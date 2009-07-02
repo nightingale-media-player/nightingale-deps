@@ -49,15 +49,10 @@
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cr = Components.results;
-const Cu = Components.utils;
 const CC = Components.Constructor;
-
-const EXPORTED_SYMBOLS = ["server", "nsHttpServer", "HttpError"];
 
 /** True if debugging output is enabled, false otherwise. */
 var DEBUG = false; // non-const *only* so tweakable in server tests
-
-var gGlobalObject = this;
 
 /**
  * Asserts that the given condition holds.  If it doesn't, the given message is
@@ -162,15 +157,14 @@ const HIDDEN_CHAR = "^";
  */
 const HEADERS_SUFFIX = HIDDEN_CHAR + "headers" + HIDDEN_CHAR;
 
-/** Type used to denote SJS scripts for CGI-like functionality. */
-const SJS_TYPE = "sjs";
-
 
 /** dump(str) with a trailing "\n" -- only outputs if DEBUG */
 function dumpn(str)
 {
   if (DEBUG)
-    dump(str + "\n");
+    Components.classes["@mozilla.org/consoleservice;1"]
+              .getService(Components.interfaces.nsIConsoleService)
+              .logStringMessage(str);
 }
 
 /** Dumps the current JS stack if DEBUG. */
@@ -197,9 +191,6 @@ const ServerSocket = CC("@mozilla.org/network/server-socket;1",
 const BinaryInputStream = CC("@mozilla.org/binaryinputstream;1",
                              "nsIBinaryInputStream",
                              "setInputStream");
-const ScriptableInputStream = CC("@mozilla.org/scriptableinputstream;1",
-                                 "nsIScriptableInputStream",
-                                 "init");
 const Pipe = CC("@mozilla.org/pipe;1",
                 "nsIPipe",
                 "init");
@@ -452,7 +443,7 @@ nsHttpServer.prototype =
   //
   registerFile: function(path, file)
   {
-    if (file && (!file.exists() || file.isDirectory()))
+    if (!file.exists() || file.isDirectory())
       throw Cr.NS_ERROR_INVALID_ARG;
 
     this._handler.registerFile(path, file);
@@ -485,14 +476,6 @@ nsHttpServer.prototype =
   },
 
   //
-  // see nsIHttpServer.registerPrefixHandler
-  //
-  registerPrefixHandler: function(prefix, handler)
-  {
-    this._handler.registerPrefixHandler(prefix, handler);
-  },
-
-  //
   // see nsIHttpServer.registerErrorHandler
   //
   registerErrorHandler: function(code, handler)
@@ -506,14 +489,6 @@ nsHttpServer.prototype =
   setIndexHandler: function(handler)
   {
     this._handler.setIndexHandler(handler);
-  },
-
-  //
-  // see nsIHttpServer.registerContentType
-  //
-  registerContentType: function(ext, type)
-  {
-    this._handler.registerContentType(ext, type);
   },
 
   // NSISUPPORTS
@@ -1265,6 +1240,29 @@ LineData.prototype =
 
 
 /**
+ * Gets a content-type for the given file, as best as it is possible to do so.
+ *
+ * @param file : nsIFile
+ *   the nsIFile for which to get a file type
+ * @returns string
+ *   the best content-type which can be determined for the file
+ */
+function getTypeFromFile(file)
+{
+  try
+  {
+    return Cc["@mozilla.org/uriloader/external-helper-app-service;1"]
+             .getService(Ci.nsIMIMEService)
+             .getTypeFromFile(file);
+  }
+  catch (e)
+  {
+    return "application/octet-stream";
+  }
+}
+
+
+/**
  * Creates a request-handling function for an nsIHttpRequestHandler object.
  */
 function createHandlerFunc(handler)
@@ -1521,15 +1519,6 @@ function ServerHandler(server)
   this._overridePaths = {};
 
   /**
-   * Custom request handlers for the path prefixes on the server in which this
-   * resides.  Path-handler pairs are stored as property-value pairs in this
-   * property.
-   *
-   * @see ServerHandler.prototype._defaultPaths
-   */
-  this._overridePrefixes = {};
-
-  /**
    * Custom request handlers for the error handlers in the server in which this
    * resides.  Path-handler pairs are stored as property-value pairs in this
    * property.
@@ -1537,12 +1526,6 @@ function ServerHandler(server)
    * @see ServerHandler.prototype._defaultErrors
    */
   this._overrideErrors = {};
-
-  /**
-   * Maps file extensions to their MIME types in the server, overriding any
-   * mapping that might or might not exist in the MIME service.
-   */
-  this._mimeMappings = {};
 
   /**
    * The default handler for requests for directories, used to serve directories
@@ -1579,29 +1562,9 @@ ServerHandler.prototype =
         // explicit paths first, then files based on existing directory mappings,
         // then (if the file doesn't exist) built-in server default paths
         if (path in this._overridePaths)
-        {
           this._overridePaths[path](metadata, response);
-        }
         else
-        {
-          let longestPrefix = "";
-          for (let prefix in this._overridePrefixes)
-          {
-            if (prefix.length > longestPrefix.length &&
-                path.substr(0, prefix.length) == prefix)
-            {
-              longestPrefix = prefix;
-            }
-          }
-          if (longestPrefix.length > 0)
-          {
-            this._overridePrefixes[longestPrefix](metadata, response);
-          }
-          else
-          {
-            this._handleDefault(metadata, response);
-          }
-        }
+          this._handleDefault(metadata, response);
       }
       catch (e)
       {
@@ -1659,13 +1622,6 @@ ServerHandler.prototype =
   //
   registerFile: function(path, file)
   {
-    if (!file)
-    {
-      dumpn("*** unregistering '" + path + "' mapping");
-      delete this._overridePaths[path];
-      return;
-    }
-
     dumpn("*** registering '" + path + "' as mapping to " + file.path);
     file = file.clone();
 
@@ -1677,7 +1633,8 @@ ServerHandler.prototype =
           throw HTTP_404;
 
         response.setStatusLine(metadata.httpVersion, 200, "OK");
-        self._writeFileResponse(metadata, file, response);
+        self._writeFileResponse(file, response);
+        maybeAddHeaders(file, metadata, response);
       };
   },
 
@@ -1691,18 +1648,6 @@ ServerHandler.prototype =
       throw Cr.NS_ERROR_INVALID_ARG;
 
     this._handlerToField(handler, this._overridePaths, path);
-  },
-
-  //
-  // see nsIHttpServer.registerPrefixHandler
-  //
-  registerPrefixHandler: function(path, handler)
-  {
-    // XXX true path validation!
-    if (path.charAt(0) != "/" || path.charAt(path.length - 1) != "/")
-      throw Cr.NS_ERROR_INVALID_ARG;
-
-    this._handlerToField(handler, this._overridePrefixes, path);
   },
 
   //
@@ -1758,17 +1703,6 @@ ServerHandler.prototype =
       handler = createHandlerFunc(handler);
 
     this._indexHandler = handler;
-  },
-
-  //
-  // see nsIHttpServer.registerContentType
-  //
-  registerContentType: function(ext, type)
-  {
-    if (!type)
-      delete this._mimeMappings[ext];
-    else
-      this._mimeMappings[ext] = headerUtils.normalizeFieldValue(type);
   },
 
   // NON-XPCOM PUBLIC API
@@ -1850,96 +1784,57 @@ ServerHandler.prototype =
     if (!file.exists())
       throw HTTP_404;
 
+    var offset = 0;
+    if (metadata.hasHeader("Range")) {
+      response.setStatusLine(metadata.httpVersion, 206, "Partial Content");
+      offset = parseInt(metadata.getHeader("Range").match(/\d+/));
+    }
+
     // finally...
     dumpn("*** handling '" + path + "' as mapping to " + file.path);
-    this._writeFileResponse(metadata, file, response);
+    this._writeFileResponse(file, response, offset);
+
+    maybeAddHeaders(file, metadata, response);
   },
 
   /**
    * Writes an HTTP response for the given file, including setting headers for
    * file metadata.
    *
-   * @param metadata : Request
-   *   the Request for which a response is being generated
    * @param file : nsILocalFile
    *   the file which is to be sent in the response
    * @param response : Response
    *   the response to which the file should be written
+   * @param offset: integer
+   *   the byte offset to skip to when writing
    */
-  _writeFileResponse: function(metadata, file, response)
+  _writeFileResponse: function(file, response, offset)
   {
-    const PR_RDONLY = 0x01;
-
-    var type = this._getTypeFromFile(file);
-    if (type == SJS_TYPE)
-    {
-      try
-      {
-        var fis = new FileInputStream(file, PR_RDONLY, 0444,
-                                      Ci.nsIFileInputStream.CLOSE_ON_EOF);
-        var sis = new ScriptableInputStream(fis);
-        var s = Cu.Sandbox(gGlobalObject);
-        Cu.evalInSandbox(sis.read(file.fileSize), s);
-        s.handleRequest(metadata, response);
-      }
-      catch (e)
-      {
-        dumpn("*** error running SJS: " + e);
-        throw HTTP_500;
-      }
-    }
-    else
-    {
-      try
-      {
-        response.setHeader("Last-Modified",
-                           toDateString(file.lastModifiedTime),
-                           false);
-      }
-      catch (e) { /* lastModifiedTime threw, ignore */ }
-
-      response.setHeader("Content-Type", type, false);
-  
-      var fis = new FileInputStream(file, PR_RDONLY, 0444,
-                                    Ci.nsIFileInputStream.CLOSE_ON_EOF);
-      response.bodyOutputStream.writeFrom(fis, file.fileSize);
-      fis.close();
-      
-      maybeAddHeaders(file, metadata, response);
-    }
-  },
-
-  /**
-   * Gets a content-type for the given file, first by checking for any custom
-   * MIME-types registered with this handler for the file's extension, second by
-   * asking the global MIME service for a content-type, and finally by failing
-   * over to application/octet-stream.
-   *
-   * @param file : nsIFile
-   *   the nsIFile for which to get a file type
-   * @returns string
-   *   the best content-type which can be determined for the file
-   */
-  _getTypeFromFile: function(file)
-  {
+    if (arguments.length < 3)
+      offset = 0;
     try
     {
-      var name = file.leafName;
-      var dot = name.lastIndexOf(".");
-      if (dot > 0)
-      {
-        var ext = name.slice(dot + 1);
-        if (ext in this._mimeMappings)
-          return this._mimeMappings[ext];
+      response.setHeader("Last-Modified",
+                         toDateString(file.lastModifiedTime),
+                         false);
+    }
+    catch (e) { /* lastModifiedTime threw, ignore */ }
+
+    response.setHeader("Content-Type", getTypeFromFile(file), false);
+
+    const PR_RDONLY = 0x01;
+    var fis = new FileInputStream(file, PR_RDONLY, 0444,
+                                  Ci.nsIFileInputStream.CLOSE_ON_EOF);
+    if (offset) {
+      if (fis instanceof Ci.nsISeekableStream) {
+        fis.seek(Ci.nsISeekableStream.SEEK_SET, offset);
+      } else {
+        dumpn("*** file stream is not seekable, failed to seek to offset " + offset);
+        throw HTTP_416;
       }
-      return Cc["@mozilla.org/uriloader/external-helper-app-service;1"]
-               .getService(Ci.nsIMIMEService)
-               .getTypeFromFile(file);
     }
-    catch (e)
-    {
-      return "application/octet-stream";
-    }
+    response.bodyOutputStream.writeFrom(fis, file.fileSize);
+    fis.close();
   },
 
   /**
@@ -2162,7 +2057,7 @@ ServerHandler.prototype =
   {
     // post-processing
     response.setHeader("Connection", "close", false);
-    response.setHeader("Server", "httpd.js", false);
+    response.setHeader("Server", "MozJSHTTP", false);
     response.setHeader("Date", toDateString(Date.now()), false);
 
     var bodyStream = response.bodyInputStream;
@@ -3416,7 +3311,6 @@ function server(port, basePath)
   var srv = new nsHttpServer();
   if (lp)
     srv.registerDirectory("/", lp);
-  srv.registerContentType("sjs", SJS_TYPE);
   srv.start(port);
 
   var thread = gThreadManager.currentThread;
