@@ -46,6 +46,7 @@
 #ifdef XP_WIN
 #include <direct.h>
 #define chdir _chdir
+#define PATH_MAX _MAX_PATH
 #else
 #include <unistd.h>
 #endif
