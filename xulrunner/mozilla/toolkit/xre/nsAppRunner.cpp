@@ -131,6 +131,10 @@
 
 #include <stdlib.h>
 
+#if defined(MOZ_SPLASHSCREEN)
+#include "nsSplashScreen.h"
+#endif
+
 #ifdef XP_UNIX
 #include <sys/stat.h>
 #include <unistd.h>
@@ -2432,9 +2436,22 @@ static void MOZ_gdk_display_close(GdkDisplay *display)
  */
 PRBool nspr_use_zone_allocator = PR_FALSE;
 
+#ifdef MOZ_SPLASHSCREEN
+#define MOZ_SPLASHSCREEN_UPDATE(_i)  do { if (splashScreen) splashScreen->Update(_i); } while(0)
+#else
+#define MOZ_SPLASHSCREEN_UPDATE(_i)  do { } while(0)
+#endif
+
 int
 XRE_main(int argc, char* argv[], const nsXREAppData* aAppData)
 {
+#ifdef MOZ_SPLASHSCREEN
+  nsSplashScreen *splashScreen =
+    nsSplashScreen::GetOrCreate();
+  if (splashScreen)
+    splashScreen->Open();
+#endif
+
   nsresult rv;
   ArgResult ar;
   NS_TIMELINE_MARK("enter main");
@@ -2536,6 +2553,8 @@ XRE_main(int argc, char* argv[], const nsXREAppData* aAppData)
       return 1;
     }
   }
+
+  MOZ_SPLASHSCREEN_UPDATE(10);
 
   ScopedAppData appData(aAppData);
   gAppData = &appData;
@@ -2770,6 +2789,8 @@ XRE_main(int argc, char* argv[], const nsXREAppData* aAppData)
 #ifdef NS_TRACE_MALLOC
   gArgc = argc = NS_TraceMallocStartupArgs(gArgc, gArgv);
 #endif
+
+  MOZ_SPLASHSCREEN_UPDATE(20);
 
   {
     nsXREDirProvider dirProvider;
@@ -3006,6 +3027,8 @@ XRE_main(int argc, char* argv[], const nsXREAppData* aAppData)
     PRBool needsRestart = PR_FALSE;
     PRBool appInitiatedRestart = PR_FALSE;
 
+    MOZ_SPLASHSCREEN_UPDATE(30);
+
     // Allows the user to forcefully bypass the restart process at their
     // own risk. Useful for debugging or for tinderboxes where child 
     // processes can be problematic.
@@ -3094,6 +3117,9 @@ XRE_main(int argc, char* argv[], const nsXREAppData* aAppData)
         NS_TIMELINE_LEAVE("appStartup->CreateHiddenWindow");
         NS_ENSURE_SUCCESS(rv, 1);
 
+        MOZ_SPLASHSCREEN_UPDATE(50);
+
+
 #if defined(HAVE_DESKTOP_STARTUP_ID) && defined(MOZ_WIDGET_GTK2)
         nsRefPtr<nsGTKToolkit> toolkit = GetGTKToolkit();
         if (toolkit && !desktopStartupID.IsEmpty()) {
@@ -3176,6 +3202,8 @@ XRE_main(int argc, char* argv[], const nsXREAppData* aAppData)
           // Prepare Cocoa's form of Apple Event handling.
           SetupMacApplicationDelegate();
 #endif
+          MOZ_SPLASHSCREEN_UPDATE(70);
+
           nsCOMPtr<nsIObserverService> obsService
             (do_GetService("@mozilla.org/observer-service;1"));
           if (obsService)
@@ -3196,6 +3224,8 @@ XRE_main(int argc, char* argv[], const nsXREAppData* aAppData)
 
           // enable win32 DDE responses and Mac appleevents responses
           nativeApp->Enable();
+
+          MOZ_SPLASHSCREEN_UPDATE(90);
 
           NS_TIMELINE_ENTER("appStartup->Run");
           rv = appStartup->Run();
@@ -3248,6 +3278,8 @@ XRE_main(int argc, char* argv[], const nsXREAppData* aAppData)
 
     // Restart the app after XPCOM has been shut down cleanly. 
     if (needsRestart) {
+      MOZ_SPLASHSCREEN_UPDATE(90);
+
       if (appInitiatedRestart) {
         RestoreStateForAppInitiatedRestart();
       }
