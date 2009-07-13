@@ -51,6 +51,13 @@ namespace TagLib {
     }
   };
 
+
+#if _MSC_VER
+  typedef unsigned __int64 ulonglong;
+#else
+  typedef unsigned long long ulonglong;
+#endif
+
   /*!
    * This class is a basic file I/O interface class providing support for
    * accessing files.

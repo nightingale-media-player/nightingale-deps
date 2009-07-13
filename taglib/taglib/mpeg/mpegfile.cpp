@@ -171,74 +171,144 @@ bool MPEG::File::save(int tags, bool stripOthers)
     Tag::duplicate(ID3v2Tag(), ID3v1Tag(true), false);
   
   bool success = true;
+  TagLib::FileIO *outfile = this;
 
   if(ID3v2 & tags) {
-    if(ID3v2Tag() && !ID3v2Tag()->isEmpty()) {
+    if(!ID3v2Tag() || ID3v2Tag()->isEmpty()) {
+      if(stripOthers && d->ID3v2OriginalSize > 0) {
+        // we need to write a tag out, but there is no tag;
+        // strip it out from the file and replace with padding instead
+        TagLib::ID3v2::Header header;
+        header.setTagSize(d->ID3v2OriginalSize);
+        outfile->insert(header.render(), d->ID3v2Location, d->ID3v2OriginalSize);
+      }
+    }
+    else {
+      // we were asked to write a tag, and there is data to write
 
       if(!d->hasID3v2)
         d->ID3v2Location = 0;
 
-      insert(ID3v2Tag()->render(), d->ID3v2Location, d->ID3v2OriginalSize);
-      
+      ByteVector id3data = ID3v2Tag()->render();
+      if (id3data.size() > d->ID3v2OriginalSize) {
+        outfile = this->tempFile();
+        if (!outfile) {
+          debug("ERROR: failed to create temporary file!");
+          return false;
+        }
+        this->seek( 0 );
+        outfile->seek( 0 );
+        for ( ulonglong readIndex = 0; readIndex < d->ID3v2Location; )
+        {
+          ulonglong size = std::min( (ulonglong)4096, d->ID3v2Location - readIndex );
+          ByteVector buffer = this->readBlock(size);
+          outfile->writeBlock(buffer);
+          readIndex += buffer.size();
+        }
+      }
+
+      outfile->insert(id3data, d->ID3v2Location, d->ID3v2OriginalSize);
+
       d->hasID3v2 = true;
 
-      // v1 tag location has changed, update if it exists
-
-      if(ID3v1Tag())
-        d->ID3v1Location = findID3v1();
-
-      // APE tag location has changed, update if it exists
-
-      if(APETag())
-	findAPE();
+      if (outfile != this) {
+        // we're using a scratch file (because the tag needed to grow)
+        // copy the old data over (including APE + id3v1 tags; we can
+        // delete it later if necessary, they're near end of file and easy)
+        ulonglong end = this->length();
+        this->seek( d->ID3v2OriginalSize, FileIO::Current );
+        for ( ulonglong readIndex = this->tell(); readIndex < end; )
+        {
+          ulonglong size = std::min( (ulonglong)4096, end - readIndex );
+          ByteVector buffer = this->readBlock(size);
+          outfile->writeBlock(buffer);
+          readIndex += buffer.size();
+        }
+        // things have moved, shift them over
+        long id3v2Difference = id3data.size() - d->ID3v2OriginalSize;
+        if (d->hasID3v1)
+          d->ID3v1Location += id3v2Difference;
+        if (d->hasAPE) {
+          d->APELocation += id3v2Difference;
+          d->APEFooterLocation += id3v2Difference;
+        }
+      }
     }
-    else if(stripOthers)
-      success = strip(ID3v2, false) && success;
   }
-  else if(d->hasID3v2 && stripOthers)
-    success = strip(ID3v2) && success;
+  else if(d->hasID3v2 && stripOthers) {
+    d->tag.set(ID3v2Index, 0);
+    if(d->ID3v2OriginalSize > 0) {
+      // for efficiency, avoid rewriting the entire file;
+      // replace the original id3v2 tag with all padding instead
+      TagLib::ID3v2::Header header;
+      header.setTagSize(d->ID3v2OriginalSize);
+      ByteVector headerBytes = header.render();
+      headerBytes.append(ByteVector(d->ID3v2OriginalSize - headerBytes.size()));
+      outfile->insert(headerBytes, d->ID3v2Location, d->ID3v2OriginalSize);
+    }
+  }
 
   if(ID3v1 & tags) {
     if(ID3v1Tag() && !ID3v1Tag()->isEmpty()) {
       int offset = d->hasID3v1 ? -128 : 0;
-      seek(offset, End);
-      writeBlock(ID3v1Tag()->render());
+      outfile->seek(offset, End);
+      d->ID3v1Location = outfile->tell();
+      outfile->writeBlock(ID3v1Tag()->render());
       d->hasID3v1 = true;
-      d->ID3v1Location = findID3v1();
     }
-    else if(stripOthers)
-      success = strip(ID3v1) && success;
+    else if(d->hasID3v1 && stripOthers) {
+      outfile->removeBlock(d->ID3v1Location, 128);
+      d->hasID3v1 = false;
+      d->ID3v1Location = -1;
+      d->tag.set(ID3v1Index, 0);
+    }
   }
-  else if(d->hasID3v1 && stripOthers)
-    success = strip(ID3v1, false) && success;
+  else if(d->hasID3v1 && stripOthers) {
+    // strip the id3v1 tag
+    outfile->removeBlock(d->ID3v1Location, 128);
+    d->hasID3v1 = false;
+    d->ID3v1Location = -1;
+  }
 
   // Dont save an APE-tag unless one has been created
 
   if((APE & tags) && APETag()) {
     if(d->hasAPE)
-      insert(APETag()->render(), d->APELocation, d->APEOriginalSize);
+      outfile->insert(APETag()->render(), d->APELocation, d->APEOriginalSize);
     else {
       if(d->hasID3v1) {
-        insert(APETag()->render(), d->ID3v1Location, 0);
+        outfile->insert(APETag()->render(), d->ID3v1Location, 0);
         d->APEOriginalSize = APETag()->footer()->completeTagSize();
         d->hasAPE = true;
         d->APELocation = d->ID3v1Location;
         d->ID3v1Location += d->APEOriginalSize;
       }
       else {
-        seek(0, End);
-        d->APELocation = tell();
-	d->APEFooterLocation = d->APELocation
-	  + d->tag.access<APE::Tag>(APEIndex, false)->footer()->completeTagSize()
-	  - APE::Footer::size();
-        writeBlock(APETag()->render());
+        outfile->seek(0, End);
+        d->APELocation = outfile->tell();
+        d->APEFooterLocation = d->APELocation
+          + d->tag.access<APE::Tag>(APEIndex, false)->footer()->completeTagSize()
+          - APE::Footer::size();
+        outfile->writeBlock(APETag()->render());
         d->APEOriginalSize = APETag()->footer()->completeTagSize();
         d->hasAPE = true;
       }
     }
   }
-  else if(d->hasAPE && stripOthers)
-    success = strip(APE, false) && success;
+  else if(d->hasAPE && stripOthers) {
+    removeBlock(d->APELocation, d->APEOriginalSize);
+    if(d->hasID3v1) {
+      if(d->ID3v1Location > d->APELocation)
+        d->ID3v1Location -= d->APEOriginalSize;
+    }
+    d->APELocation = -1;
+    d->APEFooterLocation = -1;
+    d->hasAPE = false;
+  }
+
+  if (outfile != this) {
+    success &= this->closeTempFile(success);
+  }
 
   return success;
 }
@@ -270,8 +340,43 @@ bool MPEG::File::strip(int tags, bool freeMemory)
     return false;
   }
 
+  // might need to strip:
+  //   from the front: id3v2 only (taglib doesn't find ape at front)
+  //   from the back: id3v1, ape
+
+  TagLib::ulonglong endOffset = length();
+
+  FileIO *file = this;
+
   if((tags & ID3v2) && d->hasID3v2) {
-    removeBlock(d->ID3v2Location, d->ID3v2OriginalSize);
+    file = this->tempFile();
+    if (file) {
+      // successfully created a temp file; copy the area before the id3v2 tag
+      this->seek( 0 );
+      file->seek( 0 );
+      for ( ulonglong readIndex = 0; readIndex < d->ID3v2Location; )
+      {
+        ulonglong size = std::min( (ulonglong)4096, d->ID3v2Location - readIndex );
+        ByteVector buffer = this->readBlock(size);
+        file->writeBlock(buffer);
+        readIndex += buffer.size();
+      }
+      this->seek( d->ID3v2OriginalSize, FileIO::Current );
+      long readLength = endOffset - this->tell();
+      for ( ulonglong readIndex = 0; readIndex < readLength ; )
+      {
+        ulonglong size = std::min( (ulonglong)4096, readLength - readIndex );
+        ByteVector buffer = this->readBlock(size);
+        file->writeBlock(buffer);
+        readIndex += buffer.size();
+      }
+    }
+    else {
+      // failed to create a temp file; just abort, avoid touching anything
+      return false;
+    }
+
+    long ID3v2RemovedSize = d->ID3v2OriginalSize;
     d->ID3v2Location = -1;
     d->ID3v2OriginalSize = 0;
     d->hasID3v2 = false;
@@ -281,17 +386,23 @@ bool MPEG::File::strip(int tags, bool freeMemory)
 
     // v1 tag location has changed, update if it exists
 
-    if(ID3v1Tag())
-      d->ID3v1Location = findID3v1();
+    if(this->ID3v1Tag())
+      d->ID3v1Location -= ID3v2RemovedSize;
 
     // APE tag location has changed, update if it exists
 
-   if(APETag())
-      findAPE();
+   if(this->APETag())
+      d->APELocation -= ID3v2RemovedSize;
   }
 
   if((tags & ID3v1) && d->hasID3v1) {
-    truncate(d->ID3v1Location);
+    file->removeBlock(d->ID3v1Location, 128);
+    if (d->hasAPE) {
+      if (d->APELocation > d->ID3v1Location) {
+        d->APELocation -= 128;
+        d->APEFooterLocation -= 128;
+      }
+    }
     d->ID3v1Location = -1;
     d->hasID3v1 = false;
 
@@ -300,17 +411,22 @@ bool MPEG::File::strip(int tags, bool freeMemory)
   }
 
   if((tags & APE) && d->hasAPE) {
-    removeBlock(d->APELocation, d->APEOriginalSize);
-    d->APELocation = -1;
-    d->APEFooterLocation = -1;
-    d->hasAPE = false;
+    file->removeBlock(d->APELocation, d->APEOriginalSize);
     if(d->hasID3v1) {
       if(d->ID3v1Location > d->APELocation)
         d->ID3v1Location -= d->APEOriginalSize;
     }
+    d->APELocation = -1;
+    d->APEFooterLocation = -1;
+    d->hasAPE = false;
 
     if(freeMemory)
       d->tag.set(APEIndex, 0);
+  }
+
+  if (file != this) {
+    // used a temp file
+    return this->closeTempFile(true);
   }
 
   return true;
