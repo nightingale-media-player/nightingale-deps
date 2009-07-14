@@ -18,3 +18,4 @@ ac_add_options --enable-jemalloc
 export WIN32_CRT_SRC_DIR="/d/msvc8/VC/crt/src"
 ac_add_options --disable-safe-browsing
 ac_add_options --disable-url-classifier
+ac_add_options --enable-splashscreen
