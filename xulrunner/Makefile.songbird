@@ -67,6 +67,9 @@ xr-all:
 	# Move these files where we expect them to be in the vendor build system
 	$(MV) $(CURDIR)/songbird/$(SB_XR_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/mozilla  $(SB_VENDOR_BINARIES_DIR)/mozilla
 	$(MV) $(CURDIR)/songbird/$(SB_XR_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/xulrunner $(SB_VENDOR_BINARIES_DIR)/xulrunner
+ifneq (,$(SB_VENDOR_BUILD_LOG))
+	$(CP) $(CURDIR)/$(SB_VENDOR_BUILD_LOG) $(SB_VENDOR_BINARIES_DIR)/xulrunner
+endif
 	# These files aren't needed after the package-deps and take up TONS of space
 	$(RM) -rf $(CURDIR)/mozilla/compiled
 
