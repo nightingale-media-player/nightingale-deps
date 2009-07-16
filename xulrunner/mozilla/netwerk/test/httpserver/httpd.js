@@ -1899,11 +1899,77 @@ ServerHandler.prototype =
       catch (e) { /* lastModifiedTime threw, ignore */ }
 
       response.setHeader("Content-Type", type, false);
-  
+
       var fis = new FileInputStream(file, PR_RDONLY, 0444,
                                     Ci.nsIFileInputStream.CLOSE_ON_EOF);
-      response.bodyOutputStream.writeFrom(fis, file.fileSize);
+
+      var start, end;
+      var bytesToWrite = file.fileSize;
+      if (metadata._httpVersion.atLeast(nsHttpVersion.HTTP_1_1) &&
+          metadata.hasHeader("Range"))
+      {
+        var rangeMatch = metadata.getHeader("Range").match(/^bytes=(\d+)?-(\d+)?$/);
+        if (!rangeMatch)
+          throw HTTP_400;
+
+        if (typeof(rangeMatch[1]) != "undefined")
+          start = parseInt(rangeMatch[1], 10);
+
+        if (typeof(rangeMatch[2]) != "undefined")
+          end = parseInt(rangeMatch[2], 10);
+
+        if (typeof(start) == "undefined" && typeof(end) == "undefined")
+          throw HTTP_400;
+
+        // No start given, so the end is really the count of bytes from the
+        // end of the file.
+        if (typeof(start) == "undefined")
+        {
+          start = Math.max(0, file.fileSize - end);
+          end   = file.fileSize - 1;
+        }
+
+        // start and end are inclusive
+        if (typeof(end) == "undefined" || end >= file.fileSize)
+          end = file.fileSize - 1;
+        
+        if (typeof(start) != "undefined" && start >= file.fileSize)
+          throw HTTP_416;
+        
+        if (end < start)
+        {
+          response.setStatusLine(metadata.httpVersion, 200, "OK");
+          start = 0;
+          end = file.fileSize - 1;
+        }
+        else
+        {
+          response.setStatusLine(metadata.httpVersion, 206, "Partial Content");
+          var contentRange = "bytes " + start + "-" + end + "/" + file.fileSize;
+          response.setHeader("Content-Range", contentRange);
+        }
+      } else {
+        start = 0;
+        end = file.fileSize - 1;
+      }
+        
+      if (start != 0) {
+        if (fis instanceof Ci.nsISeekableStream) {
+          dumpn("seeking " + file.path + " to " + start);
+          fis.seek(Ci.nsISeekableStream.SEEK_SET, start);
+        } else {
+          dumpn("*** file stream is not seekable, failed to seek to offset " + offset);
+          throw HTTP_416;
+        }
+      }
+  
+      dumpn("writing " + (end - start + 1) + " bytes of " + file.path);
+      var bytesWritten = response.bodyOutputStream.writeFrom(fis, end - start + 1);
       fis.close();
+      
+      NS_ASSERT(bytesWritten == (end - start + 1),
+                "wrote " + bytesWritten + " of " + (end - start + 1) +
+                " bytes of " + file.path);
       
       maybeAddHeaders(file, metadata, response);
     }
@@ -2989,6 +3055,14 @@ nsHttpVersion.prototype =
   {
     return this.major == otherVersion.major &&
            this.minor == otherVersion.minor;
+  },
+
+  /** True if this >= otherVersion, false otherwise. */
+  atLeast: function(otherVersion)
+  {
+    return this.major > otherVersion.major ||
+           (this.major == otherVersion.major &&
+            this.minor >= otherVersion.minor);
   }
 };
 
