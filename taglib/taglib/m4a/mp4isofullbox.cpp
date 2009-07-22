@@ -69,3 +69,8 @@ TagLib::uint  MP4::Mp4IsoFullBox::flags()
   return d->flags;
 }
 
+void  MP4::Mp4IsoFullBox::setFlags(TagLib::uint flags)
+{
+  d->flags = flags;
+}
+

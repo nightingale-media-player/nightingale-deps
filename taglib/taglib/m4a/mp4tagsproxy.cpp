@@ -226,6 +226,8 @@ MP4::Fourcc MP4::Mp4TagsProxy::getFourccForType( EBoxType boxtype )
     return TAGLIB_FOURCC('c','o','v','r');
   case genre:
     return TAGLIB_FOURCC('g','n','r','e');
+  case gen:
+    return TAGLIB_FOURCC(0xA9,'g','e','n');
   case year:
     return TAGLIB_FOURCC(0xA9,'d','a','y');
   case trackno:

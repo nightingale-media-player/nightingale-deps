@@ -54,6 +54,7 @@ namespace TagLib
         album,
         cover,
         genre,
+        gen, /* Also genre */
         year,
         trackno,
         comment,

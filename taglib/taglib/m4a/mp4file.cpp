@@ -119,10 +119,12 @@ static void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag );
 //! \param mp4tag the tags to read new tags from
 //! \param newData [out] the new data; may be ByteVector::null to indicate the box should be deleted
 //! \param oldData [out] if not null, the old data that existed
-static bool rebuildDataForBox( const MP4::Fourcc fourcc,
+//! \param flags [out] Flags to set on the data box
+static bool rebuildDataForBox( MP4::Fourcc fourcc,
                                MP4::Mp4TagsProxy* const proxy,
                                MP4::Tag* mp4tag,
-                               ByteVector& newData );
+                               ByteVector& newData,
+                               TagLib::uint *flags);
 
 MP4::File::File() : TagLib::File()
 {
@@ -273,7 +275,13 @@ bool MP4::File::save()
   {
     fourcc = box->fourcc();
     seenFourccs.insert( fourcc );
-    boxChanged = rebuildDataForBox( fourcc, &d->tagsProxy, &d->mp4tag, newData );
+    TagLib::uint flags = 0;
+    MP4::Mp4MetadataBox* metabox = dynamic_cast<MP4::Mp4MetadataBox*>(box);
+    if (metabox)
+    {
+      flags = metabox->data()->flags();
+    }
+    boxChanged = rebuildDataForBox( fourcc, &d->tagsProxy, &d->mp4tag, newData, &flags );
     if ( boxChanged )
     {
       hasAnyChanged = true;
@@ -282,10 +290,11 @@ bool MP4::File::save()
         // delete this box
         continue;
       }
-      MP4::Mp4MetadataBox* metabox = dynamic_cast<MP4::Mp4MetadataBox*>(box);
+
       if (metabox)
       {
         metabox->data()->setData( newData );
+        metabox->data()->setFlags( flags );
       }
       else
       {
@@ -315,7 +324,8 @@ bool MP4::File::save()
     Mp4MetadataBox* box = dynamic_cast<Mp4MetadataBox*>(isobox);
     if (box)
     {
-      boxChanged = rebuildDataForBox( fourcc, &d->tagsProxy, &d->mp4tag, newData );
+      TagLib::uint flags = 0;
+      boxChanged = rebuildDataForBox( fourcc, &d->tagsProxy, &d->mp4tag, newData , &flags );
       if ( boxChanged && !newData.isNull() )
       {
         Mp4IsoBox* newBox = MP4::BoxFactory::createInstance( this, 
@@ -333,6 +343,7 @@ bool MP4::File::save()
         {
           hasAnyChanged = true;
           data->setData( newData );
+          data->setFlags( flags );
           box->setData( data );
           newList.append( box );
           ilstBox->addChildBox( box );
@@ -791,11 +802,12 @@ void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )
 static bool rebuildDataForBox( MP4::Fourcc fourcc,
                                MP4::Mp4TagsProxy* const proxy,
                                MP4::Tag* mp4tag,
-                               ByteVector& newData )
+                               ByteVector& newData,
+                               TagLib::uint *flags)
 {
   // see if it's something we changed
   MP4::Mp4TagsProxy::EBoxType boxType = MP4::Mp4TagsProxy::END;
-  TagLib::uint firstInt, secondInt;
+  TagLib::uint firstInt, secondInt, genreIndex;
   MP4::ITunesDataBox* oldData = NULL;
   enum mode_t {
     MODE_PASSTHROUGH,
@@ -805,6 +817,7 @@ static bool rebuildDataForBox( MP4::Fourcc fourcc,
   
   newData.clear();
   
+
   switch (fourcc) 
   {
     case TAGLIB_FOURCC(0xA9,'n','a','m'):
@@ -831,11 +844,37 @@ static bool rebuildDataForBox( MP4::Fourcc fourcc,
       mode = MODE_BINARY;
       boxType = MP4::Mp4TagsProxy::cover;
       break;
+    /* Two ways to do genre; but only ever use one of them at a time: if it's
+       an id3v1 numeric genre use 'gnre', otherwise use 0xA9gen */
+    case TAGLIB_FOURCC(0xA9,'g','e','n'):
+      genreIndex = ID3v1::genreIndex(mp4tag->genre());
+      if (genreIndex == 255) {
+        *flags = 1;
+        newData = mp4tag->genre().data(String::UTF8);
+        oldData = proxy->genreData();
+        mode = MODE_BINARY;
+        boxType = MP4::Mp4TagsProxy::genre;
+      }
+      else {
+        // We have a numeric genre index, so remove this box (we'll add a 'gnre'
+        // box when we're adding new boxes, later).
+        newData = ByteVector::null;
+        mode = MODE_BINARY;
+      }
+      break;
     case TAGLIB_FOURCC('g','n','r','e'):
-      newData = mp4tag->genre().data(String::UTF8);
-      oldData = proxy->genreData();
-      mode = MODE_BINARY;
-      boxType = MP4::Mp4TagsProxy::genre;
+      genreIndex = ID3v1::genreIndex(mp4tag->genre());
+      if (genreIndex != 255) {
+        newData = ByteVector::fromShort(genreIndex + 1);
+        oldData = proxy->genreData();
+        mode = MODE_BINARY;
+        boxType = MP4::Mp4TagsProxy::genre;
+      }
+      else {
+        // We don't have a numeric genre index, so remove this box
+        newData = ByteVector::null;
+        mode = MODE_BINARY;
+      }
       break;
     case TAGLIB_FOURCC(0xA9,'d','a','y'):
     {

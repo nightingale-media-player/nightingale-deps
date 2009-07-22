@@ -43,8 +43,9 @@ namespace TagLib
 
       //! function to get the version of box
       uchar version();
-      //! function to get the flag map
+      //! functions to get/set the flag map
       uint  flags();
+      void setFlags( uint flags );
 
       //! parse wrapper to get common interface for both box and fullbox
       virtual void  parsebox();
