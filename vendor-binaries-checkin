@@ -1,11 +1,12 @@
 #!/bin/bash
 
-set -e
 #set -x
 
 os=$(uname -o)
 os_arch=$(uname)
 os_subarch=$(uname -m)
+
+set -e
 
 if [[ $os == "Msys" ]]; then
    platform=windows-i686-msvc8
