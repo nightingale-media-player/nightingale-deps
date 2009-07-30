@@ -216,6 +216,7 @@ typedef struct _WMADMOEnc
   IMediaObject *dmo;
 
   gboolean comInitialised;
+  DWORD    comInitialisingThread;
 
 } WMADMOEnc;
 
@@ -361,6 +362,7 @@ wmadmoenc_setup (WMADMOEnc * enc)
   hr = CoInitialize (0);
   if (SUCCEEDED (hr)) {
     enc->comInitialised = TRUE;
+    enc->comInitialisingThread = GetCurrentThreadId();
   } else {
     GST_WARNING_OBJECT (enc, "Failed to initialize COM: %x", hr);
     return FALSE;
@@ -414,8 +416,17 @@ wmadmoenc_teardown (WMADMOEnc * enc)
 
   enc->is_setup = FALSE;
 
-  if (enc->comInitialised)
+  /* Ensure we only uninit COM on the thread which inited COM.
+   * Unfortunately, this sometimes means we'll just not uninit it at all, but
+   * that's better than uninitialising on the wrong thread
+   */
+  if (enc->comInitialised && 
+      enc->comInitialisingThread == GetCurrentThreadId()) 
+  {
     CoUninitialize();
+    enc->comInitialised = FALSE;
+    enc->comInitialisingThread = 0;
+  }
 }
 
 static gboolean
@@ -581,6 +592,7 @@ wmadmoenc_sink_event (GstPad * pad, GstEvent * event)
       if (ret != GST_FLOW_OK) {
         return FALSE;
       }
+      wmadmoenc_teardown (enc);
 
       res = gst_pad_push_event (enc->srcpad, event);
       break;
