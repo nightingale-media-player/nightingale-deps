@@ -181,13 +181,6 @@ nsClipboard::SetData(nsITransferable *aTransferable,
     // Which selection are we about to claim, CLIPBOARD or PRIMARY?
     GdkAtom selectionAtom = GetSelectionAtom(aWhichClipboard);
 
-    // Make ourselves the owner.  If we fail to, return.
-    if (!gtk_selection_owner_set(mWidget, selectionAtom, GDK_CURRENT_TIME))
-        return NS_ERROR_FAILURE;
-
-    // Clear the old selection target list.
-    gtk_selection_clear_targets(mWidget, selectionAtom);
-
     // Get the types of supported flavors
     nsresult rv;
     nsCOMPtr<nsISupportsArray> flavors;
@@ -196,9 +189,67 @@ nsClipboard::SetData(nsITransferable *aTransferable,
     if (!flavors || NS_FAILED(rv))
         return NS_ERROR_FAILURE;
 
-    // Add all the flavors to this widget's supported type.
+    // Special case images.  Since our selection mechanism doesn't work for
+    // images, we must use GTK's clipboard utility functions.  These will
+    // handle setting the selection owner and the selection target list.  Thus,
+    // for images, use the GTK clipboard utilities and then return.
     PRUint32 count;
     flavors->Count(&count);
+    for (PRUint32 i=0; i < count; i++) {
+        nsCOMPtr<nsISupports> tastesLike;
+        flavors->GetElementAt(i, getter_AddRefs(tastesLike));
+        nsCOMPtr<nsISupportsCString> flavor = do_QueryInterface(tastesLike);
+        if (!flavor)
+            continue;
+        nsXPIDLCString flavorStr;
+        flavor->ToString(getter_Copies(flavorStr));
+        if (!strcmp(flavorStr, kNativeImageMime) ||
+            !strcmp(flavorStr, kPNGImageMime) ||
+            !strcmp(flavorStr, kJPEGImageMime) ||
+            !strcmp(flavorStr, kGIFImageMime)) {
+            nsCOMPtr<nsISupports> item;
+            PRUint32 len;
+            rv = aTransferable->GetTransferData(flavorStr,
+                                                getter_AddRefs(item),
+                                                &len);
+            nsCOMPtr<nsISupportsInterfacePointer>
+                ptrPrimitive(do_QueryInterface(item));
+            if (!ptrPrimitive)
+                continue;
+
+            nsCOMPtr<nsISupports> primitiveData;
+            ptrPrimitive->GetData(getter_AddRefs(primitiveData));
+            nsCOMPtr<nsIImage> image(do_QueryInterface(primitiveData));
+            if (!image) // Not getting an image for an image mime type!?
+                continue;
+
+            if (NS_FAILED(image->LockImagePixels(PR_FALSE)))
+                continue;
+            GdkPixbuf* pixbuf = nsImageToPixbuf::ImageToPixbuf(image);
+            if (!pixbuf) {
+                image->UnlockImagePixels(PR_FALSE);
+                continue;
+            }
+
+            GtkClipboard* aClipboard =
+                gtk_clipboard_get(GetSelectionAtom(aWhichClipboard));
+            gtk_clipboard_set_image(aClipboard, pixbuf);
+            g_object_unref(pixbuf);
+            image->UnlockImagePixels(PR_FALSE);
+
+            // GTK handled everything, so just return.
+            return NS_OK;
+        }
+    }
+
+    // Make ourselves the owner.  If we fail to, return.
+    if (!gtk_selection_owner_set(mWidget, selectionAtom, GDK_CURRENT_TIME))
+        return NS_ERROR_FAILURE;
+
+    // Clear the old selection target list.
+    gtk_selection_clear_targets(mWidget, selectionAtom);
+
+    // Add all the flavors to this widget's supported type.
     for (PRUint32 i=0; i < count; i++) {
         nsCOMPtr<nsISupports> tastesLike;
         flavors->GetElementAt(i, getter_AddRefs(tastesLike));
@@ -218,38 +269,6 @@ nsClipboard::SetData(nsITransferable *aTransferable,
                 AddTarget(gdk_atom_intern("TEXT", FALSE), selectionAtom);
                 AddTarget(GDK_SELECTION_TYPE_STRING, selectionAtom);
                 // next loop iteration
-                continue;
-            }
-
-            // very special case for this one. since our selection mechanism doesn't work for images,
-            // we must use GTK's clipboard utility functions
-            if (!strcmp(flavorStr, kNativeImageMime) || !strcmp(flavorStr, kPNGImageMime) ||
-                !strcmp(flavorStr, kJPEGImageMime) || !strcmp(flavorStr, kGIFImageMime)) {
-                nsCOMPtr<nsISupports> item;
-                PRUint32 len;
-                rv = aTransferable->GetTransferData(flavorStr, getter_AddRefs(item), &len);
-                nsCOMPtr<nsISupportsInterfacePointer> ptrPrimitive(do_QueryInterface(item));
-                if (!ptrPrimitive)
-                    continue;
-
-                nsCOMPtr<nsISupports> primitiveData;
-                ptrPrimitive->GetData(getter_AddRefs(primitiveData));
-                nsCOMPtr<nsIImage> image(do_QueryInterface(primitiveData));
-                if (!image) // Not getting an image for an image mime type!?
-                    continue;
-
-                if (NS_FAILED(image->LockImagePixels(PR_FALSE)))
-                    continue;
-                GdkPixbuf* pixbuf = nsImageToPixbuf::ImageToPixbuf(image);
-                if (!pixbuf) {
-                    image->UnlockImagePixels(PR_FALSE);
-                    continue;
-                }
-
-                GtkClipboard *aClipboard = gtk_clipboard_get(GetSelectionAtom(aWhichClipboard));
-                gtk_clipboard_set_image(aClipboard, pixbuf);
-                g_object_unref(pixbuf);
-                image->UnlockImagePixels(PR_FALSE);
                 continue;
             }
 
