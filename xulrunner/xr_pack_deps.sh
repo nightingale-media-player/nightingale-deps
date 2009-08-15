@@ -23,7 +23,7 @@ mkdir -p songbird/$tree/dependencies/$plat/xulrunner/release/
 # make debug xulrunner tarball
 ./make-xulrunner-tarball.sh mozilla/compiled/xulrunner-debug/dist/bin/ \
                             songbird/$tree/dependencies/$plat/xulrunner/debug/ \
-                            xulrunner.tar.gz
+                            xulrunner.tar.bz2
 
 # make release mozilla sdk
 ./make-mozilla-sdk.sh mozilla/ \
@@ -33,4 +33,4 @@ mkdir -p songbird/$tree/dependencies/$plat/xulrunner/release/
 # make release xulrunner tarball
 ./make-xulrunner-tarball.sh mozilla/compiled/xulrunner-release/dist/bin/ \
                             songbird/$tree/dependencies/$plat/xulrunner/release/ \
-                            xulrunner.tar.gz
+                            xulrunner.tar.bz2

@@ -1,21 +1,10 @@
 #!/bin/sh
 
-# Ugh. So stupid.
-# Mac OS 10.4, which is what's on the buildbots, uses bash 2.05,
-# which doesn't have a builtin version of which. It calls /usr/bin/which, which
-# will stupidly 1. Not use proper return values (so the "which foo && 
-# do_something" construct fails), and 2. print everything to stderr, no matter
-# what, so doing cute tricks like test -z `which gtar 2>/dev/null` don't work
-# either.
-#
-# We know OS X has tar, so just ignore gtar detection on the mac... for now...
-#
-
-TAR=tar
-if [ `uname` != "Darwin" ];  then
-  which gtar 2>&1 >/dev/null && \
-    TAR=gtar
-fi
+TAR=${TAR:-tar}
+CP=${CP:-cp}
+FIND=${FIND:-find}
+RM=${RM:-rm}
+CHMOD=${CHMOD:-chmod}
 
 notice() {
   echo $* 1>&2
@@ -27,23 +16,28 @@ if [ $# != 3 ]; then
 fi
 
 srcdir="$1"
-temp1=`dirname "$srcdir"`
-temp2=`basename "$srcdir"`
-bindir="`cd \"$temp1\" 2>/dev/null && pwd || echo \"$temp1\"`/$temp2"
+srcDirname="$(dirname "$srcdir")"
+srcBasename="$(basename "$srcdir")"
+bindir="$(cd "$srcDirname" 2>/dev/null && pwd || echo "$srcDirname")/$srcBasename"
 
 destdir="$2"
-temp1=`dirname "$destdir"`
-temp2=`basename "$destdir"`
-tarballdir="`cd \"$temp1\" 2>/dev/null && pwd || echo \"$temp1\"`/$temp2"
+destDirname="$(dirname "$destdir")"
+destBasename="$(basename "$destdir")"
+tarballdir="$(cd "$destDirname" 2>/dev/null && pwd || echo "$destDirname")/$destBasename"
 
 tarballname="$3"
 
 tarball="$tarballdir/$tarballname"
 
-echo cd "$bindir" 
-cd "$bindir" 
+permFixDir="$srcDirname/$srcBasename"
+notice "Fixing permissions in $permFixDir..."
+$FIND "$permFixDir" -perm +0111 -exec chmod 0755 {} \;
+$FIND "$permFixDir" -not -perm +0111 -exec chmod 0644 {} \;
+
+cd "$permFixDir"
 
 notice "creating tarball in dest..."
-$TAR czvhf $tarball *
+echo $TAR -cjvh --owner=0 --group=0 --numeric-owner -p -f "$tarball" *
+$TAR -cjvh --owner=0 --group=0 --numeric-owner -p -f "$tarball" *
 
 notice "done."
