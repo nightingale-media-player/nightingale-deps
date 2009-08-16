@@ -1110,7 +1110,10 @@ XPCConvert::NativeInterface2JSObject(XPCCallContext& ccx,
         if(NS_SUCCEEDED(rv) && wrapper)
         {
             uint32 flags = 0;
-            if (allowNativeWrapper && wrapper->GetScope() != xpcscope)
+
+            JSBool sameOrigin;
+            if (allowNativeWrapper &&
+                !xpc_SameScope(wrapper->GetScope(), xpcscope, &sameOrigin))
             {
                 // Cross scope access detected. Check if chrome code
                 // is accessing non-chrome objects, and if so, wrap
@@ -1171,6 +1174,7 @@ XPCConvert::NativeInterface2JSObject(XPCCallContext& ccx,
 
                 if(!JS_IsSystemObject(ccx, flat))
                 {
+
                     if(flags & JSFILENAME_PROTECTED)
                     {
 #ifdef DEBUG_XPCNativeWrapper
@@ -1259,19 +1263,23 @@ XPCConvert::NativeInterface2JSObject(XPCCallContext& ccx,
                     // the new object in a XOW.
                     jsval v = OBJECT_TO_JSVAL(flat);
                     XPCJSObjectHolder *objHolder = nsnull;
-                    if (!XPC_XOW_WrapObject(ccx, scope, &v) ||
-                        !(objHolder =
-                          XPCJSObjectHolder::newHolder(ccx,
-                                                       JSVAL_TO_OBJECT(v))))
+                    if(!sameOrigin)
                     {
-                        NS_RELEASE(wrapper);
-                        return JS_FALSE;
-                    }
+                        if(!XPC_XOW_WrapObject(ccx, scope, &v) ||
+                           !(objHolder =
+                             XPCJSObjectHolder::newHolder(ccx,
+                                                          JSVAL_TO_OBJECT(v))))
+                        {
+                            NS_RELEASE(wrapper);
+                            return JS_FALSE;
+                        }
 
-                    NS_ADDREF(objHolder);
-                    NS_RELEASE(wrapper);
-                    *dest = objHolder;
-                    return JS_TRUE;
+                        NS_ADDREF(objHolder);
+                        NS_RELEASE(wrapper);
+                        *dest = objHolder;
+
+                        return JS_TRUE;
+                    }
                 }
             }
 

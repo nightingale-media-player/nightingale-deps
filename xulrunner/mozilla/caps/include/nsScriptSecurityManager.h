@@ -368,7 +368,7 @@ MoveClassPolicyEntry(PLDHashTable *table,
 { 0x7ee2a4c0, 0x4b93, 0x17d3, \
 { 0xba, 0x18, 0x00, 0x60, 0xb0, 0xf1, 0x99, 0xa2 }}
 
-class nsScriptSecurityManager : public nsIScriptSecurityManager,
+class nsScriptSecurityManager : public nsIScriptSecurityManager_1_9_0_BRANCH,
                                 public nsIPrefSecurityCheck,
                                 public nsIChannelEventSink,
                                 public nsIObserver
@@ -380,6 +380,7 @@ public:
         
     NS_DECL_ISUPPORTS
     NS_DECL_NSISCRIPTSECURITYMANAGER
+    NS_DECL_NSISCRIPTSECURITYMANAGER_1_9_0_BRANCH
     NS_DECL_NSIXPCSECURITYMANAGER
     NS_DECL_NSIPREFSECURITYCHECK
     NS_DECL_NSICHANNELEVENTSINK

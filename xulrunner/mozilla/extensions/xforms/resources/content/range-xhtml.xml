@@ -63,6 +63,13 @@
       <method name="getControlElement">
         <body>
           return {
+            get value() {
+              return this.slider.value;
+            },
+            set value(aValue) {
+              this.slider.value = aValue;
+            },
+
             set readonly() {
               // XXX: bug 343523
             },
@@ -115,7 +122,7 @@
             this.range.updateInstanceData(true);
           }
         };
-        this.control.addEventListener("ValueChange", changeHandler, false);
+        this.control.slider.addEventListener("ValueChange", changeHandler, false);
       </constructor>
     </implementation>
 

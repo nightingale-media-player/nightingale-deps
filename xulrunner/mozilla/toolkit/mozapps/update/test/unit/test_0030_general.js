@@ -38,21 +38,15 @@
 
 /* General MAR File Download Tests */
 
-const DIR_DATA = "data"
-const URL_PREFIX = "http://localhost:4444/" + DIR_DATA + "/";
-
-const PREF_APP_UPDATE_URL_OVERRIDE = "app.update.url.override";
-
-var gUpdates;
-var gUpdateCount;
-var gStatus;
-var gCheckFunc;
 var gNextRunFunc;
-var gExpectedResult;
+var gStatusResult;
+var gExpectedStatusResult;
 
 function run_test() {
   do_test_pending();
+  removeUpdateDirsAndFiles();
   startAUS();
+  startUpdateChecker();
   start_httpserver(DIR_DATA);
   do_timeout(0, "run_test_pt1()");
 }
@@ -60,20 +54,23 @@ function run_test() {
 function end_test() {
   stop_httpserver();
   do_test_finished();
+  removeUpdateDirsAndFiles();
+  cleanUp();
 }
 
 // Helper function for testing mar downloads that have the correct size
 // specified in the update xml.
-function run_test_helper_pt1(aUpdateXML, aMsg, aResult, aNextRunFunc) {
+function run_test_helper_pt1(aUpdateXML, aMsg, aExpectedStatusResult,
+                             aNextRunFunc) {
   gUpdates = null;
   gUpdateCount = null;
-  gStatus = null;
+  gStatusResult = null;
   gCheckFunc = check_test_helper_pt1_1;
   gNextRunFunc = aNextRunFunc;
-  gExpectedResult = aResult;
+  gExpectedStatusResult = aExpectedStatusResult;
   var url = URL_PREFIX + aUpdateXML;
   dump("Testing: " + aMsg + " - " + url + "\n");
-  gPrefs.setCharPref(PREF_APP_UPDATE_URL_OVERRIDE, url);
+  getPrefBranch().setCharPref(PREF_APP_UPDATE_URL_OVERRIDE, url);
   gUpdateChecker.checkForUpdates(updateCheckListener, true);
 }
 
@@ -82,13 +79,13 @@ function check_test_helper_pt1_1() {
   gCheckFunc = check_test_helper_pt1_2;
   var bestUpdate = gAUS.selectUpdate(gUpdates, gUpdateCount);
   var state = gAUS.downloadUpdate(bestUpdate, false);
-  if (state == "null" || state == "failed")
+  if (state == STATE_NONE || state == STATE_FAILED)
     do_throw("nsIApplicationUpdateService:downloadUpdate returned " + state);
   gAUS.addDownloadListener(downloadListener);
 }
 
 function check_test_helper_pt1_2() {
-  do_check_eq(gStatus, gExpectedResult);
+  do_check_eq(gStatusResult, gExpectedStatusResult);
   gAUS.removeDownloadListener(downloadListener);
   gNextRunFunc();
 }
@@ -170,33 +167,6 @@ function run_test_pt11() {
                       AUS_Cr.NS_ERROR_UNEXPECTED, end_test);
 }
 
-// Update check listener
-const updateCheckListener = {
-  onProgress: function(request, position, totalSize) {
-  },
-
-  onCheckComplete: function(request, updates, updateCount) {
-    gUpdateCount = updateCount;
-    gUpdates = updates;
-    dump("onCheckComplete url = " + request.channel.originalURI.spec + "\n\n");
-    // Use a timeout to allow the XHR to complete
-    do_timeout(0, "gCheckFunc()");
-  },
-
-  onError: function(request, update) {
-    dump("onError url = " + request.channel.originalURI.spec + "\n\n");
-    // Use a timeout to allow the XHR to complete
-    do_timeout(0, "gCheckFunc()");
-  },
-
-  QueryInterface: function(aIID) {
-    if (!aIID.equals(AUS_Ci.nsIUpdateCheckListener) &&
-        !aIID.equals(AUS_Ci.nsISupports))
-      throw AUS_Cr.NS_ERROR_NO_INTERFACE;
-    return this;
-  }
-};
-
 /* Update download listener - nsIRequestObserver */
 const downloadListener = {
   onStartRequest: function(request, context) {
@@ -209,7 +179,7 @@ const downloadListener = {
   },
 
   onStopRequest: function(request, context, status) {
-    gStatus = status;
+    gStatusResult = status;
     // Use a timeout to allow the request to complete
     do_timeout(0, "gCheckFunc()");
   },

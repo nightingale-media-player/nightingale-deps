@@ -1087,7 +1087,8 @@ ParseQualifiedName(nsIDOMElement* aContext,
 
   if (pos < end) {
     aPrefix.Assign(Substring(begin, pos-begin));
-    aLocalName.Assign(Substring(++pos, end-pos));
+    ++pos;
+    aLocalName.Assign(Substring(pos, end-pos));
   }
   else {
     aLocalName.Assign(aQualifiedName);
@@ -2630,6 +2631,9 @@ nsSchemaLoader::ProcessSimpleTypeUnion(nsISVSchemaErrorHandler* aErrorHandler,
       if (tokenEnd < end) {
         typeStr.Assign(Substring(begin, tokenEnd-begin));
         ++tokenEnd;
+        while (tokenEnd < end && *tokenEnd == PRUnichar(' ')) {
+          ++tokenEnd;
+        }
       }
       else {
         typeStr.Assign(Substring(begin, end-begin));

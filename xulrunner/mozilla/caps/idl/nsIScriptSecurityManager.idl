@@ -328,6 +328,13 @@ interface nsIScriptSecurityManager : nsIXPCSecurityManager
     [noscript,notxpcom] nsIPrincipal getCxSubjectPrincipal(in JSContextPtr cx);
 };
 
+[scriptable, uuid(09cd62cd-3360-45e6-860b-6c0da411712a)]
+interface nsIScriptSecurityManager_1_9_0_BRANCH : nsIScriptSecurityManager
+{
+    [noscript,notxpcom] nsIPrincipal getCxSubjectPrincipalAndFrame(in JSContextPtr cx,
+                                                                   out JSStackFramePtr fp);
+};
+
 %{C++
 #define NS_SCRIPTSECURITYMANAGER_CONTRACTID "@mozilla.org/scriptsecuritymanager;1"
 #define NS_SCRIPTSECURITYMANAGER_CLASSNAME "scriptsecuritymanager"

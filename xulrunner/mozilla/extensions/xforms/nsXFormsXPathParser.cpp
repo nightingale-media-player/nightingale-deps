@@ -345,8 +345,9 @@ nsXFormsXPathParser::Expr()
 void
 nsXFormsXPathParser::FilterExpr()
 {
-  if (PrimaryExpr() && PeekToken() == nsXFormsXPathScanner::LBRACK) {
-      Predicate();
+  PrimaryExpr();
+  if (PeekToken() == nsXFormsXPathScanner::LBRACK) {
+    Predicate();
   }
 }
 
@@ -560,7 +561,8 @@ nsXFormsXPathParser::PathExpr()
       if (DoRelative()) {
         RelativeLocationPath();
       } else {
-        XPathCompilerException("After / in a filter expression it is required to have a reletive path expression", EmptyString());
+        XPathCompilerException("After / in a filter expression it is required to have a relative path expression",
+                               EmptyString());
       }
 
     }
@@ -606,7 +608,7 @@ nsXFormsXPathParser::Predicate()
   RestartContext();
 }
 
-PRBool
+void
 nsXFormsXPathParser::PrimaryExpr()
 {
   nsXFormsXPathScanner::XPATHTOKEN t = PeekToken();
@@ -640,14 +642,11 @@ nsXFormsXPathParser::PrimaryExpr()
     
   case nsXFormsXPathScanner::FUNCTIONNAME:
     FunctionCall();
-    return PeekToken() == nsXFormsXPathScanner::SLASH || PeekToken() == nsXFormsXPathScanner::SLASHSLASH || PeekToken() == nsXFormsXPathScanner::LBRACK;
     break;
     
   default:
     XPathCompilerException("Not a primary expression", mScanner.Expression(), mScanner.Offset(), mScanner.Length());
   }
-  
-  return PR_FALSE;
 }
 
 void
@@ -825,14 +824,6 @@ nsXFormsXPathParser::UnionExpr()
   case nsXFormsXPathScanner::DOTDOT:
   case nsXFormsXPathScanner::SLASH:
   case nsXFormsXPathScanner::SLASHSLASH:
-    PathExpr();
-    t = PeekToken();
-    if (t == nsXFormsXPathScanner::UNION) {
-      PopToken();
-      UnionExpr();
-    }
-    break;
-    
   case nsXFormsXPathScanner::VARIABLE:
   case nsXFormsXPathScanner::LPARAN:
   case nsXFormsXPathScanner::LITERAL:

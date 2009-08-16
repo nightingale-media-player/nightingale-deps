@@ -79,6 +79,7 @@ const KEY_UAPPDATA        = "UAppData";
 
 const DIR_UPDATES         = "updates";
 const FILE_UPDATE_STATUS  = "update.status";
+const FILE_UPDATE_VERSION = "update.version";
 const FILE_UPDATE_ARCHIVE = "update.mar";
 const FILE_UPDATE_LOG     = "update.log"
 const FILE_UPDATES_DB     = "updates.xml";
@@ -400,6 +401,28 @@ function writeStatusFile(dir, state) {
   var statusFile = dir.clone();
   statusFile.append(FILE_UPDATE_STATUS);
   writeStringToFile(statusFile, state);
+}
+
+/**
+#  Writes the update's application version to a file in the patch directory. If
+#  the update doesn't provide application version information via the
+#  extensionVersion attribute the string "null" will be written to the file.
+#  This value is compared during startup (in nsUpdateDriver.cpp) to determine if
+#  the update should be applied. Note that this won't provide protection from
+#  downgrade of the application for the nightly user case where the application
+#  version doesn't change.
+#  @param   dir
+#           The patch directory where the update.version file should be
+#           written.
+#  @param   version
+#           The version value to write. Will be the string "null" when the
+#           update doesn't provide the extensionVersion attribute in the update
+#           xml.
+ */
+function writeVersionFile(dir, version) {
+  var versionFile = dir.clone();
+  versionFile.append(FILE_UPDATE_VERSION);
+  writeStringToFile(versionFile, version);
 }
 
 /**
@@ -777,9 +800,9 @@ UpdatePatch.prototype = {
    * See nsIUpdateService.idl
    */
   get state() {
-    if (!this.statusFileExists)
-      return STATE_NONE;
-    return this._properties.state;
+    if (this._properties.state)
+      return this._properties.state;
+    return STATE_NONE;
   },
   set state(val) {
     this._properties.state = val;
@@ -1195,7 +1218,8 @@ UpdateService.prototype = {
 #endif
 
     if (status == STATE_DOWNLOADING) {
-      LOG("UpdateService", "_postUpdateProcessing: Downloading patch, resuming...");
+      LOG("UpdateService", "_postUpdateProcessing: patch found in " +
+          "downloading state");
     }
     else if (status != null) {
       // null status means the update.status file is not present, because either:
@@ -1223,16 +1247,8 @@ UpdateService.prototype = {
       if (status == STATE_SUCCEEDED) {
         update.statusText = bundle.GetStringFromName("installSuccess");
 
-        // Dig through the update history to find the patch that was just
-        // installed and update its metadata.
-        for (var i = 0; i < um.updateCount; ++i) {
-          var umUpdate = um.getUpdateAt(i);
-          if (umUpdate && umUpdate.version == update.version &&
-                          umUpdate.buildID == update.buildID) {
-            umUpdate.statusText = update.statusText;
-            break;
-          }
-        }
+        // Update the patch's metadata.
+        um.activeUpdate = update;
 
         LOG("UpdateService", "_postUpdateProcessing: Install Succeeded, Showing UI");
         prompter.showUpdateInstalled(update);
@@ -1262,6 +1278,7 @@ UpdateService.prototype = {
           if (update.errorCode == WRITE_ERROR) {
             prompter.showUpdateError(update);
             writeStatusFile(getUpdatesDir(), update.state = STATE_PENDING);
+            writeVersionFile(getUpdatesDir(), update.extensionVersion);
             return;
           }
         }
@@ -1632,8 +1649,8 @@ UpdateService.prototype = {
           // When the installation directory is not under Program Files,
           // fall through to checking if write access to the 
           // installation directory is available.
-          LOG("UpdateService", 
-              "canUpdate?  on Vista, appDir is not under the Program Files");
+          LOG("UpdateService", "canUpdate: on Vista, appDir is not under " +
+              "Program Files");
         }
       }
 
@@ -1729,6 +1746,21 @@ UpdateService.prototype = {
   downloadUpdate: function(update, background) {
     if (!update)
       throw Components.results.NS_ERROR_NULL_POINTER;
+
+    var ai = Components.classes["@mozilla.org/xre/app-info;1"].
+             getService(Components.interfaces.nsIXULAppInfo);
+    var vc = Components.classes["@mozilla.org/xpcom/version-comparator;1"].
+             getService(Components.interfaces.nsIVersionComparator);
+    // Don't download the update if the update's version is less than the
+    // current application's version.
+    if (update.extensionVersion &&
+        vc.compare(update.extensionVersion, ai.version) < 0) {
+      LOG("UpdateService", "downloadUpdate: removing update for previous " +
+          "application version " + update.extensionVersion);
+      cleanupActiveUpdate();
+      return STATE_NONE;
+    }
+
     if (this.isDownloading) {
       if (update.isCompleteUpdate == this._downloader.isCompleteUpdate &&
           background == this._downloader.background) {
@@ -1826,7 +1858,7 @@ UpdateManager.prototype = {
           LOG("UpdateManager", "_loadXMLFileIntoArray: invalid update");
           continue;
         }
-        result.push(new Update(updateElement));
+        result.push(update);
       }
     }
     catch (e) {
@@ -1845,10 +1877,10 @@ UpdateManager.prototype = {
       this._updates = this._loadXMLFileIntoArray(getUpdateFile(
                         [FILE_UPDATES_DB]));
 
-      // Make sure that any active update is part of our updates list
-      var active = this.activeUpdate;
-      if (active)
-        this._addUpdate(active);
+      var activeUpdates = this._loadXMLFileIntoArray(getUpdateFile(
+                            [FILE_UPDATE_ACTIVE]));
+      if (activeUpdates.length > 0)
+        this._activeUpdate = activeUpdates[0];
     }
   },
 
@@ -1920,8 +1952,7 @@ UpdateManager.prototype = {
       }
     }
     // Otherwise add it to the front of the list.
-    if (update)
-      this._updates = [update].concat(this._updates);
+    this._updates.unshift(update);
   },
 
   /**
@@ -1966,8 +1997,21 @@ UpdateManager.prototype = {
   saveUpdates: function() {
     this._writeUpdatesToXMLFile([this._activeUpdate],
                                 getUpdateFile([FILE_UPDATE_ACTIVE]));
+    if (this._activeUpdate)
+      this._addUpdate(this._activeUpdate);
+
+    // Don't write updates that have a temporary state to the updates.xml file.
     if (this._updates) {
-      this._writeUpdatesToXMLFile(this._updates.slice(0, 10),
+      var updates = this._updates.slice();
+      for (var i = updates.length - 1; i >= 0; --i) {
+        var state = updates[i].state;
+        if (state == STATE_NONE || state == STATE_DOWNLOADING ||
+            state == STATE_PENDING) {
+          updates.splice(i, 1);
+        }
+      }
+
+      this._writeUpdatesToXMLFile(updates.slice(0, 10),
                                   getUpdateFile([FILE_UPDATES_DB]));
     }
   },
@@ -2388,6 +2432,7 @@ Downloader.prototype = {
           // This is a pretty fatal error.  Just bail.
           LOG("Downloader", "failed to apply complete patch!");
           writeStatusFile(updateDir, STATE_NONE);
+          writeVersionFile(getUpdatesDir(), null);
           return null;
         }
       }
@@ -2612,6 +2657,7 @@ Downloader.prototype = {
 
         // Tell the updater.exe we're ready to apply.
         writeStatusFile(getUpdatesDir(), state);
+        writeVersionFile(getUpdatesDir(), this._update.extensionVersion);
         this._update.installDate = (new Date()).getTime();
         this._update.statusText = updateStrings.
           GetStringFromName("installPending");
@@ -2664,6 +2710,9 @@ Downloader.prototype = {
     if (deleteActiveUpdate) {
       this._update.installDate = (new Date()).getTime();
       um.activeUpdate = null;
+    }
+    else {
+      um.activeUpdate.state = state;
     }
     um.saveUpdates();
 

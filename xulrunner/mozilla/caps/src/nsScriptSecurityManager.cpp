@@ -93,6 +93,7 @@
 #include "nsIURIFixup.h"
 #include "nsCDefaultURIFixup.h"
 #include "nsIChromeRegistry.h"
+#include "nsPrintfCString.h"
 
 static NS_DEFINE_CID(kZipReaderCID, NS_ZIPREADER_CID);
 
@@ -439,6 +440,20 @@ nsScriptSecurityManager::GetCxSubjectPrincipal(JSContext *cx)
     return principal;
 }
 
+NS_IMETHODIMP_(nsIPrincipal *)
+nsScriptSecurityManager::GetCxSubjectPrincipalAndFrame(JSContext *cx, JSStackFrame **fp)
+{
+    NS_ASSERTION(cx == GetCurrentJSContext(),
+                 "Uh, cx is not the current JS context!");
+
+    nsresult rv = NS_ERROR_FAILURE;
+    nsIPrincipal *principal = GetPrincipalAndFrame(cx, fp, &rv);
+    if (NS_FAILED(rv))
+        return nsnull;
+
+    return principal;
+}
+
 ////////////////////
 // Policy Storage //
 ////////////////////
@@ -514,12 +529,13 @@ DeleteDomainEntry(nsHashKey *aKey, void *aData, void* closure)
 ////////////////////////////////////
 // Methods implementing ISupports //
 ////////////////////////////////////
-NS_IMPL_ISUPPORTS5(nsScriptSecurityManager,
+NS_IMPL_ISUPPORTS6(nsScriptSecurityManager,
                    nsIScriptSecurityManager,
                    nsIXPCSecurityManager,
                    nsIPrefSecurityCheck,
                    nsIChannelEventSink,
-                   nsIObserver)
+                   nsIObserver,
+                   nsIScriptSecurityManager_1_9_0_BRANCH)
 
 ///////////////////////////////////////////////////
 // Methods implementing nsIScriptSecurityManager //
@@ -1265,7 +1281,10 @@ nsScriptSecurityManager::CheckLoadURIFromScript(JSContext *cx, nsIURI *aURI)
     nsCAutoString spec;
     if (NS_FAILED(aURI->GetAsciiSpec(spec)))
         return NS_ERROR_FAILURE;
-    JS_ReportError(cx, "Access to '%s' from script denied", spec.get());
+    nsCAutoString msg("Access to '");
+    msg.Append(spec);
+    msg.AppendLiteral("' from script denied");
+    SetPendingException(cx, msg.get());
     return NS_ERROR_DOM_BAD_URI;
 }
 

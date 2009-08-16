@@ -5171,7 +5171,8 @@ nsRuleNode::Sweep()
 
 /* static */ PRBool
 nsRuleNode::HasAuthorSpecifiedRules(nsStyleContext* aStyleContext,
-                                    PRUint32 ruleTypeMask)
+                                    PRUint32 ruleTypeMask,
+                                    PRBool aAuthorColorsAllowed)
 {
   nsRuleDataColor colorData;
   nsRuleDataMargin marginData;
@@ -5262,10 +5263,22 @@ nsRuleNode::HasAuthorSpecifiedRules(nsStyleContext* aStyleContext,
       } else {
         // If any of the values we care about was set by the above rule,
         // we have author style.
-        for (PRUint32 i = 0; i < nValues; ++i)
+        for (PRUint32 i = 0; i < nValues; ++i) {
           if (values[i]->GetUnit() != eCSSUnit_Null &&
-              values[i]->GetUnit() != eCSSUnit_Dummy) // see above
-            return PR_TRUE;
+              values[i]->GetUnit() != eCSSUnit_Dummy) { // see above
+            // If author colors are not allowed, only claim to have
+            // author-specified rules if we're looking at the background
+            // color and it's set to transparent.  Anything else should get
+            // set to a dummy value instead.
+            if (aAuthorColorsAllowed ||
+                (values[i] == &colorData.mBackColor &&
+                 !values[i]->IsNonTransparentColor())) {
+              return PR_TRUE;
+            }
+
+            values[i]->SetDummyValue();
+          }
+        }
       }
     }
   }

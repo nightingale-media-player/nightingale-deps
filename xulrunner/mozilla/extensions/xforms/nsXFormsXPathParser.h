@@ -90,7 +90,7 @@ private:
   void OrExpr();
   void PathExpr();
   void Predicate();
-  PRBool PrimaryExpr();
+  void PrimaryExpr();
   void RelationalExpression();
   void RelativeLocationPath();
   void Step();

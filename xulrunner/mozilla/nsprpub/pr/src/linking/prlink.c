@@ -44,7 +44,7 @@
 #include <image.h>
 #endif
 
-#ifdef XP_MACOSX
+#if defined(XP_MACOSX) && defined(USE_MACH_DYLD)
 #include <CodeFragments.h>
 #include <TextUtils.h>
 #include <Types.h>
@@ -156,8 +156,8 @@ struct _imcb *IAC$GL_IMAGE_LIST = NULL;
 /*
  * On these platforms, symbols have a leading '_'.
  */
-#if defined(SUNOS4) || defined(DARWIN) || defined(NEXTSTEP) \
-    || defined(WIN16) || defined(XP_OS2) \
+#if defined(SUNOS4) || (defined(DARWIN) && defined(USE_MACH_DYLD)) \
+    || defined(NEXTSTEP) || defined(WIN16) || defined(XP_OS2) \
     || ((defined(OPENBSD) || defined(NETBSD)) && !defined(__ELF__))
 #define NEED_LEADING_UNDERSCORE
 #endif
@@ -180,7 +180,7 @@ struct PRLibrary {
 #endif
 #endif
 
-#ifdef XP_MACOSX
+#if defined(XP_MACOSX) && defined(USE_MACH_DYLD)
     CFragConnectionID           connection;
     CFBundleRef                 bundle;
     Ptr                         main;
@@ -224,15 +224,7 @@ static int pr_ConvertUTF16toUTF8(LPCWSTR wname, LPSTR name, int len);
 /************************************************************************/
 
 #if !defined(USE_DLFCN) && !defined(HAVE_STRERROR)
-static char* errStrBuf = NULL;
 #define ERR_STR_BUF_LENGTH    20
-static char* errno_string(PRIntn oserr)
-{
-    if (errStrBuf == NULL)
-        errStrBuf = PR_MALLOC(ERR_STR_BUF_LENGTH);
-    PR_snprintf(errStrBuf, ERR_STR_BUF_LENGTH, "error %d", oserr);
-    return errStrBuf;
-}
 #endif
 
 static void DLLErrorInternal(PRIntn oserr)
@@ -248,7 +240,9 @@ static void DLLErrorInternal(PRIntn oserr)
 #elif defined(HAVE_STRERROR)
     error = strerror(oserr);  /* this should be okay */
 #else
-    error = errno_string(oserr);
+    char errStrBuf[ERR_STR_BUF_LENGTH];
+    PR_snprintf(errStrBuf, sizeof(errStrBuf), "error %d", oserr);
+    error = errStrBuf;
 #endif
     if (NULL != error)
         PR_SetErrorText(strlen(error), error);
@@ -383,10 +377,6 @@ void _PR_ShutdownLinker(void)
         free(_pr_currentLibPath);
         _pr_currentLibPath = NULL;
     }
-
-#if !defined(USE_DLFCN) && !defined(HAVE_STRERROR)
-    PR_DELETE(errStrBuf);
-#endif
 }
 #endif
 
@@ -630,7 +620,7 @@ pr_LoadMachDyldModule(const char *name)
 }
 #endif
 
-#ifdef XP_MACOSX
+#if defined(XP_MACOSX) && defined(USE_MACH_DYLD)
 
 /*
 ** macLibraryLoadProc is a function definition for a Mac shared library
@@ -789,7 +779,7 @@ pr_LoadViaDyld(const char *name, PRLibrary *lm)
     return (lm->dlh != NULL || lm->image != NULL) ? PR_SUCCESS : PR_FAILURE;
 }
 
-#endif /* XP_MACOSX */
+#endif /* XP_MACOSX && USE_MACH_DYLD */
 
 #ifdef WIN95
 static HMODULE WINAPI
@@ -927,7 +917,7 @@ pr_LoadLibraryByPathname(const char *name, PRIntn flags)
     }
 #endif /* WIN32 || WIN16 */
 
-#ifdef XP_MACOSX
+#if defined(XP_MACOSX) && defined(USE_MACH_DYLD)
     {
     int     i;
     PRStatus status;
@@ -955,7 +945,7 @@ pr_LoadLibraryByPathname(const char *name, PRIntn flags)
     }
 #endif
 
-#if defined(XP_UNIX) && !defined(XP_MACOSX)
+#if defined(XP_UNIX) && !(defined(XP_MACOSX) && defined(USE_MACH_DYLD))
 #ifdef HAVE_DLL
     {
 #if defined(USE_DLFCN)
@@ -1019,7 +1009,7 @@ pr_LoadLibraryByPathname(const char *name, PRIntn flags)
     pr_loadmap = lm;
     }
 #endif /* HAVE_DLL */
-#endif /* XP_UNIX */
+#endif /* XP_UNIX && !(XP_MACOSX && USE_MACH_DYLD) */
 
     lm->refCount = 1;
 
@@ -1300,7 +1290,7 @@ PR_UnloadLibrary(PRLibrary *lib)
     }
 #endif  /* XP_PC */
 
-#ifdef XP_MACOSX
+#if defined(XP_MACOSX) && defined(USE_MACH_DYLD)
     /* Close the connection */
     if (lib->connection)
         CloseConnection(&(lib->connection));
@@ -1399,7 +1389,7 @@ pr_FindSymbolInLib(PRLibrary *lm, const char *name)
     f = GetProcAddress(lm->dlh, name);
 #endif  /* WIN32 || WIN16 */
 
-#ifdef XP_MACOSX
+#if defined(XP_MACOSX) && defined(USE_MACH_DYLD)
 /* add this offset to skip the leading underscore in name */
 #define SYM_OFFSET 1
     if (lm->bundle) {
@@ -1484,7 +1474,7 @@ pr_FindSymbolInLib(PRLibrary *lm, const char *name)
             f = NULL;
     }
 #undef SYM_OFFSET
-#endif /* XP_MACOSX */
+#endif /* XP_MACOSX && USE_MACH_DYLD */
 
 #ifdef XP_BEOS
     if( B_NO_ERROR != get_image_symbol( (image_id)lm->dlh, name, B_SYMBOL_TYPE_TEXT, &f ) ) {
@@ -1672,7 +1662,8 @@ PR_IMPLEMENT(char *)
 PR_GetLibraryFilePathname(const char *name, PRFuncPtr addr)
 {
 #if defined(USE_DLFCN) && (defined(SOLARIS) || defined(FREEBSD) \
-        || defined(LINUX) || defined(__GNU__) || defined(__GLIBC__))
+        || defined(LINUX) || defined(__GNU__) || defined(__GLIBC__) \
+        || defined(DARWIN))
     Dl_info dli;
     char *result;
 

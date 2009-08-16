@@ -684,6 +684,13 @@ nsXULDocument::SynchronizeBroadcastListener(nsIDOMElement   *aBroadcaster,
                                             nsIDOMElement   *aListener,
                                             const nsAString &aAttr)
 {
+    if (!nsContentUtils::IsSafeToRunScript()) {
+        nsDelayedBroadcastUpdate delayedUpdate(aBroadcaster, aListener,
+                                               aAttr);
+        mDelayedBroadcasters.AppendElement(delayedUpdate);
+        MaybeBroadcast();
+        return;
+    }
     nsCOMPtr<nsIContent> broadcaster = do_QueryInterface(aBroadcaster);
     nsCOMPtr<nsIContent> listener = do_QueryInterface(aListener);
 
@@ -869,8 +876,6 @@ nsXULDocument::RemoveBroadcastListenerFor(nsIDOMElement* aBroadcaster,
                 if (entry->mListeners.Count() == 0)
                     PL_DHashTableOperate(mBroadcasterMap, aBroadcaster,
                                          PL_DHASH_REMOVE);
-
-                SynchronizeBroadcastListener(aBroadcaster, aListener, aAttr);
 
                 break;
             }
@@ -3235,6 +3240,36 @@ nsXULDocument::StyleSheetLoaded(nsICSSStyleSheet* aSheet,
     }
 
     return NS_OK;
+}
+
+void
+nsXULDocument::MaybeBroadcast()
+{
+    // Only broadcast when not in an update and when safe to run scripts.
+    if (mUpdateNestLevel == 0 && mDelayedBroadcasters.Length()) {
+        if (!nsContentUtils::IsSafeToRunScript()) {
+            if (!mInDestructor) {
+                nsContentUtils::AddScriptRunner(
+                  NS_NEW_RUNNABLE_METHOD(nsXULDocument, this, MaybeBroadcast));
+            }
+            return;
+        }
+        PRUint32 length = mDelayedBroadcasters.Length();
+        nsTArray<nsDelayedBroadcastUpdate> delayedBroadcasters;
+        mDelayedBroadcasters.SwapElements(delayedBroadcasters);
+        for (PRUint32 i = 0; i < length; ++i) {
+            SynchronizeBroadcastListener(delayedBroadcasters[i].mBroadcaster,
+                                         delayedBroadcasters[i].mListener,
+                                         delayedBroadcasters[i].mAttr);
+        }
+    }
+}
+
+void
+nsXULDocument::EndUpdate(nsUpdateType aUpdateType)
+{
+    nsXMLDocument::EndUpdate(aUpdateType);
+    MaybeBroadcast();
 }
 
 void

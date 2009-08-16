@@ -627,18 +627,27 @@ js_watch_set(JSContext *cx, JSObject *obj, jsval id, jsval *vp)
                     memset(&frame, 0, sizeof(frame));
                     frame.script = script;
                     frame.regs = NULL;
+                    frame.callee = closure;
+                    frame.fun = fun;
+                    frame.argv = argv + 2;
+                    frame.down = cx->fp;
+                    frame.scopeChain = OBJ_GET_PARENT(cx, closure);
                     if (script) {
                         JS_ASSERT(script->length >= JSOP_STOP_LENGTH);
                         regs.pc = script->code + script->length
                                   - JSOP_STOP_LENGTH;
                         regs.sp = NULL;
                         frame.regs = &regs;
+                        if (fun &&
+                            JSFUN_HEAVYWEIGHT_TEST(fun->flags) &&
+                            !js_GetCallObject(cx, &frame, NULL)) {
+                            if (argv != smallv)
+                                JS_free(cx, argv);
+                            DBG_LOCK(rt);
+                            DropWatchPointAndUnlock(cx, wp, JSWP_HELD);
+                            return JS_FALSE;
+                        }
                     }
-                    frame.callee = closure;
-                    frame.fun = fun;
-                    frame.argv = argv + 2;
-                    frame.down = cx->fp;
-                    frame.scopeChain = OBJ_GET_PARENT(cx, closure);
 
                     cx->fp = &frame;
                 }
@@ -650,7 +659,7 @@ js_watch_set(JSContext *cx, JSObject *obj, jsval id, jsval *vp)
                      ((sprop->attrs & JSPROP_SETTER)
                       ? js_InternalCall(cx, obj, OBJECT_TO_JSVAL(wp->setter),
                                         1, vp, vp)
-                      : wp->setter(cx, OBJ_THIS_OBJECT(cx, obj), userid, vp));
+                      : wp->setter(cx, obj, userid, vp));
                 if (injectFrame) {
                     /* Evil code can cause us to have an arguments object. */
                     if (frame.callobj)

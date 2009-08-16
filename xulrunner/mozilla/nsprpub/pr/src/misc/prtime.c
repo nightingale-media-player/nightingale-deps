@@ -50,10 +50,8 @@
 
 #include <string.h>
 #include <ctype.h>
-
-#ifdef XP_MAC
+#include <errno.h>  /* for EINVAL */
 #include <time.h>
-#endif
 
 /* 
  * The COUNT_LEAPS macro counts the number of leap years passed by
@@ -518,8 +516,6 @@ PR_NormalizeTime(PRExplodedTime *time, PRTimeParamFn params)
  *
  *-------------------------------------------------------------------------
  */
-
-#include <time.h>
 
 #if defined(HAVE_INT_LOCALTIME_R)
 
@@ -1573,6 +1569,12 @@ PR_ParseTimeStringToExplodedTime(
         result->tm_year = year;
   if (dotw != TT_UNKNOWN)
         result->tm_wday = (((int)dotw) - ((int)TT_SUN));
+  /*
+   * Mainly to compute wday and yday, but normalized time is also required
+   * by the check below that works around a Visual C++ 2005 mktime problem.
+   */
+  PR_NormalizeTime(result, PR_GMTParameters);
+  /* The remaining work is to set the gmt and dst offsets in tm_params. */
 
   if (zone == TT_UNKNOWN && default_to_gmt)
         {
@@ -1622,7 +1624,32 @@ PR_ParseTimeStringToExplodedTime(
                      date you are handing it is in daylight savings mode or not;
                      and if you're wrong, it will "fix" it for you. */
                   localTime.tm_isdst = -1;
+
+#if _MSC_VER == 1400  /* 1400 = Visual C++ 2005 (8.0) */
+                  /*
+                   * mktime will return (time_t) -1 if the input is a date
+                   * after 23:59:59, December 31, 3000, US Pacific Time (not
+                   * UTC as documented): 
+                   * http://msdn.microsoft.com/en-us/library/d1y53h2a(VS.80).aspx
+                   * But if the year is 3001, mktime also invokes the invalid
+                   * parameter handler, causing the application to crash.  This
+                   * problem has been reported in
+                   * http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=266036.
+                   * We avoid this crash by not calling mktime if the date is
+                   * out of range.  To use a simple test that works in any time
+                   * zone, we consider year 3000 out of range as well.  (See
+                   * bug 480740.)
+                   */
+                  if (result->tm_year >= 3000) {
+                      /* Emulate what mktime would have done. */
+                      errno = EINVAL;
+                      secs = (time_t) -1;
+                  } else {
+                      secs = mktime(&localTime);
+                  }
+#else
                   secs = mktime(&localTime);
+#endif
                   if (secs != (time_t) -1)
                     {
                       PRTime usecs64;
@@ -1644,8 +1671,6 @@ PR_ParseTimeStringToExplodedTime(
                               + 1440 * (localTime.tm_mday - 2);
         }
 
-  /* mainly to compute wday and yday */
-  PR_NormalizeTime(result, PR_GMTParameters);
   result->tm_params.tp_gmt_offset = zone_offset * 60;
   result->tm_params.tp_dst_offset = dst_offset * 60;
 

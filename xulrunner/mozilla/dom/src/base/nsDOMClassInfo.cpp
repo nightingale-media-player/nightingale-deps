@@ -4476,6 +4476,17 @@ nsWindowSH::GetProperty(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
       rv = WrapNative(cx, frameWin->GetGlobalJSObject(), frame,
                       NS_GET_IID(nsIDOMWindow), vp,
                       getter_AddRefs(holder));
+
+      if (NS_SUCCEEDED(rv) && !win->IsChromeWindow()) {
+        JSObject *scopeobj = JS_GetScopeChain(cx);
+        if (!scopeobj) {
+          *_retval = JS_FALSE;
+          return NS_ERROR_FAILURE;
+        }
+
+        rv = sXPConnect->GetXOWForObject(cx, scopeobj, JSVAL_TO_OBJECT(*vp),
+                                         vp);
+      }
     }
 
     return NS_FAILED(rv) ? rv : NS_SUCCESS_I_DID_SOMETHING;
@@ -6033,7 +6044,14 @@ nsWindowSH::NewResolve(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
 
     if (!win->IsChromeWindow()) {
       rv = sXPConnect->GetXOWForObject(cx, scope, JSVAL_TO_OBJECT(v), &v);
-      NS_ENSURE_SUCCESS(rv, rv);
+
+      if (NS_FAILED(rv)) {
+        NS_WARNING("Failed to get XOW for window object!");
+
+        sDoSecurityCheckInAddProperty = doSecurityCheckInAddProperty;
+
+        return rv;
+      }
     }
 
     JSAutoRequest ar(cx);
@@ -6142,8 +6160,15 @@ nsWindowSH::NewResolve(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
 
         rv = sXPConnect->GetXOWForObject(cx, scope, JSVAL_TO_OBJECT(winVal),
                                          &winVal);
-        NS_ENSURE_SUCCESS(rv, rv);
+        if (NS_FAILED(rv)) {
+          NS_WARNING("Failed to get XOW for window object!");
+
+          sDoSecurityCheckInAddProperty = doSecurityCheckInAddProperty;
+
+          return rv;
+        }
       }
+
       PRBool ok =
         ::JS_DefineUCProperty(cx, obj, ::JS_GetStringChars(str),
                               ::JS_GetStringLength(str),
@@ -6391,48 +6416,19 @@ nsWindowSH::OuterObject(nsIXPConnectWrappedNative *wrapper, JSContext * cx,
     // never be called when we have no outer. But just in case, return
     // null to prevent leaking an inner window to code in a different
     // window.
-
     *_retval = nsnull;
-
     return NS_ERROR_UNEXPECTED;
   }
 
-  // Return the outer window.
-
-  // FIXME bug 420372: Our window should always have a JS object here. It
-  // doesn't because of nsJSContext::FindXPCNativeWrapperClass.
-  nsresult rv;
-  if (win->IsChromeWindow()) {
-    // Chrome windows don't get XOW wrapping.
-    JSObject *outerObj = win->GetGlobalJSObject();
-    if (!outerObj) {
-      NS_ASSERTION(origWin->IsOuterWindow(), "What window is this?");
-      *_retval = obj;
-    } else {
-      *_retval = outerObj;
-    }
-
-    rv = NS_OK;
-  } else {
-    JSObject *winObj = win->GetGlobalJSObject();
-    if (!winObj) {
-      NS_ASSERTION(origWin->IsOuterWindow(), "What window is this?");
-      *_retval = obj;
-      rv = NS_OK;
-    } else {
-      JSObject *scope = JS_GetScopeChain(cx);
-      if (!scope) {
-        *_retval = nsnull;
-        return NS_ERROR_FAILURE;
-      }
-      scope = ::JS_GetGlobalForObject(cx, scope);
-      jsval v;
-      rv = sXPConnect->GetXOWForObject(cx, scope, winObj, &v);
-      *_retval = NS_SUCCEEDED(rv) ? JSVAL_TO_OBJECT(v) : nsnull;
-    }
+  JSObject *winObj = win->GetGlobalJSObject();
+  if (!winObj) {
+    NS_ASSERTION(origWin->IsOuterWindow(), "What window is this?");
+    *_retval = obj;
+    return NS_OK;
   }
 
-  return rv;
+  *_retval = winObj;
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -7978,6 +7974,16 @@ nsHTMLDocumentSH::DocumentAllGetProperty(JSContext *cx, JSObject *obj,
   // document.all.item(), etc.
   if (id == sItem_id || id == sNamedItem_id) {
     return JS_TRUE;
+  }
+
+  while (STOBJ_GET_CLASS(obj) != &sHTMLDocumentAllClass) {
+    obj = STOBJ_GET_PROTO(obj);
+
+    if (!obj) {
+      NS_ERROR("The JS engine lies!");
+
+      return JS_TRUE;
+    }
   }
 
   nsIHTMLDocument *doc = (nsIHTMLDocument *)::JS_GetPrivate(cx, obj);

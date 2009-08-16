@@ -394,6 +394,13 @@ void nsCSSValue::StartImageLoad(nsIDocument* aDocument) const
   }
 }
 
+PRBool nsCSSValue::IsNonTransparentColor() const
+{
+  nsCSSUnit u = GetUnit();
+  return u != eCSSUnit_Enumerated && u != eCSSUnit_Initial &&
+         u != eCSSUnit_Initial;
+}
+
 // static
 nsStringBuffer*
 nsCSSValue::BufferFromString(const nsString& aValue)

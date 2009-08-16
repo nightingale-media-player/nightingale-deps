@@ -317,7 +317,6 @@ nsXULTreeBuilder::Uninit(PRBool aIsFinal)
     mRows.Clear();
 
     if (mBoxObject) {
-        mBoxObject->BeginUpdateBatch();
         mBoxObject->RowCountChanged(0, -count);
     }
 
@@ -1349,40 +1348,36 @@ nsXULTreeBuilder::RebuildAll()
     if (! mQueryProcessor)
         return NS_OK;
 
-    if (mQueriesCompiled) {
-        Uninit(PR_FALSE);
+    if (mBoxObject) {
+        mBoxObject->BeginUpdateBatch();
     }
-    else if (mBoxObject) {
+
+    if (mBoxObject) {
         PRInt32 count = mRows.Count();
         mRows.Clear();
-        mBoxObject->BeginUpdateBatch();
         mBoxObject->RowCountChanged(0, -count);
     }
 
+    if (mQueriesCompiled) {
+        Uninit(PR_FALSE);
+    }
+
     nsresult rv = CompileQueries();
-    if (NS_FAILED(rv))
-        return rv;
+    if (NS_SUCCEEDED(rv) && mQuerySets.Length() > 0) {
+        // Seed the rule network with assignments for the tree row variable
+        nsAutoString ref;
+        mRoot->GetAttr(kNameSpaceID_None, nsGkAtoms::ref, ref);
+        if (!ref.IsEmpty()) {
+            rv = mQueryProcessor->TranslateRef(mDataSource, ref,
+                                               getter_AddRefs(mRootResult));
+            if (NS_SUCCEEDED(rv) && mRootResult) {
+                OpenContainer(-1, mRootResult);
 
-    if (mQuerySets.Length() == 0)
-        return NS_OK;
+                nsCOMPtr<nsIRDFResource> rootResource;
+                GetResultResource(mRootResult, getter_AddRefs(rootResource));
 
-    // Seed the rule network with assignments for the tree row variable
-    nsAutoString ref;
-    mRoot->GetAttr(kNameSpaceID_None, nsGkAtoms::ref, ref);
-
-    if (! ref.IsEmpty()) {
-        rv = mQueryProcessor->TranslateRef(mDataSource, ref,
-                                           getter_AddRefs(mRootResult));
-        if (NS_FAILED(rv))
-            return rv;
-
-        if (mRootResult) {
-            OpenContainer(-1, mRootResult);
-
-            nsCOMPtr<nsIRDFResource> rootResource;
-            GetResultResource(mRootResult, getter_AddRefs(rootResource));
-
-            mRows.SetRootResource(rootResource);
+                mRows.SetRootResource(rootResource);
+            }
         }
     }
 
@@ -1390,7 +1385,7 @@ nsXULTreeBuilder::RebuildAll()
         mBoxObject->EndUpdateBatch();
     }
 
-    return NS_OK;
+    return rv;
 }
 
 nsresult

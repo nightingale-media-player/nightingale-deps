@@ -2230,6 +2230,8 @@ already_AddRefed<nsIDOMElement> GetFocusedElement()
       oldFirstResponder = nil;
     }
   }
+  // Bug 496582 shows that sendEvent: can cause us to be deleted.
+  nsAutoRetainCocoaObject kungFuDeathGrip(self);
   [self nsCocoaWindow_NSWindow_sendEvent:anEvent];
   if (type == NSLeftMouseDown) {
     nsCOMPtr<nsIDOMElement> newFocusedElement;

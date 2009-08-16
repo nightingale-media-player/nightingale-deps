@@ -36,23 +36,16 @@
  * ***** END LICENSE BLOCK *****
  */
 
-/* General Update Check Tests */
+/* General Update Check Update XML Tests */
 
-const DIR_DATA = "data"
-const URL_PREFIX = "http://localhost:4444/" + DIR_DATA + "/";
-
-const PREF_APP_UPDATE_URL_OVERRIDE = "app.update.url.override";
-
-var gUpdates;
-var gUpdateCount;
-var gStatus;
-var gCheckFunc;
 var gNextRunFunc;
 var gExpectedCount;
 
 function run_test() {
   do_test_pending();
+  removeUpdateDirsAndFiles();
   startAUS();
+  startUpdateChecker();
   start_httpserver(DIR_DATA);
   do_timeout(0, "run_test_pt1()");
 }
@@ -60,19 +53,20 @@ function run_test() {
 function end_test() {
   stop_httpserver();
   do_test_finished();
+  removeUpdateDirsAndFiles();
+  cleanUp();
 }
 
 // Helper function for testing update counts returned from an update xml
 function run_test_helper_pt1(aUpdateXML, aMsg, aExpectedCount, aNextRunFunc) {
   gUpdates = null;
   gUpdateCount = null;
-  gStatus = null;
   gCheckFunc = check_test_helper_pt1;
   gNextRunFunc = aNextRunFunc;
   gExpectedCount = aExpectedCount;
   var url = URL_PREFIX + aUpdateXML;
   dump("Testing: " + aMsg + " - " + url + "\n");
-  gPrefs.setCharPref(PREF_APP_UPDATE_URL_OVERRIDE, url);
+  getPrefBranch().setCharPref(PREF_APP_UPDATE_URL_OVERRIDE, url);
   gUpdateChecker.checkForUpdates(updateCheckListener, true);
 }
 
@@ -85,14 +79,13 @@ function check_test_helper_pt1() {
 function run_test_pt1() {
   gUpdates = null;
   gUpdateCount = null;
-  gStatus = null;
   gCheckFunc = check_test_pt1;
   var url = URL_PREFIX + "aus-0020_general-1.xml";
   dump("Testing: one update available and the update's property values - " +
        url + "\n");
-  gPrefs.setCharPref(PREF_APP_UPDATE_URL_OVERRIDE, url);
-  var defaults = gPrefs.QueryInterface(AUS_Ci.nsIPrefService)
-                   .getDefaultBranch(null);
+  var pb = getPrefBranch();
+  pb.setCharPref(PREF_APP_UPDATE_URL_OVERRIDE, url);
+  var defaults = pb.QueryInterface(AUS_Ci.nsIPrefService).getDefaultBranch(null);
   defaults.setCharPref("app.update.channel", "bogus_channel");
   gUpdateChecker.checkForUpdates(updateCheckListener, true);
 }
@@ -128,9 +121,12 @@ function check_test_pt1() {
   do_check_eq(patch.hashFunction, "SHA1");
   do_check_eq(patch.hashValue, "98db9dad8e1d80eda7e1170d0187d6f53e477059");
   do_check_eq(patch.size, 9856459);
-  // nsIUpdatePatch:state returns the string "null" when no action has been
-  // performed on an available update
-  do_check_eq(patch.state, "null");
+  // The value for patch.state can be the string 'null' as a valid value. This
+  // is confusing if it returns null which is an invalid value since the test
+  // failure output will show a failure for null == null. To lessen the
+  // confusion first check that the typeof for patch.value is a string.
+  do_check_eq(typeof(patch.state), "string");
+  do_check_eq(patch.state, STATE_NONE);
   do_check_false(patch.selected);
   //XXX TODO - test nsIUpdatePatch:serialize
 
@@ -141,9 +137,7 @@ function check_test_pt1() {
   do_check_eq(patch.hashFunction, "SHA1");
   do_check_eq(patch.hashValue, "e6678ca40ae7582316acdeddf3c133c9c8577de4");
   do_check_eq(patch.size, 1316138);
-  // nsIUpdatePatch:state returns the string "null" when no action has been
-  // performed on an available update
-  do_check_eq(patch.state, "null");
+  do_check_eq(patch.state, STATE_NONE);
   do_check_false(patch.selected);
   //XXX TODO - test nsIUpdatePatch:serialize
 
@@ -206,30 +200,3 @@ function run_test_pt9() {
                       "one update with partial patch with size 0",
                       0, end_test);
 }
-
-// Update check listener
-const updateCheckListener = {
-  onProgress: function(request, position, totalSize) {
-  },
-
-  onCheckComplete: function(request, updates, updateCount) {
-    gUpdateCount = updateCount;
-    gUpdates = updates;
-    dump("onCheckComplete url = " + request.channel.originalURI.spec + "\n\n");
-    // Use a timeout to allow the XHR to complete
-    do_timeout(0, "gCheckFunc()");
-  },
-
-  onError: function(request, update) {
-    dump("onError url = " + request.channel.originalURI.spec + "\n\n");
-    // Use a timeout to allow the XHR to complete
-    do_timeout(0, "gCheckFunc()");
-  },
-
-  QueryInterface: function(aIID) {
-    if (!aIID.equals(AUS_Ci.nsIUpdateCheckListener) &&
-        !aIID.equals(AUS_Ci.nsISupports))
-      throw AUS_Cr.NS_ERROR_NO_INTERFACE;
-    return this;
-  }
-};

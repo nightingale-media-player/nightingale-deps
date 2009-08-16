@@ -232,10 +232,7 @@ nsCSSCompressedDataBlock::MapRuleInfoInto(nsRuleData *aRuleData) const
                                 if (iProp == eCSSProperty_background_color) {
                                     // Force non-'transparent' background
                                     // colors to the user's default.
-                                    nsCSSUnit u = target->GetUnit();
-                                    if (u != eCSSUnit_Enumerated &&
-                                        u != eCSSUnit_Inherit &&
-                                        u != eCSSUnit_Initial) {
+                                    if (target->IsNonTransparentColor()) {
                                         target->SetColorValue(aRuleData->
                                             mPresContext->
                                             DefaultBackgroundColor());

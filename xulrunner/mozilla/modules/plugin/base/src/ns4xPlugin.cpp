@@ -1787,6 +1787,22 @@ _invokeDefault(NPP npp, NPObject* npobj, const NPVariant *args,
   if (!npp || !npobj || !npobj->_class || !npobj->_class->invokeDefault)
     return false;
 
+  // Hack to work around bug in the Sun Java Deployment Toolkit plugin
+  // where it doesn't properly initialize variants when calling into
+  // invokeDefault(). See bug 498132.
+  ns4xPluginInstance *inst = (ns4xPluginInstance *) npp->ndata;
+  if (inst) {
+    nsCOMPtr<nsIPluginInstancePeer> pip;
+    inst->GetPeer(getter_AddRefs(pip));
+    if (pip) {
+      nsMIMEType mimetype = nsnull;
+      pip->GetMIMEType(&mimetype);
+      if (mimetype && strcmp(mimetype, "application/npruntime-scriptable-plugin;DeploymentToolkit") == 0) {
+        VOID_TO_NPVARIANT(*result);
+      }
+    }
+  }
+
   NPPExceptionAutoHolder nppExceptionHolder;
   NPPAutoPusher nppPusher(npp);
 

@@ -152,6 +152,8 @@ public:
                                 PRBool aWasAlternate,
                                 nsresult aStatus);
 
+    virtual void EndUpdate(nsUpdateType aUpdateType);
+
     static PRBool
     MatchAttribute(nsIContent* aContent,
                    PRInt32 aNameSpaceID,
@@ -672,6 +674,27 @@ protected:
     nsInterfaceHashtable<nsURIHashKey,nsIObserver> mPendingOverlayLoadNotifications;
     
     PRBool mInitialLayoutComplete;
+
+    class nsDelayedBroadcastUpdate
+    {
+    public:
+      nsDelayedBroadcastUpdate(nsIDOMElement* aBroadcaster,
+                               nsIDOMElement* aListener,
+                               const nsAString &aAttr)
+      : mBroadcaster(aBroadcaster), mListener(aListener), mAttr(aAttr) {}
+
+      nsDelayedBroadcastUpdate(const nsDelayedBroadcastUpdate& aOther)
+      : mBroadcaster(aOther.mBroadcaster), mListener(aOther.mListener),
+        mAttr(aOther.mAttr) {}
+
+      nsCOMPtr<nsIDOMElement> mBroadcaster;
+      nsCOMPtr<nsIDOMElement> mListener;
+      nsString                mAttr;
+    };
+
+    nsTArray<nsDelayedBroadcastUpdate> mDelayedBroadcasters;
+
+    void MaybeBroadcast();
 private:
     // helpers
 

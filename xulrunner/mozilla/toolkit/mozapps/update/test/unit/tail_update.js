@@ -36,8 +36,6 @@
  * ***** END LICENSE BLOCK *****
  */
 
-gUpdateChecker = null;
-gAUS = null;
-gPrefs = null;
-gTestserver = null;
-remove_dirs_and_files();
+// Not used since check-interactive executes this prior to _execute_test();
+// being executed on mozilla-1.9.1 and it being easier to troubleshoot the tests
+// by commenting out the call to cleanUp in the tests.

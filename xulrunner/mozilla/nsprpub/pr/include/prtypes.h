@@ -387,7 +387,13 @@ typedef long PRInt32;
 **      the LL_ macros (see prlong.h).
 ************************************************************************/
 #ifdef HAVE_LONG_LONG
-#if PR_BYTES_PER_LONG == 8
+/* Keep this in sync with prlong.h. */
+/*
+ * On 64-bit Mac OS X, uint64 needs to be defined as unsigned long long to
+ * match uint64_t, otherwise our uint64 typedef conflicts with the uint64
+ * typedef in cssmconfig.h, which CoreServices.h includes indirectly.
+ */
+#if PR_BYTES_PER_LONG == 8 && !defined(__APPLE__)
 typedef long PRInt64;
 typedef unsigned long PRUint64;
 #elif defined(WIN16)

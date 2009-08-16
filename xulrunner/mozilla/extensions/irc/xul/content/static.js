@@ -40,11 +40,11 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-const __cz_version   = "0.9.84";
+const __cz_version   = "0.9.85";
 const __cz_condition = "green";
 const __cz_suffix    = "";
 const __cz_guid      = "59c81df5-4b7a-477b-912d-4e0fdf64e5f2";
-const __cz_locale    = "0.9.84";
+const __cz_locale    = "0.9.85";
 
 var warn;
 var ASSERT;
@@ -173,12 +173,11 @@ function init()
 
     client.ident = new IdentServer(client);
 
-    // start logging.  nothing should call display() before this point.
+    // Start log rotation checking first.  This will schedule the next check.
+    checkLogFiles();
+    // Start logging.  Nothing should call display() before this point.
     if (client.prefs["log"])
         client.openLogFile(client);
-    // kick-start a log-check interval to make sure we change logfiles in time:
-    // It will fire 2 seconds past the next full hour.
-    setTimeout("checkLogFiles()", 3602000 - (Number(new Date()) % 3600000));
 
     // Make sure the userlist is on the correct side.
     updateUserlistSide(client.prefs["userlistLeft"]);
@@ -408,7 +407,6 @@ function getVersionInfo()
     var version = new Object();
     version.cz = __cz_version + (__cz_suffix ? "-" + __cz_suffix : "");
     version.ua = navigator.userAgent;
-    version.host = "Unknown";
 
     var app = getService("@mozilla.org/xre/app-info;1", "nsIXULAppInfo");
     if (app)
@@ -421,24 +419,30 @@ function getVersionInfo()
              */
 
             // "XULRunner 1.7+"
-            version.host = "XULRunner " + app.platformVersion;
+            version.hostName = "XULRunner";
+            version.hostVersion = app.platformVersion;
+            version.host = version.hostName + " " + version.hostVersion;
 
             // "XULRunner 1.7+/2005071506"
             version.ua = version.host + "/" + app.platformBuildID;
+            version.hostBuildID = app.platformBuildID;
         }
         else
         {
             // "Mozilla Firefox 1.0+"
-            version.host = app.vendor + " " + app.name + " " + app.version;
+            version.hostName = app.vendor + " " + app.name;
+            version.hostVersion = app.version;
+            version.host = version.hostName + " " + version.hostVersion;
 
             // "Firefox 1.0+/2005071506"
-            version.ua = app.name + " " + app.version + "/";
             if ("platformBuildID" in app) // 1.1 and up
-                version.ua += app.platformBuildID;
+                version.hostBuildID = app.platformBuildID;
             else if ("geckoBuildID" in app) // 1.0 - 1.1 trunk only
-                version.ua += app.geckoBuildID;
+                version.hostBuildID = app.geckoBuildID;
             else // Uh oh!
-                version.ua += "??????????";
+                version.hostBuildID = "??????????";
+            version.ua = app.name + " " + app.version + "/" +
+                         version.hostBuildID;
         }
     }
     else
@@ -452,8 +456,11 @@ function getVersionInfo()
             else
                 version.ua = client.entities.brandShortName + " " + ary[1]; // Suite
             version.ua += "/" + ary[2];
+            version.hostBuildID = ary[2];
         }
-        version.host = client.entities.brandShortName;
+        version.hostName = client.entities.brandShortName;
+        version.hostVersion = "";
+        version.host = version.hostName;
     }
 
     version.host += ", " + client.platform;
@@ -4004,28 +4011,53 @@ function my_splitlinesforsending(line)
     return realLines;
 }
 
+/* Displays a network-centric message on the most appropriate view.
+ *
+ * When |client.SLOPPY_NETWORKS| is |true|, messages will be displayed on the
+ * *current* view instead of the network view, if the current view is part of
+ * the same network.
+ */
 CIRCNetwork.prototype.display =
-function net_display (message, msgtype, sourceObj, destObj)
+function net_display(message, msgtype, sourceObj, destObj)
 {
     var o = getObjectDetails(client.currentObject);
-
     if (client.SLOPPY_NETWORKS && client.currentObject != this &&
         o.network == this && o.server && o.server.isConnected)
     {
-        client.currentObject.display (message, msgtype, sourceObj, destObj);
+        client.currentObject.display(message, msgtype, sourceObj, destObj);
     }
     else
     {
-        this.displayHere (message, msgtype, sourceObj, destObj);
+        this.displayHere(message, msgtype, sourceObj, destObj);
     }
 }
 
+/* Displays a channel-centric message on the most appropriate view.
+ *
+ * If the channel view already exists (visible or hidden), messages are added
+ * to it; otherwise, messages go to the *network* view.
+ */
+CIRCChannel.prototype.display =
+function chan_display(message, msgtype, sourceObj, destObj)
+{
+    if ("messages" in this)
+        this.displayHere(message, msgtype, sourceObj, destObj);
+    else
+        this.parent.parent.displayHere(message, msgtype, sourceObj, destObj);
+}
+
+/* Displays a user-centric message on the most appropriate view.
+ *
+ * If the user view already exists (visible or hidden), messages are added to
+ * it; otherwise, it goes to the *current* view if the current view is part of
+ * the same network, or the *network* view if not.
+ */
 CIRCUser.prototype.display =
 function usr_display(message, msgtype, sourceObj, destObj)
 {
     if ("messages" in this)
     {
-        this.displayHere (message, msgtype, sourceObj, destObj);
+        this.displayHere(message, msgtype, sourceObj, destObj);
     }
     else
     {
@@ -4033,19 +4065,22 @@ function usr_display(message, msgtype, sourceObj, destObj)
         if (o.server && o.server.isConnected &&
             o.network == this.parent.parent &&
             client.currentObject.TYPE != "IRCUser")
-            client.currentObject.display (message, msgtype, sourceObj, destObj);
+            client.currentObject.display(message, msgtype, sourceObj, destObj);
         else
-            this.parent.parent.displayHere (message, msgtype, sourceObj,
-                                            destObj);
+            this.parent.parent.displayHere(message, msgtype, sourceObj,
+                                           destObj);
     }
 }
 
+/* Displays a DCC user/file transfer-centric message on the most appropriate view.
+ *
+ * If the DCC user/file transfer view already exists (visible or hidden),
+ * messages are added to it; otherwise, messages go to the *current* view.
+ */
 CIRCDCCChat.prototype.display =
 CIRCDCCFileTransfer.prototype.display =
 function dcc_display(message, msgtype, sourceObj, destObj)
 {
-    var o = getObjectDetails(client.currentObject);
-
     if ("messages" in this)
         this.displayHere(message, msgtype, sourceObj, destObj);
     else
@@ -4110,7 +4145,6 @@ function this_getFontCSS(format)
 client.display =
 client.displayHere =
 CIRCNetwork.prototype.displayHere =
-CIRCChannel.prototype.display =
 CIRCChannel.prototype.displayHere =
 CIRCUser.prototype.displayHere =
 CIRCDCCChat.prototype.displayHere =
@@ -4947,9 +4981,12 @@ function checkLogFiles()
     if (client.logFile && (d > client.nextLogFileDate))
         client.closeLogFile(client, true);
 
-    // We use the same line again to make sure we keep a constant offset
-    // from the full hour, in case the timers go crazy at some point.
-    setTimeout("checkLogFiles()", 3602000 - (Number(new Date()) % 3600000));
+    /* We need to calculate the correct time for the next check. This is
+     * attempting to hit 2 seconds past the hour. We need the timezone offset
+     * here for when it is not a whole number of hours from UTC.
+     */
+    var shiftedDate = d.getTime() + d.getTimezoneOffset() * 60000;
+    setTimeout("checkLogFiles()", 3602000 - (shiftedDate % 3600000));
 }
 
 CIRCChannel.prototype.getLCFunction =

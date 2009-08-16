@@ -35,7 +35,7 @@ toolkit.jar:
         content/global/printPreviewProgress.xul     (resources/content/printPreviewProgress.xul)
         content/global/printPreviewProgress.js      (resources/content/printPreviewProgress.js)
 *       content/global/about.xhtml                  (resources/content/about.xhtml) 
-        content/global/license.html                 (resources/content/license.html)
+*       content/global/license.html                 (/toolkit/content/license.html)
         content/global/bindings/browser.xml         (resources/content/bindings/browser.xml)
         content/global/bindings/button.xml          (resources/content/bindings/button.xml)
         content/global/bindings/checkbox.xml        (resources/content/bindings/checkbox.xml)

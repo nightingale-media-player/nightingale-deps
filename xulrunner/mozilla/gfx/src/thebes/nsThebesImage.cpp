@@ -519,8 +519,15 @@ nsThebesImage::Draw(nsIRenderingContext &aContext,
      * have to pre-downscale any image that would fall outside of a scaled 16-bit
      * coordinate space.
      */
-    if (aDestRect.pos.x * (1.0 / xscale) >= 32768.0 ||
-        aDestRect.pos.y * (1.0 / yscale) >= 32768.0)
+    gfxFloat deviceX, deviceY;
+    nsRefPtr<gfxASurface> currentTarget =
+	    ctx->CurrentSurface(&deviceX, &deviceY);
+
+    // Quartz's matrix limits are much larger than pixman so don't use a temporary
+    // context there so we preserve scaled image caching
+    if (currentTarget->GetType() != gfxASurface::SurfaceTypeQuartz &&
+       (aDestRect.pos.x * (1.0 / xscale) >= 32768.0 ||
+        aDestRect.pos.y * (1.0 / yscale) >= 32768.0))
     {
         gfxIntSize dim(NS_lroundf(destRect.size.width),
                        NS_lroundf(destRect.size.height));

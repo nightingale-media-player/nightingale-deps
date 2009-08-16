@@ -127,6 +127,15 @@ nsXFormsCaseElement::GetInitialSelectedState(PRBool *aInitialSelectedState)
 NS_IMETHODIMP
 nsXFormsCaseElement::SetSelected(PRBool aEnable)
 {
+  nsCOMPtr<nsIDOMNode> parent;
+  mElement->GetParentNode(getter_AddRefs(parent));
+  if (parent) {
+    if (nsXFormsUtils::IsXFormsElement(parent, NS_LITERAL_STRING("toggle"))) {
+      // We're an "action" case, so do nothing.
+      return NS_OK;
+    }
+  }
+
   mSelected = aEnable;
 
   nsCOMPtr<nsIXFormsCaseUIElement> caseUI(do_QueryInterface(mElement));

@@ -401,16 +401,17 @@ endif
 
 ifdef NEED_ABSOLUTE_PATH
 PWD := $(shell pwd)
-abspath = $(if $(findstring :,$(1)),$(1),$(if $(filter /%,$(1)),$(1),$(PWD)/$(1)))
+# The quotes allow absolute paths to contain spaces.
+pr_abspath = "$(if $(findstring :,$(1)),$(1),$(if $(filter /%,$(1)),$(1),$(PWD)/$(1)))"
 endif
 
 $(OBJDIR)/%.$(OBJ_SUFFIX): %.cpp
 	@$(MAKE_OBJDIR)
 ifeq ($(NS_USE_GCC)_$(OS_ARCH),_WINNT)
-	$(CCC) -Fo$@ -c $(CCCFLAGS) $(call abspath,$<)
+	$(CCC) -Fo$@ -c $(CCCFLAGS) $(call pr_abspath,$<)
 else
 ifdef NEED_ABSOLUTE_PATH
-	$(CCC) -o $@ -c $(CCCFLAGS) $(call abspath,$<)
+	$(CCC) -o $@ -c $(CCCFLAGS) $(call pr_abspath,$<)
 else
 	$(CCC) -o $@ -c $(CCCFLAGS) $<
 endif
@@ -422,10 +423,10 @@ WCCFLAGS3 = $(subst -D,-d,$(WCCFLAGS2))
 $(OBJDIR)/%.$(OBJ_SUFFIX): %.c
 	@$(MAKE_OBJDIR)
 ifeq ($(NS_USE_GCC)_$(OS_ARCH),_WINNT)
-	$(CC) -Fo$@ -c $(CFLAGS) $(call abspath,$<)
+	$(CC) -Fo$@ -c $(CFLAGS) $(call pr_abspath,$<)
 else
 ifdef NEED_ABSOLUTE_PATH
-	$(CC) -o $@ -c $(CFLAGS) $(call abspath,$<)
+	$(CC) -o $@ -c $(CFLAGS) $(call pr_abspath,$<)
 else
 	$(CC) -o $@ -c $(CFLAGS) $<
 endif

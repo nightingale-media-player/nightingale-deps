@@ -260,13 +260,14 @@ nsresult
 CanAccessWrapper(JSContext *cx, JSObject *wrappedObj)
 {
   // Get the subject principal from the execution stack.
-  nsIScriptSecurityManager *ssm = XPCWrapper::GetSecurityManager();
+  nsIScriptSecurityManager_1_9_0_BRANCH *ssm = XPCWrapper::GetSecurityManager();
   if (!ssm) {
     ThrowException(NS_ERROR_NOT_INITIALIZED, cx);
     return NS_ERROR_NOT_INITIALIZED;
   }
 
-  nsIPrincipal *subjectPrin = ssm->GetCxSubjectPrincipal(cx);
+  JSStackFrame *fp = nsnull;
+  nsIPrincipal *subjectPrin = ssm->GetCxSubjectPrincipalAndFrame(cx, &fp);
 
   if (!subjectPrin) {
     ThrowException(NS_ERROR_FAILURE, cx);
@@ -283,6 +284,18 @@ CanAccessWrapper(JSContext *cx, JSObject *wrappedObj)
   // object principal in this case, since Subsumes() would return true.
   if (isSystem) {
     return NS_OK;
+  }
+
+  // There might be no code running, but if there is, we need to see if it is
+  // UniversalXPConnect enabled code.
+  if (fp) {
+    void *annotation = JS_GetFrameAnnotation(cx, fp);
+    rv = subjectPrin->IsCapabilityEnabled("UniversalXPConnect", annotation,
+                                          &isSystem);
+    NS_ENSURE_SUCCESS(rv, rv);
+    if (isSystem) {
+      return NS_OK;
+    }
   }
 
   nsCOMPtr<nsIPrincipal> objectPrin;
@@ -459,21 +472,27 @@ XPC_XOW_RewrapIfNeeded(JSContext *cx, JSObject *outerObj, jsval *vp)
 }
 
 JSBool
-XPC_XOW_WrapObject(JSContext *cx, JSObject *parent, jsval *vp)
+XPC_XOW_WrapObject(JSContext *cx, JSObject *parent, jsval *vp,
+                   XPCWrappedNative* wn)
 {
-  // Our argument should be a wrapped native object.
+  NS_ASSERTION(XPCPerThreadData::IsMainThread(cx),
+               "Can't do this off the main thread!");
+
+  // Our argument should be a wrapped native object, but the caller may have
+  // passed it in as an optimization.
   JSObject *wrappedObj;
-  XPCWrappedNative *wn;
   if (!JSVAL_IS_OBJECT(*vp) ||
       !(wrappedObj = JSVAL_TO_OBJECT(*vp)) ||
-      STOBJ_GET_CLASS(wrappedObj) == &sXPC_XOW_JSClass.base ||
+      STOBJ_GET_CLASS(wrappedObj) == &sXPC_XOW_JSClass.base) {
+    return JS_TRUE;
+  }
+
+  if (!wn &&
       !(wn = XPCWrappedNative::GetWrappedNativeOfJSObject(cx, wrappedObj))) {
     return JS_TRUE;
   }
 
   XPCJSRuntime *rt = nsXPConnect::GetRuntime();
-  XPCCallContext ccx(NATIVE_CALLER, cx);
-  NS_ENSURE_TRUE(ccx.IsValid(), JS_FALSE);
 
   // The parent must be the inner global object for its scope.
   parent = JS_GetGlobalForObject(cx, parent);
@@ -489,7 +508,7 @@ XPC_XOW_WrapObject(JSContext *cx, JSObject *parent, jsval *vp)
   }
 
   XPCWrappedNativeScope *parentScope =
-    XPCWrappedNativeScope::FindInJSObjectScope(ccx, parent);
+    XPCWrappedNativeScope::FindInJSObjectScope(cx, parent, nsnull, rt);
 
 #ifdef DEBUG_mrbkap
   printf("Wrapping object at %p (%s) [%p]\n",
@@ -500,11 +519,7 @@ XPC_XOW_WrapObject(JSContext *cx, JSObject *parent, jsval *vp)
   JSObject *outerObj = nsnull;
   WrappedNative2WrapperMap *map = parentScope->GetWrapperMap();
 
-  { // Scoped lock
-    XPCAutoLock al(rt->GetMapLock());
-    outerObj = map->Find(wrappedObj);
-  }
-
+  outerObj = map->Find(wrappedObj);
   if (outerObj) {
     NS_ASSERTION(STOBJ_GET_CLASS(outerObj) == &sXPC_XOW_JSClass.base,
                               "What crazy object are we getting here?");
@@ -534,10 +549,7 @@ XPC_XOW_WrapObject(JSContext *cx, JSObject *parent, jsval *vp)
 
   *vp = OBJECT_TO_JSVAL(outerObj);
 
-  { // Scoped lock
-    XPCAutoLock al(rt->GetMapLock());
-    map->Add(wn->GetScope()->GetWrapperMap(), wrappedObj, outerObj);
-  }
+  map->Add(wn->GetScope()->GetWrapperMap(), wrappedObj, outerObj);
 
   return JS_TRUE;
 }
@@ -1000,15 +1012,12 @@ XPC_XOW_Construct(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
     return JS_FALSE;
   }
 
-  JSObject *callee = JSVAL_TO_OBJECT(argv[-2]);
-  NS_ASSERTION(GetWrappedObject(cx, callee), "How'd we get here?");
-  callee = GetWrappedObject(cx, callee);
-  if (!JS_CallFunctionValue(cx, obj, OBJECT_TO_JSVAL(callee), argc, argv,
+  if (!JS_CallFunctionValue(cx, obj, OBJECT_TO_JSVAL(wrappedObj), argc, argv,
                             rval)) {
     return JS_FALSE;
   }
 
-  return XPC_XOW_RewrapIfNeeded(cx, callee, rval);
+  return XPC_XOW_RewrapIfNeeded(cx, wrappedObj, rval);
 }
 
 JS_STATIC_DLL_CALLBACK(JSBool)

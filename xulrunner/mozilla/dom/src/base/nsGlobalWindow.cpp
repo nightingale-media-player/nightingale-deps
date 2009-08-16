@@ -3882,6 +3882,9 @@ nsGlobalWindow::EnsureReflowFlushAndPaint()
   NS_ASSERTION(mDocShell, "EnsureReflowFlushAndPaint() called with no "
                "docshell!");
 
+  if (!mDocShell)
+    return;
+
   nsCOMPtr<nsIPresShell> presShell;
   mDocShell->GetPresShell(getter_AddRefs(presShell));
 
@@ -6044,6 +6047,8 @@ nsGlobalWindow::ShowModalDialog(const nsAString& aURI, nsIVariant *aArgs,
 {
   *aRetVal = nsnull;
 
+  NS_ENSURE_TRUE(mDocShell, NS_ERROR_FAILURE);
+
   nsCOMPtr<nsIDOMWindow> dlgWin;
   nsAutoString options(NS_LITERAL_STRING("-moz-internal-modal=1,status=1"));
 
@@ -6306,6 +6311,7 @@ nsGlobalWindow::FindInternal(const nsAString& aStr, PRBool caseSensitive,
   *aDidFind = PR_FALSE;
 
   nsCOMPtr<nsIWebBrowserFind> finder(do_GetInterface(mDocShell));
+  NS_ENSURE_TRUE(finder, NS_ERROR_FAILURE);
 
   // Set the options of the search
   rv = finder->SetSearchString(PromiseFlatString(aStr).get());

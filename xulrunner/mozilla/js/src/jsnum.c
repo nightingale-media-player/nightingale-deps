@@ -691,6 +691,17 @@ js_NewNumberInRootedValue(JSContext *cx, jsdouble d, jsval *vp)
     return js_NewDoubleInRootedValue(cx, d, vp);
 }
 
+JSBool
+js_NewWeaklyRootedNumber(JSContext *cx, jsdouble d, jsval *rval)
+{
+    jsint i;
+    if (JSDOUBLE_IS_INT(d, i) && INT_FITS_IN_JSVAL(i)) {
+        *rval = INT_TO_JSVAL(i);
+        return JS_TRUE;
+    }
+    return JS_NewDoubleValue(cx, d, rval);
+}
+
 char *
 js_NumberToCString(JSContext *cx, jsdouble d, char *buf, size_t bufSize)
 {

@@ -2639,6 +2639,42 @@ nsCxPusher::Push(nsISupports *aCurrentTarget)
 }
 
 PRBool
+nsCxPusher::RePush(nsISupports *aCurrentTarget)
+{
+  if (!mScx) {
+    return Push(aCurrentTarget);
+  }
+
+  if (aCurrentTarget) {
+    nsIScriptContext* scx = nsnull;
+    nsCOMPtr<nsIScriptGlobalObject> sgo;
+    nsCOMPtr<nsINode> node = do_QueryInterface(aCurrentTarget);
+    if (node) {
+      nsIDocument* ownerDoc = node->GetOwnerDoc();
+      if (ownerDoc) {
+        PRBool hasHadScriptObject = PR_TRUE;
+        sgo = ownerDoc->GetScriptHandlingObject(hasHadScriptObject);
+      }
+    } else {
+      sgo = do_QueryInterface(aCurrentTarget);
+    }
+
+    if (sgo) {
+      scx = sgo->GetContext();
+      // If we have the same script context and native context is still
+      // alive, no need to Pop/Push.
+      if (scx && scx == mScx &&
+          scx->GetNativeContext()) {
+        return PR_TRUE;
+      }
+    }
+  }
+
+  Pop();
+  return Push(aCurrentTarget);
+}
+
+PRBool
 nsCxPusher::Push(JSContext *cx)
 {
   if (mScx) {

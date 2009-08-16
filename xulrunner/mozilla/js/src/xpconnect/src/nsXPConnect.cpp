@@ -44,6 +44,7 @@
 
 #include "xpcprivate.h"
 #include "XPCNativeWrapper.h"
+#include "XPCWrapper.h"
 #include "nsBaseHashtable.h"
 #include "nsHashKeys.h"
 #include "jsatom.h"
@@ -52,8 +53,9 @@
 #include "jsscript.h"
 #include "nsThreadUtilsInternal.h"
 
-NS_IMPL_THREADSAFE_ISUPPORTS3(nsXPConnect,
+NS_IMPL_THREADSAFE_ISUPPORTS4(nsXPConnect,
                               nsIXPConnect,
+                              nsIXPConnect_1_9_0_BRANCH,
                               nsISupportsWeakReference,
                               nsIThreadObserver)
 
@@ -63,7 +65,7 @@ PRUint32     nsXPConnect::gReportAllJSExceptions = 0;
 
 // Global cache of the default script security manager (QI'd to
 // nsIScriptSecurityManager)
-nsIScriptSecurityManager *gScriptSecurityManager = nsnull;
+nsIScriptSecurityManager_1_9_0_BRANCH *gScriptSecurityManager = nsnull;
 
 const char XPC_CONTEXT_STACK_CONTRACTID[] = "@mozilla.org/js/xpc/ContextStack;1";
 const char XPC_RUNTIME_CONTRACTID[]       = "@mozilla.org/js/xpc/RuntimeService;1";
@@ -292,6 +294,111 @@ nsXPConnect::GetContextStack(nsIThreadJSContextStack** stack,
 
     *stack = temp = xpc->mContextStack;
     NS_IF_ADDREF(temp);
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXPConnect::GetWrapperForObject(JSContext* aJSContext,
+                                 JSObject* aObject,
+                                 JSObject* aScope,
+                                 nsIPrincipal* aPrincipal,
+                                 PRUint32 aFilenameFlags,
+                                 jsval* _retval)
+{
+    NS_ASSERTION(aFilenameFlags != JSFILENAME_NULL, "Null filename!");
+    NS_ASSERTION(XPCPerThreadData::IsMainThread(aJSContext),
+                 "Must only be called from the main thread as these wrappers "
+                 "are not threadsafe!");
+
+    JSAutoRequest ar(aJSContext);
+
+    XPCWrappedNative *wrapper =
+        XPCWrappedNative::GetWrappedNativeOfJSObject(aJSContext, aObject);
+    if(!wrapper)
+    {
+        // Couldn't get the wrapped native (maybe a prototype?) so just return
+        // the original object.
+        *_retval = OBJECT_TO_JSVAL(aObject);
+        return NS_OK;
+    }
+
+    XPCWrappedNativeScope *xpcscope =
+        XPCWrappedNativeScope::FindInJSObjectScope(aJSContext, aScope);
+    if(!xpcscope)
+        return NS_ERROR_FAILURE;
+
+#ifdef DEBUG_mrbkap
+    {
+        JSObject *scopeobj = xpcscope->GetGlobalJSObject();
+        JSObject *toInnerize = scopeobj;
+        OBJ_TO_INNER_OBJECT(aJSContext, toInnerize);
+        NS_ASSERTION(toInnerize == scopeobj, "Scope chain ending in outer object?");
+    }
+#endif
+
+    XPCWrappedNativeScope *objectscope = wrapper->GetScope();
+    {
+        JSObject *possibleOuter = objectscope->GetGlobalJSObject();
+        OBJ_TO_INNER_OBJECT(aJSContext, possibleOuter);
+        if(!possibleOuter)
+            return NS_ERROR_FAILURE;
+
+        if(objectscope->GetGlobalJSObject() != possibleOuter)
+        {
+            objectscope =
+                XPCWrappedNativeScope::FindInJSObjectScope(aJSContext,
+                                                           possibleOuter);
+            NS_ASSERTION(objectscope, "Unable to find a scope from an object");
+        }
+    }
+
+    *_retval = OBJECT_TO_JSVAL(aObject);
+
+    JSBool sameOrigin;
+    JSBool sameScope = xpc_SameScope(objectscope, xpcscope, &sameOrigin);
+    JSBool forceXOW = XPC_XOW_ClassNeedsXOW(STOBJ_GET_CLASS(aObject)->name);
+
+    // We can do nothing if:
+    // - We're wrapping a system object
+    // or
+    //   - We're from the same *scope* AND
+    //   - We're not about to force a XOW (e.g. for "window") OR
+    //   - We're not actually going to create a XOW (we're wrapping for
+    //     chrome).
+    if(STOBJ_IS_SYSTEM(aObject) ||
+       (sameScope &&
+        (!forceXOW || (aFilenameFlags & JSFILENAME_SYSTEM))))
+        return NS_OK;
+
+    JSObject* wrappedObj = nsnull;
+
+    if(aFilenameFlags & JSFILENAME_PROTECTED)
+    {
+        wrappedObj = XPCNativeWrapper::GetNewOrUsed(aJSContext, wrapper,
+                                                    aPrincipal);
+    }
+    else if(aFilenameFlags & JSFILENAME_SYSTEM)
+    {
+        jsval val = OBJECT_TO_JSVAL(aObject);
+        if(XPC_SJOW_Construct(aJSContext, nsnull, 1, &val, &val))
+            wrappedObj = JSVAL_TO_OBJECT(val);
+    }
+    else
+    {
+        // We don't wrap anything same origin unless the class name requires
+        // it.
+        if(sameOrigin && !forceXOW)
+            return NS_OK;
+
+        jsval val = OBJECT_TO_JSVAL(aObject);
+        if(XPC_XOW_WrapObject(aJSContext, aScope, &val, wrapper))
+            wrappedObj = JSVAL_TO_OBJECT(val);
+    }
+
+    if(!wrappedObj)
+        return NS_ERROR_FAILURE;
+
+    *_retval = OBJECT_TO_JSVAL(wrappedObj);
     return NS_OK;
 }
 
@@ -1583,7 +1690,7 @@ nsXPConnect::SetDefaultSecurityManager(nsIXPCSecurityManager *aManager,
     mDefaultSecurityManager = aManager;
     mDefaultSecurityManagerFlags = flags;
 
-    nsCOMPtr<nsIScriptSecurityManager> ssm =
+    nsCOMPtr<nsIScriptSecurityManager_1_9_0_BRANCH> ssm =
         do_QueryInterface(mDefaultSecurityManager);
 
     // Remember the result of the above QI for fast access to the
@@ -2356,7 +2463,7 @@ void DumpJSObject(JSObject* obj)
 
 void DumpJSValue(jsval val)
 {
-    printf("Dumping 0x%lx. Value tag is %lu.\n", val, JSVAL_TAG(val));
+    printf("Dumping 0x%p. Value tag is %u.\n", (void *) val, (PRUint32) JSVAL_TAG(val));
     if(JSVAL_IS_NULL(val)) {
         printf("Value is null\n");
     }

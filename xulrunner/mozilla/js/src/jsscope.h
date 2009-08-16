@@ -239,10 +239,13 @@ JS_STATIC_ASSERT(offsetof(JSScope, title) == sizeof(JSObjectMap));
 #define SCOPE_MIDDLE_DELETE             0x0001
 #define SCOPE_SEALED                    0x0002
 #define SCOPE_BRANDED                   0x0004
+#define SCOPE_INDEXED_PROPERTIES        0x0008
 
 #define SCOPE_HAD_MIDDLE_DELETE(scope)  ((scope)->flags & SCOPE_MIDDLE_DELETE)
 #define SCOPE_SET_MIDDLE_DELETE(scope)  ((scope)->flags |= SCOPE_MIDDLE_DELETE)
 #define SCOPE_CLR_MIDDLE_DELETE(scope)  ((scope)->flags &= ~SCOPE_MIDDLE_DELETE)
+#define SCOPE_HAS_INDEXED_PROPERTIES(scope)  ((scope)->flags & SCOPE_INDEXED_PROPERTIES)
+#define SCOPE_SET_INDEXED_PROPERTIES(scope)  ((scope)->flags |= SCOPE_INDEXED_PROPERTIES)
 
 #define SCOPE_IS_SEALED(scope)          ((scope)->flags & SCOPE_SEALED)
 #define SCOPE_SET_SEALED(scope)         ((scope)->flags |= SCOPE_SEALED)
@@ -328,6 +331,16 @@ struct JSScopeProperty {
 #define SPROP_HAS_STUB_SETTER(sprop)    (!(sprop)->setter)
 
 /*
+ * JSObjectOps is private, so we know there are only two implementations
+ * of the thisObject hook: with objects and XPConnect wrapped native
+ * objects.  XPConnect objects don't expect the hook to be called here,
+ * but with objects do.
+ */
+#define UNWRAP_WITH(cx,obj)                                                   \
+    ((OBJ_GET_CLASS(cx,obj) == &js_WithClass)                                 \
+     ? OBJ_THIS_OBJECT(cx,obj) : (obj))
+
+/*
  * NB: SPROP_GET must not be called if SPROP_HAS_STUB_GETTER(sprop).
  */
 #define SPROP_GET(cx,sprop,obj,obj2,vp)                                       \
@@ -335,7 +348,7 @@ struct JSScopeProperty {
      ? js_InternalGetOrSet(cx, obj, (sprop)->id,                              \
                            OBJECT_TO_JSVAL((sprop)->getter), JSACC_READ,      \
                            0, 0, vp)                                          \
-     : (sprop)->getter(cx, OBJ_THIS_OBJECT(cx,obj), SPROP_USERID(sprop), vp))
+     : (sprop)->getter(cx, UNWRAP_WITH(cx,obj), SPROP_USERID(sprop), vp))
 
 /*
  * NB: SPROP_SET must not be called if (SPROP_HAS_STUB_SETTER(sprop) &&
@@ -347,9 +360,8 @@ struct JSScopeProperty {
                            OBJECT_TO_JSVAL((sprop)->setter), JSACC_WRITE,     \
                            1, vp, vp)                                         \
      : ((sprop)->attrs & JSPROP_GETTER)                                       \
-     ? (JS_ReportErrorNumber(cx, js_GetErrorMessage, NULL,                    \
-                             JSMSG_GETTER_ONLY, NULL), JS_FALSE)              \
-     : (sprop)->setter(cx, OBJ_THIS_OBJECT(cx,obj), SPROP_USERID(sprop), vp))
+     ? (js_ReportGetterOnlyAssignment(cx), JS_FALSE)                          \
+     : (sprop)->setter(cx, UNWRAP_WITH(cx,obj), SPROP_USERID(sprop), vp))
 
 /* Macro for common expression to test for shared permanent attributes. */
 #define SPROP_IS_SHARED_PERMANENT(sprop)                                      \

@@ -1204,7 +1204,7 @@ nsNavHistory::InitStatements()
         nsPrintfCString("%d", nsINavBookmarksService::TYPE_BOOKMARK) +
         NS_LITERAL_CSTRING(" AND b.fk = h.id "
       "JOIN moz_bookmarks t ON t.parent = ?1 AND t.id = b.parent "
-      "WHERE h.url = ?2"),
+      "WHERE h.url = ?2 AND LENGTH(t.title) > 0"),
     getter_AddRefs(mDBGetTags));
   NS_ENSURE_SUCCESS(rv, rv);
 

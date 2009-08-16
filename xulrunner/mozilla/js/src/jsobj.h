@@ -704,6 +704,13 @@ js_GetWrappedObject(JSContext *cx, JSObject *obj);
 extern const char *
 js_ComputeFilename(JSContext *cx, JSStackFrame *caller,
                    JSPrincipals *principals, uintN *linenop);
+
+void
+js_ReportGetterOnlyAssignment(JSContext *cx);
+
+extern JS_FRIEND_API(JSBool)
+js_GetterOnlyPropertyStub(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
+
 JS_END_EXTERN_C
 
 #endif /* jsobj_h___ */
