@@ -36,8 +36,12 @@
  * ***** END LICENSE BLOCK ***** */
 
 /*
- * $Id: camellia.c,v 1.1 2007/02/28 19:47:37 rrelyea%redhat.com Exp $
+ * $Id: camellia.c,v 1.1.48.1 2009/07/31 02:16:14 nrthomas%gmail.com Exp $
  */
+
+#ifdef FREEBL_NO_DEPEND
+#include "stubs.h"
+#endif
 
 #include "prinit.h"
 #include "prerr.h"

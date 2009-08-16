@@ -35,11 +35,16 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: tlsprfalg.c,v 1.5 2005/11/05 01:00:14 wtchang%redhat.com Exp $ */
+/* $Id: tlsprfalg.c,v 1.5.126.1 2009/07/31 02:16:15 nrthomas%gmail.com Exp $ */
+
+#ifdef FREEBL_NO_DEPEND
+#include "stubs.h"
+#endif
 
 #include "sechash.h"
 #include "alghmac.h"
 #include "blapi.h"
+
 
 #define PHASH_STATE_MAX_LEN SHA1_LENGTH
 

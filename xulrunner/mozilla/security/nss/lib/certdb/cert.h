@@ -37,7 +37,7 @@
 /*
  * cert.h - public data structures and prototypes for the certificate library
  *
- * $Id: cert.h,v 1.74 2008/08/04 22:31:54 nelson%bolyard.com Exp $
+ * $Id: cert.h,v 1.74.20.1 2009/07/31 02:16:02 nrthomas%gmail.com Exp $
  */
 
 #ifndef _CERT_H_
@@ -173,6 +173,17 @@ extern char *CERT_FormatName (CERTName *name);
 ** Perhaps this should be a SEC function but it's only used for certs.
 */
 extern char *CERT_Hexify (SECItem *i, int do_colon);
+
+/*
+** Converts DER string (with explicit length) into zString, if destination 
+** buffer is big enough to receive it.  Does quoting and/or escaping as 
+** specified in RFC 1485.  Input string must be single or multi-byte DER
+** character set, (ASCII, UTF8, or ISO 8851-x) not a wide character set.
+** Returns SECSuccess or SECFailure with error code set. If output buffer
+** is too small, sets error code SEC_ERROR_OUTPUT_LEN.
+*/
+extern SECStatus
+CERT_RFC1485_EscapeAndQuote(char *dst, int dstlen, char *src, int srclen);
 
 /******************************************************************************
  *
@@ -1108,7 +1119,7 @@ char *CERT_FixupEmailAddr(const char *emailAddr);
 
 /* decode string representation of trust flags into trust struct */
 SECStatus
-CERT_DecodeTrustString(CERTCertTrust *trust, char *trusts);
+CERT_DecodeTrustString(CERTCertTrust *trust, const char *trusts);
 
 /* encode trust struct into string representation of trust flags */
 char *

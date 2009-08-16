@@ -36,9 +36,13 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: aeskeywrap.c,v 1.4 2005/08/06 07:24:21 nelsonb%netscape.com Exp $ */
+/* $Id: aeskeywrap.c,v 1.4.124.1 2009/07/31 02:16:14 nrthomas%gmail.com Exp $ */
 
-/* $Id: aeskeywrap.c,v 1.4 2005/08/06 07:24:21 nelsonb%netscape.com Exp $ */
+/* $Id: aeskeywrap.c,v 1.4.124.1 2009/07/31 02:16:14 nrthomas%gmail.com Exp $ */
+
+#ifdef FREEBL_NO_DEPEND
+#include "stubs.h"
+#endif
 
 #include "prcpucfg.h"
 #if defined(IS_LITTLE_ENDIAN) || defined(SHA_NO_LONG_LONG)

@@ -36,7 +36,7 @@
 /*
  * certi.h - private data structures for the certificate library
  *
- * $Id: certi.h,v 1.26 2008/06/18 01:00:40 wtc%google.com Exp $
+ * $Id: certi.h,v 1.26.20.1 2009/07/31 02:16:02 nrthomas%gmail.com Exp $
  */
 #ifndef _CERTI_H_
 #define _CERTI_H_
@@ -249,6 +249,10 @@ extern int cert_AVAOidTagToMaxLen(SECOidTag tag);
 extern CERTAVA * CERT_CreateAVAFromRaw(PRArenaPool *pool, 
                                const SECItem * OID, const SECItem * value);
 
+/* Make an AVA from binary input specified by SECItem */
+extern CERTAVA * CERT_CreateAVAFromSECItem(PRArenaPool *arena, SECOidTag kind, 
+                                           int valueType, SECItem *value);
+
 /*
  * get a DPCache object for the given issuer subject and dp
  * Automatically creates the cache object if it doesn't exist yet.
@@ -256,6 +260,10 @@ extern CERTAVA * CERT_CreateAVAFromRaw(PRArenaPool *pool,
 SECStatus AcquireDPCache(CERTCertificate* issuer, SECItem* subject,
                          SECItem* dp, int64 t, void* wincx,
                          CRLDPCache** dpcache, PRBool* writeLocked);
+
+/* check if a particular SN is in the CRL cache and return its entry */
+SECStatus DPCache_Lookup(CRLDPCache* cache, SECItem* sn,
+                         CERTCrlEntry** returned);
 
 /* release a DPCache object that was previously acquired */
 void ReleaseDPCache(CRLDPCache* dpcache, PRBool writeLocked);

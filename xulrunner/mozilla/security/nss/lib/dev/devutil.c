@@ -35,7 +35,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: devutil.c,v $ $Revision: 1.32 $ $Date: 2008/09/30 04:09:02 $";
+static const char CVS_ID[] = "@(#) $RCSfile: devutil.c,v $ $Revision: 1.32.12.1 $ $Date: 2009/07/31 02:16:12 $";
 #endif /* DEBUG */
 
 #ifndef DEVM_H
@@ -148,9 +148,7 @@ nssSlotArray_Clone (
     if (count > 0) {
 	rvSlots = nss_ZNEWARRAY(NULL, NSSSlot *, count + 1);
 	if (rvSlots) {
-	    sp = slots;
-	    count = 0;
-	    for (sp = slots; *sp; sp++) {
+	    for (sp = slots, count = 0; *sp; sp++) {
 		rvSlots[count++] = nssSlot_AddRef(*sp);
 	    }
 	}
@@ -376,7 +374,7 @@ create_object (
 )
 {
     PRUint32 j;
-    NSSArena *arena;
+    NSSArena *arena = NULL;
     NSSSlot *slot = NULL;
     nssSession *session = NULL;
     nssCryptokiObjectAndAttributes *rvCachedObject = NULL;

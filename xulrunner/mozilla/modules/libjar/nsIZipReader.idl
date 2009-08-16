@@ -18,7 +18,7 @@
  *
  * The Initial Developer of the Original Code is
  * Netscape Communications Corporation.
- * Portions created by the Initial Developer are Copyright (C) 1998
+ * Portions created by the Initial Developer are Copyright (C) 1998-2009
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
@@ -27,6 +27,7 @@
  *   Samir Gehani <sgehani@netscape.com>
  *   Mitch Stoltz <mstoltz@netscape.com>
  *   Jeff Walden <jwalden+code@mit.edu>
+ *   Nelson Bolyard <nelson@bolyard.me>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -143,37 +144,35 @@ interface nsIZipReader : nsISupports
      * Returns a string enumerator containing the matching entry names.
      *
      * @param aPattern
-     *   A regular expression used to find matching entries in the zip file.
+     *   A globbing pattern used to find matching names in the zip file.
      *   Set this parameter to null to get all entries; otherwise, use the
      *   following syntax:
      *
      *   o * matches anything
      *   o ? matches one character
      *   o $ matches the end of the string
-     *   o [abc] matches one occurrence of a, b, or c. The only character that
-     *           must be escaped inside the brackets is ].  ^ and - must never
-     *           appear in the first and second positions within the brackets, 
-     *           respectively.  (In the former case, the behavior specified for
-     *           '[^az]' will happen.)
-     *   o [a-z] matches any character between a and z.  The characters a and z
-     *           must either both be letters or both be numbers, with the
-     *           character represented by 'a' having a lower ASCII value than
-     *           the character represented by 'z'.
-     *   o [^az] matches any character except a or z.  If ] is to appear inside
-     *           the brackets as a character to not match, it must be escaped.
-     *   o pat~pat2 returns matches to the pattern 'pat' which do not also match
-     *              the pattern 'pat2'.  This may be used to perform filtering
-     *              upon the results of one pattern to remove all matches which
-     *              also match another pattern.  For example, because '*'
-     *              matches any string and '*z*' matches any string containing a
-     *              'z', '*~*z*' will match all strings except those containing
-     *              a 'z'.  Note that a pattern may not use '~' multiple times,
-     *              so a string such as '*~*z*~*y*' is not a valid pattern.
+     *   o [abc] matches one occurrence of a, b, or c. 
+     *   o [^az] matches any character except a or z.  Between brackets,
+     *           the only characters that must be escaped are \ and ].  
+     *   o [a-z] matches any character between a and z, inclusive.  
+     *           The a and z characters must be alphanumeric ASCII characters.
+     *           If one is upper case and one is lower case, then the ASCII
+     *           non-alphanumeric characters between Z and a will be in range.
+     *   o [^a-z] matches any character except those between a and z, inclusive.
+     *            These forms cannot be combined, e.g [a-gp-z] does not work.
+     *   o yes~no returns matches to the pattern 'yes' that do not also match
+     *            the pattern 'no'.  This may be used to filter the results
+     *            of one pattern to remove all matches of a second pattern.
+     *            Only the outer-most pattern may use this, and at most once.
+     *            For example: *~abc will match any string except abc .
      *   o (foo|bar) will match either the pattern foo or the pattern bar.
-     *               Neither of the patterns foo or bar may use the 'pat~pat2'
-     *               syntax described immediately above.
-     *   o \ will escape a special character.  Escaping is required for all
-     *       special characters unless otherwise specified.
+     *            At least one pipe and two inner patterns are required. 
+     *            More are allowed. These inner patterns may NOT use the 
+     *            'yes~no' syntax described immediately above, and may not 
+     *            contain patterns of this same (foo|bar) form.
+     *   o \ will escape a special character.  To treat special characters as
+     *            ordinary matching characters, escaping is required for all
+     *            special characters, unless otherwise specified above.
      *   o All other characters match case-sensitively.
      *
      *   An aPattern not conforming to this syntax has undefined behavior.

@@ -36,7 +36,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: ssl3gthr.c,v 1.7 2005/09/09 03:02:16 nelsonb%netscape.com Exp $ */
+/* $Id: ssl3gthr.c,v 1.7.122.1 2009/07/31 02:17:02 nrthomas%gmail.com Exp $ */
 
 #include "cert.h"
 #include "ssl.h"
