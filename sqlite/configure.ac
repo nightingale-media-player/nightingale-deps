@@ -97,9 +97,10 @@ dnl show in in configure.
 #########
 # Programs needed
 #
-AC_PROG_LIBTOOL
 AC_PROG_INSTALL
 AC_PROG_AWK
+AC_CHECK_PROG(AR, ar, ar cr, false)
+AC_CHECK_PROGS(RANLIB, ranlib, :)
 
 #########
 # Enable large file support (if special flags are necessary)
@@ -304,6 +305,10 @@ case "$enable_tempstore" in
   yes ) 
      TEMP_STORE=3
     AC_MSG_RESULT([always])
+  ;;
+  only )
+     TEMP_STORE=2
+    AC_MSG_RESULT([in-memory only])
   ;;
   * ) 
     TEMP_STORE=1
@@ -577,6 +582,11 @@ AC_SUBST(TARGET_HAVE_READLINE)
 # that use "fdatasync()" function.
 #
 AC_SEARCH_LIBS(fdatasync, [rt])
+
+#########
+# Search for misc stuff
+#
+AC_SEARCH_LIBS(dlopen, [dl])
 
 #########
 # check for debug enabled

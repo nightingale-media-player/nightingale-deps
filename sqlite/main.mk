@@ -42,9 +42,11 @@
 # build the SQLite library and testing tools.
 ################################################################################
 
+OPTS=$(CFLAGS)
+
 # This is how we compile
 #
-TCCX =  $(TCC) $(OPTS) -I. -I$(TOP)/src -I$(TOP) 
+TCCX =  $(TCC) $(OPTS) -fPIC -I. -I$(TOP)/src -I$(TOP) 
 TCCX += -I$(TOP)/ext/rtree -I$(TOP)/ext/icu -I$(TOP)/ext/fts3
 
 # Object files for the SQLite library.
@@ -348,15 +350,15 @@ lemon:	$(TOP)/tool/lemon.c $(TOP)/tool/lempar.c
 #     opcodes.o
 #
 %.o: %.c $(HDR)
-	$(TCCX) -c $<
+	$(TCCX) -o $@ -c $<
 
 # Rules to build individual *.o files from files in the src directory.
 #
 %.o: $(TOP)/src/%.c $(HDR)
-	$(TCCX) -c $<
+	$(TCCX) -o $@ -c $<
 
 tclsqlite.o:	$(TOP)/src/tclsqlite.c $(HDR)
-	$(TCCX) $(TCL_FLAGS) -c $(TOP)/src/tclsqlite.c
+	$(TCCX) $(TCL_FLAGS) -o $@ -c $(TOP)/src/tclsqlite.c
 
 
 
@@ -394,49 +396,49 @@ keywordhash.h:	$(TOP)/tool/mkkeywordhash.c
 # Rules to build the extension objects.
 #
 icu.o:	$(TOP)/ext/icu/icu.c $(HDR) $(EXTHDR)
-	$(TCCX) -DSQLITE_CORE -c $(TOP)/ext/icu/icu.c
+	$(TCCX) -o $@ -DSQLITE_CORE -c $(TOP)/ext/icu/icu.c
 
 fts2.o:	$(TOP)/ext/fts2/fts2.c $(HDR) $(EXTHDR)
-	$(TCCX) -DSQLITE_CORE -c $(TOP)/ext/fts2/fts2.c
+	$(TCCX) -o $@ -DSQLITE_CORE -c $(TOP)/ext/fts2/fts2.c
 
 fts2_hash.o:	$(TOP)/ext/fts2/fts2_hash.c $(HDR) $(EXTHDR)
-	$(TCCX) -DSQLITE_CORE -c $(TOP)/ext/fts2/fts2_hash.c
+	$(TCCX) -o $@ -DSQLITE_CORE -c $(TOP)/ext/fts2/fts2_hash.c
 
 fts2_icu.o:	$(TOP)/ext/fts2/fts2_icu.c $(HDR) $(EXTHDR)
-	$(TCCX) -DSQLITE_CORE -c $(TOP)/ext/fts2/fts2_icu.c
+	$(TCCX) -o $@  -DSQLITE_CORE -c $(TOP)/ext/fts2/fts2_icu.c
 
 fts2_porter.o:	$(TOP)/ext/fts2/fts2_porter.c $(HDR) $(EXTHDR)
-	$(TCCX) -DSQLITE_CORE -c $(TOP)/ext/fts2/fts2_porter.c
+	$(TCCX) -o $@ -DSQLITE_CORE -c $(TOP)/ext/fts2/fts2_porter.c
 
 fts2_tokenizer.o:	$(TOP)/ext/fts2/fts2_tokenizer.c $(HDR) $(EXTHDR)
-	$(TCCX) -DSQLITE_CORE -c $(TOP)/ext/fts2/fts2_tokenizer.c
+	$(TCCX) -o $@ -DSQLITE_CORE -c $(TOP)/ext/fts2/fts2_tokenizer.c
 
 fts2_tokenizer1.o:	$(TOP)/ext/fts2/fts2_tokenizer1.c $(HDR) $(EXTHDR)
-	$(TCCX) -DSQLITE_CORE -c $(TOP)/ext/fts2/fts2_tokenizer1.c
+	$(TCCX) -o $@ -DSQLITE_CORE -c $(TOP)/ext/fts2/fts2_tokenizer1.c
 
 fts3.o:	$(TOP)/ext/fts3/fts3.c $(HDR) $(EXTHDR)
-	$(TCCX) -DSQLITE_CORE -c $(TOP)/ext/fts3/fts3.c
+	$(TCCX) -o $@ -DSQLITE_CORE -c $(TOP)/ext/fts3/fts3.c
 
 fts3_expr.o:	$(TOP)/ext/fts3/fts3_expr.c $(HDR) $(EXTHDR)
-	$(TCCX) -DSQLITE_CORE -c $(TOP)/ext/fts3/fts3_expr.c
+	$(TCCX) -o $@ -DSQLITE_CORE -c $(TOP)/ext/fts3/fts3_expr.c
 
 fts3_hash.o:	$(TOP)/ext/fts3/fts3_hash.c $(HDR) $(EXTHDR)
-	$(TCCX) -DSQLITE_CORE -c $(TOP)/ext/fts3/fts3_hash.c
+	$(TCCX) -o $@ -DSQLITE_CORE -c $(TOP)/ext/fts3/fts3_hash.c
 
 fts3_icu.o:	$(TOP)/ext/fts3/fts3_icu.c $(HDR) $(EXTHDR)
-	$(TCCX) -DSQLITE_CORE -c $(TOP)/ext/fts3/fts3_icu.c
+	$(TCCX) -o $@ -DSQLITE_CORE -c $(TOP)/ext/fts3/fts3_icu.c
 
 fts3_porter.o:	$(TOP)/ext/fts3/fts3_porter.c $(HDR) $(EXTHDR)
-	$(TCCX) -DSQLITE_CORE -c $(TOP)/ext/fts3/fts3_porter.c
+	$(TCCX) -o $@ -DSQLITE_CORE -c $(TOP)/ext/fts3/fts3_porter.c
 
 fts3_tokenizer.o:	$(TOP)/ext/fts3/fts3_tokenizer.c $(HDR) $(EXTHDR)
-	$(TCCX) -DSQLITE_CORE -c $(TOP)/ext/fts3/fts3_tokenizer.c
+	$(TCCX) -o $@ -DSQLITE_CORE -c $(TOP)/ext/fts3/fts3_tokenizer.c
 
 fts3_tokenizer1.o:	$(TOP)/ext/fts3/fts3_tokenizer1.c $(HDR) $(EXTHDR)
-	$(TCCX) -DSQLITE_CORE -c $(TOP)/ext/fts3/fts3_tokenizer1.c
+	$(TCCX) -o $@ -DSQLITE_CORE -c $(TOP)/ext/fts3/fts3_tokenizer1.c
 
 rtree.o:	$(TOP)/ext/rtree/rtree.c $(HDR) $(EXTHDR)
-	$(TCCX) -DSQLITE_CORE -c $(TOP)/ext/rtree/rtree.c
+	$(TCCX) -o $@ -DSQLITE_CORE -c $(TOP)/ext/rtree/rtree.c
 
 
 # Rules for building test programs and for running tests
@@ -501,13 +503,16 @@ extensiontest: testfixture$(EXE) $(TEST_EXTENSION)
 
 # Standard install and cleanup targets
 #
-install:	sqlite3 libsqlite3.a sqlite3.h
-	mv sqlite3 /usr/bin
-	mv libsqlite3.a /usr/lib
-	mv sqlite3.h /usr/include
+install:	sqlite3$(EXE) libsqlite3.a sqlite3.h
+	mkdir -p $(bindir)
+	mkdir -p $(libdir)
+	mkdir -p $(includedir)
+	mv sqlite3$(EXE) $(bindir)
+	mv libsqlite3.a $(libdir)
+	mv sqlite3.h $(includedir)
 
 clean:	
-	rm -f *.o sqlite3 libsqlite3.a sqlite3.h opcodes.*
+	rm -f *.o sqlite3$(EXE) libsqlite3.a sqlite3.h opcodes.*
 	rm -f lemon lempar.c parse.* sqlite*.tar.gz mkkeywordhash keywordhash.h
 	rm -f $(PUBLISH)
 	rm -f *.da *.bb *.bbg gmon.out
