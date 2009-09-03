@@ -12,13 +12,13 @@ export SB_VENDOR_BUILD_ROOT
 
 TEE = tee
 
-SB_VENDOR_WORLD = $(addprefix sb-, gst-plugins-good gst-plugins-bad gst-plugins-ugly taglib)
+SB_VENDOR_WORLD = $(addprefix sb-, sqlite gst-plugins-good gst-plugins-bad gst-plugins-ugly taglib)
 
 SB_VENDOR_BUILD_DEPS ?= 0
 
 world: $(SB_VENDOR_WORLD)
 
-TIER1 = sb-gettext sb-glib
+TIER1 = sb-gettext sb-glib sb-sqlite
 TIER2 = sb-libogg sb-libvorbis sb-libtheora sb-flac sb-taglib
 TIER3 = sb-gstreamer
 TIER4 = sb-gst-plugins-good sb-gst-plugins-bad sb-gst-plugins-ugly

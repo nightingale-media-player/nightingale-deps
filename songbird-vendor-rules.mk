@@ -80,6 +80,7 @@ ifneq (,$(BUILD_TARGET_SET))
   export CC = $(SB_CC)
   export CXX = $(SB_CXX)
   export LD = $(SB_LD)
+  export AR = $(SB_AR)
   export OBJDUMP = $(SB_OBJDUMP)
 
   export CPPFLAGS = $(SB_CPPFLAGS)
@@ -412,4 +413,4 @@ clean_build_dir:
 	$(RM) -rf $(SB_VENDOR_BREAKPAD_DIR)
 	$(RM) -rf $(SB_CONFIGURE_PREFIX)
 
-.PHONY: all release debug build setup_build setup_environment clean_build_dir post_build strip_build module_setup_build module_post_build copy_symbols upload_symbols regen-makefiles
+.PHONY: FORCE all release debug build setup_build setup_environment clean_build_dir post_build strip_build module_setup_build module_post_build copy_symbols upload_symbols regen-makefiles

@@ -125,6 +125,7 @@ endif
 #
 
 AWK ?= awk
+AUTOCONF ?= autoconf
 CHMOD ?= chmod
 CMAKE ?= cmake
 CONFIGURE ?= ./configure
