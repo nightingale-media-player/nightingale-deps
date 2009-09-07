@@ -42,11 +42,9 @@
 # build the SQLite library and testing tools.
 ################################################################################
 
-OPTS=$(CFLAGS)
-
 # This is how we compile
 #
-TCCX =  $(TCC) $(OPTS) -fPIC -I. -I$(TOP)/src -I$(TOP) 
+TCCX =  $(TCC) $(CFLAGS) -fPIC -I. -I$(TOP)/src -I$(TOP) 
 TCCX += -I$(TOP)/ext/rtree -I$(TOP)/ext/icu -I$(TOP)/ext/fts3
 
 # Object files for the SQLite library.
