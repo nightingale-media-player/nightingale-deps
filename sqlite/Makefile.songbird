@@ -74,3 +74,4 @@ include $(CURDIR)/../songbird-vendor-rules.mk
 module_setup_build: FORCE
 	@echo module_setup_build: Running $(AUTOCONF) to generate configure
 	$(AUTOCONF)
+	$(MV) configure $(SB_VENDOR_BUILD_DIR)
