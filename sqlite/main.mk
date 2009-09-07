@@ -506,7 +506,11 @@ install:	sqlite3$(EXE) libsqlite3.a sqlite3.h
 	mkdir -p $(libdir)
 	mkdir -p $(includedir)
 	mv sqlite3$(EXE) $(bindir)
+ifneq (,$(EXE)) 
+	mv libsqlite3.a $(libdir)/sqlite3.lib
+else
 	mv libsqlite3.a $(libdir)
+endif
 	mv sqlite3.h $(includedir)
 
 clean:	
