@@ -2,7 +2,7 @@
 
 #set -x
 
-os=$(uname -o)
+os=$(uname -o || true)
 os_arch=$(uname)
 os_subarch=$(uname -m)
 
