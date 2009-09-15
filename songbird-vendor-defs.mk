@@ -170,6 +170,7 @@ ifeq (Linux,$(SB_VENDOR_ARCH))
    DUMP_SYMS ?= $(MOZSDK_BIN_DIR)/dump_syms
    INSTALL_NAME_TOOL ?= echo install_name_tool called on Linux && exit 1;
    OTOOL ?= echo otool called on Linux && exit 1;
+   SB_AR ?= ar
 else
 ifeq (Msys,$(SB_VENDOR_ARCH))
    DUMP_SYMS ?= $(MOZSDK_BIN_DIR)/dump_syms.exe
