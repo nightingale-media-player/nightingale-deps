@@ -1228,6 +1228,10 @@ nsListBoxBodyFrame::GetNextItemBox(nsIBox* aBox, PRInt32 aOffset,
       // There is a content node that wants a frame.
       nsIContent *nextContent = parentContent->GetChildAt(i + aOffset + 1);
 
+      if (!nextContent->IsNodeOfType(nsINode::eXUL) ||
+          nextContent->Tag() != nsGkAtoms::listitem)
+        return GetNextItemBox(aBox, ++aOffset, aCreated);
+
       nsPresContext* presContext = PresContext();
       nsIFrame* existingFrame =
         presContext->GetPresShell()->GetPrimaryFrameFor(nextContent);
@@ -1258,6 +1262,9 @@ nsListBoxBodyFrame::GetNextItemBox(nsIBox* aBox, PRInt32 aOffset,
     return nsnull;
 
   mBottomFrame = result;
+
+  NS_ASSERTION(!result->IsBoxFrame() || result->GetParent() == this,
+               "returning frame that is not in childlist");
 
   return result->IsBoxFrame() ? result : nsnull;
 }

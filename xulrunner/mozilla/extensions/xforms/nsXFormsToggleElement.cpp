@@ -70,62 +70,12 @@ nsXFormsToggleElement::HandleSingleAction(nsIDOMEvent* aEvent,
   // element. Precedence is in that order.
 
   nsAutoString caseValue;
-  nsCOMPtr<nsIDOMNode> caseNode, currentNode, tmpNode;
-  PRUint16 nodeType;
   nsresult rv;
 
-  mElement->GetFirstChild(getter_AddRefs(currentNode));
-  while (currentNode) {
-    currentNode->GetNodeType(&nodeType);
-    if (nodeType == nsIDOMNode::ELEMENT_NODE) {
-      // Check to see if it's a case element.
-      nsAutoString localName, namespaceURI;
-      currentNode->GetLocalName(localName);
-      currentNode->GetNamespaceURI(namespaceURI);
-      if (localName.EqualsLiteral("case") &&
-          namespaceURI.EqualsLiteral(NS_NAMESPACE_XFORMS)) {
-        caseNode = currentNode;
-        break;
-      }
-    }
-    currentNode->GetNextSibling(getter_AddRefs(tmpNode));
-    currentNode.swap(tmpNode);
-  }
-
-  if (caseNode) {
-    nsCOMPtr<nsIDOMElement> caseElement(do_QueryInterface(caseNode));
-    if (caseElement) {
-      nsAutoString value;
-      caseElement->GetAttribute(NS_LITERAL_STRING("value"), value);
-      if (!value.IsEmpty()) {
-        // The case ID is given by the result of evaluating the
-        // value attribute.
-        nsCOMPtr<nsIModelElementPrivate> model;
-        nsCOMPtr<nsIDOMXPathResult> xpRes;
-        PRBool usesModelBind = PR_FALSE;
-        rv = nsXFormsUtils::EvaluateNodeBinding(caseElement, 0,
-                                                NS_LITERAL_STRING("value"),
-                                                EmptyString(),
-                                                nsIDOMXPathResult::STRING_TYPE,
-                                                getter_AddRefs(model),
-                                                getter_AddRefs(xpRes),
-                                                &usesModelBind);
-        NS_ENSURE_SUCCESS(rv, rv);
-        if (xpRes) {
-          rv = xpRes->GetStringValue(caseValue);
-          NS_ENSURE_SUCCESS(rv, rv);
-        }
-      }
-      else {
-        // Check the string content of the element.
-        nsXFormsUtils::GetNodeValue(caseNode, caseValue);
-      }
-    }
-  }
-  else {
-    // The case ID must be specified on the toggle element.
-    mElement->GetAttribute(NS_LITERAL_STRING("case"), caseValue);
-  }
+  rv = nsXFormsUtils::GetAttributeOrChild(NS_LITERAL_STRING("case"),
+                                          mElement,
+                                          caseValue);
+  NS_ENSURE_SUCCESS(rv, rv);
 
   if (caseValue.IsEmpty()) {
     return NS_OK;

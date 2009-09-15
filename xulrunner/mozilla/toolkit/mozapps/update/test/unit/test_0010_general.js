@@ -53,6 +53,5 @@ function run_test() {
   // Check if the update dir can be written to
   dump("Testing: nsIApplicationUpdateService:canUpdate\n");
   do_check_true(gAUS.canUpdate);
-  removeUpdateDirsAndFiles();
   cleanUp();
 }

@@ -101,16 +101,27 @@ var gUpdates;
 var gStatusCode;
 var gStatusText;
 
+
 function getPrefBranch() {
   return AUS_Cc["@mozilla.org/preferences;1"].getService(AUS_Ci.nsIPrefBranch);
 }
 
 /**
  * Nulls out the most commonly used global vars used by tests as appropriate.
- * This is not in the tail file due to check-interactive executing the tail file
- * prior to _execute_test();.
+ * This was moved here from the tail file due to check-interactive executing
+ * the tail file prior to _execute_test(); (bug 384339). It hasn't been moved
+ * back since it is easier to comment out the call to cleanUp when needed.
  */
 function cleanUp() {
+  // Always call app update's observe method passing xpcom-shutdown to test that
+  // the shutdown of app update runs without throwing or leaking. The observer
+  // method is used directly instead of calling notifyObservers so components
+  // outside of the scope of this test don't assert and thereby cause app update
+  // tests to fail.
+  if (gAUS)
+    gAUS.observe(null, "xpcom-shutdown", "");
+
+  removeUpdateDirsAndFiles();
   gDirSvc.unregisterProvider(gDirProvider);
 
   gUpdateManager = null;
@@ -149,10 +160,12 @@ function startAUS() {
   }
 
   gAUS = AUS_Cc["@mozilla.org/updates/update-service;1"].
-         getService(AUS_Ci.nsIApplicationUpdateService);
+         getService(AUS_Ci.nsIApplicationUpdateService).
+         QueryInterface(AUS_Ci.nsIObserver);
   var os = AUS_Cc["@mozilla.org/observer-service;1"].
            getService(AUS_Ci.nsIObserverService);
   os.notifyObservers(null, "profile-after-change", null);
+  os.notifyObservers(null, "final-ui-startup", null);
 }
 
 /* Initializes nsIUpdateChecker */
@@ -414,23 +427,13 @@ function writeStatusFile(aStatus) {
  *          replaced.
  */
 function writeFile(aFile, aText) {
-  var fos = AUS_Cc["@mozilla.org/network/safe-file-output-stream;1"].
+  var fos = AUS_Cc["@mozilla.org/network/file-output-stream;1"].
             createInstance(AUS_Ci.nsIFileOutputStream);
   if (!aFile.exists())
     aFile.create(AUS_Ci.nsILocalFile.NORMAL_FILE_TYPE, PERMS_FILE);
   fos.init(aFile, MODE_WRONLY | MODE_CREATE | MODE_TRUNCATE, PERMS_FILE, 0);
   fos.write(aText, aText.length);
-
-  if (fos instanceof AUS_Ci.nsISafeOutputStream) {
-    try {
-      fos.finish();
-    }
-    catch (e) {
-      fos.close();
-    }
-  }
-  else
-    fos.close();
+  fos.close();
 }
 
 /**
@@ -591,7 +594,6 @@ function removeDirRecursive(aDir) {
   aDir.remove(true);
 }
 
-
 /**
  * Helper for starting the http server used by the tests
  * @param   aRelativeDirName
@@ -599,10 +601,18 @@ function removeDirRecursive(aDir) {
  *          toolkit/mozapps/update/test/unit/
  */
 function start_httpserver(aRelativeDirName) {
+  var dir = do_get_file(REL_TEST_PATH + aRelativeDirName);
+  if (!dir.exists())
+    do_throw("The directory used by nsHttpServer does not exist! path: " +
+             dir.path + "\n");
+
+  if (!dir.isDirectory())
+    do_throw("A file instead of a directory was specified for nsHttpServer " +
+             "registerDirectory! path: " + dir.path + "\n");
+
   do_import_script("netwerk/test/httpserver/httpd.js");
   gTestserver = new nsHttpServer();
-  gTestserver.registerDirectory("/data/", do_get_file(REL_TEST_PATH +
-                                                      aRelativeDirName));
+  gTestserver.registerDirectory("/data/", dir);
   gTestserver.start(4444);
 }
 
@@ -723,7 +733,7 @@ if (gProfD.exists())
   gProfD.remove(true);
 gProfD.create(AUS_Ci.nsIFile.DIRECTORY_TYPE, PERMS_DIRECTORY);
 
-const gDirProvider = {
+var gDirProvider = {
   getFile: function(prop, persistent) {
     switch (prop) {
       case NS_APP_USER_PROFILE_50_DIR:

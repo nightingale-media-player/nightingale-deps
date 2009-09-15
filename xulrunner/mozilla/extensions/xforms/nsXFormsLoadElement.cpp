@@ -65,10 +65,14 @@ nsXFormsLoadElement::HandleSingleAction(nsIDOMEvent* aEvent,
   //action has no effect.
   PRBool hasBind;
   PRBool hasRef;
+  nsresult rv;
   mElement->HasAttribute(NS_LITERAL_STRING("bind"), &hasBind);
   mElement->HasAttribute(NS_LITERAL_STRING("ref"), &hasRef);
   nsAutoString resource;
-  mElement->GetAttribute(NS_LITERAL_STRING("resource"), resource);
+  rv = nsXFormsUtils::GetAttributeOrChild(NS_LITERAL_STRING("resource"),
+                                          mElement,
+                                          resource);
+  NS_ENSURE_SUCCESS(rv, rv);
 
   if (!resource.IsEmpty() && (hasBind || hasRef))
     return NS_OK;

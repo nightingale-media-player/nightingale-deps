@@ -43,7 +43,7 @@
 /*
  * secoidt.h - public data structures for ASN.1 OID functions
  *
- * $Id: secoidt.h,v 1.27.34.1 2009/07/31 02:17:05 nrthomas%gmail.com Exp $
+ * $Id: secoidt.h,v 1.29 2009/03/13 02:59:03 nelson%bolyard.com Exp $
  */
 
 #include "secitem.h"

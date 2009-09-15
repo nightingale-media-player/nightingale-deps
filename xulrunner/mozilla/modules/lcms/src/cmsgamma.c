@@ -114,7 +114,7 @@ LPGAMMATABLE LCMSEXPORT cmsAllocGamma(int nEntries)
        LPGAMMATABLE p;
        size_t size;
 
-       if (nEntries > 65530 || nEntries < 0) {
+       if (nEntries > 65530 || nEntries <= 0) {
                 cmsSignalError(LCMS_ERRC_ABORTED, "Couldn't create gammatable of more than 65530 entries");
                 return NULL;
        }
@@ -249,8 +249,8 @@ LPGAMMATABLE LCMSEXPORT cmsReverseGamma(int nResultSamples, LPGAMMATABLE InGamma
        LPGAMMATABLE p;
 
        // Try to reverse it analytically whatever possible
-       if (InGamma -> Seed.Type > 0 && InGamma -> Seed.Type <= 5 &&				
-			_cmsCrc32OfGammaTable(InGamma) == InGamma -> Seed.Crc32) {
+       if (InGamma -> Seed.Type > 0 && InGamma -> Seed.Type <= 5 &&             
+            _cmsCrc32OfGammaTable(InGamma) == InGamma -> Seed.Crc32) {
 
                 return cmsBuildParametricGamma(nResultSamples, -(InGamma -> Seed.Type), InGamma ->Seed.Params);
        }

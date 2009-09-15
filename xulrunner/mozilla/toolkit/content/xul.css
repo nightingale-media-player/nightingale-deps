@@ -787,6 +787,12 @@ panel[type="autocomplete-richlistbox"] {
   -moz-binding: url("chrome://global/content/bindings/autocomplete.xml#history-dropmarker");
 }
 
+/* Bug 453827 */
+toolbaritem.chromeclass-location > textbox > hbox > hbox > html|*.textbox-input > html|*.anonymous-div {
+  /* Make the line-height equal to the available height */
+  line-height: -moz-block-height;
+}
+
 %endif
 
 

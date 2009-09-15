@@ -37,7 +37,7 @@
 /*
  * cert.h - public data structures and prototypes for the certificate library
  *
- * $Id: cert.h,v 1.74.20.1 2009/07/31 02:16:02 nrthomas%gmail.com Exp $
+ * $Id: cert.h,v 1.76 2009/03/20 18:03:57 nelson%bolyard.com Exp $
  */
 
 #ifndef _CERT_H_

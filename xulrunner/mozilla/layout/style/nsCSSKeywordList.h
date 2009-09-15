@@ -87,6 +87,7 @@ CSS_KEY(-moz-center, _moz_center)
 CSS_KEY(-moz-cjk-earthly-branch, _moz_cjk_earthly_branch)
 CSS_KEY(-moz-cjk-heavenly-stem, _moz_cjk_heavenly_stem)
 CSS_KEY(-moz-compact, _moz_compact)  // Disabled because not supported.
+CSS_KEY(-moz-block-height, _moz_block_height)
 CSS_KEY(-moz-context-menu, _moz_context_menu)
 CSS_KEY(-moz-copy, _moz_copy)
 CSS_KEY(-moz-deck, _moz_deck)

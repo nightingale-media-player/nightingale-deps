@@ -42,7 +42,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: mpi-priv.h,v 1.20.124.1 2009/07/31 02:16:22 nrthomas%gmail.com Exp $ */
+/* $Id: mpi-priv.h,v 1.21 2009/03/19 02:26:48 julien.pierre.boogz%sun.com Exp $ */
 #ifndef _MPI_PRIV_H_
 #define _MPI_PRIV_H_ 1
 

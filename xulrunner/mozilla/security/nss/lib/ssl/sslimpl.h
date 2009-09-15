@@ -39,7 +39,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: sslimpl.h,v 1.65.34.1 2009/07/31 02:17:02 nrthomas%gmail.com Exp $ */
+/* $Id: sslimpl.h,v 1.66 2008/12/17 06:09:19 nelson%bolyard.com Exp $ */
 
 #ifndef __sslimpl_h_
 #define __sslimpl_h_

@@ -122,7 +122,6 @@ function run_test() {
          "\nException: " + e + "\n");
   }
 
-  removeUpdateDirsAndFiles();
   cleanUp();
   try {
     if (testDir.exists())

@@ -36,7 +36,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: softoken.h,v 1.17.36.1 2009/07/31 02:16:51 nrthomas%gmail.com Exp $ */
+/* $Id: softoken.h,v 1.23 2009/02/26 06:57:15 nelson%bolyard.com Exp $ */
 
 #ifndef _SOFTOKEN_H_
 #define _SOFTOKEN_H_

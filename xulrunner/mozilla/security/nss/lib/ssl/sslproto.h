@@ -39,7 +39,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: sslproto.h,v 1.12.46.1 2009/07/31 02:17:03 nrthomas%gmail.com Exp $ */
+/* $Id: sslproto.h,v 1.13 2008/12/17 06:09:19 nelson%bolyard.com Exp $ */
 
 #ifndef __sslproto_h_
 #define __sslproto_h_

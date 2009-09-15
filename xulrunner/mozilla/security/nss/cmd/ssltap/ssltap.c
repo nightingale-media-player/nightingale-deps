@@ -66,7 +66,7 @@
 #include "cert.h"
 #include "sslproto.h"
 
-#define VERSIONSTRING "$Revision: 1.12.20.1 $ ($Date: 2009/07/31 02:15:55 $) $Author: nrthomas%gmail.com $"
+#define VERSIONSTRING "$Revision: 1.13 $ ($Date: 2009/03/13 02:24:07 $) $Author: nelson%bolyard.com $"
 
 
 struct _DataBufferList;

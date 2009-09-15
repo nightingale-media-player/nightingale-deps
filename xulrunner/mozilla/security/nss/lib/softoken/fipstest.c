@@ -36,7 +36,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: fipstest.c,v 1.23.40.1 2009/07/31 02:16:49 nrthomas%gmail.com Exp $ */
+/* $Id: fipstest.c,v 1.25 2009/03/29 03:45:34 wtc%google.com Exp $ */
 
 #include "softoken.h"   /* Required for RC2-ECB, RC2-CBC, RC4, DES-ECB,  */
                         /*              DES-CBC, DES3-ECB, DES3-CBC, RSA */

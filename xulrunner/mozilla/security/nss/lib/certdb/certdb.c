@@ -39,7 +39,7 @@
 /*
  * Certificate handling code
  *
- * $Id: certdb.c,v 1.92.20.1 2009/07/31 02:16:02 nrthomas%gmail.com Exp $
+ * $Id: certdb.c,v 1.100 2009/03/23 02:18:19 nelson%bolyard.com Exp $
  */
 
 #include "nssilock.h"

@@ -227,18 +227,24 @@ xul|*:root output[mozType|typelist~="http://www.w3.org/2001/XMLSchema#date"][app
 }
 
   /* output mediatype="image/*" */
-html|*:root output[mozType|typelist~="http://www.w3.org/2001/XMLSchema#anyURI"][mozType|mediatype^="image"] {
+html|*:root output[mozType|mediatype^="image"] {
   -moz-binding: url('chrome://xforms/content/xforms-xhtml.xml#xformswidget-output-mediatype-anyURI');
 }
 html|*:root output[mozType|typelist~="http://www.w3.org/2001/XMLSchema#base64Binary"][mozType|mediatype^="image"] {
   -moz-binding: url('chrome://xforms/content/xforms-xhtml.xml#xformswidget-output-mediatype-base64Binary');
 }
+html|*:root output[mozType|typelist~="http://www.w3.org/2001/XMLSchema#string"][mozType|mediatype="image/svg+xml"] {
+  -moz-binding: url('chrome://xforms/content/xforms-xhtml.xml#xformswidget-output-mediatype-texthtml');
+}
 
-xul|*:root output[mozType|typelist~="http://www.w3.org/2001/XMLSchema#anyURI"][mozType|mediatype^="image"] {
+xul|*:root output[mozType|mediatype^="image"] {
   -moz-binding: url('chrome://xforms/content/xforms-xhtml.xml#xformswidget-output-mediatype-anyURI');
 }
 xul|*:root output[mozType|typelist~="http://www.w3.org/2001/XMLSchema#base64Binary"][mozType|mediatype^="image"] {
   -moz-binding: url('chrome://xforms/content/xforms-xhtml.xml#xformswidget-output-mediatype-base64Binary');
+}
+xul|*:root output[mozType|typelist~="http://www.w3.org/2001/XMLSchema#string"][mozType|mediatype="image/svg+xml"] {
+  -moz-binding: url('chrome://xforms/content/xforms-xhtml.xml#xformswidget-output-mediatype-texthtml');
 }
 
   /* output mediatype="text/html", mediatype="application/xhtml+xml" */

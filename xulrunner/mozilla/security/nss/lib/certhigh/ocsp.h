@@ -37,7 +37,7 @@
 /*
  * Interface to the OCSP implementation.
  *
- * $Id: ocsp.h,v 1.13.20.1 2009/07/31 02:16:05 nrthomas%gmail.com Exp $
+ * $Id: ocsp.h,v 1.14 2009/03/21 01:40:35 nelson%bolyard.com Exp $
  */
 
 #ifndef _OCSP_H_

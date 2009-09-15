@@ -33,7 +33,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: nsslowhash.c,v 1.4.4.2 2009/07/31 02:16:15 nrthomas%gmail.com Exp $ */
+/* $Id: nsslowhash.c,v 1.2 2008/11/27 15:20:44 wtc%google.com Exp $ */
 
 #include "stubs.h"
 #include "prtypes.h"

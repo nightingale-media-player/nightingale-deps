@@ -33,7 +33,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: rijndael.c,v 1.20.124.1 2009/07/31 02:16:15 nrthomas%gmail.com Exp $ */
+/* $Id: rijndael.c,v 1.24 2008/12/04 18:16:31 rrelyea%redhat.com Exp $ */
 
 #ifdef FREEBL_NO_DEPEND
 #include "stubs.h"

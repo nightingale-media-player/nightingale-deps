@@ -54,7 +54,6 @@ function run_test() {
 function end_test() {
   stop_httpserver();
   do_test_finished();
-  removeUpdateDirsAndFiles();
   cleanUp();
 }
 

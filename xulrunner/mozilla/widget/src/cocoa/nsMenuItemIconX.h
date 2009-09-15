@@ -83,16 +83,22 @@ public:
   // icon.  The request may not complete until after LoadIcon returns.
   nsresult LoadIcon(nsIURI* aIconURI);
 
+  // Unless we take precautions, we may outlive the object that created us
+  // (mMenuItem, which owns our native menu item (mNativeMenuItem)).
+  // Destroy() should be called from mMenuItem's destructor to prevent
+  // this from happening.  See bug 499600.
+  void Destroy();
+
 protected:
   nsCOMPtr<nsIContent>  mContent;
   nsCOMPtr<imgIRequest> mIconRequest;
-  nsISupports*          mMenuItem;
-  nsIMenu*              mMenu;
-  MenuRef               mMenuRef;
+  nsISupports*          mMenuItem;       // [weak]
+  nsIMenu*              mMenu;           // [weak]
+  MenuRef               mMenuRef;        // [weak]
   PRUint16              mMenuItemIndex;
   PRPackedBool          mLoadedIcon;
   PRPackedBool          mSetIcon;
-  NSMenuItem*           mNativeMenuItem;
+  NSMenuItem*           mNativeMenuItem; // [weak]
 };
 
 #endif // nsMenuItemIconX_h_

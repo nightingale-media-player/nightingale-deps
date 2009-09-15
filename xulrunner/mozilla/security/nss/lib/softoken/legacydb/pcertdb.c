@@ -37,7 +37,7 @@
 /*
  * Permanent Certificate database handling code 
  *
- * $Id: pcertdb.c,v 1.6.40.1 2009/07/31 02:16:59 nrthomas%gmail.com Exp $
+ * $Id: pcertdb.c,v 1.7 2009/02/03 05:34:44 julien.pierre.boogz%sun.com Exp $
  */
 #include "lowkeyti.h"
 #include "pcert.h"

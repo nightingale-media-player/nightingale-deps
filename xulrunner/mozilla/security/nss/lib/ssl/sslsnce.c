@@ -36,7 +36,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: sslsnce.c,v 1.46.12.1 2009/07/31 02:17:03 nrthomas%gmail.com Exp $ */
+/* $Id: sslsnce.c,v 1.49 2008/12/02 06:36:59 nelson%bolyard.com Exp $ */
 
 /* Note: ssl_FreeSID() in sslnonce.c gets used for both client and server 
  * cache sids!

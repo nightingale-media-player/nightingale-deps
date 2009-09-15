@@ -34,7 +34,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: sslinfo.c,v 1.17.38.1 2009/07/31 02:17:03 nrthomas%gmail.com Exp $ */
+/* $Id: sslinfo.c,v 1.18 2008/12/17 06:09:19 nelson%bolyard.com Exp $ */
 #include "ssl.h"
 #include "sslimpl.h"
 #include "sslproto.h"

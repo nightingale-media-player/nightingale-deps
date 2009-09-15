@@ -67,6 +67,7 @@
 #include "nsICryptoHMAC.h"
 #include "hasht.h"
 #include "nsNSSCallbacks.h"
+#include "nsNSSShutDown.h"
 
 #include "nsNSSHelper.h"
 
@@ -79,10 +80,10 @@
 //Define an interface that we can use to look up from the
 //callbacks passed to NSS.
 
-#define NS_INSSCOMPONENT_IID_STR "d4b49dd6-1dd1-11b2-b6fe-b14cfaf69cbd"
+#define NS_INSSCOMPONENT_IID_STR "6ffbb526-205b-49c5-ae3f-5959c084075e"
 #define NS_INSSCOMPONENT_IID \
-  {0xd4b49dd6, 0x1dd1, 0x11b2, \
-    { 0xb6, 0xfe, 0xb1, 0x4c, 0xfa, 0xf6, 0x9c, 0xbd }}
+  { 0x6ffbb526, 0x205b, 0x49c5, \
+    { 0xae, 0x3f, 0x59, 0x59, 0xc0, 0x84, 0x7, 0x5e } }
 
 #define NS_PSMCONTENTLISTEN_CID {0xc94f4a30, 0x64d7, 0x11d4, {0x99, 0x60, 0x00, 0xb0, 0xd0, 0x23, 0x54, 0xa0}}
 #define NS_PSMCONTENTLISTEN_CONTRACTID "@mozilla.org/security/psmdownload;1"
@@ -183,11 +184,13 @@ class NS_NO_VTABLE nsINSSComponent : public nsISupports {
   NS_IMETHOD DispatchEvent(const nsAString &eventType, const nsAString &token) = 0;
   
   NS_IMETHOD EnsureIdentityInfoLoaded() = 0;
+
+  NS_IMETHOD IsNSSInitialized(PRBool *initialized) = 0;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsINSSComponent, NS_INSSCOMPONENT_IID)
 
-class nsCryptoHash : public nsICryptoHash
+class nsCryptoHash : public nsICryptoHash, public nsNSSShutDownObject
 {
 public:
   NS_DECL_ISUPPORTS
@@ -197,10 +200,14 @@ public:
 
 private:
   ~nsCryptoHash();
+  
   HASHContext* mHashContext;
+
+  virtual void virtualDestroyNSSReference();
+  void destructorSafeDestroyNSSReference();
 };
 
-class nsCryptoHMAC : public nsICryptoHMAC
+class nsCryptoHMAC : public nsICryptoHMAC, public nsNSSShutDownObject
 {
 public:
   NS_DECL_ISUPPORTS
@@ -212,6 +219,9 @@ private:
   ~nsCryptoHMAC();
 
   PK11Context* mHMACContext;
+  
+  virtual void virtualDestroyNSSReference();
+  void destructorSafeDestroyNSSReference();
 };
 
 struct PRLock;
@@ -271,6 +281,7 @@ public:
   NS_IMETHOD PostEvent(const nsAString &eventType, const nsAString &token);
   NS_IMETHOD DispatchEvent(const nsAString &eventType, const nsAString &token);
   NS_IMETHOD EnsureIdentityInfoLoaded();
+  NS_IMETHOD IsNSSInitialized(PRBool *initialized);
 
 private:
 

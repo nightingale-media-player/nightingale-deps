@@ -838,6 +838,29 @@ public:
    static NS_HIDDEN_(nsresult) GetTimeZone(const nsAString &aTime,
                                            nsAString &aResult);
 
+  /**
+   * Gets a parameter for <xf:submission/> or an element from the XForms
+   * Actions module. The parameter can be specified via an attribute on the
+   * element, or via an optional child element.
+   *
+   * Precedence order:
+   * 1) @value attribute of optional child element
+   * 2) string-value of optional child element
+   * 3) attribute on actual element
+   *
+   * @note  This will NOT work for xf:output or xf:upload, as they have
+   *        different handling to elements from the Actions module.
+   *
+   * @param aParamName           The parameter name.
+   * @param aElement             The element's DOMElement.
+   * @param aResult              The result string. Empty if no parameter was
+   *                             found.
+   *
+   */
+   static NS_HIDDEN_(nsresult) GetAttributeOrChild(const nsAString &aParamName,
+                                                   nsIDOMElement*  aElement,
+                                                   nsAString       &aResult);
+
 private:
   /**
    * Do same origin checks on aBaseDocument and aTestURI. Hosts can be

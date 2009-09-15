@@ -33,7 +33,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: hasht.h,v 1.7.6.2 2009/07/31 02:16:14 nrthomas%gmail.com Exp $ */
+/* $Id: hasht.h,v 1.7 2008/12/10 22:48:03 wtchang%redhat.com Exp $ */
 
 #ifndef _HASHT_H_
 #define _HASHT_H_

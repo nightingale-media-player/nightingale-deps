@@ -64,64 +64,13 @@ nsXFormsSetFocusElement::HandleSingleAction(nsIDOMEvent* aEvent,
   // element. Precedence is in that order.
 
   nsAutoString control;
-  nsCOMPtr<nsIDOMNode> controlNode, currentNode, tmpNode;
-  PRUint16 nodeType;
   nsresult rv;
 
-  mElement->GetFirstChild(getter_AddRefs(currentNode));
-  while (currentNode) {
-    currentNode->GetNodeType(&nodeType);
-    if (nodeType == nsIDOMNode::ELEMENT_NODE) {
-      // Check to see if it's a control element.
-      nsAutoString localName, namespaceURI;
-      currentNode->GetLocalName(localName);
-      currentNode->GetNamespaceURI(namespaceURI);
-      if (localName.EqualsLiteral("control") &&
-          namespaceURI.EqualsLiteral(NS_NAMESPACE_XFORMS)) {
-        controlNode = currentNode;
-        break;
-      }
-    }
-    currentNode->GetNextSibling(getter_AddRefs(tmpNode));
-    currentNode.swap(tmpNode);
-  }
+  rv = nsXFormsUtils::GetAttributeOrChild(NS_LITERAL_STRING("control"),
+                                          mElement,
+                                          control);
+  NS_ENSURE_SUCCESS(rv, rv);
 
-  if (controlNode) {
-    nsCOMPtr<nsIDOMElement> controlElement(do_QueryInterface(controlNode));
-    if (controlElement) {
-      nsAutoString value;
-      controlElement->GetAttribute(NS_LITERAL_STRING("value"), value);
-      if (!value.IsEmpty()) {
-        // The control ID is given by the result of evaluating the
-        // value attribute.
-        nsCOMPtr<nsIModelElementPrivate> model;
-        nsCOMPtr<nsIDOMXPathResult> xpRes;
-        PRBool usesModelBind = PR_FALSE;
-        rv = nsXFormsUtils::EvaluateNodeBinding(controlElement, 0,
-                                                NS_LITERAL_STRING("value"),
-                                                EmptyString(),
-                                                nsIDOMXPathResult::STRING_TYPE,
-                                                getter_AddRefs(model),
-                                                getter_AddRefs(xpRes),
-                                                &usesModelBind);
-        NS_ENSURE_SUCCESS(rv, rv);
-        if (xpRes) {
-          rv = xpRes->GetStringValue(control);
-          NS_ENSURE_SUCCESS(rv, rv);
-        }
-      }
-      else {
-        // Check the string content of the element.
-        nsXFormsUtils::GetNodeValue(controlNode, control);
-      }
-    }
-  }
-  else {
-    // The control ID must be specified on the setfocus element.
-    mElement->GetAttribute(NS_LITERAL_STRING("control"), control);
-  }
-
-  // If there's no control, the action terminates with no effect.
   if (control.IsEmpty()) {
     return NS_OK;
   }

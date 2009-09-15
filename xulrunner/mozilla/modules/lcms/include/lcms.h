@@ -20,7 +20,7 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// Version 1.17
+// Version 1.18
 
 #ifndef __cms_H
 
@@ -73,7 +73,7 @@
 
 // ********** End of configuration toggles ******************************
 
-#define LCMS_VERSION        117
+#define LCMS_VERSION        118
 
 // Microsoft VisualC++
 
@@ -139,7 +139,7 @@ typedef    pthread_rwlock_t      LCMS_RWLOCK_T;
 #   define USE_BIG_ENDIAN      1
 #endif
 
-#if defined(__sgi__) || defined(__sgi) || defined(__powerpc__) || defined(sparc) || defined(__ppc__)
+#if defined(__sgi__) || defined(__sgi) || defined(__powerpc__) || defined(sparc) || defined(__ppc__) || defined(__s390__) || defined(__s390x__)
 #   define USE_BIG_ENDIAN      1
 #endif
 
@@ -153,7 +153,7 @@ typedef    pthread_rwlock_t      LCMS_RWLOCK_T;
 # endif
 #endif
 
-#if __BIG_ENDIAN__
+#ifdef __BIG_ENDIAN__
 #   define USE_BIG_ENDIAN      1
 #endif
 
@@ -451,8 +451,9 @@ typedef LCMSHANDLE cmsHTRANSFORM;
 
 // Format of pixel is defined by one DWORD, using bit fields as follows
 //
-//            TTTTT U Y F P X S EEE CCCC BBB
+//            D TTTTT U Y F P X S EEE CCCC BBB
 //
+//            D: Use dither (8 bits only)
 //            T: Pixeltype
 //            F: Flavor  0=MinIsBlack(Chocolate) 1=MinIsWhite(Vanilla)
 //            P: Planar? 0=Chunky, 1=Planar
@@ -464,6 +465,7 @@ typedef LCMSHANDLE cmsHTRANSFORM;
 //            Y: Swap first - changes ABGR to BGRA and KCMY to CMYK
 
 
+#define DITHER_SH(s)           ((s) << 22)
 #define COLORSPACE_SH(s)       ((s) << 16)
 #define SWAPFIRST_SH(s)        ((s) << 14)
 #define FLAVOR_SH(s)           ((s) << 13)
@@ -1030,7 +1032,7 @@ LCMSAPI LCMSBOOL              LCMSEXPORT _cmsIsMatrixShaper(cmsHPROFILE hProfile
 #define LCMS_USED_AS_OUTPUT     1
 #define LCMS_USED_AS_PROOF      2
 
-LCMSAPI LCMSBOOL             LCMSEXPORT cmsIsIntentSupported(cmsHPROFILE hProfile, int Intent, int UsedDirection);
+LCMSAPI LCMSBOOL                LCMSEXPORT cmsIsIntentSupported(cmsHPROFILE hProfile, int Intent, int UsedDirection);
 
 LCMSAPI icColorSpaceSignature   LCMSEXPORT cmsGetPCS(cmsHPROFILE hProfile);
 LCMSAPI icColorSpaceSignature   LCMSEXPORT cmsGetColorSpace(cmsHPROFILE hProfile);
@@ -1235,6 +1237,7 @@ LCMSAPI double LCMSEXPORT cmsEvalLUTreverse(LPLUT Lut, WORD Target[], WORD Resul
 LCMSAPI LPLUT  LCMSEXPORT cmsReadICCLut(cmsHPROFILE hProfile, icTagSignature sig);
 LCMSAPI LPLUT  LCMSEXPORT cmsDupLUT(LPLUT Orig);
 
+
 // LUT Sampling
 
 typedef int (* _cmsSAMPLER)(register WORD In[],
@@ -1286,13 +1289,15 @@ LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SetComment(LCMSHANDLE hIT8, const char*
 LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SetPropertyStr(LCMSHANDLE hIT8, const char* cProp, const char *Str);
 LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SetPropertyDbl(LCMSHANDLE hIT8, const char* cProp, double Val);
 LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SetPropertyHex(LCMSHANDLE hIT8, const char* cProp, int Val);
-
+LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SetPropertyMulti(LCMSHANDLE hIT8, const char* cProp, const char* cSubProp, const char *Val);
 LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SetPropertyUncooked(LCMSHANDLE hIT8, const char* Key, const char* Buffer);
 
 
 LCMSAPI const char*     LCMSEXPORT cmsIT8GetProperty(LCMSHANDLE hIT8, const char* cProp);
 LCMSAPI double          LCMSEXPORT cmsIT8GetPropertyDbl(LCMSHANDLE hIT8, const char* cProp);
-LCMSAPI int             LCMSEXPORT cmsIT8EnumProperties(LCMSHANDLE IT8, char ***PropertyNames);
+LCMSAPI const char*     LCMSEXPORT cmsIT8GetPropertyMulti(LCMSHANDLE hIT8, const char* cProp, const char *cSubProp);
+LCMSAPI int             LCMSEXPORT cmsIT8EnumProperties(LCMSHANDLE hIT8, const char ***PropertyNames);
+LCMSAPI int             LCMSEXPORT cmsIT8EnumPropertyMulti(LCMSHANDLE hIT8, const char* cProp, const char*** SubpropertyNames);
 
 // Datasets
 
@@ -1324,10 +1329,13 @@ LCMSAPI int             LCMSEXPORT cmsIT8EnumDataFormat(LCMSHANDLE IT8, char ***
 
 
 LCMSAPI const char*     LCMSEXPORT cmsIT8GetPatchName(LCMSHANDLE hIT8, int nPatch, char* buffer);
+LCMSAPI int             LCMSEXPORT cmsIT8GetPatchByName(LCMSHANDLE hIT8, const char *cSample);
 
 // The LABEL extension
 
 LCMSAPI int             LCMSEXPORT cmsIT8SetTableByLabel(LCMSHANDLE hIT8, const char* cSet, const char* cField, const char* ExpectedType);
+
+LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SetIndexColumn(LCMSHANDLE hIT8, const char* cSample);
 
 // Formatter for double
 LCMSAPI void            LCMSEXPORT cmsIT8DefineDblFormat(LCMSHANDLE IT8, const char* Formatter);
@@ -1417,6 +1425,18 @@ LCMS_INLINE void* _cmsMalloc(size_t size)
     return (void*) malloc(size);
 }
 
+LCMS_INLINE void* _cmsCalloc(size_t nmemb, size_t size)
+{
+    size_t alloc = nmemb * size;
+
+	if (size == 0) {
+		return _cmsMalloc(0);
+	}
+	if (alloc / size != nmemb) {
+        return NULL;
+    }
+    return _cmsMalloc(alloc);
+}
 
 LCMS_INLINE void _cmsFree(void *Ptr)
 {
@@ -1839,6 +1859,7 @@ void _cmsSetSaveToMemory(LPLCMSICCPROFILE Icc, LPVOID MemPtr, size_t dwSize);
 
 // These macros unpack format specifiers into integers
 
+#define T_DITHER(s)           (((s)>>22)&1)
 #define T_COLORSPACE(s)       (((s)>>16)&31)
 #define T_SWAPFIRST(s)        (((s)>>14)&1)
 #define T_FLAVOR(s)           (((s)>>13)&1)
@@ -2028,6 +2049,10 @@ void cdecl _cmsComputePrelinearizationTablesFromXFORM(cmsHTRANSFORM h[], int nTr
 
 // Build a tone curve for K->K' if possible (only works on CMYK)
 LPGAMMATABLE _cmsBuildKToneCurve(cmsHTRANSFORM hCMYK2CMYK, int nPoints);
+
+// Validates a LUT
+LCMSBOOL cdecl _cmsValidateLUT(LPLUT NewLUT);
+
 
 // These are two VITAL macros, from converting between 8 and 16 bit
 // representation. 

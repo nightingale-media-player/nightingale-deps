@@ -42,7 +42,7 @@
 /*
  * secoid.h - public data structures and prototypes for ASN.1 OID functions
  *
- * $Id: secoid.h,v 1.10.20.1 2009/07/31 02:17:05 nrthomas%gmail.com Exp $
+ * $Id: secoid.h,v 1.12 2009/03/13 02:59:02 nelson%bolyard.com Exp $
  */
 
 #include "plarena.h"

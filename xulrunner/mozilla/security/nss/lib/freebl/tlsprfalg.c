@@ -35,7 +35,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: tlsprfalg.c,v 1.5.126.1 2009/07/31 02:16:15 nrthomas%gmail.com Exp $ */
+/* $Id: tlsprfalg.c,v 1.6 2008/11/18 19:48:24 rrelyea%redhat.com Exp $ */
 
 #ifdef FREEBL_NO_DEPEND
 #include "stubs.h"

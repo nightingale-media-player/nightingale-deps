@@ -518,14 +518,14 @@ int MAT3inverse(LPMAT3 a, LPMAT3 b)
 
 LCMSBOOL MAT3solve(LPVEC3 x, LPMAT3 a, LPVEC3 b)
 {
-	MAT3 m, a_1;
+    MAT3 m, a_1;
 
-	CopyMemory(&m, a, sizeof(MAT3));
+    CopyMemory(&m, a, sizeof(MAT3));
 
-	if (!MAT3inverse(&m, &a_1)) return FALSE;  // Singular matrix
+    if (!MAT3inverse(&m, &a_1)) return FALSE;  // Singular matrix
 
-	MAT3eval(x, &a_1, b);
-	return TRUE;
+    MAT3eval(x, &a_1, b);
+    return TRUE;
 }
 
 

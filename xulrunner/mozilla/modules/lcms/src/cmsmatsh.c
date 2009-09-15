@@ -144,6 +144,12 @@ LPMATSHAPER cmsAllocMatShaper(LPMAT3 Matrix, LPGAMMATABLE Tables[], DWORD Behavi
        LPMATSHAPER NewMatShaper;
        int i, AllLinear;
 
+	   if (Matrix == NULL) return NULL;
+	   for (i=0; i < 3; i++) {
+	   
+		   if (Tables[i] == NULL) return NULL;
+	   }
+
        NewMatShaper = (LPMATSHAPER) _cmsMalloc(sizeof(MATSHAPER));
        if (NewMatShaper)
               ZeroMemory(NewMatShaper, sizeof(MATSHAPER));
@@ -160,14 +166,13 @@ LPMATSHAPER cmsAllocMatShaper(LPMAT3 Matrix, LPGAMMATABLE Tables[], DWORD Behavi
                      NewMatShaper -> dwFlags |= MATSHAPER_HASMATRIX;
 
        // Now, on the table characteristics
-
        cmsCalcL16Params(Tables[0] -> nEntries, &NewMatShaper -> p16);
 
        // Copy tables
 
        AllLinear = 0;
-       for (i=0; i < 3; i++)
-       {
+       for (i=0; i < 3; i++) {
+
         LPWORD PtrW;
 
         PtrW = (LPWORD) _cmsMalloc(sizeof(WORD) * NewMatShaper -> p16.nSamples);

@@ -139,8 +139,7 @@ nsBlockReflowState::nsBlockReflowState(const nsHTMLReflowState& aReflowState,
   mPrevChild = nsnull;
   mCurrentLine = aFrame->end_lines();
 
-  mMinLineHeight = nsHTMLReflowState::CalcLineHeight(aReflowState.rendContext,
-                                                     aReflowState.frame);
+  mMinLineHeight = aReflowState.CalcLineHeight();
 
   // Calculate mOutsideBulletX
   GetAvailableSpace();

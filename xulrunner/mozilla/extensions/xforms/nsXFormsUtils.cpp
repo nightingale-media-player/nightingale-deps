@@ -3245,3 +3245,66 @@ nsXFormsUtils::GetTimeZone(const nsAString &aTime,
 
   return NS_OK;
 }
+
+/* static */ nsresult
+nsXFormsUtils::GetAttributeOrChild(const nsAString      &aParamName,
+                                   nsIDOMElement*       aElement,
+                                   nsAString            &aResult)
+{
+  NS_ENSURE_ARG_POINTER(aElement);
+  nsCOMPtr<nsIDOMNode> currentNode, tmpNode, childNode;
+  nsresult rv;
+
+  aResult.Truncate();
+
+  aElement->GetFirstChild(getter_AddRefs(currentNode));
+  while (currentNode) {
+    if (IsXFormsElement(currentNode, aParamName)) {
+      childNode = currentNode;
+      break;
+    }
+    currentNode->GetNextSibling(getter_AddRefs(tmpNode));
+    currentNode.swap(tmpNode);
+  }
+
+  if (childNode) {
+    // We've found a child element with the desired name, so let's check it
+    // for a @value attribute or string-value.
+    nsCOMPtr<nsIDOMElement> childElement = do_QueryInterface(childNode);
+    if (childElement) {
+      nsAutoString value;
+      childElement->GetAttribute(NS_LITERAL_STRING("value"), value);
+      if (!value.IsEmpty()) {
+        // Evaluating the contents of @value will give our return value.
+        nsCOMPtr<nsIModelElementPrivate> model;
+        nsCOMPtr<nsIDOMXPathResult> xpRes;
+        PRBool usesModelBind = PR_FALSE;
+        rv = nsXFormsUtils::EvaluateNodeBinding(childElement, 0,
+                                                NS_LITERAL_STRING("value"),
+                                                EmptyString(),
+                                                nsIDOMXPathResult::STRING_TYPE,
+                                                getter_AddRefs(model),
+                                                getter_AddRefs(xpRes),
+                                                &usesModelBind);
+        NS_ENSURE_SUCCESS(rv, rv);
+        if (xpRes) {
+          rv = xpRes->GetStringValue(aResult);
+          if (NS_FAILED(rv)) {
+            aResult.Truncate();
+            return rv;
+          }
+        }
+      }
+      else {
+        // Check the string-value of the child element.
+        nsXFormsUtils::GetNodeValue(childNode, aResult);
+      }
+    }
+  }
+  else {
+    // No child element, so check the attribute on the actual element.
+    aElement->GetAttribute(aParamName, aResult);
+  }
+
+  return NS_OK;
+}

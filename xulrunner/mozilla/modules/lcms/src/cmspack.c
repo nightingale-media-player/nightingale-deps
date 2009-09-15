@@ -615,21 +615,74 @@ LPBYTE UnrollDouble1Chan(register _LPcmsTRANSFORM info, register WORD wIn[], reg
 {
     double* Inks = (double*) accum;
     double v;
-	
-	
-	v = floor(Inks[0] * 65535.0 + 0.5);
-	
-	if (v > 65535.0) v = 65535.0;
-	if (v < 0) v = 0;
-	
-	
-	wIn[0] = wIn[1] = wIn[2] = (WORD) v;
+    
+    
+    v = floor(Inks[0] * 65535.0 + 0.5);
+    
+    if (v > 65535.0) v = 65535.0;
+    if (v < 0) v = 0;
+    
+    
+    wIn[0] = wIn[1] = wIn[2] = (WORD) v;
     
     return accum + sizeof(double);    
 }
 
 
 // ----------------------------------------------------------- Packing routines
+
+
+// Generic N-bytes plus dither 16-to-8 conversion. Currently is just a quick hack
+
+static int err[MAXCHANNELS];
+
+static
+LPBYTE PackNBytesDither(register _LPcmsTRANSFORM info, register WORD wOut[], register LPBYTE output)
+{
+       int nChan  = T_CHANNELS(info -> OutputFormat);
+       register int i;
+       unsigned int n, pe, pf;
+
+       for (i=0; i < nChan;  i++) {
+
+              n = wOut[i] + err[i]; // Value
+             
+              pe = (n / 257);       // Whole part
+              pf = (n % 257);       // Fractional part
+
+              err[i] = pf;          // Store it for next pixel
+
+              *output++ = (BYTE) pe;
+       }
+
+       return output + T_EXTRA(info ->OutputFormat);
+}
+
+
+
+static
+LPBYTE PackNBytesSwapDither(register _LPcmsTRANSFORM info, register WORD wOut[], register LPBYTE output)
+{
+       int nChan  = T_CHANNELS(info -> OutputFormat);
+       register int i;
+       unsigned int n, pe, pf;
+
+       for (i=nChan-1; i >= 0;  --i) {
+
+              n = wOut[i] + err[i];     // Value
+
+              pe = (n / 257);           // Whole part
+              pf = (n % 257);           // Fractional part
+
+              err[i] = pf;              // Store it for next pixel
+
+              *output++ = (BYTE) pe;
+       }
+
+
+       return output + T_EXTRA(info ->OutputFormat);
+}
+
 
 
 // Generic chunky for byte
@@ -1476,10 +1529,10 @@ _cmsFIXFN _cmsIdentifyInputFormat(_LPcmsTRANSFORM xform, DWORD dwInput)
            case PT_HSV:
            case PT_HLS:
            case PT_Yxy: 
-			        if (T_CHANNELS(dwInput) == 1)
-						FromInput = UnrollDouble1Chan;
-					else
-						FromInput = UnrollDouble;
+                    if (T_CHANNELS(dwInput) == 1)
+                        FromInput = UnrollDouble1Chan;
+                    else
+                        FromInput = UnrollDouble;
                     break;
 
             // Inks (%) 0.0 .. 100.0
@@ -1742,6 +1795,9 @@ _cmsFIXFN _cmsIdentifyOutputFormat(_LPcmsTRANSFORM xform, DWORD dwOutput)
                      switch (T_CHANNELS(dwOutput))
                      {
                      case 1:
+                            if (T_DITHER(dwOutput))
+                                    ToOutput = PackNBytesDither;
+                            else                                        
                             ToOutput = Pack1Byte;
                             if (T_EXTRA(dwOutput) == 1) {
                                 if (T_SWAPFIRST(dwOutput))
@@ -1759,8 +1815,12 @@ _cmsFIXFN _cmsIdentifyOutputFormat(_LPcmsTRANSFORM xform, DWORD dwOutput)
                                  else
                                      if (T_COLORSPACE(dwOutput) == PT_Lab)
                                         ToOutput = Pack3BytesLab;
+                                     else {
+                                         if (T_DITHER(dwOutput))
+                                                 ToOutput = PackNBytesDither;
                                      else
                                         ToOutput = Pack3Bytes;
+                                     }
                              break;
 
                          case 1:    // TODO: ALab8 should be handled here
@@ -1786,12 +1846,22 @@ _cmsFIXFN _cmsIdentifyOutputFormat(_LPcmsTRANSFORM xform, DWORD dwOutput)
 
                      case 4: if (T_EXTRA(dwOutput) == 0) {
                             
+ 
                                 if (T_DOSWAP(dwOutput)) {
 
-                                     if (T_SWAPFIRST(dwOutput))
+
+                                     if (T_SWAPFIRST(dwOutput)) {
                                          ToOutput = Pack4BytesSwapSwapFirst;
-                                     else
+                                     }
+                                     else {
+
+                                           if (T_DITHER(dwOutput)) {
+                                                  ToOutput = PackNBytesSwapDither;
+                                           }
+                                           else {
                                          ToOutput = Pack4BytesSwap;
+                                 }
+                                     }
                                  }
                                  else {
                                      if (T_SWAPFIRST(dwOutput))
@@ -1800,10 +1870,14 @@ _cmsFIXFN _cmsIdentifyOutputFormat(_LPcmsTRANSFORM xform, DWORD dwOutput)
                                          
                                          if (T_FLAVOR(dwOutput))
                                              ToOutput = Pack4BytesReverse;
+                                         else {
+                                             if (T_DITHER(dwOutput))
+                                                 ToOutput = PackNBytesDither;
                                          else
                                              ToOutput = Pack4Bytes;
                                      }
                                  }
+                             }
                              }
                             else {
                                     if (!T_DOSWAP(dwOutput) && !T_SWAPFIRST(dwOutput))
@@ -1826,7 +1900,7 @@ _cmsFIXFN _cmsIdentifyOutputFormat(_LPcmsTRANSFORM xform, DWORD dwOutput)
                             }
                             break;
 
-					 case 2:
+                     case 2:
                      case 5:
                      case 7:
                      case 8:
@@ -1842,8 +1916,13 @@ _cmsFIXFN _cmsIdentifyOutputFormat(_LPcmsTRANSFORM xform, DWORD dwOutput)
                             {
                                    if (T_DOSWAP(dwOutput))
                                           ToOutput = PackNBytesSwap;
+                                   else {
+
+                                       if (T_DITHER(dwOutput))
+                                                 ToOutput = PackNBytesDither;
                                    else
                                           ToOutput = PackNBytes;
+                                   }
                             }
                             break;
 
@@ -1977,7 +2056,7 @@ _cmsFIXFN _cmsIdentifyOutputFormat(_LPcmsTRANSFORM xform, DWORD dwOutput)
                             break;
 
 
-					 case 2:
+                     case 2:
                      case 5:
                      case 7:
                      case 8:

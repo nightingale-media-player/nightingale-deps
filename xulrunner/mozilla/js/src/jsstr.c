@@ -1607,6 +1607,8 @@ str_replace(JSContext *cx, uintN argc, jsval *vp)
     rdata.lambda = lambda;
     rdata.repstr = repstr;
     if (repstr) {
+        if (!js_MakeStringImmutable(cx, repstr))
+            return JS_FALSE;
         rdata.dollarEnd = JSSTRING_CHARS(repstr) + JSSTRING_LENGTH(repstr);
         rdata.dollar = js_strchr_limit(JSSTRING_CHARS(repstr), '$',
                                        rdata.dollarEnd);

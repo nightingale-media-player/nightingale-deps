@@ -152,6 +152,8 @@ public:
     virtual nsresult
     RebuildAll() = 0; // must be implemented by subclasses
 
+    void RunnableRebuild() { Rebuild(); }
+
     /**
      * Find the <template> tag that applies for this builder
      */

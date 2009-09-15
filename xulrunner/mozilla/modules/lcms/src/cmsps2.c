@@ -350,9 +350,9 @@ BYTE Word2Byte(WORD w)
 static
 BYTE L2Byte(WORD w)
 {    
-	int ww = w + 0x0080;
+    int ww = w + 0x0080;
 
-	if (ww > 0xFFFF) return 0xFF;
+    if (ww > 0xFFFF) return 0xFF;
 
     return (BYTE) ((WORD) (ww >> 8) & 0xFF);
 }
@@ -535,7 +535,7 @@ void EmitLab2XYZ(LPMEMSTREAM m)
     Writef(m, "{255 mul 128 sub 200 div } bind\n");
     Writef(m, "]\n");
     Writef(m, "/MatrixABC [ 1 1 1 1 0 0 0 0 -1]\n");
-	Writef(m, "/RangeLMN [ -0.236 1.254 0 1 -0.635 1.640 ]\n"); 
+    Writef(m, "/RangeLMN [ -0.236 1.254 0 1 -0.635 1.640 ]\n"); 
     Writef(m, "/DecodeLMN [\n");
     Writef(m, "{dup 6 29 div ge {dup dup mul mul} {4 29 div sub 108 841 div mul} ifelse 0.964200 mul} bind\n");
     Writef(m, "{dup 6 29 div ge {dup dup mul mul} {4 29 div sub 108 841 div mul} ifelse } bind\n");
@@ -557,7 +557,11 @@ void Emit1Gamma(LPMEMSTREAM m, LPWORD Table, int nEntries)
     if (nEntries <= 0) return;  // Empty table
 
     // Suppress whole if identity
-    if (cmsIsLinear(Table, nEntries)) return;
+    if (cmsIsLinear(Table, nEntries)) {
+            Writef(m, "{} ");
+            return;
+    }
+
 
     // Check if is really an exponential. If so, emit "exp"
      gamma = cmsEstimateGammaEx(Table, nEntries, 0.001);
@@ -1330,15 +1334,15 @@ void EmitPQRStage(LPMEMSTREAM m, cmsHPROFILE hProfile, int DoBPC, int lIsAbsolut
         if (lIsAbsolute) {
 
             // For absolute colorimetric intent, encode back to relative 
-			// and generate a relative LUT
+            // and generate a relative LUT
 
-			// Relative encoding is obtained across XYZpcs*(D50/WhitePoint)
+            // Relative encoding is obtained across XYZpcs*(D50/WhitePoint)
 
-			cmsCIEXYZ White;
+            cmsCIEXYZ White;
 
-			cmsTakeMediaWhitePoint(&White, hProfile);
+            cmsTakeMediaWhitePoint(&White, hProfile);
 
-			Writef(m,"/MatrixPQR [1 0 0 0 1 0 0 0 1 ]\n");
+            Writef(m,"/MatrixPQR [1 0 0 0 1 0 0 0 1 ]\n");
             Writef(m,"/RangePQR [ -0.5 2 -0.5 2 -0.5 2 ]\n");
 
             Writef(m, "%% Absolute colorimetric -- encode to relative to maximize LUT usage\n"
@@ -1346,7 +1350,7 @@ void EmitPQRStage(LPMEMSTREAM m, cmsHPROFILE hProfile, int DoBPC, int lIsAbsolut
                       "{0.9642 mul %g div exch pop exch pop exch pop exch pop} bind\n"
                       "{1.0000 mul %g div exch pop exch pop exch pop exch pop} bind\n"
                       "{0.8249 mul %g div exch pop exch pop exch pop exch pop} bind\n]\n", 
-					  White.X, White.Y, White.Z);
+                      White.X, White.Y, White.Z);
             return;
         }
 
@@ -1441,7 +1445,7 @@ int WriteOutputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent, DWORD dwFlag
     LCMSBOOL lFreeDeviceLink = FALSE;
     LCMSBOOL lDoBPC = (dwFlags & cmsFLAGS_BLACKPOINTCOMPENSATION);
     LCMSBOOL lFixWhite = !(dwFlags & cmsFLAGS_NOWHITEONWHITEFIXUP);
-	int RelativeEncodingIntent;
+    int RelativeEncodingIntent;
     
     
 
@@ -1451,12 +1455,12 @@ int WriteOutputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent, DWORD dwFlag
     nChannels   = _cmsChannelsOf(ColorSpace);
     OutputFormat = CHANNELS_SH(nChannels) | BYTES_SH(2);
     
-	// For absolute colorimetric, the LUT is encoded as relative 
-	// in order to preserve precission.
+    // For absolute colorimetric, the LUT is encoded as relative 
+    // in order to preserve precission.
 
     RelativeEncodingIntent = Intent;
-	if (RelativeEncodingIntent == INTENT_ABSOLUTE_COLORIMETRIC)
-		RelativeEncodingIntent = INTENT_RELATIVE_COLORIMETRIC;
+    if (RelativeEncodingIntent == INTENT_ABSOLUTE_COLORIMETRIC)
+        RelativeEncodingIntent = INTENT_RELATIVE_COLORIMETRIC;
 
 
     // Is a devicelink profile?
@@ -1473,7 +1477,7 @@ int WriteOutputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent, DWORD dwFlag
 
             xform = cmsCreateMultiprofileTransform(Profiles, 2, TYPE_Lab_DBL, 
                                                         OutputFormat, RelativeEncodingIntent, 
-														dwFlags|cmsFLAGS_NOWHITEONWHITEFIXUP|cmsFLAGS_NOPRELINEARIZATION);
+                                                        dwFlags|cmsFLAGS_NOWHITEONWHITEFIXUP|cmsFLAGS_NOPRELINEARIZATION);
             
         }
         else {
@@ -1484,7 +1488,7 @@ int WriteOutputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent, DWORD dwFlag
 
     }
     else {
-		
+        
         // This is a normal profile
         xform = cmsCreateTransform(hLab, TYPE_Lab_DBL, hProfile, 
                             OutputFormat, RelativeEncodingIntent, dwFlags|cmsFLAGS_NOWHITEONWHITEFIXUP|cmsFLAGS_NOPRELINEARIZATION);

@@ -33,7 +33,7 @@
 typedef struct {
                 LPBYTE Block;           // Points to allocated memory
                 size_t Size;            // Size of allocated memory
-                int Pointer;            // Points to current location
+                size_t Pointer;         // Points to current location
                 int FreeBlockOnClose;   // As title
 
                 } FILEMEM;
@@ -75,9 +75,23 @@ size_t MemoryRead(LPVOID buffer, size_t size, size_t count, struct _lcms_iccprof
      FILEMEM* ResData = (FILEMEM*) Icc ->stream;
      LPBYTE Ptr;
      size_t len = size * count;
-     
+     size_t extent = ResData -> Pointer + len;
 
-     if (ResData -> Pointer + len > ResData -> Size){
+	if (len == 0) {
+		return 0;
+	}
+
+	if (len / size != count) {
+          cmsSignalError(LCMS_ERRC_ABORTED, "Read from memory error. Integer overflow with count / size.");
+          return 0;
+      }
+
+      if (extent < len || extent < ResData -> Pointer) {
+          cmsSignalError(LCMS_ERRC_ABORTED, "Read from memory error. Integer overflow with len.");
+          return 0;
+      } 
+
+      if (ResData -> Pointer + len > ResData -> Size) {
         
          len = (ResData -> Size - ResData -> Pointer);
          cmsSignalError(LCMS_ERRC_ABORTED, "Read from memory error. Got %d bytes, block should be of %d bytes", len * size, count * size);

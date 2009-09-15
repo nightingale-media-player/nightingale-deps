@@ -37,7 +37,7 @@
 /*
  * secport.h - portability interfaces for security libraries
  *
- * $Id: secport.h,v 1.17.12.1 2009/07/31 02:17:05 nrthomas%gmail.com Exp $
+ * $Id: secport.h,v 1.19 2009/02/27 00:15:03 nelson%bolyard.com Exp $
  */
 
 #ifndef _SECPORT_H_

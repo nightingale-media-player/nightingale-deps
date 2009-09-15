@@ -734,7 +734,7 @@ void cmsTrilinearInterp16(WORD Input[], WORD Output[],
     X0 = p -> opta3 * x0;
     X1 = X0 + (Input[0] == 0xFFFFU ? 0 : p->opta3);
 
-	Y0 = p -> opta2 * y0;
+    Y0 = p -> opta2 * y0;
     Y1 = Y0 + (Input[1] == 0xFFFFU ? 0 : p->opta2);
    
     Z0 = p -> opta1 * z0;
@@ -913,7 +913,7 @@ void cmsTetrahedralInterp16(WORD Input[],
     X0 = p -> opta3 * x0;
     X1 = X0 + (Input[0] == 0xFFFFU ? 0 : p->opta3);
 
-	Y0 = p -> opta2 * y0;
+    Y0 = p -> opta2 * y0;
     Y1 = Y0 + (Input[1] == 0xFFFFU ? 0 : p->opta2);
    
     Z0 = p -> opta1 * z0;
@@ -980,11 +980,11 @@ void cmsTetrahedralInterp16(WORD Input[],
         
         Rest = c1 * rx + c2 * ry + c3 * rz;                
       
-		// There is a lot of math hidden in this expression. The rest is in fixed domain
-		// and the result in 0..ffff domain. So the complete expression should be 		
-		// ROUND_FIXED_TO_INT(ToFixedDomain(Rest)) But that can be optimized as (Rest + 0x7FFF) / 0xFFFF
+        // There is a lot of math hidden in this expression. The rest is in fixed domain
+        // and the result in 0..ffff domain. So the complete expression should be       
+        // ROUND_FIXED_TO_INT(ToFixedDomain(Rest)) But that can be optimized as (Rest + 0x7FFF) / 0xFFFF
 
-		Output[OutChan] = (WORD) (c0 + ((Rest + 0x7FFF) / 0xFFFF));
+        Output[OutChan] = (WORD) (c0 + ((Rest + 0x7FFF) / 0xFFFF));
 
     }
 

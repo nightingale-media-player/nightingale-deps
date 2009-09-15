@@ -38,7 +38,7 @@
  * Diffie-Hellman parameter generation, key generation, and secret derivation.
  * KEA secret generation and verification.
  *
- * $Id: dh.c,v 1.7.174.1 2009/07/31 02:16:14 nrthomas%gmail.com Exp $
+ * $Id: dh.c,v 1.8 2008/11/18 19:48:22 rrelyea%redhat.com Exp $
  */
 #ifdef FREEBL_NO_DEPEND
 #include "stubs.h"

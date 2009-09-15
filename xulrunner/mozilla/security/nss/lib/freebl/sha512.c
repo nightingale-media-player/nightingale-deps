@@ -36,7 +36,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: sha512.c,v 1.11.38.1 2009/07/31 02:16:15 nrthomas%gmail.com Exp $ */
+/* $Id: sha512.c,v 1.13 2008/11/19 21:10:52 nelson%bolyard.com Exp $ */
 
 #ifdef FREEBL_NO_DEPEND
 #include "stubs.h"

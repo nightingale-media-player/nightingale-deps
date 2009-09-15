@@ -36,7 +36,7 @@
 /*
  * ocspi.h - NSS internal interfaces to OCSP code
  *
- * $Id: ocspi.h,v 1.10.20.1 2009/07/31 02:16:05 nrthomas%gmail.com Exp $
+ * $Id: ocspi.h,v 1.11 2008/10/31 23:02:37 alexei.volkov.bugs%sun.com Exp $
  */
 
 #ifndef _OCSPI_H_

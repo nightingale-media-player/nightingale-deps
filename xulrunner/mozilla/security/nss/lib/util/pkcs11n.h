@@ -39,7 +39,7 @@
 #define _PKCS11N_H_
 
 #ifdef DEBUG
-static const char CKT_CVS_ID[] = "@(#) $RCSfile: pkcs11n.h,v $ $Revision: 1.19.6.2 $ $Date: 2009/07/31 02:17:05 $";
+static const char CKT_CVS_ID[] = "@(#) $RCSfile: pkcs11n.h,v $ $Revision: 1.19 $ $Date: 2009/03/25 05:21:03 $";
 #endif /* DEBUG */
 
 /*

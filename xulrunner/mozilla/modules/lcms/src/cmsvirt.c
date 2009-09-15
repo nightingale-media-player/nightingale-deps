@@ -373,7 +373,7 @@ cmsHPROFILE LCMSEXPORT cmsTransform2DeviceLink(cmsHTRANSFORM hTransform, DWORD d
             
             OutputColorant = cmsReadColorantTable(v ->OutputProfile, icSigColorantTableTag);
         }     
-	}
+    }
     
     if (InputColorant) 
            cmsAddTag(hICC, icSigColorantTableTag, InputColorant);       

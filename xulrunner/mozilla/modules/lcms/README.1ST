@@ -1,9 +1,9 @@
 
- Read.me for release 1.17
+ Read.me for release 1.18
  ========================
 
  Little cms
- Copyright (C) 1998-2007 Marti Maria
+ Copyright (C) 1998-2009 Marti Maria
 
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation 
@@ -31,7 +31,7 @@
  See file COPYING. for details
 
 
-   This is the 15th. public release the engine. It has been tested 
+   This is the 17th. public release the engine. It has been tested 
    across several versions before, but it is possible some
    bugs still arises. If so, sorry for the inconvenience, and
    please feel free to submit any suggestion/solution (if you can
@@ -46,9 +46,6 @@
    The main site for the package is located at
 
            http://www.littlecms.com
-        or
-           http://www.lcms.coloraid.de
-
 
    Littlecms has also a mailing list on:
 

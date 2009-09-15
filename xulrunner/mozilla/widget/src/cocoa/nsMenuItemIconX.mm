@@ -107,10 +107,29 @@ nsMenuItemIconX::~nsMenuItemIconX()
 }
 
 
+// Called from mMenuItem's destructor, to prevent us from outliving it
+// (as might otherwise happen if calls to our imgIDecoderObserver methods
+// are still outstanding).  mMenuItem owns our nNativeMenuItem.
+void nsMenuItemIconX::Destroy()
+{
+  if (mIconRequest) {
+    mIconRequest->Cancel(NS_BINDING_ABORTED);
+    mIconRequest = nsnull;
+  }
+  mMenuItem = nsnull;
+  mMenu = nsnull;
+  mMenuRef = NULL;
+  mNativeMenuItem = nil;
+}
+
+
 nsresult
 nsMenuItemIconX::SetupIcon()
 {
   NS_OBJC_BEGIN_TRY_ABORT_BLOCK_NSRESULT;
+
+  if (!mMenuItem || !mMenu)
+    return NS_ERROR_FAILURE;
 
   nsresult rv;
   if (!mMenuRef || !mMenuItemIndex) {
@@ -149,6 +168,9 @@ nsMenuItemIconX::SetupIcon()
 nsresult
 nsMenuItemIconX::GetIconURI(nsIURI** aIconURI)
 {
+  if (!mMenuItem)
+    return NS_ERROR_FAILURE;
+
   // Mac native menu items support having both a checkmark and an icon
   // simultaneously, but this is unheard of in the cross-platform toolkit,
   // seemingly because the win32 theme is unable to cope with both at once.
@@ -354,6 +376,8 @@ nsMenuItemIconX::OnStopFrame(imgIRequest*    aRequest,
   if (mLoadedIcon)
     return NS_OK;
 
+  if (!mNativeMenuItem) return NS_ERROR_FAILURE;
+
   nsCOMPtr<gfxIImageFrame> frame = aFrame;
   nsCOMPtr<nsIImage> image = do_GetInterface(frame);
   if (!image) return NS_ERROR_FAILURE;
@@ -496,7 +520,9 @@ NS_IMETHODIMP
 nsMenuItemIconX::OnStopRequest(imgIRequest* aRequest,
                               PRBool       aIsLastPart)
 {
-  mIconRequest->Cancel(NS_BINDING_ABORTED);
-  mIconRequest = nsnull;
+  if (mIconRequest) {
+    mIconRequest->Cancel(NS_BINDING_ABORTED);
+    mIconRequest = nsnull;
+  }
   return NS_OK;
 }

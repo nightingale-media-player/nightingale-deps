@@ -36,7 +36,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: drbg.c,v 1.9.4.2 2009/07/31 02:16:14 nrthomas%gmail.com Exp $ */
+/* $Id: drbg.c,v 1.8 2009/04/01 03:37:29 wtc%google.com Exp $ */
 
 #ifdef FREEBL_NO_DEPEND
 #include "stubs.h"

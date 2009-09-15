@@ -154,9 +154,9 @@ nsAutoRepeatBoxFrame::HandlePress(nsPresContext* aPresContext,
                                   nsEventStatus* aEventStatus)
 {
   if (mIsPressMode) {
+    StartRepeat();
     mTrustedEvent = NS_IS_TRUSTED_EVENT(aEvent);
     DoMouseClick(aEvent, mTrustedEvent);
-    StartRepeat();
   }
 
   return NS_OK;

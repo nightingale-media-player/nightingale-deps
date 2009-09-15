@@ -36,7 +36,7 @@
 /*
  * certt.h - public data structures for the certificate library
  *
- * $Id: certt.h,v 1.47.20.1 2009/07/31 02:16:02 nrthomas%gmail.com Exp $
+ * $Id: certt.h,v 1.49 2009/03/21 01:40:34 nelson%bolyard.com Exp $
  */
 #ifndef _CERTT_H_
 #define _CERTT_H_

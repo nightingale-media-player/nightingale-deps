@@ -36,7 +36,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: lginit.c,v 1.12.36.1 2009/07/31 02:16:59 nrthomas%gmail.com Exp $ */
+/* $Id: lginit.c,v 1.14 2009/02/03 23:18:48 julien.pierre.boogz%sun.com Exp $ */
 
 #include "lowkeyi.h"
 #include "pcert.h"

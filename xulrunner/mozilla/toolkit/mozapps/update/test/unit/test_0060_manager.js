@@ -114,6 +114,5 @@ function run_test() {
   do_check_eq(patch.size, "775");
   do_check_true(patch.selected);
   do_check_eq(patch.state, STATE_FAILED);
-  removeUpdateDirsAndFiles();
   cleanUp();
 }

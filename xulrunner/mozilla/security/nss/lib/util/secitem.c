@@ -37,7 +37,7 @@
 /*
  * Support routines for SECItem data structure.
  *
- * $Id: secitem.c,v 1.14.46.1 2009/07/31 02:17:05 nrthomas%gmail.com Exp $
+ * $Id: secitem.c,v 1.15 2008/11/19 16:04:38 nelson%bolyard.com Exp $
  */
 
 #include "seccomon.h"

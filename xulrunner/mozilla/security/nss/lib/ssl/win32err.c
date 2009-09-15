@@ -42,7 +42,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: win32err.c,v 1.4.172.1 2009/07/31 02:17:03 nrthomas%gmail.com Exp $ */
+/* $Id: win32err.c,v 1.5 2008/11/20 04:39:59 nelson%bolyard.com Exp $ */
 
 #include "prerror.h"
 #include "prlog.h"

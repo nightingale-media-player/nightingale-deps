@@ -1,19 +1,10 @@
 
- New in ver 1.17
+ New in ver 1.18
  ===============
   
 Changes in API
 ----------------------
-
-WIN64 support
-_vsnprintf wrap
-BOOL replaced by LCMSBOOL
-cmsSetLanguage parameters changed to match ICC spec
-removed support for extended gamut descriptor (was never fully implemented)
-cmsFLAGS_NODEFAULTRESOURCEDEF moved to 0x01000000
-_cmsMalloc wrapper for malloc
-_cmsFree wrapper for free
-
+*none*
 
 Implementation
 ----------------------

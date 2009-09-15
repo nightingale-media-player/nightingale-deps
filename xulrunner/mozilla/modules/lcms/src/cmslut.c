@@ -183,6 +183,37 @@ unsigned int UIpow(unsigned int a, unsigned int b)
 }
 
 
+LCMSBOOL _cmsValidateLUT(LPLUT NewLUT)
+{
+    unsigned int calc = 1;
+    unsigned int oldCalc;
+    unsigned int power = NewLUT -> InputChan;
+
+    if (NewLUT -> cLutPoints > 100) return FALSE;
+    if (NewLUT -> InputChan > MAXCHANNELS)  return FALSE;
+    if (NewLUT -> OutputChan > MAXCHANNELS) return FALSE;
+
+    if (NewLUT -> cLutPoints == 0) return TRUE;
+    
+    for (; power > 0; power--) {
+
+      oldCalc = calc;
+      calc *= NewLUT -> cLutPoints;
+
+      if (calc / NewLUT -> cLutPoints != oldCalc) {
+        return FALSE;
+      }
+    }
+
+    oldCalc = calc;
+    calc *= NewLUT -> OutputChan;
+    if (NewLUT -> OutputChan && calc / NewLUT -> OutputChan != oldCalc) {
+      return FALSE;
+    }
+
+    return TRUE;
+}
+
 LPLUT LCMSEXPORT cmsAlloc3DGrid(LPLUT NewLUT, int clutPoints, int inputChan, int outputChan)
 {
     DWORD nTabSize;
@@ -192,12 +223,15 @@ LPLUT LCMSEXPORT cmsAlloc3DGrid(LPLUT NewLUT, int clutPoints, int inputChan, int
        NewLUT -> InputChan     = inputChan;
        NewLUT -> OutputChan    = outputChan;
 
+       if (!_cmsValidateLUT(NewLUT)) {
+         return NULL;
+       }
 
-       nTabSize = (NewLUT -> OutputChan * UIpow(NewLUT->cLutPoints,
-                                                NewLUT->InputChan)
-                                                * sizeof(WORD));
+       nTabSize = NewLUT -> OutputChan * UIpow(NewLUT->cLutPoints,
+                                               NewLUT->InputChan);
 
-       NewLUT -> T = (LPWORD) _cmsMalloc(nTabSize);
+       NewLUT -> T = (LPWORD) _cmsCalloc(sizeof(WORD), nTabSize);
+       nTabSize *= sizeof(WORD);
        if (NewLUT -> T == NULL) return NULL;
 
        ZeroMemory(NewLUT -> T, nTabSize);
@@ -233,9 +267,9 @@ LPLUT LCMSEXPORT cmsAllocLinearTable(LPLUT NewLUT, LPGAMMATABLE Tables[], int nT
 
                      NewLUT -> L1[i] = PtrW;
                      CopyMemory(PtrW, Tables[i]->GammaTable, sizeof(WORD) * NewLUT -> InputEntries);
-					 CopyMemory(&NewLUT -> LCurvesSeed[0][i], &Tables[i] -> Seed, sizeof(LCMSGAMMAPARAMS));
+                     CopyMemory(&NewLUT -> LCurvesSeed[0][i], &Tables[i] -> Seed, sizeof(LCMSGAMMAPARAMS));
                }
-			   
+               
 
                break;
 
@@ -249,7 +283,7 @@ LPLUT LCMSEXPORT cmsAllocLinearTable(LPLUT NewLUT, LPGAMMATABLE Tables[], int nT
 
                      NewLUT -> L2[i] = PtrW;
                      CopyMemory(PtrW, Tables[i]->GammaTable, sizeof(WORD) * NewLUT -> OutputEntries);
-					 CopyMemory(&NewLUT -> LCurvesSeed[1][i], &Tables[i] -> Seed, sizeof(LCMSGAMMAPARAMS));
+                     CopyMemory(&NewLUT -> LCurvesSeed[1][i], &Tables[i] -> Seed, sizeof(LCMSGAMMAPARAMS));
                }
                break;
 
@@ -268,7 +302,7 @@ LPLUT LCMSEXPORT cmsAllocLinearTable(LPLUT NewLUT, LPGAMMATABLE Tables[], int nT
 
                      NewLUT -> L3[i] = PtrW;
                      CopyMemory(PtrW, Tables[i]->GammaTable, sizeof(WORD) * NewLUT -> L3Entries);
-					 CopyMemory(&NewLUT -> LCurvesSeed[2][i], &Tables[i] -> Seed, sizeof(LCMSGAMMAPARAMS));
+                     CopyMemory(&NewLUT -> LCurvesSeed[2][i], &Tables[i] -> Seed, sizeof(LCMSGAMMAPARAMS));
                }
                break;
 
@@ -283,7 +317,7 @@ LPLUT LCMSEXPORT cmsAllocLinearTable(LPLUT NewLUT, LPGAMMATABLE Tables[], int nT
 
                      NewLUT -> L4[i] = PtrW;
                      CopyMemory(PtrW, Tables[i]->GammaTable, sizeof(WORD) * NewLUT -> L4Entries);
-					 CopyMemory(&NewLUT -> LCurvesSeed[3][i], &Tables[i] -> Seed, sizeof(LCMSGAMMAPARAMS));
+                     CopyMemory(&NewLUT -> LCurvesSeed[3][i], &Tables[i] -> Seed, sizeof(LCMSGAMMAPARAMS));
                }
                break;
                
@@ -679,7 +713,7 @@ void EvalLUTdoubleKLab(LPLUT Lut, const VEC3* In, WORD FixedK, LPcmsCIELab Out)
     wIn[3] = FixedK;
 
     cmsEvalLUT(Lut, wIn, wOut);     
-	cmsLabEncoded2Float(Out, wOut);
+    cmsLabEncoded2Float(Out, wOut);
 }
 
 // Builds a Jacobian CMY->Lab
@@ -703,10 +737,10 @@ void ComputeJacobianLab(LPLUT Lut, LPMAT3 Jacobian, const VEC3* Colorant, WORD K
         IncDelta(&ColorantD.n[j]);
 
         EvalLUTdoubleKLab(Lut, &ColorantD, K, &LabD);
-				
-		Jacobian->v[0].n[j] = ((LabD.L - Lab.L) / JACOBIAN_EPSILON);
-		Jacobian->v[1].n[j] = ((LabD.a - Lab.a) / JACOBIAN_EPSILON);
-		Jacobian->v[2].n[j] = ((LabD.b - Lab.b) / JACOBIAN_EPSILON);
+                
+        Jacobian->v[0].n[j] = ((LabD.L - Lab.L) / JACOBIAN_EPSILON);
+        Jacobian->v[1].n[j] = ((LabD.a - Lab.a) / JACOBIAN_EPSILON);
+        Jacobian->v[2].n[j] = ((LabD.b - Lab.b) / JACOBIAN_EPSILON);
         
     }
 }
@@ -779,18 +813,18 @@ LCMSAPI double LCMSEXPORT cmsEvalLUTreverse(LPLUT Lut, WORD Target[], WORD Resul
         // Obtain slope
         ComputeJacobianLab(Lut, &Jacobian, &x, FixedK);
 
-		// Solve system
-		tmp2.n[0] = fx.L - Goal.L;
-		tmp2.n[1] = fx.a - Goal.a;
-		tmp2.n[2] = fx.b - Goal.b;
+        // Solve system
+        tmp2.n[0] = fx.L - Goal.L;
+        tmp2.n[1] = fx.a - Goal.a;
+        tmp2.n[2] = fx.b - Goal.b;
 
-		if (!MAT3solve(&tmp, &Jacobian, &tmp2))
-			break;
-		
-       	// Move our guess
-		x.n[0] -= tmp.n[0];
-	    x.n[1] -= tmp.n[1];
-		x.n[2] -= tmp.n[2];
+        if (!MAT3solve(&tmp, &Jacobian, &tmp2))
+            break;
+        
+        // Move our guess
+        x.n[0] -= tmp.n[0];
+        x.n[1] -= tmp.n[1];
+        x.n[2] -= tmp.n[2];
                
         // Some clipping....
         VEC3saturate(&x);                

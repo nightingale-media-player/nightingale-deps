@@ -39,7 +39,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: sslenum.c,v 1.15.20.1 2009/07/31 02:17:02 nrthomas%gmail.com Exp $ */
+/* $Id: sslenum.c,v 1.16 2008/12/17 06:09:19 nelson%bolyard.com Exp $ */
 
 #include "ssl.h"
 #include "sslproto.h"

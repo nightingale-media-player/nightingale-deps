@@ -420,7 +420,7 @@ LCMSAPI LCMSHANDLE LCMSEXPORT cmsCIECAM97sInit(LPcmsViewingConditions pVC)
 
     // RGB_subw = [MlamRigg][WP/YWp]
 #ifdef USE_CIECAM97s2
-    MAT3eval(&lpMod -> RGB_subw, &lpMod -> MlamRigg, (LPVEC3) &lpMod -> WP);
+    MAT3eval(&lpMod -> RGB_subw, &lpMod -> MlamRigg, &lpMod -> WP);
 #else
     VEC3divK(&tmp, (LPVEC3) &lpMod -> WP, lpMod->WP.Y);
     MAT3eval(&lpMod -> RGB_subw, &lpMod -> MlamRigg, &tmp);

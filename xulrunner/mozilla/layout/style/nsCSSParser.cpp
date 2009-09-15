@@ -4841,7 +4841,7 @@ PRBool CSSParserImpl::ParseSingleValueProperty(nsresult& aErrorCode,
   case eCSSProperty_word_spacing:
     return ParseVariant(aErrorCode, aValue, VARIANT_HL | VARIANT_NORMAL, nsnull);
   case eCSSProperty_line_height:
-    return ParsePositiveVariant(aErrorCode, aValue, VARIANT_HLPN | VARIANT_NORMAL | VARIANT_SYSFONT, nsnull);
+    return ParsePositiveVariant(aErrorCode, aValue, VARIANT_HLPN | VARIANT_KEYWORD | VARIANT_NORMAL | VARIANT_SYSFONT, nsCSSProps::kLineHeightKTable);
   case eCSSProperty_list_style_image:
     return ParseVariant(aErrorCode, aValue, VARIANT_HUO, nsnull);
   case eCSSProperty_list_style_position:

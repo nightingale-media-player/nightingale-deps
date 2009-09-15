@@ -61,6 +61,5 @@ function run_test() {
 
   do_check_eq(gUpdateManager.updateCount, 1);
   do_check_eq(gUpdateManager.activeUpdate.state, STATE_DOWNLOADING);
-  removeUpdateDirsAndFiles();
   cleanUp();
 }

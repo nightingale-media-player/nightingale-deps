@@ -33,7 +33,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: sslmutex.c,v 1.20.46.1 2009/07/31 02:17:03 nrthomas%gmail.com Exp $ */
+/* $Id: sslmutex.c,v 1.23 2008/12/02 06:36:59 nelson%bolyard.com Exp $ */
 
 #include "seccomon.h"
 /* This ifdef should match the one in sslsnce.c */

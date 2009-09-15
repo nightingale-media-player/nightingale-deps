@@ -381,6 +381,7 @@ skip-if(MOZ_WIDGET_TOOLKIT=="windows") == 347496-1.xhtml 347496-1-ref.xhtml # Bu
 == 362594-2b.html 362594-2-standards-ref.html
 == 362594-2c.html 362594-2-standards-ref.html
 == 362901-1.html 362901-1-ref.html
+== 363247-1.html 363247-1-ref.html
 == 363329-1.html 363329-1-ref.html
 == 363329-2.html 363329-2-ref.html
 == 363370-1.html 363370-1-ref.html

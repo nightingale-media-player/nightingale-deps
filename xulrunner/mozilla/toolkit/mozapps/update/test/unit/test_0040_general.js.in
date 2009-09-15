@@ -54,6 +54,7 @@ function run_test() {
   var defaults = getPrefBranch().QueryInterface(AUS_Ci.nsIPrefService).
                  getDefaultBranch(null);
   defaults.setCharPref(PREF_GEN_USERAGENT_LOCALE, "bogus_locale");
+  removeUpdateDirsAndFiles();
   startAUS();
   startUpdateChecker();
   gAppInfo = AUS_Cc["@mozilla.org/xre/app-info;1"].
@@ -66,7 +67,6 @@ function run_test() {
 function end_test() {
   do_test_finished();
   stop_httpserver();
-  removeUpdateDirsAndFiles();
   cleanUp();
 }
 

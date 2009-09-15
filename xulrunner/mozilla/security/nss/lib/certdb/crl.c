@@ -37,7 +37,7 @@
 /*
  * Moved from secpkcs7.c
  *
- * $Id: crl.c,v 1.59.32.1 2009/07/31 02:16:02 nrthomas%gmail.com Exp $
+ * $Id: crl.c,v 1.62 2009/02/05 20:31:26 nelson%bolyard.com Exp $
  */
  
 #include "cert.h"

@@ -117,6 +117,7 @@ LCMSBOOL cmsAppendNamedColor(cmsHTRANSFORM xform, const char* Name, WORD PCS[3],
         List ->List[List ->nColors].PCS[i] = PCS[i];
 
     strncpy(List ->List[List ->nColors].Name, Name, MAX_PATH-1);
+    List ->List[List ->nColors].Name[MAX_PATH-1] = 0;
 
     List ->nColors++;
     return TRUE;
@@ -139,14 +140,13 @@ LCMSBOOL LCMSEXPORT cmsNamedColorInfo(cmsHTRANSFORM xform, int nColor, char* Nam
 {
     _LPcmsTRANSFORM v = (_LPcmsTRANSFORM) xform;
 
-
      if (v ->NamedColorList == NULL) return FALSE;
 
      if (nColor < 0 || nColor >= cmsNamedColorCount(xform)) return FALSE;
 
-     if (Name) strncpy(Name, v ->NamedColorList->List[nColor].Name, 31);
-     if (Prefix) strncpy(Prefix, v ->NamedColorList->Prefix, 31);
-     if (Suffix) strncpy(Suffix, v ->NamedColorList->Suffix, 31);
+	 if (Name)   { strncpy(Name, v ->NamedColorList->List[nColor].Name, 31); Name[31] = 0; }
+	 if (Prefix) { strncpy(Prefix, v ->NamedColorList->Prefix, 31); Prefix[31] = 0; }
+	 if (Suffix) { strncpy(Suffix, v ->NamedColorList->Suffix, 31); Suffix[31] = 0; }
 
      return TRUE;
 }

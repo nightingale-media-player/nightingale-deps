@@ -37,7 +37,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: ldvector.c,v 1.17.20.1 2009/07/31 02:16:14 nrthomas%gmail.com Exp $ */
+/* $Id: ldvector.c,v 1.21 2009/02/12 22:48:43 rrelyea%redhat.com Exp $ */
 
 #ifdef FREEBL_NO_DEPEND
 extern int FREEBL_InitStubs(void);

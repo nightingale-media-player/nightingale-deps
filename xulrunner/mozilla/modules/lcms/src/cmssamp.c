@@ -116,7 +116,7 @@ LCMSBOOL LCMSEXPORT cmsSample3DGrid(LPLUT Lut, _cmsSAMPLER Sampler, LPVOID Cargo
                                                 &Lut -> In16params);
         }
 
-		for (t=0; t < (int) Lut -> OutputChan; t++)
+        for (t=0; t < (int) Lut -> OutputChan; t++)
                      Out[t] = Lut->T[index + t];
 
         if (dwFlags & SAMPLER_HASTL2) {
@@ -125,7 +125,7 @@ LCMSBOOL LCMSEXPORT cmsSample3DGrid(LPLUT Lut, _cmsSAMPLER Sampler, LPVOID Cargo
                      Out[t] = cmsLinearInterpLUT16(Out[t],
                                                    Lut -> L2[t],
                                                    &Lut -> Out16params);               
-        }	
+        }   
 
 
         if (!Sampler(In, Out, Cargo))
@@ -493,7 +493,7 @@ LPLUT _cmsPrecalculateBlackPreservingDeviceLink(cmsHTRANSFORM hCMYK2CMYK, DWORD 
 
        // Compute tone curve.       
        Cargo.KTone  =  _cmsBuildKToneCurve(hCMYK2CMYK, 256);
-       if (Cargo.KTone == NULL) return NULL;   		
+       if (Cargo.KTone == NULL) return NULL;        
        cmsCalcL16Params(Cargo.KTone ->nEntries, &Cargo.KToneParams);
        
 
@@ -505,11 +505,11 @@ LPLUT _cmsPrecalculateBlackPreservingDeviceLink(cmsHTRANSFORM hCMYK2CMYK, DWORD 
        Cargo.LabK2cmyk = cmsReadICCLut(p->OutputProfile, Device2PCS[p->Intent]);
 
        // Is there any table available?
-	   if (Cargo.LabK2cmyk == NULL) {
+       if (Cargo.LabK2cmyk == NULL) {
 
-		   Grid = NULL;
-           goto Cleanup;		   
-	   }
+           Grid = NULL;
+           goto Cleanup;           
+       }
 
        // Setup a roundtrip on output profile for TAC estimation
        Cargo.hRoundTrip = cmsCreateTransform(p ->OutputProfile, TYPE_CMYK_16, 
@@ -542,7 +542,7 @@ LPLUT _cmsPrecalculateBlackPreservingDeviceLink(cmsHTRANSFORM hCMYK2CMYK, DWORD 
                 goto Cleanup;
        }
 
-	   
+       
        // Step #2, compute approximation
        if (!cmsSample3DGrid(Grid, _cmsGetBlackPreservationSampler(), (LPVOID) &Cargo, 0)) {
 

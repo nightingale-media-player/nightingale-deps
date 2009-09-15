@@ -2651,7 +2651,7 @@ nsRuleNode::ComputeTextData(void* aStartStruct,
   }
   else {
     SetCoord(textData.mLineHeight, text->mLineHeight, parentText->mLineHeight,
-             SETCOORD_LH | SETCOORD_FACTOR | SETCOORD_NORMAL,
+             SETCOORD_LEH | SETCOORD_FACTOR | SETCOORD_NORMAL,
              aContext, mPresContext, inherited);
     if (textData.mLineHeight.IsFixedLengthUnit() ||
         textData.mLineHeight.GetUnit() == eCSSUnit_Pixel) {

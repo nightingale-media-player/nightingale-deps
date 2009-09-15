@@ -313,8 +313,8 @@ void PrecalculatedXFORM(_LPcmsTRANSFORM p,
            p ->DeviceLink ->CLut16params.Interp3D(wIn, wOut, 
                                     p ->DeviceLink -> T, 
                                     &p ->DeviceLink -> CLut16params);
-		 }
-         else	   
+         }
+         else      
             cmsEvalLUT(p -> DeviceLink, wIn, wOut);
       
 
@@ -384,7 +384,7 @@ void CachedXFORM(_LPcmsTRANSFORM p,
        register LPBYTE output;
        WORD wIn[MAXCHANNELS], wOut[MAXCHANNELS];
        register unsigned int i, n;
-	   WORD CacheIn[MAXCHANNELS], CacheOut[MAXCHANNELS];
+       WORD CacheIn[MAXCHANNELS], CacheOut[MAXCHANNELS];
 
 
        accum  = (LPBYTE) in;
@@ -397,10 +397,10 @@ void CachedXFORM(_LPcmsTRANSFORM p,
        ZeroMemory(wOut, sizeof(WORD) * MAXCHANNELS);
 
 
-	   LCMS_READ_LOCK(&p ->rwlock);
-	       CopyMemory(CacheIn,  p ->CacheIn, sizeof(WORD) * MAXCHANNELS);
-	       CopyMemory(CacheOut, p ->CacheOut, sizeof(WORD) * MAXCHANNELS);
-	   LCMS_UNLOCK(&p ->rwlock);
+       LCMS_READ_LOCK(&p ->rwlock);
+           CopyMemory(CacheIn,  p ->CacheIn, sizeof(WORD) * MAXCHANNELS);
+           CopyMemory(CacheOut, p ->CacheOut, sizeof(WORD) * MAXCHANNELS);
+       LCMS_UNLOCK(&p ->rwlock);
 
        for (i=0; i < n; i++) {
 
@@ -413,15 +413,15 @@ void CachedXFORM(_LPcmsTRANSFORM p,
        }
        else {
             
-			// Try to speedup things on plain devicelinks  
+            // Try to speedup things on plain devicelinks  
 
-			 if (p ->DeviceLink ->wFlags == LUT_HAS3DGRID) {
+             if (p ->DeviceLink ->wFlags == LUT_HAS3DGRID) {
 
              p ->DeviceLink ->CLut16params.Interp3D(wIn, wOut, 
                                     p ->DeviceLink -> T, 
                                     &p ->DeviceLink -> CLut16params);
-		     }
-             else	   
+             }
+             else      
                   cmsEvalLUT(p -> DeviceLink, wIn, wOut);
             
 
@@ -432,11 +432,11 @@ void CachedXFORM(_LPcmsTRANSFORM p,
        output = p -> ToOutput(p, wOut, output);
        }
 
-	   
-	   LCMS_WRITE_LOCK(&p ->rwlock);
-	       CopyMemory(p->CacheIn,  CacheIn, sizeof(WORD) * MAXCHANNELS);
-	       CopyMemory(p->CacheOut, CacheOut, sizeof(WORD) * MAXCHANNELS);
-	   LCMS_UNLOCK(&p ->rwlock);
+       
+       LCMS_WRITE_LOCK(&p ->rwlock);
+           CopyMemory(p->CacheIn,  CacheIn, sizeof(WORD) * MAXCHANNELS);
+           CopyMemory(p->CacheOut, CacheOut, sizeof(WORD) * MAXCHANNELS);
+       LCMS_UNLOCK(&p ->rwlock);
 
 }
 
@@ -453,7 +453,7 @@ void CachedXFORMGamutCheck(_LPcmsTRANSFORM p,
        register LPBYTE output;
        WORD wIn[MAXCHANNELS], wOut[MAXCHANNELS];
        register unsigned int i, n;
-	   WORD CacheIn[MAXCHANNELS], CacheOut[MAXCHANNELS];
+       WORD CacheIn[MAXCHANNELS], CacheOut[MAXCHANNELS];
 
 
        accum  = (LPBYTE) in;
@@ -465,10 +465,10 @@ void CachedXFORMGamutCheck(_LPcmsTRANSFORM p,
        ZeroMemory(wIn,  sizeof(WORD) * MAXCHANNELS);
        ZeroMemory(wOut, sizeof(WORD) * MAXCHANNELS);
 
-	   LCMS_READ_LOCK(&p ->rwlock);
-	       CopyMemory(CacheIn,  p ->CacheIn, sizeof(WORD) * MAXCHANNELS);
-	       CopyMemory(CacheOut, p ->CacheOut, sizeof(WORD) * MAXCHANNELS);
-	   LCMS_UNLOCK(&p ->rwlock);
+       LCMS_READ_LOCK(&p ->rwlock);
+           CopyMemory(CacheIn,  p ->CacheIn, sizeof(WORD) * MAXCHANNELS);
+           CopyMemory(CacheOut, p ->CacheOut, sizeof(WORD) * MAXCHANNELS);
+       LCMS_UNLOCK(&p ->rwlock);
 
 
        for (i=0; i < n; i++) {
@@ -490,10 +490,10 @@ void CachedXFORMGamutCheck(_LPcmsTRANSFORM p,
        output = p -> ToOutput(p, wOut, output);
        }
 
-	    LCMS_WRITE_LOCK(&p ->rwlock);
-	       CopyMemory(p->CacheIn,  CacheIn, sizeof(WORD) * MAXCHANNELS);
-	       CopyMemory(p->CacheOut, CacheOut, sizeof(WORD) * MAXCHANNELS);
-	    LCMS_UNLOCK(&p ->rwlock);
+        LCMS_WRITE_LOCK(&p ->rwlock);
+           CopyMemory(p->CacheIn,  CacheIn, sizeof(WORD) * MAXCHANNELS);
+           CopyMemory(p->CacheOut, CacheOut, sizeof(WORD) * MAXCHANNELS);
+        LCMS_UNLOCK(&p ->rwlock);
 }
 
 
@@ -660,6 +660,9 @@ LPMATSHAPER cmsBuildGrayOutputMatrixShaper(cmsHPROFILE hProfile)
                 GrayTRC = cmsReadICCGamma(hProfile, icSigGrayTRCTag);
                 FromLstarToXYZ(GrayTRC, Shapes1);
 
+		if (GrayTRC == NULL)
+			return NULL;
+
                 // Reversing must be done after curve translation
 
                 Shapes[0] = cmsReverseGamma(Shapes1[0]->nEntries, Shapes1[0]);
@@ -674,6 +677,9 @@ LPMATSHAPER cmsBuildGrayOutputMatrixShaper(cmsHPROFILE hProfile)
                 // Normal case
 
                 GrayTRC = cmsReadICCGammaReversed(hProfile, icSigGrayTRCTag);   // Y
+
+		if (GrayTRC == NULL)
+			return NULL;
 
                 Shapes[0] = cmsDupGamma(GrayTRC);
                 Shapes[1] = cmsDupGamma(GrayTRC);
@@ -761,6 +767,10 @@ LPMATSHAPER cmsBuildOutputMatrixShaper(cmsHPROFILE OutputProfile)
        InverseShapes[1] = cmsReadICCGammaReversed(OutputProfile, icSigGreenTRCTag);
        InverseShapes[2] = cmsReadICCGammaReversed(OutputProfile, icSigBlueTRCTag);
        
+       if (InverseShapes[0] == NULL ||
+           InverseShapes[1] == NULL ||
+           InverseShapes[2] == NULL) return NULL;
+
        OutMatSh = cmsAllocMatShaper(&DoubleInv, InverseShapes, MATSHAPER_OUTPUT);
 
        cmsFreeGammaTriple(InverseShapes);
@@ -809,10 +819,10 @@ LCMSBOOL cmsBuildSmeltMatShaper(_LPcmsTRANSFORM p)
         InverseOut[1] = cmsReadICCGammaReversed(p -> OutputProfile, icSigGreenTRCTag);
         InverseOut[2] = cmsReadICCGammaReversed(p -> OutputProfile, icSigBlueTRCTag);
 
-		if (!InverseOut[0] || !InverseOut[1] || !InverseOut[2]) {
-				     cmsFreeGammaTriple(In); 
+        if (!InverseOut[0] || !InverseOut[1] || !InverseOut[2]) {
+                     cmsFreeGammaTriple(In); 
                      return FALSE;
-		}
+        }
 
         p -> SmeltMatShaper = cmsAllocMatShaper2(&Transfer, In, InverseOut, MATSHAPER_ALLSMELTED);
 
@@ -1053,7 +1063,7 @@ _LPcmsTRANSFORM AllocEmptyTransform(void)
     p -> ExitColorSpace  = (icColorSpaceSignature) 0;
     p -> AdaptationState = GlobalAdaptationState;
 
-	LCMS_CREATE_LOCK(&p->rwlock);
+    LCMS_CREATE_LOCK(&p->rwlock);
 
     return p;
 }
@@ -1590,7 +1600,7 @@ cmsHTRANSFORM LCMSEXPORT cmsCreateProofingTransform(cmsHPROFILE InputProfile,
        p -> FromInput = _cmsIdentifyInputFormat(p, InputFormat);
        p -> ToOutput  = _cmsIdentifyOutputFormat(p, OutputFormat);
 
-	 
+     
        return p;
 }
 
@@ -1637,10 +1647,10 @@ void LCMSEXPORT cmsDeleteTransform(cmsHTRANSFORM hTransform)
               cmsFreeMatShaper(p -> SmeltMatShaper);
        if (p ->NamedColorList)
               cmsFreeNamedColorList(p ->NamedColorList);
-	   if (p -> GamutCheck)
-			cmsFreeLUT(p -> GamutCheck); 
+       if (p -> GamutCheck)
+            cmsFreeLUT(p -> GamutCheck); 
 
-	   LCMS_FREE_LOCK(&p->rwlock);
+       LCMS_FREE_LOCK(&p->rwlock);
 
        _cmsFree((void *) p);
 }
@@ -1751,10 +1761,10 @@ int MultiprofileSampler(register WORD In[], register WORD Out[], register LPVOID
 static
 int IsAllowedInSingleXform(icProfileClassSignature aClass)
 {
-	return (aClass == icSigInputClass) ||
-		   (aClass == icSigDisplayClass) ||
-		   (aClass == icSigOutputClass) ||
-		   (aClass == icSigColorSpaceClass);
+    return (aClass == icSigInputClass) ||
+           (aClass == icSigDisplayClass) ||
+           (aClass == icSigOutputClass) ||
+           (aClass == icSigColorSpaceClass);
 }
 
 
@@ -1792,10 +1802,10 @@ cmsHTRANSFORM LCMSEXPORT cmsCreateMultiprofileTransform(cmsHPROFILE hProfiles[],
     
     if (nProfiles == 2) {
 
-		icProfileClassSignature Class1 = cmsGetDeviceClass(hProfiles[0]);
-		icProfileClassSignature Class2 = cmsGetDeviceClass(hProfiles[1]);
+        icProfileClassSignature Class1 = cmsGetDeviceClass(hProfiles[0]);
+        icProfileClassSignature Class2 = cmsGetDeviceClass(hProfiles[1]);
 
-		// Only input, output and display are allowed
+        // Only input, output and display are allowed
 
         if (IsAllowedInSingleXform(Class1) && 
             IsAllowedInSingleXform(Class2)) 
@@ -1980,7 +1990,7 @@ cmsHTRANSFORM LCMSEXPORT cmsCreateMultiprofileTransform(cmsHPROFILE hProfiles[],
                    
                     p->DeviceLink -> CLut16params.Interp3D = cmsTetrahedralInterp16;
     }
-	
+    
 
     if ((Intent != INTENT_ABSOLUTE_COLORIMETRIC) && 
         !(dwFlags & cmsFLAGS_NOWHITEONWHITEFIXUP))

@@ -970,10 +970,11 @@ nsSpaceManager::RemoveRegion(nsIFrame* aFrame)
               } else {
                 band = nsnull;
               }
-              if (mCachedBandPosition == rect) {
-                SetCachedBandPosition(band);
-              }                
             }
+            if (mCachedBandPosition == rect) {
+              // Clear cached reference to this rect before we delete it.
+              SetCachedBandPosition(band);
+            }                
             delete rect;
             rect = next;
 
@@ -995,9 +996,10 @@ nsSpaceManager::RemoveRegion(nsIFrame* aFrame)
             if (prevRect == band) {
               // the rect we're deleting is the start of the band
               band = rect;
-              if (mCachedBandPosition == prevRect) {
-                SetCachedBandPosition(band);
-              }
+            }
+            if (mCachedBandPosition == prevRect) {
+              // Clear cached reference to this rect before we delete it.
+              SetCachedBandPosition(band);
             }
             delete prevRect;
           }

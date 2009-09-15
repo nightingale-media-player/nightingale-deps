@@ -37,7 +37,7 @@
 /*
  * PQG parameter generation/verification.  Based on FIPS 186-1.
  *
- * $Id: pqg.c,v 1.15.42.1 2009/07/31 02:16:15 nrthomas%gmail.com Exp $
+ * $Id: pqg.c,v 1.17 2009/03/26 23:16:37 glen.beasley%sun.com Exp $
  */
 #ifdef FREEBL_NO_DEPEND
 #include "stubs.h"
