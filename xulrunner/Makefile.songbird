@@ -56,7 +56,7 @@ xr-all:
 	# Only build symbols for release builds 
 	$(MAKE) -C $(CURDIR)/mozilla/compiled/xulrunner-release buildsymbols
 ifneq (linux-x86_64,$(SB_TARGET_ARCH))
-	$(MV) $(wildcard $(CURDIR)/mozilla/compiled/xulrunner-release/dist/crashreporter-symbols-xulrunner-$(SB_VENDOR_TARGET_VERSION)-*.zip) $(SB_VENDOR_BUILD_DIR)
+	$(MV) $(wildcard $(CURDIR)/mozilla/compiled/xulrunner-release/dist/crashreporter-symbols/crashreporter-symbols-xulrunner-$(SB_VENDOR_TARGET_VERSION)-*.zip) $(SB_VENDOR_BUILD_DIR)
 endif
 	cd $(CURDIR)/mozilla && $(XR_STRIP_SYMBOLS) $(SB_XR_PLATFORM)
 	$(XR_PACKAGE_DEPS) $(SB_XR_PLATFORM)-$(SB_XR_ARCH) $(SB_XR_BRANCH)
