@@ -66,6 +66,7 @@ echo Correct? Hit Ctrl-c to cancel...
 read
 
 for d in $PACKAGES; do 
+   symbolsFound=
    echo "Checking $d in with vrev $vrev, vbrev $vbrev..."
    svn_load_dirs.pl \
     -no_user_input \
@@ -74,15 +75,25 @@ for d in $PACKAGES; do
 done
 
 if [[ $platform != "linux-x86_64" ]]; then
-   symbolRootDir=/var/local/symbols/vendor
+   # this is technically wrong; we could have multiple packages that are XRs
+   # and other things, but in practice, we only build XRs by themselves, so
+   # it's OK for now...
+   if test -n "$(echo $PACKAGES | grep xulrunner)"; then
+      symbolRootDir=/var/local/symbols/xulrunner
+   else
+      symbolRootDir=/var/local/symbols/vendor
+   fi
    dirDate=$(date +%Y%m%d)
 
    for f in $(find build -name "*.zip"); do
+      symbolsFound=1
       $platform/mozilla/release/scripts/upload_symbols.sh $f $symbolRootDir/$dirDate-$branch-respins/$platform;
    done
 
-   ssh -2 -p $SYMBOL_SERVER_PORT \
-    -i "$SYMBOL_SERVER_SSH_KEY" \
-    -l $SYMBOL_SERVER_USER $SYMBOL_SERVER_HOST \
-    "set -e; echo Running \$HOME/buildbot/breakpad-symlinkify.pl $symbolRootDir $symbolRootDir/$dirDate-$branch-respins/$platform; \$HOME/buildbot/breakpad-symlinkify.pl $symbolRootDir $symbolRootDir/$dirDate-$branch-respins/$platform";
+   if ! test -z $symbolsFound; then
+      ssh -2 -p $SYMBOL_SERVER_PORT \
+       -i "$SYMBOL_SERVER_SSH_KEY" \
+       -l $SYMBOL_SERVER_USER $SYMBOL_SERVER_HOST \
+       "set -e; echo Running \$HOME/buildbot/breakpad-symlinkify.pl $symbolRootDir $symbolRootDir/$dirDate-$branch-respins/$platform; \$HOME/buildbot/breakpad-symlinkify.pl $symbolRootDir $symbolRootDir/$dirDate-$branch-respins/$platform";
+  fi
 fi
