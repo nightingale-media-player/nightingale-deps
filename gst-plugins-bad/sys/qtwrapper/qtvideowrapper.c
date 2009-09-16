@@ -61,10 +61,11 @@ plugin_init (GstPlugin * plugin)
       0, "QuickTime video codec wrappers");
 
   /* Initialize quicktime environment */
-#ifdef G_OS_WIN32
-  /* Only required on win32 */
-  InitializeQTML (0);
-#endif
+  res = quicktime_os_specific_init ();
+  if (!res) {
+    GST_ERROR ("Error initializing os-specific QuickTime environment");
+    return FALSE;
+  }
 
   status = EnterMovies ();
   if (status) {

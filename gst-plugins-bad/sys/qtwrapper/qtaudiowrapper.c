@@ -49,6 +49,10 @@
 #include "qtaudiowrapper.h"
 #include <stdio.h>
 
+#ifdef G_OS_WIN32
+#include <windows.h>
+#endif
+
 GST_DEBUG_CATEGORY (qtaudiowrapper_debug);
 
 static gboolean
@@ -61,10 +65,11 @@ plugin_init (GstPlugin * plugin)
       0, "QuickTime audio codec wrappers");
 
   /* Initialize quicktime environment */
-#ifdef G_OS_WIN32
-  /* Only required on win32 */
-  InitializeQTML (0);
-#endif
+  res = quicktime_os_specific_init ();
+  if (!res) {
+    GST_ERROR ("Error initializing OS-specific QuickTime");
+    return FALSE;
+  }
 
   status = EnterMovies ();
   if (status) {

@@ -99,6 +99,8 @@
 #define QT_READ_UINT32(data)		GST_READ_UINT32_BE(data)
 #endif
 
+/* Do any OS-specific initialization for QuickTime */
+gboolean quicktime_os_specific_init ();
 
 /*
  * get_name_info_from_component:
