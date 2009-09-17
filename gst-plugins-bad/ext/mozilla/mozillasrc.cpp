@@ -398,6 +398,16 @@ StreamListener::OnStopRequest(nsIRequest *req, nsISupports *ctxt,
   GST_DEBUG_OBJECT (mSrc, "%p::StreamListener::OnStopRequest called; "
           "connection lost", this);
 
+  /* If we failed, turn this into an element error message. Unfortunately we
+     don't have much information at this point about what sort of failure it
+     was, so this will have to do.
+   */
+  if (NS_FAILED (status)) {
+    GST_ELEMENT_ERROR (mSrc, RESOURCE, READ,
+        ("Could not read from URL %s", mSrc->location), 
+        ("nsresult %d", status));
+  }
+
   if (!mSrc->is_cancelled)
   {
     GST_DEBUG_OBJECT (mSrc, "At EOS after request stopped");
