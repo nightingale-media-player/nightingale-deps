@@ -369,7 +369,7 @@ ByteVector String::data(Type t) const
   case Latin1:
   {
     for(wstring::const_iterator it = d->data.begin(); it != d->data.end(); it++)
-      v.append(char(*it));
+      v.append(*it < 256 ? char(*it) : '?');
     break;
   }
   case UTF8:
