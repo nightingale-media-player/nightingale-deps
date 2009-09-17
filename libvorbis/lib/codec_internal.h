@@ -133,5 +133,8 @@ typedef struct codec_setup_info {
 extern vorbis_look_psy_global *_vp_global_look(vorbis_info *vi);
 extern void _vp_global_free(vorbis_look_psy_global *look);
 
+void *vorbis_ogg_calloc(size_t nmemb, size_t size);
+void *vorbis_ogg_malloc(size_t size);
+
 #endif
 

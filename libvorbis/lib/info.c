@@ -31,6 +31,16 @@
 #include "misc.h"
 #include "os.h"
 
+void *vorbis_ogg_calloc(size_t nmemb, size_t size)
+{
+  return _ogg_calloc(nmemb, size);
+}
+
+void *vorbis_ogg_malloc(size_t size)
+{
+  return _ogg_malloc(size);
+}
+
 /* helpers */
 static int ilog2(unsigned int v){
   int ret=0;
