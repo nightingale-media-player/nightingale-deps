@@ -32,6 +32,8 @@
 #include <gst/gst.h>
 #include <gst/riff/riff-media.h>
 
+#include "comtaskthread.h"
+
 #define GST_CAT_DEFAULT wmadmoenc_debug
 GST_DEBUG_CATEGORY_STATIC (wmadmoenc_debug);
 
@@ -200,8 +202,6 @@ typedef struct _WMADMOEnc
   gboolean is_setup;
 
   /* Output format */
-  DMO_MEDIA_TYPE input_format;
-  DMO_MEDIA_TYPE output_format;
   GstCaps *output_caps;
 
   /* From received caps */
@@ -212,11 +212,17 @@ typedef struct _WMADMOEnc
   int selected_bitrate;
   int actual_bitrate;
 
+  /* COM thread helper. */
+  GstCOMTaskThread *comthread;
+
+  /* All the following objects MUST only be used from the COM thread */
+
   /* The actual encoder object */
   IMediaObject *dmo;
 
-  gboolean comInitialised;
-  DWORD    comInitialisingThread;
+  /* DMO format descriptions */
+  DMO_MEDIA_TYPE input_format;
+  DMO_MEDIA_TYPE output_format;
 
 } WMADMOEnc;
 
@@ -354,37 +360,33 @@ wmadmoenc_set_output_format (WMADMOEnc * enc)
   }
 }
 
-static gboolean
-wmadmoenc_setup (WMADMOEnc * enc)
+static void
+wmadmoenc_setup_task (void *data, void *ret)
 {
+  WMADMOEnc *enc = (WMADMOEnc *)data;
+  gboolean *retval = (gboolean *)ret;
   HRESULT hr;
-
-  hr = CoInitialize (0);
-  if (SUCCEEDED (hr)) {
-    enc->comInitialised = TRUE;
-    enc->comInitialisingThread = GetCurrentThreadId();
-  } else {
-    GST_WARNING_OBJECT (enc, "Failed to initialize COM: %x", hr);
-    return FALSE;
-  }
 
   hr = CoCreateInstance (CLSID_CWMAEncMediaObject, NULL, CLSCTX_INPROC,
       IID_IMediaObject, (void **) &enc->dmo);
   if (FAILED (hr)) {
     GST_WARNING_OBJECT (enc, "Could not create DMO Encoder object: %x", hr);
-    return FALSE;
+    *retval = FALSE;
+    return;
   }
 
   if (!wmadmoenc_set_output_format (enc))
   {
     GST_WARNING_OBJECT (enc, "Could not set up output format");
-    return FALSE;
+    *retval = FALSE;
+    return;
   }
 
   if (!wmadmoenc_set_input_format (enc))
   {
     GST_WARNING_OBJECT (enc, "Could not set up input format");
-    return FALSE;
+    *retval = FALSE;
+    return;
   }
 
   enc->output_caps = wmadmoenc_caps_from_format (&enc->output_format);
@@ -392,12 +394,23 @@ wmadmoenc_setup (WMADMOEnc * enc)
   gst_pad_set_caps (enc->srcpad, enc->output_caps);
 
   enc->is_setup = TRUE;
-  return TRUE;
+  *retval = TRUE;
+  return;
+}
+
+static gboolean
+wmadmoenc_setup (WMADMOEnc * enc)
+{
+  gboolean ret;
+  gst_comtaskthread_do_task (enc->comthread, wmadmoenc_setup_task, enc, &ret);
+  return ret;
 }
 
 static void
-wmadmoenc_teardown (WMADMOEnc * enc)
+wmadmoenc_teardown_task (void *data, void *ret)
 {
+  WMADMOEnc * enc = (WMADMOEnc *)data;
+
   MoFreeMediaType (&enc->input_format);
   memset (&enc->input_format, 0, sizeof (enc->input_format));
 
@@ -415,18 +428,13 @@ wmadmoenc_teardown (WMADMOEnc * enc)
   }
 
   enc->is_setup = FALSE;
+}
 
-  /* Ensure we only uninit COM on the thread which inited COM.
-   * Unfortunately, this sometimes means we'll just not uninit it at all, but
-   * that's better than uninitialising on the wrong thread
-   */
-  if (enc->comInitialised && 
-      enc->comInitialisingThread == GetCurrentThreadId()) 
-  {
-    CoUninitialize();
-    enc->comInitialised = FALSE;
-    enc->comInitialisingThread = 0;
-  }
+static void
+wmadmoenc_teardown (WMADMOEnc * enc)
+{
+  gst_comtaskthread_do_task (enc->comthread, wmadmoenc_teardown_task, enc,
+          NULL);
 }
 
 static gboolean
@@ -522,14 +530,23 @@ wmadmoenc_do_output (WMADMOEnc *enc)
   return ret;
 }
 
-static GstFlowReturn
-wmadmoenc_chain (GstPad * pad, GstBuffer * buf)
+struct ChainData
 {
-  WMADMOEnc *enc = GST_WMADMOENC (gst_pad_get_parent (pad));
+  WMADMOEnc *enc;
+  GstBuffer *buf;
+};
+
+static void
+wmadmoenc_chain_task (void *data, void *ret)
+{
+  struct ChainData *cdata = (struct ChainData *)data;
+  WMADMOEnc *enc = cdata->enc;
+  GstBuffer * buf = cdata->buf;
+  GstFlowReturn *retval = (GstFlowReturn *)ret;
+
   HRESULT hr;
   REFERENCE_TIME timestamp = 0, duration = 0;
   DWORD flags = 0;
-  GstFlowReturn ret;
 
   flags = DMO_INPUT_DATA_BUFFERF_SYNCPOINT;
 
@@ -554,29 +571,57 @@ wmadmoenc_chain (GstPad * pad, GstBuffer * buf)
   if (FAILED (hr)) {
     GST_WARNING_OBJECT (enc, "Failed to process input buffer: %x", hr);
     inbuf->Release();
-    ret = GST_FLOW_ERROR;
-    goto done;
+    *retval = GST_FLOW_ERROR;
+    return;
   }
 
   inbuf->Release();
 
-  ret = wmadmoenc_do_output (enc);
+  *retval = wmadmoenc_do_output (enc);
+}
 
-done:
-  gst_object_unref (enc);
-  return ret;
+static void
+wmadmoenc_finish_stream_task (void *data, void *ret)
+{
+  WMADMOEnc * enc = (WMADMOEnc *)data;
+  GstFlowReturn *retval = (GstFlowReturn *)ret;
+
+  HRESULT hr = enc->dmo->Discontinuity (0);
+  if (FAILED (hr)) {
+    GST_WARNING_OBJECT (enc, "Failed in Discontinuity(): %x", hr);
+    *retval = GST_FLOW_ERROR;
+    return;
+  }
+
+  *retval = wmadmoenc_do_output(enc);
+  return;
 }
 
 static GstFlowReturn
 wmadmoenc_finish_stream (WMADMOEnc * enc)
 {
-  HRESULT hr = enc->dmo->Discontinuity (0);
-  if (FAILED (hr)) {
-    GST_WARNING_OBJECT (enc, "Failed in Discontinuity(): %x", hr);
-    return GST_FLOW_ERROR;
-  }
+  GstFlowReturn ret;
+  gst_comtaskthread_do_task (enc->comthread, wmadmoenc_finish_stream_task,
+          enc, &ret);
+  return ret;
+}
 
-  return wmadmoenc_do_output(enc);
+static GstFlowReturn
+wmadmoenc_chain (GstPad * pad, GstBuffer * buf)
+{
+  GstFlowReturn ret;
+  WMADMOEnc *enc = GST_WMADMOENC (gst_pad_get_parent (pad));
+
+  struct ChainData chain_data;
+  chain_data.enc = enc;
+  chain_data.buf = buf;
+
+  gst_comtaskthread_do_task (enc->comthread, wmadmoenc_chain_task, &chain_data,
+          &ret);
+
+  gst_object_unref (enc);
+
+  return ret;
 }
 
 static gboolean
@@ -613,6 +658,8 @@ wmadmoenc_finalize (GObject * obj)
 
   wmadmoenc_teardown (enc);
 
+  gst_comtaskthread_destroy (enc->comthread);
+
   G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
@@ -633,6 +680,8 @@ wmadmoenc_init (WMADMOEnc * enc, WMADMOEncClass *klass)
   gst_element_add_pad (GST_ELEMENT (enc), enc->srcpad);
 
   enc->selected_bitrate = DEFAULT_BITRATE;
+
+  enc->comthread = gst_comtaskthread_init ();
 }
 
 static void

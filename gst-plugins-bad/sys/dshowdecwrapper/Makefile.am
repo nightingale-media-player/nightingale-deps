@@ -1,7 +1,8 @@
 plugin_LTLIBRARIES = libgstdshowdecwrapper.la
 
 libgstdshowdecwrapper_la_SOURCES = gstdshowaudiodec.cpp gstdshowfakesrc.cpp \
-	gstdshowvideodec.cpp gstdshowdecwrapper.cpp gstdshowutil.cpp
+    gstdshowvideodec.cpp gstdshowdecwrapper.cpp gstdshowutil.cpp \
+    comtaskthread.c
 
 libgstdshowdecwrapper_la_CFLAGS = $(GST_CFLAGS) -I$(top_srcdir)/gst-libs/gst
 libgstdshowdecwrapper_la_CXXFLAGS = $(GST_CFLAGS) -I$(top_srcdir)/gst-libs/gst \
@@ -14,4 +15,5 @@ libgstdshowdecwrapper_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) \
 	-L$(WINDOWS_SDK_DIR)/Lib
 
 noinst_HEADERS = gstdshowaudiodec.h gstdshowfakesrc.h \
-				 gstdshowutil.h gstdshowvideodec.h
+				 gstdshowutil.h gstdshowvideodec.h \
+                 comtaskthread.h

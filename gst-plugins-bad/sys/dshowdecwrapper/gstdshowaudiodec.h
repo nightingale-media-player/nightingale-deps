@@ -53,6 +53,8 @@
 #include "gstdshowutil.h"
 #include "gstdshowfakesrc.h"
 
+#include "comtaskthread.h"
+
 G_BEGIN_DECLS
 
 typedef struct {
@@ -83,6 +85,9 @@ struct _GstDshowAudioDec
   GstPad *srcpad;
   
   GstFlowReturn last_ret;
+
+  /* COM thread helper. */
+  GstCOMTaskThread *comthread;
 
   /* filters interfaces*/
   FakeSrc *fakesrc;
@@ -118,8 +123,6 @@ struct _GstDshowAudioDec
 
   /* timestamp of the next buffer */
   GstClockTime timestamp;
-
-  gboolean comInitialized;
 };
 
 struct _GstDshowAudioDecClass
