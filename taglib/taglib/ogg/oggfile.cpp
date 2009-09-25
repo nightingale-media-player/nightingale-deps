@@ -308,10 +308,12 @@ void Ogg::File::writePageGroup(const List<int> &pageGroup)
 
   ByteVectorList packets;
 
-  // If the first page of the group isn't dirty, append its partial content
-  // here.
-  if(!d->dirtyPages.contains(d->pages[pageGroup.front()]->firstPacketIndex()))
+  // If the first page of the group starts with a non-dirty packet, append the
+  // partial content of that packet here 
+  if(!d->dirtyPackets.contains(d->pages[pageGroup.front()]->firstPacketIndex()))
+  {
     packets.append(d->pages[pageGroup.front()]->packets().front());
+  }
 
   int previousPacket = -1;
   int originalSize = 0;
@@ -327,8 +329,9 @@ void Ogg::File::writePageGroup(const List<int> &pageGroup)
 
     for(uint i = firstPacket; i <= lastPacket; i++) {
 
-      if(it == last && i == lastPacket && !d->dirtyPages.contains(i))
+      if(it == last && i == lastPacket && !d->dirtyPackets.contains(i)) {
         packets.append(d->pages[*it]->packets().back());
+      }
       else if(int(i) != previousPacket) {
         previousPacket = i;
         packets.append(packet(i));
