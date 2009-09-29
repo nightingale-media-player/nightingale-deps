@@ -454,9 +454,9 @@ gst_dshowaudiodec_dispose (GObject * object)
     adec->codec_data = NULL;
   }
 
-  if (enc->comthread) {
-    gst_comtaskthread_destroy (enc->comthread);
-    enc->comthread = NULL;
+  if (adec->comthread) {
+    gst_comtaskthread_destroy (adec->comthread);
+    adec->comthread = NULL;
   }
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
@@ -624,7 +624,7 @@ gst_dshowaudiodec_chain_task (void *arg, void *ret)
   gboolean *result = (gboolean *)ret;
   struct ChainData *cdata = (struct ChainData *)arg;
   GstDshowAudioDec *adec = cdata->adec;
-  GstBuffer *buf = cdata->buf;
+  GstBuffer *buffer = cdata->buf;
   bool discont = FALSE;
 
   if (!adec->setup) {
@@ -683,9 +683,9 @@ gst_dshowaudiodec_chain (GstPad * pad, GstBuffer * buffer)
   GstDshowAudioDec *adec = (GstDshowAudioDec *) gst_pad_get_parent (pad);
   struct ChainData chain_data;
   chain_data.adec = adec;
-  chain_data.buf = buf;
+  chain_data.buf = buffer;
 
-  gst_comtaskthread_do_task (enc->comthread, gst_dshowaudiodec_chain_task,
+  gst_comtaskthread_do_task (adec->comthread, gst_dshowaudiodec_chain_task,
           &chain_data, &ret);
 
   gst_object_unref (adec);
