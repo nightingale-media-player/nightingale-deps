@@ -96,12 +96,21 @@ am_libgstdshowdecwrapper_la_OBJECTS =  \
 	libgstdshowdecwrapper_la-gstdshowfakesrc.lo \
 	libgstdshowdecwrapper_la-gstdshowvideodec.lo \
 	libgstdshowdecwrapper_la-gstdshowdecwrapper.lo \
-	libgstdshowdecwrapper_la-gstdshowutil.lo
+	libgstdshowdecwrapper_la-gstdshowutil.lo \
+	libgstdshowdecwrapper_la-comtaskthread.lo
 libgstdshowdecwrapper_la_OBJECTS =  \
 	$(am_libgstdshowdecwrapper_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
@@ -692,7 +701,8 @@ target_os = @target_os@
 target_vendor = @target_vendor@
 plugin_LTLIBRARIES = libgstdshowdecwrapper.la
 libgstdshowdecwrapper_la_SOURCES = gstdshowaudiodec.cpp gstdshowfakesrc.cpp \
-	gstdshowvideodec.cpp gstdshowdecwrapper.cpp gstdshowutil.cpp
+    gstdshowvideodec.cpp gstdshowdecwrapper.cpp gstdshowutil.cpp \
+    comtaskthread.c
 
 libgstdshowdecwrapper_la_CFLAGS = $(GST_CFLAGS) -I$(top_srcdir)/gst-libs/gst
 libgstdshowdecwrapper_la_CXXFLAGS = $(GST_CFLAGS) -I$(top_srcdir)/gst-libs/gst \
@@ -707,12 +717,13 @@ libgstdshowdecwrapper_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) \
 	-L$(WINDOWS_SDK_DIR)/Lib
 
 noinst_HEADERS = gstdshowaudiodec.h gstdshowfakesrc.h \
-				 gstdshowutil.h gstdshowvideodec.h
+				 gstdshowutil.h gstdshowvideodec.h \
+                 comtaskthread.h
 
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .cpp .lo .o .obj
+.SUFFIXES: .c .cpp .lo .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -778,11 +789,40 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstdshowdecwrapper_la-comtaskthread.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstdshowdecwrapper_la-gstdshowaudiodec.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstdshowdecwrapper_la-gstdshowdecwrapper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstdshowdecwrapper_la-gstdshowfakesrc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstdshowdecwrapper_la-gstdshowutil.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstdshowdecwrapper_la-gstdshowvideodec.Plo@am__quote@
+
+.c.o:
+@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c $<
+
+.c.obj:
+@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ `$(CYGPATH_W) '$<'`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
+
+.c.lo:
+@am__fastdepCC_TRUE@	if $(LTCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+
+libgstdshowdecwrapper_la-comtaskthread.lo: comtaskthread.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstdshowdecwrapper_la_CFLAGS) $(CFLAGS) -MT libgstdshowdecwrapper_la-comtaskthread.lo -MD -MP -MF "$(DEPDIR)/libgstdshowdecwrapper_la-comtaskthread.Tpo" -c -o libgstdshowdecwrapper_la-comtaskthread.lo `test -f 'comtaskthread.c' || echo '$(srcdir)/'`comtaskthread.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstdshowdecwrapper_la-comtaskthread.Tpo" "$(DEPDIR)/libgstdshowdecwrapper_la-comtaskthread.Plo"; else rm -f "$(DEPDIR)/libgstdshowdecwrapper_la-comtaskthread.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='comtaskthread.c' object='libgstdshowdecwrapper_la-comtaskthread.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstdshowdecwrapper_la_CFLAGS) $(CFLAGS) -c -o libgstdshowdecwrapper_la-comtaskthread.lo `test -f 'comtaskthread.c' || echo '$(srcdir)/'`comtaskthread.c
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
