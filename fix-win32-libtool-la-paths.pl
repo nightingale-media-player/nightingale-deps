@@ -145,6 +145,9 @@ sub main {
    foreach my $l (@currentLaFileContents) {
       my $line = $l;
 
+      # Remove old "Munged by" markers (which confuse libtool)...
+      next if ($line =~ /^$MUNGED_MARKER/);
+
       if ($line =~ /^libdir=(.+)/) {
          #if (IsDosStylePath(path => $1)) {
             $line = "libdir='" . 

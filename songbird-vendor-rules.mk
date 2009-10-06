@@ -306,7 +306,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
 	             $(SB_VENDOR_BINARIES_DIR)/$(tgt) --exclude=.svn && \
 	             $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/$(tgt)/.msyscp ; ))
 	@echo Fixing up libtools .la files for first-time use...
-	$(FIND) $(SB_VENDOR_BINARIES_DIR)/ -type f -name '*.la' -exec $(SB_VENDOR_CHECKOUT)/fix-win32-libtool-la-paths.pl {} \;
+	$(FIND) $(SB_VENDOR_BINARIES_DIR)/ -type f -name '*.la' -exec $(SB_VENDOR_CHECKOUT)/fix-win32-libtool-la-paths.pl -f {} \;
 else
 	$(foreach tgt, \
 	  $(SB_VENDOR_BINARIES_TARGETS), \
