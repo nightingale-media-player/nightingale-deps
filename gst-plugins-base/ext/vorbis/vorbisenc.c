@@ -691,6 +691,7 @@ gst_vorbis_enc_set_metadata (GstVorbisEnc * enc)
 {
   GstTagList *merged_tags;
   const GstTagList *user_tags;
+  gchar *value = NULL;
 
   vorbis_comment_init (&enc->vc);
 
@@ -706,6 +707,14 @@ gst_vorbis_enc_set_metadata (GstVorbisEnc * enc)
   if (merged_tags) {
     GST_DEBUG_OBJECT (enc, "merged   tags = %" GST_PTR_FORMAT, merged_tags);
     gst_tag_list_foreach (merged_tags, gst_vorbis_enc_metadata_set1, enc);
+
+    if (gst_tag_list_get_string_index (merged_tags, "gracenote-tagid", 0, &value)) {
+      vorbis_comment_add_tag (&enc->vc, "GracenoteFileID", value);
+    }
+    if (gst_tag_list_get_string_index (merged_tags, "gracenote-extdata", 0, &value)) {
+      vorbis_comment_add_tag (&enc->vc, "GracenoteExtData", value);
+    }
+
     gst_tag_list_free (merged_tags);
   }
 }
