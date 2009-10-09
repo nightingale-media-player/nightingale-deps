@@ -776,9 +776,8 @@ add_musicbrainz_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
 
 static void
 add_unique_file_id_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
-    const gchar * tag, guint num_tags, const gchar * unused)
+    const gchar * tag, guint num_tags, const gchar * origin)
 {
-  const gchar *origin = "http://musicbrainz.org";
   gchar *id_str = NULL;
 
   if (gst_tag_list_get_string_index (list, tag, 0, &id_str) && id_str) {
@@ -794,6 +793,32 @@ add_unique_file_id_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
     g_array_append_val (id3v2tag->frames, frame);
 
     g_free (id_str);
+  }
+}
+
+static void
+add_txxx_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
+    const gchar * tag, guint num_tags, const gchar * description)
+{
+  gchar *value = NULL;
+  int encoding1, encoding2, encoding;
+
+  if (gst_tag_list_get_string_index (list, tag, 0, &value) && value) {
+    GstId3v2Frame frame;
+
+    GST_LOG ("Adding %s (%s): %s", tag, description, value);
+
+    encoding1 = id3v2_tag_string_encoding (id3v2tag, description);
+    encoding2 = id3v2_tag_string_encoding (id3v2tag, value);
+    encoding = MAX (encoding1, encoding2);
+
+    id3v2_frame_init (&frame, "TXXX", 0);
+    id3v2_frame_write_uint8 (&frame, encoding);
+    id3v2_frame_write_string (&frame, encoding, description, TRUE);
+    id3v2_frame_write_string (&frame, encoding, value, FALSE);
+    g_array_append_val (id3v2tag->frames, frame);
+
+    g_free (value);
   }
 }
 
@@ -1046,7 +1071,8 @@ static const struct
   GST_TAG_MUSICBRAINZ_TRMID, add_musicbrainz_tag, "\003"}, {
   GST_TAG_CDDA_MUSICBRAINZ_DISCID, add_musicbrainz_tag, "\004"}, {
   GST_TAG_CDDA_CDDB_DISCID, add_musicbrainz_tag, "\005"}, {
-  GST_TAG_MUSICBRAINZ_TRACKID, add_unique_file_id_tag, NULL}, {
+  GST_TAG_MUSICBRAINZ_TRACKID, add_unique_file_id_tag,
+      "http://musicbrainz.org"}, {
 
     /* Info about encoder */
   GST_TAG_ENCODER, add_encoder_tag, NULL}, {
@@ -1071,7 +1097,12 @@ static const struct
     /* Sortable version of various tags. These are all v2.4 ONLY */
   GST_TAG_ARTIST_SORTNAME, add_text_tag_v4, "TSOP"}, {
   GST_TAG_ALBUM_SORTNAME, add_text_tag_v4, "TSOA"}, {
-  GST_TAG_TITLE_SORTNAME, add_text_tag_v4, "TSOT"}
+  GST_TAG_TITLE_SORTNAME, add_text_tag_v4, "TSOT"}, {
+
+    /* Misc custom tags (not to be upstreamed) */
+  "gracenote-tagid", add_unique_file_id_tag,
+      "http://www.cddb.com/id3/taginfo1.html"}, {
+  "gracenote-extdata", add_txxx_tag, "GN_Ext_Data"}
 };
 
 static void
