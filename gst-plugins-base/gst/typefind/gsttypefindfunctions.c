@@ -524,50 +524,58 @@ static GstStaticCaps flac_caps = GST_STATIC_CAPS ("audio/x-flac");
 static void
 flac_type_find (GstTypeFind * tf, gpointer unused)
 {
-  guint8 *data;
   DataScanCtx c = { 0, NULL, 0 };
 
-  data = gst_type_find_peek (tf, 0, 5);
-  if (G_LIKELY (data)) {
-    /* standard flac */
-    if (memcmp (data, "fLaC", 4) == 0) {
-      gst_type_find_suggest (tf, GST_TYPE_FIND_MAXIMUM, FLAC_CAPS);
-    }
-    /* flac-in-ogg, see http://flac.sourceforge.net/ogg_mapping.html */
-    else if (memcmp (data, "\177FLAC\001", 6) == 0) {
-      gst_type_find_suggest (tf, GST_TYPE_FIND_MAXIMUM, FLAC_CAPS);
-    }
+  if (G_UNLIKELY (!data_scan_ctx_ensure_data (tf, &c, 4)))
+    return;
+
+  /* standard flac */
+  if (memcmp (c.data, "fLaC", 4) == 0) {
+    gst_type_find_suggest (tf, GST_TYPE_FIND_MAXIMUM, FLAC_CAPS);
+    return;
   }
 
+  if (G_UNLIKELY (!data_scan_ctx_ensure_data (tf, &c, 6)))
+    return;
+
+  /* flac-in-ogg, see http://flac.sourceforge.net/ogg_mapping.html */
+  if (memcmp (c.data, "\177FLAC\001", 6) == 0) {
+    gst_type_find_suggest (tf, GST_TYPE_FIND_MAXIMUM, FLAC_CAPS);
+    return;
+  }
+
+  /* disabled because it happily typefinds /dev/urandom as audio/x-flac, and
+   * because I yet have to see header-less flac in the wild */
+#if 0
   /* flac without headers */
   /* 64K should be enough */
   while (c.offset < (64 * 1024)) {
     if (G_UNLIKELY (!data_scan_ctx_ensure_data (tf, &c, 4)))
       break;
 
-    if (data[0] == 0xff && (data[1] >> 2) == 0x3e) {
+    if (c.data[0] == 0xff && (c.data[1] >> 2) == 0x3e) {
       /* bit 15 must be 0 */
-      if (((data[1] >> 1) & 0x01) == 0x01)
+      if (((c.data[1] >> 1) & 0x01) == 0x01)
         goto advance;
 
       /* blocksize must be != 0x00 */
-      if ((data[2] >> 4) == 0x00)
+      if ((c.data[2] >> 4) == 0x00)
         goto advance;
 
       /* samplerate must be != 0x0f */
-      if ((data[2] & 0x0f) == 0x0f)
+      if ((c.data[2] & 0x0f) == 0x0f)
         goto advance;
 
       /* channel assignment must be < 11 */
-      if ((data[3] >> 4) >= 11)
+      if ((c.data[3] >> 4) >= 11)
         goto advance;
 
       /* sample size must be != 0x07 */
-      if (((data[3] >> 1) & 0x07) == 0x07)
+      if (((c.data[3] >> 1) & 0x07) == 0x07)
         goto advance;
 
       /* next bit must be 0 */
-      if ((data[3] & 0x01) == 0x01)
+      if ((c.data[3] & 0x01) == 0x01)
         goto advance;
 
       gst_type_find_suggest (tf, GST_TYPE_FIND_LIKELY, FLAC_CAPS);
@@ -576,6 +584,7 @@ flac_type_find (GstTypeFind * tf, gpointer unused)
   advance:
     data_scan_ctx_advance (tf, &c, 1);
   }
+#endif
 }
 
 /*** audio/mpeg version 2, 4 ***/
