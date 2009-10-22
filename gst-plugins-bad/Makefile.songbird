@@ -106,7 +106,7 @@ include $(CURDIR)/../songbird-vendor-rules.mk
 module_setup_build: directshow-libs sb-asfmux-plugin-src
 ifeq (Darwin,$(SB_VENDOR_ARCH))
 	$(MKDIR) $(DARWIN_XUL_DIR)
-	$(TAR) -C $(DARWIN_XUL_DIR) -xvz -f $(MOZ_XR_DIR)/xulrunner.tar.bz2
+	$(TAR) -C $(DARWIN_XUL_DIR) -xvj -f $(MOZ_XR_DIR)/xulrunner.tar.bz2
 endif
 
 directshow-libs:
