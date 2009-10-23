@@ -250,20 +250,16 @@ ifneq (,$(filter linux-i686 macosx-i686,$(SB_TARGET_ARCH)))
    SB_CXXFLAGS += -g -gstabs+
 endif
 
-ifeq (debug, $(SB_BUILD_TYPE))
+ifeq (debug,$(SB_BUILD_TYPE))
    SB_CONFIGURE_OPTS += --enable-debug
-   ifeq (Msys, $(SB_VENDOR_ARCH))
-      SB_CFLAGS += -MTd
-   endif
-else
-ifeq (release, $(SB_BUILD_TYPE))
-   SB_CONFIGURE_OPTS += --disable-debug
-   ifeq (Msys, $(SB_VENDOR_ARCH))
-      SB_CFLAGS += -MT -UDEBUG -DNDEBUG
-   endif
-else
-   $(error Unknown SB_BUILD_TYPE: $(SB_BUILD_TYPE))
+   SB_BUILD_TYPE_DETECTED = 1
 endif
+ifeq (release,$(SB_BUILD_TYPE))
+   SB_CONFIGURE_OPTS += --disable-debug
+   SB_BUILD_TYPE_DETECTED = 1
+endif
+ifndef SB_BUILD_TYPE_DETECTED
+   $(error Unknown SB_BUILD_TYPE: $(SB_BUILD_TYPE))
 endif
 
 #

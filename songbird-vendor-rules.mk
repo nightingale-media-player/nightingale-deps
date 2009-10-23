@@ -60,6 +60,13 @@ BUILD_TARGET_SET = $(if \
 
 SB_RUN_CONFIGURE ?= 1
 
+# This flag only means anything on Win32 right now, so assert that...
+ifdef SB_USE_MOZCRT
+   ifneq (Msys,$(SB_VENDOR_ARCH))
+      $(error SB_USE_MOZCRT is only meaningful on Win32.)
+   endif
+endif
+
 ifeq (Msys,$(SB_VENDOR_ARCH))
    ifeq (,$(wildcard $(WINDOWS_SDK_ROOT)))
       $(error Could not find Windows SDK: $(WINDOWS_SDK_ROOT)) 
@@ -71,6 +78,27 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
 
    ifeq (,$(wildcard $(QUICKTIME_SDK_ROOT)))
       $(error Could not find QuickTime SDK: $(QUICKTIME_SDK_ROOT)) 
+   endif
+
+   ifeq (debug,$(SB_BUILD_TYPE))
+      ifeq (1,$(SB_USE_MOZCRT))
+         SB_CFLAGS += -MDd
+         SB_CFLAGS += -L$(MOZSDK_DIR)/lib -NODEFAULTLIB:msvcrt \
+          -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt19d
+      else
+         SB_CFLAGS += -MTd
+      endif
+      SB_CFLAGS += -DDEBUG -UNDEBUG
+   endif
+   ifeq (release,$(SB_BUILD_TYPE))
+      ifeq (1,$(SB_USE_MOZCRT))
+         SB_CFLAGS += -MD
+         SB_CFLAGS += -L$(MOZSDK_DIR)/lib -NODEFAULTLIB:msvcrt \
+          -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt19
+      else
+         SB_CFLAGS += -MT
+      endif
+      SB_CFLAGS += -UDEBUG -DNDEBUG
    endif
 endif
 
