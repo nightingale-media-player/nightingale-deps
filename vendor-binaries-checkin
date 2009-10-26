@@ -61,9 +61,9 @@ echo Vendor repo revision: $vrev
 echo Vendor-binaries repo revision: $vbrev
 echo Platform: $platform
 echo Packages: $PACKAGES
-echo 
-echo Correct? Hit Ctrl-c to cancel...
-read
+#echo 
+#echo Correct? Hit Ctrl-c to cancel...
+#read
 
 for d in $PACKAGES; do 
    symbolsFound=
