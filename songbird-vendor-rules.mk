@@ -83,7 +83,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
    ifeq (debug,$(SB_BUILD_TYPE))
       ifeq (1,$(SB_USE_MOZCRT))
          SB_CFLAGS += -MDd
-         SB_CFLAGS += -L$(MOZSDK_DIR)/lib -NODEFAULTLIB:msvcrt \
+         SB_LDFLAGS += -L$(MOZSDK_DIR)/lib -NODEFAULTLIB:msvcrt \
           -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt19d
       else
          SB_CFLAGS += -MTd
@@ -93,7 +93,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
    ifeq (release,$(SB_BUILD_TYPE))
       ifeq (1,$(SB_USE_MOZCRT))
          SB_CFLAGS += -MD
-         SB_CFLAGS += -L$(MOZSDK_DIR)/lib -NODEFAULTLIB:msvcrt \
+         SB_LDFLAGS += -L$(MOZSDK_DIR)/lib -NODEFAULTLIB:msvcrt \
           -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt19
       else
          SB_CFLAGS += -MT
