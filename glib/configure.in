@@ -7,10 +7,6 @@ dnl *** include special GLib macros ***
 dnl ***********************************
 
 m4_define(glib_configure_in)
-m4_include(acglib.m4)dnl
-m4_include(glib/libcharset/codeset.m4)dnl
-m4_include(glib/libcharset/glibc21.m4)dnl
-m4_include(m4macros/glib-gettext.m4)dnl
 
 #
 # The following version number definitions apply to GLib, GModule, GObject 
@@ -26,9 +22,9 @@ m4_include(m4macros/glib-gettext.m4)dnl
 # set glib_binary_age _and_ glib_interface_age to 0.
 #
 m4_define([glib_major_version], [2])
-m4_define([glib_minor_version], [12])
-m4_define([glib_micro_version], [13])
-m4_define([glib_interface_age], [13])
+m4_define([glib_minor_version], [16])
+m4_define([glib_micro_version], [6])
+m4_define([glib_interface_age], [6])
 m4_define([glib_binary_age],
           [m4_eval(100 * glib_minor_version + glib_micro_version)])
 m4_define([glib_version],
@@ -128,6 +124,15 @@ case "$host" in
     GTHREAD_DEF=gthread.def
     TESTGMODULE_EXP=testgmodule.exp
     glib_pid_type='void *'
+    # Unfortunately the mingw implementations of C99-style snprintf and vsnprintf
+    # don't seem to be quite good enough, at least not in mingw-runtime-3.14.
+    # (Sorry, I don't know exactly what is the problem, but it is related to
+    # floating point formatting and decimal point vs. comma.)
+    # The simple tests in AC_FUNC_VSNPRINTF_C99 and AC_FUNC_SNPRINTF_C99 aren't
+    # rigorous enough to notice, though.
+    # So preset the autoconf cache variables.
+    ac_cv_func_vsnprintf_c99=no
+    ac_cv_func_snprintf_c99=no
     ;;
   *)
     glib_native_win32=no
@@ -145,11 +150,21 @@ case $host in
     ;;
 esac
 
-
 AC_MSG_RESULT([$glib_native_win32])
+
+glib_have_carbon=no
+AC_MSG_CHECKING([for Mac OS X Carbon support])
+AC_TRY_CPP([
+#include <Carbon/Carbon.h>
+#include <CoreServices/CoreServices.h>
+], glib_have_carbon=yes)
+
+AC_MSG_RESULT([$glib_have_carbon])
+
 AM_CONDITIONAL(OS_WIN32, [test "$glib_native_win32" = "yes"])
 AM_CONDITIONAL(OS_UNIX, [test "$glib_native_win32" != "yes"])
 AM_CONDITIONAL(OS_LINUX, [test "$glib_os_linux" = "yes"])
+AM_CONDITIONAL(OS_CARBON, [test "$glib_have_carbon" = "yes"])
 AC_SUBST(GLIB_DEF)
 AC_SUBST(GMODULE_DEF)
 AC_SUBST(GOBJECT_DEF)
@@ -173,12 +188,18 @@ AM_CONDITIONAL(MS_LIB_AVAILABLE, [test x$ms_librarian = xyes])
 if test "$glib_native_win32" != yes; then
     # libtool option to control which symbols are exported
     # right now, symbols starting with _ are not exported
-    LIBTOOL_EXPORT_OPTIONS='-export-symbols-regex "^[[^_]].*"'
+    LIBTOOL_EXPORT_OPTIONS='-export-symbols-regex "^g.*"'
 else
     # We currently use .def files on Windows
     LIBTOOL_EXPORT_OPTIONS=
 fi
 AC_SUBST(LIBTOOL_EXPORT_OPTIONS)
+
+if test "x$glib_have_carbon" = "xyes"; then
+  AC_DEFINE(HAVE_CARBON, 1, [define to 1 if Carbon is available])
+  LDFLAGS="$LDFLAGS -framework Carbon"
+fi
+
 
 dnl declare --enable-* args and collect ac_help strings
 AC_ARG_ENABLE(debug,
@@ -211,9 +232,6 @@ AC_ARG_ENABLE(visibility,
 if test "x$enable_threads" != "xyes"; then
   enable_threads=no
 fi
-
-AC_DEFINE_UNQUOTED(G_COMPILED_WITH_DEBUGGING, ["${enable_debug}"],
-	[Whether glib was compiled with debugging enabled])
 
 AC_MSG_CHECKING([whether to enable garbage collector friendliness])
 if test "x$enable_gc_friendly" = "xyes"; then
@@ -255,6 +273,7 @@ AM_CONDITIONAL(HAVE_CXX, [test "$CXX" != ""])
 AC_LANG_RESTORE
 
 AM_PROG_CC_STDC
+AM_PROG_CC_C_O
 AC_PROG_INSTALL
 
 AC_SYS_LARGEFILE
@@ -267,10 +286,10 @@ if test x$PKG_CONFIG = xno ; then
   AC_MSG_ERROR([*** pkg-config not found. See http://www.freedesktop.org/software/pkgconfig/])
 fi
 
-if $PKG_CONFIG --atleast-pkgconfig-version 0.14 ; then
+if $PKG_CONFIG --atleast-pkgconfig-version 0.16 ; then
   :
 else
-  AC_MSG_ERROR([*** pkg-config too old; version 0.14 or better required.])
+  AC_MSG_ERROR([*** pkg-config too old; version 0.16 or better required.])
 fi
 
 if test "x$enable_debug" = "xyes"; then
@@ -328,6 +347,8 @@ if test x"$glib_native_win32" = xyes; then
     fi
   fi
 fi
+GLIB_EXTRA_CFLAGS="${msnative_struct}"
+AC_SUBST(GLIB_EXTRA_CFLAGS)
 
 AC_EXEEXT
 
@@ -350,10 +371,15 @@ AC_SUBST(REBUILD)
 #
 if test "x$PERL" != x ; then
   AC_PATH_PROG(PERL_PATH, [$PERL])
-else
+fi
+if test "x$PERL_PATH" = x ; then
   PERL_PATH="/usr/bin/env perl"
 fi
 AC_SUBST(PERL_PATH)
+
+# Need suitable python path for greport
+AM_PATH_PYTHON(2.4,,PYTHON="/usr/bin/env python2.4")
+
 
 dnl ***********************
 dnl *** Tests for iconv ***
@@ -361,38 +387,44 @@ dnl ***********************
 dnl
 dnl We do this before the gettext checks, to avoid distortion
 
-AC_ARG_WITH(libiconv,
-            [AC_HELP_STRING([--with-libiconv=@<:@no/gnu/native@:>@],
-                            [use the libiconv library])],,
-	    [with_libiconv=maybe])
+dnl On Windows we use a native implementation
 
-found_iconv=no
-case $with_libiconv in
-  maybe)
-    # Check in the C library first
-    AC_CHECK_FUNC(iconv_open, [with_libiconv=no; found_iconv=yes])
-    # Check if we have GNU libiconv
-    if test $found_iconv = "no"; then
+if test x"$glib_native_win32" = xyes; then
+  with_libiconv=native
+else
+  AC_ARG_WITH(libiconv,
+	      [AC_HELP_STRING([--with-libiconv=@<:@no/gnu/native@:>@],
+			      [use the libiconv library])],,
+	      [with_libiconv=maybe])
+
+  found_iconv=no
+  case $with_libiconv in
+    maybe)
+      # Check in the C library first
+      AC_CHECK_FUNC(iconv_open, [with_libiconv=no; found_iconv=yes])
+      # Check if we have GNU libiconv
+      if test $found_iconv = "no"; then
+	AC_CHECK_LIB(iconv, libiconv_open, [with_libiconv=gnu; found_iconv=yes])
+      fi
+      # Check if we have a iconv in -liconv, possibly from vendor
+      if test $found_iconv = "no"; then
+	AC_CHECK_LIB(iconv, iconv_open, [with_libiconv=native; found_iconv=yes])
+      fi
+      ;;
+    no)
+      AC_CHECK_FUNC(iconv_open, [with_libiconv=no; found_iconv=yes])
+      ;;
+    gnu|yes)
       AC_CHECK_LIB(iconv, libiconv_open, [with_libiconv=gnu; found_iconv=yes])
-    fi
-    # Check if we have a iconv in -liconv, possibly from vendor
-    if test $found_iconv = "no"; then
+      ;;
+    native)
       AC_CHECK_LIB(iconv, iconv_open, [with_libiconv=native; found_iconv=yes])
-    fi
-    ;;
-  no)
-    AC_CHECK_FUNC(iconv_open, [with_libiconv=no; found_iconv=yes])
-    ;;
-  gnu|yes)
-    AC_CHECK_LIB(iconv, libiconv_open, [with_libiconv=gnu; found_iconv=yes])
-    ;;
-  native)
-    AC_CHECK_LIB(iconv, iconv_open, [with_libiconv=native; found_iconv=yes])
-    ;;
-esac
+      ;;
+  esac
 
-if test "x$found_iconv" = "xno" ; then
-   AC_MSG_ERROR([*** No iconv() implementation found in C library or libiconv])
+  if test "x$found_iconv" = "xno" ; then
+     AC_MSG_ERROR([*** No iconv() implementation found in C library or libiconv])
+  fi
 fi
 
 jm_GLIBC21
@@ -427,7 +459,7 @@ dnl
 dnl gettext support
 dnl
 
-ALL_LINGUAS="am ar az be be@latin bg bn bn_IN bs ca cs cy da de dz el en_CA en_GB eo es et eu fa fi fr ga gl gu he hi hr hu hy id is it ja ka ko ku lt lv mk ml mn ms nb ne nl nn or pa pl pt pt_BR ro ru rw sk sl sq sr sr@Latn sr@ije sv ta te th tl tr tt uk vi wa xh yi zh_CN zh_HK zh_TW"
+ALL_LINGUAS="am ar as az be be@latin bg bn bn_IN bs ca cs cy da de dz el en_CA en_GB eo es et eu fa fi fr ga gl gu he hi hr hu hy id is it ja ka kn ko ku lt lv mg mk ml mn mr ms nb ne nl nn oc or pa pl pt pt_BR ro ru rw si sk sl sq sr sr@Latn sr@ije sv ta te th tl tr tt uk vi wa xh yi zh_CN zh_HK zh_TW"
 GLIB_GNU_GETTEXT
 
 if test "$gt_cv_have_gettext" != "yes" ; then
@@ -450,11 +482,13 @@ dnl
 dnl Now we are done with gettext checks, figure out ICONV_LIBS
 dnl
 
-if test x$with_libiconv != xno ; then
-  case " $INTLLIBS " in
-  *[[\ \	]]-liconv[[\ \	]]*) ;;
-  *) ICONV_LIBS="-liconv" ;;
-  esac
+if test x"$glib_native_win32" != xyes; then
+  if test x$with_libiconv != xno ; then
+    case " $INTLLIBS " in
+    *[[\ \	]]-liconv[[\ \	]]*) ;;
+    *) ICONV_LIBS="-liconv" ;;
+    esac
+  fi
 fi
 AC_SUBST(ICONV_LIBS)
 
@@ -520,15 +554,15 @@ AC_HEADER_STDC
 
 # Checks for library functions.
 AC_FUNC_VPRINTF
-AC_FUNC_MMAP
 AC_FUNC_ALLOCA
+AC_CHECK_FUNCS(mmap)
 AC_CHECK_FUNCS(posix_memalign)
 AC_CHECK_FUNCS(memalign)
 AC_CHECK_FUNCS(valloc)
 
 AC_CHECK_FUNCS(atexit on_exit)
 
-AC_CHECK_FUNCS(timegm)
+AC_CHECK_FUNCS(timegm gmtime_r)
 
 AC_CHECK_SIZEOF(char)
 AC_CHECK_SIZEOF(short)
@@ -786,13 +820,52 @@ int main (int argc, char **argv)
 AC_MSG_RESULT($g_have_gnuc_visibility)
 AM_CONDITIONAL(HAVE_GNUC_VISIBILITY, [test x$g_have_gnuc_visibility = xyes])
 
+AC_MSG_CHECKING([whether using Sun Studio C compiler])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#if defined(__SUNPRO_C) || (__SUNPRO_C >= 0x550)
+#else
+# include "error: this is not Sun Studio."
+#endif
+]], [[]])], [ g_have_sunstudio_visibility=yes ], [ g_have_sunstudio_visibility=no ])
+AC_MSG_RESULT($g_have_sunstudio_visibility)
+AM_CONDITIONAL(HAVE_SUNSTUDIO_VISIBILITY, [test x$g_have_sunstudio_visibility = xyes])
+
 # check for bytesex stuff
 AC_C_BIGENDIAN
+if test x$ac_cv_c_bigendian = xuniversal ; then
+AC_TRY_COMPILE([#include <endian.h>], [#if __BYTE_ORDER == __BIG_ENDIAN
+#else
+#error Not a big endian. 
+#endif],
+    ac_cv_c_bigendian=yes
+    ,AC_TRY_COMPILE([#include <endian.h>], [#if __BYTE_ORDER == __LITTLE_ENDIAN
+#else
+#error Not a little endian. 
+#endif],
+    ac_cv_c_bigendian=no
+    ,AC_MSG_WARN([Could not determine endianness.])))
+fi
 
 # check for header files
-AC_CHECK_HEADERS([dirent.h float.h limits.h pwd.h sys/param.h sys/poll.h])
+AC_CHECK_HEADERS([dirent.h float.h limits.h pwd.h grp.h sys/param.h sys/poll.h sys/resource.h])
 AC_CHECK_HEADERS([sys/time.h sys/times.h sys/wait.h unistd.h values.h])
 AC_CHECK_HEADERS([sys/select.h sys/types.h stdint.h sched.h malloc.h])
+AC_CHECK_HEADERS([sys/vfs.h sys/mount.h sys/vmount.h sys/statfs.h sys/statvfs.h])
+AC_CHECK_HEADERS([mntent.h sys/mnttab.h sys/vfstab.h sys/mntctl.h sys/sysctl.h fstab.h])
+
+# check for structure fields
+AC_CHECK_MEMBERS([struct stat.st_mtimensec, struct stat.st_mtim.tv_nsec, struct stat.st_atimensec, struct stat.st_atim.tv_nsec, struct stat.st_ctimensec, struct stat.st_ctim.tv_nsec])
+AC_CHECK_MEMBERS([struct stat.st_blksize, struct stat.st_blocks, struct statfs.f_fstypename],,, [#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#ifdef HAVE_SYS_STATFS_H
+#include <sys/statfs.h>
+#endif
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
+#ifdef HAVE_SYS_MOUNT_H
+#include <sys/mount.h>
+#endif])
 
 # Checks for libcharset
 jm_LANGINFO_CODESET
@@ -856,6 +929,8 @@ AC_MSG_RESULT(unsigned $glib_size_type)
 
 # Check for some functions
 AC_CHECK_FUNCS(lstat strerror strsignal memmove vsnprintf stpcpy strcasecmp strncasecmp poll getcwd vasprintf setenv unsetenv getc_unlocked readlink symlink fdwalk)
+AC_CHECK_FUNCS(chown lchown fchmod fchown link statvfs statfs utimes getgrgid getpwuid)
+AC_CHECK_FUNCS(getmntent_r setmntent endmntent hasmntopt getmntinfo)
 # Check for high-resolution sleep functions
 AC_CHECK_FUNCS(nanosleep nsleep)
 
@@ -864,6 +939,47 @@ AC_CHECK_FUNCS(_NSGetEnviron)
 
 AC_FUNC_VSNPRINTF_C99
 AC_FUNC_PRINTF_UNIX98
+
+dnl
+dnl if statfs() takes 2 arguments (Posix) or 4 (Solaris)
+dnl
+if test "$ac_cv_func_statfs" = yes ; then
+  AC_MSG_CHECKING([number of arguments to statfs()])
+  AC_TRY_COMPILE([#include <unistd.h>
+  #ifdef HAVE_SYS_PARAM_H
+  #include <sys/param.h>
+  #endif
+  #ifdef HAVE_SYS_VFS_H
+  #include <sys/vfs.h>
+  #endif
+  #ifdef HAVE_SYS_MOUNT_H
+  #include <sys/mount.h>
+  #endif
+  #ifdef HAVE_SYS_STATFS_H
+  #include <sys/statfs.h>
+  #endif], [struct statfs st;
+  statfs(NULL, &st);],[
+    AC_MSG_RESULT([2])
+    AC_DEFINE(STATFS_ARGS, 2, [Number of arguments to statfs()])],[
+    AC_TRY_COMPILE([#include <unistd.h>
+  #ifdef HAVE_SYS_PARAM_H
+  #include <sys/param.h>
+  #endif
+  #ifdef HAVE_SYS_VFS_H
+  #include <sys/vfs.h>
+  #endif
+  #ifdef HAVE_SYS_MOUNT_H
+  #include <sys/mount.h>
+  #endif
+  #ifdef HAVE_SYS_STATFS_H
+  #include <sys/statfs.h>
+  #endif], [struct statfs st;
+  statfs(NULL, &st, sizeof (st), 0);],[
+      AC_MSG_RESULT([4])
+      AC_DEFINE(STATFS_ARGS, 4, [Number of arguments to statfs()])],[
+      AC_MSG_RESULT(unknown)
+      AC_MSG_ERROR([unable to determine number of arguments to statfs()])])])
+fi
 
 #
 # Check whether to use an included printf
@@ -1014,10 +1130,10 @@ fi
 
 dnl Check for nl_langinfo and CODESET
 AC_CACHE_CHECK([for nl_langinfo (CODESET)],glib_cv_langinfo_codeset,[
-	AC_TRY_COMPILE([#include <langinfo.h>],
-		[char *codeset = nl_langinfo (CODESET);],
-   		[glib_cv_langinfo_codeset=yes],
-   		[glib_cv_langinfo_codeset=no])])
+        AC_TRY_COMPILE([#include <langinfo.h>],
+                [char *codeset = nl_langinfo (CODESET);],
+                [glib_cv_langinfo_codeset=yes],
+                [glib_cv_langinfo_codeset=no])])
 if test x$glib_cv_langinfo_codeset = xyes; then
   AC_DEFINE(HAVE_CODESET,1,[Have nl_langinfo (CODESET)])
 fi
@@ -1141,7 +1257,7 @@ fi
 
 AC_CACHE_CHECK([whether va_lists can be copied by value],glib_cv_va_val_copy,[
 	AC_TRY_RUN([#include <stdarg.h>
-#include <stdlib.h>
+#include <stdlib.h> 
 	void f (int i, ...) {
 	va_list args1, args2;
 	va_start (args1, i);
@@ -1312,28 +1428,17 @@ else
 fi
 
 AC_MSG_CHECKING(for the suffix of shared libraries)
-case "$host_os" in
-  hpux9* | hpux10* | hpux11*)  # taken from ltconfig
-    case "$host_cpu" in
-      hppa*)
-	glib_gmodule_suffix='sl'
-	;;
-      ia64*)
-	glib_gmodule_suffix='so'
-	;;
-    esac
-    ;;
-  cygwin* | mingw*)
-    glib_gmodule_suffix='dll'
-    ;;
-  aix*)
-    glib_gmodule_suffix='a'
-    ;;
-  *)
-    glib_gmodule_suffix='so'    
-    ;;
-esac
+export SED
+shrext_cmds=`./libtool --config | grep '^shrext_cmds='`
+eval $shrext_cmds
+module=yes eval std_shrext=$shrext_cmds
+# chop the initial dot
+glib_gmodule_suffix=`echo $std_shrext | sed 's/^\.//'`
 AC_MSG_RESULT(.$glib_gmodule_suffix)
+# any reason it may fail?
+if test "x$glib_gmodule_suffix" = x; then
+	AC_MSG_ERROR(Cannot determine shared library suffix from libtool)
+fi
  
 AC_SUBST(G_MODULE_SUPPORTED)
 AC_SUBST(G_MODULE_IMPL)
@@ -1377,6 +1482,134 @@ case "$host" in
 esac
 AC_MSG_RESULT($GIO)
 AC_SUBST(GIO)
+
+dnl *********************************
+dnl *** Directory for GIO modules ***
+dnl *********************************
+
+AC_ARG_WITH(gio-module-dir,
+           [AC_HELP_STRING([--with-gio-module-dir=PATH],
+                           [Load gio modules from this directory [LIBDIR/gio/modules]])],
+           [],
+	   [with_gio_module_dir='${libdir}/gio/modules'])
+GIO_MODULE_DIR=$with_gio_module_dir
+AC_SUBST(GIO_MODULE_DIR)
+
+dnl **********************************
+dnl *** Check for libselinux (GIO) ***
+dnl **********************************
+AC_ARG_ENABLE(selinux, [  --disable-selinux       build without selinux support])
+msg_selinux=no
+SELINUX_LIBS=
+if test "x$enable_selinux" != "xno"; then
+
+ AC_CHECK_LIB(selinux, is_selinux_enabled,
+   [AC_CHECK_HEADERS(selinux/selinux.h,
+     [AC_CHECK_LIB(selinux, lgetfilecon_raw,
+       [AC_DEFINE(HAVE_SELINUX, 1, [Define to 1 if libselinux is available])
+        SELINUX_LIBS="-lselinux"
+        msg_selinux=yes])
+     ])
+   ])
+fi
+AC_SUBST(SELINUX_LIBS)
+
+dnl *****************************
+dnl ** Check for inotify (GIO) **
+dnl *****************************
+inotify_support=no
+AC_CHECK_HEADERS([sys/inotify.h],
+[
+	inotify_support=yes
+])
+
+AM_CONDITIONAL(HAVE_INOTIFY, [test "$inotify_support" = "yes"])
+
+dnl ****************************
+dnl *** Checks for FAM (GIO) ***
+dnl ****************************
+
+should_disable_fam=no
+
+AC_ARG_ENABLE(fam, [  --disable-fam          build without enabling fam for file system monitoring],
+                         [
+                                if test "x$enable_fam" = "xno"; then
+                                        should_disable_fam=yes
+                                        echo "Not building FAM support"
+                                fi
+                         ]
+                         )
+fam_support=no
+FAM_LIBS=
+if test "x$should_disable_fam" = "xno"; then
+AC_CHECK_LIB(fam, FAMOpen,
+  [AC_CHECK_HEADERS(fam.h,
+    [AC_DEFINE(HAVE_FAM, [], [Define if we have FAM])
+     AC_CHECK_LIB(fam, FAMNoExists,
+     		  AC_DEFINE(HAVE_FAM_NO_EXISTS, [], [Define if we have FAMNoExists in fam]))
+     FAM_LIBS="-lfam"]
+     fam_support=yes,
+    AC_MSG_WARN(*** FAM support will not be built (header files not found) ***))],
+  AC_MSG_WARN(*** FAM support will not be built (FAM library not found) ***))
+AC_SUBST(FAM_LIBS)
+fi
+AM_CONDITIONAL(HAVE_FAM, [test "$fam_support" = "yes"])
+
+
+dnl *****************************
+dnl *** Check for xattr (GIO) ***
+dnl *****************************
+AC_ARG_ENABLE(xattr, [  --disable-xattr           build without xattr support])
+msg_xattr=no
+XATTR_LIBS=
+if test "x$enable_xattr" != "xno"; then
+
+dnl either glibc or libattr can provide xattr support
+
+dnl for both of them, we check for getxattr being in
+dnl the library and a valid xattr header.
+
+dnl try glibc
+ AC_CHECK_LIB(c, getxattr,
+   [AC_CHECK_HEADERS(sys/xattr.h,
+     [AC_DEFINE(HAVE_XATTR, 1, [Define to 1 if xattr is available])
+      msg_xattr=yes])
+   ])
+
+  if test "x$msg_xattr" != "xyes"; then
+dnl   failure. try libattr
+   AC_CHECK_LIB(attr, getxattr,
+      [AC_CHECK_HEADERS(attr/xattr.h,
+       [AC_DEFINE(HAVE_XATTR, 1, [Define to 1 if xattr is available])
+        XATTR_LIBS="-lattr"
+        msg_xattr=yes])
+      ])
+  fi
+
+  if test "x$msg_xattr" = "xyes"; then
+    AC_MSG_CHECKING([for XATTR_NOFOLLOW])
+    AC_TRY_COMPILE([
+      #include <stdio.h>
+      #ifdef HAVE_SYS_TYPES_H
+      #include <sys/types.h>
+      #endif
+      #ifdef HAVE_SYS_XATTR_H
+      #include <sys/xattr.h>
+      #elif HAVE_ATTR_XATTR_H
+      #include <attr/xattr.h>
+      #endif
+    ],
+    [ssize_t len = getxattr("", "", NULL, 0, 0, XATTR_NOFOLLOW);],
+    [
+      AC_DEFINE([HAVE_XATTR_NOFOLLOW], [1], [Define to 1 if xattr API uses XATTR_NOFOLLOW])
+      AC_MSG_RESULT([yes])
+    ],
+    [AC_MSG_RESULT([no])]
+    )
+  fi
+
+fi
+AC_SUBST(XATTR_LIBS)
 
 dnl ****************************************
 dnl *** platform dependent source checks ***
@@ -1811,7 +2044,7 @@ if test x"$have_threads" != xno; then
 	# we are not doing the following for now, as this might require glib 
 	# to always be linked with the thread libs on some platforms. 
 	# LIBS="$LIBS $G_THREAD_LIBS"
-	AC_CHECK_FUNCS(localtime_r)
+	AC_CHECK_FUNCS(localtime_r gmtime_r)
 	if test "$ac_cv_header_pwd_h" = "yes"; then
 	 	AC_CACHE_CHECK([for posix getpwuid_r],
 			ac_cv_func_posix_getpwuid_r,
@@ -1848,6 +2081,45 @@ int main () {
 			if test "$ac_cv_func_nonposix_getpwuid_r" = yes; then
 				AC_DEFINE(HAVE_NONPOSIX_GETPWUID_R,1,
 					[Have non-POSIX function getpwuid_r])
+			fi
+		fi
+	fi
+	if test "$ac_cv_header_grp_h" = "yes"; then
+	   	AC_CACHE_CHECK([for posix getgrgid_r],
+			ac_cv_func_posix_getgrgid_r,
+			[AC_TRY_RUN([
+#include <errno.h>
+#include <grp.h>
+int main () { 
+    char buffer[10000];
+    struct group grp, *grpptr = &grp;
+    int error;
+    errno = 0;
+    error = getgrgid_r (0, &grp, buffer, 
+                        sizeof (buffer), &grpptr);
+   return (error < 0 && errno == ENOSYS) 
+	   || error == ENOSYS; 
+}                              ],
+			       [ac_cv_func_posix_getgrgid_r=yes],
+			       [ac_cv_func_posix_getgrgid_r=no])])
+		GLIB_ASSERT_SET(ac_cv_func_posix_getgrgid_r)
+		if test "$ac_cv_func_posix_getgrgid_r" = yes; then
+		   	AC_DEFINE(HAVE_POSIX_GETGRGID_R,1,
+				[Have POSIX function getgrgid_r])
+		else
+			AC_CACHE_CHECK([for nonposix getgrgid_r],
+				ac_cv_func_nonposix_getgrgid_r,
+				[AC_TRY_LINK([#include <grp.h>],
+                               		[char buffer[10000];
+					struct group grp;	
+					getgrgid_r (0, &grp, buffer, 
+                                       	sizeof (buffer));],
+				[ac_cv_func_nonposix_getgrgid_r=yes],
+				[ac_cv_func_nonposix_getgrgid_r=no])])
+			GLIB_ASSERT_SET(ac_cv_func_nonposix_getgrgid_r)
+			if test "$ac_cv_func_nonposix_getgrgid_r" = yes; then
+			   	AC_DEFINE(HAVE_NONPOSIX_GETGRGID_R,1,
+					[Have non-POSIX function getgrgid_r])
 			fi
 		fi
 	fi
@@ -1949,9 +2221,10 @@ fi
 # 
 #  a) GCC < 3.3 for Linux doesn't include -lpthread when
 #     building shared libraries with linux.
+#  b) FreeBSD doesn't do this either.
 #
 case $host in
-  *-*-linux*)
+  *-*-freebsd*|*-*-linux*)
     G_THREAD_LIBS_FOR_GTHREAD="`echo $G_THREAD_LIBS | sed s/-pthread/-lpthread/`"
     ;;
   *) 	 
@@ -2003,10 +2276,8 @@ AC_CHECK_FUNCS(clock_gettime, [], [
 AC_CACHE_CHECK(for monotonic clocks,
     glib_cv_monotonic_clock,AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
 #include <time.h>
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
-int main (int argc, char *argv[]) {
+int main() {
 #if !(defined(_POSIX_MONOTONIC_CLOCK) && _POSIX_MONOTONIC_CLOCK >= 0 && defined(CLOCK_MONOTONIC))
         #error No monotonic clock
 #endif
@@ -2016,6 +2287,7 @@ int main (int argc, char *argv[]) {
 if test "$glib_cv_monotonic_clock" = "yes"; then
   AC_DEFINE(HAVE_MONOTONIC_CLOCK,1,[Have a monotonic clock])
 fi
+
 
 dnl ********************************
 dnl *** g_atomic_* tests for gcc ***
@@ -2073,6 +2345,17 @@ if test x"$GCC" = xyes; then
       AC_DEFINE_UNQUOTED(G_ATOMIC_POWERPC, 1,
 		   	 [powerpc atomic implementation])
       glib_memory_barrier_needed=yes
+      AC_MSG_CHECKING([whether asm supports numbered local labels])
+      AC_TRY_COMPILE(
+		,[ 
+			__asm__ __volatile__ ("1:       nop\n"
+					      "         bne-    1b")
+		],[
+			AC_DEFINE_UNQUOTED(ASM_NUMERIC_LABELS, 1, [define if asm blocks can use numeric local labels])
+			AC_MSG_RESULT([yes])
+		],[
+			AC_MSG_RESULT([no])
+		])
       ;;	
     ia64)
       AC_MSG_RESULT([ia64])
@@ -2086,6 +2369,12 @@ if test x"$GCC" = xyes; then
 		   	 [s390 atomic implementation])
       glib_memory_barrier_needed=no
       ;;	
+    arm*)
+      AC_MSG_RESULT([arm])
+      AC_DEFINE_UNQUOTED(G_ATOMIC_ARM, 1,
+                         [arm atomic implementation])
+      glib_memory_barrier_needed=no
+      ;;
     *)
       AC_MSG_RESULT([none])
       glib_memory_barrier_needed=yes
@@ -2149,6 +2438,80 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
   [broken_poll="no (cross compiling)"])
 AC_MSG_RESULT($broken_poll)
 
+dnl *********************
+dnl *** GRegex checks ***
+dnl *********************
+PCRE_REQUIRED_VERSION=7.2
+
+# Check if we should compile GRegex
+AC_ARG_ENABLE(regex, AC_HELP_STRING([--disable-regex],
+              [disable the compilation of GRegex]),
+[case "${enableval}" in
+  yes) enable_regex=true ;;
+  no)  enable_regex=false ;;
+  *) AC_MSG_ERROR(bad value ${enableval} for --enable-regex) ;;
+esac],
+[enable_regex=true])
+
+AM_CONDITIONAL(ENABLE_REGEX, $enable_regex)
+
+if test x$enable_regex = xtrue; then
+  # Check if we should use the internal or the system-supplied pcre
+  AC_ARG_WITH(pcre,
+             [AC_HELP_STRING([--with-pcre=@<:@internal/system@:>@],
+                             [specify whether to use the internal or the
+                              system-supplied PCRE library])])
+
+  AM_CONDITIONAL(USE_SYSTEM_PCRE, [test "x$with_pcre" = xsystem])
+
+  if test "x$with_pcre" = xsystem; then
+    PKG_CHECK_MODULES(PCRE,
+                      libpcre >= $PCRE_REQUIRED_VERSION)
+    AC_CACHE_CHECK([for Unicode support in PCRE],glib_cv_pcre_has_unicode,[
+                   glib_save_CFLAGS="$CFLAGS"
+                   glib_save_LIBS="$LIBS"
+                   CFLAGS="$CFLAGS $PCRE_CFLAGS" LIBS="$PCRE_LIBS"
+                   AC_TRY_RUN([#include <pcre.h>
+                               int main () {
+                                 int support;
+                                 pcre_config (PCRE_CONFIG_UTF8, &support);
+                                 if (!support)
+                                   return 1;
+                                 pcre_config (PCRE_CONFIG_UNICODE_PROPERTIES, &support);
+                                 if (!support)
+                                   return 1;
+                                 return 0;
+                               }],
+                   glib_cv_pcre_has_unicode=yes,
+                   glib_cv_pcre_has_unicode=no,
+                   glib_cv_pcre_has_unicode=yes)
+                   CFLAGS="$glib_save_CFLAGS"
+                   LIBS="$glib_save_LIBS"
+	])
+    if test "$glib_cv_pcre_has_unicode" = "no"; then
+      AC_MSG_ERROR([*** The system-supplied PCRE does not support Unicode properties or UTF-8.])
+    fi
+    AC_SUBST(PCRE_CFLAGS)
+    AC_SUBST(PCRE_LIBS)
+    AC_DEFINE(USE_SYSTEM_PCRE, [], [using the system-supplied PCRE library])
+    PCRE_REQUIRES=libpcre
+    AC_SUBST(PCRE_REQUIRES)
+  else
+    # If using gcc 4 pass -Wno-pointer-sign when compiling the internal PCRE
+    if test x"$GCC" = xyes; then
+      AC_MSG_CHECKING([whether compiler understands -Wno-pointer-sign])
+      save_CFLAGS="$CFLAGS"
+      CFLAGS="$CFLAGS -Wno-pointer-sign"
+      AC_TRY_COMPILE([],[],[PCRE_WARN_CFLAGS="$PCRE_WARN_CFLAGS -Wno-pointer-sign"
+			    AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
+      CFLAGS="$save_CFLAGS"
+    fi
+  fi
+  AC_SUBST(PCRE_WARN_CFLAGS)
+else
+  AM_CONDITIONAL(USE_SYSTEM_PCRE, false])
+fi
+
 dnl **********************
 dnl *** Win32 API libs ***
 dnl **********************
@@ -2195,7 +2558,7 @@ dnl **************************
 dnl *** Checks for gtk-doc ***
 dnl **************************
 
-GTK_DOC_CHECK([1.4])
+GTK_DOC_CHECK([1.8])
 
 AC_ARG_ENABLE(man,
               [AC_HELP_STRING([--enable-man],
@@ -2347,6 +2710,13 @@ typedef unsigned $glib_size_type_define gsize;
 #define G_GSIZE_FORMAT $gsize_format
 
 #define G_MAXSIZE	G_MAXU$glib_msize_type
+#define G_MINSSIZE	G_MIN$glib_msize_type
+#define G_MAXSSIZE	G_MAX$glib_msize_type
+
+typedef gint64 goffset;
+#define G_MINOFFSET	G_MININT64
+#define G_MAXOFFSET	G_MAXINT64
+
 _______EOF
 
 	if test -z "$glib_unknown_void_p"; then
@@ -2443,20 +2813,20 @@ _______EOF
 
 	fi
 
-	if test x$g_have_gnuc_visibility = xyes ; then
+	if test x$g_have_gnuc_visibility = xyes; then
 		cat >>$outfile <<_______EOF
-#if __GNUC__ == 2 && __GNUC_MINOR__ == 95
-#define G_GNUC_INTERNAL
-#else
 #define G_HAVE_GNUC_VISIBILITY 1
-#define G_GNUC_INTERNAL __attribute__((visibility("hidden")))
-#endif
-_______EOF
-	else
-		cat >>$outfile <<_______EOF
-#define G_GNUC_INTERNAL
 _______EOF
 	fi
+		cat >>$outfile <<_______EOF
+#if defined(__SUNPRO_C) && (__SUNPRO_C >= 0x550)
+#define G_GNUC_INTERNAL __hidden
+#elif defined (__GNUC__) && defined (G_HAVE_GNUC_VISIBILITY)
+#define G_GNUC_INTERNAL __attribute__((visibility("hidden")))
+#else
+#define G_GNUC_INTERNAL
+#endif
+_______EOF
 
 
 	echo >>$outfile
@@ -2781,6 +3151,7 @@ g_have_iso_cxx_varargs=$g_have_iso_cxx_varargs
 
 g_can_inline=$g_can_inline
 g_have_gnuc_visibility=$g_have_gnuc_visibility
+g_have_sunstudio_visibility=$g_have_sunstudio_visibility
 
 case xyes in
 x$ac_cv_c_bigendian)
@@ -2854,6 +3225,10 @@ gthread-2.0.pc
 gthread-2.0-uninstalled.pc
 gobject-2.0.pc
 gobject-2.0-uninstalled.pc
+gio-2.0.pc
+gio-unix-2.0.pc
+gio-2.0-uninstalled.pc
+gio-unix-2.0-uninstalled.pc
 glib-zip
 glib-gettextize
 Makefile
@@ -2864,11 +3239,20 @@ build/win32/vs8/Makefile
 glib/Makefile
 glib/libcharset/Makefile
 glib/gnulib/Makefile
+glib/pcre/Makefile
+glib/update-pcre/Makefile
+glib/tests/Makefile
 gmodule/Makefile
 gmodule/gmoduleconf.h
 gobject/Makefile
 gobject/glib-mkenums
+gobject/tests/Makefile
 gthread/Makefile
+gio/Makefile
+gio/xdgmime/Makefile
+gio/inotify/Makefile
+gio/fam/Makefile
+gio/tests/Makefile
 po/Makefile.in
 docs/Makefile
 docs/reference/Makefile
@@ -2876,6 +3260,8 @@ docs/reference/glib/Makefile
 docs/reference/glib/version.xml
 docs/reference/gobject/Makefile
 docs/reference/gobject/version.xml
+docs/reference/gio/Makefile
+docs/reference/gio/version.xml
 tests/Makefile
 tests/gobject/Makefile
 tests/refcount/Makefile

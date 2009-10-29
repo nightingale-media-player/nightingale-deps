@@ -1,7 +1,10 @@
+# Note that this file is hardly maintained, hardly usable without
+# manual editing, and not really part of a recommended way to build
+# GLib and related software with Microsoft's compilers. Only a few
+# persons use a build setup that involves this file.
+
 # Common makefile definitions for building GLib, GTk+, and various
 # software that use these libraries with msvc on Win32
-
-# For more detailed information see make.mingw in this same directory
 
 # Debug builds shoud link with msvcrtd release build with msvcrt.
 !IFNDEF DEBUG

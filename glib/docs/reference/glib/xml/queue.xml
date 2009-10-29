@@ -1,27 +1,29 @@
 <refentry id="glib-Double-ended-Queues">
 <refmeta>
-<refentrytitle role="top_of_page">Double-ended Queues</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Double-ended-Queues.top_of_page">Double-ended Queues</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>Double-ended Queues</refname>
-<refpurpose>double-ended queue data structure.</refpurpose>
+<refpurpose>double-ended queue data structure</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Double-ended-Queues.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
 
-
                     <link linkend="GQueue">GQueue</link>;
 <link linkend="GQueue">GQueue</link>*             <link linkend="g-queue-new">g_queue_new</link>                         (void);
 <link linkend="void">void</link>                <link linkend="g-queue-free">g_queue_free</link>                        (<link linkend="GQueue">GQueue</link> *queue);
+#define             <link linkend="G-QUEUE-INIT:CAPS">G_QUEUE_INIT</link>
+<link linkend="void">void</link>                <link linkend="g-queue-init">g_queue_init</link>                        (<link linkend="GQueue">GQueue</link> *queue);
+<link linkend="void">void</link>                <link linkend="g-queue-clear">g_queue_clear</link>                       (<link linkend="GQueue">GQueue</link> *queue);
 <link linkend="gboolean">gboolean</link>            <link linkend="g-queue-is-empty">g_queue_is_empty</link>                    (<link linkend="GQueue">GQueue</link> *queue);
 <link linkend="guint">guint</link>               <link linkend="g-queue-get-length">g_queue_get_length</link>                  (<link linkend="GQueue">GQueue</link> *queue);
 <link linkend="void">void</link>                <link linkend="g-queue-reverse">g_queue_reverse</link>                     (<link linkend="GQueue">GQueue</link> *queue);
@@ -100,7 +102,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Double-ended-Queues.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The <link linkend="GQueue"><type>GQueue</type></link> structure and its associated functions provide a standard
@@ -117,6 +119,10 @@ or simply pointers to any type of data.
 To create a new <link linkend="GQueue"><type>GQueue</type></link>, use <link linkend="g-queue-new"><function>g_queue_new()</function></link>.
 </para>
 <para>
+To initialize a statically-allocated <link linkend="GQueue"><type>GQueue</type></link>, use <link linkend="G-QUEUE-INIT:CAPS"><type>G_QUEUE_INIT</type></link> or
+<link linkend="g-queue-init"><function>g_queue_init()</function></link>.
+</para>
+<para>
 To add elements, use <link linkend="g-queue-push-head"><function>g_queue_push_head()</function></link>, <link linkend="g-queue-push-head-link"><function>g_queue_push_head_link()</function></link>, 
 <link linkend="g-queue-push-tail"><function>g_queue_push_tail()</function></link> and <link linkend="g-queue-push-tail-link"><function>g_queue_push_tail_link()</function></link>.
 </para>
@@ -128,11 +134,11 @@ To free the entire queue, use <link linkend="g-queue-free"><function>g_queue_fre
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Double-ended-Queues.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GQueue" role="struct"/>GQueue</title>
-<indexterm><primary>GQueue</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GQueue" role="struct">
+<title>GQueue</title>
+<indexterm zone="GQueue"><primary>GQueue</primary></indexterm><programlisting>typedef struct {
   GList *head;
   GList *tail;
   guint  length;
@@ -158,9 +164,9 @@ Contains the public fields of a <link linkend="glib-queues">Queue</link>.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-queue-new" role="function"/>g_queue_new ()</title>
-<indexterm><primary>g_queue_new</primary></indexterm><programlisting><link linkend="GQueue">GQueue</link>*             g_queue_new                         (void);</programlisting>
+<refsect2 id="g-queue-new" role="function">
+<title>g_queue_new ()</title>
+<indexterm zone="g-queue-new"><primary>g_queue_new</primary></indexterm><programlisting><link linkend="GQueue">GQueue</link>*             g_queue_new                         (void);</programlisting>
 <para>
 Creates a new <link linkend="GQueue"><type>GQueue</type></link>.</para>
 <para>
@@ -169,11 +175,13 @@ Creates a new <link linkend="GQueue"><type>GQueue</type></link>.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new <link linkend="GQueue"><type>GQueue</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-queue-free" role="function"/>g_queue_free ()</title>
-<indexterm><primary>g_queue_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_free                        (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
+<refsect2 id="g-queue-free" role="function">
+<title>g_queue_free ()</title>
+<indexterm zone="g-queue-free"><primary>g_queue_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_free                        (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
 <para>
-Frees the memory allocated for the <link linkend="GQueue"><type>GQueue</type></link>.</para>
+Frees the memory allocated for the <link linkend="GQueue"><type>GQueue</type></link>. Only call this function if
+<parameter>queue</parameter> was created with <link linkend="g-queue-new"><function>g_queue_new()</function></link>. If queue elements contain
+dynamically-allocated memory, they should be freed first.</para>
 <para>
 
 </para><variablelist role="params">
@@ -181,9 +189,57 @@ Frees the memory allocated for the <link linkend="GQueue"><type>GQueue</type></l
 <listitem><simpara> a <link linkend="GQueue"><type>GQueue</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-queue-is-empty" role="function"/>g_queue_is_empty ()</title>
-<indexterm><primary>g_queue_is_empty</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_queue_is_empty                    (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
+<refsect2 id="G-QUEUE-INIT:CAPS" role="macro" condition="since:2.14">
+<title>G_QUEUE_INIT</title>
+<indexterm zone="G-QUEUE-INIT:CAPS" role="2.14"><primary>G_QUEUE_INIT</primary></indexterm><programlisting>#define G_QUEUE_INIT { NULL, NULL, 0 }
+</programlisting>
+<para>
+A statically-allocated <link linkend="GQueue"><type>GQueue</type></link> must be initialized with this macro before it
+can be used.  This macro can be used to initialize a variable, but it cannot
+be assigned to a variable.  In that case you have to use <link linkend="g-queue-init"><function>g_queue_init()</function></link>.
+</para>
+
+<informalexample>
+<programlisting>
+GQueue my_queue = G_QUEUE_INIT;
+</programlisting>
+</informalexample><para role="since">Since 2.14
+
+
+</para></refsect2>
+<refsect2 id="g-queue-init" role="function" condition="since:2.14">
+<title>g_queue_init ()</title>
+<indexterm zone="g-queue-init" role="2.14"><primary>g_queue_init</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_init                        (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
+<para>
+A statically-allocated <link linkend="GQueue"><type>GQueue</type></link> must be initialized with this function
+before it can be used. Alternatively you can initialize it with
+<link linkend="G-QUEUE-INIT:CAPS"><type>G_QUEUE_INIT</type></link>. It is not necessary to initialize queues created with
+<link linkend="g-queue-new"><function>g_queue_new()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>queue</parameter>&nbsp;:</term>
+<listitem><simpara> an uninitialized <link linkend="GQueue"><type>GQueue</type></link>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.14
+</para></refsect2>
+<refsect2 id="g-queue-clear" role="function" condition="since:2.14">
+<title>g_queue_clear ()</title>
+<indexterm zone="g-queue-clear" role="2.14"><primary>g_queue_clear</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_clear                       (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
+<para>
+Removes all the elements in <parameter>queue</parameter>. If queue elements contain
+dynamically-allocated memory, they should be freed first.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>queue</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GQueue"><type>GQueue</type></link>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.14
+</para></refsect2>
+<refsect2 id="g-queue-is-empty" role="function">
+<title>g_queue_is_empty ()</title>
+<indexterm zone="g-queue-is-empty"><primary>g_queue_is_empty</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_queue_is_empty                    (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the queue is empty.</para>
 <para>
@@ -195,9 +251,9 @@ Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the queue is
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the queue is empty.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-queue-get-length" role="function" condition="since:2.4"/>g_queue_get_length ()</title>
-<indexterm role="2.4"><primary>g_queue_get_length</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_queue_get_length                  (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
+<refsect2 id="g-queue-get-length" role="function" condition="since:2.4">
+<title>g_queue_get_length ()</title>
+<indexterm zone="g-queue-get-length" role="2.4"><primary>g_queue_get_length</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_queue_get_length                  (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
 <para>
 Returns the number of items in <parameter>queue</parameter>.</para>
 <para>
@@ -211,9 +267,9 @@ Returns the number of items in <parameter>queue</parameter>.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-reverse" role="function" condition="since:2.4"/>g_queue_reverse ()</title>
-<indexterm role="2.4"><primary>g_queue_reverse</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_reverse                     (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
+<refsect2 id="g-queue-reverse" role="function" condition="since:2.4">
+<title>g_queue_reverse ()</title>
+<indexterm zone="g-queue-reverse" role="2.4"><primary>g_queue_reverse</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_reverse                     (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
 <para>
 Reverses the order of the items in <parameter>queue</parameter>.</para>
 <para>
@@ -224,9 +280,9 @@ Reverses the order of the items in <parameter>queue</parameter>.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-copy" role="function" condition="since:2.4"/>g_queue_copy ()</title>
-<indexterm role="2.4"><primary>g_queue_copy</primary></indexterm><programlisting><link linkend="GQueue">GQueue</link>*             g_queue_copy                        (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
+<refsect2 id="g-queue-copy" role="function" condition="since:2.4">
+<title>g_queue_copy ()</title>
+<indexterm zone="g-queue-copy" role="2.4"><primary>g_queue_copy</primary></indexterm><programlisting><link linkend="GQueue">GQueue</link>*             g_queue_copy                        (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
 <para>
 Copies a <parameter>queue</parameter>. Note that is a shallow copy. If the elements in the
 queue consist of pointers to data, the pointers are copied, but the
@@ -242,9 +298,9 @@ actual data is not.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-foreach" role="function" condition="since:2.4"/>g_queue_foreach ()</title>
-<indexterm role="2.4"><primary>g_queue_foreach</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_foreach                     (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-foreach" role="function" condition="since:2.4">
+<title>g_queue_foreach ()</title>
+<indexterm zone="g-queue-foreach" role="2.4"><primary>g_queue_foreach</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_foreach                     (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="GFunc">GFunc</link> func,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -264,9 +320,9 @@ function.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-find" role="function" condition="since:2.4"/>g_queue_find ()</title>
-<indexterm role="2.4"><primary>g_queue_find</primary></indexterm><programlisting><link linkend="GList">GList</link>*              g_queue_find                        (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-find" role="function" condition="since:2.4">
+<title>g_queue_find ()</title>
+<indexterm zone="g-queue-find" role="2.4"><primary>g_queue_find</primary></indexterm><programlisting><link linkend="GList">GList</link>*              g_queue_find                        (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="gconstpointer">gconstpointer</link> data);</programlisting>
 <para>
 Finds the first link in <parameter>queue</parameter> which contains <parameter>data</parameter>.</para>
@@ -284,9 +340,9 @@ Finds the first link in <parameter>queue</parameter> which contains <parameter>d
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-find-custom" role="function" condition="since:2.4"/>g_queue_find_custom ()</title>
-<indexterm role="2.4"><primary>g_queue_find_custom</primary></indexterm><programlisting><link linkend="GList">GList</link>*              g_queue_find_custom                 (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-find-custom" role="function" condition="since:2.4">
+<title>g_queue_find_custom ()</title>
+<indexterm zone="g-queue-find-custom" role="2.4"><primary>g_queue_find_custom</primary></indexterm><programlisting><link linkend="GList">GList</link>*              g_queue_find_custom                 (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="gconstpointer">gconstpointer</link> data,
                                                          <link linkend="GCompareFunc">GCompareFunc</link> func);</programlisting>
 <para>
@@ -313,9 +369,9 @@ when the desired element is found
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-sort" role="function" condition="since:2.4"/>g_queue_sort ()</title>
-<indexterm role="2.4"><primary>g_queue_sort</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_sort                        (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-sort" role="function" condition="since:2.4">
+<title>g_queue_sort ()</title>
+<indexterm zone="g-queue-sort" role="2.4"><primary>g_queue_sort</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_sort                        (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="GCompareDataFunc">GCompareDataFunc</link> compare_func,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -337,9 +393,9 @@ Sorts <parameter>queue</parameter> using <parameter>compare_func</parameter>.</p
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-push-head" role="function"/>g_queue_push_head ()</title>
-<indexterm><primary>g_queue_push_head</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_push_head                   (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-push-head" role="function">
+<title>g_queue_push_head ()</title>
+<indexterm zone="g-queue-push-head"><primary>g_queue_push_head</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_push_head                   (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 Adds a new element at the head of the queue.</para>
@@ -353,9 +409,9 @@ Adds a new element at the head of the queue.</para>
 <listitem><simpara> the data for the new element.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-queue-push-tail" role="function"/>g_queue_push_tail ()</title>
-<indexterm><primary>g_queue_push_tail</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_push_tail                   (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-push-tail" role="function">
+<title>g_queue_push_tail ()</title>
+<indexterm zone="g-queue-push-tail"><primary>g_queue_push_tail</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_push_tail                   (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 Adds a new element at the tail of the queue.</para>
@@ -369,9 +425,9 @@ Adds a new element at the tail of the queue.</para>
 <listitem><simpara> the data for the new element.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-queue-push-nth" role="function" condition="since:2.4"/>g_queue_push_nth ()</title>
-<indexterm role="2.4"><primary>g_queue_push_nth</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_push_nth                    (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-push-nth" role="function" condition="since:2.4">
+<title>g_queue_push_nth ()</title>
+<indexterm zone="g-queue-push-nth" role="2.4"><primary>g_queue_push_nth</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_push_nth                    (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="gint">gint</link> n);</programlisting>
 <para>
@@ -392,9 +448,9 @@ Inserts a new element into <parameter>queue</parameter> at the given position</p
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-pop-head" role="function"/>g_queue_pop_head ()</title>
-<indexterm><primary>g_queue_pop_head</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_queue_pop_head                    (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
+<refsect2 id="g-queue-pop-head" role="function">
+<title>g_queue_pop_head ()</title>
+<indexterm zone="g-queue-pop-head"><primary>g_queue_pop_head</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_queue_pop_head                    (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
 <para>
 Removes the first element of the queue.</para>
 <para>
@@ -407,9 +463,9 @@ Removes the first element of the queue.</para>
   is empty.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-queue-pop-tail" role="function"/>g_queue_pop_tail ()</title>
-<indexterm><primary>g_queue_pop_tail</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_queue_pop_tail                    (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
+<refsect2 id="g-queue-pop-tail" role="function">
+<title>g_queue_pop_tail ()</title>
+<indexterm zone="g-queue-pop-tail"><primary>g_queue_pop_tail</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_queue_pop_tail                    (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
 <para>
 Removes the last element of the queue.</para>
 <para>
@@ -422,9 +478,9 @@ Removes the last element of the queue.</para>
   is empty.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-queue-pop-nth" role="function" condition="since:2.4"/>g_queue_pop_nth ()</title>
-<indexterm role="2.4"><primary>g_queue_pop_nth</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_queue_pop_nth                     (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-pop-nth" role="function" condition="since:2.4">
+<title>g_queue_pop_nth ()</title>
+<indexterm zone="g-queue-pop-nth" role="2.4"><primary>g_queue_pop_nth</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_queue_pop_nth                     (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="guint">guint</link> n);</programlisting>
 <para>
 Removes the <parameter>n</parameter>'th element of <parameter>queue</parameter>.</para>
@@ -442,9 +498,9 @@ Removes the <parameter>n</parameter>'th element of <parameter>queue</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-peek-head" role="function"/>g_queue_peek_head ()</title>
-<indexterm><primary>g_queue_peek_head</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_queue_peek_head                   (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
+<refsect2 id="g-queue-peek-head" role="function">
+<title>g_queue_peek_head ()</title>
+<indexterm zone="g-queue-peek-head"><primary>g_queue_peek_head</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_queue_peek_head                   (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
 <para>
 Returns the first element of the queue.</para>
 <para>
@@ -457,9 +513,9 @@ Returns the first element of the queue.</para>
   is empty.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-queue-peek-tail" role="function"/>g_queue_peek_tail ()</title>
-<indexterm><primary>g_queue_peek_tail</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_queue_peek_tail                   (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
+<refsect2 id="g-queue-peek-tail" role="function">
+<title>g_queue_peek_tail ()</title>
+<indexterm zone="g-queue-peek-tail"><primary>g_queue_peek_tail</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_queue_peek_tail                   (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
 <para>
 Returns the last element of the queue.</para>
 <para>
@@ -472,9 +528,9 @@ Returns the last element of the queue.</para>
   is empty.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-queue-peek-nth" role="function" condition="since:2.4"/>g_queue_peek_nth ()</title>
-<indexterm role="2.4"><primary>g_queue_peek_nth</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_queue_peek_nth                    (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-peek-nth" role="function" condition="since:2.4">
+<title>g_queue_peek_nth ()</title>
+<indexterm zone="g-queue-peek-nth" role="2.4"><primary>g_queue_peek_nth</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_queue_peek_nth                    (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="guint">guint</link> n);</programlisting>
 <para>
 Returns the <parameter>n</parameter>'th element of <parameter>queue</parameter>.</para>
@@ -493,9 +549,9 @@ Returns the <parameter>n</parameter>'th element of <parameter>queue</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-index" role="function" condition="since:2.4"/>g_queue_index ()</title>
-<indexterm role="2.4"><primary>g_queue_index</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_queue_index                       (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-index" role="function" condition="since:2.4">
+<title>g_queue_index ()</title>
+<indexterm zone="g-queue-index" role="2.4"><primary>g_queue_index</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_queue_index                       (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="gconstpointer">gconstpointer</link> data);</programlisting>
 <para>
 Returns the position of the first element in <parameter>queue</parameter> which contains <parameter>data</parameter>.</para>
@@ -513,9 +569,9 @@ Returns the position of the first element in <parameter>queue</parameter> which 
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-remove" role="function" condition="since:2.4"/>g_queue_remove ()</title>
-<indexterm role="2.4"><primary>g_queue_remove</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_remove                      (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-remove" role="function" condition="since:2.4">
+<title>g_queue_remove ()</title>
+<indexterm zone="g-queue-remove" role="2.4"><primary>g_queue_remove</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_remove                      (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="gconstpointer">gconstpointer</link> data);</programlisting>
 <para>
 Removes the first element in <parameter>queue</parameter> that contains <parameter>data</parameter>.</para>
@@ -530,9 +586,9 @@ Removes the first element in <parameter>queue</parameter> that contains <paramet
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-remove-all" role="function" condition="since:2.4"/>g_queue_remove_all ()</title>
-<indexterm role="2.4"><primary>g_queue_remove_all</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_remove_all                  (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-remove-all" role="function" condition="since:2.4">
+<title>g_queue_remove_all ()</title>
+<indexterm zone="g-queue-remove-all" role="2.4"><primary>g_queue_remove_all</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_remove_all                  (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="gconstpointer">gconstpointer</link> data);</programlisting>
 <para>
 Remove all elemeents in <parameter>queue</parameter> which contains <parameter>data</parameter>.</para>
@@ -547,9 +603,9 @@ Remove all elemeents in <parameter>queue</parameter> which contains <parameter>d
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-insert-before" role="function" condition="since:2.4"/>g_queue_insert_before ()</title>
-<indexterm role="2.4"><primary>g_queue_insert_before</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_insert_before               (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-insert-before" role="function" condition="since:2.4">
+<title>g_queue_insert_before ()</title>
+<indexterm zone="g-queue-insert-before" role="2.4"><primary>g_queue_insert_before</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_insert_before               (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="GList">GList</link> *sibling,
                                                          <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
@@ -571,9 +627,9 @@ Inserts <parameter>data</parameter> into <parameter>queue</parameter> before <pa
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-insert-after" role="function" condition="since:2.4"/>g_queue_insert_after ()</title>
-<indexterm role="2.4"><primary>g_queue_insert_after</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_insert_after                (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-insert-after" role="function" condition="since:2.4">
+<title>g_queue_insert_after ()</title>
+<indexterm zone="g-queue-insert-after" role="2.4"><primary>g_queue_insert_after</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_insert_after                (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="GList">GList</link> *sibling,
                                                          <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
@@ -595,9 +651,9 @@ Inserts <parameter>data</parameter> into <parameter>queue</parameter> after <par
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-insert-sorted" role="function" condition="since:2.4"/>g_queue_insert_sorted ()</title>
-<indexterm role="2.4"><primary>g_queue_insert_sorted</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_insert_sorted               (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-insert-sorted" role="function" condition="since:2.4">
+<title>g_queue_insert_sorted ()</title>
+<indexterm zone="g-queue-insert-sorted" role="2.4"><primary>g_queue_insert_sorted</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_insert_sorted               (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GCompareDataFunc">GCompareDataFunc</link> func,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
@@ -624,9 +680,9 @@ Inserts <parameter>data</parameter> into <parameter>queue</parameter> using <par
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-push-head-link" role="function"/>g_queue_push_head_link ()</title>
-<indexterm><primary>g_queue_push_head_link</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_push_head_link              (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-push-head-link" role="function">
+<title>g_queue_push_head_link ()</title>
+<indexterm zone="g-queue-push-head-link"><primary>g_queue_push_head_link</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_push_head_link              (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="GList">GList</link> *link_);</programlisting>
 <para>
 Adds a new element at the head of the queue.</para>
@@ -641,9 +697,9 @@ Adds a new element at the head of the queue.</para>
     more than one element.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-queue-push-tail-link" role="function"/>g_queue_push_tail_link ()</title>
-<indexterm><primary>g_queue_push_tail_link</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_push_tail_link              (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-push-tail-link" role="function">
+<title>g_queue_push_tail_link ()</title>
+<indexterm zone="g-queue-push-tail-link"><primary>g_queue_push_tail_link</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_push_tail_link              (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="GList">GList</link> *link_);</programlisting>
 <para>
 Adds a new element at the tail of the queue.</para>
@@ -658,9 +714,9 @@ Adds a new element at the tail of the queue.</para>
   more than one element.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-queue-push-nth-link" role="function" condition="since:2.4"/>g_queue_push_nth_link ()</title>
-<indexterm role="2.4"><primary>g_queue_push_nth_link</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_push_nth_link               (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-push-nth-link" role="function" condition="since:2.4">
+<title>g_queue_push_nth_link ()</title>
+<indexterm zone="g-queue-push-nth-link" role="2.4"><primary>g_queue_push_nth_link</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_push_nth_link               (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="gint">gint</link> n,
                                                          <link linkend="GList">GList</link> *link_);</programlisting>
 <para>
@@ -681,9 +737,9 @@ Inserts <parameter>link</parameter> into <parameter>queue</parameter> at the giv
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-pop-head-link" role="function"/>g_queue_pop_head_link ()</title>
-<indexterm><primary>g_queue_pop_head_link</primary></indexterm><programlisting><link linkend="GList">GList</link>*              g_queue_pop_head_link               (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
+<refsect2 id="g-queue-pop-head-link" role="function">
+<title>g_queue_pop_head_link ()</title>
+<indexterm zone="g-queue-pop-head-link"><primary>g_queue_pop_head_link</primary></indexterm><programlisting><link linkend="GList">GList</link>*              g_queue_pop_head_link               (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
 <para>
 Removes the first element of the queue.</para>
 <para>
@@ -696,9 +752,9 @@ Removes the first element of the queue.</para>
   is empty.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-queue-pop-tail-link" role="function"/>g_queue_pop_tail_link ()</title>
-<indexterm><primary>g_queue_pop_tail_link</primary></indexterm><programlisting><link linkend="GList">GList</link>*              g_queue_pop_tail_link               (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
+<refsect2 id="g-queue-pop-tail-link" role="function">
+<title>g_queue_pop_tail_link ()</title>
+<indexterm zone="g-queue-pop-tail-link"><primary>g_queue_pop_tail_link</primary></indexterm><programlisting><link linkend="GList">GList</link>*              g_queue_pop_tail_link               (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
 <para>
 Removes the last element of the queue.</para>
 <para>
@@ -711,9 +767,9 @@ Removes the last element of the queue.</para>
   is empty.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-queue-pop-nth-link" role="function" condition="since:2.4"/>g_queue_pop_nth_link ()</title>
-<indexterm role="2.4"><primary>g_queue_pop_nth_link</primary></indexterm><programlisting><link linkend="GList">GList</link>*              g_queue_pop_nth_link                (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-pop-nth-link" role="function" condition="since:2.4">
+<title>g_queue_pop_nth_link ()</title>
+<indexterm zone="g-queue-pop-nth-link" role="2.4"><primary>g_queue_pop_nth_link</primary></indexterm><programlisting><link linkend="GList">GList</link>*              g_queue_pop_nth_link                (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="guint">guint</link> n);</programlisting>
 <para>
 Removes and returns the link at the given position.</para>
@@ -731,9 +787,9 @@ Removes and returns the link at the given position.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-peek-head-link" role="function" condition="since:2.4"/>g_queue_peek_head_link ()</title>
-<indexterm role="2.4"><primary>g_queue_peek_head_link</primary></indexterm><programlisting><link linkend="GList">GList</link>*              g_queue_peek_head_link              (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
+<refsect2 id="g-queue-peek-head-link" role="function" condition="since:2.4">
+<title>g_queue_peek_head_link ()</title>
+<indexterm zone="g-queue-peek-head-link" role="2.4"><primary>g_queue_peek_head_link</primary></indexterm><programlisting><link linkend="GList">GList</link>*              g_queue_peek_head_link              (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
 <para>
 Returns the first link in <parameter>queue</parameter></para>
 <para>
@@ -747,9 +803,9 @@ Returns the first link in <parameter>queue</parameter></para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-peek-tail-link" role="function" condition="since:2.4"/>g_queue_peek_tail_link ()</title>
-<indexterm role="2.4"><primary>g_queue_peek_tail_link</primary></indexterm><programlisting><link linkend="GList">GList</link>*              g_queue_peek_tail_link              (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
+<refsect2 id="g-queue-peek-tail-link" role="function" condition="since:2.4">
+<title>g_queue_peek_tail_link ()</title>
+<indexterm zone="g-queue-peek-tail-link" role="2.4"><primary>g_queue_peek_tail_link</primary></indexterm><programlisting><link linkend="GList">GList</link>*              g_queue_peek_tail_link              (<link linkend="GQueue">GQueue</link> *queue);</programlisting>
 <para>
 Returns the last link <parameter>queue</parameter>.</para>
 <para>
@@ -763,9 +819,9 @@ Returns the last link <parameter>queue</parameter>.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-peek-nth-link" role="function" condition="since:2.4"/>g_queue_peek_nth_link ()</title>
-<indexterm role="2.4"><primary>g_queue_peek_nth_link</primary></indexterm><programlisting><link linkend="GList">GList</link>*              g_queue_peek_nth_link               (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-peek-nth-link" role="function" condition="since:2.4">
+<title>g_queue_peek_nth_link ()</title>
+<indexterm zone="g-queue-peek-nth-link" role="2.4"><primary>g_queue_peek_nth_link</primary></indexterm><programlisting><link linkend="GList">GList</link>*              g_queue_peek_nth_link               (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="guint">guint</link> n);</programlisting>
 <para>
 Returns the link at the given position</para>
@@ -784,9 +840,9 @@ end of the list
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-link-index" role="function" condition="since:2.4"/>g_queue_link_index ()</title>
-<indexterm role="2.4"><primary>g_queue_link_index</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_queue_link_index                  (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-link-index" role="function" condition="since:2.4">
+<title>g_queue_link_index ()</title>
+<indexterm zone="g-queue-link-index" role="2.4"><primary>g_queue_link_index</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_queue_link_index                  (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="GList">GList</link> *link_);</programlisting>
 <para>
 Returns the position of <parameter>link_</parameter> in <parameter>queue</parameter>.</para>
@@ -805,9 +861,9 @@ not part of <parameter>queue</parameter>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-unlink" role="function" condition="since:2.4"/>g_queue_unlink ()</title>
-<indexterm role="2.4"><primary>g_queue_unlink</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_unlink                      (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-unlink" role="function" condition="since:2.4">
+<title>g_queue_unlink ()</title>
+<indexterm zone="g-queue-unlink" role="2.4"><primary>g_queue_unlink</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_unlink                      (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="GList">GList</link> *link_);</programlisting>
 <para>
 Unlinks <parameter>link_</parameter> so that it will no longer be part of <parameter>queue</parameter>. The link is
@@ -826,9 +882,9 @@ not freed.
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-queue-delete-link" role="function" condition="since:2.4"/>g_queue_delete_link ()</title>
-<indexterm role="2.4"><primary>g_queue_delete_link</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_delete_link                 (<link linkend="GQueue">GQueue</link> *queue,
+<refsect2 id="g-queue-delete-link" role="function" condition="since:2.4">
+<title>g_queue_delete_link ()</title>
+<indexterm zone="g-queue-delete-link" role="2.4"><primary>g_queue_delete_link</primary></indexterm><programlisting><link linkend="void">void</link>                g_queue_delete_link                 (<link linkend="GQueue">GQueue</link> *queue,
                                                          <link linkend="GList">GList</link> *link_);</programlisting>
 <para>
 Removes <parameter>link_</parameter> from <parameter>queue</parameter> and frees it.

@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../..,../../../glib"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;GTHREAD_EXPORTS;HAVE_CONFIG_H;G_LOG_DOMAIN=\&quot;GThread\&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;GTHREAD_EXPORTS;HAVE_CONFIG_H;G_LOG_DOMAIN=\&quot;GThread\&quot;;G_THREADS_ENABLED"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"

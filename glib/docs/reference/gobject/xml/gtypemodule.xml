@@ -1,6 +1,6 @@
 <refentry id="GTypeModule">
 <refmeta>
-<refentrytitle role="top_of_page">GTypeModule</refentrytitle>
+<refentrytitle role="top_of_page" id="GTypeModule.top_of_page">GTypeModule</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GOBJECT Library</refmiscinfo>
 </refmeta>
@@ -11,13 +11,12 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="GTypeModule.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib-object.h&gt;
-
 
                     <link linkend="GTypeModule-struct">GTypeModule</link>;
                     <link linkend="GTypeModuleClass">GTypeModuleClass</link>;
@@ -36,18 +35,18 @@
                                                          const <link linkend="GInterfaceInfo">GInterfaceInfo</link> *interface_info);
 <link linkend="GType">GType</link>               <link linkend="g-type-module-register-enum">g_type_module_register_enum</link>         (<link linkend="GTypeModule">GTypeModule</link> *module,
                                                          const <link linkend="gchar">gchar</link> *name,
-                                                         const <link linkend="GEnumValue">GEnumValue</link> *const _static_values);
+                                                         const <link linkend="GEnumValue">GEnumValue</link> *const_static_values);
 <link linkend="GType">GType</link>               <link linkend="g-type-module-register-flags">g_type_module_register_flags</link>        (<link linkend="GTypeModule">GTypeModule</link> *module,
                                                          const <link linkend="gchar">gchar</link> *name,
-                                                         const <link linkend="GFlagsValue">GFlagsValue</link> *const _static_values);
-
+                                                         const <link linkend="GFlagsValue">GFlagsValue</link> *const_static_values);
+#define             <link linkend="G-DEFINE-DYNAMIC-TYPE:CAPS">G_DEFINE_DYNAMIC_TYPE</link>               (TN, t_n, T_P)
+#define             <link linkend="G-DEFINE-DYNAMIC-TYPE-EXTENDED:CAPS">G_DEFINE_DYNAMIC_TYPE_EXTENDED</link>      (TypeName, type_name, TYPE_PARENT, flags, CODE)
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1 role="object_hierarchy">
+<refsect1 id="GTypeModule.object-hierarchy" role="object_hierarchy">
 <title role="object_hierarchy.title">Object Hierarchy</title>
 <synopsis>
-
   <link linkend="GObject">GObject</link>
    +----GTypeModule
 </synopsis>
@@ -56,7 +55,7 @@
 
 
 
-<refsect1 role="impl_interfaces">
+<refsect1 id="GTypeModule.implemented-interfaces" role="impl_interfaces">
 <title role="impl_interfaces.title">Implemented Interfaces</title>
 <para>
 GTypeModule implements
@@ -68,7 +67,7 @@ GTypeModule implements
 
 
 
-<refsect1 role="desc">
+<refsect1 id="GTypeModule.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 <link linkend="GTypeModule"><type>GTypeModule</type></link> provides a simple implementation of the <link linkend="GTypePlugin"><type>GTypePlugin</type></link>
@@ -103,11 +102,11 @@ in <link linkend="GTypeModuleClass"><type>GTypeModuleClass</type></link>.
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="GTypeModule.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GTypeModule-struct" role="struct"/>GTypeModule</title>
-<indexterm><primary>GTypeModule</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GTypeModule-struct" role="struct">
+<title>GTypeModule</title>
+<indexterm zone="GTypeModule-struct"><primary>GTypeModule</primary></indexterm><programlisting>typedef struct {
   gchar *name;
 } GTypeModule;
 </programlisting>
@@ -122,9 +121,9 @@ be accessed directly, except for the <parameter>name</parameter> field.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GTypeModuleClass" role="struct"/>GTypeModuleClass</title>
-<indexterm><primary>GTypeModuleClass</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GTypeModuleClass" role="struct">
+<title>GTypeModuleClass</title>
+<indexterm zone="GTypeModuleClass"><primary>GTypeModuleClass</primary></indexterm><programlisting>typedef struct {
   GObjectClass parent_class;
 
   gboolean (* load)   (GTypeModule *module);
@@ -153,9 +152,9 @@ the <parameter>load</parameter> and <parameter>unload</parameter> functions in <
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-module-use" role="function"/>g_type_module_use ()</title>
-<indexterm><primary>g_type_module_use</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_type_module_use                   (<link linkend="GTypeModule">GTypeModule</link> *module);</programlisting>
+<refsect2 id="g-type-module-use" role="function">
+<title>g_type_module_use ()</title>
+<indexterm zone="g-type-module-use"><primary>g_type_module_use</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_type_module_use                   (<link linkend="GTypeModule">GTypeModule</link> *module);</programlisting>
 <para>
 Increases the use count of a <link linkend="GTypeModule"><type>GTypeModule</type></link> by one. If the
 use count was zero before, the plugin will be loaded.
@@ -169,9 +168,9 @@ use count was zero before, the plugin will be loaded.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-module-unuse" role="function"/>g_type_module_unuse ()</title>
-<indexterm><primary>g_type_module_unuse</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_module_unuse                 (<link linkend="GTypeModule">GTypeModule</link> *module);</programlisting>
+<refsect2 id="g-type-module-unuse" role="function">
+<title>g_type_module_unuse ()</title>
+<indexterm zone="g-type-module-unuse"><primary>g_type_module_unuse</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_module_unuse                 (<link linkend="GTypeModule">GTypeModule</link> *module);</programlisting>
 <para>
 Decreases the use count of a <link linkend="GTypeModule"><type>GTypeModule</type></link> by one. If the
 result is zero, the module will be unloaded. (However, the
@@ -185,9 +184,9 @@ initialized, it must exist forever.)
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-module-set-name" role="function"/>g_type_module_set_name ()</title>
-<indexterm><primary>g_type_module_set_name</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_module_set_name              (<link linkend="GTypeModule">GTypeModule</link> *module,
+<refsect2 id="g-type-module-set-name" role="function">
+<title>g_type_module_set_name ()</title>
+<indexterm zone="g-type-module-set-name"><primary>g_type_module_set_name</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_module_set_name              (<link linkend="GTypeModule">GTypeModule</link> *module,
                                                          const <link linkend="gchar">gchar</link> *name);</programlisting>
 <para>
 Sets the name for a <link linkend="GTypeModule"><type>GTypeModule</type></link> 
@@ -201,9 +200,9 @@ Sets the name for a <link linkend="GTypeModule"><type>GTypeModule</type></link>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-module-register-type" role="function"/>g_type_module_register_type ()</title>
-<indexterm><primary>g_type_module_register_type</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_module_register_type         (<link linkend="GTypeModule">GTypeModule</link> *module,
+<refsect2 id="g-type-module-register-type" role="function">
+<title>g_type_module_register_type ()</title>
+<indexterm zone="g-type-module-register-type"><primary>g_type_module_register_type</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_module_register_type         (<link linkend="GTypeModule">GTypeModule</link> *module,
                                                          <link linkend="GType">GType</link> parent_type,
                                                          const <link linkend="gchar">gchar</link> *type_name,
                                                          const <link linkend="GTypeInfo">GTypeInfo</link> *type_info,
@@ -243,9 +242,9 @@ not be unloaded.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-module-add-interface" role="function"/>g_type_module_add_interface ()</title>
-<indexterm><primary>g_type_module_add_interface</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_module_add_interface         (<link linkend="GTypeModule">GTypeModule</link> *module,
+<refsect2 id="g-type-module-add-interface" role="function">
+<title>g_type_module_add_interface ()</title>
+<indexterm zone="g-type-module-add-interface"><primary>g_type_module_add_interface</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_module_add_interface         (<link linkend="GTypeModule">GTypeModule</link> *module,
                                                          <link linkend="GType">GType</link> instance_type,
                                                          <link linkend="GType">GType</link> interface_type,
                                                          const <link linkend="GInterfaceInfo">GInterfaceInfo</link> *interface_info);</programlisting>
@@ -273,11 +272,11 @@ not be unloaded.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-module-register-enum" role="function" condition="since:2.6"/>g_type_module_register_enum ()</title>
-<indexterm role="2.6"><primary>g_type_module_register_enum</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_module_register_enum         (<link linkend="GTypeModule">GTypeModule</link> *module,
+<refsect2 id="g-type-module-register-enum" role="function" condition="since:2.6">
+<title>g_type_module_register_enum ()</title>
+<indexterm zone="g-type-module-register-enum" role="2.6"><primary>g_type_module_register_enum</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_module_register_enum         (<link linkend="GTypeModule">GTypeModule</link> *module,
                                                          const <link linkend="gchar">gchar</link> *name,
-                                                         const <link linkend="GEnumValue">GEnumValue</link> *const _static_values);</programlisting>
+                                                         const <link linkend="GEnumValue">GEnumValue</link> *const_static_values);</programlisting>
 <para>
 Looks up or registers an enumeration that is implemented with a particular
 type plugin. If a type with name <parameter>type_name</parameter> was previously registered,
@@ -294,18 +293,22 @@ not be unloaded.
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
 <listitem><simpara>               name for the type
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>_static_values</parameter>&nbsp;:</term>
-<listitem><simpara>
+<varlistentry><term><parameter>const_static_values</parameter>&nbsp;:</term>
+<listitem><simpara>an array of <link linkend="GEnumValue"><type>GEnumValue</type></link> structs for the possible
+  enumeration values. The array is terminated by a struct with all 
+  members being 0.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>the new or existing type ID
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 2.6
+
+
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-type-module-register-flags" role="function" condition="since:2.6"/>g_type_module_register_flags ()</title>
-<indexterm role="2.6"><primary>g_type_module_register_flags</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_module_register_flags        (<link linkend="GTypeModule">GTypeModule</link> *module,
+<refsect2 id="g-type-module-register-flags" role="function" condition="since:2.6">
+<title>g_type_module_register_flags ()</title>
+<indexterm zone="g-type-module-register-flags" role="2.6"><primary>g_type_module_register_flags</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_module_register_flags        (<link linkend="GTypeModule">GTypeModule</link> *module,
                                                          const <link linkend="gchar">gchar</link> *name,
-                                                         const <link linkend="GFlagsValue">GFlagsValue</link> *const _static_values);</programlisting>
+                                                         const <link linkend="GFlagsValue">GFlagsValue</link> *const_static_values);</programlisting>
 <para>
 Looks up or registers a flags type that is implemented with a particular
 type plugin. If a type with name <parameter>type_name</parameter> was previously registered,
@@ -322,19 +325,136 @@ not be unloaded.
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
 <listitem><simpara>               name for the type
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>_static_values</parameter>&nbsp;:</term>
-<listitem><simpara>
+<varlistentry><term><parameter>const_static_values</parameter>&nbsp;:</term>
+<listitem><simpara>an array of <link linkend="GFlagsValue"><type>GFlagsValue</type></link> structs for the possible
+  flags values. The array is terminated by a struct with all 
+  members being 0.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>the new or existing type ID
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 2.6
+
+
+</para></refsect2>
+<refsect2 id="G-DEFINE-DYNAMIC-TYPE:CAPS" role="macro" condition="since:2.14">
+<title>G_DEFINE_DYNAMIC_TYPE()</title>
+<indexterm zone="G-DEFINE-DYNAMIC-TYPE:CAPS" role="2.14"><primary>G_DEFINE_DYNAMIC_TYPE</primary></indexterm><programlisting>#define G_DEFINE_DYNAMIC_TYPE(TN, t_n, T_P)          G_DEFINE_DYNAMIC_TYPE_EXTENDED (TN, t_n, T_P, 0, {})
+</programlisting>
+<para>
+A convenience macro for dynamic type implementations, which declares a
+class initialization function, an instance initialization function (see 
+<link linkend="GTypeInfo"><type>GTypeInfo</type></link> for information about these) and a static variable named 
+<parameter>t_n</parameter><!-- -->_parent_class pointing to the parent class. Furthermore, 
+it defines a <function>*<link linkend="get-type"><function>_get_type()</function></link></function> and a static 
+<function>*<link linkend="register-type"><function>_register_type()</function></link></function> function for use in your
+<function><link linkend="module-init"><function>module_init()</function></link></function>.
+See <link linkend="G-DEFINE-DYNAMIC-TYPE-EXTENDED:CAPS"><function>G_DEFINE_DYNAMIC_TYPE_EXTENDED()</function></link> for an example.
+</para><variablelist role="params">
+<varlistentry><term><parameter>TN</parameter>&nbsp;:</term>
+<listitem><simpara>The name of the new type, in Camel case.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>t_n</parameter>&nbsp;:</term>
+<listitem><simpara>The name of the new type, in lowercase, with words
+  separated by '_'.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>T_P</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="GType"><type>GType</type></link> of the parent type.
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since 2.14
+
+
+</para></refsect2>
+<refsect2 id="G-DEFINE-DYNAMIC-TYPE-EXTENDED:CAPS" role="macro" condition="since:2.14">
+<title>G_DEFINE_DYNAMIC_TYPE_EXTENDED()</title>
+<indexterm zone="G-DEFINE-DYNAMIC-TYPE-EXTENDED:CAPS" role="2.14"><primary>G_DEFINE_DYNAMIC_TYPE_EXTENDED</primary></indexterm><programlisting>#define             G_DEFINE_DYNAMIC_TYPE_EXTENDED(TypeName, type_name, TYPE_PARENT, flags, CODE)</programlisting>
+<para>
+A more general version of <link linkend="G-DEFINE-DYNAMIC-TYPE:CAPS"><function>G_DEFINE_DYNAMIC_TYPE()</function></link> which
+allows to specify <link linkend="GTypeFlags"><type>GTypeFlags</type></link> and custom code.
+</para>
+<informalexample><programlisting>
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (GtkGadget,
+                                gtk_gadget,
+                                GTK_TYPE_THING,
+                                0,
+                                G_IMPLEMENT_INTERFACE (TYPE_GIZMO,
+                                                       gtk_gadget_gizmo_init));
+</programlisting>
+expands to
+<programlisting>
+static void     gtk_gadget_init              (GtkGadget      *self);
+static void     gtk_gadget_class_init        (GtkGadgetClass *klass);
+static void     gtk_gadget_class_finalize    (GtkGadgetClass *klass);
+<!-- -->
+static gpointer gtk_gadget_parent_class = NULL;
+static GType    gtk_gadget_type_id = 0;
+<!-- -->
+static void     gtk_gadget_class_intern_init (gpointer klass)
+{
+  gtk_gadget_parent_class = g_type_class_peek_parent (klass); 
+  gtk_gadget_class_init ((GtkGadgetClass*) klass); 
+}
+<!-- -->
+GType
+gtk_gadget_get_type (void)
+{
+  return gtk_gadget_type_id;
+}
+<!-- -->
+static void
+gtk_gadget_register_type (GTypeModule *type_module)
+{
+  const GTypeInfo g_define_type_info = {
+    sizeof (GtkGadgetClass),
+    (GBaseInitFunc) NULL,
+    (GBaseFinalizeFunc) NULL,
+    (GClassInitFunc) gtk_gadget_class_intern_init,
+    (GClassFinalizeFunc) gtk_gadget_class_finalize,
+    NULL,   /* class_data */
+    sizeof (GtkGadget),
+    0,      /* n_preallocs */
+    (GInstanceInitFunc) gtk_gadget_init, 
+    NULL    /* value_table */
+  };
+  gtk_gadget_type_id = g_type_module_register_type (type_module,
+                                                    GTK_TYPE_THING,
+                                                    GtkGadget,
+                                                    &amp;g_define_type_info,
+                                                    (GTypeFlags) flags);
+  {
+    const GInterfaceInfo g_implement_interface_info = {
+      (GInterfaceInitFunc) gtk_gadget_gizmo_init
+    };
+    g_type_add_interface_static (g_define_type_id, TYPE_GIZMO, &amp;g_implement_interface_info);
+  }
+}
+</programlisting>
+</informalexample><variablelist role="params">
+<varlistentry><term><parameter>TypeName</parameter>&nbsp;:</term>
+<listitem><simpara>The name of the new type, in Camel case.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type_name</parameter>&nbsp;:</term>
+<listitem><simpara>The name of the new type, in lowercase, with words
+  separated by '_'.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>TYPE_PARENT</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="GType"><type>GType</type></link> of the parent type.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara><link linkend="GTypeFlags"><type>GTypeFlags</type></link> to pass to <link linkend="g-type-module-register-type"><function>g_type_module_register_type()</function></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CODE</parameter>&nbsp;:</term>
+<listitem><simpara>Custom code that gets inserted in the *<link linkend="get-type"><function>_get_type()</function></link> function.
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since 2.14
+
+
 </para></refsect2>
 
 </refsect1>
 
 
 
-<refsect1>
+<refsect1 id="GTypeModule.see-also">
 <title>See Also</title>
 <para>
 <variablelist>

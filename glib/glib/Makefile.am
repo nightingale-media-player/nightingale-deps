@@ -1,4 +1,5 @@
 ## Process this file with automake to produce Makefile.in
+include $(top_srcdir)/Makefile.decl
 
 if HAVE_GOOD_PRINTF
 else
@@ -6,12 +7,30 @@ PRINTF_SUBDIR = gnulib
 printf_la = gnulib/libgnulib.la
 endif 
 
-SUBDIRS = libcharset $(PRINTF_SUBDIR)
+if ENABLE_REGEX
+if USE_SYSTEM_PCRE
+else
+MAYBE_PCRE = pcre 
+endif
+gregex_c = gregex.c
+gregex_h = gregex.h
+else
+gregex_c =
+gregex_h =
+endif
 
-DIST_SUBDIRS = libcharset gnulib
+SUBDIRS = libcharset $(PRINTF_SUBDIR) $(MAYBE_PCRE) update-pcre . tests
 
-INCLUDES = -I$(top_srcdir) -DG_LOG_DOMAIN=\"GLib\" \
-	$(GLIB_DEBUG_FLAGS) -DG_DISABLE_DEPRECATED -DGLIB_COMPILATION 
+DIST_SUBDIRS = libcharset gnulib pcre update-pcre tests
+
+AM_CPPFLAGS = 				\
+	-I$(top_srcdir) 		\
+	$(pcre_inc) 			\
+	-DG_LOG_DOMAIN=\"GLib\" 	\
+	$(GLIB_DEBUG_FLAGS) 		\
+	-DG_DISABLE_DEPRECATED 		\
+	-DGLIB_COMPILATION 		\
+	-DPCRE_STATIC
 
 glib.def: glib.symbols
 	(echo -e EXPORTS; $(CPP) -P -DINCLUDE_VARIABLES -DINCLUDE_INTERNAL_SYMBOLS -DG_OS_WIN32 -DALL_FILES - <$(srcdir)/glib.symbols | sed -e '/^$$/d' -e 's/^/	/' -e 's/G_GNUC_[^ ]*//g') > glib.def
@@ -24,27 +43,34 @@ galiasdef.c: glib.symbols
 
 if OS_LINUX
 if HAVE_GNUC_VISIBILITY
+TESTS_ENVIRONMENT = GLIB_DEBUG_FLAGS="$(GLIB_DEBUG_FLAGS)"
 TESTS = abicheck.sh pltcheck.sh
 endif
 endif
 
 BUILT_SOURCES = galias.h galiasdef.c
 
-MIRRORING_TAB_SOURCES = 			\
+MIRRORING_TAB_SOURCE = 				\
 	glib-mirroring-tab/Makefile 		\
 	glib-mirroring-tab/gen-mirroring-tab.c	\
 	glib-mirroring-tab/packtab.h		\
 	glib-mirroring-tab/packtab.c
 
-EXTRA_DIST = 			\
+# The compilation of GRegex can be disabled, but the source files must
+# be distributed.
+EXTRA_DIST += 			\
 	makefile.msc.in		\
 	glib.rc.in		\
 	gen-unicode-tables.pl	\
+	gen-script-table.pl	\
 	makegalias.pl		\
 	abicheck.sh		\
 	pltcheck.sh		\
 	glib.symbols		\
-	$(MIRRORING_TAB_SOURCES)
+	gregex.c		\
+	gregex.h		\
+	win_iconv.c		\
+	$(MIRRORING_TAB_SOURCE)
 
 # These may be in the builddir too
 BUILT_EXTRA_DIST = 		\
@@ -77,6 +103,7 @@ libglib_2_0_la_SOURCES = 	\
 	gbookmarkfile.c 	\
 	gbsearcharray.h		\
 	gcache.c		\
+	gchecksum.c		\
 	gcompletion.c		\
 	gconvert.c		\
 	gdataset.c		\
@@ -105,13 +132,17 @@ libglib_2_0_la_SOURCES = 	\
 	gqueue.c		\
 	grel.c			\
 	grand.c			\
+	$(gregex_c)		\
 	gscanner.c		\
+	gscripttable.h		\
+	gsequence.c		\
 	gshell.c		\
 	gslice.c		\
 	gslist.c		\
 	gstdio.c		\
 	gstrfuncs.c		\
 	gstring.c		\
+	gtestutils.c		\
 	gthread.c       	\
 	gthreadprivate.h	\
 	gthreadpool.c   	\
@@ -127,6 +158,7 @@ libglib_2_0_la_SOURCES = 	\
 	gunidecomp.h		\
 	gunidecomp.c		\
 	gunicodeprivate.h	\
+	gurifuncs.c 		\
 	gutils.c		\
 	gdebug.h		\
 	gprintf.c		\
@@ -154,6 +186,7 @@ glibsubinclude_HEADERS =   \
 	gbase64.h	\
 	gbookmarkfile.h \
 	gcache.h	\
+	gchecksum.h	\
 	gcompletion.h	\
 	gconvert.h	\
 	gdataset.h	\
@@ -182,14 +215,17 @@ glibsubinclude_HEADERS =   \
 	gquark.h	\
 	gqueue.h	\
 	grand.h		\
+	$(gregex_h)	\
 	grel.h		\
 	gscanner.h	\
+	gsequence.h	\
 	gshell.h	\
 	gslice.h	\
 	gslist.h	\
 	gspawn.h	\
 	gstdio.h	\
 	gstrfuncs.h	\
+	gtestutils.h	\
 	gstring.h	\
 	gthread.h	\
 	gthreadpool.h	\
@@ -197,6 +233,7 @@ glibsubinclude_HEADERS =   \
 	gtree.h		\
 	gtypes.h	\
 	gunicode.h	\
+	gurifuncs.h 		\
 	gutils.h	\
 	gwin32.h	\
 	gprintf.h
@@ -235,7 +272,20 @@ glib_win32_res = glib-win32-res.o
 glib_win32_res_ldflag = -Wl,$(glib_win32_res)
 endif
 
-libglib_2_0_la_LIBADD = libcharset/libcharset.la $(printf_la) @GIO@ @GSPAWN@ @PLATFORMDEP@ @ICONV_LIBS@ @G_LIBS_EXTRA@ 
+if ENABLE_REGEX
+if USE_SYSTEM_PCRE
+pcre_lib = $(PCRE_LIBS)
+pcre_inc = $(PCRE_CFLAGS)
+else
+pcre_lib = pcre/libpcre.la
+pcre_inc =
+endif
+else
+pcre_lib =
+pcre_inc =
+endif
+
+libglib_2_0_la_LIBADD = libcharset/libcharset.la $(printf_la) @GIO@ @GSPAWN@ @PLATFORMDEP@ @ICONV_LIBS@ @G_LIBS_EXTRA@ $(pcre_lib)
 libglib_2_0_la_DEPENDENCIES = libcharset/libcharset.la $(printf_la) @GIO@ @GSPAWN@ @PLATFORMDEP@ $(glib_win32_res) @GLIB_DEF@
 
 libglib_2_0_la_LDFLAGS = \
@@ -243,8 +293,13 @@ libglib_2_0_la_LDFLAGS = \
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
 	-export-dynamic $(no_undefined) $(export_symbols)
 
+INSTALL_PROGS=
+
+gspawn-win32-helper-console.c:
+	echo '#include "gspawn-win32-helper.c"' >$@
+
 if OS_WIN32
-bin_PROGRAMS = gspawn-win32-helper gspawn-win32-helper-console
+INSTALL_PROGS += gspawn-win32-helper gspawn-win32-helper-console
 gspawn_win32_helper_LDADD = libglib-2.0.la
 gspawn_win32_helper_LDFLAGS = -mwindows
 gspawn_win32_helper_console_LDADD = libglib-2.0.la
@@ -253,8 +308,33 @@ glib-win32-res.o: glib.rc
 	$(WINDRES) glib.rc $@
 endif
 
-gspawn-win32-helper-console.c:
-	echo '#include "gspawn-win32-helper.c"' >$@
+bin_PROGRAMS	 = ${INSTALL_PROGS}
+
+if OS_UNIX
+
+INSTALL_PROGS	+= gtester
+gtester_SOURCES	 = gtester.c
+gtester_LDADD	 = libglib-2.0.la
+
+auto_config_binscripts = gtester-report
+bin_SCRIPTS = ${auto_config_binscripts}
+EXTRA_DIST += ${auto_config_binscripts}
+
+CONFIGVARS = \
+        "bindir"    	: "${bindir}",		\
+        "glib-version"  : "${GLIB_VERSION}"
+
+install-exec-hook:
+	for sf in ${auto_config_binscripts} ; do \
+	  mv -f "$(DESTDIR)$(bindir)/$$sf" "$(DESTDIR)$(bindir)/$$sf".tmp \
+	  && sed < "$(DESTDIR)$(bindir)/$$sf".tmp > "$(DESTDIR)$(bindir)/$$sf" \
+	    -e '1,24s|^ *#@PKGINSTALL_CONFIGVARS_IN24LINES@|  ${CONFIGVARS}|' \
+	    -e '1,1s|#!/usr/bin/env python\([0-9]\+\(\.[0-9]\+\)\?\)\?|#!${PYTHON}|' \
+	  || exit $$? ; \
+	  rm -f "$(DESTDIR)$(bindir)/$$sf".tmp ; \
+	done
+
+endif
 
 glib-2.0.lib: libglib-2.0.la glib.def
 	lib -name:libglib-2.0-$(LT_CURRENT_MINUS_AGE).dll -def:glib.def -out:$@

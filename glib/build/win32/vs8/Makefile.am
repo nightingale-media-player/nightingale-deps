@@ -1,4 +1,5 @@
 EXTRA_DIST = \
+	gio.vcproj \
 	glib.sln \
 	glib.vcproj \
 	glib-genmarshal.vcproj \

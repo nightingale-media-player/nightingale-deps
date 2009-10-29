@@ -1,6 +1,6 @@
 <refentry id="gobject-Generic-values">
 <refmeta>
-<refentrytitle role="top_of_page">Generic Values</refentrytitle>
+<refentrytitle role="top_of_page" id="gobject-Generic-values.top_of_page">Generic Values</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GOBJECT Library</refmiscinfo>
 </refmeta>
@@ -11,13 +11,12 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="gobject-Generic-values.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib-object.h&gt;
-
 
 #define             <link linkend="G-VALUE-HOLDS:CAPS">G_VALUE_HOLDS</link>                       (value,type)
 #define             <link linkend="G-VALUE-TYPE:CAPS">G_VALUE_TYPE</link>                        (value)
@@ -50,7 +49,6 @@
                                                          <link linkend="GType">GType</link> dest_type,
                                                          <link linkend="GValueTransform">GValueTransform</link> transform_func);
 <link linkend="gchar">gchar</link>*              <link linkend="g-strdup-value-contents">g_strdup_value_contents</link>             (const <link linkend="GValue">GValue</link> *value);
-
 </synopsis>
 </refsynopsisdiv>
 
@@ -62,7 +60,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="gobject-Generic-values.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The <link linkend="GValue"><type>GValue</type></link> structure is basically a variable container that consists
@@ -79,11 +77,11 @@ provided by this interface.
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="gobject-Generic-values.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS:CAPS" role="macro"/>G_VALUE_HOLDS()</title>
-<indexterm><primary>G_VALUE_HOLDS</primary></indexterm><programlisting>#define G_VALUE_HOLDS(value,type)	(G_TYPE_CHECK_VALUE_TYPE ((value), (type)))
+<refsect2 id="G-VALUE-HOLDS:CAPS" role="macro">
+<title>G_VALUE_HOLDS()</title>
+<indexterm zone="G-VALUE-HOLDS:CAPS"><primary>G_VALUE_HOLDS</primary></indexterm><programlisting>#define G_VALUE_HOLDS(value,type)	(G_TYPE_CHECK_VALUE_TYPE ((value), (type)))
 </programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>value</parameter> holds (or contains) a value of <parameter>type</parameter>.
@@ -99,9 +97,9 @@ warning if the check fails.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-TYPE:CAPS" role="macro"/>G_VALUE_TYPE()</title>
-<indexterm><primary>G_VALUE_TYPE</primary></indexterm><programlisting>#define	G_VALUE_TYPE(value)		(((GValue*) (value))-&gt;g_type)
+<refsect2 id="G-VALUE-TYPE:CAPS" role="macro">
+<title>G_VALUE_TYPE()</title>
+<indexterm zone="G-VALUE-TYPE:CAPS"><primary>G_VALUE_TYPE</primary></indexterm><programlisting>#define	G_VALUE_TYPE(value)		(((GValue*) (value))-&gt;g_type)
 </programlisting>
 <para>
 Returns the type identifier of <parameter>value</parameter>.
@@ -112,9 +110,9 @@ Returns the type identifier of <parameter>value</parameter>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-TYPE-NAME:CAPS" role="macro"/>G_VALUE_TYPE_NAME()</title>
-<indexterm><primary>G_VALUE_TYPE_NAME</primary></indexterm><programlisting>#define	G_VALUE_TYPE_NAME(value)	(g_type_name (G_VALUE_TYPE (value)))
+<refsect2 id="G-VALUE-TYPE-NAME:CAPS" role="macro">
+<title>G_VALUE_TYPE_NAME()</title>
+<indexterm zone="G-VALUE-TYPE-NAME:CAPS"><primary>G_VALUE_TYPE_NAME</primary></indexterm><programlisting>#define	G_VALUE_TYPE_NAME(value)	(g_type_name (G_VALUE_TYPE (value)))
 </programlisting>
 <para>
 Returns the type name of <parameter>value</parameter>.
@@ -125,9 +123,9 @@ Returns the type name of <parameter>value</parameter>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-IS-VALUE:CAPS" role="macro"/>G_TYPE_IS_VALUE()</title>
-<indexterm><primary>G_TYPE_IS_VALUE</primary></indexterm><programlisting>#define	G_TYPE_IS_VALUE(type)		(g_type_check_is_value_type (type))
+<refsect2 id="G-TYPE-IS-VALUE:CAPS" role="macro">
+<title>G_TYPE_IS_VALUE()</title>
+<indexterm zone="G-TYPE-IS-VALUE:CAPS"><primary>G_TYPE_IS_VALUE</primary></indexterm><programlisting>#define	G_TYPE_IS_VALUE(type)		(g_type_check_is_value_type (type))
 </programlisting>
 <para>
 Return whether the passed in type ID can be used for <link linkend="g-value-init"><function>g_value_init()</function></link>.
@@ -142,9 +140,9 @@ of the <link linkend="GTypeValueTable"><type>GTypeValueTable</type></link> funct
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-IS-VALUE-ABSTRACT:CAPS" role="macro"/>G_TYPE_IS_VALUE_ABSTRACT()</title>
-<indexterm><primary>G_TYPE_IS_VALUE_ABSTRACT</primary></indexterm><programlisting>#define G_TYPE_IS_VALUE_ABSTRACT(type)          (g_type_test_flags ((type), G_TYPE_FLAG_VALUE_ABSTRACT))
+<refsect2 id="G-TYPE-IS-VALUE-ABSTRACT:CAPS" role="macro">
+<title>G_TYPE_IS_VALUE_ABSTRACT()</title>
+<indexterm zone="G-TYPE-IS-VALUE-ABSTRACT:CAPS"><primary>G_TYPE_IS_VALUE_ABSTRACT</primary></indexterm><programlisting>#define G_TYPE_IS_VALUE_ABSTRACT(type)          (g_type_test_flags ((type), G_TYPE_FLAG_VALUE_ABSTRACT))
 </programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>type</parameter> is an abstract value type.  An abstract value type 
@@ -157,9 +155,9 @@ used as an abstract base type for derived value types.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-VALUE:CAPS" role="macro"/>G_IS_VALUE()</title>
-<indexterm><primary>G_IS_VALUE</primary></indexterm><programlisting>#define	G_IS_VALUE(value)		(G_TYPE_CHECK_VALUE (value))
+<refsect2 id="G-IS-VALUE:CAPS" role="macro">
+<title>G_IS_VALUE()</title>
+<indexterm zone="G-IS-VALUE:CAPS"><primary>G_IS_VALUE</primary></indexterm><programlisting>#define	G_IS_VALUE(value)		(G_TYPE_CHECK_VALUE (value))
 </programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>value</parameter> is a valid and initialized <link linkend="GValue"><type>GValue</type></link> structure.
@@ -170,9 +168,9 @@ Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>v
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GValue" role="struct"/>GValue</title>
-<indexterm><primary>GValue</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GValue" role="struct">
+<title>GValue</title>
+<indexterm zone="GValue"><primary>GValue</primary></indexterm><programlisting>typedef struct {
 } GValue;
 </programlisting>
 <para>
@@ -185,25 +183,25 @@ types.
 within the 2 element <parameter>data</parameter> union, and the <parameter>g_type</parameter> member should
 only be accessed through the <link linkend="G-VALUE-TYPE:CAPS"><function>G_VALUE_TYPE()</function></link> macro.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-VALUE:CAPS" role="macro"/>G_TYPE_VALUE</title>
-<indexterm><primary>G_TYPE_VALUE</primary></indexterm><programlisting>#define	G_TYPE_VALUE		(g_value_get_type ())
+<refsect2 id="G-TYPE-VALUE:CAPS" role="macro">
+<title>G_TYPE_VALUE</title>
+<indexterm zone="G-TYPE-VALUE:CAPS"><primary>G_TYPE_VALUE</primary></indexterm><programlisting>#define	G_TYPE_VALUE		(g_value_get_type ())
 </programlisting>
 <para>
 Returns the type ID of the "GValue" type which is a boxed type,
 used to pass around pointers to GValues.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-VALUE-ARRAY:CAPS" role="macro"/>G_TYPE_VALUE_ARRAY</title>
-<indexterm><primary>G_TYPE_VALUE_ARRAY</primary></indexterm><programlisting>#define	G_TYPE_VALUE_ARRAY	(g_value_array_get_type ())
+<refsect2 id="G-TYPE-VALUE-ARRAY:CAPS" role="macro">
+<title>G_TYPE_VALUE_ARRAY</title>
+<indexterm zone="G-TYPE-VALUE-ARRAY:CAPS"><primary>G_TYPE_VALUE_ARRAY</primary></indexterm><programlisting>#define	G_TYPE_VALUE_ARRAY	(g_value_array_get_type ())
 </programlisting>
 <para>
 Returns the type ID of the "GValueArray" type which is a boxed type,
 used to pass around pointers to GValueArrays.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-value-init" role="function"/>g_value_init ()</title>
-<indexterm><primary>g_value_init</primary></indexterm><programlisting><link linkend="GValue">GValue</link>*             g_value_init                        (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-init" role="function">
+<title>g_value_init ()</title>
+<indexterm zone="g-value-init"><primary>g_value_init</primary></indexterm><programlisting><link linkend="GValue">GValue</link>*             g_value_init                        (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="GType">GType</link> g_type);</programlisting>
 <para>
 Initializes <parameter>value</parameter> with the default value of <parameter>type</parameter>.
@@ -219,9 +217,9 @@ Initializes <parameter>value</parameter> with the default value of <parameter>ty
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-copy" role="function"/>g_value_copy ()</title>
-<indexterm><primary>g_value_copy</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_copy                        (const <link linkend="GValue">GValue</link> *src_value,
+<refsect2 id="g-value-copy" role="function">
+<title>g_value_copy ()</title>
+<indexterm zone="g-value-copy"><primary>g_value_copy</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_copy                        (const <link linkend="GValue">GValue</link> *src_value,
                                                          <link linkend="GValue">GValue</link> *dest_value);</programlisting>
 <para>
 Copies the value of <parameter>src_value</parameter> into <parameter>dest_value</parameter>.
@@ -235,9 +233,9 @@ Copies the value of <parameter>src_value</parameter> into <parameter>dest_value<
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-reset" role="function"/>g_value_reset ()</title>
-<indexterm><primary>g_value_reset</primary></indexterm><programlisting><link linkend="GValue">GValue</link>*             g_value_reset                       (<link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-reset" role="function">
+<title>g_value_reset ()</title>
+<indexterm zone="g-value-reset"><primary>g_value_reset</primary></indexterm><programlisting><link linkend="GValue">GValue</link>*             g_value_reset                       (<link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Clears the current value in <parameter>value</parameter> and resets it to the default value
 (as if the value had just been initialized).
@@ -250,9 +248,9 @@ Clears the current value in <parameter>value</parameter> and resets it to the de
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-unset" role="function"/>g_value_unset ()</title>
-<indexterm><primary>g_value_unset</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_unset                       (<link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-unset" role="function">
+<title>g_value_unset ()</title>
+<indexterm zone="g-value-unset"><primary>g_value_unset</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_unset                       (<link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Clears the current value in <parameter>value</parameter> and "unsets" the type,
 this releases all resources associated with this GValue.
@@ -265,9 +263,9 @@ An unset value is the same as an uninitialized (zero-filled)
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-instance" role="function"/>g_value_set_instance ()</title>
-<indexterm><primary>g_value_set_instance</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_instance                (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-instance" role="function">
+<title>g_value_set_instance ()</title>
+<indexterm zone="g-value-set-instance"><primary>g_value_set_instance</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_instance                (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gpointer">gpointer</link> instance);</programlisting>
 <para>
 Sets <parameter>value</parameter> from an instantiatable type via the 
@@ -282,9 +280,9 @@ value_table's <link linkend="collect-value"><function>collect_value()</function>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-fits-pointer" role="function"/>g_value_fits_pointer ()</title>
-<indexterm><primary>g_value_fits_pointer</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_value_fits_pointer                (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-fits-pointer" role="function">
+<title>g_value_fits_pointer ()</title>
+<indexterm zone="g-value-fits-pointer"><primary>g_value_fits_pointer</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_value_fits_pointer                (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Determines if <parameter>value</parameter> will fit inside the size of a pointer value.
 This is an internal function introduced mainly for C marshallers.
@@ -297,9 +295,9 @@ This is an internal function introduced mainly for C marshallers.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-peek-pointer" role="function"/>g_value_peek_pointer ()</title>
-<indexterm><primary>g_value_peek_pointer</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_value_peek_pointer                (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-peek-pointer" role="function">
+<title>g_value_peek_pointer ()</title>
+<indexterm zone="g-value-peek-pointer"><primary>g_value_peek_pointer</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_value_peek_pointer                (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Return the value contents as pointer. This function asserts that
 <link linkend="g-value-fits-pointer"><function>g_value_fits_pointer()</function></link> returned <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> for the passed in value.
@@ -313,9 +311,9 @@ This is an internal function introduced mainly for C marshallers.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-type-compatible" role="function"/>g_value_type_compatible ()</title>
-<indexterm><primary>g_value_type_compatible</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_value_type_compatible             (<link linkend="GType">GType</link> src_type,
+<refsect2 id="g-value-type-compatible" role="function">
+<title>g_value_type_compatible ()</title>
+<indexterm zone="g-value-type-compatible"><primary>g_value_type_compatible</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_value_type_compatible             (<link linkend="GType">GType</link> src_type,
                                                          <link linkend="GType">GType</link> dest_type);</programlisting>
 <para>
 Returns whether a <link linkend="GValue"><type>GValue</type></link> of type <parameter>src_type</parameter> can be copied into
@@ -332,9 +330,9 @@ a <link linkend="GValue"><type>GValue</type></link> of type <parameter>dest_type
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-type-transformable" role="function"/>g_value_type_transformable ()</title>
-<indexterm><primary>g_value_type_transformable</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_value_type_transformable          (<link linkend="GType">GType</link> src_type,
+<refsect2 id="g-value-type-transformable" role="function">
+<title>g_value_type_transformable ()</title>
+<indexterm zone="g-value-type-transformable"><primary>g_value_type_transformable</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_value_type_transformable          (<link linkend="GType">GType</link> src_type,
                                                          <link linkend="GType">GType</link> dest_type);</programlisting>
 <para>
 Check whether <link linkend="g-value-transform"><function>g_value_transform()</function></link> is able to transform values
@@ -351,9 +349,9 @@ of type <parameter>src_type</parameter> into values of type <parameter>dest_type
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-transform" role="function"/>g_value_transform ()</title>
-<indexterm><primary>g_value_transform</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_value_transform                   (const <link linkend="GValue">GValue</link> *src_value,
+<refsect2 id="g-value-transform" role="function">
+<title>g_value_transform ()</title>
+<indexterm zone="g-value-transform"><primary>g_value_transform</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_value_transform                   (const <link linkend="GValue">GValue</link> *src_value,
                                                          <link linkend="GValue">GValue</link> *dest_value);</programlisting>
 <para>
 Tries to cast the contents of <parameter>src_value</parameter> into a type appropriate
@@ -376,9 +374,9 @@ as rcfile value or object property serialization).
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GValueTransform" role="function"/>GValueTransform ()</title>
-<indexterm><primary>GValueTransform</primary></indexterm><programlisting><link linkend="void">void</link>                (*GValueTransform)                  (const <link linkend="GValue">GValue</link> *src_value,
+<refsect2 id="GValueTransform" role="function">
+<title>GValueTransform ()</title>
+<indexterm zone="GValueTransform"><primary>GValueTransform</primary></indexterm><programlisting><link linkend="void">void</link>                (*GValueTransform)                  (const <link linkend="GValue">GValue</link> *src_value,
                                                          <link linkend="GValue">GValue</link> *dest_value);</programlisting>
 <para>
 The type of value transformation functions which can be registered with
@@ -393,9 +391,9 @@ The type of value transformation functions which can be registered with
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-register-transform-func" role="function"/>g_value_register_transform_func ()</title>
-<indexterm><primary>g_value_register_transform_func</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_register_transform_func     (<link linkend="GType">GType</link> src_type,
+<refsect2 id="g-value-register-transform-func" role="function">
+<title>g_value_register_transform_func ()</title>
+<indexterm zone="g-value-register-transform-func"><primary>g_value_register_transform_func</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_register_transform_func     (<link linkend="GType">GType</link> src_type,
                                                          <link linkend="GType">GType</link> dest_type,
                                                          <link linkend="GValueTransform">GValueTransform</link> transform_func);</programlisting>
 <para>
@@ -416,9 +414,9 @@ will be replaced.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strdup-value-contents" role="function"/>g_strdup_value_contents ()</title>
-<indexterm><primary>g_strdup_value_contents</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strdup_value_contents             (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-strdup-value-contents" role="function">
+<title>g_strdup_value_contents ()</title>
+<indexterm zone="g-strdup-value-contents"><primary>g_strdup_value_contents</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strdup_value_contents             (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Return a newly allocated string, which describes the contents of a <link linkend="GValue"><type>GValue</type></link>.
 The main purpose of this function is to describe <link linkend="GValue"><type>GValue</type></link> contents for 
@@ -438,7 +436,7 @@ between different GLib versions.
 
 
 
-<refsect1>
+<refsect1 id="gobject-Generic-values.see-also">
 <title>See Also</title>
 <para>
 The fundamental types which all support <link linkend="GValue"><type>GValue</type></link> operations and thus

@@ -50,10 +50,10 @@
 /* BOOLEAN:INT (./testmarshal.list:2) */
 void
 test_marshal_BOOLEAN__INT (GClosure     *closure,
-                           GValue       *return_value,
+                           GValue       *return_value G_GNUC_UNUSED,
                            guint         n_param_values,
                            const GValue *param_values,
-                           gpointer      invocation_hint,
+                           gpointer      invocation_hint G_GNUC_UNUSED,
                            gpointer      marshal_data)
 {
   typedef gboolean (*GMarshalFunc_BOOLEAN__INT) (gpointer     data1,
@@ -89,10 +89,10 @@ test_marshal_BOOLEAN__INT (GClosure     *closure,
 /* STRING:INT (./testmarshal.list:3) */
 void
 test_marshal_STRING__INT (GClosure     *closure,
-                          GValue       *return_value,
+                          GValue       *return_value G_GNUC_UNUSED,
                           guint         n_param_values,
                           const GValue *param_values,
-                          gpointer      invocation_hint,
+                          gpointer      invocation_hint G_GNUC_UNUSED,
                           gpointer      marshal_data)
 {
   typedef gchar* (*GMarshalFunc_STRING__INT) (gpointer     data1,

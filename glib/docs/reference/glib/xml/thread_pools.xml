@@ -1,23 +1,22 @@
 <refentry id="glib-Thread-Pools">
 <refmeta>
-<refentrytitle role="top_of_page">Thread Pools</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Thread-Pools.top_of_page">Thread Pools</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>Thread Pools</refname>
-<refpurpose>pools of threads to execute work concurrently.</refpurpose>
+<refpurpose>pools of threads to execute work concurrently</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Thread-Pools.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
-
 
                     <link linkend="GThreadPool">GThreadPool</link>;
 <link linkend="GThreadPool">GThreadPool</link>*        <link linkend="g-thread-pool-new">g_thread_pool_new</link>                   (<link linkend="GFunc">GFunc</link> func,
@@ -60,12 +59,12 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Thread-Pools.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
-Sometimes you wish to asyncronously fork out the execution of work and
+Sometimes you wish to asynchronously fork out the execution of work and
 continue working in your own thread. If that will happen often, the
-overhead of starting and destroying a thread each time might be to
+overhead of starting and destroying a thread each time might be too
 high. In such cases reusing already started threads seems like a good
 idea. And it indeed is, but implementing this can be tedious and
 error-prone.
@@ -105,20 +104,20 @@ can be stopped by calling <link linkend="g-thread-pool-stop-unused-threads"><fun
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Thread-Pools.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GThreadPool" role="struct"/>GThreadPool</title>
-<indexterm><primary>GThreadPool</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GThreadPool" role="struct">
+<title>GThreadPool</title>
+<indexterm zone="GThreadPool"><primary>GThreadPool</primary></indexterm><programlisting>typedef struct {
   GFunc func;
   gpointer user_data;
   gboolean exclusive;
 } GThreadPool;
 </programlisting>
 <para>
-The <link linkend="GThreadPool"><type>GThreadPool</type></link> struct represents a thread pool. It has six public
-read-only members, but the underlying struct is bigger, so you must not copy
-this struct.
+The <link linkend="GThreadPool"><type>GThreadPool</type></link> struct represents a thread pool. It has three public
+read-only members, but the underlying struct is bigger, so you must not 
+copy this struct.
 </para><variablelist role="struct">
 <varlistentry>
 <term><link linkend="GFunc">GFunc</link>&nbsp;<structfield>func</structfield>;</term>
@@ -137,9 +136,9 @@ this struct.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-thread-pool-new" role="function"/>g_thread_pool_new ()</title>
-<indexterm><primary>g_thread_pool_new</primary></indexterm><programlisting><link linkend="GThreadPool">GThreadPool</link>*        g_thread_pool_new                   (<link linkend="GFunc">GFunc</link> func,
+<refsect2 id="g-thread-pool-new" role="function">
+<title>g_thread_pool_new ()</title>
+<indexterm zone="g-thread-pool-new"><primary>g_thread_pool_new</primary></indexterm><programlisting><link linkend="GThreadPool">GThreadPool</link>*        g_thread_pool_new                   (<link linkend="GFunc">GFunc</link> func,
                                                          <link linkend="gpointer">gpointer</link> user_data,
                                                          <link linkend="gint">gint</link> max_threads,
                                                          <link linkend="gboolean">gboolean</link> exclusive,
@@ -193,9 +192,9 @@ not all <parameter>max_threads</parameter> threads could be created.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the new <link linkend="GThreadPool"><type>GThreadPool</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-thread-pool-push" role="function"/>g_thread_pool_push ()</title>
-<indexterm><primary>g_thread_pool_push</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_pool_push                  (<link linkend="GThreadPool">GThreadPool</link> *pool,
+<refsect2 id="g-thread-pool-push" role="function">
+<title>g_thread_pool_push ()</title>
+<indexterm zone="g-thread-pool-push"><primary>g_thread_pool_push</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_pool_push                  (<link linkend="GThreadPool">GThreadPool</link> *pool,
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
@@ -224,9 +223,9 @@ to do.</para>
 <listitem><simpara> return location for error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-thread-pool-set-max-threads" role="function"/>g_thread_pool_set_max_threads ()</title>
-<indexterm><primary>g_thread_pool_set_max_threads</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_pool_set_max_threads       (<link linkend="GThreadPool">GThreadPool</link> *pool,
+<refsect2 id="g-thread-pool-set-max-threads" role="function">
+<title>g_thread_pool_set_max_threads ()</title>
+<indexterm zone="g-thread-pool-set-max-threads"><primary>g_thread_pool_set_max_threads</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_pool_set_max_threads       (<link linkend="GThreadPool">GThreadPool</link> *pool,
                                                          <link linkend="gint">gint</link> max_threads,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
@@ -262,9 +261,9 @@ created.</para>
 <listitem><simpara> return location for error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-thread-pool-get-max-threads" role="function"/>g_thread_pool_get_max_threads ()</title>
-<indexterm><primary>g_thread_pool_get_max_threads</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_thread_pool_get_max_threads       (<link linkend="GThreadPool">GThreadPool</link> *pool);</programlisting>
+<refsect2 id="g-thread-pool-get-max-threads" role="function">
+<title>g_thread_pool_get_max_threads ()</title>
+<indexterm zone="g-thread-pool-get-max-threads"><primary>g_thread_pool_get_max_threads</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_thread_pool_get_max_threads       (<link linkend="GThreadPool">GThreadPool</link> *pool);</programlisting>
 <para>
 Returns the maximal number of threads for <parameter>pool</parameter>.</para>
 <para>
@@ -276,9 +275,9 @@ Returns the maximal number of threads for <parameter>pool</parameter>.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the maximal number of threads
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-thread-pool-get-num-threads" role="function"/>g_thread_pool_get_num_threads ()</title>
-<indexterm><primary>g_thread_pool_get_num_threads</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_thread_pool_get_num_threads       (<link linkend="GThreadPool">GThreadPool</link> *pool);</programlisting>
+<refsect2 id="g-thread-pool-get-num-threads" role="function">
+<title>g_thread_pool_get_num_threads ()</title>
+<indexterm zone="g-thread-pool-get-num-threads"><primary>g_thread_pool_get_num_threads</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_thread_pool_get_num_threads       (<link linkend="GThreadPool">GThreadPool</link> *pool);</programlisting>
 <para>
 Returns the number of threads currently running in <parameter>pool</parameter>.</para>
 <para>
@@ -290,9 +289,9 @@ Returns the number of threads currently running in <parameter>pool</parameter>.<
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of threads currently running
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-thread-pool-unprocessed" role="function"/>g_thread_pool_unprocessed ()</title>
-<indexterm><primary>g_thread_pool_unprocessed</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_thread_pool_unprocessed           (<link linkend="GThreadPool">GThreadPool</link> *pool);</programlisting>
+<refsect2 id="g-thread-pool-unprocessed" role="function">
+<title>g_thread_pool_unprocessed ()</title>
+<indexterm zone="g-thread-pool-unprocessed"><primary>g_thread_pool_unprocessed</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_thread_pool_unprocessed           (<link linkend="GThreadPool">GThreadPool</link> *pool);</programlisting>
 <para>
 Returns the number of tasks still unprocessed in <parameter>pool</parameter>.</para>
 <para>
@@ -304,9 +303,9 @@ Returns the number of tasks still unprocessed in <parameter>pool</parameter>.</p
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of unprocessed tasks
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-thread-pool-free" role="function"/>g_thread_pool_free ()</title>
-<indexterm><primary>g_thread_pool_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_pool_free                  (<link linkend="GThreadPool">GThreadPool</link> *pool,
+<refsect2 id="g-thread-pool-free" role="function">
+<title>g_thread_pool_free ()</title>
+<indexterm zone="g-thread-pool-free"><primary>g_thread_pool_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_pool_free                  (<link linkend="GThreadPool">GThreadPool</link> *pool,
                                                          <link linkend="gboolean">gboolean</link> immediate,
                                                          <link linkend="gboolean">gboolean</link> wait_);</programlisting>
 <para>
@@ -339,9 +338,9 @@ After calling this function <parameter>pool</parameter> must not be used anymore
 <listitem><simpara> should the function wait for all tasks to be finished?
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-thread-pool-set-max-unused-threads" role="function"/>g_thread_pool_set_max_unused_threads ()</title>
-<indexterm><primary>g_thread_pool_set_max_unused_threads</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_pool_set_max_unused_threads
+<refsect2 id="g-thread-pool-set-max-unused-threads" role="function">
+<title>g_thread_pool_set_max_unused_threads ()</title>
+<indexterm zone="g-thread-pool-set-max-unused-threads"><primary>g_thread_pool_set_max_unused_threads</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_pool_set_max_unused_threads
                                                         (<link linkend="gint">gint</link> max_threads);</programlisting>
 <para>
 Sets the maximal number of unused threads to <parameter>max_threads</parameter>. If
@@ -354,9 +353,9 @@ threads.</para>
 <listitem><simpara> maximal number of unused threads
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-thread-pool-get-max-unused-threads" role="function"/>g_thread_pool_get_max_unused_threads ()</title>
-<indexterm><primary>g_thread_pool_get_max_unused_threads</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_thread_pool_get_max_unused_threads
+<refsect2 id="g-thread-pool-get-max-unused-threads" role="function">
+<title>g_thread_pool_get_max_unused_threads ()</title>
+<indexterm zone="g-thread-pool-get-max-unused-threads"><primary>g_thread_pool_get_max_unused_threads</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_thread_pool_get_max_unused_threads
                                                         (void);</programlisting>
 <para>
 Returns the maximal allowed number of unused threads.</para>
@@ -366,9 +365,9 @@ Returns the maximal allowed number of unused threads.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the maximal number of unused threads
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-thread-pool-get-num-unused-threads" role="function"/>g_thread_pool_get_num_unused_threads ()</title>
-<indexterm><primary>g_thread_pool_get_num_unused_threads</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_thread_pool_get_num_unused_threads
+<refsect2 id="g-thread-pool-get-num-unused-threads" role="function">
+<title>g_thread_pool_get_num_unused_threads ()</title>
+<indexterm zone="g-thread-pool-get-num-unused-threads"><primary>g_thread_pool_get_num_unused_threads</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_thread_pool_get_num_unused_threads
                                                         (void);</programlisting>
 <para>
 Returns the number of currently unused threads.</para>
@@ -378,9 +377,9 @@ Returns the number of currently unused threads.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of currently unused threads
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-thread-pool-stop-unused-threads" role="function"/>g_thread_pool_stop_unused_threads ()</title>
-<indexterm><primary>g_thread_pool_stop_unused_threads</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_pool_stop_unused_threads   (void);</programlisting>
+<refsect2 id="g-thread-pool-stop-unused-threads" role="function">
+<title>g_thread_pool_stop_unused_threads ()</title>
+<indexterm zone="g-thread-pool-stop-unused-threads"><primary>g_thread_pool_stop_unused_threads</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_pool_stop_unused_threads   (void);</programlisting>
 <para>
 Stops all currently unused threads. This does not change the
 maximal number of unused threads. This function can be used to
@@ -388,9 +387,9 @@ regularly stop all unused threads e.g. from <link linkend="g-timeout-add"><funct
 <para>
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-thread-pool-set-sort-function" role="function" condition="since:2.10"/>g_thread_pool_set_sort_function ()</title>
-<indexterm role="2.10"><primary>g_thread_pool_set_sort_function</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_pool_set_sort_function     (<link linkend="GThreadPool">GThreadPool</link> *pool,
+<refsect2 id="g-thread-pool-set-sort-function" role="function" condition="since:2.10">
+<title>g_thread_pool_set_sort_function ()</title>
+<indexterm zone="g-thread-pool-set-sort-function" role="2.10"><primary>g_thread_pool_set_sort_function</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_pool_set_sort_function     (<link linkend="GThreadPool">GThreadPool</link> *pool,
                                                          <link linkend="GCompareDataFunc">GCompareDataFunc</link> func,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -423,9 +422,9 @@ created.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.10
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-thread-pool-set-max-idle-time" role="function" condition="since:2.10"/>g_thread_pool_set_max_idle_time ()</title>
-<indexterm role="2.10"><primary>g_thread_pool_set_max_idle_time</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_pool_set_max_idle_time     (<link linkend="guint">guint</link> interval);</programlisting>
+<refsect2 id="g-thread-pool-set-max-idle-time" role="function" condition="since:2.10">
+<title>g_thread_pool_set_max_idle_time ()</title>
+<indexterm zone="g-thread-pool-set-max-idle-time" role="2.10"><primary>g_thread_pool_set_max_idle_time</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_pool_set_max_idle_time     (<link linkend="guint">guint</link> interval);</programlisting>
 <para>
 This function will set the maximum <parameter>interval</parameter> that a thread waiting
 in the pool for new tasks can be idle for before being
@@ -447,9 +446,9 @@ This function makes use of <link linkend="g-async-queue-timed-pop"><function>g_a
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.10
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-thread-pool-get-max-idle-time" role="function" condition="since:2.10"/>g_thread_pool_get_max_idle_time ()</title>
-<indexterm role="2.10"><primary>g_thread_pool_get_max_idle_time</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_thread_pool_get_max_idle_time     (void);</programlisting>
+<refsect2 id="g-thread-pool-get-max-idle-time" role="function" condition="since:2.10">
+<title>g_thread_pool_get_max_idle_time ()</title>
+<indexterm zone="g-thread-pool-get-max-idle-time" role="2.10"><primary>g_thread_pool_get_max_idle_time</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_thread_pool_get_max_idle_time     (void);</programlisting>
 <para>
 This function will return the maximum <parameter>interval</parameter> that a thread will
 wait in the thread pool for new tasks before being stopped.
@@ -471,7 +470,7 @@ new work are not stopped.</para>
 
 
 
-<refsect1>
+<refsect1 id="glib-Thread-Pools.see-also">
 <title>See Also</title>
 <para>
 <variablelist>

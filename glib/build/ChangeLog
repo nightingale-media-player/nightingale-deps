@@ -1,3 +1,24 @@
+2008-05-17  Tor Lillqvist  <tml@novell.com>
+
+	* "build" is no longer include into GLib through
+	svn:externals. The relevant directories and files have been svn
+	add'ed to GLib (the glib-2-16 branch here) instead.
+
+2008-04-23  Tor Lillqvist  <tml@novell.com>
+
+	Bug 529391 - Update of vs8 build files for Glib 2.16
+
+	* win32/vs8/*: Update from Danel Atallah.
+
+2008-03-12  Tor Lillqvist  <tml@novell.com>
+
+	* MAINTAINERS: Add.
+
+	* win32/make.mingw: Remove this since long unused and obsolete
+	file from SVN.
+
+	* win32/make.msc: Don't mention it here either then.
+
 2007-04-15  Tor Lillqvist  <tml@novell.com>
 
 	* .cvsignore
@@ -7,11 +28,13 @@
 
 2006-10-14  Tor Lillqvist  <tml@novell.com>
 
-	* win32/vs8/glib.vcproj: Update by Mike Edenfield. (#353910)
-
 	* win32/vs8/gmodule.vcproj
 	* win32/vs8/gobject.vcproj
 	* win32/vs8/gthread.vcproj: Updates by Mike Edenfield. (#354124)
+
+2006-09-02  Tor Lillqvist  <tml@novell.com>
+
+	* win32/vs8/glib.vcproj: Update from Mike Edenfield.
 
 2006-02-08  Tor Lillqvist  <tml@novell.com>
 

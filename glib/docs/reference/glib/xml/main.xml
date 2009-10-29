@@ -1,23 +1,22 @@
 <refentry id="glib-The-Main-Event-Loop">
 <refmeta>
-<refentrytitle role="top_of_page">The Main Event Loop</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-The-Main-Event-Loop.top_of_page">The Main Event Loop</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>The Main Event Loop</refname>
-<refpurpose>manages all available sources of events.</refpurpose>
+<refpurpose>manages all available sources of events</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-The-Main-Event-Loop.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
-
 
                     <link linkend="GMainLoop">GMainLoop</link>;
 <link linkend="GMainLoop">GMainLoop</link>*          <link linkend="g-main-loop-new">g_main_loop_new</link>                     (<link linkend="GMainContext">GMainContext</link> *context,
@@ -94,10 +93,19 @@
 #define             <link linkend="g-main-set-poll-func">g_main_set_poll_func</link>                (func)
 
 <link linkend="GSource">GSource</link>*            <link linkend="g-timeout-source-new">g_timeout_source_new</link>                (<link linkend="guint">guint</link> interval);
+<link linkend="GSource">GSource</link>*            <link linkend="g-timeout-source-new-seconds">g_timeout_source_new_seconds</link>        (<link linkend="guint">guint</link> interval);
 <link linkend="guint">guint</link>               <link linkend="g-timeout-add">g_timeout_add</link>                       (<link linkend="guint">guint</link> interval,
                                                          <link linkend="GSourceFunc">GSourceFunc</link> function,
                                                          <link linkend="gpointer">gpointer</link> data);
 <link linkend="guint">guint</link>               <link linkend="g-timeout-add-full">g_timeout_add_full</link>                  (<link linkend="gint">gint</link> priority,
+                                                         <link linkend="guint">guint</link> interval,
+                                                         <link linkend="GSourceFunc">GSourceFunc</link> function,
+                                                         <link linkend="gpointer">gpointer</link> data,
+                                                         <link linkend="GDestroyNotify">GDestroyNotify</link> notify);
+<link linkend="guint">guint</link>               <link linkend="g-timeout-add-seconds">g_timeout_add_seconds</link>               (<link linkend="guint">guint</link> interval,
+                                                         <link linkend="GSourceFunc">GSourceFunc</link> function,
+                                                         <link linkend="gpointer">gpointer</link> data);
+<link linkend="guint">guint</link>               <link linkend="g-timeout-add-seconds-full">g_timeout_add_seconds_full</link>          (<link linkend="gint">gint</link> priority,
                                                          <link linkend="guint">guint</link> interval,
                                                          <link linkend="GSourceFunc">GSourceFunc</link> function,
                                                          <link linkend="gpointer">gpointer</link> data,
@@ -168,7 +176,6 @@ typedef             <link linkend="GPid">GPid</link>;
 <link linkend="gboolean">gboolean</link>            <link linkend="g-source-remove-by-funcs-user-data">g_source_remove_by_funcs_user_data</link>  (<link linkend="GSourceFuncs">GSourceFuncs</link> *funcs,
                                                          <link linkend="gpointer">gpointer</link> user_data);
 <link linkend="gboolean">gboolean</link>            <link linkend="g-source-remove-by-user-data">g_source_remove_by_user_data</link>        (<link linkend="gpointer">gpointer</link> user_data);
-
 </synopsis>
 </refsynopsisdiv>
 
@@ -180,7 +187,7 @@ typedef             <link linkend="GPid">GPid</link>;
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-The-Main-Event-Loop.description" role="desc">
 <title role="desc.title">Description</title>
   <para>
     The main event loop manages all the available sources of events for
@@ -243,7 +250,7 @@ typedef             <link linkend="GPid">GPid</link>;
       types.
     </para>
     <para>
-      New source types basically interact with with the main context
+      New source types basically interact with the main context
       in two ways. Their prepare function in <link linkend="GSourceFuncs"><type>GSourceFuncs</type></link> can set
       a timeout to determine the maximum amount of time that the
       main loop will sleep before checking the source again.  In
@@ -274,18 +281,18 @@ typedef             <link linkend="GPid">GPid</link>;
   </refsect2>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-The-Main-Event-Loop.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GMainLoop" role="struct"/>GMainLoop</title>
-<indexterm><primary>GMainLoop</primary></indexterm><programlisting>typedef struct _GMainLoop GMainLoop;</programlisting>
+<refsect2 id="GMainLoop" role="struct">
+<title>GMainLoop</title>
+<indexterm zone="GMainLoop"><primary>GMainLoop</primary></indexterm><programlisting>typedef struct _GMainLoop GMainLoop;</programlisting>
 <para>
 The <structname>GMainLoop</structname> struct is an opaque data type 
 representing the main event loop of a GLib or GTK+ application.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-main-loop-new" role="function"/>g_main_loop_new ()</title>
-<indexterm><primary>g_main_loop_new</primary></indexterm><programlisting><link linkend="GMainLoop">GMainLoop</link>*          g_main_loop_new                     (<link linkend="GMainContext">GMainContext</link> *context,
+<refsect2 id="g-main-loop-new" role="function">
+<title>g_main_loop_new ()</title>
+<indexterm zone="g-main-loop-new"><primary>g_main_loop_new</primary></indexterm><programlisting><link linkend="GMainLoop">GMainLoop</link>*          g_main_loop_new                     (<link linkend="GMainContext">GMainContext</link> *context,
                                                          <link linkend="gboolean">gboolean</link> is_running);</programlisting>
 <para>
 Creates a new <link linkend="GMainLoop"><type>GMainLoop</type></link> structure.</para>
@@ -303,9 +310,9 @@ is not very important since calling <link linkend="g-main-loop-run"><function>g_
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new <link linkend="GMainLoop"><type>GMainLoop</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-loop-ref" role="function"/>g_main_loop_ref ()</title>
-<indexterm><primary>g_main_loop_ref</primary></indexterm><programlisting><link linkend="GMainLoop">GMainLoop</link>*          g_main_loop_ref                     (<link linkend="GMainLoop">GMainLoop</link> *loop);</programlisting>
+<refsect2 id="g-main-loop-ref" role="function">
+<title>g_main_loop_ref ()</title>
+<indexterm zone="g-main-loop-ref"><primary>g_main_loop_ref</primary></indexterm><programlisting><link linkend="GMainLoop">GMainLoop</link>*          g_main_loop_ref                     (<link linkend="GMainLoop">GMainLoop</link> *loop);</programlisting>
 <para>
 Increases the reference count on a <link linkend="GMainLoop"><type>GMainLoop</type></link> object by one.</para>
 <para>
@@ -317,9 +324,9 @@ Increases the reference count on a <link linkend="GMainLoop"><type>GMainLoop</ty
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <parameter>loop</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-loop-unref" role="function"/>g_main_loop_unref ()</title>
-<indexterm><primary>g_main_loop_unref</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_loop_unref                   (<link linkend="GMainLoop">GMainLoop</link> *loop);</programlisting>
+<refsect2 id="g-main-loop-unref" role="function">
+<title>g_main_loop_unref ()</title>
+<indexterm zone="g-main-loop-unref"><primary>g_main_loop_unref</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_loop_unref                   (<link linkend="GMainLoop">GMainLoop</link> *loop);</programlisting>
 <para>
 Decreases the reference count on a <link linkend="GMainLoop"><type>GMainLoop</type></link> object by one. If
 the result is zero, free the loop and free all associated memory.</para>
@@ -330,9 +337,9 @@ the result is zero, free the loop and free all associated memory.</para>
 <listitem><simpara> a <link linkend="GMainLoop"><type>GMainLoop</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-loop-run" role="function"/>g_main_loop_run ()</title>
-<indexterm><primary>g_main_loop_run</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_loop_run                     (<link linkend="GMainLoop">GMainLoop</link> *loop);</programlisting>
+<refsect2 id="g-main-loop-run" role="function">
+<title>g_main_loop_run ()</title>
+<indexterm zone="g-main-loop-run"><primary>g_main_loop_run</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_loop_run                     (<link linkend="GMainLoop">GMainLoop</link> *loop);</programlisting>
 <para>
 Runs a main loop until <link linkend="g-main-loop-quit"><function>g_main_loop_quit()</function></link> is called on the loop.
 If this is called for the thread of the loop's <link linkend="GMainContext"><type>GMainContext</type></link>,
@@ -345,12 +352,16 @@ simply wait.</para>
 <listitem><simpara> a <link linkend="GMainLoop"><type>GMainLoop</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-loop-quit" role="function"/>g_main_loop_quit ()</title>
-<indexterm><primary>g_main_loop_quit</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_loop_quit                    (<link linkend="GMainLoop">GMainLoop</link> *loop);</programlisting>
+<refsect2 id="g-main-loop-quit" role="function">
+<title>g_main_loop_quit ()</title>
+<indexterm zone="g-main-loop-quit"><primary>g_main_loop_quit</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_loop_quit                    (<link linkend="GMainLoop">GMainLoop</link> *loop);</programlisting>
 <para>
 Stops a <link linkend="GMainLoop"><type>GMainLoop</type></link> from running. Any calls to <link linkend="g-main-loop-run"><function>g_main_loop_run()</function></link>
-for the loop will return.</para>
+for the loop will return. 
+</para>
+<para>
+Note that sources that have already been dispatched when 
+<link linkend="g-main-loop-quit"><function>g_main_loop_quit()</function></link> is called will still be executed.</para>
 <para>
 
 </para><variablelist role="params">
@@ -358,9 +369,9 @@ for the loop will return.</para>
 <listitem><simpara> a <link linkend="GMainLoop"><type>GMainLoop</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-loop-is-running" role="function"/>g_main_loop_is_running ()</title>
-<indexterm><primary>g_main_loop_is_running</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_main_loop_is_running              (<link linkend="GMainLoop">GMainLoop</link> *loop);</programlisting>
+<refsect2 id="g-main-loop-is-running" role="function">
+<title>g_main_loop_is_running ()</title>
+<indexterm zone="g-main-loop-is-running"><primary>g_main_loop_is_running</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_main_loop_is_running              (<link linkend="GMainLoop">GMainLoop</link> *loop);</programlisting>
 <para>
 Checks to see if the main loop is currently being run via <link linkend="g-main-loop-run"><function>g_main_loop_run()</function></link>.</para>
 <para>
@@ -372,9 +383,9 @@ Checks to see if the main loop is currently being run via <link linkend="g-main-
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the mainloop is currently being run.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-loop-get-context" role="function"/>g_main_loop_get_context ()</title>
-<indexterm><primary>g_main_loop_get_context</primary></indexterm><programlisting><link linkend="GMainContext">GMainContext</link>*       g_main_loop_get_context             (<link linkend="GMainLoop">GMainLoop</link> *loop);</programlisting>
+<refsect2 id="g-main-loop-get-context" role="function">
+<title>g_main_loop_get_context ()</title>
+<indexterm zone="g-main-loop-get-context"><primary>g_main_loop_get_context</primary></indexterm><programlisting><link linkend="GMainContext">GMainContext</link>*       g_main_loop_get_context             (<link linkend="GMainLoop">GMainLoop</link> *loop);</programlisting>
 <para>
 Returns the <link linkend="GMainContext"><type>GMainContext</type></link> of <parameter>loop</parameter>.</para>
 <para>
@@ -386,9 +397,9 @@ Returns the <link linkend="GMainContext"><type>GMainContext</type></link> of <pa
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the <link linkend="GMainContext"><type>GMainContext</type></link> of <parameter>loop</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-new" role="macro" condition="deprecated:2.2: Use g_main_loop_new() instead."/>g_main_new()</title>
-<indexterm role="deprecated"><primary>g_main_new</primary></indexterm><programlisting>#define             g_main_new(is_running)</programlisting>
+<refsect2 id="g-main-new" role="macro" condition="deprecated:2.2: Use g_main_loop_new() instead.">
+<title>g_main_new()</title>
+<indexterm zone="g-main-new" role="deprecated"><primary>g_main_new</primary></indexterm><programlisting>#define             g_main_new(is_running)</programlisting>
 <warning><para><literal>g_main_new</literal> has been deprecated since version 2.2 and should not be used in newly-written code. Use <link linkend="g-main-loop-new"><function>g_main_loop_new()</function></link> instead.</para></warning>
 <para>
 Creates a new <link linkend="GMainLoop"><type>GMainLoop</type></link> for the default main loop. 
@@ -400,9 +411,9 @@ very important since calling <link linkend="g-main-run"><function>g_main_run()</
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a new <link linkend="GMainLoop"><type>GMainLoop</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-destroy" role="macro" condition="deprecated:2.2: Use g_main_loop_unref() instead."/>g_main_destroy()</title>
-<indexterm role="deprecated"><primary>g_main_destroy</primary></indexterm><programlisting>#define             g_main_destroy(loop)</programlisting>
+<refsect2 id="g-main-destroy" role="macro" condition="deprecated:2.2: Use g_main_loop_unref() instead.">
+<title>g_main_destroy()</title>
+<indexterm zone="g-main-destroy" role="deprecated"><primary>g_main_destroy</primary></indexterm><programlisting>#define             g_main_destroy(loop)</programlisting>
 <warning><para><literal>g_main_destroy</literal> has been deprecated since version 2.2 and should not be used in newly-written code. Use <link linkend="g-main-loop-unref"><function>g_main_loop_unref()</function></link> instead.</para></warning>
 <para>
 Frees the memory allocated for the <link linkend="GMainLoop"><type>GMainLoop</type></link>. 
@@ -411,9 +422,9 @@ Frees the memory allocated for the <link linkend="GMainLoop"><type>GMainLoop</ty
 <listitem><simpara>a <link linkend="GMainLoop"><type>GMainLoop</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-run" role="macro" condition="deprecated:2.2: Use g_main_loop_run() instead."/>g_main_run()</title>
-<indexterm role="deprecated"><primary>g_main_run</primary></indexterm><programlisting>#define             g_main_run(loop)</programlisting>
+<refsect2 id="g-main-run" role="macro" condition="deprecated:2.2: Use g_main_loop_run() instead.">
+<title>g_main_run()</title>
+<indexterm zone="g-main-run" role="deprecated"><primary>g_main_run</primary></indexterm><programlisting>#define             g_main_run(loop)</programlisting>
 <warning><para><literal>g_main_run</literal> has been deprecated since version 2.2 and should not be used in newly-written code. Use <link linkend="g-main-loop-run"><function>g_main_loop_run()</function></link> instead.</para></warning>
 <para>
 Runs a main loop until it stops running. 
@@ -422,9 +433,9 @@ Runs a main loop until it stops running.
 <listitem><simpara>a <link linkend="GMainLoop"><type>GMainLoop</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-quit" role="macro" condition="deprecated:2.2: Use g_main_loop_quit() instead."/>g_main_quit()</title>
-<indexterm role="deprecated"><primary>g_main_quit</primary></indexterm><programlisting>#define             g_main_quit(loop)</programlisting>
+<refsect2 id="g-main-quit" role="macro" condition="deprecated:2.2: Use g_main_loop_quit() instead.">
+<title>g_main_quit()</title>
+<indexterm zone="g-main-quit" role="deprecated"><primary>g_main_quit</primary></indexterm><programlisting>#define             g_main_quit(loop)</programlisting>
 <warning><para><literal>g_main_quit</literal> has been deprecated since version 2.2 and should not be used in newly-written code. Use <link linkend="g-main-loop-quit"><function>g_main_loop_quit()</function></link> instead.</para></warning>
 <para>
 Stops the <link linkend="GMainLoop"><type>GMainLoop</type></link>. If <link linkend="g-main-run"><function>g_main_run()</function></link> was called to run the <link linkend="GMainLoop"><type>GMainLoop</type></link>,
@@ -434,9 +445,9 @@ it will now return.
 <listitem><simpara>a <link linkend="GMainLoop"><type>GMainLoop</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-is-running" role="macro" condition="deprecated:2.2: USe g_main_loop_is_running() instead."/>g_main_is_running()</title>
-<indexterm role="deprecated"><primary>g_main_is_running</primary></indexterm><programlisting>#define             g_main_is_running(loop)</programlisting>
+<refsect2 id="g-main-is-running" role="macro" condition="deprecated:2.2: USe g_main_loop_is_running() instead.">
+<title>g_main_is_running()</title>
+<indexterm zone="g-main-is-running" role="deprecated"><primary>g_main_is_running</primary></indexterm><programlisting>#define             g_main_is_running(loop)</programlisting>
 <warning><para><literal>g_main_is_running</literal> has been deprecated since version 2.2 and should not be used in newly-written code. USe <link linkend="g-main-loop-is-running"><function>g_main_loop_is_running()</function></link> instead.</para></warning>
 <para>
 Checks if the main loop is running. 
@@ -447,17 +458,17 @@ Checks if the main loop is running.
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara><link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the main loop is running.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PRIORITY-HIGH:CAPS" role="macro"/>G_PRIORITY_HIGH</title>
-<indexterm><primary>G_PRIORITY_HIGH</primary></indexterm><programlisting>#define G_PRIORITY_HIGH            -100
+<refsect2 id="G-PRIORITY-HIGH:CAPS" role="macro">
+<title>G_PRIORITY_HIGH</title>
+<indexterm zone="G-PRIORITY-HIGH:CAPS"><primary>G_PRIORITY_HIGH</primary></indexterm><programlisting>#define G_PRIORITY_HIGH            -100
 </programlisting>
 <para>
 Use this for high priority event sources.
 It is not used within GLib or GTK+.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-PRIORITY-DEFAULT:CAPS" role="macro"/>G_PRIORITY_DEFAULT</title>
-<indexterm><primary>G_PRIORITY_DEFAULT</primary></indexterm><programlisting>#define G_PRIORITY_DEFAULT          0
+<refsect2 id="G-PRIORITY-DEFAULT:CAPS" role="macro">
+<title>G_PRIORITY_DEFAULT</title>
+<indexterm zone="G-PRIORITY-DEFAULT:CAPS"><primary>G_PRIORITY_DEFAULT</primary></indexterm><programlisting>#define G_PRIORITY_DEFAULT          0
 </programlisting>
 <para>
 Use this for default priority event sources.
@@ -465,9 +476,9 @@ In GLib this priority is used when adding timeout functions with
 <link linkend="g-timeout-add"><function>g_timeout_add()</function></link>.
 In GDK this priority is used for events from the X server.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-PRIORITY-HIGH-IDLE:CAPS" role="macro"/>G_PRIORITY_HIGH_IDLE</title>
-<indexterm><primary>G_PRIORITY_HIGH_IDLE</primary></indexterm><programlisting>#define G_PRIORITY_HIGH_IDLE        100
+<refsect2 id="G-PRIORITY-HIGH-IDLE:CAPS" role="macro">
+<title>G_PRIORITY_HIGH_IDLE</title>
+<indexterm zone="G-PRIORITY-HIGH-IDLE:CAPS"><primary>G_PRIORITY_HIGH_IDLE</primary></indexterm><programlisting>#define G_PRIORITY_HIGH_IDLE        100
 </programlisting>
 <para>
 Use this for high priority idle functions.
@@ -476,43 +487,43 @@ GTK+ uses <link linkend="G-PRIORITY-HIGH-IDLE:CAPS"><type>G_PRIORITY_HIGH_IDLE</
 ensure that any pending resizes are processed before any pending redraws,
 so that widgets are not redrawn twice unnecessarily.)
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-PRIORITY-DEFAULT-IDLE:CAPS" role="macro"/>G_PRIORITY_DEFAULT_IDLE</title>
-<indexterm><primary>G_PRIORITY_DEFAULT_IDLE</primary></indexterm><programlisting>#define G_PRIORITY_DEFAULT_IDLE     200
+<refsect2 id="G-PRIORITY-DEFAULT-IDLE:CAPS" role="macro">
+<title>G_PRIORITY_DEFAULT_IDLE</title>
+<indexterm zone="G-PRIORITY-DEFAULT-IDLE:CAPS"><primary>G_PRIORITY_DEFAULT_IDLE</primary></indexterm><programlisting>#define G_PRIORITY_DEFAULT_IDLE     200
 </programlisting>
 <para>
 Use this for default priority idle functions.
 In GLib this priority is used when adding idle functions with <link linkend="g-idle-add"><function>g_idle_add()</function></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-PRIORITY-LOW:CAPS" role="macro"/>G_PRIORITY_LOW</title>
-<indexterm><primary>G_PRIORITY_LOW</primary></indexterm><programlisting>#define G_PRIORITY_LOW	            300
+<refsect2 id="G-PRIORITY-LOW:CAPS" role="macro">
+<title>G_PRIORITY_LOW</title>
+<indexterm zone="G-PRIORITY-LOW:CAPS"><primary>G_PRIORITY_LOW</primary></indexterm><programlisting>#define G_PRIORITY_LOW	            300
 </programlisting>
 <para>
 Use this for very low priority background tasks.
 It is not used within GLib or GTK+.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GMainContext" role="struct"/>GMainContext</title>
-<indexterm><primary>GMainContext</primary></indexterm><programlisting>typedef struct _GMainContext GMainContext;</programlisting>
+<refsect2 id="GMainContext" role="struct">
+<title>GMainContext</title>
+<indexterm zone="GMainContext"><primary>GMainContext</primary></indexterm><programlisting>typedef struct _GMainContext GMainContext;</programlisting>
 <para>
 The <structname>GMainContext</structname> struct is an opaque data type 
 representing a set of sources to be handled in a main loop. 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-new" role="function"/>g_main_context_new ()</title>
-<indexterm><primary>g_main_context_new</primary></indexterm><programlisting><link linkend="GMainContext">GMainContext</link>*       g_main_context_new                  (void);</programlisting>
+<refsect2 id="g-main-context-new" role="function">
+<title>g_main_context_new ()</title>
+<indexterm zone="g-main-context-new"><primary>g_main_context_new</primary></indexterm><programlisting><link linkend="GMainContext">GMainContext</link>*       g_main_context_new                  (void);</programlisting>
 <para>
-Creates a new <link linkend="GMainContext"><type>GMainContext</type></link> strcuture</para>
+Creates a new <link linkend="GMainContext"><type>GMainContext</type></link> structure.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the new <link linkend="GMainContext"><type>GMainContext</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-ref" role="function"/>g_main_context_ref ()</title>
-<indexterm><primary>g_main_context_ref</primary></indexterm><programlisting><link linkend="GMainContext">GMainContext</link>*       g_main_context_ref                  (<link linkend="GMainContext">GMainContext</link> *context);</programlisting>
+<refsect2 id="g-main-context-ref" role="function">
+<title>g_main_context_ref ()</title>
+<indexterm zone="g-main-context-ref"><primary>g_main_context_ref</primary></indexterm><programlisting><link linkend="GMainContext">GMainContext</link>*       g_main_context_ref                  (<link linkend="GMainContext">GMainContext</link> *context);</programlisting>
 <para>
 Increases the reference count on a <link linkend="GMainContext"><type>GMainContext</type></link> object by one.</para>
 <para>
@@ -524,9 +535,9 @@ Increases the reference count on a <link linkend="GMainContext"><type>GMainConte
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the <parameter>context</parameter> that was passed in (since 2.6)
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-unref" role="function"/>g_main_context_unref ()</title>
-<indexterm><primary>g_main_context_unref</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_context_unref                (<link linkend="GMainContext">GMainContext</link> *context);</programlisting>
+<refsect2 id="g-main-context-unref" role="function">
+<title>g_main_context_unref ()</title>
+<indexterm zone="g-main-context-unref"><primary>g_main_context_unref</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_context_unref                (<link linkend="GMainContext">GMainContext</link> *context);</programlisting>
 <para>
 Decreases the reference count on a <link linkend="GMainContext"><type>GMainContext</type></link> object by one. If
 the result is zero, free the context and free all associated memory.</para>
@@ -537,9 +548,9 @@ the result is zero, free the context and free all associated memory.</para>
 <listitem><simpara> a <link linkend="GMainContext"><type>GMainContext</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-default" role="function"/>g_main_context_default ()</title>
-<indexterm><primary>g_main_context_default</primary></indexterm><programlisting><link linkend="GMainContext">GMainContext</link>*       g_main_context_default              (void);</programlisting>
+<refsect2 id="g-main-context-default" role="function">
+<title>g_main_context_default ()</title>
+<indexterm zone="g-main-context-default"><primary>g_main_context_default</primary></indexterm><programlisting><link linkend="GMainContext">GMainContext</link>*       g_main_context_default              (void);</programlisting>
 <para>
 Returns the default main context. This is the main context used
 for main loop functions when a main loop is not explicitly
@@ -550,19 +561,24 @@ specified.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the default main context.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-iteration" role="function"/>g_main_context_iteration ()</title>
-<indexterm><primary>g_main_context_iteration</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_main_context_iteration            (<link linkend="GMainContext">GMainContext</link> *context,
+<refsect2 id="g-main-context-iteration" role="function">
+<title>g_main_context_iteration ()</title>
+<indexterm zone="g-main-context-iteration"><primary>g_main_context_iteration</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_main_context_iteration            (<link linkend="GMainContext">GMainContext</link> *context,
                                                          <link linkend="gboolean">gboolean</link> may_block);</programlisting>
 <para>
 Runs a single iteration for the given main loop. This involves
 checking to see if any event sources are ready to be processed,
 then if no events sources are ready and <parameter>may_block</parameter> is <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>, waiting
 for a source to become ready, then dispatching the highest priority
-events sources that are ready. Note that even when <parameter>may_block</parameter> is <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>,
-it is still possible for <link linkend="g-main-context-iteration"><function>g_main_context_iteration()</function></link> to return
-<link linkend="FALSE:CAPS"><literal>FALSE</literal></link>, since the the wait may be interrupted for other
-reasons than an event source becoming ready.</para>
+events sources that are ready. Otherwise, if <parameter>may_block</parameter> is <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> 
+sources are not waited to become ready, only those highest priority 
+events sources will be dispatched (if any), that are ready at this 
+given moment without further waiting.
+</para>
+<para>
+Note that even when <parameter>may_block</parameter> is <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>, it is still possible for 
+<link linkend="g-main-context-iteration"><function>g_main_context_iteration()</function></link> to return <link linkend="FALSE:CAPS"><literal>FALSE</literal></link>, since the the wait may 
+be interrupted for other reasons than an event source becoming ready.</para>
 <para>
 
 </para><variablelist role="params">
@@ -575,9 +591,9 @@ reasons than an event source becoming ready.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if events were dispatched.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-iteration" role="macro" condition="deprecated:2.2: Use g_main_context_iteration() instead."/>g_main_iteration()</title>
-<indexterm role="deprecated"><primary>g_main_iteration</primary></indexterm><programlisting>#define             g_main_iteration(may_block)</programlisting>
+<refsect2 id="g-main-iteration" role="macro" condition="deprecated:2.2: Use g_main_context_iteration() instead.">
+<title>g_main_iteration()</title>
+<indexterm zone="g-main-iteration" role="deprecated"><primary>g_main_iteration</primary></indexterm><programlisting>#define             g_main_iteration(may_block)</programlisting>
 <warning><para><literal>g_main_iteration</literal> has been deprecated since version 2.2 and should not be used in newly-written code. Use <link linkend="g-main-context-iteration"><function>g_main_context_iteration()</function></link> instead.</para></warning>
 <para>
 Runs a single iteration for the default <link linkend="GMainContext"><type>GMainContext</type></link>.
@@ -591,9 +607,9 @@ processed.
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara><link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if more events are pending.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-pending" role="function"/>g_main_context_pending ()</title>
-<indexterm><primary>g_main_context_pending</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_main_context_pending              (<link linkend="GMainContext">GMainContext</link> *context);</programlisting>
+<refsect2 id="g-main-context-pending" role="function">
+<title>g_main_context_pending ()</title>
+<indexterm zone="g-main-context-pending"><primary>g_main_context_pending</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_main_context_pending              (<link linkend="GMainContext">GMainContext</link> *context);</programlisting>
 <para>
 Checks if any sources have pending events for the given context.</para>
 <para>
@@ -605,9 +621,9 @@ Checks if any sources have pending events for the given context.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if events are pending.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-pending" role="macro" condition="deprecated:2.2: Use g_main_context_pending() instead."/>g_main_pending()</title>
-<indexterm role="deprecated"><primary>g_main_pending</primary></indexterm><programlisting>#define             g_main_pending()</programlisting>
+<refsect2 id="g-main-pending" role="macro" condition="deprecated:2.2: Use g_main_context_pending() instead.">
+<title>g_main_pending()</title>
+<indexterm zone="g-main-pending" role="deprecated"><primary>g_main_pending</primary></indexterm><programlisting>#define             g_main_pending()</programlisting>
 <warning><para><literal>g_main_pending</literal> has been deprecated since version 2.2 and should not be used in newly-written code. Use <link linkend="g-main-context-pending"><function>g_main_context_pending()</function></link> instead.</para></warning>
 <para>
 Checks if any events are pending for the default <link linkend="GMainContext"><type>GMainContext</type></link>
@@ -616,9 +632,9 @@ Checks if any events are pending for the default <link linkend="GMainContext"><t
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara><link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if any events are pending.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-find-source-by-id" role="function"/>g_main_context_find_source_by_id ()</title>
-<indexterm><primary>g_main_context_find_source_by_id</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_main_context_find_source_by_id    (<link linkend="GMainContext">GMainContext</link> *context,
+<refsect2 id="g-main-context-find-source-by-id" role="function">
+<title>g_main_context_find_source_by_id ()</title>
+<indexterm zone="g-main-context-find-source-by-id"><primary>g_main_context_find_source_by_id</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_main_context_find_source_by_id    (<link linkend="GMainContext">GMainContext</link> *context,
                                                          <link linkend="guint">guint</link> source_id);</programlisting>
 <para>
 Finds a <link linkend="GSource"><type>GSource</type></link> given a pair of context and ID.</para>
@@ -634,9 +650,9 @@ Finds a <link linkend="GSource"><type>GSource</type></link> given a pair of cont
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the <link linkend="GSource"><type>GSource</type></link> if found, otherwise, <link linkend="NULL:CAPS"><literal>NULL</literal></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-find-source-by-user-data" role="function"/>g_main_context_find_source_by_user_data ()</title>
-<indexterm><primary>g_main_context_find_source_by_user_data</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_main_context_find_source_by_user_data
+<refsect2 id="g-main-context-find-source-by-user-data" role="function">
+<title>g_main_context_find_source_by_user_data ()</title>
+<indexterm zone="g-main-context-find-source-by-user-data"><primary>g_main_context_find_source_by_user_data</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_main_context_find_source_by_user_data
                                                         (<link linkend="GMainContext">GMainContext</link> *context,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -655,9 +671,9 @@ one found will be returned.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the source, if one was found, otherwise <link linkend="NULL:CAPS"><literal>NULL</literal></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-find-source-by-funcs-user-data" role="function"/>g_main_context_find_source_by_funcs_user_data ()</title>
-<indexterm><primary>g_main_context_find_source_by_funcs_user_data</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_main_context_find_source_by_funcs_user_data
+<refsect2 id="g-main-context-find-source-by-funcs-user-data" role="function">
+<title>g_main_context_find_source_by_funcs_user_data ()</title>
+<indexterm zone="g-main-context-find-source-by-funcs-user-data"><primary>g_main_context_find_source_by_funcs_user_data</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_main_context_find_source_by_funcs_user_data
                                                         (<link linkend="GMainContext">GMainContext</link> *context,
                                                          <link linkend="GSourceFuncs">GSourceFuncs</link> *funcs,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
@@ -680,9 +696,9 @@ the first one found will be returned.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the source, if one was found, otherwise <link linkend="NULL:CAPS"><literal>NULL</literal></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-wakeup" role="function"/>g_main_context_wakeup ()</title>
-<indexterm><primary>g_main_context_wakeup</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_context_wakeup               (<link linkend="GMainContext">GMainContext</link> *context);</programlisting>
+<refsect2 id="g-main-context-wakeup" role="function">
+<title>g_main_context_wakeup ()</title>
+<indexterm zone="g-main-context-wakeup"><primary>g_main_context_wakeup</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_context_wakeup               (<link linkend="GMainContext">GMainContext</link> *context);</programlisting>
 <para>
 If <parameter>context</parameter> is currently waiting in a <link linkend="poll"><function>poll()</function></link>, interrupt
 the <link linkend="poll"><function>poll()</function></link>, and continue the iteration process.</para>
@@ -693,12 +709,12 @@ the <link linkend="poll"><function>poll()</function></link>, and continue the it
 <listitem><simpara> a <link linkend="GMainContext"><type>GMainContext</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-acquire" role="function"/>g_main_context_acquire ()</title>
-<indexterm><primary>g_main_context_acquire</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_main_context_acquire              (<link linkend="GMainContext">GMainContext</link> *context);</programlisting>
+<refsect2 id="g-main-context-acquire" role="function">
+<title>g_main_context_acquire ()</title>
+<indexterm zone="g-main-context-acquire"><primary>g_main_context_acquire</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_main_context_acquire              (<link linkend="GMainContext">GMainContext</link> *context);</programlisting>
 <para>
 Tries to become the owner of the specified context.
-If some other context is the owner of the context,
+If some other thread is the owner of the context,
 returns <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> immediately. Ownership is properly
 recursive: the owner can require ownership again
 and will release ownership when <link linkend="g-main-context-release"><function>g_main_context_release()</function></link>
@@ -718,13 +734,13 @@ can call <link linkend="g-main-context-prepare"><function>g_main_context_prepare
   this thread is now the owner of <parameter>context</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-release" role="function"/>g_main_context_release ()</title>
-<indexterm><primary>g_main_context_release</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_context_release              (<link linkend="GMainContext">GMainContext</link> *context);</programlisting>
+<refsect2 id="g-main-context-release" role="function">
+<title>g_main_context_release ()</title>
+<indexterm zone="g-main-context-release"><primary>g_main_context_release</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_context_release              (<link linkend="GMainContext">GMainContext</link> *context);</programlisting>
 <para>
 Releases ownership of a context previously acquired by this thread
 with <link linkend="g-main-context-acquire"><function>g_main_context_acquire()</function></link>. If the context was acquired multiple
-times, the only release ownership when <link linkend="g-main-context-release"><function>g_main_context_release()</function></link>
+times, the ownership will be released only when <link linkend="g-main-context-release"><function>g_main_context_release()</function></link>
 is called as many times as it was acquired.</para>
 <para>
 
@@ -733,9 +749,9 @@ is called as many times as it was acquired.</para>
 <listitem><simpara> a <link linkend="GMainContext"><type>GMainContext</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-is-owner" role="function" condition="since:2.10"/>g_main_context_is_owner ()</title>
-<indexterm role="2.10"><primary>g_main_context_is_owner</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_main_context_is_owner             (<link linkend="GMainContext">GMainContext</link> *context);</programlisting>
+<refsect2 id="g-main-context-is-owner" role="function" condition="since:2.10">
+<title>g_main_context_is_owner ()</title>
+<indexterm zone="g-main-context-is-owner" role="2.10"><primary>g_main_context_is_owner</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_main_context_is_owner             (<link linkend="GMainContext">GMainContext</link> *context);</programlisting>
 <para>
 Determines whether this thread holds the (recursive)
 ownership of this <link linkend="GMaincontext"><type>GMaincontext</type></link>. This is useful to
@@ -752,9 +768,9 @@ blocking to get ownership of <parameter>context</parameter>.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.10
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-wait" role="function"/>g_main_context_wait ()</title>
-<indexterm><primary>g_main_context_wait</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_main_context_wait                 (<link linkend="GMainContext">GMainContext</link> *context,
+<refsect2 id="g-main-context-wait" role="function">
+<title>g_main_context_wait ()</title>
+<indexterm zone="g-main-context-wait"><primary>g_main_context_wait</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_main_context_wait                 (<link linkend="GMainContext">GMainContext</link> *context,
                                                          <link linkend="GCond">GCond</link> *cond,
                                                          <link linkend="GMutex">GMutex</link> *mutex);</programlisting>
 <para>
@@ -779,9 +795,9 @@ try again (once) to become the owner.</para>
   this thread is now the owner of <parameter>context</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-prepare" role="function"/>g_main_context_prepare ()</title>
-<indexterm><primary>g_main_context_prepare</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_main_context_prepare              (<link linkend="GMainContext">GMainContext</link> *context,
+<refsect2 id="g-main-context-prepare" role="function">
+<title>g_main_context_prepare ()</title>
+<indexterm zone="g-main-context-prepare"><primary>g_main_context_prepare</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_main_context_prepare              (<link linkend="GMainContext">GMainContext</link> *context,
                                                          <link linkend="gint">gint</link> *priority);</programlisting>
 <para>
 Prepares to poll sources within a main loop. The resulting information
@@ -800,9 +816,9 @@ for polling is determined by calling <link linkend="g-main-context-query"><funct
               prior to polling.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-query" role="function"/>g_main_context_query ()</title>
-<indexterm><primary>g_main_context_query</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_main_context_query                (<link linkend="GMainContext">GMainContext</link> *context,
+<refsect2 id="g-main-context-query" role="function">
+<title>g_main_context_query ()</title>
+<indexterm zone="g-main-context-query"><primary>g_main_context_query</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_main_context_query                (<link linkend="GMainContext">GMainContext</link> *context,
                                                          <link linkend="gint">gint</link> max_priority,
                                                          <link linkend="gint">gint</link> *timeout_,
                                                          <link linkend="GPollFD">GPollFD</link> *fds,
@@ -832,9 +848,9 @@ Determines information necessary to poll this main loop.</para>
   of records that need to be stored.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-check" role="function"/>g_main_context_check ()</title>
-<indexterm><primary>g_main_context_check</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_main_context_check                (<link linkend="GMainContext">GMainContext</link> *context,
+<refsect2 id="g-main-context-check" role="function">
+<title>g_main_context_check ()</title>
+<indexterm zone="g-main-context-check"><primary>g_main_context_check</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_main_context_check                (<link linkend="GMainContext">GMainContext</link> *context,
                                                          <link linkend="gint">gint</link> max_priority,
                                                          <link linkend="GPollFD">GPollFD</link> *fds,
                                                          <link linkend="gint">gint</link> n_fds);</programlisting>
@@ -859,9 +875,9 @@ Passes the results of polling back to the main loop.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if some sources are ready to be dispatched.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-dispatch" role="function"/>g_main_context_dispatch ()</title>
-<indexterm><primary>g_main_context_dispatch</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_context_dispatch             (<link linkend="GMainContext">GMainContext</link> *context);</programlisting>
+<refsect2 id="g-main-context-dispatch" role="function">
+<title>g_main_context_dispatch ()</title>
+<indexterm zone="g-main-context-dispatch"><primary>g_main_context_dispatch</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_context_dispatch             (<link linkend="GMainContext">GMainContext</link> *context);</programlisting>
 <para>
 Dispatches all pending sources.</para>
 <para>
@@ -871,9 +887,9 @@ Dispatches all pending sources.</para>
 <listitem><simpara> a <link linkend="GMainContext"><type>GMainContext</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-set-poll-func" role="function"/>g_main_context_set_poll_func ()</title>
-<indexterm><primary>g_main_context_set_poll_func</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_context_set_poll_func        (<link linkend="GMainContext">GMainContext</link> *context,
+<refsect2 id="g-main-context-set-poll-func" role="function">
+<title>g_main_context_set_poll_func ()</title>
+<indexterm zone="g-main-context-set-poll-func"><primary>g_main_context_set_poll_func</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_context_set_poll_func        (<link linkend="GMainContext">GMainContext</link> *context,
                                                          <link linkend="GPollFunc">GPollFunc</link> func);</programlisting>
 <para>
 Sets the function to use to handle polling of file descriptors. It
@@ -894,9 +910,9 @@ loop with an external event loop.</para>
 <listitem><simpara> the function to call to poll all file descriptors
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-get-poll-func" role="function"/>g_main_context_get_poll_func ()</title>
-<indexterm><primary>g_main_context_get_poll_func</primary></indexterm><programlisting><link linkend="GPollFunc">GPollFunc</link>           g_main_context_get_poll_func        (<link linkend="GMainContext">GMainContext</link> *context);</programlisting>
+<refsect2 id="g-main-context-get-poll-func" role="function">
+<title>g_main_context_get_poll_func ()</title>
+<indexterm zone="g-main-context-get-poll-func"><primary>g_main_context_get_poll_func</primary></indexterm><programlisting><link linkend="GPollFunc">GPollFunc</link>           g_main_context_get_poll_func        (<link linkend="GMainContext">GMainContext</link> *context);</programlisting>
 <para>
 Gets the poll function set by <link linkend="g-main-context-set-poll-func"><function>g_main_context_set_poll_func()</function></link>.</para>
 <para>
@@ -908,9 +924,9 @@ Gets the poll function set by <link linkend="g-main-context-set-poll-func"><func
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the poll function
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GPollFunc" role="function"/>GPollFunc ()</title>
-<indexterm><primary>GPollFunc</primary></indexterm><programlisting><link linkend="gint">gint</link>                (*GPollFunc)                        (<link linkend="GPollFD">GPollFD</link> *ufds,
+<refsect2 id="GPollFunc" role="function">
+<title>GPollFunc ()</title>
+<indexterm zone="GPollFunc"><primary>GPollFunc</primary></indexterm><programlisting><link linkend="gint">gint</link>                (*GPollFunc)                        (<link linkend="GPollFD">GPollFD</link> *ufds,
                                                          <link linkend="guint">guint</link> nfsd,
                                                          <link linkend="gint">gint</link> timeout_);</programlisting>
 <para>
@@ -934,9 +950,9 @@ or -1 if an error occurred.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-add-poll" role="function"/>g_main_context_add_poll ()</title>
-<indexterm><primary>g_main_context_add_poll</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_context_add_poll             (<link linkend="GMainContext">GMainContext</link> *context,
+<refsect2 id="g-main-context-add-poll" role="function">
+<title>g_main_context_add_poll ()</title>
+<indexterm zone="g-main-context-add-poll"><primary>g_main_context_add_poll</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_context_add_poll             (<link linkend="GMainContext">GMainContext</link> *context,
                                                          <link linkend="GPollFD">GPollFD</link> *fd,
                                                          <link linkend="gint">gint</link> priority);</programlisting>
 <para>
@@ -959,9 +975,9 @@ a typical event source will use <link linkend="g-source-add-poll"><function>g_so
      file descriptor is polled whenever the results may be needed.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-context-remove-poll" role="function"/>g_main_context_remove_poll ()</title>
-<indexterm><primary>g_main_context_remove_poll</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_context_remove_poll          (<link linkend="GMainContext">GMainContext</link> *context,
+<refsect2 id="g-main-context-remove-poll" role="function">
+<title>g_main_context_remove_poll ()</title>
+<indexterm zone="g-main-context-remove-poll"><primary>g_main_context_remove_poll</primary></indexterm><programlisting><link linkend="void">void</link>                g_main_context_remove_poll          (<link linkend="GMainContext">GMainContext</link> *context,
                                                          <link linkend="GPollFD">GPollFD</link> *fd);</programlisting>
 <para>
 Removes file descriptor from the set of file descriptors to be
@@ -976,26 +992,24 @@ polled for a particular context.</para>
 <listitem><simpara> a <link linkend="GPollFD"><type>GPollFD</type></link> descriptor previously added with <link linkend="g-main-context-add-poll"><function>g_main_context_add_poll()</function></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-depth" role="function"/>g_main_depth ()</title>
-<indexterm><primary>g_main_depth</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_main_depth                        (void);</programlisting>
+<refsect2 id="g-main-depth" role="function">
+<title>g_main_depth ()</title>
+<indexterm zone="g-main-depth"><primary>g_main_depth</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_main_depth                        (void);</programlisting>
 <para>
-Return value: The main loop recursion level in the current thread</para>
-<para>
-
-</para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>the depth of the stack of calls to
+Returns the depth of the stack of calls to
 <link linkend="g-main-context-dispatch"><function>g_main_context_dispatch()</function></link> on any <link linkend="GMainContext"><type>GMainContext</type></link> in the current thread.
  That is, when called from the toplevel, it gives 0. When
 called from within a callback from <link linkend="g-main-context-iteration"><function>g_main_context_iteration()</function></link>
 (or <link linkend="g-main-loop-run"><function>g_main_loop_run()</function></link>, etc.) it returns 1. When called from within 
 a callback to a recursive call to <link linkend="g-main-context-iterate"><function>g_main_context_iterate()</function></link>,
 it returns 2. And so forth.
-
+</para>
+<para>
 This function is useful in a situation like the following:
 Imagine an extremely simple "garbage collected" system.
-
-<example>
+</para>
+<para>
+<informalexample><programlisting>
 static GList *free_list;
 
 gpointer
@@ -1021,24 +1035,26 @@ free_allocated_memory (void)
 while (TRUE); 
  {
    g_main_context_iteration (NULL, TRUE);
-   <link linkend="free-allocated-memory"><function>free_allocated_memory()</function></link>;
+   free_allocated_memory();
   }
-</example>
-
+</programlisting></informalexample>
+</para>
+<para>
 This works from an application, however, if you want to do the same
 thing from a library, it gets more difficult, since you no longer
 control the main loop. You might think you can simply use an idle
 function to make the call to <link linkend="free-allocated-memory"><function>free_allocated_memory()</function></link>, but that
 doesn't work, since the idle function could be called from a
 recursive callback. This can be fixed by using <link linkend="g-main-depth"><function>g_main_depth()</function></link>
-
-<example>
+</para>
+<para>
+<informalexample><programlisting>
 gpointer
 allocate_memory (gsize size)
 { 
-  FreeListBlock *block = g_new (FreeListBlock, 1);\
+  FreeListBlock *block = g_new (FreeListBlock, 1);
   block->mem = g_malloc (size);
-  block->depth = <link linkend="g-main-depth"><function>g_main_depth()</function></link>;   
+  block->depth = g_main_depth ();   
   free_list = g_list_prepend (free_list, block);
   return block->mem;
 }
@@ -1047,8 +1063,8 @@ void
 free_allocated_memory (void)
 {
   GList *l;
-
-  int depth = <link linkend="g-main-depth"><function>g_main_depth()</function></link>;
+  
+  int depth = g_main_depth ();
   for (l = free_list; l; );
     {
       GList *next = l->next;
@@ -1059,12 +1075,13 @@ free_allocated_memory (void)
           g_free (block);
           free_list = g_list_delete_link (free_list, l);
         }
-          
+              
       l = next;
     }
   }
-</example>
-
+</programlisting></informalexample>
+</para>
+<para>
 There is a temptation to use <link linkend="g-main-depth"><function>g_main_depth()</function></link> to solve
 problems with reentrancy. For instance, while waiting for data
 to be received from the network in response to a menu item,
@@ -1076,7 +1093,8 @@ the menu item do nothing. Furthermore, you'll find yourself adding
 these checks all over your code, since there are doubtless many,
 many things that the user could do. Instead, you can use the
 following techniques:
-
+</para>
+<para>
 <orderedlist>
  <listitem>
   <para>
@@ -1093,12 +1111,16 @@ following techniques:
     there is more work to do.
   </para>
  </listitem>
-</orderedlist>
+</orderedlist></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The main loop recursion level in the current thread
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-main-current-source" role="function" condition="since:2.12"/>g_main_current_source ()</title>
-<indexterm role="2.12"><primary>g_main_current_source</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_main_current_source               (void);</programlisting>
+<refsect2 id="g-main-current-source" role="function" condition="since:2.12">
+<title>g_main_current_source ()</title>
+<indexterm zone="g-main-current-source" role="2.12"><primary>g_main_current_source</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_main_current_source               (void);</programlisting>
 <para>
 Returns the currently firing source for this thread.</para>
 <para>
@@ -1109,9 +1131,9 @@ Returns the currently firing source for this thread.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-main-set-poll-func" role="macro" condition="deprecated:2.2: Use g_main_context_set_poll_func() instead."/>g_main_set_poll_func()</title>
-<indexterm role="deprecated"><primary>g_main_set_poll_func</primary></indexterm><programlisting>#define             g_main_set_poll_func(func)</programlisting>
+<refsect2 id="g-main-set-poll-func" role="macro" condition="deprecated:2.2: Use g_main_context_set_poll_func() instead.">
+<title>g_main_set_poll_func()</title>
+<indexterm zone="g-main-set-poll-func" role="deprecated"><primary>g_main_set_poll_func</primary></indexterm><programlisting>#define             g_main_set_poll_func(func)</programlisting>
 <warning><para><literal>g_main_set_poll_func</literal> has been deprecated since version 2.2 and should not be used in newly-written code. Use <link linkend="g-main-context-set-poll-func"><function>g_main_context_set_poll_func()</function></link> instead.</para></warning>
 <para>
 Sets the function to use for the handle polling of file descriptors
@@ -1121,9 +1143,9 @@ for the default main context.
 <listitem><simpara>the function to call to poll all file descriptors.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-timeout-source-new" role="function"/>g_timeout_source_new ()</title>
-<indexterm><primary>g_timeout_source_new</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_timeout_source_new                (<link linkend="guint">guint</link> interval);</programlisting>
+<refsect2 id="g-timeout-source-new" role="function">
+<title>g_timeout_source_new ()</title>
+<indexterm zone="g-timeout-source-new"><primary>g_timeout_source_new</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_timeout_source_new                (<link linkend="guint">guint</link> interval);</programlisting>
 <para>
 Creates a new timeout source.
 </para>
@@ -1140,9 +1162,34 @@ executed.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the newly-created timeout source
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-timeout-add" role="function"/>g_timeout_add ()</title>
-<indexterm><primary>g_timeout_add</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_timeout_add                       (<link linkend="guint">guint</link> interval,
+<refsect2 id="g-timeout-source-new-seconds" role="function" condition="since:2.14">
+<title>g_timeout_source_new_seconds ()</title>
+<indexterm zone="g-timeout-source-new-seconds" role="2.14"><primary>g_timeout_source_new_seconds</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_timeout_source_new_seconds        (<link linkend="guint">guint</link> interval);</programlisting>
+<para>
+Creates a new timeout source.
+</para>
+<para>
+The source will not initially be associated with any <link linkend="GMainContext"><type>GMainContext</type></link>
+and must be added to one with <link linkend="g-source-attach"><function>g_source_attach()</function></link> before it will be
+executed.
+</para>
+<para>
+The scheduling granularity/accuracy of this timeout source will be
+in seconds.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>interval</parameter>&nbsp;:</term>
+<listitem><simpara> the timeout interval in seconds
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the newly-created timeout source
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.14	
+</para></refsect2>
+<refsect2 id="g-timeout-add" role="function">
+<title>g_timeout_add ()</title>
+<indexterm zone="g-timeout-add"><primary>g_timeout_add</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_timeout_add                       (<link linkend="guint">guint</link> interval,
                                                          <link linkend="GSourceFunc">GSourceFunc</link> function,
                                                          <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
@@ -1157,7 +1204,13 @@ Note that timeout functions may be delayed, due to the processing of other
 event sources. Thus they should not be relied on for precise timing.
 After each call to the timeout function, the time of the next
 timeout is recalculated based on the current time and the given interval
-(it does not try to 'catch up' time lost in delays).</para>
+(it does not try to 'catch up' time lost in delays).
+</para>
+<para>
+If you want to have a timer in the "seconds" range and do not care
+about the exact time of the first call of the timer, use the
+<link linkend="g-timeout-add-seconds"><function>g_timeout_add_seconds()</function></link> function; this function allows for more
+optimizations and more efficient system power usage.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>interval</parameter>&nbsp;:</term>
@@ -1173,9 +1226,9 @@ timeout is recalculated based on the current time and the given interval
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the ID (greater than 0) of the event source.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-timeout-add-full" role="function"/>g_timeout_add_full ()</title>
-<indexterm><primary>g_timeout_add_full</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_timeout_add_full                  (<link linkend="gint">gint</link> priority,
+<refsect2 id="g-timeout-add-full" role="function">
+<title>g_timeout_add_full ()</title>
+<indexterm zone="g-timeout-add-full"><primary>g_timeout_add_full</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_timeout_add_full                  (<link linkend="gint">gint</link> priority,
                                                          <link linkend="guint">guint</link> interval,
                                                          <link linkend="GSourceFunc">GSourceFunc</link> function,
                                                          <link linkend="gpointer">gpointer</link> data,
@@ -1197,8 +1250,8 @@ timeout is recalculated based on the current time and the given interval
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>priority</parameter>&nbsp;:</term>
-<listitem><simpara> the priority of the idle source. Typically this will be in the
-           range between <link linkend="G-PRIORITY-DEFAULT-IDLE:CAPS"><type>G_PRIORITY_DEFAULT_IDLE</type></link> and <link linkend="G-PRIORITY-HIGH-IDLE:CAPS"><type>G_PRIORITY_HIGH_IDLE</type></link>.
+<listitem><simpara> the priority of the timeout source. Typically this will be in
+           the range between <link linkend="G-PRIORITY-DEFAULT:CAPS"><type>G_PRIORITY_DEFAULT</type></link> and <link linkend="G-PRIORITY-HIGH:CAPS"><type>G_PRIORITY_HIGH</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>interval</parameter>&nbsp;:</term>
 <listitem><simpara> the time between calls to the function, in milliseconds
@@ -1211,14 +1264,106 @@ timeout is recalculated based on the current time and the given interval
 <listitem><simpara>     data to pass to <parameter>function</parameter>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>notify</parameter>&nbsp;:</term>
-<listitem><simpara>   function to call when the idle is removed, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+<listitem><simpara>   function to call when the timeout is removed, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the ID (greater than 0) of the event source.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-idle-source-new" role="function"/>g_idle_source_new ()</title>
-<indexterm><primary>g_idle_source_new</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_idle_source_new                   (void);</programlisting>
+<refsect2 id="g-timeout-add-seconds" role="function" condition="since:2.14">
+<title>g_timeout_add_seconds ()</title>
+<indexterm zone="g-timeout-add-seconds" role="2.14"><primary>g_timeout_add_seconds</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_timeout_add_seconds               (<link linkend="guint">guint</link> interval,
+                                                         <link linkend="GSourceFunc">GSourceFunc</link> function,
+                                                         <link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+Sets a function to be called at regular intervals with the default
+priority, <link linkend="G-PRIORITY-DEFAULT:CAPS"><type>G_PRIORITY_DEFAULT</type></link>. The function is called repeatedly until
+it returns <link linkend="FALSE:CAPS"><literal>FALSE</literal></link>, at which point the timeout is automatically destroyed
+and the function will not be called again.
+</para>
+<para>
+See <link linkend="g-timeout-add-seconds-full"><function>g_timeout_add_seconds_full()</function></link> for the differences between
+<link linkend="g-timeout-add"><function>g_timeout_add()</function></link> and <link linkend="g-timeout-add-seconds"><function>g_timeout_add_seconds()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>interval</parameter>&nbsp;:</term>
+<listitem><simpara> the time between calls to the function, in seconds
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>function</parameter>&nbsp;:</term>
+<listitem><simpara> function to call
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> data to pass to <parameter>function</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the ID (greater than 0) of the event source.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.14
+</para></refsect2>
+<refsect2 id="g-timeout-add-seconds-full" role="function" condition="since:2.14">
+<title>g_timeout_add_seconds_full ()</title>
+<indexterm zone="g-timeout-add-seconds-full" role="2.14"><primary>g_timeout_add_seconds_full</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_timeout_add_seconds_full          (<link linkend="gint">gint</link> priority,
+                                                         <link linkend="guint">guint</link> interval,
+                                                         <link linkend="GSourceFunc">GSourceFunc</link> function,
+                                                         <link linkend="gpointer">gpointer</link> data,
+                                                         <link linkend="GDestroyNotify">GDestroyNotify</link> notify);</programlisting>
+<para>
+Sets a function to be called at regular intervals, with <parameter>priority</parameter>.
+The function is called repeatedly until it returns <link linkend="FALSE:CAPS"><literal>FALSE</literal></link>, at which
+point the timeout is automatically destroyed and the function will
+not be called again.
+</para>
+<para>
+Unlike <link linkend="g-timeout-add"><function>g_timeout_add()</function></link>, this function operates at whole second granularity.
+The initial starting point of the timer is determined by the implementation
+and the implementation is expected to group multiple timers together so that
+they fire all at the same time.
+To allow this grouping, the <parameter>interval</parameter> to the first timer is rounded
+and can deviate up to one second from the specified interval.
+Subsequent timer iterations will generally run at the specified interval.
+</para>
+<para>
+Note that timeout functions may be delayed, due to the processing of other
+event sources. Thus they should not be relied on for precise timing.
+After each call to the timeout function, the time of the next
+timeout is recalculated based on the current time and the given <parameter>interval</parameter>
+</para>
+<para>
+If you want timing more precise than whole seconds, use <link linkend="g-timeout-add"><function>g_timeout_add()</function></link>
+instead.
+</para>
+<para>
+The grouping of timers to fire at the same time results in a more power
+and CPU efficient behavior so if your timer is in multiples of seconds
+and you don't require the first timer exactly one second from now, the
+use of <link linkend="g-timeout-add-seconds"><function>g_timeout_add_seconds()</function></link> is preferred over <link linkend="g-timeout-add"><function>g_timeout_add()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>priority</parameter>&nbsp;:</term>
+<listitem><simpara> the priority of the timeout source. Typically this will be in
+           the range between <link linkend="G-PRIORITY-DEFAULT:CAPS"><type>G_PRIORITY_DEFAULT</type></link> and <link linkend="G-PRIORITY-HIGH:CAPS"><type>G_PRIORITY_HIGH</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>interval</parameter>&nbsp;:</term>
+<listitem><simpara> the time between calls to the function, in seconds
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>function</parameter>&nbsp;:</term>
+<listitem><simpara> function to call
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>     data to pass to <parameter>function</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>notify</parameter>&nbsp;:</term>
+<listitem><simpara>   function to call when the timeout is removed, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the ID (greater than 0) of the event source.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.14
+</para></refsect2>
+<refsect2 id="g-idle-source-new" role="function">
+<title>g_idle_source_new ()</title>
+<indexterm zone="g-idle-source-new"><primary>g_idle_source_new</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_idle_source_new                   (void);</programlisting>
 <para>
 Creates a new idle source.
 </para>
@@ -1234,9 +1379,9 @@ have a default priority of <link linkend="G-PRIORITY-DEFAULT:CAPS"><literal>G_PR
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the newly-created idle source
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-idle-add" role="function"/>g_idle_add ()</title>
-<indexterm><primary>g_idle_add</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_idle_add                          (<link linkend="GSourceFunc">GSourceFunc</link> function,
+<refsect2 id="g-idle-add" role="function">
+<title>g_idle_add ()</title>
+<indexterm zone="g-idle-add"><primary>g_idle_add</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_idle_add                          (<link linkend="GSourceFunc">GSourceFunc</link> function,
                                                          <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 Adds a function to be called whenever there are no higher priority
@@ -1255,9 +1400,9 @@ sources and will not be called again.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the ID (greater than 0) of the event source.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-idle-add-full" role="function"/>g_idle_add_full ()</title>
-<indexterm><primary>g_idle_add_full</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_idle_add_full                     (<link linkend="gint">gint</link> priority,
+<refsect2 id="g-idle-add-full" role="function">
+<title>g_idle_add_full ()</title>
+<indexterm zone="g-idle-add-full"><primary>g_idle_add_full</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_idle_add_full                     (<link linkend="gint">gint</link> priority,
                                                          <link linkend="GSourceFunc">GSourceFunc</link> function,
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GDestroyNotify">GDestroyNotify</link> notify);</programlisting>
@@ -1283,9 +1428,9 @@ removed from the list of event sources and will not be called again.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the ID (greater than 0) of the event source.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-idle-remove-by-data" role="function"/>g_idle_remove_by_data ()</title>
-<indexterm><primary>g_idle_remove_by_data</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_idle_remove_by_data               (<link linkend="gpointer">gpointer</link> data);</programlisting>
+<refsect2 id="g-idle-remove-by-data" role="function">
+<title>g_idle_remove_by_data ()</title>
+<indexterm zone="g-idle-remove-by-data"><primary>g_idle_remove_by_data</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_idle_remove_by_data               (<link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 Removes the idle function with the given data.</para>
 <para>
@@ -1296,9 +1441,9 @@ Removes the idle function with the given data.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if an idle source was found and removed.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GPid" role="typedef"/>GPid</title>
-<indexterm><primary>GPid</primary></indexterm><programlisting>typedef int GPid;
+<refsect2 id="GPid" role="typedef">
+<title>GPid</title>
+<indexterm zone="GPid"><primary>GPid</primary></indexterm><programlisting>typedef int GPid;
 </programlisting>
 <para>
 A type which is used to hold a process identification. 
@@ -1306,9 +1451,9 @@ On Unix, processes are identified by a process id (an
 integer), while Windows uses process handles (which are 
 pointers).
 </para></refsect2>
-<refsect2>
-<title><anchor id="GChildWatchFunc" role="function"/>GChildWatchFunc ()</title>
-<indexterm><primary>GChildWatchFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GChildWatchFunc)                  (<link linkend="GPid">GPid</link> pid,
+<refsect2 id="GChildWatchFunc" role="function">
+<title>GChildWatchFunc ()</title>
+<indexterm zone="GChildWatchFunc"><primary>GChildWatchFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GChildWatchFunc)                  (<link linkend="GPid">GPid</link> pid,
                                                          <link linkend="gint">gint</link> status,
                                                          <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
@@ -1327,9 +1472,9 @@ The type of functions to be called when a child exists.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-child-watch-source-new" role="function" condition="since:2.4"/>g_child_watch_source_new ()</title>
-<indexterm role="2.4"><primary>g_child_watch_source_new</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_child_watch_source_new            (<link linkend="GPid">GPid</link> pid);</programlisting>
+<refsect2 id="g-child-watch-source-new" role="function" condition="since:2.4">
+<title>g_child_watch_source_new ()</title>
+<indexterm zone="g-child-watch-source-new" role="2.4"><primary>g_child_watch_source_new</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_child_watch_source_new            (<link linkend="GPid">GPid</link> pid);</programlisting>
 <para>
 Creates a new child_watch source.
 </para>
@@ -1366,14 +1511,19 @@ for the process to watch (which actually doesn't have to be a child).
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-child-watch-add" role="function" condition="since:2.4"/>g_child_watch_add ()</title>
-<indexterm role="2.4"><primary>g_child_watch_add</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_child_watch_add                   (<link linkend="GPid">GPid</link> pid,
+<refsect2 id="g-child-watch-add" role="function" condition="since:2.4">
+<title>g_child_watch_add ()</title>
+<indexterm zone="g-child-watch-add" role="2.4"><primary>g_child_watch_add</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_child_watch_add                   (<link linkend="GPid">GPid</link> pid,
                                                          <link linkend="GChildWatchFunc">GChildWatchFunc</link> function,
                                                          <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
-Sets a function to be called when the child indicated by <parameter>pid</parameter> exits, at a
-default priority, <link linkend="G-PRIORITY-DEFAULT:CAPS"><type>G_PRIORITY_DEFAULT</type></link>.
+Sets a function to be called when the child indicated by <parameter>pid</parameter> 
+exits, at a default priority, <link linkend="G-PRIORITY-DEFAULT:CAPS"><type>G_PRIORITY_DEFAULT</type></link>.
+</para>
+<para>
+If you obtain <parameter>pid</parameter> from <link linkend="g-spawn-async"><function>g_spawn_async()</function></link> or <link linkend="g-spawn-async-with-pipes"><function>g_spawn_async_with_pipes()</function></link> 
+you will need to pass <link linkend="G-SPAWN-DO-NOT-REAP-CHILD:CAPS"><type>G_SPAWN_DO_NOT_REAP_CHILD</type></link> as flag to 
+the spawn function for the child watching to work.
 </para>
 <para>
 Note that on platforms where <link linkend="GPid"><type>GPid</type></link> must be explicitly closed
@@ -1400,16 +1550,21 @@ GLib supports only a single callback per process id.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-child-watch-add-full" role="function" condition="since:2.4"/>g_child_watch_add_full ()</title>
-<indexterm role="2.4"><primary>g_child_watch_add_full</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_child_watch_add_full              (<link linkend="gint">gint</link> priority,
+<refsect2 id="g-child-watch-add-full" role="function" condition="since:2.4">
+<title>g_child_watch_add_full ()</title>
+<indexterm zone="g-child-watch-add-full" role="2.4"><primary>g_child_watch_add_full</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_child_watch_add_full              (<link linkend="gint">gint</link> priority,
                                                          <link linkend="GPid">GPid</link> pid,
                                                          <link linkend="GChildWatchFunc">GChildWatchFunc</link> function,
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GDestroyNotify">GDestroyNotify</link> notify);</programlisting>
 <para>
-Sets a function to be called when the child indicated by <parameter>pid</parameter> exits, at a
-default priority, <link linkend="G-PRIORITY-DEFAULT:CAPS"><type>G_PRIORITY_DEFAULT</type></link>.
+Sets a function to be called when the child indicated by <parameter>pid</parameter> 
+exits, at the priority <parameter>priority</parameter>.
+</para>
+<para>
+If you obtain <parameter>pid</parameter> from <link linkend="g-spawn-async"><function>g_spawn_async()</function></link> or <link linkend="g-spawn-async-with-pipes"><function>g_spawn_async_with_pipes()</function></link> 
+you will need to pass <link linkend="G-SPAWN-DO-NOT-REAP-CHILD:CAPS"><type>G_SPAWN_DO_NOT_REAP_CHILD</type></link> as flag to 
+the spawn function for the child watching to work.
 </para>
 <para>
 Note that on platforms where <link linkend="GPid"><type>GPid</type></link> must be explicitly closed
@@ -1443,10 +1598,14 @@ GLib supports only a single callback per process id.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="GPollFD" role="struct"/>GPollFD</title>
-<indexterm><primary>GPollFD</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GPollFD" role="struct">
+<title>GPollFD</title>
+<indexterm zone="GPollFD"><primary>GPollFD</primary></indexterm><programlisting>typedef struct {
+#if defined (G_OS_WIN32) &amp;&amp; GLIB_SIZEOF_VOID_P == 8
+  gint64	fd;
+#else
   gint		fd;
+#endif
   gushort 	events;
   gushort 	revents;
 } GPollFD;
@@ -1480,25 +1639,25 @@ you would use <link linkend="G-IO-IN:CAPS"><literal>G_IO_IN</literal></link> | <
 </tbody></tgroup></informaltable>
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="GSource" role="struct"/>GSource</title>
-<indexterm><primary>GSource</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GSource" role="struct">
+<title>GSource</title>
+<indexterm zone="GSource"><primary>GSource</primary></indexterm><programlisting>typedef struct {
 } GSource;
 </programlisting>
 <para>
 The <structname>GSource</structname> struct is an opaque data type representing
 an event source.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GSourceDummyMarshal" role="function"/>GSourceDummyMarshal ()</title>
-<indexterm><primary>GSourceDummyMarshal</primary></indexterm><programlisting><link linkend="void">void</link>                (*GSourceDummyMarshal)              (void);</programlisting>
+<refsect2 id="GSourceDummyMarshal" role="function">
+<title>GSourceDummyMarshal ()</title>
+<indexterm zone="GSourceDummyMarshal"><primary>GSourceDummyMarshal</primary></indexterm><programlisting><link linkend="void">void</link>                (*GSourceDummyMarshal)              (void);</programlisting>
 <para>
 This is just a placeholder for <link linkend="GClosureMarshal"><type>GClosureMarshal</type></link>, which cannot be used here
 for dependency reasons.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GSourceFuncs" role="struct"/>GSourceFuncs</title>
-<indexterm><primary>GSourceFuncs</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GSourceFuncs" role="struct">
+<title>GSourceFuncs</title>
+<indexterm zone="GSourceFuncs"><primary>GSourceFuncs</primary></indexterm><programlisting>typedef struct {
   gboolean (*prepare)  (GSource    *source,
 			gint       *timeout_);
   gboolean (*check)    (GSource    *source);
@@ -1515,81 +1674,79 @@ for dependency reasons.
 <para>
 The <link linkend="GSourceFuncs"><type>GSourceFuncs</type></link> struct contains a table of functions used to handle
 event sources in a generic manner.
-
-<informaltable pgwide="1" frame="none" role="struct">
-<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
-<tbody>
-
-<row>
-<entry>prepare</entry>
-<entry>
-Called before all the file descriptors are polled.
+</para>
+<para>
+For idle sources, the prepare and check functions always return <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> to
+indicate that the source is always ready to be processed.
+The prepare function also returns a timeout value of 0 to ensure that the
+<link linkend="poll"><function>poll()</function></link> call doesn't block (since that would be time 
+wasted which could have been spent running the idle function).
+</para>
+<para>
+For timeout sources, the prepare and check functions both return <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the
+timeout interval has expired. The prepare function also returns a timeout 
+value to ensure that the <link linkend="poll"><function>poll()</function></link> call doesn't block too 
+long and miss the next timeout.
+</para>
+<para>
+For file descriptor sources, the prepare function typically returns <link linkend="FALSE:CAPS"><literal>FALSE</literal></link>,
+since it must wait until <link linkend="poll"><function>poll()</function></link> has been called before 
+it knows whether any events need to be processed. It sets the returned 
+timeout to -1 to indicate that it doesn't mind how long the 
+<link linkend="poll"><function>poll()</function></link> call blocks.
+In the check function, it tests the results of the <link linkend="poll"><function>poll()</function></link>
+call to see if the required condition has been met, and returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if so.
+</para><variablelist role="struct">
+<varlistentry>
+<term><structfield>prepare</structfield>&nbsp;()</term>
+<listitem><simpara>Called before all the file descriptors are polled.
 If the source can determine that it is ready here (without waiting for the
-results of the <function><link linkend="poll"><function>poll()</function></link></function> call) it should return <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>.
+results of the <link linkend="poll"><function>poll()</function></link> call) it should return <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>.
 It can also return a <parameter>timeout_</parameter> value which should be the maximum timeout
-(in milliseconds) which should be passed to the <function><link linkend="poll"><function>poll()</function></link></function> call.
+(in milliseconds) which should be passed to the <link linkend="poll"><function>poll()</function></link> call.
 The actual timeout used will be -1 if all sources returned -1, or it will
 be the minimum of all the <parameter>timeout_</parameter> values returned which were >= 0.
-</entry>
-</row>
-
-<row>
-<entry>check</entry>
-<entry>
-Called after all the file descriptors are polled.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><structfield>check</structfield>&nbsp;()</term>
+<listitem><simpara>Called after all the file descriptors are polled.
 The source should return <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if it is ready to be dispatched.
 Note that some time may have passed since the previous prepare function was
 called, so the source should be checked again here.
-</entry>
-</row>
-
-<row>
-<entry>dispatch</entry>
-<entry>
-Called to dispatch the event source, after it has returned <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> in
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><structfield>dispatch</structfield>&nbsp;()</term>
+<listitem><simpara>Called to dispatch the event source, after it has returned <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> in
 either its <parameter>prepare</parameter> or its <parameter>check</parameter> function. The <parameter>dispatch</parameter> function is
 passed in a callback function and data. The callback function may be
 <link linkend="NULL:CAPS"><literal>NULL</literal></link> if the source was never connected to a callback using
 <link linkend="g-source-set-callback"><function>g_source_set_callback()</function></link>. The <parameter>dispatch</parameter> function should call the
 callback function with <parameter>user_data</parameter> and whatever additional parameters are
 needed for this type of event source.
-</entry>
-</row>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><structfield>finalize</structfield>&nbsp;()</term>
+<listitem><simpara>Called when the source is finalized.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GSourceFunc">GSourceFunc</link>&nbsp;<structfield>closure_callback</structfield>;</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GSourceDummyMarshal">GSourceDummyMarshal</link>&nbsp;<structfield>closure_marshal</structfield>;</term>
+<listitem><simpara>
 
-<row>
-<entry>finalize</entry>
-<entry>
-Called when the source is finalized.
-</entry>
-</row>
-</tbody></tgroup></informaltable>
-</para>
-
-<para>
-For idle sources, the prepare and check functions always return <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> to
-indicate that the source is always ready to be processed.
-The prepare function also returns a timeout value of 0 to ensure that the
-<function><link linkend="poll"><function>poll()</function></link></function> call doesn't block (since that would be time 
-wasted which could have been spent running the idle function).
-</para>
-<para>
-For timeout sources, the prepare and check functions both return <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the
-timeout interval has expired. The prepare function also returns a timeout 
-value to ensure that the <function><link linkend="poll"><function>poll()</function></link></function> call doesn't block too 
-long and miss the next timeout.
-</para>
-<para>
-For file descriptor sources, the prepare function typically returns <link linkend="FALSE:CAPS"><literal>FALSE</literal></link>,
-since it must wait until <function><link linkend="poll"><function>poll()</function></link></function> has been called before 
-it knows whether any events need to be processed. It sets the returned 
-timeout to -1 to indicate that it doesn't mind how long the 
-<function><link linkend="poll"><function>poll()</function></link></function> call blocks.
-In the check function, it tests the results of the <function><link linkend="poll"><function>poll()</function></link></function>
-call to see if the required condition has been met, and returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if so.
-</para></refsect2>
-<refsect2>
-<title><anchor id="GSourceCallbackFuncs" role="struct"/>GSourceCallbackFuncs</title>
-<indexterm><primary>GSourceCallbackFuncs</primary></indexterm><programlisting>typedef struct {
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2 id="GSourceCallbackFuncs" role="struct">
+<title>GSourceCallbackFuncs</title>
+<indexterm zone="GSourceCallbackFuncs"><primary>GSourceCallbackFuncs</primary></indexterm><programlisting>typedef struct {
   void (*ref)   (gpointer     cb_data);
   void (*unref) (gpointer     cb_data);
   void (*get)   (gpointer     cb_data,
@@ -1619,9 +1776,9 @@ functions for managing callback objects.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-new" role="function"/>g_source_new ()</title>
-<indexterm><primary>g_source_new</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_source_new                        (<link linkend="GSourceFuncs">GSourceFuncs</link> *source_funcs,
+<refsect2 id="g-source-new" role="function">
+<title>g_source_new ()</title>
+<indexterm zone="g-source-new"><primary>g_source_new</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_source_new                        (<link linkend="GSourceFuncs">GSourceFuncs</link> *source_funcs,
                                                          <link linkend="guint">guint</link> struct_size);</programlisting>
 <para>
 Creates a new <link linkend="GSource"><type>GSource</type></link> structure. The size is specified to
@@ -1646,9 +1803,9 @@ executed.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the newly-created <link linkend="GSource"><type>GSource</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-ref" role="function"/>g_source_ref ()</title>
-<indexterm><primary>g_source_ref</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_source_ref                        (<link linkend="GSource">GSource</link> *source);</programlisting>
+<refsect2 id="g-source-ref" role="function">
+<title>g_source_ref ()</title>
+<indexterm zone="g-source-ref"><primary>g_source_ref</primary></indexterm><programlisting><link linkend="GSource">GSource</link>*            g_source_ref                        (<link linkend="GSource">GSource</link> *source);</programlisting>
 <para>
 Increases the reference count on a source by one.</para>
 <para>
@@ -1660,9 +1817,9 @@ Increases the reference count on a source by one.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <parameter>source</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-unref" role="function"/>g_source_unref ()</title>
-<indexterm><primary>g_source_unref</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_unref                      (<link linkend="GSource">GSource</link> *source);</programlisting>
+<refsect2 id="g-source-unref" role="function">
+<title>g_source_unref ()</title>
+<indexterm zone="g-source-unref"><primary>g_source_unref</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_unref                      (<link linkend="GSource">GSource</link> *source);</programlisting>
 <para>
 Decreases the reference count of a source by one. If the
 resulting reference count is zero the source and associated
@@ -1674,9 +1831,9 @@ memory will be destroyed.</para>
 <listitem><simpara> a <link linkend="GSource"><type>GSource</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-set-funcs" role="function" condition="since:2.12"/>g_source_set_funcs ()</title>
-<indexterm role="2.12"><primary>g_source_set_funcs</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_set_funcs                  (<link linkend="GSource">GSource</link> *source,
+<refsect2 id="g-source-set-funcs" role="function" condition="since:2.12">
+<title>g_source_set_funcs ()</title>
+<indexterm zone="g-source-set-funcs" role="2.12"><primary>g_source_set_funcs</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_set_funcs                  (<link linkend="GSource">GSource</link> *source,
                                                          <link linkend="GSourceFuncs">GSourceFuncs</link> *funcs);</programlisting>
 <para>
 Sets the source functions (can be used to override 
@@ -1692,9 +1849,9 @@ default implementations) of an unattached source.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-source-attach" role="function"/>g_source_attach ()</title>
-<indexterm><primary>g_source_attach</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_source_attach                     (<link linkend="GSource">GSource</link> *source,
+<refsect2 id="g-source-attach" role="function">
+<title>g_source_attach ()</title>
+<indexterm zone="g-source-attach"><primary>g_source_attach</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_source_attach                     (<link linkend="GSource">GSource</link> *source,
                                                          <link linkend="GMainContext">GMainContext</link> *context);</programlisting>
 <para>
 Adds a <link linkend="GSource"><type>GSource</type></link> to a <parameter>context</parameter> so that it will be executed within
@@ -1712,9 +1869,9 @@ that context.</para>
   <link linkend="GMainContext"><type>GMainContext</type></link>. 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-destroy" role="function"/>g_source_destroy ()</title>
-<indexterm><primary>g_source_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_destroy                    (<link linkend="GSource">GSource</link> *source);</programlisting>
+<refsect2 id="g-source-destroy" role="function">
+<title>g_source_destroy ()</title>
+<indexterm zone="g-source-destroy"><primary>g_source_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_destroy                    (<link linkend="GSource">GSource</link> *source);</programlisting>
 <para>
 Removes a source from its <link linkend="GMainContext"><type>GMainContext</type></link>, if any, and mark it as
 destroyed.  The source cannot be subsequently added to another
@@ -1726,9 +1883,9 @@ context.</para>
 <listitem><simpara> a <link linkend="GSource"><type>GSource</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-is-destroyed" role="function" condition="since:2.12"/>g_source_is_destroyed ()</title>
-<indexterm role="2.12"><primary>g_source_is_destroyed</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_source_is_destroyed               (<link linkend="GSource">GSource</link> *source);</programlisting>
+<refsect2 id="g-source-is-destroyed" role="function" condition="since:2.12">
+<title>g_source_is_destroyed ()</title>
+<indexterm zone="g-source-is-destroyed" role="2.12"><primary>g_source_is_destroyed</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_source_is_destroyed               (<link linkend="GSource">GSource</link> *source);</programlisting>
 <para>
 Returns whether <parameter>source</parameter> has been destroyed.
 </para>
@@ -1805,9 +1962,9 @@ idle_callback (gpointer data)
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-source-set-priority" role="function"/>g_source_set_priority ()</title>
-<indexterm><primary>g_source_set_priority</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_set_priority               (<link linkend="GSource">GSource</link> *source,
+<refsect2 id="g-source-set-priority" role="function">
+<title>g_source_set_priority ()</title>
+<indexterm zone="g-source-set-priority"><primary>g_source_set_priority</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_set_priority               (<link linkend="GSource">GSource</link> *source,
                                                          <link linkend="gint">gint</link> priority);</programlisting>
 <para>
 Sets the priority of a source. While the main loop is being
@@ -1823,9 +1980,9 @@ at a higher (numerically smaller) priority are ready to be dispatched.</para>
 <listitem><simpara> the new priority.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-get-priority" role="function"/>g_source_get_priority ()</title>
-<indexterm><primary>g_source_get_priority</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_source_get_priority               (<link linkend="GSource">GSource</link> *source);</programlisting>
+<refsect2 id="g-source-get-priority" role="function">
+<title>g_source_get_priority ()</title>
+<indexterm zone="g-source-get-priority"><primary>g_source_get_priority</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_source_get_priority               (<link linkend="GSource">GSource</link> *source);</programlisting>
 <para>
 Gets the priority of a source.</para>
 <para>
@@ -1837,9 +1994,9 @@ Gets the priority of a source.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the priority of the source
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-set-can-recurse" role="function"/>g_source_set_can_recurse ()</title>
-<indexterm><primary>g_source_set_can_recurse</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_set_can_recurse            (<link linkend="GSource">GSource</link> *source,
+<refsect2 id="g-source-set-can-recurse" role="function">
+<title>g_source_set_can_recurse ()</title>
+<indexterm zone="g-source-set-can-recurse"><primary>g_source_set_can_recurse</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_set_can_recurse            (<link linkend="GSource">GSource</link> *source,
                                                          <link linkend="gboolean">gboolean</link> can_recurse);</programlisting>
 <para>
 Sets whether a source can be called recursively. If <parameter>can_recurse</parameter> is
@@ -1856,9 +2013,9 @@ source is blocked until the dispatch function returns.</para>
 <listitem><simpara> whether recursion is allowed for this source
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-get-can-recurse" role="function"/>g_source_get_can_recurse ()</title>
-<indexterm><primary>g_source_get_can_recurse</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_source_get_can_recurse            (<link linkend="GSource">GSource</link> *source);</programlisting>
+<refsect2 id="g-source-get-can-recurse" role="function">
+<title>g_source_get_can_recurse ()</title>
+<indexterm zone="g-source-get-can-recurse"><primary>g_source_get_can_recurse</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_source_get_can_recurse            (<link linkend="GSource">GSource</link> *source);</programlisting>
 <para>
 Checks whether a source is allowed to be called recursively.
 see <link linkend="g-source-set-can-recurse"><function>g_source_set_can_recurse()</function></link>.</para>
@@ -1871,9 +2028,9 @@ see <link linkend="g-source-set-can-recurse"><function>g_source_set_can_recurse(
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> whether recursion is allowed.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-get-id" role="function"/>g_source_get_id ()</title>
-<indexterm><primary>g_source_get_id</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_source_get_id                     (<link linkend="GSource">GSource</link> *source);</programlisting>
+<refsect2 id="g-source-get-id" role="function">
+<title>g_source_get_id ()</title>
+<indexterm zone="g-source-get-id"><primary>g_source_get_id</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_source_get_id                     (<link linkend="GSource">GSource</link> *source);</programlisting>
 <para>
 Returns the numeric ID for a particular source. The ID of a source
 is a positive integer which is unique within a particular main loop 
@@ -1888,9 +2045,9 @@ mapping from ID to source is done by <link linkend="g-main-context-find-source-b
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the ID (greater than 0) for the source
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-get-context" role="function"/>g_source_get_context ()</title>
-<indexterm><primary>g_source_get_context</primary></indexterm><programlisting><link linkend="GMainContext">GMainContext</link>*       g_source_get_context                (<link linkend="GSource">GSource</link> *source);</programlisting>
+<refsect2 id="g-source-get-context" role="function">
+<title>g_source_get_context ()</title>
+<indexterm zone="g-source-get-context"><primary>g_source_get_context</primary></indexterm><programlisting><link linkend="GMainContext">GMainContext</link>*       g_source_get_context                (<link linkend="GSource">GSource</link> *source);</programlisting>
 <para>
 Gets the <link linkend="GMainContext"><type>GMainContext</type></link> with which the source is associated.
 Calling this function on a destroyed source is an error.</para>
@@ -1905,9 +2062,9 @@ Calling this function on a destroyed source is an error.</para>
               to a source.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-set-callback" role="function"/>g_source_set_callback ()</title>
-<indexterm><primary>g_source_set_callback</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_set_callback               (<link linkend="GSource">GSource</link> *source,
+<refsect2 id="g-source-set-callback" role="function">
+<title>g_source_set_callback ()</title>
+<indexterm zone="g-source-set-callback"><primary>g_source_set_callback</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_set_callback               (<link linkend="GSource">GSource</link> *source,
                                                          <link linkend="GSourceFunc">GSourceFunc</link> func,
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GDestroyNotify">GDestroyNotify</link> notify);</programlisting>
@@ -1939,9 +2096,9 @@ to the type of source you are using.</para>
 <listitem><simpara> a function to call when <parameter>data</parameter> is no longer in use, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GSourceFunc" role="function"/>GSourceFunc ()</title>
-<indexterm><primary>GSourceFunc</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            (*GSourceFunc)                      (<link linkend="gpointer">gpointer</link> data);</programlisting>
+<refsect2 id="GSourceFunc" role="function">
+<title>GSourceFunc ()</title>
+<indexterm zone="GSourceFunc"><primary>GSourceFunc</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            (*GSourceFunc)                      (<link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 Specifies the type of function passed to <link linkend="g-timeout-add"><function>g_timeout_add()</function></link>, <link linkend="g-timeout-add-full"><function>g_timeout_add_full()</function></link>,
 <link linkend="g-idle-add"><function>g_idle_add()</function></link>, and <link linkend="g-idle-add-full"><function>g_idle_add_full()</function></link>.
@@ -1955,9 +2112,9 @@ of the above functions.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-set-callback-indirect" role="function"/>g_source_set_callback_indirect ()</title>
-<indexterm><primary>g_source_set_callback_indirect</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_set_callback_indirect      (<link linkend="GSource">GSource</link> *source,
+<refsect2 id="g-source-set-callback-indirect" role="function">
+<title>g_source_set_callback_indirect ()</title>
+<indexterm zone="g-source-set-callback-indirect"><primary>g_source_set_callback_indirect</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_set_callback_indirect      (<link linkend="GSource">GSource</link> *source,
                                                          <link linkend="gpointer">gpointer</link> callback_data,
                                                          <link linkend="GSourceCallbackFuncs">GSourceCallbackFuncs</link> *callback_funcs);</programlisting>
 <para>
@@ -1981,9 +2138,9 @@ than <parameter>callback_funcs->ref</parameter>.</para>
                  and getting the callback and data
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-add-poll" role="function"/>g_source_add_poll ()</title>
-<indexterm><primary>g_source_add_poll</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_add_poll                   (<link linkend="GSource">GSource</link> *source,
+<refsect2 id="g-source-add-poll" role="function">
+<title>g_source_add_poll ()</title>
+<indexterm zone="g-source-add-poll"><primary>g_source_add_poll</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_add_poll                   (<link linkend="GSource">GSource</link> *source,
                                                          <link linkend="GPollFD">GPollFD</link> *fd);</programlisting>
 <para>
 Adds a file descriptor to the set of file descriptors polled for
@@ -2002,9 +2159,9 @@ to be processed.</para>
      descriptor to watch.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-remove-poll" role="function"/>g_source_remove_poll ()</title>
-<indexterm><primary>g_source_remove_poll</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_remove_poll                (<link linkend="GSource">GSource</link> *source,
+<refsect2 id="g-source-remove-poll" role="function">
+<title>g_source_remove_poll ()</title>
+<indexterm zone="g-source-remove-poll"><primary>g_source_remove_poll</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_remove_poll                (<link linkend="GSource">GSource</link> *source,
                                                          <link linkend="GPollFD">GPollFD</link> *fd);</programlisting>
 <para>
 Removes a file descriptor from the set of file descriptors polled for
@@ -2019,9 +2176,9 @@ this source.</para>
 <listitem><simpara> a <link linkend="GPollFD"><type>GPollFD</type></link> structure previously passed to <link linkend="g-source-add-poll"><function>g_source_add_poll()</function></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-get-current-time" role="function"/>g_source_get_current_time ()</title>
-<indexterm><primary>g_source_get_current_time</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_get_current_time           (<link linkend="GSource">GSource</link> *source,
+<refsect2 id="g-source-get-current-time" role="function">
+<title>g_source_get_current_time ()</title>
+<indexterm zone="g-source-get-current-time"><primary>g_source_get_current_time</primary></indexterm><programlisting><link linkend="void">void</link>                g_source_get_current_time           (<link linkend="GSource">GSource</link> *source,
                                                          <link linkend="GTimeVal">GTimeVal</link> *timeval);</programlisting>
 <para>
 Gets the "current time" to be used when checking 
@@ -2039,9 +2196,9 @@ instead of having to repeatedly get the system time.</para>
 <listitem><simpara> <link linkend="GTimeVal"><type>GTimeVal</type></link> structure in which to store current time.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-remove" role="function"/>g_source_remove ()</title>
-<indexterm><primary>g_source_remove</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_source_remove                     (<link linkend="guint">guint</link> tag);</programlisting>
+<refsect2 id="g-source-remove" role="function">
+<title>g_source_remove ()</title>
+<indexterm zone="g-source-remove"><primary>g_source_remove</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_source_remove                     (<link linkend="guint">guint</link> tag);</programlisting>
 <para>
 Removes the source with the given id from the default main context. 
 The id of
@@ -2060,9 +2217,9 @@ See also <link linkend="g-source-destroy"><function>g_source_destroy()</function
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the source was found and removed.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-remove-by-funcs-user-data" role="function"/>g_source_remove_by_funcs_user_data ()</title>
-<indexterm><primary>g_source_remove_by_funcs_user_data</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_source_remove_by_funcs_user_data  (<link linkend="GSourceFuncs">GSourceFuncs</link> *funcs,
+<refsect2 id="g-source-remove-by-funcs-user-data" role="function">
+<title>g_source_remove_by_funcs_user_data ()</title>
+<indexterm zone="g-source-remove-by-funcs-user-data"><primary>g_source_remove_by_funcs_user_data</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_source_remove_by_funcs_user_data  (<link linkend="GSourceFuncs">GSourceFuncs</link> *funcs,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 Removes a source from the default main loop context given the
@@ -2079,9 +2236,9 @@ same source functions and user data, only one will be destroyed.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if a source was found and removed. 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-source-remove-by-user-data" role="function"/>g_source_remove_by_user_data ()</title>
-<indexterm><primary>g_source_remove_by_user_data</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_source_remove_by_user_data        (<link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<refsect2 id="g-source-remove-by-user-data" role="function">
+<title>g_source_remove_by_user_data ()</title>
+<indexterm zone="g-source-remove-by-user-data"><primary>g_source_remove_by_user_data</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_source_remove_by_user_data        (<link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 Removes a source from the default main loop context given the user
 data for the callback. If multiple sources exist with the same user

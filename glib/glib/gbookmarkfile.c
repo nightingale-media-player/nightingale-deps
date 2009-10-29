@@ -47,6 +47,7 @@
 #include "gmarkup.h"
 #include "gmem.h"
 #include "gmessages.h"
+#include "gshell.h"
 #include "gslice.h"
 #include "gstdio.h"
 #include "gstring.h"
@@ -219,7 +220,7 @@ bookmark_app_info_new (const gchar *name)
 {
   BookmarkAppInfo *retval;
  
-  g_assert (name != NULL);
+  g_warn_if_fail (name != NULL);
   
   retval = g_slice_new (BookmarkAppInfo);
   
@@ -237,11 +238,8 @@ bookmark_app_info_free (BookmarkAppInfo *app_info)
   if (!app_info)
     return;
   
-  if (app_info->name)
-    g_free (app_info->name);
-  
-  if (app_info->exec)
-    g_free (app_info->exec);
+  g_free (app_info->name);
+  g_free (app_info->exec);
   
   g_slice_free (BookmarkAppInfo, app_info);
 }
@@ -252,7 +250,7 @@ bookmark_app_info_dump (BookmarkAppInfo *app_info)
   gchar *retval;
   gchar *name, *exec;
 
-  g_assert (app_info != NULL);
+  g_warn_if_fail (app_info != NULL);
 
   if (app_info->count == 0)
     return NULL;
@@ -311,8 +309,7 @@ bookmark_metadata_free (BookmarkMetadata *metadata)
   if (!metadata)
     return;
   
-  if (metadata->mime_type)
-    g_free (metadata->mime_type);
+  g_free (metadata->mime_type);
     
   if (metadata->groups)
     {
@@ -328,15 +325,12 @@ bookmark_metadata_free (BookmarkMetadata *metadata)
 		      (GFunc) bookmark_app_info_free,
 		      NULL);
       g_list_free (metadata->applications);
-      
-      g_hash_table_destroy (metadata->apps_by_name);
     }
-  
-  if (metadata->icon_href)
-    g_free (metadata->icon_href);
-  
-  if (metadata->icon_mime)
-    g_free (metadata->icon_mime);
+
+  g_hash_table_destroy (metadata->apps_by_name);
+
+  g_free (metadata->icon_href);
+  g_free (metadata->icon_mime);
   
   g_slice_free (BookmarkMetadata, metadata);
 }
@@ -412,7 +406,7 @@ bookmark_metadata_dump (BookmarkMetadata *metadata)
           BookmarkAppInfo *app_info = (BookmarkAppInfo *) l->data;
           gchar *app_data;
 
-	  g_assert (app_info != NULL);
+	  g_warn_if_fail (app_info != NULL);
           
           app_data = bookmark_app_info_dump (app_info);
 
@@ -468,7 +462,7 @@ bookmark_item_new (const gchar *uri)
 {
   BookmarkItem *item;
  
-  g_assert (uri != NULL);
+  g_warn_if_fail (uri != NULL);
   
   item = g_slice_new (BookmarkItem);
   item->uri = g_strdup (uri);
@@ -491,14 +485,9 @@ bookmark_item_free (BookmarkItem *item)
   if (!item)
     return;
 
-  if (item->uri)
-    g_free (item->uri);
-  
-  if (item->title)
-    g_free (item->title);
-  
-  if (item->description)
-    g_free (item->description);
+  g_free (item->uri);
+  g_free (item->title);
+  g_free (item->description);
   
   if (item->metadata)
     bookmark_metadata_free (item->metadata);
@@ -596,7 +585,7 @@ static BookmarkAppInfo *
 bookmark_item_lookup_app_info (BookmarkItem *item,
 			       const gchar  *app_name)
 {
-  g_assert (item != NULL && app_name != NULL);
+  g_warn_if_fail (item != NULL && app_name != NULL);
 
   if (!item->metadata)
     return NULL;
@@ -695,7 +684,7 @@ parse_bookmark_element (GMarkupParseContext  *context,
   BookmarkItem *item;
   GError *add_error;
  
-  g_assert ((parse_data != NULL) && (parse_data->state == STATE_BOOKMARK));
+  g_warn_if_fail ((parse_data != NULL) && (parse_data->state == STATE_BOOKMARK));
   
   i = 0;
   uri = added = modified = visited = NULL;
@@ -711,6 +700,10 @@ parse_bookmark_element (GMarkupParseContext  *context,
         visited = attribute_values[i];
       else
         {
+          /* bookmark is defined by the XBEL spec, so we need
+           * to error out if the element has different or
+           * missing attributes
+           */
           g_set_error (error, G_MARKUP_ERROR,
 		       G_MARKUP_ERROR_UNKNOWN_ATTRIBUTE,
           	       _("Unexpected attribute '%s' for element '%s'"),
@@ -730,7 +723,7 @@ parse_bookmark_element (GMarkupParseContext  *context,
       return;
     }
   
-  g_assert (parse_data->current_item == NULL);
+  g_warn_if_fail (parse_data->current_item == NULL);
   
   item = bookmark_item_new (uri);
   
@@ -772,7 +765,7 @@ parse_application_element (GMarkupParseContext  *context,
   BookmarkItem *item;
   BookmarkAppInfo *ai;
   
-  g_assert ((parse_data != NULL) && (parse_data->state == STATE_APPLICATION));
+  g_warn_if_fail ((parse_data != NULL) && (parse_data->state == STATE_APPLICATION));
 
   i = 0;
   name = exec = count = stamp = NULL;
@@ -786,17 +779,9 @@ parse_application_element (GMarkupParseContext  *context,
         count = attribute_values[i];
       else if (IS_ATTRIBUTE (attr, BOOKMARK_TIMESTAMP_ATTRIBUTE))
         stamp = attribute_values[i];
-      else
-        {
-          g_set_error (error, G_MARKUP_ERROR,
-		       G_MARKUP_ERROR_UNKNOWN_ATTRIBUTE,
-          	       _("Unexpected attribute '%s' for element '%s'"),
-          	       attr,
-          	       BOOKMARK_APPLICATION_ELEMENT);
-          return;
-        }        
     }
 
+  /* the "name" and "exec" attributes are mandatory */
   if (!name)
     {
       g_set_error (error, G_MARKUP_ERROR,
@@ -817,7 +802,7 @@ parse_application_element (GMarkupParseContext  *context,
       return;
     }
 
-  g_assert (parse_data->current_item != NULL);  
+  g_warn_if_fail (parse_data->current_item != NULL);  
   item = parse_data->current_item;
     
   ai = bookmark_item_lookup_app_info (item, name);
@@ -857,7 +842,7 @@ parse_mime_type_element (GMarkupParseContext  *context,
   gint i;
   BookmarkItem *item;
   
-  g_assert ((parse_data != NULL) && (parse_data->state == STATE_MIME));
+  g_warn_if_fail ((parse_data != NULL) && (parse_data->state == STATE_MIME));
   
   i = 0;
   type = NULL;
@@ -865,21 +850,12 @@ parse_mime_type_element (GMarkupParseContext  *context,
     {
       if (IS_ATTRIBUTE (attr, MIME_TYPE_ATTRIBUTE))
         type = attribute_values[i];
-      else
-        {
-          g_set_error (error, G_MARKUP_ERROR,
-		       G_MARKUP_ERROR_UNKNOWN_ATTRIBUTE,
-          	       _("Unexpected attribute '%s' for element '%s'"),
-          	       attr,
-          	       MIME_TYPE_ELEMENT);
-          return;
-        }        
     }
 
   if (!type)
     type = "application/octet-stream";
 
-  g_assert (parse_data->current_item != NULL);  
+  g_warn_if_fail (parse_data->current_item != NULL);  
   item = parse_data->current_item;
     
   if (!item->metadata)
@@ -901,7 +877,7 @@ parse_icon_element (GMarkupParseContext  *context,
   gint i;
   BookmarkItem *item;
   
-  g_assert ((parse_data != NULL) && (parse_data->state == STATE_ICON));
+  g_warn_if_fail ((parse_data != NULL) && (parse_data->state == STATE_ICON));
   
   i = 0;
   href = NULL;
@@ -912,17 +888,9 @@ parse_icon_element (GMarkupParseContext  *context,
         href = attribute_values[i];
       else if (IS_ATTRIBUTE (attr, BOOKMARK_TYPE_ATTRIBUTE))
         type = attribute_values[i];
-      else
-        {
-          g_set_error (error, G_MARKUP_ERROR,
-		       G_MARKUP_ERROR_UNKNOWN_ATTRIBUTE,
-          	       _("Unexpected attribute '%s' for element '%s'"),
-          	       attr,
-          	       BOOKMARK_ICON_ELEMENT);
-          return;
-        }        
     }
 
+  /* the "href" attribute is mandatory */
   if (!href)
     {
       g_set_error (error, G_MARKUP_ERROR,
@@ -936,7 +904,7 @@ parse_icon_element (GMarkupParseContext  *context,
   if (!type)
     type = "application/octet-stream";
 
-  g_assert (parse_data->current_item != NULL);  
+  g_warn_if_fail (parse_data->current_item != NULL);  
   item = parse_data->current_item;
     
   if (!item->metadata)
@@ -967,7 +935,7 @@ map_namespace_to_name (ParseData    *parse_data,
   const gchar *attr;
   gint i;
  
-  g_assert (parse_data != NULL);
+  g_warn_if_fail (parse_data != NULL);
   
   if (!attribute_names || !attribute_names[0])
     return;
@@ -1013,8 +981,8 @@ is_element_full (ParseData   *parse_data,
   const gchar *p, *element_name;
   gboolean retval;
  
-  g_assert (parse_data != NULL);
-  g_assert (element_full != NULL);
+  g_warn_if_fail (parse_data != NULL);
+  g_warn_if_fail (element_full != NULL);
   
   if (!element)
     return FALSE;
@@ -1264,7 +1232,7 @@ start_element_raw_cb (GMarkupParseContext *context,
         	     XBEL_METADATA_ELEMENT);
       break;
     default:
-      g_assert_not_reached ();
+      g_warn_if_reached ();
       break;
     }
 }
@@ -1354,7 +1322,7 @@ text_raw_cb (GMarkupParseContext *context,
       {
       GList *groups;
       
-      g_assert (parse_data->current_item != NULL);
+      g_warn_if_fail (parse_data->current_item != NULL);
       
       if (!parse_data->current_item->metadata)
         parse_data->current_item->metadata = bookmark_metadata_new ();
@@ -1374,7 +1342,7 @@ text_raw_cb (GMarkupParseContext *context,
     case STATE_ICON:
       break;
     default:
-      g_assert_not_reached ();
+      g_warn_if_reached ();
       break;
     }
   
@@ -1401,7 +1369,7 @@ g_bookmark_file_parse (GBookmarkFile  *bookmark,
   GError *parse_error, *end_error;
   gboolean retval;
   
-  g_assert (bookmark != NULL);
+  g_warn_if_fail (bookmark != NULL);
 
   if (!buffer)
     return FALSE;
@@ -1969,7 +1937,7 @@ static BookmarkItem *
 g_bookmark_file_lookup_item (GBookmarkFile *bookmark,
 			     const gchar   *uri)
 {
-  g_assert (bookmark != NULL && uri != NULL);
+  g_warn_if_fail (bookmark != NULL && uri != NULL);
   
   return g_hash_table_lookup (bookmark->items_by_uri, uri);
 }
@@ -1980,8 +1948,8 @@ g_bookmark_file_add_item (GBookmarkFile  *bookmark,
 			  BookmarkItem   *item,
 			  GError        **error)
 {
-  g_assert (bookmark != NULL);
-  g_assert (item != NULL);
+  g_warn_if_fail (bookmark != NULL);
+  g_warn_if_fail (item != NULL);
 
   /* this should never happen; and if it does, then we are
    * screwing up something big time.
@@ -2101,7 +2069,7 @@ g_bookmark_file_get_uris (GBookmarkFile *bookmark,
     {
       BookmarkItem *item = (BookmarkItem *) l->data;
       
-      g_assert (item != NULL);
+      g_warn_if_fail (item != NULL);
       
       uris[i++] = g_strdup (item->uri);
     }
@@ -2319,8 +2287,7 @@ g_bookmark_file_set_mime_type (GBookmarkFile *bookmark,
   if (!item->metadata)
     item->metadata = bookmark_metadata_new ();
   
-  if (item->metadata->mime_type != NULL)
-    g_free (item->metadata->mime_type);
+  g_free (item->metadata->mime_type);
   
   item->metadata->mime_type = g_strdup (mime_type);
   item->modified = time (NULL);
@@ -2970,7 +2937,7 @@ g_bookmark_file_get_groups (GBookmarkFile  *bookmark,
     {
       gchar *group_name = (gchar *) l->data;
       
-      g_assert (group_name != NULL);
+      g_warn_if_fail (group_name != NULL);
       
       retval[i++] = g_strdup (group_name);
     }
@@ -3270,7 +3237,7 @@ g_bookmark_file_set_app_info (GBookmarkFile  *bookmark,
   if (exec && exec[0] != '\0')
     {
       g_free (ai->exec);
-      ai->exec = g_strdup (exec);
+      ai->exec = g_shell_quote (exec);
     }
   
   item->modified = time (NULL);
@@ -3300,9 +3267,11 @@ expand_exec_line (const gchar *exec_fmt,
        {
        case '\0':
 	 goto out;
+       case 'U':
        case 'u':
          g_string_append (exec, uri);
          break;
+       case 'F':
        case 'f':
          {
 	   gchar *file = g_filename_from_uri (uri, NULL, NULL);
@@ -3349,7 +3318,9 @@ expand_exec_line (const gchar *exec_fmt,
  * @error is set to #G_BOOKMARK_FILE_ERROR_URI_NOT_FOUND.  In the
  * event that no application with name @app_name has registered a bookmark
  * for @uri,  %FALSE is returned and error is set to
- * #G_BOOKMARK_FILE_ERROR_APP_NOT_REGISTERED.
+ * #G_BOOKMARK_FILE_ERROR_APP_NOT_REGISTERED. In the event that unquoting
+ * the command line fails, an error of the #G_SHELL_ERROR domain is
+ * set and %FALSE is returned.
  *
  * Return value: %TRUE on success.
  *
@@ -3394,15 +3365,29 @@ g_bookmark_file_get_app_info (GBookmarkFile  *bookmark,
   
   if (exec)
     {
-      *exec = expand_exec_line (ai->exec, uri);
+      GError *unquote_error = NULL;
+      gchar *command_line;
+      
+      command_line = g_shell_unquote (ai->exec, &unquote_error);
+      if (unquote_error)
+        {
+          g_propagate_error (error, unquote_error);
+          return FALSE;
+        }
+
+      *exec = expand_exec_line (command_line, uri);
       if (!*exec)
         {
           g_set_error (error, G_BOOKMARK_FILE_ERROR,
 		       G_BOOKMARK_FILE_ERROR_INVALID_URI,
 		       _("Failed to expand exec line '%s' with URI '%s'"),
 		     ai->exec, uri);
+          g_free (command_line);
+
           return FALSE;
         }
+      else
+        g_free (command_line);
     } 
 
   if (count)
@@ -3475,8 +3460,8 @@ g_bookmark_file_get_applications (GBookmarkFile  *bookmark,
       
       ai = (BookmarkAppInfo *) l->data;
       
-      g_assert (ai != NULL);
-      g_assert (ai->name != NULL);
+      g_warn_if_fail (ai != NULL);
+      g_warn_if_fail (ai->name != NULL);
       
       apps[i++] = g_strdup (ai->name);
     }

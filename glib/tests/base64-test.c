@@ -1,6 +1,10 @@
+#include "config.h"
+
 #include <glib.h>
 #include <string.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <stdlib.h>
 
 #define DATA_SIZE 1024
@@ -20,7 +24,7 @@ test_incremental (gboolean line_break,
   guchar *data2;
 
   data2 = g_malloc (length);
-  text = g_malloc (length * 2);
+  text = g_malloc (length * 4);
 
   len = 0;
   state = 0;
@@ -79,24 +83,24 @@ test_incremental (gboolean line_break,
 }
 
 static void
-test_full (void)
+test_full (gint length)
 {
   char *text;
   guchar *data2;
   gsize len;
 
-  text = g_base64_encode (data, DATA_SIZE);
+  text = g_base64_encode (data, length);
   data2 = g_base64_decode (text, &len);
   g_free (text);
 
-  if (len != DATA_SIZE)
+  if (len != length)
     {
       g_print ("Wrong decoded length: got %d, expected %d\n",
-	       len, DATA_SIZE);
+	       len, length);
       exit (1);
     }
 
-  if (memcmp (data, data2, DATA_SIZE) != 0)
+  if (memcmp (data, data2, length) != 0)
     {
       g_print ("Wrong decoded base64 data\n");
       exit (1);
@@ -112,7 +116,10 @@ main (int argc, char *argv[])
   for (i = 0; i < DATA_SIZE; i++)
     data[i] = (guchar)i;
 
-  test_full ();
+  test_full (DATA_SIZE);
+  test_full (1);
+  test_full (2);
+  test_full (3);
 
   test_incremental (FALSE, DATA_SIZE);
   test_incremental (TRUE, DATA_SIZE);
@@ -122,6 +129,10 @@ main (int argc, char *argv[])
 
   test_incremental (FALSE, DATA_SIZE - 2);
   test_incremental (TRUE, DATA_SIZE - 2);
+
+  test_incremental (FALSE, 1);
+  test_incremental (FALSE, 2);
+  test_incremental (FALSE, 3);
 
   return 0;
 }

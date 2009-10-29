@@ -1,6 +1,6 @@
 <refentry id="glib-Commandline-option-parser">
 <refmeta>
-<refentrytitle role="top_of_page">Commandline option parser</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Commandline-option-parser.top_of_page">Commandline option parser</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
@@ -11,13 +11,12 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Commandline-option-parser.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
-
 
 enum                <link linkend="GOptionError">GOptionError</link>;
 #define             <link linkend="G-OPTION-ERROR:CAPS">G_OPTION_ERROR</link>
@@ -55,6 +54,9 @@ const <link linkend="gchar">gchar</link>*        (<link linkend="GTranslateFunc"
                                                          <link linkend="gboolean">gboolean</link> ignore_unknown);
 <link linkend="gboolean">gboolean</link>            <link linkend="g-option-context-get-ignore-unknown-options">g_option_context_get_ignore_unknown_options</link>
                                                         (<link linkend="GOptionContext">GOptionContext</link> *context);
+<link linkend="gchar">gchar</link>*              <link linkend="g-option-context-get-help">g_option_context_get_help</link>           (<link linkend="GOptionContext">GOptionContext</link> *context,
+                                                         <link linkend="gboolean">gboolean</link> main_help,
+                                                         <link linkend="GOptionGroup">GOptionGroup</link> *group);
 enum                <link linkend="GOptionArg">GOptionArg</link>;
 enum                <link linkend="GOptionFlags">GOptionFlags</link>;
 #define             <link linkend="G-OPTION-REMAINING:CAPS">G_OPTION_REMAINING</link>
@@ -96,7 +98,6 @@ enum                <link linkend="GOptionFlags">GOptionFlags</link>;
 <link linkend="void">void</link>                <link linkend="g-option-group-set-translation-domain">g_option_group_set_translation_domain</link>
                                                         (<link linkend="GOptionGroup">GOptionGroup</link> *group,
                                                          const <link linkend="gchar">gchar</link> *domain);
-
 </synopsis>
 </refsynopsisdiv>
 
@@ -108,7 +109,7 @@ enum                <link linkend="GOptionFlags">GOptionFlags</link>;
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Commandline-option-parser.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The GOption commandline parser is intended to be a simpler replacement for the
@@ -131,24 +132,24 @@ The example demonstrates a number of features of the GOption commandline parser
   Long options are prefixed by two consecutive dashes.
 </para></listitem>
 <listitem><para>
-  Options can have an extra argument, which can be a number, a string or a filename.
-  For long options, the extra argument can be appended with an equals sign after the
-  option name.
+  Options can have an extra argument, which can be a number, a string or a 
+  filename. For long options, the extra argument can be appended with an 
+  equals sign after the option name.
 </para></listitem>
 <listitem><para>
   Non-option arguments are returned to the application as rest arguments.
 </para></listitem>
 <listitem><para>
-  An argument consisting solely of two dashes turns off further parsing, any remaining
-  arguments (even those starting with a dash) are returned to the application as rest 
-  arguments.
+  An argument consisting solely of two dashes turns off further parsing, 
+  any remaining arguments (even those starting with a dash) are returned 
+  to the application as rest arguments.
 </para></listitem>
 </itemizedlist>
 </para>
 
 <para>
-Another important feature of GOption is that it can automatically generate nicely
-formatted help output. Unless it is explicitly turned off with 
+Another important feature of GOption is that it can automatically generate 
+nicely formatted help output. Unless it is explicitly turned off with 
 <link linkend="g-option-context-set-help-enabled"><function>g_option_context_set_help_enabled()</function></link>, GOption will recognize the 
 <option>--help</option>, <option>-?</option>, <option>--help-all</option>
 and <option>--help-</option><replaceable>groupname</replaceable> options 
@@ -185,7 +186,8 @@ to <link linkend="g-option-context-parse"><function>g_option_context_parse()</fu
 <para>
 If an option is declared to be of type string or filename, GOption takes
 care of converting it to the right encoding; strings are returned in UTF-8,
-filenames are returned in the GLib filename encoding.
+filenames are returned in the GLib filename encoding. Note that this only
+works if <link linkend="setlocale"><function>setlocale()</function></link> has been called before <link linkend="g-option-context-parse"><function>g_option_context_parse()</function></link>.
 </para>
 
 <para>
@@ -218,19 +220,23 @@ main (int argc, char *argv[])
   context = g_option_context_new ("- test tree model performance");
   g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);
   g_option_context_add_group (context, gtk_get_option_group (TRUE));
-  g_option_context_parse (context, &amp;argc, &amp;argv, &amp;error);
-  
+  if (!g_option_context_parse (context, &amp;argc, &amp;argv, &amp;error))
+    {
+      g_print ("option parsing failed: %s\n", error->message);
+      exit (1);
+    }
+
   /* ... */
 
 }
 </programlisting></informalexample>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Commandline-option-parser.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GOptionError" role="enum"/>enum GOptionError</title>
-<indexterm><primary>GOptionError</primary></indexterm><programlisting>typedef enum
+<refsect2 id="GOptionError" role="enum">
+<title>enum GOptionError</title>
+<indexterm zone="GOptionError"><primary>GOptionError</primary></indexterm><programlisting>typedef enum
 {
   G_OPTION_ERROR_UNKNOWN_OPTION,
   G_OPTION_ERROR_BAD_VALUE,
@@ -240,37 +246,37 @@ main (int argc, char *argv[])
 <para>
 Error codes returned by option parsing.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-OPTION-ERROR-UNKNOWN-OPTION:CAPS" role="constant"/><literal>G_OPTION_ERROR_UNKNOWN_OPTION</literal></term>
+<varlistentry id="G-OPTION-ERROR-UNKNOWN-OPTION:CAPS" role="constant">
+<term><literal>G_OPTION_ERROR_UNKNOWN_OPTION</literal></term>
 <listitem><simpara>An option was not known to the parser.
   This error will only be reported, if the parser hasn't been instructed
   to ignore unknown options, see <link linkend="g-option-context-set-ignore-unknown-options"><function>g_option_context_set_ignore_unknown_options()</function></link>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-OPTION-ERROR-BAD-VALUE:CAPS" role="constant"/><literal>G_OPTION_ERROR_BAD_VALUE</literal></term>
+<varlistentry id="G-OPTION-ERROR-BAD-VALUE:CAPS" role="constant">
+<term><literal>G_OPTION_ERROR_BAD_VALUE</literal></term>
 <listitem><simpara>A value couldn't be parsed.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-OPTION-ERROR-FAILED:CAPS" role="constant"/><literal>G_OPTION_ERROR_FAILED</literal></term>
+<varlistentry id="G-OPTION-ERROR-FAILED:CAPS" role="constant">
+<term><literal>G_OPTION_ERROR_FAILED</literal></term>
 <listitem><simpara>A <link linkend="GOptionArgFunc"><type>GOptionArgFunc</type></link> callback failed.
 
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-OPTION-ERROR:CAPS" role="macro"/>G_OPTION_ERROR</title>
-<indexterm><primary>G_OPTION_ERROR</primary></indexterm><programlisting>#define G_OPTION_ERROR (g_option_error_quark ())
+<refsect2 id="G-OPTION-ERROR:CAPS" role="macro">
+<title>G_OPTION_ERROR</title>
+<indexterm zone="G-OPTION-ERROR:CAPS"><primary>G_OPTION_ERROR</primary></indexterm><programlisting>#define G_OPTION_ERROR (g_option_error_quark ())
 </programlisting>
 <para>
 Error domain for option parsing. Errors in this domain will
 be from the <link linkend="GOptionError"><type>GOptionError</type></link> enumeration. See <link linkend="GError"><type>GError</type></link> for information on 
 error domains.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GOptionArgFunc" role="function"/>GOptionArgFunc ()</title>
-<indexterm><primary>GOptionArgFunc</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            (*GOptionArgFunc)                   (const <link linkend="gchar">gchar</link> *option_name,
+<refsect2 id="GOptionArgFunc" role="function">
+<title>GOptionArgFunc ()</title>
+<indexterm zone="GOptionArgFunc"><primary>GOptionArgFunc</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            (*GOptionArgFunc)                   (const <link linkend="gchar">gchar</link> *option_name,
                                                          const <link linkend="gchar">gchar</link> *value,
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
@@ -300,17 +306,17 @@ options.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GOptionContext" role="struct"/>GOptionContext</title>
-<indexterm><primary>GOptionContext</primary></indexterm><programlisting>typedef struct _GOptionContext GOptionContext;</programlisting>
+<refsect2 id="GOptionContext" role="struct">
+<title>GOptionContext</title>
+<indexterm zone="GOptionContext"><primary>GOptionContext</primary></indexterm><programlisting>typedef struct _GOptionContext GOptionContext;</programlisting>
 <para>
 A <structname>GOptionContext</structname> struct defines which options
 are accepted by the commandline option parser. The struct has only private 
 fields and should not be directly accessed.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-context-new" role="function" condition="since:2.6"/>g_option_context_new ()</title>
-<indexterm role="2.6"><primary>g_option_context_new</primary></indexterm><programlisting><link linkend="GOptionContext">GOptionContext</link>*     g_option_context_new                (const <link linkend="gchar">gchar</link> *parameter_string);</programlisting>
+<refsect2 id="g-option-context-new" role="function" condition="since:2.6">
+<title>g_option_context_new ()</title>
+<indexterm zone="g-option-context-new" role="2.6"><primary>g_option_context_new</primary></indexterm><programlisting><link linkend="GOptionContext">GOptionContext</link>*     g_option_context_new                (const <link linkend="gchar">gchar</link> *parameter_string);</programlisting>
 <para>
 Creates a new option context. 
 </para>
@@ -331,8 +337,9 @@ program functionality that should be displayed as a paragraph
 below the usage line, use <link linkend="g-option-context-set-summary"><function>g_option_context_set_summary()</function></link>.
 </para>
 <para>
-Note that the <parameter>parameter_string</parameter> is translated (see 
-<link linkend="g-option-context-set-translate-func"><function>g_option_context_set_translate_func()</function></link>).</para>
+Note that the <parameter>parameter_string</parameter> is translated using the
+function set with <link linkend="g-option-context-set-translate-func"><function>g_option_context_set_translate_func()</function></link>, so
+it should normally be passed untranslated.</para>
 <para>
 
 </para><variablelist role="params">
@@ -348,9 +355,9 @@ Note that the <parameter>parameter_string</parameter> is translated (see
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-context-set-summary" role="function" condition="since:2.12"/>g_option_context_set_summary ()</title>
-<indexterm role="2.12"><primary>g_option_context_set_summary</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_set_summary        (<link linkend="GOptionContext">GOptionContext</link> *context,
+<refsect2 id="g-option-context-set-summary" role="function" condition="since:2.12">
+<title>g_option_context_set_summary ()</title>
+<indexterm zone="g-option-context-set-summary" role="2.12"><primary>g_option_context_set_summary</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_set_summary        (<link linkend="GOptionContext">GOptionContext</link> *context,
                                                          const <link linkend="gchar">gchar</link> *summary);</programlisting>
 <para>
 Adds a string to be displayed in <option>--help</option> output
@@ -359,7 +366,7 @@ program functionality.
 </para>
 <para>
 Note that the summary is translated (see 
-<link linkend="g-option-context-set-translate-func"><function>g_option_context_set_translate_func()</function></link>).</para>
+<link linkend="g-option-context-set-translate-func"><function>g_option_context_set_translate_func()</function></link>, <link linkend="g-option-context-set-translation-domain"><function>g_option_context_set_translation_domain()</function></link>).</para>
 <para>
 
 </para><variablelist role="params">
@@ -372,9 +379,9 @@ Note that the summary is translated (see
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-context-get-summary" role="function" condition="since:2.12"/>g_option_context_get_summary ()</title>
-<indexterm role="2.12"><primary>g_option_context_get_summary</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        g_option_context_get_summary        (<link linkend="GOptionContext">GOptionContext</link> *context);</programlisting>
+<refsect2 id="g-option-context-get-summary" role="function" condition="since:2.12">
+<title>g_option_context_get_summary ()</title>
+<indexterm zone="g-option-context-get-summary" role="2.12"><primary>g_option_context_get_summary</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        g_option_context_get_summary        (<link linkend="GOptionContext">GOptionContext</link> *context);</programlisting>
 <para>
 Returns the summary. See <link linkend="g-option-context-set-summary"><function>g_option_context_set_summary()</function></link>.</para>
 <para>
@@ -388,9 +395,9 @@ Returns the summary. See <link linkend="g-option-context-set-summary"><function>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-context-set-description" role="function" condition="since:2.12"/>g_option_context_set_description ()</title>
-<indexterm role="2.12"><primary>g_option_context_set_description</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_set_description    (<link linkend="GOptionContext">GOptionContext</link> *context,
+<refsect2 id="g-option-context-set-description" role="function" condition="since:2.12">
+<title>g_option_context_set_description ()</title>
+<indexterm zone="g-option-context-set-description" role="2.12"><primary>g_option_context_set_description</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_set_description    (<link linkend="GOptionContext">GOptionContext</link> *context,
                                                          const <link linkend="gchar">gchar</link> *description);</programlisting>
 <para>
 Adds a string to be displayed in <option>--help</option> output
@@ -412,9 +419,9 @@ Note that the summary is translated (see
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-context-get-description" role="function" condition="since:2.12"/>g_option_context_get_description ()</title>
-<indexterm role="2.12"><primary>g_option_context_get_description</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        g_option_context_get_description    (<link linkend="GOptionContext">GOptionContext</link> *context);</programlisting>
+<refsect2 id="g-option-context-get-description" role="function" condition="since:2.12">
+<title>g_option_context_get_description ()</title>
+<indexterm zone="g-option-context-get-description" role="2.12"><primary>g_option_context_get_description</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        g_option_context_get_description    (<link linkend="GOptionContext">GOptionContext</link> *context);</programlisting>
 <para>
 Returns the description. See <link linkend="g-option-context-set-description"><function>g_option_context_set_description()</function></link>.</para>
 <para>
@@ -428,9 +435,9 @@ Returns the description. See <link linkend="g-option-context-set-description"><f
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="GTranslateFunc" role="function"/>GTranslateFunc ()</title>
-<indexterm><primary>GTranslateFunc</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        (*GTranslateFunc)                   (const <link linkend="gchar">gchar</link> *str,
+<refsect2 id="GTranslateFunc" role="function">
+<title>GTranslateFunc ()</title>
+<indexterm zone="GTranslateFunc"><primary>GTranslateFunc</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        (*GTranslateFunc)                   (const <link linkend="gchar">gchar</link> *str,
                                                          <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 The type of functions which are used to translate user-visible
@@ -449,9 +456,9 @@ strings, for <option>--help</option> output.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-option-context-set-translate-func" role="function" condition="since:2.12"/>g_option_context_set_translate_func ()</title>
-<indexterm role="2.12"><primary>g_option_context_set_translate_func</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_set_translate_func (<link linkend="GOptionContext">GOptionContext</link> *context,
+<refsect2 id="g-option-context-set-translate-func" role="function" condition="since:2.12">
+<title>g_option_context_set_translate_func ()</title>
+<indexterm zone="g-option-context-set-translate-func" role="2.12"><primary>g_option_context_set_translate_func</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_set_translate_func (<link linkend="GOptionContext">GOptionContext</link> *context,
                                                          <link linkend="GTranslateFunc">GTranslateFunc</link> func,
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_notify);</programlisting>
@@ -462,7 +469,7 @@ If <parameter>func</parameter> is <link linkend="NULL:CAPS"><literal>NULL</liter
 </para>
 <para>
 Note that option groups have their own translation functions, 
-this function only affects the <parameter>parameter_string</parameter> (see <link linkend="g-option-context-nex"><function>g_option_context_nex()</function></link>), 
+this function only affects the <parameter>parameter_string</parameter> (see <link linkend="g-option-context-new"><function>g_option_context_new()</function></link>), 
 the summary (see <link linkend="g-option-context-set-summary"><function>g_option_context_set_summary()</function></link>) and the description 
 (see <link linkend="g-option-context-set-description"><function>g_option_context_set_description()</function></link>).
 </para>
@@ -486,9 +493,9 @@ domain, see <link linkend="g-context-group-set-translation-domain"><function>g_c
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-context-set-translation-domain" role="function" condition="since:2.12"/>g_option_context_set_translation_domain ()</title>
-<indexterm role="2.12"><primary>g_option_context_set_translation_domain</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_set_translation_domain
+<refsect2 id="g-option-context-set-translation-domain" role="function" condition="since:2.12">
+<title>g_option_context_set_translation_domain ()</title>
+<indexterm zone="g-option-context-set-translation-domain" role="2.12"><primary>g_option_context_set_translation_domain</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_set_translation_domain
                                                         (<link linkend="GOptionContext">GOptionContext</link> *context,
                                                          const <link linkend="gchar">gchar</link> *domain);</programlisting>
 <para>
@@ -505,9 +512,9 @@ user-visible strings.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-context-free" role="function" condition="since:2.6"/>g_option_context_free ()</title>
-<indexterm role="2.6"><primary>g_option_context_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_free               (<link linkend="GOptionContext">GOptionContext</link> *context);</programlisting>
+<refsect2 id="g-option-context-free" role="function" condition="since:2.6">
+<title>g_option_context_free ()</title>
+<indexterm zone="g-option-context-free" role="2.6"><primary>g_option_context_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_free               (<link linkend="GOptionContext">GOptionContext</link> *context);</programlisting>
 <para>
 Frees context and all the groups which have been 
 added to it.</para>
@@ -519,9 +526,9 @@ added to it.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-context-parse" role="function" condition="since:2.6"/>g_option_context_parse ()</title>
-<indexterm role="2.6"><primary>g_option_context_parse</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_option_context_parse              (<link linkend="GOptionContext">GOptionContext</link> *context,
+<refsect2 id="g-option-context-parse" role="function" condition="since:2.6">
+<title>g_option_context_parse ()</title>
+<indexterm zone="g-option-context-parse" role="2.6"><primary>g_option_context_parse</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_option_context_parse              (<link linkend="GOptionContext">GOptionContext</link> *context,
                                                          <link linkend="gint">gint</link> *argc,
                                                          <link linkend="gchar">gchar</link> ***argv,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
@@ -544,7 +551,13 @@ If automatic <option>--help</option> support is enabled
 (see <link linkend="g-option-context-set-help-enabled"><function>g_option_context_set_help_enabled()</function></link>), and the 
 <parameter>argv</parameter> array contains one of the recognized help options,
 this function will produce help output to stdout and
-call <literal>exit (0)</literal>.</para>
+call <literal>exit (0)</literal>.
+</para>
+<para>
+Note that function depends on the 
+<link linkend="setlocale">current locale</link> for 
+automatic character set conversion of string and filename
+arguments.</para>
 <para>
 
 </para><variablelist role="params">
@@ -552,10 +565,10 @@ call <literal>exit (0)</literal>.</para>
 <listitem><simpara> a <link linkend="GOptionContext"><type>GOptionContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
-<listitem><simpara> a pointer to the number of command line arguments.
+<listitem><simpara> a pointer to the number of command line arguments
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
-<listitem><simpara> a pointer to the array of command line arguments.
+<listitem><simpara> a pointer to the array of command line arguments
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>error</parameter>&nbsp;:</term>
 <listitem><simpara> a return location for errors 
@@ -566,9 +579,9 @@ call <literal>exit (0)</literal>.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-context-set-help-enabled" role="function" condition="since:2.6"/>g_option_context_set_help_enabled ()</title>
-<indexterm role="2.6"><primary>g_option_context_set_help_enabled</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_set_help_enabled   (<link linkend="GOptionContext">GOptionContext</link> *context,
+<refsect2 id="g-option-context-set-help-enabled" role="function" condition="since:2.6">
+<title>g_option_context_set_help_enabled ()</title>
+<indexterm zone="g-option-context-set-help-enabled" role="2.6"><primary>g_option_context_set_help_enabled</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_set_help_enabled   (<link linkend="GOptionContext">GOptionContext</link> *context,
                                                          <link linkend="gboolean">gboolean</link> help_enabled);</programlisting>
 <para>
 Enables or disables automatic generation of <option>--help</option> 
@@ -587,9 +600,9 @@ suitable output to stdout.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-context-get-help-enabled" role="function" condition="since:2.6"/>g_option_context_get_help_enabled ()</title>
-<indexterm role="2.6"><primary>g_option_context_get_help_enabled</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_option_context_get_help_enabled   (<link linkend="GOptionContext">GOptionContext</link> *context);</programlisting>
+<refsect2 id="g-option-context-get-help-enabled" role="function" condition="since:2.6">
+<title>g_option_context_get_help_enabled ()</title>
+<indexterm zone="g-option-context-get-help-enabled" role="2.6"><primary>g_option_context_get_help_enabled</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_option_context_get_help_enabled   (<link linkend="GOptionContext">GOptionContext</link> *context);</programlisting>
 <para>
 Returns whether automatic <option>--help</option> generation
 is turned on for <parameter>context</parameter>. See <link linkend="g-option-context-set-help-enabled"><function>g_option_context_set_help_enabled()</function></link>.</para>
@@ -604,9 +617,9 @@ is turned on for <parameter>context</parameter>. See <link linkend="g-option-con
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-context-set-ignore-unknown-options" role="function" condition="since:2.6"/>g_option_context_set_ignore_unknown_options ()</title>
-<indexterm role="2.6"><primary>g_option_context_set_ignore_unknown_options</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_set_ignore_unknown_options
+<refsect2 id="g-option-context-set-ignore-unknown-options" role="function" condition="since:2.6">
+<title>g_option_context_set_ignore_unknown_options ()</title>
+<indexterm zone="g-option-context-set-ignore-unknown-options" role="2.6"><primary>g_option_context_set_ignore_unknown_options</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_set_ignore_unknown_options
                                                         (<link linkend="GOptionContext">GOptionContext</link> *context,
                                                          <link linkend="gboolean">gboolean</link> ignore_unknown);</programlisting>
 <para>
@@ -630,9 +643,9 @@ determine whether a non-option belongs to a preceding unknown option.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-context-get-ignore-unknown-options" role="function" condition="since:2.6"/>g_option_context_get_ignore_unknown_options ()</title>
-<indexterm role="2.6"><primary>g_option_context_get_ignore_unknown_options</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_option_context_get_ignore_unknown_options
+<refsect2 id="g-option-context-get-ignore-unknown-options" role="function" condition="since:2.6">
+<title>g_option_context_get_ignore_unknown_options ()</title>
+<indexterm zone="g-option-context-get-ignore-unknown-options" role="2.6"><primary>g_option_context_get_ignore_unknown_options</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_option_context_get_ignore_unknown_options
                                                         (<link linkend="GOptionContext">GOptionContext</link> *context);</programlisting>
 <para>
 Returns whether unknown options are ignored or not. See
@@ -648,9 +661,39 @@ Returns whether unknown options are ignored or not. See
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="GOptionArg" role="enum"/>enum GOptionArg</title>
-<indexterm><primary>GOptionArg</primary></indexterm><programlisting>typedef enum
+<refsect2 id="g-option-context-get-help" role="function" condition="since:2.14">
+<title>g_option_context_get_help ()</title>
+<indexterm zone="g-option-context-get-help" role="2.14"><primary>g_option_context_get_help</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_option_context_get_help           (<link linkend="GOptionContext">GOptionContext</link> *context,
+                                                         <link linkend="gboolean">gboolean</link> main_help,
+                                                         <link linkend="GOptionGroup">GOptionGroup</link> *group);</programlisting>
+<para>
+Returns a formatted, translated help text for the given context.
+To obtain the text produced by <option>--help</option>, call
+<literal>g_option_context_get_help (context, TRUE, NULL)</literal>.
+To obtain the text produced by <option>--help-all</option>, call
+<literal>g_option_context_get_help (context, FALSE, NULL)</literal>.
+To obtain the help text for an option group, call
+<literal>g_option_context_get_help (context, FALSE, group)</literal>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>context</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GOptionContext"><type>GOptionContext</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>main_help</parameter>&nbsp;:</term>
+<listitem><simpara> if <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>, only include the main group 
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>group</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="GOptionGroup"><type>GOptionGroup</type></link> to create help for, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A newly allocated string containing the help text
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.14
+</para></refsect2>
+<refsect2 id="GOptionArg" role="enum">
+<title>enum GOptionArg</title>
+<indexterm zone="GOptionArg"><primary>GOptionArg</primary></indexterm><programlisting>typedef enum
 {
   G_OPTION_ARG_NONE,
   G_OPTION_ARG_STRING,
@@ -670,52 +713,52 @@ can be specified in several ways; with a short option:
 <option>-x arg</option>, with a long option: <option>--name arg</option>
 or combined in a single argument: <option>--name=arg</option>.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-OPTION-ARG-NONE:CAPS" role="constant"/><literal>G_OPTION_ARG_NONE</literal></term>
+<varlistentry id="G-OPTION-ARG-NONE:CAPS" role="constant">
+<term><literal>G_OPTION_ARG_NONE</literal></term>
 <listitem><simpara>No extra argument. This is useful for simple flags.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-OPTION-ARG-STRING:CAPS" role="constant"/><literal>G_OPTION_ARG_STRING</literal></term>
+<varlistentry id="G-OPTION-ARG-STRING:CAPS" role="constant">
+<term><literal>G_OPTION_ARG_STRING</literal></term>
 <listitem><simpara>The option takes a string argument.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-OPTION-ARG-INT:CAPS" role="constant"/><literal>G_OPTION_ARG_INT</literal></term>
+<varlistentry id="G-OPTION-ARG-INT:CAPS" role="constant">
+<term><literal>G_OPTION_ARG_INT</literal></term>
 <listitem><simpara>The option takes an integer argument.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-OPTION-ARG-CALLBACK:CAPS" role="constant"/><literal>G_OPTION_ARG_CALLBACK</literal></term>
+<varlistentry id="G-OPTION-ARG-CALLBACK:CAPS" role="constant">
+<term><literal>G_OPTION_ARG_CALLBACK</literal></term>
 <listitem><simpara>The option provides a callback to parse the
   extra argument.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-OPTION-ARG-FILENAME:CAPS" role="constant"/><literal>G_OPTION_ARG_FILENAME</literal></term>
+<varlistentry id="G-OPTION-ARG-FILENAME:CAPS" role="constant">
+<term><literal>G_OPTION_ARG_FILENAME</literal></term>
 <listitem><simpara>The option takes a filename as argument.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-OPTION-ARG-STRING-ARRAY:CAPS" role="constant"/><literal>G_OPTION_ARG_STRING_ARRAY</literal></term>
+<varlistentry id="G-OPTION-ARG-STRING-ARRAY:CAPS" role="constant">
+<term><literal>G_OPTION_ARG_STRING_ARRAY</literal></term>
 <listitem><simpara>The option takes a string argument, multiple
   uses of the option are collected into an array of strings.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-OPTION-ARG-FILENAME-ARRAY:CAPS" role="constant"/><literal>G_OPTION_ARG_FILENAME_ARRAY</literal></term>
+<varlistentry id="G-OPTION-ARG-FILENAME-ARRAY:CAPS" role="constant">
+<term><literal>G_OPTION_ARG_FILENAME_ARRAY</literal></term>
 <listitem><simpara>The option takes a filename as argument, 
   multiple uses of the option are collected into an array of strings.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-OPTION-ARG-DOUBLE:CAPS" role="constant"/><literal>G_OPTION_ARG_DOUBLE</literal></term>
+<varlistentry id="G-OPTION-ARG-DOUBLE:CAPS" role="constant">
+<term><literal>G_OPTION_ARG_DOUBLE</literal></term>
 <listitem><simpara>The option takes a double argument. The argument
   can be formatted either for the user's locale or for the "C" locale. Since 2.12
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-OPTION-ARG-INT64:CAPS" role="constant"/><literal>G_OPTION_ARG_INT64</literal></term>
+<varlistentry id="G-OPTION-ARG-INT64:CAPS" role="constant">
+<term><literal>G_OPTION_ARG_INT64</literal></term>
 <listitem><simpara>The option takes a 64-bit integer. Like <link linkend="G-OPTION-ARG-INT:CAPS"><literal>G_OPTION_ARG_INT</literal></link>
   but for larger numbers. The number can be in decimal base, or in hexadecimal
   (when prefixed with <literal>0x</literal>, for example, <literal>0xffffffff</literal>).
@@ -724,9 +767,9 @@ or combined in a single argument: <option>--name=arg</option>.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GOptionFlags" role="enum"/>enum GOptionFlags</title>
-<indexterm><primary>GOptionFlags</primary></indexterm><programlisting>typedef enum
+<refsect2 id="GOptionFlags" role="enum">
+<title>enum GOptionFlags</title>
+<indexterm zone="GOptionFlags"><primary>GOptionFlags</primary></indexterm><programlisting>typedef enum
 {
   G_OPTION_FLAG_HIDDEN		= 1 &lt;&lt; 0,
   G_OPTION_FLAG_IN_MAIN		= 1 &lt;&lt; 1,
@@ -740,47 +783,47 @@ or combined in a single argument: <option>--name=arg</option>.
 <para>
 Flags which modify individual options.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-OPTION-FLAG-HIDDEN:CAPS" role="constant"/><literal>G_OPTION_FLAG_HIDDEN</literal></term>
+<varlistentry id="G-OPTION-FLAG-HIDDEN:CAPS" role="constant">
+<term><literal>G_OPTION_FLAG_HIDDEN</literal></term>
 <listitem><simpara>The option doesn't appear in <option>--help</option>
    output.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-OPTION-FLAG-IN-MAIN:CAPS" role="constant"/><literal>G_OPTION_FLAG_IN_MAIN</literal></term>
+<varlistentry id="G-OPTION-FLAG-IN-MAIN:CAPS" role="constant">
+<term><literal>G_OPTION_FLAG_IN_MAIN</literal></term>
 <listitem><simpara>The option appears in the main section of the
    <option>--help</option> output, even if it is defined in a group.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-OPTION-FLAG-REVERSE:CAPS" role="constant"/><literal>G_OPTION_FLAG_REVERSE</literal></term>
+<varlistentry id="G-OPTION-FLAG-REVERSE:CAPS" role="constant">
+<term><literal>G_OPTION_FLAG_REVERSE</literal></term>
 <listitem><simpara>For options of the <link linkend="G-OPTION-ARG-NONE:CAPS"><literal>G_OPTION_ARG_NONE</literal></link> kind, this flag
    indicates that the sense of the option is reversed.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-OPTION-FLAG-NO-ARG:CAPS" role="constant"/><literal>G_OPTION_FLAG_NO_ARG</literal></term>
+<varlistentry id="G-OPTION-FLAG-NO-ARG:CAPS" role="constant">
+<term><literal>G_OPTION_FLAG_NO_ARG</literal></term>
 <listitem><simpara>For options of the <link linkend="G-OPTION-ARG-CALLBACK:CAPS"><literal>G_OPTION_ARG_CALLBACK</literal></link> kind,
    this flag indicates that the callback does not take any argument
    (like a <link linkend="G-OPTION-ARG-NONE:CAPS"><literal>G_OPTION_ARG_NONE</literal></link> option). Since 2.8
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-OPTION-FLAG-FILENAME:CAPS" role="constant"/><literal>G_OPTION_FLAG_FILENAME</literal></term>
+<varlistentry id="G-OPTION-FLAG-FILENAME:CAPS" role="constant">
+<term><literal>G_OPTION_FLAG_FILENAME</literal></term>
 <listitem><simpara>For options of the <link linkend="G-OPTION-ARG-CALLBACK:CAPS"><literal>G_OPTION_ARG_CALLBACK</literal></link>
    kind, this flag indicates that the argument should be passed to the
    callback in the GLib filename encoding rather than UTF-8. Since 2.8
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-OPTION-FLAG-OPTIONAL-ARG:CAPS" role="constant"/><literal>G_OPTION_FLAG_OPTIONAL_ARG</literal></term>
+<varlistentry id="G-OPTION-FLAG-OPTIONAL-ARG:CAPS" role="constant">
+<term><literal>G_OPTION_FLAG_OPTIONAL_ARG</literal></term>
 <listitem><simpara>For options of the <link linkend="G-OPTION-ARG-CALLBACK:CAPS"><literal>G_OPTION_ARG_CALLBACK</literal></link> 
    kind, this flag indicates that the argument supply is optional. If no argument
    is given then data of <link linkend="GOptionParseFunc"><literal>GOptionParseFunc</literal></link> will be set to NULL. Since 2.8
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-OPTION-FLAG-NOALIAS:CAPS" role="constant"/><literal>G_OPTION_FLAG_NOALIAS</literal></term>
+<varlistentry id="G-OPTION-FLAG-NOALIAS:CAPS" role="constant">
+<term><literal>G_OPTION_FLAG_NOALIAS</literal></term>
 <listitem><simpara>This flag turns off the automatic conflict resolution
    which prefixes long option names with <literal>groupname-</literal> if 
    there is a conflict. This option should only be used in situations where
@@ -791,15 +834,16 @@ Flags which modify individual options.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-OPTION-REMAINING:CAPS" role="macro" condition="since:2.6"/>G_OPTION_REMAINING</title>
-<indexterm role="2.6"><primary>G_OPTION_REMAINING</primary></indexterm><programlisting>#define G_OPTION_REMAINING ""
+<refsect2 id="G-OPTION-REMAINING:CAPS" role="macro" condition="since:2.6">
+<title>G_OPTION_REMAINING</title>
+<indexterm zone="G-OPTION-REMAINING:CAPS" role="2.6"><primary>G_OPTION_REMAINING</primary></indexterm><programlisting>#define G_OPTION_REMAINING ""
 </programlisting>
 <para>
 If a long option in the main group has this name, it is not treated as a 
 regular option. Instead it collects all non-option arguments which would
 otherwise be left in <literal>argv</literal>. The option must be of type
-<link linkend="G-OPTION-ARG-STRING-ARRAY:CAPS"><literal>G_OPTION_ARG_STRING_ARRAY</literal></link> or <link linkend="G-OPTION-ARG-FILENAME-ARRAY:CAPS"><literal>G_OPTION_ARG_FILENAME_ARRAY</literal></link>.
+<link linkend="G-OPTION-ARG-CALLBACK:CAPS"><literal>G_OPTION_ARG_CALLBACK</literal></link>, <link linkend="G-OPTION-ARG-STRING-ARRAY:CAPS"><literal>G_OPTION_ARG_STRING_ARRAY</literal></link>
+or <link linkend="G-OPTION-ARG-FILENAME-ARRAY:CAPS"><literal>G_OPTION_ARG_FILENAME_ARRAY</literal></link>.
 </para>
 
 <para>
@@ -810,9 +854,9 @@ necessary encoding conversions for strings or filenames.
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="GOptionEntry" role="struct"/>GOptionEntry</title>
-<indexterm><primary>GOptionEntry</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GOptionEntry" role="struct">
+<title>GOptionEntry</title>
+<indexterm zone="GOptionEntry"><primary>GOptionEntry</primary></indexterm><programlisting>typedef struct {
   const gchar *long_name;
   gchar        short_name;
   gint         flags;
@@ -912,9 +956,9 @@ To have an effect, they must be added to a <link linkend="GOptionGroup"><type>GO
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-option-context-add-main-entries" role="function" condition="since:2.6"/>g_option_context_add_main_entries ()</title>
-<indexterm role="2.6"><primary>g_option_context_add_main_entries</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_add_main_entries   (<link linkend="GOptionContext">GOptionContext</link> *context,
+<refsect2 id="g-option-context-add-main-entries" role="function" condition="since:2.6">
+<title>g_option_context_add_main_entries ()</title>
+<indexterm zone="g-option-context-add-main-entries" role="2.6"><primary>g_option_context_add_main_entries</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_add_main_entries   (<link linkend="GOptionContext">GOptionContext</link> *context,
                                                          const <link linkend="GOptionEntry">GOptionEntry</link> *entries,
                                                          const <link linkend="gchar">gchar</link> *translation_domain);</programlisting>
 <para>
@@ -936,9 +980,9 @@ exist, adds the <parameter>entries</parameter> to it and sets the translation do
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="GOptionGroup" role="struct"/>GOptionGroup</title>
-<indexterm><primary>GOptionGroup</primary></indexterm><programlisting>typedef struct _GOptionGroup GOptionGroup;</programlisting>
+<refsect2 id="GOptionGroup" role="struct">
+<title>GOptionGroup</title>
+<indexterm zone="GOptionGroup"><primary>GOptionGroup</primary></indexterm><programlisting>typedef struct _GOptionGroup GOptionGroup;</programlisting>
 <para>
 A <structname>GOptionGroup</structname> struct defines the options in a single
 group. The struct has only private fields and should not be directly accessed. 
@@ -949,9 +993,9 @@ need to parse commandline options are expected to provide a function for
 getting a <structname>GOptionGroup</structname> holding their options, which 
 the application can then add to its <link linkend="GOptionContext"><type>GOptionContext</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-context-add-group" role="function" condition="since:2.6"/>g_option_context_add_group ()</title>
-<indexterm role="2.6"><primary>g_option_context_add_group</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_add_group          (<link linkend="GOptionContext">GOptionContext</link> *context,
+<refsect2 id="g-option-context-add-group" role="function" condition="since:2.6">
+<title>g_option_context_add_group ()</title>
+<indexterm zone="g-option-context-add-group" role="2.6"><primary>g_option_context_add_group</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_add_group          (<link linkend="GOptionContext">GOptionContext</link> *context,
                                                          <link linkend="GOptionGroup">GOptionGroup</link> *group);</programlisting>
 <para>
 Adds a <link linkend="GOptionGroup"><type>GOptionGroup</type></link> to the <parameter>context</parameter>, so that parsing with <parameter>context</parameter>
@@ -970,9 +1014,9 @@ to a context.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-context-set-main-group" role="function" condition="since:2.6"/>g_option_context_set_main_group ()</title>
-<indexterm role="2.6"><primary>g_option_context_set_main_group</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_set_main_group     (<link linkend="GOptionContext">GOptionContext</link> *context,
+<refsect2 id="g-option-context-set-main-group" role="function" condition="since:2.6">
+<title>g_option_context_set_main_group ()</title>
+<indexterm zone="g-option-context-set-main-group" role="2.6"><primary>g_option_context_set_main_group</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_context_set_main_group     (<link linkend="GOptionContext">GOptionContext</link> *context,
                                                          <link linkend="GOptionGroup">GOptionGroup</link> *group);</programlisting>
 <para>
 Sets a <link linkend="GOptionGroup"><type>GOptionGroup</type></link> as main group of the <parameter>context</parameter>. 
@@ -990,9 +1034,9 @@ treated differently when generating <option>--help</option> output.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-context-get-main-group" role="function" condition="since:2.6"/>g_option_context_get_main_group ()</title>
-<indexterm role="2.6"><primary>g_option_context_get_main_group</primary></indexterm><programlisting><link linkend="GOptionGroup">GOptionGroup</link>*       g_option_context_get_main_group     (<link linkend="GOptionContext">GOptionContext</link> *context);</programlisting>
+<refsect2 id="g-option-context-get-main-group" role="function" condition="since:2.6">
+<title>g_option_context_get_main_group ()</title>
+<indexterm zone="g-option-context-get-main-group" role="2.6"><primary>g_option_context_get_main_group</primary></indexterm><programlisting><link linkend="GOptionGroup">GOptionGroup</link>*       g_option_context_get_main_group     (<link linkend="GOptionContext">GOptionContext</link> *context);</programlisting>
 <para>
 Returns a pointer to the main group of <parameter>context</parameter>.</para>
 <para>
@@ -1008,9 +1052,9 @@ Returns a pointer to the main group of <parameter>context</parameter>.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-group-new" role="function" condition="since:2.6"/>g_option_group_new ()</title>
-<indexterm role="2.6"><primary>g_option_group_new</primary></indexterm><programlisting><link linkend="GOptionGroup">GOptionGroup</link>*       g_option_group_new                  (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-option-group-new" role="function" condition="since:2.6">
+<title>g_option_group_new ()</title>
+<indexterm zone="g-option-group-new" role="2.6"><primary>g_option_group_new</primary></indexterm><programlisting><link linkend="GOptionGroup">GOptionGroup</link>*       g_option_group_new                  (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *description,
                                                          const <link linkend="gchar">gchar</link> *help_description,
                                                          <link linkend="gpointer">gpointer</link> user_data,
@@ -1047,9 +1091,9 @@ Creates a new <link linkend="GOptionGroup"><type>GOptionGroup</type></link>.</pa
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-group-free" role="function" condition="since:2.6"/>g_option_group_free ()</title>
-<indexterm role="2.6"><primary>g_option_group_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_group_free                 (<link linkend="GOptionGroup">GOptionGroup</link> *group);</programlisting>
+<refsect2 id="g-option-group-free" role="function" condition="since:2.6">
+<title>g_option_group_free ()</title>
+<indexterm zone="g-option-group-free" role="2.6"><primary>g_option_group_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_group_free                 (<link linkend="GOptionGroup">GOptionGroup</link> *group);</programlisting>
 <para>
 Frees a <link linkend="GOptionGroup"><type>GOptionGroup</type></link>. Note that you must <emphasis>not</emphasis>
 free groups which have been added to a <link linkend="GOptionContext"><type>GOptionContext</type></link>.</para>
@@ -1061,9 +1105,9 @@ free groups which have been added to a <link linkend="GOptionContext"><type>GOpt
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-group-add-entries" role="function" condition="since:2.6"/>g_option_group_add_entries ()</title>
-<indexterm role="2.6"><primary>g_option_group_add_entries</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_group_add_entries          (<link linkend="GOptionGroup">GOptionGroup</link> *group,
+<refsect2 id="g-option-group-add-entries" role="function" condition="since:2.6">
+<title>g_option_group_add_entries ()</title>
+<indexterm zone="g-option-group-add-entries" role="2.6"><primary>g_option_group_add_entries</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_group_add_entries          (<link linkend="GOptionGroup">GOptionGroup</link> *group,
                                                          const <link linkend="GOptionEntry">GOptionEntry</link> *entries);</programlisting>
 <para>
 Adds the options specified in <parameter>entries</parameter> to <parameter>group</parameter>.</para>
@@ -1078,9 +1122,9 @@ Adds the options specified in <parameter>entries</parameter> to <parameter>group
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="GOptionParseFunc" role="function"/>GOptionParseFunc ()</title>
-<indexterm><primary>GOptionParseFunc</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            (*GOptionParseFunc)                 (<link linkend="GOptionContext">GOptionContext</link> *context,
+<refsect2 id="GOptionParseFunc" role="function">
+<title>GOptionParseFunc ()</title>
+<indexterm zone="GOptionParseFunc"><primary>GOptionParseFunc</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            (*GOptionParseFunc)                 (<link linkend="GOptionContext">GOptionContext</link> *context,
                                                          <link linkend="GOptionGroup">GOptionGroup</link> *group,
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
@@ -1106,9 +1150,9 @@ The type of function that can be called before and after parsing.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-option-group-set-parse-hooks" role="function" condition="since:2.6"/>g_option_group_set_parse_hooks ()</title>
-<indexterm role="2.6"><primary>g_option_group_set_parse_hooks</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_group_set_parse_hooks      (<link linkend="GOptionGroup">GOptionGroup</link> *group,
+<refsect2 id="g-option-group-set-parse-hooks" role="function" condition="since:2.6">
+<title>g_option_group_set_parse_hooks ()</title>
+<indexterm zone="g-option-group-set-parse-hooks" role="2.6"><primary>g_option_group_set_parse_hooks</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_group_set_parse_hooks      (<link linkend="GOptionGroup">GOptionGroup</link> *group,
                                                          <link linkend="GOptionParseFunc">GOptionParseFunc</link> pre_parse_func,
                                                          <link linkend="GOptionParseFunc">GOptionParseFunc</link> post_parse_func);</programlisting>
 <para>
@@ -1134,9 +1178,9 @@ with <link linkend="g-option-group-new"><function>g_option_group_new()</function
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="GOptionErrorFunc" role="function"/>GOptionErrorFunc ()</title>
-<indexterm><primary>GOptionErrorFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GOptionErrorFunc)                 (<link linkend="GOptionContext">GOptionContext</link> *context,
+<refsect2 id="GOptionErrorFunc" role="function">
+<title>GOptionErrorFunc ()</title>
+<indexterm zone="GOptionErrorFunc"><primary>GOptionErrorFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GOptionErrorFunc)                 (<link linkend="GOptionContext">GOptionContext</link> *context,
                                                          <link linkend="GOptionGroup">GOptionGroup</link> *group,
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
@@ -1159,9 +1203,9 @@ The type of function to be used as callback when a parse error occurs.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-option-group-set-error-hook" role="function" condition="since:2.6"/>g_option_group_set_error_hook ()</title>
-<indexterm role="2.6"><primary>g_option_group_set_error_hook</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_group_set_error_hook       (<link linkend="GOptionGroup">GOptionGroup</link> *group,
+<refsect2 id="g-option-group-set-error-hook" role="function" condition="since:2.6">
+<title>g_option_group_set_error_hook ()</title>
+<indexterm zone="g-option-group-set-error-hook" role="2.6"><primary>g_option_group_set_error_hook</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_group_set_error_hook       (<link linkend="GOptionGroup">GOptionGroup</link> *group,
                                                          <link linkend="GOptionErrorFunc">GOptionErrorFunc</link> error_func);</programlisting>
 <para>
 Associates a function with <parameter>group</parameter> which will be called 
@@ -1182,9 +1226,9 @@ with <link linkend="g-option-group-new"><function>g_option_group_new()</function
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-group-set-translate-func" role="function" condition="since:2.6"/>g_option_group_set_translate_func ()</title>
-<indexterm role="2.6"><primary>g_option_group_set_translate_func</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_group_set_translate_func   (<link linkend="GOptionGroup">GOptionGroup</link> *group,
+<refsect2 id="g-option-group-set-translate-func" role="function" condition="since:2.6">
+<title>g_option_group_set_translate_func ()</title>
+<indexterm zone="g-option-group-set-translate-func" role="2.6"><primary>g_option_group_set_translate_func</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_group_set_translate_func   (<link linkend="GOptionGroup">GOptionGroup</link> *group,
                                                          <link linkend="GTranslateFunc">GTranslateFunc</link> func,
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_notify);</programlisting>
@@ -1214,9 +1258,9 @@ domain, see <link linkend="g-option-group-set-translation-domain"><function>g_op
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-option-group-set-translation-domain" role="function" condition="since:2.6"/>g_option_group_set_translation_domain ()</title>
-<indexterm role="2.6"><primary>g_option_group_set_translation_domain</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_group_set_translation_domain
+<refsect2 id="g-option-group-set-translation-domain" role="function" condition="since:2.6">
+<title>g_option_group_set_translation_domain ()</title>
+<indexterm zone="g-option-group-set-translation-domain" role="2.6"><primary>g_option_group_set_translation_domain</primary></indexterm><programlisting><link linkend="void">void</link>                g_option_group_set_translation_domain
                                                         (<link linkend="GOptionGroup">GOptionGroup</link> *group,
                                                          const <link linkend="gchar">gchar</link> *domain);</programlisting>
 <para>

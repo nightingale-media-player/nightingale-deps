@@ -11,7 +11,7 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
@@ -41,6 +41,7 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <time.h>
+#include <stdlib.h>
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif /* HAVE_SYS_TIME_H */
@@ -179,6 +180,7 @@ struct _GTimeoutSource
   GSource     source;
   GTimeVal    expiration;
   guint       interval;
+  guint	      granularity;
 };
 
 struct _GChildWatchSource
@@ -281,6 +283,8 @@ static gint child_watch_wake_up_pipe[2] = {0, 0};
 G_LOCK_DEFINE_STATIC (main_context_list);
 static GSList *main_context_list = NULL;
 
+static gint timer_perturb = -1;
+
 GSourceFuncs g_timeout_funcs =
 {
   g_timeout_prepare,
@@ -324,7 +328,6 @@ g_poll (GPollFD *fds,
   GPollFD *f;
   DWORD ready;
   MSG msg;
-  UINT timer;
   gint nhandles = 0;
 
   for (f = fds; f < &fds[nfds]; ++f)
@@ -361,102 +364,47 @@ g_poll (GPollFD *fds,
 	ready = WAIT_OBJECT_0 + nhandles;
       else
 	{
-	  if (nhandles == 0)
-	    {
-	      /* Waiting just for messages */
-	      if (timeout == INFINITE)
-		{
-		  /* Infinite timeout
-		   * -> WaitMessage
-		   */
+	  /* Wait for either message or event
+	   * -> Use MsgWaitForMultipleObjectsEx
+	   */
 #ifdef G_MAIN_POLL_DEBUG
-		  g_print ("WaitMessage\n");
+	  g_print ("MsgWaitForMultipleObjectsEx(%d, %d)\n", nhandles, timeout);
 #endif
-		  if (!WaitMessage ())
-		    {
-		      gchar *emsg = g_win32_error_message (GetLastError ());
-		      g_warning (G_STRLOC ": WaitMessage() failed: %s", emsg);
-		      g_free (emsg);
-		    }
-		  ready = WAIT_OBJECT_0 + nhandles;
-		}
-	      else if (timeout == 0)
-		{
-		  /* Waiting just for messages, zero timeout.
-		   * If we got here, there was no message
-		   */
-		  ready = WAIT_TIMEOUT;
-		}
-	      else
-		{
-		  /* Waiting just for messages, some timeout
-		   * -> Set a timer, wait for message,
-		   * kill timer, use PeekMessage
-		   */
-		  timer = SetTimer (NULL, 0, timeout, NULL);
-		  if (timer == 0)
-		    {
-		      gchar *emsg = g_win32_error_message (GetLastError ());
-		      g_warning (G_STRLOC ": SetTimer() failed: %s", emsg);
-		      g_free (emsg);
-		      ready = WAIT_TIMEOUT;
-		    }
-		  else
-		    {
-#ifdef G_MAIN_POLL_DEBUG
-		      g_print ("WaitMessage\n");
-#endif
-		      WaitMessage ();
-		      KillTimer (NULL, timer);
-#ifdef G_MAIN_POLL_DEBUG
-		      g_print ("PeekMessage\n");
-#endif
-		      if (PeekMessage (&msg, NULL, 0, 0, PM_NOREMOVE)
-			  && msg.message != WM_TIMER)
-			ready = WAIT_OBJECT_0;
-		      else
-			ready = WAIT_TIMEOUT;
-		    }
-		}
-	    }
-	  else
-	    {
-	      /* Wait for either message or event
-	       * -> Use MsgWaitForMultipleObjects
-	       */
-#ifdef G_MAIN_POLL_DEBUG
-	      g_print ("MsgWaitForMultipleObjects(%d, %d)\n", nhandles, timeout);
-#endif
-	      ready = MsgWaitForMultipleObjects (nhandles, handles, FALSE,
-						 timeout, QS_ALLINPUT);
+	  ready = MsgWaitForMultipleObjectsEx (nhandles, handles, timeout,
+					       QS_ALLINPUT, MWMO_ALERTABLE);
 
-	      if (ready == WAIT_FAILED)
-		{
-		  gchar *emsg = g_win32_error_message (GetLastError ());
-		  g_warning (G_STRLOC ": MsgWaitForMultipleObjects() failed: %s", emsg);
-		  g_free (emsg);
-		}
+	  if (ready == WAIT_FAILED)
+	    {
+	      gchar *emsg = g_win32_error_message (GetLastError ());
+	      g_warning (G_STRLOC ": MsgWaitForMultipleObjectsEx() failed: %s", emsg);
+	      g_free (emsg);
 	    }
 	}
     }
   else if (nhandles == 0)
     {
-      /* Wait for nothing (huh?) */
-      return 0;
+      /* No handles to wait for, just the timeout */
+      if (timeout == INFINITE)
+	ready = WAIT_FAILED;
+      else
+	{
+	  SleepEx (timeout, TRUE);
+	  ready = WAIT_TIMEOUT;
+	}
     }
   else
     {
       /* Wait for just events
-       * -> Use WaitForMultipleObjects
+       * -> Use WaitForMultipleObjectsEx
        */
 #ifdef G_MAIN_POLL_DEBUG
-      g_print ("WaitForMultipleObjects(%d, %d)\n", nhandles, timeout);
+      g_print ("WaitForMultipleObjectsEx(%d, %d)\n", nhandles, timeout);
 #endif
-      ready = WaitForMultipleObjects (nhandles, handles, FALSE, timeout);
+      ready = WaitForMultipleObjectsEx (nhandles, handles, FALSE, timeout, TRUE);
       if (ready == WAIT_FAILED)
 	{
 	  gchar *emsg = g_win32_error_message (GetLastError ());
-	  g_warning (G_STRLOC ": WaitForMultipleObjects() failed: %s", emsg);
+	  g_warning (G_STRLOC ": WaitForMultipleObjectsEx() failed: %s", emsg);
 	  g_free (emsg);
 	}
     }
@@ -473,7 +421,8 @@ g_poll (GPollFD *fds,
 
   if (ready == WAIT_FAILED)
     return -1;
-  else if (ready == WAIT_TIMEOUT)
+  else if (ready == WAIT_TIMEOUT ||
+	   ready == WAIT_IO_COMPLETION)
     return 0;
   else if (poll_msgs && ready == WAIT_OBJECT_0 + nhandles)
     {
@@ -661,6 +610,9 @@ g_main_context_unref (GMainContext *context)
   else
     main_contexts_without_pipe = g_slist_remove (main_contexts_without_pipe, 
 						 context);
+
+  if (context->cond != NULL)
+    g_cond_free (context->cond);
 #endif
   
   g_free (context);
@@ -677,6 +629,9 @@ g_main_context_init_pipe (GMainContext *context)
     g_error ("Cannot create pipe main loop wake-up: %s\n",
 	     g_strerror (errno));
   
+  fcntl (context->wake_up_pipe[0], F_SETFD, FD_CLOEXEC);
+  fcntl (context->wake_up_pipe[1], F_SETFD, FD_CLOEXEC);
+
   context->wake_up_rec.fd = context->wake_up_pipe[0];
   context->wake_up_rec.events = G_IO_IN;
 # else
@@ -712,7 +667,7 @@ _g_main_thread_init (void)
 /**
  * g_main_context_new:
  * 
- * Creates a new #GMainContext strcuture
+ * Creates a new #GMainContext structure.
  * 
  * Return value: the new #GMainContext
  **/
@@ -1743,8 +1698,6 @@ get_dispatch (void)
 
 /**
  * g_main_depth:
- * 
- * Return value: The main loop recursion level in the current thread
  *
  * Returns the depth of the stack of calls to
  * g_main_context_dispatch() on any #GMainContext in the current thread.
@@ -1757,9 +1710,9 @@ get_dispatch (void)
  * This function is useful in a situation like the following:
  * Imagine an extremely simple "garbage collected" system.
  *
- * <example>
+ * |[
  * static GList *free_list;
- *
+ * 
  * gpointer
  * allocate_memory (gsize size)
  * { 
@@ -1767,7 +1720,7 @@ get_dispatch (void)
  *   free_list = g_list_prepend (free_list, result);
  *   return result;
  * }
- *
+ * 
  * void
  * free_allocated_memory (void)
  * {
@@ -1777,15 +1730,15 @@ get_dispatch (void)
  *   g_list_free (free_list);
  *   free_list = NULL;
  *  }
- *
+ * 
  * [...]
- *
+ * 
  * while (TRUE); 
  *  {
  *    g_main_context_iteration (NULL, TRUE);
  *    free_allocated_memory();
  *   }
- * </example>
+ * ]|
  *
  * This works from an application, however, if you want to do the same
  * thing from a library, it gets more difficult, since you no longer
@@ -1794,22 +1747,22 @@ get_dispatch (void)
  * doesn't work, since the idle function could be called from a
  * recursive callback. This can be fixed by using g_main_depth()
  *
- * <example>
+ * |[
  * gpointer
  * allocate_memory (gsize size)
  * { 
- *   FreeListBlock *block = g_new (FreeListBlock, 1);\
+ *   FreeListBlock *block = g_new (FreeListBlock, 1);
  *   block->mem = g_malloc (size);
  *   block->depth = g_main_depth ();   
  *   free_list = g_list_prepend (free_list, block);
  *   return block->mem;
  * }
- *
+ * 
  * void
  * free_allocated_memory (void)
  * {
  *   GList *l;
- *
+ *   
  *   int depth = g_main_depth ();
  *   for (l = free_list; l; );
  *     {
@@ -1821,11 +1774,11 @@ get_dispatch (void)
  *           g_free (block);
  *           free_list = g_list_delete_link (free_list, l);
  *         }
- *           
+ *               
  *       l = next;
  *     }
  *   }
- * </example>
+ * ]|
  *
  * There is a temptation to use g_main_depth() to solve
  * problems with reentrancy. For instance, while waiting for data
@@ -1856,6 +1809,8 @@ get_dispatch (void)
  *   </para>
  *  </listitem>
  * </orderedlist>
+ * 
+ * Return value: The main loop recursion level in the current thread
  **/
 int
 g_main_depth (void)
@@ -1890,7 +1845,7 @@ g_main_current_source (void)
  * from within idle handlers, but may have freed the object 
  * before the dispatch of your idle handler.
  *
- * <informalexample><programlisting>
+ * |[
  * static gboolean 
  * idle_callback (gpointer data)
  * {
@@ -1920,7 +1875,7 @@ g_main_current_source (void)
  *    
  *   G_OBJECT_CLASS (parent_class)->finalize (object);
  * }
- * </programlisting></informalexample>
+ * ]|
  *
  * This will fail in a multi-threaded application if the 
  * widget is destroyed before the idle handler fires due 
@@ -1928,7 +1883,7 @@ g_main_current_source (void)
  * this particular problem, is to check to if the source
  * has already been destroy within the callback.
  *
- * <informalexample><programlisting>
+ * |[
  * static gboolean 
  * idle_callback (gpointer data)
  * {
@@ -1943,7 +1898,7 @@ g_main_current_source (void)
  *   
  *   return FALSE;
  * }
- * </programlisting></informalexample>
+ * ]|
  *
  * Return value: %TRUE if the source has been destroyed
  *
@@ -2021,6 +1976,7 @@ g_main_dispatch (GMainContext *context)
 	  gboolean (*dispatch) (GSource *,
 				GSourceFunc,
 				gpointer);
+	  GSList current_source_link;
 
 	  dispatch = source->source_funcs->dispatch;
 	  cb_funcs = source->callback_funcs;
@@ -2041,11 +1997,23 @@ g_main_dispatch (GMainContext *context)
 	  UNLOCK_CONTEXT (context);
 
 	  current->depth++;
-	  current->source = g_slist_prepend (current->source, source);
+	  /* The on-stack allocation of the GSList is unconventional, but
+	   * we know that the lifetime of the link is bounded to this
+	   * function as the link is kept in a thread specific list and
+	   * not manipulated outside of this function and its descendants.
+	   * Avoiding the overhead of a g_slist_alloc() is useful as many
+	   * applications do little more than dispatch events.
+	   *
+	   * This is a performance hack - do not revert to g_slist_prepend()!
+	   */
+	  current_source_link.data = source;
+	  current_source_link.next = current->source;
+	  current->source = &current_source_link;
 	  need_destroy = ! dispatch (source,
 				     callback,
 				     user_data);
-	  current->source = g_slist_remove (current->source, source);
+	  g_assert (current->source == &current_source_link);
+	  current->source = current_source_link.next;
 	  current->depth--;
 	  
 	  if (cb_funcs)
@@ -2105,7 +2073,7 @@ next_valid_source (GMainContext *context,
  * @context: a #GMainContext
  * 
  * Tries to become the owner of the specified context.
- * If some other context is the owner of the context,
+ * If some other thread is the owner of the context,
  * returns %FALSE immediately. Ownership is properly
  * recursive: the owner can require ownership again
  * and will release ownership when g_main_context_release()
@@ -2156,7 +2124,7 @@ g_main_context_acquire (GMainContext *context)
  * 
  * Releases ownership of a context previously acquired by this thread
  * with g_main_context_acquire(). If the context was acquired multiple
- * times, the only release ownership when g_main_context_release()
+ * times, the ownership will be released only when g_main_context_release()
  * is called as many times as it was acquired.
  **/
 void
@@ -2512,7 +2480,7 @@ g_main_context_check (GMainContext *context,
   if (context->poll_changed)
     {
       UNLOCK_CONTEXT (context);
-      return 0;
+      return FALSE;
     }
 #endif /* G_THREADS_ENABLED */
   
@@ -2717,10 +2685,14 @@ g_main_context_pending (GMainContext *context)
  * checking to see if any event sources are ready to be processed,
  * then if no events sources are ready and @may_block is %TRUE, waiting
  * for a source to become ready, then dispatching the highest priority
- * events sources that are ready. Note that even when @may_block is %TRUE,
- * it is still possible for g_main_context_iteration() to return
- * %FALSE, since the the wait may be interrupted for other
- * reasons than an event source becoming ready.
+ * events sources that are ready. Otherwise, if @may_block is %FALSE 
+ * sources are not waited to become ready, only those highest priority 
+ * events sources will be dispatched (if any), that are ready at this 
+ * given moment without further waiting.
+ *
+ * Note that even when @may_block is %TRUE, it is still possible for 
+ * g_main_context_iteration() to return %FALSE, since the the wait may 
+ * be interrupted for other reasons than an event source becoming ready.
  * 
  * Return value: %TRUE if events were dispatched.
  **/
@@ -2894,7 +2866,10 @@ g_main_loop_run (GMainLoop *loop)
  * @loop: a #GMainLoop
  * 
  * Stops a #GMainLoop from running. Any calls to g_main_loop_run()
- * for the loop will return.
+ * for the loop will return. 
+ *
+ * Note that sources that have already been dispatched when 
+ * g_main_loop_quit() is called will still be executed.
  **/
 void 
 g_main_loop_quit (GMainLoop *loop)
@@ -3337,11 +3312,60 @@ g_timeout_set_expiration (GTimeoutSource *timeout_source,
       timeout_source->expiration.tv_usec -= 1000000;
       timeout_source->expiration.tv_sec++;
     }
+  if (timer_perturb==-1)
+    {
+      /*
+       * we want a per machine/session unique 'random' value; try the dbus
+       * address first, that has a UUID in it. If there is no dbus, use the
+       * hostname for hashing.
+       */
+      const char *session_bus_address = g_getenv ("DBUS_SESSION_BUS_ADDRESS");
+      if (!session_bus_address)
+        session_bus_address = g_getenv ("HOSTNAME");
+      if (session_bus_address)
+        timer_perturb = ABS ((gint) g_str_hash (session_bus_address));
+      else
+        timer_perturb = 0;
+    }
+  if (timeout_source->granularity)
+    {
+      gint remainder;
+      gint gran; /* in usecs */
+      gint perturb;
+
+      gran = timeout_source->granularity * 1000;
+      perturb = timer_perturb % gran;
+      /*
+       * We want to give each machine a per machine pertubation;
+       * shift time back first, and forward later after the rounding
+       */
+
+      timeout_source->expiration.tv_usec -= perturb;
+      if (timeout_source->expiration.tv_usec < 0)
+        {
+          timeout_source->expiration.tv_usec += 1000000;
+          timeout_source->expiration.tv_sec--;
+        }
+
+      remainder = timeout_source->expiration.tv_usec % gran;
+      if (remainder >= gran/4) /* round up */
+        timeout_source->expiration.tv_usec += gran;
+      timeout_source->expiration.tv_usec -= remainder;
+      /* shift back */
+      timeout_source->expiration.tv_usec += perturb;
+
+      /* the rounding may have overflown tv_usec */
+      while (timeout_source->expiration.tv_usec > 1000000)
+        {
+          timeout_source->expiration.tv_usec -= 1000000;
+          timeout_source->expiration.tv_sec++;
+        }
+    }
 }
 
 static gboolean
-g_timeout_prepare  (GSource  *source,
-		    gint     *timeout)
+g_timeout_prepare (GSource *source,
+		   gint    *timeout)
 {
   glong sec;
   glong msec;
@@ -3393,7 +3417,7 @@ g_timeout_prepare  (GSource  *source,
 }
 
 static gboolean 
-g_timeout_check (GSource  *source)
+g_timeout_check (GSource *source)
 {
   GTimeVal current_time;
   GTimeoutSource *timeout_source = (GTimeoutSource *)source;
@@ -3406,9 +3430,9 @@ g_timeout_check (GSource  *source)
 }
 
 static gboolean
-g_timeout_dispatch (GSource    *source,
-		    GSourceFunc callback,
-		    gpointer    user_data)
+g_timeout_dispatch (GSource     *source,
+		    GSourceFunc  callback,
+		    gpointer     user_data)
 {
   GTimeoutSource *timeout_source = (GTimeoutSource *)source;
 
@@ -3460,14 +3484,48 @@ g_timeout_source_new (guint interval)
 }
 
 /**
+ * g_timeout_source_new_seconds:
+ * @interval: the timeout interval in seconds
+ *
+ * Creates a new timeout source.
+ *
+ * The source will not initially be associated with any #GMainContext
+ * and must be added to one with g_source_attach() before it will be
+ * executed.
+ *
+ * The scheduling granularity/accuracy of this timeout source will be
+ * in seconds.
+ *
+ * Return value: the newly-created timeout source
+ *
+ * Since: 2.14	
+ **/
+GSource *
+g_timeout_source_new_seconds (guint interval)
+{
+  GSource *source = g_source_new (&g_timeout_funcs, sizeof (GTimeoutSource));
+  GTimeoutSource *timeout_source = (GTimeoutSource *)source;
+  GTimeVal current_time;
+
+  timeout_source->interval = 1000*interval;
+  timeout_source->granularity = 1000;
+
+  g_get_current_time (&current_time);
+  g_timeout_set_expiration (timeout_source, &current_time);
+
+  return source;
+}
+
+
+/**
  * g_timeout_add_full:
- * @priority: the priority of the idle source. Typically this will be in the
- *            range between #G_PRIORITY_DEFAULT_IDLE and #G_PRIORITY_HIGH_IDLE.
+ * @priority: the priority of the timeout source. Typically this will be in
+ *            the range between #G_PRIORITY_DEFAULT and #G_PRIORITY_HIGH.
  * @interval: the time between calls to the function, in milliseconds
  *             (1/1000ths of a second)
  * @function: function to call
  * @data:     data to pass to @function
- * @notify:   function to call when the idle is removed, or %NULL
+ * @notify:   function to call when the timeout is removed, or %NULL
  * 
  * Sets a function to be called at regular intervals, with the given
  * priority.  The function is called repeatedly until it returns
@@ -3526,16 +3584,112 @@ g_timeout_add_full (gint           priority,
  * After each call to the timeout function, the time of the next
  * timeout is recalculated based on the current time and the given interval
  * (it does not try to 'catch up' time lost in delays).
- * 
+ *
+ * If you want to have a timer in the "seconds" range and do not care
+ * about the exact time of the first call of the timer, use the
+ * g_timeout_add_seconds() function; this function allows for more
+ * optimizations and more efficient system power usage.
+ *
  * Return value: the ID (greater than 0) of the event source.
  **/
-guint 
+guint
 g_timeout_add (guint32        interval,
 	       GSourceFunc    function,
 	       gpointer       data)
 {
   return g_timeout_add_full (G_PRIORITY_DEFAULT, 
 			     interval, function, data, NULL);
+}
+
+/**
+ * g_timeout_add_seconds_full:
+ * @priority: the priority of the timeout source. Typically this will be in
+ *            the range between #G_PRIORITY_DEFAULT and #G_PRIORITY_HIGH.
+ * @interval: the time between calls to the function, in seconds
+ * @function: function to call
+ * @data:     data to pass to @function
+ * @notify:   function to call when the timeout is removed, or %NULL
+ *
+ * Sets a function to be called at regular intervals, with @priority.
+ * The function is called repeatedly until it returns %FALSE, at which
+ * point the timeout is automatically destroyed and the function will
+ * not be called again.
+ *
+ * Unlike g_timeout_add(), this function operates at whole second granularity.
+ * The initial starting point of the timer is determined by the implementation
+ * and the implementation is expected to group multiple timers together so that
+ * they fire all at the same time.
+ * To allow this grouping, the @interval to the first timer is rounded
+ * and can deviate up to one second from the specified interval.
+ * Subsequent timer iterations will generally run at the specified interval.
+ *
+ * Note that timeout functions may be delayed, due to the processing of other
+ * event sources. Thus they should not be relied on for precise timing.
+ * After each call to the timeout function, the time of the next
+ * timeout is recalculated based on the current time and the given @interval
+ *
+ * If you want timing more precise than whole seconds, use g_timeout_add()
+ * instead.
+ *
+ * The grouping of timers to fire at the same time results in a more power
+ * and CPU efficient behavior so if your timer is in multiples of seconds
+ * and you don't require the first timer exactly one second from now, the
+ * use of g_timeout_add_seconds() is preferred over g_timeout_add().
+ *
+ * Return value: the ID (greater than 0) of the event source.
+ *
+ * Since: 2.14
+ **/
+guint
+g_timeout_add_seconds_full (gint           priority,
+                            guint32        interval,
+                            GSourceFunc    function,
+                            gpointer       data,
+                            GDestroyNotify notify)
+{
+  GSource *source;
+  guint id;
+
+  g_return_val_if_fail (function != NULL, 0);
+
+  source = g_timeout_source_new_seconds (interval);
+
+  if (priority != G_PRIORITY_DEFAULT)
+    g_source_set_priority (source, priority);
+
+  g_source_set_callback (source, function, data, notify);
+  id = g_source_attach (source, NULL);
+  g_source_unref (source);
+
+  return id;
+}
+
+/**
+ * g_timeout_add_seconds:
+ * @interval: the time between calls to the function, in seconds
+ * @function: function to call
+ * @data: data to pass to @function
+ *
+ * Sets a function to be called at regular intervals with the default
+ * priority, #G_PRIORITY_DEFAULT. The function is called repeatedly until
+ * it returns %FALSE, at which point the timeout is automatically destroyed
+ * and the function will not be called again.
+ *
+ * See g_timeout_add_seconds_full() for the differences between
+ * g_timeout_add() and g_timeout_add_seconds().
+ *
+ * Return value: the ID (greater than 0) of the event source.
+ *
+ * Since: 2.14
+ **/
+guint
+g_timeout_add_seconds (guint       interval,
+                       GSourceFunc function,
+                       gpointer    data)
+{
+  g_return_val_if_fail (function != NULL, 0);
+
+  return g_timeout_add_seconds_full (G_PRIORITY_DEFAULT, interval, function, data, NULL);
 }
 
 /* Child watch functions */
@@ -3829,8 +3983,12 @@ g_child_watch_source_new (GPid pid)
  * @data:     data to pass to @function
  * @notify:   function to call when the idle is removed, or %NULL
  * 
- * Sets a function to be called when the child indicated by @pid exits, at a
- * default priority, #G_PRIORITY_DEFAULT.
+ * Sets a function to be called when the child indicated by @pid 
+ * exits, at the priority @priority.
+ *
+ * If you obtain @pid from g_spawn_async() or g_spawn_async_with_pipes() 
+ * you will need to pass #G_SPAWN_DO_NOT_REAP_CHILD as flag to 
+ * the spawn function for the child watching to work.
  * 
  * Note that on platforms where #GPid must be explicitly closed
  * (see g_spawn_close_pid()) @pid must not be closed while the
@@ -3873,8 +4031,12 @@ g_child_watch_add_full (gint            priority,
  * @function: function to call
  * @data:     data to pass to @function
  * 
- * Sets a function to be called when the child indicated by @pid exits, at a
- * default priority, #G_PRIORITY_DEFAULT.
+ * Sets a function to be called when the child indicated by @pid 
+ * exits, at a default priority, #G_PRIORITY_DEFAULT.
+ * 
+ * If you obtain @pid from g_spawn_async() or g_spawn_async_with_pipes() 
+ * you will need to pass #G_SPAWN_DO_NOT_REAP_CHILD as flag to 
+ * the spawn function for the child watching to work.
  * 
  * Note that on platforms where #GPid must be explicitly closed
  * (see g_spawn_close_pid()) @pid must not be closed while the

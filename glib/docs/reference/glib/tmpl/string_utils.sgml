@@ -2,7 +2,7 @@
 String Utility Functions
 
 <!-- ##### SECTION Short_Description ##### -->
-various string-related functions.
+various string-related functions
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -53,17 +53,12 @@ The returned string should be freed when no longer needed.
 
 <!-- ##### FUNCTION g_strndup ##### -->
 <para>
-Duplicates the first @n characters of a string, returning a newly-allocated
-buffer @n + 1 characters long which will always be nul-terminated.
-If @str is less than @n characters long the buffer is padded with nuls.
-If @str is %NULL it returns %NULL.
-The returned value should be freed when no longer needed.
+
 </para>
 
-@str: the string to duplicate part of.
-@n: the maximum number of characters to copy from @str.
-@Returns: a newly-allocated buffer containing the first @n characters of @str,
-nul-terminated.
+@str: 
+@n: 
+@Returns: 
 
 
 <!-- ##### FUNCTION g_strdupv ##### -->
@@ -76,13 +71,12 @@ nul-terminated.
 
 <!-- ##### FUNCTION g_strnfill ##### -->
 <para>
-Creates a new string @length characters long filled with @fill_char.
-The returned string should be freed when no longer needed.
+
 </para>
 
-@length: the length of the new string.
-@fill_char: the character to fill the string with.
-@Returns: a newly-allocated string filled the @fill_char.
+@length: 
+@fill_char: 
+@Returns: 
 
 
 <!-- ##### FUNCTION g_stpcpy ##### -->
@@ -309,7 +303,8 @@ returns the length of the allocated string.
 
 <!-- ##### FUNCTION g_printf_string_upper_bound ##### -->
 <para>
-Calculates the maximum space needed to store the output of the sprintf() function.
+Calculates the maximum space needed to store the output of the sprintf() 
+function.
 </para>
 
 @format: the format string. See the printf() documentation.
@@ -918,13 +913,14 @@ together, with @separator between them.
 <!-- ##### FUNCTION g_strerror ##### -->
 <para>
 Returns a string corresponding to the given error code, e.g. "no such process".
-This function is included since not all platforms support the 
+You should use this function in preference to strerror(), because it returns a
+string in UTF-8 encoding, and since not all platforms support the 
 strerror() function.
 </para>
 
 @errnum: the system error number. See the standard C %errno
 documentation.
-@Returns: a string describing the error code.
+@Returns: a UTF-8 string describing the error code.
 If the error code is unknown, it returns "unknown error (&lt;code&gt;)".
 The string can only be used until the next call to g_strerror().
 
@@ -932,13 +928,14 @@ The string can only be used until the next call to g_strerror().
 <!-- ##### FUNCTION g_strsignal ##### -->
 <para>
 Returns a string describing the given signal, e.g. "Segmentation fault".
-This function is included since not all platforms support the
+You should use this function in preference to strsignal(), because it returns a
+string in UTF-8 encoding, and since not all platforms support the
 strsignal() function.
 </para>
 
 @signum: the signal number. See the <literal>signal</literal>
 documentation.
-@Returns: a string describing the signal.
+@Returns: a UTF-8 string describing the signal.
 If the signal is unknown, it returns "unknown signal (&lt;signum&gt;)".
 The string can only be used until the next call to g_strsignal().
 

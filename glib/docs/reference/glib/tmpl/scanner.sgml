@@ -2,7 +2,7 @@
 Lexical Scanner
 
 <!-- ##### SECTION Short_Description ##### -->
-a general purpose lexical scanner.
+a general purpose lexical scanner
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -50,37 +50,26 @@ handler function is declared by #GScannerMsgFunc.
 @input_name: 
 @qdata: 
 @config: 
-@token: 
-@value: 
-@line: 
-@position: 
-@next_token: 
-@next_value: 
-@next_line: 
-@next_position: 
+@token:       token parsed by the last g_scanner_get_next_token()
+@value:       value of the last token from g_scanner_get_next_token()
+@line:        line number of the last token from g_scanner_get_next_token()
+@position:    char number of the last token from g_scanner_get_next_token()
+@next_token:    token parsed by the last g_scanner_peek_next_token()
+@next_value:    value of the last token from g_scanner_peek_next_token()
+@next_line:     line number of the last token from g_scanner_peek_next_token()
+@next_position: char number of the last token from g_scanner_peek_next_token()
 @symbol_table: 
 @input_fd: 
 @text: 
 @text_end: 
 @buffer: 
 @scope_id: 
-@msg_handler: 
-
-<!-- ##### FUNCTION g_scanner_new ##### -->
-<para>
-Creates a new #GScanner.
-The @config_templ structure specifies the initial settings of the scanner,
-which are copied into the #GScanner <structfield>config</structfield> field.
-If you pass %NULL then the default settings are used.
-</para>
-
-@config_templ: the initial scanner settings.
-@Returns: the new #GScanner.
-
+@msg_handler: function to handle GScanner message output
 
 <!-- ##### STRUCT GScannerConfig ##### -->
 <para>
-Specifies the #GScanner settings.
+Specifies the #GScanner parser configuration. Most settings can be changed during
+the parsing phase and will affect the lexical parsing of the next unpeeked token.
 </para>
 <para>
 <structfield>cset_skip_characters</structfield> specifies which characters
@@ -221,6 +210,26 @@ is searched for in the default scope in addition to the current scope
 @store_int64: 
 @padding_dummy: 
 
+<!-- ##### FUNCTION g_scanner_new ##### -->
+<para>
+Creates a new #GScanner.
+The @config_templ structure specifies the initial settings of the scanner,
+which are copied into the #GScanner <structfield>config</structfield> field.
+If you pass %NULL then the default settings are used.
+</para>
+
+@config_templ: the initial scanner settings.
+@Returns: the new #GScanner.
+
+
+<!-- ##### FUNCTION g_scanner_destroy ##### -->
+<para>
+Frees all memory used by the #GScanner.
+</para>
+
+@scanner: a #GScanner.
+
+
 <!-- ##### FUNCTION g_scanner_input_file ##### -->
 <para>
 Prepares to scan a file.
@@ -253,7 +262,7 @@ Prepares to scan a text buffer.
 
 <!-- ##### FUNCTION g_scanner_peek_next_token ##### -->
 <para>
-Gets the next token, without removing it from the input stream.
+Parses the next token, without removing it from the input stream.
 The token data is placed in the
 <structfield>next_token</structfield>,
 <structfield>next_value</structfield>,
@@ -264,10 +273,10 @@ The token data is placed in the
 Note that, while the token is not removed from the input stream (i.e.
 the next call to g_scanner_get_next_token() will return the same token),
 it will not be reevaluated. This can lead to surprising results when
-changing scope after peeking for the next token. Getting the next token
-after switching the scope will return whatever was peeked before, 
-regardless of any symbols that may have been added or removed in the
-new scope. 
+changing scope or the scanner configuration after peeking the next token.
+Getting the next token after switching the scope or configuration will
+return whatever was peeked before, regardless of any symbols that may
+have been added or removed in the new scope. 
 </para>
 
 @scanner: a #GScanner.
@@ -276,7 +285,8 @@ new scope.
 
 <!-- ##### FUNCTION g_scanner_get_next_token ##### -->
 <para>
-Gets the next token, removing it from the input stream.
+Parses the next token just like g_scanner_peek_next_token() and also
+removes it from the input stream.
 The token data is placed in the
 <structfield>token</structfield>,
 <structfield>value</structfield>,
@@ -288,9 +298,19 @@ The token data is placed in the
 @Returns: the type of the token.
 
 
+<!-- ##### FUNCTION g_scanner_eof ##### -->
+<para>
+Returns %TRUE if the scanner has reached the end of the file or text buffer.
+</para>
+
+@scanner: a #GScanner.
+@Returns: %TRUE if the scanner has reached the end of the file or text buffer.
+
+
 <!-- ##### FUNCTION g_scanner_cur_line ##### -->
 <para>
-Gets the current line in the input stream (counting from 1).
+Returns the current line in the input stream (counting from 1).
+This is the line of the last token parsed via g_scanner_get_next_token().
 </para>
 
 @scanner: a #GScanner.
@@ -299,7 +319,8 @@ Gets the current line in the input stream (counting from 1).
 
 <!-- ##### FUNCTION g_scanner_cur_position ##### -->
 <para>
-Gets the current position in the current line (counting from 0).
+Returns the current position in the current line (counting from 0).
+This is the position of the last token parsed via g_scanner_get_next_token().
 </para>
 
 @scanner: a #GScanner.
@@ -326,15 +347,6 @@ structure.
 
 @scanner: a #GScanner.
 @Returns: the current token value.
-
-
-<!-- ##### FUNCTION g_scanner_eof ##### -->
-<para>
-Returns %TRUE if the scanner has reached the end of the file or text buffer.
-</para>
-
-@scanner: a #GScanner.
-@Returns: %TRUE if the scanner has reached the end of the file or text buffer.
 
 
 <!-- ##### FUNCTION g_scanner_set_scope ##### -->
@@ -392,6 +404,38 @@ Removes a symbol from a scope.
 @scanner: a #GScanner.
 @scope_id: the scope id.
 @symbol: the symbol to remove.
+
+
+<!-- ##### MACRO g_scanner_add_symbol ##### -->
+<para>
+Adds a symbol to the default scope.
+</para>
+
+@scanner: a #GScanner.
+@symbol: the symbol to add.
+@value: the value of the symbol.
+@Deprecated: 2.2: Use g_scanner_scope_add_symbol() instead.
+
+
+<!-- ##### MACRO g_scanner_remove_symbol ##### -->
+<para>
+Removes a symbol from the default scope.
+</para>
+
+@scanner: a #GScanner.
+@symbol: the symbol to remove.
+@Deprecated: 2.2: Use g_scanner_scope_remove_symbol() instead.
+
+
+<!-- ##### MACRO g_scanner_foreach_symbol ##### -->
+<para>
+Calls a function for each symbol in the default scope.
+</para>
+
+@scanner: a #GScanner.
+@func: the function to call with each symbol.
+@data: data to pass to the function.
+@Deprecated: 2.2: Use g_scanner_scope_foreach_symbol() instead.
 
 
 <!-- ##### MACRO g_scanner_freeze_symbol_table ##### -->
@@ -485,45 +529,6 @@ Specifies the type of the message handler function.
   signals a warning.
 
 
-<!-- ##### FUNCTION g_scanner_destroy ##### -->
-<para>
-Frees all memory used by the #GScanner.
-</para>
-
-@scanner: a #GScanner.
-
-
-<!-- ##### ENUM GTokenType ##### -->
-<para>
-The possible types of token returned from each g_scanner_get_next_token() call.
-</para>
-
-@G_TOKEN_EOF: the end of the file.
-@G_TOKEN_LEFT_PAREN: a '(' character.
-@G_TOKEN_LEFT_CURLY: a '{' character.
-@G_TOKEN_RIGHT_CURLY: a '}' character.
-
-<!-- ##### UNION GTokenValue ##### -->
-<para>
-A union holding the value of the token.
-</para>
-
-
-<!-- ##### ENUM GErrorType ##### -->
-<para>
-The possible errors, used in the <structfield>v_error</structfield> field
-of #GTokenValue, when the token is a #G_TOKEN_ERROR.
-</para>
-
-@G_ERR_UNKNOWN: unknown error.
-@G_ERR_UNEXP_EOF: unexpected end of file.
-@G_ERR_UNEXP_EOF_IN_STRING: unterminated string constant.
-@G_ERR_UNEXP_EOF_IN_COMMENT: unterminated comment.
-@G_ERR_NON_DIGIT_IN_CONST: non-digit character in a number.
-@G_ERR_DIGIT_RADIX: digit beyond radix in a number.
-@G_ERR_FLOAT_RADIX: non-decimal floating point number.
-@G_ERR_FLOAT_MALFORMED: malformed floating point number.
-
 <!-- ##### MACRO G_CSET_a_2_z ##### -->
 <para>
 The set of lowercase ASCII alphabet characters.
@@ -566,35 +571,34 @@ Used for specifying valid identifier characters in #GScannerConfig.
 
 
 
-<!-- ##### MACRO g_scanner_add_symbol ##### -->
+<!-- ##### ENUM GTokenType ##### -->
 <para>
-Adds a symbol to the default scope.
+The possible types of token returned from each g_scanner_get_next_token() call.
 </para>
 
-@scanner: a #GScanner.
-@symbol: the symbol to add.
-@value: the value of the symbol.
-@Deprecated: 2.2: Use g_scanner_scope_add_symbol() instead.
+@G_TOKEN_EOF: the end of the file.
+@G_TOKEN_LEFT_PAREN: a '(' character.
+@G_TOKEN_LEFT_CURLY: a '{' character.
+@G_TOKEN_RIGHT_CURLY: a '}' character.
 
-
-<!-- ##### MACRO g_scanner_remove_symbol ##### -->
+<!-- ##### UNION GTokenValue ##### -->
 <para>
-Removes a symbol from the default scope.
+A union holding the value of the token.
 </para>
 
-@scanner: a #GScanner.
-@symbol: the symbol to remove.
-@Deprecated: 2.2: Use g_scanner_scope_remove_symbol() instead.
 
-
-<!-- ##### MACRO g_scanner_foreach_symbol ##### -->
+<!-- ##### ENUM GErrorType ##### -->
 <para>
-Calls a function for each symbol in the default scope.
+The possible errors, used in the <structfield>v_error</structfield> field
+of #GTokenValue, when the token is a #G_TOKEN_ERROR.
 </para>
 
-@scanner: a #GScanner.
-@func: the function to call with each symbol.
-@data: data to pass to the function.
-@Deprecated: 2.2: Use g_scanner_scope_foreach_symbol() instead.
-
+@G_ERR_UNKNOWN: unknown error.
+@G_ERR_UNEXP_EOF: unexpected end of file.
+@G_ERR_UNEXP_EOF_IN_STRING: unterminated string constant.
+@G_ERR_UNEXP_EOF_IN_COMMENT: unterminated comment.
+@G_ERR_NON_DIGIT_IN_CONST: non-digit character in a number.
+@G_ERR_DIGIT_RADIX: digit beyond radix in a number.
+@G_ERR_FLOAT_RADIX: non-decimal floating point number.
+@G_ERR_FLOAT_MALFORMED: malformed floating point number.
 

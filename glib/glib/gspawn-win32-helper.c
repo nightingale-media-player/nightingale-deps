@@ -21,6 +21,8 @@
 
 #include "config.h"
 
+#include <fcntl.h>
+
 #undef G_LOG_DOMAIN
 #include "glib.h"
 #define GSPAWN_HELPER
@@ -151,34 +153,31 @@ WinMain (struct HINSTANCE__ *hInstance,
 	 char               *lpszCmdLine,
 	 int                 nCmdShow)
 {
-  int child_err_report_fd;
+  int child_err_report_fd = -1;
+  int helper_sync_fd = -1;
   int i;
   int fd;
   int mode;
   int handle;
   int saved_errno;
   int no_error = CHILD_NO_ERROR;
-  int zero = 0;
   gint argv_zero_offset = ARG_PROGRAM;
-  gchar **new_argv;
   wchar_t **new_wargv;
   int argc;
   wchar_t **wargv, **wenvp;
   _startupinfo si = { 0 };
+  char c;
 
   g_assert (__argc >= ARG_COUNT);
 
-  if (G_WIN32_HAVE_WIDECHAR_API ())
-    {
-      /* Fetch the wide-char argument vector */
-      __wgetmainargs (&argc, &wargv, &wenvp, 0, &si);
+  /* Fetch the wide-char argument vector */
+  __wgetmainargs (&argc, &wargv, &wenvp, 0, &si);
 
-      /* We still have the system codepage args in __argv. We can look
-       * at the first args in which gspawn-win32.c passes us flags and
-       * fd numbers in __argv, as we know those are just ASCII anyway.
-       */
-      g_assert (argc == __argc);
-    }
+  /* We still have the system codepage args in __argv. We can look
+   * at the first args in which gspawn-win32.c passes us flags and
+   * fd numbers in __argv, as we know those are just ASCII anyway.
+   */
+  g_assert (argc == __argc);
 
   /* argv[ARG_CHILD_ERR_REPORT] is the file descriptor number onto
    * which write error messages.
@@ -191,6 +190,14 @@ WinMain (struct HINSTANCE__ *hInstance,
    */
   if (__argv[ARG_CHILD_ERR_REPORT][strlen (__argv[ARG_CHILD_ERR_REPORT]) - 1] == '#')
     argv_zero_offset++;
+
+  /* argv[ARG_HELPER_SYNC] is the file descriptor number we read a
+   * byte that tells us it is OK to exit. We have to wait until the
+   * parent allows us to exit, so that the parent has had time to
+   * duplicate the process handle we sent it. Duplicating a handle
+   * from another process works only if that other process exists.
+   */
+  helper_sync_fd = atoi (__argv[ARG_HELPER_SYNC]);
 
   /* argv[ARG_STDIN..ARG_STDERR] are the file descriptor numbers that
    * should be dup2'd to 0, 1 and 2. '-' if the corresponding fd
@@ -266,10 +273,7 @@ WinMain (struct HINSTANCE__ *hInstance,
   if (__argv[ARG_WORKING_DIRECTORY][0] == '-' &&
       __argv[ARG_WORKING_DIRECTORY][1] == 0)
     ; /* Nothing */
-  else if ((G_WIN32_HAVE_WIDECHAR_API () &&
-	    _wchdir (wargv[ARG_WORKING_DIRECTORY]) < 0) ||
-	   (!G_WIN32_HAVE_WIDECHAR_API () &&
-	    chdir (__argv[ARG_WORKING_DIRECTORY]) < 0))
+  else if (_wchdir (wargv[ARG_WORKING_DIRECTORY]) < 0)
     write_err_and_exit (child_err_report_fd, CHILD_CHDIR_FAILED);
 
   /* __argv[ARG_CLOSE_DESCRIPTORS] is "y" if file descriptors from 3
@@ -277,8 +281,14 @@ WinMain (struct HINSTANCE__ *hInstance,
    */
   if (__argv[ARG_CLOSE_DESCRIPTORS][0] == 'y')
     for (i = 3; i < 1000; i++)	/* FIXME real limit? */
-      if (i != child_err_report_fd)
+      if (i != child_err_report_fd && i != helper_sync_fd)
 	close (i);
+
+  /* We don't want our child to inherit the error report and
+   * helper sync fds.
+   */
+  child_err_report_fd = dup_noninherited (child_err_report_fd, _O_WRONLY);
+  helper_sync_fd = dup_noninherited (helper_sync_fd, _O_RDONLY);
 
   /* __argv[ARG_WAIT] is "w" to wait for the program to exit */
   if (__argv[ARG_WAIT][0] == 'w')
@@ -297,24 +307,12 @@ WinMain (struct HINSTANCE__ *hInstance,
   /* For the program name passed to spawnv(), don't use the quoted
    * version.
    */
-  if (G_WIN32_HAVE_WIDECHAR_API ())
-    {
-      protect_wargv (wargv + argv_zero_offset, &new_wargv);
+  protect_wargv (wargv + argv_zero_offset, &new_wargv);
 
-      if (__argv[ARG_USE_PATH][0] == 'y')
-	handle = _wspawnvp (mode, wargv[ARG_PROGRAM], (const wchar_t **) new_wargv);
-      else
-	handle = _wspawnv (mode, wargv[ARG_PROGRAM], (const wchar_t **) new_wargv);
-    }
+  if (__argv[ARG_USE_PATH][0] == 'y')
+    handle = _wspawnvp (mode, wargv[ARG_PROGRAM], (const wchar_t **) new_wargv);
   else
-    {
-      protect_argv (__argv + argv_zero_offset, &new_argv);
-
-      if (__argv[ARG_USE_PATH][0] == 'y')
-	handle = spawnvp (mode, __argv[ARG_PROGRAM], (const char **) new_argv);
-      else
-	handle = spawnv (mode, __argv[ARG_PROGRAM], (const char **) new_argv);
-    }
+    handle = _wspawnv (mode, wargv[ARG_PROGRAM], (const wchar_t **) new_wargv);
 
   saved_errno = errno;
 
@@ -322,9 +320,9 @@ WinMain (struct HINSTANCE__ *hInstance,
     write_err_and_exit (child_err_report_fd, CHILD_SPAWN_FAILED);
 
   write (child_err_report_fd, &no_error, sizeof (no_error));
-  if (mode == P_NOWAIT)
-    write (child_err_report_fd, &handle, sizeof (handle));
-  else
-    write (child_err_report_fd, &zero, sizeof (zero));
+  write (child_err_report_fd, &handle, sizeof (handle));
+
+  read (helper_sync_fd, &c, 1);
+
   return 0;
 }

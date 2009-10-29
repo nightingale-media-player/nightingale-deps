@@ -35,6 +35,7 @@ struct _GAsyncQueue
   GMutex *mutex;
   GCond *cond;
   GQueue *queue;
+  GDestroyNotify item_free_func;
   guint waiting_threads;
   gint32 ref_count;
 };
@@ -60,7 +61,28 @@ g_async_queue_new (void)
   retval->queue = g_queue_new ();
   retval->waiting_threads = 0;
   retval->ref_count = 1;
+  retval->item_free_func = NULL;
   return retval;
+}
+
+/**
+ * g_async_queue_new_full:
+ * @item_free_func: function to free queue elements
+ * 
+ * Creates a new asynchronous queue with an initial reference count of 1 and
+ * sets up a destroy notify function that is used to free any remaining
+ * queue items when the queue is destroyed after the final unref.
+ *
+ * Return value: the new #GAsyncQueue.
+ *
+ * Since: 2.16
+ **/
+GAsyncQueue*
+g_async_queue_new_full (GDestroyNotify item_free_func)
+{
+  GAsyncQueue *async_queue = g_async_queue_new ();
+  async_queue->item_free_func = item_free_func;
+  return async_queue;
 }
 
 /**
@@ -147,6 +169,8 @@ g_async_queue_unref (GAsyncQueue *queue)
       g_mutex_free (queue->mutex);
       if (queue->cond)
 	g_cond_free (queue->cond);
+      if (queue->item_free_func)
+        g_queue_foreach (queue->queue, (GFunc) queue->item_free_func, NULL);
       g_queue_free (queue->queue);
       g_free (queue);
     }
@@ -565,7 +589,7 @@ g_async_queue_length_unlocked (GAsyncQueue* queue)
  *
  * If you were sorting a list of priority numbers to make sure the
  * lowest priority would be at the top of the queue, you could use:
- * <informalexample><programlisting> 
+ * |[
  *  gint32 id1;
  *  gint32 id2;
  *   
@@ -573,7 +597,7 @@ g_async_queue_length_unlocked (GAsyncQueue* queue)
  *  id2 = GPOINTER_TO_INT (element2);
  *   
  *  return (id1 > id2 ? +1 : id1 == id2 ? 0 : -1);
- * </programlisting></informalexample>
+ * ]|
  *
  * Since: 2.10
  **/

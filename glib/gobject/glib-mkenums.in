@@ -3,8 +3,14 @@
 # glib-mkenums.pl 
 # Information about the current enumeration
 my $flags;			# Is enumeration a bitmask?
-my $option_lowercase_name;			# A lower case name to use as part of the *_get_type() function, instead of the one that we guess.
-                        # For instance, when an enum uses abnormal capitalization and we can not guess where to put the underscores.
+my $option_underscore_name;	# Overriden underscore variant of the enum name
+				# for example to fix the cases we don't get the
+				# mixed-case -> underscorized transform right.
+my $option_lowercase_name;	# DEPRECATED.  A lower case name to use as part
+				# of the *_get_type() function, instead of the
+				# one that we guess. For instance, when an enum
+				# uses abnormal capitalization and we can not
+				# guess where to put the underscores.
 my $seenbitshift;		# Have we seen bitshift operators?
 my $enum_prefix;		# Prefix for this enumeration
 my $enumname;			# Name for this enumeration
@@ -117,38 +123,38 @@ sub parse_entries {
 }
 
 sub version {
-    print STDERR "glib-mkenums version glib-@GLIB_VERSION@\n";
-    print STDERR "glib-mkenums comes with ABSOLUTELY NO WARRANTY.\n";
-    print STDERR "You may redistribute copies of glib-mkenums under the terms of\n";
-    print STDERR "the GNU General Public License which can be found in the\n";
-    print STDERR "GLib source package. Sources, examples and contact\n";
-    print STDERR "information are available at http://www.gtk.org\n";
+    print "glib-mkenums version glib-@GLIB_VERSION@\n";
+    print "glib-mkenums comes with ABSOLUTELY NO WARRANTY.\n";
+    print "You may redistribute copies of glib-mkenums under the terms of\n";
+    print "the GNU General Public License which can be found in the\n";
+    print "GLib source package. Sources, examples and contact\n";
+    print "information are available at http://www.gtk.org\n";
     exit 0;
 }
 sub usage {
-    print STDERR "Usage: glib-mkenums [options] [files...]\n";
-    print STDERR "  --fhead <text>             output file header\n";
-    print STDERR "  --fprod <text>             per input file production\n";
-    print STDERR "  --ftail <text>             output file trailer\n";
-    print STDERR "  --eprod <text>             per enum text (produced prior to value itarations)\n";
-    print STDERR "  --vhead <text>             value header, produced before iterating over enum values\n";
-    print STDERR "  --vprod <text>             value text, produced for each enum value\n";
-    print STDERR "  --vtail <text>             value tail, produced after iterating over enum values\n";
-    print STDERR "  --comments <text>          comment structure\n";
-    print STDERR "  --template file            template file\n";
-    print STDERR "  -h, --help                 show this help message\n";
-    print STDERR "  -v, --version              print version informations\n";
-    print STDERR "Production text substitutions:\n";
-    print STDERR "  \@EnumName\@                 PrefixTheXEnum\n";
-    print STDERR "  \@enum_name\@                prefix_the_xenum\n";
-    print STDERR "  \@ENUMNAME\@                 PREFIX_THE_XENUM\n";
-    print STDERR "  \@ENUMSHORT\@                THE_XENUM\n";
-    print STDERR "  \@VALUENAME\@                PREFIX_THE_XVALUE\n";
-    print STDERR "  \@valuenick\@                the-xvalue\n";
-    print STDERR "  \@type\@                     either enum or flags\n";
-    print STDERR "  \@Type\@                     either Enum or Flags\n";
-    print STDERR "  \@TYPE\@                     either ENUM or FLAGS\n";
-    print STDERR "  \@filename\@                 name of current input file\n";
+    print "Usage: glib-mkenums [options] [files...]\n";
+    print "  --fhead <text>             output file header\n";
+    print "  --fprod <text>             per input file production\n";
+    print "  --ftail <text>             output file trailer\n";
+    print "  --eprod <text>             per enum text (produced prior to value itarations)\n";
+    print "  --vhead <text>             value header, produced before iterating over enum values\n";
+    print "  --vprod <text>             value text, produced for each enum value\n";
+    print "  --vtail <text>             value tail, produced after iterating over enum values\n";
+    print "  --comments <text>          comment structure\n";
+    print "  --template file            template file\n";
+    print "  -h, --help                 show this help message\n";
+    print "  -v, --version              print version informations\n";
+    print "Production text substitutions:\n";
+    print "  \@EnumName\@                 PrefixTheXEnum\n";
+    print "  \@enum_name\@                prefix_the_xenum\n";
+    print "  \@ENUMNAME\@                 PREFIX_THE_XENUM\n";
+    print "  \@ENUMSHORT\@                THE_XENUM\n";
+    print "  \@VALUENAME\@                PREFIX_THE_XVALUE\n";
+    print "  \@valuenick\@                the-xvalue\n";
+    print "  \@type\@                     either enum or flags\n";
+    print "  \@Type\@                     either Enum or Flags\n";
+    print "  \@TYPE\@                     either ENUM or FLAGS\n";
+    print "  \@filename\@                 name of current input file\n";
     exit 0;
 }
 
@@ -184,8 +190,7 @@ sub read_template_file {
       elsif (($in eq $2) && ($1 eq 'END') && (exists($tmpl{$2}))) {
 	$in = 'junk';
 	next;
-      }
-      else {
+      } else {
 	  die "Malformed template file $file\n";
       }
     }
@@ -210,7 +215,7 @@ sub read_template_file {
 if (!defined $ARGV[0]) {
     usage;
 }
-while ($_ = $ARGV[0], /^-/) {
+while ($_=$ARGV[0],/^-/) {
     shift;
     last if /^--$/;
     if (/^--template$/)              { read_template_file (shift); }
@@ -225,6 +230,7 @@ while ($_ = $ARGV[0], /^-/) {
     elsif (/^--help$/ || /^-h$/)     { usage; }
     elsif (/^--version$/ || /^-v$/)  { version; }
     else { usage; }
+    last if not defined($ARGV[0]);
 }
 
 # put auto-generation comment
@@ -274,11 +280,21 @@ while (<>) {
 	    next if defined $options{skip};
 	    $enum_prefix = $options{prefix};
 	    $flags = $options{flags};
-      $option_lowercase_name = $options{lowercase_name};
+	    $option_lowercase_name = $options{lowercase_name};
+	    $option_underscore_name = $options{underscore_name};
 	} else {
 	    $enum_prefix = undef;
 	    $flags = undef;
-      $option_lowercase_name = undef;
+	    $option_lowercase_name = undef;
+	    $option_underscore_name = undef;
+	}
+	if (defined $option_lowercase_name) {
+	    if (defined $option_underscore_name) {
+		print STDERR "$0: $ARGV:$.: lowercase_name overriden with underscore_name\n";
+		$option_lowercase_name = undef;
+	    } else {
+		print STDERR "$0: $ARGV:$.: lowercase_name is deprecated, use underscore_name\n";
+	    }
 	}
 	# Didn't have trailing '{' look on next lines
 	if (!defined $1 && !defined $4) {
@@ -340,24 +356,29 @@ while (<>) {
 	
 
 	# Spit out the output
-	
-	# enumname is e.g. GMatchType
-	$enspace = $enumname;
-	$enspace =~ s/^([A-Z][a-z]*).*$/$1/;
-	
-	$enumshort = $enumname;
-	$enumshort =~ s/^[A-Z][a-z]*//;
-	$enumshort =~ s/([^A-Z])([A-Z])/$1_$2/g;
-	$enumshort =~ s/([A-Z][A-Z])([A-Z][0-9a-z])/$1_$2/g;
-	$enumshort = uc($enumshort);
+	if (defined $option_underscore_name) {
+	    $enumlong = uc $option_underscore_name;
+	    $enumsym = lc $option_underscore_name;
+	    $enumshort = $enumlong;
+	    $enumshort =~ s/^[A-Z][A-Z0-9]*_//;
+	} else {
+	    # enumname is e.g. GMatchType
+	    $enspace = $enumname;
+	    $enspace =~ s/^([A-Z][a-z]*).*$/$1/;
 
-	$enumlong = uc($enspace) . "_" . $enumshort;
-	$enumsym = lc($enspace) . "_" . lc($enumshort);
+	    $enumshort = $enumname;
+	    $enumshort =~ s/^[A-Z][a-z]*//;
+	    $enumshort =~ s/([^A-Z])([A-Z])/$1_$2/g;
+	    $enumshort =~ s/([A-Z][A-Z])([A-Z][0-9a-z])/$1_$2/g;
+	    $enumshort = uc($enumshort);
 
-  #The options might override the lower case name if it could not be generated correctly:
-  if (defined($option_lowercase_name)) {
-      $enumsym = $option_lowercase_name;
-  }
+	    $enumlong = uc($enspace) . "_" . $enumshort;
+	    $enumsym = lc($enspace) . "_" . lc($enumshort);
+
+	    if (defined($option_lowercase_name)) {
+		$enumsym = $option_lowercase_name;
+	    }
+	}
 
 	if ($firstenum) {
 	    $firstenum = 0;

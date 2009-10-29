@@ -2,7 +2,7 @@
 Limits of Basic Types
 
 <!-- ##### SECTION Short_Description ##### -->
-portable method of determining the limits of the standard types.
+portable method of determining the limits of the standard types
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -180,6 +180,36 @@ The maximum value which can be held in a #gsize.
 </para>
 
 @Since: 2.4
+
+
+<!-- ##### MACRO G_MINSSIZE ##### -->
+<para>
+The minimum value which can be held in a #gssize.
+</para>
+
+@Since: 2.14
+
+
+<!-- ##### MACRO G_MAXSSIZE ##### -->
+<para>
+The maximum value which can be held in a #gssize.
+</para>
+
+@Since: 2.14
+
+
+<!-- ##### MACRO G_MINOFFSET ##### -->
+<para>
+The minimum value which can be held in a #goffset.
+</para>
+
+
+
+<!-- ##### MACRO G_MAXOFFSET ##### -->
+<para>
+The maximum value which can be held in a #goffset.
+</para>
+
 
 
 <!-- ##### MACRO G_MINFLOAT ##### -->

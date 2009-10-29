@@ -1,6 +1,6 @@
 <refentry id="gobject-Type-Information">
 <refmeta>
-<refentrytitle role="top_of_page">GType</refentrytitle>
+<refentrytitle role="top_of_page" id="gobject-Type-Information.top_of_page">GType</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GOBJECT Library</refmiscinfo>
 </refmeta>
@@ -11,13 +11,12 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="gobject-Type-Information.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib-object.h&gt;
-
 
 typedef             <link linkend="GType">GType</link>;
 #define             <link linkend="G-TYPE-FUNDAMENTAL:CAPS">G_TYPE_FUNDAMENTAL</link>                  (type)
@@ -192,7 +191,6 @@ enum                <link linkend="GTypeFundamentalFlags">GTypeFundamentalFlags<
 #define             <link linkend="G-TYPE-RESERVED-BSE-FIRST:CAPS">G_TYPE_RESERVED_BSE_FIRST</link>
 #define             <link linkend="G-TYPE-RESERVED-BSE-LAST:CAPS">G_TYPE_RESERVED_BSE_LAST</link>
 #define             <link linkend="G-TYPE-RESERVED-USER-FIRST:CAPS">G_TYPE_RESERVED_USER_FIRST</link>
-
 </synopsis>
 </refsynopsisdiv>
 
@@ -204,7 +202,7 @@ enum                <link linkend="GTypeFundamentalFlags">GTypeFundamentalFlags<
 
 
 
-<refsect1 role="desc">
+<refsect1 id="gobject-Type-Information.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The GType API is the foundation of the GObject system.  It provides the
@@ -242,17 +240,17 @@ any of '-_+'.
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="gobject-Type-Information.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GType" role="typedef"/>GType</title>
-<indexterm><primary>GType</primary></indexterm><para>
+<refsect2 id="GType" role="typedef">
+<title>GType</title>
+<indexterm zone="GType"><primary>GType</primary></indexterm><para>
 A numerical value which represents the unique identifier of a registered
 type.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-FUNDAMENTAL:CAPS" role="macro"/>G_TYPE_FUNDAMENTAL()</title>
-<indexterm><primary>G_TYPE_FUNDAMENTAL</primary></indexterm><programlisting>#define G_TYPE_FUNDAMENTAL(type)	(g_type_fundamental (type))
+<refsect2 id="G-TYPE-FUNDAMENTAL:CAPS" role="macro">
+<title>G_TYPE_FUNDAMENTAL()</title>
+<indexterm zone="G-TYPE-FUNDAMENTAL:CAPS"><primary>G_TYPE_FUNDAMENTAL</primary></indexterm><programlisting>#define G_TYPE_FUNDAMENTAL(type)	(g_type_fundamental (type))
 </programlisting>
 <para>
 Returns the fundamental type which is the ancestor of <parameter>type</parameter>.
@@ -265,17 +263,17 @@ thus they are the roots of distinct inheritance hierarchies.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-FUNDAMENTAL-MAX:CAPS" role="macro"/>G_TYPE_FUNDAMENTAL_MAX</title>
-<indexterm><primary>G_TYPE_FUNDAMENTAL_MAX</primary></indexterm><programlisting>#define	G_TYPE_FUNDAMENTAL_MAX		(255 &lt;&lt; G_TYPE_FUNDAMENTAL_SHIFT)
+<refsect2 id="G-TYPE-FUNDAMENTAL-MAX:CAPS" role="macro">
+<title>G_TYPE_FUNDAMENTAL_MAX</title>
+<indexterm zone="G-TYPE-FUNDAMENTAL-MAX:CAPS"><primary>G_TYPE_FUNDAMENTAL_MAX</primary></indexterm><programlisting>#define	G_TYPE_FUNDAMENTAL_MAX		(255 &lt;&lt; G_TYPE_FUNDAMENTAL_SHIFT)
 </programlisting>
 <para>
 An integer constant that represents the number of identifiers reserved
 for types that are assigned at compile-time.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-MAKE-FUNDAMENTAL:CAPS" role="macro"/>G_TYPE_MAKE_FUNDAMENTAL()</title>
-<indexterm><primary>G_TYPE_MAKE_FUNDAMENTAL</primary></indexterm><programlisting>#define	G_TYPE_MAKE_FUNDAMENTAL(x)	((GType) ((x) &lt;&lt; G_TYPE_FUNDAMENTAL_SHIFT))
+<refsect2 id="G-TYPE-MAKE-FUNDAMENTAL:CAPS" role="macro">
+<title>G_TYPE_MAKE_FUNDAMENTAL()</title>
+<indexterm zone="G-TYPE-MAKE-FUNDAMENTAL:CAPS"><primary>G_TYPE_MAKE_FUNDAMENTAL</primary></indexterm><programlisting>#define	G_TYPE_MAKE_FUNDAMENTAL(x)	((GType) ((x) &lt;&lt; G_TYPE_FUNDAMENTAL_SHIFT))
 </programlisting>
 <para>
 Returns the type ID for the fundamental type number <parameter>x</parameter>.
@@ -288,9 +286,9 @@ types.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-IS-ABSTRACT:CAPS" role="macro"/>G_TYPE_IS_ABSTRACT()</title>
-<indexterm><primary>G_TYPE_IS_ABSTRACT</primary></indexterm><programlisting>#define G_TYPE_IS_ABSTRACT(type)                (g_type_test_flags ((type), G_TYPE_FLAG_ABSTRACT))
+<refsect2 id="G-TYPE-IS-ABSTRACT:CAPS" role="macro">
+<title>G_TYPE_IS_ABSTRACT()</title>
+<indexterm zone="G-TYPE-IS-ABSTRACT:CAPS"><primary>G_TYPE_IS_ABSTRACT</primary></indexterm><programlisting>#define G_TYPE_IS_ABSTRACT(type)                (g_type_test_flags ((type), G_TYPE_FLAG_ABSTRACT))
 </programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>type</parameter> is an abstract type.  An abstract type can not be
@@ -303,9 +301,9 @@ derived classes.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-IS-DERIVED:CAPS" role="macro"/>G_TYPE_IS_DERIVED()</title>
-<indexterm><primary>G_TYPE_IS_DERIVED</primary></indexterm><programlisting>#define G_TYPE_IS_DERIVED(type)                 ((type) &gt; G_TYPE_FUNDAMENTAL_MAX)
+<refsect2 id="G-TYPE-IS-DERIVED:CAPS" role="macro">
+<title>G_TYPE_IS_DERIVED()</title>
+<indexterm zone="G-TYPE-IS-DERIVED:CAPS"><primary>G_TYPE_IS_DERIVED</primary></indexterm><programlisting>#define G_TYPE_IS_DERIVED(type)                 ((type) &gt; G_TYPE_FUNDAMENTAL_MAX)
 </programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>type</parameter> is derived (or in object-oriented terminology:
@@ -318,9 +316,9 @@ types).
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-IS-FUNDAMENTAL:CAPS" role="macro"/>G_TYPE_IS_FUNDAMENTAL()</title>
-<indexterm><primary>G_TYPE_IS_FUNDAMENTAL</primary></indexterm><programlisting>#define G_TYPE_IS_FUNDAMENTAL(type)             ((type) &lt;= G_TYPE_FUNDAMENTAL_MAX)
+<refsect2 id="G-TYPE-IS-FUNDAMENTAL:CAPS" role="macro">
+<title>G_TYPE_IS_FUNDAMENTAL()</title>
+<indexterm zone="G-TYPE-IS-FUNDAMENTAL:CAPS"><primary>G_TYPE_IS_FUNDAMENTAL</primary></indexterm><programlisting>#define G_TYPE_IS_FUNDAMENTAL(type)             ((type) &lt;= G_TYPE_FUNDAMENTAL_MAX)
 </programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>type</parameter> is a fundamental type.
@@ -331,9 +329,9 @@ Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>t
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-IS-VALUE-TYPE:CAPS" role="macro"/>G_TYPE_IS_VALUE_TYPE()</title>
-<indexterm><primary>G_TYPE_IS_VALUE_TYPE</primary></indexterm><programlisting>#define G_TYPE_IS_VALUE_TYPE(type)              (g_type_check_is_value_type (type))
+<refsect2 id="G-TYPE-IS-VALUE-TYPE:CAPS" role="macro">
+<title>G_TYPE_IS_VALUE_TYPE()</title>
+<indexterm zone="G-TYPE-IS-VALUE-TYPE:CAPS"><primary>G_TYPE_IS_VALUE_TYPE</primary></indexterm><programlisting>#define G_TYPE_IS_VALUE_TYPE(type)              (g_type_check_is_value_type (type))
 </programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>type</parameter> is a value type and can be used with
@@ -345,9 +343,9 @@ Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>t
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-HAS-VALUE-TABLE:CAPS" role="macro"/>G_TYPE_HAS_VALUE_TABLE()</title>
-<indexterm><primary>G_TYPE_HAS_VALUE_TABLE</primary></indexterm><programlisting>#define G_TYPE_HAS_VALUE_TABLE(type)            (g_type_value_table_peek (type) != NULL)
+<refsect2 id="G-TYPE-HAS-VALUE-TABLE:CAPS" role="macro">
+<title>G_TYPE_HAS_VALUE_TABLE()</title>
+<indexterm zone="G-TYPE-HAS-VALUE-TABLE:CAPS"><primary>G_TYPE_HAS_VALUE_TABLE</primary></indexterm><programlisting>#define G_TYPE_HAS_VALUE_TABLE(type)            (g_type_value_table_peek (type) != NULL)
 </programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>type</parameter> has a <link linkend="GTypeValueTable"><type>GTypeValueTable</type></link>.
@@ -358,9 +356,9 @@ Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>t
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-IS-CLASSED:CAPS" role="macro"/>G_TYPE_IS_CLASSED()</title>
-<indexterm><primary>G_TYPE_IS_CLASSED</primary></indexterm><programlisting>#define G_TYPE_IS_CLASSED(type)                 (g_type_test_flags ((type), G_TYPE_FLAG_CLASSED))
+<refsect2 id="G-TYPE-IS-CLASSED:CAPS" role="macro">
+<title>G_TYPE_IS_CLASSED()</title>
+<indexterm zone="G-TYPE-IS-CLASSED:CAPS"><primary>G_TYPE_IS_CLASSED</primary></indexterm><programlisting>#define G_TYPE_IS_CLASSED(type)                 (g_type_test_flags ((type), G_TYPE_FLAG_CLASSED))
 </programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>type</parameter> is a classed type.
@@ -371,9 +369,9 @@ Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>t
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-IS-INSTANTIATABLE:CAPS" role="macro"/>G_TYPE_IS_INSTANTIATABLE()</title>
-<indexterm><primary>G_TYPE_IS_INSTANTIATABLE</primary></indexterm><programlisting>#define G_TYPE_IS_INSTANTIATABLE(type)          (g_type_test_flags ((type), G_TYPE_FLAG_INSTANTIATABLE))
+<refsect2 id="G-TYPE-IS-INSTANTIATABLE:CAPS" role="macro">
+<title>G_TYPE_IS_INSTANTIATABLE()</title>
+<indexterm zone="G-TYPE-IS-INSTANTIATABLE:CAPS"><primary>G_TYPE_IS_INSTANTIATABLE</primary></indexterm><programlisting>#define G_TYPE_IS_INSTANTIATABLE(type)          (g_type_test_flags ((type), G_TYPE_FLAG_INSTANTIATABLE))
 </programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>type</parameter> can be instantiated.  Instantiation is the
@@ -385,9 +383,9 @@ process of creating an instance (object) of this type.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-IS-DERIVABLE:CAPS" role="macro"/>G_TYPE_IS_DERIVABLE()</title>
-<indexterm><primary>G_TYPE_IS_DERIVABLE</primary></indexterm><programlisting>#define G_TYPE_IS_DERIVABLE(type)               (g_type_test_flags ((type), G_TYPE_FLAG_DERIVABLE))
+<refsect2 id="G-TYPE-IS-DERIVABLE:CAPS" role="macro">
+<title>G_TYPE_IS_DERIVABLE()</title>
+<indexterm zone="G-TYPE-IS-DERIVABLE:CAPS"><primary>G_TYPE_IS_DERIVABLE</primary></indexterm><programlisting>#define G_TYPE_IS_DERIVABLE(type)               (g_type_test_flags ((type), G_TYPE_FLAG_DERIVABLE))
 </programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>type</parameter> is a derivable type.  A derivable type can
@@ -399,9 +397,9 @@ be used as the base class of a flat (single-level) class hierarchy.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-IS-DEEP-DERIVABLE:CAPS" role="macro"/>G_TYPE_IS_DEEP_DERIVABLE()</title>
-<indexterm><primary>G_TYPE_IS_DEEP_DERIVABLE</primary></indexterm><programlisting>#define G_TYPE_IS_DEEP_DERIVABLE(type)          (g_type_test_flags ((type), G_TYPE_FLAG_DEEP_DERIVABLE))
+<refsect2 id="G-TYPE-IS-DEEP-DERIVABLE:CAPS" role="macro">
+<title>G_TYPE_IS_DEEP_DERIVABLE()</title>
+<indexterm zone="G-TYPE-IS-DEEP-DERIVABLE:CAPS"><primary>G_TYPE_IS_DEEP_DERIVABLE</primary></indexterm><programlisting>#define G_TYPE_IS_DEEP_DERIVABLE(type)          (g_type_test_flags ((type), G_TYPE_FLAG_DEEP_DERIVABLE))
 </programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>type</parameter> is a deep derivable type.  A deep derivable type
@@ -413,9 +411,9 @@ can be used as the base class of a deep (multi-level) class hierarchy.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-IS-INTERFACE:CAPS" role="macro"/>G_TYPE_IS_INTERFACE()</title>
-<indexterm><primary>G_TYPE_IS_INTERFACE</primary></indexterm><programlisting>#define G_TYPE_IS_INTERFACE(type)               (G_TYPE_FUNDAMENTAL (type) == G_TYPE_INTERFACE)
+<refsect2 id="G-TYPE-IS-INTERFACE:CAPS" role="macro">
+<title>G_TYPE_IS_INTERFACE()</title>
+<indexterm zone="G-TYPE-IS-INTERFACE:CAPS"><primary>G_TYPE_IS_INTERFACE</primary></indexterm><programlisting>#define G_TYPE_IS_INTERFACE(type)               (G_TYPE_FUNDAMENTAL (type) == G_TYPE_INTERFACE)
 </programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>type</parameter> is an interface type.
@@ -432,33 +430,33 @@ with the difference that GType interfaces are not derivable (but see
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GTypeInterface" role="struct"/>GTypeInterface</title>
-<indexterm><primary>GTypeInterface</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GTypeInterface" role="struct">
+<title>GTypeInterface</title>
+<indexterm zone="GTypeInterface"><primary>GTypeInterface</primary></indexterm><programlisting>typedef struct {
 } GTypeInterface;
 </programlisting>
 <para>
 An opaque structure used as the base of all interface types.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GTypeInstance" role="struct"/>GTypeInstance</title>
-<indexterm><primary>GTypeInstance</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GTypeInstance" role="struct">
+<title>GTypeInstance</title>
+<indexterm zone="GTypeInstance"><primary>GTypeInstance</primary></indexterm><programlisting>typedef struct {
 } GTypeInstance;
 </programlisting>
 <para>
 An opaque structure used as the base of all type instances.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GTypeClass" role="struct"/>GTypeClass</title>
-<indexterm><primary>GTypeClass</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GTypeClass" role="struct">
+<title>GTypeClass</title>
+<indexterm zone="GTypeClass"><primary>GTypeClass</primary></indexterm><programlisting>typedef struct {
 } GTypeClass;
 </programlisting>
 <para>
 An opaque structure used as the base of all classes.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GTypeInfo" role="struct"/>GTypeInfo</title>
-<indexterm><primary>GTypeInfo</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GTypeInfo" role="struct">
+<title>GTypeInfo</title>
+<indexterm zone="GTypeInfo"><primary>GTypeInfo</primary></indexterm><programlisting>typedef struct {
   /* interface types, classed types, instantiated types */
   guint16                class_size;
   
@@ -549,9 +547,9 @@ across invocation of <link linkend="g-type-register-static"><function>g_type_reg
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GTypeFundamentalInfo" role="struct"/>GTypeFundamentalInfo</title>
-<indexterm><primary>GTypeFundamentalInfo</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GTypeFundamentalInfo" role="struct">
+<title>GTypeFundamentalInfo</title>
+<indexterm zone="GTypeFundamentalInfo"><primary>GTypeFundamentalInfo</primary></indexterm><programlisting>typedef struct {
   GTypeFundamentalFlags  type_flags;
 } GTypeFundamentalInfo;
 </programlisting>
@@ -566,9 +564,9 @@ used specifically for managing fundamental types.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GInterfaceInfo" role="struct"/>GInterfaceInfo</title>
-<indexterm><primary>GInterfaceInfo</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GInterfaceInfo" role="struct">
+<title>GInterfaceInfo</title>
+<indexterm zone="GInterfaceInfo"><primary>GInterfaceInfo</primary></indexterm><programlisting>typedef struct {
   GInterfaceInitFunc     interface_init;
   GInterfaceFinalizeFunc interface_finalize;
   gpointer               interface_data;
@@ -595,9 +593,9 @@ used specifically for managing interface types.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GTypeValueTable" role="struct"/>GTypeValueTable</title>
-<indexterm><primary>GTypeValueTable</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GTypeValueTable" role="struct">
+<title>GTypeValueTable</title>
+<indexterm zone="GTypeValueTable"><primary>GTypeValueTable</primary></indexterm><programlisting>typedef struct {
   void     (*value_init)         (GValue       *value);
   void     (*value_free)         (GValue       *value);
   void     (*value_copy)         (const GValue *src_value,
@@ -750,7 +748,7 @@ to serve as a container for values of a type.
 			by the <link linkend="GSignal"><type>GSignal</type></link> code, reference counts should always be incremented
 			for reference counted contents stored in the value-&gt;data array.
 			To deviate from our string example for a moment, and taking a look
-			at an exemplary implementation for <link linkend="collect-value"><function>collect_value()</function></link> of <link linkend="GObject--"><type>:</type></link>
+			at an exemplary implementation for <link linkend="collect-value"><function>collect_value()</function></link> of <link linkend="GObject--"><type>""</type></link>
 <programlisting>
 {
   if (collect_values[0].v_pointer)
@@ -836,9 +834,9 @@ to serve as a container for values of a type.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-FROM-INSTANCE:CAPS" role="macro"/>G_TYPE_FROM_INSTANCE()</title>
-<indexterm><primary>G_TYPE_FROM_INSTANCE</primary></indexterm><programlisting>#define G_TYPE_FROM_INSTANCE(instance)                          (G_TYPE_FROM_CLASS (((GTypeInstance*) (instance))-&gt;g_class))
+<refsect2 id="G-TYPE-FROM-INSTANCE:CAPS" role="macro">
+<title>G_TYPE_FROM_INSTANCE()</title>
+<indexterm zone="G-TYPE-FROM-INSTANCE:CAPS"><primary>G_TYPE_FROM_INSTANCE</primary></indexterm><programlisting>#define G_TYPE_FROM_INSTANCE(instance)                          (G_TYPE_FROM_CLASS (((GTypeInstance*) (instance))-&gt;g_class))
 </programlisting>
 <para>
 Returns the type identifier from a given <parameter>instance</parameter> structure. 
@@ -852,9 +850,9 @@ This macro should only be used in type implementations.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-FROM-CLASS:CAPS" role="macro"/>G_TYPE_FROM_CLASS()</title>
-<indexterm><primary>G_TYPE_FROM_CLASS</primary></indexterm><programlisting>#define G_TYPE_FROM_CLASS(g_class)                              (((GTypeClass*) (g_class))-&gt;g_type)
+<refsect2 id="G-TYPE-FROM-CLASS:CAPS" role="macro">
+<title>G_TYPE_FROM_CLASS()</title>
+<indexterm zone="G-TYPE-FROM-CLASS:CAPS"><primary>G_TYPE_FROM_CLASS</primary></indexterm><programlisting>#define G_TYPE_FROM_CLASS(g_class)                              (((GTypeClass*) (g_class))-&gt;g_type)
 </programlisting>
 <para>
 Returns the type identifier from a given <parameter>class</parameter> structure.
@@ -868,9 +866,9 @@ This macro should only be used in type implementations.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-FROM-INTERFACE:CAPS" role="macro"/>G_TYPE_FROM_INTERFACE()</title>
-<indexterm><primary>G_TYPE_FROM_INTERFACE</primary></indexterm><programlisting>#define G_TYPE_FROM_INTERFACE(g_iface)                          (((GTypeInterface*) (g_iface))-&gt;g_type)
+<refsect2 id="G-TYPE-FROM-INTERFACE:CAPS" role="macro">
+<title>G_TYPE_FROM_INTERFACE()</title>
+<indexterm zone="G-TYPE-FROM-INTERFACE:CAPS"><primary>G_TYPE_FROM_INTERFACE</primary></indexterm><programlisting>#define G_TYPE_FROM_INTERFACE(g_iface)                          (((GTypeInterface*) (g_iface))-&gt;g_type)
 </programlisting>
 <para>
 Returns the type identifier from a given <parameter>interface</parameter> structure.
@@ -884,9 +882,9 @@ This macro should only be used in type implementations.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-INSTANCE-GET-CLASS:CAPS" role="macro"/>G_TYPE_INSTANCE_GET_CLASS()</title>
-<indexterm><primary>G_TYPE_INSTANCE_GET_CLASS</primary></indexterm><programlisting>#define G_TYPE_INSTANCE_GET_CLASS(instance, g_type, c_type)     (_G_TYPE_IGC ((instance), (g_type), c_type))
+<refsect2 id="G-TYPE-INSTANCE-GET-CLASS:CAPS" role="macro">
+<title>G_TYPE_INSTANCE_GET_CLASS()</title>
+<indexterm zone="G-TYPE-INSTANCE-GET-CLASS:CAPS"><primary>G_TYPE_INSTANCE_GET_CLASS</primary></indexterm><programlisting>#define G_TYPE_INSTANCE_GET_CLASS(instance, g_type, c_type)     (_G_TYPE_IGC ((instance), (g_type), c_type))
 </programlisting>
 <para>
 Returns the class structure of a given <parameter>instance</parameter>, casted
@@ -911,9 +909,9 @@ This macro should only be used in type implementations.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-INSTANCE-GET-INTERFACE:CAPS" role="macro"/>G_TYPE_INSTANCE_GET_INTERFACE()</title>
-<indexterm><primary>G_TYPE_INSTANCE_GET_INTERFACE</primary></indexterm><programlisting>#define G_TYPE_INSTANCE_GET_INTERFACE(instance, g_type, c_type) (_G_TYPE_IGI ((instance), (g_type), c_type))
+<refsect2 id="G-TYPE-INSTANCE-GET-INTERFACE:CAPS" role="macro">
+<title>G_TYPE_INSTANCE_GET_INTERFACE()</title>
+<indexterm zone="G-TYPE-INSTANCE-GET-INTERFACE:CAPS"><primary>G_TYPE_INSTANCE_GET_INTERFACE</primary></indexterm><programlisting>#define G_TYPE_INSTANCE_GET_INTERFACE(instance, g_type, c_type) (_G_TYPE_IGI ((instance), (g_type), c_type))
 </programlisting>
 <para>
 Returns the interface structure for interface <parameter>g_type</parameter> of a given <parameter>instance</parameter>.
@@ -933,9 +931,9 @@ This macro should only be used in type implementations.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-INSTANCE-GET-PRIVATE:CAPS" role="macro" condition="since:2.4"/>G_TYPE_INSTANCE_GET_PRIVATE()</title>
-<indexterm role="2.4"><primary>G_TYPE_INSTANCE_GET_PRIVATE</primary></indexterm><programlisting>#define G_TYPE_INSTANCE_GET_PRIVATE(instance, g_type, c_type)   ((c_type*) g_type_instance_get_private ((GTypeInstance*) (instance), (g_type)))
+<refsect2 id="G-TYPE-INSTANCE-GET-PRIVATE:CAPS" role="macro" condition="since:2.4">
+<title>G_TYPE_INSTANCE_GET_PRIVATE()</title>
+<indexterm zone="G-TYPE-INSTANCE-GET-PRIVATE:CAPS" role="2.4"><primary>G_TYPE_INSTANCE_GET_PRIVATE</primary></indexterm><programlisting>#define G_TYPE_INSTANCE_GET_PRIVATE(instance, g_type, c_type)   ((c_type*) g_type_instance_get_private ((GTypeInstance*) (instance), (g_type)))
 </programlisting>
 <para>
 Gets the private structure for a particular type.
@@ -958,9 +956,9 @@ This macro should only be used in type implementations.
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-CHECK-INSTANCE:CAPS" role="macro"/>G_TYPE_CHECK_INSTANCE()</title>
-<indexterm><primary>G_TYPE_CHECK_INSTANCE</primary></indexterm><programlisting>#define G_TYPE_CHECK_INSTANCE(instance)				(_G_TYPE_CHI ((GTypeInstance*) (instance)))
+<refsect2 id="G-TYPE-CHECK-INSTANCE:CAPS" role="macro">
+<title>G_TYPE_CHECK_INSTANCE()</title>
+<indexterm zone="G-TYPE-CHECK-INSTANCE:CAPS"><primary>G_TYPE_CHECK_INSTANCE</primary></indexterm><programlisting>#define G_TYPE_CHECK_INSTANCE(instance)				(_G_TYPE_CHI ((GTypeInstance*) (instance)))
 </programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>instance</parameter> is a valid <link linkend="GTypeInstance"><type>GTypeInstance</type></link> structure,
@@ -975,9 +973,9 @@ This macro should only be used in type implementations.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-CHECK-INSTANCE-CAST:CAPS" role="macro"/>G_TYPE_CHECK_INSTANCE_CAST()</title>
-<indexterm><primary>G_TYPE_CHECK_INSTANCE_CAST</primary></indexterm><programlisting>#define G_TYPE_CHECK_INSTANCE_CAST(instance, g_type, c_type)    (_G_TYPE_CIC ((instance), (g_type), c_type))
+<refsect2 id="G-TYPE-CHECK-INSTANCE-CAST:CAPS" role="macro">
+<title>G_TYPE_CHECK_INSTANCE_CAST()</title>
+<indexterm zone="G-TYPE-CHECK-INSTANCE-CAST:CAPS"><primary>G_TYPE_CHECK_INSTANCE_CAST</primary></indexterm><programlisting>#define G_TYPE_CHECK_INSTANCE_CAST(instance, g_type, c_type)    (_G_TYPE_CIC ((instance), (g_type), c_type))
 </programlisting>
 <para>
 Checks that <parameter>instance</parameter> is an instance of the type identified by <parameter>g_type</parameter>
@@ -999,9 +997,9 @@ This macro should only be used in type implementations.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-CHECK-INSTANCE-TYPE:CAPS" role="macro"/>G_TYPE_CHECK_INSTANCE_TYPE()</title>
-<indexterm><primary>G_TYPE_CHECK_INSTANCE_TYPE</primary></indexterm><programlisting>#define G_TYPE_CHECK_INSTANCE_TYPE(instance, g_type)            (_G_TYPE_CIT ((instance), (g_type)))
+<refsect2 id="G-TYPE-CHECK-INSTANCE-TYPE:CAPS" role="macro">
+<title>G_TYPE_CHECK_INSTANCE_TYPE()</title>
+<indexterm zone="G-TYPE-CHECK-INSTANCE-TYPE:CAPS"><primary>G_TYPE_CHECK_INSTANCE_TYPE</primary></indexterm><programlisting>#define G_TYPE_CHECK_INSTANCE_TYPE(instance, g_type)            (_G_TYPE_CIT ((instance), (g_type)))
 </programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>instance</parameter> is an instance of the type identified by <parameter>g_type</parameter>.
@@ -1019,9 +1017,9 @@ This macro should only be used in type implementations.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-CHECK-CLASS-CAST:CAPS" role="macro"/>G_TYPE_CHECK_CLASS_CAST()</title>
-<indexterm><primary>G_TYPE_CHECK_CLASS_CAST</primary></indexterm><programlisting>#define G_TYPE_CHECK_CLASS_CAST(g_class, g_type, c_type)        (_G_TYPE_CCC ((g_class), (g_type), c_type))
+<refsect2 id="G-TYPE-CHECK-CLASS-CAST:CAPS" role="macro">
+<title>G_TYPE_CHECK_CLASS_CAST()</title>
+<indexterm zone="G-TYPE-CHECK-CLASS-CAST:CAPS"><primary>G_TYPE_CHECK_CLASS_CAST</primary></indexterm><programlisting>#define G_TYPE_CHECK_CLASS_CAST(g_class, g_type, c_type)        (_G_TYPE_CCC ((g_class), (g_type), c_type))
 </programlisting>
 <para>
 Checks that <parameter>g_class</parameter> is a class structure of the type identified by <parameter>g_type</parameter>
@@ -1043,9 +1041,9 @@ This macro should only be used in type implementations.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-CHECK-CLASS-TYPE:CAPS" role="macro"/>G_TYPE_CHECK_CLASS_TYPE()</title>
-<indexterm><primary>G_TYPE_CHECK_CLASS_TYPE</primary></indexterm><programlisting>#define G_TYPE_CHECK_CLASS_TYPE(g_class, g_type)                (_G_TYPE_CCT ((g_class), (g_type)))
+<refsect2 id="G-TYPE-CHECK-CLASS-TYPE:CAPS" role="macro">
+<title>G_TYPE_CHECK_CLASS_TYPE()</title>
+<indexterm zone="G-TYPE-CHECK-CLASS-TYPE:CAPS"><primary>G_TYPE_CHECK_CLASS_TYPE</primary></indexterm><programlisting>#define G_TYPE_CHECK_CLASS_TYPE(g_class, g_type)                (_G_TYPE_CCT ((g_class), (g_type)))
 </programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>g_class</parameter> is a class structure of the type identified by 
@@ -1063,9 +1061,9 @@ This macro should only be used in type implementations.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-CHECK-VALUE:CAPS" role="macro"/>G_TYPE_CHECK_VALUE()</title>
-<indexterm><primary>G_TYPE_CHECK_VALUE</primary></indexterm><programlisting>#define G_TYPE_CHECK_VALUE(value)				(_G_TYPE_CHV ((value)))
+<refsect2 id="G-TYPE-CHECK-VALUE:CAPS" role="macro">
+<title>G_TYPE_CHECK_VALUE()</title>
+<indexterm zone="G-TYPE-CHECK-VALUE:CAPS"><primary>G_TYPE_CHECK_VALUE</primary></indexterm><programlisting>#define G_TYPE_CHECK_VALUE(value)				(_G_TYPE_CHV ((value)))
 </programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>value</parameter> has been initialized to hold values
@@ -1080,9 +1078,9 @@ This macro should only be used in type implementations.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-CHECK-VALUE-TYPE:CAPS" role="macro"/>G_TYPE_CHECK_VALUE_TYPE()</title>
-<indexterm><primary>G_TYPE_CHECK_VALUE_TYPE</primary></indexterm><programlisting>#define G_TYPE_CHECK_VALUE_TYPE(value, g_type)			(_G_TYPE_CVH ((value), (g_type)))
+<refsect2 id="G-TYPE-CHECK-VALUE-TYPE:CAPS" role="macro">
+<title>G_TYPE_CHECK_VALUE_TYPE()</title>
+<indexterm zone="G-TYPE-CHECK-VALUE-TYPE:CAPS"><primary>G_TYPE_CHECK_VALUE_TYPE</primary></indexterm><programlisting>#define G_TYPE_CHECK_VALUE_TYPE(value, g_type)			(_G_TYPE_CVH ((value), (g_type)))
 </programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>value</parameter> has been initialized to hold values
@@ -1100,24 +1098,24 @@ This macro should only be used in type implementations.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-FLAG-RESERVED-ID-BIT:CAPS" role="macro"/>G_TYPE_FLAG_RESERVED_ID_BIT</title>
-<indexterm><primary>G_TYPE_FLAG_RESERVED_ID_BIT</primary></indexterm><programlisting>#define	G_TYPE_FLAG_RESERVED_ID_BIT	((GType) (1 &lt;&lt; 0))
+<refsect2 id="G-TYPE-FLAG-RESERVED-ID-BIT:CAPS" role="macro">
+<title>G_TYPE_FLAG_RESERVED_ID_BIT</title>
+<indexterm zone="G-TYPE-FLAG-RESERVED-ID-BIT:CAPS"><primary>G_TYPE_FLAG_RESERVED_ID_BIT</primary></indexterm><programlisting>#define	G_TYPE_FLAG_RESERVED_ID_BIT	((GType) (1 &lt;&lt; 0))
 </programlisting>
 <para>
 A bit in the type number that's supposed to be left untouched.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-type-init" role="function"/>g_type_init ()</title>
-<indexterm><primary>g_type_init</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_init                         (void);</programlisting>
+<refsect2 id="g-type-init" role="function">
+<title>g_type_init ()</title>
+<indexterm zone="g-type-init"><primary>g_type_init</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_init                         (void);</programlisting>
 <para>
 Prior to any use of the type system, <link linkend="g-type-init"><function>g_type_init()</function></link> has to be called to initialize
 the type system and assorted other code portions (such as the various fundamental
 type implementations or the signal system).
 </para></refsect2>
-<refsect2>
-<title><anchor id="GTypeDebugFlags" role="enum"/>enum GTypeDebugFlags</title>
-<indexterm><primary>GTypeDebugFlags</primary></indexterm><programlisting>typedef enum	/*&lt; skip &gt;*/
+<refsect2 id="GTypeDebugFlags" role="enum">
+<title>enum GTypeDebugFlags</title>
+<indexterm zone="GTypeDebugFlags"><primary>GTypeDebugFlags</primary></indexterm><programlisting>typedef enum	/*&lt; skip &gt;*/
 {
   G_TYPE_DEBUG_NONE	= 0,
   G_TYPE_DEBUG_OBJECTS	= 1 &lt;&lt; 0,
@@ -1133,31 +1131,10 @@ Note that the messages can also be triggered by setting the
 "objects" and "signals".
 
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-TYPE-DEBUG-NONE:CAPS" role="constant"/><literal>G_TYPE_DEBUG_NONE</literal></term>
-<listitem><simpara>Print no messages.
-</simpara></listitem>
-</varlistentry>
-<varlistentry>
-<term><anchor id="G-TYPE-DEBUG-OBJECTS:CAPS" role="constant"/><literal>G_TYPE_DEBUG_OBJECTS</literal></term>
-<listitem><simpara>Print messages about object bookkeeping.
-</simpara></listitem>
-</varlistentry>
-<varlistentry>
-<term><anchor id="G-TYPE-DEBUG-SIGNALS:CAPS" role="constant"/><literal>G_TYPE_DEBUG_SIGNALS</literal></term>
-<listitem><simpara>Print messages about signal emissions.
-</simpara></listitem>
-</varlistentry>
-<varlistentry>
-<term><anchor id="G-TYPE-DEBUG-MASK:CAPS" role="constant"/><literal>G_TYPE_DEBUG_MASK</literal></term>
-<listitem><simpara>Mask covering all debug flags.
-
-</simpara></listitem>
-</varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-init-with-debug-flags" role="function"/>g_type_init_with_debug_flags ()</title>
-<indexterm><primary>g_type_init_with_debug_flags</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_init_with_debug_flags        (<link linkend="GTypeDebugFlags">GTypeDebugFlags</link> debug_flags);</programlisting>
+<refsect2 id="g-type-init-with-debug-flags" role="function">
+<title>g_type_init_with_debug_flags ()</title>
+<indexterm zone="g-type-init-with-debug-flags"><primary>g_type_init_with_debug_flags</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_init_with_debug_flags        (<link linkend="GTypeDebugFlags">GTypeDebugFlags</link> debug_flags);</programlisting>
 <para>
 Similar to <link linkend="g-type-init"><function>g_type_init()</function></link>, but additionally sets debug flags.
 </para><variablelist role="params">
@@ -1167,12 +1144,15 @@ Similar to <link linkend="g-type-init"><function>g_type_init()</function></link>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-name" role="function"/>g_type_name ()</title>
-<indexterm><primary>g_type_name</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        g_type_name                         (<link linkend="GType">GType</link> type);</programlisting>
+<refsect2 id="g-type-name" role="function">
+<title>g_type_name ()</title>
+<indexterm zone="g-type-name"><primary>g_type_name</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        g_type_name                         (<link linkend="GType">GType</link> type);</programlisting>
 <para>
-Returns the unique name that is assigned to a type ID (this is the preferred method
-to find out whether a specific type has been registered for the passed in ID yet).
+    Returns the unique name that is assigned to a type ID.
+    Note that this function (like all other GType API) cannot cope with invalid
+    type IDs. <link linkend="G-TYPE-INVALID:CAPS"><literal>G_TYPE_INVALID</literal></link> may be passed to this function, as may be any other
+    validly registered type ID, but randomized type IDs should not be passed in and
+    will most likely lead to a crash.
 </para><variablelist role="params">
 <varlistentry><term><parameter>type</parameter>&nbsp;:</term>
 <listitem><simpara>		Type to return name for.
@@ -1182,9 +1162,9 @@ to find out whether a specific type has been registered for the passed in ID yet
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-qname" role="function"/>g_type_qname ()</title>
-<indexterm><primary>g_type_qname</primary></indexterm><programlisting><link linkend="GQuark">GQuark</link>              g_type_qname                        (<link linkend="GType">GType</link> type);</programlisting>
+<refsect2 id="g-type-qname" role="function">
+<title>g_type_qname ()</title>
+<indexterm zone="g-type-qname"><primary>g_type_qname</primary></indexterm><programlisting><link linkend="GQuark">GQuark</link>              g_type_qname                        (<link linkend="GType">GType</link> type);</programlisting>
 <para>
 Return the corresponding quark of the type IDs name.
 </para><variablelist role="params">
@@ -1196,9 +1176,9 @@ Return the corresponding quark of the type IDs name.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-from-name" role="function"/>g_type_from_name ()</title>
-<indexterm><primary>g_type_from_name</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_from_name                    (const <link linkend="gchar">gchar</link> *name);</programlisting>
+<refsect2 id="g-type-from-name" role="function">
+<title>g_type_from_name ()</title>
+<indexterm zone="g-type-from-name"><primary>g_type_from_name</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_from_name                    (const <link linkend="gchar">gchar</link> *name);</programlisting>
 <para>
 Lookup the type ID from a given type name, returning 0 if no type has been registered under this name
 (this is the preferred method to find out by name whether a specific type has been registered yet).
@@ -1211,9 +1191,9 @@ Lookup the type ID from a given type name, returning 0 if no type has been regis
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-parent" role="function"/>g_type_parent ()</title>
-<indexterm><primary>g_type_parent</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_parent                       (<link linkend="GType">GType</link> type);</programlisting>
+<refsect2 id="g-type-parent" role="function">
+<title>g_type_parent ()</title>
+<indexterm zone="g-type-parent"><primary>g_type_parent</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_parent                       (<link linkend="GType">GType</link> type);</programlisting>
 <para>
 Return the direct parent type of the passed in type.
 If the passed in type has no parent, i.e. is a fundamental type, 0 is returned.
@@ -1226,9 +1206,9 @@ If the passed in type has no parent, i.e. is a fundamental type, 0 is returned.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-depth" role="function"/>g_type_depth ()</title>
-<indexterm><primary>g_type_depth</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_type_depth                        (<link linkend="GType">GType</link> type);</programlisting>
+<refsect2 id="g-type-depth" role="function">
+<title>g_type_depth ()</title>
+<indexterm zone="g-type-depth"><primary>g_type_depth</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_type_depth                        (<link linkend="GType">GType</link> type);</programlisting>
 <para>
 Returns the length of the ancestry of the passed in type. This includes the
 type itself, so that e.g. a fundamental type has depth 1.
@@ -1241,9 +1221,9 @@ type itself, so that e.g. a fundamental type has depth 1.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-next-base" role="function"/>g_type_next_base ()</title>
-<indexterm><primary>g_type_next_base</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_next_base                    (<link linkend="GType">GType</link> leaf_type,
+<refsect2 id="g-type-next-base" role="function">
+<title>g_type_next_base ()</title>
+<indexterm zone="g-type-next-base"><primary>g_type_next_base</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_next_base                    (<link linkend="GType">GType</link> leaf_type,
                                                          <link linkend="GType">GType</link> root_type);</programlisting>
 <para>
 Given a <parameter>leaf_type</parameter> and a <parameter>root_type</parameter> which is contained in its anchestry, return
@@ -1264,9 +1244,9 @@ the leaf type is descended from the root type.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-is-a" role="function"/>g_type_is_a ()</title>
-<indexterm><primary>g_type_is_a</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_type_is_a                         (<link linkend="GType">GType</link> type,
+<refsect2 id="g-type-is-a" role="function">
+<title>g_type_is_a ()</title>
+<indexterm zone="g-type-is-a"><primary>g_type_is_a</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_type_is_a                         (<link linkend="GType">GType</link> type,
                                                          <link linkend="GType">GType</link> is_a_type);</programlisting>
 <para>
 If <parameter>is_a_type</parameter> is a derivable type, check whether <parameter>type</parameter> is a descendant of <parameter>is_a_type</parameter>.
@@ -1283,9 +1263,9 @@ If <parameter>is_a_type</parameter> is an interface, check whether <parameter>ty
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-class-ref" role="function"/>g_type_class_ref ()</title>
-<indexterm><primary>g_type_class_ref</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_type_class_ref                    (<link linkend="GType">GType</link> type);</programlisting>
+<refsect2 id="g-type-class-ref" role="function">
+<title>g_type_class_ref ()</title>
+<indexterm zone="g-type-class-ref"><primary>g_type_class_ref</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_type_class_ref                    (<link linkend="GType">GType</link> type);</programlisting>
 <para>
 Increments the reference count of the class structure belonging to
 <parameter>type</parameter>. This function will demand-create the class if it doesn't
@@ -1299,9 +1279,9 @@ exist already.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-class-peek" role="function"/>g_type_class_peek ()</title>
-<indexterm><primary>g_type_class_peek</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_type_class_peek                   (<link linkend="GType">GType</link> type);</programlisting>
+<refsect2 id="g-type-class-peek" role="function">
+<title>g_type_class_peek ()</title>
+<indexterm zone="g-type-class-peek"><primary>g_type_class_peek</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_type_class_peek                   (<link linkend="GType">GType</link> type);</programlisting>
 <para>
 This function is essentially the same as <link linkend="g-type-class-ref"><function>g_type_class_ref()</function></link>, except that
 the classes reference count isn't incremented. As a consequence, this function
@@ -1317,9 +1297,9 @@ exist (hasn't been referenced before).
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-class-peek-static" role="function" condition="since:2.4"/>g_type_class_peek_static ()</title>
-<indexterm role="2.4"><primary>g_type_class_peek_static</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_type_class_peek_static            (<link linkend="GType">GType</link> type);</programlisting>
+<refsect2 id="g-type-class-peek-static" role="function" condition="since:2.4">
+<title>g_type_class_peek_static ()</title>
+<indexterm zone="g-type-class-peek-static" role="2.4"><primary>g_type_class_peek_static</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_type_class_peek_static            (<link linkend="GType">GType</link> type);</programlisting>
 <para>
 A more efficient version of <link linkend="g-type-class-peek"><function>g_type_class_peek()</function></link> which works only for
 static types.
@@ -1334,9 +1314,9 @@ static types.
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-type-class-unref" role="function"/>g_type_class_unref ()</title>
-<indexterm><primary>g_type_class_unref</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_class_unref                  (<link linkend="gpointer">gpointer</link> g_class);</programlisting>
+<refsect2 id="g-type-class-unref" role="function">
+<title>g_type_class_unref ()</title>
+<indexterm zone="g-type-class-unref"><primary>g_type_class_unref</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_class_unref                  (<link linkend="gpointer">gpointer</link> g_class);</programlisting>
 <para>
 Decrements the reference count of the class structure being passed in.
 Once the last reference count of a class has been released, classes
@@ -1349,9 +1329,9 @@ class pointer after <link linkend="g-type-class-unref"><function>g_type_class_un
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-class-peek-parent" role="function"/>g_type_class_peek_parent ()</title>
-<indexterm><primary>g_type_class_peek_parent</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_type_class_peek_parent            (<link linkend="gpointer">gpointer</link> g_class);</programlisting>
+<refsect2 id="g-type-class-peek-parent" role="function">
+<title>g_type_class_peek_parent ()</title>
+<indexterm zone="g-type-class-peek-parent"><primary>g_type_class_peek_parent</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_type_class_peek_parent            (<link linkend="gpointer">gpointer</link> g_class);</programlisting>
 <para>
 This is a convenience function often needed in class initializers.
 It returns the class structure of the immediate parent type of the class passed in.
@@ -1373,9 +1353,9 @@ g_type_class_peek (g_type_parent (G_TYPE_FROM_CLASS (g_class)));
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-class-add-private" role="function" condition="since:2.4"/>g_type_class_add_private ()</title>
-<indexterm role="2.4"><primary>g_type_class_add_private</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_class_add_private            (<link linkend="gpointer">gpointer</link> g_class,
+<refsect2 id="g-type-class-add-private" role="function" condition="since:2.4">
+<title>g_type_class_add_private ()</title>
+<indexterm zone="g-type-class-add-private" role="2.4"><primary>g_type_class_add_private</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_class_add_private            (<link linkend="gpointer">gpointer</link> g_class,
                                                          <link linkend="gsize">gsize</link> private_size);</programlisting>
 <para>
 Registers a private structure for a instantiatable type;
@@ -1424,9 +1404,9 @@ my_object_get_some_field (MyObject *my_object)
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-type-interface-peek" role="function"/>g_type_interface_peek ()</title>
-<indexterm><primary>g_type_interface_peek</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_type_interface_peek               (<link linkend="gpointer">gpointer</link> instance_class,
+<refsect2 id="g-type-interface-peek" role="function">
+<title>g_type_interface_peek ()</title>
+<indexterm zone="g-type-interface-peek"><primary>g_type_interface_peek</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_type_interface_peek               (<link linkend="gpointer">gpointer</link> instance_class,
                                                          <link linkend="GType">GType</link> iface_type);</programlisting>
 <para>
 Returns the <link linkend="GTypeInterface"><type>GTypeInterface</type></link> structure of an interface to which the passed in 
@@ -1444,9 +1424,9 @@ class conforms.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-interface-peek-parent" role="function"/>g_type_interface_peek_parent ()</title>
-<indexterm><primary>g_type_interface_peek_parent</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_type_interface_peek_parent        (<link linkend="gpointer">gpointer</link> g_iface);</programlisting>
+<refsect2 id="g-type-interface-peek-parent" role="function">
+<title>g_type_interface_peek_parent ()</title>
+<indexterm zone="g-type-interface-peek-parent"><primary>g_type_interface_peek_parent</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_type_interface_peek_parent        (<link linkend="gpointer">gpointer</link> g_iface);</programlisting>
 <para>
 Returns the corresponding <link linkend="GTypeInterface"><type>GTypeInterface</type></link> structure of the parent type
 of the instance type to which <parameter>g_iface</parameter> belongs. This is useful when 
@@ -1463,9 +1443,9 @@ then possibly overriding some methods.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-default-interface-ref" role="function" condition="since:2.4"/>g_type_default_interface_ref ()</title>
-<indexterm role="2.4"><primary>g_type_default_interface_ref</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_type_default_interface_ref        (<link linkend="GType">GType</link> g_type);</programlisting>
+<refsect2 id="g-type-default-interface-ref" role="function" condition="since:2.4">
+<title>g_type_default_interface_ref ()</title>
+<indexterm zone="g-type-default-interface-ref" role="2.4"><primary>g_type_default_interface_ref</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_type_default_interface_ref        (<link linkend="GType">GType</link> g_type);</programlisting>
 <para>
 Increments the reference count for the interface type <parameter>g_type</parameter>,
 and returns the default interface vtable for the type.
@@ -1491,9 +1471,9 @@ have been installed.
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-type-default-interface-peek" role="function" condition="since:2.4"/>g_type_default_interface_peek ()</title>
-<indexterm role="2.4"><primary>g_type_default_interface_peek</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_type_default_interface_peek       (<link linkend="GType">GType</link> g_type);</programlisting>
+<refsect2 id="g-type-default-interface-peek" role="function" condition="since:2.4">
+<title>g_type_default_interface_peek ()</title>
+<indexterm zone="g-type-default-interface-peek" role="2.4"><primary>g_type_default_interface_peek</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_type_default_interface_peek       (<link linkend="GType">GType</link> g_type);</programlisting>
 <para>
 If the interface type <parameter>g_type</parameter> is currently in use, returns
 its default interface vtable.    
@@ -1508,9 +1488,9 @@ its default interface vtable.
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-type-default-interface-unref" role="function" condition="since:2.4"/>g_type_default_interface_unref ()</title>
-<indexterm role="2.4"><primary>g_type_default_interface_unref</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_default_interface_unref      (<link linkend="gpointer">gpointer</link> g_iface);</programlisting>
+<refsect2 id="g-type-default-interface-unref" role="function" condition="since:2.4">
+<title>g_type_default_interface_unref ()</title>
+<indexterm zone="g-type-default-interface-unref" role="2.4"><primary>g_type_default_interface_unref</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_default_interface_unref      (<link linkend="gpointer">gpointer</link> g_iface);</programlisting>
 <para>
 Decrements the reference count for the type corresponding to the
 interface default vtable <parameter>g_iface</parameter>. If the type is dynamic, then
@@ -1527,9 +1507,9 @@ vtable (the <structfield>class_finalize</structfield> member of
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-type-children" role="function"/>g_type_children ()</title>
-<indexterm><primary>g_type_children</primary></indexterm><programlisting><link linkend="GType">GType</link>*              g_type_children                     (<link linkend="GType">GType</link> type,
+<refsect2 id="g-type-children" role="function">
+<title>g_type_children ()</title>
+<indexterm zone="g-type-children"><primary>g_type_children</primary></indexterm><programlisting><link linkend="GType">GType</link>*              g_type_children                     (<link linkend="GType">GType</link> type,
                                                          <link linkend="guint">guint</link> *n_children);</programlisting>
 <para>
 Return a newly allocated and 0-terminated array of type IDs, listing the
@@ -1546,9 +1526,9 @@ child types of <parameter>type</parameter>. The return value has to be <link lin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-interfaces" role="function"/>g_type_interfaces ()</title>
-<indexterm><primary>g_type_interfaces</primary></indexterm><programlisting><link linkend="GType">GType</link>*              g_type_interfaces                   (<link linkend="GType">GType</link> type,
+<refsect2 id="g-type-interfaces" role="function">
+<title>g_type_interfaces ()</title>
+<indexterm zone="g-type-interfaces"><primary>g_type_interfaces</primary></indexterm><programlisting><link linkend="GType">GType</link>*              g_type_interfaces                   (<link linkend="GType">GType</link> type,
                                                          <link linkend="guint">guint</link> *n_interfaces);</programlisting>
 <para>
 Return a newly allocated and 0-terminated array of type IDs, listing the
@@ -1566,9 +1546,9 @@ interface types that <parameter>type</parameter> conforms to. The return value h
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-interface-prerequisites" role="function" condition="since:2.2"/>g_type_interface_prerequisites ()</title>
-<indexterm role="2.2"><primary>g_type_interface_prerequisites</primary></indexterm><programlisting><link linkend="GType">GType</link>*              g_type_interface_prerequisites      (<link linkend="GType">GType</link> interface_type,
+<refsect2 id="g-type-interface-prerequisites" role="function" condition="since:2.2">
+<title>g_type_interface_prerequisites ()</title>
+<indexterm zone="g-type-interface-prerequisites" role="2.2"><primary>g_type_interface_prerequisites</primary></indexterm><programlisting><link linkend="GType">GType</link>*              g_type_interface_prerequisites      (<link linkend="GType">GType</link> interface_type,
                                                          <link linkend="guint">guint</link> *n_prerequisites);</programlisting>
 <para>
 Returns the prerequisites of an interfaces type.
@@ -1586,9 +1566,9 @@ Returns the prerequisites of an interfaces type.
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-type-set-qdata" role="function"/>g_type_set_qdata ()</title>
-<indexterm><primary>g_type_set_qdata</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_set_qdata                    (<link linkend="GType">GType</link> type,
+<refsect2 id="g-type-set-qdata" role="function">
+<title>g_type_set_qdata ()</title>
+<indexterm zone="g-type-set-qdata"><primary>g_type_set_qdata</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_set_qdata                    (<link linkend="GType">GType</link> type,
                                                          <link linkend="GQuark">GQuark</link> quark,
                                                          <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
@@ -1606,9 +1586,9 @@ Attaches arbitrary data to a type.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-get-qdata" role="function"/>g_type_get_qdata ()</title>
-<indexterm><primary>g_type_get_qdata</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_type_get_qdata                    (<link linkend="GType">GType</link> type,
+<refsect2 id="g-type-get-qdata" role="function">
+<title>g_type_get_qdata ()</title>
+<indexterm zone="g-type-get-qdata"><primary>g_type_get_qdata</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_type_get_qdata                    (<link linkend="GType">GType</link> type,
                                                          <link linkend="GQuark">GQuark</link> quark);</programlisting>
 <para>
 Obtains data which has previously been attached to <parameter>type</parameter>
@@ -1625,9 +1605,9 @@ with <link linkend="g-type-set-qdata"><function>g_type_set_qdata()</function></l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-query" role="function"/>g_type_query ()</title>
-<indexterm><primary>g_type_query</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_query                        (<link linkend="GType">GType</link> type,
+<refsect2 id="g-type-query" role="function">
+<title>g_type_query ()</title>
+<indexterm zone="g-type-query"><primary>g_type_query</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_query                        (<link linkend="GType">GType</link> type,
                                                          <link linkend="GTypeQuery">GTypeQuery</link> *query);</programlisting>
 <para>
 Queries the type system for information about a specific type. 
@@ -1646,9 +1626,9 @@ be considered constant and have to be left untouched.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GTypeQuery" role="struct"/>GTypeQuery</title>
-<indexterm><primary>GTypeQuery</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GTypeQuery" role="struct">
+<title>GTypeQuery</title>
+<indexterm zone="GTypeQuery"><primary>GTypeQuery</primary></indexterm><programlisting>typedef struct {
   GType		type;
   const gchar  *type_name;
   guint		class_size;
@@ -1681,9 +1661,9 @@ filled in by the <link linkend="g-type-query"><function>g_type_query()</function
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GBaseInitFunc" role="function"/>GBaseInitFunc ()</title>
-<indexterm><primary>GBaseInitFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GBaseInitFunc)                    (<link linkend="gpointer">gpointer</link> g_class);</programlisting>
+<refsect2 id="GBaseInitFunc" role="function">
+<title>GBaseInitFunc ()</title>
+<indexterm zone="GBaseInitFunc"><primary>GBaseInitFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GBaseInitFunc)                    (<link linkend="gpointer">gpointer</link> g_class);</programlisting>
 <para>
 A callback function used by the type system to do base initialization
 of the class structures of derived types. It is called as part of the
@@ -1700,9 +1680,9 @@ intialization process.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GBaseFinalizeFunc" role="function"/>GBaseFinalizeFunc ()</title>
-<indexterm><primary>GBaseFinalizeFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GBaseFinalizeFunc)                (<link linkend="gpointer">gpointer</link> g_class);</programlisting>
+<refsect2 id="GBaseFinalizeFunc" role="function">
+<title>GBaseFinalizeFunc ()</title>
+<indexterm zone="GBaseFinalizeFunc"><primary>GBaseFinalizeFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GBaseFinalizeFunc)                (<link linkend="gpointer">gpointer</link> g_class);</programlisting>
 <para>
 A callback function used by the type system to finalize those portions
 of a derived types class structure that were setup from the corresponding
@@ -1716,9 +1696,9 @@ See <link linkend="GClassInitFunc"><function>GClassInitFunc()</function></link> 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GClassInitFunc" role="function"/>GClassInitFunc ()</title>
-<indexterm><primary>GClassInitFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GClassInitFunc)                   (<link linkend="gpointer">gpointer</link> g_class,
+<refsect2 id="GClassInitFunc" role="function">
+<title>GClassInitFunc ()</title>
+<indexterm zone="GClassInitFunc"><primary>GClassInitFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GClassInitFunc)                   (<link linkend="gpointer">gpointer</link> g_class,
                                                          <link linkend="gpointer">gpointer</link> class_data);</programlisting>
 <para>
 A callback function used by the type system to initialize the class
@@ -1829,9 +1809,9 @@ time.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GClassFinalizeFunc" role="function"/>GClassFinalizeFunc ()</title>
-<indexterm><primary>GClassFinalizeFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GClassFinalizeFunc)               (<link linkend="gpointer">gpointer</link> g_class,
+<refsect2 id="GClassFinalizeFunc" role="function">
+<title>GClassFinalizeFunc ()</title>
+<indexterm zone="GClassFinalizeFunc"><primary>GClassFinalizeFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GClassFinalizeFunc)               (<link linkend="gpointer">gpointer</link> g_class,
                                                          <link linkend="gpointer">gpointer</link> class_data);</programlisting>
 <para>
 A callback function used by the type system to finalize a class.
@@ -1851,9 +1831,9 @@ reference count drops to zero).
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GInstanceInitFunc" role="function"/>GInstanceInitFunc ()</title>
-<indexterm><primary>GInstanceInitFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GInstanceInitFunc)                (<link linkend="GTypeInstance">GTypeInstance</link> *instance,
+<refsect2 id="GInstanceInitFunc" role="function">
+<title>GInstanceInitFunc ()</title>
+<indexterm zone="GInstanceInitFunc"><primary>GInstanceInitFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GInstanceInitFunc)                (<link linkend="GTypeInstance">GTypeInstance</link> *instance,
                                                          <link linkend="gpointer">gpointer</link> g_class);</programlisting>
 <para>
 A callback function used by the type system to initialize a new
@@ -1873,9 +1853,9 @@ belongs to the type the current initializer was introduced for.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GInterfaceInitFunc" role="function"/>GInterfaceInitFunc ()</title>
-<indexterm><primary>GInterfaceInitFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GInterfaceInitFunc)               (<link linkend="gpointer">gpointer</link> g_iface,
+<refsect2 id="GInterfaceInitFunc" role="function">
+<title>GInterfaceInitFunc ()</title>
+<indexterm zone="GInterfaceInitFunc"><primary>GInterfaceInitFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GInterfaceInitFunc)               (<link linkend="gpointer">gpointer</link> g_iface,
                                                          <link linkend="gpointer">gpointer</link> iface_data);</programlisting>
 <para>
 A callback function used by the type system to initialize a new
@@ -1891,9 +1871,9 @@ allocate any resources required by the interface.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GInterfaceFinalizeFunc" role="function"/>GInterfaceFinalizeFunc ()</title>
-<indexterm><primary>GInterfaceFinalizeFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GInterfaceFinalizeFunc)           (<link linkend="gpointer">gpointer</link> g_iface,
+<refsect2 id="GInterfaceFinalizeFunc" role="function">
+<title>GInterfaceFinalizeFunc ()</title>
+<indexterm zone="GInterfaceFinalizeFunc"><primary>GInterfaceFinalizeFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GInterfaceFinalizeFunc)           (<link linkend="gpointer">gpointer</link> g_iface,
                                                          <link linkend="gpointer">gpointer</link> iface_data);</programlisting>
 <para>
 A callback function used by the type system to finalize an interface.
@@ -1909,9 +1889,9 @@ allocated by the corresponding <link linkend="GInterfaceInitFunc"><function>GInt
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GTypeClassCacheFunc" role="function"/>GTypeClassCacheFunc ()</title>
-<indexterm><primary>GTypeClassCacheFunc</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            (*GTypeClassCacheFunc)              (<link linkend="gpointer">gpointer</link> cache_data,
+<refsect2 id="GTypeClassCacheFunc" role="function">
+<title>GTypeClassCacheFunc ()</title>
+<indexterm zone="GTypeClassCacheFunc"><primary>GTypeClassCacheFunc</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            (*GTypeClassCacheFunc)              (<link linkend="gpointer">gpointer</link> cache_data,
                                                          <link linkend="GTypeClass">GTypeClass</link> *g_class);</programlisting>
 <para>
 A callback function which is called when the reference count of a class 
@@ -1937,9 +1917,9 @@ called, <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> to continue.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GTypeFlags" role="enum"/>enum GTypeFlags</title>
-<indexterm><primary>GTypeFlags</primary></indexterm><programlisting>typedef enum    /*&lt; skip &gt;*/
+<refsect2 id="GTypeFlags" role="enum">
+<title>enum GTypeFlags</title>
+<indexterm zone="GTypeFlags"><primary>GTypeFlags</primary></indexterm><programlisting>typedef enum    /*&lt; skip &gt;*/
 {
   G_TYPE_FLAG_ABSTRACT		= (1 &lt;&lt; 4),
   G_TYPE_FLAG_VALUE_ABSTRACT	= (1 &lt;&lt; 5)
@@ -1948,24 +1928,10 @@ called, <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> to continue.
 <para>
 Bit masks used to check or determine characteristics of a type.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-TYPE-FLAG-ABSTRACT:CAPS" role="constant"/><literal>G_TYPE_FLAG_ABSTRACT</literal></term>
-<listitem><simpara>	Indicates an abstract type. No instances can be
-			created for an abstract type.
-</simpara></listitem>
-</varlistentry>
-<varlistentry>
-<term><anchor id="G-TYPE-FLAG-VALUE-ABSTRACT:CAPS" role="constant"/><literal>G_TYPE_FLAG_VALUE_ABSTRACT</literal></term>
-<listitem><simpara>Indicates an abstract value type, i.e. a type
-                        that introduces a value table, but can't be used for
-                        <link linkend="g-value-init"><function>g_value_init()</function></link>.
-
-</simpara></listitem>
-</varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GTypeFundamentalFlags" role="enum"/>enum GTypeFundamentalFlags</title>
-<indexterm><primary>GTypeFundamentalFlags</primary></indexterm><programlisting>typedef enum    /*&lt; skip &gt;*/
+<refsect2 id="GTypeFundamentalFlags" role="enum">
+<title>enum GTypeFundamentalFlags</title>
+<indexterm zone="GTypeFundamentalFlags"><primary>GTypeFundamentalFlags</primary></indexterm><programlisting>typedef enum    /*&lt; skip &gt;*/
 {
   G_TYPE_FLAG_CLASSED           = (1 &lt;&lt; 0),
   G_TYPE_FLAG_INSTANTIATABLE    = (1 &lt;&lt; 1),
@@ -1977,31 +1943,10 @@ Bit masks used to check or determine characteristics of a type.
 Bit masks used to check or determine specific characteristics of a
 fundamental type.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-TYPE-FLAG-CLASSED:CAPS" role="constant"/><literal>G_TYPE_FLAG_CLASSED</literal></term>
-<listitem><simpara>		Indicates a classed type.
-</simpara></listitem>
-</varlistentry>
-<varlistentry>
-<term><anchor id="G-TYPE-FLAG-INSTANTIATABLE:CAPS" role="constant"/><literal>G_TYPE_FLAG_INSTANTIATABLE</literal></term>
-<listitem><simpara>	Indicates an instantiable type (implies classed).
-</simpara></listitem>
-</varlistentry>
-<varlistentry>
-<term><anchor id="G-TYPE-FLAG-DERIVABLE:CAPS" role="constant"/><literal>G_TYPE_FLAG_DERIVABLE</literal></term>
-<listitem><simpara>	Indicates a flat derivable type.
-</simpara></listitem>
-</varlistentry>
-<varlistentry>
-<term><anchor id="G-TYPE-FLAG-DEEP-DERIVABLE:CAPS" role="constant"/><literal>G_TYPE_FLAG_DEEP_DERIVABLE</literal></term>
-<listitem><simpara>	Indicates a deep derivable type (implies derivable).
-
-</simpara></listitem>
-</varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-register-static" role="function"/>g_type_register_static ()</title>
-<indexterm><primary>g_type_register_static</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_register_static              (<link linkend="GType">GType</link> parent_type,
+<refsect2 id="g-type-register-static" role="function">
+<title>g_type_register_static ()</title>
+<indexterm zone="g-type-register-static"><primary>g_type_register_static</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_register_static              (<link linkend="GType">GType</link> parent_type,
                                                          const <link linkend="gchar">gchar</link> *type_name,
                                                          const <link linkend="GTypeInfo">GTypeInfo</link> *info,
                                                          <link linkend="GTypeFlags">GTypeFlags</link> flags);</programlisting>
@@ -2029,9 +1974,9 @@ instances (if not abstract).  The value of <parameter>flags</parameter> determin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-register-static-simple" role="function" condition="since:2.12"/>g_type_register_static_simple ()</title>
-<indexterm role="2.12"><primary>g_type_register_static_simple</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_register_static_simple       (<link linkend="GType">GType</link> parent_type,
+<refsect2 id="g-type-register-static-simple" role="function" condition="since:2.12">
+<title>g_type_register_static_simple ()</title>
+<indexterm zone="g-type-register-static-simple" role="2.12"><primary>g_type_register_static_simple</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_register_static_simple       (<link linkend="GType">GType</link> parent_type,
                                                          const <link linkend="gchar">gchar</link> *type_name,
                                                          <link linkend="guint">guint</link> class_size,
                                                          <link linkend="GClassInitFunc">GClassInitFunc</link> class_init,
@@ -2042,7 +1987,7 @@ instances (if not abstract).  The value of <parameter>flags</parameter> determin
 Registers <parameter>type_name</parameter> as the name of a new static type derived from
 <parameter>parent_type</parameter>.  The value of <parameter>flags</parameter> determines the nature (e.g. 
 abstract or not) of the type. It works by filling a <link linkend="GTypeInfo"><type>GTypeInfo</type></link> 
-struct and calling <link linkend="g-type-info-register-static"><function>g_type_info_register_static()</function></link>.
+struct and calling <link linkend="g-type-register-static"><function>g_type_register_static()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>parent_type</parameter>&nbsp;:</term>
 <listitem><simpara>	Type from which this type will be derived.
@@ -2071,9 +2016,9 @@ struct and calling <link linkend="g-type-info-register-static"><function>g_type_
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-type-register-dynamic" role="function"/>g_type_register_dynamic ()</title>
-<indexterm><primary>g_type_register_dynamic</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_register_dynamic             (<link linkend="GType">GType</link> parent_type,
+<refsect2 id="g-type-register-dynamic" role="function">
+<title>g_type_register_dynamic ()</title>
+<indexterm zone="g-type-register-dynamic"><primary>g_type_register_dynamic</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_register_dynamic             (<link linkend="GType">GType</link> parent_type,
                                                          const <link linkend="gchar">gchar</link> *type_name,
                                                          <link linkend="GTypePlugin">GTypePlugin</link> *plugin,
                                                          <link linkend="GTypeFlags">GTypeFlags</link> flags);</programlisting>
@@ -2101,9 +2046,9 @@ instances (if not abstract).  The value of <parameter>flags</parameter> determin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-register-fundamental" role="function"/>g_type_register_fundamental ()</title>
-<indexterm><primary>g_type_register_fundamental</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_register_fundamental         (<link linkend="GType">GType</link> type_id,
+<refsect2 id="g-type-register-fundamental" role="function">
+<title>g_type_register_fundamental ()</title>
+<indexterm zone="g-type-register-fundamental"><primary>g_type_register_fundamental</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_register_fundamental         (<link linkend="GType">GType</link> type_id,
                                                          const <link linkend="gchar">gchar</link> *type_name,
                                                          const <link linkend="GTypeInfo">GTypeInfo</link> *info,
                                                          const <link linkend="GTypeFundamentalInfo">GTypeFundamentalInfo</link> *finfo,
@@ -2136,9 +2081,9 @@ characteristics of the fundamental type.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-add-interface-static" role="function"/>g_type_add_interface_static ()</title>
-<indexterm><primary>g_type_add_interface_static</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_add_interface_static         (<link linkend="GType">GType</link> instance_type,
+<refsect2 id="g-type-add-interface-static" role="function">
+<title>g_type_add_interface_static ()</title>
+<indexterm zone="g-type-add-interface-static"><primary>g_type_add_interface_static</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_add_interface_static         (<link linkend="GType">GType</link> instance_type,
                                                          <link linkend="GType">GType</link> interface_type,
                                                          const <link linkend="GInterfaceInfo">GInterfaceInfo</link> *info);</programlisting>
 <para>
@@ -2159,9 +2104,9 @@ is used to manage the relationship.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-add-interface-dynamic" role="function"/>g_type_add_interface_dynamic ()</title>
-<indexterm><primary>g_type_add_interface_dynamic</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_add_interface_dynamic        (<link linkend="GType">GType</link> instance_type,
+<refsect2 id="g-type-add-interface-dynamic" role="function">
+<title>g_type_add_interface_dynamic ()</title>
+<indexterm zone="g-type-add-interface-dynamic"><primary>g_type_add_interface_dynamic</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_add_interface_dynamic        (<link linkend="GType">GType</link> instance_type,
                                                          <link linkend="GType">GType</link> interface_type,
                                                          <link linkend="GTypePlugin">GTypePlugin</link> *plugin);</programlisting>
 <para>
@@ -2181,9 +2126,9 @@ is used to manage the relationship.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-interface-add-prerequisite" role="function"/>g_type_interface_add_prerequisite ()</title>
-<indexterm><primary>g_type_interface_add_prerequisite</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_interface_add_prerequisite   (<link linkend="GType">GType</link> interface_type,
+<refsect2 id="g-type-interface-add-prerequisite" role="function">
+<title>g_type_interface_add_prerequisite ()</title>
+<indexterm zone="g-type-interface-add-prerequisite"><primary>g_type_interface_add_prerequisite</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_interface_add_prerequisite   (<link linkend="GType">GType</link> interface_type,
                                                          <link linkend="GType">GType</link> prerequisite_type);</programlisting>
 <para>
 Adds <parameter>prerequisite_type</parameter> to the list of prerequisites of <parameter>interface_type</parameter>.
@@ -2201,9 +2146,9 @@ at most one instantiatable prerequisite type.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-get-plugin" role="function"/>g_type_get_plugin ()</title>
-<indexterm><primary>g_type_get_plugin</primary></indexterm><programlisting><link linkend="GTypePlugin">GTypePlugin</link>*        g_type_get_plugin                   (<link linkend="GType">GType</link> type);</programlisting>
+<refsect2 id="g-type-get-plugin" role="function">
+<title>g_type_get_plugin ()</title>
+<indexterm zone="g-type-get-plugin"><primary>g_type_get_plugin</primary></indexterm><programlisting><link linkend="GTypePlugin">GTypePlugin</link>*        g_type_get_plugin                   (<link linkend="GType">GType</link> type);</programlisting>
 <para>
 Returns the <link linkend="GTypePlugin"><type>GTypePlugin</type></link> structure for <parameter>type</parameter> or
 <link linkend="NULL:CAPS"><literal>NULL</literal></link> if <parameter>type</parameter> does not have a <link linkend="GTypePlugin"><type>GTypePlugin</type></link> structure.
@@ -2217,9 +2162,9 @@ Returns the <link linkend="GTypePlugin"><type>GTypePlugin</type></link> structur
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-interface-get-plugin" role="function"/>g_type_interface_get_plugin ()</title>
-<indexterm><primary>g_type_interface_get_plugin</primary></indexterm><programlisting><link linkend="GTypePlugin">GTypePlugin</link>*        g_type_interface_get_plugin         (<link linkend="GType">GType</link> instance_type,
+<refsect2 id="g-type-interface-get-plugin" role="function">
+<title>g_type_interface_get_plugin ()</title>
+<indexterm zone="g-type-interface-get-plugin"><primary>g_type_interface_get_plugin</primary></indexterm><programlisting><link linkend="GTypePlugin">GTypePlugin</link>*        g_type_interface_get_plugin         (<link linkend="GType">GType</link> instance_type,
                                                          <link linkend="GType">GType</link> interface_type);</programlisting>
 <para>
 Returns the <link linkend="GTypePlugin"><type>GTypePlugin</type></link> structure for the dynamic interface 
@@ -2239,9 +2184,9 @@ not have a <link linkend="GTypePlugin"><type>GTypePlugin</type></link> structure
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-fundamental-next" role="function"/>g_type_fundamental_next ()</title>
-<indexterm><primary>g_type_fundamental_next</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_fundamental_next             (void);</programlisting>
+<refsect2 id="g-type-fundamental-next" role="function">
+<title>g_type_fundamental_next ()</title>
+<indexterm zone="g-type-fundamental-next"><primary>g_type_fundamental_next</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_fundamental_next             (void);</programlisting>
 <para>
 Returns the next free fundamental type id which can be used to
 register a new fundamental type with <link linkend="g-type-register-fundamental"><function>g_type_register_fundamental()</function></link>.
@@ -2255,9 +2200,9 @@ fundamental type identifier.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-fundamental" role="function"/>g_type_fundamental ()</title>
-<indexterm><primary>g_type_fundamental</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_fundamental                  (<link linkend="GType">GType</link> type_id);</programlisting>
+<refsect2 id="g-type-fundamental" role="function">
+<title>g_type_fundamental ()</title>
+<indexterm zone="g-type-fundamental"><primary>g_type_fundamental</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_type_fundamental                  (<link linkend="GType">GType</link> type_id);</programlisting>
 <para>
 Internal function, used to extract the fundamental type ID portion.
 use <link linkend="G-TYPE-FUNDAMENTAL:CAPS"><function>G_TYPE_FUNDAMENTAL()</function></link> instead.
@@ -2270,9 +2215,9 @@ use <link linkend="G-TYPE-FUNDAMENTAL:CAPS"><function>G_TYPE_FUNDAMENTAL()</func
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-create-instance" role="function"/>g_type_create_instance ()</title>
-<indexterm><primary>g_type_create_instance</primary></indexterm><programlisting><link linkend="GTypeInstance">GTypeInstance</link>*      g_type_create_instance              (<link linkend="GType">GType</link> type);</programlisting>
+<refsect2 id="g-type-create-instance" role="function">
+<title>g_type_create_instance ()</title>
+<indexterm zone="g-type-create-instance"><primary>g_type_create_instance</primary></indexterm><programlisting><link linkend="GTypeInstance">GTypeInstance</link>*      g_type_create_instance              (<link linkend="GType">GType</link> type);</programlisting>
 <para>
 Creates and initializes an instance of <parameter>type</parameter> if <parameter>type</parameter> is valid and can
 be instantiated. The type system only performs basic allocation and
@@ -2296,9 +2241,9 @@ use this function but <link linkend="g-object-new"><function>g_object_new()</fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-free-instance" role="function"/>g_type_free_instance ()</title>
-<indexterm><primary>g_type_free_instance</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_free_instance                (<link linkend="GTypeInstance">GTypeInstance</link> *instance);</programlisting>
+<refsect2 id="g-type-free-instance" role="function">
+<title>g_type_free_instance ()</title>
+<indexterm zone="g-type-free-instance"><primary>g_type_free_instance</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_free_instance                (<link linkend="GTypeInstance">GTypeInstance</link> *instance);</programlisting>
 <para>
 Frees an instance of a type, returning it to the instance pool for the type,
 if there is one.
@@ -2313,9 +2258,9 @@ fundamental types.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-add-class-cache-func" role="function"/>g_type_add_class_cache_func ()</title>
-<indexterm><primary>g_type_add_class_cache_func</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_add_class_cache_func         (<link linkend="gpointer">gpointer</link> cache_data,
+<refsect2 id="g-type-add-class-cache-func" role="function">
+<title>g_type_add_class_cache_func ()</title>
+<indexterm zone="g-type-add-class-cache-func"><primary>g_type_add_class_cache_func</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_add_class_cache_func         (<link linkend="gpointer">gpointer</link> cache_data,
                                                          <link linkend="GTypeClassCacheFunc">GTypeClassCacheFunc</link> cache_func);</programlisting>
 <para>
 Adds a <link linkend="GTypeClassCacheFunc"><type>GTypeClassCacheFunc</type></link> to be called before the reference count of a class 
@@ -2334,9 +2279,9 @@ are routed through the same <link linkend="GTypeClassCacheFunc"><type>GTypeClass
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-remove-class-cache-func" role="function"/>g_type_remove_class_cache_func ()</title>
-<indexterm><primary>g_type_remove_class_cache_func</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_remove_class_cache_func      (<link linkend="gpointer">gpointer</link> cache_data,
+<refsect2 id="g-type-remove-class-cache-func" role="function">
+<title>g_type_remove_class_cache_func ()</title>
+<indexterm zone="g-type-remove-class-cache-func"><primary>g_type_remove_class_cache_func</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_remove_class_cache_func      (<link linkend="gpointer">gpointer</link> cache_data,
                                                          <link linkend="GTypeClassCacheFunc">GTypeClassCacheFunc</link> cache_func);</programlisting>
 <para>
 Removes a previously installed <link linkend="GTypeClassCacheFunc"><type>GTypeClassCacheFunc</type></link>. The cache maintained 
@@ -2352,9 +2297,9 @@ to avoid leaks.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-class-unref-uncached" role="function"/>g_type_class_unref_uncached ()</title>
-<indexterm><primary>g_type_class_unref_uncached</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_class_unref_uncached         (<link linkend="gpointer">gpointer</link> g_class);</programlisting>
+<refsect2 id="g-type-class-unref-uncached" role="function">
+<title>g_type_class_unref_uncached ()</title>
+<indexterm zone="g-type-class-unref-uncached"><primary>g_type_class_unref_uncached</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_class_unref_uncached         (<link linkend="gpointer">gpointer</link> g_class);</programlisting>
 <para>
 A variant of <link linkend="g-type-class-unref"><function>g_type_class_unref()</function></link> for use in <link linkend="GTypeClassCacheFunc"><type>GTypeClassCacheFunc</type></link>
 implementations. It unreferences a class without consulting the chain
@@ -2367,9 +2312,9 @@ otherwise.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-type-add-interface-check" role="function" condition="since:2.4"/>g_type_add_interface_check ()</title>
-<indexterm role="2.4"><primary>g_type_add_interface_check</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_add_interface_check          (<link linkend="gpointer">gpointer</link> check_data,
+<refsect2 id="g-type-add-interface-check" role="function" condition="since:2.4">
+<title>g_type_add_interface_check ()</title>
+<indexterm zone="g-type-add-interface-check" role="2.4"><primary>g_type_add_interface_check</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_add_interface_check          (<link linkend="gpointer">gpointer</link> check_data,
                                                          <link linkend="GTypeInterfaceCheckFunc">GTypeInterfaceCheckFunc</link> check_func);</programlisting>
 <para>
 Adds a function to be called after an interface vtable is
@@ -2394,9 +2339,9 @@ defined on its interfaces.
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-type-remove-interface-check" role="function" condition="since:2.4"/>g_type_remove_interface_check ()</title>
-<indexterm role="2.4"><primary>g_type_remove_interface_check</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_remove_interface_check       (<link linkend="gpointer">gpointer</link> check_data,
+<refsect2 id="g-type-remove-interface-check" role="function" condition="since:2.4">
+<title>g_type_remove_interface_check ()</title>
+<indexterm zone="g-type-remove-interface-check" role="2.4"><primary>g_type_remove_interface_check</primary></indexterm><programlisting><link linkend="void">void</link>                g_type_remove_interface_check       (<link linkend="gpointer">gpointer</link> check_data,
                                                          <link linkend="GTypeInterfaceCheckFunc">GTypeInterfaceCheckFunc</link> check_func);</programlisting>
 <para>
 Removes an interface check function added with
@@ -2412,9 +2357,9 @@ Removes an interface check function added with
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="GTypeInterfaceCheckFunc" role="function" condition="since:2.4"/>GTypeInterfaceCheckFunc ()</title>
-<indexterm role="2.4"><primary>GTypeInterfaceCheckFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GTypeInterfaceCheckFunc)          (<link linkend="gpointer">gpointer</link> check_data,
+<refsect2 id="GTypeInterfaceCheckFunc" role="function" condition="since:2.4">
+<title>GTypeInterfaceCheckFunc ()</title>
+<indexterm zone="GTypeInterfaceCheckFunc" role="2.4"><primary>GTypeInterfaceCheckFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GTypeInterfaceCheckFunc)          (<link linkend="gpointer">gpointer</link> check_data,
                                                          <link linkend="gpointer">gpointer</link> g_iface);</programlisting>
 <para>
 A callback called after an interface vtable is initialized.
@@ -2430,9 +2375,9 @@ See <link linkend="g-type-add-interface-check"><function>g_type_add_interface_ch
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-type-value-table-peek" role="function"/>g_type_value_table_peek ()</title>
-<indexterm><primary>g_type_value_table_peek</primary></indexterm><programlisting><link linkend="GTypeValueTable">GTypeValueTable</link>*    g_type_value_table_peek             (<link linkend="GType">GType</link> type);</programlisting>
+<refsect2 id="g-type-value-table-peek" role="function">
+<title>g_type_value_table_peek ()</title>
+<indexterm zone="g-type-value-table-peek"><primary>g_type_value_table_peek</primary></indexterm><programlisting><link linkend="GTypeValueTable">GTypeValueTable</link>*    g_type_value_table_peek             (<link linkend="GType">GType</link> type);</programlisting>
 <para>
 Returns the location of the <link linkend="GTypeValueTable"><type>GTypeValueTable</type></link> associated with <parameter>type</parameter>.
 <emphasis>Note that this function should only be used from source code
@@ -2448,9 +2393,9 @@ that implements or has internal knowledge of the implementation of
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-DEFINE-TYPE:CAPS" role="macro" condition="since:2.4"/>G_DEFINE_TYPE()</title>
-<indexterm role="2.4"><primary>G_DEFINE_TYPE</primary></indexterm><programlisting>#define G_DEFINE_TYPE(TN, t_n, T_P)			    G_DEFINE_TYPE_EXTENDED (TN, t_n, T_P, 0, {})
+<refsect2 id="G-DEFINE-TYPE:CAPS" role="macro" condition="since:2.4">
+<title>G_DEFINE_TYPE()</title>
+<indexterm zone="G-DEFINE-TYPE:CAPS" role="2.4"><primary>G_DEFINE_TYPE</primary></indexterm><programlisting>#define G_DEFINE_TYPE(TN, t_n, T_P)			    G_DEFINE_TYPE_EXTENDED (TN, t_n, T_P, 0, {})
 </programlisting>
 <para>
 A convenience macro for type implementations, which declares a 
@@ -2472,9 +2417,9 @@ a *<link linkend="get-type"><function>_get_type()</function></link> function. Se
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-DEFINE-TYPE-WITH-CODE:CAPS" role="macro" condition="since:2.4"/>G_DEFINE_TYPE_WITH_CODE()</title>
-<indexterm role="2.4"><primary>G_DEFINE_TYPE_WITH_CODE</primary></indexterm><programlisting>#define G_DEFINE_TYPE_WITH_CODE(TN, t_n, T_P, _C_)	    _G_DEFINE_TYPE_EXTENDED_BEGIN (TN, t_n, T_P, 0) {_C_;} _G_DEFINE_TYPE_EXTENDED_END()
+<refsect2 id="G-DEFINE-TYPE-WITH-CODE:CAPS" role="macro" condition="since:2.4">
+<title>G_DEFINE_TYPE_WITH_CODE()</title>
+<indexterm zone="G-DEFINE-TYPE-WITH-CODE:CAPS" role="2.4"><primary>G_DEFINE_TYPE_WITH_CODE</primary></indexterm><programlisting>#define G_DEFINE_TYPE_WITH_CODE(TN, t_n, T_P, _C_)	    _G_DEFINE_TYPE_EXTENDED_BEGIN (TN, t_n, T_P, 0) {_C_;} _G_DEFINE_TYPE_EXTENDED_END()
 </programlisting>
 <para>
 A convenience macro for type implementations.  
@@ -2498,9 +2443,9 @@ See <link linkend="G-DEFINE-TYPE-EXTENDED:CAPS"><function>G_DEFINE_TYPE_EXTENDED
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-DEFINE-ABSTRACT-TYPE:CAPS" role="macro" condition="since:2.4"/>G_DEFINE_ABSTRACT_TYPE()</title>
-<indexterm role="2.4"><primary>G_DEFINE_ABSTRACT_TYPE</primary></indexterm><programlisting>#define G_DEFINE_ABSTRACT_TYPE(TN, t_n, T_P)		    G_DEFINE_TYPE_EXTENDED (TN, t_n, T_P, G_TYPE_FLAG_ABSTRACT, {})
+<refsect2 id="G-DEFINE-ABSTRACT-TYPE:CAPS" role="macro" condition="since:2.4">
+<title>G_DEFINE_ABSTRACT_TYPE()</title>
+<indexterm zone="G-DEFINE-ABSTRACT-TYPE:CAPS" role="2.4"><primary>G_DEFINE_ABSTRACT_TYPE</primary></indexterm><programlisting>#define G_DEFINE_ABSTRACT_TYPE(TN, t_n, T_P)		    G_DEFINE_TYPE_EXTENDED (TN, t_n, T_P, G_TYPE_FLAG_ABSTRACT, {})
 </programlisting>
 <para>
 A convenience macro for type implementations. 
@@ -2521,9 +2466,9 @@ See <link linkend="G-DEFINE-TYPE-EXTENDED:CAPS"><function>G_DEFINE_TYPE_EXTENDED
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-DEFINE-ABSTRACT-TYPE-WITH-CODE:CAPS" role="macro" condition="since:2.4"/>G_DEFINE_ABSTRACT_TYPE_WITH_CODE()</title>
-<indexterm role="2.4"><primary>G_DEFINE_ABSTRACT_TYPE_WITH_CODE</primary></indexterm><programlisting>#define G_DEFINE_ABSTRACT_TYPE_WITH_CODE(TN, t_n, T_P, _C_) _G_DEFINE_TYPE_EXTENDED_BEGIN (TN, t_n, T_P, G_TYPE_FLAG_ABSTRACT) {_C_;} _G_DEFINE_TYPE_EXTENDED_END()
+<refsect2 id="G-DEFINE-ABSTRACT-TYPE-WITH-CODE:CAPS" role="macro" condition="since:2.4">
+<title>G_DEFINE_ABSTRACT_TYPE_WITH_CODE()</title>
+<indexterm zone="G-DEFINE-ABSTRACT-TYPE-WITH-CODE:CAPS" role="2.4"><primary>G_DEFINE_ABSTRACT_TYPE_WITH_CODE</primary></indexterm><programlisting>#define G_DEFINE_ABSTRACT_TYPE_WITH_CODE(TN, t_n, T_P, _C_) _G_DEFINE_TYPE_EXTENDED_BEGIN (TN, t_n, T_P, G_TYPE_FLAG_ABSTRACT) {_C_;} _G_DEFINE_TYPE_EXTENDED_END()
 </programlisting>
 <para>
 A convenience macro for type implementations.
@@ -2548,9 +2493,9 @@ via <link linkend="G-IMPLEMENT-INTERFACE:CAPS"><function>G_IMPLEMENT_INTERFACE()
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-IMPLEMENT-INTERFACE:CAPS" role="macro" condition="since:2.4"/>G_IMPLEMENT_INTERFACE()</title>
-<indexterm role="2.4"><primary>G_IMPLEMENT_INTERFACE</primary></indexterm><programlisting>#define             G_IMPLEMENT_INTERFACE(TYPE_IFACE, iface_init)</programlisting>
+<refsect2 id="G-IMPLEMENT-INTERFACE:CAPS" role="macro" condition="since:2.4">
+<title>G_IMPLEMENT_INTERFACE()</title>
+<indexterm zone="G-IMPLEMENT-INTERFACE:CAPS" role="2.4"><primary>G_IMPLEMENT_INTERFACE</primary></indexterm><programlisting>#define             G_IMPLEMENT_INTERFACE(TYPE_IFACE, iface_init)</programlisting>
 <para>
 A convenience macro to ease interface addition in the <parameter>_C_</parameter> section
 of <link linkend="G-DEFINE-TYPE-WITH-CODE:CAPS"><function>G_DEFINE_TYPE_WITH_CODE()</function></link> or <link linkend="G-DEFINE-ABSTRACT-TYPE-WITH-CODE:CAPS"><function>G_DEFINE_ABSTRACT_TYPE_WITH_CODE()</function></link>. 
@@ -2570,9 +2515,9 @@ macros, since it depends on variable names from those macros.
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-DEFINE-TYPE-EXTENDED:CAPS" role="macro" condition="since:2.4"/>G_DEFINE_TYPE_EXTENDED()</title>
-<indexterm role="2.4"><primary>G_DEFINE_TYPE_EXTENDED</primary></indexterm><programlisting>#define G_DEFINE_TYPE_EXTENDED(TN, t_n, T_P, _f_, _C_)	    _G_DEFINE_TYPE_EXTENDED_BEGIN (TN, t_n, T_P, _f_) {_C_;} _G_DEFINE_TYPE_EXTENDED_END()
+<refsect2 id="G-DEFINE-TYPE-EXTENDED:CAPS" role="macro" condition="since:2.4">
+<title>G_DEFINE_TYPE_EXTENDED()</title>
+<indexterm zone="G-DEFINE-TYPE-EXTENDED:CAPS" role="2.4"><primary>G_DEFINE_TYPE_EXTENDED</primary></indexterm><programlisting>#define G_DEFINE_TYPE_EXTENDED(TN, t_n, T_P, _f_, _C_)	    _G_DEFINE_TYPE_EXTENDED_BEGIN (TN, t_n, T_P, _f_) {_C_;} _G_DEFINE_TYPE_EXTENDED_END()
 </programlisting>
 <para>
 The most general convenience macro for type implementations, on which 
@@ -2630,213 +2575,216 @@ instance and class structure and the definitions of the instance and class
 init functions.
 </informalexample><variablelist role="params">
 <varlistentry><term><parameter>TN</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara>The name of the new type, in Camel case.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>t_n</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara>The name of the new type, in lowercase, with words 
+  separated by '_'.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>T_P</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara>The <link linkend="GType"><type>GType</type></link> of the parent type.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>_f_</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara><link linkend="GTypeFlags"><type>GTypeFlags</type></link> to pass to <link linkend="g-type-register-static"><function>g_type_register_static()</function></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>_C_</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara>Custom code that gets inserted in the *<link linkend="get-type"><function>_get_type()</function></link> function.
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 2.4
+
+
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-INVALID:CAPS" role="macro"/>G_TYPE_INVALID</title>
-<indexterm><primary>G_TYPE_INVALID</primary></indexterm><programlisting>#define G_TYPE_INVALID			G_TYPE_MAKE_FUNDAMENTAL (0)
+<refsect2 id="G-TYPE-INVALID:CAPS" role="macro">
+<title>G_TYPE_INVALID</title>
+<indexterm zone="G-TYPE-INVALID:CAPS"><primary>G_TYPE_INVALID</primary></indexterm><programlisting>#define G_TYPE_INVALID			G_TYPE_MAKE_FUNDAMENTAL (0)
 </programlisting>
 <para>
 An invalid <link linkend="GType"><type>GType</type></link> used as error return value in some functions which return
 a <link linkend="GType"><type>GType</type></link>. 
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-NONE:CAPS" role="macro"/>G_TYPE_NONE</title>
-<indexterm><primary>G_TYPE_NONE</primary></indexterm><programlisting>#define G_TYPE_NONE			G_TYPE_MAKE_FUNDAMENTAL (1)
+<refsect2 id="G-TYPE-NONE:CAPS" role="macro">
+<title>G_TYPE_NONE</title>
+<indexterm zone="G-TYPE-NONE:CAPS"><primary>G_TYPE_NONE</primary></indexterm><programlisting>#define G_TYPE_NONE			G_TYPE_MAKE_FUNDAMENTAL (1)
 </programlisting>
 <para>
 A fundamental type which is used as a replacement for the C
 <literal>void</literal> return type.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-INTERFACE:CAPS" role="macro"/>G_TYPE_INTERFACE</title>
-<indexterm><primary>G_TYPE_INTERFACE</primary></indexterm><programlisting>#define G_TYPE_INTERFACE		G_TYPE_MAKE_FUNDAMENTAL (2)
+<refsect2 id="G-TYPE-INTERFACE:CAPS" role="macro">
+<title>G_TYPE_INTERFACE</title>
+<indexterm zone="G-TYPE-INTERFACE:CAPS"><primary>G_TYPE_INTERFACE</primary></indexterm><programlisting>#define G_TYPE_INTERFACE		G_TYPE_MAKE_FUNDAMENTAL (2)
 </programlisting>
 <para>
 The fundamental type from which all interfaces are derived.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-CHAR:CAPS" role="macro"/>G_TYPE_CHAR</title>
-<indexterm><primary>G_TYPE_CHAR</primary></indexterm><programlisting>#define G_TYPE_CHAR			G_TYPE_MAKE_FUNDAMENTAL (3)
+<refsect2 id="G-TYPE-CHAR:CAPS" role="macro">
+<title>G_TYPE_CHAR</title>
+<indexterm zone="G-TYPE-CHAR:CAPS"><primary>G_TYPE_CHAR</primary></indexterm><programlisting>#define G_TYPE_CHAR			G_TYPE_MAKE_FUNDAMENTAL (3)
 </programlisting>
   <para>
     The fundamental type corresponding to <link linkend="gchar"><type>gchar</type></link>.
     The type designated by G_TYPE_CHAR is unconditionally an 8-bit signed integer.
     This may or may not be the same type a the C type "gchar".
   </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-UCHAR:CAPS" role="macro"/>G_TYPE_UCHAR</title>
-<indexterm><primary>G_TYPE_UCHAR</primary></indexterm><programlisting>#define G_TYPE_UCHAR			G_TYPE_MAKE_FUNDAMENTAL (4)
+<refsect2 id="G-TYPE-UCHAR:CAPS" role="macro">
+<title>G_TYPE_UCHAR</title>
+<indexterm zone="G-TYPE-UCHAR:CAPS"><primary>G_TYPE_UCHAR</primary></indexterm><programlisting>#define G_TYPE_UCHAR			G_TYPE_MAKE_FUNDAMENTAL (4)
 </programlisting>
 <para>
 The fundamental type corresponding to <link linkend="guchar"><type>guchar</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-BOOLEAN:CAPS" role="macro"/>G_TYPE_BOOLEAN</title>
-<indexterm><primary>G_TYPE_BOOLEAN</primary></indexterm><programlisting>#define G_TYPE_BOOLEAN			G_TYPE_MAKE_FUNDAMENTAL (5)
+<refsect2 id="G-TYPE-BOOLEAN:CAPS" role="macro">
+<title>G_TYPE_BOOLEAN</title>
+<indexterm zone="G-TYPE-BOOLEAN:CAPS"><primary>G_TYPE_BOOLEAN</primary></indexterm><programlisting>#define G_TYPE_BOOLEAN			G_TYPE_MAKE_FUNDAMENTAL (5)
 </programlisting>
 <para>
 The fundamental type corresponding to <link linkend="gboolean"><type>gboolean</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-INT:CAPS" role="macro"/>G_TYPE_INT</title>
-<indexterm><primary>G_TYPE_INT</primary></indexterm><programlisting>#define G_TYPE_INT			G_TYPE_MAKE_FUNDAMENTAL (6)
+<refsect2 id="G-TYPE-INT:CAPS" role="macro">
+<title>G_TYPE_INT</title>
+<indexterm zone="G-TYPE-INT:CAPS"><primary>G_TYPE_INT</primary></indexterm><programlisting>#define G_TYPE_INT			G_TYPE_MAKE_FUNDAMENTAL (6)
 </programlisting>
 <para>
 The fundamental type corresponding to <link linkend="gint"><type>gint</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-UINT:CAPS" role="macro"/>G_TYPE_UINT</title>
-<indexterm><primary>G_TYPE_UINT</primary></indexterm><programlisting>#define G_TYPE_UINT			G_TYPE_MAKE_FUNDAMENTAL (7)
+<refsect2 id="G-TYPE-UINT:CAPS" role="macro">
+<title>G_TYPE_UINT</title>
+<indexterm zone="G-TYPE-UINT:CAPS"><primary>G_TYPE_UINT</primary></indexterm><programlisting>#define G_TYPE_UINT			G_TYPE_MAKE_FUNDAMENTAL (7)
 </programlisting>
 <para>
 The fundamental type corresponding to <link linkend="guint"><type>guint</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-LONG:CAPS" role="macro"/>G_TYPE_LONG</title>
-<indexterm><primary>G_TYPE_LONG</primary></indexterm><programlisting>#define G_TYPE_LONG			G_TYPE_MAKE_FUNDAMENTAL (8)
+<refsect2 id="G-TYPE-LONG:CAPS" role="macro">
+<title>G_TYPE_LONG</title>
+<indexterm zone="G-TYPE-LONG:CAPS"><primary>G_TYPE_LONG</primary></indexterm><programlisting>#define G_TYPE_LONG			G_TYPE_MAKE_FUNDAMENTAL (8)
 </programlisting>
 <para>
 The fundamental type corresponding to <link linkend="glong"><type>glong</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-ULONG:CAPS" role="macro"/>G_TYPE_ULONG</title>
-<indexterm><primary>G_TYPE_ULONG</primary></indexterm><programlisting>#define G_TYPE_ULONG			G_TYPE_MAKE_FUNDAMENTAL (9)
+<refsect2 id="G-TYPE-ULONG:CAPS" role="macro">
+<title>G_TYPE_ULONG</title>
+<indexterm zone="G-TYPE-ULONG:CAPS"><primary>G_TYPE_ULONG</primary></indexterm><programlisting>#define G_TYPE_ULONG			G_TYPE_MAKE_FUNDAMENTAL (9)
 </programlisting>
 <para>
 The fundamental type corresponding to <link linkend="gulong"><type>gulong</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-INT64:CAPS" role="macro"/>G_TYPE_INT64</title>
-<indexterm><primary>G_TYPE_INT64</primary></indexterm><programlisting>#define G_TYPE_INT64			G_TYPE_MAKE_FUNDAMENTAL (10)
+<refsect2 id="G-TYPE-INT64:CAPS" role="macro">
+<title>G_TYPE_INT64</title>
+<indexterm zone="G-TYPE-INT64:CAPS"><primary>G_TYPE_INT64</primary></indexterm><programlisting>#define G_TYPE_INT64			G_TYPE_MAKE_FUNDAMENTAL (10)
 </programlisting>
 <para>
 The fundamental type corresponding to <link linkend="gint64"><type>gint64</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-UINT64:CAPS" role="macro"/>G_TYPE_UINT64</title>
-<indexterm><primary>G_TYPE_UINT64</primary></indexterm><programlisting>#define G_TYPE_UINT64			G_TYPE_MAKE_FUNDAMENTAL (11)
+<refsect2 id="G-TYPE-UINT64:CAPS" role="macro">
+<title>G_TYPE_UINT64</title>
+<indexterm zone="G-TYPE-UINT64:CAPS"><primary>G_TYPE_UINT64</primary></indexterm><programlisting>#define G_TYPE_UINT64			G_TYPE_MAKE_FUNDAMENTAL (11)
 </programlisting>
 <para>
 The fundamental type corresponding to <link linkend="guint64"><type>guint64</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-ENUM:CAPS" role="macro"/>G_TYPE_ENUM</title>
-<indexterm><primary>G_TYPE_ENUM</primary></indexterm><programlisting>#define G_TYPE_ENUM			G_TYPE_MAKE_FUNDAMENTAL (12)
+<refsect2 id="G-TYPE-ENUM:CAPS" role="macro">
+<title>G_TYPE_ENUM</title>
+<indexterm zone="G-TYPE-ENUM:CAPS"><primary>G_TYPE_ENUM</primary></indexterm><programlisting>#define G_TYPE_ENUM			G_TYPE_MAKE_FUNDAMENTAL (12)
 </programlisting>
 <para>
 The fundamental type from which all enumeration types are derived.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-FLAGS:CAPS" role="macro"/>G_TYPE_FLAGS</title>
-<indexterm><primary>G_TYPE_FLAGS</primary></indexterm><programlisting>#define G_TYPE_FLAGS			G_TYPE_MAKE_FUNDAMENTAL (13)
+<refsect2 id="G-TYPE-FLAGS:CAPS" role="macro">
+<title>G_TYPE_FLAGS</title>
+<indexterm zone="G-TYPE-FLAGS:CAPS"><primary>G_TYPE_FLAGS</primary></indexterm><programlisting>#define G_TYPE_FLAGS			G_TYPE_MAKE_FUNDAMENTAL (13)
 </programlisting>
 <para>
 The fundamental type from which all flags types are derived.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-FLOAT:CAPS" role="macro"/>G_TYPE_FLOAT</title>
-<indexterm><primary>G_TYPE_FLOAT</primary></indexterm><programlisting>#define G_TYPE_FLOAT			G_TYPE_MAKE_FUNDAMENTAL (14)
+<refsect2 id="G-TYPE-FLOAT:CAPS" role="macro">
+<title>G_TYPE_FLOAT</title>
+<indexterm zone="G-TYPE-FLOAT:CAPS"><primary>G_TYPE_FLOAT</primary></indexterm><programlisting>#define G_TYPE_FLOAT			G_TYPE_MAKE_FUNDAMENTAL (14)
 </programlisting>
 <para>
 The fundamental type corresponding to <link linkend="gfloat"><type>gfloat</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-DOUBLE:CAPS" role="macro"/>G_TYPE_DOUBLE</title>
-<indexterm><primary>G_TYPE_DOUBLE</primary></indexterm><programlisting>#define G_TYPE_DOUBLE			G_TYPE_MAKE_FUNDAMENTAL (15)
+<refsect2 id="G-TYPE-DOUBLE:CAPS" role="macro">
+<title>G_TYPE_DOUBLE</title>
+<indexterm zone="G-TYPE-DOUBLE:CAPS"><primary>G_TYPE_DOUBLE</primary></indexterm><programlisting>#define G_TYPE_DOUBLE			G_TYPE_MAKE_FUNDAMENTAL (15)
 </programlisting>
 <para>
 The fundamental type corresponding to <link linkend="gdouble"><type>gdouble</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-STRING:CAPS" role="macro"/>G_TYPE_STRING</title>
-<indexterm><primary>G_TYPE_STRING</primary></indexterm><programlisting>#define G_TYPE_STRING			G_TYPE_MAKE_FUNDAMENTAL (16)
+<refsect2 id="G-TYPE-STRING:CAPS" role="macro">
+<title>G_TYPE_STRING</title>
+<indexterm zone="G-TYPE-STRING:CAPS"><primary>G_TYPE_STRING</primary></indexterm><programlisting>#define G_TYPE_STRING			G_TYPE_MAKE_FUNDAMENTAL (16)
 </programlisting>
 <para>
 The fundamental type corresponding to nul-terminated C strings.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-POINTER:CAPS" role="macro"/>G_TYPE_POINTER</title>
-<indexterm><primary>G_TYPE_POINTER</primary></indexterm><programlisting>#define G_TYPE_POINTER			G_TYPE_MAKE_FUNDAMENTAL (17)
+<refsect2 id="G-TYPE-POINTER:CAPS" role="macro">
+<title>G_TYPE_POINTER</title>
+<indexterm zone="G-TYPE-POINTER:CAPS"><primary>G_TYPE_POINTER</primary></indexterm><programlisting>#define G_TYPE_POINTER			G_TYPE_MAKE_FUNDAMENTAL (17)
 </programlisting>
 <para>
 The fundamental type corresponding to <link linkend="gpointer"><type>gpointer</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-BOXED:CAPS" role="macro"/>G_TYPE_BOXED</title>
-<indexterm><primary>G_TYPE_BOXED</primary></indexterm><programlisting>#define G_TYPE_BOXED			G_TYPE_MAKE_FUNDAMENTAL (18)
+<refsect2 id="G-TYPE-BOXED:CAPS" role="macro">
+<title>G_TYPE_BOXED</title>
+<indexterm zone="G-TYPE-BOXED:CAPS"><primary>G_TYPE_BOXED</primary></indexterm><programlisting>#define G_TYPE_BOXED			G_TYPE_MAKE_FUNDAMENTAL (18)
 </programlisting>
 <para>
 The fundamental type from which all boxed types are derived.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM:CAPS" role="macro"/>G_TYPE_PARAM</title>
-<indexterm><primary>G_TYPE_PARAM</primary></indexterm><programlisting>#define G_TYPE_PARAM			G_TYPE_MAKE_FUNDAMENTAL (19)
+<refsect2 id="G-TYPE-PARAM:CAPS" role="macro">
+<title>G_TYPE_PARAM</title>
+<indexterm zone="G-TYPE-PARAM:CAPS"><primary>G_TYPE_PARAM</primary></indexterm><programlisting>#define G_TYPE_PARAM			G_TYPE_MAKE_FUNDAMENTAL (19)
 </programlisting>
 <para>
 The fundamental type from which all <link linkend="GParamSpec"><type>GParamSpec</type></link> types are derived.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-OBJECT:CAPS" role="macro"/>G_TYPE_OBJECT</title>
-<indexterm><primary>G_TYPE_OBJECT</primary></indexterm><programlisting>#define G_TYPE_OBJECT			G_TYPE_MAKE_FUNDAMENTAL (20)
+<refsect2 id="G-TYPE-OBJECT:CAPS" role="macro">
+<title>G_TYPE_OBJECT</title>
+<indexterm zone="G-TYPE-OBJECT:CAPS"><primary>G_TYPE_OBJECT</primary></indexterm><programlisting>#define G_TYPE_OBJECT			G_TYPE_MAKE_FUNDAMENTAL (20)
 </programlisting>
 <para>
 The fundamental type for <link linkend="GObject"><type>GObject</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-GTYPE:CAPS" role="macro"/>G_TYPE_GTYPE</title>
-<indexterm><primary>G_TYPE_GTYPE</primary></indexterm><programlisting>#define	G_TYPE_GTYPE			 (g_gtype_get_type())
+<refsect2 id="G-TYPE-GTYPE:CAPS" role="macro">
+<title>G_TYPE_GTYPE</title>
+<indexterm zone="G-TYPE-GTYPE:CAPS"><primary>G_TYPE_GTYPE</primary></indexterm><programlisting>#define	G_TYPE_GTYPE			 (g_gtype_get_type())
 </programlisting>
 <para>
 The type for <link linkend="GType"><type>GType</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-RESERVED-GLIB-FIRST:CAPS" role="macro"/>G_TYPE_RESERVED_GLIB_FIRST</title>
-<indexterm><primary>G_TYPE_RESERVED_GLIB_FIRST</primary></indexterm><programlisting>#define G_TYPE_RESERVED_GLIB_FIRST	(21)
+<refsect2 id="G-TYPE-RESERVED-GLIB-FIRST:CAPS" role="macro">
+<title>G_TYPE_RESERVED_GLIB_FIRST</title>
+<indexterm zone="G-TYPE-RESERVED-GLIB-FIRST:CAPS"><primary>G_TYPE_RESERVED_GLIB_FIRST</primary></indexterm><programlisting>#define G_TYPE_RESERVED_GLIB_FIRST	(21)
 </programlisting>
 <para>
 First fundamental type number to create a new fundamental type id with
 <link linkend="G-TYPE-MAKE-FUNDAMENTAL:CAPS"><function>G_TYPE_MAKE_FUNDAMENTAL()</function></link> reserved for GLib.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-RESERVED-GLIB-LAST:CAPS" role="macro"/>G_TYPE_RESERVED_GLIB_LAST</title>
-<indexterm><primary>G_TYPE_RESERVED_GLIB_LAST</primary></indexterm><programlisting>#define G_TYPE_RESERVED_GLIB_LAST	(31)
+<refsect2 id="G-TYPE-RESERVED-GLIB-LAST:CAPS" role="macro">
+<title>G_TYPE_RESERVED_GLIB_LAST</title>
+<indexterm zone="G-TYPE-RESERVED-GLIB-LAST:CAPS"><primary>G_TYPE_RESERVED_GLIB_LAST</primary></indexterm><programlisting>#define G_TYPE_RESERVED_GLIB_LAST	(31)
 </programlisting>
 <para>
 Last fundamental type number reserved for GLib.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-RESERVED-BSE-FIRST:CAPS" role="macro"/>G_TYPE_RESERVED_BSE_FIRST</title>
-<indexterm><primary>G_TYPE_RESERVED_BSE_FIRST</primary></indexterm><programlisting>#define G_TYPE_RESERVED_BSE_FIRST	(32)
+<refsect2 id="G-TYPE-RESERVED-BSE-FIRST:CAPS" role="macro">
+<title>G_TYPE_RESERVED_BSE_FIRST</title>
+<indexterm zone="G-TYPE-RESERVED-BSE-FIRST:CAPS"><primary>G_TYPE_RESERVED_BSE_FIRST</primary></indexterm><programlisting>#define G_TYPE_RESERVED_BSE_FIRST	(32)
 </programlisting>
 <para>
 First fundamental type number to create a new fundamental type id with
 <link linkend="G-TYPE-MAKE-FUNDAMENTAL:CAPS"><function>G_TYPE_MAKE_FUNDAMENTAL()</function></link> reserved for BSE.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-RESERVED-BSE-LAST:CAPS" role="macro"/>G_TYPE_RESERVED_BSE_LAST</title>
-<indexterm><primary>G_TYPE_RESERVED_BSE_LAST</primary></indexterm><programlisting>#define G_TYPE_RESERVED_BSE_LAST	(48)
+<refsect2 id="G-TYPE-RESERVED-BSE-LAST:CAPS" role="macro">
+<title>G_TYPE_RESERVED_BSE_LAST</title>
+<indexterm zone="G-TYPE-RESERVED-BSE-LAST:CAPS"><primary>G_TYPE_RESERVED_BSE_LAST</primary></indexterm><programlisting>#define G_TYPE_RESERVED_BSE_LAST	(48)
 </programlisting>
 <para>
 Last fundamental type number reserved for BSE.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-RESERVED-USER-FIRST:CAPS" role="macro"/>G_TYPE_RESERVED_USER_FIRST</title>
-<indexterm><primary>G_TYPE_RESERVED_USER_FIRST</primary></indexterm><programlisting>#define G_TYPE_RESERVED_USER_FIRST	(49)
+<refsect2 id="G-TYPE-RESERVED-USER-FIRST:CAPS" role="macro">
+<title>G_TYPE_RESERVED_USER_FIRST</title>
+<indexterm zone="G-TYPE-RESERVED-USER-FIRST:CAPS"><primary>G_TYPE_RESERVED_USER_FIRST</primary></indexterm><programlisting>#define G_TYPE_RESERVED_USER_FIRST	(49)
 </programlisting>
 <para>
 First available fundamental type number to create new fundamental 

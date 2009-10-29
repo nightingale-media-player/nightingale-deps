@@ -1,23 +1,22 @@
 <refentry id="glib-Byte-Order-Macros">
 <refmeta>
-<refentrytitle role="top_of_page">Byte Order Macros</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Byte-Order-Macros.top_of_page">Byte Order Macros</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>Byte Order Macros</refname>
-<refpurpose>a portable way to convert between different byte orders.</refpurpose>
+<refpurpose>a portable way to convert between different byte orders</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Byte-Order-Macros.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
-
 
 #define             <link linkend="G-BYTE-ORDER:CAPS">G_BYTE_ORDER</link>
 #define             <link linkend="G-LITTLE-ENDIAN:CAPS">G_LITTLE_ENDIAN</link>
@@ -88,7 +87,6 @@
 #define             <link linkend="GUINT32-SWAP-LE-PDP:CAPS">GUINT32_SWAP_LE_PDP</link>                 (val)
 
 #define             <link linkend="GUINT64-SWAP-LE-BE:CAPS">GUINT64_SWAP_LE_BE</link>                  (val)
-
 </synopsis>
 </refsynopsisdiv>
 
@@ -100,7 +98,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Byte-Order-Macros.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 These macros provide a portable way to determine the host byte order
@@ -142,44 +140,44 @@ side-effects.
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Byte-Order-Macros.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="G-BYTE-ORDER:CAPS" role="macro"/>G_BYTE_ORDER</title>
-<indexterm><primary>G_BYTE_ORDER</primary></indexterm><programlisting>#define G_BYTE_ORDER G_LITTLE_ENDIAN
+<refsect2 id="G-BYTE-ORDER:CAPS" role="macro">
+<title>G_BYTE_ORDER</title>
+<indexterm zone="G-BYTE-ORDER:CAPS"><primary>G_BYTE_ORDER</primary></indexterm><programlisting>#define G_BYTE_ORDER G_LITTLE_ENDIAN
 </programlisting>
 <para>
 The host byte order.
 This can be either <link linkend="G-LITTLE-ENDIAN:CAPS"><type>G_LITTLE_ENDIAN</type></link> or <link linkend="G-BIG-ENDIAN:CAPS"><type>G_BIG_ENDIAN</type></link> (support for
 <link linkend="G-PDP-ENDIAN:CAPS"><type>G_PDP_ENDIAN</type></link> may be added in future.)
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-LITTLE-ENDIAN:CAPS" role="macro"/>G_LITTLE_ENDIAN</title>
-<indexterm><primary>G_LITTLE_ENDIAN</primary></indexterm><programlisting>#define G_LITTLE_ENDIAN 1234
+<refsect2 id="G-LITTLE-ENDIAN:CAPS" role="macro">
+<title>G_LITTLE_ENDIAN</title>
+<indexterm zone="G-LITTLE-ENDIAN:CAPS"><primary>G_LITTLE_ENDIAN</primary></indexterm><programlisting>#define G_LITTLE_ENDIAN 1234
 </programlisting>
 <para>
 Specifies one of the possible types of byte order.
 See <link linkend="G-BYTE-ORDER:CAPS"><type>G_BYTE_ORDER</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-BIG-ENDIAN:CAPS" role="macro"/>G_BIG_ENDIAN</title>
-<indexterm><primary>G_BIG_ENDIAN</primary></indexterm><programlisting>#define G_BIG_ENDIAN    4321
+<refsect2 id="G-BIG-ENDIAN:CAPS" role="macro">
+<title>G_BIG_ENDIAN</title>
+<indexterm zone="G-BIG-ENDIAN:CAPS"><primary>G_BIG_ENDIAN</primary></indexterm><programlisting>#define G_BIG_ENDIAN    4321
 </programlisting>
 <para>
 Specifies one of the possible types of byte order.
 See <link linkend="G-BYTE-ORDER:CAPS"><type>G_BYTE_ORDER</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-PDP-ENDIAN:CAPS" role="macro"/>G_PDP_ENDIAN</title>
-<indexterm><primary>G_PDP_ENDIAN</primary></indexterm><programlisting>#define G_PDP_ENDIAN    3412		/* unused, need specific PDP check */	
+<refsect2 id="G-PDP-ENDIAN:CAPS" role="macro">
+<title>G_PDP_ENDIAN</title>
+<indexterm zone="G-PDP-ENDIAN:CAPS"><primary>G_PDP_ENDIAN</primary></indexterm><programlisting>#define G_PDP_ENDIAN    3412		/* unused, need specific PDP check */	
 </programlisting>
 <para>
 Specifies one of the possible types of byte order (currently unused).
 See <link linkend="G-BYTE-ORDER:CAPS"><type>G_BYTE_ORDER</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-htonl" role="macro"/>g_htonl()</title>
-<indexterm><primary>g_htonl</primary></indexterm><programlisting>#define             g_htonl(val)</programlisting>
+<refsect2 id="g-htonl" role="macro">
+<title>g_htonl()</title>
+<indexterm zone="g-htonl"><primary>g_htonl</primary></indexterm><programlisting>#define             g_htonl(val)</programlisting>
 <para>
 Converts a 32-bit integer value from host to network byte order.
 </para><variablelist role="params">
@@ -191,9 +189,9 @@ Converts a 32-bit integer value from host to network byte order.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-htons" role="macro"/>g_htons()</title>
-<indexterm><primary>g_htons</primary></indexterm><programlisting>#define             g_htons(val)</programlisting>
+<refsect2 id="g-htons" role="macro">
+<title>g_htons()</title>
+<indexterm zone="g-htons"><primary>g_htons</primary></indexterm><programlisting>#define             g_htons(val)</programlisting>
 <para>
 Converts a 16-bit integer value from host to network byte order.
 </para><variablelist role="params">
@@ -205,9 +203,9 @@ Converts a 16-bit integer value from host to network byte order.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ntohl" role="macro"/>g_ntohl()</title>
-<indexterm><primary>g_ntohl</primary></indexterm><programlisting>#define             g_ntohl(val)</programlisting>
+<refsect2 id="g-ntohl" role="macro">
+<title>g_ntohl()</title>
+<indexterm zone="g-ntohl"><primary>g_ntohl</primary></indexterm><programlisting>#define             g_ntohl(val)</programlisting>
 <para>
 Converts a 32-bit integer value from network to host byte order.
 </para><variablelist role="params">
@@ -219,9 +217,9 @@ Converts a 32-bit integer value from network to host byte order.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ntohs" role="macro"/>g_ntohs()</title>
-<indexterm><primary>g_ntohs</primary></indexterm><programlisting>#define             g_ntohs(val)</programlisting>
+<refsect2 id="g-ntohs" role="macro">
+<title>g_ntohs()</title>
+<indexterm zone="g-ntohs"><primary>g_ntohs</primary></indexterm><programlisting>#define             g_ntohs(val)</programlisting>
 <para>
 Converts a 16-bit integer value from network to host byte order.
 </para><variablelist role="params">
@@ -233,9 +231,9 @@ Converts a 16-bit integer value from network to host byte order.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GINT-FROM-BE:CAPS" role="macro"/>GINT_FROM_BE()</title>
-<indexterm><primary>GINT_FROM_BE</primary></indexterm><programlisting>#define GINT_FROM_BE(val)	(GINT_TO_BE (val))
+<refsect2 id="GINT-FROM-BE:CAPS" role="macro">
+<title>GINT_FROM_BE()</title>
+<indexterm zone="GINT-FROM-BE:CAPS"><primary>GINT_FROM_BE</primary></indexterm><programlisting>#define GINT_FROM_BE(val)	(GINT_TO_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="gint"><type>gint</type></link> value from big-endian to host byte order.
@@ -248,9 +246,9 @@ Converts a <link linkend="gint"><type>gint</type></link> value from big-endian t
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GINT-FROM-LE:CAPS" role="macro"/>GINT_FROM_LE()</title>
-<indexterm><primary>GINT_FROM_LE</primary></indexterm><programlisting>#define GINT_FROM_LE(val)	(GINT_TO_LE (val))
+<refsect2 id="GINT-FROM-LE:CAPS" role="macro">
+<title>GINT_FROM_LE()</title>
+<indexterm zone="GINT-FROM-LE:CAPS"><primary>GINT_FROM_LE</primary></indexterm><programlisting>#define GINT_FROM_LE(val)	(GINT_TO_LE (val))
 </programlisting>
 <para>
 Converts a <link linkend="gint"><type>gint</type></link> value from little-endian to host byte order.
@@ -263,9 +261,9 @@ Converts a <link linkend="gint"><type>gint</type></link> value from little-endia
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GINT-TO-BE:CAPS" role="macro"/>GINT_TO_BE()</title>
-<indexterm><primary>GINT_TO_BE</primary></indexterm><programlisting>#define GINT_TO_BE(val)		((gint) GINT32_TO_BE (val))
+<refsect2 id="GINT-TO-BE:CAPS" role="macro">
+<title>GINT_TO_BE()</title>
+<indexterm zone="GINT-TO-BE:CAPS"><primary>GINT_TO_BE</primary></indexterm><programlisting>#define GINT_TO_BE(val)		((gint) GINT32_TO_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="gint"><type>gint</type></link> value from host byte order to big-endian.
@@ -278,9 +276,9 @@ Converts a <link linkend="gint"><type>gint</type></link> value from host byte or
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GINT-TO-LE:CAPS" role="macro"/>GINT_TO_LE()</title>
-<indexterm><primary>GINT_TO_LE</primary></indexterm><programlisting>#define GINT_TO_LE(val)		((gint) GINT32_TO_LE (val))
+<refsect2 id="GINT-TO-LE:CAPS" role="macro">
+<title>GINT_TO_LE()</title>
+<indexterm zone="GINT-TO-LE:CAPS"><primary>GINT_TO_LE</primary></indexterm><programlisting>#define GINT_TO_LE(val)		((gint) GINT32_TO_LE (val))
 </programlisting>
 <para>
 Converts a <link linkend="gint"><type>gint</type></link> value from host byte order to little-endian.
@@ -293,9 +291,9 @@ Converts a <link linkend="gint"><type>gint</type></link> value from host byte or
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT-FROM-BE:CAPS" role="macro"/>GUINT_FROM_BE()</title>
-<indexterm><primary>GUINT_FROM_BE</primary></indexterm><programlisting>#define GUINT_FROM_BE(val)	(GUINT_TO_BE (val))
+<refsect2 id="GUINT-FROM-BE:CAPS" role="macro">
+<title>GUINT_FROM_BE()</title>
+<indexterm zone="GUINT-FROM-BE:CAPS"><primary>GUINT_FROM_BE</primary></indexterm><programlisting>#define GUINT_FROM_BE(val)	(GUINT_TO_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="guint"><type>guint</type></link> value from big-endian to host byte order.
@@ -308,9 +306,9 @@ Converts a <link linkend="guint"><type>guint</type></link> value from big-endian
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT-FROM-LE:CAPS" role="macro"/>GUINT_FROM_LE()</title>
-<indexterm><primary>GUINT_FROM_LE</primary></indexterm><programlisting>#define GUINT_FROM_LE(val)	(GUINT_TO_LE (val))
+<refsect2 id="GUINT-FROM-LE:CAPS" role="macro">
+<title>GUINT_FROM_LE()</title>
+<indexterm zone="GUINT-FROM-LE:CAPS"><primary>GUINT_FROM_LE</primary></indexterm><programlisting>#define GUINT_FROM_LE(val)	(GUINT_TO_LE (val))
 </programlisting>
 <para>
 Converts a <link linkend="guint"><type>guint</type></link> value from little-endian to host byte order.
@@ -323,9 +321,9 @@ Converts a <link linkend="guint"><type>guint</type></link> value from little-end
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT-TO-BE:CAPS" role="macro"/>GUINT_TO_BE()</title>
-<indexterm><primary>GUINT_TO_BE</primary></indexterm><programlisting>#define GUINT_TO_BE(val)	((guint) GUINT32_TO_BE (val))
+<refsect2 id="GUINT-TO-BE:CAPS" role="macro">
+<title>GUINT_TO_BE()</title>
+<indexterm zone="GUINT-TO-BE:CAPS"><primary>GUINT_TO_BE</primary></indexterm><programlisting>#define GUINT_TO_BE(val)	((guint) GUINT32_TO_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="guint"><type>guint</type></link> value from host byte order to big-endian.
@@ -338,9 +336,9 @@ Converts a <link linkend="guint"><type>guint</type></link> value from host byte 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT-TO-LE:CAPS" role="macro"/>GUINT_TO_LE()</title>
-<indexterm><primary>GUINT_TO_LE</primary></indexterm><programlisting>#define GUINT_TO_LE(val)	((guint) GUINT32_TO_LE (val))
+<refsect2 id="GUINT-TO-LE:CAPS" role="macro">
+<title>GUINT_TO_LE()</title>
+<indexterm zone="GUINT-TO-LE:CAPS"><primary>GUINT_TO_LE</primary></indexterm><programlisting>#define GUINT_TO_LE(val)	((guint) GUINT32_TO_LE (val))
 </programlisting>
 <para>
 Converts a <link linkend="guint"><type>guint</type></link> value from host byte order to little-endian.
@@ -353,9 +351,9 @@ Converts a <link linkend="guint"><type>guint</type></link> value from host byte 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GLONG-FROM-BE:CAPS" role="macro"/>GLONG_FROM_BE()</title>
-<indexterm><primary>GLONG_FROM_BE</primary></indexterm><programlisting>#define GLONG_FROM_BE(val)	(GLONG_TO_BE (val))
+<refsect2 id="GLONG-FROM-BE:CAPS" role="macro">
+<title>GLONG_FROM_BE()</title>
+<indexterm zone="GLONG-FROM-BE:CAPS"><primary>GLONG_FROM_BE</primary></indexterm><programlisting>#define GLONG_FROM_BE(val)	(GLONG_TO_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="glong"><type>glong</type></link> value from big-endian to the host byte order.
@@ -368,9 +366,9 @@ Converts a <link linkend="glong"><type>glong</type></link> value from big-endian
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GLONG-FROM-LE:CAPS" role="macro"/>GLONG_FROM_LE()</title>
-<indexterm><primary>GLONG_FROM_LE</primary></indexterm><programlisting>#define GLONG_FROM_LE(val)	(GLONG_TO_LE (val))
+<refsect2 id="GLONG-FROM-LE:CAPS" role="macro">
+<title>GLONG_FROM_LE()</title>
+<indexterm zone="GLONG-FROM-LE:CAPS"><primary>GLONG_FROM_LE</primary></indexterm><programlisting>#define GLONG_FROM_LE(val)	(GLONG_TO_LE (val))
 </programlisting>
 <para>
 Converts a <link linkend="glong"><type>glong</type></link> value from little-endian to host byte order.
@@ -383,9 +381,9 @@ Converts a <link linkend="glong"><type>glong</type></link> value from little-end
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GLONG-TO-BE:CAPS" role="macro"/>GLONG_TO_BE()</title>
-<indexterm><primary>GLONG_TO_BE</primary></indexterm><programlisting>#define GLONG_TO_BE(val)	((glong) GINT32_TO_BE (val))
+<refsect2 id="GLONG-TO-BE:CAPS" role="macro">
+<title>GLONG_TO_BE()</title>
+<indexterm zone="GLONG-TO-BE:CAPS"><primary>GLONG_TO_BE</primary></indexterm><programlisting>#define GLONG_TO_BE(val)	((glong) GINT32_TO_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="glong"><type>glong</type></link> value from host byte order to big-endian.
@@ -398,9 +396,9 @@ Converts a <link linkend="glong"><type>glong</type></link> value from host byte 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GLONG-TO-LE:CAPS" role="macro"/>GLONG_TO_LE()</title>
-<indexterm><primary>GLONG_TO_LE</primary></indexterm><programlisting>#define GLONG_TO_LE(val)	((glong) GINT32_TO_LE (val))
+<refsect2 id="GLONG-TO-LE:CAPS" role="macro">
+<title>GLONG_TO_LE()</title>
+<indexterm zone="GLONG-TO-LE:CAPS"><primary>GLONG_TO_LE</primary></indexterm><programlisting>#define GLONG_TO_LE(val)	((glong) GINT32_TO_LE (val))
 </programlisting>
 <para>
 Converts a <link linkend="glong"><type>glong</type></link> value from host byte order to little-endian.
@@ -413,9 +411,9 @@ Converts a <link linkend="glong"><type>glong</type></link> value from host byte 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GULONG-FROM-BE:CAPS" role="macro"/>GULONG_FROM_BE()</title>
-<indexterm><primary>GULONG_FROM_BE</primary></indexterm><programlisting>#define GULONG_FROM_BE(val)	(GULONG_TO_BE (val))
+<refsect2 id="GULONG-FROM-BE:CAPS" role="macro">
+<title>GULONG_FROM_BE()</title>
+<indexterm zone="GULONG-FROM-BE:CAPS"><primary>GULONG_FROM_BE</primary></indexterm><programlisting>#define GULONG_FROM_BE(val)	(GULONG_TO_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="gulong"><type>gulong</type></link> value from big-endian to host byte order.
@@ -428,9 +426,9 @@ Converts a <link linkend="gulong"><type>gulong</type></link> value from big-endi
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GULONG-FROM-LE:CAPS" role="macro"/>GULONG_FROM_LE()</title>
-<indexterm><primary>GULONG_FROM_LE</primary></indexterm><programlisting>#define GULONG_FROM_LE(val)	(GULONG_TO_LE (val))
+<refsect2 id="GULONG-FROM-LE:CAPS" role="macro">
+<title>GULONG_FROM_LE()</title>
+<indexterm zone="GULONG-FROM-LE:CAPS"><primary>GULONG_FROM_LE</primary></indexterm><programlisting>#define GULONG_FROM_LE(val)	(GULONG_TO_LE (val))
 </programlisting>
 <para>
 Converts a <link linkend="gulong"><type>gulong</type></link> value from little-endian to host byte order.
@@ -443,9 +441,9 @@ Converts a <link linkend="gulong"><type>gulong</type></link> value from little-e
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GULONG-TO-BE:CAPS" role="macro"/>GULONG_TO_BE()</title>
-<indexterm><primary>GULONG_TO_BE</primary></indexterm><programlisting>#define GULONG_TO_BE(val)	((gulong) GUINT32_TO_BE (val))
+<refsect2 id="GULONG-TO-BE:CAPS" role="macro">
+<title>GULONG_TO_BE()</title>
+<indexterm zone="GULONG-TO-BE:CAPS"><primary>GULONG_TO_BE</primary></indexterm><programlisting>#define GULONG_TO_BE(val)	((gulong) GUINT32_TO_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="gulong"><type>gulong</type></link> value from host byte order to big-endian.
@@ -458,9 +456,9 @@ Converts a <link linkend="gulong"><type>gulong</type></link> value from host byt
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GULONG-TO-LE:CAPS" role="macro"/>GULONG_TO_LE()</title>
-<indexterm><primary>GULONG_TO_LE</primary></indexterm><programlisting>#define GULONG_TO_LE(val)	((gulong) GUINT32_TO_LE (val))
+<refsect2 id="GULONG-TO-LE:CAPS" role="macro">
+<title>GULONG_TO_LE()</title>
+<indexterm zone="GULONG-TO-LE:CAPS"><primary>GULONG_TO_LE</primary></indexterm><programlisting>#define GULONG_TO_LE(val)	((gulong) GUINT32_TO_LE (val))
 </programlisting>
 <para>
 Converts a <link linkend="gulong"><type>gulong</type></link> value from host byte order to little-endian.
@@ -473,9 +471,9 @@ Converts a <link linkend="gulong"><type>gulong</type></link> value from host byt
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GINT16-FROM-BE:CAPS" role="macro"/>GINT16_FROM_BE()</title>
-<indexterm><primary>GINT16_FROM_BE</primary></indexterm><programlisting>#define GINT16_FROM_BE(val)	(GINT16_TO_BE (val))
+<refsect2 id="GINT16-FROM-BE:CAPS" role="macro">
+<title>GINT16_FROM_BE()</title>
+<indexterm zone="GINT16-FROM-BE:CAPS"><primary>GINT16_FROM_BE</primary></indexterm><programlisting>#define GINT16_FROM_BE(val)	(GINT16_TO_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="gint16"><type>gint16</type></link> value from big-endian to host byte order.
@@ -488,9 +486,9 @@ Converts a <link linkend="gint16"><type>gint16</type></link> value from big-endi
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GINT16-FROM-LE:CAPS" role="macro"/>GINT16_FROM_LE()</title>
-<indexterm><primary>GINT16_FROM_LE</primary></indexterm><programlisting>#define GINT16_FROM_LE(val)	(GINT16_TO_LE (val))
+<refsect2 id="GINT16-FROM-LE:CAPS" role="macro">
+<title>GINT16_FROM_LE()</title>
+<indexterm zone="GINT16-FROM-LE:CAPS"><primary>GINT16_FROM_LE</primary></indexterm><programlisting>#define GINT16_FROM_LE(val)	(GINT16_TO_LE (val))
 </programlisting>
 <para>
 Converts a <link linkend="gint16"><type>gint16</type></link> value from little-endian to host byte order.
@@ -503,9 +501,9 @@ Converts a <link linkend="gint16"><type>gint16</type></link> value from little-e
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GINT16-TO-BE:CAPS" role="macro"/>GINT16_TO_BE()</title>
-<indexterm><primary>GINT16_TO_BE</primary></indexterm><programlisting>#define GINT16_TO_BE(val)	((gint16) GUINT16_SWAP_LE_BE (val))
+<refsect2 id="GINT16-TO-BE:CAPS" role="macro">
+<title>GINT16_TO_BE()</title>
+<indexterm zone="GINT16-TO-BE:CAPS"><primary>GINT16_TO_BE</primary></indexterm><programlisting>#define GINT16_TO_BE(val)	((gint16) GUINT16_SWAP_LE_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="gint16"><type>gint16</type></link> value from host byte order to big-endian.
@@ -518,9 +516,9 @@ Converts a <link linkend="gint16"><type>gint16</type></link> value from host byt
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GINT16-TO-LE:CAPS" role="macro"/>GINT16_TO_LE()</title>
-<indexterm><primary>GINT16_TO_LE</primary></indexterm><programlisting>#define GINT16_TO_LE(val)	((gint16) (val))
+<refsect2 id="GINT16-TO-LE:CAPS" role="macro">
+<title>GINT16_TO_LE()</title>
+<indexterm zone="GINT16-TO-LE:CAPS"><primary>GINT16_TO_LE</primary></indexterm><programlisting>#define GINT16_TO_LE(val)	((gint16) (val))
 </programlisting>
 <para>
 Converts a <link linkend="gint16"><type>gint16</type></link> value from host byte order to little-endian.
@@ -533,9 +531,9 @@ Converts a <link linkend="gint16"><type>gint16</type></link> value from host byt
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT16-FROM-BE:CAPS" role="macro"/>GUINT16_FROM_BE()</title>
-<indexterm><primary>GUINT16_FROM_BE</primary></indexterm><programlisting>#define GUINT16_FROM_BE(val)	(GUINT16_TO_BE (val))
+<refsect2 id="GUINT16-FROM-BE:CAPS" role="macro">
+<title>GUINT16_FROM_BE()</title>
+<indexterm zone="GUINT16-FROM-BE:CAPS"><primary>GUINT16_FROM_BE</primary></indexterm><programlisting>#define GUINT16_FROM_BE(val)	(GUINT16_TO_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="guint16"><type>guint16</type></link> value from big-endian to host byte order.
@@ -548,9 +546,9 @@ Converts a <link linkend="guint16"><type>guint16</type></link> value from big-en
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT16-FROM-LE:CAPS" role="macro"/>GUINT16_FROM_LE()</title>
-<indexterm><primary>GUINT16_FROM_LE</primary></indexterm><programlisting>#define GUINT16_FROM_LE(val)	(GUINT16_TO_LE (val))
+<refsect2 id="GUINT16-FROM-LE:CAPS" role="macro">
+<title>GUINT16_FROM_LE()</title>
+<indexterm zone="GUINT16-FROM-LE:CAPS"><primary>GUINT16_FROM_LE</primary></indexterm><programlisting>#define GUINT16_FROM_LE(val)	(GUINT16_TO_LE (val))
 </programlisting>
 <para>
 Converts a <link linkend="guint16"><type>guint16</type></link> value from little-endian to host byte order.
@@ -563,9 +561,9 @@ Converts a <link linkend="guint16"><type>guint16</type></link> value from little
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT16-TO-BE:CAPS" role="macro"/>GUINT16_TO_BE()</title>
-<indexterm><primary>GUINT16_TO_BE</primary></indexterm><programlisting>#define GUINT16_TO_BE(val)	(GUINT16_SWAP_LE_BE (val))
+<refsect2 id="GUINT16-TO-BE:CAPS" role="macro">
+<title>GUINT16_TO_BE()</title>
+<indexterm zone="GUINT16-TO-BE:CAPS"><primary>GUINT16_TO_BE</primary></indexterm><programlisting>#define GUINT16_TO_BE(val)	(GUINT16_SWAP_LE_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="guint16"><type>guint16</type></link> value from host byte order to big-endian.
@@ -578,9 +576,9 @@ Converts a <link linkend="guint16"><type>guint16</type></link> value from host b
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT16-TO-LE:CAPS" role="macro"/>GUINT16_TO_LE()</title>
-<indexterm><primary>GUINT16_TO_LE</primary></indexterm><programlisting>#define GUINT16_TO_LE(val)	((guint16) (val))
+<refsect2 id="GUINT16-TO-LE:CAPS" role="macro">
+<title>GUINT16_TO_LE()</title>
+<indexterm zone="GUINT16-TO-LE:CAPS"><primary>GUINT16_TO_LE</primary></indexterm><programlisting>#define GUINT16_TO_LE(val)	((guint16) (val))
 </programlisting>
 <para>
 Converts a <link linkend="guint16"><type>guint16</type></link> value from host byte order to little-endian.
@@ -593,9 +591,9 @@ Converts a <link linkend="guint16"><type>guint16</type></link> value from host b
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GINT32-FROM-BE:CAPS" role="macro"/>GINT32_FROM_BE()</title>
-<indexterm><primary>GINT32_FROM_BE</primary></indexterm><programlisting>#define GINT32_FROM_BE(val)	(GINT32_TO_BE (val))
+<refsect2 id="GINT32-FROM-BE:CAPS" role="macro">
+<title>GINT32_FROM_BE()</title>
+<indexterm zone="GINT32-FROM-BE:CAPS"><primary>GINT32_FROM_BE</primary></indexterm><programlisting>#define GINT32_FROM_BE(val)	(GINT32_TO_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="gint32"><type>gint32</type></link> value from big-endian to host byte order.
@@ -608,9 +606,9 @@ Converts a <link linkend="gint32"><type>gint32</type></link> value from big-endi
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GINT32-FROM-LE:CAPS" role="macro"/>GINT32_FROM_LE()</title>
-<indexterm><primary>GINT32_FROM_LE</primary></indexterm><programlisting>#define GINT32_FROM_LE(val)	(GINT32_TO_LE (val))
+<refsect2 id="GINT32-FROM-LE:CAPS" role="macro">
+<title>GINT32_FROM_LE()</title>
+<indexterm zone="GINT32-FROM-LE:CAPS"><primary>GINT32_FROM_LE</primary></indexterm><programlisting>#define GINT32_FROM_LE(val)	(GINT32_TO_LE (val))
 </programlisting>
 <para>
 Converts a <link linkend="gint32"><type>gint32</type></link> value from little-endian to host byte order.
@@ -623,9 +621,9 @@ Converts a <link linkend="gint32"><type>gint32</type></link> value from little-e
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GINT32-TO-BE:CAPS" role="macro"/>GINT32_TO_BE()</title>
-<indexterm><primary>GINT32_TO_BE</primary></indexterm><programlisting>#define GINT32_TO_BE(val)	((gint32) GUINT32_SWAP_LE_BE (val))
+<refsect2 id="GINT32-TO-BE:CAPS" role="macro">
+<title>GINT32_TO_BE()</title>
+<indexterm zone="GINT32-TO-BE:CAPS"><primary>GINT32_TO_BE</primary></indexterm><programlisting>#define GINT32_TO_BE(val)	((gint32) GUINT32_SWAP_LE_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="gint32"><type>gint32</type></link> value from host byte order to big-endian.
@@ -638,9 +636,9 @@ Converts a <link linkend="gint32"><type>gint32</type></link> value from host byt
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GINT32-TO-LE:CAPS" role="macro"/>GINT32_TO_LE()</title>
-<indexterm><primary>GINT32_TO_LE</primary></indexterm><programlisting>#define GINT32_TO_LE(val)	((gint32) (val))
+<refsect2 id="GINT32-TO-LE:CAPS" role="macro">
+<title>GINT32_TO_LE()</title>
+<indexterm zone="GINT32-TO-LE:CAPS"><primary>GINT32_TO_LE</primary></indexterm><programlisting>#define GINT32_TO_LE(val)	((gint32) (val))
 </programlisting>
 <para>
 Converts a <link linkend="gint32"><type>gint32</type></link> value from host byte order to little-endian.
@@ -653,9 +651,9 @@ Converts a <link linkend="gint32"><type>gint32</type></link> value from host byt
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT32-FROM-BE:CAPS" role="macro"/>GUINT32_FROM_BE()</title>
-<indexterm><primary>GUINT32_FROM_BE</primary></indexterm><programlisting>#define GUINT32_FROM_BE(val)	(GUINT32_TO_BE (val))
+<refsect2 id="GUINT32-FROM-BE:CAPS" role="macro">
+<title>GUINT32_FROM_BE()</title>
+<indexterm zone="GUINT32-FROM-BE:CAPS"><primary>GUINT32_FROM_BE</primary></indexterm><programlisting>#define GUINT32_FROM_BE(val)	(GUINT32_TO_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="guint32"><type>guint32</type></link> value from big-endian to host byte order.
@@ -668,9 +666,9 @@ Converts a <link linkend="guint32"><type>guint32</type></link> value from big-en
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT32-FROM-LE:CAPS" role="macro"/>GUINT32_FROM_LE()</title>
-<indexterm><primary>GUINT32_FROM_LE</primary></indexterm><programlisting>#define GUINT32_FROM_LE(val)	(GUINT32_TO_LE (val))
+<refsect2 id="GUINT32-FROM-LE:CAPS" role="macro">
+<title>GUINT32_FROM_LE()</title>
+<indexterm zone="GUINT32-FROM-LE:CAPS"><primary>GUINT32_FROM_LE</primary></indexterm><programlisting>#define GUINT32_FROM_LE(val)	(GUINT32_TO_LE (val))
 </programlisting>
 <para>
 Converts a <link linkend="guint32"><type>guint32</type></link> value from little-endian to host byte order.
@@ -683,9 +681,9 @@ Converts a <link linkend="guint32"><type>guint32</type></link> value from little
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT32-TO-BE:CAPS" role="macro"/>GUINT32_TO_BE()</title>
-<indexterm><primary>GUINT32_TO_BE</primary></indexterm><programlisting>#define GUINT32_TO_BE(val)	(GUINT32_SWAP_LE_BE (val))
+<refsect2 id="GUINT32-TO-BE:CAPS" role="macro">
+<title>GUINT32_TO_BE()</title>
+<indexterm zone="GUINT32-TO-BE:CAPS"><primary>GUINT32_TO_BE</primary></indexterm><programlisting>#define GUINT32_TO_BE(val)	(GUINT32_SWAP_LE_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="guint32"><type>guint32</type></link> value from host byte order to big-endian.
@@ -698,9 +696,9 @@ Converts a <link linkend="guint32"><type>guint32</type></link> value from host b
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT32-TO-LE:CAPS" role="macro"/>GUINT32_TO_LE()</title>
-<indexterm><primary>GUINT32_TO_LE</primary></indexterm><programlisting>#define GUINT32_TO_LE(val)	((guint32) (val))
+<refsect2 id="GUINT32-TO-LE:CAPS" role="macro">
+<title>GUINT32_TO_LE()</title>
+<indexterm zone="GUINT32-TO-LE:CAPS"><primary>GUINT32_TO_LE</primary></indexterm><programlisting>#define GUINT32_TO_LE(val)	((guint32) (val))
 </programlisting>
 <para>
 Converts a <link linkend="guint32"><type>guint32</type></link> value from host byte order to little-endian.
@@ -713,9 +711,9 @@ Converts a <link linkend="guint32"><type>guint32</type></link> value from host b
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GINT64-FROM-BE:CAPS" role="macro"/>GINT64_FROM_BE()</title>
-<indexterm><primary>GINT64_FROM_BE</primary></indexterm><programlisting>#define GINT64_FROM_BE(val)	(GINT64_TO_BE (val))
+<refsect2 id="GINT64-FROM-BE:CAPS" role="macro">
+<title>GINT64_FROM_BE()</title>
+<indexterm zone="GINT64-FROM-BE:CAPS"><primary>GINT64_FROM_BE</primary></indexterm><programlisting>#define GINT64_FROM_BE(val)	(GINT64_TO_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="gint64"><type>gint64</type></link> value from big-endian to host byte order.
@@ -728,9 +726,9 @@ Converts a <link linkend="gint64"><type>gint64</type></link> value from big-endi
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GINT64-FROM-LE:CAPS" role="macro"/>GINT64_FROM_LE()</title>
-<indexterm><primary>GINT64_FROM_LE</primary></indexterm><programlisting>#define GINT64_FROM_LE(val)	(GINT64_TO_LE (val))
+<refsect2 id="GINT64-FROM-LE:CAPS" role="macro">
+<title>GINT64_FROM_LE()</title>
+<indexterm zone="GINT64-FROM-LE:CAPS"><primary>GINT64_FROM_LE</primary></indexterm><programlisting>#define GINT64_FROM_LE(val)	(GINT64_TO_LE (val))
 </programlisting>
 <para>
 Converts a <link linkend="gint64"><type>gint64</type></link> value from little-endian to host byte order.
@@ -743,9 +741,9 @@ Converts a <link linkend="gint64"><type>gint64</type></link> value from little-e
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GINT64-TO-BE:CAPS" role="macro"/>GINT64_TO_BE()</title>
-<indexterm><primary>GINT64_TO_BE</primary></indexterm><programlisting>#define GINT64_TO_BE(val)	((gint64) GUINT64_SWAP_LE_BE (val))
+<refsect2 id="GINT64-TO-BE:CAPS" role="macro">
+<title>GINT64_TO_BE()</title>
+<indexterm zone="GINT64-TO-BE:CAPS"><primary>GINT64_TO_BE</primary></indexterm><programlisting>#define GINT64_TO_BE(val)	((gint64) GUINT64_SWAP_LE_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="gint64"><type>gint64</type></link> value from host byte order to big-endian.
@@ -758,9 +756,9 @@ Converts a <link linkend="gint64"><type>gint64</type></link> value from host byt
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GINT64-TO-LE:CAPS" role="macro"/>GINT64_TO_LE()</title>
-<indexterm><primary>GINT64_TO_LE</primary></indexterm><programlisting>#define GINT64_TO_LE(val)	((gint64) (val))
+<refsect2 id="GINT64-TO-LE:CAPS" role="macro">
+<title>GINT64_TO_LE()</title>
+<indexterm zone="GINT64-TO-LE:CAPS"><primary>GINT64_TO_LE</primary></indexterm><programlisting>#define GINT64_TO_LE(val)	((gint64) (val))
 </programlisting>
 <para>
 Converts a <link linkend="gint64"><type>gint64</type></link> value from host byte order to little-endian.
@@ -773,9 +771,9 @@ Converts a <link linkend="gint64"><type>gint64</type></link> value from host byt
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT64-FROM-BE:CAPS" role="macro"/>GUINT64_FROM_BE()</title>
-<indexterm><primary>GUINT64_FROM_BE</primary></indexterm><programlisting>#define GUINT64_FROM_BE(val)	(GUINT64_TO_BE (val))
+<refsect2 id="GUINT64-FROM-BE:CAPS" role="macro">
+<title>GUINT64_FROM_BE()</title>
+<indexterm zone="GUINT64-FROM-BE:CAPS"><primary>GUINT64_FROM_BE</primary></indexterm><programlisting>#define GUINT64_FROM_BE(val)	(GUINT64_TO_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="guint64"><type>guint64</type></link> value from big-endian to host byte order.
@@ -788,9 +786,9 @@ Converts a <link linkend="guint64"><type>guint64</type></link> value from big-en
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT64-FROM-LE:CAPS" role="macro"/>GUINT64_FROM_LE()</title>
-<indexterm><primary>GUINT64_FROM_LE</primary></indexterm><programlisting>#define GUINT64_FROM_LE(val)	(GUINT64_TO_LE (val))
+<refsect2 id="GUINT64-FROM-LE:CAPS" role="macro">
+<title>GUINT64_FROM_LE()</title>
+<indexterm zone="GUINT64-FROM-LE:CAPS"><primary>GUINT64_FROM_LE</primary></indexterm><programlisting>#define GUINT64_FROM_LE(val)	(GUINT64_TO_LE (val))
 </programlisting>
 <para>
 Converts a <link linkend="guint64"><type>guint64</type></link> value from little-endian to host byte order.
@@ -803,9 +801,9 @@ Converts a <link linkend="guint64"><type>guint64</type></link> value from little
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT64-TO-BE:CAPS" role="macro"/>GUINT64_TO_BE()</title>
-<indexterm><primary>GUINT64_TO_BE</primary></indexterm><programlisting>#define GUINT64_TO_BE(val)	(GUINT64_SWAP_LE_BE (val))
+<refsect2 id="GUINT64-TO-BE:CAPS" role="macro">
+<title>GUINT64_TO_BE()</title>
+<indexterm zone="GUINT64-TO-BE:CAPS"><primary>GUINT64_TO_BE</primary></indexterm><programlisting>#define GUINT64_TO_BE(val)	(GUINT64_SWAP_LE_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="guint64"><type>guint64</type></link> value from host byte order to big-endian.
@@ -818,9 +816,9 @@ Converts a <link linkend="guint64"><type>guint64</type></link> value from host b
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT64-TO-LE:CAPS" role="macro"/>GUINT64_TO_LE()</title>
-<indexterm><primary>GUINT64_TO_LE</primary></indexterm><programlisting>#define GUINT64_TO_LE(val)	((guint64) (val))
+<refsect2 id="GUINT64-TO-LE:CAPS" role="macro">
+<title>GUINT64_TO_LE()</title>
+<indexterm zone="GUINT64-TO-LE:CAPS"><primary>GUINT64_TO_LE</primary></indexterm><programlisting>#define GUINT64_TO_LE(val)	((guint64) (val))
 </programlisting>
 <para>
 Converts a <link linkend="guint64"><type>guint64</type></link> value from host byte order to little-endian.
@@ -833,9 +831,9 @@ Converts a <link linkend="guint64"><type>guint64</type></link> value from host b
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT16-SWAP-BE-PDP:CAPS" role="macro"/>GUINT16_SWAP_BE_PDP()</title>
-<indexterm><primary>GUINT16_SWAP_BE_PDP</primary></indexterm><programlisting>#define GUINT16_SWAP_BE_PDP(val)	(GUINT16_SWAP_LE_BE (val))
+<refsect2 id="GUINT16-SWAP-BE-PDP:CAPS" role="macro">
+<title>GUINT16_SWAP_BE_PDP()</title>
+<indexterm zone="GUINT16-SWAP-BE-PDP:CAPS"><primary>GUINT16_SWAP_BE_PDP</primary></indexterm><programlisting>#define GUINT16_SWAP_BE_PDP(val)	(GUINT16_SWAP_LE_BE (val))
 </programlisting>
 <para>
 Converts a <link linkend="guint16"><type>guint16</type></link> value between big-endian and pdp-endian byte order.
@@ -849,9 +847,9 @@ The conversion is symmetric so it can be used both ways.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT16-SWAP-LE-BE:CAPS" role="macro"/>GUINT16_SWAP_LE_BE()</title>
-<indexterm><primary>GUINT16_SWAP_LE_BE</primary></indexterm><programlisting>#define             GUINT16_SWAP_LE_BE(val)</programlisting>
+<refsect2 id="GUINT16-SWAP-LE-BE:CAPS" role="macro">
+<title>GUINT16_SWAP_LE_BE()</title>
+<indexterm zone="GUINT16-SWAP-LE-BE:CAPS"><primary>GUINT16_SWAP_LE_BE</primary></indexterm><programlisting>#define             GUINT16_SWAP_LE_BE(val)</programlisting>
 <para>
 Converts a <link linkend="guint16"><type>guint16</type></link> value between little-endian and big-endian byte order.
 The conversion is symmetric so it can be used both ways.
@@ -864,9 +862,9 @@ The conversion is symmetric so it can be used both ways.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT16-SWAP-LE-PDP:CAPS" role="macro"/>GUINT16_SWAP_LE_PDP()</title>
-<indexterm><primary>GUINT16_SWAP_LE_PDP</primary></indexterm><programlisting>#define GUINT16_SWAP_LE_PDP(val)	((guint16) (val))
+<refsect2 id="GUINT16-SWAP-LE-PDP:CAPS" role="macro">
+<title>GUINT16_SWAP_LE_PDP()</title>
+<indexterm zone="GUINT16-SWAP-LE-PDP:CAPS"><primary>GUINT16_SWAP_LE_PDP</primary></indexterm><programlisting>#define GUINT16_SWAP_LE_PDP(val)	((guint16) (val))
 </programlisting>
 <para>
 Converts a <link linkend="guint16"><type>guint16</type></link> value between little-endian and pdp-endian byte order.
@@ -880,9 +878,9 @@ The conversion is symmetric so it can be used both ways.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT32-SWAP-BE-PDP:CAPS" role="macro"/>GUINT32_SWAP_BE_PDP()</title>
-<indexterm><primary>GUINT32_SWAP_BE_PDP</primary></indexterm><programlisting>#define             GUINT32_SWAP_BE_PDP(val)</programlisting>
+<refsect2 id="GUINT32-SWAP-BE-PDP:CAPS" role="macro">
+<title>GUINT32_SWAP_BE_PDP()</title>
+<indexterm zone="GUINT32-SWAP-BE-PDP:CAPS"><primary>GUINT32_SWAP_BE_PDP</primary></indexterm><programlisting>#define             GUINT32_SWAP_BE_PDP(val)</programlisting>
 <para>
 Converts a <link linkend="guint32"><type>guint32</type></link> value between big-endian and pdp-endian byte order.
 The conversion is symmetric so it can be used both ways.
@@ -895,9 +893,9 @@ The conversion is symmetric so it can be used both ways.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT32-SWAP-LE-BE:CAPS" role="macro"/>GUINT32_SWAP_LE_BE()</title>
-<indexterm><primary>GUINT32_SWAP_LE_BE</primary></indexterm><programlisting>#define             GUINT32_SWAP_LE_BE(val)</programlisting>
+<refsect2 id="GUINT32-SWAP-LE-BE:CAPS" role="macro">
+<title>GUINT32_SWAP_LE_BE()</title>
+<indexterm zone="GUINT32-SWAP-LE-BE:CAPS"><primary>GUINT32_SWAP_LE_BE</primary></indexterm><programlisting>#define             GUINT32_SWAP_LE_BE(val)</programlisting>
 <para>
 Converts a <link linkend="guint32"><type>guint32</type></link> value between little-endian and big-endian byte order.
 The conversion is symmetric so it can be used both ways.
@@ -910,9 +908,9 @@ The conversion is symmetric so it can be used both ways.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT32-SWAP-LE-PDP:CAPS" role="macro"/>GUINT32_SWAP_LE_PDP()</title>
-<indexterm><primary>GUINT32_SWAP_LE_PDP</primary></indexterm><programlisting>#define             GUINT32_SWAP_LE_PDP(val)</programlisting>
+<refsect2 id="GUINT32-SWAP-LE-PDP:CAPS" role="macro">
+<title>GUINT32_SWAP_LE_PDP()</title>
+<indexterm zone="GUINT32-SWAP-LE-PDP:CAPS"><primary>GUINT32_SWAP_LE_PDP</primary></indexterm><programlisting>#define             GUINT32_SWAP_LE_PDP(val)</programlisting>
 <para>
 Converts a <link linkend="guint32"><type>guint32</type></link> value between little-endian and pdp-endian byte order.
 The conversion is symmetric so it can be used both ways.
@@ -925,9 +923,9 @@ The conversion is symmetric so it can be used both ways.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GUINT64-SWAP-LE-BE:CAPS" role="macro"/>GUINT64_SWAP_LE_BE()</title>
-<indexterm><primary>GUINT64_SWAP_LE_BE</primary></indexterm><programlisting>#define             GUINT64_SWAP_LE_BE(val)</programlisting>
+<refsect2 id="GUINT64-SWAP-LE-BE:CAPS" role="macro">
+<title>GUINT64_SWAP_LE_BE()</title>
+<indexterm zone="GUINT64-SWAP-LE-BE:CAPS"><primary>GUINT64_SWAP_LE_BE</primary></indexterm><programlisting>#define             GUINT64_SWAP_LE_BE(val)</programlisting>
 <para>
 Converts a <link linkend="guint64"><type>guint64</type></link> value between little-endian and big-endian byte order.
 The conversion is symmetric so it can be used both ways.

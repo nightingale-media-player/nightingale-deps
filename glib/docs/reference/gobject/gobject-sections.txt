@@ -199,6 +199,10 @@ g_type_module_register_type
 g_type_module_add_interface
 g_type_module_register_enum
 g_type_module_register_flags
+
+G_DEFINE_DYNAMIC_TYPE
+G_DEFINE_DYNAMIC_TYPE_EXTENDED
+
 <SUBSECTION Standard>
 G_TYPE_MODULE
 G_IS_TYPE_MODULE
@@ -335,6 +339,7 @@ G_TYPE_HASH_TABLE
 G_TYPE_DATE
 G_TYPE_GSTRING
 G_TYPE_STRV
+G_TYPE_REGEX
 GStrv
 
 <SUBSECTION Standard>
@@ -345,6 +350,7 @@ g_gstring_get_type
 g_strv_get_type
 g_date_get_type
 g_hash_table_get_type
+g_regex_get_type
 </SECTION>
 
 <SECTION>
@@ -411,6 +417,7 @@ GParamSpec
 GParamSpecClass
 GParamFlags
 G_PARAM_READWRITE
+G_PARAM_STATIC_STRINGS
 G_PARAM_MASK
 G_PARAM_USER_SHIFT
 g_param_spec_ref

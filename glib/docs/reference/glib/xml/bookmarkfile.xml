@@ -1,6 +1,6 @@
 <refentry id="glib-Bookmark-file-parser">
 <refmeta>
-<refentrytitle role="top_of_page">Bookmark file parser</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Bookmark-file-parser.top_of_page">Bookmark file parser</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
@@ -11,13 +11,12 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Bookmark-file-parser.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
-
 
                     <link linkend="GBookmarkFile">GBookmarkFile</link>;
 #define             <link linkend="G-BOOKMARK-FILE-ERROR:CAPS">G_BOOKMARK_FILE_ERROR</link>
@@ -155,7 +154,6 @@ enum                <link linkend="GBookmarkFileError">GBookmarkFileError</link>
                                                          const <link linkend="gchar">gchar</link> *old_uri,
                                                          const <link linkend="gchar">gchar</link> *new_uri,
                                                          <link linkend="GError">GError</link> **error);
-
 </synopsis>
 </refsynopsisdiv>
 
@@ -167,7 +165,7 @@ enum                <link linkend="GBookmarkFileError">GBookmarkFileError</link>
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Bookmark-file-parser.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 <link linkend="GBookmarkFile"><type>GBookmarkFile</type></link> lets you parse, edit or create files containing bookmarks
@@ -245,27 +243,27 @@ The <link linkend="GBookmarkFile"><type>GBookmarkFile</type></link> parser was a
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Bookmark-file-parser.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GBookmarkFile" role="struct"/>GBookmarkFile</title>
-<indexterm><primary>GBookmarkFile</primary></indexterm><programlisting>typedef struct _GBookmarkFile GBookmarkFile;</programlisting>
+<refsect2 id="GBookmarkFile" role="struct">
+<title>GBookmarkFile</title>
+<indexterm zone="GBookmarkFile"><primary>GBookmarkFile</primary></indexterm><programlisting>typedef struct _GBookmarkFile GBookmarkFile;</programlisting>
 <para>
 The <structname>GBookmarkFile</structname> struct contains only private data
 and should not be used directly.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-BOOKMARK-FILE-ERROR:CAPS" role="macro"/>G_BOOKMARK_FILE_ERROR</title>
-<indexterm><primary>G_BOOKMARK_FILE_ERROR</primary></indexterm><programlisting>#define G_BOOKMARK_FILE_ERROR	(g_bookmark_file_error_quark ())
+<refsect2 id="G-BOOKMARK-FILE-ERROR:CAPS" role="macro">
+<title>G_BOOKMARK_FILE_ERROR</title>
+<indexterm zone="G-BOOKMARK-FILE-ERROR:CAPS"><primary>G_BOOKMARK_FILE_ERROR</primary></indexterm><programlisting>#define G_BOOKMARK_FILE_ERROR	(g_bookmark_file_error_quark ())
 </programlisting>
 <para>
 Error domain for bookmark file parsing. Errors in this domain will be
 from the <link linkend="GBookmarkFileError"><type>GBookmarkFileError</type></link> enumeration. See <link linkend="GError"><type>GError</type></link> for informations
 on error domains.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GBookmarkFileError" role="enum"/>enum GBookmarkFileError</title>
-<indexterm><primary>GBookmarkFileError</primary></indexterm><programlisting>typedef enum
+<refsect2 id="GBookmarkFileError" role="enum">
+<title>enum GBookmarkFileError</title>
+<indexterm zone="GBookmarkFileError"><primary>GBookmarkFileError</primary></indexterm><programlisting>typedef enum
 {
   G_BOOKMARK_FILE_ERROR_INVALID_URI,
   G_BOOKMARK_FILE_ERROR_INVALID_VALUE,
@@ -280,53 +278,53 @@ on error domains.
 <para>
 Error codes returned by bookmark file parsing.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-BOOKMARK-FILE-ERROR-INVALID-URI:CAPS" role="constant"/><literal>G_BOOKMARK_FILE_ERROR_INVALID_URI</literal></term>
+<varlistentry id="G-BOOKMARK-FILE-ERROR-INVALID-URI:CAPS" role="constant">
+<term><literal>G_BOOKMARK_FILE_ERROR_INVALID_URI</literal></term>
 <listitem><simpara>URI was ill-formed
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-BOOKMARK-FILE-ERROR-INVALID-VALUE:CAPS" role="constant"/><literal>G_BOOKMARK_FILE_ERROR_INVALID_VALUE</literal></term>
+<varlistentry id="G-BOOKMARK-FILE-ERROR-INVALID-VALUE:CAPS" role="constant">
+<term><literal>G_BOOKMARK_FILE_ERROR_INVALID_VALUE</literal></term>
 <listitem><simpara>a requested field was not found
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-BOOKMARK-FILE-ERROR-APP-NOT-REGISTERED:CAPS" role="constant"/><literal>G_BOOKMARK_FILE_ERROR_APP_NOT_REGISTERED</literal></term>
+<varlistentry id="G-BOOKMARK-FILE-ERROR-APP-NOT-REGISTERED:CAPS" role="constant">
+<term><literal>G_BOOKMARK_FILE_ERROR_APP_NOT_REGISTERED</literal></term>
 <listitem><simpara>a requested application did not
 register a bookmark
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-BOOKMARK-FILE-ERROR-URI-NOT-FOUND:CAPS" role="constant"/><literal>G_BOOKMARK_FILE_ERROR_URI_NOT_FOUND</literal></term>
+<varlistentry id="G-BOOKMARK-FILE-ERROR-URI-NOT-FOUND:CAPS" role="constant">
+<term><literal>G_BOOKMARK_FILE_ERROR_URI_NOT_FOUND</literal></term>
 <listitem><simpara>a requested URI was not found
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-BOOKMARK-FILE-ERROR-READ:CAPS" role="constant"/><literal>G_BOOKMARK_FILE_ERROR_READ</literal></term>
+<varlistentry id="G-BOOKMARK-FILE-ERROR-READ:CAPS" role="constant">
+<term><literal>G_BOOKMARK_FILE_ERROR_READ</literal></term>
 <listitem><simpara>document was ill formed
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-BOOKMARK-FILE-ERROR-UNKNOWN-ENCODING:CAPS" role="constant"/><literal>G_BOOKMARK_FILE_ERROR_UNKNOWN_ENCODING</literal></term>
+<varlistentry id="G-BOOKMARK-FILE-ERROR-UNKNOWN-ENCODING:CAPS" role="constant">
+<term><literal>G_BOOKMARK_FILE_ERROR_UNKNOWN_ENCODING</literal></term>
 <listitem><simpara>the text being parsed was in an
 unknown encoding
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-BOOKMARK-FILE-ERROR-WRITE:CAPS" role="constant"/><literal>G_BOOKMARK_FILE_ERROR_WRITE</literal></term>
+<varlistentry id="G-BOOKMARK-FILE-ERROR-WRITE:CAPS" role="constant">
+<term><literal>G_BOOKMARK_FILE_ERROR_WRITE</literal></term>
 <listitem><simpara>an error occurred while writing
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-BOOKMARK-FILE-ERROR-FILE-NOT-FOUND:CAPS" role="constant"/><literal>G_BOOKMARK_FILE_ERROR_FILE_NOT_FOUND</literal></term>
+<varlistentry id="G-BOOKMARK-FILE-ERROR-FILE-NOT-FOUND:CAPS" role="constant">
+<term><literal>G_BOOKMARK_FILE_ERROR_FILE_NOT_FOUND</literal></term>
 <listitem><simpara>requested file was not found
 
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-new" role="function" condition="since:2.12"/>g_bookmark_file_new ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_new</primary></indexterm><programlisting><link linkend="GBookmarkFile">GBookmarkFile</link>*      g_bookmark_file_new                 (void);</programlisting>
+<refsect2 id="g-bookmark-file-new" role="function" condition="since:2.12">
+<title>g_bookmark_file_new ()</title>
+<indexterm zone="g-bookmark-file-new" role="2.12"><primary>g_bookmark_file_new</primary></indexterm><programlisting><link linkend="GBookmarkFile">GBookmarkFile</link>*      g_bookmark_file_new                 (void);</programlisting>
 <para>
 Creates a new empty <link linkend="GBookmarkFile"><type>GBookmarkFile</type></link> object.
 </para>
@@ -342,9 +340,9 @@ file.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-free" role="function" condition="since:2.12"/>g_bookmark_file_free ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_free                (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark);</programlisting>
+<refsect2 id="g-bookmark-file-free" role="function" condition="since:2.12">
+<title>g_bookmark_file_free ()</title>
+<indexterm zone="g-bookmark-file-free" role="2.12"><primary>g_bookmark_file_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_free                (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark);</programlisting>
 <para>
 Frees a <link linkend="GBookmarkFile"><type>GBookmarkFile</type></link>.</para>
 <para>
@@ -355,9 +353,9 @@ Frees a <link linkend="GBookmarkFile"><type>GBookmarkFile</type></link>.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-load-from-file" role="function" condition="since:2.12"/>g_bookmark_file_load_from_file ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_load_from_file</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_load_from_file      (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-load-from-file" role="function" condition="since:2.12">
+<title>g_bookmark_file_load_from_file ()</title>
+<indexterm zone="g-bookmark-file-load-from-file" role="2.12"><primary>g_bookmark_file_load_from_file</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_load_from_file      (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *filename,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
@@ -381,9 +379,9 @@ or <link linkend="GBookmarkFileError"><type>GBookmarkFileError</type></link>.</p
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-load-from-data" role="function" condition="since:2.12"/>g_bookmark_file_load_from_data ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_load_from_data</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_load_from_data      (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-load-from-data" role="function" condition="since:2.12">
+<title>g_bookmark_file_load_from_data ()</title>
+<indexterm zone="g-bookmark-file-load-from-data" role="2.12"><primary>g_bookmark_file_load_from_data</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_load_from_data      (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *data,
                                                          <link linkend="gsize">gsize</link> length,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
@@ -411,9 +409,9 @@ structure.  If the object cannot be created then <parameter>error</parameter> is
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-load-from-data-dirs" role="function" condition="since:2.12"/>g_bookmark_file_load_from_data_dirs ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_load_from_data_dirs</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_load_from_data_dirs (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-load-from-data-dirs" role="function" condition="since:2.12">
+<title>g_bookmark_file_load_from_data_dirs ()</title>
+<indexterm zone="g-bookmark-file-load-from-data-dirs" role="2.12"><primary>g_bookmark_file_load_from_data_dirs</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_load_from_data_dirs (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *file,
                                                          <link linkend="gchar">gchar</link> **full_path,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
@@ -444,9 +442,9 @@ set to either a <link linkend="GFileError"><type>GFileError</type></link> or <li
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-to-data" role="function" condition="since:2.12"/>g_bookmark_file_to_data ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_to_data</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_bookmark_file_to_data             (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-to-data" role="function" condition="since:2.12">
+<title>g_bookmark_file_to_data ()</title>
+<indexterm zone="g-bookmark-file-to-data" role="2.12"><primary>g_bookmark_file_to_data</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_bookmark_file_to_data             (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          <link linkend="gsize">gsize</link> *length,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
@@ -469,9 +467,9 @@ This function outputs <parameter>bookmark</parameter> as a string.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-to-file" role="function" condition="since:2.12"/>g_bookmark_file_to_file ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_to_file</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_to_file             (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-to-file" role="function" condition="since:2.12">
+<title>g_bookmark_file_to_file ()</title>
+<indexterm zone="g-bookmark-file-to-file" role="2.12"><primary>g_bookmark_file_to_file</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_to_file             (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *filename,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
@@ -494,9 +492,9 @@ guaranteed to be atomic by using <link linkend="g-file-set-contents"><function>g
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-has-item" role="function" condition="since:2.12"/>g_bookmark_file_has_item ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_has_item</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_has_item            (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-has-item" role="function" condition="since:2.12">
+<title>g_bookmark_file_has_item ()</title>
+<indexterm zone="g-bookmark-file-has-item" role="2.12"><primary>g_bookmark_file_has_item</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_has_item            (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri);</programlisting>
 <para>
 Looks whether the desktop bookmark has an item with its URI set to <parameter>uri</parameter>.</para>
@@ -514,9 +512,9 @@ Looks whether the desktop bookmark has an item with its URI set to <parameter>ur
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-has-group" role="function" condition="since:2.12"/>g_bookmark_file_has_group ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_has_group</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_has_group           (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-has-group" role="function" condition="since:2.12">
+<title>g_bookmark_file_has_group ()</title>
+<indexterm zone="g-bookmark-file-has-group" role="2.12"><primary>g_bookmark_file_has_group</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_has_group           (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          const <link linkend="gchar">gchar</link> *group,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
@@ -547,9 +545,9 @@ In the event the URI cannot be found, <link linkend="FALSE:CAPS"><literal>FALSE<
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-has-application" role="function" condition="since:2.12"/>g_bookmark_file_has_application ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_has_application</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_has_application     (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-has-application" role="function" condition="since:2.12">
+<title>g_bookmark_file_has_application ()</title>
+<indexterm zone="g-bookmark-file-has-application" role="2.12"><primary>g_bookmark_file_has_application</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_has_application     (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          const <link linkend="gchar">gchar</link> *name,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
@@ -580,9 +578,9 @@ In the event the URI cannot be found, <link linkend="FALSE:CAPS"><literal>FALSE<
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-get-size" role="function" condition="since:2.12"/>g_bookmark_file_get_size ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_get_size</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_bookmark_file_get_size            (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark);</programlisting>
+<refsect2 id="g-bookmark-file-get-size" role="function" condition="since:2.12">
+<title>g_bookmark_file_get_size ()</title>
+<indexterm zone="g-bookmark-file-get-size" role="2.12"><primary>g_bookmark_file_get_size</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_bookmark_file_get_size            (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark);</programlisting>
 <para>
 Gets the number of bookmarks inside <parameter>bookmark</parameter>.</para>
 <para>
@@ -596,9 +594,9 @@ Gets the number of bookmarks inside <parameter>bookmark</parameter>.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-get-uris" role="function" condition="since:2.12"/>g_bookmark_file_get_uris ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_get_uris</primary></indexterm><programlisting><link linkend="gchar">gchar</link>**             g_bookmark_file_get_uris            (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-get-uris" role="function" condition="since:2.12">
+<title>g_bookmark_file_get_uris ()</title>
+<indexterm zone="g-bookmark-file-get-uris" role="2.12"><primary>g_bookmark_file_get_uris</primary></indexterm><programlisting><link linkend="gchar">gchar</link>**             g_bookmark_file_get_uris            (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          <link linkend="gsize">gsize</link> *length);</programlisting>
 <para>
 Returns all URIs of the bookmarks in the bookmark file <parameter>bookmark</parameter>.
@@ -619,9 +617,9 @@ optionally be <link linkend="NULL:CAPS"><literal>NULL</literal></link>.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-get-title" role="function" condition="since:2.12"/>g_bookmark_file_get_title ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_get_title</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_bookmark_file_get_title           (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-get-title" role="function" condition="since:2.12">
+<title>g_bookmark_file_get_title ()</title>
+<indexterm zone="g-bookmark-file-get-title" role="2.12"><primary>g_bookmark_file_get_title</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_bookmark_file_get_title           (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
@@ -651,9 +649,9 @@ In the event the URI cannot be found, <link linkend="NULL:CAPS"><literal>NULL</l
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-get-description" role="function" condition="since:2.12"/>g_bookmark_file_get_description ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_get_description</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_bookmark_file_get_description     (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-get-description" role="function" condition="since:2.12">
+<title>g_bookmark_file_get_description ()</title>
+<indexterm zone="g-bookmark-file-get-description" role="2.12"><primary>g_bookmark_file_get_description</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_bookmark_file_get_description     (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
@@ -680,9 +678,9 @@ In the event the URI cannot be found, <link linkend="NULL:CAPS"><literal>NULL</l
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-get-mime-type" role="function" condition="since:2.12"/>g_bookmark_file_get_mime_type ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_get_mime_type</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_bookmark_file_get_mime_type       (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-get-mime-type" role="function" condition="since:2.12">
+<title>g_bookmark_file_get_mime_type ()</title>
+<indexterm zone="g-bookmark-file-get-mime-type" role="2.12"><primary>g_bookmark_file_get_mime_type</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_bookmark_file_get_mime_type       (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
@@ -711,9 +709,9 @@ event that the MIME type cannot be found, <link linkend="NULL:CAPS"><literal>NUL
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-get-is-private" role="function" condition="since:2.12"/>g_bookmark_file_get_is_private ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_get_is_private</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_get_is_private      (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-get-is-private" role="function" condition="since:2.12">
+<title>g_bookmark_file_get_is_private ()</title>
+<indexterm zone="g-bookmark-file-get-is-private" role="2.12"><primary>g_bookmark_file_get_is_private</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_get_is_private      (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
@@ -741,9 +739,9 @@ event that the private flag cannot be found, <link linkend="FALSE:CAPS"><literal
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-get-icon" role="function" condition="since:2.12"/>g_bookmark_file_get_icon ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_get_icon</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_get_icon            (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-get-icon" role="function" condition="since:2.12">
+<title>g_bookmark_file_get_icon ()</title>
+<indexterm zone="g-bookmark-file-get-icon" role="2.12"><primary>g_bookmark_file_get_icon</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_get_icon            (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          <link linkend="gchar">gchar</link> **href,
                                                          <link linkend="gchar">gchar</link> **mime_type,
@@ -778,9 +776,9 @@ In the event the URI cannot be found, <link linkend="FALSE:CAPS"><literal>FALSE<
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-get-added" role="function" condition="since:2.12"/>g_bookmark_file_get_added ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_get_added</primary></indexterm><programlisting><link linkend="time-t">time_t</link>              g_bookmark_file_get_added           (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-get-added" role="function" condition="since:2.12">
+<title>g_bookmark_file_get_added ()</title>
+<indexterm zone="g-bookmark-file-get-added" role="2.12"><primary>g_bookmark_file_get_added</primary></indexterm><programlisting><link linkend="time-t">time_t</link>              g_bookmark_file_get_added           (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
@@ -806,9 +804,9 @@ In the event the URI cannot be found, -1 is returned and
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-get-modified" role="function" condition="since:2.12"/>g_bookmark_file_get_modified ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_get_modified</primary></indexterm><programlisting><link linkend="time-t">time_t</link>              g_bookmark_file_get_modified        (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-get-modified" role="function" condition="since:2.12">
+<title>g_bookmark_file_get_modified ()</title>
+<indexterm zone="g-bookmark-file-get-modified" role="2.12"><primary>g_bookmark_file_get_modified</primary></indexterm><programlisting><link linkend="time-t">time_t</link>              g_bookmark_file_get_modified        (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
@@ -834,9 +832,9 @@ In the event the URI cannot be found, -1 is returned and
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-get-visited" role="function" condition="since:2.12"/>g_bookmark_file_get_visited ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_get_visited</primary></indexterm><programlisting><link linkend="time-t">time_t</link>              g_bookmark_file_get_visited         (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-get-visited" role="function" condition="since:2.12">
+<title>g_bookmark_file_get_visited ()</title>
+<indexterm zone="g-bookmark-file-get-visited" role="2.12"><primary>g_bookmark_file_get_visited</primary></indexterm><programlisting><link linkend="time-t">time_t</link>              g_bookmark_file_get_visited         (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
@@ -862,9 +860,9 @@ In the event the URI cannot be found, -1 is returned and
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-get-groups" role="function" condition="since:2.12"/>g_bookmark_file_get_groups ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_get_groups</primary></indexterm><programlisting><link linkend="gchar">gchar</link>**             g_bookmark_file_get_groups          (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-get-groups" role="function" condition="since:2.12">
+<title>g_bookmark_file_get_groups ()</title>
+<indexterm zone="g-bookmark-file-get-groups" role="2.12"><primary>g_bookmark_file_get_groups</primary></indexterm><programlisting><link linkend="gchar">gchar</link>**             g_bookmark_file_get_groups          (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          <link linkend="gsize">gsize</link> *length,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
@@ -899,9 +897,9 @@ be <link linkend="NULL:CAPS"><literal>NULL</literal></link>.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-get-applications" role="function" condition="since:2.12"/>g_bookmark_file_get_applications ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_get_applications</primary></indexterm><programlisting><link linkend="gchar">gchar</link>**             g_bookmark_file_get_applications    (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-get-applications" role="function" condition="since:2.12">
+<title>g_bookmark_file_get_applications ()</title>
+<indexterm zone="g-bookmark-file-get-applications" role="2.12"><primary>g_bookmark_file_get_applications</primary></indexterm><programlisting><link linkend="gchar">gchar</link>**             g_bookmark_file_get_applications    (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          <link linkend="gsize">gsize</link> *length,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
@@ -933,9 +931,9 @@ In the event the URI cannot be found, <link linkend="NULL:CAPS"><literal>NULL</l
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-get-app-info" role="function" condition="since:2.12"/>g_bookmark_file_get_app_info ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_get_app_info</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_get_app_info        (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-get-app-info" role="function" condition="since:2.12">
+<title>g_bookmark_file_get_app_info ()</title>
+<indexterm zone="g-bookmark-file-get-app-info" role="2.12"><primary>g_bookmark_file_get_app_info</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_get_app_info        (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          const <link linkend="gchar">gchar</link> *name,
                                                          <link linkend="gchar">gchar</link> **exec,
@@ -955,7 +953,9 @@ In the event the URI cannot be found, <link linkend="FALSE:CAPS"><literal>FALSE<
 <parameter>error</parameter> is set to <link linkend="G-BOOKMARK-FILE-ERROR-URI-NOT-FOUND:CAPS"><type>G_BOOKMARK_FILE_ERROR_URI_NOT_FOUND</type></link>.  In the
 event that no application with name <parameter>app_name</parameter> has registered a bookmark
 for <parameter>uri</parameter>,  <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> is returned and error is set to
-<link linkend="G-BOOKMARK-FILE-ERROR-APP-NOT-REGISTERED:CAPS"><type>G_BOOKMARK_FILE_ERROR_APP_NOT_REGISTERED</type></link>.</para>
+<link linkend="G-BOOKMARK-FILE-ERROR-APP-NOT-REGISTERED:CAPS"><type>G_BOOKMARK_FILE_ERROR_APP_NOT_REGISTERED</type></link>. In the event that unquoting
+the command line fails, an error of the <link linkend="G-SHELL-ERROR:CAPS"><type>G_SHELL_ERROR</type></link> domain is
+set and <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> is returned.</para>
 <para>
 
 </para><variablelist role="params">
@@ -985,9 +985,9 @@ for <parameter>uri</parameter>,  <link linkend="FALSE:CAPS"><literal>FALSE</lite
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-set-title" role="function" condition="since:2.12"/>g_bookmark_file_set_title ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_set_title</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_set_title           (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-set-title" role="function" condition="since:2.12">
+<title>g_bookmark_file_set_title ()</title>
+<indexterm zone="g-bookmark-file-set-title" role="2.12"><primary>g_bookmark_file_set_title</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_set_title           (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          const <link linkend="gchar">gchar</link> *title);</programlisting>
 <para>
@@ -1013,9 +1013,9 @@ If a bookmark for <parameter>uri</parameter> cannot be found then it is created.
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-set-description" role="function" condition="since:2.12"/>g_bookmark_file_set_description ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_set_description</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_set_description     (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-set-description" role="function" condition="since:2.12">
+<title>g_bookmark_file_set_description ()</title>
+<indexterm zone="g-bookmark-file-set-description" role="2.12"><primary>g_bookmark_file_set_description</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_set_description     (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          const <link linkend="gchar">gchar</link> *description);</programlisting>
 <para>
@@ -1040,9 +1040,9 @@ If a bookmark for <parameter>uri</parameter> cannot be found then it is created.
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-set-mime-type" role="function" condition="since:2.12"/>g_bookmark_file_set_mime_type ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_set_mime_type</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_set_mime_type       (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-set-mime-type" role="function" condition="since:2.12">
+<title>g_bookmark_file_set_mime_type ()</title>
+<indexterm zone="g-bookmark-file-set-mime-type" role="2.12"><primary>g_bookmark_file_set_mime_type</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_set_mime_type       (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          const <link linkend="gchar">gchar</link> *mime_type);</programlisting>
 <para>
@@ -1064,9 +1064,9 @@ If a bookmark for <parameter>uri</parameter> cannot be found then it is created.
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-set-is-private" role="function" condition="since:2.12"/>g_bookmark_file_set_is_private ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_set_is_private</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_set_is_private      (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-set-is-private" role="function" condition="since:2.12">
+<title>g_bookmark_file_set_is_private ()</title>
+<indexterm zone="g-bookmark-file-set-is-private" role="2.12"><primary>g_bookmark_file_set_is_private</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_set_is_private      (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          <link linkend="gboolean">gboolean</link> is_private);</programlisting>
 <para>
@@ -1088,9 +1088,9 @@ If a bookmark for <parameter>uri</parameter> cannot be found then it is created.
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-set-icon" role="function" condition="since:2.12"/>g_bookmark_file_set_icon ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_set_icon</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_set_icon            (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-set-icon" role="function" condition="since:2.12">
+<title>g_bookmark_file_set_icon ()</title>
+<indexterm zone="g-bookmark-file-set-icon" role="2.12"><primary>g_bookmark_file_set_icon</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_set_icon            (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          const <link linkend="gchar">gchar</link> *href,
                                                          const <link linkend="gchar">gchar</link> *mime_type);</programlisting>
@@ -1117,9 +1117,9 @@ If no bookmark for <parameter>uri</parameter> is found it is created.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-set-added" role="function" condition="since:2.12"/>g_bookmark_file_set_added ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_set_added</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_set_added           (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-set-added" role="function" condition="since:2.12">
+<title>g_bookmark_file_set_added ()</title>
+<indexterm zone="g-bookmark-file-set-added" role="2.12"><primary>g_bookmark_file_set_added</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_set_added           (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          <link linkend="time-t">time_t</link> added);</programlisting>
 <para>
@@ -1141,9 +1141,9 @@ If no bookmark for <parameter>uri</parameter> is found then it is created.</para
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-set-groups" role="function" condition="since:2.12"/>g_bookmark_file_set_groups ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_set_groups</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_set_groups          (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-set-groups" role="function" condition="since:2.12">
+<title>g_bookmark_file_set_groups ()</title>
+<indexterm zone="g-bookmark-file-set-groups" role="2.12"><primary>g_bookmark_file_set_groups</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_set_groups          (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          const <link linkend="gchar">gchar</link> **groups,
                                                          <link linkend="gsize">gsize</link> length);</programlisting>
@@ -1170,9 +1170,9 @@ If <parameter>uri</parameter> cannot be found then an item for it is created.</p
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-set-modified" role="function" condition="since:2.12"/>g_bookmark_file_set_modified ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_set_modified</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_set_modified        (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-set-modified" role="function" condition="since:2.12">
+<title>g_bookmark_file_set_modified ()</title>
+<indexterm zone="g-bookmark-file-set-modified" role="2.12"><primary>g_bookmark_file_set_modified</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_set_modified        (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          <link linkend="time-t">time_t</link> modified);</programlisting>
 <para>
@@ -1200,9 +1200,9 @@ modifies a bookmark also changes the modification time, except for
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-set-visited" role="function" condition="since:2.12"/>g_bookmark_file_set_visited ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_set_visited</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_set_visited         (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-set-visited" role="function" condition="since:2.12">
+<title>g_bookmark_file_set_visited ()</title>
+<indexterm zone="g-bookmark-file-set-visited" role="2.12"><primary>g_bookmark_file_set_visited</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_set_visited         (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          <link linkend="time-t">time_t</link> visited);</programlisting>
 <para>
@@ -1231,9 +1231,9 @@ does not affect the "modified" time.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-set-app-info" role="function" condition="since:2.12"/>g_bookmark_file_set_app_info ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_set_app_info</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_set_app_info        (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-set-app-info" role="function" condition="since:2.12">
+<title>g_bookmark_file_set_app_info ()</title>
+<indexterm zone="g-bookmark-file-set-app-info" role="2.12"><primary>g_bookmark_file_set_app_info</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_set_app_info        (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *exec,
@@ -1302,9 +1302,9 @@ for <parameter>uri</parameter> is found, one is created.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-add-group" role="function" condition="since:2.12"/>g_bookmark_file_add_group ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_add_group</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_add_group           (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-add-group" role="function" condition="since:2.12">
+<title>g_bookmark_file_add_group ()</title>
+<indexterm zone="g-bookmark-file-add-group" role="2.12"><primary>g_bookmark_file_add_group</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_add_group           (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          const <link linkend="gchar">gchar</link> *group);</programlisting>
 <para>
@@ -1327,9 +1327,9 @@ If no bookmark for <parameter>uri</parameter> is found then it is created.</para
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-add-application" role="function" condition="since:2.12"/>g_bookmark_file_add_application ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_add_application</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_add_application     (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-add-application" role="function" condition="since:2.12">
+<title>g_bookmark_file_add_application ()</title>
+<indexterm zone="g-bookmark-file-add-application" role="2.12"><primary>g_bookmark_file_add_application</primary></indexterm><programlisting><link linkend="void">void</link>                g_bookmark_file_add_application     (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *exec);</programlisting>
@@ -1378,9 +1378,9 @@ If no bookmark for <parameter>uri</parameter> is found, one is created.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-remove-group" role="function" condition="since:2.12"/>g_bookmark_file_remove_group ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_remove_group</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_remove_group        (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-remove-group" role="function" condition="since:2.12">
+<title>g_bookmark_file_remove_group ()</title>
+<indexterm zone="g-bookmark-file-remove-group" role="2.12"><primary>g_bookmark_file_remove_group</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_remove_group        (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          const <link linkend="gchar">gchar</link> *group,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
@@ -1413,9 +1413,9 @@ In the event no group was defined, <link linkend="FALSE:CAPS"><literal>FALSE</li
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-remove-application" role="function" condition="since:2.12"/>g_bookmark_file_remove_application ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_remove_application</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_remove_application  (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-remove-application" role="function" condition="since:2.12">
+<title>g_bookmark_file_remove_application ()</title>
+<indexterm zone="g-bookmark-file-remove-application" role="2.12"><primary>g_bookmark_file_remove_application</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_remove_application  (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          const <link linkend="gchar">gchar</link> *name,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
@@ -1449,9 +1449,9 @@ a bookmark for <parameter>uri</parameter>,  <link linkend="FALSE:CAPS"><literal>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-remove-item" role="function" condition="since:2.12"/>g_bookmark_file_remove_item ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_remove_item</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_remove_item         (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-remove-item" role="function" condition="since:2.12">
+<title>g_bookmark_file_remove_item ()</title>
+<indexterm zone="g-bookmark-file-remove-item" role="2.12"><primary>g_bookmark_file_remove_item</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_remove_item         (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *uri,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
@@ -1473,9 +1473,9 @@ Removes the bookmark for <parameter>uri</parameter> from the bookmark file <para
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-bookmark-file-move-item" role="function" condition="since:2.12"/>g_bookmark_file_move_item ()</title>
-<indexterm role="2.12"><primary>g_bookmark_file_move_item</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_move_item           (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
+<refsect2 id="g-bookmark-file-move-item" role="function" condition="since:2.12">
+<title>g_bookmark_file_move_item ()</title>
+<indexterm zone="g-bookmark-file-move-item" role="2.12"><primary>g_bookmark_file_move_item</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_bookmark_file_move_item           (<link linkend="GBookmarkFile">GBookmarkFile</link> *bookmark,
                                                          const <link linkend="gchar">gchar</link> *old_uri,
                                                          const <link linkend="gchar">gchar</link> *new_uri,
                                                          <link linkend="GError">GError</link> **error);</programlisting>

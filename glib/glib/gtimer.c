@@ -307,6 +307,18 @@ g_time_val_from_iso8601 (const gchar *iso_date,
   g_return_val_if_fail (iso_date != NULL, FALSE);
   g_return_val_if_fail (time_ != NULL, FALSE);
 
+  /* Ensure that the first character is a digit,
+   * the first digit of the date, otherwise we don't
+   * have an ISO 8601 date */
+  while (g_ascii_isspace (*iso_date))
+    iso_date++;
+
+  if (*iso_date == '\0')
+    return FALSE;
+
+  if (!g_ascii_isdigit (*iso_date) && *iso_date != '-' && *iso_date != '+')
+    return FALSE;
+
   val = strtoul (iso_date, (char **)&iso_date, 10);
   if (*iso_date == '-')
     {
@@ -390,16 +402,24 @@ gchar *
 g_time_val_to_iso8601 (GTimeVal *time_)
 {
   gchar *retval;
-
+#ifdef HAVE_GMTIME_R
+  struct tm tm_;
+#endif
+  
   g_return_val_if_fail (time_->tv_usec >= 0 && time_->tv_usec < G_USEC_PER_SEC, NULL);
 
 #define ISO_8601_LEN 	21
 #define ISO_8601_FORMAT "%Y-%m-%dT%H:%M:%SZ"
   retval = g_new0 (gchar, ISO_8601_LEN + 1);
-  
+
   strftime (retval, ISO_8601_LEN,
 	    ISO_8601_FORMAT,
-	    gmtime (&(time_->tv_sec)));
+#ifdef HAVE_GMTIME_R
+	    gmtime_r (&(time_->tv_sec), &tm_)
+#else
+	    gmtime (&(time_->tv_sec))
+#endif
+            );
   
   return retval;
 }

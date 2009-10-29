@@ -9,10 +9,12 @@ Metadata for parameter specifications
 #GParamSpec is an object structure that encapsulates the metadata
 required to specify parameters, such as e.g. #GObject properties.
 </para>
-<para>
+<para id="canonical-parameter-name">
 Parameter names need to start with a letter (a-z or A-Z). Subsequent
 characters can be letters, numbers or a '-'.
 All other characters are replaced by a '-' during construction.
+The result of this replacement is called the canonical name of the
+parameter.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
@@ -147,6 +149,8 @@ can be configured.
                          parameter is guaranteed to remain valid and
                          unmodified for the lifetime of the parameter. 
                          Since 2.8
+@G_PARAM_PRIVATE: 
+@G_PARAM_STATIC_NICK: 
 @G_PARAM_STATIC_BLURB:   the string used as blurb when constructing the 
                          parameter is guaranteed to remain valid and 
                          unmodified for the lifetime of the parameter. 
@@ -155,6 +159,15 @@ can be configured.
 <!-- ##### MACRO G_PARAM_READWRITE ##### -->
 <para>
 #GParamFlags value alias for %G_PARAM_READABLE | %G_PARAM_WRITABLE.
+</para>
+
+
+
+<!-- ##### MACRO G_PARAM_STATIC_STRINGS ##### -->
+<para>
+#GParamFlags value alias for %G_PARAM_STATIC_NAME | %G_PARAM_STATIC_NICK | %G_PARAM_STATIC_BLURB.
+
+Since 2.13.0
 </para>
 
 
@@ -231,7 +244,7 @@ Checks whether @value contains the default value as specified in @pspec.
 
 @pspec:   a valid #GParamSpec
 @value:   a #GValue of correct type for @pspec
-@Returns: whether @value contains the canonical defualt for this @pspec
+@Returns: whether @value contains the canonical default for this @pspec
 
 
 <!-- ##### FUNCTION g_param_value_validate ##### -->
@@ -370,7 +383,7 @@ returns that paramspec. Redirect is used typically for
 providing a new implementation of a property in a derived
 type while preserving all the properties from the parent
 type. Redirection is established by creating a property
-of type #GParamSpecOverride. See g_object_override_property()
+of type #GParamSpecOverride. See g_object_class_override_property()
 for an example of the use of this capability.
 </para>
 

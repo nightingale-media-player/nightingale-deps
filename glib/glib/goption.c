@@ -24,11 +24,13 @@
 #include "goption.h"
 #include "glib.h"
 #include "glibintl.h"
+#include "gprintf.h"
 
 #include "galias.h"
 
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <errno.h>
 
 #define TRANSLATE(group, str) (((group)->translate_func ? (* (group)->translate_func) ((str), (group)->translate_data) : (str)))
@@ -126,13 +128,8 @@ static void free_pending_nulls (GOptionContext *context,
 static int
 _g_unichar_get_width (gunichar c)
 {
-  /* we ignore zerowidth chars in glib-2-12, since the necessary
-   * g_unichar_iszerowidth() call is in >= 2.13 only.
-   */
-  /*
   if (G_UNLIKELY (g_unichar_iszerowidth (c)))
     return 0;
-  */
 
   /* we ignore the fact that we should call g_unichar_iswide_cjk() under
    * some locales (legacy East Asian ones) */
@@ -208,8 +205,9 @@ g_option_error_quark (void)
  * program functionality that should be displayed as a paragraph
  * below the usage line, use g_option_context_set_summary().
  *
- * Note that the @parameter_string is translated (see 
- * g_option_context_set_translate_func()).
+ * Note that the @parameter_string is translated using the
+ * function set with g_option_context_set_translate_func(), so
+ * it should normally be passed untranslated.
  *
  * Returns: a newly created #GOptionContext, which must be
  *    freed with g_option_context_free() after use.
@@ -495,10 +493,11 @@ calculate_max_length (GOptionGroup *group)
 static void
 print_entry (GOptionGroup       *group,
 	     gint                max_length,
-	     const GOptionEntry *entry)
+	     const GOptionEntry *entry,
+             GString            *string)
 {
   GString *str;
-
+  
   if (entry->flags & G_OPTION_FLAG_HIDDEN)
     return;
 
@@ -515,16 +514,76 @@ print_entry (GOptionGroup       *group,
   if (entry->arg_description)
     g_string_append_printf (str, "=%s", TRANSLATE (group, entry->arg_description));
   
-  g_print ("%s%*s %s\n", str->str,
-	   (int) (max_length + 4 - _g_utf8_strwidth (str->str, -1)), "",
-	   entry->description ? TRANSLATE (group, entry->description) : "");
+  g_string_append_printf (string, "%s%*s %s\n", str->str,
+	                  (int) (max_length + 4 - _g_utf8_strwidth (str->str, -1)), "",
+	                  entry->description ? TRANSLATE (group, entry->description) : "");
   g_string_free (str, TRUE);  
 }
 
-static void
-print_help (GOptionContext *context,
-	    gboolean        main_help,
-	    GOptionGroup   *group) 
+static gboolean
+group_has_visible_entries (GOptionContext *context,
+                           GOptionGroup *group,
+                           gboolean      main_entries)
+{
+  GOptionFlags reject_filter = G_OPTION_FLAG_HIDDEN;
+  GOptionEntry *entry;
+  gint i, l;
+  gboolean main_group = group == context->main_group;
+
+  if (!main_entries)
+    reject_filter |= G_OPTION_FLAG_IN_MAIN;
+
+  for (i = 0, l = (group ? group->n_entries : 0); i < l; i++)
+    {
+      entry = &group->entries[i];
+
+      if (main_entries && !main_group && !(entry->flags & G_OPTION_FLAG_IN_MAIN))
+        continue;
+      if (!(entry->flags & reject_filter))
+        return TRUE;
+    }
+
+  return FALSE;
+}
+
+static gboolean
+group_list_has_visible_entires (GOptionContext *context,
+                                GList          *group_list,
+                                gboolean       main_entries)
+{
+  while (group_list)
+    {
+      if (group_has_visible_entries (context, group_list->data, main_entries))
+        return TRUE;
+
+      group_list = group_list->next;
+    }
+
+  return FALSE;
+}
+
+/**
+ * g_option_context_get_help: 
+ * @context: a #GOptionContext
+ * @main_help: if %TRUE, only include the main group 
+ * @group: the #GOptionGroup to create help for, or %NULL
+ *
+ * Returns a formatted, translated help text for the given context.
+ * To obtain the text produced by <option>--help</option>, call
+ * <literal>g_option_context_get_help (context, TRUE, NULL)</literal>.
+ * To obtain the text produced by <option>--help-all</option>, call
+ * <literal>g_option_context_get_help (context, FALSE, NULL)</literal>.
+ * To obtain the help text for an option group, call
+ * <literal>g_option_context_get_help (context, FALSE, group)</literal>.
+ *
+ * Returns: A newly allocated string containing the help text
+ *
+ * Since: 2.14
+ */
+gchar *
+g_option_context_get_help (GOptionContext *context,
+	                   gboolean        main_help,
+	                   GOptionGroup   *group)
 {
   GList *list;
   gint max_length, len;
@@ -533,7 +592,10 @@ print_help (GOptionContext *context,
   GHashTable *shadow_map;
   gboolean seen[256];
   const gchar *rest_description;
-  
+  GString *string;
+
+  string = g_string_sized_new (1024);
+
   rest_description = NULL;
   if (context->main_group)
     {
@@ -549,15 +611,28 @@ print_help (GOptionContext *context,
 	}
     }
 
-  g_print ("%s\n  %s %s%s%s%s%s\n\n", 
-	   _("Usage:"), g_get_prgname(), _("[OPTION...]"),
-	   rest_description ? " " : "",
-	   rest_description ? rest_description : "",
-	   context->parameter_string ? " " : "",
-	   context->parameter_string ? TRANSLATE (context, context->parameter_string) : "");
+  g_string_append_printf (string, "%s\n  %s %s", 
+	                  _("Usage:"), g_get_prgname(), _("[OPTION...]"));
+
+  if (rest_description)
+    {
+      g_string_append (string, " ");
+      g_string_append (string, rest_description);
+    }
+
+  if (context->parameter_string)
+    {
+      g_string_append (string, " ");
+      g_string_append (string, TRANSLATE (context, context->parameter_string));
+    }
+
+  g_string_append (string, "\n\n");
 
   if (context->summary)
-    g_print ("%s\n\n", TRANSLATE (context, context->summary));
+    {
+      g_string_append (string, TRANSLATE (context, context->summary));
+      g_string_append (string, "\n\n");
+    }
 
   memset (seen, 0, sizeof (gboolean) * 256);
   shadow_map = g_hash_table_new (g_str_hash, g_str_equal);
@@ -640,36 +715,43 @@ print_help (GOptionContext *context,
     {
       list = context->groups;
       
-      g_print ("%s\n  -%c, --%-*s %s\n", 
-	       _("Help Options:"), '?', max_length - 4, "help", 
-	       _("Show help options"));
+      g_string_append_printf (string, "%s\n  -%c, --%-*s %s\n", 
+	                      _("Help Options:"), '?', max_length - 4, "help", 
+	                      _("Show help options"));
       
       /* We only want --help-all when there are groups */
       if (list)
-	g_print ("  --%-*s %s\n", max_length, "help-all", 
-		 _("Show all help options"));
+	g_string_append_printf (string, "  --%-*s %s\n", 
+                                max_length, "help-all", 
+                                _("Show all help options"));
       
       while (list)
 	{
 	  GOptionGroup *group = list->data;
-	  
-	  g_print ("  --help-%-*s %s\n", max_length - 5, group->name, 
-		   TRANSLATE (group, group->help_description));
+
+	  if (group_has_visible_entries (context, group, FALSE))
+	    g_string_append_printf (string, "  --help-%-*s %s\n",
+				    max_length - 5, group->name,
+				    TRANSLATE (group, group->help_description));
 	  
 	  list = list->next;
 	}
 
-      g_print ("\n");
+      g_string_append (string, "\n");
     }
 
   if (group)
     {
       /* Print a certain group */
-      
-      g_print ("%s\n", TRANSLATE (group, group->description));
-      for (i = 0; i < group->n_entries; i++)
-	print_entry (group, max_length, &group->entries[i]);
-      g_print ("\n");
+
+      if (group_has_visible_entries (context, group, FALSE))
+        {
+          g_string_append (string, TRANSLATE (group, group->description));
+          g_string_append (string, "\n");
+          for (i = 0; i < group->n_entries; i++)
+            print_entry (group, max_length, &group->entries[i], string);
+          g_string_append (string, "\n");
+        }
     }
   else if (!main_help)
     {
@@ -681,28 +763,34 @@ print_help (GOptionContext *context,
 	{
 	  GOptionGroup *group = list->data;
 
-	  g_print ("%s\n", group->description);
-
-	  for (i = 0; i < group->n_entries; i++)
-	    if (!(group->entries[i].flags & G_OPTION_FLAG_IN_MAIN))
-	      print_entry (group, max_length, &group->entries[i]);
+	  if (group_has_visible_entries (context, group, FALSE))
+	    {
+	      g_string_append (string, group->description);
+	      g_string_append (string, "\n");
+	      for (i = 0; i < group->n_entries; i++)
+		if (!(group->entries[i].flags & G_OPTION_FLAG_IN_MAIN))
+		  print_entry (group, max_length, &group->entries[i], string);
 	  
-	  g_print ("\n");
+	      g_string_append (string, "\n");
+	    }
+
 	  list = list->next;
 	}
     }
   
   /* Print application options if --help or --help-all has been specified */
-  if (main_help || !group)
+  if ((main_help || !group) &&
+      (group_has_visible_entries (context, context->main_group, TRUE) ||
+       group_list_has_visible_entires (context, context->groups, TRUE)))
     {
       list = context->groups;
 
-      g_print ("%s\n", _("Application Options:"));
-
+      g_string_append (string,  _("Application Options:"));
+      g_string_append (string, "\n");
       if (context->main_group)
 	for (i = 0; i < context->main_group->n_entries; i++) 
 	  print_entry (context->main_group, max_length, 
-		       &context->main_group->entries[i]);
+		       &context->main_group->entries[i], string);
 
       while (list != NULL)
 	{
@@ -711,18 +799,35 @@ print_help (GOptionContext *context,
 	  /* Print main entries from other groups */
 	  for (i = 0; i < group->n_entries; i++)
 	    if (group->entries[i].flags & G_OPTION_FLAG_IN_MAIN)
-	      print_entry (group, max_length, &group->entries[i]);
+	      print_entry (group, max_length, &group->entries[i], string);
 	  
 	  list = list->next;
 	}
 
-      g_print ("\n");
+      g_string_append (string, "\n");
     }
  
   if (context->description)
-    g_print ("%s\n", TRANSLATE (context, context->description));
- 
-  exit (0);
+    {
+      g_string_append (string, TRANSLATE (context, context->description));
+      g_string_append (string, "\n");
+    }
+
+  return g_string_free (string, FALSE);
+}
+
+static void
+print_help (GOptionContext *context,
+	    gboolean        main_help,
+	    GOptionGroup   *group)
+{
+  gchar *help;
+
+  help = g_option_context_get_help (context, main_help, group);
+  g_print ("%s", help);
+  g_free (help);
+
+  exit (0);  
 }
 
 static gboolean
@@ -1303,7 +1408,8 @@ parse_remaining_arg (GOptionContext *context,
       if (group->entries[j].long_name[0])
 	continue;
 
-      g_return_val_if_fail (group->entries[j].arg == G_OPTION_ARG_STRING_ARRAY ||
+      g_return_val_if_fail (group->entries[j].arg == G_OPTION_ARG_CALLBACK ||
+                            group->entries[j].arg == G_OPTION_ARG_STRING_ARRAY ||
 			    group->entries[j].arg == G_OPTION_ARG_FILENAME_ARRAY, FALSE);
       
       add_pending_null (context, &((*argv)[*index]), NULL);
@@ -1399,8 +1505,8 @@ free_pending_nulls (GOptionContext *context,
 /**
  * g_option_context_parse:
  * @context: a #GOptionContext
- * @argc: a pointer to the number of command line arguments.
- * @argv: a pointer to the array of command line arguments.
+ * @argc: a pointer to the number of command line arguments
+ * @argv: a pointer to the array of command line arguments
  * @error: a return location for errors 
  * 
  * Parses the command line arguments, recognizing options
@@ -1420,6 +1526,11 @@ free_pending_nulls (GOptionContext *context,
  * @argv array contains one of the recognized help options,
  * this function will produce help output to stdout and
  * call <literal>exit (0)</literal>.
+ *
+ * Note that function depends on the 
+ * <link linkend="setlocale">current locale</link> for 
+ * automatic character set conversion of string and filename
+ * arguments.
  * 
  * Return value: %TRUE if the parsing was successful, 
  *               %FALSE if an error occurred
@@ -1984,7 +2095,7 @@ g_option_group_set_translation_domain (GOptionGroup *group,
  * If @func is %NULL, strings are not translated.
  *
  * Note that option groups have their own translation functions, 
- * this function only affects the @parameter_string (see g_option_context_nex()), 
+ * this function only affects the @parameter_string (see g_option_context_new()), 
  * the summary (see g_option_context_set_summary()) and the description 
  * (see g_option_context_set_description()).
  *
@@ -2042,7 +2153,7 @@ g_option_context_set_translation_domain (GOptionContext *context,
  * program functionality. 
  *
  * Note that the summary is translated (see 
- * g_option_context_set_translate_func()).
+ * g_option_context_set_translate_func(), g_option_context_set_translation_domain()).
  *
  * Since: 2.12
  */

@@ -1,24 +1,23 @@
 <refentry id="glib-File-Utilities">
 <refmeta>
-<refentrytitle role="top_of_page">File Utilities</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-File-Utilities.top_of_page">File Utilities</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>File Utilities</refname>
-<refpurpose>various file-related functions.</refpurpose>
+<refpurpose>various file-related functions</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-File-Utilities.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
 #include &lt;glib/gstdio.h&gt;
-
 
 enum                <link linkend="GFileError">GFileError</link>;
 #define             <link linkend="G-FILE-ERROR:CAPS">G_FILE_ERROR</link>
@@ -85,7 +84,6 @@ const <link linkend="gchar">gchar</link>*        <link linkend="g-dir-read-name"
 <link linkend="int">int</link>                 <link linkend="g-creat">g_creat</link>                             (const <link linkend="gchar">gchar</link> *filename,
                                                          <link linkend="int">int</link> mode);
 <link linkend="int">int</link>                 <link linkend="g-chdir">g_chdir</link>                             (const <link linkend="gchar">gchar</link> *path);
-
 </synopsis>
 </refsynopsisdiv>
 
@@ -97,7 +95,7 @@ const <link linkend="gchar">gchar</link>*        <link linkend="g-dir-read-name"
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-File-Utilities.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 There is a group of functions which wrap the common POSIX functions 
@@ -128,11 +126,11 @@ in the GLib file name encoding. These are <link linkend="g-dir-open"><function>g
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-File-Utilities.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GFileError" role="enum"/>enum GFileError</title>
-<indexterm><primary>GFileError</primary></indexterm><programlisting>typedef enum
+<refsect2 id="GFileError" role="enum">
+<title>enum GFileError</title>
+<indexterm zone="GFileError"><primary>GFileError</primary></indexterm><programlisting>typedef enum
 {
   G_FILE_ERROR_EXIST,
   G_FILE_ERROR_ISDIR,
@@ -177,45 +175,45 @@ which errors will be returned from a given operation. Some errors
 don't occur on some systems, etc., sometimes there are subtle
 differences in when a system will report a given error, etc.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-EXIST:CAPS" role="constant"/><literal>G_FILE_ERROR_EXIST</literal></term>
+<varlistentry id="G-FILE-ERROR-EXIST:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_EXIST</literal></term>
 <listitem><simpara>Operation not permitted; only the owner of the
      file (or other resource) or processes with special privileges can
      perform the operation.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-ISDIR:CAPS" role="constant"/><literal>G_FILE_ERROR_ISDIR</literal></term>
+<varlistentry id="G-FILE-ERROR-ISDIR:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_ISDIR</literal></term>
 <listitem><simpara>File is a directory; you cannot open a directory
      for writing, or create or remove hard links to it.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-ACCES:CAPS" role="constant"/><literal>G_FILE_ERROR_ACCES</literal></term>
+<varlistentry id="G-FILE-ERROR-ACCES:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_ACCES</literal></term>
 <listitem><simpara>Permission denied; the file permissions do not
      allow the attempted operation.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-NAMETOOLONG:CAPS" role="constant"/><literal>G_FILE_ERROR_NAMETOOLONG</literal></term>
+<varlistentry id="G-FILE-ERROR-NAMETOOLONG:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_NAMETOOLONG</literal></term>
 <listitem><simpara>Filename too long.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-NOENT:CAPS" role="constant"/><literal>G_FILE_ERROR_NOENT</literal></term>
+<varlistentry id="G-FILE-ERROR-NOENT:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_NOENT</literal></term>
 <listitem><simpara>No such file or directory.  This is a "file
      doesn't exist" error for ordinary files that are referenced in
      contexts where they are expected to already exist.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-NOTDIR:CAPS" role="constant"/><literal>G_FILE_ERROR_NOTDIR</literal></term>
+<varlistentry id="G-FILE-ERROR-NOTDIR:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_NOTDIR</literal></term>
 <listitem><simpara>A file that isn't a directory was specified when
      a directory is required.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-NXIO:CAPS" role="constant"/><literal>G_FILE_ERROR_NXIO</literal></term>
+<varlistentry id="G-FILE-ERROR-NXIO:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_NXIO</literal></term>
 <listitem><simpara>No such device or address.  The system tried to
      use the device represented by a file you specified, and it
      couldn't find the device.  This can mean that the device file was
@@ -223,78 +221,78 @@ differences in when a system will report a given error, etc.
      not correctly attached to the computer.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-NODEV:CAPS" role="constant"/><literal>G_FILE_ERROR_NODEV</literal></term>
+<varlistentry id="G-FILE-ERROR-NODEV:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_NODEV</literal></term>
 <listitem><simpara>This file is of a type that doesn't support
      mapping.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-ROFS:CAPS" role="constant"/><literal>G_FILE_ERROR_ROFS</literal></term>
+<varlistentry id="G-FILE-ERROR-ROFS:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_ROFS</literal></term>
 <listitem><simpara>The directory containing the new link can't be
           modified because it's on a read-only file system.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-TXTBSY:CAPS" role="constant"/><literal>G_FILE_ERROR_TXTBSY</literal></term>
+<varlistentry id="G-FILE-ERROR-TXTBSY:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_TXTBSY</literal></term>
 <listitem><simpara>Text file busy.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-FAULT:CAPS" role="constant"/><literal>G_FILE_ERROR_FAULT</literal></term>
+<varlistentry id="G-FILE-ERROR-FAULT:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_FAULT</literal></term>
 <listitem><simpara>You passed in a pointer to bad memory.
   (GLib won't reliably return this, don't pass in pointers to bad
   memory.)
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-LOOP:CAPS" role="constant"/><literal>G_FILE_ERROR_LOOP</literal></term>
+<varlistentry id="G-FILE-ERROR-LOOP:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_LOOP</literal></term>
 <listitem><simpara>Too many levels of symbolic links were encountered
   in looking up a file name.  This often indicates a cycle of symbolic
   links.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-NOSPC:CAPS" role="constant"/><literal>G_FILE_ERROR_NOSPC</literal></term>
+<varlistentry id="G-FILE-ERROR-NOSPC:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_NOSPC</literal></term>
 <listitem><simpara>No space left on device; write operation on a
   file failed because the disk is full.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-NOMEM:CAPS" role="constant"/><literal>G_FILE_ERROR_NOMEM</literal></term>
+<varlistentry id="G-FILE-ERROR-NOMEM:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_NOMEM</literal></term>
 <listitem><simpara>No memory available.  The system cannot allocate
      more virtual memory because its capacity is full.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-MFILE:CAPS" role="constant"/><literal>G_FILE_ERROR_MFILE</literal></term>
+<varlistentry id="G-FILE-ERROR-MFILE:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_MFILE</literal></term>
 <listitem><simpara>The current process has too many files open and
      can't open any more.  Duplicate descriptors do count toward this
      limit.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-NFILE:CAPS" role="constant"/><literal>G_FILE_ERROR_NFILE</literal></term>
+<varlistentry id="G-FILE-ERROR-NFILE:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_NFILE</literal></term>
 <listitem><simpara>There are too many distinct file openings in the
      entire system.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-BADF:CAPS" role="constant"/><literal>G_FILE_ERROR_BADF</literal></term>
+<varlistentry id="G-FILE-ERROR-BADF:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_BADF</literal></term>
 <listitem><simpara>Bad file descriptor; for example, I/O on a
      descriptor that has been closed or reading from a descriptor open
      only for writing (or vice versa).
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-INVAL:CAPS" role="constant"/><literal>G_FILE_ERROR_INVAL</literal></term>
+<varlistentry id="G-FILE-ERROR-INVAL:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_INVAL</literal></term>
 <listitem><simpara>Invalid argument.  This is used to indicate
      various kinds of problems with passing the wrong argument to a
      library function.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-PIPE:CAPS" role="constant"/><literal>G_FILE_ERROR_PIPE</literal></term>
+<varlistentry id="G-FILE-ERROR-PIPE:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_PIPE</literal></term>
 <listitem><simpara>Broken pipe; there is no process reading from the
      other end of a pipe.  Every library function that returns this
      error code also generates a `SIGPIPE' signal; this signal
@@ -303,41 +301,41 @@ differences in when a system will report a given error, etc.
      blocked `SIGPIPE'.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-AGAIN:CAPS" role="constant"/><literal>G_FILE_ERROR_AGAIN</literal></term>
+<varlistentry id="G-FILE-ERROR-AGAIN:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_AGAIN</literal></term>
 <listitem><simpara>Resource temporarily unavailable; the call might
      work if you try again later.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-INTR:CAPS" role="constant"/><literal>G_FILE_ERROR_INTR</literal></term>
+<varlistentry id="G-FILE-ERROR-INTR:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_INTR</literal></term>
 <listitem><simpara>Interrupted function call; an asynchronous signal
      occurred and prevented completion of the call.  When this
      happens, you should try the call again.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-IO:CAPS" role="constant"/><literal>G_FILE_ERROR_IO</literal></term>
+<varlistentry id="G-FILE-ERROR-IO:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_IO</literal></term>
 <listitem><simpara>Input/output error; usually used for physical read
     or write errors. i.e. the disk or other physical device hardware
     is returning errors.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-PERM:CAPS" role="constant"/><literal>G_FILE_ERROR_PERM</literal></term>
+<varlistentry id="G-FILE-ERROR-PERM:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_PERM</literal></term>
 <listitem><simpara>Operation not permitted; only the owner of the
      file (or other resource) or processes with special privileges can
      perform the operation.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-NOSYS:CAPS" role="constant"/><literal>G_FILE_ERROR_NOSYS</literal></term>
+<varlistentry id="G-FILE-ERROR-NOSYS:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_NOSYS</literal></term>
 <listitem><simpara>Function not implemented; this indicates that the
     system is missing some functionality.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-ERROR-FAILED:CAPS" role="constant"/><literal>G_FILE_ERROR_FAILED</literal></term>
+<varlistentry id="G-FILE-ERROR-FAILED:CAPS" role="constant">
+<term><literal>G_FILE_ERROR_FAILED</literal></term>
 <listitem><simpara>Does not correspond to a UNIX error code; this
   is the standard "failed for unspecified reason" error code present in 
   all <link linkend="GError"><type>GError</type></link> error code enumerations. Returned if no specific
@@ -346,18 +344,18 @@ differences in when a system will report a given error, etc.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-FILE-ERROR:CAPS" role="macro"/>G_FILE_ERROR</title>
-<indexterm><primary>G_FILE_ERROR</primary></indexterm><programlisting>#define G_FILE_ERROR g_file_error_quark ()
+<refsect2 id="G-FILE-ERROR:CAPS" role="macro">
+<title>G_FILE_ERROR</title>
+<indexterm zone="G-FILE-ERROR:CAPS"><primary>G_FILE_ERROR</primary></indexterm><programlisting>#define G_FILE_ERROR g_file_error_quark ()
 </programlisting>
 <para>
 Error domain for file operations. Errors in this domain will
 be from the <link linkend="GFileError"><type>GFileError</type></link> enumeration. See <link linkend="GError"><type>GError</type></link> for information on 
 error domains.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GFileTest" role="enum"/>enum GFileTest</title>
-<indexterm><primary>GFileTest</primary></indexterm><programlisting>typedef enum
+<refsect2 id="GFileTest" role="enum">
+<title>enum GFileTest</title>
+<indexterm zone="GFileTest"><primary>GFileTest</primary></indexterm><programlisting>typedef enum
 {
   G_FILE_TEST_IS_REGULAR    = 1 &lt;&lt; 0,
   G_FILE_TEST_IS_SYMLINK    = 1 &lt;&lt; 1,
@@ -369,36 +367,39 @@ error domains.
 <para>
 A test to perform on a file using <link linkend="g-file-test"><function>g_file_test()</function></link>.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-FILE-TEST-IS-REGULAR:CAPS" role="constant"/><literal>G_FILE_TEST_IS_REGULAR</literal></term>
-<listitem><simpara><link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the file is a regular file (not a symlink or directory)
+<varlistentry id="G-FILE-TEST-IS-REGULAR:CAPS" role="constant">
+<term><literal>G_FILE_TEST_IS_REGULAR</literal></term>
+<listitem><simpara><link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the file is a regular file (not a directory).
+    Note that this test will also return <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the tested file is a symlink
+    to a regular file.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-TEST-IS-SYMLINK:CAPS" role="constant"/><literal>G_FILE_TEST_IS_SYMLINK</literal></term>
+<varlistentry id="G-FILE-TEST-IS-SYMLINK:CAPS" role="constant">
+<term><literal>G_FILE_TEST_IS_SYMLINK</literal></term>
 <listitem><simpara><link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the file is a symlink.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-TEST-IS-DIR:CAPS" role="constant"/><literal>G_FILE_TEST_IS_DIR</literal></term>
+<varlistentry id="G-FILE-TEST-IS-DIR:CAPS" role="constant">
+<term><literal>G_FILE_TEST_IS_DIR</literal></term>
 <listitem><simpara><link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the file is a directory.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-TEST-IS-EXECUTABLE:CAPS" role="constant"/><literal>G_FILE_TEST_IS_EXECUTABLE</literal></term>
+<varlistentry id="G-FILE-TEST-IS-EXECUTABLE:CAPS" role="constant">
+<term><literal>G_FILE_TEST_IS_EXECUTABLE</literal></term>
 <listitem><simpara><link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the file is executable.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-FILE-TEST-EXISTS:CAPS" role="constant"/><literal>G_FILE_TEST_EXISTS</literal></term>
-<listitem><simpara><link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the file exists. It may or may not be a regular file.
+<varlistentry id="G-FILE-TEST-EXISTS:CAPS" role="constant">
+<term><literal>G_FILE_TEST_EXISTS</literal></term>
+<listitem><simpara><link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the file exists. 
+    It may or may not be a regular file.
 
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-file-error-from-errno" role="function"/>g_file_error_from_errno ()</title>
-<indexterm><primary>g_file_error_from_errno</primary></indexterm><programlisting><link linkend="GFileError">GFileError</link>          g_file_error_from_errno             (<link linkend="gint">gint</link> err_no);</programlisting>
+<refsect2 id="g-file-error-from-errno" role="function">
+<title>g_file_error_from_errno ()</title>
+<indexterm zone="g-file-error-from-errno"><primary>g_file_error_from_errno</primary></indexterm><programlisting><link linkend="GFileError">GFileError</link>          g_file_error_from_errno             (<link linkend="gint">gint</link> err_no);</programlisting>
 <para>
 Gets a <link linkend="GFileError"><type>GFileError</type></link> constant based on the passed-in <parameter>errno</parameter>.
 For example, if you pass in <link linkend="EEXIST:CAPS"><literal>EEXIST</literal></link> this function returns
@@ -418,9 +419,9 @@ from a function that manipulates files. So you would use
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GFileError"><type>GFileError</type></link> corresponding to the given <parameter>errno</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-file-get-contents" role="function"/>g_file_get_contents ()</title>
-<indexterm><primary>g_file_get_contents</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_file_get_contents                 (const <link linkend="gchar">gchar</link> *filename,
+<refsect2 id="g-file-get-contents" role="function">
+<title>g_file_get_contents ()</title>
+<indexterm zone="g-file-get-contents"><primary>g_file_get_contents</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_file_get_contents                 (const <link linkend="gchar">gchar</link> *filename,
                                                          <link linkend="gchar">gchar</link> **contents,
                                                          <link linkend="gsize">gsize</link> *length,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
@@ -454,9 +455,9 @@ codes are those in the <link linkend="GFileError"><type>GFileError</type></link>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> on success, <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> if an error occurred
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-file-set-contents" role="function" condition="since:2.8"/>g_file_set_contents ()</title>
-<indexterm role="2.8"><primary>g_file_set_contents</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_file_set_contents                 (const <link linkend="gchar">gchar</link> *filename,
+<refsect2 id="g-file-set-contents" role="function" condition="since:2.8">
+<title>g_file_set_contents ()</title>
+<indexterm zone="g-file-set-contents" role="2.8"><primary>g_file_set_contents</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_file_set_contents                 (const <link linkend="gchar">gchar</link> *filename,
                                                          const <link linkend="gchar">gchar</link> *contents,
                                                          <link linkend="gssize">gssize</link> length,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
@@ -511,9 +512,9 @@ Possible error codes are those in the <link linkend="GFileError"><type>GFileErro
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.8
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-file-test" role="function"/>g_file_test ()</title>
-<indexterm><primary>g_file_test</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_file_test                         (const <link linkend="gchar">gchar</link> *filename,
+<refsect2 id="g-file-test" role="function">
+<title>g_file_test ()</title>
+<indexterm zone="g-file-test"><primary>g_file_test</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_file_test                         (const <link linkend="gchar">gchar</link> *filename,
                                                          <link linkend="GFileTest">GFileTest</link> test);</programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if any of the tests in the bitfield <parameter>test</parameter> are
@@ -537,16 +538,15 @@ You should never use <link linkend="g-file-test"><function>g_file_test()</functi
 to perform an operation, because there is always the possibility
 of the condition changing before you actually perform the operation.
 For example, you might think you could use <link linkend="G-FILE-TEST-IS-SYMLINK:CAPS"><literal>G_FILE_TEST_IS_SYMLINK</literal></link>
-to know whether it is is safe to write to a file without being
+to know whether it is safe to write to a file without being
 tricked into writing into a different location. It doesn't work!
-</para>
-<para>
 <informalexample><programlisting>
 /&ast; DON'T DO THIS &ast;/
- if (!g_file_test (filename, G_FILE_TEST_IS_SYMLINK)) {
-   fd = g_open (filename, O_WRONLY);
-   /&ast; write to fd &ast;/
- }
+ if (!g_file_test (filename, G_FILE_TEST_IS_SYMLINK)) 
+   {
+     fd = g_open (filename, O_WRONLY);
+     /&ast; write to fd &ast;/
+   }
 </programlisting></informalexample>
 </para>
 <para>
@@ -575,9 +575,9 @@ extensions and those listed in the <link linkend="PATHEXT:CAPS"><literal>PATHEXT
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> whether a test was <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-mkstemp" role="function"/>g_mkstemp ()</title>
-<indexterm><primary>g_mkstemp</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_mkstemp                           (<link linkend="gchar">gchar</link> *tmpl);</programlisting>
+<refsect2 id="g-mkstemp" role="function">
+<title>g_mkstemp ()</title>
+<indexterm zone="g-mkstemp"><primary>g_mkstemp</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_mkstemp                           (<link linkend="gchar">gchar</link> *tmpl);</programlisting>
 <para>
 Opens a temporary file. See the <link linkend="mkstemp"><function>mkstemp()</function></link> documentation
 on most UNIX-like systems. 
@@ -603,9 +603,9 @@ on platforms where there is a difference. The file handle should be
 closed with <link linkend="close"><function>close()</function></link>. In case of errors, -1 is returned.  
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-file-open-tmp" role="function"/>g_file_open_tmp ()</title>
-<indexterm><primary>g_file_open_tmp</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_file_open_tmp                     (const <link linkend="gchar">gchar</link> *tmpl,
+<refsect2 id="g-file-open-tmp" role="function">
+<title>g_file_open_tmp ()</title>
+<indexterm zone="g-file-open-tmp"><primary>g_file_open_tmp</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_file_open_tmp                     (const <link linkend="gchar">gchar</link> *tmpl,
                                                          <link linkend="gchar">gchar</link> **name_used,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
@@ -647,9 +647,9 @@ closed with <link linkend="close"><function>close()</function></link>. In case o
 and <parameter>error</parameter> will be set.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-file-read-link" role="function" condition="since:2.4"/>g_file_read_link ()</title>
-<indexterm role="2.4"><primary>g_file_read_link</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_file_read_link                    (const <link linkend="gchar">gchar</link> *filename,
+<refsect2 id="g-file-read-link" role="function" condition="since:2.4">
+<title>g_file_read_link ()</title>
+<indexterm zone="g-file-read-link" role="2.4"><primary>g_file_read_link</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_file_read_link                    (const <link linkend="gchar">gchar</link> *filename,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
 Reads the contents of the symbolic link <parameter>filename</parameter> like the POSIX
@@ -670,9 +670,9 @@ for filenames. Use <link linkend="g-filename-to-utf8"><function>g_filename_to_ut
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-mkdir-with-parents" role="function" condition="since:2.8"/>g_mkdir_with_parents ()</title>
-<indexterm role="2.8"><primary>g_mkdir_with_parents</primary></indexterm><programlisting><link linkend="int">int</link>                 g_mkdir_with_parents                (const <link linkend="gchar">gchar</link> *pathname,
+<refsect2 id="g-mkdir-with-parents" role="function" condition="since:2.8">
+<title>g_mkdir_with_parents ()</title>
+<indexterm zone="g-mkdir-with-parents" role="2.8"><primary>g_mkdir_with_parents</primary></indexterm><programlisting><link linkend="int">int</link>                 g_mkdir_with_parents                (const <link linkend="gchar">gchar</link> *pathname,
                                                          <link linkend="int">int</link> mode);</programlisting>
 <para>
 Create a directory if it doesn't already exist. Create intermediate
@@ -692,15 +692,15 @@ created. Returns -1 if an error occurred, with errno set.
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.8
 </para></refsect2>
-<refsect2>
-<title><anchor id="GDir" role="struct"/>GDir</title>
-<indexterm><primary>GDir</primary></indexterm><programlisting>typedef struct _GDir GDir;</programlisting>
+<refsect2 id="GDir" role="struct">
+<title>GDir</title>
+<indexterm zone="GDir"><primary>GDir</primary></indexterm><programlisting>typedef struct _GDir GDir;</programlisting>
 <para>
 An opaque structure representing an opened directory.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-dir-open" role="function"/>g_dir_open ()</title>
-<indexterm><primary>g_dir_open</primary></indexterm><programlisting><link linkend="GDir">GDir</link>*               g_dir_open                          (const <link linkend="gchar">gchar</link> *path,
+<refsect2 id="g-dir-open" role="function">
+<title>g_dir_open ()</title>
+<indexterm zone="g-dir-open"><primary>g_dir_open</primary></indexterm><programlisting><link linkend="GDir">GDir</link>*               g_dir_open                          (const <link linkend="gchar">gchar</link> *path,
                                                          <link linkend="guint">guint</link> flags,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
@@ -726,9 +726,9 @@ directory can then be retrieved using <link linkend="g-dir-read-name"><function>
   when you are finished with it.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-dir-read-name" role="function"/>g_dir_read_name ()</title>
-<indexterm><primary>g_dir_read_name</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        g_dir_read_name                     (<link linkend="GDir">GDir</link> *dir);</programlisting>
+<refsect2 id="g-dir-read-name" role="function">
+<title>g_dir_read_name ()</title>
+<indexterm zone="g-dir-read-name"><primary>g_dir_read_name</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        g_dir_read_name                     (<link linkend="GDir">GDir</link> *dir);</programlisting>
 <para>
 Retrieves the name of the next entry in the directory.  The '.' and
 '..' entries are omitted. On Windows, the returned name is in
@@ -744,9 +744,9 @@ UTF-8. On Unix, it is in the on-disk encoding.</para>
   must not be modified or freed.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-dir-rewind" role="function"/>g_dir_rewind ()</title>
-<indexterm><primary>g_dir_rewind</primary></indexterm><programlisting><link linkend="void">void</link>                g_dir_rewind                        (<link linkend="GDir">GDir</link> *dir);</programlisting>
+<refsect2 id="g-dir-rewind" role="function">
+<title>g_dir_rewind ()</title>
+<indexterm zone="g-dir-rewind"><primary>g_dir_rewind</primary></indexterm><programlisting><link linkend="void">void</link>                g_dir_rewind                        (<link linkend="GDir">GDir</link> *dir);</programlisting>
 <para>
 Resets the given directory. The next call to <link linkend="g-dir-read-name"><function>g_dir_read_name()</function></link>
 will return the first entry again.</para>
@@ -757,9 +757,9 @@ will return the first entry again.</para>
 <listitem><simpara> a <link linkend="GDir"><type>GDir</type></link>* created by <link linkend="g-dir-open"><function>g_dir_open()</function></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-dir-close" role="function"/>g_dir_close ()</title>
-<indexterm><primary>g_dir_close</primary></indexterm><programlisting><link linkend="void">void</link>                g_dir_close                         (<link linkend="GDir">GDir</link> *dir);</programlisting>
+<refsect2 id="g-dir-close" role="function">
+<title>g_dir_close ()</title>
+<indexterm zone="g-dir-close"><primary>g_dir_close</primary></indexterm><programlisting><link linkend="void">void</link>                g_dir_close                         (<link linkend="GDir">GDir</link> *dir);</programlisting>
 <para>
 Closes the directory and deallocates all related resources.</para>
 <para>
@@ -769,17 +769,17 @@ Closes the directory and deallocates all related resources.</para>
 <listitem><simpara> a <link linkend="GDir"><type>GDir</type></link>* created by <link linkend="g-dir-open"><function>g_dir_open()</function></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GMappedFile" role="struct"/>GMappedFile</title>
-<indexterm><primary>GMappedFile</primary></indexterm><programlisting>typedef struct _GMappedFile GMappedFile;</programlisting>
+<refsect2 id="GMappedFile" role="struct">
+<title>GMappedFile</title>
+<indexterm zone="GMappedFile"><primary>GMappedFile</primary></indexterm><programlisting>typedef struct _GMappedFile GMappedFile;</programlisting>
 <para>
 The <link linkend="GMappedFile"><type>GMappedFile</type></link> represents a file mapping created with
 <link linkend="g-mapped-file-new"><function>g_mapped_file_new()</function></link>. It has only private members and should
 not be accessed directly.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-mapped-file-new" role="function" condition="since:2.8"/>g_mapped_file_new ()</title>
-<indexterm role="2.8"><primary>g_mapped_file_new</primary></indexterm><programlisting><link linkend="GMappedFile">GMappedFile</link>*        g_mapped_file_new                   (const <link linkend="gchar">gchar</link> *filename,
+<refsect2 id="g-mapped-file-new" role="function" condition="since:2.8">
+<title>g_mapped_file_new ()</title>
+<indexterm zone="g-mapped-file-new" role="2.8"><primary>g_mapped_file_new</primary></indexterm><programlisting><link linkend="GMappedFile">GMappedFile</link>*        g_mapped_file_new                   (const <link linkend="gchar">gchar</link> *filename,
                                                          <link linkend="gboolean">gboolean</link> writable,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
@@ -803,7 +803,7 @@ atomically (e.g. using <link linkend="g-file-set-contents"><function>g_file_set_
 <listitem><simpara> The path of the file to load, in the GLib filename encoding
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>writable</parameter>&nbsp;:</term>
-<listitem><simpara> wether the mapping should be writable
+<listitem><simpara> whether the mapping should be writable
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>error</parameter>&nbsp;:</term>
 <listitem><simpara> return location for a <link linkend="GError"><type>GError</type></link>, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
@@ -814,9 +814,9 @@ atomically (e.g. using <link linkend="g-file-set-contents"><function>g_file_set_
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.8
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-mapped-file-free" role="function" condition="since:2.8"/>g_mapped_file_free ()</title>
-<indexterm role="2.8"><primary>g_mapped_file_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_mapped_file_free                  (<link linkend="GMappedFile">GMappedFile</link> *file);</programlisting>
+<refsect2 id="g-mapped-file-free" role="function" condition="since:2.8">
+<title>g_mapped_file_free ()</title>
+<indexterm zone="g-mapped-file-free" role="2.8"><primary>g_mapped_file_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_mapped_file_free                  (<link linkend="GMappedFile">GMappedFile</link> *file);</programlisting>
 <para>
 Unmaps the buffer of <parameter>file</parameter> and frees it.</para>
 <para>
@@ -827,9 +827,9 @@ Unmaps the buffer of <parameter>file</parameter> and frees it.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.8
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-mapped-file-get-length" role="function" condition="since:2.8"/>g_mapped_file_get_length ()</title>
-<indexterm role="2.8"><primary>g_mapped_file_get_length</primary></indexterm><programlisting><link linkend="gsize">gsize</link>               g_mapped_file_get_length            (<link linkend="GMappedFile">GMappedFile</link> *file);</programlisting>
+<refsect2 id="g-mapped-file-get-length" role="function" condition="since:2.8">
+<title>g_mapped_file_get_length ()</title>
+<indexterm zone="g-mapped-file-get-length" role="2.8"><primary>g_mapped_file_get_length</primary></indexterm><programlisting><link linkend="gsize">gsize</link>               g_mapped_file_get_length            (<link linkend="GMappedFile">GMappedFile</link> *file);</programlisting>
 <para>
 Returns the length of the contents of a <link linkend="GMappedFile"><type>GMappedFile</type></link>.</para>
 <para>
@@ -843,9 +843,9 @@ Returns the length of the contents of a <link linkend="GMappedFile"><type>GMappe
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.8
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-mapped-file-get-contents" role="function" condition="since:2.8"/>g_mapped_file_get_contents ()</title>
-<indexterm role="2.8"><primary>g_mapped_file_get_contents</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_mapped_file_get_contents          (<link linkend="GMappedFile">GMappedFile</link> *file);</programlisting>
+<refsect2 id="g-mapped-file-get-contents" role="function" condition="since:2.8">
+<title>g_mapped_file_get_contents ()</title>
+<indexterm zone="g-mapped-file-get-contents" role="2.8"><primary>g_mapped_file_get_contents</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_mapped_file_get_contents          (<link linkend="GMappedFile">GMappedFile</link> *file);</programlisting>
 <para>
 Returns the contents of a <link linkend="GMappedFile"><type>GMappedFile</type></link>. 
 </para>
@@ -863,9 +863,9 @@ even if the <link linkend="GMappedFile"><type>GMappedFile</type></link> is backe
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.8
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-open" role="function" condition="since:2.6"/>g_open ()</title>
-<indexterm role="2.6"><primary>g_open</primary></indexterm><programlisting><link linkend="int">int</link>                 g_open                              (const <link linkend="gchar">gchar</link> *filename,
+<refsect2 id="g-open" role="function" condition="since:2.6">
+<title>g_open ()</title>
+<indexterm zone="g-open" role="2.6"><primary>g_open</primary></indexterm><programlisting><link linkend="int">int</link>                 g_open                              (const <link linkend="gchar">gchar</link> *filename,
                                                          <link linkend="int">int</link> flags,
                                                          <link linkend="int">int</link> mode);</programlisting>
 <para>
@@ -896,9 +896,9 @@ return value can be used exactly like the return value from <link linkend="open"
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-rename" role="function" condition="since:2.6"/>g_rename ()</title>
-<indexterm role="2.6"><primary>g_rename</primary></indexterm><programlisting><link linkend="int">int</link>                 g_rename                            (const <link linkend="gchar">gchar</link> *oldfilename,
+<refsect2 id="g-rename" role="function" condition="since:2.6">
+<title>g_rename ()</title>
+<indexterm zone="g-rename" role="2.6"><primary>g_rename</primary></indexterm><programlisting><link linkend="int">int</link>                 g_rename                            (const <link linkend="gchar">gchar</link> *oldfilename,
                                                          const <link linkend="gchar">gchar</link> *newfilename);</programlisting>
 <para>
 A wrapper for the POSIX <link linkend="rename"><function>rename()</function></link> function. The <link linkend="rename"><function>rename()</function></link> function 
@@ -923,9 +923,9 @@ it is not possible in general on Windows to rename an open file.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-mkdir" role="function" condition="since:2.6"/>g_mkdir ()</title>
-<indexterm role="2.6"><primary>g_mkdir</primary></indexterm><programlisting><link linkend="int">int</link>                 g_mkdir                             (const <link linkend="gchar">gchar</link> *filename,
+<refsect2 id="g-mkdir" role="function" condition="since:2.6">
+<title>g_mkdir ()</title>
+<indexterm zone="g-mkdir" role="2.6"><primary>g_mkdir</primary></indexterm><programlisting><link linkend="int">int</link>                 g_mkdir                             (const <link linkend="gchar">gchar</link> *filename,
                                                          <link linkend="int">int</link> mode);</programlisting>
 <para>
 A wrapper for the POSIX <link linkend="mkdir"><function>mkdir()</function></link> function. The <link linkend="mkdir"><function>mkdir()</function></link> function 
@@ -949,9 +949,9 @@ See the C library manual for more details about <link linkend="mkdir"><function>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-stat" role="function" condition="since:2.6"/>g_stat ()</title>
-<indexterm role="2.6"><primary>g_stat</primary></indexterm><programlisting><link linkend="int">int</link>                 g_stat                              (const <link linkend="gchar">gchar</link> *filename,
+<refsect2 id="g-stat" role="function" condition="since:2.6">
+<title>g_stat ()</title>
+<indexterm zone="g-stat" role="2.6"><primary>g_stat</primary></indexterm><programlisting><link linkend="int">int</link>                 g_stat                              (const <link linkend="gchar">gchar</link> *filename,
                                                          <link linkend="struct-stat">struct stat</link> *buf);</programlisting>
 <para>
 A wrapper for the POSIX <link linkend="stat"><function>stat()</function></link> function. The <link linkend="stat"><function>stat()</function></link> function
@@ -978,9 +978,9 @@ See the C library manual for more details about <link linkend="stat"><function>s
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-lstat" role="function" condition="since:2.6"/>g_lstat ()</title>
-<indexterm role="2.6"><primary>g_lstat</primary></indexterm><programlisting><link linkend="int">int</link>                 g_lstat                             (const <link linkend="gchar">gchar</link> *filename,
+<refsect2 id="g-lstat" role="function" condition="since:2.6">
+<title>g_lstat ()</title>
+<indexterm zone="g-lstat" role="2.6"><primary>g_lstat</primary></indexterm><programlisting><link linkend="int">int</link>                 g_lstat                             (const <link linkend="gchar">gchar</link> *filename,
                                                          <link linkend="struct-stat">struct stat</link> *buf);</programlisting>
 <para>
 A wrapper for the POSIX <link linkend="lstat"><function>lstat()</function></link> function. The <link linkend="lstat"><function>lstat()</function></link> function is
@@ -1007,9 +1007,9 @@ See the C library manual for more details about <link linkend="lstat"><function>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-unlink" role="function" condition="since:2.6"/>g_unlink ()</title>
-<indexterm role="2.6"><primary>g_unlink</primary></indexterm><programlisting><link linkend="int">int</link>                 g_unlink                            (const <link linkend="gchar">gchar</link> *filename);</programlisting>
+<refsect2 id="g-unlink" role="function" condition="since:2.6">
+<title>g_unlink ()</title>
+<indexterm zone="g-unlink" role="2.6"><primary>g_unlink</primary></indexterm><programlisting><link linkend="int">int</link>                 g_unlink                            (const <link linkend="gchar">gchar</link> *filename);</programlisting>
 <para>
 A wrapper for the POSIX <link linkend="unlink"><function>unlink()</function></link> function. The <link linkend="unlink"><function>unlink()</function></link> function 
 deletes a name from the filesystem. If this was the last link to the 
@@ -1032,9 +1032,9 @@ are open to some process, or mapped into memory.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-remove" role="function" condition="since:2.6"/>g_remove ()</title>
-<indexterm role="2.6"><primary>g_remove</primary></indexterm><programlisting><link linkend="int">int</link>                 g_remove                            (const <link linkend="gchar">gchar</link> *filename);</programlisting>
+<refsect2 id="g-remove" role="function" condition="since:2.6">
+<title>g_remove ()</title>
+<indexterm zone="g-remove" role="2.6"><primary>g_remove</primary></indexterm><programlisting><link linkend="int">int</link>                 g_remove                            (const <link linkend="gchar">gchar</link> *filename);</programlisting>
 <para>
 A wrapper for the POSIX <link linkend="remove"><function>remove()</function></link> function. The <link linkend="remove"><function>remove()</function></link> function
 deletes a name from the filesystem.
@@ -1066,9 +1066,9 @@ set by <link linkend="rmdir"><function>rmdir()</function></link>.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-rmdir" role="function" condition="since:2.6"/>g_rmdir ()</title>
-<indexterm role="2.6"><primary>g_rmdir</primary></indexterm><programlisting><link linkend="int">int</link>                 g_rmdir                             (const <link linkend="gchar">gchar</link> *filename);</programlisting>
+<refsect2 id="g-rmdir" role="function" condition="since:2.6">
+<title>g_rmdir ()</title>
+<indexterm zone="g-rmdir" role="2.6"><primary>g_rmdir</primary></indexterm><programlisting><link linkend="int">int</link>                 g_rmdir                             (const <link linkend="gchar">gchar</link> *filename);</programlisting>
 <para>
 A wrapper for the POSIX <link linkend="rmdir"><function>rmdir()</function></link> function. The <link linkend="rmdir"><function>rmdir()</function></link> function
 deletes a directory from the filesystem.
@@ -1088,9 +1088,9 @@ on your system.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-fopen" role="function" condition="since:2.6"/>g_fopen ()</title>
-<indexterm role="2.6"><primary>g_fopen</primary></indexterm><programlisting><link linkend="FILE:CAPS">FILE</link>*               g_fopen                             (const <link linkend="gchar">gchar</link> *filename,
+<refsect2 id="g-fopen" role="function" condition="since:2.6">
+<title>g_fopen ()</title>
+<indexterm zone="g-fopen" role="2.6"><primary>g_fopen</primary></indexterm><programlisting><link linkend="FILE:CAPS">FILE</link>*               g_fopen                             (const <link linkend="gchar">gchar</link> *filename,
                                                          const <link linkend="gchar">gchar</link> *mode);</programlisting>
 <para>
 A wrapper for the POSIX <link linkend="fopen"><function>fopen()</function></link> function. The <link linkend="fopen"><function>fopen()</function></link> function opens
@@ -1114,9 +1114,9 @@ See the C library manual for more details about <link linkend="fopen"><function>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-freopen" role="function" condition="since:2.6"/>g_freopen ()</title>
-<indexterm role="2.6"><primary>g_freopen</primary></indexterm><programlisting><link linkend="FILE:CAPS">FILE</link>*               g_freopen                           (const <link linkend="gchar">gchar</link> *filename,
+<refsect2 id="g-freopen" role="function" condition="since:2.6">
+<title>g_freopen ()</title>
+<indexterm zone="g-freopen" role="2.6"><primary>g_freopen</primary></indexterm><programlisting><link linkend="FILE:CAPS">FILE</link>*               g_freopen                           (const <link linkend="gchar">gchar</link> *filename,
                                                          const <link linkend="gchar">gchar</link> *mode,
                                                          <link linkend="FILE:CAPS">FILE</link> *stream);</programlisting>
 <para>
@@ -1144,9 +1144,9 @@ See the C library manual for more details about <link linkend="freopen"><functio
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-chmod" role="function" condition="since:2.8"/>g_chmod ()</title>
-<indexterm role="2.8"><primary>g_chmod</primary></indexterm><programlisting><link linkend="int">int</link>                 g_chmod                             (const <link linkend="gchar">gchar</link> *filename,
+<refsect2 id="g-chmod" role="function" condition="since:2.8">
+<title>g_chmod ()</title>
+<indexterm zone="g-chmod" role="2.8"><primary>g_chmod</primary></indexterm><programlisting><link linkend="int">int</link>                 g_chmod                             (const <link linkend="gchar">gchar</link> *filename,
                                                          <link linkend="int">int</link> mode);</programlisting>
 <para>
 A wrapper for the POSIX <link linkend="chmod"><function>chmod()</function></link> function. The <link linkend="chmod"><function>chmod()</function></link> function is
@@ -1173,9 +1173,9 @@ See the C library manual for more details about <link linkend="chmod"><function>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.8
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-access" role="function" condition="since:2.8"/>g_access ()</title>
-<indexterm role="2.8"><primary>g_access</primary></indexterm><programlisting><link linkend="int">int</link>                 g_access                            (const <link linkend="gchar">gchar</link> *filename,
+<refsect2 id="g-access" role="function" condition="since:2.8">
+<title>g_access ()</title>
+<indexterm zone="g-access" role="2.8"><primary>g_access</primary></indexterm><programlisting><link linkend="int">int</link>                 g_access                            (const <link linkend="gchar">gchar</link> *filename,
                                                          <link linkend="int">int</link> mode);</programlisting>
 <para>
 A wrapper for the POSIX <link linkend="access"><function>access()</function></link> function. This function is used to
@@ -1203,14 +1203,14 @@ error.
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.8
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-creat" role="function" condition="since:2.8"/>g_creat ()</title>
-<indexterm role="2.8"><primary>g_creat</primary></indexterm><programlisting><link linkend="int">int</link>                 g_creat                             (const <link linkend="gchar">gchar</link> *filename,
+<refsect2 id="g-creat" role="function" condition="since:2.8">
+<title>g_creat ()</title>
+<indexterm zone="g-creat" role="2.8"><primary>g_creat</primary></indexterm><programlisting><link linkend="int">int</link>                 g_creat                             (const <link linkend="gchar">gchar</link> *filename,
                                                          <link linkend="int">int</link> mode);</programlisting>
 <para>
 A wrapper for the POSIX <link linkend="creat"><function>creat()</function></link> function. The <link linkend="creat"><function>creat()</function></link> function is
 used to convert a pathname into a file descriptor, creating a file
-if necessar. Note that on POSIX systems file descriptors are
+if necessary. Note that on POSIX systems file descriptors are
 implemented by the operating system. On Windows, it's the C library
 that implements <link linkend="creat"><function>creat()</function></link> and file descriptors. The actual Windows
 API for opening files is something different.
@@ -1232,9 +1232,9 @@ return value can be used exactly like the return value from <link linkend="creat
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.8
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-chdir" role="function" condition="since:2.8"/>g_chdir ()</title>
-<indexterm role="2.8"><primary>g_chdir</primary></indexterm><programlisting><link linkend="int">int</link>                 g_chdir                             (const <link linkend="gchar">gchar</link> *path);</programlisting>
+<refsect2 id="g-chdir" role="function" condition="since:2.8">
+<title>g_chdir ()</title>
+<indexterm zone="g-chdir" role="2.8"><primary>g_chdir</primary></indexterm><programlisting><link linkend="int">int</link>                 g_chdir                             (const <link linkend="gchar">gchar</link> *path);</programlisting>
 <para>
 A wrapper for the POSIX <link linkend="chdir"><function>chdir()</function></link> function. The function changes the
 current directory of the process to <parameter>path</parameter>.

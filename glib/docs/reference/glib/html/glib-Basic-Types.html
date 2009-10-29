@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Basic Types</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
-<link rel="start" href="index.html" title="GLib Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.74.0">
+<link rel="home" href="index.html" title="GLib Reference Manual">
 <link rel="up" href="glib-fundamentals.html" title="GLib Fundamentals">
 <link rel="prev" href="glib-Version-Information.html" title="Version Information">
 <link rel="next" href="glib-Limits-of-Basic-Types.html" title="Limits of Basic Types">
-<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="glib.html" title="GLib Overview">
 <link rel="chapter" href="glib-fundamentals.html" title="GLib Fundamentals">
@@ -24,6 +24,8 @@
 <link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
 <link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
 <link rel="index" href="ix08.html" title="Index of new symbols in 2.12">
+<link rel="index" href="ix09.html" title="Index of new symbols in 2.14">
+<link rel="index" href="ix10.html" title="Index of new symbols in 2.16">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -34,64 +36,61 @@
 <th width="100%" align="center">GLib Reference Manual</th>
 <td><a accesskey="n" href="glib-Limits-of-Basic-Types.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2850444" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2850675" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#glib-Basic-Types.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#glib-Basic-Types.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="glib-Basic-Types"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2850444"></a><span class="refentrytitle">Basic Types</span>
-</h2>
-<p>Basic Types &#8212; standard GLib types, defined for ease-of-use and portability.</p>
+<h2><span class="refentrytitle"><a name="glib-Basic-Types.top_of_page"></a>Basic Types</span></h2>
+<p>Basic Types — standard GLib types, defined for ease-of-use and portability</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="glib-Basic-Types.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;glib.h&gt;
 
+typedef             <a class="link" href="glib-Basic-Types.html#gboolean" title="gboolean">gboolean</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer">gpointer</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#gconstpointer" title="gconstpointer">gconstpointer</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#gchar" title="gchar">gchar</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#guchar" title="guchar">guchar</a>;
 
-typedef             <a href="glib-Basic-Types.html#gboolean">gboolean</a>;
-typedef             <a href="glib-Basic-Types.html#gpointer">gpointer</a>;
-typedef             <a href="glib-Basic-Types.html#gconstpointer">gconstpointer</a>;
-typedef             <a href="glib-Basic-Types.html#gchar">gchar</a>;
-typedef             <a href="glib-Basic-Types.html#guchar">guchar</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#gint" title="gint">gint</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#guint" title="guint">guint</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#gshort" title="gshort">gshort</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#gushort" title="gushort">gushort</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#glong" title="glong">glong</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#gulong" title="gulong">gulong</a>;
 
-typedef             <a href="glib-Basic-Types.html#gint">gint</a>;
-typedef             <a href="glib-Basic-Types.html#guint">guint</a>;
-typedef             <a href="glib-Basic-Types.html#gshort">gshort</a>;
-typedef             <a href="glib-Basic-Types.html#gushort">gushort</a>;
-typedef             <a href="glib-Basic-Types.html#glong">glong</a>;
-typedef             <a href="glib-Basic-Types.html#gulong">gulong</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#gint8" title="gint8">gint8</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#guint8" title="guint8">guint8</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#gint16" title="gint16">gint16</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#guint16" title="guint16">guint16</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#gint32" title="gint32">gint32</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#guint32" title="guint32">guint32</a>;
 
-typedef             <a href="glib-Basic-Types.html#gint8">gint8</a>;
-typedef             <a href="glib-Basic-Types.html#guint8">guint8</a>;
-typedef             <a href="glib-Basic-Types.html#gint16">gint16</a>;
-typedef             <a href="glib-Basic-Types.html#guint16">guint16</a>;
-typedef             <a href="glib-Basic-Types.html#gint32">gint32</a>;
-typedef             <a href="glib-Basic-Types.html#guint32">guint32</a>;
+#define             <a class="link" href="glib-Basic-Types.html#G-HAVE-GINT64:CAPS" title="G_HAVE_GINT64">G_HAVE_GINT64</a>
+typedef             <a class="link" href="glib-Basic-Types.html#gint64" title="gint64">gint64</a>;
+GLIB_VAR            <a class="link" href="glib-Basic-Types.html#guint64" title="guint64 ()">guint64</a>                             ();
+#define             <a class="link" href="glib-Basic-Types.html#G-GINT64-CONSTANT:CAPS" title="G_GINT64_CONSTANT()">G_GINT64_CONSTANT</a>                   (val)
+#define             <a class="link" href="glib-Basic-Types.html#G-GUINT64-CONSTANT:CAPS" title="G_GUINT64_CONSTANT()">G_GUINT64_CONSTANT</a>                  (val)
 
-#define             <a href="glib-Basic-Types.html#G-HAVE-GINT64:CAPS">G_HAVE_GINT64</a>
-typedef             <a href="glib-Basic-Types.html#gint64">gint64</a>;
-GLIB_VAR            <a href="glib-Basic-Types.html#guint64">guint64</a>                             ();
-#define             <a href="glib-Basic-Types.html#G-GINT64-CONSTANT:CAPS">G_GINT64_CONSTANT</a>                   (val)
-#define             <a href="glib-Basic-Types.html#G-GUINT64-CONSTANT:CAPS">G_GUINT64_CONSTANT</a>                  (val)
+typedef             <a class="link" href="glib-Basic-Types.html#gfloat" title="gfloat">gfloat</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#gdouble" title="gdouble">gdouble</a>;
 
-typedef             <a href="glib-Basic-Types.html#gfloat">gfloat</a>;
-typedef             <a href="glib-Basic-Types.html#gdouble">gdouble</a>;
-
-typedef             <a href="glib-Basic-Types.html#gsize">gsize</a>;
-typedef             <a href="glib-Basic-Types.html#gssize">gssize</a>;
-
+typedef             <a class="link" href="glib-Basic-Types.html#gsize" title="gsize">gsize</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#gssize" title="gssize">gssize</a>;
+typedef             <a class="link" href="glib-Basic-Types.html#goffset" title="goffset">goffset</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2850675"></a><h2>Description</h2>
+<a name="glib-Basic-Types.description"></a><h2>Description</h2>
 <p>
 GLib defines a number of commonly used types, which can be divided into
 4 groups:
@@ -99,19 +98,19 @@ GLib defines a number of commonly used types, which can be divided into
 </p>
 <div class="itemizedlist"><ul type="disc">
 <li><p>
-New types which are not part of standard C - <a href="glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>, <a href="glib-Basic-Types.html#gsize"><span class="type">gsize</span></a>, <a href="glib-Basic-Types.html#gssize"><span class="type">gssize</span></a>.
+New types which are not part of standard C - <a class="link" href="glib-Basic-Types.html#gboolean" title="gboolean"><span class="type">gboolean</span></a>, <a class="link" href="glib-Basic-Types.html#gsize" title="gsize"><span class="type">gsize</span></a>, <a class="link" href="glib-Basic-Types.html#gssize" title="gssize"><span class="type">gssize</span></a>.
 </p></li>
 <li><p>
 Integer types which are guaranteed to be the same size across all platforms -
-<a href="glib-Basic-Types.html#gint8"><span class="type">gint8</span></a>, <a href="glib-Basic-Types.html#guint8"><span class="type">guint8</span></a>, <a href="glib-Basic-Types.html#gint16"><span class="type">gint16</span></a>, <a href="glib-Basic-Types.html#guint16"><span class="type">guint16</span></a>, <a href="glib-Basic-Types.html#gint32"><span class="type">gint32</span></a>, <a href="glib-Basic-Types.html#guint32"><span class="type">guint32</span></a>, <a href="glib-Basic-Types.html#gint64"><span class="type">gint64</span></a>, <a href="glib-Basic-Types.html#guint64"><span class="type">guint64</span></a>.
+<a class="link" href="glib-Basic-Types.html#gint8" title="gint8"><span class="type">gint8</span></a>, <a class="link" href="glib-Basic-Types.html#guint8" title="guint8"><span class="type">guint8</span></a>, <a class="link" href="glib-Basic-Types.html#gint16" title="gint16"><span class="type">gint16</span></a>, <a class="link" href="glib-Basic-Types.html#guint16" title="guint16"><span class="type">guint16</span></a>, <a class="link" href="glib-Basic-Types.html#gint32" title="gint32"><span class="type">gint32</span></a>, <a class="link" href="glib-Basic-Types.html#guint32" title="guint32"><span class="type">guint32</span></a>, <a class="link" href="glib-Basic-Types.html#gint64" title="gint64"><span class="type">gint64</span></a>, <a class="link" href="glib-Basic-Types.html#guint64" title="guint64 ()"><span class="type">guint64</span></a>.
 </p></li>
 <li><p>
 Types which are easier to use than their standard C counterparts -
-<a href="glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>, <a href="glib-Basic-Types.html#gconstpointer"><span class="type">gconstpointer</span></a>, <a href="glib-Basic-Types.html#guchar"><span class="type">guchar</span></a>, <a href="glib-Basic-Types.html#guint"><span class="type">guint</span></a>, <a href="glib-Basic-Types.html#gushort"><span class="type">gushort</span></a>, <a href="glib-Basic-Types.html#gulong"><span class="type">gulong</span></a>.
+<a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer"><span class="type">gpointer</span></a>, <a class="link" href="glib-Basic-Types.html#gconstpointer" title="gconstpointer"><span class="type">gconstpointer</span></a>, <a class="link" href="glib-Basic-Types.html#guchar" title="guchar"><span class="type">guchar</span></a>, <a class="link" href="glib-Basic-Types.html#guint" title="guint"><span class="type">guint</span></a>, <a class="link" href="glib-Basic-Types.html#gushort" title="gushort"><span class="type">gushort</span></a>, <a class="link" href="glib-Basic-Types.html#gulong" title="gulong"><span class="type">gulong</span></a>.
 </p></li>
 <li><p>
 Types which correspond exactly to standard C types, but are included
-for completeness - <a href="glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>, <a href="glib-Basic-Types.html#gint"><span class="type">gint</span></a>, <a href="glib-Basic-Types.html#gshort"><span class="type">gshort</span></a>, <a href="glib-Basic-Types.html#glong"><span class="type">glong</span></a>, <a href="glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>, <a href="glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>.
+for completeness - <a class="link" href="glib-Basic-Types.html#gchar" title="gchar"><span class="type">gchar</span></a>, <a class="link" href="glib-Basic-Types.html#gint" title="gint"><span class="type">gint</span></a>, <a class="link" href="glib-Basic-Types.html#gshort" title="gshort"><span class="type">gshort</span></a>, <a class="link" href="glib-Basic-Types.html#glong" title="glong"><span class="type">glong</span></a>, <a class="link" href="glib-Basic-Types.html#gfloat" title="gfloat"><span class="type">gfloat</span></a>, <a class="link" href="glib-Basic-Types.html#gdouble" title="gdouble"><span class="type">gdouble</span></a>.
 </p></li>
 </ul></div>
 <p>
@@ -119,33 +118,30 @@ for completeness - <a href="glib-Basic-Types.html#gchar"><span class="type">gcha
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2850895"></a><h2>Details</h2>
+<a name="glib-Basic-Types.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2850905"></a><h3>
-<a name="gboolean"></a>gboolean</h3>
-<a class="indexterm" name="id2850917"></a><pre class="programlisting">typedef gint   gboolean;
+<a name="gboolean"></a><h3>gboolean</h3>
+<pre class="programlisting">typedef gint   gboolean;
 </pre>
 <p>
 A standard <span class="type">boolean</span> type.
-Variables of this type should only contain the value <a href="glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> or <a href="glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>.
+Variables of this type should only contain the value <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> or <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a>.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2850958"></a><h3>
-<a name="gpointer"></a>gpointer</h3>
-<a class="indexterm" name="id2850970"></a><pre class="programlisting">typedef void* gpointer;
+<a name="gpointer"></a><h3>gpointer</h3>
+<pre class="programlisting">typedef void* gpointer;
 </pre>
 <p>
 An untyped pointer.
-<a href="glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> looks better and is easier to use than <span class="type">void*</span>.
+<a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer"><span class="type">gpointer</span></a> looks better and is easier to use than <span class="type">void*</span>.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2850997"></a><h3>
-<a name="gconstpointer"></a>gconstpointer</h3>
-<a class="indexterm" name="id2851010"></a><pre class="programlisting">typedef const void *gconstpointer;
+<a name="gconstpointer"></a><h3>gconstpointer</h3>
+<pre class="programlisting">typedef const void *gconstpointer;
 </pre>
 <p>
 An untyped pointer to constant data.
@@ -158,9 +154,8 @@ data pointed to will not be altered by the function.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851032"></a><h3>
-<a name="gchar"></a>gchar</h3>
-<a class="indexterm" name="id2851044"></a><pre class="programlisting">typedef char   gchar;
+<a name="gchar"></a><h3>gchar</h3>
+<pre class="programlisting">typedef char   gchar;
 </pre>
 <p>
 Corresponds to the standard C <span class="type">char</span> type.
@@ -168,9 +163,8 @@ Corresponds to the standard C <span class="type">char</span> type.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851063"></a><h3>
-<a name="guchar"></a>guchar</h3>
-<a class="indexterm" name="id2851075"></a><pre class="programlisting">typedef unsigned char   guchar;
+<a name="guchar"></a><h3>guchar</h3>
+<pre class="programlisting">typedef unsigned char   guchar;
 </pre>
 <p>
 Corresponds to the standard C <span class="type">unsigned char</span> type.
@@ -178,75 +172,68 @@ Corresponds to the standard C <span class="type">unsigned char</span> type.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851095"></a><h3>
-<a name="gint"></a>gint</h3>
-<a class="indexterm" name="id2851107"></a><pre class="programlisting">typedef int    gint;
+<a name="gint"></a><h3>gint</h3>
+<pre class="programlisting">typedef int    gint;
 </pre>
 <p>
 Corresponds to the standard C <span class="type">int</span> type.
-Values of this type can range from <a href="glib-Limits-of-Basic-Types.html#G-MININT:CAPS"><span class="type">G_MININT</span></a> to <a href="glib-Limits-of-Basic-Types.html#G-MAXINT:CAPS"><span class="type">G_MAXINT</span></a>.
+Values of this type can range from <a class="link" href="glib-Limits-of-Basic-Types.html#G-MININT:CAPS" title="G_MININT"><span class="type">G_MININT</span></a> to <a class="link" href="glib-Limits-of-Basic-Types.html#G-MAXINT:CAPS" title="G_MAXINT"><span class="type">G_MAXINT</span></a>.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851145"></a><h3>
-<a name="guint"></a>guint</h3>
-<a class="indexterm" name="id2851157"></a><pre class="programlisting">typedef unsigned int    guint;
+<a name="guint"></a><h3>guint</h3>
+<pre class="programlisting">typedef unsigned int    guint;
 </pre>
 <p>
 Corresponds to the standard C <span class="type">unsigned int</span> type.
-Values of this type can range from 0 to <a href="glib-Limits-of-Basic-Types.html#G-MAXUINT:CAPS"><span class="type">G_MAXUINT</span></a>.
+Values of this type can range from 0 to <a class="link" href="glib-Limits-of-Basic-Types.html#G-MAXUINT:CAPS" title="G_MAXUINT"><span class="type">G_MAXUINT</span></a>.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851186"></a><h3>
-<a name="gshort"></a>gshort</h3>
-<a class="indexterm" name="id2851198"></a><pre class="programlisting">typedef short  gshort;
+<a name="gshort"></a><h3>gshort</h3>
+<pre class="programlisting">typedef short  gshort;
 </pre>
 <p>
 Corresponds to the standard C <span class="type">short</span> type.
-Values of this type can range from <a href="glib-Limits-of-Basic-Types.html#G-MINSHORT:CAPS"><span class="type">G_MINSHORT</span></a> to <a href="glib-Limits-of-Basic-Types.html#G-MAXSHORT:CAPS"><span class="type">G_MAXSHORT</span></a>.
+Values of this type can range from <a class="link" href="glib-Limits-of-Basic-Types.html#G-MINSHORT:CAPS" title="G_MINSHORT"><span class="type">G_MINSHORT</span></a> to <a class="link" href="glib-Limits-of-Basic-Types.html#G-MAXSHORT:CAPS" title="G_MAXSHORT"><span class="type">G_MAXSHORT</span></a>.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851236"></a><h3>
-<a name="gushort"></a>gushort</h3>
-<a class="indexterm" name="id2851248"></a><pre class="programlisting">typedef unsigned short  gushort;
+<a name="gushort"></a><h3>gushort</h3>
+<pre class="programlisting">typedef unsigned short  gushort;
 </pre>
 <p>
 Corresponds to the standard C <span class="type">unsigned short</span> type.
-Values of this type can range from 0 to <a href="glib-Limits-of-Basic-Types.html#G-MAXUSHORT:CAPS"><span class="type">G_MAXUSHORT</span></a>.
+Values of this type can range from 0 to <a class="link" href="glib-Limits-of-Basic-Types.html#G-MAXUSHORT:CAPS" title="G_MAXUSHORT"><span class="type">G_MAXUSHORT</span></a>.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851278"></a><h3>
-<a name="glong"></a>glong</h3>
-<a class="indexterm" name="id2851290"></a><pre class="programlisting">typedef long   glong;
+<a name="glong"></a><h3>glong</h3>
+<pre class="programlisting">typedef long   glong;
 </pre>
 <p>
 Corresponds to the standard C <span class="type">long</span> type.
-Values of this type can range from <a href="glib-Limits-of-Basic-Types.html#G-MINLONG:CAPS"><span class="type">G_MINLONG</span></a> to <a href="glib-Limits-of-Basic-Types.html#G-MAXLONG:CAPS"><span class="type">G_MAXLONG</span></a>.
+Values of this type can range from <a class="link" href="glib-Limits-of-Basic-Types.html#G-MINLONG:CAPS" title="G_MINLONG"><span class="type">G_MINLONG</span></a> to <a class="link" href="glib-Limits-of-Basic-Types.html#G-MAXLONG:CAPS" title="G_MAXLONG"><span class="type">G_MAXLONG</span></a>.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851328"></a><h3>
-<a name="gulong"></a>gulong</h3>
-<a class="indexterm" name="id2851340"></a><pre class="programlisting">typedef unsigned long   gulong;
+<a name="gulong"></a><h3>gulong</h3>
+<pre class="programlisting">typedef unsigned long   gulong;
 </pre>
 <p>
 Corresponds to the standard C <span class="type">unsigned long</span> type.
-Values of this type can range from 0 to <a href="glib-Limits-of-Basic-Types.html#G-MAXULONG:CAPS"><span class="type">G_MAXULONG</span></a>.
+Values of this type can range from 0 to <a class="link" href="glib-Limits-of-Basic-Types.html#G-MAXULONG:CAPS" title="G_MAXULONG"><span class="type">G_MAXULONG</span></a>.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851369"></a><h3>
-<a name="gint8"></a>gint8</h3>
-<a class="indexterm" name="id2851381"></a><pre class="programlisting">typedef signed char gint8;
+<a name="gint8"></a><h3>gint8</h3>
+<pre class="programlisting">typedef signed char gint8;
 </pre>
 <p>
 A signed integer guaranteed to be 8 bits on all platforms.
@@ -255,9 +242,8 @@ Values of this type can range from -128 to 127.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851398"></a><h3>
-<a name="guint8"></a>guint8</h3>
-<a class="indexterm" name="id2851410"></a><pre class="programlisting">typedef unsigned char guint8;
+<a name="guint8"></a><h3>guint8</h3>
+<pre class="programlisting">typedef unsigned char guint8;
 </pre>
 <p>
 An unsigned integer guaranteed to be 8 bits on all platforms.
@@ -266,9 +252,8 @@ Values of this type can range from 0 to 255.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851428"></a><h3>
-<a name="gint16"></a>gint16</h3>
-<a class="indexterm" name="id2851440"></a><pre class="programlisting">typedef signed short gint16;
+<a name="gint16"></a><h3>gint16</h3>
+<pre class="programlisting">typedef signed short gint16;
 </pre>
 <p>
 A signed integer guaranteed to be 16 bits on all platforms.
@@ -277,9 +262,8 @@ Values of this type can range from -32,768 to 32,767.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851457"></a><h3>
-<a name="guint16"></a>guint16</h3>
-<a class="indexterm" name="id2851469"></a><pre class="programlisting">typedef unsigned short guint16;
+<a name="guint16"></a><h3>guint16</h3>
+<pre class="programlisting">typedef unsigned short guint16;
 </pre>
 <p>
 An unsigned integer guaranteed to be 16 bits on all platforms.
@@ -288,9 +272,8 @@ Values of this type can range from 0 to 65,535.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851486"></a><h3>
-<a name="gint32"></a>gint32</h3>
-<a class="indexterm" name="id2851499"></a><pre class="programlisting">typedef signed int gint32;
+<a name="gint32"></a><h3>gint32</h3>
+<pre class="programlisting">typedef signed int gint32;
 </pre>
 <p>
 A signed integer guaranteed to be 32 bits on all platforms.
@@ -299,9 +282,8 @@ Values of this type can range from -2,147,483,648 to 2,147,483,647.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851516"></a><h3>
-<a name="guint32"></a>guint32</h3>
-<a class="indexterm" name="id2851528"></a><pre class="programlisting">typedef unsigned int guint32;
+<a name="guint32"></a><h3>guint32</h3>
+<pre class="programlisting">typedef unsigned int guint32;
 </pre>
 <p>
 An unsigned integer guaranteed to be 32 bits on all platforms.
@@ -310,14 +292,13 @@ Values of this type can range from 0 to 4,294,967,295.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851545"></a><h3>
-<a name="G-HAVE-GINT64:CAPS"></a>G_HAVE_GINT64</h3>
-<a class="indexterm" name="id2851560"></a><pre class="programlisting">#define G_HAVE_GINT64 1          /* deprecated, always true */
+<a name="G-HAVE-GINT64:CAPS"></a><h3>G_HAVE_GINT64</h3>
+<pre class="programlisting">#define G_HAVE_GINT64 1          /* deprecated, always true */
 </pre>
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
 <h3 class="title">Warning</h3>
 <p><code class="literal">G_HAVE_GINT64</code> is deprecated and should not be used in newly-written code. GLib requires 64-bit integer support since version 2.0, therefore
-<a href="glib-Basic-Types.html#G-HAVE-GINT64:CAPS"><code class="literal">G_HAVE_GINT64</code></a> is <span class="emphasis"><em>always</em></span> defined.</p>
+<a class="link" href="glib-Basic-Types.html#G-HAVE-GINT64:CAPS" title="G_HAVE_GINT64"><code class="literal">G_HAVE_GINT64</code></a> is <span class="emphasis"><em>always</em></span> defined.</p>
 </div>
 <p>
 This macro is defined if 64-bit signed and unsigned integers are available
@@ -326,9 +307,8 @@ on the platform.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851606"></a><h3>
-<a name="gint64"></a>gint64</h3>
-<a class="indexterm" name="id2851618"></a><pre class="programlisting">G_GNUC_EXTENSION typedef signed long long gint64;
+<a name="gint64"></a><h3>gint64</h3>
+<pre class="programlisting">G_GNUC_EXTENSION typedef signed long long gint64;
 </pre>
 <p>
 A signed integer guaranteed to be 64 bits on all platforms.
@@ -338,9 +318,8 @@ Values of this type can range from -9,223,372,036,854,775,808 to
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851636"></a><h3>
-<a name="guint64"></a>guint64 ()</h3>
-<a class="indexterm" name="id2851648"></a><pre class="programlisting">GLIB_VAR            guint64                             ();</pre>
+<a name="guint64"></a><h3>guint64 ()</h3>
+<pre class="programlisting">GLIB_VAR            guint64                             ();</pre>
 <p>
 An unsigned integer guaranteed to be 64 bits on all platforms.
 Values of this type can range from 0 to 18,446,744,073,709,551,615.
@@ -348,7 +327,7 @@ Values of this type can range from 0 to 18,446,744,073,709,551,615.
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
 
 
@@ -358,9 +337,8 @@ Values of this type can range from 0 to 18,446,744,073,709,551,615.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851686"></a><h3>
-<a name="G-GINT64-CONSTANT:CAPS"></a>G_GINT64_CONSTANT()</h3>
-<a class="indexterm" name="id2851699"></a><pre class="programlisting">#define G_GINT64_CONSTANT(val)	(G_GNUC_EXTENSION (val##LL))
+<a name="G-GINT64-CONSTANT:CAPS"></a><h3>G_GINT64_CONSTANT()</h3>
+<pre class="programlisting">#define G_GINT64_CONSTANT(val)	(G_GNUC_EXTENSION (val##LL))
 </pre>
 <p>
 This macro is used to insert 64-bit integer literals into the source code.
@@ -368,7 +346,7 @@ This macro is used to insert 64-bit integer literals into the source code.
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>val</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
 <td>a literal integer value, e.g. 0x1d636b02300a7aa7U.
 
 
@@ -378,9 +356,8 @@ This macro is used to insert 64-bit integer literals into the source code.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851736"></a><h3>
-<a name="G-GUINT64-CONSTANT:CAPS"></a>G_GUINT64_CONSTANT()</h3>
-<a class="indexterm" name="id2851750"></a><pre class="programlisting">#define G_GUINT64_CONSTANT(val)	(G_GNUC_EXTENSION (val##ULL))
+<a name="G-GUINT64-CONSTANT:CAPS"></a><h3>G_GUINT64_CONSTANT()</h3>
+<pre class="programlisting">#define G_GUINT64_CONSTANT(val)	(G_GNUC_EXTENSION (val##ULL))
 </pre>
 <p>
 This macro is used to insert 64-bit unsigned integer literals into the 
@@ -389,7 +366,7 @@ source code.
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>val</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
 <td>a literal integer value, e.g. 0x1d636b02300a7aa7U.
 </td>
 </tr></tbody>
@@ -401,47 +378,59 @@ source code.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851793"></a><h3>
-<a name="gfloat"></a>gfloat</h3>
-<a class="indexterm" name="id2851805"></a><pre class="programlisting">typedef float   gfloat;
+<a name="gfloat"></a><h3>gfloat</h3>
+<pre class="programlisting">typedef float   gfloat;
 </pre>
 <p>
 Corresponds to the standard C <span class="type">float</span> type.
-Values of this type can range from -<a href="glib-Limits-of-Basic-Types.html#G-MAXFLOAT:CAPS"><span class="type">G_MAXFLOAT</span></a> to <a href="glib-Limits-of-Basic-Types.html#G-MAXFLOAT:CAPS"><span class="type">G_MAXFLOAT</span></a>.
+Values of this type can range from -<a class="link" href="glib-Limits-of-Basic-Types.html#G-MAXFLOAT:CAPS" title="G_MAXFLOAT"><span class="type">G_MAXFLOAT</span></a> to <a class="link" href="glib-Limits-of-Basic-Types.html#G-MAXFLOAT:CAPS" title="G_MAXFLOAT"><span class="type">G_MAXFLOAT</span></a>.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851843"></a><h3>
-<a name="gdouble"></a>gdouble</h3>
-<a class="indexterm" name="id2851855"></a><pre class="programlisting">typedef double  gdouble;
+<a name="gdouble"></a><h3>gdouble</h3>
+<pre class="programlisting">typedef double  gdouble;
 </pre>
 <p>
 Corresponds to the standard C <span class="type">double</span> type.
-Values of this type can range from -<a href="glib-Limits-of-Basic-Types.html#G-MAXDOUBLE:CAPS"><span class="type">G_MAXDOUBLE</span></a> to <a href="glib-Limits-of-Basic-Types.html#G-MAXDOUBLE:CAPS"><span class="type">G_MAXDOUBLE</span></a>.
+Values of this type can range from -<a class="link" href="glib-Limits-of-Basic-Types.html#G-MAXDOUBLE:CAPS" title="G_MAXDOUBLE"><span class="type">G_MAXDOUBLE</span></a> to <a class="link" href="glib-Limits-of-Basic-Types.html#G-MAXDOUBLE:CAPS" title="G_MAXDOUBLE"><span class="type">G_MAXDOUBLE</span></a>.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851893"></a><h3>
-<a name="gsize"></a>gsize</h3>
-<a class="indexterm" name="id2851905"></a><pre class="programlisting">typedef unsigned int gsize;
+<a name="gsize"></a><h3>gsize</h3>
+<pre class="programlisting">typedef unsigned int gsize;
 </pre>
 <p>
-An unsigned 32-bit integer intended to represent sizes of data structures.
+An unsigned integer type of the result of the sizeof operator, corresponding
+to the size_t type defined in C99. This type is wide enough to hold the numeric
+value of a pointer, so it is usually 32bit wide on a 32bit platform and
+64bit wide on a 64bit platform.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2851921"></a><h3>
-<a name="gssize"></a>gssize</h3>
-<a class="indexterm" name="id2851933"></a><pre class="programlisting">typedef signed int gssize;
+<a name="gssize"></a><h3>gssize</h3>
+<pre class="programlisting">typedef signed int gssize;
 </pre>
 <p>
-A signed 32-bit integer intended to represent sizes of data structures.
+A signed variant of gsize, corresponding to the ssize_t defined on most platforms.
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="goffset"></a><h3>goffset</h3>
+<pre class="programlisting">typedef gint64 goffset;
+</pre>
+<p>
+A signed integer type that is used for file offsets, corresponding to the 
+C99 type off64_t.
 </p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

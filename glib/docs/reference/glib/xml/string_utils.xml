@@ -1,24 +1,23 @@
 <refentry id="glib-String-Utility-Functions">
 <refmeta>
-<refentrytitle role="top_of_page">String Utility Functions</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-String-Utility-Functions.top_of_page">String Utility Functions</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>String Utility Functions</refname>
-<refpurpose>various string-related functions.</refpurpose>
+<refpurpose>various string-related functions</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-String-Utility-Functions.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
 #include &lt;glib/gprintf.h&gt;
-
 
 <link linkend="gchar">gchar</link>*              <link linkend="g-strdup">g_strdup</link>                            (const <link linkend="gchar">gchar</link> *str);
 <link linkend="gchar">gchar</link>*              <link linkend="g-strndup">g_strndup</link>                           (const <link linkend="gchar">gchar</link> *str,
@@ -175,7 +174,6 @@
 
 const <link linkend="gchar">gchar</link>*        <link linkend="g-strerror">g_strerror</link>                          (<link linkend="gint">gint</link> errnum);
 const <link linkend="gchar">gchar</link>*        <link linkend="g-strsignal">g_strsignal</link>                         (<link linkend="gint">gint</link> signum);
-
 </synopsis>
 </refsynopsisdiv>
 
@@ -187,7 +185,7 @@ const <link linkend="gchar">gchar</link>*        <link linkend="g-strsignal">g_s
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-String-Utility-Functions.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 This section describes a number of utility functions for creating,
@@ -217,11 +215,11 @@ wide characters (see <link linkend="g-unichar-iswide"><function>g_unichar_iswide
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-String-Utility-Functions.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="g-strdup" role="function"/>g_strdup ()</title>
-<indexterm><primary>g_strdup</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strdup                            (const <link linkend="gchar">gchar</link> *str);</programlisting>
+<refsect2 id="g-strdup" role="function">
+<title>g_strdup ()</title>
+<indexterm zone="g-strdup"><primary>g_strdup</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strdup                            (const <link linkend="gchar">gchar</link> *str);</programlisting>
 <para>
 Duplicates a string.
 If <parameter>str</parameter> is <link linkend="NULL:CAPS"><literal>NULL</literal></link> it returns <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
@@ -235,32 +233,38 @@ The returned string should be freed when no longer needed.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strndup" role="function"/>g_strndup ()</title>
-<indexterm><primary>g_strndup</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strndup                           (const <link linkend="gchar">gchar</link> *str,
+<refsect2 id="g-strndup" role="function">
+<title>g_strndup ()</title>
+<indexterm zone="g-strndup"><primary>g_strndup</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strndup                           (const <link linkend="gchar">gchar</link> *str,
                                                          <link linkend="gsize">gsize</link> n);</programlisting>
 <para>
-Duplicates the first <parameter>n</parameter> characters of a string, returning a newly-allocated
-buffer <parameter>n</parameter> + 1 characters long which will always be nul-terminated.
-If <parameter>str</parameter> is less than <parameter>n</parameter> characters long the buffer is padded with nuls.
+Duplicates the first <parameter>n</parameter> bytes of a string, returning a newly-allocated
+buffer <parameter>n</parameter> + 1 bytes long which will always be nul-terminated.
+If <parameter>str</parameter> is less than <parameter>n</parameter> bytes long the buffer is padded with nuls.
 If <parameter>str</parameter> is <link linkend="NULL:CAPS"><literal>NULL</literal></link> it returns <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 The returned value should be freed when no longer needed.
+</para>
+<para>
+<note><para>
+To copy a number of characters from a UTF-8 encoded string, use
+<link linkend="g-utf8-strncpy"><function>g_utf8_strncpy()</function></link> instead.
+</para></note></para>
+<para>
+
 </para><variablelist role="params">
 <varlistentry><term><parameter>str</parameter>&nbsp;:</term>
-<listitem><simpara>the string to duplicate part of.
+<listitem><simpara> the string to duplicate
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n</parameter>&nbsp;:</term>
-<listitem><simpara>the maximum number of characters to copy from <parameter>str</parameter>.
+<listitem><simpara> the maximum number of bytes to copy from <parameter>str</parameter>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a newly-allocated buffer containing the first <parameter>n</parameter> characters of <parameter>str</parameter>,
-nul-terminated.
-
-
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a newly-allocated buffer containing the first <parameter>n</parameter> bytes 
+         of <parameter>str</parameter>, nul-terminated 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strdupv" role="function"/>g_strdupv ()</title>
-<indexterm><primary>g_strdupv</primary></indexterm><programlisting><link linkend="gchar">gchar</link>**             g_strdupv                           (<link linkend="gchar">gchar</link> **str_array);</programlisting>
+<refsect2 id="g-strdupv" role="function">
+<title>g_strdupv ()</title>
+<indexterm zone="g-strdupv"><primary>g_strdupv</primary></indexterm><programlisting><link linkend="gchar">gchar</link>**             g_strdupv                           (<link linkend="gchar">gchar</link> **str_array);</programlisting>
 <para>
 Copies <link linkend="NULL:CAPS"><literal>NULL</literal></link>-terminated array of strings. The copy is a deep copy;
 the new array should be freed by first freeing each string, then
@@ -274,28 +278,28 @@ on a <link linkend="NULL:CAPS"><literal>NULL</literal></link> value, <link linke
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new <link linkend="NULL:CAPS"><literal>NULL</literal></link>-terminated array of strings.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strnfill" role="function"/>g_strnfill ()</title>
-<indexterm><primary>g_strnfill</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strnfill                          (<link linkend="gsize">gsize</link> length,
+<refsect2 id="g-strnfill" role="function">
+<title>g_strnfill ()</title>
+<indexterm zone="g-strnfill"><primary>g_strnfill</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strnfill                          (<link linkend="gsize">gsize</link> length,
                                                          <link linkend="gchar">gchar</link> fill_char);</programlisting>
 <para>
-Creates a new string <parameter>length</parameter> characters long filled with <parameter>fill_char</parameter>.
-The returned string should be freed when no longer needed.
+Creates a new string <parameter>length</parameter> bytes long filled with <parameter>fill_char</parameter>.
+The returned string should be freed when no longer needed.</para>
+<para>
+
 </para><variablelist role="params">
 <varlistentry><term><parameter>length</parameter>&nbsp;:</term>
-<listitem><simpara>the length of the new string.
+<listitem><simpara> the length of the new string
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>fill_char</parameter>&nbsp;:</term>
-<listitem><simpara>the character to fill the string with.
+<listitem><simpara> the byte to fill the string with
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a newly-allocated string filled the <parameter>fill_char</parameter>.
-
-
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a newly-allocated string filled the <parameter>fill_char</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-stpcpy" role="function"/>g_stpcpy ()</title>
-<indexterm><primary>g_stpcpy</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_stpcpy                            (<link linkend="gchar">gchar</link> *dest,
+<refsect2 id="g-stpcpy" role="function">
+<title>g_stpcpy ()</title>
+<indexterm zone="g-stpcpy"><primary>g_stpcpy</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_stpcpy                            (<link linkend="gchar">gchar</link> *dest,
                                                          const <link linkend="char">char</link> *src);</programlisting>
 <para>
 Copies a nul-terminated string into the dest buffer, include the
@@ -314,9 +318,9 @@ without having to repeatedly scan for the end.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a pointer to trailing nul byte.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strstr-len" role="function"/>g_strstr_len ()</title>
-<indexterm><primary>g_strstr_len</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strstr_len                        (const <link linkend="gchar">gchar</link> *haystack,
+<refsect2 id="g-strstr-len" role="function">
+<title>g_strstr_len ()</title>
+<indexterm zone="g-strstr-len"><primary>g_strstr_len</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strstr_len                        (const <link linkend="gchar">gchar</link> *haystack,
                                                          <link linkend="gssize">gssize</link> haystack_len,
                                                          const <link linkend="gchar">gchar</link> *needle);</programlisting>
 <para>
@@ -339,9 +343,9 @@ to <parameter>haystack_len</parameter>.</para>
    <link linkend="NULL:CAPS"><literal>NULL</literal></link> if not found.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strrstr" role="function"/>g_strrstr ()</title>
-<indexterm><primary>g_strrstr</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strrstr                           (const <link linkend="gchar">gchar</link> *haystack,
+<refsect2 id="g-strrstr" role="function">
+<title>g_strrstr ()</title>
+<indexterm zone="g-strrstr"><primary>g_strrstr</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strrstr                           (const <link linkend="gchar">gchar</link> *haystack,
                                                          const <link linkend="gchar">gchar</link> *needle);</programlisting>
 <para>
 Searches the string <parameter>haystack</parameter> for the last occurrence
@@ -359,9 +363,9 @@ of the string <parameter>needle</parameter>.</para>
    <link linkend="NULL:CAPS"><literal>NULL</literal></link> if not found.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strrstr-len" role="function"/>g_strrstr_len ()</title>
-<indexterm><primary>g_strrstr_len</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strrstr_len                       (const <link linkend="gchar">gchar</link> *haystack,
+<refsect2 id="g-strrstr-len" role="function">
+<title>g_strrstr_len ()</title>
+<indexterm zone="g-strrstr-len"><primary>g_strrstr_len</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strrstr_len                       (const <link linkend="gchar">gchar</link> *haystack,
                                                          <link linkend="gssize">gssize</link> haystack_len,
                                                          const <link linkend="gchar">gchar</link> *needle);</programlisting>
 <para>
@@ -384,9 +388,9 @@ to <parameter>haystack_len</parameter>.</para>
    <link linkend="NULL:CAPS"><literal>NULL</literal></link> if not found.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-str-has-prefix" role="function" condition="since:2.2"/>g_str_has_prefix ()</title>
-<indexterm role="2.2"><primary>g_str_has_prefix</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_str_has_prefix                    (const <link linkend="gchar">gchar</link> *str,
+<refsect2 id="g-str-has-prefix" role="function" condition="since:2.2">
+<title>g_str_has_prefix ()</title>
+<indexterm zone="g-str-has-prefix" role="2.2"><primary>g_str_has_prefix</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_str_has_prefix                    (const <link linkend="gchar">gchar</link> *str,
                                                          const <link linkend="gchar">gchar</link> *prefix);</programlisting>
 <para>
 Looks whether the string <parameter>str</parameter> begins with <parameter>prefix</parameter>.</para>
@@ -404,9 +408,9 @@ Looks whether the string <parameter>str</parameter> begins with <parameter>prefi
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.2
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-str-has-suffix" role="function" condition="since:2.2"/>g_str_has_suffix ()</title>
-<indexterm role="2.2"><primary>g_str_has_suffix</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_str_has_suffix                    (const <link linkend="gchar">gchar</link> *str,
+<refsect2 id="g-str-has-suffix" role="function" condition="since:2.2">
+<title>g_str_has_suffix ()</title>
+<indexterm zone="g-str-has-suffix" role="2.2"><primary>g_str_has_suffix</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_str_has_suffix                    (const <link linkend="gchar">gchar</link> *str,
                                                          const <link linkend="gchar">gchar</link> *suffix);</programlisting>
 <para>
 Looks whether the string <parameter>str</parameter> ends with <parameter>suffix</parameter>.</para>
@@ -424,9 +428,9 @@ Looks whether the string <parameter>str</parameter> ends with <parameter>suffix<
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.2
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-strlcpy" role="function"/>g_strlcpy ()</title>
-<indexterm><primary>g_strlcpy</primary></indexterm><programlisting><link linkend="gsize">gsize</link>               g_strlcpy                           (<link linkend="gchar">gchar</link> *dest,
+<refsect2 id="g-strlcpy" role="function">
+<title>g_strlcpy ()</title>
+<indexterm zone="g-strlcpy"><primary>g_strlcpy</primary></indexterm><programlisting><link linkend="gsize">gsize</link>               g_strlcpy                           (<link linkend="gchar">gchar</link> *dest,
                                                          const <link linkend="gchar">gchar</link> *src,
                                                          <link linkend="gsize">gsize</link> dest_size);</programlisting>
 <para>
@@ -451,9 +455,9 @@ an even better idea.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strlcat" role="function"/>g_strlcat ()</title>
-<indexterm><primary>g_strlcat</primary></indexterm><programlisting><link linkend="gsize">gsize</link>               g_strlcat                           (<link linkend="gchar">gchar</link> *dest,
+<refsect2 id="g-strlcat" role="function">
+<title>g_strlcat ()</title>
+<indexterm zone="g-strlcat"><primary>g_strlcat</primary></indexterm><programlisting><link linkend="gsize">gsize</link>               g_strlcat                           (<link linkend="gchar">gchar</link> *dest,
                                                          const <link linkend="gchar">gchar</link> *src,
                                                          <link linkend="gsize">gsize</link> dest_size);</programlisting>
 <para>
@@ -477,9 +481,9 @@ nul-termination for <parameter>dest</parameter>. The total size of <parameter>de
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strdup-printf" role="function"/>g_strdup_printf ()</title>
-<indexterm><primary>g_strdup_printf</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strdup_printf                     (const <link linkend="gchar">gchar</link> *format,
+<refsect2 id="g-strdup-printf" role="function">
+<title>g_strdup_printf ()</title>
+<indexterm zone="g-strdup-printf"><primary>g_strdup_printf</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strdup_printf                     (const <link linkend="gchar">gchar</link> *format,
                                                          ...);</programlisting>
 <para>
 Similar to the standard C <link linkend="sprintf"><function>sprintf()</function></link> function
@@ -499,9 +503,9 @@ The returned string should be freed when no longer needed.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strdup-vprintf" role="function"/>g_strdup_vprintf ()</title>
-<indexterm><primary>g_strdup_vprintf</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strdup_vprintf                    (const <link linkend="gchar">gchar</link> *format,
+<refsect2 id="g-strdup-vprintf" role="function">
+<title>g_strdup_vprintf ()</title>
+<indexterm zone="g-strdup-vprintf"><primary>g_strdup_vprintf</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strdup_vprintf                    (const <link linkend="gchar">gchar</link> *format,
                                                          <link linkend="va-list">va_list</link> args);</programlisting>
 <para>
 Similar to the standard C <link linkend="vsprintf"><function>vsprintf()</function></link> function
@@ -525,9 +529,9 @@ returns the length of the allocated string.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-printf" role="function" condition="since:2.2"/>g_printf ()</title>
-<indexterm role="2.2"><primary>g_printf</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_printf                            (<link linkend="gchar">gchar</link> const *format,
+<refsect2 id="g-printf" role="function" condition="since:2.2">
+<title>g_printf ()</title>
+<indexterm zone="g-printf" role="2.2"><primary>g_printf</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_printf                            (<link linkend="gchar">gchar</link> const *format,
                                                          ...);</programlisting>
 <para>
 An implementation of the standard <link linkend="printf"><function>printf()</function></link> function which supports 
@@ -542,14 +546,14 @@ positional parameters, as specified in the Single Unix Specification.</para>
 <varlistentry><term><parameter>...</parameter>&nbsp;:</term>
 <listitem><simpara> the arguments to insert in the output.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of characters printed.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of bytes printed.
 
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.2
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-vprintf" role="function" condition="since:2.2"/>g_vprintf ()</title>
-<indexterm role="2.2"><primary>g_vprintf</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_vprintf                           (<link linkend="gchar">gchar</link> const *format,
+<refsect2 id="g-vprintf" role="function" condition="since:2.2">
+<title>g_vprintf ()</title>
+<indexterm zone="g-vprintf" role="2.2"><primary>g_vprintf</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_vprintf                           (<link linkend="gchar">gchar</link> const *format,
                                                          <link linkend="va-list">va_list</link> args);</programlisting>
 <para>
 An implementation of the standard <link linkend="vprintf"><function>vprintf()</function></link> function which supports 
@@ -564,14 +568,14 @@ positional parameters, as specified in the Single Unix Specification.</para>
 <varlistentry><term><parameter>args</parameter>&nbsp;:</term>
 <listitem><simpara> the list of arguments to insert in the output.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of characters printed.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of bytes printed.
 
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.2
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-fprintf" role="function" condition="since:2.2"/>g_fprintf ()</title>
-<indexterm role="2.2"><primary>g_fprintf</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_fprintf                           (<link linkend="FILE:CAPS">FILE</link> *file,
+<refsect2 id="g-fprintf" role="function" condition="since:2.2">
+<title>g_fprintf ()</title>
+<indexterm zone="g-fprintf" role="2.2"><primary>g_fprintf</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_fprintf                           (<link linkend="FILE:CAPS">FILE</link> *file,
                                                          <link linkend="gchar">gchar</link> const *format,
                                                          ...);</programlisting>
 <para>
@@ -590,14 +594,14 @@ positional parameters, as specified in the Single Unix Specification.</para>
 <varlistentry><term><parameter>...</parameter>&nbsp;:</term>
 <listitem><simpara> the arguments to insert in the output.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of characters printed.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of bytes printed.
 
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.2
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-vfprintf" role="function" condition="since:2.2"/>g_vfprintf ()</title>
-<indexterm role="2.2"><primary>g_vfprintf</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_vfprintf                          (<link linkend="FILE:CAPS">FILE</link> *file,
+<refsect2 id="g-vfprintf" role="function" condition="since:2.2">
+<title>g_vfprintf ()</title>
+<indexterm zone="g-vfprintf" role="2.2"><primary>g_vfprintf</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_vfprintf                          (<link linkend="FILE:CAPS">FILE</link> *file,
                                                          <link linkend="gchar">gchar</link> const *format,
                                                          <link linkend="va-list">va_list</link> args);</programlisting>
 <para>
@@ -616,14 +620,14 @@ positional parameters, as specified in the Single Unix Specification.</para>
 <varlistentry><term><parameter>args</parameter>&nbsp;:</term>
 <listitem><simpara> the list of arguments to insert in the output.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of characters printed.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of bytes printed.
 
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.2
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-sprintf" role="function" condition="since:2.2"/>g_sprintf ()</title>
-<indexterm role="2.2"><primary>g_sprintf</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_sprintf                           (<link linkend="gchar">gchar</link> *string,
+<refsect2 id="g-sprintf" role="function" condition="since:2.2">
+<title>g_sprintf ()</title>
+<indexterm zone="g-sprintf" role="2.2"><primary>g_sprintf</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_sprintf                           (<link linkend="gchar">gchar</link> *string,
                                                          <link linkend="gchar">gchar</link> const *format,
                                                          ...);</programlisting>
 <para>
@@ -633,7 +637,9 @@ positional parameters, as specified in the Single Unix Specification.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>string</parameter>&nbsp;:</term>
-<listitem><simpara> the buffer to hold the output.
+<listitem><simpara> A pointer to a memory buffer to contain the resulting string. It 
+         is up to the caller to ensure that the allocated buffer is large 
+         enough to hold the formatted result
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>format</parameter>&nbsp;:</term>
 <listitem><simpara> a standard <link linkend="printf"><function>printf()</function></link> format string, but notice 
@@ -642,14 +648,14 @@ positional parameters, as specified in the Single Unix Specification.</para>
 <varlistentry><term><parameter>...</parameter>&nbsp;:</term>
 <listitem><simpara> the arguments to insert in the output.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of characters printed.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of bytes printed.
 
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.2
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-vsprintf" role="function" condition="since:2.2"/>g_vsprintf ()</title>
-<indexterm role="2.2"><primary>g_vsprintf</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_vsprintf                          (<link linkend="gchar">gchar</link> *string,
+<refsect2 id="g-vsprintf" role="function" condition="since:2.2">
+<title>g_vsprintf ()</title>
+<indexterm zone="g-vsprintf" role="2.2"><primary>g_vsprintf</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_vsprintf                          (<link linkend="gchar">gchar</link> *string,
                                                          <link linkend="gchar">gchar</link> const *format,
                                                          <link linkend="va-list">va_list</link> args);</programlisting>
 <para>
@@ -668,14 +674,14 @@ positional parameters, as specified in the Single Unix Specification.</para>
 <varlistentry><term><parameter>args</parameter>&nbsp;:</term>
 <listitem><simpara> the list of arguments to insert in the output.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of characters printed.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of bytes printed.
 
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.2
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-snprintf" role="function"/>g_snprintf ()</title>
-<indexterm><primary>g_snprintf</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_snprintf                          (<link linkend="gchar">gchar</link> *string,
+<refsect2 id="g-snprintf" role="function">
+<title>g_snprintf ()</title>
+<indexterm zone="g-snprintf"><primary>g_snprintf</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_snprintf                          (<link linkend="gchar">gchar</link> *string,
                                                          <link linkend="gulong">gulong</link> n,
                                                          <link linkend="gchar">gchar</link> const *format,
                                                          ...);</programlisting>
@@ -707,7 +713,7 @@ the Single Unix Specification.</para>
 <listitem><simpara> the buffer to hold the output.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n</parameter>&nbsp;:</term>
-<listitem><simpara> the maximum number of characters to produce (including the 
+<listitem><simpara> the maximum number of bytes to produce (including the 
     terminating nul character).
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>format</parameter>&nbsp;:</term>
@@ -717,13 +723,13 @@ the Single Unix Specification.</para>
 <varlistentry><term><parameter>...</parameter>&nbsp;:</term>
 <listitem><simpara> the arguments to insert in the output.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of characters which would be produced if the buffer 
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of bytes which would be produced if the buffer 
     was large enough.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-vsnprintf" role="function"/>g_vsnprintf ()</title>
-<indexterm><primary>g_vsnprintf</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_vsnprintf                         (<link linkend="gchar">gchar</link> *string,
+<refsect2 id="g-vsnprintf" role="function">
+<title>g_vsnprintf ()</title>
+<indexterm zone="g-vsnprintf"><primary>g_vsnprintf</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_vsnprintf                         (<link linkend="gchar">gchar</link> *string,
                                                          <link linkend="gulong">gulong</link> n,
                                                          <link linkend="gchar">gchar</link> const *format,
                                                          <link linkend="va-list">va_list</link> args);</programlisting>
@@ -755,7 +761,7 @@ the Single Unix Specification.</para>
 <listitem><simpara> the buffer to hold the output.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n</parameter>&nbsp;:</term>
-<listitem><simpara> the maximum number of characters to produce (including the 
+<listitem><simpara> the maximum number of bytes to produce (including the 
     terminating nul character).
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>format</parameter>&nbsp;:</term>
@@ -765,13 +771,13 @@ the Single Unix Specification.</para>
 <varlistentry><term><parameter>args</parameter>&nbsp;:</term>
 <listitem><simpara> the list of arguments to insert in the output.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of characters which would be produced if the buffer 
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of bytes which would be produced if the buffer 
  was large enough.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-vasprintf" role="function" condition="since:2.4"/>g_vasprintf ()</title>
-<indexterm role="2.4"><primary>g_vasprintf</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_vasprintf                         (<link linkend="gchar">gchar</link> **string,
+<refsect2 id="g-vasprintf" role="function" condition="since:2.4">
+<title>g_vasprintf ()</title>
+<indexterm zone="g-vasprintf" role="2.4"><primary>g_vasprintf</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_vasprintf                         (<link linkend="gchar">gchar</link> **string,
                                                          <link linkend="gchar">gchar</link> const *format,
                                                          <link linkend="va-list">va_list</link> args);</programlisting>
 <para>
@@ -793,17 +799,18 @@ you allocate in advance.</para>
 <varlistentry><term><parameter>args</parameter>&nbsp;:</term>
 <listitem><simpara> the list of arguments to insert in the output.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of characters printed.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of bytes printed.
 
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-printf-string-upper-bound" role="function"/>g_printf_string_upper_bound ()</title>
-<indexterm><primary>g_printf_string_upper_bound</primary></indexterm><programlisting><link linkend="gsize">gsize</link>               g_printf_string_upper_bound         (const <link linkend="gchar">gchar</link> *format,
+<refsect2 id="g-printf-string-upper-bound" role="function">
+<title>g_printf_string_upper_bound ()</title>
+<indexterm zone="g-printf-string-upper-bound"><primary>g_printf_string_upper_bound</primary></indexterm><programlisting><link linkend="gsize">gsize</link>               g_printf_string_upper_bound         (const <link linkend="gchar">gchar</link> *format,
                                                          <link linkend="va-list">va_list</link> args);</programlisting>
 <para>
-Calculates the maximum space needed to store the output of the <link linkend="sprintf"><function>sprintf()</function></link> function.
+Calculates the maximum space needed to store the output of the <link linkend="sprintf"><function>sprintf()</function></link> 
+function.
 </para><variablelist role="params">
 <varlistentry><term><parameter>format</parameter>&nbsp;:</term>
 <listitem><simpara>the format string. See the <link linkend="printf"><function>printf()</function></link> documentation.
@@ -816,9 +823,9 @@ Calculates the maximum space needed to store the output of the <link linkend="sp
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-isalnum" role="function"/>g_ascii_isalnum ()</title>
-<indexterm><primary>g_ascii_isalnum</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_isalnum                     (<link linkend="gchar">gchar</link> c);</programlisting>
+<refsect2 id="g-ascii-isalnum" role="function">
+<title>g_ascii_isalnum ()</title>
+<indexterm zone="g-ascii-isalnum"><primary>g_ascii_isalnum</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_isalnum                     (<link linkend="gchar">gchar</link> c);</programlisting>
 <para>
 Determines whether a character is alphanumeric.
 </para>
@@ -838,9 +845,9 @@ possibly non-ASCII character in.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-isalpha" role="function"/>g_ascii_isalpha ()</title>
-<indexterm><primary>g_ascii_isalpha</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_isalpha                     (<link linkend="gchar">gchar</link> c);</programlisting>
+<refsect2 id="g-ascii-isalpha" role="function">
+<title>g_ascii_isalpha ()</title>
+<indexterm zone="g-ascii-isalpha"><primary>g_ascii_isalpha</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_isalpha                     (<link linkend="gchar">gchar</link> c);</programlisting>
 <para>
 Determines whether a character is alphabetic (i.e. a letter).
 </para>
@@ -860,9 +867,9 @@ possibly non-ASCII character in.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-iscntrl" role="function"/>g_ascii_iscntrl ()</title>
-<indexterm><primary>g_ascii_iscntrl</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_iscntrl                     (<link linkend="gchar">gchar</link> c);</programlisting>
+<refsect2 id="g-ascii-iscntrl" role="function">
+<title>g_ascii_iscntrl ()</title>
+<indexterm zone="g-ascii-iscntrl"><primary>g_ascii_iscntrl</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_iscntrl                     (<link linkend="gchar">gchar</link> c);</programlisting>
 <para>
 Determines whether a character is a control character.
 </para>
@@ -882,9 +889,9 @@ possibly non-ASCII character in.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-isdigit" role="function"/>g_ascii_isdigit ()</title>
-<indexterm><primary>g_ascii_isdigit</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_isdigit                     (<link linkend="gchar">gchar</link> c);</programlisting>
+<refsect2 id="g-ascii-isdigit" role="function">
+<title>g_ascii_isdigit ()</title>
+<indexterm zone="g-ascii-isdigit"><primary>g_ascii_isdigit</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_isdigit                     (<link linkend="gchar">gchar</link> c);</programlisting>
 <para>
 Determines whether a character is digit (0-9).
 </para>
@@ -902,9 +909,9 @@ non-ASCII character in.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-isgraph" role="function"/>g_ascii_isgraph ()</title>
-<indexterm><primary>g_ascii_isgraph</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_isgraph                     (<link linkend="gchar">gchar</link> c);</programlisting>
+<refsect2 id="g-ascii-isgraph" role="function">
+<title>g_ascii_isgraph ()</title>
+<indexterm zone="g-ascii-isgraph"><primary>g_ascii_isgraph</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_isgraph                     (<link linkend="gchar">gchar</link> c);</programlisting>
 <para>
 Determines whether a character is a printing character and not a space.
 </para>
@@ -924,9 +931,9 @@ possibly non-ASCII character in.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-islower" role="function"/>g_ascii_islower ()</title>
-<indexterm><primary>g_ascii_islower</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_islower                     (<link linkend="gchar">gchar</link> c);</programlisting>
+<refsect2 id="g-ascii-islower" role="function">
+<title>g_ascii_islower ()</title>
+<indexterm zone="g-ascii-islower"><primary>g_ascii_islower</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_islower                     (<link linkend="gchar">gchar</link> c);</programlisting>
 <para>
 Determines whether a character is an ASCII lower case letter.
 </para>
@@ -946,9 +953,9 @@ before passing a possibly non-ASCII character in.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-isprint" role="function"/>g_ascii_isprint ()</title>
-<indexterm><primary>g_ascii_isprint</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_isprint                     (<link linkend="gchar">gchar</link> c);</programlisting>
+<refsect2 id="g-ascii-isprint" role="function">
+<title>g_ascii_isprint ()</title>
+<indexterm zone="g-ascii-isprint"><primary>g_ascii_isprint</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_isprint                     (<link linkend="gchar">gchar</link> c);</programlisting>
 <para>
 Determines whether a character is a printing character.
 </para>
@@ -968,9 +975,9 @@ possibly non-ASCII character in.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-ispunct" role="function"/>g_ascii_ispunct ()</title>
-<indexterm><primary>g_ascii_ispunct</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_ispunct                     (<link linkend="gchar">gchar</link> c);</programlisting>
+<refsect2 id="g-ascii-ispunct" role="function">
+<title>g_ascii_ispunct ()</title>
+<indexterm zone="g-ascii-ispunct"><primary>g_ascii_ispunct</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_ispunct                     (<link linkend="gchar">gchar</link> c);</programlisting>
 <para>
 Determines whether a character is a punctuation character.
 </para>
@@ -990,9 +997,9 @@ possibly non-ASCII character in.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-isspace" role="function"/>g_ascii_isspace ()</title>
-<indexterm><primary>g_ascii_isspace</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_isspace                     (<link linkend="gchar">gchar</link> c);</programlisting>
+<refsect2 id="g-ascii-isspace" role="function">
+<title>g_ascii_isspace ()</title>
+<indexterm zone="g-ascii-isspace"><primary>g_ascii_isspace</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_isspace                     (<link linkend="gchar">gchar</link> c);</programlisting>
 <para>
 Determines whether a character is a white-space character.
 </para>
@@ -1012,9 +1019,9 @@ possibly non-ASCII character in.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-isupper" role="function"/>g_ascii_isupper ()</title>
-<indexterm><primary>g_ascii_isupper</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_isupper                     (<link linkend="gchar">gchar</link> c);</programlisting>
+<refsect2 id="g-ascii-isupper" role="function">
+<title>g_ascii_isupper ()</title>
+<indexterm zone="g-ascii-isupper"><primary>g_ascii_isupper</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_isupper                     (<link linkend="gchar">gchar</link> c);</programlisting>
 <para>
 Determines whether a character is an ASCII upper case letter.
 </para>
@@ -1034,9 +1041,9 @@ before passing a possibly non-ASCII character in.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-isxdigit" role="function"/>g_ascii_isxdigit ()</title>
-<indexterm><primary>g_ascii_isxdigit</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_isxdigit                    (<link linkend="gchar">gchar</link> c);</programlisting>
+<refsect2 id="g-ascii-isxdigit" role="function">
+<title>g_ascii_isxdigit ()</title>
+<indexterm zone="g-ascii-isxdigit"><primary>g_ascii_isxdigit</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_ascii_isxdigit                    (<link linkend="gchar">gchar</link> c);</programlisting>
 <para>
 Determines whether a character is a hexadecimal-digit character.
 </para>
@@ -1054,9 +1061,9 @@ possibly non-ASCII character in.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-digit-value" role="function"/>g_ascii_digit_value ()</title>
-<indexterm><primary>g_ascii_digit_value</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_ascii_digit_value                 (<link linkend="gchar">gchar</link> c);</programlisting>
+<refsect2 id="g-ascii-digit-value" role="function">
+<title>g_ascii_digit_value ()</title>
+<indexterm zone="g-ascii-digit-value"><primary>g_ascii_digit_value</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_ascii_digit_value                 (<link linkend="gchar">gchar</link> c);</programlisting>
 <para>
 Determines the numeric value of a character as a decimal
 digit. Differs from <link linkend="g-unichar-digit-value"><function>g_unichar_digit_value()</function></link> because it takes
@@ -1072,9 +1079,9 @@ are signed.</para>
 <link linkend="g-ascii-isdigit"><function>g_ascii_isdigit()</function></link>), its numeric value. Otherwise, -1.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-xdigit-value" role="function"/>g_ascii_xdigit_value ()</title>
-<indexterm><primary>g_ascii_xdigit_value</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_ascii_xdigit_value                (<link linkend="gchar">gchar</link> c);</programlisting>
+<refsect2 id="g-ascii-xdigit-value" role="function">
+<title>g_ascii_xdigit_value ()</title>
+<indexterm zone="g-ascii-xdigit-value"><primary>g_ascii_xdigit_value</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_ascii_xdigit_value                (<link linkend="gchar">gchar</link> c);</programlisting>
 <para>
 Determines the numeric value of a character as a hexidecimal
 digit. Differs from <link linkend="g-unichar-xdigit-value"><function>g_unichar_xdigit_value()</function></link> because it takes
@@ -1090,9 +1097,9 @@ are signed.</para>
 <link linkend="g-ascii-isxdigit"><function>g_ascii_isxdigit()</function></link>), its numeric value. Otherwise, -1.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-strcasecmp" role="function"/>g_ascii_strcasecmp ()</title>
-<indexterm><primary>g_ascii_strcasecmp</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_ascii_strcasecmp                  (const <link linkend="gchar">gchar</link> *s1,
+<refsect2 id="g-ascii-strcasecmp" role="function">
+<title>g_ascii_strcasecmp ()</title>
+<indexterm zone="g-ascii-strcasecmp"><primary>g_ascii_strcasecmp</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_ascii_strcasecmp                  (const <link linkend="gchar">gchar</link> *s1,
                                                          const <link linkend="gchar">gchar</link> *s2);</programlisting>
 <para>
 Compare two strings, ignoring the case of ASCII characters.
@@ -1123,9 +1130,9 @@ strings using this function, you will get false matches.</para>
   or a positive value if <parameter>s1</parameter> &gt; <parameter>s2</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-strncasecmp" role="function"/>g_ascii_strncasecmp ()</title>
-<indexterm><primary>g_ascii_strncasecmp</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_ascii_strncasecmp                 (const <link linkend="gchar">gchar</link> *s1,
+<refsect2 id="g-ascii-strncasecmp" role="function">
+<title>g_ascii_strncasecmp ()</title>
+<indexterm zone="g-ascii-strncasecmp"><primary>g_ascii_strncasecmp</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_ascii_strncasecmp                 (const <link linkend="gchar">gchar</link> *s1,
                                                          const <link linkend="gchar">gchar</link> *s2,
                                                          <link linkend="gsize">gsize</link> n);</programlisting>
 <para>
@@ -1157,9 +1164,9 @@ corresponding to ASCII letters always represent themselves.</para>
   or a positive value if <parameter>s1</parameter> &gt; <parameter>s2</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-strup" role="function"/>g_ascii_strup ()</title>
-<indexterm><primary>g_ascii_strup</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_ascii_strup                       (const <link linkend="gchar">gchar</link> *str,
+<refsect2 id="g-ascii-strup" role="function">
+<title>g_ascii_strup ()</title>
+<indexterm zone="g-ascii-strup"><primary>g_ascii_strup</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_ascii_strup                       (const <link linkend="gchar">gchar</link> *str,
                                                          <link linkend="gssize">gssize</link> len);</programlisting>
 <para>
 Converts all lower case ASCII letters to upper case ASCII letters.</para>
@@ -1179,9 +1186,9 @@ Converts all lower case ASCII letters to upper case ASCII letters.</para>
               the string in place.)
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-strdown" role="function"/>g_ascii_strdown ()</title>
-<indexterm><primary>g_ascii_strdown</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_ascii_strdown                     (const <link linkend="gchar">gchar</link> *str,
+<refsect2 id="g-ascii-strdown" role="function">
+<title>g_ascii_strdown ()</title>
+<indexterm zone="g-ascii-strdown"><primary>g_ascii_strdown</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_ascii_strdown                     (const <link linkend="gchar">gchar</link> *str,
                                                          <link linkend="gssize">gssize</link> len);</programlisting>
 <para>
 Converts all upper case ASCII letters to lower case ASCII letters.</para>
@@ -1201,9 +1208,9 @@ Converts all upper case ASCII letters to lower case ASCII letters.</para>
               the string in place.)
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-tolower" role="function"/>g_ascii_tolower ()</title>
-<indexterm><primary>g_ascii_tolower</primary></indexterm><programlisting><link linkend="gchar">gchar</link>               g_ascii_tolower                     (<link linkend="gchar">gchar</link> c);</programlisting>
+<refsect2 id="g-ascii-tolower" role="function">
+<title>g_ascii_tolower ()</title>
+<indexterm zone="g-ascii-tolower"><primary>g_ascii_tolower</primary></indexterm><programlisting><link linkend="gchar">gchar</link>               g_ascii_tolower                     (<link linkend="gchar">gchar</link> c);</programlisting>
 <para>
 Convert a character to ASCII lower case.
 </para>
@@ -1226,9 +1233,9 @@ before passing a possibly non-ASCII character in.</para>
               <parameter>c</parameter> is returned unchanged.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-toupper" role="function"/>g_ascii_toupper ()</title>
-<indexterm><primary>g_ascii_toupper</primary></indexterm><programlisting><link linkend="gchar">gchar</link>               g_ascii_toupper                     (<link linkend="gchar">gchar</link> c);</programlisting>
+<refsect2 id="g-ascii-toupper" role="function">
+<title>g_ascii_toupper ()</title>
+<indexterm zone="g-ascii-toupper"><primary>g_ascii_toupper</primary></indexterm><programlisting><link linkend="gchar">gchar</link>               g_ascii_toupper                     (<link linkend="gchar">gchar</link> c);</programlisting>
 <para>
 Convert a character to ASCII upper case.
 </para>
@@ -1251,9 +1258,9 @@ before passing a possibly non-ASCII character in.</para>
               <parameter>c</parameter> is returned unchanged.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-string-ascii-up" role="function"/>g_string_ascii_up ()</title>
-<indexterm><primary>g_string_ascii_up</primary></indexterm><programlisting><link linkend="GString">GString</link>*            g_string_ascii_up                   (<link linkend="GString">GString</link> *string);</programlisting>
+<refsect2 id="g-string-ascii-up" role="function">
+<title>g_string_ascii_up ()</title>
+<indexterm zone="g-string-ascii-up"><primary>g_string_ascii_up</primary></indexterm><programlisting><link linkend="GString">GString</link>*            g_string_ascii_up                   (<link linkend="GString">GString</link> *string);</programlisting>
 <para>
 Converts all lower case ASCII letters to upper case ASCII letters.</para>
 <para>
@@ -1264,12 +1271,12 @@ Converts all lower case ASCII letters to upper case ASCII letters.</para>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> passed-in <parameter>string</parameter> pointer, with all the lower case
               characters converted to upper case in place, with
-              semantics that exactly match g_ascii_toupper.
+              semantics that exactly match <link linkend="g-ascii-toupper"><function>g_ascii_toupper()</function></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-string-ascii-down" role="function"/>g_string_ascii_down ()</title>
-<indexterm><primary>g_string_ascii_down</primary></indexterm><programlisting><link linkend="GString">GString</link>*            g_string_ascii_down                 (<link linkend="GString">GString</link> *string);</programlisting>
+<refsect2 id="g-string-ascii-down" role="function">
+<title>g_string_ascii_down ()</title>
+<indexterm zone="g-string-ascii-down"><primary>g_string_ascii_down</primary></indexterm><programlisting><link linkend="GString">GString</link>*            g_string_ascii_down                 (<link linkend="GString">GString</link> *string);</programlisting>
 <para>
 Converts all upper case ASCII letters to lower case ASCII letters.</para>
 <para>
@@ -1280,12 +1287,12 @@ Converts all upper case ASCII letters to lower case ASCII letters.</para>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> passed-in <parameter>string</parameter> pointer, with all the upper case
               characters converted to lower case in place, with
-              semantics that exactly match g_ascii_tolower.
+              semantics that exactly match <link linkend="g-ascii-tolower"><function>g_ascii_tolower()</function></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strup" role="function" condition="deprecated"/>g_strup ()</title>
-<indexterm role="deprecated"><primary>g_strup</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strup                             (<link linkend="gchar">gchar</link> *string);</programlisting>
+<refsect2 id="g-strup" role="function" condition="deprecated">
+<title>g_strup ()</title>
+<indexterm zone="g-strup" role="deprecated"><primary>g_strup</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strup                             (<link linkend="gchar">gchar</link> *string);</programlisting>
 <warning><para><literal>g_strup</literal> has been deprecated since version 2.2 and should not be used in newly-written code. This function is totally broken for the reasons discussed 
 in the <link linkend="g-strncasecmp"><function>g_strncasecmp()</function></link> docs - use <link linkend="g-ascii-strup"><function>g_ascii_strup()</function></link> or <link linkend="g-utf8-strup"><function>g_utf8_strup()</function></link> instead.</para></warning>
 <para>
@@ -1299,9 +1306,9 @@ Converts a string to upper case.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strdown" role="function" condition="deprecated"/>g_strdown ()</title>
-<indexterm role="deprecated"><primary>g_strdown</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strdown                           (<link linkend="gchar">gchar</link> *string);</programlisting>
+<refsect2 id="g-strdown" role="function" condition="deprecated">
+<title>g_strdown ()</title>
+<indexterm zone="g-strdown" role="deprecated"><primary>g_strdown</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strdown                           (<link linkend="gchar">gchar</link> *string);</programlisting>
 <warning><para><literal>g_strdown</literal> has been deprecated since version 2.2 and should not be used in newly-written code. This function is totally broken for the reasons discussed 
 in the <link linkend="g-strncasecmp"><function>g_strncasecmp()</function></link> docs - use <link linkend="g-ascii-strdown"><function>g_ascii_strdown()</function></link> or <link linkend="g-utf8-strdown"><function>g_utf8_strdown()</function></link> 
 instead.</para></warning>
@@ -1316,9 +1323,9 @@ Converts a string to lower case.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strcasecmp" role="function" condition="deprecated"/>g_strcasecmp ()</title>
-<indexterm role="deprecated"><primary>g_strcasecmp</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_strcasecmp                        (const <link linkend="gchar">gchar</link> *s1,
+<refsect2 id="g-strcasecmp" role="function" condition="deprecated">
+<title>g_strcasecmp ()</title>
+<indexterm zone="g-strcasecmp" role="deprecated"><primary>g_strcasecmp</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_strcasecmp                        (const <link linkend="gchar">gchar</link> *s1,
                                                          const <link linkend="gchar">gchar</link> *s2);</programlisting>
 <warning><para><literal>g_strcasecmp</literal> has been deprecated since version 2.2 and should not be used in newly-written code. See <link linkend="g-strncasecmp"><function>g_strncasecmp()</function></link> for a discussion of why this function 
   is deprecated and how to replace it.</para></warning>
@@ -1338,9 +1345,9 @@ A case-insensitive string comparison, corresponding to the standard
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strncasecmp" role="function" condition="deprecated"/>g_strncasecmp ()</title>
-<indexterm role="deprecated"><primary>g_strncasecmp</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_strncasecmp                       (const <link linkend="gchar">gchar</link> *s1,
+<refsect2 id="g-strncasecmp" role="function" condition="deprecated">
+<title>g_strncasecmp ()</title>
+<indexterm zone="g-strncasecmp" role="deprecated"><primary>g_strncasecmp</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_strncasecmp                       (const <link linkend="gchar">gchar</link> *s1,
                                                          const <link linkend="gchar">gchar</link> *s2,
                                                          <link linkend="guint">guint</link> n);</programlisting>
 <warning><para><literal>g_strncasecmp</literal> has been deprecated since version 2.2 and should not be used in newly-written code. The problem with <link linkend="g-strncasecmp"><function>g_strncasecmp()</function></link> is that it does the 
@@ -1378,9 +1385,9 @@ characters of the strings.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strreverse" role="function"/>g_strreverse ()</title>
-<indexterm><primary>g_strreverse</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strreverse                        (<link linkend="gchar">gchar</link> *string);</programlisting>
+<refsect2 id="g-strreverse" role="function">
+<title>g_strreverse ()</title>
+<indexterm zone="g-strreverse"><primary>g_strreverse</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strreverse                        (<link linkend="gchar">gchar</link> *string);</programlisting>
 <para>
 Reverses all of the bytes in a string.
 For example, <literal>g_strreverse ("abcdef")</literal> will result in "fedcba".
@@ -1397,9 +1404,9 @@ For that purpose, use <link linkend="g-utf8-strreverse"><function>g_utf8_strreve
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-strtoll" role="function" condition="since:2.12"/>g_ascii_strtoll ()</title>
-<indexterm role="2.12"><primary>g_ascii_strtoll</primary></indexterm><programlisting><link linkend="gint64">gint64</link>              g_ascii_strtoll                     (const <link linkend="gchar">gchar</link> *nptr,
+<refsect2 id="g-ascii-strtoll" role="function" condition="since:2.12">
+<title>g_ascii_strtoll ()</title>
+<indexterm zone="g-ascii-strtoll" role="2.12"><primary>g_ascii_strtoll</primary></indexterm><programlisting><link linkend="gint64">gint64</link>              g_ascii_strtoll                     (const <link linkend="gchar">gchar</link> *nptr,
                                                          <link linkend="gchar">gchar</link> **endptr,
                                                          <link linkend="guint">guint</link> base);</programlisting>
 <para>
@@ -1439,9 +1446,9 @@ in <link linkend="errno"><literal>errno</literal></link>.  If the string convers
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-strtoull" role="function" condition="since:2.2"/>g_ascii_strtoull ()</title>
-<indexterm role="2.2"><primary>g_ascii_strtoull</primary></indexterm><programlisting><link linkend="guint64">guint64</link>             g_ascii_strtoull                    (const <link linkend="gchar">gchar</link> *nptr,
+<refsect2 id="g-ascii-strtoull" role="function" condition="since:2.2">
+<title>g_ascii_strtoull ()</title>
+<indexterm zone="g-ascii-strtoull" role="2.2"><primary>g_ascii_strtoull</primary></indexterm><programlisting><link linkend="guint64">guint64</link>             g_ascii_strtoull                    (const <link linkend="gchar">gchar</link> *nptr,
                                                          <link linkend="gchar">gchar</link> **endptr,
                                                          <link linkend="guint">guint</link> base);</programlisting>
 <para>
@@ -1481,9 +1488,9 @@ in <link linkend="errno"><literal>errno</literal></link>.  If the string convers
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.2
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-ASCII-DTOSTR-BUF-SIZE:CAPS" role="macro"/>G_ASCII_DTOSTR_BUF_SIZE</title>
-<indexterm><primary>G_ASCII_DTOSTR_BUF_SIZE</primary></indexterm><programlisting>#define G_ASCII_DTOSTR_BUF_SIZE (29 + 10)
+<refsect2 id="G-ASCII-DTOSTR-BUF-SIZE:CAPS" role="macro">
+<title>G_ASCII_DTOSTR_BUF_SIZE</title>
+<indexterm zone="G-ASCII-DTOSTR-BUF-SIZE:CAPS"><primary>G_ASCII_DTOSTR_BUF_SIZE</primary></indexterm><programlisting>#define G_ASCII_DTOSTR_BUF_SIZE (29 + 10)
 </programlisting>
 <para>
 A good size for a buffer to be passed into <link linkend="g-ascii-dtostr"><function>g_ascii_dtostr()</function></link>.
@@ -1498,9 +1505,9 @@ The typical usage would be something like:
   fprintf (out, "value=&percnt;s\n", g_ascii_dtostr (buf, sizeof (buf), value));
 </programlisting></informalexample>
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-strtod" role="function"/>g_ascii_strtod ()</title>
-<indexterm><primary>g_ascii_strtod</primary></indexterm><programlisting><link linkend="gdouble">gdouble</link>             g_ascii_strtod                      (const <link linkend="gchar">gchar</link> *nptr,
+<refsect2 id="g-ascii-strtod" role="function">
+<title>g_ascii_strtod ()</title>
+<indexterm zone="g-ascii-strtod"><primary>g_ascii_strtod</primary></indexterm><programlisting><link linkend="gdouble">gdouble</link>             g_ascii_strtod                      (const <link linkend="gchar">gchar</link> *nptr,
                                                          <link linkend="gchar">gchar</link> **endptr);</programlisting>
 <para>
 Converts a string to a <link linkend="gdouble"><type>gdouble</type></link> value.
@@ -1541,9 +1548,9 @@ you can reliably detect overflow and underflow.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the <link linkend="gdouble"><type>gdouble</type></link> value.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-dtostr" role="function"/>g_ascii_dtostr ()</title>
-<indexterm><primary>g_ascii_dtostr</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_ascii_dtostr                      (<link linkend="gchar">gchar</link> *buffer,
+<refsect2 id="g-ascii-dtostr" role="function">
+<title>g_ascii_dtostr ()</title>
+<indexterm zone="g-ascii-dtostr"><primary>g_ascii_dtostr</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_ascii_dtostr                      (<link linkend="gchar">gchar</link> *buffer,
                                                          <link linkend="gint">gint</link> buf_len,
                                                          <link linkend="gdouble">gdouble</link> d);</programlisting>
 <para>
@@ -1571,9 +1578,9 @@ be larger than <parameter>G_ASCII_DTOSTR_BUF_SIZE</parameter> bytes.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The pointer to the buffer with the converted string.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-ascii-formatd" role="function"/>g_ascii_formatd ()</title>
-<indexterm><primary>g_ascii_formatd</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_ascii_formatd                     (<link linkend="gchar">gchar</link> *buffer,
+<refsect2 id="g-ascii-formatd" role="function">
+<title>g_ascii_formatd ()</title>
+<indexterm zone="g-ascii-formatd"><primary>g_ascii_formatd</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_ascii_formatd                     (<link linkend="gchar">gchar</link> *buffer,
                                                          <link linkend="gint">gint</link> buf_len,
                                                          const <link linkend="gchar">gchar</link> *format,
                                                          <link linkend="gdouble">gdouble</link> d);</programlisting>
@@ -1605,9 +1612,9 @@ string, use <link linkend="g-ascii-dtostr"><function>g_ascii_dtostr()</function>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The pointer to the buffer with the converted string.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strtod" role="function"/>g_strtod ()</title>
-<indexterm><primary>g_strtod</primary></indexterm><programlisting><link linkend="gdouble">gdouble</link>             g_strtod                            (const <link linkend="gchar">gchar</link> *nptr,
+<refsect2 id="g-strtod" role="function">
+<title>g_strtod ()</title>
+<indexterm zone="g-strtod"><primary>g_strtod</primary></indexterm><programlisting><link linkend="gdouble">gdouble</link>             g_strtod                            (const <link linkend="gchar">gchar</link> *nptr,
                                                          <link linkend="gchar">gchar</link> **endptr);</programlisting>
 <para>
 Converts a string to a <link linkend="gdouble"><type>gdouble</type></link> value.
@@ -1635,9 +1642,9 @@ point in some locales, causing unexpected results.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the <link linkend="gdouble"><type>gdouble</type></link> value.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strchug" role="function"/>g_strchug ()</title>
-<indexterm><primary>g_strchug</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strchug                           (<link linkend="gchar">gchar</link> *string);</programlisting>
+<refsect2 id="g-strchug" role="function">
+<title>g_strchug ()</title>
+<indexterm zone="g-strchug"><primary>g_strchug</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strchug                           (<link linkend="gchar">gchar</link> *string);</programlisting>
 <para>
 Removes leading whitespace from a string, by moving the rest of the
 characters forward.
@@ -1657,9 +1664,9 @@ Also see <link linkend="g-strchomp"><function>g_strchomp()</function></link> and
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strchomp" role="function"/>g_strchomp ()</title>
-<indexterm><primary>g_strchomp</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strchomp                          (<link linkend="gchar">gchar</link> *string);</programlisting>
+<refsect2 id="g-strchomp" role="function">
+<title>g_strchomp ()</title>
+<indexterm zone="g-strchomp"><primary>g_strchomp</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strchomp                          (<link linkend="gchar">gchar</link> *string);</programlisting>
 <para>
 Removes trailing whitespace from a string.
 </para>
@@ -1678,9 +1685,9 @@ Also see <link linkend="g-strchug"><function>g_strchug()</function></link> and <
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strstrip" role="macro"/>g_strstrip()</title>
-<indexterm><primary>g_strstrip</primary></indexterm><programlisting>#define             g_strstrip( string )</programlisting>
+<refsect2 id="g-strstrip" role="macro">
+<title>g_strstrip()</title>
+<indexterm zone="g-strstrip"><primary>g_strstrip</primary></indexterm><programlisting>#define             g_strstrip( string )</programlisting>
 <para>
 Removes leading and trailing whitespace from a string. See <link linkend="g-strchomp"><function>g_strchomp()</function></link> and
 <link linkend="g-strchug"><function>g_strchug()</function></link>.
@@ -1691,9 +1698,9 @@ Removes leading and trailing whitespace from a string. See <link linkend="g-strc
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strdelimit" role="function"/>g_strdelimit ()</title>
-<indexterm><primary>g_strdelimit</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strdelimit                        (<link linkend="gchar">gchar</link> *string,
+<refsect2 id="g-strdelimit" role="function">
+<title>g_strdelimit ()</title>
+<indexterm zone="g-strdelimit"><primary>g_strdelimit</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strdelimit                        (<link linkend="gchar">gchar</link> *string,
                                                          const <link linkend="gchar">gchar</link> *delimiters,
                                                          <link linkend="gchar">gchar</link> new_delimiter);</programlisting>
 <para>
@@ -1718,16 +1725,16 @@ standard delimiters defined in <link linkend="G-STR-DELIMITERS:CAPS"><type>G_STR
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-STR-DELIMITERS:CAPS" role="macro"/>G_STR_DELIMITERS</title>
-<indexterm><primary>G_STR_DELIMITERS</primary></indexterm><programlisting>#define	 G_STR_DELIMITERS	"_-|&gt; &lt;."
+<refsect2 id="G-STR-DELIMITERS:CAPS" role="macro">
+<title>G_STR_DELIMITERS</title>
+<indexterm zone="G-STR-DELIMITERS:CAPS"><primary>G_STR_DELIMITERS</primary></indexterm><programlisting>#define	 G_STR_DELIMITERS	"_-|&gt; &lt;."
 </programlisting>
 <para>
 The standard delimiters, used in <link linkend="g-strdelimit"><function>g_strdelimit()</function></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-strescape" role="function"/>g_strescape ()</title>
-<indexterm><primary>g_strescape</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strescape                         (const <link linkend="gchar">gchar</link> *source,
+<refsect2 id="g-strescape" role="function">
+<title>g_strescape ()</title>
+<indexterm zone="g-strescape"><primary>g_strescape</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strescape                         (const <link linkend="gchar">gchar</link> *source,
                                                          const <link linkend="gchar">gchar</link> *exceptions);</programlisting>
 <para>
 Escapes the special characters '\b', '\f', '\n', '\r', '\t', '\' and
@@ -1753,9 +1760,9 @@ characters escaped. See above.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strcompress" role="function"/>g_strcompress ()</title>
-<indexterm><primary>g_strcompress</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strcompress                       (const <link linkend="gchar">gchar</link> *source);</programlisting>
+<refsect2 id="g-strcompress" role="function">
+<title>g_strcompress ()</title>
+<indexterm zone="g-strcompress"><primary>g_strcompress</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strcompress                       (const <link linkend="gchar">gchar</link> *source);</programlisting>
 <para>
 Replaces all escaped characters with their one byte equivalent. It
 does the reverse conversion of <link linkend="g-strescape"><function>g_strescape()</function></link>. 
@@ -1769,9 +1776,9 @@ character compressed.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strcanon" role="function"/>g_strcanon ()</title>
-<indexterm><primary>g_strcanon</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strcanon                          (<link linkend="gchar">gchar</link> *string,
+<refsect2 id="g-strcanon" role="function">
+<title>g_strcanon ()</title>
+<indexterm zone="g-strcanon"><primary>g_strcanon</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strcanon                          (<link linkend="gchar">gchar</link> *string,
                                                          const <link linkend="gchar">gchar</link> *valid_chars,
                                                          <link linkend="gchar">gchar</link> substitutor);</programlisting>
 <para>
@@ -1794,9 +1801,9 @@ nesting such as <literal>g_ascii_strup (g_strcanon (str, "abc", '?'))</literal>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strsplit" role="function"/>g_strsplit ()</title>
-<indexterm><primary>g_strsplit</primary></indexterm><programlisting><link linkend="gchar">gchar</link>**             g_strsplit                          (const <link linkend="gchar">gchar</link> *string,
+<refsect2 id="g-strsplit" role="function">
+<title>g_strsplit ()</title>
+<indexterm zone="g-strsplit"><primary>g_strsplit</primary></indexterm><programlisting><link linkend="gchar">gchar</link>**             g_strsplit                          (const <link linkend="gchar">gchar</link> *string,
                                                          const <link linkend="gchar">gchar</link> *delimiter,
                                                          <link linkend="gint">gint</link> max_tokens);</programlisting>
 <para>
@@ -1829,9 +1836,9 @@ before calling <link linkend="g-strsplit"><function>g_strsplit()</function></lin
    <link linkend="g-strfreev"><function>g_strfreev()</function></link> to free it.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strsplit-set" role="function" condition="since:2.4"/>g_strsplit_set ()</title>
-<indexterm role="2.4"><primary>g_strsplit_set</primary></indexterm><programlisting><link linkend="gchar">gchar</link>**             g_strsplit_set                      (const <link linkend="gchar">gchar</link> *string,
+<refsect2 id="g-strsplit-set" role="function" condition="since:2.4">
+<title>g_strsplit_set ()</title>
+<indexterm zone="g-strsplit-set" role="2.4"><primary>g_strsplit_set</primary></indexterm><programlisting><link linkend="gchar">gchar</link>**             g_strsplit_set                      (const <link linkend="gchar">gchar</link> *string,
                                                          const <link linkend="gchar">gchar</link> *delimiters,
                                                          <link linkend="gint">gint</link> max_tokens);</programlisting>
 <para>
@@ -1880,9 +1887,9 @@ to delimit UTF-8 strings for anything but ASCII characters.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.4
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-strfreev" role="function"/>g_strfreev ()</title>
-<indexterm><primary>g_strfreev</primary></indexterm><programlisting><link linkend="void">void</link>                g_strfreev                          (<link linkend="gchar">gchar</link> **str_array);</programlisting>
+<refsect2 id="g-strfreev" role="function">
+<title>g_strfreev ()</title>
+<indexterm zone="g-strfreev"><primary>g_strfreev</primary></indexterm><programlisting><link linkend="void">void</link>                g_strfreev                          (<link linkend="gchar">gchar</link> **str_array);</programlisting>
 <para>
 Frees a <link linkend="NULL:CAPS"><literal>NULL</literal></link>-terminated array of strings, and the array itself.
 If called on a <link linkend="NULL:CAPS"><literal>NULL</literal></link> value, <link linkend="g-strfreev"><function>g_strfreev()</function></link> simply returns.</para>
@@ -1893,9 +1900,9 @@ If called on a <link linkend="NULL:CAPS"><literal>NULL</literal></link> value, <
 <listitem><simpara> a <link linkend="NULL:CAPS"><literal>NULL</literal></link>-terminated array of strings to free.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strconcat" role="function"/>g_strconcat ()</title>
-<indexterm><primary>g_strconcat</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strconcat                         (const <link linkend="gchar">gchar</link> *string1,
+<refsect2 id="g-strconcat" role="function">
+<title>g_strconcat ()</title>
+<indexterm zone="g-strconcat"><primary>g_strconcat</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strconcat                         (const <link linkend="gchar">gchar</link> *string1,
                                                          ...);</programlisting>
 <para>
 Concatenates all of the given strings into one long string.  The returned string
@@ -1918,9 +1925,9 @@ random memory junk to your string.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strjoin" role="function"/>g_strjoin ()</title>
-<indexterm><primary>g_strjoin</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strjoin                           (const <link linkend="gchar">gchar</link> *separator,
+<refsect2 id="g-strjoin" role="function">
+<title>g_strjoin ()</title>
+<indexterm zone="g-strjoin"><primary>g_strjoin</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strjoin                           (const <link linkend="gchar">gchar</link> *separator,
                                                          ...);</programlisting>
 <para>
 Joins a number of strings together to form one long string, with the optional
@@ -1938,9 +1945,9 @@ together, with <parameter>separator</parameter> between them.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strjoinv" role="function"/>g_strjoinv ()</title>
-<indexterm><primary>g_strjoinv</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strjoinv                          (const <link linkend="gchar">gchar</link> *separator,
+<refsect2 id="g-strjoinv" role="function">
+<title>g_strjoinv ()</title>
+<indexterm zone="g-strjoinv"><primary>g_strjoinv</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_strjoinv                          (const <link linkend="gchar">gchar</link> *separator,
                                                          <link linkend="gchar">gchar</link> **str_array);</programlisting>
 <para>
 Joins a number of strings together to form one long string, with the optional
@@ -1958,9 +1965,9 @@ together, with <parameter>separator</parameter> between them.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strv-length" role="function" condition="since:2.6"/>g_strv_length ()</title>
-<indexterm role="2.6"><primary>g_strv_length</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_strv_length                       (<link linkend="gchar">gchar</link> **str_array);</programlisting>
+<refsect2 id="g-strv-length" role="function" condition="since:2.6">
+<title>g_strv_length ()</title>
+<indexterm zone="g-strv-length" role="2.6"><primary>g_strv_length</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_strv_length                       (<link linkend="gchar">gchar</link> **str_array);</programlisting>
 <para>
 Returns the length of the given <link linkend="NULL:CAPS"><literal>NULL</literal></link>-terminated 
 string array <parameter>str_array</parameter>.</para>
@@ -1975,38 +1982,40 @@ string array <parameter>str_array</parameter>.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-strerror" role="function"/>g_strerror ()</title>
-<indexterm><primary>g_strerror</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        g_strerror                          (<link linkend="gint">gint</link> errnum);</programlisting>
+<refsect2 id="g-strerror" role="function">
+<title>g_strerror ()</title>
+<indexterm zone="g-strerror"><primary>g_strerror</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        g_strerror                          (<link linkend="gint">gint</link> errnum);</programlisting>
 <para>
 Returns a string corresponding to the given error code, e.g. "no such process".
-This function is included since not all platforms support the 
+You should use this function in preference to <link linkend="strerror"><function>strerror()</function></link>, because it returns a
+string in UTF-8 encoding, and since not all platforms support the 
 <link linkend="strerror"><function>strerror()</function></link> function.
 </para><variablelist role="params">
 <varlistentry><term><parameter>errnum</parameter>&nbsp;:</term>
 <listitem><simpara>the system error number. See the standard C <link linkend="errno"><literal>errno</literal></link>
 documentation.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a string describing the error code.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a UTF-8 string describing the error code.
 If the error code is unknown, it returns "unknown error (&lt;code&gt;)".
 The string can only be used until the next call to <link linkend="g-strerror"><function>g_strerror()</function></link>.
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-strsignal" role="function"/>g_strsignal ()</title>
-<indexterm><primary>g_strsignal</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        g_strsignal                         (<link linkend="gint">gint</link> signum);</programlisting>
+<refsect2 id="g-strsignal" role="function">
+<title>g_strsignal ()</title>
+<indexterm zone="g-strsignal"><primary>g_strsignal</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        g_strsignal                         (<link linkend="gint">gint</link> signum);</programlisting>
 <para>
 Returns a string describing the given signal, e.g. "Segmentation fault".
-This function is included since not all platforms support the
+You should use this function in preference to <link linkend="strsignal"><function>strsignal()</function></link>, because it returns a
+string in UTF-8 encoding, and since not all platforms support the
 <link linkend="strsignal"><function>strsignal()</function></link> function.
 </para><variablelist role="params">
 <varlistentry><term><parameter>signum</parameter>&nbsp;:</term>
 <listitem><simpara>the signal number. See the <literal>signal</literal>
 documentation.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a string describing the signal.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a UTF-8 string describing the signal.
 If the signal is unknown, it returns "unknown signal (&lt;signum&gt;)".
 The string can only be used until the next call to <link linkend="g-strsignal"><function>g_strsignal()</function></link>.
 

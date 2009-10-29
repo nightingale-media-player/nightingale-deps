@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Shell-related Utilities</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
-<link rel="start" href="index.html" title="GLib Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.74.0">
+<link rel="home" href="index.html" title="GLib Reference Manual">
 <link rel="up" href="glib-utilities.html" title="GLib Utilities">
-<link rel="prev" href="glib-File-Utilities.html" title="File Utilities">
+<link rel="prev" href="glib-URI-Functions.html" title="URI Functions">
 <link rel="next" href="glib-Commandline-option-parser.html" title="Commandline option parser">
-<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="glib.html" title="GLib Overview">
 <link rel="chapter" href="glib-fundamentals.html" title="GLib Fundamentals">
@@ -24,62 +24,59 @@
 <link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
 <link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
 <link rel="index" href="ix08.html" title="Index of new symbols in 2.12">
+<link rel="index" href="ix09.html" title="Index of new symbols in 2.14">
+<link rel="index" href="ix10.html" title="Index of new symbols in 2.16">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="glib-File-Utilities.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="glib-URI-Functions.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="glib-utilities.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GLib Reference Manual</th>
 <td><a accesskey="n" href="glib-Commandline-option-parser.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id3129112" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id3129241" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#glib-Shell-related-Utilities.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#glib-Shell-related-Utilities.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="glib-Shell-related-Utilities"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id3129112"></a><span class="refentrytitle">Shell-related Utilities</span>
-</h2>
-<p>Shell-related Utilities &#8212; shell-like commandline handling.</p>
+<h2><span class="refentrytitle"><a name="glib-Shell-related-Utilities.top_of_page"></a>Shell-related Utilities</span></h2>
+<p>Shell-related Utilities — shell-like commandline handling</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="glib-Shell-related-Utilities.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;glib.h&gt;
 
-
-enum                <a href="glib-Shell-related-Utilities.html#GShellError">GShellError</a>;
-#define             <a href="glib-Shell-related-Utilities.html#G-SHELL-ERROR:CAPS">G_SHELL_ERROR</a>
-<a href="glib-Basic-Types.html#gboolean">gboolean</a>            <a href="glib-Shell-related-Utilities.html#g-shell-parse-argv">g_shell_parse_argv</a>                  (const <a href="glib-Basic-Types.html#gchar">gchar</a> *command_line,
-                                                         <a href="glib-Basic-Types.html#gint">gint</a> *argcp,
-                                                         <a href="glib-Basic-Types.html#gchar">gchar</a> ***argvp,
-                                                         <a href="glib-Error-Reporting.html#GError">GError</a> **error);
-<a href="glib-Basic-Types.html#gchar">gchar</a>*              <a href="glib-Shell-related-Utilities.html#g-shell-quote">g_shell_quote</a>                       (const <a href="glib-Basic-Types.html#gchar">gchar</a> *unquoted_string);
-<a href="glib-Basic-Types.html#gchar">gchar</a>*              <a href="glib-Shell-related-Utilities.html#g-shell-unquote">g_shell_unquote</a>                     (const <a href="glib-Basic-Types.html#gchar">gchar</a> *quoted_string,
-                                                         <a href="glib-Error-Reporting.html#GError">GError</a> **error);
-
+enum                <a class="link" href="glib-Shell-related-Utilities.html#GShellError" title="enum GShellError">GShellError</a>;
+#define             <a class="link" href="glib-Shell-related-Utilities.html#G-SHELL-ERROR:CAPS" title="G_SHELL_ERROR">G_SHELL_ERROR</a>
+<a class="link" href="glib-Basic-Types.html#gboolean" title="gboolean">gboolean</a>            <a class="link" href="glib-Shell-related-Utilities.html#g-shell-parse-argv" title="g_shell_parse_argv ()">g_shell_parse_argv</a>                  (const <a class="link" href="glib-Basic-Types.html#gchar" title="gchar">gchar</a> *command_line,
+                                                         <a class="link" href="glib-Basic-Types.html#gint" title="gint">gint</a> *argcp,
+                                                         <a class="link" href="glib-Basic-Types.html#gchar" title="gchar">gchar</a> ***argvp,
+                                                         <a class="link" href="glib-Error-Reporting.html#GError" title="GError">GError</a> **error);
+<a class="link" href="glib-Basic-Types.html#gchar" title="gchar">gchar</a>*              <a class="link" href="glib-Shell-related-Utilities.html#g-shell-quote" title="g_shell_quote ()">g_shell_quote</a>                       (const <a class="link" href="glib-Basic-Types.html#gchar" title="gchar">gchar</a> *unquoted_string);
+<a class="link" href="glib-Basic-Types.html#gchar" title="gchar">gchar</a>*              <a class="link" href="glib-Shell-related-Utilities.html#g-shell-unquote" title="g_shell_unquote ()">g_shell_unquote</a>                     (const <a class="link" href="glib-Basic-Types.html#gchar" title="gchar">gchar</a> *quoted_string,
+                                                         <a class="link" href="glib-Error-Reporting.html#GError" title="GError">GError</a> **error);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id3129241"></a><h2>Description</h2>
+<a name="glib-Shell-related-Utilities.description"></a><h2>Description</h2>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id3129255"></a><h2>Details</h2>
+<a name="glib-Shell-related-Utilities.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id3129266"></a><h3>
-<a name="GShellError"></a>enum GShellError</h3>
-<a class="indexterm" name="id3129278"></a><pre class="programlisting">typedef enum
+<a name="GShellError"></a><h3>enum GShellError</h3>
+<pre class="programlisting">typedef enum
 {
   /* mismatched or otherwise mangled quoting */
   G_SHELL_ERROR_BAD_QUOTING,
@@ -95,17 +92,17 @@ Error codes returned by shell functions.
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="G-SHELL-ERROR-BAD-QUOTING:CAPS"></a><code class="literal">G_SHELL_ERROR_BAD_QUOTING</code></span></td>
+<td><p><a name="G-SHELL-ERROR-BAD-QUOTING:CAPS"></a><span class="term"><code class="literal">G_SHELL_ERROR_BAD_QUOTING</code></span></p></td>
 <td>Mismatched or otherwise mangled quoting.
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="G-SHELL-ERROR-EMPTY-STRING:CAPS"></a><code class="literal">G_SHELL_ERROR_EMPTY_STRING</code></span></td>
+<td><p><a name="G-SHELL-ERROR-EMPTY-STRING:CAPS"></a><span class="term"><code class="literal">G_SHELL_ERROR_EMPTY_STRING</code></span></p></td>
 <td>String to be parsed was empty.
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="G-SHELL-ERROR-FAILED:CAPS"></a><code class="literal">G_SHELL_ERROR_FAILED</code></span></td>
+<td><p><a name="G-SHELL-ERROR-FAILED:CAPS"></a><span class="term"><code class="literal">G_SHELL_ERROR_FAILED</code></span></p></td>
 <td>Some other error.
 
 </td>
@@ -115,24 +112,22 @@ Error codes returned by shell functions.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id3129370"></a><h3>
-<a name="G-SHELL-ERROR:CAPS"></a>G_SHELL_ERROR</h3>
-<a class="indexterm" name="id3129383"></a><pre class="programlisting">#define G_SHELL_ERROR g_shell_error_quark ()
+<a name="G-SHELL-ERROR:CAPS"></a><h3>G_SHELL_ERROR</h3>
+<pre class="programlisting">#define G_SHELL_ERROR g_shell_error_quark ()
 </pre>
 <p>
 Error domain for shell functions. Errors in this domain will
-be from the <a href="glib-Shell-related-Utilities.html#GShellError"><span class="type">GShellError</span></a> enumeration. See <a href="glib-Error-Reporting.html#GError"><span class="type">GError</span></a> for information on
+be from the <a class="link" href="glib-Shell-related-Utilities.html#GShellError" title="enum GShellError"><span class="type">GShellError</span></a> enumeration. See <a class="link" href="glib-Error-Reporting.html#GError" title="GError"><span class="type">GError</span></a> for information on
 error domains.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id3129416"></a><h3>
-<a name="g-shell-parse-argv"></a>g_shell_parse_argv ()</h3>
-<a class="indexterm" name="id3129429"></a><pre class="programlisting"><a href="glib-Basic-Types.html#gboolean">gboolean</a>            g_shell_parse_argv                  (const <a href="glib-Basic-Types.html#gchar">gchar</a> *command_line,
-                                                         <a href="glib-Basic-Types.html#gint">gint</a> *argcp,
-                                                         <a href="glib-Basic-Types.html#gchar">gchar</a> ***argvp,
-                                                         <a href="glib-Error-Reporting.html#GError">GError</a> **error);</pre>
+<a name="g-shell-parse-argv"></a><h3>g_shell_parse_argv ()</h3>
+<pre class="programlisting"><a class="link" href="glib-Basic-Types.html#gboolean" title="gboolean">gboolean</a>            g_shell_parse_argv                  (const <a class="link" href="glib-Basic-Types.html#gchar" title="gchar">gchar</a> *command_line,
+                                                         <a class="link" href="glib-Basic-Types.html#gint" title="gint">gint</a> *argcp,
+                                                         <a class="link" href="glib-Basic-Types.html#gchar" title="gchar">gchar</a> ***argvp,
+                                                         <a class="link" href="glib-Error-Reporting.html#GError" title="GError">GError</a> **error);</pre>
 <p>
 Parses a command line into an argument vector, in much the same way
 the shell would, but without many of the expansions the shell would
@@ -141,8 +136,8 @@ etc. are not supported). The results are defined to be the same as
 those you would get from a UNIX98 /bin/sh, as long as the input
 contains none of the unsupported shell expansions. If the input
 does contain such expansions, they are passed through
-literally. Possible errors are those from the <a href="glib-Shell-related-Utilities.html#G-SHELL-ERROR:CAPS"><span class="type">G_SHELL_ERROR</span></a>
-domain. Free the returned vector with <a href="glib-String-Utility-Functions.html#g-strfreev"><code class="function">g_strfreev()</code></a>.</p>
+literally. Possible errors are those from the <a class="link" href="glib-Shell-related-Utilities.html#G-SHELL-ERROR:CAPS" title="G_SHELL_ERROR"><span class="type">G_SHELL_ERROR</span></a>
+domain. Free the returned vector with <a class="link" href="glib-String-Utility-Functions.html#g-strfreev" title="g_strfreev ()"><code class="function">g_strfreev()</code></a>.</p>
 <p>
 
 </p>
@@ -150,28 +145,28 @@ domain. Free the returned vector with <a href="glib-String-Utility-Functions.htm
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>command_line</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>command_line</code></em> :</span></p></td>
 <td> command line to parse
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>argcp</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>argcp</code></em> :</span></p></td>
 <td> return location for number of args
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>argvp</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>argvp</code></em> :</span></p></td>
 <td> return location for array of args
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>error</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
 <td> return location for error
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success, <a href="glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if error set
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if error set
 </td>
 </tr>
 </tbody>
@@ -179,14 +174,13 @@ domain. Free the returned vector with <a href="glib-String-Utility-Functions.htm
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id3129604"></a><h3>
-<a name="g-shell-quote"></a>g_shell_quote ()</h3>
-<a class="indexterm" name="id3129616"></a><pre class="programlisting"><a href="glib-Basic-Types.html#gchar">gchar</a>*              g_shell_quote                       (const <a href="glib-Basic-Types.html#gchar">gchar</a> *unquoted_string);</pre>
+<a name="g-shell-quote"></a><h3>g_shell_quote ()</h3>
+<pre class="programlisting"><a class="link" href="glib-Basic-Types.html#gchar" title="gchar">gchar</a>*              g_shell_quote                       (const <a class="link" href="glib-Basic-Types.html#gchar" title="gchar">gchar</a> *unquoted_string);</pre>
 <p>
 Quotes a string so that the shell (/bin/sh) will interpret the
 quoted string to mean <em class="parameter"><code>unquoted_string</code></em>. If you pass a filename to
 the shell, for example, you should first quote it with this
-function.  The return value must be freed with <a href="glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a>. The
+function.  The return value must be freed with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>. The
 quoting style used is undefined (single or double quotes may be
 used).</p>
 <p>
@@ -196,12 +190,12 @@ used).</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>unquoted_string</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>unquoted_string</code></em> :</span></p></td>
 <td> a literal string
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> quoted string
 </td>
 </tr>
@@ -210,10 +204,9 @@ used).</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id3129698"></a><h3>
-<a name="g-shell-unquote"></a>g_shell_unquote ()</h3>
-<a class="indexterm" name="id3129711"></a><pre class="programlisting"><a href="glib-Basic-Types.html#gchar">gchar</a>*              g_shell_unquote                     (const <a href="glib-Basic-Types.html#gchar">gchar</a> *quoted_string,
-                                                         <a href="glib-Error-Reporting.html#GError">GError</a> **error);</pre>
+<a name="g-shell-unquote"></a><h3>g_shell_unquote ()</h3>
+<pre class="programlisting"><a class="link" href="glib-Basic-Types.html#gchar" title="gchar">gchar</a>*              g_shell_unquote                     (const <a class="link" href="glib-Basic-Types.html#gchar" title="gchar">gchar</a> *quoted_string,
+                                                         <a class="link" href="glib-Error-Reporting.html#GError" title="GError">GError</a> **error);</pre>
 <p>
 Unquotes a string as the shell (/bin/sh) would. Only handles
 quotes; if a string contains file globs, arithmetic operators,
@@ -222,13 +215,13 @@ features, the result will be different from the result a real shell
 would produce (the variables, backticks, etc. will be passed
 through literally instead of being expanded). This function is
 guaranteed to succeed if applied to the result of
-<a href="glib-Shell-related-Utilities.html#g-shell-quote"><code class="function">g_shell_quote()</code></a>. If it fails, it returns <a href="glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> and sets the
+<a class="link" href="glib-Shell-related-Utilities.html#g-shell-quote" title="g_shell_quote ()"><code class="function">g_shell_quote()</code></a>. If it fails, it returns <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> and sets the
 error. The <em class="parameter"><code>quoted_string</code></em> need not actually contain quoted or
-escaped text; <a href="glib-Shell-related-Utilities.html#g-shell-unquote"><code class="function">g_shell_unquote()</code></a> simply goes through the string and
+escaped text; <a class="link" href="glib-Shell-related-Utilities.html#g-shell-unquote" title="g_shell_unquote ()"><code class="function">g_shell_unquote()</code></a> simply goes through the string and
 unquotes/unescapes anything that the shell would. Both single and
 double quotes are handled, as are escapes including escaped
-newlines. The return value must be freed with <a href="glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a>. Possible
-errors are in the <a href="glib-Shell-related-Utilities.html#G-SHELL-ERROR:CAPS"><span class="type">G_SHELL_ERROR</span></a> domain.
+newlines. The return value must be freed with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>. Possible
+errors are in the <a class="link" href="glib-Shell-related-Utilities.html#G-SHELL-ERROR:CAPS" title="G_SHELL_ERROR"><span class="type">G_SHELL_ERROR</span></a> domain.
 </p>
 <p>
 Shell quoting rules are a bit strange. Single quotes preserve the
@@ -244,17 +237,17 @@ literally.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>quoted_string</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>quoted_string</code></em> :</span></p></td>
 <td> shell-quoted string
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>error</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
 <td> error return location or NULL
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> an unquoted string
 </td>
 </tr>
@@ -263,5 +256,8 @@ literally.</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

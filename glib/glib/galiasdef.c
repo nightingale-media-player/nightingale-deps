@@ -138,6 +138,9 @@ extern __typeof (g_async_queue_lock) g_async_queue_lock __attribute((alias("IA__
 #undef g_async_queue_new 
 extern __typeof (g_async_queue_new) g_async_queue_new __attribute((alias("IA__g_async_queue_new"), visibility("default")));
 
+#undef g_async_queue_new_full 
+extern __typeof (g_async_queue_new_full) g_async_queue_new_full __attribute((alias("IA__g_async_queue_new_full"), visibility("default")));
+
 #undef g_async_queue_pop 
 extern __typeof (g_async_queue_pop) g_async_queue_pop __attribute((alias("IA__g_async_queue_pop"), visibility("default")));
 
@@ -384,6 +387,37 @@ extern __typeof (g_cache_remove) g_cache_remove __attribute((alias("IA__g_cache_
 extern __typeof (g_cache_value_foreach) g_cache_value_foreach __attribute((alias("IA__g_cache_value_foreach"), visibility("default")));
 
 #endif
+#endif
+#endif
+#if IN_HEADER(__G_CHECKSUM_H__)
+#if IN_FILE(__G_CHECKSUM_C__)
+#undef g_checksum_type_get_length 
+extern __typeof (g_checksum_type_get_length) g_checksum_type_get_length __attribute((alias("IA__g_checksum_type_get_length"), visibility("default")));
+
+#undef g_checksum_new 
+extern __typeof (g_checksum_new) g_checksum_new __attribute((alias("IA__g_checksum_new"), visibility("default")));
+
+#undef g_checksum_copy 
+extern __typeof (g_checksum_copy) g_checksum_copy __attribute((alias("IA__g_checksum_copy"), visibility("default")));
+
+#undef g_checksum_free 
+extern __typeof (g_checksum_free) g_checksum_free __attribute((alias("IA__g_checksum_free"), visibility("default")));
+
+#undef g_checksum_update 
+extern __typeof (g_checksum_update) g_checksum_update __attribute((alias("IA__g_checksum_update"), visibility("default")));
+
+#undef g_checksum_get_string 
+extern __typeof (g_checksum_get_string) g_checksum_get_string __attribute((alias("IA__g_checksum_get_string"), visibility("default")));
+
+#undef g_checksum_get_digest 
+extern __typeof (g_checksum_get_digest) g_checksum_get_digest __attribute((alias("IA__g_checksum_get_digest"), visibility("default")));
+
+#undef g_compute_checksum_for_data 
+extern __typeof (g_compute_checksum_for_data) g_compute_checksum_for_data __attribute((alias("IA__g_compute_checksum_for_data"), visibility("default")));
+
+#undef g_compute_checksum_for_string 
+extern __typeof (g_compute_checksum_for_string) g_compute_checksum_for_string __attribute((alias("IA__g_compute_checksum_for_string"), visibility("default")));
+
 #endif
 #endif
 #if IN_HEADER(__G_COMPLETION_H__)
@@ -751,6 +785,12 @@ extern __typeof (g_propagate_error) g_propagate_error __attribute((alias("IA__g_
 #undef g_set_error 
 extern __typeof (g_set_error) g_set_error __attribute((alias("IA__g_set_error"), visibility("default")));
 
+#undef g_prefix_error 
+extern __typeof (g_prefix_error) g_prefix_error __attribute((alias("IA__g_prefix_error"), visibility("default")));
+
+#undef g_propagate_prefixed_error 
+extern __typeof (g_propagate_prefixed_error) g_propagate_prefixed_error __attribute((alias("IA__g_propagate_prefixed_error"), visibility("default")));
+
 #endif
 #endif
 #if IN_HEADER(__G_FILEUTILS_H__)
@@ -787,6 +827,9 @@ extern __typeof (g_file_test) g_file_test __attribute((alias("IA__g_file_test"),
 
 #undef g_file_read_link 
 extern __typeof (g_file_read_link) g_file_read_link __attribute((alias("IA__g_file_read_link"), visibility("default")));
+
+#undef g_format_size_for_display 
+extern __typeof (g_format_size_for_display) g_format_size_for_display __attribute((alias("IA__g_format_size_for_display"), visibility("default")));
 
 #undef g_mkstemp 
 extern __typeof (g_mkstemp) g_mkstemp __attribute((alias("IA__g_mkstemp"), visibility("default")));
@@ -833,6 +876,12 @@ extern __typeof (g_hash_table_foreach_remove) g_hash_table_foreach_remove __attr
 #undef g_hash_table_foreach_steal 
 extern __typeof (g_hash_table_foreach_steal) g_hash_table_foreach_steal __attribute((alias("IA__g_hash_table_foreach_steal"), visibility("default")));
 
+#undef g_hash_table_get_keys 
+extern __typeof (g_hash_table_get_keys) g_hash_table_get_keys __attribute((alias("IA__g_hash_table_get_keys"), visibility("default")));
+
+#undef g_hash_table_get_values 
+extern __typeof (g_hash_table_get_values) g_hash_table_get_values __attribute((alias("IA__g_hash_table_get_values"), visibility("default")));
+
 #undef g_hash_table_insert 
 extern __typeof (g_hash_table_insert) g_hash_table_insert __attribute((alias("IA__g_hash_table_insert"), visibility("default")));
 
@@ -865,6 +914,21 @@ extern __typeof (g_hash_table_steal) g_hash_table_steal __attribute((alias("IA__
 
 #undef g_hash_table_steal_all 
 extern __typeof (g_hash_table_steal_all) g_hash_table_steal_all __attribute((alias("IA__g_hash_table_steal_all"), visibility("default")));
+
+#undef g_hash_table_iter_init 
+extern __typeof (g_hash_table_iter_init) g_hash_table_iter_init __attribute((alias("IA__g_hash_table_iter_init"), visibility("default")));
+
+#undef g_hash_table_iter_next 
+extern __typeof (g_hash_table_iter_next) g_hash_table_iter_next __attribute((alias("IA__g_hash_table_iter_next"), visibility("default")));
+
+#undef g_hash_table_iter_get_hash_table 
+extern __typeof (g_hash_table_iter_get_hash_table) g_hash_table_iter_get_hash_table __attribute((alias("IA__g_hash_table_iter_get_hash_table"), visibility("default")));
+
+#undef g_hash_table_iter_remove 
+extern __typeof (g_hash_table_iter_remove) g_hash_table_iter_remove __attribute((alias("IA__g_hash_table_iter_remove"), visibility("default")));
+
+#undef g_hash_table_iter_steal 
+extern __typeof (g_hash_table_iter_steal) g_hash_table_iter_steal __attribute((alias("IA__g_hash_table_iter_steal"), visibility("default")));
 
 #endif
 #endif
@@ -1167,6 +1231,9 @@ extern __typeof (g_key_file_has_group) g_key_file_has_group __attribute((alias("
 
 #undef g_key_file_has_key 
 extern __typeof (g_key_file_has_key) g_key_file_has_key __attribute((alias("IA__g_key_file_has_key"), visibility("default")));
+
+#undef g_key_file_load_from_dirs 
+extern __typeof (g_key_file_load_from_dirs) g_key_file_load_from_dirs __attribute((alias("IA__g_key_file_load_from_dirs"), visibility("default")));
 
 #undef g_key_file_load_from_data 
 extern __typeof (g_key_file_load_from_data) g_key_file_load_from_data __attribute((alias("IA__g_key_file_load_from_data"), visibility("default")));
@@ -1519,11 +1586,20 @@ extern __typeof (g_idle_source_new) g_idle_source_new __attribute((alias("IA__g_
 #undef g_timeout_add 
 extern __typeof (g_timeout_add) g_timeout_add __attribute((alias("IA__g_timeout_add"), visibility("default")));
 
+#undef g_timeout_add_seconds 
+extern __typeof (g_timeout_add_seconds) g_timeout_add_seconds __attribute((alias("IA__g_timeout_add_seconds"), visibility("default")));
+
 #undef g_timeout_add_full 
 extern __typeof (g_timeout_add_full) g_timeout_add_full __attribute((alias("IA__g_timeout_add_full"), visibility("default")));
 
+#undef g_timeout_add_seconds_full 
+extern __typeof (g_timeout_add_seconds_full) g_timeout_add_seconds_full __attribute((alias("IA__g_timeout_add_seconds_full"), visibility("default")));
+
 #undef g_timeout_source_new 
 extern __typeof (g_timeout_source_new) g_timeout_source_new __attribute((alias("IA__g_timeout_source_new"), visibility("default")));
+
+#undef g_timeout_source_new_seconds 
+extern __typeof (g_timeout_source_new_seconds) g_timeout_source_new_seconds __attribute((alias("IA__g_timeout_source_new_seconds"), visibility("default")));
 
 #endif
 #endif
@@ -1560,6 +1636,9 @@ extern __typeof (g_markup_parse_context_free) g_markup_parse_context_free __attr
 #undef g_markup_parse_context_get_element 
 extern __typeof (g_markup_parse_context_get_element) g_markup_parse_context_get_element __attribute((alias("IA__g_markup_parse_context_get_element"), visibility("default")));
 
+#undef g_markup_parse_context_get_element_stack 
+extern __typeof (g_markup_parse_context_get_element_stack) g_markup_parse_context_get_element_stack __attribute((alias("IA__g_markup_parse_context_get_element_stack"), visibility("default")));
+
 #undef g_markup_parse_context_get_position 
 extern __typeof (g_markup_parse_context_get_position) g_markup_parse_context_get_position __attribute((alias("IA__g_markup_parse_context_get_position"), visibility("default")));
 
@@ -1574,6 +1653,9 @@ extern __typeof (g_markup_printf_escaped) g_markup_printf_escaped __attribute((a
 
 #undef g_markup_vprintf_escaped 
 extern __typeof (g_markup_vprintf_escaped) g_markup_vprintf_escaped __attribute((alias("IA__g_markup_vprintf_escaped"), visibility("default")));
+
+#undef g_markup_collect_attributes 
+extern __typeof (g_markup_collect_attributes) g_markup_collect_attributes __attribute((alias("IA__g_markup_collect_attributes"), visibility("default")));
 
 #endif
 #endif
@@ -1657,6 +1739,9 @@ extern __typeof (g_slice_alloc) g_slice_alloc __attribute((alias("IA__g_slice_al
 #undef g_slice_alloc0 
 extern __typeof (g_slice_alloc0) g_slice_alloc0 __attribute((alias("IA__g_slice_alloc0"), visibility("default")));
 
+#undef g_slice_copy 
+extern __typeof (g_slice_copy) g_slice_copy __attribute((alias("IA__g_slice_copy"), visibility("default")));
+
 #undef g_slice_free1 
 extern __typeof (g_slice_free1) g_slice_free1 __attribute((alias("IA__g_slice_free1"), visibility("default")));
 
@@ -1672,6 +1757,8 @@ extern __typeof (g_slice_get_config) g_slice_get_config __attribute((alias("IA__
 #undef g_slice_get_config_state 
 extern __typeof (g_slice_get_config_state) g_slice_get_config_state __attribute((alias("IA__g_slice_get_config_state"), visibility("default")));
 
+#ifdef G_ENABLE_DEBUG
+#endif
 #endif
 #endif
 #if IN_HEADER(__G_MESSAGES_H__)
@@ -1706,9 +1793,14 @@ extern __typeof (g_logv) g_logv __attribute((alias("IA__g_logv"), visibility("de
 #undef g_return_if_fail_warning 
 extern __typeof (g_return_if_fail_warning) g_return_if_fail_warning __attribute((alias("IA__g_return_if_fail_warning"), visibility("default")));
 
+#undef g_warn_message 
+extern __typeof (g_warn_message) g_warn_message __attribute((alias("IA__g_warn_message"), visibility("default")));
+
+#ifndef G_DISABLE_DEPRECATED
 #undef g_assert_warning 
 extern __typeof (g_assert_warning) g_assert_warning __attribute((alias("IA__g_assert_warning"), visibility("default")));
 
+#endif
 #undef g_print 
 extern __typeof (g_print) g_print __attribute((alias("IA__g_print"), visibility("default")));
 
@@ -1871,6 +1963,9 @@ extern __typeof (g_option_context_set_translate_func) g_option_context_set_trans
 #undef g_option_context_set_translation_domain 
 extern __typeof (g_option_context_set_translation_domain) g_option_context_set_translation_domain __attribute((alias("IA__g_option_context_set_translation_domain"), visibility("default")));
 
+#undef g_option_context_get_help 
+extern __typeof (g_option_context_get_help) g_option_context_get_help __attribute((alias("IA__g_option_context_get_help"), visibility("default")));
+
 #undef g_option_group_add_entries 
 extern __typeof (g_option_group_add_entries) g_option_group_add_entries __attribute((alias("IA__g_option_group_add_entries"), visibility("default")));
 
@@ -1967,6 +2062,9 @@ extern __typeof (g_qsort_with_data) g_qsort_with_data __attribute((alias("IA__g_
 #endif
 #if IN_HEADER(__G_QUEUE_H__)
 #if IN_FILE(__G_QUEUE_C__)
+#undef g_queue_clear 
+extern __typeof (g_queue_clear) g_queue_clear __attribute((alias("IA__g_queue_clear"), visibility("default")));
+
 #undef g_queue_copy 
 extern __typeof (g_queue_copy) g_queue_copy __attribute((alias("IA__g_queue_copy"), visibility("default")));
 
@@ -1990,6 +2088,9 @@ extern __typeof (g_queue_get_length) g_queue_get_length __attribute((alias("IA__
 
 #undef g_queue_index 
 extern __typeof (g_queue_index) g_queue_index __attribute((alias("IA__g_queue_index"), visibility("default")));
+
+#undef g_queue_init 
+extern __typeof (g_queue_init) g_queue_init __attribute((alias("IA__g_queue_init"), visibility("default")));
 
 #undef g_queue_insert_after 
 extern __typeof (g_queue_insert_after) g_queue_insert_after __attribute((alias("IA__g_queue_insert_after"), visibility("default")));
@@ -2233,6 +2334,115 @@ extern __typeof (g_scanner_unexp_token) g_scanner_unexp_token __attribute((alias
 
 #undef g_scanner_warn 
 extern __typeof (g_scanner_warn) g_scanner_warn __attribute((alias("IA__g_scanner_warn"), visibility("default")));
+
+#endif
+#endif
+#if IN_HEADER(__G_SEQUENCE_H__)
+#if IN_FILE(__G_SEQUENCE_C__)
+#undef g_sequence_new 
+extern __typeof (g_sequence_new) g_sequence_new __attribute((alias("IA__g_sequence_new"), visibility("default")));
+
+#undef g_sequence_free 
+extern __typeof (g_sequence_free) g_sequence_free __attribute((alias("IA__g_sequence_free"), visibility("default")));
+
+#undef g_sequence_get_length 
+extern __typeof (g_sequence_get_length) g_sequence_get_length __attribute((alias("IA__g_sequence_get_length"), visibility("default")));
+
+#undef g_sequence_foreach 
+extern __typeof (g_sequence_foreach) g_sequence_foreach __attribute((alias("IA__g_sequence_foreach"), visibility("default")));
+
+#undef g_sequence_foreach_range 
+extern __typeof (g_sequence_foreach_range) g_sequence_foreach_range __attribute((alias("IA__g_sequence_foreach_range"), visibility("default")));
+
+#undef g_sequence_sort 
+extern __typeof (g_sequence_sort) g_sequence_sort __attribute((alias("IA__g_sequence_sort"), visibility("default")));
+
+#undef g_sequence_sort_iter 
+extern __typeof (g_sequence_sort_iter) g_sequence_sort_iter __attribute((alias("IA__g_sequence_sort_iter"), visibility("default")));
+
+#undef g_sequence_get_begin_iter 
+extern __typeof (g_sequence_get_begin_iter) g_sequence_get_begin_iter __attribute((alias("IA__g_sequence_get_begin_iter"), visibility("default")));
+
+#undef g_sequence_get_end_iter 
+extern __typeof (g_sequence_get_end_iter) g_sequence_get_end_iter __attribute((alias("IA__g_sequence_get_end_iter"), visibility("default")));
+
+#undef g_sequence_get_iter_at_pos 
+extern __typeof (g_sequence_get_iter_at_pos) g_sequence_get_iter_at_pos __attribute((alias("IA__g_sequence_get_iter_at_pos"), visibility("default")));
+
+#undef g_sequence_append 
+extern __typeof (g_sequence_append) g_sequence_append __attribute((alias("IA__g_sequence_append"), visibility("default")));
+
+#undef g_sequence_prepend 
+extern __typeof (g_sequence_prepend) g_sequence_prepend __attribute((alias("IA__g_sequence_prepend"), visibility("default")));
+
+#undef g_sequence_insert_before 
+extern __typeof (g_sequence_insert_before) g_sequence_insert_before __attribute((alias("IA__g_sequence_insert_before"), visibility("default")));
+
+#undef g_sequence_move 
+extern __typeof (g_sequence_move) g_sequence_move __attribute((alias("IA__g_sequence_move"), visibility("default")));
+
+#undef g_sequence_swap 
+extern __typeof (g_sequence_swap) g_sequence_swap __attribute((alias("IA__g_sequence_swap"), visibility("default")));
+
+#undef g_sequence_insert_sorted 
+extern __typeof (g_sequence_insert_sorted) g_sequence_insert_sorted __attribute((alias("IA__g_sequence_insert_sorted"), visibility("default")));
+
+#undef g_sequence_insert_sorted_iter 
+extern __typeof (g_sequence_insert_sorted_iter) g_sequence_insert_sorted_iter __attribute((alias("IA__g_sequence_insert_sorted_iter"), visibility("default")));
+
+#undef g_sequence_sort_changed 
+extern __typeof (g_sequence_sort_changed) g_sequence_sort_changed __attribute((alias("IA__g_sequence_sort_changed"), visibility("default")));
+
+#undef g_sequence_sort_changed_iter 
+extern __typeof (g_sequence_sort_changed_iter) g_sequence_sort_changed_iter __attribute((alias("IA__g_sequence_sort_changed_iter"), visibility("default")));
+
+#undef g_sequence_remove 
+extern __typeof (g_sequence_remove) g_sequence_remove __attribute((alias("IA__g_sequence_remove"), visibility("default")));
+
+#undef g_sequence_remove_range 
+extern __typeof (g_sequence_remove_range) g_sequence_remove_range __attribute((alias("IA__g_sequence_remove_range"), visibility("default")));
+
+#undef g_sequence_move_range 
+extern __typeof (g_sequence_move_range) g_sequence_move_range __attribute((alias("IA__g_sequence_move_range"), visibility("default")));
+
+#undef g_sequence_search 
+extern __typeof (g_sequence_search) g_sequence_search __attribute((alias("IA__g_sequence_search"), visibility("default")));
+
+#undef g_sequence_search_iter 
+extern __typeof (g_sequence_search_iter) g_sequence_search_iter __attribute((alias("IA__g_sequence_search_iter"), visibility("default")));
+
+#undef g_sequence_get 
+extern __typeof (g_sequence_get) g_sequence_get __attribute((alias("IA__g_sequence_get"), visibility("default")));
+
+#undef g_sequence_set 
+extern __typeof (g_sequence_set) g_sequence_set __attribute((alias("IA__g_sequence_set"), visibility("default")));
+
+#undef g_sequence_iter_is_begin 
+extern __typeof (g_sequence_iter_is_begin) g_sequence_iter_is_begin __attribute((alias("IA__g_sequence_iter_is_begin"), visibility("default")));
+
+#undef g_sequence_iter_is_end 
+extern __typeof (g_sequence_iter_is_end) g_sequence_iter_is_end __attribute((alias("IA__g_sequence_iter_is_end"), visibility("default")));
+
+#undef g_sequence_iter_next 
+extern __typeof (g_sequence_iter_next) g_sequence_iter_next __attribute((alias("IA__g_sequence_iter_next"), visibility("default")));
+
+#undef g_sequence_iter_prev 
+extern __typeof (g_sequence_iter_prev) g_sequence_iter_prev __attribute((alias("IA__g_sequence_iter_prev"), visibility("default")));
+
+#undef g_sequence_iter_get_position 
+extern __typeof (g_sequence_iter_get_position) g_sequence_iter_get_position __attribute((alias("IA__g_sequence_iter_get_position"), visibility("default")));
+
+#undef g_sequence_iter_move 
+extern __typeof (g_sequence_iter_move) g_sequence_iter_move __attribute((alias("IA__g_sequence_iter_move"), visibility("default")));
+
+#undef g_sequence_iter_get_sequence 
+extern __typeof (g_sequence_iter_get_sequence) g_sequence_iter_get_sequence __attribute((alias("IA__g_sequence_iter_get_sequence"), visibility("default")));
+
+#undef g_sequence_iter_compare 
+extern __typeof (g_sequence_iter_compare) g_sequence_iter_compare __attribute((alias("IA__g_sequence_iter_compare"), visibility("default")));
+
+#undef g_sequence_range_get_midpoint 
+extern __typeof (g_sequence_range_get_midpoint) g_sequence_range_get_midpoint __attribute((alias("IA__g_sequence_range_get_midpoint"), visibility("default")));
 
 #endif
 #endif
@@ -2591,6 +2801,25 @@ extern __typeof (g_strv_length) g_strv_length __attribute((alias("IA__g_strv_len
 #undef g_strip_context 
 extern __typeof (g_strip_context) g_strip_context __attribute((alias("IA__g_strip_context"), visibility("default")));
 
+#undef g_dpgettext 
+extern __typeof (g_dpgettext) g_dpgettext __attribute((alias("IA__g_dpgettext"), visibility("default")));
+
+#endif
+#endif
+#if IN_HEADER(__G_URI_FUNCS_H__)
+#if IN_FILE(__G_URI_FUNCS_C__)
+#undef g_uri_unescape_string 
+extern __typeof (g_uri_unescape_string) g_uri_unescape_string __attribute((alias("IA__g_uri_unescape_string"), visibility("default")));
+
+#undef g_uri_unescape_segment 
+extern __typeof (g_uri_unescape_segment) g_uri_unescape_segment __attribute((alias("IA__g_uri_unescape_segment"), visibility("default")));
+
+#undef g_uri_parse_scheme 
+extern __typeof (g_uri_parse_scheme) g_uri_parse_scheme __attribute((alias("IA__g_uri_parse_scheme"), visibility("default")));
+
+#undef g_uri_escape_string 
+extern __typeof (g_uri_escape_string) g_uri_escape_string __attribute((alias("IA__g_uri_escape_string"), visibility("default")));
+
 #endif
 #endif
 #if IN_HEADER(__G_STRING_H__)
@@ -2607,6 +2836,9 @@ extern __typeof (g_string_append_printf) g_string_append_printf __attribute((ali
 #undef g_string_append_unichar 
 extern __typeof (g_string_append_unichar) g_string_append_unichar __attribute((alias("IA__g_string_append_unichar"), visibility("default")));
 
+#undef g_string_append_vprintf 
+extern __typeof (g_string_append_vprintf) g_string_append_vprintf __attribute((alias("IA__g_string_append_vprintf"), visibility("default")));
+
 #undef g_string_ascii_down 
 extern __typeof (g_string_ascii_down) g_string_ascii_down __attribute((alias("IA__g_string_ascii_down"), visibility("default")));
 
@@ -2618,6 +2850,9 @@ extern __typeof (g_string_assign) g_string_assign __attribute((alias("IA__g_stri
 
 #undef g_string_chunk_free 
 extern __typeof (g_string_chunk_free) g_string_chunk_free __attribute((alias("IA__g_string_chunk_free"), visibility("default")));
+
+#undef g_string_chunk_clear 
+extern __typeof (g_string_chunk_clear) g_string_chunk_clear __attribute((alias("IA__g_string_chunk_clear"), visibility("default")));
 
 #undef g_string_chunk_insert 
 extern __typeof (g_string_chunk_insert) g_string_chunk_insert __attribute((alias("IA__g_string_chunk_insert"), visibility("default")));
@@ -2661,6 +2896,12 @@ extern __typeof (g_string_new) g_string_new __attribute((alias("IA__g_string_new
 #undef g_string_new_len 
 extern __typeof (g_string_new_len) g_string_new_len __attribute((alias("IA__g_string_new_len"), visibility("default")));
 
+#undef g_string_overwrite 
+extern __typeof (g_string_overwrite) g_string_overwrite __attribute((alias("IA__g_string_overwrite"), visibility("default")));
+
+#undef g_string_overwrite_len 
+extern __typeof (g_string_overwrite_len) g_string_overwrite_len __attribute((alias("IA__g_string_overwrite_len"), visibility("default")));
+
 #undef g_string_prepend 
 extern __typeof (g_string_prepend) g_string_prepend __attribute((alias("IA__g_string_prepend"), visibility("default")));
 
@@ -2685,6 +2926,9 @@ extern __typeof (g_string_sized_new) g_string_sized_new __attribute((alias("IA__
 #undef g_string_truncate 
 extern __typeof (g_string_truncate) g_string_truncate __attribute((alias("IA__g_string_truncate"), visibility("default")));
 
+#undef g_string_append_uri_escaped 
+extern __typeof (g_string_append_uri_escaped) g_string_append_uri_escaped __attribute((alias("IA__g_string_append_uri_escaped"), visibility("default")));
+
 #ifndef G_DISABLE_DEPRECATED
 #undef g_string_down 
 extern __typeof (g_string_down) g_string_down __attribute((alias("IA__g_string_down"), visibility("default")));
@@ -2693,6 +2937,9 @@ extern __typeof (g_string_down) g_string_down __attribute((alias("IA__g_string_d
 extern __typeof (g_string_up) g_string_up __attribute((alias("IA__g_string_up"), visibility("default")));
 
 #endif
+#undef g_string_vprintf 
+extern __typeof (g_string_vprintf) g_string_vprintf __attribute((alias("IA__g_string_vprintf"), visibility("default")));
+
 #undef g_str_equal 
 extern __typeof (g_str_equal) g_str_equal __attribute((alias("IA__g_str_equal"), visibility("default")));
 
@@ -2705,6 +2952,12 @@ extern __typeof (g_str_hash) g_str_hash __attribute((alias("IA__g_str_hash"), vi
 #if IN_FILE(__G_THREAD_C__)
 #undef g_once_impl 
 extern __typeof (g_once_impl) g_once_impl __attribute((alias("IA__g_once_impl"), visibility("default")));
+
+#undef g_once_init_enter_impl 
+extern __typeof (g_once_init_enter_impl) g_once_init_enter_impl __attribute((alias("IA__g_once_init_enter_impl"), visibility("default")));
+
+#undef g_once_init_leave 
+extern __typeof (g_once_init_leave) g_once_init_leave __attribute((alias("IA__g_once_init_leave"), visibility("default")));
 
 #undef g_thread_create_full 
 extern __typeof (g_thread_create_full) g_thread_create_full __attribute((alias("IA__g_thread_create_full"), visibility("default")));
@@ -2841,6 +3094,133 @@ extern __typeof (g_thread_pool_set_sort_function) g_thread_pool_set_sort_functio
 
 #endif
 #endif
+#if IN_HEADER(__G_TEST_UTILS_H__)
+#if IN_FILE(__G_TEST_UTILS_C__)
+#undef g_assertion_message 
+extern __typeof (g_assertion_message) g_assertion_message __attribute((alias("IA__g_assertion_message"), visibility("default")));
+
+#undef g_assertion_message_cmpnum 
+extern __typeof (g_assertion_message_cmpnum) g_assertion_message_cmpnum __attribute((alias("IA__g_assertion_message_cmpnum"), visibility("default")));
+
+#undef g_assertion_message_cmpstr 
+extern __typeof (g_assertion_message_cmpstr) g_assertion_message_cmpstr __attribute((alias("IA__g_assertion_message_cmpstr"), visibility("default")));
+
+#undef g_assertion_message_expr 
+extern __typeof (g_assertion_message_expr) g_assertion_message_expr __attribute((alias("IA__g_assertion_message_expr"), visibility("default")));
+
+#undef g_strcmp0 
+extern __typeof (g_strcmp0) g_strcmp0 __attribute((alias("IA__g_strcmp0"), visibility("default")));
+
+#undef g_test_add_data_func 
+extern __typeof (g_test_add_data_func) g_test_add_data_func __attribute((alias("IA__g_test_add_data_func"), visibility("default")));
+
+#undef g_test_add_func 
+extern __typeof (g_test_add_func) g_test_add_func __attribute((alias("IA__g_test_add_func"), visibility("default")));
+
+#undef g_test_add_vtable 
+extern __typeof (g_test_add_vtable) g_test_add_vtable __attribute((alias("IA__g_test_add_vtable"), visibility("default")));
+
+#undef g_test_bug 
+extern __typeof (g_test_bug) g_test_bug __attribute((alias("IA__g_test_bug"), visibility("default")));
+
+#undef g_test_bug_base 
+extern __typeof (g_test_bug_base) g_test_bug_base __attribute((alias("IA__g_test_bug_base"), visibility("default")));
+
+#undef g_test_config_vars 
+extern __typeof (g_test_config_vars) g_test_config_vars __attribute((alias("IA__g_test_config_vars"), visibility("default")));
+
+#undef g_test_create_case 
+extern __typeof (g_test_create_case) g_test_create_case __attribute((alias("IA__g_test_create_case"), visibility("default")));
+
+#undef g_test_create_suite 
+extern __typeof (g_test_create_suite) g_test_create_suite __attribute((alias("IA__g_test_create_suite"), visibility("default")));
+
+#undef g_test_get_root 
+extern __typeof (g_test_get_root) g_test_get_root __attribute((alias("IA__g_test_get_root"), visibility("default")));
+
+#undef g_test_init 
+extern __typeof (g_test_init) g_test_init __attribute((alias("IA__g_test_init"), visibility("default")));
+
+#undef g_test_log_buffer_free 
+extern __typeof (g_test_log_buffer_free) g_test_log_buffer_free __attribute((alias("IA__g_test_log_buffer_free"), visibility("default")));
+
+#undef g_test_log_buffer_new 
+extern __typeof (g_test_log_buffer_new) g_test_log_buffer_new __attribute((alias("IA__g_test_log_buffer_new"), visibility("default")));
+
+#undef g_test_log_buffer_pop 
+extern __typeof (g_test_log_buffer_pop) g_test_log_buffer_pop __attribute((alias("IA__g_test_log_buffer_pop"), visibility("default")));
+
+#undef g_test_log_buffer_push 
+extern __typeof (g_test_log_buffer_push) g_test_log_buffer_push __attribute((alias("IA__g_test_log_buffer_push"), visibility("default")));
+
+#undef g_test_log_msg_free 
+extern __typeof (g_test_log_msg_free) g_test_log_msg_free __attribute((alias("IA__g_test_log_msg_free"), visibility("default")));
+
+#undef g_test_log_type_name 
+extern __typeof (g_test_log_type_name) g_test_log_type_name __attribute((alias("IA__g_test_log_type_name"), visibility("default")));
+
+#undef g_test_maximized_result 
+extern __typeof (g_test_maximized_result) g_test_maximized_result __attribute((alias("IA__g_test_maximized_result"), visibility("default")));
+
+#undef g_test_message 
+extern __typeof (g_test_message) g_test_message __attribute((alias("IA__g_test_message"), visibility("default")));
+
+#undef g_test_minimized_result 
+extern __typeof (g_test_minimized_result) g_test_minimized_result __attribute((alias("IA__g_test_minimized_result"), visibility("default")));
+
+#undef g_test_queue_destroy 
+extern __typeof (g_test_queue_destroy) g_test_queue_destroy __attribute((alias("IA__g_test_queue_destroy"), visibility("default")));
+
+#undef g_test_queue_free 
+extern __typeof (g_test_queue_free) g_test_queue_free __attribute((alias("IA__g_test_queue_free"), visibility("default")));
+
+#undef g_test_rand_double 
+extern __typeof (g_test_rand_double) g_test_rand_double __attribute((alias("IA__g_test_rand_double"), visibility("default")));
+
+#undef g_test_rand_double_range 
+extern __typeof (g_test_rand_double_range) g_test_rand_double_range __attribute((alias("IA__g_test_rand_double_range"), visibility("default")));
+
+#undef g_test_rand_int 
+extern __typeof (g_test_rand_int) g_test_rand_int __attribute((alias("IA__g_test_rand_int"), visibility("default")));
+
+#undef g_test_rand_int_range 
+extern __typeof (g_test_rand_int_range) g_test_rand_int_range __attribute((alias("IA__g_test_rand_int_range"), visibility("default")));
+
+#undef g_test_run 
+extern __typeof (g_test_run) g_test_run __attribute((alias("IA__g_test_run"), visibility("default")));
+
+#undef g_test_run_suite 
+extern __typeof (g_test_run_suite) g_test_run_suite __attribute((alias("IA__g_test_run_suite"), visibility("default")));
+
+#undef g_test_suite_add 
+extern __typeof (g_test_suite_add) g_test_suite_add __attribute((alias("IA__g_test_suite_add"), visibility("default")));
+
+#undef g_test_suite_add_suite 
+extern __typeof (g_test_suite_add_suite) g_test_suite_add_suite __attribute((alias("IA__g_test_suite_add_suite"), visibility("default")));
+
+#undef g_test_timer_elapsed 
+extern __typeof (g_test_timer_elapsed) g_test_timer_elapsed __attribute((alias("IA__g_test_timer_elapsed"), visibility("default")));
+
+#undef g_test_timer_last 
+extern __typeof (g_test_timer_last) g_test_timer_last __attribute((alias("IA__g_test_timer_last"), visibility("default")));
+
+#undef g_test_timer_start 
+extern __typeof (g_test_timer_start) g_test_timer_start __attribute((alias("IA__g_test_timer_start"), visibility("default")));
+
+#undef g_test_trap_assertions 
+extern __typeof (g_test_trap_assertions) g_test_trap_assertions __attribute((alias("IA__g_test_trap_assertions"), visibility("default")));
+
+#undef g_test_trap_fork 
+extern __typeof (g_test_trap_fork) g_test_trap_fork __attribute((alias("IA__g_test_trap_fork"), visibility("default")));
+
+#undef g_test_trap_has_passed 
+extern __typeof (g_test_trap_has_passed) g_test_trap_has_passed __attribute((alias("IA__g_test_trap_has_passed"), visibility("default")));
+
+#undef g_test_trap_reached_timeout 
+extern __typeof (g_test_trap_reached_timeout) g_test_trap_reached_timeout __attribute((alias("IA__g_test_trap_reached_timeout"), visibility("default")));
+
+#endif
+#endif
 #if IN_HEADER(__G_TIMER_H__)
 #if IN_FILE(__G_TIMER_C__)
 #undef g_timer_continue 
@@ -2957,6 +3337,9 @@ extern __typeof (g_unicode_canonical_decomposition) g_unicode_canonical_decompos
 #undef g_unicode_canonical_ordering 
 extern __typeof (g_unicode_canonical_ordering) g_unicode_canonical_ordering __attribute((alias("IA__g_unicode_canonical_ordering"), visibility("default")));
 
+#undef g_unichar_combining_class 
+extern __typeof (g_unichar_combining_class) g_unichar_combining_class __attribute((alias("IA__g_unichar_combining_class"), visibility("default")));
+
 #undef g_utf8_normalize 
 extern __typeof (g_utf8_normalize) g_utf8_normalize __attribute((alias("IA__g_utf8_normalize"), visibility("default")));
 
@@ -3009,6 +3392,9 @@ extern __typeof (g_unichar_iswide_cjk) g_unichar_iswide_cjk __attribute((alias("
 #undef g_unichar_isxdigit 
 extern __typeof (g_unichar_isxdigit) g_unichar_isxdigit __attribute((alias("IA__g_unichar_isxdigit"), visibility("default")));
 
+#undef g_unichar_iszerowidth 
+extern __typeof (g_unichar_iszerowidth) g_unichar_iszerowidth __attribute((alias("IA__g_unichar_iszerowidth"), visibility("default")));
+
 #undef g_unichar_tolower 
 extern __typeof (g_unichar_tolower) g_unichar_tolower __attribute((alias("IA__g_unichar_tolower"), visibility("default")));
 
@@ -3018,8 +3404,14 @@ extern __typeof (g_unichar_totitle) g_unichar_totitle __attribute((alias("IA__g_
 #undef g_unichar_toupper 
 extern __typeof (g_unichar_toupper) g_unichar_toupper __attribute((alias("IA__g_unichar_toupper"), visibility("default")));
 
+#undef g_unichar_ismark 
+extern __typeof (g_unichar_ismark) g_unichar_ismark __attribute((alias("IA__g_unichar_ismark"), visibility("default")));
+
 #undef g_unichar_get_mirror_char 
 extern __typeof (g_unichar_get_mirror_char) g_unichar_get_mirror_char __attribute((alias("IA__g_unichar_get_mirror_char"), visibility("default")));
+
+#undef g_unichar_get_script 
+extern __typeof (g_unichar_get_script) g_unichar_get_script __attribute((alias("IA__g_unichar_get_script"), visibility("default")));
 
 #undef g_unichar_digit_value 
 extern __typeof (g_unichar_digit_value) g_unichar_digit_value __attribute((alias("IA__g_unichar_digit_value"), visibility("default")));
@@ -3111,6 +3503,13 @@ extern __typeof (g_unichar_to_utf8) g_unichar_to_utf8 __attribute((alias("IA__g_
 
 #undef g_unichar_validate 
 extern __typeof (g_unichar_validate) g_unichar_validate __attribute((alias("IA__g_unichar_validate"), visibility("default")));
+
+#endif
+#endif
+#if IN_HEADER(__GLIBINTL_H__)
+#if IN_FILE(__G_UTILS_C__)
+#undef glib_gettext 
+extern __typeof (glib_gettext) glib_gettext __attribute((alias("IA__glib_gettext"), visibility("default")));
 
 #endif
 #endif
@@ -3229,6 +3628,9 @@ extern __typeof (g_get_user_config_dir) g_get_user_config_dir __attribute((alias
 #undef g_get_user_data_dir 
 extern __typeof (g_get_user_data_dir) g_get_user_data_dir __attribute((alias("IA__g_get_user_data_dir"), visibility("default")));
 
+#undef g_get_user_special_dir 
+extern __typeof (g_get_user_special_dir) g_get_user_special_dir __attribute((alias("IA__g_get_user_special_dir"), visibility("default")));
+
 #undef g_get_user_name 
 extern __typeof (g_get_user_name) g_get_user_name __attribute((alias("IA__g_get_user_name"), visibility("default")));
 
@@ -3266,6 +3668,112 @@ extern __typeof (g_set_prgname) g_set_prgname __attribute((alias("IA__g_set_prgn
 
 #endif
 #endif
+#if IN_HEADER(__G_REGEX_H__)
+#if IN_FILE(__G_REGEX_C__)
+#undef g_regex_error_quark 
+extern __typeof (g_regex_error_quark) g_regex_error_quark __attribute((alias("IA__g_regex_error_quark"), visibility("default")));
+
+#undef g_regex_new 
+extern __typeof (g_regex_new) g_regex_new __attribute((alias("IA__g_regex_new"), visibility("default")));
+
+#undef g_regex_ref 
+extern __typeof (g_regex_ref) g_regex_ref __attribute((alias("IA__g_regex_ref"), visibility("default")));
+
+#undef g_regex_unref 
+extern __typeof (g_regex_unref) g_regex_unref __attribute((alias("IA__g_regex_unref"), visibility("default")));
+
+#undef g_regex_get_pattern 
+extern __typeof (g_regex_get_pattern) g_regex_get_pattern __attribute((alias("IA__g_regex_get_pattern"), visibility("default")));
+
+#undef g_regex_get_max_backref 
+extern __typeof (g_regex_get_max_backref) g_regex_get_max_backref __attribute((alias("IA__g_regex_get_max_backref"), visibility("default")));
+
+#undef g_regex_get_capture_count 
+extern __typeof (g_regex_get_capture_count) g_regex_get_capture_count __attribute((alias("IA__g_regex_get_capture_count"), visibility("default")));
+
+#undef g_regex_get_string_number 
+extern __typeof (g_regex_get_string_number) g_regex_get_string_number __attribute((alias("IA__g_regex_get_string_number"), visibility("default")));
+
+#undef g_regex_escape_string 
+extern __typeof (g_regex_escape_string) g_regex_escape_string __attribute((alias("IA__g_regex_escape_string"), visibility("default")));
+
+#undef g_regex_match_simple 
+extern __typeof (g_regex_match_simple) g_regex_match_simple __attribute((alias("IA__g_regex_match_simple"), visibility("default")));
+
+#undef g_regex_match 
+extern __typeof (g_regex_match) g_regex_match __attribute((alias("IA__g_regex_match"), visibility("default")));
+
+#undef g_regex_match_full 
+extern __typeof (g_regex_match_full) g_regex_match_full __attribute((alias("IA__g_regex_match_full"), visibility("default")));
+
+#undef g_regex_match_all 
+extern __typeof (g_regex_match_all) g_regex_match_all __attribute((alias("IA__g_regex_match_all"), visibility("default")));
+
+#undef g_regex_match_all_full 
+extern __typeof (g_regex_match_all_full) g_regex_match_all_full __attribute((alias("IA__g_regex_match_all_full"), visibility("default")));
+
+#undef g_regex_split_simple 
+extern __typeof (g_regex_split_simple) g_regex_split_simple __attribute((alias("IA__g_regex_split_simple"), visibility("default")));
+
+#undef g_regex_split 
+extern __typeof (g_regex_split) g_regex_split __attribute((alias("IA__g_regex_split"), visibility("default")));
+
+#undef g_regex_split_full 
+extern __typeof (g_regex_split_full) g_regex_split_full __attribute((alias("IA__g_regex_split_full"), visibility("default")));
+
+#undef g_regex_replace 
+extern __typeof (g_regex_replace) g_regex_replace __attribute((alias("IA__g_regex_replace"), visibility("default")));
+
+#undef g_regex_replace_literal 
+extern __typeof (g_regex_replace_literal) g_regex_replace_literal __attribute((alias("IA__g_regex_replace_literal"), visibility("default")));
+
+#undef g_regex_replace_eval 
+extern __typeof (g_regex_replace_eval) g_regex_replace_eval __attribute((alias("IA__g_regex_replace_eval"), visibility("default")));
+
+#undef g_regex_check_replacement 
+extern __typeof (g_regex_check_replacement) g_regex_check_replacement __attribute((alias("IA__g_regex_check_replacement"), visibility("default")));
+
+#undef g_match_info_get_regex 
+extern __typeof (g_match_info_get_regex) g_match_info_get_regex __attribute((alias("IA__g_match_info_get_regex"), visibility("default")));
+
+#undef g_match_info_get_string 
+extern __typeof (g_match_info_get_string) g_match_info_get_string __attribute((alias("IA__g_match_info_get_string"), visibility("default")));
+
+#undef g_match_info_free 
+extern __typeof (g_match_info_free) g_match_info_free __attribute((alias("IA__g_match_info_free"), visibility("default")));
+
+#undef g_match_info_next 
+extern __typeof (g_match_info_next) g_match_info_next __attribute((alias("IA__g_match_info_next"), visibility("default")));
+
+#undef g_match_info_matches 
+extern __typeof (g_match_info_matches) g_match_info_matches __attribute((alias("IA__g_match_info_matches"), visibility("default")));
+
+#undef g_match_info_get_match_count 
+extern __typeof (g_match_info_get_match_count) g_match_info_get_match_count __attribute((alias("IA__g_match_info_get_match_count"), visibility("default")));
+
+#undef g_match_info_is_partial_match 
+extern __typeof (g_match_info_is_partial_match) g_match_info_is_partial_match __attribute((alias("IA__g_match_info_is_partial_match"), visibility("default")));
+
+#undef g_match_info_expand_references 
+extern __typeof (g_match_info_expand_references) g_match_info_expand_references __attribute((alias("IA__g_match_info_expand_references"), visibility("default")));
+
+#undef g_match_info_fetch 
+extern __typeof (g_match_info_fetch) g_match_info_fetch __attribute((alias("IA__g_match_info_fetch"), visibility("default")));
+
+#undef g_match_info_fetch_pos 
+extern __typeof (g_match_info_fetch_pos) g_match_info_fetch_pos __attribute((alias("IA__g_match_info_fetch_pos"), visibility("default")));
+
+#undef g_match_info_fetch_named 
+extern __typeof (g_match_info_fetch_named) g_match_info_fetch_named __attribute((alias("IA__g_match_info_fetch_named"), visibility("default")));
+
+#undef g_match_info_fetch_named_pos 
+extern __typeof (g_match_info_fetch_named_pos) g_match_info_fetch_named_pos __attribute((alias("IA__g_match_info_fetch_named_pos"), visibility("default")));
+
+#undef g_match_info_fetch_all 
+extern __typeof (g_match_info_fetch_all) g_match_info_fetch_all __attribute((alias("IA__g_match_info_fetch_all"), visibility("default")));
+
+#endif
+#endif
 #if IN_HEADER(__G_WIN32_H__)
 #if IN_FILE(__G_WIN32_H__)
 #ifdef G_OS_WIN32
@@ -3274,6 +3782,9 @@ extern __typeof (g_win32_error_message) g_win32_error_message __attribute((alias
 
 #undef g_win32_ftruncate 
 extern __typeof (g_win32_ftruncate) g_win32_ftruncate __attribute((alias("IA__g_win32_ftruncate"), visibility("default")));
+
+#undef g_win32_get_package_installation_directory_of_module 
+extern __typeof (g_win32_get_package_installation_directory_of_module) g_win32_get_package_installation_directory_of_module __attribute((alias("IA__g_win32_get_package_installation_directory_of_module"), visibility("default")));
 
 #undef g_win32_get_package_installation_directory 
 extern __typeof (g_win32_get_package_installation_directory) g_win32_get_package_installation_directory __attribute((alias("IA__g_win32_get_package_installation_directory"), visibility("default")));

@@ -85,6 +85,19 @@ has been changed. Note that getting this signal doesn't guarantee that the
 value of the property has actually changed, it may also be emitted when
 the setter for the property is called to reinstate the previous value.
 </para>
+<para>
+This signal is typically used to obtain change notification for a 
+single property, by specifying the property name as a detail in the
+g_signal_connect() call, like this:
+<informalexample><programlisting>
+g_signal_connect (text_view->buffer, "notify::paste-target-list",
+                  G_CALLBACK (gtk_text_view_target_list_notify),
+                  text_view)
+</programlisting></informalexample>
+It is important to note that you must use 
+<link linkend="canonical-parameter-name">canonical</link> parameter names as
+detail strings for the notify signal.
+</para>
 
 @pspec: the #GParamSpec of the property which changed
 @gobject: the object which received the signal.
@@ -143,6 +156,13 @@ my_singleton_constructor (GType                  type,
   of properties. Overriding @dispatch_properties_changed should be rarely 
   needed.
 @notify: the class closure for the notify signal
+@constructed: the @constructed function is called by g_object_new() as the
+  final step of the object creation process.  At the point of the call, all
+  construction properties have been set on the object.  The purpose of this
+  call is to allow for object initialisation steps that can only be performed
+  after construction properties have been set.  @constructed implementors
+  should chain up to the @constructed call of their parent class to allow it
+  to complete its initialisation.
 
 <!-- ##### STRUCT GObjectConstructParam ##### -->
 <para>
@@ -335,6 +355,7 @@ g_param_spec_get_redirect_target().
 @property_id: the new property ID
 @name: the name of a property registered in a parent class or
        in an interface of this class.
+@Since: 2.4
 
 
 <!-- ##### FUNCTION g_object_interface_install_property ##### -->
@@ -867,6 +888,9 @@ Like g_object_set_data() except it adds notification
 for when the association is destroyed, either by setting it 
 to a different value or when the object is destroyed.
 </para>
+<para>
+Note that the @destroy callback is not called if @data is %NULL.
+</para>
 
 @object: #GObject containing the associations
 @key: name of the key
@@ -1076,7 +1100,7 @@ This functions should only be called from object system implementations.
 
 <!-- ##### MACRO G_OBJECT_WARN_INVALID_PROPERTY_ID ##### -->
 <para>
-This macros should be used to emit a standard warning about unexpected 
+This macro should be used to emit a standard warning about unexpected 
 properties in set_property() and get_property() implementations.
 </para>
 

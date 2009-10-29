@@ -4,19 +4,19 @@
   <chapters>
     <sub name="Introduction" link="pr01.html"/>
     <sub name="Concepts" link="pt01.html">
-      <sub name="Background" link="ch01.html">
-        <sub name="Data types and programming" link="ch01.html#id2794393"/>
+      <sub name="Background" link="chapter-intro.html">
+        <sub name="Data types and programming" link="chapter-intro.html#id2639724"/>
         <sub name="Exporting a C API" link="ch01s02.html"/>
       </sub>
-      <sub name="The Glib Dynamic Type System" link="ch02.html">
-        <sub name="Copy functions" link="ch02.html#gtype-copy"/>
+      <sub name="The GLib Dynamic Type System" link="chapter-gtype.html">
+        <sub name="Copy functions" link="chapter-gtype.html#gtype-copy"/>
         <sub name="Conventions" link="gtype-conventions.html"/>
-        <sub name="Non-Instantiable non-classed fundamental types" link="gtype-non-instantiable.html"/>
+        <sub name="Non-instantiable non-classed fundamental types" link="gtype-non-instantiable.html"/>
         <sub name="Instantiable classed types: objects" link="gtype-instantiable-classed.html"/>
-        <sub name="Non-instantiable classed types: Interfaces." link="gtype-non-instantiable-classed.html"/>
+        <sub name="Non-instantiable classed types: interfaces" link="gtype-non-instantiable-classed.html"/>
       </sub>
       <sub name="The GObject base class" link="chapter-gobject.html">
-        <sub name="Object instanciation" link="chapter-gobject.html#gobject-instanciation"/>
+        <sub name="Object instantiation" link="chapter-gobject.html#gobject-instantiation"/>
         <sub name="Object memory management" link="gobject-memory.html"/>
         <sub name="Object properties" link="gobject-properties.html"/>
       </sub>
@@ -46,7 +46,7 @@
       <sub name="gobject-query" link="gobject-query.html"/>
     </sub>
     <sub name="Tutorial" link="pt02.html">
-      <sub name="How To define and implement a new GObject?" link="howto-gobject.html">
+      <sub name="How to define and implement a new GObject" link="howto-gobject.html">
         <sub name="Boilerplate header code" link="howto-gobject.html#howto-gobject-header"/>
         <sub name="Boilerplate code" link="howto-gobject-code.html"/>
         <sub name="Object Construction" link="howto-gobject-construction.html"/>
@@ -54,13 +54,13 @@
         <sub name="Object methods" link="howto-gobject-methods.html"/>
         <sub name="Chaining up" link="howto-gobject-chainup.html"/>
       </sub>
-      <sub name="How To define and implement Interfaces?" link="howto-interface.html">
-        <sub name="How To define Interfaces?" link="howto-interface.html#howto-interface-define"/>
+      <sub name="How to define and implement interfaces" link="howto-interface.html">
+        <sub name="How to define interfaces" link="howto-interface.html#howto-interface-define"/>
         <sub name="How To define implement an Interface?" link="howto-interface-implement.html"/>
         <sub name="Interface definition prerequisites" link="ch06s03.html"/>
         <sub name="Interface Properties" link="howto-interface-properties.html"/>
       </sub>
-      <sub name="Howto create and use signals" link="howto-signals.html">
+      <sub name="How to create and use signals" link="howto-signals.html">
         <sub name="Simple use of signals" link="howto-signals.html#howto-simple-signals"/>
         <sub name="How to provide more flexibility to users?" link="ch07s02.html"/>
         <sub name="How users can abuse signals (and why some think it is good)" link="ch07s03.html"/>
@@ -68,7 +68,7 @@
     </sub>
     <sub name="Related Tools" link="pt03.html">
       <sub name="GObject builder" link="tools-gob.html"/>
-      <sub name="Graphical inspection of Gobjects" link="tools-ginspector.html"/>
+      <sub name="Graphical inspection of GObjects" link="tools-ginspector.html"/>
       <sub name="Debugging reference count problems" link="tools-refdb.html"/>
       <sub name="Writing API docs" link="tools-gtkdoc.html"/>
     </sub>
@@ -80,6 +80,7 @@
     <sub name="Index of new symbols in 2.8" link="ix06.html"/>
     <sub name="Index of new symbols in 2.10" link="ix07.html"/>
     <sub name="Index of new symbols in 2.12" link="ix08.html"/>
+    <sub name="Index of new symbols in 2.14" link="ix09.html"/>
   </chapters>
   <functions>
     <keyword type="typedef" name="GType" link="gobject-Type-Information.html#GType"/>
@@ -227,6 +228,8 @@
     <keyword type="function" name="g_type_module_add_interface ()" link="GTypeModule.html#g-type-module-add-interface"/>
     <keyword type="function" name="g_type_module_register_enum ()" link="GTypeModule.html#g-type-module-register-enum" since="2.6"/>
     <keyword type="function" name="g_type_module_register_flags ()" link="GTypeModule.html#g-type-module-register-flags" since="2.6"/>
+    <keyword type="macro" name="G_DEFINE_DYNAMIC_TYPE()" link="GTypeModule.html#G-DEFINE-DYNAMIC-TYPE:CAPS" since="2.14"/>
+    <keyword type="macro" name="G_DEFINE_DYNAMIC_TYPE_EXTENDED()" link="GTypeModule.html#G-DEFINE-DYNAMIC-TYPE-EXTENDED:CAPS" since="2.14"/>
     <keyword type="struct" name="GObject" link="gobject-The-Base-Object-Type.html#GObject-struct"/>
     <keyword type="struct" name="GObjectClass" link="gobject-The-Base-Object-Type.html#GObjectClass"/>
     <keyword type="struct" name="GObjectConstructParam" link="gobject-The-Base-Object-Type.html#GObjectConstructParam"/>
@@ -246,7 +249,7 @@
     <keyword type="function" name="g_object_class_install_property ()" link="gobject-The-Base-Object-Type.html#g-object-class-install-property"/>
     <keyword type="function" name="g_object_class_find_property ()" link="gobject-The-Base-Object-Type.html#g-object-class-find-property"/>
     <keyword type="function" name="g_object_class_list_properties ()" link="gobject-The-Base-Object-Type.html#g-object-class-list-properties"/>
-    <keyword type="function" name="g_object_class_override_property ()" link="gobject-The-Base-Object-Type.html#g-object-class-override-property"/>
+    <keyword type="function" name="g_object_class_override_property ()" link="gobject-The-Base-Object-Type.html#g-object-class-override-property" since="2.4"/>
     <keyword type="function" name="g_object_interface_install_property ()" link="gobject-The-Base-Object-Type.html#g-object-interface-install-property" since="2.4"/>
     <keyword type="function" name="g_object_interface_find_property ()" link="gobject-The-Base-Object-Type.html#g-object-interface-find-property" since="2.4"/>
     <keyword type="function" name="g_object_interface_list_properties ()" link="gobject-The-Base-Object-Type.html#g-object-interface-list-properties" since="2.4"/>
@@ -292,7 +295,7 @@
     <keyword type="function" name="g_object_watch_closure ()" link="gobject-The-Base-Object-Type.html#g-object-watch-closure"/>
     <keyword type="function" name="g_object_run_dispose ()" link="gobject-The-Base-Object-Type.html#g-object-run-dispose"/>
     <keyword type="macro" name="G_OBJECT_WARN_INVALID_PROPERTY_ID()" link="gobject-The-Base-Object-Type.html#G-OBJECT-WARN-INVALID-PROPERTY-ID:CAPS"/>
-    <keyword type="" name="The ::notify signal" link="gobject-The-Base-Object-Type.html#GObject-notify"/>
+    <keyword type="" name="The &quot;notify&quot; signal" link="gobject-The-Base-Object-Type.html#GObject-notify"/>
     <keyword type="struct" name="GEnumClass" link="gobject-Enumeration-and-Flag-Types.html#GEnumClass"/>
     <keyword type="struct" name="GFlagsClass" link="gobject-Enumeration-and-Flag-Types.html#GFlagsClass"/>
     <keyword type="macro" name="G_ENUM_CLASS_TYPE()" link="gobject-Enumeration-and-Flag-Types.html#G-ENUM-CLASS-TYPE:CAPS"/>
@@ -327,6 +330,7 @@
     <keyword type="macro" name="G_TYPE_DATE" link="gobject-Boxed-Types.html#G-TYPE-DATE:CAPS"/>
     <keyword type="macro" name="G_TYPE_GSTRING" link="gobject-Boxed-Types.html#G-TYPE-GSTRING:CAPS"/>
     <keyword type="macro" name="G_TYPE_STRV" link="gobject-Boxed-Types.html#G-TYPE-STRV:CAPS" since="2.4"/>
+    <keyword type="macro" name="G_TYPE_REGEX" link="gobject-Boxed-Types.html#G-TYPE-REGEX:CAPS" since="2.14"/>
     <keyword type="typedef" name="GStrv" link="gobject-Boxed-Types.html#GStrv"/>
     <keyword type="macro" name="G_VALUE_HOLDS()" link="gobject-Generic-values.html#G-VALUE-HOLDS:CAPS"/>
     <keyword type="macro" name="G_VALUE_TYPE()" link="gobject-Generic-values.html#G-VALUE-TYPE:CAPS"/>
@@ -549,6 +553,7 @@
     <keyword type="struct" name="GParamSpecClass" link="gobject-GParamSpec.html#GParamSpecClass"/>
     <keyword type="enum" name="enum GParamFlags" link="gobject-GParamSpec.html#GParamFlags"/>
     <keyword type="macro" name="G_PARAM_READWRITE" link="gobject-GParamSpec.html#G-PARAM-READWRITE:CAPS"/>
+    <keyword type="macro" name="G_PARAM_STATIC_STRINGS" link="gobject-GParamSpec.html#G-PARAM-STATIC-STRINGS:CAPS"/>
     <keyword type="macro" name="G_PARAM_MASK" link="gobject-GParamSpec.html#G-PARAM-MASK:CAPS"/>
     <keyword type="macro" name="G_PARAM_USER_SHIFT" link="gobject-GParamSpec.html#G-PARAM-USER-SHIFT:CAPS"/>
     <keyword type="function" name="g_param_spec_ref ()" link="gobject-GParamSpec.html#g-param-spec-ref"/>
@@ -692,12 +697,12 @@
     <keyword type="function" name="g_value_array_remove ()" link="gobject-Value-arrays.html#g-value-array-remove"/>
     <keyword type="function" name="g_value_array_sort ()" link="gobject-Value-arrays.html#g-value-array-sort"/>
     <keyword type="function" name="g_value_array_sort_with_data ()" link="gobject-Value-arrays.html#g-value-array-sort-with-data"/>
-    <keyword type="" name="Options" link="glib-mkenums.html#id3025134"/>
-    <keyword type="" name="Production text substitutions" link="glib-mkenums.html#id3025402"/>
-    <keyword type="" name="Trigraph extensions" link="glib-mkenums.html#id3025571"/>
-    <keyword type="" name="Options" link="glib-genmarshal.html#id3026370"/>
-    <keyword type="" name="Marshaller list format" link="glib-genmarshal.html#id3026505"/>
-    <keyword type="" name="Parameter types" link="glib-genmarshal.html#id3026578"/>
-    <keyword type="" name="Options" link="gobject-query.html#id3027859"/>
+    <keyword type="" name="Options" link="glib-mkenums.html#id2840332"/>
+    <keyword type="" name="Production text substitutions" link="glib-mkenums.html#id2840601"/>
+    <keyword type="" name="Trigraph extensions" link="glib-mkenums.html#id2840770"/>
+    <keyword type="" name="Options" link="glib-genmarshal.html#id2841568"/>
+    <keyword type="" name="Marshaller list format" link="glib-genmarshal.html#id2841705"/>
+    <keyword type="" name="Parameter types" link="glib-genmarshal.html#id2841777"/>
+    <keyword type="" name="Options" link="gobject-query.html#id2843059"/>
   </functions>
 </book>

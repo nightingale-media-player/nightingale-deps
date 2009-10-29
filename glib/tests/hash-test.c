@@ -44,7 +44,50 @@
 
 int array[10000];
 
+static void
+fill_hash_table_and_array (GHashTable *hash_table)
+{
+  int i;
 
+  for (i = 0; i < 10000; i++)
+    {
+      array[i] = i;
+      g_hash_table_insert (hash_table, &array[i], &array[i]);
+    }
+}
+
+static void
+init_result_array (int result_array[10000])
+{
+  int i;
+
+  for (i = 0; i < 10000; i++)
+    result_array[i] = -1;
+}
+
+static void
+verify_result_array (int array[10000])
+{
+  int i;
+
+  for (i = 0; i < 10000; i++)
+    g_assert (array[i] == i);
+}
+
+static void
+handle_pair (gpointer key, gpointer value, int result_array[10000])
+{
+  int n;
+
+  g_assert (key == value);
+
+  n = *((int *) value);
+
+  g_assert (n >= 0 && n < 10000);
+  g_assert (result_array[n] == -1);
+
+  result_array[n] = n;
+}
 
 static gboolean
 my_hash_callback_remove (gpointer key,
@@ -75,8 +118,7 @@ my_hash_callback (gpointer key,
 		  gpointer value,
 		  gpointer user_data)
 {
-  int *d = value;
-  *d = 1;
+  handle_pair (key, value, user_data);
 }
 
 static guint
@@ -232,8 +274,9 @@ static void second_hash_test (gboolean simple_hash)
 
      crcinit ();
 
-     h = g_hash_table_new (simple_hash ? one_hash : honeyman_hash,
-     			   second_hash_cmp);
+     h = g_hash_table_new_full (simple_hash ? one_hash : honeyman_hash,
+     			        second_hash_cmp,
+                                g_free, g_free);
      g_assert (h != NULL);
      for (i=0; i<20; i++)
           {
@@ -262,14 +305,13 @@ static void second_hash_test (gboolean simple_hash)
 
      sprintf (key, "%d", 3);
      g_hash_table_remove (h, key);
+     g_assert (g_hash_table_size (h) == 19);
      g_hash_table_foreach_remove (h, remove_even_foreach, NULL);
+     g_assert (g_hash_table_size (h) == 9);
      g_hash_table_foreach (h, not_even_foreach, NULL);
 
      for (i=0; i<20; i++)
           {
-	  if ((i % 2) == 0 || i == 3)
-  	      continue;
-
           sprintf (key, "%d", i);
 	  g_assert (atoi(key) == i);
 
@@ -280,17 +322,19 @@ static void second_hash_test (gboolean simple_hash)
           found = g_hash_table_lookup_extended (h, key,
 	  					(gpointer)&orig_key,
 						(gpointer)&orig_val);
-	  g_assert (found);
+	  if ((i % 2) == 0 || i == 3)
+            {
+              g_assert (!found);
+  	      continue;
+            }
 
-	  g_hash_table_remove (h, key);
+	  g_assert (found);
 
 	  g_assert (orig_key != NULL);
 	  g_assert (strcmp (key, orig_key) == 0);
-	  g_free (orig_key);
 
 	  g_assert (orig_val != NULL);
 	  g_assert (strcmp (val, orig_val) == 0);
-	  g_free (orig_val);
           }
 
     g_hash_table_destroy (h);
@@ -342,32 +386,60 @@ main (int   argc,
   GHashTable *hash_table;
   gint i;
   gint value = 120;
-  gint *pvalue; 
+  gint *pvalue;
+  GList *keys, *values;
+  gint keys_len, values_len;
+  GHashTableIter iter;
+  gpointer ikey, ivalue;
+  int result_array[10000];
   
   hash_table = g_hash_table_new (my_hash, my_hash_equal);
-  for (i = 0; i < 10000; i++)
-    {
-      array[i] = i;
-      g_hash_table_insert (hash_table, &array[i], &array[i]);
-    }
+  fill_hash_table_and_array (hash_table);
   pvalue = g_hash_table_find (hash_table, find_first, &value);
   if (!pvalue || *pvalue != value)
     g_assert_not_reached();
-  
-  g_hash_table_foreach (hash_table, my_hash_callback, NULL);
 
+  keys = g_hash_table_get_keys (hash_table);
+  if (!keys)
+    g_assert_not_reached ();
+
+  values = g_hash_table_get_values (hash_table);
+  if (!values)
+    g_assert_not_reached ();
+
+  keys_len = g_list_length (keys);
+  values_len = g_list_length (values);
+  if (values_len != keys_len &&  keys_len != g_hash_table_size (hash_table))
+    g_assert_not_reached ();
+
+  g_list_free (keys);
+  g_list_free (values);
+
+  init_result_array (result_array);
+  g_hash_table_iter_init (&iter, hash_table);
   for (i = 0; i < 10000; i++)
-    if (array[i] == 0)
-      g_assert_not_reached();
+    {
+      g_assert (g_hash_table_iter_next (&iter, &ikey, &ivalue));
+
+      handle_pair (ikey, ivalue, result_array);
+
+      if (i % 2)
+	g_hash_table_iter_remove (&iter);
+    }
+  g_assert (! g_hash_table_iter_next (&iter, &ikey, &ivalue));
+  g_assert (g_hash_table_size (hash_table) == 5000);
+  verify_result_array (result_array);
+
+  fill_hash_table_and_array (hash_table);
+
+  init_result_array (result_array);
+  g_hash_table_foreach (hash_table, my_hash_callback, result_array);
+  verify_result_array (result_array);
 
   for (i = 0; i < 10000; i++)
     g_hash_table_remove (hash_table, &array[i]);
 
-  for (i = 0; i < 10000; i++)
-    {
-      array[i] = i;
-      g_hash_table_insert (hash_table, &array[i], &array[i]);
-    }
+  fill_hash_table_and_array (hash_table);
 
   if (g_hash_table_foreach_remove (hash_table, my_hash_callback_remove, NULL) != 5000 ||
       g_hash_table_size (hash_table) != 5000)

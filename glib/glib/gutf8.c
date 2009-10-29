@@ -504,11 +504,17 @@ charset_cache_free (gpointer data)
  * g_get_charset:
  * @charset: return location for character set name
  * 
- * Obtains the character set for the current locale; you might use
- * this character set as an argument to g_convert(), to convert from
- * the current locale's encoding to some other encoding. (Frequently
- * g_locale_to_utf8() and g_locale_from_utf8() are nice shortcuts,
- * though.)
+ * Obtains the character set for the <link linkend="setlocale">current 
+ * locale</link>; you might use this character set as an argument to 
+ * g_convert(), to convert from the current locale's encoding to some 
+ * other encoding. (Frequently g_locale_to_utf8() and g_locale_from_utf8()
+ * are nice shortcuts, though.)
+ *
+ * On Windows the character set returned by this function is the
+ * so-called system default ANSI code-page. That is the character set
+ * used by the "narrow" versions of C library and Win32 functions that
+ * handle file names. It might be different from the character set
+ * used by the C library's current locale.
  *
  * The return value is %TRUE if the locale's encoding is UTF-8, in that
  * case you can perhaps avoid calling g_convert().
@@ -755,7 +761,8 @@ g_utf8_get_char_extended (const  gchar *p,
 /**
  * g_utf8_get_char_validated:
  * @p: a pointer to Unicode character encoded as UTF-8
- * @max_len: the maximum number of bytes to read, or -1, for no maximum.
+ * @max_len: the maximum number of bytes to read, or -1, for no maximum or
+ *           if @p is nul-terminated
  * 
  * Convert a sequence of bytes encoded as UTF-8 to a Unicode character.
  * This function checks for incomplete characters, for invalid characters
@@ -1094,7 +1101,7 @@ g_utf16_to_utf8 (const gunichar2  *str,
   gint n_bytes;
   gunichar high_surrogate;
 
-  g_return_val_if_fail (str != 0, NULL);
+  g_return_val_if_fail (str != NULL, NULL);
 
   n_bytes = 0;
   in = str;
@@ -1235,7 +1242,7 @@ g_utf16_to_ucs4 (const gunichar2  *str,
   gint n_bytes;
   gunichar high_surrogate;
 
-  g_return_val_if_fail (str != 0, NULL);
+  g_return_val_if_fail (str != NULL, NULL);
 
   n_bytes = 0;
   in = str;
@@ -1631,7 +1638,9 @@ fast_validate_len (const char *str,
   gunichar min = 0;
   const gchar *p;
 
-  for (p = str; (max_len < 0 || (p - str) < max_len) && *p; p++)
+  g_assert (max_len >= 0);
+
+  for (p = str; ((p - str) < max_len) && *p; p++)
     {
       if (*(guchar *)p < 128)
 	/* done */;
@@ -1642,7 +1651,7 @@ fast_validate_len (const char *str,
 	  last = p;
 	  if ((*(guchar *)p & 0xe0) == 0xc0) /* 110xxxxx */
 	    {
-	      if (G_UNLIKELY (max_len >= 0 && max_len - (p - str) < 2))
+	      if (G_UNLIKELY (max_len - (p - str) < 2))
 		goto error;
 	      
 	      if (G_UNLIKELY ((*(guchar *)p & 0x1e) == 0))
@@ -1655,7 +1664,7 @@ fast_validate_len (const char *str,
 	    {
 	      if ((*(guchar *)p & 0xf0) == 0xe0) /* 1110xxxx */
 		{
-		  if (G_UNLIKELY (max_len >= 0 && max_len - (p - str) < 3))
+		  if (G_UNLIKELY (max_len - (p - str) < 3))
 		    goto error;
 		  
 		  min = (1 << 11);
@@ -1664,7 +1673,7 @@ fast_validate_len (const char *str,
 		}
  	      else if ((*(guchar *)p & 0xf8) == 0xf0) /* 11110xxx */
 		{
-		  if (G_UNLIKELY (max_len >= 0 && max_len - (p - str) < 4))
+		  if (G_UNLIKELY (max_len - (p - str) < 4))
 		    goto error;
 		  
 		  min = (1 << 16);
@@ -1744,7 +1753,6 @@ g_utf8_validate (const char   *str,
     return TRUE;
 }
 
-
 /**
  * g_unichar_validate:
  * @ch: a Unicode character
@@ -1771,6 +1779,12 @@ g_unichar_validate (gunichar ch)
  * (Use g_utf8_validate() on all text before trying to use UTF-8 
  * utility functions with it.)
  *
+ * This function is intended for programmatic uses of reversed strings.
+ * It pays no attention to decomposed characters, combining marks, byte 
+ * order marks, directional indicators (LRM, LRO, etc) and similar 
+ * characters which might need special handling when reversing a string 
+ * for display purposes.
+ *
  * Note that unlike g_strreverse(), this function returns
  * newly-allocated memory, which should be freed with g_free() when
  * no longer needed. 
@@ -1780,12 +1794,11 @@ g_unichar_validate (gunichar ch)
  * Since: 2.2
  */
 gchar *
-g_utf8_strreverse (const gchar *str, 
-		   gssize len)
+g_utf8_strreverse (const gchar *str,
+		   gssize       len)
 {
-  gchar *result;
+  gchar *r, *result;
   const gchar *p;
-  gchar *m, *r, skip;
 
   if (len < 0)
     len = strlen (str);
@@ -1793,9 +1806,9 @@ g_utf8_strreverse (const gchar *str,
   result = g_new (gchar, len + 1);
   r = result + len;
   p = str;
-  while (*p) 
+  while (r > result)
     {
-      skip = g_utf8_skip[*(guchar*)p];
+      gchar *m, skip = g_utf8_skip[*(guchar*) p];
       r -= skip;
       for (m = r; skip; skip--)
         *m++ = *p++;

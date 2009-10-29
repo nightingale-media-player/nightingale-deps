@@ -1,23 +1,22 @@
 <refentry id="glib-Warnings-and-Assertions">
 <refmeta>
-<refentrytitle role="top_of_page">Message Output and Debugging Functions</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Warnings-and-Assertions.top_of_page">Message Output and Debugging Functions</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>Message Output and Debugging Functions</refname>
-<refpurpose>functions to output messages and help debug applications.</refpurpose>
+<refpurpose>functions to output messages and help debug applications</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Warnings-and-Assertions.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
-
 
 <link linkend="void">void</link>                <link linkend="g-print">g_print</link>                             (const <link linkend="gchar">gchar</link> *format,
                                                          ...);
@@ -32,15 +31,18 @@
 #define             <link linkend="g-return-val-if-fail">g_return_val_if_fail</link>                (expr,val)
 #define             <link linkend="g-return-if-reached">g_return_if_reached</link>                 ()
 #define             <link linkend="g-return-val-if-reached">g_return_val_if_reached</link>             (val)
-
-#define             <link linkend="g-assert">g_assert</link>                            (expr)
-#define             <link linkend="g-assert-not-reached">g_assert_not_reached</link>                ()
+#define             <link linkend="g-warn-if-fail">g_warn_if_fail</link>                      (expr)
+#define             <link linkend="g-warn-if-reached">g_warn_if_reached</link>                   ()
+<link linkend="void">void</link>                <link linkend="g-warn-message">g_warn_message</link>                      (const <link linkend="char">char</link> *domain,
+                                                         const <link linkend="char">char</link> *file,
+                                                         <link linkend="int">int</link> line,
+                                                         const <link linkend="char">char</link> *func,
+                                                         const <link linkend="char">char</link> *warnexpr);
 
 <link linkend="void">void</link>                <link linkend="g-on-error-query">g_on_error_query</link>                    (const <link linkend="gchar">gchar</link> *prg_name);
 <link linkend="void">void</link>                <link linkend="g-on-error-stack-trace">g_on_error_stack_trace</link>              (const <link linkend="gchar">gchar</link> *prg_name);
 
 #define             <link linkend="G-BREAKPOINT:CAPS">G_BREAKPOINT</link>                        ()
-
 </synopsis>
 </refsynopsisdiv>
 
@@ -52,18 +54,29 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Warnings-and-Assertions.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 These functions provide support for outputting messages.
 </para>
+<para>
+The <function>g_return</function> family of macros (<link linkend="g-return-if-fail"><function>g_return_if_fail()</function></link>, 
+<link linkend="g-return-val-if-fail"><function>g_return_val_if_fail()</function></link>, <link linkend="g-return-if-reached"><function>g_return_if_reached()</function></link>, <link linkend="g-return-val-if-reached"><function>g_return_val_if_reached()</function></link>)
+should only be used for programming errors, a typical use case is
+checking for invalid parameters at the beginning of a public function.
+They should not be used if you just mean "if (error) return", they
+should only be used if you mean "if (bug in program) return".
+The program behavior is generally considered undefined after one of these 
+checks fails. They are not intended for normal control flow, only to
+give a perhaps-helpful warning before giving up. 
+</para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Warnings-and-Assertions.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="g-print" role="function"/>g_print ()</title>
-<indexterm><primary>g_print</primary></indexterm><programlisting><link linkend="void">void</link>                g_print                             (const <link linkend="gchar">gchar</link> *format,
+<refsect2 id="g-print" role="function">
+<title>g_print ()</title>
+<indexterm zone="g-print"><primary>g_print</primary></indexterm><programlisting><link linkend="void">void</link>                g_print                             (const <link linkend="gchar">gchar</link> *format,
                                                          ...);</programlisting>
 <para>
 Outputs a formatted message via the print handler.
@@ -77,8 +90,7 @@ Instead, libraries should use <link linkend="g-log"><function>g_log()</function>
 <link linkend="g-message"><function>g_message()</function></link>, <link linkend="g-warning"><function>g_warning()</function></link> and <link linkend="g-error"><function>g_error()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>format</parameter>&nbsp;:</term>
-<listitem><simpara>the message format. See the <function><link linkend="printf"><function>printf()</function></link></function>
-documentation.
+<listitem><simpara>the message format. See the <link linkend="printf"><function>printf()</function></link> documentation.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>...</parameter>&nbsp;:</term>
 <listitem><simpara>the parameters to insert into the format string.
@@ -86,9 +98,9 @@ documentation.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-set-print-handler" role="function"/>g_set_print_handler ()</title>
-<indexterm><primary>g_set_print_handler</primary></indexterm><programlisting><link linkend="GPrintFunc">GPrintFunc</link>          g_set_print_handler                 (<link linkend="GPrintFunc">GPrintFunc</link> func);</programlisting>
+<refsect2 id="g-set-print-handler" role="function">
+<title>g_set_print_handler ()</title>
+<indexterm zone="g-set-print-handler"><primary>g_set_print_handler</primary></indexterm><programlisting><link linkend="GPrintFunc">GPrintFunc</link>          g_set_print_handler                 (<link linkend="GPrintFunc">GPrintFunc</link> func);</programlisting>
 <para>
 Sets the print handler.
 Any messages passed to <link linkend="g-print"><function>g_print()</function></link> will be output via the new handler.
@@ -104,9 +116,9 @@ widget or a log file for example.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GPrintFunc" role="function"/>GPrintFunc ()</title>
-<indexterm><primary>GPrintFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GPrintFunc)                       (const <link linkend="gchar">gchar</link> *string);</programlisting>
+<refsect2 id="GPrintFunc" role="function">
+<title>GPrintFunc ()</title>
+<indexterm zone="GPrintFunc"><primary>GPrintFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GPrintFunc)                       (const <link linkend="gchar">gchar</link> *string);</programlisting>
 <para>
 Specifies the type of the print handler functions.
 These are called with the complete formatted string to output.
@@ -117,9 +129,9 @@ These are called with the complete formatted string to output.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-printerr" role="function"/>g_printerr ()</title>
-<indexterm><primary>g_printerr</primary></indexterm><programlisting><link linkend="void">void</link>                g_printerr                          (const <link linkend="gchar">gchar</link> *format,
+<refsect2 id="g-printerr" role="function">
+<title>g_printerr ()</title>
+<indexterm zone="g-printerr"><primary>g_printerr</primary></indexterm><programlisting><link linkend="void">void</link>                g_printerr                          (const <link linkend="gchar">gchar</link> *format,
                                                          ...);</programlisting>
 <para>
 Outputs a formatted message via the error message handler.
@@ -130,8 +142,7 @@ The default handler simply outputs the message to stderr.
 be used, or the convenience functions <link linkend="g-message"><function>g_message()</function></link>, <link linkend="g-warning"><function>g_warning()</function></link> and <link linkend="g-error"><function>g_error()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>format</parameter>&nbsp;:</term>
-<listitem><simpara>the message format. See the <function><link linkend="printf"><function>printf()</function></link></function>
-documentation.
+<listitem><simpara>the message format. See the <link linkend="printf"><function>printf()</function></link> documentation.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>...</parameter>&nbsp;:</term>
 <listitem><simpara>the parameters to insert into the format string.
@@ -139,9 +150,9 @@ documentation.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-set-printerr-handler" role="function"/>g_set_printerr_handler ()</title>
-<indexterm><primary>g_set_printerr_handler</primary></indexterm><programlisting><link linkend="GPrintFunc">GPrintFunc</link>          g_set_printerr_handler              (<link linkend="GPrintFunc">GPrintFunc</link> func);</programlisting>
+<refsect2 id="g-set-printerr-handler" role="function">
+<title>g_set_printerr_handler ()</title>
+<indexterm zone="g-set-printerr-handler"><primary>g_set_printerr_handler</primary></indexterm><programlisting><link linkend="GPrintFunc">GPrintFunc</link>          g_set_printerr_handler              (<link linkend="GPrintFunc">GPrintFunc</link> func);</programlisting>
 <para>
 Sets the handler for printing error messages.
 Any messages passed to <link linkend="g-printerr"><function>g_printerr()</function></link> will be output via the new handler.
@@ -157,9 +168,9 @@ widget or a log file for example.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-return-if-fail" role="macro"/>g_return_if_fail()</title>
-<indexterm><primary>g_return_if_fail</primary></indexterm><programlisting>#define             g_return_if_fail(expr)</programlisting>
+<refsect2 id="g-return-if-fail" role="macro">
+<title>g_return_if_fail()</title>
+<indexterm zone="g-return-if-fail"><primary>g_return_if_fail</primary></indexterm><programlisting>#define             g_return_if_fail(expr)</programlisting>
 <para>
 Returns from the current function if the expression is not true.
 If the expression evaluates to <link linkend="FALSE:CAPS"><literal>FALSE</literal></link>, a critical message is logged and
@@ -172,9 +183,9 @@ a value.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-return-val-if-fail" role="macro"/>g_return_val_if_fail()</title>
-<indexterm><primary>g_return_val_if_fail</primary></indexterm><programlisting>#define             g_return_val_if_fail(expr,val)</programlisting>
+<refsect2 id="g-return-val-if-fail" role="macro">
+<title>g_return_val_if_fail()</title>
+<indexterm zone="g-return-val-if-fail"><primary>g_return_val_if_fail</primary></indexterm><programlisting>#define             g_return_val_if_fail(expr,val)</programlisting>
 <para>
 Returns from the current function, returning the value <parameter>val</parameter>, if the expression
 is not true.
@@ -191,16 +202,16 @@ true.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-return-if-reached" role="macro"/>g_return_if_reached()</title>
-<indexterm><primary>g_return_if_reached</primary></indexterm><programlisting>#define             g_return_if_reached()</programlisting>
+<refsect2 id="g-return-if-reached" role="macro">
+<title>g_return_if_reached()</title>
+<indexterm zone="g-return-if-reached"><primary>g_return_if_reached</primary></indexterm><programlisting>#define             g_return_if_reached()</programlisting>
 <para>
 Logs a critical message and returns from the current function. 
 This can only be used in functions which do not return a value.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-return-val-if-reached" role="macro"/>g_return_val_if_reached()</title>
-<indexterm><primary>g_return_val_if_reached</primary></indexterm><programlisting>#define             g_return_val_if_reached(val)</programlisting>
+<refsect2 id="g-return-val-if-reached" role="macro">
+<title>g_return_val_if_reached()</title>
+<indexterm zone="g-return-val-if-reached"><primary>g_return_val_if_reached</primary></indexterm><programlisting>#define             g_return_val_if_reached(val)</programlisting>
 <para>
 Logs a critical message and returns <parameter>val</parameter>. 
 </para><variablelist role="params">
@@ -210,38 +221,55 @@ Logs a critical message and returns <parameter>val</parameter>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-assert" role="macro"/>g_assert()</title>
-<indexterm><primary>g_assert</primary></indexterm><programlisting>#define             g_assert(expr)</programlisting>
+<refsect2 id="g-warn-if-fail" role="macro">
+<title>g_warn_if_fail()</title>
+<indexterm zone="g-warn-if-fail"><primary>g_warn_if_fail</primary></indexterm><programlisting>#define             g_warn_if_fail(expr)</programlisting>
 <para>
-Debugging macro to terminate the application if the assertion fails.
-If the assertion fails (i.e. the expression is not true), an error message
-is logged and the application is terminated.
-</para>
-<para>
-The macro can be turned off in final releases of code by defining
-<link linkend="G-DISABLE-ASSERT:CAPS"><type>G_DISABLE_ASSERT</type></link> when compiling the application.
+
 </para><variablelist role="params">
 <varlistentry><term><parameter>expr</parameter>&nbsp;:</term>
-<listitem><simpara>the expression to check.
+<listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-assert-not-reached" role="macro"/>g_assert_not_reached()</title>
-<indexterm><primary>g_assert_not_reached</primary></indexterm><programlisting>#define             g_assert_not_reached()</programlisting>
+<refsect2 id="g-warn-if-reached" role="macro">
+<title>g_warn_if_reached()</title>
+<indexterm zone="g-warn-if-reached"><primary>g_warn_if_reached</primary></indexterm><programlisting>#define             g_warn_if_reached()</programlisting>
 <para>
-Debugging macro to terminate the application if it is ever reached.
-If it is reached, an error message is logged and the application is terminated.
-</para>
-<para>
-The macro can be turned off in final releases of code by defining
-<link linkend="G-DISABLE-ASSERT:CAPS"><type>G_DISABLE_ASSERT</type></link> when compiling the application.
+
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-on-error-query" role="function"/>g_on_error_query ()</title>
-<indexterm><primary>g_on_error_query</primary></indexterm><programlisting><link linkend="void">void</link>                g_on_error_query                    (const <link linkend="gchar">gchar</link> *prg_name);</programlisting>
+<refsect2 id="g-warn-message" role="function">
+<title>g_warn_message ()</title>
+<indexterm zone="g-warn-message"><primary>g_warn_message</primary></indexterm><programlisting><link linkend="void">void</link>                g_warn_message                      (const <link linkend="char">char</link> *domain,
+                                                         const <link linkend="char">char</link> *file,
+                                                         <link linkend="int">int</link> line,
+                                                         const <link linkend="char">char</link> *func,
+                                                         const <link linkend="char">char</link> *warnexpr);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>domain</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>file</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>line</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>func</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>warnexpr</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-on-error-query" role="function">
+<title>g_on_error_query ()</title>
+<indexterm zone="g-on-error-query"><primary>g_on_error_query</primary></indexterm><programlisting><link linkend="void">void</link>                g_on_error_query                    (const <link linkend="gchar">gchar</link> *prg_name);</programlisting>
 <para>
 Prompts the user with <computeroutput>[E]xit, [H]alt, show [S]tack trace or [P]roceed</computeroutput>.
 This function is intended to be used for debugging use only. The following
@@ -300,9 +328,9 @@ If <parameter>prg_name</parameter> is <link linkend="NULL:CAPS"><literal>NULL</l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-on-error-stack-trace" role="function"/>g_on_error_stack_trace ()</title>
-<indexterm><primary>g_on_error_stack_trace</primary></indexterm><programlisting><link linkend="void">void</link>                g_on_error_stack_trace              (const <link linkend="gchar">gchar</link> *prg_name);</programlisting>
+<refsect2 id="g-on-error-stack-trace" role="function">
+<title>g_on_error_stack_trace ()</title>
+<indexterm zone="g-on-error-stack-trace"><primary>g_on_error_stack_trace</primary></indexterm><programlisting><link linkend="void">void</link>                g_on_error_stack_trace              (const <link linkend="gchar">gchar</link> *prg_name);</programlisting>
 <para>
 Invokes <command>gdb</command>, which attaches to the current process and shows a stack trace.
 Called by <link linkend="g-on-error-query"><function>g_on_error_query()</function></link> when the [S]tack trace option is selected.
@@ -318,11 +346,13 @@ If <parameter>prg_name</parameter> is <link linkend="NULL:CAPS"><literal>NULL</l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-BREAKPOINT:CAPS" role="macro"/>G_BREAKPOINT()</title>
-<indexterm><primary>G_BREAKPOINT</primary></indexterm><programlisting>#define             G_BREAKPOINT()</programlisting>
+<refsect2 id="G-BREAKPOINT:CAPS" role="macro">
+<title>G_BREAKPOINT()</title>
+<indexterm zone="G-BREAKPOINT:CAPS"><primary>G_BREAKPOINT</primary></indexterm><programlisting>#define             G_BREAKPOINT()</programlisting>
 <para>
-Inserts a breakpoint instruction into the code (on x86 machines only).
+Inserts a breakpoint instruction into the code.  On x86 and alpha systems
+this is implemented as a soft interrupt and on other architectures it raises
+a <link linkend="SIGTRAP:CAPS"><literal>SIGTRAP</literal></link> signal.
 </para></refsect2>
 
 </refsect1>

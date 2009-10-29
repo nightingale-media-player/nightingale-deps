@@ -1,6 +1,6 @@
 <refentry id="gobject-Signals">
 <refmeta>
-<refentrytitle role="top_of_page">Signals</refentrytitle>
+<refentrytitle role="top_of_page" id="gobject-Signals.top_of_page">Signals</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GOBJECT Library</refmiscinfo>
 </refmeta>
@@ -11,13 +11,12 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="gobject-Signals.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib-object.h&gt;
-
 
                     <link linkend="GSignalInvocationHint">GSignalInvocationHint</link>;
 <link linkend="gboolean">gboolean</link>            (<link linkend="GSignalAccumulator">*GSignalAccumulator</link>)               (<link linkend="GSignalInvocationHint">GSignalInvocationHint</link> *ihint,
@@ -184,7 +183,6 @@ enum                <link linkend="GConnectFlags">GConnectFlags</link>;
                                                          <link linkend="GValue">GValue</link> *return_accu,
                                                          const <link linkend="GValue">GValue</link> *handler_return,
                                                          <link linkend="gpointer">gpointer</link> dummy);
-
 </synopsis>
 </refsynopsisdiv>
 
@@ -196,7 +194,7 @@ enum                <link linkend="GConnectFlags">GConnectFlags</link>;
 
 
 
-<refsect1 role="desc">
+<refsect1 id="gobject-Signals.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The basic concept of the signal system is that of the <emphasis>emission</emphasis>
@@ -259,11 +257,11 @@ wildcard and matches any detail argument passed in to emission.
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="gobject-Signals.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GSignalInvocationHint" role="struct"/>GSignalInvocationHint</title>
-<indexterm><primary>GSignalInvocationHint</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GSignalInvocationHint" role="struct">
+<title>GSignalInvocationHint</title>
+<indexterm zone="GSignalInvocationHint"><primary>GSignalInvocationHint</primary></indexterm><programlisting>typedef struct {
   guint		signal_id;
   GQuark	detail;
   GSignalFlags	run_type;
@@ -292,9 +290,9 @@ to callbacks during a signal emission.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GSignalAccumulator" role="function"/>GSignalAccumulator ()</title>
-<indexterm><primary>GSignalAccumulator</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            (*GSignalAccumulator)               (<link linkend="GSignalInvocationHint">GSignalInvocationHint</link> *ihint,
+<refsect2 id="GSignalAccumulator" role="function">
+<title>GSignalAccumulator ()</title>
+<indexterm zone="GSignalAccumulator"><primary>GSignalAccumulator</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            (*GSignalAccumulator)               (<link linkend="GSignalInvocationHint">GSignalInvocationHint</link> *ihint,
                                                          <link linkend="GValue">GValue</link> *return_accu,
                                                          const <link linkend="GValue">GValue</link> *handler_return,
                                                          <link linkend="gpointer">gpointer</link> data);</programlisting>
@@ -326,9 +324,9 @@ value returned by the last callback.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GSignalCMarshaller" role="typedef"/>GSignalCMarshaller</title>
-<indexterm><primary>GSignalCMarshaller</primary></indexterm><programlisting>typedef GClosureMarshal			 GSignalCMarshaller;
+<refsect2 id="GSignalCMarshaller" role="typedef">
+<title>GSignalCMarshaller</title>
+<indexterm zone="GSignalCMarshaller"><primary>GSignalCMarshaller</primary></indexterm><programlisting>typedef GClosureMarshal			 GSignalCMarshaller;
 </programlisting>
 <para>
 This is the signature of marshaller functions, required to marshall
@@ -337,9 +335,9 @@ invocations. It is merely an alias to <link linkend="GClosureMarshal"><type>GClo
 mechanism takes over responsibility of actual function invocation for the
 signal system.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GSignalEmissionHook" role="function"/>GSignalEmissionHook ()</title>
-<indexterm><primary>GSignalEmissionHook</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            (*GSignalEmissionHook)              (<link linkend="GSignalInvocationHint">GSignalInvocationHint</link> *ihint,
+<refsect2 id="GSignalEmissionHook" role="function">
+<title>GSignalEmissionHook ()</title>
+<indexterm zone="GSignalEmissionHook"><primary>GSignalEmissionHook</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            (*GSignalEmissionHook)              (<link linkend="GSignalInvocationHint">GSignalInvocationHint</link> *ihint,
                                                          <link linkend="guint">guint</link> n_param_values,
                                                          const <link linkend="GValue">GValue</link> *param_values,
                                                          <link linkend="gpointer">gpointer</link> data);</programlisting>
@@ -371,9 +369,9 @@ You may not attach these to signals created with the <link linkend="G-SIGNAL-NO-
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GSignalFlags" role="enum"/>enum GSignalFlags</title>
-<indexterm><primary>GSignalFlags</primary></indexterm><programlisting>typedef enum
+<refsect2 id="GSignalFlags" role="enum">
+<title>enum GSignalFlags</title>
+<indexterm zone="GSignalFlags"><primary>GSignalFlags</primary></indexterm><programlisting>typedef enum
 {
   G_SIGNAL_RUN_FIRST	= 1 &lt;&lt; 0,
   G_SIGNAL_RUN_LAST	= 1 &lt;&lt; 1,
@@ -389,36 +387,36 @@ The signal flags are used to specify a signal's behaviour, the overall
 signal description outlines how especially the RUN flags control the
 stages of a signal emission.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-SIGNAL-RUN-FIRST:CAPS" role="constant"/><literal>G_SIGNAL_RUN_FIRST</literal></term>
+<varlistentry id="G-SIGNAL-RUN-FIRST:CAPS" role="constant">
+<term><literal>G_SIGNAL_RUN_FIRST</literal></term>
 <listitem><simpara>  Invoke the object method handler in the first emission stage.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SIGNAL-RUN-LAST:CAPS" role="constant"/><literal>G_SIGNAL_RUN_LAST</literal></term>
+<varlistentry id="G-SIGNAL-RUN-LAST:CAPS" role="constant">
+<term><literal>G_SIGNAL_RUN_LAST</literal></term>
 <listitem><simpara>   Invoke the object method handler in the third emission stage.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SIGNAL-RUN-CLEANUP:CAPS" role="constant"/><literal>G_SIGNAL_RUN_CLEANUP</literal></term>
+<varlistentry id="G-SIGNAL-RUN-CLEANUP:CAPS" role="constant">
+<term><literal>G_SIGNAL_RUN_CLEANUP</literal></term>
 <listitem><simpara>Invoke the object method handler in the last emission stage.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SIGNAL-NO-RECURSE:CAPS" role="constant"/><literal>G_SIGNAL_NO_RECURSE</literal></term>
+<varlistentry id="G-SIGNAL-NO-RECURSE:CAPS" role="constant">
+<term><literal>G_SIGNAL_NO_RECURSE</literal></term>
 <listitem><simpara> Signals being emitted for an object while currently being in
                        emission for this very object will not be emitted recursively,
                        but instead cause the first emission to be restarted.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SIGNAL-DETAILED:CAPS" role="constant"/><literal>G_SIGNAL_DETAILED</literal></term>
+<varlistentry id="G-SIGNAL-DETAILED:CAPS" role="constant">
+<term><literal>G_SIGNAL_DETAILED</literal></term>
 <listitem><simpara>   This signal supports "::detail" appendices to the signal name
                        upon handler connections and emissions.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SIGNAL-ACTION:CAPS" role="constant"/><literal>G_SIGNAL_ACTION</literal></term>
+<varlistentry id="G-SIGNAL-ACTION:CAPS" role="constant">
+<term><literal>G_SIGNAL_ACTION</literal></term>
 <listitem><simpara>     Action signals are signals that may freely be emitted on alive
                        objects from user code via <link linkend="g-signal-emit"><function>g_signal_emit()</function></link> and friends, without
                        the need of being embedded into extra code that performs pre or
@@ -427,16 +425,16 @@ stages of a signal emission.
                        third-party code.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SIGNAL-NO-HOOKS:CAPS" role="constant"/><literal>G_SIGNAL_NO_HOOKS</literal></term>
+<varlistentry id="G-SIGNAL-NO-HOOKS:CAPS" role="constant">
+<term><literal>G_SIGNAL_NO_HOOKS</literal></term>
 <listitem><simpara>   No emissions hooks are supported for this signal.
 
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GSignalMatchType" role="enum"/>enum GSignalMatchType</title>
-<indexterm><primary>GSignalMatchType</primary></indexterm><programlisting>typedef enum
+<refsect2 id="GSignalMatchType" role="enum">
+<title>enum GSignalMatchType</title>
+<indexterm zone="GSignalMatchType"><primary>GSignalMatchType</primary></indexterm><programlisting>typedef enum
 {
   G_SIGNAL_MATCH_ID	   = 1 &lt;&lt; 0,
   G_SIGNAL_MATCH_DETAIL	   = 1 &lt;&lt; 1,
@@ -451,41 +449,41 @@ The match types specify what <link linkend="g-signal-handlers-block-matched"><fu
 <link linkend="g-signal-handlers-unblock-matched"><function>g_signal_handlers_unblock_matched()</function></link> and <link linkend="g-signal-handlers-disconnect-matched"><function>g_signal_handlers_disconnect_matched()</function></link>
 match signals by.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-SIGNAL-MATCH-ID:CAPS" role="constant"/><literal>G_SIGNAL_MATCH_ID</literal></term>
+<varlistentry id="G-SIGNAL-MATCH-ID:CAPS" role="constant">
+<term><literal>G_SIGNAL_MATCH_ID</literal></term>
 <listitem><simpara>The signal id must be equal.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SIGNAL-MATCH-DETAIL:CAPS" role="constant"/><literal>G_SIGNAL_MATCH_DETAIL</literal></term>
+<varlistentry id="G-SIGNAL-MATCH-DETAIL:CAPS" role="constant">
+<term><literal>G_SIGNAL_MATCH_DETAIL</literal></term>
 <listitem><simpara>The signal detail be equal.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SIGNAL-MATCH-CLOSURE:CAPS" role="constant"/><literal>G_SIGNAL_MATCH_CLOSURE</literal></term>
+<varlistentry id="G-SIGNAL-MATCH-CLOSURE:CAPS" role="constant">
+<term><literal>G_SIGNAL_MATCH_CLOSURE</literal></term>
 <listitem><simpara>The closure must be the same.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SIGNAL-MATCH-FUNC:CAPS" role="constant"/><literal>G_SIGNAL_MATCH_FUNC</literal></term>
+<varlistentry id="G-SIGNAL-MATCH-FUNC:CAPS" role="constant">
+<term><literal>G_SIGNAL_MATCH_FUNC</literal></term>
 <listitem><simpara>The C closure callback must be the same.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SIGNAL-MATCH-DATA:CAPS" role="constant"/><literal>G_SIGNAL_MATCH_DATA</literal></term>
+<varlistentry id="G-SIGNAL-MATCH-DATA:CAPS" role="constant">
+<term><literal>G_SIGNAL_MATCH_DATA</literal></term>
 <listitem><simpara>The closure data must be the same.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SIGNAL-MATCH-UNBLOCKED:CAPS" role="constant"/><literal>G_SIGNAL_MATCH_UNBLOCKED</literal></term>
+<varlistentry id="G-SIGNAL-MATCH-UNBLOCKED:CAPS" role="constant">
+<term><literal>G_SIGNAL_MATCH_UNBLOCKED</literal></term>
 <listitem><simpara>Only unblocked signals may matched.
 
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GSignalQuery" role="struct"/>GSignalQuery</title>
-<indexterm><primary>GSignalQuery</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GSignalQuery" role="struct">
+<title>GSignalQuery</title>
+<indexterm zone="GSignalQuery"><primary>GSignalQuery</primary></indexterm><programlisting>typedef struct {
   guint		signal_id;
   const gchar  *signal_name;
   GType		itype;
@@ -543,9 +541,9 @@ filled in by the <link linkend="g-signal-query"><function>g_signal_query()</func
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-SIGNAL-TYPE-STATIC-SCOPE:CAPS" role="macro"/>G_SIGNAL_TYPE_STATIC_SCOPE</title>
-<indexterm><primary>G_SIGNAL_TYPE_STATIC_SCOPE</primary></indexterm><programlisting>#define	G_SIGNAL_TYPE_STATIC_SCOPE (G_TYPE_FLAG_RESERVED_ID_BIT)
+<refsect2 id="G-SIGNAL-TYPE-STATIC-SCOPE:CAPS" role="macro">
+<title>G_SIGNAL_TYPE_STATIC_SCOPE</title>
+<indexterm zone="G-SIGNAL-TYPE-STATIC-SCOPE:CAPS"><primary>G_SIGNAL_TYPE_STATIC_SCOPE</primary></indexterm><programlisting>#define	G_SIGNAL_TYPE_STATIC_SCOPE (G_TYPE_FLAG_RESERVED_ID_BIT)
 </programlisting>
 <para>
 This macro flags signal argument types for which the signal system may 
@@ -569,23 +567,23 @@ of <link linkend="g-signal-new"><function>g_signal_new()</function></link>.
 		  GTK_TYPE_REQUISITION | G_SIGNAL_TYPE_STATIC_SCOPE);
 </programlisting>
 </informalexample></refsect2>
-<refsect2>
-<title><anchor id="G-SIGNAL-MATCH-MASK:CAPS" role="macro"/>G_SIGNAL_MATCH_MASK</title>
-<indexterm><primary>G_SIGNAL_MATCH_MASK</primary></indexterm><programlisting>#define G_SIGNAL_MATCH_MASK  0x3f
+<refsect2 id="G-SIGNAL-MATCH-MASK:CAPS" role="macro">
+<title>G_SIGNAL_MATCH_MASK</title>
+<indexterm zone="G-SIGNAL-MATCH-MASK:CAPS"><primary>G_SIGNAL_MATCH_MASK</primary></indexterm><programlisting>#define G_SIGNAL_MATCH_MASK  0x3f
 </programlisting>
 <para>
 A mask for all <link linkend="GSignalMatchType"><type>GSignalMatchType</type></link> bits.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-SIGNAL-FLAGS-MASK:CAPS" role="macro"/>G_SIGNAL_FLAGS_MASK</title>
-<indexterm><primary>G_SIGNAL_FLAGS_MASK</primary></indexterm><programlisting>#define G_SIGNAL_FLAGS_MASK  0x7f
+<refsect2 id="G-SIGNAL-FLAGS-MASK:CAPS" role="macro">
+<title>G_SIGNAL_FLAGS_MASK</title>
+<indexterm zone="G-SIGNAL-FLAGS-MASK:CAPS"><primary>G_SIGNAL_FLAGS_MASK</primary></indexterm><programlisting>#define G_SIGNAL_FLAGS_MASK  0x7f
 </programlisting>
 <para>
 A mask for all <link linkend="GSignalFlags"><type>GSignalFlags</type></link> bits.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-signal-new" role="function"/>g_signal_new ()</title>
-<indexterm><primary>g_signal_new</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_signal_new                        (const <link linkend="gchar">gchar</link> *signal_name,
+<refsect2 id="g-signal-new" role="function">
+<title>g_signal_new ()</title>
+<indexterm zone="g-signal-new"><primary>g_signal_new</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_signal_new                        (const <link linkend="gchar">gchar</link> *signal_name,
                                                          <link linkend="GType">GType</link> itype,
                                                          <link linkend="GSignalFlags">GSignalFlags</link> signal_flags,
                                                          <link linkend="guint">guint</link> class_offset,
@@ -650,9 +648,9 @@ be used, but they cannot be mixed.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-newv" role="function"/>g_signal_newv ()</title>
-<indexterm><primary>g_signal_newv</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_signal_newv                       (const <link linkend="gchar">gchar</link> *signal_name,
+<refsect2 id="g-signal-newv" role="function">
+<title>g_signal_newv ()</title>
+<indexterm zone="g-signal-newv"><primary>g_signal_newv</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_signal_newv                       (const <link linkend="gchar">gchar</link> *signal_name,
                                                          <link linkend="GType">GType</link> itype,
                                                          <link linkend="GSignalFlags">GSignalFlags</link> signal_flags,
                                                          <link linkend="GClosure">GClosure</link> *class_closure,
@@ -708,9 +706,9 @@ See <link linkend="g-signal-new"><function>g_signal_new()</function></link> for 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-new-valist" role="function"/>g_signal_new_valist ()</title>
-<indexterm><primary>g_signal_new_valist</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_signal_new_valist                 (const <link linkend="gchar">gchar</link> *signal_name,
+<refsect2 id="g-signal-new-valist" role="function">
+<title>g_signal_new_valist ()</title>
+<indexterm zone="g-signal-new-valist"><primary>g_signal_new_valist</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_signal_new_valist                 (const <link linkend="gchar">gchar</link> *signal_name,
                                                          <link linkend="GType">GType</link> itype,
                                                          <link linkend="GSignalFlags">GSignalFlags</link> signal_flags,
                                                          <link linkend="GClosure">GClosure</link> *class_closure,
@@ -766,9 +764,9 @@ See <link linkend="g-signal-new"><function>g_signal_new()</function></link> for 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-query" role="function"/>g_signal_query ()</title>
-<indexterm><primary>g_signal_query</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_query                      (<link linkend="guint">guint</link> signal_id,
+<refsect2 id="g-signal-query" role="function">
+<title>g_signal_query ()</title>
+<indexterm zone="g-signal-query"><primary>g_signal_query</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_query                      (<link linkend="guint">guint</link> signal_id,
                                                          <link linkend="GSignalQuery">GSignalQuery</link> *query);</programlisting>
 <para>
 Queries the signal system for in-depth information about a
@@ -788,9 +786,9 @@ be considered constant and have to be left untouched.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-lookup" role="function"/>g_signal_lookup ()</title>
-<indexterm><primary>g_signal_lookup</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_signal_lookup                     (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-signal-lookup" role="function">
+<title>g_signal_lookup ()</title>
+<indexterm zone="g-signal-lookup"><primary>g_signal_lookup</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_signal_lookup                     (const <link linkend="gchar">gchar</link> *name,
                                                          <link linkend="GType">GType</link> itype);</programlisting>
 <para>
 Given the name of the signal and the type of object it connects to, gets 
@@ -814,9 +812,9 @@ See <link linkend="g-signal-new"><function>g_signal_new()</function></link> for 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-name" role="function"/>g_signal_name ()</title>
-<indexterm><primary>g_signal_name</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        g_signal_name                       (<link linkend="guint">guint</link> signal_id);</programlisting>
+<refsect2 id="g-signal-name" role="function">
+<title>g_signal_name ()</title>
+<indexterm zone="g-signal-name"><primary>g_signal_name</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        g_signal_name                       (<link linkend="guint">guint</link> signal_id);</programlisting>
 <para>
 Given the signal's identifier, finds its name.
 </para>
@@ -831,9 +829,9 @@ Two different signals may have the same name, if they have differing types.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-list-ids" role="function"/>g_signal_list_ids ()</title>
-<indexterm><primary>g_signal_list_ids</primary></indexterm><programlisting><link linkend="guint">guint</link>*              g_signal_list_ids                   (<link linkend="GType">GType</link> itype,
+<refsect2 id="g-signal-list-ids" role="function">
+<title>g_signal_list_ids ()</title>
+<indexterm zone="g-signal-list-ids"><primary>g_signal_list_ids</primary></indexterm><programlisting><link linkend="guint">guint</link>*              g_signal_list_ids                   (<link linkend="GType">GType</link> itype,
                                                          <link linkend="guint">guint</link> *n_ids);</programlisting>
 <para>
 Lists the signals by id that a certain instance or interface type
@@ -851,9 +849,9 @@ created. Further information about the signals can be acquired through
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-emit" role="function"/>g_signal_emit ()</title>
-<indexterm><primary>g_signal_emit</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_emit                       (<link linkend="gpointer">gpointer</link> instance,
+<refsect2 id="g-signal-emit" role="function">
+<title>g_signal_emit ()</title>
+<indexterm zone="g-signal-emit"><primary>g_signal_emit</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_emit                       (<link linkend="gpointer">gpointer</link> instance,
                                                          <link linkend="guint">guint</link> signal_id,
                                                          <link linkend="GQuark">GQuark</link> detail,
                                                          ...);</programlisting>
@@ -881,9 +879,9 @@ if no handlers are connected, in contrast to <link linkend="g-signal-emitv"><fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-emit-by-name" role="function"/>g_signal_emit_by_name ()</title>
-<indexterm><primary>g_signal_emit_by_name</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_emit_by_name               (<link linkend="gpointer">gpointer</link> instance,
+<refsect2 id="g-signal-emit-by-name" role="function">
+<title>g_signal_emit_by_name ()</title>
+<indexterm zone="g-signal-emit-by-name"><primary>g_signal_emit_by_name</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_emit_by_name               (<link linkend="gpointer">gpointer</link> instance,
                                                          const <link linkend="gchar">gchar</link> *detailed_signal,
                                                          ...);</programlisting>
 <para>
@@ -907,9 +905,9 @@ if no handlers are connected, in contrast to <link linkend="g-signal-emitv"><fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-emitv" role="function"/>g_signal_emitv ()</title>
-<indexterm><primary>g_signal_emitv</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_emitv                      (const <link linkend="GValue">GValue</link> *instance_and_params,
+<refsect2 id="g-signal-emitv" role="function">
+<title>g_signal_emitv ()</title>
+<indexterm zone="g-signal-emitv"><primary>g_signal_emitv</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_emitv                      (const <link linkend="GValue">GValue</link> *instance_and_params,
                                                          <link linkend="guint">guint</link> signal_id,
                                                          <link linkend="GQuark">GQuark</link> detail,
                                                          <link linkend="GValue">GValue</link> *return_value);</programlisting>
@@ -938,9 +936,9 @@ connected, in contrast to <link linkend="g-signal-emit"><function>g_signal_emit(
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-emit-valist" role="function"/>g_signal_emit_valist ()</title>
-<indexterm><primary>g_signal_emit_valist</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_emit_valist                (<link linkend="gpointer">gpointer</link> instance,
+<refsect2 id="g-signal-emit-valist" role="function">
+<title>g_signal_emit_valist ()</title>
+<indexterm zone="g-signal-emit-valist"><primary>g_signal_emit_valist</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_emit_valist                (<link linkend="gpointer">gpointer</link> instance,
                                                          <link linkend="guint">guint</link> signal_id,
                                                          <link linkend="GQuark">GQuark</link> detail,
                                                          <link linkend="va-list">va_list</link> var_args);</programlisting>
@@ -968,9 +966,9 @@ if no handlers are connected, in contrast to <link linkend="g-signal-emitv"><fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-connect" role="macro"/>g_signal_connect()</title>
-<indexterm><primary>g_signal_connect</primary></indexterm><programlisting>#define             g_signal_connect(instance, detailed_signal, c_handler, data)</programlisting>
+<refsect2 id="g-signal-connect" role="macro">
+<title>g_signal_connect()</title>
+<indexterm zone="g-signal-connect"><primary>g_signal_connect</primary></indexterm><programlisting>#define             g_signal_connect(instance, detailed_signal, c_handler, data)</programlisting>
 <para>
 Connects a <link linkend="GCallback"><type>GCallback</type></link> function to a signal for a particular object.
 </para>
@@ -994,9 +992,9 @@ The handler will be called before the default handler of the signal.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-connect-after" role="macro"/>g_signal_connect_after()</title>
-<indexterm><primary>g_signal_connect_after</primary></indexterm><programlisting>#define             g_signal_connect_after(instance, detailed_signal, c_handler, data)</programlisting>
+<refsect2 id="g-signal-connect-after" role="macro">
+<title>g_signal_connect_after()</title>
+<indexterm zone="g-signal-connect-after"><primary>g_signal_connect_after</primary></indexterm><programlisting>#define             g_signal_connect_after(instance, detailed_signal, c_handler, data)</programlisting>
 <para>
 Connects a <link linkend="GCallback"><type>GCallback</type></link> function to a signal for a particular object.
 </para>
@@ -1020,9 +1018,9 @@ The handler will be called after the default handler of the signal.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-connect-swapped" role="macro"/>g_signal_connect_swapped()</title>
-<indexterm><primary>g_signal_connect_swapped</primary></indexterm><programlisting>#define             g_signal_connect_swapped(instance, detailed_signal, c_handler, data)</programlisting>
+<refsect2 id="g-signal-connect-swapped" role="macro">
+<title>g_signal_connect_swapped()</title>
+<indexterm zone="g-signal-connect-swapped"><primary>g_signal_connect_swapped</primary></indexterm><programlisting>#define             g_signal_connect_swapped(instance, detailed_signal, c_handler, data)</programlisting>
 <para>
 Connects a <link linkend="GCallback"><type>GCallback</type></link> function to a signal for a particular object.
 </para>
@@ -1047,9 +1045,9 @@ calling the handler.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-connect-object" role="function"/>g_signal_connect_object ()</title>
-<indexterm><primary>g_signal_connect_object</primary></indexterm><programlisting><link linkend="gulong">gulong</link>              g_signal_connect_object             (<link linkend="gpointer">gpointer</link> instance,
+<refsect2 id="g-signal-connect-object" role="function">
+<title>g_signal_connect_object ()</title>
+<indexterm zone="g-signal-connect-object"><primary>g_signal_connect_object</primary></indexterm><programlisting><link linkend="gulong">gulong</link>              g_signal_connect_object             (<link linkend="gpointer">gpointer</link> instance,
                                                          const <link linkend="gchar">gchar</link> *detailed_signal,
                                                          <link linkend="GCallback">GCallback</link> c_handler,
                                                          <link linkend="gpointer">gpointer</link> gobject,
@@ -1100,9 +1098,9 @@ calling the handler.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GConnectFlags" role="enum"/>enum GConnectFlags</title>
-<indexterm><primary>GConnectFlags</primary></indexterm><programlisting>typedef enum
+<refsect2 id="GConnectFlags" role="enum">
+<title>enum GConnectFlags</title>
+<indexterm zone="GConnectFlags"><primary>GConnectFlags</primary></indexterm><programlisting>typedef enum
 {
   G_CONNECT_AFTER	= 1 &lt;&lt; 0,
   G_CONNECT_SWAPPED	= 1 &lt;&lt; 1
@@ -1112,23 +1110,23 @@ calling the handler.
 The connection flags are used to specify the behaviour of a signal's 
 connection.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-CONNECT-AFTER:CAPS" role="constant"/><literal>G_CONNECT_AFTER</literal></term>
+<varlistentry id="G-CONNECT-AFTER:CAPS" role="constant">
+<term><literal>G_CONNECT_AFTER</literal></term>
 <listitem><simpara>whether the handler should be called before or after the 
                   default handler of the signal.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-CONNECT-SWAPPED:CAPS" role="constant"/><literal>G_CONNECT_SWAPPED</literal></term>
+<varlistentry id="G-CONNECT-SWAPPED:CAPS" role="constant">
+<term><literal>G_CONNECT_SWAPPED</literal></term>
 <listitem><simpara>whether the instance and data should be swapped when
                   calling the handler.
 
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-connect-data" role="function"/>g_signal_connect_data ()</title>
-<indexterm><primary>g_signal_connect_data</primary></indexterm><programlisting><link linkend="gulong">gulong</link>              g_signal_connect_data               (<link linkend="gpointer">gpointer</link> instance,
+<refsect2 id="g-signal-connect-data" role="function">
+<title>g_signal_connect_data ()</title>
+<indexterm zone="g-signal-connect-data"><primary>g_signal_connect_data</primary></indexterm><programlisting><link linkend="gulong">gulong</link>              g_signal_connect_data               (<link linkend="gpointer">gpointer</link> instance,
                                                          const <link linkend="gchar">gchar</link> *detailed_signal,
                                                          <link linkend="GCallback">GCallback</link> c_handler,
                                                          <link linkend="gpointer">gpointer</link> data,
@@ -1136,7 +1134,7 @@ connection.
                                                          <link linkend="GConnectFlags">GConnectFlags</link> connect_flags);</programlisting>
 <para>
 Connects a <link linkend="GCallback"><type>GCallback</type></link> function to a signal for a particular object. Similar
-to <link linkend="g-signal-connect"><function>g_signal_connect()</function></link>, but allows to provide a <link linkend="GDestroyNotify"><type>GDestroyNotify</type></link> for the data
+to <link linkend="g-signal-connect"><function>g_signal_connect()</function></link>, but allows to provide a <link linkend="GClosureNotify"><type>GClosureNotify</type></link> for the data
 which will be called when the signal handler is disconnected and no longer
 used. Specify <parameter>connect_flags</parameter> if you need <literal>...<link linkend="after"><function>_after()</function></link></literal> pr
 <literal>...<link linkend="swapped"><function>_swapped()</function></link></literal> variants of this function.
@@ -1154,7 +1152,7 @@ used. Specify <parameter>connect_flags</parameter> if you need <literal>...<link
 <listitem><simpara>data to pass to <parameter>c_handler</parameter> calls.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>destroy_data</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GDestroyNotify"><type>GDestroyNotify</type></link> for <parameter>data</parameter>.
+<listitem><simpara>a <link linkend="GClosureNotify"><type>GClosureNotify</type></link> for <parameter>data</parameter>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>connect_flags</parameter>&nbsp;:</term>
 <listitem><simpara>a combination of <link linkend="GConnectFlags"><type>GConnectFlags</type></link>.
@@ -1164,9 +1162,9 @@ used. Specify <parameter>connect_flags</parameter> if you need <literal>...<link
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-connect-closure" role="function"/>g_signal_connect_closure ()</title>
-<indexterm><primary>g_signal_connect_closure</primary></indexterm><programlisting><link linkend="gulong">gulong</link>              g_signal_connect_closure            (<link linkend="gpointer">gpointer</link> instance,
+<refsect2 id="g-signal-connect-closure" role="function">
+<title>g_signal_connect_closure ()</title>
+<indexterm zone="g-signal-connect-closure"><primary>g_signal_connect_closure</primary></indexterm><programlisting><link linkend="gulong">gulong</link>              g_signal_connect_closure            (<link linkend="gpointer">gpointer</link> instance,
                                                          const <link linkend="gchar">gchar</link> *detailed_signal,
                                                          <link linkend="GClosure">GClosure</link> *closure,
                                                          <link linkend="gboolean">gboolean</link> after);</programlisting>
@@ -1191,9 +1189,9 @@ Connects a closure to a signal for a particular object.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-connect-closure-by-id" role="function"/>g_signal_connect_closure_by_id ()</title>
-<indexterm><primary>g_signal_connect_closure_by_id</primary></indexterm><programlisting><link linkend="gulong">gulong</link>              g_signal_connect_closure_by_id      (<link linkend="gpointer">gpointer</link> instance,
+<refsect2 id="g-signal-connect-closure-by-id" role="function">
+<title>g_signal_connect_closure_by_id ()</title>
+<indexterm zone="g-signal-connect-closure-by-id"><primary>g_signal_connect_closure_by_id</primary></indexterm><programlisting><link linkend="gulong">gulong</link>              g_signal_connect_closure_by_id      (<link linkend="gpointer">gpointer</link> instance,
                                                          <link linkend="guint">guint</link> signal_id,
                                                          <link linkend="GQuark">GQuark</link> detail,
                                                          <link linkend="GClosure">GClosure</link> *closure,
@@ -1222,9 +1220,9 @@ Connects a closure to a signal for a particular object.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-handler-block" role="function"/>g_signal_handler_block ()</title>
-<indexterm><primary>g_signal_handler_block</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_handler_block              (<link linkend="gpointer">gpointer</link> instance,
+<refsect2 id="g-signal-handler-block" role="function">
+<title>g_signal_handler_block ()</title>
+<indexterm zone="g-signal-handler-block"><primary>g_signal_handler_block</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_handler_block              (<link linkend="gpointer">gpointer</link> instance,
                                                          <link linkend="gulong">gulong</link> handler_id);</programlisting>
 <para>
 Blocks a handler of an instance so it will not be called during 
@@ -1246,9 +1244,9 @@ signal of <parameter>instance</parameter>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-handler-unblock" role="function"/>g_signal_handler_unblock ()</title>
-<indexterm><primary>g_signal_handler_unblock</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_handler_unblock            (<link linkend="gpointer">gpointer</link> instance,
+<refsect2 id="g-signal-handler-unblock" role="function">
+<title>g_signal_handler_unblock ()</title>
+<indexterm zone="g-signal-handler-unblock"><primary>g_signal_handler_unblock</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_handler_unblock            (<link linkend="gpointer">gpointer</link> instance,
                                                          <link linkend="gulong">gulong</link> handler_id);</programlisting>
 <para>
 Undoes the effect of a previous <link linkend="g-signal-handler-block"><function>g_signal_handler_block()</function></link> call. 
@@ -1275,9 +1273,9 @@ connected to a signal of <parameter>instance</parameter> and is currently blocke
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-handler-disconnect" role="function"/>g_signal_handler_disconnect ()</title>
-<indexterm><primary>g_signal_handler_disconnect</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_handler_disconnect         (<link linkend="gpointer">gpointer</link> instance,
+<refsect2 id="g-signal-handler-disconnect" role="function">
+<title>g_signal_handler_disconnect ()</title>
+<indexterm zone="g-signal-handler-disconnect"><primary>g_signal_handler_disconnect</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_handler_disconnect         (<link linkend="gpointer">gpointer</link> instance,
                                                          <link linkend="gulong">gulong</link> handler_id);</programlisting>
 <para>
 Disconnects a handler from an instance so it will not be called during 
@@ -1297,9 +1295,9 @@ signal of <parameter>instance</parameter>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-handler-find" role="function"/>g_signal_handler_find ()</title>
-<indexterm><primary>g_signal_handler_find</primary></indexterm><programlisting><link linkend="gulong">gulong</link>              g_signal_handler_find               (<link linkend="gpointer">gpointer</link> instance,
+<refsect2 id="g-signal-handler-find" role="function">
+<title>g_signal_handler_find ()</title>
+<indexterm zone="g-signal-handler-find"><primary>g_signal_handler_find</primary></indexterm><programlisting><link linkend="gulong">gulong</link>              g_signal_handler_find               (<link linkend="gpointer">gpointer</link> instance,
                                                          <link linkend="GSignalMatchType">GSignalMatchType</link> mask,
                                                          <link linkend="guint">guint</link> signal_id,
                                                          <link linkend="GQuark">GQuark</link> detail,
@@ -1340,9 +1338,9 @@ If no handler was found, 0 is returned.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-handlers-block-matched" role="function"/>g_signal_handlers_block_matched ()</title>
-<indexterm><primary>g_signal_handlers_block_matched</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_signal_handlers_block_matched     (<link linkend="gpointer">gpointer</link> instance,
+<refsect2 id="g-signal-handlers-block-matched" role="function">
+<title>g_signal_handlers_block_matched ()</title>
+<indexterm zone="g-signal-handlers-block-matched"><primary>g_signal_handlers_block_matched</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_signal_handlers_block_matched     (<link linkend="gpointer">gpointer</link> instance,
                                                          <link linkend="GSignalMatchType">GSignalMatchType</link> mask,
                                                          <link linkend="guint">guint</link> signal_id,
                                                          <link linkend="GQuark">GQuark</link> detail,
@@ -1385,9 +1383,9 @@ otherwise.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-handlers-unblock-matched" role="function"/>g_signal_handlers_unblock_matched ()</title>
-<indexterm><primary>g_signal_handlers_unblock_matched</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_signal_handlers_unblock_matched   (<link linkend="gpointer">gpointer</link> instance,
+<refsect2 id="g-signal-handlers-unblock-matched" role="function">
+<title>g_signal_handlers_unblock_matched ()</title>
+<indexterm zone="g-signal-handlers-unblock-matched"><primary>g_signal_handlers_unblock_matched</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_signal_handlers_unblock_matched   (<link linkend="gpointer">gpointer</link> instance,
                                                          <link linkend="GSignalMatchType">GSignalMatchType</link> mask,
                                                          <link linkend="guint">guint</link> signal_id,
                                                          <link linkend="GQuark">GQuark</link> detail,
@@ -1431,9 +1429,9 @@ not currently blocked.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-handlers-disconnect-matched" role="function"/>g_signal_handlers_disconnect_matched ()</title>
-<indexterm><primary>g_signal_handlers_disconnect_matched</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_signal_handlers_disconnect_matched
+<refsect2 id="g-signal-handlers-disconnect-matched" role="function">
+<title>g_signal_handlers_disconnect_matched ()</title>
+<indexterm zone="g-signal-handlers-disconnect-matched"><primary>g_signal_handlers_disconnect_matched</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_signal_handlers_disconnect_matched
                                                         (<link linkend="gpointer">gpointer</link> instance,
                                                          <link linkend="GSignalMatchType">GSignalMatchType</link> mask,
                                                          <link linkend="guint">guint</link> signal_id,
@@ -1477,9 +1475,9 @@ handlers otherwise.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-handler-is-connected" role="function"/>g_signal_handler_is_connected ()</title>
-<indexterm><primary>g_signal_handler_is_connected</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_signal_handler_is_connected       (<link linkend="gpointer">gpointer</link> instance,
+<refsect2 id="g-signal-handler-is-connected" role="function">
+<title>g_signal_handler_is_connected ()</title>
+<indexterm zone="g-signal-handler-is-connected"><primary>g_signal_handler_is_connected</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_signal_handler_is_connected       (<link linkend="gpointer">gpointer</link> instance,
                                                          <link linkend="gulong">gulong</link> handler_id);</programlisting>
 <para>
 Returns whether <parameter>handler_id</parameter> is the id of a handler connected to <parameter>instance</parameter>.
@@ -1495,9 +1493,9 @@ Returns whether <parameter>handler_id</parameter> is the id of a handler connect
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-handlers-block-by-func" role="macro"/>g_signal_handlers_block_by_func()</title>
-<indexterm><primary>g_signal_handlers_block_by_func</primary></indexterm><programlisting>#define             g_signal_handlers_block_by_func(instance, func, data)</programlisting>
+<refsect2 id="g-signal-handlers-block-by-func" role="macro">
+<title>g_signal_handlers_block_by_func()</title>
+<indexterm zone="g-signal-handlers-block-by-func"><primary>g_signal_handlers_block_by_func</primary></indexterm><programlisting>#define             g_signal_handlers_block_by_func(instance, func, data)</programlisting>
 <para>
 Blocks all handlers on an instance that match <parameter>func</parameter> and <parameter>data</parameter>.
 </para><variablelist role="params">
@@ -1515,9 +1513,9 @@ Blocks all handlers on an instance that match <parameter>func</parameter> and <p
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-handlers-unblock-by-func" role="macro"/>g_signal_handlers_unblock_by_func()</title>
-<indexterm><primary>g_signal_handlers_unblock_by_func</primary></indexterm><programlisting>#define             g_signal_handlers_unblock_by_func(instance, func, data)</programlisting>
+<refsect2 id="g-signal-handlers-unblock-by-func" role="macro">
+<title>g_signal_handlers_unblock_by_func()</title>
+<indexterm zone="g-signal-handlers-unblock-by-func"><primary>g_signal_handlers_unblock_by_func</primary></indexterm><programlisting>#define             g_signal_handlers_unblock_by_func(instance, func, data)</programlisting>
 <para>
 Unblocks all handlers on an instance that match <parameter>func</parameter> and <parameter>data</parameter>.
 </para><variablelist role="params">
@@ -1535,9 +1533,9 @@ Unblocks all handlers on an instance that match <parameter>func</parameter> and 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-handlers-disconnect-by-func" role="macro"/>g_signal_handlers_disconnect_by_func()</title>
-<indexterm><primary>g_signal_handlers_disconnect_by_func</primary></indexterm><programlisting>#define             g_signal_handlers_disconnect_by_func(instance, func, data)</programlisting>
+<refsect2 id="g-signal-handlers-disconnect-by-func" role="macro">
+<title>g_signal_handlers_disconnect_by_func()</title>
+<indexterm zone="g-signal-handlers-disconnect-by-func"><primary>g_signal_handlers_disconnect_by_func</primary></indexterm><programlisting>#define             g_signal_handlers_disconnect_by_func(instance, func, data)</programlisting>
 <para>
 Disconnects all handlers on an instance that match <parameter>func</parameter> and <parameter>data</parameter>.
 </para><variablelist role="params">
@@ -1555,9 +1553,9 @@ Disconnects all handlers on an instance that match <parameter>func</parameter> a
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-has-handler-pending" role="function"/>g_signal_has_handler_pending ()</title>
-<indexterm><primary>g_signal_has_handler_pending</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_signal_has_handler_pending        (<link linkend="gpointer">gpointer</link> instance,
+<refsect2 id="g-signal-has-handler-pending" role="function">
+<title>g_signal_has_handler_pending ()</title>
+<indexterm zone="g-signal-has-handler-pending"><primary>g_signal_has_handler_pending</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_signal_has_handler_pending        (<link linkend="gpointer">gpointer</link> instance,
                                                          <link linkend="guint">guint</link> signal_id,
                                                          <link linkend="GQuark">GQuark</link> detail,
                                                          <link linkend="gboolean">gboolean</link> may_be_blocked);</programlisting>
@@ -1589,9 +1587,9 @@ the arguments.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-stop-emission" role="function"/>g_signal_stop_emission ()</title>
-<indexterm><primary>g_signal_stop_emission</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_stop_emission              (<link linkend="gpointer">gpointer</link> instance,
+<refsect2 id="g-signal-stop-emission" role="function">
+<title>g_signal_stop_emission ()</title>
+<indexterm zone="g-signal-stop-emission"><primary>g_signal_stop_emission</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_stop_emission              (<link linkend="gpointer">gpointer</link> instance,
                                                          <link linkend="guint">guint</link> signal_id,
                                                          <link linkend="GQuark">GQuark</link> detail);</programlisting>
 <para>
@@ -1617,9 +1615,9 @@ Prints a warning if used on a signal which isn't being emitted.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-stop-emission-by-name" role="function"/>g_signal_stop_emission_by_name ()</title>
-<indexterm><primary>g_signal_stop_emission_by_name</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_stop_emission_by_name      (<link linkend="gpointer">gpointer</link> instance,
+<refsect2 id="g-signal-stop-emission-by-name" role="function">
+<title>g_signal_stop_emission_by_name ()</title>
+<indexterm zone="g-signal-stop-emission-by-name"><primary>g_signal_stop_emission_by_name</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_stop_emission_by_name      (<link linkend="gpointer">gpointer</link> instance,
                                                          const <link linkend="gchar">gchar</link> *detailed_signal);</programlisting>
 <para>
 Stops a signal's current emission.
@@ -1637,9 +1635,9 @@ signal id for you.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-override-class-closure" role="function"/>g_signal_override_class_closure ()</title>
-<indexterm><primary>g_signal_override_class_closure</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_override_class_closure     (<link linkend="guint">guint</link> signal_id,
+<refsect2 id="g-signal-override-class-closure" role="function">
+<title>g_signal_override_class_closure ()</title>
+<indexterm zone="g-signal-override-class-closure"><primary>g_signal_override_class_closure</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_override_class_closure     (<link linkend="guint">guint</link> signal_id,
                                                          <link linkend="GType">GType</link> instance_type,
                                                          <link linkend="GClosure">GClosure</link> *class_closure);</programlisting>
 <para>
@@ -1660,9 +1658,9 @@ from the type to which the signal belongs.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-chain-from-overridden" role="function"/>g_signal_chain_from_overridden ()</title>
-<indexterm><primary>g_signal_chain_from_overridden</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_chain_from_overridden      (const <link linkend="GValue">GValue</link> *instance_and_params,
+<refsect2 id="g-signal-chain-from-overridden" role="function">
+<title>g_signal_chain_from_overridden ()</title>
+<indexterm zone="g-signal-chain-from-overridden"><primary>g_signal_chain_from_overridden</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_chain_from_overridden      (const <link linkend="GValue">GValue</link> *instance_and_params,
                                                          <link linkend="GValue">GValue</link> *return_value);</programlisting>
 <para>
 Calls the original class closure of a signal. This function should only
@@ -1680,9 +1678,9 @@ be called from an overridden class closure; see
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-add-emission-hook" role="function"/>g_signal_add_emission_hook ()</title>
-<indexterm><primary>g_signal_add_emission_hook</primary></indexterm><programlisting><link linkend="gulong">gulong</link>              g_signal_add_emission_hook          (<link linkend="guint">guint</link> signal_id,
+<refsect2 id="g-signal-add-emission-hook" role="function">
+<title>g_signal_add_emission_hook ()</title>
+<indexterm zone="g-signal-add-emission-hook"><primary>g_signal_add_emission_hook</primary></indexterm><programlisting><link linkend="gulong">gulong</link>              g_signal_add_emission_hook          (<link linkend="guint">guint</link> signal_id,
                                                          <link linkend="GQuark">GQuark</link> detail,
                                                          <link linkend="GSignalEmissionHook">GSignalEmissionHook</link> hook_func,
                                                          <link linkend="gpointer">gpointer</link> hook_data,
@@ -1712,9 +1710,9 @@ for signals which don't have <link linkend="G-SIGNAL-NO-HOOKS:CAPS"><type>G_SIGN
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-remove-emission-hook" role="function"/>g_signal_remove_emission_hook ()</title>
-<indexterm><primary>g_signal_remove_emission_hook</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_remove_emission_hook       (<link linkend="guint">guint</link> signal_id,
+<refsect2 id="g-signal-remove-emission-hook" role="function">
+<title>g_signal_remove_emission_hook ()</title>
+<indexterm zone="g-signal-remove-emission-hook"><primary>g_signal_remove_emission_hook</primary></indexterm><programlisting><link linkend="void">void</link>                g_signal_remove_emission_hook       (<link linkend="guint">guint</link> signal_id,
                                                          <link linkend="gulong">gulong</link> hook_id);</programlisting>
 <para>
 Deletes an emission hook.
@@ -1729,9 +1727,9 @@ Deletes an emission hook.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-parse-name" role="function"/>g_signal_parse_name ()</title>
-<indexterm><primary>g_signal_parse_name</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_signal_parse_name                 (const <link linkend="gchar">gchar</link> *detailed_signal,
+<refsect2 id="g-signal-parse-name" role="function">
+<title>g_signal_parse_name ()</title>
+<indexterm zone="g-signal-parse-name"><primary>g_signal_parse_name</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_signal_parse_name                 (const <link linkend="gchar">gchar</link> *detailed_signal,
                                                          <link linkend="GType">GType</link> itype,
                                                          <link linkend="guint">guint</link> *signal_id_p,
                                                          <link linkend="GQuark">GQuark</link> *detail_p,
@@ -1760,9 +1758,9 @@ and <parameter>detail</parameter> quark.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-get-invocation-hint" role="function"/>g_signal_get_invocation_hint ()</title>
-<indexterm><primary>g_signal_get_invocation_hint</primary></indexterm><programlisting><link linkend="GSignalInvocationHint">GSignalInvocationHint</link>* g_signal_get_invocation_hint     (<link linkend="gpointer">gpointer</link> instance);</programlisting>
+<refsect2 id="g-signal-get-invocation-hint" role="function">
+<title>g_signal_get_invocation_hint ()</title>
+<indexterm zone="g-signal-get-invocation-hint"><primary>g_signal_get_invocation_hint</primary></indexterm><programlisting><link linkend="GSignalInvocationHint">GSignalInvocationHint</link>* g_signal_get_invocation_hint     (<link linkend="gpointer">gpointer</link> instance);</programlisting>
 <para>
 Returns the invocation hint of the innermost signal emission of instance. 
 </para><variablelist role="params">
@@ -1774,9 +1772,9 @@ Returns the invocation hint of the innermost signal emission of instance.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-type-cclosure-new" role="function"/>g_signal_type_cclosure_new ()</title>
-<indexterm><primary>g_signal_type_cclosure_new</primary></indexterm><programlisting><link linkend="GClosure">GClosure</link>*           g_signal_type_cclosure_new          (<link linkend="GType">GType</link> itype,
+<refsect2 id="g-signal-type-cclosure-new" role="function">
+<title>g_signal_type_cclosure_new ()</title>
+<indexterm zone="g-signal-type-cclosure-new"><primary>g_signal_type_cclosure_new</primary></indexterm><programlisting><link linkend="GClosure">GClosure</link>*           g_signal_type_cclosure_new          (<link linkend="GType">GType</link> itype,
                                                          <link linkend="guint">guint</link> struct_offset);</programlisting>
 <para>
 Creates a new closure which invokes the function found at the offset
@@ -1795,9 +1793,9 @@ identified by <parameter>itype</parameter>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-signal-accumulator-true-handled" role="function" condition="since:2.4"/>g_signal_accumulator_true_handled ()</title>
-<indexterm role="2.4"><primary>g_signal_accumulator_true_handled</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_signal_accumulator_true_handled   (<link linkend="GSignalInvocationHint">GSignalInvocationHint</link> *ihint,
+<refsect2 id="g-signal-accumulator-true-handled" role="function" condition="since:2.4">
+<title>g_signal_accumulator_true_handled ()</title>
+<indexterm zone="g-signal-accumulator-true-handled" role="2.4"><primary>g_signal_accumulator_true_handled</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_signal_accumulator_true_handled   (<link linkend="GSignalInvocationHint">GSignalInvocationHint</link> *ihint,
                                                          <link linkend="GValue">GValue</link> *return_accu,
                                                          const <link linkend="GValue">GValue</link> *handler_return,
                                                          <link linkend="gpointer">gpointer</link> dummy);</programlisting>

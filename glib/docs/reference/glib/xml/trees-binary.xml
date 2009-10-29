@@ -1,6 +1,6 @@
 <refentry id="glib-Balanced-Binary-Trees">
 <refmeta>
-<refentrytitle role="top_of_page">Balanced Binary Trees</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Balanced-Binary-Trees.top_of_page">Balanced Binary Trees</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
@@ -8,17 +8,16 @@
 <refnamediv>
 <refname>Balanced Binary Trees</refname>
 <refpurpose>a sorted collection of key/value pairs optimized for searching
-and traversing in order.</refpurpose>
+and traversing in order</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Balanced-Binary-Trees.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
-
 
                     <link linkend="GTree">GTree</link>;
 <link linkend="GTree">GTree</link>*              <link linkend="g-tree-new">g_tree_new</link>                          (<link linkend="GCompareFunc">GCompareFunc</link> key_compare_func);
@@ -72,7 +71,7 @@ enum                <link linkend="GTraverseType">GTraverseType</link>;
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Balanced-Binary-Trees.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The <link linkend="GTree"><type>GTree</type></link> structure and its associated functions provide a sorted collection
@@ -104,19 +103,19 @@ To destroy a <link linkend="GTree"><type>GTree</type></link>, use <link linkend=
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Balanced-Binary-Trees.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GTree" role="struct"/>GTree</title>
-<indexterm><primary>GTree</primary></indexterm><programlisting>typedef struct _GTree GTree;</programlisting>
+<refsect2 id="GTree" role="struct">
+<title>GTree</title>
+<indexterm zone="GTree"><primary>GTree</primary></indexterm><programlisting>typedef struct _GTree GTree;</programlisting>
 <para>
 The <structname>GTree</structname> struct is an opaque data structure representing a
 <link linkend="glib-Balanced-Binary-Trees">Balanced Binary Tree</link>.
 It should be accessed only by using the following functions.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-tree-new" role="function"/>g_tree_new ()</title>
-<indexterm><primary>g_tree_new</primary></indexterm><programlisting><link linkend="GTree">GTree</link>*              g_tree_new                          (<link linkend="GCompareFunc">GCompareFunc</link> key_compare_func);</programlisting>
+<refsect2 id="g-tree-new" role="function">
+<title>g_tree_new ()</title>
+<indexterm zone="g-tree-new"><primary>g_tree_new</primary></indexterm><programlisting><link linkend="GTree">GTree</link>*              g_tree_new                          (<link linkend="GCompareFunc">GCompareFunc</link> key_compare_func);</programlisting>
 <para>
 Creates a new <link linkend="GTree"><type>GTree</type></link>.</para>
 <para>
@@ -132,9 +131,9 @@ Creates a new <link linkend="GTree"><type>GTree</type></link>.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new <link linkend="GTree"><type>GTree</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-tree-new-with-data" role="function"/>g_tree_new_with_data ()</title>
-<indexterm><primary>g_tree_new_with_data</primary></indexterm><programlisting><link linkend="GTree">GTree</link>*              g_tree_new_with_data                (<link linkend="GCompareDataFunc">GCompareDataFunc</link> key_compare_func,
+<refsect2 id="g-tree-new-with-data" role="function">
+<title>g_tree_new_with_data ()</title>
+<indexterm zone="g-tree-new-with-data"><primary>g_tree_new_with_data</primary></indexterm><programlisting><link linkend="GTree">GTree</link>*              g_tree_new_with_data                (<link linkend="GCompareDataFunc">GCompareDataFunc</link> key_compare_func,
                                                          <link linkend="gpointer">gpointer</link> key_compare_data);</programlisting>
 <para>
 Creates a new <link linkend="GTree"><type>GTree</type></link> with a comparison function that accepts user data.
@@ -151,9 +150,9 @@ See <link linkend="g-tree-new"><function>g_tree_new()</function></link> for more
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new <link linkend="GTree"><type>GTree</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-tree-new-full" role="function"/>g_tree_new_full ()</title>
-<indexterm><primary>g_tree_new_full</primary></indexterm><programlisting><link linkend="GTree">GTree</link>*              g_tree_new_full                     (<link linkend="GCompareDataFunc">GCompareDataFunc</link> key_compare_func,
+<refsect2 id="g-tree-new-full" role="function">
+<title>g_tree_new_full ()</title>
+<indexterm zone="g-tree-new-full"><primary>g_tree_new_full</primary></indexterm><programlisting><link linkend="GTree">GTree</link>*              g_tree_new_full                     (<link linkend="GCompareDataFunc">GCompareDataFunc</link> key_compare_func,
                                                          <link linkend="gpointer">gpointer</link> key_compare_data,
                                                          <link linkend="GDestroyNotify">GDestroyNotify</link> key_destroy_func,
                                                          <link linkend="GDestroyNotify">GDestroyNotify</link> value_destroy_func);</programlisting>
@@ -183,9 +182,9 @@ removing the entry from the <link linkend="GTree"><type>GTree</type></link>.</pa
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new <link linkend="GTree"><type>GTree</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-tree-insert" role="function"/>g_tree_insert ()</title>
-<indexterm><primary>g_tree_insert</primary></indexterm><programlisting><link linkend="void">void</link>                g_tree_insert                       (<link linkend="GTree">GTree</link> *tree,
+<refsect2 id="g-tree-insert" role="function">
+<title>g_tree_insert ()</title>
+<indexterm zone="g-tree-insert"><primary>g_tree_insert</primary></indexterm><programlisting><link linkend="void">void</link>                g_tree_insert                       (<link linkend="GTree">GTree</link> *tree,
                                                          <link linkend="gpointer">gpointer</link> key,
                                                          <link linkend="gpointer">gpointer</link> value);</programlisting>
 <para>
@@ -211,9 +210,9 @@ so that the distance from the root to every leaf is as small as possible.</para>
 <listitem><simpara> the value corresponding to the key.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-tree-replace" role="function"/>g_tree_replace ()</title>
-<indexterm><primary>g_tree_replace</primary></indexterm><programlisting><link linkend="void">void</link>                g_tree_replace                      (<link linkend="GTree">GTree</link> *tree,
+<refsect2 id="g-tree-replace" role="function">
+<title>g_tree_replace ()</title>
+<indexterm zone="g-tree-replace"><primary>g_tree_replace</primary></indexterm><programlisting><link linkend="void">void</link>                g_tree_replace                      (<link linkend="GTree">GTree</link> *tree,
                                                          <link linkend="gpointer">gpointer</link> key,
                                                          <link linkend="gpointer">gpointer</link> value);</programlisting>
 <para>
@@ -240,9 +239,9 @@ so that the distance from the root to every leaf is as small as possible.</para>
 <listitem><simpara> the value corresponding to the key.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-tree-nnodes" role="function"/>g_tree_nnodes ()</title>
-<indexterm><primary>g_tree_nnodes</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_tree_nnodes                       (<link linkend="GTree">GTree</link> *tree);</programlisting>
+<refsect2 id="g-tree-nnodes" role="function">
+<title>g_tree_nnodes ()</title>
+<indexterm zone="g-tree-nnodes"><primary>g_tree_nnodes</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_tree_nnodes                       (<link linkend="GTree">GTree</link> *tree);</programlisting>
 <para>
 Gets the number of nodes in a <link linkend="GTree"><type>GTree</type></link>.</para>
 <para>
@@ -254,9 +253,9 @@ Gets the number of nodes in a <link linkend="GTree"><type>GTree</type></link>.</
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of nodes in the <link linkend="GTree"><type>GTree</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-tree-height" role="function"/>g_tree_height ()</title>
-<indexterm><primary>g_tree_height</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_tree_height                       (<link linkend="GTree">GTree</link> *tree);</programlisting>
+<refsect2 id="g-tree-height" role="function">
+<title>g_tree_height ()</title>
+<indexterm zone="g-tree-height"><primary>g_tree_height</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_tree_height                       (<link linkend="GTree">GTree</link> *tree);</programlisting>
 <para>
 Gets the height of a <link linkend="GTree"><type>GTree</type></link>.
 </para>
@@ -273,9 +272,9 @@ If the root node has children the height is 2, etc.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the height of the <link linkend="GTree"><type>GTree</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-tree-lookup" role="function"/>g_tree_lookup ()</title>
-<indexterm><primary>g_tree_lookup</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_tree_lookup                       (<link linkend="GTree">GTree</link> *tree,
+<refsect2 id="g-tree-lookup" role="function">
+<title>g_tree_lookup ()</title>
+<indexterm zone="g-tree-lookup"><primary>g_tree_lookup</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_tree_lookup                       (<link linkend="GTree">GTree</link> *tree,
                                                          <link linkend="gconstpointer">gconstpointer</link> key);</programlisting>
 <para>
 Gets the value corresponding to the given key. Since a <link linkend="GTree"><type>GTree</type></link> is 
@@ -294,9 +293,9 @@ fast.</para>
 not found.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-tree-lookup-extended" role="function"/>g_tree_lookup_extended ()</title>
-<indexterm><primary>g_tree_lookup_extended</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_tree_lookup_extended              (<link linkend="GTree">GTree</link> *tree,
+<refsect2 id="g-tree-lookup-extended" role="function">
+<title>g_tree_lookup_extended ()</title>
+<indexterm zone="g-tree-lookup-extended"><primary>g_tree_lookup_extended</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_tree_lookup_extended              (<link linkend="GTree">GTree</link> *tree,
                                                          <link linkend="gconstpointer">gconstpointer</link> lookup_key,
                                                          <link linkend="gpointer">gpointer</link> *orig_key,
                                                          <link linkend="gpointer">gpointer</link> *value);</programlisting>
@@ -321,9 +320,9 @@ for example before calling <link linkend="g-tree-remove"><function>g_tree_remove
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the key was found in the <link linkend="GTree"><type>GTree</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-tree-foreach" role="function"/>g_tree_foreach ()</title>
-<indexterm><primary>g_tree_foreach</primary></indexterm><programlisting><link linkend="void">void</link>                g_tree_foreach                      (<link linkend="GTree">GTree</link> *tree,
+<refsect2 id="g-tree-foreach" role="function">
+<title>g_tree_foreach ()</title>
+<indexterm zone="g-tree-foreach"><primary>g_tree_foreach</primary></indexterm><programlisting><link linkend="void">void</link>                g_tree_foreach                      (<link linkend="GTree">GTree</link> *tree,
                                                          <link linkend="GTraverseFunc">GTraverseFunc</link> func,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -350,9 +349,9 @@ the tree, then walk the list and remove each item.</para>
 <listitem><simpara> user data to pass to the function.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-tree-traverse" role="function" condition="deprecated"/>g_tree_traverse ()</title>
-<indexterm role="deprecated"><primary>g_tree_traverse</primary></indexterm><programlisting><link linkend="void">void</link>                g_tree_traverse                     (<link linkend="GTree">GTree</link> *tree,
+<refsect2 id="g-tree-traverse" role="function" condition="deprecated">
+<title>g_tree_traverse ()</title>
+<indexterm zone="g-tree-traverse" role="deprecated"><primary>g_tree_traverse</primary></indexterm><programlisting><link linkend="void">void</link>                g_tree_traverse                     (<link linkend="GTree">GTree</link> *tree,
                                                          <link linkend="GTraverseFunc">GTraverseFunc</link> traverse_func,
                                                          <link linkend="GTraverseType">GTraverseType</link> traverse_type,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
@@ -380,9 +379,9 @@ Calls the given function for each node in the <link linkend="GTree"><type>GTree<
 <listitem><simpara> user data to pass to the function.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GTraverseFunc" role="function"/>GTraverseFunc ()</title>
-<indexterm><primary>GTraverseFunc</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            (*GTraverseFunc)                    (<link linkend="gpointer">gpointer</link> key,
+<refsect2 id="GTraverseFunc" role="function">
+<title>GTraverseFunc ()</title>
+<indexterm zone="GTraverseFunc"><primary>GTraverseFunc</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            (*GTraverseFunc)                    (<link linkend="gpointer">gpointer</link> key,
                                                          <link linkend="gpointer">gpointer</link> value,
                                                          <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
@@ -405,9 +404,9 @@ If the function returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GTraverseType" role="enum"/>enum GTraverseType</title>
-<indexterm><primary>GTraverseType</primary></indexterm><programlisting>typedef enum
+<refsect2 id="GTraverseType" role="enum">
+<title>enum GTraverseType</title>
+<indexterm zone="GTraverseType"><primary>GTraverseType</primary></indexterm><programlisting>typedef enum
 {
   G_IN_ORDER,
   G_PRE_ORDER,
@@ -419,25 +418,25 @@ If the function returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>
 Specifies the type of traveral performed by <link linkend="g-tree-traverse"><function>g_tree_traverse()</function></link>,
 <link linkend="g-node-traverse"><function>g_node_traverse()</function></link> and <link linkend="g-node-find"><function>g_node_find()</function></link>.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-IN-ORDER:CAPS" role="constant"/><literal>G_IN_ORDER</literal></term>
+<varlistentry id="G-IN-ORDER:CAPS" role="constant">
+<term><literal>G_IN_ORDER</literal></term>
 <listitem><simpara>vists a node's left child first, then the node itself, then its
   right child. This is the one to use if you want the output sorted according
   to the compare function.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-PRE-ORDER:CAPS" role="constant"/><literal>G_PRE_ORDER</literal></term>
+<varlistentry id="G-PRE-ORDER:CAPS" role="constant">
+<term><literal>G_PRE_ORDER</literal></term>
 <listitem><simpara>visits a node, then its children.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-POST-ORDER:CAPS" role="constant"/><literal>G_POST_ORDER</literal></term>
+<varlistentry id="G-POST-ORDER:CAPS" role="constant">
+<term><literal>G_POST_ORDER</literal></term>
 <listitem><simpara>visits the node's children, then the node itself.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-LEVEL-ORDER:CAPS" role="constant"/><literal>G_LEVEL_ORDER</literal></term>
+<varlistentry id="G-LEVEL-ORDER:CAPS" role="constant">
+<term><literal>G_LEVEL_ORDER</literal></term>
 <listitem><simpara>is not implemented for
   <link linkend="glib-Balanced-Binary-Trees">Balanced Binary Trees</link>.
   For <link linkend="glib-N-ary-Trees">N-ary Trees</link>, it vists the root
@@ -447,9 +446,9 @@ Specifies the type of traveral performed by <link linkend="g-tree-traverse"><fun
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-tree-search" role="function"/>g_tree_search ()</title>
-<indexterm><primary>g_tree_search</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_tree_search                       (<link linkend="GTree">GTree</link> *tree,
+<refsect2 id="g-tree-search" role="function">
+<title>g_tree_search ()</title>
+<indexterm zone="g-tree-search"><primary>g_tree_search</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_tree_search                       (<link linkend="GTree">GTree</link> *tree,
                                                          <link linkend="GCompareFunc">GCompareFunc</link> search_func,
                                                          <link linkend="gconstpointer">gconstpointer</link> user_data);</programlisting>
 <para>
@@ -479,9 +478,9 @@ function.
 was not found.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-tree-remove" role="function"/>g_tree_remove ()</title>
-<indexterm><primary>g_tree_remove</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_tree_remove                       (<link linkend="GTree">GTree</link> *tree,
+<refsect2 id="g-tree-remove" role="function">
+<title>g_tree_remove ()</title>
+<indexterm zone="g-tree-remove"><primary>g_tree_remove</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_tree_remove                       (<link linkend="GTree">GTree</link> *tree,
                                                          <link linkend="gconstpointer">gconstpointer</link> key);</programlisting>
 <para>
 Removes a key/value pair from a <link linkend="GTree"><type>GTree</type></link>.
@@ -504,9 +503,9 @@ If the key does not exist in the <link linkend="GTree"><type>GTree</type></link>
   nothing)
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-tree-steal" role="function"/>g_tree_steal ()</title>
-<indexterm><primary>g_tree_steal</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_tree_steal                        (<link linkend="GTree">GTree</link> *tree,
+<refsect2 id="g-tree-steal" role="function">
+<title>g_tree_steal ()</title>
+<indexterm zone="g-tree-steal"><primary>g_tree_steal</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_tree_steal                        (<link linkend="GTree">GTree</link> *tree,
                                                          <link linkend="gconstpointer">gconstpointer</link> key);</programlisting>
 <para>
 Removes a key and its associated value from a <link linkend="GTree"><type>GTree</type></link> without calling 
@@ -527,9 +526,9 @@ If the key does not exist in the <link linkend="GTree"><type>GTree</type></link>
    nothing)
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-tree-destroy" role="function"/>g_tree_destroy ()</title>
-<indexterm><primary>g_tree_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                g_tree_destroy                      (<link linkend="GTree">GTree</link> *tree);</programlisting>
+<refsect2 id="g-tree-destroy" role="function">
+<title>g_tree_destroy ()</title>
+<indexterm zone="g-tree-destroy"><primary>g_tree_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                g_tree_destroy                      (<link linkend="GTree">GTree</link> *tree);</programlisting>
 <para>
 Destroys the <link linkend="GTree"><type>GTree</type></link>. If keys and/or values are dynamically allocated, you 
 should either free them first or create the <link linkend="GTree"><type>GTree</type></link> using <link linkend="g-tree-new-full"><function>g_tree_new_full()</function></link>.

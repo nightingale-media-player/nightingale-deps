@@ -132,7 +132,7 @@ How to compile GLib itself
       <listitem>
 	<para>
 	  The libintl library from the <ulink
-	  url="http://www.gtk.org/software/gettext">GNU gettext
+	  url="http://www.gnu.org/software/gettext">GNU gettext
 	  package</ulink> is needed if your system doesn't have the
 	  <function>gettext()</function> functionality for handling
 	  message translation databases.
@@ -145,6 +145,32 @@ How to compile GLib itself
 	  in GLib can be based upon several native thread implementations,
 	  e.g. POSIX threads, DCE threads or Solaris threads. 
 	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  GRegex uses the <ulink url="http://www.pcre.org/">PCRE library</ulink>
+	  for regular expression matching. The default is to use the internal
+	  version of PCRE that is patched to use GLib for memory management
+	  and Unicode handling. If you prefer to use the system-supplied PCRE
+	  library  you can pass the --with-pcre=system option to configure,
+	  but it is not recommended.
+	</para>
+      </listitem>
+      <listitem>
+        <para>
+          The optional extended attribute support in GIO requires the 
+          getxattr() family of functions that may be provided by glibc or 
+          by the standalone libattr library. To build GLib without extended 
+          attribute support, use the <option>--disable-xattr</option> 
+          configure option.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          The optional SELinux support in GIO requires libselinux. To build 
+          GLib without SELinux support, use the 
+          <option>--disable-selinux</option> configure option.
+        </para>
       </listitem>
     </itemizedlist>
 
@@ -177,6 +203,13 @@ How to compile GLib itself
           <group>
             <arg>--with-threads=[none|posix|dce|win32]</arg>
           </group>
+          <group>
+            <arg>--disable-regex</arg>
+            <arg>--enable-regex</arg>
+          </group>
+          <group>
+            <arg>--with-pcre=[internal|system]</arg>
+          </group>
 	  <group>
              <arg>--disable-included-printf</arg>
              <arg>--enable-included-printf</arg>
@@ -192,6 +225,14 @@ How to compile GLib itself
           <group>
             <arg>--disable-man</arg>
             <arg>--enable-man</arg>
+          </group>
+          <group>
+            <arg>--disable-xattr</arg>
+            <arg>--enable-xattr</arg>
+          </group>
+          <group>
+            <arg>--disable-selinux</arg>
+            <arg>--enable-selinux</arg>
           </group>
         </cmdsynopsis>
       </para>
@@ -362,6 +403,61 @@ How to compile GLib itself
       </formalpara>
 
       <formalpara>
+        <title><systemitem>--disable-regex</systemitem> and
+          <systemitem>--enable-regex</systemitem></title>
+
+        <para>
+           Do not compile GLib with regular expression support.
+           GLib will be smaller because it will not need the
+           PCRE library. This is however not recommended, as
+           programs may need GRegex.
+        </para>
+      </formalpara>
+
+      <formalpara>
+        <title><systemitem>--with-pcre</systemitem></title>
+
+        <para>
+          Specify whether to use the internal or the system-supplied
+          PCRE library.
+          <itemizedlist>
+            <listitem><para>
+              'internal' means that GRegex will be compiled to use
+              the internal PCRE library.
+            </para></listitem>
+
+            <listitem><para>
+              'system' means that GRegex will be compiled to use
+              the system-supplied PCRE library.
+            </para></listitem>
+          </itemizedlist>
+          Using the internal PCRE is the preferred solution:
+          <itemizedlist>
+            <listitem>
+              <para>
+                System-supplied PCRE has a separated copy of the big tables
+                used for Unicode handling.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                Some systems have PCRE libraries compiled without some needed
+                features, such as UTF-8 and Unicode support.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                PCRE uses some global variables for memory management and
+                other features. In the rare case of a program using both
+                GRegex and PCRE (maybe indirectly through a library),
+                this variables could lead to problems when they are modified.
+              </para>
+            </listitem>
+          </itemizedlist>
+        </para>
+      </formalpara>
+
+      <formalpara>
          <title><systemitem>--disable-included-printf</systemitem> and
            <systemitem>--enable-included-printf</systemitem></title>
 
@@ -432,6 +528,33 @@ How to compile GLib itself
         </para>
       </formalpara>
 
+      <formalpara>
+        <title><systemitem>--disable-xattr</systemitem> and
+          <systemitem>--enable-xattr</systemitem></title>
+
+        <para>
+          By default the <command>configure</command> script will try
+          to auto-detect whether the getxattr() family of functions
+          is available. If it is, then extended attribute support
+          will be included in GIO. These options can be used to
+          explicitly control whether extended attribute support 
+          should be included or not. getxattr() and friends can
+          be provided by glibc or by the standalone libattr library.
+        </para>
+     </formalpara>
+
+      <formalpara>
+        <title><systemitem>--disable-selinux</systemitem> and
+          <systemitem>--enable-selinux</systemitem></title>
+
+        <para>
+          By default the <command>configure</command> script will
+          auto-detect if libselinux is available and include
+          SELinux support in GIO if it is. These options can be
+          used to explicitly control whether SELinxu support should
+	  be included.
+        </para>
+     </formalpara>
    </refsect1>
 
 </refentry>

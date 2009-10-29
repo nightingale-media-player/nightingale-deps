@@ -647,8 +647,11 @@ Similar to g_type_init(), but additionally sets debug flags.
 
 <!-- ##### FUNCTION g_type_name ##### -->
 <para>
-Returns the unique name that is assigned to a type ID (this is the preferred method
-to find out whether a specific type has been registered for the passed in ID yet).
+    Returns the unique name that is assigned to a type ID.
+    Note that this function (like all other GType API) cannot cope with invalid
+    type IDs. %G_TYPE_INVALID may be passed to this function, as may be any other
+    validly registered type ID, but randomized type IDs should not be passed in and
+    will most likely lead to a crash.
 </para>
 
 @type: 		Type to return name for.
@@ -1235,7 +1238,7 @@ instances (if not abstract).  The value of @flags determines the nature
 Registers @type_name as the name of a new static type derived from
 @parent_type.  The value of @flags determines the nature (e.g. 
 abstract or not) of the type. It works by filling a #GTypeInfo 
-struct and calling g_type_info_register_static().
+struct and calling g_type_register_static().
 </para>
 
 @parent_type: 	Type from which this type will be derived.
@@ -1627,19 +1630,13 @@ instance and class structure and the definitions of the instance and class
 init functions.
 </informalexample>
 
-@TN: 
-@t_n: 
-@T_P: 
-@_f_: 
-@_C_: 
-@Since: 2.4
-<!-- # Unused Parameters # -->
-@TypeName: The name of the new type, in Camel case.
-@type_name: The name of the new type, in lowercase, with words 
+@TN: The name of the new type, in Camel case.
+@t_n: The name of the new type, in lowercase, with words 
   separated by '_'.
-@TYPE_PARENT: The #GType of the parent type.
-@flags: #GTypeFlags to pass to g_type_register_static()
-@CODE: Custom code that gets inserted in the *_get_type() function.
+@T_P: The #GType of the parent type.
+@_f_: #GTypeFlags to pass to g_type_register_static()
+@_C_: Custom code that gets inserted in the *_get_type() function.
+@Since: 2.4
 
 
 <!-- ##### MACRO G_TYPE_INVALID ##### -->

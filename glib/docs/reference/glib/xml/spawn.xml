@@ -1,23 +1,22 @@
 <refentry id="glib-Spawning-Processes">
 <refmeta>
-<refentrytitle role="top_of_page">Spawning Processes</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Spawning-Processes.top_of_page">Spawning Processes</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>Spawning Processes</refname>
-<refpurpose>process launching with <function><link linkend="fork"><function>fork()</function></link></function>/<function><link linkend="exec"><function>exec()</function></link></function>.</refpurpose>
+<refpurpose>process launching with <link linkend="fork"><function>fork()</function></link>/<link linkend="exec"><function>exec()</function></link></refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Spawning-Processes.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
-
 
 enum                <link linkend="GSpawnError">GSpawnError</link>;
 #define             <link linkend="G-SPAWN-ERROR:CAPS">G_SPAWN_ERROR</link>
@@ -60,7 +59,6 @@ enum                <link linkend="GSpawnFlags">GSpawnFlags</link>;
                                                          <link linkend="gint">gint</link> *exit_status,
                                                          <link linkend="GError">GError</link> **error);
 <link linkend="void">void</link>                <link linkend="g-spawn-close-pid">g_spawn_close_pid</link>                   (<link linkend="GPid">GPid</link> pid);
-
 </synopsis>
 </refsynopsisdiv>
 
@@ -72,18 +70,18 @@ enum                <link linkend="GSpawnFlags">GSpawnFlags</link>;
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Spawning-Processes.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Spawning-Processes.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GSpawnError" role="enum"/>enum GSpawnError</title>
-<indexterm><primary>GSpawnError</primary></indexterm><programlisting>typedef enum
+<refsect2 id="GSpawnError" role="enum">
+<title>enum GSpawnError</title>
+<indexterm zone="GSpawnError"><primary>GSpawnError</primary></indexterm><programlisting>typedef enum
 {
   G_SPAWN_ERROR_FORK,   /* fork failed due to lack of memory */
   G_SPAWN_ERROR_READ,   /* read or select on pipes failed */
@@ -112,120 +110,120 @@ enum                <link linkend="GSpawnFlags">GSpawnFlags</link>;
 <para>
 Error codes returned by spawning processes.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-FORK:CAPS" role="constant"/><literal>G_SPAWN_ERROR_FORK</literal></term>
+<varlistentry id="G-SPAWN-ERROR-FORK:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_FORK</literal></term>
 <listitem><simpara>Fork failed due to lack of memory.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-READ:CAPS" role="constant"/><literal>G_SPAWN_ERROR_READ</literal></term>
+<varlistentry id="G-SPAWN-ERROR-READ:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_READ</literal></term>
 <listitem><simpara>Read or select on pipes failed.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-CHDIR:CAPS" role="constant"/><literal>G_SPAWN_ERROR_CHDIR</literal></term>
+<varlistentry id="G-SPAWN-ERROR-CHDIR:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_CHDIR</literal></term>
 <listitem><simpara>Changing to working directory failed.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-ACCES:CAPS" role="constant"/><literal>G_SPAWN_ERROR_ACCES</literal></term>
-<listitem><simpara><function><link linkend="execv"><function>execv()</function></link></function> returned <link linkend="EACCES:CAPS"><literal>EACCES</literal></link>.
+<varlistentry id="G-SPAWN-ERROR-ACCES:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_ACCES</literal></term>
+<listitem><simpara><link linkend="execv"><function>execv()</function></link> returned <link linkend="EACCES:CAPS"><literal>EACCES</literal></link>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-PERM:CAPS" role="constant"/><literal>G_SPAWN_ERROR_PERM</literal></term>
-<listitem><simpara><function><link linkend="execv"><function>execv()</function></link></function> returned <link linkend="EPERM:CAPS"><literal>EPERM</literal></link>.
+<varlistentry id="G-SPAWN-ERROR-PERM:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_PERM</literal></term>
+<listitem><simpara><link linkend="execv"><function>execv()</function></link> returned <link linkend="EPERM:CAPS"><literal>EPERM</literal></link>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-2BIG:CAPS" role="constant"/><literal>G_SPAWN_ERROR_2BIG</literal></term>
-<listitem><simpara><function><link linkend="execv"><function>execv()</function></link></function> returned <link linkend="E2BIG:CAPS"><literal>E2BIG</literal></link>.
+<varlistentry id="G-SPAWN-ERROR-2BIG:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_2BIG</literal></term>
+<listitem><simpara><link linkend="execv"><function>execv()</function></link> returned <link linkend="E2BIG:CAPS"><literal>E2BIG</literal></link>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-NOEXEC:CAPS" role="constant"/><literal>G_SPAWN_ERROR_NOEXEC</literal></term>
-<listitem><simpara><function><link linkend="execv"><function>execv()</function></link></function> returned <link linkend="ENOEXEC:CAPS"><literal>ENOEXEC</literal></link>.
+<varlistentry id="G-SPAWN-ERROR-NOEXEC:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_NOEXEC</literal></term>
+<listitem><simpara><link linkend="execv"><function>execv()</function></link> returned <link linkend="ENOEXEC:CAPS"><literal>ENOEXEC</literal></link>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-NAMETOOLONG:CAPS" role="constant"/><literal>G_SPAWN_ERROR_NAMETOOLONG</literal></term>
-<listitem><simpara><function><link linkend="execv"><function>execv()</function></link></function> returned <link linkend="ENAMETOOLONG:CAPS"><literal>ENAMETOOLONG</literal></link>.
+<varlistentry id="G-SPAWN-ERROR-NAMETOOLONG:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_NAMETOOLONG</literal></term>
+<listitem><simpara><link linkend="execv"><function>execv()</function></link> returned <link linkend="ENAMETOOLONG:CAPS"><literal>ENAMETOOLONG</literal></link>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-NOENT:CAPS" role="constant"/><literal>G_SPAWN_ERROR_NOENT</literal></term>
-<listitem><simpara><function><link linkend="execv"><function>execv()</function></link></function> returned <link linkend="ENOENT:CAPS"><literal>ENOENT</literal></link>.
+<varlistentry id="G-SPAWN-ERROR-NOENT:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_NOENT</literal></term>
+<listitem><simpara><link linkend="execv"><function>execv()</function></link> returned <link linkend="ENOENT:CAPS"><literal>ENOENT</literal></link>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-NOMEM:CAPS" role="constant"/><literal>G_SPAWN_ERROR_NOMEM</literal></term>
-<listitem><simpara><function><link linkend="execv"><function>execv()</function></link></function> returned <link linkend="ENOMEM:CAPS"><literal>ENOMEM</literal></link>.
+<varlistentry id="G-SPAWN-ERROR-NOMEM:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_NOMEM</literal></term>
+<listitem><simpara><link linkend="execv"><function>execv()</function></link> returned <link linkend="ENOMEM:CAPS"><literal>ENOMEM</literal></link>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-NOTDIR:CAPS" role="constant"/><literal>G_SPAWN_ERROR_NOTDIR</literal></term>
-<listitem><simpara><function><link linkend="execv"><function>execv()</function></link></function> returned <link linkend="ENOTDIR:CAPS"><literal>ENOTDIR</literal></link>.
+<varlistentry id="G-SPAWN-ERROR-NOTDIR:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_NOTDIR</literal></term>
+<listitem><simpara><link linkend="execv"><function>execv()</function></link> returned <link linkend="ENOTDIR:CAPS"><literal>ENOTDIR</literal></link>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-LOOP:CAPS" role="constant"/><literal>G_SPAWN_ERROR_LOOP</literal></term>
-<listitem><simpara><function><link linkend="execv"><function>execv()</function></link></function> returned <link linkend="ELOOP:CAPS"><literal>ELOOP</literal></link>.
+<varlistentry id="G-SPAWN-ERROR-LOOP:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_LOOP</literal></term>
+<listitem><simpara><link linkend="execv"><function>execv()</function></link> returned <link linkend="ELOOP:CAPS"><literal>ELOOP</literal></link>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-TXTBUSY:CAPS" role="constant"/><literal>G_SPAWN_ERROR_TXTBUSY</literal></term>
-<listitem><simpara><function><link linkend="execv"><function>execv()</function></link></function> returned <link linkend="ETXTBUSY:CAPS"><literal>ETXTBUSY</literal></link>.
+<varlistentry id="G-SPAWN-ERROR-TXTBUSY:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_TXTBUSY</literal></term>
+<listitem><simpara><link linkend="execv"><function>execv()</function></link> returned <link linkend="ETXTBUSY:CAPS"><literal>ETXTBUSY</literal></link>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-IO:CAPS" role="constant"/><literal>G_SPAWN_ERROR_IO</literal></term>
-<listitem><simpara><function><link linkend="execv"><function>execv()</function></link></function> returned <link linkend="EIO:CAPS"><literal>EIO</literal></link>.
+<varlistentry id="G-SPAWN-ERROR-IO:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_IO</literal></term>
+<listitem><simpara><link linkend="execv"><function>execv()</function></link> returned <link linkend="EIO:CAPS"><literal>EIO</literal></link>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-NFILE:CAPS" role="constant"/><literal>G_SPAWN_ERROR_NFILE</literal></term>
-<listitem><simpara><function><link linkend="execv"><function>execv()</function></link></function> returned <link linkend="ENFILE:CAPS"><literal>ENFILE</literal></link>.
+<varlistentry id="G-SPAWN-ERROR-NFILE:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_NFILE</literal></term>
+<listitem><simpara><link linkend="execv"><function>execv()</function></link> returned <link linkend="ENFILE:CAPS"><literal>ENFILE</literal></link>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-MFILE:CAPS" role="constant"/><literal>G_SPAWN_ERROR_MFILE</literal></term>
-<listitem><simpara><function><link linkend="execv"><function>execv()</function></link></function> returned <link linkend="EMFILE:CAPS"><literal>EMFILE</literal></link>.
+<varlistentry id="G-SPAWN-ERROR-MFILE:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_MFILE</literal></term>
+<listitem><simpara><link linkend="execv"><function>execv()</function></link> returned <link linkend="EMFILE:CAPS"><literal>EMFILE</literal></link>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-INVAL:CAPS" role="constant"/><literal>G_SPAWN_ERROR_INVAL</literal></term>
-<listitem><simpara><function><link linkend="execv"><function>execv()</function></link></function> returned <link linkend="EINVAL:CAPS"><literal>EINVAL</literal></link>.
+<varlistentry id="G-SPAWN-ERROR-INVAL:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_INVAL</literal></term>
+<listitem><simpara><link linkend="execv"><function>execv()</function></link> returned <link linkend="EINVAL:CAPS"><literal>EINVAL</literal></link>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-ISDIR:CAPS" role="constant"/><literal>G_SPAWN_ERROR_ISDIR</literal></term>
-<listitem><simpara><function><link linkend="execv"><function>execv()</function></link></function> returned <link linkend="EISDIR:CAPS"><literal>EISDIR</literal></link>.
+<varlistentry id="G-SPAWN-ERROR-ISDIR:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_ISDIR</literal></term>
+<listitem><simpara><link linkend="execv"><function>execv()</function></link> returned <link linkend="EISDIR:CAPS"><literal>EISDIR</literal></link>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-LIBBAD:CAPS" role="constant"/><literal>G_SPAWN_ERROR_LIBBAD</literal></term>
-<listitem><simpara><function><link linkend="execv"><function>execv()</function></link></function> returned <link linkend="ELIBBAD:CAPS"><literal>ELIBBAD</literal></link>.
+<varlistentry id="G-SPAWN-ERROR-LIBBAD:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_LIBBAD</literal></term>
+<listitem><simpara><link linkend="execv"><function>execv()</function></link> returned <link linkend="ELIBBAD:CAPS"><literal>ELIBBAD</literal></link>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-ERROR-FAILED:CAPS" role="constant"/><literal>G_SPAWN_ERROR_FAILED</literal></term>
+<varlistentry id="G-SPAWN-ERROR-FAILED:CAPS" role="constant">
+<term><literal>G_SPAWN_ERROR_FAILED</literal></term>
 <listitem><simpara>Some other fatal failure, <literal>error-&gt;message</literal> should explain.
 
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-SPAWN-ERROR:CAPS" role="macro"/>G_SPAWN_ERROR</title>
-<indexterm><primary>G_SPAWN_ERROR</primary></indexterm><programlisting>#define G_SPAWN_ERROR g_spawn_error_quark ()
+<refsect2 id="G-SPAWN-ERROR:CAPS" role="macro">
+<title>G_SPAWN_ERROR</title>
+<indexterm zone="G-SPAWN-ERROR:CAPS"><primary>G_SPAWN_ERROR</primary></indexterm><programlisting>#define G_SPAWN_ERROR g_spawn_error_quark ()
 </programlisting>
 <para>
 Error domain for spawning processes. Errors in this domain will
 be from the <link linkend="GSpawnError"><type>GSpawnError</type></link> enumeration. See <link linkend="GError"><type>GError</type></link> for information on
 error domains.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GSpawnFlags" role="enum"/>enum GSpawnFlags</title>
-<indexterm><primary>GSpawnFlags</primary></indexterm><programlisting>typedef enum
+<refsect2 id="GSpawnFlags" role="enum">
+<title>enum GSpawnFlags</title>
+<indexterm zone="GSpawnFlags"><primary>GSpawnFlags</primary></indexterm><programlisting>typedef enum
 {
   G_SPAWN_LEAVE_DESCRIPTORS_OPEN = 1 &lt;&lt; 0,
   G_SPAWN_DO_NOT_REAP_CHILD      = 1 &lt;&lt; 1,
@@ -241,46 +239,46 @@ error domains.
 <para>
 Flags passed to <link linkend="g-spawn-sync"><function>g_spawn_sync()</function></link>, <link linkend="g-spawn-async"><function>g_spawn_async()</function></link> and <link linkend="g-spawn-async-with-pipes"><function>g_spawn_async_with_pipes()</function></link>.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-SPAWN-LEAVE-DESCRIPTORS-OPEN:CAPS" role="constant"/><literal>G_SPAWN_LEAVE_DESCRIPTORS_OPEN</literal></term>
+<varlistentry id="G-SPAWN-LEAVE-DESCRIPTORS-OPEN:CAPS" role="constant">
+<term><literal>G_SPAWN_LEAVE_DESCRIPTORS_OPEN</literal></term>
 <listitem><simpara>the parent's open file descriptors will be 
  inherited by the child; otherwise all descriptors except stdin/stdout/stderr 
- will be closed before calling <function><link linkend="exec"><function>exec()</function></link></function> in the child.
+ will be closed before calling <link linkend="exec"><function>exec()</function></link> in the child.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-DO-NOT-REAP-CHILD:CAPS" role="constant"/><literal>G_SPAWN_DO_NOT_REAP_CHILD</literal></term>
+<varlistentry id="G-SPAWN-DO-NOT-REAP-CHILD:CAPS" role="constant">
+<term><literal>G_SPAWN_DO_NOT_REAP_CHILD</literal></term>
 <listitem><simpara>the child will not be automatically reaped; you 
-  must call <function><link linkend="waitpid"><function>waitpid()</function></link></function> or handle <literal>SIGCHLD</literal> 
-  yourself, or the child will become a zombie.
+  must use <link linkend="g-child-watch-add"><function>g_child_watch_add()</function></link> yourself (or call <link linkend="waitpid"><function>waitpid()</function></link> 
+  or handle <literal>SIGCHLD</literal> yourself), or the child will become a zombie.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-SEARCH-PATH:CAPS" role="constant"/><literal>G_SPAWN_SEARCH_PATH</literal></term>
+<varlistentry id="G-SPAWN-SEARCH-PATH:CAPS" role="constant">
+<term><literal>G_SPAWN_SEARCH_PATH</literal></term>
 <listitem><simpara><literal>argv[0]</literal> need not be an absolute path, 
   it will be looked for in the user's <envar>PATH</envar>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-STDOUT-TO-DEV-NULL:CAPS" role="constant"/><literal>G_SPAWN_STDOUT_TO_DEV_NULL</literal></term>
-<listitem><simpara>the child's standad output will be discarded, 
+<varlistentry id="G-SPAWN-STDOUT-TO-DEV-NULL:CAPS" role="constant">
+<term><literal>G_SPAWN_STDOUT_TO_DEV_NULL</literal></term>
+<listitem><simpara>the child's standard output will be discarded, 
   instead of going to the same location as the parent's standard output.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-STDERR-TO-DEV-NULL:CAPS" role="constant"/><literal>G_SPAWN_STDERR_TO_DEV_NULL</literal></term>
+<varlistentry id="G-SPAWN-STDERR-TO-DEV-NULL:CAPS" role="constant">
+<term><literal>G_SPAWN_STDERR_TO_DEV_NULL</literal></term>
 <listitem><simpara>the child's standard error will be discarded.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-CHILD-INHERITS-STDIN:CAPS" role="constant"/><literal>G_SPAWN_CHILD_INHERITS_STDIN</literal></term>
+<varlistentry id="G-SPAWN-CHILD-INHERITS-STDIN:CAPS" role="constant">
+<term><literal>G_SPAWN_CHILD_INHERITS_STDIN</literal></term>
 <listitem><simpara>the child will inherit the parent's standard 
   input (by default, the child's standard input is attached to 
   <filename>/dev/null</filename>).
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-SPAWN-FILE-AND-ARGV-ZERO:CAPS" role="constant"/><literal>G_SPAWN_FILE_AND_ARGV_ZERO</literal></term>
+<varlistentry id="G-SPAWN-FILE-AND-ARGV-ZERO:CAPS" role="constant">
+<term><literal>G_SPAWN_FILE_AND_ARGV_ZERO</literal></term>
 <listitem><simpara>the first element of <literal>argv</literal> is 
   the file to execute, while the remaining elements are the actual argument 
   vector to pass to the file. Normally <link linkend="g-spawn-async-with-pipes"><function>g_spawn_async_with_pipes()</function></link> uses 
@@ -290,16 +288,25 @@ Flags passed to <link linkend="g-spawn-sync"><function>g_spawn_sync()</function>
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GSpawnChildSetupFunc" role="function"/>GSpawnChildSetupFunc ()</title>
-<indexterm><primary>GSpawnChildSetupFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GSpawnChildSetupFunc)             (<link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<refsect2 id="GSpawnChildSetupFunc" role="function">
+<title>GSpawnChildSetupFunc ()</title>
+<indexterm zone="GSpawnChildSetupFunc"><primary>GSpawnChildSetupFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GSpawnChildSetupFunc)             (<link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 Specifies the type of the setup function passed to <link linkend="g-spawn-async"><function>g_spawn_async()</function></link>,
 <link linkend="g-spawn-sync"><function>g_spawn_sync()</function></link> and <link linkend="g-spawn-async-with-pipes"><function>g_spawn_async_with_pipes()</function></link>. On POSIX platforms it
 is called in the child after GLib has performed all the setup it plans
-to perform but before calling <function><link linkend="exec"><function>exec()</function></link></function>. On POSIX
-actions taken in this function will thus only affect the child, not
-the parent.
+to perform but before calling <link linkend="exec"><function>exec()</function></link>. On POSIX actions taken in this 
+function will thus only affect the child, not the parent.
+</para>
+
+<para>
+Note that POSIX allows only async-signal-safe functions (see signal(7)) 
+to be called in the child between <link linkend="fork"><function>fork()</function></link> and <link linkend="exec"><function>exec()</function></link>, which drastically 
+limits the usefulness of child setup functions.  
+</para>
+
+<para>
+Also note that modifying the environment from 
 </para>
 
 <para>
@@ -315,9 +322,9 @@ functions.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-spawn-async-with-pipes" role="function"/>g_spawn_async_with_pipes ()</title>
-<indexterm><primary>g_spawn_async_with_pipes</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_spawn_async_with_pipes            (const <link linkend="gchar">gchar</link> *working_directory,
+<refsect2 id="g-spawn-async-with-pipes" role="function">
+<title>g_spawn_async_with_pipes ()</title>
+<indexterm zone="g-spawn-async-with-pipes"><primary>g_spawn_async_with_pipes</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_spawn_async_with_pipes            (const <link linkend="gchar">gchar</link> *working_directory,
                                                          <link linkend="gchar">gchar</link> **argv,
                                                          <link linkend="gchar">gchar</link> **envp,
                                                          <link linkend="GSpawnFlags">GSpawnFlags</link> flags,
@@ -342,7 +349,7 @@ will only be searched if you pass the <link linkend="G-SPAWN-SEARCH-PATH:CAPS"><
 On Windows, note that all the string or string vector arguments to
 this function and the other g_spawn*() functions are in UTF-8, the
 GLib file name encoding. Unicode characters that are not part of
-the system codepage passed in argument vectors will be correctly
+the system codepage passed in these arguments will be correctly
 available in the spawned program only if it uses wide character API
 to retrieve its command line. For C programs built with Microsoft's
 tools it is enough to make the program have a <link linkend="wmain"><function>wmain()</function></link> instead of
@@ -435,7 +442,7 @@ if you intend your software to be portable to Windows.
 <para>
 If non-<link linkend="NULL:CAPS"><literal>NULL</literal></link>, <parameter>child_pid</parameter> will on Unix be filled with the child's
 process ID. You can use the process ID to send signals to the
-child, or to <link linkend="waitpid"><function>waitpid()</function></link> if you specified the
+child, or to use <link linkend="g-child-watch-add"><function>g_child_watch_add()</function></link> (or <link linkend="waitpid"><function>waitpid()</function></link>) if you specified the
 <link linkend="G-SPAWN-DO-NOT-REAP-CHILD:CAPS"><literal>G_SPAWN_DO_NOT_REAP_CHILD</literal></link> flag. On Windows, <parameter>child_pid</parameter> will be
 filled with a handle to the child process only if you specified the
 <link linkend="G-SPAWN-DO-NOT-REAP-CHILD:CAPS"><literal>G_SPAWN_DO_NOT_REAP_CHILD</literal></link> flag. You can then access the child
@@ -453,16 +460,18 @@ when they are no longer in use. If these parameters are <link linkend="NULL:CAPS
 pipe won't be created.
 </para>
 <para>
-If <parameter>standard_input</parameter> is NULL, the child's standard input is attached to /dev/null
-unless <link linkend="G-SPAWN-CHILD-INHERITS-STDIN:CAPS"><literal>G_SPAWN_CHILD_INHERITS_STDIN</literal></link> is set.
+If <parameter>standard_input</parameter> is NULL, the child's standard input is attached to 
+/dev/null unless <link linkend="G-SPAWN-CHILD-INHERITS-STDIN:CAPS"><literal>G_SPAWN_CHILD_INHERITS_STDIN</literal></link> is set.
 </para>
 <para>
-If <parameter>standard_error</parameter> is NULL, the child's standard error goes to the same location
-as the parent's standard error unless <link linkend="G-SPAWN-STDERR-TO-DEV-NULL:CAPS"><literal>G_SPAWN_STDERR_TO_DEV_NULL</literal></link> is set.
+If <parameter>standard_error</parameter> is NULL, the child's standard error goes to the same 
+location as the parent's standard error unless <link linkend="G-SPAWN-STDERR-TO-DEV-NULL:CAPS"><literal>G_SPAWN_STDERR_TO_DEV_NULL</literal></link> 
+is set.
 </para>
 <para>
-If <parameter>standard_output</parameter> is NULL, the child's standard output goes to the same location
-as the parent's standard output unless <link linkend="G-SPAWN-STDOUT-TO-DEV-NULL:CAPS"><literal>G_SPAWN_STDOUT_TO_DEV_NULL</literal></link> is set.
+If <parameter>standard_output</parameter> is NULL, the child's standard output goes to the same 
+location as the parent's standard output unless <link linkend="G-SPAWN-STDOUT-TO-DEV-NULL:CAPS"><literal>G_SPAWN_STDOUT_TO_DEV_NULL</literal></link> 
+is set.
 </para>
 <para>
 <parameter>error</parameter> can be <link linkend="NULL:CAPS"><literal>NULL</literal></link> to ignore errors, or non-<link linkend="NULL:CAPS"><literal>NULL</literal></link> to report errors.
@@ -478,7 +487,15 @@ and <parameter>standard_error</parameter> will not be filled with valid values.
 </para>
 <para>
 If <parameter>child_pid</parameter> is not <link linkend="NULL:CAPS"><literal>NULL</literal></link> and an error does not occur then the returned
-pid must be closed using <link linkend="g-spawn-close-pid"><function>g_spawn_close_pid()</function></link>.</para>
+pid must be closed using <link linkend="g-spawn-close-pid"><function>g_spawn_close_pid()</function></link>.
+</para>
+<para>
+<note><para>
+If you are writing a GTK+ application, and the program you 
+are spawning is a graphical application, too, then you may
+want to use <link linkend="gdk-spawn-on-screen-with-pipes"><function>gdk_spawn_on_screen_with_pipes()</function></link> instead to ensure that 
+the spawned program opens its windows no the right screen.
+</para></note></para>
 <para>
 
 </para><variablelist role="params">
@@ -518,9 +535,9 @@ pid must be closed using <link linkend="g-spawn-close-pid"><function>g_spawn_clo
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> on success, <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> if an error was set
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-spawn-async" role="function"/>g_spawn_async ()</title>
-<indexterm><primary>g_spawn_async</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_spawn_async                       (const <link linkend="gchar">gchar</link> *working_directory,
+<refsect2 id="g-spawn-async" role="function">
+<title>g_spawn_async ()</title>
+<indexterm zone="g-spawn-async"><primary>g_spawn_async</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_spawn_async                       (const <link linkend="gchar">gchar</link> *working_directory,
                                                          <link linkend="gchar">gchar</link> **argv,
                                                          <link linkend="gchar">gchar</link> **envp,
                                                          <link linkend="GSpawnFlags">GSpawnFlags</link> flags,
@@ -530,7 +547,15 @@ pid must be closed using <link linkend="g-spawn-close-pid"><function>g_spawn_clo
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
 See <link linkend="g-spawn-async-with-pipes"><function>g_spawn_async_with_pipes()</function></link> for a full description; this function
-simply calls the <link linkend="g-spawn-async-with-pipes"><function>g_spawn_async_with_pipes()</function></link> without any pipes.</para>
+simply calls the <link linkend="g-spawn-async-with-pipes"><function>g_spawn_async_with_pipes()</function></link> without any pipes.
+</para>
+<para>
+<note><para>
+If you are writing a GTK+ application, and the program you 
+are spawning is a graphical application, too, then you may
+want to use <link linkend="gdk-spawn-on-screen"><function>gdk_spawn_on_screen()</function></link> instead to ensure that 
+the spawned program opens its windows on the right screen.
+</para></note></para>
 <para>
 
 </para><variablelist role="params">
@@ -561,9 +586,9 @@ simply calls the <link linkend="g-spawn-async-with-pipes"><function>g_spawn_asyn
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> on success, <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> if error is set
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-spawn-sync" role="function"/>g_spawn_sync ()</title>
-<indexterm><primary>g_spawn_sync</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_spawn_sync                        (const <link linkend="gchar">gchar</link> *working_directory,
+<refsect2 id="g-spawn-sync" role="function">
+<title>g_spawn_sync ()</title>
+<indexterm zone="g-spawn-sync"><primary>g_spawn_sync</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_spawn_sync                        (const <link linkend="gchar">gchar</link> *working_directory,
                                                          <link linkend="gchar">gchar</link> **argv,
                                                          <link linkend="gchar">gchar</link> **envp,
                                                          <link linkend="GSpawnFlags">GSpawnFlags</link> flags,
@@ -576,11 +601,16 @@ simply calls the <link linkend="g-spawn-async-with-pipes"><function>g_spawn_asyn
 <para>
 Executes a child synchronously (waits for the child to exit before returning).
 All output from the child is stored in <parameter>standard_output</parameter> and <parameter>standard_error</parameter>,
-if those parameters are non-<link linkend="NULL:CAPS"><literal>NULL</literal></link>. If <parameter>exit_status</parameter> is non-<link linkend="NULL:CAPS"><literal>NULL</literal></link>, the exit 
-status of the child is stored there as it would be returned by 
-<link linkend="waitpid"><function>waitpid()</function></link>; standard UNIX macros such as <link linkend="WIFEXITED:CAPS"><function>WIFEXITED()</function></link> and <link linkend="WEXITSTATUS:CAPS"><function>WEXITSTATUS()</function></link> 
-must be used to evaluate the exit status. If an error occurs, no data is 
-returned in <parameter>standard_output</parameter>, <parameter>standard_error</parameter>, or <parameter>exit_status</parameter>.
+if those parameters are non-<link linkend="NULL:CAPS"><literal>NULL</literal></link>. Note that you must set the  
+<link linkend="G-SPAWN-STDOUT-TO-DEV-NULL:CAPS"><literal>G_SPAWN_STDOUT_TO_DEV_NULL</literal></link> and <link linkend="G-SPAWN-STDERR-TO-DEV-NULL:CAPS"><literal>G_SPAWN_STDERR_TO_DEV_NULL</literal></link> flags when
+passing <link linkend="NULL:CAPS"><literal>NULL</literal></link> for <parameter>standard_output</parameter> and <parameter>standard_error</parameter>.
+If <parameter>exit_status</parameter> is non-<link linkend="NULL:CAPS"><literal>NULL</literal></link>, the exit status of the child is stored
+there as it would be returned by <link linkend="waitpid"><function>waitpid()</function></link>; standard UNIX macros such 
+as <link linkend="WIFEXITED:CAPS"><function>WIFEXITED()</function></link> and <link linkend="WEXITSTATUS:CAPS"><function>WEXITSTATUS()</function></link> must be used to evaluate the exit status.
+Note that this function call <link linkend="waitpid"><function>waitpid()</function></link> even if <parameter>exit_status</parameter> is <link linkend="NULL:CAPS"><literal>NULL</literal></link>, and
+does not accept the <link linkend="G-SPAWN-DO-NOT-REAP-CHILD:CAPS"><literal>G_SPAWN_DO_NOT_REAP_CHILD</literal></link> flag.
+If an error occurs, no data is returned in <parameter>standard_output</parameter>, 
+<parameter>standard_error</parameter>, or <parameter>exit_status</parameter>. 
 </para>
 <para>
 This function calls <link linkend="g-spawn-async-with-pipes"><function>g_spawn_async_with_pipes()</function></link> internally; see that
@@ -599,7 +629,7 @@ how these functions work on Windows.</para>
 <listitem><simpara> child's environment, or <link linkend="NULL:CAPS"><literal>NULL</literal></link> to inherit parent's
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
-<listitem><simpara> flags from <link linkend="GSpawnFlags"><type>GSpawnFlags</type></link>
+<listitem><simpara> flags from <link linkend="GSpawnFlags"><type>GSpawnFlags</type></link> 
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child_setup</parameter>&nbsp;:</term>
 <listitem><simpara> function to run in the child just before <link linkend="exec"><function>exec()</function></link>
@@ -608,23 +638,23 @@ how these functions work on Windows.</para>
 <listitem><simpara> user data for <parameter>child_setup</parameter>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>standard_output</parameter>&nbsp;:</term>
-<listitem><simpara> return location for child output 
+<listitem><simpara> return location for child output, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>standard_error</parameter>&nbsp;:</term>
-<listitem><simpara> return location for child error messages
+<listitem><simpara> return location for child error messages, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>exit_status</parameter>&nbsp;:</term>
-<listitem><simpara> return location for child exit status, as returned by <link linkend="waitpid"><function>waitpid()</function></link>
+<listitem><simpara> return location for child exit status, as returned by <link linkend="waitpid"><function>waitpid()</function></link>, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>error</parameter>&nbsp;:</term>
-<listitem><simpara> return location for error
+<listitem><simpara> return location for error, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> on success, <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> if an error was set.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-spawn-command-line-async" role="function"/>g_spawn_command_line_async ()</title>
-<indexterm><primary>g_spawn_command_line_async</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_spawn_command_line_async          (const <link linkend="gchar">gchar</link> *command_line,
+<refsect2 id="g-spawn-command-line-async" role="function">
+<title>g_spawn_command_line_async ()</title>
+<indexterm zone="g-spawn-command-line-async"><primary>g_spawn_command_line_async</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_spawn_command_line_async          (const <link linkend="gchar">gchar</link> *command_line,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
 A simple version of <link linkend="g-spawn-async"><function>g_spawn_async()</function></link> that parses a command line with
@@ -649,9 +679,9 @@ The same concerns on Windows apply as for <link linkend="g-spawn-command-line-sy
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> on success, <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> if error is set.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-spawn-command-line-sync" role="function"/>g_spawn_command_line_sync ()</title>
-<indexterm><primary>g_spawn_command_line_sync</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_spawn_command_line_sync           (const <link linkend="gchar">gchar</link> *command_line,
+<refsect2 id="g-spawn-command-line-sync" role="function">
+<title>g_spawn_command_line_sync ()</title>
+<indexterm zone="g-spawn-command-line-sync"><primary>g_spawn_command_line_sync</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_spawn_command_line_sync           (const <link linkend="gchar">gchar</link> *command_line,
                                                          <link linkend="gchar">gchar</link> **standard_output,
                                                          <link linkend="gchar">gchar</link> **standard_error,
                                                          <link linkend="gint">gint</link> *exit_status,
@@ -702,9 +732,9 @@ separator. You need to enclose such paths with single quotes, like
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> on success, <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> if an error was set
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-spawn-close-pid" role="function"/>g_spawn_close_pid ()</title>
-<indexterm><primary>g_spawn_close_pid</primary></indexterm><programlisting><link linkend="void">void</link>                g_spawn_close_pid                   (<link linkend="GPid">GPid</link> pid);</programlisting>
+<refsect2 id="g-spawn-close-pid" role="function">
+<title>g_spawn_close_pid ()</title>
+<indexterm zone="g-spawn-close-pid"><primary>g_spawn_close_pid</primary></indexterm><programlisting><link linkend="void">void</link>                g_spawn_close_pid                   (<link linkend="GPid">GPid</link> pid);</programlisting>
 <para>
 On some platforms, notably WIN32, the <link linkend="GPid"><type>GPid</type></link> type represents a resource
 which must be closed to prevent resource leaking. <link linkend="g-spawn-close-pid"><function>g_spawn_close_pid()</function></link>

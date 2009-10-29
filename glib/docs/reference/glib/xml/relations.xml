@@ -1,23 +1,22 @@
 <refentry id="glib-Relations-and-Tuples">
 <refmeta>
-<refentrytitle role="top_of_page">Relations and Tuples</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Relations-and-Tuples.top_of_page">Relations and Tuples</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>Relations and Tuples</refname>
-<refpurpose>tables of data which can be indexed on any number of fields.</refpurpose>
+<refpurpose>tables of data which can be indexed on any number of fields</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Relations-and-Tuples.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
-
 
                     <link linkend="GRelation">GRelation</link>;
 <link linkend="GRelation">GRelation</link>*          <link linkend="g-relation-new">g_relation_new</link>                      (<link linkend="gint">gint</link> fields);
@@ -58,7 +57,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Relations-and-Tuples.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 A <link linkend="GRelation"><type>GRelation</type></link> is a table of data which can be indexed on any number of fields,
@@ -107,19 +106,19 @@ To help debug <link linkend="GRelation"><type>GRelation</type></link> objects, u
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Relations-and-Tuples.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GRelation" role="struct"/>GRelation</title>
-<indexterm><primary>GRelation</primary></indexterm><programlisting>typedef struct _GRelation GRelation;</programlisting>
+<refsect2 id="GRelation" role="struct">
+<title>GRelation</title>
+<indexterm zone="GRelation"><primary>GRelation</primary></indexterm><programlisting>typedef struct _GRelation GRelation;</programlisting>
 <para>
 The <link linkend="GRelation"><type>GRelation</type></link> struct is an opaque data structure to represent a
 <link linkend="glib-Relations-and-Tuples">Relation</link>.
 It should only be accessed via the following functions.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-relation-new" role="function"/>g_relation_new ()</title>
-<indexterm><primary>g_relation_new</primary></indexterm><programlisting><link linkend="GRelation">GRelation</link>*          g_relation_new                      (<link linkend="gint">gint</link> fields);</programlisting>
+<refsect2 id="g-relation-new" role="function">
+<title>g_relation_new ()</title>
+<indexterm zone="g-relation-new"><primary>g_relation_new</primary></indexterm><programlisting><link linkend="GRelation">GRelation</link>*          g_relation_new                      (<link linkend="gint">gint</link> fields);</programlisting>
 <para>
 Creates a new <link linkend="GRelation"><type>GRelation</type></link> with the given number of fields.
 Note that currently the number of fields must be 2.
@@ -132,9 +131,9 @@ Note that currently the number of fields must be 2.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-relation-index" role="function"/>g_relation_index ()</title>
-<indexterm><primary>g_relation_index</primary></indexterm><programlisting><link linkend="void">void</link>                g_relation_index                    (<link linkend="GRelation">GRelation</link> *relation,
+<refsect2 id="g-relation-index" role="function">
+<title>g_relation_index ()</title>
+<indexterm zone="g-relation-index"><primary>g_relation_index</primary></indexterm><programlisting><link linkend="void">void</link>                g_relation_index                    (<link linkend="GRelation">GRelation</link> *relation,
                                                          <link linkend="gint">gint</link> field,
                                                          <link linkend="GHashFunc">GHashFunc</link> hash_func,
                                                          <link linkend="GEqualFunc">GEqualFunc</link> key_equal_func);</programlisting>
@@ -157,9 +156,9 @@ Note that this must be called before any records are added to the <link linkend=
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-relation-insert" role="function"/>g_relation_insert ()</title>
-<indexterm><primary>g_relation_insert</primary></indexterm><programlisting><link linkend="void">void</link>                g_relation_insert                   (<link linkend="GRelation">GRelation</link> *relation,
+<refsect2 id="g-relation-insert" role="function">
+<title>g_relation_insert ()</title>
+<indexterm zone="g-relation-insert"><primary>g_relation_insert</primary></indexterm><programlisting><link linkend="void">void</link>                g_relation_insert                   (<link linkend="GRelation">GRelation</link> *relation,
                                                          ...);</programlisting>
 <para>
 Inserts a record into a <link linkend="GRelation"><type>GRelation</type></link>.
@@ -174,9 +173,9 @@ fields in the <link linkend="GRelation"><type>GRelation</type></link>, and of ty
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-relation-exists" role="function"/>g_relation_exists ()</title>
-<indexterm><primary>g_relation_exists</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_relation_exists                   (<link linkend="GRelation">GRelation</link> *relation,
+<refsect2 id="g-relation-exists" role="function">
+<title>g_relation_exists ()</title>
+<indexterm zone="g-relation-exists"><primary>g_relation_exists</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_relation_exists                   (<link linkend="GRelation">GRelation</link> *relation,
                                                          ...);</programlisting>
 <para>
 Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if a record with the given values exists in a <link linkend="GRelation"><type>GRelation</type></link>.
@@ -195,9 +194,9 @@ number of fields in the <link linkend="GRelation"><type>GRelation</type></link>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-relation-count" role="function"/>g_relation_count ()</title>
-<indexterm><primary>g_relation_count</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_relation_count                    (<link linkend="GRelation">GRelation</link> *relation,
+<refsect2 id="g-relation-count" role="function">
+<title>g_relation_count ()</title>
+<indexterm zone="g-relation-count"><primary>g_relation_count</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_relation_count                    (<link linkend="GRelation">GRelation</link> *relation,
                                                          <link linkend="gconstpointer">gconstpointer</link> key,
                                                          <link linkend="gint">gint</link> field);</programlisting>
 <para>
@@ -218,9 +217,9 @@ in the given field.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-relation-select" role="function"/>g_relation_select ()</title>
-<indexterm><primary>g_relation_select</primary></indexterm><programlisting><link linkend="GTuples">GTuples</link>*            g_relation_select                   (<link linkend="GRelation">GRelation</link> *relation,
+<refsect2 id="g-relation-select" role="function">
+<title>g_relation_select ()</title>
+<indexterm zone="g-relation-select"><primary>g_relation_select</primary></indexterm><programlisting><link linkend="GTuples">GTuples</link>*            g_relation_select                   (<link linkend="GRelation">GRelation</link> *relation,
                                                          <link linkend="gconstpointer">gconstpointer</link> key,
                                                          <link linkend="gint">gint</link> field);</programlisting>
 <para>
@@ -242,9 +241,9 @@ The returned records should be freed with <link linkend="g-tuples-destroy"><func
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-relation-delete" role="function"/>g_relation_delete ()</title>
-<indexterm><primary>g_relation_delete</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_relation_delete                   (<link linkend="GRelation">GRelation</link> *relation,
+<refsect2 id="g-relation-delete" role="function">
+<title>g_relation_delete ()</title>
+<indexterm zone="g-relation-delete"><primary>g_relation_delete</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_relation_delete                   (<link linkend="GRelation">GRelation</link> *relation,
                                                          <link linkend="gconstpointer">gconstpointer</link> key,
                                                          <link linkend="gint">gint</link> field);</programlisting>
 <para>
@@ -265,9 +264,9 @@ the given field.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-relation-destroy" role="function"/>g_relation_destroy ()</title>
-<indexterm><primary>g_relation_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                g_relation_destroy                  (<link linkend="GRelation">GRelation</link> *relation);</programlisting>
+<refsect2 id="g-relation-destroy" role="function">
+<title>g_relation_destroy ()</title>
+<indexterm zone="g-relation-destroy"><primary>g_relation_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                g_relation_destroy                  (<link linkend="GRelation">GRelation</link> *relation);</programlisting>
 <para>
 Destroys the <link linkend="GRelation"><type>GRelation</type></link>, freeing all memory allocated.
 However, it does not free memory allocated for the
@@ -279,9 +278,9 @@ tuple data, so you should free that first if appropriate.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-relation-print" role="function"/>g_relation_print ()</title>
-<indexterm><primary>g_relation_print</primary></indexterm><programlisting><link linkend="void">void</link>                g_relation_print                    (<link linkend="GRelation">GRelation</link> *relation);</programlisting>
+<refsect2 id="g-relation-print" role="function">
+<title>g_relation_print ()</title>
+<indexterm zone="g-relation-print"><primary>g_relation_print</primary></indexterm><programlisting><link linkend="void">void</link>                g_relation_print                    (<link linkend="GRelation">GRelation</link> *relation);</programlisting>
 <para>
 Outputs information about all records in a <link linkend="GRelation"><type>GRelation</type></link>, as well as the indexes.
 It is for debugging.
@@ -292,9 +291,9 @@ It is for debugging.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GTuples" role="struct"/>GTuples</title>
-<indexterm><primary>GTuples</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GTuples" role="struct">
+<title>GTuples</title>
+<indexterm zone="GTuples"><primary>GTuples</primary></indexterm><programlisting>typedef struct {
   guint len;
 } GTuples;
 </programlisting>
@@ -311,9 +310,9 @@ To access the matched records, you must use <link linkend="g-tuples-index"><func
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-tuples-destroy" role="function"/>g_tuples_destroy ()</title>
-<indexterm><primary>g_tuples_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                g_tuples_destroy                    (<link linkend="GTuples">GTuples</link> *tuples);</programlisting>
+<refsect2 id="g-tuples-destroy" role="function">
+<title>g_tuples_destroy ()</title>
+<indexterm zone="g-tuples-destroy"><primary>g_tuples_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                g_tuples_destroy                    (<link linkend="GTuples">GTuples</link> *tuples);</programlisting>
 <para>
 Frees the records which were returned by <link linkend="g-relation-select"><function>g_relation_select()</function></link>.
 This should always be called after <link linkend="g-relation-select"><function>g_relation_select()</function></link> when you are
@@ -326,9 +325,9 @@ The records are not removed from the <link linkend="GRelation"><type>GRelation</
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-tuples-index" role="function"/>g_tuples_index ()</title>
-<indexterm><primary>g_tuples_index</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_tuples_index                      (<link linkend="GTuples">GTuples</link> *tuples,
+<refsect2 id="g-tuples-index" role="function">
+<title>g_tuples_index ()</title>
+<indexterm zone="g-tuples-index"><primary>g_tuples_index</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_tuples_index                      (<link linkend="GTuples">GTuples</link> *tuples,
                                                          <link linkend="gint">gint</link> index_,
                                                          <link linkend="gint">gint</link> field);</programlisting>
 <para>

@@ -2,11 +2,22 @@
 Message Output and Debugging Functions
 
 <!-- ##### SECTION Short_Description ##### -->
-functions to output messages and help debug applications.
+functions to output messages and help debug applications
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
 These functions provide support for outputting messages.
+</para>
+<para>
+The <function>g_return</function> family of macros (g_return_if_fail(), 
+g_return_val_if_fail(), g_return_if_reached(), g_return_val_if_reached())
+should only be used for programming errors, a typical use case is
+checking for invalid parameters at the beginning of a public function.
+They should not be used if you just mean "if (error) return", they
+should only be used if you mean "if (bug in program) return".
+The program behavior is generally considered undefined after one of these 
+checks fails. They are not intended for normal control flow, only to
+give a perhaps-helpful warning before giving up. 
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
@@ -30,8 +41,7 @@ Instead, libraries should use g_log(), or the convenience functions
 g_message(), g_warning() and g_error().
 </para>
 
-@format: the message format. See the <function>printf()</function>
-documentation.
+@format: the message format. See the printf() documentation.
 @Varargs: the parameters to insert into the format string.
 
 
@@ -67,8 +77,7 @@ g_printerr() should not be used from within libraries. Instead g_log() should
 be used, or the convenience functions g_message(), g_warning() and g_error().
 </para>
 
-@format: the message format. See the <function>printf()</function>
-documentation.
+@format: the message format. See the printf() documentation.
 @Varargs: the parameters to insert into the format string.
 
 
@@ -125,30 +134,31 @@ Logs a critical message and returns @val.
 @val: the value to return from the current function.
 
 
-<!-- ##### MACRO g_assert ##### -->
+<!-- ##### MACRO g_warn_if_fail ##### -->
 <para>
-Debugging macro to terminate the application if the assertion fails.
-If the assertion fails (i.e. the expression is not true), an error message
-is logged and the application is terminated.
-</para>
-<para>
-The macro can be turned off in final releases of code by defining
-#G_DISABLE_ASSERT when compiling the application.
+
 </para>
 
-@expr: the expression to check.
+@expr: 
 
 
-<!-- ##### MACRO g_assert_not_reached ##### -->
+<!-- ##### MACRO g_warn_if_reached ##### -->
 <para>
-Debugging macro to terminate the application if it is ever reached.
-If it is reached, an error message is logged and the application is terminated.
-</para>
-<para>
-The macro can be turned off in final releases of code by defining
-#G_DISABLE_ASSERT when compiling the application.
+
 </para>
 
+
+
+<!-- ##### FUNCTION g_warn_message ##### -->
+<para>
+
+</para>
+
+@domain: 
+@file: 
+@line: 
+@func: 
+@warnexpr: 
 
 
 <!-- ##### FUNCTION g_on_error_query ##### -->
@@ -224,7 +234,9 @@ If @prg_name is %NULL, g_get_prgname() is called to get the program name
 
 <!-- ##### MACRO G_BREAKPOINT ##### -->
 <para>
-Inserts a breakpoint instruction into the code (on x86 machines only).
+Inserts a breakpoint instruction into the code.  On x86 and alpha systems
+this is implemented as a soft interrupt and on other architectures it raises
+a %SIGTRAP signal.
 </para>
 
 

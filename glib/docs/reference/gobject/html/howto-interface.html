@@ -1,30 +1,30 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>How To define and implement Interfaces?</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
-<link rel="start" href="index.html" title="GObject Reference Manual">
-<link rel="up" href="pt02.html" title="Part&#160;IV.&#160;Tutorial">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>How to define and implement interfaces</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.74.0">
+<link rel="home" href="index.html" title="GObject Reference Manual">
+<link rel="up" href="pt02.html" title="Part IV. Tutorial">
 <link rel="prev" href="howto-gobject-chainup.html" title="Chaining up">
 <link rel="next" href="howto-interface-implement.html" title="How To define implement an Interface?">
-<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="preface" href="pr01.html" title="Introduction">
-<link rel="part" href="pt01.html" title="Part&#160;I.&#160;Concepts">
-<link rel="chapter" href="ch01.html" title="Background">
-<link rel="chapter" href="ch02.html" title="The Glib Dynamic Type System">
+<link rel="part" href="pt01.html" title="Part I. Concepts">
+<link rel="chapter" href="chapter-intro.html" title="Background">
+<link rel="chapter" href="chapter-gtype.html" title="The GLib Dynamic Type System">
 <link rel="chapter" href="chapter-gobject.html" title="The GObject base class">
 <link rel="chapter" href="chapter-signal.html" title="The GObject messaging system">
 <link rel="reference" href="rn01.html" title="API Reference">
 <link rel="reference" href="rn02.html" title="Tools Reference">
-<link rel="part" href="pt02.html" title="Part&#160;IV.&#160;Tutorial">
-<link rel="chapter" href="howto-gobject.html" title="How To define and implement a new GObject?">
-<link rel="chapter" href="howto-interface.html" title="How To define and implement Interfaces?">
-<link rel="chapter" href="howto-signals.html" title="Howto create and use signals">
-<link rel="part" href="pt03.html" title="Part&#160;V.&#160;Related Tools">
+<link rel="part" href="pt02.html" title="Part IV. Tutorial">
+<link rel="chapter" href="howto-gobject.html" title="How to define and implement a new GObject">
+<link rel="chapter" href="howto-interface.html" title="How to define and implement interfaces">
+<link rel="chapter" href="howto-signals.html" title="How to create and use signals">
+<link rel="part" href="pt03.html" title="Part V. Related Tools">
 <link rel="chapter" href="tools-gob.html" title="GObject builder">
-<link rel="chapter" href="tools-ginspector.html" title="Graphical inspection of Gobjects">
+<link rel="chapter" href="tools-ginspector.html" title="Graphical inspection of GObjects">
 <link rel="chapter" href="tools-refdb.html" title="Debugging reference count problems">
 <link rel="chapter" href="tools-gtkdoc.html" title="Writing API docs">
 <link rel="index" href="ix01.html" title="Index">
@@ -35,6 +35,7 @@
 <link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
 <link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
 <link rel="index" href="ix08.html" title="Index of new symbols in 2.12">
+<link rel="index" href="ix09.html" title="Index of new symbols in 2.14">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle">
@@ -46,24 +47,24 @@
 </tr></table>
 <div class="chapter" lang="en">
 <div class="titlepage"><div><div><h2 class="title">
-<a name="howto-interface"></a>How To define and implement Interfaces?</h2></div></div></div>
+<a name="howto-interface"></a>How to define and implement interfaces</h2></div></div></div>
 <div class="toc"><dl>
-<dt><span class="sect1"><a href="howto-interface.html#howto-interface-define">How To define Interfaces?</a></span></dt>
+<dt><span class="sect1"><a href="howto-interface.html#howto-interface-define">How to define interfaces</a></span></dt>
 <dt><span class="sect1"><a href="howto-interface-implement.html">How To define implement an Interface?</a></span></dt>
 <dt><span class="sect1"><a href="ch06s03.html">Interface definition prerequisites</a></span></dt>
 <dt><span class="sect1"><a href="howto-interface-properties.html">Interface Properties</a></span></dt>
 </dl></div>
 <div class="sect1" lang="en">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="howto-interface-define"></a>How To define Interfaces?</h2></div></div></div>
+<a name="howto-interface-define"></a>How to define interfaces</h2></div></div></div>
 <p>
-      The bulk of interface definition has already been shown in <a href="gtype-non-instantiable-classed.html" title="Non-instantiable classed types: Interfaces.">the section called &#8220;Non-instantiable classed types: Interfaces.&#8221;</a>
-      but I feel it is needed to show exactly how to create an interface. The sample source code
-      associated to this section can be found in the documentation's source tarball, in the 
-      <code class="filename">sample/interface/maman-ibaz.{h|c}</code> file.
-    </p>
+    The bulk of interface definition has already been shown in <a class="xref" href="gtype-non-instantiable-classed.html" title="Non-instantiable classed types: interfaces">the section called “Non-instantiable classed types: interfaces”</a>
+    but I feel it is needed to show exactly how to create an interface. The sample source code
+    associated to this section can be found in the documentation's source tarball, in the 
+    <code class="filename">sample/interface/maman-ibaz.{h|c}</code> file.
+  </p>
 <p>
-      As above, the first step is to get the header right:
+    As above, the first step is to get the header right:
 </p>
 <pre class="programlisting">
 #ifndef MAMAN_IBAZ_H
@@ -93,39 +94,39 @@ void maman_ibaz_do_action (MamanIbaz *self);
 #endif /*MAMAN_IBAZ_H*/
 </pre>
 <p>
-      This code is the same as the code for a normal <span class="type"><a href="gobject-Type-Information.html#GType">GType</a></span>
-      which derives from a <span class="type"><a href="gobject-The-Base-Object-Type.html#GObject">GObject</a></span> except for a few details:
-      </p>
+    This code is the same as the code for a normal <span class="type"><a class="link" href="gobject-Type-Information.html#GType" title="GType">GType</a></span>
+    which derives from a <span class="type"><a class="link" href="gobject-The-Base-Object-Type.html#GObject">GObject</a></span> except for a few details:
+    </p>
 <div class="itemizedlist"><ul type="disc">
 <li><p>
-          The <code class="function">_GET_CLASS</code> macro is called <code class="function">_GET_INTERFACE</code>
-					and not implemented with <code class="function">G_TYPE_INSTANCE_GET_CLASS</code>
-					but with <code class="function">G_TYPE_INSTANCE_GET_INTERFACE</code>.
-        </p></li>
+        The <code class="function">_GET_CLASS</code> macro is called <code class="function">_GET_INTERFACE</code>
+                  and not implemented with <code class="function">G_TYPE_INSTANCE_GET_CLASS</code>
+                  but with <code class="function">G_TYPE_INSTANCE_GET_INTERFACE</code>.
+      </p></li>
 <li><p>
-          The instance type, <span class="type">MamanIbaz</span> is not fully defined: it is used merely as an abstract 
-          type which represents an instance of whatever object which implements the interface.
-        </p></li>
+        The instance type, <span class="type">MamanIbaz</span> is not fully defined: it is used merely as an abstract 
+        type which represents an instance of whatever object which implements the interface.
+      </p></li>
 </ul></div>
 <p>
-    </p>
+  </p>
 <p>
-      The implementation of the <span class="type">MamanIbaz</span> type itself is trivial:
-      </p>
+    The implementation of the <span class="type">MamanIbaz</span> type itself is trivial:
+    </p>
 <div class="itemizedlist"><ul type="disc">
 <li><p><code class="function">maman_ibaz_get_type</code> registers the
-         type in the type system.
-         </p></li>
+       type in the type system.
+       </p></li>
 <li><p><code class="function">maman_ibaz_base_init</code> is expected 
-        to register the interface's signals if there are any (we will see a bit
-        (later how to use them). Make sure to use a static local boolean variable
-        to make sure not to run the initialization code twice (as described in
-        <a href="gtype-non-instantiable-classed.html#gtype-non-instantiable-classed-init" title="Interface Initialization">the section called &#8220;Interface Initialization&#8221;</a>, 
-        <code class="function">base_init</code> is run once for each interface implementation 
-        instanciation)</p></li>
+      to register the interface's signals if there are any (we will see a bit
+      (later how to use them). Make sure to use a static local boolean variable
+      to make sure not to run the initialization code twice (as described in
+      <a class="xref" href="gtype-non-instantiable-classed.html#gtype-non-instantiable-classed-init" title="Interface Initialization">the section called “Interface Initialization”</a>, 
+      <code class="function">base_init</code> is run once for each interface implementation 
+      instantiation)</p></li>
 <li><p><code class="function">maman_ibaz_do_action</code> dereferences the class
-        structure to access its associated class function and calls it.
-        </p></li>
+      structure to access its associated class function and calls it.
+      </p></li>
 </ul></div>
 <p>
 </p>
@@ -171,5 +172,8 @@ void maman_ibaz_do_action (MamanIbaz *self)
     </p>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

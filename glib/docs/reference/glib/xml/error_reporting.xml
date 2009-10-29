@@ -1,23 +1,22 @@
 <refentry id="glib-Error-Reporting">
 <refmeta>
-<refentrytitle role="top_of_page">Error Reporting</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Error-Reporting.top_of_page">Error Reporting</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>Error Reporting</refname>
-<refpurpose>a system for reporting errors.</refpurpose>
+<refpurpose>a system for reporting errors</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Error-Reporting.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
-
 
                     <link linkend="GError">GError</link>;
 <link linkend="GError">GError</link>*             <link linkend="g-error-new">g_error_new</link>                         (<link linkend="GQuark">GQuark</link> domain,
@@ -40,6 +39,13 @@
 <link linkend="void">void</link>                <link linkend="g-propagate-error">g_propagate_error</link>                   (<link linkend="GError">GError</link> **dest,
                                                          <link linkend="GError">GError</link> *src);
 <link linkend="void">void</link>                <link linkend="g-clear-error">g_clear_error</link>                       (<link linkend="GError">GError</link> **err);
+<link linkend="void">void</link>                <link linkend="g-prefix-error">g_prefix_error</link>                      (<link linkend="GError">GError</link> **err,
+                                                         const <link linkend="gchar">gchar</link> *format,
+                                                         ...);
+<link linkend="void">void</link>                <link linkend="g-propagate-prefixed-error">g_propagate_prefixed_error</link>          (<link linkend="GError">GError</link> **dest,
+                                                         <link linkend="GError">GError</link> *src,
+                                                         const <link linkend="gchar">gchar</link> *format,
+                                                         ...);
 </synopsis>
 </refsynopsisdiv>
 
@@ -51,7 +57,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Error-Reporting.description" role="desc">
 <title role="desc.title">Description</title>
 
 <para>
@@ -289,9 +295,18 @@ Error domains and codes are conventionally named as follows:
 <itemizedlist>
 <listitem>
 <para>
-The error domain is called
+The error domain is called 
 <literal>&lt;NAMESPACE&gt;_&lt;MODULE&gt;_ERROR</literal>, for example
-<link linkend="G-EXEC-ERROR:CAPS"><literal>G_EXEC_ERROR</literal></link> or <link linkend="G-THREAD-ERROR:CAPS"><literal>G_THREAD_ERROR</literal></link>.
+<link linkend="G-SPAWN-ERROR:CAPS"><literal>G_SPAWN_ERROR</literal></link> or <link linkend="G-THREAD-ERROR:CAPS"><literal>G_THREAD_ERROR</literal></link>:
+<informalexample><programlisting>
+#define G_SPAWN_ERROR g_spawn_error_quark (<!-- -->)
+
+GQuark
+g_spawn_error_quark (void)
+{
+  return g_quark_from_static_string ("g-spawn-error-quark");
+}
+</programlisting></informalexample>
 </para>
 </listitem>
 <listitem>
@@ -318,7 +333,7 @@ example <link linkend="G-SPAWN-ERROR-FAILED:CAPS"><literal>G_SPAWN_ERROR_FAILED<
 </para>
 
 <para>
-Summary of rules for use of <link linkend="GError--"><type>:</type></link>
+Summary of rules for use of <link linkend="GError--"><type>""</type></link>
       <itemizedlist>
 	<listitem>
 	  <para>
@@ -414,11 +429,11 @@ Summary of rules for use of <link linkend="GError--"><type>:</type></link>
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Error-Reporting.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GError" role="struct"/>GError</title>
-<indexterm><primary>GError</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GError" role="struct">
+<title>GError</title>
+<indexterm zone="GError"><primary>GError</primary></indexterm><programlisting>typedef struct {
   GQuark       domain;
   gint         code;
   gchar       *message;
@@ -445,9 +460,9 @@ information about an error that has occurred.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-error-new" role="function"/>g_error_new ()</title>
-<indexterm><primary>g_error_new</primary></indexterm><programlisting><link linkend="GError">GError</link>*             g_error_new                         (<link linkend="GQuark">GQuark</link> domain,
+<refsect2 id="g-error-new" role="function">
+<title>g_error_new ()</title>
+<indexterm zone="g-error-new"><primary>g_error_new</primary></indexterm><programlisting><link linkend="GError">GError</link>*             g_error_new                         (<link linkend="GQuark">GQuark</link> domain,
                                                          <link linkend="gint">gint</link> code,
                                                          const <link linkend="gchar">gchar</link> *format,
                                                          ...);</programlisting>
@@ -472,9 +487,9 @@ and a message formatted with <parameter>format</parameter>.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new <link linkend="GError"><type>GError</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-error-new-literal" role="function"/>g_error_new_literal ()</title>
-<indexterm><primary>g_error_new_literal</primary></indexterm><programlisting><link linkend="GError">GError</link>*             g_error_new_literal                 (<link linkend="GQuark">GQuark</link> domain,
+<refsect2 id="g-error-new-literal" role="function">
+<title>g_error_new_literal ()</title>
+<indexterm zone="g-error-new-literal"><primary>g_error_new_literal</primary></indexterm><programlisting><link linkend="GError">GError</link>*             g_error_new_literal                 (<link linkend="GQuark">GQuark</link> domain,
                                                          <link linkend="gint">gint</link> code,
                                                          const <link linkend="gchar">gchar</link> *message);</programlisting>
 <para>
@@ -497,9 +512,9 @@ that could include <link linkend="printf"><function>printf()</function></link> e
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new <link linkend="GError"><type>GError</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-error-free" role="function"/>g_error_free ()</title>
-<indexterm><primary>g_error_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_error_free                        (<link linkend="GError">GError</link> *error);</programlisting>
+<refsect2 id="g-error-free" role="function">
+<title>g_error_free ()</title>
+<indexterm zone="g-error-free"><primary>g_error_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_error_free                        (<link linkend="GError">GError</link> *error);</programlisting>
 <para>
 Frees a <link linkend="GError"><type>GError</type></link> and associated resources.</para>
 <para>
@@ -509,9 +524,9 @@ Frees a <link linkend="GError"><type>GError</type></link> and associated resourc
 <listitem><simpara> a <link linkend="GError"><type>GError</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-error-copy" role="function"/>g_error_copy ()</title>
-<indexterm><primary>g_error_copy</primary></indexterm><programlisting><link linkend="GError">GError</link>*             g_error_copy                        (const <link linkend="GError">GError</link> *error);</programlisting>
+<refsect2 id="g-error-copy" role="function">
+<title>g_error_copy ()</title>
+<indexterm zone="g-error-copy"><primary>g_error_copy</primary></indexterm><programlisting><link linkend="GError">GError</link>*             g_error_copy                        (const <link linkend="GError">GError</link> *error);</programlisting>
 <para>
 Makes a copy of <parameter>error</parameter>.</para>
 <para>
@@ -523,9 +538,9 @@ Makes a copy of <parameter>error</parameter>.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new <link linkend="GError"><type>GError</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-error-matches" role="function"/>g_error_matches ()</title>
-<indexterm><primary>g_error_matches</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_error_matches                     (const <link linkend="GError">GError</link> *error,
+<refsect2 id="g-error-matches" role="function">
+<title>g_error_matches ()</title>
+<indexterm zone="g-error-matches"><primary>g_error_matches</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_error_matches                     (const <link linkend="GError">GError</link> *error,
                                                          <link linkend="GQuark">GQuark</link> domain,
                                                          <link linkend="gint">gint</link> code);</programlisting>
 <para>
@@ -546,9 +561,9 @@ otherwise.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> whether <parameter>error</parameter> has <parameter>domain</parameter> and <parameter>code</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-set-error" role="function"/>g_set_error ()</title>
-<indexterm><primary>g_set_error</primary></indexterm><programlisting><link linkend="void">void</link>                g_set_error                         (<link linkend="GError">GError</link> **err,
+<refsect2 id="g-set-error" role="function">
+<title>g_set_error ()</title>
+<indexterm zone="g-set-error"><primary>g_set_error</primary></indexterm><programlisting><link linkend="void">void</link>                g_set_error                         (<link linkend="GError">GError</link> **err,
                                                          <link linkend="GQuark">GQuark</link> domain,
                                                          <link linkend="gint">gint</link> code,
                                                          const <link linkend="gchar">gchar</link> *format,
@@ -575,13 +590,13 @@ be <link linkend="NULL:CAPS"><literal>NULL</literal></link>. A new <link linkend
 <listitem><simpara> args for <parameter>format</parameter> 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-propagate-error" role="function"/>g_propagate_error ()</title>
-<indexterm><primary>g_propagate_error</primary></indexterm><programlisting><link linkend="void">void</link>                g_propagate_error                   (<link linkend="GError">GError</link> **dest,
+<refsect2 id="g-propagate-error" role="function">
+<title>g_propagate_error ()</title>
+<indexterm zone="g-propagate-error"><primary>g_propagate_error</primary></indexterm><programlisting><link linkend="void">void</link>                g_propagate_error                   (<link linkend="GError">GError</link> **dest,
                                                          <link linkend="GError">GError</link> *src);</programlisting>
 <para>
-If <parameter>dest</parameter> is <link linkend="NULL:CAPS"><literal>NULL</literal></link>, free <parameter>src</parameter>; otherwise,
-moves <parameter>src</parameter> into *<parameter>dest</parameter>. *<parameter>dest</parameter> must be <link linkend="NULL:CAPS"><literal>NULL</literal></link>.</para>
+If <parameter>dest</parameter> is <link linkend="NULL:CAPS"><literal>NULL</literal></link>, free <parameter>src</parameter>; otherwise, moves <parameter>src</parameter> into *<parameter>dest</parameter>.
+The error variable <parameter>dest</parameter> points to must be <link linkend="NULL:CAPS"><literal>NULL</literal></link>.</para>
 <para>
 
 </para><variablelist role="params">
@@ -592,9 +607,9 @@ moves <parameter>src</parameter> into *<parameter>dest</parameter>. *<parameter>
 <listitem><simpara> error to move into the return location
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-clear-error" role="function"/>g_clear_error ()</title>
-<indexterm><primary>g_clear_error</primary></indexterm><programlisting><link linkend="void">void</link>                g_clear_error                       (<link linkend="GError">GError</link> **err);</programlisting>
+<refsect2 id="g-clear-error" role="function">
+<title>g_clear_error ()</title>
+<indexterm zone="g-clear-error"><primary>g_clear_error</primary></indexterm><programlisting><link linkend="void">void</link>                g_clear_error                       (<link linkend="GError">GError</link> **err);</programlisting>
 <para>
 If <parameter>err</parameter> is <link linkend="NULL:CAPS"><literal>NULL</literal></link>, does nothing. If <parameter>err</parameter> is non-<link linkend="NULL:CAPS"><literal>NULL</literal></link>,
 calls <link linkend="g-error-free"><function>g_error_free()</function></link> on *<parameter>err</parameter> and sets *<parameter>err</parameter> to <link linkend="NULL:CAPS"><literal>NULL</literal></link>.</para>
@@ -605,6 +620,65 @@ calls <link linkend="g-error-free"><function>g_error_free()</function></link> on
 <listitem><simpara> a <link linkend="GError"><type>GError</type></link> return location
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
+<refsect2 id="g-prefix-error" role="function" condition="since:2.16">
+<title>g_prefix_error ()</title>
+<indexterm zone="g-prefix-error" role="2.16"><primary>g_prefix_error</primary></indexterm><programlisting><link linkend="void">void</link>                g_prefix_error                      (<link linkend="GError">GError</link> **err,
+                                                         const <link linkend="gchar">gchar</link> *format,
+                                                         ...);</programlisting>
+<para>
+Formats a string according to <parameter>format</parameter> and
+prefix it to an existing error message.  If
+<parameter>err</parameter> is <link linkend="NULL:CAPS"><literal>NULL</literal></link> (ie: no error variable) then do
+nothing.
+</para>
+<para>
+If *<parameter>err</parameter> is <link linkend="NULL:CAPS"><literal>NULL</literal></link> (ie: an error variable is
+present but there is no error condition) then
+also do nothing.  Whether or not it makes
+sense to take advantage of this feature is up
+to you.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara> a return location for a <link linkend="GError"><type>GError</type></link>, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>format</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="printf"><function>printf()</function></link>-style format string
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara> arguments to <parameter>format</parameter>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.16
+</para></refsect2>
+<refsect2 id="g-propagate-prefixed-error" role="function" condition="since:2.16">
+<title>g_propagate_prefixed_error ()</title>
+<indexterm zone="g-propagate-prefixed-error" role="2.16"><primary>g_propagate_prefixed_error</primary></indexterm><programlisting><link linkend="void">void</link>                g_propagate_prefixed_error          (<link linkend="GError">GError</link> **dest,
+                                                         <link linkend="GError">GError</link> *src,
+                                                         const <link linkend="gchar">gchar</link> *format,
+                                                         ...);</programlisting>
+<para>
+If <parameter>dest</parameter> is <link linkend="NULL:CAPS"><literal>NULL</literal></link>, free <parameter>src</parameter>; otherwise,
+moves <parameter>src</parameter> into *<parameter>dest</parameter>. *<parameter>dest</parameter> must be <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
+After the move, add a prefix as with 
+<link linkend="g-prefix-error"><function>g_prefix_error()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dest</parameter>&nbsp;:</term>
+<listitem><simpara> error return location
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>src</parameter>&nbsp;:</term>
+<listitem><simpara> error to move into the return location
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>format</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="printf"><function>printf()</function></link>-style format string
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara> arguments to <parameter>format</parameter>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.16
+</para></refsect2>
 
 </refsect1>
 

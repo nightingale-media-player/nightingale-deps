@@ -46,6 +46,7 @@
 #include "glib.h"
 #include "gprintf.h"
 #include "gprintfint.h"
+#include "glibintl.h"
 
 #include "galias.h"
 
@@ -114,6 +115,25 @@ g_memdup (gconstpointer mem,
   return new_mem;
 }
 
+/**
+ * g_strndup:
+ * @str: the string to duplicate
+ * @n: the maximum number of bytes to copy from @str
+ *
+ * Duplicates the first @n bytes of a string, returning a newly-allocated
+ * buffer @n + 1 bytes long which will always be nul-terminated.
+ * If @str is less than @n bytes long the buffer is padded with nuls.
+ * If @str is %NULL it returns %NULL.
+ * The returned value should be freed when no longer needed.
+ * 
+ * <note><para>
+ * To copy a number of characters from a UTF-8 encoded string, use
+ * g_utf8_strncpy() instead.
+ * </para></note>
+ * 
+ * Returns: a newly-allocated buffer containing the first @n bytes 
+ *          of @str, nul-terminated 
+ */
 gchar*
 g_strndup (const gchar *str,
 	   gsize        n)    
@@ -132,6 +152,16 @@ g_strndup (const gchar *str,
   return new_str;
 }
 
+/**
+ * g_strnfill:
+ * @length: the length of the new string
+ * @fill_char: the byte to fill the string with
+ *
+ * Creates a new string @length bytes long filled with @fill_char.
+ * The returned string should be freed when no longer needed.
+ * 
+ * Returns: a newly-allocated string filled the @fill_char
+ */
 gchar*
 g_strnfill (gsize length,     
 	    gchar fill_char)
@@ -581,13 +611,12 @@ g_ascii_formatd (gchar       *buffer,
 	{
 	  *p = '.';
 	  p++;
-	  if (decimal_point_len > 1) {
-	    rest_len = strlen (p + (decimal_point_len-1));
-	    memmove (p, p + (decimal_point_len-1),
-		     rest_len);
-	    p[rest_len] = 0;
-	    
-	  }
+	  if (decimal_point_len > 1) 
+            {
+	      rest_len = strlen (p + (decimal_point_len-1));
+	      memmove (p, p + (decimal_point_len-1), rest_len);
+	      p[rest_len] = 0;
+	    }
 	}
     }
   
@@ -595,10 +624,10 @@ g_ascii_formatd (gchar       *buffer,
 }
 
 static guint64
-g_parse_long_long (const gchar *nptr,
-		   gchar      **endptr,
-		   guint        base,
-		   gboolean    *negative)
+g_parse_long_long (const gchar  *nptr,
+		   gchar       **endptr,
+		   guint         base,
+		   gboolean     *negative)
 {
   /* this code is based on on the strtol(3) code from GNU libc released under
    * the GNU Lesser General Public License.
@@ -622,9 +651,12 @@ g_parse_long_long (const gchar *nptr,
   
   g_return_val_if_fail (nptr != NULL, 0);
   
+  *negative = FALSE;
   if (base == 1 || base > 36)
     {
       errno = EINVAL;
+      if (endptr)
+	*endptr = nptr;
       return 0;
     }
   
@@ -638,7 +670,6 @@ g_parse_long_long (const gchar *nptr,
     goto noconv;
   
   /* Check for a sign.  */
-  *negative = FALSE;
   if (*s == '-')
     {
       *negative = TRUE;
@@ -2259,13 +2290,10 @@ g_strsplit (const gchar *string,
       while (--max_tokens && s)
 	{
 	  gsize len;     
-	  gchar *new_string;
 
 	  len = s - remainder;
-	  new_string = g_new (gchar, len + 1);
-	  strncpy (new_string, remainder, len);
-	  new_string[len] = 0;
-	  string_list = g_slist_prepend (string_list, new_string);
+	  string_list = g_slist_prepend (string_list,
+					 g_strndup (remainder, len));
 	  n++;
 	  remainder = s + delimiter_len;
 	  s = strstr (remainder, delimiter);
@@ -2402,8 +2430,8 @@ g_strfreev (gchar **str_array)
     {
       int i;
 
-      for(i = 0; str_array[i] != NULL; i++)
-	g_free(str_array[i]);
+      for (i = 0; str_array[i] != NULL; i++)
+	g_free (str_array[i]);
 
       g_free (str_array);
     }
@@ -2815,6 +2843,67 @@ g_strv_length (gchar **str_array)
 
   return i;
 }
+
+
+/**
+ * g_dpgettext:
+ * @domain: the translation domain to use, or %NULL to use
+ *   the domain set with textdomain()
+ * @msgctxtid: a combined message context and message id, separated
+ *   by a \004 character
+ * @msgidoffset: the offset of the message id in @msgctxid
+ *
+ * This function is a variant of dgettext() which supports
+ * a disambiguating message context. GNU gettext uses the
+ * '\004' character to separate the message context and
+ * message id in @msgctxtid.
+ * If 0 is passed as @msgidoffset, this function will fall back to
+ * trying to use the deprecated convention of using "|" as a separation
+ * character.
+ *
+ * Applications should normally not use this function directly,
+ * but use the C_() macro for translations with context.
+ *
+ * Returns: The translated string
+ *
+ * Since: 2.16
+ */
+const gchar *
+g_dpgettext (const gchar *domain, 
+             const gchar *msgctxtid, 
+             gsize        msgidoffset)
+{
+  const gchar *translation;
+  gchar *sep;
+
+  translation = dgettext (domain, msgctxtid);
+
+  if (translation == msgctxtid)
+    {
+      if (msgidoffset > 0)
+        return msgctxtid + msgidoffset;
+
+      sep = strchr (msgctxtid, '|');
+ 
+      if (sep)
+        {
+          /* try with '\004' instead of '|', in case
+           * xgettext -kQ_:1g was used
+           */
+          gchar *tmp = g_alloca (strlen (msgctxtid) + 1);
+          strcpy (tmp, msgctxtid);
+          tmp[sep - msgctxtid] = '\004';
+
+          translation = dgettext (domain, tmp);
+   
+          if (translation == tmp)
+            return sep + 1; 
+        }
+    }
+
+  return translation;
+}
+
 
 #define __G_STRFUNCS_C__
 #include "galiasdef.c"

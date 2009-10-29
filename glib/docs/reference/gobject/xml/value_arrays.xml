@@ -1,6 +1,6 @@
 <refentry id="gobject-Value-arrays">
 <refmeta>
-<refentrytitle role="top_of_page">Value arrays</refentrytitle>
+<refentrytitle role="top_of_page" id="gobject-Value-arrays.top_of_page">Value arrays</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GOBJECT Library</refmiscinfo>
 </refmeta>
@@ -11,13 +11,12 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="gobject-Value-arrays.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib-object.h&gt;
-
 
                     <link linkend="GValueArray">GValueArray</link>;
 <link linkend="GValue">GValue</link>*             <link linkend="g-value-array-get-nth">g_value_array_get_nth</link>               (<link linkend="GValueArray">GValueArray</link> *value_array,
@@ -50,7 +49,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="gobject-Value-arrays.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The prime purpose of a <link linkend="GValueArray"><type>GValueArray</type></link> is for it to be used as an object property
@@ -59,11 +58,11 @@ in order for it to be used as a boxed type through <link linkend="G-TYPE-VALUE-A
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="gobject-Value-arrays.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GValueArray" role="struct"/>GValueArray</title>
-<indexterm><primary>GValueArray</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GValueArray" role="struct">
+<title>GValueArray</title>
+<indexterm zone="GValueArray"><primary>GValueArray</primary></indexterm><programlisting>typedef struct {
   guint   n_values;
   GValue *values;
 } GValueArray;
@@ -83,9 +82,9 @@ A <link linkend="GValueArray"><type>GValueArray</type></link> contains an array 
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-array-get-nth" role="function"/>g_value_array_get_nth ()</title>
-<indexterm><primary>g_value_array_get_nth</primary></indexterm><programlisting><link linkend="GValue">GValue</link>*             g_value_array_get_nth               (<link linkend="GValueArray">GValueArray</link> *value_array,
+<refsect2 id="g-value-array-get-nth" role="function">
+<title>g_value_array_get_nth ()</title>
+<indexterm zone="g-value-array-get-nth"><primary>g_value_array_get_nth</primary></indexterm><programlisting><link linkend="GValue">GValue</link>*             g_value_array_get_nth               (<link linkend="GValueArray">GValueArray</link> *value_array,
                                                          <link linkend="guint">guint</link> index_);</programlisting>
 <para>
 Return a pointer to the value at <parameter>index_</parameter> containd in <parameter>value_array</parameter>.
@@ -101,9 +100,9 @@ Return a pointer to the value at <parameter>index_</parameter> containd in <para
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-array-new" role="function"/>g_value_array_new ()</title>
-<indexterm><primary>g_value_array_new</primary></indexterm><programlisting><link linkend="GValueArray">GValueArray</link>*        g_value_array_new                   (<link linkend="guint">guint</link> n_prealloced);</programlisting>
+<refsect2 id="g-value-array-new" role="function">
+<title>g_value_array_new ()</title>
+<indexterm zone="g-value-array-new"><primary>g_value_array_new</primary></indexterm><programlisting><link linkend="GValueArray">GValueArray</link>*        g_value_array_new                   (<link linkend="guint">guint</link> n_prealloced);</programlisting>
 <para>
 Allocate and initialize a new <link linkend="GValueArray"><type>GValueArray</type></link>, optionally preserve space
 for <parameter>n_prealloced</parameter> elements. New arrays always contain 0 elements,
@@ -117,9 +116,9 @@ regardless of the value of <parameter>n_prealloced</parameter>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-array-copy" role="function"/>g_value_array_copy ()</title>
-<indexterm><primary>g_value_array_copy</primary></indexterm><programlisting><link linkend="GValueArray">GValueArray</link>*        g_value_array_copy                  (const <link linkend="GValueArray">GValueArray</link> *value_array);</programlisting>
+<refsect2 id="g-value-array-copy" role="function">
+<title>g_value_array_copy ()</title>
+<indexterm zone="g-value-array-copy"><primary>g_value_array_copy</primary></indexterm><programlisting><link linkend="GValueArray">GValueArray</link>*        g_value_array_copy                  (const <link linkend="GValueArray">GValueArray</link> *value_array);</programlisting>
 <para>
 Construct an exact copy of a <link linkend="GValueArray"><type>GValueArray</type></link> by duplicating all its
 contents.
@@ -132,9 +131,9 @@ contents.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-array-free" role="function"/>g_value_array_free ()</title>
-<indexterm><primary>g_value_array_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_array_free                  (<link linkend="GValueArray">GValueArray</link> *value_array);</programlisting>
+<refsect2 id="g-value-array-free" role="function">
+<title>g_value_array_free ()</title>
+<indexterm zone="g-value-array-free"><primary>g_value_array_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_array_free                  (<link linkend="GValueArray">GValueArray</link> *value_array);</programlisting>
 <para>
 Free a <link linkend="GValueArray"><type>GValueArray</type></link> including its contents.
 </para><variablelist role="params">
@@ -144,9 +143,9 @@ Free a <link linkend="GValueArray"><type>GValueArray</type></link> including its
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-array-append" role="function"/>g_value_array_append ()</title>
-<indexterm><primary>g_value_array_append</primary></indexterm><programlisting><link linkend="GValueArray">GValueArray</link>*        g_value_array_append                (<link linkend="GValueArray">GValueArray</link> *value_array,
+<refsect2 id="g-value-array-append" role="function">
+<title>g_value_array_append ()</title>
+<indexterm zone="g-value-array-append"><primary>g_value_array_append</primary></indexterm><programlisting><link linkend="GValueArray">GValueArray</link>*        g_value_array_append                (<link linkend="GValueArray">GValueArray</link> *value_array,
                                                          const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Insert a copy of <parameter>value</parameter> as last element of <parameter>value_array</parameter>.
@@ -162,9 +161,9 @@ Insert a copy of <parameter>value</parameter> as last element of <parameter>valu
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-array-prepend" role="function"/>g_value_array_prepend ()</title>
-<indexterm><primary>g_value_array_prepend</primary></indexterm><programlisting><link linkend="GValueArray">GValueArray</link>*        g_value_array_prepend               (<link linkend="GValueArray">GValueArray</link> *value_array,
+<refsect2 id="g-value-array-prepend" role="function">
+<title>g_value_array_prepend ()</title>
+<indexterm zone="g-value-array-prepend"><primary>g_value_array_prepend</primary></indexterm><programlisting><link linkend="GValueArray">GValueArray</link>*        g_value_array_prepend               (<link linkend="GValueArray">GValueArray</link> *value_array,
                                                          const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Insert a copy of <parameter>value</parameter> as first element of <parameter>value_array</parameter>.
@@ -180,9 +179,9 @@ Insert a copy of <parameter>value</parameter> as first element of <parameter>val
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-array-insert" role="function"/>g_value_array_insert ()</title>
-<indexterm><primary>g_value_array_insert</primary></indexterm><programlisting><link linkend="GValueArray">GValueArray</link>*        g_value_array_insert                (<link linkend="GValueArray">GValueArray</link> *value_array,
+<refsect2 id="g-value-array-insert" role="function">
+<title>g_value_array_insert ()</title>
+<indexterm zone="g-value-array-insert"><primary>g_value_array_insert</primary></indexterm><programlisting><link linkend="GValueArray">GValueArray</link>*        g_value_array_insert                (<link linkend="GValueArray">GValueArray</link> *value_array,
                                                          <link linkend="guint">guint</link> index_,
                                                          const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
@@ -202,9 +201,9 @@ Insert a copy of <parameter>value</parameter> at specified position into <parame
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-array-remove" role="function"/>g_value_array_remove ()</title>
-<indexterm><primary>g_value_array_remove</primary></indexterm><programlisting><link linkend="GValueArray">GValueArray</link>*        g_value_array_remove                (<link linkend="GValueArray">GValueArray</link> *value_array,
+<refsect2 id="g-value-array-remove" role="function">
+<title>g_value_array_remove ()</title>
+<indexterm zone="g-value-array-remove"><primary>g_value_array_remove</primary></indexterm><programlisting><link linkend="GValueArray">GValueArray</link>*        g_value_array_remove                (<link linkend="GValueArray">GValueArray</link> *value_array,
                                                          <link linkend="guint">guint</link> index_);</programlisting>
 <para>
 Remove the value at position <parameter>index_</parameter> from <parameter>value_array</parameter>.
@@ -220,9 +219,9 @@ Remove the value at position <parameter>index_</parameter> from <parameter>value
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-array-sort" role="function"/>g_value_array_sort ()</title>
-<indexterm><primary>g_value_array_sort</primary></indexterm><programlisting><link linkend="GValueArray">GValueArray</link>*        g_value_array_sort                  (<link linkend="GValueArray">GValueArray</link> *value_array,
+<refsect2 id="g-value-array-sort" role="function">
+<title>g_value_array_sort ()</title>
+<indexterm zone="g-value-array-sort"><primary>g_value_array_sort</primary></indexterm><programlisting><link linkend="GValueArray">GValueArray</link>*        g_value_array_sort                  (<link linkend="GValueArray">GValueArray</link> *value_array,
                                                          <link linkend="GCompareFunc">GCompareFunc</link> compare_func);</programlisting>
 <para>
 Sort <parameter>value_array</parameter> using <parameter>compare_func</parameter> to compare the elements accoring to
@@ -243,9 +242,9 @@ The current implementation uses Quick-Sort as sorting algorithm.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-array-sort-with-data" role="function"/>g_value_array_sort_with_data ()</title>
-<indexterm><primary>g_value_array_sort_with_data</primary></indexterm><programlisting><link linkend="GValueArray">GValueArray</link>*        g_value_array_sort_with_data        (<link linkend="GValueArray">GValueArray</link> *value_array,
+<refsect2 id="g-value-array-sort-with-data" role="function">
+<title>g_value_array_sort_with_data ()</title>
+<indexterm zone="g-value-array-sort-with-data"><primary>g_value_array_sort_with_data</primary></indexterm><programlisting><link linkend="GValueArray">GValueArray</link>*        g_value_array_sort_with_data        (<link linkend="GValueArray">GValueArray</link> *value_array,
                                                          <link linkend="GCompareDataFunc">GCompareDataFunc</link> compare_func,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -275,7 +274,7 @@ The current implementation uses Quick-Sort as sorting algorithm.
 
 
 
-<refsect1>
+<refsect1 id="gobject-Value-arrays.see-also">
 <title>See Also</title>
 <para>
 <link linkend="GValue"><type>GValue</type></link>, <link linkend="GParamSpecValueArray"><type>GParamSpecValueArray</type></link>, <link linkend="g-param-spec-value-array"><function>g_param_spec_value_array()</function></link>

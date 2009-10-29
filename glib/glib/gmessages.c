@@ -144,7 +144,7 @@ g_messages_prefixed_init (void)
       
       if (val)
 	{
-	  static const GDebugKey keys[] = {
+	  const GDebugKey keys[] = {
 	    { "error", G_LOG_LEVEL_ERROR },
 	    { "critical", G_LOG_LEVEL_CRITICAL },
 	    { "warning", G_LOG_LEVEL_WARNING },
@@ -485,8 +485,8 @@ g_logv (const gchar   *log_domain,
 			  MB_ICONERROR|MB_SETFOREGROUND);
 	      if (IsDebuggerPresent () && !(test_level & G_LOG_FLAG_RECURSION))
 		G_BREAKPOINT ();
-
-	      abort ();
+	      else
+		abort ();
 #else
 #if defined (G_ENABLE_DEBUG) && defined (SIGTRAP)
 	      if (!(test_level & G_LOG_FLAG_RECURSION))
@@ -534,6 +534,27 @@ g_return_if_fail_warning (const char *log_domain,
 	 "%s: assertion `%s' failed",
 	 pretty_function,
 	 expression);
+}
+
+void
+g_warn_message (const char     *domain,
+                const char     *file,
+                int             line,
+                const char     *func,
+                const char     *warnexpr)
+{
+  char *s, lstr[32];
+  g_snprintf (lstr, 32, "%d", line);
+  if (warnexpr)
+    s = g_strconcat ("(", file, ":", lstr, "):",
+                     func, func[0] ? ":" : "",
+                     " runtime check failed: (", warnexpr, ")", NULL);
+  else
+    s = g_strconcat ("(", file, ":", lstr, "):",
+                     func, func[0] ? ":" : "",
+                     " ", "code should not be reached", NULL);
+  g_log (domain, G_LOG_LEVEL_WARNING, "%s", s);
+  g_free (s);
 }
 
 void
@@ -1062,7 +1083,7 @@ _g_debug_init (void)
   val = g_getenv ("G_DEBUG");
   if (val != NULL)
     {
-      static const GDebugKey keys[] = {
+      const GDebugKey keys[] = {
 	{"fatal_warnings", G_DEBUG_FATAL_WARNINGS},
 	{"fatal_criticals", G_DEBUG_FATAL_CRITICALS}
       };

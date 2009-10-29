@@ -28,23 +28,24 @@
  * MT safe
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-#include	"gstdio.h"
-#include	"gmodule.h"
-#include	"gmoduleconf.h"
-#include	<errno.h>
-#include	<string.h>
-#include 	<sys/types.h>
-#include 	<sys/stat.h>
-#include 	<fcntl.h>
+#include "config.h"
+#include "glibconfig.h"
+
+#include <errno.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #ifdef HAVE_UNISTD_H
-# include <unistd.h>
+#include <unistd.h>
 #endif
-#if defined (G_OS_WIN32)
-# include <io.h>		/* For open() and close() prototypes. */
+#ifdef G_OS_WIN32
+#include <io.h>		/* For open() and close() prototypes. */
 #endif
+
+#include "gmoduleconf.h"
+#include "gstdio.h"
+#include "gmodule.h"
 
 /* We maintain a list of modules, so we can reference count them.
  * That's needed because some platforms don't support refernce counts on
@@ -90,6 +91,8 @@ static inline GModule*	g_module_find_by_name	(const gchar	*name);
 static GModule	     *modules = NULL;
 static GModule	     *main_module = NULL;
 static GStaticPrivate module_error_private = G_STATIC_PRIVATE_INIT;
+static gboolean	      module_debug_initialized = FALSE;
+static guint	      module_debug_flags = 0;
 
 
 /* --- inline functions --- */
@@ -299,6 +302,29 @@ str_check_suffix (const gchar* string,
     strcmp (string + string_len - suffix_len, suffix) == 0;
 }
 
+enum
+{
+  G_MODULE_DEBUG_RESIDENT_MODULES = 1 << 0,
+  G_MODULE_DEBUG_BIND_NOW_MODULES = 1 << 1
+};
+
+static void
+_g_module_debug_init (void)
+{
+  const GDebugKey keys[] = {
+    { "resident-modules", G_MODULE_DEBUG_RESIDENT_MODULES },
+    { "bind-now-modules", G_MODULE_DEBUG_BIND_NOW_MODULES }
+  };
+  const gchar *env;
+
+  env = g_getenv ("G_DEBUG");
+
+  module_debug_flags =
+    !env ? 0 : g_parse_debug_string (env, keys, G_N_ELEMENTS (keys));
+
+  module_debug_initialized = TRUE;
+}
+
 static GStaticRecMutex g_module_global_lock = G_STATIC_REC_MUTEX_INIT;
 
 GModule*
@@ -312,6 +338,13 @@ g_module_open (const gchar    *file_name,
   SUPPORT_OR_RETURN (NULL);
   
   g_static_rec_mutex_lock (&g_module_global_lock);
+
+  if (G_UNLIKELY (!module_debug_initialized))
+    _g_module_debug_init ();
+
+  if (module_debug_flags & G_MODULE_DEBUG_BIND_NOW_MODULES)
+    flags &= ~G_MODULE_BIND_LAZY;
+
   if (!file_name)
     {      
       if (!main_module)
@@ -395,8 +428,11 @@ g_module_open (const gchar    *file_name,
 	  gchar *real_name = parse_libtool_archive (name);
 
 	  /* real_name might be NULL, but then module error is already set */
-	  g_free (name);
-	  name = real_name;
+	  if (real_name)
+	    {
+	      g_free (name);
+	      name = real_name;
+            }
 	}
       if (name)
 	handle = _g_module_open (name, (flags & G_MODULE_BIND_LAZY) != 0,
@@ -445,7 +481,7 @@ g_module_open (const gchar    *file_name,
       modules = module;
       
       /* check initialization */
-      if (g_module_symbol (module, "g_module_check_init", (gpointer) &check_init))
+      if (g_module_symbol (module, "g_module_check_init", (gpointer) &check_init) && check_init != NULL)
 	check_failed = check_init (module);
       
       /* we don't call unload() if the initialization check failed. */
@@ -456,7 +492,10 @@ g_module_open (const gchar    *file_name,
 	{
 	  gchar *error;
 
-	  error = g_strconcat ("GModule initialization check failed: ", check_failed, NULL);
+	  error = g_strconcat ("GModule (", 
+                               file_name ? file_name : "NULL", 
+                               ") initialization check failed: ", 
+                               check_failed, NULL);
 	  g_module_close (module);
 	  module = NULL;
 	  g_module_set_error (error);
@@ -467,6 +506,10 @@ g_module_open (const gchar    *file_name,
 
       g_free (saved_error);
     }
+
+  if (module != NULL &&
+      (module_debug_flags & G_MODULE_DEBUG_RESIDENT_MODULES))
+    g_module_make_resident (module);
 
   g_static_rec_mutex_unlock (&g_module_global_lock);
   return module;

@@ -2,7 +2,7 @@
 Internationalization
 
 <!-- ##### SECTION Short_Description ##### -->
-gettext support macros.
+gettext support macros
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -20,6 +20,8 @@ the GETTEXT_PACKAGE macro suitably for your library:
 &num;define GETTEXT_PACKAGE "gtk20"
 &num;include &lt;glib/gi18n-lib.h&gt;
 </programlisting></informalexample>
+The gettext manual covers details of how to set up message extraction
+with xgettext.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
@@ -30,21 +32,11 @@ The gettext manual.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### MACRO _ ##### -->
-<para>
-Marks a string for translation, gets replaced with the translated string
-at runtime.
-</para>
-
-@String: the string to be translated
-@Since: 2.4
-
-
 <!-- ##### MACRO Q_ ##### -->
 <para>
-Like _(), but applies g_strip_context() to the translation. This has the
-advantage that the string can be adorned with a prefix to guarantee 
-uniqueness and provide context to the translator.
+Like _(), but handles context in message ids. This has the advantage that 
+the string can be adorned with a prefix to guarantee uniqueness and provide 
+context to the translator. 
 </para>
 <para>
 One use case given in the gettext manual is GUI translation, where one could 
@@ -54,17 +46,54 @@ differently depending on whether it's the name of a character set or a
 language. This could be solved by using "charset|Russian" and 
 "language|Russian".
 </para>
+<para>
+See the C_() macro for a different way to mark up translatable strings
+with context.
+</para>
+<note><para>
+If you are using the Q_() macro, you need to make sure that you 
+pass <option>--keyword=Q_</option> to xgettext when extracting messages.
+If you are using GNU gettext >= 0.15, you can also use
+<option>--keyword=Q_:1g</option> to let xgettext split the context
+string off into a msgctxt line in the po file.
+</para></note>
 
 @String: the string to be translated, with a '|'-separated prefix which 
   must not be translated
+@Returns: the translated message
 @Since: 2.4
+
+
+<!-- ##### MACRO C_ ##### -->
+<para>
+Uses gettext to get the translation for @msgid. @msgctxt is 
+used as a context. This is mainly useful for short strings which 
+may need different translations, depending on the context in which 
+they are used.
+<informalexample><programlisting>
+label1 = C_("Navigation", "Back");
+label2 = C_("Body part", "Back");
+</programlisting></informalexample> 
+</para>
+
+<note><para>
+If you are using the C_() macro, you need to make sure that you 
+pass <option>--keyword=C_:1c,2</option> to xgettext when extracting 
+messages. Note that this only works with GNU gettext >= 0.15. 
+</para></note>
+
+@Context: a message context, must be a string literal
+@String: a message id, must be a string literal
+@Returns: the translated message
+@Since: 2.16
 
 
 <!-- ##### MACRO N_ ##### -->
 <para>
-Marks a string for translation, gets replaced with the untranslated string
-at runtime. This is useful in situations where the translated strings can't
+Only marks a string for translation.
+This is useful in situations where the translated strings can't
 be directly used, e.g. in string array initializers. 
+To get the translated string, call gettext() at runtime.
 </para>
 <informalexample><programlisting>
      {
@@ -93,6 +122,17 @@ be directly used, e.g. in string array initializers.
 
 @msgid: 
 @msgval: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g_dpgettext ##### -->
+<para>
+
+</para>
+
+@domain: 
+@msgctxtid: 
+@msgidoffset: 
 @Returns: 
 
 

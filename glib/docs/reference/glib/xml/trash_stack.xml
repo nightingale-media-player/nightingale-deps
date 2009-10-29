@@ -1,23 +1,22 @@
 <refentry id="glib-Trash-Stacks">
 <refmeta>
-<refentrytitle role="top_of_page">Trash Stacks</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Trash-Stacks.top_of_page">Trash Stacks</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>Trash Stacks</refname>
-<refpurpose>maintain a stack of unused allocated memory chunks.</refpurpose>
+<refpurpose>maintain a stack of unused allocated memory chunks</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Trash-Stacks.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
-
 
                     <link linkend="GTrashStack">GTrashStack</link>;
 <link linkend="void">void</link>                <link linkend="g-trash-stack-push">g_trash_stack_push</link>                  (<link linkend="GTrashStack">GTrashStack</link> **stack_p,
@@ -36,7 +35,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Trash-Stacks.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 A <link linkend="GTrashStack"><type>GTrashStack</type></link> is an efficient way to keep a stack of unused allocated
@@ -50,11 +49,11 @@ is a perfectly valid empty stack.
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Trash-Stacks.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GTrashStack" role="struct"/>GTrashStack</title>
-<indexterm><primary>GTrashStack</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GTrashStack" role="struct">
+<title>GTrashStack</title>
+<indexterm zone="GTrashStack"><primary>GTrashStack</primary></indexterm><programlisting>typedef struct {
   GTrashStack *next;
 } GTrashStack;
 </programlisting>
@@ -71,9 +70,9 @@ bytes of the element.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-trash-stack-push" role="function"/>g_trash_stack_push ()</title>
-<indexterm><primary>g_trash_stack_push</primary></indexterm><programlisting><link linkend="void">void</link>                g_trash_stack_push                  (<link linkend="GTrashStack">GTrashStack</link> **stack_p,
+<refsect2 id="g-trash-stack-push" role="function">
+<title>g_trash_stack_push ()</title>
+<indexterm zone="g-trash-stack-push"><primary>g_trash_stack_push</primary></indexterm><programlisting><link linkend="void">void</link>                g_trash_stack_push                  (<link linkend="GTrashStack">GTrashStack</link> **stack_p,
                                                          <link linkend="gpointer">gpointer</link> data_p);</programlisting>
 <para>
 Pushes a piece of memory onto a <link linkend="GTrashStack"><type>GTrashStack</type></link>.
@@ -87,9 +86,9 @@ Pushes a piece of memory onto a <link linkend="GTrashStack"><type>GTrashStack</t
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-trash-stack-pop" role="function"/>g_trash_stack_pop ()</title>
-<indexterm><primary>g_trash_stack_pop</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_trash_stack_pop                   (<link linkend="GTrashStack">GTrashStack</link> **stack_p);</programlisting>
+<refsect2 id="g-trash-stack-pop" role="function">
+<title>g_trash_stack_pop ()</title>
+<indexterm zone="g-trash-stack-pop"><primary>g_trash_stack_pop</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_trash_stack_pop                   (<link linkend="GTrashStack">GTrashStack</link> **stack_p);</programlisting>
 <para>
 Pops a piece of memory off a <link linkend="GTrashStack"><type>GTrashStack</type></link>.
 </para><variablelist role="params">
@@ -101,9 +100,9 @@ Pops a piece of memory off a <link linkend="GTrashStack"><type>GTrashStack</type
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-trash-stack-peek" role="function"/>g_trash_stack_peek ()</title>
-<indexterm><primary>g_trash_stack_peek</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_trash_stack_peek                  (<link linkend="GTrashStack">GTrashStack</link> **stack_p);</programlisting>
+<refsect2 id="g-trash-stack-peek" role="function">
+<title>g_trash_stack_peek ()</title>
+<indexterm zone="g-trash-stack-peek"><primary>g_trash_stack_peek</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_trash_stack_peek                  (<link linkend="GTrashStack">GTrashStack</link> **stack_p);</programlisting>
 <para>
 Returns the element at the top of a <link linkend="GTrashStack"><type>GTrashStack</type></link> which may be <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 </para><variablelist role="params">
@@ -115,9 +114,9 @@ Returns the element at the top of a <link linkend="GTrashStack"><type>GTrashStac
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-trash-stack-height" role="function"/>g_trash_stack_height ()</title>
-<indexterm><primary>g_trash_stack_height</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_trash_stack_height                (<link linkend="GTrashStack">GTrashStack</link> **stack_p);</programlisting>
+<refsect2 id="g-trash-stack-height" role="function">
+<title>g_trash_stack_height ()</title>
+<indexterm zone="g-trash-stack-height"><primary>g_trash_stack_height</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_trash_stack_height                (<link linkend="GTrashStack">GTrashStack</link> **stack_p);</programlisting>
 <para>
 Returns the height of a <link linkend="GTrashStack"><type>GTrashStack</type></link>.
 Note that execution of this function is of O(N) complexity

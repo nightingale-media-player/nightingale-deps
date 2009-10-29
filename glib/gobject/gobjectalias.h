@@ -32,6 +32,9 @@ extern __typeof (g_strv_get_type) IA__g_strv_get_type __attribute((visibility("h
 extern __typeof (g_hash_table_get_type) IA__g_hash_table_get_type __attribute((visibility("hidden"))) G_GNUC_CONST;
 #define g_hash_table_get_type IA__g_hash_table_get_type
 
+extern __typeof (g_regex_get_type) IA__g_regex_get_type __attribute((visibility("hidden"))) G_GNUC_CONST;
+#define g_regex_get_type IA__g_regex_get_type
+
 extern __typeof (g_closure_get_type) IA__g_closure_get_type __attribute((visibility("hidden"))) G_GNUC_CONST;
 #define g_closure_get_type IA__g_closure_get_type
 

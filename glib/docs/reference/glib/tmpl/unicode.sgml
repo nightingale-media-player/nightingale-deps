@@ -2,7 +2,7 @@
 Unicode Manipulation
 
 <!-- ##### SECTION Short_Description ##### -->
-functions operating on Unicode characters and UTF-8 strings.
+functions operating on Unicode characters and UTF-8 strings
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -20,7 +20,7 @@ The implementations of the Unicode functions in GLib are based
 on the Unicode Character Data tables, which are available from
 <ulink url="http://www.unicode.org">www.unicode.org</ulink>.
 GLib 2.8 supports Unicode 4.0, GLib 2.10 supports Unicode 4.1,
-GLib 2.12 supports Unicode 5.0.
+GLib 2.12 supports Unicode 5.0, GLib 2.16.3 supports Unicode 5.1.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
@@ -93,6 +93,15 @@ will correctly interpret surrogate pairs.</footnote>.
 @Returns: 
 
 
+<!-- ##### FUNCTION g_unichar_isdefined ##### -->
+<para>
+
+</para>
+
+@c: 
+@Returns: 
+
+
 <!-- ##### FUNCTION g_unichar_isdigit ##### -->
 <para>
 
@@ -112,6 +121,15 @@ will correctly interpret surrogate pairs.</footnote>.
 
 
 <!-- ##### FUNCTION g_unichar_islower ##### -->
+<para>
+
+</para>
+
+@c: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g_unichar_ismark ##### -->
 <para>
 
 </para>
@@ -147,6 +165,15 @@ will correctly interpret surrogate pairs.</footnote>.
 @Returns: 
 
 
+<!-- ##### FUNCTION g_unichar_istitle ##### -->
+<para>
+
+</para>
+
+@c: 
+@Returns: 
+
+
 <!-- ##### FUNCTION g_unichar_isupper ##### -->
 <para>
 
@@ -165,24 +192,6 @@ will correctly interpret surrogate pairs.</footnote>.
 @Returns: 
 
 
-<!-- ##### FUNCTION g_unichar_istitle ##### -->
-<para>
-
-</para>
-
-@c: 
-@Returns: 
-
-
-<!-- ##### FUNCTION g_unichar_isdefined ##### -->
-<para>
-
-</para>
-
-@c: 
-@Returns: 
-
-
 <!-- ##### FUNCTION g_unichar_iswide ##### -->
 <para>
 
@@ -193,6 +202,15 @@ will correctly interpret surrogate pairs.</footnote>.
 
 
 <!-- ##### FUNCTION g_unichar_iswide_cjk ##### -->
+<para>
+
+</para>
+
+@c: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g_unichar_iszerowidth ##### -->
 <para>
 
 </para>
@@ -248,41 +266,42 @@ will correctly interpret surrogate pairs.</footnote>.
 
 <!-- ##### ENUM GUnicodeType ##### -->
 <para>
-These are the possible character classifications.
+These are the possible character classifications from the 
+Unicode specification.
 See <ulink url="http://www.unicode.org/Public/UNIDATA/UnicodeData.html"
 >http://www.unicode.org/Public/UNIDATA/UnicodeData.html</ulink>.
 </para>
 
-@G_UNICODE_CONTROL: 
-@G_UNICODE_FORMAT: 
-@G_UNICODE_UNASSIGNED: 
-@G_UNICODE_PRIVATE_USE: 
-@G_UNICODE_SURROGATE: 
-@G_UNICODE_LOWERCASE_LETTER: 
-@G_UNICODE_MODIFIER_LETTER: 
-@G_UNICODE_OTHER_LETTER: 
-@G_UNICODE_TITLECASE_LETTER: 
-@G_UNICODE_UPPERCASE_LETTER: 
-@G_UNICODE_COMBINING_MARK: 
-@G_UNICODE_ENCLOSING_MARK: 
-@G_UNICODE_NON_SPACING_MARK: 
-@G_UNICODE_DECIMAL_NUMBER: 
-@G_UNICODE_LETTER_NUMBER: 
-@G_UNICODE_OTHER_NUMBER: 
-@G_UNICODE_CONNECT_PUNCTUATION: 
-@G_UNICODE_DASH_PUNCTUATION: 
-@G_UNICODE_CLOSE_PUNCTUATION: 
-@G_UNICODE_FINAL_PUNCTUATION: 
-@G_UNICODE_INITIAL_PUNCTUATION: 
-@G_UNICODE_OTHER_PUNCTUATION: 
-@G_UNICODE_OPEN_PUNCTUATION: 
-@G_UNICODE_CURRENCY_SYMBOL: 
-@G_UNICODE_MODIFIER_SYMBOL: 
-@G_UNICODE_MATH_SYMBOL: 
-@G_UNICODE_OTHER_SYMBOL: 
-@G_UNICODE_LINE_SEPARATOR: 
-@G_UNICODE_PARAGRAPH_SEPARATOR: 
-@G_UNICODE_SPACE_SEPARATOR: 
+@G_UNICODE_CONTROL: General category "Other, Control" (Cc)
+@G_UNICODE_FORMAT: General category "Other, Format" (Cf)
+@G_UNICODE_UNASSIGNED: General category "Other, Not Assigned" (Cn)
+@G_UNICODE_PRIVATE_USE: General category "Other, Private Use" (Co)
+@G_UNICODE_SURROGATE: General category "Other, Surrogate" (Cs)
+@G_UNICODE_LOWERCASE_LETTER: General category "Letter, Lowercase" (Ll)
+@G_UNICODE_MODIFIER_LETTER: General category "Letter, Modifier" (Lm)
+@G_UNICODE_OTHER_LETTER: General category "Letter, Other" (Lo)
+@G_UNICODE_TITLECASE_LETTER: General category "Letter, Titlecase" (Lt)
+@G_UNICODE_UPPERCASE_LETTER: General category "Letter, Uppercase" (Lu)
+@G_UNICODE_COMBINING_MARK: General category "Mark, Spacing Combining" (Mc)
+@G_UNICODE_ENCLOSING_MARK: General category "Mark, Enclosing" (Me)
+@G_UNICODE_NON_SPACING_MARK: General category "Mark, Nonspacing" (Mn)
+@G_UNICODE_DECIMAL_NUMBER: General category "Number, Decimal Digit" (Nd)
+@G_UNICODE_LETTER_NUMBER: General category "Number, Letter" (Nl)
+@G_UNICODE_OTHER_NUMBER: General category "Number, Other" (No)
+@G_UNICODE_CONNECT_PUNCTUATION: General category "Punctuation, Connector" (Pc)
+@G_UNICODE_DASH_PUNCTUATION: General category "Punctuation, Dash" (Pd)
+@G_UNICODE_CLOSE_PUNCTUATION: General category "Punctuation, Close" (Pe)
+@G_UNICODE_FINAL_PUNCTUATION: General category "Punctuation, Final quote" (Pf)
+@G_UNICODE_INITIAL_PUNCTUATION: General category "Punctuation, Initial quote" (Pi)
+@G_UNICODE_OTHER_PUNCTUATION: General category "Punctuation, Other" (Po)
+@G_UNICODE_OPEN_PUNCTUATION: General category "Punctuation, Open" (Ps)
+@G_UNICODE_CURRENCY_SYMBOL: General category "Symbol, Currency" (Sc)
+@G_UNICODE_MODIFIER_SYMBOL: General category "Symbol, Modifier" (Sk)
+@G_UNICODE_MATH_SYMBOL: General category "Symbol, Math" (Sm)
+@G_UNICODE_OTHER_SYMBOL: General category "Symbol, Other" (So)
+@G_UNICODE_LINE_SEPARATOR: General category "Separator, Line" (Zl)
+@G_UNICODE_PARAGRAPH_SEPARATOR: General category "Separator, Paragraph" (Zp)
+@G_UNICODE_SPACE_SEPARATOR: General category "Separator, Space" (Zs)
 
 <!-- ##### FUNCTION g_unichar_type ##### -->
 <para>
@@ -302,7 +321,6 @@ Applications should be ready to handle unknown values.
 They may be regarded as %G_UNICODE_BREAK_UNKNOWN.
 See <ulink url="http://www.unicode.org/unicode/reports/tr14/"
 >http://www.unicode.org/unicode/reports/tr14/</ulink>.
-
 </para>
 
 @G_UNICODE_BREAK_MANDATORY: 
@@ -351,6 +369,15 @@ See <ulink url="http://www.unicode.org/unicode/reports/tr14/"
 @Returns: 
 
 
+<!-- ##### FUNCTION g_unichar_combining_class ##### -->
+<para>
+
+</para>
+
+@uc: 
+@Returns: 
+
+
 <!-- ##### FUNCTION g_unicode_canonical_ordering ##### -->
 <para>
 
@@ -377,6 +404,110 @@ See <ulink url="http://www.unicode.org/unicode/reports/tr14/"
 
 @ch: 
 @mirrored_ch: 
+@Returns: 
+
+
+<!-- ##### ENUM GUnicodeScript ##### -->
+<para>
+The #GUnicodeScript enumeration identifies different writing
+systems. The values correspond to the names as defined in the
+Unicode standard. The enumeration has been added in GLib 2.14,
+and is interchangeable with #PangoScript.
+Note that new types may be added in the future. Applications 
+should be ready to handle unknown values.
+See <ulink
+url="http://www.unicode.org/reports/tr24/">Unicode Standard Annex
+#24: Script names</ulink>.
+</para>
+
+@G_UNICODE_SCRIPT_INVALID_CODE: a value never returned from g_unichar_get_script()
+@G_UNICODE_SCRIPT_COMMON:     a character used by multiple different scripts
+@G_UNICODE_SCRIPT_INHERITED:  a mark glyph that takes its script from the
+                              base glyph to which it is attached
+@G_UNICODE_SCRIPT_ARABIC:     Arabic
+@G_UNICODE_SCRIPT_ARMENIAN:   Armenian
+@G_UNICODE_SCRIPT_BENGALI:    Bengali
+@G_UNICODE_SCRIPT_BOPOMOFO:   Bopomofo
+@G_UNICODE_SCRIPT_CHEROKEE:   Cherokee
+@G_UNICODE_SCRIPT_COPTIC:     Coptic
+@G_UNICODE_SCRIPT_CYRILLIC:   Cyrillic
+@G_UNICODE_SCRIPT_DESERET:    Deseret
+@G_UNICODE_SCRIPT_DEVANAGARI: Devanagari
+@G_UNICODE_SCRIPT_ETHIOPIC:   Ethiopic
+@G_UNICODE_SCRIPT_GEORGIAN:   Georgian
+@G_UNICODE_SCRIPT_GOTHIC:     Gothic
+@G_UNICODE_SCRIPT_GREEK:      Greek
+@G_UNICODE_SCRIPT_GUJARATI:   Gujarati
+@G_UNICODE_SCRIPT_GURMUKHI:   Gurmukhi
+@G_UNICODE_SCRIPT_HAN:        Han
+@G_UNICODE_SCRIPT_HANGUL:     Hangul
+@G_UNICODE_SCRIPT_HEBREW:     Hebrew
+@G_UNICODE_SCRIPT_HIRAGANA:   Hiragana
+@G_UNICODE_SCRIPT_KANNADA:    Kannada
+@G_UNICODE_SCRIPT_KATAKANA:   Katakana
+@G_UNICODE_SCRIPT_KHMER:      Khmer
+@G_UNICODE_SCRIPT_LAO:        Lao
+@G_UNICODE_SCRIPT_LATIN:      Latin
+@G_UNICODE_SCRIPT_MALAYALAM:  Malayalam
+@G_UNICODE_SCRIPT_MONGOLIAN:  Mongolian
+@G_UNICODE_SCRIPT_MYANMAR:    Myanmar
+@G_UNICODE_SCRIPT_OGHAM:      Ogham
+@G_UNICODE_SCRIPT_OLD_ITALIC: Old Italic
+@G_UNICODE_SCRIPT_ORIYA:      Oriya
+@G_UNICODE_SCRIPT_RUNIC:      Runic
+@G_UNICODE_SCRIPT_SINHALA:    Sinhala
+@G_UNICODE_SCRIPT_SYRIAC:     Syriac
+@G_UNICODE_SCRIPT_TAMIL:      Tamil
+@G_UNICODE_SCRIPT_TELUGU:     Telugu
+@G_UNICODE_SCRIPT_THAANA:     Thaana
+@G_UNICODE_SCRIPT_THAI:       Thai
+@G_UNICODE_SCRIPT_TIBETAN:    Tibetan
+@G_UNICODE_SCRIPT_CANADIAN_ABORIGINAL: 
+                              Canadian Aboriginal
+@G_UNICODE_SCRIPT_YI:         Yi
+@G_UNICODE_SCRIPT_TAGALOG:    Tagalog
+@G_UNICODE_SCRIPT_HANUNOO:    Hanunoo
+@G_UNICODE_SCRIPT_BUHID:      Buhid
+@G_UNICODE_SCRIPT_TAGBANWA:   Tagbanwa
+@G_UNICODE_SCRIPT_BRAILLE:    Braille
+@G_UNICODE_SCRIPT_CYPRIOT:    Cypriot
+@G_UNICODE_SCRIPT_LIMBU:      Limbu
+@G_UNICODE_SCRIPT_OSMANYA:    Osmanya
+@G_UNICODE_SCRIPT_SHAVIAN:    Shavian
+@G_UNICODE_SCRIPT_LINEAR_B:   Linear B
+@G_UNICODE_SCRIPT_TAI_LE:     Tai Le
+@G_UNICODE_SCRIPT_UGARITIC:   Ugaritic
+@G_UNICODE_SCRIPT_NEW_TAI_LUE: New Tai Lue
+@G_UNICODE_SCRIPT_BUGINESE:   Buginese
+@G_UNICODE_SCRIPT_GLAGOLITIC: Glagolitic
+@G_UNICODE_SCRIPT_TIFINAGH:   Tifinagh
+@G_UNICODE_SCRIPT_SYLOTI_NAGRI: Syloti Nagri
+@G_UNICODE_SCRIPT_OLD_PERSIAN: Old Persian
+@G_UNICODE_SCRIPT_KHAROSHTHI: Kharoshthi
+@G_UNICODE_SCRIPT_UNKNOWN:    an unassigned code point
+@G_UNICODE_SCRIPT_BALINESE:   Balinese
+@G_UNICODE_SCRIPT_CUNEIFORM:  Cuneiform
+@G_UNICODE_SCRIPT_PHOENICIAN: Phoenician
+@G_UNICODE_SCRIPT_PHAGS_PA:   Phags-pa
+@G_UNICODE_SCRIPT_NKO:        N'Ko
+@G_UNICODE_SCRIPT_KAYAH_LI:   Kayah Li. Since 2.16.3
+@G_UNICODE_SCRIPT_LEPCHA:     Lepcha. Since 2.16.3
+@G_UNICODE_SCRIPT_REJANG:     Rejang. Since 2.16.3
+@G_UNICODE_SCRIPT_SUNDANESE:  Sundanese. Since 2.16.3
+@G_UNICODE_SCRIPT_SAURASHTRA: Saurashtra. Since 2.16.3
+@G_UNICODE_SCRIPT_CHAM:       Cham. Since 2.16.3
+@G_UNICODE_SCRIPT_OL_CHIKI:   Ol Chiki. Since 2.16.3
+@G_UNICODE_SCRIPT_VAI:        Vai. Since 2.16.3
+@G_UNICODE_SCRIPT_CARIAN:     Carian. Since 2.16.3
+@G_UNICODE_SCRIPT_LYCIAN:     Lycian. Since 2.16.3
+@G_UNICODE_SCRIPT_LYDIAN:     Lydian. Since 2.16.3
+
+<!-- ##### FUNCTION g_unichar_get_script ##### -->
+<para>
+
+</para>
+
+@ch: 
 @Returns: 
 
 

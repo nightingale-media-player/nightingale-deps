@@ -67,6 +67,7 @@ typedef struct _GKeyFileGroup GKeyFileGroup;
 struct _GKeyFile
 {
   GList *groups;
+  GHashTable *group_hash;
 
   GKeyFileGroup *start_group;
   GKeyFileGroup *current_group;
@@ -80,6 +81,8 @@ struct _GKeyFile
   gchar list_separator;
 
   GKeyFileFlags flags;
+
+  gchar **locales;
 };
 
 typedef struct _GKeyFileKeyValuePair GKeyFileKeyValuePair;
@@ -106,8 +109,8 @@ struct _GKeyFileKeyValuePair
 };
 
 static gint                  find_file_in_data_dirs            (const gchar            *file,
+								const gchar           **data_dirs,
 								gchar                 **output_file,
-								gchar                ***data_dirs,
 								GError                **error);
 static gboolean              g_key_file_load_from_fd           (GKeyFile               *key_file,
 								gint                    fd,
@@ -197,13 +200,15 @@ g_key_file_error_quark (void)
 static void
 g_key_file_init (GKeyFile *key_file)
 {  
-  key_file->current_group = g_new0 (GKeyFileGroup, 1);
+  key_file->current_group = g_slice_new0 (GKeyFileGroup);
   key_file->groups = g_list_prepend (NULL, key_file->current_group);
+  key_file->group_hash = g_hash_table_new (g_str_hash, g_str_equal);
   key_file->start_group = NULL;
   key_file->parse_buffer = g_string_sized_new (128);
   key_file->approximate_size = 0;
   key_file->list_separator = ';';
   key_file->flags = 0;
+  key_file->locales = g_strdupv ((gchar **)g_get_language_names ());
 }
 
 static void
@@ -211,8 +216,17 @@ g_key_file_clear (GKeyFile *key_file)
 {
   GList *tmp, *group_node;
 
+  if (key_file->locales) 
+    {
+      g_strfreev (key_file->locales);
+      key_file->locales = NULL;
+    }
+
   if (key_file->parse_buffer)
-    g_string_free (key_file->parse_buffer, TRUE);
+    {
+      g_string_free (key_file->parse_buffer, TRUE);
+      key_file->parse_buffer = NULL;
+    }
 
   tmp = key_file->groups;
   while (tmp != NULL)
@@ -222,15 +236,19 @@ g_key_file_clear (GKeyFile *key_file)
       g_key_file_remove_group_node (key_file, group_node);
     }
 
-  g_assert (key_file->groups == NULL);
+  g_hash_table_destroy (key_file->group_hash);
+  key_file->group_hash = NULL;
+
+  g_warn_if_fail (key_file->groups == NULL);
 }
 
 
 /**
  * g_key_file_new:
  *
- * Creates a new empty #GKeyFile object. Use g_key_file_load_from_file(),
- * g_key_file_load_from_data() or g_key_file_load_from_data_dirs() to
+ * Creates a new empty #GKeyFile object. Use
+ * g_key_file_load_from_file(), g_key_file_load_from_data(),
+ * g_key_file_load_from_dirs() or g_key_file_load_from_data_dirs() to
  * read an existing key file.
  *
  * Return value: an empty #GKeyFile.
@@ -242,7 +260,7 @@ g_key_file_new (void)
 {
   GKeyFile *key_file;
 
-  key_file = g_new0 (GKeyFile, 1);
+  key_file = g_slice_new0 (GKeyFile);
   g_key_file_init (key_file);
 
   return key_file;
@@ -272,16 +290,16 @@ g_key_file_set_list_separator (GKeyFile *key_file,
 /* Iterates through all the directories in *dirs trying to
  * open file.  When it successfully locates and opens a file it
  * returns the file descriptor to the open file.  It also
- * outputs the absolute path of the file in output_file and
- * leaves the unchecked directories in *dirs.
+ * outputs the absolute path of the file in output_file.
  */
 static gint
 find_file_in_data_dirs (const gchar   *file,
+                        const gchar  **dirs,
                         gchar        **output_file,
-                        gchar       ***dirs,
                         GError       **error)
 {
-  gchar **data_dirs, *data_dir, *path;
+  const gchar **data_dirs, *data_dir;
+  gchar *path;
   gint fd;
 
   path = NULL;
@@ -290,7 +308,7 @@ find_file_in_data_dirs (const gchar   *file,
   if (dirs == NULL)
     return fd;
 
-  data_dirs = *dirs;
+  data_dirs = dirs;
 
   while (data_dirs && (data_dir = *data_dirs) && fd < 0)
     {
@@ -333,14 +351,12 @@ find_file_in_data_dirs (const gchar   *file,
       data_dirs++;
     }
 
-  *dirs = data_dirs;
-
   if (fd < 0)
     {
       g_set_error (error, G_KEY_FILE_ERROR,
                    G_KEY_FILE_ERROR_NOT_FOUND,
                    _("Valid key file could not be "
-                     "found in data dirs")); 
+                     "found in search dirs"));
     }
 
   if (output_file != NULL && fd > 0)
@@ -438,7 +454,7 @@ g_key_file_load_from_fd (GKeyFile       *key_file,
 /**
  * g_key_file_load_from_file:
  * @key_file: an empty #GKeyFile struct
- * @file: the path of a filename to load, in the GLib file name encoding
+ * @file: the path of a filename to load, in the GLib filename encoding
  * @flags: flags from #GKeyFileFlags
  * @error: return location for a #GError, or %NULL
  *
@@ -446,7 +462,8 @@ g_key_file_load_from_fd (GKeyFile       *key_file,
  * If the file could not be loaded then %error is set to 
  * either a #GFileError or #GKeyFileError.
  *
- * Return value: %TRUE if a key file could be loaded, %FALSE othewise
+ * Return value: %TRUE if a key file could be loaded, %FALSE otherwise
+ *
  * Since: 2.6
  **/
 gboolean
@@ -486,16 +503,16 @@ g_key_file_load_from_file (GKeyFile       *key_file,
 /**
  * g_key_file_load_from_data:
  * @key_file: an empty #GKeyFile struct
- * @data: key file loaded in memory.
+ * @data: key file loaded in memory
  * @length: the length of @data in bytes
  * @flags: flags from #GKeyFileFlags
  * @error: return location for a #GError, or %NULL
  *
- * Loads a key file from memory into an empty #GKeyFile structure.  If
- * the object cannot be created then %error is set to a
- * #GKeyFileError. 
+ * Loads a key file from memory into an empty #GKeyFile structure.  
+ * If the object cannot be created then %error is set to a #GKeyFileError. 
  *
- * Return value: %TRUE if a key file could be loaded, %FALSE othewise
+ * Return value: %TRUE if a key file could be loaded, %FALSE otherwise
+ *
  * Since: 2.6
  **/
 gboolean
@@ -541,6 +558,80 @@ g_key_file_load_from_data (GKeyFile       *key_file,
 }
 
 /**
+ * g_key_file_load_from_dirs:
+ * @key_file: an empty #GKeyFile struct
+ * @file: a relative path to a filename to open and parse
+ * @search_dirs: %NULL-terminated array of directories to search
+ * @full_path: return location for a string containing the full path
+ *   of the file, or %NULL
+ * @flags: flags from #GKeyFileFlags
+ * @error: return location for a #GError, or %NULL
+ *
+ * This function looks for a key file named @file in the paths
+ * specified in @search_dirs, loads the file into @key_file and
+ * returns the file's full path in @full_path.  If the file could not
+ * be loaded then an %error is set to either a #GFileError or
+ * #GKeyFileError.
+ *
+ * Return value: %TRUE if a key file could be loaded, %FALSE otherwise
+ *
+ * Since: 2.14
+ **/
+gboolean
+g_key_file_load_from_dirs (GKeyFile       *key_file,
+                           const gchar    *file,
+                           const gchar   **search_dirs,
+                           gchar         **full_path,
+                           GKeyFileFlags   flags,
+                           GError        **error)
+{
+  GError *key_file_error = NULL;
+  const gchar **data_dirs;
+  gchar *output_path;
+  gint fd;
+  gboolean found_file;
+
+  g_return_val_if_fail (key_file != NULL, FALSE);
+  g_return_val_if_fail (!g_path_is_absolute (file), FALSE);
+  g_return_val_if_fail (search_dirs != NULL, FALSE);
+
+  found_file = FALSE;
+  data_dirs = search_dirs;
+  output_path = NULL;
+  while (*data_dirs != NULL && !found_file)
+    {
+      g_free (output_path);
+
+      fd = find_file_in_data_dirs (file, data_dirs, &output_path,
+                                   &key_file_error);
+
+      if (fd < 0)
+        {
+          if (key_file_error)
+            g_propagate_error (error, key_file_error);
+ 	  break;
+        }
+
+      found_file = g_key_file_load_from_fd (key_file, fd, flags,
+	                                    &key_file_error);
+      close (fd);
+
+      if (key_file_error)
+        {
+	  g_propagate_error (error, key_file_error);
+	  break;
+        }
+    }
+
+  if (found_file && full_path)
+    *full_path = output_path;
+  else
+    g_free (output_path);
+
+  return found_file;
+}
+
+/**
  * g_key_file_load_from_data_dirs:
  * @key_file: an empty #GKeyFile struct
  * @file: a relative path to a filename to open and parse
@@ -565,21 +656,18 @@ g_key_file_load_from_data_dirs (GKeyFile       *key_file,
 				GKeyFileFlags   flags,
 				GError        **error)
 {
-  GError *key_file_error = NULL;
-  gchar **all_data_dirs, **data_dirs;
+  gchar **all_data_dirs;
   const gchar * user_data_dir;
   const gchar * const * system_data_dirs;
   gsize i, j;
-  gchar *output_path;
-  gint fd;
   gboolean found_file;
-  
+
   g_return_val_if_fail (key_file != NULL, FALSE);
   g_return_val_if_fail (!g_path_is_absolute (file), FALSE);
 
   user_data_dir = g_get_user_data_dir ();
   system_data_dirs = g_get_system_data_dirs ();
-  all_data_dirs = g_new0 (gchar *, g_strv_length ((gchar **)system_data_dirs) + 2);
+  all_data_dirs = g_new (gchar *, g_strv_length ((gchar **)system_data_dirs) + 2);
 
   i = 0;
   all_data_dirs[i++] = g_strdup (user_data_dir);
@@ -587,39 +675,14 @@ g_key_file_load_from_data_dirs (GKeyFile       *key_file,
   j = 0;
   while (system_data_dirs[j] != NULL)
     all_data_dirs[i++] = g_strdup (system_data_dirs[j++]);
+  all_data_dirs[i] = NULL;
 
-  found_file = FALSE;
-  data_dirs = all_data_dirs;
-  output_path = NULL;
-  while (*data_dirs != NULL && !found_file)
-    {
-      g_free (output_path);
-
-      fd = find_file_in_data_dirs (file, &output_path, &data_dirs, 
-                                   &key_file_error);
-      
-      if (fd < 0)
-        {
-          if (key_file_error)
-            g_propagate_error (error, key_file_error);
- 	  break;
-        }
-
-      found_file = g_key_file_load_from_fd (key_file, fd, flags,
-	                                    &key_file_error);
-      close (fd);
-      
-      if (key_file_error)
-        {
-	  g_propagate_error (error, key_file_error);
-	  break;
-        }
-    }
-
-  if (found_file && full_path)
-    *full_path = output_path;
-  else 
-    g_free (output_path);
+  found_file = g_key_file_load_from_dirs (key_file,
+                                          file,
+                                          (const gchar **)all_data_dirs,
+                                          full_path,
+                                          flags,
+                                          error);
 
   g_strfreev (all_data_dirs);
 
@@ -640,7 +703,7 @@ g_key_file_free (GKeyFile *key_file)
   g_return_if_fail (key_file != NULL);
   
   g_key_file_clear (key_file);
-  g_free (key_file);
+  g_slice_free (GKeyFile, key_file);
 }
 
 /* If G_KEY_FILE_KEEP_TRANSLATIONS is not set, only returns
@@ -650,17 +713,14 @@ static gboolean
 g_key_file_locale_is_interesting (GKeyFile    *key_file,
 				  const gchar *locale)
 {
-  const gchar * const * current_locales;
   gsize i;
 
   if (key_file->flags & G_KEY_FILE_KEEP_TRANSLATIONS)
     return TRUE;
 
-  current_locales = g_get_language_names ();
-
-  for (i = 0; current_locales[i] != NULL; i++)
+  for (i = 0; key_file->locales[i] != NULL; i++)
     {
-      if (g_ascii_strcasecmp (current_locales[i], locale) == 0)
+      if (g_ascii_strcasecmp (key_file->locales[i], locale) == 0)
 	return TRUE;
     }
 
@@ -721,10 +781,9 @@ g_key_file_parse_comment (GKeyFile     *key_file,
   if (!(key_file->flags & G_KEY_FILE_KEEP_COMMENTS))
     return;
   
-  g_assert (key_file->current_group != NULL);
+  g_warn_if_fail (key_file->current_group != NULL);
 
-  pair = g_new0 (GKeyFileKeyValuePair, 1);
-  
+  pair = g_slice_new (GKeyFileKeyValuePair);
   pair->key = NULL;
   pair->value = g_strndup (line, length);
   
@@ -787,7 +846,7 @@ g_key_file_parse_key_value_pair (GKeyFile     *key_file,
 
   key_end = value_start = strchr (line, '=');
 
-  g_assert (key_end != NULL);
+  g_warn_if_fail (key_end != NULL);
 
   key_end--;
   value_start++;
@@ -799,7 +858,7 @@ g_key_file_parse_key_value_pair (GKeyFile     *key_file,
 
   key_len = key_end - line + 2;
 
-  g_assert (key_len <= length);
+  g_warn_if_fail (key_len <= length);
 
   key = g_strndup (line, key_len - 1);
 
@@ -821,7 +880,7 @@ g_key_file_parse_key_value_pair (GKeyFile     *key_file,
 
   value = g_strndup (value_start, value_len);
 
-  g_assert (key_file->start_group != NULL);
+  g_warn_if_fail (key_file->start_group != NULL);
 
   if (key_file->current_group
       && key_file->current_group->name
@@ -1022,8 +1081,8 @@ g_key_file_to_data (GKeyFile  *key_file,
  * be found, %NULL is returned and @error is set to
  * #G_KEY_FILE_ERROR_GROUP_NOT_FOUND.
  *
- * Return value: a newly-allocated %NULL-terminated array of
- * strings. Use g_strfreev() to free it.
+ * Return value: a newly-allocated %NULL-terminated array of strings. 
+ *     Use g_strfreev() to free it.
  *
  * Since: 2.6
  **/
@@ -1063,7 +1122,7 @@ g_key_file_get_keys (GKeyFile     *key_file,
 	num_keys++;
     }
   
-  keys = g_new0 (gchar *, num_keys + 1);
+  keys = g_new (gchar *, num_keys + 1);
 
   i = num_keys - 1;
   for (tmp = group->key_value_pairs; tmp; tmp = tmp->next)
@@ -1113,9 +1172,9 @@ g_key_file_get_start_group (GKeyFile *key_file)
  * @key_file: a #GKeyFile
  * @length: return location for the number of returned groups, or %NULL
  *
- * Returns all groups in the key file loaded with @key_file.  The
- * array of returned groups will be %NULL-terminated, so @length may
- * optionally be %NULL.
+ * Returns all groups in the key file loaded with @key_file.  
+ * The array of returned groups will be %NULL-terminated, so 
+ * @length may optionally be %NULL.
  *
  * Return value: a newly-allocated %NULL-terminated array of strings. 
  *   Use g_strfreev() to free it.
@@ -1133,18 +1192,19 @@ g_key_file_get_groups (GKeyFile *key_file,
 
   num_groups = g_list_length (key_file->groups);
 
-  g_assert (num_groups > 0);
+  g_return_val_if_fail (num_groups > 0, NULL);
+
+  group_node = g_list_last (key_file->groups);
+  
+  g_return_val_if_fail (((GKeyFileGroup *) group_node->data)->name == NULL, NULL);
 
   /* Only need num_groups instead of num_groups + 1
    * because the first group of the file (last in the
    * list) is always the comment group at the top,
    * which we skip
    */
-  groups = g_new0 (gchar *, num_groups);
+  groups = g_new (gchar *, num_groups);
 
-  group_node = g_list_last (key_file->groups);
-  
-  g_assert (((GKeyFileGroup *) group_node->data)->name == NULL);
 
   i = 0;
   for (group_node = group_node->prev;
@@ -1155,7 +1215,7 @@ g_key_file_get_groups (GKeyFile *key_file,
 
       group = (GKeyFileGroup *) group_node->data;
 
-      g_assert (group->name != NULL);
+      g_warn_if_fail (group->name != NULL);
 
       groups[i++] = g_strdup (group->name);
     }
@@ -1230,9 +1290,9 @@ g_key_file_get_value (GKeyFile     *key_file,
  * @key: a key
  * @value: a string
  *
- * Associates a new value with @key under @group_name.  If @key
- * cannot be found then it is created. If @group_name cannot be
- * found then it is created.
+ * Associates a new value with @key under @group_name.  
+ * If @key cannot be found then it is created. 
+ * If @group_name cannot be found then it is created.
  *
  * Since: 2.6
  **/
@@ -1359,9 +1419,9 @@ g_key_file_get_string (GKeyFile     *key_file,
  * @key: a key
  * @string: a string
  *
- * Associates a new string value with @key under @group_name.  If
- * @key cannot be found then it is created.  If @group_name
- * cannot be found then it is created.
+ * Associates a new string value with @key under @group_name.  
+ * If @key cannot be found then it is created.  
+ * If @group_name cannot be found then it is created.
  *
  * Since: 2.6
  **/
@@ -1417,6 +1477,9 @@ g_key_file_get_string_list (GKeyFile     *key_file,
   g_return_val_if_fail (group_name != NULL, NULL);
   g_return_val_if_fail (key != NULL, NULL);
 
+  if (length)
+    *length = 0;
+
   value = g_key_file_get_value (key_file, group_name, key, &key_file_error);
 
   if (key_file_error)
@@ -1457,10 +1520,12 @@ g_key_file_get_string_list (GKeyFile     *key_file,
         }
       else
         g_propagate_error (error, key_file_error);
+
+      return NULL;
     }
 
   len = g_slist_length (pieces);
-  values = g_new0 (gchar *, len + 1); 
+  values = g_new (gchar *, len + 1);
   for (p = pieces, i = 0; p; p = p->next)
     values[i++] = p->data;
   values[len] = NULL;
@@ -1482,8 +1547,8 @@ g_key_file_get_string_list (GKeyFile     *key_file,
  * @length: number of locale string values in @list
  *
  * Associates a list of string values for @key under @group_name.
- * If @key cannot be found then it is created.  If @group_name 
- * cannot be found then it is created.
+ * If @key cannot be found then it is created.  
+ * If @group_name cannot be found then it is created.
  *
  * Since: 2.6
  **/
@@ -1524,9 +1589,8 @@ g_key_file_set_string_list (GKeyFile            *key_file,
  * @locale: a locale
  * @string: a string
  *
- * Associates a string value for @key and @locale under
- * @group_name.  If the translation for @key cannot be found 
- * then it is created.
+ * Associates a string value for @key and @locale under @group_name.  
+ * If the translation for @key cannot be found then it is created.
  *
  * Since: 2.6
  **/
@@ -1565,8 +1629,8 @@ extern GSList *_g_compute_locale_variants (const gchar *locale);
  * translated in the given @locale if available.  If @locale is
  * %NULL then the current locale is assumed. 
  *
- * If @key cannot be found then %NULL is returned and @error is set to
- * #G_KEY_FILE_ERROR_KEY_NOT_FOUND. If the value associated
+ * If @key cannot be found then %NULL is returned and @error is set 
+ * to #G_KEY_FILE_ERROR_KEY_NOT_FOUND. If the value associated
  * with @key cannot be interpreted or no suitable translation can
  * be found then the untranslated value is returned.
  *
@@ -1602,7 +1666,7 @@ g_key_file_get_locale_string (GKeyFile     *key_file,
 
       list = _g_compute_locale_variants (locale);
 
-      languages = g_new0 (gchar *, g_slist_length (list) + 1);
+      languages = g_new (gchar *, g_slist_length (list) + 1);
       for (l = list, i = 0; l; l = l->next, i++)
 	languages[i] = l->data;
       languages[i] = NULL;
@@ -1662,11 +1726,12 @@ g_key_file_get_locale_string (GKeyFile     *key_file,
  * translated in the given @locale if available.  If @locale is
  * %NULL then the current locale is assumed.
 
- * If @key cannot be found then %NULL is returned and @error is set to
- * #G_KEY_FILE_ERROR_KEY_NOT_FOUND. If the values associated
+ * If @key cannot be found then %NULL is returned and @error is set 
+ * to #G_KEY_FILE_ERROR_KEY_NOT_FOUND. If the values associated
  * with @key cannot be interpreted or no suitable translations
- * can be found then the untranslated values are returned.
- * The returned array is %NULL-terminated, so @length may optionally be %NULL.
+ * can be found then the untranslated values are returned. The 
+ * returned array is %NULL-terminated, so @length may optionally 
+ * be %NULL.
  *
  * Return value: a newly allocated %NULL-terminated string array
  *   or %NULL if the key isn't found. The string array should be freed
@@ -1699,7 +1764,11 @@ g_key_file_get_locale_string_list (GKeyFile     *key_file,
     g_propagate_error (error, key_file_error);
   
   if (!value)
-    return NULL;
+    {
+      if (length)
+        *length = 0;
+      return NULL;
+    }
 
   if (value[strlen (value) - 1] == ';')
     value[strlen (value) - 1] = '\0';
@@ -1775,13 +1844,14 @@ g_key_file_set_locale_string_list (GKeyFile            *key_file,
  * Returns the value associated with @key under @group_name as a
  * boolean. 
  *
- * If @key cannot be found then the return value is undefined and
- * @error is set to #G_KEY_FILE_ERROR_KEY_NOT_FOUND. Likewise, if
- * the value associated with @key cannot be interpreted as a boolean
- * then the return value is also undefined and @error is set to
- * #G_KEY_FILE_ERROR_INVALID_VALUE.
+ * If @key cannot be found then %FALSE is returned and @error is set
+ * to #G_KEY_FILE_ERROR_KEY_NOT_FOUND. Likewise, if the value
+ * associated with @key cannot be interpreted as a boolean then %FALSE
+ * is returned and @error is set to #G_KEY_FILE_ERROR_INVALID_VALUE.
  *
- * Return value: the value associated with the key as a boolean
+ * Return value: the value associated with the key as a boolean, 
+ *    or %FALSE if the key was not found or could not be parsed.
+ *
  * Since: 2.6
  **/
 gboolean
@@ -1866,15 +1936,15 @@ g_key_file_set_boolean (GKeyFile    *key_file,
  * @error: return location for a #GError
  *
  * Returns the values associated with @key under @group_name as
- * booleans. If @group_name is %NULL, the start_group is used.
+ * booleans. 
  *
- * If @key cannot be found then the return value is undefined and
- * @error is set to #G_KEY_FILE_ERROR_KEY_NOT_FOUND. Likewise, if
- * the values associated with @key cannot be interpreted as booleans
- * then the return value is also undefined and @error is set to
- * #G_KEY_FILE_ERROR_INVALID_VALUE.
+ * If @key cannot be found then %NULL is returned and @error is set to
+ * #G_KEY_FILE_ERROR_KEY_NOT_FOUND. Likewise, if the values associated
+ * with @key cannot be interpreted as booleans then %NULL is returned
+ * and @error is set to #G_KEY_FILE_ERROR_INVALID_VALUE.
  *
- * Return value: the values associated with the key as a boolean
+ * Return value: the values associated with the key as a list of
+ *    booleans, or %NULL if the key was not found or could not be parsed.
  * 
  * Since: 2.6
  **/
@@ -1894,6 +1964,9 @@ g_key_file_get_boolean_list (GKeyFile     *key_file,
   g_return_val_if_fail (group_name != NULL, NULL);
   g_return_val_if_fail (key != NULL, NULL);
 
+  if (length)
+    *length = 0;
+
   key_file_error = NULL;
 
   values = g_key_file_get_string_list (key_file, group_name, key,
@@ -1905,7 +1978,7 @@ g_key_file_get_boolean_list (GKeyFile     *key_file,
   if (!values)
     return NULL;
 
-  bool_values = g_new0 (gboolean, num_bools);
+  bool_values = g_new (gboolean, num_bools);
 
   for (i = 0; i < num_bools; i++)
     {
@@ -1938,8 +2011,8 @@ g_key_file_get_boolean_list (GKeyFile     *key_file,
  * @list: an array of boolean values
  * @length: length of @list
  *
- * Associates a list of boolean values with @key under
- * @group_name.  If @key cannot be found then it is created.
+ * Associates a list of boolean values with @key under @group_name.  
+ * If @key cannot be found then it is created.
  * If @group_name is %NULL, the start_group is used.
  *
  * Since: 2.6
@@ -1982,15 +2055,15 @@ g_key_file_set_boolean_list (GKeyFile    *key_file,
  * @error: return location for a #GError
  *
  * Returns the value associated with @key under @group_name as an
- * integer. If @group_name is %NULL, the start_group is used.
+ * integer. 
  *
- * If @key cannot be found then the return value is undefined and
- * @error is set to #G_KEY_FILE_ERROR_KEY_NOT_FOUND. Likewise, if
- * the value associated with @key cannot be interpreted as an integer
- * then the return value is also undefined and @error is set to
- * #G_KEY_FILE_ERROR_INVALID_VALUE.
+ * If @key cannot be found then 0 is returned and @error is set to
+ * #G_KEY_FILE_ERROR_KEY_NOT_FOUND. Likewise, if the value associated
+ * with @key cannot be interpreted as an integer then 0 is returned
+ * and @error is set to #G_KEY_FILE_ERROR_INVALID_VALUE.
  *
- * Return value: the value associated with the key as an integer.
+ * Return value: the value associated with the key as an integer, or
+ *     0 if the key was not found or could not be parsed.
  *
  * Since: 2.6
  **/
@@ -2080,13 +2153,13 @@ g_key_file_set_integer (GKeyFile    *key_file,
  * Returns the values associated with @key under @group_name as
  * integers. 
  *
- * If @key cannot be found then the return value is undefined and
- * @error is set to #G_KEY_FILE_ERROR_KEY_NOT_FOUND. Likewise, if
- * the values associated with @key cannot be interpreted as integers
- * then the return value is also undefined and @error is set to
- * #G_KEY_FILE_ERROR_INVALID_VALUE.
+ * If @key cannot be found then %NULL is returned and @error is set to
+ * #G_KEY_FILE_ERROR_KEY_NOT_FOUND. Likewise, if the values associated
+ * with @key cannot be interpreted as integers then %NULL is returned
+ * and @error is set to #G_KEY_FILE_ERROR_INVALID_VALUE.
  *
- * Return value: the values associated with the key as a integer
+ * Return value: the values associated with the key as a list of
+ *     integers, or %NULL if the key was not found or could not be parsed.
  *
  * Since: 2.6
  **/
@@ -2106,6 +2179,9 @@ g_key_file_get_integer_list (GKeyFile     *key_file,
   g_return_val_if_fail (group_name != NULL, NULL);
   g_return_val_if_fail (key != NULL, NULL);
 
+  if (length)
+    *length = 0;
+
   values = g_key_file_get_string_list (key_file, group_name, key,
 				       &num_ints, &key_file_error);
 
@@ -2115,7 +2191,7 @@ g_key_file_get_integer_list (GKeyFile     *key_file,
   if (!values)
     return NULL;
 
-  int_values = g_new0 (gint, num_ints);
+  int_values = g_new (gint, num_ints);
 
   for (i = 0; i < num_ints; i++)
     {
@@ -2148,17 +2224,17 @@ g_key_file_get_integer_list (GKeyFile     *key_file,
  * @list: an array of integer values
  * @length: number of integer values in @list
  *
- * Associates a list of integer values with @key under
- * @group_name.  If @key cannot be found then it is created.
+ * Associates a list of integer values with @key under @group_name.  
+ * If @key cannot be found then it is created.
  *
  * Since: 2.6
  **/
 void
-g_key_file_set_integer_list (GKeyFile     *key_file,
-			     const gchar  *group_name,
-			     const gchar  *key,
-			     gint          list[],
-			     gsize         length)
+g_key_file_set_integer_list (GKeyFile    *key_file,
+			     const gchar *group_name,
+			     const gchar *key,
+			     gint         list[],
+			     gsize        length)
 {
   GString *values;
   gsize i;
@@ -2190,16 +2266,16 @@ g_key_file_set_integer_list (GKeyFile     *key_file,
  * @key: a key
  * @error: return location for a #GError
  *
- * Returns the value associated with @key under @group_name as an
- * integer. If @group_name is %NULL, the start_group is used.
+ * Returns the value associated with @key under @group_name as a
+ * double. If @group_name is %NULL, the start_group is used.
  *
- * If @key cannot be found then the return value is undefined and
- * @error is set to #G_KEY_FILE_ERROR_KEY_NOT_FOUND. Likewise, if
- * the value associated with @key cannot be interpreted as a double
- * then the return value is also undefined and @error is set to
- * #G_KEY_FILE_ERROR_INVALID_VALUE.
+ * If @key cannot be found then 0.0 is returned and @error is set to
+ * #G_KEY_FILE_ERROR_KEY_NOT_FOUND. Likewise, if the value associated
+ * with @key cannot be interpreted as a double then 0.0 is returned
+ * and @error is set to #G_KEY_FILE_ERROR_INVALID_VALUE.
  *
- * Return value: the value associated with the key as a double.
+ * Return value: the value associated with the key as a double, or
+ *     0.0 if the key was not found or could not be parsed.
  *
  * Since: 2.12
  **/
@@ -2259,8 +2335,7 @@ g_key_file_get_double  (GKeyFile     *key_file,
  * @value: an double value
  *
  * Associates a new double value with @key under @group_name.
- * If @key cannot be found then it is created. If @group_name
- * is %NULL, the start group is used.
+ * If @key cannot be found then it is created. 
  *
  * Since: 2.12
  **/
@@ -2287,15 +2362,15 @@ g_key_file_set_double  (GKeyFile    *key_file,
  * @error: return location for a #GError
  *
  * Returns the values associated with @key under @group_name as
- * doubles. If @group_name is %NULL, the start group is used.
+ * doubles. 
  *
- * If @key cannot be found then the return value is undefined and
- * @error is set to #G_KEY_FILE_ERROR_KEY_NOT_FOUND. Likewise, if
- * the values associated with @key cannot be interpreted as doubles
- * then the return value is also undefined and @error is set to
- * #G_KEY_FILE_ERROR_INVALID_VALUE.
+ * If @key cannot be found then %NULL is returned and @error is set to
+ * #G_KEY_FILE_ERROR_KEY_NOT_FOUND. Likewise, if the values associated
+ * with @key cannot be interpreted as doubles then %NULL is returned
+ * and @error is set to #G_KEY_FILE_ERROR_INVALID_VALUE.
  *
- * Return value: the values associated with the key as a double
+ * Return value: the values associated with the key as a list of
+ *     doubles, or %NULL if the key was not found or could not be parsed.
  *
  * Since: 2.12
  **/
@@ -2315,6 +2390,9 @@ g_key_file_get_double_list  (GKeyFile     *key_file,
   g_return_val_if_fail (group_name != NULL, NULL);
   g_return_val_if_fail (key != NULL, NULL);
 
+  if (length)
+    *length = 0;
+
   values = g_key_file_get_string_list (key_file, group_name, key,
                                        &num_doubles, &key_file_error);
 
@@ -2324,7 +2402,7 @@ g_key_file_get_double_list  (GKeyFile     *key_file,
   if (!values)
     return NULL;
 
-  double_values = g_new0 (gdouble, num_doubles);
+  double_values = g_new (gdouble, num_doubles);
 
   for (i = 0; i < num_doubles; i++)
     {
@@ -2359,16 +2437,15 @@ g_key_file_get_double_list  (GKeyFile     *key_file,
  *
  * Associates a list of double values with @key under
  * @group_name.  If @key cannot be found then it is created.
- * If @group_name is %NULL the start group is used.
  *
  * Since: 2.12
  **/
 void
-g_key_file_set_double_list (GKeyFile     *key_file,
-			    const gchar  *group_name,
-			    const gchar  *key,
-			    gdouble       list[],
-			    gsize         length)
+g_key_file_set_double_list (GKeyFile    *key_file,
+			    const gchar *group_name,
+			    const gchar *key,
+			    gdouble      list[],
+			    gsize        length)
 {
   GString *values;
   gsize i;
@@ -2391,12 +2468,12 @@ g_key_file_set_double_list (GKeyFile     *key_file,
   g_string_free (values, TRUE);
 }
 
-static void
-g_key_file_set_key_comment (GKeyFile             *key_file,
-                            const gchar          *group_name,
-                            const gchar          *key,
-                            const gchar          *comment,
-                            GError              **error)
+static gboolean
+g_key_file_set_key_comment (GKeyFile     *key_file,
+                            const gchar  *group_name,
+                            const gchar  *key,
+                            const gchar  *comment,
+                            GError      **error)
 {
   GKeyFileGroup *group;
   GKeyFileKeyValuePair *pair;
@@ -2410,7 +2487,7 @@ g_key_file_set_key_comment (GKeyFile             *key_file,
                    _("Key file does not have group '%s'"),
                    group_name ? group_name : "(null)");
 
-      return;
+      return FALSE;
     }
 
   /* First find the key the comments are supposed to be
@@ -2424,7 +2501,7 @@ g_key_file_set_key_comment (GKeyFile             *key_file,
                    G_KEY_FILE_ERROR_KEY_NOT_FOUND,
                    _("Key file does not have key '%s' in group '%s'"),
                    key, group->name);
-      return;
+      return FALSE;
     }
 
   /* Then find all the comments already associated with the
@@ -2447,27 +2524,28 @@ g_key_file_set_key_comment (GKeyFile             *key_file,
     }
 
   if (comment == NULL)
-    return;
+    return TRUE;
 
   /* Now we can add our new comment
    */
-  pair = g_new0 (GKeyFileKeyValuePair, 1);
-  
+  pair = g_slice_new (GKeyFileKeyValuePair);
   pair->key = NULL;
   pair->value = g_key_file_parse_comment_as_value (key_file, comment);
   
   key_node = g_list_insert (key_node, pair, 1);
+
+  return TRUE;
 }
 
-static void
-g_key_file_set_group_comment (GKeyFile             *key_file,
-                              const gchar          *group_name,
-                              const gchar          *comment,
-                              GError              **error)
+static gboolean
+g_key_file_set_group_comment (GKeyFile     *key_file,
+                              const gchar  *group_name,
+                              const gchar  *comment,
+                              GError      **error)
 {
   GKeyFileGroup *group;
   
-  g_return_if_fail (g_key_file_is_group_name (group_name));
+  g_return_val_if_fail (g_key_file_is_group_name (group_name), FALSE);
 
   group = g_key_file_lookup_group (key_file, group_name);
   if (!group)
@@ -2477,7 +2555,7 @@ g_key_file_set_group_comment (GKeyFile             *key_file,
                    _("Key file does not have group '%s'"),
                    group_name ? group_name : "(null)");
 
-      return;
+      return FALSE;
     }
 
   /* First remove any existing comment
@@ -2489,20 +2567,21 @@ g_key_file_set_group_comment (GKeyFile             *key_file,
     }
 
   if (comment == NULL)
-    return;
+    return TRUE;
 
   /* Now we can add our new comment
    */
-  group->comment = g_new0 (GKeyFileKeyValuePair, 1);
-  
+  group->comment = g_slice_new (GKeyFileKeyValuePair);
   group->comment->key = NULL;
   group->comment->value = g_key_file_parse_comment_as_value (key_file, comment);
+
+  return TRUE;
 }
 
-static void
-g_key_file_set_top_comment (GKeyFile             *key_file,
-                            const gchar          *comment,
-                            GError              **error)
+static gboolean
+g_key_file_set_top_comment (GKeyFile     *key_file,
+                            const gchar  *comment,
+                            GError      **error)
 {
   GList *group_node;
   GKeyFileGroup *group;
@@ -2511,10 +2590,10 @@ g_key_file_set_top_comment (GKeyFile             *key_file,
   /* The last group in the list should be the top (comments only)
    * group in the file
    */
-  g_assert (key_file->groups != NULL);
+  g_warn_if_fail (key_file->groups != NULL);
   group_node = g_list_last (key_file->groups);
   group = (GKeyFileGroup *) group_node->data;
-  g_assert (group->name == NULL);
+  g_warn_if_fail (group->name == NULL);
 
   /* Note all keys must be comments at the top of
    * the file, so we can just free it all.
@@ -2529,15 +2608,16 @@ g_key_file_set_top_comment (GKeyFile             *key_file,
     }
 
   if (comment == NULL)
-     return;
+     return TRUE;
 
-  pair = g_new0 (GKeyFileKeyValuePair, 1);
-  
+  pair = g_slice_new (GKeyFileKeyValuePair);
   pair->key = NULL;
   pair->value = g_key_file_parse_comment_as_value (key_file, comment);
   
   group->key_value_pairs =
     g_list_prepend (group->key_value_pairs, pair);
+
+  return TRUE;
 }
 
 /**
@@ -2549,38 +2629,50 @@ g_key_file_set_top_comment (GKeyFile             *key_file,
  * @error: return location for a #GError
  *
  * Places a comment above @key from @group_name.
- * @group_name. If @key is %NULL then @comment will
- * be written above @group_name.  If both @key
- * and @group_name are NULL, then @comment will
- * be written above the first group in the file.
+ * If @key is %NULL then @comment will be written above @group_name.  
+ * If both @key and @group_name  are %NULL, then @comment will be 
+ * written above the first group in the file.
+ *
+ * Returns: %TRUE if the comment was written, %FALSE otherwise
  *
  * Since: 2.6
  **/
-void
-g_key_file_set_comment (GKeyFile             *key_file,
-                        const gchar          *group_name,
-                        const gchar          *key,
-                        const gchar          *comment,
-                        GError              **error)
+gboolean
+g_key_file_set_comment (GKeyFile     *key_file,
+                        const gchar  *group_name,
+                        const gchar  *key,
+                        const gchar  *comment,
+                        GError      **error)
 {
-  g_return_if_fail (key_file != NULL);
+  g_return_val_if_fail (key_file != NULL, FALSE);
 
-  if (group_name != NULL && key != NULL)
-    g_key_file_set_key_comment (key_file, group_name, key, comment, error);
-  else if (group_name != NULL)
-    g_key_file_set_group_comment (key_file, group_name, comment, error);
-  else
-    g_key_file_set_top_comment (key_file, comment, error);
+  if (group_name != NULL && key != NULL) 
+    {
+      if (!g_key_file_set_key_comment (key_file, group_name, key, comment, error))
+        return FALSE;
+    } 
+  else if (group_name != NULL) 
+    {
+      if (!g_key_file_set_group_comment (key_file, group_name, comment, error))
+        return FALSE;
+    } 
+  else 
+    {
+      if (!g_key_file_set_top_comment (key_file, comment, error))
+        return FALSE;
+    }
 
   if (comment != NULL)
     key_file->approximate_size += strlen (comment);
+
+  return TRUE;
 }
 
 static gchar *
-g_key_file_get_key_comment (GKeyFile             *key_file,
-                            const gchar          *group_name,
-                            const gchar          *key,
-                            GError              **error)
+g_key_file_get_key_comment (GKeyFile     *key_file,
+                            const gchar  *group_name,
+                            const gchar  *key,
+                            GError      **error)
 {
   GKeyFileGroup *group;
   GKeyFileKeyValuePair *pair;
@@ -2718,15 +2810,15 @@ get_group_comment (GKeyFile       *key_file,
 }
 
 static gchar *
-g_key_file_get_group_comment (GKeyFile             *key_file,
-                              const gchar          *group_name,
-                              GError              **error)
+g_key_file_get_group_comment (GKeyFile     *key_file,
+                              const gchar  *group_name,
+                              GError      **error)
 {
   GList *group_node;
   GKeyFileGroup *group;
   
-  group_node = g_key_file_lookup_group_node (key_file, group_name);
-  if (!group_node)
+  group = g_key_file_lookup_group (key_file, group_name);
+  if (!group)
     {
       g_set_error (error, G_KEY_FILE_ERROR,
                    G_KEY_FILE_ERROR_GROUP_NOT_FOUND,
@@ -2736,18 +2828,18 @@ g_key_file_get_group_comment (GKeyFile             *key_file,
       return NULL;
     }
 
-  group = (GKeyFileGroup *)group_node->data;
   if (group->comment)
     return g_strdup (group->comment->value);
   
+  group_node = g_key_file_lookup_group_node (key_file, group_name);
   group_node = group_node->next;
   group = (GKeyFileGroup *)group_node->data;  
   return get_group_comment (key_file, group, error);
 }
 
 static gchar *
-g_key_file_get_top_comment (GKeyFile             *key_file,
-                            GError              **error)
+g_key_file_get_top_comment (GKeyFile  *key_file,
+                            GError   **error)
 {
   GList *group_node;
   GKeyFileGroup *group;
@@ -2755,10 +2847,10 @@ g_key_file_get_top_comment (GKeyFile             *key_file,
   /* The last group in the list should be the top (comments only)
    * group in the file
    */
-  g_assert (key_file->groups != NULL);
+  g_warn_if_fail (key_file->groups != NULL);
   group_node = g_list_last (key_file->groups);
   group = (GKeyFileGroup *) group_node->data;
-  g_assert (group->name == NULL);
+  g_warn_if_fail (group->name == NULL);
 
   return get_group_comment (key_file, group, error);
 }
@@ -2771,20 +2863,19 @@ g_key_file_get_top_comment (GKeyFile             *key_file,
  * @error: return location for a #GError
  *
  * Retrieves a comment above @key from @group_name.
- * @group_name. If @key is %NULL then @comment will
- * be read from above @group_name.  If both @key
- * and @group_name are NULL, then @comment will
- * be read from above the first group in the file.
+ * If @key is %NULL then @comment will be read from above 
+ * @group_name. If both @key and @group_name are %NULL, then 
+ * @comment will be read from above the first group in the file.
  *
  * Returns: a comment that should be freed with g_free()
  *
  * Since: 2.6
  **/
 gchar * 
-g_key_file_get_comment (GKeyFile             *key_file,
-                        const gchar          *group_name,
-                        const gchar          *key,
-                        GError              **error)
+g_key_file_get_comment (GKeyFile     *key_file,
+                        const gchar  *group_name,
+                        const gchar  *key,
+                        GError      **error)
 {
   g_return_val_if_fail (key_file != NULL, NULL);
 
@@ -2804,28 +2895,29 @@ g_key_file_get_comment (GKeyFile             *key_file,
  * @error: return location for a #GError
  *
  * Removes a comment above @key from @group_name.
- * @group_name. If @key is %NULL then @comment will
- * be written above @group_name.  If both @key
- * and @group_name are NULL, then @comment will
- * be written above the first group in the file.
+ * If @key is %NULL then @comment will be removed above @group_name. 
+ * If both @key and @group_name are %NULL, then @comment will
+ * be removed above the first group in the file.
+ *
+ * Returns: %TRUE if the comment was removed, %FALSE otherwise
  *
  * Since: 2.6
  **/
 
-void
-g_key_file_remove_comment (GKeyFile             *key_file,
-                           const gchar          *group_name,
-                           const gchar          *key,
-                           GError              **error)
+gboolean
+g_key_file_remove_comment (GKeyFile     *key_file,
+                           const gchar  *group_name,
+                           const gchar  *key,
+                           GError      **error)
 {
-  g_return_if_fail (key_file != NULL);
+  g_return_val_if_fail (key_file != NULL, FALSE);
 
   if (group_name != NULL && key != NULL)
-    g_key_file_set_key_comment (key_file, group_name, key, NULL, error);
+    return g_key_file_set_key_comment (key_file, group_name, key, NULL, error);
   else if (group_name != NULL)
-    g_key_file_set_group_comment (key_file, group_name, NULL, error);
+    return g_key_file_set_group_comment (key_file, group_name, NULL, error);
   else
-    g_key_file_set_top_comment (key_file, NULL, error);
+    return g_key_file_set_top_comment (key_file, NULL, error);
 }
 
 /**
@@ -2846,7 +2938,7 @@ g_key_file_has_group (GKeyFile    *key_file,
   g_return_val_if_fail (key_file != NULL, FALSE);
   g_return_val_if_fail (group_name != NULL, FALSE);
 
-  return g_key_file_lookup_group_node (key_file, group_name) != NULL;
+  return g_key_file_lookup_group (key_file, group_name) != NULL;
 }
 
 /**
@@ -2910,7 +3002,7 @@ g_key_file_add_group (GKeyFile    *key_file,
       return;
     }
 
-  group = g_new0 (GKeyFileGroup, 1);
+  group = g_slice_new0 (GKeyFileGroup);
   group->name = g_strdup (group_name);
   group->lookup_map = g_hash_table_new (g_str_hash, g_str_equal);
   key_file->groups = g_list_prepend (key_file->groups, group);
@@ -2919,6 +3011,8 @@ g_key_file_add_group (GKeyFile    *key_file,
 
   if (key_file->start_group == NULL)
     key_file->start_group = group;
+
+  g_hash_table_insert (key_file->group_hash, (gpointer)group->name, group);
 }
 
 static void
@@ -2928,7 +3022,7 @@ g_key_file_key_value_pair_free (GKeyFileKeyValuePair *pair)
     {
       g_free (pair->key);
       g_free (pair->value);
-      g_free (pair);
+      g_slice_free (GKeyFileKeyValuePair, pair);
     }
 }
 
@@ -2956,7 +3050,7 @@ g_key_file_remove_key_value_pair_node (GKeyFile      *key_file,
   if (pair->key != NULL)
     key_file->approximate_size -= strlen (pair->key) + 1;
 
-  g_assert (pair->value != NULL);
+  g_warn_if_fail (pair->value != NULL);
   key_file->approximate_size -= strlen (pair->value);
 
   g_key_file_key_value_pair_free (pair);
@@ -2972,6 +3066,9 @@ g_key_file_remove_group_node (GKeyFile *key_file,
   GList *tmp;
 
   group = (GKeyFileGroup *) group_node->data;
+
+  if (group->name)
+    g_hash_table_remove (key_file->group_hash, group->name);
 
   /* If the current group gets deleted make the current group the last
    * added group.
@@ -3023,7 +3120,7 @@ g_key_file_remove_group_node (GKeyFile *key_file,
       g_key_file_remove_key_value_pair_node (key_file, group, pair_node);
     }
 
-  g_assert (group->key_value_pairs == NULL);
+  g_warn_if_fail (group->key_value_pairs == NULL);
 
   if (group->lookup_map)
     {
@@ -3032,7 +3129,7 @@ g_key_file_remove_group_node (GKeyFile *key_file,
     }
 
   g_free ((gchar *) group->name);
-  g_free (group);
+  g_slice_free (GKeyFileGroup, group);
   g_list_free_1 (group_node);
 }
 
@@ -3045,17 +3142,19 @@ g_key_file_remove_group_node (GKeyFile *key_file,
  * Removes the specified group, @group_name, 
  * from the key file. 
  *
+ * Returns: %TRUE if the group was removed, %FALSE otherwise
+ *
  * Since: 2.6
  **/
-void
+gboolean
 g_key_file_remove_group (GKeyFile     *key_file,
 			 const gchar  *group_name,
 			 GError      **error)
 {
   GList *group_node;
 
-  g_return_if_fail (key_file != NULL);
-  g_return_if_fail (group_name != NULL);
+  g_return_val_if_fail (key_file != NULL, FALSE);
+  g_return_val_if_fail (group_name != NULL, FALSE);
 
   group_node = g_key_file_lookup_group_node (key_file, group_name);
 
@@ -3065,10 +3164,12 @@ g_key_file_remove_group (GKeyFile     *key_file,
 		   G_KEY_FILE_ERROR_GROUP_NOT_FOUND,
 		   _("Key file does not have group '%s'"),
 		   group_name);
-      return;
+      return FALSE;
     }
 
-    g_key_file_remove_group_node (key_file, group_node);
+  g_key_file_remove_group_node (key_file, group_node);
+
+  return TRUE;  
 }
 
 static void
@@ -3079,8 +3180,7 @@ g_key_file_add_key (GKeyFile      *key_file,
 {
   GKeyFileKeyValuePair *pair;
 
-  pair = g_new0 (GKeyFileKeyValuePair, 1);
-
+  pair = g_slice_new (GKeyFileKeyValuePair);
   pair->key = g_strdup (key);
   pair->value = g_strdup (value);
 
@@ -3099,9 +3199,11 @@ g_key_file_add_key (GKeyFile      *key_file,
  *
  * Removes @key in @group_name from the key file. 
  *
+ * Returns: %TRUE if the key was removed, %FALSE otherwise
+ *
  * Since: 2.6
  **/
-void
+gboolean
 g_key_file_remove_key (GKeyFile     *key_file,
 		       const gchar  *group_name,
 		       const gchar  *key,
@@ -3110,9 +3212,9 @@ g_key_file_remove_key (GKeyFile     *key_file,
   GKeyFileGroup *group;
   GKeyFileKeyValuePair *pair;
 
-  g_return_if_fail (key_file != NULL);
-  g_return_if_fail (group_name != NULL);
-  g_return_if_fail (key != NULL);
+  g_return_val_if_fail (key_file != NULL, FALSE);
+  g_return_val_if_fail (group_name != NULL, FALSE);
+  g_return_val_if_fail (key != NULL, FALSE);
 
   pair = NULL;
 
@@ -3123,7 +3225,7 @@ g_key_file_remove_key (GKeyFile     *key_file,
                    G_KEY_FILE_ERROR_GROUP_NOT_FOUND,
                    _("Key file does not have group '%s'"),
                    group_name ? group_name : "(null)");
-      return;
+      return FALSE;
     }
 
   pair = g_key_file_lookup_key_value_pair (key_file, group, key);
@@ -3134,7 +3236,7 @@ g_key_file_remove_key (GKeyFile     *key_file,
                    G_KEY_FILE_ERROR_KEY_NOT_FOUND,
                    _("Key file does not have key '%s' in group '%s'"),
 		   key, group->name);
-      return;
+      return FALSE;
     }
 
   key_file->approximate_size -= strlen (pair->key) + strlen (pair->value) + 2;
@@ -3142,6 +3244,8 @@ g_key_file_remove_key (GKeyFile     *key_file,
   group->key_value_pairs = g_list_remove (group->key_value_pairs, pair);
   g_hash_table_remove (group->lookup_map, pair->key);  
   g_key_file_key_value_pair_free (pair);
+
+  return TRUE;
 }
 
 static GList *
@@ -3166,14 +3270,7 @@ static GKeyFileGroup *
 g_key_file_lookup_group (GKeyFile    *key_file,
 			 const gchar *group_name)
 {
-  GList *group_node;
-
-  group_node = g_key_file_lookup_group_node (key_file, group_name);
-
-  if (group_node != NULL)
-    return (GKeyFileGroup *) group_node->data; 
-
-  return NULL;
+  return (GKeyFileGroup *)g_hash_table_lookup (key_file->group_hash, group_name);
 }
 
 static GList *
@@ -3226,7 +3323,7 @@ g_key_file_is_group_name (const gchar *name)
 
   p = q = (gchar *) name;
   while (*q && *q != ']' && *q != '[' && !g_ascii_iscntrl (*q))
-    q = g_utf8_next_char (q);
+    q = g_utf8_find_next_char (q, NULL);
   
   if (*q != '\0' || q == p)
     return FALSE;
@@ -3247,14 +3344,14 @@ g_key_file_is_key_name (const gchar *name)
    * since gnome-vfs uses mime-types as keys in its cache.
    */
   while (*q && *q != '=' && *q != '[' && *q != ']')
-    q = g_utf8_next_char (q);
+    q = g_utf8_find_next_char (q, NULL);
   
   /* No empty keys, please */
   if (q == p)
     return FALSE;
 
   /* We accept spaces in the middle of keys to not break
-   * existing apps, but we don't tolerate initial of final
+   * existing apps, but we don't tolerate initial or final
    * spaces, which would lead to silent corruption when
    * rereading the file.
    */
@@ -3264,8 +3361,8 @@ g_key_file_is_key_name (const gchar *name)
   if (*q == '[')
     {
       q++;
-      while (*q && (g_unichar_isalnum (g_utf8_get_char (q)) || *q == '-' || *q == '_' || *q == '.' || *q == '@'))
-        q = g_utf8_next_char (q);
+      while (*q && (g_unichar_isalnum (g_utf8_get_char_validated (q, -1)) || *q == '-' || *q == '_' || *q == '.' || *q == '@'))
+        q = g_utf8_find_next_char (q, NULL);
 
       if (*q != ']')
         return FALSE;     
@@ -3294,15 +3391,15 @@ g_key_file_line_is_group (const gchar *line)
   p++;
 
   while (*p && *p != ']')
-    p = g_utf8_next_char (p);
+    p = g_utf8_find_next_char (p, NULL);
 
   if (*p != ']')
     return FALSE;
  
   /* silently accept whitespace after the ] */
-  p = g_utf8_next_char (p);
+  p = g_utf8_find_next_char (p, NULL);
   while (*p == ' ' || *p == '\t')
-    p = g_utf8_next_char (p);
+    p = g_utf8_find_next_char (p, NULL);
      
   if (*p)
     return FALSE;
@@ -3336,7 +3433,7 @@ g_key_file_parse_value_as_string (GKeyFile     *key_file,
 {
   gchar *string_value, *p, *q0, *q;
 
-  string_value = g_new0 (gchar, strlen (value) + 1);
+  string_value = g_new (gchar, strlen (value) + 1);
 
   p = (gchar *) value;
   q0 = q = string_value;
@@ -3442,7 +3539,7 @@ g_key_file_parse_string_as_value (GKeyFile    *key_file,
   /* Worst case would be that every character needs to be escaped.
    * In other words every character turns to two characters
    */
-  value = g_new0 (gchar, 2 * length);
+  value = g_new (gchar, 2 * length);
 
   p = (gchar *) string;
   q = value;
@@ -3524,7 +3621,7 @@ g_key_file_parse_value_as_integer (GKeyFile     *key_file,
 				   GError      **error)
 {
   gchar *end_of_valid_int;
-  glong long_value;
+ glong long_value;
   gint int_value;
 
   errno = 0;
@@ -3598,13 +3695,10 @@ g_key_file_parse_value_as_boolean (GKeyFile     *key_file,
 {
   gchar *value_utf8;
 
-  if (value)
-    {
-      if (strcmp (value, "true") == 0 || strcmp (value, "1") == 0)
-        return TRUE;
-      else if (strcmp (value, "false") == 0 || strcmp (value, "0") == 0)
-        return FALSE;
-    }
+  if (strcmp (value, "true") == 0 || strcmp (value, "1") == 0)
+    return TRUE;
+  else if (strcmp (value, "false") == 0 || strcmp (value, "0") == 0)
+    return FALSE;
 
   value_utf8 = _g_utf8_make_valid (value);
   g_set_error (error, G_KEY_FILE_ERROR,

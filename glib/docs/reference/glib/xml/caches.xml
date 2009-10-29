@@ -1,23 +1,22 @@
 <refentry id="glib-Caches">
 <refmeta>
-<refentrytitle role="top_of_page">Caches</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Caches.top_of_page">Caches</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>Caches</refname>
-<refpurpose>caches allow sharing of complex data structures to save resources.</refpurpose>
+<refpurpose>caches allow sharing of complex data structures to save resources</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Caches.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
-
 
                     <link linkend="GCache">GCache</link>;
 <link linkend="GCache">GCache</link>*             <link linkend="g-cache-new">g_cache_new</link>                         (<link linkend="GCacheNewFunc">GCacheNewFunc</link> value_new_func,
@@ -54,7 +53,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Caches.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 A <link linkend="GCache"><type>GCache</type></link> allows sharing of complex data structures, in order to save
@@ -73,18 +72,18 @@ A <link linkend="GCache"><type>GCache</type></link> value is the actual resource
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Caches.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GCache" role="struct"/>GCache</title>
-<indexterm><primary>GCache</primary></indexterm><programlisting>typedef struct _GCache GCache;</programlisting>
+<refsect2 id="GCache" role="struct">
+<title>GCache</title>
+<indexterm zone="GCache"><primary>GCache</primary></indexterm><programlisting>typedef struct _GCache GCache;</programlisting>
 <para>
 The <link linkend="GCache"><type>GCache</type></link> struct is an opaque data structure containing information about
 a <link linkend="GCache"><type>GCache</type></link>. It should only be accessed via the following functions.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-cache-new" role="function"/>g_cache_new ()</title>
-<indexterm><primary>g_cache_new</primary></indexterm><programlisting><link linkend="GCache">GCache</link>*             g_cache_new                         (<link linkend="GCacheNewFunc">GCacheNewFunc</link> value_new_func,
+<refsect2 id="g-cache-new" role="function">
+<title>g_cache_new ()</title>
+<indexterm zone="g-cache-new"><primary>g_cache_new</primary></indexterm><programlisting><link linkend="GCache">GCache</link>*             g_cache_new                         (<link linkend="GCacheNewFunc">GCacheNewFunc</link> value_new_func,
                                                          <link linkend="GCacheDestroyFunc">GCacheDestroyFunc</link> value_destroy_func,
                                                          <link linkend="GCacheDupFunc">GCacheDupFunc</link> key_dup_func,
                                                          <link linkend="GCacheDestroyFunc">GCacheDestroyFunc</link> key_destroy_func,
@@ -128,9 +127,9 @@ the two keys are equivalent.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-cache-insert" role="function"/>g_cache_insert ()</title>
-<indexterm><primary>g_cache_insert</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_cache_insert                      (<link linkend="GCache">GCache</link> *cache,
+<refsect2 id="g-cache-insert" role="function">
+<title>g_cache_insert ()</title>
+<indexterm zone="g-cache-insert"><primary>g_cache_insert</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_cache_insert                      (<link linkend="GCache">GCache</link> *cache,
                                                          <link linkend="gpointer">gpointer</link> key);</programlisting>
 <para>
 Gets the value corresponding to the given key, creating it if necessary.
@@ -154,9 +153,9 @@ into the <link linkend="GCache"><type>GCache</type></link>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-cache-remove" role="function"/>g_cache_remove ()</title>
-<indexterm><primary>g_cache_remove</primary></indexterm><programlisting><link linkend="void">void</link>                g_cache_remove                      (<link linkend="GCache">GCache</link> *cache,
+<refsect2 id="g-cache-remove" role="function">
+<title>g_cache_remove ()</title>
+<indexterm zone="g-cache-remove"><primary>g_cache_remove</primary></indexterm><programlisting><link linkend="void">void</link>                g_cache_remove                      (<link linkend="GCache">GCache</link> *cache,
                                                          <link linkend="gconstpointer">gconstpointer</link> value);</programlisting>
 <para>
 Decreases the reference count of the given value.
@@ -172,9 +171,9 @@ using the <parameter>value_destroy_func</parameter> and <parameter>key_destroy_f
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-cache-destroy" role="function"/>g_cache_destroy ()</title>
-<indexterm><primary>g_cache_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                g_cache_destroy                     (<link linkend="GCache">GCache</link> *cache);</programlisting>
+<refsect2 id="g-cache-destroy" role="function">
+<title>g_cache_destroy ()</title>
+<indexterm zone="g-cache-destroy"><primary>g_cache_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                g_cache_destroy                     (<link linkend="GCache">GCache</link> *cache);</programlisting>
 <para>
 Frees the memory allocated for the <link linkend="GCache"><type>GCache</type></link>.
 </para>
@@ -188,9 +187,9 @@ Note that it does not destroy the keys and values which were contained in the
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-cache-key-foreach" role="function"/>g_cache_key_foreach ()</title>
-<indexterm><primary>g_cache_key_foreach</primary></indexterm><programlisting><link linkend="void">void</link>                g_cache_key_foreach                 (<link linkend="GCache">GCache</link> *cache,
+<refsect2 id="g-cache-key-foreach" role="function">
+<title>g_cache_key_foreach ()</title>
+<indexterm zone="g-cache-key-foreach"><primary>g_cache_key_foreach</primary></indexterm><programlisting><link linkend="void">void</link>                g_cache_key_foreach                 (<link linkend="GCache">GCache</link> *cache,
                                                          <link linkend="GHFunc">GHFunc</link> func,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -213,9 +212,9 @@ to its callback function !
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-cache-value-foreach" role="function" condition="deprecated"/>g_cache_value_foreach ()</title>
-<indexterm role="deprecated"><primary>g_cache_value_foreach</primary></indexterm><programlisting><link linkend="void">void</link>                g_cache_value_foreach               (<link linkend="GCache">GCache</link> *cache,
+<refsect2 id="g-cache-value-foreach" role="function" condition="deprecated">
+<title>g_cache_value_foreach ()</title>
+<indexterm zone="g-cache-value-foreach" role="deprecated"><primary>g_cache_value_foreach</primary></indexterm><programlisting><link linkend="void">void</link>                g_cache_value_foreach               (<link linkend="GCache">GCache</link> *cache,
                                                          <link linkend="GHFunc">GHFunc</link> func,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <warning><para><literal>g_cache_value_foreach</literal> has been deprecated since version 2.10 and should not be used in newly-written code. The reason is that it passes pointers to internal data 
@@ -233,9 +232,9 @@ Calls the given function for each of the values in the <link linkend="GCache"><t
 <listitem><simpara>user data to pass to the function.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GCacheDestroyFunc" role="function"/>GCacheDestroyFunc ()</title>
-<indexterm><primary>GCacheDestroyFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GCacheDestroyFunc)                (<link linkend="gpointer">gpointer</link> value);</programlisting>
+<refsect2 id="GCacheDestroyFunc" role="function">
+<title>GCacheDestroyFunc ()</title>
+<indexterm zone="GCacheDestroyFunc"><primary>GCacheDestroyFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GCacheDestroyFunc)                (<link linkend="gpointer">gpointer</link> value);</programlisting>
 <para>
 Specifies the type of the <parameter>value_destroy_func</parameter> and <parameter>key_destroy_func</parameter> functions
 passed to <link linkend="g-cache-new"><function>g_cache_new()</function></link>.
@@ -248,9 +247,9 @@ should free any memory and other resources associated with it.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GCacheDupFunc" role="function"/>GCacheDupFunc ()</title>
-<indexterm><primary>GCacheDupFunc</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            (*GCacheDupFunc)                    (<link linkend="gpointer">gpointer</link> value);</programlisting>
+<refsect2 id="GCacheDupFunc" role="function">
+<title>GCacheDupFunc ()</title>
+<indexterm zone="GCacheDupFunc"><primary>GCacheDupFunc</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            (*GCacheDupFunc)                    (<link linkend="gpointer">gpointer</link> value);</programlisting>
 <para>
 Specifies the type of the <parameter>key_dup_func</parameter> function passed to <link linkend="g-cache-new"><function>g_cache_new()</function></link>.
 The function is passed a key (<emphasis>not</emphasis> a value as the prototype implies) and
@@ -264,9 +263,9 @@ should return a duplicate of the key.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GCacheNewFunc" role="function"/>GCacheNewFunc ()</title>
-<indexterm><primary>GCacheNewFunc</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            (*GCacheNewFunc)                    (<link linkend="gpointer">gpointer</link> key);</programlisting>
+<refsect2 id="GCacheNewFunc" role="function">
+<title>GCacheNewFunc ()</title>
+<indexterm zone="GCacheNewFunc"><primary>GCacheNewFunc</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            (*GCacheNewFunc)                    (<link linkend="gpointer">gpointer</link> key);</programlisting>
 <para>
 Specifies the type of the <parameter>value_new_func</parameter> function passed to <link linkend="g-cache-new"><function>g_cache_new()</function></link>.
 It is passed a <link linkend="GCache"><type>GCache</type></link> key and should create the value corresponding to the

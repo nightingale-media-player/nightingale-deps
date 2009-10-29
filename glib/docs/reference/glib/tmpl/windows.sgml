@@ -2,7 +2,7 @@
 Windows Compatibility Functions
 
 <!-- ##### SECTION Short_Description ##### -->
-UNIX emulation on Windows.
+UNIX emulation on Windows
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -26,15 +26,6 @@ macro %MAXPATHLEN, which is the maximum length of a filename
 (including full path).
 </para>
 
-
-
-<!-- ##### MACRO pipe ##### -->
-<para>
-Provided for UNIX emulation on Windows; see documentation for <function>pipe()</function>
-in any UNIX manual.
-</para>
-
-@phandles: file descriptors, the first one for reading, the second one for writing.
 
 
 <!-- ##### FUNCTION g_win32_error_message ##### -->
@@ -61,6 +52,15 @@ in any UNIX manual.
 
 @package: 
 @dll_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g_win32_get_package_installation_directory_of_module ##### -->
+<para>
+
+</para>
+
+@hmodule: 
 @Returns: 
 
 
@@ -94,9 +94,8 @@ in any UNIX manual.
 
 <!-- ##### MACRO G_WIN32_DLLMAIN_FOR_DLL_NAME ##### -->
 <para>
-On Windows, this macro defines a <function>DllMain()</function> function 
-that stores the actual DLL name that the code being compiled will be 
-included in.
+On Windows, this macro defines a DllMain() function that stores the actual 
+DLL name that the code being compiled will be included in.
 </para>
 <para>
 On non-Windows platforms, expands to nothing.

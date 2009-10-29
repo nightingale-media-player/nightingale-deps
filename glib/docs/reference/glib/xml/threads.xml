@@ -1,28 +1,24 @@
 <refentry id="glib-Threads">
 <refmeta>
-<refentrytitle role="top_of_page">
-Threads</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Threads.top_of_page">Threads</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>
-Threads</refname>
+<refname>Threads</refname>
 <refpurpose>
 thread abstraction; including threads, different mutexes, conditions
-and thread private data.</refpurpose>
+and thread private data</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Threads.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
-
-
 
 #define             <link linkend="G-THREADS-ENABLED:CAPS">G_THREADS_ENABLED</link>
 #define             <link linkend="G-THREADS-IMPL-POSIX:CAPS">G_THREADS_IMPL_POSIX</link>
@@ -133,7 +129,9 @@ enum                <link linkend="GThreadPriority">GThreadPriority</link>;
 enum                <link linkend="GOnceStatus">GOnceStatus</link>;
 #define             <link linkend="G-ONCE-INIT:CAPS">G_ONCE_INIT</link>
 #define             <link linkend="g-once">g_once</link>                              (once, func, arg)
-
+<link linkend="gboolean">gboolean</link>            <link linkend="g-once-init-enter">g_once_init_enter</link>                   (volatile <link linkend="gsize">gsize</link> *value_location);
+<link linkend="void">void</link>                <link linkend="g-once-init-leave">g_once_init_leave</link>                   (volatile <link linkend="gsize">gsize</link> *value_location,
+                                                         <link linkend="gsize">gsize</link> initialization_value);
 </synopsis>
 </refsynopsisdiv>
 
@@ -145,7 +143,7 @@ enum                <link linkend="GOnceStatus">GOnceStatus</link>;
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Threads.description" role="desc">
 <title role="desc.title">Description</title>
 
 <para>
@@ -183,13 +181,20 @@ this rule are <link linkend="GMainLoop"><type>GMainLoop</type></link> and <link 
 which <emphasis>are</emphasis> threadsafe and needs no further
 application-level locking to be accessed from multiple threads.
 </para>
+
+<para>
+To help debugging problems in multithreaded applications, GLib supports
+error-checking mutexes that will give you helpful error messages on
+common problems. To use error-checking mutexes, define the symbol 
+<link linkend="G-ERRORCHECK-MUTEXES:CAPS"><type>G_ERRORCHECK_MUTEXES</type></link> when compiling the application.
+</para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Threads.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="G-THREADS-ENABLED:CAPS" role="macro"/>G_THREADS_ENABLED</title>
-<indexterm><primary>G_THREADS_ENABLED</primary></indexterm><programlisting>#define G_THREADS_ENABLED
+<refsect2 id="G-THREADS-ENABLED:CAPS" role="macro">
+<title>G_THREADS_ENABLED</title>
+<indexterm zone="G-THREADS-ENABLED:CAPS"><primary>G_THREADS_ENABLED</primary></indexterm><programlisting>#define G_THREADS_ENABLED
 </programlisting>
 
 <para>
@@ -200,33 +205,33 @@ that once you provide a thread implementation to <link linkend="g-thread-init"><
 will be multi-thread safe. If <link linkend="G-THREADS-ENABLED:CAPS"><type>G_THREADS_ENABLED</type></link> is not defined, then
 Glib is not, and cannot be, multi-thread safe.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-THREADS-IMPL-POSIX:CAPS" role="macro"/>G_THREADS_IMPL_POSIX</title>
-<indexterm><primary>G_THREADS_IMPL_POSIX</primary></indexterm><programlisting>#define G_THREADS_IMPL_POSIX
+<refsect2 id="G-THREADS-IMPL-POSIX:CAPS" role="macro">
+<title>G_THREADS_IMPL_POSIX</title>
+<indexterm zone="G-THREADS-IMPL-POSIX:CAPS"><primary>G_THREADS_IMPL_POSIX</primary></indexterm><programlisting>#define G_THREADS_IMPL_POSIX
 </programlisting>
 
 <para>
 This macro is defined if POSIX style threads are used.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-THREADS-IMPL-NONE:CAPS" role="macro"/>G_THREADS_IMPL_NONE</title>
-<indexterm><primary>G_THREADS_IMPL_NONE</primary></indexterm><programlisting>#define G_THREADS_IMPL_NONE
+<refsect2 id="G-THREADS-IMPL-NONE:CAPS" role="macro">
+<title>G_THREADS_IMPL_NONE</title>
+<indexterm zone="G-THREADS-IMPL-NONE:CAPS"><primary>G_THREADS_IMPL_NONE</primary></indexterm><programlisting>#define G_THREADS_IMPL_NONE
 </programlisting>
 
 <para>
 This macro is defined if no thread implementation is used. You can,
 however, provide one to <link linkend="g-thread-init"><function>g_thread_init()</function></link> to make GLib multi-thread safe.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-THREAD-ERROR:CAPS" role="macro"/>G_THREAD_ERROR</title>
-<indexterm><primary>G_THREAD_ERROR</primary></indexterm><programlisting>#define G_THREAD_ERROR g_thread_error_quark ()
+<refsect2 id="G-THREAD-ERROR:CAPS" role="macro">
+<title>G_THREAD_ERROR</title>
+<indexterm zone="G-THREAD-ERROR:CAPS"><primary>G_THREAD_ERROR</primary></indexterm><programlisting>#define G_THREAD_ERROR g_thread_error_quark ()
 </programlisting>
 <para>
 The error domain of the GLib thread subsystem.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GThreadError" role="enum"/>enum GThreadError</title>
-<indexterm><primary>GThreadError</primary></indexterm><programlisting>typedef enum
+<refsect2 id="GThreadError" role="enum">
+<title>enum GThreadError</title>
+<indexterm zone="GThreadError"><primary>GThreadError</primary></indexterm><programlisting>typedef enum
 {
   G_THREAD_ERROR_AGAIN /* Resource temporarily unavailable */
 } GThreadError;
@@ -234,17 +239,17 @@ The error domain of the GLib thread subsystem.
 <para>
 Possible errors of thread related functions.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-THREAD-ERROR-AGAIN:CAPS" role="constant"/><literal>G_THREAD_ERROR_AGAIN</literal></term>
+<varlistentry id="G-THREAD-ERROR-AGAIN:CAPS" role="constant">
+<term><literal>G_THREAD_ERROR_AGAIN</literal></term>
 <listitem><simpara>a thread couldn't be created due to resource
 shortage. Try again later.
 
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GThreadFunctions" role="struct"/>GThreadFunctions</title>
-<indexterm><primary>GThreadFunctions</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GThreadFunctions" role="struct">
+<title>GThreadFunctions</title>
+<indexterm zone="GThreadFunctions"><primary>GThreadFunctions</primary></indexterm><programlisting>typedef struct {
   GMutex*  (*mutex_new)           (void);
   void     (*mutex_lock)          (GMutex               *mutex);
   gboolean (*mutex_trylock)       (GMutex               *mutex);
@@ -295,9 +300,9 @@ if you call <link linkend="g-mutex-new"><function>g_mutex_new()</function></link
 Do not use this struct unless you know what you are doing.
 </para>
 </note></refsect2>
-<refsect2>
-<title><anchor id="g-thread-init" role="function"/>g_thread_init ()</title>
-<indexterm><primary>g_thread_init</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_init                       (<link linkend="GThreadFunctions">GThreadFunctions</link> *vtable);</programlisting>
+<refsect2 id="g-thread-init" role="function">
+<title>g_thread_init ()</title>
+<indexterm zone="g-thread-init"><primary>g_thread_init</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_init                       (<link linkend="GThreadFunctions">GThreadFunctions</link> *vtable);</programlisting>
 
 <para>
 If you use GLib from more than one thread, you must initialize
@@ -361,9 +366,9 @@ entry points to the thread system to be used.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-thread-supported" role="function"/>g_thread_supported ()</title>
-<indexterm><primary>g_thread_supported</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_thread_supported                  ();</programlisting>
+<refsect2 id="g-thread-supported" role="function">
+<title>g_thread_supported ()</title>
+<indexterm zone="g-thread-supported"><primary>g_thread_supported</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_thread_supported                  ();</programlisting>
 <para>
 This function returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the thread system is initialized, and
 <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> if it is not.
@@ -380,9 +385,9 @@ you can however use it as if it was a function.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GThreadFunc" role="function"/>GThreadFunc ()</title>
-<indexterm><primary>GThreadFunc</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            (*GThreadFunc)                      (<link linkend="gpointer">gpointer</link> data);</programlisting>
+<refsect2 id="GThreadFunc" role="function">
+<title>GThreadFunc ()</title>
+<indexterm zone="GThreadFunc"><primary>GThreadFunc</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            (*GThreadFunc)                      (<link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 Specifies the type of the <parameter>func</parameter> functions passed to
 <link linkend="g-thread-create"><function>g_thread_create()</function></link> or <link linkend="g-thread-create-full"><function>g_thread_create_full()</function></link>.
@@ -396,9 +401,9 @@ Specifies the type of the <parameter>func</parameter> functions passed to
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GThreadPriority" role="enum"/>enum GThreadPriority</title>
-<indexterm><primary>GThreadPriority</primary></indexterm><programlisting>typedef enum
+<refsect2 id="GThreadPriority" role="enum">
+<title>enum GThreadPriority</title>
+<indexterm zone="GThreadPriority"><primary>GThreadPriority</primary></indexterm><programlisting>typedef enum
 {
   G_THREAD_PRIORITY_LOW,
   G_THREAD_PRIORITY_NORMAL,
@@ -419,31 +424,31 @@ different scheduling for different priorities. All in all try to avoid
 being dependent on priorities.
 </para>
 </note><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-THREAD-PRIORITY-LOW:CAPS" role="constant"/><literal>G_THREAD_PRIORITY_LOW</literal></term>
+<varlistentry id="G-THREAD-PRIORITY-LOW:CAPS" role="constant">
+<term><literal>G_THREAD_PRIORITY_LOW</literal></term>
 <listitem><simpara>a priority lower than normal
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-THREAD-PRIORITY-NORMAL:CAPS" role="constant"/><literal>G_THREAD_PRIORITY_NORMAL</literal></term>
+<varlistentry id="G-THREAD-PRIORITY-NORMAL:CAPS" role="constant">
+<term><literal>G_THREAD_PRIORITY_NORMAL</literal></term>
 <listitem><simpara>the default priority
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-THREAD-PRIORITY-HIGH:CAPS" role="constant"/><literal>G_THREAD_PRIORITY_HIGH</literal></term>
+<varlistentry id="G-THREAD-PRIORITY-HIGH:CAPS" role="constant">
+<term><literal>G_THREAD_PRIORITY_HIGH</literal></term>
 <listitem><simpara>a priority higher than normal
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-THREAD-PRIORITY-URGENT:CAPS" role="constant"/><literal>G_THREAD_PRIORITY_URGENT</literal></term>
+<varlistentry id="G-THREAD-PRIORITY-URGENT:CAPS" role="constant">
+<term><literal>G_THREAD_PRIORITY_URGENT</literal></term>
 <listitem><simpara>the highest priority
 
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GThread" role="struct"/>GThread</title>
-<indexterm><primary>GThread</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GThread" role="struct">
+<title>GThread</title>
+<indexterm zone="GThread"><primary>GThread</primary></indexterm><programlisting>typedef struct {
 } GThread;
 </programlisting>
 <para>
@@ -458,9 +463,9 @@ Resources for a joinable thread are not fully released until
 <link linkend="g-thread-join"><function>g_thread_join()</function></link> is called for that thread.
 </para>
 </note></refsect2>
-<refsect2>
-<title><anchor id="g-thread-create" role="function"/>g_thread_create ()</title>
-<indexterm><primary>g_thread_create</primary></indexterm><programlisting><link linkend="GThread">GThread</link>*            g_thread_create                     (<link linkend="GThreadFunc">GThreadFunc</link> func,
+<refsect2 id="g-thread-create" role="function">
+<title>g_thread_create ()</title>
+<indexterm zone="g-thread-create"><primary>g_thread_create</primary></indexterm><programlisting><link linkend="GThread">GThread</link>*            g_thread_create                     (<link linkend="GThreadFunc">GThreadFunc</link> func,
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="gboolean">gboolean</link> joinable,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
@@ -500,9 +505,9 @@ error is set, if and only if the function returns <link linkend="NULL:CAPS"><lit
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-thread-create-full" role="function"/>g_thread_create_full ()</title>
-<indexterm><primary>g_thread_create_full</primary></indexterm><programlisting><link linkend="GThread">GThread</link>*            g_thread_create_full                (<link linkend="GThreadFunc">GThreadFunc</link> func,
+<refsect2 id="g-thread-create-full" role="function">
+<title>g_thread_create_full ()</title>
+<indexterm zone="g-thread-create-full"><primary>g_thread_create_full</primary></indexterm><programlisting><link linkend="GThread">GThread</link>*            g_thread_create_full                (<link linkend="GThreadFunc">GThreadFunc</link> func,
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="gulong">gulong</link> stack_size,
                                                          <link linkend="gboolean">gboolean</link> joinable,
@@ -581,9 +586,9 @@ be used in cases in which it is unavoidable.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-thread-self" role="function"/>g_thread_self ()</title>
-<indexterm><primary>g_thread_self</primary></indexterm><programlisting><link linkend="GThread">GThread</link>*            g_thread_self                       (void);</programlisting>
+<refsect2 id="g-thread-self" role="function">
+<title>g_thread_self ()</title>
+<indexterm zone="g-thread-self"><primary>g_thread_self</primary></indexterm><programlisting><link linkend="GThread">GThread</link>*            g_thread_self                       (void);</programlisting>
 <para>
 This functions returns the <link linkend="GThread"><type>GThread</type></link> corresponding to the calling thread.
 </para><variablelist role="params">
@@ -592,9 +597,9 @@ This functions returns the <link linkend="GThread"><type>GThread</type></link> c
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-thread-join" role="function"/>g_thread_join ()</title>
-<indexterm><primary>g_thread_join</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_thread_join                       (<link linkend="GThread">GThread</link> *thread);</programlisting>
+<refsect2 id="g-thread-join" role="function">
+<title>g_thread_join ()</title>
+<indexterm zone="g-thread-join"><primary>g_thread_join</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_thread_join                       (<link linkend="GThread">GThread</link> *thread);</programlisting>
 <para>
 Waits until <parameter>thread</parameter> finishes, i.e. the function <parameter>func</parameter>, as given
 to <link linkend="g-thread-create"><function>g_thread_create()</function></link>, returns or <link linkend="g-thread-exit"><function>g_thread_exit()</function></link> is called by
@@ -611,9 +616,9 @@ released. <parameter>thread</parameter> must have been created with <parameter>j
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-thread-set-priority" role="function"/>g_thread_set_priority ()</title>
-<indexterm><primary>g_thread_set_priority</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_set_priority               (<link linkend="GThread">GThread</link> *thread,
+<refsect2 id="g-thread-set-priority" role="function">
+<title>g_thread_set_priority ()</title>
+<indexterm zone="g-thread-set-priority"><primary>g_thread_set_priority</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_set_priority               (<link linkend="GThread">GThread</link> *thread,
                                                          <link linkend="GThreadPriority">GThreadPriority</link> priority);</programlisting>
 <para>
 Changes the priority of <parameter>thread</parameter> to <parameter>priority</parameter>.
@@ -637,9 +642,9 @@ being dependent on priorities.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-thread-yield" role="function"/>g_thread_yield ()</title>
-<indexterm><primary>g_thread_yield</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_yield                      ();</programlisting>
+<refsect2 id="g-thread-yield" role="function">
+<title>g_thread_yield ()</title>
+<indexterm zone="g-thread-yield"><primary>g_thread_yield</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_yield                      ();</programlisting>
 <para>
 Gives way to other threads waiting to be scheduled. 
 </para>
@@ -649,9 +654,9 @@ This function is often used as a method to make busy wait less
 evil. But in most cases you will encounter, there are better methods
 to do that. So in general you shouldn't use this function.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-thread-exit" role="function"/>g_thread_exit ()</title>
-<indexterm><primary>g_thread_exit</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_exit                       (<link linkend="gpointer">gpointer</link> retval);</programlisting>
+<refsect2 id="g-thread-exit" role="function">
+<title>g_thread_exit ()</title>
+<indexterm zone="g-thread-exit"><primary>g_thread_exit</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_exit                       (<link linkend="gpointer">gpointer</link> retval);</programlisting>
 <para>
 Exits the current thread. If another thread is waiting for that thread
 using <link linkend="g-thread-join"><function>g_thread_join()</function></link> and the current thread is joinable, the waiting
@@ -696,9 +701,9 @@ that will mess up the bookkeeping and lead to funny and unwanted results.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-thread-foreach" role="function" condition="since:2.10"/>g_thread_foreach ()</title>
-<indexterm role="2.10"><primary>g_thread_foreach</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_foreach                    (<link linkend="GFunc">GFunc</link> thread_func,
+<refsect2 id="g-thread-foreach" role="function" condition="since:2.10">
+<title>g_thread_foreach ()</title>
+<indexterm zone="g-thread-foreach" role="2.10"><primary>g_thread_foreach</primary></indexterm><programlisting><link linkend="void">void</link>                g_thread_foreach                    (<link linkend="GFunc">GFunc</link> thread_func,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 Call <parameter>thread_func</parameter> on all existing <link linkend="GThread"><type>GThread</type></link> structures. Note that
@@ -722,9 +727,9 @@ which is quadratic in the number of existing threads.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.10
 </para></refsect2>
-<refsect2>
-<title><anchor id="GMutex" role="struct"/>GMutex</title>
-<indexterm><primary>GMutex</primary></indexterm><programlisting>typedef struct _GMutex GMutex;</programlisting>
+<refsect2 id="GMutex" role="struct">
+<title>GMutex</title>
+<indexterm zone="GMutex"><primary>GMutex</primary></indexterm><programlisting>typedef struct _GMutex GMutex;</programlisting>
 
 <para>
 The <link linkend="GMutex"><type>GMutex</type></link> struct is an opaque data structure to represent a mutex
@@ -830,9 +835,9 @@ Apart from taking their addresses, you can however use them as if they
 were functions.
 </para>
 </note></refsect2>
-<refsect2>
-<title><anchor id="g-mutex-new" role="function"/>g_mutex_new ()</title>
-<indexterm><primary>g_mutex_new</primary></indexterm><programlisting><link linkend="GMutex">GMutex</link>*             g_mutex_new                         ();</programlisting>
+<refsect2 id="g-mutex-new" role="function">
+<title>g_mutex_new ()</title>
+<indexterm zone="g-mutex-new"><primary>g_mutex_new</primary></indexterm><programlisting><link linkend="GMutex">GMutex</link>*             g_mutex_new                         ();</programlisting>
 
 <para>
 Creates a new <link linkend="GMutex"><type>GMutex</type></link>. 
@@ -848,9 +853,9 @@ This function will abort if <link linkend="g-thread-init"><function>g_thread_ini
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-mutex-lock" role="function"/>g_mutex_lock ()</title>
-<indexterm><primary>g_mutex_lock</primary></indexterm><programlisting><link linkend="void">void</link>                g_mutex_lock                        (<link linkend="GMutex">GMutex</link> *mutex);</programlisting>
+<refsect2 id="g-mutex-lock" role="function">
+<title>g_mutex_lock ()</title>
+<indexterm zone="g-mutex-lock"><primary>g_mutex_lock</primary></indexterm><programlisting><link linkend="void">void</link>                g_mutex_lock                        (<link linkend="GMutex">GMutex</link> *mutex);</programlisting>
 
 <para>
 Locks <parameter>mutex</parameter>. If <parameter>mutex</parameter> is already locked by another thread, the
@@ -877,9 +882,9 @@ mutexes.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-mutex-trylock" role="function"/>g_mutex_trylock ()</title>
-<indexterm><primary>g_mutex_trylock</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_mutex_trylock                     (<link linkend="GMutex">GMutex</link> *mutex);</programlisting>
+<refsect2 id="g-mutex-trylock" role="function">
+<title>g_mutex_trylock ()</title>
+<indexterm zone="g-mutex-trylock"><primary>g_mutex_trylock</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_mutex_trylock                     (<link linkend="GMutex">GMutex</link> *mutex);</programlisting>
 
 <para>
 Tries to lock <parameter>mutex</parameter>. If <parameter>mutex</parameter> is already locked by another
@@ -908,9 +913,9 @@ i.e. the return value of <link linkend="g-mutex-trylock"><function>g_mutex_trylo
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-mutex-unlock" role="function"/>g_mutex_unlock ()</title>
-<indexterm><primary>g_mutex_unlock</primary></indexterm><programlisting><link linkend="void">void</link>                g_mutex_unlock                      (<link linkend="GMutex">GMutex</link> *mutex);</programlisting>
+<refsect2 id="g-mutex-unlock" role="function">
+<title>g_mutex_unlock ()</title>
+<indexterm zone="g-mutex-unlock"><primary>g_mutex_unlock</primary></indexterm><programlisting><link linkend="void">void</link>                g_mutex_unlock                      (<link linkend="GMutex">GMutex</link> *mutex);</programlisting>
 
 <para>
 Unlocks <parameter>mutex</parameter>. If another thread is blocked in a <link linkend="g-mutex-lock"><function>g_mutex_lock()</function></link> call
@@ -927,9 +932,9 @@ called, and, in that case, will do nothing.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-mutex-free" role="function"/>g_mutex_free ()</title>
-<indexterm><primary>g_mutex_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_mutex_free                        (<link linkend="GMutex">GMutex</link> *mutex);</programlisting>
+<refsect2 id="g-mutex-free" role="function">
+<title>g_mutex_free ()</title>
+<indexterm zone="g-mutex-free"><primary>g_mutex_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_mutex_free                        (<link linkend="GMutex">GMutex</link> *mutex);</programlisting>
 
 <para>
 Destroys <parameter>mutex</parameter>.
@@ -940,9 +945,9 @@ Destroys <parameter>mutex</parameter>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GStaticMutex" role="struct"/>GStaticMutex</title>
-<indexterm><primary>GStaticMutex</primary></indexterm><programlisting>typedef struct _GStaticMutex GStaticMutex;</programlisting>
+<refsect2 id="GStaticMutex" role="struct">
+<title>GStaticMutex</title>
+<indexterm zone="GStaticMutex"><primary>GStaticMutex</primary></indexterm><programlisting>typedef struct _GStaticMutex GStaticMutex;</programlisting>
 
 <para>
 A <link linkend="GStaticMutex"><type>GStaticMutex</type></link> works like a <link linkend="GMutex"><type>GMutex</type></link>, but it has one significant
@@ -1002,9 +1007,9 @@ macros. Apart from taking their addresses, you can however use them
 as if they were functions.
 </para>
 </note></refsect2>
-<refsect2>
-<title><anchor id="G-STATIC-MUTEX-INIT:CAPS" role="macro"/>G_STATIC_MUTEX_INIT</title>
-<indexterm><primary>G_STATIC_MUTEX_INIT</primary></indexterm><programlisting>#define G_STATIC_MUTEX_INIT
+<refsect2 id="G-STATIC-MUTEX-INIT:CAPS" role="macro">
+<title>G_STATIC_MUTEX_INIT</title>
+<indexterm zone="G-STATIC-MUTEX-INIT:CAPS"><primary>G_STATIC_MUTEX_INIT</primary></indexterm><programlisting>#define G_STATIC_MUTEX_INIT
 </programlisting>
 
 <para>
@@ -1021,9 +1026,9 @@ GStaticMutex my_mutex = G_STATIC_MUTEX_INIT;
 </programlisting>
 </informalexample>
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-static-mutex-init" role="function"/>g_static_mutex_init ()</title>
-<indexterm><primary>g_static_mutex_init</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_mutex_init                 (<link linkend="GStaticMutex">GStaticMutex</link> *mutex);</programlisting>
+<refsect2 id="g-static-mutex-init" role="function">
+<title>g_static_mutex_init ()</title>
+<indexterm zone="g-static-mutex-init"><primary>g_static_mutex_init</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_mutex_init                 (<link linkend="GStaticMutex">GStaticMutex</link> *mutex);</programlisting>
 <para>
 Initializes <parameter>mutex</parameter>. Alternatively you can initialize it with
 <link linkend="G-STATIC-MUTEX-INIT:CAPS"><type>G_STATIC_MUTEX_INIT</type></link>.
@@ -1034,9 +1039,9 @@ Initializes <parameter>mutex</parameter>. Alternatively you can initialize it wi
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-mutex-lock" role="function"/>g_static_mutex_lock ()</title>
-<indexterm><primary>g_static_mutex_lock</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_mutex_lock                 (<link linkend="GStaticMutex">GStaticMutex</link> *mutex);</programlisting>
+<refsect2 id="g-static-mutex-lock" role="function">
+<title>g_static_mutex_lock ()</title>
+<indexterm zone="g-static-mutex-lock"><primary>g_static_mutex_lock</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_mutex_lock                 (<link linkend="GStaticMutex">GStaticMutex</link> *mutex);</programlisting>
 <para>
 Works like <link linkend="g-mutex-lock"><function>g_mutex_lock()</function></link>, but for a <link linkend="GStaticMutex"><type>GStaticMutex</type></link>.
 </para><variablelist role="params">
@@ -1046,9 +1051,9 @@ Works like <link linkend="g-mutex-lock"><function>g_mutex_lock()</function></lin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-mutex-trylock" role="function"/>g_static_mutex_trylock ()</title>
-<indexterm><primary>g_static_mutex_trylock</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_static_mutex_trylock              (<link linkend="GStaticMutex">GStaticMutex</link> *mutex);</programlisting>
+<refsect2 id="g-static-mutex-trylock" role="function">
+<title>g_static_mutex_trylock ()</title>
+<indexterm zone="g-static-mutex-trylock"><primary>g_static_mutex_trylock</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_static_mutex_trylock              (<link linkend="GStaticMutex">GStaticMutex</link> *mutex);</programlisting>
 
 <para>
 Works like <link linkend="g-mutex-trylock"><function>g_mutex_trylock()</function></link>, but for a <link linkend="GStaticMutex"><type>GStaticMutex</type></link>.
@@ -1061,9 +1066,9 @@ Works like <link linkend="g-mutex-trylock"><function>g_mutex_trylock()</function
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-mutex-unlock" role="function"/>g_static_mutex_unlock ()</title>
-<indexterm><primary>g_static_mutex_unlock</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_mutex_unlock               (<link linkend="GStaticMutex">GStaticMutex</link> *mutex);</programlisting>
+<refsect2 id="g-static-mutex-unlock" role="function">
+<title>g_static_mutex_unlock ()</title>
+<indexterm zone="g-static-mutex-unlock"><primary>g_static_mutex_unlock</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_mutex_unlock               (<link linkend="GStaticMutex">GStaticMutex</link> *mutex);</programlisting>
 
 <para>
 Works like <link linkend="g-mutex-unlock"><function>g_mutex_unlock()</function></link>, but for a <link linkend="GStaticMutex"><type>GStaticMutex</type></link>.
@@ -1074,9 +1079,9 @@ Works like <link linkend="g-mutex-unlock"><function>g_mutex_unlock()</function><
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-mutex-get-mutex" role="function"/>g_static_mutex_get_mutex ()</title>
-<indexterm><primary>g_static_mutex_get_mutex</primary></indexterm><programlisting><link linkend="GMutex">GMutex</link>*             g_static_mutex_get_mutex            (<link linkend="GStaticMutex">GStaticMutex</link> *mutex);</programlisting>
+<refsect2 id="g-static-mutex-get-mutex" role="function">
+<title>g_static_mutex_get_mutex ()</title>
+<indexterm zone="g-static-mutex-get-mutex"><primary>g_static_mutex_get_mutex</primary></indexterm><programlisting><link linkend="GMutex">GMutex</link>*             g_static_mutex_get_mutex            (<link linkend="GStaticMutex">GStaticMutex</link> *mutex);</programlisting>
 
 <para>
 For some operations (like <link linkend="g-cond-wait"><function>g_cond_wait()</function></link>) you must have a <link linkend="GMutex"><type>GMutex</type></link>
@@ -1091,9 +1096,9 @@ corresponding <link linkend="GMutex"><type>GMutex</type></link> for <parameter>m
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-mutex-free" role="function"/>g_static_mutex_free ()</title>
-<indexterm><primary>g_static_mutex_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_mutex_free                 (<link linkend="GStaticMutex">GStaticMutex</link> *mutex);</programlisting>
+<refsect2 id="g-static-mutex-free" role="function">
+<title>g_static_mutex_free ()</title>
+<indexterm zone="g-static-mutex-free"><primary>g_static_mutex_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_mutex_free                 (<link linkend="GStaticMutex">GStaticMutex</link> *mutex);</programlisting>
 <para>
 Releases all resources allocated to <parameter>mutex</parameter>. 
 </para>
@@ -1110,9 +1115,9 @@ you should also free the <link linkend="GStaticMutex"><type>GStaticMutex</type><
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-LOCK-DEFINE:CAPS" role="macro"/>G_LOCK_DEFINE()</title>
-<indexterm><primary>G_LOCK_DEFINE</primary></indexterm><programlisting>#define             G_LOCK_DEFINE(name)</programlisting>
+<refsect2 id="G-LOCK-DEFINE:CAPS" role="macro">
+<title>G_LOCK_DEFINE()</title>
+<indexterm zone="G-LOCK-DEFINE:CAPS"><primary>G_LOCK_DEFINE</primary></indexterm><programlisting>#define             G_LOCK_DEFINE(name)</programlisting>
 
 <para>
 The <link linkend="G-LOCK-:CAPS"><literal>G_LOCK_</literal></link>* macros provide a convenient interface to <link linkend="GStaticMutex"><type>GStaticMutex</type></link>
@@ -1152,9 +1157,9 @@ int give_me_next_number (<!-- -->)
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-LOCK-DEFINE-STATIC:CAPS" role="macro"/>G_LOCK_DEFINE_STATIC()</title>
-<indexterm><primary>G_LOCK_DEFINE_STATIC</primary></indexterm><programlisting>#define             G_LOCK_DEFINE_STATIC(name)</programlisting>
+<refsect2 id="G-LOCK-DEFINE-STATIC:CAPS" role="macro">
+<title>G_LOCK_DEFINE_STATIC()</title>
+<indexterm zone="G-LOCK-DEFINE-STATIC:CAPS"><primary>G_LOCK_DEFINE_STATIC</primary></indexterm><programlisting>#define             G_LOCK_DEFINE_STATIC(name)</programlisting>
 
 <para>
 This works like <link linkend="G-LOCK-DEFINE:CAPS"><type>G_LOCK_DEFINE</type></link>, but it creates a static object.
@@ -1165,9 +1170,9 @@ This works like <link linkend="G-LOCK-DEFINE:CAPS"><type>G_LOCK_DEFINE</type></l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-LOCK-EXTERN:CAPS" role="macro"/>G_LOCK_EXTERN()</title>
-<indexterm><primary>G_LOCK_EXTERN</primary></indexterm><programlisting>#define             G_LOCK_EXTERN(name)</programlisting>
+<refsect2 id="G-LOCK-EXTERN:CAPS" role="macro">
+<title>G_LOCK_EXTERN()</title>
+<indexterm zone="G-LOCK-EXTERN:CAPS"><primary>G_LOCK_EXTERN</primary></indexterm><programlisting>#define             G_LOCK_EXTERN(name)</programlisting>
 
 <para>
 This declares a lock, that is defined with <link linkend="G-LOCK-DEFINE:CAPS"><type>G_LOCK_DEFINE</type></link> in another module.
@@ -1178,9 +1183,9 @@ This declares a lock, that is defined with <link linkend="G-LOCK-DEFINE:CAPS"><t
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-LOCK:CAPS" role="macro"/>G_LOCK()</title>
-<indexterm><primary>G_LOCK</primary></indexterm><programlisting>#define             G_LOCK(name)</programlisting>
+<refsect2 id="G-LOCK:CAPS" role="macro">
+<title>G_LOCK()</title>
+<indexterm zone="G-LOCK:CAPS"><primary>G_LOCK</primary></indexterm><programlisting>#define             G_LOCK(name)</programlisting>
 
 <para>
 Works like <link linkend="g-mutex-lock"><function>g_mutex_lock()</function></link>, but for a lock defined with <link linkend="G-LOCK-DEFINE:CAPS"><type>G_LOCK_DEFINE</type></link>.
@@ -1191,9 +1196,9 @@ Works like <link linkend="g-mutex-lock"><function>g_mutex_lock()</function></lin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TRYLOCK:CAPS" role="macro"/>G_TRYLOCK()</title>
-<indexterm><primary>G_TRYLOCK</primary></indexterm><programlisting>#define             G_TRYLOCK(name)</programlisting>
+<refsect2 id="G-TRYLOCK:CAPS" role="macro">
+<title>G_TRYLOCK()</title>
+<indexterm zone="G-TRYLOCK:CAPS"><primary>G_TRYLOCK</primary></indexterm><programlisting>#define             G_TRYLOCK(name)</programlisting>
 
 <para>
 Works like <link linkend="g-mutex-trylock"><function>g_mutex_trylock()</function></link>, but for a lock defined with <link linkend="G-LOCK-DEFINE:CAPS"><type>G_LOCK_DEFINE</type></link>.
@@ -1206,9 +1211,9 @@ Works like <link linkend="g-mutex-trylock"><function>g_mutex_trylock()</function
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-UNLOCK:CAPS" role="macro"/>G_UNLOCK()</title>
-<indexterm><primary>G_UNLOCK</primary></indexterm><programlisting>#define             G_UNLOCK(name)</programlisting>
+<refsect2 id="G-UNLOCK:CAPS" role="macro">
+<title>G_UNLOCK()</title>
+<indexterm zone="G-UNLOCK:CAPS"><primary>G_UNLOCK</primary></indexterm><programlisting>#define             G_UNLOCK(name)</programlisting>
 
 <para>
 Works like <link linkend="g-mutex-unlock"><function>g_mutex_unlock()</function></link>, but for a lock defined with <link linkend="G-LOCK-DEFINE:CAPS"><type>G_LOCK_DEFINE</type></link>.
@@ -1219,9 +1224,9 @@ Works like <link linkend="g-mutex-unlock"><function>g_mutex_unlock()</function><
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GStaticRecMutex" role="struct"/>GStaticRecMutex</title>
-<indexterm><primary>GStaticRecMutex</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GStaticRecMutex" role="struct">
+<title>GStaticRecMutex</title>
+<indexterm zone="GStaticRecMutex"><primary>GStaticRecMutex</primary></indexterm><programlisting>typedef struct {
 } GStaticRecMutex;
 </programlisting>
 <para>
@@ -1246,9 +1251,9 @@ used even if <link linkend="g-thread-init"><function>g_thread_init()</function><
 nothing, apart from <function>g_static_rec_mutex_trylock</function>,
 which does nothing but returning <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-STATIC-REC-MUTEX-INIT:CAPS" role="macro"/>G_STATIC_REC_MUTEX_INIT</title>
-<indexterm><primary>G_STATIC_REC_MUTEX_INIT</primary></indexterm><programlisting>#define G_STATIC_REC_MUTEX_INIT { G_STATIC_MUTEX_INIT }
+<refsect2 id="G-STATIC-REC-MUTEX-INIT:CAPS" role="macro">
+<title>G_STATIC_REC_MUTEX_INIT</title>
+<indexterm zone="G-STATIC-REC-MUTEX-INIT:CAPS"><primary>G_STATIC_REC_MUTEX_INIT</primary></indexterm><programlisting>#define G_STATIC_REC_MUTEX_INIT { G_STATIC_MUTEX_INIT }
 </programlisting>
 <para>
 A <link linkend="GStaticRecMutex"><type>GStaticRecMutex</type></link> must be initialized with this macro before it can
@@ -1264,9 +1269,9 @@ GStaticRecMutex my_mutex = G_STATIC_REC_MUTEX_INIT;
 </programlisting>
 </informalexample>
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-static-rec-mutex-init" role="function"/>g_static_rec_mutex_init ()</title>
-<indexterm><primary>g_static_rec_mutex_init</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rec_mutex_init             (<link linkend="GStaticRecMutex">GStaticRecMutex</link> *mutex);</programlisting>
+<refsect2 id="g-static-rec-mutex-init" role="function">
+<title>g_static_rec_mutex_init ()</title>
+<indexterm zone="g-static-rec-mutex-init"><primary>g_static_rec_mutex_init</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rec_mutex_init             (<link linkend="GStaticRecMutex">GStaticRecMutex</link> *mutex);</programlisting>
 <para>
 A <link linkend="GStaticRecMutex"><type>GStaticRecMutex</type></link> must be initialized with this function before it
 can be used. Alternatively you can initialize it with
@@ -1278,9 +1283,9 @@ can be used. Alternatively you can initialize it with
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-rec-mutex-lock" role="function"/>g_static_rec_mutex_lock ()</title>
-<indexterm><primary>g_static_rec_mutex_lock</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rec_mutex_lock             (<link linkend="GStaticRecMutex">GStaticRecMutex</link> *mutex);</programlisting>
+<refsect2 id="g-static-rec-mutex-lock" role="function">
+<title>g_static_rec_mutex_lock ()</title>
+<indexterm zone="g-static-rec-mutex-lock"><primary>g_static_rec_mutex_lock</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rec_mutex_lock             (<link linkend="GStaticRecMutex">GStaticRecMutex</link> *mutex);</programlisting>
 <para>
 Locks <parameter>mutex</parameter>. If <parameter>mutex</parameter> is already locked by another thread, the
 current thread will block until <parameter>mutex</parameter> is unlocked by the other
@@ -1293,14 +1298,14 @@ functions increases the depth of <parameter>mutex</parameter> and returns immedi
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-rec-mutex-trylock" role="function"/>g_static_rec_mutex_trylock ()</title>
-<indexterm><primary>g_static_rec_mutex_trylock</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_static_rec_mutex_trylock          (<link linkend="GStaticRecMutex">GStaticRecMutex</link> *mutex);</programlisting>
+<refsect2 id="g-static-rec-mutex-trylock" role="function">
+<title>g_static_rec_mutex_trylock ()</title>
+<indexterm zone="g-static-rec-mutex-trylock"><primary>g_static_rec_mutex_trylock</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_static_rec_mutex_trylock          (<link linkend="GStaticRecMutex">GStaticRecMutex</link> *mutex);</programlisting>
 <para>
 Tries to lock <parameter>mutex</parameter>. If <parameter>mutex</parameter> is already locked by another thread,
 it immediately returns <link linkend="FALSE:CAPS"><literal>FALSE</literal></link>. Otherwise it locks <parameter>mutex</parameter> and returns
 <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>. If <parameter>mutex</parameter> is already locked by the calling thread, this
-functions increases the depth of <parameter>mutex</parameter> and immediately  returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>.
+functions increases the depth of <parameter>mutex</parameter> and immediately returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>mutex</parameter>&nbsp;:</term>
 <listitem><simpara>a <link linkend="GStaticRecMutex"><type>GStaticRecMutex</type></link> to lock.
@@ -1310,9 +1315,9 @@ functions increases the depth of <parameter>mutex</parameter> and immediately  r
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-rec-mutex-unlock" role="function"/>g_static_rec_mutex_unlock ()</title>
-<indexterm><primary>g_static_rec_mutex_unlock</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rec_mutex_unlock           (<link linkend="GStaticRecMutex">GStaticRecMutex</link> *mutex);</programlisting>
+<refsect2 id="g-static-rec-mutex-unlock" role="function">
+<title>g_static_rec_mutex_unlock ()</title>
+<indexterm zone="g-static-rec-mutex-unlock"><primary>g_static_rec_mutex_unlock</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rec_mutex_unlock           (<link linkend="GStaticRecMutex">GStaticRecMutex</link> *mutex);</programlisting>
 <para>
 Unlocks <parameter>mutex</parameter>. Another thread will be allowed to lock <parameter>mutex</parameter> only
 when it has been unlocked as many times as it had been locked
@@ -1326,9 +1331,9 @@ can lock <parameter>mutex</parameter> itself.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-rec-mutex-lock-full" role="function"/>g_static_rec_mutex_lock_full ()</title>
-<indexterm><primary>g_static_rec_mutex_lock_full</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rec_mutex_lock_full        (<link linkend="GStaticRecMutex">GStaticRecMutex</link> *mutex,
+<refsect2 id="g-static-rec-mutex-lock-full" role="function">
+<title>g_static_rec_mutex_lock_full ()</title>
+<indexterm zone="g-static-rec-mutex-lock-full"><primary>g_static_rec_mutex_lock_full</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rec_mutex_lock_full        (<link linkend="GStaticRecMutex">GStaticRecMutex</link> *mutex,
                                                          <link linkend="guint">guint</link> depth);</programlisting>
 <para>
 Works like calling <link linkend="g-static-rec-mutex-lock"><function>g_static_rec_mutex_lock()</function></link> for <parameter>mutex</parameter> <parameter>depth</parameter> times.
@@ -1342,9 +1347,9 @@ Works like calling <link linkend="g-static-rec-mutex-lock"><function>g_static_re
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-rec-mutex-unlock-full" role="function"/>g_static_rec_mutex_unlock_full ()</title>
-<indexterm><primary>g_static_rec_mutex_unlock_full</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_static_rec_mutex_unlock_full      (<link linkend="GStaticRecMutex">GStaticRecMutex</link> *mutex);</programlisting>
+<refsect2 id="g-static-rec-mutex-unlock-full" role="function">
+<title>g_static_rec_mutex_unlock_full ()</title>
+<indexterm zone="g-static-rec-mutex-unlock-full"><primary>g_static_rec_mutex_unlock_full</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_static_rec_mutex_unlock_full      (<link linkend="GStaticRecMutex">GStaticRecMutex</link> *mutex);</programlisting>
 <para>
 Completely unlocks <parameter>mutex</parameter>. If another thread is blocked in a
 <link linkend="g-static-rec-mutex-lock"><function>g_static_rec_mutex_lock()</function></link> call for <parameter>mutex</parameter>, it will be woken and can
@@ -1362,9 +1367,9 @@ function.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-rec-mutex-free" role="function"/>g_static_rec_mutex_free ()</title>
-<indexterm><primary>g_static_rec_mutex_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rec_mutex_free             (<link linkend="GStaticRecMutex">GStaticRecMutex</link> *mutex);</programlisting>
+<refsect2 id="g-static-rec-mutex-free" role="function">
+<title>g_static_rec_mutex_free ()</title>
+<indexterm zone="g-static-rec-mutex-free"><primary>g_static_rec_mutex_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rec_mutex_free             (<link linkend="GStaticRecMutex">GStaticRecMutex</link> *mutex);</programlisting>
 <para>
 Releases all resources allocated to a <link linkend="GStaticRecMutex"><type>GStaticRecMutex</type></link>.
 </para>
@@ -1381,9 +1386,9 @@ freed, you should also free the <link linkend="GStaticRecMutex"><type>GStaticRec
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GStaticRWLock" role="struct"/>GStaticRWLock</title>
-<indexterm><primary>GStaticRWLock</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GStaticRWLock" role="struct">
+<title>GStaticRWLock</title>
+<indexterm zone="GStaticRWLock"><primary>GStaticRWLock</primary></indexterm><programlisting>typedef struct {
 } GStaticRWLock;
 </programlisting>
 <para>
@@ -1478,9 +1483,9 @@ readers, and which keep the lock for a considerable time justify a
 a <link linkend="GStaticMutex"><type>GStaticMutex</type></link>.
 </para>
 </note></refsect2>
-<refsect2>
-<title><anchor id="G-STATIC-RW-LOCK-INIT:CAPS" role="macro"/>G_STATIC_RW_LOCK_INIT</title>
-<indexterm><primary>G_STATIC_RW_LOCK_INIT</primary></indexterm><programlisting>#define G_STATIC_RW_LOCK_INIT { G_STATIC_MUTEX_INIT, NULL, NULL, 0, FALSE, 0, 0 }
+<refsect2 id="G-STATIC-RW-LOCK-INIT:CAPS" role="macro">
+<title>G_STATIC_RW_LOCK_INIT</title>
+<indexterm zone="G-STATIC-RW-LOCK-INIT:CAPS"><primary>G_STATIC_RW_LOCK_INIT</primary></indexterm><programlisting>#define G_STATIC_RW_LOCK_INIT { G_STATIC_MUTEX_INIT, NULL, NULL, 0, FALSE, 0, 0 }
 </programlisting>
 <para>
 A <link linkend="GStaticRWLock"><type>GStaticRWLock</type></link> must be initialized with this macro before it can
@@ -1496,9 +1501,9 @@ GStaticRWLock my_lock = G_STATIC_RW_LOCK_INIT;
 </programlisting>
 </informalexample>
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-static-rw-lock-init" role="function"/>g_static_rw_lock_init ()</title>
-<indexterm><primary>g_static_rw_lock_init</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rw_lock_init               (<link linkend="GStaticRWLock">GStaticRWLock</link> *lock);</programlisting>
+<refsect2 id="g-static-rw-lock-init" role="function">
+<title>g_static_rw_lock_init ()</title>
+<indexterm zone="g-static-rw-lock-init"><primary>g_static_rw_lock_init</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rw_lock_init               (<link linkend="GStaticRWLock">GStaticRWLock</link> *lock);</programlisting>
 <para>
 A <link linkend="GStaticRWLock"><type>GStaticRWLock</type></link> must be initialized with this function before it can
 be used. Alternatively you can initialize it with
@@ -1510,9 +1515,9 @@ be used. Alternatively you can initialize it with
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-rw-lock-reader-lock" role="function"/>g_static_rw_lock_reader_lock ()</title>
-<indexterm><primary>g_static_rw_lock_reader_lock</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rw_lock_reader_lock        (<link linkend="GStaticRWLock">GStaticRWLock</link> *lock);</programlisting>
+<refsect2 id="g-static-rw-lock-reader-lock" role="function">
+<title>g_static_rw_lock_reader_lock ()</title>
+<indexterm zone="g-static-rw-lock-reader-lock"><primary>g_static_rw_lock_reader_lock</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rw_lock_reader_lock        (<link linkend="GStaticRWLock">GStaticRWLock</link> *lock);</programlisting>
 <para>
 Locks <parameter>lock</parameter> for reading. There may be unlimited concurrent locks for
 reading of a <link linkend="GStaticRWLock"><type>GStaticRWLock</type></link> at the same time.  If <parameter>lock</parameter> is already
@@ -1534,9 +1539,9 @@ to writer preference.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-rw-lock-reader-trylock" role="function"/>g_static_rw_lock_reader_trylock ()</title>
-<indexterm><primary>g_static_rw_lock_reader_trylock</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_static_rw_lock_reader_trylock     (<link linkend="GStaticRWLock">GStaticRWLock</link> *lock);</programlisting>
+<refsect2 id="g-static-rw-lock-reader-trylock" role="function">
+<title>g_static_rw_lock_reader_trylock ()</title>
+<indexterm zone="g-static-rw-lock-reader-trylock"><primary>g_static_rw_lock_reader_trylock</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_static_rw_lock_reader_trylock     (<link linkend="GStaticRWLock">GStaticRWLock</link> *lock);</programlisting>
 <para>
 Tries to lock <parameter>lock</parameter> for reading. If <parameter>lock</parameter> is already locked for
 writing by another thread or if another thread is already waiting to
@@ -1552,9 +1557,9 @@ lock <parameter>lock</parameter> for writing, immediately returns <link linkend=
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-rw-lock-reader-unlock" role="function"/>g_static_rw_lock_reader_unlock ()</title>
-<indexterm><primary>g_static_rw_lock_reader_unlock</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rw_lock_reader_unlock      (<link linkend="GStaticRWLock">GStaticRWLock</link> *lock);</programlisting>
+<refsect2 id="g-static-rw-lock-reader-unlock" role="function">
+<title>g_static_rw_lock_reader_unlock ()</title>
+<indexterm zone="g-static-rw-lock-reader-unlock"><primary>g_static_rw_lock_reader_unlock</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rw_lock_reader_unlock      (<link linkend="GStaticRWLock">GStaticRWLock</link> *lock);</programlisting>
 <para>
 Unlocks <parameter>lock</parameter>. If a thread waits to lock <parameter>lock</parameter> for writing and all
 locks for reading have been unlocked, the waiting thread is woken up
@@ -1566,9 +1571,9 @@ and can lock <parameter>lock</parameter> for writing.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-rw-lock-writer-lock" role="function"/>g_static_rw_lock_writer_lock ()</title>
-<indexterm><primary>g_static_rw_lock_writer_lock</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rw_lock_writer_lock        (<link linkend="GStaticRWLock">GStaticRWLock</link> *lock);</programlisting>
+<refsect2 id="g-static-rw-lock-writer-lock" role="function">
+<title>g_static_rw_lock_writer_lock ()</title>
+<indexterm zone="g-static-rw-lock-writer-lock"><primary>g_static_rw_lock_writer_lock</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rw_lock_writer_lock        (<link linkend="GStaticRWLock">GStaticRWLock</link> *lock);</programlisting>
 <para>
 Locks <parameter>lock</parameter> for writing. If <parameter>lock</parameter> is already locked for writing or
 reading by other threads, this function will block until <parameter>lock</parameter> is
@@ -1584,9 +1589,9 @@ by <link linkend="g-static-rw-lock-writer-unlock"><function>g_static_rw_lock_wri
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-rw-lock-writer-trylock" role="function"/>g_static_rw_lock_writer_trylock ()</title>
-<indexterm><primary>g_static_rw_lock_writer_trylock</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_static_rw_lock_writer_trylock     (<link linkend="GStaticRWLock">GStaticRWLock</link> *lock);</programlisting>
+<refsect2 id="g-static-rw-lock-writer-trylock" role="function">
+<title>g_static_rw_lock_writer_trylock ()</title>
+<indexterm zone="g-static-rw-lock-writer-trylock"><primary>g_static_rw_lock_writer_trylock</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_static_rw_lock_writer_trylock     (<link linkend="GStaticRWLock">GStaticRWLock</link> *lock);</programlisting>
 <para>
 Tries to lock <parameter>lock</parameter> for writing. If <parameter>lock</parameter> is already locked (for
 either reading or writing) by another thread, it immediately returns
@@ -1601,9 +1606,9 @@ lock has to be unlocked by <link linkend="g-static-rw-lock-writer-unlock"><funct
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-rw-lock-writer-unlock" role="function"/>g_static_rw_lock_writer_unlock ()</title>
-<indexterm><primary>g_static_rw_lock_writer_unlock</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rw_lock_writer_unlock      (<link linkend="GStaticRWLock">GStaticRWLock</link> *lock);</programlisting>
+<refsect2 id="g-static-rw-lock-writer-unlock" role="function">
+<title>g_static_rw_lock_writer_unlock ()</title>
+<indexterm zone="g-static-rw-lock-writer-unlock"><primary>g_static_rw_lock_writer_unlock</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rw_lock_writer_unlock      (<link linkend="GStaticRWLock">GStaticRWLock</link> *lock);</programlisting>
 <para>
 Unlocks <parameter>lock</parameter>. If a thread is waiting to lock <parameter>lock</parameter> for writing and
 all locks for reading have been unlocked, the waiting thread is woken
@@ -1618,9 +1623,9 @@ reading.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-rw-lock-free" role="function"/>g_static_rw_lock_free ()</title>
-<indexterm><primary>g_static_rw_lock_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rw_lock_free               (<link linkend="GStaticRWLock">GStaticRWLock</link> *lock);</programlisting>
+<refsect2 id="g-static-rw-lock-free" role="function">
+<title>g_static_rw_lock_free ()</title>
+<indexterm zone="g-static-rw-lock-free"><primary>g_static_rw_lock_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_rw_lock_free               (<link linkend="GStaticRWLock">GStaticRWLock</link> *lock);</programlisting>
 <para>
 Releases all resources allocated to <parameter>lock</parameter>. 
 </para>
@@ -1637,9 +1642,9 @@ you should also free the <link linkend="GStaticRWLock"><type>GStaticRWLock</type
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GCond" role="struct"/>GCond</title>
-<indexterm><primary>GCond</primary></indexterm><programlisting>typedef struct _GCond GCond;</programlisting>
+<refsect2 id="GCond" role="struct">
+<title>GCond</title>
+<indexterm zone="GCond"><primary>GCond</primary></indexterm><programlisting>typedef struct _GCond GCond;</programlisting>
 
 <para>
 The <link linkend="GCond"><type>GCond</type></link> struct is an opaque data structure that represents a
@@ -1710,9 +1715,9 @@ Apart from taking their addresses, you can however use them as if they
 were functions.
 </para>
 </note></refsect2>
-<refsect2>
-<title><anchor id="g-cond-new" role="function"/>g_cond_new ()</title>
-<indexterm><primary>g_cond_new</primary></indexterm><programlisting><link linkend="GCond">GCond</link>*              g_cond_new                          ();</programlisting>
+<refsect2 id="g-cond-new" role="function">
+<title>g_cond_new ()</title>
+<indexterm zone="g-cond-new"><primary>g_cond_new</primary></indexterm><programlisting><link linkend="GCond">GCond</link>*              g_cond_new                          ();</programlisting>
 
 <para>
 Creates a new <link linkend="GCond"><type>GCond</type></link>. This function will abort, if <link linkend="g-thread-init"><function>g_thread_init()</function></link>
@@ -1723,9 +1728,9 @@ has not been called yet.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-cond-signal" role="function"/>g_cond_signal ()</title>
-<indexterm><primary>g_cond_signal</primary></indexterm><programlisting><link linkend="void">void</link>                g_cond_signal                       (<link linkend="GCond">GCond</link> *cond);</programlisting>
+<refsect2 id="g-cond-signal" role="function">
+<title>g_cond_signal ()</title>
+<indexterm zone="g-cond-signal"><primary>g_cond_signal</primary></indexterm><programlisting><link linkend="void">void</link>                g_cond_signal                       (<link linkend="GCond">GCond</link> *cond);</programlisting>
 <para>
 If threads are waiting for <parameter>cond</parameter>, exactly one of them is woken up. It
 is good practice to hold the same lock as the waiting thread while
@@ -1742,9 +1747,9 @@ and, in that case, will do nothing.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-cond-broadcast" role="function"/>g_cond_broadcast ()</title>
-<indexterm><primary>g_cond_broadcast</primary></indexterm><programlisting><link linkend="void">void</link>                g_cond_broadcast                    (<link linkend="GCond">GCond</link> *cond);</programlisting>
+<refsect2 id="g-cond-broadcast" role="function">
+<title>g_cond_broadcast ()</title>
+<indexterm zone="g-cond-broadcast"><primary>g_cond_broadcast</primary></indexterm><programlisting><link linkend="void">void</link>                g_cond_broadcast                    (<link linkend="GCond">GCond</link> *cond);</programlisting>
 
 <para>
 If threads are waiting for <parameter>cond</parameter>, all of them are woken up. It is good
@@ -1762,9 +1767,9 @@ and, in that case, will do nothing.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-cond-wait" role="function"/>g_cond_wait ()</title>
-<indexterm><primary>g_cond_wait</primary></indexterm><programlisting><link linkend="void">void</link>                g_cond_wait                         (<link linkend="GCond">GCond</link> *cond,
+<refsect2 id="g-cond-wait" role="function">
+<title>g_cond_wait ()</title>
+<indexterm zone="g-cond-wait"><primary>g_cond_wait</primary></indexterm><programlisting><link linkend="void">void</link>                g_cond_wait                         (<link linkend="GCond">GCond</link> *cond,
                                                          <link linkend="GMutex">GMutex</link> *mutex);</programlisting>
 
 <para>
@@ -1785,9 +1790,9 @@ called, and, in that case, will immediately return.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-cond-timed-wait" role="function"/>g_cond_timed_wait ()</title>
-<indexterm><primary>g_cond_timed_wait</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_cond_timed_wait                   (<link linkend="GCond">GCond</link> *cond,
+<refsect2 id="g-cond-timed-wait" role="function">
+<title>g_cond_timed_wait ()</title>
+<indexterm zone="g-cond-timed-wait"><primary>g_cond_timed_wait</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_cond_timed_wait                   (<link linkend="GCond">GCond</link> *cond,
                                                          <link linkend="GMutex">GMutex</link> *mutex,
                                                          <link linkend="GTimeVal">GTimeVal</link> *abs_time);</programlisting>
 
@@ -1824,9 +1829,9 @@ and <link linkend="g-time-val-add"><function>g_time_val_add()</function></link> 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-cond-free" role="function"/>g_cond_free ()</title>
-<indexterm><primary>g_cond_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_cond_free                         (<link linkend="GCond">GCond</link> *cond);</programlisting>
+<refsect2 id="g-cond-free" role="function">
+<title>g_cond_free ()</title>
+<indexterm zone="g-cond-free"><primary>g_cond_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_cond_free                         (<link linkend="GCond">GCond</link> *cond);</programlisting>
 
 <para>
 Destroys the <link linkend="GCond"><type>GCond</type></link>.
@@ -1837,9 +1842,9 @@ Destroys the <link linkend="GCond"><type>GCond</type></link>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GPrivate" role="struct"/>GPrivate</title>
-<indexterm><primary>GPrivate</primary></indexterm><programlisting>typedef struct _GPrivate GPrivate;</programlisting>
+<refsect2 id="GPrivate" role="struct">
+<title>GPrivate</title>
+<indexterm zone="GPrivate"><primary>GPrivate</primary></indexterm><programlisting>typedef struct _GPrivate GPrivate;</programlisting>
 <para>
 The <link linkend="GPrivate"><type>GPrivate</type></link> struct is an opaque data structure to represent a thread
 private data key. Threads can thereby obtain and set a pointer which
@@ -1861,7 +1866,7 @@ done as follows:
 
     if (!current_number)
     {
-      current_number = g_new (int,1);
+      current_number = g_new (int, 1);
       *current_number = 0;
       g_private_set (current_number_key, current_number);
     }
@@ -1890,9 +1895,9 @@ Apart from taking their addresses, you can however use them as if they were
 functions.
 </para>
 </note></refsect2>
-<refsect2>
-<title><anchor id="g-private-new" role="function"/>g_private_new ()</title>
-<indexterm><primary>g_private_new</primary></indexterm><programlisting><link linkend="GPrivate">GPrivate</link>*           g_private_new                       (<link linkend="GDestroyNotify">GDestroyNotify</link> destructor);</programlisting>
+<refsect2 id="g-private-new" role="function">
+<title>g_private_new ()</title>
+<indexterm zone="g-private-new"><primary>g_private_new</primary></indexterm><programlisting><link linkend="GPrivate">GPrivate</link>*           g_private_new                       (<link linkend="GDestroyNotify">GDestroyNotify</link> destructor);</programlisting>
 
 <para>
 Creates a new <link linkend="GPrivate"><type>GPrivate</type></link>. If <parameter>destructor</parameter> is non-<link linkend="NULL:CAPS"><literal>NULL</literal></link>, it is a pointer
@@ -1929,9 +1934,9 @@ thread ends.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-private-get" role="function"/>g_private_get ()</title>
-<indexterm><primary>g_private_get</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_private_get                       (<link linkend="GPrivate">GPrivate</link> *private_key);</programlisting>
+<refsect2 id="g-private-get" role="function">
+<title>g_private_get ()</title>
+<indexterm zone="g-private-get"><primary>g_private_get</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_private_get                       (<link linkend="GPrivate">GPrivate</link> *private_key);</programlisting>
 
 <para>
 Returns the pointer keyed to <parameter>private_key</parameter> for the current thread.
@@ -1940,8 +1945,12 @@ current <parameter>private_key</parameter> and thread yet, this pointer will be 
 </para>
 
 <para>
-This function can be used even if <link linkend="g-thread-init"><function>g_thread_init()</function></link> has not yet been
-called, and, in that case, will return the value of <parameter>private_key</parameter> casted to <link linkend="gpointer"><type>gpointer</type></link>.
+This function can be used even if <link linkend="g-thread-init"><function>g_thread_init()</function></link> has not yet been called, and,
+in that case, will return the value of <parameter>private_key</parameter> casted to <link linkend="gpointer"><type>gpointer</type></link>.
+Note however, that private data set <emphasis>before</emphasis> <link linkend="g-thread-init"><function>g_thread_init()</function></link> will
+<emphasis>not</emphasis> be retained <emphasis>after</emphasis> the call. Instead, <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+will be returned in all threads directly after <link linkend="g-thread-init"><function>g_thread_init()</function></link>, regardless of
+any <link linkend="g-private-set"><function>g_private_set()</function></link> calls issued before threading system intialization.
 </para><variablelist role="params">
 <varlistentry><term><parameter>private_key</parameter>&nbsp;:</term>
 <listitem><simpara>a <link linkend="GPrivate"><type>GPrivate</type></link>.
@@ -1951,9 +1960,9 @@ called, and, in that case, will return the value of <parameter>private_key</para
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-private-set" role="function"/>g_private_set ()</title>
-<indexterm><primary>g_private_set</primary></indexterm><programlisting><link linkend="void">void</link>                g_private_set                       (<link linkend="GPrivate">GPrivate</link> *private_key,
+<refsect2 id="g-private-set" role="function">
+<title>g_private_set ()</title>
+<indexterm zone="g-private-set"><primary>g_private_set</primary></indexterm><programlisting><link linkend="void">void</link>                g_private_set                       (<link linkend="GPrivate">GPrivate</link> *private_key,
                                                          <link linkend="gpointer">gpointer</link> data);</programlisting>
 
 <para>
@@ -1963,6 +1972,7 @@ Sets the pointer keyed to <parameter>private_key</parameter> for the current thr
 <para>
 This function can be used even if <link linkend="g-thread-init"><function>g_thread_init()</function></link> has not yet been
 called, and, in that case, will set <parameter>private_key</parameter> to <parameter>data</parameter> casted to <link linkend="GPrivate"><type>GPrivate</type></link>*.
+See <link linkend="g-private-get"><function>g_private_get()</function></link> for resulting caveats.
 </para><variablelist role="params">
 <varlistentry><term><parameter>private_key</parameter>&nbsp;:</term>
 <listitem><simpara>a <link linkend="GPrivate"><type>GPrivate</type></link>.
@@ -1973,9 +1983,9 @@ called, and, in that case, will set <parameter>private_key</parameter> to <param
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GStaticPrivate" role="struct"/>GStaticPrivate</title>
-<indexterm><primary>GStaticPrivate</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GStaticPrivate" role="struct">
+<title>GStaticPrivate</title>
+<indexterm zone="GStaticPrivate"><primary>GStaticPrivate</primary></indexterm><programlisting>typedef struct {
 } GStaticPrivate;
 </programlisting>
 
@@ -1984,7 +1994,7 @@ A <link linkend="GStaticPrivate"><type>GStaticPrivate</type></link> works almost
 significant advantage. It doesn't need to be created at run-time like
 a <link linkend="GPrivate"><type>GPrivate</type></link>, but can be defined at compile-time. This is similar to
 the difference between <link linkend="GMutex"><type>GMutex</type></link> and <link linkend="GStaticMutex"><type>GStaticMutex</type></link>. Now look at our
-<function><link linkend="give-me-next-number"><function>give_me_next_number()</function></link></function> example with <link linkend="GStaticPrivate--"><type>:</type></link>
+<function><link linkend="give-me-next-number"><function>give_me_next_number()</function></link></function> example with <link linkend="GStaticPrivate--"><type>""</type></link>
 </para>
 
 <para>
@@ -2008,9 +2018,9 @@ the difference between <link linkend="GMutex"><type>GMutex</type></link> and <li
 </programlisting>
 </example>
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-STATIC-PRIVATE-INIT:CAPS" role="macro"/>G_STATIC_PRIVATE_INIT</title>
-<indexterm><primary>G_STATIC_PRIVATE_INIT</primary></indexterm><programlisting>#define G_STATIC_PRIVATE_INIT 
+<refsect2 id="G-STATIC-PRIVATE-INIT:CAPS" role="macro">
+<title>G_STATIC_PRIVATE_INIT</title>
+<indexterm zone="G-STATIC-PRIVATE-INIT:CAPS"><primary>G_STATIC_PRIVATE_INIT</primary></indexterm><programlisting>#define G_STATIC_PRIVATE_INIT 
 </programlisting>
 <para>
 Every <link linkend="GStaticPrivate"><type>GStaticPrivate</type></link> must be initialized with this macro, before it can
@@ -2024,9 +2034,9 @@ GStaticPrivate my_private = G_STATIC_PRIVATE_INIT;
 </programlisting>
 </informalexample>
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-static-private-init" role="function"/>g_static_private_init ()</title>
-<indexterm><primary>g_static_private_init</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_private_init               (<link linkend="GStaticPrivate">GStaticPrivate</link> *private_key);</programlisting>
+<refsect2 id="g-static-private-init" role="function">
+<title>g_static_private_init ()</title>
+<indexterm zone="g-static-private-init"><primary>g_static_private_init</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_private_init               (<link linkend="GStaticPrivate">GStaticPrivate</link> *private_key);</programlisting>
 <para>
 Initializes <parameter>private_key</parameter>. Alternatively you can initialize it with
 <link linkend="G-STATIC-PRIVATE-INIT:CAPS"><type>G_STATIC_PRIVATE_INIT</type></link>.
@@ -2037,9 +2047,9 @@ Initializes <parameter>private_key</parameter>. Alternatively you can initialize
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-private-get" role="function"/>g_static_private_get ()</title>
-<indexterm><primary>g_static_private_get</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_static_private_get                (<link linkend="GStaticPrivate">GStaticPrivate</link> *private_key);</programlisting>
+<refsect2 id="g-static-private-get" role="function">
+<title>g_static_private_get ()</title>
+<indexterm zone="g-static-private-get"><primary>g_static_private_get</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_static_private_get                (<link linkend="GStaticPrivate">GStaticPrivate</link> *private_key);</programlisting>
 <para>
 Works like <link linkend="g-private-get"><function>g_private_get()</function></link> only for a <link linkend="GStaticPrivate"><type>GStaticPrivate</type></link>.
 </para>
@@ -2055,9 +2065,9 @@ This function works even if <link linkend="g-thread-init"><function>g_thread_ini
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-private-set" role="function"/>g_static_private_set ()</title>
-<indexterm><primary>g_static_private_set</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_private_set                (<link linkend="GStaticPrivate">GStaticPrivate</link> *private_key,
+<refsect2 id="g-static-private-set" role="function">
+<title>g_static_private_set ()</title>
+<indexterm zone="g-static-private-set"><primary>g_static_private_set</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_private_set                (<link linkend="GStaticPrivate">GStaticPrivate</link> *private_key,
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GDestroyNotify">GDestroyNotify</link> notify);</programlisting>
 <para>
@@ -2092,9 +2102,9 @@ current thread ends or sets this pointer again.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-static-private-free" role="function"/>g_static_private_free ()</title>
-<indexterm><primary>g_static_private_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_private_free               (<link linkend="GStaticPrivate">GStaticPrivate</link> *private_key);</programlisting>
+<refsect2 id="g-static-private-free" role="function">
+<title>g_static_private_free ()</title>
+<indexterm zone="g-static-private-free"><primary>g_static_private_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_static_private_free               (<link linkend="GStaticPrivate">GStaticPrivate</link> *private_key);</programlisting>
 <para>
 Releases all resources allocated to <parameter>private_key</parameter>. 
 </para>
@@ -2111,9 +2121,9 @@ you should also free the <link linkend="GStaticPrivate"><type>GStaticPrivate</ty
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GOnce" role="struct" condition="since:2.4"/>GOnce</title>
-<indexterm role="2.4"><primary>GOnce</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GOnce" role="struct" condition="since:2.4">
+<title>GOnce</title>
+<indexterm zone="GOnce" role="2.4"><primary>GOnce</primary></indexterm><programlisting>typedef struct {
   volatile GOnceStatus status;
   volatile gpointer retval;
 } GOnce;
@@ -2137,9 +2147,9 @@ function. Any one-time initialization function must have its own unique
 </variablelist><para role="since">Since 2.4
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="GOnceStatus" role="enum" condition="since:2.4"/>enum GOnceStatus</title>
-<indexterm role="2.4"><primary>GOnceStatus</primary></indexterm><programlisting>typedef enum
+<refsect2 id="GOnceStatus" role="enum" condition="since:2.4">
+<title>enum GOnceStatus</title>
+<indexterm zone="GOnceStatus" role="2.4"><primary>GOnceStatus</primary></indexterm><programlisting>typedef enum
 {
   G_ONCE_STATUS_NOTCALLED,
   G_ONCE_STATUS_PROGRESS,
@@ -2149,27 +2159,27 @@ function. Any one-time initialization function must have its own unique
 <para>
 The possible statuses of a one-time initialization function controlled by a <link linkend="GOnce"><type>GOnce</type></link> struct.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-ONCE-STATUS-NOTCALLED:CAPS" role="constant"/><literal>G_ONCE_STATUS_NOTCALLED</literal></term>
+<varlistentry id="G-ONCE-STATUS-NOTCALLED:CAPS" role="constant">
+<term><literal>G_ONCE_STATUS_NOTCALLED</literal></term>
 <listitem><simpara>the function has not been called yet.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-ONCE-STATUS-PROGRESS:CAPS" role="constant"/><literal>G_ONCE_STATUS_PROGRESS</literal></term>
+<varlistentry id="G-ONCE-STATUS-PROGRESS:CAPS" role="constant">
+<term><literal>G_ONCE_STATUS_PROGRESS</literal></term>
 <listitem><simpara>the function call is currently in progress.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-ONCE-STATUS-READY:CAPS" role="constant"/><literal>G_ONCE_STATUS_READY</literal></term>
+<varlistentry id="G-ONCE-STATUS-READY:CAPS" role="constant">
+<term><literal>G_ONCE_STATUS_READY</literal></term>
 <listitem><simpara>the function has been called.
 </simpara></listitem>
 </varlistentry>
 </variablelist><para role="since">Since 2.4
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-ONCE-INIT:CAPS" role="macro" condition="since:2.4"/>G_ONCE_INIT</title>
-<indexterm role="2.4"><primary>G_ONCE_INIT</primary></indexterm><programlisting>#define G_ONCE_INIT { G_ONCE_STATUS_NOTCALLED, NULL }
+<refsect2 id="G-ONCE-INIT:CAPS" role="macro" condition="since:2.4">
+<title>G_ONCE_INIT</title>
+<indexterm zone="G-ONCE-INIT:CAPS" role="2.4"><primary>G_ONCE_INIT</primary></indexterm><programlisting>#define G_ONCE_INIT { G_ONCE_STATUS_NOTCALLED, NULL }
 </programlisting>
 <para>
 A <link linkend="GOnce"><type>GOnce</type></link> must be initialized with this macro before it can be used. 
@@ -2184,9 +2194,9 @@ GOnce my_once = G_ONCE_INIT;
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-once" role="macro" condition="since:2.4"/>g_once()</title>
-<indexterm role="2.4"><primary>g_once</primary></indexterm><programlisting>#define             g_once(once, func, arg)</programlisting>
+<refsect2 id="g-once" role="macro" condition="since:2.4">
+<title>g_once()</title>
+<indexterm zone="g-once" role="2.4"><primary>g_once</primary></indexterm><programlisting>#define             g_once(once, func, arg)</programlisting>
 <para>
 The first call to this routine by a process with a given <link linkend="GOnce"><type>GOnce</type></link> struct calls 
 <parameter>func</parameter> with the given argument. Thereafter, subsequent calls to <link linkend="g-once"><function>g_once()</function></link>  with 
@@ -2233,12 +2243,67 @@ get_debug_flags ()
 
 
 </para></refsect2>
+<refsect2 id="g-once-init-enter" role="function" condition="since:2.14">
+<title>g_once_init_enter ()</title>
+<indexterm zone="g-once-init-enter" role="2.14"><primary>g_once_init_enter</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_once_init_enter                   (volatile <link linkend="gsize">gsize</link> *value_location);</programlisting>
+<para>
+Function to be called when starting a critical initialization section.
+The argument <parameter>value_location</parameter> must point to a static 0-initialized variable
+that will be set to a value other than 0 at the end of the initialization 
+section.
+In combination with <link linkend="g-once-init-leave"><function>g_once_init_leave()</function></link> and the unique address <parameter>value_location</parameter>,
+it can be ensured that an initialization section will be executed only once
+during a program's life time, and that concurrent threads are blocked until
+initialization completed. To be used in constructs like this:
+</para>
+
+<para>
+<informalexample><programlisting>
+static gsize initialization_value = 0;
+if (g_once_init_enter (&amp;initialization_value))              /* section start */
+  {
+    gsize setup_value = 42; /* initialization code here */
+    g_once_init_leave (&amp;initialization_value, setup_value); /* section end */
+  }
+/* use initialization_value here */
+</programlisting></informalexample>
+</para><variablelist role="params">
+<varlistentry><term><parameter>value_location</parameter>&nbsp;:</term>
+<listitem><simpara>location of a static initializable variable containing 0.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara><link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the initialization section should be entered, <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> and blocks otherwise
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since 2.14
+
+
+</para></refsect2>
+<refsect2 id="g-once-init-leave" role="function" condition="since:2.14">
+<title>g_once_init_leave ()</title>
+<indexterm zone="g-once-init-leave" role="2.14"><primary>g_once_init_leave</primary></indexterm><programlisting><link linkend="void">void</link>                g_once_init_leave                   (volatile <link linkend="gsize">gsize</link> *value_location,
+                                                         <link linkend="gsize">gsize</link> initialization_value);</programlisting>
+<para>
+Counterpart to <link linkend="g-once-init-enter"><function>g_once_init_enter()</function></link>. Expects a location of a static 
+0-initialized initialization variable, and an initialization value other 
+than 0. Sets the variable to the initialization value, and releases 
+concurrent threads blocking in <link linkend="g-once-init-enter"><function>g_once_init_enter()</function></link> on this initialization 
+variable.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value_location</parameter>&nbsp;:</term>
+<listitem><simpara>location of a static initializable variable containing 0.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>initialization_value</parameter>&nbsp;:</term>
+<listitem><simpara>new non-0 value for *<parameter>value_location</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since 2.14
+
+
+</para></refsect2>
 
 </refsect1>
 
 
 
-<refsect1>
+<refsect1 id="glib-Threads.see-also">
 <title>See Also</title>
 <para>
 <variablelist>

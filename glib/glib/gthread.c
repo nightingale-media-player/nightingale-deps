@@ -32,6 +32,10 @@
  * MT safe
  */
 
+/* implement gthread.h's inline functions */
+#define G_IMPLEMENT_INLINES 1
+#define __G_THREAD_C__
+
 #include "config.h"
 
 #include "glib.h"
@@ -121,6 +125,7 @@ static GCond    *g_once_cond = NULL;
 static GPrivate *g_thread_specific_private = NULL;
 static GRealThread *g_thread_all_threads = NULL;
 static GSList   *g_thread_free_indeces = NULL;
+static GSList*   g_once_init_list = NULL;
 
 G_LOCK_DEFINE_STATIC (g_thread);
 
@@ -194,6 +199,42 @@ g_once_impl (GOnce       *once,
   return once->retval;
 }
 
+gboolean
+g_once_init_enter_impl (volatile gsize *value_location)
+{
+  gboolean need_init = FALSE;
+  g_mutex_lock (g_once_mutex);
+  if (g_atomic_pointer_get ((void**) value_location) == NULL)
+    {
+      if (!g_slist_find (g_once_init_list, (void*) value_location))
+        {
+          need_init = TRUE;
+          g_once_init_list = g_slist_prepend (g_once_init_list, (void*) value_location);
+        }
+      else
+        do
+          g_cond_wait (g_once_cond, g_once_mutex);
+        while (g_slist_find (g_once_init_list, (void*) value_location));
+    }
+  g_mutex_unlock (g_once_mutex);
+  return need_init;
+}
+
+void
+g_once_init_leave (volatile gsize *value_location,
+                   gsize           initialization_value)
+{
+  g_return_if_fail (g_atomic_pointer_get ((void**) value_location) == NULL);
+  g_return_if_fail (initialization_value != 0);
+  g_return_if_fail (g_once_init_list != NULL);
+
+  g_atomic_pointer_set ((void**) value_location, (void*) initialization_value);
+  g_mutex_lock (g_once_mutex);
+  g_once_init_list = g_slist_remove (g_once_init_list, (void*) value_location);
+  g_cond_broadcast (g_once_cond);
+  g_mutex_unlock (g_once_mutex);
+}
+
 void
 g_static_mutex_init (GStaticMutex *mutex)
 {
@@ -215,7 +256,7 @@ g_static_mutex_get_mutex_impl (GMutex** mutex)
   g_mutex_lock (g_once_mutex);
 
   if (!(*mutex))
-    g_atomic_pointer_set (mutex, g_mutex_new());
+    g_atomic_pointer_set ((void**) mutex, g_mutex_new());
 
   g_mutex_unlock (g_once_mutex);
 
@@ -539,7 +580,7 @@ g_thread_cleanup (gpointer data)
 
 	  /* Just to make sure, this isn't used any more */
 	  g_system_thread_assign (thread->system_thread, zero_thread);
-	  g_free (thread);
+          g_free (thread);
 	}
     }
 }
@@ -622,8 +663,11 @@ g_thread_create_full (GThreadFunc 		 func,
   G_THREAD_UF (thread_create, (g_thread_create_proxy, result,
 			       stack_size, joinable, bound, priority,
 			       &result->system_thread, &local_error));
-  result->next = g_thread_all_threads;
-  g_thread_all_threads = result;
+  if (!local_error)
+    {
+      result->next = g_thread_all_threads;
+      g_thread_all_threads = result;
+    }
   G_UNLOCK (g_thread);
 
   if (local_error)

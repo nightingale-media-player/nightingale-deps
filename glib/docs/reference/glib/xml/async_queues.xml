@@ -1,26 +1,26 @@
 <refentry id="glib-Asynchronous-Queues">
 <refmeta>
-<refentrytitle role="top_of_page">Asynchronous Queues</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Asynchronous-Queues.top_of_page">Asynchronous Queues</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>Asynchronous Queues</refname>
-<refpurpose>asynchronous communication between threads.</refpurpose>
+<refpurpose>asynchronous communication between threads</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Asynchronous-Queues.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
 
-
                     <link linkend="GAsyncQueue">GAsyncQueue</link>;
 <link linkend="GAsyncQueue">GAsyncQueue</link>*        <link linkend="g-async-queue-new">g_async_queue_new</link>                   (void);
+<link linkend="GAsyncQueue">GAsyncQueue</link>*        <link linkend="g-async-queue-new-full">g_async_queue_new_full</link>              (<link linkend="GDestroyNotify">GDestroyNotify</link> item_free_func);
 <link linkend="GAsyncQueue">GAsyncQueue</link>*        <link linkend="g-async-queue-ref">g_async_queue_ref</link>                   (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);
 <link linkend="void">void</link>                <link linkend="g-async-queue-unref">g_async_queue_unref</link>                 (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);
 <link linkend="void">void</link>                <link linkend="g-async-queue-push">g_async_queue_push</link>                  (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue,
@@ -67,7 +67,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Asynchronous-Queues.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 Often you need to communicate between different threads. In general
@@ -123,28 +123,46 @@ locking function variants (those without the suffix _unlocked)
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Asynchronous-Queues.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GAsyncQueue" role="struct"/>GAsyncQueue</title>
-<indexterm><primary>GAsyncQueue</primary></indexterm><programlisting>typedef struct _GAsyncQueue GAsyncQueue;</programlisting>
+<refsect2 id="GAsyncQueue" role="struct">
+<title>GAsyncQueue</title>
+<indexterm zone="GAsyncQueue"><primary>GAsyncQueue</primary></indexterm><programlisting>typedef struct _GAsyncQueue GAsyncQueue;</programlisting>
 <para>
 The <link linkend="GAsyncQueue"><type>GAsyncQueue</type></link> struct is an opaque data structure, which represents
 an asynchronous queue. It should only be accessed through the
 <function>g_async_queue_*</function> functions.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-new" role="function"/>g_async_queue_new ()</title>
-<indexterm><primary>g_async_queue_new</primary></indexterm><programlisting><link linkend="GAsyncQueue">GAsyncQueue</link>*        g_async_queue_new                   (void);</programlisting>
+<refsect2 id="g-async-queue-new" role="function">
+<title>g_async_queue_new ()</title>
+<indexterm zone="g-async-queue-new"><primary>g_async_queue_new</primary></indexterm><programlisting><link linkend="GAsyncQueue">GAsyncQueue</link>*        g_async_queue_new                   (void);</programlisting>
 <para>
 Creates a new asynchronous queue with the initial reference count of 1.</para>
 <variablelist role="params">
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the new <link linkend="GAsyncQueue"><type>GAsyncQueue</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-ref" role="function"/>g_async_queue_ref ()</title>
-<indexterm><primary>g_async_queue_ref</primary></indexterm><programlisting><link linkend="GAsyncQueue">GAsyncQueue</link>*        g_async_queue_ref                   (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
+<refsect2 id="g-async-queue-new-full" role="function" condition="since:2.16">
+<title>g_async_queue_new_full ()</title>
+<indexterm zone="g-async-queue-new-full" role="2.16"><primary>g_async_queue_new_full</primary></indexterm><programlisting><link linkend="GAsyncQueue">GAsyncQueue</link>*        g_async_queue_new_full              (<link linkend="GDestroyNotify">GDestroyNotify</link> item_free_func);</programlisting>
+<para>
+Creates a new asynchronous queue with an initial reference count of 1 and
+sets up a destroy notify function that is used to free any remaining
+queue items when the queue is destroyed after the final unref.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>item_free_func</parameter>&nbsp;:</term>
+<listitem><simpara> function to free queue elements
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the new <link linkend="GAsyncQueue"><type>GAsyncQueue</type></link>.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.16
+</para></refsect2>
+<refsect2 id="g-async-queue-ref" role="function">
+<title>g_async_queue_ref ()</title>
+<indexterm zone="g-async-queue-ref"><primary>g_async_queue_ref</primary></indexterm><programlisting><link linkend="GAsyncQueue">GAsyncQueue</link>*        g_async_queue_ref                   (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
 <para>
 Increases the reference count of the asynchronous <parameter>queue</parameter> by 1. You
 do not need to hold the lock to call this function.</para>
@@ -155,9 +173,9 @@ do not need to hold the lock to call this function.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the <parameter>queue</parameter> that was passed in (since 2.6)
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-unref" role="function"/>g_async_queue_unref ()</title>
-<indexterm><primary>g_async_queue_unref</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_unref                 (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
+<refsect2 id="g-async-queue-unref" role="function">
+<title>g_async_queue_unref ()</title>
+<indexterm zone="g-async-queue-unref"><primary>g_async_queue_unref</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_unref                 (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
 <para>
 Decreases the reference count of the asynchronous <parameter>queue</parameter> by 1. If
 the reference count went to 0, the <parameter>queue</parameter> will be destroyed and the
@@ -169,9 +187,9 @@ hold the lock to call this function.</para>
 <listitem><simpara> a <link linkend="GAsyncQueue"><type>GAsyncQueue</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-push" role="function"/>g_async_queue_push ()</title>
-<indexterm><primary>g_async_queue_push</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_push                  (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue,
+<refsect2 id="g-async-queue-push" role="function">
+<title>g_async_queue_push ()</title>
+<indexterm zone="g-async-queue-push"><primary>g_async_queue_push</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_push                  (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue,
                                                          <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 Pushes the <parameter>data</parameter> into the <parameter>queue</parameter>. <parameter>data</parameter> must not be <link linkend="NULL:CAPS"><literal>NULL</literal></link>.</para>
@@ -183,9 +201,9 @@ Pushes the <parameter>data</parameter> into the <parameter>queue</parameter>. <p
 <listitem><simpara> <parameter>data</parameter> to push into the <parameter>queue</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-push-sorted" role="function" condition="since:2.10"/>g_async_queue_push_sorted ()</title>
-<indexterm role="2.10"><primary>g_async_queue_push_sorted</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_push_sorted           (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue,
+<refsect2 id="g-async-queue-push-sorted" role="function" condition="since:2.10">
+<title>g_async_queue_push_sorted ()</title>
+<indexterm zone="g-async-queue-push-sorted" role="2.10"><primary>g_async_queue_push_sorted</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_push_sorted           (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue,
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GCompareDataFunc">GCompareDataFunc</link> func,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
@@ -224,9 +242,9 @@ For an example of <parameter>func</parameter> see <link linkend="g-async-queue-s
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.10
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-pop" role="function"/>g_async_queue_pop ()</title>
-<indexterm><primary>g_async_queue_pop</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_async_queue_pop                   (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
+<refsect2 id="g-async-queue-pop" role="function">
+<title>g_async_queue_pop ()</title>
+<indexterm zone="g-async-queue-pop"><primary>g_async_queue_pop</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_async_queue_pop                   (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
 <para>
 Pops data from the <parameter>queue</parameter>. This function blocks until data become
 available.</para>
@@ -237,9 +255,9 @@ available.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> data from the queue.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-try-pop" role="function"/>g_async_queue_try_pop ()</title>
-<indexterm><primary>g_async_queue_try_pop</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_async_queue_try_pop               (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
+<refsect2 id="g-async-queue-try-pop" role="function">
+<title>g_async_queue_try_pop ()</title>
+<indexterm zone="g-async-queue-try-pop"><primary>g_async_queue_try_pop</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_async_queue_try_pop               (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
 <para>
 Tries to pop data from the <parameter>queue</parameter>. If no data is available, <link linkend="NULL:CAPS"><literal>NULL</literal></link> is
 returned.</para>
@@ -251,9 +269,9 @@ returned.</para>
 available immediately.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-timed-pop" role="function"/>g_async_queue_timed_pop ()</title>
-<indexterm><primary>g_async_queue_timed_pop</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_async_queue_timed_pop             (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue,
+<refsect2 id="g-async-queue-timed-pop" role="function">
+<title>g_async_queue_timed_pop ()</title>
+<indexterm zone="g-async-queue-timed-pop"><primary>g_async_queue_timed_pop</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_async_queue_timed_pop             (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue,
                                                          <link linkend="GTimeVal">GTimeVal</link> *end_time);</programlisting>
 <para>
 Pops data from the <parameter>queue</parameter>. If no data is received before <parameter>end_time</parameter>,
@@ -273,9 +291,9 @@ and <link linkend="g-time-val-add"><function>g_time_val_add()</function></link> 
 received before <parameter>end_time</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-length" role="function"/>g_async_queue_length ()</title>
-<indexterm><primary>g_async_queue_length</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_async_queue_length                (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
+<refsect2 id="g-async-queue-length" role="function">
+<title>g_async_queue_length ()</title>
+<indexterm zone="g-async-queue-length"><primary>g_async_queue_length</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_async_queue_length                (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
 <para>
 Returns the length of the queue, negative values mean waiting
 threads, positive values mean available entries in the
@@ -291,9 +309,9 @@ scheduling.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the length of the <parameter>queue</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-sort" role="function" condition="since:2.10"/>g_async_queue_sort ()</title>
-<indexterm role="2.10"><primary>g_async_queue_sort</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_sort                  (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue,
+<refsect2 id="g-async-queue-sort" role="function" condition="since:2.10">
+<title>g_async_queue_sort ()</title>
+<indexterm zone="g-async-queue-sort" role="2.10"><primary>g_async_queue_sort</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_sort                  (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue,
                                                          <link linkend="GCompareDataFunc">GCompareDataFunc</link> func,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -306,7 +324,7 @@ it when it is finished.
 <para>
 If you were sorting a list of priority numbers to make sure the
 lowest priority would be at the top of the queue, you could use:
-<informalexample><programlisting> 
+<informalexample><programlisting>
  gint32 id1;
  gint32 id2;
   
@@ -334,9 +352,9 @@ lowest priority would be at the top of the queue, you could use:
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.10
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-lock" role="function"/>g_async_queue_lock ()</title>
-<indexterm><primary>g_async_queue_lock</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_lock                  (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
+<refsect2 id="g-async-queue-lock" role="function">
+<title>g_async_queue_lock ()</title>
+<indexterm zone="g-async-queue-lock"><primary>g_async_queue_lock</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_lock                  (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
 <para>
 Acquires the <parameter>queue</parameter>'s lock. After that you can only call the
 <function>g_async_queue_*<link linkend="unlocked"><function>_unlocked()</function></link></function> function variants on that
@@ -346,9 +364,9 @@ Acquires the <parameter>queue</parameter>'s lock. After that you can only call t
 <listitem><simpara> a <link linkend="GAsyncQueue"><type>GAsyncQueue</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-unlock" role="function"/>g_async_queue_unlock ()</title>
-<indexterm><primary>g_async_queue_unlock</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_unlock                (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
+<refsect2 id="g-async-queue-unlock" role="function">
+<title>g_async_queue_unlock ()</title>
+<indexterm zone="g-async-queue-unlock"><primary>g_async_queue_unlock</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_unlock                (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
 <para>
 Releases the queue's lock.</para>
 <variablelist role="params">
@@ -356,9 +374,9 @@ Releases the queue's lock.</para>
 <listitem><simpara> a <link linkend="GAsyncQueue"><type>GAsyncQueue</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-ref-unlocked" role="function" condition="deprecated:"/>g_async_queue_ref_unlocked ()</title>
-<indexterm role="deprecated"><primary>g_async_queue_ref_unlocked</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_ref_unlocked          (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
+<refsect2 id="g-async-queue-ref-unlocked" role="function" condition="deprecated:">
+<title>g_async_queue_ref_unlocked ()</title>
+<indexterm zone="g-async-queue-ref-unlocked" role="deprecated"><primary>g_async_queue_ref_unlocked</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_ref_unlocked          (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
 <warning><para><literal>g_async_queue_ref_unlocked</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Increases the reference count of the asynchronous <parameter>queue</parameter> by 1.
@@ -372,9 +390,9 @@ lock.</para>
 <listitem><simpara> a <link linkend="GAsyncQueue"><type>GAsyncQueue</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-unref-and-unlock" role="function" condition="deprecated:"/>g_async_queue_unref_and_unlock ()</title>
-<indexterm role="deprecated"><primary>g_async_queue_unref_and_unlock</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_unref_and_unlock      (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
+<refsect2 id="g-async-queue-unref-and-unlock" role="function" condition="deprecated:">
+<title>g_async_queue_unref_and_unlock ()</title>
+<indexterm zone="g-async-queue-unref-and-unlock" role="deprecated"><primary>g_async_queue_unref_and_unlock</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_unref_and_unlock      (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
 <warning><para><literal>g_async_queue_unref_and_unlock</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Decreases the reference count of the asynchronous <parameter>queue</parameter> by 1 and
@@ -391,9 +409,9 @@ lock.</para>
 <listitem><simpara> a <link linkend="GAsyncQueue"><type>GAsyncQueue</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-push-unlocked" role="function"/>g_async_queue_push_unlocked ()</title>
-<indexterm><primary>g_async_queue_push_unlocked</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_push_unlocked         (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue,
+<refsect2 id="g-async-queue-push-unlocked" role="function">
+<title>g_async_queue_push_unlocked ()</title>
+<indexterm zone="g-async-queue-push-unlocked"><primary>g_async_queue_push_unlocked</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_push_unlocked         (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue,
                                                          <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 Pushes the <parameter>data</parameter> into the <parameter>queue</parameter>. <parameter>data</parameter> must not be <link linkend="NULL:CAPS"><literal>NULL</literal></link>. This
@@ -406,9 +424,9 @@ function must be called while holding the <parameter>queue</parameter>'s lock.</
 <listitem><simpara> <parameter>data</parameter> to push into the <parameter>queue</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-push-sorted-unlocked" role="function" condition="since:2.10"/>g_async_queue_push_sorted_unlocked ()</title>
-<indexterm role="2.10"><primary>g_async_queue_push_sorted_unlocked</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_push_sorted_unlocked  (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue,
+<refsect2 id="g-async-queue-push-sorted-unlocked" role="function" condition="since:2.10">
+<title>g_async_queue_push_sorted_unlocked ()</title>
+<indexterm zone="g-async-queue-push-sorted-unlocked" role="2.10"><primary>g_async_queue_push_sorted_unlocked</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_push_sorted_unlocked  (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue,
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GCompareDataFunc">GCompareDataFunc</link> func,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
@@ -446,9 +464,9 @@ For an example of <parameter>func</parameter> see <link linkend="g-async-queue-s
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.10
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-pop-unlocked" role="function"/>g_async_queue_pop_unlocked ()</title>
-<indexterm><primary>g_async_queue_pop_unlocked</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_async_queue_pop_unlocked          (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
+<refsect2 id="g-async-queue-pop-unlocked" role="function">
+<title>g_async_queue_pop_unlocked ()</title>
+<indexterm zone="g-async-queue-pop-unlocked"><primary>g_async_queue_pop_unlocked</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_async_queue_pop_unlocked          (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
 <para>
 Pops data from the <parameter>queue</parameter>. This function blocks until data become
 available. This function must be called while holding the <parameter>queue</parameter>'s
@@ -460,9 +478,9 @@ lock.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> data from the queue.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-try-pop-unlocked" role="function"/>g_async_queue_try_pop_unlocked ()</title>
-<indexterm><primary>g_async_queue_try_pop_unlocked</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_async_queue_try_pop_unlocked      (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
+<refsect2 id="g-async-queue-try-pop-unlocked" role="function">
+<title>g_async_queue_try_pop_unlocked ()</title>
+<indexterm zone="g-async-queue-try-pop-unlocked"><primary>g_async_queue_try_pop_unlocked</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_async_queue_try_pop_unlocked      (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
 <para>
 Tries to pop data from the <parameter>queue</parameter>. If no data is available, <link linkend="NULL:CAPS"><literal>NULL</literal></link> is
 returned. This function must be called while holding the <parameter>queue</parameter>'s
@@ -475,9 +493,9 @@ lock.</para>
 available immediately.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-timed-pop-unlocked" role="function"/>g_async_queue_timed_pop_unlocked ()</title>
-<indexterm><primary>g_async_queue_timed_pop_unlocked</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_async_queue_timed_pop_unlocked    (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue,
+<refsect2 id="g-async-queue-timed-pop-unlocked" role="function">
+<title>g_async_queue_timed_pop_unlocked ()</title>
+<indexterm zone="g-async-queue-timed-pop-unlocked"><primary>g_async_queue_timed_pop_unlocked</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_async_queue_timed_pop_unlocked    (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue,
                                                          <link linkend="GTimeVal">GTimeVal</link> *end_time);</programlisting>
 <para>
 Pops data from the <parameter>queue</parameter>. If no data is received before <parameter>end_time</parameter>,
@@ -498,9 +516,9 @@ and <link linkend="g-time-val-add"><function>g_time_val_add()</function></link> 
 received before <parameter>end_time</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-length-unlocked" role="function"/>g_async_queue_length_unlocked ()</title>
-<indexterm><primary>g_async_queue_length_unlocked</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_async_queue_length_unlocked       (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
+<refsect2 id="g-async-queue-length-unlocked" role="function">
+<title>g_async_queue_length_unlocked ()</title>
+<indexterm zone="g-async-queue-length-unlocked"><primary>g_async_queue_length_unlocked</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_async_queue_length_unlocked       (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue);</programlisting>
 <para>
 Returns the length of the queue, negative values mean waiting
 threads, positive values mean available entries in the
@@ -517,9 +535,9 @@ lock.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the length of the <parameter>queue</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-async-queue-sort-unlocked" role="function" condition="since:2.10"/>g_async_queue_sort_unlocked ()</title>
-<indexterm role="2.10"><primary>g_async_queue_sort_unlocked</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_sort_unlocked         (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue,
+<refsect2 id="g-async-queue-sort-unlocked" role="function" condition="since:2.10">
+<title>g_async_queue_sort_unlocked ()</title>
+<indexterm zone="g-async-queue-sort-unlocked" role="2.10"><primary>g_async_queue_sort_unlocked</primary></indexterm><programlisting><link linkend="void">void</link>                g_async_queue_sort_unlocked         (<link linkend="GAsyncQueue">GAsyncQueue</link> *queue,
                                                          <link linkend="GCompareDataFunc">GCompareDataFunc</link> func,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>

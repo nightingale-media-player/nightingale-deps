@@ -1042,7 +1042,9 @@ static void
 param_gtype_set_default (GParamSpec *pspec,
 			 GValue     *value)
 {
-  value->data[0].v_long = G_TYPE_NONE;
+  GParamSpecGType *tspec = G_PARAM_SPEC_GTYPE (pspec);
+
+  value->data[0].v_long = tspec->is_a_type;
 }
 
 static gboolean
@@ -1055,7 +1057,7 @@ param_gtype_validate (GParamSpec *pspec,
   
   if (tspec->is_a_type != G_TYPE_NONE && !g_type_is_a (gtype, tspec->is_a_type))
     {
-      value->data[0].v_long = G_TYPE_NONE;
+      value->data[0].v_long = tspec->is_a_type;
       changed++;
     }
   
@@ -1470,17 +1472,17 @@ g_param_spec_types_init (void)
   /* G_TYPE_PARAM_GTYPE
    */
   {
-    GType value_type = G_TYPE_GTYPE;
     GParamSpecTypeInfo pspec_info = {
       sizeof (GParamSpecGType),	/* instance_size */
       0,			/* n_preallocs */
       param_gtype_init,		/* instance_init */
-      value_type,		/* value_type */
+      0xdeadbeef,		/* value_type, assigned further down */
       NULL,			/* finalize */
       param_gtype_set_default,	/* value_set_default */
       param_gtype_validate,	/* value_validate */
       param_gtype_values_cmp,	/* values_cmp */
     };
+    pspec_info.value_type = G_TYPE_GTYPE;
     type = g_param_type_register_static (g_intern_static_string ("GParamGType"), &pspec_info);
     *spec_types++ = type;
     g_assert (type == G_TYPE_PARAM_GTYPE);

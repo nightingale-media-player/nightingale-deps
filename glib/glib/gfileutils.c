@@ -152,16 +152,16 @@ g_mkdir_with_parents (const gchar *pathname,
  * to perform an operation, because there is always the possibility
  * of the condition changing before you actually perform the operation.
  * For example, you might think you could use %G_FILE_TEST_IS_SYMLINK
- * to know whether it is is safe to write to a file without being
+ * to know whether it is safe to write to a file without being
  * tricked into writing into a different location. It doesn't work!
- *
- * <informalexample><programlisting>
+ * |[
  * /&ast; DON'T DO THIS &ast;/
- *  if (!g_file_test (filename, G_FILE_TEST_IS_SYMLINK)) {
- *    fd = g_open (filename, O_WRONLY);
- *    /&ast; write to fd &ast;/
- *  }
- * </programlisting></informalexample>
+ *  if (!g_file_test (filename, G_FILE_TEST_IS_SYMLINK)) 
+ *    {
+ *      fd = g_open (filename, O_WRONLY);
+ *      /&ast; write to fd &ast;/
+ *    }
+ * ]|
  *
  * Another thing to note is that %G_FILE_TEST_EXISTS and
  * %G_FILE_TEST_IS_EXECUTABLE are implemented using the access()
@@ -191,29 +191,14 @@ g_file_test (const gchar *filename,
 #    define FILE_ATTRIBUTE_DEVICE 64
 #  endif
   int attributes;
+  wchar_t *wfilename = g_utf8_to_utf16 (filename, -1, NULL, NULL, NULL);
 
-  if (G_WIN32_HAVE_WIDECHAR_API ())
-    {
-      wchar_t *wfilename = g_utf8_to_utf16 (filename, -1, NULL, NULL, NULL);
+  if (wfilename == NULL)
+    return FALSE;
 
-      if (wfilename == NULL)
-	return FALSE;
+  attributes = GetFileAttributesW (wfilename);
 
-      attributes = GetFileAttributesW (wfilename);
-
-      g_free (wfilename);
-    }
-  else
-    {
-      gchar *cpfilename = g_locale_from_utf8 (filename, -1, NULL, NULL, NULL);
-
-      if (cpfilename == NULL)
-	return FALSE;
-      
-      attributes = GetFileAttributesA (cpfilename);
-      
-      g_free (cpfilename);
-    }
+  g_free (wfilename);
 
   if (attributes == INVALID_FILE_ATTRIBUTES)
     return FALSE;
@@ -236,10 +221,10 @@ g_file_test (const gchar *filename,
       if (lastdot == NULL)
 	return FALSE;
 
-      if (stricmp (lastdot, ".exe") == 0 ||
-	  stricmp (lastdot, ".cmd") == 0 ||
-	  stricmp (lastdot, ".bat") == 0 ||
-	  stricmp (lastdot, ".com") == 0)
+      if (_stricmp (lastdot, ".exe") == 0 ||
+	  _stricmp (lastdot, ".cmd") == 0 ||
+	  _stricmp (lastdot, ".bat") == 0 ||
+	  _stricmp (lastdot, ".com") == 0)
 	return TRUE;
 
       /* Check if it is one of the types listed in %PATHEXT% */
@@ -540,10 +525,10 @@ get_contents_stdio (const gchar *display_filename,
                     GError     **error)
 {
   gchar buf[4096];
-  size_t bytes;
+  gsize bytes;
   gchar *str = NULL;
-  size_t total_bytes = 0;
-  size_t total_allocated = 0;
+  gsize total_bytes = 0;
+  gsize total_allocated = 0;
   gchar *tmp;
 
   g_assert (f != NULL);
@@ -628,9 +613,9 @@ get_contents_regfile (const gchar *display_filename,
                       GError     **error)
 {
   gchar *buf;
-  size_t bytes_read;
-  size_t size;
-  size_t alloc_size;
+  gsize bytes_read;
+  gsize size;
+  gsize alloc_size;
   
   size = stat_buf->st_size;
 
@@ -935,11 +920,12 @@ write_to_temp_file (const gchar *contents,
 
   errno = 0;
   fd = create_temp_file (tmp_name, 0666);
+  save_errno = errno;
+
   display_name = g_filename_display_name (tmp_name);
       
   if (fd == -1)
     {
-      save_errno = errno;
       g_set_error (err,
 		   G_FILE_ERROR,
 		   g_file_error_from_errno (save_errno),
@@ -969,7 +955,7 @@ write_to_temp_file (const gchar *contents,
 
   if (length > 0)
     {
-      size_t n_written;
+      gsize n_written;
       
       errno = 0;
 
@@ -1813,6 +1799,53 @@ g_build_filename (const gchar *first_element,
 
   return str;
 }
+
+#define KILOBYTE_FACTOR 1024.0
+#define MEGABYTE_FACTOR (1024.0 * 1024.0)
+#define GIGABYTE_FACTOR (1024.0 * 1024.0 * 1024.0)
+
+/**
+ * g_format_size_for_display:
+ * @size: a size in bytes.
+ * 
+ * Formats a size (for example the size of a file) into a human readable string.
+ * Sizes are rounded to the nearest size prefix (KB, MB, GB) and are displayed rounded to
+ * the nearest  tenth. E.g. the file size 3292528 bytes will be converted into
+ * the string "3.1 MB".
+ *
+ * The prefix units base is 1024 (i.e. 1 KB is 1024 bytes).
+ * 
+ * Returns: a formatted string containing a human readable file size.
+ *
+ * Since: 2.16
+ **/
+char *
+g_format_size_for_display (goffset size)
+{
+  if (size < (goffset) KILOBYTE_FACTOR)
+    return g_strdup_printf (dngettext(GETTEXT_PACKAGE, "%u byte", "%u bytes",(guint) size), (guint) size);
+  else
+    {
+      gdouble displayed_size;
+      
+      if (size < (goffset) MEGABYTE_FACTOR)
+	{
+	  displayed_size = (gdouble) size / KILOBYTE_FACTOR;
+	  return g_strdup_printf (_("%.1f KB"), displayed_size);
+	}
+      else if (size < (goffset) GIGABYTE_FACTOR)
+	{
+	  displayed_size = (gdouble) size / MEGABYTE_FACTOR;
+	  return g_strdup_printf (_("%.1f MB"), displayed_size);
+	}
+      else
+	{
+	  displayed_size = (gdouble) size / GIGABYTE_FACTOR;
+	  return g_strdup_printf (_("%.1f GB"), displayed_size);
+	}
+    }
+}
+
 
 /**
  * g_file_read_link:

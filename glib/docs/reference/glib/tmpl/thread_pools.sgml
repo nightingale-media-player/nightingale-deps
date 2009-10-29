@@ -2,13 +2,13 @@
 Thread Pools
 
 <!-- ##### SECTION Short_Description ##### -->
-pools of threads to execute work concurrently.
+pools of threads to execute work concurrently
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-Sometimes you wish to asyncronously fork out the execution of work and
+Sometimes you wish to asynchronously fork out the execution of work and
 continue working in your own thread. If that will happen often, the
-overhead of starting and destroying a thread each time might be to
+overhead of starting and destroying a thread each time might be too
 high. In such cases reusing already started threads seems like a good
 idea. And it indeed is, but implementing this can be tedious and
 error-prone.
@@ -64,9 +64,9 @@ can be stopped by calling g_thread_pool_stop_unused_threads().
 
 <!-- ##### STRUCT GThreadPool ##### -->
 <para>
-The #GThreadPool struct represents a thread pool. It has six public
-read-only members, but the underlying struct is bigger, so you must not copy
-this struct.
+The #GThreadPool struct represents a thread pool. It has three public
+read-only members, but the underlying struct is bigger, so you must not 
+copy this struct.
 </para>
 
 @func: the function to execute in the threads of this pool

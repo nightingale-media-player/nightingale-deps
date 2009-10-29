@@ -22,16 +22,23 @@
 
 #include "config.h"
 
+#include "glib.h"
+
+#ifndef G_OS_WIN32
 #include <iconv.h>
+#endif
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-#include "glib.h"
 #include "gprintfint.h"
 #include "gthreadprivate.h"
 #include "gunicode.h"
+
+#ifdef G_OS_WIN32
+#include "win_iconv.c"
+#endif
 
 #ifdef G_PLATFORM_WIN32
 #define STRICT
@@ -89,7 +96,8 @@ try_to_aliases (const char **to_aliases,
   return FALSE;
 }
 
-G_GNUC_INTERNAL extern const char ** _g_charset_get_aliases (const char *canonical_name);
+G_GNUC_INTERNAL extern const char ** 
+_g_charset_get_aliases (const char *canonical_name);
 
 /**
  * g_iconv_open:
@@ -157,7 +165,7 @@ g_iconv_open (const gchar  *to_codeset,
  * 
  * Return value: count of non-reversible conversions, or -1 on error
  **/
-size_t 
+gsize 
 g_iconv (GIConv   converter,
 	 gchar  **inbuf,
 	 gsize   *inbytes_left,
@@ -227,7 +235,7 @@ iconv_cache_init (void)
 }
 
 
-/**
+/*
  * iconv_cache_bucket_new:
  * @key: cache key
  * @cd: iconv descriptor
@@ -262,7 +270,7 @@ iconv_cache_bucket_new (gchar *key, GIConv cd)
 }
 
 
-/**
+/*
  * iconv_cache_bucket_expire:
  * @node: cache bucket's node
  * @bucket: cache bucket
@@ -307,7 +315,7 @@ iconv_cache_bucket_expire (GList *node, struct _iconv_cache_bucket *bucket)
 }
 
 
-/**
+/*
  * iconv_cache_expire_unused:
  *
  * Expires as many unused cache buckets as it needs to in order to get
@@ -572,13 +580,13 @@ g_convert_with_iconv (const gchar *str,
   gchar *dest;
   gchar *outp;
   const gchar *p;
-  const gchar *shift_p = NULL;
   gsize inbytes_remaining;
   gsize outbytes_remaining;
   gsize err;
   gsize outbuf_size;
   gboolean have_error = FALSE;
   gboolean done = FALSE;
+  gboolean reset = FALSE;
   
   g_return_val_if_fail (converter != (GIConv) -1, NULL);
      
@@ -594,9 +602,12 @@ g_convert_with_iconv (const gchar *str,
 
   while (!done && !have_error)
     {
-      err = g_iconv (converter, (char **)&p, &inbytes_remaining, &outp, &outbytes_remaining);
+      if (reset)
+        err = g_iconv (converter, NULL, &inbytes_remaining, &outp, &outbytes_remaining);
+      else
+        err = g_iconv (converter, (char **)&p, &inbytes_remaining, &outp, &outbytes_remaining);
 
-      if (err == (size_t) -1)
+      if (err == (gsize) -1)
 	{
 	  switch (errno)
 	    {
@@ -606,7 +617,7 @@ g_convert_with_iconv (const gchar *str,
 	      break;
 	    case E2BIG:
 	      {
-		size_t used = outp - dest;
+		gsize used = outp - dest;
 		
 		outbuf_size *= 2;
 		dest = g_realloc (dest, outbuf_size);
@@ -632,20 +643,16 @@ g_convert_with_iconv (const gchar *str,
 	}
       else 
 	{
-	  if (!shift_p)
+	  if (!reset)
 	    {
 	      /* call g_iconv with NULL inbuf to cleanup shift state */
-	      shift_p = p;
-	      p = NULL;
+	      reset = TRUE;
 	      inbytes_remaining = 0;
 	    }
 	  else
 	    done = TRUE;
 	}
     }
-
-  if (shift_p)
-    p = shift_p;
 
   *outp = '\0';
   
@@ -776,7 +783,7 @@ g_convert (const gchar *str,
  * including fallback sequences for characters not representable
  * in the output. Note that it is not guaranteed that the specification
  * for the fallback sequences in @fallback will be honored. Some
- * systems may do a approximate conversion from @from_codeset
+ * systems may do an approximate conversion from @from_codeset
  * to @to_codeset in their iconv() functions, 
  * in which case GLib will simply return that approximate conversion.
  *
@@ -880,11 +887,11 @@ g_convert_with_fallback (const gchar *str,
 
   while (!done && !have_error)
     {
-      size_t inbytes_tmp = inbytes_remaining;
+      gsize inbytes_tmp = inbytes_remaining;
       err = g_iconv (cd, (char **)&p, &inbytes_tmp, &outp, &outbytes_remaining);
       inbytes_remaining = inbytes_tmp;
 
-      if (err == (size_t) -1)
+      if (err == (gsize) -1)
 	{
 	  switch (errno)
 	    {
@@ -893,7 +900,7 @@ g_convert_with_fallback (const gchar *str,
 	      break;
 	    case E2BIG:
 	      {
-		size_t used = outp - dest;
+		gsize used = outp - dest;
 
 		outbuf_size *= 2;
 		dest = g_realloc (dest, outbuf_size);
@@ -1050,7 +1057,8 @@ strdup_len (const gchar *string,
  * 
  * Converts a string which is in the encoding used for strings by
  * the C runtime (usually the same as that used by the operating
- * system) in the current locale into a UTF-8 string.
+ * system) in the <link linkend="setlocale">current locale</link> into a
+ * UTF-8 string.
  * 
  * Return value: The converted string, or %NULL on an error.
  **/
@@ -1090,7 +1098,8 @@ g_locale_to_utf8 (const gchar  *opsysstring,
  * 
  * Converts a string from UTF-8 to the encoding used for strings by
  * the C runtime (usually the same as that used by the operating
- * system) in the current locale.
+ * system) in the <link linkend="setlocale">current locale</link>. On
+ * Windows this means the system codepage.
  * 
  * Return value: The converted string, or %NULL on an error.
  **/
@@ -1145,18 +1154,19 @@ filename_charset_cache_free (gpointer data)
  * have no effect.
  *
  * <envar>G_FILENAME_ENCODING</envar> may be set to a comma-separated list 
- * of character set names. The special token "@locale" is taken to mean the 
- * character set for the current locale. If <envar>G_FILENAME_ENCODING</envar> 
- * is not set, but <envar>G_BROKEN_FILENAMES</envar> is, the character set of 
- * the current locale is taken as the filename encoding. If neither environment
- * variable is set, UTF-8 is taken as the filename encoding, but the character
+ * of character set names. The special token "&commat;locale" is taken to 
+ * mean the character set for the <link linkend="setlocale">current 
+ * locale</link>. If <envar>G_FILENAME_ENCODING</envar> is not set, but 
+ * <envar>G_BROKEN_FILENAMES</envar> is, the character set of the current 
+ * locale is taken as the filename encoding. If neither environment variable 
+ * is set, UTF-8 is taken as the filename encoding, but the character
  * set of the current locale is also put in the list of encodings.
  *
  * The returned @charsets belong to GLib and must not be freed.
  *
  * Note that on Unix, regardless of the locale character set or
- * <envar>G_FILENAME_ENCODING</envar> value, the actual file names present on a
- * system might be in any random encoding or just gibberish.
+ * <envar>G_FILENAME_ENCODING</envar> value, the actual file names present 
+ * on a system might be in any random encoding or just gibberish.
  *
  * Return value: %TRUE if the filename encoding is UTF-8.
  * 
@@ -1300,7 +1310,8 @@ _g_convert_thread_init (void)
  * 
  * Converts a string which is in the encoding used by GLib for
  * filenames into a UTF-8 string. Note that on Windows GLib uses UTF-8
- * for filenames.
+ * for filenames; on other platforms, this function indirectly depends on 
+ * the <link linkend="setlocale">current locale</link>.
  * 
  * Return value: The converted string, or %NULL on an error.
  **/
@@ -1363,7 +1374,9 @@ g_filename_to_utf8 (const gchar *opsysstring,
  *                 errors. Any of the errors in #GConvertError may occur.
  * 
  * Converts a string from UTF-8 to the encoding GLib uses for
- * filenames. Note that on Windows GLib uses UTF-8 for filenames.
+ * filenames. Note that on Windows GLib uses UTF-8 for filenames;
+ * on other platforms, this function indirectly depends on the 
+ * <link linkend="setlocale">current locale</link>.
  * 
  * Return value: The converted string, or %NULL on an error.
  **/

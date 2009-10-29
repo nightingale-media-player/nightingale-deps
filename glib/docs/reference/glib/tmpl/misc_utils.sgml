@@ -2,7 +2,7 @@
 Miscellaneous Utility Functions
 
 <!-- ##### SECTION Short_Description ##### -->
-a selection of portable utility functions.
+a selection of portable utility functions
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -122,6 +122,30 @@ These are portable utility functions.
 
 </para>
 
+@Returns: 
+
+
+<!-- ##### ENUM GUserDirectory ##### -->
+<para>
+
+</para>
+
+@G_USER_DIRECTORY_DESKTOP: 
+@G_USER_DIRECTORY_DOCUMENTS: 
+@G_USER_DIRECTORY_DOWNLOAD: 
+@G_USER_DIRECTORY_MUSIC: 
+@G_USER_DIRECTORY_PICTURES: 
+@G_USER_DIRECTORY_PUBLIC_SHARE: 
+@G_USER_DIRECTORY_TEMPLATES: 
+@G_USER_DIRECTORY_VIDEOS: 
+@G_USER_N_DIRECTORIES: 
+
+<!-- ##### FUNCTION g_get_user_special_dir ##### -->
+<para>
+
+</para>
+
+@directory: 
 @Returns: 
 
 
@@ -268,6 +292,15 @@ The returned string should be freed when no longer needed.
 
 @separator: 
 @args: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g_format_size_for_display ##### -->
+<para>
+
+</para>
+
+@size: 
 @Returns: 
 
 

@@ -1,27 +1,27 @@
 <refentry id="glib-Lexical-Scanner">
 <refmeta>
-<refentrytitle role="top_of_page">Lexical Scanner</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Lexical-Scanner.top_of_page">Lexical Scanner</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>Lexical Scanner</refname>
-<refpurpose>a general purpose lexical scanner.</refpurpose>
+<refpurpose>a general purpose lexical scanner</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Lexical-Scanner.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
 
-
                     <link linkend="GScanner">GScanner</link>;
-<link linkend="GScanner">GScanner</link>*           <link linkend="g-scanner-new">g_scanner_new</link>                       (const <link linkend="GScannerConfig">GScannerConfig</link> *config_templ);
                     <link linkend="GScannerConfig">GScannerConfig</link>;
+<link linkend="GScanner">GScanner</link>*           <link linkend="g-scanner-new">g_scanner_new</link>                       (const <link linkend="GScannerConfig">GScannerConfig</link> *config_templ);
+<link linkend="void">void</link>                <link linkend="g-scanner-destroy">g_scanner_destroy</link>                   (<link linkend="GScanner">GScanner</link> *scanner);
 
 <link linkend="void">void</link>                <link linkend="g-scanner-input-file">g_scanner_input_file</link>                (<link linkend="GScanner">GScanner</link> *scanner,
                                                          <link linkend="gint">gint</link> input_fd);
@@ -31,12 +31,12 @@
                                                          <link linkend="guint">guint</link> text_len);
 <link linkend="GTokenType">GTokenType</link>          <link linkend="g-scanner-peek-next-token">g_scanner_peek_next_token</link>           (<link linkend="GScanner">GScanner</link> *scanner);
 <link linkend="GTokenType">GTokenType</link>          <link linkend="g-scanner-get-next-token">g_scanner_get_next_token</link>            (<link linkend="GScanner">GScanner</link> *scanner);
+<link linkend="gboolean">gboolean</link>            <link linkend="g-scanner-eof">g_scanner_eof</link>                       (<link linkend="GScanner">GScanner</link> *scanner);
 
 <link linkend="guint">guint</link>               <link linkend="g-scanner-cur-line">g_scanner_cur_line</link>                  (<link linkend="GScanner">GScanner</link> *scanner);
 <link linkend="guint">guint</link>               <link linkend="g-scanner-cur-position">g_scanner_cur_position</link>              (<link linkend="GScanner">GScanner</link> *scanner);
 <link linkend="GTokenType">GTokenType</link>          <link linkend="g-scanner-cur-token">g_scanner_cur_token</link>                 (<link linkend="GScanner">GScanner</link> *scanner);
 <link linkend="GTokenValue">GTokenValue</link>         <link linkend="g-scanner-cur-value">g_scanner_cur_value</link>                 (<link linkend="GScanner">GScanner</link> *scanner);
-<link linkend="gboolean">gboolean</link>            <link linkend="g-scanner-eof">g_scanner_eof</link>                       (<link linkend="GScanner">GScanner</link> *scanner);
 
 <link linkend="guint">guint</link>               <link linkend="g-scanner-set-scope">g_scanner_set_scope</link>                 (<link linkend="GScanner">GScanner</link> *scanner,
                                                          <link linkend="guint">guint</link> scope_id);
@@ -54,6 +54,9 @@
 <link linkend="void">void</link>                <link linkend="g-scanner-scope-remove-symbol">g_scanner_scope_remove_symbol</link>       (<link linkend="GScanner">GScanner</link> *scanner,
                                                          <link linkend="guint">guint</link> scope_id,
                                                          const <link linkend="gchar">gchar</link> *symbol);
+#define             <link linkend="g-scanner-add-symbol">g_scanner_add_symbol</link>                ( scanner, symbol, value )
+#define             <link linkend="g-scanner-remove-symbol">g_scanner_remove_symbol</link>             ( scanner, symbol )
+#define             <link linkend="g-scanner-foreach-symbol">g_scanner_foreach_symbol</link>            ( scanner, func, data )
 
 #define             <link linkend="g-scanner-freeze-symbol-table">g_scanner_freeze_symbol_table</link>       (scanner)
 #define             <link linkend="g-scanner-thaw-symbol-table">g_scanner_thaw_symbol_table</link>         (scanner)
@@ -77,20 +80,14 @@
                                                          <link linkend="gchar">gchar</link> *message,
                                                          <link linkend="gboolean">gboolean</link> error);
 
-<link linkend="void">void</link>                <link linkend="g-scanner-destroy">g_scanner_destroy</link>                   (<link linkend="GScanner">GScanner</link> *scanner);
-
-enum                <link linkend="GTokenType">GTokenType</link>;
-union               <link linkend="GTokenValue">GTokenValue</link>;
-enum                <link linkend="GErrorType">GErrorType</link>;
 #define             <link linkend="G-CSET-a-2-z">G_CSET_a_2_z</link>
 #define             <link linkend="G-CSET-A-2-Z:CAPS">G_CSET_A_2_Z</link>
 #define             <link linkend="G-CSET-DIGITS:CAPS">G_CSET_DIGITS</link>
 #define             <link linkend="G-CSET-LATINC:CAPS">G_CSET_LATINC</link>
 #define             <link linkend="G-CSET-LATINS:CAPS">G_CSET_LATINS</link>
-
-#define             <link linkend="g-scanner-add-symbol">g_scanner_add_symbol</link>                ( scanner, symbol, value )
-#define             <link linkend="g-scanner-remove-symbol">g_scanner_remove_symbol</link>             ( scanner, symbol )
-#define             <link linkend="g-scanner-foreach-symbol">g_scanner_foreach_symbol</link>            ( scanner, func, data )
+enum                <link linkend="GTokenType">GTokenType</link>;
+union               <link linkend="GTokenValue">GTokenValue</link>;
+enum                <link linkend="GErrorType">GErrorType</link>;
 </synopsis>
 </refsynopsisdiv>
 
@@ -102,7 +99,7 @@ enum                <link linkend="GErrorType">GErrorType</link>;
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Lexical-Scanner.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The <link linkend="GScanner"><type>GScanner</type></link> and its associated functions provide a general purpose
@@ -115,11 +112,11 @@ understand it myself. Look at gtkrc.c for some code using the scanner.
 -->
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Lexical-Scanner.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GScanner" role="struct"/>GScanner</title>
-<indexterm><primary>GScanner</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GScanner" role="struct">
+<title>GScanner</title>
+<indexterm zone="GScanner"><primary>GScanner</primary></indexterm><programlisting>typedef struct {
   /* unused fields */
   gpointer		user_data;
   guint			max_parse_errors;
@@ -178,27 +175,117 @@ If you need to associate extra data with the scanner you can place them here.
 If you want to use your own message handler you can set the
 <structfield>msg_handler</structfield> field. The type of the message
 handler function is declared by <link linkend="GScannerMsgFunc"><type>GScannerMsgFunc</type></link>.
-</para></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-new" role="function"/>g_scanner_new ()</title>
-<indexterm><primary>g_scanner_new</primary></indexterm><programlisting><link linkend="GScanner">GScanner</link>*           g_scanner_new                       (const <link linkend="GScannerConfig">GScannerConfig</link> *config_templ);</programlisting>
-<para>
-Creates a new <link linkend="GScanner"><type>GScanner</type></link>.
-The <parameter>config_templ</parameter> structure specifies the initial settings of the scanner,
-which are copied into the <link linkend="GScanner"><type>GScanner</type></link> <structfield>config</structfield> field.
-If you pass <link linkend="NULL:CAPS"><literal>NULL</literal></link> then the default settings are used.
-</para><variablelist role="params">
-<varlistentry><term><parameter>config_templ</parameter>&nbsp;:</term>
-<listitem><simpara>the initial scanner settings.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>the new <link linkend="GScanner"><type>GScanner</type></link>.
+</para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="gpointer">gpointer</link>&nbsp;<structfield>user_data</structfield>;</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="guint">guint</link>&nbsp;<structfield>max_parse_errors</structfield>;</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="guint">guint</link>&nbsp;<structfield>parse_errors</structfield>;</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term>const&nbsp;<link linkend="gchar">gchar</link>&nbsp;*<structfield>input_name</structfield>;</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GData">GData</link>&nbsp;*<structfield>qdata</structfield>;</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GScannerConfig">GScannerConfig</link>&nbsp;*<structfield>config</structfield>;</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GTokenType">GTokenType</link>&nbsp;<structfield>token</structfield>;</term>
+<listitem><simpara>      token parsed by the last <link linkend="g-scanner-get-next-token"><function>g_scanner_get_next_token()</function></link>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GTokenValue">GTokenValue</link>&nbsp;<structfield>value</structfield>;</term>
+<listitem><simpara>      value of the last token from <link linkend="g-scanner-get-next-token"><function>g_scanner_get_next_token()</function></link>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="guint">guint</link>&nbsp;<structfield>line</structfield>;</term>
+<listitem><simpara>       line number of the last token from <link linkend="g-scanner-get-next-token"><function>g_scanner_get_next_token()</function></link>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="guint">guint</link>&nbsp;<structfield>position</structfield>;</term>
+<listitem><simpara>   char number of the last token from <link linkend="g-scanner-get-next-token"><function>g_scanner_get_next_token()</function></link>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GTokenType">GTokenType</link>&nbsp;<structfield>next_token</structfield>;</term>
+<listitem><simpara>   token parsed by the last <link linkend="g-scanner-peek-next-token"><function>g_scanner_peek_next_token()</function></link>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GTokenValue">GTokenValue</link>&nbsp;<structfield>next_value</structfield>;</term>
+<listitem><simpara>   value of the last token from <link linkend="g-scanner-peek-next-token"><function>g_scanner_peek_next_token()</function></link>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="guint">guint</link>&nbsp;<structfield>next_line</structfield>;</term>
+<listitem><simpara>    line number of the last token from <link linkend="g-scanner-peek-next-token"><function>g_scanner_peek_next_token()</function></link>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="guint">guint</link>&nbsp;<structfield>next_position</structfield>;</term>
+<listitem><simpara>char number of the last token from <link linkend="g-scanner-peek-next-token"><function>g_scanner_peek_next_token()</function></link>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GHashTable">GHashTable</link>&nbsp;*<structfield>symbol_table</structfield>;</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="gint">gint</link>&nbsp;<structfield>input_fd</structfield>;</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term>const&nbsp;<link linkend="gchar">gchar</link>&nbsp;*<structfield>text</structfield>;</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term>const&nbsp;<link linkend="gchar">gchar</link>&nbsp;*<structfield>text_end</structfield>;</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="gchar">gchar</link>&nbsp;*<structfield>buffer</structfield>;</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="guint">guint</link>&nbsp;<structfield>scope_id</structfield>;</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GScannerMsgFunc">GScannerMsgFunc</link>&nbsp;<structfield>msg_handler</structfield>;</term>
+<listitem><simpara>function to handle GScanner message output
 
-
-</simpara></listitem></varlistentry>
+</simpara></listitem>
+</varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GScannerConfig" role="struct"/>GScannerConfig</title>
-<indexterm><primary>GScannerConfig</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GScannerConfig" role="struct">
+<title>GScannerConfig</title>
+<indexterm zone="GScannerConfig"><primary>GScannerConfig</primary></indexterm><programlisting>typedef struct {
   /* Character sets
    */
   gchar		*cset_skip_characters;		/* default: " \t\n" */
@@ -238,7 +325,8 @@ If you pass <link linkend="NULL:CAPS"><literal>NULL</literal></link> then the de
 } GScannerConfig;
 </programlisting>
 <para>
-Specifies the <link linkend="GScanner"><type>GScanner</type></link> settings.
+Specifies the <link linkend="GScanner"><type>GScanner</type></link> parser configuration. Most settings can be changed during
+the parsing phase and will affect the lexical parsing of the next unpeeked token.
 </para>
 <para>
 <structfield>cset_skip_characters</structfield> specifies which characters
@@ -350,9 +438,38 @@ are reported by setting <literal>token = v_symbol</literal> or as
 is searched for in the default scope in addition to the current scope
 (the default is <link linkend="FALSE:CAPS"><literal>FALSE</literal></link>).
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-input-file" role="function"/>g_scanner_input_file ()</title>
-<indexterm><primary>g_scanner_input_file</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_input_file                (<link linkend="GScanner">GScanner</link> *scanner,
+<refsect2 id="g-scanner-new" role="function">
+<title>g_scanner_new ()</title>
+<indexterm zone="g-scanner-new"><primary>g_scanner_new</primary></indexterm><programlisting><link linkend="GScanner">GScanner</link>*           g_scanner_new                       (const <link linkend="GScannerConfig">GScannerConfig</link> *config_templ);</programlisting>
+<para>
+Creates a new <link linkend="GScanner"><type>GScanner</type></link>.
+The <parameter>config_templ</parameter> structure specifies the initial settings of the scanner,
+which are copied into the <link linkend="GScanner"><type>GScanner</type></link> <structfield>config</structfield> field.
+If you pass <link linkend="NULL:CAPS"><literal>NULL</literal></link> then the default settings are used.
+</para><variablelist role="params">
+<varlistentry><term><parameter>config_templ</parameter>&nbsp;:</term>
+<listitem><simpara>the initial scanner settings.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>the new <link linkend="GScanner"><type>GScanner</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-scanner-destroy" role="function">
+<title>g_scanner_destroy ()</title>
+<indexterm zone="g-scanner-destroy"><primary>g_scanner_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_destroy                   (<link linkend="GScanner">GScanner</link> *scanner);</programlisting>
+<para>
+Frees all memory used by the <link linkend="GScanner"><type>GScanner</type></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>scanner</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GScanner"><type>GScanner</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-scanner-input-file" role="function">
+<title>g_scanner_input_file ()</title>
+<indexterm zone="g-scanner-input-file"><primary>g_scanner_input_file</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_input_file                (<link linkend="GScanner">GScanner</link> *scanner,
                                                          <link linkend="gint">gint</link> input_fd);</programlisting>
 <para>
 Prepares to scan a file.
@@ -366,9 +483,9 @@ Prepares to scan a file.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-sync-file-offset" role="function"/>g_scanner_sync_file_offset ()</title>
-<indexterm><primary>g_scanner_sync_file_offset</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_sync_file_offset          (<link linkend="GScanner">GScanner</link> *scanner);</programlisting>
+<refsect2 id="g-scanner-sync-file-offset" role="function">
+<title>g_scanner_sync_file_offset ()</title>
+<indexterm zone="g-scanner-sync-file-offset"><primary>g_scanner_sync_file_offset</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_sync_file_offset          (<link linkend="GScanner">GScanner</link> *scanner);</programlisting>
 <para>
 Rewinds the filedescriptor to the current buffer position and blows 
 the file read ahead buffer. This is useful for third party uses of
@@ -381,9 +498,9 @@ position.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-input-text" role="function"/>g_scanner_input_text ()</title>
-<indexterm><primary>g_scanner_input_text</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_input_text                (<link linkend="GScanner">GScanner</link> *scanner,
+<refsect2 id="g-scanner-input-text" role="function">
+<title>g_scanner_input_text ()</title>
+<indexterm zone="g-scanner-input-text"><primary>g_scanner_input_text</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_input_text                (<link linkend="GScanner">GScanner</link> *scanner,
                                                          const <link linkend="gchar">gchar</link> *text,
                                                          <link linkend="guint">guint</link> text_len);</programlisting>
 <para>
@@ -401,11 +518,11 @@ Prepares to scan a text buffer.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-peek-next-token" role="function"/>g_scanner_peek_next_token ()</title>
-<indexterm><primary>g_scanner_peek_next_token</primary></indexterm><programlisting><link linkend="GTokenType">GTokenType</link>          g_scanner_peek_next_token           (<link linkend="GScanner">GScanner</link> *scanner);</programlisting>
+<refsect2 id="g-scanner-peek-next-token" role="function">
+<title>g_scanner_peek_next_token ()</title>
+<indexterm zone="g-scanner-peek-next-token"><primary>g_scanner_peek_next_token</primary></indexterm><programlisting><link linkend="GTokenType">GTokenType</link>          g_scanner_peek_next_token           (<link linkend="GScanner">GScanner</link> *scanner);</programlisting>
 <para>
-Gets the next token, without removing it from the input stream.
+Parses the next token, without removing it from the input stream.
 The token data is placed in the
 <structfield>next_token</structfield>,
 <structfield>next_value</structfield>,
@@ -416,10 +533,10 @@ The token data is placed in the
 Note that, while the token is not removed from the input stream (i.e.
 the next call to <link linkend="g-scanner-get-next-token"><function>g_scanner_get_next_token()</function></link> will return the same token),
 it will not be reevaluated. This can lead to surprising results when
-changing scope after peeking for the next token. Getting the next token
-after switching the scope will return whatever was peeked before, 
-regardless of any symbols that may have been added or removed in the
-new scope. 
+changing scope or the scanner configuration after peeking the next token.
+Getting the next token after switching the scope or configuration will
+return whatever was peeked before, regardless of any symbols that may
+have been added or removed in the new scope. 
 </para><variablelist role="params">
 <varlistentry><term><parameter>scanner</parameter>&nbsp;:</term>
 <listitem><simpara>a <link linkend="GScanner"><type>GScanner</type></link>.
@@ -429,11 +546,12 @@ new scope.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-get-next-token" role="function"/>g_scanner_get_next_token ()</title>
-<indexterm><primary>g_scanner_get_next_token</primary></indexterm><programlisting><link linkend="GTokenType">GTokenType</link>          g_scanner_get_next_token            (<link linkend="GScanner">GScanner</link> *scanner);</programlisting>
+<refsect2 id="g-scanner-get-next-token" role="function">
+<title>g_scanner_get_next_token ()</title>
+<indexterm zone="g-scanner-get-next-token"><primary>g_scanner_get_next_token</primary></indexterm><programlisting><link linkend="GTokenType">GTokenType</link>          g_scanner_get_next_token            (<link linkend="GScanner">GScanner</link> *scanner);</programlisting>
 <para>
-Gets the next token, removing it from the input stream.
+Parses the next token just like <link linkend="g-scanner-peek-next-token"><function>g_scanner_peek_next_token()</function></link> and also
+removes it from the input stream.
 The token data is placed in the
 <structfield>token</structfield>,
 <structfield>value</structfield>,
@@ -448,11 +566,26 @@ The token data is placed in the
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-cur-line" role="function"/>g_scanner_cur_line ()</title>
-<indexterm><primary>g_scanner_cur_line</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_scanner_cur_line                  (<link linkend="GScanner">GScanner</link> *scanner);</programlisting>
+<refsect2 id="g-scanner-eof" role="function">
+<title>g_scanner_eof ()</title>
+<indexterm zone="g-scanner-eof"><primary>g_scanner_eof</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_scanner_eof                       (<link linkend="GScanner">GScanner</link> *scanner);</programlisting>
 <para>
-Gets the current line in the input stream (counting from 1).
+Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the scanner has reached the end of the file or text buffer.
+</para><variablelist role="params">
+<varlistentry><term><parameter>scanner</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GScanner"><type>GScanner</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara><link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the scanner has reached the end of the file or text buffer.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-scanner-cur-line" role="function">
+<title>g_scanner_cur_line ()</title>
+<indexterm zone="g-scanner-cur-line"><primary>g_scanner_cur_line</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_scanner_cur_line                  (<link linkend="GScanner">GScanner</link> *scanner);</programlisting>
+<para>
+Returns the current line in the input stream (counting from 1).
+This is the line of the last token parsed via <link linkend="g-scanner-get-next-token"><function>g_scanner_get_next_token()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>scanner</parameter>&nbsp;:</term>
 <listitem><simpara>a <link linkend="GScanner"><type>GScanner</type></link>.
@@ -462,11 +595,12 @@ Gets the current line in the input stream (counting from 1).
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-cur-position" role="function"/>g_scanner_cur_position ()</title>
-<indexterm><primary>g_scanner_cur_position</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_scanner_cur_position              (<link linkend="GScanner">GScanner</link> *scanner);</programlisting>
+<refsect2 id="g-scanner-cur-position" role="function">
+<title>g_scanner_cur_position ()</title>
+<indexterm zone="g-scanner-cur-position"><primary>g_scanner_cur_position</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_scanner_cur_position              (<link linkend="GScanner">GScanner</link> *scanner);</programlisting>
 <para>
-Gets the current position in the current line (counting from 0).
+Returns the current position in the current line (counting from 0).
+This is the position of the last token parsed via <link linkend="g-scanner-get-next-token"><function>g_scanner_get_next_token()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>scanner</parameter>&nbsp;:</term>
 <listitem><simpara>a <link linkend="GScanner"><type>GScanner</type></link>.
@@ -476,9 +610,9 @@ Gets the current position in the current line (counting from 0).
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-cur-token" role="function"/>g_scanner_cur_token ()</title>
-<indexterm><primary>g_scanner_cur_token</primary></indexterm><programlisting><link linkend="GTokenType">GTokenType</link>          g_scanner_cur_token                 (<link linkend="GScanner">GScanner</link> *scanner);</programlisting>
+<refsect2 id="g-scanner-cur-token" role="function">
+<title>g_scanner_cur_token ()</title>
+<indexterm zone="g-scanner-cur-token"><primary>g_scanner_cur_token</primary></indexterm><programlisting><link linkend="GTokenType">GTokenType</link>          g_scanner_cur_token                 (<link linkend="GScanner">GScanner</link> *scanner);</programlisting>
 <para>
 Gets the current token type.
 This is simply the <structfield>token</structfield> field in the <link linkend="GScanner"><type>GScanner</type></link>
@@ -492,9 +626,9 @@ structure.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-cur-value" role="function"/>g_scanner_cur_value ()</title>
-<indexterm><primary>g_scanner_cur_value</primary></indexterm><programlisting><link linkend="GTokenValue">GTokenValue</link>         g_scanner_cur_value                 (<link linkend="GScanner">GScanner</link> *scanner);</programlisting>
+<refsect2 id="g-scanner-cur-value" role="function">
+<title>g_scanner_cur_value ()</title>
+<indexterm zone="g-scanner-cur-value"><primary>g_scanner_cur_value</primary></indexterm><programlisting><link linkend="GTokenValue">GTokenValue</link>         g_scanner_cur_value                 (<link linkend="GScanner">GScanner</link> *scanner);</programlisting>
 <para>
 Gets the current token value.
 This is simply the <structfield>value</structfield> field in the <link linkend="GScanner"><type>GScanner</type></link>
@@ -508,23 +642,9 @@ structure.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-eof" role="function"/>g_scanner_eof ()</title>
-<indexterm><primary>g_scanner_eof</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_scanner_eof                       (<link linkend="GScanner">GScanner</link> *scanner);</programlisting>
-<para>
-Returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the scanner has reached the end of the file or text buffer.
-</para><variablelist role="params">
-<varlistentry><term><parameter>scanner</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GScanner"><type>GScanner</type></link>.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara><link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the scanner has reached the end of the file or text buffer.
-
-
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-set-scope" role="function"/>g_scanner_set_scope ()</title>
-<indexterm><primary>g_scanner_set_scope</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_scanner_set_scope                 (<link linkend="GScanner">GScanner</link> *scanner,
+<refsect2 id="g-scanner-set-scope" role="function">
+<title>g_scanner_set_scope ()</title>
+<indexterm zone="g-scanner-set-scope"><primary>g_scanner_set_scope</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_scanner_set_scope                 (<link linkend="GScanner">GScanner</link> *scanner,
                                                          <link linkend="guint">guint</link> scope_id);</programlisting>
 <para>
 Sets the current scope.
@@ -540,9 +660,9 @@ Sets the current scope.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-scope-add-symbol" role="function"/>g_scanner_scope_add_symbol ()</title>
-<indexterm><primary>g_scanner_scope_add_symbol</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_scope_add_symbol          (<link linkend="GScanner">GScanner</link> *scanner,
+<refsect2 id="g-scanner-scope-add-symbol" role="function">
+<title>g_scanner_scope_add_symbol ()</title>
+<indexterm zone="g-scanner-scope-add-symbol"><primary>g_scanner_scope_add_symbol</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_scope_add_symbol          (<link linkend="GScanner">GScanner</link> *scanner,
                                                          <link linkend="guint">guint</link> scope_id,
                                                          const <link linkend="gchar">gchar</link> *symbol,
                                                          <link linkend="gpointer">gpointer</link> value);</programlisting>
@@ -564,9 +684,9 @@ Adds a symbol to the given scope.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-scope-foreach-symbol" role="function"/>g_scanner_scope_foreach_symbol ()</title>
-<indexterm><primary>g_scanner_scope_foreach_symbol</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_scope_foreach_symbol      (<link linkend="GScanner">GScanner</link> *scanner,
+<refsect2 id="g-scanner-scope-foreach-symbol" role="function">
+<title>g_scanner_scope_foreach_symbol ()</title>
+<indexterm zone="g-scanner-scope-foreach-symbol"><primary>g_scanner_scope_foreach_symbol</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_scope_foreach_symbol      (<link linkend="GScanner">GScanner</link> *scanner,
                                                          <link linkend="guint">guint</link> scope_id,
                                                          <link linkend="GHFunc">GHFunc</link> func,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
@@ -590,9 +710,9 @@ value of each pair, and the given <parameter>user_data</parameter> parameter.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-scope-lookup-symbol" role="function"/>g_scanner_scope_lookup_symbol ()</title>
-<indexterm><primary>g_scanner_scope_lookup_symbol</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_scanner_scope_lookup_symbol       (<link linkend="GScanner">GScanner</link> *scanner,
+<refsect2 id="g-scanner-scope-lookup-symbol" role="function">
+<title>g_scanner_scope_lookup_symbol ()</title>
+<indexterm zone="g-scanner-scope-lookup-symbol"><primary>g_scanner_scope_lookup_symbol</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_scanner_scope_lookup_symbol       (<link linkend="GScanner">GScanner</link> *scanner,
                                                          <link linkend="guint">guint</link> scope_id,
                                                          const <link linkend="gchar">gchar</link> *symbol);</programlisting>
 <para>
@@ -614,9 +734,9 @@ if <parameter>symbol</parameter> is not bound in the given scope.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-scope-remove-symbol" role="function"/>g_scanner_scope_remove_symbol ()</title>
-<indexterm><primary>g_scanner_scope_remove_symbol</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_scope_remove_symbol       (<link linkend="GScanner">GScanner</link> *scanner,
+<refsect2 id="g-scanner-scope-remove-symbol" role="function">
+<title>g_scanner_scope_remove_symbol ()</title>
+<indexterm zone="g-scanner-scope-remove-symbol"><primary>g_scanner_scope_remove_symbol</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_scope_remove_symbol       (<link linkend="GScanner">GScanner</link> *scanner,
                                                          <link linkend="guint">guint</link> scope_id,
                                                          const <link linkend="gchar">gchar</link> *symbol);</programlisting>
 <para>
@@ -634,9 +754,57 @@ Removes a symbol from a scope.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-freeze-symbol-table" role="macro" condition="deprecated:2.2: This macro does nothing."/>g_scanner_freeze_symbol_table()</title>
-<indexterm role="deprecated"><primary>g_scanner_freeze_symbol_table</primary></indexterm><programlisting>#define             g_scanner_freeze_symbol_table(scanner)</programlisting>
+<refsect2 id="g-scanner-add-symbol" role="macro" condition="deprecated:2.2: Use g_scanner_scope_add_symbol() instead.">
+<title>g_scanner_add_symbol()</title>
+<indexterm zone="g-scanner-add-symbol" role="deprecated"><primary>g_scanner_add_symbol</primary></indexterm><programlisting>#define             g_scanner_add_symbol( scanner, symbol, value )</programlisting>
+<warning><para><literal>g_scanner_add_symbol</literal> has been deprecated since version 2.2 and should not be used in newly-written code. Use <link linkend="g-scanner-scope-add-symbol"><function>g_scanner_scope_add_symbol()</function></link> instead.</para></warning>
+<para>
+Adds a symbol to the default scope.
+</para><variablelist role="params">
+<varlistentry><term><parameter>scanner</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GScanner"><type>GScanner</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>symbol</parameter>&nbsp;:</term>
+<listitem><simpara>the symbol to add.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>the value of the symbol.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-scanner-remove-symbol" role="macro" condition="deprecated:2.2: Use g_scanner_scope_remove_symbol() instead.">
+<title>g_scanner_remove_symbol()</title>
+<indexterm zone="g-scanner-remove-symbol" role="deprecated"><primary>g_scanner_remove_symbol</primary></indexterm><programlisting>#define             g_scanner_remove_symbol( scanner, symbol )</programlisting>
+<warning><para><literal>g_scanner_remove_symbol</literal> has been deprecated since version 2.2 and should not be used in newly-written code. Use <link linkend="g-scanner-scope-remove-symbol"><function>g_scanner_scope_remove_symbol()</function></link> instead.</para></warning>
+<para>
+Removes a symbol from the default scope.
+</para><variablelist role="params">
+<varlistentry><term><parameter>scanner</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GScanner"><type>GScanner</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>symbol</parameter>&nbsp;:</term>
+<listitem><simpara>the symbol to remove.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-scanner-foreach-symbol" role="macro" condition="deprecated:2.2: Use g_scanner_scope_foreach_symbol() instead.">
+<title>g_scanner_foreach_symbol()</title>
+<indexterm zone="g-scanner-foreach-symbol" role="deprecated"><primary>g_scanner_foreach_symbol</primary></indexterm><programlisting>#define             g_scanner_foreach_symbol( scanner, func, data )</programlisting>
+<warning><para><literal>g_scanner_foreach_symbol</literal> has been deprecated since version 2.2 and should not be used in newly-written code. Use <link linkend="g-scanner-scope-foreach-symbol"><function>g_scanner_scope_foreach_symbol()</function></link> instead.</para></warning>
+<para>
+Calls a function for each symbol in the default scope.
+</para><variablelist role="params">
+<varlistentry><term><parameter>scanner</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GScanner"><type>GScanner</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>func</parameter>&nbsp;:</term>
+<listitem><simpara>the function to call with each symbol.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>data to pass to the function.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-scanner-freeze-symbol-table" role="macro" condition="deprecated:2.2: This macro does nothing.">
+<title>g_scanner_freeze_symbol_table()</title>
+<indexterm zone="g-scanner-freeze-symbol-table" role="deprecated"><primary>g_scanner_freeze_symbol_table</primary></indexterm><programlisting>#define             g_scanner_freeze_symbol_table(scanner)</programlisting>
 <warning><para><literal>g_scanner_freeze_symbol_table</literal> has been deprecated since version 2.2 and should not be used in newly-written code. This macro does nothing.</para></warning>
 <para>
 There is no reason to use this macro, since it does nothing.
@@ -645,9 +813,9 @@ There is no reason to use this macro, since it does nothing.
 <listitem><simpara>a <link linkend="GScanner"><type>GScanner</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-thaw-symbol-table" role="macro" condition="deprecated:2.2: This macro does nothing."/>g_scanner_thaw_symbol_table()</title>
-<indexterm role="deprecated"><primary>g_scanner_thaw_symbol_table</primary></indexterm><programlisting>#define             g_scanner_thaw_symbol_table(scanner)</programlisting>
+<refsect2 id="g-scanner-thaw-symbol-table" role="macro" condition="deprecated:2.2: This macro does nothing.">
+<title>g_scanner_thaw_symbol_table()</title>
+<indexterm zone="g-scanner-thaw-symbol-table" role="deprecated"><primary>g_scanner_thaw_symbol_table</primary></indexterm><programlisting>#define             g_scanner_thaw_symbol_table(scanner)</programlisting>
 <warning><para><literal>g_scanner_thaw_symbol_table</literal> has been deprecated since version 2.2 and should not be used in newly-written code. This macro does nothing.</para></warning>
 <para>
 There is no reason to use this macro, since it does nothing.
@@ -656,9 +824,9 @@ There is no reason to use this macro, since it does nothing.
 <listitem><simpara>a <link linkend="GScanner"><type>GScanner</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-lookup-symbol" role="function"/>g_scanner_lookup_symbol ()</title>
-<indexterm><primary>g_scanner_lookup_symbol</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_scanner_lookup_symbol             (<link linkend="GScanner">GScanner</link> *scanner,
+<refsect2 id="g-scanner-lookup-symbol" role="function">
+<title>g_scanner_lookup_symbol ()</title>
+<indexterm zone="g-scanner-lookup-symbol"><primary>g_scanner_lookup_symbol</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_scanner_lookup_symbol             (<link linkend="GScanner">GScanner</link> *scanner,
                                                          const <link linkend="gchar">gchar</link> *symbol);</programlisting>
 <para>
 Looks up a symbol in the current scope and return its value. If the
@@ -676,9 +844,9 @@ if <parameter>symbol</parameter> is not bound in the current scope.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-warn" role="function"/>g_scanner_warn ()</title>
-<indexterm><primary>g_scanner_warn</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_warn                      (<link linkend="GScanner">GScanner</link> *scanner,
+<refsect2 id="g-scanner-warn" role="function">
+<title>g_scanner_warn ()</title>
+<indexterm zone="g-scanner-warn"><primary>g_scanner_warn</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_warn                      (<link linkend="GScanner">GScanner</link> *scanner,
                                                          const <link linkend="gchar">gchar</link> *format,
                                                          ...);</programlisting>
 <para>
@@ -697,9 +865,9 @@ documentation.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-error" role="function"/>g_scanner_error ()</title>
-<indexterm><primary>g_scanner_error</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_error                     (<link linkend="GScanner">GScanner</link> *scanner,
+<refsect2 id="g-scanner-error" role="function">
+<title>g_scanner_error ()</title>
+<indexterm zone="g-scanner-error"><primary>g_scanner_error</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_error                     (<link linkend="GScanner">GScanner</link> *scanner,
                                                          const <link linkend="gchar">gchar</link> *format,
                                                          ...);</programlisting>
 <para>
@@ -718,9 +886,9 @@ documentation.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-unexp-token" role="function"/>g_scanner_unexp_token ()</title>
-<indexterm><primary>g_scanner_unexp_token</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_unexp_token               (<link linkend="GScanner">GScanner</link> *scanner,
+<refsect2 id="g-scanner-unexp-token" role="function">
+<title>g_scanner_unexp_token ()</title>
+<indexterm zone="g-scanner-unexp-token"><primary>g_scanner_unexp_token</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_unexp_token               (<link linkend="GScanner">GScanner</link> *scanner,
                                                          <link linkend="GTokenType">GTokenType</link> expected_token,
                                                          const <link linkend="gchar">gchar</link> *identifier_spec,
                                                          const <link linkend="gchar">gchar</link> *symbol_spec,
@@ -768,9 +936,9 @@ of the message.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GScannerMsgFunc" role="function"/>GScannerMsgFunc ()</title>
-<indexterm><primary>GScannerMsgFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GScannerMsgFunc)                  (<link linkend="GScanner">GScanner</link> *scanner,
+<refsect2 id="GScannerMsgFunc" role="function">
+<title>GScannerMsgFunc ()</title>
+<indexterm zone="GScannerMsgFunc"><primary>GScannerMsgFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GScannerMsgFunc)                  (<link linkend="GScanner">GScanner</link> *scanner,
                                                          <link linkend="gchar">gchar</link> *message,
                                                          <link linkend="gboolean">gboolean</link> error);</programlisting>
 <para>
@@ -789,21 +957,49 @@ Specifies the type of the message handler function.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-destroy" role="function"/>g_scanner_destroy ()</title>
-<indexterm><primary>g_scanner_destroy</primary></indexterm><programlisting><link linkend="void">void</link>                g_scanner_destroy                   (<link linkend="GScanner">GScanner</link> *scanner);</programlisting>
+<refsect2 id="G-CSET-a-2-z" role="macro">
+<title>G_CSET_a_2_z</title>
+<indexterm zone="G-CSET-a-2-z"><primary>G_CSET_a_2_z</primary></indexterm><programlisting>#define G_CSET_a_2_z	"abcdefghijklmnopqrstuvwxyz"
+</programlisting>
 <para>
-Frees all memory used by the <link linkend="GScanner"><type>GScanner</type></link>.
-</para><variablelist role="params">
-<varlistentry><term><parameter>scanner</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GScanner"><type>GScanner</type></link>.
-
-
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
-<title><anchor id="GTokenType" role="enum"/>enum GTokenType</title>
-<indexterm><primary>GTokenType</primary></indexterm><programlisting>typedef enum
+The set of lowercase ASCII alphabet characters.
+Used for specifying valid identifier characters in <link linkend="GScannerConfig"><type>GScannerConfig</type></link>.
+</para></refsect2>
+<refsect2 id="G-CSET-A-2-Z:CAPS" role="macro">
+<title>G_CSET_A_2_Z</title>
+<indexterm zone="G-CSET-A-2-Z:CAPS"><primary>G_CSET_A_2_Z</primary></indexterm><programlisting>#define G_CSET_A_2_Z	"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+</programlisting>
+<para>
+The set of uppercase ASCII alphabet characters.
+Used for specifying valid identifier characters in <link linkend="GScannerConfig"><type>GScannerConfig</type></link>.
+</para></refsect2>
+<refsect2 id="G-CSET-DIGITS:CAPS" role="macro">
+<title>G_CSET_DIGITS</title>
+<indexterm zone="G-CSET-DIGITS:CAPS"><primary>G_CSET_DIGITS</primary></indexterm><programlisting>#define G_CSET_DIGITS	"0123456789"
+</programlisting>
+<para>
+The set of digits.
+Used for specifying valid identifier characters in <link linkend="GScannerConfig"><type>GScannerConfig</type></link>.
+</para></refsect2>
+<refsect2 id="G-CSET-LATINC:CAPS" role="macro">
+<title>G_CSET_LATINC</title>
+<indexterm zone="G-CSET-LATINC:CAPS"><primary>G_CSET_LATINC</primary></indexterm><programlisting>#define             G_CSET_LATINC</programlisting>
+<para>
+The set of uppercase ISO 8859-1 alphabet characters which are 
+not ASCII characters. 
+Used for specifying valid identifier characters in <link linkend="GScannerConfig"><type>GScannerConfig</type></link>.
+</para></refsect2>
+<refsect2 id="G-CSET-LATINS:CAPS" role="macro">
+<title>G_CSET_LATINS</title>
+<indexterm zone="G-CSET-LATINS:CAPS"><primary>G_CSET_LATINS</primary></indexterm><programlisting>#define             G_CSET_LATINS</programlisting>
+<para>
+The set of lowercase ISO 8859-1 alphabet characters which are 
+not ASCII characters. 
+Used for specifying valid identifier characters in <link linkend="GScannerConfig"><type>GScannerConfig</type></link>.
+</para></refsect2>
+<refsect2 id="GTokenType" role="enum">
+<title>enum GTokenType</title>
+<indexterm zone="GTokenType"><primary>GTokenType</primary></indexterm><programlisting>typedef enum
 {
   G_TOKEN_EOF			=   0,
   
@@ -840,31 +1036,31 @@ Frees all memory used by the <link linkend="GScanner"><type>GScanner</type></lin
 <para>
 The possible types of token returned from each <link linkend="g-scanner-get-next-token"><function>g_scanner_get_next_token()</function></link> call.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-TOKEN-EOF:CAPS" role="constant"/><literal>G_TOKEN_EOF</literal></term>
+<varlistentry id="G-TOKEN-EOF:CAPS" role="constant">
+<term><literal>G_TOKEN_EOF</literal></term>
 <listitem><simpara>the end of the file.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-TOKEN-LEFT-PAREN:CAPS" role="constant"/><literal>G_TOKEN_LEFT_PAREN</literal></term>
+<varlistentry id="G-TOKEN-LEFT-PAREN:CAPS" role="constant">
+<term><literal>G_TOKEN_LEFT_PAREN</literal></term>
 <listitem><simpara>a '(' character.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-TOKEN-LEFT-CURLY:CAPS" role="constant"/><literal>G_TOKEN_LEFT_CURLY</literal></term>
+<varlistentry id="G-TOKEN-LEFT-CURLY:CAPS" role="constant">
+<term><literal>G_TOKEN_LEFT_CURLY</literal></term>
 <listitem><simpara>a '{' character.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-TOKEN-RIGHT-CURLY:CAPS" role="constant"/><literal>G_TOKEN_RIGHT_CURLY</literal></term>
+<varlistentry id="G-TOKEN-RIGHT-CURLY:CAPS" role="constant">
+<term><literal>G_TOKEN_RIGHT_CURLY</literal></term>
 <listitem><simpara>a '}' character.
 
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GTokenValue" role="union"/>union GTokenValue</title>
-<indexterm><primary>GTokenValue</primary></indexterm><programlisting>union GTokenValue
+<refsect2 id="GTokenValue" role="union">
+<title>union GTokenValue</title>
+<indexterm zone="GTokenValue"><primary>GTokenValue</primary></indexterm><programlisting>union GTokenValue
 {
   gpointer	v_symbol;
   gchar		*v_identifier;
@@ -883,9 +1079,9 @@ The possible types of token returned from each <link linkend="g-scanner-get-next
 <para>
 A union holding the value of the token.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GErrorType" role="enum"/>enum GErrorType</title>
-<indexterm><primary>GErrorType</primary></indexterm><programlisting>typedef enum
+<refsect2 id="GErrorType" role="enum">
+<title>enum GErrorType</title>
+<indexterm zone="GErrorType"><primary>GErrorType</primary></indexterm><programlisting>typedef enum
 {
   G_ERR_UNKNOWN,
   G_ERR_UNEXP_EOF,
@@ -901,135 +1097,47 @@ A union holding the value of the token.
 The possible errors, used in the <structfield>v_error</structfield> field
 of <link linkend="GTokenValue"><type>GTokenValue</type></link>, when the token is a <link linkend="G-TOKEN-ERROR:CAPS"><type>G_TOKEN_ERROR</type></link>.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="G-ERR-UNKNOWN:CAPS" role="constant"/><literal>G_ERR_UNKNOWN</literal></term>
+<varlistentry id="G-ERR-UNKNOWN:CAPS" role="constant">
+<term><literal>G_ERR_UNKNOWN</literal></term>
 <listitem><simpara>unknown error.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-ERR-UNEXP-EOF:CAPS" role="constant"/><literal>G_ERR_UNEXP_EOF</literal></term>
+<varlistentry id="G-ERR-UNEXP-EOF:CAPS" role="constant">
+<term><literal>G_ERR_UNEXP_EOF</literal></term>
 <listitem><simpara>unexpected end of file.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-ERR-UNEXP-EOF-IN-STRING:CAPS" role="constant"/><literal>G_ERR_UNEXP_EOF_IN_STRING</literal></term>
+<varlistentry id="G-ERR-UNEXP-EOF-IN-STRING:CAPS" role="constant">
+<term><literal>G_ERR_UNEXP_EOF_IN_STRING</literal></term>
 <listitem><simpara>unterminated string constant.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-ERR-UNEXP-EOF-IN-COMMENT:CAPS" role="constant"/><literal>G_ERR_UNEXP_EOF_IN_COMMENT</literal></term>
+<varlistentry id="G-ERR-UNEXP-EOF-IN-COMMENT:CAPS" role="constant">
+<term><literal>G_ERR_UNEXP_EOF_IN_COMMENT</literal></term>
 <listitem><simpara>unterminated comment.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-ERR-NON-DIGIT-IN-CONST:CAPS" role="constant"/><literal>G_ERR_NON_DIGIT_IN_CONST</literal></term>
+<varlistentry id="G-ERR-NON-DIGIT-IN-CONST:CAPS" role="constant">
+<term><literal>G_ERR_NON_DIGIT_IN_CONST</literal></term>
 <listitem><simpara>non-digit character in a number.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-ERR-DIGIT-RADIX:CAPS" role="constant"/><literal>G_ERR_DIGIT_RADIX</literal></term>
+<varlistentry id="G-ERR-DIGIT-RADIX:CAPS" role="constant">
+<term><literal>G_ERR_DIGIT_RADIX</literal></term>
 <listitem><simpara>digit beyond radix in a number.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-ERR-FLOAT-RADIX:CAPS" role="constant"/><literal>G_ERR_FLOAT_RADIX</literal></term>
+<varlistentry id="G-ERR-FLOAT-RADIX:CAPS" role="constant">
+<term><literal>G_ERR_FLOAT_RADIX</literal></term>
 <listitem><simpara>non-decimal floating point number.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="G-ERR-FLOAT-MALFORMED:CAPS" role="constant"/><literal>G_ERR_FLOAT_MALFORMED</literal></term>
+<varlistentry id="G-ERR-FLOAT-MALFORMED:CAPS" role="constant">
+<term><literal>G_ERR_FLOAT_MALFORMED</literal></term>
 <listitem><simpara>malformed floating point number.
 
 </simpara></listitem>
 </varlistentry>
-</variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-CSET-a-2-z" role="macro"/>G_CSET_a_2_z</title>
-<indexterm><primary>G_CSET_a_2_z</primary></indexterm><programlisting>#define G_CSET_a_2_z	"abcdefghijklmnopqrstuvwxyz"
-</programlisting>
-<para>
-The set of lowercase ASCII alphabet characters.
-Used for specifying valid identifier characters in <link linkend="GScannerConfig"><type>GScannerConfig</type></link>.
-</para></refsect2>
-<refsect2>
-<title><anchor id="G-CSET-A-2-Z:CAPS" role="macro"/>G_CSET_A_2_Z</title>
-<indexterm><primary>G_CSET_A_2_Z</primary></indexterm><programlisting>#define G_CSET_A_2_Z	"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-</programlisting>
-<para>
-The set of uppercase ASCII alphabet characters.
-Used for specifying valid identifier characters in <link linkend="GScannerConfig"><type>GScannerConfig</type></link>.
-</para></refsect2>
-<refsect2>
-<title><anchor id="G-CSET-DIGITS:CAPS" role="macro"/>G_CSET_DIGITS</title>
-<indexterm><primary>G_CSET_DIGITS</primary></indexterm><programlisting>#define G_CSET_DIGITS	"0123456789"
-</programlisting>
-<para>
-The set of digits.
-Used for specifying valid identifier characters in <link linkend="GScannerConfig"><type>GScannerConfig</type></link>.
-</para></refsect2>
-<refsect2>
-<title><anchor id="G-CSET-LATINC:CAPS" role="macro"/>G_CSET_LATINC</title>
-<indexterm><primary>G_CSET_LATINC</primary></indexterm><programlisting>#define             G_CSET_LATINC</programlisting>
-<para>
-The set of uppercase ISO 8859-1 alphabet characters which are 
-not ASCII characters. 
-Used for specifying valid identifier characters in <link linkend="GScannerConfig"><type>GScannerConfig</type></link>.
-</para></refsect2>
-<refsect2>
-<title><anchor id="G-CSET-LATINS:CAPS" role="macro"/>G_CSET_LATINS</title>
-<indexterm><primary>G_CSET_LATINS</primary></indexterm><programlisting>#define             G_CSET_LATINS</programlisting>
-<para>
-The set of lowercase ISO 8859-1 alphabet characters which are 
-not ASCII characters. 
-Used for specifying valid identifier characters in <link linkend="GScannerConfig"><type>GScannerConfig</type></link>.
-</para></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-add-symbol" role="macro" condition="deprecated:2.2: Use g_scanner_scope_add_symbol() instead."/>g_scanner_add_symbol()</title>
-<indexterm role="deprecated"><primary>g_scanner_add_symbol</primary></indexterm><programlisting>#define             g_scanner_add_symbol( scanner, symbol, value )</programlisting>
-<warning><para><literal>g_scanner_add_symbol</literal> has been deprecated since version 2.2 and should not be used in newly-written code. Use <link linkend="g-scanner-scope-add-symbol"><function>g_scanner_scope_add_symbol()</function></link> instead.</para></warning>
-<para>
-Adds a symbol to the default scope.
-</para><variablelist role="params">
-<varlistentry><term><parameter>scanner</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GScanner"><type>GScanner</type></link>.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>symbol</parameter>&nbsp;:</term>
-<listitem><simpara>the symbol to add.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
-<listitem><simpara>the value of the symbol.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-remove-symbol" role="macro" condition="deprecated:2.2: Use g_scanner_scope_remove_symbol() instead."/>g_scanner_remove_symbol()</title>
-<indexterm role="deprecated"><primary>g_scanner_remove_symbol</primary></indexterm><programlisting>#define             g_scanner_remove_symbol( scanner, symbol )</programlisting>
-<warning><para><literal>g_scanner_remove_symbol</literal> has been deprecated since version 2.2 and should not be used in newly-written code. Use <link linkend="g-scanner-scope-remove-symbol"><function>g_scanner_scope_remove_symbol()</function></link> instead.</para></warning>
-<para>
-Removes a symbol from the default scope.
-</para><variablelist role="params">
-<varlistentry><term><parameter>scanner</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GScanner"><type>GScanner</type></link>.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>symbol</parameter>&nbsp;:</term>
-<listitem><simpara>the symbol to remove.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-scanner-foreach-symbol" role="macro" condition="deprecated:2.2: Use g_scanner_scope_foreach_symbol() instead."/>g_scanner_foreach_symbol()</title>
-<indexterm role="deprecated"><primary>g_scanner_foreach_symbol</primary></indexterm><programlisting>#define             g_scanner_foreach_symbol( scanner, func, data )</programlisting>
-<warning><para><literal>g_scanner_foreach_symbol</literal> has been deprecated since version 2.2 and should not be used in newly-written code. Use <link linkend="g-scanner-scope-foreach-symbol"><function>g_scanner_scope_foreach_symbol()</function></link> instead.</para></warning>
-<para>
-Calls a function for each symbol in the default scope.
-</para><variablelist role="params">
-<varlistentry><term><parameter>scanner</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GScanner"><type>GScanner</type></link>.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>func</parameter>&nbsp;:</term>
-<listitem><simpara>the function to call with each symbol.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
-<listitem><simpara>data to pass to the function.
-</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>

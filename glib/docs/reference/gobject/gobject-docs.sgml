@@ -42,7 +42,7 @@
 			types and algorithms (linked lists, hash tables and so forth), the
 			GLib Object System provides the required implementations of a
 			flexible extensible and intentionally easy to map (into other
-			languages) object oriented framework for C.
+			languages) object-oriented framework for C.
 			The substantial elements that are provided can be summarized as:
 			<itemizedlist>
 				<listitem><para>
@@ -144,6 +144,9 @@
   </index>  
   <index role="2.12">
     <title>Index of new symbols in 2.12</title>
+  </index>  
+  <index role="2.14">
+    <title>Index of new symbols in 2.14</title>
   </index>  
   
 </book>

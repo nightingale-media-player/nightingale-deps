@@ -432,8 +432,8 @@ arg_test6 (void)
   g_assert (retval);
 
   /* Last arg specified is the one that should be stored */
-  g_assert (arg_test6_int64 == 4294967296LL);
-  g_assert (arg_test6_int64_2 == 0xfffffffffLL);
+  g_assert (arg_test6_int64 == G_GINT64_CONSTANT(4294967296));
+  g_assert (arg_test6_int64_2 == G_GINT64_CONSTANT(0xfffffffff));
 
   g_strfreev (argv);
   g_option_context_free (context);
@@ -783,6 +783,48 @@ callback_test_optional_8 (void)
   g_assert (callback_test_optional_boolean);
 
   g_free (callback_test_optional_string);
+  
+  g_strfreev (argv);
+  g_option_context_free (context);
+}
+
+static GPtrArray *callback_remaining_args;
+static gboolean
+callback_remaining_test1_callback (const gchar *option_name, const gchar *value,
+		         gpointer data, GError **error)
+{
+	g_ptr_array_add (callback_remaining_args, g_strdup (value));
+	return TRUE;
+}
+
+void
+callback_remaining_test1 (void)
+{
+  GOptionContext *context;
+  gboolean retval;
+  GError *error = NULL;
+  gchar **argv;
+  int argc;
+  GOptionEntry entries [] =
+    { { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_CALLBACK, callback_remaining_test1_callback, NULL, NULL },
+      { NULL } };
+  
+  callback_remaining_args = g_ptr_array_new ();
+  context = g_option_context_new (NULL);
+  g_option_context_add_main_entries (context, entries, NULL);
+
+  /* Now try parsing */
+  argv = split_string ("program foo.txt blah.txt", &argc);
+  
+  retval = g_option_context_parse (context, &argc, &argv, &error);
+  g_assert (retval);
+
+  g_assert (callback_remaining_args->len == 2);
+  g_assert (strcmp (callback_remaining_args->pdata[0], "foo.txt") == 0);
+  g_assert (strcmp (callback_remaining_args->pdata[1], "blah.txt") == 0);
+
+  g_ptr_array_foreach (callback_remaining_args, (GFunc) g_free, NULL);
+  g_ptr_array_free (callback_remaining_args, TRUE);
   
   g_strfreev (argv);
   g_option_context_free (context);
@@ -1420,6 +1462,9 @@ main (int argc, char **argv)
   callback_test_optional_6 ();
   callback_test_optional_7 ();
   callback_test_optional_8 ();
+
+  /* Test callback with G_OPTION_REMAINING */
+  callback_remaining_test1 ();
   
   /* Test ignoring options */
   ignore_test1 ();

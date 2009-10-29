@@ -1,23 +1,22 @@
 <refentry id="glib-Memory-Allocation">
 <refmeta>
-<refentrytitle role="top_of_page">Memory Allocation</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Memory-Allocation.top_of_page">Memory Allocation</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>Memory Allocation</refname>
-<refpurpose>general memory-handling.</refpurpose>
+<refpurpose>general memory-handling</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Memory-Allocation.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
-
 
 #define             <link linkend="g-new">g_new</link>                               (struct_type, n_structs)
 #define             <link linkend="g-new0">g_new0</link>                              (struct_type, n_structs)
@@ -26,14 +25,14 @@
 #define             <link linkend="g-try-new0">g_try_new0</link>                          (struct_type, n_structs)
 #define             <link linkend="g-try-renew">g_try_renew</link>                         (struct_type, mem, n_structs)
 
-<link linkend="gpointer">gpointer</link>            <link linkend="g-malloc">g_malloc</link>                            (<link linkend="gulong">gulong</link> n_bytes);
-<link linkend="gpointer">gpointer</link>            <link linkend="g-malloc0">g_malloc0</link>                           (<link linkend="gulong">gulong</link> n_bytes);
+<link linkend="gpointer">gpointer</link>            <link linkend="g-malloc">g_malloc</link>                            (<link linkend="gsize">gsize</link> n_bytes);
+<link linkend="gpointer">gpointer</link>            <link linkend="g-malloc0">g_malloc0</link>                           (<link linkend="gsize">gsize</link> n_bytes);
 <link linkend="gpointer">gpointer</link>            <link linkend="g-realloc">g_realloc</link>                           (<link linkend="gpointer">gpointer</link> mem,
-                                                         <link linkend="gulong">gulong</link> n_bytes);
-<link linkend="gpointer">gpointer</link>            <link linkend="g-try-malloc">g_try_malloc</link>                        (<link linkend="gulong">gulong</link> n_bytes);
-<link linkend="gpointer">gpointer</link>            <link linkend="g-try-malloc0">g_try_malloc0</link>                       (<link linkend="gulong">gulong</link> n_bytes);
+                                                         <link linkend="gsize">gsize</link> n_bytes);
+<link linkend="gpointer">gpointer</link>            <link linkend="g-try-malloc">g_try_malloc</link>                        (<link linkend="gsize">gsize</link> n_bytes);
+<link linkend="gpointer">gpointer</link>            <link linkend="g-try-malloc0">g_try_malloc0</link>                       (<link linkend="gsize">gsize</link> n_bytes);
 <link linkend="gpointer">gpointer</link>            <link linkend="g-try-realloc">g_try_realloc</link>                       (<link linkend="gpointer">gpointer</link> mem,
-                                                         <link linkend="gulong">gulong</link> n_bytes);
+                                                         <link linkend="gsize">gsize</link> n_bytes);
 
 <link linkend="void">void</link>                <link linkend="g-free">g_free</link>                              (<link linkend="gpointer">gpointer</link> mem);
 extern              gboolean <link linkend="g-mem-gc-friendly">g_mem_gc_friendly</link>;
@@ -62,24 +61,35 @@ extern              GMemVTable	*<link linkend="glib-mem-profiler-table">glib_mem
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Memory-Allocation.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 These functions provide support for allocating and freeing memory.
 </para>
+
 <note>
 <para>
 If any call to allocate memory fails, the application is terminated.
 This also means that there is no need to check if the call succeeded.
 </para>
 </note>
+
+<note>
+<para>
+It's important to match <link linkend="g-malloc"><function>g_malloc()</function></link> with <link linkend="g-free"><function>g_free()</function></link>, plain <link linkend="malloc"><function>malloc()</function></link> with <link linkend="free"><function>free()</function></link>,
+and (if you're using C++) new with delete and new[] with delete[]. Otherwise
+bad things can happen, since these allocators may use different memory
+pools (and new/delete call constructors and destructors). See also
+<link linkend="g-mem-set-vtable"><function>g_mem_set_vtable()</function></link>.
+</para>
+</note>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Memory-Allocation.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="g-new" role="macro"/>g_new()</title>
-<indexterm><primary>g_new</primary></indexterm><programlisting>#define             g_new(struct_type, n_structs)</programlisting>
+<refsect2 id="g-new" role="macro">
+<title>g_new()</title>
+<indexterm zone="g-new"><primary>g_new</primary></indexterm><programlisting>#define             g_new(struct_type, n_structs)</programlisting>
 <para>
 Allocates <parameter>n_structs</parameter> elements of type <parameter>struct_type</parameter>.
 The returned pointer is cast to a pointer to the given type.
@@ -91,19 +101,19 @@ it is normally unnecessary to cast it explicitly, and doing
 so might hide memory allocation errors.
 </para><variablelist role="params">
 <varlistentry><term><parameter>struct_type</parameter>&nbsp;:</term>
-<listitem><simpara>the type of the elements to allocate.
+<listitem><simpara>the type of the elements to allocate
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n_structs</parameter>&nbsp;:</term>
-<listitem><simpara>the number of elements to allocate.
+<listitem><simpara>the number of elements to allocate
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a pointer to the allocated memory, cast to a pointer to <parameter>struct_type</parameter>.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a pointer to the allocated memory, cast to a pointer to <parameter>struct_type</parameter>
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-new0" role="macro"/>g_new0()</title>
-<indexterm><primary>g_new0</primary></indexterm><programlisting>#define             g_new0(struct_type, n_structs)</programlisting>
+<refsect2 id="g-new0" role="macro">
+<title>g_new0()</title>
+<indexterm zone="g-new0"><primary>g_new0</primary></indexterm><programlisting>#define             g_new0(struct_type, n_structs)</programlisting>
 <para>
 Allocates <parameter>n_structs</parameter> elements of type <parameter>struct_type</parameter>, initialized to 0's.
 The returned pointer is cast to a pointer to the given type.
@@ -125,31 +135,31 @@ so might hide memory allocation errors.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-renew" role="macro"/>g_renew()</title>
-<indexterm><primary>g_renew</primary></indexterm><programlisting>#define             g_renew(struct_type, mem, n_structs)</programlisting>
+<refsect2 id="g-renew" role="macro">
+<title>g_renew()</title>
+<indexterm zone="g-renew"><primary>g_renew</primary></indexterm><programlisting>#define             g_renew(struct_type, mem, n_structs)</programlisting>
 <para>
 Reallocates the memory pointed to by <parameter>mem</parameter>, so that it now has space for
 <parameter>n_structs</parameter> elements of type <parameter>struct_type</parameter>. It returns the new address of 
 the memory, which may have been moved.
 </para><variablelist role="params">
 <varlistentry><term><parameter>struct_type</parameter>&nbsp;:</term>
-<listitem><simpara>the type of the elements to allocate.
+<listitem><simpara>the type of the elements to allocate
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>mem</parameter>&nbsp;:</term>
-<listitem><simpara>the currently allocated memory.
+<listitem><simpara>the currently allocated memory
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n_structs</parameter>&nbsp;:</term>
-<listitem><simpara>the number of elements to allocate.
+<listitem><simpara>the number of elements to allocate
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a pointer to the new allocated memory, cast to a pointer to <parameter>struct_type</parameter>.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a pointer to the new allocated memory, cast to a pointer to <parameter>struct_type</parameter>
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-try-new" role="macro" condition="since:2.8"/>g_try_new()</title>
-<indexterm role="2.8"><primary>g_try_new</primary></indexterm><programlisting>#define             g_try_new(struct_type, n_structs)</programlisting>
+<refsect2 id="g-try-new" role="macro" condition="since:2.8">
+<title>g_try_new()</title>
+<indexterm zone="g-try-new" role="2.8"><primary>g_try_new</primary></indexterm><programlisting>#define             g_try_new(struct_type, n_structs)</programlisting>
 <para>
 Attempts to allocate <parameter>n_structs</parameter> elements of type <parameter>struct_type</parameter>, and returns 
 <link linkend="NULL:CAPS"><literal>NULL</literal></link> on failure. Contrast with <link linkend="g-new"><function>g_new()</function></link>, which aborts the program on failure.
@@ -157,42 +167,42 @@ The returned pointer is cast to a pointer to the given type.
 If <parameter>n_structs</parameter> is 0 it returns <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>struct_type</parameter>&nbsp;:</term>
-<listitem><simpara>the type of the elements to allocate.
+<listitem><simpara>the type of the elements to allocate
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n_structs</parameter>&nbsp;:</term>
-<listitem><simpara>the number of elements to allocate.
+<listitem><simpara>the number of elements to allocate
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a pointer to the allocated memory, cast to a pointer to <parameter>struct_type</parameter>.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a pointer to the allocated memory, cast to a pointer to <parameter>struct_type</parameter>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 2.8
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-try-new0" role="macro" condition="since:2.8"/>g_try_new0()</title>
-<indexterm role="2.8"><primary>g_try_new0</primary></indexterm><programlisting>#define             g_try_new0(struct_type, n_structs)</programlisting>
+<refsect2 id="g-try-new0" role="macro" condition="since:2.8">
+<title>g_try_new0()</title>
+<indexterm zone="g-try-new0" role="2.8"><primary>g_try_new0</primary></indexterm><programlisting>#define             g_try_new0(struct_type, n_structs)</programlisting>
 <para>
 Attempts to allocate <parameter>n_structs</parameter> elements of type <parameter>struct_type</parameter>, initialized 
 to 0's, and returns <link linkend="NULL:CAPS"><literal>NULL</literal></link> on failure. Contrast with <link linkend="g-new0"><function>g_new0()</function></link>, which aborts 
 the program on failure.
 The returned pointer is cast to a pointer to the given type.
-If <parameter>n_counts</parameter> is 0 it returns <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
+The function returns <link linkend="NULL:CAPS"><literal>NULL</literal></link> when <parameter>n_structs</parameter> is 0.
 </para><variablelist role="params">
 <varlistentry><term><parameter>struct_type</parameter>&nbsp;:</term>
-<listitem><simpara>the type of the elements to allocate.
+<listitem><simpara>the type of the elements to allocate
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n_structs</parameter>&nbsp;:</term>
-<listitem><simpara>the number of elements to allocate.
+<listitem><simpara>the number of elements to allocate
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a pointer to the allocated memory, cast to a pointer to <parameter>struct_type</parameter>.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a pointer to the allocated memory, cast to a pointer to <parameter>struct_type</parameter>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 2.8
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-try-renew" role="macro" condition="since:2.8"/>g_try_renew()</title>
-<indexterm role="2.8"><primary>g_try_renew</primary></indexterm><programlisting>#define             g_try_renew(struct_type, mem, n_structs)</programlisting>
+<refsect2 id="g-try-renew" role="macro" condition="since:2.8">
+<title>g_try_renew()</title>
+<indexterm zone="g-try-renew" role="2.8"><primary>g_try_renew</primary></indexterm><programlisting>#define             g_try_renew(struct_type, mem, n_structs)</programlisting>
 <para>
 Attempts to reallocate the memory pointed to by <parameter>mem</parameter>, so that it now has 
 space for <parameter>n_structs</parameter> elements of type <parameter>struct_type</parameter>, and returns <link linkend="NULL:CAPS"><literal>NULL</literal></link> on 
@@ -200,74 +210,75 @@ failure. Contrast with <link linkend="g-renew"><function>g_renew()</function></l
 It returns the new address of the memory, which may have been moved.
 </para><variablelist role="params">
 <varlistentry><term><parameter>struct_type</parameter>&nbsp;:</term>
-<listitem><simpara>the type of the elements to allocate.
+<listitem><simpara>the type of the elements to allocate
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>mem</parameter>&nbsp;:</term>
-<listitem><simpara>the currently allocated memory.
+<listitem><simpara>the currently allocated memory
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n_structs</parameter>&nbsp;:</term>
-<listitem><simpara>the number of elements to allocate.
+<listitem><simpara>the number of elements to allocate
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a pointer to the new allocated memory, cast to a pointer to <parameter>struct_type</parameter>.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a pointer to the new allocated memory, cast to a pointer to <parameter>struct_type</parameter>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 2.8
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-malloc" role="function"/>g_malloc ()</title>
-<indexterm><primary>g_malloc</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_malloc                            (<link linkend="gulong">gulong</link> n_bytes);</programlisting>
+<refsect2 id="g-malloc" role="function">
+<title>g_malloc ()</title>
+<indexterm zone="g-malloc"><primary>g_malloc</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_malloc                            (<link linkend="gsize">gsize</link> n_bytes);</programlisting>
 <para>
 Allocates <parameter>n_bytes</parameter> bytes of memory.
 If <parameter>n_bytes</parameter> is 0 it returns <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>n_bytes</parameter>&nbsp;:</term>
-<listitem><simpara>the number of bytes to allocate.
+<listitem><simpara>the number of bytes to allocate
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a pointer to the allocated memory.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a pointer to the allocated memory
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-malloc0" role="function"/>g_malloc0 ()</title>
-<indexterm><primary>g_malloc0</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_malloc0                           (<link linkend="gulong">gulong</link> n_bytes);</programlisting>
+<refsect2 id="g-malloc0" role="function">
+<title>g_malloc0 ()</title>
+<indexterm zone="g-malloc0"><primary>g_malloc0</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_malloc0                           (<link linkend="gsize">gsize</link> n_bytes);</programlisting>
 <para>
 Allocates <parameter>n_bytes</parameter> bytes of memory, initialized to 0's.
 If <parameter>n_bytes</parameter> is 0 it returns <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>n_bytes</parameter>&nbsp;:</term>
-<listitem><simpara>the number of bytes to allocate.
+<listitem><simpara>the number of bytes to allocate
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a pointer to the allocated memory.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a pointer to the allocated memory
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-realloc" role="function"/>g_realloc ()</title>
-<indexterm><primary>g_realloc</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_realloc                           (<link linkend="gpointer">gpointer</link> mem,
-                                                         <link linkend="gulong">gulong</link> n_bytes);</programlisting>
+<refsect2 id="g-realloc" role="function">
+<title>g_realloc ()</title>
+<indexterm zone="g-realloc"><primary>g_realloc</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_realloc                           (<link linkend="gpointer">gpointer</link> mem,
+                                                         <link linkend="gsize">gsize</link> n_bytes);</programlisting>
 <para>
 Reallocates the memory pointed to by <parameter>mem</parameter>, so that it now has space for
 <parameter>n_bytes</parameter> bytes of memory. It returns the new address of the memory, which may
 have been moved. <parameter>mem</parameter> may be <link linkend="NULL:CAPS"><literal>NULL</literal></link>, in which case it's considered to 
-have zero-length. <parameter>n_bytes</parameter> may be 0, in which case <link linkend="NULL:CAPS"><literal>NULL</literal></link> will be returned.
+have zero-length. <parameter>n_bytes</parameter> may be 0, in which case <link linkend="NULL:CAPS"><literal>NULL</literal></link> will be returned
+and <parameter>mem</parameter> will be freed unless it is <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>mem</parameter>&nbsp;:</term>
-<listitem><simpara>the memory to reallocate.
+<listitem><simpara>the memory to reallocate
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n_bytes</parameter>&nbsp;:</term>
-<listitem><simpara>new size of the memory in bytes.
+<listitem><simpara>new size of the memory in bytes
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>the new address of the allocated memory.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>the new address of the allocated memory
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-try-malloc" role="function"/>g_try_malloc ()</title>
-<indexterm><primary>g_try_malloc</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_try_malloc                        (<link linkend="gulong">gulong</link> n_bytes);</programlisting>
+<refsect2 id="g-try-malloc" role="function">
+<title>g_try_malloc ()</title>
+<indexterm zone="g-try-malloc"><primary>g_try_malloc</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_try_malloc                        (<link linkend="gsize">gsize</link> n_bytes);</programlisting>
 <para>
 Attempts to allocate <parameter>n_bytes</parameter>, and returns <link linkend="NULL:CAPS"><literal>NULL</literal></link> on failure. 
 Contrast with <link linkend="g-malloc"><function>g_malloc()</function></link>, which aborts the program on failure.
@@ -280,26 +291,26 @@ Contrast with <link linkend="g-malloc"><function>g_malloc()</function></link>, w
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-try-malloc0" role="function" condition="since:2.8"/>g_try_malloc0 ()</title>
-<indexterm role="2.8"><primary>g_try_malloc0</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_try_malloc0                       (<link linkend="gulong">gulong</link> n_bytes);</programlisting>
+<refsect2 id="g-try-malloc0" role="function" condition="since:2.8">
+<title>g_try_malloc0 ()</title>
+<indexterm zone="g-try-malloc0" role="2.8"><primary>g_try_malloc0</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_try_malloc0                       (<link linkend="gsize">gsize</link> n_bytes);</programlisting>
 <para>
 Attempts to allocate <parameter>n_bytes</parameter>, initialized to 0's, and returns <link linkend="NULL:CAPS"><literal>NULL</literal></link> on 
 failure. Contrast with <link linkend="g-malloc0"><function>g_malloc0()</function></link>, which aborts the program on failure.
 </para><variablelist role="params">
 <varlistentry><term><parameter>n_bytes</parameter>&nbsp;:</term>
-<listitem><simpara>number of bytes to allocate.
+<listitem><simpara>number of bytes to allocate
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>the allocated memory, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>the allocated memory, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since 2.8
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-try-realloc" role="function"/>g_try_realloc ()</title>
-<indexterm><primary>g_try_realloc</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_try_realloc                       (<link linkend="gpointer">gpointer</link> mem,
-                                                         <link linkend="gulong">gulong</link> n_bytes);</programlisting>
+<refsect2 id="g-try-realloc" role="function">
+<title>g_try_realloc ()</title>
+<indexterm zone="g-try-realloc"><primary>g_try_realloc</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_try_realloc                       (<link linkend="gpointer">gpointer</link> mem,
+                                                         <link linkend="gsize">gsize</link> n_bytes);</programlisting>
 <para>
 Attempts to realloc <parameter>mem</parameter> to a new size, <parameter>n_bytes</parameter>, and returns <link linkend="NULL:CAPS"><literal>NULL</literal></link>
 on failure. Contrast with <link linkend="g-realloc"><function>g_realloc()</function></link>, which aborts the program
@@ -316,58 +327,58 @@ on failure. If <parameter>mem</parameter> is <link linkend="NULL:CAPS"><literal>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-free" role="function"/>g_free ()</title>
-<indexterm><primary>g_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_free                              (<link linkend="gpointer">gpointer</link> mem);</programlisting>
+<refsect2 id="g-free" role="function">
+<title>g_free ()</title>
+<indexterm zone="g-free"><primary>g_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_free                              (<link linkend="gpointer">gpointer</link> mem);</programlisting>
 <para>
 Frees the memory pointed to by <parameter>mem</parameter>.
 If <parameter>mem</parameter> is <link linkend="NULL:CAPS"><literal>NULL</literal></link> it simply returns.
 </para><variablelist role="params">
 <varlistentry><term><parameter>mem</parameter>&nbsp;:</term>
-<listitem><simpara>the memory to free.
+<listitem><simpara>the memory to free
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-mem-gc-friendly" role="variable"/>g_mem_gc_friendly</title>
-<indexterm><primary>g_mem_gc_friendly</primary></indexterm><programlisting>extern gboolean g_mem_gc_friendly;
+<refsect2 id="g-mem-gc-friendly" role="variable">
+<title>g_mem_gc_friendly</title>
+<indexterm zone="g-mem-gc-friendly"><primary>g_mem_gc_friendly</primary></indexterm><programlisting>extern gboolean g_mem_gc_friendly;
 </programlisting>
 <para>
 This variable is <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the <envar>G_DEBUG</envar> environment variable
 includes the key <link linkend="G_DEBUG">gc-friendly</link>.  
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-alloca" role="macro"/>g_alloca()</title>
-<indexterm><primary>g_alloca</primary></indexterm><programlisting>#define             g_alloca(size)</programlisting>
+<refsect2 id="g-alloca" role="macro">
+<title>g_alloca()</title>
+<indexterm zone="g-alloca"><primary>g_alloca</primary></indexterm><programlisting>#define             g_alloca(size)</programlisting>
 <para>
 Allocates <parameter>size</parameter> bytes on the stack; these bytes will be freed when the current
-stack frame is cleaned up. This macro essentially just wraps the 
-<function><link linkend="alloca"><function>alloca()</function></link></function> function present on most UNIX variants. 
-Thus it provides the same advantages and pitfalls as <function><link linkend="alloca"><function>alloca()</function></link></function>:
+stack frame is cleaned up. This macro essentially just wraps the <link linkend="alloca"><function>alloca()</function></link> 
+function present on most UNIX variants. 
+Thus it provides the same advantages and pitfalls as <link linkend="alloca"><function>alloca()</function></link>:
 <variablelist>
   <varlistentry><term></term><listitem><para>
-    + <function><link linkend="alloca"><function>alloca()</function></link></function> is very fast, as on most systems it's implemented by just adjusting
+    + <link linkend="alloca"><function>alloca()</function></link> is very fast, as on most systems it's implemented by just adjusting
     the stack pointer register.
   </para></listitem></varlistentry>
   <varlistentry><term></term><listitem><para>
-    + It doesn't cause any memory fragmentation, within its scope, separate <function><link linkend="alloca"><function>alloca()</function></link></function>
+    + It doesn't cause any memory fragmentation, within its scope, separate <link linkend="alloca"><function>alloca()</function></link>
     blocks just build up and are released together at function end.
   </para></listitem></varlistentry>
   <varlistentry><term></term><listitem><para>
     - Allocation sizes have to fit into the current stack frame. For instance in a
       threaded environment on Linux, the per-thread stack size is limited to 2 Megabytes,
-      so be sparse with <function><link linkend="alloca"><function>alloca()</function></link></function> uses.
+      so be sparse with <link linkend="alloca"><function>alloca()</function></link> uses.
   </para></listitem></varlistentry>
   <varlistentry><term></term><listitem><para>
     - Allocation failure due to insufficient stack space is not indicated with a <link linkend="NULL:CAPS"><literal>NULL</literal></link>
-      return like e.g. with <function><link linkend="malloc"><function>malloc()</function></link></function>. Instead, most systems probably handle it the same
+      return like e.g. with <link linkend="malloc"><function>malloc()</function></link>. Instead, most systems probably handle it the same
       way as out of stack space situations from infinite function recursion, i.e.
       with a segmentation fault.
   </para></listitem></varlistentry>
   <varlistentry><term></term><listitem><para>
-    - Special care has to be taken when mixing <function><link linkend="alloca"><function>alloca()</function></link></function> with GNU C variable sized arrays.
-      Stack space allocated with <function><link linkend="alloca"><function>alloca()</function></link></function> in the same scope as a variable sized array
+    - Special care has to be taken when mixing <link linkend="alloca"><function>alloca()</function></link> with GNU C variable sized arrays.
+      Stack space allocated with <link linkend="alloca"><function>alloca()</function></link> in the same scope as a variable sized array
       will be freed together with the variable sized array upon exit of that scope, and
       not upon exit of the enclosing function scope.
   </para></listitem></varlistentry>
@@ -382,9 +393,9 @@ Thus it provides the same advantages and pitfalls as <function><link linkend="al
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-newa" role="macro"/>g_newa()</title>
-<indexterm><primary>g_newa</primary></indexterm><programlisting>#define             g_newa(struct_type, n_structs)</programlisting>
+<refsect2 id="g-newa" role="macro">
+<title>g_newa()</title>
+<indexterm zone="g-newa"><primary>g_newa</primary></indexterm><programlisting>#define             g_newa(struct_type, n_structs)</programlisting>
 <para>
 Wraps <link linkend="g-alloca"><function>g_alloca()</function></link> in a more typesafe manner.
 </para><variablelist role="params">
@@ -399,9 +410,9 @@ Wraps <link linkend="g-alloca"><function>g_alloca()</function></link> in a more 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-memmove" role="macro"/>g_memmove()</title>
-<indexterm><primary>g_memmove</primary></indexterm><programlisting>#define             g_memmove(dest,src,len)</programlisting>
+<refsect2 id="g-memmove" role="macro">
+<title>g_memmove()</title>
+<indexterm zone="g-memmove"><primary>g_memmove</primary></indexterm><programlisting>#define             g_memmove(dest,src,len)</programlisting>
 <para>
 Copies a block of memory <parameter>len</parameter> bytes long, from <parameter>src</parameter> to <parameter>dest</parameter>.
 The source and destination areas may overlap.
@@ -424,9 +435,9 @@ typically simply resolve to <link linkend="memmove"><function>memmove()</functio
 <listitem><simpara> the number of bytes to copy.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-memdup" role="function"/>g_memdup ()</title>
-<indexterm><primary>g_memdup</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_memdup                            (<link linkend="gconstpointer">gconstpointer</link> mem,
+<refsect2 id="g-memdup" role="function">
+<title>g_memdup ()</title>
+<indexterm zone="g-memdup"><primary>g_memdup</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_memdup                            (<link linkend="gconstpointer">gconstpointer</link> mem,
                                                          <link linkend="guint">guint</link> byte_size);</programlisting>
 <para>
 Allocates <parameter>byte_size</parameter> bytes of memory, and copies <parameter>byte_size</parameter> bytes into it
@@ -444,9 +455,9 @@ is <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GMemVTable" role="struct"/>GMemVTable</title>
-<indexterm><primary>GMemVTable</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GMemVTable" role="struct">
+<title>GMemVTable</title>
+<indexterm zone="GMemVTable"><primary>GMemVTable</primary></indexterm><programlisting>typedef struct {
   gpointer (*malloc)      (gsize    n_bytes);
   gpointer (*realloc)     (gpointer mem,
 			   gsize    n_bytes);
@@ -496,16 +507,17 @@ if it exists, should be prior to any use of GLib.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-mem-set-vtable" role="function"/>g_mem_set_vtable ()</title>
-<indexterm><primary>g_mem_set_vtable</primary></indexterm><programlisting><link linkend="void">void</link>                g_mem_set_vtable                    (<link linkend="GMemVTable">GMemVTable</link> *vtable);</programlisting>
+<refsect2 id="g-mem-set-vtable" role="function">
+<title>g_mem_set_vtable ()</title>
+<indexterm zone="g-mem-set-vtable"><primary>g_mem_set_vtable</primary></indexterm><programlisting><link linkend="void">void</link>                g_mem_set_vtable                    (<link linkend="GMemVTable">GMemVTable</link> *vtable);</programlisting>
 <para>
 Sets the <link linkend="GMemVTable"><type>GMemVTable</type></link> to use for memory allocation. You can use this to provide
-custom memory allocation routines. <emphasis>This function must be called before using any other GLib functions.</emphasis> The <parameter>vtable</parameter> only needs to provide <function><link linkend="malloc"><function>malloc()</function></link></function>, <function><link linkend="realloc"><function>realloc()</function></link></function>, and <function><link linkend="free"><function>free()</function></link></function>
-functions; GLib can provide default implementations of the others.  The <function><link linkend="malloc"><function>malloc()</function></link></function>
-and <function><link linkend="realloc"><function>realloc()</function></link></function> implementations should return <link linkend="NULL:CAPS"><literal>NULL</literal></link> on failure, GLib will handle
-error-checking for you. <parameter>vtable</parameter> is copied, so need not persist after this 
-function has been called.
+custom memory allocation routines. <emphasis>This function must be called 
+before using any other GLib functions.</emphasis> The <parameter>vtable</parameter> only needs to 
+provide <link linkend="malloc"><function>malloc()</function></link>, <link linkend="realloc"><function>realloc()</function></link>, and <link linkend="free"><function>free()</function></link> functions; GLib can provide default 
+implementations of the others. The <link linkend="malloc"><function>malloc()</function></link> and <link linkend="realloc"><function>realloc()</function></link> implementations 
+should return <link linkend="NULL:CAPS"><literal>NULL</literal></link> on failure, GLib will handle error-checking for you. 
+<parameter>vtable</parameter> is copied, so need not persist after this function has been called.
 </para><variablelist role="params">
 <varlistentry><term><parameter>vtable</parameter>&nbsp;:</term>
 <listitem><simpara>table of memory allocation routines.
@@ -513,9 +525,9 @@ function has been called.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-mem-is-system-malloc" role="function"/>g_mem_is_system_malloc ()</title>
-<indexterm><primary>g_mem_is_system_malloc</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_mem_is_system_malloc              (void);</programlisting>
+<refsect2 id="g-mem-is-system-malloc" role="function">
+<title>g_mem_is_system_malloc ()</title>
+<indexterm zone="g-mem-is-system-malloc"><primary>g_mem_is_system_malloc</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_mem_is_system_malloc              (void);</programlisting>
 <para>
 Checks whether the allocator used by <link linkend="g-malloc"><function>g_malloc()</function></link> is the system's
 malloc implementation. If it returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> memory allocated with
@@ -531,9 +543,9 @@ A different allocator can be set using <link linkend="g-mem-set-vtable"><functio
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> if <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>, <link linkend="malloc"><function>malloc()</function></link> and <link linkend="g-malloc"><function>g_malloc()</function></link> can be mixed.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="glib-mem-profiler-table" role="variable"/>glib_mem_profiler_table</title>
-<indexterm><primary>glib_mem_profiler_table</primary></indexterm><programlisting>extern GMemVTable	*glib_mem_profiler_table;
+<refsect2 id="glib-mem-profiler-table" role="variable">
+<title>glib_mem_profiler_table</title>
+<indexterm zone="glib-mem-profiler-table"><primary>glib_mem_profiler_table</primary></indexterm><programlisting>extern GMemVTable	*glib_mem_profiler_table;
 </programlisting>
 <para>
 A <link linkend="GMemVTable"><type>GMemVTable</type></link> containing profiling variants of the memory
@@ -541,9 +553,9 @@ allocation functions. Use them together with <link linkend="g-mem-profile"><func
 in order to get information about the memory allocation pattern
 of your program.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-mem-profile" role="function"/>g_mem_profile ()</title>
-<indexterm><primary>g_mem_profile</primary></indexterm><programlisting><link linkend="void">void</link>                g_mem_profile                       (void);</programlisting>
+<refsect2 id="g-mem-profile" role="function">
+<title>g_mem_profile ()</title>
+<indexterm zone="g-mem-profile"><primary>g_mem_profile</primary></indexterm><programlisting><link linkend="void">void</link>                g_mem_profile                       (void);</programlisting>
 <para>
 Outputs a summary of memory usage.
 </para>

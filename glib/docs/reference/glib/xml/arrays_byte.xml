@@ -1,23 +1,22 @@
 <refentry id="glib-Byte-Arrays">
 <refmeta>
-<refentrytitle role="top_of_page">Byte Arrays</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Byte-Arrays.top_of_page">Byte Arrays</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>Byte Arrays</refname>
-<refpurpose>arrays of bytes, which grow automatically as elements are added.</refpurpose>
+<refpurpose>arrays of bytes, which grow automatically as elements are added</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Byte-Arrays.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
-
 
                     <link linkend="GByteArray">GByteArray</link>;
 <link linkend="GByteArray">GByteArray</link>*         <link linkend="g-byte-array-new">g_byte_array_new</link>                    (void);
@@ -55,7 +54,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Byte-Arrays.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 <link linkend="GByteArray"><type>GByteArray</type></link> is based on <link linkend="GArray"><type>GArray</type></link>, to provide arrays of bytes which grow
@@ -97,11 +96,11 @@ To free a <link linkend="GByteArray"><type>GByteArray</type></link>, use <link l
 </programlisting></example>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Byte-Arrays.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GByteArray" role="struct"/>GByteArray</title>
-<indexterm><primary>GByteArray</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GByteArray" role="struct">
+<title>GByteArray</title>
+<indexterm zone="GByteArray"><primary>GByteArray</primary></indexterm><programlisting>typedef struct {
   guint8 *data;
   guint	  len;
 } GByteArray;
@@ -122,9 +121,9 @@ added to the <link linkend="GByteArray"><type>GByteArray</type></link>.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-byte-array-new" role="function"/>g_byte_array_new ()</title>
-<indexterm><primary>g_byte_array_new</primary></indexterm><programlisting><link linkend="GByteArray">GByteArray</link>*         g_byte_array_new                    (void);</programlisting>
+<refsect2 id="g-byte-array-new" role="function">
+<title>g_byte_array_new ()</title>
+<indexterm zone="g-byte-array-new"><primary>g_byte_array_new</primary></indexterm><programlisting><link linkend="GByteArray">GByteArray</link>*         g_byte_array_new                    (void);</programlisting>
 <para>
 Creates a new <link linkend="GByteArray"><type>GByteArray</type></link>.
 </para><variablelist role="params">
@@ -133,9 +132,9 @@ Creates a new <link linkend="GByteArray"><type>GByteArray</type></link>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-byte-array-sized-new" role="function"/>g_byte_array_sized_new ()</title>
-<indexterm><primary>g_byte_array_sized_new</primary></indexterm><programlisting><link linkend="GByteArray">GByteArray</link>*         g_byte_array_sized_new              (<link linkend="guint">guint</link> reserved_size);</programlisting>
+<refsect2 id="g-byte-array-sized-new" role="function">
+<title>g_byte_array_sized_new ()</title>
+<indexterm zone="g-byte-array-sized-new"><primary>g_byte_array_sized_new</primary></indexterm><programlisting><link linkend="GByteArray">GByteArray</link>*         g_byte_array_sized_new              (<link linkend="guint">guint</link> reserved_size);</programlisting>
 <para>
 Creates a new <link linkend="GByteArray"><type>GByteArray</type></link> with <parameter>reserved_size</parameter> bytes preallocated. This
 avoids frequent reallocation, if you are going to add many bytes to
@@ -149,9 +148,9 @@ the array. Note however that the size of the array is still 0.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-byte-array-append" role="function"/>g_byte_array_append ()</title>
-<indexterm><primary>g_byte_array_append</primary></indexterm><programlisting><link linkend="GByteArray">GByteArray</link>*         g_byte_array_append                 (<link linkend="GByteArray">GByteArray</link> *array,
+<refsect2 id="g-byte-array-append" role="function">
+<title>g_byte_array_append ()</title>
+<indexterm zone="g-byte-array-append"><primary>g_byte_array_append</primary></indexterm><programlisting><link linkend="GByteArray">GByteArray</link>*         g_byte_array_append                 (<link linkend="GByteArray">GByteArray</link> *array,
                                                          const <link linkend="guint8">guint8</link> *data,
                                                          <link linkend="guint">guint</link> len);</programlisting>
 <para>
@@ -172,9 +171,9 @@ The array will grow in size automatically if necessary.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-byte-array-prepend" role="function"/>g_byte_array_prepend ()</title>
-<indexterm><primary>g_byte_array_prepend</primary></indexterm><programlisting><link linkend="GByteArray">GByteArray</link>*         g_byte_array_prepend                (<link linkend="GByteArray">GByteArray</link> *array,
+<refsect2 id="g-byte-array-prepend" role="function">
+<title>g_byte_array_prepend ()</title>
+<indexterm zone="g-byte-array-prepend"><primary>g_byte_array_prepend</primary></indexterm><programlisting><link linkend="GByteArray">GByteArray</link>*         g_byte_array_prepend                (<link linkend="GByteArray">GByteArray</link> *array,
                                                          const <link linkend="guint8">guint8</link> *data,
                                                          <link linkend="guint">guint</link> len);</programlisting>
 <para>
@@ -195,9 +194,9 @@ The array will grow in size automatically if necessary.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-byte-array-remove-index" role="function"/>g_byte_array_remove_index ()</title>
-<indexterm><primary>g_byte_array_remove_index</primary></indexterm><programlisting><link linkend="GByteArray">GByteArray</link>*         g_byte_array_remove_index           (<link linkend="GByteArray">GByteArray</link> *array,
+<refsect2 id="g-byte-array-remove-index" role="function">
+<title>g_byte_array_remove_index ()</title>
+<indexterm zone="g-byte-array-remove-index"><primary>g_byte_array_remove_index</primary></indexterm><programlisting><link linkend="GByteArray">GByteArray</link>*         g_byte_array_remove_index           (<link linkend="GByteArray">GByteArray</link> *array,
                                                          <link linkend="guint">guint</link> index_);</programlisting>
 <para>
 Removes the byte at the given index from a <link linkend="GByteArray"><type>GByteArray</type></link>.
@@ -214,9 +213,9 @@ The following bytes are moved down one place.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-byte-array-remove-index-fast" role="function"/>g_byte_array_remove_index_fast ()</title>
-<indexterm><primary>g_byte_array_remove_index_fast</primary></indexterm><programlisting><link linkend="GByteArray">GByteArray</link>*         g_byte_array_remove_index_fast      (<link linkend="GByteArray">GByteArray</link> *array,
+<refsect2 id="g-byte-array-remove-index-fast" role="function">
+<title>g_byte_array_remove_index_fast ()</title>
+<indexterm zone="g-byte-array-remove-index-fast"><primary>g_byte_array_remove_index_fast</primary></indexterm><programlisting><link linkend="GByteArray">GByteArray</link>*         g_byte_array_remove_index_fast      (<link linkend="GByteArray">GByteArray</link> *array,
                                                          <link linkend="guint">guint</link> index_);</programlisting>
 <para>
 Removes the byte at the given index from a <link linkend="GByteArray"><type>GByteArray</type></link>.
@@ -235,9 +234,9 @@ does not preserve the order of the <link linkend="GByteArray"><type>GByteArray</
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-byte-array-remove-range" role="function" condition="since:2.4"/>g_byte_array_remove_range ()</title>
-<indexterm role="2.4"><primary>g_byte_array_remove_range</primary></indexterm><programlisting><link linkend="GByteArray">GByteArray</link>*         g_byte_array_remove_range           (<link linkend="GByteArray">GByteArray</link> *array,
+<refsect2 id="g-byte-array-remove-range" role="function" condition="since:2.4">
+<title>g_byte_array_remove_range ()</title>
+<indexterm zone="g-byte-array-remove-range" role="2.4"><primary>g_byte_array_remove_range</primary></indexterm><programlisting><link linkend="GByteArray">GByteArray</link>*         g_byte_array_remove_range           (<link linkend="GByteArray">GByteArray</link> *array,
                                                          <link linkend="guint">guint</link> index_,
                                                          <link linkend="guint">guint</link> length);</programlisting>
 <para>
@@ -259,9 +258,9 @@ Removes the given number of bytes starting at the given index from a
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-byte-array-sort" role="function"/>g_byte_array_sort ()</title>
-<indexterm><primary>g_byte_array_sort</primary></indexterm><programlisting><link linkend="void">void</link>                g_byte_array_sort                   (<link linkend="GByteArray">GByteArray</link> *array,
+<refsect2 id="g-byte-array-sort" role="function">
+<title>g_byte_array_sort ()</title>
+<indexterm zone="g-byte-array-sort"><primary>g_byte_array_sort</primary></indexterm><programlisting><link linkend="void">void</link>                g_byte_array_sort                   (<link linkend="GByteArray">GByteArray</link> *array,
                                                          <link linkend="GCompareFunc">GCompareFunc</link> compare_func);</programlisting>
 <para>
 Sorts a byte array, using <parameter>compare_func</parameter> which should be a <link linkend="qsort"><function>qsort()</function></link>-style
@@ -282,9 +281,9 @@ undefined.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-byte-array-sort-with-data" role="function"/>g_byte_array_sort_with_data ()</title>
-<indexterm><primary>g_byte_array_sort_with_data</primary></indexterm><programlisting><link linkend="void">void</link>                g_byte_array_sort_with_data         (<link linkend="GByteArray">GByteArray</link> *array,
+<refsect2 id="g-byte-array-sort-with-data" role="function">
+<title>g_byte_array_sort_with_data ()</title>
+<indexterm zone="g-byte-array-sort-with-data"><primary>g_byte_array_sort_with_data</primary></indexterm><programlisting><link linkend="void">void</link>                g_byte_array_sort_with_data         (<link linkend="GByteArray">GByteArray</link> *array,
                                                          <link linkend="GCompareDataFunc">GCompareDataFunc</link> compare_func,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -303,9 +302,9 @@ argument.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-byte-array-set-size" role="function"/>g_byte_array_set_size ()</title>
-<indexterm><primary>g_byte_array_set_size</primary></indexterm><programlisting><link linkend="GByteArray">GByteArray</link>*         g_byte_array_set_size               (<link linkend="GByteArray">GByteArray</link> *array,
+<refsect2 id="g-byte-array-set-size" role="function">
+<title>g_byte_array_set_size ()</title>
+<indexterm zone="g-byte-array-set-size"><primary>g_byte_array_set_size</primary></indexterm><programlisting><link linkend="GByteArray">GByteArray</link>*         g_byte_array_set_size               (<link linkend="GByteArray">GByteArray</link> *array,
                                                          <link linkend="guint">guint</link> length);</programlisting>
 <para>
 Sets the size of the <link linkend="GByteArray"><type>GByteArray</type></link>, expanding it if necessary.
@@ -321,9 +320,9 @@ Sets the size of the <link linkend="GByteArray"><type>GByteArray</type></link>, 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-byte-array-free" role="function"/>g_byte_array_free ()</title>
-<indexterm><primary>g_byte_array_free</primary></indexterm><programlisting><link linkend="guint8">guint8</link>*             g_byte_array_free                   (<link linkend="GByteArray">GByteArray</link> *array,
+<refsect2 id="g-byte-array-free" role="function">
+<title>g_byte_array_free ()</title>
+<indexterm zone="g-byte-array-free"><primary>g_byte_array_free</primary></indexterm><programlisting><link linkend="guint8">guint8</link>*             g_byte_array_free                   (<link linkend="GByteArray">GByteArray</link> *array,
                                                          <link linkend="gboolean">gboolean</link> free_segment);</programlisting>
 <para>
 Frees the memory allocated by the <link linkend="GByteArray"><type>GByteArray</type></link>.

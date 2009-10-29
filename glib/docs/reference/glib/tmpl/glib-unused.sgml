@@ -48,6 +48,30 @@ Desktop Entry Parser
 
 
 
+<!-- ##### SECTION ./tmpl/testutils.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/testutils.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/testutils.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/testutils.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/testutils.sgml:Title ##### -->
+Testing
+
+
 <!-- ##### ENUM GChannelError ##### -->
 <para>
 
@@ -251,6 +275,15 @@ i.e. just the <filename>foo</filename> in <filename>/usr/bin/foo</filename>.
 </para>
 
 
+<!-- ##### MACRO _ ##### -->
+<para>
+Marks a string for translation, gets replaced with the translated string
+at runtime.
+</para>
+
+@String: the string to be translated
+@Since: 2.4
+
 <!-- ##### MACRO access ##### -->
 <para>
 
@@ -280,7 +313,7 @@ in any UNIX manual.
 
 <!-- ##### MACRO ftruncate ##### -->
 <para>
-Provided for UNIX emulation on Windows; see documentation for <function>ftruncate()</function>
+Provided for UNIX emulation on Windows; see documentation for ftruncate()
 in any UNIX manual.
 </para>
 
@@ -644,6 +677,14 @@ in any UNIX manual.
 @error: 
 @Returns: 
 
+<!-- ##### FUNCTION g_format_file_size_for_display ##### -->
+<para>
+
+</para>
+
+@size: 
+@Returns: 
+
 <!-- ##### FUNCTION g_io_channel_error_quark ##### -->
 <para>
 
@@ -711,6 +752,20 @@ To use this function you must configure glib with the flag
 </para>
 
 @mem: the memory to check.
+
+<!-- ##### FUNCTION g_regex_error_quark ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION g_regex_free ##### -->
+<para>
+
+</para>
+
+@regex: 
 
 <!-- ##### FUNCTION g_scanner_stat_mode ##### -->
 <para>
@@ -860,6 +915,14 @@ in any UNIX manual.
 
 </para>
 
+
+<!-- ##### MACRO pipe ##### -->
+<para>
+Provided for UNIX emulation on Windows; see documentation for pipe()
+in any UNIX manual.
+</para>
+
+@phandles: file descriptors, the first one for reading, the second one for writing.
 
 <!-- ##### MACRO popen ##### -->
 <para>

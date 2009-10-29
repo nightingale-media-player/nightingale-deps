@@ -40,6 +40,8 @@
 #include <string.h>
 #include <ctype.h>		/* For tolower() */
 #include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #ifdef HAVE_PWD_H
 #include <pwd.h>
 #endif
@@ -58,6 +60,7 @@
 #include "glib.h"
 #include "gprintfint.h"
 #include "gthreadprivate.h"
+#include "glibintl.h"
 #include "galias.h"
 
 #ifdef	MAXPATHLEN
@@ -85,11 +88,20 @@
 #  include <direct.h>
 #  include <shlobj.h>
    /* older SDK (e.g. msvc 5.0) does not have these*/
+#  ifndef CSIDL_MYMUSIC
+#    define CSIDL_MYMUSIC 13
+#  endif
+#  ifndef CSIDL_MYVIDEO
+#    define CSIDL_MYVIDEO 14
+#  endif
 #  ifndef CSIDL_INTERNET_CACHE
 #    define CSIDL_INTERNET_CACHE 32
 #  endif
 #  ifndef CSIDL_COMMON_APPDATA
 #    define CSIDL_COMMON_APPDATA 35
+#  endif
+#  ifndef CSIDL_MYPICTURES
+#    define CSIDL_MYPICTURES 0x27
 #  endif
 #  ifndef CSIDL_COMMON_DOCUMENTS
 #    define CSIDL_COMMON_DOCUMENTS 46
@@ -98,6 +110,10 @@
 #    define CSIDL_PROFILE 40
 #  endif
 #  include <process.h>
+#endif
+
+#ifdef HAVE_CARBON
+#include <CoreServices/CoreServices.h>
 #endif
 
 #ifdef HAVE_CODESET
@@ -116,7 +132,27 @@ const guint glib_binary_age = GLIB_BINARY_AGE;
 
 #ifdef G_PLATFORM_WIN32
 
-G_WIN32_DLLMAIN_FOR_DLL_NAME (static, dll_name)
+static HMODULE glib_dll = NULL;
+
+BOOL WINAPI
+DllMain (HINSTANCE hinstDLL,
+	 DWORD     fdwReason,
+	 LPVOID    lpvReserved)
+{
+  if (fdwReason == DLL_PROCESS_ATTACH)
+      glib_dll = hinstDLL;
+
+  return TRUE;
+}
+
+gchar *
+_glib_get_installation_directory (void)
+{
+  if (glib_dll == NULL)
+    return NULL;
+
+  return g_win32_get_package_installation_directory_of_module (glib_dll);
+}
 
 #endif
 
@@ -387,9 +423,12 @@ g_find_program_in_path (const gchar *program)
   const gchar *path_copy;
   gchar *filename = NULL, *appdir = NULL;
   gchar *sysdir = NULL, *windir = NULL;
+  int n;
+  wchar_t wfilename[MAXPATHLEN], wsysdir[MAXPATHLEN],
+    wwindir[MAXPATHLEN];
 #endif
-  size_t len;
-  size_t pathlen;
+  gsize len;
+  gsize pathlen;
 
   g_return_val_if_fail (program != NULL, NULL);
 
@@ -427,42 +466,17 @@ g_find_program_in_path (const gchar *program)
       path = "/bin:/usr/bin:.";
     }
 #else
-  if (G_WIN32_HAVE_WIDECHAR_API ())
-    {
-      int n;
-      wchar_t wfilename[MAXPATHLEN], wsysdir[MAXPATHLEN],
-	wwindir[MAXPATHLEN];
-      
-      n = GetModuleFileNameW (NULL, wfilename, MAXPATHLEN);
-      if (n > 0 && n < MAXPATHLEN)
-	filename = g_utf16_to_utf8 (wfilename, -1, NULL, NULL, NULL);
-      
-      n = GetSystemDirectoryW (wsysdir, MAXPATHLEN);
-      if (n > 0 && n < MAXPATHLEN)
-	sysdir = g_utf16_to_utf8 (wsysdir, -1, NULL, NULL, NULL);
-      
-      n = GetWindowsDirectoryW (wwindir, MAXPATHLEN);
-      if (n > 0 && n < MAXPATHLEN)
-	windir = g_utf16_to_utf8 (wwindir, -1, NULL, NULL, NULL);
-    }
-  else
-    {
-      int n;
-      gchar cpfilename[MAXPATHLEN], cpsysdir[MAXPATHLEN],
-	cpwindir[MAXPATHLEN];
-      
-      n = GetModuleFileNameA (NULL, cpfilename, MAXPATHLEN);
-      if (n > 0 && n < MAXPATHLEN)
-	filename = g_locale_to_utf8 (cpfilename, -1, NULL, NULL, NULL);
-      
-      n = GetSystemDirectoryA (cpsysdir, MAXPATHLEN);
-      if (n > 0 && n < MAXPATHLEN)
-	sysdir = g_locale_to_utf8 (cpsysdir, -1, NULL, NULL, NULL);
-      
-      n = GetWindowsDirectoryA (cpwindir, MAXPATHLEN);
-      if (n > 0 && n < MAXPATHLEN)
-	windir = g_locale_to_utf8 (cpwindir, -1, NULL, NULL, NULL);
-    }
+  n = GetModuleFileNameW (NULL, wfilename, MAXPATHLEN);
+  if (n > 0 && n < MAXPATHLEN)
+    filename = g_utf16_to_utf8 (wfilename, -1, NULL, NULL, NULL);
+  
+  n = GetSystemDirectoryW (wsysdir, MAXPATHLEN);
+  if (n > 0 && n < MAXPATHLEN)
+    sysdir = g_utf16_to_utf8 (wsysdir, -1, NULL, NULL, NULL);
+  
+  n = GetWindowsDirectoryW (wwindir, MAXPATHLEN);
+  if (n > 0 && n < MAXPATHLEN)
+    windir = g_utf16_to_utf8 (wwindir, -1, NULL, NULL, NULL);
   
   if (filename)
     {
@@ -573,7 +587,7 @@ debug_key_matches (const gchar *key,
 /**
  * g_parse_debug_string:
  * @string: a list of debug options separated by colons, spaces, or
- * commas; or the string "all" to set all flags.
+ * commas; or the string "all" to set all flags, or %NULL.
  * @keys: pointer to an array of #GDebugKey which associate 
  *     strings with bit flags.
  * @nkeys: the number of #GDebugKey<!-- -->s in the array.
@@ -593,7 +607,8 @@ g_parse_debug_string  (const gchar     *string,
   guint i;
   guint result = 0;
   
-  g_return_val_if_fail (string != NULL, 0);
+  if (string == NULL)
+    return 0;
 
   /* this function is used by gmem.c/gslice.c initialization code,
    * so introducing malloc dependencies here would require adaptions
@@ -939,33 +954,16 @@ g_get_current_dir (void)
 #ifdef G_OS_WIN32
 
   gchar *dir = NULL;
+  wchar_t dummy[2], *wdir;
+  int len;
 
-  if (G_WIN32_HAVE_WIDECHAR_API ())
-    {
-      wchar_t dummy[2], *wdir;
-      int len;
+  len = GetCurrentDirectoryW (2, dummy);
+  wdir = g_new (wchar_t, len);
 
-      len = GetCurrentDirectoryW (2, dummy);
-      wdir = g_new (wchar_t, len);
-
-      if (GetCurrentDirectoryW (len, wdir) == len - 1)
-	dir = g_utf16_to_utf8 (wdir, -1, NULL, NULL, NULL);
-
-      g_free (wdir);
-    }
-  else
-    {
-      gchar dummy[2], *cpdir;
-      int len;
-
-      len = GetCurrentDirectoryA (2, dummy);
-      cpdir = g_new (gchar, len);
-
-      if (GetCurrentDirectoryA (len, cpdir) == len - 1)
-	dir = g_locale_to_utf8 (cpdir, -1, NULL, NULL, NULL);
-
-      g_free (cpdir);
-    }
+  if (GetCurrentDirectoryW (len, wdir) == len - 1)
+    dir = g_utf16_to_utf8 (wdir, -1, NULL, NULL, NULL);
+  
+  g_free (wdir);
 
   if (dir == NULL)
     dir = g_strdup ("\\");
@@ -991,6 +989,7 @@ g_get_current_dir (void)
 #else	/* !sun || !HAVE_GETCWD */
   while (max_len < G_MAXULONG / 2)
     {
+      g_free (buffer);
       buffer = g_new (gchar, max_len + 1);
       *buffer = 0;
       dir = getcwd (buffer, max_len);
@@ -998,7 +997,6 @@ g_get_current_dir (void)
       if (dir || errno != ERANGE)
 	break;
 
-      g_free (buffer);
       max_len *= 2;
     }
 #endif	/* !sun || !HAVE_GETCWD */
@@ -1048,6 +1046,8 @@ g_getenv (const gchar *variable)
 
   GQuark quark;
   gchar *value;
+  wchar_t dummy[2], *wname, *wvalue;
+  int len;
 
   g_return_val_if_fail (variable != NULL, NULL);
   g_return_val_if_fail (g_utf8_validate (variable, -1, NULL), NULL);
@@ -1062,110 +1062,51 @@ g_getenv (const gchar *variable)
    * contain references to other environment variables.)
    */
 
-  if (G_WIN32_HAVE_WIDECHAR_API ())
+  wname = g_utf8_to_utf16 (variable, -1, NULL, NULL, NULL);
+
+  len = GetEnvironmentVariableW (wname, dummy, 2);
+
+  if (len == 0)
     {
-      wchar_t dummy[2], *wname, *wvalue;
-      int len;
-      
-      wname = g_utf8_to_utf16 (variable, -1, NULL, NULL, NULL);
+      g_free (wname);
+      return NULL;
+    }
+  else if (len == 1)
+    len = 2;
 
-      len = GetEnvironmentVariableW (wname, dummy, 2);
+  wvalue = g_new (wchar_t, len);
 
-      if (len == 0)
-	{
-	  g_free (wname);
-	  return NULL;
-	}
-      else if (len == 1)
-	len = 2;
-
-      wvalue = g_new (wchar_t, len);
-
-      if (GetEnvironmentVariableW (wname, wvalue, len) != len - 1)
-	{
-	  g_free (wname);
-	  g_free (wvalue);
-	  return NULL;
-	}
-
-      if (wcschr (wvalue, L'%') != NULL)
-	{
-	  wchar_t *tem = wvalue;
-
-	  len = ExpandEnvironmentStringsW (wvalue, dummy, 2);
-
-	  if (len > 0)
-	    {
-	      wvalue = g_new (wchar_t, len);
-
-	      if (ExpandEnvironmentStringsW (tem, wvalue, len) != len)
-		{
-		  g_free (wvalue);
-		  wvalue = tem;
-		}
-	      else
-		g_free (tem);
-	    }
-	}
-
-      value = g_utf16_to_utf8 (wvalue, -1, NULL, NULL, NULL);
-
+  if (GetEnvironmentVariableW (wname, wvalue, len) != len - 1)
+    {
       g_free (wname);
       g_free (wvalue);
+      return NULL;
     }
-  else
+
+  if (wcschr (wvalue, L'%') != NULL)
     {
-      gchar dummy[3], *cpname, *cpvalue;
-      int len;
-      
-      cpname = g_locale_from_utf8 (variable, -1, NULL, NULL, NULL);
+      wchar_t *tem = wvalue;
 
-      g_return_val_if_fail (cpname != NULL, NULL);
+      len = ExpandEnvironmentStringsW (wvalue, dummy, 2);
 
-      len = GetEnvironmentVariableA (cpname, dummy, 2);
-
-      if (len == 0)
+      if (len > 0)
 	{
-	  g_free (cpname);
-	  return NULL;
-	}
-      else if (len == 1)
-	len = 2;
+	  wvalue = g_new (wchar_t, len);
 
-      cpvalue = g_new (gchar, len);
-
-      if (GetEnvironmentVariableA (cpname, cpvalue, len) != len - 1)
-	{
-	  g_free (cpname);
-	  g_free (cpvalue);
-	  return NULL;
-	}
-
-      if (strchr (cpvalue, '%') != NULL)
-	{
-	  gchar *tem = cpvalue;
-
-	  len = ExpandEnvironmentStringsA (cpvalue, dummy, 3);
-
-	  if (len > 0)
+	  if (ExpandEnvironmentStringsW (tem, wvalue, len) != len)
 	    {
-	      cpvalue = g_new (gchar, len);
-
-	      if (ExpandEnvironmentStringsA (tem, cpvalue, len) != len)
-		{
-		  g_free (cpvalue);
-		  cpvalue = tem;
-		}
-	      else
-		g_free (tem);
+	      g_free (wvalue);
+	      wvalue = tem;
 	    }
+	  else
+	    g_free (tem);
 	}
-
-      value = g_locale_to_utf8 (cpvalue, -1, NULL, NULL, NULL);
-
-      g_free (cpname);
-      g_free (cpvalue);
     }
+
+  value = g_utf16_to_utf8 (wvalue, -1, NULL, NULL, NULL);
+
+  g_free (wname);
+  g_free (wvalue);
 
   quark = g_quark_from_string (value);
   g_free (value);
@@ -1250,6 +1191,8 @@ g_setenv (const gchar *variable,
 #else /* G_OS_WIN32 */
 
   gboolean retval;
+  wchar_t *wname, *wvalue, *wassignment;
+  gchar *tem;
 
   g_return_val_if_fail (variable != NULL, FALSE);
   g_return_val_if_fail (strchr (variable, '=') == NULL, FALSE);
@@ -1273,36 +1216,19 @@ g_setenv (const gchar *variable,
    * the putenv() first, then call SetEnvironmentValueW ourselves.
    */
 
-  if (G_WIN32_HAVE_WIDECHAR_API ())
-    {
-      wchar_t *wname = g_utf8_to_utf16 (variable, -1, NULL, NULL, NULL);
-      wchar_t *wvalue = g_utf8_to_utf16 (value, -1, NULL, NULL, NULL);
-      gchar *tem = g_strconcat (variable, "=", value, NULL);
-      wchar_t *wassignment = g_utf8_to_utf16 (tem, -1, NULL, NULL, NULL);
-      
-      g_free (tem);
-      _wputenv (wassignment);
-      g_free (wassignment);
+  wname = g_utf8_to_utf16 (variable, -1, NULL, NULL, NULL);
+  wvalue = g_utf8_to_utf16 (value, -1, NULL, NULL, NULL);
+  tem = g_strconcat (variable, "=", value, NULL);
+  wassignment = g_utf8_to_utf16 (tem, -1, NULL, NULL, NULL);
+    
+  g_free (tem);
+  _wputenv (wassignment);
+  g_free (wassignment);
 
-      retval = (SetEnvironmentVariableW (wname, wvalue) != 0);
+  retval = (SetEnvironmentVariableW (wname, wvalue) != 0);
 
-      g_free (wname);
-      g_free (wvalue);
-    }
-  else
-    {
-      /* In the non-Unicode case (Win9x), just putenv() is good
-       * enough.
-       */
-      gchar *tem = g_strconcat (variable, "=", value, NULL);
-      gchar *cpassignment = g_locale_from_utf8 (tem, -1, NULL, NULL, NULL);
-
-      g_free (tem);
-      
-      retval = (putenv (cpassignment) == 0);
-
-      g_free (cpassignment);
-    }
+  g_free (wname);
+  g_free (wvalue);
 
   return retval;
 
@@ -1372,38 +1298,24 @@ g_unsetenv (const gchar *variable)
 
 #else  /* G_OS_WIN32 */
 
+  wchar_t *wname, *wassignment;
+  gchar *tem;
+
   g_return_if_fail (variable != NULL);
   g_return_if_fail (strchr (variable, '=') == NULL);
   g_return_if_fail (g_utf8_validate (variable, -1, NULL));
 
-  if (G_WIN32_HAVE_WIDECHAR_API ())
-    {
-      wchar_t *wname = g_utf8_to_utf16 (variable, -1, NULL, NULL, NULL);
-      gchar *tem = g_strconcat (variable, "=", NULL);
-      wchar_t *wassignment = g_utf8_to_utf16 (tem, -1, NULL, NULL, NULL);
-      
-      g_free (tem);
-      _wputenv (wassignment);
-      g_free (wassignment);
+  wname = g_utf8_to_utf16 (variable, -1, NULL, NULL, NULL);
+  tem = g_strconcat (variable, "=", NULL);
+  wassignment = g_utf8_to_utf16 (tem, -1, NULL, NULL, NULL);
+    
+  g_free (tem);
+  _wputenv (wassignment);
+  g_free (wassignment);
 
-      SetEnvironmentVariableW (wname, NULL);
+  SetEnvironmentVariableW (wname, NULL);
 
-      g_free (wname);
-    }
-  else
-    {
-      /* In the non-Unicode case (Win9x), just putenv() is good
-       * enough.
-       */
-      gchar *tem = g_strconcat (variable, "=", NULL);
-      gchar *cpassignment = g_locale_from_utf8 (tem, -1, NULL, NULL, NULL);
-
-      g_free (tem);
-      
-      putenv (cpassignment);
-
-      g_free (cpassignment);
-    }
+  g_free (wname);
 
 #endif /* G_OS_WIN32 */
 }
@@ -1448,68 +1360,41 @@ g_listenv (void)
   return result;
 #else
   gchar **result, *eq;
-  gint len = 0, i, j;
+  gint len = 0, j;
+  wchar_t *p, *q;
 
-  if (G_WIN32_HAVE_WIDECHAR_API ())
+  p = (wchar_t *) GetEnvironmentStringsW ();
+  if (p != NULL)
     {
-      wchar_t *p, *q;
-
-      p = (wchar_t *) GetEnvironmentStringsW ();
-      if (p != NULL)
-	{
-	  q = p;
-	  while (*q)
-	    {
-	      q += wcslen (q) + 1;
-	      len++;
-	    }
-	}
-      result = g_new0 (gchar *, len + 1);
-
-      j = 0;
       q = p;
       while (*q)
 	{
-	  result[j] = g_utf16_to_utf8 (q, -1, NULL, NULL, NULL);
-	  if (result[j] != NULL)
-	    {
-	      eq = strchr (result[j], '=');
-	      if (eq && eq > result[j])
-		{
-		  *eq = '\0';
-		  j++;
-		}
-	      else
-		g_free (result[j]);
-	    }
 	  q += wcslen (q) + 1;
+	  len++;
 	}
-      result[j] = NULL;
-      FreeEnvironmentStringsW (p);
     }
-  else
+  result = g_new0 (gchar *, len + 1);
+
+  j = 0;
+  q = p;
+  while (*q)
     {
-      len = g_strv_length (environ);
-      result = g_new0 (gchar *, len + 1);
-      
-      j = 0;
-      for (i = 0; i < len; i++)
+      result[j] = g_utf16_to_utf8 (q, -1, NULL, NULL, NULL);
+      if (result[j] != NULL)
 	{
-	  result[j] = g_locale_to_utf8 (environ[i], -1, NULL, NULL, NULL);
-	  if (result[j] != NULL)
+	  eq = strchr (result[j], '=');
+	  if (eq && eq > result[j])
 	    {
-	      eq = strchr (result[j], '=');
-	      if (eq && eq > result[j])
-		{
-		  *eq = '\0';
-		  j++;
-		}
-	      else
-		g_free (result[j]);
+	      *eq = '\0';
+	      j++;
 	    }
+	  else
+	    g_free (result[j]);
 	}
-      result[j] = NULL;
+      q += wcslen (q) + 1;
     }
+  result[j] = NULL;
+  FreeEnvironmentStringsW (p);
 
   return result;
 #endif
@@ -1539,15 +1424,17 @@ static  gchar   *g_user_cache_dir = NULL;
 static  gchar   *g_user_config_dir = NULL;
 static  gchar  **g_system_config_dirs = NULL;
 
+static  gchar  **g_user_special_dirs = NULL;
+
+/* fifteen minutes of fame for everybody */
+#define G_USER_DIRS_EXPIRE      15 * 60
+
 #ifdef G_OS_WIN32
 
 static gchar *
 get_special_folder (int csidl)
 {
-  union {
-    char c[MAX_PATH+1];
-    wchar_t wc[MAX_PATH+1];
-  } path;
+  wchar_t path[MAX_PATH+1];
   HRESULT hr;
   LPITEMIDLIST pidl = NULL;
   BOOL b;
@@ -1556,18 +1443,9 @@ get_special_folder (int csidl)
   hr = SHGetSpecialFolderLocation (NULL, csidl, &pidl);
   if (hr == S_OK)
     {
-      if (G_WIN32_HAVE_WIDECHAR_API ())
-	{
-	  b = SHGetPathFromIDListW (pidl, path.wc);
-	  if (b)
-	    retval = g_utf16_to_utf8 (path.wc, -1, NULL, NULL, NULL);
-	}
-      else
-	{
-	  b = SHGetPathFromIDListA (pidl, path.c);
-	  if (b)
-	    retval = g_locale_to_utf8 (path.c, -1, NULL, NULL, NULL);
-	}
+      b = SHGetPathFromIDListW (pidl, path);
+      if (b)
+	retval = g_utf16_to_utf8 (path, -1, NULL, NULL, NULL);
       CoTaskMemFree (pidl);
     }
   return retval;
@@ -1576,18 +1454,24 @@ get_special_folder (int csidl)
 static char *
 get_windows_directory_root (void)
 {
-  char windowsdir[MAX_PATH];
+  wchar_t wwindowsdir[MAX_PATH];
 
-  if (GetWindowsDirectory (windowsdir, sizeof (windowsdir)))
+  if (GetWindowsDirectoryW (wwindowsdir, G_N_ELEMENTS (wwindowsdir)))
     {
       /* Usually X:\Windows, but in terminal server environments
        * might be an UNC path, AFAIK.
        */
-      char *p = (char *) g_path_skip_root (windowsdir);
+      char *windowsdir = g_utf16_to_utf8 (wwindowsdir, -1, NULL, NULL, NULL);
+      char *p;
+
+      if (windowsdir == NULL)
+	return g_strdup ("C:\\");
+
+      p = (char *) g_path_skip_root (windowsdir);
       if (G_IS_DIR_SEPARATOR (p[-1]) && p[-2] != ':')
 	p--;
       *p = '\0';
-      return g_strdup (windowsdir);
+      return windowsdir;
     }
   else
     return g_strdup ("C:\\");
@@ -1788,28 +1672,16 @@ g_get_any_init_do (void)
 #else /* !HAVE_PWD_H */
   
 #ifdef G_OS_WIN32
-  if (G_WIN32_HAVE_WIDECHAR_API ())
-    {
-      guint len = UNLEN+1;
-      wchar_t buffer[UNLEN+1];
-      
-      if (GetUserNameW (buffer, (LPDWORD) &len))
-	{
-	  g_user_name = g_utf16_to_utf8 (buffer, -1, NULL, NULL, NULL);
-	  g_real_name = g_strdup (g_user_name);
-	}
-    }
-  else
-    {
-      guint len = UNLEN+1;
-      char buffer[UNLEN+1];
-      
-      if (GetUserNameA (buffer, (LPDWORD) &len))
-	{
-	  g_user_name = g_locale_to_utf8 (buffer, -1, NULL, NULL, NULL);
-	  g_real_name = g_strdup (g_user_name);
-	}
-    }
+  {
+    guint len = UNLEN+1;
+    wchar_t buffer[UNLEN+1];
+    
+    if (GetUserNameW (buffer, (LPDWORD) &len))
+      {
+	g_user_name = g_utf16_to_utf8 (buffer, -1, NULL, NULL, NULL);
+	g_real_name = g_strdup (g_user_name);
+      }
+  }
 #endif /* G_OS_WIN32 */
 
 #endif /* !HAVE_PWD_H */
@@ -1914,13 +1786,33 @@ g_get_real_name (void)
 /**
  * g_get_home_dir:
  *
- * Gets the current user's home directory. 
+ * Gets the current user's home directory as defined in the 
+ * password database.
  *
  * Note that in contrast to traditional UNIX tools, this function 
  * prefers <filename>passwd</filename> entries over the <envar>HOME</envar> 
- * environment variable.
+ * environment variable. 
  *
- * Returns: the current user's home directory.
+ * One of the reasons for this decision is that applications in many 
+ * cases need special handling to deal with the case where 
+ * <envar>HOME</envar> is
+ * <simplelist>
+ *   <member>Not owned by the user</member>
+ *   <member>Not writeable</member>
+ *   <member>Not even readable</member>
+ * </simplelist>
+ * Since applications are in general <emphasis>not</emphasis> written 
+ * to deal with these situations it was considered better to make 
+ * g_get_homedir() not pay attention to <envar>HOME</envar> and to 
+ * return the real home directory for the user. If applications
+ * want to pay attention to <envar>HOME</envar>, they can do:
+ * |[
+ *  const char *homedir = g_getenv ("HOME");
+ *   if (!homedir)
+ *      homedir = g_get_homedir (<!-- -->);
+ * ]|
+ *
+ * Returns: the current user's home directory
  */
 G_CONST_RETURN gchar*
 g_get_home_dir (void)
@@ -2004,22 +1896,13 @@ g_get_prgname (void)
       if (!beenhere)
 	{
 	  gchar *utf8_buf = NULL;
+	  wchar_t buf[MAX_PATH+1];
 
 	  beenhere = TRUE;
-	  if (G_WIN32_HAVE_WIDECHAR_API ())
-	    {
-	      wchar_t buf[MAX_PATH+1];
-	      if (GetModuleFileNameW (GetModuleHandle (NULL),
-				      buf, G_N_ELEMENTS (buf)) > 0)
-		utf8_buf = g_utf16_to_utf8 (buf, -1, NULL, NULL, NULL);
-	    }
-	  else
-	    {
-	      gchar buf[MAX_PATH+1];
-	      if (GetModuleFileNameA (GetModuleHandle (NULL),
-				      buf, G_N_ELEMENTS (buf)) > 0)
-		utf8_buf = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
-	    }
+	  if (GetModuleFileNameW (GetModuleHandle (NULL),
+				  buf, G_N_ELEMENTS (buf)) > 0)
+	    utf8_buf = g_utf16_to_utf8 (buf, -1, NULL, NULL, NULL);
+
 	  if (utf8_buf)
 	    {
 	      g_prgname = g_path_get_basename (utf8_buf);
@@ -2100,6 +1983,7 @@ g_get_application_name (void)
  * The application name will be used in contexts such as error messages,
  * or when displaying an application's name in the task list.
  * 
+ * Since: 2.2
  **/
 void
 g_set_application_name (const gchar *application_name)
@@ -2170,26 +2054,10 @@ g_get_user_data_dir (void)
   return data_dir;
 }
 
-/**
- * g_get_user_config_dir:
- * 
- * Returns a base directory in which to store user-specific application 
- * configuration information such as user preferences and settings. 
- *
- * On UNIX platforms this is determined using the mechanisms described in
- * the <ulink url="http://www.freedesktop.org/Standards/basedir-spec">
- * XDG Base Directory Specification</ulink>
- * 
- * Return value: a string owned by GLib that must not be modified 
- *               or freed.
- * Since: 2.6
- **/
-G_CONST_RETURN gchar*
-g_get_user_config_dir (void)
+static void
+g_init_user_config_dir (void)
 {
-  gchar *config_dir;  
-
-  G_LOCK (g_utils_global);
+  gchar *config_dir;
 
   if (!g_user_config_dir)
     {
@@ -2210,14 +2078,35 @@ g_get_user_config_dir (void)
 	  else
 	    config_dir = g_build_filename (g_tmp_dir, g_user_name, ".config", NULL);
 	}
+
       g_user_config_dir = config_dir;
     }
-  else
-    config_dir = g_user_config_dir;
+}
+
+/**
+ * g_get_user_config_dir:
+ * 
+ * Returns a base directory in which to store user-specific application 
+ * configuration information such as user preferences and settings. 
+ *
+ * On UNIX platforms this is determined using the mechanisms described in
+ * the <ulink url="http://www.freedesktop.org/Standards/basedir-spec">
+ * XDG Base Directory Specification</ulink>
+ * 
+ * Return value: a string owned by GLib that must not be modified 
+ *               or freed.
+ * Since: 2.6
+ **/
+G_CONST_RETURN gchar*
+g_get_user_config_dir (void)
+{
+  G_LOCK (g_utils_global);
+
+  g_init_user_config_dir ();
 
   G_UNLOCK (g_utils_global);
 
-  return config_dir;
+  return g_user_config_dir;
 }
 
 /**
@@ -2270,6 +2159,282 @@ g_get_user_cache_dir (void)
   return cache_dir;
 }
 
+#ifdef HAVE_CARBON
+
+static gchar *
+find_folder (OSType type)
+{
+  gchar *filename = NULL;
+  FSRef  found;
+
+  if (FSFindFolder (kUserDomain, type, kDontCreateFolder, &found) == noErr)
+    {
+      CFURLRef url = CFURLCreateFromFSRef (kCFAllocatorSystemDefault, &found);
+
+      if (url)
+	{
+	  CFStringRef path = CFURLCopyFileSystemPath (url, kCFURLPOSIXPathStyle);
+
+	  if (path)
+	    {
+	      filename = g_strdup (CFStringGetCStringPtr (path, kCFStringEncodingUTF8));
+
+	      if (! filename)
+		{
+		  filename = g_new0 (gchar, CFStringGetLength (path) * 3 + 1);
+
+		  CFStringGetCString (path, filename,
+				      CFStringGetLength (path) * 3 + 1,
+				      kCFStringEncodingUTF8);
+		}
+
+	      CFRelease (path);
+	    }
+
+	  CFRelease (url);
+	}
+    }
+
+  return filename;
+}
+
+static void
+load_user_special_dirs (void)
+{
+  g_user_special_dirs[G_USER_DIRECTORY_DESKTOP] = find_folder (kDesktopFolderType);
+  g_user_special_dirs[G_USER_DIRECTORY_DOCUMENTS] = find_folder (kDocumentsFolderType);
+  g_user_special_dirs[G_USER_DIRECTORY_DOWNLOAD] = find_folder (kDesktopFolderType); /* XXX correct ? */
+  g_user_special_dirs[G_USER_DIRECTORY_MUSIC] = find_folder (kMusicDocumentsFolderType);
+  g_user_special_dirs[G_USER_DIRECTORY_PICTURES] = find_folder (kPictureDocumentsFolderType);
+  g_user_special_dirs[G_USER_DIRECTORY_PUBLIC_SHARE] = NULL;
+  g_user_special_dirs[G_USER_DIRECTORY_TEMPLATES] = NULL;
+  g_user_special_dirs[G_USER_DIRECTORY_VIDEOS] = find_folder (kMovieDocumentsFolderType);
+}
+
+#endif /* HAVE_CARBON */
+
+#if defined(G_OS_WIN32)
+static void
+load_user_special_dirs (void)
+{
+  g_user_special_dirs[G_USER_DIRECTORY_DESKTOP] = get_special_folder (CSIDL_DESKTOPDIRECTORY);
+  g_user_special_dirs[G_USER_DIRECTORY_DOCUMENTS] = get_special_folder (CSIDL_PERSONAL);
+  g_user_special_dirs[G_USER_DIRECTORY_DOWNLOAD] = get_special_folder (CSIDL_DESKTOPDIRECTORY); /* XXX correct ? */
+  g_user_special_dirs[G_USER_DIRECTORY_MUSIC] = get_special_folder (CSIDL_MYMUSIC);
+  g_user_special_dirs[G_USER_DIRECTORY_PICTURES] = get_special_folder (CSIDL_MYPICTURES);
+  g_user_special_dirs[G_USER_DIRECTORY_PUBLIC_SHARE] = get_special_folder (CSIDL_COMMON_DOCUMENTS);  /* XXX correct ? */
+  g_user_special_dirs[G_USER_DIRECTORY_TEMPLATES] = get_special_folder (CSIDL_TEMPLATES);
+  g_user_special_dirs[G_USER_DIRECTORY_VIDEOS] = get_special_folder (CSIDL_MYVIDEO);
+}
+#endif /* G_OS_WIN32 */
+
+static void g_init_user_config_dir (void);
+
+#if defined(G_OS_UNIX) && !defined(HAVE_CARBON)
+
+/* adapted from xdg-user-dir-lookup.c
+ *
+ * Copyright (C) 2007 Red Hat Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation files
+ * (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge,
+ * publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions: 
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software. 
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+static void
+load_user_special_dirs (void)
+{
+  gchar *config_file;
+  gchar *data;
+  gchar **lines;
+  gint n_lines, i;
+  
+  g_init_user_config_dir ();
+  config_file = g_build_filename (g_user_config_dir,
+                                  "user-dirs.dirs",
+                                  NULL);
+  
+  if (!g_file_get_contents (config_file, &data, NULL, NULL))
+    {
+      g_free (config_file);
+      return;
+    }
+
+  lines = g_strsplit (data, "\n", -1);
+  n_lines = g_strv_length (lines);
+  g_free (data);
+  
+  for (i = 0; i < n_lines; i++)
+    {
+      gchar *buffer = lines[i];
+      gchar *d, *p;
+      gint len;
+      gboolean is_relative = FALSE;
+      GUserDirectory directory;
+
+      /* Remove newline at end */
+      len = strlen (buffer);
+      if (len > 0 && buffer[len - 1] == '\n')
+	buffer[len - 1] = 0;
+      
+      p = buffer;
+      while (*p == ' ' || *p == '\t')
+	p++;
+      
+      if (strncmp (p, "XDG_DESKTOP_DIR", strlen ("XDG_DESKTOP_DIR")) == 0)
+        {
+          directory = G_USER_DIRECTORY_DESKTOP;
+          p += strlen ("XDG_DESKTOP_DIR");
+        }
+      else if (strncmp (p, "XDG_DOCUMENTS_DIR", strlen ("XDG_DOCUMENTS_DIR")) == 0)
+        {
+          directory = G_USER_DIRECTORY_DOCUMENTS;
+          p += strlen ("XDG_DOCUMENTS_DIR");
+        }
+      else if (strncmp (p, "XDG_DOWNLOAD_DIR", strlen ("XDG_DOWNLOAD_DIR")) == 0)
+        {
+          directory = G_USER_DIRECTORY_DOWNLOAD;
+          p += strlen ("XDG_DOWNLOAD_DIR");
+        }
+      else if (strncmp (p, "XDG_MUSIC_DIR", strlen ("XDG_MUSIC_DIR")) == 0)
+        {
+          directory = G_USER_DIRECTORY_MUSIC;
+          p += strlen ("XDG_MUSIC_DIR");
+        }
+      else if (strncmp (p, "XDG_PICTURES_DIR", strlen ("XDG_PICTURES_DIR")) == 0)
+        {
+          directory = G_USER_DIRECTORY_PICTURES;
+          p += strlen ("XDG_PICTURES_DIR");
+        }
+      else if (strncmp (p, "XDG_PUBLICSHARE_DIR", strlen ("XDG_PUBLICSHARE_DIR")) == 0)
+        {
+          directory = G_USER_DIRECTORY_PUBLIC_SHARE;
+          p += strlen ("XDG_PUBLICSHARE_DIR");
+        }
+      else if (strncmp (p, "XDG_TEMPLATES_DIR", strlen ("XDG_TEMPLATES_DIR")) == 0)
+        {
+          directory = G_USER_DIRECTORY_TEMPLATES;
+          p += strlen ("XDG_TEMPLATES_DIR");
+        }
+      else if (strncmp (p, "XDG_VIDEOS_DIR", strlen ("XDG_VIDEOS_DIR")) == 0)
+        {
+          directory = G_USER_DIRECTORY_VIDEOS;
+          p += strlen ("XDG_VIDEOS_DIR");
+        }
+      else
+	continue;
+
+      while (*p == ' ' || *p == '\t')
+	p++;
+
+      if (*p != '=')
+	continue;
+      p++;
+
+      while (*p == ' ' || *p == '\t')
+	p++;
+
+      if (*p != '"')
+	continue;
+      p++;
+
+      if (strncmp (p, "$HOME", 5) == 0)
+	{
+	  p += 5;
+	  is_relative = TRUE;
+	}
+      else if (*p != '/')
+	continue;
+
+      d = strrchr (p, '"');
+      if (!d)
+        continue;
+      *d = 0;
+
+      d = p;
+      
+      /* remove trailing slashes */
+      len = strlen (d);
+      if (d[len - 1] == '/')
+        d[len - 1] = 0;
+      
+      if (is_relative)
+        {
+          g_get_any_init ();
+          g_user_special_dirs[directory] = g_build_filename (g_home_dir, d, NULL);
+        }
+      else
+	g_user_special_dirs[directory] = g_strdup (d);
+    }
+
+  g_strfreev (lines);
+  g_free (config_file);
+}
+
+#endif /* G_OS_UNIX && !HAVE_CARBON */
+
+/**
+ * g_get_user_special_dir:
+ * @directory: the logical id of special directory
+ *
+ * Returns the full path of a special directory using its logical id.
+ *
+ * On Unix this is done using the XDG special user directories.
+ *
+ * Depending on the platform, the user might be able to change the path
+ * of the special directory without requiring the session to restart; GLib
+ * will not reflect any change once the special directories are loaded.
+ *
+ * Return value: the path to the specified special directory, or %NULL
+ *   if the logical id was not found. The returned string is owned by
+ *   GLib and should not be modified or freed.
+ *
+ * Since: 2.14
+ */
+G_CONST_RETURN gchar *
+g_get_user_special_dir (GUserDirectory directory)
+{
+  g_return_val_if_fail (directory >= G_USER_DIRECTORY_DESKTOP &&
+                        directory < G_USER_N_DIRECTORIES, NULL);
+
+  G_LOCK (g_utils_global);
+
+  if (G_UNLIKELY (g_user_special_dirs == NULL))
+    {
+      g_user_special_dirs = g_new0 (gchar *, G_USER_N_DIRECTORIES);
+
+      load_user_special_dirs ();
+
+      /* Special-case desktop for historical compatibility */
+      if (g_user_special_dirs[G_USER_DIRECTORY_DESKTOP] == NULL)
+        {
+          g_get_any_init ();
+
+          g_user_special_dirs[G_USER_DIRECTORY_DESKTOP] =
+            g_build_filename (g_home_dir, "Desktop", NULL);
+        }
+    }
+
+  G_UNLOCK (g_utils_global);
+
+  return g_user_special_dirs[directory];
+}
+
 #ifdef G_OS_WIN32
 
 #undef g_get_system_data_dirs
@@ -2282,7 +2447,7 @@ get_module_for_address (gconstpointer address)
   static gboolean beenhere = FALSE;
   typedef BOOL (WINAPI *t_GetModuleHandleExA) (DWORD, LPCTSTR, HMODULE *);
   static t_GetModuleHandleExA p_GetModuleHandleExA = NULL;
-  HMODULE hmodule;
+  HMODULE hmodule = NULL;
 
   if (!address)
     return NULL;
@@ -2312,36 +2477,14 @@ static gchar *
 get_module_share_dir (gconstpointer address)
 {
   HMODULE hmodule;
-  gchar *filename = NULL;
-  gchar *p, *retval;
+  gchar *filename;
+  gchar *retval;
 
   hmodule = get_module_for_address (address);
   if (hmodule == NULL)
     return NULL;
 
-  if (G_WIN32_IS_NT_BASED ())
-    {
-      wchar_t wfilename[MAX_PATH];
-      if (GetModuleFileNameW (hmodule, wfilename, G_N_ELEMENTS (wfilename)))
-	filename = g_utf16_to_utf8 (wfilename, -1, NULL, NULL, NULL);
-    }
-  else
-    {
-      char cpfilename[MAX_PATH];
-      if (GetModuleFileNameA (hmodule, cpfilename, G_N_ELEMENTS (cpfilename)))
-	filename = g_locale_to_utf8 (cpfilename, -1, NULL, NULL, NULL);
-    }
-
-  if (filename == NULL)
-    return NULL;
-
-  if ((p = strrchr (filename, G_DIR_SEPARATOR)) != NULL)
-    *p = '\0';
-
-  p = strrchr (filename, G_DIR_SEPARATOR);
-  if (p && (g_ascii_strcasecmp (p + 1, "bin") == 0))
-    *p = '\0';
-
+  filename = g_win32_get_package_installation_directory_of_module (hmodule);
   retval = g_build_filename (filename, "share", NULL);
   g_free (filename);
 
@@ -2356,6 +2499,7 @@ g_win32_get_system_data_dirs_for_module (gconstpointer address)
   static GHashTable *per_module_data_dirs = NULL;
   gchar **retval;
   gchar *p;
+  gchar *exe_root;
       
   if (address)
     {
@@ -2416,13 +2560,20 @@ g_win32_get_system_data_dirs_for_module (gconstpointer address)
   if (p)
     g_array_append_val (data_dirs, p);
     
-  p = g_win32_get_package_installation_subdirectory (NULL, dll_name, "share");
-  if (p)
-    g_array_append_val (data_dirs, p);
+  if (glib_dll != NULL)
+    {
+      gchar *glib_root = g_win32_get_package_installation_directory_of_module (glib_dll);
+      p = g_build_filename (glib_root, "share", NULL);
+      if (p)
+	g_array_append_val (data_dirs, p);
+      g_free (glib_root);
+    }
   
-  p = g_win32_get_package_installation_subdirectory (NULL, NULL, "share");
+  exe_root = g_win32_get_package_installation_directory_of_module (NULL);
+  p = g_build_filename (exe_root, "share", NULL);
   if (p)
     g_array_append_val (data_dirs, p);
+  g_free (exe_root);
 
   retval = (gchar **) g_array_free (data_dirs, FALSE);
 
@@ -2999,38 +3150,43 @@ _g_utils_thread_init (void)
   g_get_language_names ();
 }
 
-#ifdef ENABLE_NLS
-
-#include <libintl.h>
-
 #ifdef G_OS_WIN32
 
 /**
  * _glib_get_locale_dir:
  *
- * Return the path to the lib\locale subfolder of the GLib
- * installation folder. The path is in the system codepage. We have to
- * use system codepage as bindtextdomain() doesn't have a UTF-8
- * interface.
+ * Return the path to the share\locale or lib\locale subfolder of the
+ * GLib installation folder. The path is in the system codepage. We
+ * have to use system codepage as bindtextdomain() doesn't have a
+ * UTF-8 interface.
  */
-static const gchar *
+static gchar *
 _glib_get_locale_dir (void)
 {
-  gchar *dir, *cp_dir;
+  gchar *install_dir = NULL, *locale_dir;
   gchar *retval = NULL;
 
-  dir = g_win32_get_package_installation_directory (GETTEXT_PACKAGE, dll_name);
-  cp_dir = g_win32_locale_filename_from_utf8 (dir);
-  g_free (dir);
+  if (glib_dll != NULL)
+    install_dir = g_win32_get_package_installation_directory_of_module (glib_dll);
 
-  if (cp_dir)
+  if (install_dir)
     {
-      /* Don't use g_build_filename() on pathnames in the system
-       * codepage. In CJK locales cp_dir might end with a double-byte
-       * character whose trailing byte is a backslash.
+      /*
+       * Append "/share/locale" or "/lib/locale" depending on whether
+       * autoconfigury detected GNU gettext or not.
        */
-      retval = g_strconcat (cp_dir, "\\lib\\locale", NULL);
-      g_free (cp_dir);
+      const char *p = GLIB_LOCALE_DIR + strlen (GLIB_LOCALE_DIR);
+      while (*--p != '/')
+	;
+      while (*--p != '/')
+	;
+
+      locale_dir = g_build_filename (install_dir, p, NULL);
+
+      retval = g_win32_locale_filename_from_utf8 (locale_dir);
+
+      g_free (install_dir);
+      g_free (locale_dir);
     }
 
   if (retval)
@@ -3040,18 +3196,33 @@ _glib_get_locale_dir (void)
 }
 
 #undef GLIB_LOCALE_DIR
-#define GLIB_LOCALE_DIR _glib_get_locale_dir ()
 
 #endif /* G_OS_WIN32 */
 
+/**
+ * glib_gettext:
+ * @str: The string to be translated
+ *
+ * Returns the translated string from the glib translations.
+ * This is an internal function and should only be used by
+ * the internals of glib (such as libgio).
+ *
+ * Returns: the transation of @str to the current locale
+ */
 G_CONST_RETURN gchar *
-_glib_gettext (const gchar *str)
+glib_gettext (const gchar *str)
 {
   static gboolean _glib_gettext_initialized = FALSE;
 
   if (!_glib_gettext_initialized)
     {
-      bindtextdomain(GETTEXT_PACKAGE, GLIB_LOCALE_DIR);
+#ifdef G_OS_WIN32
+      gchar *tmp = _glib_get_locale_dir ();
+      bindtextdomain (GETTEXT_PACKAGE, tmp);
+      g_free (tmp);
+#else
+      bindtextdomain (GETTEXT_PACKAGE, GLIB_LOCALE_DIR);
+#endif
 #    ifdef HAVE_BIND_TEXTDOMAIN_CODESET
       bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #    endif
@@ -3060,8 +3231,6 @@ _glib_gettext (const gchar *str)
   
   return dgettext (GETTEXT_PACKAGE, str);
 }
-
-#endif /* ENABLE_NLS */
 
 #ifdef G_OS_WIN32
 

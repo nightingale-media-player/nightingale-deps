@@ -1,29 +1,27 @@
 <refentry id="glib-Memory-Allocators">
 <refmeta>
-<refentrytitle role="top_of_page">Memory Allocators</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Memory-Allocators.top_of_page">Memory Allocators</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>Memory Allocators</refname>
-<refpurpose>deprecated way to allocate chunks of memory for <link linkend="GList"><type>GList</type></link>, <link linkend="GSList"><type>GSList</type></link> and <link linkend="GNode"><type>GNode</type></link>.</refpurpose>
+<refpurpose>deprecated way to allocate chunks of memory for GList, GSList and GNode</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Memory-Allocators.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
 
-
                     <link linkend="GAllocator">GAllocator</link>;
 <link linkend="GAllocator">GAllocator</link>*         <link linkend="g-allocator-new">g_allocator_new</link>                     (const <link linkend="gchar">gchar</link> *name,
                                                          <link linkend="guint">guint</link> n_preallocs);
 <link linkend="void">void</link>                <link linkend="g-allocator-free">g_allocator_free</link>                    (<link linkend="GAllocator">GAllocator</link> *allocator);
-
 </synopsis>
 </refsynopsisdiv>
 
@@ -35,7 +33,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Memory-Allocators.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 </para>
@@ -47,19 +45,19 @@ structures. Since 2.10, it has been completely replaced by the
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Memory-Allocators.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GAllocator" role="struct" condition="deprecated:"/>GAllocator</title>
-<indexterm role="deprecated"><primary>GAllocator</primary></indexterm><programlisting>typedef struct _GAllocator GAllocator;</programlisting>
+<refsect2 id="GAllocator" role="struct" condition="deprecated:">
+<title>GAllocator</title>
+<indexterm zone="GAllocator" role="deprecated"><primary>GAllocator</primary></indexterm><programlisting>typedef struct _GAllocator GAllocator;</programlisting>
 <warning><para><literal>GAllocator</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 The <structname>GAllocator</structname> struct contains private data. and 
 should only be accessed using the following functions.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-allocator-new" role="function" condition="deprecated"/>g_allocator_new ()</title>
-<indexterm role="deprecated"><primary>g_allocator_new</primary></indexterm><programlisting><link linkend="GAllocator">GAllocator</link>*         g_allocator_new                     (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-allocator-new" role="function" condition="deprecated">
+<title>g_allocator_new ()</title>
+<indexterm zone="g-allocator-new" role="deprecated"><primary>g_allocator_new</primary></indexterm><programlisting><link linkend="GAllocator">GAllocator</link>*         g_allocator_new                     (const <link linkend="gchar">gchar</link> *name,
                                                          <link linkend="guint">guint</link> n_preallocs);</programlisting>
 <warning><para><literal>g_allocator_new</literal> has been deprecated since version 2.10 and should not be used in newly-written code. Use the <link linkend="glib-Memory-Slices">slice allocator</link>
 instead</para></warning>
@@ -79,9 +77,9 @@ and 65535.
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>a new <link linkend="GAllocator"><type>GAllocator</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-allocator-free" role="function" condition="deprecated"/>g_allocator_free ()</title>
-<indexterm role="deprecated"><primary>g_allocator_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_allocator_free                    (<link linkend="GAllocator">GAllocator</link> *allocator);</programlisting>
+<refsect2 id="g-allocator-free" role="function" condition="deprecated">
+<title>g_allocator_free ()</title>
+<indexterm zone="g-allocator-free" role="deprecated"><primary>g_allocator_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_allocator_free                    (<link linkend="GAllocator">GAllocator</link> *allocator);</programlisting>
 <warning><para><literal>g_allocator_free</literal> has been deprecated since version 2.10 and should not be used in newly-written code. Use the <link linkend="glib-Memory-Slices">slice allocator</link>
 instead</para></warning>
 <para>

@@ -1,6 +1,6 @@
 <refentry id="gobject-Boxed-Types">
 <refmeta>
-<refentrytitle role="top_of_page">GBoxed</refentrytitle>
+<refentrytitle role="top_of_page" id="gobject-Boxed-Types.top_of_page">GBoxed</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GOBJECT Library</refmiscinfo>
 </refmeta>
@@ -11,13 +11,12 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="gobject-Boxed-Types.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib-object.h&gt;
-
 
 <link linkend="gpointer">gpointer</link>            (<link linkend="GBoxedCopyFunc">*GBoxedCopyFunc</link>)                   (<link linkend="gpointer">gpointer</link> boxed);
 <link linkend="void">void</link>                (<link linkend="GBoxedFreeFunc">*GBoxedFreeFunc</link>)                   (<link linkend="gpointer">gpointer</link> boxed);
@@ -34,9 +33,8 @@
 #define             <link linkend="G-TYPE-DATE:CAPS">G_TYPE_DATE</link>
 #define             <link linkend="G-TYPE-GSTRING:CAPS">G_TYPE_GSTRING</link>
 #define             <link linkend="G-TYPE-STRV:CAPS">G_TYPE_STRV</link>
+#define             <link linkend="G-TYPE-REGEX:CAPS">G_TYPE_REGEX</link>
 typedef             <link linkend="GStrv">GStrv</link>;
-
-
 </synopsis>
 </refsynopsisdiv>
 
@@ -48,7 +46,7 @@ typedef             <link linkend="GStrv">GStrv</link>;
 
 
 
-<refsect1 role="desc">
+<refsect1 id="gobject-Boxed-Types.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 GBoxed is a generic wrapper mechanism for arbitrary C structures. The only
@@ -62,11 +60,11 @@ based libraries.
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="gobject-Boxed-Types.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GBoxedCopyFunc" role="function"/>GBoxedCopyFunc ()</title>
-<indexterm><primary>GBoxedCopyFunc</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            (*GBoxedCopyFunc)                   (<link linkend="gpointer">gpointer</link> boxed);</programlisting>
+<refsect2 id="GBoxedCopyFunc" role="function">
+<title>GBoxedCopyFunc ()</title>
+<indexterm zone="GBoxedCopyFunc"><primary>GBoxedCopyFunc</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            (*GBoxedCopyFunc)                   (<link linkend="gpointer">gpointer</link> boxed);</programlisting>
 <para>
 This function is provided by the user and should produce a copy of the passed
 in boxed structure.
@@ -79,9 +77,9 @@ in boxed structure.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="GBoxedFreeFunc" role="function"/>GBoxedFreeFunc ()</title>
-<indexterm><primary>GBoxedFreeFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GBoxedFreeFunc)                   (<link linkend="gpointer">gpointer</link> boxed);</programlisting>
+<refsect2 id="GBoxedFreeFunc" role="function">
+<title>GBoxedFreeFunc ()</title>
+<indexterm zone="GBoxedFreeFunc"><primary>GBoxedFreeFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GBoxedFreeFunc)                   (<link linkend="gpointer">gpointer</link> boxed);</programlisting>
 <para>
 This function is provided by the user and should free the boxed
 structure passed.
@@ -92,9 +90,9 @@ structure passed.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-boxed-copy" role="function"/>g_boxed_copy ()</title>
-<indexterm><primary>g_boxed_copy</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_boxed_copy                        (<link linkend="GType">GType</link> boxed_type,
+<refsect2 id="g-boxed-copy" role="function">
+<title>g_boxed_copy ()</title>
+<indexterm zone="g-boxed-copy"><primary>g_boxed_copy</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_boxed_copy                        (<link linkend="GType">GType</link> boxed_type,
                                                          <link linkend="gconstpointer">gconstpointer</link> src_boxed);</programlisting>
 <para>
 Provide a copy of a boxed structure <parameter>src_boxed</parameter> which is of type <parameter>boxed_type</parameter>.
@@ -110,9 +108,9 @@ Provide a copy of a boxed structure <parameter>src_boxed</parameter> which is of
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-boxed-free" role="function"/>g_boxed_free ()</title>
-<indexterm><primary>g_boxed_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_boxed_free                        (<link linkend="GType">GType</link> boxed_type,
+<refsect2 id="g-boxed-free" role="function">
+<title>g_boxed_free ()</title>
+<indexterm zone="g-boxed-free"><primary>g_boxed_free</primary></indexterm><programlisting><link linkend="void">void</link>                g_boxed_free                        (<link linkend="GType">GType</link> boxed_type,
                                                          <link linkend="gpointer">gpointer</link> boxed);</programlisting>
 <para>
 Free the boxed structure <parameter>boxed</parameter> which is of type <parameter>boxed_type</parameter>.
@@ -126,9 +124,9 @@ Free the boxed structure <parameter>boxed</parameter> which is of type <paramete
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-boxed-type-register-static" role="function"/>g_boxed_type_register_static ()</title>
-<indexterm><primary>g_boxed_type_register_static</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_boxed_type_register_static        (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-boxed-type-register-static" role="function">
+<title>g_boxed_type_register_static ()</title>
+<indexterm zone="g-boxed-type-register-static"><primary>g_boxed_type_register_static</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_boxed_type_register_static        (const <link linkend="gchar">gchar</link> *name,
                                                          <link linkend="GBoxedCopyFunc">GBoxedCopyFunc</link> boxed_copy,
                                                          <link linkend="GBoxedFreeFunc">GBoxedFreeFunc</link> boxed_free);</programlisting>
 <para>
@@ -150,9 +148,9 @@ provided to copy and free opaque boxed structures of this type.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-pointer-type-register-static" role="function"/>g_pointer_type_register_static ()</title>
-<indexterm><primary>g_pointer_type_register_static</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_pointer_type_register_static      (const <link linkend="gchar">gchar</link> *name);</programlisting>
+<refsect2 id="g-pointer-type-register-static" role="function">
+<title>g_pointer_type_register_static ()</title>
+<indexterm zone="g-pointer-type-register-static"><primary>g_pointer_type_register_static</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_pointer_type_register_static      (const <link linkend="gchar">gchar</link> *name);</programlisting>
 <para>
 Creates a new <link linkend="G-TYPE-POINTER:CAPS"><literal>G_TYPE_POINTER</literal></link> derived type id for a new
 pointer type with name <parameter>name</parameter>. 
@@ -165,9 +163,9 @@ pointer type with name <parameter>name</parameter>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-HASH-TABLE:CAPS" role="macro" condition="since:2.10"/>G_TYPE_HASH_TABLE</title>
-<indexterm role="2.10"><primary>G_TYPE_HASH_TABLE</primary></indexterm><programlisting>#define	G_TYPE_HASH_TABLE	(g_hash_table_get_type ())
+<refsect2 id="G-TYPE-HASH-TABLE:CAPS" role="macro" condition="since:2.10">
+<title>G_TYPE_HASH_TABLE</title>
+<indexterm zone="G-TYPE-HASH-TABLE:CAPS" role="2.10"><primary>G_TYPE_HASH_TABLE</primary></indexterm><programlisting>#define	G_TYPE_HASH_TABLE	(g_hash_table_get_type ())
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> for a boxed type holding a <link linkend="GHashTable"><type>GHashTable</type></link> reference.
@@ -175,23 +173,23 @@ The <link linkend="GType"><type>GType</type></link> for a boxed type holding a <
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-DATE:CAPS" role="macro"/>G_TYPE_DATE</title>
-<indexterm><primary>G_TYPE_DATE</primary></indexterm><programlisting>#define	G_TYPE_DATE	        (g_date_get_type ())
+<refsect2 id="G-TYPE-DATE:CAPS" role="macro">
+<title>G_TYPE_DATE</title>
+<indexterm zone="G-TYPE-DATE:CAPS"><primary>G_TYPE_DATE</primary></indexterm><programlisting>#define	G_TYPE_DATE	        (g_date_get_type ())
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> for <link linkend="GDate"><type>GDate</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-GSTRING:CAPS" role="macro"/>G_TYPE_GSTRING</title>
-<indexterm><primary>G_TYPE_GSTRING</primary></indexterm><programlisting>#define	G_TYPE_GSTRING		(g_gstring_get_type ())
+<refsect2 id="G-TYPE-GSTRING:CAPS" role="macro">
+<title>G_TYPE_GSTRING</title>
+<indexterm zone="G-TYPE-GSTRING:CAPS"><primary>G_TYPE_GSTRING</primary></indexterm><programlisting>#define	G_TYPE_GSTRING		(g_gstring_get_type ())
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> for <link linkend="GString"><type>GString</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-STRV:CAPS" role="macro" condition="since:2.4"/>G_TYPE_STRV</title>
-<indexterm role="2.4"><primary>G_TYPE_STRV</primary></indexterm><programlisting>#define	G_TYPE_STRV	        (g_strv_get_type ())
+<refsect2 id="G-TYPE-STRV:CAPS" role="macro" condition="since:2.4">
+<title>G_TYPE_STRV</title>
+<indexterm zone="G-TYPE-STRV:CAPS" role="2.4"><primary>G_TYPE_STRV</primary></indexterm><programlisting>#define	G_TYPE_STRV	        (g_strv_get_type ())
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> for a boxed type holding a <link linkend="NULL:CAPS"><literal>NULL</literal></link>-terminated array of strings.
@@ -223,9 +221,19 @@ g_strfreev (writers);
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="GStrv" role="typedef"/>GStrv</title>
-<indexterm><primary>GStrv</primary></indexterm><programlisting>typedef gchar** GStrv;
+<refsect2 id="G-TYPE-REGEX:CAPS" role="macro" condition="since:2.14">
+<title>G_TYPE_REGEX</title>
+<indexterm zone="G-TYPE-REGEX:CAPS" role="2.14"><primary>G_TYPE_REGEX</primary></indexterm><programlisting>#define	G_TYPE_REGEX		(g_regex_get_type ())
+</programlisting>
+<para>
+The <link linkend="GType"><type>GType</type></link> for a boxed type holding a <link linkend="GRegex"><type>GRegex</type></link> reference.
+</para><para role="since">Since 2.14
+
+
+</para></refsect2>
+<refsect2 id="GStrv" role="typedef">
+<title>GStrv</title>
+<indexterm zone="GStrv"><primary>GStrv</primary></indexterm><programlisting>typedef gchar** GStrv;
 </programlisting>
 <para>
 A C representable type name for <link linkend="G-TYPE-STRV:CAPS"><type>G_TYPE_STRV</type></link>.
@@ -235,7 +243,7 @@ A C representable type name for <link linkend="G-TYPE-STRV:CAPS"><type>G_TYPE_ST
 
 
 
-<refsect1>
+<refsect1 id="gobject-Boxed-Types.see-also">
 <title>See Also</title>
 <para>
 <link linkend="GParamSpecBoxed"><type>GParamSpecBoxed</type></link>, <link linkend="g-param-spec-boxed"><function>g_param_spec_boxed()</function></link>

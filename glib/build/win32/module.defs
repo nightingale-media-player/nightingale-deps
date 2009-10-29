@@ -1,3 +1,8 @@
+# Note that this file is hardly maintained, hardly usable without
+# manual editing, and not really part of a recommended way to build
+# GLib and related software with Microsoft's compilers. Only a few
+# persons use a build setup that involves this file.
+
 # This file is included by makefiles for both GNU Make (for gcc
 # (mingw) builds, and NMAKE (for MSVC builds).
 

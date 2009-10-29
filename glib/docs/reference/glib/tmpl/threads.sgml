@@ -1,11 +1,10 @@
 <!-- ##### SECTION Title ##### -->
-
 Threads
 
 <!-- ##### SECTION Short_Description ##### -->
 
 thread abstraction; including threads, different mutexes, conditions
-and thread private data.
+and thread private data
 
 <!-- ##### SECTION Long_Description ##### -->
 
@@ -43,6 +42,13 @@ reasons. So, for example you must coordinate accesses to the same
 this rule are #GMainLoop and #GAsyncQueue,
 which <emphasis>are</emphasis> threadsafe and needs no further
 application-level locking to be accessed from multiple threads.
+</para>
+
+<para>
+To help debugging problems in multithreaded applications, GLib supports
+error-checking mutexes that will give you helpful error messages on
+common problems. To use error-checking mutexes, define the symbol 
+#G_ERRORCHECK_MUTEXES when compiling the application.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
@@ -959,7 +965,7 @@ functions increases the depth of @mutex and returns immediately.
 Tries to lock @mutex. If @mutex is already locked by another thread,
 it immediately returns %FALSE. Otherwise it locks @mutex and returns
 %TRUE. If @mutex is already locked by the calling thread, this
-functions increases the depth of @mutex and immediately  returns %TRUE.
+functions increases the depth of @mutex and immediately returns %TRUE.
 </para>
 
 @mutex: a #GStaticRecMutex to lock.
@@ -1426,7 +1432,7 @@ done as follows:
 
     if (!current_number)
     {
-      current_number = g_new (int,1);
+      current_number = g_new (int, 1);
       *current_number = 0;
       g_private_set (current_number_key, current_number);
     }
@@ -1500,8 +1506,12 @@ current @private_key and thread yet, this pointer will be %NULL.
 </para>
 
 <para>
-This function can be used even if g_thread_init() has not yet been
-called, and, in that case, will return the value of @private_key casted to #gpointer.
+This function can be used even if g_thread_init() has not yet been called, and,
+in that case, will return the value of @private_key casted to #gpointer.
+Note however, that private data set <emphasis>before</emphasis> g_thread_init() will
+<emphasis>not</emphasis> be retained <emphasis>after</emphasis> the call. Instead, %NULL
+will be returned in all threads directly after g_thread_init(), regardless of
+any g_private_set() calls issued before threading system intialization.
 </para>
 
 @private_key: a #GPrivate.
@@ -1517,6 +1527,7 @@ Sets the pointer keyed to @private_key for the current thread.
 <para>
 This function can be used even if g_thread_init() has not yet been
 called, and, in that case, will set @private_key to @data casted to #GPrivate*.
+See g_private_get() for resulting caveats.
 </para>
 
 @private_key: a #GPrivate.
@@ -1712,5 +1723,48 @@ get_debug_flags ()
        associated #GOnce struct are passed to g_once() .
 @arg:  data to be passed to @func
 @Since: 2.4
+
+
+<!-- ##### FUNCTION g_once_init_enter ##### -->
+<para>
+Function to be called when starting a critical initialization section.
+The argument @value_location must point to a static 0-initialized variable
+that will be set to a value other than 0 at the end of the initialization 
+section.
+In combination with g_once_init_leave() and the unique address @value_location,
+it can be ensured that an initialization section will be executed only once
+during a program's life time, and that concurrent threads are blocked until
+initialization completed. To be used in constructs like this:
+</para>
+
+<para>
+<informalexample><programlisting>
+static gsize initialization_value = 0;
+if (g_once_init_enter (&amp;initialization_value))              /* section start */
+  {
+    gsize setup_value = 42; /* initialization code here */
+    g_once_init_leave (&amp;initialization_value, setup_value); /* section end */
+  }
+/* use initialization_value here */
+</programlisting></informalexample>
+</para>
+
+@value_location: location of a static initializable variable containing 0.
+@Returns: %TRUE if the initialization section should be entered, %FALSE and blocks otherwise
+@Since: 2.14
+
+
+<!-- ##### FUNCTION g_once_init_leave ##### -->
+<para>
+Counterpart to g_once_init_enter(). Expects a location of a static 
+0-initialized initialization variable, and an initialization value other 
+than 0. Sets the variable to the initialization value, and releases 
+concurrent threads blocking in g_once_init_enter() on this initialization 
+variable.
+</para>
+
+@value_location: location of a static initializable variable containing 0.
+@initialization_value: new non-0 value for *@value_location.
+@Since: 2.14
 
 

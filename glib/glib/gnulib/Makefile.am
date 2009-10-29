@@ -1,6 +1,7 @@
 ## Process this file with automake to produce Makefile.in
+include $(top_srcdir)/Makefile.decl
 
-INCLUDES = -I$(top_srcdir) -DG_LOG_DOMAIN=\"GLib\" \
+INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/glib -DG_LOG_DOMAIN=\"GLib\" \
 	$(GLIB_DEBUG_FLAGS) -DG_DISABLE_DEPRECATED -DGLIB_COMPILATION 
 
 noinst_LTLIBRARIES = libgnulib.la
@@ -18,11 +19,4 @@ libgnulib_la_SOURCES = 	\
 	g-gnulib.h
 
 
-EXTRA_DIST = makefile.msc
-
-
-
-
-
-
-
+EXTRA_DIST += makefile.msc

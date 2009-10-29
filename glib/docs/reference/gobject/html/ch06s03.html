@@ -1,30 +1,30 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Interface definition prerequisites</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
-<link rel="start" href="index.html" title="GObject Reference Manual">
-<link rel="up" href="howto-interface.html" title="How To define and implement Interfaces?">
+<meta name="generator" content="DocBook XSL Stylesheets V1.74.0">
+<link rel="home" href="index.html" title="GObject Reference Manual">
+<link rel="up" href="howto-interface.html" title="How to define and implement interfaces">
 <link rel="prev" href="howto-interface-implement.html" title="How To define implement an Interface?">
 <link rel="next" href="howto-interface-properties.html" title="Interface Properties">
-<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="preface" href="pr01.html" title="Introduction">
-<link rel="part" href="pt01.html" title="Part&#160;I.&#160;Concepts">
-<link rel="chapter" href="ch01.html" title="Background">
-<link rel="chapter" href="ch02.html" title="The Glib Dynamic Type System">
+<link rel="part" href="pt01.html" title="Part I. Concepts">
+<link rel="chapter" href="chapter-intro.html" title="Background">
+<link rel="chapter" href="chapter-gtype.html" title="The GLib Dynamic Type System">
 <link rel="chapter" href="chapter-gobject.html" title="The GObject base class">
 <link rel="chapter" href="chapter-signal.html" title="The GObject messaging system">
 <link rel="reference" href="rn01.html" title="API Reference">
 <link rel="reference" href="rn02.html" title="Tools Reference">
-<link rel="part" href="pt02.html" title="Part&#160;IV.&#160;Tutorial">
-<link rel="chapter" href="howto-gobject.html" title="How To define and implement a new GObject?">
-<link rel="chapter" href="howto-interface.html" title="How To define and implement Interfaces?">
-<link rel="chapter" href="howto-signals.html" title="Howto create and use signals">
-<link rel="part" href="pt03.html" title="Part&#160;V.&#160;Related Tools">
+<link rel="part" href="pt02.html" title="Part IV. Tutorial">
+<link rel="chapter" href="howto-gobject.html" title="How to define and implement a new GObject">
+<link rel="chapter" href="howto-interface.html" title="How to define and implement interfaces">
+<link rel="chapter" href="howto-signals.html" title="How to create and use signals">
+<link rel="part" href="pt03.html" title="Part V. Related Tools">
 <link rel="chapter" href="tools-gob.html" title="GObject builder">
-<link rel="chapter" href="tools-ginspector.html" title="Graphical inspection of Gobjects">
+<link rel="chapter" href="tools-ginspector.html" title="Graphical inspection of GObjects">
 <link rel="chapter" href="tools-refdb.html" title="Debugging reference count problems">
 <link rel="chapter" href="tools-gtkdoc.html" title="Writing API docs">
 <link rel="index" href="ix01.html" title="Index">
@@ -35,6 +35,7 @@
 <link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
 <link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
 <link rel="index" href="ix08.html" title="Index of new symbols in 2.12">
+<link rel="index" href="ix09.html" title="Index of new symbols in 2.14">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle">
@@ -46,15 +47,17 @@
 </tr></table>
 <div class="sect1" lang="en">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="id3029970"></a>Interface definition prerequisites</h2></div></div></div>
-<p>To specify that an interface requires the presence of other interfaces when implemented, 
-  GObject introduces the concept of <span class="emphasis"><em>prerequisites</em></span>: it is possible to associate
-  a list of prerequisite interfaces to an interface. For example, if object A wishes to implement interface
-  I1, and if interface I1 has a prerequisite on interface I2, A has to implement both I1 and I2.
-  </p>
-<p>The mechanism described above is, in practice, very similar to Java's interface I1 extends 
-  interface I2. The example below shows the GObject equivalent:
-
+<a name="id2845491"></a>Interface definition prerequisites</h2></div></div></div>
+<p>
+      To specify that an interface requires the presence of other interfaces when implemented, 
+      GObject introduces the concept of <span class="emphasis"><em>prerequisites</em></span>: it is possible to associate
+      a list of prerequisite interfaces to an interface. For example, if object A wishes to implement interface
+      I1, and if interface I1 has a prerequisite on interface I2, A has to implement both I1 and I2.
+    </p>
+<p>
+      The mechanism described above is, in practice, very similar to Java's interface I1 extends 
+      interface I2. The example below shows the GObject equivalent:
+  
 </p>
 <pre class="programlisting">
   type = g_type_register_static (G_TYPE_INTERFACE, "MamanIbar", &amp;info, 0);
@@ -62,8 +65,8 @@
   g_type_interface_add_prerequisite (type, MAMAN_TYPE_IBAZ);
 </pre>
 <p>
-  The code shown above adds the MamanIbaz interface to the list of prerequisites of MamanIbar while the 
-  code below shows how an implementation can implement both interfaces and register their implementations:
+      The code shown above adds the MamanIbaz interface to the list of prerequisites of MamanIbar while the 
+      code below shows how an implementation can implement both interfaces and register their implementations:
 </p>
 <pre class="programlisting">
 static void ibar_do_another_action (MamanBar *self)
@@ -93,7 +96,6 @@ ibaz_interface_init (gpointer   g_iface,
   iface-&gt;do_action = (void (*) (MamanIbaz *self))ibaz_do_action;
 }
 
-
 static void
 bar_instance_init (GTypeInstance   *instance,
                    gpointer         g_class)
@@ -101,7 +103,6 @@ bar_instance_init (GTypeInstance   *instance,
   MamanBar *self = (MamanBar *)instance;
   self-&gt;instance_member = 0x666;
 }
-
 
 GType 
 maman_bar_get_type (void)
@@ -143,15 +144,18 @@ maman_bar_get_type (void)
 }
 </pre>
 <p>
-  It is very important to notice that the order in which interface implementations are added to the main object
-  is not random: <code class="function"><a href="gobject-Type-Information.html#g-type-add-interface-static">g_type_add_interface_static</a></code> must be invoked first on the interfaces which have
-  no prerequisites and then on the others.
-</p>
+      It is very important to notice that the order in which interface implementations are added to the main object
+      is not random: <code class="function"><a class="link" href="gobject-Type-Information.html#g-type-add-interface-static" title="g_type_add_interface_static ()">g_type_add_interface_static</a></code> must be invoked first on the interfaces which have
+      no prerequisites and then on the others.
+    </p>
 <p>
-		Complete source code showing how to define the MamanIbar interface which requires MamanIbaz and how to 
-		implement the MamanIbar interface is located in <code class="filename">sample/interface/maman-ibar.{h|c}</code> 
-		and <code class="filename">sample/interface/maman-bar.{h|c}</code>.
-	</p>
+      Complete source code showing how to define the MamanIbar interface which requires MamanIbaz and how to 
+      implement the MamanIbar interface is located in <code class="filename">sample/interface/maman-ibar.{h|c}</code> 
+      and <code class="filename">sample/interface/maman-bar.{h|c}</code>.
+    </p>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

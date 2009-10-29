@@ -1,6 +1,6 @@
 <refentry id="gobject-Varargs-Value-Collection">
 <refmeta>
-<refentrytitle role="top_of_page">Varargs Value Collection</refentrytitle>
+<refentrytitle role="top_of_page" id="gobject-Varargs-Value-Collection.top_of_page">Varargs Value Collection</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GOBJECT Library</refmiscinfo>
 </refmeta>
@@ -11,14 +11,13 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="gobject-Varargs-Value-Collection.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib-object.h&gt;
 #include &lt;gobject/gvaluecollector.h&gt;
-
 
 union               <link linkend="GTypeCValue">GTypeCValue</link>;
 #define             <link linkend="G-VALUE-COLLECT:CAPS">G_VALUE_COLLECT</link>                     (value, var_args, flags, __error)
@@ -35,7 +34,7 @@ union               <link linkend="GTypeCValue">GTypeCValue</link>;
 
 
 
-<refsect1 role="desc">
+<refsect1 id="gobject-Varargs-Value-Collection.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The macros in this section provide the varargs parsing support needed
@@ -45,11 +44,11 @@ types and pointers.
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="gobject-Varargs-Value-Collection.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GTypeCValue" role="union"/>union GTypeCValue</title>
-<indexterm><primary>GTypeCValue</primary></indexterm><programlisting>union GTypeCValue
+<refsect2 id="GTypeCValue" role="union">
+<title>union GTypeCValue</title>
+<indexterm zone="GTypeCValue"><primary>GTypeCValue</primary></indexterm><programlisting>union GTypeCValue
 {
   gint     v_int;
   glong    v_long;
@@ -61,9 +60,9 @@ types and pointers.
 <para>
 A union holding one collected value.
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-COLLECT:CAPS" role="macro"/>G_VALUE_COLLECT()</title>
-<indexterm><primary>G_VALUE_COLLECT</primary></indexterm><programlisting>#define             G_VALUE_COLLECT(value, var_args, flags, __error)</programlisting>
+<refsect2 id="G-VALUE-COLLECT:CAPS" role="macro">
+<title>G_VALUE_COLLECT()</title>
+<indexterm zone="G-VALUE-COLLECT:CAPS"><primary>G_VALUE_COLLECT</primary></indexterm><programlisting>#define             G_VALUE_COLLECT(value, var_args, flags, __error)</programlisting>
 <para>
 Collects a variable argument value from a va_list. We have to
 implement the varargs collection as a macro, because on some systems
@@ -87,9 +86,9 @@ va_list variables cannot be passed by reference.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-LCOPY:CAPS" role="macro"/>G_VALUE_LCOPY()</title>
-<indexterm><primary>G_VALUE_LCOPY</primary></indexterm><programlisting>#define             G_VALUE_LCOPY(value, var_args, flags, __error)</programlisting>
+<refsect2 id="G-VALUE-LCOPY:CAPS" role="macro">
+<title>G_VALUE_LCOPY()</title>
+<indexterm zone="G-VALUE-LCOPY:CAPS"><primary>G_VALUE_LCOPY</primary></indexterm><programlisting>#define             G_VALUE_LCOPY(value, var_args, flags, __error)</programlisting>
 <para>
 Collects a value's variable argument locations from a va_list. 
 </para><variablelist role="params">
@@ -111,9 +110,9 @@ Collects a value's variable argument locations from a va_list.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-COLLECT-FORMAT-MAX-LENGTH:CAPS" role="macro"/>G_VALUE_COLLECT_FORMAT_MAX_LENGTH</title>
-<indexterm><primary>G_VALUE_COLLECT_FORMAT_MAX_LENGTH</primary></indexterm><programlisting>#define	G_VALUE_COLLECT_FORMAT_MAX_LENGTH	(8)
+<refsect2 id="G-VALUE-COLLECT-FORMAT-MAX-LENGTH:CAPS" role="macro">
+<title>G_VALUE_COLLECT_FORMAT_MAX_LENGTH</title>
+<indexterm zone="G-VALUE-COLLECT-FORMAT-MAX-LENGTH:CAPS"><primary>G_VALUE_COLLECT_FORMAT_MAX_LENGTH</primary></indexterm><programlisting>#define	G_VALUE_COLLECT_FORMAT_MAX_LENGTH	(8)
 </programlisting>
 <para>
 The maximal number of <link linkend="GTypeCValue"><type>GTypeCValue</type></link><!-- -->s which can be collected for a 
@@ -124,7 +123,7 @@ single <link linkend="GValue"><type>GValue</type></link>.
 
 
 
-<refsect1>
+<refsect1 id="gobject-Varargs-Value-Collection.see-also">
 <title>See Also</title>
 <para>
 <link linkend="GValueTable"><type>GValueTable</type></link>

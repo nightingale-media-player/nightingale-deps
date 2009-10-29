@@ -1,15 +1,21 @@
 ## Process this file with automake to produce Makefile.in
+include $(top_srcdir)/Makefile.decl
 
 AUTOMAKE_OPTIONS = 1.7
 
-SUBDIRS = . m4macros glib gobject gmodule gthread tests build po docs
+SUBDIRS = . m4macros glib gmodule gthread gobject gio tests po docs
+DIST_SUBDIRS = $(SUBDIRS) build
 
 bin_SCRIPTS = glib-gettextize
 
-INCLUDES = -DG_LOG_DOMAIN=g_log_domain_glib @GLIB_DEBUG_FLAGS@ \
-	-DG_DISABLE_DEPRECATED -DGLIB_COMPILATION
+AM_CPPFLAGS = 					\
+	-DG_LOG_DOMAIN=g_log_domain_glib 	\
+	@GLIB_DEBUG_FLAGS@ 			\
+	-DG_DISABLE_DEPRECATED 			\
+	-DGLIB_COMPILATION
 
-EXTRA_DIST = 			\
+EXTRA_DIST += 			\
+	ChangeLog.pre-2-14	\
 	ChangeLog.pre-2-12	\
 	ChangeLog.pre-2-10	\
 	ChangeLog.pre-2-8	\
@@ -28,6 +34,8 @@ EXTRA_DIST = 			\
 	HACKING			\
 	MAINTAINERS		\
 	autogen.sh		\
+	Makefile.decl		\
+	mkinstalldirs		\
 	makefile.msc		\
 	glibconfig.h.win32.in	\
 	msvc_recommended_pragmas.h \
@@ -39,11 +47,15 @@ EXTRA_DIST = 			\
 	gmodule-export-2.0.pc.in	\
 	gmodule-no-export-2.0.pc.in	\
 	gthread-2.0.pc.in	\
+	gio-2.0.pc.in		\
+	gio-unix-2.0.pc.in	\
 	glib-2.0-uninstalled.pc.in 	\
 	gobject-2.0-uninstalled.pc.in 	\
 	gmodule-2.0-uninstalled.pc.in	\
 	gthread-2.0-uninstalled.pc.in	\
-	gmodule-no-export-2.0-uninstalled.pc.in
+	gmodule-no-export-2.0-uninstalled.pc.in \
+	gio-2.0-uninstalled.pc.in		\
+	gio-unix-2.0-uninstalled.pc.in	
 
 
 # These may be in the builddir too
@@ -55,13 +67,7 @@ BUILT_EXTRA_DIST = 		\
 	gtk-doc.make
 
 configexecincludedir = $(libdir)/glib-2.0/include
-#configexecinclude_DATA = glibconfig.h
-
-install-exec-local: glibconfig.h
-	$(mkinstalldirs) $(DESTDIR)$(configexecincludedir)
-	file=$(DESTDIR)$(configexecincludedir)/glibconfig.h; \
-	if test -r $$file && cmp -s glibconfig.h $$file; then :; \
-	else $(INSTALL_DATA) glibconfig.h $$file; fi
+configexecinclude_DATA = glibconfig.h
 
 uninstall-local:
 	rm -f $(DESTDIR)$(configexecincludedir)/glibconfig.h
@@ -77,7 +83,7 @@ stamp-gc-h: config.status
 	echo timestamp > stamp-gc-h
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = glib-2.0.pc gobject-2.0.pc gmodule-2.0.pc gmodule-export-2.0.pc gmodule-no-export-2.0.pc gthread-2.0.pc
+pkgconfig_DATA = glib-2.0.pc gobject-2.0.pc gmodule-2.0.pc gmodule-export-2.0.pc gmodule-no-export-2.0.pc gthread-2.0.pc gio-2.0.pc gio-unix-2.0.pc
 
 $(pkgconfig_DATA): config.status
 
@@ -86,7 +92,7 @@ gettextdir = $(datadir)/glib-2.0/gettext
 gettext_SCRIPTS = mkinstalldirs
 
 # build documentation when doing distcheck
-DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
+DISTCHECK_CONFIGURE_FLAGS = --enable-debug --enable-gtk-doc --enable-man
 
 DISTCLEANFILES = glibconfig-sysdefs.h glibconfig.h stamp-gc-h
 

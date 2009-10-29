@@ -13,7 +13,13 @@ for so in .libs/lib*.so; do
 	echo Checking $so for local PLT entries
 	# g_string_insert_c is used in g_string_append_c_inline
 	# unaliased.  Couldn't find a way to fix it.
-	readelf -r $so | grep 'JU\?MP_SLOT' | grep -v '\<g_string_insert_c\>' | grep '\<g_' && status=1
+	# Same for g_once_init_enter
+	readelf -r $so | grep 'JU\?MP_SLOT' | \
+		grep -v '\<g_string_insert_c\>' | \
+		grep -v '\<g_atomic_[a-z]*_[sg]et\>' | \
+		grep -v '\<g_once_init_enter_impl\>' | \
+		grep -v '\<g_bit_' | \
+		grep '\<g_' && status=1
 done
 
 exit $status

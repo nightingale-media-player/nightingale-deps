@@ -176,125 +176,83 @@ gchar *
 g_win32_error_message (gint error)
 {
   gchar *retval;
+  wchar_t *msg = NULL;
+  int nchars;
 
-  if (G_WIN32_HAVE_WIDECHAR_API ())
+  FormatMessageW (FORMAT_MESSAGE_ALLOCATE_BUFFER
+		  |FORMAT_MESSAGE_IGNORE_INSERTS
+		  |FORMAT_MESSAGE_FROM_SYSTEM,
+		  NULL, error, 0,
+		  (LPWSTR) &msg, 0, NULL);
+  if (msg != NULL)
     {
-      wchar_t *msg = NULL;
-      int nchars;
-
-      FormatMessageW (FORMAT_MESSAGE_ALLOCATE_BUFFER
-		      |FORMAT_MESSAGE_IGNORE_INSERTS
-		      |FORMAT_MESSAGE_FROM_SYSTEM,
-		      NULL, error, 0,
-		      (LPWSTR) &msg, 0, NULL);
-      if (msg != NULL)
-	{
-	  nchars = wcslen (msg);
-
-	  if (nchars > 2 && msg[nchars-1] == '\n' && msg[nchars-2] == '\r')
-	    msg[nchars-2] = '\0';
-	  
-	  retval = g_utf16_to_utf8 (msg, -1, NULL, NULL, NULL);
-	  
-	  LocalFree (msg);
-	}
-      else
-	retval = g_strdup ("");
+      nchars = wcslen (msg);
+      
+      if (nchars > 2 && msg[nchars-1] == '\n' && msg[nchars-2] == '\r')
+	msg[nchars-2] = '\0';
+      
+      retval = g_utf16_to_utf8 (msg, -1, NULL, NULL, NULL);
+      
+      LocalFree (msg);
     }
   else
-    {
-      gchar *msg = NULL;
-      int nbytes;
-
-      FormatMessageA (FORMAT_MESSAGE_ALLOCATE_BUFFER
-		      |FORMAT_MESSAGE_IGNORE_INSERTS
-		      |FORMAT_MESSAGE_FROM_SYSTEM,
-		      NULL, error, 0,
-		      (LPTSTR) &msg, 0, NULL);
-      if (msg != NULL)
-	{
-	  nbytes = strlen (msg);
-
-	  if (nbytes > 2 && msg[nbytes-1] == '\n' && msg[nbytes-2] == '\r')
-	    msg[nbytes-2] = '\0';
-	  
-	  retval = g_locale_to_utf8 (msg, -1, NULL, NULL, NULL);
-	  
-	  LocalFree (msg);
-	}
-      else
-	retval = g_strdup ("");
-    }
+    retval = g_strdup ("");
 
   return retval;
 }
 
-static gchar *
-get_package_directory_from_module (gchar *module_name)
+/**
+ * g_win32_get_package_installation_directory_of_module:
+ * @hmodule: The Win32 handle for a DLL loaded into the current process, or %NULL
+ *
+ * This function tries to determine the installation directory of a
+ * software package based on the location of a DLL of the software
+ * package.
+ *
+ * @hmodule should be the handle of a loaded DLL or %NULL. The
+ * function looks up the directory that DLL was loaded from. If
+ * @hmodule is NULL, the directory the main executable of the current
+ * process is looked up. If that directory's last component is "bin"
+ * or "lib", its parent directory is returned, otherwise the directory
+ * itself.
+ *
+ * It thus makes sense to pass only the handle to a "public" DLL of a
+ * software package to this function, as such DLLs typically are known
+ * to be installed in a "bin" or occasionally "lib" subfolder of the
+ * installation folder. DLLs that are of the dynamically loaded module
+ * or plugin variety are often located in more private locations
+ * deeper down in the tree, from which it is impossible for GLib to
+ * deduce the root of the package installation.
+ *
+ * The typical use case for this function is to have a DllMain() that
+ * saves the handle for the DLL. Then when code in the DLL needs to
+ * construct names of files in the installation tree it calls this
+ * function passing the DLL handle.
+ *
+ * Returns: a string containing the guessed installation directory for
+ * the software package @hmodule is from. The string is in the GLib
+ * file name encoding, i.e. UTF-8. The return value should be freed
+ * with g_free() when not needed any longer. If the function fails
+ * %NULL is returned.
+ *
+ * Since: 2.16
+ */
+gchar *
+g_win32_get_package_installation_directory_of_module (gpointer hmodule)
 {
-  static GHashTable *module_dirs = NULL;
-  G_LOCK_DEFINE_STATIC (module_dirs);
-  HMODULE hmodule = NULL;
-  gchar *fn;
+  gchar *retval;
   gchar *p;
-  gchar *result;
+  wchar_t wc_fn[MAX_PATH];
 
-  G_LOCK (module_dirs);
+  if (!GetModuleFileNameW (hmodule, wc_fn, MAX_PATH))
+    return NULL;
 
-  if (module_dirs == NULL)
-    module_dirs = g_hash_table_new (g_str_hash, g_str_equal);
-  
-  result = g_hash_table_lookup (module_dirs, module_name ? module_name : "");
-      
-  if (result)
-    {
-      G_UNLOCK (module_dirs);
-      return g_strdup (result);
-    }
+  retval = g_utf16_to_utf8 (wc_fn, -1, NULL, NULL, NULL);
 
-  if (module_name)
-    {
-      if (G_WIN32_HAVE_WIDECHAR_API ())
-	{
-	  wchar_t *wc_module_name = g_utf8_to_utf16 (module_name, -1, NULL, NULL, NULL);
-	  hmodule = GetModuleHandleW (wc_module_name);
-	  g_free (wc_module_name);
-	}
-      else
-	{
-	  char *cp_module_name = g_locale_from_utf8 (module_name, -1, NULL, NULL, NULL);
-	  hmodule = GetModuleHandleA (cp_module_name);
-	  g_free (cp_module_name);
-	}
-      if (!hmodule)
-	return NULL;
-    }
-
-  if (G_WIN32_HAVE_WIDECHAR_API ())
-    {
-      wchar_t wc_fn[MAX_PATH];
-      if (!GetModuleFileNameW (hmodule, wc_fn, MAX_PATH))
-	{
-	  G_UNLOCK (module_dirs);
-	  return NULL;
-	}
-      fn = g_utf16_to_utf8 (wc_fn, -1, NULL, NULL, NULL);
-    }
-  else
-    {
-      gchar cp_fn[MAX_PATH];
-      if (!GetModuleFileNameA (hmodule, cp_fn, MAX_PATH))
-	{
-	  G_UNLOCK (module_dirs);
-	  return NULL;
-	}
-      fn = g_locale_to_utf8 (cp_fn, -1, NULL, NULL, NULL);
-    }
-
-  if ((p = strrchr (fn, G_DIR_SEPARATOR)) != NULL)
+  if ((p = strrchr (retval, G_DIR_SEPARATOR)) != NULL)
     *p = '\0';
 
-  p = strrchr (fn, G_DIR_SEPARATOR);
+  p = strrchr (retval, G_DIR_SEPARATOR);
   if (p && (g_ascii_strcasecmp (p + 1, "bin") == 0 ||
 	    g_ascii_strcasecmp (p + 1, "lib") == 0))
     *p = '\0';
@@ -304,12 +262,51 @@ get_package_directory_from_module (gchar *module_name)
   {
     gchar tmp[MAX_PATH];
 
-    cygwin_conv_to_posix_path(fn, tmp);
-    g_free(fn);
-    fn = g_strdup(tmp);
+    cygwin_conv_to_posix_path (retval, tmp);
+    g_free (retval);
+    retval = g_strdup (tmp);
   }
 #endif
 
+  return retval;
+}
+
+static gchar *
+get_package_directory_from_module (const gchar *module_name)
+{
+  static GHashTable *module_dirs = NULL;
+  G_LOCK_DEFINE_STATIC (module_dirs);
+  HMODULE hmodule = NULL;
+  gchar *fn;
+
+  G_LOCK (module_dirs);
+
+  if (module_dirs == NULL)
+    module_dirs = g_hash_table_new (g_str_hash, g_str_equal);
+  
+  fn = g_hash_table_lookup (module_dirs, module_name ? module_name : "");
+      
+  if (fn)
+    {
+      G_UNLOCK (module_dirs);
+      return g_strdup (fn);
+    }
+
+  if (module_name)
+    {
+      wchar_t *wc_module_name = g_utf8_to_utf16 (module_name, -1, NULL, NULL, NULL);
+      hmodule = GetModuleHandleW (wc_module_name);
+      g_free (wc_module_name);
+
+      if (!hmodule)
+	return NULL;
+    }
+
+  fn = g_win32_get_package_installation_directory_of_module (hmodule);
+
+  if (fn == NULL)
+    return NULL;
+  
   g_hash_table_insert (module_dirs, module_name ? g_strdup (module_name) : "", fn);
 
   G_UNLOCK (module_dirs);
@@ -319,13 +316,18 @@ get_package_directory_from_module (gchar *module_name)
 
 /**
  * g_win32_get_package_installation_directory:
- * @package: An identifier for a software package, or %NULL, in UTF-8
- * @dll_name: The name of a DLL that a package provides, or %NULL, in UTF-8
+ * @package: You should pass %NULL for this.
+ * @dll_name: The name of a DLL that a package provides in UTF-8, or %NULL.
  *
  * Try to determine the installation directory for a software package.
  *
- * @package should be a short identifier for the package. Typically it
- * is the same identifier as used for
+ * This function will be deprecated in the future. Use
+ * g_win32_get_package_installation_directory_of_module() instead.
+ *
+ * The use of @package is deprecated. You should always pass %NULL.
+ *
+ * The original intended use of @package was for a short identifier of
+ * the package, typically the same identifier as used for
  * <literal>GETTEXT_PACKAGE</literal> in software configured using GNU
  * autotools. The function first looks in the Windows Registry for the
  * value <literal>&num;InstallationDirectory</literal> in the key
@@ -335,13 +337,14 @@ get_package_directory_from_module (gchar *module_name)
  * It is strongly recommended that packagers of GLib-using libraries
  * for Windows do not store installation paths in the Registry to be
  * used by this function as that interfers with having several
- * parallel installations of the library. Parallel installations of
- * different versions of some GLib-using library, or GLib itself,
- * might well be desirable for various reasons.
+ * parallel installations of the library. Enabling multiple
+ * installations of different versions of some GLib-using library, or
+ * GLib itself, is desirable for various reasons.
  *
- * For the same reason it is recommeded to always pass %NULL as
+ * For this reason it is recommeded to always pass %NULL as
  * @package to this function, to avoid the temptation to use the
- * Registry.
+ * Registry. In version 2.18 of GLib the @package parameter
+ * will be ignored and this function won't look in the Registry at all.
  *
  * If @package is %NULL, or the above value isn't found in the
  * Registry, but @dll_name is non-%NULL, it should name a DLL loaded
@@ -358,19 +361,20 @@ get_package_directory_from_module (gchar *module_name)
  * the same way as above.
  *
  * Returns: a string containing the installation directory for
- * @package. The string is in the GLib file name encoding, i.e. UTF-8
- * on Windows. The return value should be freed with g_free() when not
- * needed any longer.
+ * @package. The string is in the GLib file name encoding,
+ * i.e. UTF-8. The return value should be freed with g_free() when not
+ * needed any longer. If the function fails %NULL is returned.
  **/
 
 gchar *
-g_win32_get_package_installation_directory (gchar *package,
-					    gchar *dll_name)
+g_win32_get_package_installation_directory (const gchar *package,
+					    const gchar *dll_name)
 {
   static GHashTable *package_dirs = NULL;
   G_LOCK_DEFINE_STATIC (package_dirs);
   gchar *result = NULL;
   gchar *key;
+  wchar_t *wc_key;
   HKEY reg_key = NULL;
   DWORD type;
   DWORD nbytes;
@@ -393,52 +397,27 @@ g_win32_get_package_installation_directory (gchar *package,
       key = g_strconcat ("Software\\", package, NULL);
       
       nbytes = 0;
-      if (G_WIN32_HAVE_WIDECHAR_API ())
+
+      wc_key = g_utf8_to_utf16 (key, -1, NULL, NULL, NULL);
+      if (((RegOpenKeyExW (HKEY_CURRENT_USER, wc_key, 0,
+			   KEY_QUERY_VALUE, &reg_key) == ERROR_SUCCESS
+	    && RegQueryValueExW (reg_key, L"InstallationDirectory", 0,
+				 &type, NULL, &nbytes) == ERROR_SUCCESS)
+	   ||
+	   (RegOpenKeyExW (HKEY_LOCAL_MACHINE, wc_key, 0,
+			   KEY_QUERY_VALUE, &reg_key) == ERROR_SUCCESS
+	    && RegQueryValueExW (reg_key, L"InstallationDirectory", 0,
+				 &type, NULL, &nbytes) == ERROR_SUCCESS))
+	  && type == REG_SZ)
 	{
-	  wchar_t *wc_key = g_utf8_to_utf16 (key, -1, NULL, NULL, NULL);
-	  if (((RegOpenKeyExW (HKEY_CURRENT_USER, wc_key, 0,
-			       KEY_QUERY_VALUE, &reg_key) == ERROR_SUCCESS
-		&& RegQueryValueExW (reg_key, L"InstallationDirectory", 0,
-				     &type, NULL, &nbytes) == ERROR_SUCCESS)
-	       ||
-	       (RegOpenKeyExW (HKEY_LOCAL_MACHINE, wc_key, 0,
-			       KEY_QUERY_VALUE, &reg_key) == ERROR_SUCCESS
-		&& RegQueryValueExW (reg_key, L"InstallationDirectory", 0,
-				     &type, NULL, &nbytes) == ERROR_SUCCESS))
-	      && type == REG_SZ)
-	    {
-	      wchar_t *wc_temp = g_new (wchar_t, (nbytes+1)/2 + 1);
-	      RegQueryValueExW (reg_key, L"InstallationDirectory", 0,
-				&type, (LPBYTE) wc_temp, &nbytes);
-	      wc_temp[nbytes/2] = '\0';
-	      result = g_utf16_to_utf8 (wc_temp, -1, NULL, NULL, NULL);
-	      g_free (wc_temp);
-	    }
-	  g_free (wc_key);
+	  wchar_t *wc_temp = g_new (wchar_t, (nbytes+1)/2 + 1);
+	  RegQueryValueExW (reg_key, L"InstallationDirectory", 0,
+			    &type, (LPBYTE) wc_temp, &nbytes);
+	  wc_temp[nbytes/2] = '\0';
+	  result = g_utf16_to_utf8 (wc_temp, -1, NULL, NULL, NULL);
+	  g_free (wc_temp);
 	}
-      else
-	{
-	  char *cp_key = g_locale_from_utf8 (key, -1, NULL, NULL, NULL);
-	  if (((RegOpenKeyExA (HKEY_CURRENT_USER, cp_key, 0,
-			       KEY_QUERY_VALUE, &reg_key) == ERROR_SUCCESS
-		&& RegQueryValueExA (reg_key, "InstallationDirectory", 0,
-				     &type, NULL, &nbytes) == ERROR_SUCCESS)
-	       ||
-	       (RegOpenKeyExA (HKEY_LOCAL_MACHINE, cp_key, 0,
-			       KEY_QUERY_VALUE, &reg_key) == ERROR_SUCCESS
-		&& RegQueryValueExA (reg_key, "InstallationDirectory", 0,
-				     &type, NULL, &nbytes) == ERROR_SUCCESS))
-	      && type == REG_SZ)
-	    {
-	      char *cp_temp = g_malloc (nbytes + 1);
-	      RegQueryValueExA (reg_key, "InstallationDirectory", 0,
-				&type, cp_temp, &nbytes);
-	      cp_temp[nbytes] = '\0';
-	      result = g_locale_to_utf8 (cp_temp, -1, NULL, NULL, NULL);
-	      g_free (cp_temp);
-	    }
-	  g_free (cp_key);
-	}
+      g_free (wc_key);
 
       if (reg_key != NULL)
 	RegCloseKey (reg_key);
@@ -468,8 +447,8 @@ g_win32_get_package_installation_directory (gchar *package,
 /* DLL ABI binary compatibility version that uses system codepage file names */
 
 gchar *
-g_win32_get_package_installation_directory (gchar *package,
-					    gchar *dll_name)
+g_win32_get_package_installation_directory (const gchar *package,
+					    const gchar *dll_name)
 {
   gchar *utf8_package = NULL, *utf8_dll_name = NULL;
   gchar *utf8_retval, *retval;
@@ -495,28 +474,32 @@ g_win32_get_package_installation_directory (gchar *package,
 
 /**
  * g_win32_get_package_installation_subdirectory:
- * @package: An identifier for a software package, in UTF-8, or %NULL
- * @dll_name: The name of a DLL that a package provides, in UTF-8, or %NULL
+ * @package: You should pass %NULL for this.
+ * @dll_name: The name of a DLL that a package provides, in UTF-8, or %NULL.
  * @subdir: A subdirectory of the package installation directory, also in UTF-8
+ *
+ * This function will be deprecated in the future. Use
+ * g_win32_get_package_installation_directory_of_module() instead.
  *
  * Returns a newly-allocated string containing the path of the
  * subdirectory @subdir in the return value from calling
  * g_win32_get_package_installation_directory() with the @package and
  * @dll_name parameters. See the documentation for
  * g_win32_get_package_installation_directory() for more details. In
- * particular, note that it is recomended to always pass NULL as
- * @package.
+ * particular, note that it is deprecated to pass anything except NULL
+ * as @package.
  *
  * Returns: a string containing the complete path to @subdir inside
  * the installation directory of @package. The returned string is in
- * the GLib file name encoding, i.e. UTF-8 on Windows. The return
- * value should be freed with g_free() when no longer needed.
+ * the GLib file name encoding, i.e. UTF-8. The return value should be
+ * freed with g_free() when no longer needed. If something goes wrong,
+ * %NULL is returned.
  **/
 
 gchar *
-g_win32_get_package_installation_subdirectory (gchar *package,
-					       gchar *dll_name,
-					       gchar *subdir)
+g_win32_get_package_installation_subdirectory (const gchar *package,
+					       const gchar *dll_name,
+					       const gchar *subdir)
 {
   gchar *prefix;
   gchar *dirname;
@@ -534,9 +517,9 @@ g_win32_get_package_installation_subdirectory (gchar *package,
 /* DLL ABI binary compatibility version that uses system codepage file names */
 
 gchar *
-g_win32_get_package_installation_subdirectory (gchar *package,
-					       gchar *dll_name,
-					       gchar *subdir)
+g_win32_get_package_installation_subdirectory (const gchar *package,
+					       const gchar *dll_name,
+					       const gchar *subdir)
 {
   gchar *prefix;
   gchar *dirname;
@@ -559,10 +542,10 @@ g_win32_windows_version_init (void)
   if (!beenhere)
     {
       beenhere = TRUE;
-      if (getenv ("G_WIN32_PRETEND_WIN9X"))
-	windows_version = 0x80000004;
-      else
-	windows_version = GetVersion ();
+      windows_version = GetVersion ();
+
+      if (windows_version & 0x80000000)
+	g_error ("This version of GLib requires NT-based Windows.");
     }
 }
 
@@ -578,16 +561,12 @@ _g_win32_thread_init (void)
  * Returns version information for the Windows operating system the
  * code is running on. See MSDN documentation for the GetVersion()
  * function. To summarize, the most significant bit is one on Win9x,
- * and zero on NT-based systems. The least significant byte is 4 on
- * Windows NT 4, 5 on Windows XP. Software that needs really detailled
- * version and feature information should use Win32 API like
+ * and zero on NT-based systems. Since version 2.14, GLib works only
+ * on NT-based systems, so checking whether your are running on Win9x
+ * in your own software is moot. The least significant byte is 4 on
+ * Windows NT 4, and 5 on Windows XP. Software that needs really
+ * detailled version and feature information should use Win32 API like
  * GetVersionEx() and VerifyVersionInfo().
- *
- * If there is an environment variable <envar>G_WIN32_PRETEND_WIN9X</envar> 
- * defined (with any value), this function always returns a version 
- * code for Windows 9x. This is mainly an internal debugging aid for 
- * GTK+ and GLib developers, to be able to check the code paths for 
- * Windows 9x.
  *
  * Returns: The version information.
  * 
@@ -635,7 +614,7 @@ g_win32_locale_filename_from_utf8 (const gchar *utf8filename)
 {
   gchar *retval = g_locale_from_utf8 (utf8filename, -1, NULL, NULL, NULL);
 
-  if (retval == NULL && G_WIN32_HAVE_WIDECHAR_API ())
+  if (retval == NULL)
     {
       /* Conversion failed, so convert to wide chars, check if there
        * is a 8.3 version, and use that.

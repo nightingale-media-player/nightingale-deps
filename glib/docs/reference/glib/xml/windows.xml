@@ -1,41 +1,40 @@
 <refentry id="glib-Windows-Compatibility-Functions">
 <refmeta>
-<refentrytitle role="top_of_page">Windows Compatibility Functions</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Windows-Compatibility-Functions.top_of_page">Windows Compatibility Functions</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>Windows Compatibility Functions</refname>
-<refpurpose>UNIX emulation on Windows.</refpurpose>
+<refpurpose>UNIX emulation on Windows</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Windows-Compatibility-Functions.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
 
-
 #define             <link linkend="MAXPATHLEN:CAPS">MAXPATHLEN</link>
-#define             <link linkend="pipe">pipe</link>                                (phandles)
 <link linkend="gchar">gchar</link>*              <link linkend="g-win32-error-message">g_win32_error_message</link>               (<link linkend="gint">gint</link> error);
 <link linkend="gchar">gchar</link>*              <link linkend="g-win32-getlocale">g_win32_getlocale</link>                   (void);
 <link linkend="gchar">gchar</link>*              <link linkend="g-win32-get-package-installation-directory">g_win32_get_package_installation_directory</link>
-                                                        (<link linkend="gchar">gchar</link> *package,
-                                                         <link linkend="gchar">gchar</link> *dll_name);
+                                                        (const <link linkend="gchar">gchar</link> *package,
+                                                         const <link linkend="gchar">gchar</link> *dll_name);
+<link linkend="gchar">gchar</link>*              <link linkend="g-win32-get-package-installation-directory-of-module">g_win32_get_package_installation_directory_of_module</link>
+                                                        (<link linkend="gpointer">gpointer</link> hmodule);
 <link linkend="gchar">gchar</link>*              <link linkend="g-win32-get-package-installation-subdirectory">g_win32_get_package_installation_subdirectory</link>
-                                                        (<link linkend="gchar">gchar</link> *package,
-                                                         <link linkend="gchar">gchar</link> *dll_name,
-                                                         <link linkend="gchar">gchar</link> *subdir);
+                                                        (const <link linkend="gchar">gchar</link> *package,
+                                                         const <link linkend="gchar">gchar</link> *dll_name,
+                                                         const <link linkend="gchar">gchar</link> *subdir);
 <link linkend="guint">guint</link>               <link linkend="g-win32-get-windows-version">g_win32_get_windows_version</link>         (void);
 <link linkend="gchar">gchar</link>*              <link linkend="g-win32-locale-filename-from-utf8">g_win32_locale_filename_from_utf8</link>   (const <link linkend="gchar">gchar</link> *utf8filename);
 #define             <link linkend="G-WIN32-DLLMAIN-FOR-DLL-NAME:CAPS">G_WIN32_DLLMAIN_FOR_DLL_NAME</link>        (static, dll_name)
 #define             <link linkend="G-WIN32-HAVE-WIDECHAR-API:CAPS">G_WIN32_HAVE_WIDECHAR_API</link>           ()
 #define             <link linkend="G-WIN32-IS-NT-BASED:CAPS">G_WIN32_IS_NT_BASED</link>                 ()
-
 </synopsis>
 </refsynopsisdiv>
 
@@ -47,7 +46,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Windows-Compatibility-Functions.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 These functions provide some level of UNIX emulation on the Windows platform.
@@ -56,34 +55,20 @@ project.
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Windows-Compatibility-Functions.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="MAXPATHLEN:CAPS" role="macro"/>MAXPATHLEN</title>
-<indexterm><primary>MAXPATHLEN</primary></indexterm><programlisting>#define MAXPATHLEN 1024
+<refsect2 id="MAXPATHLEN:CAPS" role="macro">
+<title>MAXPATHLEN</title>
+<indexterm zone="MAXPATHLEN:CAPS"><primary>MAXPATHLEN</primary></indexterm><programlisting>#define MAXPATHLEN 1024
 </programlisting>
 <para>
 Provided for UNIX emulation on Windows; equivalent to UNIX 
 macro <link linkend="MAXPATHLEN:CAPS"><literal>MAXPATHLEN</literal></link>, which is the maximum length of a filename
 (including full path).
 </para></refsect2>
-<refsect2>
-<title><anchor id="pipe" role="macro"/>pipe()</title>
-<indexterm><primary>pipe</primary></indexterm><programlisting>#define pipe(phandles)	_pipe (phandles, 4096, _O_BINARY)
-</programlisting>
-<para>
-Provided for UNIX emulation on Windows; see documentation for <function><link linkend="pipe"><function>pipe()</function></link></function>
-in any UNIX manual.
-</para><variablelist role="params">
-<varlistentry><term><parameter>phandles</parameter>&nbsp;:</term>
-<listitem><simpara>file descriptors, the first one for reading, the second one for writing.
-
-
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-win32-error-message" role="function"/>g_win32_error_message ()</title>
-<indexterm><primary>g_win32_error_message</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_win32_error_message               (<link linkend="gint">gint</link> error);</programlisting>
+<refsect2 id="g-win32-error-message" role="function">
+<title>g_win32_error_message ()</title>
+<indexterm zone="g-win32-error-message"><primary>g_win32_error_message</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_win32_error_message               (<link linkend="gint">gint</link> error);</programlisting>
 <para>
 Translate a Win32 error code (as returned by <link linkend="GetLastError"><function>GetLastError()</function></link>) into
 the corresponding message. The message is either language neutral,
@@ -100,9 +85,9 @@ returned string is in UTF-8. It should be deallocated with
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> newly-allocated error message
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-win32-getlocale" role="function"/>g_win32_getlocale ()</title>
-<indexterm><primary>g_win32_getlocale</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_win32_getlocale                   (void);</programlisting>
+<refsect2 id="g-win32-getlocale" role="function">
+<title>g_win32_getlocale ()</title>
+<indexterm zone="g-win32-getlocale"><primary>g_win32_getlocale</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_win32_getlocale                   (void);</programlisting>
 <para>
 The <link linkend="setlocale"><function>setlocale()</function></link> function in the Microsoft C library uses locale
 names of the form "English_United States.1252" etc. We want the
@@ -117,17 +102,24 @@ file names etc. The returned string should be deallocated with
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> newly-allocated locale name.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-win32-get-package-installation-directory" role="function"/>g_win32_get_package_installation_directory ()</title>
-<indexterm><primary>g_win32_get_package_installation_directory</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_win32_get_package_installation_directory
-                                                        (<link linkend="gchar">gchar</link> *package,
-                                                         <link linkend="gchar">gchar</link> *dll_name);</programlisting>
+<refsect2 id="g-win32-get-package-installation-directory" role="function">
+<title>g_win32_get_package_installation_directory ()</title>
+<indexterm zone="g-win32-get-package-installation-directory"><primary>g_win32_get_package_installation_directory</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_win32_get_package_installation_directory
+                                                        (const <link linkend="gchar">gchar</link> *package,
+                                                         const <link linkend="gchar">gchar</link> *dll_name);</programlisting>
 <para>
 Try to determine the installation directory for a software package.
 </para>
 <para>
-<parameter>package</parameter> should be a short identifier for the package. Typically it
-is the same identifier as used for
+This function will be deprecated in the future. Use
+<link linkend="g-win32-get-package-installation-directory-of-module"><function>g_win32_get_package_installation_directory_of_module()</function></link> instead.
+</para>
+<para>
+The use of <parameter>package</parameter> is deprecated. You should always pass <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
+</para>
+<para>
+The original intended use of <parameter>package</parameter> was for a short identifier of
+the package, typically the same identifier as used for
 <literal>GETTEXT_PACKAGE</literal> in software configured using GNU
 autotools. The function first looks in the Windows Registry for the
 value <literal>&num;InstallationDirectory</literal> in the key
@@ -138,14 +130,15 @@ exists and is a string, returns that.
 It is strongly recommended that packagers of GLib-using libraries
 for Windows do not store installation paths in the Registry to be
 used by this function as that interfers with having several
-parallel installations of the library. Parallel installations of
-different versions of some GLib-using library, or GLib itself,
-might well be desirable for various reasons.
+parallel installations of the library. Enabling multiple
+installations of different versions of some GLib-using library, or
+GLib itself, is desirable for various reasons.
 </para>
 <para>
-For the same reason it is recommeded to always pass <link linkend="NULL:CAPS"><literal>NULL</literal></link> as
+For this reason it is recommeded to always pass <link linkend="NULL:CAPS"><literal>NULL</literal></link> as
 <parameter>package</parameter> to this function, to avoid the temptation to use the
-Registry.
+Registry. In version 2.18 of GLib the <parameter>package</parameter> parameter
+will be ignored and this function won't look in the Registry at all.
 </para>
 <para>
 If <parameter>package</parameter> is <link linkend="NULL:CAPS"><literal>NULL</literal></link>, or the above value isn't found in the
@@ -166,67 +159,113 @@ the same way as above.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>package</parameter>&nbsp;:</term>
-<listitem><simpara> An identifier for a software package, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>, in UTF-8
+<listitem><simpara> You should pass <link linkend="NULL:CAPS"><literal>NULL</literal></link> for this.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>dll_name</parameter>&nbsp;:</term>
-<listitem><simpara> The name of a DLL that a package provides, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>, in UTF-8
+<listitem><simpara> The name of a DLL that a package provides in UTF-8, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a string containing the installation directory for
-<parameter>package</parameter>. The string is in the GLib file name encoding, i.e. UTF-8
-on Windows. The return value should be freed with <link linkend="g-free"><function>g_free()</function></link> when not
-needed any longer.
+<parameter>package</parameter>. The string is in the GLib file name encoding,
+i.e. UTF-8. The return value should be freed with <link linkend="g-free"><function>g_free()</function></link> when not
+needed any longer. If the function fails <link linkend="NULL:CAPS"><literal>NULL</literal></link> is returned.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-win32-get-package-installation-subdirectory" role="function"/>g_win32_get_package_installation_subdirectory ()</title>
-<indexterm><primary>g_win32_get_package_installation_subdirectory</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_win32_get_package_installation_subdirectory
-                                                        (<link linkend="gchar">gchar</link> *package,
-                                                         <link linkend="gchar">gchar</link> *dll_name,
-                                                         <link linkend="gchar">gchar</link> *subdir);</programlisting>
+<refsect2 id="g-win32-get-package-installation-directory-of-module" role="function" condition="since:2.16">
+<title>g_win32_get_package_installation_directory_of_module ()</title>
+<indexterm zone="g-win32-get-package-installation-directory-of-module" role="2.16"><primary>g_win32_get_package_installation_directory_of_module</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_win32_get_package_installation_directory_of_module
+                                                        (<link linkend="gpointer">gpointer</link> hmodule);</programlisting>
+<para>
+This function tries to determine the installation directory of a
+software package based on the location of a DLL of the software
+package.
+</para>
+<para>
+<parameter>hmodule</parameter> should be the handle of a loaded DLL or <link linkend="NULL:CAPS"><literal>NULL</literal></link>. The
+function looks up the directory that DLL was loaded from. If
+<parameter>hmodule</parameter> is NULL, the directory the main executable of the current
+process is looked up. If that directory's last component is "bin"
+or "lib", its parent directory is returned, otherwise the directory
+itself.
+</para>
+<para>
+It thus makes sense to pass only the handle to a "public" DLL of a
+software package to this function, as such DLLs typically are known
+to be installed in a "bin" or occasionally "lib" subfolder of the
+installation folder. DLLs that are of the dynamically loaded module
+or plugin variety are often located in more private locations
+deeper down in the tree, from which it is impossible for GLib to
+deduce the root of the package installation.
+</para>
+<para>
+The typical use case for this function is to have a <link linkend="DllMain"><function>DllMain()</function></link> that
+saves the handle for the DLL. Then when code in the DLL needs to
+construct names of files in the installation tree it calls this
+function passing the DLL handle.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>hmodule</parameter>&nbsp;:</term>
+<listitem><simpara> The Win32 handle for a DLL loaded into the current process, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a string containing the guessed installation directory for
+the software package <parameter>hmodule</parameter> is from. The string is in the GLib
+file name encoding, i.e. UTF-8. The return value should be freed
+with <link linkend="g-free"><function>g_free()</function></link> when not needed any longer. If the function fails
+<link linkend="NULL:CAPS"><literal>NULL</literal></link> is returned.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.16
+</para></refsect2>
+<refsect2 id="g-win32-get-package-installation-subdirectory" role="function">
+<title>g_win32_get_package_installation_subdirectory ()</title>
+<indexterm zone="g-win32-get-package-installation-subdirectory"><primary>g_win32_get_package_installation_subdirectory</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_win32_get_package_installation_subdirectory
+                                                        (const <link linkend="gchar">gchar</link> *package,
+                                                         const <link linkend="gchar">gchar</link> *dll_name,
+                                                         const <link linkend="gchar">gchar</link> *subdir);</programlisting>
+<para>
+This function will be deprecated in the future. Use
+<link linkend="g-win32-get-package-installation-directory-of-module"><function>g_win32_get_package_installation_directory_of_module()</function></link> instead.
+</para>
 <para>
 Returns a newly-allocated string containing the path of the
 subdirectory <parameter>subdir</parameter> in the return value from calling
 <link linkend="g-win32-get-package-installation-directory"><function>g_win32_get_package_installation_directory()</function></link> with the <parameter>package</parameter> and
 <parameter>dll_name</parameter> parameters. See the documentation for
 <link linkend="g-win32-get-package-installation-directory"><function>g_win32_get_package_installation_directory()</function></link> for more details. In
-particular, note that it is recomended to always pass NULL as
-<parameter>package</parameter>.</para>
+particular, note that it is deprecated to pass anything except NULL
+as <parameter>package</parameter>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>package</parameter>&nbsp;:</term>
-<listitem><simpara> An identifier for a software package, in UTF-8, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+<listitem><simpara> You should pass <link linkend="NULL:CAPS"><literal>NULL</literal></link> for this.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>dll_name</parameter>&nbsp;:</term>
-<listitem><simpara> The name of a DLL that a package provides, in UTF-8, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+<listitem><simpara> The name of a DLL that a package provides, in UTF-8, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>subdir</parameter>&nbsp;:</term>
 <listitem><simpara> A subdirectory of the package installation directory, also in UTF-8
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a string containing the complete path to <parameter>subdir</parameter> inside
 the installation directory of <parameter>package</parameter>. The returned string is in
-the GLib file name encoding, i.e. UTF-8 on Windows. The return
-value should be freed with <link linkend="g-free"><function>g_free()</function></link> when no longer needed.
+the GLib file name encoding, i.e. UTF-8. The return value should be
+freed with <link linkend="g-free"><function>g_free()</function></link> when no longer needed. If something goes wrong,
+<link linkend="NULL:CAPS"><literal>NULL</literal></link> is returned.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-win32-get-windows-version" role="function" condition="since:2.6"/>g_win32_get_windows_version ()</title>
-<indexterm role="2.6"><primary>g_win32_get_windows_version</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_win32_get_windows_version         (void);</programlisting>
+<refsect2 id="g-win32-get-windows-version" role="function" condition="since:2.6">
+<title>g_win32_get_windows_version ()</title>
+<indexterm zone="g-win32-get-windows-version" role="2.6"><primary>g_win32_get_windows_version</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_win32_get_windows_version         (void);</programlisting>
 <para>
 Returns version information for the Windows operating system the
 code is running on. See MSDN documentation for the <link linkend="GetVersion"><function>GetVersion()</function></link>
 function. To summarize, the most significant bit is one on Win9x,
-and zero on NT-based systems. The least significant byte is 4 on
-Windows NT 4, 5 on Windows XP. Software that needs really detailled
-version and feature information should use Win32 API like
-<link linkend="GetVersionEx"><function>GetVersionEx()</function></link> and <link linkend="VerifyVersionInfo"><function>VerifyVersionInfo()</function></link>.
-</para>
-<para>
-If there is an environment variable <envar>G_WIN32_PRETEND_WIN9X</envar> 
-defined (with any value), this function always returns a version 
-code for Windows 9x. This is mainly an internal debugging aid for 
-GTK+ and GLib developers, to be able to check the code paths for 
-Windows 9x.</para>
+and zero on NT-based systems. Since version 2.14, GLib works only
+on NT-based systems, so checking whether your are running on Win9x
+in your own software is moot. The least significant byte is 4 on
+Windows NT 4, and 5 on Windows XP. Software that needs really
+detailled version and feature information should use Win32 API like
+<link linkend="GetVersionEx"><function>GetVersionEx()</function></link> and <link linkend="VerifyVersionInfo"><function>VerifyVersionInfo()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
@@ -235,9 +274,9 @@ Windows 9x.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.6
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-win32-locale-filename-from-utf8" role="function" condition="since:2.8"/>g_win32_locale_filename_from_utf8 ()</title>
-<indexterm role="2.8"><primary>g_win32_locale_filename_from_utf8</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_win32_locale_filename_from_utf8   (const <link linkend="gchar">gchar</link> *utf8filename);</programlisting>
+<refsect2 id="g-win32-locale-filename-from-utf8" role="function" condition="since:2.8">
+<title>g_win32_locale_filename_from_utf8 ()</title>
+<indexterm zone="g-win32-locale-filename-from-utf8" role="2.8"><primary>g_win32_locale_filename_from_utf8</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_win32_locale_filename_from_utf8   (const <link linkend="gchar">gchar</link> *utf8filename);</programlisting>
 <para>
 Converts a filename from UTF-8 to the system codepage.
 </para>
@@ -273,13 +312,12 @@ failure and lack of short names.
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.8
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-WIN32-DLLMAIN-FOR-DLL-NAME:CAPS" role="macro"/>G_WIN32_DLLMAIN_FOR_DLL_NAME()</title>
-<indexterm><primary>G_WIN32_DLLMAIN_FOR_DLL_NAME</primary></indexterm><programlisting>#define             G_WIN32_DLLMAIN_FOR_DLL_NAME(static, dll_name)</programlisting>
+<refsect2 id="G-WIN32-DLLMAIN-FOR-DLL-NAME:CAPS" role="macro">
+<title>G_WIN32_DLLMAIN_FOR_DLL_NAME()</title>
+<indexterm zone="G-WIN32-DLLMAIN-FOR-DLL-NAME:CAPS"><primary>G_WIN32_DLLMAIN_FOR_DLL_NAME</primary></indexterm><programlisting>#define             G_WIN32_DLLMAIN_FOR_DLL_NAME(static, dll_name)</programlisting>
 <para>
-On Windows, this macro defines a <function><link linkend="DllMain"><function>DllMain()</function></link></function> function 
-that stores the actual DLL name that the code being compiled will be 
-included in.
+On Windows, this macro defines a <link linkend="DllMain"><function>DllMain()</function></link> function that stores the actual 
+DLL name that the code being compiled will be included in.
 </para>
 <para>
 On non-Windows platforms, expands to nothing.
@@ -296,9 +334,9 @@ On non-Windows platforms, expands to nothing.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-WIN32-HAVE-WIDECHAR-API:CAPS" role="macro" condition="since:2.6"/>G_WIN32_HAVE_WIDECHAR_API()</title>
-<indexterm role="2.6"><primary>G_WIN32_HAVE_WIDECHAR_API</primary></indexterm><programlisting>#define G_WIN32_HAVE_WIDECHAR_API() (G_WIN32_IS_NT_BASED ())
+<refsect2 id="G-WIN32-HAVE-WIDECHAR-API:CAPS" role="macro" condition="since:2.6">
+<title>G_WIN32_HAVE_WIDECHAR_API()</title>
+<indexterm zone="G-WIN32-HAVE-WIDECHAR-API:CAPS" role="2.6"><primary>G_WIN32_HAVE_WIDECHAR_API</primary></indexterm><programlisting>#define G_WIN32_HAVE_WIDECHAR_API() TRUE
 </programlisting>
 <para>
 On Windows, this macro defines an expression which evaluates to <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>
@@ -313,9 +351,9 @@ On non-Windows platforms, it is not defined.
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-WIN32-IS-NT-BASED:CAPS" role="macro" condition="since:2.6"/>G_WIN32_IS_NT_BASED()</title>
-<indexterm role="2.6"><primary>G_WIN32_IS_NT_BASED</primary></indexterm><programlisting>#define G_WIN32_IS_NT_BASED() (g_win32_get_windows_version () &lt; 0x80000000)
+<refsect2 id="G-WIN32-IS-NT-BASED:CAPS" role="macro" condition="since:2.6">
+<title>G_WIN32_IS_NT_BASED()</title>
+<indexterm zone="G-WIN32-IS-NT-BASED:CAPS" role="2.6"><primary>G_WIN32_IS_NT_BASED</primary></indexterm><programlisting>#define G_WIN32_IS_NT_BASED() TRUE
 </programlisting>
 <para>
 On Windows, this macro defines an expression which evaluates to <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> 

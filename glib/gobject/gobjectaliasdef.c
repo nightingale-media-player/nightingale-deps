@@ -35,6 +35,9 @@ extern __typeof (g_strv_get_type) g_strv_get_type __attribute((alias("IA__g_strv
 #undef g_hash_table_get_type 
 extern __typeof (g_hash_table_get_type) g_hash_table_get_type __attribute((alias("IA__g_hash_table_get_type"), visibility("default")));
 
+#undef g_regex_get_type 
+extern __typeof (g_regex_get_type) g_regex_get_type __attribute((alias("IA__g_regex_get_type"), visibility("default")));
+
 #undef g_closure_get_type 
 extern __typeof (g_closure_get_type) g_closure_get_type __attribute((alias("IA__g_closure_get_type"), visibility("default")));
 

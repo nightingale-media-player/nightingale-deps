@@ -135,6 +135,9 @@ extern __typeof (g_async_queue_lock) IA__g_async_queue_lock __attribute((visibil
 extern __typeof (g_async_queue_new) IA__g_async_queue_new __attribute((visibility("hidden")));
 #define g_async_queue_new IA__g_async_queue_new
 
+extern __typeof (g_async_queue_new_full) IA__g_async_queue_new_full __attribute((visibility("hidden")));
+#define g_async_queue_new_full IA__g_async_queue_new_full
+
 extern __typeof (g_async_queue_pop) IA__g_async_queue_pop __attribute((visibility("hidden")));
 #define g_async_queue_pop IA__g_async_queue_pop
 
@@ -381,6 +384,37 @@ extern __typeof (g_cache_value_foreach) IA__g_cache_value_foreach __attribute((v
 #define g_cache_value_foreach IA__g_cache_value_foreach
 
 #endif
+#endif
+#endif
+#if IN_HEADER(__G_CHECKSUM_H__)
+#if IN_FILE(__G_CHECKSUM_C__)
+extern __typeof (g_checksum_type_get_length) IA__g_checksum_type_get_length __attribute((visibility("hidden")));
+#define g_checksum_type_get_length IA__g_checksum_type_get_length
+
+extern __typeof (g_checksum_new) IA__g_checksum_new __attribute((visibility("hidden")));
+#define g_checksum_new IA__g_checksum_new
+
+extern __typeof (g_checksum_copy) IA__g_checksum_copy __attribute((visibility("hidden")));
+#define g_checksum_copy IA__g_checksum_copy
+
+extern __typeof (g_checksum_free) IA__g_checksum_free __attribute((visibility("hidden")));
+#define g_checksum_free IA__g_checksum_free
+
+extern __typeof (g_checksum_update) IA__g_checksum_update __attribute((visibility("hidden")));
+#define g_checksum_update IA__g_checksum_update
+
+extern __typeof (g_checksum_get_string) IA__g_checksum_get_string __attribute((visibility("hidden")));
+#define g_checksum_get_string IA__g_checksum_get_string
+
+extern __typeof (g_checksum_get_digest) IA__g_checksum_get_digest __attribute((visibility("hidden")));
+#define g_checksum_get_digest IA__g_checksum_get_digest
+
+extern __typeof (g_compute_checksum_for_data) IA__g_compute_checksum_for_data __attribute((visibility("hidden")));
+#define g_compute_checksum_for_data IA__g_compute_checksum_for_data
+
+extern __typeof (g_compute_checksum_for_string) IA__g_compute_checksum_for_string __attribute((visibility("hidden")));
+#define g_compute_checksum_for_string IA__g_compute_checksum_for_string
+
 #endif
 #endif
 #if IN_HEADER(__G_COMPLETION_H__)
@@ -748,6 +782,12 @@ extern __typeof (g_propagate_error) IA__g_propagate_error __attribute((visibilit
 extern __typeof (g_set_error) IA__g_set_error __attribute((visibility("hidden"))) G_GNUC_PRINTF(4,5);
 #define g_set_error IA__g_set_error
 
+extern __typeof (g_prefix_error) IA__g_prefix_error __attribute((visibility("hidden"))) G_GNUC_PRINTF(2,3);
+#define g_prefix_error IA__g_prefix_error
+
+extern __typeof (g_propagate_prefixed_error) IA__g_propagate_prefixed_error __attribute((visibility("hidden"))) G_GNUC_PRINTF(3,4);
+#define g_propagate_prefixed_error IA__g_propagate_prefixed_error
+
 #endif
 #endif
 #if IN_HEADER(__G_FILEUTILS_H__)
@@ -784,6 +824,9 @@ extern __typeof (g_file_test) IA__g_file_test __attribute((visibility("hidden"))
 
 extern __typeof (g_file_read_link) IA__g_file_read_link __attribute((visibility("hidden")));
 #define g_file_read_link IA__g_file_read_link
+
+extern __typeof (g_format_size_for_display) IA__g_format_size_for_display __attribute((visibility("hidden")));
+#define g_format_size_for_display IA__g_format_size_for_display
 
 extern __typeof (g_mkstemp) IA__g_mkstemp __attribute((visibility("hidden")));
 #define g_mkstemp IA__g_mkstemp
@@ -830,6 +873,12 @@ extern __typeof (g_hash_table_foreach_remove) IA__g_hash_table_foreach_remove __
 extern __typeof (g_hash_table_foreach_steal) IA__g_hash_table_foreach_steal __attribute((visibility("hidden")));
 #define g_hash_table_foreach_steal IA__g_hash_table_foreach_steal
 
+extern __typeof (g_hash_table_get_keys) IA__g_hash_table_get_keys __attribute((visibility("hidden")));
+#define g_hash_table_get_keys IA__g_hash_table_get_keys
+
+extern __typeof (g_hash_table_get_values) IA__g_hash_table_get_values __attribute((visibility("hidden")));
+#define g_hash_table_get_values IA__g_hash_table_get_values
+
 extern __typeof (g_hash_table_insert) IA__g_hash_table_insert __attribute((visibility("hidden")));
 #define g_hash_table_insert IA__g_hash_table_insert
 
@@ -862,6 +911,21 @@ extern __typeof (g_hash_table_steal) IA__g_hash_table_steal __attribute((visibil
 
 extern __typeof (g_hash_table_steal_all) IA__g_hash_table_steal_all __attribute((visibility("hidden")));
 #define g_hash_table_steal_all IA__g_hash_table_steal_all
+
+extern __typeof (g_hash_table_iter_init) IA__g_hash_table_iter_init __attribute((visibility("hidden")));
+#define g_hash_table_iter_init IA__g_hash_table_iter_init
+
+extern __typeof (g_hash_table_iter_next) IA__g_hash_table_iter_next __attribute((visibility("hidden")));
+#define g_hash_table_iter_next IA__g_hash_table_iter_next
+
+extern __typeof (g_hash_table_iter_get_hash_table) IA__g_hash_table_iter_get_hash_table __attribute((visibility("hidden")));
+#define g_hash_table_iter_get_hash_table IA__g_hash_table_iter_get_hash_table
+
+extern __typeof (g_hash_table_iter_remove) IA__g_hash_table_iter_remove __attribute((visibility("hidden")));
+#define g_hash_table_iter_remove IA__g_hash_table_iter_remove
+
+extern __typeof (g_hash_table_iter_steal) IA__g_hash_table_iter_steal __attribute((visibility("hidden")));
+#define g_hash_table_iter_steal IA__g_hash_table_iter_steal
 
 #endif
 #endif
@@ -1164,6 +1228,9 @@ extern __typeof (g_key_file_has_group) IA__g_key_file_has_group __attribute((vis
 
 extern __typeof (g_key_file_has_key) IA__g_key_file_has_key __attribute((visibility("hidden")));
 #define g_key_file_has_key IA__g_key_file_has_key
+
+extern __typeof (g_key_file_load_from_dirs) IA__g_key_file_load_from_dirs __attribute((visibility("hidden")));
+#define g_key_file_load_from_dirs IA__g_key_file_load_from_dirs
 
 extern __typeof (g_key_file_load_from_data) IA__g_key_file_load_from_data __attribute((visibility("hidden")));
 #define g_key_file_load_from_data IA__g_key_file_load_from_data
@@ -1516,11 +1583,20 @@ extern __typeof (g_idle_source_new) IA__g_idle_source_new __attribute((visibilit
 extern __typeof (g_timeout_add) IA__g_timeout_add __attribute((visibility("hidden")));
 #define g_timeout_add IA__g_timeout_add
 
+extern __typeof (g_timeout_add_seconds) IA__g_timeout_add_seconds __attribute((visibility("hidden")));
+#define g_timeout_add_seconds IA__g_timeout_add_seconds
+
 extern __typeof (g_timeout_add_full) IA__g_timeout_add_full __attribute((visibility("hidden")));
 #define g_timeout_add_full IA__g_timeout_add_full
 
+extern __typeof (g_timeout_add_seconds_full) IA__g_timeout_add_seconds_full __attribute((visibility("hidden")));
+#define g_timeout_add_seconds_full IA__g_timeout_add_seconds_full
+
 extern __typeof (g_timeout_source_new) IA__g_timeout_source_new __attribute((visibility("hidden")));
 #define g_timeout_source_new IA__g_timeout_source_new
+
+extern __typeof (g_timeout_source_new_seconds) IA__g_timeout_source_new_seconds __attribute((visibility("hidden")));
+#define g_timeout_source_new_seconds IA__g_timeout_source_new_seconds
 
 #endif
 #endif
@@ -1557,6 +1633,9 @@ extern __typeof (g_markup_parse_context_free) IA__g_markup_parse_context_free __
 extern __typeof (g_markup_parse_context_get_element) IA__g_markup_parse_context_get_element __attribute((visibility("hidden")));
 #define g_markup_parse_context_get_element IA__g_markup_parse_context_get_element
 
+extern __typeof (g_markup_parse_context_get_element_stack) IA__g_markup_parse_context_get_element_stack __attribute((visibility("hidden")));
+#define g_markup_parse_context_get_element_stack IA__g_markup_parse_context_get_element_stack
+
 extern __typeof (g_markup_parse_context_get_position) IA__g_markup_parse_context_get_position __attribute((visibility("hidden")));
 #define g_markup_parse_context_get_position IA__g_markup_parse_context_get_position
 
@@ -1571,6 +1650,9 @@ extern __typeof (g_markup_printf_escaped) IA__g_markup_printf_escaped __attribut
 
 extern __typeof (g_markup_vprintf_escaped) IA__g_markup_vprintf_escaped __attribute((visibility("hidden")));
 #define g_markup_vprintf_escaped IA__g_markup_vprintf_escaped
+
+extern __typeof (g_markup_collect_attributes) IA__g_markup_collect_attributes __attribute((visibility("hidden")));
+#define g_markup_collect_attributes IA__g_markup_collect_attributes
 
 #endif
 #endif
@@ -1654,6 +1736,9 @@ extern __typeof (g_slice_alloc) IA__g_slice_alloc __attribute((visibility("hidde
 extern __typeof (g_slice_alloc0) IA__g_slice_alloc0 __attribute((visibility("hidden"))) G_GNUC_MALLOC;
 #define g_slice_alloc0 IA__g_slice_alloc0
 
+extern __typeof (g_slice_copy) IA__g_slice_copy __attribute((visibility("hidden"))) G_GNUC_MALLOC;
+#define g_slice_copy IA__g_slice_copy
+
 extern __typeof (g_slice_free1) IA__g_slice_free1 __attribute((visibility("hidden")));
 #define g_slice_free1 IA__g_slice_free1
 
@@ -1669,6 +1754,8 @@ extern __typeof (g_slice_get_config) IA__g_slice_get_config __attribute((visibil
 extern __typeof (g_slice_get_config_state) IA__g_slice_get_config_state __attribute((visibility("hidden")));
 #define g_slice_get_config_state IA__g_slice_get_config_state
 
+#ifdef G_ENABLE_DEBUG
+#endif
 #endif
 #endif
 #if IN_HEADER(__G_MESSAGES_H__)
@@ -1703,9 +1790,14 @@ extern __typeof (g_logv) IA__g_logv __attribute((visibility("hidden")));
 extern __typeof (g_return_if_fail_warning) IA__g_return_if_fail_warning __attribute((visibility("hidden")));
 #define g_return_if_fail_warning IA__g_return_if_fail_warning
 
+extern __typeof (g_warn_message) IA__g_warn_message __attribute((visibility("hidden")));
+#define g_warn_message IA__g_warn_message
+
+#ifndef G_DISABLE_DEPRECATED
 extern __typeof (g_assert_warning) IA__g_assert_warning __attribute((visibility("hidden"))) G_GNUC_NORETURN;
 #define g_assert_warning IA__g_assert_warning
 
+#endif
 extern __typeof (g_print) IA__g_print __attribute((visibility("hidden"))) G_GNUC_PRINTF(1,2);
 #define g_print IA__g_print
 
@@ -1868,6 +1960,9 @@ extern __typeof (g_option_context_set_translate_func) IA__g_option_context_set_t
 extern __typeof (g_option_context_set_translation_domain) IA__g_option_context_set_translation_domain __attribute((visibility("hidden")));
 #define g_option_context_set_translation_domain IA__g_option_context_set_translation_domain
 
+extern __typeof (g_option_context_get_help) IA__g_option_context_get_help __attribute((visibility("hidden")));
+#define g_option_context_get_help IA__g_option_context_get_help
+
 extern __typeof (g_option_group_add_entries) IA__g_option_group_add_entries __attribute((visibility("hidden")));
 #define g_option_group_add_entries IA__g_option_group_add_entries
 
@@ -1964,6 +2059,9 @@ extern __typeof (g_qsort_with_data) IA__g_qsort_with_data __attribute((visibilit
 #endif
 #if IN_HEADER(__G_QUEUE_H__)
 #if IN_FILE(__G_QUEUE_C__)
+extern __typeof (g_queue_clear) IA__g_queue_clear __attribute((visibility("hidden")));
+#define g_queue_clear IA__g_queue_clear
+
 extern __typeof (g_queue_copy) IA__g_queue_copy __attribute((visibility("hidden")));
 #define g_queue_copy IA__g_queue_copy
 
@@ -1987,6 +2085,9 @@ extern __typeof (g_queue_get_length) IA__g_queue_get_length __attribute((visibil
 
 extern __typeof (g_queue_index) IA__g_queue_index __attribute((visibility("hidden")));
 #define g_queue_index IA__g_queue_index
+
+extern __typeof (g_queue_init) IA__g_queue_init __attribute((visibility("hidden")));
+#define g_queue_init IA__g_queue_init
 
 extern __typeof (g_queue_insert_after) IA__g_queue_insert_after __attribute((visibility("hidden")));
 #define g_queue_insert_after IA__g_queue_insert_after
@@ -2230,6 +2331,115 @@ extern __typeof (g_scanner_unexp_token) IA__g_scanner_unexp_token __attribute((v
 
 extern __typeof (g_scanner_warn) IA__g_scanner_warn __attribute((visibility("hidden"))) G_GNUC_PRINTF(2,3);
 #define g_scanner_warn IA__g_scanner_warn
+
+#endif
+#endif
+#if IN_HEADER(__G_SEQUENCE_H__)
+#if IN_FILE(__G_SEQUENCE_C__)
+extern __typeof (g_sequence_new) IA__g_sequence_new __attribute((visibility("hidden")));
+#define g_sequence_new IA__g_sequence_new
+
+extern __typeof (g_sequence_free) IA__g_sequence_free __attribute((visibility("hidden")));
+#define g_sequence_free IA__g_sequence_free
+
+extern __typeof (g_sequence_get_length) IA__g_sequence_get_length __attribute((visibility("hidden")));
+#define g_sequence_get_length IA__g_sequence_get_length
+
+extern __typeof (g_sequence_foreach) IA__g_sequence_foreach __attribute((visibility("hidden")));
+#define g_sequence_foreach IA__g_sequence_foreach
+
+extern __typeof (g_sequence_foreach_range) IA__g_sequence_foreach_range __attribute((visibility("hidden")));
+#define g_sequence_foreach_range IA__g_sequence_foreach_range
+
+extern __typeof (g_sequence_sort) IA__g_sequence_sort __attribute((visibility("hidden")));
+#define g_sequence_sort IA__g_sequence_sort
+
+extern __typeof (g_sequence_sort_iter) IA__g_sequence_sort_iter __attribute((visibility("hidden")));
+#define g_sequence_sort_iter IA__g_sequence_sort_iter
+
+extern __typeof (g_sequence_get_begin_iter) IA__g_sequence_get_begin_iter __attribute((visibility("hidden")));
+#define g_sequence_get_begin_iter IA__g_sequence_get_begin_iter
+
+extern __typeof (g_sequence_get_end_iter) IA__g_sequence_get_end_iter __attribute((visibility("hidden")));
+#define g_sequence_get_end_iter IA__g_sequence_get_end_iter
+
+extern __typeof (g_sequence_get_iter_at_pos) IA__g_sequence_get_iter_at_pos __attribute((visibility("hidden")));
+#define g_sequence_get_iter_at_pos IA__g_sequence_get_iter_at_pos
+
+extern __typeof (g_sequence_append) IA__g_sequence_append __attribute((visibility("hidden")));
+#define g_sequence_append IA__g_sequence_append
+
+extern __typeof (g_sequence_prepend) IA__g_sequence_prepend __attribute((visibility("hidden")));
+#define g_sequence_prepend IA__g_sequence_prepend
+
+extern __typeof (g_sequence_insert_before) IA__g_sequence_insert_before __attribute((visibility("hidden")));
+#define g_sequence_insert_before IA__g_sequence_insert_before
+
+extern __typeof (g_sequence_move) IA__g_sequence_move __attribute((visibility("hidden")));
+#define g_sequence_move IA__g_sequence_move
+
+extern __typeof (g_sequence_swap) IA__g_sequence_swap __attribute((visibility("hidden")));
+#define g_sequence_swap IA__g_sequence_swap
+
+extern __typeof (g_sequence_insert_sorted) IA__g_sequence_insert_sorted __attribute((visibility("hidden")));
+#define g_sequence_insert_sorted IA__g_sequence_insert_sorted
+
+extern __typeof (g_sequence_insert_sorted_iter) IA__g_sequence_insert_sorted_iter __attribute((visibility("hidden")));
+#define g_sequence_insert_sorted_iter IA__g_sequence_insert_sorted_iter
+
+extern __typeof (g_sequence_sort_changed) IA__g_sequence_sort_changed __attribute((visibility("hidden")));
+#define g_sequence_sort_changed IA__g_sequence_sort_changed
+
+extern __typeof (g_sequence_sort_changed_iter) IA__g_sequence_sort_changed_iter __attribute((visibility("hidden")));
+#define g_sequence_sort_changed_iter IA__g_sequence_sort_changed_iter
+
+extern __typeof (g_sequence_remove) IA__g_sequence_remove __attribute((visibility("hidden")));
+#define g_sequence_remove IA__g_sequence_remove
+
+extern __typeof (g_sequence_remove_range) IA__g_sequence_remove_range __attribute((visibility("hidden")));
+#define g_sequence_remove_range IA__g_sequence_remove_range
+
+extern __typeof (g_sequence_move_range) IA__g_sequence_move_range __attribute((visibility("hidden")));
+#define g_sequence_move_range IA__g_sequence_move_range
+
+extern __typeof (g_sequence_search) IA__g_sequence_search __attribute((visibility("hidden")));
+#define g_sequence_search IA__g_sequence_search
+
+extern __typeof (g_sequence_search_iter) IA__g_sequence_search_iter __attribute((visibility("hidden")));
+#define g_sequence_search_iter IA__g_sequence_search_iter
+
+extern __typeof (g_sequence_get) IA__g_sequence_get __attribute((visibility("hidden")));
+#define g_sequence_get IA__g_sequence_get
+
+extern __typeof (g_sequence_set) IA__g_sequence_set __attribute((visibility("hidden")));
+#define g_sequence_set IA__g_sequence_set
+
+extern __typeof (g_sequence_iter_is_begin) IA__g_sequence_iter_is_begin __attribute((visibility("hidden")));
+#define g_sequence_iter_is_begin IA__g_sequence_iter_is_begin
+
+extern __typeof (g_sequence_iter_is_end) IA__g_sequence_iter_is_end __attribute((visibility("hidden")));
+#define g_sequence_iter_is_end IA__g_sequence_iter_is_end
+
+extern __typeof (g_sequence_iter_next) IA__g_sequence_iter_next __attribute((visibility("hidden")));
+#define g_sequence_iter_next IA__g_sequence_iter_next
+
+extern __typeof (g_sequence_iter_prev) IA__g_sequence_iter_prev __attribute((visibility("hidden")));
+#define g_sequence_iter_prev IA__g_sequence_iter_prev
+
+extern __typeof (g_sequence_iter_get_position) IA__g_sequence_iter_get_position __attribute((visibility("hidden")));
+#define g_sequence_iter_get_position IA__g_sequence_iter_get_position
+
+extern __typeof (g_sequence_iter_move) IA__g_sequence_iter_move __attribute((visibility("hidden")));
+#define g_sequence_iter_move IA__g_sequence_iter_move
+
+extern __typeof (g_sequence_iter_get_sequence) IA__g_sequence_iter_get_sequence __attribute((visibility("hidden")));
+#define g_sequence_iter_get_sequence IA__g_sequence_iter_get_sequence
+
+extern __typeof (g_sequence_iter_compare) IA__g_sequence_iter_compare __attribute((visibility("hidden")));
+#define g_sequence_iter_compare IA__g_sequence_iter_compare
+
+extern __typeof (g_sequence_range_get_midpoint) IA__g_sequence_range_get_midpoint __attribute((visibility("hidden")));
+#define g_sequence_range_get_midpoint IA__g_sequence_range_get_midpoint
 
 #endif
 #endif
@@ -2588,6 +2798,25 @@ extern __typeof (g_strv_length) IA__g_strv_length __attribute((visibility("hidde
 extern __typeof (g_strip_context) IA__g_strip_context __attribute((visibility("hidden")));
 #define g_strip_context IA__g_strip_context
 
+extern __typeof (g_dpgettext) IA__g_dpgettext __attribute((visibility("hidden")));
+#define g_dpgettext IA__g_dpgettext
+
+#endif
+#endif
+#if IN_HEADER(__G_URI_FUNCS_H__)
+#if IN_FILE(__G_URI_FUNCS_C__)
+extern __typeof (g_uri_unescape_string) IA__g_uri_unescape_string __attribute((visibility("hidden")));
+#define g_uri_unescape_string IA__g_uri_unescape_string
+
+extern __typeof (g_uri_unescape_segment) IA__g_uri_unescape_segment __attribute((visibility("hidden")));
+#define g_uri_unescape_segment IA__g_uri_unescape_segment
+
+extern __typeof (g_uri_parse_scheme) IA__g_uri_parse_scheme __attribute((visibility("hidden")));
+#define g_uri_parse_scheme IA__g_uri_parse_scheme
+
+extern __typeof (g_uri_escape_string) IA__g_uri_escape_string __attribute((visibility("hidden")));
+#define g_uri_escape_string IA__g_uri_escape_string
+
 #endif
 #endif
 #if IN_HEADER(__G_STRING_H__)
@@ -2604,6 +2833,9 @@ extern __typeof (g_string_append_printf) IA__g_string_append_printf __attribute(
 extern __typeof (g_string_append_unichar) IA__g_string_append_unichar __attribute((visibility("hidden")));
 #define g_string_append_unichar IA__g_string_append_unichar
 
+extern __typeof (g_string_append_vprintf) IA__g_string_append_vprintf __attribute((visibility("hidden")));
+#define g_string_append_vprintf IA__g_string_append_vprintf
+
 extern __typeof (g_string_ascii_down) IA__g_string_ascii_down __attribute((visibility("hidden")));
 #define g_string_ascii_down IA__g_string_ascii_down
 
@@ -2615,6 +2847,9 @@ extern __typeof (g_string_assign) IA__g_string_assign __attribute((visibility("h
 
 extern __typeof (g_string_chunk_free) IA__g_string_chunk_free __attribute((visibility("hidden")));
 #define g_string_chunk_free IA__g_string_chunk_free
+
+extern __typeof (g_string_chunk_clear) IA__g_string_chunk_clear __attribute((visibility("hidden")));
+#define g_string_chunk_clear IA__g_string_chunk_clear
 
 extern __typeof (g_string_chunk_insert) IA__g_string_chunk_insert __attribute((visibility("hidden")));
 #define g_string_chunk_insert IA__g_string_chunk_insert
@@ -2658,6 +2893,12 @@ extern __typeof (g_string_new) IA__g_string_new __attribute((visibility("hidden"
 extern __typeof (g_string_new_len) IA__g_string_new_len __attribute((visibility("hidden")));
 #define g_string_new_len IA__g_string_new_len
 
+extern __typeof (g_string_overwrite) IA__g_string_overwrite __attribute((visibility("hidden")));
+#define g_string_overwrite IA__g_string_overwrite
+
+extern __typeof (g_string_overwrite_len) IA__g_string_overwrite_len __attribute((visibility("hidden")));
+#define g_string_overwrite_len IA__g_string_overwrite_len
+
 extern __typeof (g_string_prepend) IA__g_string_prepend __attribute((visibility("hidden")));
 #define g_string_prepend IA__g_string_prepend
 
@@ -2682,6 +2923,9 @@ extern __typeof (g_string_sized_new) IA__g_string_sized_new __attribute((visibil
 extern __typeof (g_string_truncate) IA__g_string_truncate __attribute((visibility("hidden")));
 #define g_string_truncate IA__g_string_truncate
 
+extern __typeof (g_string_append_uri_escaped) IA__g_string_append_uri_escaped __attribute((visibility("hidden")));
+#define g_string_append_uri_escaped IA__g_string_append_uri_escaped
+
 #ifndef G_DISABLE_DEPRECATED
 extern __typeof (g_string_down) IA__g_string_down __attribute((visibility("hidden")));
 #define g_string_down IA__g_string_down
@@ -2690,6 +2934,9 @@ extern __typeof (g_string_up) IA__g_string_up __attribute((visibility("hidden"))
 #define g_string_up IA__g_string_up
 
 #endif
+extern __typeof (g_string_vprintf) IA__g_string_vprintf __attribute((visibility("hidden")));
+#define g_string_vprintf IA__g_string_vprintf
+
 extern __typeof (g_str_equal) IA__g_str_equal __attribute((visibility("hidden")));
 #define g_str_equal IA__g_str_equal
 
@@ -2702,6 +2949,12 @@ extern __typeof (g_str_hash) IA__g_str_hash __attribute((visibility("hidden")));
 #if IN_FILE(__G_THREAD_C__)
 extern __typeof (g_once_impl) IA__g_once_impl __attribute((visibility("hidden")));
 #define g_once_impl IA__g_once_impl
+
+extern __typeof (g_once_init_enter_impl) IA__g_once_init_enter_impl __attribute((visibility("hidden")));
+#define g_once_init_enter_impl IA__g_once_init_enter_impl
+
+extern __typeof (g_once_init_leave) IA__g_once_init_leave __attribute((visibility("hidden")));
+#define g_once_init_leave IA__g_once_init_leave
 
 extern __typeof (g_thread_create_full) IA__g_thread_create_full __attribute((visibility("hidden")));
 #define g_thread_create_full IA__g_thread_create_full
@@ -2838,6 +3091,133 @@ extern __typeof (g_thread_pool_set_sort_function) IA__g_thread_pool_set_sort_fun
 
 #endif
 #endif
+#if IN_HEADER(__G_TEST_UTILS_H__)
+#if IN_FILE(__G_TEST_UTILS_C__)
+extern __typeof (g_assertion_message) IA__g_assertion_message __attribute((visibility("hidden"))) G_GNUC_NORETURN;
+#define g_assertion_message IA__g_assertion_message
+
+extern __typeof (g_assertion_message_cmpnum) IA__g_assertion_message_cmpnum __attribute((visibility("hidden"))) G_GNUC_NORETURN;
+#define g_assertion_message_cmpnum IA__g_assertion_message_cmpnum
+
+extern __typeof (g_assertion_message_cmpstr) IA__g_assertion_message_cmpstr __attribute((visibility("hidden"))) G_GNUC_NORETURN;
+#define g_assertion_message_cmpstr IA__g_assertion_message_cmpstr
+
+extern __typeof (g_assertion_message_expr) IA__g_assertion_message_expr __attribute((visibility("hidden"))) G_GNUC_NORETURN;
+#define g_assertion_message_expr IA__g_assertion_message_expr
+
+extern __typeof (g_strcmp0) IA__g_strcmp0 __attribute((visibility("hidden")));
+#define g_strcmp0 IA__g_strcmp0
+
+extern __typeof (g_test_add_data_func) IA__g_test_add_data_func __attribute((visibility("hidden")));
+#define g_test_add_data_func IA__g_test_add_data_func
+
+extern __typeof (g_test_add_func) IA__g_test_add_func __attribute((visibility("hidden")));
+#define g_test_add_func IA__g_test_add_func
+
+extern __typeof (g_test_add_vtable) IA__g_test_add_vtable __attribute((visibility("hidden")));
+#define g_test_add_vtable IA__g_test_add_vtable
+
+extern __typeof (g_test_bug) IA__g_test_bug __attribute((visibility("hidden")));
+#define g_test_bug IA__g_test_bug
+
+extern __typeof (g_test_bug_base) IA__g_test_bug_base __attribute((visibility("hidden")));
+#define g_test_bug_base IA__g_test_bug_base
+
+extern __typeof (g_test_config_vars) IA__g_test_config_vars __attribute((visibility("hidden")));
+#define g_test_config_vars IA__g_test_config_vars
+
+extern __typeof (g_test_create_case) IA__g_test_create_case __attribute((visibility("hidden")));
+#define g_test_create_case IA__g_test_create_case
+
+extern __typeof (g_test_create_suite) IA__g_test_create_suite __attribute((visibility("hidden")));
+#define g_test_create_suite IA__g_test_create_suite
+
+extern __typeof (g_test_get_root) IA__g_test_get_root __attribute((visibility("hidden")));
+#define g_test_get_root IA__g_test_get_root
+
+extern __typeof (g_test_init) IA__g_test_init __attribute((visibility("hidden")));
+#define g_test_init IA__g_test_init
+
+extern __typeof (g_test_log_buffer_free) IA__g_test_log_buffer_free __attribute((visibility("hidden")));
+#define g_test_log_buffer_free IA__g_test_log_buffer_free
+
+extern __typeof (g_test_log_buffer_new) IA__g_test_log_buffer_new __attribute((visibility("hidden")));
+#define g_test_log_buffer_new IA__g_test_log_buffer_new
+
+extern __typeof (g_test_log_buffer_pop) IA__g_test_log_buffer_pop __attribute((visibility("hidden")));
+#define g_test_log_buffer_pop IA__g_test_log_buffer_pop
+
+extern __typeof (g_test_log_buffer_push) IA__g_test_log_buffer_push __attribute((visibility("hidden")));
+#define g_test_log_buffer_push IA__g_test_log_buffer_push
+
+extern __typeof (g_test_log_msg_free) IA__g_test_log_msg_free __attribute((visibility("hidden")));
+#define g_test_log_msg_free IA__g_test_log_msg_free
+
+extern __typeof (g_test_log_type_name) IA__g_test_log_type_name __attribute((visibility("hidden")));
+#define g_test_log_type_name IA__g_test_log_type_name
+
+extern __typeof (g_test_maximized_result) IA__g_test_maximized_result __attribute((visibility("hidden")));
+#define g_test_maximized_result IA__g_test_maximized_result
+
+extern __typeof (g_test_message) IA__g_test_message __attribute((visibility("hidden")));
+#define g_test_message IA__g_test_message
+
+extern __typeof (g_test_minimized_result) IA__g_test_minimized_result __attribute((visibility("hidden")));
+#define g_test_minimized_result IA__g_test_minimized_result
+
+extern __typeof (g_test_queue_destroy) IA__g_test_queue_destroy __attribute((visibility("hidden")));
+#define g_test_queue_destroy IA__g_test_queue_destroy
+
+extern __typeof (g_test_queue_free) IA__g_test_queue_free __attribute((visibility("hidden")));
+#define g_test_queue_free IA__g_test_queue_free
+
+extern __typeof (g_test_rand_double) IA__g_test_rand_double __attribute((visibility("hidden")));
+#define g_test_rand_double IA__g_test_rand_double
+
+extern __typeof (g_test_rand_double_range) IA__g_test_rand_double_range __attribute((visibility("hidden")));
+#define g_test_rand_double_range IA__g_test_rand_double_range
+
+extern __typeof (g_test_rand_int) IA__g_test_rand_int __attribute((visibility("hidden")));
+#define g_test_rand_int IA__g_test_rand_int
+
+extern __typeof (g_test_rand_int_range) IA__g_test_rand_int_range __attribute((visibility("hidden")));
+#define g_test_rand_int_range IA__g_test_rand_int_range
+
+extern __typeof (g_test_run) IA__g_test_run __attribute((visibility("hidden")));
+#define g_test_run IA__g_test_run
+
+extern __typeof (g_test_run_suite) IA__g_test_run_suite __attribute((visibility("hidden")));
+#define g_test_run_suite IA__g_test_run_suite
+
+extern __typeof (g_test_suite_add) IA__g_test_suite_add __attribute((visibility("hidden")));
+#define g_test_suite_add IA__g_test_suite_add
+
+extern __typeof (g_test_suite_add_suite) IA__g_test_suite_add_suite __attribute((visibility("hidden")));
+#define g_test_suite_add_suite IA__g_test_suite_add_suite
+
+extern __typeof (g_test_timer_elapsed) IA__g_test_timer_elapsed __attribute((visibility("hidden")));
+#define g_test_timer_elapsed IA__g_test_timer_elapsed
+
+extern __typeof (g_test_timer_last) IA__g_test_timer_last __attribute((visibility("hidden")));
+#define g_test_timer_last IA__g_test_timer_last
+
+extern __typeof (g_test_timer_start) IA__g_test_timer_start __attribute((visibility("hidden")));
+#define g_test_timer_start IA__g_test_timer_start
+
+extern __typeof (g_test_trap_assertions) IA__g_test_trap_assertions __attribute((visibility("hidden")));
+#define g_test_trap_assertions IA__g_test_trap_assertions
+
+extern __typeof (g_test_trap_fork) IA__g_test_trap_fork __attribute((visibility("hidden")));
+#define g_test_trap_fork IA__g_test_trap_fork
+
+extern __typeof (g_test_trap_has_passed) IA__g_test_trap_has_passed __attribute((visibility("hidden")));
+#define g_test_trap_has_passed IA__g_test_trap_has_passed
+
+extern __typeof (g_test_trap_reached_timeout) IA__g_test_trap_reached_timeout __attribute((visibility("hidden")));
+#define g_test_trap_reached_timeout IA__g_test_trap_reached_timeout
+
+#endif
+#endif
 #if IN_HEADER(__G_TIMER_H__)
 #if IN_FILE(__G_TIMER_C__)
 extern __typeof (g_timer_continue) IA__g_timer_continue __attribute((visibility("hidden")));
@@ -2954,6 +3334,9 @@ extern __typeof (g_unicode_canonical_decomposition) IA__g_unicode_canonical_deco
 extern __typeof (g_unicode_canonical_ordering) IA__g_unicode_canonical_ordering __attribute((visibility("hidden")));
 #define g_unicode_canonical_ordering IA__g_unicode_canonical_ordering
 
+extern __typeof (g_unichar_combining_class) IA__g_unichar_combining_class __attribute((visibility("hidden"))) G_GNUC_CONST;
+#define g_unichar_combining_class IA__g_unichar_combining_class
+
 extern __typeof (g_utf8_normalize) IA__g_utf8_normalize __attribute((visibility("hidden")));
 #define g_utf8_normalize IA__g_utf8_normalize
 
@@ -3006,6 +3389,9 @@ extern __typeof (g_unichar_iswide_cjk) IA__g_unichar_iswide_cjk __attribute((vis
 extern __typeof (g_unichar_isxdigit) IA__g_unichar_isxdigit __attribute((visibility("hidden"))) G_GNUC_CONST;
 #define g_unichar_isxdigit IA__g_unichar_isxdigit
 
+extern __typeof (g_unichar_iszerowidth) IA__g_unichar_iszerowidth __attribute((visibility("hidden"))) G_GNUC_CONST;
+#define g_unichar_iszerowidth IA__g_unichar_iszerowidth
+
 extern __typeof (g_unichar_tolower) IA__g_unichar_tolower __attribute((visibility("hidden"))) G_GNUC_CONST;
 #define g_unichar_tolower IA__g_unichar_tolower
 
@@ -3015,8 +3401,14 @@ extern __typeof (g_unichar_totitle) IA__g_unichar_totitle __attribute((visibilit
 extern __typeof (g_unichar_toupper) IA__g_unichar_toupper __attribute((visibility("hidden"))) G_GNUC_CONST;
 #define g_unichar_toupper IA__g_unichar_toupper
 
+extern __typeof (g_unichar_ismark) IA__g_unichar_ismark __attribute((visibility("hidden"))) G_GNUC_CONST;
+#define g_unichar_ismark IA__g_unichar_ismark
+
 extern __typeof (g_unichar_get_mirror_char) IA__g_unichar_get_mirror_char __attribute((visibility("hidden")));
 #define g_unichar_get_mirror_char IA__g_unichar_get_mirror_char
+
+extern __typeof (g_unichar_get_script) IA__g_unichar_get_script __attribute((visibility("hidden")));
+#define g_unichar_get_script IA__g_unichar_get_script
 
 extern __typeof (g_unichar_digit_value) IA__g_unichar_digit_value __attribute((visibility("hidden"))) G_GNUC_CONST;
 #define g_unichar_digit_value IA__g_unichar_digit_value
@@ -3108,6 +3500,13 @@ extern __typeof (g_unichar_to_utf8) IA__g_unichar_to_utf8 __attribute((visibilit
 
 extern __typeof (g_unichar_validate) IA__g_unichar_validate __attribute((visibility("hidden")));
 #define g_unichar_validate IA__g_unichar_validate
+
+#endif
+#endif
+#if IN_HEADER(__GLIBINTL_H__)
+#if IN_FILE(__G_UTILS_C__)
+extern __typeof (glib_gettext) IA__glib_gettext __attribute((visibility("hidden")));
+#define glib_gettext IA__glib_gettext
 
 #endif
 #endif
@@ -3226,6 +3625,9 @@ extern __typeof (g_get_user_config_dir) IA__g_get_user_config_dir __attribute((v
 extern __typeof (g_get_user_data_dir) IA__g_get_user_data_dir __attribute((visibility("hidden")));
 #define g_get_user_data_dir IA__g_get_user_data_dir
 
+extern __typeof (g_get_user_special_dir) IA__g_get_user_special_dir __attribute((visibility("hidden")));
+#define g_get_user_special_dir IA__g_get_user_special_dir
+
 extern __typeof (g_get_user_name) IA__g_get_user_name __attribute((visibility("hidden")));
 #define g_get_user_name IA__g_get_user_name
 
@@ -3263,6 +3665,112 @@ extern __typeof (g_set_prgname) IA__g_set_prgname __attribute((visibility("hidde
 
 #endif
 #endif
+#if IN_HEADER(__G_REGEX_H__)
+#if IN_FILE(__G_REGEX_C__)
+extern __typeof (g_regex_error_quark) IA__g_regex_error_quark __attribute((visibility("hidden")));
+#define g_regex_error_quark IA__g_regex_error_quark
+
+extern __typeof (g_regex_new) IA__g_regex_new __attribute((visibility("hidden")));
+#define g_regex_new IA__g_regex_new
+
+extern __typeof (g_regex_ref) IA__g_regex_ref __attribute((visibility("hidden")));
+#define g_regex_ref IA__g_regex_ref
+
+extern __typeof (g_regex_unref) IA__g_regex_unref __attribute((visibility("hidden")));
+#define g_regex_unref IA__g_regex_unref
+
+extern __typeof (g_regex_get_pattern) IA__g_regex_get_pattern __attribute((visibility("hidden")));
+#define g_regex_get_pattern IA__g_regex_get_pattern
+
+extern __typeof (g_regex_get_max_backref) IA__g_regex_get_max_backref __attribute((visibility("hidden")));
+#define g_regex_get_max_backref IA__g_regex_get_max_backref
+
+extern __typeof (g_regex_get_capture_count) IA__g_regex_get_capture_count __attribute((visibility("hidden")));
+#define g_regex_get_capture_count IA__g_regex_get_capture_count
+
+extern __typeof (g_regex_get_string_number) IA__g_regex_get_string_number __attribute((visibility("hidden")));
+#define g_regex_get_string_number IA__g_regex_get_string_number
+
+extern __typeof (g_regex_escape_string) IA__g_regex_escape_string __attribute((visibility("hidden")));
+#define g_regex_escape_string IA__g_regex_escape_string
+
+extern __typeof (g_regex_match_simple) IA__g_regex_match_simple __attribute((visibility("hidden")));
+#define g_regex_match_simple IA__g_regex_match_simple
+
+extern __typeof (g_regex_match) IA__g_regex_match __attribute((visibility("hidden")));
+#define g_regex_match IA__g_regex_match
+
+extern __typeof (g_regex_match_full) IA__g_regex_match_full __attribute((visibility("hidden")));
+#define g_regex_match_full IA__g_regex_match_full
+
+extern __typeof (g_regex_match_all) IA__g_regex_match_all __attribute((visibility("hidden")));
+#define g_regex_match_all IA__g_regex_match_all
+
+extern __typeof (g_regex_match_all_full) IA__g_regex_match_all_full __attribute((visibility("hidden")));
+#define g_regex_match_all_full IA__g_regex_match_all_full
+
+extern __typeof (g_regex_split_simple) IA__g_regex_split_simple __attribute((visibility("hidden")));
+#define g_regex_split_simple IA__g_regex_split_simple
+
+extern __typeof (g_regex_split) IA__g_regex_split __attribute((visibility("hidden")));
+#define g_regex_split IA__g_regex_split
+
+extern __typeof (g_regex_split_full) IA__g_regex_split_full __attribute((visibility("hidden")));
+#define g_regex_split_full IA__g_regex_split_full
+
+extern __typeof (g_regex_replace) IA__g_regex_replace __attribute((visibility("hidden")));
+#define g_regex_replace IA__g_regex_replace
+
+extern __typeof (g_regex_replace_literal) IA__g_regex_replace_literal __attribute((visibility("hidden")));
+#define g_regex_replace_literal IA__g_regex_replace_literal
+
+extern __typeof (g_regex_replace_eval) IA__g_regex_replace_eval __attribute((visibility("hidden")));
+#define g_regex_replace_eval IA__g_regex_replace_eval
+
+extern __typeof (g_regex_check_replacement) IA__g_regex_check_replacement __attribute((visibility("hidden")));
+#define g_regex_check_replacement IA__g_regex_check_replacement
+
+extern __typeof (g_match_info_get_regex) IA__g_match_info_get_regex __attribute((visibility("hidden")));
+#define g_match_info_get_regex IA__g_match_info_get_regex
+
+extern __typeof (g_match_info_get_string) IA__g_match_info_get_string __attribute((visibility("hidden")));
+#define g_match_info_get_string IA__g_match_info_get_string
+
+extern __typeof (g_match_info_free) IA__g_match_info_free __attribute((visibility("hidden")));
+#define g_match_info_free IA__g_match_info_free
+
+extern __typeof (g_match_info_next) IA__g_match_info_next __attribute((visibility("hidden")));
+#define g_match_info_next IA__g_match_info_next
+
+extern __typeof (g_match_info_matches) IA__g_match_info_matches __attribute((visibility("hidden")));
+#define g_match_info_matches IA__g_match_info_matches
+
+extern __typeof (g_match_info_get_match_count) IA__g_match_info_get_match_count __attribute((visibility("hidden")));
+#define g_match_info_get_match_count IA__g_match_info_get_match_count
+
+extern __typeof (g_match_info_is_partial_match) IA__g_match_info_is_partial_match __attribute((visibility("hidden")));
+#define g_match_info_is_partial_match IA__g_match_info_is_partial_match
+
+extern __typeof (g_match_info_expand_references) IA__g_match_info_expand_references __attribute((visibility("hidden")));
+#define g_match_info_expand_references IA__g_match_info_expand_references
+
+extern __typeof (g_match_info_fetch) IA__g_match_info_fetch __attribute((visibility("hidden")));
+#define g_match_info_fetch IA__g_match_info_fetch
+
+extern __typeof (g_match_info_fetch_pos) IA__g_match_info_fetch_pos __attribute((visibility("hidden")));
+#define g_match_info_fetch_pos IA__g_match_info_fetch_pos
+
+extern __typeof (g_match_info_fetch_named) IA__g_match_info_fetch_named __attribute((visibility("hidden")));
+#define g_match_info_fetch_named IA__g_match_info_fetch_named
+
+extern __typeof (g_match_info_fetch_named_pos) IA__g_match_info_fetch_named_pos __attribute((visibility("hidden")));
+#define g_match_info_fetch_named_pos IA__g_match_info_fetch_named_pos
+
+extern __typeof (g_match_info_fetch_all) IA__g_match_info_fetch_all __attribute((visibility("hidden")));
+#define g_match_info_fetch_all IA__g_match_info_fetch_all
+
+#endif
+#endif
 #if IN_HEADER(__G_WIN32_H__)
 #if IN_FILE(__G_WIN32_H__)
 #ifdef G_OS_WIN32
@@ -3271,6 +3779,9 @@ extern __typeof (g_win32_error_message) IA__g_win32_error_message __attribute((v
 
 extern __typeof (g_win32_ftruncate) IA__g_win32_ftruncate __attribute((visibility("hidden")));
 #define g_win32_ftruncate IA__g_win32_ftruncate
+
+extern __typeof (g_win32_get_package_installation_directory_of_module) IA__g_win32_get_package_installation_directory_of_module __attribute((visibility("hidden")));
+#define g_win32_get_package_installation_directory_of_module IA__g_win32_get_package_installation_directory_of_module
 
 extern __typeof (g_win32_get_package_installation_directory) IA__g_win32_get_package_installation_directory __attribute((visibility("hidden")));
 #define g_win32_get_package_installation_directory IA__g_win32_get_package_installation_directory

@@ -1,6 +1,6 @@
 <refentry id="gobject-Standard-Parameter-and-Value-Types">
 <refmeta>
-<refentrytitle role="top_of_page">Parameters and Values</refentrytitle>
+<refentrytitle role="top_of_page" id="gobject-Standard-Parameter-and-Value-Types.top_of_page">Parameters and Values</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GOBJECT Library</refmiscinfo>
 </refmeta>
@@ -11,14 +11,12 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="gobject-Standard-Parameter-and-Value-Types.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib-object.h&gt;
-
-
 
 #define             <link linkend="G-IS-PARAM-SPEC-BOOLEAN:CAPS">G_IS_PARAM_SPEC_BOOLEAN</link>             (pspec)
 #define             <link linkend="G-PARAM-SPEC-BOOLEAN:CAPS">G_PARAM_SPEC_BOOLEAN</link>                (pspec)
@@ -316,7 +314,7 @@ const <link linkend="gchar">gchar</link>*        <link linkend="g-value-get-stri
 <link linkend="void">void</link>                <link linkend="g-value-set-object-take-ownership">g_value_set_object_take_ownership</link>   (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gpointer">gpointer</link> v_object);
 <link linkend="gpointer">gpointer</link>            <link linkend="g-value-get-object">g_value_get_object</link>                  (const <link linkend="GValue">GValue</link> *value);
-<link linkend="GObject">GObject</link>*            <link linkend="g-value-dup-object">g_value_dup_object</link>                  (const <link linkend="GValue">GValue</link> *value);
+<link linkend="gpointer">gpointer</link>            <link linkend="g-value-dup-object">g_value_dup_object</link>                  (const <link linkend="GValue">GValue</link> *value);
 
 #define             <link linkend="G-IS-PARAM-SPEC-UNICHAR:CAPS">G_IS_PARAM_SPEC_UNICHAR</link>             (pspec)
 #define             <link linkend="G-PARAM-SPEC-UNICHAR:CAPS">G_PARAM_SPEC_UNICHAR</link>                (pspec)
@@ -358,7 +356,6 @@ const <link linkend="gchar">gchar</link>*        <link linkend="g-value-get-stri
 <link linkend="GType">GType</link>               <link linkend="g-value-get-gtype">g_value_get_gtype</link>                   (const <link linkend="GValue">GValue</link> *value);
 <link linkend="void">void</link>                <link linkend="g-value-set-gtype">g_value_set_gtype</link>                   (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="GType">GType</link> v_gtype);
-
 </synopsis>
 </refsynopsisdiv>
 
@@ -370,7 +367,7 @@ const <link linkend="gchar">gchar</link>*        <link linkend="g-value-get-stri
 
 
 
-<refsect1 role="desc">
+<refsect1 id="gobject-Standard-Parameter-and-Value-Types.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 <link linkend="GValue"><type>GValue</type></link> provides an abstract container structure which can be copied,
@@ -387,11 +384,11 @@ All other characters are replaced by a '-' during construction.
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="gobject-Standard-Parameter-and-Value-Types.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-BOOLEAN:CAPS" role="macro"/>G_IS_PARAM_SPEC_BOOLEAN()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_BOOLEAN</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_BOOLEAN(pspec)     (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_BOOLEAN))
+<refsect2 id="G-IS-PARAM-SPEC-BOOLEAN:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_BOOLEAN()</title>
+<indexterm zone="G-IS-PARAM-SPEC-BOOLEAN:CAPS"><primary>G_IS_PARAM_SPEC_BOOLEAN</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_BOOLEAN(pspec)     (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_BOOLEAN))
 </programlisting>
 <para>
 Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-BOOLEAN:CAPS"><literal>G_TYPE_PARAM_BOOLEAN</literal></link>.
@@ -402,9 +399,9 @@ Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></lin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-BOOLEAN:CAPS" role="macro"/>G_PARAM_SPEC_BOOLEAN()</title>
-<indexterm><primary>G_PARAM_SPEC_BOOLEAN</primary></indexterm><programlisting>#define G_PARAM_SPEC_BOOLEAN(pspec)        (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_BOOLEAN, GParamSpecBoolean))
+<refsect2 id="G-PARAM-SPEC-BOOLEAN:CAPS" role="macro">
+<title>G_PARAM_SPEC_BOOLEAN()</title>
+<indexterm zone="G-PARAM-SPEC-BOOLEAN:CAPS"><primary>G_PARAM_SPEC_BOOLEAN</primary></indexterm><programlisting>#define G_PARAM_SPEC_BOOLEAN(pspec)        (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_BOOLEAN, GParamSpecBoolean))
 </programlisting>
 <para>
 Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecBoolean"><type>GParamSpecBoolean</type></link>.
@@ -415,9 +412,9 @@ Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-BOOLEAN:CAPS" role="macro"/>G_VALUE_HOLDS_BOOLEAN()</title>
-<indexterm><primary>G_VALUE_HOLDS_BOOLEAN</primary></indexterm><programlisting>#define G_VALUE_HOLDS_BOOLEAN(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_BOOLEAN))
+<refsect2 id="G-VALUE-HOLDS-BOOLEAN:CAPS" role="macro">
+<title>G_VALUE_HOLDS_BOOLEAN()</title>
+<indexterm zone="G-VALUE-HOLDS-BOOLEAN:CAPS"><primary>G_VALUE_HOLDS_BOOLEAN</primary></indexterm><programlisting>#define G_VALUE_HOLDS_BOOLEAN(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_BOOLEAN))
 </programlisting>
 <para>
 Return whether the given <link linkend="GValue"><type>GValue</type></link> can hold values of type <link linkend="G-TYPE-BOOLEAN:CAPS"><literal>G_TYPE_BOOLEAN</literal></link>.
@@ -428,16 +425,16 @@ Return whether the given <link linkend="GValue"><type>GValue</type></link> can h
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-BOOLEAN:CAPS" role="macro"/>G_TYPE_PARAM_BOOLEAN</title>
-<indexterm><primary>G_TYPE_PARAM_BOOLEAN</primary></indexterm><programlisting>#define	G_TYPE_PARAM_BOOLEAN		   (g_param_spec_types[2])
+<refsect2 id="G-TYPE-PARAM-BOOLEAN:CAPS" role="macro">
+<title>G_TYPE_PARAM_BOOLEAN</title>
+<indexterm zone="G-TYPE-PARAM-BOOLEAN:CAPS"><primary>G_TYPE_PARAM_BOOLEAN</primary></indexterm><programlisting>#define	G_TYPE_PARAM_BOOLEAN		   (g_param_spec_types[2])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecBoolean"><type>GParamSpecBoolean</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecBoolean" role="struct"/>GParamSpecBoolean</title>
-<indexterm><primary>GParamSpecBoolean</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecBoolean" role="struct">
+<title>GParamSpecBoolean</title>
+<indexterm zone="GParamSpecBoolean"><primary>GParamSpecBoolean</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
   
   gboolean      default_value;
@@ -458,9 +455,9 @@ A <link linkend="GParamSpec"><type>GParamSpec</type></link> derived structure th
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-boolean" role="function"/>g_param_spec_boolean ()</title>
-<indexterm><primary>g_param_spec_boolean</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_boolean                (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-boolean" role="function">
+<title>g_param_spec_boolean ()</title>
+<indexterm zone="g-param-spec-boolean"><primary>g_param_spec_boolean</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_boolean                (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="gboolean">gboolean</link> default_value,
@@ -492,9 +489,9 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-boolean" role="function"/>g_value_set_boolean ()</title>
-<indexterm><primary>g_value_set_boolean</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_boolean                 (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-boolean" role="function">
+<title>g_value_set_boolean ()</title>
+<indexterm zone="g-value-set-boolean"><primary>g_value_set_boolean</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_boolean                 (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gboolean">gboolean</link> v_boolean);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-BOOLEAN:CAPS"><literal>G_TYPE_BOOLEAN</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>v_boolean</parameter>.
@@ -508,9 +505,9 @@ Set the contents of a <link linkend="G-TYPE-BOOLEAN:CAPS"><literal>G_TYPE_BOOLEA
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-boolean" role="function"/>g_value_get_boolean ()</title>
-<indexterm><primary>g_value_get_boolean</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_value_get_boolean                 (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-boolean" role="function">
+<title>g_value_get_boolean ()</title>
+<indexterm zone="g-value-get-boolean"><primary>g_value_get_boolean</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            g_value_get_boolean                 (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-BOOLEAN:CAPS"><literal>G_TYPE_BOOLEAN</literal></link> <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -522,9 +519,9 @@ Get the contents of a <link linkend="G-TYPE-BOOLEAN:CAPS"><literal>G_TYPE_BOOLEA
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-CHAR:CAPS" role="macro"/>G_IS_PARAM_SPEC_CHAR()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_CHAR</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_CHAR(pspec)        (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_CHAR))
+<refsect2 id="G-IS-PARAM-SPEC-CHAR:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_CHAR()</title>
+<indexterm zone="G-IS-PARAM-SPEC-CHAR:CAPS"><primary>G_IS_PARAM_SPEC_CHAR</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_CHAR(pspec)        (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_CHAR))
 </programlisting>
 <para>
 Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-CHAR:CAPS"><literal>G_TYPE_PARAM_CHAR</literal></link>.
@@ -535,9 +532,9 @@ Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></lin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-CHAR:CAPS" role="macro"/>G_PARAM_SPEC_CHAR()</title>
-<indexterm><primary>G_PARAM_SPEC_CHAR</primary></indexterm><programlisting>#define G_PARAM_SPEC_CHAR(pspec)           (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_CHAR, GParamSpecChar))
+<refsect2 id="G-PARAM-SPEC-CHAR:CAPS" role="macro">
+<title>G_PARAM_SPEC_CHAR()</title>
+<indexterm zone="G-PARAM-SPEC-CHAR:CAPS"><primary>G_PARAM_SPEC_CHAR</primary></indexterm><programlisting>#define G_PARAM_SPEC_CHAR(pspec)           (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_CHAR, GParamSpecChar))
 </programlisting>
 <para>
 Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecChar"><type>GParamSpecChar</type></link>.
@@ -548,9 +545,9 @@ Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-CHAR:CAPS" role="macro"/>G_VALUE_HOLDS_CHAR()</title>
-<indexterm><primary>G_VALUE_HOLDS_CHAR</primary></indexterm><programlisting>#define G_VALUE_HOLDS_CHAR(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_CHAR))
+<refsect2 id="G-VALUE-HOLDS-CHAR:CAPS" role="macro">
+<title>G_VALUE_HOLDS_CHAR()</title>
+<indexterm zone="G-VALUE-HOLDS-CHAR:CAPS"><primary>G_VALUE_HOLDS_CHAR</primary></indexterm><programlisting>#define G_VALUE_HOLDS_CHAR(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_CHAR))
 </programlisting>
 <para>
 Return whether the given <link linkend="GValue"><type>GValue</type></link> can hold values of type <link linkend="G-TYPE-CHAR:CAPS"><literal>G_TYPE_CHAR</literal></link>.
@@ -561,16 +558,16 @@ Return whether the given <link linkend="GValue"><type>GValue</type></link> can h
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-CHAR:CAPS" role="macro"/>G_TYPE_PARAM_CHAR</title>
-<indexterm><primary>G_TYPE_PARAM_CHAR</primary></indexterm><programlisting>#define	G_TYPE_PARAM_CHAR		   (g_param_spec_types[0])
+<refsect2 id="G-TYPE-PARAM-CHAR:CAPS" role="macro">
+<title>G_TYPE_PARAM_CHAR</title>
+<indexterm zone="G-TYPE-PARAM-CHAR:CAPS"><primary>G_TYPE_PARAM_CHAR</primary></indexterm><programlisting>#define	G_TYPE_PARAM_CHAR		   (g_param_spec_types[0])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecChar"><type>GParamSpecChar</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecChar" role="struct"/>GParamSpecChar</title>
-<indexterm><primary>GParamSpecChar</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecChar" role="struct">
+<title>GParamSpecChar</title>
+<indexterm zone="GParamSpecChar"><primary>GParamSpecChar</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
   
   gint8         minimum;
@@ -603,9 +600,9 @@ A <link linkend="GParamSpec"><type>GParamSpec</type></link> derived structure th
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-char" role="function"/>g_param_spec_char ()</title>
-<indexterm><primary>g_param_spec_char</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_char                   (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-char" role="function">
+<title>g_param_spec_char ()</title>
+<indexterm zone="g-param-spec-char"><primary>g_param_spec_char</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_char                   (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="gint8">gint8</link> minimum,
@@ -641,9 +638,9 @@ Creates a new <link linkend="GParamSpecChar"><type>GParamSpecChar</type></link> 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-char" role="function"/>g_value_set_char ()</title>
-<indexterm><primary>g_value_set_char</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_char                    (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-char" role="function">
+<title>g_value_set_char ()</title>
+<indexterm zone="g-value-set-char"><primary>g_value_set_char</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_char                    (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gchar">gchar</link> v_char);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-CHAR:CAPS"><literal>G_TYPE_CHAR</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>v_char</parameter>.
@@ -657,9 +654,9 @@ Set the contents of a <link linkend="G-TYPE-CHAR:CAPS"><literal>G_TYPE_CHAR</lit
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-char" role="function"/>g_value_get_char ()</title>
-<indexterm><primary>g_value_get_char</primary></indexterm><programlisting><link linkend="gchar">gchar</link>               g_value_get_char                    (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-char" role="function">
+<title>g_value_get_char ()</title>
+<indexterm zone="g-value-get-char"><primary>g_value_get_char</primary></indexterm><programlisting><link linkend="gchar">gchar</link>               g_value_get_char                    (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-CHAR:CAPS"><literal>G_TYPE_CHAR</literal></link> <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -671,9 +668,9 @@ Get the contents of a <link linkend="G-TYPE-CHAR:CAPS"><literal>G_TYPE_CHAR</lit
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-UCHAR:CAPS" role="macro"/>G_IS_PARAM_SPEC_UCHAR()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_UCHAR</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_UCHAR(pspec)       (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_UCHAR))
+<refsect2 id="G-IS-PARAM-SPEC-UCHAR:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_UCHAR()</title>
+<indexterm zone="G-IS-PARAM-SPEC-UCHAR:CAPS"><primary>G_IS_PARAM_SPEC_UCHAR</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_UCHAR(pspec)       (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_UCHAR))
 </programlisting>
 <para>
 Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-UCHAR:CAPS"><literal>G_TYPE_PARAM_UCHAR</literal></link>.
@@ -684,9 +681,9 @@ Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></lin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-UCHAR:CAPS" role="macro"/>G_PARAM_SPEC_UCHAR()</title>
-<indexterm><primary>G_PARAM_SPEC_UCHAR</primary></indexterm><programlisting>#define G_PARAM_SPEC_UCHAR(pspec)          (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_UCHAR, GParamSpecUChar))
+<refsect2 id="G-PARAM-SPEC-UCHAR:CAPS" role="macro">
+<title>G_PARAM_SPEC_UCHAR()</title>
+<indexterm zone="G-PARAM-SPEC-UCHAR:CAPS"><primary>G_PARAM_SPEC_UCHAR</primary></indexterm><programlisting>#define G_PARAM_SPEC_UCHAR(pspec)          (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_UCHAR, GParamSpecUChar))
 </programlisting>
 <para>
 Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecUChar"><type>GParamSpecUChar</type></link>.
@@ -697,9 +694,9 @@ Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-UCHAR:CAPS" role="macro"/>G_VALUE_HOLDS_UCHAR()</title>
-<indexterm><primary>G_VALUE_HOLDS_UCHAR</primary></indexterm><programlisting>#define G_VALUE_HOLDS_UCHAR(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_UCHAR))
+<refsect2 id="G-VALUE-HOLDS-UCHAR:CAPS" role="macro">
+<title>G_VALUE_HOLDS_UCHAR()</title>
+<indexterm zone="G-VALUE-HOLDS-UCHAR:CAPS"><primary>G_VALUE_HOLDS_UCHAR</primary></indexterm><programlisting>#define G_VALUE_HOLDS_UCHAR(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_UCHAR))
 </programlisting>
 <para>
 Return whether the given <link linkend="GValue"><type>GValue</type></link> can hold values of type <link linkend="G-TYPE-UCHAR:CAPS"><literal>G_TYPE_UCHAR</literal></link>.
@@ -710,16 +707,16 @@ Return whether the given <link linkend="GValue"><type>GValue</type></link> can h
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-UCHAR:CAPS" role="macro"/>G_TYPE_PARAM_UCHAR</title>
-<indexterm><primary>G_TYPE_PARAM_UCHAR</primary></indexterm><programlisting>#define	G_TYPE_PARAM_UCHAR		   (g_param_spec_types[1])
+<refsect2 id="G-TYPE-PARAM-UCHAR:CAPS" role="macro">
+<title>G_TYPE_PARAM_UCHAR</title>
+<indexterm zone="G-TYPE-PARAM-UCHAR:CAPS"><primary>G_TYPE_PARAM_UCHAR</primary></indexterm><programlisting>#define	G_TYPE_PARAM_UCHAR		   (g_param_spec_types[1])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecUChar"><type>GParamSpecUChar</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecUChar" role="struct"/>GParamSpecUChar</title>
-<indexterm><primary>GParamSpecUChar</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecUChar" role="struct">
+<title>GParamSpecUChar</title>
+<indexterm zone="GParamSpecUChar"><primary>GParamSpecUChar</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
   
   guint8        minimum;
@@ -752,9 +749,9 @@ A <link linkend="GParamSpec"><type>GParamSpec</type></link> derived structure th
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-uchar" role="function"/>g_param_spec_uchar ()</title>
-<indexterm><primary>g_param_spec_uchar</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_uchar                  (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-uchar" role="function">
+<title>g_param_spec_uchar ()</title>
+<indexterm zone="g-param-spec-uchar"><primary>g_param_spec_uchar</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_uchar                  (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="guint8">guint8</link> minimum,
@@ -790,9 +787,9 @@ Creates a new <link linkend="GParamSpecUChar"><type>GParamSpecUChar</type></link
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-uchar" role="function"/>g_value_set_uchar ()</title>
-<indexterm><primary>g_value_set_uchar</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_uchar                   (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-uchar" role="function">
+<title>g_value_set_uchar ()</title>
+<indexterm zone="g-value-set-uchar"><primary>g_value_set_uchar</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_uchar                   (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="guchar">guchar</link> v_uchar);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-UCHAR:CAPS"><literal>G_TYPE_UCHAR</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>v_uchar</parameter>.
@@ -806,9 +803,9 @@ Set the contents of a <link linkend="G-TYPE-UCHAR:CAPS"><literal>G_TYPE_UCHAR</l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-uchar" role="function"/>g_value_get_uchar ()</title>
-<indexterm><primary>g_value_get_uchar</primary></indexterm><programlisting><link linkend="guchar">guchar</link>              g_value_get_uchar                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-uchar" role="function">
+<title>g_value_get_uchar ()</title>
+<indexterm zone="g-value-get-uchar"><primary>g_value_get_uchar</primary></indexterm><programlisting><link linkend="guchar">guchar</link>              g_value_get_uchar                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-UCHAR:CAPS"><literal>G_TYPE_UCHAR</literal></link> <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -820,9 +817,9 @@ Get the contents of a <link linkend="G-TYPE-UCHAR:CAPS"><literal>G_TYPE_UCHAR</l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-INT:CAPS" role="macro"/>G_IS_PARAM_SPEC_INT()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_INT</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_INT(pspec)         (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_INT))
+<refsect2 id="G-IS-PARAM-SPEC-INT:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_INT()</title>
+<indexterm zone="G-IS-PARAM-SPEC-INT:CAPS"><primary>G_IS_PARAM_SPEC_INT</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_INT(pspec)         (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_INT))
 </programlisting>
 <para>
 Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-INT:CAPS"><literal>G_TYPE_PARAM_INT</literal></link>.
@@ -833,9 +830,9 @@ Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></lin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-INT:CAPS" role="macro"/>G_PARAM_SPEC_INT()</title>
-<indexterm><primary>G_PARAM_SPEC_INT</primary></indexterm><programlisting>#define G_PARAM_SPEC_INT(pspec)            (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_INT, GParamSpecInt))
+<refsect2 id="G-PARAM-SPEC-INT:CAPS" role="macro">
+<title>G_PARAM_SPEC_INT()</title>
+<indexterm zone="G-PARAM-SPEC-INT:CAPS"><primary>G_PARAM_SPEC_INT</primary></indexterm><programlisting>#define G_PARAM_SPEC_INT(pspec)            (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_INT, GParamSpecInt))
 </programlisting>
 <para>
 Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecInt"><type>GParamSpecInt</type></link>.
@@ -846,9 +843,9 @@ Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-INT:CAPS" role="macro"/>G_VALUE_HOLDS_INT()</title>
-<indexterm><primary>G_VALUE_HOLDS_INT</primary></indexterm><programlisting>#define G_VALUE_HOLDS_INT(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_INT))
+<refsect2 id="G-VALUE-HOLDS-INT:CAPS" role="macro">
+<title>G_VALUE_HOLDS_INT()</title>
+<indexterm zone="G-VALUE-HOLDS-INT:CAPS"><primary>G_VALUE_HOLDS_INT</primary></indexterm><programlisting>#define G_VALUE_HOLDS_INT(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_INT))
 </programlisting>
 <para>
 Return whether the given <link linkend="GValue"><type>GValue</type></link> can hold values of type <link linkend="G-TYPE-INT:CAPS"><literal>G_TYPE_INT</literal></link>.
@@ -859,16 +856,16 @@ Return whether the given <link linkend="GValue"><type>GValue</type></link> can h
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-INT:CAPS" role="macro"/>G_TYPE_PARAM_INT</title>
-<indexterm><primary>G_TYPE_PARAM_INT</primary></indexterm><programlisting>#define	G_TYPE_PARAM_INT		   (g_param_spec_types[3])
+<refsect2 id="G-TYPE-PARAM-INT:CAPS" role="macro">
+<title>G_TYPE_PARAM_INT</title>
+<indexterm zone="G-TYPE-PARAM-INT:CAPS"><primary>G_TYPE_PARAM_INT</primary></indexterm><programlisting>#define	G_TYPE_PARAM_INT		   (g_param_spec_types[3])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecInt"><type>GParamSpecInt</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecInt" role="struct"/>GParamSpecInt</title>
-<indexterm><primary>GParamSpecInt</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecInt" role="struct">
+<title>GParamSpecInt</title>
+<indexterm zone="GParamSpecInt"><primary>GParamSpecInt</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
   
   gint          minimum;
@@ -901,9 +898,9 @@ A <link linkend="GParamSpec"><type>GParamSpec</type></link> derived structure th
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-int" role="function"/>g_param_spec_int ()</title>
-<indexterm><primary>g_param_spec_int</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_int                    (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-int" role="function">
+<title>g_param_spec_int ()</title>
+<indexterm zone="g-param-spec-int"><primary>g_param_spec_int</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_int                    (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="gint">gint</link> minimum,
@@ -942,9 +939,9 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-int" role="function"/>g_value_set_int ()</title>
-<indexterm><primary>g_value_set_int</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_int                     (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-int" role="function">
+<title>g_value_set_int ()</title>
+<indexterm zone="g-value-set-int"><primary>g_value_set_int</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_int                     (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gint">gint</link> v_int);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-INT:CAPS"><literal>G_TYPE_INT</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>v_int</parameter>.
@@ -958,9 +955,9 @@ Set the contents of a <link linkend="G-TYPE-INT:CAPS"><literal>G_TYPE_INT</liter
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-int" role="function"/>g_value_get_int ()</title>
-<indexterm><primary>g_value_get_int</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_value_get_int                     (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-int" role="function">
+<title>g_value_get_int ()</title>
+<indexterm zone="g-value-get-int"><primary>g_value_get_int</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_value_get_int                     (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-INT:CAPS"><literal>G_TYPE_INT</literal></link> <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -972,9 +969,9 @@ Get the contents of a <link linkend="G-TYPE-INT:CAPS"><literal>G_TYPE_INT</liter
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-UINT:CAPS" role="macro"/>G_IS_PARAM_SPEC_UINT()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_UINT</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_UINT(pspec)        (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_UINT))
+<refsect2 id="G-IS-PARAM-SPEC-UINT:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_UINT()</title>
+<indexterm zone="G-IS-PARAM-SPEC-UINT:CAPS"><primary>G_IS_PARAM_SPEC_UINT</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_UINT(pspec)        (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_UINT))
 </programlisting>
 <para>
 Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-UINT:CAPS"><literal>G_TYPE_PARAM_UINT</literal></link>.
@@ -985,9 +982,9 @@ Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></lin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-UINT:CAPS" role="macro"/>G_PARAM_SPEC_UINT()</title>
-<indexterm><primary>G_PARAM_SPEC_UINT</primary></indexterm><programlisting>#define G_PARAM_SPEC_UINT(pspec)           (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_UINT, GParamSpecUInt))
+<refsect2 id="G-PARAM-SPEC-UINT:CAPS" role="macro">
+<title>G_PARAM_SPEC_UINT()</title>
+<indexterm zone="G-PARAM-SPEC-UINT:CAPS"><primary>G_PARAM_SPEC_UINT</primary></indexterm><programlisting>#define G_PARAM_SPEC_UINT(pspec)           (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_UINT, GParamSpecUInt))
 </programlisting>
 <para>
 Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecUInt"><type>GParamSpecUInt</type></link>.
@@ -998,9 +995,9 @@ Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-UINT:CAPS" role="macro"/>G_VALUE_HOLDS_UINT()</title>
-<indexterm><primary>G_VALUE_HOLDS_UINT</primary></indexterm><programlisting>#define G_VALUE_HOLDS_UINT(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_UINT))
+<refsect2 id="G-VALUE-HOLDS-UINT:CAPS" role="macro">
+<title>G_VALUE_HOLDS_UINT()</title>
+<indexterm zone="G-VALUE-HOLDS-UINT:CAPS"><primary>G_VALUE_HOLDS_UINT</primary></indexterm><programlisting>#define G_VALUE_HOLDS_UINT(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_UINT))
 </programlisting>
 <para>
 Return whether the given <link linkend="GValue"><type>GValue</type></link> can hold values of type <link linkend="G-TYPE-UINT:CAPS"><literal>G_TYPE_UINT</literal></link>.
@@ -1011,16 +1008,16 @@ Return whether the given <link linkend="GValue"><type>GValue</type></link> can h
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-UINT:CAPS" role="macro"/>G_TYPE_PARAM_UINT</title>
-<indexterm><primary>G_TYPE_PARAM_UINT</primary></indexterm><programlisting>#define	G_TYPE_PARAM_UINT		   (g_param_spec_types[4])
+<refsect2 id="G-TYPE-PARAM-UINT:CAPS" role="macro">
+<title>G_TYPE_PARAM_UINT</title>
+<indexterm zone="G-TYPE-PARAM-UINT:CAPS"><primary>G_TYPE_PARAM_UINT</primary></indexterm><programlisting>#define	G_TYPE_PARAM_UINT		   (g_param_spec_types[4])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecUInt"><type>GParamSpecUInt</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecUInt" role="struct"/>GParamSpecUInt</title>
-<indexterm><primary>GParamSpecUInt</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecUInt" role="struct">
+<title>GParamSpecUInt</title>
+<indexterm zone="GParamSpecUInt"><primary>GParamSpecUInt</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
   
   guint         minimum;
@@ -1053,9 +1050,9 @@ A <link linkend="GParamSpec"><type>GParamSpec</type></link> derived structure th
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-uint" role="function"/>g_param_spec_uint ()</title>
-<indexterm><primary>g_param_spec_uint</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_uint                   (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-uint" role="function">
+<title>g_param_spec_uint ()</title>
+<indexterm zone="g-param-spec-uint"><primary>g_param_spec_uint</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_uint                   (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="guint">guint</link> minimum,
@@ -1094,9 +1091,9 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-uint" role="function"/>g_value_set_uint ()</title>
-<indexterm><primary>g_value_set_uint</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_uint                    (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-uint" role="function">
+<title>g_value_set_uint ()</title>
+<indexterm zone="g-value-set-uint"><primary>g_value_set_uint</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_uint                    (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="guint">guint</link> v_uint);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-UINT:CAPS"><literal>G_TYPE_UINT</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>v_uint</parameter>.
@@ -1110,9 +1107,9 @@ Set the contents of a <link linkend="G-TYPE-UINT:CAPS"><literal>G_TYPE_UINT</lit
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-uint" role="function"/>g_value_get_uint ()</title>
-<indexterm><primary>g_value_get_uint</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_value_get_uint                    (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-uint" role="function">
+<title>g_value_get_uint ()</title>
+<indexterm zone="g-value-get-uint"><primary>g_value_get_uint</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_value_get_uint                    (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-UINT:CAPS"><literal>G_TYPE_UINT</literal></link> <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -1124,9 +1121,9 @@ Get the contents of a <link linkend="G-TYPE-UINT:CAPS"><literal>G_TYPE_UINT</lit
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-LONG:CAPS" role="macro"/>G_IS_PARAM_SPEC_LONG()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_LONG</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_LONG(pspec)        (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_LONG))
+<refsect2 id="G-IS-PARAM-SPEC-LONG:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_LONG()</title>
+<indexterm zone="G-IS-PARAM-SPEC-LONG:CAPS"><primary>G_IS_PARAM_SPEC_LONG</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_LONG(pspec)        (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_LONG))
 </programlisting>
 <para>
 Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-LONG:CAPS"><literal>G_TYPE_PARAM_LONG</literal></link>.
@@ -1137,9 +1134,9 @@ Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></lin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-LONG:CAPS" role="macro"/>G_PARAM_SPEC_LONG()</title>
-<indexterm><primary>G_PARAM_SPEC_LONG</primary></indexterm><programlisting>#define G_PARAM_SPEC_LONG(pspec)           (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_LONG, GParamSpecLong))
+<refsect2 id="G-PARAM-SPEC-LONG:CAPS" role="macro">
+<title>G_PARAM_SPEC_LONG()</title>
+<indexterm zone="G-PARAM-SPEC-LONG:CAPS"><primary>G_PARAM_SPEC_LONG</primary></indexterm><programlisting>#define G_PARAM_SPEC_LONG(pspec)           (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_LONG, GParamSpecLong))
 </programlisting>
 <para>
 Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecLong"><type>GParamSpecLong</type></link>.
@@ -1150,9 +1147,9 @@ Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-LONG:CAPS" role="macro"/>G_VALUE_HOLDS_LONG()</title>
-<indexterm><primary>G_VALUE_HOLDS_LONG</primary></indexterm><programlisting>#define G_VALUE_HOLDS_LONG(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_LONG))
+<refsect2 id="G-VALUE-HOLDS-LONG:CAPS" role="macro">
+<title>G_VALUE_HOLDS_LONG()</title>
+<indexterm zone="G-VALUE-HOLDS-LONG:CAPS"><primary>G_VALUE_HOLDS_LONG</primary></indexterm><programlisting>#define G_VALUE_HOLDS_LONG(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_LONG))
 </programlisting>
 <para>
 Return whether the given <link linkend="GValue"><type>GValue</type></link> can hold values of type <link linkend="G-TYPE-LONG:CAPS"><literal>G_TYPE_LONG</literal></link>.
@@ -1163,16 +1160,16 @@ Return whether the given <link linkend="GValue"><type>GValue</type></link> can h
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-LONG:CAPS" role="macro"/>G_TYPE_PARAM_LONG</title>
-<indexterm><primary>G_TYPE_PARAM_LONG</primary></indexterm><programlisting>#define	G_TYPE_PARAM_LONG		   (g_param_spec_types[5])
+<refsect2 id="G-TYPE-PARAM-LONG:CAPS" role="macro">
+<title>G_TYPE_PARAM_LONG</title>
+<indexterm zone="G-TYPE-PARAM-LONG:CAPS"><primary>G_TYPE_PARAM_LONG</primary></indexterm><programlisting>#define	G_TYPE_PARAM_LONG		   (g_param_spec_types[5])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecLong"><type>GParamSpecLong</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecLong" role="struct"/>GParamSpecLong</title>
-<indexterm><primary>GParamSpecLong</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecLong" role="struct">
+<title>GParamSpecLong</title>
+<indexterm zone="GParamSpecLong"><primary>GParamSpecLong</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
   
   glong         minimum;
@@ -1205,9 +1202,9 @@ A <link linkend="GParamSpec"><type>GParamSpec</type></link> derived structure th
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-long" role="function"/>g_param_spec_long ()</title>
-<indexterm><primary>g_param_spec_long</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_long                   (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-long" role="function">
+<title>g_param_spec_long ()</title>
+<indexterm zone="g-param-spec-long"><primary>g_param_spec_long</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_long                   (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="glong">glong</link> minimum,
@@ -1246,9 +1243,9 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-long" role="function"/>g_value_set_long ()</title>
-<indexterm><primary>g_value_set_long</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_long                    (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-long" role="function">
+<title>g_value_set_long ()</title>
+<indexterm zone="g-value-set-long"><primary>g_value_set_long</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_long                    (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="glong">glong</link> v_long);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-LONG:CAPS"><literal>G_TYPE_LONG</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>v_long</parameter>.
@@ -1262,9 +1259,9 @@ Set the contents of a <link linkend="G-TYPE-LONG:CAPS"><literal>G_TYPE_LONG</lit
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-long" role="function"/>g_value_get_long ()</title>
-<indexterm><primary>g_value_get_long</primary></indexterm><programlisting><link linkend="glong">glong</link>               g_value_get_long                    (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-long" role="function">
+<title>g_value_get_long ()</title>
+<indexterm zone="g-value-get-long"><primary>g_value_get_long</primary></indexterm><programlisting><link linkend="glong">glong</link>               g_value_get_long                    (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-LONG:CAPS"><literal>G_TYPE_LONG</literal></link> <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -1276,9 +1273,9 @@ Get the contents of a <link linkend="G-TYPE-LONG:CAPS"><literal>G_TYPE_LONG</lit
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-ULONG:CAPS" role="macro"/>G_IS_PARAM_SPEC_ULONG()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_ULONG</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_ULONG(pspec)       (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_ULONG))
+<refsect2 id="G-IS-PARAM-SPEC-ULONG:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_ULONG()</title>
+<indexterm zone="G-IS-PARAM-SPEC-ULONG:CAPS"><primary>G_IS_PARAM_SPEC_ULONG</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_ULONG(pspec)       (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_ULONG))
 </programlisting>
 <para>
 Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-ULONG:CAPS"><literal>G_TYPE_PARAM_ULONG</literal></link>.
@@ -1289,9 +1286,9 @@ Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></lin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-ULONG:CAPS" role="macro"/>G_PARAM_SPEC_ULONG()</title>
-<indexterm><primary>G_PARAM_SPEC_ULONG</primary></indexterm><programlisting>#define G_PARAM_SPEC_ULONG(pspec)          (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_ULONG, GParamSpecULong))
+<refsect2 id="G-PARAM-SPEC-ULONG:CAPS" role="macro">
+<title>G_PARAM_SPEC_ULONG()</title>
+<indexterm zone="G-PARAM-SPEC-ULONG:CAPS"><primary>G_PARAM_SPEC_ULONG</primary></indexterm><programlisting>#define G_PARAM_SPEC_ULONG(pspec)          (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_ULONG, GParamSpecULong))
 </programlisting>
 <para>
 Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecULong"><type>GParamSpecULong</type></link>.
@@ -1302,9 +1299,9 @@ Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-ULONG:CAPS" role="macro"/>G_VALUE_HOLDS_ULONG()</title>
-<indexterm><primary>G_VALUE_HOLDS_ULONG</primary></indexterm><programlisting>#define G_VALUE_HOLDS_ULONG(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_ULONG))
+<refsect2 id="G-VALUE-HOLDS-ULONG:CAPS" role="macro">
+<title>G_VALUE_HOLDS_ULONG()</title>
+<indexterm zone="G-VALUE-HOLDS-ULONG:CAPS"><primary>G_VALUE_HOLDS_ULONG</primary></indexterm><programlisting>#define G_VALUE_HOLDS_ULONG(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_ULONG))
 </programlisting>
 <para>
 Return whether the given <link linkend="GValue"><type>GValue</type></link> can hold values of type <link linkend="G-TYPE-ULONG:CAPS"><literal>G_TYPE_ULONG</literal></link>.
@@ -1315,16 +1312,16 @@ Return whether the given <link linkend="GValue"><type>GValue</type></link> can h
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-ULONG:CAPS" role="macro"/>G_TYPE_PARAM_ULONG</title>
-<indexterm><primary>G_TYPE_PARAM_ULONG</primary></indexterm><programlisting>#define	G_TYPE_PARAM_ULONG		   (g_param_spec_types[6])
+<refsect2 id="G-TYPE-PARAM-ULONG:CAPS" role="macro">
+<title>G_TYPE_PARAM_ULONG</title>
+<indexterm zone="G-TYPE-PARAM-ULONG:CAPS"><primary>G_TYPE_PARAM_ULONG</primary></indexterm><programlisting>#define	G_TYPE_PARAM_ULONG		   (g_param_spec_types[6])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecULong"><type>GParamSpecULong</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecULong" role="struct"/>GParamSpecULong</title>
-<indexterm><primary>GParamSpecULong</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecULong" role="struct">
+<title>GParamSpecULong</title>
+<indexterm zone="GParamSpecULong"><primary>GParamSpecULong</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
   
   gulong        minimum;
@@ -1357,9 +1354,9 @@ A <link linkend="GParamSpec"><type>GParamSpec</type></link> derived structure th
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-ulong" role="function"/>g_param_spec_ulong ()</title>
-<indexterm><primary>g_param_spec_ulong</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_ulong                  (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-ulong" role="function">
+<title>g_param_spec_ulong ()</title>
+<indexterm zone="g-param-spec-ulong"><primary>g_param_spec_ulong</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_ulong                  (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="gulong">gulong</link> minimum,
@@ -1398,9 +1395,9 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-ulong" role="function"/>g_value_set_ulong ()</title>
-<indexterm><primary>g_value_set_ulong</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_ulong                   (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-ulong" role="function">
+<title>g_value_set_ulong ()</title>
+<indexterm zone="g-value-set-ulong"><primary>g_value_set_ulong</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_ulong                   (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gulong">gulong</link> v_ulong);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-ULONG:CAPS"><literal>G_TYPE_ULONG</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>v_ulong</parameter>.
@@ -1414,9 +1411,9 @@ Set the contents of a <link linkend="G-TYPE-ULONG:CAPS"><literal>G_TYPE_ULONG</l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-ulong" role="function"/>g_value_get_ulong ()</title>
-<indexterm><primary>g_value_get_ulong</primary></indexterm><programlisting><link linkend="gulong">gulong</link>              g_value_get_ulong                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-ulong" role="function">
+<title>g_value_get_ulong ()</title>
+<indexterm zone="g-value-get-ulong"><primary>g_value_get_ulong</primary></indexterm><programlisting><link linkend="gulong">gulong</link>              g_value_get_ulong                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-ULONG:CAPS"><literal>G_TYPE_ULONG</literal></link> <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -1428,9 +1425,9 @@ Get the contents of a <link linkend="G-TYPE-ULONG:CAPS"><literal>G_TYPE_ULONG</l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-INT64:CAPS" role="macro"/>G_IS_PARAM_SPEC_INT64()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_INT64</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_INT64(pspec)       (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_INT64))
+<refsect2 id="G-IS-PARAM-SPEC-INT64:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_INT64()</title>
+<indexterm zone="G-IS-PARAM-SPEC-INT64:CAPS"><primary>G_IS_PARAM_SPEC_INT64</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_INT64(pspec)       (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_INT64))
 </programlisting>
 <para>
 Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-INT64:CAPS"><literal>G_TYPE_PARAM_INT64</literal></link>.
@@ -1441,9 +1438,9 @@ Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></lin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-INT64:CAPS" role="macro"/>G_PARAM_SPEC_INT64()</title>
-<indexterm><primary>G_PARAM_SPEC_INT64</primary></indexterm><programlisting>#define G_PARAM_SPEC_INT64(pspec)          (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_INT64, GParamSpecInt64))
+<refsect2 id="G-PARAM-SPEC-INT64:CAPS" role="macro">
+<title>G_PARAM_SPEC_INT64()</title>
+<indexterm zone="G-PARAM-SPEC-INT64:CAPS"><primary>G_PARAM_SPEC_INT64</primary></indexterm><programlisting>#define G_PARAM_SPEC_INT64(pspec)          (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_INT64, GParamSpecInt64))
 </programlisting>
 <para>
 Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecInt64"><type>GParamSpecInt64</type></link>.
@@ -1454,9 +1451,9 @@ Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-INT64:CAPS" role="macro"/>G_VALUE_HOLDS_INT64()</title>
-<indexterm><primary>G_VALUE_HOLDS_INT64</primary></indexterm><programlisting>#define G_VALUE_HOLDS_INT64(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_INT64))
+<refsect2 id="G-VALUE-HOLDS-INT64:CAPS" role="macro">
+<title>G_VALUE_HOLDS_INT64()</title>
+<indexterm zone="G-VALUE-HOLDS-INT64:CAPS"><primary>G_VALUE_HOLDS_INT64</primary></indexterm><programlisting>#define G_VALUE_HOLDS_INT64(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_INT64))
 </programlisting>
 <para>
 Return whether the given <link linkend="GValue"><type>GValue</type></link> can hold values of type <link linkend="G-TYPE-INT64:CAPS"><literal>G_TYPE_INT64</literal></link>.
@@ -1467,16 +1464,16 @@ Return whether the given <link linkend="GValue"><type>GValue</type></link> can h
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-INT64:CAPS" role="macro"/>G_TYPE_PARAM_INT64</title>
-<indexterm><primary>G_TYPE_PARAM_INT64</primary></indexterm><programlisting>#define	G_TYPE_PARAM_INT64		   (g_param_spec_types[7])
+<refsect2 id="G-TYPE-PARAM-INT64:CAPS" role="macro">
+<title>G_TYPE_PARAM_INT64</title>
+<indexterm zone="G-TYPE-PARAM-INT64:CAPS"><primary>G_TYPE_PARAM_INT64</primary></indexterm><programlisting>#define	G_TYPE_PARAM_INT64		   (g_param_spec_types[7])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecInt64"><type>GParamSpecInt64</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecInt64" role="struct"/>GParamSpecInt64</title>
-<indexterm><primary>GParamSpecInt64</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecInt64" role="struct">
+<title>GParamSpecInt64</title>
+<indexterm zone="GParamSpecInt64"><primary>GParamSpecInt64</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
   
   gint64        minimum;
@@ -1509,9 +1506,9 @@ A <link linkend="GParamSpec"><type>GParamSpec</type></link> derived structure th
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-int64" role="function"/>g_param_spec_int64 ()</title>
-<indexterm><primary>g_param_spec_int64</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_int64                  (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-int64" role="function">
+<title>g_param_spec_int64 ()</title>
+<indexterm zone="g-param-spec-int64"><primary>g_param_spec_int64</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_int64                  (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="gint64">gint64</link> minimum,
@@ -1550,9 +1547,9 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-int64" role="function"/>g_value_set_int64 ()</title>
-<indexterm><primary>g_value_set_int64</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_int64                   (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-int64" role="function">
+<title>g_value_set_int64 ()</title>
+<indexterm zone="g-value-set-int64"><primary>g_value_set_int64</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_int64                   (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gint64">gint64</link> v_int64);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-INT64:CAPS"><literal>G_TYPE_INT64</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>v_int64</parameter>.
@@ -1566,9 +1563,9 @@ Set the contents of a <link linkend="G-TYPE-INT64:CAPS"><literal>G_TYPE_INT64</l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-int64" role="function"/>g_value_get_int64 ()</title>
-<indexterm><primary>g_value_get_int64</primary></indexterm><programlisting><link linkend="gint64">gint64</link>              g_value_get_int64                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-int64" role="function">
+<title>g_value_get_int64 ()</title>
+<indexterm zone="g-value-get-int64"><primary>g_value_get_int64</primary></indexterm><programlisting><link linkend="gint64">gint64</link>              g_value_get_int64                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-INT64:CAPS"><literal>G_TYPE_INT64</literal></link> <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -1580,9 +1577,9 @@ Get the contents of a <link linkend="G-TYPE-INT64:CAPS"><literal>G_TYPE_INT64</l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-UINT64:CAPS" role="macro"/>G_IS_PARAM_SPEC_UINT64()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_UINT64</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_UINT64(pspec)      (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_UINT64))
+<refsect2 id="G-IS-PARAM-SPEC-UINT64:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_UINT64()</title>
+<indexterm zone="G-IS-PARAM-SPEC-UINT64:CAPS"><primary>G_IS_PARAM_SPEC_UINT64</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_UINT64(pspec)      (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_UINT64))
 </programlisting>
 <para>
 Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-UINT64:CAPS"><literal>G_TYPE_PARAM_UINT64</literal></link>.
@@ -1593,9 +1590,9 @@ Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></lin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-UINT64:CAPS" role="macro"/>G_PARAM_SPEC_UINT64()</title>
-<indexterm><primary>G_PARAM_SPEC_UINT64</primary></indexterm><programlisting>#define G_PARAM_SPEC_UINT64(pspec)         (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_UINT64, GParamSpecUInt64))
+<refsect2 id="G-PARAM-SPEC-UINT64:CAPS" role="macro">
+<title>G_PARAM_SPEC_UINT64()</title>
+<indexterm zone="G-PARAM-SPEC-UINT64:CAPS"><primary>G_PARAM_SPEC_UINT64</primary></indexterm><programlisting>#define G_PARAM_SPEC_UINT64(pspec)         (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_UINT64, GParamSpecUInt64))
 </programlisting>
 <para>
 Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecUInt64"><type>GParamSpecUInt64</type></link>.
@@ -1606,9 +1603,9 @@ Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-UINT64:CAPS" role="macro"/>G_VALUE_HOLDS_UINT64()</title>
-<indexterm><primary>G_VALUE_HOLDS_UINT64</primary></indexterm><programlisting>#define G_VALUE_HOLDS_UINT64(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_UINT64))
+<refsect2 id="G-VALUE-HOLDS-UINT64:CAPS" role="macro">
+<title>G_VALUE_HOLDS_UINT64()</title>
+<indexterm zone="G-VALUE-HOLDS-UINT64:CAPS"><primary>G_VALUE_HOLDS_UINT64</primary></indexterm><programlisting>#define G_VALUE_HOLDS_UINT64(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_UINT64))
 </programlisting>
 <para>
 Return whether the given <link linkend="GValue"><type>GValue</type></link> can hold values of type <link linkend="G-TYPE-UINT64:CAPS"><literal>G_TYPE_UINT64</literal></link>.
@@ -1619,16 +1616,16 @@ Return whether the given <link linkend="GValue"><type>GValue</type></link> can h
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-UINT64:CAPS" role="macro"/>G_TYPE_PARAM_UINT64</title>
-<indexterm><primary>G_TYPE_PARAM_UINT64</primary></indexterm><programlisting>#define	G_TYPE_PARAM_UINT64		   (g_param_spec_types[8])
+<refsect2 id="G-TYPE-PARAM-UINT64:CAPS" role="macro">
+<title>G_TYPE_PARAM_UINT64</title>
+<indexterm zone="G-TYPE-PARAM-UINT64:CAPS"><primary>G_TYPE_PARAM_UINT64</primary></indexterm><programlisting>#define	G_TYPE_PARAM_UINT64		   (g_param_spec_types[8])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecUInt64"><type>GParamSpecUInt64</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecUInt64" role="struct"/>GParamSpecUInt64</title>
-<indexterm><primary>GParamSpecUInt64</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecUInt64" role="struct">
+<title>GParamSpecUInt64</title>
+<indexterm zone="GParamSpecUInt64"><primary>GParamSpecUInt64</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
   
   guint64       minimum;
@@ -1661,9 +1658,9 @@ A <link linkend="GParamSpec"><type>GParamSpec</type></link> derived structure th
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-uint64" role="function"/>g_param_spec_uint64 ()</title>
-<indexterm><primary>g_param_spec_uint64</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_uint64                 (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-uint64" role="function">
+<title>g_param_spec_uint64 ()</title>
+<indexterm zone="g-param-spec-uint64"><primary>g_param_spec_uint64</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_uint64                 (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="guint64">guint64</link> minimum,
@@ -1703,9 +1700,9 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-uint64" role="function"/>g_value_set_uint64 ()</title>
-<indexterm><primary>g_value_set_uint64</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_uint64                  (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-uint64" role="function">
+<title>g_value_set_uint64 ()</title>
+<indexterm zone="g-value-set-uint64"><primary>g_value_set_uint64</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_uint64                  (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="guint64">guint64</link> v_uint64);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-UINT64:CAPS"><literal>G_TYPE_UINT64</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>v_uint64</parameter>.
@@ -1719,9 +1716,9 @@ Set the contents of a <link linkend="G-TYPE-UINT64:CAPS"><literal>G_TYPE_UINT64<
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-uint64" role="function"/>g_value_get_uint64 ()</title>
-<indexterm><primary>g_value_get_uint64</primary></indexterm><programlisting><link linkend="guint64">guint64</link>             g_value_get_uint64                  (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-uint64" role="function">
+<title>g_value_get_uint64 ()</title>
+<indexterm zone="g-value-get-uint64"><primary>g_value_get_uint64</primary></indexterm><programlisting><link linkend="guint64">guint64</link>             g_value_get_uint64                  (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-UINT64:CAPS"><literal>G_TYPE_UINT64</literal></link> <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -1733,9 +1730,9 @@ Get the contents of a <link linkend="G-TYPE-UINT64:CAPS"><literal>G_TYPE_UINT64<
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-FLOAT:CAPS" role="macro"/>G_IS_PARAM_SPEC_FLOAT()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_FLOAT</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_FLOAT(pspec)       (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_FLOAT))
+<refsect2 id="G-IS-PARAM-SPEC-FLOAT:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_FLOAT()</title>
+<indexterm zone="G-IS-PARAM-SPEC-FLOAT:CAPS"><primary>G_IS_PARAM_SPEC_FLOAT</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_FLOAT(pspec)       (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_FLOAT))
 </programlisting>
 <para>
 Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-FLOAT:CAPS"><literal>G_TYPE_PARAM_FLOAT</literal></link>.
@@ -1746,9 +1743,9 @@ Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></lin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-FLOAT:CAPS" role="macro"/>G_PARAM_SPEC_FLOAT()</title>
-<indexterm><primary>G_PARAM_SPEC_FLOAT</primary></indexterm><programlisting>#define G_PARAM_SPEC_FLOAT(pspec)          (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_FLOAT, GParamSpecFloat))
+<refsect2 id="G-PARAM-SPEC-FLOAT:CAPS" role="macro">
+<title>G_PARAM_SPEC_FLOAT()</title>
+<indexterm zone="G-PARAM-SPEC-FLOAT:CAPS"><primary>G_PARAM_SPEC_FLOAT</primary></indexterm><programlisting>#define G_PARAM_SPEC_FLOAT(pspec)          (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_FLOAT, GParamSpecFloat))
 </programlisting>
 <para>
 Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecFloat"><type>GParamSpecFloat</type></link>.
@@ -1759,9 +1756,9 @@ Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-FLOAT:CAPS" role="macro"/>G_VALUE_HOLDS_FLOAT()</title>
-<indexterm><primary>G_VALUE_HOLDS_FLOAT</primary></indexterm><programlisting>#define G_VALUE_HOLDS_FLOAT(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_FLOAT))
+<refsect2 id="G-VALUE-HOLDS-FLOAT:CAPS" role="macro">
+<title>G_VALUE_HOLDS_FLOAT()</title>
+<indexterm zone="G-VALUE-HOLDS-FLOAT:CAPS"><primary>G_VALUE_HOLDS_FLOAT</primary></indexterm><programlisting>#define G_VALUE_HOLDS_FLOAT(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_FLOAT))
 </programlisting>
 <para>
 Return whether the given <link linkend="GValue"><type>GValue</type></link> can hold values of type <link linkend="G-TYPE-FLOAT:CAPS"><literal>G_TYPE_FLOAT</literal></link>.
@@ -1772,16 +1769,16 @@ Return whether the given <link linkend="GValue"><type>GValue</type></link> can h
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-FLOAT:CAPS" role="macro"/>G_TYPE_PARAM_FLOAT</title>
-<indexterm><primary>G_TYPE_PARAM_FLOAT</primary></indexterm><programlisting>#define	G_TYPE_PARAM_FLOAT		   (g_param_spec_types[12])
+<refsect2 id="G-TYPE-PARAM-FLOAT:CAPS" role="macro">
+<title>G_TYPE_PARAM_FLOAT</title>
+<indexterm zone="G-TYPE-PARAM-FLOAT:CAPS"><primary>G_TYPE_PARAM_FLOAT</primary></indexterm><programlisting>#define	G_TYPE_PARAM_FLOAT		   (g_param_spec_types[12])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecFloat"><type>GParamSpecFloat</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecFloat" role="struct"/>GParamSpecFloat</title>
-<indexterm><primary>GParamSpecFloat</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecFloat" role="struct">
+<title>GParamSpecFloat</title>
+<indexterm zone="GParamSpecFloat"><primary>GParamSpecFloat</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
   
   gfloat        minimum;
@@ -1821,9 +1818,9 @@ A <link linkend="GParamSpec"><type>GParamSpec</type></link> derived structure th
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-float" role="function"/>g_param_spec_float ()</title>
-<indexterm><primary>g_param_spec_float</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_float                  (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-float" role="function">
+<title>g_param_spec_float ()</title>
+<indexterm zone="g-param-spec-float"><primary>g_param_spec_float</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_float                  (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="gfloat">gfloat</link> minimum,
@@ -1862,9 +1859,9 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-float" role="function"/>g_value_set_float ()</title>
-<indexterm><primary>g_value_set_float</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_float                   (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-float" role="function">
+<title>g_value_set_float ()</title>
+<indexterm zone="g-value-set-float"><primary>g_value_set_float</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_float                   (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gfloat">gfloat</link> v_float);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-FLOAT:CAPS"><literal>G_TYPE_FLOAT</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>v_float</parameter>.
@@ -1878,9 +1875,9 @@ Set the contents of a <link linkend="G-TYPE-FLOAT:CAPS"><literal>G_TYPE_FLOAT</l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-float" role="function"/>g_value_get_float ()</title>
-<indexterm><primary>g_value_get_float</primary></indexterm><programlisting><link linkend="gfloat">gfloat</link>              g_value_get_float                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-float" role="function">
+<title>g_value_get_float ()</title>
+<indexterm zone="g-value-get-float"><primary>g_value_get_float</primary></indexterm><programlisting><link linkend="gfloat">gfloat</link>              g_value_get_float                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-FLOAT:CAPS"><literal>G_TYPE_FLOAT</literal></link> <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -1892,9 +1889,9 @@ Get the contents of a <link linkend="G-TYPE-FLOAT:CAPS"><literal>G_TYPE_FLOAT</l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-DOUBLE:CAPS" role="macro"/>G_IS_PARAM_SPEC_DOUBLE()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_DOUBLE</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_DOUBLE(pspec)      (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_DOUBLE))
+<refsect2 id="G-IS-PARAM-SPEC-DOUBLE:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_DOUBLE()</title>
+<indexterm zone="G-IS-PARAM-SPEC-DOUBLE:CAPS"><primary>G_IS_PARAM_SPEC_DOUBLE</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_DOUBLE(pspec)      (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_DOUBLE))
 </programlisting>
 <para>
 Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-DOUBLE:CAPS"><literal>G_TYPE_PARAM_DOUBLE</literal></link>.
@@ -1905,9 +1902,9 @@ Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></lin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-DOUBLE:CAPS" role="macro"/>G_PARAM_SPEC_DOUBLE()</title>
-<indexterm><primary>G_PARAM_SPEC_DOUBLE</primary></indexterm><programlisting>#define G_PARAM_SPEC_DOUBLE(pspec)         (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_DOUBLE, GParamSpecDouble))
+<refsect2 id="G-PARAM-SPEC-DOUBLE:CAPS" role="macro">
+<title>G_PARAM_SPEC_DOUBLE()</title>
+<indexterm zone="G-PARAM-SPEC-DOUBLE:CAPS"><primary>G_PARAM_SPEC_DOUBLE</primary></indexterm><programlisting>#define G_PARAM_SPEC_DOUBLE(pspec)         (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_DOUBLE, GParamSpecDouble))
 </programlisting>
 <para>
 Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecDouble"><type>GParamSpecDouble</type></link>.
@@ -1918,9 +1915,9 @@ Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-DOUBLE:CAPS" role="macro"/>G_VALUE_HOLDS_DOUBLE()</title>
-<indexterm><primary>G_VALUE_HOLDS_DOUBLE</primary></indexterm><programlisting>#define G_VALUE_HOLDS_DOUBLE(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_DOUBLE))
+<refsect2 id="G-VALUE-HOLDS-DOUBLE:CAPS" role="macro">
+<title>G_VALUE_HOLDS_DOUBLE()</title>
+<indexterm zone="G-VALUE-HOLDS-DOUBLE:CAPS"><primary>G_VALUE_HOLDS_DOUBLE</primary></indexterm><programlisting>#define G_VALUE_HOLDS_DOUBLE(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_DOUBLE))
 </programlisting>
 <para>
 Return whether the given <link linkend="GValue"><type>GValue</type></link> can hold values of type <link linkend="G-TYPE-DOUBLE:CAPS"><literal>G_TYPE_DOUBLE</literal></link>.
@@ -1931,16 +1928,16 @@ Return whether the given <link linkend="GValue"><type>GValue</type></link> can h
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-DOUBLE:CAPS" role="macro"/>G_TYPE_PARAM_DOUBLE</title>
-<indexterm><primary>G_TYPE_PARAM_DOUBLE</primary></indexterm><programlisting>#define	G_TYPE_PARAM_DOUBLE		   (g_param_spec_types[13])
+<refsect2 id="G-TYPE-PARAM-DOUBLE:CAPS" role="macro">
+<title>G_TYPE_PARAM_DOUBLE</title>
+<indexterm zone="G-TYPE-PARAM-DOUBLE:CAPS"><primary>G_TYPE_PARAM_DOUBLE</primary></indexterm><programlisting>#define	G_TYPE_PARAM_DOUBLE		   (g_param_spec_types[13])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecDouble"><type>GParamSpecDouble</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecDouble" role="struct"/>GParamSpecDouble</title>
-<indexterm><primary>GParamSpecDouble</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecDouble" role="struct">
+<title>GParamSpecDouble</title>
+<indexterm zone="GParamSpecDouble"><primary>GParamSpecDouble</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
   
   gdouble       minimum;
@@ -1980,9 +1977,9 @@ A <link linkend="GParamSpec"><type>GParamSpec</type></link> derived structure th
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-double" role="function"/>g_param_spec_double ()</title>
-<indexterm><primary>g_param_spec_double</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_double                 (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-double" role="function">
+<title>g_param_spec_double ()</title>
+<indexterm zone="g-param-spec-double"><primary>g_param_spec_double</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_double                 (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="gdouble">gdouble</link> minimum,
@@ -2022,9 +2019,9 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-double" role="function"/>g_value_set_double ()</title>
-<indexterm><primary>g_value_set_double</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_double                  (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-double" role="function">
+<title>g_value_set_double ()</title>
+<indexterm zone="g-value-set-double"><primary>g_value_set_double</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_double                  (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gdouble">gdouble</link> v_double);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-DOUBLE:CAPS"><literal>G_TYPE_DOUBLE</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>v_double</parameter>.
@@ -2038,9 +2035,9 @@ Set the contents of a <link linkend="G-TYPE-DOUBLE:CAPS"><literal>G_TYPE_DOUBLE<
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-double" role="function"/>g_value_get_double ()</title>
-<indexterm><primary>g_value_get_double</primary></indexterm><programlisting><link linkend="gdouble">gdouble</link>             g_value_get_double                  (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-double" role="function">
+<title>g_value_get_double ()</title>
+<indexterm zone="g-value-get-double"><primary>g_value_get_double</primary></indexterm><programlisting><link linkend="gdouble">gdouble</link>             g_value_get_double                  (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-DOUBLE:CAPS"><literal>G_TYPE_DOUBLE</literal></link> <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -2052,9 +2049,9 @@ Get the contents of a <link linkend="G-TYPE-DOUBLE:CAPS"><literal>G_TYPE_DOUBLE<
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-ENUM:CAPS" role="macro"/>G_IS_PARAM_SPEC_ENUM()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_ENUM</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_ENUM(pspec)        (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_ENUM))
+<refsect2 id="G-IS-PARAM-SPEC-ENUM:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_ENUM()</title>
+<indexterm zone="G-IS-PARAM-SPEC-ENUM:CAPS"><primary>G_IS_PARAM_SPEC_ENUM</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_ENUM(pspec)        (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_ENUM))
 </programlisting>
 <para>
 Returns whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-ENUM:CAPS"><literal>G_TYPE_PARAM_ENUM</literal></link>.
@@ -2065,9 +2062,9 @@ Returns whether the given <link linkend="GParamSpec"><type>GParamSpec</type></li
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-ENUM:CAPS" role="macro"/>G_PARAM_SPEC_ENUM()</title>
-<indexterm><primary>G_PARAM_SPEC_ENUM</primary></indexterm><programlisting>#define G_PARAM_SPEC_ENUM(pspec)           (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_ENUM, GParamSpecEnum))
+<refsect2 id="G-PARAM-SPEC-ENUM:CAPS" role="macro">
+<title>G_PARAM_SPEC_ENUM()</title>
+<indexterm zone="G-PARAM-SPEC-ENUM:CAPS"><primary>G_PARAM_SPEC_ENUM</primary></indexterm><programlisting>#define G_PARAM_SPEC_ENUM(pspec)           (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_ENUM, GParamSpecEnum))
 </programlisting>
 <para>
 Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecEnum"><type>GParamSpecEnum</type></link>.
@@ -2078,9 +2075,9 @@ Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-ENUM:CAPS" role="macro"/>G_VALUE_HOLDS_ENUM()</title>
-<indexterm><primary>G_VALUE_HOLDS_ENUM</primary></indexterm><programlisting>#define G_VALUE_HOLDS_ENUM(value)      (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_ENUM))
+<refsect2 id="G-VALUE-HOLDS-ENUM:CAPS" role="macro">
+<title>G_VALUE_HOLDS_ENUM()</title>
+<indexterm zone="G-VALUE-HOLDS-ENUM:CAPS"><primary>G_VALUE_HOLDS_ENUM</primary></indexterm><programlisting>#define G_VALUE_HOLDS_ENUM(value)      (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_ENUM))
 </programlisting>
 <para>
 Return whether the given <link linkend="GValue"><type>GValue</type></link> can hold values derived from type <link linkend="G-TYPE-ENUM:CAPS"><literal>G_TYPE_ENUM</literal></link>.
@@ -2091,16 +2088,16 @@ Return whether the given <link linkend="GValue"><type>GValue</type></link> can h
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-ENUM:CAPS" role="macro"/>G_TYPE_PARAM_ENUM</title>
-<indexterm><primary>G_TYPE_PARAM_ENUM</primary></indexterm><programlisting>#define	G_TYPE_PARAM_ENUM		   (g_param_spec_types[10])
+<refsect2 id="G-TYPE-PARAM-ENUM:CAPS" role="macro">
+<title>G_TYPE_PARAM_ENUM</title>
+<indexterm zone="G-TYPE-PARAM-ENUM:CAPS"><primary>G_TYPE_PARAM_ENUM</primary></indexterm><programlisting>#define	G_TYPE_PARAM_ENUM		   (g_param_spec_types[10])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecEnum"><type>GParamSpecEnum</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecEnum" role="struct"/>GParamSpecEnum</title>
-<indexterm><primary>GParamSpecEnum</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecEnum" role="struct">
+<title>GParamSpecEnum</title>
+<indexterm zone="GParamSpecEnum"><primary>GParamSpecEnum</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
   
   GEnumClass   *enum_class;
@@ -2128,9 +2125,9 @@ properties.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-enum" role="function"/>g_param_spec_enum ()</title>
-<indexterm><primary>g_param_spec_enum</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_enum                   (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-enum" role="function">
+<title>g_param_spec_enum ()</title>
+<indexterm zone="g-param-spec-enum"><primary>g_param_spec_enum</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_enum                   (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="GType">GType</link> enum_type,
@@ -2166,9 +2163,9 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-enum" role="function"/>g_value_set_enum ()</title>
-<indexterm><primary>g_value_set_enum</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_enum                    (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-enum" role="function">
+<title>g_value_set_enum ()</title>
+<indexterm zone="g-value-set-enum"><primary>g_value_set_enum</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_enum                    (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gint">gint</link> v_enum);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-ENUM:CAPS"><literal>G_TYPE_ENUM</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>v_enum</parameter>.
@@ -2182,9 +2179,9 @@ Set the contents of a <link linkend="G-TYPE-ENUM:CAPS"><literal>G_TYPE_ENUM</lit
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-enum" role="function"/>g_value_get_enum ()</title>
-<indexterm><primary>g_value_get_enum</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_value_get_enum                    (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-enum" role="function">
+<title>g_value_get_enum ()</title>
+<indexterm zone="g-value-get-enum"><primary>g_value_get_enum</primary></indexterm><programlisting><link linkend="gint">gint</link>                g_value_get_enum                    (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-ENUM:CAPS"><literal>G_TYPE_ENUM</literal></link> <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -2196,9 +2193,9 @@ Get the contents of a <link linkend="G-TYPE-ENUM:CAPS"><literal>G_TYPE_ENUM</lit
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-FLAGS:CAPS" role="macro"/>G_IS_PARAM_SPEC_FLAGS()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_FLAGS</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_FLAGS(pspec)       (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_FLAGS))
+<refsect2 id="G-IS-PARAM-SPEC-FLAGS:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_FLAGS()</title>
+<indexterm zone="G-IS-PARAM-SPEC-FLAGS:CAPS"><primary>G_IS_PARAM_SPEC_FLAGS</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_FLAGS(pspec)       (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_FLAGS))
 </programlisting>
 <para>
 Returns whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-FLAGS:CAPS"><literal>G_TYPE_PARAM_FLAGS</literal></link>.
@@ -2209,9 +2206,9 @@ Returns whether the given <link linkend="GParamSpec"><type>GParamSpec</type></li
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-FLAGS:CAPS" role="macro"/>G_PARAM_SPEC_FLAGS()</title>
-<indexterm><primary>G_PARAM_SPEC_FLAGS</primary></indexterm><programlisting>#define G_PARAM_SPEC_FLAGS(pspec)          (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_FLAGS, GParamSpecFlags))
+<refsect2 id="G-PARAM-SPEC-FLAGS:CAPS" role="macro">
+<title>G_PARAM_SPEC_FLAGS()</title>
+<indexterm zone="G-PARAM-SPEC-FLAGS:CAPS"><primary>G_PARAM_SPEC_FLAGS</primary></indexterm><programlisting>#define G_PARAM_SPEC_FLAGS(pspec)          (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_FLAGS, GParamSpecFlags))
 </programlisting>
 <para>
 Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecFlags"><type>GParamSpecFlags</type></link>.
@@ -2222,9 +2219,9 @@ Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-FLAGS:CAPS" role="macro"/>G_VALUE_HOLDS_FLAGS()</title>
-<indexterm><primary>G_VALUE_HOLDS_FLAGS</primary></indexterm><programlisting>#define G_VALUE_HOLDS_FLAGS(value)     (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_FLAGS))
+<refsect2 id="G-VALUE-HOLDS-FLAGS:CAPS" role="macro">
+<title>G_VALUE_HOLDS_FLAGS()</title>
+<indexterm zone="G-VALUE-HOLDS-FLAGS:CAPS"><primary>G_VALUE_HOLDS_FLAGS</primary></indexterm><programlisting>#define G_VALUE_HOLDS_FLAGS(value)     (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_FLAGS))
 </programlisting>
 <para>
 Returns whether the given <link linkend="GValue"><type>GValue</type></link> can hold values derived from type <link linkend="G-TYPE-FLAGS:CAPS"><literal>G_TYPE_FLAGS</literal></link>.
@@ -2235,16 +2232,16 @@ Returns whether the given <link linkend="GValue"><type>GValue</type></link> can 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-FLAGS:CAPS" role="macro"/>G_TYPE_PARAM_FLAGS</title>
-<indexterm><primary>G_TYPE_PARAM_FLAGS</primary></indexterm><programlisting>#define	G_TYPE_PARAM_FLAGS		   (g_param_spec_types[11])
+<refsect2 id="G-TYPE-PARAM-FLAGS:CAPS" role="macro">
+<title>G_TYPE_PARAM_FLAGS</title>
+<indexterm zone="G-TYPE-PARAM-FLAGS:CAPS"><primary>G_TYPE_PARAM_FLAGS</primary></indexterm><programlisting>#define	G_TYPE_PARAM_FLAGS		   (g_param_spec_types[11])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecFlags"><type>GParamSpecFlags</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecFlags" role="struct"/>GParamSpecFlags</title>
-<indexterm><primary>GParamSpecFlags</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecFlags" role="struct">
+<title>GParamSpecFlags</title>
+<indexterm zone="GParamSpecFlags"><primary>GParamSpecFlags</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
   
   GFlagsClass  *flags_class;
@@ -2272,9 +2269,9 @@ properties.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-flags" role="function"/>g_param_spec_flags ()</title>
-<indexterm><primary>g_param_spec_flags</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_flags                  (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-flags" role="function">
+<title>g_param_spec_flags ()</title>
+<indexterm zone="g-param-spec-flags"><primary>g_param_spec_flags</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_flags                  (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="GType">GType</link> flags_type,
@@ -2310,9 +2307,9 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-flags" role="function"/>g_value_set_flags ()</title>
-<indexterm><primary>g_value_set_flags</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_flags                   (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-flags" role="function">
+<title>g_value_set_flags ()</title>
+<indexterm zone="g-value-set-flags"><primary>g_value_set_flags</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_flags                   (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="guint">guint</link> v_flags);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-FLAGS:CAPS"><literal>G_TYPE_FLAGS</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>v_flags</parameter>.
@@ -2326,9 +2323,9 @@ Set the contents of a <link linkend="G-TYPE-FLAGS:CAPS"><literal>G_TYPE_FLAGS</l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-flags" role="function"/>g_value_get_flags ()</title>
-<indexterm><primary>g_value_get_flags</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_value_get_flags                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-flags" role="function">
+<title>g_value_get_flags ()</title>
+<indexterm zone="g-value-get-flags"><primary>g_value_get_flags</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_value_get_flags                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-FLAGS:CAPS"><literal>G_TYPE_FLAGS</literal></link> <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -2340,9 +2337,9 @@ Get the contents of a <link linkend="G-TYPE-FLAGS:CAPS"><literal>G_TYPE_FLAGS</l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-STRING:CAPS" role="macro"/>G_IS_PARAM_SPEC_STRING()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_STRING</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_STRING(pspec)      (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_STRING))
+<refsect2 id="G-IS-PARAM-SPEC-STRING:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_STRING()</title>
+<indexterm zone="G-IS-PARAM-SPEC-STRING:CAPS"><primary>G_IS_PARAM_SPEC_STRING</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_STRING(pspec)      (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_STRING))
 </programlisting>
 <para>
 Returns whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-STRING:CAPS"><literal>G_TYPE_PARAM_STRING</literal></link>.
@@ -2353,9 +2350,9 @@ Returns whether the given <link linkend="GParamSpec"><type>GParamSpec</type></li
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-STRING:CAPS" role="macro"/>G_PARAM_SPEC_STRING()</title>
-<indexterm><primary>G_PARAM_SPEC_STRING</primary></indexterm><programlisting>#define G_PARAM_SPEC_STRING(pspec)         (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_STRING, GParamSpecString))
+<refsect2 id="G-PARAM-SPEC-STRING:CAPS" role="macro">
+<title>G_PARAM_SPEC_STRING()</title>
+<indexterm zone="G-PARAM-SPEC-STRING:CAPS"><primary>G_PARAM_SPEC_STRING</primary></indexterm><programlisting>#define G_PARAM_SPEC_STRING(pspec)         (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_STRING, GParamSpecString))
 </programlisting>
 <para>
 Casts a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecString"><type>GParamSpecString</type></link>.
@@ -2366,9 +2363,9 @@ Casts a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-STRING:CAPS" role="macro"/>G_VALUE_HOLDS_STRING()</title>
-<indexterm><primary>G_VALUE_HOLDS_STRING</primary></indexterm><programlisting>#define G_VALUE_HOLDS_STRING(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_STRING))
+<refsect2 id="G-VALUE-HOLDS-STRING:CAPS" role="macro">
+<title>G_VALUE_HOLDS_STRING()</title>
+<indexterm zone="G-VALUE-HOLDS-STRING:CAPS"><primary>G_VALUE_HOLDS_STRING</primary></indexterm><programlisting>#define G_VALUE_HOLDS_STRING(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_STRING))
 </programlisting>
 <para>
 Return whether the given <link linkend="GValue"><type>GValue</type></link> can hold values of type <link linkend="G-TYPE-STRING:CAPS"><literal>G_TYPE_STRING</literal></link>.
@@ -2379,16 +2376,16 @@ Return whether the given <link linkend="GValue"><type>GValue</type></link> can h
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-STRING:CAPS" role="macro"/>G_TYPE_PARAM_STRING</title>
-<indexterm><primary>G_TYPE_PARAM_STRING</primary></indexterm><programlisting>#define	G_TYPE_PARAM_STRING		   (g_param_spec_types[14])
+<refsect2 id="G-TYPE-PARAM-STRING:CAPS" role="macro">
+<title>G_TYPE_PARAM_STRING</title>
+<indexterm zone="G-TYPE-PARAM-STRING:CAPS"><primary>G_TYPE_PARAM_STRING</primary></indexterm><programlisting>#define	G_TYPE_PARAM_STRING		   (g_param_spec_types[14])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecString"><type>GParamSpecString</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecString" role="struct"/>GParamSpecString</title>
-<indexterm><primary>GParamSpecString</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecString" role="struct">
+<title>GParamSpecString</title>
+<indexterm zone="GParamSpecString"><primary>GParamSpecString</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
   
   gchar        *default_value;
@@ -2440,16 +2437,16 @@ properties.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="gchararray" role="typedef"/>gchararray</title>
-<indexterm><primary>gchararray</primary></indexterm><programlisting>typedef gchar* gchararray;
+<refsect2 id="gchararray" role="typedef">
+<title>gchararray</title>
+<indexterm zone="gchararray"><primary>gchararray</primary></indexterm><programlisting>typedef gchar* gchararray;
 </programlisting>
 <para>
 A C representable type name for <link linkend="G-TYPE-STRING:CAPS"><type>G_TYPE_STRING</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-string" role="function"/>g_param_spec_string ()</title>
-<indexterm><primary>g_param_spec_string</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_string                 (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-string" role="function">
+<title>g_param_spec_string ()</title>
+<indexterm zone="g-param-spec-string"><primary>g_param_spec_string</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_string                 (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          const <link linkend="gchar">gchar</link> *default_value,
@@ -2480,9 +2477,9 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-string" role="function"/>g_value_set_string ()</title>
-<indexterm><primary>g_value_set_string</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_string                  (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-string" role="function">
+<title>g_value_set_string ()</title>
+<indexterm zone="g-value-set-string"><primary>g_value_set_string</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_string                  (<link linkend="GValue">GValue</link> *value,
                                                          const <link linkend="gchar">gchar</link> *v_string);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-STRING:CAPS"><literal>G_TYPE_STRING</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>v_string</parameter>.
@@ -2496,9 +2493,9 @@ Set the contents of a <link linkend="G-TYPE-STRING:CAPS"><literal>G_TYPE_STRING<
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-static-string" role="function"/>g_value_set_static_string ()</title>
-<indexterm><primary>g_value_set_static_string</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_static_string           (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-static-string" role="function">
+<title>g_value_set_static_string ()</title>
+<indexterm zone="g-value-set-static-string"><primary>g_value_set_static_string</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_static_string           (<link linkend="GValue">GValue</link> *value,
                                                          const <link linkend="gchar">gchar</link> *v_string);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-STRING:CAPS"><literal>G_TYPE_STRING</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>v_string</parameter>.
@@ -2514,9 +2511,9 @@ when setting the <link linkend="GValue"><type>GValue</type></link>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-take-string" role="function" condition="since:2.4"/>g_value_take_string ()</title>
-<indexterm role="2.4"><primary>g_value_take_string</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_take_string                 (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-take-string" role="function" condition="since:2.4">
+<title>g_value_take_string ()</title>
+<indexterm zone="g-value-take-string" role="2.4"><primary>g_value_take_string</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_take_string                 (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gchar">gchar</link> *v_string);</programlisting>
 <para>
 Sets the contents of a <link linkend="G-TYPE-STRING:CAPS"><literal>G_TYPE_STRING</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>v_string</parameter>.
@@ -2531,9 +2528,9 @@ Sets the contents of a <link linkend="G-TYPE-STRING:CAPS"><literal>G_TYPE_STRING
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-string-take-ownership" role="function" condition="deprecated:2.4: Use g_value_take_string() instead."/>g_value_set_string_take_ownership ()</title>
-<indexterm role="deprecated"><primary>g_value_set_string_take_ownership</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_string_take_ownership   (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-string-take-ownership" role="function" condition="deprecated:2.4: Use g_value_take_string() instead.">
+<title>g_value_set_string_take_ownership ()</title>
+<indexterm zone="g-value-set-string-take-ownership" role="deprecated"><primary>g_value_set_string_take_ownership</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_string_take_ownership   (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gchar">gchar</link> *v_string);</programlisting>
 <warning><para><literal>g_value_set_string_take_ownership</literal> has been deprecated since version 2.4 and should not be used in newly-written code. Use <link linkend="g-value-take-string"><function>g_value_take_string()</function></link> instead.</para></warning>
 <para>
@@ -2546,9 +2543,9 @@ This is an internal function introduced mainly for C marshallers.
 <listitem><simpara>duplicated unowned string to be set
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-string" role="function"/>g_value_get_string ()</title>
-<indexterm><primary>g_value_get_string</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        g_value_get_string                  (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-string" role="function">
+<title>g_value_get_string ()</title>
+<indexterm zone="g-value-get-string"><primary>g_value_get_string</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        g_value_get_string                  (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-STRING:CAPS"><literal>G_TYPE_STRING</literal></link> <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -2560,9 +2557,9 @@ Get the contents of a <link linkend="G-TYPE-STRING:CAPS"><literal>G_TYPE_STRING<
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-dup-string" role="function"/>g_value_dup_string ()</title>
-<indexterm><primary>g_value_dup_string</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_value_dup_string                  (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-dup-string" role="function">
+<title>g_value_dup_string ()</title>
+<indexterm zone="g-value-dup-string"><primary>g_value_dup_string</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_value_dup_string                  (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get a copy the contents of a <link linkend="G-TYPE-STRING:CAPS"><literal>G_TYPE_STRING</literal></link> <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -2574,9 +2571,9 @@ Get a copy the contents of a <link linkend="G-TYPE-STRING:CAPS"><literal>G_TYPE_
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-PARAM:CAPS" role="macro"/>G_IS_PARAM_SPEC_PARAM()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_PARAM</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_PARAM(pspec)       (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_PARAM))
+<refsect2 id="G-IS-PARAM-SPEC-PARAM:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_PARAM()</title>
+<indexterm zone="G-IS-PARAM-SPEC-PARAM:CAPS"><primary>G_IS_PARAM_SPEC_PARAM</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_PARAM(pspec)       (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_PARAM))
 </programlisting>
 <para>
 Returns whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-PARAM:CAPS"><literal>G_TYPE_PARAM_PARAM</literal></link>.
@@ -2587,9 +2584,9 @@ Returns whether the given <link linkend="GParamSpec"><type>GParamSpec</type></li
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-PARAM:CAPS" role="macro"/>G_PARAM_SPEC_PARAM()</title>
-<indexterm><primary>G_PARAM_SPEC_PARAM</primary></indexterm><programlisting>#define G_PARAM_SPEC_PARAM(pspec)          (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_PARAM, GParamSpecParam))
+<refsect2 id="G-PARAM-SPEC-PARAM:CAPS" role="macro">
+<title>G_PARAM_SPEC_PARAM()</title>
+<indexterm zone="G-PARAM-SPEC-PARAM:CAPS"><primary>G_PARAM_SPEC_PARAM</primary></indexterm><programlisting>#define G_PARAM_SPEC_PARAM(pspec)          (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_PARAM, GParamSpecParam))
 </programlisting>
 <para>
 Casts a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecParam"><type>GParamSpecParam</type></link>.
@@ -2600,9 +2597,9 @@ Casts a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-PARAM:CAPS" role="macro"/>G_VALUE_HOLDS_PARAM()</title>
-<indexterm><primary>G_VALUE_HOLDS_PARAM</primary></indexterm><programlisting>#define G_VALUE_HOLDS_PARAM(value)	(G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_PARAM))
+<refsect2 id="G-VALUE-HOLDS-PARAM:CAPS" role="macro">
+<title>G_VALUE_HOLDS_PARAM()</title>
+<indexterm zone="G-VALUE-HOLDS-PARAM:CAPS"><primary>G_VALUE_HOLDS_PARAM</primary></indexterm><programlisting>#define G_VALUE_HOLDS_PARAM(value)	(G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_PARAM))
 </programlisting>
 <para>
 Return whether the given <link linkend="GValue"><type>GValue</type></link> can hold values derived from type <link linkend="G-TYPE-PARAM:CAPS"><literal>G_TYPE_PARAM</literal></link>.
@@ -2613,16 +2610,16 @@ Return whether the given <link linkend="GValue"><type>GValue</type></link> can h
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-PARAM:CAPS" role="macro"/>G_TYPE_PARAM_PARAM</title>
-<indexterm><primary>G_TYPE_PARAM_PARAM</primary></indexterm><programlisting>#define	G_TYPE_PARAM_PARAM		   (g_param_spec_types[15])
+<refsect2 id="G-TYPE-PARAM-PARAM:CAPS" role="macro">
+<title>G_TYPE_PARAM_PARAM</title>
+<indexterm zone="G-TYPE-PARAM-PARAM:CAPS"><primary>G_TYPE_PARAM_PARAM</primary></indexterm><programlisting>#define	G_TYPE_PARAM_PARAM		   (g_param_spec_types[15])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecParam"><type>GParamSpecParam</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecParam" role="struct"/>GParamSpecParam</title>
-<indexterm><primary>GParamSpecParam</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecParam" role="struct">
+<title>GParamSpecParam</title>
+<indexterm zone="GParamSpecParam"><primary>GParamSpecParam</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
 } GParamSpecParam;
 </programlisting>
@@ -2637,9 +2634,9 @@ properties.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-param" role="function"/>g_param_spec_param ()</title>
-<indexterm><primary>g_param_spec_param</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_param                  (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-param" role="function">
+<title>g_param_spec_param ()</title>
+<indexterm zone="g-param-spec-param"><primary>g_param_spec_param</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_param                  (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="GType">GType</link> param_type,
@@ -2669,9 +2666,9 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a newly created parameter specification
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-param" role="function"/>g_value_set_param ()</title>
-<indexterm><primary>g_value_set_param</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_param                   (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-param" role="function">
+<title>g_value_set_param ()</title>
+<indexterm zone="g-value-set-param"><primary>g_value_set_param</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_param                   (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="GParamSpec">GParamSpec</link> *param);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-PARAM:CAPS"><literal>G_TYPE_PARAM</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>param</parameter>.
@@ -2685,9 +2682,9 @@ Set the contents of a <link linkend="G-TYPE-PARAM:CAPS"><literal>G_TYPE_PARAM</l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-take-param" role="function" condition="since:2.4"/>g_value_take_param ()</title>
-<indexterm role="2.4"><primary>g_value_take_param</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_take_param                  (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-take-param" role="function" condition="since:2.4">
+<title>g_value_take_param ()</title>
+<indexterm zone="g-value-take-param" role="2.4"><primary>g_value_take_param</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_take_param                  (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="GParamSpec">GParamSpec</link> *param);</programlisting>
 <para>
 Sets the contents of a <link linkend="G-TYPE-PARAM:CAPS"><literal>G_TYPE_PARAM</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>param</parameter> and
@@ -2704,9 +2701,9 @@ the caller doesn't have to unref it any more.
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-param-take-ownership" role="function" condition="deprecated:2.4: Use g_value_take_param() instead."/>g_value_set_param_take_ownership ()</title>
-<indexterm role="deprecated"><primary>g_value_set_param_take_ownership</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_param_take_ownership    (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-param-take-ownership" role="function" condition="deprecated:2.4: Use g_value_take_param() instead.">
+<title>g_value_set_param_take_ownership ()</title>
+<indexterm zone="g-value-set-param-take-ownership" role="deprecated"><primary>g_value_set_param_take_ownership</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_param_take_ownership    (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="GParamSpec">GParamSpec</link> *param);</programlisting>
 <warning><para><literal>g_value_set_param_take_ownership</literal> has been deprecated since version 2.4 and should not be used in newly-written code. Use <link linkend="g-value-take-param"><function>g_value_take_param()</function></link> instead.</para></warning>
 <para>
@@ -2719,9 +2716,9 @@ This is an internal function introduced mainly for C marshallers.
 <listitem><simpara>the <link linkend="GParamSpec"><type>GParamSpec</type></link> to be set
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-param" role="function"/>g_value_get_param ()</title>
-<indexterm><primary>g_value_get_param</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_value_get_param                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-param" role="function">
+<title>g_value_get_param ()</title>
+<indexterm zone="g-value-get-param"><primary>g_value_get_param</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_value_get_param                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-PARAM:CAPS"><literal>G_TYPE_PARAM</literal></link> <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -2733,9 +2730,9 @@ Get the contents of a <link linkend="G-TYPE-PARAM:CAPS"><literal>G_TYPE_PARAM</l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-dup-param" role="function"/>g_value_dup_param ()</title>
-<indexterm><primary>g_value_dup_param</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_value_dup_param                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-dup-param" role="function">
+<title>g_value_dup_param ()</title>
+<indexterm zone="g-value-dup-param"><primary>g_value_dup_param</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_value_dup_param                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-PARAM:CAPS"><literal>G_TYPE_PARAM</literal></link> <link linkend="GValue"><type>GValue</type></link>, increasing its reference count.
 </para><variablelist role="params">
@@ -2747,9 +2744,9 @@ Get the contents of a <link linkend="G-TYPE-PARAM:CAPS"><literal>G_TYPE_PARAM</l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-BOXED:CAPS" role="macro"/>G_IS_PARAM_SPEC_BOXED()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_BOXED</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_BOXED(pspec)       (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_BOXED))
+<refsect2 id="G-IS-PARAM-SPEC-BOXED:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_BOXED()</title>
+<indexterm zone="G-IS-PARAM-SPEC-BOXED:CAPS"><primary>G_IS_PARAM_SPEC_BOXED</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_BOXED(pspec)       (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_BOXED))
 </programlisting>
 <para>
 Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-BOXED:CAPS"><literal>G_TYPE_PARAM_BOXED</literal></link>.
@@ -2760,9 +2757,9 @@ Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></lin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-BOXED:CAPS" role="macro"/>G_PARAM_SPEC_BOXED()</title>
-<indexterm><primary>G_PARAM_SPEC_BOXED</primary></indexterm><programlisting>#define G_PARAM_SPEC_BOXED(pspec)          (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_BOXED, GParamSpecBoxed))
+<refsect2 id="G-PARAM-SPEC-BOXED:CAPS" role="macro">
+<title>G_PARAM_SPEC_BOXED()</title>
+<indexterm zone="G-PARAM-SPEC-BOXED:CAPS"><primary>G_PARAM_SPEC_BOXED</primary></indexterm><programlisting>#define G_PARAM_SPEC_BOXED(pspec)          (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_BOXED, GParamSpecBoxed))
 </programlisting>
 <para>
 Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecBoxed"><type>GParamSpecBoxed</type></link>.
@@ -2773,9 +2770,9 @@ Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-BOXED:CAPS" role="macro"/>G_VALUE_HOLDS_BOXED()</title>
-<indexterm><primary>G_VALUE_HOLDS_BOXED</primary></indexterm><programlisting>#define G_VALUE_HOLDS_BOXED(value) (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_BOXED))
+<refsect2 id="G-VALUE-HOLDS-BOXED:CAPS" role="macro">
+<title>G_VALUE_HOLDS_BOXED()</title>
+<indexterm zone="G-VALUE-HOLDS-BOXED:CAPS"><primary>G_VALUE_HOLDS_BOXED</primary></indexterm><programlisting>#define G_VALUE_HOLDS_BOXED(value) (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_BOXED))
 </programlisting>
 <para>
 Return whether the given <link linkend="GValue"><type>GValue</type></link> can hold values derived from type <link linkend="G-TYPE-BOXED:CAPS"><literal>G_TYPE_BOXED</literal></link>.
@@ -2786,16 +2783,16 @@ Return whether the given <link linkend="GValue"><type>GValue</type></link> can h
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-BOXED:CAPS" role="macro"/>G_TYPE_PARAM_BOXED</title>
-<indexterm><primary>G_TYPE_PARAM_BOXED</primary></indexterm><programlisting>#define	G_TYPE_PARAM_BOXED		   (g_param_spec_types[16])
+<refsect2 id="G-TYPE-PARAM-BOXED:CAPS" role="macro">
+<title>G_TYPE_PARAM_BOXED</title>
+<indexterm zone="G-TYPE-PARAM-BOXED:CAPS"><primary>G_TYPE_PARAM_BOXED</primary></indexterm><programlisting>#define	G_TYPE_PARAM_BOXED		   (g_param_spec_types[16])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecBoxed"><type>GParamSpecBoxed</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecBoxed" role="struct"/>GParamSpecBoxed</title>
-<indexterm><primary>GParamSpecBoxed</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecBoxed" role="struct">
+<title>GParamSpecBoxed</title>
+<indexterm zone="GParamSpecBoxed"><primary>GParamSpecBoxed</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
 } GParamSpecBoxed;
 </programlisting>
@@ -2809,9 +2806,9 @@ A <link linkend="GParamSpec"><type>GParamSpec</type></link> derived structure th
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-boxed" role="function"/>g_param_spec_boxed ()</title>
-<indexterm><primary>g_param_spec_boxed</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_boxed                  (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-boxed" role="function">
+<title>g_param_spec_boxed ()</title>
+<indexterm zone="g-param-spec-boxed"><primary>g_param_spec_boxed</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_boxed                  (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="GType">GType</link> boxed_type,
@@ -2843,9 +2840,9 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-boxed" role="function"/>g_value_set_boxed ()</title>
-<indexterm><primary>g_value_set_boxed</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_boxed                   (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-boxed" role="function">
+<title>g_value_set_boxed ()</title>
+<indexterm zone="g-value-set-boxed"><primary>g_value_set_boxed</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_boxed                   (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gconstpointer">gconstpointer</link> v_boxed);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-BOXED:CAPS"><literal>G_TYPE_BOXED</literal></link> derived <link linkend="GValue"><type>GValue</type></link> to <parameter>v_boxed</parameter>.
@@ -2859,9 +2856,9 @@ Set the contents of a <link linkend="G-TYPE-BOXED:CAPS"><literal>G_TYPE_BOXED</l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-static-boxed" role="function"/>g_value_set_static_boxed ()</title>
-<indexterm><primary>g_value_set_static_boxed</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_static_boxed            (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-static-boxed" role="function">
+<title>g_value_set_static_boxed ()</title>
+<indexterm zone="g-value-set-static-boxed"><primary>g_value_set_static_boxed</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_static_boxed            (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gconstpointer">gconstpointer</link> v_boxed);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-BOXED:CAPS"><literal>G_TYPE_BOXED</literal></link> derived <link linkend="GValue"><type>GValue</type></link> to <parameter>v_boxed</parameter>.
@@ -2877,9 +2874,9 @@ when setting the <link linkend="GValue"><type>GValue</type></link>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-take-boxed" role="function" condition="since:2.4"/>g_value_take_boxed ()</title>
-<indexterm role="2.4"><primary>g_value_take_boxed</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_take_boxed                  (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-take-boxed" role="function" condition="since:2.4">
+<title>g_value_take_boxed ()</title>
+<indexterm zone="g-value-take-boxed" role="2.4"><primary>g_value_take_boxed</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_take_boxed                  (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gconstpointer">gconstpointer</link> v_boxed);</programlisting>
 <para>
 Sets the contents of a <link linkend="G-TYPE-BOXED:CAPS"><literal>G_TYPE_BOXED</literal></link> derived <link linkend="GValue"><type>GValue</type></link> to <parameter>v_boxed</parameter> and
@@ -2896,9 +2893,9 @@ the caller doesn't have to unref it any more.
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-boxed-take-ownership" role="function" condition="deprecated:2.4: Use g_value_take_boxed() instead."/>g_value_set_boxed_take_ownership ()</title>
-<indexterm role="deprecated"><primary>g_value_set_boxed_take_ownership</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_boxed_take_ownership    (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-boxed-take-ownership" role="function" condition="deprecated:2.4: Use g_value_take_boxed() instead.">
+<title>g_value_set_boxed_take_ownership ()</title>
+<indexterm zone="g-value-set-boxed-take-ownership" role="deprecated"><primary>g_value_set_boxed_take_ownership</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_boxed_take_ownership    (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gconstpointer">gconstpointer</link> v_boxed);</programlisting>
 <warning><para><literal>g_value_set_boxed_take_ownership</literal> has been deprecated since version 2.4 and should not be used in newly-written code. Use <link linkend="g-value-take-boxed"><function>g_value_take_boxed()</function></link> instead.</para></warning>
 <para>
@@ -2911,9 +2908,9 @@ This is an internal function introduced mainly for C marshallers.
 <listitem><simpara>duplicated unowned boxed value to be set
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-boxed" role="function"/>g_value_get_boxed ()</title>
-<indexterm><primary>g_value_get_boxed</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_value_get_boxed                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-boxed" role="function">
+<title>g_value_get_boxed ()</title>
+<indexterm zone="g-value-get-boxed"><primary>g_value_get_boxed</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_value_get_boxed                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-BOXED:CAPS"><literal>G_TYPE_BOXED</literal></link> derived <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -2925,9 +2922,9 @@ Get the contents of a <link linkend="G-TYPE-BOXED:CAPS"><literal>G_TYPE_BOXED</l
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-dup-boxed" role="function"/>g_value_dup_boxed ()</title>
-<indexterm><primary>g_value_dup_boxed</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_value_dup_boxed                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-dup-boxed" role="function">
+<title>g_value_dup_boxed ()</title>
+<indexterm zone="g-value-dup-boxed"><primary>g_value_dup_boxed</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_value_dup_boxed                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-BOXED:CAPS"><literal>G_TYPE_BOXED</literal></link> derived <link linkend="GValue"><type>GValue</type></link>.
 Upon getting, the boxed value is duplicated and needs to be
@@ -2941,9 +2938,9 @@ later freed with <link linkend="g-boxed-free"><function>g_boxed_free()</function
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-POINTER:CAPS" role="macro"/>G_IS_PARAM_SPEC_POINTER()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_POINTER</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_POINTER(pspec)     (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_POINTER))
+<refsect2 id="G-IS-PARAM-SPEC-POINTER:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_POINTER()</title>
+<indexterm zone="G-IS-PARAM-SPEC-POINTER:CAPS"><primary>G_IS_PARAM_SPEC_POINTER</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_POINTER(pspec)     (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_POINTER))
 </programlisting>
 <para>
 Returns whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-POINTER:CAPS"><literal>G_TYPE_PARAM_POINTER</literal></link>.
@@ -2954,9 +2951,9 @@ Returns whether the given <link linkend="GParamSpec"><type>GParamSpec</type></li
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-POINTER:CAPS" role="macro"/>G_PARAM_SPEC_POINTER()</title>
-<indexterm><primary>G_PARAM_SPEC_POINTER</primary></indexterm><programlisting>#define G_PARAM_SPEC_POINTER(pspec)        (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_POINTER, GParamSpecPointer))
+<refsect2 id="G-PARAM-SPEC-POINTER:CAPS" role="macro">
+<title>G_PARAM_SPEC_POINTER()</title>
+<indexterm zone="G-PARAM-SPEC-POINTER:CAPS"><primary>G_PARAM_SPEC_POINTER</primary></indexterm><programlisting>#define G_PARAM_SPEC_POINTER(pspec)        (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_POINTER, GParamSpecPointer))
 </programlisting>
 <para>
 Casts a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecPointer"><type>GParamSpecPointer</type></link>.
@@ -2967,9 +2964,9 @@ Casts a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-POINTER:CAPS" role="macro"/>G_VALUE_HOLDS_POINTER()</title>
-<indexterm><primary>G_VALUE_HOLDS_POINTER</primary></indexterm><programlisting>#define G_VALUE_HOLDS_POINTER(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_POINTER))
+<refsect2 id="G-VALUE-HOLDS-POINTER:CAPS" role="macro">
+<title>G_VALUE_HOLDS_POINTER()</title>
+<indexterm zone="G-VALUE-HOLDS-POINTER:CAPS"><primary>G_VALUE_HOLDS_POINTER</primary></indexterm><programlisting>#define G_VALUE_HOLDS_POINTER(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_POINTER))
 </programlisting>
 <para>
 Return whether the given <link linkend="GValue"><type>GValue</type></link> can hold values of type <link linkend="G-TYPE-POINTER:CAPS"><literal>G_TYPE_POINTER</literal></link>.
@@ -2980,16 +2977,16 @@ Return whether the given <link linkend="GValue"><type>GValue</type></link> can h
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-POINTER:CAPS" role="macro"/>G_TYPE_PARAM_POINTER</title>
-<indexterm><primary>G_TYPE_PARAM_POINTER</primary></indexterm><programlisting>#define	G_TYPE_PARAM_POINTER		   (g_param_spec_types[17])
+<refsect2 id="G-TYPE-PARAM-POINTER:CAPS" role="macro">
+<title>G_TYPE_PARAM_POINTER</title>
+<indexterm zone="G-TYPE-PARAM-POINTER:CAPS"><primary>G_TYPE_PARAM_POINTER</primary></indexterm><programlisting>#define	G_TYPE_PARAM_POINTER		   (g_param_spec_types[17])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecPointer"><type>GParamSpecPointer</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecPointer" role="struct"/>GParamSpecPointer</title>
-<indexterm><primary>GParamSpecPointer</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecPointer" role="struct">
+<title>GParamSpecPointer</title>
+<indexterm zone="GParamSpecPointer"><primary>GParamSpecPointer</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
 } GParamSpecPointer;
 </programlisting>
@@ -3003,9 +3000,9 @@ A <link linkend="GParamSpec"><type>GParamSpec</type></link> derived structure th
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-pointer" role="function"/>g_param_spec_pointer ()</title>
-<indexterm><primary>g_param_spec_pointer</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_pointer                (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-pointer" role="function">
+<title>g_param_spec_pointer ()</title>
+<indexterm zone="g-param-spec-pointer"><primary>g_param_spec_pointer</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_pointer                (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="GParamFlags">GParamFlags</link> flags);</programlisting>
@@ -3032,9 +3029,9 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-pointer" role="function"/>g_value_set_pointer ()</title>
-<indexterm><primary>g_value_set_pointer</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_pointer                 (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-pointer" role="function">
+<title>g_value_set_pointer ()</title>
+<indexterm zone="g-value-set-pointer"><primary>g_value_set_pointer</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_pointer                 (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gpointer">gpointer</link> v_pointer);</programlisting>
 <para>
 Set the contents of a pointer <link linkend="GValue"><type>GValue</type></link> to <parameter>v_pointer</parameter>.
@@ -3048,9 +3045,9 @@ Set the contents of a pointer <link linkend="GValue"><type>GValue</type></link> 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-pointer" role="function"/>g_value_get_pointer ()</title>
-<indexterm><primary>g_value_get_pointer</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_value_get_pointer                 (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-pointer" role="function">
+<title>g_value_get_pointer ()</title>
+<indexterm zone="g-value-get-pointer"><primary>g_value_get_pointer</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_value_get_pointer                 (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a pointer <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -3062,9 +3059,9 @@ Get the contents of a pointer <link linkend="GValue"><type>GValue</type></link>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-OBJECT:CAPS" role="macro"/>G_IS_PARAM_SPEC_OBJECT()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_OBJECT</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_OBJECT(pspec)      (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_OBJECT))
+<refsect2 id="G-IS-PARAM-SPEC-OBJECT:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_OBJECT()</title>
+<indexterm zone="G-IS-PARAM-SPEC-OBJECT:CAPS"><primary>G_IS_PARAM_SPEC_OBJECT</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_OBJECT(pspec)      (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_OBJECT))
 </programlisting>
 <para>
 Returns whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-OBJECT:CAPS"><literal>G_TYPE_PARAM_OBJECT</literal></link>.
@@ -3075,9 +3072,9 @@ Returns whether the given <link linkend="GParamSpec"><type>GParamSpec</type></li
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-OBJECT:CAPS" role="macro"/>G_PARAM_SPEC_OBJECT()</title>
-<indexterm><primary>G_PARAM_SPEC_OBJECT</primary></indexterm><programlisting>#define G_PARAM_SPEC_OBJECT(pspec)         (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_OBJECT, GParamSpecObject))
+<refsect2 id="G-PARAM-SPEC-OBJECT:CAPS" role="macro">
+<title>G_PARAM_SPEC_OBJECT()</title>
+<indexterm zone="G-PARAM-SPEC-OBJECT:CAPS"><primary>G_PARAM_SPEC_OBJECT</primary></indexterm><programlisting>#define G_PARAM_SPEC_OBJECT(pspec)         (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_OBJECT, GParamSpecObject))
 </programlisting>
 <para>
 Casts a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecObject"><type>GParamSpecObject</type></link>.
@@ -3088,9 +3085,9 @@ Casts a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-OBJECT:CAPS" role="macro"/>G_VALUE_HOLDS_OBJECT()</title>
-<indexterm><primary>G_VALUE_HOLDS_OBJECT</primary></indexterm><programlisting>#define G_VALUE_HOLDS_OBJECT(value) (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_OBJECT))
+<refsect2 id="G-VALUE-HOLDS-OBJECT:CAPS" role="macro">
+<title>G_VALUE_HOLDS_OBJECT()</title>
+<indexterm zone="G-VALUE-HOLDS-OBJECT:CAPS"><primary>G_VALUE_HOLDS_OBJECT</primary></indexterm><programlisting>#define G_VALUE_HOLDS_OBJECT(value) (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_OBJECT))
 </programlisting>
 <para>
 Return whether the given <link linkend="GValue"><type>GValue</type></link> can hold values derived from type <link linkend="G-TYPE-OBJECT:CAPS"><literal>G_TYPE_OBJECT</literal></link>.
@@ -3101,16 +3098,16 @@ Return whether the given <link linkend="GValue"><type>GValue</type></link> can h
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-OBJECT:CAPS" role="macro"/>G_TYPE_PARAM_OBJECT</title>
-<indexterm><primary>G_TYPE_PARAM_OBJECT</primary></indexterm><programlisting>#define	G_TYPE_PARAM_OBJECT		   (g_param_spec_types[19])
+<refsect2 id="G-TYPE-PARAM-OBJECT:CAPS" role="macro">
+<title>G_TYPE_PARAM_OBJECT</title>
+<indexterm zone="G-TYPE-PARAM-OBJECT:CAPS"><primary>G_TYPE_PARAM_OBJECT</primary></indexterm><programlisting>#define	G_TYPE_PARAM_OBJECT		   (g_param_spec_types[19])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecObject"><type>GParamSpecObject</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecObject" role="struct"/>GParamSpecObject</title>
-<indexterm><primary>GParamSpecObject</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecObject" role="struct">
+<title>GParamSpecObject</title>
+<indexterm zone="GParamSpecObject"><primary>GParamSpecObject</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
 } GParamSpecObject;
 </programlisting>
@@ -3124,9 +3121,9 @@ A <link linkend="GParamSpec"><type>GParamSpec</type></link> derived structure th
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-object" role="function"/>g_param_spec_object ()</title>
-<indexterm><primary>g_param_spec_object</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_object                 (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-object" role="function">
+<title>g_param_spec_object ()</title>
+<indexterm zone="g-param-spec-object"><primary>g_param_spec_object</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_object                 (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="GType">GType</link> object_type,
@@ -3158,12 +3155,25 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-object" role="function"/>g_value_set_object ()</title>
-<indexterm><primary>g_value_set_object</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_object                  (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-object" role="function">
+<title>g_value_set_object ()</title>
+<indexterm zone="g-value-set-object"><primary>g_value_set_object</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_object                  (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gpointer">gpointer</link> v_object);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-OBJECT:CAPS"><literal>G_TYPE_OBJECT</literal></link> derived <link linkend="GValue"><type>GValue</type></link> to <parameter>v_object</parameter>.
+</para>
+<para>
+<link linkend="g-value-set-object"><function>g_value_set_object()</function></link> increases the reference count of <parameter>v_object</parameter>
+(the <link linkend="GValue"><type>GValue</type></link> holds a reference to <parameter>v_object</parameter>).
+If you do not wish to increase the reference count of the object
+(i.e. you wish to pass your current reference to the <link linkend="GValue"><type>GValue</type></link> because you no
+longer need it),
+use <link linkend="g-value-take-object"><function>g_value_take_object()</function></link> instead.
+</para>
+<para>
+It is important that your <link linkend="GValue"><type>GValue</type></link> holds a reference to <parameter>v_object</parameter> (either its
+own, or one it has taken) to ensure that the object won't be destroyed while
+the <link linkend="GValue"><type>GValue</type></link> still exists).
 </para><variablelist role="params">
 <varlistentry><term><parameter>value</parameter>&nbsp;:</term>
 <listitem><simpara>  a valid <link linkend="GValue"><type>GValue</type></link> of <link linkend="G-TYPE-OBJECT:CAPS"><literal>G_TYPE_OBJECT</literal></link> derived type
@@ -3174,14 +3184,19 @@ Set the contents of a <link linkend="G-TYPE-OBJECT:CAPS"><literal>G_TYPE_OBJECT<
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-take-object" role="function" condition="since:2.4"/>g_value_take_object ()</title>
-<indexterm role="2.4"><primary>g_value_take_object</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_take_object                 (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-take-object" role="function" condition="since:2.4">
+<title>g_value_take_object ()</title>
+<indexterm zone="g-value-take-object" role="2.4"><primary>g_value_take_object</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_take_object                 (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gpointer">gpointer</link> v_object);</programlisting>
 <para>
 Sets the contents of a <link linkend="G-TYPE-OBJECT:CAPS"><literal>G_TYPE_OBJECT</literal></link> derived <link linkend="GValue"><type>GValue</type></link> to <parameter>v_object</parameter> 
 and takes over the ownership of the callers reference to <parameter>v_object</parameter>; 
-the caller doesn't have to unref it any more.
+the caller doesn't have to unref it any more (i.e. the reference
+count of the object is not increased).
+</para>
+<para>
+If you want the <link linkend="GValue"><type>GValue</type></link> to hold its own reference to <parameter>v_object</parameter>, use
+<link linkend="g-value-set-object"><function>g_value_set_object()</function></link> instead.
 </para><variablelist role="params">
 <varlistentry><term><parameter>value</parameter>&nbsp;:</term>
 <listitem><simpara> a valid <link linkend="GValue"><type>GValue</type></link> of <link linkend="G-TYPE-OBJECT:CAPS"><literal>G_TYPE_OBJECT</literal></link> derived type
@@ -3193,9 +3208,9 @@ the caller doesn't have to unref it any more.
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-object-take-ownership" role="function" condition="deprecated:2.4: Use g_value_take_object() instead."/>g_value_set_object_take_ownership ()</title>
-<indexterm role="deprecated"><primary>g_value_set_object_take_ownership</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_object_take_ownership   (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-object-take-ownership" role="function" condition="deprecated:2.4: Use g_value_take_object() instead.">
+<title>g_value_set_object_take_ownership ()</title>
+<indexterm zone="g-value-set-object-take-ownership" role="deprecated"><primary>g_value_set_object_take_ownership</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_object_take_ownership   (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="gpointer">gpointer</link> v_object);</programlisting>
 <warning><para><literal>g_value_set_object_take_ownership</literal> has been deprecated since version 2.4 and should not be used in newly-written code. Use <link linkend="g-value-take-object"><function>g_value_take_object()</function></link> instead.</para></warning>
 <para>
@@ -3208,9 +3223,9 @@ This is an internal function introduced mainly for C marshallers.
 <listitem><simpara>object value to be set
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-object" role="function"/>g_value_get_object ()</title>
-<indexterm><primary>g_value_get_object</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_value_get_object                  (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-object" role="function">
+<title>g_value_get_object ()</title>
+<indexterm zone="g-value-get-object"><primary>g_value_get_object</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_value_get_object                  (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-OBJECT:CAPS"><literal>G_TYPE_OBJECT</literal></link> derived <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -3222,9 +3237,9 @@ Get the contents of a <link linkend="G-TYPE-OBJECT:CAPS"><literal>G_TYPE_OBJECT<
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-value-dup-object" role="function"/>g_value_dup_object ()</title>
-<indexterm><primary>g_value_dup_object</primary></indexterm><programlisting><link linkend="GObject">GObject</link>*            g_value_dup_object                  (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-dup-object" role="function">
+<title>g_value_dup_object ()</title>
+<indexterm zone="g-value-dup-object"><primary>g_value_dup_object</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_value_dup_object                  (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-OBJECT:CAPS"><literal>G_TYPE_OBJECT</literal></link> derived <link linkend="GValue"><type>GValue</type></link>, increasing its reference count.
 </para><variablelist role="params">
@@ -3236,9 +3251,9 @@ Get the contents of a <link linkend="G-TYPE-OBJECT:CAPS"><literal>G_TYPE_OBJECT<
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-UNICHAR:CAPS" role="macro"/>G_IS_PARAM_SPEC_UNICHAR()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_UNICHAR</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_UNICHAR(pspec)     (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_UNICHAR))
+<refsect2 id="G-IS-PARAM-SPEC-UNICHAR:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_UNICHAR()</title>
+<indexterm zone="G-IS-PARAM-SPEC-UNICHAR:CAPS"><primary>G_IS_PARAM_SPEC_UNICHAR</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_UNICHAR(pspec)     (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_UNICHAR))
 </programlisting>
 <para>
 Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-UNICHAR:CAPS"><literal>G_TYPE_PARAM_UNICHAR</literal></link>.
@@ -3249,9 +3264,9 @@ Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></lin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-UNICHAR:CAPS" role="macro"/>G_PARAM_SPEC_UNICHAR()</title>
-<indexterm><primary>G_PARAM_SPEC_UNICHAR</primary></indexterm><programlisting>#define G_PARAM_SPEC_UNICHAR(pspec)        (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_UNICHAR, GParamSpecUnichar))
+<refsect2 id="G-PARAM-SPEC-UNICHAR:CAPS" role="macro">
+<title>G_PARAM_SPEC_UNICHAR()</title>
+<indexterm zone="G-PARAM-SPEC-UNICHAR:CAPS"><primary>G_PARAM_SPEC_UNICHAR</primary></indexterm><programlisting>#define G_PARAM_SPEC_UNICHAR(pspec)        (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_UNICHAR, GParamSpecUnichar))
 </programlisting>
 <para>
 Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecUnichar"><type>GParamSpecUnichar</type></link>.
@@ -3262,16 +3277,16 @@ Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-UNICHAR:CAPS" role="macro"/>G_TYPE_PARAM_UNICHAR</title>
-<indexterm><primary>G_TYPE_PARAM_UNICHAR</primary></indexterm><programlisting>#define	G_TYPE_PARAM_UNICHAR		   (g_param_spec_types[9])
+<refsect2 id="G-TYPE-PARAM-UNICHAR:CAPS" role="macro">
+<title>G_TYPE_PARAM_UNICHAR</title>
+<indexterm zone="G-TYPE-PARAM-UNICHAR:CAPS"><primary>G_TYPE_PARAM_UNICHAR</primary></indexterm><programlisting>#define	G_TYPE_PARAM_UNICHAR		   (g_param_spec_types[9])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecUnichar"><type>GParamSpecUnichar</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecUnichar" role="struct"/>GParamSpecUnichar</title>
-<indexterm><primary>GParamSpecUnichar</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecUnichar" role="struct">
+<title>GParamSpecUnichar</title>
+<indexterm zone="GParamSpecUnichar"><primary>GParamSpecUnichar</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
   
   gunichar      default_value;
@@ -3292,9 +3307,9 @@ A <link linkend="GParamSpec"><type>GParamSpec</type></link> derived structure th
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-unichar" role="function"/>g_param_spec_unichar ()</title>
-<indexterm><primary>g_param_spec_unichar</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_unichar                (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-unichar" role="function">
+<title>g_param_spec_unichar ()</title>
+<indexterm zone="g-param-spec-unichar"><primary>g_param_spec_unichar</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_unichar                (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="gunichar">gunichar</link> default_value,
@@ -3327,9 +3342,9 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-VALUE-ARRAY:CAPS" role="macro"/>G_IS_PARAM_SPEC_VALUE_ARRAY()</title>
-<indexterm><primary>G_IS_PARAM_SPEC_VALUE_ARRAY</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_VALUE_ARRAY(pspec) (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_VALUE_ARRAY))
+<refsect2 id="G-IS-PARAM-SPEC-VALUE-ARRAY:CAPS" role="macro">
+<title>G_IS_PARAM_SPEC_VALUE_ARRAY()</title>
+<indexterm zone="G-IS-PARAM-SPEC-VALUE-ARRAY:CAPS"><primary>G_IS_PARAM_SPEC_VALUE_ARRAY</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_VALUE_ARRAY(pspec) (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_VALUE_ARRAY))
 </programlisting>
 <para>
 Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-VALUE-ARRAY:CAPS"><literal>G_TYPE_PARAM_VALUE_ARRAY</literal></link>.
@@ -3340,9 +3355,9 @@ Return whether the given <link linkend="GParamSpec"><type>GParamSpec</type></lin
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-VALUE-ARRAY:CAPS" role="macro"/>G_PARAM_SPEC_VALUE_ARRAY()</title>
-<indexterm><primary>G_PARAM_SPEC_VALUE_ARRAY</primary></indexterm><programlisting>#define G_PARAM_SPEC_VALUE_ARRAY(pspec)    (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_VALUE_ARRAY, GParamSpecValueArray))
+<refsect2 id="G-PARAM-SPEC-VALUE-ARRAY:CAPS" role="macro">
+<title>G_PARAM_SPEC_VALUE_ARRAY()</title>
+<indexterm zone="G-PARAM-SPEC-VALUE-ARRAY:CAPS"><primary>G_PARAM_SPEC_VALUE_ARRAY</primary></indexterm><programlisting>#define G_PARAM_SPEC_VALUE_ARRAY(pspec)    (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_VALUE_ARRAY, GParamSpecValueArray))
 </programlisting>
 <para>
 Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a <link linkend="GParamSpecValueArray"><type>GParamSpecValueArray</type></link>.
@@ -3353,16 +3368,16 @@ Cast a <link linkend="GParamSpec"><type>GParamSpec</type></link> instance into a
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-VALUE-ARRAY:CAPS" role="macro"/>G_TYPE_PARAM_VALUE_ARRAY</title>
-<indexterm><primary>G_TYPE_PARAM_VALUE_ARRAY</primary></indexterm><programlisting>#define	G_TYPE_PARAM_VALUE_ARRAY	   (g_param_spec_types[18])
+<refsect2 id="G-TYPE-PARAM-VALUE-ARRAY:CAPS" role="macro">
+<title>G_TYPE_PARAM_VALUE_ARRAY</title>
+<indexterm zone="G-TYPE-PARAM-VALUE-ARRAY:CAPS"><primary>G_TYPE_PARAM_VALUE_ARRAY</primary></indexterm><programlisting>#define	G_TYPE_PARAM_VALUE_ARRAY	   (g_param_spec_types[18])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecValueArray"><type>GParamSpecValueArray</type></link>.
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecValueArray" role="struct"/>GParamSpecValueArray</title>
-<indexterm><primary>GParamSpecValueArray</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecValueArray" role="struct">
+<title>GParamSpecValueArray</title>
+<indexterm zone="GParamSpecValueArray"><primary>GParamSpecValueArray</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
   GParamSpec   *element_spec;
   guint		fixed_n_elements;
@@ -3388,9 +3403,9 @@ A <link linkend="GParamSpec"><type>GParamSpec</type></link> derived structure th
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-value-array" role="function"/>g_param_spec_value_array ()</title>
-<indexterm><primary>g_param_spec_value_array</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_value_array            (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-value-array" role="function">
+<title>g_param_spec_value_array ()</title>
+<indexterm zone="g-param-spec-value-array"><primary>g_param_spec_value_array</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_value_array            (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="GParamSpec">GParamSpec</link> *element_spec,
@@ -3425,9 +3440,9 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-OVERRIDE:CAPS" role="macro" condition="since:2.4"/>G_IS_PARAM_SPEC_OVERRIDE()</title>
-<indexterm role="2.4"><primary>G_IS_PARAM_SPEC_OVERRIDE</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_OVERRIDE(pspec)    (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_OVERRIDE))
+<refsect2 id="G-IS-PARAM-SPEC-OVERRIDE:CAPS" role="macro" condition="since:2.4">
+<title>G_IS_PARAM_SPEC_OVERRIDE()</title>
+<indexterm zone="G-IS-PARAM-SPEC-OVERRIDE:CAPS" role="2.4"><primary>G_IS_PARAM_SPEC_OVERRIDE</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_OVERRIDE(pspec)    (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_OVERRIDE))
 </programlisting>
 <para>
 Returns whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-OVERRIDE:CAPS"><literal>G_TYPE_PARAM_OVERRIDE</literal></link>.
@@ -3439,9 +3454,9 @@ Returns whether the given <link linkend="GParamSpec"><type>GParamSpec</type></li
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-OVERRIDE:CAPS" role="macro" condition="since:2.4"/>G_PARAM_SPEC_OVERRIDE()</title>
-<indexterm role="2.4"><primary>G_PARAM_SPEC_OVERRIDE</primary></indexterm><programlisting>#define G_PARAM_SPEC_OVERRIDE(pspec)       (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_OVERRIDE, GParamSpecOverride))
+<refsect2 id="G-PARAM-SPEC-OVERRIDE:CAPS" role="macro" condition="since:2.4">
+<title>G_PARAM_SPEC_OVERRIDE()</title>
+<indexterm zone="G-PARAM-SPEC-OVERRIDE:CAPS" role="2.4"><primary>G_PARAM_SPEC_OVERRIDE</primary></indexterm><programlisting>#define G_PARAM_SPEC_OVERRIDE(pspec)       (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_OVERRIDE, GParamSpecOverride))
 </programlisting>
 <para>
 Casts a <link linkend="GParamSpec"><type>GParamSpec</type></link> into a <link linkend="GParamSpecOverride"><type>GParamSpecOverride</type></link>.
@@ -3453,9 +3468,9 @@ Casts a <link linkend="GParamSpec"><type>GParamSpec</type></link> into a <link l
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-OVERRIDE:CAPS" role="macro" condition="since:2.4"/>G_TYPE_PARAM_OVERRIDE</title>
-<indexterm role="2.4"><primary>G_TYPE_PARAM_OVERRIDE</primary></indexterm><programlisting>#define	G_TYPE_PARAM_OVERRIDE		   (g_param_spec_types[20])
+<refsect2 id="G-TYPE-PARAM-OVERRIDE:CAPS" role="macro" condition="since:2.4">
+<title>G_TYPE_PARAM_OVERRIDE</title>
+<indexterm zone="G-TYPE-PARAM-OVERRIDE:CAPS" role="2.4"><primary>G_TYPE_PARAM_OVERRIDE</primary></indexterm><programlisting>#define	G_TYPE_PARAM_OVERRIDE		   (g_param_spec_types[20])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecOverride"><type>GParamSpecOverride</type></link>.
@@ -3463,9 +3478,9 @@ The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpec
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecOverride" role="struct" condition="since:2.4"/>GParamSpecOverride</title>
-<indexterm role="2.4"><primary>GParamSpecOverride</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecOverride" role="struct" condition="since:2.4">
+<title>GParamSpecOverride</title>
+<indexterm zone="GParamSpecOverride" role="2.4"><primary>GParamSpecOverride</primary></indexterm><programlisting>typedef struct {
 } GParamSpecOverride;
 </programlisting>
 <para>
@@ -3480,9 +3495,9 @@ unless you are implementing a new base type similar to GObject.
 </para><para role="since">Since 2.4
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-override" role="function" condition="since:2.4"/>g_param_spec_override ()</title>
-<indexterm role="2.4"><primary>g_param_spec_override</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_override               (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-override" role="function" condition="since:2.4">
+<title>g_param_spec_override ()</title>
+<indexterm zone="g-param-spec-override" role="2.4"><primary>g_param_spec_override</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_override               (const <link linkend="gchar">gchar</link> *name,
                                                          <link linkend="GParamSpec">GParamSpec</link> *overridden);</programlisting>
 <para>
 Creates a new property of type <link linkend="GParamSpecOverride"><type>GParamSpecOverride</type></link>. This is used
@@ -3501,9 +3516,9 @@ useful unless you are implementing a new base type similar to GObject.
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-IS-PARAM-SPEC-GTYPE:CAPS" role="macro" condition="since:2.10"/>G_IS_PARAM_SPEC_GTYPE()</title>
-<indexterm role="2.10"><primary>G_IS_PARAM_SPEC_GTYPE</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_GTYPE(pspec)       (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_GTYPE))
+<refsect2 id="G-IS-PARAM-SPEC-GTYPE:CAPS" role="macro" condition="since:2.10">
+<title>G_IS_PARAM_SPEC_GTYPE()</title>
+<indexterm zone="G-IS-PARAM-SPEC-GTYPE:CAPS" role="2.10"><primary>G_IS_PARAM_SPEC_GTYPE</primary></indexterm><programlisting>#define G_IS_PARAM_SPEC_GTYPE(pspec)       (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), G_TYPE_PARAM_GTYPE))
 </programlisting>
 <para>
 Returns whether the given <link linkend="GParamSpec"><type>GParamSpec</type></link> is of type <link linkend="G-TYPE-PARAM-GTYPE:CAPS"><literal>G_TYPE_PARAM_GTYPE</literal></link>.
@@ -3515,9 +3530,9 @@ Returns whether the given <link linkend="GParamSpec"><type>GParamSpec</type></li
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-PARAM-SPEC-GTYPE:CAPS" role="macro" condition="since:2.10"/>G_PARAM_SPEC_GTYPE()</title>
-<indexterm role="2.10"><primary>G_PARAM_SPEC_GTYPE</primary></indexterm><programlisting>#define G_PARAM_SPEC_GTYPE(pspec)          (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_GTYPE, GParamSpecGType))
+<refsect2 id="G-PARAM-SPEC-GTYPE:CAPS" role="macro" condition="since:2.10">
+<title>G_PARAM_SPEC_GTYPE()</title>
+<indexterm zone="G-PARAM-SPEC-GTYPE:CAPS" role="2.10"><primary>G_PARAM_SPEC_GTYPE</primary></indexterm><programlisting>#define G_PARAM_SPEC_GTYPE(pspec)          (G_TYPE_CHECK_INSTANCE_CAST ((pspec), G_TYPE_PARAM_GTYPE, GParamSpecGType))
 </programlisting>
 <para>
 Casts a <link linkend="GParamSpec"><type>GParamSpec</type></link> into a <link linkend="GParamSpecGType"><type>GParamSpecGType</type></link>.
@@ -3529,9 +3544,9 @@ Casts a <link linkend="GParamSpec"><type>GParamSpec</type></link> into a <link l
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-VALUE-HOLDS-GTYPE:CAPS" role="macro" condition="since:2.12"/>G_VALUE_HOLDS_GTYPE()</title>
-<indexterm role="2.12"><primary>G_VALUE_HOLDS_GTYPE</primary></indexterm><programlisting>#define G_VALUE_HOLDS_GTYPE(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_GTYPE))
+<refsect2 id="G-VALUE-HOLDS-GTYPE:CAPS" role="macro" condition="since:2.12">
+<title>G_VALUE_HOLDS_GTYPE()</title>
+<indexterm zone="G-VALUE-HOLDS-GTYPE:CAPS" role="2.12"><primary>G_VALUE_HOLDS_GTYPE</primary></indexterm><programlisting>#define G_VALUE_HOLDS_GTYPE(value)	 (G_TYPE_CHECK_VALUE_TYPE ((value), G_TYPE_GTYPE))
 </programlisting>
 <para>
 Returns whether the given <link linkend="GValue"><type>GValue</type></link> can hold values of type <link linkend="G-TYPE-GTYPE:CAPS"><literal>G_TYPE_GTYPE</literal></link>.
@@ -3543,9 +3558,9 @@ Returns whether the given <link linkend="GValue"><type>GValue</type></link> can 
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-TYPE-PARAM-GTYPE:CAPS" role="macro" condition="since:2.10"/>G_TYPE_PARAM_GTYPE</title>
-<indexterm role="2.10"><primary>G_TYPE_PARAM_GTYPE</primary></indexterm><programlisting>#define	G_TYPE_PARAM_GTYPE		   (g_param_spec_types[21])
+<refsect2 id="G-TYPE-PARAM-GTYPE:CAPS" role="macro" condition="since:2.10">
+<title>G_TYPE_PARAM_GTYPE</title>
+<indexterm zone="G-TYPE-PARAM-GTYPE:CAPS" role="2.10"><primary>G_TYPE_PARAM_GTYPE</primary></indexterm><programlisting>#define	G_TYPE_PARAM_GTYPE		   (g_param_spec_types[21])
 </programlisting>
 <para>
 The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpecGType"><type>GParamSpecGType</type></link>.
@@ -3553,9 +3568,9 @@ The <link linkend="GType"><type>GType</type></link> of <link linkend="GParamSpec
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="GParamSpecGType" role="struct" condition="since:2.10"/>GParamSpecGType</title>
-<indexterm role="2.10"><primary>GParamSpecGType</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="GParamSpecGType" role="struct" condition="since:2.10">
+<title>GParamSpecGType</title>
+<indexterm zone="GParamSpecGType" role="2.10"><primary>GParamSpecGType</primary></indexterm><programlisting>typedef struct {
   GParamSpec    parent_instance;
   GType         is_a_type;
 } GParamSpecGType;
@@ -3576,9 +3591,9 @@ A <link linkend="GParamSpec"><type>GParamSpec</type></link> derived structure th
 </variablelist><para role="since">Since 2.10
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-param-spec-gtype" role="function" condition="since:2.10"/>g_param_spec_gtype ()</title>
-<indexterm role="2.10"><primary>g_param_spec_gtype</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_gtype                  (const <link linkend="gchar">gchar</link> *name,
+<refsect2 id="g-param-spec-gtype" role="function" condition="since:2.10">
+<title>g_param_spec_gtype ()</title>
+<indexterm zone="g-param-spec-gtype" role="2.10"><primary>g_param_spec_gtype</primary></indexterm><programlisting><link linkend="GParamSpec">GParamSpec</link>*         g_param_spec_gtype                  (const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> *nick,
                                                          const <link linkend="gchar">gchar</link> *blurb,
                                                          <link linkend="GType">GType</link> is_a_type,
@@ -3612,9 +3627,9 @@ See <link linkend="g-param-spec-internal"><function>g_param_spec_internal()</fun
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-value-get-gtype" role="function" condition="since:2.12"/>g_value_get_gtype ()</title>
-<indexterm role="2.12"><primary>g_value_get_gtype</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_value_get_gtype                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
+<refsect2 id="g-value-get-gtype" role="function" condition="since:2.12">
+<title>g_value_get_gtype ()</title>
+<indexterm zone="g-value-get-gtype" role="2.12"><primary>g_value_get_gtype</primary></indexterm><programlisting><link linkend="GType">GType</link>               g_value_get_gtype                   (const <link linkend="GValue">GValue</link> *value);</programlisting>
 <para>
 Get the contents of a <link linkend="G-TYPE-GTYPE:CAPS"><literal>G_TYPE_GTYPE</literal></link> <link linkend="GValue"><type>GValue</type></link>.
 </para><variablelist role="params">
@@ -3627,9 +3642,9 @@ Get the contents of a <link linkend="G-TYPE-GTYPE:CAPS"><literal>G_TYPE_GTYPE</l
 
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-value-set-gtype" role="function" condition="since:2.12"/>g_value_set_gtype ()</title>
-<indexterm role="2.12"><primary>g_value_set_gtype</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_gtype                   (<link linkend="GValue">GValue</link> *value,
+<refsect2 id="g-value-set-gtype" role="function" condition="since:2.12">
+<title>g_value_set_gtype ()</title>
+<indexterm zone="g-value-set-gtype" role="2.12"><primary>g_value_set_gtype</primary></indexterm><programlisting><link linkend="void">void</link>                g_value_set_gtype                   (<link linkend="GValue">GValue</link> *value,
                                                          <link linkend="GType">GType</link> v_gtype);</programlisting>
 <para>
 Set the contents of a <link linkend="G-TYPE-GTYPE:CAPS"><literal>G_TYPE_GTYPE</literal></link> <link linkend="GValue"><type>GValue</type></link> to <parameter>v_gtype</parameter>.
@@ -3649,7 +3664,7 @@ Set the contents of a <link linkend="G-TYPE-GTYPE:CAPS"><literal>G_TYPE_GTYPE</l
 
 
 
-<refsect1>
+<refsect1 id="gobject-Standard-Parameter-and-Value-Types.see-also">
 <title>See Also</title>
 <para>
 <link linkend="GParamSpec"><type>GParamSpec</type></link>, <link linkend="GValue"><type>GValue</type></link>, <link linkend="g-object-class-install-property"><function>g_object_class_install_property()</function></link>.

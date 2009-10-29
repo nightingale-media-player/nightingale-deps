@@ -1,30 +1,30 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>glib-genmarshal</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
-<link rel="start" href="index.html" title="GObject Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.74.0">
+<link rel="home" href="index.html" title="GObject Reference Manual">
 <link rel="up" href="rn02.html" title="Tools Reference">
 <link rel="prev" href="glib-mkenums.html" title="glib-mkenums">
 <link rel="next" href="gobject-query.html" title="gobject-query">
-<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="preface" href="pr01.html" title="Introduction">
-<link rel="part" href="pt01.html" title="Part&#160;I.&#160;Concepts">
-<link rel="chapter" href="ch01.html" title="Background">
-<link rel="chapter" href="ch02.html" title="The Glib Dynamic Type System">
+<link rel="part" href="pt01.html" title="Part I. Concepts">
+<link rel="chapter" href="chapter-intro.html" title="Background">
+<link rel="chapter" href="chapter-gtype.html" title="The GLib Dynamic Type System">
 <link rel="chapter" href="chapter-gobject.html" title="The GObject base class">
 <link rel="chapter" href="chapter-signal.html" title="The GObject messaging system">
 <link rel="reference" href="rn01.html" title="API Reference">
 <link rel="reference" href="rn02.html" title="Tools Reference">
-<link rel="part" href="pt02.html" title="Part&#160;IV.&#160;Tutorial">
-<link rel="chapter" href="howto-gobject.html" title="How To define and implement a new GObject?">
-<link rel="chapter" href="howto-interface.html" title="How To define and implement Interfaces?">
-<link rel="chapter" href="howto-signals.html" title="Howto create and use signals">
-<link rel="part" href="pt03.html" title="Part&#160;V.&#160;Related Tools">
+<link rel="part" href="pt02.html" title="Part IV. Tutorial">
+<link rel="chapter" href="howto-gobject.html" title="How to define and implement a new GObject">
+<link rel="chapter" href="howto-interface.html" title="How to define and implement interfaces">
+<link rel="chapter" href="howto-signals.html" title="How to create and use signals">
+<link rel="part" href="pt03.html" title="Part V. Related Tools">
 <link rel="chapter" href="tools-gob.html" title="GObject builder">
-<link rel="chapter" href="tools-ginspector.html" title="Graphical inspection of Gobjects">
+<link rel="chapter" href="tools-ginspector.html" title="Graphical inspection of GObjects">
 <link rel="chapter" href="tools-refdb.html" title="Debugging reference count problems">
 <link rel="chapter" href="tools-gtkdoc.html" title="Writing API docs">
 <link rel="index" href="ix01.html" title="Index">
@@ -35,6 +35,7 @@
 <link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
 <link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
 <link rel="index" href="ix08.html" title="Index of new symbols in 2.12">
+<link rel="index" href="ix09.html" title="Index of new symbols in 2.14">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle">
@@ -49,7 +50,7 @@
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle">glib-genmarshal</span></h2>
-<p>glib-genmarshal &#8212; C code marshaller generation utility for GLib closures</p>
+<p>glib-genmarshal — C code marshaller generation utility for GLib closures</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -58,8 +59,8 @@
 <div class="cmdsynopsis"><p><code class="command">glib-genmarshal</code>  [options...] [files...]</p></div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id3026332"></a><h2>Description</h2>
-<p><span><strong class="command">glib-genmarshal</strong></span> is a small utility that generates C code 
+<a name="id2841531"></a><h2>Description</h2>
+<p><span class="command"><strong>glib-genmarshal</strong></span> is a small utility that generates C code 
 marshallers for callback functions of the GClosure mechanism in the GObject 
 sublibrary of GLib. The marshaller functions have a standard signature, 
 they get passed in the invoking closure, an array of value structures holding
@@ -70,61 +71,61 @@ collect its return value.
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id3026354"></a><h2>Invocation</h2>
-<p><span><strong class="command">glib-genmarshal</strong></span> takes a list of marshallers to generate as 
+<a name="id2841553"></a><h2>Invocation</h2>
+<p><span class="command"><strong>glib-genmarshal</strong></span> takes a list of marshallers to generate as 
 input. The marshaller list is either read from standard input or from files
 passed as additional arguments on the command line.
 </p>
 <div class="refsect2" lang="en">
-<a name="id3026370"></a><h3>Options</h3>
+<a name="id2841568"></a><h3>Options</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><code class="option">--header</code></span></td>
+<td><p><span class="term"><code class="option">--header</code></span></p></td>
 <td><p>
 Generate header file contents of the marshallers.
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><code class="option">--body</code></span></td>
+<td><p><span class="term"><code class="option">--body</code></span></p></td>
 <td><p>
 Generate C code file contents of the marshallers.
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><code class="option">--prefix=string</code>, <code class="option">--prefix string</code></span></td>
+<td><p><span class="term"><code class="option">--prefix=string</code>, <code class="option">--prefix string</code></span></p></td>
 <td><p>
 Specify marshaller prefix. The default prefix is <code class="literal">`g_cclosure_marshal'</code>.
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><code class="option">--skip-source</code></span></td>
+<td><p><span class="term"><code class="option">--skip-source</code></span></p></td>
 <td><p>
 Skip source location remarks in generated comments.
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><code class="option">--nostdinc</code></span></td>
+<td><p><span class="term"><code class="option">--nostdinc</code></span></p></td>
 <td><p>
 Do not use the standard marshallers of the GObject library, and skip 
 <code class="filename">gmarshal.h</code> include directive in generated header files.
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><code class="option">--g-fatal-warnings</code></span></td>
+<td><p><span class="term"><code class="option">--g-fatal-warnings</code></span></p></td>
 <td><p>
 Make warnings fatal, that is, exit immediately once a warning occurs.
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><code class="option">-h</code>, <code class="option">--help</code></span></td>
+<td><p><span class="term"><code class="option">-h</code>, <code class="option">--help</code></span></p></td>
 <td><p>
 Print brief help and exit.
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><code class="option">-v</code>, <code class="option">--version</code></span></td>
+<td><p><span class="term"><code class="option">-v</code>, <code class="option">--version</code></span></p></td>
 <td><p>
 Print version and exit.
 </p></td>
@@ -134,7 +135,7 @@ Print version and exit.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id3026505"></a><h3>Marshaller list format</h3>
+<a name="id2841705"></a><h3>Marshaller list format</h3>
 <p>
 The marshaller lists are processed line by line, a line can contain a
 comment in the form of
@@ -162,7 +163,7 @@ which are always pointers.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id3026578"></a><h3>Parameter types</h3>
+<a name="id2841777"></a><h3>Parameter types</h3>
 <p>
 Currently, the following types are supported:
 </p>
@@ -170,7 +171,7 @@ Currently, the following types are supported:
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="replaceable"><code>VOID</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>VOID</code></em></span></p></td>
 <td><p>
 indicates no return type, or no extra parameters. 
 If <em class="replaceable"><code>VOID</code></em> is used as the parameter list, no 
@@ -178,121 +179,121 @@ additional parameters may be present.
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>BOOLEAN</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>BOOLEAN</code></em></span></p></td>
 <td><p>
 for boolean types (gboolean)
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>CHAR</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>CHAR</code></em></span></p></td>
 <td><p>
 for signed char types (gchar)
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>UCHAR</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>UCHAR</code></em></span></p></td>
 <td><p>
 for unsigned char types (guchar)
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>INT</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>INT</code></em></span></p></td>
 <td><p>
 for signed integer types (gint)
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>UINT</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>UINT</code></em></span></p></td>
 <td><p>
 for unsigned integer types (guint)
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>LONG</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>LONG</code></em></span></p></td>
 <td><p>
 for signed long integer types (glong)
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>ULONG</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>ULONG</code></em></span></p></td>
 <td><p>
 for unsigned long integer types (gulong)
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>INT64</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>INT64</code></em></span></p></td>
 <td><p>
 for signed 64bit integer types (gint64)
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>UINT64</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>UINT64</code></em></span></p></td>
 <td><p>
 for unsigned 64bit integer types (guint64)
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>ENUM</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>ENUM</code></em></span></p></td>
 <td><p>
 for enumeration types (gint)
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>FLAGS</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>FLAGS</code></em></span></p></td>
 <td><p>
 for flag enumeration types (guint)
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>FLOAT</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>FLOAT</code></em></span></p></td>
 <td><p>
 for single-precision float types (gfloat)
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>DOUBLE</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>DOUBLE</code></em></span></p></td>
 <td><p>
 for double-precision float types (gdouble)
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>STRING</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>STRING</code></em></span></p></td>
 <td><p>
 for string types (gchar*)
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>BOXED</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>BOXED</code></em></span></p></td>
 <td><p>
 for boxed (anonymous but reference counted) types (GBoxed*)
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>PARAM</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>PARAM</code></em></span></p></td>
 <td><p>
 for GParamSpec or derived types (GParamSpec*)
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>POINTER</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>POINTER</code></em></span></p></td>
 <td><p>
 for anonymous pointer types (gpointer)
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>OBJECT</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>OBJECT</code></em></span></p></td>
 <td><p>
 for GObject or derived types (GObject*)
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>NONE</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>NONE</code></em></span></p></td>
 <td><p>
 deprecated alias for <em class="replaceable"><code>VOID</code></em>
 </p></td>
 </tr>
 <tr>
-<td><span class="term"><em class="replaceable"><code>BOOL</code></em></span></td>
+<td><p><span class="term"><em class="replaceable"><code>BOOL</code></em></span></p></td>
 <td><p>
 deprecated alias for <em class="replaceable"><code>BOOLEAN</code></em>
 </p></td>
@@ -304,7 +305,7 @@ deprecated alias for <em class="replaceable"><code>BOOLEAN</code></em>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id3026872"></a><h2>Example</h2>
+<a name="id2842072"></a><h2>Example</h2>
 <p>
 To generate marshallers for the following callback functions:
 </p>
@@ -352,26 +353,29 @@ g_closure_set_marshal (cc_baz, g_cclosure_marshal_FLOAT__BOOLEAN_UCHAR);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id3026933"></a><h2>See also</h2>
+<a name="id2842132"></a><h2>See also</h2>
 <p>
-<span><strong class="command">glib-mkenums</strong></span>(1)
+<span class="command"><strong>glib-mkenums</strong></span>(1)
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id3026948"></a><h2>Bugs</h2>
+<a name="id2842147"></a><h2>Bugs</h2>
 <p>
 None known yet.
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id3026957"></a><h2>Author</h2>
-<p><span><strong class="command">glib-genmarshal</strong></span> has been written by Tim Janik 
-<code class="email">&lt;<a href="mailto:timj@gtk.org">timj@gtk.org</a>&gt;</code>.
+<a name="id2842157"></a><h2>Author</h2>
+<p><span class="command"><strong>glib-genmarshal</strong></span> has been written by Tim Janik 
+<code class="email">&lt;<a class="email" href="mailto:timj@gtk.org">timj@gtk.org</a>&gt;</code>.
 </p>
 <p>
-This manual page was provided by Tim Janik <code class="email">&lt;<a href="mailto:timj@gtk.org">timj@gtk.org</a>&gt;</code>.
+This manual page was provided by Tim Janik <code class="email">&lt;<a class="email" href="mailto:timj@gtk.org">timj@gtk.org</a>&gt;</code>.
 </p>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

@@ -31,10 +31,15 @@
 #include <signal.h>
 #include <string.h>
 #include <stdlib.h>   /* for fdwalk */
+#include <dirent.h>
 
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif /* HAVE_SYS_SELECT_H */
+
+#ifdef HAVE_SYS_RESOURCE_H
+#include <sys/resource.h>
+#endif /* HAVE_SYS_RESOURCE_H */
 
 #include "glib.h"
 #include "glibintl.h"
@@ -85,6 +90,13 @@ g_spawn_error_quark (void)
  * See g_spawn_async_with_pipes() for a full description; this function
  * simply calls the g_spawn_async_with_pipes() without any pipes.
  * 
+ * <note><para>
+ * If you are writing a GTK+ application, and the program you 
+ * are spawning is a graphical application, too, then you may
+ * want to use gdk_spawn_on_screen() instead to ensure that 
+ * the spawned program opens its windows on the right screen.
+ * </para></note>
+ *
  * Return value: %TRUE on success, %FALSE if error is set
  **/
 gboolean
@@ -179,22 +191,27 @@ read_data (GString *str,
  * @working_directory: child's current working directory, or %NULL to inherit parent's
  * @argv: child's argument vector
  * @envp: child's environment, or %NULL to inherit parent's
- * @flags: flags from #GSpawnFlags
+ * @flags: flags from #GSpawnFlags 
  * @child_setup: function to run in the child just before exec()
  * @user_data: user data for @child_setup
- * @standard_output: return location for child output 
- * @standard_error: return location for child error messages
- * @exit_status: return location for child exit status, as returned by waitpid()
- * @error: return location for error
+ * @standard_output: return location for child output, or %NULL
+ * @standard_error: return location for child error messages, or %NULL
+ * @exit_status: return location for child exit status, as returned by waitpid(), or %NULL
+ * @error: return location for error, or %NULL
  *
  * Executes a child synchronously (waits for the child to exit before returning).
  * All output from the child is stored in @standard_output and @standard_error,
- * if those parameters are non-%NULL. If @exit_status is non-%NULL, the exit 
- * status of the child is stored there as it would be returned by 
- * waitpid(); standard UNIX macros such as WIFEXITED() and WEXITSTATUS() 
- * must be used to evaluate the exit status. If an error occurs, no data is 
- * returned in @standard_output, @standard_error, or @exit_status.
- * 
+ * if those parameters are non-%NULL. Note that you must set the  
+ * %G_SPAWN_STDOUT_TO_DEV_NULL and %G_SPAWN_STDERR_TO_DEV_NULL flags when
+ * passing %NULL for @standard_output and @standard_error.
+ * If @exit_status is non-%NULL, the exit status of the child is stored
+ * there as it would be returned by waitpid(); standard UNIX macros such 
+ * as WIFEXITED() and WEXITSTATUS() must be used to evaluate the exit status.
+ * Note that this function call waitpid() even if @exit_status is %NULL, and
+ * does not accept the %G_SPAWN_DO_NOT_REAP_CHILD flag.
+ * If an error occurs, no data is returned in @standard_output, 
+ * @standard_error, or @exit_status. 
+ *
  * This function calls g_spawn_async_with_pipes() internally; see that
  * function for full details on the other parameters and details on
  * how these functions work on Windows.
@@ -436,7 +453,7 @@ g_spawn_sync (const gchar          *working_directory,
  * On Windows, note that all the string or string vector arguments to
  * this function and the other g_spawn*() functions are in UTF-8, the
  * GLib file name encoding. Unicode characters that are not part of
- * the system codepage passed in argument vectors will be correctly
+ * the system codepage passed in these arguments will be correctly
  * available in the spawned program only if it uses wide character API
  * to retrieve its command line. For C programs built with Microsoft's
  * tools it is enough to make the program have a wmain() instead of
@@ -522,7 +539,7 @@ g_spawn_sync (const gchar          *working_directory,
  *
  * If non-%NULL, @child_pid will on Unix be filled with the child's
  * process ID. You can use the process ID to send signals to the
- * child, or to waitpid() if you specified the
+ * child, or to use g_child_watch_add() (or waitpid()) if you specified the
  * %G_SPAWN_DO_NOT_REAP_CHILD flag. On Windows, @child_pid will be
  * filled with a handle to the child process only if you specified the
  * %G_SPAWN_DO_NOT_REAP_CHILD flag. You can then access the child
@@ -538,14 +555,16 @@ g_spawn_sync (const gchar          *working_directory,
  * when they are no longer in use. If these parameters are %NULL, the corresponding
  * pipe won't be created.
  *
- * If @standard_input is NULL, the child's standard input is attached to /dev/null
- * unless %G_SPAWN_CHILD_INHERITS_STDIN is set.
+ * If @standard_input is NULL, the child's standard input is attached to 
+ * /dev/null unless %G_SPAWN_CHILD_INHERITS_STDIN is set.
  *
- * If @standard_error is NULL, the child's standard error goes to the same location
- * as the parent's standard error unless %G_SPAWN_STDERR_TO_DEV_NULL is set.
+ * If @standard_error is NULL, the child's standard error goes to the same 
+ * location as the parent's standard error unless %G_SPAWN_STDERR_TO_DEV_NULL 
+ * is set.
  *
- * If @standard_output is NULL, the child's standard output goes to the same location
- * as the parent's standard output unless %G_SPAWN_STDOUT_TO_DEV_NULL is set.
+ * If @standard_output is NULL, the child's standard output goes to the same 
+ * location as the parent's standard output unless %G_SPAWN_STDOUT_TO_DEV_NULL 
+ * is set.
  *
  * @error can be %NULL to ignore errors, or non-%NULL to report errors.
  * If an error is set, the function returns %FALSE. Errors
@@ -559,6 +578,13 @@ g_spawn_sync (const gchar          *working_directory,
  *
  * If @child_pid is not %NULL and an error does not occur then the returned
  * pid must be closed using g_spawn_close_pid().
+ *
+ * <note><para>
+ * If you are writing a GTK+ application, and the program you 
+ * are spawning is a graphical application, too, then you may
+ * want to use gdk_spawn_on_screen_with_pipes() instead to ensure that 
+ * the spawned program opens its windows no the right screen.
+ * </para></note>
  * 
  * Return value: %TRUE on success, %FALSE if an error was set
  **/
@@ -853,10 +879,10 @@ write_err_and_exit (gint fd, gint msg)
   _exit (1);
 }
 
-static int 
+static int
 set_cloexec (void *data, gint fd)
 {
-  if (fd >= GPOINTER_TO_INT(data))
+  if (fd >= GPOINTER_TO_INT (data))
     fcntl (fd, F_SETFD, FD_CLOEXEC);
 
   return 0;
@@ -868,12 +894,62 @@ fdwalk (int (*cb)(void *data, int fd), void *data)
 {
   gint open_max;
   gint fd;
-  gint res;
+  gint res = 0;
+  
+#ifdef HAVE_SYS_RESOURCE_H
+  struct rlimit rl;
+#endif
 
-  res = 0;
-  open_max = sysconf (_SC_OPEN_MAX);
-  for (fd = 0; fd < open_max && res == 0; fd++)
-    res = cb (data, fd);
+#ifdef __linux__  
+  DIR *d;
+
+  if ((d = opendir("/proc/self/fd"))) {
+      struct dirent *de;
+
+      while ((de = readdir(d))) {
+          glong l;
+          gchar *e = NULL;
+
+          if (de->d_name[0] == '.')
+              continue;
+            
+          errno = 0;
+          l = strtol(de->d_name, &e, 10);
+          if (errno != 0 || !e || *e)
+              continue;
+
+          fd = (gint) l;
+
+          if ((glong) fd != l)
+              continue;
+
+          if (fd == dirfd(d))
+              continue;
+
+          if ((res = cb (data, fd)) != 0)
+              break;
+        }
+      
+      closedir(d);
+      return res;
+  }
+
+  /* If /proc is not mounted or not accessible we fall back to the old
+   * rlimit trick */
+
+#endif
+  
+#ifdef HAVE_SYS_RESOURCE_H
+      
+  if (getrlimit(RLIMIT_NOFILE, &rl) == 0 && rl.rlim_max != RLIM_INFINITY)
+      open_max = rl.rlim_max;
+  else
+#endif
+      open_max = sysconf (_SC_OPEN_MAX);
+
+  for (fd = 0; fd < open_max; fd++)
+      if ((res = cb (data, fd)) != 0)
+          break;
 
   return res;
 }
@@ -1460,8 +1536,8 @@ g_execute (const gchar *file,
       gboolean got_eacces = 0;
       const gchar *path, *p;
       gchar *name, *freeme;
-      size_t len;
-      size_t pathlen;
+      gsize len;
+      gsize pathlen;
 
       path = g_getenv ("PATH");
       if (path == NULL)

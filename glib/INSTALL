@@ -1,8 +1,8 @@
 Simple install procedure
 ========================
 
-  % gzip -cd glib-2.12.13.tar.gz | tar xvf -  # unpack the sources
-  % cd glib-2.12.13                           # change to the toplevel directory
+  % gzip -cd glib-2.16.6.tar.gz | tar xvf -  # unpack the sources
+  % cd glib-2.16.6                           # change to the toplevel directory
   % ./configure                             # run the `configure' script
   % make                                    # build GLIB
 
@@ -59,6 +59,11 @@ you should use the libintl library from the GNU gettext package,
 available from:
 
  http://www.gnu.org/software/gettext/
+
+
+Support for extended attributes and SELinux in GIO requires
+libattr and libselinux. 
+
 
 The Nitty-Gritty
 ================

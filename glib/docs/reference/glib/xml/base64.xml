@@ -1,6 +1,6 @@
 <refentry id="glib-Base64-Encoding">
 <refmeta>
-<refentrytitle role="top_of_page">Base64 Encoding</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Base64-Encoding.top_of_page">Base64 Encoding</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
@@ -11,13 +11,12 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Base64-Encoding.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
-
 
 <link linkend="gsize">gsize</link>               <link linkend="g-base64-encode-step">g_base64_encode_step</link>                (const <link linkend="guchar">guchar</link> *in,
                                                          <link linkend="gsize">gsize</link> len,
@@ -49,7 +48,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Base64-Encoding.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 Base64 is an encoding that allows to encode a sequence of arbitrary
@@ -72,11 +71,11 @@ Support for Base64 encoding has been added in GLib 2.12.
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Base64-Encoding.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="g-base64-encode-step" role="function" condition="since:2.12"/>g_base64_encode_step ()</title>
-<indexterm role="2.12"><primary>g_base64_encode_step</primary></indexterm><programlisting><link linkend="gsize">gsize</link>               g_base64_encode_step                (const <link linkend="guchar">guchar</link> *in,
+<refsect2 id="g-base64-encode-step" role="function" condition="since:2.12">
+<title>g_base64_encode_step ()</title>
+<indexterm zone="g-base64-encode-step" role="2.12"><primary>g_base64_encode_step</primary></indexterm><programlisting><link linkend="gsize">gsize</link>               g_base64_encode_step                (const <link linkend="guchar">guchar</link> *in,
                                                          <link linkend="gsize">gsize</link> len,
                                                          <link linkend="gboolean">gboolean</link> break_lines,
                                                          <link linkend="gchar">gchar</link> *out,
@@ -127,9 +126,9 @@ the same line. This avoids problems with long lines in the email system.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-base64-encode-close" role="function" condition="since:2.12"/>g_base64_encode_close ()</title>
-<indexterm role="2.12"><primary>g_base64_encode_close</primary></indexterm><programlisting><link linkend="gsize">gsize</link>               g_base64_encode_close               (<link linkend="gboolean">gboolean</link> break_lines,
+<refsect2 id="g-base64-encode-close" role="function" condition="since:2.12">
+<title>g_base64_encode_close ()</title>
+<indexterm zone="g-base64-encode-close" role="2.12"><primary>g_base64_encode_close</primary></indexterm><programlisting><link linkend="gsize">gsize</link>               g_base64_encode_close               (<link linkend="gboolean">gboolean</link> break_lines,
                                                          <link linkend="gchar">gchar</link> *out,
                                                          <link linkend="gint">gint</link> *state,
                                                          <link linkend="gint">gint</link> *save);</programlisting>
@@ -155,9 +154,9 @@ Flush the status from a sequence of calls to <link linkend="g-base64-encode-step
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-base64-encode" role="function" condition="since:2.12"/>g_base64_encode ()</title>
-<indexterm role="2.12"><primary>g_base64_encode</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_base64_encode                     (const <link linkend="guchar">guchar</link> *data,
+<refsect2 id="g-base64-encode" role="function" condition="since:2.12">
+<title>g_base64_encode ()</title>
+<indexterm zone="g-base64-encode" role="2.12"><primary>g_base64_encode</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              g_base64_encode                     (const <link linkend="guchar">guchar</link> *data,
                                                          <link linkend="gsize">gsize</link> len);</programlisting>
 <para>
 Encode a sequence of binary data into its Base-64 stringified
@@ -172,14 +171,15 @@ representation.</para>
 <listitem><simpara> the length of <parameter>data</parameter>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a newly allocated, zero-terminated Base-64 encoded
-              string representing <parameter>data</parameter>.
+              string representing <parameter>data</parameter>. The returned string must 
+              be freed with <link linkend="g-free"><function>g_free()</function></link>.
 
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-base64-decode-step" role="function" condition="since:2.12"/>g_base64_decode_step ()</title>
-<indexterm role="2.12"><primary>g_base64_decode_step</primary></indexterm><programlisting><link linkend="gsize">gsize</link>               g_base64_decode_step                (const <link linkend="gchar">gchar</link> *in,
+<refsect2 id="g-base64-decode-step" role="function" condition="since:2.12">
+<title>g_base64_decode_step ()</title>
+<indexterm zone="g-base64-decode-step" role="2.12"><primary>g_base64_decode_step</primary></indexterm><programlisting><link linkend="gsize">gsize</link>               g_base64_decode_step                (const <link linkend="gchar">gchar</link> *in,
                                                          <link linkend="gsize">gsize</link> len,
                                                          <link linkend="guchar">guchar</link> *out,
                                                          <link linkend="gint">gint</link> *state,
@@ -216,9 +216,9 @@ at least: <parameter>len</parameter> * 3 / 4 bytes.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-base64-decode" role="function" condition="since:2.12"/>g_base64_decode ()</title>
-<indexterm role="2.12"><primary>g_base64_decode</primary></indexterm><programlisting><link linkend="guchar">guchar</link>*             g_base64_decode                     (const <link linkend="gchar">gchar</link> *text,
+<refsect2 id="g-base64-decode" role="function" condition="since:2.12">
+<title>g_base64_decode ()</title>
+<indexterm zone="g-base64-decode" role="2.12"><primary>g_base64_decode</primary></indexterm><programlisting><link linkend="guchar">guchar</link>*             g_base64_decode                     (const <link linkend="gchar">gchar</link> *text,
                                                          <link linkend="gsize">gsize</link> *out_len);</programlisting>
 <para>
 Decode a sequence of Base-64 encoded text into binary data</para>
@@ -232,7 +232,8 @@ Decode a sequence of Base-64 encoded text into binary data</para>
 <listitem><simpara> The length of the decoded data is written here
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a newly allocated buffer containing the binary data
-              that <parameter>text</parameter> represents
+              that <parameter>text</parameter> represents. The returned buffer must
+              be freed with <link linkend="g-free"><function>g_free()</function></link>.
 
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.12

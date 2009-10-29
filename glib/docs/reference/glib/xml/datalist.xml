@@ -1,23 +1,22 @@
 <refentry id="glib-Keyed-Data-Lists">
 <refmeta>
-<refentrytitle role="top_of_page">Keyed Data Lists</refentrytitle>
+<refentrytitle role="top_of_page" id="glib-Keyed-Data-Lists.top_of_page">Keyed Data Lists</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GLIB Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
 <refname>Keyed Data Lists</refname>
-<refpurpose>lists of data elements which are accessible by a string or <link linkend="GQuark"><type>GQuark</type></link> identifier.</refpurpose>
+<refpurpose>lists of data elements which are accessible by a string or GQuark identifier</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="glib-Keyed-Data-Lists.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
 #include &lt;glib.h&gt;
-
 
                     <link linkend="GData">GData</link>;
 <link linkend="void">void</link>                <link linkend="g-datalist-init">g_datalist_init</link>                     (<link linkend="GData">GData</link> **datalist);
@@ -60,7 +59,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="glib-Keyed-Data-Lists.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 Keyed data lists provide lists of arbitrary data elements which can be accessed
@@ -100,19 +99,19 @@ To remove all data elements from a datalist, use <link linkend="g-datalist-clear
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="glib-Keyed-Data-Lists.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="GData" role="struct"/>GData</title>
-<indexterm><primary>GData</primary></indexterm><programlisting>typedef struct _GData GData;</programlisting>
+<refsect2 id="GData" role="struct">
+<title>GData</title>
+<indexterm zone="GData"><primary>GData</primary></indexterm><programlisting>typedef struct _GData GData;</programlisting>
 <para>
 The <link linkend="GData"><type>GData</type></link> struct is an opaque data structure to represent a
 <link linkend="glib-Keyed-Data-Lists">Keyed Data List</link>.
 It should only be accessed via the following functions.
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-datalist-init" role="function"/>g_datalist_init ()</title>
-<indexterm><primary>g_datalist_init</primary></indexterm><programlisting><link linkend="void">void</link>                g_datalist_init                     (<link linkend="GData">GData</link> **datalist);</programlisting>
+<refsect2 id="g-datalist-init" role="function">
+<title>g_datalist_init ()</title>
+<indexterm zone="g-datalist-init"><primary>g_datalist_init</primary></indexterm><programlisting><link linkend="void">void</link>                g_datalist_init                     (<link linkend="GData">GData</link> **datalist);</programlisting>
 <para>
 Resets the datalist to <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 It does not free any memory or call any destroy functions.
@@ -123,9 +122,9 @@ It does not free any memory or call any destroy functions.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-datalist-id-set-data" role="macro"/>g_datalist_id_set_data()</title>
-<indexterm><primary>g_datalist_id_set_data</primary></indexterm><programlisting>#define             g_datalist_id_set_data(dl, q, d)</programlisting>
+<refsect2 id="g-datalist-id-set-data" role="macro">
+<title>g_datalist_id_set_data()</title>
+<indexterm zone="g-datalist-id-set-data"><primary>g_datalist_id_set_data</primary></indexterm><programlisting>#define             g_datalist_id_set_data(dl, q, d)</programlisting>
 <para>
 Sets the data corresponding to the given <link linkend="GQuark"><type>GQuark</type></link> id.
 Any previous data with the same key is removed, and its
@@ -144,9 +143,9 @@ corresponding to <parameter>q</parameter>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-datalist-id-set-data-full" role="function"/>g_datalist_id_set_data_full ()</title>
-<indexterm><primary>g_datalist_id_set_data_full</primary></indexterm><programlisting><link linkend="void">void</link>                g_datalist_id_set_data_full         (<link linkend="GData">GData</link> **datalist,
+<refsect2 id="g-datalist-id-set-data-full" role="function">
+<title>g_datalist_id_set_data_full ()</title>
+<indexterm zone="g-datalist-id-set-data-full"><primary>g_datalist_id_set_data_full</primary></indexterm><programlisting><link linkend="void">void</link>                g_datalist_id_set_data_full         (<link linkend="GData">GData</link> **datalist,
                                                          <link linkend="GQuark">GQuark</link> key_id,
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_func);</programlisting>
@@ -175,9 +174,9 @@ also be <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-datalist-id-get-data" role="function"/>g_datalist_id_get_data ()</title>
-<indexterm><primary>g_datalist_id_get_data</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_datalist_id_get_data              (<link linkend="GData">GData</link> **datalist,
+<refsect2 id="g-datalist-id-get-data" role="function">
+<title>g_datalist_id_get_data ()</title>
+<indexterm zone="g-datalist-id-get-data"><primary>g_datalist_id_get_data</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_datalist_id_get_data              (<link linkend="GData">GData</link> **datalist,
                                                          <link linkend="GQuark">GQuark</link> key_id);</programlisting>
 <para>
 Retrieves the data element corresponding to <parameter>key_id</parameter>. 
@@ -193,9 +192,9 @@ Retrieves the data element corresponding to <parameter>key_id</parameter>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-datalist-id-remove-data" role="macro"/>g_datalist_id_remove_data()</title>
-<indexterm><primary>g_datalist_id_remove_data</primary></indexterm><programlisting>#define             g_datalist_id_remove_data(dl, q)</programlisting>
+<refsect2 id="g-datalist-id-remove-data" role="macro">
+<title>g_datalist_id_remove_data()</title>
+<indexterm zone="g-datalist-id-remove-data"><primary>g_datalist_id_remove_data</primary></indexterm><programlisting>#define             g_datalist_id_remove_data(dl, q)</programlisting>
 <para>
 Removes an element, using its <link linkend="GQuark"><type>GQuark</type></link> identifier.
 </para><variablelist role="params">
@@ -208,9 +207,9 @@ Removes an element, using its <link linkend="GQuark"><type>GQuark</type></link> 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-datalist-id-remove-no-notify" role="function"/>g_datalist_id_remove_no_notify ()</title>
-<indexterm><primary>g_datalist_id_remove_no_notify</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_datalist_id_remove_no_notify      (<link linkend="GData">GData</link> **datalist,
+<refsect2 id="g-datalist-id-remove-no-notify" role="function">
+<title>g_datalist_id_remove_no_notify ()</title>
+<indexterm zone="g-datalist-id-remove-no-notify"><primary>g_datalist_id_remove_no_notify</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>            g_datalist_id_remove_no_notify      (<link linkend="GData">GData</link> **datalist,
                                                          <link linkend="GQuark">GQuark</link> key_id);</programlisting>
 <para>
 Removes an element, without calling its destroy notification function.
@@ -226,9 +225,9 @@ Removes an element, without calling its destroy notification function.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-datalist-set-data" role="macro"/>g_datalist_set_data()</title>
-<indexterm><primary>g_datalist_set_data</primary></indexterm><programlisting>#define             g_datalist_set_data(dl, k, d)</programlisting>
+<refsect2 id="g-datalist-set-data" role="macro">
+<title>g_datalist_set_data()</title>
+<indexterm zone="g-datalist-set-data"><primary>g_datalist_set_data</primary></indexterm><programlisting>#define             g_datalist_set_data(dl, k, d)</programlisting>
 <para>
 Sets the data element corresponding to the given string identifier.
 </para><variablelist role="params">
@@ -245,9 +244,9 @@ corresponding to <parameter>k</parameter>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-datalist-set-data-full" role="macro"/>g_datalist_set_data_full()</title>
-<indexterm><primary>g_datalist_set_data_full</primary></indexterm><programlisting>#define             g_datalist_set_data_full(dl, k, d, f)</programlisting>
+<refsect2 id="g-datalist-set-data-full" role="macro">
+<title>g_datalist_set_data_full()</title>
+<indexterm zone="g-datalist-set-data-full"><primary>g_datalist_set_data_full</primary></indexterm><programlisting>#define             g_datalist_set_data_full(dl, k, d, f)</programlisting>
 <para>
 Sets the data element corresponding to the given string identifier, and the
 function to be called when the data element is removed.
@@ -270,9 +269,9 @@ memory allocated for it. If <parameter>d</parameter> is <link linkend="NULL:CAPS
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-datalist-get-data" role="macro"/>g_datalist_get_data()</title>
-<indexterm><primary>g_datalist_get_data</primary></indexterm><programlisting>#define             g_datalist_get_data(dl, k)</programlisting>
+<refsect2 id="g-datalist-get-data" role="macro">
+<title>g_datalist_get_data()</title>
+<indexterm zone="g-datalist-get-data"><primary>g_datalist_get_data</primary></indexterm><programlisting>#define             g_datalist_get_data(dl, k)</programlisting>
 <para>
 Gets a data element, using its string identifer.
 This is slower than <link linkend="g-datalist-id-get-data"><function>g_datalist_id_get_data()</function></link> because the string is first
@@ -289,9 +288,9 @@ converted to a <link linkend="GQuark"><type>GQuark</type></link>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-datalist-remove-data" role="macro"/>g_datalist_remove_data()</title>
-<indexterm><primary>g_datalist_remove_data</primary></indexterm><programlisting>#define             g_datalist_remove_data(dl, k)</programlisting>
+<refsect2 id="g-datalist-remove-data" role="macro">
+<title>g_datalist_remove_data()</title>
+<indexterm zone="g-datalist-remove-data"><primary>g_datalist_remove_data</primary></indexterm><programlisting>#define             g_datalist_remove_data(dl, k)</programlisting>
 <para>
 Removes an element using its string identifier.
 The data element's destroy function is called if it has been set.
@@ -305,9 +304,9 @@ The data element's destroy function is called if it has been set.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-datalist-remove-no-notify" role="macro"/>g_datalist_remove_no_notify()</title>
-<indexterm><primary>g_datalist_remove_no_notify</primary></indexterm><programlisting>#define             g_datalist_remove_no_notify(dl, k)</programlisting>
+<refsect2 id="g-datalist-remove-no-notify" role="macro">
+<title>g_datalist_remove_no_notify()</title>
+<indexterm zone="g-datalist-remove-no-notify"><primary>g_datalist_remove_no_notify</primary></indexterm><programlisting>#define             g_datalist_remove_no_notify(dl, k)</programlisting>
 <para>
 Removes an element, without calling its destroy notifier.
 </para><variablelist role="params">
@@ -320,9 +319,9 @@ Removes an element, without calling its destroy notifier.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-datalist-foreach" role="function"/>g_datalist_foreach ()</title>
-<indexterm><primary>g_datalist_foreach</primary></indexterm><programlisting><link linkend="void">void</link>                g_datalist_foreach                  (<link linkend="GData">GData</link> **datalist,
+<refsect2 id="g-datalist-foreach" role="function">
+<title>g_datalist_foreach ()</title>
+<indexterm zone="g-datalist-foreach"><primary>g_datalist_foreach</primary></indexterm><programlisting><link linkend="void">void</link>                g_datalist_foreach                  (<link linkend="GData">GData</link> **datalist,
                                                          <link linkend="GDataForeachFunc">GDataForeachFunc</link> func,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -345,9 +344,9 @@ function, it should not be called.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-datalist-clear" role="function"/>g_datalist_clear ()</title>
-<indexterm><primary>g_datalist_clear</primary></indexterm><programlisting><link linkend="void">void</link>                g_datalist_clear                    (<link linkend="GData">GData</link> **datalist);</programlisting>
+<refsect2 id="g-datalist-clear" role="function">
+<title>g_datalist_clear ()</title>
+<indexterm zone="g-datalist-clear"><primary>g_datalist_clear</primary></indexterm><programlisting><link linkend="void">void</link>                g_datalist_clear                    (<link linkend="GData">GData</link> **datalist);</programlisting>
 <para>
 Frees all the data elements of the datalist.
 The data elements' destroy functions are called if they have been set.
@@ -358,9 +357,9 @@ The data elements' destroy functions are called if they have been set.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="g-datalist-set-flags" role="function" condition="since:2.8"/>g_datalist_set_flags ()</title>
-<indexterm role="2.8"><primary>g_datalist_set_flags</primary></indexterm><programlisting><link linkend="void">void</link>                g_datalist_set_flags                (<link linkend="GData">GData</link> **datalist,
+<refsect2 id="g-datalist-set-flags" role="function" condition="since:2.8">
+<title>g_datalist_set_flags ()</title>
+<indexterm zone="g-datalist-set-flags" role="2.8"><primary>g_datalist_set_flags</primary></indexterm><programlisting><link linkend="void">void</link>                g_datalist_set_flags                (<link linkend="GData">GData</link> **datalist,
                                                          <link linkend="guint">guint</link> flags);</programlisting>
 <para>
 Turns on flag values for a data list. This function is used
@@ -384,9 +383,9 @@ example.)</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.8
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-datalist-unset-flags" role="function" condition="since:2.8"/>g_datalist_unset_flags ()</title>
-<indexterm role="2.8"><primary>g_datalist_unset_flags</primary></indexterm><programlisting><link linkend="void">void</link>                g_datalist_unset_flags              (<link linkend="GData">GData</link> **datalist,
+<refsect2 id="g-datalist-unset-flags" role="function" condition="since:2.8">
+<title>g_datalist_unset_flags ()</title>
+<indexterm zone="g-datalist-unset-flags" role="2.8"><primary>g_datalist_unset_flags</primary></indexterm><programlisting><link linkend="void">void</link>                g_datalist_unset_flags              (<link linkend="GData">GData</link> **datalist,
                                                          <link linkend="guint">guint</link> flags);</programlisting>
 <para>
 Turns off flag values for a data list. See <link linkend="g-datalist-unset-flags"><function>g_datalist_unset_flags()</function></link></para>
@@ -405,9 +404,9 @@ Turns off flag values for a data list. See <link linkend="g-datalist-unset-flags
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.8
 </para></refsect2>
-<refsect2>
-<title><anchor id="g-datalist-get-flags" role="function" condition="since:2.8"/>g_datalist_get_flags ()</title>
-<indexterm role="2.8"><primary>g_datalist_get_flags</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_datalist_get_flags                (<link linkend="GData">GData</link> **datalist);</programlisting>
+<refsect2 id="g-datalist-get-flags" role="function" condition="since:2.8">
+<title>g_datalist_get_flags ()</title>
+<indexterm zone="g-datalist-get-flags" role="2.8"><primary>g_datalist_get_flags</primary></indexterm><programlisting><link linkend="guint">guint</link>               g_datalist_get_flags                (<link linkend="GData">GData</link> **datalist);</programlisting>
 <para>
 Gets flags values packed in together with the datalist.
 See <link linkend="g-datalist-set-flags"><function>g_datalist_set_flags()</function></link>.</para>
@@ -422,9 +421,9 @@ See <link linkend="g-datalist-set-flags"><function>g_datalist_set_flags()</funct
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  2.8
 </para></refsect2>
-<refsect2>
-<title><anchor id="G-DATALIST-FLAGS-MASK:CAPS" role="macro"/>G_DATALIST_FLAGS_MASK</title>
-<indexterm><primary>G_DATALIST_FLAGS_MASK</primary></indexterm><programlisting>#define G_DATALIST_FLAGS_MASK 0x3
+<refsect2 id="G-DATALIST-FLAGS-MASK:CAPS" role="macro">
+<title>G_DATALIST_FLAGS_MASK</title>
+<indexterm zone="G-DATALIST-FLAGS-MASK:CAPS"><primary>G_DATALIST_FLAGS_MASK</primary></indexterm><programlisting>#define G_DATALIST_FLAGS_MASK 0x3
 </programlisting>
 <para>
 A bitmask that restricts the possible flags passed to

@@ -1,3 +1,5 @@
+include $(top_srcdir)/Makefile.decl
+
 INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/glib			\
@@ -51,6 +53,7 @@ test_programs =					\
 	paramspec-test				\
 	accumulator				\
 	defaultiface				\
+	dynamictype				\
 	ifacecheck				\
 	ifaceinit				\
 	ifaceinherit				\
@@ -69,7 +72,7 @@ TESTS_ENVIRONMENT = srcdir=$(srcdir) \
 
 ########################################################################
 
-EXTRA_DIST = 		  \
+EXTRA_DIST += 		  \
 	testmarshal.list
 
 BUILT_EXTRA_DIST =				\
