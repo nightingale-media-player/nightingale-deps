@@ -350,20 +350,11 @@ nsIAtom*  nsDirectoryService::sCommon_Startmenu = nsnull;
 nsIAtom*  nsDirectoryService::sCommon_Programs = nsnull;
 nsIAtom*  nsDirectoryService::sCommon_Startup = nsnull;
 nsIAtom*  nsDirectoryService::sCommon_Desktopdirectory = nsnull;
-nsIAtom*  nsDirectoryService::sCommon_Documents = nsnull;
-nsIAtom*  nsDirectoryService::sCommon_Pictures = nsnull;
-nsIAtom*  nsDirectoryService::sCommon_Music = nsnull;
-nsIAtom*  nsDirectoryService::sCommon_Video = nsnull;
 nsIAtom*  nsDirectoryService::sAppdata = nsnull;
 nsIAtom*  nsDirectoryService::sLocalAppdata = nsnull;
 nsIAtom*  nsDirectoryService::sPrinthood = nsnull;
 nsIAtom*  nsDirectoryService::sWinCookiesDirectory = nsnull;
 nsIAtom*  nsDirectoryService::sDefaultDownloadDirectory = nsnull;
-nsIAtom*  nsDirectoryService::sDocuments = nsnull;
-nsIAtom*  nsDirectoryService::sPictures = nsnull;
-nsIAtom*  nsDirectoryService::sMusic = nsnull;
-nsIAtom*  nsDirectoryService::sVideo = nsnull;
-nsIAtom*  nsDirectoryService::sDiscBurning = nsnull;
 #elif defined (XP_UNIX)
 nsIAtom*  nsDirectoryService::sLocalDirectory = nsnull;
 nsIAtom*  nsDirectoryService::sLibDirectory = nsnull;
@@ -475,20 +466,11 @@ static const nsStaticAtom directory_atoms[] = {
     { NS_WIN_COMMON_PROGRAMS_DIR,  &nsDirectoryService::sCommon_Programs },
     { NS_WIN_COMMON_STARTUP_DIR,   &nsDirectoryService::sCommon_Startup },
     { NS_WIN_COMMON_DESKTOP_DIRECTORY, &nsDirectoryService::sCommon_Desktopdirectory },
-    { NS_WIN_COMMON_DOCUMENTS,     &nsDirectoryService::sCommon_Documents },
-    { NS_WIN_COMMON_PICTURES,      &nsDirectoryService::sCommon_Pictures },
-    { NS_WIN_COMMON_MUSIC,         &nsDirectoryService::sCommon_Music },
-    { NS_WIN_COMMON_VIDEO,         &nsDirectoryService::sCommon_Video },
     { NS_WIN_APPDATA_DIR,          &nsDirectoryService::sAppdata },
     { NS_WIN_LOCAL_APPDATA_DIR,    &nsDirectoryService::sLocalAppdata },
     { NS_WIN_PRINTHOOD,            &nsDirectoryService::sPrinthood },
     { NS_WIN_COOKIES_DIR,          &nsDirectoryService::sWinCookiesDirectory },
     { NS_WIN_DEFAULT_DOWNLOAD_DIR, &nsDirectoryService::sDefaultDownloadDirectory },
-    { NS_WIN_DOCUMENTS,            &nsDirectoryService::sDocuments },
-    { NS_WIN_PICTURES,             &nsDirectoryService::sPictures },
-    { NS_WIN_MUSIC,                &nsDirectoryService::sMusic },
-    { NS_WIN_VIDEO,                &nsDirectoryService::sVideo },
-    { NS_WIN_DISCBURNING,          &nsDirectoryService::sDiscBurning },
 #elif defined (XP_UNIX)
     { NS_UNIX_LOCAL_DIR,           &nsDirectoryService::sLocalDirectory },
     { NS_UNIX_LIB_DIR,             &nsDirectoryService::sLibDirectory },
@@ -1152,22 +1134,6 @@ nsDirectoryService::GetFile(const char *prop, PRBool *persistent, nsIFile **_ret
     {
         rv = GetSpecialSystemDirectory(Win_Common_Desktopdirectory, getter_AddRefs(localFile)); 
     }
-    else if (inAtom == nsDirectoryService::sCommon_Documents)
-    {
-        rv = GetSpecialSystemDirectory(Win_Common_Documents, getter_AddRefs(localFile));
-    }
-    else if (inAtom == nsDirectoryService::sCommon_Pictures)
-    {
-        rv = GetSpecialSystemDirectory(Win_Common_Pictures, getter_AddRefs(localFile));
-    }
-    else if (inAtom == nsDirectoryService::sCommon_Music)
-    {
-        rv = GetSpecialSystemDirectory(Win_Common_Music, getter_AddRefs(localFile));
-    }
-    else if (inAtom == nsDirectoryService::sCommon_Video)
-    {
-        rv = GetSpecialSystemDirectory(Win_Common_Video, getter_AddRefs(localFile));
-    }
     else if (inAtom == nsDirectoryService::sAppdata)
     {
         rv = GetSpecialSystemDirectory(Win_Appdata, getter_AddRefs(localFile)); 
@@ -1187,26 +1153,6 @@ nsDirectoryService::GetFile(const char *prop, PRBool *persistent, nsIFile **_ret
     else if (inAtom == nsDirectoryService::sDefaultDownloadDirectory)
     {
         rv = GetSpecialSystemDirectory(Win_Downloads, getter_AddRefs(localFile));
-    }
-    else if (inAtom == nsDirectoryService::sDocuments)
-    {
-        rv = GetSpecialSystemDirectory(Win_Documents, getter_AddRefs(localFile));
-    }
-    else if (inAtom == nsDirectoryService::sPictures)
-    {
-        rv = GetSpecialSystemDirectory(Win_Pictures, getter_AddRefs(localFile));
-    }
-    else if (inAtom == nsDirectoryService::sMusic)
-    {
-        rv = GetSpecialSystemDirectory(Win_Music, getter_AddRefs(localFile));
-    }
-    else if (inAtom == nsDirectoryService::sVideo)
-    {
-        rv = GetSpecialSystemDirectory(Win_Video, getter_AddRefs(localFile));
-    }
-    else if (inAtom == nsDirectoryService::sDiscBurning)
-    {
-        rv = GetSpecialSystemDirectory(Win_DiscBurning, getter_AddRefs(localFile));
     }
 #elif defined (XP_UNIX)
 
