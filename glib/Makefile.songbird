@@ -30,7 +30,10 @@
 ################################################################################
 ################################################################################
 
-SB_VENDOR_TARGET_DEP_MODULES := gettext
+
+ifneq (,$(filter Linux,$(SB_VENDOR_ARCH)))
+  SB_VENDOR_TARGET_DEP_MODULES := gettext
+endif
 
 SB_VENDOR_TARGET = glib
 SB_VENDOR_TARGET_VERSION = 2.12.13
