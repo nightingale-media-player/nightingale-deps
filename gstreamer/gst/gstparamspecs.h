@@ -35,6 +35,38 @@ G_BEGIN_DECLS
 #define	GST_PARAM_CONTROLLABLE	(1 << (G_PARAM_USER_SHIFT + 1))
 
 /**
+ * GST_PARAM_MUTABLE_READY:
+ *
+ * Use this flag on GObject properties of GstElements to indicate that
+ * they can be changed when the element is in the READY or lower state.
+ *
+ * Since: 0.10.23
+ */
+#define GST_PARAM_MUTABLE_READY  (1 << (G_PARAM_USER_SHIFT + 2))
+
+/**
+ * GST_PARAM_MUTABLE_PAUSED:
+ *
+ * Use this flag on GObject properties of GstElements to indicate that
+ * they can be changed when the element is in the PAUSED or lower state.
+ * This flag implies GST_PARAM_MUTABLE_READY.
+ *
+ * Since: 0.10.23
+ */
+#define GST_PARAM_MUTABLE_PAUSED  (1 << (G_PARAM_USER_SHIFT + 3))
+
+/**
+ * GST_PARAM_MUTABLE_PLAYING:
+ *
+ * Use this flag on GObject properties of GstElements to indicate that
+ * they can be changed when the element is in the PLAYING or lower state.
+ * This flag implies GST_PARAM_MUTABLE_PAUSED.
+ *
+ * Since: 0.10.23
+ */
+#define GST_PARAM_MUTABLE_PLAYING  (1 << (G_PARAM_USER_SHIFT + 4))
+
+/**
  * GST_PARAM_USER_SHIFT:
  *
  * Bits based on GST_PARAM_USER_SHIFT can be used by 3rd party applications.

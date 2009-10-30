@@ -20,12 +20,13 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 #ifndef __GST_PRIVATE_H__
 #define __GST_PRIVATE_H__
 
 #ifdef HAVE_CONFIG_H
+# ifndef GST_LICENSE   /* don't include config.h twice, it has no guards */
 #  include "config.h"
+# endif
 #endif
 
 /* This needs to be before glib.h, since it might be used in inline
@@ -69,6 +70,7 @@ typedef struct {
 
 struct _GstPluginPrivate {
   GList *deps;    /* list of GstPluginDep structures */
+  GstStructure *cache_data;
 };
 
 gboolean _priv_plugin_deps_env_vars_changed (GstPlugin * plugin);
@@ -85,6 +87,7 @@ void _priv_gst_quarks_initialize (void);
  * headers, so at least the symbols need to continue to be available unless
  * we want enterprise edition packagers dancing on our heads) */
 void  _gst_buffer_initialize (void);
+void  _gst_buffer_list_initialize (void);
 void  _gst_event_initialize (void);
 void  _gst_format_initialize (void);
 void  _gst_message_initialize (void);
@@ -105,32 +108,33 @@ gboolean  priv_gst_structure_append_to_gstring (const GstStructure * structure,
 
 /* registry cache backends */
 /* FIXME 0.11: use priv_ prefix */
-#ifdef USE_BINARY_REGISTRY
 gboolean 		gst_registry_binary_read_cache 	(GstRegistry * registry, const char *location);
 gboolean 		gst_registry_binary_write_cache	(GstRegistry * registry, const char *location);
-/* FIXME 0.11: this is in registry.h for backwards compatibility
-#else 
-gboolean 		gst_registry_xml_read_cache 	(GstRegistry * registry, const char *location);
-gboolean 		gst_registry_xml_write_cache 	(GstRegistry * registry, const char *location);
-*/
-#endif
+
+
+/* used in gstvalue.c and gststructure.c */
+#define GST_ASCII_IS_STRING(c) (g_ascii_isalnum((c)) || ((c) == '_') || \
+    ((c) == '-') || ((c) == '+') || ((c) == '/') || ((c) == ':') || \
+    ((c) == '.'))
 
 /*** debugging categories *****************************************************/
 
-#ifndef GST_DISABLE_GST_DEBUG
+#ifndef GST_REMOVE_GST_DEBUG
 
 GST_EXPORT GstDebugCategory *GST_CAT_GST_INIT;
-GST_EXPORT GstDebugCategory *GST_CAT_AUTOPLUG;
-GST_EXPORT GstDebugCategory *GST_CAT_AUTOPLUG_ATTEMPT;
+GST_EXPORT GstDebugCategory *GST_CAT_AUTOPLUG; /* FIXME 0.11: remove? */
+GST_EXPORT GstDebugCategory *GST_CAT_AUTOPLUG_ATTEMPT; /* FIXME 0.11: remove? */
 GST_EXPORT GstDebugCategory *GST_CAT_PARENTAGE;
 GST_EXPORT GstDebugCategory *GST_CAT_STATES;
 GST_EXPORT GstDebugCategory *GST_CAT_SCHEDULING;
 GST_EXPORT GstDebugCategory *GST_CAT_BUFFER;
+GST_EXPORT GstDebugCategory *GST_CAT_BUFFER_LIST;
 GST_EXPORT GstDebugCategory *GST_CAT_BUS;
 GST_EXPORT GstDebugCategory *GST_CAT_CAPS;
 GST_EXPORT GstDebugCategory *GST_CAT_CLOCK;
 GST_EXPORT GstDebugCategory *GST_CAT_ELEMENT_PADS;
 GST_EXPORT GstDebugCategory *GST_CAT_PADS;
+GST_EXPORT GstDebugCategory *GST_CAT_PERFORMANCE;
 GST_EXPORT GstDebugCategory *GST_CAT_PIPELINE;
 GST_EXPORT GstDebugCategory *GST_CAT_PLUGIN_LOADING;
 GST_EXPORT GstDebugCategory *GST_CAT_PLUGIN_INFO;
@@ -159,11 +163,13 @@ GST_EXPORT GstDebugCategory *GST_CAT_TYPES; /* FIXME 0.11: remove? */
 #define GST_CAT_SCHEDULING       NULL
 #define GST_CAT_DATAFLOW         NULL
 #define GST_CAT_BUFFER           NULL
+#define GST_CAT_BUFFER_LIST      NULL
 #define GST_CAT_BUS              NULL
 #define GST_CAT_CAPS             NULL
 #define GST_CAT_CLOCK            NULL
 #define GST_CAT_ELEMENT_PADS     NULL
 #define GST_CAT_PADS             NULL
+#define GST_CAT_PERFORMANCE      NULL
 #define GST_CAT_PIPELINE         NULL
 #define GST_CAT_PLUGIN_LOADING   NULL
 #define GST_CAT_PLUGIN_INFO      NULL

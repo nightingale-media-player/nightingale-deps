@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gstreamer Elements">
 <link rel="prev" href="gstreamer-plugins-filesrc.html" title="filesrc">
 <link rel="next" href="gstreamer-plugins-identity.html" title="identity">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gstreamer Elements">
 <link rel="chapter" href="ch02.html" title="gstreamer Plugins">
@@ -22,15 +22,17 @@
 <th width="100%" align="center">GStreamer Core Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-plugins-identity.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-plugins-filesink.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gstreamer-plugins-filesink.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gstreamer-plugins-filesink.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gstreamer-plugins-filesink.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#gstreamer-plugins-filesink.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gstreamer-plugins-filesink.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gstreamer-plugins-filesink.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gstreamer-plugins-filesink.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gstreamer-plugins-filesink.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gstreamer-plugins-filesink.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-plugins-filesink"></a><div class="titlepage"></div>
@@ -51,11 +53,17 @@
 <a name="gstreamer-plugins-filesink.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
   <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
-               +----GstBaseSink
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="../gstreamer-libs-0.10/GstBaseSink.html"
+>GstBaseSink</a>
                      +----GstFileSink
 </pre>
 </div>
@@ -63,17 +71,19 @@ href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 <a name="gstreamer-plugins-filesink.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstFileSink implements
- GstURIHandler.</p>
+ <a
+href="../gstreamer-0.10/gstreamer-GstUriHandler.html#GstURIHandler"
+>GstURIHandler</a>.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-filesink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
   "<a class="link" href="gstreamer-plugins-filesink.html#GstFileSink--location" title='The "location" property'>location</a>"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a>*                : Read / Write
   "<a class="link" href="gstreamer-plugins-filesink.html#GstFileSink--buffer-mode" title='The "buffer-mode" property'>buffer-mode</a>"              GstFileSinkBufferMode  : Read / Write
   "<a class="link" href="gstreamer-plugins-filesink.html#GstFileSink--buffer-size" title='The "buffer-size" property'>buffer-size</a>"              <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write
 </pre>
 </div>
@@ -84,7 +94,7 @@ Write incoming data to a file in the local file system.</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2702511"></a><h3>Element Information</h3>
+<a name="id2861921"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -96,7 +106,7 @@ Write incoming data to a file in the local file system.</p>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
-<td>Thomas &lt;thomas@apestaart.org&gt;</td>
+<td>Thomas Vander Stichele &lt;thomas at apestaart dot org&gt;</td>
 </tr>
 <tr>
 <td><p><span class="term">class</span></p></td>
@@ -107,7 +117,7 @@ Write incoming data to a file in the local file system.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2702574"></a><h3>Element Pads</h3>
+<a name="id2861984"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -132,7 +142,6 @@ Write incoming data to a file in the local file system.</p>
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -143,7 +152,6 @@ Write incoming data to a file in the local file system.</p>
 <p>
 Opaque <a class="link" href="gstreamer-plugins-filesink.html#GstFileSink"><span class="type">GstFileSink</span></a> structure.</p>
 <p>
-
 </p>
 </div>
 </div>
@@ -152,7 +160,7 @@ Opaque <a class="link" href="gstreamer-plugins-filesink.html#GstFileSink"><span 
 <div class="refsect2" lang="en">
 <a name="GstFileSink--location"></a><h3>The <code class="literal">"location"</code> property</h3>
 <pre class="programlisting">  "location"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a>*                : Read / Write</pre>
 <p>Location of the file to write.</p>
 <p>Default value: NULL</p>
@@ -168,7 +176,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <div class="refsect2" lang="en">
 <a name="GstFileSink--buffer-size"></a><h3>The <code class="literal">"buffer-size"</code> property</h3>
 <pre class="programlisting">  "buffer-size"              <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write</pre>
 <p>Size of buffer in number of bytes for line or full buffer-mode.</p>
 <p>Default value: 65536</p>
@@ -176,11 +184,11 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 </div>
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-filesink.see-also"></a><h2>See Also</h2>
-<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc"><span class="type">GstFileSrc</span></a>
+#GstFileSrc
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

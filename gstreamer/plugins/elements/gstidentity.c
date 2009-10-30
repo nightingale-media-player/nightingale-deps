@@ -137,6 +137,7 @@ gst_identity_finalize (GObject * object)
   identity = GST_IDENTITY (object);
 
   g_free (identity->last_message);
+  g_static_rec_mutex_free (&identity->notify_lock);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -163,8 +164,8 @@ marshal_VOID__MINIOBJECT (GClosure * closure, GValue * return_value,
     data2 = closure->data;
   }
   callback =
-      (marshalfunc_VOID__MINIOBJECT) (marshal_data ? marshal_data : cc->
-      callback);
+      (marshalfunc_VOID__MINIOBJECT) (marshal_data ? marshal_data :
+      cc->callback);
 
   callback (data1, gst_value_get_mini_object (param_values + 1), data2);
 }
@@ -173,11 +174,9 @@ static void
 gst_identity_class_init (GstIdentityClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseTransformClass *gstbasetrans_class;
 
   gobject_class = G_OBJECT_CLASS (klass);
-  gstelement_class = GST_ELEMENT_CLASS (klass);
   gstbasetrans_class = GST_BASE_TRANSFORM_CLASS (klass);
 
   gobject_class->set_property = GST_DEBUG_FUNCPTR (gst_identity_set_property);
@@ -291,6 +290,21 @@ gst_identity_init (GstIdentity * identity, GstIdentityClass * g_class)
   identity->dump = DEFAULT_DUMP;
   identity->last_message = NULL;
   identity->signal_handoffs = DEFAULT_SIGNAL_HANDOFFS;
+  g_static_rec_mutex_init (&identity->notify_lock);
+}
+
+static void
+gst_identity_notify_last_message (GstIdentity * identity)
+{
+  /* FIXME: this hacks around a bug in GLib/GObject: doing concurrent
+   * g_object_notify() on the same object might lead to crashes, see
+   * http://bugzilla.gnome.org/show_bug.cgi?id=166020#c60 and follow-ups.
+   * So we really don't want to do a g_object_notify() here for out-of-band
+   * events with the streaming thread possibly also doing a g_object_notify()
+   * for an in-band buffer or event. */
+  g_static_rec_mutex_lock (&identity->notify_lock);
+  g_object_notify ((GObject *) identity, "last_message");
+  g_static_rec_mutex_unlock (&identity->notify_lock);
 }
 
 static gboolean
@@ -320,7 +334,7 @@ gst_identity_event (GstBaseTransform * trans, GstEvent * event)
     g_free (sstr);
     GST_OBJECT_UNLOCK (identity);
 
-    g_object_notify (G_OBJECT (identity), "last_message");
+    gst_identity_notify_last_message (identity);
   }
 
   if (identity->single_segment
@@ -335,8 +349,7 @@ gst_identity_event (GstBaseTransform * trans, GstEvent * event)
       /* This is the first newsegment, send out a (0, -1) newsegment */
       news = gst_event_new_new_segment (TRUE, 1.0, format, 0, -1, 0);
 
-      if (!(gst_pad_event_default (trans->sinkpad, news)))
-        return FALSE;
+      gst_pad_event_default (trans->sinkpad, news);
     }
   }
 
@@ -435,11 +448,9 @@ gst_identity_check_imperfect_timestamp (GstIdentity * identity, GstBuffer * buf)
     /* check if we had a previous buffer to compare to */
     if (identity->prev_timestamp != GST_CLOCK_TIME_NONE &&
         identity->prev_duration != GST_CLOCK_TIME_NONE) {
-      guint64 offset;
       GstClockTime t_expected;
       GstClockTimeDiff dt;
 
-      offset = GST_BUFFER_OFFSET (buf);
       t_expected = identity->prev_timestamp + identity->prev_duration;
       dt = GST_CLOCK_DIFF (t_expected, timestamp);
       if (dt != 0) {
@@ -566,7 +577,7 @@ gst_identity_transform_ip (GstBaseTransform * trans, GstBuffer * buf)
             GST_TIME_ARGS (GST_BUFFER_DURATION (buf)), GST_BUFFER_OFFSET (buf),
             GST_BUFFER_OFFSET_END (buf), GST_BUFFER_FLAGS (buf), buf);
         GST_OBJECT_UNLOCK (identity);
-        g_object_notify (G_OBJECT (identity), "last-message");
+        gst_identity_notify_last_message (identity);
       }
       /* return DROPPED to basetransform. */
       return GST_BASE_TRANSFORM_FLOW_DROPPED;
@@ -590,7 +601,7 @@ gst_identity_transform_ip (GstBaseTransform * trans, GstBuffer * buf)
         GST_BUFFER_OFFSET (buf), GST_BUFFER_OFFSET_END (buf),
         GST_BUFFER_FLAGS (buf), buf);
     GST_OBJECT_UNLOCK (identity);
-    g_object_notify (G_OBJECT (identity), "last-message");
+    gst_identity_notify_last_message (identity);
   }
 
   if (identity->datarate > 0) {

@@ -9,11 +9,7 @@ endif
 if GST_DISABLE_REGISTRY
 GST_REGISTRY_SRC =
 else
-if USE_BINARY_REGISTRY
 GST_REGISTRY_SRC = gstregistrybinary.c
-else
-GST_REGISTRY_SRC = gstregistryxml.c
-endif
 endif
 
 if GST_DISABLE_PARSE
@@ -49,7 +45,7 @@ built_source_make = gstenumtypes.c gstmarshal.c
 
 EXTRA_libgstreamer_@GST_MAJORMINOR@_la_SOURCES = \
 	gstmarshal.list gsttrace.c gstxml.c \
-	gstregistryxml.c gstregistrybinary.c
+	gstregistrybinary.c
 
 
 # temporarily not used
@@ -60,6 +56,7 @@ libgstreamer_@GST_MAJORMINOR@_la_SOURCES = \
 	gstobject.c		\
 	gstbin.c		\
 	gstbuffer.c		\
+	gstbufferlist.c		\
 	gstbus.c		\
 	gstcaps.c		\
 	gstchildproxy.c		\
@@ -96,6 +93,7 @@ libgstreamer_@GST_MAJORMINOR@_la_SOURCES = \
 	gsttaglist.c		\
 	gsttagsetter.c		\
 	gsttask.c		\
+	gsttaskpool.c		\
 	$(GST_TRACE_SRC)	\
 	gsttypefind.c		\
 	gsttypefindfactory.c	\
@@ -135,7 +133,7 @@ libgstreamer_@GST_MAJORMINOR@_la_LIBADD =		\
 	$(XML_LIBS)
 
 libgstreamer_@GST_MAJORMINOR@_la_LDFLAGS =		\
-	$(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
+	$(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS) $(LIBM)
 
 libgstreamer_@GST_MAJORMINOR@includedir = $(includedir)/gstreamer-@GST_MAJORMINOR@/gst
 
@@ -145,6 +143,7 @@ gst_headers =			\
 	gstobject.h		\
 	gstbin.h		\
 	gstbuffer.h		\
+	gstbufferlist.h		\
 	gstbus.h		\
 	gstcaps.h		\
 	gstchildproxy.h		\
@@ -181,6 +180,7 @@ gst_headers =			\
 	gsttaglist.h		\
 	gsttagsetter.h		\
 	gsttask.h		\
+	gsttaskpool.h		\
 	gsttrace.h		\
 	gsttypefind.h		\
 	gsttypefindfactory.h	\
@@ -227,12 +227,55 @@ gstenumtypes.c: $(gst_headers)
 	glib-mkenums \
 	--fhead "#include \"gst_private.h\"\n#include <gst/gst.h>\n#define C_ENUM(v) ((gint) v)\n#define C_FLAGS(v) ((guint) v)\n " \
 	--fprod "\n/* enumerations from \"@filename@\" */" \
-	--vhead "static void\nregister_@enum_name@ (GType* id)\n{\n  static const G@Type@Value values[] = {"     \
+	--vhead "GType\n@enum_name@_get_type (void)\n{\n  static gsize id = 0;\n  static const G@Type@Value values[] = {"     \
 	--vprod "    { C_@TYPE@(@VALUENAME@), \"@VALUENAME@\", \"@valuenick@\" }," \
-	--vtail "    { 0, NULL, NULL }\n  };\n  *id = g_@type@_register_static (\"@EnumName@\", values);\n}\nGType\n@enum_name@_get_type (void)\n{\n  static GType id;\n  static GOnce once = G_ONCE_INIT;\n\n  g_once (&once, (GThreadFunc)register_@enum_name@, &id);\n  return id;\n}\n" \
+	--vtail "    { 0, NULL, NULL }\n  };\n\n  if (g_once_init_enter (&id)) {\n    GType tmp = g_@type@_register_static (\"@EnumName@\", values);\n    g_once_init_leave (&id, tmp);\n  }\n\n  return (GType) id;\n}" \
 	$^ > gstenumtypes.c
 
 %.c.gcov: .libs/libgstreamer_@GST_MAJORMINOR@_la-%.gcda %.c
 	$(GCOV) -b -f -o $^ > $@.out
 
 gcov: $(libgstreamer_@GST_MAJORMINOR@_la_SOURCES:=.gcov)
+
+if HAVE_INTROSPECTION
+BUILT_GIRSOURCES = Gst-@GST_MAJORMINOR@.gir
+
+gir_headers=$(patsubst %,$(srcdir)/%, $(libgstreamer_@GST_MAJORMINOR@include_HEADERS))
+gir_sources=$(patsubst %,$(srcdir)/%, $(libgstreamer_@GST_MAJORMINOR@_la_SOURCES))
+
+Gst-@GST_MAJORMINOR@.gir: $(INTROSPECTION_SCANNER) libgstreamer-@GST_MAJORMINOR@.la
+	$(INTROSPECTION_SCANNER) -v --namespace Gst \
+		--nsversion=@GST_MAJORMINOR@ \
+		-I$(top_srcdir) \
+		-I$(top_builddir) \
+		-DIN_GOBJECT_INTROSPECTION=1 \
+		--c-include='gst/gst.h' \
+		--library=gstreamer-0.10 \
+		--include=GLib-2.0 \
+		--include=GObject-2.0 \
+		--include=GModule-2.0 \
+		--include=libxml2-2.0 \
+		--libtool="$(top_builddir)/libtool" \
+		--pkg glib-2.0 \
+		--pkg gobject-2.0 \
+		--pkg gmodule-no-export-2.0 \
+		--pkg gthread-2.0 \
+		--pkg libxml-2.0 \
+		--output $@ \
+		$(gir_headers) \
+		$(gir_sources)
+
+# INTROSPECTION_GIRDIR/INTROSPECTION_TYPELIBDIR aren't the right place to
+# install anything - we need to install inside our prefix.
+girdir = $(datadir)/gir-1.0
+gir_DATA = $(BUILT_GIRSOURCES)
+
+typelibsdir = $(libdir)/girepository-1.0/
+
+typelibs_DATA = $(BUILT_GIRSOURCES:.gir=.typelib)
+
+%.typelib: %.gir $(INTROSPECTION_COMPILER)
+	$(INTROSPECTION_COMPILER) --includedir=$(srcdir) --includedir=$(builddir) $(INTROSPECTION_COMPILER_OPTS) $< -o $(@F)
+
+CLEANFILES += $(BUILT_GIRSOURCES) $(typelibs_DATA)
+endif

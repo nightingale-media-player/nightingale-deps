@@ -213,6 +213,40 @@ GST_START_TEST (test_complete_structure)
 
 GST_END_TEST;
 
+GST_START_TEST (test_string_properties)
+{
+  GstCaps *caps1, *caps2;
+  GstStructure *st1, *st2;
+  gchar *str, *res1, *res2;
+
+  /* test escaping/unescaping */
+  st1 = gst_structure_new ("RandomStructure", "prop1", G_TYPE_STRING, "foo",
+      "prop2", G_TYPE_STRING, "", "prop3", G_TYPE_STRING, NULL,
+      "prop4", G_TYPE_STRING, "NULL", NULL);
+  str = gst_structure_to_string (st1);
+  st2 = gst_structure_from_string (str, NULL);
+  g_free (str);
+
+  fail_unless (st2 != NULL);
+
+  /* need to put stuctures into caps to compare */
+  caps1 = gst_caps_new_empty ();
+  gst_caps_append_structure (caps1, st1);
+  caps2 = gst_caps_new_empty ();
+  gst_caps_append_structure (caps2, st2);
+  res1 = gst_caps_to_string (caps1);
+  res2 = gst_caps_to_string (caps2);
+  fail_unless (gst_caps_is_equal (caps1, caps2),
+      "Structures did not match:\n\tStructure 1: %s\n\tStructure 2: %s\n",
+      res1, res2);
+  gst_caps_unref (caps1);
+  gst_caps_unref (caps2);
+  g_free (res1);
+  g_free (res2);
+}
+
+GST_END_TEST;
+
 GST_START_TEST (test_structure_new)
 {
   GstStructure *s;
@@ -349,19 +383,20 @@ GST_START_TEST (test_structure_nested)
   GstStructure *sp, *sc1, *sc2;
   gchar *str;
 
-  sc1 =
-      gst_structure_new ("Camera", "XResolution", G_TYPE_INT, 72, "YResolution",
-      G_TYPE_INT, 73, NULL);
+  sc1 = gst_structure_new ("Camera",
+      "XResolution", G_TYPE_INT, 72, "YResolution", G_TYPE_INT, 73, NULL);
   fail_unless (sc1 != NULL);
 
-  sc2 =
-      gst_structure_new ("Image-Data", "Orientation", G_TYPE_STRING, "top-left",
-      NULL);
+  sc2 = gst_structure_new ("Image-Data",
+      "Orientation", G_TYPE_STRING, "top-left",
+      "Comment", G_TYPE_STRING, "super photo", NULL);
   fail_unless (sc2 != NULL);
 
   sp = gst_structure_new ("Exif", "Camera", GST_TYPE_STRUCTURE, sc1,
       "Image Data", GST_TYPE_STRUCTURE, sc2, NULL);
   fail_unless (sp != NULL);
+
+  fail_unless (gst_structure_n_fields (sp) == 2);
 
   fail_unless (gst_structure_has_field_typed (sp, "Camera",
           GST_TYPE_STRUCTURE));
@@ -369,10 +404,12 @@ GST_START_TEST (test_structure_nested)
   str = gst_structure_to_string (sp);
   fail_unless (str != NULL);
 
+  GST_DEBUG ("serialized to '%s'", str);
+
   fail_unless (g_str_equal (str,
           "Exif"
-          ", Camera=(structure)Camera, XResolution=(int)72, YResolution=(int)73;"
-          ", Image Data=(structure)Image-Data, Orientation=(string)top-left;;"));
+          ", Camera=(structure)\"Camera\\,\\ XResolution\\=\\(int\\)72\\,\\ YResolution\\=\\(int\\)73\\;\""
+          ", Image Data=(structure)\"Image-Data\\,\\ Orientation\\=\\(string\\)top-left\\,\\ Comment\\=\\(string\\)\\\"super\\\\\\ photo\\\"\\;\";"));
 
   g_free (str);
   str = NULL;
@@ -380,7 +417,142 @@ GST_START_TEST (test_structure_nested)
   gst_structure_free (sc1);
   gst_structure_free (sc2);
   gst_structure_free (sp);
+}
 
+GST_END_TEST;
+
+GST_START_TEST (test_structure_nested_from_and_to_string)
+{
+  GstStructure *s;
+  gchar *str1, *str2, *end = NULL;
+
+  str1 = "main"
+      ", main-sub1=(structure)\"type-b\\,\\ machine-type\\=\\(int\\)0\\;\""
+      ", main-sub2=(structure)\"type-a\\,\\ plugin-filename\\=\\(string\\)\\\"/home/user/lib/lib\\\\\\ with\\\\\\ spaces.dll\\\"\\,\\ machine-type\\=\\(int\\)1\\;\""
+      ", main-sub3=(structure)\"type-b\\,\\ plugin-filename\\=\\(string\\)/home/user/lib/lib_no_spaces.so\\,\\ machine-type\\=\\(int\\)1\\;\""
+      ";";
+
+  s = gst_structure_from_string (str1, &end);
+  fail_unless (s != NULL);
+
+  GST_DEBUG ("not parsed part : %s", end);
+  fail_unless (*end == '\0');
+
+  fail_unless (gst_structure_n_fields (s) == 3);
+
+  fail_unless (gst_structure_has_field_typed (s, "main-sub1",
+          GST_TYPE_STRUCTURE));
+
+  str2 = gst_structure_to_string (s);
+  fail_unless (str2 != NULL);
+
+  fail_unless (g_str_equal (str1, str2));
+
+  g_free (str2);
+
+  gst_structure_free (s);
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_vararg_getters)
+{
+  GstStructure *s;
+  GstBuffer *buf, *buf2;
+  gboolean ret;
+  GstCaps *caps, *caps2;
+  gdouble d;
+  gint64 i64;
+  gchar *c;
+  gint i, num, denom;
+
+  buf = gst_buffer_new_and_alloc (3);
+  GST_BUFFER_DATA (buf)[0] = 0xf0;
+  GST_BUFFER_DATA (buf)[1] = 0x66;
+  GST_BUFFER_DATA (buf)[2] = 0x0d;
+
+  caps = gst_caps_new_simple ("video/x-foo", NULL);
+
+  s = gst_structure_new ("test", "int", G_TYPE_INT, 12345678, "string",
+      G_TYPE_STRING, "Hello World!", "buf", GST_TYPE_BUFFER, buf, "caps",
+      GST_TYPE_CAPS, caps, "int64", G_TYPE_INT64, G_GINT64_CONSTANT (-99),
+      "double", G_TYPE_DOUBLE, G_MAXDOUBLE, "frag", GST_TYPE_FRACTION, 39, 14,
+      NULL);
+
+  /* first the plain one */
+  ret = gst_structure_get (s, "double", G_TYPE_DOUBLE, &d, "string",
+      G_TYPE_STRING, &c, "caps", GST_TYPE_CAPS, &caps2, "buf",
+      GST_TYPE_BUFFER, &buf2, "frag", GST_TYPE_FRACTION, &num, &denom, "int",
+      G_TYPE_INT, &i, "int64", G_TYPE_INT64, &i64, NULL);
+
+  fail_unless (ret);
+  fail_unless_equals_string (c, "Hello World!");
+  fail_unless_equals_int (i, 12345678);
+  fail_unless_equals_float (d, G_MAXDOUBLE);
+  fail_unless_equals_int (num, 39);
+  fail_unless_equals_int (denom, 14);
+  fail_unless (i64 == -99);
+  fail_unless (caps == caps2);
+  fail_unless (buf == buf2);
+
+  /* expected failures */
+  ASSERT_CRITICAL (gst_structure_get (s, NULL, G_TYPE_INT, &i, NULL));
+  fail_if (gst_structure_get (s, "int", G_TYPE_INT, &i, "double",
+          G_TYPE_FLOAT, &d, NULL));
+  fail_if (gst_structure_get (s, "int", G_TYPE_INT, &i, "dooble",
+          G_TYPE_DOUBLE, &d, NULL));
+
+  g_free (c);
+  c = NULL;
+  gst_caps_unref (caps2);
+  caps2 = NULL;
+  gst_buffer_unref (buf2);
+  buf2 = NULL;
+
+  /* and now the _id variant */
+  ret = gst_structure_id_get (s, g_quark_from_static_string ("double"),
+      G_TYPE_DOUBLE, &d, g_quark_from_static_string ("string"), G_TYPE_STRING,
+      &c, g_quark_from_static_string ("caps"), GST_TYPE_CAPS, &caps2,
+      g_quark_from_static_string ("buf"), GST_TYPE_BUFFER, &buf2,
+      g_quark_from_static_string ("int"), G_TYPE_INT, &i,
+      g_quark_from_static_string ("int64"), G_TYPE_INT64, &i64, NULL);
+
+  fail_unless (ret);
+  fail_unless_equals_string (c, "Hello World!");
+  fail_unless_equals_int (i, 12345678);
+  fail_unless_equals_float (d, G_MAXDOUBLE);
+  fail_unless (i64 == -99);
+  fail_unless (caps == caps2);
+  fail_unless (buf == buf2);
+
+  /* expected failures */
+  ASSERT_CRITICAL (gst_structure_get (s, 0, G_TYPE_INT, &i, NULL));
+  fail_if (gst_structure_id_get (s, g_quark_from_static_string ("int"),
+          G_TYPE_INT, &i, g_quark_from_static_string ("double"), G_TYPE_FLOAT,
+          &d, NULL));
+  fail_if (gst_structure_id_get (s, g_quark_from_static_string ("int"),
+          G_TYPE_INT, &i, g_quark_from_static_string ("dooble"), G_TYPE_DOUBLE,
+          &d, NULL));
+
+  g_free (c);
+  gst_caps_unref (caps2);
+  gst_buffer_unref (buf2);
+
+  /* finally make sure NULL as return location is handled gracefully */
+  ret = gst_structure_get (s, "double", G_TYPE_DOUBLE, NULL, "string",
+      G_TYPE_STRING, NULL, "caps", GST_TYPE_CAPS, NULL, "buf",
+      GST_TYPE_BUFFER, NULL, "int", G_TYPE_INT, &i, "frag", GST_TYPE_FRACTION,
+      NULL, NULL, "int64", G_TYPE_INT64, &i64, NULL);
+
+  ASSERT_WARNING (gst_structure_get (s, "frag", GST_TYPE_FRACTION, NULL,
+          &denom, NULL));
+  ASSERT_WARNING (gst_structure_get (s, "frag", GST_TYPE_FRACTION, &num,
+          NULL, NULL));
+
+  /* clean up */
+  gst_caps_unref (caps);
+  gst_buffer_unref (buf);
+  gst_structure_free (s);
 }
 
 GST_END_TEST;
@@ -396,11 +568,14 @@ gst_structure_suite (void)
   tcase_add_test (tc_chain, test_from_string);
   tcase_add_test (tc_chain, test_to_string);
   tcase_add_test (tc_chain, test_to_from_string);
+  tcase_add_test (tc_chain, test_string_properties);
   tcase_add_test (tc_chain, test_complete_structure);
   tcase_add_test (tc_chain, test_structure_new);
   tcase_add_test (tc_chain, test_fixate);
   tcase_add_test (tc_chain, test_fixate_frac_list);
   tcase_add_test (tc_chain, test_structure_nested);
+  tcase_add_test (tc_chain, test_structure_nested_from_and_to_string);
+  tcase_add_test (tc_chain, test_vararg_getters);
   return s;
 }
 

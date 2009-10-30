@@ -1,9 +1,11 @@
 SUBDIRS = m4
 
+CONFIG_CLEAN_FILES = shave shave-libtool
+
 EXTRA_DIST = \
 	ChangeLog \
 	gettext.patch \
-	glib-gen.mak gtk-doc.mak upload.mak upload-doc.mak \
+	glib-gen.mak gtk-doc.mak upload-doc.mak \
 	release.mak win32.mak po.mak \
 	gst-autogen.sh \
 	check-exports \
@@ -15,4 +17,5 @@ EXTRA_DIST = \
 	coverage/coverage-report.pl \
 	coverage/coverage-report.xsl \
 	coverage/coverage-report-entry.pl \
-	download-translations
+	download-translations \
+        shave.in shave-libtool.in

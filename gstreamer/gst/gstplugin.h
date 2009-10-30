@@ -32,6 +32,7 @@
 #include <gmodule.h>
 #include <gst/gstobject.h>
 #include <gst/gstmacros.h>
+#include <gst/gststructure.h>
 
 G_BEGIN_DECLS
 
@@ -108,6 +109,23 @@ typedef enum {
  * Returns: %TRUE if plugin initialised successfully
  */
 typedef gboolean (*GstPluginInitFunc) (GstPlugin *plugin);
+
+/**
+ * GstPluginInitFullFunc:
+ * @plugin: The plugin object that can be used to register #GstPluginFeatures for this plugin.
+ * @user_data: The user data.
+ *
+ * A plugin should provide a pointer to a function of either #GstPluginInitFunc
+ * or this type in the plugin_desc struct.
+ * The function will be called by the loader at startup. This version allows
+ * user data to be passed to init function (useful for bindings).
+ *
+ * Returns: %TRUE if plugin initialised successfully
+ *
+ * Since: 0.10.24
+ *
+ */
+typedef gboolean (*GstPluginInitFullFunc) (GstPlugin *plugin, gpointer user_data);
 
 /**
  * GstPluginDesc:
@@ -203,7 +221,9 @@ struct _GstPluginClass {
  *
  * This macro needs to be used to define the entry point and meta data of a
  * plugin. One would use this macro to export a plugin, so that it can be used
- * by other applications
+ * by other applications.
+ *
+ * The macro uses a define named PACKAGE for the #GstPluginDesc,source field.
  */
 #define GST_PLUGIN_DEFINE(major,minor,name,description,init,version,license,package,origin)	\
 GST_PLUGIN_EXPORT GstPluginDesc gst_plugin_desc = {	\
@@ -236,9 +256,12 @@ GST_PLUGIN_EXPORT GstPluginDesc gst_plugin_desc = {	\
  * local plugin. One would use this macro to define a local plugin that can only
  * be used by the own application.
  *
+ * The macro uses a define named PACKAGE for the #GstPluginDesc.source field.
+ *
  * Deprecated: Use gst_plugin_register_static() instead. This macro was
  * deprecated because it uses constructors, which is a compiler feature not
  * available on all compilers.
+ *
  */
 /* We don't have deprecation guards here on purpose, it's enough to have
  * deprecation guards around _gst_plugin_register_static(), and will result in
@@ -303,6 +326,18 @@ gboolean		gst_plugin_register_static	(gint major_version,
                                                          const gchar *package,
                                                          const gchar *origin);
 
+gboolean		gst_plugin_register_static_full	(gint major_version,
+                                                         gint minor_version,
+                                                         const gchar *name,
+                                                         gchar *description,
+                                                         GstPluginInitFullFunc init_full_func,
+                                                         const gchar *version,
+                                                         const gchar *license,
+                                                         const gchar *source,
+                                                         const gchar *package,
+                                                         const gchar *origin,
+                                                         gpointer user_data);
+
 G_CONST_RETURN gchar*	gst_plugin_get_name		(GstPlugin *plugin);
 G_CONST_RETURN gchar*	gst_plugin_get_description	(GstPlugin *plugin);
 G_CONST_RETURN gchar*	gst_plugin_get_filename		(GstPlugin *plugin);
@@ -311,6 +346,9 @@ G_CONST_RETURN gchar*	gst_plugin_get_license		(GstPlugin *plugin);
 G_CONST_RETURN gchar*	gst_plugin_get_source		(GstPlugin *plugin);
 G_CONST_RETURN gchar*	gst_plugin_get_package		(GstPlugin *plugin);
 G_CONST_RETURN gchar*	gst_plugin_get_origin		(GstPlugin *plugin);
+G_CONST_RETURN GstStructure*	gst_plugin_get_cache_data	(GstPlugin * plugin);
+void		gst_plugin_set_cache_data	(GstPlugin * plugin, GstStructure *cache_data);
+
 GModule *		gst_plugin_get_module		(GstPlugin *plugin);
 gboolean		gst_plugin_is_loaded		(GstPlugin *plugin);
 

@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gstreamer Elements">
 <link rel="prev" href="gstreamer-plugins-identity.html" title="identity">
 <link rel="next" href="gstreamer-plugins-queue.html" title="queue">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gstreamer Elements">
 <link rel="chapter" href="ch02.html" title="gstreamer Plugins">
@@ -22,15 +22,17 @@
 <th width="100%" align="center">GStreamer Core Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-plugins-queue.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-plugins-multiqueue.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gstreamer-plugins-multiqueue.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gstreamer-plugins-multiqueue.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gstreamer-plugins-multiqueue.properties" class="shortcut">Properties</a>
-                   | 
-                  <a href="#gstreamer-plugins-multiqueue.signals" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gstreamer-plugins-multiqueue.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gstreamer-plugins-multiqueue.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gstreamer-plugins-multiqueue.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gstreamer-plugins-multiqueue.properties" class="shortcut">Properties</a>
+                 | 
+                <a href="#gstreamer-plugins-multiqueue.signals" class="shortcut">Signals</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-plugins-multiqueue"></a><div class="titlepage"></div>
@@ -51,10 +53,14 @@
 <a name="gstreamer-plugins-multiqueue.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
   <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
                +----GstMultiQueue
 </pre>
 </div>
@@ -62,22 +68,22 @@ href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 <a name="gstreamer-plugins-multiqueue.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
   "<a class="link" href="gstreamer-plugins-multiqueue.html#GstMultiQueue--extra-size-buffers" title='The "extra-size-buffers" property'>extra-size-buffers</a>"       <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write
   "<a class="link" href="gstreamer-plugins-multiqueue.html#GstMultiQueue--extra-size-bytes" title='The "extra-size-bytes" property'>extra-size-bytes</a>"         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write
   "<a class="link" href="gstreamer-plugins-multiqueue.html#GstMultiQueue--extra-size-time" title='The "extra-size-time" property'>extra-size-time</a>"          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+href="../glib/glib-Basic-Types.html#guint64"
 >guint64</a>               : Read / Write
   "<a class="link" href="gstreamer-plugins-multiqueue.html#GstMultiQueue--max-size-buffers" title='The "max-size-buffers" property'>max-size-buffers</a>"         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write
   "<a class="link" href="gstreamer-plugins-multiqueue.html#GstMultiQueue--max-size-bytes" title='The "max-size-bytes" property'>max-size-bytes</a>"           <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write
   "<a class="link" href="gstreamer-plugins-multiqueue.html#GstMultiQueue--max-size-time" title='The "max-size-time" property'>max-size-time</a>"            <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+href="../glib/glib-Basic-Types.html#guint64"
 >guint64</a>               : Read / Write
 </pre>
 </div>
@@ -93,7 +99,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2698270"></a><p>
+<a name="id2837038"></a><p>
 Multiqueue is similar to a normal <a class="link" href="gstreamer-plugins-queue.html#GstQueue"><span class="type">GstQueue</span></a> with the following additional
 features:
 </p>
@@ -107,7 +113,9 @@ features:
     'sometimes' src pads (src<code class="literal">d</code>).
   </p>
 <p>
-    When requesting a given sinkpad with <code class="function">gst_element_get_request_pad()</code>,
+    When requesting a given sinkpad with <a
+href="../gstreamer-0.10/GstElement.html#gst-element-get-request-pad"
+><code class="function">gst_element_get_request_pad()</code></a>,
     the associated srcpad for that stream will be created.
     Example: requesting sink1 will generate src1.
   </p>
@@ -182,7 +190,7 @@ Last reviewed on 2008-01-25 (0.10.17)</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2698488"></a><h3>Element Information</h3>
+<a name="id2863251"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -205,7 +213,7 @@ Last reviewed on 2008-01-25 (0.10.17)</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2698551"></a><h3>Element Pads</h3>
+<a name="id2863314"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -251,7 +259,6 @@ Last reviewed on 2008-01-25 (0.10.17)</p>
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -262,7 +269,6 @@ Last reviewed on 2008-01-25 (0.10.17)</p>
 <p>
 Opaque <a class="link" href="gstreamer-plugins-multiqueue.html#GstMultiQueue"><span class="type">GstMultiQueue</span></a> structure.</p>
 <p>
-
 </p>
 </div>
 </div>
@@ -271,7 +277,7 @@ Opaque <a class="link" href="gstreamer-plugins-multiqueue.html#GstMultiQueue"><s
 <div class="refsect2" lang="en">
 <a name="GstMultiQueue--extra-size-buffers"></a><h3>The <code class="literal">"extra-size-buffers"</code> property</h3>
 <pre class="programlisting">  "extra-size-buffers"       <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write</pre>
 <p>Amount of buffers the queues can grow if one of them is empty (0=disable).</p>
 <p>Default value: 5</p>
@@ -280,7 +286,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <div class="refsect2" lang="en">
 <a name="GstMultiQueue--extra-size-bytes"></a><h3>The <code class="literal">"extra-size-bytes"</code> property</h3>
 <pre class="programlisting">  "extra-size-bytes"         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write</pre>
 <p>Amount of data the queues can grow if one of them is empty (bytes, 0=disable).</p>
 <p>Default value: 10485760</p>
@@ -289,7 +295,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <div class="refsect2" lang="en">
 <a name="GstMultiQueue--extra-size-time"></a><h3>The <code class="literal">"extra-size-time"</code> property</h3>
 <pre class="programlisting">  "extra-size-time"          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+href="../glib/glib-Basic-Types.html#guint64"
 >guint64</a>               : Read / Write</pre>
 <p>Amount of time the queues can grow if one of them is empty (in ns, 0=disable).</p>
 <p>Default value: 3000000000</p>
@@ -298,7 +304,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
 <div class="refsect2" lang="en">
 <a name="GstMultiQueue--max-size-buffers"></a><h3>The <code class="literal">"max-size-buffers"</code> property</h3>
 <pre class="programlisting">  "max-size-buffers"         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write</pre>
 <p>Max. number of buffers in the queue (0=disable).</p>
 <p>Default value: 5</p>
@@ -307,7 +313,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <div class="refsect2" lang="en">
 <a name="GstMultiQueue--max-size-bytes"></a><h3>The <code class="literal">"max-size-bytes"</code> property</h3>
 <pre class="programlisting">  "max-size-bytes"           <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write</pre>
 <p>Max. amount of data in the queue (bytes, 0=disable).</p>
 <p>Default value: 10485760</p>
@@ -316,7 +322,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <div class="refsect2" lang="en">
 <a name="GstMultiQueue--max-size-time"></a><h3>The <code class="literal">"max-size-time"</code> property</h3>
 <pre class="programlisting">  "max-size-time"            <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+href="../glib/glib-Basic-Types.html#guint64"
 >guint64</a>               : Read / Write</pre>
 <p>Max. amount of data in the queue (in ns, 0=disable).</p>
 <p>Default value: 2000000000</p>
@@ -328,7 +334,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
 <a name="GstMultiQueue-overrun"></a><h3>The <code class="literal">"overrun"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="gstreamer-plugins-multiqueue.html#GstMultiQueue">GstMultiQueue</a> *multiqueue,
                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>       user_data)       : Run First</pre>
 <p>
 Reports that one of the queues in the multiqueue is full (overrun).
@@ -339,7 +345,6 @@ GObject properties.
 <p>
 This can be used as an indicator of pre-roll.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -361,7 +366,7 @@ This can be used as an indicator of pre-roll.</p>
 <a name="GstMultiQueue-underrun"></a><h3>The <code class="literal">"underrun"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="gstreamer-plugins-multiqueue.html#GstMultiQueue">GstMultiQueue</a> *multiqueue,
                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>       user_data)       : Run First</pre>
 <p>
 This signal is emitted from the streaming thread when there is
@@ -370,7 +375,6 @@ no data in any of the queues inside the multiqueue instance (underrun).
 <p>
 This indicates either starvation or EOS from the upstream data sources.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -390,11 +394,11 @@ This indicates either starvation or EOS from the upstream data sources.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-multiqueue.see-also"></a><h2>See Also</h2>
-<a class="link" href="gstreamer-plugins-queue.html#GstQueue"><span class="type">GstQueue</span></a>
+#GstQueue
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

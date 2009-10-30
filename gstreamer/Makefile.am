@@ -5,22 +5,23 @@ all-local: gst-element-check-@GST_MAJORMINOR@.m4
 gst-element-check-@GST_MAJORMINOR@.m4: gst-element-check.m4
 	cp gst-element-check.m4 gst-element-check-@GST_MAJORMINOR@.m4
 
-ACLOCAL_AMFLAGS = -I common/m4
+# note: keep in sync with configure.ac
+ACLOCAL_AMFLAGS = -I common/m4 -I .
 
 aclocaldir = $(datadir)/aclocal
 aclocal_DATA = gst-element-check-@GST_MAJORMINOR@.m4
 
-SUBDIRS = \
+SUBDIRS = pkgconfig \
 	gst libs plugins tools tests \
 	docs \
-	pkgconfig po \
+	po \
 	common
 
 # These are all the possible subdirs
-DIST_SUBDIRS = \
+DIST_SUBDIRS = pkgconfig \
 	gst libs plugins tools tests \
 	docs \
-	pkgconfig po \
+	po \
 	common
 
 # include before EXTRA_DIST for win32 assignment
@@ -28,12 +29,15 @@ include $(top_srcdir)/common/win32.mak
 
 EXTRA_DIST = \
 	gstreamer.spec gstreamer.spec.in \
+	check-checks.m4 \
 	gst-element-check.m4.in \
 	configure.ac autogen.sh depcomp \
 	MAINTAINERS ABOUT-NLS RELEASE gstreamer.doap \
 	$(win32)
 
 CLEANFILES = gst-element-check-@GST_MAJORMINOR@.m4
+
+DISTCLEANFILES = _stdint.h
 
 include $(top_srcdir)/common/release.mak
 include $(top_srcdir)/common/po.mak
@@ -98,8 +102,43 @@ win32-update:
 	for f in gstversion.h gstenumtypes.c gstenumtypes.h; do \
 		cp $(top_builddir)/gst/$$f win32/common; done
 	$(top_srcdir)/tools/gst-indent win32/common/gstenumtypes.c
+	cp $(top_builddir)/win32/common/config.h-new \
+		$(top_srcdir)/win32/common/config.h
+
+check-enum-gettypes: $(top_builddir)/gst/gstenumtypes.h
+	echo 'Checking if all enum and flag _get_type() funcs are inited in gst_init()';                         \
+	FUNCS=`grep '_get_type (' gst/gstenumtypes.h | sed -e 's/^.*gst_/gst_/' -e 's/_get_type.*$$/_get_type/'`;\
+	MISSING_FUNCS='';                                                                                        \
+	for f in $$FUNCS; do                                                                                     \
+	  INIT_LINE=`grep $$f $(top_srcdir)/gst/*.c | grep g_type_class_ref`;                                    \
+	  if test "x$$INIT_LINE" = "x"; then                                                                     \
+	    MISSING_FUNCS="$$MISSING_FUNCS $$f";                                                                 \
+	  fi;                                                                                                    \
+	done;                                                                                                    \
+	if test "x$$MISSING_FUNCS" != "x"; then                                                                  \
+	  echo "FIXME: please add to the following to gst/gst.c init_post():";                                   \
+	  for f in $$MISSING_FUNCS; do                                                                           \
+	    echo "  g_type_class_ref ($$f ());";                                                                 \
+	  done;                                                                                                  \
+	  exit 1;                                                                                                \
+	fi;                                                                                                      \
+	echo 'Checking if all enum and flag _get_type() funcs are deinited in gst_deinit()';                     \
+	MISSING_FUNCS='';                                                                                        \
+	for f in $$FUNCS; do                                                                                     \
+	  INIT_LINE=`grep $$f $(top_srcdir)/gst/*.c | grep g_type_class_unref`;                                  \
+	  if test "x$$INIT_LINE" = "x"; then                                                                     \
+	    MISSING_FUNCS="$$MISSING_FUNCS $$f";                                                                 \
+	  fi;                                                                                                    \
+	done;                                                                                                    \
+	if test "x$$MISSING_FUNCS" != "x"; then                                                                  \
+	  echo "FIXME: please add to the following to gst/gst.c gst_deinit():";                                  \
+	  for f in $$MISSING_FUNCS; do                                                                           \
+	    echo "  g_type_class_unref (g_type_class_peek ($$f ()));";                                           \
+	  done;                                                                                                  \
+	  exit 1;                                                                                                \
+	fi
 
 include $(top_srcdir)/common/coverage/lcov.mak
 
-check: check-exports
+check: check-exports check-enum-gettypes
 

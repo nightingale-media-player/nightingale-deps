@@ -8,7 +8,7 @@
 <link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="prev" href="GstClock.html" title="GstClock">
 <link rel="next" href="GstElement.html" title="GstElement">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
@@ -26,9 +26,11 @@
 <th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
 <td><a accesskey="n" href="GstElement.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-gstconfig.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gstreamer-gstconfig.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gstreamer-gstconfig.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gstreamer-gstconfig.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-gstconfig"></a><div class="titlepage"></div>
@@ -45,14 +47,14 @@
 
 #include &lt;gst/gst.h&gt;
 
-#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-GST-DEBUG:CAPS" title="GST_DISABLE_GST_DEBUG">GST_DISABLE_GST_DEBUG</a>
-#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-LOADSAVE:CAPS" title="GST_DISABLE_LOADSAVE">GST_DISABLE_LOADSAVE</a>
-#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-PARSE:CAPS" title="GST_DISABLE_PARSE">GST_DISABLE_PARSE</a>
-#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-TRACE:CAPS" title="GST_DISABLE_TRACE">GST_DISABLE_TRACE</a>
-#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-ALLOC-TRACE:CAPS" title="GST_DISABLE_ALLOC_TRACE">GST_DISABLE_ALLOC_TRACE</a>
-#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-REGISTRY:CAPS" title="GST_DISABLE_REGISTRY">GST_DISABLE_REGISTRY</a>
-#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-PLUGIN:CAPS" title="GST_DISABLE_PLUGIN">GST_DISABLE_PLUGIN</a>
-#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-XML:CAPS" title="GST_DISABLE_XML">GST_DISABLE_XML</a>
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-GST-DEBUG--CAPS" title="GST_DISABLE_GST_DEBUG">GST_DISABLE_GST_DEBUG</a>
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-LOADSAVE--CAPS" title="GST_DISABLE_LOADSAVE">GST_DISABLE_LOADSAVE</a>
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-PARSE--CAPS" title="GST_DISABLE_PARSE">GST_DISABLE_PARSE</a>
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-TRACE--CAPS" title="GST_DISABLE_TRACE">GST_DISABLE_TRACE</a>
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-ALLOC-TRACE--CAPS" title="GST_DISABLE_ALLOC_TRACE">GST_DISABLE_ALLOC_TRACE</a>
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-REGISTRY--CAPS" title="GST_DISABLE_REGISTRY">GST_DISABLE_REGISTRY</a>
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-PLUGIN--CAPS" title="GST_DISABLE_PLUGIN">GST_DISABLE_PLUGIN</a>
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-XML--CAPS" title="GST_DISABLE_XML">GST_DISABLE_XML</a>
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -75,7 +77,7 @@ If a subsystem is disabled in GStreamer, a value is defined in
 &lt;gst/gst.h&gt;. You can check this if you do subsystem-specific stuff.
 </p>
 <div class="example">
-<a name="example-gstconfig"></a><p class="title"><b>Example 5. Doing subsystem specific things</b></p>
+<a name="example-gstconfig"></a><p class="title"><b>Example 8. Doing subsystem specific things</b></p>
 <div class="example-contents"><pre class="programlisting">
 #ifndef GST_DISABLE_GST_DEBUG
 // do stuff specific to the debugging subsystem
@@ -84,71 +86,65 @@ If a subsystem is disabled in GStreamer, a value is defined in
 </div>
 <p><br class="example-break"></p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gstreamer-gstconfig.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="GST-DISABLE-GST-DEBUG:CAPS"></a><h3>GST_DISABLE_GST_DEBUG</h3>
+<a name="GST-DISABLE-GST-DEBUG--CAPS"></a><h3>GST_DISABLE_GST_DEBUG</h3>
 <pre class="programlisting">#define GST_DISABLE_GST_DEBUG 1
 </pre>
 <p>
 Configures the inclusion of the debugging subsystem</p>
 <p>
-
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-DISABLE-LOADSAVE:CAPS"></a><h3>GST_DISABLE_LOADSAVE</h3>
+<a name="GST-DISABLE-LOADSAVE--CAPS"></a><h3>GST_DISABLE_LOADSAVE</h3>
 <pre class="programlisting">#define GST_DISABLE_LOADSAVE 1
 </pre>
 <p>
 Configures the inclusion of the plugin graph xml-serialisation
 (was used in 0.8 by gst-editor)</p>
 <p>
-
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-DISABLE-PARSE:CAPS"></a><h3>GST_DISABLE_PARSE</h3>
+<a name="GST-DISABLE-PARSE--CAPS"></a><h3>GST_DISABLE_PARSE</h3>
 <pre class="programlisting">#define GST_DISABLE_PARSE 1
 </pre>
 <p>
 Configures the inclusion of the gst-lauch parser</p>
 <p>
-
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-DISABLE-TRACE:CAPS"></a><h3>GST_DISABLE_TRACE</h3>
+<a name="GST-DISABLE-TRACE--CAPS"></a><h3>GST_DISABLE_TRACE</h3>
 <pre class="programlisting">#define GST_DISABLE_TRACE 1
 </pre>
 <p>
 Configures the inclusion of a resource tracing facillity
 (seems to be unused)</p>
 <p>
-
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-DISABLE-ALLOC-TRACE:CAPS"></a><h3>GST_DISABLE_ALLOC_TRACE</h3>
+<a name="GST-DISABLE-ALLOC-TRACE--CAPS"></a><h3>GST_DISABLE_ALLOC_TRACE</h3>
 <pre class="programlisting">#define GST_DISABLE_ALLOC_TRACE 1
 </pre>
 <p>
 Configures the use of a memory tracer based on the resource tracer
 if TRACE is disabled, ALLOC_TRACE is disabled as well</p>
 <p>
-
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-DISABLE-REGISTRY:CAPS"></a><h3>GST_DISABLE_REGISTRY</h3>
+<a name="GST-DISABLE-REGISTRY--CAPS"></a><h3>GST_DISABLE_REGISTRY</h3>
 <pre class="programlisting">#define GST_DISABLE_REGISTRY 1
 </pre>
 <p>
@@ -156,34 +152,31 @@ Configures the use of the plugin registry.
 If one disables this, required plugins need to be loaded and registered
 manually</p>
 <p>
-
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-DISABLE-PLUGIN:CAPS"></a><h3>GST_DISABLE_PLUGIN</h3>
+<a name="GST-DISABLE-PLUGIN--CAPS"></a><h3>GST_DISABLE_PLUGIN</h3>
 <pre class="programlisting">#define GST_DISABLE_PLUGIN 1
 </pre>
 <p>
-
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-DISABLE-XML:CAPS"></a><h3>GST_DISABLE_XML</h3>
+<a name="GST-DISABLE-XML--CAPS"></a><h3>GST_DISABLE_XML</h3>
 <pre class="programlisting">#define GST_DISABLE_XML 1
 </pre>
 <p>
 Configures the use libxml2. This setting is derived from the settings of
-<a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-LOADSAVE:CAPS" title="GST_DISABLE_LOADSAVE"><code class="literal">GST_DISABLE_LOADSAVE</code></a> and <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-REGISTRY:CAPS" title="GST_DISABLE_REGISTRY"><code class="literal">GST_DISABLE_REGISTRY</code></a> (in the xml registry case).</p>
+<a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-LOADSAVE--CAPS" title="GST_DISABLE_LOADSAVE"><code class="literal">GST_DISABLE_LOADSAVE</code></a> and <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-REGISTRY--CAPS" title="GST_DISABLE_REGISTRY"><code class="literal">GST_DISABLE_REGISTRY</code></a> (in the xml registry case).</p>
 <p>
-
 </p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

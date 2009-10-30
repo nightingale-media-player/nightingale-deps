@@ -91,10 +91,6 @@ static void gst_bus_class_init (GstBusClass * klass);
 static void gst_bus_init (GstBus * bus);
 static void gst_bus_dispose (GObject * object);
 
-static void gst_bus_set_property (GObject * object, guint prop_id,
-    const GValue * value, GParamSpec * pspec);
-static void gst_bus_get_property (GObject * object, guint prop_id,
-    GValue * value, GParamSpec * pspec);
 static void gst_bus_set_main_context (GstBus * bus, GMainContext * ctx);
 
 static GstObjectClass *parent_class = NULL;
@@ -103,37 +99,12 @@ static guint gst_bus_signals[LAST_SIGNAL] = { 0 };
 struct _GstBusPrivate
 {
   guint num_sync_message_emitters;
-
   GCond *queue_cond;
-
   GSource *watch_id;
-
   GMainContext *main_context;
 };
 
-GType
-gst_bus_get_type (void)
-{
-  static GType bus_type = 0;
-
-  if (G_UNLIKELY (bus_type == 0)) {
-    static const GTypeInfo bus_info = {
-      sizeof (GstBusClass),
-      NULL,
-      NULL,
-      (GClassInitFunc) gst_bus_class_init,
-      NULL,
-      NULL,
-      sizeof (GstBus),
-      0,
-      (GInstanceInitFunc) gst_bus_init,
-      NULL
-    };
-
-    bus_type = g_type_register_static (GST_TYPE_OBJECT, "GstBus", &bus_info, 0);
-  }
-  return bus_type;
-}
+G_DEFINE_TYPE (GstBus, gst_bus, GST_TYPE_OBJECT);
 
 /* fixme: do something about this */
 static void
@@ -166,20 +137,11 @@ marshal_VOID__MINIOBJECT (GClosure * closure, GValue * return_value,
 static void
 gst_bus_class_init (GstBusClass * klass)
 {
-  GObjectClass *gobject_class;
-  GstObjectClass *gstobject_class;
-
-  gobject_class = (GObjectClass *) klass;
-  gstobject_class = (GstObjectClass *) klass;
+  GObjectClass *gobject_class = (GObjectClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
 
-  if (!g_thread_supported ())
-    g_thread_init (NULL);
-
   gobject_class->dispose = GST_DEBUG_FUNCPTR (gst_bus_dispose);
-  gobject_class->set_property = GST_DEBUG_FUNCPTR (gst_bus_set_property);
-  gobject_class->get_property = GST_DEBUG_FUNCPTR (gst_bus_get_property);
 
   /**
    * GstBus::sync-message:
@@ -235,9 +197,7 @@ gst_bus_init (GstBus * bus)
 static void
 gst_bus_dispose (GObject * object)
 {
-  GstBus *bus;
-
-  bus = GST_BUS (object);
+  GstBus *bus = GST_BUS (object);
 
   if (bus->queue) {
     GstMessage *message;
@@ -263,36 +223,6 @@ gst_bus_dispose (GObject * object)
   }
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
-}
-
-static void
-gst_bus_set_property (GObject * object, guint prop_id,
-    const GValue * value, GParamSpec * pspec)
-{
-  GstBus *bus;
-
-  bus = GST_BUS (object);
-
-  switch (prop_id) {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-      break;
-  }
-}
-
-static void
-gst_bus_get_property (GObject * object, guint prop_id,
-    GValue * value, GParamSpec * pspec)
-{
-  GstBus *bus;
-
-  bus = GST_BUS (object);
-
-  switch (prop_id) {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-      break;
-  }
 }
 
 static void

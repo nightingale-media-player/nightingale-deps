@@ -31,6 +31,10 @@
  * Various GStreamer objects provide access to their internal structures using
  * an iterator.
  *
+ * In general, whenever calling a GstIterator function results in your code
+ * receiving a refcounted object, the refcount for that object will have been
+ * increased.  Your code is responsible for unrefing that object after use.
+ *
  * The basic use pattern of an iterator is as follows:
  *
  * <example>
@@ -49,7 +53,7 @@
  *          gst_iterator_resync (it);
  *          break;
  *        case GST_ITERATOR_ERROR:
- *          ...wrong parameter were given...
+ *          ...wrong parameters were given...
  *          done = TRUE;
  *          break;
  *        case GST_ITERATOR_DONE:
@@ -61,7 +65,7 @@
  *   </programlisting>
  * </example>
  *
- * Last reviewed on 2008-08-29 (0.10.21)
+ * Last reviewed on 2009-06-16 (0.10.24)
  */
 
 #include "gst_private.h"
@@ -199,7 +203,7 @@ gst_list_iterator_free (GstListIterator * it)
  *
  * When a concurrent update to the list is performed, usually by @owner while
  * holding @lock, @master_cookie will be updated. The iterator implementation
- * will notice the update of the cookie and will return #GST_ITERATOR_RESYNC to
+ * will notice the update of the cookie and will return %GST_ITERATOR_RESYNC to
  * the user of the iterator in the next call to gst_iterator_next().
  *
  * @owner will be passed to the @free function when the iterator is freed.
@@ -375,7 +379,7 @@ gst_iterator_free (GstIterator * it)
  * @other: The #GstIterator to push
  *
  * Pushes @other iterator onto @it. All calls performed on @it are
- * forwarded to @other. If @other returns #GST_ITERATOR_DONE, it is
+ * forwarded to @other. If @other returns %GST_ITERATOR_DONE, it is
  * popped again and calls are handled by @it again.
  *
  * This function is mainly used by objects implementing the iterator
@@ -508,15 +512,16 @@ gst_iterator_filter (GstIterator * it, GCompareFunc func, gpointer user_data)
  * Folds @func over the elements of @iter. That is to say, @func will be called
  * as @func (object, @ret, @user_data) for each object in @it. The normal use
  * of this procedure is to accumulate the results of operating on the objects in
- * @ret.
+ * @ret.  If object is a refcounted object its refcount will be increased 
+ * before @func is called, and it should be unrefed after use in @func.
  *
- * This procedure can be used (and is used internally) to implement the foreach
- * and find_custom operations.
+ * This procedure can be used (and is used internally) to implement the
+ * gst_iterator_foreach() and gst_iterator_find_custom() operations.
  *
  * The fold will proceed as long as @func returns TRUE. When the iterator has no
- * more arguments, #GST_ITERATOR_DONE will be returned. If @func returns FALSE,
- * the fold will stop, and #GST_ITERATOR_OK will be returned. Errors or resyncs
- * will cause fold to return #GST_ITERATOR_ERROR or #GST_ITERATOR_RESYNC as
+ * more arguments, %GST_ITERATOR_DONE will be returned. If @func returns FALSE,
+ * the fold will stop, and %GST_ITERATOR_OK will be returned. Errors or resyncs
+ * will cause fold to return %GST_ITERATOR_ERROR or %GST_ITERATOR_RESYNC as
  * appropriate.
  *
  * The iterator will not be freed.
@@ -573,7 +578,9 @@ foreach_fold_func (gpointer item, GValue * unused, ForeachFoldData * data)
  * @user_data: user data passed to the function
  *
  * Iterate over all element of @it and call the given function @func for
- * each element.
+ * each element.  As in gst_iterator_fold(), the refcount of a refcounted 
+ * object will be increased before @func is called, and should be unrefed
+ * after use.
  *
  * Returns: the result call to gst_iterator_fold(). The iterator will not be
  * freed.
@@ -616,7 +623,9 @@ find_custom_fold_func (gpointer item, GValue * ret, FindCustomFoldData * data)
  * @user_data: user data passed to the compare function
  *
  * Find the first element in @it that matches the compare function @func.
- * @func should return 0 when the element is found.
+ * @func should return 0 when the element is found.  As in gst_iterator_fold(),
+ * the refcount of a refcounted object will be increased before @func is 
+ * called, and should be unrefed after use.
  *
  * The iterator will not be freed.
  *
@@ -648,4 +657,83 @@ gst_iterator_find_custom (GstIterator * it, GCompareFunc func,
 
   /* no need to unset, it's just a pointer */
   return g_value_get_pointer (&ret);
+}
+
+typedef struct
+{
+  GstIterator parent;
+  gpointer object;
+  GstCopyFunction copy;
+  GFreeFunc free;
+  gboolean visited;
+} GstSingleObjectIterator;
+
+static guint32 _single_object_dummy_cookie = 0;
+
+static GstIteratorResult
+gst_single_object_iterator_iterator_next (GstSingleObjectIterator * it,
+    gpointer * result)
+{
+  if (it->visited || !it->object) {
+    *result = NULL;
+    return GST_ITERATOR_DONE;
+  }
+
+  *result = it->copy (it->object);
+  it->visited = TRUE;
+  return GST_ITERATOR_OK;
+}
+
+static void
+gst_single_object_iterator_resync (GstSingleObjectIterator * it)
+{
+  it->visited = FALSE;
+}
+
+static void
+gst_single_object_iterator_free (GstSingleObjectIterator * it)
+{
+  if (it->object)
+    it->free (it->object);
+  g_free (it);
+}
+
+/**
+ * gst_iterator_new_single:
+ * @type: #GType of the passed object
+ * @object: object that this iterator should return
+ * @copy: Function that returns a copy of @object or increases its refcount
+ * @free: Function to be called for freeing @object
+ *
+ * This #GstIterator is a convenient iterator for the common
+ * case where a #GstIterator needs to be returned but only
+ * a single object has the be considered. This happens often
+ * for the #GstPadIterIntLinkFunction.
+ *
+ * Returns: the new #GstIterator for @object.
+ *
+ * Since: 0.10.25
+ */
+GstIterator *
+gst_iterator_new_single (GType type, gpointer object, GstCopyFunction copy,
+    GFreeFunc free)
+{
+  GstSingleObjectIterator *result;
+
+  g_return_val_if_fail (copy != NULL, NULL);
+  g_return_val_if_fail (free != NULL, NULL);
+
+  result = (GstSingleObjectIterator *)
+      gst_iterator_new (sizeof (GstSingleObjectIterator),
+      type, NULL, &_single_object_dummy_cookie,
+      (GstIteratorNextFunction) gst_single_object_iterator_iterator_next, NULL,
+      (GstIteratorResyncFunction) gst_single_object_iterator_resync,
+      (GstIteratorFreeFunction) gst_single_object_iterator_free);
+
+  result->object = (object) ? copy (object) : NULL;
+  result->copy = copy;
+  result->free = free;
+  result->visited = FALSE;
+
+  return (GstIterator *) result;
 }

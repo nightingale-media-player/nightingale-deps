@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gstreamer Elements">
 <link rel="prev" href="gstreamer-plugins-filesink.html" title="filesink">
 <link rel="next" href="gstreamer-plugins-multiqueue.html" title="multiqueue">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gstreamer Elements">
 <link rel="chapter" href="ch02.html" title="gstreamer Plugins">
@@ -22,15 +22,17 @@
 <th width="100%" align="center">GStreamer Core Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-plugins-multiqueue.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-plugins-identity.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gstreamer-plugins-identity.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gstreamer-plugins-identity.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gstreamer-plugins-identity.properties" class="shortcut">Properties</a>
-                   | 
-                  <a href="#gstreamer-plugins-identity.signals" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gstreamer-plugins-identity.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gstreamer-plugins-identity.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gstreamer-plugins-identity.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gstreamer-plugins-identity.properties" class="shortcut">Properties</a>
+                 | 
+                <a href="#gstreamer-plugins-identity.signals" class="shortcut">Signals</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-plugins-identity"></a><div class="titlepage"></div>
@@ -51,11 +53,17 @@
 <a name="gstreamer-plugins-identity.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
   <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
-               +----GstBaseTransform
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="../gstreamer-libs-0.10/GstBaseTransform.html"
+>GstBaseTransform</a>
                      +----GstIdentity
 </pre>
 </div>
@@ -63,43 +71,43 @@ href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 <a name="gstreamer-plugins-identity.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
   "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--check-perfect" title='The "check-perfect" property'>check-perfect</a>"            <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
   "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--datarate" title='The "datarate" property'>datarate</a>"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write
   "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--drop-probability" title='The "drop-probability" property'>drop-probability</a>"         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+href="../glib/glib-Basic-Types.html#gfloat"
 >gfloat</a>                : Read / Write
   "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--dump" title='The "dump" property'>dump</a>"                     <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
   "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--error-after" title='The "error-after" property'>error-after</a>"              <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write
   "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--last-message" title='The "last-message" property'>last-message</a>"             <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a>*                : Read
   "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--silent" title='The "silent" property'>silent</a>"                   <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
   "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--single-segment" title='The "single-segment" property'>single-segment</a>"           <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
   "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--sleep-time" title='The "sleep-time" property'>sleep-time</a>"               <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write
   "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--sync" title='The "sync" property'>sync</a>"                     <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
   "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--check-imperfect-offset" title='The "check-imperfect-offset" property'>check-imperfect-offset</a>"   <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
   "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--check-imperfect-timestamp" title='The "check-imperfect-timestamp" property'>check-imperfect-timestamp</a>" <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
   "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--signal-handoffs" title='The "signal-handoffs" property'>signal-handoffs</a>"          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
 </pre>
 </div>
@@ -117,7 +125,7 @@ useful diagnostic functions, such as offset and timestamp checking.</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2697888"></a><h3>Element Information</h3>
+<a name="id2862285"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -140,7 +148,7 @@ useful diagnostic functions, such as offset and timestamp checking.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2697949"></a><h3>Element Pads</h3>
+<a name="id2862348"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -186,7 +194,6 @@ useful diagnostic functions, such as offset and timestamp checking.</p>
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -197,7 +204,6 @@ useful diagnostic functions, such as offset and timestamp checking.</p>
 <p>
 Opaque <a class="link" href="gstreamer-plugins-identity.html#GstIdentity"><span class="type">GstIdentity</span></a> data structure</p>
 <p>
-
 </p>
 </div>
 </div>
@@ -206,7 +212,7 @@ Opaque <a class="link" href="gstreamer-plugins-identity.html#GstIdentity"><span 
 <div class="refsect2" lang="en">
 <a name="GstIdentity--check-perfect"></a><h3>The <code class="literal">"check-perfect"</code> property</h3>
 <pre class="programlisting">  "check-perfect"            <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write</pre>
 <p>Verify that the stream is time- and data-contiguous. This only logs in the debug log.  This will be deprecated in favor of the check-imperfect-timestamp/offset properties.</p>
 <p>Default value: FALSE</p>
@@ -215,7 +221,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <div class="refsect2" lang="en">
 <a name="GstIdentity--datarate"></a><h3>The <code class="literal">"datarate"</code> property</h3>
 <pre class="programlisting">  "datarate"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write</pre>
 <p>(Re)timestamps buffers with number of bytes per second (0 = inactive).</p>
 <p>Allowed values: &gt;= 0</p>
@@ -225,7 +231,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <div class="refsect2" lang="en">
 <a name="GstIdentity--drop-probability"></a><h3>The <code class="literal">"drop-probability"</code> property</h3>
 <pre class="programlisting">  "drop-probability"         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+href="../glib/glib-Basic-Types.html#gfloat"
 >gfloat</a>                : Read / Write</pre>
 <p>The Probability a buffer is dropped.</p>
 <p>Allowed values: [0,1]</p>
@@ -235,7 +241,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
 <div class="refsect2" lang="en">
 <a name="GstIdentity--dump"></a><h3>The <code class="literal">"dump"</code> property</h3>
 <pre class="programlisting">  "dump"                     <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write</pre>
 <p>Dump buffer contents to stdout.</p>
 <p>Default value: FALSE</p>
@@ -244,7 +250,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <div class="refsect2" lang="en">
 <a name="GstIdentity--error-after"></a><h3>The <code class="literal">"error-after"</code> property</h3>
 <pre class="programlisting">  "error-after"              <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write</pre>
 <p>Error after N buffers.</p>
 <p>Default value: -1</p>
@@ -253,7 +259,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <div class="refsect2" lang="en">
 <a name="GstIdentity--last-message"></a><h3>The <code class="literal">"last-message"</code> property</h3>
 <pre class="programlisting">  "last-message"             <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a>*                : Read</pre>
 <p>last-message.</p>
 <p>Default value: NULL</p>
@@ -262,7 +268,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <div class="refsect2" lang="en">
 <a name="GstIdentity--silent"></a><h3>The <code class="literal">"silent"</code> property</h3>
 <pre class="programlisting">  "silent"                   <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write</pre>
 <p>silent.</p>
 <p>Default value: FALSE</p>
@@ -271,7 +277,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <div class="refsect2" lang="en">
 <a name="GstIdentity--single-segment"></a><h3>The <code class="literal">"single-segment"</code> property</h3>
 <pre class="programlisting">  "single-segment"           <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write</pre>
 <p>Timestamp buffers and eat newsegments so as to appear as one segment.</p>
 <p>Default value: FALSE</p>
@@ -280,7 +286,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <div class="refsect2" lang="en">
 <a name="GstIdentity--sleep-time"></a><h3>The <code class="literal">"sleep-time"</code> property</h3>
 <pre class="programlisting">  "sleep-time"               <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write</pre>
 <p>Microseconds to sleep between processing.</p>
 <p>Default value: 0</p>
@@ -289,7 +295,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <div class="refsect2" lang="en">
 <a name="GstIdentity--sync"></a><h3>The <code class="literal">"sync"</code> property</h3>
 <pre class="programlisting">  "sync"                     <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write</pre>
 <p>Synchronize to pipeline clock.</p>
 <p>Default value: FALSE</p>
@@ -298,7 +304,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <div class="refsect2" lang="en">
 <a name="GstIdentity--check-imperfect-offset"></a><h3>The <code class="literal">"check-imperfect-offset"</code> property</h3>
 <pre class="programlisting">  "check-imperfect-offset"   <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write</pre>
 <p>Send element messages if offset and offset_end do not match up.</p>
 <p>Default value: FALSE</p>
@@ -307,7 +313,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <div class="refsect2" lang="en">
 <a name="GstIdentity--check-imperfect-timestamp"></a><h3>The <code class="literal">"check-imperfect-timestamp"</code> property</h3>
 <pre class="programlisting">  "check-imperfect-timestamp" <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write</pre>
 <p>Send element messages if timestamps and durations do not match up.</p>
 <p>Default value: FALSE</p>
@@ -316,21 +322,19 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <div class="refsect2" lang="en">
 <a name="GstIdentity--signal-handoffs"></a><h3>The <code class="literal">"signal-handoffs"</code> property</h3>
 <pre class="programlisting">  "signal-handoffs"          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write</pre>
 <p>
 If set to <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><span class="type">TRUE</span></a>, the identity will emit a handoff signal when handling a buffer.
 When set to <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
 ><span class="type">FALSE</span></a>, no signal will be emited, which might improve performance.</p>
 <p>
-
 </p>
 <p>Default value: TRUE</p>
-<p>Since  0.10.16
-</p>
+<p>Since 0.10.16</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
@@ -338,14 +342,15 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
 <div class="refsect2" lang="en">
 <a name="GstIdentity-handoff"></a><h3>The <code class="literal">"handoff"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="gstreamer-plugins-identity.html#GstIdentity">GstIdentity</a> *identity,
-                                                        GstBuffer   *buffer,
                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a>   *buffer,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>     user_data)      : Run Last</pre>
 <p>
 This signal gets emitted before passing the buffer downstream.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -376,6 +381,6 @@ This signal gets emitted before passing the buffer downstream.</p>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

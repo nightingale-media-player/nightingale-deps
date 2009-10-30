@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-control.html" title="GStreamer Dynamic Parameter Control">
 <link rel="prev" href="GstController.html" title="GstController">
 <link rel="next" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-libs.html" title="Part I. GStreamer Libraries">
 <link rel="chapter" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
@@ -29,11 +29,13 @@
 <th width="100%" align="center">GStreamer 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="GstInterpolationControlSource.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#GstControlSource.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#GstControlSource.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#GstControlSource.object-hierarchy" class="shortcut">Object Hierarchy</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#GstControlSource.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#GstControlSource.description" class="shortcut">Description</a>
+                 | 
+                <a href="#GstControlSource.object-hierarchy" class="shortcut">Object Hierarchy</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="GstControlSource"></a><div class="titlepage"></div>
@@ -53,42 +55,50 @@
                     <a class="link" href="GstControlSource.html#GstControlSource-struct" title="GstControlSource">GstControlSource</a>;
                     <a class="link" href="GstControlSource.html#GstControlSourceClass" title="GstControlSourceClass">GstControlSourceClass</a>;
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            (<a class="link" href="GstControlSource.html#GstControlSourceBind" title="GstControlSourceBind ()">*GstControlSourceBind</a>)             (<a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a> *self,
                                                          <a
-href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
 >GParamSpec</a> *pspec);
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            (<a class="link" href="GstControlSource.html#GstControlSourceGetValue" title="GstControlSourceGetValue ()">*GstControlSourceGetValue</a>)         (<a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a> *self,
-                                                         GstClockTime timestamp,
                                                          <a
-href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> timestamp,
+                                                         <a
+href="../gobject/gobject-Generic-values.html#GValue"
 >GValue</a> *value);
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            (<a class="link" href="GstControlSource.html#GstControlSourceGetValueArray" title="GstControlSourceGetValueArray ()">*GstControlSourceGetValueArray</a>)    (<a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a> *self,
-                                                         GstClockTime timestamp,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> timestamp,
                                                          <a class="link" href="GstControlSource.html#GstValueArray" title="GstValueArray">GstValueArray</a> *value_array);
                     <a class="link" href="GstControlSource.html#GstTimedValue" title="GstTimedValue">GstTimedValue</a>;
                     <a class="link" href="GstControlSource.html#GstValueArray" title="GstValueArray">GstValueArray</a>;
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            <a class="link" href="GstControlSource.html#gst-control-source-bind" title="gst_control_source_bind ()">gst_control_source_bind</a>             (<a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a> *self,
                                                          <a
-href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
 >GParamSpec</a> *pspec);
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            <a class="link" href="GstControlSource.html#gst-control-source-get-value" title="gst_control_source_get_value ()">gst_control_source_get_value</a>        (<a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a> *self,
-                                                         GstClockTime timestamp,
                                                          <a
-href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> timestamp,
+                                                         <a
+href="../gobject/gobject-Generic-values.html#GValue"
 >GValue</a> *value);
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            <a class="link" href="GstControlSource.html#gst-control-source-get-value-array" title="gst_control_source_get_value_array ()">gst_control_source_get_value_array</a>  (<a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a> *self,
-                                                         GstClockTime timestamp,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> timestamp,
                                                          <a class="link" href="GstControlSource.html#GstValueArray" title="GstValueArray">GstValueArray</a> *value_array);
 </pre>
 </div>
@@ -96,7 +106,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <a name="GstControlSource.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
   <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
    +----GstControlSource
          +----<a class="link" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource">GstInterpolationControlSource</a>
@@ -112,7 +122,7 @@ be used by <a class="link" href="GstController.html" title="GstController"><span
 <p>
 A <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a> is used by first getting an instance, binding it to a
 <a
-href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
 ><span class="type">GParamSpec</span></a> (for example by using <a class="link" href="GstController.html#gst-controller-set-control-source" title="gst_controller_set_control_source ()"><code class="function">gst_controller_set_control_source()</code></a>) and
 then by having it used by the <a class="link" href="GstController.html" title="GstController"><span class="type">GstController</span></a> or calling
 <a class="link" href="GstControlSource.html#gst-control-source-get-value" title="gst_control_source_get_value ()"><code class="function">gst_control_source_get_value()</code></a> or <a class="link" href="GstControlSource.html#gst-control-source-get-value-array" title="gst_control_source_get_value_array ()"><code class="function">gst_control_source_get_value_array()</code></a>.
@@ -120,14 +130,13 @@ then by having it used by the <a class="link" href="GstController.html" title="G
 <p>
 For implementing a new <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a> one has to implement a
 <a class="link" href="GstControlSource.html#GstControlSourceBind" title="GstControlSourceBind ()"><span class="type">GstControlSourceBind</span></a> method, which will depending on the <a
-href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
 ><span class="type">GParamSpec</span></a> set up
 the control source for use and sets the <a class="link" href="GstControlSource.html#GstControlSourceGetValue" title="GstControlSourceGetValue ()"><span class="type">GstControlSourceGetValue</span></a> and
 <a class="link" href="GstControlSource.html#GstControlSourceGetValueArray" title="GstControlSourceGetValueArray ()"><span class="type">GstControlSourceGetValueArray</span></a> functions. These are then used by
 <a class="link" href="GstControlSource.html#gst-control-source-get-value" title="gst_control_source_get_value ()"><code class="function">gst_control_source_get_value()</code></a> or <a class="link" href="GstControlSource.html#gst-control-source-get-value-array" title="gst_control_source_get_value_array ()"><code class="function">gst_control_source_get_value_array()</code></a>
 to get values for specific timestamps.</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -142,7 +151,6 @@ to get values for specific timestamps.</p>
 <p>
 The instance structure of <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -172,14 +180,13 @@ The instance structure of <a class="link" href="GstControlSource.html" title="Gs
 <p>
 The class structure of <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObjectClass"
+href="../gobject/gobject-The-Base-Object-Type.html#GObjectClass"
 >GObjectClass</a> <em class="structfield"><code>parent_class</code></em>;</span></p></td>
 <td> Parent class
 </td>
@@ -196,17 +203,16 @@ href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObjectC
 <div class="refsect2" lang="en">
 <a name="GstControlSourceBind"></a><h3>GstControlSourceBind ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            (*GstControlSourceBind)             (<a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a> *self,
                                                          <a
-href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
 >GParamSpec</a> *pspec);</pre>
 <p>
 Function for binding a <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a> to a <a
-href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
 ><span class="type">GParamSpec</span></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -219,16 +225,16 @@ href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
 <tr>
 <td><p><span class="term"><em class="parameter"><code>pspec</code></em> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
 ><span class="type">GParamSpec</span></a> that should be bound to
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> if the property could be bound to the <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a>, <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
 ><code class="literal">FALSE</code></a> otherwise.
 </td>
 </tr>
@@ -239,16 +245,17 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
 <div class="refsect2" lang="en">
 <a name="GstControlSourceGetValue"></a><h3>GstControlSourceGetValue ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            (*GstControlSourceGetValue)         (<a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a> *self,
-                                                         GstClockTime timestamp,
                                                          <a
-href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> timestamp,
+                                                         <a
+href="../gobject/gobject-Generic-values.html#GValue"
 >GValue</a> *value);</pre>
 <p>
 Function for returning a value for a given timestamp.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -266,14 +273,14 @@ Function for returning a value for a given timestamp.</p>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a <a
-href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+href="../gobject/gobject-Generic-values.html#GValue"
 ><span class="type">GValue</span></a> which will be set to the result. It must be initialized to the correct type.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> if the value was successfully calculated.
 
 </td>
@@ -285,14 +292,15 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <div class="refsect2" lang="en">
 <a name="GstControlSourceGetValueArray"></a><h3>GstControlSourceGetValueArray ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            (*GstControlSourceGetValueArray)    (<a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a> *self,
-                                                         GstClockTime timestamp,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> timestamp,
                                                          <a class="link" href="GstControlSource.html#GstValueArray" title="GstValueArray">GstValueArray</a> *value_array);</pre>
 <p>
 Function for returning a <a class="link" href="GstControlSource.html#GstValueArray" title="GstValueArray"><span class="type">GstValueArray</span></a> for a given timestamp.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -315,7 +323,7 @@ Function for returning a <a class="link" href="GstControlSource.html#GstValueArr
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> if the values were successfully calculated.
 
 </td>
@@ -334,19 +342,20 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <p>
 Structure for saving a timestamp and a value.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term">GstClockTime <em class="structfield"><code>timestamp</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> <em class="structfield"><code>timestamp</code></em>;</span></p></td>
 <td> timestamp of the value change
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+href="../gobject/gobject-Generic-values.html#GValue"
 >GValue</a> <em class="structfield"><code>value</code></em>;</span></p></td>
 <td> the corresponding value
 </td>
@@ -367,33 +376,34 @@ href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
 <p>
 Structure to receive multiple values at once.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *<em class="structfield"><code>property_name</code></em>;</span></p></td>
 <td> the name of the property this array belongs to
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> <em class="structfield"><code>nbsamples</code></em>;</span></p></td>
 <td> number of samples requested
 </td>
 </tr>
 <tr>
-<td><p><span class="term">GstClockTime <em class="structfield"><code>sample_interval</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> <em class="structfield"><code>sample_interval</code></em>;</span></p></td>
 <td> interval between each sample
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> *<em class="structfield"><code>values</code></em>;</span></p></td>
 <td> pointer to the array
 </td>
@@ -405,16 +415,15 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 <div class="refsect2" lang="en">
 <a name="gst-control-source-bind"></a><h3>gst_control_source_bind ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            gst_control_source_bind             (<a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a> *self,
                                                          <a
-href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
 >GParamSpec</a> *pspec);</pre>
 <p>
 Binds a <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a> to a specific property. This must be called only once for a
 <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -427,16 +436,16 @@ Binds a <a class="link" href="GstControlSource.html" title="GstControlSource"><s
 <tr>
 <td><p><span class="term"><em class="parameter"><code>pspec</code></em> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
 ><span class="type">GParamSpec</span></a> for the property for which this <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a> should generate values.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> if the <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a> was bound correctly, <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
 ><code class="literal">FALSE</code></a> otherwise.
 </td>
 </tr>
@@ -447,16 +456,17 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
 <div class="refsect2" lang="en">
 <a name="gst-control-source-get-value"></a><h3>gst_control_source_get_value ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            gst_control_source_get_value        (<a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a> *self,
-                                                         GstClockTime timestamp,
                                                          <a
-href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> timestamp,
+                                                         <a
+href="../gobject/gobject-Generic-values.html#GValue"
 >GValue</a> *value);</pre>
 <p>
 Gets the value for this <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a> at a given timestamp.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -488,9 +498,11 @@ Gets the value for this <a class="link" href="GstControlSource.html" title="GstC
 <div class="refsect2" lang="en">
 <a name="gst-control-source-get-value-array"></a><h3>gst_control_source_get_value_array ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            gst_control_source_get_value_array  (<a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a> *self,
-                                                         GstClockTime timestamp,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> timestamp,
                                                          <a class="link" href="GstControlSource.html#GstValueArray" title="GstValueArray">GstValueArray</a> *value_array);</pre>
 <p>
 Gets an array of values for one element property.
@@ -503,7 +515,6 @@ of values.
 <p>
 The type of the values in the array is the same as the property's type.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -526,9 +537,9 @@ The type of the values in the array is the same as the property's type.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> if the given array could be filled, <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
 ><code class="literal">FALSE</code></a> otherwise
 </td>
 </tr>
@@ -539,6 +550,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

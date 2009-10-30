@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-net.html" title="GStreamer Network Classes">
 <link rel="prev" href="gstreamer-net.html" title="GStreamer Network Classes">
 <link rel="next" href="gstreamer-libs-GstNetTimePacket.html" title="GstNetTimePacket">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-libs.html" title="Part I. GStreamer Libraries">
 <link rel="chapter" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
@@ -29,13 +29,15 @@
 <th width="100%" align="center">GStreamer 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-libs-GstNetTimePacket.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#GstNetClientClock.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#GstNetClientClock.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#GstNetClientClock.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#GstNetClientClock.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#GstNetClientClock.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#GstNetClientClock.description" class="shortcut">Description</a>
+                 | 
+                <a href="#GstNetClientClock.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#GstNetClientClock.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="GstNetClientClock"></a><div class="titlepage"></div>
@@ -54,27 +56,37 @@
 #include &lt;gst/net/gstnet.h&gt;
 
                     <a class="link" href="GstNetClientClock.html#GstNetClientClock-struct" title="GstNetClientClock">GstNetClientClock</a>;
-GstClock*           <a class="link" href="GstNetClientClock.html#gst-net-client-clock-new" title="gst_net_client_clock_new ()">gst_net_client_clock_new</a>            (<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+<a
+href="../gstreamer-0.10/GstClock.html"
+>GstClock</a>*           <a class="link" href="GstNetClientClock.html#gst-net-client-clock-new" title="gst_net_client_clock_new ()">gst_net_client_clock_new</a>            (<a
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *remote_address,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> remote_port,
-                                                         GstClockTime base_time);
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> base_time);
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="GstNetClientClock.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
   <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstClock
-               +----GstSystemClock
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstClock.html"
+>GstClock</a>
+               +----<a
+href="../gstreamer-0.10/GstSystemClock.html"
+>GstSystemClock</a>
                      +----GstNetClientClock
 </pre>
 </div>
@@ -82,17 +94,19 @@ href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 <a name="GstNetClientClock.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
   "<a class="link" href="GstNetClientClock.html#GstNetClientClock--address" title='The "address" property'>address</a>"                  <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a>*                : Read / Write
   "<a class="link" href="GstNetClientClock.html#GstNetClientClock--port" title='The "port" property'>port</a>"                     <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="GstNetClientClock.description"></a><h2>Description</h2>
 <p>
-This object implements a custom <span class="type">GstClock</span> that synchronizes its time
+This object implements a custom <a
+href="../gstreamer-0.10/GstClock.html"
+><span class="type">GstClock</span></a> that synchronizes its time
 to a remote time provider such as <a class="link" href="GstNetTimeProvider.html" title="GstNetTimeProvider"><span class="type">GstNetTimeProvider</span></a>.
 </p>
 <p>
@@ -105,17 +119,22 @@ This clock will poll the time provider and will update its calibration
 parameters based on the local and remote observations.
 </p>
 <p>
-Various parameters of the clock can be configured with the parent <span class="type">GstClock</span>
+Various parameters of the clock can be configured with the parent <a
+href="../gstreamer-0.10/GstClock.html"
+><span class="type">GstClock</span></a>
 "timeout", "window-size" and "window-threshold" object properties.
 </p>
 <p>
-A <a class="link" href="GstNetClientClock.html" title="GstNetClientClock"><span class="type">GstNetClientClock</span></a> is typically set on a <span class="type">GstPipeline</span> with 
-<code class="function">gst_pipeline_use_clock()</code>.
+A <a class="link" href="GstNetClientClock.html" title="GstNetClientClock"><span class="type">GstNetClientClock</span></a> is typically set on a <a
+href="../gstreamer-0.10/GstPipeline.html"
+><span class="type">GstPipeline</span></a> with 
+<a
+href="../gstreamer-0.10/GstPipeline.html#gst-pipeline-use-clock"
+><code class="function">gst_pipeline_use_clock()</code></a>.
 </p>
 <p>
 Last reviewed on 2005-11-23 (0.9.5)</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -126,7 +145,6 @@ Last reviewed on 2005-11-23 (0.9.5)</p>
 <p>
 Opaque <a class="link" href="GstNetClientClock.html" title="GstNetClientClock"><span class="type">GstNetClientClock</span></a> structure.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -136,22 +154,25 @@ Opaque <a class="link" href="GstNetClientClock.html" title="GstNetClientClock"><
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-net-client-clock-new"></a><h3>gst_net_client_clock_new ()</h3>
-<pre class="programlisting">GstClock*           gst_net_client_clock_new            (<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+<pre class="programlisting"><a
+href="../gstreamer-0.10/GstClock.html"
+>GstClock</a>*           gst_net_client_clock_new            (<a
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *remote_address,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> remote_port,
-                                                         GstClockTime base_time);</pre>
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> base_time);</pre>
 <p>
 Create a new <a class="link" href="GstNetClientClock.html" title="GstNetClientClock"><span class="type">GstNetClientClock</span></a> that will report the time
 provided by the <span class="type">GstNetClockProvider</span> on <em class="parameter"><code>remote_address</code></em> and 
 <em class="parameter"><code>remote_port</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -178,7 +199,9 @@ provided by the <span class="type">GstNetClockProvider</span> on <em class="para
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a new <span class="type">GstClock</span> that receives a time from the remote
+<td> a new <a
+href="../gstreamer-0.10/GstClock.html"
+><span class="type">GstClock</span></a> that receives a time from the remote
 clock.
 </td>
 </tr>
@@ -191,7 +214,7 @@ clock.
 <div class="refsect2" lang="en">
 <a name="GstNetClientClock--address"></a><h3>The <code class="literal">"address"</code> property</h3>
 <pre class="programlisting">  "address"                  <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a>*                : Read / Write</pre>
 <p>The address of the machine providing a time server, as a dotted quad (x.x.x.x).</p>
 <p>Default value: "127.0.0.1"</p>
@@ -200,7 +223,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <div class="refsect2" lang="en">
 <a name="GstNetClientClock--port"></a><h3>The <code class="literal">"port"</code> property</h3>
 <pre class="programlisting">  "port"                     <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write</pre>
 <p>The port on which the remote server is listening.</p>
 <p>Allowed values: [0,65535]</p>
@@ -209,11 +232,13 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 </div>
 <div class="refsect1" lang="en">
 <a name="GstNetClientClock.see-also"></a><h2>See Also</h2>
-<span class="type">GstClock</span>, <a class="link" href="GstNetTimeProvider.html" title="GstNetTimeProvider"><span class="type">GstNetTimeProvider</span></a>, <span class="type">GstPipeline</span>
+#GstClock, <a class="link" href="GstNetTimeProvider.html" title="GstNetTimeProvider"><span class="type">GstNetTimeProvider</span></a>, <a
+href="../gstreamer-0.10/GstPipeline.html"
+><span class="type">GstPipeline</span></a>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

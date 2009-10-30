@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gstreamer Elements">
 <link rel="prev" href="gstreamer-plugins-capsfilter.html" title="capsfilter">
 <link rel="next" href="gstreamer-plugins-fakesink.html" title="fakesink">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gstreamer Elements">
 <link rel="chapter" href="ch02.html" title="gstreamer Plugins">
@@ -22,15 +22,17 @@
 <th width="100%" align="center">GStreamer Core Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-plugins-fakesink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-plugins-fakesrc.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gstreamer-plugins-fakesrc.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gstreamer-plugins-fakesrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gstreamer-plugins-fakesrc.properties" class="shortcut">Properties</a>
-                   | 
-                  <a href="#gstreamer-plugins-fakesrc.signals" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gstreamer-plugins-fakesrc.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gstreamer-plugins-fakesrc.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gstreamer-plugins-fakesrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gstreamer-plugins-fakesrc.properties" class="shortcut">Properties</a>
+                 | 
+                <a href="#gstreamer-plugins-fakesrc.signals" class="shortcut">Signals</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-plugins-fakesrc"></a><div class="titlepage"></div>
@@ -55,11 +57,17 @@ enum                <a class="link" href="gstreamer-plugins-fakesrc.html#GstFake
 <a name="gstreamer-plugins-fakesrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
   <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
-               +----GstBaseSrc
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="../gstreamer-libs-0.10/GstBaseSrc.html"
+>GstBaseSrc</a>
                      +----GstFakeSrc
 </pre>
 </div>
@@ -67,48 +75,50 @@ href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 <a name="gstreamer-plugins-fakesrc.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
   "<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc--can-activate-pull" title='The "can-activate-pull" property'>can-activate-pull</a>"        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write / Construct
   "<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc--can-activate-push" title='The "can-activate-push" property'>can-activate-push</a>"        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write / Construct
   "<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc--data" title='The "data" property'>data</a>"                     <a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrcDataType" title="enum GstFakeSrcDataType">GstFakeSrcDataType</a>    : Read / Write
   "<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc--datarate" title='The "datarate" property'>datarate</a>"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write
   "<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc--dump" title='The "dump" property'>dump</a>"                     <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
   "<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc--filltype" title='The "filltype" property'>filltype</a>"                 <a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrcFillType" title="enum GstFakeSrcFillType">GstFakeSrcFillType</a>    : Read / Write
   "<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc--is-live" title='The "is-live" property'>is-live</a>"                  <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write / Construct
   "<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc--last-message" title='The "last-message" property'>last-message</a>"             <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a>*                : Read
   "<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc--parentsize" title='The "parentsize" property'>parentsize</a>"               <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write
   "<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc--pattern" title='The "pattern" property'>pattern</a>"                  <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a>*                : Read / Write
   "<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc--signal-handoffs" title='The "signal-handoffs" property'>signal-handoffs</a>"          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
   "<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc--silent" title='The "silent" property'>silent</a>"                   <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
   "<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc--sizemax" title='The "sizemax" property'>sizemax</a>"                  <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write
   "<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc--sizemin" title='The "sizemin" property'>sizemin</a>"                  <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write
   "<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc--sizetype" title='The "sizetype" property'>sizetype</a>"                 <a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrcSizeType" title="enum GstFakeSrcSizeType">GstFakeSrcSizeType</a>    : Read / Write
   "<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc--sync" title='The "sync" property'>sync</a>"                     <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
-  "<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc--format" title='The "format" property'>format</a>"                   GstFormat             : Read / Write
+  "<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc--format" title='The "format" property'>format</a>"                   <a
+href="../gstreamer-0.10/gstreamer-GstFormat.html#GstFormat"
+>GstFormat</a>             : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -130,7 +140,7 @@ basic <span class="application">GStreamer</span> core functionality is:
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2694073"></a><h3>Example launch line</h3>
+<a name="id2830290"></a><h3>Example launch line</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch -v fakesrc num-buffers=5 ! fakesink
 </pre></div> This pipeline will push 5 empty buffers to the fakesink element and then
@@ -143,7 +153,7 @@ Last reviewed on 2008-06-20 (0.10.21)</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2694098"></a><h3>Element Information</h3>
+<a name="id2830316"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -166,7 +176,7 @@ Last reviewed on 2008-06-20 (0.10.21)</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2694160"></a><h3>Element Pads</h3>
+<a name="id2830378"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -191,7 +201,6 @@ Last reviewed on 2008-06-20 (0.10.21)</p>
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -202,7 +211,6 @@ Last reviewed on 2008-06-20 (0.10.21)</p>
 <p>
 Opaque <a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc"><span class="type">GstFakeSrc</span></a> data structure.</p>
 <p>
-
 </p>
 </div>
 <hr>
@@ -216,18 +224,17 @@ Opaque <a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc"><span cl
 <p>
 The different ways buffers are allocated.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="FAKE-SRC-DATA-ALLOCATE:CAPS"></a><span class="term"><code class="literal">FAKE_SRC_DATA_ALLOCATE</code></span></p></td>
+<td><p><a name="FAKE-SRC-DATA-ALLOCATE--CAPS"></a><span class="term"><code class="literal">FAKE_SRC_DATA_ALLOCATE</code></span></p></td>
 <td> allocate buffers
 </td>
 </tr>
 <tr>
-<td><p><a name="FAKE-SRC-DATA-SUBBUFFER:CAPS"></a><span class="term"><code class="literal">FAKE_SRC_DATA_SUBBUFFER</code></span></p></td>
+<td><p><a name="FAKE-SRC-DATA-SUBBUFFER--CAPS"></a><span class="term"><code class="literal">FAKE_SRC_DATA_SUBBUFFER</code></span></p></td>
 <td> subbuffer each buffer
 </td>
 </tr>
@@ -248,33 +255,32 @@ The different ways buffers are allocated.</p>
 <p>
 The different ways of filling the buffers.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="FAKE-SRC-FILLTYPE-NOTHING:CAPS"></a><span class="term"><code class="literal">FAKE_SRC_FILLTYPE_NOTHING</code></span></p></td>
+<td><p><a name="FAKE-SRC-FILLTYPE-NOTHING--CAPS"></a><span class="term"><code class="literal">FAKE_SRC_FILLTYPE_NOTHING</code></span></p></td>
 <td> do not fill buffers 
 </td>
 </tr>
 <tr>
-<td><p><a name="FAKE-SRC-FILLTYPE-ZERO:CAPS"></a><span class="term"><code class="literal">FAKE_SRC_FILLTYPE_ZERO</code></span></p></td>
+<td><p><a name="FAKE-SRC-FILLTYPE-ZERO--CAPS"></a><span class="term"><code class="literal">FAKE_SRC_FILLTYPE_ZERO</code></span></p></td>
 <td> fill buffers with 0
 </td>
 </tr>
 <tr>
-<td><p><a name="FAKE-SRC-FILLTYPE-RANDOM:CAPS"></a><span class="term"><code class="literal">FAKE_SRC_FILLTYPE_RANDOM</code></span></p></td>
+<td><p><a name="FAKE-SRC-FILLTYPE-RANDOM--CAPS"></a><span class="term"><code class="literal">FAKE_SRC_FILLTYPE_RANDOM</code></span></p></td>
 <td> fill buffers with random bytes
 </td>
 </tr>
 <tr>
-<td><p><a name="FAKE-SRC-FILLTYPE-PATTERN:CAPS"></a><span class="term"><code class="literal">FAKE_SRC_FILLTYPE_PATTERN</code></span></p></td>
+<td><p><a name="FAKE-SRC-FILLTYPE-PATTERN--CAPS"></a><span class="term"><code class="literal">FAKE_SRC_FILLTYPE_PATTERN</code></span></p></td>
 <td> fill buffers with a pattern
 </td>
 </tr>
 <tr>
-<td><p><a name="FAKE-SRC-FILLTYPE-PATTERN-CONT:CAPS"></a><span class="term"><code class="literal">FAKE_SRC_FILLTYPE_PATTERN_CONT</code></span></p></td>
+<td><p><a name="FAKE-SRC-FILLTYPE-PATTERN-CONT--CAPS"></a><span class="term"><code class="literal">FAKE_SRC_FILLTYPE_PATTERN_CONT</code></span></p></td>
 <td> fill buffers with a continuous pattern
 </td>
 </tr>
@@ -298,48 +304,47 @@ The different ways of filling the buffers.</p>
 <p>
 The different output types. Unused currently.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="FAKE-SRC-FIRST-LAST-LOOP:CAPS"></a><span class="term"><code class="literal">FAKE_SRC_FIRST_LAST_LOOP</code></span></p></td>
+<td><p><a name="FAKE-SRC-FIRST-LAST-LOOP--CAPS"></a><span class="term"><code class="literal">FAKE_SRC_FIRST_LAST_LOOP</code></span></p></td>
 <td> first pad then last pad
 </td>
 </tr>
 <tr>
-<td><p><a name="FAKE-SRC-LAST-FIRST-LOOP:CAPS"></a><span class="term"><code class="literal">FAKE_SRC_LAST_FIRST_LOOP</code></span></p></td>
+<td><p><a name="FAKE-SRC-LAST-FIRST-LOOP--CAPS"></a><span class="term"><code class="literal">FAKE_SRC_LAST_FIRST_LOOP</code></span></p></td>
 <td> last pad then first pad
 </td>
 </tr>
 <tr>
-<td><p><a name="FAKE-SRC-PING-PONG:CAPS"></a><span class="term"><code class="literal">FAKE_SRC_PING_PONG</code></span></p></td>
+<td><p><a name="FAKE-SRC-PING-PONG--CAPS"></a><span class="term"><code class="literal">FAKE_SRC_PING_PONG</code></span></p></td>
 <td> ping pong between pads
 </td>
 </tr>
 <tr>
-<td><p><a name="FAKE-SRC-ORDERED-RANDOM:CAPS"></a><span class="term"><code class="literal">FAKE_SRC_ORDERED_RANDOM</code></span></p></td>
+<td><p><a name="FAKE-SRC-ORDERED-RANDOM--CAPS"></a><span class="term"><code class="literal">FAKE_SRC_ORDERED_RANDOM</code></span></p></td>
 <td> ordered random pad
 </td>
 </tr>
 <tr>
-<td><p><a name="FAKE-SRC-RANDOM:CAPS"></a><span class="term"><code class="literal">FAKE_SRC_RANDOM</code></span></p></td>
+<td><p><a name="FAKE-SRC-RANDOM--CAPS"></a><span class="term"><code class="literal">FAKE_SRC_RANDOM</code></span></p></td>
 <td> random pad
 </td>
 </tr>
 <tr>
-<td><p><a name="FAKE-SRC-PATTERN-LOOP:CAPS"></a><span class="term"><code class="literal">FAKE_SRC_PATTERN_LOOP</code></span></p></td>
+<td><p><a name="FAKE-SRC-PATTERN-LOOP--CAPS"></a><span class="term"><code class="literal">FAKE_SRC_PATTERN_LOOP</code></span></p></td>
 <td> loop between pads in a particular pattern
 </td>
 </tr>
 <tr>
-<td><p><a name="FAKE-SRC-PING-PONG-PATTERN:CAPS"></a><span class="term"><code class="literal">FAKE_SRC_PING_PONG_PATTERN</code></span></p></td>
+<td><p><a name="FAKE-SRC-PING-PONG-PATTERN--CAPS"></a><span class="term"><code class="literal">FAKE_SRC_PING_PONG_PATTERN</code></span></p></td>
 <td> ping pong based on a pattern
 </td>
 </tr>
 <tr>
-<td><p><a name="FAKE-SRC-GET-ALWAYS-SUCEEDS:CAPS"></a><span class="term"><code class="literal">FAKE_SRC_GET_ALWAYS_SUCEEDS</code></span></p></td>
+<td><p><a name="FAKE-SRC-GET-ALWAYS-SUCEEDS--CAPS"></a><span class="term"><code class="literal">FAKE_SRC_GET_ALWAYS_SUCEEDS</code></span></p></td>
 <td> a get always succeeds on a pad
 </td>
 </tr>
@@ -358,23 +363,22 @@ The different output types. Unused currently.</p>
 <p>
 The different size of the allocated buffers.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="FAKE-SRC-SIZETYPE-EMPTY:CAPS"></a><span class="term"><code class="literal">FAKE_SRC_SIZETYPE_EMPTY</code></span></p></td>
+<td><p><a name="FAKE-SRC-SIZETYPE-EMPTY--CAPS"></a><span class="term"><code class="literal">FAKE_SRC_SIZETYPE_EMPTY</code></span></p></td>
 <td> create empty buffers
 </td>
 </tr>
 <tr>
-<td><p><a name="FAKE-SRC-SIZETYPE-FIXED:CAPS"></a><span class="term"><code class="literal">FAKE_SRC_SIZETYPE_FIXED</code></span></p></td>
+<td><p><a name="FAKE-SRC-SIZETYPE-FIXED--CAPS"></a><span class="term"><code class="literal">FAKE_SRC_SIZETYPE_FIXED</code></span></p></td>
 <td> fixed buffer size (sizemax sized)
 </td>
 </tr>
 <tr>
-<td><p><a name="FAKE-SRC-SIZETYPE-RANDOM:CAPS"></a><span class="term"><code class="literal">FAKE_SRC_SIZETYPE_RANDOM</code></span></p></td>
+<td><p><a name="FAKE-SRC-SIZETYPE-RANDOM--CAPS"></a><span class="term"><code class="literal">FAKE_SRC_SIZETYPE_RANDOM</code></span></p></td>
 <td> random buffer size (sizemin &lt;= size &lt;= sizemax)
 </td>
 </tr>
@@ -387,7 +391,7 @@ The different size of the allocated buffers.</p>
 <div class="refsect2" lang="en">
 <a name="GstFakeSrc--can-activate-pull"></a><h3>The <code class="literal">"can-activate-pull"</code> property</h3>
 <pre class="programlisting">  "can-activate-pull"        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write / Construct</pre>
 <p>Can activate in pull mode.</p>
 <p>Default value: TRUE</p>
@@ -396,7 +400,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <div class="refsect2" lang="en">
 <a name="GstFakeSrc--can-activate-push"></a><h3>The <code class="literal">"can-activate-push"</code> property</h3>
 <pre class="programlisting">  "can-activate-push"        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write / Construct</pre>
 <p>Can activate in push mode.</p>
 <p>Default value: TRUE</p>
@@ -412,7 +416,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <div class="refsect2" lang="en">
 <a name="GstFakeSrc--datarate"></a><h3>The <code class="literal">"datarate"</code> property</h3>
 <pre class="programlisting">  "datarate"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write</pre>
 <p>Timestamps buffers with number of bytes per second (0 = none).</p>
 <p>Allowed values: &gt;= 0</p>
@@ -422,7 +426,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <div class="refsect2" lang="en">
 <a name="GstFakeSrc--dump"></a><h3>The <code class="literal">"dump"</code> property</h3>
 <pre class="programlisting">  "dump"                     <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write</pre>
 <p>Dump buffer contents to stdout.</p>
 <p>Default value: FALSE</p>
@@ -438,7 +442,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <div class="refsect2" lang="en">
 <a name="GstFakeSrc--is-live"></a><h3>The <code class="literal">"is-live"</code> property</h3>
 <pre class="programlisting">  "is-live"                  <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write / Construct</pre>
 <p>True if the element cannot produce data in PAUSED.</p>
 <p>Default value: FALSE</p>
@@ -447,7 +451,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <div class="refsect2" lang="en">
 <a name="GstFakeSrc--last-message"></a><h3>The <code class="literal">"last-message"</code> property</h3>
 <pre class="programlisting">  "last-message"             <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a>*                : Read</pre>
 <p>The last status message.</p>
 <p>Default value: NULL</p>
@@ -456,7 +460,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <div class="refsect2" lang="en">
 <a name="GstFakeSrc--parentsize"></a><h3>The <code class="literal">"parentsize"</code> property</h3>
 <pre class="programlisting">  "parentsize"               <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write</pre>
 <p>Size of parent buffer for sub-buffered allocation.</p>
 <p>Allowed values: &gt;= 0</p>
@@ -466,7 +470,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <div class="refsect2" lang="en">
 <a name="GstFakeSrc--pattern"></a><h3>The <code class="literal">"pattern"</code> property</h3>
 <pre class="programlisting">  "pattern"                  <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a>*                : Read / Write</pre>
 <p>pattern.</p>
 <p>Default value: NULL</p>
@@ -475,7 +479,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <div class="refsect2" lang="en">
 <a name="GstFakeSrc--signal-handoffs"></a><h3>The <code class="literal">"signal-handoffs"</code> property</h3>
 <pre class="programlisting">  "signal-handoffs"          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write</pre>
 <p>Send a signal before pushing the buffer.</p>
 <p>Default value: FALSE</p>
@@ -484,7 +488,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <div class="refsect2" lang="en">
 <a name="GstFakeSrc--silent"></a><h3>The <code class="literal">"silent"</code> property</h3>
 <pre class="programlisting">  "silent"                   <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write</pre>
 <p>Don't produce last_message events.</p>
 <p>Default value: FALSE</p>
@@ -493,7 +497,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <div class="refsect2" lang="en">
 <a name="GstFakeSrc--sizemax"></a><h3>The <code class="literal">"sizemax"</code> property</h3>
 <pre class="programlisting">  "sizemax"                  <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write</pre>
 <p>Maximum buffer size.</p>
 <p>Allowed values: &gt;= 0</p>
@@ -503,7 +507,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <div class="refsect2" lang="en">
 <a name="GstFakeSrc--sizemin"></a><h3>The <code class="literal">"sizemin"</code> property</h3>
 <pre class="programlisting">  "sizemin"                  <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write</pre>
 <p>Minimum buffer size.</p>
 <p>Allowed values: &gt;= 0</p>
@@ -520,7 +524,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <div class="refsect2" lang="en">
 <a name="GstFakeSrc--sync"></a><h3>The <code class="literal">"sync"</code> property</h3>
 <pre class="programlisting">  "sync"                     <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write</pre>
 <p>Sync to the clock to the datarate.</p>
 <p>Default value: FALSE</p>
@@ -528,15 +532,15 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstFakeSrc--format"></a><h3>The <code class="literal">"format"</code> property</h3>
-<pre class="programlisting">  "format"                   GstFormat             : Read / Write</pre>
+<pre class="programlisting">  "format"                   <a
+href="../gstreamer-0.10/gstreamer-GstFormat.html#GstFormat"
+>GstFormat</a>             : Read / Write</pre>
 <p>
 Set the format of the newsegment events to produce.</p>
 <p>
-
 </p>
 <p>Default value: GST_FORMAT_BYTES</p>
-<p>Since  0.10.20
-</p>
+<p>Since 0.10.20</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
@@ -544,15 +548,18 @@ Set the format of the newsegment events to produce.</p>
 <div class="refsect2" lang="en">
 <a name="GstFakeSrc-handoff"></a><h3>The <code class="literal">"handoff"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc">GstFakeSrc</a> *fakesrc,
-                                                        GstBuffer  *buffer,
-                                                        GstPad     *pad,
                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a>  *buffer,
+                                                        <a
+href="../gstreamer-0.10/GstPad.html"
+>GstPad</a>     *pad,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>    user_data)      : Run Last</pre>
 <p>
 This signal gets emitted before sending the buffer.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -582,11 +589,11 @@ This signal gets emitted before sending the buffer.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-fakesrc.see-also"></a><h2>See Also</h2>
-<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink"><span class="type">GstFakeSink</span></a>
+#GstFakeSink
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

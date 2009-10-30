@@ -70,12 +70,14 @@ REGISTRY_CHECKS =				\
 	libs/basesrc				\
 	libs/controller				\
 	libs/typefindhelper			\
-	pipelines/stress
+	pipelines/stress			\
+	pipelines/queue-error
 endif
 
 check_PROGRAMS =				\
 	gst/gstabi			     	\
 	gst/gstbuffer				\
+	gst/gstbufferlist			\
 	gst/gstbus				\
 	gst/gstcaps     			\
 	gst/gstinfo		 		\
@@ -141,6 +143,8 @@ LDADD = $(top_builddir)/libs/gst/check/libgstcheck-@GST_MAJORMINOR@.la \
 	$(GST_OBJ_LIBS) \
 	$(CHECK_LIBS)
 
+gst_gstutils_LDADD = $(LDADD) $(GSL_LIBS) $(GMP_LIBS)
+
 libs_gdp_SOURCES = \
 	libs/gdp.c
 libs_gdp_CFLAGS = $(AM_CFLAGS)
@@ -150,6 +154,10 @@ libs_gdp_LDADD = \
 
 elements_fdsrc_CFLAGS=$(GST_OBJ_CFLAGS) $(CHECK_CFLAGS) -DTESTFILE=\"$(top_srcdir)/configure.ac\"
 elements_filesrc_CFLAGS=$(GST_OBJ_CFLAGS) $(CHECK_CFLAGS) -DTESTFILE=\"$(top_srcdir)/configure.ac\"
+
+elements_fakesink_LDADD = \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
+	$(LDADD)
 
 libs_basesrc_LDADD = \
 	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \

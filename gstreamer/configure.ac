@@ -2,20 +2,20 @@ AC_PREREQ(2.52)
 
 dnl initialize autoconf
 dnl when going to/from release please set the nano (fourth number) right !
-dnl releases only do Wall, cvs and prerelease does Werror too
-AC_INIT(GStreamer, 0.10.22,
+dnl releases only do Wall, git and prerelease does Werror too
+AC_INIT(GStreamer, 0.10.25,
     http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer,
     gstreamer)
 AG_GST_INIT
 
-dnl initialize automake
-AM_INIT_AUTOMAKE
+dnl initialize automake (we require GNU make)
+AM_INIT_AUTOMAKE([-Wno-portability])
 
 dnl define PACKAGE_VERSION_* variables
 AS_VERSION
 
 dnl check if this is a release version
-AS_NANO(GST_CVS="no", GST_CVS="yes")
+AS_NANO(GST_GIT="no", GST_GIT="yes")
 
 dnl can autoconf find the source ?
 AC_CONFIG_SRCDIR([gst/gst.c])
@@ -43,7 +43,7 @@ dnl - interfaces added/removed/changed -> increment CURRENT, REVISION = 0
 dnl - interfaces added -> increment AGE
 dnl - interfaces removed -> AGE = 0
 dnl sets GST_LT_LDFLAGS
-AS_LIBTOOL(GST, 19, 0, 19)
+AS_LIBTOOL(GST, 22, 0, 22)
 
 dnl FIXME: this macro doesn't actually work;
 dnl the generated libtool script has no support for the listed tags.
@@ -58,12 +58,12 @@ dnl *** autotools stuff ****
 dnl allow for different autotools
 AS_AUTOTOOLS_ALTERNATE
 
-dnl Add parameters for aclocal
-AC_SUBST(ACLOCAL_AMFLAGS, "-I common/m4")
+dnl Add parameters for aclocal (keep in sync with Makefile.am)
+AC_SUBST(ACLOCAL_AMFLAGS, "-I common/m4 -I .")
 
 dnl set up gettext
 dnl the version check needs to stay here because autopoint greps for it
-AM_GNU_GETTEXT_VERSION([0.14])
+AM_GNU_GETTEXT_VERSION([0.17])
 AM_GNU_GETTEXT([external])
 AG_GST_GETTEXT([gstreamer-$GST_MAJORMINOR])
 
@@ -174,26 +174,6 @@ if test "x$USE_POISONING" = xyes; then
     [Define if we should poison deallocated memory])
 fi
 
-dnl Use binary registry
-AC_ARG_ENABLE(binary-registry,
-  AC_HELP_STRING([--disable-binary-registry],
-    [disable binary registry]),
-  [
-    case "${enableval}" in
-      yes) USE_BINARY_REGISTRY=yes ;;
-      no)  USE_BINARY_REGISTRY=no ;;
-      *)   AC_MSG_ERROR(bad value ${enableval} for --disable-binary-registry) ;;
-    esac
-  ],
-  [USE_BINARY_REGISTRY=yes]) dnl Default value
-
-if test "x$USE_BINARY_REGISTRY" = xyes; then
-  dnl for config.h:
-  AC_DEFINE(USE_BINARY_REGISTRY, 1,
-    [Define if we should use binary registry instead xml registry])
-fi
-AM_CONDITIONAL(USE_BINARY_REGISTRY, test "x$USE_BINARY_REGISTRY" = "xyes")
-
 dnl *** checks for platform ***
 
 dnl * hardware/architecture *
@@ -224,10 +204,33 @@ case $host_os in
      darwin*)
 	AC_DEFINE_UNQUOTED(GST_EXTRA_MODULE_SUFFIX, [".dylib"], [Extra platform specific plugin suffix])
         AC_DEFINE_UNQUOTED(GST_HAVE_UNSAFE_FORK, 1, [Defined when registry scanning through fork is unsafe])
+        AC_DEFINE_UNQUOTED(HAVE_OSX, 1, [Defined if compiling for OSX])
 	;;
-     cygwin* | mingw* | msvc* | mks*)
+     cygwin*)
+	AC_DEFINE_UNQUOTED(GST_HAVE_UNSAFE_FORK, 1, [Defined when registry scanning through fork is unsafe])
+	;;
+     mingw* | msvc* | mks*)
         dnl HAVE_WIN32 currently means "disable POSIXisms".
         AC_DEFINE_UNQUOTED(HAVE_WIN32, 1, [Defined if compiling for Windows])
+
+        dnl define __MSVCRT_VERSION__ version if not set already by the
+        dnl compiler (ie. mostly for mingw). This is needed for things like
+        dnl __stat64 to be available. If set by the compiler, ensure it's
+        dnl new enough - we need at least WinXP SP2.
+        AC_TRY_COMPILE([ ], [ return __MSVCRT_VERSION__; ], [
+            AC_TRY_COMPILE([ ], [
+              #if __MSVCRT_VERSION__ < 0x0601
+              #error "MSVCRT too old"
+              #endif
+            ], [
+              AC_MSG_NOTICE([MSVCRT version looks ok])
+            ], [
+              AC_MSG_ERROR([MSVCRT version too old, need at least WinXP SP2])
+            ])
+        ], [
+          AC_MSG_NOTICE([Setting MSVCRT version to 0x0601])
+          AC_DEFINE_UNQUOTED(__MSVCRT_VERSION__, 0x0601, [We need at least WinXP SP2 for __stat64])
+        ])
         ;;
      *)
 	;;
@@ -264,6 +267,9 @@ fi
 
 AC_PATH_PROG(VALGRIND_PATH, valgrind, no)
 AM_CONDITIONAL(HAVE_VALGRIND, test ! "x$VALGRIND_PATH" = "xno")
+
+dnl check for gobject-introspection
+GOBJECT_INTROSPECTION_CHECK([0.6.3])
 
 dnl check for documentation tools
 AG_GST_DOCBOOK_CHECK
@@ -303,6 +309,10 @@ AC_CHECK_HEADERS([sys/utsname.h])
 dnl Check for stdio_ext.f for __fbufsize
 AC_CHECK_HEADERS([stdio_ext.h])
 
+dnl check for pthreads
+AC_CHECK_HEADERS([pthread.h], HAVE_PTHREAD_H=yes)
+AM_CONDITIONAL(HAVE_PTHREAD_H, test "x$HAVE_PTHREAD_H" = "xyes")
+
 dnl Check for valgrind.h
 dnl separate from HAVE_VALGRIND because you can have the program, but not
 dnl the dev package
@@ -316,14 +326,41 @@ if test "x$HAVE_WINSOCK2_H" = "xyes"; then
   AC_SUBST(WIN32_LIBS)
 fi
 
+dnl check for GMP/GSL, used by the gst_util_uint64_scale unit test only
+AG_GST_CHECK_LIBHEADER(GMP, gmp,
+                        __gmpz_init_set_d, ,
+                        gmp.h,
+                        GMP_LIBS="-lgmp"
+                        AC_SUBST(GMP_LIBS)
+			AC_DEFINE(HAVE_GMP, [1],[Have GMP library]))
+AG_GST_CHECK_LIBHEADER(GSL, gsl,
+                        gsl_rng_uniform_int, -lgslcblas,
+                        gsl/gsl_rng.h,
+                        GSL_LIBS="-lgsl -lgslcblas"
+                        AC_SUBST(GSL_LIBS)
+			AC_DEFINE(HAVE_GSL, [1],[Have GSL library]))
+
 dnl *** checks for types/defines ***
 
 dnl *** checks for structures ***
 
 dnl *** checks for compiler characteristics ***
 
-dnl make sure we can use "inline" from C code
-AC_C_INLINE
+dnl check if the compiler supports __uint128_t (gcc)
+AC_CACHE_CHECK(for __uint128_t, gst_cv_uint128_t,
+    AC_TRY_COMPILE([ ], [
+      __uint128_t u = 0;
+
+      return 0;
+    ], [
+      gst_cv_uint128_t=yes
+    ], [
+      gst_cv_uint128_t=no
+    ])
+)
+if test x$gst_cv_uint128_t = xyes; then
+  AC_DEFINE(HAVE_UINT128_T, 1, [Have __uint128_t type])
+fi
 
 OPT_CFLAGS=
 dnl Check for some compiler flags that optimize our code.
@@ -429,20 +466,21 @@ AM_CONDITIONAL(GST_HAVE_MONOTONIC_CLOCK, test "$gst_cv_monotonic_clock" = "yes")
 dnl Check for a way to display the function name in debug output
 AG_GST_CHECK_FUNCTION
 
-dnl test for register_printf_function
-AC_CHECK_FUNC(register_printf_function,
-  [
-    GST_PRINTF_EXTENSION_POINTER_FORMAT_DEFINE="#define GST_PTR_FORMAT \"P\""
-    GST_PRINTF_EXTENSION_SEGMENT_FORMAT_DEFINE="#define GST_SEGMENT_FORMAT \"Q\""
-    GST_USING_PRINTF_EXTENSION_DEFINE="#define GST_USING_PRINTF_EXTENSION"
-    AC_DEFINE(HAVE_PRINTF_EXTENSION, 1,
-      [Defined if we have register_printf_function ()])
-  ], [
+dnl test for register_printf_specifier or register_printf_function
+AC_CHECK_FUNCS([register_printf_specifier register_printf_function],
+    [HAVE_PRINTF_EXTENSION=yes])
+
+if test "$HAVE_PRINTF_EXTENSION" = yes; then
+  GST_PRINTF_EXTENSION_POINTER_FORMAT_DEFINE="#define GST_PTR_FORMAT \"P\""
+  GST_PRINTF_EXTENSION_SEGMENT_FORMAT_DEFINE="#define GST_SEGMENT_FORMAT \"Q\""
+  GST_USING_PRINTF_EXTENSION_DEFINE="#define GST_USING_PRINTF_EXTENSION"
+  AC_DEFINE(HAVE_PRINTF_EXTENSION, 1,
+      [Defined if we have printf specifier extensions available])
+else
     GST_PRINTF_EXTENSION_POINTER_FORMAT_DEFINE="#define GST_PTR_FORMAT \"p\""
     GST_PRINTF_EXTENSION_SEGMENT_FORMAT_DEFINE="#define GST_SEGMENT_FORMAT \"p\""
     GST_USING_PRINTF_EXTENSION_DEFINE="#undef GST_USING_PRINTF_EXTENSION"
-  ]
-)
+fi
 AC_SUBST(GST_PRINTF_EXTENSION_POINTER_FORMAT_DEFINE)
 AC_SUBST(GST_PRINTF_EXTENSION_SEGMENT_FORMAT_DEFINE)
 AC_SUBST(GST_USING_PRINTF_EXTENSION_DEFINE)
@@ -454,6 +492,10 @@ AC_CHECK_LIB(dl, dladdr,
    AC_DEFINE(HAVE_DLADDR, 1, [Defined if we have dladdr ()])
    LIBS="$LIBS -ldl")
 CFLAGS="$save_cflags"
+
+dnl *** checks for socket and nsl libraries ***
+AC_CHECK_FUNC(socket,,[AC_CHECK_LIB(socket,socket)])
+AC_CHECK_FUNC(gethostbyname,,[AC_CHECK_LIB(nsl,gethostbyname)])
 
 dnl check for inet_aton()
 save_libs="$LIBS"
@@ -468,7 +510,7 @@ LIBS="$save_libs"
 dnl *** checks for dependency libraries ***
 
 dnl GLib
-GLIB_REQ=2.12
+GLIB_REQ=2.16
 
 AG_GST_GLIB_CHECK([$GLIB_REQ])
 
@@ -483,10 +525,8 @@ dnl Check for documentation xrefs
 GLIB_PREFIX="`$PKG_CONFIG --variable=prefix glib-2.0`"
 AC_SUBST(GLIB_PREFIX)
 
-dnl libxml 2 is optional in some cases
-if test "x$GST_DISABLE_LOADSAVE" = "xyes" && \
-   ( test "x$GST_DISABLE_REGISTRY" = "xyes" || \
-   test "x$USE_BINARY_REGISTRY" = "xyes" )
+dnl libxml2 is only needed for xml loading/saving of pipelines these days
+if test "x$GST_DISABLE_LOADSAVE" = "xyes"
 then
   AC_MSG_NOTICE([XML registry and load/save are disabled, not checking for libxml2])
   GST_DISABLE_XML_DEFINE="#define GST_DISABLE_XML 1"
@@ -497,22 +537,26 @@ else
 fi
 AC_SUBST(GST_DISABLE_XML_DEFINE)
 
-dnl check for "check", unit testing library/header
-if test "$cross_compiling" != yes; then
-  AM_PATH_CHECK(0.9.2,
-      HAVE_CHECK=yes,
-      HAVE_CHECK=no)
-else
-  HAVE_CHECK=no
-fi
-AM_CONDITIONAL(HAVE_CHECK, test "x$HAVE_CHECK" = "xyes")
+dnl building of unit test libraries
+AC_ARG_ENABLE(check,
+  AC_HELP_STRING([--disable-check], [disable building unit test libraries]),
+  [
+    case "${enableval}" in
+      yes) BUILD_CHECK=yes ;;
+      no)  BUILD_CHECK=no ;;
+      *)   AC_MSG_ERROR(bad value ${enableval} for --disable-check) ;;
+    esac
+  ], [
+    dnl Default value
+    case $host_os in
+      mingw* | msvc* | mks*) BUILD_CHECK=no ;;
+      *) BUILD_CHECK=yes ;;
+    esac
+])
+dnl bit of a misnomer, but keep the conditional named like this so we don't
+dnl have to change too much elsewhere
+AM_CONDITIONAL(HAVE_CHECK, test "x$BUILD_CHECK" = "xyes")
 
-dnl pkg-config check that for libcheck that works for cross-compiling
-dnl but not normal compilation on Fedora & Ubuntu:
-dnl PKG_CHECK_MODULES(CHECK, check >= 0.9.2,
-dnl   AM_CONDITIONAL(HAVE_CHECK, true),
-dnl   AM_CONDITIONAL(HAVE_CHECK, false)
-dnl )
 
 dnl *** set variables based on configure arguments
 
@@ -535,10 +579,10 @@ GST_PKG_DEPS="glib-2.0, gobject-2.0, gmodule-no-export-2.0, gthread-2.0"
 AC_SUBST(GST_PKG_DEPS)
 
 dnl define an ERROR_CFLAGS Makefile variable
-AG_GST_SET_ERROR_CFLAGS($GST_CVS)
+AG_GST_SET_ERROR_CFLAGS($GST_GIT)
 
 dnl define correct level for debugging messages
-AG_GST_SET_LEVEL_DEFAULT($GST_CVS)
+AG_GST_SET_LEVEL_DEFAULT($GST_GIT)
 
 dnl *** finalize CFLAGS, LDFLAGS, LIBS
 
@@ -561,7 +605,7 @@ AC_SUBST(PROFILE_CFLAGS)
 # functionality from the API that gstreamer uses
 # GST_REMOVE_DEPRECATED: don't compile deprecated functionality (breaks ABI)
 if test "x$PACKAGE_VERSION_NANO" = "x1"; then
-  dnl Define _only_ during CVS (not pre-releases or releases)
+  dnl Define _only_ when compiling from git (not for pre-releases or releases)
   DEPRECATED_CFLAGS="-DGST_DISABLE_DEPRECATED"
 else
   DEPRECATED_CFLAGS=""
@@ -581,7 +625,7 @@ dnl - src and build dirs need to be added because every piece that gets built
 dnl   will need the GStreamer source and generated headers
 dnl LIBS: XML doesn't need to be added because we don't explicitly use symbols
 dnl       from LibXML except for in the core library
-GST_ALL_CFLAGS="-I\$(top_srcdir)/libs -I\$(top_srcdir) -I\$(top_builddir) $GLIB_CFLAGS $XML_CFLAGS \$(GST_OPTION_CFLAGS)"
+GST_ALL_CFLAGS="-I\$(top_srcdir)/libs -I\$(top_srcdir) -I\$(top_builddir)/libs -I\$(top_builddir) $GLIB_CFLAGS $XML_CFLAGS \$(GST_OPTION_CFLAGS)"
 
 dnl FIXME: check if LTLIBINTL is needed everywhere
 dnl I presume it is given that it contains the symbols that _() stuff maps to
@@ -600,13 +644,6 @@ dnl linker flags shared by all libraries
 dnl LDFLAGS modifier defining exported symbols from built libraries
 GST_LIB_LDFLAGS="-export-symbols-regex \^[_]*\(gst_\|Gst\|GST_\).*"
 AC_SUBST(GST_LIB_LDFLAGS)
-dnl Version of the linker flags specifically for libgstcheck to support the boonky extra symbols it exports.
-GST_CHECK_LIB_LDFLAGS="-export-symbols-regex \^\([_]*\(gst_\|Gst\|GST_\).*\|check_\(debug\|mutex\|cond\)\|buffers\|mutex\|start_cond\|sync_cond\|thread_list\)$"
-dnl HACK: add non-portable --export-dynamic if we have GNU ld (needed on my debian stable, tpm)
-if test "x$ac_cv_prog_gnu_ld" = "xyes" -o "x$acl_cv_prog_gnu_ld" = "xyes" ; then
-  GST_CHECK_LIB_LDFLAGS="-Wl,--export-dynamic $GST_CHECK_LIB_LDFLAGS"
-fi
-AC_SUBST(GST_CHECK_LIB_LDFLAGS)
 
 dnl GST_OBJ_*
 dnl default vars for all internal objects built on libgstreamer
@@ -621,8 +658,17 @@ dnl LDFLAGS for plugins; includes GST_ALL_LDFLAGS
 GST_PLUGIN_LDFLAGS="-module -avoid-version -export-symbols-regex '^[_]*gst_plugin_desc\$\$' $GST_ALL_LDFLAGS"
 AC_SUBST(GST_PLUGIN_LDFLAGS, "$GST_PLUGIN_LDFLAGS")
 
+SHAVE_INIT([common],[enable])
+
+dnl things for our internal libcheck
+if test "x$BUILD_CHECK" = "xyes"; then
+  AG_GST_CHECK_CHECKS()
+fi
+
 AC_CONFIG_FILES(
 Makefile
+common/shave
+common/shave-libtool
 gst/Makefile
 gst/gstconfig.h
 gst/gstversion.h
@@ -631,6 +677,8 @@ libs/Makefile
 libs/gst/Makefile
 libs/gst/base/Makefile
 libs/gst/check/Makefile
+libs/gst/check/libcheck/Makefile
+libs/gst/check/libcheck/check.h
 libs/gst/controller/Makefile
 libs/gst/dataprotocol/Makefile
 libs/gst/net/Makefile
@@ -645,11 +693,13 @@ tests/misc/Makefile
 tests/examples/Makefile
 tests/examples/adapter/Makefile
 tests/examples/controller/Makefile
+tests/examples/stepping/Makefile
 tests/examples/helloworld/Makefile
 tests/examples/launch/Makefile
 tests/examples/manual/Makefile
 tests/examples/metadata/Makefile
 tests/examples/queue/Makefile
+tests/examples/streams/Makefile
 tests/examples/typefind/Makefile
 tests/examples/xml/Makefile
 tools/Makefile
@@ -667,7 +717,6 @@ docs/pwg/Makefile
 docs/slides/Makefile
 docs/xsl/Makefile
 docs/version.entities
-win32/common/config.h
 pkgconfig/Makefile
 stamp.h
 pkgconfig/gstreamer.pc
@@ -686,9 +735,45 @@ gst-element-check.m4
 gstreamer.spec
 )
 
+dnl Create the config.h file for Visual Studio builds
+dnl Beware of spaces and /'s in some of the shell variable contents.
+sed \
+    -e 's/.*config.h.in.*autoheader.*/\/* Autogenerated config.h created for win32 Visual Studio builds *\/\n\n\/* PREFIX -- specifically added for Windows for easier moving *\/\n#define PREFIX "C:\\\\gstreamer"/' \
+    -e 's/.* GETTEXT_PACKAGE$/#define GETTEXT_PACKAGE "'$GETTEXT_PACKAGE'"/' \
+    -e 's/.* GST_DATADIR$/#define GST_DATADIR PREFIX "\\\\share"/' \
+    -e 's/.* GST_LEVEL_DEFAULT$/#define GST_LEVEL_DEFAULT GST_LEVEL_ERROR/' \
+    -e 's/.* GST_LICENSE$/#define GST_LICENSE "'$GST_LICENSE'"/' \
+    -e 's/.* GST_MAJORMINOR$/#define GST_MAJORMINOR "'$GST_MAJORMINOR'"/' \
+    -e "s,.* GST_PACKAGE_NAME$,#define GST_PACKAGE_NAME \"${GST_PACKAGE_NAME}\"," \
+    -e 's/.* GST_PACKAGE_ORIGIN$/#define GST_PACKAGE_ORIGIN "Unknown package origin"/' \
+    -e 's/.* HAVE_CPU_I386$/#define HAVE_CPU_I386 1/' \
+    -e 's/.* HAVE_FGETPOS$/#define HAVE_FGETPOS 1/' \
+    -e 's/.* HAVE_FSETPOS$/#define HAVE_FSETPOS 1/' \
+    -e 's/.* HAVE_LIBXML2$/#define HAVE_LIBXML2 1/' \
+    -e 's/.* HAVE_PROCESS_H$/#define HAVE_PROCESS_H 1/' \
+    -e 's/.* HAVE_STDLIB_H$/#define HAVE_STDLIB_H 1/' \
+    -e 's/.* HAVE_STRING_H$/#define HAVE_STRING_H 1/' \
+    -e 's/.* HAVE_SYS_STAT_H$/#define HAVE_SYS_STAT_H 1/' \
+    -e 's/.* HAVE_SYS_TYPES_H$/#define HAVE_SYS_TYPES_H 1/' \
+    -e 's/.* HAVE_WIN32$/#define HAVE_WIN32 1/' \
+    -e 's/.* HAVE_WINSOCK2_H$/#define HAVE_WINSOCK2_H 1/' \
+    -e 's/.* HOST_CPU$/#define HOST_CPU "i686"/' \
+    -e 's/.* LIBDIR$/#ifdef _DEBUG\n#  define LIBDIR PREFIX "\\\\debug\\\\lib"\n#else\n#  define LIBDIR PREFIX "\\\\lib"\n#endif/' \
+    -e 's/.* LOCALEDIR$/#define LOCALEDIR PREFIX "\\\\share\\\\locale"/' \
+    -e 's/.* PACKAGE$/#define PACKAGE "gstreamer"/' \
+    -e 's/.* PACKAGE_BUGREPORT$/#define PACKAGE_BUGREPORT "http:\/\/bugzilla.gnome.org\/enter_bug.cgi?product=GStreamer"/' \
+    -e 's/.* PACKAGE_NAME$/#define PACKAGE_NAME "'$PACKAGE_NAME'"/' \
+    -e "s/.* PACKAGE_STRING$/#define PACKAGE_STRING \"$PACKAGE_STRING\"/" \
+    -e 's/.* PACKAGE_TARNAME$/#define PACKAGE_TARNAME "'$PACKAGE_TARNAME'"/' \
+    -e 's/.* PACKAGE_VERSION$/#define PACKAGE_VERSION "'$PACKAGE_VERSION'"/' \
+    -e 's/.* PLUGINDIR$/#ifdef _DEBUG\n#  define PLUGINDIR PREFIX "\\\\debug\\\\lib\\\\gstreamer-0.10"\n#else\n#  define PLUGINDIR PREFIX "\\\\lib\\\\gstreamer-0.10"\n#endif/' \
+    -e 's/.* VERSION$/#define VERSION "'$VERSION'"/' \
+    config.h.in >win32/common/config.h-new
+
 AC_OUTPUT
 
 dnl negate for output
+if test "x${GST_DISABLE_GST_DEBUG}" = "xno"; then enable_gst_debug="yes"; fi
 if test "x${GST_DISABLE_LOADSAVE}" = "xno"; then enable_loadsave="yes"; fi
 if test "x${GST_DISABLE_PARSE}" = "xno"; then enable_parse="yes"; fi
 if test "x${GST_DISABLE_OPTION_PARSING}" = "xno"; then enable_option_parsing="yes"; fi
@@ -704,13 +789,14 @@ Configuration
 	Version                    : ${VERSION}
 	Source code location       : ${srcdir}
 	Prefix                     : ${prefix}
-	Compiler                   : ${CC}
+	Compiler                   : ${SHAVE_SAVED_CC}
 	Package name               : ${GST_PACKAGE_NAME}
 	Package origin             : ${GST_PACKAGE_ORIGIN}
 
 	Documentation (manuals)    : ${enable_docbook}
 	Documentation (API)        : ${enable_gtk_doc}
 
+	Debug Logging              : ${enable_gst_debug}
 	Pipeline XML load/save     : ${enable_loadsave}
 	Command-line parser        : ${enable_parse}
 	Option parsing in gst_init : ${enable_option_parsing}
@@ -719,6 +805,7 @@ Configuration
 	Plugin registry            : ${enable_registry}
 	Plugin support	           : ${enable_plugin}
 	Network support            : ${enable_net}
+	Unit testing support       : ${BUILD_CHECK}
 
 	Debug                      : ${USE_DEBUG}
 	Profiling                  : ${USE_PROFILING}

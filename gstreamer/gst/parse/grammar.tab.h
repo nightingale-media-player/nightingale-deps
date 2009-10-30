@@ -62,7 +62,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 533 "./grammar.y"
+#line 566 "./grammar.y"
 {
     gchar *s;
     chain_t *c;

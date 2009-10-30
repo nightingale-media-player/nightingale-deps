@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gstreamer Elements">
 <link rel="prev" href="gstreamer-plugins-fdsrc.html" title="fdsrc">
 <link rel="next" href="gstreamer-plugins-filesink.html" title="filesink">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gstreamer Elements">
 <link rel="chapter" href="ch02.html" title="gstreamer Plugins">
@@ -22,15 +22,17 @@
 <th width="100%" align="center">GStreamer Core Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-plugins-filesink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-plugins-filesrc.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gstreamer-plugins-filesrc.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gstreamer-plugins-filesrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gstreamer-plugins-filesrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#gstreamer-plugins-filesrc.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gstreamer-plugins-filesrc.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gstreamer-plugins-filesrc.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gstreamer-plugins-filesrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gstreamer-plugins-filesrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gstreamer-plugins-filesrc.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-plugins-filesrc"></a><div class="titlepage"></div>
@@ -51,11 +53,17 @@
 <a name="gstreamer-plugins-filesrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
   <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
-               +----GstBaseSrc
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="../gstreamer-libs-0.10/GstBaseSrc.html"
+>GstBaseSrc</a>
                      +----GstFileSrc
 </pre>
 </div>
@@ -63,28 +71,30 @@ href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 <a name="gstreamer-plugins-filesrc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstFileSrc implements
- GstURIHandler.</p>
+ <a
+href="../gstreamer-0.10/gstreamer-GstUriHandler.html#GstURIHandler"
+>GstURIHandler</a>.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-filesrc.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
   "<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc--fd" title='The "fd" property'>fd</a>"                       <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read
   "<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc--location" title='The "location" property'>location</a>"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a>*                : Read / Write
   "<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc--mmapsize" title='The "mmapsize" property'>mmapsize</a>"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+href="../glib/glib-Basic-Types.html#gulong"
 >gulong</a>                : Read / Write
   "<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc--touch" title='The "touch" property'>touch</a>"                    <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
   "<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc--use-mmap" title='The "use-mmap" property'>use-mmap</a>"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
   "<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc--sequential" title='The "sequential" property'>sequential</a>"               <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
 </pre>
 </div>
@@ -95,7 +105,7 @@ Read data from a file in the local file system.</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2672823"></a><h3>Element Information</h3>
+<a name="id2850168"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -118,7 +128,7 @@ Read data from a file in the local file system.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2682871"></a><h3>Element Pads</h3>
+<a name="id2839250"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -143,7 +153,6 @@ Read data from a file in the local file system.</p>
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -154,7 +163,6 @@ Read data from a file in the local file system.</p>
 <p>
 Opaque <a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc"><span class="type">GstFileSrc</span></a> structure.</p>
 <p>
-
 </p>
 </div>
 </div>
@@ -163,7 +171,7 @@ Opaque <a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc"><span cl
 <div class="refsect2" lang="en">
 <a name="GstFileSrc--fd"></a><h3>The <code class="literal">"fd"</code> property</h3>
 <pre class="programlisting">  "fd"                       <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read</pre>
 <p>File-descriptor for the file being mmap()d.</p>
 <p>Allowed values: &gt;= 0</p>
@@ -173,7 +181,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <div class="refsect2" lang="en">
 <a name="GstFileSrc--location"></a><h3>The <code class="literal">"location"</code> property</h3>
 <pre class="programlisting">  "location"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a>*                : Read / Write</pre>
 <p>Location of the file to read.</p>
 <p>Default value: NULL</p>
@@ -182,7 +190,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <div class="refsect2" lang="en">
 <a name="GstFileSrc--mmapsize"></a><h3>The <code class="literal">"mmapsize"</code> property</h3>
 <pre class="programlisting">  "mmapsize"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+href="../glib/glib-Basic-Types.html#gulong"
 >gulong</a>                : Read / Write</pre>
 <p>Size in bytes of mmap()d regions.</p>
 </div>
@@ -190,7 +198,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
 <div class="refsect2" lang="en">
 <a name="GstFileSrc--touch"></a><h3>The <code class="literal">"touch"</code> property</h3>
 <pre class="programlisting">  "touch"                    <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write</pre>
 <p>Touch mmapped data regions to force them to be read from disk.</p>
 <p>Default value: TRUE</p>
@@ -199,7 +207,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <div class="refsect2" lang="en">
 <a name="GstFileSrc--use-mmap"></a><h3>The <code class="literal">"use-mmap"</code> property</h3>
 <pre class="programlisting">  "use-mmap"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write</pre>
 <p>
 Whether to use <code class="function">mmap()</code>. Set to TRUE to force use of <code class="function">mmap()</code> instead of
@@ -217,7 +225,6 @@ drive or a portable music player) are unplugged while in use, or when
 a CD/DVD medium cannot be be read because the medium is scratched or
 otherwise damaged.</p>
 <p>
-
 </p>
 <p>Default value: FALSE</p>
 </div>
@@ -225,7 +232,7 @@ otherwise damaged.</p>
 <div class="refsect2" lang="en">
 <a name="GstFileSrc--sequential"></a><h3>The <code class="literal">"sequential"</code> property</h3>
 <pre class="programlisting">  "sequential"               <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write</pre>
 <p>Whether to use madvise to hint to the kernel that access to mmap pages will be sequential.</p>
 <p>Default value: FALSE</p>
@@ -233,11 +240,11 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 </div>
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-filesrc.see-also"></a><h2>See Also</h2>
-<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc"><span class="type">GstFileSrc</span></a>
+#GstFileSrc
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

@@ -167,11 +167,11 @@ typedef gpointer GstClockID;
  * @t: The #GstClockTime to convert
  * @tv: The target timeval
  *
- * Note: on 32-bit systems, a timeval has a range of only 2^32 - 1 seconds,
- * which is about 68 years.  Expect trouble if you want to schedule stuff
- * in your pipeline for 2038.
- *
  * Convert a #GstClockTime to a #GTimeVal
+ *
+ * <note>on 32-bit systems, a timeval has a range of only 2^32 - 1 seconds,
+ * which is about 68 years.  Expect trouble if you want to schedule stuff
+ * in your pipeline for 2038.</note>
  */
 #define GST_TIME_TO_TIMEVAL(t,tv)				\
 G_STMT_START {							\
@@ -235,6 +235,7 @@ G_STMT_START {						\
 typedef struct _GstClockEntry	GstClockEntry;
 typedef struct _GstClock	GstClock;
 typedef struct _GstClockClass	GstClockClass;
+typedef struct _GstClockPrivate	GstClockPrivate;
 
 /* --- prototype for async callbacks --- */
 /**
@@ -447,7 +448,10 @@ struct _GstClock {
   GstClockID     clockid;
 
   /*< private >*/
-  GstClockTime	 _gst_reserved[GST_PADDING];
+  union {
+    GstClockPrivate *priv;
+    GstClockTime     _gst_reserved[GST_PADDING];
+  } ABI;
 };
 
 /**

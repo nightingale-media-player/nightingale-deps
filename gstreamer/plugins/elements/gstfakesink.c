@@ -113,6 +113,7 @@ static void gst_fake_sink_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_fake_sink_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
+static void gst_fake_sink_finalize (GObject * obj);
 
 static GstStateChangeReturn gst_fake_sink_change_state (GstElement * element,
     GstStateChange transition);
@@ -146,8 +147,8 @@ marshal_VOID__MINIOBJECT_OBJECT (GClosure * closure, GValue * return_value,
     data2 = closure->data;
   }
   callback =
-      (marshalfunc_VOID__MINIOBJECT_OBJECT) (marshal_data ? marshal_data : cc->
-      callback);
+      (marshalfunc_VOID__MINIOBJECT_OBJECT) (marshal_data ? marshal_data :
+      cc->callback);
 
   callback (data1, gst_value_get_mini_object (param_values + 1),
       g_value_get_object (param_values + 2), data2);
@@ -182,6 +183,7 @@ gst_fake_sink_class_init (GstFakeSinkClass * klass)
 
   gobject_class->set_property = GST_DEBUG_FUNCPTR (gst_fake_sink_set_property);
   gobject_class->get_property = GST_DEBUG_FUNCPTR (gst_fake_sink_get_property);
+  gobject_class->finalize = gst_fake_sink_finalize;
 
   g_object_class_install_property (gobject_class, PROP_STATE_ERROR,
       g_param_spec_enum ("state-error", "State Error",
@@ -265,6 +267,17 @@ gst_fake_sink_init (GstFakeSink * fakesink, GstFakeSinkClass * g_class)
   fakesink->state_error = DEFAULT_STATE_ERROR;
   fakesink->signal_handoffs = DEFAULT_SIGNAL_HANDOFFS;
   fakesink->num_buffers = DEFAULT_NUM_BUFFERS;
+  g_static_rec_mutex_init (&fakesink->notify_lock);
+}
+
+static void
+gst_fake_sink_finalize (GObject * obj)
+{
+  GstFakeSink *sink = GST_FAKE_SINK (obj);
+
+  g_static_rec_mutex_free (&sink->notify_lock);
+
+  G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
 static void
@@ -344,6 +357,20 @@ gst_fake_sink_get_property (GObject * object, guint prop_id, GValue * value,
   }
 }
 
+static void
+gst_fake_sink_notify_last_message (GstFakeSink * sink)
+{
+  /* FIXME: this hacks around a bug in GLib/GObject: doing concurrent
+   * g_object_notify() on the same object might lead to crashes, see
+   * http://bugzilla.gnome.org/show_bug.cgi?id=166020#c60 and follow-ups.
+   * So we really don't want to do a g_object_notify() here for out-of-band
+   * events with the streaming thread possibly also doing a g_object_notify()
+   * for an in-band buffer or event. */
+  g_static_rec_mutex_lock (&sink->notify_lock);
+  g_object_notify ((GObject *) sink, "last_message");
+  g_static_rec_mutex_unlock (&sink->notify_lock);
+}
+
 static gboolean
 gst_fake_sink_event (GstBaseSink * bsink, GstEvent * event)
 {
@@ -367,7 +394,7 @@ gst_fake_sink_event (GstBaseSink * bsink, GstEvent * event)
     g_free (sstr);
     GST_OBJECT_UNLOCK (sink);
 
-    g_object_notify (G_OBJECT (sink), "last_message");
+    gst_fake_sink_notify_last_message (sink);
   }
 
   if (GST_BASE_SINK_CLASS (parent_class)->event) {
@@ -392,7 +419,7 @@ gst_fake_sink_preroll (GstBaseSink * bsink, GstBuffer * buffer)
     sink->last_message = g_strdup_printf ("preroll   ******* ");
     GST_OBJECT_UNLOCK (sink);
 
-    g_object_notify (G_OBJECT (sink), "last_message");
+    gst_fake_sink_notify_last_message (sink);
   }
   if (sink->signal_handoffs) {
     g_signal_emit (sink,
@@ -445,10 +472,10 @@ gst_fake_sink_render (GstBaseSink * bsink, GstBuffer * buf)
         ", duration: %s, offset: %" G_GINT64_FORMAT ", offset_end: %"
         G_GINT64_FORMAT ", flags: %d) %p", GST_BUFFER_SIZE (buf), ts_str,
         dur_str, GST_BUFFER_OFFSET (buf), GST_BUFFER_OFFSET_END (buf),
-        GST_MINI_OBJECT (buf)->flags, buf);
+        GST_MINI_OBJECT_CAST (buf)->flags, buf);
     GST_OBJECT_UNLOCK (sink);
 
-    g_object_notify (G_OBJECT (sink), "last_message");
+    gst_fake_sink_notify_last_message (sink);
   }
   if (sink->signal_handoffs)
     g_signal_emit (G_OBJECT (sink), gst_fake_sink_signals[SIGNAL_HANDOFF], 0,

@@ -73,7 +73,7 @@
  * toplevel #GstPipeline so the clock functions are only to be used in very
  * specific situations.
  *
- * Last reviewed on 2006-03-12 (0.10.5)
+ * Last reviewed on 2009-05-29 (0.10.24)
  */
 
 #include "gst_private.h"
@@ -89,6 +89,7 @@
 #include "gstevent.h"
 #include "gstutils.h"
 #include "gstinfo.h"
+#include "gstvalue.h"
 #include "gst-i18n-lib.h"
 
 /* Element signals and args */
@@ -145,12 +146,16 @@ static void gst_element_restore_thyself (GstObject * parent, xmlNodePtr self);
 static GstObjectClass *parent_class = NULL;
 static guint gst_element_signals[LAST_SIGNAL] = { 0 };
 
+/* this is used in gstelementfactory.c:gst_element_register() */
+GQuark _gst_elementclass_factory = 0;
+
 GType
 gst_element_get_type (void)
 {
-  static GType gst_element_type = 0;
+  static volatile gsize gst_element_type = 0;
 
-  if (G_UNLIKELY (gst_element_type == 0)) {
+  if (g_once_init_enter (&gst_element_type)) {
+    GType _type;
     static const GTypeInfo element_info = {
       sizeof (GstElementClass),
       gst_element_base_class_init,
@@ -164,8 +169,12 @@ gst_element_get_type (void)
       NULL
     };
 
-    gst_element_type = g_type_register_static (GST_TYPE_OBJECT, "GstElement",
+    _type = g_type_register_static (GST_TYPE_OBJECT, "GstElement",
         &element_info, G_TYPE_FLAG_ABSTRACT);
+
+    _gst_elementclass_factory =
+        g_quark_from_static_string ("GST_ELEMENTCLASS_FACTORY");
+    g_once_init_leave (&gst_element_type, _type);
   }
   return gst_element_type;
 }
@@ -250,6 +259,13 @@ gst_element_base_class_init (gpointer g_class)
    */
   memset (&element_class->details, 0, sizeof (GstElementDetails));
   element_class->padtemplates = NULL;
+
+  /* set the factory, see gst_element_register() */
+  element_class->elementfactory =
+      g_type_get_qdata (G_TYPE_FROM_CLASS (element_class),
+      _gst_elementclass_factory);
+  GST_DEBUG ("type %s : factory %p", G_OBJECT_CLASS_NAME (element_class),
+      element_class->elementfactory);
 }
 
 static void
@@ -310,6 +326,10 @@ gst_element_default_error (GObject * object, GstObject * source, GError * error,
  *
  * Makes the element free the previously requested pad as obtained
  * with gst_element_get_request_pad().
+ *
+ * This does not unref the pad. If the pad was created by using
+ * gst_element_get_request_pad(), gst_element_release_request_pad() needs to be
+ * followed by gst_object_unref() to free the @pad.
  *
  * MT safe.
  */
@@ -431,6 +451,7 @@ gst_element_set_clock (GstElement * element, GstClock * clock)
   GstClock **clock_p;
 
   g_return_val_if_fail (GST_IS_ELEMENT (element), FALSE);
+  g_return_val_if_fail (clock == NULL || GST_IS_CLOCK (clock), FALSE);
 
   oclass = GST_ELEMENT_GET_CLASS (element);
 
@@ -508,7 +529,7 @@ gst_element_set_base_time (GstElement * element, GstClockTime time)
  * Returns the base time of the element. The base time is the
  * absolute time of the clock when this element was last put to
  * PLAYING. Subtracting the base time from the clock time gives
- * the stream time of the element.
+ * the running time of the element.
  *
  * Returns: the base time of the element.
  *
@@ -523,6 +544,73 @@ gst_element_get_base_time (GstElement * element)
 
   GST_OBJECT_LOCK (element);
   result = element->base_time;
+  GST_OBJECT_UNLOCK (element);
+
+  return result;
+}
+
+/**
+ * gst_element_set_start_time:
+ * @element: a #GstElement.
+ * @time: the base time to set.
+ *
+ * Set the start time of an element. The start time of the element is the
+ * running time of the element when it last went to the PAUSED state. In READY
+ * or after a flushing seek, it is set to 0.
+ *
+ * Toplevel elements like #GstPipeline will manage the start_time and
+ * base_time on its children. Setting the start_time to #GST_CLOCK_TIME_NONE
+ * on such a toplevel element will disable the distribution of the base_time to
+ * the children and can be useful if the application manages the base_time
+ * itself, for example if you want to synchronize capture from multiple
+ * pipelines, and you can also ensure that the pipelines have the same clock.
+ *
+ * MT safe.
+ *
+ * Since: 0.10.24
+ */
+void
+gst_element_set_start_time (GstElement * element, GstClockTime time)
+{
+  GstClockTime old;
+
+  g_return_if_fail (GST_IS_ELEMENT (element));
+
+  GST_OBJECT_LOCK (element);
+  old = GST_ELEMENT_START_TIME (element);
+  GST_ELEMENT_START_TIME (element) = time;
+  GST_OBJECT_UNLOCK (element);
+
+  GST_CAT_DEBUG_OBJECT (GST_CAT_CLOCK, element,
+      "set start_time=%" GST_TIME_FORMAT ", old %" GST_TIME_FORMAT,
+      GST_TIME_ARGS (time), GST_TIME_ARGS (old));
+}
+
+/**
+ * gst_element_get_start_time:
+ * @element: a #GstElement.
+ *
+ * Returns the start time of the element. The start time is the
+ * running time of the clock when this element was last put to PAUSED.
+ *
+ * Usually the start_time is managed by a toplevel element such as
+ * #GstPipeline.
+ *
+ * MT safe.
+ *
+ * Returns: the start time of the element.
+ *
+ * Since: 0.10.24
+ */
+GstClockTime
+gst_element_get_start_time (GstElement * element)
+{
+  GstClockTime result;
+
+  g_return_val_if_fail (GST_IS_ELEMENT (element), GST_CLOCK_TIME_NONE);
+
+  GST_OBJECT_LOCK (element);
+  result = GST_ELEMENT_START_TIME (element);
   GST_OBJECT_UNLOCK (element);
 
   return result;
@@ -566,7 +654,7 @@ gst_element_set_index (GstElement * element, GstIndex * index)
   GstElementClass *oclass;
 
   g_return_if_fail (GST_IS_ELEMENT (element));
-  g_return_if_fail (GST_IS_INDEX (index));
+  g_return_if_fail (index == NULL || GST_IS_INDEX (index));
 
   oclass = GST_ELEMENT_GET_CLASS (element);
 
@@ -1164,12 +1252,12 @@ gst_element_class_set_details (GstElementClass * klass,
  * @classification: String describing the type of element, as an unordered list
  * separated with slashes ('/'). See draft-klass.txt of the design docs
  * for more details and common types. E.g: "Sink/File"
- * @description: Sentence describing the purpose of the element. 
+ * @description: Sentence describing the purpose of the element.
  * E.g: "Write stream to a file"
- * @author: Name and contact details of the author(s). Use \n to separate 
+ * @author: Name and contact details of the author(s). Use \n to separate
  * multiple author details. E.g: "Joe Bloggs &lt;joe.blogs at foo.com&gt;"
  *
- * Sets the detailed information for a #GstElementClass. Simpler version of 
+ * Sets the detailed information for a #GstElementClass. Simpler version of
  * gst_element_class_set_details() that generates less linker overhead.
  * <note>This function is for use in _base_init functions only.</note>
  *
@@ -1772,7 +1860,7 @@ gst_element_set_locked_state (GstElement * element, gboolean locked_state)
 
 was_ok:
   {
-    GST_CAT_DEBUG (GST_CAT_STATES, "elements %s was in locked state %d",
+    GST_CAT_DEBUG (GST_CAT_STATES, "elements %s was already in locked state %d",
         GST_ELEMENT_NAME (element), old);
     GST_OBJECT_UNLOCK (element);
 
@@ -1891,7 +1979,7 @@ gst_element_get_state_func (GstElement * element,
     } else {
       timeval = NULL;
     }
-    /* get cookie to dected state change during waiting */
+    /* get cookie to detect state changes during waiting */
     cookie = element->state_cookie;
 
     GST_CAT_INFO_OBJECT (GST_CAT_STATES, element,
@@ -2117,10 +2205,10 @@ gst_element_continue_state (GstElement * element, GstStateChangeReturn ret)
   GST_OBJECT_UNLOCK (element);
 
   GST_CAT_INFO_OBJECT (GST_CAT_STATES, element,
-      "committing state from %s to %s, pending %s",
+      "committing state from %s to %s, pending %s, next %s",
       gst_element_state_get_name (old_state),
       gst_element_state_get_name (old_next),
-      gst_element_state_get_name (pending));
+      gst_element_state_get_name (pending), gst_element_state_get_name (next));
 
   message = gst_message_new_state_changed (GST_OBJECT_CAST (element),
       old_state, old_next, pending);
@@ -2174,15 +2262,16 @@ complete:
 }
 
 /**
- * gst_element_lost_state:
+ * gst_element_lost_state_full:
  * @element: a #GstElement the state is lost of
+ * @new_base_time: if a new base time should be distributed
  *
  * Brings the element to the lost state. The current state of the
  * element is copied to the pending state so that any call to
  * gst_element_get_state() will return %GST_STATE_CHANGE_ASYNC.
  *
- * An ASYNC_START message is posted with an indication to distribute a new
- * base_time to the element.
+ * An ASYNC_START message is posted with indication to distribute a new
+ * base_time to the element when @new_base_time is %TRUE.
  * If the element was PLAYING, it will go to PAUSED. The element
  * will be restored to its PLAYING state by the parent pipeline when it
  * prerolls again.
@@ -2197,9 +2286,11 @@ complete:
  * plugins or applications.
  *
  * MT safe.
+ *
+ * Since: 0.10.24
  */
 void
-gst_element_lost_state (GstElement * element)
+gst_element_lost_state_full (GstElement * element, gboolean new_base_time)
 {
   GstState old_state, new_state;
   GstMessage *message;
@@ -2207,9 +2298,11 @@ gst_element_lost_state (GstElement * element)
   g_return_if_fail (GST_IS_ELEMENT (element));
 
   GST_OBJECT_LOCK (element);
-  if (GST_STATE_PENDING (element) != GST_STATE_VOID_PENDING ||
-      GST_STATE_RETURN (element) == GST_STATE_CHANGE_FAILURE)
+  if (GST_STATE_RETURN (element) == GST_STATE_CHANGE_FAILURE)
     goto nothing_lost;
+
+  if (GST_STATE_PENDING (element) != GST_STATE_VOID_PENDING)
+    goto only_async_start;
 
   old_state = GST_STATE (element);
 
@@ -2229,13 +2322,16 @@ gst_element_lost_state (GstElement * element)
   GST_STATE_NEXT (element) = new_state;
   GST_STATE_PENDING (element) = new_state;
   GST_STATE_RETURN (element) = GST_STATE_CHANGE_ASYNC;
+  if (new_base_time)
+    GST_ELEMENT_START_TIME (element) = 0;
   GST_OBJECT_UNLOCK (element);
 
   message = gst_message_new_state_changed (GST_OBJECT_CAST (element),
       new_state, new_state, new_state);
   gst_element_post_message (element, message);
 
-  message = gst_message_new_async_start (GST_OBJECT_CAST (element), TRUE);
+  message =
+      gst_message_new_async_start (GST_OBJECT_CAST (element), new_base_time);
   gst_element_post_message (element, message);
 
   return;
@@ -2245,6 +2341,32 @@ nothing_lost:
     GST_OBJECT_UNLOCK (element);
     return;
   }
+only_async_start:
+  {
+    GST_OBJECT_UNLOCK (element);
+
+    message = gst_message_new_async_start (GST_OBJECT_CAST (element), TRUE);
+    gst_element_post_message (element, message);
+    return;
+  }
+}
+
+/**
+ * gst_element_lost_state:
+ * @element: a #GstElement the state is lost of
+ *
+ * Brings the element to the lost state. This function calls
+ * gst_element_lost_state_full() with the new_base_time set to %TRUE.
+ *
+ * This function is used internally and should normally not be called from
+ * plugins or applications.
+ *
+ * MT safe.
+ */
+void
+gst_element_lost_state (GstElement * element)
+{
+  gst_element_lost_state_full (element, TRUE);
 }
 
 /**
@@ -2261,6 +2383,9 @@ nothing_lost:
  * another thread.
  * An application can use gst_element_get_state() to wait for the completion
  * of the state change or it can wait for a state change message on the bus.
+ *
+ * State changes to %GST_STATE_READY or %GST_STATE_NULL never return
+ * #GST_STATE_CHANGE_ASYNC.
  *
  * Returns: Result of the state change using #GstStateChangeReturn.
  *
@@ -2321,6 +2446,8 @@ gst_element_set_state_func (GstElement * element, GstState state)
   /* this is the (new) state we should go to. TARGET is the last state we set on
    * the element. */
   if (state != GST_STATE_TARGET (element)) {
+    GST_CAT_DEBUG_OBJECT (GST_CAT_STATES, element,
+        "setting target state to %s", gst_element_state_get_name (state));
     GST_STATE_TARGET (element) = state;
     /* increment state cookie so that we can track each state change. We only do
      * this if this is actually a new state change. */
@@ -2413,14 +2540,8 @@ gst_element_change_state (GstElement * element, GstStateChange transition)
 {
   GstElementClass *oclass;
   GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;
-  GstState current;
-  GstState next;
 
   oclass = GST_ELEMENT_GET_CLASS (element);
-
-  /* start with the current state. */
-  current = (GstState) GST_STATE_TRANSITION_CURRENT (transition);
-  next = GST_STATE_TRANSITION_NEXT (transition);
 
   /* call the state change function so it can set the state */
   if (oclass->change_state)
@@ -2634,6 +2755,7 @@ gst_element_change_state_func (GstElement * element, GstStateChange transition)
 {
   GstState state, next;
   GstStateChangeReturn result = GST_STATE_CHANGE_SUCCESS;
+  GstClock **clock_p;
 
   g_return_val_if_fail (GST_IS_ELEMENT (element), GST_STATE_CHANGE_FAILURE);
 
@@ -2670,6 +2792,12 @@ gst_element_change_state_func (GstElement * element, GstStateChange transition)
       } else {
         gst_element_set_base_time (element, 0);
       }
+
+      /* In null state release the reference to the clock */
+      GST_OBJECT_LOCK (element);
+      clock_p = &element->clock;
+      gst_object_replace ((GstObject **) clock_p, NULL);
+      GST_OBJECT_UNLOCK (element);
       break;
     default:
       /* this will catch real but unhandled state changes;
@@ -2754,11 +2882,19 @@ gst_element_dispose (GObject * object)
   /* ERRORS */
 not_null:
   {
+    gboolean is_locked;
+
+    is_locked = GST_OBJECT_FLAG_IS_SET (element, GST_ELEMENT_LOCKED_STATE);
     g_critical
-        ("\nTrying to dispose element %s, but it is not in the NULL state.\n"
+        ("\nTrying to dispose element %s, but it is in %s%s instead of the NULL"
+        " state.\n"
         "You need to explicitly set elements to the NULL state before\n"
-        "dropping the final reference, to allow them to clean up.\n",
-        GST_OBJECT_NAME (element));
+        "dropping the final reference, to allow them to clean up.\n"
+        "This problem may also be caused by a refcounting bug in the\n"
+        "application or some element.\n",
+        GST_OBJECT_NAME (element),
+        gst_element_state_get_name (GST_STATE (element)),
+        is_locked ? " (locked)" : "");
     return;
   }
 }
@@ -2843,7 +2979,13 @@ gst_element_save_thyself (GstObject * object, xmlNodePtr parent)
       else if (G_IS_PARAM_SPEC_INT64 (spec))
         contents = g_strdup_printf ("%" G_GINT64_FORMAT,
             g_value_get_int64 (&value));
-      else
+      else if (GST_VALUE_HOLDS_STRUCTURE (&value)) {
+        if (g_value_get_boxed (&value) != NULL) {
+          contents = g_strdup_value_contents (&value);
+        } else {
+          contents = g_strdup ("NULL");
+        }
+      } else
         contents = g_strdup_value_contents (&value);
 
       xmlNewChild (param, NULL, (xmlChar *) "value", (xmlChar *) contents);
@@ -2855,7 +2997,7 @@ gst_element_save_thyself (GstObject * object, xmlNodePtr parent)
 
   g_free (specs);
 
-  pads = GST_ELEMENT_PADS (element);
+  pads = g_list_last (GST_ELEMENT_PADS (element));
 
   while (pads) {
     GstPad *pad = GST_PAD_CAST (pads->data);
@@ -2866,7 +3008,7 @@ gst_element_save_thyself (GstObject * object, xmlNodePtr parent)
 
       gst_object_save_thyself (GST_OBJECT_CAST (pad), padtag);
     }
-    pads = g_list_next (pads);
+    pads = g_list_previous (pads);
   }
 
   return parent;

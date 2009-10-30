@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gstreamer Elements">
 <link rel="prev" href="gstreamer-plugins-queue.html" title="queue">
 <link rel="next" href="gstreamer-plugins-typefind.html" title="typefind">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gstreamer Elements">
 <link rel="chapter" href="ch02.html" title="gstreamer Plugins">
@@ -22,13 +22,15 @@
 <th width="100%" align="center">GStreamer Core Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-plugins-typefind.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-plugins-tee.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gstreamer-plugins-tee.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gstreamer-plugins-tee.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gstreamer-plugins-tee.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gstreamer-plugins-tee.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gstreamer-plugins-tee.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gstreamer-plugins-tee.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gstreamer-plugins-tee.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-plugins-tee"></a><div class="titlepage"></div>
@@ -50,10 +52,14 @@ enum                <a class="link" href="gstreamer-plugins-tee.html#GstTeePullM
 <a name="gstreamer-plugins-tee.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
   <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
                +----GstTee
 </pre>
 </div>
@@ -61,21 +67,24 @@ href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 <a name="gstreamer-plugins-tee.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
   "<a class="link" href="gstreamer-plugins-tee.html#GstTee--has-chain" title='The "has-chain" property'>has-chain</a>"                <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write / Construct
   "<a class="link" href="gstreamer-plugins-tee.html#GstTee--has-sink-loop" title='The "has-sink-loop" property'>has-sink-loop</a>"            <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write / Construct
   "<a class="link" href="gstreamer-plugins-tee.html#GstTee--last-message" title='The "last-message" property'>last-message</a>"             <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a>*                : Read
   "<a class="link" href="gstreamer-plugins-tee.html#GstTee--num-src-pads" title='The "num-src-pads" property'>num-src-pads</a>"             <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read
   "<a class="link" href="gstreamer-plugins-tee.html#GstTee--silent" title='The "silent" property'>silent</a>"                   <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write / Construct
   "<a class="link" href="gstreamer-plugins-tee.html#GstTee--pull-mode" title='The "pull-mode" property'>pull-mode</a>"                <a class="link" href="gstreamer-plugins-tee.html#GstTeePullMode" title="enum GstTeePullMode">GstTeePullMode</a>        : Read / Write / Construct
+  "<a class="link" href="gstreamer-plugins-tee.html#GstTee--alloc-pad" title='The "alloc-pad" property'>alloc-pad</a>"                <a
+href="../gstreamer-0.10/GstPad.html"
+>GstPad</a>*               : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -85,7 +94,7 @@ Split data to multiple pads.</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2671450"></a><h3>Element Information</h3>
+<a name="id2834914"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -108,7 +117,7 @@ Split data to multiple pads.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2668709"></a><h3>Element Pads</h3>
+<a name="id2865634"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -154,7 +163,6 @@ Split data to multiple pads.</p>
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -165,7 +173,6 @@ Split data to multiple pads.</p>
 <p>
 Opaque <a class="link" href="gstreamer-plugins-tee.html#GstTee"><span class="type">GstTee</span></a> data structure.</p>
 <p>
-
 </p>
 </div>
 <hr>
@@ -180,18 +187,17 @@ Opaque <a class="link" href="gstreamer-plugins-tee.html#GstTee"><span class="typ
 The different ways that tee can behave in pull mode. <em class="parameter"><code>TEE_PULL_MODE_NEVER</code></em>
 disables pull mode.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-TEE-PULL-MODE-NEVER:CAPS"></a><span class="term"><code class="literal">GST_TEE_PULL_MODE_NEVER</code></span></p></td>
+<td><p><a name="GST-TEE-PULL-MODE-NEVER--CAPS"></a><span class="term"><code class="literal">GST_TEE_PULL_MODE_NEVER</code></span></p></td>
 <td> Never activate in pull mode.
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-TEE-PULL-MODE-SINGLE:CAPS"></a><span class="term"><code class="literal">GST_TEE_PULL_MODE_SINGLE</code></span></p></td>
+<td><p><a name="GST-TEE-PULL-MODE-SINGLE--CAPS"></a><span class="term"><code class="literal">GST_TEE_PULL_MODE_SINGLE</code></span></p></td>
 <td> Only one src pad can be active in pull mode.
 </td>
 </tr>
@@ -204,7 +210,7 @@ disables pull mode.</p>
 <div class="refsect2" lang="en">
 <a name="GstTee--has-chain"></a><h3>The <code class="literal">"has-chain"</code> property</h3>
 <pre class="programlisting">  "has-chain"                <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write / Construct</pre>
 <p>If the element can operate in push mode.</p>
 <p>Default value: TRUE</p>
@@ -213,7 +219,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <div class="refsect2" lang="en">
 <a name="GstTee--has-sink-loop"></a><h3>The <code class="literal">"has-sink-loop"</code> property</h3>
 <pre class="programlisting">  "has-sink-loop"            <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write / Construct</pre>
 <p>If the element should spawn a thread (unimplemented and deprecated).</p>
 <p>Default value: FALSE</p>
@@ -222,7 +228,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <div class="refsect2" lang="en">
 <a name="GstTee--last-message"></a><h3>The <code class="literal">"last-message"</code> property</h3>
 <pre class="programlisting">  "last-message"             <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a>*                : Read</pre>
 <p>The message describing current status.</p>
 <p>Default value: NULL</p>
@@ -231,7 +237,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <div class="refsect2" lang="en">
 <a name="GstTee--num-src-pads"></a><h3>The <code class="literal">"num-src-pads"</code> property</h3>
 <pre class="programlisting">  "num-src-pads"             <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read</pre>
 <p>The number of source pads.</p>
 <p>Allowed values: &gt;= 0</p>
@@ -241,7 +247,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <div class="refsect2" lang="en">
 <a name="GstTee--silent"></a><h3>The <code class="literal">"silent"</code> property</h3>
 <pre class="programlisting">  "silent"                   <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write / Construct</pre>
 <p>Don't produce last_message events.</p>
 <p>Default value: TRUE</p>
@@ -253,14 +259,22 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <p>Behavior of tee in pull mode.</p>
 <p>Default value: Never activate in pull mode</p>
 </div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTee--alloc-pad"></a><h3>The <code class="literal">"alloc-pad"</code> property</h3>
+<pre class="programlisting">  "alloc-pad"                <a
+href="../gstreamer-0.10/GstPad.html"
+>GstPad</a>*               : Read / Write</pre>
+<p>The pad used for gst_pad_alloc_buffer.</p>
+</div>
 </div>
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-tee.see-also"></a><h2>See Also</h2>
-<a class="link" href="gstreamer-plugins-identity.html#GstIdentity"><span class="type">GstIdentity</span></a>
+#GstIdentity
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

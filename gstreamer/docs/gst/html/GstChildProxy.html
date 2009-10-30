@@ -8,7 +8,7 @@
 <link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="prev" href="gstreamer-GstCaps.html" title="GstCaps">
 <link rel="next" href="GstClock.html" title="GstClock">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
@@ -26,17 +26,19 @@
 <th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
 <td><a accesskey="n" href="GstClock.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#GstChildProxy.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#GstChildProxy.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#GstChildProxy.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#GstChildProxy.prerequisites" class="shortcut">Prerequisites</a>
-                   | 
-                  <a href="#GstChildProxy.implementations" class="shortcut">Known Implementations</a>
-                   | 
-                  <a href="#GstChildProxy.signals" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#GstChildProxy.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#GstChildProxy.description" class="shortcut">Description</a>
+                 | 
+                <a href="#GstChildProxy.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#GstChildProxy.prerequisites" class="shortcut">Prerequisites</a>
+                 | 
+                <a href="#GstChildProxy.implementations" class="shortcut">Known Implementations</a>
+                 | 
+                <a href="#GstChildProxy.signals" class="shortcut">Signals</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="GstChildProxy"></a><div class="titlepage"></div>
@@ -56,58 +58,58 @@
                     <a class="link" href="GstChildProxy.html#GstChildProxy-struct" title="GstChildProxy">GstChildProxy</a>;
                     <a class="link" href="GstChildProxy.html#GstChildProxyInterface" title="GstChildProxyInterface">GstChildProxyInterface</a>;
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>               <a class="link" href="GstChildProxy.html#gst-child-proxy-get-children-count" title="gst_child_proxy_get_children_count ()">gst_child_proxy_get_children_count</a>  (<a class="link" href="GstChildProxy.html" title="GstChildProxy">GstChildProxy</a> *parent);
-<a class="link" href="GstObject.html" title="GstObject">GstObject</a>*          <a class="link" href="GstChildProxy.html#gst-child-proxy-get-child-by-name" title="gst_child_proxy_get_child_by_name ()">gst_child_proxy_get_child_by_name</a>   (<a class="link" href="GstChildProxy.html" title="GstChildProxy">GstChildProxy</a> *parent,
+<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *         <a class="link" href="GstChildProxy.html#gst-child-proxy-get-child-by-name" title="gst_child_proxy_get_child_by_name ()">gst_child_proxy_get_child_by_name</a>   (<a class="link" href="GstChildProxy.html" title="GstChildProxy">GstChildProxy</a> *parent,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name);
-<a class="link" href="GstObject.html" title="GstObject">GstObject</a>*          <a class="link" href="GstChildProxy.html#gst-child-proxy-get-child-by-index" title="gst_child_proxy_get_child_by_index ()">gst_child_proxy_get_child_by_index</a>  (<a class="link" href="GstChildProxy.html" title="GstChildProxy">GstChildProxy</a> *parent,
+<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *         <a class="link" href="GstChildProxy.html#gst-child-proxy-get-child-by-index" title="gst_child_proxy_get_child_by_index ()">gst_child_proxy_get_child_by_index</a>  (<a class="link" href="GstChildProxy.html" title="GstChildProxy">GstChildProxy</a> *parent,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a> index);
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            <a class="link" href="GstChildProxy.html#gst-child-proxy-lookup" title="gst_child_proxy_lookup ()">gst_child_proxy_lookup</a>              (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *object,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name,
                                                          <a class="link" href="GstObject.html" title="GstObject">GstObject</a> **target,
                                                          <a
-href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
 >GParamSpec</a> **pspec);
 void                <a class="link" href="GstChildProxy.html#gst-child-proxy-get-property" title="gst_child_proxy_get_property ()">gst_child_proxy_get_property</a>        (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *object,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name,
                                                          <a
-href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+href="../gobject/gobject-Generic-values.html#GValue"
 >GValue</a> *value);
 void                <a class="link" href="GstChildProxy.html#gst-child-proxy-get-valist" title="gst_child_proxy_get_valist ()">gst_child_proxy_get_valist</a>          (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *object,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *first_property_name,
                                                          va_list var_args);
 void                <a class="link" href="GstChildProxy.html#gst-child-proxy-get" title="gst_child_proxy_get ()">gst_child_proxy_get</a>                 (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *object,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *first_property_name,
                                                          ...);
 void                <a class="link" href="GstChildProxy.html#gst-child-proxy-set-property" title="gst_child_proxy_set_property ()">gst_child_proxy_set_property</a>        (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *object,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name,
                                                          const <a
-href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+href="../gobject/gobject-Generic-values.html#GValue"
 >GValue</a> *value);
 void                <a class="link" href="GstChildProxy.html#gst-child-proxy-set-valist" title="gst_child_proxy_set_valist ()">gst_child_proxy_set_valist</a>          (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *object,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *first_property_name,
                                                          va_list var_args);
 void                <a class="link" href="GstChildProxy.html#gst-child-proxy-set" title="gst_child_proxy_set ()">gst_child_proxy_set</a>                 (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *object,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *first_property_name,
                                                          ...);
 void                <a class="link" href="GstChildProxy.html#gst-child-proxy-child-added" title="gst_child_proxy_child_added ()">gst_child_proxy_child_added</a>         (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *object,
@@ -161,7 +163,6 @@ Property names are written as "child-name::property-name". The whole naming
 scheme is recursive. Thus "child1::child2::property" is valid too, if
 "child1" and "child2" implement the <a class="link" href="GstChildProxy.html" title="GstChildProxy"><span class="type">GstChildProxy</span></a> interface.</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -172,7 +173,6 @@ scheme is recursive. Thus "child1::child2::property" is valid too, if
 <p>
 Opaque <a class="link" href="GstChildProxy.html" title="GstChildProxy"><span class="type">GstChildProxy</span></a> data structure.</p>
 <p>
-
 </p>
 </div>
 <hr>
@@ -189,14 +189,13 @@ Opaque <a class="link" href="GstChildProxy.html" title="GstChildProxy"><span cla
 <p>
 <a class="link" href="GstChildProxy.html" title="GstChildProxy"><span class="type">GstChildProxy</span></a> interface.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GTypeInterface"
+href="../gobject/gobject-Type-Information.html#GTypeInterface"
 >GTypeInterface</a> <em class="structfield"><code>parent</code></em>;</span></p></td>
 <td> parent interface type.
 </td>
@@ -218,12 +217,11 @@ href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GTypeInterfa
 <div class="refsect2" lang="en">
 <a name="gst-child-proxy-get-children-count"></a><h3>gst_child_proxy_get_children_count ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>               gst_child_proxy_get_children_count  (<a class="link" href="GstChildProxy.html" title="GstChildProxy">GstChildProxy</a> *parent);</pre>
 <p>
 Gets the number of child objects this parent contains.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -246,9 +244,9 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-child-proxy-get-child-by-name"></a><h3>gst_child_proxy_get_child_by_name ()</h3>
-<pre class="programlisting"><a class="link" href="GstObject.html" title="GstObject">GstObject</a>*          gst_child_proxy_get_child_by_name   (<a class="link" href="GstChildProxy.html" title="GstChildProxy">GstChildProxy</a> *parent,
+<pre class="programlisting"><a class="link" href="GstObject.html" title="GstObject">GstObject</a> *         gst_child_proxy_get_child_by_name   (<a class="link" href="GstChildProxy.html" title="GstChildProxy">GstChildProxy</a> *parent,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name);</pre>
 <p>
 Looks up a child element by the given name.
@@ -256,7 +254,6 @@ Looks up a child element by the given name.
 <p>
 Implementors can use <a class="link" href="GstObject.html" title="GstObject"><span class="type">GstObject</span></a> together with <a class="link" href="GstObject.html#gst-object-get-name" title="gst_object_get_name ()"><code class="function">gst_object_get_name()</code></a></p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -274,7 +271,7 @@ Implementors can use <a class="link" href="GstObject.html" title="GstObject"><sp
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the child object or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+href="../glib/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a> if not found. Unref after usage.
 
 MT safe.
@@ -286,14 +283,13 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-child-proxy-get-child-by-index"></a><h3>gst_child_proxy_get_child_by_index ()</h3>
-<pre class="programlisting"><a class="link" href="GstObject.html" title="GstObject">GstObject</a>*          gst_child_proxy_get_child_by_index  (<a class="link" href="GstChildProxy.html" title="GstChildProxy">GstChildProxy</a> *parent,
+<pre class="programlisting"><a class="link" href="GstObject.html" title="GstObject">GstObject</a> *         gst_child_proxy_get_child_by_index  (<a class="link" href="GstChildProxy.html" title="GstChildProxy">GstChildProxy</a> *parent,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a> index);</pre>
 <p>
 Fetches a child by its number.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -311,7 +307,7 @@ Fetches a child by its number.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the child object or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+href="../glib/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a> if not found (index too high). Unref
 after usage.
 
@@ -325,21 +321,20 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-child-proxy-lookup"></a><h3>gst_child_proxy_lookup ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            gst_child_proxy_lookup              (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *object,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name,
                                                          <a class="link" href="GstObject.html" title="GstObject">GstObject</a> **target,
                                                          <a
-href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
 >GParamSpec</a> **pspec);</pre>
 <p>
 Looks up which object and <a
-href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
 ><span class="type">GParamSpec</span></a> would be effected by the given <em class="parameter"><code>name</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -362,7 +357,7 @@ href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
 <tr>
 <td><p><span class="term"><em class="parameter"><code>pspec</code></em> :</span></p></td>
 <td> pointer to take the <a
-href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
 ><span class="type">GParamSpec</span></a> describing the property
 </td>
 </tr>
@@ -383,18 +378,17 @@ MT safe.
 <a name="gst-child-proxy-get-property"></a><h3>gst_child_proxy_get_property ()</h3>
 <pre class="programlisting">void                gst_child_proxy_get_property        (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *object,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name,
                                                          <a
-href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+href="../gobject/gobject-Generic-values.html#GValue"
 >GValue</a> *value);</pre>
 <p>
 Gets a single property using the GstChildProxy mechanism.
 You are responsible for for freeing it by calling <a
-href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#g-value-unset"
+href="../gobject/gobject-Generic-values.html#g-value-unset"
 ><code class="function">g_value_unset()</code></a></p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -412,7 +406,7 @@ href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#g-value-unset"
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a <a
-href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+href="../gobject/gobject-Generic-values.html#GValue"
 ><span class="type">GValue</span></a> that should take the result.
 </td>
 </tr>
@@ -424,13 +418,12 @@ href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
 <a name="gst-child-proxy-get-valist"></a><h3>gst_child_proxy_get_valist ()</h3>
 <pre class="programlisting">void                gst_child_proxy_get_valist          (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *object,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *first_property_name,
                                                          va_list var_args);</pre>
 <p>
 Gets properties of the parent object and its children.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -458,13 +451,12 @@ Gets properties of the parent object and its children.</p>
 <a name="gst-child-proxy-get"></a><h3>gst_child_proxy_get ()</h3>
 <pre class="programlisting">void                gst_child_proxy_get                 (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *object,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *first_property_name,
                                                          ...);</pre>
 <p>
 Gets properties of the parent object and its children.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -492,15 +484,14 @@ Gets properties of the parent object and its children.</p>
 <a name="gst-child-proxy-set-property"></a><h3>gst_child_proxy_set_property ()</h3>
 <pre class="programlisting">void                gst_child_proxy_set_property        (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *object,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name,
                                                          const <a
-href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+href="../gobject/gobject-Generic-values.html#GValue"
 >GValue</a> *value);</pre>
 <p>
 Sets a single property using the GstChildProxy mechanism.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -518,7 +509,7 @@ Sets a single property using the GstChildProxy mechanism.</p>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> new <a
-href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+href="../gobject/gobject-Generic-values.html#GValue"
 ><span class="type">GValue</span></a> for the property
 </td>
 </tr>
@@ -530,13 +521,12 @@ href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
 <a name="gst-child-proxy-set-valist"></a><h3>gst_child_proxy_set_valist ()</h3>
 <pre class="programlisting">void                gst_child_proxy_set_valist          (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *object,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *first_property_name,
                                                          va_list var_args);</pre>
 <p>
 Sets properties of the parent object and its children.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -564,13 +554,12 @@ Sets properties of the parent object and its children.</p>
 <a name="gst-child-proxy-set"></a><h3>gst_child_proxy_set ()</h3>
 <pre class="programlisting">void                gst_child_proxy_set                 (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *object,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *first_property_name,
                                                          ...);</pre>
 <p>
 Sets properties of the parent object and its children.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -601,7 +590,6 @@ Sets properties of the parent object and its children.</p>
 <p>
 Emits the "child-added" signal.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -627,7 +615,6 @@ Emits the "child-added" signal.</p>
 <p>
 Emits the "child-removed" signal.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -652,15 +639,14 @@ Emits the "child-removed" signal.</p>
 <a name="GstChildProxy-child-added"></a><h3>The <code class="literal">"child-added"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="GstChildProxy.html" title="GstChildProxy">GstChildProxy</a> *child_proxy,
                                                         <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>       *object,
                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>       user_data)        : Run First</pre>
 <p>
 Will be emitted after the <em class="parameter"><code>object</code></em> was added to the <em class="parameter"><code>child_proxy</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -673,7 +659,7 @@ Will be emitted after the <em class="parameter"><code>object</code></em> was add
 <tr>
 <td><p><span class="term"><em class="parameter"><code>object</code></em> :</span></p></td>
 <td> the <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
 ><span class="type">GObject</span></a> that was added
 </td>
 </tr>
@@ -689,15 +675,14 @@ href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 <a name="GstChildProxy-child-removed"></a><h3>The <code class="literal">"child-removed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="GstChildProxy.html" title="GstChildProxy">GstChildProxy</a> *child_proxy,
                                                         <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>       *object,
                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>       user_data)        : Run First</pre>
 <p>
 Will be emitted after the <em class="parameter"><code>object</code></em> was removed from the <em class="parameter"><code>child_proxy</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -710,7 +695,7 @@ Will be emitted after the <em class="parameter"><code>object</code></em> was rem
 <tr>
 <td><p><span class="term"><em class="parameter"><code>object</code></em> :</span></p></td>
 <td> the <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
 ><span class="type">GObject</span></a> that was removed
 </td>
 </tr>
@@ -724,11 +709,11 @@ href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 </div>
 <div class="refsect1" lang="en">
 <a name="GstChildProxy.see-also"></a><h2>See Also</h2>
-<a class="link" href="GstBin.html" title="GstBin"><span class="type">GstBin</span></a>
+#GstBin
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

@@ -257,6 +257,40 @@ print_interfaces (GType type)
   }
 }
 
+static gchar *
+flags_to_string (GFlagsValue * vals, guint flags)
+{
+  GString *s = NULL;
+  guint flags_left, i;
+
+  /* first look for an exact match and count the number of values */
+  for (i = 0; vals[i].value_name != NULL; ++i) {
+    if (vals[i].value == flags)
+      return g_strdup (vals[i].value_nick);
+  }
+
+  s = g_string_new (NULL);
+
+  /* we assume the values are sorted from lowest to highest value */
+  flags_left = flags;
+  while (i > 0) {
+    --i;
+    if (vals[i].value != 0 && (flags_left & vals[i].value) == vals[i].value) {
+      if (s->len > 0)
+        g_string_append (s, " | ");
+      g_string_append (s, vals[i].value_nick);
+      flags_left -= vals[i].value;
+      if (flags_left == 0)
+        break;
+    }
+  }
+
+  if (s->len == 0)
+    g_string_assign (s, "(none)");
+
+  return g_string_free (s, FALSE);
+}
+
 static void
 print_element_properties_info (GstElement * element)
 {
@@ -302,8 +336,6 @@ print_element_properties_info (GstElement * element)
     if (param->flags & GST_PARAM_CONTROLLABLE) {
       if (!first_flag)
         g_print (", ");
-      else
-        first_flag = FALSE;
       g_print (_("controllable"));
     }
     n_print ("\n");
@@ -475,54 +507,30 @@ print_element_properties_info (GstElement * element)
           /* g_type_class_unref (ec); */
         } else if (G_IS_PARAM_SPEC_FLAGS (param)) {
           GParamSpecFlags *pflags = G_PARAM_SPEC_FLAGS (param);
-          GFlagsValue *values;
-          guint j = 0;
-          gint flags_value;
-          GString *cur_flags = NULL, *def_flags = NULL;
+          GFlagsValue *vals;
+          gchar *cur, *def;
 
-          values = G_FLAGS_CLASS (g_type_class_ref (param->value_type))->values;
-          flags_value = g_value_get_flags (&value);
+          vals = pflags->flags_class->values;
 
-          while (values[j].value_name) {
-            if (values[j].value & flags_value) {
-              if (cur_flags) {
-                g_string_append_printf (cur_flags, " | %s",
-                    values[j].value_nick);
-              } else {
-                cur_flags = g_string_new (values[j].value_nick);
-              }
-            }
-            if (values[j].value & pflags->default_value) {
-              if (def_flags) {
-                g_string_append_printf (def_flags, " | %s",
-                    values[j].value_nick);
-              } else {
-                def_flags = g_string_new (values[j].value_nick);
-              }
-            }
-            j++;
-          }
+          cur = flags_to_string (vals, g_value_get_flags (&value));
+          def = flags_to_string (vals, pflags->default_value);
 
           n_print
               ("%-23.23s Flags \"%s\" Default: 0x%08x, \"%s\" Current: 0x%08x, \"%s\"",
               "", g_type_name (G_VALUE_TYPE (&value)), pflags->default_value,
-              (def_flags ? def_flags->str : "(none)"), flags_value,
-              (cur_flags ? cur_flags->str : "(none)"));
+              def, g_value_get_flags (&value), cur);
 
-          j = 0;
-          while (values[j].value_name) {
+          while (vals[0].value_name) {
             g_print ("\n");
             if (_name)
               g_print ("%s", _name);
             g_print ("%-23.23s    (0x%08x): %-16s - %s", "",
-                values[j].value, values[j].value_nick, values[j].value_name);
-            j++;
+                vals[0].value, vals[0].value_nick, vals[0].value_name);
+            ++vals;
           }
 
-          if (cur_flags)
-            g_string_free (cur_flags, TRUE);
-          if (def_flags)
-            g_string_free (def_flags, TRUE);
+          g_free (cur);
+          g_free (def);
         } else if (G_IS_PARAM_SPEC_OBJECT (param)) {
           n_print ("%-23.23s Object of type \"%s\"", "",
               g_type_name (param->value_type));
@@ -796,9 +804,9 @@ print_pad_info (GstElement * element)
       print_query_types (gst_pad_get_query_types (pad));
     }
 
-    if (pad->intlinkfunc != gst_pad_get_internal_links_default)
-      n_print ("      Has custom intconnfunc(): %s\n",
-          GST_DEBUG_FUNCPTR_NAME (pad->intlinkfunc));
+    if (pad->iterintlinkfunc != gst_pad_iterate_internal_links_default)
+      n_print ("      Has custom iterintlinkfunc(): %s\n",
+          GST_DEBUG_FUNCPTR_NAME (pad->iterintlinkfunc));
 
     if (pad->bufferallocfunc)
       n_print ("      Has bufferallocfunc(): %s\n",
@@ -1034,7 +1042,7 @@ print_all_uri_handlers (void)
         plugin->desc.name);
 
     for (f = features; f; f = f->next) {
-      GstPluginFeature *feature = GST_PLUGIN_FEATURE (features->data);
+      GstPluginFeature *feature = GST_PLUGIN_FEATURE (f->data);
 
       if (GST_IS_ELEMENT_FACTORY (feature)) {
         GstElementFactory *factory;
@@ -1115,7 +1123,7 @@ print_plugin_features (GstPlugin * plugin)
   GList *features;
   gint num_features = 0;
   gint num_elements = 0;
-  gint num_types = 0;
+  gint num_typefinders = 0;
   gint num_indexes = 0;
   gint num_other = 0;
 
@@ -1159,7 +1167,7 @@ print_plugin_features (GstPlugin * plugin)
         g_print ("%s: %s: no extensions\n", plugin->desc.name,
             gst_plugin_feature_get_name (feature));
 
-      num_types++;
+      num_typefinders++;
     } else {
       n_print ("  %s (%s)\n", gst_object_get_name (GST_OBJECT (feature)),
           g_type_name (G_OBJECT_TYPE (feature)));
@@ -1172,8 +1180,8 @@ print_plugin_features (GstPlugin * plugin)
   n_print ("  %d features:\n", num_features);
   if (num_elements > 0)
     n_print ("  +-- %d elements\n", num_elements);
-  if (num_types > 0)
-    n_print ("  +-- %d types\n", num_types);
+  if (num_typefinders > 0)
+    n_print ("  +-- %d typefinders\n", num_typefinders);
   if (num_indexes > 0)
     n_print ("  +-- %d indexes\n", num_indexes);
   if (num_other > 0)
@@ -1395,6 +1403,7 @@ main (int argc, char *argv[])
   gboolean plugin_name = FALSE;
   gboolean print_aii = FALSE;
   gboolean uri_handlers = FALSE;
+#ifndef GST_DISABLE_OPTION_PARSING
   GOptionEntry options[] = {
     {"print-all", 'a', 0, G_OPTION_ARG_NONE, &print_all,
         N_("Print all elements"), NULL},
@@ -1414,6 +1423,7 @@ main (int argc, char *argv[])
   };
   GOptionContext *ctx;
   GError *err = NULL;
+#endif
 
 #ifdef ENABLE_NLS
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
@@ -1424,6 +1434,7 @@ main (int argc, char *argv[])
   if (!g_thread_supported ())
     g_thread_init (NULL);
 
+#ifndef GST_DISABLE_OPTION_PARSING
   ctx = g_option_context_new ("[ELEMENT-NAME | PLUGIN-NAME]");
   g_option_context_add_main_entries (ctx, options, GETTEXT_PACKAGE);
   g_option_context_add_group (ctx, gst_init_get_option_group ());
@@ -1432,6 +1443,9 @@ main (int argc, char *argv[])
     exit (1);
   }
   g_option_context_free (ctx);
+#else
+  gst_init (&argc, &argv);
+#endif
 
   gst_tools_print_version ("gst-inspect");
 

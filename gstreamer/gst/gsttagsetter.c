@@ -91,9 +91,10 @@ typedef struct
 GType
 gst_tag_setter_get_type (void)
 {
-  static GType tag_setter_type = 0;
+  static volatile gsize tag_setter_type = 0;
 
-  if (G_UNLIKELY (tag_setter_type == 0)) {
+  if (g_once_init_enter (&tag_setter_type)) {
+    GType _type;
     static const GTypeInfo tag_setter_info = {
       sizeof (GstTagSetterIFace),       /* class_size */
       NULL,                     /* base_init */
@@ -109,12 +110,13 @@ gst_tag_setter_get_type (void)
     GST_DEBUG_CATEGORY_INIT (gst_tag_interface_debug, "GstTagInterface", 0,
         "interfaces for tagging");
 
-    tag_setter_type = g_type_register_static (G_TYPE_INTERFACE, "GstTagSetter",
+    _type = g_type_register_static (G_TYPE_INTERFACE, "GstTagSetter",
         &tag_setter_info, 0);
 
-    g_type_interface_add_prerequisite (tag_setter_type, GST_TYPE_ELEMENT);
+    g_type_interface_add_prerequisite (_type, GST_TYPE_ELEMENT);
 
     gst_tag_key = g_quark_from_static_string ("GST_TAG_SETTER");
+    g_once_init_leave (&tag_setter_type, _type);
   }
 
   return tag_setter_type;
@@ -296,6 +298,33 @@ gst_tag_setter_add_tag_valist_values (GstTagSetter * setter,
     data->list = gst_tag_list_new ();
 
   gst_tag_list_add_valist_values (data->list, mode, tag, var_args);
+}
+
+/**
+ * gst_tag_setter_add_tag_value:
+ * @setter: a #GstTagSetter
+ * @mode: the mode to use
+ * @tag: tag to set
+ * @value: GValue to set for the tag
+ *
+ * Adds the given tag / GValue pair on the setter using the given merge mode.
+ *
+ * Since: 0.10.24
+ */
+void
+gst_tag_setter_add_tag_value (GstTagSetter * setter,
+    GstTagMergeMode mode, const gchar * tag, const GValue * value)
+{
+  GstTagData *data;
+
+  g_return_if_fail (GST_IS_TAG_SETTER (setter));
+  g_return_if_fail (GST_TAG_MODE_IS_VALID (mode));
+
+  data = gst_tag_setter_get_data (setter);
+  if (!data->list)
+    data->list = gst_tag_list_new ();
+
+  gst_tag_list_add_value (data->list, mode, tag, value);
 }
 
 /**

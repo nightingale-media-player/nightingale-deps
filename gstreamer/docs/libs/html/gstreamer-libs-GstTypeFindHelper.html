@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
 <link rel="prev" href="GstCollectPads.html" title="GstCollectPads">
 <link rel="next" href="gstreamer-libs-GstDataQueue.html" title="GstDataQueue">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-libs.html" title="Part I. GStreamer Libraries">
 <link rel="chapter" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
@@ -29,9 +29,11 @@
 <th width="100%" align="center">GStreamer 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-libs-GstDataQueue.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-libs-GstTypeFindHelper.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gstreamer-libs-GstTypeFindHelper.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gstreamer-libs-GstTypeFindHelper.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gstreamer-libs-GstTypeFindHelper.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-libs-GstTypeFindHelper"></a><div class="titlepage"></div>
@@ -48,28 +50,60 @@
 
 #include &lt;gst/base/gsttypefindhelper.h&gt;
 
-GstCaps*            <a class="link" href="gstreamer-libs-GstTypeFindHelper.html#gst-type-find-helper" title="gst_type_find_helper ()">gst_type_find_helper</a>                (GstPad *src,
+<a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           <a class="link" href="gstreamer-libs-GstTypeFindHelper.html#gst-type-find-helper" title="gst_type_find_helper ()">gst_type_find_helper</a>                (<a
+href="../gstreamer-0.10/GstPad.html"
+>GstPad</a> *src,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+href="../glib/glib-Basic-Types.html#guint64"
 >guint64</a> size);
-GstCaps*            <a class="link" href="gstreamer-libs-GstTypeFindHelper.html#gst-type-find-helper-for-buffer" title="gst_type_find_helper_for_buffer ()">gst_type_find_helper_for_buffer</a>     (GstObject *obj,
-                                                         GstBuffer *buf,
-                                                         GstTypeFindProbability *prob);
-GstFlowReturn       (<a class="link" href="gstreamer-libs-GstTypeFindHelper.html#GstTypeFindHelperGetRangeFunction" title="GstTypeFindHelperGetRangeFunction ()">*GstTypeFindHelperGetRangeFunction</a>)
-                                                        (GstObject *obj,
+<a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           <a class="link" href="gstreamer-libs-GstTypeFindHelper.html#gst-type-find-helper-for-buffer" title="gst_type_find_helper_for_buffer ()">gst_type_find_helper_for_buffer</a>     (<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a> *obj,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buf,
+                                                         <a
+href="../gstreamer-0.10/gstreamer-GstTypeFind.html#GstTypeFindProbability"
+>GstTypeFindProbability</a> *prob);
+<a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           <a class="link" href="gstreamer-libs-GstTypeFindHelper.html#gst-type-find-helper-for-extension" title="gst_type_find_helper_for_extension ()">gst_type_find_helper_for_extension</a>  (<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a> *obj,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *extension);
+<a
+href="../gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       (<a class="link" href="gstreamer-libs-GstTypeFindHelper.html#GstTypeFindHelperGetRangeFunction" title="GstTypeFindHelperGetRangeFunction ()">*GstTypeFindHelperGetRangeFunction</a>)
+                                                        (<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a> *obj,
+                                                         <a
+href="../glib/glib-Basic-Types.html#guint64"
 >guint64</a> offset,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a> length,
-                                                         GstBuffer **buffer);
-GstCaps*            <a class="link" href="gstreamer-libs-GstTypeFindHelper.html#gst-type-find-helper-get-range" title="gst_type_find_helper_get_range ()">gst_type_find_helper_get_range</a>      (GstObject *obj,
+                                                         <a
+href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> **buffer);
+<a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           <a class="link" href="gstreamer-libs-GstTypeFindHelper.html#gst-type-find-helper-get-range" title="gst_type_find_helper_get_range ()">gst_type_find_helper_get_range</a>      (<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a> *obj,
                                                          <a class="link" href="gstreamer-libs-GstTypeFindHelper.html#GstTypeFindHelperGetRangeFunction" title="GstTypeFindHelperGetRangeFunction ()">GstTypeFindHelperGetRangeFunction</a> func,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+href="../glib/glib-Basic-Types.html#guint64"
 >guint64</a> size,
-                                                         GstTypeFindProbability *prob);
+                                                         <a
+href="../gstreamer-0.10/gstreamer-GstTypeFind.html#GstTypeFindProbability"
+>GstTypeFindProbability</a> *prob);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -80,28 +114,34 @@ Utility functions for elements doing typefinding:
 <a class="link" href="gstreamer-libs-GstTypeFindHelper.html#gst-type-find-helper-for-buffer" title="gst_type_find_helper_for_buffer ()"><code class="function">gst_type_find_helper_for_buffer()</code></a> is useful for elements needing to do
 typefinding in push mode from a chain function.</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gstreamer-libs-GstTypeFindHelper.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
 <a name="gst-type-find-helper"></a><h3>gst_type_find_helper ()</h3>
-<pre class="programlisting">GstCaps*            gst_type_find_helper                (GstPad *src,
+<pre class="programlisting"><a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           gst_type_find_helper                (<a
+href="../gstreamer-0.10/GstPad.html"
+>GstPad</a> *src,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+href="../glib/glib-Basic-Types.html#guint64"
 >guint64</a> size);</pre>
 <p>
-Tries to find what type of data is flowing from the given source <span class="type">GstPad</span>.</p>
+Tries to find what type of data is flowing from the given source <a
+href="../gstreamer-0.10/GstPad.html"
+><span class="type">GstPad</span></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>src</code></em> :</span></p></td>
-<td> A source <span class="type">GstPad</span>
+<td> A source <a
+href="../gstreamer-0.10/GstPad.html"
+><span class="type">GstPad</span></a>
 </td>
 </tr>
 <tr>
@@ -111,10 +151,14 @@ Tries to find what type of data is flowing from the given source <span class="ty
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The <span class="type">GstCaps</span> corresponding to the data stream.
+<td> The <a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a> corresponding to the data stream.
 Returns <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><span class="type">NULL</span></a> if no <span class="type">GstCaps</span> matches the data stream.
+href="../glib/glib-Standard-Macros.html#NULL--CAPS"
+><span class="type">NULL</span></a> if no <a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a> matches the data stream.
 </td>
 </tr>
 </tbody>
@@ -123,11 +167,21 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-type-find-helper-for-buffer"></a><h3>gst_type_find_helper_for_buffer ()</h3>
-<pre class="programlisting">GstCaps*            gst_type_find_helper_for_buffer     (GstObject *obj,
-                                                         GstBuffer *buf,
-                                                         GstTypeFindProbability *prob);</pre>
+<pre class="programlisting"><a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           gst_type_find_helper_for_buffer     (<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a> *obj,
+                                                         <a
+href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buf,
+                                                         <a
+href="../gstreamer-0.10/gstreamer-GstTypeFind.html#GstTypeFindProbability"
+>GstTypeFindProbability</a> *prob);</pre>
 <p>
-Tries to find what type of data is contained in the given <span class="type">GstBuffer</span>, the
+Tries to find what type of data is contained in the given <a
+href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+><span class="type">GstBuffer</span></a>, the
 assumption being that the buffer represents the beginning of the stream or
 file.
 </p>
@@ -137,11 +191,10 @@ a typefinding function returns a probability of <span class="type">GST_TYPE_FIND
 typefinding is stopped immediately and the found caps will be returned
 right away. Otherwise, all available typefind functions will the tried,
 and the caps with the highest probability will be returned, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+href="../glib/glib-Standard-Macros.html#NULL--CAPS"
 ><span class="type">NULL</span></a> if
 the content of the buffer could not be identified.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -153,22 +206,28 @@ the content of the buffer could not be identified.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>buf</code></em> :</span></p></td>
-<td> a <span class="type">GstBuffer</span> with data to typefind
+<td> a <a
+href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+><span class="type">GstBuffer</span></a> with data to typefind
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>prob</code></em> :</span></p></td>
 <td> location to store the probability of the found caps, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+href="../glib/glib-Standard-Macros.html#NULL--CAPS"
 ><span class="type">NULL</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The <span class="type">GstCaps</span> corresponding to the data, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+<td> The <a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a> corresponding to the data, or <a
+href="../glib/glib-Standard-Macros.html#NULL--CAPS"
 ><span class="type">NULL</span></a> if no type could
-be found. The caller should free the caps returned with <code class="function">gst_caps_unref()</code>.
+be found. The caller should free the caps returned with <a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#gst-caps-unref"
+><code class="function">gst_caps_unref()</code></a>.
 </td>
 </tr>
 </tbody>
@@ -176,16 +235,74 @@ be found. The caller should free the caps returned with <code class="function">g
 </div>
 <hr>
 <div class="refsect2" lang="en">
+<a name="gst-type-find-helper-for-extension"></a><h3>gst_type_find_helper_for_extension ()</h3>
+<pre class="programlisting"><a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           gst_type_find_helper_for_extension  (<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a> *obj,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *extension);</pre>
+<p>
+Tries to find the best <a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a> associated with <em class="parameter"><code>extension</code></em>.
+</p>
+<p>
+All available typefinders will be checked against the extension in order
+of rank. The caps of the first typefinder that can handle <em class="parameter"><code>extension</code></em> will be
+returned.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
+<td> object doing the typefinding, or NULL (used for logging)
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>extension</code></em> :</span></p></td>
+<td> an extension
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The <a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a> corresponding to <em class="parameter"><code>extension</code></em>, or <a
+href="../glib/glib-Standard-Macros.html#NULL--CAPS"
+><span class="type">NULL</span></a> if no type could
+be found. The caller should free the caps returned with <a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#gst-caps-unref"
+><code class="function">gst_caps_unref()</code></a>.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.23</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
 <a name="GstTypeFindHelperGetRangeFunction"></a><h3>GstTypeFindHelperGetRangeFunction ()</h3>
-<pre class="programlisting">GstFlowReturn       (*GstTypeFindHelperGetRangeFunction)
-                                                        (GstObject *obj,
+<pre class="programlisting"><a
+href="../gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       (*GstTypeFindHelperGetRangeFunction)
+                                                        (<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a> *obj,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+href="../glib/glib-Basic-Types.html#guint64"
 >guint64</a> offset,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a> length,
-                                                         GstBuffer **buffer);</pre>
+                                                         <a
+href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> **buffer);</pre>
 <p>
 This function will be called by <a class="link" href="gstreamer-libs-GstTypeFindHelper.html#gst-type-find-helper-get-range" title="gst_type_find_helper_get_range ()"><code class="function">gst_type_find_helper_get_range()</code></a> when
 typefinding functions request to peek at the data of a stream at certain
@@ -194,16 +311,19 @@ stored in <em class="parameter"><code>buffer</code></em>. The  contents of <em c
 return value.
 </p>
 <p>
-This function is supposed to behave exactly like a <span class="type">GstPadGetRangeFunction</span>.</p>
+This function is supposed to behave exactly like a <a
+href="../gstreamer-0.10/GstPad.html#GstPadGetRangeFunction"
+><span class="type">GstPadGetRangeFunction</span></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td> a <span class="type">GstObject</span> that will handle the getrange request
+<td> a <a
+href="../gstreamer-0.10/GstObject.html"
+><span class="type">GstObject</span></a> that will handle the getrange request
 </td>
 </tr>
 <tr>
@@ -232,12 +352,18 @@ This function is supposed to behave exactly like a <span class="type">GstPadGetR
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-type-find-helper-get-range"></a><h3>gst_type_find_helper_get_range ()</h3>
-<pre class="programlisting">GstCaps*            gst_type_find_helper_get_range      (GstObject *obj,
+<pre class="programlisting"><a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           gst_type_find_helper_get_range      (<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a> *obj,
                                                          <a class="link" href="gstreamer-libs-GstTypeFindHelper.html#GstTypeFindHelperGetRangeFunction" title="GstTypeFindHelperGetRangeFunction ()">GstTypeFindHelperGetRangeFunction</a> func,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+href="../glib/glib-Basic-Types.html#guint64"
 >guint64</a> size,
-                                                         GstTypeFindProbability *prob);</pre>
+                                                         <a
+href="../gstreamer-0.10/gstreamer-GstTypeFind.html#GstTypeFindProbability"
+>GstTypeFindProbability</a> *prob);</pre>
 <p>
 Utility function to do pull-based typefinding. Unlike <a class="link" href="gstreamer-libs-GstTypeFindHelper.html#gst-type-find-helper" title="gst_type_find_helper ()"><code class="function">gst_type_find_helper()</code></a>
 however, this function will use the specified function <em class="parameter"><code>func</code></em> to obtain the
@@ -248,14 +374,15 @@ the stripped data stream before adding their own source pad (the specified
 callback can then call the upstream peer pad with offsets adjusted for the
 tag size, for example).</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td> A <span class="type">GstObject</span> that will be passed as first argument to <em class="parameter"><code>func</code></em>
+<td> A <a
+href="../gstreamer-0.10/GstObject.html"
+><span class="type">GstObject</span></a> that will be passed as first argument to <em class="parameter"><code>func</code></em>
 </td>
 </tr>
 <tr>
@@ -272,16 +399,20 @@ tag size, for example).</p>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>prob</code></em> :</span></p></td>
 <td> location to store the probability of the found caps, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+href="../glib/glib-Standard-Macros.html#NULL--CAPS"
 ><span class="type">NULL</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The <span class="type">GstCaps</span> corresponding to the data stream.
+<td> The <a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a> corresponding to the data stream.
 Returns <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><span class="type">NULL</span></a> if no <span class="type">GstCaps</span> matches the data stream.
+href="../glib/glib-Standard-Macros.html#NULL--CAPS"
+><span class="type">NULL</span></a> if no <a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a> matches the data stream.
 </td>
 </tr>
 </tbody>
@@ -291,6 +422,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

@@ -25,10 +25,10 @@
  *
  * The fakesrc element is a multipurpose element that can generate
  * a wide range of buffers and can operate in various scheduling modes.
- * 
+ *
  * It is mostly used as a testing element, one trivial example for testing
  * basic <application>GStreamer</application> core functionality is:
- * 
+ *
  * <refsect2>
  * <title>Example launch line</title>
  * |[
@@ -36,8 +36,12 @@
  * ]| This pipeline will push 5 empty buffers to the fakesink element and then
  * sends an EOS.
  * </refsect2>
- * 
+ *
  * Last reviewed on 2008-06-20 (0.10.21)
+ */
+
+/* FIXME: this ignores basesrc::blocksize property, which could be used as an
+ * alias to ::sizemax (see gst_base_src_get_blocksize()).
  */
 
 #ifdef HAVE_CONFIG_H
@@ -243,8 +247,8 @@ marshal_VOID__MINIOBJECT_OBJECT (GClosure * closure, GValue * return_value,
     data2 = closure->data;
   }
   callback =
-      (marshalfunc_VOID__MINIOBJECT_OBJECT) (marshal_data ? marshal_data : cc->
-      callback);
+      (marshalfunc_VOID__MINIOBJECT_OBJECT) (marshal_data ? marshal_data :
+      cc->callback);
 
   callback (data1, gst_value_get_mini_object (param_values + 1),
       g_value_get_object (param_values + 2), data2);
@@ -268,11 +272,9 @@ static void
 gst_fake_src_class_init (GstFakeSrcClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseSrcClass *gstbase_src_class;
 
   gobject_class = G_OBJECT_CLASS (klass);
-  gstelement_class = GST_ELEMENT_CLASS (klass);
   gstbase_src_class = GST_BASE_SRC_CLASS (klass);
 
   gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_fake_src_finalize);

@@ -20,6 +20,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <gst/check/gstcheck.h>
 
 #define SPECIAL_POINTER(x) ((void*)(19283847+(x)))
@@ -225,6 +229,32 @@ GST_START_TEST (test_math_scale)
   fail_if (gst_util_uint64_scale_int (G_MAXUINT64 - 1, G_MAXINT32,
           1) != G_MAXUINT64);
 
+} GST_END_TEST;
+
+GST_START_TEST (test_math_scale_round)
+{
+  fail_if (gst_util_uint64_scale_int_round (2, 1, 2) != 1);
+  fail_if (gst_util_uint64_scale_int_round (3, 1, 2) != 2);
+  fail_if (gst_util_uint64_scale_int_round (4, 1, 2) != 2);
+
+  fail_if (gst_util_uint64_scale_int_round (200, 100, 20000) != 1);
+  fail_if (gst_util_uint64_scale_int_round (299, 100, 20000) != 1);
+  fail_if (gst_util_uint64_scale_int_round (300, 100, 20000) != 2);
+  fail_if (gst_util_uint64_scale_int_round (301, 100, 20000) != 2);
+  fail_if (gst_util_uint64_scale_int_round (400, 100, 20000) != 2);
+} GST_END_TEST;
+
+GST_START_TEST (test_math_scale_ceil)
+{
+  fail_if (gst_util_uint64_scale_int_ceil (2, 1, 2) != 1);
+  fail_if (gst_util_uint64_scale_int_ceil (3, 1, 2) != 2);
+  fail_if (gst_util_uint64_scale_int_ceil (4, 1, 2) != 2);
+
+  fail_if (gst_util_uint64_scale_int_ceil (200, 100, 20000) != 1);
+  fail_if (gst_util_uint64_scale_int_ceil (299, 100, 20000) != 2);
+  fail_if (gst_util_uint64_scale_int_ceil (300, 100, 20000) != 2);
+  fail_if (gst_util_uint64_scale_int_ceil (301, 100, 20000) != 2);
+  fail_if (gst_util_uint64_scale_int_ceil (400, 100, 20000) != 2);
 } GST_END_TEST;
 
 GST_START_TEST (test_math_scale_uint64)
@@ -610,6 +640,314 @@ GST_START_TEST (test_set_value_from_string)
 
 GST_END_TEST;
 
+static gint
+_binary_search_compare (guint32 * a, guint32 * b)
+{
+  return *a - *b;
+}
+
+GST_START_TEST (test_binary_search)
+{
+  guint32 data[257];
+  guint32 *match;
+  guint32 search_element = 121 * 2;
+  guint i;
+
+  for (i = 0; i < 257; i++)
+    data[i] = (i + 1) * 2;
+
+  match =
+      (guint32 *) gst_util_array_binary_search (data, 257, sizeof (guint32),
+      (GCompareDataFunc) _binary_search_compare, GST_SEARCH_MODE_EXACT,
+      &search_element, NULL);
+  fail_unless (match != NULL);
+  fail_unless_equals_int (match - data, 120);
+
+  match =
+      (guint32 *) gst_util_array_binary_search (data, 257, sizeof (guint32),
+      (GCompareDataFunc) _binary_search_compare, GST_SEARCH_MODE_BEFORE,
+      &search_element, NULL);
+  fail_unless (match != NULL);
+  fail_unless_equals_int (match - data, 120);
+
+  match =
+      (guint32 *) gst_util_array_binary_search (data, 257, sizeof (guint32),
+      (GCompareDataFunc) _binary_search_compare, GST_SEARCH_MODE_AFTER,
+      &search_element, NULL);
+  fail_unless (match != NULL);
+  fail_unless_equals_int (match - data, 120);
+
+  search_element = 0;
+  match =
+      (guint32 *) gst_util_array_binary_search (data, 257, sizeof (guint32),
+      (GCompareDataFunc) _binary_search_compare, GST_SEARCH_MODE_EXACT,
+      &search_element, NULL);
+  fail_unless (match == NULL);
+
+  match =
+      (guint32 *) gst_util_array_binary_search (data, 257, sizeof (guint32),
+      (GCompareDataFunc) _binary_search_compare, GST_SEARCH_MODE_AFTER,
+      &search_element, NULL);
+  fail_unless (match != NULL);
+  fail_unless_equals_int (match - data, 0);
+
+  match =
+      (guint32 *) gst_util_array_binary_search (data, 257, sizeof (guint32),
+      (GCompareDataFunc) _binary_search_compare, GST_SEARCH_MODE_BEFORE,
+      &search_element, NULL);
+  fail_unless (match == NULL);
+
+  search_element = 1000;
+  match =
+      (guint32 *) gst_util_array_binary_search (data, 257, sizeof (guint32),
+      (GCompareDataFunc) _binary_search_compare, GST_SEARCH_MODE_EXACT,
+      &search_element, NULL);
+  fail_unless (match == NULL);
+
+  match =
+      (guint32 *) gst_util_array_binary_search (data, 257, sizeof (guint32),
+      (GCompareDataFunc) _binary_search_compare, GST_SEARCH_MODE_AFTER,
+      &search_element, NULL);
+  fail_unless (match == NULL);
+
+  match =
+      (guint32 *) gst_util_array_binary_search (data, 257, sizeof (guint32),
+      (GCompareDataFunc) _binary_search_compare, GST_SEARCH_MODE_BEFORE,
+      &search_element, NULL);
+  fail_unless (match != NULL);
+  fail_unless_equals_int (match - data, 256);
+
+  search_element = 121 * 2 - 1;
+  match =
+      (guint32 *) gst_util_array_binary_search (data, 257, sizeof (guint32),
+      (GCompareDataFunc) _binary_search_compare, GST_SEARCH_MODE_EXACT,
+      &search_element, NULL);
+  fail_unless (match == NULL);
+
+  match =
+      (guint32 *) gst_util_array_binary_search (data, 257, sizeof (guint32),
+      (GCompareDataFunc) _binary_search_compare, GST_SEARCH_MODE_AFTER,
+      &search_element, NULL);
+  fail_unless (match != NULL);
+  fail_unless_equals_int (match - data, 120);
+
+  match =
+      (guint32 *) gst_util_array_binary_search (data, 257, sizeof (guint32),
+      (GCompareDataFunc) _binary_search_compare, GST_SEARCH_MODE_BEFORE,
+      &search_element, NULL);
+  fail_unless (match != NULL);
+  fail_unless_equals_int (match - data, 119);
+
+}
+
+GST_END_TEST;
+
+#ifdef HAVE_GSL
+#ifdef HAVE_GMP
+
+#include <gsl/gsl_rng.h>
+#include <gmp.h>
+
+static guint64
+randguint64 (gsl_rng * rng, guint64 n)
+{
+  union
+  {
+    guint64 x;
+    struct
+    {
+      guint16 a, b, c, d;
+    } parts;
+  } x;
+  x.parts.a = gsl_rng_uniform_int (rng, 1 << 16);
+  x.parts.b = gsl_rng_uniform_int (rng, 1 << 16);
+  x.parts.c = gsl_rng_uniform_int (rng, 1 << 16);
+  x.parts.d = gsl_rng_uniform_int (rng, 1 << 16);
+  return x.x % n;
+}
+
+
+enum round_t
+{
+  ROUND_TONEAREST = 0,
+  ROUND_UP,
+  ROUND_DOWN
+};
+
+static void
+gmp_set_uint64 (mpz_t mp, guint64 x)
+{
+  mpz_t two_32, tmp;
+
+  mpz_init (two_32);
+  mpz_init (tmp);
+
+  mpz_ui_pow_ui (two_32, 2, 32);
+  mpz_set_ui (mp, (unsigned long) ((x >> 32) & G_MAXUINT32));
+  mpz_mul (tmp, mp, two_32);
+  mpz_add_ui (mp, tmp, (unsigned long) (x & G_MAXUINT32));
+  mpz_clear (two_32);
+  mpz_clear (tmp);
+}
+
+static guint64
+gmp_get_uint64 (mpz_t mp)
+{
+  mpz_t two_64, two_32, tmp;
+  guint64 ret;
+
+  mpz_init (two_64);
+  mpz_init (two_32);
+  mpz_init (tmp);
+
+  mpz_ui_pow_ui (two_64, 2, 64);
+  mpz_ui_pow_ui (two_32, 2, 32);
+  if (mpz_cmp (tmp, two_64) >= 0)
+    return G_MAXUINT64;
+  mpz_clear (two_64);
+
+  mpz_tdiv_q (tmp, mp, two_32);
+  ret = mpz_get_ui (tmp);
+  ret <<= 32;
+  ret |= mpz_get_ui (mp);
+  mpz_clear (two_32);
+  mpz_clear (tmp);
+
+  return ret;
+}
+
+static guint64
+gmp_scale (guint64 x, guint64 a, guint64 b, enum round_t mode)
+{
+  mpz_t mp1, mp2, mp3;
+  if (!b)
+    /* overflow */
+    return G_MAXUINT64;
+  mpz_init (mp1);
+  mpz_init (mp2);
+  mpz_init (mp3);
+
+  gmp_set_uint64 (mp1, x);
+  gmp_set_uint64 (mp3, a);
+  mpz_mul (mp2, mp1, mp3);
+  switch (mode) {
+    case ROUND_TONEAREST:
+      gmp_set_uint64 (mp1, b);
+      mpz_tdiv_q_ui (mp3, mp1, 2);
+      mpz_add (mp1, mp2, mp3);
+      mpz_set (mp2, mp1);
+      break;
+    case ROUND_UP:
+      gmp_set_uint64 (mp1, b);
+      mpz_sub_ui (mp3, mp1, 1);
+      mpz_add (mp1, mp2, mp3);
+      mpz_set (mp2, mp1);
+      break;
+    case ROUND_DOWN:
+      break;
+  }
+  gmp_set_uint64 (mp3, b);
+  mpz_tdiv_q (mp1, mp2, mp3);
+  x = gmp_get_uint64 (mp1);
+  mpz_clear (mp1);
+  mpz_clear (mp2);
+  mpz_clear (mp3);
+  return x;
+}
+
+static void
+_gmp_test_scale (gsl_rng * rng)
+{
+  guint64 bygst, bygmp;
+  guint64 a = randguint64 (rng, gsl_rng_uniform_int (rng,
+          2) ? G_MAXUINT64 : G_MAXUINT32);
+  guint64 b = randguint64 (rng, gsl_rng_uniform_int (rng, 2) ? G_MAXUINT64 - 1 : G_MAXUINT32 - 1) + 1;  /* 0 not allowed */
+  guint64 val = randguint64 (rng, gmp_scale (G_MAXUINT64, b, a, ROUND_DOWN));
+  enum round_t mode = gsl_rng_uniform_int (rng, 3);
+  const char *func;
+
+  bygmp = gmp_scale (val, a, b, mode);
+  switch (mode) {
+    case ROUND_TONEAREST:
+      bygst = gst_util_uint64_scale_round (val, a, b);
+      func = "gst_util_uint64_scale_round";
+      break;
+    case ROUND_UP:
+      bygst = gst_util_uint64_scale_ceil (val, a, b);
+      func = "gst_util_uint64_scale_ceil";
+      break;
+    case ROUND_DOWN:
+      bygst = gst_util_uint64_scale (val, a, b);
+      func = "gst_util_uint64_scale";
+      break;
+  }
+  fail_unless (bygst == bygmp,
+      "error: %s(): %" G_GUINT64_FORMAT " * %" G_GUINT64_FORMAT " / %"
+      G_GUINT64_FORMAT " = %" G_GUINT64_FORMAT ", correct = %" G_GUINT64_FORMAT
+      "\n", func, val, a, b, bygst, bygmp);
+}
+
+static void
+_gmp_test_scale_int (gsl_rng * rng)
+{
+  guint64 bygst, bygmp;
+  gint32 a = randguint64 (rng, G_MAXINT32);
+  gint32 b = randguint64 (rng, G_MAXINT32 - 1) + 1;     /* 0 not allowed */
+  guint64 val = randguint64 (rng, gmp_scale (G_MAXUINT64, b, a, ROUND_DOWN));
+  enum round_t mode = gsl_rng_uniform_int (rng, 3);
+  const char *func;
+
+  bygmp = gmp_scale (val, a, b, mode);
+  switch (mode) {
+    case ROUND_TONEAREST:
+      bygst = gst_util_uint64_scale_int_round (val, a, b);
+      func = "gst_util_uint64_scale_int_round";
+      break;
+    case ROUND_UP:
+      bygst = gst_util_uint64_scale_int_ceil (val, a, b);
+      func = "gst_util_uint64_scale_int_ceil";
+      break;
+    case ROUND_DOWN:
+      bygst = gst_util_uint64_scale_int (val, a, b);
+      func = "gst_util_uint64_scale_int";
+      break;
+  }
+  fail_unless (bygst == bygmp,
+      "error: %s(): %" G_GUINT64_FORMAT " * %d / %d = %" G_GUINT64_FORMAT
+      ", correct = %" G_GUINT64_FORMAT "\n", func, val, a, b, bygst, bygmp);
+}
+
+#define GMP_TEST_RUNS 100000
+
+GST_START_TEST (test_math_scale_gmp)
+{
+  gsl_rng *rng = gsl_rng_alloc (gsl_rng_mt19937);
+  gint n;
+
+  for (n = 0; n < GMP_TEST_RUNS; n++)
+    _gmp_test_scale (rng);
+
+  gsl_rng_free (rng);
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_math_scale_gmp_int)
+{
+  gsl_rng *rng = gsl_rng_alloc (gsl_rng_mt19937);
+  gint n;
+
+  for (n = 0; n < GMP_TEST_RUNS; n++)
+    _gmp_test_scale_int (rng);
+
+  gsl_rng_free (rng);
+}
+
+GST_END_TEST;
+
+#endif
+#endif
+
 static Suite *
 gst_utils_suite (void)
 {
@@ -620,8 +958,17 @@ gst_utils_suite (void)
   tcase_add_test (tc_chain, test_buffer_probe_n_times);
   tcase_add_test (tc_chain, test_buffer_probe_once);
   tcase_add_test (tc_chain, test_math_scale);
+  tcase_add_test (tc_chain, test_math_scale_round);
+  tcase_add_test (tc_chain, test_math_scale_ceil);
   tcase_add_test (tc_chain, test_math_scale_uint64);
   tcase_add_test (tc_chain, test_math_scale_random);
+#ifdef HAVE_GSL
+#ifdef HAVE_GMP
+  tcase_add_test (tc_chain, test_math_scale_gmp);
+  tcase_add_test (tc_chain, test_math_scale_gmp_int);
+#endif
+#endif
+
   tcase_add_test (tc_chain, test_guint64_to_gdouble);
   tcase_add_test (tc_chain, test_gdouble_to_guint64);
 #ifndef GST_DISABLE_PARSE
@@ -630,6 +977,7 @@ gst_utils_suite (void)
   tcase_add_test (tc_chain, test_element_found_tags);
   tcase_add_test (tc_chain, test_element_unlink);
   tcase_add_test (tc_chain, test_set_value_from_string);
+  tcase_add_test (tc_chain, test_binary_search);
   return s;
 }
 

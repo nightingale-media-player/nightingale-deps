@@ -98,6 +98,8 @@ static GstAllocTrace *_gst_object_trace;
 #define DEBUG_REFCOUNT
 
 /* Object signals and args */
+/* FIXME-0.11: have a read-only parent property instead of the two signals
+ * then we get notify::parent for free */
 enum
 {
   PARENT_SET,
@@ -138,9 +140,6 @@ static void gst_signal_object_init (GstSignalObject * object);
 static guint gst_signal_object_signals[SO_LAST_SIGNAL] = { 0 };
 #endif
 
-static void gst_object_class_init (GstObjectClass * klass);
-static void gst_object_init (GTypeInstance * instance, gpointer g_class);
-
 static void gst_object_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_object_get_property (GObject * object, guint prop_id,
@@ -161,38 +160,12 @@ static void gst_object_real_restore_thyself (GstObject * object,
 static GObjectClass *parent_class = NULL;
 static guint gst_object_signals[LAST_SIGNAL] = { 0 };
 
-GType
-gst_object_get_type (void)
-{
-  static GType gst_object_type = 0;
-
-  if (G_UNLIKELY (gst_object_type == 0)) {
-    static const GTypeInfo object_info = {
-      sizeof (GstObjectClass),
-      NULL,
-      NULL,
-      (GClassInitFunc) gst_object_class_init,
-      NULL,
-      NULL,
-      sizeof (GstObject),
-      0,
-      gst_object_init,
-      NULL
-    };
-
-    gst_object_type =
-        g_type_register_static (G_TYPE_OBJECT, "GstObject", &object_info,
-        G_TYPE_FLAG_ABSTRACT);
-  }
-  return gst_object_type;
-}
+G_DEFINE_ABSTRACT_TYPE (GstObject, gst_object, G_TYPE_OBJECT);
 
 static void
 gst_object_class_init (GstObjectClass * klass)
 {
-  GObjectClass *gobject_class;
-
-  gobject_class = G_OBJECT_CLASS (klass);
+  GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
   parent_class = g_type_class_peek_parent (klass);
 
@@ -284,10 +257,8 @@ gst_object_class_init (GstObjectClass * klass)
 }
 
 static void
-gst_object_init (GTypeInstance * instance, gpointer g_class)
+gst_object_init (GstObject * object)
 {
-  GstObject *object = GST_OBJECT (instance);
-
   object->lock = g_mutex_new ();
   object->parent = NULL;
   object->name = NULL;
@@ -356,6 +327,39 @@ gst_object_unref (gpointer object)
 }
 
 /**
+ * gst_object_ref_sink:
+ * @object: a #GstObject to sink
+ *
+ * Increase the reference count of @object, and possibly remove the floating
+ * reference, if @object has a floating reference.
+ *
+ * In other words, if the object is floating, then this call "assumes ownership"
+ * of the floating reference, converting it to a normal reference by clearing
+ * the floating flag while leaving the reference count unchanged. If the object
+ * is not floating, then this call adds a new normal reference increasing the
+ * reference count by one.
+ *
+ * MT safe. This function grabs and releases @object lock.
+ *
+ * Since: 0.10.24
+ */
+void
+gst_object_ref_sink (gpointer object)
+{
+  g_return_if_fail (GST_IS_OBJECT (object));
+
+  GST_OBJECT_LOCK (object);
+  if (G_LIKELY (GST_OBJECT_IS_FLOATING (object))) {
+    GST_CAT_LOG_OBJECT (GST_CAT_REFCOUNTING, object, "unsetting floating flag");
+    GST_OBJECT_FLAG_UNSET (object, GST_OBJECT_FLOATING);
+    GST_OBJECT_UNLOCK (object);
+  } else {
+    GST_OBJECT_UNLOCK (object);
+    gst_object_ref (object);
+  }
+}
+
+/**
  * gst_object_sink:
  * @object: a #GstObject to sink
  *
@@ -412,10 +416,10 @@ gst_object_replace (GstObject ** oldobj, GstObject * newobj)
   g_return_if_fail (newobj == NULL || GST_IS_OBJECT (newobj));
 
 #ifdef DEBUG_REFCOUNT
-  GST_CAT_LOG (GST_CAT_REFCOUNTING, "replace %s (%d) with %s (%d)",
-      *oldobj ? GST_STR_NULL (GST_OBJECT_NAME (*oldobj)) : "(NONE)",
+  GST_CAT_LOG (GST_CAT_REFCOUNTING, "replace %p %s (%d) with %p %s (%d)",
+      *oldobj, *oldobj ? GST_STR_NULL (GST_OBJECT_NAME (*oldobj)) : "(NONE)",
       *oldobj ? G_OBJECT (*oldobj)->ref_count : 0,
-      newobj ? GST_STR_NULL (GST_OBJECT_NAME (newobj)) : "(NONE)",
+      newobj, newobj ? GST_STR_NULL (GST_OBJECT_NAME (newobj)) : "(NONE)",
       newobj ? G_OBJECT (newobj)->ref_count : 0);
 #endif
 
@@ -500,16 +504,9 @@ gst_object_dispatch_properties_changed (GObject * object,
   GstObject *gst_object, *parent, *old_parent;
   guint i;
   gchar *name, *debug_name;
-  GstObjectClass *klass;
-
-  /* we fail when this is not a GstObject */
-  g_return_if_fail (GST_IS_OBJECT (object));
-
-  klass = GST_OBJECT_GET_CLASS (object);
 
   /* do the standard dispatching */
-  G_OBJECT_CLASS (parent_class)->dispatch_properties_changed (object, n_pspecs,
-      pspecs);
+  parent_class->dispatch_properties_changed (object, n_pspecs, pspecs);
 
   gst_object = GST_OBJECT_CAST (object);
   name = gst_object_get_name (gst_object);
@@ -523,8 +520,7 @@ gst_object_dispatch_properties_changed (GObject * object,
           "deep notification from %s (%s)", debug_name, pspecs[i]->name);
 
       g_signal_emit (parent, gst_object_signals[DEEP_NOTIFY],
-          g_quark_from_string (pspecs[i]->name), GST_OBJECT_CAST (object),
-          pspecs[i]);
+          g_quark_from_string (pspecs[i]->name), gst_object, pspecs[i]);
     }
 
     old_parent = parent;
@@ -798,7 +794,7 @@ gst_object_set_parent (GstObject * object, GstObject * parent)
     gst_object_ref (object);
   }
 
-  g_signal_emit (G_OBJECT (object), gst_object_signals[PARENT_SET], 0, parent);
+  g_signal_emit (object, gst_object_signals[PARENT_SET], 0, parent);
 
   return TRUE;
 
@@ -864,8 +860,7 @@ gst_object_unparent (GstObject * object)
     object->parent = NULL;
     GST_OBJECT_UNLOCK (object);
 
-    g_signal_emit (G_OBJECT (object), gst_object_signals[PARENT_UNSET], 0,
-        parent);
+    g_signal_emit (object, gst_object_signals[PARENT_UNSET], 0, parent);
 
     gst_object_unref (object);
   } else {
@@ -970,8 +965,7 @@ gst_object_save_thyself (GstObject * object, xmlNodePtr parent)
   if (oclass->save_thyself)
     oclass->save_thyself (object, parent);
 
-  g_signal_emit (G_OBJECT (object), gst_object_signals[OBJECT_SAVED], 0,
-      parent);
+  g_signal_emit (object, gst_object_signals[OBJECT_SAVED], 0, parent);
 
   return parent;
 }
@@ -1144,39 +1138,11 @@ struct _GstSignalObjectClass
 #endif
 };
 
-static GType
-gst_signal_object_get_type (void)
-{
-  static GType signal_object_type = 0;
-
-  if (G_UNLIKELY (signal_object_type == 0)) {
-    static const GTypeInfo signal_object_info = {
-      sizeof (GstSignalObjectClass),
-      NULL,
-      NULL,
-      (GClassInitFunc) gst_signal_object_class_init,
-      NULL,
-      NULL,
-      sizeof (GstSignalObject),
-      0,
-      (GInstanceInitFunc) gst_signal_object_init,
-      NULL
-    };
-
-    signal_object_type =
-        g_type_register_static (G_TYPE_OBJECT, "GstSignalObject",
-        &signal_object_info, 0);
-  }
-  return signal_object_type;
-}
+G_DEFINE_TYPE (GstSignalObject, gst_signal_object, G_TYPE_OBJECT);
 
 static void
 gst_signal_object_class_init (GstSignalObjectClass * klass)
 {
-  GObjectClass *gobject_class;
-
-  gobject_class = (GObjectClass *) klass;
-
   parent_class = g_type_class_peek_parent (klass);
 
 #ifndef GST_DISABLE_LOADSAVE

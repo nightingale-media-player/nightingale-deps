@@ -32,11 +32,11 @@
 
  *
 
- * $Revision: 1.2 $
+ * $Revision$
 
- * $Author: sebastien $
+ * $Author$
 
- * $Date: 2006-02-06 21:29:04 $
+ * $Date$
 
  *
 

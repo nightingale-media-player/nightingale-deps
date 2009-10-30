@@ -114,7 +114,9 @@ struct _GstQueryTypeDefinition
 #define GST_IS_QUERY_CLASS(klass)              (G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_QUERY))
 #define GST_QUERY_GET_CLASS(obj)               (G_TYPE_INSTANCE_GET_CLASS ((obj), GST_TYPE_QUERY, GstQueryClass))
 #define GST_QUERY(obj)                         (G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_QUERY, GstQuery))
+#define GST_QUERY_CAST(obj)                    ((GstQuery*)(obj)) /* only since 0.10.23 */
 #define GST_QUERY_CLASS(klass)                 (G_TYPE_CHECK_CLASS_CAST ((klass), GST_TYPE_QUERY, GstQueryClass))
+
 
 /**
  * GST_QUERY_TYPE:
@@ -152,14 +154,14 @@ struct _GstQuery
 
   GstStructure *structure;
 
-  /*< private > */
+  /*< private >*/
   gpointer _gst_reserved;
 };
 
 struct _GstQueryClass {
   GstMiniObjectClass mini_object_class;
 
-  /*< private > */
+  /*< private >*/
   gpointer _gst_reserved[GST_PADDING];
 };
 
@@ -189,8 +191,19 @@ GstIterator*    gst_query_type_iterate_definitions (void);
  * @q: a #GstQuery to increase the refcount of.
  *
  * Increases the refcount of the given query by one.
+ *
+ * Returns: @q
  */
-#define         gst_query_ref(q)		GST_QUERY (gst_mini_object_ref (GST_MINI_OBJECT (q)))
+#ifdef _FOOL_GTK_DOC_
+G_INLINE_FUNC GstQuery * gst_query_ref (GstQuery * q);
+#endif
+
+static inline GstQuery *
+gst_query_ref (GstQuery * q)
+{
+  return GST_QUERY (gst_mini_object_ref (GST_MINI_OBJECT_CAST (q)));
+}
+
 /**
  * gst_query_unref:
  * @q: a #GstQuery to decrease the refcount of.
@@ -198,7 +211,15 @@ GstIterator*    gst_query_type_iterate_definitions (void);
  * Decreases the refcount of the query. If the refcount reaches 0, the query
  * will be freed.
  */
-#define         gst_query_unref(q)		gst_mini_object_unref (GST_MINI_OBJECT (q))
+#ifdef _FOOL_GTK_DOC_
+G_INLINE_FUNC void gst_query_unref (GstQuery * q);
+#endif
+
+static inline void
+gst_query_unref (GstQuery * q)
+{
+  gst_mini_object_unref (GST_MINI_OBJECT_CAST (q));
+}
 
 /* copy query */
 /**
@@ -207,8 +228,19 @@ GstIterator*    gst_query_type_iterate_definitions (void);
  *
  * Copies the given query using the copy function of the parent #GstData
  * structure.
+ *
+ * Returns: a new copy of @q.
  */
-#define         gst_query_copy(q)		GST_QUERY (gst_mini_object_copy (GST_MINI_OBJECT (q)))
+#ifdef _FOOL_GTK_DOC_
+G_INLINE_FUNC GstQuery * gst_query_copy (const GstQuery * q);
+#endif
+
+static inline GstQuery *
+gst_query_copy (const GstQuery * q)
+{
+  return GST_QUERY (gst_mini_object_copy (GST_MINI_OBJECT_CAST (q)));
+}
+
 /**
  * gst_query_make_writable:
  * @q: a #GstQuery to make writable

@@ -1,5 +1,5 @@
 dnl AG_GST_PLUGIN_DOCS([MINIMUM-GTK-DOC-VERSION],[MINIMUM-PYTHON-VERSION])
-dnl 
+dnl
 dnl checks for prerequisites for the common/mangle-tmpl.py script
 dnl used when building the plugin documentation
 

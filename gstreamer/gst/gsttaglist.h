@@ -23,6 +23,7 @@
 #ifndef __GST_TAGLIST_H__
 #define __GST_TAGLIST_H__
 
+#include <gst/gstbuffer.h>
 #include <gst/gststructure.h>
 #include <gst/glib-compat.h>
 
@@ -140,12 +141,21 @@ typedef enum {
 
 #define GST_TAG_FLAG_IS_VALID(flag)     (((flag) > GST_TAG_FLAG_UNDEFINED) && ((flag) < GST_TAG_FLAG_COUNT))
 
+/* FIXME 0.11: Don't typedef GstTagList to be a GstStructure, they're
+ *             internally the same but not from an API point of view.
+ *             See bug #518934.
+ */
 /**
  * GstTagList:
  *
  * Opaque #GstTagList data structure.
  */
+#ifdef IN_GOBJECT_INTROSPECTION
+typedef struct _GstTagList GstTagList;
+#else
 typedef GstStructure GstTagList;
+#endif
+
 #define GST_TAG_LIST(x)       ((GstTagList *) (x))
 #define GST_IS_TAG_LIST(x)    ((x) != NULL && gst_is_tag_list (GST_TAG_LIST (x)))
 #define GST_TYPE_TAG_LIST     (gst_tag_list_get_type ())
@@ -197,6 +207,9 @@ gboolean               gst_tag_is_fixed        (const gchar * tag);
 
 /* tag lists */
 GstTagList * gst_tag_list_new               (void);
+GstTagList * gst_tag_list_new_full          (const gchar * tag, ...);
+GstTagList * gst_tag_list_new_full_valist   (va_list var_args);
+
 gboolean     gst_is_tag_list                (gconstpointer p);
 GstTagList * gst_tag_list_copy              (const GstTagList * list);
 gboolean     gst_tag_list_is_empty          (const GstTagList * list);
@@ -225,6 +238,10 @@ void         gst_tag_list_add_valist_values (GstTagList       * list,
                                              GstTagMergeMode    mode,
                                              const gchar      * tag,
                                              va_list            var_args);
+void         gst_tag_list_add_value         (GstTagList       * list,
+                                             GstTagMergeMode    mode,
+                                             const gchar      * tag,
+                                             const GValue     * value);
 void         gst_tag_list_remove_tag        (GstTagList       * list,
                                              const gchar      * tag);
 void         gst_tag_list_foreach           (const GstTagList * list,
@@ -338,6 +355,13 @@ gboolean     gst_tag_list_get_date_index    (const GstTagList * list,
                                              const gchar      * tag,
                                              guint              index,
                                              GDate           ** value);
+gboolean     gst_tag_list_get_buffer        (const GstTagList * list,
+                                             const gchar      * tag,
+                                             GstBuffer       ** value);
+gboolean     gst_tag_list_get_buffer_index  (const GstTagList * list,
+                                             const gchar      * tag,
+                                             guint              index,
+                                             GstBuffer       ** value);
 
 /* GStreamer core tags */
 /**
@@ -397,6 +421,22 @@ gboolean     gst_tag_list_get_date_index    (const GstTagList * list,
  * Since: 0.10.15
  */
 #define GST_TAG_ALBUM_SORTNAME         "album-sortname"
+/**
+ * GST_TAG_ALBUM_ARTIST
+ *
+ * The artist of the entire album, as it should be displayed.
+ *
+ * Since: 0.10.25
+ */
+#define GST_TAG_ALBUM_ARTIST           "album-artist"
+/**
+ * GST_TAG_ALBUM_ARTIST_SORTNAME
+ *
+ * The artist of the entire album, as it should be sorted.
+ *
+ * Since: 0.10.25
+ */
+#define GST_TAG_ALBUM_ARTIST_SORTNAME  "album-artist-sortname"
 /**
  * GST_TAG_COMPOSER:
  *
@@ -469,6 +509,14 @@ gboolean     gst_tag_list_get_date_index    (const GstTagList * list,
  * is hosted) (string)
  */
 #define GST_TAG_LOCATION               "location"
+/**
+ * GST_TAG_HOMEPAGE:
+ *
+ * Homepage for this media (i.e. artist or movie homepage) (string)
+ *
+ * Since: 0.10.23
+ */
+#define GST_TAG_HOMEPAGE               "homepage"
 /**
  * GST_TAG_DESCRIPTION:
  *
@@ -557,6 +605,22 @@ gboolean     gst_tag_list_get_date_index    (const GstTagList * list,
  * codec the audio data is stored in (string)
  */
 #define GST_TAG_AUDIO_CODEC            "audio-codec"
+/**
+ * GST_TAG_SUBTITLE_CODEC:
+ *
+ * codec/format the subtitle data is stored in (string)
+ *
+ * Since: 0.10.23
+ */
+#define GST_TAG_SUBTITLE_CODEC         "subtitle-codec"
+/**
+ * GST_TAG_CONTAINER_FORMAT:
+ *
+ * container format the data is stored in (string)
+ *
+ * Since: 0.10.24
+ */
+#define GST_TAG_CONTAINER_FORMAT       "container-format"
 /**
  * GST_TAG_BITRATE:
  *

@@ -20,6 +20,82 @@ debug ()
   fi
 }
 
+version_get ()
+# based on the command's version output, set variables
+# _MAJOR, _MINOR, _MICRO, _VERSION, using the given prefix as variable prefix
+#
+# arg 1: command binary name
+# arg 2: (uppercased) variable name prefix
+{
+  COMMAND=$1
+  VARPREFIX=`echo $2 | tr .,- _`
+
+  # strip everything that's not a digit, then use cut to get the first field
+  pkg_version=`$COMMAND --version|head -n 1|sed 's/^.*)[^0-9]*//'|cut -d' ' -f1`
+  debug "pkg_version $pkg_version"
+  # remove any non-digit characters from the version numbers to permit numeric
+  # comparison
+  pkg_major=`echo $pkg_version | cut -d. -f1 | sed s/[a-zA-Z\-].*//g`
+  pkg_minor=`echo $pkg_version | cut -d. -f2 | sed s/[a-zA-Z\-].*//g`
+  pkg_micro=`echo $pkg_version | cut -d. -f3 | sed s/[a-zA-Z\-].*//g`
+  test -z "$pkg_major" && pkg_major=0
+  test -z "$pkg_minor" && pkg_minor=0
+  test -z "$pkg_micro" && pkg_micro=0
+  debug "found major $pkg_major minor $pkg_minor micro $pkg_micro"
+  eval ${VARPREFIX}_MAJOR=$pkg_major
+  eval ${VARPREFIX}_MINOR=$pkg_minor
+  eval ${VARPREFIX}_MICRO=$pkg_micro
+  eval ${VARPREFIX}_VERSION=$pkg_version
+}
+
+version_compare ()
+# Checks whether the version of VARPREFIX is equal to or
+# newer than the requested version
+# arg1: VARPREFIX
+# arg2: MAJOR
+# arg3: MINOR
+# arg4: MICRO
+{
+  VARPREFIX=`echo $1 | tr .,- _`
+  MAJOR=$2
+  MINOR=$3
+  MICRO=$4
+
+  eval pkg_major=\$${VARPREFIX}_MAJOR;
+  eval pkg_minor=\$${VARPREFIX}_MINOR;
+  eval pkg_micro=\$${VARPREFIX}_MICRO;
+
+  #start checking the version
+  debug "version_compare: $VARPREFIX against $MAJOR.$MINOR.$MICRO"
+
+    # reset check
+    WRONG=
+
+    if [ ! "$pkg_major" -gt "$MAJOR" ]; then
+      debug "major: $pkg_major <= $MAJOR"
+      if [ "$pkg_major" -lt "$MAJOR" ]; then
+        debug "major: $pkg_major < $MAJOR"
+        WRONG=1
+      elif [ ! "$pkg_minor" -gt "$MINOR" ]; then
+        debug "minor: $pkg_minor <= $MINOR"
+        if [ "$pkg_minor" -lt "$MINOR" ]; then
+          debug "minor: $pkg_minor < $MINOR"
+          WRONG=1
+        elif [ "$pkg_micro" -lt "$MICRO" ]; then
+          debug "micro: $pkg_micro < $MICRO"
+	  WRONG=1
+        fi
+      fi
+    fi
+    if test ! -z "$WRONG"; then
+      debug "version_compare: $VARPREFIX older than $MAJOR.$MINOR.$MICRO"
+      return 1
+    fi
+    debug "version_compare: $VARPREFIX equal to/newer than $MAJOR.$MINOR.$MICRO"
+    return 0
+}
+
+
 version_check ()
 # check the version of a package
 # first argument : package name (executable)
@@ -44,13 +120,13 @@ version_check ()
   if test ! -z "$MICRO"; then VERSION=$VERSION.$MICRO; else MICRO=0; fi
 
   debug "major $MAJOR minor $MINOR micro $MICRO"
-  
-  for SUGGESTION in $PKG_PATH; do 
+
+  for SUGGESTION in $PKG_PATH; do
     COMMAND="$SUGGESTION"
 
     # don't check if asked not to
     test -z "$NOCHECK" && {
-      echo -n "  checking for $COMMAND >= $VERSION ... "
+      printf "  checking for $COMMAND >= $VERSION ... "
     } || {
       # we set a var with the same name as the package, but stripped of
       # unwanted chars
@@ -60,49 +136,18 @@ version_check ()
       return 0
     }
 
-    debug "checking version with $COMMAND"
-    ($COMMAND --version) < /dev/null > /dev/null 2>&1 || 
-    {
-      echo "not found."
+    which $COMMAND > /dev/null 2>&1
+    if test $? -eq 1;
+    then 
+      debug "$COMMAND not found"
       continue
-    }
-    # strip everything that's not a digit, then use cut to get the first field
-    pkg_version=`$COMMAND --version|head -n 1|sed 's/^.*)[^0-9]*//'|cut -d' ' -f1`
-    debug "pkg_version $pkg_version"
-    # remove any non-digit characters from the version numbers to permit numeric
-    # comparison
-    pkg_major=`echo $pkg_version | cut -d. -f1 | sed s/[a-zA-Z\-].*//g`
-    pkg_minor=`echo $pkg_version | cut -d. -f2 | sed s/[a-zA-Z\-].*//g`
-    pkg_micro=`echo $pkg_version | cut -d. -f3 | sed s/[a-zA-Z\-].*//g`
-    test -z "$pkg_major" && pkg_major=0
-    test -z "$pkg_minor" && pkg_minor=0
-    test -z "$pkg_micro" && pkg_micro=0
-    debug "found major $pkg_major minor $pkg_minor micro $pkg_micro"
-
-    #start checking the version
-    debug "version check"
-
-    # reset check
-    WRONG=
-
-    if [ ! "$pkg_major" -gt "$MAJOR" ]; then
-      debug "major: $pkg_major <= $MAJOR"
-      if [ "$pkg_major" -lt "$MAJOR" ]; then
-        debug "major: $pkg_major < $MAJOR"
-        WRONG=1
-      elif [ ! "$pkg_minor" -gt "$MINOR" ]; then
-        debug "minor: $pkg_minor <= $MINOR"
-        if [ "$pkg_minor" -lt "$MINOR" ]; then
-          debug "minor: $pkg_minor < $MINOR"
-          WRONG=1
-        elif [ "$pkg_micro" -lt "$MICRO" ]; then
-          debug "micro: $pkg_micro < $MICRO"
-	  WRONG=1
-        fi
-      fi
     fi
 
-    if test ! -z "$WRONG"; then
+    VARPREFIX=`echo $COMMAND | sed 's/-//g' | tr [:lower:] [:upper:]`
+    version_get $COMMAND $VARPREFIX
+
+    version_compare $VARPREFIX $MAJOR $MINOR $MICRO
+    if test $? -ne 0; then
       echo "found $pkg_version, not ok !"
       continue
     else
@@ -116,7 +161,7 @@ version_check ()
     fi
   done
 
-  echo "not found !"
+  echo "$PACKAGE not found !"
   echo "You must have $PACKAGE installed to compile $package."
   echo "Download the appropriate package for your distribution,"
   echo "or get the source tarball at $URL"
@@ -170,6 +215,7 @@ autoheader_check ()
   fi
 
 }
+
 autoconf_2_52d_check ()
 {
   # autoconf 2.52d has a weird issue involving a yes:no error
@@ -185,6 +231,22 @@ autoconf_2_52d_check ()
   }
   return 0
 }
+libtool_2_2_gettext_check ()
+{
+  # libtool 2.2 needs autopoint 0.17 or higher
+  version_compare LIBTOOLIZE 2 2 0
+  if test $? -eq 0
+  then
+    version_compare AUTOPOINT 0 17 0
+    if test $? -ne 0
+    then
+      echo "libtool 2.2 requires autopoint 0.17 or higher"
+      return 1
+    fi
+  fi
+  return 0
+}
+
 
 die_check ()
 {
@@ -221,7 +283,7 @@ autogen_options ()
           echo "+ autotools version check disabled"
           shift
           ;;
-      --debug)
+      -d|--debug)
           DEBUG=defined
 	  AUTOGEN_EXT_OPT="$AUTOGEN_EXT_OPT --debug"
           echo "+ debug output enabled"
@@ -278,7 +340,6 @@ toplevel_check ()
   }
 }
 
-
 tool_run ()
 {
   tool=$1
@@ -291,4 +352,25 @@ tool_run ()
     eval $run_if_fail
     exit 1
   }
+}
+
+install_git_hooks ()
+{
+  if test -d .git; then
+    # install pre-commit hook for doing clean commits
+    for hook in pre-commit; do
+      if test ! \( -x .git/hooks/$hook -a -L .git/hooks/$hook \); then
+        echo "+ Installing git $hook hook"
+        rm -f .git/hooks/$hook
+        ln -s ../../common/hooks/$hook.hook .git/hooks/$hook || {
+          # if we couldn't create a symbolic link, try doing a plain cp
+          if cp common/hooks/pre-commit.hook .git/hooks/pre-commit; then
+            chmod +x .git/hooks/pre-commit;
+          else
+            echo "********** Couldn't install git $hook hook **********";
+          fi
+        }
+      fi
+    done
+  fi
 }

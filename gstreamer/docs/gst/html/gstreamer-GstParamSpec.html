@@ -8,7 +8,7 @@
 <link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="prev" href="GstPadTemplate.html" title="GstPadTemplate">
 <link rel="next" href="gstreamer-GstParse.html" title="GstParse">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
@@ -26,9 +26,11 @@
 <th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-GstParse.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-GstParamSpec.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gstreamer-GstParamSpec.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gstreamer-GstParamSpec.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gstreamer-GstParamSpec.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-GstParamSpec"></a><div class="titlepage"></div>
@@ -46,41 +48,44 @@ to GStreamer</p>
 
 #include &lt;gst/gst.h&gt;
 
-#define             <a class="link" href="gstreamer-GstParamSpec.html#GST-PARAM-CONTROLLABLE:CAPS" title="GST_PARAM_CONTROLLABLE">GST_PARAM_CONTROLLABLE</a>
-#define             <a class="link" href="gstreamer-GstParamSpec.html#GST-PARAM-USER-SHIFT:CAPS" title="GST_PARAM_USER_SHIFT">GST_PARAM_USER_SHIFT</a>
+#define             <a class="link" href="gstreamer-GstParamSpec.html#GST-PARAM-CONTROLLABLE--CAPS" title="GST_PARAM_CONTROLLABLE">GST_PARAM_CONTROLLABLE</a>
+#define             <a class="link" href="gstreamer-GstParamSpec.html#GST-PARAM-USER-SHIFT--CAPS" title="GST_PARAM_USER_SHIFT">GST_PARAM_USER_SHIFT</a>
+#define             <a class="link" href="gstreamer-GstParamSpec.html#GST-PARAM-MUTABLE-PAUSED--CAPS" title="GST_PARAM_MUTABLE_PAUSED">GST_PARAM_MUTABLE_PAUSED</a>
+#define             <a class="link" href="gstreamer-GstParamSpec.html#GST-PARAM-MUTABLE-PLAYING--CAPS" title="GST_PARAM_MUTABLE_PLAYING">GST_PARAM_MUTABLE_PLAYING</a>
+#define             <a class="link" href="gstreamer-GstParamSpec.html#GST-PARAM-MUTABLE-READY--CAPS" title="GST_PARAM_MUTABLE_READY">GST_PARAM_MUTABLE_READY</a>
 
                     <a class="link" href="gstreamer-GstParamSpec.html#GstParamSpecFraction" title="GstParamSpecFraction">GstParamSpecFraction</a>;
 <a
-href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
->GParamSpec</a>*         <a class="link" href="gstreamer-GstParamSpec.html#gst-param-spec-fraction" title="gst_param_spec_fraction ()">gst_param_spec_fraction</a>             (const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a> *        <a class="link" href="gstreamer-GstParamSpec.html#gst-param-spec-fraction" title="gst_param_spec_fraction ()">gst_param_spec_fraction</a>             (const <a
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *nick,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *blurb,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> min_num,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> min_denom,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> max_num,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> max_denom,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> default_num,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> default_denom,
                                                          <a
-href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamFlags"
+href="../gobject/gobject-GParamSpec.html#GParamFlags"
 >GParamFlags</a> flags);
 </pre>
 </div>
@@ -92,32 +97,67 @@ GParamSpec implementations specific to GStreamer.
 <p>
 Last reviewed on 2008-03-11 (0.10.18)</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gstreamer-GstParamSpec.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="GST-PARAM-CONTROLLABLE:CAPS"></a><h3>GST_PARAM_CONTROLLABLE</h3>
+<a name="GST-PARAM-CONTROLLABLE--CAPS"></a><h3>GST_PARAM_CONTROLLABLE</h3>
 <pre class="programlisting">#define	GST_PARAM_CONTROLLABLE	(1 &lt;&lt; (G_PARAM_USER_SHIFT + 1))
 </pre>
 <p>
 Use this flag on GObject properties to signal they can make sense to be.
 controlled over time. This hint is used by the GstController.</p>
 <p>
-
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-PARAM-USER-SHIFT:CAPS"></a><h3>GST_PARAM_USER_SHIFT</h3>
+<a name="GST-PARAM-USER-SHIFT--CAPS"></a><h3>GST_PARAM_USER_SHIFT</h3>
 <pre class="programlisting">#define	GST_PARAM_USER_SHIFT	(1 &lt;&lt; (G_PARAM_USER_SHIFT + 8))
 </pre>
 <p>
 Bits based on GST_PARAM_USER_SHIFT can be used by 3rd party applications.</p>
 <p>
-
 </p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-PARAM-MUTABLE-PAUSED--CAPS"></a><h3>GST_PARAM_MUTABLE_PAUSED</h3>
+<pre class="programlisting">#define GST_PARAM_MUTABLE_PAUSED  (1 &lt;&lt; (G_PARAM_USER_SHIFT + 3))
+</pre>
+<p>
+Use this flag on GObject properties of GstElements to indicate that
+they can be changed when the element is in the PAUSED or lower state.
+This flag implies GST_PARAM_MUTABLE_READY.</p>
+<p>
+</p>
+<p class="since">Since 0.10.23</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-PARAM-MUTABLE-PLAYING--CAPS"></a><h3>GST_PARAM_MUTABLE_PLAYING</h3>
+<pre class="programlisting">#define GST_PARAM_MUTABLE_PLAYING  (1 &lt;&lt; (G_PARAM_USER_SHIFT + 4))
+</pre>
+<p>
+Use this flag on GObject properties of GstElements to indicate that
+they can be changed when the element is in the PLAYING or lower state.
+This flag implies GST_PARAM_MUTABLE_PAUSED.</p>
+<p>
+</p>
+<p class="since">Since 0.10.23</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-PARAM-MUTABLE-READY--CAPS"></a><h3>GST_PARAM_MUTABLE_READY</h3>
+<pre class="programlisting">#define GST_PARAM_MUTABLE_READY  (1 &lt;&lt; (G_PARAM_USER_SHIFT + 2))
+</pre>
+<p>
+Use this flag on GObject properties of GstElements to indicate that
+they can be changed when the element is in the READY or lower state.</p>
+<p>
+</p>
+<p class="since">Since 0.10.23</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -134,56 +174,55 @@ Bits based on GST_PARAM_USER_SHIFT can be used by 3rd party applications.</p>
 A GParamSpec derived structure that contains the meta data for fractional
 properties.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
 >GParamSpec</a> <em class="structfield"><code>parent_instance</code></em>;</span></p></td>
 <td> super class
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> <em class="structfield"><code>min_num</code></em>;</span></p></td>
 <td> minimal numerator
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> <em class="structfield"><code>min_den</code></em>;</span></p></td>
 <td> minimal denominator
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> <em class="structfield"><code>max_num</code></em>;</span></p></td>
 <td> maximal numerator
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> <em class="structfield"><code>max_den</code></em>;</span></p></td>
 <td> maximal denominator
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> <em class="structfield"><code>def_num</code></em>;</span></p></td>
 <td> default numerator
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> <em class="structfield"><code>def_den</code></em>;</span></p></td>
 <td> default denominator
 </td>
@@ -195,46 +234,45 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <div class="refsect2" lang="en">
 <a name="gst-param-spec-fraction"></a><h3>gst_param_spec_fraction ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
->GParamSpec</a>*         gst_param_spec_fraction             (const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a> *        gst_param_spec_fraction             (const <a
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *nick,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *blurb,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> min_num,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> min_denom,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> max_num,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> max_denom,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> default_num,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> default_denom,
                                                          <a
-href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamFlags"
+href="../gobject/gobject-GParamSpec.html#GParamFlags"
 >GParamFlags</a> flags);</pre>
 <p>
 This function creates a fraction GParamSpec for use by objects/elements
 that want to expose properties of fraction type. This function is typically
 used in connection with <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#g-object-class-install-property"
+href="../gobject/gobject-The-Base-Object-Type.html#g-object-class-install-property"
 ><code class="function">g_object_class_install_property()</code></a> in a GObjects's
 instance_init function.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -297,13 +335,12 @@ instance_init function.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.14
-</p>
+<p class="since">Since 0.10.14</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

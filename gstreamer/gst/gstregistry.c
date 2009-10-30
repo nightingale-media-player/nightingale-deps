@@ -241,8 +241,7 @@ gst_registry_get_default (void)
   g_static_mutex_lock (&_gst_registry_mutex);
   if (G_UNLIKELY (!_gst_registry_default)) {
     _gst_registry_default = g_object_new (GST_TYPE_REGISTRY, NULL);
-    gst_object_ref (GST_OBJECT_CAST (_gst_registry_default));
-    gst_object_sink (GST_OBJECT_CAST (_gst_registry_default));
+    gst_object_ref_sink (GST_OBJECT_CAST (_gst_registry_default));
   }
   registry = _gst_registry_default;
   g_static_mutex_unlock (&_gst_registry_mutex);
@@ -353,14 +352,12 @@ gst_registry_add_plugin (GstRegistry * registry, GstPlugin * plugin)
 
   registry->plugins = g_list_prepend (registry->plugins, plugin);
 
-  gst_object_ref (plugin);
-  gst_object_sink (plugin);
+  gst_object_ref_sink (plugin);
   GST_OBJECT_UNLOCK (registry);
 
   GST_LOG_OBJECT (registry, "emitting plugin-added for filename \"%s\"",
       GST_STR_NULL (plugin->filename));
-  g_signal_emit (G_OBJECT (registry), gst_registry_signals[PLUGIN_ADDED], 0,
-      plugin);
+  g_signal_emit (registry, gst_registry_signals[PLUGIN_ADDED], 0, plugin);
 
   return TRUE;
 }
@@ -370,9 +367,12 @@ gst_registry_remove_features_for_plugin_unlocked (GstRegistry * registry,
     GstPlugin * plugin)
 {
   GList *f;
+  const gchar *name;
 
   g_return_if_fail (GST_IS_REGISTRY (registry));
   g_return_if_fail (GST_IS_PLUGIN (plugin));
+
+  name = gst_plugin_get_name (plugin);
 
   /* Remove all features for this plugin */
   f = registry->features;
@@ -380,10 +380,9 @@ gst_registry_remove_features_for_plugin_unlocked (GstRegistry * registry,
     GList *next = g_list_next (f);
     GstPluginFeature *feature = f->data;
 
-    if (feature && !strcmp (feature->plugin_name, gst_plugin_get_name (plugin))) {
+    if (G_UNLIKELY (feature && !strcmp (feature->plugin_name, name))) {
       GST_DEBUG_OBJECT (registry, "removing feature %p (%s) for plugin %s",
-          feature, gst_plugin_feature_get_name (feature),
-          gst_plugin_get_name (plugin));
+          feature, gst_plugin_feature_get_name (feature), name);
 
       registry->features = g_list_delete_link (registry->features, f);
       g_hash_table_remove (registry->feature_hash, feature->name);
@@ -447,7 +446,8 @@ gst_registry_add_feature (GstRegistry * registry, GstPluginFeature * feature)
     GST_DEBUG_OBJECT (registry, "replacing existing feature %p (%s)",
         existing_feature, feature->name);
     /* Remove the existing feature from the list now, before we insert the new
-     * one, but don't unref yet because the hash is still storing a reference to     * it. */
+     * one, but don't unref yet because the hash is still storing a reference to
+     * it. */
     registry->features = g_list_remove (registry->features, existing_feature);
   }
 
@@ -457,17 +457,16 @@ gst_registry_add_feature (GstRegistry * registry, GstPluginFeature * feature)
   g_hash_table_replace (registry->feature_hash, feature->name, feature);
 
   if (G_UNLIKELY (existing_feature)) {
-    /* We unref now. No need to remove the feature name from the hash table, it      * got replaced by the new feature */
+    /* We unref now. No need to remove the feature name from the hash table, it
+     * got replaced by the new feature */
     gst_object_unref (existing_feature);
   }
 
-  gst_object_ref (feature);
-  gst_object_sink (feature);
+  gst_object_ref_sink (feature);
   GST_OBJECT_UNLOCK (registry);
 
   GST_LOG_OBJECT (registry, "emitting feature-added for %s", feature->name);
-  g_signal_emit (G_OBJECT (registry), gst_registry_signals[FEATURE_ADDED], 0,
-      feature);
+  g_signal_emit (registry, gst_registry_signals[FEATURE_ADDED], 0, feature);
 
   return TRUE;
 }
@@ -756,7 +755,8 @@ gst_registry_lookup_locked (GstRegistry * registry, const char *filename)
   /* FIXME: use GTree speed up lookups */
   for (g = registry->plugins; g; g = g_list_next (g)) {
     plugin = GST_PLUGIN_CAST (g->data);
-    if (plugin->basename && strcmp (basename, plugin->basename) == 0) {
+    if (G_UNLIKELY (plugin->basename
+            && strcmp (basename, plugin->basename) == 0)) {
       g_free (basename);
       return plugin;
     }
@@ -812,7 +812,7 @@ gst_registry_scan_path_level (GstRegistry * registry, const gchar * path,
   while ((dirent = g_dir_read_name (dir))) {
     struct stat file_status;
 
-    filename = g_strjoin ("/", path, dirent, NULL);
+    filename = g_build_filename (path, dirent, NULL);
     if (g_stat (filename, &file_status) < 0) {
       /* Plugin will be removed from cache after the scan completes if it
        * is still marked 'cached' */
@@ -823,8 +823,8 @@ gst_registry_scan_path_level (GstRegistry * registry, const gchar * path,
     if (file_status.st_mode & S_IFDIR) {
       /* skip the .debug directory, these contain elf files that are not
        * useful or worse, can crash dlopen () */
-      if (g_str_equal (dirent, ".debug")) {
-        GST_LOG_OBJECT (registry, "found .debug directory, ignoring");
+      if (g_str_equal (dirent, ".debug") || g_str_equal (dirent, ".git")) {
+        GST_LOG_OBJECT (registry, "ignoring .debug or .git directory");
         g_free (filename);
         continue;
       }
@@ -934,12 +934,11 @@ gst_registry_scan_path_level (GstRegistry * registry, const gchar * path,
 
 /**
  * gst_registry_scan_path:
- * @registry: the registry to add the path to
- * @path: the path to add to the registry
+ * @registry: the registry to add found plugins to
+ * @path: the path to scan
  *
- * Add the given path to the registry. The syntax of the
- * path is specific to the registry. If the path has already been
- * added, do nothing.
+ * Scan the given path for plugins to add to the registry. The syntax of the
+ * path is specific to the registry.
  *
  * Returns: %TRUE if registry changed
  */

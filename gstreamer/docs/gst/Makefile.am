@@ -4,13 +4,16 @@
 # DOC_MODULE=gstreamer-@GST_MAJORMINOR@
 DOC_MODULE=gstreamer
 
+# don't want $(DOC_MODULE)-scan.c to be built with -Werror
+ERROR_CFLAGS=
+
 BUILT_SOURCES=gstreamer.types
 
-# for upload.mak
+# for upload-doc.mak
 DOC=gstreamer
 FORMATS=html
 html: html-build.stamp
-include $(top_srcdir)/common/upload.mak
+include $(top_srcdir)/common/upload-doc.mak
 
 # generated basefiles
 #basefiles = \
@@ -75,7 +78,7 @@ IGNORE_HFILES= \
 HTML_IMAGES =
 
 # Extra SGML files that are included by $(DOC_MAIN_SGML_FILE).
-content_files = running.xml
+content_files = building.xml running.xml
 
 # Other files to distribute.
 extra_files =
@@ -85,8 +88,8 @@ extra_files =
 GTKDOC_CFLAGS = $(GST_OBJ_CFLAGS)
 GTKDOC_LIBS = $(GST_OBJ_LIBS) $(SCANOBJ_DEPS)
 
-GTKDOC_CC=$(LIBTOOL) --mode=compile $(CC)
-GTKDOC_LD=$(LIBTOOL) --mode=link $(CC)
+GTKDOC_CC=$(LIBTOOL) --tag=CC --mode=compile $(CC)
+GTKDOC_LD=$(LIBTOOL) --tag=CC --mode=link $(CC)
 
 # If you need to override some of the declarations, place them in this file
 # and uncomment this line.

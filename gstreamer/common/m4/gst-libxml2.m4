@@ -10,7 +10,7 @@ AC_DEFUN([AG_GST_LIBXML2_CHECK],
   AC_SUBST(LIBXML2_REQ)
 
   dnl check for libxml2
-  PKG_CHECK_MODULES(XML, libxml-2.0 >= $LIBXML2_REQ, 
+  PKG_CHECK_MODULES(XML, libxml-2.0 >= $LIBXML2_REQ,
                     HAVE_LIBXML2=yes, [
                       AC_MSG_RESULT(no)
                       HAVE_LIBXML2=no
@@ -21,7 +21,7 @@ AC_DEFUN([AG_GST_LIBXML2_CHECK],
     AC_MSG_ERROR([Need libxml2 for glib2 builds -- you should be able to do without it -- this needs fixing])
   fi
   dnl this is for the .pc file
-  LIBXML_PKG=', libxml-2.0' 
+  LIBXML_PKG=', libxml-2.0'
   AC_SUBST(LIBXML_PKG)
   AC_SUBST(XML_LIBS)
   AC_SUBST(XML_CFLAGS)
@@ -35,7 +35,7 @@ AC_DEFUN([AG_GST_LIBXML2_CHECK],
   AC_TRY_LINK([
 #include <libxml/tree.h>
 #include <stdio.h>
-],[ 
+],[
 /* function body */
 ],
     AC_MSG_NOTICE([Test xml2 program linked]),

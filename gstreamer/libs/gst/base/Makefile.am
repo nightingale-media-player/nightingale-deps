@@ -33,9 +33,50 @@ libgstbase_@GST_MAJORMINOR@include_HEADERS =	\
 	gsttypefindhelper.h	\
 	gstdataqueue.h
 
+noinst_HEADERS = \
+	gstbytereader-docs.h
+
 CLEANFILES = *.gcno *.gcda *.gcov
 
 %.c.gcov: .libs/libgstbase_@GST_MAJORMINOR@_la-%.gcda %.c
 	$(GCOV) -b -f -o $^ > $@.out
 
 gcov: $(libgstbase_@GST_MAJORMINOR@_la_SOURCES:=.gcov)
+
+if HAVE_INTROSPECTION
+BUILT_GIRSOURCES = GstBase-@GST_MAJORMINOR@.gir
+
+gir_headers=$(patsubst %,$(srcdir)/%, $(libgstbase_@GST_MAJORMINOR@include_HEADERS))
+gir_sources=$(patsubst %,$(srcdir)/%, $(libgstbase_@GST_MAJORMINOR@_la_SOURCES))
+gir_cincludes=$(patsubst %,--c-include='gst/base/%',$(libgstbase_@GST_MAJORMINOR@include_HEADERS))
+
+GstBase-@GST_MAJORMINOR@.gir: $(INTROSPECTION_SCANNER) libgstbase-@GST_MAJORMINOR@.la
+	PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig" \
+		$(INTROSPECTION_SCANNER) -v --namespace GstBase \
+		--nsversion=@GST_MAJORMINOR@ \
+		--strip-prefix=Gst \
+		-I$(top_srcdir) \
+		$(gir_cincludes) \
+		--add-include-path=$(top_builddir)/gst \
+		--library=gstbase-0.10 \
+		--include=Gst-0.10 \
+		--libtool="$(top_builddir)/libtool" \
+		--pkg gstreamer-0.10 \
+		--output $@ \
+		$(gir_headers) \
+		$(gir_sources)
+
+# INTROSPECTION_GIRDIR/INTROSPECTION_TYPELIBDIR aren't the right place to
+# install anything - we need to install inside our prefix.
+girdir = $(datadir)/gir-1.0
+gir_DATA = $(BUILT_GIRSOURCES)
+
+typelibsdir = $(libdir)/girepository-1.0/
+
+typelibs_DATA = $(BUILT_GIRSOURCES:.gir=.typelib)
+
+%.typelib: %.gir $(INTROSPECTION_COMPILER)
+	$(INTROSPECTION_COMPILER) --includedir=$(srcdir) --includedir=$(builddir) --includedir=$(top_builddir)/gst $(INTROSPECTION_COMPILER_OPTS) $< -o $(@F)
+
+CLEANFILES += $(BUILT_GIRSOURCES) $(typelibs_DATA)
+endif

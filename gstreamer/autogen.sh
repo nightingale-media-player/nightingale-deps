@@ -5,16 +5,13 @@ DIE=0
 package=gstreamer
 srcfile=gst/gst.c
 
-# a quick cvs co to ease the transition
-if test ! -d common;
+# Make sure we have common
+if test ! -f common/gst-autogen.sh;
 then
-  echo "+ getting common/ from cvs"
-  if test -e CVS/Tag
-  then
-    TAG="-r `tail -c +2 CVS/Tag`"
-  fi
-  cvs co $TAG common
+  echo "+ Setting up common submodule"
+  git submodule init
 fi
+git submodule update
 
 # source helper functions
 if test ! -f common/gst-autogen.sh;
@@ -25,18 +22,27 @@ then
 fi
 . common/gst-autogen.sh
 
+# install pre-commit hook for doing clean commits
+if test ! \( -x .git/hooks/pre-commit -a -L .git/hooks/pre-commit \);
+then
+    rm -f .git/hooks/pre-commit
+    ln -s ../../common/hooks/pre-commit.hook .git/hooks/pre-commit
+fi
+
+
+
 CONFIGURE_DEF_OPT='--enable-maintainer-mode --enable-failing-tests --enable-poisoning --enable-gtk-doc --enable-docbook'
 
 autogen_options $@
 
-echo -n "+ check for build tools"
+printf "+ check for build tools"
 if test ! -z "$NOCHECK"; then echo ": skipped version checks"; else  echo; fi
 version_check "autoconf" "$AUTOCONF autoconf autoconf259 autoconf257 autoconf-2.54 autoconf-2.53 autoconf253 autoconf-2.52 autoconf252" \
               "ftp://ftp.gnu.org/pub/gnu/autoconf/" 2 52 || DIE=1
-version_check "automake" "$AUTOMAKE automake automake-1.9 automake19 automake-1.8 automake18 automake-1.7 automake17 automake-1.6 automake16" \
+version_check "automake" "$AUTOMAKE automake automake-1.11 automake-1.10 automake-1.9 automake19 automake-1.8 automake18 automake-1.7 automake17 automake-1.6 automake16" \
               "ftp://ftp.gnu.org/pub/gnu/automake/" 1 7 || DIE=1
 version_check "autopoint" "autopoint" \
-              "ftp://ftp.gnu.org/pub/gnu/gettext/" 0 14 || DIE=1
+              "ftp://ftp.gnu.org/pub/gnu/gettext/" 0 17 || DIE=1
 version_check "libtoolize" "libtoolize libtoolize15 glibtoolize" \
               "ftp://ftp.gnu.org/pub/gnu/libtool/" 1 5 0 || DIE=1
 version_check "pkg-config" "" \
@@ -74,9 +80,9 @@ patch -p0 < common/gettext.patch
 
 # aclocal
 if test -f acinclude.m4; then rm acinclude.m4; fi
-tool_run "$aclocal" "-I common/m4 $ACLOCAL_FLAGS"
 
 tool_run "$libtoolize" "--copy --force"
+tool_run "$aclocal" "-I common/m4 -I . $ACLOCAL_FLAGS"
 tool_run "$autoheader"
 
 # touch the stamp-h.in build stamp so we don't re-run autoheader in maintainer mode -- wingo
@@ -84,7 +90,7 @@ echo timestamp > stamp-h.in 2> /dev/null
 
 tool_run "$autoconf"
 debug "automake: $automake"
-tool_run "$automake" "--add-missing --copy -Wno-portability"
+tool_run "$automake" "--add-missing --copy"
 
 test -n "$NOCONFIGURE" && {
   echo "skipping configure stage for package $package, as requested."

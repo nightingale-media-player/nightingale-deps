@@ -74,10 +74,6 @@ static gboolean _gst_plugin_inited;
 /* static variables for segfault handling of plugin loading */
 static char *_gst_plugin_fault_handler_filename = NULL;
 
-#ifndef HAVE_WIN32
-static gboolean _gst_plugin_fault_handler_is_setup = FALSE;
-#endif
-
 /* list of valid licenses.
  * One of these must be specified or the plugin won't be loaded
  * Contact gstreamer-devel@lists.sourceforge.net if your license should be
@@ -104,7 +100,7 @@ static const gchar *valid_licenses[] = {
 };
 
 static GstPlugin *gst_plugin_register_func (GstPlugin * plugin,
-    const GstPluginDesc * desc);
+    const GstPluginDesc * desc, gpointer user_data);
 static void gst_plugin_desc_copy (GstPluginDesc * dest,
     const GstPluginDesc * src);
 static void gst_plugin_desc_free (GstPluginDesc * desc);
@@ -140,6 +136,10 @@ gst_plugin_finalize (GObject * object)
   g_list_foreach (plugin->priv->deps, (GFunc) gst_plugin_ext_dep_free, NULL);
   g_list_free (plugin->priv->deps);
   plugin->priv->deps = NULL;
+
+  if (plugin->priv->cache_data) {
+    gst_structure_free (plugin->priv->cache_data);
+  }
 
   G_OBJECT_CLASS (gst_plugin_parent_class)->finalize (object);
 }
@@ -246,7 +246,76 @@ gst_plugin_register_static (gint major_version, gint minor_version,
 
   GST_LOG ("attempting to load static plugin \"%s\" now...", name);
   plugin = g_object_new (GST_TYPE_PLUGIN, NULL);
-  if (gst_plugin_register_func (plugin, &desc) != NULL) {
+  if (gst_plugin_register_func (plugin, &desc, NULL) != NULL) {
+    GST_INFO ("registered static plugin \"%s\"", name);
+    res = gst_default_registry_add_plugin (plugin);
+    GST_INFO ("added static plugin \"%s\", result: %d", name, res);
+  }
+  return res;
+}
+
+/**
+ * gst_plugin_register_static_full:
+ * @major_version: the major version number of the GStreamer core that the
+ *     plugin was compiled for, you can just use GST_VERSION_MAJOR here
+ * @minor_version: the minor version number of the GStreamer core that the
+ *     plugin was compiled for, you can just use GST_VERSION_MINOR here
+ * @name: a unique name of the plugin (ideally prefixed with an application- or
+ *     library-specific namespace prefix in order to avoid name conflicts in
+ *     case a similar plugin with the same name ever gets added to GStreamer)
+ * @description: description of the plugin
+ * @init_full_func: pointer to the init function with user data of this plugin.
+ * @version: version string of the plugin
+ * @license: effective license of plugin. Must be one of the approved licenses
+ *     (see #GstPluginDesc above) or the plugin will not be registered.
+ * @source: source module plugin belongs to
+ * @package: shipped package plugin belongs to
+ * @origin: URL to provider of plugin
+ * @user_data: gpointer to user data
+ *
+ * Registers a static plugin, ie. a plugin which is private to an application
+ * or library and contained within the application or library (as opposed to
+ * being shipped as a separate module file) with a #GstPluginInitFullFunc
+ * which allows user data to be passed to the callback function (useful
+ * for bindings).
+ *
+ * You must make sure that GStreamer has been initialised (with gst_init() or
+ * via gst_init_get_option_group()) before calling this function.
+ *
+ * Returns: TRUE if the plugin was registered correctly, otherwise FALSE.
+ *
+ * Since: 0.10.24
+ *
+ */
+gboolean
+gst_plugin_register_static_full (gint major_version, gint minor_version,
+    const gchar * name, gchar * description,
+    GstPluginInitFullFunc init_full_func, const gchar * version,
+    const gchar * license, const gchar * source, const gchar * package,
+    const gchar * origin, gpointer user_data)
+{
+  GstPluginDesc desc = { major_version, minor_version, name, description,
+    (GstPluginInitFunc) init_full_func, version, license, source, package,
+    origin,
+  };
+  GstPlugin *plugin;
+  gboolean res = FALSE;
+
+  g_return_val_if_fail (name != NULL, FALSE);
+  g_return_val_if_fail (description != NULL, FALSE);
+  g_return_val_if_fail (init_full_func != NULL, FALSE);
+  g_return_val_if_fail (version != NULL, FALSE);
+  g_return_val_if_fail (license != NULL, FALSE);
+  g_return_val_if_fail (source != NULL, FALSE);
+  g_return_val_if_fail (package != NULL, FALSE);
+  g_return_val_if_fail (origin != NULL, FALSE);
+
+  /* make sure gst_init() has been called */
+  g_return_val_if_fail (_gst_plugin_inited != FALSE, FALSE);
+
+  GST_LOG ("attempting to load static plugin \"%s\" now...", name);
+  plugin = g_object_new (GST_TYPE_PLUGIN, NULL);
+  if (gst_plugin_register_func (plugin, &desc, user_data) != NULL) {
     GST_INFO ("registered static plugin \"%s\"", name);
     res = gst_default_registry_add_plugin (plugin);
     GST_INFO ("added static plugin \"%s\", result: %d", name, res);
@@ -310,7 +379,8 @@ gst_plugin_check_version (gint major, gint minor)
 }
 
 static GstPlugin *
-gst_plugin_register_func (GstPlugin * plugin, const GstPluginDesc * desc)
+gst_plugin_register_func (GstPlugin * plugin, const GstPluginDesc * desc,
+    gpointer user_data)
 {
   if (!gst_plugin_check_version (desc->major_version, desc->minor_version)) {
     if (GST_CAT_DEFAULT)
@@ -339,11 +409,20 @@ gst_plugin_register_func (GstPlugin * plugin, const GstPluginDesc * desc)
 
   gst_plugin_desc_copy (&plugin->desc, desc);
 
-  if (!((desc->plugin_init) (plugin))) {
-    if (GST_CAT_DEFAULT)
-      GST_WARNING ("plugin \"%s\" failed to initialise", plugin->filename);
-    plugin->module = NULL;
-    return NULL;
+  if (user_data) {
+    if (!(((GstPluginInitFullFunc) (desc->plugin_init)) (plugin, user_data))) {
+      if (GST_CAT_DEFAULT)
+        GST_WARNING ("plugin \"%s\" failed to initialise", plugin->filename);
+      plugin->module = NULL;
+      return NULL;
+    }
+  } else {
+    if (!((desc->plugin_init) (plugin))) {
+      if (GST_CAT_DEFAULT)
+        GST_WARNING ("plugin \"%s\" failed to initialise", plugin->filename);
+      plugin->module = NULL;
+      return NULL;
+    }
   }
 
   if (GST_CAT_DEFAULT)
@@ -354,6 +433,7 @@ gst_plugin_register_func (GstPlugin * plugin, const GstPluginDesc * desc)
 
 #ifdef HAVE_SIGACTION
 static struct sigaction oldaction;
+static gboolean _gst_plugin_fault_handler_is_setup = FALSE;
 
 /*
  * _gst_plugin_fault_handler_restore:
@@ -419,7 +499,7 @@ _gst_plugin_fault_handler_setup (void)
 
   sigaction (SIGSEGV, &action, &oldaction);
 }
-#else
+#else /* !HAVE_SIGACTION */
 static void
 _gst_plugin_fault_handler_restore (void)
 {
@@ -429,7 +509,7 @@ static void
 _gst_plugin_fault_handler_setup (void)
 {
 }
-#endif
+#endif /* HAVE_SIGACTION */
 
 static void _gst_plugin_fault_handler_setup ();
 
@@ -459,6 +539,7 @@ gst_plugin_load_file (const gchar * filename, GError ** error)
   gpointer ptr;
   struct stat file_status;
   GstRegistry *registry;
+  gboolean new_plugin = TRUE;
 
   g_return_val_if_fail (filename != NULL, NULL);
 
@@ -468,11 +549,12 @@ gst_plugin_load_file (const gchar * filename, GError ** error)
   plugin = gst_registry_lookup (registry, filename);
   if (plugin) {
     if (plugin->module) {
+      /* already loaded */
       g_static_mutex_unlock (&gst_plugin_loading_mutex);
       return plugin;
     } else {
-      gst_object_unref (plugin);
-      plugin = NULL;
+      /* load plugin and update fields */
+      new_plugin = FALSE;
     }
   }
 
@@ -510,13 +592,14 @@ gst_plugin_load_file (const gchar * filename, GError ** error)
     goto return_error;
   }
 
-  plugin = g_object_new (GST_TYPE_PLUGIN, NULL);
-
+  if (new_plugin) {
+    plugin = g_object_new (GST_TYPE_PLUGIN, NULL);
+    plugin->file_mtime = file_status.st_mtime;
+    plugin->file_size = file_status.st_size;
+    plugin->filename = g_strdup (filename);
+    plugin->basename = g_path_get_basename (filename);
+  }
   plugin->module = module;
-  plugin->filename = g_strdup (filename);
-  plugin->basename = g_path_get_basename (filename);
-  plugin->file_mtime = file_status.st_mtime;
-  plugin->file_size = file_status.st_size;
 
   ret = g_module_symbol (module, "gst_plugin_desc", &ptr);
   if (!ret) {
@@ -530,15 +613,20 @@ gst_plugin_load_file (const gchar * filename, GError ** error)
   }
   plugin->orig_desc = (GstPluginDesc *) ptr;
 
-  /* check plugin description: complain about bad values but accept them, to
-   * maintain backwards compatibility (FIXME: 0.11) */
-  CHECK_PLUGIN_DESC_FIELD (plugin->orig_desc, name, filename);
-  CHECK_PLUGIN_DESC_FIELD (plugin->orig_desc, description, filename);
-  CHECK_PLUGIN_DESC_FIELD (plugin->orig_desc, version, filename);
-  CHECK_PLUGIN_DESC_FIELD (plugin->orig_desc, license, filename);
-  CHECK_PLUGIN_DESC_FIELD (plugin->orig_desc, source, filename);
-  CHECK_PLUGIN_DESC_FIELD (plugin->orig_desc, package, filename);
-  CHECK_PLUGIN_DESC_FIELD (plugin->orig_desc, origin, filename);
+  if (new_plugin) {
+    /* check plugin description: complain about bad values but accept them, to
+     * maintain backwards compatibility (FIXME: 0.11) */
+    CHECK_PLUGIN_DESC_FIELD (plugin->orig_desc, name, filename);
+    CHECK_PLUGIN_DESC_FIELD (plugin->orig_desc, description, filename);
+    CHECK_PLUGIN_DESC_FIELD (plugin->orig_desc, version, filename);
+    CHECK_PLUGIN_DESC_FIELD (plugin->orig_desc, license, filename);
+    CHECK_PLUGIN_DESC_FIELD (plugin->orig_desc, source, filename);
+    CHECK_PLUGIN_DESC_FIELD (plugin->orig_desc, package, filename);
+    CHECK_PLUGIN_DESC_FIELD (plugin->orig_desc, origin, filename);
+  } else {
+    /* this is overwritten by gst_plugin_register_func() */
+    g_free (plugin->desc.description);
+  }
 
   GST_LOG ("Plugin %p for file \"%s\" prepared, calling entry function...",
       plugin, filename);
@@ -550,7 +638,7 @@ gst_plugin_load_file (const gchar * filename, GError ** error)
   GST_LOG ("Plugin %p for file \"%s\" prepared, registering...",
       plugin, filename);
 
-  if (!gst_plugin_register_func (plugin, plugin->orig_desc)) {
+  if (!gst_plugin_register_func (plugin, plugin->orig_desc, NULL)) {
     /* remove signal handler */
     _gst_plugin_fault_handler_restore ();
     GST_DEBUG ("gst_plugin_register_func failed for plugin \"%s\"", filename);
@@ -569,8 +657,10 @@ gst_plugin_load_file (const gchar * filename, GError ** error)
   _gst_plugin_fault_handler_filename = NULL;
   GST_INFO ("plugin \"%s\" loaded", plugin->filename);
 
-  gst_object_ref (plugin);
-  gst_default_registry_add_plugin (plugin);
+  if (new_plugin) {
+    gst_object_ref (plugin);
+    gst_default_registry_add_plugin (plugin);
+  }
 
   g_static_mutex_unlock (&gst_plugin_loading_mutex);
   return plugin;
@@ -768,6 +858,49 @@ gst_plugin_is_loaded (GstPlugin * plugin)
   g_return_val_if_fail (plugin != NULL, FALSE);
 
   return (plugin->module != NULL || plugin->filename == NULL);
+}
+
+/**
+ * gst_plugin_get_cache_data:
+ * @plugin: a plugin
+ *
+ * Gets the plugin specific data cache. If it is %NULL there is no cached data
+ * stored. This is the case when the registry is getting rebuild.
+ *
+ * Returns: The cached data as a #GstStructure or %NULL.
+ *
+ * Since: 0.10.24
+ */
+G_CONST_RETURN GstStructure *
+gst_plugin_get_cache_data (GstPlugin * plugin)
+{
+  g_return_val_if_fail (GST_IS_PLUGIN (plugin), NULL);
+
+  return plugin->priv->cache_data;
+}
+
+/**
+ * gst_plugin_set_cache_data:
+ * @plugin: a plugin
+ * @cache_data: a structure containing the data to cache
+ *
+ * Adds plugin specific data to cache. Passes the ownership of the structure to
+ * the @plugin.
+ *
+ * The cache is flushed every time the registry is rebuild.
+ *
+ * Since: 0.10.24
+ */
+void
+gst_plugin_set_cache_data (GstPlugin * plugin, GstStructure * cache_data)
+{
+  g_return_if_fail (GST_IS_PLUGIN (plugin));
+  g_return_if_fail (GST_IS_STRUCTURE (cache_data));
+
+  if (plugin->priv->cache_data) {
+    gst_structure_free (plugin->priv->cache_data);
+  }
+  plugin->priv->cache_data = cache_data;
 }
 
 #if 0

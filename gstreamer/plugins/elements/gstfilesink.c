@@ -41,8 +41,20 @@
 #include <errno.h>
 #include "gstfilesink.h"
 #include <string.h>
-#include <sys/stat.h>
 #include <sys/types.h>
+
+#ifdef G_OS_WIN32
+#include <io.h>                 /* lseek, open, close, read */
+#undef lseek
+#define lseek _lseeki64
+#undef off_t
+#define off_t guint64
+#ifdef _MSC_VER                 /* Check if we are using MSVC, fileno is deprecated in favour */
+#define fileno _fileno          /* of _fileno */
+#endif
+#endif
+
+#include <sys/stat.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -78,6 +90,7 @@ GST_DEBUG_CATEGORY_STATIC (gst_file_sink_debug);
 #define DEFAULT_LOCATION 	NULL
 #define DEFAULT_BUFFER_MODE 	-1
 #define DEFAULT_BUFFER_SIZE 	64 * 1024
+#define DEFAULT_APPEND		FALSE
 
 enum
 {
@@ -85,49 +98,9 @@ enum
   PROP_LOCATION,
   PROP_BUFFER_MODE,
   PROP_BUFFER_SIZE,
+  PROP_APPEND,
   PROP_LAST
 };
-
-/* Copy of glib's g_fopen due to win32 libc/cross-DLL brokenness: we can't
- * use the 'file pointer' opened in glib (and returned from this function)
- * in this library, as they may have unrelated C runtimes. */
-FILE *
-gst_fopen (const gchar *filename,
-           const gchar *mode)
-{
-#ifdef G_OS_WIN32
-  wchar_t *wfilename = g_utf8_to_utf16 (filename, -1, NULL, NULL, NULL);
-  wchar_t *wmode;
-  FILE *retval;
-  int save_errno;
-
-  if (wfilename == NULL)
-  {
-    errno = EINVAL;
-    return NULL;
-  }
-
-  wmode = g_utf8_to_utf16 (mode, -1, NULL, NULL, NULL);
-
-  if (wmode == NULL)
-  {
-    g_free (wfilename);
-    errno = EINVAL;
-    return NULL;
-  }
-
-  retval = _wfopen (wfilename, wmode);
-  save_errno = errno;
-
-  g_free (wfilename);
-  g_free (wmode);
-
-  errno = save_errno;
-  return retval;
-#else
-  return fopen (filename, mode);
-#endif
-}
 
 static void gst_file_sink_dispose (GObject * object);
 
@@ -214,6 +187,18 @@ gst_file_sink_class_init (GstFileSinkClass * klass)
           G_MAXUINT, DEFAULT_BUFFER_SIZE,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+  /**
+   * GstFileSink:append
+   * 
+   * Append to an already existing file.
+   *
+   * Since: 0.10.25
+   */
+  g_object_class_install_property (gobject_class, PROP_APPEND,
+      g_param_spec_boolean ("append", "Append",
+          "Append to an already existing file", DEFAULT_APPEND,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
   gstbasesink_class->get_times = NULL;
   gstbasesink_class->start = GST_DEBUG_FUNCPTR (gst_file_sink_start);
   gstbasesink_class->stop = GST_DEBUG_FUNCPTR (gst_file_sink_stop);
@@ -240,6 +225,7 @@ gst_file_sink_init (GstFileSink * filesink, GstFileSinkClass * g_class)
   filesink->buffer_mode = DEFAULT_BUFFER_MODE;
   filesink->buffer_size = DEFAULT_BUFFER_SIZE;
   filesink->buffer = NULL;
+  filesink->append = FALSE;
 
   gst_base_sink_set_sync (GST_BASE_SINK (filesink), FALSE);
 }
@@ -283,8 +269,8 @@ gst_file_sink_set_location (GstFileSink * sink, const gchar * location)
   /* ERRORS */
 was_open:
   {
-    g_warning ("Changing the `location' property on filesink when "
-        "a file is open not supported.");
+    g_warning ("Changing the `location' property on filesink when a file is "
+        "open is not supported.");
     return FALSE;
   }
 }
@@ -304,6 +290,9 @@ gst_file_sink_set_property (GObject * object, guint prop_id,
       break;
     case PROP_BUFFER_SIZE:
       sink->buffer_size = g_value_get_uint (value);
+      break;
+    case PROP_APPEND:
+      sink->append = g_value_get_boolean (value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -327,6 +316,9 @@ gst_file_sink_get_property (GObject * object, guint prop_id, GValue * value,
     case PROP_BUFFER_SIZE:
       g_value_set_uint (value, sink->buffer_size);
       break;
+    case PROP_APPEND:
+      g_value_set_boolean (value, sink->append);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -342,7 +334,13 @@ gst_file_sink_open_file (GstFileSink * sink)
   if (sink->filename == NULL || sink->filename[0] == '\0')
     goto no_filename;
 
-  sink->file = gst_fopen (sink->filename, "wb");
+  /* FIXME, can we use g_fopen here? some people say that the FILE object is
+   * local to the .so that performed the fopen call, which would not be us when
+   * we use g_fopen. */
+  if (sink->append)
+    sink->file = fopen (sink->filename, "ab");
+  else
+    sink->file = fopen (sink->filename, "wb");
   if (sink->file == NULL)
     goto open_failed;
 
@@ -459,7 +457,7 @@ gst_file_sink_query (GstPad * pad, GstQuery * query)
 
 #ifdef HAVE_FSEEKO
 # define __GST_STDIO_SEEK_FUNCTION "fseeko"
-#elif defined (G_OS_UNIX)
+#elif defined (G_OS_UNIX) || defined (G_OS_WIN32)
 # define __GST_STDIO_SEEK_FUNCTION "lseek"
 #else
 # define __GST_STDIO_SEEK_FUNCTION "fseek"
@@ -477,7 +475,7 @@ gst_file_sink_do_seek (GstFileSink * filesink, guint64 new_offset)
 #ifdef HAVE_FSEEKO
   if (fseeko (filesink->file, (off_t) new_offset, SEEK_SET) != 0)
     goto seek_failed;
-#elif defined (G_OS_UNIX)
+#elif defined (G_OS_UNIX) || defined (G_OS_WIN32)
   if (lseek (fileno (filesink->file), (off_t) new_offset,
           SEEK_SET) == (off_t) - 1)
     goto seek_failed;
@@ -575,11 +573,11 @@ flush_failed:
 static gboolean
 gst_file_sink_get_current_offset (GstFileSink * filesink, guint64 * p_pos)
 {
-  off_t ret;
+  off_t ret = -1;
 
 #ifdef HAVE_FTELLO
   ret = ftello (filesink->file);
-#elif defined (G_OS_UNIX)
+#elif defined (G_OS_UNIX) || defined (G_OS_WIN32)
   if (fflush (filesink->file)) {
     GST_DEBUG_OBJECT (filesink, "Flush failed: %s", g_strerror (errno));
     /* ignore and continue */

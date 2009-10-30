@@ -162,7 +162,8 @@ gst_type_find_element_have_type (GstTypeFindElement * typefind,
 {
   g_assert (caps != NULL);
 
-  GST_INFO_OBJECT (typefind, "found caps %" GST_PTR_FORMAT, caps);
+  GST_INFO_OBJECT (typefind, "found caps %" GST_PTR_FORMAT ", probability=%u",
+      caps, probability);
   if (typefind->caps)
     gst_caps_unref (typefind->caps);
   typefind->caps = gst_caps_copy (caps);
@@ -235,6 +236,7 @@ gst_type_find_element_class_init (GstTypeFindElementClass * typefind_class)
   gstelement_class->change_state =
       GST_DEBUG_FUNCPTR (gst_type_find_element_change_state);
 }
+
 static void
 gst_type_find_element_init (GstTypeFindElement * typefind,
     GstTypeFindElementClass * g_class)
@@ -278,6 +280,7 @@ gst_type_find_element_init (GstTypeFindElement * typefind,
 
   typefind->store = NULL;
 }
+
 static void
 gst_type_find_element_dispose (GObject * object)
 {
@@ -286,6 +289,10 @@ gst_type_find_element_dispose (GObject * object)
   if (typefind->store) {
     gst_buffer_unref (typefind->store);
     typefind->store = NULL;
+  }
+  if (typefind->force_caps) {
+    gst_caps_unref (typefind->force_caps);
+    typefind->force_caps = NULL;
   }
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
@@ -318,6 +325,7 @@ gst_type_find_element_set_property (GObject * object, guint prop_id,
       break;
   }
 }
+
 static void
 gst_type_find_element_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec)
@@ -606,6 +614,73 @@ gst_type_find_element_setcaps (GstPad * pad, GstCaps * caps)
   return TRUE;
 }
 
+static GstCaps *
+gst_type_find_guess_by_extension (GstTypeFindElement * typefind, GstPad * pad,
+    GstTypeFindProbability * probability)
+{
+  GstQuery *query;
+  gchar *uri;
+  size_t len;
+  gint find;
+  GstCaps *caps;
+
+  query = gst_query_new_uri ();
+
+  /* try getting the caps with an uri query and from the extension */
+  if (!gst_pad_peer_query (pad, query))
+    goto peer_query_failed;
+
+  gst_query_parse_uri (query, &uri);
+  if (uri == NULL)
+    goto no_uri;
+
+  GST_DEBUG_OBJECT (typefind, "finding extension of %s", uri);
+
+  /* find the extension on the uri, this is everything after a '.' */
+  len = strlen (uri);
+  find = len - 1;
+
+  while (find >= 0) {
+    if (uri[find] == '.')
+      break;
+    find--;
+  }
+  if (find < 0)
+    goto no_extension;
+
+  GST_DEBUG_OBJECT (typefind, "found extension %s", &uri[find + 1]);
+
+  caps =
+      gst_type_find_helper_for_extension (GST_OBJECT_CAST (typefind),
+      &uri[find + 1]);
+  if (caps)
+    *probability = GST_TYPE_FIND_MAXIMUM;
+
+  gst_query_unref (query);
+
+  return caps;
+
+  /* ERRORS */
+peer_query_failed:
+  {
+    GST_WARNING_OBJECT (typefind, "failed to query peer uri");
+    gst_query_unref (query);
+    return NULL;
+  }
+no_uri:
+  {
+    GST_WARNING_OBJECT (typefind, "could not parse the peer uri");
+    gst_query_unref (query);
+    return NULL;
+  }
+no_extension:
+  {
+    GST_WARNING_OBJECT (typefind, "could not find uri extension in %s", uri);
+    gst_query_unref (query);
+    return NULL;
+  }
+}
+
 static GstFlowReturn
 gst_type_find_element_chain (GstPad * pad, GstBuffer * buffer)
 {
@@ -752,9 +827,11 @@ gst_type_find_element_activate (GstPad * pad)
      2. try to pull type find.
      3. deactivate pull mode.
      4. src pad might have been activated push by the state change. deactivate.
-     5. if we didn't find any caps, fail.
-     6. emit have-type; maybe the app connected the source pad to something.
-     7. if the sink pad is activated, we are in pull mode. succeed.
+     5. if we didn't find any caps, try getting the uri extension by doing an uri
+     query.
+     6. if we didn't find any caps, fail.
+     7. emit have-type; maybe the app connected the source pad to something.
+     8. if the sink pad is activated, we are in pull mode. succeed.
      otherwise activate both pads in push mode and succeed.
    */
 
@@ -804,19 +881,24 @@ gst_type_find_element_activate (GstPad * pad)
 
   /* 5 */
   if (!found_caps || probability < typefind->min_probability) {
+    found_caps = gst_type_find_guess_by_extension (typefind, pad, &probability);
+  }
+
+  /* 6 */
+  if (!found_caps || probability < typefind->min_probability) {
     GST_ELEMENT_ERROR (typefind, STREAM, TYPE_NOT_FOUND, (NULL), (NULL));
     gst_caps_replace (&found_caps, NULL);
     return FALSE;
   }
 
 done:
-  /* 6 */
+  /* 7 */
   g_signal_emit (typefind, gst_type_find_element_signals[HAVE_TYPE],
       0, probability, found_caps);
   gst_caps_unref (found_caps);
   typefind->mode = MODE_NORMAL;
 
-  /* 7 */
+  /* 8 */
   if (gst_pad_is_active (pad))
     return TRUE;
   else {

@@ -126,35 +126,13 @@ enum
 static GstObject *parent_class = NULL;
 static guint gst_pad_template_signals[LAST_SIGNAL] = { 0 };
 
-static void gst_pad_template_class_init (GstPadTemplateClass * klass);
-static void gst_pad_template_init (GstPadTemplate * templ,
-    GstPadTemplateClass * klass);
 static void gst_pad_template_dispose (GObject * object);
 static void gst_pad_template_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_pad_template_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
-GType
-gst_pad_template_get_type (void)
-{
-  static GType padtemplate_type = 0;
-
-  if (G_UNLIKELY (padtemplate_type == 0)) {
-    static const GTypeInfo padtemplate_info = {
-      sizeof (GstPadTemplateClass), NULL, NULL,
-      (GClassInitFunc) gst_pad_template_class_init, NULL, NULL,
-      sizeof (GstPadTemplate),
-      0,
-      (GInstanceInitFunc) gst_pad_template_init, NULL
-    };
-
-    padtemplate_type =
-        g_type_register_static (GST_TYPE_OBJECT, "GstPadTemplate",
-        &padtemplate_info, 0);
-  }
-  return padtemplate_type;
-}
+G_DEFINE_TYPE (GstPadTemplate, gst_pad_template, GST_TYPE_OBJECT);
 
 static void
 gst_pad_template_class_init (GstPadTemplateClass * klass)
@@ -239,7 +217,7 @@ gst_pad_template_class_init (GstPadTemplateClass * klass)
 }
 
 static void
-gst_pad_template_init (GstPadTemplate * templ, GstPadTemplateClass * klass)
+gst_pad_template_init (GstPadTemplate * templ)
 {
   /* FIXME 0.11: Does anybody remember why this is here? If not, let's
    * change it for 0.11 and let gst_element_class_add_pad_template() for
@@ -253,8 +231,7 @@ gst_pad_template_init (GstPadTemplate * templ, GstPadTemplateClass * klass)
    * owned by the creator of the object
    */
   if (GST_OBJECT_IS_FLOATING (templ)) {
-    gst_object_ref (templ);
-    gst_object_sink (templ);
+    gst_object_ref_sink (templ);
   }
 }
 
@@ -296,9 +273,9 @@ name_is_valid (const gchar * name, GstPadPresence presence)
           " allowed in GST_PAD_REQUEST padtemplate", name);
       return FALSE;
     }
-    if (str && (*(str + 1) != 's' && *(str + 1) != 'd')) {
+    if (str && (*(str + 1) != 's' && *(str + 1) != 'd' && *(str + 1) != 'u')) {
       g_warning ("invalid name template %s: conversion specification must be of"
-          " type '%%d' or '%%s' for GST_PAD_REQUEST padtemplate", name);
+          " type '%%d', '%%u' or '%%s' for GST_PAD_REQUEST padtemplate", name);
       return FALSE;
     }
     if (str && (*(str + 2) != '\0')) {
@@ -388,13 +365,8 @@ gst_pad_template_new (const gchar * name_template,
       "name", name_template, "name-template", name_template,
       "direction", direction, "presence", presence, "caps", caps, NULL);
 
-#if 0
-  /* FIXME: enable this after gst-ffmpeg-0.10.6 and
-   * gst-plugins-good-0.10.11 have been released.  Previous versions
-   * depend on broken core behavior. */
   if (caps)
     gst_caps_unref (caps);
-#endif
 
   return new;
 }
@@ -405,8 +377,10 @@ gst_pad_template_new (const gchar * name_template,
  *
  * Gets the capabilities of the static pad template.
  *
- * Returns: the #GstCaps of the static pad template. If you need to keep a
- * reference to the caps, take a ref (see gst_caps_ref ()).
+ * Returns: the #GstCaps of the static pad template.
+ * Unref after usage. Since the core holds an additional
+ * ref to the returned caps, use gst_caps_make_writable()
+ * on the returned caps to modify it.
  */
 GstCaps *
 gst_static_pad_template_get_caps (GstStaticPadTemplate * templ)

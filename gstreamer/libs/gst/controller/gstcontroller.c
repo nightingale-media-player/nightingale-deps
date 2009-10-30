@@ -201,6 +201,58 @@ gst_controller_find_controlled_property (GstController * self,
   return NULL;
 }
 
+/*
+ * gst_controller_add_property:
+ * @self: the controller object or %NULL if none yet exists
+ * @object: object to bind the property
+ * @name: name of projecty in @object
+ * @ref_existing: pointer to flag that tracks if we need to ref an existng
+ *   controller still
+ *
+ * Creates a new #GstControlledProperty if there is none for property @name yet.
+ * In case this is the first controlled propery, it creates the controller as
+ * well.
+ *
+ * Returns: a newly created controller object or reffed existing one with the
+ * given property bound.
+ */
+static GstController *
+gst_controller_add_property (GstController * self, GObject * object,
+    gchar * name, gboolean * ref_existing)
+{
+  /* test if this property isn't yet controlled */
+  if (!self || !gst_controller_find_controlled_property (self, name)) {
+    GstControlledProperty *prop;
+
+    /* create GstControlledProperty and add to self->propeties List */
+    if ((prop = gst_controlled_property_new (object, name))) {
+      /* if we don't have a controller object yet, now is the time to create one */
+      if (!self) {
+        self = g_object_new (GST_TYPE_CONTROLLER, NULL);
+        self->object = g_object_ref (object);
+        /* store the controller */
+        g_object_set_qdata (object, priv_gst_controller_key, self);
+        *ref_existing = FALSE;
+      } else {
+        /* only want one single _ref(), even for multiple properties */
+        if (*ref_existing) {
+          g_object_ref (self);
+          *ref_existing = FALSE;
+          GST_INFO ("returning existing controller");
+        }
+      }
+      self->properties = g_list_prepend (self->properties, prop);
+    }
+  } else {
+    GST_WARNING ("trying to control property again");
+    if (*ref_existing) {
+      g_object_ref (self);
+      *ref_existing = FALSE;
+    }
+  }
+  return self;
+}
+
 /* methods */
 
 /**
@@ -216,7 +268,6 @@ GstController *
 gst_controller_new_valist (GObject * object, va_list var_args)
 {
   GstController *self;
-  GstControlledProperty *prop;
   gboolean ref_existing = TRUE;
   gchar *name;
 
@@ -227,34 +278,7 @@ gst_controller_new_valist (GObject * object, va_list var_args)
   self = g_object_get_qdata (object, priv_gst_controller_key);
   /* create GstControlledProperty for each property */
   while ((name = va_arg (var_args, gchar *))) {
-    /* test if this property isn't yet controlled */
-    if (!self || !(prop = gst_controller_find_controlled_property (self, name))) {
-      /* create GstControlledProperty and add to self->propeties List */
-      if ((prop = gst_controlled_property_new (object, name))) {
-        /* if we don't have a controller object yet, now is the time to create one */
-        if (!self) {
-          self = g_object_new (GST_TYPE_CONTROLLER, NULL);
-          self->object = g_object_ref (object);
-          /* store the controller */
-          g_object_set_qdata (object, priv_gst_controller_key, self);
-          ref_existing = FALSE;
-        } else {
-          /* only want one single _ref(), even for multiple properties */
-          if (ref_existing) {
-            g_object_ref (self);
-            ref_existing = FALSE;
-            GST_INFO ("returning existing controller");
-          }
-        }
-        self->properties = g_list_prepend (self->properties, prop);
-      }
-    } else {
-      GST_WARNING ("trying to control property again");
-      if (ref_existing) {
-        g_object_ref (self);
-        ref_existing = FALSE;
-      }
-    }
+    self = gst_controller_add_property (self, object, name, &ref_existing);
   }
   va_end (var_args);
 
@@ -276,7 +300,6 @@ GstController *
 gst_controller_new_list (GObject * object, GList * list)
 {
   GstController *self;
-  GstControlledProperty *prop;
   gboolean ref_existing = TRUE;
   gchar *name;
   GList *node;
@@ -289,34 +312,7 @@ gst_controller_new_list (GObject * object, GList * list)
   /* create GstControlledProperty for each property */
   for (node = list; node; node = g_list_next (node)) {
     name = (gchar *) node->data;
-    /* test if this property isn't yet controlled */
-    if (!self || !(prop = gst_controller_find_controlled_property (self, name))) {
-      /* create GstControlledProperty and add to self->propeties List */
-      if ((prop = gst_controlled_property_new (object, name))) {
-        /* if we don't have a controller object yet, now is the time to create one */
-        if (!self) {
-          self = g_object_new (GST_TYPE_CONTROLLER, NULL);
-          self->object = g_object_ref (object);
-          /* store the controller */
-          g_object_set_qdata (object, priv_gst_controller_key, self);
-          ref_existing = FALSE;
-        } else {
-          /* only want one single _ref(), even for multiple properties */
-          if (ref_existing) {
-            g_object_ref (self);
-            ref_existing = FALSE;
-            GST_INFO ("returning existing controller");
-          }
-        }
-        self->properties = g_list_prepend (self->properties, prop);
-      }
-    } else {
-      GST_WARNING ("trying to control property again");
-      if (ref_existing) {
-        g_object_ref (self);
-        ref_existing = FALSE;
-      }
-    }
+    self = gst_controller_add_property (self, object, name, &ref_existing);
   }
 
   if (self)
@@ -646,7 +642,9 @@ gst_controller_suggest_next_sync (GstController * self)
   g_mutex_lock (self->lock);
 
   /* TODO: Implement more logic, depending on interpolation mode
-   * and control points */
+   * and control points
+   * FIXME: we need playback direction
+   */
   ret = self->priv->last_sync + self->priv->control_rate;
 
   g_mutex_unlock (self->lock);
@@ -952,9 +950,10 @@ _gst_controller_class_init (GstControllerClass * klass)
 GType
 gst_controller_get_type (void)
 {
-  static GType type = 0;
+  static volatile gsize type = 0;
 
-  if (type == 0) {
+  if (g_once_init_enter (&type)) {
+    GType _type;
     static const GTypeInfo info = {
       sizeof (GstControllerClass),
       NULL,                     /* base_init */
@@ -967,7 +966,8 @@ gst_controller_get_type (void)
       (GInstanceInitFunc) _gst_controller_init, /* instance_init */
       NULL                      /* value_table */
     };
-    type = g_type_register_static (G_TYPE_OBJECT, "GstController", &info, 0);
+    _type = g_type_register_static (G_TYPE_OBJECT, "GstController", &info, 0);
+    g_once_init_leave (&type, _type);
   }
   return type;
 }

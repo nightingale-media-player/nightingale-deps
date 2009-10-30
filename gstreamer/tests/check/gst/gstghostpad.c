@@ -148,6 +148,8 @@ GST_START_TEST (test_remove2)
 
 GST_END_TEST;
 
+
+
 /* test if a ghost pad without a target can be linked and
  * unlinked. An untargeted ghostpad has a default ANY caps unless there 
  * is a padtemplate that says something else.
@@ -213,6 +215,46 @@ GST_START_TEST (test_ghost_pads_notarget)
 }
 
 GST_END_TEST;
+
+/* Test that removing the target of a ghostpad properly sets the target of the
+ * ghostpad to NULL */
+GST_START_TEST (test_remove_target)
+{
+  GstElement *b1, *b2, *src, *sink;
+
+  GstPad *sinkpad, *ghost, *target;
+
+  b1 = gst_element_factory_make ("pipeline", NULL);
+  b2 = gst_element_factory_make ("bin", NULL);
+  src = gst_element_factory_make ("fakesrc", NULL);
+  sink = gst_element_factory_make ("fakesink", NULL);
+  ASSERT_OBJECT_REFCOUNT (src, "src", 1);
+
+  fail_unless (gst_bin_add (GST_BIN (b2), sink));
+  fail_unless (gst_bin_add (GST_BIN (b1), src));
+  fail_unless (gst_bin_add (GST_BIN (b1), b2));
+  ASSERT_OBJECT_REFCOUNT (src, "src", 1);
+
+  sinkpad = gst_element_get_static_pad (sink, "sink");
+  gst_element_add_pad (b2, gst_ghost_pad_new ("sink", sinkpad));
+
+  ghost = gst_element_get_static_pad (b2, "sink");
+
+  target = gst_ghost_pad_get_target (GST_GHOST_PAD (ghost));
+  fail_unless (target == sinkpad);
+  gst_object_unref (target);
+  gst_object_unref (sinkpad);
+
+  gst_bin_remove (GST_BIN (b2), sink);
+
+  target = gst_ghost_pad_get_target (GST_GHOST_PAD (ghost));
+  fail_unless (target == NULL);
+
+  gst_object_unref (b1);
+}
+
+GST_END_TEST;
+
 
 /* test if linking fails over different bins using a pipeline
  * like this:
@@ -357,9 +399,9 @@ GST_START_TEST (test_ghost_pads)
   ASSERT_OBJECT_REFCOUNT (fsink, "fsink", 1);
 
   ASSERT_OBJECT_REFCOUNT (gisrc, "gisrc", 2);   /* gsink */
-  ASSERT_OBJECT_REFCOUNT (isink, "isink", 2);   /* gsink */
+  ASSERT_OBJECT_REFCOUNT (isink, "isink", 1);   /* gsink */
   ASSERT_OBJECT_REFCOUNT (gisink, "gisink", 2); /* gsrc */
-  ASSERT_OBJECT_REFCOUNT (isrc, "isrc", 2);     /* gsrc */
+  ASSERT_OBJECT_REFCOUNT (isrc, "isrc", 1);     /* gsrc */
 
   gst_object_unref (gsink);
   ASSERT_OBJECT_REFCOUNT (isink, "isink", 1);
@@ -554,9 +596,7 @@ GST_END_TEST;
 GST_START_TEST (test_ghost_pads_new_from_template)
 {
   GstPad *sinkpad, *ghostpad;
-
   GstPadTemplate *padtempl, *ghosttempl;
-
   GstCaps *padcaps, *ghostcaps, *newcaps;
   GstCaps *copypadcaps;
 
@@ -571,13 +611,6 @@ GST_START_TEST (test_ghost_pads_new_from_template)
   fail_unless (padtempl != NULL);
   ghosttempl = gst_pad_template_new ("ghosttempl", GST_PAD_SINK,
       GST_PAD_ALWAYS, ghostcaps);
-
-  /* FIXME : We should not have to unref those caps, but due to 
-   * a bug in gst_pad_template_new() not stealing the refcount of
-   * the given caps we have to. */
-  gst_caps_unref (ghostcaps);
-  gst_caps_unref (copypadcaps);
-
 
   sinkpad = gst_pad_new_from_template (padtempl, "sinkpad");
   fail_unless (sinkpad != NULL);
@@ -607,9 +640,7 @@ GST_END_TEST;
 GST_START_TEST (test_ghost_pads_new_no_target_from_template)
 {
   GstPad *sinkpad, *ghostpad;
-
   GstPadTemplate *padtempl, *ghosttempl;
-
   GstCaps *padcaps, *ghostcaps, *newcaps;
   GstCaps *copypadcaps, *copyghostcaps;
 
@@ -626,12 +657,6 @@ GST_START_TEST (test_ghost_pads_new_no_target_from_template)
   fail_unless (padtempl != NULL);
   ghosttempl = gst_pad_template_new ("ghosttempl", GST_PAD_SINK,
       GST_PAD_ALWAYS, copyghostcaps);
-
-  /* FIXME : We should not have to unref those caps, but due to 
-   * a bug in gst_pad_template_new() not stealing the refcount of
-   * the given caps we have to. */
-  gst_caps_unref (copyghostcaps);
-  gst_caps_unref (copypadcaps);
 
   sinkpad = gst_pad_new_from_template (padtempl, "sinkpad");
   fail_unless (sinkpad != NULL);
@@ -685,9 +710,10 @@ GST_START_TEST (test_ghost_pads_forward_setcaps)
   templ_caps = gst_caps_from_string ("meh; muh");
   src_template = gst_pad_template_new ("src", GST_PAD_SRC,
       GST_PAD_ALWAYS, templ_caps);
+
+  templ_caps = gst_caps_from_string ("muh; meh");
   sink_template = gst_pad_template_new ("sink", GST_PAD_SINK,
       GST_PAD_ALWAYS, templ_caps);
-  gst_caps_unref (templ_caps);
 
   src = gst_pad_new_from_template (src_template, "src");
   sink = gst_pad_new_from_template (sink_template, "sink");
@@ -770,6 +796,215 @@ GST_START_TEST (test_ghost_pads_forward_setcaps)
 
 GST_END_TEST;
 
+static gint linked_count1;
+static gint unlinked_count1;
+static gint linked_count2;
+static gint unlinked_count2;
+
+static GstPadLinkReturn
+pad_linked1 (GstPad * pad, GstPad * peer)
+{
+  linked_count1++;
+
+  return GST_PAD_LINK_OK;
+}
+
+static void
+pad_unlinked1 (GstPad * pad)
+{
+  unlinked_count1++;
+}
+
+static GstPadLinkReturn
+pad_linked2 (GstPad * pad, GstPad * peer)
+{
+  linked_count2++;
+
+  return GST_PAD_LINK_OK;
+}
+
+static void
+pad_unlinked2 (GstPad * pad)
+{
+  unlinked_count2++;
+}
+
+GST_START_TEST (test_ghost_pads_sink_link_unlink)
+{
+  GstCaps *padcaps;
+  GstPad *srcpad, *sinkpad, *ghostpad;
+  GstPadTemplate *srctempl, *sinktempl;
+  GstPadLinkReturn ret;
+  gboolean res;
+
+  padcaps = gst_caps_from_string ("some/caps");
+  fail_unless (padcaps != NULL);
+  srctempl = gst_pad_template_new ("srctempl", GST_PAD_SRC,
+      GST_PAD_ALWAYS, padcaps);
+
+  padcaps = gst_caps_from_string ("some/caps");
+  fail_unless (padcaps != NULL);
+  sinktempl = gst_pad_template_new ("sinktempl", GST_PAD_SINK,
+      GST_PAD_ALWAYS, padcaps);
+
+  srcpad = gst_pad_new_from_template (srctempl, "src");
+  fail_unless (srcpad != NULL);
+  sinkpad = gst_pad_new_from_template (sinktempl, "sink");
+  fail_unless (sinkpad != NULL);
+
+  /* set up link/unlink functions for the pad */
+  linked_count1 = unlinked_count1 = 0;
+  gst_pad_set_link_function (sinkpad, pad_linked1);
+  gst_pad_set_unlink_function (sinkpad, pad_unlinked1);
+  linked_count2 = unlinked_count2 = 0;
+  gst_pad_set_link_function (srcpad, pad_linked2);
+  gst_pad_set_unlink_function (srcpad, pad_unlinked2);
+
+  /* this should trigger a link from the internal pad to the sinkpad */
+  ghostpad = gst_ghost_pad_new ("ghostpad", sinkpad);
+  fail_unless (ghostpad != NULL);
+  fail_unless (linked_count1 == 1);
+  fail_unless (unlinked_count1 == 0);
+  fail_unless (linked_count2 == 0);
+  fail_unless (unlinked_count2 == 0);
+
+  /* this should not trigger anything because we are not directly
+   * linking/unlinking the sink pad. */
+  ret = gst_pad_link (srcpad, ghostpad);
+  fail_unless (ret == GST_PAD_LINK_OK);
+  fail_unless (linked_count1 == 1);
+  fail_unless (unlinked_count1 == 0);
+  fail_unless (linked_count2 == 1);
+  fail_unless (unlinked_count2 == 0);
+
+  res = gst_pad_unlink (srcpad, ghostpad);
+  fail_unless (res == TRUE);
+  fail_unless (linked_count1 == 1);
+  fail_unless (unlinked_count1 == 0);
+  fail_unless (linked_count2 == 1);
+  fail_unless (unlinked_count2 == 1);
+
+  /* this should trigger the unlink */
+  res = gst_ghost_pad_set_target (GST_GHOST_PAD_CAST (ghostpad), NULL);
+  fail_unless (res == TRUE);
+  fail_unless (linked_count1 == 1);
+  fail_unless (unlinked_count1 == 1);
+  fail_unless (linked_count2 == 1);
+  fail_unless (unlinked_count2 == 1);
+
+  gst_object_unref (ghostpad);
+  gst_object_unref (sinkpad);
+  gst_object_unref (srcpad);
+  gst_object_unref (srctempl);
+  gst_object_unref (sinktempl);
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_ghost_pads_src_link_unlink)
+{
+  GstCaps *padcaps;
+  GstPad *srcpad, *sinkpad, *ghostpad, *dummy;
+  GstPadTemplate *srctempl, *sinktempl;
+  GstPadLinkReturn ret;
+  gboolean res;
+
+  padcaps = gst_caps_from_string ("some/caps");
+  fail_unless (padcaps != NULL);
+  srctempl = gst_pad_template_new ("srctempl", GST_PAD_SRC,
+      GST_PAD_ALWAYS, padcaps);
+
+  padcaps = gst_caps_from_string ("some/caps");
+  fail_unless (padcaps != NULL);
+  sinktempl = gst_pad_template_new ("sinktempl", GST_PAD_SINK,
+      GST_PAD_ALWAYS, padcaps);
+
+  srcpad = gst_pad_new_from_template (srctempl, "src");
+  fail_unless (srcpad != NULL);
+  sinkpad = gst_pad_new_from_template (sinktempl, "sink");
+  fail_unless (sinkpad != NULL);
+
+  /* set up link/unlink functions for the pad */
+  linked_count1 = unlinked_count1 = 0;
+  gst_pad_set_link_function (srcpad, pad_linked1);
+  gst_pad_set_unlink_function (srcpad, pad_unlinked1);
+  linked_count2 = unlinked_count2 = 0;
+  gst_pad_set_link_function (sinkpad, pad_linked2);
+  gst_pad_set_unlink_function (sinkpad, pad_unlinked2);
+
+  /* this should trigger a link from the internal pad to the srcpad */
+  ghostpad = gst_ghost_pad_new ("ghostpad", srcpad);
+  fail_unless (ghostpad != NULL);
+  fail_unless (linked_count1 == 1);
+  fail_unless (unlinked_count1 == 0);
+  fail_unless (linked_count2 == 0);
+  fail_unless (unlinked_count2 == 0);
+
+  /* this should fail with a critial */
+  ASSERT_CRITICAL (dummy = gst_ghost_pad_new ("ghostpad", srcpad));
+  fail_unless (dummy == NULL);
+  fail_unless (linked_count1 == 1);
+  fail_unless (unlinked_count1 == 0);
+  fail_unless (linked_count2 == 0);
+  fail_unless (unlinked_count2 == 0);
+
+  /* this should not trigger anything because we are not directly
+   * linking/unlinking the src pad. */
+  ret = gst_pad_link (ghostpad, sinkpad);
+  fail_unless (ret == GST_PAD_LINK_OK);
+  fail_unless (linked_count1 == 1);
+  fail_unless (unlinked_count1 == 0);
+  fail_unless (linked_count2 == 1);
+  fail_unless (unlinked_count2 == 0);
+
+  /* this link should fail because we are already linked. Let's make sure the
+   * link functions are not called */
+  ret = gst_pad_link (ghostpad, sinkpad);
+  fail_unless (ret == GST_PAD_LINK_WAS_LINKED);
+  fail_unless (linked_count1 == 1);
+  fail_unless (unlinked_count1 == 0);
+  fail_unless (linked_count2 == 1);
+  fail_unless (unlinked_count2 == 0);
+
+  res = gst_pad_unlink (ghostpad, sinkpad);
+  fail_unless (res == TRUE);
+  fail_unless (linked_count1 == 1);
+  fail_unless (unlinked_count1 == 0);
+  fail_unless (linked_count2 == 1);
+  fail_unless (unlinked_count2 == 1);
+
+  res = gst_pad_unlink (ghostpad, sinkpad);
+  fail_unless (res == FALSE);
+  fail_unless (linked_count1 == 1);
+  fail_unless (unlinked_count1 == 0);
+  fail_unless (linked_count2 == 1);
+  fail_unless (unlinked_count2 == 1);
+
+  /* this should trigger the unlink function */
+  res = gst_ghost_pad_set_target (GST_GHOST_PAD_CAST (ghostpad), NULL);
+  fail_unless (res == TRUE);
+  fail_unless (linked_count1 == 1);
+  fail_unless (unlinked_count1 == 1);
+  fail_unless (linked_count2 == 1);
+  fail_unless (unlinked_count2 == 1);
+
+  /* and this the link function again */
+  res = gst_ghost_pad_set_target (GST_GHOST_PAD_CAST (ghostpad), srcpad);
+  fail_unless (res == TRUE);
+  fail_unless (linked_count1 == 2);
+  fail_unless (unlinked_count1 == 1);
+  fail_unless (linked_count2 == 1);
+  fail_unless (unlinked_count2 == 1);
+
+  gst_object_unref (ghostpad);
+  gst_object_unref (sinkpad);
+  gst_object_unref (srcpad);
+  gst_object_unref (srctempl);
+  gst_object_unref (sinktempl);
+}
+
+GST_END_TEST;
+
 static Suite *
 gst_ghost_pad_suite (void)
 {
@@ -780,6 +1015,7 @@ gst_ghost_pad_suite (void)
   suite_add_tcase (s, tc_chain);
   tcase_add_test (tc_chain, test_remove1);
   tcase_add_test (tc_chain, test_remove2);
+  tcase_add_test (tc_chain, test_remove_target);
   tcase_add_test (tc_chain, test_link);
   tcase_add_test (tc_chain, test_ghost_pads);
   tcase_add_test (tc_chain, test_ghost_pads_bin);
@@ -789,6 +1025,8 @@ gst_ghost_pad_suite (void)
   tcase_add_test (tc_chain, test_ghost_pads_new_from_template);
   tcase_add_test (tc_chain, test_ghost_pads_new_no_target_from_template);
   tcase_add_test (tc_chain, test_ghost_pads_forward_setcaps);
+  tcase_add_test (tc_chain, test_ghost_pads_sink_link_unlink);
+  tcase_add_test (tc_chain, test_ghost_pads_src_link_unlink);
 
   return s;
 }

@@ -81,14 +81,14 @@ gst_plugin_feature_finalize (GObject * object)
  * unaffected; use the return value instead.
  *
  * Normally this function is used like this:
- *
- * <programlisting>
+ * |[
  * GstPluginFeature *loaded_feature;
+ * 
  * loaded_feature = gst_plugin_feature_load (feature);
  * // presumably, we're no longer interested in the potentially-unloaded feature
  * gst_object_unref (feature);
  * feature = loaded_feature;
- * </programlisting>
+ * ]|
  *
  * Returns: A reference to the loaded feature, or NULL on error.
  */
@@ -159,6 +159,8 @@ gboolean
 gst_plugin_feature_type_name_filter (GstPluginFeature * feature,
     GstTypeNameData * data)
 {
+  g_return_val_if_fail (GST_IS_PLUGIN_FEATURE (feature), FALSE);
+
   return ((data->type == 0 || data->type == G_OBJECT_TYPE (feature)) &&
       (data->name == NULL
           || !strcmp (data->name, GST_PLUGIN_FEATURE_NAME (feature))));
@@ -185,7 +187,7 @@ gst_plugin_feature_set_name (GstPluginFeature * feature, const gchar * name)
   } else {
     feature->name = g_strdup (name);
   }
-  gst_object_set_name (GST_OBJECT (feature), feature->name);
+  gst_object_set_name (GST_OBJECT_CAST (feature), feature->name);
 }
 
 /**
@@ -288,12 +290,16 @@ gst_plugin_feature_check_version (GstPluginFeature * feature,
 
   if (plugin) {
     const gchar *ver_str;
-    guint major, minor, micro;
+    guint major, minor, micro, nano;
+    gint nscan;
 
     ver_str = gst_plugin_get_version (plugin);
     g_return_val_if_fail (ver_str != NULL, FALSE);
 
-    if (sscanf (ver_str, "%u.%u.%u", &major, &minor, &micro) == 3) {
+    nscan = sscanf (ver_str, "%u.%u.%u.%u", &major, &minor, &micro, &nano);
+    GST_DEBUG ("version string '%s' parsed to %d values", ver_str, nscan);
+
+    if (nscan >= 3) {
       if (major > min_major)
         ret = TRUE;
       else if (major < min_major)
@@ -303,6 +309,10 @@ gst_plugin_feature_check_version (GstPluginFeature * feature,
       else if (minor < min_minor)
         ret = FALSE;
       else if (micro > min_micro)
+        ret = TRUE;
+      /* micro is 1 smaller but we have a nano version, this is the upcomming
+       * release of the requested version and we're ok then */
+      else if (nscan == 4 && nano > 0 && (micro + 1 == min_micro))
         ret = TRUE;
       else
         ret = (micro == min_micro);

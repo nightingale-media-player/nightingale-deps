@@ -28,6 +28,7 @@
 
 #include <gst/gstobject.h>
 #include <gst/gstbuffer.h>
+#include <gst/gstbufferlist.h>
 #include <gst/gstcaps.h>
 #include <gst/gstevent.h>
 #include <gst/gstquery.h>
@@ -47,6 +48,7 @@ G_BEGIN_DECLS
 
 
 typedef struct _GstPad GstPad;
+typedef struct _GstPadPrivate GstPadPrivate;
 typedef struct _GstPadClass GstPadClass;
 
 /**
@@ -230,6 +232,26 @@ typedef gboolean		(*GstPadActivateModeFunction)	(GstPad *pad, gboolean active);
  * Returns: #GST_FLOW_OK for success
  */
 typedef GstFlowReturn		(*GstPadChainFunction)		(GstPad *pad, GstBuffer *buffer);
+
+/**
+ * GstPadChainListFunction:
+ * @pad: the sink #GstPad that performed the chain.
+ * @list: the #GstBufferList that is chained, not %NULL.
+ *
+ * A function that will be called on sinkpads when chaining buffer lists.
+ * The function typically processes the data contained in the buffer list and
+ * either consumes the data or passes it on to the internally linked pad(s).
+ *
+ * The implementer of this function receives a refcount to @list and
+ * should gst_buffer_list_unref() when the list is no longer needed.
+ *
+ * When a chainlist function detects an error in the data stream, it must
+ * post an error on the bus and return an appropriate #GstFlowReturn value.
+ *
+ * Returns: #GST_FLOW_OK for success
+ */
+typedef GstFlowReturn		(*GstPadChainListFunction)	(GstPad *pad, GstBufferList *list);
+
 /**
  * GstPadGetRangeFunction:
  * @pad: the src #GstPad to perform the getrange on.
@@ -546,7 +568,7 @@ typedef struct _GstPadTemplate GstPadTemplate;
  * @unlinkfunc: function called when pad is unlinked
  * @peer: the pad this pad is linked to
  * @sched_private: private storage for the scheduler
- * @chainfunc: function to chain data to pad
+ * @chainfunc: function to chain buffer to pad
  * @checkgetrangefunc: function to check if pad can operate in pull mode
  * @getrangefunc: function to get a range of data from a pad
  * @eventfunc: function to send an event to a pad
@@ -558,6 +580,7 @@ typedef struct _GstPadTemplate GstPadTemplate;
  * @do_buffer_signals: counter counting installed buffer signals
  * @do_event_signals: counter counting installed event signals
  * @iterintlinkfunc: get the internal links iterator of this pad
+ * @block_destroy_data: notify function for gst_pad_set_blocked_async_full()
  *
  * The #GstPad structure. Use the functions to update the variables.
  */
@@ -629,8 +652,17 @@ struct _GstPad {
   /* iterate internal links */
   GstPadIterIntLinkFunction     iterintlinkfunc;
 
+  /* free block_data */
+  GDestroyNotify block_destroy_data;
+
   /*< private >*/
-  gpointer _gst_reserved[GST_PADDING - 1];
+  union {
+    struct {
+      gboolean                      block_callback_called;
+      GstPadPrivate                *priv;
+    } ABI;
+    gpointer _gst_reserved[GST_PADDING - 2];
+  } abidata;
 };
 
 struct _GstPadClass {
@@ -666,7 +698,9 @@ struct _GstPadClass {
 #define GST_PAD_EVENTFUNC(pad)		(GST_PAD_CAST(pad)->eventfunc)
 #define GST_PAD_QUERYTYPEFUNC(pad)	(GST_PAD_CAST(pad)->querytypefunc)
 #define GST_PAD_QUERYFUNC(pad)		(GST_PAD_CAST(pad)->queryfunc)
+#ifndef GST_DISABLE_DEPRECATED
 #define GST_PAD_INTLINKFUNC(pad)	(GST_PAD_CAST(pad)->intlinkfunc)
+#endif
 #define GST_PAD_ITERINTLINKFUNC(pad)    (GST_PAD_CAST(pad)->iterintlinkfunc)
 
 #define GST_PAD_PEER(pad)		(GST_PAD_CAST(pad)->peer)
@@ -809,6 +843,9 @@ gboolean		gst_pad_activate_push			(GstPad *pad, gboolean active);
 gboolean		gst_pad_set_blocked			(GstPad *pad, gboolean blocked);
 gboolean		gst_pad_set_blocked_async		(GstPad *pad, gboolean blocked,
 								 GstPadBlockCallback callback, gpointer user_data);
+gboolean		gst_pad_set_blocked_async_full		(GstPad *pad, gboolean blocked,
+								 GstPadBlockCallback callback, gpointer user_data,
+                                                                 GDestroyNotify destroy_data);
 gboolean		gst_pad_is_blocked			(GstPad *pad);
 gboolean		gst_pad_is_blocking			(GstPad *pad);
 
@@ -828,6 +865,7 @@ void			gst_pad_set_activate_function		(GstPad *pad, GstPadActivateFunction activ
 void			gst_pad_set_activatepull_function	(GstPad *pad, GstPadActivateModeFunction activatepull);
 void			gst_pad_set_activatepush_function	(GstPad *pad, GstPadActivateModeFunction activatepush);
 void			gst_pad_set_chain_function		(GstPad *pad, GstPadChainFunction chain);
+void			gst_pad_set_chain_list_function	(GstPad *pad, GstPadChainListFunction chainlist);
 void			gst_pad_set_getrange_function		(GstPad *pad, GstPadGetRangeFunction get);
 void			gst_pad_set_checkgetrange_function	(GstPad *pad, GstPadCheckGetRangeFunction check);
 void			gst_pad_set_event_function		(GstPad *pad, GstPadEventFunction event);
@@ -836,6 +874,7 @@ void			gst_pad_set_event_function		(GstPad *pad, GstPadEventFunction event);
 void			gst_pad_set_link_function		(GstPad *pad, GstPadLinkFunction link);
 void			gst_pad_set_unlink_function		(GstPad *pad, GstPadUnlinkFunction unlink);
 
+gboolean                gst_pad_can_link                        (GstPad *srcpad, GstPad *sinkpad);
 GstPadLinkReturn        gst_pad_link				(GstPad *srcpad, GstPad *sinkpad);
 gboolean		gst_pad_unlink				(GstPad *srcpad, GstPad *sinkpad);
 gboolean		gst_pad_is_linked			(GstPad *pad);
@@ -865,6 +904,7 @@ GstCaps *		gst_pad_get_negotiated_caps		(GstPad * pad);
 
 /* data passing functions to peer */
 GstFlowReturn		gst_pad_push				(GstPad *pad, GstBuffer *buffer);
+GstFlowReturn		gst_pad_push_list			(GstPad *pad, GstBufferList *list);
 gboolean		gst_pad_check_pull_range		(GstPad *pad);
 GstFlowReturn		gst_pad_pull_range			(GstPad *pad, guint64 offset, guint size,
 								 GstBuffer **buffer);
@@ -873,6 +913,7 @@ gboolean		gst_pad_event_default			(GstPad *pad, GstEvent *event);
 
 /* data passing functions on pad */
 GstFlowReturn		gst_pad_chain				(GstPad *pad, GstBuffer *buffer);
+GstFlowReturn		gst_pad_chain_list                      (GstPad *pad, GstBufferList *list);
 GstFlowReturn		gst_pad_get_range			(GstPad *pad, guint64 offset, guint size,
 								 GstBuffer **buffer);
 gboolean		gst_pad_send_event			(GstPad *pad, GstEvent *event);
@@ -884,9 +925,11 @@ gboolean		gst_pad_pause_task			(GstPad *pad);
 gboolean		gst_pad_stop_task			(GstPad *pad);
 
 /* internal links */
+#ifndef GST_DISABLE_DEPRECATED
 void			gst_pad_set_internal_link_function	(GstPad *pad, GstPadIntLinkFunction intlink);
 GList*			gst_pad_get_internal_links		(GstPad *pad);
 GList*			gst_pad_get_internal_links_default	(GstPad *pad);
+#endif
 
 void                    gst_pad_set_iterate_internal_links_function (GstPad * pad,
                                                                  GstPadIterIntLinkFunction iterintlink);

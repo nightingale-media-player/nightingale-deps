@@ -61,6 +61,15 @@
 #include "gst/gst_private.h"
 
 #include <sys/types.h>
+
+#ifdef G_OS_WIN32
+#include <io.h>                 /* lseek, open, close, read */
+#undef lseek
+#define lseek _lseeki64
+#undef off_t
+#define off_t guint64
+#endif
+
 #include <sys/stat.h>
 #include <sys/socket.h>
 #include <fcntl.h>
@@ -152,11 +161,9 @@ gst_fd_src_class_init (GstFdSrcClass * klass)
 {
   GObjectClass *gobject_class;
   GstBaseSrcClass *gstbasesrc_class;
-  GstElementClass *gstelement_class;
   GstPushSrcClass *gstpush_src_class;
 
   gobject_class = G_OBJECT_CLASS (klass);
-  gstelement_class = GST_ELEMENT_CLASS (klass);
   gstbasesrc_class = GST_BASE_SRC_CLASS (klass);
   gstpush_src_class = GST_PUSH_SRC_CLASS (klass);
 

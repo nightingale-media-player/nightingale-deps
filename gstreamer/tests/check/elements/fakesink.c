@@ -4,6 +4,7 @@
  *
  * Copyright (C) <2005> Thomas Vander Stichele <thomas at apestaart dot org>
  *               <2007> Wim Taymans <wim@fluendo.com>
+ *               <2009> Tim-Philipp Müller <tim centricular net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,6 +24,7 @@
 
 #include <unistd.h>
 
+#include <gst/base/gstpushsrc.h>
 #include <gst/check/gstcheck.h>
 
 typedef struct
@@ -218,6 +220,15 @@ GST_START_TEST (test_clipping)
 
 GST_END_TEST;
 
+static gint num_preroll = 0;
+
+static void
+preroll_count (GstElement * sink)
+{
+  num_preroll++;
+  GST_DEBUG ("got preroll handoff %d", num_preroll);
+}
+
 GST_START_TEST (test_preroll_sync)
 {
   GstElement *pipeline, *sink;
@@ -231,6 +242,10 @@ GST_START_TEST (test_preroll_sync)
   sink = gst_element_factory_make ("fakesink", "sink");
   fail_if (sink == NULL);
   g_object_set (G_OBJECT (sink), "sync", TRUE, NULL);
+  g_object_set (G_OBJECT (sink), "signal-handoffs", TRUE, NULL);
+  g_signal_connect (sink, "preroll-handoff", G_CALLBACK (preroll_count), NULL);
+
+  fail_unless (num_preroll == 0);
 
   gst_bin_add (GST_BIN (pipeline), sink);
 
@@ -248,7 +263,7 @@ GST_START_TEST (test_preroll_sync)
 
     GST_DEBUG ("sending segment");
     segment = gst_event_new_new_segment (FALSE,
-        1.0, GST_FORMAT_TIME, 0 * GST_SECOND, 2 * GST_SECOND, 0 * GST_SECOND);
+        1.0, GST_FORMAT_TIME, 0 * GST_SECOND, 102 * GST_SECOND, 0 * GST_SECOND);
 
     eret = gst_pad_send_event (sinkpad, segment);
     fail_if (eret == FALSE);
@@ -277,6 +292,8 @@ GST_START_TEST (test_preroll_sync)
     fail_unless (current == GST_STATE_PAUSED);
     fail_unless (pending == GST_STATE_VOID_PENDING);
 
+    fail_unless (num_preroll == 1);
+
     /* playing should render the buffer */
     ret = gst_element_set_state (pipeline, GST_STATE_PLAYING);
     fail_unless (ret == GST_STATE_CHANGE_SUCCESS);
@@ -284,6 +301,40 @@ GST_START_TEST (test_preroll_sync)
     /* and we should get a success return value */
     fret = chain_async_return (data);
     fail_if (fret != GST_FLOW_OK);
+
+    /* now we are playing no new preroll was done */
+    fail_unless (num_preroll == 1);
+
+    buffer = gst_buffer_new ();
+    /* far in the future to make sure we block */
+    GST_BUFFER_TIMESTAMP (buffer) = 100 * GST_SECOND;
+    GST_BUFFER_DURATION (buffer) = 100 * GST_SECOND;
+    data = chain_async (sinkpad, buffer);
+    fail_if (data == NULL);
+
+    g_usleep (1000000);
+
+    /* pause again. Since the buffer has a humongous timestamp we likely
+     * interrupt the clock_wait and we should preroll on this buffer again */
+    ret = gst_element_set_state (pipeline, GST_STATE_PAUSED);
+    fail_unless (ret == GST_STATE_CHANGE_ASYNC);
+
+    ret =
+        gst_element_get_state (pipeline, &current, &pending,
+        GST_CLOCK_TIME_NONE);
+    fail_unless (ret == GST_STATE_CHANGE_SUCCESS);
+    fail_unless (current == GST_STATE_PAUSED);
+    fail_unless (pending == GST_STATE_VOID_PENDING);
+
+    fail_unless (num_preroll == 2);
+
+    /* shutdown */
+    ret = gst_element_set_state (pipeline, GST_STATE_READY);
+    fail_unless (ret == GST_STATE_CHANGE_SUCCESS);
+
+    /* should be wrong state now */
+    fret = chain_async_return (data);
+    fail_if (fret != GST_FLOW_WRONG_STATE);
   }
   gst_element_set_state (pipeline, GST_STATE_NULL);
   gst_element_get_state (pipeline, NULL, NULL, GST_CLOCK_TIME_NONE);
@@ -809,6 +860,106 @@ GST_START_TEST (test_position)
 
 GST_END_TEST;
 
+/* like fakesrc, but also pushes an OOB event after each buffer */
+typedef GstPushSrc OOBSource;
+typedef GstPushSrcClass OOBSourceClass;
+
+GST_BOILERPLATE (OOBSource, oob_source, GstPushSrc, GST_TYPE_PUSH_SRC);
+
+static void
+oob_source_base_init (gpointer g_class)
+{
+  static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("src",
+      GST_PAD_SRC, GST_PAD_ALWAYS, GST_STATIC_CAPS_ANY);
+
+  gst_element_class_add_pad_template (GST_ELEMENT_CLASS (g_class),
+      gst_static_pad_template_get (&sinktemplate));
+}
+
+static GstFlowReturn
+oob_source_create (GstPushSrc * src, GstBuffer ** p_buf)
+{
+  *p_buf = gst_buffer_new ();
+
+  gst_pad_push_event (GST_BASE_SRC_PAD (src),
+      gst_event_new_custom (GST_EVENT_CUSTOM_DOWNSTREAM_OOB, NULL));
+
+  return GST_FLOW_OK;
+}
+
+static void
+oob_source_class_init (OOBSourceClass * klass)
+{
+  GstPushSrcClass *pushsrc_class = GST_PUSH_SRC_CLASS (klass);
+
+  pushsrc_class->create = GST_DEBUG_FUNCPTR (oob_source_create);
+}
+
+static void
+oob_source_init (OOBSource * src, OOBSourceClass * g_class)
+{
+  /* nothing to do */
+}
+
+#define NOTIFY_RACE_NUM_PIPELINES 20
+
+typedef struct
+{
+  GstElement *src;
+  GstElement *queue;
+  GstElement *sink;
+  GstElement *pipe;
+} NotifyRacePipeline;
+
+static void
+test_notify_race_setup_pipeline (NotifyRacePipeline * p)
+{
+  p->pipe = gst_pipeline_new ("pipeline");
+  p->src = g_object_new (oob_source_get_type (), NULL);
+
+  p->queue = gst_element_factory_make ("queue", NULL);
+  g_object_set (p->queue, "max-size-buffers", 2, NULL);
+
+  p->sink = gst_element_factory_make ("fakesink", NULL);
+  gst_bin_add (GST_BIN (p->pipe), p->src);
+  gst_bin_add (GST_BIN (p->pipe), p->queue);
+  gst_bin_add (GST_BIN (p->pipe), p->sink);
+  gst_element_link_many (p->src, p->queue, p->sink, NULL);
+
+  fail_unless_equals_int (gst_element_set_state (p->pipe, GST_STATE_PLAYING),
+      GST_STATE_CHANGE_ASYNC);
+  fail_unless_equals_int (gst_element_get_state (p->pipe, NULL, NULL, -1),
+      GST_STATE_CHANGE_SUCCESS);
+}
+
+static void
+test_notify_race_cleanup_pipeline (NotifyRacePipeline * p)
+{
+  gst_element_set_state (p->pipe, GST_STATE_NULL);
+  gst_object_unref (p->pipe);
+  memset (p, 0, sizeof (NotifyRacePipeline));
+}
+
+/* we create N pipelines to make sure the notify race isn't per-class, but
+ * only per instance */
+GST_START_TEST (test_notify_race)
+{
+  NotifyRacePipeline pipelines[NOTIFY_RACE_NUM_PIPELINES];
+  int i;
+
+  for (i = 0; i < G_N_ELEMENTS (pipelines); ++i) {
+    test_notify_race_setup_pipeline (&pipelines[i]);
+  }
+
+  g_usleep (2 * G_USEC_PER_SEC);
+
+  for (i = 0; i < G_N_ELEMENTS (pipelines); ++i) {
+    test_notify_race_cleanup_pipeline (&pipelines[i]);
+  }
+}
+
+GST_END_TEST;
+
 static Suite *
 fakesink_suite (void)
 {
@@ -823,6 +974,7 @@ fakesink_suite (void)
   tcase_add_test (tc_chain, test_eos);
   tcase_add_test (tc_chain, test_eos2);
   tcase_add_test (tc_chain, test_position);
+  tcase_add_test (tc_chain, test_notify_race);
 
   return s;
 }

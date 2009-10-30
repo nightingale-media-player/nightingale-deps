@@ -131,9 +131,9 @@ GST_START_TEST (test_get_uint_le)
   };
   GstByteReader reader = GST_BYTE_READER_INIT (data, 16);
   guint8 a;
-  guint16 b;
-  guint32 c;
-  guint64 d;
+  guint16 b = 0;
+  guint32 c = 0;
+  guint64 d = 0;
 
   GET_CHECK8 (&reader, a, 0x12);
   GET_CHECK (&reader, b, 16, le, 0x5634);
@@ -174,9 +174,9 @@ GST_START_TEST (test_get_uint_be)
   };
   GstByteReader reader = GST_BYTE_READER_INIT (data, 16);
   guint8 a;
-  guint16 b;
-  guint32 c;
-  guint64 d;
+  guint16 b = 0;
+  guint32 c = 0;
+  guint64 d = 0;
 
   GET_CHECK8 (&reader, a, 0x12);
   GET_CHECK (&reader, b, 16, be, 0x3456);
@@ -262,9 +262,9 @@ GST_START_TEST (test_get_int_le)
   };
   GstByteReader reader = GST_BYTE_READER_INIT (data, 16);
   gint8 a;
-  gint16 b;
-  gint32 c;
-  gint64 d;
+  gint16 b = 0;
+  gint32 c = 0;
+  gint64 d = 0;
 
   GET_CHECK8 (&reader, a, -1);
   GET_CHECK (&reader, b, 16, le, -1);
@@ -306,9 +306,9 @@ GST_START_TEST (test_get_int_be)
   };
   GstByteReader reader = GST_BYTE_READER_INIT (data, 16);
   gint8 a;
-  gint16 b;
-  gint32 c;
-  gint64 d;
+  gint16 b = 0;
+  gint32 c = 0;
+  gint64 d = 0;
 
   GET_CHECK8 (&reader, a, -1);
   GET_CHECK (&reader, b, 16, be, -1);
@@ -460,6 +460,226 @@ GST_START_TEST (test_position_tracking)
 
 GST_END_TEST;
 
+#define do_scan(r,m,p,o,s,x) \
+    fail_unless_equals_int (gst_byte_reader_masked_scan_uint32 (r,m,p,o,s), x);
+
+GST_START_TEST (test_scan)
+{
+  GstByteReader reader;
+  guint8 data[200];
+  guint i;
+
+  /* fill half the buffer with a pattern */
+  for (i = 0; i < 100; i++)
+    data[i] = i;
+
+  gst_byte_reader_init (&reader, data, 100);
+
+  /* find first bytes */
+  do_scan (&reader, 0xffffffff, 0x00010203, 0, 100, 0);
+  do_scan (&reader, 0xffffffff, 0x01020304, 0, 100, 1);
+  do_scan (&reader, 0xffffffff, 0x01020304, 1, 99, 1);
+  /* offset is past the pattern start */
+  do_scan (&reader, 0xffffffff, 0x01020304, 2, 98, -1);
+  /* not enough bytes to find the pattern */
+  do_scan (&reader, 0xffffffff, 0x02030405, 2, 3, -1);
+  do_scan (&reader, 0xffffffff, 0x02030405, 2, 4, 2);
+  /* size does not include the last scanned byte */
+  do_scan (&reader, 0xffffffff, 0x40414243, 0, 0x41, -1);
+  do_scan (&reader, 0xffffffff, 0x40414243, 0, 0x43, -1);
+  do_scan (&reader, 0xffffffff, 0x40414243, 0, 0x44, 0x40);
+  /* past the start */
+  do_scan (&reader, 0xffffffff, 0x40414243, 65, 10, -1);
+  do_scan (&reader, 0xffffffff, 0x40414243, 64, 5, 64);
+  do_scan (&reader, 0xffffffff, 0x60616263, 65, 35, 0x60);
+  do_scan (&reader, 0xffffffff, 0x60616263, 0x60, 4, 0x60);
+  /* past the start */
+  do_scan (&reader, 0xffffffff, 0x60616263, 0x61, 3, -1);
+  do_scan (&reader, 0xffffffff, 0x60616263, 99, 1, -1);
+
+  /* add more data to the buffer */
+  for (i = 100; i < 200; i++)
+    data[i] = i;
+  gst_byte_reader_init (&reader, data, 200);
+
+  /* past the start */
+  do_scan (&reader, 0xffffffff, 0x60616263, 0x61, 6, -1);
+  /* this should work */
+  do_scan (&reader, 0xffffffff, 0x61626364, 0x61, 4, 0x61);
+  /* not enough data */
+  do_scan (&reader, 0xffffffff, 0x62636465, 0x61, 4, -1);
+  do_scan (&reader, 0xffffffff, 0x62636465, 0x61, 5, 0x62);
+  do_scan (&reader, 0xffffffff, 0x62636465, 0, 120, 0x62);
+
+  /* border conditions */
+  do_scan (&reader, 0xffffffff, 0x62636465, 0, 200, 0x62);
+  do_scan (&reader, 0xffffffff, 0x63646566, 0, 200, 0x63);
+  /* we completely searched the first list */
+  do_scan (&reader, 0xffffffff, 0x64656667, 0, 200, 0x64);
+  /* skip first buffer */
+  do_scan (&reader, 0xffffffff, 0x64656667, 0x64, 100, 0x64);
+  /* past the start */
+  do_scan (&reader, 0xffffffff, 0x64656667, 0x65, 10, -1);
+  /* not enough data to scan */
+  do_scan (&reader, 0xffffffff, 0x64656667, 0x63, 4, -1);
+  do_scan (&reader, 0xffffffff, 0x64656667, 0x63, 5, 0x64);
+  do_scan (&reader, 0xffffffff, 0xc4c5c6c7, 0, 199, -1);
+  do_scan (&reader, 0xffffffff, 0xc4c5c6c7, 0x62, 102, 0xc4);
+  /* different masks */
+  do_scan (&reader, 0x00ffffff, 0x00656667, 0x64, 100, 0x64);
+  do_scan (&reader, 0x000000ff, 0x00000000, 0, 100, -1);
+  do_scan (&reader, 0x000000ff, 0x00000003, 0, 100, 0);
+  do_scan (&reader, 0x000000ff, 0x00000061, 0x61, 100, -1);
+  do_scan (&reader, 0xff000000, 0x61000000, 0, 0x62, -1);
+  /* does not even exist */
+  do_scan (&reader, 0x00ffffff, 0xffffffff, 0x65, 99, -1);
+
+  /* flush some bytes */
+  gst_byte_reader_skip (&reader, 0x20);
+
+  do_scan (&reader, 0xffffffff, 0x20212223, 0, 100, 0);
+  do_scan (&reader, 0xffffffff, 0x20212223, 0, 4, 0);
+  do_scan (&reader, 0xffffffff, 0xc4c5c6c7, 0x62, 70, 0xa4);
+  do_scan (&reader, 0xffffffff, 0xc4c5c6c7, 0, 168, 0xa4);
+
+  do_scan (&reader, 0xffffffff, 0xc4c5c6c7, 164, 4, 0xa4);
+  do_scan (&reader, 0xffffffff, 0xc4c5c6c7, 0x44, 100, 0xa4);
+
+  /* not enough bytes */
+  do_scan (&reader, 0xffffffff, 0xc4c5c6c7, 0x44, 99, -1);
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_string_funcs)
+{
+  GstByteReader reader, backup;
+  const gchar *s8;
+  guint32 *c32;
+  guint16 *c16;
+  gchar *c8;
+  guint8 data[200], *d = 0;
+  guint i;
+
+  /* fill half the buffer with a pattern */
+  for (i = 0; i < 100; i++)
+    data[i] = i + 1;
+
+  gst_byte_reader_init (&reader, data, 100);
+
+  /* no NUL terminator, so these should all fail */
+  fail_if (gst_byte_reader_get_string (&reader, &s8));
+  fail_if (gst_byte_reader_get_string_utf8 (&reader, &s8));
+  fail_if (gst_byte_reader_dup_string (&reader, &c8));
+  fail_if (gst_byte_reader_dup_string_utf8 (&reader, &c8));
+  fail_if (gst_byte_reader_skip_string (&reader));
+  fail_if (gst_byte_reader_skip_string_utf8 (&reader));
+  fail_if (gst_byte_reader_skip_string_utf16 (&reader));
+  fail_if (gst_byte_reader_skip_string_utf32 (&reader));
+  fail_if (gst_byte_reader_peek_string (&reader, &s8));
+  fail_if (gst_byte_reader_peek_string_utf8 (&reader, &s8));
+  fail_if (gst_byte_reader_dup_string_utf16 (&reader, &c16));
+  fail_if (gst_byte_reader_dup_string_utf32 (&reader, &c32));
+
+  /* let's add a single NUL terminator */
+  data[80] = '\0';
+  backup = reader;
+  fail_if (gst_byte_reader_skip_string_utf32 (&reader));
+  fail_if (gst_byte_reader_skip_string_utf16 (&reader));
+  fail_if (gst_byte_reader_dup_string_utf16 (&reader, &c16));
+  fail_if (gst_byte_reader_dup_string_utf32 (&reader, &c32));
+  fail_unless (gst_byte_reader_skip_string (&reader));
+  reader = backup;
+  fail_unless (gst_byte_reader_skip_string_utf8 (&reader));
+  reader = backup;
+  fail_unless (gst_byte_reader_peek_string (&reader, &s8));
+  fail_unless (gst_byte_reader_peek_string_utf8 (&reader, &s8));
+  fail_if (gst_byte_reader_dup_string_utf16 (&reader, &c16));
+  fail_if (gst_byte_reader_dup_string_utf32 (&reader, &c32));
+
+  /* let's add another NUL terminator */
+  data[81] = '\0';
+  reader = backup;
+  fail_if (gst_byte_reader_skip_string_utf32 (&reader));
+  fail_if (gst_byte_reader_dup_string_utf32 (&reader, &c32));
+  fail_unless (gst_byte_reader_skip_string_utf16 (&reader));
+  reader = backup;
+  fail_unless (gst_byte_reader_dup_string_utf16 (&reader, &c16));
+  g_free (c16);
+  reader = backup;
+  fail_unless (gst_byte_reader_skip_string (&reader));
+  reader = backup;
+  fail_unless (gst_byte_reader_skip_string_utf8 (&reader));
+  reader = backup;
+  fail_unless (gst_byte_reader_peek_string (&reader, &s8));
+  fail_unless (gst_byte_reader_peek_string_utf8 (&reader, &s8));
+  fail_if (gst_byte_reader_dup_string_utf32 (&reader, &c32));
+
+  /* two more NUL terminators */
+  data[79] = '\0';
+  data[82] = '\0';
+  reader = backup;
+  /* we're at pos. 80 now, so have only 3 NUL terminators in front of us */
+  fail_if (gst_byte_reader_skip_string_utf32 (&reader));
+  /* let's rewind */
+  gst_byte_reader_init (&reader, data, 100);
+  backup = reader;
+  /* oops, 79 is not dividable by 4, so not aligned, so should fail as well! */
+  fail_if (gst_byte_reader_skip_string_utf32 (&reader));
+  /* let's try that again */
+  data[83] = '\0';
+  gst_byte_reader_init (&reader, data, 100);
+  backup = reader;
+  fail_unless (gst_byte_reader_skip_string_utf16 (&reader));
+  reader = backup;
+  fail_unless (gst_byte_reader_skip_string (&reader));
+  reader = backup;
+  fail_unless (gst_byte_reader_skip_string_utf8 (&reader));
+  reader = backup;
+  fail_unless (gst_byte_reader_peek_string (&reader, &s8));
+  fail_unless (gst_byte_reader_peek_string_utf8 (&reader, &s8));
+  fail_unless (gst_byte_reader_dup_string_utf16 (&reader, &c16));
+  g_free (c16);
+  reader = backup;
+  fail_unless (gst_byte_reader_dup_string_utf32 (&reader, &c32));
+  g_free (c32);
+
+  /* and again from the start */
+  gst_byte_reader_init (&reader, data, 100);
+  fail_unless (gst_byte_reader_skip_string_utf16 (&reader));
+  fail_if (gst_byte_reader_dup_data (&reader, 200, &d));
+  fail_if (gst_byte_reader_dup_data (&reader, 100, &d));
+  fail_if (gst_byte_reader_dup_data (&reader, 20, &d));
+  fail_unless (gst_byte_reader_dup_data (&reader, 10, &d));
+  fail_unless_equals_int (d[0], 0);
+  fail_unless_equals_int (d[1], 0);
+  fail_unless_equals_int (d[2], 85);
+  fail_unless_equals_int (d[3], 86);
+  g_free (d);
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_dup_string)
+{
+  const gchar moredata[] = { 0x99, 0x10, 'f', '0', '0', '!', '\0', 0xff };
+  GstByteReader reader;
+  guint16 num = 0;
+  guint8 x = 0;
+  gchar *s;
+
+  gst_byte_reader_init (&reader, (guint8 *) moredata, sizeof (moredata));
+  fail_unless (gst_byte_reader_get_uint16_be (&reader, &num));
+  fail_unless_equals_int (num, 0x9910);
+  fail_unless (gst_byte_reader_dup_string (&reader, &s));
+  fail_unless_equals_string (s, "f00!");
+  fail_unless (gst_byte_reader_get_uint8 (&reader, &x));
+  fail_unless_equals_int (x, 0xff);
+  g_free (s);
+}
+
+GST_END_TEST;
+
 static Suite *
 gst_byte_reader_suite (void)
 {
@@ -476,6 +696,9 @@ gst_byte_reader_suite (void)
   tcase_add_test (tc_chain, test_get_float_le);
   tcase_add_test (tc_chain, test_get_float_be);
   tcase_add_test (tc_chain, test_position_tracking);
+  tcase_add_test (tc_chain, test_scan);
+  tcase_add_test (tc_chain, test_string_funcs);
+  tcase_add_test (tc_chain, test_dup_string);
 
   return s;
 }

@@ -6,9 +6,9 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer 0.10 Core Reference Manual">
 <link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
-<link rel="prev" href="GstTask.html" title="GstTask">
+<link rel="prev" href="GstTaskPool.html" title="GstTaskPool">
 <link rel="next" href="GstTypeFindFactory.html" title="GstTypeFindFactory">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
@@ -20,15 +20,17 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="GstTask.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="GstTaskPool.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="libgstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
 <td><a accesskey="n" href="GstTypeFindFactory.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-GstTypeFind.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gstreamer-GstTypeFind.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gstreamer-GstTypeFind.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gstreamer-GstTypeFind.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-GstTypeFind"></a><div class="titlepage"></div>
@@ -48,52 +50,52 @@
                     <a class="link" href="gstreamer-GstTypeFind.html#GstTypeFind" title="GstTypeFind">GstTypeFind</a>;
 void                (<a class="link" href="gstreamer-GstTypeFind.html#GstTypeFindFunction" title="GstTypeFindFunction ()">*GstTypeFindFunction</a>)              (<a class="link" href="gstreamer-GstTypeFind.html#GstTypeFind" title="GstTypeFind">GstTypeFind</a> *find,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> data);
 enum                <a class="link" href="gstreamer-GstTypeFind.html#GstTypeFindProbability" title="enum GstTypeFindProbability">GstTypeFindProbability</a>;
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
->guint8</a>*             <a class="link" href="gstreamer-GstTypeFind.html#gst-type-find-peek" title="gst_type_find_peek ()">gst_type_find_peek</a>                  (<a class="link" href="gstreamer-GstTypeFind.html#GstTypeFind" title="GstTypeFind">GstTypeFind</a> *find,
+href="../glib/glib-Basic-Types.html#guint8"
+>guint8</a> *            <a class="link" href="gstreamer-GstTypeFind.html#gst-type-find-peek" title="gst_type_find_peek ()">gst_type_find_peek</a>                  (<a class="link" href="gstreamer-GstTypeFind.html#GstTypeFind" title="GstTypeFind">GstTypeFind</a> *find,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> offset,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a> size);
 void                <a class="link" href="gstreamer-GstTypeFind.html#gst-type-find-suggest" title="gst_type_find_suggest ()">gst_type_find_suggest</a>               (<a class="link" href="gstreamer-GstTypeFind.html#GstTypeFind" title="GstTypeFind">GstTypeFind</a> *find,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a> probability,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
 void                <a class="link" href="gstreamer-GstTypeFind.html#gst-type-find-suggest-simple" title="gst_type_find_suggest_simple ()">gst_type_find_suggest_simple</a>        (<a class="link" href="gstreamer-GstTypeFind.html#GstTypeFind" title="GstTypeFind">GstTypeFind</a> *find,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a> probability,
                                                          const char *media_type,
                                                          const char *fieldname,
                                                          ...);
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+href="../glib/glib-Basic-Types.html#guint64"
 >guint64</a>             <a class="link" href="gstreamer-GstTypeFind.html#gst-type-find-get-length" title="gst_type_find_get_length ()">gst_type_find_get_length</a>            (<a class="link" href="gstreamer-GstTypeFind.html#GstTypeFind" title="GstTypeFind">GstTypeFind</a> *find);
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            <a class="link" href="gstreamer-GstTypeFind.html#gst-type-find-register" title="gst_type_find_register ()">gst_type_find_register</a>              (<a class="link" href="GstPlugin.html" title="GstPlugin">GstPlugin</a> *plugin,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a> rank,
                                                          <a class="link" href="gstreamer-GstTypeFind.html#GstTypeFindFunction" title="GstTypeFindFunction ()">GstTypeFindFunction</a> func,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> **extensions,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *possible_caps,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> data,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"
+href="../glib/glib-Datasets.html#GDestroyNotify"
 >GDestroyNotify</a> data_notify);
 </pre>
 </div>
@@ -106,7 +108,6 @@ stream.
 <p>
 Last reviewed on 2005-11-09 (0.9.4)</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -132,7 +133,6 @@ Last reviewed on 2005-11-09 (0.9.4)</p>
 <p>
 Object that stores typefind callbacks. To use with <a class="link" href="GstTypeFindFactory.html" title="GstTypeFindFactory"><span class="type">GstTypeFindFactory</span></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -149,7 +149,7 @@ Object that stores typefind callbacks. To use with <a class="link" href="GstType
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> <em class="structfield"><code>data</code></em>;</span></p></td>
 <td> The data used by the caller of the typefinding function.
 </td>
@@ -167,12 +167,11 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 <a name="GstTypeFindFunction"></a><h3>GstTypeFindFunction ()</h3>
 <pre class="programlisting">void                (*GstTypeFindFunction)              (<a class="link" href="gstreamer-GstTypeFind.html#GstTypeFind" title="GstTypeFind">GstTypeFind</a> *find,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> data);</pre>
 <p>
 A function that will be called by typefinding.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -205,33 +204,32 @@ A function that will be called by typefinding.</p>
 The probability of the typefind function. Higher values have more certainty
 in doing a reliable typefind.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-TYPE-FIND-MINIMUM:CAPS"></a><span class="term"><code class="literal">GST_TYPE_FIND_MINIMUM</code></span></p></td>
+<td><p><a name="GST-TYPE-FIND-MINIMUM--CAPS"></a><span class="term"><code class="literal">GST_TYPE_FIND_MINIMUM</code></span></p></td>
 <td> unlikely typefind
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-TYPE-FIND-POSSIBLE:CAPS"></a><span class="term"><code class="literal">GST_TYPE_FIND_POSSIBLE</code></span></p></td>
+<td><p><a name="GST-TYPE-FIND-POSSIBLE--CAPS"></a><span class="term"><code class="literal">GST_TYPE_FIND_POSSIBLE</code></span></p></td>
 <td> possible type detected
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-TYPE-FIND-LIKELY:CAPS"></a><span class="term"><code class="literal">GST_TYPE_FIND_LIKELY</code></span></p></td>
+<td><p><a name="GST-TYPE-FIND-LIKELY--CAPS"></a><span class="term"><code class="literal">GST_TYPE_FIND_LIKELY</code></span></p></td>
 <td> likely a type was detected
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-TYPE-FIND-NEARLY-CERTAIN:CAPS"></a><span class="term"><code class="literal">GST_TYPE_FIND_NEARLY_CERTAIN</code></span></p></td>
+<td><p><a name="GST-TYPE-FIND-NEARLY-CERTAIN--CAPS"></a><span class="term"><code class="literal">GST_TYPE_FIND_NEARLY_CERTAIN</code></span></p></td>
 <td> nearly certain that a type was detected
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-TYPE-FIND-MAXIMUM:CAPS"></a><span class="term"><code class="literal">GST_TYPE_FIND_MAXIMUM</code></span></p></td>
+<td><p><a name="GST-TYPE-FIND-MAXIMUM--CAPS"></a><span class="term"><code class="literal">GST_TYPE_FIND_MAXIMUM</code></span></p></td>
 <td> very certain a type was detected.
 </td>
 </tr>
@@ -242,13 +240,13 @@ in doing a reliable typefind.</p>
 <div class="refsect2" lang="en">
 <a name="gst-type-find-peek"></a><h3>gst_type_find_peek ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
->guint8</a>*             gst_type_find_peek                  (<a class="link" href="gstreamer-GstTypeFind.html#GstTypeFind" title="GstTypeFind">GstTypeFind</a> *find,
+href="../glib/glib-Basic-Types.html#guint8"
+>guint8</a> *            gst_type_find_peek                  (<a class="link" href="gstreamer-GstTypeFind.html#GstTypeFind" title="GstTypeFind">GstTypeFind</a> *find,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> offset,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a> size);</pre>
 <p>
 Returns the <em class="parameter"><code>size</code></em> bytes of the stream to identify beginning at offset. If
@@ -257,7 +255,6 @@ stream, if offset is a negative number the offset is relative to the end of
 the stream. The returned memory is valid until the typefinding function
 returns and must not be freed.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -290,7 +287,7 @@ returns and must not be freed.</p>
 <a name="gst-type-find-suggest"></a><h3>gst_type_find_suggest ()</h3>
 <pre class="programlisting">void                gst_type_find_suggest               (<a class="link" href="gstreamer-GstTypeFind.html#GstTypeFind" title="GstTypeFind">GstTypeFind</a> *find,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a> probability,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
 <p>
@@ -299,7 +296,6 @@ given probability. A <a class="link" href="gstreamer-GstTypeFind.html#GstTypeFin
 in one call.
 It is up to the caller of the <a class="link" href="gstreamer-GstTypeFind.html#GstTypeFindFunction" title="GstTypeFindFunction ()"><span class="type">GstTypeFindFunction</span></a> to interpret these values.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -327,7 +323,7 @@ It is up to the caller of the <a class="link" href="gstreamer-GstTypeFind.html#G
 <a name="gst-type-find-suggest-simple"></a><h3>gst_type_find_suggest_simple ()</h3>
 <pre class="programlisting">void                gst_type_find_suggest_simple        (<a class="link" href="gstreamer-GstTypeFind.html#GstTypeFind" title="GstTypeFind">GstTypeFind</a> *find,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a> probability,
                                                          const char *media_type,
                                                          const char *fieldname,
@@ -349,7 +345,6 @@ the values passed have the correct type (in terms of width in bytes when
 passed to the vararg function - this applies particularly to gdouble and
 guint64 arguments).</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -383,19 +378,17 @@ guint64 arguments).</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.20
-</p>
+<p class="since">Since 0.10.20</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-type-find-get-length"></a><h3>gst_type_find_get_length ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+href="../glib/glib-Basic-Types.html#guint64"
 >guint64</a>             gst_type_find_get_length            (<a class="link" href="gstreamer-GstTypeFind.html#GstTypeFind" title="GstTypeFind">GstTypeFind</a> *find);</pre>
 <p>
 Get the length of the data stream.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -417,31 +410,30 @@ Get the length of the data stream.</p>
 <div class="refsect2" lang="en">
 <a name="gst-type-find-register"></a><h3>gst_type_find_register ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            gst_type_find_register              (<a class="link" href="GstPlugin.html" title="GstPlugin">GstPlugin</a> *plugin,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a> rank,
                                                          <a class="link" href="gstreamer-GstTypeFind.html#GstTypeFindFunction" title="GstTypeFindFunction ()">GstTypeFindFunction</a> func,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> **extensions,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *possible_caps,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> data,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"
+href="../glib/glib-Datasets.html#GDestroyNotify"
 >GDestroyNotify</a> data_notify);</pre>
 <p>
 Registers a new typefind function to be used for typefinding. After
 registering this function will be available for typefinding.
 This function is typically called during an element's plugin initialization.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -487,7 +479,7 @@ This function is typically called during an element's plugin initialization.</p>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>data_notify</code></em> :</span></p></td>
 <td> a <a
-href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"
+href="../glib/glib-Datasets.html#GDestroyNotify"
 ><span class="type">GDestroyNotify</span></a> that will be called on <em class="parameter"><code>data</code></em> when the plugin
        is unloaded.
 </td>
@@ -504,6 +496,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

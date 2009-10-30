@@ -8,7 +8,7 @@
   version="1.0">
 <xsl:output method="xml" indent="yes"
             doctype-public ="-//OASIS//DTD DocBook XML V4.1.2//EN"
-            doctype-system = "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"/> 
+            doctype-system = "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"/>
 
 <xsl:param name="module" />
 
@@ -32,7 +32,7 @@
         <xsl:element name="refsect2">
           <xsl:element name="title">Element Information</xsl:element>
           <xsl:element name="variablelist">
-          
+
             <!-- plugin name and link -->
             <xsl:element name="varlistentry">
               <xsl:element name="term">plugin</xsl:element>
@@ -45,24 +45,24 @@
                 </xsl:element>
               </xsl:element>
             </xsl:element>
-          
+
             <xsl:element name="varlistentry">
               <xsl:element name="term">author</xsl:element>
               <xsl:element name="listitem">
                 <xsl:element name="simpara"><xsl:value-of select="author" /></xsl:element>
               </xsl:element>
             </xsl:element>
-          
+
             <xsl:element name="varlistentry">
               <xsl:element name="term">class</xsl:element>
               <xsl:element name="listitem">
                 <xsl:element name="simpara"><xsl:value-of select="class" /></xsl:element>
               </xsl:element>
             </xsl:element>
-                        
+
           </xsl:element> <!-- variablelist -->
         </xsl:element> <!-- refsect2 -->
-  
+
         <xsl:element name="refsect2">
           <xsl:element name="title">Element Pads</xsl:element>
           <!-- process all caps -->
@@ -74,21 +74,21 @@
                   <xsl:element name="simpara"><xsl:value-of select="name" /></xsl:element>
                 </xsl:element>
               </xsl:element>
-              
+
               <xsl:element name="varlistentry">
                 <xsl:element name="term">direction</xsl:element>
                 <xsl:element name="listitem">
                   <xsl:element name="simpara"><xsl:value-of select="direction" /></xsl:element>
                 </xsl:element>
               </xsl:element>
-              
+
               <xsl:element name="varlistentry">
                 <xsl:element name="term">presence</xsl:element>
                 <xsl:element name="listitem">
                   <xsl:element name="simpara"><xsl:value-of select="presence" /></xsl:element>
                 </xsl:element>
               </xsl:element>
-              
+
               <xsl:for-each select='str:tokenize(details, ";")'>
                 <xsl:element name="varlistentry">
                   <xsl:element name="term">
@@ -99,11 +99,11 @@
                   </xsl:element>
                 </xsl:element>
               </xsl:for-each>
-  
+
             </xsl:element> <!-- variablelist -->
-  
+
             <!--xsl:element name="programlisting"><xsl:value-of select="details" /></xsl:element-->
-  
+
           </xsl:for-each>
         </xsl:element> <!-- refsect2 -->
       </xsl:element> <!-- refsynopsisdiv -->
@@ -130,7 +130,7 @@
             <xsl:value-of select="name"/>
           </xsl:element>
         </xsl:element>
-  
+
         <xsl:element name="refpurpose">
           <xsl:value-of select="description"/>
         </xsl:element>

@@ -37,8 +37,8 @@
 #include "gsterror.h"
 #include "gstinfo.h"
 #include "gstparse.h"
+#include "gstvalue.h"
 #include "gst-i18n-lib.h"
-
 
 /**
  * gst_util_dump_mem:
@@ -86,11 +86,14 @@ gst_util_dump_mem (const guchar * mem, guint size)
  *
  * Converts the string to the type of the value and
  * sets the value with it.
+ *
+ * Note that this function is dangerous as it does not return any indication
+ * if the conversion worked or not.
  */
 void
 gst_util_set_value_from_string (GValue * value, const gchar * value_str)
 {
-  gint sscanf_ret;
+  gboolean res;
 
   g_return_if_fail (value != NULL);
   g_return_if_fail (value_str != NULL);
@@ -98,86 +101,13 @@ gst_util_set_value_from_string (GValue * value, const gchar * value_str)
   GST_CAT_DEBUG (GST_CAT_PARAMS, "parsing '%s' to type %s", value_str,
       g_type_name (G_VALUE_TYPE (value)));
 
-  switch (G_VALUE_TYPE (value)) {
-    case G_TYPE_STRING:
-      g_value_set_string (value, value_str);
-      break;
-    case G_TYPE_ENUM:
-    case G_TYPE_INT:{
-      gint i;
-
-      sscanf_ret = sscanf (value_str, "%d", &i);
-      g_return_if_fail (sscanf_ret == 1);
-      g_value_set_int (value, i);
-      break;
-    }
-    case G_TYPE_UINT:{
-      guint i;
-
-      sscanf_ret = sscanf (value_str, "%u", &i);
-      g_return_if_fail (sscanf_ret == 1);
-      g_value_set_uint (value, i);
-      break;
-    }
-    case G_TYPE_LONG:{
-      glong i;
-
-      sscanf_ret = sscanf (value_str, "%ld", &i);
-      g_return_if_fail (sscanf_ret == 1);
-      g_value_set_long (value, i);
-      break;
-    }
-    case G_TYPE_ULONG:{
-      gulong i;
-
-      sscanf_ret = sscanf (value_str, "%lu", &i);
-      g_return_if_fail (sscanf_ret == 1);
-      g_value_set_ulong (value, i);
-      break;
-    }
-    case G_TYPE_BOOLEAN:{
-      gboolean i = FALSE;
-
-      if (!g_ascii_strncasecmp ("true", value_str, 4))
-        i = TRUE;
-      g_value_set_boolean (value, i);
-      break;
-    }
-    case G_TYPE_CHAR:{
-      gchar i;
-
-      sscanf_ret = sscanf (value_str, "%c", &i);
-      g_return_if_fail (sscanf_ret == 1);
-      g_value_set_char (value, i);
-      break;
-    }
-    case G_TYPE_UCHAR:{
-      guchar i;
-
-      sscanf_ret = sscanf (value_str, "%c", &i);
-      g_return_if_fail (sscanf_ret == 1);
-      g_value_set_uchar (value, i);
-      break;
-    }
-    case G_TYPE_FLOAT:{
-      gfloat i;
-
-      sscanf_ret = sscanf (value_str, "%f", &i);
-      g_return_if_fail (sscanf_ret == 1);
-      g_value_set_float (value, i);
-      break;
-    }
-    case G_TYPE_DOUBLE:{
-      gfloat i;
-
-      sscanf_ret = sscanf (value_str, "%g", &i);
-      g_return_if_fail (sscanf_ret == 1);
-      g_value_set_double (value, (gdouble) i);
-      break;
-    }
-    default:
-      break;
+  res = gst_value_deserialize (value, value_str);
+  if (!res && G_VALUE_TYPE (value) == G_TYPE_BOOLEAN) {
+    /* backwards compat, all booleans that fail to parse are false */
+    g_value_set_boolean (value, FALSE);
+    res = TRUE;
   }
+  g_return_if_fail (res);
 }
 
 /**
@@ -188,116 +118,49 @@ gst_util_set_value_from_string (GValue * value, const gchar * value_str)
  *
  * Convertes the string value to the type of the objects argument and
  * sets the argument with it.
+ *
+ * Note that this function silently returns if @object has no property named
+ * @name or when @value cannot be converted to the type of the property.
  */
 void
 gst_util_set_object_arg (GObject * object, const gchar * name,
     const gchar * value)
 {
-  gboolean sscanf_ret;
+  GParamSpec *pspec;
+  GType value_type;
+  GValue v = { 0, };
 
-  if (name && value) {
-    GParamSpec *paramspec;
+  g_return_if_fail (G_IS_OBJECT (object));
+  g_return_if_fail (name != NULL);
+  g_return_if_fail (value != NULL);
 
-    paramspec =
-        g_object_class_find_property (G_OBJECT_GET_CLASS (object), name);
+  pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (object), name);
+  if (!pspec)
+    return;
 
-    if (!paramspec) {
-      return;
-    }
+  value_type = G_PARAM_SPEC_VALUE_TYPE (pspec);
 
-    GST_DEBUG ("paramspec->flags is %d, paramspec->value_type is %d",
-        paramspec->flags, (gint) paramspec->value_type);
+  GST_DEBUG ("pspec->flags is %d, pspec->value_type is %s",
+      pspec->flags, g_type_name (value_type));
 
-    if (paramspec->flags & G_PARAM_WRITABLE) {
-      switch (paramspec->value_type) {
-        case G_TYPE_STRING:
-          g_object_set (G_OBJECT (object), name, value, NULL);
-          break;
-        case G_TYPE_ENUM:
-        case G_TYPE_INT:{
-          gint i;
+  if (!(pspec->flags & G_PARAM_WRITABLE))
+    return;
 
-          sscanf_ret = sscanf (value, "%d", &i);
-          g_return_if_fail (sscanf_ret == 1);
-          g_object_set (G_OBJECT (object), name, i, NULL);
-          break;
-        }
-        case G_TYPE_UINT:{
-          guint i;
+  g_value_init (&v, value_type);
 
-          sscanf_ret = sscanf (value, "%u", &i);
-          g_return_if_fail (sscanf_ret == 1);
-          g_object_set (G_OBJECT (object), name, i, NULL);
-          break;
-        }
-        case G_TYPE_LONG:{
-          glong i;
-
-          sscanf_ret = sscanf (value, "%ld", &i);
-          g_return_if_fail (sscanf_ret == 1);
-          g_object_set (G_OBJECT (object), name, i, NULL);
-          break;
-        }
-        case G_TYPE_ULONG:{
-          gulong i;
-
-          sscanf_ret = sscanf (value, "%lu", &i);
-          g_return_if_fail (sscanf_ret == 1);
-          g_object_set (G_OBJECT (object), name, i, NULL);
-          break;
-        }
-        case G_TYPE_BOOLEAN:{
-          gboolean i = FALSE;
-
-          if (!g_ascii_strncasecmp ("true", value, 4))
-            i = TRUE;
-          g_object_set (G_OBJECT (object), name, i, NULL);
-          break;
-        }
-        case G_TYPE_CHAR:{
-          gchar i;
-
-          sscanf_ret = sscanf (value, "%c", &i);
-          g_return_if_fail (sscanf_ret == 1);
-          g_object_set (G_OBJECT (object), name, i, NULL);
-          break;
-        }
-        case G_TYPE_UCHAR:{
-          guchar i;
-
-          sscanf_ret = sscanf (value, "%c", &i);
-          g_return_if_fail (sscanf_ret == 1);
-          g_object_set (G_OBJECT (object), name, i, NULL);
-          break;
-        }
-        case G_TYPE_FLOAT:{
-          gfloat i;
-
-          sscanf_ret = sscanf (value, "%f", &i);
-          g_return_if_fail (sscanf_ret == 1);
-          g_object_set (G_OBJECT (object), name, i, NULL);
-          break;
-        }
-        case G_TYPE_DOUBLE:{
-          gfloat i;
-
-          sscanf_ret = sscanf (value, "%g", &i);
-          g_return_if_fail (sscanf_ret == 1);
-          g_object_set (G_OBJECT (object), name, (gdouble) i, NULL);
-          break;
-        }
-        default:
-          if (G_IS_PARAM_SPEC_ENUM (paramspec)) {
-            gint i;
-
-            sscanf_ret = sscanf (value, "%d", &i);
-            g_return_if_fail (sscanf_ret == 1);
-            g_object_set (G_OBJECT (object), name, i, NULL);
-          }
-          break;
-      }
-    }
+  /* special case for element <-> xml (de)serialisation */
+  if (GST_VALUE_HOLDS_STRUCTURE (&v) && strcmp (value, "NULL") == 0) {
+    g_value_set_boxed (&v, NULL);
+    goto done;
   }
+
+  if (!gst_value_deserialize (&v, value))
+    return;
+
+done:
+
+  g_object_set_property (object, pspec->name, &v);
+  g_value_unset (&v);
 }
 
 /* work around error C2520: conversion from unsigned __int64 to double
@@ -326,6 +189,7 @@ gst_util_gdouble_to_guint64 (gdouble value)
   return ((guint64) ((gint64) value));
 }
 
+#ifndef HAVE_UINT128_T
 /* convenience struct for getting high and low uint32 parts of
  * a guint64 */
 typedef union
@@ -341,8 +205,95 @@ typedef union
   } l;
 } GstUInt64;
 
+#if defined (__x86_64__) && defined (__GNUC__)
+static inline void
+gst_util_uint64_mul_uint64 (GstUInt64 * c1, GstUInt64 * c0, guint64 arg1,
+    guint64 arg2)
+{
+  __asm__ __volatile__ ("mul %3":"=a" (c0->ll), "=d" (c1->ll)
+      :"a" (arg1), "g" (arg2)
+      );
+}
+#else /* defined (__x86_64__) */
+/* multiply two 64-bit unsigned ints into a 128-bit unsigned int.  the high
+ * and low 64 bits of the product are placed in c1 and c0 respectively.
+ * this operation cannot overflow. */
+static inline void
+gst_util_uint64_mul_uint64 (GstUInt64 * c1, GstUInt64 * c0, guint64 arg1,
+    guint64 arg2)
+{
+  GstUInt64 a1, b0;
+  GstUInt64 v, n;
+
+  /* prepare input */
+  v.ll = arg1;
+  n.ll = arg2;
+
+  /* do 128 bits multiply
+   *                   nh   nl
+   *                *  vh   vl
+   *                ----------
+   * a0 =              vl * nl
+   * a1 =         vl * nh
+   * b0 =         vh * nl
+   * b1 =  + vh * nh
+   *       -------------------
+   *        c1h  c1l  c0h  c0l
+   *
+   * "a0" is optimized away, result is stored directly in c0.  "b1" is
+   * optimized away, result is stored directly in c1.
+   */
+  c0->ll = (guint64) v.l.low * n.l.low;
+  a1.ll = (guint64) v.l.low * n.l.high;
+  b0.ll = (guint64) v.l.high * n.l.low;
+
+  /* add the high word of a0 to the low words of a1 and b0 using c1 as
+   * scrach space to capture the carry.  the low word of the result becomes
+   * the final high word of c0 */
+  c1->ll = (guint64) c0->l.high + a1.l.low + b0.l.low;
+  c0->l.high = c1->l.low;
+
+  /* add the carry from the result above (found in the high word of c1) and
+   * the high words of a1 and b0 to b1, the result is c1. */
+  c1->ll = (guint64) v.l.high * n.l.high + c1->l.high + a1.l.high + b0.l.high;
+}
+#endif /* defined (__x86_64__) */
+
+#if defined (__x86_64__) && defined (__GNUC__)
+static inline guint64
+gst_util_div128_64 (GstUInt64 c1, GstUInt64 c0, guint64 denom)
+{
+  guint64 res;
+
+  __asm__ __volatile__ ("divq %3":"=a" (res)
+      :"d" (c1.ll), "a" (c0.ll), "g" (denom)
+      );
+
+  return res;
+}
+#else
+/* count leading zeros */
+static inline guint
+gst_util_clz (guint32 val)
+{
+  guint s;
+
+  s = val | (val >> 1);
+  s |= (s >> 2);
+  s |= (s >> 4);
+  s |= (s >> 8);
+  s = ~(s | (s >> 16));
+  s = s - ((s >> 1) & 0x55555555);
+  s = (s & 0x33333333) + ((s >> 2) & 0x33333333);
+  s = (s + (s >> 4)) & 0x0f0f0f0f;
+  s += (s >> 8);
+  s = (s + (s >> 16)) & 0x3f;
+
+  return s;
+}
+
 /* based on Hacker's Delight p152 */
-static guint64
+static inline guint64
 gst_util_div128_64 (GstUInt64 c1, GstUInt64 c0, guint64 denom)
 {
   GstUInt64 q1, q0, rhat;
@@ -353,16 +304,7 @@ gst_util_div128_64 (GstUInt64 c1, GstUInt64 c0, guint64 denom)
 
   /* count number of leading zeroes, we know they must be in the high
    * part of denom since denom > G_MAXUINT32. */
-  s = v.l.high | (v.l.high >> 1);
-  s |= (s >> 2);
-  s |= (s >> 4);
-  s |= (s >> 8);
-  s = ~(s | (s >> 16));
-  s = s - ((s >> 1) & 0x55555555);
-  s = (s & 0x33333333) + ((s >> 2) & 0x33333333);
-  s = (s + (s >> 4)) & 0x0f0f0f0f;
-  s += (s >> 8);
-  s = (s + (s >> 16)) & 0x3f;
+  s = gst_util_clz (v.l.high);
 
   if (s > 0) {
     /* normalize divisor and dividend */
@@ -408,68 +350,157 @@ gst_util_div128_64 (GstUInt64 c1, GstUInt64 c0, guint64 denom)
 
   return q0.ll;
 }
+#endif /* defined (__GNUC__) */
+
+/* This always gives the correct result because:
+ * a) val <= G_MAXUINT64-1
+ * b) (c0,c1) <= G_MAXUINT64 * (G_MAXUINT64-1)
+ *    or
+ *    (c0,c1) == G_MAXUINT64 * G_MAXUINT64 and denom < G_MAXUINT64
+ *    (note: num==denom case is handled by short path)
+ * This means that (c0,c1) either has enough space for val
+ * or that the overall result will overflow anyway.
+ */
+
+/* add correction with carry */
+#define CORRECT(c0,c1,val)                    \
+  if (val) {                                  \
+    if (G_MAXUINT64 - c0.ll < val) {          \
+      if (G_UNLIKELY (c1.ll == G_MAXUINT64))  \
+        /* overflow */                        \
+        return G_MAXUINT64;                   \
+      c1.ll++;                                \
+    }                                         \
+    c0.ll += val;                             \
+  }
 
 static guint64
-gst_util_uint64_scale_int64 (guint64 val, guint64 num, guint64 denom)
+gst_util_uint64_scale_uint64_unchecked (guint64 val, guint64 num,
+    guint64 denom, guint64 correct)
 {
-  GstUInt64 a0, a1, b0, b1, c0, ct, c1, result;
-  GstUInt64 v, n;
+  GstUInt64 c1, c0;
 
-  /* prepare input */
-  v.ll = val;
-  n.ll = num;
+  /* compute 128-bit numerator product */
+  gst_util_uint64_mul_uint64 (&c1, &c0, val, num);
 
-  /* do 128 bits multiply
-   *                   nh   nl
-   *                *  vh   vl
-   *                ----------
-   * a0 =              vl * nl
-   * a1 =         vl * nh
-   * b0 =         vh * nl
-   * b1 =  + vh * nh
-   *       -------------------
-   * c1,c0
-   */
-  a0.ll = (guint64) v.l.low * n.l.low;
-  a1.ll = (guint64) v.l.low * n.l.high;
-  b0.ll = (guint64) v.l.high * n.l.low;
-  b1.ll = (guint64) v.l.high * n.l.high;
+  /* perform rounding correction */
+  CORRECT (c0, c1, correct);
 
-  /* and sum together with carry into 128 bits c1, c0 */
-  c0.l.low = a0.l.low;
-  ct.ll = (guint64) a0.l.high + a1.l.low + b0.l.low;
-  c0.l.high = ct.l.low;
-  c1.ll = (guint64) a1.l.high + b0.l.high + ct.l.high + b1.ll;
-
-  /* if high bits bigger than denom, we overflow */
-  if (c1.ll >= denom)
-    goto overflow;
-
-  /* shortcut for division by 1, c1.ll should be 0 because of the
-   * overflow check above. */
-  if (denom == 1)
-    return c0.ll;
-
-  /* and 128/64 bits division, result fits 64 bits */
-  if (denom <= G_MAXUINT32) {
-    guint32 den = (guint32) denom;
-
-    /* easy case, (c1,c0)128/(den)32 division */
-    c1.l.high %= den;
-    c1.l.high = c1.ll % den;
-    c1.l.low = c0.l.high;
-    c0.l.high = c1.ll % den;
-    result.l.high = c1.ll / den;
-    result.l.low = c0.ll / den;
-  } else {
-    result.ll = gst_util_div128_64 (c1, c0, denom);
-  }
-  return result.ll;
-
-overflow:
-  {
+  /* high word as big as or bigger than denom --> overflow */
+  if (G_UNLIKELY (c1.ll >= denom))
     return G_MAXUINT64;
+
+  /* compute quotient, fits in 64 bits */
+  return gst_util_div128_64 (c1, c0, denom);
+}
+#else
+
+#define GST_MAXUINT128 ((__uint128_t) -1)
+static guint64
+gst_util_uint64_scale_uint64_unchecked (guint64 val, guint64 num,
+    guint64 denom, guint64 correct)
+{
+  __uint128_t tmp;
+
+  /* Calculate val * num */
+  tmp = ((__uint128_t) val) * ((__uint128_t) num);
+
+  /* overflow checks */
+  if (G_UNLIKELY (GST_MAXUINT128 - correct < tmp))
+    return G_MAXUINT64;
+
+  /* perform rounding correction */
+  tmp += correct;
+
+  /* Divide by denom */
+  tmp /= denom;
+
+  /* if larger than G_MAXUINT64 --> overflow */
+  if (G_UNLIKELY (tmp > G_MAXUINT64))
+    return G_MAXUINT64;
+
+  /* compute quotient, fits in 64 bits */
+  return (guint64) tmp;
+}
+
+#endif
+
+#if !defined (__x86_64__) && !defined (HAVE_UINT128_T)
+static inline void
+gst_util_uint64_mul_uint32 (GstUInt64 * c1, GstUInt64 * c0, guint64 arg1,
+    guint32 arg2)
+{
+  GstUInt64 a;
+
+  a.ll = arg1;
+
+  c0->ll = (guint64) a.l.low * arg2;
+  c1->ll = (guint64) a.l.high * arg2 + c0->l.high;
+  c0->l.high = 0;
+}
+
+/* divide a 96-bit unsigned int by a 32-bit unsigned int when we know the
+ * quotient fits into 64 bits.  the high 64 bits and low 32 bits of the
+ * numerator are expected in c1 and c0 respectively. */
+static inline guint64
+gst_util_div96_32 (guint64 c1, guint64 c0, guint32 denom)
+{
+  c0 += (c1 % denom) << 32;
+  return ((c1 / denom) << 32) + (c0 / denom);
+}
+
+static inline guint64
+gst_util_uint64_scale_uint32_unchecked (guint64 val, guint32 num,
+    guint32 denom, guint32 correct)
+{
+  GstUInt64 c1, c0;
+
+  /* compute 96-bit numerator product */
+  gst_util_uint64_mul_uint32 (&c1, &c0, val, num);
+
+  /* condition numerator based on rounding mode */
+  CORRECT (c0, c1, correct);
+
+  /* high 32 bits as big as or bigger than denom --> overflow */
+  if (G_UNLIKELY (c1.l.high >= denom))
+    return G_MAXUINT64;
+
+  /* compute quotient, fits in 64 bits */
+  return gst_util_div96_32 (c1.ll, c0.ll, denom);
+}
+#endif
+
+/* the guts of the gst_util_uint64_scale() variants */
+static guint64
+_gst_util_uint64_scale (guint64 val, guint64 num, guint64 denom,
+    guint64 correct)
+{
+  g_return_val_if_fail (denom != 0, G_MAXUINT64);
+
+  if (G_UNLIKELY (num == 0))
+    return 0;
+
+  if (G_UNLIKELY (num == denom))
+    return val;
+
+  /* on 64bits we always use a full 128bits multipy/division */
+#if !defined (__x86_64__) && !defined (HAVE_UINT128_T)
+  /* denom is low --> try to use 96 bit muldiv */
+  if (G_LIKELY (denom <= G_MAXUINT32)) {
+    /* num is low --> use 96 bit muldiv */
+    if (G_LIKELY (num <= G_MAXUINT32))
+      return gst_util_uint64_scale_uint32_unchecked (val, (guint32) num,
+          (guint32) denom, correct);
+
+    /* num is high but val is low --> swap and use 96-bit muldiv */
+    if (G_LIKELY (val <= G_MAXUINT32))
+      return gst_util_uint64_scale_uint32_unchecked (num, (guint32) val,
+          (guint32) denom, correct);
   }
+#endif /* !defined (__x86_64__) && !defined (HAVE_UINT128_T) */
+
+  /* val is high and num is high --> use 128-bit muldiv */
+  return gst_util_uint64_scale_uint64_unchecked (val, num, denom, correct);
 }
 
 /**
@@ -478,45 +509,107 @@ overflow:
  * @num: the numerator of the scale ratio
  * @denom: the denominator of the scale ratio
  *
- * Scale @val by @num / @denom, trying to avoid overflows.
+ * Scale @val by the rational number @num / @denom, avoiding overflows and
+ * underflows and without loss of precision.
  *
- * This function can potentially be very slow if denom > G_MAXUINT32.
+ * This function can potentially be very slow if val and num are both
+ * greater than G_MAXUINT32.
  *
- * Returns: @val * @num / @denom, trying to avoid overflows.
- * In the case of an overflow, this function returns G_MAXUINT64.
+ * Returns: @val * @num / @denom.  In the case of an overflow, this
+ * function returns G_MAXUINT64.  If the result is not exactly
+ * representable as an integer it is truncated.  See also
+ * gst_util_uint64_scale_round(), gst_util_uint64_scale_ceil(),
+ * gst_util_uint64_scale_int(), gst_util_uint64_scale_int_round(),
+ * gst_util_uint64_scale_int_ceil().
  */
 guint64
 gst_util_uint64_scale (guint64 val, guint64 num, guint64 denom)
 {
-  g_return_val_if_fail (denom != 0, G_MAXUINT64);
+  return _gst_util_uint64_scale (val, num, denom, 0);
+}
 
-  if (num == 0)
+/**
+ * gst_util_uint64_scale_round:
+ * @val: the number to scale
+ * @num: the numerator of the scale ratio
+ * @denom: the denominator of the scale ratio
+ *
+ * Scale @val by the rational number @num / @denom, avoiding overflows and
+ * underflows and without loss of precision.
+ *
+ * This function can potentially be very slow if val and num are both
+ * greater than G_MAXUINT32.
+ *
+ * Returns: @val * @num / @denom.  In the case of an overflow, this
+ * function returns G_MAXUINT64.  If the result is not exactly
+ * representable as an integer, it is rounded to the nearest integer
+ * (half-way cases are rounded up).  See also gst_util_uint64_scale(),
+ * gst_util_uint64_scale_ceil(), gst_util_uint64_scale_int(),
+ * gst_util_uint64_scale_int_round(), gst_util_uint64_scale_int_ceil().
+ */
+guint64
+gst_util_uint64_scale_round (guint64 val, guint64 num, guint64 denom)
+{
+  return _gst_util_uint64_scale (val, num, denom, denom >> 1);
+}
+
+/**
+ * gst_util_uint64_scale_ceil:
+ * @val: the number to scale
+ * @num: the numerator of the scale ratio
+ * @denom: the denominator of the scale ratio
+ *
+ * Scale @val by the rational number @num / @denom, avoiding overflows and
+ * underflows and without loss of precision.
+ *
+ * This function can potentially be very slow if val and num are both
+ * greater than G_MAXUINT32.
+ *
+ * Returns: @val * @num / @denom.  In the case of an overflow, this
+ * function returns G_MAXUINT64.  If the result is not exactly
+ * representable as an integer, it is rounded up.  See also
+ * gst_util_uint64_scale(), gst_util_uint64_scale_round(),
+ * gst_util_uint64_scale_int(), gst_util_uint64_scale_int_round(),
+ * gst_util_uint64_scale_int_ceil().
+ */
+guint64
+gst_util_uint64_scale_ceil (guint64 val, guint64 num, guint64 denom)
+{
+  return _gst_util_uint64_scale (val, num, denom, denom - 1);
+}
+
+/* the guts of the gst_util_uint64_scale_int() variants */
+static guint64
+_gst_util_uint64_scale_int (guint64 val, gint num, gint denom, gint correct)
+{
+  g_return_val_if_fail (denom > 0, G_MAXUINT64);
+  g_return_val_if_fail (num >= 0, G_MAXUINT64);
+
+  if (G_UNLIKELY (num == 0))
     return 0;
 
-  if (num == 1 && denom == 1)
+  if (G_UNLIKELY (num == denom))
     return val;
 
-  /* if the denom is high, we need to do a 64 muldiv */
-  if (denom > G_MAXINT32)
-    goto do_int64;
+  if (val <= G_MAXUINT32) {
+    /* simple case.  num and denom are not negative so casts are OK.  when
+     * not truncating, the additions to the numerator cannot overflow
+     * because val*num <= G_MAXUINT32 * G_MAXINT32 < G_MAXUINT64 -
+     * G_MAXINT32, so there's room to add another gint32. */
+    val *= (guint64) num;
+    /* add rounding correction */
+    val += correct;
 
-  /* if num and denom are low we can do a 32 bit muldiv */
-  if (num <= G_MAXINT32)
-    goto do_int32;
-
-  /* val and num are high, we need 64 muldiv */
-  if (val > G_MAXINT32)
-    goto do_int64;
-
-  /* val is low and num is high, we can swap them and do 32 muldiv */
-  return gst_util_uint64_scale_int (num, (gint) val, (gint) denom);
-
-do_int32:
-  return gst_util_uint64_scale_int (val, (gint) num, (gint) denom);
-
-do_int64:
-  /* to the more heavy implementations... */
-  return gst_util_uint64_scale_int64 (val, num, denom);
+    return val / (guint64) denom;
+  }
+#if !defined (__x86_64__) && !defined (HAVE_UINT128_T)
+  /* num and denom are not negative so casts are OK */
+  return gst_util_uint64_scale_uint32_unchecked (val, (guint32) num,
+      (guint32) denom, (guint32) correct);
+#else
+  /* always use full 128bits scale */
+  return gst_util_uint64_scale_uint64_unchecked (val, num, denom, correct);
+#endif
 }
 
 /**
@@ -525,54 +618,69 @@ do_int64:
  * @num: numerator of the scale factor.
  * @denom: denominator of the scale factor.
  *
- * Scale a guint64 by a factor expressed as a fraction (num/denom), avoiding
- * overflows and loss of precision.
+ * Scale @val by the rational number @num / @denom, avoiding overflows and
+ * underflows and without loss of precision.  @num must be non-negative and
+ * @denom must be positive.
  *
- * @num and @denom must be positive integers. @denom cannot be 0.
- *
- * Returns: @val * @num / @denom, avoiding overflow and loss of precision.
- * In the case of an overflow, this function returns G_MAXUINT64.
+ * Returns: @val * @num / @denom.  In the case of an overflow, this
+ * function returns G_MAXUINT64.  If the result is not exactly
+ * representable as an integer, it is truncated.  See also
+ * gst_util_uint64_scale_int_round(), gst_util_uint64_scale_int_ceil(),
+ * gst_util_uint64_scale(), gst_util_uint64_scale_round(),
+ * gst_util_uint64_scale_ceil().
  */
 guint64
 gst_util_uint64_scale_int (guint64 val, gint num, gint denom)
 {
-  GstUInt64 result;
-  GstUInt64 low, high;
+  return _gst_util_uint64_scale_int (val, num, denom, 0);
+}
 
-  g_return_val_if_fail (denom > 0, G_MAXUINT64);
-  g_return_val_if_fail (num >= 0, G_MAXUINT64);
+/**
+ * gst_util_uint64_scale_int_round:
+ * @val: guint64 (such as a #GstClockTime) to scale.
+ * @num: numerator of the scale factor.
+ * @denom: denominator of the scale factor.
+ *
+ * Scale @val by the rational number @num / @denom, avoiding overflows and
+ * underflows and without loss of precision.  @num must be non-negative and
+ * @denom must be positive.
+ *
+ * Returns: @val * @num / @denom.  In the case of an overflow, this
+ * function returns G_MAXUINT64.  If the result is not exactly
+ * representable as an integer, it is rounded to the nearest integer
+ * (half-way cases are rounded up).  See also gst_util_uint64_scale_int(),
+ * gst_util_uint64_scale_int_ceil(), gst_util_uint64_scale(),
+ * gst_util_uint64_scale_round(), gst_util_uint64_scale_ceil().
+ */
+guint64
+gst_util_uint64_scale_int_round (guint64 val, gint num, gint denom)
+{
+  /* we can use a shift to divide by 2 because denom is required to be
+   * positive. */
+  return _gst_util_uint64_scale_int (val, num, denom, denom >> 1);
+}
 
-  if (num == 0)
-    return 0;
-
-  if (num == 1 && denom == 1)
-    return val;
-
-  if (val <= G_MAXUINT32)
-    /* simple case */
-    return val * num / denom;
-
-  /* do 96 bits mult/div */
-  low.ll = val;
-  result.ll = ((guint64) low.l.low) * num;
-  high.ll = ((guint64) low.l.high) * num + (result.l.high);
-
-  low.ll = high.ll / denom;
-  result.l.high = high.ll % denom;
-  result.ll /= denom;
-
-  /* avoid overflow */
-  if (low.ll + result.l.high > G_MAXUINT32)
-    goto overflow;
-
-  result.l.high += low.l.low;
-
-  return result.ll;
-
-overflow:
-  {
-    return G_MAXUINT64;
-  }
+/**
+ * gst_util_uint64_scale_int_ceil:
+ * @val: guint64 (such as a #GstClockTime) to scale.
+ * @num: numerator of the scale factor.
+ * @denom: denominator of the scale factor.
+ *
+ * Scale @val by the rational number @num / @denom, avoiding overflows and
+ * underflows and without loss of precision.  @num must be non-negative and
+ * @denom must be positive.
+ *
+ * Returns: @val * @num / @denom.  In the case of an overflow, this
+ * function returns G_MAXUINT64.  If the result is not exactly
+ * representable as an integer, it is rounded up.  See also
+ * gst_util_uint64_scale_int(), gst_util_uint64_scale_int_round(),
+ * gst_util_uint64_scale(), gst_util_uint64_scale_round(),
+ * gst_util_uint64_scale_ceil().
+ */
+guint64
+gst_util_uint64_scale_int_ceil (guint64 val, gint num, gint denom)
+{
+  return _gst_util_uint64_scale_int (val, num, denom, denom - 1);
 }
 
 /**
@@ -604,7 +712,7 @@ gst_util_seqnum_next (void)
  * @s2: Another sequence number.
  *
  * Compare two sequence numbers, handling wraparound.
- * 
+ *
  * The current implementation just returns (gint32)(@s1 - @s2).
  *
  * Returns: A negative number if @s1 is before @s2, 0 if they are equal, or a
@@ -765,6 +873,7 @@ gst_element_get_compatible_pad_template (GstElement * element,
   GstPadTemplate *newtempl = NULL;
   GList *padlist;
   GstElementClass *class;
+  gboolean compatible;
 
   g_return_val_if_fail (element != NULL, NULL);
   g_return_val_if_fail (GST_IS_ELEMENT (element), NULL);
@@ -780,7 +889,6 @@ gst_element_get_compatible_pad_template (GstElement * element,
 
   while (padlist) {
     GstPadTemplate *padtempl = (GstPadTemplate *) padlist->data;
-    GstCaps *intersection;
 
     /* Ignore name
      * Ignore presence
@@ -800,17 +908,16 @@ gst_element_get_compatible_pad_template (GstElement * element,
       GST_CAT_DEBUG (GST_CAT_CAPS,
           "..and %" GST_PTR_FORMAT, GST_PAD_TEMPLATE_CAPS (padtempl));
 
-      intersection = gst_caps_intersect (GST_PAD_TEMPLATE_CAPS (compattempl),
+      compatible = gst_caps_can_intersect (GST_PAD_TEMPLATE_CAPS (compattempl),
           GST_PAD_TEMPLATE_CAPS (padtempl));
 
-      GST_CAT_DEBUG (GST_CAT_CAPS, "caps are %scompatible %" GST_PTR_FORMAT,
-          (intersection ? "" : "not "), intersection);
+      GST_CAT_DEBUG (GST_CAT_CAPS, "caps are %scompatible",
+          (compatible ? "" : "not "));
 
-      if (!gst_caps_is_empty (intersection))
+      if (compatible) {
         newtempl = padtempl;
-      gst_caps_unref (intersection);
-      if (newtempl)
         break;
+      }
     }
 
     padlist = g_list_next (padlist);
@@ -918,6 +1025,60 @@ gst_element_request_compatible_pad (GstElement * element,
   return pad;
 }
 
+/*
+ * Checks if the source pad and the sink pad can be linked.
+ * Both @srcpad and @sinkpad must be unlinked and have a parent.
+ */
+static gboolean
+gst_pad_check_link (GstPad * srcpad, GstPad * sinkpad)
+{
+  /* FIXME This function is gross.  It's almost a direct copy of
+   * gst_pad_link_filtered().  Any decent programmer would attempt
+   * to merge the two functions, which I will do some day. --ds
+   */
+
+  /* generic checks */
+  g_return_val_if_fail (GST_IS_PAD (srcpad), FALSE);
+  g_return_val_if_fail (GST_IS_PAD (sinkpad), FALSE);
+
+  GST_CAT_INFO (GST_CAT_PADS, "trying to link %s:%s and %s:%s",
+      GST_DEBUG_PAD_NAME (srcpad), GST_DEBUG_PAD_NAME (sinkpad));
+
+  /* FIXME: shouldn't we convert this to g_return_val_if_fail? */
+  if (GST_PAD_PEER (srcpad) != NULL) {
+    GST_CAT_INFO (GST_CAT_PADS, "Source pad %s:%s has a peer, failed",
+        GST_DEBUG_PAD_NAME (srcpad));
+    return FALSE;
+  }
+  if (GST_PAD_PEER (sinkpad) != NULL) {
+    GST_CAT_INFO (GST_CAT_PADS, "Sink pad %s:%s has a peer, failed",
+        GST_DEBUG_PAD_NAME (sinkpad));
+    return FALSE;
+  }
+  if (!GST_PAD_IS_SRC (srcpad)) {
+    GST_CAT_INFO (GST_CAT_PADS, "Src pad %s:%s is not source pad, failed",
+        GST_DEBUG_PAD_NAME (srcpad));
+    return FALSE;
+  }
+  if (!GST_PAD_IS_SINK (sinkpad)) {
+    GST_CAT_INFO (GST_CAT_PADS, "Sink pad %s:%s is not sink pad, failed",
+        GST_DEBUG_PAD_NAME (sinkpad));
+    return FALSE;
+  }
+  if (GST_PAD_PARENT (srcpad) == NULL) {
+    GST_CAT_INFO (GST_CAT_PADS, "Src pad %s:%s has no parent, failed",
+        GST_DEBUG_PAD_NAME (srcpad));
+    return FALSE;
+  }
+  if (GST_PAD_PARENT (sinkpad) == NULL) {
+    GST_CAT_INFO (GST_CAT_PADS, "Sink pad %s:%s has no parent, failed",
+        GST_DEBUG_PAD_NAME (srcpad));
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
 /**
  * gst_element_get_compatible_pad:
  * @element: a #GstElement in which the pad should be found.
@@ -969,8 +1130,9 @@ gst_element_get_compatible_pad (GstElement * element, GstPad * pad,
 
         peer = gst_pad_get_peer (current);
 
-        if (peer == NULL && gst_pad_can_link (pad, current)) {
-          GstCaps *temp, *temp2, *intersection;
+        if (peer == NULL && gst_pad_check_link (pad, current)) {
+          GstCaps *temp, *intersection;
+          gboolean compatible;
 
           /* Now check if the two pads' caps are compatible */
           temp = gst_pad_get_caps (pad);
@@ -982,23 +1144,23 @@ gst_element_get_compatible_pad (GstElement * element, GstPad * pad,
           }
 
           temp = gst_pad_get_caps (current);
-          temp2 = gst_caps_intersect (temp, intersection);
+          compatible = gst_caps_can_intersect (temp, intersection);
           gst_caps_unref (temp);
           gst_caps_unref (intersection);
 
-          intersection = temp2;
-
-          if (!gst_caps_is_empty (intersection)) {
-            gst_caps_unref (intersection);
-
+          if (compatible) {
             GST_CAT_DEBUG (GST_CAT_ELEMENT_PADS,
                 "found existing unlinked compatible pad %s:%s",
                 GST_DEBUG_PAD_NAME (current));
             gst_iterator_free (pads);
 
             return current;
+          } else {
+            GST_CAT_DEBUG (GST_CAT_ELEMENT_PADS, "incompatible pads");
           }
-          gst_caps_unref (intersection);
+        } else {
+          GST_CAT_DEBUG (GST_CAT_ELEMENT_PADS,
+              "already linked or cannot be linked (peer = %p)", peer);
         }
         GST_CAT_DEBUG (GST_CAT_ELEMENT_PADS, "unreffing pads");
 
@@ -1031,11 +1193,6 @@ gst_element_get_compatible_pad (GstElement * element, GstPad * pad,
 
   templ = gst_pad_template_new ((gchar *) GST_PAD_NAME (pad),
       GST_PAD_DIRECTION (pad), GST_PAD_ALWAYS, templcaps);
-
-  /* FIXME : Because of a bug in gst_pad_template_new() by which is does not
-   * properly steal the refcount of the given caps, we have to unref these caps
-   * REVERT THIS WHEN FIXED !*/
-  gst_caps_unref (templcaps);
 
   foundpad = gst_element_request_compatible_pad (element, templ);
   gst_object_unref (templ);
@@ -1760,6 +1917,7 @@ gst_element_link (GstElement * src, GstElement * dest)
 gboolean
 gst_element_link_many (GstElement * element_1, GstElement * element_2, ...)
 {
+  gboolean res = TRUE;
   va_list args;
 
   g_return_val_if_fail (GST_IS_ELEMENT (element_1), FALSE);
@@ -1768,8 +1926,10 @@ gst_element_link_many (GstElement * element_1, GstElement * element_2, ...)
   va_start (args, element_2);
 
   while (element_2) {
-    if (!gst_element_link (element_1, element_2))
-      return FALSE;
+    if (!gst_element_link (element_1, element_2)) {
+      res = FALSE;
+      break;
+    }
 
     element_1 = element_2;
     element_2 = va_arg (args, GstElement *);
@@ -1777,7 +1937,7 @@ gst_element_link_many (GstElement * element_1, GstElement * element_2, ...)
 
   va_end (args);
 
-  return TRUE;
+  return res;
 }
 
 /**
@@ -2100,66 +2260,6 @@ gst_element_seek_simple (GstElement * element, GstFormat format,
 }
 
 /**
- * gst_pad_can_link:
- * @srcpad: the source #GstPad to link.
- * @sinkpad: the sink #GstPad to link.
- *
- * Checks if the source pad and the sink pad can be linked.
- * Both @srcpad and @sinkpad must be unlinked.
- *
- * Returns: TRUE if the pads can be linked, FALSE otherwise.
- */
-gboolean
-gst_pad_can_link (GstPad * srcpad, GstPad * sinkpad)
-{
-  /* FIXME This function is gross.  It's almost a direct copy of
-   * gst_pad_link_filtered().  Any decent programmer would attempt
-   * to merge the two functions, which I will do some day. --ds
-   */
-
-  /* generic checks */
-  g_return_val_if_fail (GST_IS_PAD (srcpad), FALSE);
-  g_return_val_if_fail (GST_IS_PAD (sinkpad), FALSE);
-
-  GST_CAT_INFO (GST_CAT_PADS, "trying to link %s:%s and %s:%s",
-      GST_DEBUG_PAD_NAME (srcpad), GST_DEBUG_PAD_NAME (sinkpad));
-
-  /* FIXME: shouldn't we convert this to g_return_val_if_fail? */
-  if (GST_PAD_PEER (srcpad) != NULL) {
-    GST_CAT_INFO (GST_CAT_PADS, "Source pad %s:%s has a peer, failed",
-        GST_DEBUG_PAD_NAME (srcpad));
-    return FALSE;
-  }
-  if (GST_PAD_PEER (sinkpad) != NULL) {
-    GST_CAT_INFO (GST_CAT_PADS, "Sink pad %s:%s has a peer, failed",
-        GST_DEBUG_PAD_NAME (sinkpad));
-    return FALSE;
-  }
-  if (!GST_PAD_IS_SRC (srcpad)) {
-    GST_CAT_INFO (GST_CAT_PADS, "Src pad %s:%s is not source pad, failed",
-        GST_DEBUG_PAD_NAME (srcpad));
-    return FALSE;
-  }
-  if (!GST_PAD_IS_SINK (sinkpad)) {
-    GST_CAT_INFO (GST_CAT_PADS, "Sink pad %s:%s is not sink pad, failed",
-        GST_DEBUG_PAD_NAME (sinkpad));
-    return FALSE;
-  }
-  if (GST_PAD_PARENT (srcpad) == NULL) {
-    GST_CAT_INFO (GST_CAT_PADS, "Src pad %s:%s has no parent, failed",
-        GST_DEBUG_PAD_NAME (srcpad));
-    return FALSE;
-  }
-  if (GST_PAD_PARENT (sinkpad) == NULL) {
-    GST_CAT_INFO (GST_CAT_PADS, "Sink pad %s:%s has no parent, failed",
-        GST_DEBUG_PAD_NAME (srcpad));
-    return FALSE;
-  }
-
-  return TRUE;
-}
-
-/**
  * gst_pad_use_fixed_caps:
  * @pad: the pad to use
  *
@@ -2202,9 +2302,7 @@ gst_pad_get_fixed_caps_func (GstPad * pad)
         "using pad caps %p %" GST_PTR_FORMAT, result, result);
 
     result = gst_caps_ref (result);
-    goto done;
-  }
-  if (GST_PAD_PAD_TEMPLATE (pad)) {
+  } else if (GST_PAD_PAD_TEMPLATE (pad)) {
     GstPadTemplate *templ = GST_PAD_PAD_TEMPLATE (pad);
 
     result = GST_PAD_TEMPLATE_CAPS (templ);
@@ -2213,12 +2311,10 @@ gst_pad_get_fixed_caps_func (GstPad * pad)
         result);
 
     result = gst_caps_ref (result);
-    goto done;
+  } else {
+    GST_CAT_DEBUG (GST_CAT_CAPS, "pad has no caps");
+    result = gst_caps_new_empty ();
   }
-  GST_CAT_DEBUG (GST_CAT_CAPS, "pad has no caps");
-  result = gst_caps_new_empty ();
-
-done:
   GST_OBJECT_UNLOCK (pad);
 
   return result;
@@ -2488,9 +2584,9 @@ gst_buffer_merge (GstBuffer * buf1, GstBuffer * buf2)
  * If the buffers point to contiguous areas of memory, the buffer
  * is created without copying the data.
  *
- * This is a convenience function for C programmers. See also 
- * gst_buffer_merge(), which does the same thing without 
- * unreffing the input parameters. Language bindings without 
+ * This is a convenience function for C programmers. See also
+ * gst_buffer_merge(), which does the same thing without
+ * unreffing the input parameters. Language bindings without
  * explicit reference counting should not wrap this function.
  *
  * Returns: the new #GstBuffer which is the concatenation of the source buffers.
@@ -2921,7 +3017,7 @@ gst_pad_query_peer_convert (GstPad * pad, GstFormat src_format, gint64 src_val,
  * @value: value to set
  *
  * Unconditionally sets the atomic integer to @value.
- * 
+ *
  * Deprecated: Use g_atomic_int_set().
  *
  */
@@ -3234,11 +3330,9 @@ gst_element_found_tags_for_pad (GstElement * element,
   g_return_if_fail (list != NULL);
 
   gst_pad_push_event (pad, gst_event_new_tag (gst_tag_list_copy (list)));
-  /* FIXME 0.11: Set the pad as source to make it possible to detect for
-   * which pad the tags are actually found.
-   */
+  /* FIXME 0.11: Set the pad as source. */
   gst_element_post_message (element,
-      gst_message_new_tag (GST_OBJECT (element), list));
+      gst_message_new_tag_full (GST_OBJECT (element), pad, list));
 }
 
 static void
@@ -3523,37 +3617,37 @@ gst_parse_bin_from_description_full (const gchar * bin_description,
 
 /**
  * gst_type_register_static_full:
- * @parent_type: The GType of the parent type the newly registered type will 
+ * @parent_type: The GType of the parent type the newly registered type will
  *   derive from
  * @type_name: NULL-terminated string used as the name of the new type
  * @class_size: Size of the class structure.
  * @base_init: Location of the base initialization function (optional).
  * @base_finalize: Location of the base finalization function (optional).
- * @class_init: Location of the class initialization function for class types 
- *   Location of the default vtable inititalization function for interface 
+ * @class_init: Location of the class initialization function for class types
+ *   Location of the default vtable inititalization function for interface
  *   types. (optional)
  * @class_finalize: Location of the class finalization function for class types.
- *   Location of the default vtable finalization function for interface types. 
+ *   Location of the default vtable finalization function for interface types.
  *   (optional)
  * @class_data: User-supplied data passed to the class init/finalize functions.
- * @instance_size: Size of the instance (object) structure (required for 
+ * @instance_size: Size of the instance (object) structure (required for
  *   instantiatable types only).
- * @n_preallocs: The number of pre-allocated (cached) instances to reserve 
+ * @n_preallocs: The number of pre-allocated (cached) instances to reserve
  *   memory for (0 indicates no caching). Ignored on recent GLib's.
- * @instance_init: Location of the instance initialization function (optional, 
+ * @instance_init: Location of the instance initialization function (optional,
  *   for instantiatable types only).
- * @value_table: A GTypeValueTable function table for generic handling of 
- *   GValues of this type (usually only useful for fundamental types). 
+ * @value_table: A GTypeValueTable function table for generic handling of
+ *   GValues of this type (usually only useful for fundamental types).
  * @flags: #GTypeFlags for this GType. E.g: G_TYPE_FLAG_ABSTRACT
  *
- * Helper function which constructs a #GTypeInfo structure and registers a 
- * GType, but which generates less linker overhead than a static const 
+ * Helper function which constructs a #GTypeInfo structure and registers a
+ * GType, but which generates less linker overhead than a static const
  * #GTypeInfo structure. For further details of the parameters, please see
  * #GTypeInfo in the GLib documentation.
  *
- * Registers type_name as the name of a new static type derived from 
- * parent_type. The value of flags determines the nature (e.g. abstract or 
- * not) of the type. It works by filling a GTypeInfo struct and calling 
+ * Registers type_name as the name of a new static type derived from
+ * parent_type. The value of flags determines the nature (e.g. abstract or
+ * not) of the type. It works by filling a GTypeInfo struct and calling
  * g_type_info_register_static().
  *
  * Returns: A #GType for the newly-registered type.
@@ -3615,4 +3709,92 @@ gst_util_get_timestamp (void)
   g_get_current_time (&now);
   return GST_TIMEVAL_TO_TIME (now);
 #endif
+}
+
+/**
+ * gst_util_array_binary_search:
+ * @array: the sorted input array
+ * @num_elements: number of elements in the array
+ * @element_size: size of every element in bytes
+ * @search_func: function to compare two elements, @search_data will always be passed as second argument
+ * @mode: search mode that should be used
+ * @search_data: element that should be found
+ * @user_data: data to pass to @search_func
+ *
+ * Searches inside @array for @search_data by using the comparison function
+ * @search_func. @array must be sorted ascending.
+ *
+ * As @search_data is always passed as second argument to @search_func it's
+ * not required that @search_data has the same type as the array elements.
+ *
+ * The complexity of this search function is O(log (num_elements)).
+ *
+ * Returns: The address of the found element or %NULL if nothing was found
+ *
+ * Since: 0.10.23
+ */
+gpointer
+gst_util_array_binary_search (gpointer array, guint num_elements,
+    gsize element_size, GCompareDataFunc search_func, GstSearchMode mode,
+    gconstpointer search_data, gpointer user_data)
+{
+  glong left = 0, right = num_elements - 1, m;
+  gint ret;
+  guint8 *data = (guint8 *) array;
+
+  g_return_val_if_fail (array != NULL, NULL);
+  g_return_val_if_fail (element_size > 0, NULL);
+  g_return_val_if_fail (search_func != NULL, NULL);
+
+  /* 0. No elements => return NULL */
+  if (num_elements == 0)
+    return NULL;
+
+  /* 1. If search_data is before the 0th element return the 0th element */
+  ret = search_func (data, search_data, user_data);
+  if ((ret >= 0 && mode == GST_SEARCH_MODE_AFTER) || ret == 0)
+    return data;
+  else if (ret > 0)
+    return NULL;
+
+  /* 2. If search_data is after the last element return the last element */
+  ret =
+      search_func (data + (num_elements - 1) * element_size, search_data,
+      user_data);
+  if ((ret <= 0 && mode == GST_SEARCH_MODE_BEFORE) || ret == 0)
+    return data + (num_elements - 1) * element_size;
+  else if (ret < 0)
+    return NULL;
+
+  /* 3. else binary search */
+  while (TRUE) {
+    m = left + (right - left) / 2;
+
+    ret = search_func (data + m * element_size, search_data, user_data);
+
+    if (ret == 0) {
+      return data + m * element_size;
+    } else if (ret < 0) {
+      left = m + 1;
+    } else {
+      right = m - 1;
+    }
+
+    /* No exact match found */
+    if (right < left) {
+      if (mode == GST_SEARCH_MODE_EXACT) {
+        return NULL;
+      } else if (mode == GST_SEARCH_MODE_AFTER) {
+        if (ret < 0)
+          return (m < num_elements) ? data + (m + 1) * element_size : NULL;
+        else
+          return data + m * element_size;
+      } else {
+        if (ret < 0)
+          return data + m * element_size;
+        else
+          return (m > 0) ? data + (m - 1) * element_size : NULL;
+      }
+    }
+  }
 }

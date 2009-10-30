@@ -29,16 +29,31 @@
 
 G_BEGIN_DECLS
 
-#define GST_TYPE_SYSTEM_CLOCK 			(gst_system_clock_get_type ())
-#define GST_SYSTEM_CLOCK(obj) 			(G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_SYSTEM_CLOCK, GstSystemClock))
-#define GST_IS_SYSTEM_CLOCK(obj) 		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_SYSTEM_CLOCK))
-#define GST_SYSTEM_CLOCK_CLASS(klass) 		(G_TYPE_CHECK_CLASS_CAST ((klass), GST_TYPE_SYSTEM_CLOCK, GstSystemClockClass))
-#define GST_IS_SYSTEM_CLOCK_CLASS(klass) 	(G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_SYSTEM_CLOCK))
-#define GST_SYSTEM_CLOCK_GET_CLASS(obj) 	(G_TYPE_INSTANCE_GET_CLASS ((obj), GST_TYPE_SYSTEM_CLOCK, GstSystemClockClass))
+#define GST_TYPE_SYSTEM_CLOCK                   (gst_system_clock_get_type ())
+#define GST_SYSTEM_CLOCK(obj)                   (G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_SYSTEM_CLOCK, GstSystemClock))
+#define GST_SYSTEM_CLOCK_CAST(obj)              ((GstSystemClock *)(obj))
+#define GST_IS_SYSTEM_CLOCK(obj)                (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_SYSTEM_CLOCK))
+#define GST_SYSTEM_CLOCK_CLASS(klass)           (G_TYPE_CHECK_CLASS_CAST ((klass), GST_TYPE_SYSTEM_CLOCK, GstSystemClockClass))
+#define GST_IS_SYSTEM_CLOCK_CLASS(klass)        (G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_SYSTEM_CLOCK))
+#define GST_SYSTEM_CLOCK_GET_CLASS(obj)         (G_TYPE_INSTANCE_GET_CLASS ((obj), GST_TYPE_SYSTEM_CLOCK, GstSystemClockClass))
 
 
 typedef struct _GstSystemClock GstSystemClock;
 typedef struct _GstSystemClockClass GstSystemClockClass;
+typedef struct _GstSystemClockPrivate GstSystemClockPrivate;
+
+/**
+ * GstClockType:
+ * @GST_CLOCK_TYPE_REALTIME: time since Epoch
+ * @GST_CLOCK_TYPE_MONOTONIC: monotonic time since some unspecified starting
+ *                            point
+ *
+ * The different kind of clocks.
+ */
+typedef enum {
+  GST_CLOCK_TYPE_REALTIME       = 0,
+  GST_CLOCK_TYPE_MONOTONIC      = 1
+} GstClockType;
 
 /**
  * GstSystemClock:
@@ -47,13 +62,16 @@ typedef struct _GstSystemClockClass GstSystemClockClass;
  * The default implementation of a #GstClock that uses the system time.
  */
 struct _GstSystemClock {
-  GstClock 	 clock;
+  GstClock       clock;
 
   /*< private >*/
-  GThread	*thread;	/* thread for async notify */
-  gboolean 	 stopping;
+  GThread       *thread;        /* thread for async notify */
+  gboolean       stopping;
 
-  gpointer _gst_reserved[GST_PADDING];
+  /* ABI added */
+  GstSystemClockPrivate *priv;
+
+  gpointer _gst_reserved[GST_PADDING - 1];
 };
 
 struct _GstSystemClockClass {
@@ -63,9 +81,9 @@ struct _GstSystemClockClass {
   gpointer _gst_reserved[GST_PADDING];
 };
 
-GType 			gst_system_clock_get_type 	(void);
+GType                   gst_system_clock_get_type       (void);
 
-GstClock*		gst_system_clock_obtain		(void);
+GstClock*               gst_system_clock_obtain         (void);
 
 G_END_DECLS
 

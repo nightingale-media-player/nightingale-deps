@@ -1,3 +1,4 @@
+<ONLINE href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-plugins/html/">
 <ANCHOR id="gstreamer-plugins-capsfilter" href="gstreamer-plugins-0.10/gstreamer-plugins-capsfilter.html">
 <ANCHOR id="gstreamer-plugins-capsfilter.synopsis" href="gstreamer-plugins-0.10/gstreamer-plugins-capsfilter.html#gstreamer-plugins-capsfilter.synopsis">
 <ANCHOR id="GstCapsFilter" href="gstreamer-plugins-0.10/gstreamer-plugins-capsfilter.html#GstCapsFilter">
@@ -208,6 +209,7 @@
 <ANCHOR id="GstTee--num-src-pads" href="gstreamer-plugins-0.10/gstreamer-plugins-tee.html#GstTee--num-src-pads">
 <ANCHOR id="GstTee--silent" href="gstreamer-plugins-0.10/gstreamer-plugins-tee.html#GstTee--silent">
 <ANCHOR id="GstTee--pull-mode" href="gstreamer-plugins-0.10/gstreamer-plugins-tee.html#GstTee--pull-mode">
+<ANCHOR id="GstTee--alloc-pad" href="gstreamer-plugins-0.10/gstreamer-plugins-tee.html#GstTee--alloc-pad">
 <ANCHOR id="gstreamer-plugins-tee.see-also" href="gstreamer-plugins-0.10/gstreamer-plugins-tee.html#gstreamer-plugins-tee.see-also">
 <ANCHOR id="gstreamer-plugins-typefind" href="gstreamer-plugins-0.10/gstreamer-plugins-typefind.html">
 <ANCHOR id="gstreamer-plugins-typefind.synopsis" href="gstreamer-plugins-0.10/gstreamer-plugins-typefind.html#gstreamer-plugins-typefind.synopsis">

@@ -22,7 +22,9 @@ always_dirs = \
 	helloworld \
 	manual     \
 	metadata   \
-	queue
+	queue      \
+	stepping \
+	streams
 
 #appreader
 #cutter

@@ -22,6 +22,10 @@ GType gst_buffer_flag_get_type (void);
 GType gst_buffer_copy_flags_get_type (void);
 #define GST_TYPE_BUFFER_COPY_FLAGS (gst_buffer_copy_flags_get_type())
 
+/* enumerations from "gstbufferlist.h" */
+GType gst_buffer_list_item_get_type (void);
+#define GST_TYPE_BUFFER_LIST_ITEM (gst_buffer_list_item_get_type())
+
 /* enumerations from "gstbus.h" */
 GType gst_bus_flags_get_type (void);
 #define GST_TYPE_BUS_FLAGS (gst_bus_flags_get_type())
@@ -107,6 +111,10 @@ GType gst_iterator_item_get_type (void);
 /* enumerations from "gstmessage.h" */
 GType gst_message_type_get_type (void);
 #define GST_TYPE_MESSAGE_TYPE (gst_message_type_get_type())
+GType gst_structure_change_type_get_type (void);
+#define GST_TYPE_STRUCTURE_CHANGE_TYPE (gst_structure_change_type_get_type())
+GType gst_stream_status_type_get_type (void);
+#define GST_TYPE_STREAM_STATUS_TYPE (gst_stream_status_type_get_type())
 
 /* enumerations from "gstminiobject.h" */
 GType gst_mini_object_flags_get_type (void);
@@ -139,6 +147,8 @@ GType gst_plugin_error_get_type (void);
 #define GST_TYPE_PLUGIN_ERROR (gst_plugin_error_get_type())
 GType gst_plugin_flags_get_type (void);
 #define GST_TYPE_PLUGIN_FLAGS (gst_plugin_flags_get_type())
+GType gst_plugin_dependency_flags_get_type (void);
+#define GST_TYPE_PLUGIN_DEPENDENCY_FLAGS (gst_plugin_dependency_flags_get_type())
 
 /* enumerations from "gstpluginfeature.h" */
 GType gst_rank_get_type (void);
@@ -149,6 +159,10 @@ GType gst_query_type_get_type (void);
 #define GST_TYPE_QUERY_TYPE (gst_query_type_get_type())
 GType gst_buffering_mode_get_type (void);
 #define GST_TYPE_BUFFERING_MODE (gst_buffering_mode_get_type())
+
+/* enumerations from "gstsystemclock.h" */
+GType gst_clock_type_get_type (void);
+#define GST_TYPE_CLOCK_TYPE (gst_clock_type_get_type())
 
 /* enumerations from "gsttaglist.h" */
 GType gst_tag_merge_mode_get_type (void);
@@ -171,6 +185,10 @@ GType gst_type_find_probability_get_type (void);
 /* enumerations from "gsturi.h" */
 GType gst_uri_type_get_type (void);
 #define GST_TYPE_URI_TYPE (gst_uri_type_get_type())
+
+/* enumerations from "gstutils.h" */
+GType gst_search_mode_get_type (void);
+#define GST_TYPE_SEARCH_MODE (gst_search_mode_get_type())
 
 /* enumerations from "gstparse.h" */
 GType gst_parse_error_get_type (void);

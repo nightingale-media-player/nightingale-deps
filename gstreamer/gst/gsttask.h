@@ -24,6 +24,7 @@
 #define __GST_TASK_H__
 
 #include <gst/gstobject.h>
+#include <gst/gsttaskpool.h>
 
 G_BEGIN_DECLS
 
@@ -47,6 +48,7 @@ typedef void         (*GstTaskFunction)          (void *data);
 
 typedef struct _GstTask GstTask;
 typedef struct _GstTaskClass GstTaskClass;
+typedef struct _GstTaskPrivate GstTaskPrivate;
 
 /**
  * GstTaskState:
@@ -108,6 +110,25 @@ typedef enum {
 #define GST_TASK_GET_LOCK(task)		(GST_TASK_CAST(task)->lock)
 
 /**
+ * GstTaskThreadCallbacks:
+ * @enter_thread: a thread is entered, this callback is called when the new
+ *   thread enters its function.
+ * @leave_thread: a thread is exiting, this is called when the thread is about
+ *   to leave its function
+ *
+ * Custom GstTask thread callback functions that can be installed. 
+ *
+ * Since: 0.10.24
+ */
+typedef struct {
+  /* manage the lifetime of the thread */
+  void      (*enter_thread)     (GstTask *task, GThread *thread, gpointer user_data);
+  void      (*leave_thread)     (GstTask *task, GThread *thread, gpointer user_data);
+  /*< private >*/
+  gpointer     _gst_reserved[GST_PADDING];
+} GstTaskThreadCallbacks;
+
+/**
  * GstTask:
  * @state: the state of the task
  * @cond: used to pause/resume the task
@@ -138,17 +159,17 @@ struct _GstTask {
       /* thread this task is currently running in */
       GThread  *thread;
     } ABI;
-    /* adding + 0 to mark ABI change to be undone later */
-    gpointer _gst_reserved[GST_PADDING + 0];
+    gpointer _gst_reserved[GST_PADDING - 1];
   } abidata;
 
+  GstTaskPrivate *priv;
 };
 
 struct _GstTaskClass {
   GstObjectClass parent_class;
 
   /*< private >*/
-  GThreadPool *pool;
+  GstTaskPool *pool;
 
   /*< private >*/
   gpointer _gst_reserved[GST_PADDING];
@@ -160,8 +181,18 @@ GType           gst_task_get_type       (void);
 
 GstTask*	gst_task_create		(GstTaskFunction func, gpointer data);
 void		gst_task_set_lock	(GstTask *task, GStaticRecMutex *mutex);
+void		gst_task_set_priority	(GstTask *task, GThreadPriority priority);
+
+GstTaskPool *   gst_task_get_pool       (GstTask *task);
+void            gst_task_set_pool       (GstTask *task, GstTaskPool *pool);
+
+void            gst_task_set_thread_callbacks  (GstTask *task,
+                                                GstTaskThreadCallbacks *callbacks,
+						gpointer user_data,
+						GDestroyNotify notify);
 
 GstTaskState	gst_task_get_state	(GstTask *task);
+gboolean        gst_task_set_state      (GstTask *task, GstTaskState state);
 
 gboolean	gst_task_start		(GstTask *task);
 gboolean	gst_task_stop		(GstTask *task);

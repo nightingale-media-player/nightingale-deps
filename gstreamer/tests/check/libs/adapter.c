@@ -149,6 +149,44 @@ GST_END_TEST;
  */
 GST_START_TEST (test_take1)
 {
+  GstAdapter *adapter;
+  GstBuffer *buffer, *buffer2;
+  guint avail;
+  guint8 *data, *data2;
+
+  adapter = gst_adapter_new ();
+  fail_unless (adapter != NULL);
+
+  buffer = gst_buffer_new_and_alloc (100);
+  fail_unless (buffer != NULL);
+  fail_unless (GST_BUFFER_DATA (buffer) != NULL);
+  fail_unless (GST_BUFFER_SIZE (buffer) == 100);
+
+  data = GST_BUFFER_DATA (buffer);
+
+  /* push in the adapter */
+  gst_adapter_push (adapter, buffer);
+
+  avail = gst_adapter_available (adapter);
+  fail_unless (avail == 100);
+
+  /* take out buffer */
+  buffer2 = gst_adapter_take_buffer (adapter, 100);
+  fail_unless (buffer2 != NULL);
+  fail_unless (GST_BUFFER_DATA (buffer2) != NULL);
+  fail_unless (GST_BUFFER_SIZE (buffer2) == 100);
+  data2 = GST_BUFFER_DATA (buffer2);
+
+  avail = gst_adapter_available (adapter);
+  fail_unless (avail == 0);
+
+  /* the buffer should be the same */
+  fail_unless (buffer == buffer2);
+  fail_unless (data == data2);
+
+  gst_buffer_unref (buffer2);
+
+  g_object_unref (adapter);
 }
 
 GST_END_TEST;
@@ -244,6 +282,325 @@ GST_START_TEST (test_take_buf_order)
 
 GST_END_TEST;
 
+GST_START_TEST (test_timestamp)
+{
+  GstAdapter *adapter;
+  GstBuffer *buffer;
+  guint avail;
+  GstClockTime timestamp;
+  guint64 dist;
+
+  adapter = gst_adapter_new ();
+  fail_unless (adapter != NULL);
+
+  buffer = gst_buffer_new_and_alloc (100);
+
+  /* push in the adapter */
+  gst_adapter_push (adapter, buffer);
+  avail = gst_adapter_available (adapter);
+  fail_unless (avail == 100);
+
+  /* timestamp is now undefined */
+  timestamp = gst_adapter_prev_timestamp (adapter, &dist);
+  fail_unless (timestamp == GST_CLOCK_TIME_NONE);
+  fail_unless (dist == 0);
+
+  gst_adapter_flush (adapter, 50);
+  avail = gst_adapter_available (adapter);
+  fail_unless (avail == 50);
+
+  /* still undefined, dist changed, though */
+  timestamp = gst_adapter_prev_timestamp (adapter, &dist);
+  fail_unless (timestamp == GST_CLOCK_TIME_NONE);
+  fail_unless (dist == 50);
+
+  buffer = gst_buffer_new_and_alloc (100);
+  GST_BUFFER_TIMESTAMP (buffer) = 1 * GST_SECOND;
+
+  /* push in the adapter */
+  gst_adapter_push (adapter, buffer);
+  avail = gst_adapter_available (adapter);
+  fail_unless (avail == 150);
+
+  /* timestamp is still undefined */
+  timestamp = gst_adapter_prev_timestamp (adapter, &dist);
+  fail_unless (timestamp == GST_CLOCK_TIME_NONE);
+  fail_unless (dist == 50);
+
+  /* flush out first buffer we are now at the second buffer timestamp */
+  gst_adapter_flush (adapter, 50);
+  avail = gst_adapter_available (adapter);
+  fail_unless (avail == 100);
+
+  timestamp = gst_adapter_prev_timestamp (adapter, &dist);
+  fail_unless (timestamp == 1 * GST_SECOND);
+  fail_unless (dist == 0);
+
+  /* move some more, still the same timestamp but further away */
+  gst_adapter_flush (adapter, 50);
+  avail = gst_adapter_available (adapter);
+  fail_unless (avail == 50);
+
+  timestamp = gst_adapter_prev_timestamp (adapter, &dist);
+  fail_unless (timestamp == 1 * GST_SECOND);
+  fail_unless (dist == 50);
+
+  /* push a buffer without timestamp in the adapter */
+  buffer = gst_buffer_new_and_alloc (100);
+  gst_adapter_push (adapter, buffer);
+  avail = gst_adapter_available (adapter);
+  fail_unless (avail == 150);
+  /* push a buffer with timestamp in the adapter */
+  buffer = gst_buffer_new_and_alloc (100);
+  GST_BUFFER_TIMESTAMP (buffer) = 2 * GST_SECOND;
+  gst_adapter_push (adapter, buffer);
+  avail = gst_adapter_available (adapter);
+  fail_unless (avail == 250);
+
+  /* timestamp still as it was before the push */
+  timestamp = gst_adapter_prev_timestamp (adapter, &dist);
+  fail_unless (timestamp == 1 * GST_SECOND);
+  fail_unless (dist == 50);
+
+  /* flush away buffer with the timestamp */
+  gst_adapter_flush (adapter, 50);
+  avail = gst_adapter_available (adapter);
+  fail_unless (avail == 200);
+  timestamp = gst_adapter_prev_timestamp (adapter, &dist);
+  fail_unless (timestamp == 1 * GST_SECOND);
+  fail_unless (dist == 100);
+
+  /* move into the second buffer */
+  gst_adapter_flush (adapter, 50);
+  avail = gst_adapter_available (adapter);
+  fail_unless (avail == 150);
+  timestamp = gst_adapter_prev_timestamp (adapter, &dist);
+  fail_unless (timestamp == 1 * GST_SECOND);
+  fail_unless (dist == 150);
+
+  /* move to third buffer we move to the new timestamp */
+  gst_adapter_flush (adapter, 50);
+  avail = gst_adapter_available (adapter);
+  fail_unless (avail == 100);
+  timestamp = gst_adapter_prev_timestamp (adapter, &dist);
+  fail_unless (timestamp == 2 * GST_SECOND);
+  fail_unless (dist == 0);
+
+  /* move everything out */
+  gst_adapter_flush (adapter, 100);
+  avail = gst_adapter_available (adapter);
+  fail_unless (avail == 0);
+  timestamp = gst_adapter_prev_timestamp (adapter, &dist);
+  fail_unless (timestamp == 2 * GST_SECOND);
+  fail_unless (dist == 100);
+
+  /* clear everything */
+  gst_adapter_clear (adapter);
+  avail = gst_adapter_available (adapter);
+  fail_unless (avail == 0);
+  timestamp = gst_adapter_prev_timestamp (adapter, &dist);
+  fail_unless (timestamp == GST_CLOCK_TIME_NONE);
+  fail_unless (dist == 0);
+
+  g_object_unref (adapter);
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_scan)
+{
+  GstAdapter *adapter;
+  GstBuffer *buffer;
+  guint8 *data;
+  guint offset;
+  guint i;
+
+  adapter = gst_adapter_new ();
+  fail_unless (adapter != NULL);
+
+  buffer = gst_buffer_new_and_alloc (100);
+  data = GST_BUFFER_DATA (buffer);
+  /* fill with pattern */
+  for (i = 0; i < 100; i++)
+    data[i] = i;
+
+  gst_adapter_push (adapter, buffer);
+
+  /* find first bytes */
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x00010203, 0, 100);
+  fail_unless (offset == 0);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x01020304, 0, 100);
+  fail_unless (offset == 1);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x01020304, 1, 99);
+  fail_unless (offset == 1);
+  /* offset is past the pattern start */
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x01020304, 2, 98);
+  fail_unless (offset == -1);
+  /* not enough bytes to find the pattern */
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x02030405, 2, 3);
+  fail_unless (offset == -1);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x02030405, 2, 4);
+  fail_unless (offset == 2);
+  /* size does not include the last scanned byte */
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x40414243, 0, 0x41);
+  fail_unless (offset == -1);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x40414243, 0, 0x43);
+  fail_unless (offset == -1);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x40414243, 0, 0x44);
+  fail_unless (offset == 0x40);
+  /* past the start */
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x40414243, 65, 10);
+  fail_unless (offset == -1);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x40414243, 64, 5);
+  fail_unless (offset == 64);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x60616263, 65, 35);
+  fail_unless (offset == 0x60);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x60616263, 0x60, 4);
+  fail_unless (offset == 0x60);
+  /* past the start */
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x60616263, 0x61, 3);
+  fail_unless (offset == -1);
+
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x60616263, 99, 1);
+  fail_unless (offset == -1);
+
+  /* add another buffer */
+  buffer = gst_buffer_new_and_alloc (100);
+  data = GST_BUFFER_DATA (buffer);
+  /* fill with pattern */
+  for (i = 0; i < 100; i++)
+    data[i] = i + 100;
+
+  gst_adapter_push (adapter, buffer);
+
+  /* past the start */
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x60616263, 0x61, 6);
+  fail_unless (offset == -1);
+  /* this should work */
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x61626364, 0x61, 4);
+  fail_unless (offset == 0x61);
+  /* not enough data */
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x62636465, 0x61, 4);
+  fail_unless (offset == -1);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x62636465, 0x61, 5);
+  fail_unless (offset == 0x62);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x62636465, 0, 120);
+  fail_unless (offset == 0x62);
+
+  /* border conditions */
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x62636465, 0, 200);
+  fail_unless (offset == 0x62);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x63646566, 0, 200);
+  fail_unless (offset == 0x63);
+  /* we completely searched the first list */
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x64656667, 0, 200);
+  fail_unless (offset == 0x64);
+  /* skip first buffer */
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x64656667, 0x64,
+      100);
+  fail_unless (offset == 0x64);
+  /* past the start */
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x64656667, 0x65,
+      10);
+  fail_unless (offset == -1);
+  /* not enough data to scan */
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x64656667, 0x63, 4);
+  fail_unless (offset == -1);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x64656667, 0x63, 5);
+  fail_unless (offset == 0x64);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0xc4c5c6c7, 0, 199);
+  fail_unless (offset == -1);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0xc4c5c6c7, 0x62,
+      102);
+  fail_unless (offset == 0xc4);
+  /* different masks */
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0x00ffffff, 0x00656667, 0x64,
+      100);
+  fail_unless (offset == 0x64);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0x000000ff, 0x00000000, 0, 100);
+  fail_unless (offset == -1);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0x000000ff, 0x00000003, 0, 100);
+  fail_unless (offset == 0);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0x000000ff, 0x00000061, 0x61,
+      100);
+  fail_unless (offset == -1);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xff000000, 0x61000000, 0, 0x62);
+  fail_unless (offset == -1);
+  /* does not even exist */
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0x00ffffff, 0xffffffff, 0x65,
+      99);
+  fail_unless (offset == -1);
+
+  /* flush some bytes */
+  gst_adapter_flush (adapter, 0x20);
+
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x20212223, 0, 100);
+  fail_unless (offset == 0);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0x20212223, 0, 4);
+  fail_unless (offset == 0);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0xc4c5c6c7, 0x62,
+      70);
+  fail_unless (offset == 0xa4);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0xc4c5c6c7, 0, 168);
+  fail_unless (offset == 0xa4);
+
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0xc4c5c6c7, 164, 4);
+  fail_unless (offset == 0xa4);
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0xc4c5c6c7, 0x44,
+      100);
+  fail_unless (offset == 0xa4);
+  /* not enough bytes */
+  offset =
+      gst_adapter_masked_scan_uint32 (adapter, 0xffffffff, 0xc4c5c6c7, 0x44,
+      99);
+  fail_unless (offset == -1);
+
+  g_object_unref (adapter);
+}
+
+GST_END_TEST;
+
 static Suite *
 gst_adapter_suite (void)
 {
@@ -259,6 +616,8 @@ gst_adapter_suite (void)
   tcase_add_test (tc_chain, test_take3);
   tcase_add_test (tc_chain, test_take_order);
   tcase_add_test (tc_chain, test_take_buf_order);
+  tcase_add_test (tc_chain, test_timestamp);
+  tcase_add_test (tc_chain, test_scan);
 
   return s;
 }

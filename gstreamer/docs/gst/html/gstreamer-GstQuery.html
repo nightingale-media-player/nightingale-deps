@@ -8,7 +8,7 @@
 <link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="prev" href="GstPreset.html" title="GstPreset">
 <link rel="next" href="GstRegistry.html" title="GstRegistry">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
@@ -26,9 +26,11 @@
 <th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
 <td><a accesskey="n" href="GstRegistry.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-GstQuery.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gstreamer-GstQuery.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gstreamer-GstQuery.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gstreamer-GstQuery.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-GstQuery"></a><div class="titlepage"></div>
@@ -48,92 +50,92 @@
 
                     <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a>;
 enum                <a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a>;
-#define             <a class="link" href="gstreamer-GstQuery.html#GST-QUERY-TYPE-NAME:CAPS" title="GST_QUERY_TYPE_NAME()">GST_QUERY_TYPE_NAME</a>                 (query)
+#define             <a class="link" href="gstreamer-GstQuery.html#GST-QUERY-TYPE-NAME--CAPS" title="GST_QUERY_TYPE_NAME()">GST_QUERY_TYPE_NAME</a>                 (query)
                     <a class="link" href="gstreamer-GstQuery.html#GstQueryTypeDefinition" title="GstQueryTypeDefinition">GstQueryTypeDefinition</a>;
 const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a>*        <a class="link" href="gstreamer-GstQuery.html#gst-query-type-get-name" title="gst_query_type_get_name ()">gst_query_type_get_name</a>             (<a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a> query);
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Quarks.html#GQuark"
+href="../glib/glib-Quarks.html#GQuark"
 >GQuark</a>              <a class="link" href="gstreamer-GstQuery.html#gst-query-type-to-quark" title="gst_query_type_to_quark ()">gst_query_type_to_quark</a>             (<a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a> query);
 <a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a>        <a class="link" href="gstreamer-GstQuery.html#gst-query-type-register" title="gst_query_type_register ()">gst_query_type_register</a>             (const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *nick,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *description);
 <a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a>        <a class="link" href="gstreamer-GstQuery.html#gst-query-type-get-by-nick" title="gst_query_type_get_by_nick ()">gst_query_type_get_by_nick</a>          (const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *nick);
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            <a class="link" href="gstreamer-GstQuery.html#gst-query-types-contains" title="gst_query_types_contains ()">gst_query_types_contains</a>            (const <a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a> *types,
                                                          <a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a> type);
-const <a class="link" href="gstreamer-GstQuery.html#GstQueryTypeDefinition" title="GstQueryTypeDefinition">GstQueryTypeDefinition</a>* <a class="link" href="gstreamer-GstQuery.html#gst-query-type-get-details" title="gst_query_type_get_details ()">gst_query_type_get_details</a>
+const <a class="link" href="gstreamer-GstQuery.html#GstQueryTypeDefinition" title="GstQueryTypeDefinition">GstQueryTypeDefinition</a> * <a class="link" href="gstreamer-GstQuery.html#gst-query-type-get-details" title="gst_query_type_get_details ()">gst_query_type_get_details</a>
                                                         (<a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a> type);
 <a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        <a class="link" href="gstreamer-GstQuery.html#gst-query-type-iterate-definitions" title="gst_query_type_iterate_definitions ()">gst_query_type_iterate_definitions</a>  (void);
-#define             <a class="link" href="gstreamer-GstQuery.html#gst-query-ref" title="gst_query_ref()">gst_query_ref</a>                       (q)
-#define             <a class="link" href="gstreamer-GstQuery.html#gst-query-unref" title="gst_query_unref()">gst_query_unref</a>                     (q)
-#define             <a class="link" href="gstreamer-GstQuery.html#gst-query-copy" title="gst_query_copy()">gst_query_copy</a>                      (q)
+<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *          <a class="link" href="gstreamer-GstQuery.html#gst-query-ref" title="gst_query_ref ()">gst_query_ref</a>                       (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *q);
+void                <a class="link" href="gstreamer-GstQuery.html#gst-query-unref" title="gst_query_unref ()">gst_query_unref</a>                     (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *q);
+<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *          <a class="link" href="gstreamer-GstQuery.html#gst-query-copy" title="gst_query_copy ()">gst_query_copy</a>                      (const <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *q);
 #define             <a class="link" href="gstreamer-GstQuery.html#gst-query-make-writable" title="gst_query_make_writable()">gst_query_make_writable</a>             (q)
-<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a>*           <a class="link" href="gstreamer-GstQuery.html#gst-query-new-application" title="gst_query_new_application ()">gst_query_new_application</a>           (<a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a> type,
+<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *          <a class="link" href="gstreamer-GstQuery.html#gst-query-new-application" title="gst_query_new_application ()">gst_query_new_application</a>           (<a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a> type,
                                                          <a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a> *structure);
-<a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a>*       <a class="link" href="gstreamer-GstQuery.html#gst-query-get-structure" title="gst_query_get_structure ()">gst_query_get_structure</a>             (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query);
+<a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a> *      <a class="link" href="gstreamer-GstQuery.html#gst-query-get-structure" title="gst_query_get_structure ()">gst_query_get_structure</a>             (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query);
 <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a>*           <a class="link" href="gstreamer-GstQuery.html#gst-query-new-convert" title="gst_query_new_convert ()">gst_query_new_convert</a>               (<a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> src_format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> value,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> dest_format);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-set-convert" title="gst_query_set_convert ()">gst_query_set_convert</a>               (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> src_format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> src_value,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> dest_format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> dest_value);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-parse-convert" title="gst_query_parse_convert ()">gst_query_parse_convert</a>             (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *src_format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *src_value,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *dest_format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *dest_value);
 <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a>*           <a class="link" href="gstreamer-GstQuery.html#gst-query-new-position" title="gst_query_new_position ()">gst_query_new_position</a>              (<a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-set-position" title="gst_query_set_position ()">gst_query_set_position</a>              (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> cur);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-parse-position" title="gst_query_parse_position ()">gst_query_parse_position</a>            (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *cur);
 <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a>*           <a class="link" href="gstreamer-GstQuery.html#gst-query-new-duration" title="gst_query_new_duration ()">gst_query_new_duration</a>              (<a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-set-duration" title="gst_query_set_duration ()">gst_query_set_duration</a>              (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> duration);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-parse-duration" title="gst_query_parse_duration ()">gst_query_parse_duration</a>            (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *duration);
 <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a>*           <a class="link" href="gstreamer-GstQuery.html#gst-query-new-latency" title="gst_query_new_latency ()">gst_query_new_latency</a>               (void);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-parse-latency" title="gst_query_parse_latency ()">gst_query_parse_latency</a>             (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> *live,
                                                          <a class="link" href="GstClock.html#GstClockTime" title="GstClockTime">GstClockTime</a> *min_latency,
                                                          <a class="link" href="GstClock.html#GstClockTime" title="GstClockTime">GstClockTime</a> *max_latency);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-set-latency" title="gst_query_set_latency ()">gst_query_set_latency</a>               (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> live,
                                                          <a class="link" href="GstClock.html#GstClockTime" title="GstClockTime">GstClockTime</a> min_latency,
                                                          <a class="link" href="GstClock.html#GstClockTime" title="GstClockTime">GstClockTime</a> max_latency);
@@ -141,136 +143,136 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-set-seeking" title="gst_query_set_seeking ()">gst_query_set_seeking</a>               (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> seekable,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> segment_start,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> segment_end);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-parse-seeking" title="gst_query_parse_seeking ()">gst_query_parse_seeking</a>             (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> *seekable,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *segment_start,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *segment_end);
 <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a>*           <a class="link" href="gstreamer-GstQuery.html#gst-query-new-formats" title="gst_query_new_formats ()">gst_query_new_formats</a>               (void);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-set-formats" title="gst_query_set_formats ()">gst_query_set_formats</a>               (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> n_formats,
                                                          ...);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-set-formatsv" title="gst_query_set_formatsv ()">gst_query_set_formatsv</a>              (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> n_formats,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *formats);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-parse-formats-length" title="gst_query_parse_formats_length ()">gst_query_parse_formats_length</a>      (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a> *n_formats);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-parse-formats-nth" title="gst_query_parse_formats_nth ()">gst_query_parse_formats_nth</a>         (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a> nth,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format);
 <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a>*           <a class="link" href="gstreamer-GstQuery.html#gst-query-new-segment" title="gst_query_new_segment ()">gst_query_new_segment</a>               (<a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-set-segment" title="gst_query_set_segment ()">gst_query_set_segment</a>               (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+href="../glib/glib-Basic-Types.html#gdouble"
 >gdouble</a> rate,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> start_value,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> stop_value);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-parse-segment" title="gst_query_parse_segment ()">gst_query_parse_segment</a>             (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+href="../glib/glib-Basic-Types.html#gdouble"
 >gdouble</a> *rate,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *start_value,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *stop_value);
 enum                <a class="link" href="gstreamer-GstQuery.html#GstBufferingMode" title="enum GstBufferingMode">GstBufferingMode</a>;
 <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a>*           <a class="link" href="gstreamer-GstQuery.html#gst-query-new-buffering" title="gst_query_new_buffering ()">gst_query_new_buffering</a>             (<a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-set-buffering-percent" title="gst_query_set_buffering_percent ()">gst_query_set_buffering_percent</a>     (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> busy,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> percent);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-parse-buffering-percent" title="gst_query_parse_buffering_percent ()">gst_query_parse_buffering_percent</a>   (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> *busy,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> *percent);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-set-buffering-stats" title="gst_query_set_buffering_stats ()">gst_query_set_buffering_stats</a>       (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstQuery.html#GstBufferingMode" title="enum GstBufferingMode">GstBufferingMode</a> mode,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> avg_in,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> avg_out,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> buffering_left);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-parse-buffering-stats" title="gst_query_parse_buffering_stats ()">gst_query_parse_buffering_stats</a>     (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstQuery.html#GstBufferingMode" title="enum GstBufferingMode">GstBufferingMode</a> *mode,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> *avg_in,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> *avg_out,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *buffering_left);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-set-buffering-range" title="gst_query_set_buffering_range ()">gst_query_set_buffering_range</a>       (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> start,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> stop,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> estimated_total);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-parse-buffering-range" title="gst_query_parse_buffering_range ()">gst_query_parse_buffering_range</a>     (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *start,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *stop,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *estimated_total);
-<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a>*           <a class="link" href="gstreamer-GstQuery.html#gst-query-new-uri" title="gst_query_new_uri ()">gst_query_new_uri</a>                   (void);
+<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *          <a class="link" href="gstreamer-GstQuery.html#gst-query-new-uri" title="gst_query_new_uri ()">gst_query_new_uri</a>                   (void);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-parse-uri" title="gst_query_parse_uri ()">gst_query_parse_uri</a>                 (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> **uri);
 void                <a class="link" href="gstreamer-GstQuery.html#gst-query-set-uri" title="gst_query_set_uri ()">gst_query_set_uri</a>                   (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *uri);
 </pre>
 </div>
@@ -292,7 +294,7 @@ The following example shows how to query the duration of a pipeline:
 <p>
 </p>
 <div class="example">
-<a name="id3054110"></a><p class="title"><b>Example 13. Query duration on a pipeline</b></p>
+<a name="id3098828"></a><p class="title"><b>Example 16. Query duration on a pipeline</b></p>
 <div class="example-contents"><pre class="programlisting">
  GstQuery *query;
  gboolean res;
@@ -314,7 +316,6 @@ The following example shows how to query the duration of a pipeline:
 <p>
 Last reviewed on 2006-02-14 (0.10.4)</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -332,7 +333,6 @@ Last reviewed on 2006-02-14 (0.10.4)</p>
 <p>
 The <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery"><span class="type">GstQuery</span></a> structure.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -377,75 +377,74 @@ The <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery"><sp
 <p>
 Standard predefined Query types</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-QUERY-NONE:CAPS"></a><span class="term"><code class="literal">GST_QUERY_NONE</code></span></p></td>
+<td><p><a name="GST-QUERY-NONE--CAPS"></a><span class="term"><code class="literal">GST_QUERY_NONE</code></span></p></td>
 <td> invalid query type
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-QUERY-POSITION:CAPS"></a><span class="term"><code class="literal">GST_QUERY_POSITION</code></span></p></td>
+<td><p><a name="GST-QUERY-POSITION--CAPS"></a><span class="term"><code class="literal">GST_QUERY_POSITION</code></span></p></td>
 <td> current position in stream
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-QUERY-DURATION:CAPS"></a><span class="term"><code class="literal">GST_QUERY_DURATION</code></span></p></td>
+<td><p><a name="GST-QUERY-DURATION--CAPS"></a><span class="term"><code class="literal">GST_QUERY_DURATION</code></span></p></td>
 <td> total duration of the stream
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-QUERY-LATENCY:CAPS"></a><span class="term"><code class="literal">GST_QUERY_LATENCY</code></span></p></td>
+<td><p><a name="GST-QUERY-LATENCY--CAPS"></a><span class="term"><code class="literal">GST_QUERY_LATENCY</code></span></p></td>
 <td> latency of stream
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-QUERY-JITTER:CAPS"></a><span class="term"><code class="literal">GST_QUERY_JITTER</code></span></p></td>
+<td><p><a name="GST-QUERY-JITTER--CAPS"></a><span class="term"><code class="literal">GST_QUERY_JITTER</code></span></p></td>
 <td> current jitter of stream
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-QUERY-RATE:CAPS"></a><span class="term"><code class="literal">GST_QUERY_RATE</code></span></p></td>
+<td><p><a name="GST-QUERY-RATE--CAPS"></a><span class="term"><code class="literal">GST_QUERY_RATE</code></span></p></td>
 <td> current rate of the stream
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-QUERY-SEEKING:CAPS"></a><span class="term"><code class="literal">GST_QUERY_SEEKING</code></span></p></td>
+<td><p><a name="GST-QUERY-SEEKING--CAPS"></a><span class="term"><code class="literal">GST_QUERY_SEEKING</code></span></p></td>
 <td> seeking capabilities
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-QUERY-SEGMENT:CAPS"></a><span class="term"><code class="literal">GST_QUERY_SEGMENT</code></span></p></td>
+<td><p><a name="GST-QUERY-SEGMENT--CAPS"></a><span class="term"><code class="literal">GST_QUERY_SEGMENT</code></span></p></td>
 <td> segment start/stop positions
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-QUERY-CONVERT:CAPS"></a><span class="term"><code class="literal">GST_QUERY_CONVERT</code></span></p></td>
+<td><p><a name="GST-QUERY-CONVERT--CAPS"></a><span class="term"><code class="literal">GST_QUERY_CONVERT</code></span></p></td>
 <td> convert values between formats
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-QUERY-FORMATS:CAPS"></a><span class="term"><code class="literal">GST_QUERY_FORMATS</code></span></p></td>
+<td><p><a name="GST-QUERY-FORMATS--CAPS"></a><span class="term"><code class="literal">GST_QUERY_FORMATS</code></span></p></td>
 <td> query supported formats for convert
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-QUERY-BUFFERING:CAPS"></a><span class="term"><code class="literal">GST_QUERY_BUFFERING</code></span></p></td>
+<td><p><a name="GST-QUERY-BUFFERING--CAPS"></a><span class="term"><code class="literal">GST_QUERY_BUFFERING</code></span></p></td>
 <td> query available media for efficient seeking. Since
 0.10.20.
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-QUERY-CUSTOM:CAPS"></a><span class="term"><code class="literal">GST_QUERY_CUSTOM</code></span></p></td>
+<td><p><a name="GST-QUERY-CUSTOM--CAPS"></a><span class="term"><code class="literal">GST_QUERY_CUSTOM</code></span></p></td>
 <td> a custom application or element defined query. Since
 0.10.22.
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-QUERY-URI:CAPS"></a><span class="term"><code class="literal">GST_QUERY_URI</code></span></p></td>
+<td><p><a name="GST-QUERY-URI--CAPS"></a><span class="term"><code class="literal">GST_QUERY_URI</code></span></p></td>
 <td> query the URI of the source or sink. Since 0.10.22.
 </td>
 </tr>
@@ -454,13 +453,12 @@ Standard predefined Query types</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-QUERY-TYPE-NAME:CAPS"></a><h3>GST_QUERY_TYPE_NAME()</h3>
+<a name="GST-QUERY-TYPE-NAME--CAPS"></a><h3>GST_QUERY_TYPE_NAME()</h3>
 <pre class="programlisting">#define GST_QUERY_TYPE_NAME(query) (gst_query_type_get_name(GST_QUERY_TYPE(query)))
 </pre>
 <p>
 Get a constant string representation of the <a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType"><span class="type">GstQueryType</span></a> of the query.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -470,8 +468,7 @@ Get a constant string representation of the <a class="link" href="gstreamer-GstQ
 </td>
 </tr></tbody>
 </table></div>
-<p class="since">Since  0.10.4
-</p>
+<p class="since">Since 0.10.4</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -486,7 +483,6 @@ Get a constant string representation of the <a class="link" href="gstreamer-GstQ
 <p>
 A Query Type definition</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -498,21 +494,21 @@ A Query Type definition</p>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *<em class="structfield"><code>nick</code></em>;</span></p></td>
 <td> a short nick
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *<em class="structfield"><code>description</code></em>;</span></p></td>
 <td> a longer description of the query type
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Quarks.html#GQuark"
+href="../glib/glib-Quarks.html#GQuark"
 >GQuark</a> <em class="structfield"><code>quark</code></em>;</span></p></td>
 <td> the quark for the nick
 </td>
@@ -524,12 +520,11 @@ href="/usr/share/gtk-doc/html/glib/glib-Quarks.html#GQuark"
 <div class="refsect2" lang="en">
 <a name="gst-query-type-get-name"></a><h3>gst_query_type_get_name ()</h3>
 <pre class="programlisting">const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a>*        gst_query_type_get_name             (<a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a> query);</pre>
 <p>
 Get a printable name for the given query type. Do not modify or free.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -551,12 +546,11 @@ Get a printable name for the given query type. Do not modify or free.</p>
 <div class="refsect2" lang="en">
 <a name="gst-query-type-to-quark"></a><h3>gst_query_type_to_quark ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Quarks.html#GQuark"
+href="../glib/glib-Quarks.html#GQuark"
 >GQuark</a>              gst_query_type_to_quark             (<a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a> query);</pre>
 <p>
 Get the unique quark for the given query type.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -578,16 +572,15 @@ Get the unique quark for the given query type.</p>
 <div class="refsect2" lang="en">
 <a name="gst-query-type-register"></a><h3>gst_query_type_register ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a>        gst_query_type_register             (const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *nick,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *description);</pre>
 <p>
 Create a new GstQueryType based on the nick or return an
 already registered query with that nick</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -615,12 +608,11 @@ with the same nick.
 <div class="refsect2" lang="en">
 <a name="gst-query-type-get-by-nick"></a><h3>gst_query_type_get_by_nick ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a>        gst_query_type_get_by_nick          (const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *nick);</pre>
 <p>
 Get the query type registered with <em class="parameter"><code>nick</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -632,7 +624,7 @@ Get the query type registered with <em class="parameter"><code>nick</code></em>.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The query registered with <em class="parameter"><code>nick</code></em> or <a class="link" href="gstreamer-GstQuery.html#GST-QUERY-NONE:CAPS"><span class="type">GST_QUERY_NONE</span></a>
+<td> The query registered with <em class="parameter"><code>nick</code></em> or <a class="link" href="gstreamer-GstQuery.html#GST-QUERY-NONE--CAPS"><span class="type">GST_QUERY_NONE</span></a>
 if the query was not registered.
 </td>
 </tr>
@@ -643,13 +635,12 @@ if the query was not registered.
 <div class="refsect2" lang="en">
 <a name="gst-query-types-contains"></a><h3>gst_query_types_contains ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            gst_query_types_contains            (const <a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a> *types,
                                                          <a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a> type);</pre>
 <p>
 See if the given <a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType"><span class="type">GstQueryType</span></a> is inside the <em class="parameter"><code>types</code></em> query types array.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -675,12 +666,11 @@ See if the given <a class="link" href="gstreamer-GstQuery.html#GstQueryType" tit
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-query-type-get-details"></a><h3>gst_query_type_get_details ()</h3>
-<pre class="programlisting">const <a class="link" href="gstreamer-GstQuery.html#GstQueryTypeDefinition" title="GstQueryTypeDefinition">GstQueryTypeDefinition</a>* gst_query_type_get_details
+<pre class="programlisting">const <a class="link" href="gstreamer-GstQuery.html#GstQueryTypeDefinition" title="GstQueryTypeDefinition">GstQueryTypeDefinition</a> * gst_query_type_get_details
                                                         (<a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a> type);</pre>
 <p>
 Get details about the given <a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType"><span class="type">GstQueryType</span></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -706,7 +696,6 @@ Get details about the given <a class="link" href="gstreamer-GstQuery.html#GstQue
 Get a <a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator"><span class="type">GstIterator</span></a> of all the registered query types. The definitions 
 iterated over are read only.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -719,33 +708,36 @@ iterated over are read only.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="gst-query-ref"></a><h3>gst_query_ref()</h3>
-<pre class="programlisting">#define         gst_query_ref(q)		GST_QUERY (gst_mini_object_ref (GST_MINI_OBJECT (q)))
-</pre>
+<a name="gst-query-ref"></a><h3>gst_query_ref ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *          gst_query_ref                       (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *q);</pre>
 <p>
 Increases the refcount of the given query by one.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
-<tbody><tr>
+<tbody>
+<tr>
 <td><p><span class="term"><em class="parameter"><code>q</code></em> :</span></p></td>
 <td> a <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery"><span class="type">GstQuery</span></a> to increase the refcount of.
 </td>
-</tr></tbody>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <em class="parameter"><code>q</code></em>
+</td>
+</tr>
+</tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="gst-query-unref"></a><h3>gst_query_unref()</h3>
-<pre class="programlisting">#define         gst_query_unref(q)		gst_mini_object_unref (GST_MINI_OBJECT (q))
-</pre>
+<a name="gst-query-unref"></a><h3>gst_query_unref ()</h3>
+<pre class="programlisting">void                gst_query_unref                     (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *q);</pre>
 <p>
 Decreases the refcount of the query. If the refcount reaches 0, the query
 will be freed.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -758,22 +750,27 @@ will be freed.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="gst-query-copy"></a><h3>gst_query_copy()</h3>
-<pre class="programlisting">#define         gst_query_copy(q)		GST_QUERY (gst_mini_object_copy (GST_MINI_OBJECT (q)))
-</pre>
+<a name="gst-query-copy"></a><h3>gst_query_copy ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *          gst_query_copy                      (const <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *q);</pre>
 <p>
 Copies the given query using the copy function of the parent <span class="type">GstData</span>
 structure.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
-<tbody><tr>
+<tbody>
+<tr>
 <td><p><span class="term"><em class="parameter"><code>q</code></em> :</span></p></td>
 <td> a <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery"><span class="type">GstQuery</span></a> to copy.
 </td>
-</tr></tbody>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a new copy of <em class="parameter"><code>q</code></em>.
+</td>
+</tr>
+</tbody>
 </table></div>
 </div>
 <hr>
@@ -784,7 +781,6 @@ structure.</p>
 <p>
 Makes a writable query from the given query.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -798,13 +794,12 @@ Makes a writable query from the given query.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-query-new-application"></a><h3>gst_query_new_application ()</h3>
-<pre class="programlisting"><a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a>*           gst_query_new_application           (<a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a> type,
+<pre class="programlisting"><a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *          gst_query_new_application           (<a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a> type,
                                                          <a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a> *structure);</pre>
 <p>
-Constructs a new custom application query object. Use <a class="link" href="gstreamer-GstQuery.html#gst-query-unref" title="gst_query_unref()"><code class="function">gst_query_unref()</code></a>
+Constructs a new custom application query object. Use <a class="link" href="gstreamer-GstQuery.html#gst-query-unref" title="gst_query_unref ()"><code class="function">gst_query_unref()</code></a>
 when done with it.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -830,11 +825,10 @@ when done with it.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-query-get-structure"></a><h3>gst_query_get_structure ()</h3>
-<pre class="programlisting"><a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a>*       gst_query_get_structure             (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query);</pre>
+<pre class="programlisting"><a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a> *      gst_query_get_structure             (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query);</pre>
 <p>
 Get the structure of a query.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -858,15 +852,14 @@ by the query and will therefore be freed when the query is unreffed.
 <a name="gst-query-new-convert"></a><h3>gst_query_new_convert ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a>*           gst_query_new_convert               (<a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> src_format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> value,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> dest_format);</pre>
 <p>
-Constructs a new convert query object. Use <a class="link" href="gstreamer-GstQuery.html#gst-query-unref" title="gst_query_unref()"><code class="function">gst_query_unref()</code></a>
+Constructs a new convert query object. Use <a class="link" href="gstreamer-GstQuery.html#gst-query-unref" title="gst_query_unref ()"><code class="function">gst_query_unref()</code></a>
 when done with it. A convert query is used to ask for a conversion between
 one format and another.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -900,16 +893,15 @@ one format and another.</p>
 <pre class="programlisting">void                gst_query_set_convert               (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> src_format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> src_value,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> dest_format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> dest_value);</pre>
 <p>
 Answer a convert query by setting the requested values.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -948,17 +940,16 @@ Answer a convert query by setting the requested values.</p>
 <pre class="programlisting">void                gst_query_parse_convert             (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *src_format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *src_value,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *dest_format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *dest_value);</pre>
 <p>
 Parse a convert query answer. Any of <em class="parameter"><code>src_format</code></em>, <em class="parameter"><code>src_value</code></em>, <em class="parameter"><code>dest_format</code></em>,
 and <em class="parameter"><code>dest_value</code></em> may be NULL, in which case that value is omitted.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -996,11 +987,10 @@ and <em class="parameter"><code>dest_value</code></em> may be NULL, in which cas
 <a name="gst-query-new-position"></a><h3>gst_query_new_position ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a>*           gst_query_new_position              (<a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format);</pre>
 <p>
-Constructs a new query stream position query object. Use <a class="link" href="gstreamer-GstQuery.html#gst-query-unref" title="gst_query_unref()"><code class="function">gst_query_unref()</code></a>
+Constructs a new query stream position query object. Use <a class="link" href="gstreamer-GstQuery.html#gst-query-unref" title="gst_query_unref ()"><code class="function">gst_query_unref()</code></a>
 when done with it. A position query is used to query the current position
 of playback in the streams, in some format.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1024,12 +1014,11 @@ of playback in the streams, in some format.</p>
 <pre class="programlisting">void                gst_query_set_position              (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> cur);</pre>
 <p>
 Answer a position query by setting the requested value in the given format.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1058,13 +1047,12 @@ Answer a position query by setting the requested value in the given format.</p>
 <pre class="programlisting">void                gst_query_parse_position            (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *cur);</pre>
 <p>
 Parse a position query, writing the format into <em class="parameter"><code>format</code></em>, and the position
 into <em class="parameter"><code>cur</code></em>, if the respective parameters are non-NULL.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1093,10 +1081,9 @@ into <em class="parameter"><code>cur</code></em>, if the respective parameters a
 <pre class="programlisting"><a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a>*           gst_query_new_duration              (<a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format);</pre>
 <p>
 Constructs a new stream duration query object to query in the given format. 
-Use <a class="link" href="gstreamer-GstQuery.html#gst-query-unref" title="gst_query_unref()"><code class="function">gst_query_unref()</code></a> when done with it. A duration query will give the
+Use <a class="link" href="gstreamer-GstQuery.html#gst-query-unref" title="gst_query_unref ()"><code class="function">gst_query_unref()</code></a> when done with it. A duration query will give the
 total length of the stream.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1120,12 +1107,11 @@ total length of the stream.</p>
 <pre class="programlisting">void                gst_query_set_duration              (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> duration);</pre>
 <p>
 Answer a duration query by setting the requested value in the given format.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1154,13 +1140,12 @@ Answer a duration query by setting the requested value in the given format.</p>
 <pre class="programlisting">void                gst_query_parse_duration            (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *duration);</pre>
 <p>
 Parse a duration query answer. Write the format of the duration into <em class="parameter"><code>format</code></em>,
 and the value into <em class="parameter"><code>duration</code></em>, if the respective variables are non-NULL.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1189,11 +1174,10 @@ and the value into <em class="parameter"><code>duration</code></em>, if the resp
 <pre class="programlisting"><a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a>*           gst_query_new_latency               (void);</pre>
 <p>
 Constructs a new latency query object. 
-Use <a class="link" href="gstreamer-GstQuery.html#gst-query-unref" title="gst_query_unref()"><code class="function">gst_query_unref()</code></a> when done with it. A latency query is usually performed
+Use <a class="link" href="gstreamer-GstQuery.html#gst-query-unref" title="gst_query_unref ()"><code class="function">gst_query_unref()</code></a> when done with it. A latency query is usually performed
 by sinks to compensate for additional latency introduced by elements in the
 pipeline.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1204,22 +1188,20 @@ pipeline.</p>
 </td>
 </tr></tbody>
 </table></div>
-<p class="since">Since  0.10.12
-</p>
+<p class="since">Since 0.10.12</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-query-parse-latency"></a><h3>gst_query_parse_latency ()</h3>
 <pre class="programlisting">void                gst_query_parse_latency             (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> *live,
                                                          <a class="link" href="GstClock.html#GstClockTime" title="GstClockTime">GstClockTime</a> *min_latency,
                                                          <a class="link" href="GstClock.html#GstClockTime" title="GstClockTime">GstClockTime</a> *max_latency);</pre>
 <p>
 Parse a latency query answer.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1246,22 +1228,20 @@ Parse a latency query answer.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.12
-</p>
+<p class="since">Since 0.10.12</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-query-set-latency"></a><h3>gst_query_set_latency ()</h3>
 <pre class="programlisting">void                gst_query_set_latency               (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> live,
                                                          <a class="link" href="GstClock.html#GstClockTime" title="GstClockTime">GstClockTime</a> min_latency,
                                                          <a class="link" href="GstClock.html#GstClockTime" title="GstClockTime">GstClockTime</a> max_latency);</pre>
 <p>
 Answer a latency query by setting the requested values in the given format.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1288,8 +1268,7 @@ Answer a latency query by setting the requested values in the given format.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.12
-</p>
+<p class="since">Since 0.10.12</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -1299,7 +1278,6 @@ Answer a latency query by setting the requested values in the given format.</p>
 Constructs a new query object for querying seeking properties of
 the stream.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1323,18 +1301,17 @@ the stream.</p>
 <pre class="programlisting">void                gst_query_set_seeking               (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> seekable,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> segment_start,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> segment_end);</pre>
 <p>
 Set the seeking query result fields in <em class="parameter"><code>query</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1373,20 +1350,19 @@ Set the seeking query result fields in <em class="parameter"><code>query</code><
 <pre class="programlisting">void                gst_query_parse_seeking             (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> *seekable,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *segment_start,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *segment_end);</pre>
 <p>
 Parse a seeking query, writing the format into <em class="parameter"><code>format</code></em>, and 
 other results into the passed parameters, if the respective parameters
 are non-NULL</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1427,7 +1403,6 @@ are non-NULL</p>
 Constructs a new query object for querying formats of
 the stream.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1438,22 +1413,20 @@ the stream.</p>
 </td>
 </tr></tbody>
 </table></div>
-<p class="since">Since  0.10.4
-</p>
+<p class="since">Since 0.10.4</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-query-set-formats"></a><h3>gst_query_set_formats ()</h3>
 <pre class="programlisting">void                gst_query_set_formats               (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> n_formats,
                                                          ...);</pre>
 <p>
 Set the formats query result fields in <em class="parameter"><code>query</code></em>. The number of formats passed
 must be equal to <em class="parameter"><code>n_formats</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1481,14 +1454,13 @@ must be equal to <em class="parameter"><code>n_formats</code></em>.</p>
 <a name="gst-query-set-formatsv"></a><h3>gst_query_set_formatsv ()</h3>
 <pre class="programlisting">void                gst_query_set_formatsv              (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> n_formats,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *formats);</pre>
 <p>
 Set the formats query result fields in <em class="parameter"><code>query</code></em>. The number of formats passed
 in the <em class="parameter"><code>formats</code></em> array must be equal to <em class="parameter"><code>n_formats</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1510,20 +1482,18 @@ in the <em class="parameter"><code>formats</code></em> array must be equal to <e
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.4
-</p>
+<p class="since">Since 0.10.4</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-query-parse-formats-length"></a><h3>gst_query_parse_formats_length ()</h3>
 <pre class="programlisting">void                gst_query_parse_formats_length      (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a> *n_formats);</pre>
 <p>
 Parse the number of formats in the formats <em class="parameter"><code>query</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1540,15 +1510,14 @@ Parse the number of formats in the formats <em class="parameter"><code>query</co
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.4
-</p>
+<p class="since">Since 0.10.4</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-query-parse-formats-nth"></a><h3>gst_query_parse_formats_nth ()</h3>
 <pre class="programlisting">void                gst_query_parse_formats_nth         (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a> nth,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format);</pre>
 <p>
@@ -1556,7 +1525,6 @@ Parse the format query and retrieve the <em class="parameter"><code>nth</code></
 <em class="parameter"><code>format</code></em>. If the list contains less elements than <em class="parameter"><code>nth</code></em>, <em class="parameter"><code>format</code></em> will be
 set to GST_FORMAT_UNDEFINED.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1578,19 +1546,17 @@ set to GST_FORMAT_UNDEFINED.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.4
-</p>
+<p class="since">Since 0.10.4</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-query-new-segment"></a><h3>gst_query_new_segment ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a>*           gst_query_new_segment               (<a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format);</pre>
 <p>
-Constructs a new segment query object. Use <a class="link" href="gstreamer-GstQuery.html#gst-query-unref" title="gst_query_unref()"><code class="function">gst_query_unref()</code></a>
+Constructs a new segment query object. Use <a class="link" href="gstreamer-GstQuery.html#gst-query-unref" title="gst_query_unref ()"><code class="function">gst_query_unref()</code></a>
 when done with it. A segment query is used to discover information about the
 currently configured segment for playback.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1613,14 +1579,14 @@ currently configured segment for playback.</p>
 <a name="gst-query-set-segment"></a><h3>gst_query_set_segment ()</h3>
 <pre class="programlisting">void                gst_query_set_segment               (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+href="../glib/glib-Basic-Types.html#gdouble"
 >gdouble</a> rate,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> start_value,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> stop_value);</pre>
 <p>
 Answer a segment query by setting the requested values. The normal
@@ -1636,7 +1602,6 @@ The values are always between 0 and the duration of the media and
 negative rates, playback will actually happen from <em class="parameter"><code>stop_value</code></em> to
 <em class="parameter"><code>start_value</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1674,14 +1639,14 @@ negative rates, playback will actually happen from <em class="parameter"><code>s
 <a name="gst-query-parse-segment"></a><h3>gst_query_parse_segment ()</h3>
 <pre class="programlisting">void                gst_query_parse_segment             (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+href="../glib/glib-Basic-Types.html#gdouble"
 >gdouble</a> *rate,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *start_value,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *stop_value);</pre>
 <p>
 Parse a segment query answer. Any of <em class="parameter"><code>rate</code></em>, <em class="parameter"><code>format</code></em>, <em class="parameter"><code>start_value</code></em>, and 
@@ -1690,7 +1655,6 @@ Parse a segment query answer. Any of <em class="parameter"><code>rate</code></em
 <p>
 See <a class="link" href="gstreamer-GstQuery.html#gst-query-set-segment" title="gst_query_set_segment ()"><code class="function">gst_query_set_segment()</code></a> for an explanation of the function arguments.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1736,28 +1700,27 @@ See <a class="link" href="gstreamer-GstQuery.html#gst-query-set-segment" title="
 <p>
 The different types of buffering methods.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-BUFFERING-STREAM:CAPS"></a><span class="term"><code class="literal">GST_BUFFERING_STREAM</code></span></p></td>
+<td><p><a name="GST-BUFFERING-STREAM--CAPS"></a><span class="term"><code class="literal">GST_BUFFERING_STREAM</code></span></p></td>
 <td> a small amount of data is buffered
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-BUFFERING-DOWNLOAD:CAPS"></a><span class="term"><code class="literal">GST_BUFFERING_DOWNLOAD</code></span></p></td>
+<td><p><a name="GST-BUFFERING-DOWNLOAD--CAPS"></a><span class="term"><code class="literal">GST_BUFFERING_DOWNLOAD</code></span></p></td>
 <td> the stream is being downloaded
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-BUFFERING-TIMESHIFT:CAPS"></a><span class="term"><code class="literal">GST_BUFFERING_TIMESHIFT</code></span></p></td>
+<td><p><a name="GST-BUFFERING-TIMESHIFT--CAPS"></a><span class="term"><code class="literal">GST_BUFFERING_TIMESHIFT</code></span></p></td>
 <td> the stream is being downloaded in a ringbuffer
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-BUFFERING-LIVE:CAPS"></a><span class="term"><code class="literal">GST_BUFFERING_LIVE</code></span></p></td>
+<td><p><a name="GST-BUFFERING-LIVE--CAPS"></a><span class="term"><code class="literal">GST_BUFFERING_LIVE</code></span></p></td>
 <td> the stream is a live stream
 </td>
 </tr>
@@ -1772,7 +1735,6 @@ The different types of buffering methods.</p>
 Constructs a new query object for querying the buffering status of
 a stream.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1790,26 +1752,24 @@ a stream.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.20
-</p>
+<p class="since">Since 0.10.20</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-query-set-buffering-percent"></a><h3>gst_query_set_buffering_percent ()</h3>
 <pre class="programlisting">void                gst_query_set_buffering_percent     (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> busy,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> percent);</pre>
 <p>
 Set the percentage of buffered data. This is a value between 0 and 100.
 The <em class="parameter"><code>busy</code></em> indicator is <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> when the buffering is in progress.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1831,26 +1791,24 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.20
-</p>
+<p class="since">Since 0.10.20</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-query-parse-buffering-percent"></a><h3>gst_query_parse_buffering_percent ()</h3>
 <pre class="programlisting">void                gst_query_parse_buffering_percent   (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> *busy,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> *percent);</pre>
 <p>
 Get the percentage of buffered data. This is a value between 0 and 100.
 The <em class="parameter"><code>busy</code></em> indicator is <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> when the buffering is in progress.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1872,8 +1830,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.20
-</p>
+<p class="since">Since 0.10.20</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -1881,18 +1838,17 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <pre class="programlisting">void                gst_query_set_buffering_stats       (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstQuery.html#GstBufferingMode" title="enum GstBufferingMode">GstBufferingMode</a> mode,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> avg_in,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> avg_out,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> buffering_left);</pre>
 <p>
 Configures the buffering stats values in <em class="parameter"><code>query</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1924,8 +1880,7 @@ Configures the buffering stats values in <em class="parameter"><code>query</code
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.20
-</p>
+<p class="since">Since 0.10.20</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -1933,18 +1888,17 @@ Configures the buffering stats values in <em class="parameter"><code>query</code
 <pre class="programlisting">void                gst_query_parse_buffering_stats     (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstQuery.html#GstBufferingMode" title="enum GstBufferingMode">GstBufferingMode</a> *mode,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> *avg_in,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+href="../glib/glib-Basic-Types.html#gint"
 >gint</a> *avg_out,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *buffering_left);</pre>
 <p>
 Extracts the buffering stats values from <em class="parameter"><code>query</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1976,8 +1930,7 @@ Extracts the buffering stats values from <em class="parameter"><code>query</code
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.20
-</p>
+<p class="since">Since 0.10.20</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -1985,18 +1938,17 @@ Extracts the buffering stats values from <em class="parameter"><code>query</code
 <pre class="programlisting">void                gst_query_set_buffering_range       (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> start,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> stop,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> estimated_total);</pre>
 <p>
 Set the available query result fields in <em class="parameter"><code>query</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2028,8 +1980,7 @@ Set the available query result fields in <em class="parameter"><code>query</code
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.20
-</p>
+<p class="since">Since 0.10.20</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -2037,20 +1988,19 @@ Set the available query result fields in <em class="parameter"><code>query</code
 <pre class="programlisting">void                gst_query_parse_buffering_range     (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *start,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *stop,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *estimated_total);</pre>
 <p>
 Parse an available query, writing the format into <em class="parameter"><code>format</code></em>, and 
 other results into the passed parameters, if the respective parameters
 are non-NULL</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2082,19 +2032,17 @@ are non-NULL</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.20
-</p>
+<p class="since">Since 0.10.20</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-query-new-uri"></a><h3>gst_query_new_uri ()</h3>
-<pre class="programlisting"><a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a>*           gst_query_new_uri                   (void);</pre>
+<pre class="programlisting"><a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *          gst_query_new_uri                   (void);</pre>
 <p>
-Constructs a new query URI query object. Use <a class="link" href="gstreamer-GstQuery.html#gst-query-unref" title="gst_query_unref()"><code class="function">gst_query_unref()</code></a>
+Constructs a new query URI query object. Use <a class="link" href="gstreamer-GstQuery.html#gst-query-unref" title="gst_query_unref ()"><code class="function">gst_query_unref()</code></a>
 when done with it. An URI query is used to query the current URI
 that is used by the source or sink.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2105,24 +2053,22 @@ that is used by the source or sink.</p>
 </td>
 </tr></tbody>
 </table></div>
-<p class="since">Since  0.10.22
-</p>
+<p class="since">Since 0.10.22</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-query-parse-uri"></a><h3>gst_query_parse_uri ()</h3>
 <pre class="programlisting">void                gst_query_parse_uri                 (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> **uri);</pre>
 <p>
 Parse an URI query, writing the URI into <em class="parameter"><code>uri</code></em> as a newly
 allocated string, if the respective parameters are non-NULL.
 Free the string with <a
-href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
+href="../glib/glib-Memory-Allocation.html#g-free"
 ><code class="function">g_free()</code></a> after usage.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2139,20 +2085,18 @@ href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.22
-</p>
+<p class="since">Since 0.10.22</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-query-set-uri"></a><h3>gst_query_set_uri ()</h3>
 <pre class="programlisting">void                gst_query_set_uri                   (<a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query,
                                                          const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *uri);</pre>
 <p>
 Answer a URI query by setting the requested URI.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2169,17 +2113,16 @@ Answer a URI query by setting the requested URI.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.22
-</p>
+<p class="since">Since 0.10.22</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
 <a name="gstreamer-GstQuery.see-also"></a><h2>See Also</h2>
-<a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a>, <a class="link" href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a>
+#GstPad, <a class="link" href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

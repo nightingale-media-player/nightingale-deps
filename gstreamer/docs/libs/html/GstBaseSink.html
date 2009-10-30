@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
 <link rel="prev" href="GstBaseSrc.html" title="GstBaseSrc">
 <link rel="next" href="GstBaseTransform.html" title="GstBaseTransform">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-libs.html" title="Part I. GStreamer Libraries">
 <link rel="chapter" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
@@ -29,13 +29,15 @@
 <th width="100%" align="center">GStreamer 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="GstBaseTransform.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#GstBaseSink.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#GstBaseSink.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#GstBaseSink.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#GstBaseSink.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#GstBaseSink.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#GstBaseSink.description" class="shortcut">Description</a>
+                 | 
+                <a href="#GstBaseSink.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#GstBaseSink.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="GstBaseSink"></a><div class="titlepage"></div>
@@ -55,79 +57,117 @@
                     <a class="link" href="GstBaseSink.html#GstBaseSink-struct" title="GstBaseSink">GstBaseSink</a>;
                     <a class="link" href="GstBaseSink.html#GstBaseSinkClass" title="GstBaseSinkClass">GstBaseSinkClass</a>;
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            <a class="link" href="GstBaseSink.html#gst-base-sink-query-latency" title="gst_base_sink_query_latency ()">gst_base_sink_query_latency</a>         (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> *live,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> *upstream_live,
-                                                         GstClockTime *min_latency,
-                                                         GstClockTime *max_latency);
-GstClockTime        <a class="link" href="GstBaseSink.html#gst-base-sink-get-latency" title="gst_base_sink_get_latency ()">gst_base_sink_get_latency</a>           (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);
-GstFlowReturn       <a class="link" href="GstBaseSink.html#gst-base-sink-do-preroll" title="gst_base_sink_do_preroll ()">gst_base_sink_do_preroll</a>            (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
-                                                         GstMiniObject *obj);
-GstFlowReturn       <a class="link" href="GstBaseSink.html#gst-base-sink-wait-preroll" title="gst_base_sink_wait_preroll ()">gst_base_sink_wait_preroll</a>          (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);
-GstClockReturn      <a class="link" href="GstBaseSink.html#gst-base-sink-wait-clock" title="gst_base_sink_wait_clock ()">gst_base_sink_wait_clock</a>            (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
-                                                         GstClockTime time,
-                                                         GstClockTimeDiff *jitter);
-GstFlowReturn       <a class="link" href="GstBaseSink.html#gst-base-sink-wait-eos" title="gst_base_sink_wait_eos ()">gst_base_sink_wait_eos</a>              (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
-                                                         GstClockTime time,
-                                                         GstClockTimeDiff *jitter);
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> *min_latency,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> *max_latency);
+<a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a>        <a class="link" href="GstBaseSink.html#gst-base-sink-get-latency" title="gst_base_sink_get_latency ()">gst_base_sink_get_latency</a>           (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);
+<a
+href="../gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       <a class="link" href="GstBaseSink.html#gst-base-sink-do-preroll" title="gst_base_sink_do_preroll ()">gst_base_sink_do_preroll</a>            (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
+                                                         <a
+href="../gstreamer-0.10/gstreamer-GstMiniObject.html#GstMiniObject"
+>GstMiniObject</a> *obj);
+<a
+href="../gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       <a class="link" href="GstBaseSink.html#gst-base-sink-wait-preroll" title="gst_base_sink_wait_preroll ()">gst_base_sink_wait_preroll</a>          (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);
+<a
+href="../gstreamer-0.10/GstClock.html#GstClockReturn"
+>GstClockReturn</a>      <a class="link" href="GstBaseSink.html#gst-base-sink-wait-clock" title="gst_base_sink_wait_clock ()">gst_base_sink_wait_clock</a>            (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> time,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTimeDiff"
+>GstClockTimeDiff</a> *jitter);
+<a
+href="../gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       <a class="link" href="GstBaseSink.html#gst-base-sink-wait-eos" title="gst_base_sink_wait_eos ()">gst_base_sink_wait_eos</a>              (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> time,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTimeDiff"
+>GstClockTimeDiff</a> *jitter);
 void                <a class="link" href="GstBaseSink.html#gst-base-sink-set-sync" title="gst_base_sink_set_sync ()">gst_base_sink_set_sync</a>              (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> sync);
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            <a class="link" href="GstBaseSink.html#gst-base-sink-get-sync" title="gst_base_sink_get_sync ()">gst_base_sink_get_sync</a>              (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);
 void                <a class="link" href="GstBaseSink.html#gst-base-sink-set-max-lateness" title="gst_base_sink_set_max_lateness ()">gst_base_sink_set_max_lateness</a>      (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> max_lateness);
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a>              <a class="link" href="GstBaseSink.html#gst-base-sink-get-max-lateness" title="gst_base_sink_get_max_lateness ()">gst_base_sink_get_max_lateness</a>      (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);
 void                <a class="link" href="GstBaseSink.html#gst-base-sink-set-qos-enabled" title="gst_base_sink_set_qos_enabled ()">gst_base_sink_set_qos_enabled</a>       (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> enabled);
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            <a class="link" href="GstBaseSink.html#gst-base-sink-is-qos-enabled" title="gst_base_sink_is_qos_enabled ()">gst_base_sink_is_qos_enabled</a>        (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);
 void                <a class="link" href="GstBaseSink.html#gst-base-sink-set-async-enabled" title="gst_base_sink_set_async_enabled ()">gst_base_sink_set_async_enabled</a>     (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> enabled);
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            <a class="link" href="GstBaseSink.html#gst-base-sink-is-async-enabled" title="gst_base_sink_is_async_enabled ()">gst_base_sink_is_async_enabled</a>      (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);
 void                <a class="link" href="GstBaseSink.html#gst-base-sink-set-ts-offset" title="gst_base_sink_set_ts_offset ()">gst_base_sink_set_ts_offset</a>         (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
-                                                         GstClockTimeDiff offset);
-GstClockTimeDiff    <a class="link" href="GstBaseSink.html#gst-base-sink-get-ts-offset" title="gst_base_sink_get_ts_offset ()">gst_base_sink_get_ts_offset</a>         (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTimeDiff"
+>GstClockTimeDiff</a> offset);
+<a
+href="../gstreamer-0.10/GstClock.html#GstClockTimeDiff"
+>GstClockTimeDiff</a>    <a class="link" href="GstBaseSink.html#gst-base-sink-get-ts-offset" title="gst_base_sink_get_ts_offset ()">gst_base_sink_get_ts_offset</a>         (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);
 void                <a class="link" href="GstBaseSink.html#gst-base-sink-set-render-delay" title="gst_base_sink_set_render_delay ()">gst_base_sink_set_render_delay</a>      (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
-                                                         GstClockTime delay);
-GstClockTime        <a class="link" href="GstBaseSink.html#gst-base-sink-get-render-delay" title="gst_base_sink_get_render_delay ()">gst_base_sink_get_render_delay</a>      (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);
-GstBuffer*          <a class="link" href="GstBaseSink.html#gst-base-sink-get-last-buffer" title="gst_base_sink_get_last_buffer ()">gst_base_sink_get_last_buffer</a>       (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> delay);
+<a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a>        <a class="link" href="GstBaseSink.html#gst-base-sink-get-render-delay" title="gst_base_sink_get_render_delay ()">gst_base_sink_get_render_delay</a>      (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);
+<a
+href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *         <a class="link" href="GstBaseSink.html#gst-base-sink-get-last-buffer" title="gst_base_sink_get_last_buffer ()">gst_base_sink_get_last_buffer</a>       (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);
 void                <a class="link" href="GstBaseSink.html#gst-base-sink-set-blocksize" title="gst_base_sink_set_blocksize ()">gst_base_sink_set_blocksize</a>         (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a> blocksize);
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>               <a class="link" href="GstBaseSink.html#gst-base-sink-get-blocksize" title="gst_base_sink_get_blocksize ()">gst_base_sink_get_blocksize</a>         (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);
-#define             <a class="link" href="GstBaseSink.html#GST-BASE-SINK-PAD:CAPS" title="GST_BASE_SINK_PAD()">GST_BASE_SINK_PAD</a>                   (obj)
+#define             <a class="link" href="GstBaseSink.html#GST-BASE-SINK-PAD--CAPS" title="GST_BASE_SINK_PAD()">GST_BASE_SINK_PAD</a>                   (obj)
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="GstBaseSink.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
   <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
                +----GstBaseSink
 </pre>
 </div>
@@ -135,29 +175,31 @@ href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 <a name="GstBaseSink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
   "<a class="link" href="GstBaseSink.html#GstBaseSink--async" title='The "async" property'>async</a>"                    <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
   "<a class="link" href="GstBaseSink.html#GstBaseSink--blocksize" title='The "blocksize" property'>blocksize</a>"                <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write
-  "<a class="link" href="GstBaseSink.html#GstBaseSink--last-buffer" title='The "last-buffer" property'>last-buffer</a>"              GstBuffer*            : Read
+  "<a class="link" href="GstBaseSink.html#GstBaseSink--last-buffer" title='The "last-buffer" property'>last-buffer</a>"              <a
+href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a>*            : Read
   "<a class="link" href="GstBaseSink.html#GstBaseSink--max-lateness" title='The "max-lateness" property'>max-lateness</a>"             <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a>                : Read / Write
   "<a class="link" href="GstBaseSink.html#GstBaseSink--preroll-queue-len" title='The "preroll-queue-len" property'>preroll-queue-len</a>"        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write / Construct
   "<a class="link" href="GstBaseSink.html#GstBaseSink--qos" title='The "qos" property'>qos</a>"                      <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
   "<a class="link" href="GstBaseSink.html#GstBaseSink--render-delay" title='The "render-delay" property'>render-delay</a>"             <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+href="../glib/glib-Basic-Types.html#guint64"
 >guint64</a>               : Read / Write
   "<a class="link" href="GstBaseSink.html#GstBaseSink--sync" title='The "sync" property'>sync</a>"                     <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
   "<a class="link" href="GstBaseSink.html#GstBaseSink--ts-offset" title='The "ts-offset" property'>ts-offset</a>"                <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a>                : Read / Write
 </pre>
 </div>
@@ -165,14 +207,18 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
 <a name="GstBaseSink.description"></a><h2>Description</h2>
 <p>
 <a class="link" href="GstBaseSink.html" title="GstBaseSink"><span class="type">GstBaseSink</span></a> is the base class for sink elements in GStreamer, such as
-xvimagesink or filesink. It is a layer on top of <span class="type">GstElement</span> that provides a
+xvimagesink or filesink. It is a layer on top of <a
+href="../gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a> that provides a
 simplified interface to plugin writers. <a class="link" href="GstBaseSink.html" title="GstBaseSink"><span class="type">GstBaseSink</span></a> handles many details
 for you, for example: preroll, clock synchronization, state changes,
 activation in push or pull mode, and queries.
 </p>
 <p>
 In most cases, when writing sink elements, there is no need to implement
-class methods from <span class="type">GstElement</span> or to set functions on pads, because the
+class methods from <a
+href="../gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a> or to set functions on pads, because the
 <a class="link" href="GstBaseSink.html" title="GstBaseSink"><span class="type">GstBaseSink</span></a> infrastructure should be sufficient.
 </p>
 <p>
@@ -185,12 +231,16 @@ static void
 my_element_base_init (gpointer g_class)
 {
   GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
-  
-  // sinktemplate should be a GstStaticPadTemplate with direction
+
+  // sinktemplate should be a <a
+href="../gstreamer-0.10/GstPadTemplate.html#GstStaticPadTemplate"
+>GstStaticPadTemplate</a> with direction
   // GST_PAD_SINK and name "sink"
   gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&amp;sinktemplate));
-  // see GstElementDetails
+  // see <a
+href="../gstreamer-0.10/GstElementFactory.html#GstElementDetails"
+>GstElementDetails</a>
   gst_element_class_set_details (gstelement_class, &amp;details);
 }
 </pre>
@@ -206,10 +256,12 @@ the state change to the next asynchronously pending state.
 <p>
 When the element is set to PLAYING, <a class="link" href="GstBaseSink.html" title="GstBaseSink"><span class="type">GstBaseSink</span></a> will synchronise on the
 clock using the times returned from ::get_times. If this function returns
-<span class="type">GST_CLOCK_TIME_NONE</span> for the start time, no synchronisation will be done.
+<a
+href="../gstreamer-0.10/GstClock.html#GST-CLOCK-TIME-NONE--CAPS"
+><span class="type">GST_CLOCK_TIME_NONE</span></a> for the start time, no synchronisation will be done.
 Synchronisation can be disabled entirely by setting the object "sync"
 property to <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
 ><code class="literal">FALSE</code></a>.
 </p>
 <p>
@@ -298,7 +350,6 @@ with non-synchronized streams or sparse streams.
 <p>
 Last reviewed on 2007-08-29 (0.10.15)</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -309,7 +360,6 @@ Last reviewed on 2007-08-29 (0.10.15)</p>
 <p>
 The opaque <a class="link" href="GstBaseSink.html" title="GstBaseSink"><span class="type">GstBaseSink</span></a> data structure.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -329,11 +379,11 @@ The opaque <a class="link" href="GstBaseSink.html" title="GstBaseSink"><span cla
 
   /* allocate a new buffer with given caps */
   GstFlowReturn (*buffer_alloc) (GstBaseSink *sink, guint64 offset, guint size,
-		                 GstCaps *caps, GstBuffer **buf);
+                                 GstCaps *caps, GstBuffer **buf);
 
   /* get the start and end times for syncing on this buffer */
-  void		(*get_times)    (GstBaseSink *sink, GstBuffer *buffer,
-		                 GstClockTime *start, GstClockTime *end);
+  void          (*get_times)    (GstBaseSink *sink, GstBuffer *buffer,
+                                 GstClockTime *start, GstClockTime *end);
 
   /* start and stop processing, ideal for opening/closing the resource */
   gboolean      (*start)        (GstBaseSink *sink);
@@ -354,15 +404,18 @@ The opaque <a class="link" href="GstBaseSink.html" title="GstBaseSink"><span cla
   GstStateChangeReturn (*async_play)   (GstBaseSink *sink);
 
   /* start or stop a pulling thread */
-  gboolean	(*activate_pull)(GstBaseSink *sink, gboolean active);
+  gboolean      (*activate_pull)(GstBaseSink *sink, gboolean active);
 
   /* fixate sink caps during pull-mode negotiation */
-  void		(*fixate)	(GstBaseSink *sink, GstCaps *caps);
+  void          (*fixate)       (GstBaseSink *sink, GstCaps *caps);
 
-  /* Clear a previously indicated unlock request not that unlocking is 
+  /* Clear a previously indicated unlock request not that unlocking is
    * complete. Sub-classes should clear any command queue or indicator they
    * set during unlock */
-  gboolean      (*unlock_stop)       (GstBaseSink *sink);
+  gboolean      (*unlock_stop)  (GstBaseSink *sink);
+
+  /* Render a BufferList */
+  GstFlowReturn (*render_list)  (GstBaseSink *sink, GstBufferList *buffer_list);
 } GstBaseSinkClass;
 </pre>
 <p>
@@ -370,13 +423,14 @@ Subclasses can override any of the available virtual methods or not, as
 needed. At the minimum, the <em class="parameter"><code>render</code></em> method should be overridden to
 output/present buffers.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term">GstElementClass <em class="structfield"><code>parent_class</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="../gstreamer-0.10/GstElement.html#GstElementClass"
+>GstElementClass</a> <em class="structfield"><code>parent_class</code></em>;</span></p></td>
 <td> Element parent class
 </td>
 </tr>
@@ -452,14 +506,22 @@ output/present buffers.</p>
 <tr>
 <td><p><span class="term"><em class="structfield"><code>fixate</code></em> ()</span></p></td>
 <td> Only useful in pull mode, this vmethod will be called in response to
-    <code class="function">gst_pad_fixate_caps()</code> being called on the sink pad. Implement if you have
+    <a
+href="../gstreamer-0.10/GstPad.html#gst-pad-fixate-caps"
+><code class="function">gst_pad_fixate_caps()</code></a> being called on the sink pad. Implement if you have
     ideas about what should be the default values for the caps you support.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="structfield"><code>unlock_stop</code></em> ()</span></p></td>
 <td> Clear the previous unlock request. Subclasses should clear
-    any state they set during <code class="function">unlock()</code>, such as clearing command queues. 
+    any state they set during <code class="function">unlock()</code>, such as clearing command queues.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code>render_list</code></em> ()</span></p></td>
+<td> Same as <em class="parameter"><code>render</code></em> but used whith buffer lists instead of
+    buffers. Since: 0.10.24
 </td>
 </tr>
 </tbody>
@@ -469,21 +531,25 @@ output/present buffers.</p>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-query-latency"></a><h3>gst_base_sink_query_latency ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            gst_base_sink_query_latency         (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> *live,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> *upstream_live,
-                                                         GstClockTime *min_latency,
-                                                         GstClockTime *max_latency);</pre>
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> *min_latency,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> *max_latency);</pre>
 <p>
 Query the sink for the latency parameters. The latency will be queried from
 the upstream elements. <em class="parameter"><code>live</code></em> will be TRUE if <em class="parameter"><code>sink</code></em> is configured to
 synchronize against the clock. <em class="parameter"><code>upstream_live</code></em> will be TRUE if an upstream
-element is live. 
+element is live.
 </p>
 <p>
 If both <em class="parameter"><code>live</code></em> and <em class="parameter"><code>upstream_live</code></em> are TRUE, the sink will want to compensate
@@ -493,7 +559,6 @@ for the latency introduced by the upstream elements by setting the
 <p>
 This function is mostly used by subclasses.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -531,17 +596,17 @@ This function is mostly used by subclasses.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.12
-</p>
+<p class="since">Since 0.10.12</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-get-latency"></a><h3>gst_base_sink_get_latency ()</h3>
-<pre class="programlisting">GstClockTime        gst_base_sink_get_latency           (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);</pre>
+<pre class="programlisting"><a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a>        gst_base_sink_get_latency           (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);</pre>
 <p>
 Get the currently configured latency.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -559,14 +624,17 @@ Get the currently configured latency.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.12
-</p>
+<p class="since">Since 0.10.12</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-do-preroll"></a><h3>gst_base_sink_do_preroll ()</h3>
-<pre class="programlisting">GstFlowReturn       gst_base_sink_do_preroll            (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
-                                                         GstMiniObject *obj);</pre>
+<pre class="programlisting"><a
+href="../gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       gst_base_sink_do_preroll            (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
+                                                         <a
+href="../gstreamer-0.10/gstreamer-GstMiniObject.html#GstMiniObject"
+>GstMiniObject</a> *obj);</pre>
 <p>
 If the <em class="parameter"><code>sink</code></em> spawns its own thread for pulling buffers from upstream it
 should call this method after it has pulled a buffer. If the element needed
@@ -579,7 +647,6 @@ This function should be called with the PREROLL_LOCK held.
 <p>
 Since 0.10.22</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -606,7 +673,9 @@ continue. Any other return value should be returned from the render vmethod.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-wait-preroll"></a><h3>gst_base_sink_wait_preroll ()</h3>
-<pre class="programlisting">GstFlowReturn       gst_base_sink_wait_preroll          (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);</pre>
+<pre class="programlisting"><a
+href="../gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       gst_base_sink_wait_preroll          (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);</pre>
 <p>
 If the <span class="type">"render"</span> method performs its own synchronisation against
 the clock it must unblock when going from PLAYING to the PAUSED state and call
@@ -622,7 +691,6 @@ returns <span class="type">GST_FLOW_WRONG_STATE</span>).
 This function should only be called with the PREROLL_LOCK held, like in the
 render function.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -640,16 +708,20 @@ continue. Any other return value should be returned from the render vmethod.
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.11
-
-</p>
+<p class="since">Since 0.10.11</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-wait-clock"></a><h3>gst_base_sink_wait_clock ()</h3>
-<pre class="programlisting">GstClockReturn      gst_base_sink_wait_clock            (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
-                                                         GstClockTime time,
-                                                         GstClockTimeDiff *jitter);</pre>
+<pre class="programlisting"><a
+href="../gstreamer-0.10/GstClock.html#GstClockReturn"
+>GstClockReturn</a>      gst_base_sink_wait_clock            (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> time,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTimeDiff"
+>GstClockTimeDiff</a> *jitter);</pre>
 <p>
 This function will block until <em class="parameter"><code>time</code></em> is reached. It is usually called by
 subclasses that use their own internal synchronisation.
@@ -672,7 +744,6 @@ sink.
 <p>
 Since 0.10.20</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -694,7 +765,9 @@ Since 0.10.20</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <span class="type">GstClockReturn</span>
+<td> <a
+href="../gstreamer-0.10/GstClock.html#GstClockReturn"
+><span class="type">GstClockReturn</span></a>
 </td>
 </tr>
 </tbody>
@@ -703,9 +776,15 @@ Since 0.10.20</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-wait-eos"></a><h3>gst_base_sink_wait_eos ()</h3>
-<pre class="programlisting">GstFlowReturn       gst_base_sink_wait_eos              (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
-                                                         GstClockTime time,
-                                                         GstClockTimeDiff *jitter);</pre>
+<pre class="programlisting"><a
+href="../gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       gst_base_sink_wait_eos              (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> time,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTimeDiff"
+>GstClockTimeDiff</a> *jitter);</pre>
 <p>
 This function will block until <em class="parameter"><code>time</code></em> is reached. It is usually called by
 subclasses that use their own internal synchronisation but want to let the
@@ -722,7 +801,6 @@ and will be adjusted with any latency and offset configured in the sink.
 <p>
 Since 0.10.15</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -744,7 +822,9 @@ Since 0.10.15</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <span class="type">GstFlowReturn</span>
+<td> <a
+href="../gstreamer-0.10/GstPad.html#GstFlowReturn"
+><span class="type">GstFlowReturn</span></a>
 </td>
 </tr>
 </tbody>
@@ -755,7 +835,7 @@ Since 0.10.15</p>
 <a name="gst-base-sink-set-sync"></a><h3>gst_base_sink_set_sync ()</h3>
 <pre class="programlisting">void                gst_base_sink_set_sync              (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> sync);</pre>
 <p>
 Configures <em class="parameter"><code>sink</code></em> to synchronize on the clock or not. When
@@ -764,7 +844,6 @@ possible. If <em class="parameter"><code>sync</code></em> is TRUE, the timestamp
 buffers will be used to schedule the exact render time of its
 contents.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -781,20 +860,18 @@ contents.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.4
-</p>
+<p class="since">Since 0.10.4</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-get-sync"></a><h3>gst_base_sink_get_sync ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            gst_base_sink_get_sync              (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);</pre>
 <p>
 Checks if <em class="parameter"><code>sink</code></em> is currently configured to synchronize against the
 clock.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -812,15 +889,14 @@ clock.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.4
-</p>
+<p class="since">Since 0.10.4</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-set-max-lateness"></a><h3>gst_base_sink_set_max_lateness ()</h3>
 <pre class="programlisting">void                gst_base_sink_set_max_lateness      (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> max_lateness);</pre>
 <p>
 Sets the new max lateness value to <em class="parameter"><code>max_lateness</code></em>. This value is
@@ -828,7 +904,6 @@ used to decide if a buffer should be dropped or not based on the
 buffer timestamp and the current clock time. A value of -1 means
 an unlimited time.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -845,20 +920,18 @@ an unlimited time.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.4
-</p>
+<p class="since">Since 0.10.4</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-get-max-lateness"></a><h3>gst_base_sink_get_max_lateness ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a>              gst_base_sink_get_max_lateness      (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);</pre>
 <p>
 Gets the max lateness value. See gst_base_sink_set_max_lateness for
 more details.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -878,20 +951,18 @@ unlimited time.
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.4
-</p>
+<p class="since">Since 0.10.4</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-set-qos-enabled"></a><h3>gst_base_sink_set_qos_enabled ()</h3>
 <pre class="programlisting">void                gst_base_sink_set_qos_enabled       (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> enabled);</pre>
 <p>
 Configures <em class="parameter"><code>sink</code></em> to send Quality-of-Service events upstream.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -908,20 +979,18 @@ Configures <em class="parameter"><code>sink</code></em> to send Quality-of-Servi
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.5
-</p>
+<p class="since">Since 0.10.5</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-is-qos-enabled"></a><h3>gst_base_sink_is_qos_enabled ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            gst_base_sink_is_qos_enabled        (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);</pre>
 <p>
 Checks if <em class="parameter"><code>sink</code></em> is currently configured to send Quality-of-Service events
 upstream.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -939,15 +1008,14 @@ upstream.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.5
-</p>
+<p class="since">Since 0.10.5</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-set-async-enabled"></a><h3>gst_base_sink_set_async_enabled ()</h3>
 <pre class="programlisting">void                gst_base_sink_set_async_enabled     (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> enabled);</pre>
 <p>
 Configures <em class="parameter"><code>sink</code></em> to perform all state changes asynchronusly. When async is
@@ -955,7 +1023,6 @@ disabled, the sink will immediatly go to PAUSED instead of waiting for a
 preroll buffer. This feature is usefull if the sink does not synchronize
 against the clock or when it is dealing with sparse streams.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -972,20 +1039,18 @@ against the clock or when it is dealing with sparse streams.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.15
-</p>
+<p class="since">Since 0.10.15</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-is-async-enabled"></a><h3>gst_base_sink_is_async_enabled ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            gst_base_sink_is_async_enabled      (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);</pre>
 <p>
 Checks if <em class="parameter"><code>sink</code></em> is currently configured to perform asynchronous state
 changes to PAUSED.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1004,21 +1069,21 @@ changes.
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.15
-</p>
+<p class="since">Since 0.10.15</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-set-ts-offset"></a><h3>gst_base_sink_set_ts_offset ()</h3>
 <pre class="programlisting">void                gst_base_sink_set_ts_offset         (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
-                                                         GstClockTimeDiff offset);</pre>
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTimeDiff"
+>GstClockTimeDiff</a> offset);</pre>
 <p>
 Adjust the synchronisation of <em class="parameter"><code>sink</code></em> with <em class="parameter"><code>offset</code></em>. A negative value will
 render buffers earlier than their timestamp. A positive value will delay
 rendering. This function can be used to fix playback of badly timestamped
 buffers.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1035,17 +1100,17 @@ buffers.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.15
-</p>
+<p class="since">Since 0.10.15</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-get-ts-offset"></a><h3>gst_base_sink_get_ts_offset ()</h3>
-<pre class="programlisting">GstClockTimeDiff    gst_base_sink_get_ts_offset         (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);</pre>
+<pre class="programlisting"><a
+href="../gstreamer-0.10/GstClock.html#GstClockTimeDiff"
+>GstClockTimeDiff</a>    gst_base_sink_get_ts_offset         (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);</pre>
 <p>
 Get the synchronisation offset of <em class="parameter"><code>sink</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1063,19 +1128,20 @@ Get the synchronisation offset of <em class="parameter"><code>sink</code></em>.<
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.15
-</p>
+<p class="since">Since 0.10.15</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-set-render-delay"></a><h3>gst_base_sink_set_render_delay ()</h3>
 <pre class="programlisting">void                gst_base_sink_set_render_delay      (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
-                                                         GstClockTime delay);</pre>
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> delay);</pre>
 <p>
-Set the render delay in <em class="parameter"><code>sink</code></em> to <em class="parameter"><code>delay</code></em>. The render delay is the time 
+Set the render delay in <em class="parameter"><code>sink</code></em> to <em class="parameter"><code>delay</code></em>. The render delay is the time
 between actual rendering of a buffer and its synchronisation time. Some
 devices might delay media rendering which can be compensated for with this
-function. 
+function.
 </p>
 <p>
 After calling this function, this sink will report additional latency and
@@ -1084,7 +1150,6 @@ other sinks will adjust their latency to delay the rendering of their media.
 <p>
 This function is usually called by subclasses.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1101,18 +1166,18 @@ This function is usually called by subclasses.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.21
-</p>
+<p class="since">Since 0.10.21</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-get-render-delay"></a><h3>gst_base_sink_get_render_delay ()</h3>
-<pre class="programlisting">GstClockTime        gst_base_sink_get_render_delay      (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);</pre>
+<pre class="programlisting"><a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a>        gst_base_sink_get_render_delay      (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);</pre>
 <p>
 Get the render delay of <em class="parameter"><code>sink</code></em>. see <a class="link" href="GstBaseSink.html#gst-base-sink-set-render-delay" title="gst_base_sink_set_render_delay ()"><code class="function">gst_base_sink_set_render_delay()</code></a> for more
 information about the render delay.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1130,21 +1195,23 @@ information about the render delay.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.21
-</p>
+<p class="since">Since 0.10.21</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-get-last-buffer"></a><h3>gst_base_sink_get_last_buffer ()</h3>
-<pre class="programlisting">GstBuffer*          gst_base_sink_get_last_buffer       (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);</pre>
+<pre class="programlisting"><a
+href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *         gst_base_sink_get_last_buffer       (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);</pre>
 <p>
 Get the last buffer that arrived in the sink and was used for preroll or for
 rendering. This property can be used to generate thumbnails.
 </p>
 <p>
-The <span class="type">GstCaps</span> on the buffer can be used to determine the type of the buffer.</p>
+The <a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a> on the buffer can be used to determine the type of the buffer.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1156,7 +1223,11 @@ The <span class="type">GstCaps</span> on the buffer can be used to determine the
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GstBuffer</span>. <code class="function">gst_buffer_unref()</code> after usage. This function returns
+<td> a <a
+href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+><span class="type">GstBuffer</span></a>. <a
+href="../gstreamer-0.10/gstreamer-GstBuffer.html#gst-buffer-unref"
+><code class="function">gst_buffer_unref()</code></a> after usage. This function returns
 NULL when no buffer has arrived in the sink yet or when the sink is not in
 PAUSED or PLAYING.
 
@@ -1164,21 +1235,19 @@ PAUSED or PLAYING.
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.15
-</p>
+<p class="since">Since 0.10.15</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-set-blocksize"></a><h3>gst_base_sink_set_blocksize ()</h3>
 <pre class="programlisting">void                gst_base_sink_set_blocksize         (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a> blocksize);</pre>
 <p>
 Set the number of bytes that the sink will pull when it is operating in pull
 mode.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1195,20 +1264,18 @@ mode.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.22
-</p>
+<p class="since">Since 0.10.22</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-sink-get-blocksize"></a><h3>gst_base_sink_get_blocksize ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>               gst_base_sink_get_blocksize         (<a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a> *sink);</pre>
 <p>
 Get the number of bytes that the sink will pull when it is operating in pull
 mode.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1226,18 +1293,18 @@ mode.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.22
-</p>
+<p class="since">Since 0.10.22</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-BASE-SINK-PAD:CAPS"></a><h3>GST_BASE_SINK_PAD()</h3>
-<pre class="programlisting">#define GST_BASE_SINK_PAD(obj)		(GST_BASE_SINK_CAST (obj)-&gt;sinkpad)
+<a name="GST-BASE-SINK-PAD--CAPS"></a><h3>GST_BASE_SINK_PAD()</h3>
+<pre class="programlisting">#define GST_BASE_SINK_PAD(obj)          (GST_BASE_SINK_CAST (obj)-&gt;sinkpad)
 </pre>
 <p>
-Gives the pointer to the <span class="type">GstPad</span> object of the element.</p>
+Gives the pointer to the <a
+href="../gstreamer-0.10/GstPad.html"
+><span class="type">GstPad</span></a> object of the element.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1254,58 +1321,54 @@ Gives the pointer to the <span class="type">GstPad</span> object of the element.
 <div class="refsect2" lang="en">
 <a name="GstBaseSink--async"></a><h3>The <code class="literal">"async"</code> property</h3>
 <pre class="programlisting">  "async"                    <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write</pre>
 <p>
 If set to <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><span class="type">TRUE</span></a>, the basesink will perform asynchronous state changes.
 When set to <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
 ><span class="type">FALSE</span></a>, the sink will not signal the parent when it prerolls.
 Use this option when dealing with sparse streams or when synchronisation is
 not required.</p>
 <p>
-
 </p>
 <p>Default value: TRUE</p>
-<p>Since  0.10.15
-</p>
+<p>Since 0.10.15</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstBaseSink--blocksize"></a><h3>The <code class="literal">"blocksize"</code> property</h3>
 <pre class="programlisting">  "blocksize"                <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write</pre>
 <p>
 The amount of bytes to pull when operating in pull mode.</p>
 <p>
-
 </p>
 <p>Default value: 4096</p>
-<p>Since  0.10.22
-</p>
+<p>Since 0.10.22</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstBaseSink--last-buffer"></a><h3>The <code class="literal">"last-buffer"</code> property</h3>
-<pre class="programlisting">  "last-buffer"              GstBuffer*            : Read</pre>
+<pre class="programlisting">  "last-buffer"              <a
+href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a>*            : Read</pre>
 <p>
 The last buffer that arrived in the sink and was used for preroll or for
 rendering. This property can be used to generate thumbnails. This property
 can be NULL when the sink has not yet received a bufer.</p>
 <p>
-
 </p>
-<p>Since  0.10.15
-</p>
+<p>Since 0.10.15</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstBaseSink--max-lateness"></a><h3>The <code class="literal">"max-lateness"</code> property</h3>
 <pre class="programlisting">  "max-lateness"             <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a>                : Read / Write</pre>
 <p>Maximum number of nanoseconds that a buffer can be late before it is dropped (-1 unlimited).</p>
 <p>Allowed values: &gt;= -1</p>
@@ -1315,7 +1378,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
 <div class="refsect2" lang="en">
 <a name="GstBaseSink--preroll-queue-len"></a><h3>The <code class="literal">"preroll-queue-len"</code> property</h3>
 <pre class="programlisting">  "preroll-queue-len"        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+href="../glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write / Construct</pre>
 <p>Number of buffers to queue during preroll.</p>
 <p>Default value: 0</p>
@@ -1324,7 +1387,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <div class="refsect2" lang="en">
 <a name="GstBaseSink--qos"></a><h3>The <code class="literal">"qos"</code> property</h3>
 <pre class="programlisting">  "qos"                      <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write</pre>
 <p>Generate Quality-of-Service events upstream.</p>
 <p>Default value: FALSE</p>
@@ -1333,24 +1396,22 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <div class="refsect2" lang="en">
 <a name="GstBaseSink--render-delay"></a><h3>The <code class="literal">"render-delay"</code> property</h3>
 <pre class="programlisting">  "render-delay"             <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+href="../glib/glib-Basic-Types.html#guint64"
 >guint64</a>               : Read / Write</pre>
 <p>
 The additional delay between synchronisation and actual rendering of the
 media. This property will add additional latency to the device in order to
 make other sinks compensate for the delay.</p>
 <p>
-
 </p>
 <p>Default value: 0</p>
-<p>Since  0.10.22
-</p>
+<p>Since 0.10.22</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstBaseSink--sync"></a><h3>The <code class="literal">"sync"</code> property</h3>
 <pre class="programlisting">  "sync"                     <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write</pre>
 <p>Sync on the clock.</p>
 <p>Default value: TRUE</p>
@@ -1359,27 +1420,25 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <div class="refsect2" lang="en">
 <a name="GstBaseSink--ts-offset"></a><h3>The <code class="literal">"ts-offset"</code> property</h3>
 <pre class="programlisting">  "ts-offset"                <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a>                : Read / Write</pre>
 <p>
 Controls the final synchronisation, a negative value will render the buffer
-earlier while a positive value delays playback. This property can be 
+earlier while a positive value delays playback. This property can be
 used to fix synchronisation in bad files.</p>
 <p>
-
 </p>
 <p>Default value: 0</p>
-<p>Since  0.10.15
-</p>
+<p>Since 0.10.15</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
 <a name="GstBaseSink.see-also"></a><h2>See Also</h2>
-<a class="link" href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a>, <span class="type">GstBaseSource</span>
+#GstBaseTransform, <span class="type">GstBaseSource</span>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

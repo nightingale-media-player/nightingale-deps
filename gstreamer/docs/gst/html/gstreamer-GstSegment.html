@@ -8,7 +8,7 @@
 <link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="prev" href="GstRegistry.html" title="GstRegistry">
 <link rel="next" href="gstreamer-GstStructure.html" title="GstStructure">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
@@ -26,9 +26,11 @@
 <th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-GstStructure.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-GstSegment.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gstreamer-GstSegment.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gstreamer-GstSegment.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gstreamer-GstSegment.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-GstSegment"></a><div class="titlepage"></div>
@@ -48,104 +50,118 @@
 
                     <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a>;
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            <a class="link" href="gstreamer-GstSegment.html#gst-segment-clip" title="gst_segment_clip ()">gst_segment_clip</a>                    (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> start,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> stop,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *clip_start,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *clip_stop);
 void                <a class="link" href="gstreamer-GstSegment.html#gst-segment-init" title="gst_segment_init ()">gst_segment_init</a>                    (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format);
-<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a>*         <a class="link" href="gstreamer-GstSegment.html#gst-segment-new" title="gst_segment_new ()">gst_segment_new</a>                     (void);
-<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a>*         <a class="link" href="gstreamer-GstSegment.html#gst-segment-copy" title="gst_segment_copy ()">gst_segment_copy</a>                    (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment);
+<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *        <a class="link" href="gstreamer-GstSegment.html#gst-segment-new" title="gst_segment_new ()">gst_segment_new</a>                     (void);
+<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *        <a class="link" href="gstreamer-GstSegment.html#gst-segment-copy" title="gst_segment_copy ()">gst_segment_copy</a>                    (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment);
 void                <a class="link" href="gstreamer-GstSegment.html#gst-segment-free" title="gst_segment_free ()">gst_segment_free</a>                    (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment);
 void                <a class="link" href="gstreamer-GstSegment.html#gst-segment-set-duration" title="gst_segment_set_duration ()">gst_segment_set_duration</a>            (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> duration);
 void                <a class="link" href="gstreamer-GstSegment.html#gst-segment-set-last-stop" title="gst_segment_set_last_stop ()">gst_segment_set_last_stop</a>           (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> position);
 void                <a class="link" href="gstreamer-GstSegment.html#gst-segment-set-newsegment" title="gst_segment_set_newsegment ()">gst_segment_set_newsegment</a>          (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> update,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+href="../glib/glib-Basic-Types.html#gdouble"
 >gdouble</a> rate,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> start,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> stop,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> time);
 void                <a class="link" href="gstreamer-GstSegment.html#gst-segment-set-newsegment-full" title="gst_segment_set_newsegment_full ()">gst_segment_set_newsegment_full</a>     (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> update,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+href="../glib/glib-Basic-Types.html#gdouble"
 >gdouble</a> rate,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+href="../glib/glib-Basic-Types.html#gdouble"
 >gdouble</a> applied_rate,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> start,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> stop,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> time);
 void                <a class="link" href="gstreamer-GstSegment.html#gst-segment-set-seek" title="gst_segment_set_seek ()">gst_segment_set_seek</a>                (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+href="../glib/glib-Basic-Types.html#gdouble"
 >gdouble</a> rate,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a class="link" href="gstreamer-GstEvent.html#GstSeekFlags" title="enum GstSeekFlags">GstSeekFlags</a> flags,
                                                          <a class="link" href="gstreamer-GstEvent.html#GstSeekType" title="enum GstSeekType">GstSeekType</a> start_type,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> start,
                                                          <a class="link" href="gstreamer-GstEvent.html#GstSeekType" title="enum GstSeekType">GstSeekType</a> stop_type,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> stop,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> *update);
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a>              <a class="link" href="gstreamer-GstSegment.html#gst-segment-to-running-time" title="gst_segment_to_running_time ()">gst_segment_to_running_time</a>         (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> position);
 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a>              <a class="link" href="gstreamer-GstSegment.html#gst-segment-to-stream-time" title="gst_segment_to_stream_time ()">gst_segment_to_stream_time</a>          (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> position);
+<a
+href="../glib/glib-Basic-Types.html#gint64"
+>gint64</a>              <a class="link" href="gstreamer-GstSegment.html#gst-segment-to-position" title="gst_segment_to_position ()">gst_segment_to_position</a>             (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
+                                                         <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint64"
+>gint64</a> running_time);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstSegment.html#gst-segment-set-running-time" title="gst_segment_set_running_time ()">gst_segment_set_running_time</a>        (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
+                                                         <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint64"
+>gint64</a> running_time);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -215,7 +231,6 @@ info to stream time (which is always between 0 and the duration of the stream).
 <p>
 Last reviewed on 2007-05-17 (0.10.13)</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -243,21 +258,20 @@ Last reviewed on 2007-05-17 (0.10.13)</p>
 A helper structure that holds the configured region of
 interest in a media file.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+href="../glib/glib-Basic-Types.html#gdouble"
 >gdouble</a> <em class="structfield"><code>rate</code></em>;</span></p></td>
 <td> the rate of the segment
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+href="../glib/glib-Basic-Types.html#gdouble"
 >gdouble</a> <em class="structfield"><code>abs_rate</code></em>;</span></p></td>
 <td> absolute value of <em class="parameter"><code>rate</code></em>
 </td>
@@ -274,49 +288,49 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> <em class="structfield"><code>start</code></em>;</span></p></td>
 <td> the start of the segment
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> <em class="structfield"><code>stop</code></em>;</span></p></td>
 <td> the stop of the segment
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> <em class="structfield"><code>time</code></em>;</span></p></td>
 <td> the stream time of the segment
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> <em class="structfield"><code>accum</code></em>;</span></p></td>
 <td> accumulated segment
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> <em class="structfield"><code>last_stop</code></em>;</span></p></td>
 <td> last known stop time
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> <em class="structfield"><code>duration</code></em>;</span></p></td>
 <td> total duration of segment
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+href="../glib/glib-Basic-Types.html#gdouble"
 >gdouble</a> <em class="structfield"><code>applied_rate</code></em>;</span></p></td>
 <td> the already applied rate to the segment
 </td>
@@ -328,20 +342,20 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
 <div class="refsect2" lang="en">
 <a name="gst-segment-clip"></a><h3>gst_segment_clip ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            gst_segment_clip                    (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> start,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> stop,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *clip_start,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> *clip_stop);</pre>
 <p>
 Clip the given <em class="parameter"><code>start</code></em> and <em class="parameter"><code>stop</code></em> values to the segment boundaries given
@@ -361,7 +375,6 @@ respectively, the region fell partially in the segment.
 Note that when <em class="parameter"><code>stop</code></em> is -1, <em class="parameter"><code>clip_stop</code></em> will be set to the end of the
 segment. Depending on the use case, this may or may not be what you want.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -419,7 +432,6 @@ flags are set.
 <p>
 Initialize <em class="parameter"><code>segment</code></em> to its default values.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -440,12 +452,11 @@ Initialize <em class="parameter"><code>segment</code></em> to its default values
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-segment-new"></a><h3>gst_segment_new ()</h3>
-<pre class="programlisting"><a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a>*         gst_segment_new                     (void);</pre>
+<pre class="programlisting"><a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *        gst_segment_new                     (void);</pre>
 <p>
 Allocate a new <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment"><span class="type">GstSegment</span></a> structure and initialize it using 
 <a class="link" href="gstreamer-GstSegment.html#gst-segment-init" title="gst_segment_init ()"><code class="function">gst_segment_init()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -459,11 +470,10 @@ Allocate a new <a class="link" href="gstreamer-GstSegment.html#GstSegment" title
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-segment-copy"></a><h3>gst_segment_copy ()</h3>
-<pre class="programlisting"><a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a>*         gst_segment_copy                    (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment);</pre>
+<pre class="programlisting"><a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *        gst_segment_copy                    (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment);</pre>
 <p>
 Create a copy of given <em class="parameter"><code>segment</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -481,8 +491,7 @@ Create a copy of given <em class="parameter"><code>segment</code></em>.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.20
-</p>
+<p class="since">Since 0.10.20</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -491,7 +500,6 @@ Create a copy of given <em class="parameter"><code>segment</code></em>.</p>
 <p>
 Free the allocated segment <em class="parameter"><code>segment</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -508,7 +516,7 @@ Free the allocated segment <em class="parameter"><code>segment</code></em>.</p>
 <pre class="programlisting">void                gst_segment_set_duration            (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> duration);</pre>
 <p>
 Set the duration of the segment to <em class="parameter"><code>duration</code></em>. This function is mainly
@@ -519,7 +527,6 @@ segment.
 This field should be set to allow seeking requests relative to the
 duration.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -548,7 +555,7 @@ duration.</p>
 <pre class="programlisting">void                gst_segment_set_last_stop           (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> position);</pre>
 <p>
 Set the last observed stop position in the segment to <em class="parameter"><code>position</code></em>.
@@ -557,7 +564,6 @@ Set the last observed stop position in the segment to <em class="parameter"><cod
 This field should be set to allow seeking requests relative to the
 current playing position.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -585,26 +591,25 @@ current playing position.</p>
 <a name="gst-segment-set-newsegment"></a><h3>gst_segment_set_newsegment ()</h3>
 <pre class="programlisting">void                gst_segment_set_newsegment          (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> update,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+href="../glib/glib-Basic-Types.html#gdouble"
 >gdouble</a> rate,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> start,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> stop,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> time);</pre>
 <p>
 Update the segment structure with the field values of a new segment event and
 with a default applied_rate of 1.0.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -646,36 +651,34 @@ with a default applied_rate of 1.0.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.6
-</p>
+<p class="since">Since 0.10.6</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-segment-set-newsegment-full"></a><h3>gst_segment_set_newsegment_full ()</h3>
 <pre class="programlisting">void                gst_segment_set_newsegment_full     (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> update,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+href="../glib/glib-Basic-Types.html#gdouble"
 >gdouble</a> rate,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+href="../glib/glib-Basic-Types.html#gdouble"
 >gdouble</a> applied_rate,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> start,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> stop,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> time);</pre>
 <p>
 Update the segment structure with the field values of a new segment event.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -728,20 +731,20 @@ Update the segment structure with the field values of a new segment event.</p>
 <a name="gst-segment-set-seek"></a><h3>gst_segment_set_seek ()</h3>
 <pre class="programlisting">void                gst_segment_set_seek                (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+href="../glib/glib-Basic-Types.html#gdouble"
 >gdouble</a> rate,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a class="link" href="gstreamer-GstEvent.html#GstSeekFlags" title="enum GstSeekFlags">GstSeekFlags</a> flags,
                                                          <a class="link" href="gstreamer-GstEvent.html#GstSeekType" title="enum GstSeekType">GstSeekType</a> start_type,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> start,
                                                          <a class="link" href="gstreamer-GstEvent.html#GstSeekType" title="enum GstSeekType">GstSeekType</a> stop_type,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> stop,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> *update);</pre>
 <p>
 Update the segment structure with the field values of a seek event (see
@@ -755,16 +758,16 @@ position in the segment depends on <em class="parameter"><code>rate</code></em> 
 <p>
 For positive <em class="parameter"><code>rate</code></em>, the new position in the segment is the new <em class="parameter"><code>segment</code></em>
 start field when it was updated with a <em class="parameter"><code>start_type</code></em> different from
-<a class="link" href="gstreamer-GstEvent.html#GST-SEEK-TYPE-NONE:CAPS"><span class="type">GST_SEEK_TYPE_NONE</span></a>. If no update was performed on <em class="parameter"><code>segment</code></em> start position
-(<a class="link" href="gstreamer-GstEvent.html#GST-SEEK-TYPE-NONE:CAPS"><span class="type">GST_SEEK_TYPE_NONE</span></a>), <em class="parameter"><code>start</code></em> is ignored and <em class="parameter"><code>segment</code></em> last_stop is
+<a class="link" href="gstreamer-GstEvent.html#GST-SEEK-TYPE-NONE--CAPS"><span class="type">GST_SEEK_TYPE_NONE</span></a>. If no update was performed on <em class="parameter"><code>segment</code></em> start position
+(<a class="link" href="gstreamer-GstEvent.html#GST-SEEK-TYPE-NONE--CAPS"><span class="type">GST_SEEK_TYPE_NONE</span></a>), <em class="parameter"><code>start</code></em> is ignored and <em class="parameter"><code>segment</code></em> last_stop is
 unmodified.
 </p>
 <p>
 For negative <em class="parameter"><code>rate</code></em>, the new position in the segment is the new <em class="parameter"><code>segment</code></em>
 stop field when it was updated with a <em class="parameter"><code>stop_type</code></em> different from
-<a class="link" href="gstreamer-GstEvent.html#GST-SEEK-TYPE-NONE:CAPS"><span class="type">GST_SEEK_TYPE_NONE</span></a>. If no stop was previously configured in the segment, the
+<a class="link" href="gstreamer-GstEvent.html#GST-SEEK-TYPE-NONE--CAPS"><span class="type">GST_SEEK_TYPE_NONE</span></a>. If no stop was previously configured in the segment, the
 duration of the segment will be used to update the stop position.
-If no update was performed on <em class="parameter"><code>segment</code></em> stop position (<a class="link" href="gstreamer-GstEvent.html#GST-SEEK-TYPE-NONE:CAPS"><span class="type">GST_SEEK_TYPE_NONE</span></a>),
+If no update was performed on <em class="parameter"><code>segment</code></em> stop position (<a class="link" href="gstreamer-GstEvent.html#GST-SEEK-TYPE-NONE--CAPS"><span class="type">GST_SEEK_TYPE_NONE</span></a>),
 <em class="parameter"><code>stop</code></em> is ignored and <em class="parameter"><code>segment</code></em> last_stop is unmodified.
 </p>
 <p>
@@ -777,7 +780,6 @@ rate and applied_rate after calling this function.
 last_stop field. This field can be FALSE if, for example, only the <em class="parameter"><code>rate</code></em>
 has been changed but not the playback position.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -834,11 +836,11 @@ has been changed but not the playback position.</p>
 <div class="refsect2" lang="en">
 <a name="gst-segment-to-running-time"></a><h3>gst_segment_to_running_time ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a>              gst_segment_to_running_time         (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> position);</pre>
 <p>
 Translate <em class="parameter"><code>position</code></em> to the total running time using the currently configured 
@@ -854,7 +856,6 @@ starting from 0. When <a class="link" href="gstreamer-GstSegment.html#gst-segmen
 <p>
 This function returns -1 if the position is outside of <em class="parameter"><code>segment</code></em> start and stop.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -887,11 +888,11 @@ was given.
 <div class="refsect2" lang="en">
 <a name="gst-segment-to-stream-time"></a><h3>gst_segment_to_stream_time ()</h3>
 <pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a>              gst_segment_to_stream_time          (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
                                                          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+href="../glib/glib-Basic-Types.html#gint64"
 >gint64</a> position);</pre>
 <p>
 Translate <em class="parameter"><code>position</code></em> to stream time using the currently configured 
@@ -906,7 +907,6 @@ clock time that one wants to convert to the stream time.
 The stream time is always between 0 and the total duration of the 
 media stream.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -935,14 +935,106 @@ was given.
 </tbody>
 </table></div>
 </div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-segment-to-position"></a><h3>gst_segment_to_position ()</h3>
+<pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint64"
+>gint64</a>              gst_segment_to_position             (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
+                                                         <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint64"
+>gint64</a> running_time);</pre>
+<p>
+Convert <em class="parameter"><code>running_time</code></em> into a position in the segment so that
+<a class="link" href="gstreamer-GstSegment.html#gst-segment-to-running-time" title="gst_segment_to_running_time ()"><code class="function">gst_segment_to_running_time()</code></a> with that position returns <em class="parameter"><code>running_time</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>segment</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment"><span class="type">GstSegment</span></a> structure.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td> the format of the segment.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>running_time</code></em> :</span></p></td>
+<td> the running_time in the segment
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the position in the segment for <em class="parameter"><code>running_time</code></em>. This function returns
+-1 when <em class="parameter"><code>running_time</code></em> is -1 or when it is not inside <em class="parameter"><code>segment</code></em>.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.24</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-segment-set-running-time"></a><h3>gst_segment_set_running_time ()</h3>
+<pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_segment_set_running_time        (<a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment">GstSegment</a> *segment,
+                                                         <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint64"
+>gint64</a> running_time);</pre>
+<p>
+Adjust the start/stop and accum values of <em class="parameter"><code>segment</code></em> such that the next valid
+buffer will be one with <em class="parameter"><code>running_time</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>segment</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="GstSegment"><span class="type">GstSegment</span></a> structure.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td> the format of the segment.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>running_time</code></em> :</span></p></td>
+<td> the running_time in the segment
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
+><code class="literal">TRUE</code></a> if the segment could be updated successfully. If <a
+href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
+><code class="literal">FALSE</code></a> is
+returned, <em class="parameter"><code>running_time</code></em> is -1 or not in <em class="parameter"><code>segment</code></em>.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.24</p>
+</div>
 </div>
 <div class="refsect1" lang="en">
 <a name="gstreamer-GstSegment.see-also"></a><h2>See Also</h2>
-<a class="link" href="gstreamer-GstEvent.html#GstEvent" title="GstEvent"><span class="type">GstEvent</span></a>
+#GstEvent
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

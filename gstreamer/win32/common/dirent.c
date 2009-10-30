@@ -26,11 +26,11 @@
 
  *      
 
- * $Revision: 1.4 $
+ * $Revision$
 
- * $Author: tpm $
+ * $Author$
 
- * $Date: 2007-10-31 22:01:03 $
+ * $Date$
 
  *
 

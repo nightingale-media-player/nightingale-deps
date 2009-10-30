@@ -1,9 +1,9 @@
 #!/bin/bash -i
 #
-# this script is in CVS as gstreamer/docs/faq/gst-uninstalled
+# this script is in git as gstreamer/docs/faq/gst-uninstalled
 #
 # It will set up the environment to use and develop gstreamer and projects
-# that use gstreamer with an uninstalled CVS checkout of gstreamer and the
+# that use gstreamer with an uninstalled git checkout of gstreamer and the
 # plugin modules.
 #
 # It will set up LD_LIBRARY_PATH, DYLD_LIBRARY_PATH, PKG_CONFIG_PATH,
@@ -27,7 +27,7 @@
 
 # This script is run -i so that PS1 doesn't get cleared
 
-# Change this variable to the location of your gstreamer CVS checkouts
+# Change this variable to the location of your gstreamer git checkouts
 MYGST=$HOME/gst
 
 #
@@ -46,13 +46,23 @@ if test ! -e $GST; then
 fi
 
 # set up a bunch of paths
-PATH=$GST/gstreamer/tools:$GST/gst-plugins/tools:$GST/gst-player/src:$GST/gst-editor/src:$GST/prefix/bin:$PATH
+PATH="\
+$GST/gstreamer/tools:\
+$GST/gst-plugins-base/tools:\
+$GST/gst-player/src:\
+$GST/gst-editor/src:\
+$GST/prefix/bin:\
+$PATH"
 
 # /some/path: makes the dynamic linker look in . too, so avoid this
 LD_LIBRARY_PATH=$GST/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 DYLD_LIBRARY_PATH=$GST/prefix/lib${DYLD_LIBRARY_PATH:+:$DYLD_LIBRARY_PATH}
 
-# Gstreamer ffmpeg libraries
+# GStreamer rtsp server library
+LD_LIBRARY_PATH=$GST/gst-rtsp-server/gst/rtsp-server/.libs:$LD_LIBRARY_PATH
+DYLD_LIBRARY_PATH=$GST/gst-rtsp-server/gst/rtsp-server/.libs:$DYLD_LIBRARY_PATH
+
+# GStreamer ffmpeg libraries
 for path in libavformat libavutil libavcodec libpostproc libavdevice
 do
    LD_LIBRARY_PATH=$GST/gst-ffmpeg/gst-libs/ext/ffmpeg/$path:$LD_LIBRARY_PATH
@@ -77,13 +87,43 @@ DYLD_LIBRARY_PATH=$GST/gstreamer/gst/.libs:$DYLD_LIBRARY_PATH
 export LD_LIBRARY_PATH
 export DYLD_LIBRARY_PATH
   
-export PKG_CONFIG_PATH=$GST/prefix/lib/pkgconfig:$GST/gstreamer/pkgconfig:$GST/gst-plugins/pkgconfig:$GST/gst-plugins-base/pkgconfig:$GST/gst-plugins-good/pkgconfig:$GST/gst-python/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
-export GST_PLUGIN_PATH=$GST/gstreamer:$GST/gst-plugins:$GST/gst-plugins-base:$GST/gst-plugins-good:$GST/gst-plugins-ugly:$GST/gst-plugins-bad:$GST/gst-ffmpeg:$GST/gnonlin:$GST/gst-monkeysaudio:$GST/gst-plugins-gl:$GST/plugins${GST_PLUGIN_PATH:+:$GST_PLUGIN_PATH}
+export PKG_CONFIG_PATH="\
+$GST/prefix/lib/pkgconfig\
+:$GST/gstreamer/pkgconfig\
+:$GST/gst-plugins-base/pkgconfig\
+:$GST/gst-plugins-good/pkgconfig\
+:$GST/gst-python/pkgconfig\
+:$GST/gst-rtsp-server/pkgconfig\
+${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
+
+export GST_PLUGIN_PATH="\
+$GST/gstreamer/plugins\
+:$GST/gst-plugins-base/ext\
+:$GST/gst-plugins-base/gst\
+:$GST/gst-plugins-base/sys\
+:$GST/gst-plugins-good/ext\
+:$GST/gst-plugins-good/gst\
+:$GST/gst-plugins-good/sys\
+:$GST/gst-plugins-ugly/ext\
+:$GST/gst-plugins-ugly/gst\
+:$GST/gst-plugins-ugly/sys\
+:$GST/gst-plugins-bad/ext\
+:$GST/gst-plugins-bad/gst\
+:$GST/gst-plugins-bad/sys\
+:$GST/gst-ffmpeg/ext\
+:$GST/gnonlin/gnl\
+:$GST/gst-openmax\
+:$GST/gst-plugins-gl/gst\
+:$GST/plugins\
+${GST_PLUGIN_PATH:+:$GST_PLUGIN_PATH}"
+
 # don't use any system-installed plug-ins at all
 export GST_PLUGIN_SYSTEM_PATH=
 # set our registry somewhere else so we don't mess up the registry generated
 # by an installed copy
-export GST_REGISTRY=$GST/gstreamer/registry.xml
+rm -f $GST/gstreamer/registry.xml 2>/dev/null
+export GST_REGISTRY=$GST/gstreamer/registry.dat
+
 # once MANPATH is set, it needs at least an "empty"component to keep pulling
 # in the system-configured man paths from man.config
 # this still doesn't make it work for the uninstalled case, since man goes
@@ -91,6 +131,14 @@ export GST_REGISTRY=$GST/gstreamer/registry.xml
 export MANPATH=$GST/gstreamer/tools:$GST/prefix/share/man:$MANPATH
 pythonver=`python -c "import sys; print sys.version[:3]"`
 export PYTHONPATH=$GST/gst-python:$GST/prefix/lib/python$pythonver/site-packages${PYTHONPATH:+:$PYTHONPATH}
+
+# totem-pl-parser
+export PKG_CONFIG_PATH=$GST/totem-pl-parser:$PKG_CONFIG_PATH
+export LD_LIBRARY_PATH=$GST/totem-pl-parser/plparse/.libs:$LD_LIBRARY_PATH
+export DYLD_LIBRARY_PATH=$GST/totem-pl-parser/plparse/.libs:$DYLD_LIBRARY_PATH
+
+# totem
+export PATH=$GST/totem/src:$PATH
 
 # if we got a command, run it, else start a shell
 if test ! -z "$1";

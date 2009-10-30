@@ -56,12 +56,24 @@ static void sigint_restore (void);
 static gboolean caught_intr = FALSE;
 #endif
 
+/* event_loop return codes */
+typedef enum _EventLoopResult
+{
+  ELR_NO_ERROR = 0,
+  ELR_ERROR,
+  ELR_INTERRUPT
+} EventLoopResult;
+
 static GstElement *pipeline;
-static gboolean caught_error = FALSE;
+static EventLoopResult caught_error = ELR_NO_ERROR;
+static gboolean quiet = FALSE;
 static gboolean tags = FALSE;
 static gboolean messages = FALSE;
 static gboolean is_live = FALSE;
+static gboolean waiting_eos = FALSE;
 
+/* convenience macro so we don't have to litter the code with if(!quiet) */
+#define PRINT if(!quiet)g_print
 
 #ifndef GST_DISABLE_LOADSAVE
 static GstElement *
@@ -86,20 +98,20 @@ xmllaunch_parse_cmdline (const gchar ** argv)
   err = gst_xml_parse_file (xml, (guchar *) arg, NULL);
 
   if (err != TRUE) {
-    fprintf (stderr, _("ERROR: parse of xml file '%s' failed.\n"), arg);
+    g_printerr (_("ERROR: parse of xml file '%s' failed.\n"), arg);
     exit (1);
   }
 
   l = gst_xml_get_topelements (xml);
   if (!l) {
-    fprintf (stderr, _("ERROR: no toplevel pipeline element in file '%s'.\n"),
-        arg);
+    g_printerr (_("ERROR: no toplevel pipeline element in file '%s'.\n"), arg);
     exit (1);
   }
 
-  if (l->next)
-    fprintf (stderr,
-        _("WARNING: only one toplevel element is supported at this time."));
+  if (l->next) {
+    g_printerr ("%s",
+        _("WARNING: only one toplevel element is supported at this time.\n"));
+  }
 
   pipeline = GST_ELEMENT (l->data);
 
@@ -109,9 +121,8 @@ xmllaunch_parse_cmdline (const gchar ** argv)
     value = strchr (element, '=');
 
     if (!(element < property && property < value)) {
-      fprintf (stderr,
-          _("ERROR: could not parse command line argument %d: %s.\n"), i,
-          element);
+      g_printerr (_("ERROR: could not parse command line argument %d: %s.\n"),
+          i, element);
       g_free (element);
       exit (1);
     }
@@ -121,7 +132,7 @@ xmllaunch_parse_cmdline (const gchar ** argv)
 
     e = gst_bin_get_by_name (GST_BIN (pipeline), element);
     if (!e) {
-      fprintf (stderr, _("WARNING: element named '%s' not found.\n"), element);
+      g_printerr (_("WARNING: element named '%s' not found.\n"), element);
     } else {
       gst_util_set_object_arg (G_OBJECT (e), property, value);
     }
@@ -285,8 +296,14 @@ sigint_handler_sighandler (int signum)
 {
   g_print ("Caught interrupt -- ");
 
-  sigint_restore ();
-
+  /* If we were waiting for an EOS, we still want to catch
+   * the next signal to shutdown properly (and the following one
+   * will quit the program). */
+  if (waiting_eos) {
+    waiting_eos = FALSE;
+  } else {
+    sigint_restore ();
+  }
   /* we set a flag that is checked by the mainloop, we cannot do much in the
    * interrupt handler (no mutex or other blocking stuff) */
   caught_intr = TRUE;
@@ -363,13 +380,15 @@ play_signal_setup (void)
 }
 #endif /* DISABLE_FAULT_HANDLER */
 
-/* returns TRUE if there was an error or we caught a keyboard interrupt. */
-static gboolean
+/* returns ELR_ERROR if there was an error
+ * or ELR_INTERRUPT if we caught a keyboard interrupt
+ * or ELR_NO_ERROR otherwise. */
+static EventLoopResult
 event_loop (GstElement * pipeline, gboolean blocking, GstState target_state)
 {
   GstBus *bus;
   GstMessage *message = NULL;
-  gboolean res = FALSE;
+  EventLoopResult res = ELR_NO_ERROR;
   gboolean buffering = FALSE;
 
   bus = gst_element_get_bus (GST_ELEMENT (pipeline));
@@ -387,6 +406,7 @@ event_loop (GstElement * pipeline, gboolean blocking, GstState target_state)
 
     /* check if we need to dump messages to the console */
     if (messages) {
+      GstObject *src_obj;
       const GstStructure *s;
       guint32 seqnum;
 
@@ -394,10 +414,25 @@ event_loop (GstElement * pipeline, gboolean blocking, GstState target_state)
 
       s = gst_message_get_structure (message);
 
-      g_print (_("Got Message #%" G_GUINT32_FORMAT
-              " from element \"%s\" (%s): "), seqnum,
-          GST_STR_NULL (GST_ELEMENT_NAME (GST_MESSAGE_SRC (message))),
-          gst_message_type_get_name (GST_MESSAGE_TYPE (message)));
+      src_obj = GST_MESSAGE_SRC (message);
+
+      if (GST_IS_ELEMENT (src_obj)) {
+        g_print (_("Got message #%u from element \"%s\" (%s): "),
+            (guint) seqnum, GST_ELEMENT_NAME (src_obj),
+            GST_MESSAGE_TYPE_NAME (message));
+      } else if (GST_IS_PAD (src_obj)) {
+        g_print (_("Got message #%u from pad \"%s:%s\" (%s): "),
+            (guint) seqnum, GST_DEBUG_PAD_NAME (src_obj),
+            GST_MESSAGE_TYPE_NAME (message));
+      } else if (GST_IS_OBJECT (src_obj)) {
+        g_print (_("Got message #%u from object \"%s\" (%s): "),
+            (guint) seqnum, GST_OBJECT_NAME (src_obj),
+            GST_MESSAGE_TYPE_NAME (message));
+      } else {
+        g_print (_("Got message #%u (%s): "), (guint) seqnum,
+            GST_MESSAGE_TYPE_NAME (message));
+      }
+
       if (s) {
         gchar *sstr;
 
@@ -419,18 +454,40 @@ event_loop (GstElement * pipeline, gboolean blocking, GstState target_state)
         g_print ("New clock: %s\n", (clock ? GST_OBJECT_NAME (clock) : "NULL"));
         break;
       }
-      case GST_MESSAGE_EOS:
-        g_print (_
-            ("Got EOS from element \"%s\".\n"),
-            GST_STR_NULL (GST_ELEMENT_NAME (GST_MESSAGE_SRC (message))));
+      case GST_MESSAGE_CLOCK_LOST:
+#if 0
+        /* disabled for now as it caused problems with rtspsrc. We need to fix
+         * rtspsrc first, then release -good before we can reenable this again
+         */
+        g_print ("Clock lost, selecting a new one\n");
+        gst_element_set_state (pipeline, GST_STATE_PAUSED);
+        gst_element_set_state (pipeline, GST_STATE_PLAYING);
+#endif
+        break;
+      case GST_MESSAGE_EOS:{
+        waiting_eos = FALSE;
+        g_print (_("Got EOS from element \"%s\".\n"),
+            GST_MESSAGE_SRC_NAME (message));
         goto exit;
+      }
       case GST_MESSAGE_TAG:
         if (tags) {
           GstTagList *tags;
 
+          if (GST_IS_ELEMENT (GST_MESSAGE_SRC (message))) {
+            g_print (_("FOUND TAG      : found by element \"%s\".\n"),
+                GST_MESSAGE_SRC_NAME (message));
+          } else if (GST_IS_PAD (GST_MESSAGE_SRC (message))) {
+            g_print (_("FOUND TAG      : found by pad \"%s:%s\".\n"),
+                GST_DEBUG_PAD_NAME (GST_MESSAGE_SRC (message)));
+          } else if (GST_IS_OBJECT (GST_MESSAGE_SRC (message))) {
+            g_print (_("FOUND TAG      : found by object \"%s\".\n"),
+                GST_MESSAGE_SRC_NAME (message));
+          } else {
+            g_print (_("FOUND TAG\n"));
+          }
+
           gst_message_parse_tag (message, &tags);
-          g_print (_("FOUND TAG      : found by element \"%s\".\n"),
-              GST_STR_NULL (GST_ELEMENT_NAME (GST_MESSAGE_SRC (message))));
           gst_tag_list_foreach (tags, print_tag, NULL);
           gst_tag_list_free (tags);
         }
@@ -481,7 +538,7 @@ event_loop (GstElement * pipeline, gboolean blocking, GstState target_state)
         g_error_free (gerror);
         g_free (debug);
         /* we have an error */
-        res = TRUE;
+        res = ELR_ERROR;
         goto exit;
       }
       case GST_MESSAGE_STATE_CHANGED:{
@@ -506,8 +563,7 @@ event_loop (GstElement * pipeline, gboolean blocking, GstState target_state)
         /* ignore when we are buffering since then we mess with the states
          * ourselves. */
         if (buffering) {
-          fprintf (stderr,
-              _("Prerolled, waiting for buffering to finish...\n"));
+          PRINT (_("Prerolled, waiting for buffering to finish...\n"));
           break;
         }
 
@@ -522,7 +578,7 @@ event_loop (GstElement * pipeline, gboolean blocking, GstState target_state)
         gint percent;
 
         gst_message_parse_buffering (message, &percent);
-        fprintf (stderr, "%s %d%%  \r", _("buffering..."), percent);
+        PRINT ("%s %d%%  \r", _("buffering..."), percent);
 
         /* no state management needed for live pipelines */
         if (is_live)
@@ -533,8 +589,7 @@ event_loop (GstElement * pipeline, gboolean blocking, GstState target_state)
           buffering = FALSE;
           /* if the desired state is playing, go back */
           if (target_state == GST_STATE_PLAYING) {
-            fprintf (stderr,
-                _("Done buffering, setting pipeline to PLAYING ...\n"));
+            PRINT (_("Done buffering, setting pipeline to PLAYING ...\n"));
             gst_element_set_state (pipeline, GST_STATE_PLAYING);
           } else
             goto exit;
@@ -542,7 +597,7 @@ event_loop (GstElement * pipeline, gboolean blocking, GstState target_state)
           /* buffering busy */
           if (buffering == FALSE && target_state == GST_STATE_PLAYING) {
             /* we were not buffering but PLAYING, PAUSE  the pipeline. */
-            fprintf (stderr, _("Buffering, setting pipeline to PAUSED ...\n"));
+            PRINT (_("Buffering, setting pipeline to PAUSED ...\n"));
             gst_element_set_state (pipeline, GST_STATE_PAUSED);
           }
           buffering = TRUE;
@@ -551,8 +606,23 @@ event_loop (GstElement * pipeline, gboolean blocking, GstState target_state)
       }
       case GST_MESSAGE_LATENCY:
       {
-        fprintf (stderr, _("Redistribute latency...\n"));
+        PRINT (_("Redistribute latency...\n"));
         gst_bin_recalculate_latency (GST_BIN (pipeline));
+        break;
+      }
+      case GST_MESSAGE_REQUEST_STATE:
+      {
+        GstState state;
+        gchar *name = gst_object_get_path_string (GST_MESSAGE_SRC (message));
+
+        gst_message_parse_request_state (message, &state);
+
+        PRINT (_("Setting state to %s as requested by %s...\n"),
+            gst_element_state_get_name (state), name);
+
+        gst_element_set_state (pipeline, state);
+
+        g_free (name);
         break;
       }
       case GST_MESSAGE_APPLICATION:{
@@ -563,9 +633,8 @@ event_loop (GstElement * pipeline, gboolean blocking, GstState target_state)
         if (gst_structure_has_name (s, "GstLaunchInterrupt")) {
           /* this application message is posted when we caught an interrupt and
            * we need to stop the pipeline. */
-          fprintf (stderr, _("Interrupt: Stopping pipeline ...\n"));
-          /* return TRUE when we caught an interrupt */
-          res = TRUE;
+          PRINT (_("Interrupt: Stopping pipeline ...\n"));
+          res = ELR_INTERRUPT;
           goto exit;
         }
       }
@@ -594,13 +663,17 @@ main (int argc, char *argv[])
   gboolean verbose = FALSE;
   gboolean no_fault = FALSE;
   gboolean trace = FALSE;
+  gboolean eos_on_shutdown = FALSE;
   gchar *savefile = NULL;
   gchar *exclude_args = NULL;
+#ifndef GST_DISABLE_OPTION_PARSING
   GOptionEntry options[] = {
     {"tags", 't', 0, G_OPTION_ARG_NONE, &tags,
         N_("Output tags (also known as metadata)"), NULL},
     {"verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose,
         N_("Output status information and property notifications"), NULL},
+    {"quiet", 'q', 0, G_OPTION_ARG_NONE, &quiet,
+        N_("Do not print any progress information"), NULL},
     {"messages", 'm', 0, G_OPTION_ARG_NONE, &messages,
         N_("Output messages"), NULL},
     {"exclude", 'X', 0, G_OPTION_ARG_NONE, &exclude_args,
@@ -613,11 +686,14 @@ main (int argc, char *argv[])
         N_("Do not install a fault handler"), NULL},
     {"trace", 'T', 0, G_OPTION_ARG_NONE, &trace,
         N_("Print alloc trace (if enabled at compile time)"), NULL},
+    {"eos-on-shutdown", 'e', 0, G_OPTION_ARG_NONE, &eos_on_shutdown,
+        N_("Force EOS on sources before shutting the pipeline down"), NULL},
     GST_TOOLS_GOPTION_VERSION,
     {NULL}
   };
   GOptionContext *ctx;
   GError *err = NULL;
+#endif
   gchar **argvn;
   GError *error = NULL;
   gint res = 0;
@@ -635,6 +711,7 @@ main (int argc, char *argv[])
 
   gst_alloc_trace_set_flags_all (GST_ALLOC_TRACE_LIVE);
 
+#ifndef GST_DISABLE_OPTION_PARSING
   ctx = g_option_context_new ("PIPELINE-DESCRIPTION");
   g_option_context_add_main_entries (ctx, options, GETTEXT_PACKAGE);
   g_option_context_add_group (ctx, gst_init_get_option_group ());
@@ -646,6 +723,9 @@ main (int argc, char *argv[])
     exit (1);
   }
   g_option_context_free (ctx);
+#else
+  gst_init (&argc, &argv);
+#endif
 
   gst_tools_print_version ("gst-launch");
 
@@ -680,15 +760,15 @@ main (int argc, char *argv[])
 
   if (!pipeline) {
     if (error) {
-      fprintf (stderr, _("ERROR: pipeline could not be constructed: %s.\n"),
+      g_printerr (_("ERROR: pipeline could not be constructed: %s.\n"),
           GST_STR_NULL (error->message));
       g_error_free (error);
     } else {
-      fprintf (stderr, _("ERROR: pipeline could not be constructed.\n"));
+      g_printerr (_("ERROR: pipeline could not be constructed.\n"));
     }
     return 1;
   } else if (error) {
-    fprintf (stderr, _("WARNING: erroneous pipeline: %s\n"),
+    g_printerr (_("WARNING: erroneous pipeline: %s\n"),
         GST_STR_NULL (error->message));
     g_error_free (error);
     return 1;
@@ -697,7 +777,7 @@ main (int argc, char *argv[])
   if (verbose) {
     gchar **exclude_list =
         exclude_args ? g_strsplit (exclude_args, ",", 0) : NULL;
-    g_signal_connect (pipeline, "deep_notify",
+    g_signal_connect (pipeline, "deep-notify",
         G_CALLBACK (gst_object_default_deep_notify), exclude_list);
   }
 #ifndef GST_DISABLE_LOADSAVE
@@ -715,54 +795,55 @@ main (int argc, char *argv[])
       GstElement *real_pipeline = gst_element_factory_make ("pipeline", NULL);
 
       if (real_pipeline == NULL) {
-        fprintf (stderr, _("ERROR: the 'pipeline' element wasn't found.\n"));
+        g_printerr (_("ERROR: the 'pipeline' element wasn't found.\n"));
         return 1;
       }
       gst_bin_add (GST_BIN (real_pipeline), pipeline);
       pipeline = real_pipeline;
     }
-    fprintf (stderr, _("Setting pipeline to PAUSED ...\n"));
+    PRINT (_("Setting pipeline to PAUSED ...\n"));
     ret = gst_element_set_state (pipeline, GST_STATE_PAUSED);
 
     switch (ret) {
       case GST_STATE_CHANGE_FAILURE:
-        fprintf (stderr, _("ERROR: Pipeline doesn't want to pause.\n"));
+        g_printerr (_("ERROR: Pipeline doesn't want to pause.\n"));
         res = -1;
         event_loop (pipeline, FALSE, GST_STATE_VOID_PENDING);
         goto end;
       case GST_STATE_CHANGE_NO_PREROLL:
-        fprintf (stderr, _("Pipeline is live and does not need PREROLL ...\n"));
+        PRINT (_("Pipeline is live and does not need PREROLL ...\n"));
         is_live = TRUE;
         break;
       case GST_STATE_CHANGE_ASYNC:
-        fprintf (stderr, _("Pipeline is PREROLLING ...\n"));
+        PRINT (_("Pipeline is PREROLLING ...\n"));
         caught_error = event_loop (pipeline, TRUE, GST_STATE_PAUSED);
         if (caught_error) {
-          fprintf (stderr, _("ERROR: pipeline doesn't want to preroll.\n"));
+          g_printerr (_("ERROR: pipeline doesn't want to preroll.\n"));
           goto end;
         }
         state = GST_STATE_PAUSED;
         /* fallthrough */
       case GST_STATE_CHANGE_SUCCESS:
-        fprintf (stderr, _("Pipeline is PREROLLED ...\n"));
+        PRINT (_("Pipeline is PREROLLED ...\n"));
         break;
     }
 
     caught_error = event_loop (pipeline, FALSE, GST_STATE_PLAYING);
 
     if (caught_error) {
-      fprintf (stderr, _("ERROR: pipeline doesn't want to preroll.\n"));
+      g_printerr (_("ERROR: pipeline doesn't want to preroll.\n"));
     } else {
       GstClockTime tfthen, tfnow;
       GstClockTimeDiff diff;
 
-      fprintf (stderr, _("Setting pipeline to PLAYING ...\n"));
+      PRINT (_("Setting pipeline to PLAYING ...\n"));
+
       if (gst_element_set_state (pipeline,
               GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE) {
         GstMessage *err_msg;
         GstBus *bus;
 
-        fprintf (stderr, _("ERROR: pipeline doesn't want to play.\n"));
+        g_printerr (_("ERROR: pipeline doesn't want to play.\n"));
         bus = gst_element_get_bus (pipeline);
         if ((err_msg = gst_bus_poll (bus, GST_MESSAGE_ERROR, 0))) {
           GError *gerror;
@@ -781,6 +862,20 @@ main (int argc, char *argv[])
 
       tfthen = gst_util_get_timestamp ();
       caught_error = event_loop (pipeline, TRUE, GST_STATE_PLAYING);
+      if (eos_on_shutdown && caught_error == ELR_INTERRUPT) {
+        PRINT (_("EOS on shutdown enabled -- Forcing EOS on the pipeline\n"));
+        waiting_eos = TRUE;
+        gst_element_send_event (pipeline, gst_event_new_eos ());
+        PRINT (_("Waiting for EOS...\n"));
+        caught_error = event_loop (pipeline, TRUE, GST_STATE_PLAYING);
+
+        if (caught_error == ELR_NO_ERROR) {
+          /* we got EOS */
+          PRINT (_("EOS received - stopping pipeline...\n"));
+        } else if (caught_error == ELR_ERROR) {
+          PRINT (_("An error happened while waiting for EOS\n"));
+        }
+      }
       tfnow = gst_util_get_timestamp ();
 
       diff = GST_CLOCK_DIFF (tfthen, tfnow);
@@ -788,24 +883,25 @@ main (int argc, char *argv[])
       g_print (_("Execution ended after %" G_GUINT64_FORMAT " ns.\n"), diff);
     }
 
+    PRINT (_("Setting pipeline to PAUSED ...\n"));
+    gst_element_set_state (pipeline, GST_STATE_PAUSED);
+    if (caught_error == ELR_NO_ERROR)
+      gst_element_get_state (pipeline, &state, &pending, GST_CLOCK_TIME_NONE);
+
     /* iterate mainloop to process pending stuff */
     while (g_main_context_iteration (NULL, FALSE));
 
-    fprintf (stderr, _("Setting pipeline to PAUSED ...\n"));
-    gst_element_set_state (pipeline, GST_STATE_PAUSED);
-    if (!caught_error)
-      gst_element_get_state (pipeline, &state, &pending, GST_CLOCK_TIME_NONE);
-    fprintf (stderr, _("Setting pipeline to READY ...\n"));
+    PRINT (_("Setting pipeline to READY ...\n"));
     gst_element_set_state (pipeline, GST_STATE_READY);
     gst_element_get_state (pipeline, &state, &pending, GST_CLOCK_TIME_NONE);
 
   end:
-    fprintf (stderr, _("Setting pipeline to NULL ...\n"));
+    PRINT (_("Setting pipeline to NULL ...\n"));
     gst_element_set_state (pipeline, GST_STATE_NULL);
     gst_element_get_state (pipeline, &state, &pending, GST_CLOCK_TIME_NONE);
   }
 
-  fprintf (stderr, _("FREEING pipeline ...\n"));
+  PRINT (_("Freeing pipeline ...\n"));
   gst_object_unref (pipeline);
 
   gst_deinit ();

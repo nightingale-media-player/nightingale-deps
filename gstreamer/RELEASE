@@ -1,5 +1,5 @@
 
-Release notes for GStreamer 0.10.22 "I heard a disturbing sound"
+Release notes for GStreamer 0.10.25 "Feel the burn"
         
 
 
@@ -37,83 +37,58 @@ contains a set of less supported plug-ins that haven't passed the
 
 Features of this release
     
-      * GstController improvements
-      * Extensions to the latency setting behaviours
-      * Ability for plugins to register dependencies to trigger re-scanning
-      * Optimisations in some common operations on caps and values and elsewhere
-      * Add sequence numbers to events so dependent events can be associated with the event that caused them
-      * New macros for reading and writing float values
-      * Many improvements in the basesink base class
-      * Support non-default main contexts for GstBus watches
-      * Improvements in pull-mode scheduling of sinks
-      * Fixes for alignment issues on sparc
-      * Ghost pad fixes
-      * New bit-reader assistance API
-      * Many other bug fixes and improvements
+      * Improve the byte-reader API
+      * GObject introspection support
+      * Improve clock accuracy on win32
+      * Optimisations in capabilities checking
+      * Optimisations and fixes in the basetransform base class
+      * new 64-bit scaling utility function variants
+      * Various bug-fixes and improvements (see ChangeLog and bugs list below)
 
 Bugs fixed in this release
      
-      * 567002 : --gst-disable-registry-update also skips registry creation
-      * 350477 : [Registry] Provide a way for plugins to delegate the 'cha...
-      * 510354 : post GST_MESSAGE_STRUCTURE_CHANGE when linking and unlink...
-      * 526044 : Crash if there is more than one watcher for a GstBus
-      * 539108 : gst_ghost_pad_new() does more than call g_object_new()
-      * 544003 : [parse] Links to wrong pad if no padtemplate name is given
-      * 544293 : rtspsrc / gstpoll regression
-      * 545714 : GST_READ_UINT_* and GST_WRITE_UINT_* are not always safe ...
-      * 548786 : [win32] search for plugins based on location of DLL
-      * 551676 : Small Memleak fix in gst_pad_link_check_compatible_unlocked
-      * 552778 : add free_func in gstbuffer instances
-      * 553554 : [base] Add a generic bit reader
-      * 553874 : query_position broken during seek
-      * 555196 : Move floating point endian conversion macros into core
-      * 555307 : Need to push latency event into the pipeline
-      * 555631 : Banshee crashes; gstreamer GST_CAPS GST_IS_CAPS warnings
-      * 556091 : libtool-2.2 and old gettext don't mix
-      * 556900 : a copy & paste bug in helloworld example
-      * 557154 : Allow totem to run without write-access to home directory
-      * 557300 : libgstnet needs to link against $(WIN32_LIBS)
-      * 557438 : Gstreamer crashes when Banshee supposed to change track
-      * 557649 : GstBaseTransform can cause ivalid memory references
-      * 559250 : segments need identifiers.
-      * 560301 : Add --plugin to gst-inspect
-      * 560360 : Excessive statting when reading binary cache
-      * 560399 : Unnecessary CRC checksum for binary registry cache
-      * 560442 : GNOME Goal: Remove deprecated GLib symbols
-      * 561501 : g_type_class_ref without unref
-      * 562170 : GstBus watch doesn't work with non-default main context
-      * 562949 : [API] Add an URI query type for querying the source/sink URI
-      * 564863 : Caps are not propagated from a ghostpad's target to the g...
-      * 567225 : volatile gonce_data in BOILERPLATE not initialized to 0
-      * 566393 : [deadlock] Setting index on a pipeline
+      * 583999 : [basetransform] caps refcounting problem causing GST_IS_CAPS assertion failures
+      * 566881 : [GstIndex] support/caching in GstBin
+      * 588472 : [basetransform] problems in reverse-negotiating
+      * 589173 : macros cause spurious semicolon warnings
+      * 589314 : [basetransform] clears GAP flag in passthrough mode
+      * 589524 : gst_base_transform_acceptcaps() could provide more verbose debugging output
+      * 589849 : [segment] Clipping fails to handle start=stop < segment_start correctly
+      * 589991 : [queue] limited error handling might cause pipeline appearing to hang
+      * 590045 : Query position fails when pipeline is paused and format is not time
+      * 590430 : Add support for " album artist " tags
+      * 590841 : configure script check for libxml2 is incorrect
+      * 590919 : gst_util_uint64_scale_int() and friends don't round
+      * 591045 : [basesrc] Leaking GstTask instances
+      * 591318 : ghostpad : core dump : on_src_target_notify called with an invalid ghostpad
+      * 591441 : append mode for filesink
+      * 592209 : [GstPad] Deprecated markers missing in the header for internal links function related things
+      * 592314 : core/tests/examples/streams/ does not link to pthread
+      * 593460 : Broken win32-specific systemclock code
+      * 593719 : regression: segfault when using gstrtpbin and certain video codecs
+      * 594107 : [gstbin] : use of freed message : valgrind Invalid read
+      * 594225 : [API] [bytereader] add _unchecked() variants and inline most common functions
+      * 594990 : [introspection] pkg-config file madness and another bug
+      * 595130 : checks fail
+      * 595133 : gst/gstutils check fails
+      * 595209 : Fix out-of-tree build
+      * 368536 : bin_change_state makes children go through unnecessary state changes
 
 API changed in this release
      
 - API additions:
     
-* Add bit reader and byte reader classes.
-* gst_message_new_structure_change()
-* gst_message_parse_structure_change()
-* GST_BUFFER_FREE_FUNC()
-* Add GST_READ_UINT24_(LE|BE) and GST_WRITE_UINT24_(LE|BE).
-* GstBaseSrc::gst_base_src_set_blocksize()
-* GstBaseSrc::gst_base_src_get_blocksize()
-* GstBaseSink::gst_base_sink_set_blocksize()
-* GstBaseSink::gst_base_sink_get_blocksize()
-* GstBaseSink::blocksize
-* GstBaseSink::gst_base_sink_do_preroll()
-* Add gst_byte_reader_get_data and gst_byte_reader_peek_data
-* Move float endianness conversion macros from libgstfloatcast to core
-* gst_util_seqnum_next, gst_util_seqnum_compare
-* gst_event_get_seqnum, gst_event_set_seqnum
-* gst_message_get_seqnum, gst_message_set_seqnum
-* GstSeekFlags::GST_SEEK_FLAG_SKIP
-* gst_bin_recalculate_latency()
-* GstBin::do-latency
-* gst_tag_setter_reset_tags()
-* gst_query_new_uri, gst_query_set_uri, gst_query_parse_uri
-* add gst_plugin_add_dependency()
-* add gst_plugin_add_dependency_simple()
+* gst_caps_can_intersect()
+* gst_util_uint64_scale_int_round()
+* gst_util_uint64_scale_int_ceil()
+* gst_util_uint64_scale_round()
+* gst_util_uint64_scale_ceil()
+* gst_iterator_new_single()
+* gst_byte_reader_skip_unchecked()
+* gst_byte_reader_peek_*_unchecked()
+* gst_byte_reader_get_*_unchecked()
+* gst_byte_reader_{peek,get,dup}_data_unchecked()
+* gst_byte_reader_get_float*_unchecked()
 
 Download
 
@@ -132,8 +107,7 @@ http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer
 
 Developers
 
-CVS is hosted on cvs.freedesktop.org.
-All code is in CVS and can be checked out from there.
+GStreamer is stored in Git, hosted at git.freedesktop.org, and can be cloned from there.
 Interested developers of the core library, plug-ins, and applications should
 subscribe to the gstreamer-devel list. If there is sufficient interest we
 will create more lists as necessary.
@@ -148,26 +122,22 @@ Let us know if you want to be added to this list.
   
 Contributors to this release
     
-      * Alessandro Decina
-      * Andrew Feren
-      * Andy Wingo
       * Antoine Tremblay
-      * Cygwin Ports maintainer
+      * Aurelien Grimaud
+      * Benjamin Otte
       * David Schleef
-      * Dig Ge
       * Edward Hervey
       * Jan Schmidt
-      * Jan Schmidt - Sun Microsystems
+      * John Millikin
       * Jonas Holmberg
-      * Michael Smith
-      * Olivier Crete
-      * Peter Kjellerstedt
+      * Kipp Cannon
+      * Laurent Glayal
+      * Mark Nauwelaerts
       * Sebastian Dröge
-      * Simon Holm Thøgersen
       * Stefan Kost
+      * Stian Selnes
       * Thijs Vermeir
-      * Thomas Vander Stichele
       * Tim-Philipp Müller
       * Wim Taymans
-      * 이문형
+      * Руслан Ижбулатов
  
