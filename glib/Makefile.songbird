@@ -31,6 +31,8 @@
 ################################################################################
 
 
+# We don't want this on linux because -lintl (which this will add) doesn't
+# exist there - it's integrated into libc.
 ifneq (,$(filter Linux,$(SB_VENDOR_ARCH)))
   SB_VENDOR_TARGET_DEP_MODULES := gettext
 endif
