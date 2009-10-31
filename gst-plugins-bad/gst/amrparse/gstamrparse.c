@@ -210,7 +210,6 @@ gst_amrparse_set_src_caps (GstAmrParse * amrparse)
   }
   gst_pad_use_fixed_caps (GST_BASE_PARSE (amrparse)->srcpad);
   res = gst_pad_set_caps (GST_BASE_PARSE (amrparse)->srcpad, src_caps);
-  gst_pad_fixate_caps (GST_BASE_PARSE (amrparse)->srcpad, src_caps);
   gst_caps_unref (src_caps);
   return res;
 }
@@ -309,12 +308,12 @@ gst_amrparse_parse_header (GstAmrParse * amrparse,
     GST_DEBUG_OBJECT (amrparse, "AMR-WB detected");
     amrparse->block_size = block_size_wb;
     amrparse->wide = TRUE;
-    *skipsize = 9;
+    *skipsize = amrparse->header = 9;
   } else if (!memcmp (data, "#!AMR\n", 6)) {
     GST_DEBUG_OBJECT (amrparse, "AMR-NB detected");
     amrparse->block_size = block_size_nb;
     amrparse->wide = FALSE;
-    *skipsize = 6;
+    *skipsize = amrparse->header = 6;
   } else
     return FALSE;
 
@@ -453,6 +452,7 @@ gst_amrparse_start (GstBaseParse * parse)
   amrparse = GST_AMRPARSE (parse);
   GST_DEBUG ("start");
   amrparse->need_header = TRUE;
+  amrparse->header = 0;
   amrparse->sync = TRUE;
   amrparse->eos = FALSE;
   amrparse->framecount = 0;
@@ -478,6 +478,7 @@ gst_amrparse_stop (GstBaseParse * parse)
   amrparse = GST_AMRPARSE (parse);
   GST_DEBUG ("stop");
   amrparse->need_header = TRUE;
+  amrparse->header = 0;
   amrparse->ts = -1;
   return TRUE;
 }
@@ -548,8 +549,9 @@ gst_amrparse_convert (GstBaseParse * parse,
       GST_DEBUG ("converting bytes -> time");
 
       if (amrparse->framecount) {
-        *dest_value = AMR_FRAME_DURATION * src_value / bpf;
-        GST_DEBUG ("conversion result: %lld ms", *dest_value / GST_MSECOND);
+        *dest_value = AMR_FRAME_DURATION * (src_value - amrparse->header) / bpf;
+        GST_DEBUG ("conversion result: %" G_GINT64_FORMAT " ms",
+            *dest_value / GST_MSECOND);
         ret = TRUE;
       }
     }
@@ -557,8 +559,8 @@ gst_amrparse_convert (GstBaseParse * parse,
     GST_DEBUG ("converting time -> bytes");
     if (dest_format == GST_FORMAT_BYTES) {
       if (amrparse->framecount) {
-        *dest_value = bpf * src_value / AMR_FRAME_DURATION;
-        GST_DEBUG ("time %lld ms in bytes = %lld",
+        *dest_value = bpf * src_value / AMR_FRAME_DURATION + amrparse->header;
+        GST_DEBUG ("time %" G_GINT64_FORMAT " ms in bytes = %" G_GINT64_FORMAT,
             src_value / GST_MSECOND, *dest_value);
         ret = TRUE;
       }

@@ -20,7 +20,7 @@
 ** osd.h
 **
 ** O/S dependent routine defintions (must be customized)
-** $Id: osd.h,v 1.2 2008-03-25 15:56:12 slomo Exp $
+** $Id$
 */
 
 #ifndef _OSD_H_
@@ -78,8 +78,8 @@ extern void osd_shutdown(void);
 #endif /* _OSD_H_ */
 
 /*
-** $Log: osd.h,v $
-** Revision 1.2  2008-03-25 15:56:12  slomo
+** $Log$
+** Revision 1.2  2008/03/25 15:56:12  slomo
 ** Patch by: Andreas Henriksson <andreas at fatal dot set>
 ** * gst/nsf/Makefile.am:
 ** * gst/nsf/dis6502.h:

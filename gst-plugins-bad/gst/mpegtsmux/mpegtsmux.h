@@ -109,10 +109,10 @@ struct MpegTsMux {
   GstCollectPads *collect;
 
   TsMux *tsmux;
-  TsMuxProgram *program;
+  TsMuxProgram **programs;
+  GstStructure *prog_map;
 
   gboolean first;
-  TsMuxStream *pcr_stream;
   GstFlowReturn last_flow_ret;
   GstAdapter *adapter;
   gint64 previous_pcr;
@@ -125,6 +125,8 @@ struct MpegTsMux {
 struct MpegTsMuxClass  {
   GstElementClass parent_class;
 };
+
+#define MPEG_TS_PAD_DATA(data)  ((MpegTsPadData *)(data))
 
 struct MpegTsPadData {
   GstCollectData collect; /* Parent */
@@ -141,6 +143,9 @@ struct MpegTsPadData {
   MpegTsPadDataPrepareFunction prepare_func; /* Handler to prepare input data */
 
   gboolean eos;
+
+  gint prog_id; /* The program id to which it is attached to (not program pid) */ 
+  TsMuxProgram *prog; /* The program to which this stream belongs to */ 
 };
 
 GType mpegtsmux_get_type (void);
@@ -158,6 +163,10 @@ GType mpegtsmux_get_type (void);
 #define STANDARD_TIME_CLOCK     27000000
 /*33 bits as 1 ie 0x1ffffffff*/
 #define TWO_POW_33_MINUS1     ((0xffffffff * 2) - 1) 
+
+#define MAX_PROG_NUMBER	32
+#define DEFAULT_PROG_ID	0
+
 G_END_DECLS
 
 #endif

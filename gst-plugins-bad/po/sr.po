@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gst-plugins 0.7.6\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-01-19 22:32+0000\n"
+"POT-Creation-Date: 2009-10-23 23:15+0100\n"
 "PO-Revision-Date: 2004-03-13 00:18+0100\n"
 "Last-Translator: Danilo Segan <dsegan@gmx.net>\n"
 "Language-Team: Serbian <gnu@prevod.org>\n"
@@ -16,396 +16,414 @@ msgstr ""
 "Plural-Forms: nplurals=3;    plural=n%10==1 && n%100!=11 ? 0 :  (n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ext/resindvd/resindvdsrc.c:333
 #, fuzzy
 msgid "Could not read title information for DVD."
 msgstr "Не могу да пишем у датотеку „%s“."
 
-#: ext/resindvd/resindvdsrc.c:339
 #, fuzzy, c-format
 msgid "Failed to open DVD device '%s'."
 msgstr "Не могу да затворим управљачки уређај „%s“."
 
-#: ext/resindvd/resindvdsrc.c:345
 msgid "Failed to set PGC based seeking."
 msgstr ""
 
-#: ext/resindvd/rsnbasesrc.c:1659
 msgid "Internal clock error."
 msgstr ""
 
-#: ext/resindvd/rsnbasesrc.c:1904 ext/resindvd/rsnbasesrc.c:1915
-#: gst/aiffparse/aiffparse.c:1265
 msgid "Internal data flow error."
 msgstr ""
 
-#: ext/sndfile/gstsfsink.c:277 ext/sndfile/gstsfsrc.c:345
 #, fuzzy
 msgid "No file name specified for writing."
 msgstr "Име датотеке није задато."
 
-#: ext/sndfile/gstsfsink.c:290 ext/sndfile/gstsfsrc.c:351
 #, c-format
 msgid "Could not open file \"%s\" for writing."
 msgstr "Не могу да отворим датотеку „%s“ ради уписа."
 
-#: ext/sndfile/gstsfsink.c:440 gst/nuvdemux/gstnuvdemux.c:735
 msgid "Internal data stream error."
 msgstr ""
 
-#: ext/sndfile/gstsfsink.c:494 ext/sndfile/gstsfsink.c:502
 #, c-format
 msgid "Could not write to file \"%s\"."
 msgstr "Не могу да пишем у датотеку „%s“."
 
-#: ext/twolame/gsttwolame.c:427
-msgid "Failed to configure TwoLAME encoder. Check your encoding parameters."
-msgstr ""
-
-#: ext/twolame/gsttwolame.c:502
-#, c-format
-msgid ""
-"The requested bitrate %d kbit/s for property '%s' is not allowed. The "
-"bitrate was changed to %d kbit/s."
-msgstr ""
-
-#: sys/dvb/gstdvbsrc.c:700 sys/dvb/gstdvbsrc.c:793
 #, c-format
 msgid "Device \"%s\" does not exist."
 msgstr "Не постоји уређај „%s“."
 
-#: sys/dvb/gstdvbsrc.c:704
 #, fuzzy, c-format
 msgid "Could not open frontend device \"%s\"."
 msgstr "Не могу да затворим управљачки уређај „%s“."
 
-#: sys/dvb/gstdvbsrc.c:716
 #, fuzzy, c-format
 msgid "Could not get settings from frontend device \"%s\"."
 msgstr "Не могу да примим довољно бафера са уређаја „%s“."
 
-#: sys/dvb/gstdvbsrc.c:797
 #, c-format
 msgid "Could not open file \"%s\" for reading."
 msgstr "Не могу да отворим датотеку „%s“ ради читања."
 
-#: sys/oss4/oss4-mixer.c:302
 #, fuzzy
 msgid "Could not open audio device for mixer control handling."
 msgstr "Не могу да отворим звучни уређај „%s“ ради уписа."
 
-#: sys/oss4/oss4-mixer.c:316
 msgid ""
 "Could not open audio device for mixer control handling. This version of the "
 "Open Sound System is not supported by this element."
 msgstr ""
 
-#: sys/oss4/oss4-mixer.c:720
-msgid "Fast"
+msgid "Volume"
+msgstr "Јачина звука"
+
+msgid "Master"
 msgstr ""
 
-#: sys/oss4/oss4-mixer.c:721
-msgid "Low"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:722
-msgid "Medium"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:723
-msgid "High"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:724
-msgid "Very high"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:725
-msgid "Production"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:726
-msgid "Off"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:727
-msgid "On"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:728
-msgid "Stereo"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:729
-msgid "Surround sound"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:730 sys/oss4/oss4-mixer.c:805
-msgid "Input mix"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:731 sys/oss4/oss4-mixer.c:800
 msgid "Front"
 msgstr ""
 
-#: sys/oss4/oss4-mixer.c:732 sys/oss4/oss4-mixer.c:801
 #, fuzzy
 msgid "Rear"
 msgstr "Снимање"
 
-#: sys/oss4/oss4-mixer.c:733 sys/oss4/oss4-mixer.c:802
+msgid "Headphones"
+msgstr ""
+
+msgid "Center"
+msgstr ""
+
+msgid "LFE"
+msgstr ""
+
+msgid "Surround"
+msgstr ""
+
 #, fuzzy
 msgid "Side"
 msgstr "Видео"
 
-#: sys/oss4/oss4-mixer.c:734 sys/oss4/oss4-mixer.c:803
-msgid "Center / LFE"
+#, fuzzy
+msgid "Built-in Speaker"
+msgstr "Звучник"
+
+msgid "AUX 1 Out"
 msgstr ""
 
-#: sys/oss4/oss4-mixer.c:735 sys/oss4/oss4-mixer.c:794
+msgid "AUX 2 Out"
+msgstr ""
+
+msgid "AUX Out"
+msgstr ""
+
+msgid "Bass"
+msgstr "Бас"
+
+msgid "Treble"
+msgstr "Шум"
+
+msgid "3D Depth"
+msgstr ""
+
+msgid "3D Center"
+msgstr ""
+
+msgid "3D Enhance"
+msgstr ""
+
+msgid "Telephone"
+msgstr ""
+
 msgid "Microphone"
 msgstr "Микрофон"
 
-#: sys/oss4/oss4-mixer.c:736 sys/oss4/oss4-mixer.c:795
-msgid "Front panel microphone"
+msgid "Line Out"
 msgstr ""
 
-#: sys/oss4/oss4-mixer.c:737
-msgid "Input"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:738 sys/oss4/oss4-mixer.c:796
-msgid "Line-in"
+#, fuzzy
+msgid "Line In"
 msgstr "Ул.лин."
 
-#: sys/oss4/oss4-mixer.c:739
+msgid "Internal CD"
+msgstr ""
+
 #, fuzzy
-msgid "PCM 1"
-msgstr "ПЦМ"
+msgid "Video In"
+msgstr "Видео"
 
-#: sys/oss4/oss4-mixer.c:740
-#, fuzzy
-msgid "PCM 2"
-msgstr "ПЦМ-2"
-
-#: sys/oss4/oss4-mixer.c:741
-#, fuzzy
-msgid "PCM 3"
-msgstr "ПЦМ"
-
-#: sys/oss4/oss4-mixer.c:742
-#, fuzzy
-msgid "PCM 4"
-msgstr "ПЦМ"
-
-#: sys/oss4/oss4-mixer.c:754
-msgid "Green connector"
+msgid "AUX 1 In"
 msgstr ""
 
-#: sys/oss4/oss4-mixer.c:755
-msgid "Green front panel connector"
+msgid "AUX 2 In"
 msgstr ""
 
-#: sys/oss4/oss4-mixer.c:756
-msgid "Pink connector"
+msgid "AUX In"
 msgstr ""
 
-#: sys/oss4/oss4-mixer.c:757
-msgid "Pink front panel connector"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:758
-msgid "Blue connector"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:759
-msgid "Blue front panel connector"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:760
-msgid "Orange connector"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:761
-msgid "Orange front panel connector"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:762
-msgid "Black connector"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:763
-msgid "Black front panel connector"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:764
-msgid "Gray connector"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:765
-msgid "Gray front panel connector"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:766
-msgid "White connector"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:767
-msgid "White front panel connector"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:768
-msgid "Red connector"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:769
-msgid "Red front panel connector"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:770
-msgid "Yellow connector"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:771
-msgid "Yellow front panel connector"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:774
-msgid "Green connector function"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:775
-msgid "Green front panel connector function"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:776
-msgid "Pink connector function"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:777
-msgid "Pink front panel connector function"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:778
-msgid "Blue connector function"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:779
-msgid "Blue front panel connector function"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:780
-msgid "Orange connector function"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:781
-msgid "Orange front panel connector function"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:782
-msgid "Black connector function"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:783
-msgid "Black front panel connector function"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:784
-msgid "Gray connector function"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:785
-msgid "Gray front panel connector function"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:786
-msgid "White connector function"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:787
-msgid "White front panel connector function"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:788
-msgid "Red connector function"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:789
-msgid "Red front panel connector function"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:790
-msgid "Yellow connector function"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:791
-msgid "Yellow front panel connector function"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:797
-msgid "Front panel line-in"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:798
-msgid "Headphones"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:799
-msgid "Front panel headphones"
-msgstr ""
-
-#: sys/oss4/oss4-mixer.c:804
 msgid "PCM"
 msgstr "ПЦМ"
 
-#: sys/oss4/oss4-mixer.c:846
-msgid "Virtual mixer input"
+#, fuzzy
+msgid "Record Gain"
+msgstr "Снимање"
+
+#, fuzzy
+msgid "Output Gain"
+msgstr "Из. пој."
+
+#, fuzzy
+msgid "Microphone Boost"
+msgstr "Микрофон"
+
+msgid "Loopback"
 msgstr ""
 
-#: sys/oss4/oss4-mixer.c:848
-msgid "Virtual mixer output"
+msgid "Diagnostic"
 msgstr ""
 
-#: sys/oss4/oss4-mixer.c:850
-msgid "Virtual mixer channel configuration"
+msgid "Bass Boost"
 msgstr ""
 
-#: sys/oss4/oss4-sink.c:376 sys/oss4/oss4-source.c:367
+msgid "Playback Ports"
+msgstr ""
+
+msgid "Input"
+msgstr ""
+
+#, fuzzy
+msgid "Record Source"
+msgstr "Снимање"
+
+#, fuzzy
+msgid "Monitor Source"
+msgstr "Праћење"
+
+msgid "Keyboard Beep"
+msgstr ""
+
+msgid "Monitor"
+msgstr "Праћење"
+
+msgid "Simulate Stereo"
+msgstr ""
+
+msgid "Stereo"
+msgstr ""
+
+msgid "Surround Sound"
+msgstr ""
+
+#, fuzzy
+msgid "Microphone Gain"
+msgstr "Микрофон"
+
+#, fuzzy
+msgid "Speaker Source"
+msgstr "Звучник"
+
+#, fuzzy
+msgid "Microphone Source"
+msgstr "Микрофон"
+
+msgid "Jack"
+msgstr ""
+
+msgid "Center / LFE"
+msgstr ""
+
+msgid "Stereo Mix"
+msgstr ""
+
+msgid "Mono Mix"
+msgstr ""
+
+msgid "Input Mix"
+msgstr ""
+
+msgid "SPDIF In"
+msgstr ""
+
+msgid "SPDIF Out"
+msgstr ""
+
+#, fuzzy
+msgid "Microphone 1"
+msgstr "Микрофон"
+
+#, fuzzy
+msgid "Microphone 2"
+msgstr "Микрофон"
+
+#, fuzzy
+msgid "Digital Out"
+msgstr "Диг. 1"
+
+#, fuzzy
+msgid "Digital In"
+msgstr "Диг. 1"
+
+msgid "HDMI"
+msgstr ""
+
+msgid "Modem"
+msgstr ""
+
+msgid "Handset"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "On"
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "Mute"
+msgstr ""
+
+msgid "Fast"
+msgstr ""
+
+msgid "Very Low"
+msgstr ""
+
+msgid "Low"
+msgstr ""
+
+msgid "Medium"
+msgstr ""
+
+msgid "High"
+msgstr ""
+
+msgid "Very High"
+msgstr ""
+
+msgid "Production"
+msgstr ""
+
+#, fuzzy
+msgid "Front Panel Microphone"
+msgstr "Микрофон"
+
+msgid "Front Panel Line In"
+msgstr ""
+
+msgid "Front Panel Headphones"
+msgstr ""
+
+msgid "Front Panel Line Out"
+msgstr ""
+
+msgid "Green Connector"
+msgstr ""
+
+msgid "Pink Connector"
+msgstr ""
+
+msgid "Blue Connector"
+msgstr ""
+
+msgid "White Connector"
+msgstr ""
+
+msgid "Black Connector"
+msgstr ""
+
+msgid "Gray Connector"
+msgstr ""
+
+msgid "Orange Connector"
+msgstr ""
+
+msgid "Red Connector"
+msgstr ""
+
+msgid "Yellow Connector"
+msgstr ""
+
+msgid "Green Front Panel Connector"
+msgstr ""
+
+msgid "Pink Front Panel Connector"
+msgstr ""
+
+msgid "Blue Front Panel Connector"
+msgstr ""
+
+msgid "White Front Panel Connector"
+msgstr ""
+
+msgid "Black Front Panel Connector"
+msgstr ""
+
+msgid "Gray Front Panel Connector"
+msgstr ""
+
+msgid "Orange Front Panel Connector"
+msgstr ""
+
+msgid "Red Front Panel Connector"
+msgstr ""
+
+msgid "Yellow Front Panel Connector"
+msgstr ""
+
+msgid "Spread Output"
+msgstr ""
+
+msgid "Downmix"
+msgstr ""
+
+msgid "Virtual Mixer Input"
+msgstr ""
+
+msgid "Virtual Mixer Output"
+msgstr ""
+
+msgid "Virtual Mixer Channels"
+msgstr ""
+
+#, c-format
+msgid "%s Function"
+msgstr ""
+
+#, c-format
+msgid "%s %d"
+msgstr ""
+
 msgid ""
 "Could not open audio device for playback. Device is being used by another "
 "application."
 msgstr ""
 
-#: sys/oss4/oss4-sink.c:386 sys/oss4/oss4-source.c:377
 msgid ""
 "Could not open audio device for playback. You don't have permission to open "
 "the device."
 msgstr ""
 
-#: sys/oss4/oss4-sink.c:397 sys/oss4/oss4-source.c:388
 #, fuzzy
 msgid "Could not open audio device for playback."
 msgstr "Не могу да отворим звучни уређај „%s“ ради уписа."
 
-#: sys/oss4/oss4-sink.c:406 sys/oss4/oss4-source.c:398
 msgid ""
 "Could not open audio device for playback. This version of the Open Sound "
 "System is not supported by this element."
 msgstr ""
 
-#: sys/oss4/oss4-sink.c:522
 msgid "Playback is not supported by this audio device."
 msgstr ""
 
-#: sys/oss4/oss4-sink.c:529
 msgid "Audio playback error."
 msgstr ""
 
-#: sys/oss4/oss4-source.c:520
 msgid "Recording is not supported by this audio device."
 msgstr ""
 
-#: sys/oss4/oss4-source.c:527
 msgid "Error recording from audio device."
 msgstr ""
 
@@ -457,20 +475,8 @@ msgstr ""
 #~ msgid "Could not open device \"%s\" for reading."
 #~ msgstr "Не могу да отворим уређај „%s“ ради читања."
 
-#~ msgid "Volume"
-#~ msgstr "Јачина звука"
-
-#~ msgid "Bass"
-#~ msgstr "Бас"
-
-#~ msgid "Treble"
-#~ msgstr "Шум"
-
 #~ msgid "Synth"
 #~ msgstr "Синт."
-
-#~ msgid "Speaker"
-#~ msgstr "Звучник"
 
 #~ msgid "CD"
 #~ msgstr "ЦД"
@@ -478,11 +484,11 @@ msgstr ""
 #~ msgid "Mixer"
 #~ msgstr "Миксер"
 
+#~ msgid "PCM-2"
+#~ msgstr "ПЦМ-2"
+
 #~ msgid "In-gain"
 #~ msgstr "Ул. пој."
-
-#~ msgid "Out-gain"
-#~ msgstr "Из. пој."
 
 #~ msgid "Line-1"
 #~ msgstr "Лин. 1"
@@ -492,9 +498,6 @@ msgstr ""
 
 #~ msgid "Line-3"
 #~ msgstr "Лин. 3"
-
-#~ msgid "Digital-1"
-#~ msgstr "Диг. 1"
 
 #~ msgid "Digital-2"
 #~ msgstr "Диг. 2"
@@ -510,13 +513,6 @@ msgstr ""
 
 #~ msgid "Radio"
 #~ msgstr "Радио"
-
-#~ msgid "Monitor"
-#~ msgstr "Праћење"
-
-#, fuzzy
-#~ msgid "PC Speaker"
-#~ msgstr "Звучник"
 
 #~ msgid "Could not open CD device for reading."
 #~ msgstr "Не могу да отворим ЦД уређај ради читања."

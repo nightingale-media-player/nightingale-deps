@@ -7,8 +7,8 @@
 <link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="prev" href="gst-plugins-bad-plugins-videoparse.html" title="videoparse">
-<link rel="next" href="gst-plugins-bad-plugins-x264enc.html" title="x264enc">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<link rel="next" href="gst-plugins-bad-plugins-zbar.html" title="zbar">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
@@ -21,15 +21,17 @@
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-bad-plugins-x264enc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-zbar.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-wildmidi.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-wildmidi.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-wildmidi.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-wildmidi.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-bad-plugins-wildmidi.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-wildmidi.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-wildmidi.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-wildmidi.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-bad-plugins-wildmidi"></a><div class="titlepage"></div>
@@ -52,8 +54,12 @@
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
                +----GstWildmidi
 </pre>
 </div>
@@ -80,7 +86,7 @@ $HOME/.wildmidirc and /etc/wildmidi.cfg)
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2878205"></a><h3>Example pipeline</h3>
+<a name="id2874303"></a><h3>Example pipeline</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch filesrc location=song.mid ! wildmidi ! alsasink
 </pre></div> This example pipeline will parse the midi and render to raw audio which is
@@ -89,7 +95,7 @@ played via alsa.
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2849094"></a><h3>Element Information</h3>
+<a name="id2841016"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -112,7 +118,7 @@ played via alsa.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2914874"></a><h3>Element Pads</h3>
+<a name="id2922060"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -131,6 +137,85 @@ played via alsa.
 <tr>
 <td><p><span class="term">details</span></p></td>
 <td>audio/midi</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/riff-midi</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, rate=(int)44100, channels=(int)2, endianness=(int)1234, width=(int)16, depth=(int)16, signed=(boolean)true</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2922216"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-wildmidi.html#plugin-wildmidi">wildmidi</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Wouter Paesen &lt;wouter@blue-gate.be&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Decoder/Audio</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2922279"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/midi</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/riff-midi</td>
 </tr>
 </tbody>
 </table></div>
@@ -158,7 +243,6 @@ played via alsa.
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -167,7 +251,6 @@ played via alsa.
 <a name="GstWildmidi-struct"></a><h3>GstWildmidi</h3>
 <pre class="programlisting">typedef struct _GstWildmidi GstWildmidi;</pre>
 <p>
-
 </p>
 </div>
 </div>
@@ -198,6 +281,6 @@ timidity
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

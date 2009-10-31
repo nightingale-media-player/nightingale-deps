@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) 2008 Sebastian Dröge <sebastian.droege@collabora.co.uk>
+ * Copyright (C) 2008-2009 Sebastian Dröge <sebastian.droege@collabora.co.uk>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,10 +24,11 @@
 
 #include <gst/gst.h>
 
-/* SMPTE 377M 3.2 */
+#include "mxful.h"
+
 typedef struct {
   guint8 u[16];
-} MXFUL;
+} MXFUUID;
 
 /* SMPTE 377M 3.2 */
 typedef struct {
@@ -42,7 +43,7 @@ typedef struct {
   guint8 hour;
   guint8 minute;
   guint8 second;
-  guint8 quarter_msecond;
+  guint16 msecond;
 } MXFTimestamp;
 
 /* SMPTE 377M 3.3 */
@@ -62,9 +63,11 @@ typedef struct {
 
 /* SMPTE 377M 8.3 */
 typedef struct {
-  MXFUL key;
+  MXFUL ul;
   guint16 size;
   guint8 *data;
+  
+  gboolean g_slice; /* TRUE if data was allocated by GSlice */
 } MXFLocalTag;
 
 /* SMPTE 377M 11.1 */
@@ -74,6 +77,20 @@ typedef struct {
 } MXFRandomIndexPackEntry;
 
 typedef enum {
+  MXF_OP_UNKNOWN = 0,
+  MXF_OP_ATOM,
+  MXF_OP_1a,
+  MXF_OP_1b,
+  MXF_OP_1c,
+  MXF_OP_2a,
+  MXF_OP_2b,
+  MXF_OP_2c,
+  MXF_OP_3a,
+  MXF_OP_3b,
+  MXF_OP_3c,
+} MXFOperationalPattern;
+
+typedef enum {
   MXF_PARTITION_PACK_HEADER,
   MXF_PARTITION_PACK_BODY,
   MXF_PARTITION_PACK_FOOTER
@@ -81,8 +98,6 @@ typedef enum {
 
 /* SMPTE 377M 6.1, Table 1 and 2 */
 typedef struct {
-  gboolean valid;
-
   MXFPartitionPackType type;
 
   gboolean closed;
@@ -114,9 +129,10 @@ typedef struct {
 
 /* SMPTE 377M 8.1 */
 typedef struct {
-  gboolean valid;
-
+  guint64 offset;
   GHashTable *mappings;
+  GHashTable *reverse_mappings;
+  guint16 next_free_tag;
 } MXFPrimerPack;
 
 /* SMPTE 377M 10.2.3 */
@@ -138,7 +154,7 @@ typedef struct {
 } MXFIndexEntry;
 
 typedef struct {
-  MXFUL instance_id;
+  MXFUUID instance_id;
   MXFFraction index_edit_rate;
   gint64 index_start_position;
   gint64 index_duration;
@@ -156,5 +172,97 @@ typedef struct {
 
   GHashTable *other_tags;
 } MXFIndexTableSegment;
+
+#define GST_TAG_MXF_UMID "mxf-umid"
+#define GST_TAG_MXF_STRUCTURE "mxf-structure"
+#define GST_TAG_MXF_DESCRIPTIVE_METADATA_FRAMEWORK "mxf-descriptive-metadata-framework"
+
+void mxf_uuid_init (MXFUUID *uuid, GHashTable *hashtable);
+gboolean mxf_uuid_is_equal (const MXFUUID *a, const MXFUUID *b);
+gboolean mxf_uuid_is_zero (const MXFUUID *uuid);
+guint mxf_uuid_hash (const MXFUUID *uuid);
+gchar * mxf_uuid_to_string (const MXFUUID *uuid, gchar str[48]);
+MXFUUID * mxf_uuid_from_string (const gchar *str, MXFUUID *uuid);
+gboolean mxf_uuid_array_parse (MXFUUID ** array, guint32 * count, const guint8 * data, guint size);
+
+gchar *mxf_umid_to_string (const MXFUMID * umid, gchar str[96]);
+MXFUMID *mxf_umid_from_string (const gchar *str, MXFUMID * umid);
+gboolean mxf_umid_is_equal (const MXFUMID *a, const MXFUMID *b);
+gboolean mxf_umid_is_zero (const MXFUMID *umid);
+void mxf_umid_init (MXFUMID *umid);
+
+gboolean mxf_is_mxf_packet (const MXFUL *ul);
+
+gboolean mxf_is_partition_pack (const MXFUL *ul);
+gboolean mxf_is_header_partition_pack (const MXFUL *ul);
+gboolean mxf_is_body_partition_pack (const MXFUL *ul);
+gboolean mxf_is_footer_partition_pack (const MXFUL *ul);
+
+gboolean mxf_is_primer_pack (const MXFUL *ul);
+
+gboolean mxf_is_metadata (const MXFUL *ul);
+gboolean mxf_is_descriptive_metadata (const MXFUL *ul);
+
+gboolean mxf_is_random_index_pack (const MXFUL *ul);
+gboolean mxf_is_index_table_segment (const MXFUL *ul);
+
+gboolean mxf_is_generic_container_system_item (const MXFUL *ul);
+gboolean mxf_is_generic_container_essence_element (const MXFUL *ul);
+gboolean mxf_is_avid_essence_container_essence_element (const MXFUL * key);
+
+gboolean mxf_is_generic_container_essence_container_label (const MXFUL *ul);
+gboolean mxf_is_avid_essence_container_label (const MXFUL *ul);
+
+gboolean mxf_is_fill (const MXFUL *ul);
+
+guint mxf_ber_encode_size (guint size, guint8 ber[9]);
+
+gchar * mxf_utf16_to_utf8 (const guint8 * data, guint size);
+guint8 * mxf_utf8_to_utf16 (const gchar *str, guint16 *size);
+
+gboolean mxf_product_version_parse (MXFProductVersion * product_version,
+    const guint8 * data, guint size);
+gboolean mxf_product_version_is_valid (const MXFProductVersion *version);
+void mxf_product_version_write (const MXFProductVersion *version, guint8 *data);
+
+
+gboolean mxf_fraction_parse (MXFFraction *fraction, const guint8 *data, guint size);
+gdouble mxf_fraction_to_double (const MXFFraction *fraction);
+
+gboolean mxf_timestamp_parse (MXFTimestamp * timestamp, const guint8 * data, guint size);
+gboolean mxf_timestamp_is_unknown (const MXFTimestamp *a);
+gint mxf_timestamp_compare (const MXFTimestamp *a, const MXFTimestamp *b);
+gchar *mxf_timestamp_to_string (const MXFTimestamp *t, gchar str[32]);
+void mxf_timestamp_set_now (MXFTimestamp *timestamp);
+void mxf_timestamp_write (const MXFTimestamp *timestamp, guint8 *data);
+
+void mxf_op_set_atom (MXFUL *ul, gboolean single_sourceclip, gboolean single_essence_track);
+void mxf_op_set_generalized (MXFUL *ul, MXFOperationalPattern pattern, gboolean internal_essence, gboolean streamable, gboolean single_track);
+
+GstBuffer * mxf_fill_to_buffer (guint size);
+
+gboolean mxf_partition_pack_parse (const MXFUL *ul, MXFPartitionPack *pack, const guint8 *data, guint size);
+void mxf_partition_pack_reset (MXFPartitionPack *pack);
+GstBuffer * mxf_partition_pack_to_buffer (const MXFPartitionPack *pack);
+
+gboolean mxf_primer_pack_parse (const MXFUL *ul, MXFPrimerPack *pack, const guint8 *data, guint size);
+void mxf_primer_pack_reset (MXFPrimerPack *pack);
+guint16 mxf_primer_pack_add_mapping (MXFPrimerPack *primer, guint16 local_tag, const MXFUL *ul);
+GstBuffer * mxf_primer_pack_to_buffer (const MXFPrimerPack *pack);
+
+gboolean mxf_random_index_pack_parse (const MXFUL *ul, const guint8 *data, guint size, GArray **array);
+GstBuffer * mxf_random_index_pack_to_buffer (const GArray *array);
+
+gboolean mxf_index_table_segment_parse (const MXFUL *ul, MXFIndexTableSegment *segment, const MXFPrimerPack *primer, const guint8 *data, guint size);
+void mxf_index_table_segment_reset (MXFIndexTableSegment *segment);
+
+gboolean mxf_local_tag_parse (const guint8 * data, guint size, guint16 * tag,
+    guint16 * tag_size, const guint8 ** tag_data);
+void mxf_local_tag_free (MXFLocalTag *tag);
+
+gboolean mxf_local_tag_add_to_hash_table (const MXFPrimerPack *primer,
+  guint16 tag, const guint8 *tag_data, guint16 tag_size,
+  GHashTable **hash_table);
+gboolean mxf_local_tag_insert (MXFLocalTag *tag, GHashTable **hash_table);
 
 #endif /* __MXF_TYPES_H__ */

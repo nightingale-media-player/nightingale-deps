@@ -48,16 +48,16 @@ struct _GstRawParse
 {
   GstElement parent;
 
-  /* private */
+  /* <private> */
   GstPad *sinkpad;
   GstPad *srcpad;
 
   GstActivateMode mode;
   GstAdapter *adapter;
 
-  int framesize;
-  int fps_d;
-  int fps_n;
+  gint framesize;
+  gint fps_d;
+  gint fps_n;
 
   gboolean discont;
   guint64 n_frames;
@@ -78,6 +78,7 @@ struct _GstRawParseClass
   GstElementClass parent_class;
 
   GstCaps * (*get_caps) (GstRawParse *rp);
+  void (*set_buffer_flags) (GstRawParse *rp, GstBuffer *buffer);
 
   gboolean multiple_frames_per_buffer;
 };

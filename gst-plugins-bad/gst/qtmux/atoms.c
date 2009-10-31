@@ -1036,7 +1036,8 @@ atom_meta_free (AtomMETA * meta)
 {
   atom_full_clear (&meta->header);
   atom_hdlr_clear (&meta->hdlr);
-  atom_ilst_free (meta->ilst);
+  if (meta->ilst)
+    atom_ilst_free (meta->ilst);
   meta->ilst = NULL;
   g_free (meta);
 }
@@ -1061,8 +1062,11 @@ static void
 atom_udta_free (AtomUDTA * udta)
 {
   atom_clear (&udta->header);
-  atom_meta_free (udta->meta);
+  if (udta->meta)
+    atom_meta_free (udta->meta);
   udta->meta = NULL;
+  if (udta->entries)
+    atom_info_list_free (udta->entries);
   g_free (udta);
 }
 
@@ -1094,8 +1098,8 @@ atom_tag_new (guint32 fourcc, guint32 flags_as_uint)
   tag->header.type = fourcc;
   atom_tag_data_init (&tag->data);
   tag->data.header.flags[2] = flags_as_uint & 0xFF;
-  tag->data.header.flags[1] = flags_as_uint & 0xFF00;
-  tag->data.header.flags[0] = flags_as_uint & 0xFF0000;
+  tag->data.header.flags[1] = (flags_as_uint & 0xFF00) >> 8;
+  tag->data.header.flags[0] = (flags_as_uint & 0xFF0000) >> 16;
   return tag;
 }
 
@@ -1149,6 +1153,7 @@ atom_moov_init (AtomMOOV * moov, AtomsContext * context)
   atom_mvhd_init (&(moov->mvhd));
   moov->udta = NULL;
   moov->traks = NULL;
+  moov->context = *context;
 }
 
 AtomMOOV *
@@ -1170,13 +1175,11 @@ atom_moov_free (AtomMOOV * moov)
 
   walker = moov->traks;
   while (walker) {
-    GList *aux = walker;
-
+    atom_trak_free ((AtomTRAK *) walker->data);
     walker = g_list_next (walker);
-    moov->traks = g_list_remove_link (moov->traks, aux);
-    atom_trak_free ((AtomTRAK *) aux->data);
-    g_list_free (aux);
   }
+  g_list_free (moov->traks);
+  moov->traks = NULL;
 
   if (moov->udta) {
     atom_udta_free (moov->udta);
@@ -1240,9 +1243,6 @@ atom_copy_data (Atom * atom, guint8 ** buffer, guint64 * size, guint64 * offset)
      * would be a problem for size (re)write code, not to mention memory */
     g_return_val_if_fail (atom->type == FOURCC_mdat, 0);
     prop_copy_uint64 (atom->extended_size, buffer, size, offset);
-  } else {
-    /* just in case some trivially derived atom does not do so */
-    atom_write_size (buffer, size, offset, original_offset);
   }
 
   return *offset - original_offset;
@@ -1855,13 +1855,11 @@ atom_stsd_copy_data (AtomSTSD * stsd, guint8 ** buffer, guint64 * size,
         break;
       default:
         if (se->kind == VIDEO) {
-          size +=
-              sample_entry_mp4v_copy_data ((SampleTableEntryMP4V *) walker->
-              data, buffer, size, offset);
+          size += sample_entry_mp4v_copy_data ((SampleTableEntryMP4V *)
+              walker->data, buffer, size, offset);
         } else if (se->kind == AUDIO) {
-          size +=
-              sample_entry_mp4a_copy_data ((SampleTableEntryMP4A *) walker->
-              data, buffer, size, offset);
+          size += sample_entry_mp4a_copy_data ((SampleTableEntryMP4A *)
+              walker->data, buffer, size, offset);
         } else {
           if (!atom_hint_sample_entry_copy_data (
                   (AtomHintSampleEntry *) walker->data, buffer, size, offset)) {
@@ -2165,6 +2163,10 @@ atom_udta_copy_data (AtomUDTA * udta, guint8 ** buffer, guint64 * size,
     if (!atom_meta_copy_data (udta->meta, buffer, size, offset)) {
       return 0;
     }
+  } else if (udta->entries) {
+    /* extra atoms */
+    if (!atom_info_list_copy_data (udta->entries, buffer, size, offset))
+      return 0;
   }
 
   atom_write_size (buffer, size, offset, original_offset);
@@ -2240,6 +2242,10 @@ stsc_entry_new (guint32 first_chunk, guint32 samples, guint32 desc_index)
 static void
 atom_stsc_add_new_entry (AtomSTSC * stsc, guint32 first_chunk, guint32 nsamples)
 {
+  if (stsc->entries &&
+      ((STSCEntry *) stsc->entries->data)->samples_per_chunk == nsamples)
+    return;
+
   stsc->entries =
       g_list_prepend (stsc->entries, stsc_entry_new (first_chunk, nsamples, 1));
   stsc->n_entries++;
@@ -2519,16 +2525,18 @@ atom_moov_chunks_add_offset (AtomMOOV * moov, guint32 offset)
  * Meta tags functions
  */
 static void
-atom_moov_init_metatags (AtomMOOV * moov)
+atom_moov_init_metatags (AtomMOOV * moov, AtomsContext * context)
 {
   if (!moov->udta) {
     moov->udta = atom_udta_new ();
   }
-  if (!moov->udta->meta) {
-    moov->udta->meta = atom_meta_new ();
-  }
-  if (!moov->udta->meta->ilst) {
-    moov->udta->meta->ilst = atom_ilst_new ();
+  if (context->flavor != ATOMS_TREE_FLAVOR_3GP) {
+    if (!moov->udta->meta) {
+      moov->udta->meta = atom_meta_new ();
+    }
+    if (!moov->udta->meta->ilst) {
+      moov->udta->meta->ilst = atom_ilst_new ();
+    }
   }
 }
 
@@ -2545,10 +2553,14 @@ atom_tag_data_alloc_data (AtomTagData * data, guint size)
 static void
 atom_moov_append_tag (AtomMOOV * moov, AtomInfo * tag)
 {
-  AtomILST *ilst;
+  GList **entries;
 
-  ilst = moov->udta->meta->ilst;
-  ilst->entries = g_list_append (ilst->entries, tag);
+  atom_moov_init_metatags (moov, &moov->context);
+  if (moov->udta->meta)
+    entries = &moov->udta->meta->ilst->entries;
+  else
+    entries = &moov->udta->entries;
+  *entries = g_list_append (*entries, tag);
 }
 
 void
@@ -2563,7 +2575,6 @@ atom_moov_add_tag (AtomMOOV * moov, guint32 fourcc, guint32 flags,
   atom_tag_data_alloc_data (tdata, size);
   g_memmove (tdata->data, data, size);
 
-  atom_moov_init_metatags (moov);
   atom_moov_append_tag (moov,
       build_atom_info_wrapper ((Atom *) tag, atom_tag_copy_data,
           atom_tag_free));
@@ -2621,6 +2632,87 @@ atom_moov_add_blob_tag (AtomMOOV * moov, guint8 * data, guint size)
   atom_moov_append_tag (moov,
       build_atom_info_wrapper ((Atom *) data_atom, atom_data_copy_data,
           atom_data_free));
+}
+
+void
+atom_moov_add_3gp_tag (AtomMOOV * moov, guint32 fourcc, guint8 * data,
+    guint size)
+{
+  AtomData *data_atom;
+  GstBuffer *buf;
+  guint8 *bdata;
+
+  /* need full atom */
+  buf = gst_buffer_new_and_alloc (size + 4);
+  bdata = GST_BUFFER_DATA (buf);
+  /* full atom: version and flags */
+  GST_WRITE_UINT32_BE (bdata, 0);
+  memcpy (bdata + 4, data, size);
+
+  data_atom = atom_data_new_from_gst_buffer (fourcc, buf);
+  gst_buffer_unref (buf);
+
+  atom_moov_append_tag (moov,
+      build_atom_info_wrapper ((Atom *) data_atom, atom_data_copy_data,
+          atom_data_free));
+}
+
+guint16
+language_code (const char *lang)
+{
+  g_return_val_if_fail (lang != NULL, 0);
+  g_return_val_if_fail (strlen (lang) == 3, 0);
+
+  return (((lang[0] - 0x60) & 0x1F) << 10) + (((lang[1] - 0x60) & 0x1F) << 5) +
+      ((lang[2] - 0x60) & 0x1F);
+}
+
+void
+atom_moov_add_3gp_str_int_tag (AtomMOOV * moov, guint32 fourcc,
+    const gchar * value, gint16 ivalue)
+{
+  gint len = 0, size = 0;
+  guint8 *data;
+
+  if (value) {
+    len = strlen (value);
+    size = len + 3;
+  }
+
+  if (ivalue >= 0)
+    size += 2;
+
+  data = g_malloc (size + 3);
+  /* language tag and null-terminated UTF-8 string */
+  if (value) {
+    GST_WRITE_UINT16_BE (data, language_code (GST_QT_MUX_DEFAULT_TAG_LANGUAGE));
+    /* include 0 terminator */
+    memcpy (data + 2, value, len + 1);
+  }
+  /* 16-bit unsigned int if standalone, otherwise 8-bit */
+  if (ivalue >= 0) {
+    if (size == 2)
+      GST_WRITE_UINT16_BE (data + size - 2, ivalue);
+    else {
+      GST_WRITE_UINT8 (data + size - 2, ivalue & 0xFF);
+      size--;
+    }
+  }
+
+  atom_moov_add_3gp_tag (moov, fourcc, data, size);
+  g_free (data);
+}
+
+void
+atom_moov_add_3gp_str_tag (AtomMOOV * moov, guint32 fourcc, const gchar * value)
+{
+  atom_moov_add_3gp_str_int_tag (moov, fourcc, value, -1);
+}
+
+void
+atom_moov_add_3gp_uint_tag (AtomMOOV * moov, guint32 fourcc, guint16 value)
+{
+  atom_moov_add_3gp_str_int_tag (moov, fourcc, NULL, value);
 }
 
 /*
@@ -2785,6 +2877,9 @@ atom_trak_set_audio_type (AtomTRAK * trak, AtomsContext * context,
   atom_trak_set_audio_commons (trak, context, scale);
   ste = atom_trak_add_audio_entry (trak, context, entry->fourcc);
 
+  trak->is_video = FALSE;
+  trak->is_h264 = FALSE;
+
   ste->version = entry->version;
   ste->compression_id = entry->compression_id;
   ste->sample_size = entry->sample_size;
@@ -2803,15 +2898,60 @@ atom_trak_set_audio_type (AtomTRAK * trak, AtomsContext * context,
   atom_trak_set_constant_size_samples (trak, sample_size);
 }
 
+AtomInfo *
+build_pasp_extension (AtomTRAK * trak, gint par_width, gint par_height)
+{
+  AtomData *atom_data;
+  GstBuffer *buf;
+  guint8 *data;
+
+  buf = gst_buffer_new_and_alloc (8);
+  data = GST_BUFFER_DATA (buf);
+
+  /* ihdr = image header box */
+  GST_WRITE_UINT32_BE (data, par_width);
+  GST_WRITE_UINT32_BE (data + 4, par_height);
+
+  atom_data = atom_data_new_from_gst_buffer (FOURCC_pasp, buf);
+  gst_buffer_unref (buf);
+
+  return build_atom_info_wrapper ((Atom *) atom_data, atom_data_copy_data,
+      atom_data_free);
+}
+
 void
 atom_trak_set_video_type (AtomTRAK * trak, AtomsContext * context,
     VisualSampleEntry * entry, guint32 scale, AtomInfo * ext)
 {
   SampleTableEntryMP4V *ste;
+  gint dwidth, dheight;
+  gint par_n = 0, par_d = 0;
 
-  atom_trak_set_video_commons (trak, context, scale, entry->width,
-      entry->height);
+  if ((entry->par_n != 1 || entry->par_d != 1) &&
+      (entry->par_n != entry->par_d)) {
+    par_n = entry->par_n;
+    par_d = entry->par_d;
+  }
+
+  dwidth = entry->width;
+  dheight = entry->height;
+  /* ISO file spec says track header w/h indicates track's visual presentation
+   * (so this together with pixels w/h implicitly defines PAR) */
+  if (par_n && (context->flavor != ATOMS_TREE_FLAVOR_MOV)) {
+    if (par_n > par_d) {
+      dwidth = entry->width * par_n / par_d;
+      dheight = entry->height;
+    } else {
+      dwidth = entry->width * par_n / par_d;
+      dheight = entry->height;
+    }
+  }
+
+  atom_trak_set_video_commons (trak, context, scale, dwidth, dheight);
   ste = atom_trak_add_video_entry (trak, context, entry->fourcc);
+
+  trak->is_video = TRUE;
+  trak->is_h264 = (entry->fourcc == FOURCC_avc1);
 
   ste->width = entry->width;
   ste->height = entry->height;
@@ -2821,6 +2961,12 @@ atom_trak_set_video_type (AtomTRAK * trak, AtomsContext * context,
 
   if (ext)
     ste->extension_atoms = g_list_prepend (ste->extension_atoms, ext);
+
+  /* QT spec has a pasp extension atom in stsd that can hold PAR */
+  if (par_n && (context->flavor == ATOMS_TREE_FLAVOR_MOV)) {
+    ste->extension_atoms = g_list_append (ste->extension_atoms,
+        build_pasp_extension (trak, par_n, par_d));
+  }
 }
 
 /* some sample description construction helpers */
@@ -2858,13 +3004,10 @@ build_esds_extension (AtomTRAK * trak, guint8 object_type, guint8 stream_type,
 AtomInfo *
 build_mov_aac_extension (AtomTRAK * trak, const GstBuffer * codec_data)
 {
-  guint32 track_id;
   AtomWAVE *wave;
   AtomFRMA *frma;
   Atom *ext_atom;
   GstBuffer *buf;
-
-  track_id = trak->tkhd.track_ID;
 
   /* Add WAVE atom to the MP4A sample table entry */
   wave = atom_wave_new ();
@@ -2971,4 +3114,56 @@ build_codec_data_extension (guint32 fourcc, const GstBuffer * codec_data)
   }
 
   return result;
+}
+
+AtomInfo *
+build_amr_extension ()
+{
+  guint8 ext[9];
+  GstBuffer *buf;
+  AtomInfo *res;
+
+  buf = gst_buffer_new ();
+  GST_BUFFER_DATA (buf) = ext;
+  GST_BUFFER_SIZE (buf) = sizeof (ext);
+
+  /* vendor */
+  GST_WRITE_UINT32_LE (ext, 0);
+  /* decoder version */
+  GST_WRITE_UINT8 (ext + 4, 0);
+  /* mode set (all modes) */
+  GST_WRITE_UINT16_BE (ext + 5, 0x81FF);
+  /* mode change period (no restriction) */
+  GST_WRITE_UINT8 (ext + 7, 0);
+  /* frames per sample */
+  GST_WRITE_UINT8 (ext + 8, 1);
+
+  res = build_codec_data_extension (GST_MAKE_FOURCC ('d', 'a', 'm', 'r'), buf);
+  gst_buffer_unref (buf);
+  return res;
+}
+
+AtomInfo *
+build_h263_extension ()
+{
+  guint8 ext[7];
+  GstBuffer *buf;
+  AtomInfo *res;
+
+  buf = gst_buffer_new ();
+  GST_BUFFER_DATA (buf) = ext;
+  GST_BUFFER_SIZE (buf) = sizeof (ext);
+
+  /* vendor */
+  GST_WRITE_UINT32_LE (ext, 0);
+  /* decoder version */
+  GST_WRITE_UINT8 (ext + 4, 0);
+  /* level / profile */
+  /* FIXME ? maybe ? obtain somewhere; baseline for now */
+  GST_WRITE_UINT8 (ext + 5, 10);
+  GST_WRITE_UINT8 (ext + 6, 0);
+
+  res = build_codec_data_extension (GST_MAKE_FOURCC ('d', '2', '6', '3'), buf);
+  gst_buffer_unref (buf);
+  return res;
 }

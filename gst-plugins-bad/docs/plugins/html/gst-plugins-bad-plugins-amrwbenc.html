@@ -6,9 +6,9 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
-<link rel="prev" href="gst-plugins-bad-plugins-amrwbdec.html" title="amrwbdec">
-<link rel="next" href="gst-plugins-bad-plugins-amrwbparse.html" title="amrwbparse">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<link rel="prev" href="gst-plugins-bad-plugins-amrparse.html" title="amrparse">
+<link rel="next" href="gst-plugins-bad-plugins-autoconvert.html" title="autoconvert">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
@@ -17,17 +17,19 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-bad-plugins-amrwbdec.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-bad-plugins-amrparse.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-bad-plugins-amrwbparse.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-autoconvert.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-amrwbenc.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-amrwbenc.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-amrwbenc.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-bad-plugins-amrwbenc.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-amrwbenc.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-amrwbenc.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-bad-plugins-amrwbenc"></a><div class="titlepage"></div>
@@ -59,7 +61,7 @@ AMR wideband encoder based on the
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2836662"></a><h3>Example launch line</h3>
+<a name="id2831086"></a><h3>Example launch line</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch filesrc location=abc.wav ! wavparse ! audioresample ! audioconvert ! amrwbenc ! filesink location=abc.amr
 </pre></div>
@@ -69,14 +71,14 @@ the stream.
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2846894"></a><h3>Element Information</h3>
+<a name="id2846286"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-            <a class="link" href="gst-plugins-bad-plugins-plugin-amrwb.html#plugin-amrwb">amrwb</a>
+            amrwb
           </td>
 </tr>
 <tr>
@@ -92,7 +94,78 @@ the stream.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2864098"></a><h3>Element Pads</h3>
+<a name="id2820542"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/AMR-WB, rate=(int)16000, channels=(int)1</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, width=(int)16, depth=(int)16, signed=(boolean)true, endianness=(int)1234, rate=(int)16000, channels=(int)1</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2848625"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            amrwb
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Renato Araujo &lt;renato.filho@indt.org.br&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Encoder/Audio</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2829877"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -138,7 +211,6 @@ the stream.
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -164,7 +236,6 @@ the stream.
 } GstAmrwbEnc;
 </pre>
 <p>
-
 </p>
 </div>
 </div>
@@ -179,11 +250,11 @@ the stream.
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-amrwbenc.see-also"></a><h2>See Also</h2>
-<a class="link" href="gst-plugins-bad-plugins-amrwbdec.html#GstAmrwbDec" title="GstAmrwbDec"><span class="type">GstAmrwbDec</span></a>, <a class="link" href="gst-plugins-bad-plugins-amrwbparse.html#GstAmrwbParse" title="GstAmrwbParse"><span class="type">GstAmrwbParse</span></a>
+#GstAmrwbDec, <span class="type">GstAmrwbParse</span>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

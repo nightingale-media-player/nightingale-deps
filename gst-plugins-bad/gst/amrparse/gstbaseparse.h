@@ -225,12 +225,16 @@ struct _GstBaseParseClass {
 GType           gst_base_parse_get_type         (void);
 
 
+GstFlowReturn gst_base_parse_push_buffer (GstBaseParse *parse,
+                                          GstBuffer *buffer);
+
 void gst_base_parse_set_duration (GstBaseParse *parse,
                                   GstFormat fmt,
                                   gint64 duration);
 
 void gst_base_parse_set_min_frame_size (GstBaseParse *parse,
                                         guint min_size);
+void gst_base_parse_set_passthrough (GstBaseParse * parse, gboolean passthrough);
 
 G_END_DECLS
 

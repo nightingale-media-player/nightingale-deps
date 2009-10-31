@@ -29,6 +29,7 @@
 #undef PACKAGE_BUGREPORT
 #undef PACKAGE
 
+/* FIXME: keep it here to avoid PACKAGE* redefinition warnings */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -47,7 +48,11 @@ GST_DEBUG_CATEGORY_STATIC (gst_bpm_detect_debug);
 struct _GstBPMDetectPrivate
 {
   gfloat bpm;
+#if HAVE_SOUNDTOUCH_1_4
+    soundtouch::BPMDetect * detect;
+#else
   BPMDetect *detect;
+#endif
 };
 
 #define ALLOWED_CAPS \
@@ -196,9 +201,14 @@ gst_bpm_detect_transform_ip (GstBaseTransform * trans, GstBuffer * in)
       GST_ERROR_OBJECT (bpm_detect, "No channels or rate set yet");
       return GST_FLOW_ERROR;
     }
-
+#if HAVE_SOUNDTOUCH_1_4
+    bpm_detect->priv->detect =
+        new soundtouch::BPMDetect (filter->format.channels,
+        filter->format.rate);
+#else
     bpm_detect->priv->detect =
         new BPMDetect (filter->format.channels, filter->format.rate);
+#endif
   }
 
   nsamples = GST_BUFFER_SIZE (in) / (4 * filter->format.channels);
@@ -207,13 +217,25 @@ gst_bpm_detect_transform_ip (GstBaseTransform * trans, GstBuffer * in)
    * data but our buffer data shouldn't be modified.
    */
   if (filter->format.channels == 1) {
-    bpm_detect->priv->detect->inputSamples ((gfloat *) GST_BUFFER_DATA (in),
-        nsamples);
+    gfloat *inbuf = (gfloat *) GST_BUFFER_DATA (in);
+
+    while (nsamples > 0) {
+      bpm_detect->priv->detect->inputSamples (inbuf, MIN (nsamples, 2048));
+      nsamples -= 2048;
+      inbuf += 2048;
+    }
   } else {
-    gfloat *data =
-        (gfloat *) g_memdup (GST_BUFFER_DATA (in), GST_BUFFER_SIZE (in));
-    bpm_detect->priv->detect->inputSamples (data, nsamples);
-    g_free (data);
+    gfloat *inbuf, *intmp, data[2 * 2048];
+
+    inbuf = (gfloat *) GST_BUFFER_DATA (in);
+    intmp = data;
+
+    while (nsamples > 0) {
+      memcpy (intmp, inbuf, sizeof (gfloat) * 2 * MIN (nsamples, 2048));
+      bpm_detect->priv->detect->inputSamples (intmp, MIN (nsamples, 2048));
+      nsamples -= 2048;
+      inbuf += 2048 * 2;
+    }
   }
 
   bpm = bpm_detect->priv->detect->getBpm ();

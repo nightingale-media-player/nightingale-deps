@@ -27,7 +27,8 @@
 #include <gst/audio/gstaudiosrc.h>
 #include <gst/interfaces/propertyprobe.h>
 
-#include "gstdshowsrcwrapper.h"
+#include "gstdshow.h"
+#include "gstdshowfakesink.h"
 
 G_BEGIN_DECLS
 #define GST_TYPE_DSHOWAUDIOSRC              (gst_dshowaudiosrc_get_type())
@@ -58,13 +59,13 @@ struct _GstDshowAudioSrc
   IBaseFilter *audio_cap_filter;
 
   /* dshow fakesink filter */
-  IBaseFilter *dshow_fakesink;
+  CDshowFakeSink *dshow_fakesink;
 
   /* graph manager interfaces */
   IMediaFilter *media_filter;
   IFilterGraph *filter_graph;
 
-  /* bytes array*/
+  /* bytes array */
   GByteArray *gbarray;
   GMutex *gbarray_lock;
 

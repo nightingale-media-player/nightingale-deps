@@ -316,7 +316,7 @@ metadata_tags_exif_register (void)
 
   gst_tag_register (GST_TAG_CAPTURE_ORIENTATION, GST_TAG_FLAG_META,
       G_TYPE_UINT, GST_TAG_CAPTURE_ORIENTATION,
-      "The kind of light source.", NULL);
+      "The orientation of the camera.", NULL);
 
   /*
      from -100 to 100
@@ -446,5 +446,17 @@ metadata_tags_iptc_register (void)
 static void
 metadata_tags_xmp_register (void)
 {
+  gst_tag_register (GST_TAG_XMP_GEO_LOCATION_COUNTRY, GST_TAG_FLAG_META,
+      G_TYPE_STRING, GST_TAG_XMP_GEO_LOCATION_COUNTRY,
+      "human readable english country name of where the media has been recorded or produced",
+      NULL);
+  gst_tag_register (GST_TAG_XMP_GEO_LOCATION_CITY, GST_TAG_FLAG_META,
+      G_TYPE_STRING, GST_TAG_XMP_GEO_LOCATION_CITY,
+      "human readable english city name of where the media has been recorded or produced",
+      NULL);
+  gst_tag_register (GST_TAG_XMP_GEO_LOCATION_SUBLOCATION, GST_TAG_FLAG_META,
+      G_TYPE_STRING, GST_TAG_XMP_GEO_LOCATION_SUBLOCATION,
+      "human readable location detail of where the media has been recorded or produced",
+      NULL);
 
 }

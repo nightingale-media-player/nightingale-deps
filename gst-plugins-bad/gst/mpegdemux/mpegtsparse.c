@@ -75,6 +75,13 @@ struct _MpegTSParsePad
   GstFlowReturn flow_return;
 };
 
+static GQuark QUARK_PROGRAMS;
+static GQuark QUARK_PROGRAM_NUMBER;
+static GQuark QUARK_PID;
+static GQuark QUARK_PCR_PID;
+static GQuark QUARK_STREAMS;
+static GQuark QUARK_STREAM_TYPE;
+
 static GstElementDetails mpegts_parse_details =
 GST_ELEMENT_DETAILS ("MPEG transport stream parser",
     "Codec/Parser",
@@ -134,8 +141,10 @@ static gboolean mpegts_parse_sink_event (GstPad * pad, GstEvent * event);
 static GstStateChangeReturn mpegts_parse_change_state (GstElement * element,
     GstStateChange transition);
 static gboolean mpegts_parse_src_pad_query (GstPad * pad, GstQuery * query);
+static void _extra_init (GType type);
 
-GST_BOILERPLATE (MpegTSParse, mpegts_parse, GstElement, GST_TYPE_ELEMENT);
+GST_BOILERPLATE_FULL (MpegTSParse, mpegts_parse, GstElement, GST_TYPE_ELEMENT,
+    _extra_init);
 
 static const guint32 crc_tab[256] = {
   0x00000000, 0x04c11db7, 0x09823b6e, 0x0d4326d9, 0x130476dc, 0x17c56b6b,
@@ -194,6 +203,17 @@ mpegts_parse_calc_crc32 (guint8 * data, guint datalen)
     crc = (crc << 8) ^ crc_tab[((crc >> 24) ^ *data++) & 0xff];
   }
   return crc;
+}
+
+static void
+_extra_init (GType type)
+{
+  QUARK_PROGRAMS = g_quark_from_string ("programs");
+  QUARK_PROGRAM_NUMBER = g_quark_from_string ("program-number");
+  QUARK_PID = g_quark_from_string ("pid");
+  QUARK_PCR_PID = g_quark_from_string ("pcr-pid");
+  QUARK_STREAMS = g_quark_from_string ("streams");
+  QUARK_STREAM_TYPE = g_quark_from_string ("stream-type");
 }
 
 static void
@@ -266,13 +286,17 @@ mpegts_parse_init (MpegTSParse * parse, MpegTSParseClass * klass)
   gst_element_add_pad (GST_ELEMENT (parse), parse->sinkpad);
 
   parse->disposed = FALSE;
+  parse->need_sync_program_pads = FALSE;
   parse->packetizer = mpegts_packetizer_new ();
   parse->program_numbers = g_strdup ("");
   parse->pads_to_add = NULL;
+  parse->pads_to_remove = NULL;
   parse->programs = g_hash_table_new_full (g_direct_hash, g_direct_equal,
       NULL, (GDestroyNotify) mpegts_parse_free_program);
   parse->psi_pids = g_hash_table_new (g_direct_hash, g_direct_equal);
+  parse->pes_pids = g_hash_table_new (g_direct_hash, g_direct_equal);
   mpegts_parse_reset (parse);
+
 }
 
 static void
@@ -301,6 +325,7 @@ mpegts_parse_finalize (GObject * object)
   }
   g_hash_table_destroy (parse->programs);
   g_hash_table_destroy (parse->psi_pids);
+  g_hash_table_destroy (parse->pes_pids);
 
   if (G_OBJECT_CLASS (parent_class)->finalize)
     G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -348,7 +373,7 @@ mpegts_parse_add_program (MpegTSParse * parse,
   program->pcr_pid = G_MAXUINT16;
   program->streams = g_hash_table_new_full (g_direct_hash, g_direct_equal,
       NULL, (GDestroyNotify) mpegts_parse_free_stream);
-  program->patcount = 1;
+  program->patcount = 0;
   program->selected = 0;
   program->active = FALSE;
 
@@ -422,22 +447,30 @@ mpegts_parse_remove_program (MpegTSParse * parse, gint program_number)
 }
 
 static void
-mpegts_parse_sync_program_pads (MpegTSParse * parse,
-    GList * to_add, GList * to_remove)
+mpegts_parse_sync_program_pads (MpegTSParse * parse)
 {
   GList *walk;
 
-  for (walk = to_remove; walk; walk = walk->next)
+  GST_INFO_OBJECT (parse, "begin sync pads");
+  for (walk = parse->pads_to_remove; walk; walk = walk->next)
     gst_element_remove_pad (GST_ELEMENT (parse), GST_PAD (walk->data));
 
-  for (walk = to_add; walk; walk = walk->next)
+  for (walk = parse->pads_to_add; walk; walk = walk->next)
     gst_element_add_pad (GST_ELEMENT (parse), GST_PAD (walk->data));
 
-  if (to_add)
-    g_list_free (to_add);
+  if (parse->pads_to_add)
+    g_list_free (parse->pads_to_add);
 
-  if (to_remove)
-    g_list_free (to_remove);
+  if (parse->pads_to_remove)
+    g_list_free (parse->pads_to_remove);
+
+  GST_OBJECT_LOCK (parse);
+  parse->pads_to_remove = NULL;
+  parse->pads_to_add = NULL;
+  parse->need_sync_program_pads = FALSE;
+  GST_OBJECT_UNLOCK (parse);
+
+  GST_INFO_OBJECT (parse, "end sync pads");
 }
 
 
@@ -493,9 +526,6 @@ static void
 mpegts_parse_reset_selected_programs (MpegTSParse * parse,
     gchar * program_numbers)
 {
-  GList *pads_to_add = NULL;
-  GList *pads_to_remove = NULL;
-
   GST_OBJECT_LOCK (parse);
   if (parse->program_numbers)
     g_free (parse->program_numbers);
@@ -526,13 +556,9 @@ mpegts_parse_reset_selected_programs (MpegTSParse * parse,
   g_hash_table_foreach (parse->programs,
       foreach_program_activate_or_deactivate, parse);
 
-  pads_to_add = parse->pads_to_add;
-  parse->pads_to_add = NULL;
-  pads_to_remove = parse->pads_to_remove;
-  parse->pads_to_remove = NULL;
+  if (parse->pads_to_remove || parse->pads_to_add)
+    parse->need_sync_program_pads = TRUE;
   GST_OBJECT_UNLOCK (parse);
-
-  mpegts_parse_sync_program_pads (parse, pads_to_add, pads_to_remove);
 }
 
 static void
@@ -546,6 +572,35 @@ mpegts_parse_program_remove_stream (MpegTSParse * parse,
     MpegTSParseProgram * program, guint16 pid)
 {
   g_hash_table_remove (program->streams, GINT_TO_POINTER ((gint) pid));
+}
+
+static void
+mpegts_parse_deactivate_pmt (MpegTSParse * parse, MpegTSParseProgram * program)
+{
+  gint i;
+  guint pid;
+  guint stream_type;
+  GstStructure *stream;
+  const GValue *streams;
+  const GValue *value;
+
+  if (program->pmt_info) {
+    streams = gst_structure_id_get_value (program->pmt_info, QUARK_STREAMS);
+
+    for (i = 0; i < gst_value_list_get_size (streams); ++i) {
+      value = gst_value_list_get_value (streams, i);
+      stream = g_value_get_boxed (value);
+      gst_structure_id_get (stream, QUARK_PID, G_TYPE_UINT, &pid,
+          QUARK_STREAM_TYPE, G_TYPE_UINT, &stream_type, NULL);
+      mpegts_parse_program_remove_stream (parse, program, (guint16) pid);
+      g_hash_table_remove (parse->pes_pids, GINT_TO_POINTER ((gint) pid));
+    }
+
+    /* remove pcr stream */
+    mpegts_parse_program_remove_stream (parse, program, program->pcr_pid);
+    g_hash_table_remove (parse->pes_pids,
+        GINT_TO_POINTER ((gint) program->pcr_pid));
+  }
 }
 
 static MpegTSParsePad *
@@ -711,21 +766,19 @@ static GstFlowReturn
 mpegts_parse_push (MpegTSParse * parse, MpegTSPacketizerPacket * packet,
     MpegTSPacketizerSection * section)
 {
-  GstIterator *iterator;
+  guint32 pads_cookie;
   gboolean done = FALSE;
-  gpointer pad = NULL;
+  GstPad *pad = NULL;
   MpegTSParsePad *tspad;
   guint16 pid;
   GstBuffer *buffer;
   GstFlowReturn ret;
-  GstCaps *caps;
+  GList *srcpads;
 
   pid = packet->pid;
   buffer = packet->buffer;
   /* we have the same caps on all the src pads */
-  caps = gst_static_pad_template_get_caps (&src_template);
-  gst_buffer_set_caps (buffer, caps);
-  gst_caps_unref (caps);
+  gst_buffer_set_caps (buffer, parse->packetizer->caps);
 
   GST_OBJECT_LOCK (parse);
   /* clear tspad->pushed on pads */
@@ -735,53 +788,66 @@ mpegts_parse_push (MpegTSParse * parse, MpegTSPacketizerPacket * packet,
     ret = GST_FLOW_NOT_LINKED;
   else
     ret = GST_FLOW_OK;
+
+  /* Get cookie and source pads list */
+  pads_cookie = GST_ELEMENT_CAST (parse)->pads_cookie;
+  srcpads = GST_ELEMENT_CAST (parse)->srcpads;
+  if (G_LIKELY (srcpads)) {
+    pad = GST_PAD_CAST (srcpads->data);
+    g_object_ref (pad);
+  }
   GST_OBJECT_UNLOCK (parse);
 
-  iterator = gst_element_iterate_src_pads (GST_ELEMENT_CAST (parse));
-  while (!done) {
-    switch (gst_iterator_next (iterator, &pad)) {
-      case GST_ITERATOR_OK:
-        tspad = gst_pad_get_element_private (GST_PAD (pad));
+  while (pad && !done) {
+    tspad = gst_pad_get_element_private (pad);
 
-        /* make sure to push only once if the iterator resyncs */
-        if (!tspad->pushed) {
-          /* ref the buffer as gst_pad_push takes a ref but we want to reuse the
-           * same buffer for next pushes */
-          gst_buffer_ref (buffer);
-          if (section) {
-            tspad->flow_return =
-                mpegts_parse_tspad_push_section (parse, tspad, section, buffer);
-          } else {
-            tspad->flow_return =
-                mpegts_parse_tspad_push (parse, tspad, pid, buffer);
-          }
-          tspad->pushed = TRUE;
+    if (G_LIKELY (!tspad->pushed)) {
+      /* ref the buffer as gst_pad_push takes a ref but we want to reuse the
+       * same buffer for next pushes */
+      gst_buffer_ref (buffer);
+      if (section) {
+        tspad->flow_return =
+            mpegts_parse_tspad_push_section (parse, tspad, section, buffer);
+      } else {
+        tspad->flow_return =
+            mpegts_parse_tspad_push (parse, tspad, pid, buffer);
+      }
+      tspad->pushed = TRUE;
 
-          if (GST_FLOW_IS_FATAL (tspad->flow_return)) {
-            /* return the error upstream */
-            ret = tspad->flow_return;
-            done = TRUE;
-          }
-        }
-
-        if (ret == GST_FLOW_NOT_LINKED)
-          ret = tspad->flow_return;
-
-        /* the iterator refs the pad */
-        g_object_unref (GST_PAD (pad));
-        break;
-      case GST_ITERATOR_RESYNC:
-        gst_iterator_resync (iterator);
-        break;
-      case GST_ITERATOR_DONE:
+      if (G_UNLIKELY (GST_FLOW_IS_FATAL (tspad->flow_return))) {
+        /* return the error upstream */
+        ret = tspad->flow_return;
         done = TRUE;
-        break;
-      default:
-        g_warning ("this should not be reached");
+      }
+
+    }
+
+    if (ret == GST_FLOW_NOT_LINKED)
+      ret = tspad->flow_return;
+
+    g_object_unref (pad);
+
+    if (G_UNLIKELY (!done)) {
+      GST_OBJECT_LOCK (parse);
+      if (G_UNLIKELY (pads_cookie != GST_ELEMENT_CAST (parse)->pads_cookie)) {
+        /* resync */
+        GST_DEBUG ("resync");
+        pads_cookie = GST_ELEMENT_CAST (parse)->pads_cookie;
+        srcpads = GST_ELEMENT_CAST (parse)->srcpads;
+      } else {
+        GST_DEBUG ("getting next pad");
+        /* Get next pad */
+        srcpads = g_list_next (srcpads);
+      }
+
+      if (srcpads) {
+        pad = GST_PAD_CAST (srcpads->data);
+        g_object_ref (pad);
+      } else
+        done = TRUE;
+      GST_OBJECT_UNLOCK (parse);
     }
   }
-
-  gst_iterator_free (iterator);
 
   gst_buffer_unref (buffer);
   packet->buffer = NULL;
@@ -795,21 +861,26 @@ mpegts_parse_is_psi (MpegTSParse * parse, MpegTSPacketizerPacket * packet)
   gboolean retval = FALSE;
   guint8 table_id;
   int i;
-  guint8 si_tables[] = { 0x00, 0x01, 0x02, 0x03, 0x40, 0x41, 0x42, 0x46, 0x4A,
-    0x4E, 0x4F, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59,
-    0x5A, 0x5B, 0x5C, 0x5D, 0x5E, 0x5F, 0x60, 0x61, 0x62, 0x63, 0x64, 0x65,
-    0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F, 0x70, 0x71,
-    0x72, 0x73, 0x7E, 0x7F, TABLE_ID_UNSET
+  static const guint8 si_tables[] =
+      { 0x00, 0x01, 0x02, 0x03, 0x40, 0x41, 0x42, 0x46, 0x4A, 0x4E, 0x4F, 0x50,
+    0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A, 0x5B, 0x5C,
+    0x5D, 0x5E, 0x5F, 0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68,
+    0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F, 0x70, 0x71, 0x72, 0x73, 0x7E,
+    0x7F, TABLE_ID_UNSET
   };
   if (g_hash_table_lookup (parse->psi_pids,
           GINT_TO_POINTER ((gint) packet->pid)) != NULL)
     retval = TRUE;
+  /* check is it is a pes pid */
+  if (g_hash_table_lookup (parse->pes_pids,
+          GINT_TO_POINTER ((gint) packet->pid)) != NULL)
+    return FALSE;
   if (!retval) {
     if (packet->payload_unit_start_indicator) {
       table_id = *(packet->data);
       i = 0;
       while (si_tables[i] != TABLE_ID_UNSET) {
-        if (si_tables[i] == table_id) {
+        if (G_UNLIKELY (si_tables[i] == table_id)) {
           GST_DEBUG_OBJECT (parse, "Packet has table id 0x%x", table_id);
           retval = TRUE;
           break;
@@ -817,16 +888,13 @@ mpegts_parse_is_psi (MpegTSParse * parse, MpegTSPacketizerPacket * packet)
         i++;
       }
     } else {
-      MpegTSPacketizerStream *stream = (MpegTSPacketizerStream *)
-          g_hash_table_lookup (parse->packetizer->streams,
-          GINT_TO_POINTER ((gint) packet->pid));
-
+      MpegTSPacketizerStream *stream = parse->packetizer->streams[packet->pid];
       if (stream) {
         i = 0;
         GST_DEBUG_OBJECT (parse, "section table id: 0x%x",
             stream->section_table_id);
         while (si_tables[i] != TABLE_ID_UNSET) {
-          if (si_tables[i] == stream->section_table_id) {
+          if (G_UNLIKELY (si_tables[i] == stream->section_table_id)) {
             retval = TRUE;
             break;
           }
@@ -835,6 +903,7 @@ mpegts_parse_is_psi (MpegTSParse * parse, MpegTSPacketizerPacket * packet)
       }
     }
   }
+
   GST_DEBUG_OBJECT (parse, "Packet of pid 0x%x is psi: %d", packet->pid,
       retval);
   return retval;
@@ -850,31 +919,26 @@ mpegts_parse_apply_pat (MpegTSParse * parse, GstStructure * pat_info)
   guint pid;
   MpegTSParseProgram *program;
   gint i;
-  GList *pads_to_add = NULL;
-  GList *pads_to_remove = NULL;
   const GValue *programs;
-  gchar *dbg;
 
   old_pat = parse->pat;
   parse->pat = gst_structure_copy (pat_info);
 
-  dbg = gst_structure_to_string (pat_info);
-  GST_INFO_OBJECT (parse, "PAT %s", dbg);
-  g_free (dbg);
+  GST_INFO_OBJECT (parse, "PAT %" GST_PTR_FORMAT, pat_info);
 
   gst_element_post_message (GST_ELEMENT_CAST (parse),
       gst_message_new_element (GST_OBJECT (parse),
           gst_structure_copy (pat_info)));
 
   GST_OBJECT_LOCK (parse);
-  programs = gst_structure_get_value (pat_info, "programs");
+  programs = gst_structure_id_get_value (pat_info, QUARK_PROGRAMS);
   /* activate the new table */
   for (i = 0; i < gst_value_list_get_size (programs); ++i) {
     value = gst_value_list_get_value (programs, i);
 
     program_info = g_value_get_boxed (value);
-    gst_structure_get_uint (program_info, "program-number", &program_number);
-    gst_structure_get_uint (program_info, "pid", &pid);
+    gst_structure_id_get (program_info, QUARK_PROGRAM_NUMBER, G_TYPE_UINT,
+        &program_number, QUARK_PID, G_TYPE_UINT, &pid, NULL);
 
     program = mpegts_parse_get_program (parse, program_number);
     if (program) {
@@ -889,14 +953,12 @@ mpegts_parse_apply_pat (MpegTSParse * parse, GstStructure * pat_info)
         g_hash_table_insert (parse->psi_pids,
             GINT_TO_POINTER ((gint) pid), GINT_TO_POINTER (1));
       }
-
-      program->patcount += 1;
     } else {
       g_hash_table_insert (parse->psi_pids,
           GINT_TO_POINTER ((gint) pid), GINT_TO_POINTER (1));
       program = mpegts_parse_add_program (parse, program_number, pid);
     }
-
+    program->patcount += 1;
     if (program->selected && !program->active)
       parse->pads_to_add = g_list_append (parse->pads_to_add,
           mpegts_parse_activate_program (parse, program));
@@ -905,13 +967,14 @@ mpegts_parse_apply_pat (MpegTSParse * parse, GstStructure * pat_info)
   if (old_pat) {
     /* deactivate the old table */
 
-    programs = gst_structure_get_value (old_pat, "programs");
+    programs = gst_structure_id_get_value (old_pat, QUARK_PROGRAMS);
     for (i = 0; i < gst_value_list_get_size (programs); ++i) {
       value = gst_value_list_get_value (programs, i);
 
       program_info = g_value_get_boxed (value);
-      gst_structure_get_uint (program_info, "program-number", &program_number);
-      gst_structure_get_uint (program_info, "pid", &pid);
+      gst_structure_id_get (program_info,
+          QUARK_PROGRAM_NUMBER, G_TYPE_UINT, &program_number,
+          QUARK_PID, G_TYPE_UINT, &pid, NULL);
 
       program = mpegts_parse_get_program (parse, program_number);
       if (program == NULL) {
@@ -924,31 +987,25 @@ mpegts_parse_apply_pat (MpegTSParse * parse, GstStructure * pat_info)
         /* the program has been referenced by the new pat, keep it */
         continue;
 
-      {
-        gchar *dbg = gst_structure_to_string (program_info);
-
-        GST_INFO_OBJECT (parse, "PAT removing program %s", dbg);
-        g_free (dbg);
-      }
+      GST_INFO_OBJECT (parse, "PAT removing program %" GST_PTR_FORMAT,
+          program_info);
 
       if (program->active)
         parse->pads_to_remove = g_list_append (parse->pads_to_remove,
             mpegts_parse_deactivate_program (parse, program));
 
+      mpegts_parse_deactivate_pmt (parse, program);
       mpegts_parse_remove_program (parse, program_number);
       g_hash_table_remove (parse->psi_pids, GINT_TO_POINTER ((gint) pid));
+      mpegts_packetizer_remove_stream (parse->packetizer, pid);
     }
 
     gst_structure_free (old_pat);
   }
 
-  pads_to_add = parse->pads_to_add;
-  parse->pads_to_add = NULL;
-  pads_to_remove = parse->pads_to_remove;
-  parse->pads_to_remove = NULL;
   GST_OBJECT_UNLOCK (parse);
 
-  mpegts_parse_sync_program_pads (parse, pads_to_add, pads_to_remove);
+  mpegts_parse_sync_program_pads (parse);
 }
 
 static void
@@ -962,35 +1019,22 @@ mpegts_parse_apply_pmt (MpegTSParse * parse,
   guint stream_type;
   GstStructure *stream;
   gint i;
-  const GValue *old_streams;
   const GValue *new_streams;
   const GValue *value;
 
-  gst_structure_get_uint (pmt_info, "program-number", &program_number);
-  gst_structure_get_uint (pmt_info, "pcr-pid", &pcr_pid);
-  new_streams = gst_structure_get_value (pmt_info, "streams");
+  gst_structure_id_get (pmt_info,
+      QUARK_PROGRAM_NUMBER, G_TYPE_UINT, &program_number,
+      QUARK_PCR_PID, G_TYPE_UINT, &pcr_pid, NULL);
+  new_streams = gst_structure_id_get_value (pmt_info, QUARK_STREAMS);
 
   GST_OBJECT_LOCK (parse);
   program = mpegts_parse_get_program (parse, program_number);
   if (program) {
-    if (program->pmt_info) {
-      /* deactivate old pmt */
-      old_streams = gst_structure_get_value (program->pmt_info, "streams");
-
-      for (i = 0; i < gst_value_list_get_size (old_streams); ++i) {
-        value = gst_value_list_get_value (old_streams, i);
-        stream = g_value_get_boxed (value);
-        gst_structure_get_uint (stream, "pid", &pid);
-        gst_structure_get_uint (stream, "stream-type", &stream_type);
-        mpegts_parse_program_remove_stream (parse, program, (guint16) pid);
-      }
-
-      /* remove pcr stream */
-      mpegts_parse_program_remove_stream (parse, program, program->pcr_pid);
-
+    /* deactivate old pmt */
+    mpegts_parse_deactivate_pmt (parse, program);
+    if (program->pmt_info)
       gst_structure_free (program->pmt_info);
-      program->pmt_info = NULL;
-    }
+    program->pmt_info = NULL;
   } else {
     /* no PAT?? */
     g_hash_table_insert (parse->psi_pids,
@@ -1003,24 +1047,24 @@ mpegts_parse_apply_pmt (MpegTSParse * parse,
   program->pmt_pid = pmt_pid;
   program->pcr_pid = pcr_pid;
   mpegts_parse_program_add_stream (parse, program, (guint16) pcr_pid, -1);
+  g_hash_table_insert (parse->pes_pids, GINT_TO_POINTER ((gint) pcr_pid),
+      GINT_TO_POINTER (1));
 
   for (i = 0; i < gst_value_list_get_size (new_streams); ++i) {
     value = gst_value_list_get_value (new_streams, i);
     stream = g_value_get_boxed (value);
 
-    gst_structure_get_uint (stream, "pid", &pid);
-    gst_structure_get_uint (stream, "stream-type", &stream_type);
+    gst_structure_id_get (stream, QUARK_PID, G_TYPE_UINT, &pid,
+        QUARK_STREAM_TYPE, G_TYPE_UINT, &stream_type, NULL);
     mpegts_parse_program_add_stream (parse, program,
         (guint16) pid, (guint8) stream_type);
+    g_hash_table_insert (parse->pes_pids, GINT_TO_POINTER ((gint) pid),
+        GINT_TO_POINTER ((gint) 1));
+
   }
   GST_OBJECT_UNLOCK (parse);
 
-  {
-    gchar *dbg = gst_structure_to_string (pmt_info);
-
-    GST_DEBUG_OBJECT (parse, "new pmt %s", dbg);
-    g_free (dbg);
-  }
+  GST_DEBUG_OBJECT (parse, "new pmt %" GST_PTR_FORMAT, pmt_info);
 
   gst_element_post_message (GST_ELEMENT_CAST (parse),
       gst_message_new_element (GST_OBJECT (parse),
@@ -1060,8 +1104,8 @@ mpegts_parse_handle_psi (MpegTSParse * parse, MpegTSPacketizerSection * section)
   gboolean res = TRUE;
   GstStructure *structure = NULL;
 
-  if (mpegts_parse_calc_crc32 (GST_BUFFER_DATA (section->buffer),
-          GST_BUFFER_SIZE (section->buffer)) != 0) {
+  if (G_UNLIKELY (mpegts_parse_calc_crc32 (GST_BUFFER_DATA (section->buffer),
+              GST_BUFFER_SIZE (section->buffer)) != 0)) {
     GST_WARNING_OBJECT (parse, "bad crc in psi pid 0x%x", section->pid);
     return FALSE;
   }
@@ -1070,7 +1114,7 @@ mpegts_parse_handle_psi (MpegTSParse * parse, MpegTSPacketizerSection * section)
     case 0x00:
       /* PAT */
       structure = mpegts_packetizer_parse_pat (parse->packetizer, section);
-      if (structure)
+      if (G_LIKELY (structure))
         mpegts_parse_apply_pat (parse, structure);
       else
         res = FALSE;
@@ -1078,7 +1122,7 @@ mpegts_parse_handle_psi (MpegTSParse * parse, MpegTSPacketizerSection * section)
       break;
     case 0x02:
       structure = mpegts_packetizer_parse_pmt (parse->packetizer, section);
-      if (structure)
+      if (G_LIKELY (structure))
         mpegts_parse_apply_pmt (parse, section->pid, structure);
       else
         res = FALSE;
@@ -1089,7 +1133,7 @@ mpegts_parse_handle_psi (MpegTSParse * parse, MpegTSPacketizerSection * section)
     case 0x41:
       /* NIT, other network */
       structure = mpegts_packetizer_parse_nit (parse->packetizer, section);
-      if (structure)
+      if (G_LIKELY (structure))
         mpegts_parse_apply_nit (parse, section->pid, structure);
       else
         res = FALSE;
@@ -1098,7 +1142,7 @@ mpegts_parse_handle_psi (MpegTSParse * parse, MpegTSPacketizerSection * section)
     case 0x42:
     case 0x46:
       structure = mpegts_packetizer_parse_sdt (parse->packetizer, section);
-      if (structure)
+      if (G_LIKELY (structure))
         mpegts_parse_apply_sdt (parse, section->pid, structure);
       else
         res = FALSE;
@@ -1140,7 +1184,7 @@ mpegts_parse_handle_psi (MpegTSParse * parse, MpegTSPacketizerSection * section)
     case 0x6F:
       /* EIT, schedule */
       structure = mpegts_packetizer_parse_eit (parse->packetizer, section);
-      if (structure)
+      if (G_LIKELY (structure))
         mpegts_parse_apply_eit (parse, section->pid, structure);
       else
         res = FALSE;
@@ -1181,6 +1225,7 @@ mpegts_parse_chain (GstPad * pad, GstBuffer * buf)
   GstFlowReturn res = GST_FLOW_OK;
   MpegTSParse *parse;
   gboolean parsed;
+  MpegTSPacketizerPacketReturn pret;
   MpegTSPacketizer *packetizer;
   MpegTSPacketizerPacket packet;
 
@@ -1188,11 +1233,10 @@ mpegts_parse_chain (GstPad * pad, GstBuffer * buf)
   packetizer = parse->packetizer;
 
   mpegts_packetizer_push (parse->packetizer, buf);
-  while (mpegts_packetizer_has_packets (parse->packetizer) &&
-      !GST_FLOW_IS_FATAL (res)) {
-    /* get the next packet */
-    parsed = mpegts_packetizer_next_packet (packetizer, &packet);
-    if (!parsed)
+  while (((pret =
+              mpegts_packetizer_next_packet (parse->packetizer,
+                  &packet)) != PACKET_NEED_MORE) && !GST_FLOW_IS_FATAL (res)) {
+    if (G_UNLIKELY (pret == PACKET_BAD))
       /* bad header, skip the packet */
       goto next;
 
@@ -1201,16 +1245,16 @@ mpegts_parse_chain (GstPad * pad, GstBuffer * buf)
       MpegTSPacketizerSection section;
 
       parsed = mpegts_packetizer_push_section (packetizer, &packet, &section);
-      if (!parsed)
+      if (G_UNLIKELY (!parsed))
         /* bad section data */
         goto next;
 
-      if (section.complete) {
+      if (G_LIKELY (section.complete)) {
         /* section complete */
         parsed = mpegts_parse_handle_psi (parse, &section);
         gst_buffer_unref (section.buffer);
 
-        if (!parsed)
+        if (G_UNLIKELY (!parsed))
           /* bad PSI table */
           goto next;
       }
@@ -1225,6 +1269,9 @@ mpegts_parse_chain (GstPad * pad, GstBuffer * buf)
   next:
     mpegts_packetizer_clear_packet (parse->packetizer, &packet);
   }
+
+  if (parse->need_sync_program_pads)
+    mpegts_parse_sync_program_pads (parse);
 
   gst_object_unref (parse);
   return res;
@@ -1278,7 +1325,7 @@ mpegts_parse_src_pad_query (GstPad * pad, GstQuery * query)
     default:
       res = gst_pad_query_default (pad, query);
   }
-
+  gst_object_unref (parse);
   return res;
 }
 
@@ -1288,7 +1335,6 @@ gst_mpegtsparse_plugin_init (GstPlugin * plugin)
   GST_DEBUG_CATEGORY_INIT (mpegts_parse_debug, "mpegtsparse", 0,
       "MPEG transport stream parser");
 
-  mpegts_packetizer_init_debug ();
   gst_mpegtsdesc_init_debug ();
 
   return gst_element_register (plugin, "mpegtsparse",

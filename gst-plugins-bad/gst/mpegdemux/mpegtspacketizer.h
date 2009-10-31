@@ -28,6 +28,14 @@
 #include <gst/base/gstadapter.h>
 #include <glib.h>
 
+#define MPEGTS_NORMAL_PACKETSIZE  188
+#define MPEGTS_M2TS_PACKETSIZE    192
+#define MPEGTS_DVB_ASI_PACKETSIZE 204
+#define MPEGTS_ATSC_PACKETSIZE    208
+
+#define MPEGTS_MIN_PACKETSIZE MPEGTS_NORMAL_PACKETSIZE
+#define MPEGTS_MAX_PACKETSIZE MPEGTS_ATSC_PACKETSIZE
+
 G_BEGIN_DECLS
 
 #define GST_TYPE_MPEGTS_PACKETIZER \
@@ -45,13 +53,25 @@ G_BEGIN_DECLS
 typedef struct _MpegTSPacketizer MpegTSPacketizer;
 typedef struct _MpegTSPacketizerClass MpegTSPacketizerClass;
 
+typedef struct
+{
+  guint continuity_counter;
+  GstAdapter *section_adapter;
+  guint8 section_table_id;
+  guint section_length;
+  GSList *subtables;
+} MpegTSPacketizerStream;
+
 struct _MpegTSPacketizer {
   GObject object;
 
   GstAdapter *adapter;
   /* streams hashed by pid */
-  GHashTable *streams;
+  MpegTSPacketizerStream **streams;
   gboolean disposed;
+  gboolean know_packet_size;
+  guint16 packet_size;
+  GstCaps *caps;
 };
 
 struct _MpegTSPacketizerClass {
@@ -95,27 +115,24 @@ typedef struct
   guint8 version_number;
 } MpegTSPacketizerStreamSubtable;
 
-typedef struct
-{
-  guint continuity_counter;
-  GstAdapter *section_adapter;
-  guint8 section_table_id;
-  guint section_length;
-  GSList *subtables;
-} MpegTSPacketizerStream;
-
+typedef enum {
+  PACKET_BAD       = FALSE,
+  PACKET_OK        = TRUE,
+  PACKET_NEED_MORE
+} MpegTSPacketizerPacketReturn;
 
 GType gst_mpegts_packetizer_get_type(void);
 
-void mpegts_packetizer_init_debug ();
 MpegTSPacketizer *mpegts_packetizer_new ();
 void mpegts_packetizer_clear (MpegTSPacketizer *packetizer);
 void mpegts_packetizer_push (MpegTSPacketizer *packetizer, GstBuffer *buffer);
 gboolean mpegts_packetizer_has_packets (MpegTSPacketizer *packetizer);
-gboolean mpegts_packetizer_next_packet (MpegTSPacketizer *packetizer,
+MpegTSPacketizerPacketReturn mpegts_packetizer_next_packet (MpegTSPacketizer *packetizer,
   MpegTSPacketizerPacket *packet);
 void mpegts_packetizer_clear_packet (MpegTSPacketizer *packetizer,
   MpegTSPacketizerPacket *packet);
+void mpegts_packetizer_remove_stream(MpegTSPacketizer *packetizer, 
+  gint16 pid);
 
 gboolean mpegts_packetizer_push_section (MpegTSPacketizer *packetzer,
   MpegTSPacketizerPacket *packet, MpegTSPacketizerSection *section);

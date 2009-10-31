@@ -69,6 +69,23 @@
 GST_DEBUG_CATEGORY (gst_metadata_exif_debug);
 #define GST_CAT_DEFAULT gst_metadata_exif_debug
 
+GType
+gst_meta_exif_byte_order_get_type (void)
+{
+  static GType meta_exif_byte_order_type = 0;
+  static const GEnumValue meta_exif_byte_order[] = {
+    {GST_META_EXIF_BYTE_ORDER_MOTOROLA, "Motorola byte-order", "Motorola"},
+    {GST_META_EXIF_BYTE_ORDER_INTEL, "Intel byte-order", "Intel"},
+    {0, NULL, NULL},
+  };
+
+  if (!meta_exif_byte_order_type) {
+    meta_exif_byte_order_type =
+        g_enum_register_static ("MetaExifByteOrder", meta_exif_byte_order);
+  }
+  return meta_exif_byte_order_type;
+}
+
 /*
  * Implementation when libexif isn't available at compilation time
  */
@@ -95,7 +112,7 @@ metadataparse_exif_tag_list_add (GstTagList * taglist, GstTagMergeMode mode,
 
 void
 metadatamux_exif_create_chunk_from_tag_list (guint8 ** buf, guint32 * size,
-    const GstTagList * taglist)
+    const GstTagList * taglist, const MetaExifWriteOptions * opts)
 {
   /* do nothing */
 }
@@ -353,6 +370,7 @@ done:
  * @buf: buffer that will have the created EXIF chunk
  * @size: size of the buffer that will be created
  * @taglist: list of tags to be added to EXIF chunk
+ * @opts: write options for exif metadata
  *
  * Get tags from @taglist, create a EXIF chunk based on it and save to @buf.
  * Note: The EXIF chunk is NOT wrapped by any bytes specific to any file format
@@ -362,7 +380,7 @@ done:
 
 void
 metadatamux_exif_create_chunk_from_tag_list (guint8 ** buf, guint32 * size,
-    const GstTagList * taglist)
+    const GstTagList * taglist, const MetaExifWriteOptions * opts)
 {
   ExifData *ed = NULL;
   GstBuffer *exif_chunk = NULL;
@@ -387,6 +405,17 @@ metadatamux_exif_create_chunk_from_tag_list (guint8 ** buf, guint32 * size,
 
   if (!ed) {
     ed = exif_data_new ();
+    GST_DEBUG ("setting byteorder %d", opts->byteorder);
+    switch (opts->byteorder) {
+      case GST_META_EXIF_BYTE_ORDER_MOTOROLA:
+        exif_data_set_byte_order (ed, EXIF_BYTE_ORDER_MOTOROLA);
+        break;
+      case GST_META_EXIF_BYTE_ORDER_INTEL:
+        exif_data_set_byte_order (ed, EXIF_BYTE_ORDER_INTEL);
+        break;
+      default:
+        break;
+    }
     exif_data_set_data_type (ed, EXIF_DATA_TYPE_COMPRESSED);
     exif_data_fix (ed);
   }
@@ -527,11 +556,13 @@ metadataparse_exif_content_foreach_entry_func (ExifEntry * entry,
   MEUserData *meudata = (MEUserData *) user_data;
   GType type = G_TYPE_NONE;
   ExifByteOrder byte_order;
-  const gchar *tag = metadataparse_exif_get_tag_from_exif (entry->tag, &type);
+  const gchar *tag;
 
   /* We need the byte order */
   if (!entry || !entry->parent || !entry->parent->parent)
     return;
+
+  tag = metadataparse_exif_get_tag_from_exif (entry->tag, &type);
   byte_order = exif_data_get_byte_order (entry->parent->parent);
 
   if (metadataparse_handle_unit_tags (entry, meudata, byte_order))
@@ -665,16 +696,19 @@ metadataparse_exif_content_foreach_entry_func (ExifEntry * entry,
 
           /* DDD - degrees */
           value = (gdouble) rt->numerator / (gdouble) rt->denominator;
+          GST_DEBUG ("deg: %lu / %lu", (gulong) rt->numerator,
+              (gulong) rt->denominator);
           rt++;
 
           /* MM - minutes and SS - seconds */
-          if (rt->numerator % rt->denominator) {
-            value += (gdouble) rt->numerator / (gdouble) rt->denominator;
-          } else {
-            value += rt->numerator / rt->denominator;
-            rt++;
-            value += rt->numerator / rt->denominator;
-          }
+          GST_DEBUG ("min: %lu / %lu", (gulong) rt->numerator,
+              (gulong) rt->denominator);
+          value += (gdouble) rt->numerator / ((gdouble) rt->denominator * 60.0);
+          rt++;
+          GST_DEBUG ("sec: %lu / %lu", (gulong) rt->numerator,
+              (gulong) rt->denominator);
+          value +=
+              (gdouble) rt->numerator / ((gdouble) rt->denominator * 3600.0);
 
           /* apply sign */
           if (entry->tag == EXIF_TAG_GPS_LATITUDE) {
@@ -710,6 +744,7 @@ metadataparse_exif_content_foreach_entry_func (ExifEntry * entry,
 
 done:
   {
+#ifndef GST_DISABLE_GST_DEBUG
     char buf[2048];
     GST_LOG ("\n    Entry %p: %s (%s)\n"
         "      Size, Comps: %d, %d\n"
@@ -723,6 +758,7 @@ done:
         (int) (entry->components),
         exif_entry_get_value (entry, buf, sizeof (buf)),
         exif_tag_get_title (entry->tag), exif_tag_get_description (entry->tag));
+#endif
   }
   return;
 
@@ -852,9 +888,9 @@ metadatamux_exif_for_each_tag_in_list (const GstTagList * list,
 {
   ExifData *ed = (ExifData *) user_data;
   ExifTag exif_tag;
-  GType type;
+  GType type = G_TYPE_INVALID;
   ExifEntry *entry = NULL;
-  ExifIfd ifd;
+  ExifIfd ifd = EXIF_IFD_COUNT;
   const ExifByteOrder byte_order = exif_data_get_byte_order (ed);
 
   exif_tag = metadatamux_exif_get_exif_from_tag (tag, &type, &ifd);
@@ -1018,17 +1054,27 @@ metadatamux_exif_for_each_tag_in_list (const GstTagList * list,
           const ExifTag ref_tag = entry->tag == EXIF_TAG_GPS_LATITUDE ?
               EXIF_TAG_GPS_LATITUDE_REF : EXIF_TAG_GPS_LONGITUDE_REF;
 
+          /* DDD - degrees */
           rt->numerator = (gulong) v;
           rt->denominator = 1;
+          GST_DEBUG ("deg: %lf : %lu / %lu", v, (gulong) rt->numerator,
+              (gulong) rt->denominator);
           v -= rt->numerator;
           rt++;
 
-          rt->numerator = (gulong) (0.5 + v * 100.0);
-          rt->denominator = 100;
+          /* MM - minutes */
+          rt->numerator = (gulong) (v * 60.0);
+          rt->denominator = 1;
+          GST_DEBUG ("min: %lf : %lu / %lu", v, (gulong) rt->numerator,
+              (gulong) rt->denominator);
+          v -= ((gdouble) rt->numerator / 60.0);
           rt++;
 
-          rt->numerator = 0;
+          /* SS - seconds */
+          rt->numerator = (gulong) (0.5 + v * 3600.0);
           rt->denominator = 1;
+          GST_DEBUG ("sec: %lf : %lu / %lu", v, (gulong) rt->numerator,
+              (gulong) rt->denominator);
 
           if (entry->tag == EXIF_TAG_GPS_LONGITUDE) {
             GST_DEBUG ("longitude : %lf", value);

@@ -135,9 +135,9 @@ gst_section_filter_push (GstSectionFilter * filter, gboolean pusi,      /* deter
     }
     filter->section_length = GST_READ_UINT16_BE (data + 1);
     filter->section_length &= 0x0fff;
-    if (filter->section_length > 1021) {
+    if (filter->section_length > 4093) {
       GST_DEBUG ("section length too big");
-      return FALSE;
+      goto failure;
     }
     gst_adapter_push (filter->adapter, buf);
     filter->last_continuity_counter = continuity_counter;
@@ -156,6 +156,9 @@ gst_section_filter_push (GstSectionFilter * filter, gboolean pusi,      /* deter
         "new continuity counter but not pusi: %d",
         filter->last_continuity_counter, continuity_counter);
     gst_section_filter_clear (filter);
-    return FALSE;
+    goto failure;
   }
+failure:
+  gst_buffer_unref (buf);
+  return FALSE;
 }

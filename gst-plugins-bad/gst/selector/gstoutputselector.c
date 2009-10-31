@@ -19,7 +19,7 @@
 
 /**
  * SECTION:element-output-selector
- * @see_also: #GstTee, #GstInputSelector
+ * @see_also: #GstOutputSelector, #GstInputSelector
  *
  * Direct input stream to one out of N output pads.
  */
@@ -74,6 +74,8 @@ static GstPad *gst_output_selector_request_new_pad (GstElement * element,
 static void gst_output_selector_release_pad (GstElement * element,
     GstPad * pad);
 static GstFlowReturn gst_output_selector_chain (GstPad * pad, GstBuffer * buf);
+static GstFlowReturn gst_output_selector_buffer_alloc (GstPad * pad,
+    guint64 offset, guint size, GstCaps * caps, GstBuffer ** buf);
 static GstStateChangeReturn gst_output_selector_change_state (GstElement *
     element, GstStateChange transition);
 static gboolean gst_output_selector_handle_sink_event (GstPad * pad,
@@ -136,21 +138,21 @@ gst_output_selector_init (GstOutputSelector * sel,
       GST_DEBUG_FUNCPTR (gst_output_selector_chain));
   gst_pad_set_event_function (sel->sinkpad,
       GST_DEBUG_FUNCPTR (gst_output_selector_handle_sink_event));
-
-  gst_element_add_pad (GST_ELEMENT (sel), sel->sinkpad);
-
+  gst_pad_set_bufferalloc_function (sel->sinkpad,
+      GST_DEBUG_FUNCPTR (gst_output_selector_buffer_alloc));
   /*
-     gst_pad_set_bufferalloc_function (sel->sinkpad,
-     GST_DEBUG_FUNCPTR (gst_output_selector_bufferalloc));
      gst_pad_set_setcaps_function (sel->sinkpad,
      GST_DEBUG_FUNCPTR (gst_pad_proxy_setcaps));
      gst_pad_set_getcaps_function (sel->sinkpad,
      GST_DEBUG_FUNCPTR (gst_pad_proxy_getcaps));
    */
+
+  gst_element_add_pad (GST_ELEMENT (sel), sel->sinkpad);
+
   /* srcpad management */
   sel->active_srcpad = NULL;
   sel->nb_srcpads = 0;
-  gst_segment_init (&sel->segment, GST_FORMAT_UNDEFINED);
+  gst_segment_init (&sel->segment, GST_FORMAT_TIME);
   sel->pending_srcpad = NULL;
 
   sel->resend_latest = FALSE;
@@ -158,10 +160,8 @@ gst_output_selector_init (GstOutputSelector * sel,
 }
 
 static void
-gst_output_selector_dispose (GObject * object)
+gst_output_selector_reset (GstOutputSelector * osel)
 {
-  GstOutputSelector *osel = GST_OUTPUT_SELECTOR (object);
-
   if (osel->pending_srcpad != NULL) {
     gst_object_unref (osel->pending_srcpad);
     osel->pending_srcpad = NULL;
@@ -170,6 +170,15 @@ gst_output_selector_dispose (GObject * object)
     gst_buffer_unref (osel->latest_buffer);
     osel->latest_buffer = NULL;
   }
+  gst_segment_init (&osel->segment, GST_FORMAT_UNDEFINED);
+}
+
+static void
+gst_output_selector_dispose (GObject * object)
+{
+  GstOutputSelector *osel = GST_OUTPUT_SELECTOR (object);
+
+  gst_output_selector_reset (osel);
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
 }
@@ -187,7 +196,7 @@ gst_output_selector_set_property (GObject * object, guint prop_id,
 
       next_pad = g_value_get_object (value);
 
-      GST_LOG_OBJECT (sel, "Activating pad %s:%s",
+      GST_INFO_OBJECT (sel, "Activating pad %s:%s",
           GST_DEBUG_PAD_NAME (next_pad));
 
       GST_OBJECT_LOCK (object);
@@ -229,7 +238,8 @@ gst_output_selector_get_property (GObject * object, guint prop_id,
   switch (prop_id) {
     case PROP_ACTIVE_PAD:
       GST_OBJECT_LOCK (object);
-      g_value_set_object (value, sel->active_srcpad);
+      g_value_set_object (value,
+          sel->pending_srcpad ? sel->pending_srcpad : sel->active_srcpad);
       GST_OBJECT_UNLOCK (object);
       break;
     case PROP_RESEND_LATEST:{
@@ -242,6 +252,44 @@ gst_output_selector_get_property (GObject * object, guint prop_id,
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
+}
+
+static GstFlowReturn
+gst_output_selector_buffer_alloc (GstPad * pad, guint64 offset, guint size,
+    GstCaps * caps, GstBuffer ** buf)
+{
+  GstOutputSelector *sel;
+  GstFlowReturn res;
+  GstPad *allocpad;
+
+  sel = GST_OUTPUT_SELECTOR (GST_PAD_PARENT (pad));
+  res = GST_FLOW_NOT_LINKED;
+
+  GST_OBJECT_LOCK (sel);
+  allocpad = sel->pending_srcpad ? sel->pending_srcpad : sel->active_srcpad;
+  if (allocpad) {
+    /* if we had a previous pad we used for allocating a buffer, continue using
+     * it. */
+    GST_DEBUG_OBJECT (sel, "using pad %s:%s for alloc",
+        GST_DEBUG_PAD_NAME (allocpad));
+    gst_object_ref (allocpad);
+    GST_OBJECT_UNLOCK (sel);
+
+    res = gst_pad_alloc_buffer (allocpad, offset, size, caps, buf);
+    gst_object_unref (allocpad);
+
+    GST_OBJECT_LOCK (sel);
+  } else {
+    /* fallback case, allocate a buffer of our own, add pad caps. */
+    GST_DEBUG_OBJECT (pad, "fallback buffer alloc");
+    *buf = NULL;
+    res = GST_FLOW_OK;
+  }
+  GST_OBJECT_UNLOCK (sel);
+
+  GST_DEBUG_OBJECT (sel, "buffer alloc finished: %s", gst_flow_get_name (res));
+
+  return res;
 }
 
 static GstPad *
@@ -290,14 +338,24 @@ gst_output_selector_release_pad (GstElement * element, GstPad * pad)
 static gboolean
 gst_output_selector_switch (GstOutputSelector * osel)
 {
-  gboolean res = TRUE;
+  gboolean res = FALSE;
   GstEvent *ev = NULL;
   GstSegment *seg = NULL;
   gint64 start = 0, position = 0;
 
+  /* Switch */
+  GST_OBJECT_LOCK (GST_OBJECT (osel));
   GST_INFO ("switching to pad %" GST_PTR_FORMAT, osel->pending_srcpad);
-
   if (gst_pad_is_linked (osel->pending_srcpad)) {
+    osel->active_srcpad = osel->pending_srcpad;
+    res = TRUE;
+  }
+  gst_object_unref (osel->pending_srcpad);
+  osel->pending_srcpad = NULL;
+  GST_OBJECT_UNLOCK (GST_OBJECT (osel));
+
+  /* Send NEWSEGMENT event and latest buffer if switching succeeded */
+  if (res) {
     /* Send NEWSEGMENT to the pad we are going to switch to */
     seg = &osel->segment;
     /* If resending then mark newsegment start and position accordingly */
@@ -309,28 +367,21 @@ gst_output_selector_switch (GstOutputSelector * osel)
     }
     ev = gst_event_new_new_segment (TRUE, seg->rate,
         seg->format, start, seg->stop, position);
-    if (!gst_pad_push_event (osel->pending_srcpad, ev)) {
+    if (!gst_pad_push_event (osel->active_srcpad, ev)) {
       GST_WARNING_OBJECT (osel,
           "newsegment handling failed in %" GST_PTR_FORMAT,
-          osel->pending_srcpad);
+          osel->active_srcpad);
     }
 
     /* Resend latest buffer to newly switched pad */
     if (osel->resend_latest && osel->latest_buffer) {
       GST_INFO ("resending latest buffer");
-      gst_pad_push (osel->pending_srcpad, osel->latest_buffer);
+      gst_pad_push (osel->active_srcpad, osel->latest_buffer);
       osel->latest_buffer = NULL;
     }
-
-    /* Switch */
-    osel->active_srcpad = osel->pending_srcpad;
   } else {
     GST_WARNING_OBJECT (osel, "switch failed, pad not linked");
-    res = FALSE;
   }
-
-  gst_object_unref (osel->pending_srcpad);
-  osel->pending_srcpad = NULL;
 
   return res;
 }
@@ -349,10 +400,15 @@ gst_output_selector_chain (GstPad * pad, GstBuffer * buf)
     gst_output_selector_switch (osel);
   }
 
-  /* Keep reference to latest buffer to resend it after switch */
-  if (osel->latest_buffer)
+  if (osel->latest_buffer) {
     gst_buffer_unref (osel->latest_buffer);
-  osel->latest_buffer = gst_buffer_ref (buf);
+    osel->latest_buffer = NULL;
+  }
+
+  if (osel->resend_latest) {
+    /* Keep reference to latest buffer to resend it after switch */
+    osel->latest_buffer = gst_buffer_ref (buf);
+  }
 
   /* Keep track of last stop and use it in NEWSEGMENT start after 
      switching to a new src pad */
@@ -379,7 +435,29 @@ static GstStateChangeReturn
 gst_output_selector_change_state (GstElement * element,
     GstStateChange transition)
 {
-  return GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
+  GstOutputSelector *sel;
+  GstStateChangeReturn result;
+
+  sel = GST_OUTPUT_SELECTOR (element);
+
+  switch (transition) {
+    case GST_STATE_CHANGE_READY_TO_PAUSED:
+      break;
+    default:
+      break;
+  }
+
+  result = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
+
+  switch (transition) {
+    case GST_STATE_CHANGE_PAUSED_TO_READY:
+      gst_output_selector_reset (sel);
+      break;
+    default:
+      break;
+  }
+
+  return result;
 }
 
 static gboolean
@@ -412,7 +490,6 @@ gst_output_selector_handle_sink_event (GstPad * pad, GstEvent * event)
 
       /* Send newsegment to all src pads */
       gst_pad_event_default (pad, event);
-
       break;
     }
     case GST_EVENT_EOS:

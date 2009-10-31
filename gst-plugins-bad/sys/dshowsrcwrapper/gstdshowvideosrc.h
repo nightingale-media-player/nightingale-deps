@@ -22,14 +22,17 @@
 #ifndef __GST_DSHOWVIDEOSRC_H__
 #define __GST_DSHOWVIDEOSRC_H__
 
+#include <glib.h>
 #include <gst/gst.h>
 #include <gst/base/gstpushsrc.h>
 #include <gst/interfaces/propertyprobe.h>
 
-#include "gstdshowsrcwrapper.h"
+#include "gstdshow.h"
+#include "gstdshowfakesink.h"
 
 // 30323449-0000-0010-8000-00AA00389B71            MEDIASUBTYPE_I420
-DEFINE_GUID(MEDIASUBTYPE_I420, 0x30323449, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B, 0x71);
+DEFINE_GUID (MEDIASUBTYPE_I420, 0x30323449, 0x0000, 0x0010, 0x80, 0x00, 0x00,
+    0xAA, 0x00, 0x38, 0x9B, 0x71);
 
 G_BEGIN_DECLS
 #define GST_TYPE_DSHOWVIDEOSRC              (gst_dshowvideosrc_get_type())
@@ -39,6 +42,7 @@ G_BEGIN_DECLS
 #define GST_IS_DSHOWVIDEOSRC_CLASS(klass)   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_DSHOWVIDEOSRC))
 typedef struct _GstDshowVideoSrc GstDshowVideoSrc;
 typedef struct _GstDshowVideoSrcClass GstDshowVideoSrcClass;
+
 
 struct _GstDshowVideoSrc
 {
@@ -60,16 +64,16 @@ struct _GstDshowVideoSrc
   IBaseFilter *video_cap_filter;
 
   /* dshow sink filter */
-  IBaseFilter *dshow_fakesink;
+  CDshowFakeSink *dshow_fakesink;
 
   /* graph manager interfaces */
   IMediaFilter *media_filter;
   IFilterGraph *filter_graph;
 
   /* the last buffer from DirectShow */
-  GCond * buffer_cond;
-  GMutex * buffer_mutex;
-  GstBuffer * buffer;
+  GCond *buffer_cond;
+  GMutex *buffer_mutex;
+  GstBuffer *buffer;
   gboolean stop_requested;
 
   gboolean is_rgb;

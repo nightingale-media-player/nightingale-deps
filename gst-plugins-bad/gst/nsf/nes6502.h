@@ -20,7 +20,7 @@
 ** nes6502.h
 **
 ** NES custom 6502 CPU definitions / prototypes
-** $Id: nes6502.h,v 1.2 2008-03-25 15:56:12 slomo Exp $
+** $Id$
 */
 
 /* straitm */
@@ -144,8 +144,8 @@ extern void nes6502_getcontext(nes6502_context *cpu);
 #endif /* _NES6502_H_ */
 
 /*
-** $Log: nes6502.h,v $
-** Revision 1.2  2008-03-25 15:56:12  slomo
+** $Log$
+** Revision 1.2  2008/03/25 15:56:12  slomo
 ** Patch by: Andreas Henriksson <andreas at fatal dot set>
 ** * gst/nsf/Makefile.am:
 ** * gst/nsf/dis6502.h:

@@ -60,7 +60,7 @@ static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_STATIC_CAPS ("ANY")
     );
 
-GST_BOILERPLATE (RsnAudioMunge, rsn_audiomunge, GstElement, GST_TYPE_ELEMENT);
+G_DEFINE_TYPE (RsnAudioMunge, rsn_audiomunge, GST_TYPE_ELEMENT);
 
 static void rsn_audiomunge_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
@@ -75,18 +75,19 @@ static GstStateChangeReturn
 rsn_audiomunge_change_state (GstElement * element, GstStateChange transition);
 
 static void
-rsn_audiomunge_base_init (gpointer gclass)
+rsn_audiomunge_class_init (RsnAudioMungeClass * klass)
 {
+  GObjectClass *gobject_class = (GObjectClass *) (klass);
+  GstElementClass *element_class = (GstElementClass *) (klass);
   static GstElementDetails element_details = {
     "RsnAudioMunge",
     "Audio/Filter",
     "Resin DVD audio stream regulator",
     "Jan Schmidt <thaytan@noraisin.net>"
   };
-  GstElementClass *element_class = GST_ELEMENT_CLASS (gclass);
 
-  GST_DEBUG_CATEGORY_INIT (rsn_audiomunge_debug, "rsn_audiomunge",
-      0, "Resin audio stream regulator");
+  GST_DEBUG_CATEGORY_INIT (rsn_audiomunge_debug, "rsnaudiomunge",
+      0, "ResinDVD audio stream regulator");
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_template));
@@ -94,25 +95,15 @@ rsn_audiomunge_base_init (gpointer gclass)
       gst_static_pad_template_get (&sink_template));
 
   gst_element_class_set_details (element_class, &element_details);
-}
-
-static void
-rsn_audiomunge_class_init (RsnAudioMungeClass * klass)
-{
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
-
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
 
   gobject_class->set_property = rsn_audiomunge_set_property;
   gobject_class->get_property = rsn_audiomunge_get_property;
 
-  gstelement_class->change_state = rsn_audiomunge_change_state;
+  element_class->change_state = rsn_audiomunge_change_state;
 }
 
 static void
-rsn_audiomunge_init (RsnAudioMunge * munge, RsnAudioMungeClass * gclass)
+rsn_audiomunge_init (RsnAudioMunge * munge)
 {
   munge->sinkpad = gst_pad_new_from_static_template (&sink_template, "sink");
   gst_pad_set_setcaps_function (munge->sinkpad,
@@ -187,7 +178,8 @@ rsn_audiomunge_chain (GstPad * pad, GstBuffer * buf)
   RsnAudioMunge *munge = RSN_AUDIOMUNGE (GST_OBJECT_PARENT (pad));
 
   if (!munge->have_audio) {
-    g_print ("First audio after flush has TS %" GST_TIME_FORMAT "\n",
+    GST_INFO_OBJECT (munge,
+        "First audio after flush has TS %" GST_TIME_FORMAT,
         GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)));
   }
 
@@ -208,10 +200,13 @@ rsn_audiomunge_make_audio (RsnAudioMunge * munge,
   guint buf_size;
 
   /* Just generate a 48khz stereo buffer for now */
+  /* FIXME: Adapt to the allowed formats, according to the currently
+   * plugged decoder, or at least add a source pad that accepts the
+   * caps we're outputting if the upstream decoder does not */
 #if 0
   caps =
       gst_caps_from_string
-      ("audio/x-raw-int,rate=48000,channels=2,width=16,depth=16,signed=(boolean)true,endianness=1234");
+      ("audio/x-raw-int,rate=48000,channels=2,width=16,depth=16,signed=(boolean)true,endianness=4321");
   buf_size = 4 * (48000 * fill_time / GST_SECOND);
 #else
   caps = gst_caps_from_string ("audio/x-raw-float, endianness=(int)1234,"
@@ -230,8 +225,8 @@ rsn_audiomunge_make_audio (RsnAudioMunge * munge,
 
   memset (GST_BUFFER_DATA (audio_buf), 0, buf_size);
 
-  g_print ("Sending %u bytes (%" GST_TIME_FORMAT ") of audio data "
-      "with TS %" GST_TIME_FORMAT "\n",
+  GST_LOG_OBJECT (munge, "Sending %u bytes (%" GST_TIME_FORMAT
+      ") of audio data with TS %" GST_TIME_FORMAT,
       buf_size, GST_TIME_ARGS (fill_time), GST_TIME_ARGS (start));
 
   ret = gst_pad_push (munge->srcpad, audio_buf);
@@ -260,7 +255,7 @@ rsn_audiomunge_handle_dvd_event (RsnAudioMunge * munge, GstEvent * event)
      * when a new-segment arrives */
     munge->in_still = in_still;
 
-    g_print ("**** AUDIO MUNGE: still-state now %d\n", munge->in_still);
+    GST_INFO_OBJECT (munge, "AUDIO MUNGE: still-state now %d", munge->in_still);
   }
 }
 
@@ -296,15 +291,12 @@ rsn_audiomunge_sink_event (GstPad * pad, GstEvent * event)
       gst_segment_set_newsegment_full (segment, update,
           rate, arate, format, start, stop, time);
 
-      if (munge->have_audio) {
-        ret = gst_pad_push_event (munge->srcpad, event);
-        break;
-      }
-
       /*
        * FIXME:
-       * If the accum >= threshold or we're in a still frame and there's been
-       * no audio received, then we need to generate some audio data.
+       * If this is a segment update and accum >= threshold,
+       * or we're in a still frame and there's been no audio received,
+       * then we need to generate some audio data.
+       *
        * If caused by a segment start update (time advancing in a gap) adjust
        * the new-segment and send the buffer.
        *
@@ -312,32 +304,38 @@ rsn_audiomunge_sink_event (GstPad * pad, GstEvent * event)
        * in the closing segment.
        */
       if (!update) {
-        GST_DEBUG_OBJECT (munge, "Sending newsegment: start %" GST_TIME_FORMAT
-            " stop %" GST_TIME_FORMAT " accum now %" GST_TIME_FORMAT,
+        GST_DEBUG_OBJECT (munge,
+            "Sending newsegment: update %d start %" GST_TIME_FORMAT " stop %"
+            GST_TIME_FORMAT " accum now %" GST_TIME_FORMAT, update,
             GST_TIME_ARGS (start), GST_TIME_ARGS (stop),
             GST_TIME_ARGS (segment->accum));
 
         ret = gst_pad_push_event (munge->srcpad, event);
       }
 
-      if (segment->accum >= AUDIO_FILL_THRESHOLD || munge->in_still) {
-        g_print ("***********  Sending audio fill: accum = %" GST_TIME_FORMAT
-            " still-state=%d\n", GST_TIME_ARGS (segment->accum),
-            munge->in_still);
+      if (!munge->have_audio) {
+        if ((update && segment->accum >= AUDIO_FILL_THRESHOLD)
+            || munge->in_still) {
+          GST_DEBUG_OBJECT (munge,
+              "Sending audio fill with ts %" GST_TIME_FORMAT ": accum = %"
+              GST_TIME_FORMAT " still-state=%d", GST_TIME_ARGS (segment->start),
+              GST_TIME_ARGS (segment->accum), munge->in_still);
 
-        /* Just generate a 100ms silence buffer for now. FIXME: Fill the gap */
-        if (rsn_audiomunge_make_audio (munge, segment->start,
-                GST_SECOND / 10) == GST_FLOW_OK)
-          munge->have_audio = TRUE;
-      } else {
-        GST_LOG_OBJECT (munge, "Not sending audio fill buffer: "
-            "segment accum below thresh: accum = %" GST_TIME_FORMAT,
-            GST_TIME_ARGS (segment->accum));
+          /* Just generate a 200ms silence buffer for now. FIXME: Fill the gap */
+          if (rsn_audiomunge_make_audio (munge, segment->start,
+                  GST_SECOND / 5) == GST_FLOW_OK)
+            munge->have_audio = TRUE;
+        } else {
+          GST_LOG_OBJECT (munge, "Not sending audio fill buffer: "
+              "Not segment update, or segment accum below thresh: accum = %"
+              GST_TIME_FORMAT, GST_TIME_ARGS (segment->accum));
+        }
       }
 
       if (update) {
-        GST_DEBUG_OBJECT (munge, "Sending newsegment: start %" GST_TIME_FORMAT
-            " stop %" GST_TIME_FORMAT " accum now %" GST_TIME_FORMAT,
+        GST_DEBUG_OBJECT (munge,
+            "Sending newsegment: update %d start %" GST_TIME_FORMAT " stop %"
+            GST_TIME_FORMAT " accum now %" GST_TIME_FORMAT, update,
             GST_TIME_ARGS (start), GST_TIME_ARGS (stop),
             GST_TIME_ARGS (segment->accum));
 
@@ -361,6 +359,7 @@ rsn_audiomunge_sink_event (GstPad * pad, GstEvent * event)
       break;
   }
 
+  gst_object_unref (munge);
   return ret;
 
 newseg_wrong_format:
@@ -380,7 +379,9 @@ rsn_audiomunge_change_state (GstElement * element, GstStateChange transition)
   if (transition == GST_STATE_CHANGE_READY_TO_PAUSED)
     rsn_audiomunge_reset (munge);
 
-  ret = parent_class->change_state (element, transition);
+  ret =
+      GST_ELEMENT_CLASS (rsn_audiomunge_parent_class)->change_state (element,
+      transition);
 
   return ret;
 }

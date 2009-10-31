@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="prev" href="gst-plugins-bad-plugins-celtenc.html" title="celtenc">
 <link rel="next" href="gst-plugins-bad-plugins-dccpclientsrc.html" title="dccpclientsrc">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
@@ -23,15 +23,17 @@
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-bad-plugins-dccpclientsrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-dccpclientsink.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-dccpclientsink.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-dccpclientsink.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-dccpclientsink.properties" class="shortcut">Properties</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-dccpclientsink.signals" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-bad-plugins-dccpclientsink.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-dccpclientsink.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-dccpclientsink.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-dccpclientsink.properties" class="shortcut">Properties</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-dccpclientsink.signals" class="shortcut">Signals</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-bad-plugins-dccpclientsink"></a><div class="titlepage"></div>
@@ -54,9 +56,15 @@
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
-               +----GstBaseSink
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="/usr/share/gtk-doc/html/gstreamer-libs-0.10/GstBaseSink.html"
+>GstBaseSink</a>
                      +----GstDCCPClientSink
 </pre>
 </div>
@@ -97,7 +105,7 @@ TCP and UDP.
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2864299"></a><h3>Example pipeline</h3>
+<a name="id2821742"></a><h3>Example pipeline</h3>
 <p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -119,7 +127,7 @@ Run the server pipeline first than the client pipeline.
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2864337"></a><h3>Element Information</h3>
+<a name="id2866694"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -142,7 +150,57 @@ Run the server pipeline first than the client pipeline.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2864400"></a><h3>Element Pads</h3>
+<a name="id2866757"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2866834"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-dccp.html#plugin-dccp">dccp</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>E-Phone Team at Federal University of Campina Grande &lt;leandroal@gmail.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Sink/Network</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2866897"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -167,7 +225,6 @@ Run the server pipeline first than the client pipeline.
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -178,7 +235,6 @@ Run the server pipeline first than the client pipeline.
 <p>
 dccpclientsink object structure.</p>
 <p>
-
 </p>
 </div>
 </div>
@@ -228,7 +284,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write</pre>
 <p>The socket file descriptor.</p>
-<p>Allowed values: &gt;= G_MAXULONG</p>
+<p>Allowed values: &gt;= -1</p>
 <p>Default value: -1</p>
 </div>
 </div>
@@ -244,7 +300,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>           user_data)              : Run First</pre>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -257,7 +312,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 <tr>
 <td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
 <td>
-
 </td>
 </tr>
 <tr>
@@ -275,6 +329,6 @@ dccpserversrc, dccpclientsrc, dccpserversink
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

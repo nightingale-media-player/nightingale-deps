@@ -1,97 +1,68 @@
 # Indonesian translations for gst-plugins-bad package.
 # This file is put in the public domain.
-# Andhika Padmawan <andhika.padmawan@gmail.com>, 2008.
+# Andhika Padmawan <andhika.padmawan@gmail.com>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins-bad 0.10.8.3\n"
+"Project-Id-Version: gst-plugins-bad 0.10.13.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-01-19 22:32+0000\n"
-"PO-Revision-Date: 2008-10-17 20:22+0700\n"
+"POT-Creation-Date: 2009-10-23 23:15+0100\n"
+"PO-Revision-Date: 2009-08-24 11:38-0400\n"
 "Last-Translator: Andhika Padmawan <andhika.padmawan@gmail.com>\n"
 "Language-Team: Indonesian <translation-team-id@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ext/resindvd/resindvdsrc.c:333
 msgid "Could not read title information for DVD."
 msgstr "Tak dapat membaca informasi judul untuk DVD."
 
-#: ext/resindvd/resindvdsrc.c:339
 #, c-format
 msgid "Failed to open DVD device '%s'."
 msgstr "Gagal membuka divais DVD '%s'."
 
-#: ext/resindvd/resindvdsrc.c:345
 msgid "Failed to set PGC based seeking."
-msgstr ""
+msgstr "Gagal mengatur pencarian berbasis PGC."
 
-#: ext/resindvd/rsnbasesrc.c:1659
 msgid "Internal clock error."
 msgstr "Galat jam internal."
 
-#: ext/resindvd/rsnbasesrc.c:1904 ext/resindvd/rsnbasesrc.c:1915
-#: gst/aiffparse/aiffparse.c:1265
 msgid "Internal data flow error."
 msgstr "Galat arus data internal."
 
-#: ext/sndfile/gstsfsink.c:277 ext/sndfile/gstsfsrc.c:345
 msgid "No file name specified for writing."
 msgstr "Tak ada nama berkas yang ditentukan untuk ditulis."
 
-#: ext/sndfile/gstsfsink.c:290 ext/sndfile/gstsfsrc.c:351
 #, c-format
 msgid "Could not open file \"%s\" for writing."
 msgstr "Tak dapat membuka berkas \"%s\" untuk ditulis."
 
-#: ext/sndfile/gstsfsink.c:440 gst/nuvdemux/gstnuvdemux.c:735
 msgid "Internal data stream error."
 msgstr "Galat arus data internal."
 
-#: ext/sndfile/gstsfsink.c:494 ext/sndfile/gstsfsink.c:502
 #, c-format
 msgid "Could not write to file \"%s\"."
 msgstr "Tak dapat menulis ke berkas \"%s\"."
 
-#: ext/twolame/gsttwolame.c:427
-msgid "Failed to configure TwoLAME encoder. Check your encoding parameters."
-msgstr "Gagal mengatur penyandi TwoLAME. Cek parameter penyandian anda."
-
-#: ext/twolame/gsttwolame.c:502
-#, c-format
-msgid ""
-"The requested bitrate %d kbit/s for property '%s' is not allowed. The "
-"bitrate was changed to %d kbit/s."
-msgstr ""
-"Bitrasi %d kbit/s yang diminta untuk properti '%s' tak diizinkan. Bitrasi "
-"telah diubah ke %d kbit/s."
-
-#: sys/dvb/gstdvbsrc.c:700 sys/dvb/gstdvbsrc.c:793
 #, c-format
 msgid "Device \"%s\" does not exist."
 msgstr "Divais \"%s\" tak ada."
 
-#: sys/dvb/gstdvbsrc.c:704
 #, c-format
 msgid "Could not open frontend device \"%s\"."
 msgstr "Tak dapat membuka divais ujung-depan \"%s\"."
 
-#: sys/dvb/gstdvbsrc.c:716
 #, c-format
 msgid "Could not get settings from frontend device \"%s\"."
 msgstr "Tak dapat mendapatkan pengaturan dari divais ujung-depan \"%s\"."
 
-#: sys/dvb/gstdvbsrc.c:797
 #, c-format
 msgid "Could not open file \"%s\" for reading."
 msgstr "Tak dapat membuka berkas \"%s\" untuk dibaca."
 
-#: sys/oss4/oss4-mixer.c:302
 msgid "Could not open audio device for mixer control handling."
 msgstr "Tak dapat membuka divais audio untuk pengendalian kontrol mixer."
 
-#: sys/oss4/oss4-mixer.c:316
 msgid ""
 "Could not open audio device for mixer control handling. This version of the "
 "Open Sound System is not supported by this element."
@@ -99,271 +70,311 @@ msgstr ""
 "Tak dapat membuka divais audio untuk pengendalian kontrol mixer. Versi Open "
 "Sound System ini tak didukung oleh elemen ini."
 
-#: sys/oss4/oss4-mixer.c:720
-msgid "Fast"
-msgstr "Cepat"
+msgid "Volume"
+msgstr "Volume"
 
-#: sys/oss4/oss4-mixer.c:721
-msgid "Low"
-msgstr "Rendah"
+msgid "Master"
+msgstr "Induk"
 
-#: sys/oss4/oss4-mixer.c:722
-msgid "Medium"
-msgstr "Sedang"
-
-#: sys/oss4/oss4-mixer.c:723
-msgid "High"
-msgstr "Tinggi"
-
-#: sys/oss4/oss4-mixer.c:724
-msgid "Very high"
-msgstr "Sangat tinggi"
-
-#: sys/oss4/oss4-mixer.c:725
-msgid "Production"
-msgstr "Produksi"
-
-#: sys/oss4/oss4-mixer.c:726
-msgid "Off"
-msgstr "Mati"
-
-#: sys/oss4/oss4-mixer.c:727
-msgid "On"
-msgstr "Hidup"
-
-#: sys/oss4/oss4-mixer.c:728
-msgid "Stereo"
-msgstr "Stereo"
-
-#: sys/oss4/oss4-mixer.c:729
-msgid "Surround sound"
-msgstr "Surround sound"
-
-#: sys/oss4/oss4-mixer.c:730 sys/oss4/oss4-mixer.c:805
-msgid "Input mix"
-msgstr "Mix masukan"
-
-#: sys/oss4/oss4-mixer.c:731 sys/oss4/oss4-mixer.c:800
 msgid "Front"
 msgstr "Depan"
 
-#: sys/oss4/oss4-mixer.c:732 sys/oss4/oss4-mixer.c:801
 msgid "Rear"
 msgstr "Belakang"
 
-#: sys/oss4/oss4-mixer.c:733 sys/oss4/oss4-mixer.c:802
-msgid "Side"
-msgstr "Samping"
-
-#: sys/oss4/oss4-mixer.c:734 sys/oss4/oss4-mixer.c:803
-msgid "Center / LFE"
-msgstr "Tengah / LFE"
-
-#: sys/oss4/oss4-mixer.c:735 sys/oss4/oss4-mixer.c:794
-msgid "Microphone"
-msgstr "Mikrofon"
-
-#: sys/oss4/oss4-mixer.c:736 sys/oss4/oss4-mixer.c:795
-msgid "Front panel microphone"
-msgstr "Mikrofon panel depan"
-
-#: sys/oss4/oss4-mixer.c:737
-msgid "Input"
-msgstr "Masukan"
-
-#: sys/oss4/oss4-mixer.c:738 sys/oss4/oss4-mixer.c:796
-msgid "Line-in"
-msgstr "Jalur-masuk"
-
-#: sys/oss4/oss4-mixer.c:739
-msgid "PCM 1"
-msgstr "PCM 1"
-
-#: sys/oss4/oss4-mixer.c:740
-msgid "PCM 2"
-msgstr "PCM 2"
-
-#: sys/oss4/oss4-mixer.c:741
-msgid "PCM 3"
-msgstr "PCM 3"
-
-#: sys/oss4/oss4-mixer.c:742
-msgid "PCM 4"
-msgstr "PCM 4"
-
-#: sys/oss4/oss4-mixer.c:754
-msgid "Green connector"
-msgstr "Penyambung hijau"
-
-#: sys/oss4/oss4-mixer.c:755
-msgid "Green front panel connector"
-msgstr "Penyambung panel depan hijau"
-
-#: sys/oss4/oss4-mixer.c:756
-msgid "Pink connector"
-msgstr "Penyambung merah jambu"
-
-#: sys/oss4/oss4-mixer.c:757
-msgid "Pink front panel connector"
-msgstr "Penyambung panel depan merah jambu"
-
-#: sys/oss4/oss4-mixer.c:758
-msgid "Blue connector"
-msgstr "Penyambung biru"
-
-#: sys/oss4/oss4-mixer.c:759
-msgid "Blue front panel connector"
-msgstr "Penyambung panel depan biru"
-
-#: sys/oss4/oss4-mixer.c:760
-msgid "Orange connector"
-msgstr "Penyambung jingga"
-
-#: sys/oss4/oss4-mixer.c:761
-msgid "Orange front panel connector"
-msgstr "Penyambung panel depan jingga"
-
-#: sys/oss4/oss4-mixer.c:762
-msgid "Black connector"
-msgstr "Penyambung hitam"
-
-#: sys/oss4/oss4-mixer.c:763
-msgid "Black front panel connector"
-msgstr "Penyambung panel depan hitam"
-
-#: sys/oss4/oss4-mixer.c:764
-msgid "Gray connector"
-msgstr "Penyambung abu-abu"
-
-#: sys/oss4/oss4-mixer.c:765
-msgid "Gray front panel connector"
-msgstr "Penyambung panel depan abu-abu"
-
-#: sys/oss4/oss4-mixer.c:766
-msgid "White connector"
-msgstr "Penyambung putih"
-
-#: sys/oss4/oss4-mixer.c:767
-msgid "White front panel connector"
-msgstr "Penyambung panel depan putih"
-
-#: sys/oss4/oss4-mixer.c:768
-msgid "Red connector"
-msgstr "Penyambung merah"
-
-#: sys/oss4/oss4-mixer.c:769
-msgid "Red front panel connector"
-msgstr "Penyambung panel depan merah"
-
-#: sys/oss4/oss4-mixer.c:770
-msgid "Yellow connector"
-msgstr "Penyambung kuning"
-
-#: sys/oss4/oss4-mixer.c:771
-msgid "Yellow front panel connector"
-msgstr "Penyambung panel depan kuning"
-
-#: sys/oss4/oss4-mixer.c:774
-msgid "Green connector function"
-msgstr "Fungsi penyambung hijau"
-
-#: sys/oss4/oss4-mixer.c:775
-msgid "Green front panel connector function"
-msgstr "Fungsi penyambung panel depan hijau"
-
-#: sys/oss4/oss4-mixer.c:776
-msgid "Pink connector function"
-msgstr "Fungsi penyambung merah jambu"
-
-#: sys/oss4/oss4-mixer.c:777
-msgid "Pink front panel connector function"
-msgstr "Fungsi penyambung panel depan merah jambu"
-
-#: sys/oss4/oss4-mixer.c:778
-msgid "Blue connector function"
-msgstr "Fungsi penyambung biru"
-
-#: sys/oss4/oss4-mixer.c:779
-msgid "Blue front panel connector function"
-msgstr "Fungsi penyambung panel depan biru"
-
-#: sys/oss4/oss4-mixer.c:780
-msgid "Orange connector function"
-msgstr "Fungsi penyambung jingga"
-
-#: sys/oss4/oss4-mixer.c:781
-msgid "Orange front panel connector function"
-msgstr "Fungsi penyambung panel depan jingga"
-
-#: sys/oss4/oss4-mixer.c:782
-msgid "Black connector function"
-msgstr "Fungsi penyambung hitam"
-
-#: sys/oss4/oss4-mixer.c:783
-msgid "Black front panel connector function"
-msgstr "Fungsi penyambung panel depan hitam"
-
-#: sys/oss4/oss4-mixer.c:784
-msgid "Gray connector function"
-msgstr "Fungsi penyambung abu-abu"
-
-#: sys/oss4/oss4-mixer.c:785
-msgid "Gray front panel connector function"
-msgstr "Fungsi penyambung panel depan abu-abu"
-
-#: sys/oss4/oss4-mixer.c:786
-msgid "White connector function"
-msgstr "Fungsi penyambung putih"
-
-#: sys/oss4/oss4-mixer.c:787
-msgid "White front panel connector function"
-msgstr "Fungsi penyambung panel depan putih"
-
-#: sys/oss4/oss4-mixer.c:788
-msgid "Red connector function"
-msgstr "Fungsi penyambung merah"
-
-#: sys/oss4/oss4-mixer.c:789
-msgid "Red front panel connector function"
-msgstr "Fungsi penyambung panel depan merah"
-
-#: sys/oss4/oss4-mixer.c:790
-msgid "Yellow connector function"
-msgstr "Fungsi penyambung kuning"
-
-#: sys/oss4/oss4-mixer.c:791
-msgid "Yellow front panel connector function"
-msgstr "Fungsi penyambung panel depan kuning"
-
-#: sys/oss4/oss4-mixer.c:797
-msgid "Front panel line-in"
-msgstr "Jalur-masuk panel depan"
-
-#: sys/oss4/oss4-mixer.c:798
 msgid "Headphones"
 msgstr "Headphone"
 
-#: sys/oss4/oss4-mixer.c:799
-msgid "Front panel headphones"
-msgstr "Headphone panel depan"
+msgid "Center"
+msgstr "Tengah"
 
-#: sys/oss4/oss4-mixer.c:804
+msgid "LFE"
+msgstr "LFE"
+
+msgid "Surround"
+msgstr "Surround"
+
+msgid "Side"
+msgstr "Samping"
+
+msgid "Built-in Speaker"
+msgstr "Pengeras Suara Terbina"
+
+msgid "AUX 1 Out"
+msgstr "AUX 1 Keluar"
+
+msgid "AUX 2 Out"
+msgstr "AUX 2 Keluar"
+
+msgid "AUX Out"
+msgstr "AUX Keluar"
+
+msgid "Bass"
+msgstr "Bass"
+
+msgid "Treble"
+msgstr "Treble"
+
+msgid "3D Depth"
+msgstr "3D Dalam"
+
+msgid "3D Center"
+msgstr "3D Tengah"
+
+msgid "3D Enhance"
+msgstr "3D Tingkatkan"
+
+msgid "Telephone"
+msgstr "Telepon"
+
+msgid "Microphone"
+msgstr "Mikrofon"
+
+msgid "Line Out"
+msgstr "Jalur Masuk"
+
+msgid "Line In"
+msgstr "Jalur Masuk"
+
+msgid "Internal CD"
+msgstr "CD Internal"
+
+msgid "Video In"
+msgstr "Video Masuk"
+
+msgid "AUX 1 In"
+msgstr "AUX 1 Masuk"
+
+msgid "AUX 2 In"
+msgstr "AUX 2 Masuk"
+
+msgid "AUX In"
+msgstr "AUX Masuk"
+
 msgid "PCM"
 msgstr "PCM"
 
-#: sys/oss4/oss4-mixer.c:846
-msgid "Virtual mixer input"
-msgstr "Masukan mixer virtual"
+msgid "Record Gain"
+msgstr "Gain Rekaman"
 
-#: sys/oss4/oss4-mixer.c:848
-msgid "Virtual mixer output"
-msgstr "Keluaran mixer virtual"
+msgid "Output Gain"
+msgstr "Keluaran Gain"
 
-#: sys/oss4/oss4-mixer.c:850
-msgid "Virtual mixer channel configuration"
-msgstr "Konfigurasi kanal mixer virtual"
+msgid "Microphone Boost"
+msgstr "Mikrofon Galak"
 
-#: sys/oss4/oss4-sink.c:376 sys/oss4/oss4-source.c:367
+msgid "Loopback"
+msgstr "Simpul Berulang"
+
+msgid "Diagnostic"
+msgstr "Diagnostik"
+
+msgid "Bass Boost"
+msgstr "Bass Galak"
+
+msgid "Playback Ports"
+msgstr "Pangkalan Putar Kembali"
+
+msgid "Input"
+msgstr "Masukan"
+
+msgid "Record Source"
+msgstr "Sumber Rekaman"
+
+msgid "Monitor Source"
+msgstr "Sumber Monitor"
+
+msgid "Keyboard Beep"
+msgstr "Bip Papan Ketik"
+
+msgid "Monitor"
+msgstr "Monitor"
+
+msgid "Simulate Stereo"
+msgstr "Simulasikan Stereo"
+
+msgid "Stereo"
+msgstr "Stereo"
+
+msgid "Surround Sound"
+msgstr "Suara Surround"
+
+msgid "Microphone Gain"
+msgstr "Mikrofon Galak"
+
+msgid "Speaker Source"
+msgstr "Sumber Pengeras Suara"
+
+msgid "Microphone Source"
+msgstr "Sumber Mikrofon"
+
+msgid "Jack"
+msgstr "Pengungkit"
+
+msgid "Center / LFE"
+msgstr "Tengah / LFE"
+
+msgid "Stereo Mix"
+msgstr "Mix Stereo"
+
+msgid "Mono Mix"
+msgstr "Mix Mono"
+
+msgid "Input Mix"
+msgstr "Mix Masukan"
+
+msgid "SPDIF In"
+msgstr "SPDIF Masukan"
+
+msgid "SPDIF Out"
+msgstr "SPDIF Keluaran"
+
+msgid "Microphone 1"
+msgstr "Mikrofon 1"
+
+msgid "Microphone 2"
+msgstr "Mikrofon 2"
+
+msgid "Digital Out"
+msgstr "Digital Keluar"
+
+msgid "Digital In"
+msgstr "Digital Masuk"
+
+msgid "HDMI"
+msgstr "HDMI"
+
+msgid "Modem"
+msgstr "Modem"
+
+msgid "Handset"
+msgstr "Handset"
+
+msgid "Other"
+msgstr "Lainnya"
+
+msgid "None"
+msgstr "Tak Ada"
+
+msgid "On"
+msgstr "Hidup"
+
+msgid "Off"
+msgstr "Mati"
+
+msgid "Mute"
+msgstr "Diam"
+
+msgid "Fast"
+msgstr "Cepat"
+
+msgid "Very Low"
+msgstr "Sangat Rendah"
+
+msgid "Low"
+msgstr "Rendah"
+
+msgid "Medium"
+msgstr "Sedang"
+
+msgid "High"
+msgstr "Tinggi"
+
+msgid "Very High"
+msgstr "Sangat Tinggi"
+
+msgid "Production"
+msgstr "Produksi"
+
+msgid "Front Panel Microphone"
+msgstr "Mikrofon Panel Depan"
+
+msgid "Front Panel Line In"
+msgstr "Jalur Masuk Panel Depan"
+
+msgid "Front Panel Headphones"
+msgstr "Headphone Panel Depan"
+
+msgid "Front Panel Line Out"
+msgstr "Jalur Keluar Panel Depan"
+
+msgid "Green Connector"
+msgstr "Konektor Hijau"
+
+msgid "Pink Connector"
+msgstr "Konektor Merah Jambu"
+
+msgid "Blue Connector"
+msgstr "Konektor Biru"
+
+msgid "White Connector"
+msgstr "Konektor Putih"
+
+msgid "Black Connector"
+msgstr "Konektor Hitam"
+
+msgid "Gray Connector"
+msgstr "Konektor Abu-abu"
+
+msgid "Orange Connector"
+msgstr "Konektor Jingga"
+
+msgid "Red Connector"
+msgstr "Konektor Merah"
+
+msgid "Yellow Connector"
+msgstr "Konektor Kuning"
+
+msgid "Green Front Panel Connector"
+msgstr "Konektor Panel Depan Hijau"
+
+msgid "Pink Front Panel Connector"
+msgstr "Konektor Panel Depan Merah Jambu"
+
+msgid "Blue Front Panel Connector"
+msgstr "Konektor Panel Depan Biru"
+
+msgid "White Front Panel Connector"
+msgstr "Konektor Panel Depan Putih"
+
+msgid "Black Front Panel Connector"
+msgstr "Konektor Panel Depan Hitam"
+
+msgid "Gray Front Panel Connector"
+msgstr "Konektor Panel Depan Abu-abu"
+
+msgid "Orange Front Panel Connector"
+msgstr "Konektor Panel Depan Jingga"
+
+msgid "Red Front Panel Connector"
+msgstr "Konektor Panel Depan Merah"
+
+msgid "Yellow Front Panel Connector"
+msgstr "Konektor Panel Depan Kuning"
+
+msgid "Spread Output"
+msgstr "Sebar Keluaran"
+
+msgid "Downmix"
+msgstr "Downmix"
+
+msgid "Virtual Mixer Input"
+msgstr "Masukan Mixer Virtual"
+
+msgid "Virtual Mixer Output"
+msgstr "Keluaran Mixer Virtual"
+
+msgid "Virtual Mixer Channels"
+msgstr "Kanal Mixer Virtual"
+
+#, c-format
+msgid "%s Function"
+msgstr "Fungsi %s"
+
+#, c-format
+msgid "%s %d"
+msgstr "%s %d"
+
 msgid ""
 "Could not open audio device for playback. Device is being used by another "
 "application."
@@ -371,7 +382,6 @@ msgstr ""
 "Tak dapat membuka divais audio untuk putar kembali. Divais sedang digunakan "
 "oleh aplikasi lain."
 
-#: sys/oss4/oss4-sink.c:386 sys/oss4/oss4-source.c:377
 msgid ""
 "Could not open audio device for playback. You don't have permission to open "
 "the device."
@@ -379,11 +389,9 @@ msgstr ""
 "Tak dapat membuka divais audio untuk putar kembali. Anda tak memiliki hak "
 "akses untuk membuka divais."
 
-#: sys/oss4/oss4-sink.c:397 sys/oss4/oss4-source.c:388
 msgid "Could not open audio device for playback."
 msgstr "Tak dapat membuka divais audio untuk putar kembali."
 
-#: sys/oss4/oss4-sink.c:406 sys/oss4/oss4-source.c:398
 msgid ""
 "Could not open audio device for playback. This version of the Open Sound "
 "System is not supported by this element."
@@ -391,18 +399,93 @@ msgstr ""
 "Tak dapat membuka divais audio untuk putar kembali. Versi Open Sound System "
 "ini tak didukung oleh elemen ini."
 
-#: sys/oss4/oss4-sink.c:522
 msgid "Playback is not supported by this audio device."
 msgstr "Putar kembali tak didukung oleh divais audio ini."
 
-#: sys/oss4/oss4-sink.c:529
 msgid "Audio playback error."
 msgstr "Putar kembali audio galat."
 
-#: sys/oss4/oss4-source.c:520
 msgid "Recording is not supported by this audio device."
 msgstr "Perekaman tak didukung oleh divais audio ini."
 
-#: sys/oss4/oss4-source.c:527
 msgid "Error recording from audio device."
 msgstr "Galat ketika merekam dari divais audio."
+
+#~ msgid "PCM 1"
+#~ msgstr "PCM 1"
+
+#~ msgid "PCM 2"
+#~ msgstr "PCM 2"
+
+#~ msgid "PCM 3"
+#~ msgstr "PCM 3"
+
+#~ msgid "PCM 4"
+#~ msgstr "PCM 4"
+
+#~ msgid "Green connector function"
+#~ msgstr "Fungsi penyambung hijau"
+
+#~ msgid "Green front panel connector function"
+#~ msgstr "Fungsi penyambung panel depan hijau"
+
+#~ msgid "Pink connector function"
+#~ msgstr "Fungsi penyambung merah jambu"
+
+#~ msgid "Pink front panel connector function"
+#~ msgstr "Fungsi penyambung panel depan merah jambu"
+
+#~ msgid "Blue connector function"
+#~ msgstr "Fungsi penyambung biru"
+
+#~ msgid "Blue front panel connector function"
+#~ msgstr "Fungsi penyambung panel depan biru"
+
+#~ msgid "Orange connector function"
+#~ msgstr "Fungsi penyambung jingga"
+
+#~ msgid "Orange front panel connector function"
+#~ msgstr "Fungsi penyambung panel depan jingga"
+
+#~ msgid "Black connector function"
+#~ msgstr "Fungsi penyambung hitam"
+
+#~ msgid "Black front panel connector function"
+#~ msgstr "Fungsi penyambung panel depan hitam"
+
+#~ msgid "Gray connector function"
+#~ msgstr "Fungsi penyambung abu-abu"
+
+#~ msgid "Gray front panel connector function"
+#~ msgstr "Fungsi penyambung panel depan abu-abu"
+
+#~ msgid "White connector function"
+#~ msgstr "Fungsi penyambung putih"
+
+#~ msgid "White front panel connector function"
+#~ msgstr "Fungsi penyambung panel depan putih"
+
+#~ msgid "Red connector function"
+#~ msgstr "Fungsi penyambung merah"
+
+#~ msgid "Red front panel connector function"
+#~ msgstr "Fungsi penyambung panel depan merah"
+
+#~ msgid "Yellow connector function"
+#~ msgstr "Fungsi penyambung kuning"
+
+#~ msgid "Yellow front panel connector function"
+#~ msgstr "Fungsi penyambung panel depan kuning"
+
+#~ msgid "Virtual mixer channel configuration"
+#~ msgstr "Konfigurasi kanal mixer virtual"
+
+#~ msgid "Failed to configure TwoLAME encoder. Check your encoding parameters."
+#~ msgstr "Gagal mengatur penyandi TwoLAME. Cek parameter penyandian anda."
+
+#~ msgid ""
+#~ "The requested bitrate %d kbit/s for property '%s' is not allowed. The "
+#~ "bitrate was changed to %d kbit/s."
+#~ msgstr ""
+#~ "Bitrasi %d kbit/s yang diminta untuk properti '%s' tak diizinkan. Bitrasi "
+#~ "telah diubah ke %d kbit/s."

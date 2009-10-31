@@ -20,7 +20,7 @@
 ** nes6502.c
 **
 ** NES custom 6502 (2A03) CPU implementation
-** $Id: nes6502.c,v 1.3 2008-03-25 15:56:11 slomo Exp $
+** $Id$
 */
 
 
@@ -944,7 +944,7 @@
    ADD_CYCLES(cycles); \
 }
 
-#define SEC() \
+#define SEC_6502() \
 { \
    SET_FLAG(C_FLAG); \
    ADD_CYCLES(2); \
@@ -1798,7 +1798,7 @@ nes6502_execute (int remaining_cycles)
         break;
 
       case 0x38:               /* SEC */
-        SEC ();
+        SEC_6502 ();
         break;
 
       case 0x39:               /* AND $nnnn,Y */
@@ -2558,8 +2558,8 @@ nes6502_chk_mem_access (uint8 * access, int flags)
 #endif
 
 /*
-** $Log: nes6502.c,v $
-** Revision 1.3  2008-03-25 15:56:11  slomo
+** $Log$
+** Revision 1.3  2008/03/25 15:56:11  slomo
 ** Patch by: Andreas Henriksson <andreas at fatal dot set>
 ** * gst/nsf/Makefile.am:
 ** * gst/nsf/dis6502.h:

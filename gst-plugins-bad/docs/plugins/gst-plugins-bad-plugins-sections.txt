@@ -27,20 +27,6 @@ gst_amrparse_get_type
 </SECTION>
 
 <SECTION>
-<FILE>element-amrwbdec</FILE>
-<TITLE>amrwbdec</TITLE>
-GstAmrwbDec
-<SUBSECTION Standard>
-GstAmrwbDecClass
-GST_AMRWBDEC
-GST_AMRWBDEC_CLASS
-GST_IS_AMRWBDEC
-GST_IS_AMRWBDEC_CLASS
-GST_TYPE_AMRWBDEC
-gst_amrwbdec_get_type
-</SECTION>
-
-<SECTION>
 <FILE>element-amrwbenc</FILE>
 <TITLE>amrwbenc</TITLE>
 GstAmrwbEnc
@@ -55,20 +41,6 @@ gst_amrwbenc_get_type
 </SECTION>
 
 <SECTION>
-<FILE>element-amrwbparse</FILE>
-<TITLE>amrwbparse</TITLE>
-GstAmrwbParse
-<SUBSECTION Standard>
-GstAmrwbParseClass
-GST_AMRWBPARSE
-GST_AMRWBPARSE_CLASS
-GST_IS_AMRWBPARSE
-GST_IS_AMRWBPARSE_CLASS
-GST_TYPE_AMRWBPARSE
-gst_amrwbparse_get_type
-</SECTION>
-
-<SECTION>
 <FILE>element-audioparse</FILE>
 <TITLE>audioparse</TITLE>
 GstAudioParse
@@ -80,6 +52,49 @@ GST_IS_AUDIO_PARSE
 GST_IS_AUDIO_PARSE_CLASS
 GST_TYPE_AUDIO_PARSE
 gst_audio_parse_get_type
+</SECTION>
+
+
+<SECTION>
+<FILE>element-autoconvert</FILE>
+<TITLE>autoconvert</TITLE>
+GstAutoConvert
+<SUBSECTION Standard>
+GstAutoConvertClass
+GST_TYPE_AUTO_CONVERT
+GST_AUTO_CONVERT
+GST_AUTO_CONVERT_CLASS
+GST_IS_AUTO_CONVERT
+GST_IS_AUTO_CONVERT_CLASS
+</SECTION>
+
+<SECTION>
+<FILE>element-camerabin</FILE>
+<TITLE>camerabin</TITLE>
+GstCameraBin
+GstCameraBinMode
+<SUBSECTION Standard>
+GstCameraBinClass
+GST_CAMERABIN
+GST_IS_CAMERABIN
+GST_TYPE_CAMERABIN
+GST_CAMERABIN_CLASS
+GST_IS_CAMERABIN_CLASS
+gst_camerabin_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-capssetter</FILE>
+<TITLE>capssetter</TITLE>
+GstCapsSetter
+<SUBSECTION Standard>
+GstCapsSetterClass
+GST_TYPE_CAPS_SETTER
+GST_CAPS_SETTER
+GST_IS_CAPS_SETTER
+GST_CAPS_SETTER_CLASS
+GST_IS_CAPS_SETTER_CLASS
+gst_caps_setter_get_type
 </SECTION>
 
 <SECTION>
@@ -181,20 +196,6 @@ gst_dccp_server_src_get_type
 </SECTION>
 
 <SECTION>
-<FILE>element-deinterlace</FILE>
-<TITLE>deinterlace</TITLE>
-GstDeinterlace
-<SUBSECTION Standard>
-GstDeinterlaceClass
-GST_DEINTERLACE
-GST_DEINTERLACE_CLASS
-GST_IS_DEINTERLACE
-GST_IS_DEINTERLACE_CLASS
-GST_TYPE_DEINTERLACE
-gst_deinterlace_get_type
-</SECTION>
-
-<SECTION>
 <FILE>element-dfbvideosink</FILE>
 <TITLE>dfbvideosink</TITLE>
 GstDfbVideoSink
@@ -212,6 +213,58 @@ GST_DFBSURFACE
 GST_IS_DFBSURFACE
 GST_TYPE_DFBSURFACE
 gst_dfbsurface_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-directdrawsink</FILE>
+<TITLE>directdrawsink</TITLE>
+GstDirectDrawSink
+<SUBSECTION Standard>
+GstDirectDrawSinkClass
+GST_DIRECTDRAW_SINK
+GST_DIRECTDRAW_SINK_CLASS
+GST_IS_DIRECTDRAW_SINK
+GST_IS_DIRECTDRAW_SINK_CLASS
+GST_TYPE_DIRECTDRAW_SINK
+gst_directdraw_sink_get_type
+GstDDrawSurface
+GST_DDRAWSURFACE
+GST_IS_DDRAWSURFACE
+GST_TYPE_DDRAWSURFACE
+DIRECTDRAW_VERSION
+</SECTION>
+
+<SECTION>
+<FILE>element-dtmfsrc</FILE>
+<TITLE>dtmfsrc</TITLE>
+GstDTMFSrc
+<SUBSECTION Standard>
+GstDTMFEventType
+GstDTMFSrcEvent
+GstDTMFSrcClass
+GST_TYPE_DTMF_SRC
+GST_DTMF_SRC
+GST_DTMF_SRC_CAST
+GST_DTMF_SRC_CLASS
+GST_DTMF_SRC_GET_CLASS
+GST_IS_DTMF_SRC
+GST_IS_DTMF_SRC_CLASS
+gst_dtmf_src_get_type
+gst_dtmf_src_plugin_init
+</SECTION>
+
+<SECTION>
+<FILE>element-dtsdec</FILE>
+<TITLE>dtsdec</TITLE>
+GstDtsDec
+<SUBSECTION Standard>
+GstDtsDecClass
+gst_dtsdec_get_type
+GST_TYPE_DTSDEC
+GST_DTSDEC
+GST_DTSDEC_CLASS
+GST_IS_DTSDEC
+GST_IS_DTSDEC_CLASS
 </SECTION>
 
 <SECTION>
@@ -263,6 +316,20 @@ SPU_STATE_FLAGS_MASK
 </SECTION>
 
 <SECTION>
+<FILE>element-faac</FILE>
+<TITLE>faac</TITLE>
+GstFaac
+<SUBSECTION Standard>
+GstFaacClass
+GST_TYPE_FAAC
+GST_FAAC
+GST_IS_FAAC
+GST_FAAC_CLASS
+GST_IS_FAAC_CLASS
+gst_faac_get_type
+</SECTION>
+
+<SECTION>
 <FILE>element-festival</FILE>
 <TITLE>festival</TITLE>
 GstFestival
@@ -278,6 +345,20 @@ gst_festival_get_type
 FESTIVAL_DEFAULT_SERVER_HOST
 FESTIVAL_DEFAULT_SERVER_PORT
 FESTIVAL_DEFAULT_TEXT_MODE
+</SECTION>
+
+<SECTION>
+<FILE>element-fpsdisplaysink</FILE>
+<TITLE>fpsdisplaysink</TITLE>
+GstFPSDisplaySink
+<SUBSECTION Standard>
+GstFPSDisplaySinkClass
+GST_TYPE_FPS_DISPLAY_SINK
+GST_FPS_DISPLAY_SINK
+GST_IS_FPS_DISPLAY_SINK
+GST_FPS_DISPLAY_SINK_CLASS
+GST_IS_FPS_DISPLAY_SINK_CLASS
+fps_display_sink_get_type
 </SECTION>
 
 <SECTION>
@@ -345,6 +426,116 @@ gst_jack_audio_sink_get_type
 </SECTION>
 
 <SECTION>
+<FILE>element-legacyresample</FILE>
+<TITLE>legacyresample</TITLE>
+GstLegacyresample
+<SUBSECTION Standard>
+GstLegacyresampleClass
+GST_LEGACYRESAMPLE
+GST_LEGACYRESAMPLE_CLASS
+GST_IS_LEGACYRESAMPLE
+GST_IS_LEGACYRESAMPLE_CLASS
+GST_TYPE_LEGACYRESAMPLE
+gst_legacyresample_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-liveadder</FILE>
+<TITLE>liveadder</TITLE>
+GstLiveAdder
+<SUBSECTION Standard>
+GstLiveAdderClass
+GST_IS_LIVE_ADDER
+GST_IS_LIVE_ADDER_CLASS
+GST_IS_MXF_DEMUX_PAD
+GST_LIVE_ADDER
+GST_LIVE_ADDER_CLASS
+GST_LIVE_ADDER_GET_CLASS
+GST_TYPE_LIVE_ADDER
+GstLiveAdderFormat
+GstLiveAdderFunction
+gst_live_adder_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-katedec</FILE>
+<TITLE>katedec</TITLE>
+GstKateDec
+<SUBSECTION Standard>
+GstKateDecClass
+GST_KATE_DEC
+GST_KATE_DEC_CLASS
+GST_IS_KATE_DEC
+GST_IS_KATE_DEC_CLASS
+GST_TYPE_KATE_DEC
+gst_kate_dec_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-kateenc</FILE>
+<TITLE>kateenc</TITLE>
+GstKateEnc
+<SUBSECTION Standard>
+GstKateEncClass
+GST_KATE_ENC
+GST_KATE_ENC_CLASS
+GST_IS_KATE_ENC
+GST_IS_KATE_ENC_CLASS
+GST_TYPE_KATE_ENC
+gst_kate_enc_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-kateparse</FILE>
+<TITLE>kateparse</TITLE>
+GstKateParse
+<SUBSECTION Standard>
+GstKateParseClass
+GST_KATE_PARSE
+GST_KATE_PARSE_CLASS
+GST_IS_KATE_PARSE
+GST_IS_KATE_PARSE_CLASS
+GST_TYPE_KATE_PARSE
+gst_kate_parse_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-katetag</FILE>
+<TITLE>katetag</TITLE>
+GstKateTag
+<SUBSECTION Standard>
+GstKateTagClass
+GST_KATE_TAG
+GST_KATE_TAG_CLASS
+GST_IS_KATE_TAG
+GST_IS_KATE_TAG_CLASS
+GST_TYPE_KATE_TAG
+gst_kate_tag_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-tiger</FILE>
+<TITLE>tiger</TITLE>
+GstKateTiger
+<SUBSECTION Standard>
+GstKateTigerClass
+GST_KATE_TIGER
+GST_KATE_TIGER_CLASS
+GST_IS_KATE_TIGER
+GST_IS_KATE_TIGER_CLASS
+GST_TYPE_KATE_TIGER
+gst_kate_tiger_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-ladspa</FILE>
+<TITLE>ladspa</TITLE>
+GstLADSPA
+<SUBSECTION Standard>
+GstLADSPAClass
+</SECTION>
+
+<SECTION>
 <FILE>gstbasemetadata</FILE>
 <TITLE>GstBaseMetadata</TITLE>
 GstBaseMetadata
@@ -397,6 +588,34 @@ GST_IS_METADATA_MUX
 GST_IS_METADATA_MUX_CLASS
 GST_TYPE_METADATA_MUX
 gst_metadata_mux_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-mimdec</FILE>
+<TITLE>mimdec</TITLE>
+GstMimDec
+<SUBSECTION Standard>
+GstMimDecClass
+GST_IS_MIMDEC
+GST_IS_MIMDEC_CLASS
+GST_MIMDEC
+GST_MIMDEC_CLASS
+GST_TYPE_MIMDEC
+gst_mimdec_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-mimenc</FILE>
+<TITLE>mimenc</TITLE>
+GstMimEnc
+<SUBSECTION Standard>
+GstMimEncClass
+GST_IS_MIMENC
+GST_IS_MIMENC_CLASS
+GST_MIMENC
+GST_MIMENC_CLASS
+GST_TYPE_MIMENC
+gst_mimenc_get_type
 </SECTION>
 
 <SECTION>
@@ -480,6 +699,20 @@ gst_mxf_demux_get_type
 </SECTION>
 
 <SECTION>
+<FILE>element-mxfmux</FILE>
+<TITLE>mxfmux</TITLE>
+GstMXFMux
+<SUBSECTION Standard>
+GstMXFMuxClass
+GST_IS_MXF_MUX
+GST_IS_MXF_MUX_CLASS
+GST_MXF_MUX
+GST_MXF_MUX_CLASS
+GST_TYPE_MXF_MUX
+gst_mxf_mux_get_type
+</SECTION>
+
+<SECTION>
 <FILE>element-nuvdemux</FILE>
 <TITLE>nuvdemux</TITLE>
 GstNuvDemux
@@ -509,94 +742,84 @@ gst_output_selector_get_type
 </SECTION>
 
 <SECTION>
-<FILE>element-gstrtpbin</FILE>
-<TITLE>gstrtpbin</TITLE>
-GstRtpBin
+<FILE>element-pcapparse</FILE>
+<TITLE>pcapparse</TITLE>
+GstPcapParse
 <SUBSECTION Standard>
-GstRtpBinPrivate
-GstRtpBinClass
-GST_RTP_BIN 
-GST_IS_RTP_BIN
-GST_TYPE_RTP_BIN
-gst_rtp_bin_get_type
-GST_RTP_BIN_CLASS
-GST_IS_RTP_BIN_CLASS
+GstPcapParseClass
+GST_PCAP_PARSE
+GST_PCAP_PARSE_CLASS
+GST_IS_PCAP_PARSE
+GST_IS_PCAP_PARSE_CLASS
+GST_TYPE_PCAP_PARSE
+GstPcapParseState
+gst_pcap_parse_get_type
 </SECTION>
 
 <SECTION>
-<FILE>element-gstrtpclient</FILE>
-<TITLE>gstrtpclient</TITLE>
-GstRtpClient
+<FILE>element-rtpdtmfdepay</FILE>
+<TITLE>rtpdtmfdepay</TITLE>
+GstRtpDTMFDepay
 <SUBSECTION Standard>
-GstRtpClientClass
-GstRtpClientPrivate
-GST_RTP_CLIENT
-GST_IS_RTP_CLIENT
-GST_TYPE_RTP_CLIENT
-gst_rtp_client_get_type
-GST_RTP_CLIENT_CLASS
-GST_IS_RTP_CLIENT_CLASS
+GstRtpDTMFDepayClass
+GST_TYPE_RTP_DTMF_DEPAY
+GST_IS_RTP_DTMF_DEPAY
+GST_IS_RTP_DTMF_DEPAY_CLASS
+GST_RTP_DTMF_DEPAY
+GST_RTP_DTMF_DEPAY_CLASS
+gst_rtp_dtmf_depay_plugin_init
 </SECTION>
 
 <SECTION>
-<FILE>element-gstrtpjitterbuffer</FILE>
-<TITLE>gstrtpjitterbuffer</TITLE>
-GstRtpJitterBuffer
+<FILE>element-rtpdtmfmux</FILE>
+<TITLE>rtpdtmfmux</TITLE>
+GstRTPDTMFMux
 <SUBSECTION Standard>
-GstRtpJitterBufferClass
-GstRtpJitterBufferPrivate
-GST_RTP_JITTER_BUFFER
-GST_IS_RTP_JITTER_BUFFER
-GST_TYPE_RTP_JITTER_BUFFER
-gst_rtp_jitter_buffer_get_type
-GST_RTP_JITTER_BUFFER_CLASS
-GST_IS_RTP_JITTER_BUFFER_CLASS
+GST_IS_RTP_DTMF_MUX
+GST_IS_RTP_DTMF_MUX_CLASS
+GST_TYPE_RTP_DTMF_MUX
+GstRTPDTMFMuxClass
+GST_RTP_DTMF_MUX
+GST_RTP_DTMF_MUX_CLASS
+gst_rtp_dtmf_mux_get_type
+gst_rtp_dtmf_mux_plugin_init
 </SECTION>
 
 <SECTION>
-<FILE>element-gstrtpptdemux</FILE>
-<TITLE>gstrtpptdemux</TITLE>
-GstRtpPtDemux
+<FILE>element-rtpdtmfsrc</FILE>
+<TITLE>rtpdtmfsrc</TITLE>
+GstRTPDTMFSrc
 <SUBSECTION Standard>
-GstRtpPtDemuxClass
-GstRtpPtDemuxPad
-GST_RTP_PT_DEMUX
-GST_IS_RTP_PT_DEMUX
-GST_TYPE_RTP_PT_DEMUX
-gst_rtp_pt_demux_get_type
-GST_RTP_PT_DEMUX_CLASS
-GST_IS_RTP_PT_DEMUX_CLASS
+GstRTPDTMFSrcClass
+GST_TYPE_RTP_DTMF_SRC
+GST_IS_RTP_DTMF_SRC
+GST_IS_RTP_DTMF_SRC_CLASS
+GST_RTP_DTMF_SRC
+GST_RTP_DTMF_SRC_CAST
+GST_RTP_DTMF_SRC_CLASS
+GST_RTP_DTMF_SRC_GET_CLASS
+gst_rtp_dtmf_src_get_type
+gst_rtp_dtmf_src_plugin_init
+GstRTPDTMFPayload
+GstRTPDTMFSrcEvent
+GstRTPDTMFEventType
 </SECTION>
 
 <SECTION>
-<FILE>element-gstrtpsession</FILE>
-<TITLE>gstrtpsession</TITLE>
-GstRtpSession
+<FILE>element-rtpmux</FILE>
+<TITLE>rtpmux</TITLE>
+GstRTPMux
 <SUBSECTION Standard>
-GstRtpSessionClass
-GstRtpSessionPrivate
-GST_RTP_SESSION
-GST_IS_RTP_SESSION
-GST_TYPE_RTP_SESSION
-gst_rtp_session_get_type
-GST_RTP_SESSION_CLASS
-GST_IS_RTP_SESSION_CLASS
-GST_RTP_SESSION_CAST
-</SECTION>
-
-<SECTION>
-<FILE>element-gstrtpssrcdemux</FILE>
-<TITLE>gstrtpssrcdemux</TITLE>
-GstRtpSsrcDemux
-<SUBSECTION Standard>
-GstRtpSsrcDemuxClass
-GstRtpSsrcDemuxPad
-GST_RTP_SSRC_DEMUX
-GST_IS_RTP_SSRC_DEMUX
-GST_TYPE_RTP_SSRC_DEMUX
-gst_rtp_ssrc_demux_get_type
-GST_RTP_SSRC_DEMUX_CLASS
-GST_IS_RTP_SSRC_DEMUX_CLASS
+GST_IS_RTP_MUX
+GST_IS_RTP_MUX_CLASS
+GST_RTP_MUX
+GST_RTP_MUX_CLASS
+GST_RTP_MUX_GET_CLASS
+GST_TYPE_RTP_MUX
+GstRTPMuxClass
+gst_rtp_mux_get_type
+gst_rtp_mux_plugin_init
+gst_rtp_session_set_ssrc
 </SECTION>
 
 <SECTION>
@@ -679,6 +902,21 @@ gst_speed_get_type
 </SECTION>
 
 <SECTION>
+<FILE>element-shapewipe</FILE>
+<TITLE>shapewipe</TITLE>
+GstShapeWipe
+<SUBSECTION Standard>
+GstShapeWipeClass
+GST_SHAPE_WIPE
+GST_SHAPE_WIPE_CLASS
+GST_IS_SHAPE_WIPE
+GST_IS_SHAPE_WIPE_CLASS
+GST_TYPE_SHAPE_WIPE
+gst_shape_wipe_get_type
+</SECTION>
+
+
+<SECTION>
 <FILE>element-stereo</FILE>
 <TITLE>stereo</TITLE>
 GstStereo
@@ -690,20 +928,6 @@ GST_IS_STEREO
 GST_IS_STEREO_CLASS
 GST_TYPE_STEREO
 gst_stereo_get_type
-</SECTION>
-
-<SECTION>
-<FILE>element-legacyresample</FILE>
-<TITLE>legacyresample</TITLE>
-GstAudioresample
-<SUBSECTION Standard>
-GstAudioresampleClass
-GST_AUDIORESAMPLE
-GST_AUDIORESAMPLE_CLASS
-GST_IS_AUDIORESAMPLE
-GST_IS_AUDIORESAMPLE_CLASS
-GST_TYPE_AUDIORESAMPLE
-gst_audioresample_get_type
 </SECTION>
 
 <SECTION>
@@ -734,20 +958,6 @@ gst_timidity_get_type
 </SECTION>
 
 <SECTION>
-<FILE>element-twolame</FILE>
-<TITLE>twolame</TITLE>
-GstTwoLame
-<SUBSECTION Standard>
-GstTwoLameClass
-GST_TWO_LAME
-GST_TWO_LAME_CLASS
-GST_IS_TWO_LAME
-GST_IS_TWO_LAME_CLASS
-GST_TYPE_TWO_LAME
-gst_two_lame_get_type
-</SECTION>
-
-<SECTION>
 <FILE>element-trm</FILE>
 <TITLE>trm</TITLE>
 GstTRM
@@ -759,6 +969,21 @@ GST_IS_TRM
 GST_IS_TRM_CLASS
 GST_TYPE_TRM
 gst_trm_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-valve</FILE>
+<TITLE>valve</TITLE>
+GstValve
+<SUBSECTION Standard>
+GstValveClass
+GstValvePrivate
+gst_valve_get_type
+GST_IS_VALVE
+GST_IS_VALVE_CLASS
+GST_TYPE_VALVE
+GST_VALVE
+GST_VALVE_CLASS
 </SECTION>
 
 <SECTION>
@@ -832,29 +1057,15 @@ GST_TYPE_WILDMIDI
 </SECTION>
 
 <SECTION>
-<FILE>element-x264enc</FILE>
-<TITLE>x264enc</TITLE>
-GstX264Enc
+<FILE>element-zbar</FILE>
+<TITLE>zbar</TITLE>
+GstZBar
 <SUBSECTION Standard>
-GstX264EncClass
-GST_X264_ENC
-GST_X264_ENC_CLASS
-GST_IS_X264_ENC
-GST_IS_X264_ENC_CLASS
-GST_TYPE_X264_ENC
+GstZBarClass
+GST_ZBAR
+GST_ZBAR_CLASS
+GST_IS_ZBAR
+GST_IS_ZBAR_CLASS
+GST_TYPE_ZBAR
 </SECTION>
 
-<SECTION>
-<FILE>element-y4menc</FILE>
-<TITLE>y4menc</TITLE>
-GstY4mEncode
-<SUBSECTION Standard>
-GstY4mEncodeClass
-GST_Y4M_ENCODE
-GST_Y4M_ENCODE_CLASS
-GST_IS_Y4M_ENCODE
-GST_IS_Y4M_ENCODE_CLASS
-GST_Y4M_ENCODE_GET_CLASS
-GST_TYPE_Y4M_ENCODE
-gst_y4m_encode_get_type
-</SECTION>

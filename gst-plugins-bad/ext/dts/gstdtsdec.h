@@ -43,29 +43,41 @@ struct _GstDtsDec {
   GstElement 	 element;
 
   /* pads */
-  GstPad 	*sinkpad,
-  		*srcpad;
+  GstPad        *sinkpad;
+  GstPad        *srcpad;
+  GstSegment     segment;
+
+  gboolean       dvdmode;
+  gboolean       sent_segment;
+  gboolean       discont;
+  gboolean       flag_update;
+  gboolean       prev_flags;
 
   /* stream properties */
-  gint 		 bit_rate;
-  gint 		 sample_rate;
-  gint 		 stream_channels;
-  gint 		 request_channels;
-  gint 		 using_channels;
+  gint 	         bit_rate;
+  gint 	         sample_rate;
+  gint 	         stream_channels;
+  gint 	         request_channels;
+  gint 	         using_channels;
 
   /* decoding properties */
   sample_t 	 level;
   sample_t 	 bias;
   gboolean 	 dynamic_range_compression;
   sample_t 	*samples;
+#ifndef DTS_OLD
+  dca_state_t   *state;
+#else
   dts_state_t 	*state;
-  gboolean       dvdmode;
+#endif
+
 
   /* Data left over from the previous buffer */
-  GstBuffer	*cache;
-  
-  /* keep track of time */
-  GstClockTime	current_ts;
+  GstBuffer		*cache;
+  GstClockTime	time;
+
+  /* reverse playback */
+  GList *queued;
 };
 
 struct _GstDtsDecClass {

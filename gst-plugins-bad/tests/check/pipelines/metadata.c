@@ -38,7 +38,6 @@ bus_handler (GstBus * bus, GstMessage * message, gpointer data)
 
       gst_message_parse_error (message, &gerror, &debug);
       gst_object_default_error (GST_MESSAGE_SRC (message), gerror, debug);
-      gst_message_unref (message);
       g_error_free (gerror);
       g_free (debug);
       g_main_loop_quit (loop);
@@ -81,11 +80,17 @@ test_tags (const gchar * tag_str)
   gint i, j, n_recv, n_sent;
   const gchar *name_sent, *name_recv;
   const GValue *value_sent, *value_recv;
-  gboolean found;
+  gboolean found, ok;
   gint comparison;
-
   GstElement *videotestsrc, *jpegenc, *metadatamux, *metadatademux, *fakesink;
   GstTagSetter *setter;
+
+  GST_DEBUG ("testing tags : %s", tag_str);
+
+  if (received_tags) {
+    gst_tag_list_free (received_tags);
+    received_tags = NULL;
+  }
 
   pipeline = gst_pipeline_new ("pipeline");
   fail_unless (pipeline != NULL);
@@ -113,8 +118,9 @@ test_tags (const gchar * tag_str)
   gst_bin_add_many (GST_BIN (pipeline), videotestsrc, jpegenc, metadatamux,
       metadatademux, fakesink, NULL);
 
-  fail_unless (gst_element_link_many (videotestsrc, jpegenc, metadatamux,
-          metadatademux, fakesink, NULL));
+  ok = gst_element_link_many (videotestsrc, jpegenc, metadatamux, metadatademux,
+      fakesink, NULL);
+  fail_unless (ok == TRUE);
 
   loop = g_main_loop_new (NULL, TRUE);
   fail_unless (loop != NULL);
@@ -129,10 +135,13 @@ test_tags (const gchar * tag_str)
   setter = GST_TAG_SETTER (metadatamux);
   fail_unless (setter != NULL);
   sent_tags = gst_structure_from_string (tag_str, NULL);
+  fail_unless (sent_tags != NULL);
   gst_tag_setter_merge_tags (setter, sent_tags, GST_TAG_MERGE_REPLACE);
 
   gst_element_set_state (pipeline, GST_STATE_PLAYING);
   g_main_loop_run (loop);
+
+  GST_DEBUG ("mainloop done : %p", received_tags);
 
   /* verify tags */
   fail_unless (received_tags != NULL);
@@ -145,7 +154,7 @@ test_tags (const gchar * tag_str)
     name_sent = gst_structure_nth_field_name (sent_tags, i);
     value_sent = gst_structure_get_value (sent_tags, name_sent);
     found = FALSE;
-    for (j = 0; i < n_recv; j++) {
+    for (j = 0; j < n_recv; j++) {
       name_recv = gst_structure_nth_field_name (received_tags, j);
       if (!strcmp (name_sent, name_recv)) {
         value_recv = gst_structure_get_value (received_tags, name_recv);
@@ -181,7 +190,13 @@ test_tags (const gchar * tag_str)
 
 GST_START_TEST (test_common_tags)
 {
+  /* The title tag will only work if the XMP backend is enabled.
+   * And since we don't have any programmatic feedback on whether
+   * a tag is properly handled or not... we need to do this kind
+   * of hack. */
+#if HAVE_XMP
   test_tags ("taglist,title=\"test image\"");
+#endif
 }
 
 GST_END_TEST;

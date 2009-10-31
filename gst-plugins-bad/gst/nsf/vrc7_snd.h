@@ -22,7 +22,7 @@
 ** VRCVII (Konami MMC) sound hardware emulation header
 ** Thanks to Charles MacDonald (cgfm2@hooked.net) for donating code.
 **
-** $Id: vrc7_snd.h,v 1.2 2008-03-25 15:56:12 slomo Exp $
+** $Id$
 */
 
 #ifndef _VRC7_SND_H_
@@ -54,8 +54,8 @@ extern apuext_t vrc7_ext;
 #endif /* !_VRC7_SND_H_ */
 
 /*
-** $Log: vrc7_snd.h,v $
-** Revision 1.2  2008-03-25 15:56:12  slomo
+** $Log$
+** Revision 1.2  2008/03/25 15:56:12  slomo
 ** Patch by: Andreas Henriksson <andreas at fatal dot set>
 ** * gst/nsf/Makefile.am:
 ** * gst/nsf/dis6502.h:

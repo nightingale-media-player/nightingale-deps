@@ -78,6 +78,7 @@
 #define DESC_DIRAC_TC_PRIVATE			0xAC
 
 /* DVB tags */
+#define DESC_DVB_CAROUSEL_IDENTIFIER	0x13
 #define DESC_DVB_NETWORK_NAME   0x40
 #define DESC_DVB_SERVICE_LIST   0x41
 #define DESC_DVB_STUFFING       0x42
@@ -301,6 +302,26 @@
 #define DESC_DVB_CABLE_DELIVERY_SYSTEM_modulation(desc)		(desc[8])
 #define DESC_DVB_CABLE_DELIVERY_SYSTEM_symbol_rate(desc)	(desc + 9)
 #define DESC_DVB_CABLE_DELIVERY_SYSTEM_fec_inner(desc)		(desc[12] & 0x0F)
+
+/* DVB Data Broadcast Descriptor */
+#define DESC_DVB_DATA_BROADCAST_data_broadcast_id(desc)		(GST_READ_UINT16_BE((desc) + 2))
+#define DESC_DVB_DATA_BROADCAST_component_tag(desc)		(desc[4])
+#define DESC_DVB_DATA_BROADCAST_selector_length(desc)		(desc[5])
+#define DESC_DVB_DATA_BROADCAST_selector(desc)			(desc + 6)
+#define DESC_DVB_DATA_BROADCAST_iso639_language_code(desc)	(desc + 6 + DESC_DVB_DATA_BROADCAST_selector_length(desc))
+#define DESC_DVB_DATA_BROADCAST_text_length(desc)		(desc + 9 + DESC_DVB_DATA_BROADCAST_selector_length(desc))
+#define DESC_DVB_DATA_BROADCAST_text(desc)			(desc + 10 + DESC_DVB_DATA_BROADCAST_selector_length(desc))
+
+/* DVB Data Broadcast Id Descriptor */
+#define DESC_DVB_DATA_BROADCAST_ID_data_broadcast_id(desc)	(GST_READ_UINT16_BE((desc) + 2))
+#define DESC_DVB_DATA_BROADCAST_ID_id_selector_byte(desc)	(desc + 4)
+
+/* DVB Carousel Identifier Descriptor */
+#define DESC_DVB_CAROUSEL_IDENTIFIER_carousel_id(desc)		(GST_READ_UINT32_BE((desc) + 2))
+
+/* registration_descriptor format IDs */
+#define DRF_ID_HDMV       0x48444d56
+#define DRF_ID_VC1        0x56432D31   /* defined in RP227 */
 
 typedef struct {
   guint    n_desc;

@@ -20,7 +20,7 @@
 ** dis6502.h
 **
 ** 6502 disassembler header
-** $Id: dis6502.h,v 1.2 2008-03-25 15:56:10 slomo Exp $
+** $Id$
 */
 
 #ifndef _DIS6502_H_
@@ -39,8 +39,8 @@ extern void nes6502_disasm(uint32 PC, uint8 P, uint8 A, uint8 X, uint8 Y, uint8 
 #endif /* !_DIS6502_H_ */
 
 /*
-** $Log: dis6502.h,v $
-** Revision 1.2  2008-03-25 15:56:10  slomo
+** $Log$
+** Revision 1.2  2008/03/25 15:56:10  slomo
 ** Patch by: Andreas Henriksson <andreas at fatal dot set>
 ** * gst/nsf/Makefile.am:
 ** * gst/nsf/dis6502.h:

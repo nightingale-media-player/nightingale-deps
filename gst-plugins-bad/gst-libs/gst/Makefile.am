@@ -1,4 +1,5 @@
-SUBDIRS = 
+
+SUBDIRS = interfaces signalprocessor video
 
 noinst_HEADERS = gst-i18n-plugin.h gettext.h
-DIST_SUBDIRS = dshow
+DIST_SUBDIRS = interfaces signalprocessor video

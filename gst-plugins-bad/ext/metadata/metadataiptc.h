@@ -41,14 +41,20 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef __GST_METADATAPARSE_IPTC_H__
-#define __GST_METADATAPARSE_IPTC_H__
+#ifndef __GST_METADATA_IPTC_H__
+#define __GST_METADATA_IPTC_H__
 
 #include <gst/gst.h>
 #include <gst/base/gstadapter.h>
 #include "metadatatags.h"
 
 G_BEGIN_DECLS
+
+/*
+ * defines
+ */
+#define PHOTOSHOP_HEADER "Photoshop 3.0"
+
 
 /*
  * external function prototypes
@@ -63,4 +69,4 @@ metadatamux_iptc_create_chunk_from_tag_list (guint8 ** buf, guint32 *size,
     const GstTagList * taglist);
 
 G_END_DECLS
-#endif /* __GST_METADATAPARSE_IPTC_H__ */
+#endif /* __GST_METADATA_IPTC_H__ */

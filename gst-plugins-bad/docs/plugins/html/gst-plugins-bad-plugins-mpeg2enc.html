@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="prev" href="gst-plugins-bad-plugins-modplug.html" title="modplug">
 <link rel="next" href="gst-plugins-bad-plugins-mplex.html" title="mplex">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
@@ -23,11 +23,17 @@
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-bad-plugins-mplex.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-mpeg2enc.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-mpeg2enc.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-mpeg2enc.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-bad-plugins-mpeg2enc.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-mpeg2enc.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-mpeg2enc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-mpeg2enc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-mpeg2enc.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-bad-plugins-mpeg2enc"></a><div class="titlepage"></div>
@@ -40,9 +46,32 @@
 </tr></table></div>
 <div class="refsynopsisdiv">
 <a name="gst-plugins-bad-plugins-mpeg2enc.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">
-                    <a class="link" href="gst-plugins-bad-plugins-mpeg2enc.html#GstMpeg2enc" title="GstMpeg2enc">GstMpeg2enc</a>;
+<a name="GstMpeg2enc"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-bad-plugins-mpeg2enc.html#GstMpeg2enc-struct" title="GstMpeg2enc">GstMpeg2enc</a>;
 </pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-mpeg2enc.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----GstMpeg2enc
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-mpeg2enc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstMpeg2enc implements
+ <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPreset.html"
+>GstPreset</a>.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-mpeg2enc.properties"></a><h2>Properties</h2>
@@ -150,7 +179,7 @@ of the mpeg2enc tool in particular, which shares options with this element.
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2901954"></a><h3>Example pipeline</h3>
+<a name="id2894637"></a><h3>Example pipeline</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch-0.10 videotestsrc num-buffers=1000 ! mpeg2enc ! filesink location=videotestsrc.m1v
 </pre></div> This example pipeline will encode a test video source to a an MPEG1
@@ -172,7 +201,7 @@ for PAL <a class="link" href="gst-plugins-bad-plugins-mpeg2enc.html#GstMpeg2enc-
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2902012"></a><h3>Element Information</h3>
+<a name="id2894697"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -196,7 +225,79 @@ for PAL <a class="link" href="gst-plugins-bad-plugins-mpeg2enc.html#GstMpeg2enc-
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2902076"></a><h3>Element Pads</h3>
+<a name="id2894761"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw-yuv, format=(fourcc){ I420 }, width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ], framerate=(fraction){ 24000/1001, 24/1, 25/1, 30000/1001, 30/1, 50/1, 60000/1001 }</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/mpeg, systemstream=(boolean)false, mpegversion=(int){ 1, 2 }, width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ], framerate=(fraction){ 24000/1001, 24/1, 25/1, 30000/1001, 30/1, 50/1, 60000/1001 }</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2894907"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-mpeg2enc.html#plugin-mpeg2enc">mpeg2enc</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Andrew Stevens &lt;andrew.stevens@nexgo.de&gt;
+    Ronald Bultje &lt;rbultje@ronald.bitfreak.net&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Encoder/Video</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2894971"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -242,43 +343,14 @@ for PAL <a class="link" href="gst-plugins-bad-plugins-mpeg2enc.html#GstMpeg2enc-
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-mpeg2enc.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="GstMpeg2enc"></a><h3>GstMpeg2enc</h3>
-<pre class="programlisting">typedef struct {
-  GstElement parent;
-
-  /* pads */
-  GstPad *sinkpad, *srcpad;
-
-  /* options wrapper */
-  GstMpeg2EncOptions *options;
-
-  /* general encoding object (contains rest) */
-  GstMpeg2Encoder *encoder;
-
-  /* lock for syncing with encoding task */
-  GMutex *tlock;
-  /* with TLOCK */
-  /* signals counterpart thread that something changed;
-   * buffer ready for task or buffer has been processed */
-  GCond *cond;
-  /* seen eos */
-  gboolean eos;
-  /* flowreturn obtained by encoding task */
-  GstFlowReturn srcresult;
-  /* buffer for encoding task */
-  GstBuffer *buffer;
-  /* timestamps for output */
-  GQueue *time;
-} GstMpeg2enc;
-</pre>
+<a name="GstMpeg2enc-struct"></a><h3>GstMpeg2enc</h3>
+<pre class="programlisting">typedef struct _GstMpeg2enc GstMpeg2enc;</pre>
 <p>
-
 </p>
 </div>
 </div>
@@ -316,7 +388,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write</pre>
 <p>Compressed video bitrate (kbps).</p>
-<p>Allowed values: [0,10240]</p>
+<p>Allowed values: [0,10000]</p>
 <p>Default value: 1125</p>
 </div>
 <hr>
@@ -460,7 +532,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write</pre>
 <p>Assumed bitrate of non-video for sequence splitting (kbps).</p>
-<p>Allowed values: [0,10240]</p>
+<p>Allowed values: [0,10000]</p>
 <p>Default value: 0</p>
 </div>
 <hr>
@@ -588,7 +660,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <pre class="programlisting">  "vcd-still-size"           <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write</pre>
-<p>Size of VCD stills (in kB).</p>
+<p>Size of VCD stills (in KB).</p>
 <p>Allowed values: [0,512]</p>
 <p>Default value: 0</p>
 </div>
@@ -600,6 +672,6 @@ mpeg2dec
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

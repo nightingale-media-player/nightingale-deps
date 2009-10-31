@@ -78,6 +78,13 @@
  * </listitem>
  * <listitem>
  *   <para>
+ *   #guint64
+ *   <classname>&quot;data-uint64&quot;</classname>:
+ *   the data-pattern found after the pattern or 0 when have-signal is #FALSE.
+ *   </para>
+ * </listitem>
+ * <listitem>
+ *   <para>
  *   #guint
  *   <classname>&quot;data&quot;</classname>:
  *   the data-pattern found after the pattern or 0 when have-signal is #FALSE.
@@ -145,14 +152,16 @@ static GstStaticPadTemplate gst_video_detect_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV ("{ I420, YV12 }"))
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV
+        ("{ I420, YV12, Y41B, Y42B, Y444, YUY2, UYVY, AYUV, YVYU }"))
     );
 
 static GstStaticPadTemplate gst_video_detect_sink_template =
 GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV ("{ I420, YV12 }"))
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV
+        ("{ I420, YV12, Y41B, Y42B, Y444, YUY2, UYVY, AYUV, YVYU }"))
     );
 
 static GstVideoFilterClass *parent_class = NULL;
@@ -163,6 +172,7 @@ gst_video_detect_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
 {
   GstVideoDetect *vf;
   GstStructure *in_s;
+  guint32 fourcc;
   gboolean ret;
 
   vf = GST_VIDEO_DETECT (btrans);
@@ -171,25 +181,17 @@ gst_video_detect_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
 
   ret = gst_structure_get_int (in_s, "width", &vf->width);
   ret &= gst_structure_get_int (in_s, "height", &vf->height);
-  ret &= gst_structure_get_fourcc (in_s, "format", &vf->format);
+  ret &= gst_structure_get_fourcc (in_s, "format", &fourcc);
+
+  if (ret)
+    vf->format = gst_video_format_from_fourcc (fourcc);
 
   return ret;
 }
 
-/* Useful macros */
-#define GST_VIDEO_I420_Y_ROWSTRIDE(width) (GST_ROUND_UP_4(width))
-#define GST_VIDEO_I420_U_ROWSTRIDE(width) (GST_ROUND_UP_8(width)/2)
-#define GST_VIDEO_I420_V_ROWSTRIDE(width) ((GST_ROUND_UP_8(GST_VIDEO_I420_Y_ROWSTRIDE(width)))/2)
-
-#define GST_VIDEO_I420_Y_OFFSET(w,h) (0)
-#define GST_VIDEO_I420_U_OFFSET(w,h) (GST_VIDEO_I420_Y_OFFSET(w,h)+(GST_VIDEO_I420_Y_ROWSTRIDE(w)*GST_ROUND_UP_2(h)))
-#define GST_VIDEO_I420_V_OFFSET(w,h) (GST_VIDEO_I420_U_OFFSET(w,h)+(GST_VIDEO_I420_U_ROWSTRIDE(w)*GST_ROUND_UP_2(h)/2))
-
-#define GST_VIDEO_I420_SIZE(w,h)     (GST_VIDEO_I420_V_OFFSET(w,h)+(GST_VIDEO_I420_V_ROWSTRIDE(w)*GST_ROUND_UP_2(h)/2))
-
 static void
 gst_video_detect_post_message (GstVideoDetect * videodetect, GstBuffer * buffer,
-    guint data)
+    guint64 data)
 {
   GstBaseTransform *trans;
   GstMessage *m;
@@ -213,13 +215,14 @@ gst_video_detect_post_message (GstVideoDetect * videodetect, GstBuffer * buffer,
           "stream-time", G_TYPE_UINT64, stream_time,
           "running-time", G_TYPE_UINT64, running_time,
           "duration", G_TYPE_UINT64, duration,
-          "data", G_TYPE_UINT, data, NULL));
+          "data-uint64", G_TYPE_UINT64, data,
+          "data", G_TYPE_UINT, (guint) MIN (data, G_MAXINT), NULL));
   gst_element_post_message (GST_ELEMENT_CAST (videodetect), m);
 }
 
 static gdouble
 gst_video_detect_calc_brightness (GstVideoDetect * videodetect, guint8 * data,
-    gint width, gint height, gint stride)
+    gint width, gint height, gint row_stride, gint pixel_stride)
 {
   gint i, j;
   guint64 sum;
@@ -227,43 +230,55 @@ gst_video_detect_calc_brightness (GstVideoDetect * videodetect, guint8 * data,
   sum = 0;
   for (i = 0; i < height; i++) {
     for (j = 0; j < width; j++) {
-      sum += data[j];
+      sum += data[pixel_stride * j];
     }
-    /* move to next line */
-    data += stride;
+    data += row_stride;
   }
   return sum / (255.0 * width * height);
 }
 
 static void
-gst_video_detect_420 (GstVideoDetect * videodetect, GstBuffer * buffer)
+gst_video_detect_yuv (GstVideoDetect * videodetect, GstBuffer * buffer)
 {
+  GstVideoFormat format;
   gdouble brightness;
-  gint i, pw, ph, stride, width, height;
+  gint i, pw, ph, row_stride, pixel_stride, offset;
+  gint width, height, req_width, req_height;
   guint8 *d, *data;
-  guint pattern_data;
+  guint64 pattern_data;
 
   data = GST_BUFFER_DATA (buffer);
 
+  format = videodetect->format;
   width = videodetect->width;
   height = videodetect->height;
 
   pw = videodetect->pattern_width;
   ph = videodetect->pattern_height;
-  stride = GST_VIDEO_I420_Y_ROWSTRIDE (width);
+  row_stride = gst_video_format_get_row_stride (format, 0, width);
+  pixel_stride = gst_video_format_get_pixel_stride (format, 0);
+  offset = gst_video_format_get_component_offset (format, 0, width, height);
+
+  req_width =
+      (videodetect->pattern_count + videodetect->pattern_data_count) * pw +
+      videodetect->left_offset;
+  req_height = videodetect->bottom_offset + ph;
+  if (req_width > width || req_height > height) {
+    goto no_pattern;
+  }
 
   /* analyse the bottom left pixels */
   for (i = 0; i < videodetect->pattern_count; i++) {
-    d = data;
+    d = data + offset;
     /* move to start of bottom left, adjust for offsets */
-    d += stride * (height - ph - videodetect->bottom_offset) +
-        videodetect->left_offset;
+    d += row_stride * (height - ph - videodetect->bottom_offset) +
+        pixel_stride * videodetect->left_offset;
     /* move to i-th pattern */
-    d += pw * i;
+    d += pixel_stride * pw * i;
 
     /* calc brightness of width * height box */
-    brightness =
-        gst_video_detect_calc_brightness (videodetect, d, pw, ph, stride);
+    brightness = gst_video_detect_calc_brightness (videodetect, d, pw, ph,
+        row_stride, pixel_stride);
 
     GST_DEBUG_OBJECT (videodetect, "brightness %f", brightness);
 
@@ -287,25 +302,25 @@ gst_video_detect_420 (GstVideoDetect * videodetect, GstBuffer * buffer)
 
   /* get the data of the pattern */
   for (i = 0; i < videodetect->pattern_data_count; i++) {
-    d = data;
+    d = data + offset;
     /* move to start of bottom left, adjust for offsets */
-    d += stride * (height - ph - videodetect->bottom_offset) +
-        videodetect->left_offset;
+    d += row_stride * (height - ph - videodetect->bottom_offset) +
+        pixel_stride * videodetect->left_offset;
     /* move after the fixed pattern */
-    d += (videodetect->pattern_count * pw);
+    d += pixel_stride * (videodetect->pattern_count * pw);
     /* move to i-th pattern data */
-    d += pw * i;
+    d += pixel_stride * pw * i;
 
     /* calc brightness of width * height box */
-    brightness =
-        gst_video_detect_calc_brightness (videodetect, d, pw, ph, stride);
+    brightness = gst_video_detect_calc_brightness (videodetect, d, pw, ph,
+        row_stride, pixel_stride);
     /* update pattern, we just use the center to decide between black and white. */
     pattern_data <<= 1;
     if (brightness > videodetect->pattern_center)
       pattern_data |= 1;
   }
 
-  GST_DEBUG_OBJECT (videodetect, "have data %u", pattern_data);
+  GST_DEBUG_OBJECT (videodetect, "have data %" G_GUINT64_FORMAT, pattern_data);
 
   videodetect->in_pattern = TRUE;
   gst_video_detect_post_message (videodetect, buffer, pattern_data);
@@ -331,7 +346,7 @@ gst_video_detect_transform_ip (GstBaseTransform * trans, GstBuffer * buf)
 
   videodetect = GST_VIDEO_DETECT (trans);
 
-  gst_video_detect_420 (videodetect, buf);
+  gst_video_detect_yuv (videodetect, buf);
 
   return ret;
 }
@@ -461,7 +476,7 @@ gst_video_detect_class_init (gpointer klass, gpointer class_data)
           DEFAULT_PATTERN_HEIGHT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
   g_object_class_install_property (gobject_class, PROP_PATTERN_COUNT,
       g_param_spec_int ("pattern-count", "Pattern count",
-          "The number of pattern markers", 1, G_MAXINT,
+          "The number of pattern markers", 0, G_MAXINT,
           DEFAULT_PATTERN_COUNT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
   g_object_class_install_property (gobject_class, PROP_PATTERN_DATA_COUNT,
       g_param_spec_int ("pattern-data-count", "Pattern data count",

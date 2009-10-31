@@ -20,7 +20,7 @@
 ** log.c
 **
 ** Error logging functions
-** $Id: log.c,v 1.2 2008-03-25 15:56:11 slomo Exp $
+** $Id$
 */
 
 #include <stdio.h>
@@ -106,8 +106,8 @@ log_printf (const char *format, ...)
 }
 
 /*
-** $Log: log.c,v $
-** Revision 1.2  2008-03-25 15:56:11  slomo
+** $Log$
+** Revision 1.2  2008/03/25 15:56:11  slomo
 ** Patch by: Andreas Henriksson <andreas at fatal dot set>
 ** * gst/nsf/Makefile.am:
 ** * gst/nsf/dis6502.h:

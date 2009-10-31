@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>directdrawsink</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-dfbvideosink.html" title="dfbvideosink">
+<link rel="next" href="gst-plugins-bad-plugins-dtmfsrc.html" title="dtmfsrc">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-plugins-dfbvideosink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-dtmfsrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-bad-plugins-directdrawsink.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-directdrawsink.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-bad-plugins-directdrawsink"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-plugins-directdrawsink.top_of_page"></a>directdrawsink</span></h2>
+<p>directdrawsink — Direct Draw video sink</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-bad-plugins-directdrawsink.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">
+                    <a class="link" href="gst-plugins-bad-plugins-directdrawsink.html#GstDirectDrawSink" title="GstDirectDrawSink">GstDirectDrawSink</a>;
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-directdrawsink.description"></a><h2>Description</h2>
+<p>
+DirectdrawSink renders video RGB frames to any win32 window. This element
+can receive a window ID from the application through the <span class="type">XOverlay</span> interface
+and will then render video frames in this window.
+If no Window ID was provided by the application, the element will create its
+own internal window and render into it.
+</p>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2836747"></a><h3>Example pipelines</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v videotestsrc ! directdrawsink
+</pre></div> a simple pipeline to test the sink
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2836766"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-directdraw.html#plugin-directdraw">directdraw</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Sebastien Moutte &lt;sebastien@moutte.net&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Sink/Video</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2850636"></a><h3>Element Pads</h3>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2850650"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-directdraw.html#plugin-directdraw">directdraw</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Sebastien Moutte &lt;sebastien@moutte.net&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Sink/Video</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2850711"></a><h3>Element Pads</h3>
+</div>
+</div>
+<p>
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-directdrawsink.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstDirectDrawSink"></a><h3>GstDirectDrawSink</h3>
+<pre class="programlisting">typedef struct {
+  GstVideoSink videosink;
+
+  /* directdraw offscreen surfaces pool */
+  GSList *buffer_pool;
+  GMutex *pool_lock;
+
+  /* directdraw objects */
+  LPDIRECTDRAW ddraw_object;
+  LPDIRECTDRAWSURFACE primary_surface;
+  LPDIRECTDRAWSURFACE offscreen_surface;
+  LPDIRECTDRAWCLIPPER clipper; 
+
+  /* last buffer displayed (used for XOverlay interface expose method) */
+  GstBuffer * last_buffer;
+
+  /* directdraw caps */
+  GstCaps *caps;
+
+  /* video window management */
+  HWND video_window;
+  gboolean our_video_window;
+  HANDLE window_created_signal;
+  
+  /* video properties */
+  gint video_width, video_height;
+  gint out_width, out_height;
+  gint fps_n;
+  gint fps_d;
+
+  /* properties */
+  gboolean keep_aspect_ratio;
+
+  /*pixel format */
+  DDPIXELFORMAT dd_pixel_format;
+
+  /* thread processing our default window messages */
+  GThread *window_thread;
+
+  /* TRUE when directdraw object is set up */
+  gboolean setup;
+
+  /* TRUE if the hardware supports blitting from one colorspace to another */
+  gboolean can_blit_between_colorspace;
+
+  /* This flag is used to force re-creation of our offscreen surface.
+   * It's needed when hardware doesn't support fourcc blit and the bit depth
+   * of the current display mode changes.
+   */
+  gboolean must_recreate_offscreen;
+} GstDirectDrawSink;
+</pre>
+<p>
+</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.11</div>
+</body>
+</html>

@@ -104,6 +104,7 @@ G_BEGIN_DECLS
 #define FOURCC_wave     GST_MAKE_FOURCC('w','a','v','e')
 #define FOURCC_appl     GST_MAKE_FOURCC('a','p','p','l')
 #define FOURCC_esds     GST_MAKE_FOURCC('e','s','d','s')
+#define FOURCC_pasp     GST_MAKE_FOURCC('p','a','s','p')
 #define FOURCC_hnti     GST_MAKE_FOURCC('h','n','t','i')
 #define FOURCC_rtp_     GST_MAKE_FOURCC('r','t','p',' ')
 #define FOURCC_sdp_     GST_MAKE_FOURCC('s','d','p',' ')
@@ -140,6 +141,7 @@ G_BEGIN_DECLS
 #define FOURCC_drms     GST_MAKE_FOURCC('d','r','m','s')
 #define FOURCC_avc1     GST_MAKE_FOURCC('a','v','c','1')
 #define FOURCC_h263     GST_MAKE_FOURCC('h','2','6','3')
+#define FOURCC_s263     GST_MAKE_FOURCC('s','2','6','3')
 #define FOURCC_avcC     GST_MAKE_FOURCC('a','v','c','C')
 #define FOURCC_VP31     GST_MAKE_FOURCC('V','P','3','1')
 #define FOURCC_rle_     GST_MAKE_FOURCC('r','l','e',' ')
@@ -179,6 +181,15 @@ G_BEGIN_DECLS
 /* ilst metatags */
 #define FOURCC_titl     GST_MAKE_FOURCC('t','i','t','l')
 #define FOURCC__cmt     GST_MAKE_FOURCC(0xa9, 'c','m','t')
+
+/* 3gp tags */
+#define FOURCC_dscp     GST_MAKE_FOURCC('d','s','c','p')
+#define FOURCC_perf     GST_MAKE_FOURCC('p','e','r','f')
+#define FOURCC_auth     GST_MAKE_FOURCC('a','u','t','h')
+#define FOURCC_yrrc     GST_MAKE_FOURCC('y','r','r','c')
+#define FOURCC_albm     GST_MAKE_FOURCC('a','l','b','m')
+#define FOURCC_loci     GST_MAKE_FOURCC('l','o','c','i')
+#define FOURCC_kywd     GST_MAKE_FOURCC('k','y','w','d')
 
 G_END_DECLS
 

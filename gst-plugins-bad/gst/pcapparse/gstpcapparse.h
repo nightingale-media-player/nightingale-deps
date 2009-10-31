@@ -45,10 +45,17 @@ typedef enum
   PCAP_PARSE_STATE_PARSING,
 } GstPcapParseState;
 
+/**
+ * GstPcapParse:
+ *
+ * GstPcapParse element.
+ */
+
 struct _GstPcapParse
 {
   GstElement element;
 
+  /*< private >*/
   GstPad * sink_pad;
   GstPad * src_pad;
 
@@ -63,6 +70,10 @@ struct _GstPcapParse
   gboolean initialized;
   gboolean swap_endian;
   gint64 cur_packet_size;
+  GstClockTime cur_ts;
+
+  gboolean newsegment_sent;
+
   gint64 buffer_offset;
 };
 

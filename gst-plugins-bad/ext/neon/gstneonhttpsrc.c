@@ -27,12 +27,14 @@
 
 #include <ne_redirect.h>
 
+#define STATUS_IS_REDIRECTION(status)     ((status) >= 300 && (status) < 400)
+
 GST_DEBUG_CATEGORY_STATIC (neonhttpsrc_debug);
 #define GST_CAT_DEFAULT neonhttpsrc_debug
 
 #define MAX_READ_SIZE (4 * 1024)
 
-/* max number of HTTP redirects, when iterating over a sequence of HTTP 302/303 status code */
+/* max number of HTTP redirects, when iterating over a sequence of HTTP 3xx status code */
 #define MAX_HTTP_REDIRECTS_NUMBER 5
 
 static const GstElementDetails gst_neonhttp_src_details =
@@ -63,6 +65,7 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
 #define DEFAULT_IRADIO_GENRE         NULL
 #define DEFAULT_IRADIO_URL           NULL
 #define DEFAULT_AUTOMATIC_REDIRECT   TRUE
+#define DEFAULT_ACCEPT_SELF_SIGNED   FALSE
 #define DEFAULT_NEON_HTTP_DEBUG      FALSE
 
 enum
@@ -76,6 +79,7 @@ enum
   PROP_IRADIO_GENRE,
   PROP_IRADIO_URL,
   PROP_AUTOMATIC_REDIRECT,
+  PROP_ACCEPT_SELF_SIGNED,
 #ifndef GST_DISABLE_GST_DEBUG
   PROP_NEON_HTTP_DEBUG
 #endif
@@ -197,8 +201,14 @@ gst_neonhttp_src_class_init (GstNeonhttpSrcClass * klass)
   g_object_class_install_property
       (gobject_class, PROP_AUTOMATIC_REDIRECT,
       g_param_spec_boolean ("automatic-redirect", "automatic-redirect",
-          "Automatically follow HTTP redirects (HTTP Status Code 302/303)",
+          "Automatically follow HTTP redirects (HTTP Status Code 3xx)",
           TRUE, G_PARAM_READWRITE));
+
+  g_object_class_install_property
+      (gobject_class, PROP_ACCEPT_SELF_SIGNED,
+      g_param_spec_boolean ("accept-self-signed", "accept-self-signed",
+          "Accept self-signed SSL/TLS certificates",
+          DEFAULT_ACCEPT_SELF_SIGNED, G_PARAM_READWRITE));
 
 #ifndef GST_DISABLE_GST_DEBUG
   g_object_class_install_property
@@ -233,6 +243,7 @@ gst_neonhttp_src_init (GstNeonhttpSrc * src, GstNeonhttpSrcClass * g_class)
   src->iradio_url = DEFAULT_IRADIO_URL;
   src->user_agent = g_strdup (DEFAULT_USER_AGENT);
   src->automatic_redirect = DEFAULT_AUTOMATIC_REDIRECT;
+  src->accept_self_signed = DEFAULT_ACCEPT_SELF_SIGNED;
 
   src->session = NULL;
   src->request = NULL;
@@ -332,28 +343,23 @@ gst_neonhttp_src_set_property (GObject * object, guint prop_id,
       break;
     }
     case PROP_USER_AGENT:
-    {
       if (src->user_agent)
         g_free (src->user_agent);
       src->user_agent = g_strdup (g_value_get_string (value));
       break;
-    }
     case PROP_IRADIO_MODE:
-    {
       src->iradio_mode = g_value_get_boolean (value);
       break;
-    }
     case PROP_AUTOMATIC_REDIRECT:
-    {
       src->automatic_redirect = g_value_get_boolean (value);
       break;
-    }
+    case PROP_ACCEPT_SELF_SIGNED:
+      src->accept_self_signed = g_value_get_boolean (value);
+      break;
 #ifndef GST_DISABLE_GST_DEBUG
     case PROP_NEON_HTTP_DEBUG:
-    {
       src->neon_http_debug = g_value_get_boolean (value);
       break;
-    }
 #endif
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -401,10 +407,8 @@ gst_neonhttp_src_get_property (GObject * object, guint prop_id,
       break;
     }
     case PROP_USER_AGENT:
-    {
       g_value_set_string (value, neonhttpsrc->user_agent);
       break;
-    }
     case PROP_IRADIO_MODE:
       g_value_set_boolean (value, neonhttpsrc->iradio_mode);
       break;
@@ -420,6 +424,9 @@ gst_neonhttp_src_get_property (GObject * object, guint prop_id,
     case PROP_AUTOMATIC_REDIRECT:
       g_value_set_boolean (value, neonhttpsrc->automatic_redirect);
       break;
+    case PROP_ACCEPT_SELF_SIGNED:
+      g_value_set_boolean (value, neonhttpsrc->accept_self_signed);
+      break;
 #ifndef GST_DISABLE_GST_DEBUG
     case PROP_NEON_HTTP_DEBUG:
       g_value_set_boolean (value, neonhttpsrc->neon_http_debug);
@@ -429,6 +436,13 @@ gst_neonhttp_src_get_property (GObject * object, guint prop_id,
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
+}
+
+/* NEON CALLBACK */
+static void
+oom_callback ()
+{
+  GST_ERROR ("memory exeception in neon");
 }
 
 static GstFlowReturn
@@ -772,8 +786,39 @@ error:
   }
 }
 
+static int
+ssl_verify_callback (void *data, int failures, const ne_ssl_certificate * cert)
+{
+  GstNeonhttpSrc *src = GST_NEONHTTP_SRC (data);
+
+  if ((failures & NE_SSL_UNTRUSTED) &&
+      src->accept_self_signed && !ne_ssl_cert_signedby (cert)) {
+    GST_ELEMENT_INFO (src, RESOURCE, READ,
+        (NULL), ("Accepting self-signed server certificate"));
+
+    failures &= ~NE_SSL_UNTRUSTED;
+  }
+
+  if (failures & NE_SSL_NOTYETVALID)
+    GST_ELEMENT_ERROR (src, RESOURCE, READ,
+        (NULL), ("Server certificate not valid yet"));
+  if (failures & NE_SSL_EXPIRED)
+    GST_ELEMENT_ERROR (src, RESOURCE, READ,
+        (NULL), ("Server certificate has expired"));
+  if (failures & NE_SSL_IDMISMATCH)
+    GST_ELEMENT_ERROR (src, RESOURCE, READ,
+        (NULL), ("Server certificate doesn't match hostname"));
+  if (failures & NE_SSL_UNTRUSTED)
+    GST_ELEMENT_ERROR (src, RESOURCE, READ,
+        (NULL), ("Server certificate signer not trusted"));
+
+  GST_DEBUG_OBJECT (src, "failures: %d\n", failures);
+
+  return failures;
+}
+
 /* Try to send the HTTP request to the Icecast server, and if possible deals with
- * all the probable redirections (HTTP status code == 302/303)
+ * all the probable redirections (HTTP status code == 3xx)
  */
 static gint
 gst_neonhttp_src_send_request_and_redirect (GstNeonhttpSrc * src,
@@ -799,6 +844,7 @@ gst_neonhttp_src_send_request_and_redirect (GstNeonhttpSrc * src,
     }
 
     ne_set_session_flag (session, NE_SESSFLAG_ICYPROTO, 1);
+    ne_ssl_set_verify (session, ssl_verify_callback, src);
 
     request = ne_request_create (session, "GET", src->query_string);
 
@@ -818,10 +864,10 @@ gst_neonhttp_src_send_request_and_redirect (GstNeonhttpSrc * src,
     res = ne_begin_request (request);
 
     if (res == NE_OK) {
-      /* When the HTTP status code is 302/303, it is not the SHOUTcast streaming content yet;
+      /* When the HTTP status code is 3xx, it is not the SHOUTcast streaming content yet;
        * Reload the HTTP request with a new URI value */
       http_status = ne_get_status (request)->code;
-      if ((http_status == 302 || http_status == 303) && do_redir) {
+      if (STATUS_IS_REDIRECTION (http_status) && do_redir) {
         const gchar *redir;
 
         /* the new URI value to go when redirecting can be found on the 'Location' HTTP header */
@@ -837,21 +883,21 @@ gst_neonhttp_src_send_request_and_redirect (GstNeonhttpSrc * src,
 
     if ((res != NE_OK) ||
         (offset == 0 && http_status != 200) ||
-        (offset > 0 && http_status != 206 && http_status != 302
-            && http_status != 303)) {
+        (offset > 0 && http_status != 206 &&
+            !STATUS_IS_REDIRECTION (http_status))) {
       ne_request_destroy (request);
       request = NULL;
       ne_close_connection (session);
       ne_session_destroy (session);
       session = NULL;
-      if (offset > 0 && http_status != 206 && http_status != 302
-          && http_status != 303) {
+      if (offset > 0 && http_status != 206 &&
+          !STATUS_IS_REDIRECTION (http_status)) {
         src->seekable = FALSE;
       }
     }
 
     /* if - NE_OK */
-    if ((http_status == 302 || http_status == 303) && do_redir) {
+    if (STATUS_IS_REDIRECTION (http_status) && do_redir) {
       ++request_count;
       GST_LOG_OBJECT (src, "redirect request_count is now %d", request_count);
       if (request_count < MAX_HTTP_REDIRECTS_NUMBER && do_redir) {
@@ -865,7 +911,7 @@ gst_neonhttp_src_send_request_and_redirect (GstNeonhttpSrc * src,
     }
     /* do the redirect, go back to send another HTTP request now using the 'Location' */
   } while (do_redir && (request_count < MAX_HTTP_REDIRECTS_NUMBER)
-      && (http_status == 302 || http_status == 303));
+      && STATUS_IS_REDIRECTION (http_status));
 
   if (session) {
     *ses = session;
@@ -1012,13 +1058,6 @@ gst_neonhttp_src_uri_handler_init (gpointer g_iface, gpointer iface_data)
   iface->get_protocols = gst_neonhttp_src_uri_get_protocols;
   iface->get_uri = gst_neonhttp_src_uri_get_uri;
   iface->set_uri = gst_neonhttp_src_uri_set_uri;
-}
-
-/* NEON CALLBACK */
-static void
-oom_callback ()
-{
-  GST_ERROR ("memory exeception in neon");
 }
 
 /* entry point to initialize the plug-in

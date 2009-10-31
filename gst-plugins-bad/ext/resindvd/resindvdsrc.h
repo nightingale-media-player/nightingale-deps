@@ -25,21 +25,9 @@
 
 #include "_stdint.h"
 
-#ifndef DVDNAV_OLD
-
 #include <dvdnav/dvdnav.h>
 #include <dvdread/ifo_read.h>
 #include <dvdread/nav_read.h>
-
-#else
-
-#include <dvdnav/dvd_reader.h>
-#include <dvdnav/ifo_read.h>
-
-#include <dvdnav/dvdnav.h>
-#include <dvdnav/nav_read.h>
-
-#endif
 
 G_BEGIN_DECLS
 
@@ -60,6 +48,8 @@ struct _resinDvdSrc
 {
   RsnPushSrc parent;
 
+  gboolean	faststart;
+
   GMutex	*dvd_lock;
   GCond		*still_cond;
   GMutex	*branch_lock;
@@ -67,6 +57,8 @@ struct _resinDvdSrc
 
   gchar		*device;
   dvdnav_t	*dvdnav;
+
+  const char    *disc_name;
 
   /* dvd_reader instance is used to load and cache VTS/VMG ifo info */
   dvd_reader_t  *dvdread;
@@ -82,6 +74,10 @@ struct _resinDvdSrc
   /* Current playback location: VTS 0 = VMG, plus in_menu or not */
   gint		vts_n;
   gboolean	in_menu;
+  gint          title_n; /* Title num */
+  gint          part_n; /* Part num */
+  gint          n_angles; /* number of angles */
+  gint          cur_angle; /* current angle */
 
   gboolean	running;
   gboolean	discont;
@@ -91,6 +87,11 @@ struct _resinDvdSrc
   gboolean	active_highlight;
   gboolean      in_still_state;
   gboolean      in_playing;
+
+  gboolean      was_mouse_over;
+
+  /* Remaining time to wait in a timed still: */
+  GstClockTime  still_time_remaining;
 
   GstBuffer	*alloc_buf;
   GstBuffer	*next_buf;
@@ -122,6 +123,9 @@ struct _resinDvdSrc
   GstEvent	*audio_select_event;
   GstEvent	*highlight_event;
 
+  gboolean      angles_changed;
+  gboolean      commands_changed;
+
   /* GList of NAV packets awaiting activation, and the
    * running times to activate them. */
   GSList *pending_nav_blocks;
@@ -137,6 +141,8 @@ struct _resinDvdSrc
   gint8         cur_spu_phys_stream;
   gboolean      cur_spu_forced_only;
   guint32       cur_clut[16];
+
+  guint32       cur_btn_mask;
 };
 
 struct _resinDvdSrcClass 

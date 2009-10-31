@@ -28,7 +28,7 @@
 
 #include <gst/gst.h>
 
-#include "gstsignalprocessor.h"
+#include <gst/signalprocessor/gstsignalprocessor.h>
 
 
 G_BEGIN_DECLS
@@ -39,7 +39,7 @@ typedef struct _ladspa_control_info {
   gchar *param_name;
   gfloat lowerbound, upperbound;
   gfloat def;
-  gboolean lower,upper,samplerate;
+  gboolean lower, upper, samplerate;
   gboolean toggled, logarithmic, integer, writable;
 } ladspa_control_info;
 

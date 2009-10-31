@@ -99,7 +99,21 @@ static void gst_mpeg2enc_get_property (GObject * object,
 static void gst_mpeg2enc_set_property (GObject * object,
     guint prop_id, const GValue * value, GParamSpec * pspec);
 
-GST_BOILERPLATE (GstMpeg2enc, gst_mpeg2enc, GstElement, GST_TYPE_ELEMENT);
+static void
+_do_init (GType object_type)
+{
+  const GInterfaceInfo preset_interface_info = {
+    NULL,                       /* interface_init */
+    NULL,                       /* interface_finalize */
+    NULL                        /* interface_data */
+  };
+
+  g_type_add_interface_static (object_type, GST_TYPE_PRESET,
+      &preset_interface_info);
+}
+
+GST_BOILERPLATE_FULL (GstMpeg2enc, gst_mpeg2enc, GstElement, GST_TYPE_ELEMENT,
+    _do_init);
 
 static void
 gst_mpeg2enc_base_init (gpointer klass)
@@ -703,7 +717,7 @@ plugin_init (GstPlugin * plugin)
   mjpeg_default_handler_verbosity (0);
 
   return gst_element_register (plugin, "mpeg2enc",
-      GST_RANK_NONE, GST_TYPE_MPEG2ENC);
+      GST_RANK_SECONDARY, GST_TYPE_MPEG2ENC);
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,

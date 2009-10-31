@@ -22,6 +22,18 @@ endif
 # CDROM_DIR=
 # endif
 
+if USE_DIRECTDRAW
+DIRECTDRAW_DIR=directdraw
+else
+DIRECTDRAW_DIR=
+endif
+
+if USE_DIRECTSOUND
+DIRECTSOUND_DIR=directsound
+else
+DIRECTSOUND_DIR=
+endif
+
 if USE_FBDEV
 FBDEV_DIR=fbdev
 else
@@ -40,16 +52,16 @@ else
 OSS4_DIR=
 endif
 
+if USE_OSX_VIDEO
+OSX_VIDEO_DIR=osxvideo
+else
+OSX_VIDEO_DIR=
+endif
+
 if USE_QUICKTIME
 QT_DIR=qtwrapper
 else
 QT_DIR=
-endif
-
-if USE_DIRECTSHOW
-DSHOW_DIRS=dshowdecwrapper dshowvideosink
-else
-DSHOW_DIRS=
 endif
 
 if USE_WININET
@@ -59,20 +71,19 @@ WININET_DIR=
 endif
 
 if USE_ACM
-ACM_DIRS=acmenc acmmp3dec
+ACM_DIR=acmenc acmmp3dec
 else
-ACM_DIRS=
+ACM_DIR=
 endif
 
-if USE_DMO
-DMO_DIR=dmoenc
+if USE_VDPAU
+VDPAU_DIR=vdpau
 else
-DMO_DIR=
+VDPAU_DIR=
 endif
 
-SUBDIRS = $(ACM_DIRS) $(DMO_DIR) $(DSHOW_DIRS) $(DVB_DIR) $(FBDEV_DIR) $(OSS4_DIR) $(QT_DIR) $(VCD_DIR) $(WININET_DIR)
+SUBDIRS = $(ACM_DIR) $(DIRECTDRAW_DIR) $(DIRECTSOUND_DIR) $(DVB_DIR) $(FBDEV_DIR) $(OSS4_DIR) $(OSX_VIDEO_DIR) $(QT_DIR) $(VCD_DIR) $(VDPAU_DIR) $(WININET_DIR)
 
-DIST_SUBDIRS = acmenc acmmp3dec dvb fbdev dmoenc dshowdecwrapper \
-               dshowsrcwrapper dshowvideosink \
-               oss4 qtwrapper vcd wasapi wininet winks winscreencap
+DIST_SUBDIRS = acmenc acmmp3dec directdraw directsound dvb fbdev dshowdecwrapper dshowsrcwrapper dshowvideosink \
+			   oss4 osxvideo qtwrapper vcd vdpau wasapi wininet winks winscreencap
 

@@ -41,14 +41,19 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef __GST_METADATAPARSE_XMP_H__
-#define __GST_METADATAPARSE_XMP_H__
+#ifndef __GST_METADATA_XMP_H__
+#define __GST_METADATA_XMP_H__
 
 #include <gst/gst.h>
 #include <gst/base/gstadapter.h>
 #include "metadatatags.h"
 
 G_BEGIN_DECLS
+
+/*
+ * defines
+ */
+#define XMP_HEADER "http://ns.adobe.com/xap/1.0/"
 
 /*
  * external function prototypes
@@ -67,4 +72,4 @@ metadatamux_xmp_create_chunk_from_tag_list (guint8 ** buf, guint32 *size,
     const GstTagList * taglist);
 
 G_END_DECLS
-#endif /* __GST_METADATAPARSE_XMP_H__ */
+#endif /* __GST_METADATA_XMP_H__ */

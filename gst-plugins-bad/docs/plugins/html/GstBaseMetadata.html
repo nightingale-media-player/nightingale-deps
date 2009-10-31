@@ -2,12 +2,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>gstbasemetadata</title>
+<title>GstBaseMetadata</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch03.html" title="gst-plugins-bad Classes">
 <link rel="prev" href="ch03.html" title="gst-plugins-bad Classes">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
@@ -22,18 +22,20 @@
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
 <td> </td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#GstBaseMetadata.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#GstBaseMetadata.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#GstBaseMetadata.object-hierarchy" class="shortcut">Object Hierarchy</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#GstBaseMetadata.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#GstBaseMetadata.description" class="shortcut">Description</a>
+                 | 
+                <a href="#GstBaseMetadata.object-hierarchy" class="shortcut">Object Hierarchy</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="GstBaseMetadata"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2><span class="refentrytitle"><a name="GstBaseMetadata.top_of_page"></a>gstbasemetadata</span></h2>
-<p>gstbasemetadata — Base class for metadata handling elements</p>
+<h2><span class="refentrytitle"><a name="GstBaseMetadata.top_of_page"></a>GstBaseMetadata</span></h2>
+<p>GstBaseMetadata — Base class for metadata handling elements</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -41,15 +43,15 @@
 <a name="GstBaseMetadata.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
                     <a class="link" href="GstBaseMetadata.html#GstBaseMetadata-struct" title="GstBaseMetadata">GstBaseMetadata</a>;
-#define             <a class="link" href="GstBaseMetadata.html#GST-BASE-METADATA-SINK-PAD:CAPS" title="GST_BASE_METADATA_SINK_PAD()">GST_BASE_METADATA_SINK_PAD</a>          (obj)
-#define             <a class="link" href="GstBaseMetadata.html#GST-BASE-METADATA-SRC-PAD:CAPS" title="GST_BASE_METADATA_SRC_PAD()">GST_BASE_METADATA_SRC_PAD</a>           (obj)
-MetaOptions         <a class="link" href="GstBaseMetadata.html#gst-base-metadata-get-option-flag" title="gst_base_metadata_get_option_flag ()">gst_base_metadata_get_option_flag</a>   (const <a class="link" href="GstBaseMetadata.html" title="gstbasemetadata">GstBaseMetadata</a> *base);
-void                <a class="link" href="GstBaseMetadata.html#gst-base-metadata-set-option-flag" title="gst_base_metadata_set_option_flag ()">gst_base_metadata_set_option_flag</a>   (<a class="link" href="GstBaseMetadata.html" title="gstbasemetadata">GstBaseMetadata</a> *base,
+#define             <a class="link" href="GstBaseMetadata.html#GST-BASE-METADATA-SINK-PAD--CAPS" title="GST_BASE_METADATA_SINK_PAD()">GST_BASE_METADATA_SINK_PAD</a>          (obj)
+#define             <a class="link" href="GstBaseMetadata.html#GST-BASE-METADATA-SRC-PAD--CAPS" title="GST_BASE_METADATA_SRC_PAD()">GST_BASE_METADATA_SRC_PAD</a>           (obj)
+MetaOptions         <a class="link" href="GstBaseMetadata.html#gst-base-metadata-get-option-flag" title="gst_base_metadata_get_option_flag ()">gst_base_metadata_get_option_flag</a>   (const <a class="link" href="GstBaseMetadata.html" title="GstBaseMetadata">GstBaseMetadata</a> *base);
+void                <a class="link" href="GstBaseMetadata.html#gst-base-metadata-set-option-flag" title="gst_base_metadata_set_option_flag ()">gst_base_metadata_set_option_flag</a>   (<a class="link" href="GstBaseMetadata.html" title="GstBaseMetadata">GstBaseMetadata</a> *base,
                                                          const MetaOptions options);
-void                <a class="link" href="GstBaseMetadata.html#gst-base-metadata-unset-option-flag" title="gst_base_metadata_unset_option_flag ()">gst_base_metadata_unset_option_flag</a> (<a class="link" href="GstBaseMetadata.html" title="gstbasemetadata">GstBaseMetadata</a> *base,
+void                <a class="link" href="GstBaseMetadata.html#gst-base-metadata-unset-option-flag" title="gst_base_metadata_unset_option_flag ()">gst_base_metadata_unset_option_flag</a> (<a class="link" href="GstBaseMetadata.html" title="GstBaseMetadata">GstBaseMetadata</a> *base,
                                                          const MetaOptions options);
 void                <a class="link" href="GstBaseMetadata.html#gst-base-metadata-update-inject-segment-with-new-data" title="gst_base_metadata_update_inject_segment_with_new_data ()">gst_base_metadata_update_inject_segment_with_new_data</a>
-                                                        (<a class="link" href="GstBaseMetadata.html" title="gstbasemetadata">GstBaseMetadata</a> *base,
+                                                        (<a class="link" href="GstBaseMetadata.html" title="GstBaseMetadata">GstBaseMetadata</a> *base,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 >guint8</a> **data,
@@ -65,8 +67,12 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
                +----GstBaseMetadata
                      +----<a class="link" href="gst-plugins-bad-plugins-metadatademux.html#GstMetadataDemux">GstMetadataDemux</a>
                      +----<a class="link" href="gst-plugins-bad-plugins-metadatamux.html#GstMetadataMux">GstMetadataMux</a>
@@ -90,7 +96,7 @@ types of elements are supported:
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2923232"></a><p>
+<a name="id2935099"></a><p>
 This a abstract element that parses a stream and find chunks and offset
 where new chunks could be injected into it.
 Basically, the only thing need by implementors (parsers, (de)muxers) is to
@@ -103,7 +109,9 @@ and add chunks to be injected (using the helper function
 </p>
 <p>
 This can work in 'pull' and 'push' scheduling modes. In case of push mode,
-the stream will be parsed during sink activation if <span class="type">gst_pad_get_range</span> is
+the stream will be parsed during sink activation if <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html#gst-pad-get-range"
+><span class="type">gst_pad_get_range</span></a> is
 available on upstream element. If get_range function is not available
 upstream, then the data will be hold until the stream is completly parsed,
 and then after that the fisrt buffer will be pushed downstream. The same
@@ -125,7 +133,6 @@ stream types and EXIF, IPTC and XMP metadatas.
 <p>
 Last reviewed on 2008-01-21 (0.10.15)</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -134,45 +141,38 @@ Last reviewed on 2008-01-21 (0.10.15)</p>
 <a name="GstBaseMetadata-struct"></a><h3>GstBaseMetadata</h3>
 <pre class="programlisting">typedef struct _GstBaseMetadata GstBaseMetadata;</pre>
 <p>
-The opaque <a class="link" href="GstBaseMetadata.html" title="gstbasemetadata"><span class="type">GstBaseMetadata</span></a> data structure.</p>
+The opaque <a class="link" href="GstBaseMetadata.html" title="GstBaseMetadata"><span class="type">GstBaseMetadata</span></a> data structure.</p>
 <p>
-
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-BASE-METADATA-SINK-PAD:CAPS"></a><h3>GST_BASE_METADATA_SINK_PAD()</h3>
+<a name="GST-BASE-METADATA-SINK-PAD--CAPS"></a><h3>GST_BASE_METADATA_SINK_PAD()</h3>
 <pre class="programlisting">#define GST_BASE_METADATA_SINK_PAD(obj) (GST_BASE_METADATA_CAST (obj)-&gt;sinkpad)
 </pre>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
 <td>
-
-
 </td>
 </tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-BASE-METADATA-SRC-PAD:CAPS"></a><h3>GST_BASE_METADATA_SRC_PAD()</h3>
+<a name="GST-BASE-METADATA-SRC-PAD--CAPS"></a><h3>GST_BASE_METADATA_SRC_PAD()</h3>
 <pre class="programlisting">#define GST_BASE_METADATA_SRC_PAD(obj) (GST_BASE_METADATA_CAST (obj)-&gt;srcpad)
 </pre>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
 <td>
-
-
 </td>
 </tr></tbody>
 </table></div>
@@ -180,14 +180,13 @@ The opaque <a class="link" href="GstBaseMetadata.html" title="gstbasemetadata"><
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-metadata-get-option-flag"></a><h3>gst_base_metadata_get_option_flag ()</h3>
-<pre class="programlisting">MetaOptions         gst_base_metadata_get_option_flag   (const <a class="link" href="GstBaseMetadata.html" title="gstbasemetadata">GstBaseMetadata</a> *base);</pre>
+<pre class="programlisting">MetaOptions         gst_base_metadata_get_option_flag   (const <a class="link" href="GstBaseMetadata.html" title="GstBaseMetadata">GstBaseMetadata</a> *base);</pre>
 <p>
 Check how the this base class will behaviour. As a demuxer or muxer.
 Hanlding EXIF, IPTC, XMP or not.
 <em class="parameter"><code>see_also</code></em>: <a class="link" href="GstBaseMetadata.html#gst-base-metadata-set-option-flag" title="gst_base_metadata_set_option_flag ()"><span class="type">gst_base_metadata_set_option_flag</span></a>
 <a class="link" href="GstBaseMetadata.html#gst-base-metadata-unset-option-flag" title="gst_base_metadata_unset_option_flag ()"><span class="type">gst_base_metadata_unset_option_flag</span></a></p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -208,7 +207,7 @@ Hanlding EXIF, IPTC, XMP or not.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-metadata-set-option-flag"></a><h3>gst_base_metadata_set_option_flag ()</h3>
-<pre class="programlisting">void                gst_base_metadata_set_option_flag   (<a class="link" href="GstBaseMetadata.html" title="gstbasemetadata">GstBaseMetadata</a> *base,
+<pre class="programlisting">void                gst_base_metadata_set_option_flag   (<a class="link" href="GstBaseMetadata.html" title="GstBaseMetadata">GstBaseMetadata</a> *base,
                                                          const MetaOptions options);</pre>
 <p>
 Set how the this base class will behaviour. As a demuxer or muxer. Hanlding
@@ -216,7 +215,6 @@ EXIF, IPTC, XMP or not.
 <em class="parameter"><code>see_also</code></em>: <a class="link" href="GstBaseMetadata.html#gst-base-metadata-unset-option-flag" title="gst_base_metadata_unset_option_flag ()"><span class="type">gst_base_metadata_unset_option_flag</span></a>
 <a class="link" href="GstBaseMetadata.html#gst-base-metadata-get-option-flag" title="gst_base_metadata_get_option_flag ()"><span class="type">gst_base_metadata_get_option_flag</span></a></p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -237,7 +235,7 @@ EXIF, IPTC, XMP or not.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-metadata-unset-option-flag"></a><h3>gst_base_metadata_unset_option_flag ()</h3>
-<pre class="programlisting">void                gst_base_metadata_unset_option_flag (<a class="link" href="GstBaseMetadata.html" title="gstbasemetadata">GstBaseMetadata</a> *base,
+<pre class="programlisting">void                gst_base_metadata_unset_option_flag (<a class="link" href="GstBaseMetadata.html" title="GstBaseMetadata">GstBaseMetadata</a> *base,
                                                          const MetaOptions options);</pre>
 <p>
 Set how the this base class will behaviour. As a demuxer or muxer. Hanlding
@@ -245,7 +243,6 @@ EXIF, IPTC, XMP or not.
 <em class="parameter"><code>see_also</code></em>: <a class="link" href="GstBaseMetadata.html#gst-base-metadata-set-option-flag" title="gst_base_metadata_set_option_flag ()"><span class="type">gst_base_metadata_set_option_flag</span></a>
 <a class="link" href="GstBaseMetadata.html#gst-base-metadata-get-option-flag" title="gst_base_metadata_get_option_flag ()"><span class="type">gst_base_metadata_get_option_flag</span></a></p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -267,7 +264,7 @@ EXIF, IPTC, XMP or not.
 <div class="refsect2" lang="en">
 <a name="gst-base-metadata-update-inject-segment-with-new-data"></a><h3>gst_base_metadata_update_inject_segment_with_new_data ()</h3>
 <pre class="programlisting">void                gst_base_metadata_update_inject_segment_with_new_data
-                                                        (<a class="link" href="GstBaseMetadata.html" title="gstbasemetadata">GstBaseMetadata</a> *base,
+                                                        (<a class="link" href="GstBaseMetadata.html" title="GstBaseMetadata">GstBaseMetadata</a> *base,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 >guint8</a> **data,
@@ -283,7 +280,6 @@ the <em class="parameter"><code>data</code></em> ownership will be taken and <em
 Hanlding EXIF, IPTC, XMP or not.
 <em class="parameter"><code>see_also</code></em>: <span class="type">gst_base_metadata_calculate_offsets</span></p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -315,6 +311,6 @@ Hanlding EXIF, IPTC, XMP or not.
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

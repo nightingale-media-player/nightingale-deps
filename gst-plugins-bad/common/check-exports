@@ -32,7 +32,7 @@ fi
 # really be exported, either because we're too lazy to rename them to something
 # that's not exported (like the _gst_parse_* stuff) or because we had them in
 # public headers at some point although they shouldn't be and so we need to
-# keep them exported now (like _gst_debug_init, 
+# keep them exported now (like _gst_debug_init,
 # __gst_element_factory_add_interface or
 # __gst_element_factory_add_static_pad_template).  We suppress them here to
 # make sure they're at least not exported in the windows msvc build (they
@@ -58,10 +58,11 @@ nm $NMARGS $lib_path | awk \
 	> $lib_result
 
 diffoutput=`diff -u $def_path $lib_result`
+diffresult=$?
 
 rm $lib_result
 
-if test "x$diffoutput" = "x"; then
+if test "$diffresult" -eq 0; then
   exit 0;
 else
   echo -n "$diffoutput" >&2

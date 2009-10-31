@@ -20,7 +20,7 @@
 ** types.h
 **
 ** Data type definitions
-** $Id: types.h,v 1.6 2008-03-26 07:40:55 slomo Exp $
+** $Id$
 */
 
 #ifndef _NSF_TYPES_H_
@@ -89,8 +89,8 @@ typedef  guint8  boolean;
 #endif /* _NSF_TYPES_H_ */
 
 /*
-** $Log: types.h,v $
-** Revision 1.6  2008-03-26 07:40:55  slomo
+** $Log$
+** Revision 1.6  2008/03/26 07:40:55  slomo
 ** * gst/nsf/Makefile.am:
 ** * gst/nsf/fds_snd.c:
 ** * gst/nsf/mmc5_snd.c:

@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="prev" href="gst-plugins-bad-plugins-videomark.html" title="videomark">
 <link rel="next" href="gst-plugins-bad-plugins-wildmidi.html" title="wildmidi">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
@@ -23,13 +23,15 @@
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-bad-plugins-wildmidi.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-videoparse.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-videoparse.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-videoparse.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-videoparse.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-bad-plugins-videoparse.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-videoparse.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-videoparse.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-videoparse.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-bad-plugins-videoparse"></a><div class="titlepage"></div>
@@ -52,8 +54,12 @@
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
                +----GstRawParse
                      +----GstVideoParse
 </pre>
@@ -74,7 +80,9 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write
   "<a class="link" href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--endianness" title='The "endianness" property'>endianness</a>"               GstVideoParseEndianness  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--format" title='The "format" property'>format</a>"                   GstVideoParseFormat   : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--format" title='The "format" property'>format</a>"                   <a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstvideo.html#GstVideoFormat"
+>GstVideoFormat</a>        : Read / Write
   "<a class="link" href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--framerate" title='The "framerate" property'>framerate</a>"                GstFraction           : Read / Write
   "<a class="link" href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--green-mask" title='The "green-mask" property'>green-mask</a>"               <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
@@ -89,6 +97,12 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
   "<a class="link" href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--width" title='The "width" property'>width</a>"                    <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--interlaced" title='The "interlaced" property'>interlaced</a>"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--top-field-first" title='The "top-field-first" property'>top-field-first</a>"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -98,7 +112,7 @@ Converts a byte stream into video frames.</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2913957"></a><h3>Element Information</h3>
+<a name="id2921815"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -110,7 +124,7 @@ Converts a byte stream into video frames.</p>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
-<td>David Schleef &lt;ds@schleef.org&gt;, Sebastian Dröge &lt;slomo@circular-chaos.org&gt;</td>
+<td>David Schleef &lt;ds@schleef.org&gt;, Sebastian Dröge &lt;sebastian.droege@collabora.co.uk&gt;</td>
 </tr>
 <tr>
 <td><p><span class="term">class</span></p></td>
@@ -121,7 +135,7 @@ Converts a byte stream into video frames.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2914021"></a><h3>Element Pads</h3>
+<a name="id2921878"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -139,15 +153,102 @@ Converts a byte stream into video frames.</p>
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw-yuv, format=(fourcc){ I420, YV12, YUY2, UYVY }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td>video/x-raw-rgb</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb</td>
+<td> video/x-raw-yuv</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
 <td> video/x-raw-gray</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-bayer</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2922798"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-rawparse.html#plugin-rawparse">rawparse</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>David Schleef &lt;ds@schleef.org&gt;, Sebastian Dröge &lt;sebastian.droege@collabora.co.uk&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Filter/Video</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2922862"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw-rgb</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-yuv</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-gray</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-bayer</td>
 </tr>
 </tbody>
 </table></div>
@@ -175,7 +276,6 @@ Converts a byte stream into video frames.</p>
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -184,7 +284,6 @@ Converts a byte stream into video frames.</p>
 <a name="GstVideoParse-struct"></a><h3>GstVideoParse</h3>
 <pre class="programlisting">typedef struct _GstVideoParse GstVideoParse;</pre>
 <p>
-
 </p>
 </div>
 </div>
@@ -196,7 +295,6 @@ Converts a byte stream into video frames.</p>
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write</pre>
 <p>Alpha mask of images in raw stream.</p>
-<p>Allowed values: &gt;= 0</p>
 <p>Default value: 0</p>
 </div>
 <hr>
@@ -206,7 +304,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write</pre>
 <p>Blue mask of images in raw stream.</p>
-<p>Allowed values: &gt;= 0</p>
 <p>Default value: 255</p>
 </div>
 <hr>
@@ -239,9 +336,11 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstVideoParse--format"></a><h3>The <code class="literal">"format"</code> property</h3>
-<pre class="programlisting">  "format"                   GstVideoParseFormat   : Read / Write</pre>
+<pre class="programlisting">  "format"                   <a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstvideo.html#GstVideoFormat"
+>GstVideoFormat</a>        : Read / Write</pre>
 <p>Format of images in raw stream.</p>
-<p>Default value: I420</p>
+<p>Default value: GST_VIDEO_FORMAT_I420</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -256,7 +355,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write</pre>
 <p>Green mask of images in raw stream.</p>
-<p>Allowed values: &gt;= 0</p>
 <p>Default value: 65280</p>
 </div>
 <hr>
@@ -282,7 +380,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write</pre>
 <p>Red mask of images in raw stream.</p>
-<p>Allowed values: &gt;= 0</p>
 <p>Default value: 16711680</p>
 </div>
 <hr>
@@ -295,10 +392,28 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 320</p>
 </div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoParse--interlaced"></a><h3>The <code class="literal">"interlaced"</code> property</h3>
+<pre class="programlisting">  "interlaced"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>True if video is interlaced.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoParse--top-field-first"></a><h3>The <code class="literal">"top-field-first"</code> property</h3>
+<pre class="programlisting">  "top-field-first"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>True if top field is earlier than bottom field.</p>
+<p>Default value: TRUE</p>
+</div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

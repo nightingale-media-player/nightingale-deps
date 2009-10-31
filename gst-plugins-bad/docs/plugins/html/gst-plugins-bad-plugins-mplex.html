@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="prev" href="gst-plugins-bad-plugins-mpeg2enc.html" title="mpeg2enc">
 <link rel="next" href="gst-plugins-bad-plugins-mythtvsrc.html" title="mythtvsrc">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
@@ -23,11 +23,15 @@
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-bad-plugins-mythtvsrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-mplex.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-mplex.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-mplex.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-bad-plugins-mplex.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-mplex.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-mplex.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-mplex.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-bad-plugins-mplex"></a><div class="titlepage"></div>
@@ -40,8 +44,23 @@
 </tr></table></div>
 <div class="refsynopsisdiv">
 <a name="gst-plugins-bad-plugins-mplex.synopsis"></a><h2>Synopsis</h2>
+<a name="GstMplex"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-bad-plugins-mplex.html#GstMplex-struct" title="GstMplex">GstMplex</a>;
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-mplex.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-                    <a class="link" href="gst-plugins-bad-plugins-mplex.html#GstMplex" title="GstMplex">GstMplex</a>;
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----GstMplex
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -82,7 +101,7 @@ which are shared with the mplex tool.
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2898314"></a><h3>Example pipeline</h3>
+<a name="id2891082"></a><h3>Example pipeline</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch -v videotestsrc num-buffers=1000 ! mpeg2enc ! mplex ! filesink location=videotestsrc.mpg
 </pre></div> This example pipeline will encode a test video source to an
@@ -97,7 +116,7 @@ pipeline stalling.
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2900316"></a><h3>Element Information</h3>
+<a name="id2843400"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -122,7 +141,113 @@ pipeline stalling.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2868171"></a><h3>Element Pads</h3>
+<a name="id2878636"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>audio_%d</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/mpeg, mpegversion=(int)1, layer=(int)[ 1, 3 ], channels=(int)[ 1, 8 ], rate=(int)[ 8000, 96000 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-ac3, channels=(int)[ 1, 8 ], rate=(int)[ 8000, 96000 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-dts</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, endianness=(int)4321, signed=(boolean)true, width=(int){ 16, 20, 24 }, depth=(int){ 16, 20, 24 }, rate=(int){ 48000, 96000 }, channels=(int)[ 1, 6 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>video_%d</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/mpeg, mpegversion=(int){ 1, 2 }, systemstream=(boolean)false, width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/mpeg, systemstream=(boolean)true</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2891747"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-mplex.html#plugin-mplex">mplex</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Andrew Stevens &lt;andrew.stevens@nexgo.de&gt;
+    Ronald Bultje &lt;rbultje@ronald.bitfreak.net&gt;
+    Mark Nauwelaerts &lt;mnauw@users.sourceforge.net</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Muxer</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2891811"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -201,35 +326,14 @@ pipeline stalling.
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-mplex.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="GstMplex"></a><h3>GstMplex</h3>
-<pre class="programlisting">typedef struct {
-  GstElement parent;
-
-  /* pads */
-  GSList *pads;
-  GstPad *srcpad;
-  guint num_apads, num_vpads;
-
-  /* options wrapper */
-  GstMplexJob *job;
-
-  /* lock for syncing */
-  GMutex *tlock;
-  /* with TLOCK */
-  /* muxer writer generated eos */
-  gboolean eos;
-  /* flowreturn obtained by muxer task */
-  GstFlowReturn srcresult;
-} GstMplex;
-</pre>
+<a name="GstMplex-struct"></a><h3>GstMplex</h3>
+<pre class="programlisting">typedef struct _GstMplex GstMplex;</pre>
 <p>
-
 </p>
 </div>
 </div>
@@ -307,6 +411,6 @@ mpeg2enc
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

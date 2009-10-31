@@ -1,0 +1,14 @@
+<plugin>
+  <name>amrwbenc</name>
+  <description>Adaptive Multi-Rate Wide-Band Encoder</description>
+  <filename>../../ext/amrwbenc/.libs/libgstamrwbenc.so</filename>
+  <basename>libgstamrwbenc.so</basename>
+  <version>0.10.14.1</version>
+  <license>unknown</license>
+  <source>gst-plugins-bad</source>
+  <package>GStreamer Bad Plug-ins git/prerelease</package>
+  <origin>http://gstreamer.freedesktop.org</origin>
+  <elements>
+
+  </elements>
+</plugin>

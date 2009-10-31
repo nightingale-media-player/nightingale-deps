@@ -20,7 +20,7 @@
 ** nes_apu.c
 **
 ** NES APU emulation
-** $Id: nes_apu.c,v 1.3 2008-04-09 13:43:50 thaytan Exp $
+** $Id$
 */
 
 #include <string.h>
@@ -1209,8 +1209,8 @@ apu_getcyclerate (void)
 }
 
 /*
-** $Log: nes_apu.c,v $
-** Revision 1.3  2008-04-09 13:43:50  thaytan
+** $Log$
+** Revision 1.3  2008/04/09 13:43:50  thaytan
 ** * gst/nsf/nes_apu.c: (apu_process):
 ** * gst/nsf/nes_apu.h:
 ** Don't do void pointer arithmetic - it's a gcc extension.

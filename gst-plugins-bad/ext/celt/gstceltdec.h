@@ -41,8 +41,6 @@ G_BEGIN_DECLS
 typedef struct _GstCeltDec GstCeltDec;
 typedef struct _GstCeltDecClass GstCeltDecClass;
 
-#define DEC_MAX_FRAME_SIZE 2000
-
 struct _GstCeltDec {
   GstElement            element;
 
@@ -60,6 +58,7 @@ struct _GstCeltDec {
 
   GstSegment            segment;    /* STREAM LOCK */
   gint64                granulepos; /* -1 = needs to be set from current time */
+  gboolean              discont;
 };
 
 struct _GstCeltDecClass {

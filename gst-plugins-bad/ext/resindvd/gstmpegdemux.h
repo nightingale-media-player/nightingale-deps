@@ -63,7 +63,9 @@ struct _GstFluPSStream {
   gboolean       notlinked;
   gboolean       need_segment;
  
+  GstClockTime   last_seg_start;
   GstClockTime   last_ts;
+  GstClockTime   segment_thresh;
 };
 
 struct _GstFluPSDemux {
@@ -104,6 +106,7 @@ struct _GstFluPSDemux {
 
   /* Indicates an MPEG-2 stream */
   gboolean is_mpeg2_pack;
+  gboolean disable_stream_creation;
 
   /* Language codes event is stored when a dvd-lang-codes
    * custom event arrives from upstream */

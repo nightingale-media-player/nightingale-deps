@@ -20,7 +20,7 @@
 ** vrcvisnd.h
 **
 ** VRCVI (Konami MMC) sound hardware emulation header
-** $Id: vrcvisnd.h,v 1.2 2008-03-25 15:56:13 slomo Exp $
+** $Id$
 */
 
 #ifndef _VRCVISND_H_
@@ -63,8 +63,8 @@ extern apuext_t vrcvi_ext;
 #endif /* _VRCVISND_H_ */
 
 /*
-** $Log: vrcvisnd.h,v $
-** Revision 1.2  2008-03-25 15:56:13  slomo
+** $Log$
+** Revision 1.2  2008/03/25 15:56:13  slomo
 ** Patch by: Andreas Henriksson <andreas at fatal dot set>
 ** * gst/nsf/Makefile.am:
 ** * gst/nsf/dis6502.h:

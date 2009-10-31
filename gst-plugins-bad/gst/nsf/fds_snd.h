@@ -20,7 +20,7 @@
 ** fds_snd.h
 **
 ** Famicom Disk System sound emulation
-** $Id: fds_snd.h,v 1.2 2008-03-25 15:56:10 slomo Exp $
+** $Id$
 */
 
 #ifndef _FDS_SND_H_
@@ -34,8 +34,8 @@ extern apuext_t fds_ext;
 #endif /* _VRCVISND_H_ */
 
 /*
-** $Log: fds_snd.h,v $
-** Revision 1.2  2008-03-25 15:56:10  slomo
+** $Log$
+** Revision 1.2  2008/03/25 15:56:10  slomo
 ** Patch by: Andreas Henriksson <andreas at fatal dot set>
 ** * gst/nsf/Makefile.am:
 ** * gst/nsf/dis6502.h:

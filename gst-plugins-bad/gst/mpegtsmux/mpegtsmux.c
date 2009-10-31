@@ -83,6 +83,7 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+#include <stdio.h>
 #include <string.h>
 
 #include "mpegtsmux.h"
@@ -96,6 +97,7 @@ GST_DEBUG_CATEGORY (mpegtsmux_debug);
 enum
 {
   ARG_0,
+  ARG_PROG_MAP,
   ARG_M2TS_MODE
 };
 
@@ -180,6 +182,11 @@ mpegtsmux_class_init (MpegTsMuxClass * klass)
   gstelement_class->release_pad = mpegtsmux_release_pad;
   gstelement_class->change_state = mpegtsmux_change_state;
 
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_PROG_MAP,
+      g_param_spec_boxed ("prog-map", "Program map",
+          "A GstStructure specifies the mapping from elementary streams to programs",
+          GST_TYPE_STRUCTURE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_M2TS_MODE,
       g_param_spec_boolean ("m2ts_mode", "M2TS(192 bytes) Mode",
           "Defines what packet size to use, normal TS format ie .ts(188 bytes) "
@@ -202,14 +209,16 @@ mpegtsmux_init (MpegTsMux * mux, MpegTsMuxClass * g_class)
 
   mux->tsmux = tsmux_new ();
   tsmux_set_write_func (mux->tsmux, new_packet_cb, mux);
-  mux->program = tsmux_program_new (mux->tsmux);
 
+  mux->programs = g_new0 (TsMuxProgram *, MAX_PROG_NUMBER);
   mux->first = TRUE;
   mux->last_flow_ret = GST_FLOW_OK;
   mux->adapter = gst_adapter_new ();
   mux->m2ts_mode = FALSE;
   mux->first_pcr = TRUE;
   mux->last_ts = 0;
+
+  mux->prog_map = NULL;
 }
 
 static void
@@ -219,7 +228,7 @@ mpegtsmux_dispose (GObject * object)
 
   if (mux->adapter) {
     gst_adapter_clear (mux->adapter);
-    gst_object_unref (mux->adapter);
+    g_object_unref (mux->adapter);
     mux->adapter = NULL;
   }
   if (mux->collect) {
@@ -229,6 +238,14 @@ mpegtsmux_dispose (GObject * object)
   if (mux->tsmux) {
     tsmux_free (mux->tsmux);
     mux->tsmux = NULL;
+  }
+  if (mux->prog_map) {
+    gst_structure_free (mux->prog_map);
+    mux->prog_map = NULL;
+  }
+  if (mux->programs) {
+    g_free (mux->programs);
+    mux->programs = NULL;
   }
 
   GST_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
@@ -245,6 +262,18 @@ gst_mpegtsmux_set_property (GObject * object, guint prop_id,
       /*set incase if the output stream need to be of 192 bytes */
       mux->m2ts_mode = g_value_get_boolean (value);
       break;
+    case ARG_PROG_MAP:
+    {
+      const GstStructure *s = gst_value_get_structure (value);
+      if (mux->prog_map) {
+        gst_structure_free (mux->prog_map);
+      }
+      if (s)
+        mux->prog_map = gst_structure_copy (s);
+      else
+        mux->prog_map = NULL;
+      break;
+    }
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -260,6 +289,9 @@ gst_mpegtsmux_get_property (GObject * object, guint prop_id,
   switch (prop_id) {
     case ARG_M2TS_MODE:
       g_value_set_boolean (value, mux->m2ts_mode);
+      break;
+    case ARG_PROG_MAP:
+      gst_value_set_structure (value, mux->prog_map);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -404,7 +436,7 @@ mpegtsmux_create_stream (MpegTsMux * mux, MpegTsPadData * ts_data, GstPad * pad)
     gst_structure_get_int (s, "bitrate", &ts_data->stream->audio_bitrate);
 
     tsmux_stream_set_buffer_release_func (ts_data->stream, release_buffer_cb);
-    tsmux_program_add_stream (mux->program, ts_data->stream);
+    tsmux_program_add_stream (ts_data->prog, ts_data->stream);
 
     ret = GST_FLOW_OK;
   }
@@ -423,8 +455,40 @@ mpegtsmux_create_streams (MpegTsMux * mux)
   while (walk) {
     GstCollectData *c_data = (GstCollectData *) walk->data;
     MpegTsPadData *ts_data = (MpegTsPadData *) walk->data;
+    gchar *name = NULL;
 
     walk = g_slist_next (walk);
+
+    if (ts_data->prog_id == -1) {
+      name = GST_PAD_NAME (c_data->pad);
+      if (mux->prog_map != NULL && gst_structure_has_field (mux->prog_map,
+              name)) {
+        gint idx;
+        gboolean ret = gst_structure_get_int (mux->prog_map, name, &idx);
+        if (!ret) {
+          GST_ELEMENT_ERROR (mux, STREAM, MUX,
+              ("Reading program map failed. Assuming default"), (NULL));
+          idx = DEFAULT_PROG_ID;
+        }
+        if (idx < 0 || idx >= MAX_PROG_NUMBER) {
+          GST_DEBUG_OBJECT (mux, "Program number %d associate with pad %s out "
+              "of range (max = %d); DEFAULT_PROGRAM = %d is used instead",
+              idx, name, MAX_PROG_NUMBER, DEFAULT_PROG_ID);
+          idx = DEFAULT_PROG_ID;
+        }
+        ts_data->prog_id = idx;
+      } else {
+        ts_data->prog_id = DEFAULT_PROG_ID;
+      }
+    }
+
+    ts_data->prog = mux->programs[ts_data->prog_id];
+    if (ts_data->prog == NULL) {
+      ts_data->prog = tsmux_program_new (mux->tsmux);
+      if (ts_data->prog == NULL)
+        goto no_program;
+      mux->programs[ts_data->prog_id] = ts_data->prog;
+    }
 
     if (ts_data->stream == NULL) {
       ret = mpegtsmux_create_stream (mux, ts_data, c_data->pad);
@@ -434,6 +498,10 @@ mpegtsmux_create_streams (MpegTsMux * mux)
   }
 
   return GST_FLOW_OK;
+no_program:
+  GST_ELEMENT_ERROR (mux, STREAM, MUX,
+      ("Could not create new program"), (NULL));
+  return GST_FLOW_ERROR;
 no_stream:
   GST_ELEMENT_ERROR (mux, STREAM, MUX,
       ("Could not create handler for stream"), (NULL));
@@ -523,6 +591,8 @@ mpegtsmux_choose_best_stream (MpegTsMux * mux)
   return best;
 }
 
+#define COLLECT_DATA_PAD(collect_data) (((GstCollectData *)(collect_data))->pad)
+
 static GstFlowReturn
 mpegtsmux_collected (GstCollectPads * pads, MpegTsMux * mux)
 {
@@ -538,20 +608,6 @@ mpegtsmux_collected (GstCollectPads * pads, MpegTsMux * mux)
 
     best = mpegtsmux_choose_best_stream (mux);
 
-    if (mux->pcr_stream == NULL) {
-      if (best) {
-        GstCollectData *c_data = (GstCollectData *) best;
-        /* Take the first data stream for the PCR */
-        GST_DEBUG_OBJECT (mux, "Use stream from pad %" GST_PTR_FORMAT " as PCR",
-            c_data->pad);
-        mux->pcr_stream = best->stream;
-      }
-    }
-
-    /* Set the chosen PCR stream */
-    g_return_val_if_fail (mux->pcr_stream != NULL, GST_FLOW_ERROR);
-    tsmux_program_set_pcr_stream (mux->program, mux->pcr_stream);
-
     if (!mpegtsdemux_prepare_srcpad (mux)) {
       GST_DEBUG_OBJECT (mux, "Failed to send new segment");
       goto new_seg_fail;
@@ -563,15 +619,32 @@ mpegtsmux_collected (GstCollectPads * pads, MpegTsMux * mux)
   }
 
   if (best != NULL) {
+    TsMuxProgram *prog = best->prog;
     GstBuffer *buf = best->queued_buf;
-    GstCollectData *c_data = (GstCollectData *) best;
     gint64 pts = -1;
+
+    if (prog == NULL) {
+      GST_ELEMENT_ERROR (mux, STREAM, MUX, ("Stream is not associated with "
+              "any program"), (NULL));
+      return GST_FLOW_ERROR;
+    }
+
+    if (G_UNLIKELY (prog->pcr_stream == NULL)) {
+      if (best) {
+        /* Take the first data stream for the PCR */
+        GST_DEBUG_OBJECT (COLLECT_DATA_PAD (best),
+            "Use stream (pid=%d) from pad as PCR for program (prog_id = %d)",
+            MPEG_TS_PAD_DATA (best)->pid, MPEG_TS_PAD_DATA (best)->prog_id);
+
+        /* Set the chosen PCR stream */
+        tsmux_program_set_pcr_stream (prog, best->stream);
+      }
+    }
 
     g_return_val_if_fail (buf != NULL, GST_FLOW_ERROR);
 
-    GST_DEBUG_OBJECT (mux,
-        "Chose stream from pad %" GST_PTR_FORMAT " for output (PID: 0x%04x)",
-        c_data->pad, best->pid);
+    GST_DEBUG_OBJECT (COLLECT_DATA_PAD (best),
+        "Chose stream for output (PID: 0x%04x)", best->pid);
 
     if (GST_CLOCK_TIME_IS_VALID (best->cur_ts)) {
       pts = GSTTIME_TO_MPEGTIME (best->cur_ts);
@@ -589,7 +662,7 @@ mpegtsmux_collected (GstCollectPads * pads, MpegTsMux * mux)
         goto write_fail;
       }
     }
-    if (mux->pcr_stream == best->stream) {
+    if (prog->pcr_stream == best->stream) {
       mux->last_ts = best->last_ts;
     }
   } else {
@@ -636,6 +709,8 @@ mpegtsmux_request_new_pad (GstElement * element,
   pad_data->last_ts = GST_CLOCK_TIME_NONE;
   pad_data->codec_data = NULL;
   pad_data->prepare_func = NULL;
+  pad_data->prog_id = -1;
+  pad_data->prog = NULL;
 
   if (G_UNLIKELY (!gst_element_add_pad (element, pad)))
     goto could_not_add;

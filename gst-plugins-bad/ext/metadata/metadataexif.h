@@ -41,14 +41,41 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef __GST_METADATAPARSE_EXIF_H__
-#define __GST_METADATAPARSE_EXIF_H__
+#ifndef __GST_METADATA_EXIF_H__
+#define __GST_METADATA_EXIF_H__
 
 #include <gst/gst.h>
 #include <gst/base/gstadapter.h>
 #include "metadatatags.h"
 
 G_BEGIN_DECLS
+
+/*
+ * defines
+ */
+ 
+#define EXIF_HEADER "Exif\0"
+
+typedef enum {
+        GST_META_EXIF_BYTE_ORDER_MOTOROLA,
+        GST_META_EXIF_BYTE_ORDER_INTEL
+} MetaExifByteOrder;
+
+typedef struct _MetaExifWriteOptions MetaExifWriteOptions;
+
+/**
+ * MetaExifWriteOptions:
+ * @byteorder: byte-ordering for exif chunk
+ *
+ * Options for Exif metadata writing
+ */
+struct _MetaExifWriteOptions
+{
+  MetaExifByteOrder   byteorder;
+};
+
+#define GST_TYPE_META_EXIF_BYTE_ORDER (gst_meta_exif_byte_order_get_type())
+GType gst_meta_exif_byte_order_get_type (void);
 
 /*
  * external function prototypes
@@ -60,7 +87,7 @@ metadataparse_exif_tag_list_add (GstTagList * taglist, GstTagMergeMode mode,
 
 extern void
 metadatamux_exif_create_chunk_from_tag_list (guint8 ** buf, guint32 *size,
-    const GstTagList * taglist);
+    const GstTagList * taglist, const MetaExifWriteOptions *opts);
 
 G_END_DECLS
-#endif /* __GST_METADATAPARSE_EXIF_H__ */
+#endif /* __GST_METADATA_EXIF_H__ */

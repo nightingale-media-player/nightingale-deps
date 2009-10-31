@@ -18,7 +18,16 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-
+/**
+ * SECTION:element-ladspa
+ * @short_description: bridge for ladspa (Linux Audio Developer's Simple Plugin API)
+ * 
+ * The ladspa (Linux Audio Developer's Simple Plugin API) element is a bridge
+ * for plugins using the <ulink url="http://www.ladspa.org/">ladspa</ulink> API.
+ * It scans all installed ladspa plugins and registers them as gstreamer
+ * elements. If available it can also parse lrdf files and use the metadata for
+ * element classification.
+ */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -29,7 +38,9 @@
 
 #include "gstladspa.h"
 #include <ladspa.h>             /* main ladspa sdk include file */
-#include "utils.h"              /* ladspa sdk utility functions */
+#if HAVE_LRDF
+#include <lrdf.h>
+#endif
 
 /* 1.0 and the 1.1 preliminary headers don't define a version, but 1.1 final
    does */
@@ -38,6 +49,11 @@
 #endif
 
 #define GST_LADSPA_DESCRIPTOR_QDATA g_quark_from_static_string("ladspa-descriptor")
+
+#define GST_LADSPA_DEFAULT_PATH \
+  "/usr/lib/ladspa" G_SEARCHPATH_SEPARATOR_S \
+  "/usr/local/lib/ladspa" G_SEARCHPATH_SEPARATOR_S \
+  LIBDIR "/ladspa"
 
 static void gst_ladspa_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
@@ -66,8 +82,13 @@ gst_ladspa_base_init (gpointer g_class)
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
   GstSignalProcessorClass *gsp_class = GST_SIGNAL_PROCESSOR_CLASS (g_class);
   GstElementDetails *details;
+  GstAudioChannelPosition mono_position = GST_AUDIO_CHANNEL_POSITION_FRONT_MONO;
   LADSPA_Descriptor *desc;
   guint j, audio_in_count, audio_out_count, control_in_count, control_out_count;
+  gchar *klass_tags;
+#if HAVE_LRDF
+  gchar *uri, *extra_klass_tags = NULL;
+#endif
 
   GST_DEBUG ("base_init %p", g_class);
 
@@ -105,10 +126,10 @@ gst_ladspa_base_init (gpointer g_class)
 
       if (LADSPA_IS_PORT_INPUT (p))
         gst_signal_processor_class_add_pad_template (gsp_class, name,
-            GST_PAD_SINK, gsp_class->num_audio_in++);
+            GST_PAD_SINK, gsp_class->num_audio_in++, 1, &mono_position);
       else
         gst_signal_processor_class_add_pad_template (gsp_class, name,
-            GST_PAD_SRC, gsp_class->num_audio_out++);
+            GST_PAD_SRC, gsp_class->num_audio_out++, 1, &mono_position);
 
       g_free (name);
     } else if (LADSPA_IS_PORT_CONTROL (p)) {
@@ -129,20 +150,106 @@ gst_ladspa_base_init (gpointer g_class)
   if (!details->author)
     details->author = g_strdup ("no author available");
 
+#if HAVE_LRDF
+  /* libldrf support, we want to get extra class information here */
+  uri = g_strdup_printf (LADSPA_BASE "%ld", desc->UniqueID);
+  if (uri) {
+    lrdf_statement query = { 0, };
+    lrdf_uris *uris;
+    gchar *str, *base_type = NULL;
+
+    GST_DEBUG ("uri (id=%d) : %s", desc->UniqueID, uri);
+    /* we can take this directly from 'desc', keep this example for future
+       attributes. 
+       if ((str = lrdf_get_setting_metadata (uri, "title"))) {
+       GST_DEBUG ("title : %s", str);
+       }
+       if ((str = lrdf_get_setting_metadata (uri, "creator"))) {
+       GST_DEBUG ("creator : %s", str);
+       }
+     */
+
+    /* get the rdf:type for this plugin */
+    query.subject = uri;
+    query.predicate = RDF_BASE "type";
+    query.object = "?";
+    query.next = NULL;
+    uris = lrdf_match_multi (&query);
+    if (uris) {
+      if (uris->count == 1) {
+        base_type = g_strdup (uris->items[0]);
+        GST_DEBUG ("base_type :  %s", base_type);
+      }
+      lrdf_free_uris (uris);
+    }
+
+    /* query taxonomy */
+    if (base_type) {
+      uris = lrdf_get_all_superclasses (base_type);
+      if (uris) {
+        guint32 j;
+
+        for (j = 0; j < uris->count; j++) {
+          GST_LOG ("parent_type_uri : %s", uris->items[j]);
+          if ((str = lrdf_get_label (uris->items[j]))) {
+            GST_DEBUG ("parent_type_label : %s", str);
+            if (extra_klass_tags) {
+              gchar *old_tags = extra_klass_tags;
+              extra_klass_tags = g_strconcat (extra_klass_tags, "/", str, NULL);
+              g_free (old_tags);
+            } else {
+              extra_klass_tags = g_strconcat ("/", str, NULL);
+            }
+          }
+        }
+        lrdf_free_uris (uris);
+      }
+      g_free (base_type);
+    }
+
+    /* we can use this for the presets
+       uris = lrdf_get_setting_uris (desc->UniqueID);
+       if (uris) {
+       guint32 j;
+
+       for (j = 0; j < uris->count; j++) {
+       GST_INFO ("setting_uri : %s", uris->items[j]);
+       if ((str = lrdf_get_label (uris->items[j]))) {
+       GST_INFO ("setting_label : %s", str);
+       }
+       }
+       lrdf_free_uris (uris);
+       }
+     */
+
+  }
+  g_free (uri);
+#endif
+
   if (gsp_class->num_audio_in == 0)
-    details->klass = "Source/Audio/LADSPA";
+    klass_tags = "Source/Audio/LADSPA";
   else if (gsp_class->num_audio_out == 0) {
     if (gsp_class->num_control_out == 0)
-      details->klass = "Sink/Audio/LADSPA";
+      klass_tags = "Sink/Audio/LADSPA";
     else
-      details->klass = "Sink/Analyzer/Audio/LADSPA";
+      klass_tags = "Sink/Analyzer/Audio/LADSPA";
   } else
-    details->klass = "Filter/Effect/Audio/LADSPA";
+    klass_tags = "Filter/Effect/Audio/LADSPA";
+
+#if HAVE_LRDF
+  if (extra_klass_tags) {
+    details->klass = g_strconcat (klass_tags, extra_klass_tags, NULL);
+    g_free (extra_klass_tags);
+  } else
+#endif
+  {
+    details->klass = klass_tags;
+  }
+  GST_INFO ("tags : %s", details->klass);
   gst_element_class_set_details (element_class, details);
   g_free (details->longname);
   g_free (details->author);
   g_free (details);
-
 
   klass->audio_in_portnums = g_new0 (gint, gsp_class->num_audio_in);
   klass->audio_out_portnums = g_new0 (gint, gsp_class->num_audio_out);
@@ -568,15 +675,14 @@ gst_ladspa_process (GstSignalProcessor * gsp, guint nframes)
 }
 
 static void
-ladspa_describe_plugin (const char *pcFullFilename,
-    void *pvPluginHandle, LADSPA_Descriptor_Function pfDescriptorFunction)
+ladspa_describe_plugin (LADSPA_Descriptor_Function descriptor_function)
 {
   const LADSPA_Descriptor *desc;
   gint i;
 
   /* walk through all the plugins in this pluginlibrary */
   i = 0;
-  while ((desc = pfDescriptorFunction (i++))) {
+  while ((desc = descriptor_function (i++))) {
     gchar *type_name;
     GTypeInfo typeinfo = {
       sizeof (GstLADSPAClass),
@@ -590,7 +696,6 @@ ladspa_describe_plugin (const char *pcFullFilename,
       (GInstanceInitFunc) gst_ladspa_init,
     };
     GType type;
-
     /* construct the type */
     type_name = g_strdup_printf ("ladspa-%s", desc->Label);
     g_strcanon (type_name, G_CSET_A_2_Z G_CSET_a_2_z G_CSET_DIGITS "-+", '-');
@@ -614,6 +719,148 @@ ladspa_describe_plugin (const char *pcFullFilename,
   }
 }
 
+#if HAVE_LRDF
+static gboolean
+ladspa_rdf_directory_search (const char *dir_name)
+{
+  GDir *dir;
+  gchar *file_name, *file_uri;
+  const gchar *entry_name;
+  gint ok;
+
+  GST_INFO ("scanning directory for rdfs \"%s\"", dir_name);
+
+  dir = g_dir_open (dir_name, 0, NULL);
+  if (!dir)
+    return FALSE;
+
+  while ((entry_name = g_dir_read_name (dir))) {
+    file_name = g_build_filename (dir_name, entry_name, NULL);
+    file_uri = g_strconcat ("file://", file_name, NULL);
+    ok = lrdf_read_file (file_uri);
+    GST_INFO ("read %s : %d", file_uri, ok);
+    g_free (file_uri);
+    g_free (file_name);
+  }
+  g_dir_close (dir);
+
+  return TRUE;
+}
+
+#endif
+
+/* search just the one directory.
+ */
+static gboolean
+ladspa_plugin_directory_search (const char *dir_name)
+{
+  GDir *dir;
+  gchar *file_name;
+  const gchar *entry_name;
+  LADSPA_Descriptor_Function descriptor_function;
+  GModule *plugin;
+  gboolean ok = FALSE;
+
+  GST_INFO ("scanning directory for plugins \"%s\"", dir_name);
+
+  dir = g_dir_open (dir_name, 0, NULL);
+  if (!dir)
+    return FALSE;
+
+  while ((entry_name = g_dir_read_name (dir))) {
+    file_name = g_build_filename (dir_name, entry_name, NULL);
+    plugin =
+        g_module_open (file_name, G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
+    if (plugin) {
+      /* the file is a shared library */
+      if (g_module_symbol (plugin, "ladspa_descriptor",
+              (gpointer *) & descriptor_function)) {
+        /* we've found a ladspa_descriptor function, now introspect it. */
+        GST_INFO ("describe %s", file_name);
+        ladspa_describe_plugin (descriptor_function);
+        ok = TRUE;
+      } else {
+        /* it was a library, but not a LADSPA one. Unload it. */
+        g_module_close (plugin);
+      }
+    }
+    g_free (file_name);
+  }
+  g_dir_close (dir);
+
+  return ok;
+}
+
+/* search the plugin path
+ */
+static gboolean
+ladspa_plugin_path_search (void)
+{
+  const gchar *search_path;
+  gchar *ladspa_path;
+  gchar **paths;
+  gint i, j, path_entries;
+  gboolean res = FALSE, skip;
+#if HAVE_LRDF
+  gchar *pos, *prefix, *rdf_path;
+#endif
+
+  search_path = g_getenv ("LADSPA_PATH");
+  if (search_path) {
+    ladspa_path =
+        g_strdup_printf ("%s" G_SEARCHPATH_SEPARATOR_S GST_LADSPA_DEFAULT_PATH,
+        search_path);
+  } else {
+    ladspa_path = g_strdup (GST_LADSPA_DEFAULT_PATH);
+  }
+
+  paths = g_strsplit (ladspa_path, G_SEARCHPATH_SEPARATOR_S, 0);
+  path_entries = g_strv_length (paths);
+  GST_INFO ("%d dirs in search paths \"%s\"", path_entries, ladspa_path);
+
+#if HAVE_LRDF
+  for (i = 0; i < path_entries; i++) {
+    skip = FALSE;
+    for (j = 0; j < i; j++) {
+      if (!strcmp (paths[i], paths[j])) {
+        skip = TRUE;
+        break;
+      }
+    }
+    if (skip)
+      break;
+    /* transform path: /usr/lib/ladspa -> /usr/share/ladspa/rdf/
+     * yes, this is ugly, but lrdf has not searchpath
+     */
+    if ((pos = strstr (paths[i], "/lib/ladspa"))) {
+      prefix = g_strndup (paths[i], (pos - paths[i]));
+      rdf_path = g_build_filename (prefix, "share", "ladspa", "rdf", NULL);
+      ladspa_rdf_directory_search (rdf_path);
+      g_free (rdf_path);
+      g_free (prefix);
+    }
+  }
+#endif
+
+  for (i = 0; i < path_entries; i++) {
+    skip = FALSE;
+    for (j = 0; j < i; j++) {
+      if (!strcmp (paths[i], paths[j])) {
+        skip = TRUE;
+        break;
+      }
+    }
+    if (skip)
+      break;
+    res |= ladspa_plugin_directory_search (paths[i]);
+  }
+  g_strfreev (paths);
+
+  g_free (ladspa_path);
+
+  return res;
+}
+
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
@@ -622,16 +869,17 @@ plugin_init (GstPlugin * plugin)
 
   gst_plugin_add_dependency_simple (plugin,
       "LADSPA_PATH",
-      "/usr/lib/ladspa:/usr/local/lib/ladspa",
-      NULL, GST_PLUGIN_DEPENDENCY_FLAG_NONE);
+      GST_LADSPA_DEFAULT_PATH, NULL, GST_PLUGIN_DEPENDENCY_FLAG_NONE);
+
+#if HAVE_LRDF
+  lrdf_init ();
+#endif
 
   parent_class = g_type_class_ref (GST_TYPE_SIGNAL_PROCESSOR);
 
   ladspa_plugin = plugin;
 
-  LADSPAPluginSearch (ladspa_describe_plugin);
-
-  return TRUE;
+  return ladspa_plugin_path_search ();
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,

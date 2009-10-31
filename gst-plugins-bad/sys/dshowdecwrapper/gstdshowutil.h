@@ -44,6 +44,5 @@ IPin *gst_dshow_get_pin_from_filter (IBaseFilter *filter, PIN_DIRECTION pindir);
 IBaseFilter * 
 gst_dshow_find_filter(CLSID input_majortype, CLSID input_subtype, 
                       CLSID output_majortype, CLSID output_subtype, 
-                      PreferredFilter *preferred_filters,
-                      CLSID *filterclsid);
+                      PreferredFilter *preferred_filters);
 #endif /* _GST_DSHOW_UTIL_H_ */

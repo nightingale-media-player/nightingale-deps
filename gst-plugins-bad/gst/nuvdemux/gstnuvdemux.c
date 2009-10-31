@@ -191,7 +191,8 @@ gst_nuv_demux_finalize (GObject * object)
   gst_nuv_demux_destoy_src_pad (nuv);
   gst_nuv_demux_reset (nuv);
   if (nuv->adapter != NULL) {
-    gst_object_unref (nuv->adapter);
+    g_object_unref (nuv->adapter);
+    nuv->adapter = NULL;
   }
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -376,8 +377,9 @@ gst_nuv_demux_extended_header_load (GstNuvDemux * nuv,
 
   GST_DEBUG_OBJECT (nuv,
       "ex hdr: v=%d vffc=%4.4s afcc=%4.4s %dHz %dbits ach=%d acr=%d aq=%d"
-      "rtjpeg q=%d lf=%d lc=%d lavc br=%d qmin=%d qmax=%d maxqdiff=%d seekableoff=%lld keyfao=%lld",
-      h->i_version, (gchar *) & h->i_video_fcc, (gchar *) & h->i_audio_fcc,
+      "rtjpeg q=%d lf=%d lc=%d lavc br=%d qmin=%d qmax=%d maxqdiff=%d seekableoff=%"
+      G_GINT64_FORMAT " keyfao=%" G_GINT64_FORMAT, h->i_version,
+      (gchar *) & h->i_video_fcc, (gchar *) & h->i_audio_fcc,
       h->i_audio_sample_rate, h->i_audio_bits_per_sample, h->i_audio_channels,
       h->i_audio_compression_ratio, h->i_audio_quality, h->i_rtjpeg_quality,
       h->i_rtjpeg_luma_filter, h->i_rtjpeg_chroma_filter, h->i_lavc_bitrate,
@@ -800,7 +802,7 @@ gst_nuv_demux_sink_activate (GstPad * sinkpad)
   if (gst_pad_check_pull_range (sinkpad)) {
     nuv->mode = 0;
     if (nuv->adapter != NULL) {
-      gst_object_unref (nuv->adapter);
+      g_object_unref (nuv->adapter);
       nuv->adapter = NULL;
     }
     res = gst_pad_activate_pull (sinkpad, TRUE);

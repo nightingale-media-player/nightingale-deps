@@ -261,6 +261,7 @@ mpegvideoparse_handle_sequence (MpegVideoParse * mpegvideoparse,
         "height", G_TYPE_INT, new_hdr.height,
         "framerate", GST_TYPE_FRACTION, new_hdr.fps_n, new_hdr.fps_d,
         "pixel-aspect-ratio", GST_TYPE_FRACTION, new_hdr.par_w, new_hdr.par_h,
+        "interlaced", G_TYPE_BOOLEAN, !new_hdr.progressive,
         "codec_data", GST_TYPE_BUFFER, seq_buf, NULL);
 
     GST_DEBUG ("New mpegvideoparse caps: %" GST_PTR_FORMAT, caps);
@@ -277,6 +278,64 @@ mpegvideoparse_handle_sequence (MpegVideoParse * mpegvideoparse,
   return TRUE;
 }
 
+#ifndef GST_DISABLE_GST_DEBUG
+static const gchar *
+picture_start_code_name (guint8 psc)
+{
+  guint i;
+  const struct
+  {
+    guint8 psc;
+    const gchar *name;
+  } psc_names[] = {
+    {
+    0x00, "Picture Start"}, {
+    0xb0, "Reserved"}, {
+    0xb1, "Reserved"}, {
+    0xb2, "User Data Start"}, {
+    0xb3, "Sequence Header Start"}, {
+    0xb4, "Sequence Error"}, {
+    0xb5, "Extnsion Start"}, {
+    0xb6, "Reserved"}, {
+    0xb7, "Sequence End"}, {
+    0xb8, "Group Start"}, {
+    0xb9, "Program End"}
+  };
+  if (psc < 0xB0 && psc > 0)
+    return "Slice Start";
+
+  for (i = 0; i < G_N_ELEMENTS (psc_names); i++)
+    if (psc_names[i].psc == psc)
+      return psc_names[i].name;
+
+  return "UNKNOWN";
+};
+
+static const gchar *
+picture_type_name (guint8 pct)
+{
+  guint i;
+  const struct
+  {
+    guint8 pct;
+    const gchar *name;
+  } pct_names[] = {
+    {
+    0, "Forbidden"}, {
+    1, "I Frame"}, {
+    2, "P Frame"}, {
+    3, "B Frame"}, {
+    4, "DC Intra Coded (Shall Not Be Used!)"}
+  };
+
+  for (i = 0; i < G_N_ELEMENTS (pct_names); i++)
+    if (pct_names[i].pct == pct)
+      return pct_names[i].name;
+
+  return "Reserved/Unknown";
+}
+#endif /* GST_DISABLE_GST_DEBUG */
+
 static gboolean
 mpegvideoparse_handle_picture (MpegVideoParse * mpegvideoparse, GstBuffer * buf)
 {
@@ -288,6 +347,9 @@ mpegvideoparse_handle_picture (MpegVideoParse * mpegvideoparse, GstBuffer * buf)
 
   cur = mpeg_util_find_start_code (&sync_word, cur, end);
   while (cur != NULL) {
+    if (cur[0] == 0 || cur[0] > 0xaf)
+      GST_LOG_OBJECT (mpegvideoparse, "Picture Start Code : %s",
+          picture_start_code_name (cur[0]));
     /* Cur points at the last byte of the start code */
     if (cur[0] == MPEG_PACKET_PICTURE) {
       guint8 *pic_data = cur - 3;
@@ -300,7 +362,8 @@ mpegvideoparse_handle_picture (MpegVideoParse * mpegvideoparse, GstBuffer * buf)
       if (hdr.pic_type != MPEG_PICTURE_TYPE_I)
         GST_BUFFER_FLAG_SET (buf, GST_BUFFER_FLAG_DELTA_UNIT);
 
-      GST_LOG_OBJECT (mpegvideoparse, "Picture type is %u", hdr.pic_type);
+      GST_LOG_OBJECT (mpegvideoparse, "Picture type is %s",
+          picture_type_name (hdr.pic_type));
       /* FIXME: Can use the picture type and number of fields to track a
        * timestamp */
     }
@@ -358,8 +421,9 @@ mpegvideoparse_drain_avail (MpegVideoParse * mpegvideoparse)
   while ((cur != NULL) && (res == GST_FLOW_OK)) {
     /* Handle the block */
     GST_LOG_OBJECT (mpegvideoparse,
-        "Have block of size %u with pack_type 0x%02x and flags 0x%02x",
-        cur->length, cur->first_pack_type, cur->flags);
+        "Have block of size %u with pack_type %s and flags 0x%02x",
+        cur->length, picture_start_code_name (cur->first_pack_type),
+        cur->flags);
 
     /* Don't start pushing out buffers until we've seen a sequence header */
     if (mpegvideoparse->seq_hdr.mpeg_version == 0) {
@@ -535,7 +599,8 @@ scan_keyframe (MpegVideoParse * mpegvideoparse)
   if (count)
     scanword = (scanword << (8 * (8 - count)));
 
-  GST_LOG_OBJECT (mpegvideoparse, "scanword 0x%016llx", scanword);
+  GST_LOG_OBJECT (mpegvideoparse, "scanword 0x%016" G_GINT64_MODIFIER "x",
+      scanword);
 
   data = GST_BUFFER_DATA (head);
   size = GST_BUFFER_SIZE (head);
@@ -543,8 +608,8 @@ scan_keyframe (MpegVideoParse * mpegvideoparse)
   while (size > 0) {
     scanword = (((guint64) data[size - 1]) << 56) | (scanword >> 8);
 
-    GST_LOG_OBJECT (mpegvideoparse, "scanword at %d 0x%016llx", size - 1,
-        scanword);
+    GST_LOG_OBJECT (mpegvideoparse,
+        "scanword at %d 0x%016" G_GINT64_MODIFIER "x", size - 1, scanword);
 
     /* check picture start and picture type */
     if ((scanword & G_GUINT64_CONSTANT (0xffffffff00380000)) ==
@@ -807,6 +872,8 @@ mpv_parse_sink_event (GstPad * pad, GstEvent * event)
             format, start, stop, pos);
       }
 
+      gst_mpegvideoparse_flush (mpegvideoparse);
+
       /* now configure the values */
       gst_segment_set_newsegment_full (&mpegvideoparse->segment, update,
           rate, applied_rate, format, start, stop, pos);
@@ -895,7 +962,7 @@ plugin_init (GstPlugin * plugin)
       "MPEG Video Parser");
 
   return gst_element_register (plugin, "mpegvideoparse",
-      GST_RANK_SECONDARY - 1, GST_TYPE_MPEGVIDEOPARSE);
+      GST_RANK_PRIMARY, GST_TYPE_MPEGVIDEOPARSE);
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,

@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="prev" href="gst-plugins-bad-plugins-videoanalyse.html" title="videoanalyse">
 <link rel="next" href="gst-plugins-bad-plugins-videomark.html" title="videomark">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
@@ -23,13 +23,15 @@
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-bad-plugins-videomark.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-videodetect.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-videodetect.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-videodetect.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-videodetect.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-bad-plugins-videodetect.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-videodetect.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-videodetect.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-videodetect.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-bad-plugins-videodetect"></a><div class="titlepage"></div>
@@ -52,9 +54,15 @@
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
-               +----GstBaseTransform
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="/usr/share/gtk-doc/html/gstreamer-libs-0.10/GstBaseTransform.html"
+>GstBaseTransform</a>
                      +----<a
 href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstvideofilter.html#GstVideoFilter"
 >GstVideoFilter</a>
@@ -112,10 +120,10 @@ After the pattern has been found and the data pattern has been read, an
 element message called <code class="classname">"GstVideoDetect"</code> will
 be posted on the bus. If the pattern is no longer found in the frame, the
 same element message is posted with the have-pattern field set to <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE--CAPS"
 ><span class="type">FALSE</span></a>.
 The message is only posted if the <a class="link" href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--message" title='The "message" property'><span class="type">"message"</span></a> property is <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><span class="type">TRUE</span></a>.
 </p>
 <p>
@@ -128,30 +136,47 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 ><span class="type">gboolean</span></a>
   <code class="classname">"have-pattern"</code>:
   if the pattern was found. This field will be set to <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><span class="type">TRUE</span></a> for as long as
   the pattern was found in the frame and set to FALSE for the first frame
   that does not contain the pattern anymore.
   </p></li>
 <li><p>
-  <span class="type">GstClockTime</span>
+  <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstClock.html#GstClockTime"
+><span class="type">GstClockTime</span></a>
   <code class="classname">"timestamp"</code>:
   the timestamp of the buffer that triggered the message.
   </p></li>
 <li><p>
-  <span class="type">GstClockTime</span>
+  <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstClock.html#GstClockTime"
+><span class="type">GstClockTime</span></a>
   <code class="classname">"stream-time"</code>:
   the stream time of the buffer.
   </p></li>
 <li><p>
-  <span class="type">GstClockTime</span>
+  <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstClock.html#GstClockTime"
+><span class="type">GstClockTime</span></a>
   <code class="classname">"running-time"</code>:
   the running_time of the buffer.
   </p></li>
 <li><p>
-  <span class="type">GstClockTime</span>
+  <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstClock.html#GstClockTime"
+><span class="type">GstClockTime</span></a>
   <code class="classname">"duration"</code>:
   the duration of the buffer.
+  </p></li>
+<li><p>
+  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+><span class="type">guint64</span></a>
+  <code class="classname">"data-uint64"</code>:
+  the data-pattern found after the pattern or 0 when have-signal is <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE--CAPS"
+><span class="type">FALSE</span></a>.
   </p></li>
 <li><p>
   <a
@@ -159,7 +184,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 ><span class="type">guint</span></a>
   <code class="classname">"data"</code>:
   the data-pattern found after the pattern or 0 when have-signal is <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE--CAPS"
 ><span class="type">FALSE</span></a>.
   </p></li>
 </ul></div>
@@ -168,7 +193,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2913092"></a><h3>Example launch line</h3>
+<a name="id2919760"></a><h3>Example launch line</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch videotestsrc ! videodetect ! ffmpegcolorspace ! ximagesink
 </pre></div>
@@ -180,7 +205,7 @@ Last reviewed on 2007-05-30 (0.10.5)</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2913116"></a><h3>Element Information</h3>
+<a name="id2919786"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -203,7 +228,7 @@ Last reviewed on 2007-05-30 (0.10.5)</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2913179"></a><h3>Element Pads</h3>
+<a name="id2919849"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -221,7 +246,7 @@ Last reviewed on 2007-05-30 (0.10.5)</p>
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw-yuv, format=(fourcc){ I420, YV12 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td>video/x-raw-yuv, format=(fourcc){ I420, YV12, Y41B, Y42B, Y444, YUY2, UYVY, AYUV, YVYU }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
@@ -242,14 +267,84 @@ Last reviewed on 2007-05-30 (0.10.5)</p>
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw-yuv, format=(fourcc){ I420, YV12 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td>video/x-raw-yuv, format=(fourcc){ I420, YV12, Y41B, Y42B, Y444, YUY2, UYVY, AYUV, YVYU }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2919996"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-videosignal.html#plugin-videosignal">videosignal</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Wim Taymans &lt;wim@fluendo.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Filter/Effect/Video</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2920059"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw-yuv, format=(fourcc){ I420, YV12, Y41B, Y42B, Y444, YUY2, UYVY, AYUV, YVYU }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw-yuv, format=(fourcc){ I420, YV12, Y41B, Y42B, Y444, YUY2, UYVY, AYUV, YVYU }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -260,7 +355,6 @@ Last reviewed on 2007-05-30 (0.10.5)</p>
 <p>
 Opaque datastructure.</p>
 <p>
-
 </p>
 </div>
 </div>
@@ -281,7 +375,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write / Construct</pre>
 <p>The number of pattern markers.</p>
-<p>Allowed values: &gt;= 1</p>
+<p>Allowed values: &gt;= 0</p>
 <p>Default value: 4</p>
 </div>
 <hr>
@@ -357,11 +451,11 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-videodetect.see-also"></a><h2>See Also</h2>
-<a class="link" href="gst-plugins-bad-plugins-videomark.html#GstVideoMark"><span class="type">GstVideoMark</span></a>
+#GstVideoMark
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

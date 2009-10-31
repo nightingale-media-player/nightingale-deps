@@ -20,7 +20,7 @@
 ** vrcvisnd.c
 **
 ** VRCVI sound hardware emulation
-** $Id: vrcvisnd.c,v 1.4 2008-03-26 07:40:56 slomo Exp $
+** $Id$
 */
 
 #include <stdio.h>
@@ -188,8 +188,8 @@ apuext_t vrcvi_ext = {
 };
 
 /*
-** $Log: vrcvisnd.c,v $
-** Revision 1.4  2008-03-26 07:40:56  slomo
+** $Log$
+** Revision 1.4  2008/03/26 07:40:56  slomo
 ** * gst/nsf/Makefile.am:
 ** * gst/nsf/fds_snd.c:
 ** * gst/nsf/mmc5_snd.c:

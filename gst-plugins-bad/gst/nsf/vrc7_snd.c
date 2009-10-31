@@ -21,7 +21,7 @@
 **
 ** VRCVII sound hardware emulation
 ** Thanks to Charles MacDonald (cgfm2@hooked.net) for donating code.
-** $Id: vrc7_snd.c,v 1.4 2008-03-26 07:40:56 slomo Exp $
+** $Id$
 */
 
 #include <stdio.h>
@@ -323,8 +323,8 @@ apuext_t vrc7_ext = {
 };
 
 /*
-** $Log: vrc7_snd.c,v $
-** Revision 1.4  2008-03-26 07:40:56  slomo
+** $Log$
+** Revision 1.4  2008/03/26 07:40:56  slomo
 ** * gst/nsf/Makefile.am:
 ** * gst/nsf/fds_snd.c:
 ** * gst/nsf/mmc5_snd.c:

@@ -53,8 +53,6 @@
 #include "gstdshowutil.h"
 #include "gstdshowfakesrc.h"
 
-#include "comtaskthread.h"
-
 G_BEGIN_DECLS
 
 typedef struct {
@@ -86,9 +84,6 @@ struct _GstDshowAudioDec
   
   GstFlowReturn last_ret;
 
-  /* COM thread helper. */
-  GstCOMTaskThread *comthread;
-
   /* filters interfaces*/
   FakeSrc *fakesrc;
   AudioFakeSink *fakesink;
@@ -110,19 +105,14 @@ struct _GstDshowAudioDec
   gint rate;
   gint layer;
   GstBuffer *codec_data;
-
-  gboolean check_mp3_frames;
-  gboolean first_frame;
-  gint mpegaudioversion;
-  GstBuffer *good_mp3_frame;
-  gboolean seen_bad_mp3_frames;
-  gboolean decoder_is_xp_mp3;
   
   /* current segment */
   GstSegment * segment;
 
   /* timestamp of the next buffer */
   GstClockTime timestamp;
+
+  gboolean comInitialized;
 };
 
 struct _GstDshowAudioDecClass
@@ -142,7 +132,7 @@ class AudioFakeSink :  public CBaseRenderer
 public:
   AudioFakeSink(GstDshowAudioDec *dec) : 
       m_hres(S_OK),
-      CBaseRenderer(CLSID_AudioFakeSink, L"AudioFakeSink", NULL, &m_hres),
+      CBaseRenderer(CLSID_AudioFakeSink, _T("AudioFakeSink"), NULL, &m_hres),
       mDec(dec) 
   {};
   virtual ~AudioFakeSink() {};

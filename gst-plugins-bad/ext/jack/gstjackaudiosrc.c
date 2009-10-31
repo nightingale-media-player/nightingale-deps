@@ -233,7 +233,6 @@ jack_process_cb (jack_nframes_t nframes, void *arg)
   /* the samples in the jack input buffers have to be interleaved into the 
    * ringbuffer 
    */
-
   for (i = 0; i < nframes; ++i)
     for (j = 0; j < channels; ++j)
       *data++ = buffers[j][i];
@@ -445,9 +444,17 @@ gst_jack_ring_buffer_acquire (GstRingBuffer * buf, GstRingBufferSpec * spec)
       (GST_SECOND / GST_USECOND), spec->rate * spec->bytes_per_sample);
   /* segtotal based on buffer-time latency */
   spec->segtotal = spec->buffer_time / spec->latency_time;
+  if (spec->segtotal < 2) {
+    spec->segtotal = 2;
+    spec->buffer_time = spec->latency_time * spec->segtotal;
+  }
 
-  GST_DEBUG_OBJECT (src, "segsize %d, segtotal %d", spec->segsize,
-      spec->segtotal);
+  GST_DEBUG_OBJECT (src, "buffer time: %" G_GINT64_FORMAT " usec",
+      spec->buffer_time);
+  GST_DEBUG_OBJECT (src, "latency time: %" G_GINT64_FORMAT " usec",
+      spec->latency_time);
+  GST_DEBUG_OBJECT (src, "buffer_size %d, segsize %d, segtotal %d",
+      buffer_size, spec->segsize, spec->segtotal);
 
   /* allocate the ringbuffer memory now */
   buf->data = gst_buffer_new_and_alloc (spec->segtotal * spec->segsize);
@@ -458,7 +465,8 @@ gst_jack_ring_buffer_acquire (GstRingBuffer * buf, GstRingBufferSpec * spec)
 
   /* if we need to automatically connect the ports, do so now. We must do this
    * after activating the client. */
-  if (src->connect == GST_JACK_CONNECT_AUTO) {
+  if (src->connect == GST_JACK_CONNECT_AUTO
+      || src->connect == GST_JACK_CONNECT_AUTO_FORCED) {
     /* find all the physical output ports. A physical output port is a port
      * associated with a hardware device. Someone needs connect to a physical
      * port in order to capture something. */
@@ -483,10 +491,9 @@ gst_jack_ring_buffer_acquire (GstRingBuffer * buf, GstRingBufferSpec * spec)
       }
       GST_DEBUG_OBJECT (src, "try connecting to %s",
           jack_port_name (src->ports[i]));
-      /* connect the physical port to a port */
 
+      /* connect the physical port to a port */
       res = jack_connect (client, ports[i], jack_port_name (src->ports[i]));
-      g_print ("connecting to %s\n", jack_port_name (src->ports[i]));
       if (res != 0 && res != EEXIST)
         goto cannot_connect;
     }

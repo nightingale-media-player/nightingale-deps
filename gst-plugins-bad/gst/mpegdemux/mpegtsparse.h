@@ -60,7 +60,9 @@ struct _MpegTSParse {
   GstStructure *pat;
   MpegTSPacketizer *packetizer;
   GHashTable *psi_pids;
+  GHashTable *pes_pids;
   gboolean disposed;
+  gboolean need_sync_program_pads;
 };
 
 struct _MpegTSParseClass {

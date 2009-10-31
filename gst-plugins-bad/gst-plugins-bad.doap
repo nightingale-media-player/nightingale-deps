@@ -36,6 +36,72 @@ real live maintainer, or some actual wide use.
 
  <release>
   <Version>
+   <revision>0.10.16</revision>
+   <branch>0.10</branch>
+   <name>Sensible Precaution</name>
+   <created>2009-10-23</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-0.10.16.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-0.10.16.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.10.15</revision>
+   <branch>0.10</branch>
+   <name>Ending the war</name>
+   <created>2009-10-21</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-0.10.15.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-0.10.15.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.10.14</revision>
+   <branch>0.10</branch>
+   <name>Your New Best Friends</name>
+   <created>2009-08-29</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-0.10.14.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-0.10.14.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.10.13</revision>
+   <branch>0.10</branch>
+   <name>Supersonic Rocket</name>
+   <created>2009-06-18</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-0.10.13.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-0.10.13.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.10.12</revision>
+   <branch>0.10</branch>
+   <name>More than I can handle</name>
+   <created>2009-05-20</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-0.10.12.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-0.10.12.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.10.11</revision>
+   <branch>0.10</branch>
+   <name>A precious stone</name>
+   <created>2009-03-20</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-0.10.11.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-0.10.11.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
    <revision>0.10.10</revision>
    <branch>0.10</branch>
    <name>Keep the dogies rollin</name>

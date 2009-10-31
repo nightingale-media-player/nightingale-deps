@@ -74,6 +74,7 @@ enum
   PROP_PATTERN_COUNT,
   PROP_PATTERN_DATA_COUNT,
   PROP_PATTERN_DATA,
+  PROP_PATTERN_DATA_64,
   PROP_ENABLED,
   PROP_LEFT_OFFSET,
   PROP_BOTTOM_OFFSET
@@ -92,14 +93,16 @@ static GstStaticPadTemplate gst_video_mark_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV ("{ I420, YV12 }"))
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV
+        ("{ I420, YV12, Y41B, Y42B, Y444, YUY2, UYVY, AYUV, YVYU }"))
     );
 
 static GstStaticPadTemplate gst_video_mark_sink_template =
 GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV ("{ I420, YV12 }"))
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV
+        ("{ I420, YV12, Y41B, Y42B, Y444, YUY2, UYVY, AYUV, YVYU }"))
     );
 
 static GstVideoFilterClass *parent_class = NULL;
@@ -110,6 +113,7 @@ gst_video_mark_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
 {
   GstVideoMark *vf;
   GstStructure *in_s;
+  guint32 fourcc;
   gboolean ret;
 
   vf = GST_VIDEO_MARK (btrans);
@@ -118,62 +122,69 @@ gst_video_mark_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
 
   ret = gst_structure_get_int (in_s, "width", &vf->width);
   ret &= gst_structure_get_int (in_s, "height", &vf->height);
-  ret &= gst_structure_get_fourcc (in_s, "format", &vf->format);
+  ret &= gst_structure_get_fourcc (in_s, "format", &fourcc);
+
+  if (ret)
+    vf->format = gst_video_format_from_fourcc (fourcc);
 
   return ret;
 }
 
-/* Useful macros */
-#define GST_VIDEO_I420_Y_ROWSTRIDE(width) (GST_ROUND_UP_4(width))
-#define GST_VIDEO_I420_U_ROWSTRIDE(width) (GST_ROUND_UP_8(width)/2)
-#define GST_VIDEO_I420_V_ROWSTRIDE(width) ((GST_ROUND_UP_8(GST_VIDEO_I420_Y_ROWSTRIDE(width)))/2)
-
-#define GST_VIDEO_I420_Y_OFFSET(w,h) (0)
-#define GST_VIDEO_I420_U_OFFSET(w,h) (GST_VIDEO_I420_Y_OFFSET(w,h)+(GST_VIDEO_I420_Y_ROWSTRIDE(w)*GST_ROUND_UP_2(h)))
-#define GST_VIDEO_I420_V_OFFSET(w,h) (GST_VIDEO_I420_U_OFFSET(w,h)+(GST_VIDEO_I420_U_ROWSTRIDE(w)*GST_ROUND_UP_2(h)/2))
-
-#define GST_VIDEO_I420_SIZE(w,h)     (GST_VIDEO_I420_V_OFFSET(w,h)+(GST_VIDEO_I420_V_ROWSTRIDE(w)*GST_ROUND_UP_2(h)/2))
-
 static void
 gst_video_mark_draw_box (GstVideoMark * videomark, guint8 * data,
-    gint width, gint height, gint stride, guint8 color)
+    gint width, gint height, gint row_stride, gint pixel_stride, guint8 color)
 {
   gint i, j;
 
   for (i = 0; i < height; i++) {
     for (j = 0; j < width; j++) {
-      data[j] = color;
+      data[pixel_stride * j] = color;
     }
-    /* move to next line */
-    data += stride;
+    data += row_stride;
   }
 }
 
-static void
-gst_video_mark_420 (GstVideoMark * videomark, GstBuffer * buffer)
+static GstFlowReturn
+gst_video_mark_yuv (GstVideoMark * videomark, GstBuffer * buffer)
 {
-  gint i, pw, ph, stride, width, height;
+  GstVideoFormat format;
+  gint i, pw, ph, row_stride, pixel_stride, offset;
+  gint width, height, req_width, req_height;
   guint8 *d, *data;
-  guint pattern_shift;
+  guint64 pattern_shift;
   guint8 color;
 
   data = GST_BUFFER_DATA (buffer);
 
+  format = videomark->format;
   width = videomark->width;
   height = videomark->height;
 
   pw = videomark->pattern_width;
   ph = videomark->pattern_height;
-  stride = GST_VIDEO_I420_Y_ROWSTRIDE (width);
+  row_stride = gst_video_format_get_row_stride (format, 0, width);
+  pixel_stride = gst_video_format_get_pixel_stride (format, 0);
+  offset = gst_video_format_get_component_offset (format, 0, width, height);
+
+  req_width =
+      (videomark->pattern_count + videomark->pattern_data_count) * pw +
+      videomark->left_offset;
+  req_height = videomark->bottom_offset + ph;
+  if (req_width > width || req_height > height) {
+    GST_ELEMENT_ERROR (videomark, STREAM, WRONG_TYPE, (NULL),
+        ("videomark pattern doesn't fit video, need at least %ix%i (stream has %ix%i)",
+            req_width, req_height, width, height));
+    return GST_FLOW_ERROR;
+  }
 
   /* draw the bottom left pixels */
   for (i = 0; i < videomark->pattern_count; i++) {
-    d = data;
+    d = data + offset;
     /* move to start of bottom left */
-    d += stride * (height - ph - videomark->bottom_offset) +
-        videomark->left_offset;
+    d += row_stride * (height - ph - videomark->bottom_offset) +
+        pixel_stride * videomark->left_offset;
     /* move to i-th pattern */
-    d += pw * i;
+    d += pixel_stride * pw * i;
 
     if (i & 1)
       /* odd pixels must be white */
@@ -182,31 +193,35 @@ gst_video_mark_420 (GstVideoMark * videomark, GstBuffer * buffer)
       color = 0;
 
     /* draw box of width * height */
-    gst_video_mark_draw_box (videomark, d, pw, ph, stride, color);
+    gst_video_mark_draw_box (videomark, d, pw, ph, row_stride, pixel_stride,
+        color);
   }
 
-  pattern_shift = 1 << (videomark->pattern_data_count - 1);
+  pattern_shift = G_GUINT64_CONSTANT (1) << (videomark->pattern_data_count - 1);
 
   /* get the data of the pattern */
   for (i = 0; i < videomark->pattern_data_count; i++) {
-    d = data;
+    d = data + offset;
     /* move to start of bottom left, adjust for offsets */
-    d += stride * (height - ph - videomark->bottom_offset) +
-        videomark->left_offset;
+    d += row_stride * (height - ph - videomark->bottom_offset) +
+        pixel_stride * videomark->left_offset;
     /* move after the fixed pattern */
-    d += (videomark->pattern_count * pw);
+    d += pixel_stride * videomark->pattern_count * pw;
     /* move to i-th pattern data */
-    d += pw * i;
+    d += pixel_stride * pw * i;
 
     if (videomark->pattern_data & pattern_shift)
       color = 255;
     else
       color = 0;
 
-    gst_video_mark_draw_box (videomark, d, pw, ph, stride, color);
+    gst_video_mark_draw_box (videomark, d, pw, ph, row_stride, pixel_stride,
+        color);
 
     pattern_shift >>= 1;
   }
+
+  return GST_FLOW_OK;
 }
 
 static GstFlowReturn
@@ -218,7 +233,7 @@ gst_video_mark_transform_ip (GstBaseTransform * trans, GstBuffer * buf)
   videomark = GST_VIDEO_MARK (trans);
 
   if (videomark->enabled)
-    gst_video_mark_420 (videomark, buf);
+    return gst_video_mark_yuv (videomark, buf);
 
   return ret;
 }
@@ -243,6 +258,9 @@ gst_video_mark_set_property (GObject * object, guint prop_id,
       break;
     case PROP_PATTERN_DATA_COUNT:
       videomark->pattern_data_count = g_value_get_int (value);
+      break;
+    case PROP_PATTERN_DATA_64:
+      videomark->pattern_data = g_value_get_uint64 (value);
       break;
     case PROP_PATTERN_DATA:
       videomark->pattern_data = g_value_get_int (value);
@@ -283,8 +301,11 @@ gst_video_mark_get_property (GObject * object, guint prop_id, GValue * value,
     case PROP_PATTERN_DATA_COUNT:
       g_value_set_int (value, videomark->pattern_data_count);
       break;
+    case PROP_PATTERN_DATA_64:
+      g_value_set_uint64 (value, videomark->pattern_data);
+      break;
     case PROP_PATTERN_DATA:
-      g_value_set_int (value, videomark->pattern_data);
+      g_value_set_int (value, MIN (videomark->pattern_data, G_MAXINT));
       break;
     case PROP_ENABLED:
       g_value_set_boolean (value, videomark->enabled);
@@ -338,16 +359,20 @@ gst_video_mark_class_init (gpointer klass, gpointer class_data)
           DEFAULT_PATTERN_HEIGHT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
   g_object_class_install_property (gobject_class, PROP_PATTERN_COUNT,
       g_param_spec_int ("pattern-count", "Pattern count",
-          "The number of pattern markers", 1, G_MAXINT,
+          "The number of pattern markers", 0, G_MAXINT,
           DEFAULT_PATTERN_COUNT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
   g_object_class_install_property (gobject_class, PROP_PATTERN_DATA_COUNT,
       g_param_spec_int ("pattern-data-count", "Pattern data count",
-          "The number of extra data pattern markers", 0, G_MAXINT,
+          "The number of extra data pattern markers", 0, 64,
           DEFAULT_PATTERN_DATA_COUNT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+  g_object_class_install_property (gobject_class, PROP_PATTERN_DATA_64,
+      g_param_spec_uint64 ("pattern-data-uint64", "Pattern data",
+          "The extra data pattern markers", 0, G_MAXUINT64,
+          DEFAULT_PATTERN_DATA, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
   g_object_class_install_property (gobject_class, PROP_PATTERN_DATA,
       g_param_spec_int ("pattern-data", "Pattern data",
           "The extra data pattern markers", 0, G_MAXINT,
-          DEFAULT_PATTERN_DATA, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          DEFAULT_PATTERN_DATA, G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, PROP_ENABLED,
       g_param_spec_boolean ("enabled", "Enabled",
           "Enable or disable the filter",

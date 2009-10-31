@@ -28,7 +28,8 @@
 #include "gstmpegdefs.h"
 #include "gstmpegdemux.h"
 
-#define SEGMENT_THRESHOLD (GST_SECOND/2)
+#define SEGMENT_THRESHOLD (300*GST_MSECOND)
+#define VIDEO_SEGMENT_THRESHOLD (500*GST_MSECOND)
 
 /* The SCR_MUNGE value is used to offset the scr_adjust value, to avoid
  * ever generating a negative timestamp */
@@ -248,6 +249,7 @@ gst_flups_demux_create_stream (GstFluPSDemux * demux, gint id, gint stream_type)
   gchar *name;
   GstFluPSDemuxClass *klass = GST_FLUPS_DEMUX_GET_CLASS (demux);
   GstCaps *caps;
+  GstClockTime threshold = SEGMENT_THRESHOLD;
 
   name = NULL;
   template = NULL;
@@ -277,6 +279,7 @@ gst_flups_demux_create_stream (GstFluPSDemux * demux, gint id, gint stream_type)
       caps = gst_caps_new_simple ("video/mpeg",
           "mpegversion", G_TYPE_INT, mpeg_version,
           "systemstream", G_TYPE_BOOLEAN, FALSE, NULL);
+      threshold = VIDEO_SEGMENT_THRESHOLD;
       break;
     }
     case ST_AUDIO_MPEG1:
@@ -296,6 +299,7 @@ gst_flups_demux_create_stream (GstFluPSDemux * demux, gint id, gint stream_type)
       template = klass->video_template;
       name = g_strdup_printf ("video_%02x", id);
       caps = gst_caps_new_simple ("video/x-h264", NULL);
+      threshold = VIDEO_SEGMENT_THRESHOLD;
       break;
     case ST_PS_AUDIO_AC3:
       template = klass->audio_template;
@@ -335,6 +339,7 @@ gst_flups_demux_create_stream (GstFluPSDemux * demux, gint id, gint stream_type)
   stream->notlinked = FALSE;
   stream->type = stream_type;
   stream->pad = gst_pad_new_from_template (template, name);
+  stream->segment_thresh = threshold;
   gst_pad_set_event_function (stream->pad, gst_flups_demux_src_event);
   gst_pad_set_query_function (stream->pad, gst_flups_demux_src_query);
   gst_pad_use_fixed_caps (stream->pad);
@@ -351,7 +356,7 @@ gst_flups_demux_get_stream (GstFluPSDemux * demux, gint id, gint type)
 {
   GstFluPSStream *stream = demux->streams[id];
 
-  if (stream == NULL) {
+  if (stream == NULL && !demux->disable_stream_creation) {
     if (!(stream = gst_flups_demux_create_stream (demux, id, type)))
       goto unknown_stream;
 
@@ -411,8 +416,7 @@ gst_flups_demux_send_data (GstFluPSDemux * demux, GstFluPSStream * stream,
   /* Set the buffer discont flag, and clear discont state on the stream */
   if (stream->discont) {
     GST_DEBUG_OBJECT (demux, "discont buffer to pad %" GST_PTR_FORMAT
-        " with TS %" GST_TIME_FORMAT "\n", stream->pad,
-        GST_TIME_ARGS (timestamp));
+        " with TS %" GST_TIME_FORMAT, stream->pad, GST_TIME_ARGS (timestamp));
 
     GST_BUFFER_FLAG_SET (buf, GST_BUFFER_FLAG_DISCONT);
     stream->discont = FALSE;
@@ -465,7 +469,7 @@ gst_flups_demux_clear_times (GstFluPSDemux * demux)
     GstFluPSStream *stream = demux->streams[id];
 
     if (stream) {
-      stream->last_ts = GST_CLOCK_TIME_NONE;
+      stream->last_seg_start = stream->last_ts = GST_CLOCK_TIME_NONE;
     }
   }
 }
@@ -488,11 +492,17 @@ gst_flups_demux_send_segment_updates (GstFluPSDemux * demux,
       if (stream->last_ts == GST_CLOCK_TIME_NONE ||
           stream->last_ts < demux->src_segment.start)
         stream->last_ts = demux->src_segment.start;
-      if (stream->last_ts + SEGMENT_THRESHOLD < new_time) {
+      if (stream->last_ts + stream->segment_thresh < new_time) {
 #if 0
-        g_print ("Segment update to pad %s time %" GST_TIME_FORMAT "\n",
-            GST_PAD_NAME (stream->pad), GST_TIME_ARGS (new_time));
+        g_print ("Segment update to pad %s time %" GST_TIME_FORMAT " stop now %"
+            GST_TIME_FORMAT " last_stop %" GST_TIME_FORMAT "\n",
+            GST_PAD_NAME (stream->pad), GST_TIME_ARGS (new_time),
+            GST_TIME_ARGS (demux->src_segment.stop),
+            GST_TIME_ARGS (demux->src_segment.last_stop));
 #endif
+        GST_DEBUG_OBJECT (demux,
+            "Segment update to pad %s time %" GST_TIME_FORMAT,
+            GST_PAD_NAME (stream->pad), GST_TIME_ARGS (new_time));
         if (event == NULL) {
           event = gst_event_new_new_segment_full (TRUE,
               demux->src_segment.rate, demux->src_segment.applied_rate,
@@ -502,7 +512,7 @@ gst_flups_demux_send_segment_updates (GstFluPSDemux * demux,
         }
         gst_event_ref (event);
         gst_pad_push_event (stream->pad, event);
-        stream->last_ts = new_time;
+        stream->last_seg_start = stream->last_ts = new_time;
       }
     }
   }
@@ -516,28 +526,39 @@ gst_flups_demux_send_segment_close (GstFluPSDemux * demux)
 {
   gint id;
   GstEvent *event = NULL;
+  GstClockTime stop = demux->src_segment.stop;
+
+  if (demux->src_segment.last_stop != -1 && demux->src_segment.last_stop > stop)
+    stop = demux->src_segment.last_stop;
 
   for (id = 0; id < GST_FLUPS_DEMUX_MAX_STREAMS; id++) {
     GstFluPSStream *stream = demux->streams[id];
 
     if (stream) {
-      if (stream->last_ts == GST_CLOCK_TIME_NONE ||
-          stream->last_ts < demux->src_segment.start)
-        stream->last_ts = demux->src_segment.start;
+      GstClockTime start = demux->src_segment.start;
+
+      if (stream->last_seg_start != GST_CLOCK_TIME_NONE &&
+          stream->last_seg_start > start)
+        start = stream->last_seg_start;
 
 #if 0
-      g_print ("Segment update to pad %s start %" GST_TIME_FORMAT
+      g_print ("Segment close to pad %s start %" GST_TIME_FORMAT
           " stop %" GST_TIME_FORMAT "\n",
-          GST_PAD_NAME (stream->pad), GST_TIME_ARGS (stream->last_ts),
-          GST_TIME_ARGS (demux->src_segment.stop));
+          GST_PAD_NAME (stream->pad), GST_TIME_ARGS (start),
+          GST_TIME_ARGS (stop));
 #endif
+      if (start > stop) {
+        g_print ("Problem on pad %s with start %" GST_TIME_FORMAT " > stop %"
+            GST_TIME_FORMAT "\n",
+            gst_object_get_name (GST_OBJECT (stream->pad)),
+            GST_TIME_ARGS (start), GST_TIME_ARGS (stop));
+      }
       event = gst_event_new_new_segment_full (TRUE,
           demux->src_segment.rate, demux->src_segment.applied_rate,
-          GST_FORMAT_TIME, stream->last_ts,
-          demux->src_segment.stop,
-          demux->src_segment.time +
-          (stream->last_ts - demux->src_segment.start));
-      gst_pad_push_event (stream->pad, event);
+          GST_FORMAT_TIME, start,
+          stop, demux->src_segment.time + (start - demux->src_segment.start));
+      if (event)
+        gst_pad_push_event (stream->pad, event);
     }
   }
 }
@@ -551,7 +572,7 @@ gst_flups_demux_send_event (GstFluPSDemux * demux, GstEvent * event)
   for (id = 0; id < GST_FLUPS_DEMUX_MAX_STREAMS; id++) {
     GstFluPSStream *stream = demux->streams[id];
 
-    if (stream && !stream->notlinked) {
+    if (stream) {
       (void) gst_event_ref (event);
 
       if (!gst_pad_push_event (stream->pad, event)) {
@@ -591,7 +612,9 @@ gst_flups_demux_handle_dvd_event (GstFluPSDemux * demux, GstEvent * event)
 
     GST_DEBUG_OBJECT (demux, "Handling language codes event");
 
-    /* Create a video pad to ensure it exists before emit no more pads */
+    demux->disable_stream_creation = FALSE;
+
+    /* Create a video pad to ensure it exists before emitting no more pads */
     temp = gst_flups_demux_get_stream (demux, 0xe0, ST_VIDEO_MPEG2);
     /* Send a video format event downstream */
     {
@@ -622,30 +645,47 @@ gst_flups_demux_handle_dvd_event (GstFluPSDemux * demux, GstEvent * event)
       if (!gst_structure_get_int (structure, cur_stream_name, &stream_format))
         continue;
 
-      demux->audio_stream_types[i] = stream_format;
+      g_snprintf (cur_stream_name, 32, "audio-%d-stream", i);
+      if (!gst_structure_get_int (structure, cur_stream_name, &stream_id))
+        continue;
+      if (stream_id < 0 || stream_id >= MAX_DVD_AUDIO_STREAMS)
+        continue;
 
+      demux->audio_stream_types[i] = stream_format;
       switch (stream_format) {
         case 0x0:
           /* AC3 */
-          stream_id = 0x80 + i;
+          stream_id += 0x80;
+          GST_DEBUG_OBJECT (demux,
+              "Audio stream %d format %d ID 0x%02x - AC3", i,
+              stream_format, stream_id);
           temp = gst_flups_demux_get_stream (demux, stream_id, ST_PS_AUDIO_AC3);
           break;
         case 0x2:
         case 0x3:
           /* MPEG audio without and with extension stream are 
            * treated the same */
-          stream_id = 0xC0 + i;
+          stream_id += 0xC0;
+          GST_DEBUG_OBJECT (demux,
+              "Audio stream %d format %d ID 0x%02x - MPEG audio", i,
+              stream_format, stream_id);
           temp = gst_flups_demux_get_stream (demux, stream_id, ST_AUDIO_MPEG1);
           break;
         case 0x4:
           /* LPCM */
-          stream_id = 0xA0 + i;
+          stream_id += 0xA0;
+          GST_DEBUG_OBJECT (demux,
+              "Audio stream %d format %d ID 0x%02x - DVD LPCM", i,
+              stream_format, stream_id);
           temp =
               gst_flups_demux_get_stream (demux, stream_id, ST_PS_AUDIO_LPCM);
           break;
         case 0x6:
           /* DTS */
-          stream_id = 0x88 + i;
+          stream_id += 0x88;
+          GST_DEBUG_OBJECT (demux,
+              "Audio stream %d format %d ID 0x%02x - DTS", i,
+              stream_format, stream_id);
           temp = gst_flups_demux_get_stream (demux, stream_id, ST_PS_AUDIO_DTS);
           break;
         case 0x7:
@@ -662,15 +702,26 @@ gst_flups_demux_handle_dvd_event (GstFluPSDemux * demux, GstEvent * event)
     /* And subtitle streams */
     for (i = 0; i < MAX_DVD_SUBPICTURE_STREAMS; i++) {
       gint stream_format;
+      gint stream_id;
 
       g_snprintf (cur_stream_name, 32, "subpicture-%d-format", i);
-
       if (!gst_structure_get_int (structure, cur_stream_name, &stream_format))
         continue;
 
+      g_snprintf (cur_stream_name, 32, "subpicture-%d-stream", i);
+      if (!gst_structure_get_int (structure, cur_stream_name, &stream_id))
+        continue;
+      if (stream_id < 0 || stream_id >= MAX_DVD_SUBPICTURE_STREAMS)
+        continue;
+
+      GST_DEBUG_OBJECT (demux, "Subpicture stream %d ID 0x%02x", i, 0x20 + i);
+
       /* Retrieve the subpicture stream to force pad creation */
-      temp = gst_flups_demux_get_stream (demux, 0x20 + i, ST_PS_DVD_SUBPICTURE);
+      temp = gst_flups_demux_get_stream (demux, 0x20 + stream_id,
+          ST_PS_DVD_SUBPICTURE);
     }
+
+    demux->disable_stream_creation = TRUE;
 
     GST_DEBUG_OBJECT (demux, "Created all pads from Language Codes event, "
         "signalling no-more-pads");
@@ -692,11 +743,14 @@ gst_flups_demux_handle_dvd_event (GstFluPSDemux * demux, GstEvent * event)
             "event", G_TYPE_STRING, "select-pad", NULL);
         GstEvent *sel_event =
             gst_event_new_custom (GST_EVENT_CUSTOM_DOWNSTREAM, s);
+
+        temp->notlinked = FALSE;
         gst_pad_push_event (temp->pad, sel_event);
 
         gst_event_ref (event);
         ret = gst_pad_push_event (temp->pad, event);
-        g_print ("Subpicture physical ID change to %d, forced %d\n", stream_id,
+        GST_INFO_OBJECT (demux,
+            "Subpicture physical ID change to %d, forced %d", stream_id,
             forced_only);
       }
     }
@@ -709,7 +763,7 @@ gst_flups_demux_handle_dvd_event (GstFluPSDemux * demux, GstEvent * event)
 
       stream_id %= MAX_DVD_AUDIO_STREAMS;
 
-      aud_type = demux->audio_stream_types[stream_id % MAX_DVD_AUDIO_STREAMS];
+      aud_type = demux->audio_stream_types[stream_id];
 
       switch (aud_type) {
         case 0x0:
@@ -717,32 +771,33 @@ gst_flups_demux_handle_dvd_event (GstFluPSDemux * demux, GstEvent * event)
           stream_id += 0x80;
           temp = demux->streams[stream_id];
           break;
-#if 0                           /* FIXME: Ignore non AC-3 requests until the decoder bin can handle them */
         case 0x2:
         case 0x3:
           /* MPEG audio without and with extension stream are 
            * treated the same */
-          stream_id = 0xC0 + i;
+          stream_id += 0xC0;
           temp = demux->streams[stream_id];
           break;
         case 0x4:
           /* LPCM */
-          stream_id = 0xA0 + i;
+          stream_id += 0xA0;
           temp = demux->streams[stream_id];
           break;
         case 0x6:
           /* DTS */
-          stream_id = 0x88 + i;
+          stream_id += 0x88;
           temp = demux->streams[stream_id];
           break;
         case 0x7:
           /* FIXME: What range is SDDS? */
+          temp = NULL;
           break;
-#endif
         default:
           temp = NULL;
           break;
       }
+      GST_INFO_OBJECT (demux, "Have DVD audio stream select event: "
+          "stream 0x%02x", stream_id);
       if (temp != NULL && temp->pad != NULL) {
         /* Send event to the selector to activate the desired pad */
         GstStructure *s = gst_structure_new ("application/x-gst-dvd",
@@ -750,7 +805,6 @@ gst_flups_demux_handle_dvd_event (GstFluPSDemux * demux, GstEvent * event)
         GstEvent *sel_event =
             gst_event_new_custom (GST_EVENT_CUSTOM_DOWNSTREAM, s);
         gst_pad_push_event (temp->pad, sel_event);
-        g_print ("Audio physical ID change to %d\n", stream_id);
 
         gst_event_ref (event);
         ret = gst_pad_push_event (temp->pad, event);
@@ -815,9 +869,9 @@ gst_flups_demux_sink_event (GstPad * pad, GstEvent * event)
       gst_segment_set_newsegment_full (&demux->sink_segment, update, rate,
           arate, format, start, stop, time);
 
-      g_print ("demux: got segment update %d start %" G_GINT64_FORMAT
-          " stop %" G_GINT64_FORMAT " time %" G_GINT64_FORMAT "\n",
-          update, start, stop, time);
+      GST_DEBUG_OBJECT (demux,
+          "demux: got segment update %d start %" G_GINT64_FORMAT " stop %"
+          G_GINT64_FORMAT " time %" G_GINT64_FORMAT, update, start, stop, time);
 
       accum = demux->sink_segment.accum;
       start = demux->sink_segment.start;
@@ -831,18 +885,18 @@ gst_flups_demux_sink_event (GstPad * pad, GstEvent * event)
       else
         demux->scr_adjust = -GSTTIME_TO_MPEGTIME (-adjust);
 
-      if (stop != -1)
+      if (stop != -1) {
         stop = start + dur;
+        if (demux->src_segment.last_stop != -1
+            && demux->src_segment.last_stop > stop)
+          stop = demux->src_segment.last_stop;
+      }
 
-      GST_INFO_OBJECT (demux, "sending new segment: rate %g "
-          "format %d, start: %" G_GINT64_FORMAT ", stop: %" G_GINT64_FORMAT
-          ", time: %" G_GINT64_FORMAT, rate, format, start, stop, time);
-
-      g_print ("sending new segment: update %d rate %g format %d, start: %"
+      GST_DEBUG_OBJECT (demux,
+          "sending new segment: update %d rate %g format %d, start: %"
           G_GINT64_FORMAT ", stop: %" G_GINT64_FORMAT ", time: %"
-          G_GINT64_FORMAT " scr_adjust: %" G_GINT64_FORMAT
-          "(%" GST_TIME_FORMAT ")\n",
-          update, rate, format, start, stop, time, demux->scr_adjust,
+          G_GINT64_FORMAT " scr_adjust: %" G_GINT64_FORMAT "(%" GST_TIME_FORMAT
+          ")", update, rate, format, start, stop, time, demux->scr_adjust,
           GST_TIME_ARGS (MPEGTIME_TO_GSTTIME (demux->scr_adjust)));
 
       gst_segment_set_newsegment_full (&demux->src_segment, update,
@@ -1113,7 +1167,7 @@ gst_flups_demux_reset_psm (GstFluPSDemux * demux)
   FILL_TYPE (0x40, 0x7f, -1);
   FILL_TYPE (0x80, 0x87, ST_PS_AUDIO_AC3);
   FILL_TYPE (0x88, 0x9f, ST_PS_AUDIO_DTS);
-  FILL_TYPE (0xa0, 0xbf, ST_PS_AUDIO_LPCM);
+  FILL_TYPE (0xa0, 0xaf, ST_PS_AUDIO_LPCM);
   FILL_TYPE (0xbd, 0xbd, -1);
   FILL_TYPE (0xc0, 0xdf, ST_AUDIO_MPEG1);
   FILL_TYPE (0xe0, 0xef, ST_GST_VIDEO_MPEG1_OR_2);
@@ -1310,7 +1364,8 @@ gst_flups_demux_parse_pack_start (GstFluPSDemux * demux)
           ", adjust %" G_GINT64_FORMAT, diff, demux->scr_adjust);
       scr_adjusted = demux->next_scr;
 #else
-      g_print ("Unexpected SCR diff of %" G_GINT64_FORMAT "\n", diff);
+      GST_WARNING_OBJECT (demux, "Unexpected SCR diff of %" G_GINT64_FORMAT,
+          diff);
 #endif
     } else {
       demux->next_scr = scr_adjusted;
@@ -1324,8 +1379,8 @@ gst_flups_demux_parse_pack_start (GstFluPSDemux * demux)
   new_time = MPEGTIME_TO_GSTTIME (scr_adjusted);
   if (new_time != GST_CLOCK_TIME_NONE) {
     // g_print ("SCR now %" GST_TIME_FORMAT "\n", GST_TIME_ARGS (new_time));
+    gst_segment_set_last_stop (&demux->src_segment, GST_FORMAT_TIME, new_time);
     gst_flups_demux_send_segment_updates (demux, new_time);
-    demux->src_segment.last_stop = new_time;
   }
 
   /* Reset the bytes_since_scr value to count the data remaining in the
@@ -1819,7 +1874,7 @@ need_data:
   }
 }
 
-static gboolean
+static inline gboolean
 gst_flups_demux_is_pes_sync (guint32 sync)
 {
   return ((sync & 0xfc) == 0xbc) ||

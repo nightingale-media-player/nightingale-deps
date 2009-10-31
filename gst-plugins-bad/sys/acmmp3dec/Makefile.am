@@ -2,7 +2,7 @@ plugin_LTLIBRARIES = libgstacmmp3dec.la
 
 libgstacmmp3dec_la_SOURCES = acmmp3dec.c
 libgstacmmp3dec_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
-	$(GST_PLUGINS_BASE_CFLAGS)
+	$(GST_PLUGINS_BASE_CFLAGS) $(ACMMP3DEC_CFLAGS)
 libgstacmmp3dec_la_LIBADD =      \
     $(GST_BASE_LIBS)             \
     $(GST_PLUGINS_BASE_LIBS)     \

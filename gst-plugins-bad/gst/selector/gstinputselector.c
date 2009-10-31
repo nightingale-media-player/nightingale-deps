@@ -95,7 +95,7 @@ static guint gst_input_selector_signals[LAST_SIGNAL] = { 0 };
 static gboolean gst_input_selector_is_active_sinkpad (GstInputSelector * sel,
     GstPad * pad);
 static GstPad *gst_input_selector_activate_sinkpad (GstInputSelector * sel,
-    GstPad * pad, gboolean *notify);
+    GstPad * pad);
 static GstPad *gst_input_selector_get_linked_pad (GstPad * pad,
     gboolean strict);
 static gboolean gst_input_selector_check_eos (GstElement * selector);
@@ -128,7 +128,6 @@ struct _GstSelectorPad
   GstTagList *tags;             /* last tags received on the pad */
 
   gboolean segment_pending;
-  gboolean segment_pending_update;
 };
 
 struct _GstSelectorPadClass
@@ -150,7 +149,7 @@ static gint64 gst_selector_pad_get_running_time (GstSelectorPad * pad);
 static void gst_selector_pad_reset (GstSelectorPad * pad);
 static gboolean gst_selector_pad_event (GstPad * pad, GstEvent * event);
 static GstCaps *gst_selector_pad_getcaps (GstPad * pad);
-static GList *gst_selector_pad_get_linked_pads (GstPad * pad);
+static GstIterator *gst_selector_pad_iterate_linked_pads (GstPad * pad);
 static GstFlowReturn gst_selector_pad_chain (GstPad * pad, GstBuffer * buf);
 static GstFlowReturn gst_selector_pad_bufferalloc (GstPad * pad,
     guint64 offset, guint size, GstCaps * caps, GstBuffer ** buf);
@@ -314,7 +313,6 @@ gst_selector_pad_reset (GstSelectorPad * pad)
   pad->active = FALSE;
   pad->eos = FALSE;
   pad->segment_pending = FALSE;
-  pad->segment_pending_update = FALSE;
   pad->discont = FALSE;
   gst_segment_init (&pad->segment, GST_FORMAT_UNDEFINED);
   GST_OBJECT_UNLOCK (pad);
@@ -322,19 +320,20 @@ gst_selector_pad_reset (GstSelectorPad * pad)
 
 /* strictly get the linked pad from the sinkpad. If the pad is active we return
  * the srcpad else we return NULL */
-static GList *
-gst_selector_pad_get_linked_pads (GstPad * pad)
+
+static GstIterator *
+gst_selector_pad_iterate_linked_pads (GstPad * pad)
 {
-  GstPad *otherpad;
+  GstInputSelector *sel = GST_INPUT_SELECTOR (gst_pad_get_parent (pad));
+  GstPad *opad = gst_input_selector_get_linked_pad (pad, TRUE);
+  GstIterator *it = gst_iterator_new_single (GST_TYPE_PAD, opad,
+      (GstCopyFunction) gst_object_ref, (GFreeFunc) gst_object_unref);
 
-  otherpad = gst_input_selector_get_linked_pad (pad, TRUE);
-  if (!otherpad)
-    return NULL;
+  if (opad)
+    gst_object_unref (opad);
+  gst_object_unref (sel);
 
-  /* need to drop the ref, internal linked pads is not MT safe */
-  gst_object_unref (otherpad);
-
-  return g_list_append (NULL, otherpad);
+  return it;
 }
 
 static gboolean
@@ -344,14 +343,15 @@ gst_selector_pad_event (GstPad * pad, GstEvent * event)
   gboolean forward = TRUE;
   GstInputSelector *sel;
   GstSelectorPad *selpad;
+  GstPad *prev_active_sinkpad;
   GstPad *active_sinkpad;
-  gboolean notify;
 
   sel = GST_INPUT_SELECTOR (gst_pad_get_parent (pad));
   selpad = GST_SELECTOR_PAD_CAST (pad);
 
   GST_INPUT_SELECTOR_LOCK (sel);
-  active_sinkpad = gst_input_selector_activate_sinkpad (sel, pad, &notify);
+  prev_active_sinkpad = sel->active_sinkpad;
+  active_sinkpad = gst_input_selector_activate_sinkpad (sel, pad);
 
   /* only forward if we are dealing with the active sinkpad or if select_all
    * is enabled */
@@ -359,7 +359,7 @@ gst_selector_pad_event (GstPad * pad, GstEvent * event)
     forward = FALSE;
   GST_INPUT_SELECTOR_UNLOCK (sel);
 
-  if (notify)
+  if (prev_active_sinkpad != active_sinkpad && pad == active_sinkpad)
     g_object_notify (G_OBJECT (sel), "active-pad");
 
   switch (GST_EVENT_TYPE (event)) {
@@ -393,28 +393,36 @@ gst_selector_pad_event (GstPad * pad, GstEvent * event)
       gst_segment_set_newsegment_full (&selpad->segment, update,
           rate, arate, format, start, stop, time);
       GST_OBJECT_UNLOCK (selpad);
-      /* we are not going to forward the segment, mark the segment as
-       * pending */
-      forward = FALSE;
-      selpad->segment_pending = TRUE;
-      selpad->segment_pending_update = update;
-      GST_INPUT_SELECTOR_UNLOCK (sel);
 
+      /* If we aren't forwarding the event (because the pad is not the
+       * active_sinkpad, and select_all is not set, then set the flag on the
+       * that says a segment needs sending if/when that pad is activated.
+       * For all other cases, we send the event immediately, which makes
+       * sparse streams and other segment updates work correctly downstream.
+       */
+      if (!forward)
+        selpad->segment_pending = TRUE;
+
+      GST_INPUT_SELECTOR_UNLOCK (sel);
       break;
     }
     case GST_EVENT_TAG:
     {
-      GstTagList *tags;
+      GstTagList *tags, *oldtags, *newtags;
+
+      gst_event_parse_tag (event, &tags);
 
       GST_OBJECT_LOCK (selpad);
-      if (selpad->tags)
-        gst_tag_list_free (selpad->tags);
-      gst_event_parse_tag (event, &tags);
-      if (tags)
-        tags = gst_tag_list_copy (tags);
-      selpad->tags = tags;
-      GST_DEBUG_OBJECT (pad, "received tags %" GST_PTR_FORMAT, selpad->tags);
+      oldtags = selpad->tags;
+
+      newtags = gst_tag_list_merge (oldtags, tags, GST_TAG_MERGE_REPLACE);
+      selpad->tags = newtags;
+      if (oldtags)
+        gst_tag_list_free (oldtags);
+      GST_DEBUG_OBJECT (pad, "received tags %" GST_PTR_FORMAT, newtags);
       GST_OBJECT_UNLOCK (selpad);
+
+      g_object_notify (G_OBJECT (selpad), "tags");
       break;
     }
     case GST_EVENT_EOS:
@@ -466,7 +474,6 @@ gst_selector_pad_bufferalloc (GstPad * pad, guint64 offset,
   GstPad *active_sinkpad;
   GstPad *prev_active_sinkpad;
   GstSelectorPad *selpad;
-  gboolean notify;
 
   sel = GST_INPUT_SELECTOR (gst_pad_get_parent (pad));
   selpad = GST_SELECTOR_PAD_CAST (pad);
@@ -474,14 +481,15 @@ gst_selector_pad_bufferalloc (GstPad * pad, guint64 offset,
   GST_DEBUG_OBJECT (pad, "received alloc");
 
   GST_INPUT_SELECTOR_LOCK (sel);
-  active_sinkpad = gst_input_selector_activate_sinkpad (sel, pad, &notify);
+  prev_active_sinkpad = sel->active_sinkpad;
+  active_sinkpad = gst_input_selector_activate_sinkpad (sel, pad);
 
   if (pad != active_sinkpad)
     goto not_active;
 
   GST_INPUT_SELECTOR_UNLOCK (sel);
 
-  if (notify)
+  if (prev_active_sinkpad != active_sinkpad && pad == active_sinkpad)
     g_object_notify (G_OBJECT (sel), "active-pad");
 
   result = gst_pad_alloc_buffer (sel->srcpad, offset, size, caps, buf);
@@ -537,7 +545,6 @@ gst_selector_pad_chain (GstPad * pad, GstBuffer * buf)
   GstClockTime end_time, duration;
   GstSegment *seg;
   GstEvent *close_event = NULL, *start_event = NULL;
-  gboolean notify;
 
   sel = GST_INPUT_SELECTOR (gst_pad_get_parent (pad));
   selpad = GST_SELECTOR_PAD_CAST (pad);
@@ -550,7 +557,8 @@ gst_selector_pad_chain (GstPad * pad, GstBuffer * buf)
 
   GST_DEBUG_OBJECT (pad, "getting active pad");
 
-  active_sinkpad = gst_input_selector_activate_sinkpad (sel, pad, &notify);
+  prev_active_sinkpad = sel->active_sinkpad;
+  active_sinkpad = gst_input_selector_activate_sinkpad (sel, pad);
 
   /* update the segment on the srcpad */
   end_time = GST_BUFFER_TIMESTAMP (buf);
@@ -588,23 +596,21 @@ gst_selector_pad_chain (GstPad * pad, GstBuffer * buf)
   }
   /* if we have a pending segment, push it out now */
   if (G_UNLIKELY (selpad->segment_pending)) {
-    gboolean update = selpad->segment_pending_update;
     GST_DEBUG_OBJECT (pad,
         "pushing NEWSEGMENT update %d, rate %lf, applied rate %lf, "
         "format %d, "
         "%" G_GINT64_FORMAT " -- %" G_GINT64_FORMAT ", time %"
-        G_GINT64_FORMAT, update, seg->rate, seg->applied_rate, seg->format,
+        G_GINT64_FORMAT, FALSE, seg->rate, seg->applied_rate, seg->format,
         seg->start, seg->stop, seg->time);
 
-    start_event = gst_event_new_new_segment_full (update, seg->rate,
+    start_event = gst_event_new_new_segment_full (FALSE, seg->rate,
         seg->applied_rate, seg->format, seg->start, seg->stop, seg->time);
 
     selpad->segment_pending = FALSE;
-    selpad->segment_pending_update = FALSE;
   }
   GST_INPUT_SELECTOR_UNLOCK (sel);
 
-  if (notify)
+  if (prev_active_sinkpad != active_sinkpad && pad == active_sinkpad)
     g_object_notify (G_OBJECT (sel), "active-pad");
 
   if (close_event)
@@ -806,8 +812,11 @@ gst_input_selector_class_init (GstInputSelectorClass * klass)
    * If @pad is the same as the current active pad, the element will cancel any
    * previous block without adjusting segments.
    *
-   * Since: 0.10.7 the signal changed from accepting the pad name to the pad
-   * object.
+   * <note><simpara>
+   * the signal changed from accepting the pad name to the pad object.
+   * </simpara></note>
+   *
+   * Since: 0.10.7
    */
   gst_input_selector_signals[SIGNAL_SWITCH] =
       g_signal_new ("switch", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
@@ -828,8 +837,8 @@ static void
 gst_input_selector_init (GstInputSelector * sel)
 {
   sel->srcpad = gst_pad_new ("src", GST_PAD_SRC);
-  gst_pad_set_internal_link_function (sel->srcpad,
-      GST_DEBUG_FUNCPTR (gst_selector_pad_get_linked_pads));
+  gst_pad_set_iterate_internal_links_function (sel->srcpad,
+      GST_DEBUG_FUNCPTR (gst_selector_pad_iterate_linked_pads));
   gst_pad_set_getcaps_function (sel->srcpad,
       GST_DEBUG_FUNCPTR (gst_input_selector_getcaps));
   gst_pad_set_query_function (sel->srcpad,
@@ -946,7 +955,6 @@ gst_input_selector_set_active_pad (GstInputSelector * self,
     /* schedule a new segment push */
     gst_segment_set_start (&new->segment, start_time);
     new->segment_pending = TRUE;
-    new->segment_pending_update = FALSE;
   }
 
   active_pad_p = &self->active_sinkpad;
@@ -1049,7 +1057,8 @@ gst_input_selector_event (GstPad * pad, GstEvent * event)
     res = gst_pad_push_event (otherpad, event);
 
     gst_object_unref (otherpad);
-  }
+  } else
+    gst_event_unref (event);
   return res;
 }
 
@@ -1191,8 +1200,7 @@ gst_input_selector_is_active_sinkpad (GstInputSelector * sel, GstPad * pad)
 
 /* Get or create the active sinkpad, must be called with SELECTOR_LOCK */
 static GstPad *
-gst_input_selector_activate_sinkpad (GstInputSelector * sel, GstPad * pad,
-        gboolean *notify)
+gst_input_selector_activate_sinkpad (GstInputSelector * sel, GstPad * pad)
 {
   GstPad *active_sinkpad;
   GstSelectorPad *selpad;
@@ -1204,12 +1212,11 @@ gst_input_selector_activate_sinkpad (GstInputSelector * sel, GstPad * pad,
   if (active_sinkpad == NULL || sel->select_all) {
     /* first pad we get activity on becomes the activated pad by default, if we
      * select all, we also remember the last used pad. */
+    if (sel->active_sinkpad)
+      gst_object_unref (sel->active_sinkpad);
     active_sinkpad = sel->active_sinkpad = gst_object_ref (pad);
     GST_DEBUG_OBJECT (sel, "Activating pad %s:%s", GST_DEBUG_PAD_NAME (pad));
-    *notify = TRUE;
   }
-  else
-    *notify = FALSE;
 
   return active_sinkpad;
 }
@@ -1242,8 +1249,8 @@ gst_input_selector_request_new_pad (GstElement * element,
       GST_DEBUG_FUNCPTR (gst_selector_pad_getcaps));
   gst_pad_set_chain_function (sinkpad,
       GST_DEBUG_FUNCPTR (gst_selector_pad_chain));
-  gst_pad_set_internal_link_function (sinkpad,
-      GST_DEBUG_FUNCPTR (gst_selector_pad_get_linked_pads));
+  gst_pad_set_iterate_internal_links_function (sinkpad,
+      GST_DEBUG_FUNCPTR (gst_selector_pad_iterate_linked_pads));
   gst_pad_set_bufferalloc_function (sinkpad,
       GST_DEBUG_FUNCPTR (gst_selector_pad_bufferalloc));
 
@@ -1411,6 +1418,7 @@ gst_input_selector_check_eos (GstElement * selector)
         if (!pad->eos) {
           done = TRUE;
         }
+        gst_object_unref (pad);
         break;
       case GST_ITERATOR_RESYNC:
         gst_iterator_resync (it);

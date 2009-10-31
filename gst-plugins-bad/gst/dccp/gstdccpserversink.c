@@ -51,9 +51,6 @@
 
 #include "gstdccpserversink.h"
 #include "gstdccp.h"
-#include <string.h>             /* memset */
-#include <unistd.h>
-#include <arpa/inet.h>
 #include <fcntl.h>
 
 /* signals */
@@ -145,6 +142,8 @@ gst_dccp_server_accept_new_clients (void *arg)
     sink->clients = g_list_append (sink->clients, client);
     pthread_mutex_unlock (&lock);
   }
+
+  return NULL;
 }
 
 /*

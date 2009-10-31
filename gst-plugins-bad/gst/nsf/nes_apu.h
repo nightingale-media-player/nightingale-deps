@@ -20,7 +20,7 @@
 ** nes_apu.h
 **
 ** NES APU emulation header file
-** $Id: nes_apu.h,v 1.3 2008-04-09 13:43:51 thaytan Exp $
+** $Id$
 */
 
 #ifndef _NES_APU_H_
@@ -300,8 +300,8 @@ void apu_setcontext(apu_t *src_apu);
 #endif /* _NES_APU_H_ */
 
 /*
-** $Log: nes_apu.h,v $
-** Revision 1.3  2008-04-09 13:43:51  thaytan
+** $Log$
+** Revision 1.3  2008/04/09 13:43:51  thaytan
 ** * gst/nsf/nes_apu.c: (apu_process):
 ** * gst/nsf/nes_apu.h:
 ** Don't do void pointer arithmetic - it's a gcc extension.

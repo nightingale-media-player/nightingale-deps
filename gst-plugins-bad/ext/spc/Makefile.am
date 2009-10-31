@@ -8,3 +8,4 @@ libgstspc_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstspc_la_LIBTOOLFLAGS = --tag=disable-static
 
 noinst_HEADERS = gstspc.h tag.h
+

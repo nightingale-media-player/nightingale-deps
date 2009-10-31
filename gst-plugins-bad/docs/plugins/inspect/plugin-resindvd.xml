@@ -3,7 +3,7 @@
   <description>Resin DVD playback elements</description>
   <filename>../../ext/resindvd/.libs/libresindvd.so</filename>
   <basename>libresindvd.so</basename>
-  <version>0.10.10</version>
+  <version>0.10.16</version>
   <license>GPL</license>
   <source>gst-plugins-bad</source>
   <package>GStreamer</package>
@@ -32,7 +32,7 @@
           <name>video</name>
           <direction>source</direction>
           <presence>sometimes</presence>
-          <details>video/mpeg, mpegversion=(int){ 1, 2 }, systemstream=(boolean)false</details>
+          <details>video/x-raw-yuv</details>
         </caps>
       </pads>
     </element>

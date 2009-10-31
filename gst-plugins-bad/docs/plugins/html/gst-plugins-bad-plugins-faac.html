@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>faac</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-dvdspu.html" title="dvdspu">
+<link rel="next" href="gst-plugins-bad-plugins-festival.html" title="festival">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-plugins-dvdspu.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-festival.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-bad-plugins-faac.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-faac.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-faac.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-faac.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-faac.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-bad-plugins-faac"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-plugins-faac.top_of_page"></a>faac</span></h2>
+<p>faac — Free MPEG-2/4 AAC encoder</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-bad-plugins-faac.synopsis"></a><h2>Synopsis</h2>
+<a name="GstFaac"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-bad-plugins-faac.html#GstFaac-struct" title="GstFaac">GstFaac</a>;
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-faac.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----GstFaac
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-faac.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstFaac implements
+ <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPreset.html"
+>GstPreset</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-faac.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-bad-plugins-faac.html#GstFaac--bitrate" title='The "bitrate" property'>bitrate</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-faac.html#GstFaac--midside" title='The "midside" property'>midside</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-faac.html#GstFaac--outputformat" title='The "outputformat" property'>outputformat</a>"             GstFaacOutputFormat   : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-faac.html#GstFaac--profile" title='The "profile" property'>profile</a>"                  GstFaacProfile        : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-faac.html#GstFaac--shortctl" title='The "shortctl" property'>shortctl</a>"                 GstFaacShortCtl       : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-faac.html#GstFaac--tns" title='The "tns" property'>tns</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-faac.description"></a><h2>Description</h2>
+<p>
+faac encodes raw audio to AAC (MPEG-4 part 10) streams.
+</p>
+<p>
+The <a class="link" href="gst-plugins-bad-plugins-faac.html#GstFaac--outputformat" title='The "outputformat" property'><span class="type">"outputformat"</span></a> property determines whether or not the
+AAC data needs additional framing provided by a container
+(such as Matroska or Quicktime).
+This is required for raw data, whereas ADTS formatted AAC already provides
+framing and needs no container.
+</p>
+<p>
+The <a class="link" href="gst-plugins-bad-plugins-faac.html#GstFaac--profile" title='The "profile" property'><span class="type">"profile"</span></a> property determines the AAC profile, where the default
+Main profile is fine for most players and settings,
+but in some cases (e.g. hardware platforms)
+a more restricted profile/level may be necessary.
+In particular, typical (iTunes) m4a expects LC profile AAC data.
+</p>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2874725"></a><h3>Example launch line</h3>
+<pre class="programlisting">
+gst-launch audiotestsrc wave=sine num-buffers=100 ! audioconvert ! faac ! matroskamux ! filesink location=sine.mkv
+</pre>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2874746"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-faac.html#plugin-faac">faac</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Ronald Bultje &lt;rbultje@ronald.bitfreak.net&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Encoder/Audio</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2877110"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)16, depth=(int)16, rate=(int)[ 8000, 96000 ], channels=(int)[ 1, 6 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/mpeg, mpegversion=(int){ 4, 2 }, channels=(int)[ 1, 6 ], rate=(int)[ 8000, 96000 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-faac.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstFaac-struct"></a><h3>GstFaac</h3>
+<pre class="programlisting">typedef struct _GstFaac GstFaac;</pre>
+<p>
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-faac.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstFaac--bitrate"></a><h3>The <code class="literal">"bitrate"</code> property</h3>
+<pre class="programlisting">  "bitrate"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Bitrate in bits/sec.</p>
+<p>Allowed values: [8000,320000]</p>
+<p>Default value: 128000</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstFaac--midside"></a><h3>The <code class="literal">"midside"</code> property</h3>
+<pre class="programlisting">  "midside"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Allow mid/side encoding.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstFaac--outputformat"></a><h3>The <code class="literal">"outputformat"</code> property</h3>
+<pre class="programlisting">  "outputformat"             GstFaacOutputFormat   : Read / Write</pre>
+<p>Format of output frames.</p>
+<p>Default value: OUTPUTFORMAT_RAW</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstFaac--profile"></a><h3>The <code class="literal">"profile"</code> property</h3>
+<pre class="programlisting">  "profile"                  GstFaacProfile        : Read / Write</pre>
+<p>MPEG/AAC encoding profile.</p>
+<p>Default value: MAIN</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstFaac--shortctl"></a><h3>The <code class="literal">"shortctl"</code> property</h3>
+<pre class="programlisting">  "shortctl"                 GstFaacShortCtl       : Read / Write</pre>
+<p>Block type encorcing.</p>
+<p>Default value: SHORTCTL_NOSHORT</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstFaac--tns"></a><h3>The <code class="literal">"tns"</code> property</h3>
+<pre class="programlisting">  "tns"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Use temporal noise shaping.</p>
+<p>Default value: FALSE</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.11</div>
+</body>
+</html>

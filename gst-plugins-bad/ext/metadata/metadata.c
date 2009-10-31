@@ -125,7 +125,7 @@ metadata_init (MetaData ** meta_data, const MetaOptions options)
     /* when parsing we will probably strip only 3 chunk (exif, iptc and xmp)
        so we use 4 just in case there is more than one chunk of them.
        But this is just for convinience, 'cause the chunk_array increases
-       dinamically */
+       dynamically */
     metadata_chunk_array_init (&(*meta_data)->strip_chunks, 4);
     /* at most 1 chunk will be injected (JPEG JFIF) */
     metadata_chunk_array_init (&(*meta_data)->inject_chunks, 1);
@@ -177,17 +177,17 @@ metadata_dispose (MetaData ** meta_data)
   metadata_chunk_array_free (&(*meta_data)->inject_chunks);
 
   if ((*meta_data)->xmp_adapter) {
-    gst_object_unref ((*meta_data)->xmp_adapter);
+    g_object_unref ((*meta_data)->xmp_adapter);
     (*meta_data)->xmp_adapter = NULL;
   }
 
   if ((*meta_data)->iptc_adapter) {
-    gst_object_unref ((*meta_data)->iptc_adapter);
+    g_object_unref ((*meta_data)->iptc_adapter);
     (*meta_data)->iptc_adapter = NULL;
   }
 
   if ((*meta_data)->exif_adapter) {
-    gst_object_unref ((*meta_data)->exif_adapter);
+    g_object_unref ((*meta_data)->exif_adapter);
     (*meta_data)->exif_adapter = NULL;
   }
 
@@ -248,28 +248,34 @@ metadata_parse (MetaData * meta_data, const guint8 * buf,
 
   switch (meta_data->img_type) {
     case IMG_JPEG:
-      if (G_LIKELY (meta_data->options & META_OPT_DEMUX))
+      if (G_LIKELY (meta_data->options & META_OPT_DEMUX)) {
+        GST_DEBUG ("parsing jpeg");
         ret =
             metadataparse_jpeg_parse (&meta_data->format_data.jpeg_parse,
             (guint8 *) buf, &buf_size, meta_data->offset_orig, &next_start,
             next_size);
-      else
+      } else {
+        GST_DEBUG ("formatting jpeg");
         ret =
             metadatamux_jpeg_parse (&meta_data->format_data.jpeg_mux,
             (guint8 *) buf, &buf_size, meta_data->offset_orig, &next_start,
             next_size);
+      }
       break;
     case IMG_PNG:
-      if (G_LIKELY (meta_data->options & META_OPT_DEMUX))
+      if (G_LIKELY (meta_data->options & META_OPT_DEMUX)) {
+        GST_DEBUG ("parsing png");
         ret =
             metadataparse_png_parse (&meta_data->format_data.png_parse,
             (guint8 *) buf, &buf_size, meta_data->offset_orig, &next_start,
             next_size);
-      else
+      } else {
+        GST_DEBUG ("formatting png");
         ret =
             metadatamux_png_parse (&meta_data->format_data.png_mux,
             (guint8 *) buf, &buf_size, meta_data->offset_orig, &next_start,
             next_size);
+      }
       break;
     default:
       /* unexpected */
@@ -286,6 +292,7 @@ done:
   if (ret == META_PARSING_DONE) {
     meta_data->state = STATE_DONE;
   }
+  GST_DEBUG ("parsing/formatting done : %d", ret);
 
   return ret;
 }
@@ -297,15 +304,14 @@ done:
  * This function must be called after #metadata_parse and after the element
  * has modified the segments (chunks)
  * Data written to #META_DATA_INJECT_CHUNKS will be properly wrapped
- * This function is really importante in case o muxing 'cause:
- * 1- 'cause gives the oportunity to muxers to wrapper new segments with
- * apropriate bytes
+ * This function is really important in case of muxing because it gives the
+ * oportunity to muxers:
+ * 1:  to frame new segments
  *   ex: in case of JPEG it can wrap the EXIF chunk (created using tags) with
- * chunk id and chunk size
- * 2- 'cause gives the oportunity to muxer to decide if some chunks should
- * still be striped/injected
+ *       chunk id and chunk size
+ * 2: to decide if some chunks should still be striped/injected
  *   ex: if there is no EXIF chunk to be inserted, the muxer decides to not
- * strip JFIF anymore
+ *       strip JFIF anymore
  * @see_also: #metadata_parse #META_DATA_INJECT_CHUNKS
  *
  * Returns: nothing

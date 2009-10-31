@@ -238,7 +238,7 @@ gst_mplex_reset (GstMplex * mplex)
 
     if (!mpad->pad) {
       g_cond_free (mpad->cond);
-      gst_object_unref (mpad->adapter);
+      g_object_unref (mpad->adapter);
       g_free (mpad);
     } else
       nlist = g_slist_append (nlist, mpad);
@@ -755,7 +755,7 @@ gst_mplex_log_callback (log_level_t level, const char *message)
 {
   GstDebugLevel gst_level;
 
-#if GST_MJPEGTOOLS_API >= 10903
+#if GST_MJPEGTOOLS_API >= 10900
   static const gint mjpeg_log_error = mjpeg_loglev_t ("error");
   static const gint mjpeg_log_warn = mjpeg_loglev_t ("warn");
   static const gint mjpeg_log_info = mjpeg_loglev_t ("info");

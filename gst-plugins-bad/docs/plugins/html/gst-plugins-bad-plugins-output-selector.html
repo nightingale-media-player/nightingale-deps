@@ -7,8 +7,8 @@
 <link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="prev" href="gst-plugins-bad-plugins-nuvdemux.html" title="nuvdemux">
-<link rel="next" href="gst-plugins-bad-plugins-scaletempo.html" title="scaletempo">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<link rel="next" href="gst-plugins-bad-plugins-pcapparse.html" title="pcapparse">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
@@ -21,15 +21,17 @@
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-bad-plugins-scaletempo.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-pcapparse.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-output-selector.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-output-selector.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-output-selector.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-output-selector.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-bad-plugins-output-selector.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-output-selector.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-output-selector.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-output-selector.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-bad-plugins-output-selector"></a><div class="titlepage"></div>
@@ -52,15 +54,21 @@
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
                +----GstOutputSelector
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-output-selector.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-bad-plugins-output-selector.html#GstOutputSelector--active-pad" title='The "active-pad" property'>active-pad</a>"               GstPad*               : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-output-selector.html#GstOutputSelector--active-pad" title='The "active-pad" property'>active-pad</a>"               <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html"
+>GstPad</a>*               : Read / Write
   "<a class="link" href="gst-plugins-bad-plugins-output-selector.html#GstOutputSelector--resend-latest" title='The "resend-latest" property'>resend-latest</a>"            <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
@@ -73,7 +81,7 @@ Direct input stream to one out of N output pads.</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2876995"></a><h3>Element Information</h3>
+<a name="id2841184"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -96,7 +104,78 @@ Direct input stream to one out of N output pads.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2905835"></a><h3>Element Pads</h3>
+<a name="id2899789"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src%d</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2899929"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-selector.html#plugin-selector">selector</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Stefan Kost &lt;stefan.kost@nokia.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Generic</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2899990"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -142,7 +221,6 @@ Direct input stream to one out of N output pads.</p>
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -151,7 +229,6 @@ Direct input stream to one out of N output pads.</p>
 <a name="GstOutputSelector-struct"></a><h3>GstOutputSelector</h3>
 <pre class="programlisting">typedef struct _GstOutputSelector GstOutputSelector;</pre>
 <p>
-
 </p>
 </div>
 </div>
@@ -159,7 +236,9 @@ Direct input stream to one out of N output pads.</p>
 <a name="gst-plugins-bad-plugins-output-selector.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstOutputSelector--active-pad"></a><h3>The <code class="literal">"active-pad"</code> property</h3>
-<pre class="programlisting">  "active-pad"               GstPad*               : Read / Write</pre>
+<pre class="programlisting">  "active-pad"               <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html"
+>GstPad</a>*               : Read / Write</pre>
 <p>Currently active src pad.</p>
 </div>
 <hr>
@@ -174,11 +253,11 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-output-selector.see-also"></a><h2>See Also</h2>
-<span class="type">GstTee</span>, <a class="link" href="gst-plugins-bad-plugins-input-selector.html#GstInputSelector"><span class="type">GstInputSelector</span></a>
+#GstOutputSelector, <a class="link" href="gst-plugins-bad-plugins-input-selector.html#GstInputSelector"><span class="type">GstInputSelector</span></a>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

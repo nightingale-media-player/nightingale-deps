@@ -42,6 +42,7 @@
  * Note: The prototypes don't need to be defined conditionaly, as the cpp will
  * do that for us.
  */
+#if FAAD2_MINOR_VERSION < 7
 #ifdef FAAD_IS_NEAAC
 #define NeAACDecInit NeAACDecInit_no_definition
 #define NeAACDecInit2 NeAACDecInit2_no_definition
@@ -49,7 +50,11 @@
 #define faacDecInit faacDecInit_no_definition
 #define faacDecInit2 faacDecInit2_no_definition
 #endif
+#endif /* FAAD2_MINOR_VERSION < 7 */
+
 #include "gstfaad.h"
+
+#if FAAD2_MINOR_VERSION < 7
 #ifdef FAAD_IS_NEAAC
 #undef NeAACDecInit
 #undef NeAACDecInit2
@@ -59,8 +64,10 @@
 #endif
 
 extern long faacDecInit (faacDecHandle, guint8 *, guint32, guint32 *, guint8 *);
-extern int8_t faacDecInit2 (faacDecHandle, guint8 *, guint32,
+extern gint8 faacDecInit2 (faacDecHandle, guint8 *, guint32,
     guint32 *, guint8 *);
+
+#endif /* FAAD2_MINOR_VERSION < 7 */
 
 GST_DEBUG_CATEGORY_STATIC (faad_debug);
 #define GST_CAT_DEFAULT faad_debug
@@ -302,7 +309,11 @@ gst_faad_setcaps (GstPad * pad, GstCaps * caps)
   faad->packetised = FALSE;
 
   if ((value = gst_structure_get_value (str, "codec_data"))) {
+#if FAAD2_MINOR_VERSION >= 7
+    unsigned long samplerate;
+#else
     guint32 samplerate;
+#endif
     guint8 channels;
     guint8 *cdata;
     guint csize;
@@ -317,13 +328,25 @@ gst_faad_setcaps (GstPad * pad, GstCaps * caps)
     if (csize < 2)
       goto wrong_length;
 
+    GST_DEBUG ("codec_data: object_type=%d, sample_rate=%d, channels=%d",
+        ((cdata[0] & 0xf8) >> 3),
+        (((cdata[0] & 0x07) << 1) | ((cdata[1] & 0x80) >> 7)),
+        ((cdata[1] & 0x78) >> 3));
+
     /* someone forgot that char can be unsigned when writing the API */
     if ((gint8) faacDecInit2 (faad->handle, cdata, csize, &samplerate,
             &channels) < 0)
       goto init_failed;
 
+    if (channels != ((cdata[1] & 0x78) >> 3)) {
+      /* https://bugs.launchpad.net/ubuntu/+source/faad2/+bug/290259 */
+      GST_WARNING_OBJECT (faad,
+          "buggy faad version, wrong nr of channels %d instead of %d", channels,
+          ((cdata[1] & 0x78) >> 3));
+    }
+
     GST_DEBUG_OBJECT (faad, "codec_data init: channels=%u, rate=%u", channels,
-        samplerate);
+        (guint32) samplerate);
 
     /* not updating these here, so they are updated in the
      * chain function, and new caps are created etc. */
@@ -370,17 +393,20 @@ gst_faad_setcaps (GstPad * pad, GstCaps * caps)
   if (!faad->packetised)
     gst_faad_send_tags (faad);
 
+  gst_object_unref (faad);
   return TRUE;
 
   /* ERRORS */
 wrong_length:
   {
     GST_DEBUG_OBJECT (faad, "codec_data less than 2 bytes long");
+    gst_object_unref (faad);
     return FALSE;
   }
 init_failed:
   {
     GST_DEBUG_OBJECT (faad, "faacDecInit2() failed");
+    gst_object_unref (faad);
     return FALSE;
   }
 }
@@ -1272,7 +1298,11 @@ gst_faad_chain (GstPad * pad, GstBuffer * buffer)
 
   /* init if not already done during capsnego */
   if (!faad->init) {
+#if FAAD2_MINOR_VERSION >= 7
+    unsigned long rate;
+#else
     guint32 rate;
+#endif
     guint8 ch;
 
     GST_DEBUG_OBJECT (faad, "initialising ...");
@@ -1283,15 +1313,15 @@ gst_faad_chain (GstPad * pad, GstBuffer * buffer)
       if (faacDecInit (faad->handle, input_data, input_size, &rate, &ch) < 0)
         goto init_failed;
 
-      GST_DEBUG_OBJECT (faad, "faacDecInit() ok: rate=%u,channels=%u", rate,
-          ch);
+      GST_DEBUG_OBJECT (faad, "faacDecInit() ok: rate=%u,channels=%u",
+          (guint32) rate, ch);
     } else {
       if ((gint8) faacDecInit2 (faad->handle, faad->fake_codec_data, 2,
               &rate, &ch) < 0) {
         goto init2_failed;
       }
-      GST_DEBUG_OBJECT (faad, "faacDecInit2() ok: rate=%u,channels=%u", rate,
-          ch);
+      GST_DEBUG_OBJECT (faad, "faacDecInit2() ok: rate=%u,channels=%u",
+          (guint32) rate, ch);
     }
 
     skip_bytes = 0;

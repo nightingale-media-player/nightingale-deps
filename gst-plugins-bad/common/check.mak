@@ -1,7 +1,6 @@
+# keep target around, since it's referenced in the modules' Makefiles
 clean-local-check:
-	for i in `find . -name ".libs" -type d`; do \
-	  rm -rf $$i; \
-	done
+	@echo
 
 if HAVE_VALGRIND
 # hangs spectacularly on some machines, so let's not do this by default yet
@@ -44,7 +43,7 @@ LOOPS = 10
 	$(TESTS_ENVIRONMENT)					\
 	CK_DEFAULT_TIMEOUT=360					\
 	G_SLICE=always-malloc					\
-	libtool --mode=execute					\
+	$(LIBTOOL) --mode=execute					\
 	$(VALGRIND_PATH) -q					\
 	$(foreach s,$(SUPPRESSIONS),--suppressions=$(s))	\
 	--tool=memcheck --leak-check=full --trace-children=yes	\
@@ -61,7 +60,7 @@ LOOPS = 10
 	$(TESTS_ENVIRONMENT)					\
 	CK_DEFAULT_TIMEOUT=360					\
 	G_SLICE=always-malloc					\
-	libtool --mode=execute					\
+	$(LIBTOOL) --mode=execute					\
 	$(VALGRIND_PATH) -q 					\
 	$(foreach s,$(SUPPRESSIONS),--suppressions=$(s))	\
 	--tool=memcheck --leak-check=full --trace-children=yes	\
@@ -78,7 +77,7 @@ LOOPS = 10
 %.gdb: %
 	$(TESTS_ENVIRONMENT)					\
 	CK_FORK=no						\
-	libtool --mode=execute					\
+	$(LIBTOOL) --mode=execute					\
 	gdb $*
 
 # torture tests

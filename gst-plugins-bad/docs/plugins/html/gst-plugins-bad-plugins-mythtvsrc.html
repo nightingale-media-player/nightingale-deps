@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="prev" href="gst-plugins-bad-plugins-mplex.html" title="mplex">
 <link rel="next" href="gst-plugins-bad-plugins-mxfdemux.html" title="mxfdemux">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
@@ -23,15 +23,17 @@
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-bad-plugins-mxfdemux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-mythtvsrc.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-mythtvsrc.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-mythtvsrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-mythtvsrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-mythtvsrc.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-bad-plugins-mythtvsrc.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-mythtvsrc.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-mythtvsrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-mythtvsrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-mythtvsrc.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-bad-plugins-mythtvsrc"></a><div class="titlepage"></div>
@@ -54,10 +56,18 @@
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
-               +----GstBaseSrc
-                     +----GstPushSrc
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="/usr/share/gtk-doc/html/gstreamer-libs-0.10/GstBaseSrc.html"
+>GstBaseSrc</a>
+                     +----<a
+href="/usr/share/gtk-doc/html/gstreamer-libs-0.10/GstPushSrc.html"
+>GstPushSrc</a>
                            +----GstMythtvSrc
 </pre>
 </div>
@@ -65,7 +75,9 @@ href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 <a name="gst-plugins-bad-plugins-mythtvsrc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstMythtvSrc implements
- GstURIHandler.</p>
+ <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstUriHandler.html#GstURIHandler"
+>GstURIHandler</a>.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-mythtvsrc.properties"></a><h2>Properties</h2>
@@ -107,7 +119,7 @@ through the <a class="link" href="gst-plugins-bad-plugins-mythtvsrc.html#GstMyth
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2903825"></a><h3>Examples</h3>
+<a name="id2893631"></a><h3>Examples</h3>
 <p>
 If you want to get the LiveTV content (set channel, TV tuner, RemoteEncoder, 
 Recorder), use the following URI:
@@ -149,7 +161,7 @@ and the last field is the database name (mythconverg).
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2903887"></a><h3>Element Information</h3>
+<a name="id2893693"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -172,7 +184,57 @@ and the last field is the database name (mythconverg).
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2903951"></a><h3>Element Pads</h3>
+<a name="id2893872"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2893949"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            mythtv
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Rosfran Borges &lt;rosfran.borges@indt.org.br&gt;,Renato Filho &lt;renato.filho@indt.org.br&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Source/Network</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2894012"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -197,7 +259,6 @@ and the last field is the database name (mythconverg).
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -206,7 +267,6 @@ and the last field is the database name (mythconverg).
 <a name="GstMythtvSrc-struct"></a><h3>GstMythtvSrc</h3>
 <pre class="programlisting">typedef struct _GstMythtvSrc GstMythtvSrc;</pre>
 <p>
-
 </p>
 </div>
 </div>
@@ -284,6 +344,6 @@ nuvdemux
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

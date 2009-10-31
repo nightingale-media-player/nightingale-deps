@@ -51,7 +51,7 @@ my $TYPE_INIT_FUNC="g_type_init ()";
 	   'output-dir' => \$OUTPUT_DIR,
 	   'version' => \$PRINT_VERSION,
 	   'help' => \$PRINT_HELP);
-	   
+
 GetOptions(\%optctl, "module=s", "source=s", "types:s", "output-dir:s", "nogtkinit", "type-init-func:s", "version", "help");
 
 if ($NO_GTK_INIT) {
@@ -877,7 +877,7 @@ output_object_hierarchy (void)
     }
   output_hierarchy (fp, G_TYPE_OBJECT, 0);
   output_hierarchy (fp, G_TYPE_INTERFACE, 0);
-  
+
   for (i=0; object_types[i]; i++) {
     if (!g_type_parent (object_types[i]) &&
       (object_types[i] != G_TYPE_NONE) &&

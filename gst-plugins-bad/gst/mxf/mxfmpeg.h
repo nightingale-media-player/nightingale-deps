@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) 2008 Sebastian Dröge <sebastian.droege@collabora.co.uk>
+ * Copyright (C) 2008-2009 Sebastian Dröge <sebastian.droege@collabora.co.uk>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -26,8 +26,8 @@
 
 #include <gst/gst.h>
 
-#include "mxfparse.h"
-
 void mxf_mpeg_init (void);
+
+gboolean mxf_mpeg_is_mpeg2_keyframe (GstBuffer *buffer);
 
 #endif /* __MXF_MPEG_H__ */

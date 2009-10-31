@@ -7,7 +7,7 @@ dnl Last modification: 2008-02-18
 
 dnl AG_GST_SET_ERROR_CFLAGS([ADD-WERROR])
 dnl AG_GST_SET_ERROR_CXXFLAGS([ADD-WERROR])
-dnl AG_GST_SET_LEVEL_DEFAULT([IS-CVS-VERSION])
+dnl AG_GST_SET_LEVEL_DEFAULT([IS-GIT-VERSION])
 
 
 dnl Sets ERROR_CFLAGS to something the compiler will accept.
@@ -23,12 +23,12 @@ AC_DEFUN([AG_GST_SET_ERROR_CFLAGS],
   AC_REQUIRE([AC_PROG_CC])
   AC_REQUIRE([AS_COMPILER_FLAG])
 
-  
+
   dnl if we support -Wall, set it unconditionally
   AS_COMPILER_FLAG(-Wall,
                    ERROR_CFLAGS="-Wall",
                    ERROR_CFLAGS="")
- 
+
   dnl Warn if declarations after statements are used (C99 extension)
   AS_COMPILER_FLAG(-Wdeclaration-after-statement,
         ERROR_CFLAGS="$ERROR_CFLAGS -Wdeclaration-after-statement")
@@ -36,6 +36,10 @@ AC_DEFUN([AG_GST_SET_ERROR_CFLAGS],
   dnl Warn if variable length arrays are used (C99 extension)
   AS_COMPILER_FLAG(-Wvla,
         ERROR_CFLAGS="$ERROR_CFLAGS -Wvla")
+
+  dnl Warn for invalid pointer arithmetic
+  AS_COMPILER_FLAG(-Wpointer-arith,
+        ERROR_CFLAGS="$ERROR_CFLAGS -Wpointer-arith")
 
   dnl if asked for, add -Werror if supported
   if test "x$1" != "xno"
@@ -50,7 +54,7 @@ AC_DEFUN([AG_GST_SET_ERROR_CFLAGS],
           dnl try -errwarn=%all,no%E_EMPTY_DECLARATION,
           dnl no%E_STATEMENT_NOT_REACHED,no%E_ARGUEMENT_MISMATCH,
           dnl no%E_MACRO_REDEFINED (Sun Forte case)
-          dnl For Forte we need disable "empty declaration" warning produced by un-needed semicolon 
+          dnl For Forte we need disable "empty declaration" warning produced by un-needed semicolon
           dnl "statement not reached" disabled because there is g_assert_not_reached () in some places
           dnl "macro redefined" because of gst/gettext.h
           dnl FIXME: is it really supposed to be 'ARGUEMENT' and not 'ARGUMENT'?
@@ -66,8 +70,13 @@ AC_DEFUN([AG_GST_SET_ERROR_CFLAGS],
           done
       ])
     else
-      AS_COMPILER_FLAG(-fno-strict-aliasing,
-          ERROR_CFLAGS="$ERROR_CFLAGS -fno-strict-aliasing")
+      dnl Add -fno-strict-aliasing for GLib versions before 2.19.8
+      dnl as before G_LOCK and friends caused strict aliasing compiler
+      dnl warnings.
+      PKG_CHECK_EXISTS([glib-2.0 < 2.19.8], [
+        AS_COMPILER_FLAG(-fno-strict-aliasing,
+            ERROR_CFLAGS="$ERROR_CFLAGS -fno-strict-aliasing")
+	])
     fi
   fi
 
@@ -88,14 +97,14 @@ AC_DEFUN([AG_GST_SET_ERROR_CXXFLAGS],
   AC_REQUIRE([AC_PROG_CXX])
   AC_REQUIRE([AS_CXX_COMPILER_FLAG])
 
-  
+
   dnl if we support -Wall, set it unconditionally
   AS_CXX_COMPILER_FLAG(-Wall, [
       ERROR_CXXFLAGS="-Wall"
   ], [
       ERROR_CXXFLAGS=""
   ])
-  
+
   dnl if asked for, add -Werror if supported
   if test "x$1" != "xno"
   then
@@ -105,10 +114,15 @@ AC_DEFUN([AG_GST_SET_ERROR_CXXFLAGS],
         ERROR_CXXFLAGS="$ERROR_CXXFLAGS -Werror"
 
         dnl add exceptions
-        for f in '-Wno-non-virtual-dtor' '-fno-strict-aliasing'
-        do
-          AS_CXX_COMPILER_FLAG([$f], ERROR_CXXFLAGS="$ERROR_CXXFLAGS $f")
-        done
+        AS_CXX_COMPILER_FLAG([-Wno-non-virtual-dtor], ERROR_CXXFLAGS="$ERROR_CXXFLAGS -Wno-non-virtual-dtor")
+
+	dnl Add -fno-strict-aliasing for GLib versions before 2.19.8
+	dnl as before G_LOCK and friends caused strict aliasing compiler
+	dnl warnings.
+	PKG_CHECK_EXISTS([glib-2.0 < 2.19.8], [
+	  AS_CXX_COMPILER_FLAG([-fno-strict-aliasing],
+	    ERROR_CXXFLAGS="$ERROR_CXXFLAGS -fno-strict-aliasing")
+	  ])
     else
       dnl if -Werror isn't suported, try -errwarn=%all
       AS_CXX_COMPILER_FLAG([-errwarn=%all], errwarnall=yes, errwarnall=no)
@@ -117,7 +131,7 @@ AC_DEFUN([AG_GST_SET_ERROR_CXXFLAGS],
         dnl try -errwarn=%all,no%E_EMPTY_DECLARATION,
         dnl no%E_STATEMENT_NOT_REACHED,no%E_ARGUEMENT_MISMATCH,
         dnl no%E_MACRO_REDEFINED (Sun Forte case)
-        dnl For Forte we need disable "empty declaration" warning produced by un-needed semicolon 
+        dnl For Forte we need disable "empty declaration" warning produced by un-needed semicolon
         dnl "statement not reached" disabled because there is g_assert_not_reached () in some places
         dnl "macro redefined" because of gst/gettext.h
         dnl FIXME: is it really supposed to be 'ARGUEMENT' and not 'ARGUMENT'?

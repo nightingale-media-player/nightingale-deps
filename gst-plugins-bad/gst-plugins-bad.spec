@@ -4,7 +4,7 @@
 %define gst_minver   0.10.0
 
 Name: 		%{gstreamer}-plugins-bad
-Version: 	0.10.10
+Version: 	0.10.16
 Release: 	1.gst
 Summary: 	GStreamer plug-ins of bad quality
 
@@ -31,7 +31,6 @@ Requires:      faac >= 1.23
 Provides:       gstreamer-gsm = %{version}-%{release}
 Requires: libmms >= 0.1
 #Requires: gmyth
-#Requires: x264
 
 %description
 GStreamer is a streaming media framework, based on graphs of filters which
@@ -71,24 +70,21 @@ rm -rf $RPM_BUILD_ROOT
 %files -f gst-plugins-bad-%{majorminor}.lang
 %defattr(-, root, root)
 %doc AUTHORS COPYING README REQUIREMENTS gst-plugins-bad.doap
+%{_bindir}/gst-camera
+%{_bindir}/gst-camera-perf
 
 # non-core plugins without external dependencies
 %{_libdir}/gstreamer-%{majorminor}/libgsttta.so
 %{_libdir}/gstreamer-%{majorminor}/libgstspeed.so
 %{_libdir}/gstreamer-%{majorminor}/libgstcdxaparse.so
 %{_libdir}/gstreamer-%{majorminor}/libgstfreeze.so
-%{_libdir}/gstreamer-%{majorminor}/libgstmodplug.so
 %{_libdir}/gstreamer-%{majorminor}/libgsth264parse.so
-%{_libdir}/gstreamer-%{majorminor}/libgstfilter.so
 %{_libdir}/gstreamer-%{majorminor}/libgstnsf.so
-%{_libdir}/gstreamer-%{majorminor}/libgstdeinterlace.so
 %{_libdir}/gstreamer-%{majorminor}/libgstnuvdemux.so
-%{_libdir}/gstreamer-%{majorminor}/libgsty4menc.so
 %{_libdir}/gstreamer-%{majorminor}/libgstrfbsrc.so
 %{_libdir}/gstreamer-%{majorminor}/libgstreal.so
 %{_libdir}/gstreamer-%{majorminor}/libgstmve.so
 %{_libdir}/gstreamer-%{majorminor}/libgstmpegvideoparse.so
-%{_libdir}/gstreamer-%{majorminor}/libgstrtpmanager.so
 %{_libdir}/gstreamer-%{majorminor}/libgstbayer.so
 %{_libdir}/gstreamer-%{majorminor}/libgstdvdspu.so
 %{_libdir}/gstreamer-%{majorminor}/libgstfestival.so
@@ -99,11 +95,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/gstreamer-%{majorminor}/libgstmpeg4videoparse.so
 %{_libdir}/gstreamer-%{majorminor}/libgstfbdevsink.so
 %{_libdir}/gstreamer-%{majorminor}/libgstrawparse.so
-%{_libdir}/gstreamer-%{majorminor}/libgstmetadata.so
 %{_libdir}/gstreamer-%{majorminor}/libgstselector.so
 %{_libdir}/gstreamer-%{majorminor}/libgstsubenc.so
 %{_libdir}/gstreamer-%{majorminor}/libgstoss4audio.so
-%{_libdir}/gstreamer-%{majorminor}/libgstdeinterlace2.so
 %{_libdir}/gstreamer-%{majorminor}/libresindvd.so
 %{_libdir}/gstreamer-%{majorminor}/libgstaiffparse.so
 %{_libdir}/gstreamer-%{majorminor}/libgstdccp.so
@@ -111,7 +105,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/gstreamer-%{majorminor}/libgstmpegtsmux.so
 %{_libdir}/gstreamer-%{majorminor}/libgstscaletempoplugin.so
 %{_libdir}/gstreamer-%{majorminor}/libgstmpegdemux.so
-%{_libdir}/gstreamer-%{majorminor}/libgstflv.so
 %{_libdir}/gstreamer-%{majorminor}/libgstjp2k.so
 %{_libdir}/gstreamer-%{majorminor}/libgstapexsink.so
 %{_libdir}/gstreamer-%{majorminor}/libgstaacparse.so
@@ -119,16 +112,40 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/gstreamer-%{majorminor}/libgstqtmux.so
 %{_libdir}/gstreamer-%{majorminor}/libgstlegacyresample.so
 %{_libdir}/gstreamer-%{majorminor}/libgstmxf.so
-%{_includedir}/gstreamer-%{majorminor}/gst/app/gstappbuffer.h
-%{_includedir}/gstreamer-%{majorminor}/gst/app/gstappsink.h
-%{_includedir}/gstreamer-%{majorminor}/gst/app/gstappsrc.h
-%{_libdir}/gstreamer-%{majorminor}/libgstapp.so
 %{_libdir}/gstreamer-%{majorminor}/libgstvmnc.so
 %{_libdir}/gstreamer-%{majorminor}/libgstvideosignal.so
-%{_libdir}/libgstapp-0.10.so
-%{_libdir}/libgstapp-0.10.so.0
-%{_libdir}/libgstapp-0.10.so.0.0.0
+%{_libdir}/gstreamer-%{majorminor}/libgstvalve.so
+%{_libdir}/gstreamer-%{majorminor}/libgstautoconvert.so
+%{_libdir}/gstreamer-%{majorminor}/libgstdtmf.so
+%{_libdir}/gstreamer-%{majorminor}/libgstliveadder.so
+%{_libdir}/gstreamer-%{majorminor}/libgstrtpmux.so
+%{_libdir}/gstreamer-%{majorminor}/libgstsiren.so
+%{_libdir}/gstreamer-%{majorminor}/libgstadpcmdec.so
+%{_libdir}/gstreamer-%{majorminor}/libgstid3tag.so
+%{_libdir}/gstreamer-%{majorminor}/libgsthdvparse.so
+%{_libdir}/gstreamer-%{majorminor}/libgstshapewipe.so
+%{_libdir}/gstreamer-%{majorminor}/libgstdebugutilsbad.so
+%{_libdir}/gstreamer-%{majorminor}/libgstasfmux.so
+%{_libdir}/gstreamer-%{majorminor}/libgstpnm.so
+%{_libdir}/gstreamer-%{majorminor}/libgstvideomeasure.so
+%{_includedir}/gstreamer-%{majorminor}/gst/video/gstbasevideocodec.h
+%{_includedir}/gstreamer-%{majorminor}/gst/video/gstbasevideodecoder.h
+%{_includedir}/gstreamer-%{majorminor}/gst/video/gstbasevideoencoder.h
+%{_includedir}/gstreamer-%{majorminor}/gst/video/gstbasevideoparse.h
+%{_includedir}/gstreamer-%{majorminor}/gst/video/gstbasevideoutils.h
+%{_datadir}/gstreamer-%{majorminor}/camera-apps/gst-camera.glade
+%{_includedir}/gstreamer-%{majorminor}/gst/signalprocessor/gstsignalprocessor.h
 
+%{_includedir}/gstreamer-%{majorminor}/gst/interfaces/photography-enumtypes.h
+%{_includedir}/gstreamer-%{majorminor}/gst/interfaces/photography.h
+%{_libdir}/libgstphotography-0.10.so
+%{_libdir}/gstreamer-%{majorminor}/libgstcamerabin.so
+%{_libdir}/libgstphotography-%{majorminor}.so.0
+%{_libdir}/libgstphotography-%{majorminor}.so.0.0.0
+%{_libdir}/libgstbasevideo*
+%{_libdir}/libgstsignalprocessor*
+%{_libdir}/gstreamer-%{majorminor}/libgstmpegpsmux.so
+# %{_datadir}/gstreamer-%{majorminor}/presets/GstFAAC.prs
 # gstreamer-plugins with external dependencies but in the main package
 %{_libdir}/gstreamer-%{majorminor}/libgstfaad.so
 %{_libdir}/gstreamer-%{majorminor}/libgstfaac.so
@@ -136,7 +153,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/gstreamer-%{majorminor}/libgstsdl.so
 #%{_libdir}/gstreamer-%{majorminor}/libgstswfdec.so
 %{_libdir}/gstreamer-%{majorminor}/libgstmms.so
-#%{_libdir}/gstreamer-%{majorminor}/libgstxvid.so
+%{_libdir}/gstreamer-%{majorminor}/libgstxvid.so
 %{_libdir}/gstreamer-%{majorminor}/libgstbz2.so
 #%{_libdir}/gstreamer-%{majorminor}/libgstivorbis.so
 %{_libdir}/gstreamer-%{majorminor}/libgstneonhttpsrc.so
@@ -146,12 +163,25 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/gstreamer-%{majorminor}/libgstdtsdec.so
 %{_libdir}/gstreamer-%{majorminor}/libgstladspa.so
 #%{_libdir}/gstreamer-%{majorminor}/libgstmythtvsrc.so
-#%{_libdir}/gstreamer-%{majorminor}/libgstx264.so
 %{_libdir}/gstreamer-%{majorminor}/libgstdc1394.so
 #%{_libdir}/gstreamer-%{majorminor}/libgsttimidity.so
-#%{_libdir}/gstreamer-%{majorminor}/libgstwildmidi.so
+%{_libdir}/gstreamer-%{majorminor}/libgstwildmidi.so
+%{_libdir}/gstreamer-%{majorminor}/libgstjack.so
+%{_libdir}/gstreamer-%{majorminor}/libgstsndfile.so
+%{_libdir}/gstreamer-%{majorminor}/libgstcelt.so
+%{_libdir}/gstreamer-%{majorminor}/libgstmpeg2enc.so
+%{_libdir}/gstreamer-%{majorminor}/libgstmplex.so
+%{_libdir}/gstreamer-%{majorminor}/libgstkate.so
+%{_libdir}/gstreamer-%{majorminor}/libgstassrender.so
+%{_libdir}/gstreamer-%{majorminor}/libgstfrei0r.so
+#%{_libdir}/gstreamer-%{majorminor}/libgstschro.so
+%{_libdir}/gstreamer-%{majorminor}/libgstofa.so
+%{_libdir}/gstreamer-%{majorminor}/libgstmetadata.so
 
 %changelog
+* Thu Mar 12 2009 Christian Schaller <chrisian.schaller at collabora dot co uk>
+- Add Celt, mpeg2enc and mplex plugins to spec file
+
 * Thu Oct 9 2008 Christian Schaller <chrisian.schaller at collabora dot co uk>
 - flacparse, flvmux and j2kdec plugins added
 

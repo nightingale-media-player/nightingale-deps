@@ -82,9 +82,12 @@
 
 #include "metadataparsejpeg.h"
 #include "metadataparseutil.h"
+#include "metadataexif.h"
+#include "metadataxmp.h"
 
 #ifdef HAVE_IPTC
 #include <libiptcdata/iptc-jpeg.h>
+#include "metadataiptc.h"
 #endif
 
 /*
@@ -226,9 +229,7 @@ metadataparse_jpeg_parse (JpegParseData * jpeg_data, guint8 * buf,
     guint32 * bufsize, const guint32 offset, guint8 ** next_start,
     guint32 * next_size)
 {
-
   int ret = META_PARSING_DONE;
-  guint8 mark[2] = { 0x00, 0x00 };
   const guint8 *step_buf = buf;
 
   /* step_buf holds where buf starts. this const value will be passed to
@@ -240,11 +241,13 @@ metadataparse_jpeg_parse (JpegParseData * jpeg_data, guint8 * buf,
   *next_start = buf;
 
   if (jpeg_data->state == JPEG_PARSE_NULL) {
+    guint8 mark[2];
 
     /* only the first time this function is called it will verify the stream
        type to be sure it is a JPEG */
 
     if (*bufsize < 2) {
+      GST_INFO ("need more data");
       *next_size = (buf - *next_start) + 2;
       ret = META_PARSING_NEED_MORE_DATA;
       goto done;
@@ -254,32 +257,35 @@ metadataparse_jpeg_parse (JpegParseData * jpeg_data, guint8 * buf,
     mark[1] = READ (buf, *bufsize);
 
     if (mark[0] != 0xFF || mark[1] != 0xD8) {
+      GST_INFO ("missing marker");
       ret = META_PARSING_ERROR;
       goto done;
     }
-
     jpeg_data->state = JPEG_PARSE_READING;
-
   }
 
   while (ret == META_PARSING_DONE) {
     switch (jpeg_data->state) {
       case JPEG_PARSE_READING:
+        GST_DEBUG ("start reading");
         ret =
             metadataparse_jpeg_reading (jpeg_data, &buf, bufsize,
             offset, step_buf, next_start, next_size);
         break;
       case JPEG_PARSE_JUMPING:
+        GST_DEBUG ("jump");
         ret =
             metadataparse_jpeg_jump (jpeg_data, &buf, bufsize, next_start,
             next_size);
         break;
       case JPEG_PARSE_EXIF:
+        GST_DEBUG ("parse exif");
         ret =
             metadataparse_jpeg_exif (jpeg_data, &buf, bufsize, next_start,
             next_size);
         break;
       case JPEG_PARSE_IPTC:
+        GST_DEBUG ("parse iptc");
 #ifdef HAVE_IPTC
         ret =
             metadataparse_jpeg_iptc (jpeg_data, &buf, bufsize, next_start,
@@ -287,6 +293,7 @@ metadataparse_jpeg_parse (JpegParseData * jpeg_data, guint8 * buf,
 #endif
         break;
       case JPEG_PARSE_XMP:
+        GST_DEBUG ("parse xmp");
         ret =
             metadataparse_jpeg_xmp (jpeg_data, &buf, bufsize, next_start,
             next_size);
@@ -295,15 +302,15 @@ metadataparse_jpeg_parse (JpegParseData * jpeg_data, guint8 * buf,
         goto done;
         break;
       default:
+        GST_INFO ("invalid parser state");
         ret = META_PARSING_ERROR;
         break;
     }
   }
 
 done:
-
+  GST_INFO ("finishing: %d", ret);
   return ret;
-
 }
 
 /*
@@ -381,12 +388,6 @@ metadataparse_jpeg_reading (JpegParseData * jpeg_data, guint8 ** buf,
   guint16 chunk_size = 0;
 
   static const char JfifHeader[] = "JFIF";
-  static const unsigned char ExifHeader[] =
-      { 0x45, 0x78, 0x69, 0x66, 0x00, 0x00 };
-#ifdef HAVE_IPTC
-  static const char PhotoshopHeader[] = "Photoshop 3.0";
-#endif
-  static const char XmpHeader[] = "http://ns.adobe.com/xap/1.0/";
 
   *next_start = *buf;
 
@@ -399,12 +400,14 @@ metadataparse_jpeg_reading (JpegParseData * jpeg_data, guint8 ** buf,
   mark[0] = READ (*buf, *bufsize);
   mark[1] = READ (*buf, *bufsize);
 
+  GST_DEBUG ("parsing JPEG marker : 0x%02x%02x", mark[0], mark[1]);
+
   if (mark[0] == 0xFF) {
-    if (mark[1] == 0xD9) {      /* end of image */
+    if (mark[1] == 0xD9) {      /* EOI - end of image */
       ret = META_PARSING_DONE;
       jpeg_data->state = JPEG_PARSE_DONE;
       goto done;
-    } else if (mark[1] == 0xDA) {
+    } else if (mark[1] == 0xDA) {       /* SOS - start of scan */
       /* start of scan image, lets not look behind of this */
       ret = META_PARSING_DONE;
       jpeg_data->state = JPEG_PARSE_DONE;
@@ -420,30 +423,34 @@ metadataparse_jpeg_reading (JpegParseData * jpeg_data, guint8 ** buf,
     chunk_size = READ (*buf, *bufsize) << 8;
     chunk_size += READ (*buf, *bufsize);
 
-    if (mark[1] == 0xE0) {      /* may be JFIF */
+    if (mark[1] == 0xE0) {      /* APP0 - may be JFIF */
 
-      if (chunk_size >= 16) {
+      /* FIXME: whats the 14 ? according to
+       * http://en.wikipedia.org/wiki/JFIF#JFIF_segment_format
+       * its the jfif segment without thumbnails
+       */
+      if (chunk_size >= 14 + 2) {
         if (*bufsize < 14) {
           *next_size = (*buf - *next_start) + 14;
           ret = META_PARSING_NEED_MORE_DATA;
           goto done;
         }
 
-        if (0 == memcmp (JfifHeader, *buf, 5)) {
+        if (0 == memcmp (JfifHeader, *buf, sizeof (JfifHeader))) {
           jpeg_data->jfif_found = TRUE;
         }
       }
 
-    } else if (mark[1] == 0xE1) {       /* may be it is Exif or XMP */
+    } else if (mark[1] == 0xE1) {       /* APP1 - may be it is Exif or XMP */
 
-      if (chunk_size >= 8) {    /* size2 'EXIF' 0x00 0x00 */
-        if (*bufsize < 6) {
-          *next_size = (*buf - *next_start) + 6;
+      if (chunk_size >= sizeof (EXIF_HEADER) + 2) {
+        if (*bufsize < sizeof (EXIF_HEADER)) {
+          *next_size = (*buf - *next_start) + sizeof (EXIF_HEADER);
           ret = META_PARSING_NEED_MORE_DATA;
           goto done;
         }
 
-        if (0 == memcmp (ExifHeader, *buf, 6)) {
+        if (0 == memcmp (EXIF_HEADER, *buf, sizeof (EXIF_HEADER))) {
           MetadataChunk chunk;
 
           if (!jpeg_data->parse_only) {
@@ -494,14 +501,14 @@ metadataparse_jpeg_reading (JpegParseData * jpeg_data, guint8 ** buf,
             goto done;
           }
         }
-        if (chunk_size >= 31) { /* size2 "http://ns.adobe.com/xap/1.0/" */
-          if (*bufsize < 29) {
-            *next_size = (*buf - *next_start) + 29;
+        if (chunk_size >= sizeof (XMP_HEADER) + 2) {
+          if (*bufsize < sizeof (XMP_HEADER)) {
+            *next_size = (*buf - *next_start) + sizeof (XMP_HEADER);
             ret = META_PARSING_NEED_MORE_DATA;
             goto done;
           }
 
-          if (0 == memcmp (XmpHeader, *buf, 29)) {
+          if (0 == memcmp (XMP_HEADER, *buf, sizeof (XMP_HEADER))) {
 
             if (!jpeg_data->parse_only) {
 
@@ -519,9 +526,9 @@ metadataparse_jpeg_reading (JpegParseData * jpeg_data, guint8 ** buf,
 
             /* if adapter has been provided, prepare to hold chunk */
             if (jpeg_data->xmp_adapter) {
-              *buf += 29;
-              *bufsize -= 29;
-              jpeg_data->read = chunk_size - 2 - 29;
+              *buf += sizeof (XMP_HEADER);
+              *bufsize -= sizeof (XMP_HEADER);
+              jpeg_data->read = chunk_size - 2 - sizeof (XMP_HEADER);
               jpeg_data->state = JPEG_PARSE_XMP;
               ret = META_PARSING_DONE;
               goto done;
@@ -542,8 +549,7 @@ metadataparse_jpeg_reading (JpegParseData * jpeg_data, guint8 ** buf,
           goto done;
         }
 
-
-        if (0 == memcmp (PhotoshopHeader, *buf, 14)) {
+        if (0 == memcmp (PHOTOSHOP_HEADER, *buf, sizeof (PHOTOSHOP_HEADER))) {
 
           if (!jpeg_data->parse_only) {
 

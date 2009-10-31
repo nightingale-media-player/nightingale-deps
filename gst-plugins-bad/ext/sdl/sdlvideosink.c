@@ -25,7 +25,9 @@
 
 #include <signal.h>
 #include <string.h>
+#ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
+#endif
 #include <stdlib.h>
 
 #include <gst/interfaces/xoverlay.h>
@@ -948,7 +950,7 @@ gst_sdlvideosink_navigation_send_event (GstNavigation * navigation,
   GstSDLVideoSink *sdlvideosink = GST_SDLVIDEOSINK (navigation);
   GstEvent *event;
   GstVideoRectangle src, dst, result;
-  double x, y;
+  double x, y, old_x, old_y;
   GstPad *pad = NULL;
 
   src.w = GST_VIDEO_SINK_WIDTH (sdlvideosink);
@@ -962,8 +964,8 @@ gst_sdlvideosink_navigation_send_event (GstNavigation * navigation,
   /* Our coordinates can be wrong here if we centered the video */
 
   /* Converting pointer coordinates to the non scaled geometry */
-  if (gst_structure_get_double (structure, "pointer_x", &x)) {
-    double old_x = x;
+  if (gst_structure_get_double (structure, "pointer_x", &old_x)) {
+    x = old_x;
 
     if (x >= result.x && x <= (result.x + result.w)) {
       x -= result.x;
@@ -976,8 +978,8 @@ gst_sdlvideosink_navigation_send_event (GstNavigation * navigation,
         "coordinate from %f to %f", old_x, x);
     gst_structure_set (structure, "pointer_x", G_TYPE_DOUBLE, x, NULL);
   }
-  if (gst_structure_get_double (structure, "pointer_y", &y)) {
-    double old_y = y;
+  if (gst_structure_get_double (structure, "pointer_y", &old_y)) {
+    y = old_y;
 
     if (y >= result.y && y <= (result.y + result.h)) {
       y -= result.y;

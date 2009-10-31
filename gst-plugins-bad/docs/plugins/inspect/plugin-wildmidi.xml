@@ -3,10 +3,10 @@
   <description>Wildmidi Plugin</description>
   <filename>../../ext/timidity/.libs/libgstwildmidi.so</filename>
   <basename>libgstwildmidi.so</basename>
-  <version>0.10.10</version>
+  <version>0.10.16</version>
   <license>GPL</license>
   <source>gst-plugins-bad</source>
-  <package>GStreamer Bad Plug-ins source release</package>
+  <package>GStreamer Bad Plug-ins prerelease</package>
   <origin>Unknown package origin</origin>
   <elements>
     <element>
@@ -20,7 +20,7 @@
           <name>sink</name>
           <direction>sink</direction>
           <presence>always</presence>
-          <details>audio/midi</details>
+          <details>audio/midi; audio/riff-midi</details>
         </caps>
         <caps>
           <name>src</name>

@@ -20,7 +20,7 @@
 ** nsf.h
 **
 ** NSF loading/saving related defines / prototypes
-** $Id: nsf.h,v 1.3 2008-04-10 10:01:48 tpm Exp $
+** $Id$
 */
 
 #ifndef _NSF_H_
@@ -147,8 +147,8 @@ extern int nsf_setfilter(nsf_t *nsf, int filter_type);
 #endif /* _NSF_H_ */
 
 /*
-** $Log: nsf.h,v $
-** Revision 1.3  2008-04-10 10:01:48  tpm
+** $Log$
+** Revision 1.3  2008/04/10 10:01:48  tpm
 ** 	* gst/nsf/nsf.h:
 ** 	  Change prototype of process function here too to avoid
 ** 	  'incompatible assignment' warnings.

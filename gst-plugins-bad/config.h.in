@@ -1,11 +1,17 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
-/* Define if an old libdvdnav is used */
-#undef DVDNAV_OLD
+/* Define if building universal (internal helper macro) */
+#undef AC_APPLE_UNIVERSAL_BUILD
+
+/* Define if an old libdts is used */
+#undef DTS_OLD
 
 /* Define to 1 if translation of program messages to the user's native
    language is requested. */
 #undef ENABLE_NLS
+
+/* The x in 2.x */
+#undef FAAD2_MINOR_VERSION
 
 /* Define if AAC is using new api prefix */
 #undef FAAD_IS_NEAAC
@@ -40,14 +46,14 @@
 /* Define to enable alsa plug-ins (used by gstalsa). */
 #undef HAVE_ALSA
 
-/* Define to enable amrwb library (used by amrwb). */
+/* Define to enable amrwb library (used by amrwbenc). */
 #undef HAVE_AMRWB
 
 /* Define to enable AirPort Express Wireless sink (used by apexsink). */
 #undef HAVE_APEXSINK
 
-/* Define to enable asf muxer (used by asfmux). */
-#undef HAVE_ASFMUX
+/* Define to enable ASS/SSA renderer (used by assrender). */
+#undef HAVE_ASSRENDER
 
 /* Define to enable bz2 library (used by bz2). */
 #undef HAVE_BZ2
@@ -57,6 +63,20 @@
 
 /* Define to enable celt (used by celt). */
 #undef HAVE_CELT
+
+/* Define if libcelt 0.4 is installed */
+#undef HAVE_CELT_0_4
+
+/* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
+   CoreFoundation framework. */
+#undef HAVE_CFLOCALECOPYCURRENT
+
+/* Define to 1 if you have the MacOS X function CFPreferencesCopyAppValue in
+   the CoreFoundation framework. */
+#undef HAVE_CFPREFERENCESCOPYAPPVALUE
+
+/* Define to enable Cog plugin (used by cog). */
+#undef HAVE_COG
 
 /* Define if the host CPU is an Alpha */
 #undef HAVE_CPU_ALPHA
@@ -110,23 +130,20 @@
 /* Define to enable dirac (used by dirac). */
 #undef HAVE_DIRAC
 
+/* Define to enable DirectDraw plug-in (used by directdrawsink). */
+#undef HAVE_DIRECTDRAW
+
 /* Define to enable directfb (used by dfbvideosink ). */
 #undef HAVE_DIRECTFB
 
-/* Define to enable DirectShow plug-in (used by dshowdecwrapper). */
-#undef HAVE_DIRECTSHOW
+/* Define to enable DirectSound (used by directsoundsrc). */
+#undef HAVE_DIRECTSOUND
 
 /* Define to enable divx plugins (used by divx). */
 #undef HAVE_DIVX
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
-
-/* Define to enable Windows DMO library (used by dmo). */
-#undef HAVE_DMO
-
-/* Define to 1 if you have the <dmo.h> header file. */
-#undef HAVE_DMO_H
 
 /* define for working do while(0) macros */
 #undef HAVE_DOWHILE_MACROS
@@ -164,16 +181,22 @@
 /* FIONREAD ioctl found in sys/ioclt.h */
 #undef HAVE_FIONREAD_IN_SYS_IOCTL
 
-/* Define if compiler supports gcc inline assembly */
-#undef HAVE_GCC_ASM
+/* Define to 1 if you have the `getpagesize' function. */
+#undef HAVE_GETPAGESIZE
 
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #undef HAVE_GETTEXT
 
+/* Define to enable gme decoder (used by gme). */
+#undef HAVE_GME
+
+/* Define to 1 if you have the `gmtime_r' function. */
+#undef HAVE_GMTIME_R
+
 /* Define to enable GSM library (used by gsmenc gsmdec). */
 #undef HAVE_GSM
 
-/* Define if you have the iconv() function. */
+/* Define if you have the iconv() function and it works. */
 #undef HAVE_ICONV
 
 /* Define to 1 if you have the <inttypes.h> header file. */
@@ -188,6 +211,9 @@
 /* Define to enable jp2k (used by jp2kdec jp2kenc). */
 #undef HAVE_JP2K
 
+/* Define to enable Kate (used by kate). */
+#undef HAVE_KATE
+
 /* Define to enable ladspa (used by ladspa). */
 #undef HAVE_LADSPA
 
@@ -200,17 +226,38 @@
 /* Define to 1 if you have the `divxencore' library (-ldivxencore). */
 #undef HAVE_LIBDIVXENCORE
 
+/* Define if gme 0.5.6 or newer is available */
+#undef HAVE_LIBGME_ACCURACY
+
 /* Define to enable mms protocol library (used by libmms). */
 #undef HAVE_LIBMMS
 
-/* Define to enable liboil usage in some plugins. */
-#undef HAVE_LIBOIL
+/* Define to 1 if you have the `nsl' library (-lnsl). */
+#undef HAVE_LIBNSL
+
+/* Define to 1 if you have the `socket' library (-lsocket). */
+#undef HAVE_LIBSOCKET
+
+/* Define if we have liblrdf */
+#undef HAVE_LRDF
+
+/* Define to enable lv2 (used by lv2). */
+#undef HAVE_LV2
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
 /* Define to enable METADATA muxer and demuxer (used by metadata). */
 #undef HAVE_METADATA
+
+/* Define to enable libmimic library (used by mimic). */
+#undef HAVE_MIMIC
+
+/* Define to 1 if you have a working `mmap' system call. */
+#undef HAVE_MMAP
+
+/* Define to enable modplug (used by modplug). */
+#undef HAVE_MODPLUG
 
 /* Define to enable mpeg2enc (used by mpeg2enc). */
 #undef HAVE_MPEG2ENC
@@ -242,11 +289,23 @@
 /* Define to enable Open Sound System 4 (used by oss4). */
 #undef HAVE_OSS4
 
+/* Define to enable OSX video (used by osxvideosrc). */
+#undef HAVE_OSX_VIDEO
+
+/* Define to 1 if you have the <pthread.h> header file. */
+#undef HAVE_PTHREAD_H
+
 /* Define to enable QuickTime wrapper (used by qtwrapper). */
 #undef HAVE_QUICKTIME
 
 /* Define if RDTSC is available */
 #undef HAVE_RDTSC
+
+/* Define to enable rsvg decoder (used by rsvg). */
+#undef HAVE_RSVG
+
+/* Define to enable Schroedinger video codec (used by schro). */
+#undef HAVE_SCHRO
 
 /* Define to enable SDL plug-in (used by sdlvideosink sdlaudiosink). */
 #undef HAVE_SDL
@@ -256,6 +315,9 @@
 
 /* Define to enable soundtouch plug-in (used by soundtouch). */
 #undef HAVE_SOUNDTOUCH
+
+/* Defined if the available libSoundTouch is >= 1.4 */
+#undef HAVE_SOUNDTOUCH_1_4
 
 /* Define to enable spc decoder (used by spc). */
 #undef HAVE_SPC
@@ -284,17 +346,23 @@
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
 
+/* Define to 1 if you have the <sys/time.h> header file. */
+#undef HAVE_SYS_TIME_H
+
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <sys/utsname.h> header file. */
+#undef HAVE_SYS_UTSNAME_H
 
 /* Define to enable ogg theora codec (used by theoraexpdec). */
 #undef HAVE_THEORADEC
 
+/* Define if libtiger is available */
+#undef HAVE_TIGER
+
 /* Define to enable timidity midi soft synth plugin (used by timidity). */
 #undef HAVE_TIMIDITY
-
-/* Define to enable twolame (used by twolame). */
-#undef HAVE_TWOLAME
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
@@ -304,6 +372,9 @@
 
 /* Define to enable Video CD (used by vcdsrc). */
 #undef HAVE_VCD
+
+/* Define to enable VDPAU (used by vdpau). */
+#undef HAVE_VDPAU
 
 /* Define to enable wildmidi midi soft synth plugin (used by wildmidi). */
 #undef HAVE_WILDMIDI
@@ -323,14 +394,17 @@
 /* Define if you have X11 library */
 #undef HAVE_X11
 
-/* Define to enable x264 plug-in (used by x264). */
-#undef HAVE_X264
-
 /* Define to enable xvid plugins (used by xvid). */
 #undef HAVE_XVID
 
+/* Define to enable ZBar barcode detector (used by zbar). */
+#undef HAVE_ZBAR
+
 /* the host CPU */
 #undef HOST_CPU
+
+/* library dir */
+#undef LIBDIR
 
 /* gettext locale dir */
 #undef LOCALEDIR
@@ -366,19 +440,19 @@
 /* directory where plugins are located */
 #undef PLUGINDIR
 
-/* The size of a `char', as computed by sizeof. */
+/* The size of `char', as computed by sizeof. */
 #undef SIZEOF_CHAR
 
-/* The size of a `int', as computed by sizeof. */
+/* The size of `int', as computed by sizeof. */
 #undef SIZEOF_INT
 
-/* The size of a `long', as computed by sizeof. */
+/* The size of `long', as computed by sizeof. */
 #undef SIZEOF_LONG
 
-/* The size of a `short', as computed by sizeof. */
+/* The size of `short', as computed by sizeof. */
 #undef SIZEOF_SHORT
 
-/* The size of a `void*', as computed by sizeof. */
+/* The size of `void*', as computed by sizeof. */
 #undef SIZEOF_VOIDP
 
 /* Define to 1 if you have the ANSI C header files. */
@@ -390,9 +464,17 @@
 /* Version number of package */
 #undef VERSION
 
-/* Define to 1 if your processor stores words with the most significant byte
-   first (like Motorola and SPARC, unlike Intel and VAX). */
-#undef WORDS_BIGENDIAN
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel). */
+#if defined AC_APPLE_UNIVERSAL_BUILD
+# if defined __BIG_ENDIAN__
+#  define WORDS_BIGENDIAN 1
+# endif
+#else
+# ifndef WORDS_BIGENDIAN
+#  undef WORDS_BIGENDIAN
+# endif
+#endif
 
 /* Define to 1 if the X Window System is missing or not being used. */
 #undef X_DISPLAY_MISSING

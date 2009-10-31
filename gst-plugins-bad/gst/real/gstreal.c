@@ -22,18 +22,23 @@
 #include "config.h"
 #endif
 
+#include "gstreal.h"
 #include "gstrealvideodec.h"
 #include "gstrealaudiodec.h"
 
 static gboolean
 plugin_init (GstPlugin * p)
 {
-  if (!gst_element_register (p, "realvideodec", GST_RANK_PRIMARY,
+  if (!gst_element_register (p, "realvideodec", GST_RANK_MARGINAL,
           GST_TYPE_REAL_VIDEO_DEC))
     return FALSE;
-  if (!gst_element_register (p, "realaudiodec", GST_RANK_SECONDARY,
+  if (!gst_element_register (p, "realaudiodec", GST_RANK_MARGINAL,
           GST_TYPE_REAL_AUDIO_DEC))
     return FALSE;
+
+  gst_plugin_add_dependency_simple (p, NULL, DEFAULT_REAL_CODECS_PATH, NULL,
+      GST_PLUGIN_DEPENDENCY_FLAG_NONE);
+
   return TRUE;
 }
 

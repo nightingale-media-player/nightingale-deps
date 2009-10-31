@@ -48,7 +48,7 @@
 
 #include <string.h>
 
-#include "qtvideowrapper.h"
+#include "qtwrapper.h"
 #include "codecmapping.h"
 #include "qtutils.h"
 #include "imagedescription.h"
@@ -87,7 +87,6 @@ struct _QTWrapperVideoDecoder
   GstClockTime last_ts;
   GstClockTime last_duration;
   GstBuffer *prevbuf;
-  GstBuffer *buf_to_push;
   gboolean flushing;
   gboolean framebuffering;
 
@@ -627,25 +626,34 @@ decompressCb (void *decompressionTrackingRefCon,
     /* See if we push buffer downstream */
     if (G_LIKELY (!qtwrapper->framebuffering)) {
       GST_LOG ("No buffering needed, pushing buffer downstream");
-      qtwrapper->buf_to_push = outbuf;
+      MAC_UNLOCK (qtwrapper);
+      qtwrapper->lastret = gst_pad_push (qtwrapper->srcpad, outbuf);
+      MAC_LOCK (qtwrapper);
     } else {
       /* Check if we push the current buffer or the stored buffer */
       if (!qtwrapper->prevbuf) {
         GST_LOG ("Storing buffer");
         qtwrapper->prevbuf = outbuf;
+        qtwrapper->lastret = GST_FLOW_OK;
       } else if (GST_BUFFER_TIMESTAMP (qtwrapper->prevbuf) >
           GST_BUFFER_TIMESTAMP (outbuf)) {
         GST_LOG ("Newly decoded buffer is earliest, pushing that one !");
-        qtwrapper->buf_to_push = outbuf;
+        MAC_UNLOCK (qtwrapper);
+        qtwrapper->lastret = gst_pad_push (qtwrapper->srcpad, outbuf);
+        MAC_LOCK (qtwrapper);
       } else {
         GstBuffer *tmp;
 
         tmp = qtwrapper->prevbuf;
         qtwrapper->prevbuf = outbuf;
         GST_LOG ("Stored buffer is earliest, pushing that one !");
-        qtwrapper->buf_to_push = tmp;
+        MAC_UNLOCK (qtwrapper);
+        qtwrapper->lastret = gst_pad_push (qtwrapper->srcpad, tmp);
+        MAC_LOCK (qtwrapper);
       }
     }
+  } else {
+    qtwrapper->lastret = GST_FLOW_OK;
   }
 
 beach:
@@ -709,16 +717,9 @@ qtwrapper_video_decoder_chain (GstPad * pad, GstBuffer * buf)
     goto beach;
   }
 
-  /* Decoder managed to give us a frame, now push it. */
-  if (qtwrapper->buf_to_push)
-  {
-    ret = gst_pad_push (qtwrapper->srcpad, qtwrapper->buf_to_push);
-    qtwrapper->buf_to_push = NULL;
-  }
-
 beach:
   gst_object_unref (qtwrapper);
-  return ret;
+  return qtwrapper->lastret;
 }
 
 static gboolean

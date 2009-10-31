@@ -77,14 +77,20 @@ GST_ELEMENT_DETAILS ("Celt audio encoder",
     "Encodes audio in Celt format",
     "Sebastian Dröge <sebastian.droege@collabora.co.uk>");
 
-#define DEFAULT_BITRATE         128
+#define DEFAULT_BITRATE         64
 #define DEFAULT_FRAMESIZE       256
+#define DEFAULT_CBR             TRUE
+#define DEFAULT_COMPLEXITY      9
+#define DEFAULT_MAX_BITRATE     64
 
 enum
 {
   PROP_0,
   PROP_BITRATE,
-  PROP_FRAMESIZE
+  PROP_FRAMESIZE,
+  PROP_CBR,
+  PROP_COMPLEXITY,
+  PROP_MAX_BITRATE
 };
 
 static void gst_celt_enc_finalize (GObject * object);
@@ -106,9 +112,16 @@ static void
 gst_celt_enc_setup_interfaces (GType celtenc_type)
 {
   static const GInterfaceInfo tag_setter_info = { NULL, NULL, NULL };
+  const GInterfaceInfo preset_interface_info = {
+    NULL,                       /* interface_init */
+    NULL,                       /* interface_finalize */
+    NULL                        /* interface_data */
+  };
 
   g_type_add_interface_static (celtenc_type, GST_TYPE_TAG_SETTER,
       &tag_setter_info);
+  g_type_add_interface_static (celtenc_type, GST_TYPE_PRESET,
+      &preset_interface_info);
 
   GST_DEBUG_CATEGORY_INIT (celtenc_debug, "celtenc", 0, "Celt encoder");
 }
@@ -145,11 +158,25 @@ gst_celt_enc_class_init (GstCeltEncClass * klass)
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_BITRATE,
       g_param_spec_int ("bitrate", "Encoding Bit-rate",
-          "Specify an encoding bit-rate (in bps). (0 = automatic)",
-          0, 150, DEFAULT_BITRATE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          "Specify an encoding bit-rate (in Kbps).",
+          10, 320, DEFAULT_BITRATE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_FRAMESIZE,
       g_param_spec_int ("framesize", "Frame Size",
-          "The number of samples per frame", 64, 256, DEFAULT_FRAMESIZE,
+          "The number of samples per frame", 64, 512, DEFAULT_FRAMESIZE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_CBR,
+      g_param_spec_boolean ("cbr", "Constant bit rate",
+          "Constant bit rate", DEFAULT_CBR,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_COMPLEXITY,
+      g_param_spec_int ("complexity", "Complexity",
+          "Complexity", 0, 10, DEFAULT_COMPLEXITY,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_MAX_BITRATE,
+      g_param_spec_int ("max-bitrate", "Maximum Encoding Bit-rate",
+          "Specify a maximum encoding bit rate (in Kbps) for variable bit rate encoding.",
+          10, 320, DEFAULT_MAX_BITRATE,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_celt_enc_finalize);
@@ -503,6 +530,9 @@ gst_celt_enc_init (GstCeltEnc * enc, GstCeltEncClass * klass)
 
   enc->bitrate = DEFAULT_BITRATE;
   enc->frame_size = DEFAULT_FRAMESIZE;
+  enc->cbr = DEFAULT_CBR;
+  enc->complexity = DEFAULT_COMPLEXITY;
+  enc->max_bitrate = DEFAULT_MAX_BITRATE;
 
   enc->setup = FALSE;
   enc->header_sent = FALSE;
@@ -543,26 +573,8 @@ static gboolean
 gst_celt_enc_setup (GstCeltEnc * enc)
 {
   gint error = CELT_OK;
-  gint bytes_per_packet;
 
   enc->setup = FALSE;
-
-  /* Fix bitrate */
-  if (enc->channels == 1) {
-    if (enc->bitrate <= 0)
-      enc->bitrate = 64;
-    else if (enc->bitrate < 32)
-      enc->bitrate = 32;
-    else if (enc->bitrate > 110)
-      enc->bitrate = 110;
-  } else {
-    if (enc->bitrate <= 0)
-      enc->bitrate = 128;
-    else if (enc->bitrate < 64)
-      enc->bitrate = 64;
-    else if (enc->bitrate > 150)
-      enc->bitrate = 150;
-  }
 
   enc->mode =
       celt_mode_create (enc->rate, enc->channels, enc->frame_size, &error);
@@ -571,15 +583,20 @@ gst_celt_enc_setup (GstCeltEnc * enc)
 
   celt_mode_info (enc->mode, CELT_GET_FRAME_SIZE, &enc->frame_size);
 
-  bytes_per_packet =
-      (enc->bitrate * 1000 * enc->frame_size / enc->rate + 4) / 8;
-
   celt_header_init (&enc->header, enc->mode);
   enc->header.nb_channels = enc->channels;
 
   enc->state = celt_encoder_create (enc->mode);
   if (!enc->state)
     goto encoder_creation_failed;
+
+#ifdef CELT_SET_VBR_RATE
+  if (!enc->cbr) {
+    GST_ERROR ("setting vbr");
+    celt_encoder_ctl (enc->state, CELT_SET_VBR_RATE (enc->bitrate), 0);
+  }
+#endif
+  celt_encoder_ctl (enc->state, CELT_SET_COMPLEXITY (enc->complexity), 0);
 
   GST_LOG_OBJECT (enc, "we have frame size %d", enc->frame_size);
 
@@ -709,8 +726,15 @@ gst_celt_enc_encode (GstCeltEnc * enc, gboolean flush)
   GstFlowReturn ret = GST_FLOW_OK;
   gint frame_size = enc->frame_size;
   gint bytes = frame_size * 2 * enc->channels;
-  gint bytes_per_packet =
-      (enc->bitrate * 1000 * enc->frame_size / enc->rate + 4) / 8;
+  gint bytes_per_packet;
+
+  if (enc->cbr) {
+    bytes_per_packet =
+        (enc->bitrate * 1000 * enc->frame_size / enc->rate + 4) / 8;
+  } else {
+    bytes_per_packet =
+        (enc->max_bitrate * 1000 * enc->frame_size / enc->rate + 4) / 8;
+  }
 
   if (flush && gst_adapter_available (enc->adapter) % bytes != 0) {
     guint diff = gst_adapter_available (enc->adapter) % bytes;
@@ -738,9 +762,15 @@ gst_celt_enc_encode (GstCeltEnc * enc, gboolean flush)
 
     GST_DEBUG_OBJECT (enc, "encoding %d samples (%d bytes)", frame_size, bytes);
 
+#ifdef HAVE_CELT_0_4
     outsize =
-        celt_encode (enc->state, data, GST_BUFFER_DATA (outbuf),
-        bytes_per_packet);
+        celt_encode (enc->state, data,
+        GST_BUFFER_DATA (outbuf), bytes_per_packet);
+#else
+    outsize =
+        celt_encode (enc->state, data, NULL,
+        GST_BUFFER_DATA (outbuf), bytes_per_packet);
+#endif
 
     g_free (data);
 
@@ -946,6 +976,17 @@ gst_celt_enc_get_property (GObject * object, guint prop_id, GValue * value,
     case PROP_FRAMESIZE:
       g_value_set_int (value, enc->frame_size);
       break;
+    case PROP_CBR:
+#ifdef CELT_SET_VBR_RATE
+      g_value_set_boolean (value, enc->cbr);
+#endif
+      break;
+    case PROP_COMPLEXITY:
+      g_value_set_int (value, enc->complexity);
+      break;
+    case PROP_MAX_BITRATE:
+      g_value_set_int (value, enc->max_bitrate);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -966,6 +1007,15 @@ gst_celt_enc_set_property (GObject * object, guint prop_id,
       break;
     case PROP_FRAMESIZE:
       enc->frame_size = g_value_get_int (value);
+      break;
+    case PROP_CBR:
+      enc->cbr = g_value_get_boolean (value);
+      break;
+    case PROP_COMPLEXITY:
+      enc->complexity = g_value_get_int (value);
+      break;
+    case PROP_MAX_BITRATE:
+      enc->max_bitrate = g_value_get_int (value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
