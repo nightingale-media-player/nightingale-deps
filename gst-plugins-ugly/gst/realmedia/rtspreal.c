@@ -118,15 +118,19 @@ rtsp_ext_real_before_send (GstRTSPExtension * ext, GstRTSPMessage * request)
     }
     case GST_RTSP_DESCRIBE:
     {
-      gst_rtsp_message_add_header (request, GST_RTSP_HDR_BANDWIDTH,
-          DEFAULT_BANDWIDTH);
-      gst_rtsp_message_add_header (request, GST_RTSP_HDR_GUID,
-          "00000000-0000-0000-0000-000000000000");
-      gst_rtsp_message_add_header (request, GST_RTSP_HDR_REGION_DATA, "0");
-      gst_rtsp_message_add_header (request, GST_RTSP_HDR_CLIENT_ID,
-          "Linux_2.4_6.0.9.1235_play32_RN01_EN_586");
-      gst_rtsp_message_add_header (request, GST_RTSP_HDR_MAX_ASM_WIDTH, "1");
-      gst_rtsp_message_add_header (request, GST_RTSP_HDR_LANGUAGE, "en-US");
+      if (ctx->isreal) {
+        gst_rtsp_message_add_header (request, GST_RTSP_HDR_BANDWIDTH,
+            DEFAULT_BANDWIDTH);
+        gst_rtsp_message_add_header (request, GST_RTSP_HDR_GUID,
+            "00000000-0000-0000-0000-000000000000");
+        gst_rtsp_message_add_header (request, GST_RTSP_HDR_REGION_DATA, "0");
+        gst_rtsp_message_add_header (request, GST_RTSP_HDR_CLIENT_ID,
+            "Linux_2.4_6.0.9.1235_play32_RN01_EN_586");
+        gst_rtsp_message_add_header (request, GST_RTSP_HDR_MAX_ASM_WIDTH, "1");
+        gst_rtsp_message_add_header (request, GST_RTSP_HDR_LANGUAGE, "en-US");
+        gst_rtsp_message_add_header (request, GST_RTSP_HDR_REQUIRE,
+            "com.real.retain-entity-for-setup");
+      }
       break;
     }
     case GST_RTSP_SETUP:
@@ -136,6 +140,7 @@ rtsp_ext_real_before_send (GstRTSPExtension * ext, GstRTSPMessage * request)
             g_strdup_printf ("%s, sd=%s", ctx->challenge2, ctx->checksum);
         gst_rtsp_message_add_header (request, GST_RTSP_HDR_REAL_CHALLENGE2,
             value);
+        gst_rtsp_message_add_header (request, GST_RTSP_HDR_IF_MATCH, ctx->etag);
         g_free (value);
       }
       break;
@@ -167,6 +172,22 @@ rtsp_ext_real_after_send (GstRTSPExtension * ext, GstRTSPMessage * req,
 
       gst_rtsp_ext_real_calc_response_and_checksum (ctx->challenge2,
           ctx->checksum, challenge1);
+
+      GST_DEBUG_OBJECT (ctx, "Found Real challenge tag");
+      ctx->isreal = TRUE;
+      break;
+    }
+    case GST_RTSP_DESCRIBE:
+    {
+      gchar *etag = NULL;
+      guint len;
+
+      gst_rtsp_message_get_header (resp, GST_RTSP_HDR_ETAG, &etag, 0);
+      if (etag) {
+        len = sizeof (ctx->etag);
+        strncpy (ctx->etag, etag, len);
+        ctx->etag[len - 1] = '\0';
+      }
       break;
     }
     default:
@@ -360,6 +381,9 @@ rtsp_ext_real_parse_sdp (GstRTSPExtension * ext, GstSDPMessage * sdp,
     gint sel, j, n;
 
     media = gst_sdp_message_get_media (sdp, i);
+
+    if (media->media && !strcmp (media->media, "data"))
+      continue;
 
     stream = g_new0 (GstRTSPRealStream, 1);
     ctx->streams = g_list_append (ctx->streams, stream);
@@ -641,11 +665,6 @@ reset:
   }
 }
 
-static void gst_rtsp_real_finalize (GObject * object);
-
-static GstStateChangeReturn gst_rtsp_real_change_state (GstElement * element,
-    GstStateChange transition);
-
 static void gst_rtsp_real_extension_init (gpointer g_iface,
     gpointer iface_data);
 
@@ -676,19 +695,6 @@ gst_rtsp_real_base_init (gpointer klass)
 static void
 gst_rtsp_real_class_init (GstRTSPRealClass * g_class)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
-  GstRTSPRealClass *klass;
-
-  klass = (GstRTSPRealClass *) g_class;
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
-
-  gobject_class->finalize = gst_rtsp_real_finalize;
-
-  gstelement_class->change_state =
-      GST_DEBUG_FUNCPTR (gst_rtsp_real_change_state);
-
   GST_DEBUG_CATEGORY_INIT (rtspreal_debug, "rtspreal", 0,
       "RealMedia RTSP extension");
 }
@@ -697,29 +703,6 @@ static void
 gst_rtsp_real_init (GstRTSPReal * rtspreal, GstRTSPRealClass * klass)
 {
   rtspreal->isreal = FALSE;
-}
-
-static void
-gst_rtsp_real_finalize (GObject * object)
-{
-  GstRTSPReal *rtspreal;
-
-  rtspreal = GST_RTSP_REAL (object);
-
-  G_OBJECT_CLASS (parent_class)->finalize (object);
-}
-
-static GstStateChangeReturn
-gst_rtsp_real_change_state (GstElement * element, GstStateChange transition)
-{
-  GstStateChangeReturn ret;
-  GstRTSPReal *rtspreal;
-
-  rtspreal = GST_RTSP_REAL (element);
-
-  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
-
-  return ret;
 }
 
 static void

@@ -12,14 +12,16 @@ GObject
       GstMpeg2dec
       GstA52Dec
       GstMad
-      GstID3TagBase
-        GstID3Tag
       GstBaseSrc
         GstPushSrc
           GstCddaBaseSrc
             GstCdioCddaSrc
           GstDvdReadSrc
+          GstPNMSrc
       GstSidDec
+      GstTwoLame
+      GstX264Enc
+      GstLameMP3Enc
       GstLame
       GstRMDemux
       GstRealAudioDemux
@@ -37,8 +39,12 @@ GObject
       GstMPEGAudioParse
       GstASFDemux
       GstRTSPWMS
+      GstBaseRTPDepayload
+        GstRtpAsfDepay
+      GstSynaesthesia
     GstBus
     GstTask
+    GstTaskPool
     GstClock
     GstPlugin
     GstRegistry
@@ -47,5 +53,6 @@ GInterface
   GTypePlugin
   GstChildProxy
   GstURIHandler
+  GstPreset
   GstTagSetter
   GstRTSPExtension

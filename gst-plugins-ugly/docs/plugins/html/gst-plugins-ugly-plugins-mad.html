@@ -6,9 +6,9 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Ugly Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-ugly Elements">
-<link rel="prev" href="gst-plugins-ugly-plugins-lame.html" title="lame">
+<link rel="prev" href="gst-plugins-ugly-plugins-lamemp3enc.html" title="lamemp3enc">
 <link rel="next" href="gst-plugins-ugly-plugins-rademux.html" title="rademux">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-ugly Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-ugly Plugins">
@@ -16,19 +16,21 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-ugly-plugins-lame.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-ugly-plugins-lamemp3enc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Ugly Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-ugly-plugins-rademux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-ugly-plugins-mad.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-ugly-plugins-mad.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-ugly-plugins-mad.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-ugly-plugins-mad.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-ugly-plugins-mad.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-mad.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-mad.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-mad.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-ugly-plugins-mad"></a><div class="titlepage"></div>
@@ -48,17 +50,27 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-ugly-plugins-mad.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
-   +----GstObject
-         +----GstElement
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
                +----GstMad
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-ugly-plugins-mad.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-ugly-plugins-mad.html#GstMad--half" title='The "half" property'>half</a>"                     gboolean              : Read / Write
-  "<a class="link" href="gst-plugins-ugly-plugins-mad.html#GstMad--ignore-crc" title='The "ignore-crc" property'>ignore-crc</a>"               gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-mad.html#GstMad--half" title='The "half" property'>half</a>"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-mad.html#GstMad--ignore-crc" title='The "ignore-crc" property'>ignore-crc</a>"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -69,7 +81,7 @@ MP3 audio decoder.
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2567323"></a><h3>Example pipelines</h3>
+<a name="id2979372"></a><h3>Example pipelines</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch filesrc location=music.mp3 ! mad ! audioconvert ! audioresample ! autoaudiosink
 </pre></div> Decode the mp3 file and play
@@ -77,7 +89,7 @@ gst-launch filesrc location=music.mp3 ! mad ! audioconvert ! audioresample ! aut
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2498214"></a><h3>Element Information</h3>
+<a name="id2977057"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -100,7 +112,7 @@ gst-launch filesrc location=music.mp3 ! mad ! audioconvert ! audioresample ! aut
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2575628"></a><h3>Element Pads</h3>
+<a name="id2980227"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -146,7 +158,6 @@ gst-launch filesrc location=music.mp3 ! mad ! audioconvert ! audioresample ! aut
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -155,7 +166,6 @@ gst-launch filesrc location=music.mp3 ! mad ! audioconvert ! audioresample ! aut
 <a name="GstMad-struct"></a><h3>GstMad</h3>
 <pre class="programlisting">typedef struct _GstMad GstMad;</pre>
 <p>
-
 </p>
 </div>
 </div>
@@ -163,14 +173,18 @@ gst-launch filesrc location=music.mp3 ! mad ! audioconvert ! audioresample ! aut
 <a name="gst-plugins-ugly-plugins-mad.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstMad--half"></a><h3>The <code class="literal">"half"</code> property</h3>
-<pre class="programlisting">  "half"                     gboolean              : Read / Write</pre>
+<pre class="programlisting">  "half"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Generate PCM at 1/2 sample rate.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstMad--ignore-crc"></a><h3>The <code class="literal">"ignore-crc"</code> property</h3>
-<pre class="programlisting">  "ignore-crc"               gboolean              : Read / Write</pre>
+<pre class="programlisting">  "ignore-crc"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Ignore CRC errors.</p>
 <p>Default value: TRUE</p>
 </div>
@@ -182,6 +196,6 @@ lame
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

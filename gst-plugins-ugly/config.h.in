@@ -1,5 +1,8 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define if building universal (internal helper macro) */
+#undef AC_APPLE_UNIVERSAL_BUILD
+
 /* Default audio sink */
 #undef DEFAULT_AUDIOSINK
 
@@ -43,11 +46,22 @@
 /* Define to enable a52dec (used by a52dec). */
 #undef HAVE_A52DEC
 
-/* Define to enable AMR-NB (used by amrnb). */
+/* Define to enable amrnb library (used by amrnb). */
 #undef HAVE_AMRNB
+
+/* Define to enable amrwb library (used by amrwbdec). */
+#undef HAVE_AMRWB
 
 /* Define to enable cdio library (used by cdio). */
 #undef HAVE_CDIO
+
+/* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
+   CoreFoundation framework. */
+#undef HAVE_CFLOCALECOPYCURRENT
+
+/* Define to 1 if you have the MacOS X function CFPreferencesCopyAppValue in
+   the CoreFoundation framework. */
+#undef HAVE_CFPREFERENCESCOPYAPPVALUE
 
 /* Define if the host CPU is an Alpha */
 #undef HAVE_CPU_ALPHA
@@ -101,9 +115,6 @@
 /* define for working do while(0) macros */
 #undef HAVE_DOWHILE_MACROS
 
-/* Define to enable dvdnav library (used by dvdnav). */
-#undef HAVE_DVDNAV
-
 /* Define to enable dvdread library (used by dvdreadsrc). */
 #undef HAVE_DVDREAD
 
@@ -122,21 +133,14 @@
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #undef HAVE_GETTEXT
 
-/* Define if you have the iconv() function. */
+/* Define if you have the iconv() function and it works. */
 #undef HAVE_ICONV
-
-/* Define to enable id3tag reading and writing from the MAD project (used by
-   id3tag). */
-#undef HAVE_ID3TAG
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
 /* Define to enable lame mp3 encoder library (used by lame). */
 #undef HAVE_LAME
-
-/* Define to enable liboil usage in some plugins. */
-#undef HAVE_LIBOIL
 
 /* Define to enable mad mp3 decoder (used by mad). */
 #undef HAVE_MAD
@@ -177,6 +181,9 @@
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
 
+/* Define to enable twolame (used by twolame). */
+#undef HAVE_TWOLAME
+
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
@@ -185,6 +192,9 @@
 
 /* Define to 1 if you have the <winsock2.h> header file. */
 #undef HAVE_WINSOCK2_H
+
+/* Define to enable x264 plug-in (used by x264). */
+#undef HAVE_X264
 
 /* the host CPU */
 #undef HOST_CPU
@@ -220,19 +230,19 @@
 /* directory where plugins are located */
 #undef PLUGINDIR
 
-/* The size of a `char', as computed by sizeof. */
+/* The size of `char', as computed by sizeof. */
 #undef SIZEOF_CHAR
 
-/* The size of a `int', as computed by sizeof. */
+/* The size of `int', as computed by sizeof. */
 #undef SIZEOF_INT
 
-/* The size of a `long', as computed by sizeof. */
+/* The size of `long', as computed by sizeof. */
 #undef SIZEOF_LONG
 
-/* The size of a `short', as computed by sizeof. */
+/* The size of `short', as computed by sizeof. */
 #undef SIZEOF_SHORT
 
-/* The size of a `void*', as computed by sizeof. */
+/* The size of `void*', as computed by sizeof. */
 #undef SIZEOF_VOIDP
 
 /* Define to 1 if you have the ANSI C header files. */
@@ -241,6 +251,14 @@
 /* Version number of package */
 #undef VERSION
 
-/* Define to 1 if your processor stores words with the most significant byte
-   first (like Motorola and SPARC, unlike Intel and VAX). */
-#undef WORDS_BIGENDIAN
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel). */
+#if defined AC_APPLE_UNIVERSAL_BUILD
+# if defined __BIG_ENDIAN__
+#  define WORDS_BIGENDIAN 1
+# endif
+#else
+# ifndef WORDS_BIGENDIAN
+#  undef WORDS_BIGENDIAN
+# endif
+#endif

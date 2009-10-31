@@ -84,7 +84,7 @@ class Object:
         if not overwrite and self._args.has_key(arg.name):
             raise IndexError, "arg %s already in %r" % (arg.name, self)
         self._args[arg.name] = arg
-        
+
 class Docable:
     def __init__(self, **kwargs):
         for key in self.attrs:

@@ -7,7 +7,7 @@ GST_DOC_SCANOBJ = $(top_srcdir)/common/gstdoc-scangobj
 MODULE=gst-plugins-ugly
 DOC_MODULE=$(MODULE)-plugins
 
-# for upload.mak
+# for upload-doc.mak
 DOC=$(MODULE)-plugins
 FORMATS=html
 html: html-build.stamp
@@ -86,11 +86,14 @@ EXTRA_HFILES = \
 	$(top_srcdir)/ext/a52dec/gsta52dec.h \
 	$(top_srcdir)/ext/amrnb/amrnbdec.h \
 	$(top_srcdir)/ext/amrnb/amrnbenc.h \
-	$(top_srcdir)/ext/amrnb/amrnbparse.h \
+	$(top_srcdir)/ext/amrwbdec/amrwbdec.h \
 	$(top_srcdir)/ext/cdio/gstcdiocddasrc.h \
 	$(top_srcdir)/ext/lame/gstlame.h \
+	$(top_srcdir)/ext/lame/gstlamemp3enc.h \
 	$(top_srcdir)/ext/mad/gstmad.h \
 	$(top_srcdir)/ext/sidplay/gstsiddec.h \
+	$(top_srcdir)/ext/twolame/gsttwolame.h \
+	$(top_srcdir)/ext/x264/gstx264enc.h \
 	$(top_srcdir)/gst/asfdemux/gstrtspwms.h \
 	$(top_srcdir)/gst/mpegaudioparse/gstxingmux.h \
 	$(top_srcdir)/gst/realmedia/rademux.h \
@@ -112,8 +115,8 @@ extra_files =
 GTKDOC_CFLAGS = $(GST_BASE_CFLAGS) -I$(top_builddir)
 GTKDOC_LIBS = $(SCANOBJ_DEPS) $(GST_BASE_LIBS)
 
-GTKDOC_CC=$(LIBTOOL) --mode=compile $(CC)
-GTKDOC_LD=$(LIBTOOL) --mode=link $(CC)
+GTKDOC_CC=$(LIBTOOL) --tag=CC --mode=compile $(CC)
+GTKDOC_LD=$(LIBTOOL) --tag=CC --mode=link $(CC)
 
 # If you need to override some of the declarations, place them in this file
 # and uncomment this line.

@@ -5,14 +5,14 @@ dnl please read gstreamer/docs/random/autotools before changing this file
 dnl initialize autoconf
 dnl releases only do -Wall, cvs and prerelease does -Werror too
 dnl use a three digit version number for releases, and four for cvs/prerelease
-AC_INIT(GStreamer Ugly Plug-ins, 0.10.10,
+AC_INIT(GStreamer Ugly Plug-ins, 0.10.13,
     http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer,
     gst-plugins-ugly)
 
 AG_GST_INIT
 
 dnl initialize automake
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([-Wno-portability])
 
 dnl define PACKAGE_VERSION_* variables
 AS_VERSION
@@ -47,8 +47,8 @@ AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 
 dnl *** required versions of GStreamer stuff ***
-GST_REQ=0.10.20
-GSTPB_REQ=0.10.14
+GST_REQ=0.10.25
+GSTPB_REQ=0.10.25
 
 dnl *** autotools stuff ****
 
@@ -60,7 +60,7 @@ AC_SUBST(ACLOCAL_AMFLAGS, "-I m4 -I common/m4")
 
 dnl set up gettext
 dnl the version check needs to stay here because autopoint greps for it
-AM_GNU_GETTEXT_VERSION(0.11.5)
+AM_GNU_GETTEXT_VERSION(0.17)
 AM_GNU_GETTEXT([external])
 AG_GST_GETTEXT([gst-plugins-ugly-$GST_MAJORMINOR])
 
@@ -148,15 +148,11 @@ dnl *** checks for dependency libraries ***
 dnl GLib is required
 AG_GST_GLIB_CHECK([2.12])
 
-dnl liboil is optional, but must be > 0.3.14 if present and enabled
-translit(dnm, m, l) AM_CONDITIONAL(USE_LIBOIL, true)
-AG_GST_CHECK_FEATURE(LIBOIL, [liboil usage in some plugins],, [
-  PKG_CHECK_MODULES(LIBOIL, liboil-0.3 >= 0.3.14, HAVE_LIBOIL=yes, HAVE_LIBOIL=no)
-  if test "x$HAVE_LIBOIL" = "xyes"; then
-    AC_DEFINE_UNQUOTED(HAVE_LIBOIL, 1, [defined if liboil is present])
-  fi
-])
-
+dnl liboil is required
+PKG_CHECK_MODULES(LIBOIL, liboil-0.3 >= 0.3.8, HAVE_LIBOIL=yes, HAVE_LIBOIL=no)
+if test "x$HAVE_LIBOIL" != "xyes"; then
+  AC_ERROR([liboil-0.3.8 or later is required])
+fi
 
 dnl checks for gstreamer
 dnl uninstalled is selected preferentially -- see pkg-config(1)
@@ -235,14 +231,30 @@ AG_GST_CHECK_FEATURE(A52DEC, [a52dec], a52dec, [
   AC_CHECK_A52DEC(HAVE_A52DEC=yes, HAVE_A52DEC=no)
 ])
 
-dnl *** AMR-NB ***
+dnl *** amr-nb ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_AMRNB, true)
-AG_GST_CHECK_FEATURE(AMRNB, [AMR-NB], amrnb, [
-  AG_GST_CHECK_LIBHEADER(AMRNB, amrnb,
-		      Decoder_Interface_init, -lm,
-		      amrnb/interf_dec.h,
-		      AMRNB_LIBS="-lamrnb -lm"
-		      AC_SUBST(AMRNB_LIBS))
+AG_GST_CHECK_FEATURE(AMRNB, [amrnb library], amrnb, [
+  PKG_CHECK_MODULES(AMRNB, opencore-amrnb, HAVE_AMRNB="yes",
+      [ AG_GST_CHECK_LIBHEADER(AMRNB, opencore-amrnb,
+		           Decoder_Interface_init, -lm,
+		           opencore-amrnb/interf_dec.h,
+			   AMRNB_LIBS="-lopencore-amrnb")
+      ])
+  AC_SUBST(AMRNB_CFLAGS)
+  AC_SUBST(AMRNB_LIBS)
+])
+
+dnl *** amr-wb dec ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_AMRWB, true)
+AG_GST_CHECK_FEATURE(AMRWB, [amrwb library], amrwbdec, [
+  PKG_CHECK_MODULES(AMRWB, opencore-amrwb, HAVE_AMRWB="yes",
+      [ AG_GST_CHECK_LIBHEADER(AMRWB, opencore-amrwb,
+			   D_IF_decode, ,
+			   opencore-amrwb/dec_if.h,
+			   AMRWB_LIBS="-lopencore-amrwb")
+      ])
+  AC_SUBST(AMRWB_CFLAGS)
+  AC_SUBST(AMRWB_LIBS)
 ])
 
 dnl *** cdio ***
@@ -258,42 +270,6 @@ AG_GST_CHECK_FEATURE(DVDREAD, [dvdread library], dvdreadsrc, [
   AC_SUBST(DVDREAD_LIBS)
 ])
 
-dnl *** dvdnav ***
-translit(dnm, m, l) AM_CONDITIONAL(USE_DVDNAV, true)
-AG_GST_CHECK_FEATURE(DVDNAV, [dvdnav library], dvdnav, [
-  translit(dnm, m, l) AC_SUBST(DVDNAV_LIBS)
-  translit(dnm, m, l) AC_SUBST(DVDNAV_CFLAGS)
-  AG_GST_CHECK_CONFIGPROG(DVDNAV, dvdnav-config)
-  if test x"$HAVE_DVDNAV" = x"yes"; then
-    dnl check version
-    DVDNAV_VERSION=`dvdnav-config --version|head -n 1|sed 's/^.*) //'|sed 's/ (.*)//'`
-    DVDNAV_MAJOR=`echo $DVDNAV_VERSION | cut -d. -f1 | sed s/[a-zA-Z\-].*//g`
-    DVDNAV_MINOR=`echo $DVDNAV_VERSION | cut -d. -f2 | sed s/[a-zA-Z\-].*//g`
-    DVDNAV_MICRO=`echo $DVDNAV_VERSION | cut -d. -f3 | sed s/[a-zA-Z\-].*//g`
-    if [[ "$DVDNAV_MAJOR" -eq "0" ]] && \
-       [[ "$DVDNAV_MINOR" -lt "1" ]]; then
-      AC_MSG_WARN([libdvdnav >= 0.1.7 is required, you have $DVDNAV_VERSION])
-      HAVE_DVDNAV="no"
-    elif [[ "$DVDNAV_MAJOR" -eq "0" ]] && \
-         [[ "$DVDNAV_MINOR" -eq "1" ]] && \
-         [[ "$DVDNAV_MICRO" -lt "7" ]]; then
-      AC_MSG_WARN([libdvdnav >= 0.1.7 is required, you have $DVDNAV_VERSION])
-      HAVE_DVDNAV="no"
-    fi
-  fi
-  dnl now check for dvdread/nav_print.h - see #133002
-  AC_CHECK_HEADER(dvdread/nav_print.h, , [
-      AC_MSG_WARN([header dvdread/nav_print.h from dvdread missing])
-      HAVE_DVDNAV="no"
-  ])
-  AS_SCRUB_INCLUDE(DVDNAV_CFLAGS)
-
-  dnl disabled until plugin is fully functional
-  HAVE_DVDNAV=no
-], disabled, , [
-  AC_MSG_NOTICE([dvdnavsrc not stable yet, not building])
-])
-
 dnl *** lame ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_LAME, true)
 AG_GST_CHECK_FEATURE(LAME, [lame mp3 encoder library], lame, [
@@ -307,15 +283,21 @@ AG_GST_CHECK_FEATURE(LAME, [lame mp3 encoder library], lame, [
       [LAME_CFLAGS="-DGSTLAME_PRESET"],
       [LAME_CFLAGS=""]
     )
+    AC_TRY_COMPILE([#include <lame/lame.h>], [
+        void *ptr = &lame_set_VBR_quality
+      ],
+      [LAME_CFLAGS="$LAME_CFLAGS -DHAVE_LAME_SET_VBR_QUALITY"],
+      [LAME_CFLAGS="$LAME_CFLAGS"]
+    )
   AC_SUBST(LAME_CFLAGS)
   AC_SUBST(LAME_LIBS)
   ])
 ])
 
-dnl *** id3tag from the MAD project ***
-translit(dnm, m, l) AM_CONDITIONAL(USE_ID3TAG, true)
-AG_GST_CHECK_FEATURE(ID3TAG, [id3tag reading and writing from the MAD project],
-  id3tag, [
+dnl *** mad ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_MAD, true)
+AG_GST_CHECK_FEATURE(MAD, [mad mp3 decoder], mad, [
+
   dnl check with pkg-config first
   AG_GST_PKG_CHECK_MODULES(ID3TAG, id3tag >= 0.15)
   if test "x$HAVE_ID3TAG" = "xno"; then
@@ -329,21 +311,18 @@ AG_GST_CHECK_FEATURE(ID3TAG, [id3tag reading and writing from the MAD project],
       AC_SUBST(ID3TAG_LIBS)
     ])
   fi
-])
 
-dnl *** mad ***
-translit(dnm, m, l) AM_CONDITIONAL(USE_MAD, true)
-AG_GST_CHECK_FEATURE(MAD, [mad mp3 decoder], mad, [
   if test "x$HAVE_ID3TAG" = "xyes"; then
     dnl check with pkg-config first
-    AG_GST_PKG_CHECK_MODULES(MAD, mad >= 0.15 id3tag >= 0.15)
+    AG_GST_PKG_CHECK_MODULES(MAD, mad >= 0.15)
+    MAD_LIBS="$MAD_LIBS $ID3TAG_LIBS"
     if test "x$HAVE_MAD" = "xno"; then
       dnl fall back to oldskool detection
       AC_CHECK_HEADER(mad.h, [
         AC_CHECK_LIB(mad, mad_decoder_finish,
           HAVE_MAD="yes" MAD_LIBS="-lmad $ID3TAG_LIBS")
       ])
-    fi    
+    fi
   else
     HAVE_MAD="no"
     AC_MSG_WARN([libid3tag not available, cannot build MAD MP3 decoder plugin])
@@ -363,6 +342,41 @@ AG_GST_CHECK_FEATURE(SIDPLAY, [libsidplay], sid, [
   GST_PATH_SIDPLAY()
 ])
 
+dnl *** twolame ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_TWOLAME, true)
+AG_GST_CHECK_FEATURE(TWOLAME, [twolame], twolame, [
+  PKG_CHECK_MODULES(TWOLAME, twolame >= 0.3.10, [
+      HAVE_TWOLAME="yes"], [
+      HAVE_TWOLAME="no"
+      AC_MSG_RESULT(no)
+  ])
+  AC_SUBST(TWOLAME_CFLAGS)
+  AC_SUBST(TWOLAME_LIBS)
+])
+
+dnl *** x264 (MPEG-4 part 10/h.264/AVC encoder) ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_X264, true)
+AG_GST_CHECK_FEATURE(X264, [x264 plug-in], x264, [
+  AG_GST_CHECK_LIBHEADER(X264, x264, x264_encoder_encode, -lm, x264.h,
+      AC_MSG_CHECKING([for uptodate x264 API version])
+      dnl _stdint not yet generated, so no compiling
+      AC_TRY_CPP([
+        #include <x264.h>
+        #if X264_BUILD < 55
+        #error "x264 build too old"
+        #endif
+      ], [
+        AC_MSG_RESULT(yes)
+        X264_LIBS="$LDFLAGS -lx264 -lm"
+        X264_CFLAGS="$CFLAGS"
+        AC_SUBST(X264_LIBS)
+        AC_SUBST(X264_CFLAGS)
+      ], [
+        AC_MSG_RESULT(no)
+        HAVE_X264=no
+      ]))
+])
+
 else
 
 dnl not building plugins with external dependencies,
@@ -370,14 +384,15 @@ dnl but we still need to set the conditionals
 
 AM_CONDITIONAL(USE_A52DEC, false)
 AM_CONDITIONAL(USE_AMRNB, false)
+AM_CONDITIONAL(USE_AMRWB, false)
 AM_CONDITIONAL(USE_CDIO, false)
 AM_CONDITIONAL(USE_DVDREAD, false)
-AM_CONDITIONAL(USE_DVDNAV, false)
 AM_CONDITIONAL(USE_LAME, false)
-AM_CONDITIONAL(USE_ID3TAG, false)
 AM_CONDITIONAL(USE_MAD, false)
 AM_CONDITIONAL(USE_MPEG2DEC, false)
 AM_CONDITIONAL(USE_SIDPLAY, false)
+AM_CONDITIONAL(USE_TWOLAME, false)
+AM_CONDITIONAL(USE_X264, false)
 
 fi dnl of EXT plugins
 
@@ -432,10 +447,16 @@ dnl whatevertarget_LIBS and -L flags here affect the rest of the linking
 GST_PLUGIN_LDFLAGS="-module -avoid-version -export-symbols-regex '^[_]*gst_plugin_desc\$\$' $GST_ALL_LDFLAGS"
 AC_SUBST(GST_PLUGIN_LDFLAGS)
 
+SHAVE_INIT([common],[enable])
+
 dnl *** output files ***
 
 AC_CONFIG_FILES(
 Makefile
+common/Makefile
+common/m4/Makefile
+common/shave
+common/shave-libtool
 gst-libs/Makefile
 gst-libs/gst/Makefile
 gst/Makefile
@@ -450,20 +471,20 @@ gst/synaesthesia/Makefile
 ext/Makefile
 ext/a52dec/Makefile
 ext/amrnb/Makefile
+ext/amrwbdec/Makefile
 ext/cdio/Makefile
-ext/dvdnav/Makefile
 ext/dvdread/Makefile
 ext/lame/Makefile
 ext/mad/Makefile
 ext/mpeg2dec/Makefile
 ext/sidplay/Makefile
+ext/twolame/Makefile
+ext/x264/Makefile
 docs/Makefile
 docs/plugins/Makefile
 docs/version.entities
 tests/Makefile
 tests/check/Makefile
-common/Makefile
-common/m4/Makefile
 m4/Makefile
 po/Makefile.in
 win32/common/config.h

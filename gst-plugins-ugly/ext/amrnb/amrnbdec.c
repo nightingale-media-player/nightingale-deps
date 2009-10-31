@@ -19,15 +19,15 @@
 
 /**
  * SECTION:element-amrnbdec
- * @see_also: #GstAmrnbEnc, #GstAmrnbParse
+ * @see_also: #GstAmrnbEnc, #GstAmrParse
  *
  * AMR narrowband decoder based on the 
- * <ulink url="http://www.penguin.cz/~utx/amr">reference codec implementation</ulink>.
+ * <ulink url="http://sourceforge.net/projects/opencore-amr">opencore codec implementation</ulink>.
  * 
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch filesrc location=abc.amr ! amrnbparse ! amrnbdec ! audioresample ! audioconvert ! alsasink
+ * gst-launch filesrc location=abc.amr ! amrparse ! amrnbdec ! audioresample ! audioconvert ! alsasink
  * ]|
  * </refsect2>
  */
@@ -61,6 +61,7 @@ GST_DEBUG_CATEGORY_STATIC (gst_amrnbdec_debug);
 static const gint block_size_if1[16] = { 12, 13, 15, 17, 19, 20, 26, 31, 5,
   0, 0, 0, 0, 0, 0, 0
 };
+
 static const gint block_size_if2[16] = { 12, 13, 15, 17, 18, 20, 25, 30, 5,
   0, 0, 0, 0, 0, 0, 0
 };
@@ -116,7 +117,7 @@ gst_amrnbdec_base_init (gpointer klass)
   GstElementDetails details = GST_ELEMENT_DETAILS ("AMR-NB audio decoder",
       "Codec/Decoder/Audio",
       "Adaptive Multi-Rate Narrow-Band audio decoder",
-      "Ronald Bultje <rbultje@ronald.bitfreak.net>");
+      "GStreamer maintainers <gstreamer-devel@lists.sourceforge.net>");
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sink_template));

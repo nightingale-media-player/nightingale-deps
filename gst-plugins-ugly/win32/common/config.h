@@ -42,7 +42,7 @@
 #undef HAVE_CPU_HPPA
 
 /* Define if the host CPU is an x86 */
-#undef HAVE_CPU_I386
+#define HAVE_CPU_I386 1
 
 /* Define if the host CPU is a IA64 */
 #undef HAVE_CPU_IA64
@@ -55,6 +55,9 @@
 
 /* Define if the host CPU is a PowerPC */
 #undef HAVE_CPU_PPC
+
+/* Define if the host CPU is a 64 bit PowerPC */
+#undef HAVE_CPU_PPC64
 
 /* Define if the host CPU is a S390 */
 #undef HAVE_CPU_S390
@@ -193,13 +196,13 @@
 #undef PACKAGE_NAME "GStreamer Ugly Plug-ins"
 
 /* Define to the full name and version of this package. */
-#undef PACKAGE_STRING "GStreamer Ugly Plug-ins 0.10.10"
+#undef PACKAGE_STRING "GStreamer Ugly Plug-ins 0.10.13"
 
 /* Define to the one symbol short name of this package. */
 #undef PACKAGE_TARNAME "gst-plugins-ugly"
 
 /* Define to the version of this package. */
-#undef PACKAGE_VERSION "0.10.10"
+#undef PACKAGE_VERSION "0.10.13"
 
 /* directory where plugins are located */
 #undef PLUGINDIR
@@ -223,7 +226,7 @@
 #undef STDC_HEADERS
 
 /* Version number of package */
-#define VERSION "0.10.10"
+#define VERSION "0.10.13"
 
 /* Define to 1 if your processor stores words with the most significant byte
    first (like Motorola and SPARC, unlike Intel and VAX). */
@@ -231,9 +234,3 @@
 
 /* Define to 1 if the X Window System is missing or not being used. */
 #undef X_DISPLAY_MISSING
-
-/* Define to `__inline__' or `__inline' if that's what the C compiler
-   calls it, or to nothing if 'inline' is not supported under any name.  */
-#ifndef __cplusplus
-#undef inline
-#endif

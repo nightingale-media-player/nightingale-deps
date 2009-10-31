@@ -782,17 +782,18 @@ gst_mpeg_parse_chain (GstPad * pad, GstBuffer * buffer)
     /* Make sure the output pad has proper capabilities. */
     if (!GST_PAD_CAPS (mpeg_parse->sinkpad)) {
       gboolean mpeg2 = GST_MPEG_PACKETIZE_IS_MPEG2 (mpeg_parse->packetize);
-
-      if (!gst_pad_set_caps (mpeg_parse->sinkpad,
-              gst_caps_new_simple ("video/mpeg",
-                  "mpegversion", G_TYPE_INT, (mpeg2 ? 2 : 1),
-                  "systemstream", G_TYPE_BOOLEAN, TRUE,
-                  "parsed", G_TYPE_BOOLEAN, TRUE, NULL)) < 0) {
+      GstCaps *caps = gst_caps_new_simple ("video/mpeg",
+          "mpegversion", G_TYPE_INT, (mpeg2 ? 2 : 1),
+          "systemstream", G_TYPE_BOOLEAN, TRUE,
+          "parsed", G_TYPE_BOOLEAN, TRUE, NULL);
+      if (!gst_pad_set_caps (mpeg_parse->sinkpad, caps) < 0) {
         GST_ELEMENT_ERROR (mpeg_parse, CORE, NEGOTIATION, (NULL), (NULL));
         gst_buffer_unref (buffer);
         result = GST_FLOW_ERROR;
+        gst_caps_unref (caps);
         break;
       }
+      gst_caps_unref (caps);
     }
 
     /* Send the buffer. */
@@ -1029,7 +1030,6 @@ gst_mpeg_parse_handle_src_query (GstPad * pad, GstQuery * query)
           src_format = GST_FORMAT_TIME;
           if (gst_pad_query_peer_duration (mpeg_parse->sinkpad,
                   &src_format, &src_value)) {
-            res = TRUE;
             break;
           }
           /* Otherwise fallthrough */
@@ -1165,7 +1165,8 @@ normal_seek (GstMPEGParse * mpeg_parse, GstPad * pad, GstEvent * event)
       goto done;
     }
     GST_INFO_OBJECT (mpeg_parse,
-        "Finished conversion of cur, BYTES cur : %lld", start_position);
+        "Finished conversion of cur, BYTES cur : %" G_GINT64_FORMAT,
+        start_position);
   } else {
     start_position = -1;
   }
@@ -1185,7 +1186,8 @@ normal_seek (GstMPEGParse * mpeg_parse, GstPad * pad, GstEvent * event)
       goto done;
     }
     GST_INFO_OBJECT (mpeg_parse,
-        "Finished conversion of stop, BYTES stop : %lld", end_position);
+        "Finished conversion of stop, BYTES stop : %" G_GINT64_FORMAT,
+        end_position);
   } else {
     end_position = -1;
   }

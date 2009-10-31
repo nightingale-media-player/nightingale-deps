@@ -4,7 +4,7 @@ dnl autostars m4 macro for detection of gcc inline assembly
 
 dnl David Schleef <ds@schleef.org>
 
-dnl $Id: as-gcc-inline-assembly.m4,v 1.1 2008-02-26 09:38:00 thaytan Exp $
+dnl $Id$
 
 dnl AS_COMPILER_FLAG(ACTION-IF-ACCEPTED, [ACTION-IF-NOT-ACCEPTED])
 dnl Tries to compile with the given CFLAGS.

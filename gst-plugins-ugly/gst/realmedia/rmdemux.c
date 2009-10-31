@@ -29,11 +29,7 @@
 #endif
 
 #include "rmdemux.h"
-#include "rdtdepay.h"
-#include "rdtmanager.h"
-#include "rtspreal.h"
 #include "rmutils.h"
-#include "rademux.h"
 
 #include <string.h>
 #include <ctype.h>
@@ -474,7 +470,7 @@ gst_rmdemux_perform_seek (GstRMDemux * rmdemux, GstEvent * event)
 {
   gboolean validated;
   gboolean ret = TRUE;
-  gboolean flush, accurate;
+  gboolean flush;
   GstFormat format;
   gdouble rate;
   GstSeekFlags flags;
@@ -509,7 +505,6 @@ gst_rmdemux_perform_seek (GstRMDemux * rmdemux, GstEvent * event)
   GST_DEBUG_OBJECT (rmdemux, "seek, rate %g", rate);
 
   flush = flags & GST_SEEK_FLAG_FLUSH;
-  accurate = flags & GST_SEEK_FLAG_ACCURATE;
 
   /* first step is to unlock the streaming thread if it is
    * blocked in a chain call, we do this by starting the flush. */
@@ -612,7 +607,7 @@ done:
   /* streaming can continue now */
   GST_PAD_STREAM_UNLOCK (rmdemux->sinkpad);
 
-  return TRUE;
+  return ret;
 
 error:
   {
@@ -1575,7 +1570,6 @@ gst_rmdemux_parse_mdpr (GstRMDemux * rmdemux, const guint8 * data, int length)
   GST_LOG_OBJECT (rmdemux, "stream_number=%d", stream->id);
 
   offset = 30;
-  stream_type = GST_RMDEMUX_STREAM_UNKNOWN;
   stream1_type_string = gst_rm_utils_read_string8 (data + offset,
       length - offset, &str_len);
   offset += str_len;
@@ -1989,7 +1983,6 @@ gst_rmdemux_descramble_mp4a_audio (GstRMDemux * rmdemux,
   GstBuffer *buf, *outbuf;
   guint frames, index, i;
   guint8 *data;
-  guint size;
   GstClockTime timestamp;
 
   res = GST_FLOW_OK;
@@ -1999,7 +1992,6 @@ gst_rmdemux_descramble_mp4a_audio (GstRMDemux * rmdemux,
   g_ptr_array_set_size (stream->subpackets, 0);
 
   data = GST_BUFFER_DATA (buf);
-  size = GST_BUFFER_SIZE (buf);
   timestamp = GST_BUFFER_TIMESTAMP (buf);
 
   frames = (data[1] & 0xf0) >> 4;
@@ -2469,12 +2461,16 @@ gst_rmdemux_parse_audio_packet (GstRMDemux * rmdemux, GstRMDemuxStream * stream,
     }
     ret = gst_pad_push (stream->pad, buffer);
   }
+
+  gst_buffer_unref (in);
+
   return ret;
 
   /* ERRORS */
 alloc_failed:
   {
     GST_DEBUG_OBJECT (rmdemux, "pad alloc returned %d", ret);
+    gst_buffer_unref (in);
     return cret;
   }
 }
@@ -2522,19 +2518,16 @@ gst_rmdemux_parse_packet (GstRMDemux * rmdemux, GstBuffer * in, guint16 version)
   data += (2 + 4);
   size -= (2 + 4);
 
-  /* skip other stuff */
-  if (version == 0) {
-    /* uint8 packet_group */
-    /* uint8 flags        */
-    flags = GST_READ_UINT8 (data + 1);
-    data += 2;
-    size -= 2;
-  } else {
-    /* uint16 asm_rule */
-    /* uint8 asm_flags */
-    flags = GST_READ_UINT8 (data + 2);
-    data += 3;
-    size -= 3;
+  /* get flags */
+  flags = GST_READ_UINT8 (data + 1);
+
+  data += 2;
+  size -= 2;
+
+  /* version 1 has an extra byte */
+  if (version == 1) {
+    data += 1;
+    size -= 1;
   }
   key = (flags & 0x02) != 0;
   GST_DEBUG_OBJECT (rmdemux, "flags %d, Keyframe %d", flags, key);
@@ -2594,36 +2587,9 @@ unknown_stream:
   }
 }
 
-static gboolean
+gboolean
 gst_rmdemux_plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "rmdemux",
-      GST_RANK_PRIMARY, GST_TYPE_RMDEMUX) &&
-      gst_element_register (plugin, "rademux",
-      GST_RANK_SECONDARY, GST_TYPE_REAL_AUDIO_DEMUX);
+      GST_RANK_PRIMARY, GST_TYPE_RMDEMUX);
 }
-
-
-static gboolean
-plugin_init (GstPlugin * plugin)
-{
-  if (!gst_rmdemux_plugin_init (plugin))
-    return FALSE;
-
-  if (!gst_rdt_depay_plugin_init (plugin))
-    return FALSE;
-
-  if (!gst_rdt_manager_plugin_init (plugin))
-    return FALSE;
-
-  if (!gst_rtsp_real_plugin_init (plugin))
-    return FALSE;
-
-  return TRUE;
-}
-
-GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
-    GST_VERSION_MINOR,
-    "realmedia",
-    "RealMedia demuxer and depayloader",
-    plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

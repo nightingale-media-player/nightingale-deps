@@ -75,11 +75,6 @@ GST_BOILERPLATE (GstRDTDepay, gst_rdt_depay, GstElement, GST_TYPE_ELEMENT);
 
 static void gst_rdt_depay_finalize (GObject * object);
 
-static void gst_rdt_depay_set_property (GObject * object, guint prop_id,
-    const GValue * value, GParamSpec * pspec);
-static void gst_rdt_depay_get_property (GObject * object, guint prop_id,
-    GValue * value, GParamSpec * pspec);
-
 static GstStateChangeReturn gst_rdt_depay_change_state (GstElement *
     element, GstStateChange transition);
 
@@ -113,9 +108,6 @@ gst_rdt_depay_class_init (GstRDTDepayClass * klass)
   gstelement_class = (GstElementClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
-
-  gobject_class->set_property = gst_rdt_depay_set_property;
-  gobject_class->get_property = gst_rdt_depay_get_property;
 
   gobject_class->finalize = gst_rdt_depay_finalize;
 
@@ -326,6 +318,8 @@ gst_rdt_depay_handle_data (GstRDTDepay * rdtdepay, GstClockTime outtime,
   guint32 timestamp;
   gint gap;
   guint16 seqnum;
+  guint8 flags;
+  guint16 outflags;
 
   /* get pointers to the packet data */
   gst_rdt_packet_data_peek_data (packet, &data, &size);
@@ -339,11 +333,12 @@ gst_rdt_depay_handle_data (GstRDTDepay * rdtdepay, GstClockTime outtime,
   /* copy over some things */
   stream_id = gst_rdt_packet_data_get_stream_id (packet);
   timestamp = gst_rdt_packet_data_get_timestamp (packet);
+  flags = gst_rdt_packet_data_get_flags (packet);
 
   seqnum = gst_rdt_packet_data_get_seq (packet);
 
-  GST_DEBUG_OBJECT (rdtdepay, "stream_id %u, timestamp %u, seqnum %d",
-      stream_id, timestamp, seqnum);
+  GST_DEBUG_OBJECT (rdtdepay, "stream_id %u, timestamp %u, seqnum %d, flags %d",
+      stream_id, timestamp, seqnum, flags);
 
   if (rdtdepay->next_seqnum != -1) {
     gap = gst_rdt_buffer_compare_seqnum (seqnum, rdtdepay->next_seqnum);
@@ -375,11 +370,16 @@ gst_rdt_depay_handle_data (GstRDTDepay * rdtdepay, GstClockTime outtime,
   if (rdtdepay->next_seqnum == 0xff00)
     rdtdepay->next_seqnum = 0;
 
+  if ((flags & 1) == 0)
+    outflags = 2;
+  else
+    outflags = 0;
+
   GST_WRITE_UINT16_BE (outdata + 0, 0); /* version   */
   GST_WRITE_UINT16_BE (outdata + 2, size + 12); /* length    */
   GST_WRITE_UINT16_BE (outdata + 4, stream_id); /* stream    */
   GST_WRITE_UINT32_BE (outdata + 6, timestamp); /* timestamp */
-  GST_WRITE_UINT16_BE (outdata + 10, 0);        /* flags     */
+  GST_WRITE_UINT16_BE (outdata + 10, outflags); /* flags     */
   memcpy (outdata + 12, data, size);
 
   GST_DEBUG_OBJECT (rdtdepay, "Pushing packet, outtime %" GST_TIME_FORMAT,
@@ -420,7 +420,7 @@ gst_rdt_depay_chain (GstPad * pad, GstBuffer * buf)
     rdtdepay->header = NULL;
 
     /* push header data first */
-    ret = gst_rdt_depay_push (rdtdepay, out);
+    gst_rdt_depay_push (rdtdepay, out);
   }
 
   /* save timestamp */
@@ -456,36 +456,6 @@ gst_rdt_depay_chain (GstPad * pad, GstBuffer * buf)
   }
 
   return ret;
-}
-
-static void
-gst_rdt_depay_set_property (GObject * object, guint prop_id,
-    const GValue * value, GParamSpec * pspec)
-{
-  GstRDTDepay *rdtdepay;
-
-  rdtdepay = GST_RDT_DEPAY (object);
-
-  switch (prop_id) {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-      break;
-  }
-}
-
-static void
-gst_rdt_depay_get_property (GObject * object, guint prop_id,
-    GValue * value, GParamSpec * pspec)
-{
-  GstRDTDepay *rdtdepay;
-
-  rdtdepay = GST_RDT_DEPAY (object);
-
-  switch (prop_id) {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-      break;
-  }
 }
 
 static GstStateChangeReturn

@@ -1,4 +1,79 @@
-This is GStreamer Ugly Plug-ins 0.10.10 "Under the House"
+This is GStreamer Ugly Plug-ins 0.10.13 "Appointed Point"
+
+Changes since 0.10.12:
+    
+      * Improve A52 decoder
+      * Add AMR-WB decoder and AMR-NB decoder/encoder based on OpenCore codecs
+      * ASF playback improvements
+      * Improve mp3 parser and seeking
+
+Bugs fixed since 0.10.12:
+     
+      * 519721 : [asfdemux] wma tags are not copied when converting to another format
+      * 584890 : AMR plugins based on Opencore codecs
+      * 585956 : [mp3parse] indexing improvements
+      * 590432 : It's only possible to build the mad plugin when building id3tag as well
+      * 591348 : AMR plugins should check for opencore-amr .pc files
+      * 592787 : a52dec: Allow liba52 to use djbfft based IMDCT transform
+      * 596517 : x264 element no longer compiles against changed upstream API
+      * 598272 : a52dec leaks input buffers
+      * 598370 : Properly detect pre-releases
+
+Changes since 0.10.11:
+    
+      * Real and WMS RTSP improvements
+      * Other cleanups and bug fixes
+      * Improve ASF file handling
+      * Large MPEG video file support
+      * Interlacing support for MPEG video
+      * New 'lamemp3dec' mp3 encoder element
+      * x264enc moved from -bad
+      * Remove id3mux in favour of the new id3tag element in -bad
+
+Bugs fixed since 0.10.11:
+     
+      * 401173 : [asfdemux] Stream doesn't play, stuck on first frame
+      * 494528 : Simplifications of the LAME plugin
+      * 574461 : [mpeg2dec] Lower rank and make ffdec_mpeg2video PRIMARY
+      * 576305 : twolame plugin does not detet proper version
+      * 579058 : [asfdemux] proper handling of RTSP input
+      * 580803 : [PLUGIN-MOVE] Move x264enc to -ugly
+      * 580869 : dvdsubdec ARGB support
+      * 581341 : [lamemp3enc] doesn't build with LAME 3.97: implicit decla...
+      * 581756 : [id3mux] replace with something more reliable
+      * 582056 : [asfdemux] forcing an EOS on the pipeline doesn't work wi...
+      * 582375 : mpeg2dec not building in gst-plugins-ugly
+      * 583112 : [asfdemux] extract coverart (WM/Picture tag)
+      * 573720 : [mp3parse] Memory leak when playing shoutcast streams
+      * 581464 : xing data is being ignored
+      * 578524 : synaesthesia MSVC compatibility
+
+Changes since 0.10.10:
+    
+      * Migrate twolame element from -bad
+      * mp3parse improvements
+      * Support scaling in the synaesthsia visualisation
+      * Improve realmedia streaming, supporting RDT and pnm://
+      * Improved ASF demuxing, including streaming-mode seeking
+      * Support for 4:4:4 MPEG-2 video
+
+Bugs fixed since 0.10.10:
+     
+      * 571146 : [mpeg2dec] Probably uses wrong strides for 4:2:2 and 4:4:...
+      * 574461 : [mpeg2dec] Lower rank and make ffdec_mpeg2video PRIMARY
+      * 454228 : [mpegdemux] problem with mark shuttleworth clip
+      * 522699 : pnm:/something.ra streams can't be loaded in Totem from a...
+      * 527112 : [real] Can't play several real audio streams
+      * 556714 : Real Audio streams not working properly
+      * 560348 : plus7.arte.tv plays slooooowly
+      * 562065 : mpeg2dec does not handle STATE_SEQUENCE_MODIFIED from > =l...
+      * 562086 : mpeg2 stream crashes something in gstreamer
+      * 564885 : [mpegstream] memory leak
+      * 568836 : [asfdemux] add seeking support when operating in push mode
+      * 569317 : [PLUGIN-MOVE] Move twolame plugin from -bad to -ugly
+      * 575068 : [mp3parse] deadlock with accurate seeking
+      * 335067 : Need RTP ASF depayloader
+      * 571358 : [real] file playing stops immediately
 
 Changes since 0.10.9:
     

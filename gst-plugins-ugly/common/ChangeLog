@@ -1,3 +1,99 @@
+2008-12-17  Edward Hervey  <bilboed@gmail.com>
+
+	* gst.supp:
+	And yet another variation of the GstAudioFilter leak.
+
+2008-12-15  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	Patch by: Roland Illig <roland dot illig at gmx dot de>
+
+	* m4/gst-parser.m4:
+	Fix AG_GST_BISON_CHECK to handle version numbers with more than
+	two components (i.e. 2.4.1). Fixes bug #564507.
+
+2008-12-14  Edward Hervey  <bilboed@gmail.com>
+
+	* gst.supp:
+	And yet another variant of the GstAudioFilter leak.
+
+2008-12-13  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst.supp:
+	Added variants of leaks of dynamic pad templates created in
+	GstAudioFilter.
+	Add conditional jump triggered by getaddrinfo (maybe glibc-2.9).
+
+2008-12-12  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst.supp:
+	Fix leak in GIO called by gnomevfs. Nothing we can do about this.
+
+2008-12-12  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst.supp:
+	Added another suppression for dynamic pad templates, in this case
+	GstAudioFilter.
+	Added suppression for PangoLanguage which can never be freed
+	according to the Pango API.
+
+2008-12-12  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst.supp:
+	A whole bunch of suppressions detected on latest gentoo ~amd64.
+	Make some existing suppressions more generic (for subtle dependecy
+	code changes).
+	Added suppressions for glibc-2.9.
+	Added suppressions for new variants of ALSA leaks.
+	Added suppressions for a series of leaks in plugins registrations due
+	to some pad templates' caps calculated at runtime.
+	Added suppressions for variants of some leaks in pango/fontconfig.
+	Added suppressions for leak in gstffmpegcsp.c (nothing we can do
+	about it, but will only exist once).
+
+2008-12-04  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* m4/gst-plugin-docs.m4:
+	Remove the check if $have_gtk_doc equals yes as it's not defined
+	and $enable_gtk_doc should be good enough.
+	Also this restores the build of the plugin documentation.
+
+2008-12-01  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* gst.supp:
+	Add suppression variant for Ubuntu Hardy x86/64bit.
+
+2008-12-01  Stefan Kost  <ensonic@users.sf.net>
+
+	* gtk-doc-plugins.mak:
+	* gtk-doc.mak:
+	  Simplily uninstall rule. Its closer to upstream and fixes #150331.
+
+2008-11-29  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* m4/glib-gettext.m4:
+	Update glib-gettext.m4 from latest stable GLib release.
+
+2008-11-29  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	Patch by: Cygwin Ports maintainer
+	           <yselkowitz at users dot sourceforge dot net>
+
+	* gettext.patch:
+	Update the gettext patch for use with gettext 0.17 which is
+	required to build with libtool 2.2 because of conflicts.
+	First part of bug #556091.
+
+2008-11-29  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* m4/gtk-doc.m4:
+	* m4/pkg.m4:
+	Update gtk-doc and pkg-config m4 macros from their latest releases.
+
+2008-11-20  Michael Smith <msmith@songbirdnest.com>
+
+	* m4/as-objc.m4:
+	  Fix objective C test macro when none of the compilers are found at all.
+
 2008-10-30  Stefan Kost  <ensonic@users.sf.net>
 
 	* gtk-doc.mak:

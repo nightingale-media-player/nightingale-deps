@@ -4,7 +4,7 @@ dnl autostars m4 macro for libtool versioning
 
 dnl Thomas Vander Stichele <thomas at apestaart dot org>
 
-dnl $Id: as-libtool.m4,v 1.6 2004/06/01 10:04:44 thomasvs Exp $
+dnl $Id: as-libtool.m4,v 1.10 2005/10/15 13:44:23 thomasvs Exp $
 
 dnl AS_LIBTOOL(PREFIX, CURRENT, REVISION, AGE, [RELEASE])
 

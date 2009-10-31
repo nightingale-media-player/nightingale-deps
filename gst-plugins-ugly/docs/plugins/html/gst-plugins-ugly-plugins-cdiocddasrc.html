@@ -6,9 +6,9 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Ugly Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-ugly Elements">
-<link rel="prev" href="gst-plugins-ugly-plugins-amrnbparse.html" title="amrnbparse">
+<link rel="prev" href="gst-plugins-ugly-plugins-amrwbdec.html" title="amrwbdec">
 <link rel="next" href="gst-plugins-ugly-plugins-lame.html" title="lame">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-ugly Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-ugly Plugins">
@@ -16,21 +16,23 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-ugly-plugins-amrnbparse.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-ugly-plugins-amrwbdec.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Ugly Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-ugly-plugins-lame.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-ugly-plugins-cdiocddasrc.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-ugly-plugins-cdiocddasrc.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-ugly-plugins-cdiocddasrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-ugly-plugins-cdiocddasrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#gst-plugins-ugly-plugins-cdiocddasrc.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-ugly-plugins-cdiocddasrc.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-cdiocddasrc.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-cdiocddasrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-cdiocddasrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-cdiocddasrc.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-ugly-plugins-cdiocddasrc"></a><div class="titlepage"></div>
@@ -50,13 +52,23 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-ugly-plugins-cdiocddasrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
-   +----GstObject
-         +----GstElement
-               +----GstBaseSrc
-                     +----GstPushSrc
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="../gstreamer-libs-0.10/GstBaseSrc.html"
+>GstBaseSrc</a>
+                     +----<a
+href="../gstreamer-libs-0.10/GstPushSrc.html"
+>GstPushSrc</a>
                            +----<a
-href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrc"
+href="../gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrc"
 >GstCddaBaseSrc</a>
                                  +----GstCdioCddaSrc
 </pre>
@@ -65,12 +77,16 @@ href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-g
 <a name="gst-plugins-ugly-plugins-cdiocddasrc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstCdioCddaSrc implements
- GstURIHandler.</p>
+ <a
+href="../gstreamer-0.10/gstreamer-GstUriHandler.html#GstURIHandler"
+>GstURIHandler</a>.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-ugly-plugins-cdiocddasrc.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-ugly-plugins-cdiocddasrc.html#GstCdioCddaSrc--read-speed" title='The "read-speed" property'>read-speed</a>"               gint                  : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-cdiocddasrc.html#GstCdioCddaSrc--read-speed" title='The "read-speed" property'>read-speed</a>"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -78,7 +94,7 @@ GstCdioCddaSrc implements
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2570546"></a><h3>Example launch line</h3>
+<a name="id2961201"></a><h3>Example launch line</h3>
 <p>
 cdiocddasrc reads and extracts raw audio from Audio CDs. It can operate
 in one of two modes:
@@ -131,7 +147,7 @@ Ogg/Vorbis file.
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2570621"></a><h3>Element Information</h3>
+<a name="id2961276"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -154,7 +170,7 @@ Ogg/Vorbis file.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2571759"></a><h3>Element Pads</h3>
+<a name="id2954647"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -179,7 +195,6 @@ Ogg/Vorbis file.
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -188,7 +203,6 @@ Ogg/Vorbis file.
 <a name="GstCdioCddaSrc-struct"></a><h3>GstCdioCddaSrc</h3>
 <pre class="programlisting">typedef struct _GstCdioCddaSrc GstCdioCddaSrc;</pre>
 <p>
-
 </p>
 </div>
 </div>
@@ -196,7 +210,9 @@ Ogg/Vorbis file.
 <a name="gst-plugins-ugly-plugins-cdiocddasrc.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstCdioCddaSrc--read-speed"></a><h3>The <code class="literal">"read-speed"</code> property</h3>
-<pre class="programlisting">  "read-speed"               gint                  : Read / Write</pre>
+<pre class="programlisting">  "read-speed"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Read from device at the specified speed (-1 = default).</p>
 <p>Allowed values: [-1,100]</p>
 <p>Default value: -1</p>
@@ -209,6 +225,6 @@ GstCdParanoiaSrc, GstCddaBaseSrc
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

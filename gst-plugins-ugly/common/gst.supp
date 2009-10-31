@@ -33,16 +33,56 @@
 {
    <conditional jump on wim's debian 2/2/06>
    Memcheck:Cond
-   obj:/lib/ld-2.3.*.so
+   obj:/lib/ld-2.*.so
    fun:dl_open_worker
-   obj:/lib/ld-2.3.*.so
+   obj:/lib/ld-2.*.so
    fun:_dl_open
    fun:dlopen_doit
-   obj:/lib/ld-2.3.*.so
+   obj:/lib/ld-2.*.so
    fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.1
+   fun:dlopen
    fun:g_module_open
    fun:gst_plugin_load_file
+}
+
+{
+   <Conditional jump>
+   Memcheck:Cond
+   fun:strlen
+   fun:fillin_rpath
+   fun:_dl_init_paths
+   fun:dl_main
+   fun:_dl_sysdep_start
+   fun:_dl_start
+   obj:/lib64/ld-2.*.so
+   obj:*
+   obj:*
+}
+
+{
+   <Conditional jump>
+   Memcheck:Cond
+   fun:_dl_relocate_object
+   fun:dl_main
+   fun:_dl_sysdep_start
+   fun:_dl_start
+   obj:/lib64/ld-2.*.so
+   obj:*
+   obj:*
+}
+
+{
+   <insert a suppression name here>
+   Memcheck:Cond
+   fun:_dl_relocate_object
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen@@GLIBC_2.2.5
+   fun:g_module_open
 }
 
 # glibc does not deallocate thread-local storage
@@ -623,7 +663,7 @@
 # suppression for a glibc bug:
 # http://valgrind.org/docs/manual/faq.html#faq.exit_errors>
 {
-   <Workaround for a glibc bug> 
+   <Workaround for a glibc bug>
    Memcheck:Free
    fun:free
    obj:*libc-*.so
@@ -867,6 +907,75 @@
    fun:g_type_init_with_debug_flags
 }
 
+{
+   <g_type_init calloc 4>
+   Memcheck:Leak
+   fun:calloc
+   fun:g_malloc0
+   fun:*
+   fun:g_type_init_with_debug_flags
+}
+
+{
+   <g_type_init calloc 5>
+   Memcheck:Leak
+   fun:calloc
+   fun:g_malloc0
+   fun:type_node_any_new*
+   fun:g_type_register_fundamental
+}
+
+{
+   <glib 2.21 static type data>
+   Memcheck:Leak
+   fun:malloc
+   fun:realloc
+   fun:g_realloc
+   fun:type_node_any_new_W
+}
+
+{
+   <glib 2.21 static type data>
+   Memcheck:Leak
+   fun:realloc
+   fun:g_realloc
+   fun:type_node_any_new_W
+}
+
+{
+   <glib 2.21 static type data>
+   Memcheck:Leak
+   fun:calloc
+   fun:g_malloc0
+   fun:type_data_make_W
+   fun:g_type_register_fundamental
+}
+
+{
+   <glib 2.21 static type data>
+   Memcheck:Leak
+   fun:calloc
+   fun:g_malloc0
+   fun:g_type_class_ref
+}
+
+{
+   <glib 2.21 static type data>
+   Memcheck:Leak
+   fun:malloc
+   fun:realloc
+   fun:g_realloc
+   fun:type_add_flags_W
+}
+
+{
+   <glib 2.21 static type data>
+   Memcheck:Leak
+   fun:calloc
+   fun:g_malloc0
+   fun:type_add_flags_W
+}
+
 #pthread memleaks
 
 {
@@ -980,7 +1089,7 @@
 }
 
 # More edgy suppressions (Mike)
-{  
+{
    <dlopen Condition jump suppressions for Ubuntu Edgy/x86>
    Memcheck:Cond
    obj:/lib/ld-2.4.so
@@ -993,7 +1102,7 @@
    fun:dlopen@@GLIBC_2.1
 }
 
-{  
+{
    <dlopen Condition jump suppressions for Ubuntu Edgy/x86>
    Memcheck:Cond
    obj:/lib/ld-2.4.so
@@ -1008,7 +1117,7 @@
    fun:dlopen@@GLIBC_2.1
 }
 
-{  
+{
    <dlopen Condition jump suppressions for Ubuntu Edgy/x86>
    Memcheck:Cond
    obj:/lib/ld-2.4.so
@@ -1020,7 +1129,7 @@
 
 # This one's overly general, but there's zero other information in the stack
 # trace - just these five lines!
-{  
+{
    <dlopen Condition jump suppressions for Ubuntu Edgy/x86>
    Memcheck:Cond
    obj:/lib/ld-2.4.so
@@ -1635,11 +1744,11 @@
    fun:calloc
    fun:g_malloc0
    fun:ORBit_alloc_tcval
-   obj:/usr/lib/libORBit-2.so.*
+   obj:*
    fun:PortableServer_POA_servant_to_reference
-   obj:/usr/lib/libgconf-2.so.*
-   obj:/usr/lib/libgconf-2.so.*
-   obj:/usr/lib/libgconf-2.so.*
+   fun:*
+   fun:*
+   fun:*
    fun:gconf_engine_get_default
 }
 {
@@ -1658,21 +1767,21 @@
    obj:/usr/lib/libgconf-2.so.*
    obj:/usr/lib/libgconf-2.so.*
    fun:gconf_engine_get_default
-}  
+}
 {
    <gconf internal initialisation>
    Memcheck:Leak
    fun:calloc
    fun:g_malloc0
    fun:ORBit_alloc*
-   obj:/usr/lib/libORBit-2.so.*
+   fun:*
    fun:ORBit_demarshal_IOR
    fun:ORBit_demarshal_object
    fun:ORBit_demarshal_value
-   obj:/usr/lib/libORBit-2.so.*
+   fun:*
    fun:ORBit_small_invoke_stub
    fun:ConfigServer_get_default_database
-   obj:/usr/lib/libgconf-2.so.*
+   fun:*
    fun:gconf_engine_get_default
 }
 {
@@ -1681,15 +1790,15 @@
    fun:calloc
    fun:g_malloc0
    fun:ORBit_alloc*
-   obj:/usr/lib/libORBit-2.so.*
+   fun:*
    fun:IOP_generate_profiles
    fun:ORBit_marshal_object
    fun:ORBit_marshal_value
-   obj:/usr/lib/libORBit-2.so.*
+   fun:*
    fun:ORBit_small_invoke_stub
    fun:ConfigServer_add_client
-   obj:/usr/lib/libgconf-2.so.*
-   obj:/usr/lib/libgconf-2.so.*
+   fun:*
+   fun:*
    fun:gconf_engine_get_default
 }
 {
@@ -1698,11 +1807,11 @@
    fun:calloc
    fun:g_malloc0
    fun:ORBit_alloc_by_tc
-   obj:/usr/lib/libORBit-2.so.*
+   fun:*
    fun:PortableServer_POA_servant_to_reference
-   obj:/usr/lib/libgconf-2.so.*
-   obj:/usr/lib/libgconf-2.so.*
-   obj:/usr/lib/libgconf-2.so.*
+   fun:*
+   fun:*
+   fun:*
    fun:gconf_engine_get_default
 }
 {
@@ -1721,6 +1830,20 @@
    obj:/usr/lib/libgconf-2.so.*
    obj:/usr/lib/libgconf-2.so.*
    fun:gconf_engine_get_default
+}
+
+{
+   <insert a suppression name here>
+   Memcheck:Leak
+   fun:calloc
+   fun:g_malloc0
+   fun:ORBit_alloc*
+   fun:*
+   fun:ORBit_demarshal_IOR
+   fun:ORBit_demarshal_object
+   fun:*
+   fun:*
+   fun:gconf_activate_server
 }
 
 # Some libORBit/bonobo initialisation stuff
@@ -1767,7 +1890,7 @@
    fun:g_malloc0
    fun:ORBit_alloc_tcval
    fun:ORBit_adaptor_setup
-   obj:/usr/lib/libORBit-2.so*
+   fun:*
    fun:ORBit_POA_setup_root
    fun:ORBit_init_internals
    fun:CORBA_ORB_init
@@ -1784,7 +1907,7 @@
    fun:bonobo_activation_init
 }
 
-# More GConf stuff from the FC5 buildbot, mostly variations on the 
+# More GConf stuff from the FC5 buildbot, mostly variations on the
 # above stack traces
 {
    <incompletely initialised ORBit buffer>
@@ -1954,19 +2077,19 @@
    fun:FcPatternObjectAddWithBinding
    fun:FcPatternAppend
    fun:FcEndElement
-   obj:/usr/lib/libexpat.so.1.0.0
-   obj:/usr/lib/libexpat.so.1.0.0
-   obj:/usr/lib/libexpat.so.1.0.0
-   obj:/usr/lib/libexpat.so.1.0.0
+   obj:/usr/lib/libexpat.so.*
+   obj:/usr/lib/libexpat.so.*
+   obj:/usr/lib/libexpat.so.*
+   obj:/usr/lib/libexpat.so.*
    fun:XML_ParseBuffer
    fun:FcConfigParseAndLoad
    fun:FcConfigParseAndLoad
    fun:FcParseInclude
    fun:FcEndElement
-   obj:/usr/lib/libexpat.so.1.0.0
-   obj:/usr/lib/libexpat.so.1.0.0
-   obj:/usr/lib/libexpat.so.1.0.0
-   obj:/usr/lib/libexpat.so.1.0.0
+   obj:/usr/lib/libexpat.so.*
+   obj:/usr/lib/libexpat.so.*
+   obj:/usr/lib/libexpat.so.*
+   obj:/usr/lib/libexpat.so.*
    fun:XML_ParseBuffer
    fun:FcConfigParseAndLoad
 }
@@ -1976,19 +2099,19 @@
    fun:malloc
    fun:FcStrCopy
    fun:FcEndElement
-   obj:/usr/lib/libexpat.so.1.0.0
-   obj:/usr/lib/libexpat.so.1.0.0
-   obj:/usr/lib/libexpat.so.1.0.0
-   obj:/usr/lib/libexpat.so.1.0.0
+   obj:/usr/lib/libexpat.so.*
+   obj:/usr/lib/libexpat.so.*
+   obj:/usr/lib/libexpat.so.*
+   obj:/usr/lib/libexpat.so.*
    fun:XML_ParseBuffer
    fun:FcConfigParseAndLoad
    fun:FcConfigParseAndLoad
    fun:FcParseInclude
    fun:FcEndElement
-   obj:/usr/lib/libexpat.so.1.0.0
-   obj:/usr/lib/libexpat.so.1.0.0
-   obj:/usr/lib/libexpat.so.1.0.0
-   obj:/usr/lib/libexpat.so.1.0.0
+   obj:/usr/lib/libexpat.so.*
+   obj:/usr/lib/libexpat.so.*
+   obj:/usr/lib/libexpat.so.*
+   obj:/usr/lib/libexpat.so.*
    fun:XML_ParseBuffer
    fun:FcConfigParseAndLoad
    fun:FcInitLoadConfig
@@ -2314,4 +2437,1599 @@
    obj:/lib/tls/i686/cmov/libnss_compat-2.7.so
    fun:_nss_compat_getpwnam_r
    fun:getpwnam_r
+}
+
+{
+   <GLib caching>
+   Memcheck:Addr8
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/libc-2.7.so
+   obj:/lib/ld-2.7.so
+   fun:__libc_dlopen_mode
+   fun:__nss_lookup_function
+   obj:/lib/libc-2.7.so
+   fun:getpwnam_r
+}
+
+## Leaks in ALSA (variations of leak from snd_config_load1)
+
+{
+   <Alsa leak>
+   Memcheck:Leak
+   fun:calloc
+   fun:_snd_config_make
+   fun:_snd_config_make_add
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:snd_config_load1
+}
+
+{
+   <Alsa leak>
+   Memcheck:Leak
+   fun:calloc
+   fun:_snd_config_make
+   fun:_snd_config_make_add
+   fun:*
+   fun:*
+   fun:snd_config_load1
+}
+{
+   <Alsa leak>
+   Memcheck:Leak
+   fun:calloc
+   fun:_snd_config_make
+   fun:_snd_config_make_add
+   fun:*
+   fun:*
+   fun:*
+   fun:snd_config_load1
+}
+{
+   <Alsa leak>
+   Memcheck:Leak
+   fun:calloc
+   fun:_snd_config_make
+   fun:_snd_config_make_add
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:snd_config_load1
+}
+
+{
+   <Alsa leak>
+   Memcheck:Leak
+   fun:calloc
+   fun:_snd_config_make
+   fun:_snd_config_make_add
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:snd_config_load1
+}
+
+{
+   <Alsa leak>
+   Memcheck:Leak
+   fun:calloc
+   fun:_snd_config_make
+   fun:_snd_config_make_add
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:snd_config_load1
+}
+{
+   <Alsa leak>
+   Memcheck:Leak
+   fun:calloc
+   fun:_snd_config_make
+   fun:_snd_config_make_add
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:snd_config_load1
+}
+
+{
+   <Alsa leak>
+   Memcheck:Leak
+   fun:malloc
+   fun:snd1_dlobj_cache_add
+   fun:snd_ctl_open_noupdate
+}
+
+# The following are leaks of caps that need to be created dynamically
+# in the type registration of the plugin (used for pad templates).
+
+{
+   <Leak in ogmparsers>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:gst_caps_new_empty
+   fun:gst_caps_new_simple
+   fun:*
+   fun:g_type_class_ref
+   fun:gst_element_register
+}
+
+{
+   <Leak in ogmparsers>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:gst_caps_new_empty
+   fun:*
+   fun:*
+   fun:g_type_class_ref
+   fun:gst_element_register
+   fun:gst_ogm_parse_plugin_init
+   fun:plugin_init
+}
+
+{
+   <Leak in videotestsrc>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:gst_caps_new_empty
+   fun:gst_caps_copy
+   fun:gst_video_test_src_base_init
+   fun:g_type_class_ref
+   fun:gst_element_register
+}
+
+{
+   <Leak in videotestsrc>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:gst_caps_new_empty
+   fun:gst_caps_copy
+   fun:gst_video_test_src_getcaps
+   fun:gst_video_test_src_base_init
+   fun:g_type_class_ref
+   fun:gst_element_register
+}
+
+{
+   <Leak in ffmpegcolorspace>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:gst_caps_new_empty
+   fun:gst_ffmpegcsp_codectype_to_caps
+   fun:gst_ffmpegcolorspace_register
+   fun:plugin_init
+}
+
+{
+   <Leak in ffmpegocolorspace>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:gst_caps_new_empty
+   fun:gst_caps_copy
+   fun:gst_ffmpegcolorspace_register
+   fun:plugin_init
+}
+
+{
+   <Leak in gstffmpegdemux>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:gst_caps_new_empty
+   fun:gst_caps_new_any
+   fun:gst_ffmpegdemux_register
+   fun:plugin_init
+}
+
+{
+   <Leak in GstAudioFilter subclasses>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:gst_caps_new_empty
+   fun:gst_caps_copy
+   fun:gst_audio_filter_class_add_pad_templates
+}
+
+{
+   <Leak in GstAudioFilter subclasses, variant>
+   Memcheck:Leak
+   fun:realloc
+   fun:g_realloc
+   fun:g_ptr_array_maybe_expand
+   fun:g_ptr_array_add
+   fun:gst_caps_append
+   fun:gst_audio_filter_class_add_pad_templates
+}
+
+{
+   <Leak in GstAudioFilter subclasses, variant>
+   Memcheck:Leak
+   fun:malloc
+   fun:realloc
+   fun:g_realloc
+   fun:g_ptr_array_maybe_expand
+   fun:g_ptr_array_add
+   fun:gst_caps_append
+   fun:gst_audio_filter_class_add_pad_templates
+}
+
+{
+   <Leak in GstAudioFilter subclasses, variant>
+   Memcheck:Leak
+   fun:malloc
+   fun:realloc
+   fun:g_realloc
+   fun:g_ptr_array_maybe_expand
+   fun:g_ptr_array_add
+   fun:gst_caps_copy
+   fun:gst_audio_filter_class_add_pad_templates
+}
+
+{
+   <Leak in GstAudioFilter subclasses, variant2>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_ptr_array_sized_new
+   fun:gst_caps_new_empty
+   fun:gst_caps_copy
+   fun:gst_audio_filter_class_add_pad_templates
+}
+{
+   <Leak in GstAudioFilter subclasses, variant3>
+   Memcheck:Leak
+   fun:malloc
+   fun:realloc
+   fun:g_realloc
+   fun:g_array_maybe_expand
+   fun:g_array_sized_new
+   fun:*
+   fun:*
+   fun:*
+   fun:gst_value_init_and_copy
+   fun:gst_structure_copy
+   fun:gst_caps_copy
+   fun:gst_audio_filter_class_add_pad_templates
+}
+{
+   <Leak in GstAudioFilter subclasses, variant4>
+   Memcheck:Leak
+   fun:malloc
+   fun:realloc
+   fun:g_realloc
+   fun:g_array_maybe_expand
+   fun:g_array_sized_new
+   fun:*
+   fun:gst_structure_copy
+   fun:gst_caps_copy
+   fun:gst_audio_filter_class_add_pad_templates
+}
+{
+   <Leak in GstAudioFilter subclasses, variant5>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_array_sized_new
+   fun:*
+   fun:gst_structure_copy
+   fun:gst_caps_copy
+   fun:gst_audio_filter_class_add_pad_templates
+}
+
+{
+   <Leak in riff-media>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:gst_caps_new_empty
+   fun:gst_riff_create_*_template_caps
+}
+{
+   <Leak in riff-media>
+   Memcheck:Leak
+   fun:malloc
+   fun:realloc
+   fun:g_realloc
+   fun:*
+   fun:*
+   fun:*
+   fun:gst_structure_copy
+   fun:gst_caps_copy
+   fun:gst_caps_append
+   fun:gst_riff_create_*_template_caps
+}
+{
+   <Leak in riff-media>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_array_sized_new
+   fun:*
+   fun:gst_structure_copy
+   fun:gst_caps_copy
+   fun:gst_caps_append
+   fun:gst_riff_create_*_template_caps
+}
+
+## Leaks in pango (bilboed: gentoo unstable amd64)
+
+{
+   <insert a suppression name here>
+   Memcheck:Leak
+   fun:realloc
+   fun:FcPatternObjectInsertElt
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:pango_layout_get_extents*
+   fun:pango_layout_get_pixel_extents
+   fun:gst_text_overlay_render_text
+}
+{
+   <insert a suppression name here>
+   Memcheck:Leak
+   fun:calloc
+   fun:g_malloc0
+   fun:pango_language_from_string
+   fun:pango_language_get_default
+   fun:pango_context_init
+   fun:g_type_create_instance
+   fun:g_object_constructor
+   fun:g_object_newv
+   fun:g_object_new_valist
+   fun:g_object_new
+   fun:pango_font_map_create_context
+}
+
+{
+   <PangoLanguage can never be freed>
+   Memcheck:Leak
+   fun:calloc
+   fun:g_malloc0
+   fun:pango_language_from_string
+}
+
+# some more pango leaks (Debian/unstable x86)
+{
+   <insert a suppression name here>
+   Memcheck:Leak
+   fun:malloc
+   fun:FcPatternObjectInsertElt
+   fun:FcPatternObjectAddWithBinding
+   fun:FcPatternAppend
+   fun:FcEndElement
+   obj:/usr/lib/libexpat.so.*
+   obj:/usr/lib/libexpat.so.*
+   obj:/usr/lib/libexpat.so.*
+   obj:/usr/lib/libexpat.so.*
+   fun:XML_ParseBuffer
+   fun:FcConfigParseAndLoad
+   fun:FcConfigParseAndLoad
+   fun:FcEndElement
+   obj:/usr/lib/libexpat.so.*
+   obj:/usr/lib/libexpat.so.*
+   obj:/usr/lib/libexpat.so.*
+   obj:/usr/lib/libexpat.so.*
+   fun:XML_ParseBuffer
+   fun:FcConfigParseAndLoad
+   fun:FcInitLoadConfig
+}
+{
+   <insert a suppression name here>
+   Memcheck:Leak
+   fun:malloc
+   fun:FcPatternObjectAddWithBinding
+   fun:FcPatternObjectAdd
+   fun:FcFontRenderPrepare
+   fun:pango_fc_font_map_load_fontset
+   fun:pango_font_map_load_fontset
+   fun:itemize_state_process_run
+   fun:pango_itemize_with_base_dir
+   fun:pango_layout_check_lines
+   fun:pango_layout_get_extents_internal
+   fun:pango_layout_get_pixel_extents
+}
+{
+   <insert a suppression name here>
+   Memcheck:Leak
+   fun:realloc
+   fun:FcPatternObjectInsertElt
+   fun:FcPatternObjectAddWithBinding
+   fun:FcPatternObjectAdd
+   fun:FcFontRenderPrepare
+   fun:pango_fc_font_map_load_fontset
+   fun:pango_font_map_load_fontset
+   fun:itemize_state_process_run
+   fun:pango_itemize_with_base_dir
+   fun:pango_layout_check_lines
+   fun:pango_layout_get_extents_internal
+   fun:pango_layout_get_pixel_extents
+}
+
+## Leak of property_list in gstffmpegcfg.c
+## This list is created in gst_ffmpegcsp_init(), called from
+## gst_ffmpegenc_register.
+{
+   <insert a suppression name here>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_datalist_id_set_data_full
+   fun:gst_ffmpeg_cfg_init
+   fun:gst_ffmpegenc_register
+   fun:plugin_init
+}
+{
+   <insert a suppression name here>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_datalist_id_set_data_full
+   fun:g_param_spec_set_qdata_full
+   fun:gst_ffmpeg_cfg_init
+   fun:gst_ffmpegenc_register
+   fun:plugin_init
+}
+
+## Leak of GIO module through gnomevfs
+
+{
+   <gio leak>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:*
+   fun:*
+   fun:g_type_create_instance
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:g_io_module_new
+   fun:g_io_modules_load_all_in_directory
+   fun:*
+   fun:get_default_vfs
+}
+
+## Conditional jump in getaddrinfo (bilboed, gentoo ~amd64, Dec 13 2008)
+{
+   <Leak of addrinfo in esd>
+   Memcheck:Cond
+   fun:gaih_inet
+   fun:getaddrinfo
+}
+
+## Dynamic pad templates in mxfmux
+{
+   <Dynamic pad templates in mxfmux>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:gst_caps_new_empty
+   fun:gst_caps_from_string
+   fun:mxf_*_init
+   fun:plugin_init
+}
+
+## We don't know if ffmpeg frees this or not and better pass a copy for safety
+{
+   <insert a suppression name here>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_strdup
+   fun:gst_ffmpeg_cfg_fill_context
+   fun:gst_ffmpegenc_setcaps
+   fun:gst_pad_set_caps
+}
+
+## Leak/overreads with glibc-2.10
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:do_sym
+   fun:dlsym_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlsym
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:do_sym
+   fun:dlsym_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlsym
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen*
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_relocate_object
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen*
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_check_map_versions
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen*
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen*
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_relocate_object
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen*
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_check_map_versions
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen*
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_map_object*
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen*
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_map_object*
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen*
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_check_caller
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen*
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_check_caller
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen*
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   obj:/lib64/libc-2.10.1.so
+   obj:/lib64/libc-2.10.1.so
+   fun:_vgnU_freeres
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   obj:/lib64/libc-2.10.1.so
+   obj:/lib64/libc-2.10.1.so
+   fun:_vgnU_freeres
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_fini
+   fun:__run_exit_handlers
+   fun:exit
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_fini
+   fun:__run_exit_handlers
+   fun:exit
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_sort_fini
+   fun:_dl_fini
+   fun:__run_exit_handlers
+   fun:exit
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_sort_fini
+   fun:_dl_fini
+   fun:__run_exit_handlers
+   fun:exit
+}
+
+# glibc-2.10 dl overreads
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_fixup
+   fun:_dl_runtime_resolve
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_fixup
+   fun:_dl_runtime_resolve
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_lookup_symbol_x
+   fun:_dl_fixup
+   fun:_dl_runtime_resolve
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_lookup_symbol_x
+   fun:_dl_fixup
+   fun:_dl_runtime_resolve
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:call_init
+   fun:_dl_init
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_init
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:do_lookup_x
+   fun:_dl_lookup_symbol_x
+   fun:_dl_relocate_object
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:do_lookup_x
+   fun:_dl_lookup_symbol_x
+   fun:_dl_relocate_object
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_lookup_symbol_x
+   fun:_dl_relocate_object
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_relocate_object
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:dl_main
+   fun:_dl_sysdep_start
+   fun:_dl_start
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:dl_main
+   fun:_dl_sysdep_start
+   fun:_dl_start
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:*
+   fun:do_lookup_x
+   fun:_dl_lookup_symbol_x
+   fun:_dl_relocate_object
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:do_lookup_x
+   fun:_dl_lookup_symbol_x
+   fun:_dl_relocate_object
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_check_map_versions
+   fun:_dl_check_all_versions
+   fun:version_check_doit
+   fun:_dl_receive_error
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_check_map_versions
+   fun:_dl_check_all_versions
+   fun:version_check_doit
+   fun:_dl_receive_error
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_check_all_versions
+   fun:version_check_doit
+   fun:_dl_receive_error
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_check_all_versions
+   fun:version_check_doit
+   fun:_dl_receive_error
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:_dl_check_map_versions
+   fun:_dl_check_all_versions
+   fun:version_check_doit
+   fun:_dl_receive_error
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:*
+   fun:_dl_check_map_versions
+   fun:_dl_check_all_versions
+   fun:version_check_doit
+   fun:_dl_receive_error
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:init_tls
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:init_tls
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_map_object_deps
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_map_object_deps
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_protect_relro
+   fun:_dl_relocate_object
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:do_lookup_x
+   fun:_dl_lookup_symbol_x
+   fun:_dl_relocate_object
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_setup_hash
+   fun:_dl_map_object_from_fd
+   fun:_dl_map_object
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:_dl_new_object
+   fun:_dl_map_object_from_fd
+   fun:_dl_map_object
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:*
+   fun:_dl_new_object
+   fun:_dl_map_object_from_fd
+   fun:_dl_map_object
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:openaux
+   fun:_dl_catch_error
+   fun:_dl_map_object_deps
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:_dl_map_object
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:*
+   fun:_dl_map_object
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_map_object
+   fun:openaux
+   fun:_dl_catch_error
+   fun:_dl_map_object_deps
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_map_object
+   fun:openaux
+   fun:_dl_catch_error
+   fun:_dl_map_object_deps
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:*
+   fun:_dl_map_object
+   fun:openaux
+   fun:_dl_catch_error
+   fun:_dl_map_object_deps
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:open_path
+   fun:_dl_map_object
+   fun:openaux
+   fun:_dl_catch_error
+   fun:_dl_map_object_deps
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:*
+   fun:open_path
+   fun:_dl_map_object
+   fun:openaux
+   fun:_dl_catch_error
+   fun:_dl_map_object_deps
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_map_object_from_fd
+   fun:_dl_map_object
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_map_object_from_fd
+   fun:_dl_map_object
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:_dl_new_object
+   fun:_dl_map_object_from_fd
+   fun:_dl_map_object
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_new_object
+   fun:_dl_map_object_from_fd
+   fun:_dl_map_object
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_new_object
+   fun:_dl_map_object_from_fd
+   fun:_dl_map_object
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:_dl_name_match_p
+   fun:_dl_map_object
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:*
+   fun:*
+   fun:_dl_map_object
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:_dl_name_match_p
+   fun:_dl_check_map_versions
+   fun:_dl_check_all_versions
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:*
+   fun:do_lookup_x
+   fun:_dl_lookup_symbol_x
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:do_lookup_x
+   fun:_dl_lookup_symbol_x
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:do_lookup_x
+   fun:_dl_lookup_symbol_x
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:do_lookup_x
+   fun:_dl_lookup_symbol_x
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:*
+   fun:do_lookup_x
+   fun:_dl_lookup_symbol_x
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_name_match_p
+   fun:_dl_map_object
+   fun:dl_open_worker
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_name_match_p
+   fun:_dl_map_object
+   fun:dl_open_worker
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:_dl_name_match_p
+   fun:_dl_map_object
+   fun:dl_open_worker
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:*
+   fun:_dl_name_match_p
+   fun:_dl_map_object
+   fun:dl_open_worker
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_lookup_symbol_x
+   fun:_dl_relocate_object
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_lookup_symbol_x
+   fun:_dl_relocate_object
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:*
+   fun:_dl_check_map_versions
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:_dl_check_map_versions
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:*
+   fun:*
+   fun:_dl_check_map_versions
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:*
+   fun:_dl_check_map_versions
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:openaux
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_name_match_p
+   fun:_dl_map_object
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_close_worker
+   fun:_dl_close
+   fun:_dl_catch_error
+   fun:dlerror_run
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_close_worker
+   fun:_dl_close
+   fun:_dl_catch_error
+   fun:dlerror_run
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:*
+   fun:_dl_close_worker
+   fun:_dl_close
+   fun:_dl_catch_error
+   fun:dlerror_run
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:_dl_close_worker
+   fun:_dl_close
+   fun:_dl_catch_error
+   fun:dlerror_run
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:fillin_rpath
+   fun:_dl_init_paths
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:fillin_rpath
+   fun:_dl_init_paths
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:*
+   fun:fillin_rpath
+   fun:_dl_init_paths
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:fillin_rpath
+   fun:_dl_init_paths
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_map_object
+   fun:map_doit
+   fun:_dl_catch_error
+   fun:do_preload
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_map_object
+   fun:map_doit
+   fun:_dl_catch_error
+   fun:do_preload
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Param
+   open(filename)
+   fun:open
+   fun:open_verify
+   fun:_dl_map_object
+   fun:map_doit
+   fun:_dl_catch_error
+   fun:do_preload
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Param
+   stat(file_name)
+   fun:_xstat
+   fun:open_path
+   fun:_dl_map_object
+   fun:openaux
+   fun:_dl_catch_error
+   fun:_dl_map_object_deps
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_catch_error
+   fun:_dl_map_object_deps
+   fun:dl_open_worker
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:*
+   fun:_dl_map_object_deps
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:_dl_map_object_deps
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:*
+   fun:_dl_map_object_deps
+   fun:dl_main
+}
+
+# glibc-2.10 tls issues
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:*
+   fun:init_tls
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:init_tls
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:*
+   fun:*
+   fun:init_tls
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:*
+   fun:init_tls
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:_dl_allocate_tls_init
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:_dl_allocate_tls_init
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:*
+   fun:_dl_allocate_tls_init
+   fun:dl_main
+}
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Value8
+   fun:*
+   fun:_dl_allocate_tls_init
+   fun:dl_main
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Cond
+   fun:__tls*
+   obj:*
+   obj:*
+   fun:_vgnU_freeres
+}
+
+{
+   <glibc-2.10 overreads/conditionals>
+   Memcheck:Param
+   arch_prctl(arg2)
+   fun:init_tls
+}
+# GLib caching tmp/home directories (glibc-2.10 variants)
+{
+   <glibc-2.10 GLIB leaks>
+   Memcheck:Cond
+   fun:*
+   fun:dl_open_worker
+   fun:*
+   fun:*
+   fun:*
+   fun:_dl_catch_error
+   fun:dlerror_run
+   fun:*
+   fun:__nss_lookup_function
+   fun:__nss_lookup
+   fun:getpwnam*
+}
+{
+   <glibc-2.10 GLIB leaks>
+   Memcheck:Value8
+   fun:*
+   fun:dl_open_worker
+   fun:*
+   fun:*
+   fun:*
+   fun:_dl_catch_error
+   fun:dlerror_run
+   fun:*
+   fun:__nss_lookup_function
+   fun:__nss_lookup
+   fun:getpwnam*
+}
+{
+   <glibc-2.10 GLIB leaks>
+   Memcheck:Cond
+   fun:dl_open_worker
+   fun:*
+   fun:*
+   fun:do_dlopen
+   fun:*
+   fun:dlerror_run
+   fun:*
+   fun:__nss_lookup_function
+   fun:__nss_lookup
+   fun:getpwnam*
+}
+{
+   <glibc-2.10 GLIB leaks>
+   Memcheck:Value8
+   fun:dl_open_worker
+   fun:*
+   fun:*
+   fun:do_dlopen
+   fun:*
+   fun:dlerror_run
+   fun:*
+   fun:__nss_lookup_function
+   fun:__nss_lookup
+   fun:getpwnam*
+}
+
+{
+   <glibc-2.10 GLIB leaks>
+   Memcheck:Value8
+   fun:_dl_add_to_slotinfo
+   fun:dl_main
+}
+{
+   <glibc-2.10 GLIB leaks>
+   Memcheck:Param
+   open(filename)
+   fun:open
+   fun:open_verify
+   fun:open_path
+   fun:_dl_map_object
+}
+
+
+
+# GModule issues with glibc-2.10
+{
+   <glibc-2.10 GLIB leaks>
+   Memcheck:Value8
+   fun:*
+   fun:*
+   fun:dlsym
+   fun:g_module_symbol
+}
+{
+   <glibc-2.10 GLIB leaks>
+   Memcheck:Value8
+   fun:g_module_*
+   fun:gst_plugin*
+}
+{
+   <glibc-2.10 GLIB leaks>
+   Memcheck:Value8
+   fun:*
+   fun:g_module_*
+   fun:gst_plugin*
+}
+
+{
+   <glibc-2.10 GLIB leaks>
+   Memcheck:Value8
+   fun:*
+   fun:*
+   fun:dlopen*
+   fun:g_module_open
+}
+{
+   <glibc-2.10 GLIB leaks>
+   Memcheck:Value8
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:dlsym
+   fun:g_module_symbol
+}
+
+{
+   <glibc-2.10 GLIB leaks>
+   Memcheck:Value8
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:dlopen*
+   fun:g_module_open
+}
+
+# Leak in GSlice
+{
+   <insert a suppression name here>
+   Memcheck:Value8
+   fun:g_parse_debug_string
+   fun:slice_config_init
+   fun:g_slice_init_nomessage
+   fun:_g_slice_thread_init_nomessage
+   fun:g_thread_init_glib
+}
+
+# 2.10 pthread issues
+{
+   <insert a suppression name here>
+   Memcheck:Value8
+   fun:__pthread_initialize_minimal
 }

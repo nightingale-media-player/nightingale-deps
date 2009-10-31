@@ -12,7 +12,7 @@ AC_DEFUN([AG_GST_ARCH],
     xi?86 | xk? | xi?86_64)
       HAVE_CPU_I386=yes
       AC_DEFINE(HAVE_CPU_I386, 1, [Define if the host CPU is an x86])
-  
+
       dnl FIXME could use some better detection
       dnl (ie CPUID)
       case "x${host_cpu}" in
@@ -60,10 +60,10 @@ AC_DEFUN([AG_GST_ARCH],
       HAVE_CPU_CRISV32=yes
       AC_DEFINE(HAVE_CPU_CRISV32, 1, [Define if the host CPU is a CRISv32]) ;;
   esac
-  
+
   dnl Determine endianness
   AC_C_BIGENDIAN
-  
+
   AM_CONDITIONAL(HAVE_CPU_I386,       test "x$HAVE_CPU_I386" = "xyes")
   AM_CONDITIONAL(HAVE_CPU_PPC,        test "x$HAVE_CPU_PPC" = "xyes")
   AM_CONDITIONAL(HAVE_CPU_PPC64,      test "x$HAVE_CPU_PPC64" = "xyes")

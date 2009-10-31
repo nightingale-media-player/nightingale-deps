@@ -599,12 +599,9 @@ gst_real_audio_demux_chain (GstPad * pad, GstBuffer * buf)
 static void
 gst_real_audio_demux_loop (GstRealAudioDemux * demux)
 {
-  GstRealAudioDemuxState old_state;
   GstFlowReturn ret;
   GstBuffer *buf;
   guint bytes_needed;
-
-  old_state = demux->state;
 
   /* check how much data we need */
   switch (demux->state) {
@@ -963,4 +960,11 @@ gst_real_audio_demux_change_state (GstElement * element,
   }
 
   return ret;
+}
+
+gboolean
+gst_rademux_plugin_init (GstPlugin * plugin)
+{
+  return gst_element_register (plugin, "rademux",
+      GST_RANK_SECONDARY, GST_TYPE_REAL_AUDIO_DEMUX);
 }

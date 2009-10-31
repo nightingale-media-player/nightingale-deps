@@ -58,7 +58,6 @@ while (<>) {
 	my $class = $1 > 0 ? "perfect" : "terrible";
 	$_ = "<span class=\"$class\">$_</span>";
     }
-    
 
     print;
 }

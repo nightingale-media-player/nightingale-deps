@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gst-plugins-ugly Elements">
 <link rel="prev" href="ch01.html" title="gst-plugins-ugly Elements">
 <link rel="next" href="gst-plugins-ugly-plugins-amrnbdec.html" title="amrnbdec">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-ugly Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-ugly Plugins">
@@ -22,13 +22,15 @@
 <th width="100%" align="center">GStreamer Ugly Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-ugly-plugins-amrnbdec.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-ugly-plugins-a52dec.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-ugly-plugins-a52dec.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-ugly-plugins-a52dec.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-ugly-plugins-a52dec.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-ugly-plugins-a52dec.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-a52dec.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-a52dec.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-a52dec.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-ugly-plugins-a52dec"></a><div class="titlepage"></div>
@@ -48,17 +50,27 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-ugly-plugins-a52dec.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
-   +----GstObject
-         +----GstElement
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
                +----GstA52Dec
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-ugly-plugins-a52dec.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-ugly-plugins-a52dec.html#GstA52Dec--drc" title='The "drc" property'>drc</a>"                      gboolean              : Read / Write
-  "<a class="link" href="gst-plugins-ugly-plugins-a52dec.html#GstA52Dec--lfe" title='The "lfe" property'>lfe</a>"                      gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-a52dec.html#GstA52Dec--drc" title='The "drc" property'>drc</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-a52dec.html#GstA52Dec--lfe" title='The "lfe" property'>lfe</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
   "<a class="link" href="gst-plugins-ugly-plugins-a52dec.html#GstA52Dec--mode" title='The "mode" property'>mode</a>"                     GstA52DecMode         : Read / Write
 </pre>
 </div>
@@ -70,9 +82,9 @@ Dolby Digital (AC-3) audio decoder.
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2575940"></a><h3>Example launch line</h3>
+<a name="id2977819"></a><h3>Example launch line</h3>
 <div class="informalexample"><pre class="programlisting">
-gst-launch dvdreadsrc title=1 ! dvddemux ! a52dec ! audioresample ! audioconvert ! alsasink
+gst-launch dvdreadsrc title=1 ! mpegpsdemux ! a52dec ! audioresample ! audioconvert ! alsasink
 </pre></div> Play audio track from a dvd.
 <div class="informalexample"><pre class="programlisting">
 gst-launch filesrc location=abc.ac3 ! a52dec ! audioresample ! audioconvert ! alsasink
@@ -81,7 +93,7 @@ gst-launch filesrc location=abc.ac3 ! a52dec ! audioresample ! audioconvert ! al
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2563076"></a><h3>Element Information</h3>
+<a name="id2974981"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -104,7 +116,7 @@ gst-launch filesrc location=abc.ac3 ! a52dec ! audioresample ! audioconvert ! al
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2499563"></a><h3>Element Pads</h3>
+<a name="id2900542"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -158,7 +170,6 @@ gst-launch filesrc location=abc.ac3 ! a52dec ! audioresample ! audioconvert ! al
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -167,7 +178,6 @@ gst-launch filesrc location=abc.ac3 ! a52dec ! audioresample ! audioconvert ! al
 <a name="GstA52Dec-struct"></a><h3>GstA52Dec</h3>
 <pre class="programlisting">typedef struct _GstA52Dec GstA52Dec;</pre>
 <p>
-
 </p>
 </div>
 </div>
@@ -175,14 +185,18 @@ gst-launch filesrc location=abc.ac3 ! a52dec ! audioresample ! audioconvert ! al
 <a name="gst-plugins-ugly-plugins-a52dec.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstA52Dec--drc"></a><h3>The <code class="literal">"drc"</code> property</h3>
-<pre class="programlisting">  "drc"                      gboolean              : Read / Write</pre>
+<pre class="programlisting">  "drc"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Use Dynamic Range Compression.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstA52Dec--lfe"></a><h3>The <code class="literal">"lfe"</code> property</h3>
-<pre class="programlisting">  "lfe"                      gboolean              : Read / Write</pre>
+<pre class="programlisting">  "lfe"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>LFE.</p>
 <p>Default value: TRUE</p>
 </div>
@@ -197,6 +211,6 @@ gst-launch filesrc location=abc.ac3 ! a52dec ! audioresample ! audioconvert ! al
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

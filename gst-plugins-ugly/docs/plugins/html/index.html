@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Ugly Plugins 0.10 Plugins Reference Manual">
 <link rel="next" href="ch01.html" title="gst-plugins-ugly Elements">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-ugly Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-ugly Plugins">
@@ -14,7 +14,14 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <div class="book" lang="en">
 <div class="titlepage">
-<div><div><table class="navigation" id="top" width="100%" cellpadding="2" cellspacing="0"><tr><th valign="middle"><p class="title">GStreamer Ugly Plugins 0.10 Plugins Reference Manual</p></th></tr></table></div></div>
+<div>
+<div><table class="navigation" id="top" width="100%" cellpadding="2" cellspacing="0"><tr><th valign="middle"><p class="title">GStreamer Ugly Plugins 0.10 Plugins Reference Manual</p></th></tr></table></div>
+<div><p class="releaseinfo">
+      for GStreamer Ugly Plugins 0.10 (0.10.12.1)
+      The latest version of this documentation can be found on-line at
+      <a class="ulink" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-ugly/html/" target="_top">http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-ugly/html/</a>.
+    </p></div>
+</div>
 <hr>
 </div>
 <div class="toc"><dl>
@@ -30,13 +37,16 @@
 <span class="refentrytitle"><a href="gst-plugins-ugly-plugins-amrnbenc.html">amrnbenc</a></span><span class="refpurpose"> — Adaptive Multi-Rate Narrow-Band audio encoder</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-ugly-plugins-amrnbparse.html">amrnbparse</a></span><span class="refpurpose"> — Adaptive Multi-Rate Narrow-Band audio parser</span>
+<span class="refentrytitle"><a href="gst-plugins-ugly-plugins-amrwbdec.html">amrwbdec</a></span><span class="refpurpose"> — Adaptive Multi-Rate Wideband audio decoder</span>
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-ugly-plugins-cdiocddasrc.html">cdiocddasrc</a></span><span class="refpurpose"> — Reads raw audio from an Audio CD</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-ugly-plugins-lame.html">lame</a></span><span class="refpurpose"> — High-quality free MP3 encoder</span>
+<span class="refentrytitle"><a href="gst-plugins-ugly-plugins-lame.html">lame</a></span><span class="refpurpose"> — High-quality free MP3 encoder (deprecated)</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-ugly-plugins-lamemp3enc.html">lamemp3enc</a></span><span class="refpurpose"> — High-quality free MP3 encoder</span>
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-ugly-plugins-mad.html">mad</a></span><span class="refpurpose"> — Uses mad code to decode mp3 streams</span>
@@ -57,7 +67,13 @@
 <span class="refentrytitle"><a href="gst-plugins-ugly-plugins-siddec.html">siddec</a></span><span class="refpurpose"> — Use libsidplay to decode SID audio tunes</span>
 </dt>
 <dt>
+<span class="refentrytitle"><a href="gst-plugins-ugly-plugins-twolame.html">twolame</a></span><span class="refpurpose"> — High-quality free MP2 encoder</span>
+</dt>
+<dt>
 <span class="refentrytitle"><a href="gst-plugins-ugly-plugins-synaesthesia.html">synaesthesia</a></span><span class="refpurpose"> — Creates video visualizations of audio input, using stereo and pitch information</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-ugly-plugins-x264enc.html">x264enc</a></span><span class="refpurpose"> — H264 Encoder</span>
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-ugly-plugins-xingmux.html">xingmux</a></span><span class="refpurpose"> — Adds a Xing header to the beginning of a VBR MP3 file</span>
@@ -72,6 +88,9 @@
 <span class="refentrytitle"><a href="gst-plugins-ugly-plugins-plugin-amrnb.html">amrnb</a></span><span class="refpurpose"> — Adaptive Multi-Rate Narrow-Band</span>
 </dt>
 <dt>
+<span class="refentrytitle"><a href="gst-plugins-ugly-plugins-plugin-amrwbdec.html">amrwbdec</a></span><span class="refpurpose"> — Adaptive Multi-Rate Wide-Band Decoder</span>
+</dt>
+<dt>
 <span class="refentrytitle"><a href="gst-plugins-ugly-plugins-plugin-asf.html">asf</a></span><span class="refpurpose"> — Demuxes and muxes audio and video in Microsofts ASF format</span>
 </dt>
 <dt>
@@ -79,9 +98,6 @@
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-ugly-plugins-plugin-dvdlpcmdec.html">dvdlpcmdec</a></span><span class="refpurpose"> — Decode DVD LPCM frames into standard PCM</span>
-</dt>
-<dt>
-<span class="refentrytitle"><a href="gst-plugins-ugly-plugins-plugin-dvdnav.html">dvdnav</a></span><span class="refpurpose"> — Access a DVD with navigation features using libdvdnav</span>
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-ugly-plugins-plugin-dvdread.html">dvdread</a></span><span class="refpurpose"> — Access a DVD with dvdread</span>
@@ -96,7 +112,7 @@
 <span class="refentrytitle"><a href="gst-plugins-ugly-plugins-plugin-lame.html">lame</a></span><span class="refpurpose"> — Encode MP3s with LAME</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-ugly-plugins-plugin-mad.html">mad</a></span><span class="refpurpose"> — id3 tag manipulation and mp3 decoding based on the mad library</span>
+<span class="refentrytitle"><a href="gst-plugins-ugly-plugins-plugin-mad.html">mad</a></span><span class="refpurpose"> — mp3 decoding based on the mad library</span>
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-ugly-plugins-plugin-mpeg2dec.html">mpeg2dec</a></span><span class="refpurpose"> — LibMpeg2 decoder</span>
@@ -108,7 +124,7 @@
 <span class="refentrytitle"><a href="gst-plugins-ugly-plugins-plugin-mpegstream.html">mpegstream</a></span><span class="refpurpose"> — MPEG system stream parser</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-ugly-plugins-plugin-realmedia.html">realmedia</a></span><span class="refpurpose"> — RealMedia demuxer and depayloader</span>
+<span class="refentrytitle"><a href="gst-plugins-ugly-plugins-plugin-realmedia.html">realmedia</a></span><span class="refpurpose"> — RealMedia support plugins</span>
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-ugly-plugins-plugin-rmdemux.html">rmdemux</a></span><span class="refpurpose"> — Realmedia stream demuxer</span>
@@ -119,11 +135,17 @@
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-ugly-plugins-plugin-synaesthesia.html">synaesthesia</a></span><span class="refpurpose"> — Creates video visualizations of audio input, using stereo and pitch information</span>
 </dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-ugly-plugins-plugin-twolame.html">twolame</a></span><span class="refpurpose"> — Encode MP2s with TwoLAME</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-ugly-plugins-plugin-x264.html">x264</a></span><span class="refpurpose"> — libx264-based H264 plugins</span>
+</dt>
 </dl></dd>
 </dl></div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

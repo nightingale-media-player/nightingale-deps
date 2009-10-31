@@ -41,17 +41,17 @@ gst_amrnbenc_get_type
 </SECTION>
 
 <SECTION>
-<FILE>element-amrnbparse</FILE>
-<TITLE>amrnbparse</TITLE>
-GstAmrnbParse
+<FILE>element-amrwbdec</FILE>
+<TITLE>amrwbdec</TITLE>
+GstAmrwbDec
 <SUBSECTION Standard>
-GstAmrnbParseClass
-GST_AMRNBPARSE
-GST_AMRNBPARSE_CLASS
-GST_IS_AMRNBPARSE
-GST_IS_AMRNBPARSE_CLASS
-GST_TYPE_AMRNBPARSE
-gst_amrnbparse_get_type
+GstAmrwbDecClass
+GST_AMRWBDEC
+GST_AMRWBDEC_CLASS
+GST_IS_AMRWBDEC
+GST_IS_AMRWBDEC_CLASS
+GST_TYPE_AMRWBDEC
+gst_amrwbdec_get_type
 </SECTION>
 
 <SECTION>
@@ -83,6 +83,20 @@ gst_lame_get_type
 </SECTION>
 
 <SECTION>
+<FILE>element-lamemp3enc</FILE>
+<TITLE>lamemp3enc</TITLE>
+GstLameMP3Enc
+<SUBSECTION Standard>
+GstLameMP3EncClass
+GST_LAMEMP3ENC
+GST_LAMEMP3ENC_CLASS
+GST_IS_LAMEMP3ENC
+GST_IS_LAMEMP3ENC_CLASS
+GST_TYPE_LAMEMP3ENC
+gst_lamemp3enc_get_type
+</SECTION>
+
+<SECTION>
 <FILE>element-mad</FILE>
 <TITLE>mad</TITLE>
 GstMad
@@ -94,9 +108,6 @@ GST_IS_MAD
 GST_IS_MAD_CLASS
 GST_TYPE_MAD
 gst_mad_get_type
-gst_id3_tag_get_type
-gst_mad_id3_to_tag_list
-gst_mad_tag_list_to_id3_tag
 </SECTION>
 
 <SECTION>
@@ -189,6 +200,34 @@ gst_synaesthesia_get_type
 SYNAES_HEIGHT
 SYNAES_SAMPLES
 SYNAES_WIDTH
+</SECTION>
+
+<SECTION>
+<FILE>element-twolame</FILE>
+<TITLE>twolame</TITLE>
+GstTwoLame
+<SUBSECTION Standard>
+GstTwoLameClass
+GST_TWO_LAME
+GST_TWO_LAME_CLASS
+GST_IS_TWO_LAME
+GST_IS_TWO_LAME_CLASS
+GST_TYPE_TWO_LAME
+gst_two_lame_get_type
+</SECTION>
+
+
+<SECTION>
+<FILE>element-x264enc</FILE>
+<TITLE>x264enc</TITLE>
+GstX264Enc
+<SUBSECTION Standard>
+GstX264EncClass
+GST_X264_ENC
+GST_X264_ENC_CLASS
+GST_IS_X264_ENC
+GST_IS_X264_ENC_CLASS
+GST_TYPE_X264_ENC
 </SECTION>
 
 <SECTION>

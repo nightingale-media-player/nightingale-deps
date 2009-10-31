@@ -688,3 +688,533 @@
 <DEFAULT>-1</DEFAULT>
 </ARG>
 
+<ARG>
+<NAME>GstPNMSrc::location</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>PNM Location</NICK>
+<BLURB>Location of the PNM url to read.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::ath-level</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>ATH Level</NICK>
+<BLURB>ATH Level in dB.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::bitrate</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[8,384]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Bitrate (kb/s)</NICK>
+<BLURB>Bitrate in kbit/sec (8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 192, 224, 256, 320, 384).</BLURB>
+<DEFAULT>192</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::copyright</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Copyright</NICK>
+<BLURB>Mark as copyright.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::emphasis</NAME>
+<TYPE>GstTwoLameEmphasis</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Emphasis</NICK>
+<BLURB>Pre-emphasis to apply to the decoded audio.</BLURB>
+<DEFAULT>No emphasis</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::energy-level-extension</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Energy Level Extension</NICK>
+<BLURB>Write peak PCM level to each frame.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::error-protection</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Error protection</NICK>
+<BLURB>Adds checksum to every frame.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::mode</NAME>
+<TYPE>GstTwoLameMode</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Mode</NICK>
+<BLURB>Encoding mode.</BLURB>
+<DEFAULT>Joint Stereo</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::original</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Original</NICK>
+<BLURB>Mark as original.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::padding</NAME>
+<TYPE>GstTwoLamePadding</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Padding</NICK>
+<BLURB>Padding type.</BLURB>
+<DEFAULT>No Padding</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::psymodel</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[-1,4]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Psychoacoustic Model</NICK>
+<BLURB>Psychoacoustic model used to encode the audio.</BLURB>
+<DEFAULT>3</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::quick-mode</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Quick mode</NICK>
+<BLURB>Calculate Psymodel every frames.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::quick-mode-count</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 0</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Quick mode count</NICK>
+<BLURB>Calculate Psymodel every n frames.</BLURB>
+<DEFAULT>10</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::vbr</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>VBR</NICK>
+<BLURB>Enable variable bitrate mode.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::vbr-level</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE>[-10,10]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>VBR Level</NICK>
+<BLURB>VBR Level.</BLURB>
+<DEFAULT>5</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::vbr-max-bitrate</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,384]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>VBR max bitrate</NICK>
+<BLURB>Specify maximum VBR bitrate (0=off, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 192, 224, 256, 320, 384).</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstLameMP3Enc::bitrate</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[8,320]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Bitrate (kb/s)</NICK>
+<BLURB>Bitrate in kbit/sec (Only valid if target is bitrate, for CBR one of 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256 or 320).</BLURB>
+<DEFAULT>128</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstLameMP3Enc::cbr</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>CBR</NICK>
+<BLURB>Enforce constant bitrate encoding (Only valid if target is bitrate).</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstLameMP3Enc::encoding-engine-quality</NAME>
+<TYPE>GstLameMP3EncEncodingEngineQuality</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Encoding Engine Quality</NICK>
+<BLURB>Quality/speed of the encoding engine, this does not affect the bitrate!.</BLURB>
+<DEFAULT>Standard</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstLameMP3Enc::fast-vbr</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Fast VBR</NICK>
+<BLURB>Use fast VBR encoding.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstLameMP3Enc::mono</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Mono</NICK>
+<BLURB>Enforce mono encoding.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstLameMP3Enc::target</NAME>
+<TYPE>GstLameMP3EncTarget</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Target</NICK>
+<BLURB>Optimize for quality or bitrate.</BLURB>
+<DEFAULT>Quality</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstLameMP3Enc::vbr-quality</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE>[0,9.999]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>VBR Quality</NICK>
+<BLURB>VBR Quality from 0 to 10, 0 being the best.</BLURB>
+<DEFAULT>4</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstLameMP3Enc::quality</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE>[0,9.999]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Quality</NICK>
+<BLURB>VBR Quality from 0 to 10, 0 being the best (Only valid if target is quality).</BLURB>
+<DEFAULT>4</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAmrnbDec::variant</NAME>
+<TYPE>GstAmrnbVariant</TYPE>
+<RANGE></RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Variant</NICK>
+<BLURB>The decoder variant.</BLURB>
+<DEFAULT>IF1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::analyse</NAME>
+<TYPE>GstX264EncAnalyse</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Analyse</NICK>
+<BLURB>Partitions to consider.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::b-adapt</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>B-Adapt</NICK>
+<BLURB>Automatically decide how many B-frames to use.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::b-pyramid</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>B-Pyramid</NICK>
+<BLURB>Keep some B-frames as references.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::bframes</NAME>
+<TYPE>guint</TYPE>
+<RANGE><= 4</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>B-Frames</NICK>
+<BLURB>Number of B-frames between I and P.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::bitrate</NAME>
+<TYPE>guint</TYPE>
+<RANGE>[1,102400]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Bitrate</NICK>
+<BLURB>Bitrate in kbit/sec.</BLURB>
+<DEFAULT>2048</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::byte-stream</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Byte Stream</NICK>
+<BLURB>Generate byte stream format of NALU.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::cabac</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Use CABAC</NICK>
+<BLURB>Enable CABAC entropy coding.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::dct8x8</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>DCT8x8</NICK>
+<BLURB>Adaptive spatial transform size.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::interlaced</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Interlaced</NICK>
+<BLURB>Interlaced material.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::ip-factor</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE>[0,2]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>IP-Factor</NICK>
+<BLURB>Quantizer factor between I- and P-frames.</BLURB>
+<DEFAULT>1.4</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::key-int-max</NAME>
+<TYPE>guint</TYPE>
+<RANGE><= G_MAXINT</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Key-frame maximal interval</NICK>
+<BLURB>Maximal distance between two key-frames (0 for automatic).</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::me</NAME>
+<TYPE>GstX264EncMe</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Motion Estimation</NICK>
+<BLURB>Integer pixel motion estimation method.</BLURB>
+<DEFAULT>hexagonal search, radius 2</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::multipass-cache-file</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Multipass Cache File</NICK>
+<BLURB>Filename for multipass cache file.</BLURB>
+<DEFAULT>"x264.log"</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::noise-reduction</NAME>
+<TYPE>guint</TYPE>
+<RANGE><= 100000</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Noise Reducation</NICK>
+<BLURB>Noise reduction strength.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::pass</NAME>
+<TYPE>GstX264EncPass</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Encoding pass/type</NICK>
+<BLURB>Encoding pass/type.</BLURB>
+<DEFAULT>Constant Bitrate Encoding</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::pb-factor</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE>[0,2]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>PB-Factor</NICK>
+<BLURB>Quantizer factor between P- and B-frames.</BLURB>
+<DEFAULT>1.3</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::qp-max</NAME>
+<TYPE>guint</TYPE>
+<RANGE>[1,51]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Maximum Quantizer</NICK>
+<BLURB>Maximum quantizer.</BLURB>
+<DEFAULT>51</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::qp-min</NAME>
+<TYPE>guint</TYPE>
+<RANGE>[1,51]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Minimum Quantizer</NICK>
+<BLURB>Minimum quantizer.</BLURB>
+<DEFAULT>10</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::qp-step</NAME>
+<TYPE>guint</TYPE>
+<RANGE>[1,50]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Maximum Quantizer Difference</NICK>
+<BLURB>Maximum quantizer difference between frames.</BLURB>
+<DEFAULT>4</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::quantizer</NAME>
+<TYPE>guint</TYPE>
+<RANGE>[1,50]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Constant Quantizer</NICK>
+<BLURB>Constant quantizer or quality to apply.</BLURB>
+<DEFAULT>21</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::ref</NAME>
+<TYPE>guint</TYPE>
+<RANGE>[1,12]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Reference Frames</NICK>
+<BLURB>Number of reference frames.</BLURB>
+<DEFAULT>1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::sps-id</NAME>
+<TYPE>guint</TYPE>
+<RANGE><= 31</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>SPS ID</NICK>
+<BLURB>SPS and PPS ID number.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::stats-file</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Stats File</NICK>
+<BLURB>Filename for multipass statistics (deprecated, use multipass-stats-file).</BLURB>
+<DEFAULT>"x264.log"</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::subme</NAME>
+<TYPE>guint</TYPE>
+<RANGE>[1,6]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Subpixel Motion Estimation</NICK>
+<BLURB>Subpixel motion estimation and partition decision quality: 1=fast, 6=best.</BLURB>
+<DEFAULT>1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::threads</NAME>
+<TYPE>guint</TYPE>
+<RANGE><= 4</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Threads</NICK>
+<BLURB>Number of threads used by the codec (0 for automatic).</BLURB>
+<DEFAULT>1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::trellis</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Trellis quantization</NICK>
+<BLURB>Enable trellis searched quantization.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::vbv-buf-capacity</NAME>
+<TYPE>guint</TYPE>
+<RANGE>[300,10000]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>VBV buffer capacity</NICK>
+<BLURB>Size of the VBV buffer in milliseconds.</BLURB>
+<DEFAULT>600</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::weightb</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Weighted B-Frames</NICK>
+<BLURB>Weighted prediction for B-frames.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+

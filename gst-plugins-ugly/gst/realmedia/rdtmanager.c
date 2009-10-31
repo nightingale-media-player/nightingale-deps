@@ -56,6 +56,8 @@
 #include "rdtmanager.h"
 #include "rdtjitterbuffer.h"
 
+#include <stdio.h>
+
 GST_DEBUG_CATEGORY_STATIC (rdtmanager_debug);
 #define GST_CAT_DEFAULT (rdtmanager_debug)
 
@@ -371,8 +373,8 @@ gst_rdt_manager_marshal_BOXED__UINT_UINT (GClosure * closure,
     data2 = closure->data;
   }
   callback =
-      (GMarshalFunc_BOXED__UINT_UINT) (marshal_data ? marshal_data : cc->
-      callback);
+      (GMarshalFunc_BOXED__UINT_UINT) (marshal_data ? marshal_data :
+      cc->callback);
 
   v_return = callback (data1,
       g_marshal_value_peek_uint (param_values + 1),
@@ -404,8 +406,8 @@ gst_rdt_manager_marshal_VOID__UINT_UINT (GClosure * closure,
     data2 = closure->data;
   }
   callback =
-      (GMarshalFunc_VOID__UINT_UINT) (marshal_data ? marshal_data : cc->
-      callback);
+      (GMarshalFunc_VOID__UINT_UINT) (marshal_data ? marshal_data :
+      cc->callback);
 
   callback (data1,
       g_marshal_value_peek_uint (param_values + 1),
@@ -874,9 +876,8 @@ do_eos:
   }
 pause:
   {
-    const gchar *reason = gst_flow_get_name (result);
-
-    GST_DEBUG_OBJECT (rdtmanager, "pausing task, reason %s", reason);
+    GST_DEBUG_OBJECT (rdtmanager, "pausing task, reason %s",
+        gst_flow_get_name (result));
 
     JBUF_LOCK (session);
     /* store result */
@@ -1096,9 +1097,6 @@ static GstStateChangeReturn
 gst_rdt_manager_change_state (GstElement * element, GstStateChange transition)
 {
   GstStateChangeReturn ret;
-  GstRDTManager *rdtmanager;
-
-  rdtmanager = GST_RDT_MANAGER (element);
 
   switch (transition) {
     default:

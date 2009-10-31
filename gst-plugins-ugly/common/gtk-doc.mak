@@ -111,9 +111,9 @@ tmpl.stamp: tmpl-build.stamp
 #### xml ####
 
 ### FIXME: make this error out again when docs are complete
-sgml-build.stamp: tmpl.stamp $(CFILE_GLOB)
+sgml-build.stamp: tmpl.stamp $(CFILE_GLOB) $(expand_content_files)
 	@echo '*** Building XML ***'
-	gtkdoc-mkdb --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR) --main-sgml-file=$(srcdir)/$(DOC_MAIN_SGML_FILE) --output-format=xml $(MKDB_OPTIONS) | tee sgml-build.log
+	gtkdoc-mkdb --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR)  --expand-content-files="$(expand_content_files)" --main-sgml-file=$(srcdir)/$(DOC_MAIN_SGML_FILE) --output-format=xml $(MKDB_OPTIONS) | tee sgml-build.log
 	@if grep "WARNING:" sgml-build.log > /dev/null; then true; fi # exit 1; fi
 	cp ../version.entities xml
 	rm sgml-build.log
@@ -141,8 +141,8 @@ html-build.stamp: sgml.stamp $(DOC_MAIN_SGML_FILE) $(content_files)
 	rm -f html/version.entities
 	test "x$(HTML_IMAGES)" = "x" || for i in "" $(HTML_IMAGES) ; do \
 	    if test "$$i" != ""; then cp $(srcdir)/$$i html ; fi; done
-	@echo '-- Fixing Crossreferences' 
-	gtkdoc-fixxref --module-dir=html --html-dir=$(HTML_DIR) $(FIXXREF_OPTIONS)
+	@echo '-- Fixing Crossreferences'
+	gtkdoc-fixxref --module=$(DOC_MODULE) --module-dir=html --html-dir=$(HTML_DIR) $(FIXXREF_OPTIONS)
 	touch html-build.stamp
 
 clean-local-gtkdoc:
@@ -160,10 +160,10 @@ clean-local: clean-local-gtkdoc
 	rm -f *~ *.bak
 	rm -rf .libs
 
-# company: don't delete .sgml and -sections.txt as they're in CVS
+# company: don't delete .sgml and -sections.txt as they're in git
 # FIXME : thomas added all sgml files and some other things to make
 # make distcheck work
-distclean-local: clean
+distclean-local:
 	rm -f $(REPORT_FILES) \
                 $(DOC_MODULE)-decl-list.txt $(DOC_MODULE)-decl.txt
 	rm -rf tmpl/*.sgml.bak
@@ -204,38 +204,15 @@ install-data-local:
 	  fi; \
 	  (which gtkdoc-rebase >/dev/null && \
 	    gtkdoc-rebase --relative --dest-dir=$(DESTDIR) --html-dir=$(DESTDIR)$(TARGET_DIR)) || true ; \
-	fi) 
+	fi)
 uninstall-local:
-	(installfiles=`echo ./html/*.html`; \
-	if test "$$installfiles" = './html/*.html'; \
-	then echo '-- Nothing to uninstall' ; \
+	if test -d $(DESTDIR)$(TARGET_DIR); then \
+	  rm -rf $(DESTDIR)$(TARGET_DIR)/*; \
+	  rmdir -p $(DESTDIR)$(TARGET_DIR) 2>/dev/null || true; \
 	else \
-	  for i in $$installfiles; do \
-	    rmfile=`basename $$i` ; \
-	    echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/'$$rmfile ; \
-	    rm -f $(DESTDIR)$(TARGET_DIR)/$$rmfile; \
-	  done; \
-	  pngfiles=`echo ./html/*.png`; \
-	  if test "$$pngfiles" != './html/*.png'; then \
-	    for i in $$pngfiles; do \
-	      rmfile=`basename $$i` ; \
-	      echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/'$$rmfile ; \
-	      rm -f $(DESTDIR)$(TARGET_DIR)/$$rmfile; \
-	    done; \
-	  fi; \
-	  echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE).devhelp' ; \
-	  rm -f $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp; \
-	  if test -e $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp2; then \
-	    rm -f $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp2; \
-	  fi; \
-	  echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/index.sgml' ; \
-	  rm -f $(DESTDIR)$(TARGET_DIR)/index.sgml; \
-		if test -e $(DESTDIR)$(TARGET_DIR)/style.css; then \
-			echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/style.css' ; \
-			rm -f $(DESTDIR)$(TARGET_DIR)/style.css; \
-		fi; \
-	fi) 
-	if test -d $(DESTDIR)$(TARGET_DIR); then rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(TARGET_DIR) 2>/dev/null; fi; true
+	  echo '-- Nothing to uninstall' ; \
+	fi;
+
 
 #
 # Require gtk-doc when making dist

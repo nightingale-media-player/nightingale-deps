@@ -10,6 +10,12 @@ else
  AMRNB_DIR =
 endif
 
+if USE_AMRWB
+ AMRWB_DIR = amrwbdec
+else
+ AMRWB_DIR =
+endif
+
 if USE_CDIO
 CDIO_DIR = cdio
 else
@@ -20,12 +26,6 @@ if USE_DVDREAD
  DVDREAD_DIR = dvdread
 else
  DVDREAD_DIR =
-endif
-
-if USE_DVDNAV
- DVDNAV_DIR = dvdnav
-else
- DVDNAV_DIR =
 endif
 
 if USE_LAME
@@ -52,24 +52,40 @@ else
 SIDPLAY_DIR =
 endif
 
+if USE_TWOLAME
+TWOLAME_DIR = twolame
+else
+TWOLAME_DIR =
+endif
+
+if USE_X264
+X264_DIR=x264
+else
+X264_DIR=
+endif
+
 SUBDIRS = \
 	$(A52DEC_DIR) \
 	$(AMRNB_DIR) \
+	$(AMRWB_DIR) \
 	$(CDIO_DIR) \
 	$(DVDREAD_DIR) \
-	$(DVDNAV_DIR) \
 	$(LAME_DIR) \
 	$(MAD_DIR) \
 	$(MPEG2DEC_DIR) \
-	$(SIDPLAY_DIR)
+	$(SIDPLAY_DIR) \
+	$(TWOLAME_DIR) \
+	$(X264_DIR)
 
 DIST_SUBDIRS = \
 	a52dec \
 	amrnb \
+	amrwbdec \
 	cdio \
-	dvdnav \
 	dvdread \
 	lame \
 	mad \
 	mpeg2dec \
-	sidplay
+	sidplay \
+	twolame \
+	x264

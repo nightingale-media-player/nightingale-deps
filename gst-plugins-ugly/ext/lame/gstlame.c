@@ -21,13 +21,19 @@
 
 /**
  * SECTION:element-lame
- * @see_also: mad, vorbisenc
+ * @see_also: lamemp3enc, mad, vorbisenc
  *
  * This element encodes raw integer audio into an MPEG-1 layer 3 (MP3) stream.
  * Note that <ulink url="http://en.wikipedia.org/wiki/MP3">MP3</ulink> is not
  * a free format, there are licensing and patent issues to take into
  * consideration. See <ulink url="http://www.vorbis.com/">Ogg/Vorbis</ulink>
  * for a royalty free (and often higher quality) alternative.
+ *
+ * <refsect2>
+ * <title>Note</title>
+ * This element is deprecated, use the lamemp3enc element instead
+ * which provides a much simpler interface and results in better MP3 files.
+ * </refsect2>
  *
  * <refsect2>
  * <title>Output sample rate</title>
@@ -90,7 +96,7 @@ GST_DEBUG_CATEGORY_STATIC (debug);
 static GstElementDetails gst_lame_details = {
   "L.A.M.E. mp3 encoder",
   "Codec/Encoder/Audio",
-  "High-quality free MP3 encoder",
+  "High-quality free MP3 encoder (deprecated)",
   "Erik Walthinsen <omega@cse.ogi.edu>, " "Wim Taymans <wim@fluendo.com>",
 };
 
@@ -347,12 +353,17 @@ gst_lame_get_type (void)
       NULL,
       NULL
     };
+    static const GInterfaceInfo preset_info = {
+      NULL,
+      NULL,
+      NULL
+    };
 
     gst_lame_type =
         g_type_register_static (GST_TYPE_ELEMENT, "GstLame", &gst_lame_info, 0);
     g_type_add_interface_static (gst_lame_type, GST_TYPE_TAG_SETTER,
         &tag_setter_info);
-
+    g_type_add_interface_static (gst_lame_type, GST_TYPE_PRESET, &preset_info);
   }
   return gst_lame_type;
 }
@@ -1009,14 +1020,15 @@ gst_lame_sink_event (GstPad * pad, GstEvent * event)
     case GST_EVENT_FLUSH_STOP:
     {
       guchar *mp3_data = NULL;
-      gint mp3_buffer_size, mp3_size = 0;
+      gint mp3_buffer_size;
 
       GST_DEBUG_OBJECT (lame, "handling FLUSH stop event");
 
       /* clear buffers */
       mp3_buffer_size = 7200;
       mp3_data = g_malloc (mp3_buffer_size);
-      mp3_size = lame_encode_flush (lame->lgf, mp3_data, mp3_buffer_size);
+      lame_encode_flush (lame->lgf, mp3_data, mp3_buffer_size);
+      g_free (mp3_data);
 
       ret = gst_pad_push_event (lame->srcpad, event);
       break;
@@ -1352,29 +1364,16 @@ gst_lame_get_default_settings (void)
   return TRUE;
 }
 
-static gboolean
-plugin_init (GstPlugin * plugin)
+gboolean
+gst_lame_register (GstPlugin * plugin)
 {
   GST_DEBUG_CATEGORY_INIT (debug, "lame", 0, "lame mp3 encoder");
 
   if (!gst_lame_get_default_settings ())
     return FALSE;
 
-#ifdef ENABLE_NLS
-  GST_DEBUG ("binding text domain %s to locale dir %s", GETTEXT_PACKAGE,
-      LOCALEDIR);
-  bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-#endif /* ENABLE_NLS */
-
-  if (!gst_element_register (plugin, "lame", GST_RANK_NONE, GST_TYPE_LAME))
+  if (!gst_element_register (plugin, "lame", GST_RANK_MARGINAL, GST_TYPE_LAME))
     return FALSE;
 
   return TRUE;
 }
-
-GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
-    GST_VERSION_MINOR,
-    "lame",
-    "Encode MP3s with LAME",
-    plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

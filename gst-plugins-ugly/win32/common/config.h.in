@@ -42,7 +42,7 @@
 #undef HAVE_CPU_HPPA
 
 /* Define if the host CPU is an x86 */
-#undef HAVE_CPU_I386
+#define HAVE_CPU_I386 1
 
 /* Define if the host CPU is a IA64 */
 #undef HAVE_CPU_IA64
@@ -55,6 +55,9 @@
 
 /* Define if the host CPU is a PowerPC */
 #undef HAVE_CPU_PPC
+
+/* Define if the host CPU is a 64 bit PowerPC */
+#undef HAVE_CPU_PPC64
 
 /* Define if the host CPU is a S390 */
 #undef HAVE_CPU_S390
@@ -231,9 +234,3 @@
 
 /* Define to 1 if the X Window System is missing or not being used. */
 #undef X_DISPLAY_MISSING
-
-/* Define to `__inline__' or `__inline' if that's what the C compiler
-   calls it, or to nothing if 'inline' is not supported under any name.  */
-#ifndef __cplusplus
-#undef inline
-#endif

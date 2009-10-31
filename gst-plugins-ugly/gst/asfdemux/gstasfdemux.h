@@ -46,6 +46,11 @@ typedef struct _GstASFDemux GstASFDemux;
 typedef struct _GstASFDemuxClass GstASFDemuxClass;
 
 typedef struct {
+  guint32	packet;
+  guint16	count;
+} AsfSimpleIndexEntry;
+
+typedef struct {
   AsfPayloadExtensionID   id : 16;  /* extension ID; the :16 makes sure the
                                      * struct gets packed into 4 bytes       */
   guint16                 len;      /* save this so we can skip unknown IDs  */
@@ -83,18 +88,10 @@ typedef struct
 
   GstPad     *pad;
   guint16     id;
-  guint32     frag_offset;
-  guint32     sequence;
-  guint64     delay;
-  guint64     first_pts;
-  guint64     last_pts; /* FIXME: remove, not actually evaluated */
-  GstBuffer  *payload;
 
   /* video-only */
-  guint64     last_buffer_timestamp;  /* timestamp of last buffer sent out */
   gboolean    is_video;
   gboolean    fps_known;
-  GstBuffer  *cache;
 
   GstCaps    *caps;
 
@@ -105,6 +102,11 @@ typedef struct
   /* for new parsing code */
   GstFlowReturn   last_flow; /* last flow return */
   GArray         *payloads;  /* pending payloads */
+
+  /* Video stream PAR & interlacing */
+  guint8	par_x;
+  guint8	par_y;
+  gboolean      interlaced;
 
   /* extended stream properties (optional) */
   AsfStreamExtProps  ext_props;
@@ -134,7 +136,8 @@ struct _GstASFDemux {
   guint64            data_offset;  /* byte offset where packets start          */
   guint64            data_size;    /* total size of packet data in bytes, or 0 */
   guint64            num_packets;  /* total number of data packets, or 0       */
-  guint64            packet;       /* current packet                           */
+  gint64             packet;       /* current packet                           */
+  guint              speed_packets; /* Known number of packets to get in one go*/
 
   /* bitrates are unused at the moment */
   guint32              bitrate[GST_ASF_DEMUX_NUM_STREAM_IDS];
@@ -144,7 +147,7 @@ struct _GstASFDemux {
 
   GstCaps             *metadata;         /* metadata, for delayed parsing; one
                                           * structure ('stream-N') per stream */
-
+  GstStructure	      *global_metadata;  /* metadata which isn't specific to one stream */
   GSList              *ext_stream_props; /* for delayed processing (buffers) */
   GSList              *mut_ex_streams;   /* mutually exclusive streams */
 
@@ -160,17 +163,21 @@ struct _GstASFDemux {
   guint32              timestamp;       /* in milliseconds              */
   guint64              play_time;
 
-  guint64              preroll;         /* FIXME: make into GstClockTime */
-  guint64              pts;
+  guint64              preroll;
 
   gboolean             seekable;
   gboolean             broadcast;
 
   GstSegment           segment;          /* configured play segment                 */
+  gboolean             accurate;
 
   gboolean             need_newsegment;  /* do we need to send a new-segment event? */
+  GstClockTime         segment_ts;       /* streaming; timestamp for segment start */
+  GstSegment           in_segment;       /* streaming; upstream segment info */
+  GstClockTime         in_gap;           /* streaming; upstream initial segment gap for interpolation */
   gboolean             segment_running;  /* if we've started the current segment    */
   gboolean             streaming;        /* TRUE if we are operating chain-based    */
+  GstClockTime         latency;
 
   /* Descrambler settings */
   guint8               span;
@@ -184,7 +191,7 @@ struct _GstASFDemux {
   /* simple index, if available */
   GstClockTime         sidx_interval;    /* interval between entries in ns */
   guint                sidx_num_entries; /* number of index entries        */
-  guint32             *sidx_entries;     /* packet number for each entry   */
+  AsfSimpleIndexEntry *sidx_entries;     /* packet number for each entry   */
 };
 
 struct _GstASFDemuxClass {

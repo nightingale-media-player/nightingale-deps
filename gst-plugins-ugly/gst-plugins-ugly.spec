@@ -4,7 +4,7 @@
 %define gst_minver  0.10.0
 
 Name: 		%{gstreamer}-plugins-ugly
-Version: 	0.10.10
+Version: 	0.10.13
 Release: 	1.gst
 Summary: 	GStreamer streaming media framework "ugly" plug-ins
 
@@ -21,20 +21,20 @@ BuildRequires:  gcc-c++
 
 BuildRequires:  libsidplay-devel >= 1.36.0
 BuildRequires:  a52dec-devel >= 0.7.3
-# #BuildRequires:  libdvdnav-devel >= 0.1.3
 BuildRequires:  libdvdread-devel >= 0.9.0
-#BuildRequires:  lame-devel >= 3.89
+BuildRequires:  lame-devel >= 3.89
 BuildRequires:  libid3tag-devel >= 0.15.0
 BuildRequires:  libmad-devel >= 0.15.0
 BuildRequires:  mpeg2dec-devel >= 0.4.0
 
 Provides:       gstreamer-sid = %{version}-%{release}
-#Provides:      gstreamer-lame = %{version}-%{release}
+Provides:      gstreamer-lame = %{version}-%{release}
 Provides:       gstreamer-mad = %{version}-%{release}
 Provides:       gstreamer-a52dec = %{version}-%{release}
-# #Provides:       gstreamer-dvdnavsrc = %{version}-%{release}
 Provides:       gstreamer-dvdread = %{version}-%{release}
 Provides:       gstreamer-mpeg2dec = %{version}-%{release}
+
+Requires: x264-libs
 
 %description
 GStreamer is a streaming media framework, based on graphs of elements which
@@ -103,15 +103,25 @@ rm -rf $RPM_BUILD_ROOT
 
 # plugins with dependencies
 %{_libdir}/gstreamer-%{majorminor}/libgstsid.so
-#%{_libdir}/gstreamer-%{majorminor}/libgstlame.so
+%{_libdir}/gstreamer-%{majorminor}/libgstlame.so
 %{_libdir}/gstreamer-%{majorminor}/libgstmad.so
 %{_libdir}/gstreamer-%{majorminor}/libgsta52dec.so
-# #%{_libdir}/gstreamer-%{majorminor}/libgstdvdnavsrc.so
 %{_libdir}/gstreamer-%{majorminor}/libgstdvdread.so
 %{_libdir}/gstreamer-%{majorminor}/libgstmpeg2dec.so
+%{_libdir}/gstreamer-%{majorminor}/libgsttwolame.so
 %doc %{_datadir}/gtk-doc/html/gst-plugins-ugly-plugins-%{majorminor}/*
+%{_datadir}/gstreamer-%{majorminor}/presets/GstX264Enc.prs
+%{_libdir}/gstreamer-%{majorminor}/libgstx264.so
+#%{_libdir}/gstreamer-%{majorminor}/libgstamrnb.so
+#%{_libdir}/gstreamer-%{majorminor}/libgstamrwbdec.so
+#%{_datadir}/gstreamer-%{majorminor}/presets/GstAmrnbEnc.prs
+%{_libdir}/gstreamer-%{majorminor}/libgstcdio.so
+
 
 %changelog
+* Fri Jun 5 2009 Jan Schmidt <thaytan at mad dot scientist dot com>
+- Move x264enc plugin from -bad
+
 * Fri Dec 15 2006 Thomas Vander Stichele <thomas at apestaart dot org>
 - further cleanup
 - add .doap file

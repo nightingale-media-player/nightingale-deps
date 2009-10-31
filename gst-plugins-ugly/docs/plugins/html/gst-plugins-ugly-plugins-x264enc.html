@@ -1,0 +1,551 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>x264enc</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Ugly Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-ugly Elements">
+<link rel="prev" href="gst-plugins-ugly-plugins-synaesthesia.html" title="synaesthesia">
+<link rel="next" href="gst-plugins-ugly-plugins-xingmux.html" title="xingmux">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-ugly Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-ugly Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-ugly-plugins-synaesthesia.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Ugly Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-ugly-plugins-xingmux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-ugly-plugins-x264enc.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-x264enc.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-x264enc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-x264enc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-x264enc.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-ugly-plugins-x264enc"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-ugly-plugins-x264enc.top_of_page"></a>x264enc</span></h2>
+<p>x264enc — H264 Encoder</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-ugly-plugins-x264enc.synopsis"></a><h2>Synopsis</h2>
+<a name="GstX264Enc"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc-struct" title="GstX264Enc">GstX264Enc</a>;
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-ugly-plugins-x264enc.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----GstX264Enc
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-ugly-plugins-x264enc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstX264Enc implements
+ <a
+href="../gstreamer-0.10/GstPreset.html"
+>GstPreset</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-ugly-plugins-x264enc.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--analyse" title='The "analyse" property'>analyse</a>"                  GstX264EncAnalyse     : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--b-adapt" title='The "b-adapt" property'>b-adapt</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--b-pyramid" title='The "b-pyramid" property'>b-pyramid</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--bframes" title='The "bframes" property'>bframes</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--bitrate" title='The "bitrate" property'>bitrate</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--byte-stream" title='The "byte-stream" property'>byte-stream</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--cabac" title='The "cabac" property'>cabac</a>"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--dct8x8" title='The "dct8x8" property'>dct8x8</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--interlaced" title='The "interlaced" property'>interlaced</a>"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--ip-factor" title='The "ip-factor" property'>ip-factor</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a>                : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--key-int-max" title='The "key-int-max" property'>key-int-max</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--me" title='The "me" property'>me</a>"                       GstX264EncMe          : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--multipass-cache-file" title='The "multipass-cache-file" property'>multipass-cache-file</a>"     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--noise-reduction" title='The "noise-reduction" property'>noise-reduction</a>"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--pass" title='The "pass" property'>pass</a>"                     GstX264EncPass        : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--pb-factor" title='The "pb-factor" property'>pb-factor</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a>                : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--qp-max" title='The "qp-max" property'>qp-max</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--qp-min" title='The "qp-min" property'>qp-min</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--qp-step" title='The "qp-step" property'>qp-step</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--quantizer" title='The "quantizer" property'>quantizer</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--ref" title='The "ref" property'>ref</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--sps-id" title='The "sps-id" property'>sps-id</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--stats-file" title='The "stats-file" property'>stats-file</a>"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--subme" title='The "subme" property'>subme</a>"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--threads" title='The "threads" property'>threads</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--trellis" title='The "trellis" property'>trellis</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--vbv-buf-capacity" title='The "vbv-buf-capacity" property'>vbv-buf-capacity</a>"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--weightb" title='The "weightb" property'>weightb</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-ugly-plugins-x264enc.description"></a><h2>Description</h2>
+<p>
+This element encodes raw video into H264 compressed data,
+also otherwise known as MPEG-4 AVC (Advanced Video Codec).
+</p>
+<p>
+The <a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--pass" title='The "pass" property'><span class="type">"pass"</span></a> property controls the type of encoding.  In case of Constant
+Bitrate Encoding (actually ABR), the <a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--bitrate" title='The "bitrate" property'><span class="type">"bitrate"</span></a> will determine the quality
+of the encoding.  This will similarly be the case if this target bitrate
+is to obtained in multiple (2 or 3) pass encoding.
+Alternatively, one may choose to perform Constant Quantizer or Quality encoding,
+in which case the <a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--quantizer" title='The "quantizer" property'><span class="type">"quantizer"</span></a> property controls much of the outcome.
+</p>
+<p>
+The H264 profile that is eventually used depends on a few settings.
+If <a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--dct8x8" title='The "dct8x8" property'><span class="type">"dct8x8"</span></a> is enabled, then High profile is used.
+Otherwise, if <a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--cabac" title='The "cabac" property'><span class="type">"cabac"</span></a> entropy coding is enabled or <a class="link" href="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--bframes" title='The "bframes" property'><span class="type">"bframes"</span></a>
+are allowed, then Main Profile is in effect, and otherwise Baseline profile
+applies.  As such, Main is presently the default profile, which is fine for
+most players and settings, but in some cases (e.g. hardware platforms)
+a more restricted profile/level may be necessary.
+</p>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id3001503"></a><h3>Example pipeline</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v videotestsrc num-buffers=1000 ! x264enc qp-min=18 ! \
+  avimux ! filesink location=videotestsrc.avi
+</pre></div> This example pipeline will encode a test video source to H264 muxed in an
+AVI container, while ensuring a sane minimum quantization factor to avoid
+some (excessive) waste.
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v videotestsrc num-buffers=1000 ! x264enc pass=quant ! \
+  matroskamux ! filesink location=videotestsrc.avi
+</pre></div> This example pipeline will encode a test video source to H264 using fixed
+quantization, and muxes it in a Matroska container.
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id3001537"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-ugly-plugins-plugin-x264.html#plugin-x264">x264</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Josef Zlomek &lt;josef.zlomek@itonis.tv&gt;, Mark Nauwelaerts &lt;mnauw@users.sf.net&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Encoder/Video</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3001600"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw-yuv, format=(fourcc)I420, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 2147483647 ], height=(int)[ 16, 2147483647 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-h264, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-ugly-plugins-x264enc.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc-struct"></a><h3>GstX264Enc</h3>
+<pre class="programlisting">typedef struct _GstX264Enc GstX264Enc;</pre>
+<p>
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-ugly-plugins-x264enc.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--analyse"></a><h3>The <code class="literal">"analyse"</code> property</h3>
+<pre class="programlisting">  "analyse"                  GstX264EncAnalyse     : Read / Write</pre>
+<p>Partitions to consider.</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--b-adapt"></a><h3>The <code class="literal">"b-adapt"</code> property</h3>
+<pre class="programlisting">  "b-adapt"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Automatically decide how many B-frames to use.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--b-pyramid"></a><h3>The <code class="literal">"b-pyramid"</code> property</h3>
+<pre class="programlisting">  "b-pyramid"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Keep some B-frames as references.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--bframes"></a><h3>The <code class="literal">"bframes"</code> property</h3>
+<pre class="programlisting">  "bframes"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>Number of B-frames between I and P.</p>
+<p>Allowed values: &lt;= 4</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--bitrate"></a><h3>The <code class="literal">"bitrate"</code> property</h3>
+<pre class="programlisting">  "bitrate"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>Bitrate in kbit/sec.</p>
+<p>Allowed values: [1,102400]</p>
+<p>Default value: 2048</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--byte-stream"></a><h3>The <code class="literal">"byte-stream"</code> property</h3>
+<pre class="programlisting">  "byte-stream"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Generate byte stream format of NALU.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--cabac"></a><h3>The <code class="literal">"cabac"</code> property</h3>
+<pre class="programlisting">  "cabac"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Enable CABAC entropy coding.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--dct8x8"></a><h3>The <code class="literal">"dct8x8"</code> property</h3>
+<pre class="programlisting">  "dct8x8"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Adaptive spatial transform size.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--interlaced"></a><h3>The <code class="literal">"interlaced"</code> property</h3>
+<pre class="programlisting">  "interlaced"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Interlaced material.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--ip-factor"></a><h3>The <code class="literal">"ip-factor"</code> property</h3>
+<pre class="programlisting">  "ip-factor"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a>                : Read / Write</pre>
+<p>Quantizer factor between I- and P-frames.</p>
+<p>Allowed values: [0,2]</p>
+<p>Default value: 1.4</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--key-int-max"></a><h3>The <code class="literal">"key-int-max"</code> property</h3>
+<pre class="programlisting">  "key-int-max"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>Maximal distance between two key-frames (0 for automatic).</p>
+<p>Allowed values: &lt;= G_MAXINT</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--me"></a><h3>The <code class="literal">"me"</code> property</h3>
+<pre class="programlisting">  "me"                       GstX264EncMe          : Read / Write</pre>
+<p>Integer pixel motion estimation method.</p>
+<p>Default value: hexagonal search, radius 2</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--multipass-cache-file"></a><h3>The <code class="literal">"multipass-cache-file"</code> property</h3>
+<pre class="programlisting">  "multipass-cache-file"     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>Filename for multipass cache file.</p>
+<p>Default value: "x264.log"</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--noise-reduction"></a><h3>The <code class="literal">"noise-reduction"</code> property</h3>
+<pre class="programlisting">  "noise-reduction"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>Noise reduction strength.</p>
+<p>Allowed values: &lt;= 100000</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--pass"></a><h3>The <code class="literal">"pass"</code> property</h3>
+<pre class="programlisting">  "pass"                     GstX264EncPass        : Read / Write</pre>
+<p>Encoding pass/type.</p>
+<p>Default value: Constant Bitrate Encoding</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--pb-factor"></a><h3>The <code class="literal">"pb-factor"</code> property</h3>
+<pre class="programlisting">  "pb-factor"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a>                : Read / Write</pre>
+<p>Quantizer factor between P- and B-frames.</p>
+<p>Allowed values: [0,2]</p>
+<p>Default value: 1.3</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--qp-max"></a><h3>The <code class="literal">"qp-max"</code> property</h3>
+<pre class="programlisting">  "qp-max"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>Maximum quantizer.</p>
+<p>Allowed values: [1,51]</p>
+<p>Default value: 51</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--qp-min"></a><h3>The <code class="literal">"qp-min"</code> property</h3>
+<pre class="programlisting">  "qp-min"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>Minimum quantizer.</p>
+<p>Allowed values: [1,51]</p>
+<p>Default value: 10</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--qp-step"></a><h3>The <code class="literal">"qp-step"</code> property</h3>
+<pre class="programlisting">  "qp-step"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>Maximum quantizer difference between frames.</p>
+<p>Allowed values: [1,50]</p>
+<p>Default value: 4</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--quantizer"></a><h3>The <code class="literal">"quantizer"</code> property</h3>
+<pre class="programlisting">  "quantizer"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>Constant quantizer or quality to apply.</p>
+<p>Allowed values: [1,50]</p>
+<p>Default value: 21</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--ref"></a><h3>The <code class="literal">"ref"</code> property</h3>
+<pre class="programlisting">  "ref"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>Number of reference frames.</p>
+<p>Allowed values: [1,12]</p>
+<p>Default value: 1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--sps-id"></a><h3>The <code class="literal">"sps-id"</code> property</h3>
+<pre class="programlisting">  "sps-id"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>SPS and PPS ID number.</p>
+<p>Allowed values: &lt;= 31</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--stats-file"></a><h3>The <code class="literal">"stats-file"</code> property</h3>
+<pre class="programlisting">  "stats-file"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>Filename for multipass statistics (deprecated, use multipass-stats-file).</p>
+<p>Default value: "x264.log"</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--subme"></a><h3>The <code class="literal">"subme"</code> property</h3>
+<pre class="programlisting">  "subme"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>Subpixel motion estimation and partition decision quality: 1=fast, 6=best.</p>
+<p>Allowed values: [1,6]</p>
+<p>Default value: 1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--threads"></a><h3>The <code class="literal">"threads"</code> property</h3>
+<pre class="programlisting">  "threads"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>Number of threads used by the codec (0 for automatic).</p>
+<p>Allowed values: &lt;= 4</p>
+<p>Default value: 1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--trellis"></a><h3>The <code class="literal">"trellis"</code> property</h3>
+<pre class="programlisting">  "trellis"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Enable trellis searched quantization.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--vbv-buf-capacity"></a><h3>The <code class="literal">"vbv-buf-capacity"</code> property</h3>
+<pre class="programlisting">  "vbv-buf-capacity"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>Size of the VBV buffer in milliseconds.</p>
+<p>Allowed values: [300,10000]</p>
+<p>Default value: 600</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstX264Enc--weightb"></a><h3>The <code class="literal">"weightb"</code> property</h3>
+<pre class="programlisting">  "weightb"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Weighted prediction for B-frames.</p>
+<p>Default value: FALSE</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-ugly-plugins-x264enc.see-also"></a><h2>See Also</h2>
+faac
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.11</div>
+</body>
+</html>

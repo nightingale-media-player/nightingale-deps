@@ -30,5 +30,5 @@ def main():
     # print content
     print saxutils.escape(content).encode('UTF-8')
     print '</programlisting>'
-        
+
 main()

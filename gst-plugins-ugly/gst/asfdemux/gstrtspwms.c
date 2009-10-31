@@ -44,6 +44,7 @@ GST_ELEMENT_DETAILS ("WMS RTSP Extension",
 
 #define SERVER_PREFIX "WMServer/"
 #define HEADER_PREFIX "data:application/vnd.ms.wms-hdr.asfv1;base64,"
+#define EXTENSION_CMD "application/x-wms-extension-cmd"
 
 static GstRTSPResult
 gst_rtsp_wms_before_send (GstRTSPExtension * ext, GstRTSPMessage * request)
@@ -158,10 +159,54 @@ gst_rtsp_wms_configure_stream (GstRTSPExtension * ext, GstCaps * caps)
   return TRUE;
 }
 
-static void gst_rtsp_wms_finalize (GObject * object);
+static GstRTSPResult
+gst_rtsp_wms_receive_request (GstRTSPExtension * ext, GstRTSPMessage * request)
+{
+  GstRTSPWMS *ctx;
+  GstRTSPResult res = GST_RTSP_ENOTIMPL;
+  GstRTSPMessage response = { 0 };
 
-static GstStateChangeReturn gst_rtsp_wms_change_state (GstElement * element,
-    GstStateChange transition);
+  ctx = (GstRTSPWMS *) ext;
+
+  GST_DEBUG_OBJECT (ext, "before send");
+
+  switch (request->type_data.request.method) {
+    case GST_RTSP_SET_PARAMETER:
+    {
+      gchar *content_type = NULL;
+
+      gst_rtsp_message_get_header (request, GST_RTSP_HDR_CONTENT_TYPE,
+          &content_type, 0);
+
+      if (content_type && !g_ascii_strcasecmp (content_type, EXTENSION_CMD)) {
+        /* parse the command */
+
+        /* default implementation, send OK */
+        res = gst_rtsp_message_init_response (&response, GST_RTSP_STS_OK, "OK",
+            request);
+        if (res < 0)
+          goto send_error;
+
+        GST_DEBUG_OBJECT (ctx, "replying with OK");
+
+        /* send reply */
+        if ((res = gst_rtsp_extension_send (ext, request, &response)) < 0)
+          goto send_error;
+
+        res = GST_RTSP_EEOF;
+      }
+      break;
+    }
+    default:
+      break;
+  }
+  return res;
+
+send_error:
+  {
+    return res;
+  }
+}
 
 static void gst_rtsp_wms_extension_init (gpointer g_iface, gpointer iface_data);
 
@@ -192,48 +237,12 @@ gst_rtsp_wms_base_init (gpointer klass)
 static void
 gst_rtsp_wms_class_init (GstRTSPWMSClass * g_class)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
-  GstRTSPWMSClass *klass;
-
-  klass = (GstRTSPWMSClass *) g_class;
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
-
-  gobject_class->finalize = gst_rtsp_wms_finalize;
-
-  gstelement_class->change_state =
-      GST_DEBUG_FUNCPTR (gst_rtsp_wms_change_state);
-
   GST_DEBUG_CATEGORY_INIT (rtspwms_debug, "rtspwms", 0, "WMS RTSP extension");
 }
 
 static void
 gst_rtsp_wms_init (GstRTSPWMS * rtspwms, GstRTSPWMSClass * klass)
 {
-}
-
-static void
-gst_rtsp_wms_finalize (GObject * object)
-{
-  GstRTSPWMS *rtspwms;
-
-  rtspwms = GST_RTSP_WMS (object);
-
-  G_OBJECT_CLASS (parent_class)->finalize (object);
-}
-
-static GstStateChangeReturn
-gst_rtsp_wms_change_state (GstElement * element, GstStateChange transition)
-{
-  GstStateChangeReturn ret;
-  GstRTSPWMS *rtspwms;
-
-  rtspwms = GST_RTSP_WMS (element);
-
-  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
-
-  return ret;
 }
 
 static void
@@ -245,4 +254,5 @@ gst_rtsp_wms_extension_init (gpointer g_iface, gpointer iface_data)
   iface->before_send = gst_rtsp_wms_before_send;
   iface->after_send = gst_rtsp_wms_after_send;
   iface->configure_stream = gst_rtsp_wms_configure_stream;
+  iface->receive_request = gst_rtsp_wms_receive_request;
 }

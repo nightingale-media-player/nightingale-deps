@@ -38,7 +38,7 @@ while (<>) {
 	$type = "file";
 	$name = $1;
 	$coverage{$type}->{$name} = {};
-	
+
 	foreach my $func (@functions) {
 	    $coverage{"function"}->{$func}->{file} = $name;
 	}
@@ -112,7 +112,7 @@ foreach my $type ("function", "file") {
 	}
 	print  "  </entry>\n";
     }
-    
+
     printf "  <summary>\n";
     printf "    <lines count=\"%s\" coverage=\"%s\"/>\n", $summary{$type}->{lines}, $summary{$type}->{linesCoverage};
     printf "    <branches count=\"%s\" coverage=\"%s\"/>\n", $summary{$type}->{branches}, $summary{$type}->{branchesCoverage};

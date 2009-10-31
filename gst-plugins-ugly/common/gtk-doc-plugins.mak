@@ -4,7 +4,7 @@
 help:
 	@echo
 	@echo "If you are a doc maintainer, run 'make update' to update"
-	@echo "the documentation files maintained in CVS"
+	@echo "the documentation files maintained in git"
 	@echo
 	@echo Other useful make targets:
 	@echo
@@ -46,7 +46,7 @@ MAINTAINER_DOC_STAMPS =			\
 	inspect.stamp
 
 # we don't add inspect-build.stamp and scanobj-build.stamp here since they are
-# built manually by docs maintainers and result is commited to CVS
+# built manually by docs maintainers and result is commited to git
 DOC_STAMPS =				\
 	scan-build.stamp		\
 	tmpl-build.stamp		\
@@ -137,7 +137,8 @@ INSPECT_REGISTRY=$(top_builddir)/docs/plugins/inspect-registry.xml
 INSPECT_ENVIRONMENT=\
         GST_PLUGIN_SYSTEM_PATH= \
         GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(top_builddir)/plugins:$(top_builddir)/src:$(top_builddir)/gnl \
-        GST_REGISTRY=$(INSPECT_REGISTRY)
+        GST_REGISTRY=$(INSPECT_REGISTRY) \
+	$(INSPECT_EXTRA_ENVIRONMENT)
 
 # update the element and plugin XML descriptions; store in inspect/
 inspect:
@@ -201,7 +202,7 @@ tmpl.stamp: tmpl-build.stamp
 #### build xml; done on every build ####
 
 ### FIXME: make this error out again when docs are fixed for 0.9
-sgml-build.stamp: tmpl.stamp inspect.stamp $(CFILE_GLOB) $(top_srcdir)/common/plugins.xsl
+sgml-build.stamp: tmpl.stamp inspect.stamp $(CFILE_GLOB) $(top_srcdir)/common/plugins.xsl $(expand_content_files)
 	@echo '*** Building XML ***'
 	@-mkdir -p xml
 	@for a in $(srcdir)/inspect/*.xml; do \
@@ -212,6 +213,7 @@ sgml-build.stamp: tmpl.stamp inspect.stamp $(CFILE_GLOB) $(top_srcdir)/common/pl
 	gtkdoc-mkdb \
 		--module=$(DOC_MODULE) \
 		--source-dir=$(DOC_SOURCE_DIR) \
+                 --expand-content-files="$(expand_content_files)" \
 		--main-sgml-file=$(srcdir)/$(DOC_MAIN_SGML_FILE) \
 		--output-format=xml \
 		--ignore-files="$(IGNORE_HFILES) $(IGNORE_CFILES)" \
@@ -235,11 +237,7 @@ html-build.stamp: sgml.stamp $(DOC_MAIN_SGML_FILE) $(content_files)
 	@for f in $(content_files); do cp $(srcdir)/$$f html; done
 	cp -pr xml html
 	cp ../version.entities html
-	cd html && gtkdoc-mkhtml $(DOC_MODULE) $(DOC_MAIN_SGML_FILE) \
-	    2>&1 | tee ../html-build.log
-	@if grep "warning:" html-build.log > /dev/null; then \
-		echo "ERROR"; grep "warning:" html-build.log; exit 1; fi
-	@rm html-build.log
+	cd html && gtkdoc-mkhtml $(DOC_MODULE) $(DOC_MAIN_SGML_FILE)
 	mv html/index.sgml html/index.sgml.bak
 	$(SED) "s/ href=\"$(DOC_MODULE)\// href=\"$(DOC_MODULE)-@GST_MAJORMINOR@\//g" html/index.sgml.bak >html/index.sgml
 	rm -f html/index.sgml.bak
@@ -248,8 +246,8 @@ html-build.stamp: sgml.stamp $(DOC_MAIN_SGML_FILE) $(content_files)
 	rm -f html/version.entities
 	test "x$(HTML_IMAGES)" = "x" || for i in "" $(HTML_IMAGES) ; do \
 	    if test "$$i" != ""; then cp $(srcdir)/$$i html ; fi; done
-	@echo '-- Fixing Crossreferences' 
-	gtkdoc-fixxref --module-dir=html --html-dir=$(HTML_DIR) $(FIXXREF_OPTIONS)
+	@echo '-- Fixing Crossreferences'
+	gtkdoc-fixxref --module=$(DOC_MODULE) --module-dir=html --html-dir=$(HTML_DIR) $(FIXXREF_OPTIONS)
 	touch html-build.stamp
 
 clean-local-gtkdoc:
@@ -267,7 +265,7 @@ clean-local: clean-local-gtkdoc
 	rm -f *~ *.bak
 	rm -rf .libs
 
-distclean-local: clean
+distclean-local:
 	rm -rf tmpl/*.sgml.bak
 	rm -rf *.o
 
@@ -300,38 +298,14 @@ install-data-local:
 	  fi; \
 	  (which gtkdoc-rebase >/dev/null && \
 	    gtkdoc-rebase --relative --dest-dir=$(DESTDIR) --html-dir=$(DESTDIR)$(TARGET_DIR)) || true ; \
-	fi) 
+	fi)
 uninstall-local:
-	(installfiles=`echo ./html/*.html`; \
-	if test "$$installfiles" = './html/*.html'; \
-	then echo '-- Nothing to uninstall' ; \
+	if test -d $(DESTDIR)$(TARGET_DIR); then \
+	  rm -rf $(DESTDIR)$(TARGET_DIR)/*; \
+	  rmdir -p $(DESTDIR)$(TARGET_DIR) 2>/dev/null || true; \
 	else \
-	  for i in $$installfiles; do \
-	    rmfile=`basename $$i` ; \
-	    echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/'$$rmfile ; \
-	    rm -f $(DESTDIR)$(TARGET_DIR)/$$rmfile; \
-	  done; \
-	  pngfiles=`echo ./html/*.png`; \
-	  if test "$$pngfiles" != './html/*.png'; then \
-	    for i in $$pngfiles; do \
-	      rmfile=`basename $$i` ; \
-	      echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/'$$rmfile ; \
-	      rm -f $(DESTDIR)$(TARGET_DIR)/$$rmfile; \
-	    done; \
-	  fi; \
-	  echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE).devhelp' ; \
-	  rm -f $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp; \
-	  if test -e $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp2; then \
-	    rm -f $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp2; \
-	  fi; \
-	  echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/index.sgml' ; \
-	  rm -f $(DESTDIR)$(TARGET_DIR)/index.sgml; \
-		if test -e $(DESTDIR)$(TARGET_DIR)/style.css; then \
-			echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/style.css' ; \
-			rm -f $(DESTDIR)$(TARGET_DIR)/style.css; \
-		fi; \
-	fi) 
-	if test -d $(DESTDIR)$(TARGET_DIR); then rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(TARGET_DIR) 2>/dev/null; fi; true
+	  echo '-- Nothing to uninstall' ; \
+	fi;
 
 #
 # Checks
