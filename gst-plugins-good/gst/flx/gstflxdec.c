@@ -19,10 +19,7 @@
 /**
  * SECTION:element-flxdec
  *
- * <refsect2>
- * <para>
  * This element decodes fli/flc/flx-video into raw video
- * </refsect2>
  */
 /*
  * http://www.coolutils.com/Formats/FLI
@@ -362,7 +359,7 @@ flx_decode_brun (GstFlxDec * flxdec, guchar * data, guchar * dest)
 static void
 flx_decode_delta_fli (GstFlxDec * flxdec, guchar * data, guchar * dest)
 {
-  gulong count, packets, lines, start_line, start_l;
+  gulong count, packets, lines, start_line;
   guchar *start_p, x;
 
   g_return_if_fail (flxdec != NULL);
@@ -379,7 +376,6 @@ flx_decode_delta_fli (GstFlxDec * flxdec, guchar * data, guchar * dest)
   /* start position of delta */
   dest += (flxdec->hdr.width * start_line);
   start_p = dest;
-  start_l = lines;
 
   while (lines--) {
     /* packet count */

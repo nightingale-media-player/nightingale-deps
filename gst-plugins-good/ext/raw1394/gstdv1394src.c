@@ -22,18 +22,14 @@
 /**
  * SECTION:element-dv1394src
  *
- * <refsect2>
- * <para>
  * Read DV (digital video) data from firewire port.
- * </para>
+ *
+ * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
- * gst-launch dv1394src ! dvdemux name=d ! queue ! dvdec ! xvimagesink d. ! queue ! alsasink
- * </programlisting>
- * This pipeline captures from the firewire port and displays it (might need
+ * |[
+ * gst-launch dv1394src ! queue ! dvdemux name=d ! queue ! dvdec ! xvimagesink d. ! queue ! alsasink
+ * ]| This pipeline captures from the firewire port and displays it (might need
  * format converters for audio/video).
- * </para>
  * </refsect2>
  */
 
@@ -46,6 +42,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include <libavc1394/avc1394.h>
 #include <libavc1394/avc1394_vcr.h>
@@ -68,8 +65,8 @@
 
 #define SEND_COMMAND(src, command)          \
 G_STMT_START {                              \
-  unsigned char c; c = command;             \
-  write (WRITE_SOCKET(src), &c, 1);         \
+  int _res; unsigned char c; c = command;   \
+  _res = write (WRITE_SOCKET(src), &c, 1);  \
 } G_STMT_END
 
 #define READ_COMMAND(src, command, res)        \
@@ -145,12 +142,7 @@ static gboolean gst_dv1394src_unlock (GstBaseSrc * bsrc);
 
 static GstFlowReturn gst_dv1394src_create (GstPushSrc * psrc, GstBuffer ** buf);
 
-static gboolean gst_dv1394src_convert (GstPad * pad,
-    GstFormat src_format, gint64 src_value,
-    GstFormat * dest_format, gint64 * dest_value);
-
-static const GstQueryType *gst_dv1394src_get_query_types (GstPad * pad);
-static gboolean gst_dv1394src_query (GstPad * pad, GstQuery * query);
+static gboolean gst_dv1394src_query (GstBaseSrc * src, GstQuery * query);
 static void gst_dv1394src_update_device_name (GstDV1394Src * src);
 
 static void
@@ -247,6 +239,7 @@ gst_dv1394src_class_init (GstDV1394SrcClass * klass)
   gstbasesrc_class->start = gst_dv1394src_start;
   gstbasesrc_class->stop = gst_dv1394src_stop;
   gstbasesrc_class->unlock = gst_dv1394src_unlock;
+  gstbasesrc_class->query = gst_dv1394src_query;
 
   gstpushsrc_class->create = gst_dv1394src_create;
 }
@@ -257,10 +250,9 @@ gst_dv1394src_init (GstDV1394Src * dv1394src, GstDV1394SrcClass * klass)
   GstPad *srcpad = GST_BASE_SRC_PAD (dv1394src);
 
   gst_base_src_set_live (GST_BASE_SRC (dv1394src), TRUE);
+  gst_base_src_set_format (GST_BASE_SRC (dv1394src), GST_FORMAT_TIME);
+  gst_base_src_set_do_timestamp (GST_BASE_SRC (dv1394src), TRUE);
   gst_pad_use_fixed_caps (srcpad);
-
-  gst_pad_set_query_function (srcpad, gst_dv1394src_query);
-  gst_pad_set_query_type_function (srcpad, gst_dv1394src_get_query_types);
 
   dv1394src->port = DEFAULT_PORT;
   dv1394src->channel = DEFAULT_CHANNEL;
@@ -395,7 +387,7 @@ gst_dv1394src_iec61883_receive (unsigned char *data, int len,
 {
   GstDV1394Src *dv1394src = GST_DV1394SRC (cbdata);
 
-  if (!GST_PAD_CAPS (GST_BASE_SRC_PAD (dv1394src))) {
+  if (G_UNLIKELY (!GST_PAD_CAPS (GST_BASE_SRC_PAD (dv1394src)))) {
     GstCaps *caps;
     unsigned char *p = data;
 
@@ -421,26 +413,17 @@ gst_dv1394src_iec61883_receive (unsigned char *data, int len,
     gst_pad_set_caps (GST_BASE_SRC_PAD (dv1394src), caps);
     gst_caps_unref (caps);
   }
+
   dv1394src->frame = NULL;
-  if ((dv1394src->frame_sequence + 1) % (dv1394src->skip +
-          dv1394src->consecutive) < dv1394src->consecutive) {
+  if (G_LIKELY ((dv1394src->frame_sequence + 1) % (dv1394src->skip +
+              dv1394src->consecutive) < dv1394src->consecutive)) {
     if (complete && len == dv1394src->frame_size) {
-      gint64 i64;
       guint8 *bufdata;
       GstBuffer *buf;
-      GstFormat format;
 
       buf = gst_buffer_new_and_alloc (dv1394src->frame_size);
 
-      /* fill in offset, duration, timestamp */
       GST_BUFFER_OFFSET (buf) = dv1394src->frame_sequence;
-      format = GST_FORMAT_TIME;
-      gst_dv1394src_convert (GST_BASE_SRC_PAD (dv1394src), GST_FORMAT_DEFAULT,
-          GST_BUFFER_OFFSET (buf), &format, &i64);
-      GST_BUFFER_TIMESTAMP (buf) = i64;
-      gst_dv1394src_convert (GST_BASE_SRC_PAD (dv1394src), GST_FORMAT_DEFAULT,
-          1, &format, &i64);
-      GST_BUFFER_DURATION (buf) = i64;
       bufdata = GST_BUFFER_DATA (buf);
       memcpy (bufdata, data, len);
       dv1394src->buf = buf;
@@ -512,7 +495,6 @@ gst_dv1394src_iso_receive (raw1394handle_t handle, int channel, size_t len,
       }
       if ((dv1394src->frame_sequence + 1) % (dv1394src->skip +
               dv1394src->consecutive) < dv1394src->consecutive) {
-        GstFormat format;
         GstBuffer *buf;
         gint64 i64;
 
@@ -520,14 +502,6 @@ gst_dv1394src_iso_receive (raw1394handle_t handle, int channel, size_t len,
 
         /* fill in offset, duration, timestamp */
         GST_BUFFER_OFFSET (buf) = dv1394src->frame_sequence;
-        format = GST_FORMAT_TIME;
-        gst_dv1394src_convert (GST_BASE_SRC_PAD (dv1394src), GST_FORMAT_DEFAULT,
-            GST_BUFFER_OFFSET (buf), &format, &i64);
-        GST_BUFFER_TIMESTAMP (buf) = i64;
-        gst_dv1394src_convert (GST_BASE_SRC_PAD (dv1394src), GST_FORMAT_DEFAULT,
-            1, &format, &i64);
-        GST_BUFFER_DURATION (buf) = i64;
-
         dv1394src->frame = buf;
       }
       dv1394src->frame_sequence++;
@@ -645,7 +619,7 @@ gst_dv1394src_create (GstPushSrc * psrc, GstBuffer ** buf)
   pollfds[1].fd = READ_SOCKET (dv1394src);
   pollfds[1].events = POLLIN | POLLERR | POLLHUP | POLLPRI;
 
-  if (dv1394src->buf) {
+  if (G_UNLIKELY (dv1394src->buf)) {
     /* maybe we had an error before, and there's a stale buffer? */
     gst_buffer_unref (dv1394src->buf);
     dv1394src->buf = NULL;
@@ -654,12 +628,13 @@ gst_dv1394src_create (GstPushSrc * psrc, GstBuffer ** buf)
   while (TRUE) {
     int res = poll (pollfds, 2, -1);
 
-    if (res < 0) {
+    if (G_UNLIKELY (res < 0)) {
       if (errno == EAGAIN || errno == EINTR)
         continue;
       else
         goto error_while_polling;
     }
+
     if (G_UNLIKELY (pollfds[1].revents)) {
       char command;
 
@@ -714,7 +689,6 @@ gst_dv1394src_discover_avc_node (GstDV1394Src * src)
   /* loop over all our ports */
   for (; j < m && node == -1; j++) {
     raw1394handle_t handle;
-    gint n_ports;
     struct raw1394_portinfo pinf[16];
 
     /* open the port */
@@ -723,7 +697,7 @@ gst_dv1394src_discover_avc_node (GstDV1394Src * src)
       GST_WARNING ("raw1394 - failed to get handle: %s.\n", strerror (errno));
       continue;
     }
-    if ((n_ports = raw1394_get_port_info (handle, pinf, 16)) < 0) {
+    if (raw1394_get_port_info (handle, pinf, 16) < 0) {
       GST_WARNING ("raw1394 - failed to get port info: %s.\n",
           strerror (errno));
       goto next;
@@ -969,122 +943,22 @@ gst_dv1394src_unlock (GstBaseSrc * bsrc)
 }
 
 static gboolean
-gst_dv1394src_convert (GstPad * pad,
-    GstFormat src_format, gint64 src_value,
-    GstFormat * dest_format, gint64 * dest_value)
+gst_dv1394src_query (GstBaseSrc * basesrc, GstQuery * query)
 {
-  GstDV1394Src *src;
-
-  src = GST_DV1394SRC (gst_pad_get_parent (pad));
-
-  switch (src_format) {
-    case GST_FORMAT_TIME:
-      switch (*dest_format) {
-        case GST_FORMAT_BYTES:
-          src_value *= src->frame_size;
-        case GST_FORMAT_DEFAULT:
-          *dest_value =
-              gst_util_uint64_scale_int (src_value, src->frame_rate,
-              GST_SECOND);
-          break;
-        default:
-          goto not_supported;
-      }
-      break;
-    case GST_FORMAT_BYTES:
-      src_value /= src->frame_size;
-    case GST_FORMAT_DEFAULT:
-      switch (*dest_format) {
-        case GST_FORMAT_BYTES:
-          *dest_value = src_value * src->frame_size;
-          break;
-        case GST_FORMAT_TIME:
-          if (src->frame_rate != 0)
-            *dest_value =
-                gst_util_uint64_scale_int (src_value, GST_SECOND,
-                src->frame_rate);
-          else
-            goto not_supported;
-          break;
-        default:
-          goto not_supported;
-      }
-      break;
-    default:
-      goto not_supported;
-  }
-
-  gst_object_unref (src);
-  return TRUE;
-
-not_supported:
-  {
-    GST_DEBUG_OBJECT (src, "unsupported conversion");
-    gst_object_unref (src);
-    return FALSE;
-  }
-}
-
-static const GstQueryType *
-gst_dv1394src_get_query_types (GstPad * pad)
-{
-  static const GstQueryType src_query_types[] = {
-    GST_QUERY_CONVERT,
-    GST_QUERY_POSITION,
-    0
-  };
-
-  return src_query_types;
-}
-
-static gboolean
-gst_dv1394src_query (GstPad * pad, GstQuery * query)
-{
-  gboolean res = TRUE;
-  GstDV1394Src *src;
-
-  src = GST_DV1394SRC (gst_pad_get_parent (pad));
-
   switch (GST_QUERY_TYPE (query)) {
-    case GST_QUERY_POSITION:
+    case GST_QUERY_LATENCY:
     {
-      GstFormat format;
-      gint64 current;
-
-      gst_query_parse_position (query, &format, NULL);
-
-      /* bring our current frame to the requested format */
-      res = gst_pad_query_convert (pad,
-          GST_FORMAT_DEFAULT, src->frame_sequence, &format, &current);
-
-      gst_query_set_position (query, format, current);
-      break;
+      gst_query_set_latency (query, TRUE, GST_SECOND / 25, GST_CLOCK_TIME_NONE);
     }
-    case GST_QUERY_CONVERT:
-    {
-      GstFormat src_fmt, dest_fmt;
-      gint64 src_val, dest_val;
-
-      gst_query_parse_convert (query, &src_fmt, &src_val, &dest_fmt, &dest_val);
-      if (!(res =
-              gst_dv1394src_convert (pad, src_fmt, src_val, &dest_fmt,
-                  &dest_val)))
-        goto not_supported;
-      gst_query_set_convert (query, src_fmt, src_val, dest_fmt, dest_val);
       break;
-    }
     default:
       goto not_supported;
   }
 
-  gst_object_unref (src);
   return TRUE;
 
 not_supported:
-  {
-    gst_object_unref (src);
-    return FALSE;
-  }
+  return GST_BASE_SRC_CLASS (parent_class)->query (basesrc, query);
 }
 
 static void

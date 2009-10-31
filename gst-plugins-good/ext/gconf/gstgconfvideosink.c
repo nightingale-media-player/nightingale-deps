@@ -16,6 +16,19 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION:element-gconfvideosink
+ *
+ * This element outputs video to the videosink that has been configured in
+ * GConf by the user.
+ * 
+ * <refsect2>
+ * <title>Example launch line</title>
+ * |[
+ * gst-launch filesrc location=foo.ogg ! decodebin ! ffmpegcolorspace ! gconfvideosink
+ * ]| Play on configured videosink
+ * </refsect2>
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -109,7 +122,7 @@ gst_gconf_video_sink_init (GstGConfVideoSink * sink,
   sink->client = gconf_client_get_default ();
   gconf_client_add_dir (sink->client, GST_GCONF_DIR,
       GCONF_CLIENT_PRELOAD_RECURSIVE, NULL);
-  gconf_client_notify_add (sink->client,
+  sink->notify_id = gconf_client_notify_add (sink->client,
       GST_GCONF_DIR "/" GST_GCONF_VIDEOSINK_KEY,
       cb_toggle_element, sink, NULL, NULL);
 }
@@ -120,6 +133,9 @@ gst_gconf_video_sink_dispose (GObject * object)
   GstGConfVideoSink *sink = GST_GCONF_VIDEO_SINK (object);
 
   if (sink->client) {
+    if (sink->notify_id != 0)
+      gconf_client_notify_remove (sink->client, sink->notify_id);
+
     g_object_unref (G_OBJECT (sink->client));
     sink->client = NULL;
   }

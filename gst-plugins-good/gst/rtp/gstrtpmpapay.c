@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2005> Wim Taymans <wim@fluendo.com>
+ * Copyright (C) <2005> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -29,16 +29,16 @@
 
 /* elementfactory information */
 static const GstElementDetails gst_rtp_mpapay_details =
-GST_ELEMENT_DETAILS ("RTP packet payloader",
+GST_ELEMENT_DETAILS ("RTP MPEG audio payloader",
     "Codec/Payloader/Network",
     "Payload MPEG audio as RTP packets (RFC 2038)",
-    "Wim Taymans <wim@fluendo.com>");
+    "Wim Taymans <wim.taymans@gmail.com>");
 
 static GstStaticPadTemplate gst_rtp_mpa_pay_sink_template =
 GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/mpeg")
+    GST_STATIC_CAPS ("audio/mpeg, " "mpegversion = (int) 1")
     );
 
 static GstStaticPadTemplate gst_rtp_mpa_pay_src_template =
@@ -109,11 +109,9 @@ static void
 gst_rtp_mpa_pay_class_init (GstRtpMPAPayClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseRTPPayloadClass *gstbasertppayload_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
   gstbasertppayload_class = (GstBaseRTPPayloadClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
@@ -146,10 +144,12 @@ gst_rtp_mpa_pay_finalize (GObject * object)
 static gboolean
 gst_rtp_mpa_pay_setcaps (GstBaseRTPPayload * payload, GstCaps * caps)
 {
-  gst_basertppayload_set_options (payload, "audio", TRUE, "MPA", 90000);
-  gst_basertppayload_set_outcaps (payload, NULL);
+  gboolean res;
 
-  return TRUE;
+  gst_basertppayload_set_options (payload, "audio", TRUE, "MPA", 90000);
+  res = gst_basertppayload_set_outcaps (payload, NULL);
+
+  return res;
 }
 
 static GstFlowReturn

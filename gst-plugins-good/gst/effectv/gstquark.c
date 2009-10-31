@@ -1,8 +1,11 @@
 /* GStreamer
  * Copyright (C) <1999> Erik Walthinsen <omega@cse.ogi.edu>
+ * Copyright (C) <2009> Sebastian Dröge <sebastian.droege@collabora.co.uk>
  *
  * EffecTV:
- * Copyright (C) 2001 FUKUCHI Kentarou
+ * Copyright (C) 2001-2002 FUKUCHI Kentarou
+ *
+ * QuarkTV - motion disolver.
  *
  *  EffecTV is free software. This library is free software;
  * you can redistribute it and/or
@@ -21,82 +24,62 @@
  * Boston, MA 02111-1307, USA.
  */
 
+/**
+ * SECTION:element-quarktv
+ *
+ * QuarkTV disolves moving objects. It picks up pixels from
+ * the last frames randomly.
+ *
+ * <refsect2>
+ * <title>Example launch line</title>
+ * |[
+ * gst-launch -v videotestsrc ! quarktv ! ffmpegcolorspace ! autovideosink
+ * ]| This pipeline shows the effect of quarktv on a test stream.
+ * </refsect2>
+ */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
-#include <gst/video/gstvideofilter.h>
-
 #include <math.h>
 #include <string.h>
 
-#include <gst/video/video.h>
+#include "gstquark.h"
+#include "gsteffectv.h"
 
-#define GST_TYPE_QUARKTV \
-  (gst_quarktv_get_type())
-#define GST_QUARKTV(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_QUARKTV,GstQuarkTV))
-#define GST_QUARKTV_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_QUARKTV,GstQuarkTVClass))
-#define GST_IS_QUARKTV(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_QUARKTV))
-#define GST_IS_QUARKTV_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_QUARKTV))
+#include <gst/video/video.h>
 
 /* number of frames of time-buffer. It should be as a configurable paramater */
 /* This number also must be 2^n just for the speed. */
 #define PLANES 16
 
-typedef struct _GstQuarkTV GstQuarkTV;
-typedef struct _GstQuarkTVClass GstQuarkTVClass;
-
-struct _GstQuarkTV
-{
-  GstVideoFilter element;
-
-  gint width, height;
-  gint area;
-  gint planes;
-  gint current_plane;
-  GstBuffer **planetable;
-};
-
-struct _GstQuarkTVClass
-{
-  GstVideoFilterClass parent_class;
-};
-
 enum
 {
-  ARG_0,
-  ARG_PLANES
+  PROP_0,
+  PROP_PLANES
 };
 
-GType gst_quarktv_get_type (void);
+GST_BOILERPLATE (GstQuarkTV, gst_quarktv, GstVideoFilter,
+    GST_TYPE_VIDEO_FILTER);
 
 static void gst_quarktv_planetable_clear (GstQuarkTV * filter);
-
-static const GstElementDetails quarktv_details =
-GST_ELEMENT_DETAILS ("QuarkTV effect",
-    "Filter/Effect/Video",
-    "Motion dissolver",
-    "FUKUCHI, Kentarou <fukuchi@users.sourceforge.net>");
 
 static GstStaticPadTemplate gst_quarktv_src_template =
     GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_BGRx "; " GST_VIDEO_CAPS_RGBx)
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_xRGB ";" GST_VIDEO_CAPS_xBGR ";"
+        GST_VIDEO_CAPS_BGRx "; " GST_VIDEO_CAPS_RGBx)
     );
 
 static GstStaticPadTemplate gst_quarktv_sink_template =
     GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_BGRx "; " GST_VIDEO_CAPS_RGBx)
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_xRGB ";" GST_VIDEO_CAPS_xBGR ";"
+        GST_VIDEO_CAPS_BGRx "; " GST_VIDEO_CAPS_RGBx)
     );
-
-static GstVideoFilterClass *parent_class = NULL;
 
 static gboolean
 gst_quarktv_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
@@ -118,50 +101,14 @@ gst_quarktv_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
   return ret;
 }
 
-static gboolean
-gst_quarktv_get_unit_size (GstBaseTransform * btrans, GstCaps * caps,
-    guint * size)
-{
-  GstQuarkTV *filter;
-  GstStructure *structure;
-  gboolean ret = FALSE;
-  gint width, height;
-
-  filter = GST_QUARKTV (btrans);
-
-  structure = gst_caps_get_structure (caps, 0);
-
-  if (gst_structure_get_int (structure, "width", &width) &&
-      gst_structure_get_int (structure, "height", &height)) {
-    *size = width * height * 32 / 8;
-    ret = TRUE;
-    GST_DEBUG_OBJECT (filter, "our frame size is %d bytes (%dx%d)", *size,
-        width, height);
-  }
-
-  return ret;
-}
-
-static inline guint32
-fastrand (void)
-{
-  static unsigned int fastrand_val;
-
-  return (fastrand_val = fastrand_val * 1103515245 + 12345);
-}
-
 static GstFlowReturn
 gst_quarktv_transform (GstBaseTransform * trans, GstBuffer * in,
     GstBuffer * out)
 {
-  GstQuarkTV *filter;
+  GstQuarkTV *filter = GST_QUARKTV (trans);
   gint area;
   guint32 *src, *dest;
   GstFlowReturn ret = GST_FLOW_OK;
-
-  filter = GST_QUARKTV (trans);
-
-  gst_buffer_copy_metadata (out, in, GST_BUFFER_COPY_TIMESTAMPS);
 
   area = filter->area;
   src = (guint32 *) GST_BUFFER_DATA (in);
@@ -182,10 +129,11 @@ gst_quarktv_transform (GstBaseTransform * trans, GstBuffer * in,
     /* pick a random buffer */
     rand =
         filter->planetable[(filter->current_plane +
-            (fastrand () >> 24)) & (filter->planes - 1)];
+            (fastrand () >> 24)) % filter->planes];
 
     /* Copy the pixel from the random buffer to dest */
-    dest[area] = (rand ? ((guint32 *) GST_BUFFER_DATA (rand))[area] : 0);
+    dest[area] =
+        (rand ? ((guint32 *) GST_BUFFER_DATA (rand))[area] : src[area]);
   }
 
   filter->current_plane--;
@@ -211,54 +159,43 @@ gst_quarktv_planetable_clear (GstQuarkTV * filter)
   }
 }
 
-static GstStateChangeReturn
-gst_quarktv_change_state (GstElement * element, GstStateChange transition)
+static gboolean
+gst_quarktv_start (GstBaseTransform * trans)
 {
-  GstQuarkTV *filter = GST_QUARKTV (element);
-  GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;
+  GstQuarkTV *filter = GST_QUARKTV (trans);
 
-  switch (transition) {
-    case GST_STATE_CHANGE_READY_TO_PAUSED:
-    {
-      filter->planetable =
-          (GstBuffer **) g_malloc0 (filter->planes * sizeof (GstBuffer *));
-      break;
-    }
-    default:
-      break;
+  if (filter->planetable) {
+    gst_quarktv_planetable_clear (filter);
+    g_free (filter->planetable);
   }
+  filter->planetable =
+      (GstBuffer **) g_malloc0 (filter->planes * sizeof (GstBuffer *));
 
-  if (GST_ELEMENT_CLASS (parent_class)->change_state)
-    ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
-
-  switch (transition) {
-    case GST_STATE_CHANGE_PAUSED_TO_READY:
-    {
-      gst_quarktv_planetable_clear (filter);
-      g_free (filter->planetable);
-      filter->planetable = NULL;
-      break;
-    }
-    default:
-      break;
-  }
-
-  return ret;
+  return TRUE;
 }
 
+static void
+gst_quarktv_finalize (GObject * object)
+{
+  GstQuarkTV *filter = GST_QUARKTV (object);
+
+  if (filter->planetable) {
+    gst_quarktv_planetable_clear (filter);
+    g_free (filter->planetable);
+    filter->planetable = NULL;
+  }
+
+  G_OBJECT_CLASS (parent_class)->finalize (object);
+}
 
 static void
 gst_quarktv_set_property (GObject * object, guint prop_id, const GValue * value,
     GParamSpec * pspec)
 {
-  GstQuarkTV *filter;
-
-  g_return_if_fail (GST_IS_QUARKTV (object));
-
-  filter = GST_QUARKTV (object);
+  GstQuarkTV *filter = GST_QUARKTV (object);
 
   switch (prop_id) {
-    case ARG_PLANES:
+    case PROP_PLANES:
     {
       gint new_n_planes = g_value_get_int (value);
       GstBuffer **new_planetable;
@@ -267,22 +204,25 @@ gst_quarktv_set_property (GObject * object, guint prop_id, const GValue * value,
       /* If the number of planes changed, copy across any existing planes */
       if (new_n_planes != filter->planes) {
         new_planetable =
-            (GstBuffer **) g_malloc (new_n_planes * sizeof (GstBuffer *));
+            (GstBuffer **) g_malloc0 (new_n_planes * sizeof (GstBuffer *));
 
-        for (i = 0; (i < new_n_planes) && (i < filter->planes); i++) {
-          new_planetable[i] = filter->planetable[i];
+        if (filter->planetable) {
+          for (i = 0; (i < new_n_planes) && (i < filter->planes); i++) {
+            new_planetable[i] = filter->planetable[i];
+          }
+          for (; i < filter->planes; i++) {
+            if (filter->planetable[i])
+              gst_buffer_unref (filter->planetable[i]);
+          }
+          g_free (filter->planetable);
         }
-        for (; i < filter->planes; i++) {
-          if (filter->planetable[i])
-            gst_buffer_unref (filter->planetable[i]);
-        }
-        g_free (filter->planetable);
+
         filter->planetable = new_planetable;
-        filter->current_plane = filter->planes - 1;
         filter->planes = new_n_planes;
+        filter->current_plane = filter->planes - 1;
       }
-    }
       break;
+    }
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -293,14 +233,10 @@ static void
 gst_quarktv_get_property (GObject * object, guint prop_id, GValue * value,
     GParamSpec * pspec)
 {
-  GstQuarkTV *filter;
-
-  g_return_if_fail (GST_IS_QUARKTV (object));
-
-  filter = GST_QUARKTV (object);
+  GstQuarkTV *filter = GST_QUARKTV (object);
 
   switch (prop_id) {
-    case ARG_PLANES:
+    case PROP_PLANES:
       g_value_set_int (value, filter->planes);
       break;
     default:
@@ -314,7 +250,9 @@ gst_quarktv_base_init (gpointer g_class)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
-  gst_element_class_set_details (element_class, &quarktv_details);
+  gst_element_class_set_details_simple (element_class, "QuarkTV effect",
+      "Filter/Effect/Video",
+      "Motion dissolver", "FUKUCHI, Kentarou <fukuchi@users.sourceforge.net>");
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&gst_quarktv_sink_template));
@@ -323,57 +261,32 @@ gst_quarktv_base_init (gpointer g_class)
 }
 
 static void
-gst_quarktv_class_init (gpointer klass, gpointer class_data)
+gst_quarktv_class_init (GstQuarkTVClass * klass)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *element_class;
-  GstBaseTransformClass *trans_class;
+  GObjectClass *gobject_class = (GObjectClass *) klass;
+  GstBaseTransformClass *trans_class = (GstBaseTransformClass *) klass;
 
-  gobject_class = (GObjectClass *) klass;
-  element_class = (GstElementClass *) klass;
-  trans_class = (GstBaseTransformClass *) klass;
+  gobject_class->set_property = gst_quarktv_set_property;
+  gobject_class->get_property = gst_quarktv_get_property;
 
-  parent_class = g_type_class_peek_parent (klass);
+  gobject_class->finalize = gst_quarktv_finalize;
 
-  gobject_class->set_property = GST_DEBUG_FUNCPTR (gst_quarktv_set_property);
-  gobject_class->get_property = GST_DEBUG_FUNCPTR (gst_quarktv_get_property);
-
-  element_class->change_state = GST_DEBUG_FUNCPTR (gst_quarktv_change_state);
+  g_object_class_install_property (gobject_class, PROP_PLANES,
+      g_param_spec_int ("planes", "Planes",
+          "Number of planes", 0, 64, PLANES,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   trans_class->set_caps = GST_DEBUG_FUNCPTR (gst_quarktv_set_caps);
-  trans_class->get_unit_size = GST_DEBUG_FUNCPTR (gst_quarktv_get_unit_size);
   trans_class->transform = GST_DEBUG_FUNCPTR (gst_quarktv_transform);
+  trans_class->start = GST_DEBUG_FUNCPTR (gst_quarktv_start);
 }
 
 static void
-gst_quarktv_init (GTypeInstance * instance, gpointer g_class)
+gst_quarktv_init (GstQuarkTV * filter, GstQuarkTVClass * klass)
 {
-  GstQuarkTV *filter = GST_QUARKTV (instance);
-
   filter->planes = PLANES;
   filter->current_plane = filter->planes - 1;
-}
 
-GType
-gst_quarktv_get_type (void)
-{
-  static GType quarktv_type = 0;
-
-  if (!quarktv_type) {
-    static const GTypeInfo quarktv_info = {
-      sizeof (GstQuarkTVClass),
-      gst_quarktv_base_init,
-      NULL,
-      gst_quarktv_class_init,
-      NULL,
-      NULL,
-      sizeof (GstQuarkTV),
-      0,
-      gst_quarktv_init,
-    };
-
-    quarktv_type = g_type_register_static (GST_TYPE_VIDEO_FILTER,
-        "GstQuarkTV", &quarktv_info, 0);
-  }
-  return quarktv_type;
+  gst_pad_use_fixed_caps (GST_BASE_TRANSFORM_SRC_PAD (filter));
+  gst_pad_use_fixed_caps (GST_BASE_TRANSFORM_SINK_PAD (filter));
 }

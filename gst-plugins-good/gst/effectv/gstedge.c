@@ -1,10 +1,13 @@
 /* GStreamer
  * Copyright (C) <1999> Erik Walthinsen <omega@cse.ogi.edu>
+ * Copyright (C) <2009> Sebastian Dröge <sebastian.droege@collabora.co.uk>
  *
  * EffecTV:
- * Copyright (C) 2001 FUKUCHI Kentarou
+ * Copyright (C) 2001-2002 FUKUCHI Kentarou
  *
- * EffecTV is free software. * This library is free software;
+ * EdgeTV - detects edge and display it in good old computer way
+ *
+ * EffecTV is free software. This library is free software;
  * you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -21,68 +24,53 @@
  * Boston, MA 02111-1307, USA.
  */
 
+/**
+ * SECTION:element-edgetv
+ *
+ * EdgeTV detects edges and display it in good old low resolution
+ * computer way.
+ *
+ * <refsect2>
+ * <title>Example launch line</title>
+ * |[
+ * gst-launch -v videotestsrc ! edgetv ! ffmpegcolorspace ! autovideosink
+ * ]| This pipeline shows the effect of edgetv on a test stream.
+ * </refsect2>
+ */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
-#include <gst/video/gstvideofilter.h>
-
 #include <string.h>
+
+#include "gstedge.h"
 
 #include <gst/video/video.h>
 
-#define GST_TYPE_EDGETV \
-  (gst_edgetv_get_type())
-#define GST_EDGETV(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_EDGETV,GstEdgeTV))
-#define GST_EDGETV_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_EDGETV,GstEdgeTVClass))
-#define GST_IS_EDGETV(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_EDGETV))
-#define GST_IS_EDGETV_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_EDGETV))
-
-typedef struct _GstEdgeTV GstEdgeTV;
-typedef struct _GstEdgeTVClass GstEdgeTVClass;
-
-struct _GstEdgeTV
-{
-  GstVideoFilter videofilter;
-
-  gint width, height;
-  gint map_width, map_height;
-  guint32 *map;
-  gint video_width_margin;
-};
-
-struct _GstEdgeTVClass
-{
-  GstVideoFilterClass parent_class;
-};
-
-GType gst_edgetv_get_type (void);
-
-static const GstElementDetails gst_edgetv_details =
-GST_ELEMENT_DETAILS ("EdgeTV effect",
-    "Filter/Effect/Video",
-    "Apply edge detect on video",
-    "Wim Taymans <wim.taymans@chello.be>");
+GST_BOILERPLATE (GstEdgeTV, gst_edgetv, GstVideoFilter, GST_TYPE_VIDEO_FILTER);
 
 static GstStaticPadTemplate gst_edgetv_src_template =
-GST_STATIC_PAD_TEMPLATE ("src",
+    GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_BGRx)
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_BGRx ";" GST_VIDEO_CAPS_RGBx)
+#else
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_xBGR ";" GST_VIDEO_CAPS_xRGB)
+#endif
     );
 
 static GstStaticPadTemplate gst_edgetv_sink_template =
-GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_BGRx)
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_BGRx ";" GST_VIDEO_CAPS_RGBx)
+#else
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_xBGR ";" GST_VIDEO_CAPS_xRGB)
+#endif
     );
-
-static GstVideoFilterClass *parent_class = NULL;
 
 static gboolean
 gst_edgetv_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
@@ -96,41 +84,17 @@ gst_edgetv_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
 
   if (gst_structure_get_int (structure, "width", &edgetv->width) &&
       gst_structure_get_int (structure, "height", &edgetv->height)) {
+    guint map_size;
+
     edgetv->map_width = edgetv->width / 4;
     edgetv->map_height = edgetv->height / 4;
     edgetv->video_width_margin = edgetv->width % 4;
 
+    map_size = edgetv->map_width * edgetv->map_height * sizeof (guint32) * 2;
+
     g_free (edgetv->map);
-    edgetv->map =
-        (guint32 *) g_malloc (edgetv->map_width * edgetv->map_height *
-        sizeof (guint32) * 2);
-    memset (edgetv->map, 0,
-        edgetv->map_width * edgetv->map_height * sizeof (guint32) * 2);
+    edgetv->map = (guint32 *) g_malloc0 (map_size);
     ret = TRUE;
-  }
-
-  return ret;
-}
-
-static gboolean
-gst_edgetv_get_unit_size (GstBaseTransform * btrans, GstCaps * caps,
-    guint * size)
-{
-  GstEdgeTV *filter;
-  GstStructure *structure;
-  gboolean ret = FALSE;
-  gint width, height;
-
-  filter = GST_EDGETV (btrans);
-
-  structure = gst_caps_get_structure (caps, 0);
-
-  if (gst_structure_get_int (structure, "width", &width) &&
-      gst_structure_get_int (structure, "height", &height)) {
-    *size = width * height * 32 / 8;
-    ret = TRUE;
-    GST_DEBUG_OBJECT (filter, "our frame size is %d bytes (%dx%d)", *size,
-        width, height);
   }
 
   return ret;
@@ -139,16 +103,12 @@ gst_edgetv_get_unit_size (GstBaseTransform * btrans, GstCaps * caps,
 static GstFlowReturn
 gst_edgetv_transform (GstBaseTransform * trans, GstBuffer * in, GstBuffer * out)
 {
-  GstEdgeTV *filter;
+  GstEdgeTV *filter = GST_EDGETV (trans);
   gint x, y, r, g, b;
   guint32 *src, *dest;
   guint32 p, q;
   guint32 v0, v1, v2, v3;
   GstFlowReturn ret = GST_FLOW_OK;
-
-  filter = GST_EDGETV (trans);
-
-  gst_buffer_copy_metadata (out, in, GST_BUFFER_COPY_TIMESTAMPS);
 
   src = (guint32 *) GST_BUFFER_DATA (in);
   dest = (guint32 *) GST_BUFFER_DATA (out);
@@ -158,7 +118,6 @@ gst_edgetv_transform (GstBaseTransform * trans, GstBuffer * in, GstBuffer * out)
 
   for (y = 1; y < filter->map_height - 1; y++) {
     for (x = 1; x < filter->map_width - 1; x++) {
-
       p = *src;
       q = *(src - 4);
 
@@ -234,12 +193,36 @@ gst_edgetv_transform (GstBaseTransform * trans, GstBuffer * in, GstBuffer * out)
   return ret;
 }
 
+static gboolean
+gst_edgetv_start (GstBaseTransform * trans)
+{
+  GstEdgeTV *edgetv = GST_EDGETV (trans);
+
+  if (edgetv->map)
+    memset (edgetv->map, 0,
+        edgetv->map_width * edgetv->map_height * sizeof (guint32) * 2);
+  return TRUE;
+}
+
+static void
+gst_edgetv_finalize (GObject * object)
+{
+  GstEdgeTV *edgetv = GST_EDGETV (object);
+
+  g_free (edgetv->map);
+  edgetv->map = NULL;
+
+  G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
 static void
 gst_edgetv_base_init (gpointer g_class)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
-  gst_element_class_set_details (element_class, &gst_edgetv_details);
+  gst_element_class_set_details_simple (element_class, "EdgeTV effect",
+      "Filter/Effect/Video",
+      "Apply edge detect on video", "Wim Taymans <wim.taymans@chello.be>");
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&gst_edgetv_sink_template));
@@ -248,52 +231,19 @@ gst_edgetv_base_init (gpointer g_class)
 }
 
 static void
-gst_edgetv_class_init (gpointer klass, gpointer class_data)
+gst_edgetv_class_init (GstEdgeTVClass * klass)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *element_class;
-  GstBaseTransformClass *trans_class;
+  GstBaseTransformClass *trans_class = (GstBaseTransformClass *) klass;
+  GObjectClass *gobject_class = (GObjectClass *) klass;
 
-  gobject_class = (GObjectClass *) klass;
-  element_class = (GstElementClass *) klass;
-  trans_class = (GstBaseTransformClass *) klass;
-
-  parent_class = g_type_class_peek_parent (klass);
+  gobject_class->finalize = gst_edgetv_finalize;
 
   trans_class->set_caps = GST_DEBUG_FUNCPTR (gst_edgetv_set_caps);
-  trans_class->get_unit_size = GST_DEBUG_FUNCPTR (gst_edgetv_get_unit_size);
   trans_class->transform = GST_DEBUG_FUNCPTR (gst_edgetv_transform);
+  trans_class->start = GST_DEBUG_FUNCPTR (gst_edgetv_start);
 }
 
 static void
-gst_edgetv_init (GTypeInstance * instance, gpointer g_class)
+gst_edgetv_init (GstEdgeTV * edgetv, GstEdgeTVClass * klass)
 {
-  GstEdgeTV *edgetv = GST_EDGETV (instance);
-
-  edgetv->map = NULL;
-}
-
-GType
-gst_edgetv_get_type (void)
-{
-  static GType edgetv_type = 0;
-
-  if (!edgetv_type) {
-    static const GTypeInfo edgetv_info = {
-      sizeof (GstEdgeTVClass),
-      gst_edgetv_base_init,
-      NULL,
-      (GClassInitFunc) gst_edgetv_class_init,
-      NULL,
-      NULL,
-      sizeof (GstEdgeTV),
-      0,
-      (GInstanceInitFunc) gst_edgetv_init,
-    };
-
-    edgetv_type =
-        g_type_register_static (GST_TYPE_VIDEO_FILTER, "GstEdgeTV",
-        &edgetv_info, 0);
-  }
-  return edgetv_type;
 }

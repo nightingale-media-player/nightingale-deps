@@ -1,50 +1,64 @@
+/* GStreamer PCM/A-Law conversions
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 #include "mulaw-encode.h"
 #include "mulaw-decode.h"
 
-static GstCaps *
-mulaw_factory (void)
-{
-  return gst_caps_new_simple ("audio/x-mulaw",
-      "rate", GST_TYPE_INT_RANGE, 8000, 192000,
-      "channels", GST_TYPE_INT_RANGE, 1, 2, NULL);
-}
+GstStaticPadTemplate mulaw_dec_src_factory = GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("audio/x-raw-int, "
+        "rate = (int) [ 8000, 192000 ], "
+        "channels = (int) [ 1, 2 ], "
+        "endianness = (int) BYTE_ORDER, "
+        "width = (int) 16, " "depth = (int) 16, " "signed = (boolean) True")
+    );
 
-static GstCaps *
-linear_factory (void)
-{
-  return gst_caps_new_simple ("audio/x-raw-int",
-      "width", G_TYPE_INT, 16,
-      "depth", G_TYPE_INT, 16,
-      "endianness", G_TYPE_INT, G_BYTE_ORDER,
-      "signed", G_TYPE_BOOLEAN, TRUE,
-      "rate", GST_TYPE_INT_RANGE, 8000, 192000,
-      "channels", GST_TYPE_INT_RANGE, 1, 2, NULL);
-}
+GstStaticPadTemplate mulaw_dec_sink_factory = GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("audio/x-mulaw, "
+        "rate = [ 8000 , 192000 ], " "channels = [ 1 , 2 ]")
+    );
 
-GstPadTemplate *mulawenc_src_template, *mulawenc_sink_template;
-GstPadTemplate *mulawdec_src_template, *mulawdec_sink_template;
+GstStaticPadTemplate mulaw_enc_sink_factory = GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("audio/x-raw-int, "
+        "rate = (int) [ 8000, 192000 ], "
+        "channels = (int) [ 1, 2 ], "
+        "endianness = (int) BYTE_ORDER, "
+        "width = (int) 16, " "depth = (int) 16, " "signed = (boolean) True")
+    );
+
+GstStaticPadTemplate mulaw_enc_src_factory = GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("audio/x-mulaw, "
+        "rate = [ 8000 , 192000 ], " "channels = [ 1 , 2 ]")
+    );
 
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  GstCaps *mulaw_caps, *linear_caps;
-
-  mulaw_caps = mulaw_factory ();
-  linear_caps = linear_factory ();
-
-  mulawenc_src_template =
-      gst_pad_template_new ("src", GST_PAD_SRC, GST_PAD_ALWAYS, mulaw_caps);
-  mulawenc_sink_template =
-      gst_pad_template_new ("sink", GST_PAD_SINK, GST_PAD_ALWAYS, linear_caps);
-
-  mulawdec_src_template =
-      gst_pad_template_new ("src", GST_PAD_SRC, GST_PAD_ALWAYS, linear_caps);
-  mulawdec_sink_template =
-      gst_pad_template_new ("sink", GST_PAD_SINK, GST_PAD_ALWAYS, mulaw_caps);
-
   if (!gst_element_register (plugin, "mulawenc",
           GST_RANK_NONE, GST_TYPE_MULAWENC) ||
       !gst_element_register (plugin, "mulawdec",

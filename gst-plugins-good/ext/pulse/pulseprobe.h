@@ -34,9 +34,10 @@ typedef struct _GstPulseProbe GstPulseProbe;
 
 struct _GstPulseProbe
 {
+  GObject *object;
   gchar *server;
   GList *devices;
-  int devices_valid;
+  gboolean devices_valid;
 
   pa_threaded_mainloop *mainloop;
   pa_context *context;
@@ -48,8 +49,8 @@ struct _GstPulseProbe
   int operation_success;
 };
 
-GstPulseProbe *gst_pulseprobe_new (GObjectClass * klass, guint prop_id,
-    const gchar * server, gboolean sinks, gboolean sources);
+GstPulseProbe *gst_pulseprobe_new (GObject *object, GObjectClass * klass,
+    guint prop_id, const gchar * server, gboolean sinks, gboolean sources);
 void gst_pulseprobe_free (GstPulseProbe * probe);
 
 const GList *gst_pulseprobe_get_properties (GstPulseProbe * probe);

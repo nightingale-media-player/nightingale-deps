@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2007> Wim Taymans <wim@fluendo.com>
+ * Copyright (C) <2007> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -29,10 +29,10 @@
 
 /* elementfactory information */
 static const GstElementDetails gst_rtp_mp2t_pay_details =
-GST_ELEMENT_DETAILS ("RTP MP2T audio payloader",
+GST_ELEMENT_DETAILS ("RTP MPEG2 Transport Stream payloader",
     "Codec/Payloader/Network",
     "Payload-encodes MPEG2 TS into RTP packets (RFC 2250)",
-    "Wim Taymans <wim@fluendo.com>");
+    "Wim Taymans <wim.taymans@gmail.com>");
 
 static GstStaticPadTemplate gst_rtp_mp2t_pay_sink_template =
 GST_STATIC_PAD_TEMPLATE ("sink",
@@ -78,11 +78,9 @@ static void
 gst_rtp_mp2t_pay_class_init (GstRTPMP2TPayClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseRTPPayloadClass *gstbasertppayload_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
   gstbasertppayload_class = (GstBaseRTPPayloadClass *) klass;
 
   gobject_class->finalize = gst_rtp_mp2t_pay_finalize;
@@ -116,13 +114,6 @@ gst_rtp_mp2t_pay_finalize (GObject * object)
 static gboolean
 gst_rtp_mp2t_pay_setcaps (GstBaseRTPPayload * payload, GstCaps * caps)
 {
-  const char *stname;
-  GstStructure *structure;
-
-  structure = gst_caps_get_structure (caps, 0);
-
-  stname = gst_structure_get_name (structure);
-
   gst_basertppayload_set_options (payload, "video", TRUE, "MP2T-ES", 90000);
   gst_basertppayload_set_outcaps (payload, NULL);
 
@@ -166,14 +157,12 @@ gst_rtp_mp2t_pay_handle_buffer (GstBaseRTPPayload * basepayload,
 {
   GstRTPMP2TPay *rtpmp2tpay;
   guint size, avail, packet_len;
-  guint8 *data;
   GstClockTime timestamp, duration;
   GstFlowReturn ret;
 
   rtpmp2tpay = GST_RTP_MP2T_PAY (basepayload);
 
   size = GST_BUFFER_SIZE (buffer);
-  data = GST_BUFFER_DATA (buffer);
   timestamp = GST_BUFFER_TIMESTAMP (buffer);
   duration = GST_BUFFER_DURATION (buffer);
 

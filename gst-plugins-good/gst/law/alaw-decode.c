@@ -16,6 +16,11 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION:element-alawdec
+ *
+ * This element decodes alaw audio. Alaw coding is also known as G.711.
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -23,8 +28,8 @@
 
 #include "alaw-decode.h"
 
-extern GstPadTemplate *alawdec_src_template;
-extern GstPadTemplate *alawdec_sink_template;
+extern GstStaticPadTemplate alaw_dec_src_factory;
+extern GstStaticPadTemplate alaw_dec_sink_factory;
 
 GST_DEBUG_CATEGORY_STATIC (alaw_dec_debug);
 #define GST_CAT_DEFAULT alaw_dec_debug
@@ -140,13 +145,77 @@ gst_alaw_dec_sink_setcaps (GstPad * pad, GstCaps * caps)
   return ret;
 }
 
+static GstCaps *
+gst_alaw_dec_getcaps (GstPad * pad)
+{
+  GstALawDec *alawdec;
+  GstPad *otherpad;
+  GstCaps *othercaps, *result;
+  const GstCaps *templ;
+  gchar *name;
+  gint i;
+
+  alawdec = GST_ALAW_DEC (GST_PAD_PARENT (pad));
+
+  /* figure out the name of the caps we are going to return */
+  if (pad == alawdec->srcpad) {
+    name = "audio/x-raw-int";
+    otherpad = alawdec->sinkpad;
+  } else {
+    name = "audio/x-alaw";
+    otherpad = alawdec->srcpad;
+  }
+  /* get caps from the peer, this can return NULL when there is no peer */
+  othercaps = gst_pad_peer_get_caps (otherpad);
+
+  /* get the template caps to make sure we return something acceptable */
+  templ = gst_pad_get_pad_template_caps (pad);
+
+  if (othercaps) {
+    /* there was a peer */
+    othercaps = gst_caps_make_writable (othercaps);
+
+    /* go through the caps and remove the fields we don't want */
+    for (i = 0; i < gst_caps_get_size (othercaps); i++) {
+      GstStructure *structure;
+
+      structure = gst_caps_get_structure (othercaps, i);
+
+      /* adjust the name */
+      gst_structure_set_name (structure, name);
+
+      if (pad == alawdec->sinkpad) {
+        /* remove the fields we don't want */
+        gst_structure_remove_fields (structure, "width", "depth", "endianness",
+            "signed", NULL);
+      } else {
+        /* add fixed fields */
+        gst_structure_set (structure, "width", G_TYPE_INT, 16,
+            "depth", G_TYPE_INT, 16,
+            "endianness", G_TYPE_INT, G_BYTE_ORDER,
+            "signed", G_TYPE_BOOLEAN, TRUE, NULL);
+      }
+    }
+    /* filter against the allowed caps of the pad to return our result */
+    result = gst_caps_intersect (othercaps, templ);
+    gst_caps_unref (othercaps);
+  } else {
+    /* there was no peer, return the template caps */
+    result = gst_caps_copy (templ);
+  }
+
+  return result;
+}
+
 static void
 gst_alaw_dec_base_init (gpointer klass)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
 
-  gst_element_class_add_pad_template (element_class, alawdec_src_template);
-  gst_element_class_add_pad_template (element_class, alawdec_sink_template);
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&alaw_dec_src_factory));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&alaw_dec_sink_factory));
 
   gst_element_class_set_details_simple (element_class, "A Law audio decoder",
       "Codec/Decoder/Audio", "Convert 8bit A law to 16bit PCM",
@@ -166,15 +235,21 @@ gst_alaw_dec_class_init (GstALawDecClass * klass)
 static void
 gst_alaw_dec_init (GstALawDec * alawdec, GstALawDecClass * klass)
 {
-  alawdec->sinkpad = gst_pad_new_from_template (alawdec_sink_template, "sink");
+  alawdec->sinkpad =
+      gst_pad_new_from_static_template (&alaw_dec_sink_factory, "sink");
   gst_pad_set_setcaps_function (alawdec->sinkpad,
       GST_DEBUG_FUNCPTR (gst_alaw_dec_sink_setcaps));
+  gst_pad_set_getcaps_function (alawdec->sinkpad,
+      GST_DEBUG_FUNCPTR (gst_alaw_dec_getcaps));
   gst_pad_set_chain_function (alawdec->sinkpad,
       GST_DEBUG_FUNCPTR (gst_alaw_dec_chain));
   gst_element_add_pad (GST_ELEMENT (alawdec), alawdec->sinkpad);
 
-  alawdec->srcpad = gst_pad_new_from_template (alawdec_src_template, "src");
+  alawdec->srcpad =
+      gst_pad_new_from_static_template (&alaw_dec_src_factory, "src");
   gst_pad_use_fixed_caps (alawdec->srcpad);
+  gst_pad_set_getcaps_function (alawdec->srcpad,
+      GST_DEBUG_FUNCPTR (gst_alaw_dec_getcaps));
   gst_element_add_pad (GST_ELEMENT (alawdec), alawdec->srcpad);
 }
 
@@ -229,14 +304,14 @@ gst_alaw_dec_chain (GstPad * pad, GstBuffer * buffer)
 not_negotiated:
   {
     gst_buffer_unref (buffer);
-    GST_ERROR_OBJECT (alawdec, "no format negotiated");
-    ret = GST_FLOW_NOT_NEGOTIATED;
-    return ret;
+    GST_WARNING_OBJECT (alawdec, "no input format set: not-negotiated");
+    return GST_FLOW_NOT_NEGOTIATED;
   }
 alloc_failed:
   {
     gst_buffer_unref (buffer);
-    GST_ERROR_OBJECT (alawdec, "pad alloc failed");
+    GST_DEBUG_OBJECT (alawdec, "pad alloc failed, flow: %s",
+        gst_flow_get_name (ret));
     return ret;
   }
 }

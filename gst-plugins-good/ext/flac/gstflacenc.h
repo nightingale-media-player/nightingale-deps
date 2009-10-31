@@ -25,12 +25,6 @@
 
 #include <FLAC/all.h>
 
-#if !defined(FLAC_API_VERSION_CURRENT) || FLAC_API_VERSION_CURRENT < 8
-#define LEGACY_FLAC
-#else
-#undef LEGACY_FLAC
-#endif 
-
 G_BEGIN_DECLS
 
 #define GST_TYPE_FLAC_ENC (gst_flac_enc_get_type())
@@ -45,6 +39,8 @@ typedef struct _GstFlacEncClass GstFlacEncClass;
 struct _GstFlacEnc {
   GstElement     element;
 
+  /* < private > */
+
   GstPad        *sinkpad;
   GstPad        *srcpad;
 
@@ -52,18 +48,15 @@ struct _GstFlacEnc {
                              * correct flow return upstream in case the push
                              * fails for some reason */
 
-  gboolean       first;
-  GstBuffer     *first_buf;
   guint64        offset;
   guint64        samples_written;
-  gboolean       eos;
   gint           channels;
+  gint           width;
   gint           depth;
   gint           sample_rate;
-  gboolean       negotiated;
   gint           quality;
   gboolean       stopped;
-  FLAC__int32   *data;
+  guint           padding;
 
 #if !defined(FLAC_API_VERSION_CURRENT) || FLAC_API_VERSION_CURRENT < 8
   FLAC__SeekableStreamEncoder *encoder;
@@ -77,6 +70,11 @@ struct _GstFlacEnc {
   /* queue headers until we have them all so we can add streamheaders to caps */
   gboolean         got_headers;
   GList           *headers;
+
+  /* Timestamp and granulepos tracking */
+  GstClockTime     start_ts;
+  GstClockTime     next_ts;
+  guint64          granulepos_offset;
 };
 
 struct _GstFlacEncClass {

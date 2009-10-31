@@ -27,7 +27,7 @@
 
 /* elementfactory information */
 static GstElementDetails gst_rtpilbcpay_details = {
-  "RTP Payloader for iLBC Audio",
+  "RTP iLBC Payloader",
   "Codec/Payloader/Network",
   "Packetize iLBC audio streams into RTP packets",
   "Philippe Kalaf <philippe.kalaf@collabora.co.uk>"
@@ -79,12 +79,8 @@ gst_rtpilbcpay_base_init (gpointer klass)
 static void
 gst_rtpilbcpay_class_init (GstRTPILBCPayClass * klass)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseRTPPayloadClass *gstbasertppayload_class;
 
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
   gstbasertppayload_class = (GstBaseRTPPayloadClass *) klass;
 
   parent_class = g_type_class_ref (GST_TYPE_BASE_RTP_PAYLOAD);
@@ -131,19 +127,20 @@ gst_rtpilbcpay_sink_setcaps (GstBaseRTPPayload * basertppayload, GstCaps * caps)
 
   structure = gst_caps_get_structure (caps, 0);
 
-  gst_structure_get_int (structure, "mode", &mode);
-  if (mode != 20 && mode != 30)
-    goto wrong_mode;
-
   payload_name = gst_structure_get_name (structure);
   if (g_ascii_strcasecmp ("audio/x-iLBC", payload_name))
     goto wrong_caps;
+
+  if (!gst_structure_get_int (structure, "mode", &mode))
+    goto no_mode;
+
+  if (mode != 20 && mode != 30)
+    goto wrong_mode;
 
   gst_basertppayload_set_options (basertppayload, "audio", TRUE, "ILBC", 8000);
   /* set options for this frame based audio codec */
   gst_base_rtp_audio_payload_set_frame_options (basertpaudiopayload,
       mode, mode == 30 ? 50 : 38);
-
 
   mode_str = g_strdup_printf ("%d", mode);
   ret =
@@ -159,15 +156,20 @@ gst_rtpilbcpay_sink_setcaps (GstBaseRTPPayload * basertppayload, GstCaps * caps)
   return ret;
 
   /* ERRORS */
-wrong_mode:
-  {
-    GST_ERROR_OBJECT (rtpilbcpay, "mode must be 20 or 30, received %d", mode);
-    return FALSE;
-  }
 wrong_caps:
   {
     GST_ERROR_OBJECT (rtpilbcpay, "expected audio/x-iLBC, received %s",
         payload_name);
+    return FALSE;
+  }
+no_mode:
+  {
+    GST_ERROR_OBJECT (rtpilbcpay, "did not receive a mode");
+    return FALSE;
+  }
+wrong_mode:
+  {
+    GST_ERROR_OBJECT (rtpilbcpay, "mode must be 20 or 30, received %d", mode);
     return FALSE;
   }
 mode_changed:

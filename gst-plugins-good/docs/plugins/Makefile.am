@@ -7,11 +7,11 @@ GST_DOC_SCANOBJ = $(top_srcdir)/common/gstdoc-scangobj
 MODULE=gst-plugins-good
 DOC_MODULE=$(MODULE)-plugins
 
-# for upload.mak
+# for upload-doc.mak
 DOC=$(MODULE)-plugins
 FORMATS=html
 html: html-build.stamp
-include $(srcdir)/../upload.mak
+include $(top_srcdir)/common/upload-doc.mak
 
 # generated basefiles
 #basefiles = \
@@ -78,11 +78,19 @@ EXTRA_HFILES = \
 	$(top_srcdir)/ext/aalib/gstaasink.h \
 	$(top_srcdir)/ext/annodex/gstcmmldec.h \
 	$(top_srcdir)/ext/annodex/gstcmmlenc.h \
+	$(top_srcdir)/ext/cairo/gsttextoverlay.h \
 	$(top_srcdir)/ext/cairo/gsttimeoverlay.h \
+	$(top_srcdir)/ext/cairo/gstcairorender.h \
 	$(top_srcdir)/ext/dv/gstdvdec.h \
 	$(top_srcdir)/ext/dv/gstdvdemux.h \
 	$(top_srcdir)/ext/esd/esdsink.h \
 	$(top_srcdir)/ext/flac/gstflacdec.h \
+	$(top_srcdir)/ext/flac/gstflacenc.h \
+	$(top_srcdir)/ext/flac/gstflactag.h \
+	$(top_srcdir)/ext/gconf/gstgconfaudiosrc.h \
+	$(top_srcdir)/ext/gconf/gstgconfaudiosink.h \
+	$(top_srcdir)/ext/gconf/gstgconfvideosrc.h \
+	$(top_srcdir)/ext/gconf/gstgconfvideosink.h \
 	$(top_srcdir)/ext/gdk_pixbuf/gstgdkpixbufsink.h \
 	$(top_srcdir)/ext/hal/gsthalaudiosink.h \
 	$(top_srcdir)/ext/hal/gsthalaudiosrc.h \
@@ -94,40 +102,74 @@ EXTRA_HFILES = \
 	$(top_srcdir)/ext/libpng/gstpngdec.h \
 	$(top_srcdir)/ext/libpng/gstpngenc.h \
 	$(top_srcdir)/ext/raw1394/gstdv1394src.h \
+	$(top_srcdir)/ext/raw1394/gsthdv1394src.h \
 	$(top_srcdir)/ext/soup/gstsouphttpsrc.h \
 	$(top_srcdir)/ext/taglib/gstapev2mux.h \
 	$(top_srcdir)/ext/taglib/gstid3v2mux.h \
 	$(top_srcdir)/ext/pulse/pulsesink.h \
 	$(top_srcdir)/ext/pulse/pulsesrc.h \
 	$(top_srcdir)/ext/pulse/pulsemixer.h \
+	$(top_srcdir)/ext/speex/gstspeexenc.h \
+	$(top_srcdir)/ext/speex/gstspeexdec.h \
+	$(top_srcdir)/ext/wavpack/gstwavpackdec.h \
+	$(top_srcdir)/ext/wavpack/gstwavpackenc.h \
+	$(top_srcdir)/ext/wavpack/gstwavpackparse.h \
 	$(top_srcdir)/gst/alpha/gstalphacolor.h \
 	$(top_srcdir)/gst/apetag/gstapedemux.h \
 	$(top_srcdir)/gst/audiofx/audioamplify.h \
+	$(top_srcdir)/gst/audiofx/audioecho.h \
 	$(top_srcdir)/gst/audiofx/audiodynamic.h \
 	$(top_srcdir)/gst/audiofx/audioinvert.h \
 	$(top_srcdir)/gst/audiofx/audiokaraoke.h \
 	$(top_srcdir)/gst/audiofx/audiopanorama.h \
 	$(top_srcdir)/gst/audiofx/audiocheblimit.h \
 	$(top_srcdir)/gst/audiofx/audiochebband.h \
+	$(top_srcdir)/gst/audiofx/audioiirfilter.h \
 	$(top_srcdir)/gst/audiofx/audiowsincband.h \
 	$(top_srcdir)/gst/audiofx/audiowsinclimit.h \
+	$(top_srcdir)/gst/audiofx/audiofirfilter.h \
 	$(top_srcdir)/gst/autodetect/gstautoaudiosink.h \
+	$(top_srcdir)/gst/autodetect/gstautoaudiosrc.h \
 	$(top_srcdir)/gst/autodetect/gstautovideosink.h \
+	$(top_srcdir)/gst/autodetect/gstautovideosrc.h \
 	$(top_srcdir)/gst/avi/gstavidemux.h \
 	$(top_srcdir)/gst/avi/gstavimux.h \
 	$(top_srcdir)/gst/avi/gstavisubtitle.h \
-	$(top_srcdir)/gst/debug/gsttaginject.h \
-	$(top_srcdir)/gst/debug/progressreport.h \
+	$(top_srcdir)/gst/cutter/gstcutter.h \
+	$(top_srcdir)/gst/debugutils/gsttaginject.h \
+	$(top_srcdir)/gst/debugutils/progressreport.h \
+	$(top_srcdir)/gst/deinterlace/gstdeinterlace.h \
+	$(top_srcdir)/gst/effectv/gstaging.h \
+	$(top_srcdir)/gst/effectv/gstdice.h \
+	$(top_srcdir)/gst/effectv/gstedge.h \
+	$(top_srcdir)/gst/effectv/gstquark.h \
+	$(top_srcdir)/gst/effectv/gstrev.h \
+	$(top_srcdir)/gst/effectv/gstshagadelic.h \
+	$(top_srcdir)/gst/effectv/gstvertigo.h \
+	$(top_srcdir)/gst/effectv/gstwarp.h \
+	$(top_srcdir)/gst/effectv/gststreak.h \
+	$(top_srcdir)/gst/effectv/gstripple.h \
+	$(top_srcdir)/gst/effectv/gstop.h \
+	$(top_srcdir)/gst/effectv/gstradioac.h \
 	$(top_srcdir)/gst/equalizer/gstiirequalizer.h \
 	$(top_srcdir)/gst/equalizer/gstiirequalizer3bands.h \
 	$(top_srcdir)/gst/equalizer/gstiirequalizer10bands.h \
 	$(top_srcdir)/gst/equalizer/gstiirequalizernbands.h \
+	$(top_srcdir)/gst/flv/gstflvdemux.h \
+	$(top_srcdir)/gst/flv/gstflvmux.h \
 	$(top_srcdir)/gst/goom/gstgoom.h \
+	$(top_srcdir)/gst/goom2k1/gstgoom.h \
+	$(top_srcdir)/gst/law/alaw-decode.h \
+	$(top_srcdir)/gst/law/alaw-encode.h \
+	$(top_srcdir)/gst/law/mulaw-decode.h \
+	$(top_srcdir)/gst/law/mulaw-encode.h \
 	$(top_srcdir)/gst/icydemux/gsticydemux.h \
 	$(top_srcdir)/gst/id3demux/gstid3demux.h \
 	$(top_srcdir)/gst/interleave/deinterleave.h \
 	$(top_srcdir)/gst/interleave/interleave.h \
 	$(top_srcdir)/gst/level/gstlevel.h \
+	$(top_srcdir)/gst/matroska/matroska-demux.h \
+	$(top_srcdir)/gst/matroska/matroska-mux.h \
 	$(top_srcdir)/gst/monoscope/gstmonoscope.h \
 	$(top_srcdir)/gst/multifile/gstmultifilesink.h \
 	$(top_srcdir)/gst/multifile/gstmultifilesrc.h \
@@ -137,25 +179,31 @@ EXTRA_HFILES = \
 	$(top_srcdir)/gst/replaygain/gstrganalysis.h \
 	$(top_srcdir)/gst/replaygain/gstrglimiter.h \
 	$(top_srcdir)/gst/replaygain/gstrgvolume.h \
+	$(top_srcdir)/gst/rtp/gstrtpjpegpay.h \
+	$(top_srcdir)/gst/rtpmanager/gstrtpbin.h \
+	$(top_srcdir)/gst/rtpmanager/gstrtpjitterbuffer.h \
+	$(top_srcdir)/gst/rtpmanager/gstrtpptdemux.h \
+	$(top_srcdir)/gst/rtpmanager/gstrtpsession.h \
+	$(top_srcdir)/gst/rtpmanager/gstrtpssrcdemux.h \
 	$(top_srcdir)/gst/rtsp/gstrtpdec.h \
 	$(top_srcdir)/gst/rtsp/gstrtspsrc.h \
 	$(top_srcdir)/gst/smpte/gstsmpte.h \
 	$(top_srcdir)/gst/smpte/gstsmptealpha.h \
 	$(top_srcdir)/gst/spectrum/gstspectrum.h \
+	$(top_srcdir)/gst/udp/gstdynudpsink.h \
 	$(top_srcdir)/gst/udp/gstmultiudpsink.h \
 	$(top_srcdir)/gst/udp/gstudpsrc.h \
+	$(top_srcdir)/gst/udp/gstudpsink.h \
 	$(top_srcdir)/gst/videocrop/gstvideocrop.h \
+	$(top_srcdir)/gst/videocrop/gstaspectratiocrop.h \
 	$(top_srcdir)/gst/videofilter/gstgamma.h \
 	$(top_srcdir)/gst/videofilter/gstvideobalance.h \
 	$(top_srcdir)/gst/videofilter/gstvideoflip.h \
 	$(top_srcdir)/gst/videomixer/videomixer.h \
 	$(top_srcdir)/gst/videomixer/videomixerpad.h \
-	$(top_srcdir)/sys/waveform/gstwaveformsink.h \
-	$(top_srcdir)/ext/wavpack/gstwavpackdec.h \
-	$(top_srcdir)/ext/wavpack/gstwavpackenc.h \
-	$(top_srcdir)/ext/wavpack/gstwavpackparse.h \
+	$(top_srcdir)/gst/wavenc/gstwavenc.h \
 	$(top_srcdir)/gst/wavparse/gstwavparse.h \
-	$(top_srcdir)/sys/directdraw/gstdirectdrawsink.h \
+	$(top_srcdir)/gst/y4m/gsty4mencode.h \
 	$(top_srcdir)/sys/directsound/gstdirectsoundsink.h \
 	$(top_srcdir)/sys/oss/gstossmixerelement.h \
 	$(top_srcdir)/sys/oss/gstosssink.h \
@@ -164,13 +212,15 @@ EXTRA_HFILES = \
 	$(top_srcdir)/sys/osxaudio/gstosxaudiosink.h \
 	$(top_srcdir)/sys/osxvideo/osxvideosink.h \
 	$(top_srcdir)/sys/v4l2/gstv4l2src.h \
+	$(top_srcdir)/sys/waveform/gstwaveformsink.h \
 	$(top_srcdir)/sys/ximage/gstximagesrc.h
-
 
 # example code that needs to be converted to xml and placed in xml/
 EXAMPLE_CFILES = \
 	$(top_srcdir)/tests/examples/level/level-example.c \
-	$(top_srcdir)/tests/examples/spectrum/spectrum-example.c
+	$(top_srcdir)/tests/examples/spectrum/spectrum-example.c \
+	$(top_srcdir)/tests/examples/audiofx/firfilter-example.c \
+	$(top_srcdir)/tests/examples/audiofx/iirfilter-example.c
 
 # Images to copy into HTML directory.
 HTML_IMAGES =
@@ -186,8 +236,8 @@ extra_files =
 GTKDOC_CFLAGS = $(GST_BASE_CFLAGS) -I$(top_builddir)
 GTKDOC_LIBS = $(SCANOBJ_DEPS) $(GST_BASE_LIBS)
 
-GTKDOC_CC=$(LIBTOOL) --mode=compile $(CC)
-GTKDOC_LD=$(LIBTOOL) --mode=link $(CC)
+GTKDOC_CC=$(LIBTOOL) --tag=CC --mode=compile $(CC)
+GTKDOC_LD=$(LIBTOOL) --tag=CC --mode=link $(CC)
 
 # If you need to override some of the declarations, place them in this file
 # and uncomment this line.

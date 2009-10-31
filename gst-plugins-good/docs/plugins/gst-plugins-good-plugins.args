@@ -411,7 +411,7 @@
 <ARG>
 <NAME>GstUDPSrc::sockfd</NAME>
 <TYPE>gint</TYPE>
-<RANGE>>= -1</RANGE>
+<RANGE>>= G_MAXULONG</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Socket Handle</NICK>
 <BLURB>Socket to use for UDP reception. (-1 == allocate).</BLURB>
@@ -461,7 +461,7 @@
 <ARG>
 <NAME>GstUDPSrc::sock</NAME>
 <TYPE>gint</TYPE>
-<RANGE>>= -1</RANGE>
+<RANGE>>= G_MAXULONG</RANGE>
 <FLAGS>r</FLAGS>
 <NICK>Socket Handle</NICK>
 <BLURB>Socket currently in use for UDP reception. (-1 = no socket).</BLURB>
@@ -476,6 +476,16 @@
 <NICK>Auto Multicast</NICK>
 <BLURB>Automatically join/leave multicast groups.</BLURB>
 <DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstUDPSrc::multicast-iface</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Multicast Interface</NICK>
+<BLURB>The network interface on which to join the multicast group.</BLURB>
+<DEFAULT>NULL</DEFAULT>
 </ARG>
 
 <ARG>
@@ -609,6 +619,46 @@
 </ARG>
 
 <ARG>
+<NAME>GstRTSPSrc::nat-method</NAME>
+<TYPE>GstRTSPNatMethod</TYPE>
+<RANGE></RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>NAT Method</NICK>
+<BLURB>Method to use for traversing firewalls and NAT.</BLURB>
+<DEFAULT>Send Dummy packets</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRTSPSrc::do-rtcp</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Do RTCP</NICK>
+<BLURB>Send RTCP packets, disable for old incompatible server.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRTSPSrc::proxy</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Proxy</NICK>
+<BLURB>Proxy settings for HTTP tunneling. Format: [http://][user:passwd@]host[:port].</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRTSPSrc::rtp-blocksize</NAME>
+<TYPE>guint</TYPE>
+<RANGE><= 65536</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>RTP Blocksize</NICK>
+<BLURB>RTP package size to suggest to server (0 = disabled).</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstRTPDec::skip</NAME>
 <TYPE>gint</TYPE>
 <RANGE></RANGE>
@@ -731,10 +781,10 @@
 <ARG>
 <NAME>GstQuarkTV::planes</NAME>
 <TYPE>gint</TYPE>
-<RANGE>[1,32]</RANGE>
+<RANGE>[0,64]</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Planes</NICK>
-<BLURB>Number of frames in the buffer.</BLURB>
+<BLURB>Number of planes.</BLURB>
 <DEFAULT>16</DEFAULT>
 </ARG>
 
@@ -1099,6 +1149,16 @@
 </ARG>
 
 <ARG>
+<NAME>GstJpegEnc::idct-method</NAME>
+<TYPE>GstIDCTMethod</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>IDCT Method</NICK>
+<BLURB>The IDCT algorithm to use.</BLURB>
+<DEFAULT>Faster, less accurate integer method</DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstSmokeEnc::keyframe</NAME>
 <TYPE>gint</TYPE>
 <RANGE>[1,100000]</RANGE>
@@ -1451,7 +1511,7 @@
 <ARG>
 <NAME>GstDV1394Src::port</NAME>
 <TYPE>gint</TYPE>
-<RANGE>[-1,16]</RANGE>
+<RANGE>[G_MAXULONG,16]</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Port</NICK>
 <BLURB>Port number (-1 automatic).</BLURB>
@@ -1492,7 +1552,7 @@
 <NAME>GstFlacEnc::blocksize</NAME>
 <TYPE>guint</TYPE>
 <RANGE>[16,65535]</RANGE>
-<FLAGS>rw</FLAGS>
+<FLAGS>rwx</FLAGS>
 <NICK>Blocksize</NICK>
 <BLURB>Blocksize in samples.</BLURB>
 <DEFAULT>4608</DEFAULT>
@@ -1502,7 +1562,7 @@
 <NAME>GstFlacEnc::escape-coding</NAME>
 <TYPE>gboolean</TYPE>
 <RANGE></RANGE>
-<FLAGS>rw</FLAGS>
+<FLAGS>rwx</FLAGS>
 <NICK>Do Escape coding</NICK>
 <BLURB>search for escape codes in the entropy coding stage for slightly better compression.</BLURB>
 <DEFAULT>FALSE</DEFAULT>
@@ -1512,7 +1572,7 @@
 <NAME>GstFlacEnc::exhaustive-model-search</NAME>
 <TYPE>gboolean</TYPE>
 <RANGE></RANGE>
-<FLAGS>rw</FLAGS>
+<FLAGS>rwx</FLAGS>
 <NICK>Do exhaustive model search</NICK>
 <BLURB>do exhaustive search of LP coefficient quantization (expensive!).</BLURB>
 <DEFAULT>FALSE</DEFAULT>
@@ -1522,7 +1582,7 @@
 <NAME>GstFlacEnc::loose-mid-side-stereo</NAME>
 <TYPE>gboolean</TYPE>
 <RANGE></RANGE>
-<FLAGS>rw</FLAGS>
+<FLAGS>rwx</FLAGS>
 <NICK>Loose mid side stereo</NICK>
 <BLURB>Loose mid side stereo.</BLURB>
 <DEFAULT>FALSE</DEFAULT>
@@ -1532,7 +1592,7 @@
 <NAME>GstFlacEnc::max-lpc-order</NAME>
 <TYPE>guint</TYPE>
 <RANGE><= 32</RANGE>
-<FLAGS>rw</FLAGS>
+<FLAGS>rwx</FLAGS>
 <NICK>Max LPC order</NICK>
 <BLURB>Max LPC order; 0 => use only fixed predictors.</BLURB>
 <DEFAULT>8</DEFAULT>
@@ -1542,7 +1602,7 @@
 <NAME>GstFlacEnc::max-residual-partition-order</NAME>
 <TYPE>guint</TYPE>
 <RANGE><= 16</RANGE>
-<FLAGS>rw</FLAGS>
+<FLAGS>rwx</FLAGS>
 <NICK>Max residual partition order</NICK>
 <BLURB>Max residual partition order (above 4 doesn't usually help much).</BLURB>
 <DEFAULT>3</DEFAULT>
@@ -1552,7 +1612,7 @@
 <NAME>GstFlacEnc::mid-side-stereo</NAME>
 <TYPE>gboolean</TYPE>
 <RANGE></RANGE>
-<FLAGS>rw</FLAGS>
+<FLAGS>rwx</FLAGS>
 <NICK>Do mid side stereo</NICK>
 <BLURB>Do mid side stereo (only for stereo input).</BLURB>
 <DEFAULT>TRUE</DEFAULT>
@@ -1562,7 +1622,7 @@
 <NAME>GstFlacEnc::min-residual-partition-order</NAME>
 <TYPE>guint</TYPE>
 <RANGE><= 16</RANGE>
-<FLAGS>rw</FLAGS>
+<FLAGS>rwx</FLAGS>
 <NICK>Min residual partition order</NICK>
 <BLURB>Min residual partition order (above 4 doesn't usually help much).</BLURB>
 <DEFAULT>3</DEFAULT>
@@ -1572,7 +1632,7 @@
 <NAME>GstFlacEnc::qlp-coeff-prec-search</NAME>
 <TYPE>gboolean</TYPE>
 <RANGE></RANGE>
-<FLAGS>rw</FLAGS>
+<FLAGS>rwx</FLAGS>
 <NICK>Do QLP coefficients precision search</NICK>
 <BLURB>false = use qlp_coeff_precision, true = search around qlp_coeff_precision, take best.</BLURB>
 <DEFAULT>FALSE</DEFAULT>
@@ -1582,7 +1642,7 @@
 <NAME>GstFlacEnc::qlp-coeff-precision</NAME>
 <TYPE>guint</TYPE>
 <RANGE><= 32</RANGE>
-<FLAGS>rw</FLAGS>
+<FLAGS>rwx</FLAGS>
 <NICK>QLP coefficients precision</NICK>
 <BLURB>Precision in bits of quantized linear-predictor coefficients; 0 = automatic.</BLURB>
 <DEFAULT>0</DEFAULT>
@@ -1592,7 +1652,7 @@
 <NAME>GstFlacEnc::quality</NAME>
 <TYPE>GstFlacEncQuality</TYPE>
 <RANGE></RANGE>
-<FLAGS>rw</FLAGS>
+<FLAGS>rwx</FLAGS>
 <NICK>Quality</NICK>
 <BLURB>Speed versus compression tradeoff.</BLURB>
 <DEFAULT>5 - Default</DEFAULT>
@@ -1602,7 +1662,7 @@
 <NAME>GstFlacEnc::rice-parameter-search-dist</NAME>
 <TYPE>guint</TYPE>
 <RANGE><= 15</RANGE>
-<FLAGS>rw</FLAGS>
+<FLAGS>rwx</FLAGS>
 <NICK>rice_parameter_search_dist</NICK>
 <BLURB>0 = try only calc'd parameter k; else try all [k-dist..k+dist] parameters, use best.</BLURB>
 <DEFAULT>0</DEFAULT>
@@ -1612,10 +1672,20 @@
 <NAME>GstFlacEnc::streamable-subset</NAME>
 <TYPE>gboolean</TYPE>
 <RANGE></RANGE>
-<FLAGS>rw</FLAGS>
+<FLAGS>rwx</FLAGS>
 <NICK>Streamable subset</NICK>
 <BLURB>true to limit encoder to generating a Subset stream, else false.</BLURB>
 <DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstFlacEnc::padding</NAME>
+<TYPE>guint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Padding</NICK>
+<BLURB>Write a PADDING block with this length in bytes.</BLURB>
+<DEFAULT>0</DEFAULT>
 </ARG>
 
 <ARG>
@@ -1661,7 +1731,7 @@
 <ARG>
 <NAME>GstTest::allowed-timestamp-deviation</NAME>
 <TYPE>gint64</TYPE>
-<RANGE>>= -1</RANGE>
+<RANGE>>= G_MAXULONG</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>allowed timestamp deviation</NICK>
 <BLURB>allowed average difference in usec between timestamp of next buffer and expected timestamp from analyzing last buffer.</BLURB>
@@ -1671,7 +1741,7 @@
 <ARG>
 <NAME>GstTest::buffer-count</NAME>
 <TYPE>gint64</TYPE>
-<RANGE>>= -1</RANGE>
+<RANGE>>= G_MAXULONG</RANGE>
 <FLAGS>r</FLAGS>
 <NICK>buffer count</NICK>
 <BLURB>number of buffers in stream.</BLURB>
@@ -1681,7 +1751,7 @@
 <ARG>
 <NAME>GstTest::expected-buffer-count</NAME>
 <TYPE>gint64</TYPE>
-<RANGE>>= -1</RANGE>
+<RANGE>>= G_MAXULONG</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>expected buffer count</NICK>
 <BLURB>expected number of buffers in stream.</BLURB>
@@ -1691,7 +1761,7 @@
 <ARG>
 <NAME>GstTest::expected-length</NAME>
 <TYPE>gint64</TYPE>
-<RANGE>>= -1</RANGE>
+<RANGE>>= G_MAXULONG</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>expected length</NICK>
 <BLURB>expected length of stream.</BLURB>
@@ -1711,7 +1781,7 @@
 <ARG>
 <NAME>GstTest::length</NAME>
 <TYPE>gint64</TYPE>
-<RANGE>>= -1</RANGE>
+<RANGE>>= G_MAXULONG</RANGE>
 <FLAGS>r</FLAGS>
 <NICK>length</NICK>
 <BLURB>length of stream.</BLURB>
@@ -1731,7 +1801,7 @@
 <ARG>
 <NAME>GstTest::timestamp-deviation</NAME>
 <TYPE>gint64</TYPE>
-<RANGE>>= -1</RANGE>
+<RANGE>>= G_MAXULONG</RANGE>
 <FLAGS>r</FLAGS>
 <NICK>timestamp deviation</NICK>
 <BLURB>average difference in usec between timestamp of next buffer and expected timestamp from analyzing last buffer.</BLURB>
@@ -1801,7 +1871,7 @@
 <ARG>
 <NAME>GstBreakMyData::set-to</NAME>
 <TYPE>gint</TYPE>
-<RANGE>[-1,255]</RANGE>
+<RANGE>[G_MAXULONG,255]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>set-to</NICK>
 <BLURB>set changed bytes to this value (-1 means random value.</BLURB>
@@ -1979,6 +2049,16 @@
 </ARG>
 
 <ARG>
+<NAME>GstRtpMP4VPay::buffer-list</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Buffer Array</NICK>
+<BLURB>Use Buffer Arrays.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstRTPDepay::skip</NAME>
 <TYPE>gint</TYPE>
 <RANGE></RANGE>
@@ -2121,7 +2201,7 @@
 <ARG>
 <NAME>GstDynUDPSink::sockfd</NAME>
 <TYPE>gint</TYPE>
-<RANGE>[-1,32767]</RANGE>
+<RANGE>[G_MAXULONG,32767]</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>socket handle</NICK>
 <BLURB>Socket to use for UDP sending. (-1 == allocate).</BLURB>
@@ -2191,7 +2271,7 @@
 <ARG>
 <NAME>GstMultiUDPSink::sock</NAME>
 <TYPE>gint</TYPE>
-<RANGE>>= -1</RANGE>
+<RANGE>>= G_MAXULONG</RANGE>
 <FLAGS>r</FLAGS>
 <NICK>Socket Handle</NICK>
 <BLURB>Socket currently in use for UDP sending. (-1 == no socket).</BLURB>
@@ -2201,7 +2281,7 @@
 <ARG>
 <NAME>GstMultiUDPSink::sockfd</NAME>
 <TYPE>gint</TYPE>
-<RANGE>>= -1</RANGE>
+<RANGE>>= G_MAXULONG</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Socket Handle</NICK>
 <BLURB>Socket to use for UDP sending. (-1 == allocate).</BLURB>
@@ -2231,7 +2311,7 @@
 <ARG>
 <NAME>GstMultiUDPSink::qos-dscp</NAME>
 <TYPE>gint</TYPE>
-<RANGE>[-1,63]</RANGE>
+<RANGE>[G_MAXULONG,63]</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>QoS diff srv code point</NICK>
 <BLURB>Quality of Service, differentiated services code point (-1 default).</BLURB>
@@ -2555,7 +2635,7 @@
 <FLAGS>rw</FLAGS>
 <NICK>Clipping method</NICK>
 <BLURB>Selects how to handle values higher than the maximum.</BLURB>
-<DEFAULT>Normal Clipping (default)</DEFAULT>
+<DEFAULT>Normal clipping (default)</DEFAULT>
 </ARG>
 
 <ARG>
@@ -2781,10 +2861,10 @@
 <ARG>
 <NAME>GstV4l2Src::queue-size</NAME>
 <TYPE>guint</TYPE>
-<RANGE>[2,16]</RANGE>
+<RANGE>[1,16]</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Queue size</NICK>
-<BLURB>Number of buffers to be enqueud in the driver.</BLURB>
+<BLURB>Number of buffers to be enqueud in the driver in streaming mode.</BLURB>
 <DEFAULT>2</DEFAULT>
 </ARG>
 
@@ -2801,7 +2881,7 @@
 <ARG>
 <NAME>GstV4l2Src::device-fd</NAME>
 <TYPE>gint</TYPE>
-<RANGE>>= -1</RANGE>
+<RANGE>>= G_MAXULONG</RANGE>
 <FLAGS>r</FLAGS>
 <NICK>File descriptor</NICK>
 <BLURB>File descriptor of the device.</BLURB>
@@ -3021,7 +3101,7 @@
 <ARG>
 <NAME>GstRndBufferSize::max</NAME>
 <TYPE>glong</TYPE>
-<RANGE>>= 1</RANGE>
+<RANGE>[1,G_MAXINT]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>maximum</NICK>
 <BLURB>maximum buffer size.</BLURB>
@@ -3031,7 +3111,7 @@
 <ARG>
 <NAME>GstRndBufferSize::min</NAME>
 <TYPE>glong</TYPE>
-<RANGE>>= 0</RANGE>
+<RANGE>[0,G_MAXINT]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>mininum</NICK>
 <BLURB>mininum buffer size.</BLURB>
@@ -3041,7 +3121,7 @@
 <ARG>
 <NAME>GstRndBufferSize::seed</NAME>
 <TYPE>gulong</TYPE>
-<RANGE></RANGE>
+<RANGE><= G_MAXUINT</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>random number seed</NICK>
 <BLURB>seed for randomness (initialized when going from READY to PAUSED).</BLURB>
@@ -3229,6 +3309,76 @@
 </ARG>
 
 <ARG>
+<NAME>GstSoupHTTPSrc::is-live</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>is-live</NICK>
+<BLURB>Act like a live source.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSoupHTTPSrc::proxy-id</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>proxy-id</NICK>
+<BLURB>HTTP proxy URI user id for authentication.</BLURB>
+<DEFAULT>""</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSoupHTTPSrc::proxy-pw</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>proxy-pw</NICK>
+<BLURB>HTTP proxy URI user password for authentication.</BLURB>
+<DEFAULT>""</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSoupHTTPSrc::user-id</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>user-id</NICK>
+<BLURB>HTTP location URI user id for authentication.</BLURB>
+<DEFAULT>""</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSoupHTTPSrc::user-pw</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>user-pw</NICK>
+<BLURB>HTTP location URI user password for authentication.</BLURB>
+<DEFAULT>""</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSoupHTTPSrc::extra-headers</NAME>
+<TYPE>GstStructure*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Extra Headers</NICK>
+<BLURB>Extra headers to append to the HTTP request.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSoupHTTPSrc::timeout</NAME>
+<TYPE>guint</TYPE>
+<RANGE><= 3600</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>timeout</NICK>
+<BLURB>Value in seconds to timeout a blocking I/O (0 = No timeout).</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstRTPDVPay::mode</NAME>
 <TYPE>GstDVPayMode</TYPE>
 <RANGE></RANGE>
@@ -3266,6 +3416,16 @@
 <NICK>Scan Mode</NICK>
 <BLURB>How to scan the input buffers for NAL units. Performance can be increased when certain assumptions are made about the input buffers.</BLURB>
 <DEFAULT>Buffers contain multiple complete NALUs</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpH264Pay::buffer-list</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Buffer List</NICK>
+<BLURB>Use Buffer Lists.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
 </ARG>
 
 <ARG>
@@ -19293,7 +19453,7 @@
 <TYPE>gchar*</TYPE>
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
-<NICK>Sink</NICK>
+<NICK>Device</NICK>
 <BLURB>The PulseAudio sink device to connect to.</BLURB>
 <DEFAULT>NULL</DEFAULT>
 </ARG>
@@ -19309,11 +19469,31 @@
 </ARG>
 
 <ARG>
+<NAME>GstPulseSink::device-name</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Device name</NICK>
+<BLURB>Human-readable name of the sound device.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstPulseSink::volume</NAME>
+<TYPE>gdouble</TYPE>
+<RANGE>[0,10]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Volume</NICK>
+<BLURB>Volume of this stream, 1.0=100%.</BLURB>
+<DEFAULT>1</DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstPulseSrc::device</NAME>
 <TYPE>gchar*</TYPE>
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
-<NICK>Source</NICK>
+<NICK>Device</NICK>
 <BLURB>The PulseAudio source device to connect to.</BLURB>
 <DEFAULT>NULL</DEFAULT>
 </ARG>
@@ -19329,11 +19509,21 @@
 </ARG>
 
 <ARG>
+<NAME>GstPulseSrc::device-name</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Device name</NICK>
+<BLURB>Human-readable name of the sound device.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstPulseMixer::device</NAME>
 <TYPE>gchar*</TYPE>
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
-<NICK>Sink/Source</NICK>
+<NICK>Device</NICK>
 <BLURB>The PulseAudio sink or source to control.</BLURB>
 <DEFAULT>NULL</DEFAULT>
 </ARG>
@@ -19496,5 +19686,705 @@
 <NICK>Reference level</NICK>
 <BLURB>Reference level [dB].</BLURB>
 <DEFAULT>89</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRgAnalysis::message</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Message</NICK>
+<BLURB>Post statics messages.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstHDV1394Src::channel</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,64]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Channel</NICK>
+<BLURB>Channel number for listening.</BLURB>
+<DEFAULT>63</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstHDV1394Src::device-name</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>device name</NICK>
+<BLURB>user-friendly name of the device.</BLURB>
+<DEFAULT>"Default"</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstHDV1394Src::guid</NAME>
+<TYPE>guint64</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>GUID</NICK>
+<BLURB>select one of multiple DV devices by its GUID. use a hexadecimal like 0xhhhhhhhhhhhhhhhh. (0 = no guid).</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstHDV1394Src::port</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[G_MAXULONG,16]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Port</NICK>
+<BLURB>Port number (-1 automatic).</BLURB>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstHDV1394Src::use-avc</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Use AV/C</NICK>
+<BLURB>Use AV/C VTR control.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAutoVideoSrc::filter-caps</NAME>
+<TYPE>GstCaps*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Filter caps</NICK>
+<BLURB>Filter src candidates using these caps.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAutoAudioSrc::filter-caps</NAME>
+<TYPE>GstCaps*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Filter caps</NICK>
+<BLURB>Filter sink candidates using these caps.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpJPEGPay::quality</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,255]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Quality</NICK>
+<BLURB>Quality factor on JPEG data (unused).</BLURB>
+<DEFAULT>255</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpJPEGPay::type</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,255]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Type</NICK>
+<BLURB>Default JPEG Type, overwritten by SOF when present.</BLURB>
+<DEFAULT>1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpJPEGPay::buffer-list</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Buffer List</NICK>
+<BLURB>Use Buffer Lists.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioFIRFilter::kernel</NAME>
+<TYPE>GValueArray*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Filter Kernel</NICK>
+<BLURB>Filter kernel for the FIR filter.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioFIRFilter::latency</NAME>
+<TYPE>guint64</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Latecy</NICK>
+<BLURB>Filter latency in samples.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioIIRFilter::a</NAME>
+<TYPE>GValueArray*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>A</NICK>
+<BLURB>Filter coefficients (numerator of transfer function).</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioIIRFilter::b</NAME>
+<TYPE>GValueArray*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>B</NICK>
+<BLURB>Filter coefficients (denominator of transfer function).</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioDelay::delay</NAME>
+<TYPE>guint64</TYPE>
+<RANGE>>= 1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Delay</NICK>
+<BLURB>Delay in nanoseconds.</BLURB>
+<DEFAULT>1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioDelay::feedback</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE>[0,1]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Feedback</NICK>
+<BLURB>Amount of feedback.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioDelay::intensity</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE>[0,1]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Intensity</NICK>
+<BLURB>Intensity of the echo.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioReverb::delay</NAME>
+<TYPE>guint64</TYPE>
+<RANGE>>= 1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Delay</NICK>
+<BLURB>Delay of the echo in nanoseconds.</BLURB>
+<DEFAULT>1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioReverb::feedback</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE>[0,1]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Feedback</NICK>
+<BLURB>Amount of feedback.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioReverb::intensity</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE>[0,1]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Intensity</NICK>
+<BLURB>Intensity of the echo.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioEcho::delay</NAME>
+<TYPE>guint64</TYPE>
+<RANGE>>= 1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Delay</NICK>
+<BLURB>Delay of the echo in nanoseconds.</BLURB>
+<DEFAULT>1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioEcho::feedback</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE>[0,1]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Feedback</NICK>
+<BLURB>Amount of feedback.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioEcho::intensity</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE>[0,1]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Intensity</NICK>
+<BLURB>Intensity of the echo.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioEcho::max-delay</NAME>
+<TYPE>guint64</TYPE>
+<RANGE>>= 1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Maximum Delay</NICK>
+<BLURB>Maximum delay of the echo in nanoseconds (can't be changed in PLAYING or PAUSED state).</BLURB>
+<DEFAULT>1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAspectRatioCrop::aspect-ratio</NAME>
+<TYPE>GstFraction</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>aspect-ratio</NICK>
+<BLURB>Target aspect-ratio of video.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpG726Depay::force-aal2</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Force AAL2</NICK>
+<BLURB>Force AAL2 decoding for compatibility with bad payloaders.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpG726Pay::force-aal2</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Force AAL2</NICK>
+<BLURB>Force AAL2 encoding for compatibility with bad depayloaders.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpH263Pay::modea-only</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Fragment packets in mode A Only</NICK>
+<BLURB>Disable packetization modes B and C.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDeinterlace::fields</NAME>
+<TYPE>GstDeinterlaceFields</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>fields</NICK>
+<BLURB>Fields to use for deinterlacing.</BLURB>
+<DEFAULT>All fields</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDeinterlace::method</NAME>
+<TYPE>GstDeinterlaceMethods</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Method</NICK>
+<BLURB>Deinterlace Method.</BLURB>
+<DEFAULT>Motion Adaptive: Advanced Detection</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDeinterlace::mode</NAME>
+<TYPE>GstDeinterlaceModes</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Mode</NICK>
+<BLURB>Deinterlace Mode.</BLURB>
+<DEFAULT>Enfore deinterlacing</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDeinterlace::tff</NAME>
+<TYPE>GstDeinterlaceFieldLayout</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>tff</NICK>
+<BLURB>Deinterlace top field first.</BLURB>
+<DEFAULT>Auto detection</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAgingTV::color-aging</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Color Aging</NICK>
+<BLURB>Color Aging.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAgingTV::dusts</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Dusts</NICK>
+<BLURB>Dusts.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAgingTV::pits</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Pits</NICK>
+<BLURB>Pits.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAgingTV::scratch-lines</NAME>
+<TYPE>guint</TYPE>
+<RANGE><= 20</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Scratch Lines</NICK>
+<BLURB>Number of scratch lines.</BLURB>
+<DEFAULT>7</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstOpTV::mode</NAME>
+<TYPE>GstOpTVMode</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Mode</NICK>
+<BLURB>Mode.</BLURB>
+<DEFAULT>Maelstrom</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstOpTV::speed</NAME>
+<TYPE>gint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Speed</NICK>
+<BLURB>Effect speed.</BLURB>
+<DEFAULT>16</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstOpTV::threshold</NAME>
+<TYPE>guint</TYPE>
+<RANGE><= G_MAXINT</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Threshold</NICK>
+<BLURB>Luma threshold.</BLURB>
+<DEFAULT>60</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRadioacTV::color</NAME>
+<TYPE>GstRadioacTVColor</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Color</NICK>
+<BLURB>Color.</BLURB>
+<DEFAULT>White</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRadioacTV::interval</NAME>
+<TYPE>guint</TYPE>
+<RANGE><= G_MAXINT</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Interval</NICK>
+<BLURB>Snapshot interval (in strobe mode).</BLURB>
+<DEFAULT>3</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRadioacTV::mode</NAME>
+<TYPE>GstRadioacTVMode</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Mode</NICK>
+<BLURB>Mode.</BLURB>
+<DEFAULT>Normal</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRadioacTV::trigger</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Trigger</NICK>
+<BLURB>Trigger (in trigger mode).</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstStreakTV::feedback</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Feedback</NICK>
+<BLURB>Feedback.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRippleTV::mode</NAME>
+<TYPE>GstRippleTVMode</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Mode</NICK>
+<BLURB>Mode.</BLURB>
+<DEFAULT>Motion Detection</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRippleTV::reset</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>w</FLAGS>
+<NICK>Reset</NICK>
+<BLURB>Reset all current ripples.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpBin::do-lost</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Do Lost</NICK>
+<BLURB>Send an event downstream when a packet is lost.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpBin::latency</NAME>
+<TYPE>guint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Buffer latency in ms</NICK>
+<BLURB>Default amount of ms to buffer in the jitterbuffers.</BLURB>
+<DEFAULT>200</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpBin::sdes</NAME>
+<TYPE>GstStructure*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>SDES</NICK>
+<BLURB>The SDES items of this session.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpJitterBuffer::do-lost</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Do Lost</NICK>
+<BLURB>Send an event downstream when a packet is lost.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpJitterBuffer::drop-on-latency</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Drop buffers when maximum latency is reached</NICK>
+<BLURB>Tells the jitterbuffer to never exceed the given latency in size.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpJitterBuffer::latency</NAME>
+<TYPE>guint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Buffer latency in ms</NICK>
+<BLURB>Amount of ms to buffer.</BLURB>
+<DEFAULT>200</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpJitterBuffer::ts-offset</NAME>
+<TYPE>gint64</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Timestamp Offset</NICK>
+<BLURB>Adjust buffer timestamps with offset in nanoseconds.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpSession::bandwidth</NAME>
+<TYPE>gdouble</TYPE>
+<RANGE>>= 0</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Bandwidth</NICK>
+<BLURB>The bandwidth of the session.</BLURB>
+<DEFAULT>64000</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpSession::internal-session</NAME>
+<TYPE>RTPSession*</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Internal Session</NICK>
+<BLURB>The internal RTPSession object.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpSession::ntp-ns-base</NAME>
+<TYPE>guint64</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>NTP base time</NICK>
+<BLURB>The NTP base time corresponding to running_time 0.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpSession::num-active-sources</NAME>
+<TYPE>guint</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Num Active Sources</NICK>
+<BLURB>The number of active sources in the session.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpSession::num-sources</NAME>
+<TYPE>guint</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Num Sources</NICK>
+<BLURB>The number of sources in the session.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpSession::rtcp-fraction</NAME>
+<TYPE>gdouble</TYPE>
+<RANGE>>= 0</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>RTCP Fraction</NICK>
+<BLURB>The fraction of the bandwidth used for RTCP.</BLURB>
+<DEFAULT>3000</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpSession::sdes</NAME>
+<TYPE>GstStructure*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>SDES</NICK>
+<BLURB>The SDES items of this session.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstV4l2Sink::device</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Device</NICK>
+<BLURB>Device location.</BLURB>
+<DEFAULT>"/dev/video1"</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstV4l2Sink::device-fd</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= G_MAXULONG</RANGE>
+<FLAGS>r</FLAGS>
+<NICK>File descriptor</NICK>
+<BLURB>File descriptor of the device.</BLURB>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstV4l2Sink::device-name</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Device name</NICK>
+<BLURB>Name of the device.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstV4l2Sink::flags</NAME>
+<TYPE>GstV4l2DeviceTypeFlags</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Flags</NICK>
+<BLURB>Device type flags.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstV4l2Sink::overlay-height</NAME>
+<TYPE>guint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Overlay height</NICK>
+<BLURB>The height of the video overlay; default is equal to negotiated image height.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstV4l2Sink::overlay-left</NAME>
+<TYPE>gint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Overlay left</NICK>
+<BLURB>The leftmost (x) coordinate of the video overlay; top left corner of screen is 0,0.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstV4l2Sink::overlay-top</NAME>
+<TYPE>gint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Overlay top</NICK>
+<BLURB>The topmost (y) coordinate of the video overlay; top left corner of screen is 0,0.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstV4l2Sink::overlay-width</NAME>
+<TYPE>guint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Overlay width</NICK>
+<BLURB>The width of the video overlay; default is equal to negotiated image width.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstV4l2Sink::queue-size</NAME>
+<TYPE>guint</TYPE>
+<RANGE>[1,16]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Queue size</NICK>
+<BLURB>Number of buffers to be enqueud in the driver in streaming mode.</BLURB>
+<DEFAULT>8</DEFAULT>
 </ARG>
 

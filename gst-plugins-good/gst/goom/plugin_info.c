@@ -1,3 +1,21 @@
+/* Goom Project
+ * Copyright (C) <2003> iOS-Software
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -25,11 +43,9 @@
 #include "mmx.h"
 #endif /* HAVE_MMX */
 
-#ifdef HAVE_LIBOIL
 #include <liboil/liboil.h>
 #include <liboil/liboilfunction.h>
 #include <liboil/liboilcpu.h>
-#endif
 
 GST_DEBUG_CATEGORY_EXTERN (goom_debug);
 #define GST_CAT_DEFAULT goom_debug
@@ -38,10 +54,7 @@ static void
 setOptimizedMethods (PluginInfo * p)
 {
 
-  unsigned int cpuFlavour;
-#ifdef HAVE_LIBOIL
-  cpuFlavour = oil_cpu_get_flags ();
-#endif
+  unsigned int cpuFlavour = oil_cpu_get_flags ();
 
   /* set default methods */
   p->methods.draw_line = draw_line;
@@ -53,7 +66,6 @@ setOptimizedMethods (PluginInfo * p)
 /* FIXME: what about HAVE_CPU_X86_64 ? */
 #ifdef HAVE_CPU_I386
 #ifdef HAVE_MMX
-#ifdef HAVE_LIBOIL
   GST_INFO ("have an x86");
   if (cpuFlavour & OIL_IMPL_FLAG_MMXEXT) {
     GST_INFO ("Extended MMX detected. Using the fastest methods!");
@@ -66,7 +78,6 @@ setOptimizedMethods (PluginInfo * p)
   } else {
     GST_INFO ("Too bad ! No SIMD optimization available for your CPU.");
   }
-#endif
 #endif
 #endif /* HAVE_CPU_I386 */
 
@@ -98,7 +109,7 @@ void
 plugin_info_init (PluginInfo * pp, int nbVisuals)
 {
 
-  PluginInfo p;
+  PluginInfo p = { 0, };
   int i;
 
   p.sound.speedvar = p.sound.accelvar = p.sound.totalgoom = 0;
@@ -136,6 +147,7 @@ plugin_info_init (PluginInfo * pp, int nbVisuals)
   p.nbVisuals = nbVisuals;
   p.visuals = (VisualFX **) malloc (sizeof (VisualFX *) * nbVisuals);
 
+  /* huh, we're setting a local variable and now copying it over? */
   *pp = p;
   pp->sound.params.params[0] = &pp->sound.biggoom_speed_limit_p;
   pp->sound.params.params[1] = &pp->sound.biggoom_factor_p;

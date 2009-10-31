@@ -21,26 +21,21 @@
 
 /**
  * SECTION:element-icydemux
- * @short_description: reads tag information from an Icy (Icecast/Shoutcast) 
- * stream, outputting them as tag messages, and forwarding the enclosed data.
  *
- * <refsect2>
- * <para>
  * icydemux accepts data streams with ICY metadata at known intervals, as
  * transmitted from an upstream element (usually read as response headers from
  * an HTTP stream). The mime type of the data between the tag blocks is
  * detected using typefind functions, and the appropriate output mime type set
  * on outgoing buffers. 
- * </para>
+ *
+ * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
- * gst-launch gnomevfssrc location=http://some.server/ ! icydemux ! fakesink -t
- * </programlisting>
- * This pipeline should read any available ICY tag information and output it.
+ * |[
+ * gst-launch souphttpsrc location=http://some.server/ iradio-mode=true ! icydemux ! fakesink -t
+ * ]| This pipeline should read any available ICY tag information and output it.
  * The contents of the stream should be detected, and the appropriate mime
- * type set on buffers produced from icydemux.
- * </para>
+ * type set on buffers produced from icydemux. (Using gnomevfssrc, neonhttpsrc
+ * or giosrc instead of souphttpsrc should also work.)
  * </refsect2>
  */
 #ifdef HAVE_CONFIG_H
@@ -239,8 +234,6 @@ gst_icydemux_dispose (GObject * object)
 static gboolean
 gst_icydemux_add_srcpad (GstICYDemux * icydemux, GstCaps * new_caps)
 {
-  GstPad *srcpad = NULL;
-
   if (icydemux->src_caps == NULL ||
       !gst_caps_is_equal (new_caps, icydemux->src_caps)) {
     gst_caps_replace (&(icydemux->src_caps), new_caps);
@@ -256,7 +249,7 @@ gst_icydemux_add_srcpad (GstICYDemux * icydemux, GstCaps * new_caps)
   }
 
   if (icydemux->srcpad == NULL) {
-    srcpad = icydemux->srcpad =
+    icydemux->srcpad =
         gst_pad_new_from_template (gst_element_class_get_pad_template
         (GST_ELEMENT_GET_CLASS (icydemux), "src"), "src");
     g_return_val_if_fail (icydemux->srcpad != NULL, FALSE);

@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>gconfaudiosink</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="prev" href="gst-plugins-good-plugins-gconfaudiosrc.html" title="gconfaudiosrc">
+<link rel="next" href="gst-plugins-good-plugins-gconfvideosrc.html" title="gconfvideosrc">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-good-plugins-gconfaudiosrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-good-plugins-gconfvideosrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-good-plugins-gconfaudiosink.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-gconfaudiosink.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-gconfaudiosink.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-gconfaudiosink.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-gconfaudiosink.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry" title="gconfaudiosink">
+<a name="gst-plugins-good-plugins-gconfaudiosink"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-gconfaudiosink.top_of_page"></a>gconfaudiosink</span></h2>
+<p>gconfaudiosink — Audio sink embedding the GConf-settings for audio output</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv" title="Synopsis">
+<a name="gst-plugins-good-plugins-gconfaudiosink.synopsis"></a><h2>Synopsis</h2>
+<a name="GstGConfAudioSink"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-good-plugins-gconfaudiosink.html#GstGConfAudioSink-struct" title="GstGConfAudioSink">GstGConfAudioSink</a>;
+</pre>
+</div>
+<div class="refsect1" title="Object Hierarchy">
+<a name="gst-plugins-good-plugins-gconfaudiosink.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="../gstreamer-0.10/GstBin.html"
+>GstBin</a>
+                     +----GstSwitchSink
+                           +----GstGConfAudioSink
+</pre>
+</div>
+<div class="refsect1" title="Implemented Interfaces">
+<a name="gst-plugins-good-plugins-gconfaudiosink.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstGConfAudioSink implements
+ <a
+href="../gstreamer-0.10/GstChildProxy.html"
+>GstChildProxy</a>.</p>
+</div>
+<div class="refsect1" title="Properties">
+<a name="gst-plugins-good-plugins-gconfaudiosink.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-good-plugins-gconfaudiosink.html#GstGConfAudioSink--profile" title='The "profile" property'>profile</a>"                  GstGConfProfile       : Read / Write
+</pre>
+</div>
+<div class="refsect1" title="Description">
+<a name="gst-plugins-good-plugins-gconfaudiosink.description"></a><h2>Description</h2>
+<p>
+This element outputs sound to the audiosink that has been configured in
+GConf by the user.
+</p>
+<p>
+</p>
+<div class="refsect2" title="Example launch line">
+<a name="id487825"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch filesrc location=foo.ogg ! decodebin ! audioconvert ! audioresample ! gconfaudiosink
+</pre></div> Play on configured audiosink
+</div>
+<div class="refsynopsisdiv" title="Synopsis">
+<h2>Synopsis</h2>
+<div class="refsect2" title="Element Information">
+<a name="id533647"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-good-plugins-plugin-gconfelements.html#plugin-gconfelements">gconfelements</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Ronald Bultje &lt;rbultje@ronald.bitfreak.net&gt;
+    Jan Schmidt &lt;thaytan@mad.scientist.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Sink/Audio</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="Element Pads">
+<a name="id519778"></a><h3>Element Pads</h3>
+</div>
+</div>
+<p>
+</p>
+</div>
+<div class="refsect1" title="Details">
+<a name="gst-plugins-good-plugins-gconfaudiosink.details"></a><h2>Details</h2>
+<div class="refsect2" title="GstGConfAudioSink">
+<a name="GstGConfAudioSink-struct"></a><h3>GstGConfAudioSink</h3>
+<pre class="programlisting">typedef struct _GstGConfAudioSink GstGConfAudioSink;</pre>
+<p>
+</p>
+</div>
+</div>
+<div class="refsect1" title="Property Details">
+<a name="gst-plugins-good-plugins-gconfaudiosink.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" title='The "profile" property'>
+<a name="GstGConfAudioSink--profile"></a><h3>The <code class="literal">"profile"</code> property</h3>
+<pre class="programlisting">  "profile"                  GstGConfProfile       : Read / Write</pre>
+<p>Profile.</p>
+<p>Default value: Sound Events</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.11</div>
+</body>
+</html>

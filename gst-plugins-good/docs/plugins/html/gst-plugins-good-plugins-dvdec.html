@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>dvdec</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-dv1394src.html" title="dv1394src">
 <link rel="next" href="gst-plugins-good-plugins-dvdemux.html" title="dvdemux">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
@@ -23,15 +23,17 @@
 <th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-dvdemux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-good-plugins-dvdec.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-dvdec.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-dvdec.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-dvdec.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-good-plugins-dvdec.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-dvdec.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-dvdec.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-dvdec.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry" title="dvdec">
 <a name="gst-plugins-good-plugins-dvdec"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -40,59 +42,69 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="gst-plugins-good-plugins-dvdec.synopsis"></a><h2>Synopsis</h2>
 <a name="GstDVDec"></a><pre class="synopsis">
                     <a class="link" href="gst-plugins-good-plugins-dvdec.html#GstDVDec-struct" title="GstDVDec">GstDVDec</a>;
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Object Hierarchy">
 <a name="gst-plugins-good-plugins-dvdec.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
-   +----GstObject
-         +----GstElement
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
                +----GstDVDec
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Properties">
 <a name="gst-plugins-good-plugins-dvdec.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-dvdec.html#GstDVDec--clamp-chroma" title='The "clamp-chroma" property'>clamp-chroma</a>"             gboolean              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-dvdec.html#GstDVDec--clamp-luma" title='The "clamp-luma" property'>clamp-luma</a>"               gboolean              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-dvdec.html#GstDVDec--drop-factor" title='The "drop-factor" property'>drop-factor</a>"              gint                  : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-dvdec.html#GstDVDec--clamp-chroma" title='The "clamp-chroma" property'>clamp-chroma</a>"             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-dvdec.html#GstDVDec--clamp-luma" title='The "clamp-luma" property'>clamp-luma</a>"               <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-dvdec.html#GstDVDec--drop-factor" title='The "drop-factor" property'>drop-factor</a>"              <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
   "<a class="link" href="gst-plugins-good-plugins-dvdec.html#GstDVDec--quality" title='The "quality" property'>quality</a>"                  GstDVDecQualityEnum   : Read / Write
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Description">
 <a name="gst-plugins-good-plugins-dvdec.description"></a><h2>Description</h2>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2567571"></a><h3>Example launch line</h3>
 <p>
 dvdec decodes DV video into raw video. The element expects a full DV frame
 as input, which is 120000 bytes for NTSC and 144000 for PAL video.
 </p>
 <p>
-This element can perform simple frame dropping with the drop-factor
+This element can perform simple frame dropping with the <a class="link" href="gst-plugins-good-plugins-dvdec.html#GstDVDec--drop-factor" title='The "drop-factor" property'><span class="type">"drop-factor"</span></a>
 property. Setting this property to a value N &gt; 1 will only decode every 
 Nth frame.
 </p>
 <p>
 </p>
-<pre class="programlisting">
+<div class="refsect2" title="Example launch line">
+<a name="id478068"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch filesrc location=test.dv ! dvdemux name=demux ! dvdec ! xvimagesink
-</pre>
-<p>
-This pipeline decodes and renders the raw DV stream to a videosink.
-</p>
-Last reviewed on 2006-02-28 (0.10.3)
+</pre></div> This pipeline decodes and renders the raw DV stream to a videosink.
 </div>
-<div class="refsynopsisdiv">
+<p>
+</p>
+<p>
+Last reviewed on 2006-02-28 (0.10.3)</p>
+<div class="refsynopsisdiv" title="Synopsis">
 <h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2585336"></a><h3>Element Information</h3>
+<div class="refsect2" title="Element Information">
+<a name="id538674"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -114,29 +126,8 @@ Last reviewed on 2006-02-28 (0.10.3)
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2602761"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>video/x-dv, systemstream=(boolean)false</td>
-</tr>
-</tbody>
-</table></div>
+<div class="refsect2" title="Element Pads">
+<a name="id538955"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -166,47 +157,72 @@ Last reviewed on 2006-02-28 (0.10.3)
 </tr>
 </tbody>
 </table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-dv, systemstream=(boolean)false</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 </div>
 <p>
-
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Details">
 <a name="gst-plugins-good-plugins-dvdec.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="GstDVDec">
 <a name="GstDVDec-struct"></a><h3>GstDVDec</h3>
 <pre class="programlisting">typedef struct _GstDVDec GstDVDec;</pre>
 <p>
-
 </p>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Property Details">
 <a name="gst-plugins-good-plugins-dvdec.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title='The "clamp-chroma" property'>
 <a name="GstDVDec--clamp-chroma"></a><h3>The <code class="literal">"clamp-chroma"</code> property</h3>
-<pre class="programlisting">  "clamp-chroma"             gboolean              : Read / Write</pre>
+<pre class="programlisting">  "clamp-chroma"             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Clamp chroma.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title='The "clamp-luma" property'>
 <a name="GstDVDec--clamp-luma"></a><h3>The <code class="literal">"clamp-luma"</code> property</h3>
-<pre class="programlisting">  "clamp-luma"               gboolean              : Read / Write</pre>
+<pre class="programlisting">  "clamp-luma"               <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Clamp luma.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title='The "drop-factor" property'>
 <a name="GstDVDec--drop-factor"></a><h3>The <code class="literal">"drop-factor"</code> property</h3>
-<pre class="programlisting">  "drop-factor"              gint                  : Read / Write</pre>
+<pre class="programlisting">  "drop-factor"              <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Only decode Nth frame.</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 1</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title='The "quality" property'>
 <a name="GstDVDec--quality"></a><h3>The <code class="literal">"quality"</code> property</h3>
 <pre class="programlisting">  "quality"                  GstDVDecQualityEnum   : Read / Write</pre>
 <p>Decoding quality.</p>
@@ -216,6 +232,6 @@ Last reviewed on 2006-02-28 (0.10.3)
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

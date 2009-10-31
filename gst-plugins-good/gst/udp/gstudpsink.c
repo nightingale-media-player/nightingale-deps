@@ -16,7 +16,20 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-
+/**
+ * SECTION:element-udpsink
+ * @see_also: udpsrc, multifdsink
+ *
+ * udpsink is a network sink that sends UDP packets to the network.
+ * It can be combined with RTP payloaders to implement RTP streaming.
+ *
+ * <refsect2>
+ * <title>Examples</title>
+ * |[
+ * gst-launch -v audiotestsrc ! udpsink
+ * ]|
+ * </refsect2>
+ */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -120,12 +133,8 @@ static void
 gst_udpsink_class_init (GstUDPSink * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
-  GstBaseSinkClass *gstbasesink_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
-  gstbasesink_class = (GstBaseSinkClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
 
@@ -210,9 +219,9 @@ gst_udpsink_set_uri (GstUDPSink * sink, const gchar * uri)
   /* ERRORS */
 wrong_protocol:
   {
-    g_free (protocol);
     GST_ELEMENT_ERROR (sink, RESOURCE, READ, (NULL),
         ("error parsing uri %s: wrong protocol (%s != udp)", uri, protocol));
+    g_free (protocol);
     return FALSE;
   }
 }

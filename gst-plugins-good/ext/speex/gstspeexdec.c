@@ -20,23 +20,19 @@
 
 /**
  * SECTION:element-speexdec
- * @short_description: a decoder that decodes Speex to raw audio
  * @see_also: speexenc, oggdemux
  *
- * <refsect2>
- * <para>
  * This element decodes a Speex stream to raw integer audio.
  * <ulink url="http://www.speex.org/">Speex</ulink> is a royalty-free
  * audio codec maintained by the <ulink url="http://www.xiph.org/">Xiph.org
  * Foundation</ulink>.
- * </para>
+ *
+ * <refsect2>
  * <title>Example pipelines</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch -v filesrc location=speex.ogg ! oggdemux ! speexdec ! audioconvert ! audioresample ! alsasink
- * </programlisting>
- * Decode an Ogg/Speex file. To create an Ogg/Speex file refer to the documentation of speexenc.
- * </para>
+ * ]| Decode an Ogg/Speex file. To create an Ogg/Speex file refer to the
+ * documentation of speexenc.
  * </refsect2>
  *
  * Last reviewed on 2006-04-05 (0.10.2)
@@ -201,14 +197,14 @@ speex_dec_convert (GstPad * pad,
 
   dec = GST_SPEEX_DEC (gst_pad_get_parent (pad));
 
-  if (dec->packetno < 1) {
-    res = FALSE;
-    goto cleanup;
-  }
-
   if (src_format == *dest_format) {
     *dest_value = src_value;
     res = TRUE;
+    goto cleanup;
+  }
+
+  if (dec->packetno < 1) {
+    res = FALSE;
     goto cleanup;
   }
 
@@ -664,6 +660,14 @@ speex_dec_chain_parse_data (GstSpeexDec * dec, GstBuffer * buf,
 
     GST_DEBUG_OBJECT (dec, "received buffer of size %u, fpp %d", size, fpp);
 
+    if (!GST_BUFFER_TIMESTAMP_IS_VALID (buf)
+        && GST_BUFFER_OFFSET_END_IS_VALID (buf)) {
+      dec->granulepos = GST_BUFFER_OFFSET_END (buf);
+      GST_DEBUG_OBJECT (dec,
+          "Taking granulepos from upstream: %" G_GUINT64_FORMAT,
+          dec->granulepos);
+    }
+
     /* copy timestamp */
   } else {
     /* concealment data, pass NULL as the bits parameters */
@@ -677,26 +681,9 @@ speex_dec_chain_parse_data (GstSpeexDec * dec, GstBuffer * buf,
   for (i = 0; i < fpp; i++) {
     GstBuffer *outbuf;
     gint16 *out_data;
-    gint ret, j;
+    gint ret;
 
     GST_LOG_OBJECT (dec, "decoding frame %d/%d", i, fpp);
-
-    ret = speex_decode (dec->state, bits, dec->output);
-    if (ret == -1) {
-      /* uh? end of stream */
-      GST_WARNING_OBJECT (dec, "Unexpected end of stream found");
-      break;
-    } else if (ret == -2) {
-      GST_WARNING_OBJECT (dec, "Decoding error: corrupted stream?");
-      break;
-    }
-
-    if (bits && speex_bits_remaining (bits) < 0) {
-      GST_WARNING_OBJECT (dec, "Decoding overflow: corrupted stream?");
-      break;
-    }
-    if (dec->header->nb_channels == 2)
-      speex_decode_stereo (dec->output, dec->frame_size, &dec->stereo);
 
     res = gst_pad_alloc_buffer_and_set_caps (dec->srcpad,
         GST_BUFFER_OFFSET_NONE, dec->frame_size * dec->header->nb_channels * 2,
@@ -709,34 +696,47 @@ speex_dec_chain_parse_data (GstSpeexDec * dec, GstBuffer * buf,
 
     out_data = (gint16 *) GST_BUFFER_DATA (outbuf);
 
-    /*PCM saturation (just in case) */
-    for (j = 0; j < dec->frame_size * dec->header->nb_channels; j++) {
-      if (dec->output[j] > 32767.0)
-        out_data[j] = 32767;
-      else if (dec->output[i] < -32768.0)
-        out_data[j] = -32768;
-      else
-        out_data[j] = (gint16) dec->output[j];
+    ret = speex_decode_int (dec->state, bits, out_data);
+    if (ret == -1) {
+      /* uh? end of stream */
+      GST_WARNING_OBJECT (dec, "Unexpected end of stream found");
+      gst_buffer_unref (outbuf);
+      outbuf = NULL;
+      break;
+    } else if (ret == -2) {
+      GST_WARNING_OBJECT (dec, "Decoding error: corrupted stream?");
+      gst_buffer_unref (outbuf);
+      outbuf = NULL;
+      break;
     }
+
+    if (bits && speex_bits_remaining (bits) < 0) {
+      GST_WARNING_OBJECT (dec, "Decoding overflow: corrupted stream?");
+      gst_buffer_unref (outbuf);
+      outbuf = NULL;
+      break;
+    }
+    if (dec->header->nb_channels == 2)
+      speex_decode_stereo_int (out_data, dec->frame_size, &dec->stereo);
 
     if (dec->granulepos == -1) {
       if (dec->segment.format != GST_FORMAT_TIME) {
         GST_WARNING_OBJECT (dec, "segment not initialized or not TIME format");
-        dec->granulepos = 0;
+        dec->granulepos = dec->frame_size;
       } else {
         dec->granulepos = gst_util_uint64_scale_int (dec->segment.last_stop,
-            dec->header->rate, GST_SECOND);
+            dec->header->rate, GST_SECOND) + dec->frame_size;
       }
       GST_DEBUG_OBJECT (dec, "granulepos=%" G_GINT64_FORMAT, dec->granulepos);
     }
 
     if (timestamp == -1) {
-      timestamp = gst_util_uint64_scale_int (dec->granulepos,
+      timestamp = gst_util_uint64_scale_int (dec->granulepos - dec->frame_size,
           GST_SECOND, dec->header->rate);
     }
 
-    GST_BUFFER_OFFSET (outbuf) = dec->granulepos;
-    GST_BUFFER_OFFSET_END (outbuf) = dec->granulepos + dec->frame_size;
+    GST_BUFFER_OFFSET (outbuf) = dec->granulepos - dec->frame_size;
+    GST_BUFFER_OFFSET_END (outbuf) = dec->granulepos;
     GST_BUFFER_TIMESTAMP (outbuf) = timestamp;
     GST_BUFFER_DURATION (outbuf) = dec->frame_duration;
 

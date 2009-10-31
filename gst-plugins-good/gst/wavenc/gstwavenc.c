@@ -19,7 +19,12 @@
  * Boston, MA 02111-1307, USA.
  * 
  */
-
+/**
+ * SECTION:element-wavenc
+ *
+ * Format a audio stream into the wav format.
+ *
+ */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -30,8 +35,6 @@
 
 GST_DEBUG_CATEGORY_STATIC (wavenc_debug);
 #define GST_CAT_DEFAULT wavenc_debug
-
-#define WAVE_FORMAT_PCM 0x0001
 
 struct riff_struct
 {
@@ -79,7 +82,7 @@ GST_ELEMENT_DETAILS ("WAV audio muxer",
     "channels = (int) [ 1, 2 ], "        \
     "endianness = (int) LITTLE_ENDIAN, " \
     "width = (int) 32, "                 \
-    "depth = (int) [ 25, 32 ], "         \
+    "depth = (int) 32, "                 \
     "signed = (boolean) true"            \
     "; "                                 \
     "audio/x-raw-int, "                  \
@@ -87,7 +90,7 @@ GST_ELEMENT_DETAILS ("WAV audio muxer",
     "channels = (int) [ 1, 2 ], "        \
     "endianness = (int) LITTLE_ENDIAN, " \
     "width = (int) 24, "                 \
-    "depth = (int) [ 17, 24 ], "         \
+    "depth = (int) 24, "                 \
     "signed = (boolean) true"            \
     "; "                                 \
     "audio/x-raw-int, "                  \
@@ -95,15 +98,34 @@ GST_ELEMENT_DETAILS ("WAV audio muxer",
     "channels = (int) [ 1, 2 ], "        \
     "endianness = (int) LITTLE_ENDIAN, " \
     "width = (int) 16, "                 \
-    "depth = (int) [ 9, 16 ], "          \
+    "depth = (int) 16, "                 \
     "signed = (boolean) true"            \
     "; "                                 \
     "audio/x-raw-int, "                  \
     "rate = (int) [ 1, MAX ], "          \
     "channels = (int) [ 1, 2 ], "        \
     "width = (int) 8, "                  \
-    "depth = (int) [ 1, 8 ], "           \
+    "depth = (int) 8, "                  \
+    "signed = (boolean) false"           \
+    "; "                                 \
+    "audio/x-raw-float, "                \
+    "rate = (int) [ 1, MAX ], "          \
+    "channels = (int) [ 1, 2 ], "        \
+    "endianness = (int) LITTLE_ENDIAN, " \
+    "width = (int) { 32, 64 }; "         \
+    "audio/x-alaw, "                     \
+    "rate = (int) [ 8000, 192000 ], "    \
+    "channels = (int) [ 1, 2 ], "        \
+    "width = (int) 8, "                  \
+    "depth = (int) 8, "                  \
+    "signed = (boolean) false; "         \
+    "audio/x-mulaw, "                    \
+    "rate = (int) [ 8000, 192000 ], "    \
+    "channels = (int) [ 1, 2 ], "        \
+    "width = (int) 8, "                  \
+    "depth = (int) 8, "                  \
     "signed = (boolean) false"
+
 
 static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
@@ -183,7 +205,7 @@ gst_wavenc_create_header_buf (GstWavEnc * wavenc, guint audio_data_size)
   memset (header, 0, WAV_HEADER_LEN);
 
   wave.common.wChannels = wavenc->channels;
-  wave.common.wBitsPerSample = wavenc->depth;
+  wave.common.wBitsPerSample = wavenc->width;
   wave.common.dwSamplesPerSec = wavenc->rate;
 
   /* Fill out our wav-header with some information */
@@ -194,7 +216,7 @@ gst_wavenc_create_header_buf (GstWavEnc * wavenc, guint audio_data_size)
   memcpy (wave.format.id, "fmt ", 4);
   wave.format.len = 16;
 
-  wave.common.wFormatTag = WAVE_FORMAT_PCM;
+  wave.common.wFormatTag = wavenc->format;
   wave.common.wBlockAlign = (wavenc->width / 8) * wave.common.wChannels;
   wave.common.dwAvgBytesPerSec =
       wave.common.wBlockAlign * wave.common.dwSamplesPerSec;
@@ -252,7 +274,8 @@ gst_wavenc_sink_setcaps (GstPad * pad, GstCaps * caps)
 {
   GstWavEnc *wavenc;
   GstStructure *structure;
-  gint chans, rate, width, depth;
+  const gchar *name;
+  gint chans, rate, width;
 
   wavenc = GST_WAVENC (gst_pad_get_parent (pad));
 
@@ -264,21 +287,45 @@ gst_wavenc_sink_setcaps (GstPad * pad, GstCaps * caps)
   GST_DEBUG_OBJECT (wavenc, "got caps: %" GST_PTR_FORMAT, caps);
 
   structure = gst_caps_get_structure (caps, 0);
+  name = gst_structure_get_name (structure);
+
   if (!gst_structure_get_int (structure, "channels", &chans) ||
-      !gst_structure_get_int (structure, "rate", &rate) ||
-      !gst_structure_get_int (structure, "width", &width) ||
-      !gst_structure_get_int (structure, "depth", &depth)) {
+      !gst_structure_get_int (structure, "rate", &rate)) {
     GST_WARNING_OBJECT (wavenc, "caps incomplete");
     goto fail;
   }
 
+  if (strcmp (name, "audio/x-raw-int") == 0) {
+    if (!gst_structure_get_int (structure, "width", &width)) {
+      GST_WARNING_OBJECT (wavenc, "caps incomplete");
+      goto fail;
+    }
+    wavenc->format = GST_RIFF_WAVE_FORMAT_PCM;
+    wavenc->width = width;
+  } else if (strcmp (name, "audio/x-raw-float") == 0) {
+    if (!gst_structure_get_int (structure, "width", &width)) {
+      GST_WARNING_OBJECT (wavenc, "caps incomplete");
+      goto fail;
+    }
+    wavenc->format = GST_RIFF_WAVE_FORMAT_FLOAT;
+    wavenc->width = width;
+  } else if (strcmp (name, "audio/x-alaw") == 0) {
+    wavenc->format = GST_RIFF_WAVE_FORMAT_ALAW;
+    wavenc->width = 8;
+  } else if (strcmp (name, "audio/x-mulaw") == 0) {
+    wavenc->format = GST_RIFF_WAVE_FORMAT_MULAW;
+    wavenc->width = 8;
+  } else {
+    GST_WARNING_OBJECT (wavenc, "Unsupported format %s", name);
+    goto fail;
+  }
+
   wavenc->channels = chans;
-  wavenc->depth = depth;
-  wavenc->width = width;
   wavenc->rate = rate;
 
-  GST_LOG_OBJECT (wavenc, "accepted caps: chans=%u width=%u depth=%u rate=%u",
-      wavenc->channels, wavenc->width, wavenc->depth, wavenc->rate);
+  GST_LOG_OBJECT (wavenc,
+      "accepted caps: format=0x%04x chans=%u width=%u rate=%u",
+      wavenc->format, wavenc->channels, wavenc->width, wavenc->rate);
 
   gst_object_unref (wavenc);
   return TRUE;
@@ -608,52 +655,6 @@ gst_wavenc_event (GstPad * pad, GstEvent * event)
   return res;
 }
 
-/* Copied from gst-plugins-base/gst/audioconvert/audioconvert.c */
-#define READ24_FROM_LE(p) (p[0] | (p[1] << 8) | (p[2] << 16))
-#define WRITE24_TO_LE(p,v) p[0] = v & 0xff; p[1] = (v >> 8) & 0xff; p[2] = (v >> 16) & 0xff
-
-/* Correctly format samples with width!=depth for the wav format, i.e.
- * have the data in the highest depth bits and all others zero */
-static void
-gst_wavenc_format_samples (GstBuffer * buf, guint width, guint depth)
-{
-  guint8 *data = GST_BUFFER_DATA (buf);
-  guint nsamples = (GST_BUFFER_SIZE (buf) * 8) / width;
-  guint32 tmp;
-
-  for (; nsamples; nsamples--) {
-    switch (width) {
-
-      case 8:
-        tmp = *data;
-        *data = *data << (width - depth);
-        data += 1;
-        break;
-      case 16:
-        tmp = GST_READ_UINT16_LE (data);
-        tmp = tmp << (width - depth);
-        GST_WRITE_UINT16_LE (data, tmp);
-        data += 2;
-        break;
-      case 24:
-        tmp = READ24_FROM_LE (data);
-        tmp = tmp << (width - depth);
-        WRITE24_TO_LE (data, tmp);
-        data += 3;
-        break;
-      case 32:
-        tmp = GST_READ_UINT32_LE (data);
-        tmp = tmp << (width - depth);
-        GST_WRITE_UINT32_LE (data, tmp);
-        data += 4;
-        break;
-    }
-  }
-}
-
-#undef READ24_FROM_LE
-#undef WRITE24_TO_LE
-
 static GstFlowReturn
 gst_wavenc_chain (GstPad * pad, GstBuffer * buf)
 {
@@ -679,12 +680,7 @@ gst_wavenc_chain (GstPad * pad, GstBuffer * buf)
   GST_LOG_OBJECT (wavenc, "pushing %u bytes raw audio, ts=%" GST_TIME_FORMAT,
       GST_BUFFER_SIZE (buf), GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)));
 
-  if (wavenc->width != wavenc->depth) {
-    buf = gst_buffer_make_writable (buf);
-    gst_wavenc_format_samples (buf, wavenc->width, wavenc->depth);
-  } else {
-    buf = gst_buffer_make_metadata_writable (buf);
-  }
+  buf = gst_buffer_make_metadata_writable (buf);
 
   gst_buffer_set_caps (buf, GST_PAD_CAPS (wavenc->srcpad));
   GST_BUFFER_OFFSET (buf) = WAV_HEADER_LEN + wavenc->length;
@@ -703,8 +699,8 @@ gst_wavenc_change_state (GstElement * element, GstStateChange transition)
 
   switch (transition) {
     case GST_STATE_CHANGE_NULL_TO_READY:
+      wavenc->format = 0;
       wavenc->channels = 0;
-      wavenc->depth = 0;
       wavenc->width = 0;
       wavenc->rate = 0;
       wavenc->length = 0;

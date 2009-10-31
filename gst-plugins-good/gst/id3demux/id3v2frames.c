@@ -73,6 +73,7 @@ id3demux_id3v2_parse_frame (ID3TagsWorking * work)
   guint frame_data_size = work->cur_frame_size;
   gchar *tag_str = NULL;
   GArray *tag_fields = NULL;
+  guint8 *uu_data = NULL;
 
 #ifdef HAVE_ZLIB
   guint8 *uncompressed_data = NULL;
@@ -86,15 +87,12 @@ id3demux_id3v2_parse_frame (ID3TagsWorking * work)
     }
   }
 
-  /* Can't handle encrypted frames right now */
+  /* Can't handle encrypted frames right now (in case we ever do, we'll have
+   * to do the decryption after the un-unsynchronisation and decompression,
+   * not here) */
   if (work->frame_flags & ID3V2_FRAME_FORMAT_ENCRYPTION) {
     GST_WARNING ("Encrypted frames are not supported");
     return FALSE;
-  }
-
-  if (work->frame_flags & ID3V2_FRAME_FORMAT_UNSYNCHRONISATION) {
-    GST_WARNING ("ID3v2 frame with unsupported unsynchronisation applied. "
-        "May fail badly");
   }
 
   tag_name = gst_tag_from_id3_tag (work->frame_id);
@@ -110,13 +108,30 @@ id3demux_id3v2_parse_frame (ID3TagsWorking * work)
           ID3V2_FRAME_FORMAT_DATA_LENGTH_INDICATOR)) {
     if (work->hdr.frame_data_size <= 4)
       return FALSE;
-    work->parse_size = read_synch_uint (frame_data, 4);
+    if (ID3V2_VER_MAJOR (work->hdr.version) == 3) {
+      work->parse_size = GST_READ_UINT32_BE (frame_data);
+    } else {
+      work->parse_size = read_synch_uint (frame_data, 4);
+    }
     frame_data += 4;
     frame_data_size -= 4;
     if (work->parse_size < frame_data_size) {
       GST_WARNING ("ID3v2 frame %s has invalid size %d.", tag_name,
           frame_data_size);
       return FALSE;
+    }
+  }
+
+  /* in v2.3 the frame sizes are not syncsafe, so the entire tag had to be
+   * unsynced. In v2.4 the frame sizes are syncsafe so it's just the frame
+   * data that needs un-unsyncing, but not the frame headers. */
+  if (ID3V2_VER_MAJOR (work->hdr.version) == 4) {
+    if ((work->hdr.flags & ID3V2_HDR_FLAG_UNSYNC) != 0 ||
+        ((work->frame_flags & ID3V2_FRAME_FORMAT_UNSYNCHRONISATION) != 0)) {
+      GST_DEBUG ("Un-unsyncing frame %s", work->frame_id);
+      uu_data = id3demux_ununsync_data (frame_data, &frame_data_size);
+      frame_data = uu_data;
+      GST_MEMDUMP ("ID3v2 frame (un-unsyced)", frame_data, frame_data_size);
     }
   }
 
@@ -134,6 +149,7 @@ id3demux_id3v2_parse_frame (ID3TagsWorking * work)
 
     if (uncompress (dest, &destSize, src, frame_data_size) != Z_OK) {
       g_free (uncompressed_data);
+      g_free (uu_data);
       return FALSE;
     }
     if (destSize != work->parse_size) {
@@ -141,12 +157,14 @@ id3demux_id3v2_parse_frame (ID3TagsWorking * work)
           ("Decompressing ID3v2 frame %s did not produce expected size %d bytes (got %lu)",
           tag_name, work->parse_size, destSize);
       g_free (uncompressed_data);
+      g_free (uu_data);
       return FALSE;
     }
     work->parse_data = uncompressed_data;
 #else
     GST_WARNING ("Compressed ID3v2 tag frame could not be decompressed"
         " because gstid3demux was compiled without zlib support");
+    g_free (uu_data);
     return FALSE;
 #endif
   } else {
@@ -208,6 +226,8 @@ id3demux_id3v2_parse_frame (ID3TagsWorking * work)
     }
     free_tag_strings (tag_fields);
   }
+
+  g_free (uu_data);
 
   return result;
 }
@@ -928,6 +948,73 @@ find_utf16_bom (gchar * data, const gchar ** p_in_encoding)
   return FALSE;
 }
 
+static void *
+string_utf8_dup (const gchar * start, const guint size)
+{
+  const gchar *env;
+  gsize bytes_read;
+  gchar *utf8;
+
+  /* Should we try the charsets specified
+   * via environment variables FIRST ? */
+  if (g_utf8_validate (start, size, NULL)) {
+    utf8 = g_strndup (start, size);
+    goto beach;
+  }
+
+  env = g_getenv ("GST_ID3V1_TAG_ENCODING");
+  if (!env || *env == '\0')
+    env = g_getenv ("GST_ID3_TAG_ENCODING");
+  if (!env || *env == '\0')
+    env = g_getenv ("GST_TAG_ENCODING");
+
+  /* Try charsets specified via the environment */
+  if (env && *env != '\0') {
+    gchar **c, **csets;
+
+    csets = g_strsplit (env, G_SEARCHPATH_SEPARATOR_S, -1);
+
+    for (c = csets; c && *c; ++c) {
+      if ((utf8 =
+              g_convert (start, size, "UTF-8", *c, &bytes_read, NULL, NULL))) {
+        if (bytes_read == size) {
+          GST_DEBUG ("Using charset %s to interperate id3 tags\n", c);
+          g_strfreev (csets);
+          goto beach;
+        }
+        g_free (utf8);
+        utf8 = NULL;
+      }
+    }
+  }
+  /* Try current locale (if not UTF-8) */
+  if (!g_get_charset (&env)) {
+    if ((utf8 = g_locale_to_utf8 (start, size, &bytes_read, NULL, NULL))) {
+      if (bytes_read == size) {
+        goto beach;
+      }
+      g_free (utf8);
+      utf8 = NULL;
+    }
+  }
+
+  /* Try ISO-8859-1 */
+  utf8 =
+      g_convert (start, size, "UTF-8", "ISO-8859-1", &bytes_read, NULL, NULL);
+  if (utf8 != NULL && bytes_read == size) {
+    goto beach;
+  }
+
+  g_free (utf8);
+  return NULL;
+
+beach:
+
+  g_strchomp (utf8);
+
+  return (utf8);
+}
+
 static void
 parse_insert_string_field (guint8 encoding, gchar * data, gint data_size,
     GArray * fields)
@@ -968,8 +1055,9 @@ parse_insert_string_field (guint8 encoding, gchar * data, gint data_size,
       if (g_utf8_validate (data, data_size, NULL))
         field = g_strndup (data, data_size);
       else
-        field = g_convert (data, data_size, "UTF-8", "ISO-8859-1",
-            NULL, NULL, NULL);
+        /* field = g_convert (data, data_size, "UTF-8", "ISO-8859-1",
+           NULL, NULL, NULL); */
+        field = string_utf8_dup (data, data_size);
       break;
     default:
       field = g_strndup (data, data_size);

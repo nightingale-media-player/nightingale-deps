@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2005> Wim Taymans <wim@fluendo.com>
+ * Copyright (C) <2005> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -31,16 +31,16 @@ GST_DEBUG_CATEGORY_STATIC (rtpmpadepay_debug);
 
 /* elementfactory information */
 static const GstElementDetails gst_rtp_mpadepay_details =
-GST_ELEMENT_DETAILS ("RTP packet depayloader",
+GST_ELEMENT_DETAILS ("RTP MPEG audio depayloader",
     "Codec/Depayloader/Network",
     "Extracts MPEG audio from RTP packets (RFC 2038)",
-    "Wim Taymans <wim@fluendo.com>");
+    "Wim Taymans <wim.taymans@gmail.com>");
 
 static GstStaticPadTemplate gst_rtp_mpa_depay_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/mpeg")
+    GST_STATIC_CAPS ("audio/mpeg, " "mpegversion = (int) 1")
     );
 
 static GstStaticPadTemplate gst_rtp_mpa_depay_sink_template =
@@ -65,9 +65,6 @@ static gboolean gst_rtp_mpa_depay_setcaps (GstBaseRTPDepayload * depayload,
 static GstBuffer *gst_rtp_mpa_depay_process (GstBaseRTPDepayload * depayload,
     GstBuffer * buf);
 
-static GstStateChangeReturn gst_rtp_mpa_depay_change_state (GstElement *
-    element, GstStateChange transition);
-
 static void
 gst_rtp_mpa_depay_base_init (gpointer klass)
 {
@@ -84,17 +81,11 @@ gst_rtp_mpa_depay_base_init (gpointer klass)
 static void
 gst_rtp_mpa_depay_class_init (GstRtpMPADepayClass * klass)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
 
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
   gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
-
-  gstelement_class->change_state = gst_rtp_mpa_depay_change_state;
 
   gstbasertpdepayload_class->set_caps = gst_rtp_mpa_depay_setcaps;
   gstbasertpdepayload_class->process = gst_rtp_mpa_depay_process;
@@ -114,17 +105,22 @@ static gboolean
 gst_rtp_mpa_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
 {
   GstStructure *structure;
-  GstRtpMPADepay *rtpmpadepay;
-  gint clock_rate = 90000;      /* default */
-
-  rtpmpadepay = GST_RTP_MPA_DEPAY (depayload);
+  GstCaps *outcaps;
+  gint clock_rate;
+  gboolean res;
 
   structure = gst_caps_get_structure (caps, 0);
 
-  gst_structure_get_int (structure, "clock-rate", &clock_rate);
+  if (!gst_structure_get_int (structure, "clock-rate", &clock_rate))
+    clock_rate = 90000;
   depayload->clock_rate = clock_rate;
 
-  return TRUE;
+  outcaps =
+      gst_caps_new_simple ("audio/mpeg", "mpegversion", G_TYPE_INT, 1, NULL);
+  res = gst_pad_set_caps (depayload->srcpad, outcaps);
+  gst_caps_unref (outcaps);
+
+  return res;
 }
 
 static GstBuffer *
@@ -135,20 +131,18 @@ gst_rtp_mpa_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 
   rtpmpadepay = GST_RTP_MPA_DEPAY (depayload);
 
-  if (!gst_rtp_buffer_validate (buf))
-    goto bad_packet;
-
   {
     gint payload_len;
     guint8 *payload;
     guint16 frag_offset;
+    gboolean marker;
 
     payload_len = gst_rtp_buffer_get_payload_len (buf);
-    payload = gst_rtp_buffer_get_payload (buf);
 
     if (payload_len <= 4)
       goto empty_packet;
 
+    payload = gst_rtp_buffer_get_payload (buf);
     /* strip off header
      *
      *  0                   1                   2                   3
@@ -161,7 +155,12 @@ gst_rtp_mpa_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 
     /* subbuffer skipping the 4 header bytes */
     outbuf = gst_rtp_buffer_get_payload_subbuffer (buf, 4, -1);
+    marker = gst_rtp_buffer_get_marker (buf);
 
+    if (marker) {
+      /* mark start of talkspurt with discont */
+      GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_DISCONT);
+    }
     GST_DEBUG_OBJECT (rtpmpadepay,
         "gst_rtp_mpa_depay_chain: pushing buffer of size %d",
         GST_BUFFER_SIZE (outbuf));
@@ -173,52 +172,13 @@ gst_rtp_mpa_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 
   return NULL;
 
-bad_packet:
-  {
-    GST_ELEMENT_WARNING (rtpmpadepay, STREAM, DECODE,
-        ("Packet did not validate."), (NULL));
-    return NULL;
-  }
-#if 0
-bad_payload:
-  {
-    GST_ELEMENT_WARNING (rtpmpadepay, STREAM, DECODE,
-        ("Unexpected payload type."), (NULL));
-    return NULL;
-  }
-#endif
+  /* ERRORS */
 empty_packet:
   {
     GST_ELEMENT_WARNING (rtpmpadepay, STREAM, DECODE,
         ("Empty Payload."), (NULL));
     return NULL;
   }
-}
-
-static GstStateChangeReturn
-gst_rtp_mpa_depay_change_state (GstElement * element, GstStateChange transition)
-{
-  GstRtpMPADepay *rtpmpadepay;
-  GstStateChangeReturn ret;
-
-  rtpmpadepay = GST_RTP_MPA_DEPAY (element);
-
-  switch (transition) {
-    case GST_STATE_CHANGE_NULL_TO_READY:
-      break;
-    default:
-      break;
-  }
-
-  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
-
-  switch (transition) {
-    case GST_STATE_CHANGE_READY_TO_NULL:
-      break;
-    default:
-      break;
-  }
-  return ret;
 }
 
 gboolean

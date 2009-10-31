@@ -1,0 +1,374 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>flacenc</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="prev" href="gst-plugins-good-plugins-flacdec.html" title="flacdec">
+<link rel="next" href="gst-plugins-good-plugins-flactag.html" title="flactag">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-good-plugins-flacdec.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-good-plugins-flactag.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-good-plugins-flacenc.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-flacenc.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-flacenc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-flacenc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-flacenc.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry" title="flacenc">
+<a name="gst-plugins-good-plugins-flacenc"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-flacenc.top_of_page"></a>flacenc</span></h2>
+<p>flacenc — Encodes audio with the FLAC lossless audio encoder</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv" title="Synopsis">
+<a name="gst-plugins-good-plugins-flacenc.synopsis"></a><h2>Synopsis</h2>
+<a name="GstFlacEnc"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-good-plugins-flacenc.html#GstFlacEnc-struct" title="GstFlacEnc">GstFlacEnc</a>;
+</pre>
+</div>
+<div class="refsect1" title="Object Hierarchy">
+<a name="gst-plugins-good-plugins-flacenc.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----GstFlacEnc
+</pre>
+</div>
+<div class="refsect1" title="Implemented Interfaces">
+<a name="gst-plugins-good-plugins-flacenc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstFlacEnc implements
+ <a
+href="../gstreamer-0.10/GstPreset.html"
+>GstPreset</a> and  <a
+href="../gstreamer-0.10/GstTagSetter.html"
+>GstTagSetter</a>.</p>
+</div>
+<div class="refsect1" title="Properties">
+<a name="gst-plugins-good-plugins-flacenc.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-good-plugins-flacenc.html#GstFlacEnc--blocksize" title='The "blocksize" property'>blocksize</a>"                <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write / Construct
+  "<a class="link" href="gst-plugins-good-plugins-flacenc.html#GstFlacEnc--escape-coding" title='The "escape-coding" property'>escape-coding</a>"            <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct
+  "<a class="link" href="gst-plugins-good-plugins-flacenc.html#GstFlacEnc--exhaustive-model-search" title='The "exhaustive-model-search" property'>exhaustive-model-search</a>"  <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct
+  "<a class="link" href="gst-plugins-good-plugins-flacenc.html#GstFlacEnc--loose-mid-side-stereo" title='The "loose-mid-side-stereo" property'>loose-mid-side-stereo</a>"    <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct
+  "<a class="link" href="gst-plugins-good-plugins-flacenc.html#GstFlacEnc--max-lpc-order" title='The "max-lpc-order" property'>max-lpc-order</a>"            <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write / Construct
+  "<a class="link" href="gst-plugins-good-plugins-flacenc.html#GstFlacEnc--max-residual-partition-order" title='The "max-residual-partition-order" property'>max-residual-partition-order</a>" <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write / Construct
+  "<a class="link" href="gst-plugins-good-plugins-flacenc.html#GstFlacEnc--mid-side-stereo" title='The "mid-side-stereo" property'>mid-side-stereo</a>"          <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct
+  "<a class="link" href="gst-plugins-good-plugins-flacenc.html#GstFlacEnc--min-residual-partition-order" title='The "min-residual-partition-order" property'>min-residual-partition-order</a>" <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write / Construct
+  "<a class="link" href="gst-plugins-good-plugins-flacenc.html#GstFlacEnc--qlp-coeff-prec-search" title='The "qlp-coeff-prec-search" property'>qlp-coeff-prec-search</a>"    <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct
+  "<a class="link" href="gst-plugins-good-plugins-flacenc.html#GstFlacEnc--qlp-coeff-precision" title='The "qlp-coeff-precision" property'>qlp-coeff-precision</a>"      <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write / Construct
+  "<a class="link" href="gst-plugins-good-plugins-flacenc.html#GstFlacEnc--quality" title='The "quality" property'>quality</a>"                  GstFlacEncQuality     : Read / Write / Construct
+  "<a class="link" href="gst-plugins-good-plugins-flacenc.html#GstFlacEnc--rice-parameter-search-dist" title='The "rice-parameter-search-dist" property'>rice-parameter-search-dist</a>" <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write / Construct
+  "<a class="link" href="gst-plugins-good-plugins-flacenc.html#GstFlacEnc--streamable-subset" title='The "streamable-subset" property'>streamable-subset</a>"        <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct
+  "<a class="link" href="gst-plugins-good-plugins-flacenc.html#GstFlacEnc--padding" title='The "padding" property'>padding</a>"                  <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write / Construct
+</pre>
+</div>
+<div class="refsect1" title="Description">
+<a name="gst-plugins-good-plugins-flacenc.description"></a><h2>Description</h2>
+<p>
+flacenc encodes FLAC streams.
+<a class="ulink" href="http://flac.sourceforge.net/" target="_top">FLAC</a>
+is a Free Lossless Audio Codec.
+</p>
+<p>
+</p>
+<div class="refsect2" title="Example launch line">
+<a name="id492686"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch audiotestsrc num-buffers=100 ! flacenc ! filesink location=beep.flac
+</pre></div>
+</div>
+<div class="refsynopsisdiv" title="Synopsis">
+<h2>Synopsis</h2>
+<div class="refsect2" title="Element Information">
+<a name="id523517"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-good-plugins-plugin-flac.html#plugin-flac">flac</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Wim Taymans &lt;wim.taymans@chello.be&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Encoder/Audio</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="Element Pads">
+<a name="id518001"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)8, depth=(int)8, rate=(int)[ 1, 655350 ], channels=(int)[ 1, 8 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)16, depth=(int){ 12, 16 }, rate=(int)[ 1, 655350 ], channels=(int)[ 1, 8 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)32, depth=(int){ 20, 24 }, rate=(int)[ 1, 655350 ], channels=(int)[ 1, 8 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-flac</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>
+</p>
+</div>
+<div class="refsect1" title="Details">
+<a name="gst-plugins-good-plugins-flacenc.details"></a><h2>Details</h2>
+<div class="refsect2" title="GstFlacEnc">
+<a name="GstFlacEnc-struct"></a><h3>GstFlacEnc</h3>
+<pre class="programlisting">typedef struct _GstFlacEnc GstFlacEnc;</pre>
+<p>
+</p>
+</div>
+</div>
+<div class="refsect1" title="Property Details">
+<a name="gst-plugins-good-plugins-flacenc.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" title='The "blocksize" property'>
+<a name="GstFlacEnc--blocksize"></a><h3>The <code class="literal">"blocksize"</code> property</h3>
+<pre class="programlisting">  "blocksize"                <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write / Construct</pre>
+<p>Blocksize in samples.</p>
+<p>Allowed values: [16,65535]</p>
+<p>Default value: 4608</p>
+</div>
+<hr>
+<div class="refsect2" title='The "escape-coding" property'>
+<a name="GstFlacEnc--escape-coding"></a><h3>The <code class="literal">"escape-coding"</code> property</h3>
+<pre class="programlisting">  "escape-coding"            <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct</pre>
+<p>search for escape codes in the entropy coding stage for slightly better compression.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" title='The "exhaustive-model-search" property'>
+<a name="GstFlacEnc--exhaustive-model-search"></a><h3>The <code class="literal">"exhaustive-model-search"</code> property</h3>
+<pre class="programlisting">  "exhaustive-model-search"  <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct</pre>
+<p>do exhaustive search of LP coefficient quantization (expensive!).</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" title='The "loose-mid-side-stereo" property'>
+<a name="GstFlacEnc--loose-mid-side-stereo"></a><h3>The <code class="literal">"loose-mid-side-stereo"</code> property</h3>
+<pre class="programlisting">  "loose-mid-side-stereo"    <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct</pre>
+<p>Loose mid side stereo.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" title='The "max-lpc-order" property'>
+<a name="GstFlacEnc--max-lpc-order"></a><h3>The <code class="literal">"max-lpc-order"</code> property</h3>
+<pre class="programlisting">  "max-lpc-order"            <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write / Construct</pre>
+<p>Max LPC order; 0 =&gt; use only fixed predictors.</p>
+<p>Allowed values: &lt;= 32</p>
+<p>Default value: 8</p>
+</div>
+<hr>
+<div class="refsect2" title='The "max-residual-partition-order" property'>
+<a name="GstFlacEnc--max-residual-partition-order"></a><h3>The <code class="literal">"max-residual-partition-order"</code> property</h3>
+<pre class="programlisting">  "max-residual-partition-order" <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write / Construct</pre>
+<p>Max residual partition order (above 4 doesn't usually help much).</p>
+<p>Allowed values: &lt;= 16</p>
+<p>Default value: 3</p>
+</div>
+<hr>
+<div class="refsect2" title='The "mid-side-stereo" property'>
+<a name="GstFlacEnc--mid-side-stereo"></a><h3>The <code class="literal">"mid-side-stereo"</code> property</h3>
+<pre class="programlisting">  "mid-side-stereo"          <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct</pre>
+<p>Do mid side stereo (only for stereo input).</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" title='The "min-residual-partition-order" property'>
+<a name="GstFlacEnc--min-residual-partition-order"></a><h3>The <code class="literal">"min-residual-partition-order"</code> property</h3>
+<pre class="programlisting">  "min-residual-partition-order" <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write / Construct</pre>
+<p>Min residual partition order (above 4 doesn't usually help much).</p>
+<p>Allowed values: &lt;= 16</p>
+<p>Default value: 3</p>
+</div>
+<hr>
+<div class="refsect2" title='The "qlp-coeff-prec-search" property'>
+<a name="GstFlacEnc--qlp-coeff-prec-search"></a><h3>The <code class="literal">"qlp-coeff-prec-search"</code> property</h3>
+<pre class="programlisting">  "qlp-coeff-prec-search"    <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct</pre>
+<p>false = use qlp_coeff_precision, true = search around qlp_coeff_precision, take best.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" title='The "qlp-coeff-precision" property'>
+<a name="GstFlacEnc--qlp-coeff-precision"></a><h3>The <code class="literal">"qlp-coeff-precision"</code> property</h3>
+<pre class="programlisting">  "qlp-coeff-precision"      <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write / Construct</pre>
+<p>Precision in bits of quantized linear-predictor coefficients; 0 = automatic.</p>
+<p>Allowed values: &lt;= 32</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" title='The "quality" property'>
+<a name="GstFlacEnc--quality"></a><h3>The <code class="literal">"quality"</code> property</h3>
+<pre class="programlisting">  "quality"                  GstFlacEncQuality     : Read / Write / Construct</pre>
+<p>Speed versus compression tradeoff.</p>
+<p>Default value: 5 - Default</p>
+</div>
+<hr>
+<div class="refsect2" title='The "rice-parameter-search-dist" property'>
+<a name="GstFlacEnc--rice-parameter-search-dist"></a><h3>The <code class="literal">"rice-parameter-search-dist"</code> property</h3>
+<pre class="programlisting">  "rice-parameter-search-dist" <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write / Construct</pre>
+<p>0 = try only calc'd parameter k; else try all [k-dist..k+dist] parameters, use best.</p>
+<p>Allowed values: &lt;= 15</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" title='The "streamable-subset" property'>
+<a name="GstFlacEnc--streamable-subset"></a><h3>The <code class="literal">"streamable-subset"</code> property</h3>
+<pre class="programlisting">  "streamable-subset"        <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct</pre>
+<p>true to limit encoder to generating a Subset stream, else false.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" title='The "padding" property'>
+<a name="GstFlacEnc--padding"></a><h3>The <code class="literal">"padding"</code> property</h3>
+<pre class="programlisting">  "padding"                  <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write / Construct</pre>
+<p>
+Write a PADDING block with this length in bytes</p>
+<p>
+</p>
+<p>Default value: 0</p>
+<p>Since 0.10.16</p>
+</div>
+</div>
+<div class="refsect1" title="See Also">
+<a name="gst-plugins-good-plugins-flacenc.see-also"></a><h2>See Also</h2>
+#GstFlacDec
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.11</div>
+</body>
+</html>

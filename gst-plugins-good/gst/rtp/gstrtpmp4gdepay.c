@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2005> Wim Taymans <wim@fluendo.com>
+ * Copyright (C) <2005> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -32,10 +32,10 @@ GST_DEBUG_CATEGORY_STATIC (rtpmp4gdepay_debug);
 
 /* elementfactory information */
 static const GstElementDetails gst_rtp_mp4gdepay_details =
-GST_ELEMENT_DETAILS ("RTP packet depayloader",
+GST_ELEMENT_DETAILS ("RTP MPEG4 ES depayloader",
     "Codec/Depayloader/Network",
     "Extracts MPEG4 elementary streams from RTP packets (RFC 3640)",
-    "Wim Taymans <wim@fluendo.com>");
+    "Wim Taymans <wim.taymans@gmail.com>");
 
 static GstStaticPadTemplate gst_rtp_mp4g_depay_src_template =
     GST_STATIC_PAD_TEMPLATE ("src",
@@ -225,33 +225,30 @@ gst_rtp_mp4g_depay_parse_int (GstStructure * structure, const gchar * field,
 static gboolean
 gst_rtp_mp4g_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
 {
-
   GstStructure *structure;
   GstRtpMP4GDepay *rtpmp4gdepay;
   GstCaps *srccaps = NULL;
   const gchar *str;
-  gint clock_rate = 90000;      /* default */
+  gint clock_rate;
   gint someint;
+  gboolean res;
 
   rtpmp4gdepay = GST_RTP_MP4G_DEPAY (depayload);
 
   structure = gst_caps_get_structure (caps, 0);
 
-  gst_structure_get_int (structure, "clock-rate", &clock_rate);
+  if (!gst_structure_get_int (structure, "clock-rate", &clock_rate))
+    clock_rate = 90000;         /* default */
   depayload->clock_rate = clock_rate;
 
   if ((str = gst_structure_get_string (structure, "media"))) {
     if (strcmp (str, "audio") == 0) {
       srccaps = gst_caps_new_simple ("audio/mpeg",
           "mpegversion", G_TYPE_INT, 4, NULL);
-      /* AAC always has a default constant duration of 1024 but it can be
-       * overriden below. */
-      rtpmp4gdepay->constantDuration = 1024;
     } else if (strcmp (str, "video") == 0) {
       srccaps = gst_caps_new_simple ("video/mpeg",
           "mpegversion", G_TYPE_INT, 4,
           "systemstream", G_TYPE_BOOLEAN, FALSE, NULL);
-      rtpmp4gdepay->constantDuration = 0;
     }
   }
   if (srccaps == NULL)
@@ -278,8 +275,7 @@ gst_rtp_mp4g_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
   rtpmp4gdepay->constantSize =
       gst_rtp_mp4g_depay_parse_int (structure, "constantsize", 0);
   rtpmp4gdepay->constantDuration =
-      gst_rtp_mp4g_depay_parse_int (structure, "constantduration",
-      rtpmp4gdepay->constantDuration);
+      gst_rtp_mp4g_depay_parse_int (structure, "constantduration", 0);
 
 
   /* get config string */
@@ -299,10 +295,10 @@ gst_rtp_mp4g_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
     }
   }
 
-  gst_pad_set_caps (depayload->srcpad, srccaps);
+  res = gst_pad_set_caps (depayload->srcpad, srccaps);
   gst_caps_unref (srccaps);
 
-  return TRUE;
+  return res;
 
   /* ERRORS */
 unknown_media:
@@ -424,9 +420,6 @@ gst_rtp_mp4g_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 
   rtpmp4gdepay = GST_RTP_MP4G_DEPAY (depayload);
 
-  if (!gst_rtp_buffer_validate (buf))
-    goto bad_packet;
-
   /* flush remaining data on discont */
   if (GST_BUFFER_IS_DISCONT (buf)) {
     GST_DEBUG_OBJECT (rtpmp4gdepay, "received DISCONT");
@@ -513,6 +506,7 @@ gst_rtp_mp4g_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
          * reconstruct the AU ordering when interleaving. */
         if (i == 0) {
           AU_index = gst_bs_parse_read (&bs, rtpmp4gdepay->indexlength);
+
           if (AU_index == 0 && rtpmp4gdepay->prev_AU_index == 0) {
             gint diff;
 
@@ -525,6 +519,13 @@ gst_rtp_mp4g_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
               diff = rtptime - rtpmp4gdepay->prev_rtptime;
             else
               diff = -(rtpmp4gdepay->prev_rtptime - rtptime);
+
+            /* if no constantDuration was given, make one */
+            if (rtpmp4gdepay->constantDuration == 0) {
+              rtpmp4gdepay->constantDuration = diff / num_AU_headers;
+              GST_DEBUG_OBJECT (depayload, "guessing constantDuration %d",
+                  rtpmp4gdepay->constantDuration);
+            }
 
             /* get the number of packets by dividing with the duration */
             diff /= rtpmp4gdepay->constantDuration;
@@ -628,7 +629,6 @@ gst_rtp_mp4g_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
         avail = gst_adapter_available (rtpmp4gdepay->adapter);
 
         outbuf = gst_adapter_take_buffer (rtpmp4gdepay->adapter, avail);
-        gst_buffer_set_caps (outbuf, GST_PAD_CAPS (depayload->srcpad));
 
         GST_DEBUG ("gst_rtp_mp4g_depay_chain: pushing buffer of size %d",
             GST_BUFFER_SIZE (outbuf));
@@ -640,12 +640,6 @@ gst_rtp_mp4g_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   return NULL;
 
   /* ERRORS */
-bad_packet:
-  {
-    GST_ELEMENT_WARNING (rtpmp4gdepay, STREAM, DECODE,
-        ("Packet did not validate."), (NULL));
-    return NULL;
-  }
 short_payload:
   {
     GST_ELEMENT_WARNING (rtpmp4gdepay, STREAM, DECODE,

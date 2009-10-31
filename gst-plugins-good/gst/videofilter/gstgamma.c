@@ -30,17 +30,13 @@
 /**
  * SECTION:element-gamma
  *
- * <refsect2>
- * <para>
  * Performs gamma correction on a video stream.
- * </para>
+ *
+ * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch videotestsrc ! gamma gamma=2.0 ! ffmpegcolorspace ! ximagesink
- * </programlisting>
- * This pipeline will make the image "brighter".
- * </para>
+ * ]| This pipeline will make the image "brighter".
  * </refsect2>
  */
 
@@ -311,9 +307,6 @@ static gboolean
 plugin_init (GstPlugin * plugin)
 {
   GST_DEBUG_CATEGORY_INIT (gamma_debug, "gamma", 0, "gamma");
-#ifdef HAVE_LIBOIL
-  oil_init();
-#endif
 
   return gst_element_register (plugin, "gamma", GST_RANK_NONE, GST_TYPE_GAMMA);
 }

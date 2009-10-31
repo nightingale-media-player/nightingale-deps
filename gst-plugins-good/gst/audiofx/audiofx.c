@@ -32,8 +32,11 @@
 #include "audiodynamic.h"
 #include "audiocheblimit.h"
 #include "audiochebband.h"
+#include "audioiirfilter.h"
 #include "audiowsincband.h"
 #include "audiowsinclimit.h"
+#include "audiofirfilter.h"
+#include "audioecho.h"
 
 /* entry point to initialize the plug-in
  * initialize the plug-in itself
@@ -60,10 +63,16 @@ plugin_init (GstPlugin * plugin)
           GST_TYPE_AUDIO_CHEB_LIMIT) &&
       gst_element_register (plugin, "audiochebband", GST_RANK_NONE,
           GST_TYPE_AUDIO_CHEB_BAND) &&
+      gst_element_register (plugin, "audioiirfilter", GST_RANK_NONE,
+          GST_TYPE_AUDIO_IIR_FILTER) &&
       gst_element_register (plugin, "audiowsinclimit", GST_RANK_NONE,
           GST_TYPE_AUDIO_WSINC_LIMIT) &&
       gst_element_register (plugin, "audiowsincband", GST_RANK_NONE,
-          GST_TYPE_AUDIO_WSINC_BAND));
+          GST_TYPE_AUDIO_WSINC_BAND) &&
+      gst_element_register (plugin, "audiofirfilter", GST_RANK_NONE,
+          GST_TYPE_AUDIO_FIR_FILTER) &&
+      gst_element_register (plugin, "audioecho", GST_RANK_NONE,
+          GST_TYPE_AUDIO_ECHO));
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,

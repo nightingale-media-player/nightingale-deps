@@ -44,11 +44,7 @@
 /**
  * SECTION:element-rtpdec
  *
- * <refsect2>
- * <para>
  * A simple RTP session manager used internally by rtspsrc.
- * </para>
- * </refsect2>
  *
  * Last reviewed on 2006-06-20 (0.10.4)
  */
@@ -252,8 +248,8 @@ gst_rtp_dec_marshal_BOXED__UINT_UINT (GClosure * closure,
     data2 = closure->data;
   }
   callback =
-      (GMarshalFunc_BOXED__UINT_UINT) (marshal_data ? marshal_data : cc->
-      callback);
+      (GMarshalFunc_BOXED__UINT_UINT) (marshal_data ? marshal_data :
+      cc->callback);
 
   v_return = callback (data1,
       g_marshal_value_peek_uint (param_values + 1),
@@ -285,8 +281,8 @@ gst_rtp_dec_marshal_VOID__UINT_UINT (GClosure * closure,
     data2 = closure->data;
   }
   callback =
-      (GMarshalFunc_VOID__UINT_UINT) (marshal_data ? marshal_data : cc->
-      callback);
+      (GMarshalFunc_VOID__UINT_UINT) (marshal_data ? marshal_data :
+      cc->callback);
 
   callback (data1,
       g_marshal_value_peek_uint (param_values + 1),
@@ -446,10 +442,7 @@ gst_rtp_dec_finalize (GObject * object)
 static gboolean
 gst_rtp_dec_query_src (GstPad * pad, GstQuery * query)
 {
-  GstRTPDec *rtpdec;
   gboolean res;
-
-  rtpdec = GST_RTP_DEC (GST_PAD_PARENT (pad));
 
   switch (GST_QUERY_TYPE (query)) {
     case GST_QUERY_LATENCY:
@@ -548,6 +541,7 @@ bad_packet:
   {
     GST_ELEMENT_WARNING (rtpdec, STREAM, DECODE, (NULL),
         ("RTP packet did not validate, dropping"));
+    gst_buffer_unref (buffer);
     return GST_FLOW_OK;
   }
 }
@@ -702,9 +696,11 @@ gst_rtp_dec_chain_rtcp (GstPad * pad, GstBuffer * buffer)
 bad_packet:
   {
     GST_WARNING_OBJECT (src, "got invalid RTCP packet");
+    gst_buffer_unref (buffer);
     return GST_FLOW_OK;
   }
 #else
+  gst_buffer_unref (buffer);
   return GST_FLOW_OK;
 #endif
 }
@@ -759,9 +755,6 @@ static GstStateChangeReturn
 gst_rtp_dec_change_state (GstElement * element, GstStateChange transition)
 {
   GstStateChangeReturn ret;
-  GstRTPDec *rtpdec;
-
-  rtpdec = GST_RTP_DEC (element);
 
   switch (transition) {
     default:

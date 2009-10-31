@@ -1,6 +1,6 @@
 dnl as-arts.m4 0.1.0
 
-dnl $Id: as-arts.m4,v 1.1 2004/05/21 11:17:03 thomasvs Exp $
+dnl $Id: as-arts.m4,v 1.5 2004/05/21 11:20:49 thomasvs Exp $
 dnl if you copy this file to your cvs,
 dnl add this file using cvs -ko add to retain this header
 

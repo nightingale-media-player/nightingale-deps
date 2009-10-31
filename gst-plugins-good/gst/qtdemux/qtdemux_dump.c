@@ -20,12 +20,6 @@
 #include "qtdemux_types.h"
 #include "qtdemux_dump.h"
 
-#if 0
-#define qtdemux_dump_mem(a,b)  gst_util_dump_mem(a,b)
-#else
-#define qtdemux_dump_mem(a,b)   /* */
-#endif
-
 void
 qtdemux_dump_mvhd (GstQTDemux * qtdemux, guint8 * buffer, int depth)
 {
@@ -233,6 +227,25 @@ qtdemux_dump_stts (GstQTDemux * qtdemux, guint8 * buffer, int depth)
 }
 
 void
+qtdemux_dump_stps (GstQTDemux * qtdemux, guint8 * buffer, int depth)
+{
+  int i;
+  int n;
+  int offset;
+
+  GST_LOG ("%*s  version/flags: %08x", depth, "", QT_UINT32 (buffer + 8));
+  GST_LOG ("%*s  n entries:     %d", depth, "", QT_UINT32 (buffer + 12));
+  n = QT_UINT32 (buffer + 12);
+  offset = 16;
+  for (i = 0; i < n; i++) {
+    GST_LOG ("%*s    sample:        %u", depth, "",
+        QT_UINT32 (buffer + offset));
+
+    offset += 4;
+  }
+}
+
+void
 qtdemux_dump_stss (GstQTDemux * qtdemux, guint8 * buffer, int depth)
 {
   int i;
@@ -381,8 +394,7 @@ qtdemux_dump_unknown (GstQTDemux * qtdemux, guint8 * buffer, int depth)
   GST_LOG ("%*s  length: %d", depth, "", QT_UINT32 (buffer + 0));
 
   len = QT_UINT32 (buffer + 0);
-  qtdemux_dump_mem (buffer, len);
-
+  GST_MEMDUMP_OBJECT (qtdemux, "unknown atom data", buffer, len);
 }
 
 static gboolean
@@ -412,6 +424,9 @@ qtdemux_node_dump_foreach (GNode * node, gpointer qtdemux)
 void
 qtdemux_node_dump (GstQTDemux * qtdemux, GNode * node)
 {
+  if (__gst_debug_min < GST_LEVEL_LOG)
+    return;
+
   g_node_traverse (qtdemux->moov_node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
       qtdemux_node_dump_foreach, qtdemux);
 }

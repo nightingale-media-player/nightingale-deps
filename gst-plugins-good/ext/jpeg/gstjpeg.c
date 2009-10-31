@@ -29,11 +29,28 @@
 #include "gstsmokeenc.h"
 #include "gstsmokedec.h"
 
+GType
+gst_idct_method_get_type (void)
+{
+  static GType idct_method_type = 0;
+  static const GEnumValue idct_method[] = {
+    {JDCT_ISLOW, "Slow but accurate integer algorithm", "islow"},
+    {JDCT_IFAST, "Faster, less accurate integer method", "ifast"},
+    {JDCT_FLOAT, "Floating-point: accurate, fast on fast HW", "float"},
+    {0, NULL, NULL},
+  };
+
+  if (!idct_method_type) {
+    idct_method_type = g_enum_register_static ("GstIDCTMethod", idct_method);
+  }
+  return idct_method_type;
+}
+
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
 
-  if (!gst_element_register (plugin, "jpegenc", GST_RANK_NONE,
+  if (!gst_element_register (plugin, "jpegenc", GST_RANK_PRIMARY,
           GST_TYPE_JPEGENC))
     return FALSE;
 

@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2005> Wim Taymans <wim@fluendo.com>
+ * Copyright (C) <2005> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -32,10 +32,10 @@ GST_DEBUG_CATEGORY_STATIC (rtpmp4vpay_debug);
 
 /* elementfactory information */
 static const GstElementDetails gst_rtp_mp4vpay_details =
-GST_ELEMENT_DETAILS ("RTP MPEG-4 Video packet payloader",
+GST_ELEMENT_DETAILS ("RTP MPEG4 Video payloader",
     "Codec/Payloader/Network",
     "Payload MPEG-4 video as RTP packets (RFC 3016)",
-    "Wim Taymans <wim@fluendo.com>");
+    "Wim Taymans <wim.taymans@gmail.com>");
 
 static GstStaticPadTemplate gst_rtp_mp4v_pay_sink_template =
 GST_STATIC_PAD_TEMPLATE ("sink",
@@ -62,11 +62,13 @@ GST_STATIC_PAD_TEMPLATE ("src",
     );
 
 #define DEFAULT_SEND_CONFIG     FALSE
+#define DEFAULT_BUFFER_LIST     FALSE
 
 enum
 {
   ARG_0,
-  ARG_SEND_CONFIG
+  ARG_SEND_CONFIG,
+  ARG_BUFFER_LIST
 };
 
 
@@ -130,11 +132,9 @@ static void
 gst_rtp_mp4v_pay_class_init (GstRtpMP4VPayClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseRTPPayloadClass *gstbasertppayload_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
   gstbasertppayload_class = (GstBaseRTPPayloadClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
@@ -146,6 +146,11 @@ gst_rtp_mp4v_pay_class_init (GstRtpMP4VPayClass * klass)
       g_param_spec_boolean ("send-config", "Send Config",
           "Send the config parameters in RTP packets as well",
           DEFAULT_SEND_CONFIG, G_PARAM_READWRITE));
+
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_BUFFER_LIST,
+      g_param_spec_boolean ("buffer-list", "Buffer Array",
+          "Use Buffer Arrays",
+          DEFAULT_BUFFER_LIST, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gobject_class->finalize = gst_rtp_mp4v_pay_finalize;
 
@@ -165,7 +170,9 @@ gst_rtp_mp4v_pay_init (GstRtpMP4VPay * rtpmp4vpay)
   rtpmp4vpay->adapter = gst_adapter_new ();
   rtpmp4vpay->rate = 90000;
   rtpmp4vpay->profile = 1;
+  rtpmp4vpay->buffer_list = DEFAULT_BUFFER_LIST;
   rtpmp4vpay->send_config = DEFAULT_SEND_CONFIG;
+  rtpmp4vpay->need_config = TRUE;
 
   rtpmp4vpay->config = NULL;
 
@@ -192,18 +199,19 @@ gst_rtp_mp4v_pay_finalize (GObject * object)
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-static void
+static gboolean
 gst_rtp_mp4v_pay_new_caps (GstRtpMP4VPay * rtpmp4vpay)
 {
   gchar *profile, *config;
   GValue v = { 0 };
+  gboolean res;
 
   profile = g_strdup_printf ("%d", rtpmp4vpay->profile);
   g_value_init (&v, GST_TYPE_BUFFER);
   gst_value_set_buffer (&v, rtpmp4vpay->config);
   config = gst_value_serialize (&v);
 
-  gst_basertppayload_set_outcaps (GST_BASE_RTP_PAYLOAD (rtpmp4vpay),
+  res = gst_basertppayload_set_outcaps (GST_BASE_RTP_PAYLOAD (rtpmp4vpay),
       "profile-level-id", G_TYPE_STRING, profile,
       "config", G_TYPE_STRING, config, NULL);
 
@@ -211,6 +219,8 @@ gst_rtp_mp4v_pay_new_caps (GstRtpMP4VPay * rtpmp4vpay)
 
   g_free (profile);
   g_free (config);
+
+  return res;
 }
 
 static gboolean
@@ -219,11 +229,14 @@ gst_rtp_mp4v_pay_setcaps (GstBaseRTPPayload * payload, GstCaps * caps)
   GstRtpMP4VPay *rtpmp4vpay;
   GstStructure *structure;
   const GValue *codec_data;
+  gboolean res;
 
   rtpmp4vpay = GST_RTP_MP4V_PAY (payload);
 
   gst_basertppayload_set_options (payload, "video", TRUE, "MP4V-ES",
       rtpmp4vpay->rate);
+
+  res = TRUE;
 
   structure = gst_caps_get_structure (caps, 0);
   codec_data = gst_structure_get_value (structure, "codec_data");
@@ -249,12 +262,12 @@ gst_rtp_mp4v_pay_setcaps (GstBaseRTPPayload * payload, GstCaps * caps)
       if (rtpmp4vpay->config)
         gst_buffer_unref (rtpmp4vpay->config);
       rtpmp4vpay->config = gst_buffer_copy (buffer);
-      gst_rtp_mp4v_pay_new_caps (rtpmp4vpay);
+      res = gst_rtp_mp4v_pay_new_caps (rtpmp4vpay);
     }
   }
 
 done:
-  return TRUE;
+  return res;
 }
 
 static void
@@ -268,7 +281,10 @@ gst_rtp_mp4v_pay_flush (GstRtpMP4VPay * rtpmp4vpay)
 {
   guint avail;
   GstBuffer *outbuf;
+  GstBuffer *outbuf_data = NULL;
   GstFlowReturn ret;
+  GstBufferList *list = NULL;
+  GstBufferListIterator *it = NULL;
 
   /* the data available in the adapter is either smaller
    * than the MTU or bigger. In the case it is smaller, the complete
@@ -277,7 +293,24 @@ gst_rtp_mp4v_pay_flush (GstRtpMP4VPay * rtpmp4vpay)
    * over multiple packets. */
   avail = gst_adapter_available (rtpmp4vpay->adapter);
 
+  if (rtpmp4vpay->config == NULL && rtpmp4vpay->need_config) {
+    /* when we don't have a config yet, flush things out */
+    gst_adapter_flush (rtpmp4vpay->adapter, avail);
+    avail = 0;
+  }
+
+  if (!avail)
+    return GST_FLOW_OK;
+
   ret = GST_FLOW_OK;
+
+  if (rtpmp4vpay->buffer_list) {
+    /* Use buffer lists. Each frame will be put into a list
+     * of buffers and the whole list will be pushed downstream
+     * at once */
+    list = gst_buffer_list_new ();
+    it = gst_buffer_list_iterate (list);
+  }
 
   while (avail > 0) {
     guint towrite;
@@ -294,14 +327,24 @@ gst_rtp_mp4v_pay_flush (GstRtpMP4VPay * rtpmp4vpay)
     /* this is the payload length */
     payload_len = gst_rtp_buffer_calc_payload_len (towrite, 0, 0);
 
-    /* create buffer to hold the payload */
-    outbuf = gst_rtp_buffer_new_allocate (payload_len, 0, 0);
+    if (rtpmp4vpay->buffer_list) {
+      /* create buffer without payload. The payload will be put
+       * in next buffer instead. Both buffers will be then added
+       * to the list */
+      outbuf = gst_rtp_buffer_new_allocate (0, 0, 0);
 
-    /* copy payload */
-    payload = gst_rtp_buffer_get_payload (outbuf);
+      /* Take buffer with the payload from the adapter */
+      outbuf_data = gst_adapter_take_buffer (rtpmp4vpay->adapter, payload_len);
+    } else {
+      /* create buffer to hold the payload */
+      outbuf = gst_rtp_buffer_new_allocate (payload_len, 0, 0);
 
-    gst_adapter_copy (rtpmp4vpay->adapter, payload, 0, payload_len);
-    gst_adapter_flush (rtpmp4vpay->adapter, payload_len);
+      /* copy payload */
+      payload = gst_rtp_buffer_get_payload (outbuf);
+
+      gst_adapter_copy (rtpmp4vpay->adapter, payload, 0, payload_len);
+      gst_adapter_flush (rtpmp4vpay->adapter, payload_len);
+    }
 
     avail -= payload_len;
 
@@ -309,7 +352,21 @@ gst_rtp_mp4v_pay_flush (GstRtpMP4VPay * rtpmp4vpay)
 
     GST_BUFFER_TIMESTAMP (outbuf) = rtpmp4vpay->first_timestamp;
 
-    ret = gst_basertppayload_push (GST_BASE_RTP_PAYLOAD (rtpmp4vpay), outbuf);
+    if (rtpmp4vpay->buffer_list) {
+      /* create a new group to hold the rtp header and the payload */
+      gst_buffer_list_iterator_add_group (it);
+      gst_buffer_list_iterator_add (it, outbuf);
+      gst_buffer_list_iterator_add (it, outbuf_data);
+    } else {
+      ret = gst_basertppayload_push (GST_BASE_RTP_PAYLOAD (rtpmp4vpay), outbuf);
+    }
+  }
+
+  if (rtpmp4vpay->buffer_list) {
+    gst_buffer_list_iterator_free (it);
+    /* push the whole buffer list at once */
+    ret =
+        gst_basertppayload_push_list (GST_BASE_RTP_PAYLOAD (rtpmp4vpay), list);
   }
 
   return ret;
@@ -339,20 +396,23 @@ gst_rtp_mp4v_pay_depay_data (GstRtpMP4VPay * enc, guint8 * data, guint size,
 
   switch (code) {
     case VOS_STARTCODE:
+    case 0x00000101:
     {
       gint i;
       guint8 profile;
       gboolean newprofile = FALSE;
       gboolean equal;
 
-      /* profile_and_level_indication */
-      profile = data[4];
+      if (code == VOS_STARTCODE) {
+        /* profile_and_level_indication */
+        profile = data[4];
 
-      GST_DEBUG_OBJECT (enc, "VOS profile 0x%08x", profile);
+        GST_DEBUG_OBJECT (enc, "VOS profile 0x%08x", profile);
 
-      if (profile != enc->profile) {
-        newprofile = TRUE;
-        enc->profile = profile;
+        if (profile != enc->profile) {
+          newprofile = TRUE;
+          enc->profile = profile;
+        }
       }
 
       /* up to the next GOP_STARTCODE or VOP_STARTCODE is
@@ -389,10 +449,19 @@ gst_rtp_mp4v_pay_depay_data (GstRtpMP4VPay * enc, guint8 * data, guint size,
       /* VOP startcode, we don't have to flush the packet */
       result = FALSE;
       break;
-    default:
-      GST_DEBUG_OBJECT (enc, "other startcode");
-      /* all other startcodes need a flush */
+    case 0x00000100:
+      enc->need_config = FALSE;
       result = TRUE;
+      break;
+    default:
+      if (code >= 0x20 && code <= 0x2f) {
+        GST_DEBUG_OBJECT (enc, "short header");
+        result = FALSE;
+      } else {
+        GST_DEBUG_OBJECT (enc, "other startcode");
+        /* all other startcodes need a flush */
+        result = TRUE;
+      }
       break;
   }
   return result;
@@ -440,6 +509,9 @@ gst_rtp_mp4v_pay_handle_buffer (GstBaseRTPPayload * basepayload,
     if (!rtpmp4vpay->send_config) {
       GstBuffer *subbuf;
 
+      GST_LOG_OBJECT (rtpmp4vpay, "stripping config at %d, size %d", strip,
+          size - strip);
+
       /* strip off header */
       subbuf = gst_buffer_create_sub (buffer, strip, size - strip);
       GST_BUFFER_TIMESTAMP (subbuf) = timestamp;
@@ -447,7 +519,6 @@ gst_rtp_mp4v_pay_handle_buffer (GstBaseRTPPayload * basepayload,
       buffer = subbuf;
 
       size = GST_BUFFER_SIZE (buffer);
-      data = GST_BUFFER_DATA (buffer);
     }
   }
 
@@ -489,6 +560,9 @@ gst_rtp_mp4v_pay_event (GstPad * pad, GstEvent * event)
 
   switch (GST_EVENT_TYPE (event)) {
     case GST_EVENT_NEWSEGMENT:
+    case GST_EVENT_EOS:
+      /* This flush call makes sure that the last buffer is always pushed
+       * to the base payloader */
       gst_rtp_mp4v_pay_flush (rtpmp4vpay);
       break;
     case GST_EVENT_FLUSH_STOP:
@@ -517,6 +591,9 @@ gst_rtp_mp4v_pay_set_property (GObject * object, guint prop_id,
     case ARG_SEND_CONFIG:
       rtpmp4vpay->send_config = g_value_get_boolean (value);
       break;
+    case ARG_BUFFER_LIST:
+      rtpmp4vpay->buffer_list = g_value_get_boolean (value);
+      break;
     default:
       break;
   }
@@ -533,6 +610,9 @@ gst_rtp_mp4v_pay_get_property (GObject * object, guint prop_id,
   switch (prop_id) {
     case ARG_SEND_CONFIG:
       g_value_set_boolean (value, rtpmp4vpay->send_config);
+      break;
+    case ARG_BUFFER_LIST:
+      g_value_set_boolean (value, rtpmp4vpay->buffer_list);
       break;
     default:
       break;

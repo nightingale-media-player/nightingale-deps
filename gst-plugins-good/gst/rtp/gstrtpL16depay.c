@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2007> Wim Taymans <wim@fluendo.com>
+ * Copyright (C) <2007> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,17 +24,21 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <gst/audio/audio.h>
+#include <gst/audio/multichannel.h>
+
 #include "gstrtpL16depay.h"
+#include "gstrtpchannels.h"
 
 GST_DEBUG_CATEGORY_STATIC (rtpL16depay_debug);
 #define GST_CAT_DEFAULT (rtpL16depay_debug)
 
 /* elementfactory information */
 static const GstElementDetails gst_rtp_L16_depay_details =
-GST_ELEMENT_DETAILS ("RTP packet depayloader",
+GST_ELEMENT_DETAILS ("RTP audio depayloader",
     "Codec/Depayloader/Network",
     "Extracts raw audio from RTP packets",
-    "Zeeshan Ali <zak147@yahoo.com>," "Wim Taymans <wim@fluendo.com>");
+    "Zeeshan Ali <zak147@yahoo.com>," "Wim Taymans <wim.taymans@gmail.com>");
 
 static GstStaticPadTemplate gst_rtp_L16_depay_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
@@ -78,9 +82,6 @@ static gboolean gst_rtp_L16_depay_setcaps (GstBaseRTPDepayload * depayload,
 static GstBuffer *gst_rtp_L16_depay_process (GstBaseRTPDepayload * depayload,
     GstBuffer * buf);
 
-static GstStateChangeReturn gst_rtp_L16_depay_change_state (GstElement *
-    element, GstStateChange transition);
-
 static void
 gst_rtp_L16_depay_base_init (gpointer klass)
 {
@@ -97,15 +98,11 @@ gst_rtp_L16_depay_base_init (gpointer klass)
 static void
 gst_rtp_L16_depay_class_init (GstRtpL16DepayClass * klass)
 {
-  GstElementClass *gstelement_class;
   GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
 
-  gstelement_class = (GstElementClass *) klass;
   gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
-
-  gstelement_class->change_state = gst_rtp_L16_depay_change_state;
 
   gstbasertpdepayload_class->set_caps = gst_rtp_L16_depay_setcaps;
   gstbasertpdepayload_class->process = gst_rtp_L16_depay_process;
@@ -145,6 +142,9 @@ gst_rtp_L16_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
   gint clock_rate, payload;
   gint channels;
   GstCaps *srccaps;
+  gboolean res;
+  const gchar *channel_order;
+  const GstRTPChannelOrder *order;
 
   rtpL16depay = GST_RTP_L16_DEPAY (depayload);
 
@@ -162,6 +162,7 @@ gst_rtp_L16_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
       clock_rate = 44100;
       break;
     default:
+      /* no fixed mapping, we need channels and clock-rate */
       channels = 0;
       clock_rate = 0;
       break;
@@ -170,7 +171,12 @@ gst_rtp_L16_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
   /* caps can overwrite defaults */
   clock_rate =
       gst_rtp_L16_depay_parse_int (structure, "clock-rate", clock_rate);
+  if (clock_rate == 0)
+    goto no_clockrate;
+
   channels = gst_rtp_L16_depay_parse_int (structure, "channels", channels);
+  if (channels == 0)
+    goto no_channels;
 
   depayload->clock_rate = clock_rate;
   rtpL16depay->rate = clock_rate;
@@ -183,10 +189,41 @@ gst_rtp_L16_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
       "depth", G_TYPE_INT, 16,
       "rate", G_TYPE_INT, clock_rate, "channels", G_TYPE_INT, channels, NULL);
 
-  gst_pad_set_caps (depayload->srcpad, srccaps);
+  /* add channel positions */
+  channel_order = gst_structure_get_string (structure, "channel-order");
+
+  order = gst_rtp_channels_get_by_order (channels, channel_order);
+  if (order) {
+    gst_audio_set_channel_positions (gst_caps_get_structure (srccaps, 0),
+        order->pos);
+  } else {
+    GstAudioChannelPosition *pos;
+
+    GST_ELEMENT_WARNING (rtpL16depay, STREAM, DECODE,
+        (NULL), ("Unknown channel order '%s' for %d channels",
+            GST_STR_NULL (channel_order), channels));
+    /* create default NONE layout */
+    pos = gst_rtp_channels_create_default (channels);
+    gst_audio_set_channel_positions (gst_caps_get_structure (srccaps, 0), pos);
+    g_free (pos);
+  }
+
+  res = gst_pad_set_caps (depayload->srcpad, srccaps);
   gst_caps_unref (srccaps);
 
-  return TRUE;
+  return res;
+
+  /* ERRORS */
+no_clockrate:
+  {
+    GST_ERROR_OBJECT (depayload, "no clock-rate specified");
+    return FALSE;
+  }
+no_channels:
+  {
+    GST_ERROR_OBJECT (depayload, "no channels specified");
+    return FALSE;
+  }
 }
 
 static GstBuffer *
@@ -194,70 +231,35 @@ gst_rtp_L16_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 {
   GstRtpL16Depay *rtpL16depay;
   GstBuffer *outbuf;
+  gint payload_len;
+  gboolean marker;
 
   rtpL16depay = GST_RTP_L16_DEPAY (depayload);
 
-  if (!gst_rtp_buffer_validate (buf))
-    goto bad_packet;
+  payload_len = gst_rtp_buffer_get_payload_len (buf);
 
-  {
-    gint payload_len;
+  if (payload_len <= 0)
+    goto empty_packet;
 
-    payload_len = gst_rtp_buffer_get_payload_len (buf);
+  GST_DEBUG_OBJECT (rtpL16depay, "got payload of %d bytes", payload_len);
 
-    if (payload_len <= 0)
-      goto empty_packet;
+  outbuf = gst_rtp_buffer_get_payload_buffer (buf);
+  marker = gst_rtp_buffer_get_marker (buf);
 
-    GST_DEBUG_OBJECT (rtpL16depay, "got payload of %d bytes", payload_len);
-
-    outbuf = gst_rtp_buffer_get_payload_buffer (buf);
-
-    return outbuf;
+  if (marker) {
+    /* mark talk spurt with DISCONT */
+    GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_DISCONT);
   }
-  return NULL;
 
-bad_packet:
-  {
-    GST_ELEMENT_WARNING (rtpL16depay, STREAM, DECODE,
-        ("Packet did not validate."), (NULL));
-    return NULL;
-  }
+  return outbuf;
+
+  /* ERRORS */
 empty_packet:
   {
     GST_ELEMENT_WARNING (rtpL16depay, STREAM, DECODE,
         ("Empty Payload."), (NULL));
     return NULL;
   }
-}
-
-static GstStateChangeReturn
-gst_rtp_L16_depay_change_state (GstElement * element, GstStateChange transition)
-{
-  GstRtpL16Depay *rtpL16depay;
-  GstStateChangeReturn ret;
-
-  rtpL16depay = GST_RTP_L16_DEPAY (element);
-
-  /*
-     switch (transition) {
-     case GST_STATE_CHANGE_NULL_TO_READY:
-     break;
-     default:
-     break;
-     }
-   */
-
-  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
-
-  /*
-     switch (transition) {
-     case GST_STATE_CHANGE_READY_TO_NULL:
-     break;
-     default:
-     break;
-     }
-   */
-  return ret;
 }
 
 gboolean

@@ -22,32 +22,23 @@
 
 /**
  * SECTION:element-osssink
- * @short_description: output sound using OSS
  *
- * <refsect2>
- * <para>
  * This element lets you output sound using the Open Sound System (OSS).
- * </para>
- * <para>
+ *
  * Note that you should almost always use generic audio conversion elements
  * like audioconvert and audioresample in front of an audiosink to make sure
  * your pipeline works under all circumstances (those conversion elements will
  * act in passthrough-mode if no conversion is necessary).
- * </para>
+ *
+ * <refsect2>
  * <title>Example pipelines</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch -v audiotestsrc ! audioconvert ! volume volume=0.1 ! osssink
- * </programlisting>
- * will output a sine wave (continuous beep sound) to your sound card (with
+ * ]| will output a sine wave (continuous beep sound) to your sound card (with
  * a very low volume as precaution).
- * </para>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch -v filesrc location=music.ogg ! decodebin ! audioconvert ! audioresample ! osssink
- * </programlisting>
- * will play an Ogg/Vorbis audio file and output it using the Open Sound System.
- * </para>
+ * ]| will play an Ogg/Vorbis audio file and output it using the Open Sound System.
  * </refsect2>
  */
 
@@ -197,19 +188,16 @@ gst_oss_sink_base_init (gpointer g_class)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&osssink_sink_factory));
 }
+
 static void
 gst_oss_sink_class_init (GstOssSinkClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseSinkClass *gstbasesink_class;
-  GstBaseAudioSinkClass *gstbaseaudiosink_class;
   GstAudioSinkClass *gstaudiosink_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
   gstbasesink_class = (GstBaseSinkClass *) klass;
-  gstbaseaudiosink_class = (GstBaseAudioSinkClass *) klass;
   gstaudiosink_class = (GstAudioSinkClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
@@ -418,7 +406,7 @@ busy:
 no_permission:
   {
     GST_ELEMENT_ERROR (oss, RESOURCE, OPEN_WRITE,
-        (_("Could not open audio device for playback."
+        (_("Could not open audio device for playback. "
                 "You don't have permission to open the device.")),
         GST_ERROR_SYSTEM);
     return FALSE;

@@ -6,7 +6,7 @@ dnl Andy Wingo does not claim credit for this macro
 dnl backported from libtool 1.6 by Paolo Bonzini
 dnl see http://lists.gnu.org/archive/html/libtool/2003-12/msg00007.html
 
-dnl $Id: as-libtool-tags.m4,v 1.3 2006-04-01 15:30:56 thomasvs Exp $
+dnl $Id$
 
 dnl AS_LIBTOOL_TAGS([tags...])
 

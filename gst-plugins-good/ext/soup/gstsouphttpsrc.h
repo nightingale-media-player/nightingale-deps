@@ -42,6 +42,7 @@ typedef enum {
   GST_SOUP_HTTP_SRC_SESSION_IO_STATUS_IDLE,
   GST_SOUP_HTTP_SRC_SESSION_IO_STATUS_QUEUED,
   GST_SOUP_HTTP_SRC_SESSION_IO_STATUS_RUNNING,
+  GST_SOUP_HTTP_SRC_SESSION_IO_STATUS_CANCELLED,
 } GstSoupHTTPSrcSessionIOStatus;
 
 struct _GstSoupHTTPSrc {
@@ -51,6 +52,10 @@ struct _GstSoupHTTPSrc {
   gchar *user_agent;           /* User-Agent HTTP header. */
   gboolean automatic_redirect; /* Follow redirects. */
   SoupURI *proxy;              /* HTTP proxy URI. */
+  gchar *user_id;              /* Authentication user id for location URI. */
+  gchar *user_pw;              /* Authentication user password for location URI. */
+  gchar *proxy_id;             /* Authentication user id for proxy URI. */
+  gchar *proxy_pw;             /* Authentication user password for proxy URI. */
   gchar **cookies;             /* HTTP request cookies. */
   GMainContext *context;       /* I/O context. */
   GMainLoop *loop;             /* Event loop. */
@@ -73,11 +78,15 @@ struct _GstSoupHTTPSrc {
 
   /* Shoutcast/icecast metadata extraction handling. */
   gboolean iradio_mode;
-  GstCaps *icy_caps;
+  GstCaps *src_caps;
   gchar *iradio_name;
   gchar *iradio_genre;
   gchar *iradio_url;
   gchar *iradio_title;
+
+  GstStructure *extra_headers;
+
+  guint timeout;
 };
 
 struct _GstSoupHTTPSrcClass {

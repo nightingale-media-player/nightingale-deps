@@ -32,7 +32,7 @@ GST_DEBUG_CATEGORY_STATIC (rtpspeexpay_debug);
 
 /* elementfactory information */
 static const GstElementDetails gst_rtp_speex_pay_details =
-GST_ELEMENT_DETAILS ("RTP packet payloader",
+GST_ELEMENT_DETAILS ("RTP Speex payloader",
     "Codec/Payloader/Network",
     "Payload-encodes Speex audio into a RTP packet",
     "Edgard Lima <edgard.lima@indt.org.br>");
@@ -88,11 +88,9 @@ gst_rtp_speex_pay_base_init (gpointer klass)
 static void
 gst_rtp_speex_pay_class_init (GstRtpSPEEXPayClass * klass)
 {
-  GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
   GstBaseRTPPayloadClass *gstbasertppayload_class;
 
-  gobject_class = (GObjectClass *) klass;
   gstelement_class = (GstElementClass *) klass;
   gstbasertppayload_class = (GstBaseRTPPayloadClass *) klass;
 
@@ -151,6 +149,7 @@ gst_rtp_speex_pay_parse_ident (GstRtpSPEEXPay * rtpspeexpay,
   guint32 version, header_size, rate, mode, nb_channels;
   GstBaseRTPPayload *payload;
   gchar *cstr;
+  gboolean res;
 
   /* we need the header string (8), the version string (20), the version
    * and the header length. */
@@ -190,11 +189,11 @@ gst_rtp_speex_pay_parse_ident (GstRtpSPEEXPay * rtpspeexpay,
 
   gst_basertppayload_set_options (payload, "audio", FALSE, "SPEEX", rate);
   cstr = g_strdup_printf ("%d", nb_channels);
-  gst_basertppayload_set_outcaps (payload, "encoding-params",
+  res = gst_basertppayload_set_outcaps (payload, "encoding-params",
       G_TYPE_STRING, cstr, NULL);
   g_free (cstr);
 
-  return TRUE;
+  return res;
 
   /* ERRORS */
 too_small:

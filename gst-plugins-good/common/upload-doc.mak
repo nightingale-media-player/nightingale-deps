@@ -9,26 +9,37 @@
 # - FORMATS: the formats in which DOC is output
 #            (html ps pdf)
 
-# if you want to use it, make sure your ..sh/config file contains the
+# if you want to use it, make sure your $HOME/.ssh/config file contains the
 # correct User entry for the Host entry for the DOC_SERVER
 
 # these variables define the location of the online docs
-DOC_SERVER=gstreamer.freedesktop.org
-DOC_BASE=/srv/gstreamer.freedesktop.org/www/data/doc
-DOC_URL=$(DOC_SERVER):$(DOC_BASE)
-
+DOC_SERVER = gstreamer.freedesktop.org
+DOC_BASE = /srv/gstreamer.freedesktop.org/www/data/doc
+DOC_URL = $(DOC_SERVER):$(DOC_BASE)
 
 upload: $(FORMATS)
-	@if test "x$(GST_VERSION_NANO)" = x0; then \
+	@if test "x$(PACKAGE_VERSION_NANO)" = x0; then \
             export DOCVERSION=$(VERSION); \
         else export DOCVERSION=head; \
         fi; \
         export DIR=$(DOC_BASE)/gstreamer/$$DOCVERSION/$(DOC); \
 	ssh $(DOC_SERVER) mkdir -p $$DIR; \
-	if echo $(FORMATS) | grep html > /dev/null; then export SRC="$$SRC html"; fi; \
+	if echo $(FORMATS) | grep html > /dev/null; then \
+	  echo "Preparing docs for upload (rebasing cross-references) ..." ; \
+	  if test x$(builddir) != x$(srcdir); then \
+	    echo "make upload can only be used if srcdir == builddir"; \
+	    exit 1; \
+	  fi; \
+	  gtkdoc-rebase --online --html-dir=$(builddir)/html ; \
+	  export SRC="$$SRC html"; \
+	fi; \
 	if echo $(FORMATS) | grep ps > /dev/null; then export SRC="$$SRC $(DOC).ps"; fi; \
 	if echo $(FORMATS) | grep pdf > /dev/null; then export SRC="$$SRC $(DOC).pdf"; fi; \
 	echo Uploading $$SRC to $(DOC_SERVER):$$DIR; \
 	rsync -rv -e ssh --delete $$SRC $(DOC_SERVER):$$DIR; \
 	ssh $(DOC_SERVER) chmod -R g+w $$DIR; \
+	if echo $(FORMATS) | grep html > /dev/null; then \
+	  echo "Un-preparing docs for upload (rebasing cross-references) ..." ; \
+	  gtkdoc-rebase --html-dir=$(builddir)/html ; \
+	fi; \
 	echo Done

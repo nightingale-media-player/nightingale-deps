@@ -1,0 +1,829 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>gstrtpsession</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="prev" href="gst-plugins-good-plugins-gstrtpptdemux.html" title="gstrtpptdemux">
+<link rel="next" href="gst-plugins-good-plugins-gstrtpssrcdemux.html" title="gstrtpssrcdemux">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-good-plugins-gstrtpptdemux.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-good-plugins-gstrtpssrcdemux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-good-plugins-gstrtpsession.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-gstrtpsession.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-gstrtpsession.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-gstrtpsession.properties" class="shortcut">Properties</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-gstrtpsession.signals" class="shortcut">Signals</a>
+</td></tr>
+</table>
+<div class="refentry" title="gstrtpsession">
+<a name="gst-plugins-good-plugins-gstrtpsession"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-gstrtpsession.top_of_page"></a>gstrtpsession</span></h2>
+<p>gstrtpsession — Implement an RTP session</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv" title="Synopsis">
+<a name="gst-plugins-good-plugins-gstrtpsession.synopsis"></a><h2>Synopsis</h2>
+<a name="GstRtpSession"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession-struct" title="GstRtpSession">GstRtpSession</a>;
+</pre>
+</div>
+<div class="refsect1" title="Object Hierarchy">
+<a name="gst-plugins-good-plugins-gstrtpsession.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----GstRtpSession
+</pre>
+</div>
+<div class="refsect1" title="Properties">
+<a name="gst-plugins-good-plugins-gstrtpsession.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession--bandwidth" title='The "bandwidth" property'>bandwidth</a>"                <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession--internal-session" title='The "internal-session" property'>internal-session</a>"         RTPSession*           : Read
+  "<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession--ntp-ns-base" title='The "ntp-ns-base" property'>ntp-ns-base</a>"              <a
+href="../glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession--num-active-sources" title='The "num-active-sources" property'>num-active-sources</a>"       <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read
+  "<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession--num-sources" title='The "num-sources" property'>num-sources</a>"              <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read
+  "<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession--rtcp-fraction" title='The "rtcp-fraction" property'>rtcp-fraction</a>"            <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession--sdes" title='The "sdes" property'>sdes</a>"                     <a
+href="../gstreamer-0.10/gstreamer-GstStructure.html#GstStructure"
+>GstStructure</a>*         : Read / Write
+</pre>
+</div>
+<div class="refsect1" title="Signals">
+<a name="gst-plugins-good-plugins-gstrtpsession.signals"></a><h2>Signals</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession-clear-pt-map" title='The "clear-pt-map" signal'>clear-pt-map</a>"                                   : Action
+  "<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession-on-bye-ssrc" title='The "on-bye-ssrc" signal'>on-bye-ssrc</a>"                                    : Run Last
+  "<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession-on-bye-timeout" title='The "on-bye-timeout" signal'>on-bye-timeout</a>"                                 : Run Last
+  "<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession-on-new-ssrc" title='The "on-new-ssrc" signal'>on-new-ssrc</a>"                                    : Run Last
+  "<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession-on-sender-timeout" title='The "on-sender-timeout" signal'>on-sender-timeout</a>"                              : Run Last
+  "<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession-on-ssrc-active" title='The "on-ssrc-active" signal'>on-ssrc-active</a>"                                 : Run Last
+  "<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession-on-ssrc-collision" title='The "on-ssrc-collision" signal'>on-ssrc-collision</a>"                              : Run Last
+  "<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession-on-ssrc-sdes" title='The "on-ssrc-sdes" signal'>on-ssrc-sdes</a>"                                   : Run Last
+  "<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession-on-ssrc-validated" title='The "on-ssrc-validated" signal'>on-ssrc-validated</a>"                              : Run Last
+  "<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession-on-timeout" title='The "on-timeout" signal'>on-timeout</a>"                                     : Run Last
+  "<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession-request-pt-map" title='The "request-pt-map" signal'>request-pt-map</a>"                                 : Run Last
+</pre>
+</div>
+<div class="refsect1" title="Description">
+<a name="gst-plugins-good-plugins-gstrtpsession.description"></a><h2>Description</h2>
+<p>
+The RTP session manager models one participant with a unique SSRC in an RTP
+session. This session can be used to send and receive RTP and RTCP packets.
+Based on what REQUEST pads are requested from the session manager, specific
+functionality can be activated.
+</p>
+<p>
+The session manager currently implements RFC 3550 including:
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>RTP packet validation based on consecutive sequence numbers.</p></li>
+<li class="listitem"><p>Maintainance of the SSRC participant database.</p></li>
+<li class="listitem"><p>Keeping per participant statistics based on received RTCP packets.</p></li>
+<li class="listitem"><p>Scheduling of RR/SR RTCP packets.</p></li>
+</ul></div>
+<p>
+</p>
+<p>
+The gstrtpsession will not demux packets based on SSRC or payload type, nor will
+it correct for packet reordering and jitter. Use <span class="type">GstRtpsSrcDemux</span>,
+<a class="link" href="gst-plugins-good-plugins-gstrtpptdemux.html#GstRtpPtDemux"><span class="type">GstRtpPtDemux</span></a> and GstRtpJitterBuffer in addition to <a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession"><span class="type">GstRtpSession</span></a> to
+perform these tasks. It is usually a good idea to use <a class="link" href="gst-plugins-good-plugins-gstrtpbin.html#GstRtpBin"><span class="type">GstRtpBin</span></a>, which
+combines all these features in one element.
+</p>
+<p>
+To use <a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession"><span class="type">GstRtpSession</span></a> as an RTP receiver, request a recv_rtp_sink pad, which will
+automatically create recv_rtp_src pad. Data received on the recv_rtp_sink pad
+will be processed in the session and after being validated forwarded on the
+recv_rtp_src pad.
+</p>
+<p>
+To also use <a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession"><span class="type">GstRtpSession</span></a> as an RTCP receiver, request a recv_rtcp_sink pad,
+which will automatically create a sync_src pad. Packets received on the RTCP
+pad will be used by the session manager to update the stats and database of
+the other participants. SR packets will be forwarded on the sync_src pad
+so that they can be used to perform inter-stream synchronisation when needed.
+</p>
+<p>
+If you want the session manager to generate and send RTCP packets, request
+the send_rtcp_src pad. Packet pushed on this pad contain SR/RR RTCP reports
+that should be sent to all participants in the session.
+</p>
+<p>
+To use <a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession"><span class="type">GstRtpSession</span></a> as a sender, request a send_rtp_sink pad, which will
+automatically create a send_rtp_src pad. The session manager will modify the
+SSRC in the RTP packets to its own SSRC and wil forward the packets on the
+send_rtp_src pad after updating its internal state.
+</p>
+<p>
+The session manager needs the clock-rate of the payload types it is handling
+and will signal the <a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession-request-pt-map" title='The "request-pt-map" signal'><span class="type">"request-pt-map"</span></a> signal when it needs such a
+mapping. One can clear the cached values with the <a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession-clear-pt-map" title='The "clear-pt-map" signal'><span class="type">"clear-pt-map"</span></a>
+signal.
+</p>
+<p>
+</p>
+<div class="refsect2" title="Example pipelines">
+<a name="id562913"></a><h3>Example pipelines</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch udpsrc port=5000 caps="application/x-rtp, ..." ! .recv_rtp_sink gstrtpsession .recv_rtp_src ! rtptheoradepay ! theoradec ! xvimagesink
+</pre></div> Receive theora RTP packets from port 5000 and send them to the depayloader,
+decoder and display. Note that the application/x-rtp caps on udpsrc should be
+configured based on some negotiation process such as RTSP for this pipeline
+to work correctly.
+<div class="informalexample"><pre class="programlisting">
+gst-launch udpsrc port=5000 caps="application/x-rtp, ..." ! .recv_rtp_sink gstrtpsession name=session \
+       .recv_rtp_src ! rtptheoradepay ! theoradec ! xvimagesink \
+    udpsrc port=5001 caps="application/x-rtcp" ! session.recv_rtcp_sink
+</pre></div> Receive theora RTP packets from port 5000 and send them to the depayloader,
+decoder and display. Receive RTCP packets from port 5001 and process them in
+the session manager.
+Note that the application/x-rtp caps on udpsrc should be
+configured based on some negotiation process such as RTSP for this pipeline
+to work correctly.
+<div class="informalexample"><pre class="programlisting">
+gst-launch videotestsrc ! theoraenc ! rtptheorapay ! .send_rtp_sink gstrtpsession .send_rtp_src ! udpsink port=5000
+</pre></div> Send theora RTP packets through the session manager and out on UDP port
+5000.
+<div class="informalexample"><pre class="programlisting">
+gst-launch videotestsrc ! theoraenc ! rtptheorapay ! .send_rtp_sink gstrtpsession name=session .send_rtp_src \
+    ! udpsink port=5000  session.send_rtcp_src ! udpsink port=5001
+</pre></div> Send theora RTP packets through the session manager and out on UDP port
+5000. Send RTCP packets on port 5001. Note that this pipeline will not preroll
+correctly because the second udpsink will not preroll correctly (no RTCP
+packets are sent in the PAUSED state). Applications should manually set and
+keep (see <a
+href="../gstreamer-0.10/GstElement.html#gst-element-set-locked-state"
+><code class="function">gst_element_set_locked_state()</code></a>) the RTCP udpsink to the PLAYING state.
+</div>
+<p>
+</p>
+<p>
+Last reviewed on 2007-05-28 (0.10.5)</p>
+<div class="refsynopsisdiv" title="Synopsis">
+<h2>Synopsis</h2>
+<div class="refsect2" title="Element Information">
+<a name="id562981"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-good-plugins-plugin-gstrtpmanager.html#plugin-gstrtpmanager">gstrtpmanager</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Wim Taymans &lt;wim.taymans@gmail.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Filter/Network/RTP</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="Element Pads">
+<a name="id563044"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>send_rtcp_src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>application/x-rtcp</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>send_rtp_src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>sometimes</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>application/x-rtp</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sync_src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>sometimes</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>application/x-rtcp</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>recv_rtp_src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>sometimes</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>application/x-rtp</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>send_rtp_sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>application/x-rtp</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>recv_rtcp_sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>application/x-rtcp</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>recv_rtp_sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>application/x-rtp</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>
+</p>
+</div>
+<div class="refsect1" title="Details">
+<a name="gst-plugins-good-plugins-gstrtpsession.details"></a><h2>Details</h2>
+<div class="refsect2" title="GstRtpSession">
+<a name="GstRtpSession-struct"></a><h3>GstRtpSession</h3>
+<pre class="programlisting">typedef struct _GstRtpSession GstRtpSession;</pre>
+<p>
+</p>
+</div>
+</div>
+<div class="refsect1" title="Property Details">
+<a name="gst-plugins-good-plugins-gstrtpsession.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" title='The "bandwidth" property'>
+<a name="GstRtpSession--bandwidth"></a><h3>The <code class="literal">"bandwidth"</code> property</h3>
+<pre class="programlisting">  "bandwidth"                <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write</pre>
+<p>The bandwidth of the session.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 64000</p>
+</div>
+<hr>
+<div class="refsect2" title='The "internal-session" property'>
+<a name="GstRtpSession--internal-session"></a><h3>The <code class="literal">"internal-session"</code> property</h3>
+<pre class="programlisting">  "internal-session"         RTPSession*           : Read</pre>
+<p>The internal RTPSession object.</p>
+</div>
+<hr>
+<div class="refsect2" title='The "ntp-ns-base" property'>
+<a name="GstRtpSession--ntp-ns-base"></a><h3>The <code class="literal">"ntp-ns-base"</code> property</h3>
+<pre class="programlisting">  "ntp-ns-base"              <a
+href="../glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read / Write</pre>
+<p>The NTP base time corresponding to running_time 0.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" title='The "num-active-sources" property'>
+<a name="GstRtpSession--num-active-sources"></a><h3>The <code class="literal">"num-active-sources"</code> property</h3>
+<pre class="programlisting">  "num-active-sources"       <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read</pre>
+<p>The number of active sources in the session.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" title='The "num-sources" property'>
+<a name="GstRtpSession--num-sources"></a><h3>The <code class="literal">"num-sources"</code> property</h3>
+<pre class="programlisting">  "num-sources"              <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read</pre>
+<p>The number of sources in the session.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" title='The "rtcp-fraction" property'>
+<a name="GstRtpSession--rtcp-fraction"></a><h3>The <code class="literal">"rtcp-fraction"</code> property</h3>
+<pre class="programlisting">  "rtcp-fraction"            <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write</pre>
+<p>The fraction of the bandwidth used for RTCP.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 3000</p>
+</div>
+<hr>
+<div class="refsect2" title='The "sdes" property'>
+<a name="GstRtpSession--sdes"></a><h3>The <code class="literal">"sdes"</code> property</h3>
+<pre class="programlisting">  "sdes"                     <a
+href="../gstreamer-0.10/gstreamer-GstStructure.html#GstStructure"
+>GstStructure</a>*         : Read / Write</pre>
+<p>The SDES items of this session.</p>
+</div>
+</div>
+<div class="refsect1" title="Signal Details">
+<a name="gst-plugins-good-plugins-gstrtpsession.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2" title='The "clear-pt-map" signal'>
+<a name="GstRtpSession-clear-pt-map"></a><h3>The <code class="literal">"clear-pt-map"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession">GstRtpSession</a> *sess,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)      : Action</pre>
+<p>
+Clear the cached pt-maps requested with <a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession-request-pt-map" title='The "request-pt-map" signal'><span class="type">"request-pt-map"</span></a>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sess</code></em> :</span></p></td>
+<td> the object which received the signal
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title='The "on-bye-ssrc" signal'>
+<a name="GstRtpSession-on-bye-ssrc"></a><h3>The <code class="literal">"on-bye-ssrc"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession">GstRtpSession</a> *sess,
+                                                        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>          ssrc,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)      : Run Last</pre>
+<p>
+Notify of an SSRC that became inactive because of a BYE packet.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sess</code></em> :</span></p></td>
+<td> the object which received the signal
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
+<td> the SSRC
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title='The "on-bye-timeout" signal'>
+<a name="GstRtpSession-on-bye-timeout"></a><h3>The <code class="literal">"on-bye-timeout"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession">GstRtpSession</a> *sess,
+                                                        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>          ssrc,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)      : Run Last</pre>
+<p>
+Notify of an SSRC that has timed out because of BYE</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sess</code></em> :</span></p></td>
+<td> the object which received the signal
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
+<td> the SSRC 
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title='The "on-new-ssrc" signal'>
+<a name="GstRtpSession-on-new-ssrc"></a><h3>The <code class="literal">"on-new-ssrc"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession">GstRtpSession</a> *sess,
+                                                        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>          ssrc,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)      : Run Last</pre>
+<p>
+Notify of a new SSRC that entered <em class="parameter"><code>session</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sess</code></em> :</span></p></td>
+<td> the object which received the signal
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
+<td> the SSRC 
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title='The "on-sender-timeout" signal'>
+<a name="GstRtpSession-on-sender-timeout"></a><h3>The <code class="literal">"on-sender-timeout"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession">GstRtpSession</a> *sess,
+                                                        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>          ssrc,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)      : Run Last</pre>
+<p>
+Notify of a sender SSRC that has timed out and became a receiver</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sess</code></em> :</span></p></td>
+<td> the object which received the signal
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
+<td> the SSRC 
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title='The "on-ssrc-active" signal'>
+<a name="GstRtpSession-on-ssrc-active"></a><h3>The <code class="literal">"on-ssrc-active"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession">GstRtpSession</a> *gstrtpsession,
+                                                        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>          arg1,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)          : Run Last</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>gstrtpsession</code></em> :</span></p></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title='The "on-ssrc-collision" signal'>
+<a name="GstRtpSession-on-ssrc-collision"></a><h3>The <code class="literal">"on-ssrc-collision"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession">GstRtpSession</a> *gstrtpsession,
+                                                        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>          arg1,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)          : Run Last</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>gstrtpsession</code></em> :</span></p></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title='The "on-ssrc-sdes" signal'>
+<a name="GstRtpSession-on-ssrc-sdes"></a><h3>The <code class="literal">"on-ssrc-sdes"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession">GstRtpSession</a> *session,
+                                                        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>          src,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)      : Run Last</pre>
+<p>
+Notify that a new SDES was received for SSRC.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
+<td> the object which received the signal
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>src</code></em> :</span></p></td>
+<td> the SSRC
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title='The "on-ssrc-validated" signal'>
+<a name="GstRtpSession-on-ssrc-validated"></a><h3>The <code class="literal">"on-ssrc-validated"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession">GstRtpSession</a> *gstrtpsession,
+                                                        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>          arg1,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)          : Run Last</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>gstrtpsession</code></em> :</span></p></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title='The "on-timeout" signal'>
+<a name="GstRtpSession-on-timeout"></a><h3>The <code class="literal">"on-timeout"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession">GstRtpSession</a> *sess,
+                                                        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>          ssrc,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)      : Run Last</pre>
+<p>
+Notify of an SSRC that has timed out</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sess</code></em> :</span></p></td>
+<td> the object which received the signal
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
+<td> the SSRC 
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title='The "request-pt-map" signal'>
+<a name="GstRtpSession-request-pt-map"></a><h3>The <code class="literal">"request-pt-map"</code> signal</h3>
+<pre class="programlisting"><a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a>*            user_function                      (<a class="link" href="gst-plugins-good-plugins-gstrtpsession.html#GstRtpSession">GstRtpSession</a> *sess,
+                                                        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>          pt,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)      : Run Last</pre>
+<p>
+Request the payload type as <a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a> for <em class="parameter"><code>pt</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sess</code></em> :</span></p></td>
+<td> the object which received the signal
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pt</code></em> :</span></p></td>
+<td> the pt
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" title="See Also">
+<a name="gst-plugins-good-plugins-gstrtpsession.see-also"></a><h2>See Also</h2>
+gstrtpjitterbuffer, gstrtpbin, gstrtpptdemux, gstrtpssrcdemux
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.11</div>
+</body>
+</html>

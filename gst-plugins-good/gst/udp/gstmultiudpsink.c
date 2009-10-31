@@ -21,13 +21,9 @@
  * SECTION:element-multiupdsink
  * @see_also: udpsink, multifdsink
  *
- * <refsect2>
- * <para>
  * multiudpsink is a network sink that sends UDP packets to multiple
  * clients.
  * It can be combined with rtp payload encoders to implement RTP streaming.
- * </para>
- * </refsect2>
  */
 
 #ifdef HAVE_CONFIG_H
@@ -43,10 +39,6 @@
 #endif
 #include <errno.h>
 #include <string.h>
-
-#ifdef G_OS_WIN32
-typedef int socklen_t;
-#endif
 
 GST_DEBUG_CATEGORY_STATIC (multiudpsink_debug);
 #define GST_CAT_DEFAULT (multiudpsink_debug)
@@ -125,6 +117,10 @@ static void gst_multiudpsink_finalize (GObject * object);
 
 static GstFlowReturn gst_multiudpsink_render (GstBaseSink * sink,
     GstBuffer * buffer);
+#ifndef G_OS_WIN32              /* sendmsg() is not available on Windows */
+static GstFlowReturn gst_multiudpsink_render_list (GstBaseSink * bsink,
+    GstBufferList * list);
+#endif
 static GstStateChangeReturn gst_multiudpsink_change_state (GstElement *
     element, GstStateChange transition);
 
@@ -326,6 +322,9 @@ gst_multiudpsink_class_init (GstMultiUDPSinkClass * klass)
   gstelement_class->change_state = gst_multiudpsink_change_state;
 
   gstbasesink_class->render = gst_multiudpsink_render;
+#ifndef G_OS_WIN32
+  gstbasesink_class->render_list = gst_multiudpsink_render_list;
+#endif
   klass->add = gst_multiudpsink_add;
   klass->remove = gst_multiudpsink_remove;
   klass->clear = gst_multiudpsink_clear;
@@ -375,10 +374,10 @@ static GstFlowReturn
 gst_multiudpsink_render (GstBaseSink * bsink, GstBuffer * buffer)
 {
   GstMultiUDPSink *sink;
-  gint ret, size, num = 0;
+  gint ret, size, num = 0, no_clients = 0;
   guint8 *data;
   GList *clients;
-  socklen_t len;
+  gint len;
 
   sink = GST_MULTIUDPSINK (bsink);
 
@@ -396,36 +395,30 @@ gst_multiudpsink_render (GstBaseSink * bsink, GstBuffer * buffer)
     GstUDPClient *client;
 
     client = (GstUDPClient *) clients->data;
-    num++;
+    no_clients++;
     GST_LOG_OBJECT (sink, "sending %d bytes to client %p", size, client);
 
     while (TRUE) {
-      /* Mac OS is picky about the size for the bind so we switch on the family */
-      switch (client->theiraddr.ss_family) {
-        case AF_INET:
-          len = sizeof (struct sockaddr_in);
-          break;
-        case AF_INET6:
-          len = sizeof (struct sockaddr_in6);
-          break;
-        default:
-          /* don't know, Screw MacOS and use the full length */
-          len = sizeof (client->theiraddr);
-          break;
-      }
+      len = gst_udp_get_sockaddr_length (&client->theiraddr);
 
-      ret = sendto (*client->sock, data, size, 0,
-          (struct sockaddr *) &client->theiraddr, len);
+      ret = sendto (*client->sock,
+#ifdef G_OS_WIN32
+          (char *) data,
+#else
+          data,
+#endif
+          size, 0, (struct sockaddr *) &client->theiraddr, len);
 
       if (ret < 0) {
-        /* we get a non-posix EPERM on Linux when a firewall rule blocks this
-         * destination. We will simply ignore this. */
-        if (errno == EPERM)
-          break;
+        /* some error, just warn, it's likely recoverable and we don't want to
+         * break streaming. We break so that we stop retrying for this client. */
         if (errno != EINTR && errno != EAGAIN) {
-          goto send_error;
+          GST_WARNING_OBJECT (sink, "client %p gave error %d (%s)", client,
+              errno, g_strerror (errno));
+          break;
         }
       } else {
+        num++;
         client->bytes_sent += ret;
         client->packets_sent++;
         sink->bytes_served += ret;
@@ -435,21 +428,101 @@ gst_multiudpsink_render (GstBaseSink * bsink, GstBuffer * buffer)
   }
   g_mutex_unlock (sink->client_lock);
 
-  GST_LOG_OBJECT (sink, "sent %d bytes to %d clients", size, num);
+  GST_LOG_OBJECT (sink, "sent %d bytes to %d (of %d) clients", size, num,
+      no_clients);
+
+  return GST_FLOW_OK;
+}
+
+#ifndef G_OS_WIN32
+static GstFlowReturn
+gst_multiudpsink_render_list (GstBaseSink * bsink, GstBufferList * list)
+{
+  GstMultiUDPSink *sink;
+  GList *clients;
+  gint ret, size = 0, num = 0, no_clients = 0;
+  struct iovec *iov;
+  struct msghdr msg = { 0 };
+
+  GstBufferListIterator *it;
+  guint gsize;
+  GstBuffer *buf;
+
+  sink = GST_MULTIUDPSINK (bsink);
+
+  g_return_val_if_fail (list != NULL, GST_FLOW_ERROR);
+
+  it = gst_buffer_list_iterate (list);
+  g_return_val_if_fail (it != NULL, GST_FLOW_ERROR);
+
+  while (gst_buffer_list_iterator_next_group (it)) {
+    msg.msg_iovlen = 0;
+    size = 0;
+
+    if ((gsize = gst_buffer_list_iterator_n_buffers (it)) == 0) {
+      goto invalid_list;
+    }
+
+    iov = (struct iovec *) g_malloc (gsize * sizeof (struct iovec));
+    msg.msg_iov = iov;
+
+    while ((buf = gst_buffer_list_iterator_next (it))) {
+      msg.msg_iov[msg.msg_iovlen].iov_len = GST_BUFFER_SIZE (buf);
+      msg.msg_iov[msg.msg_iovlen].iov_base = GST_BUFFER_DATA (buf);
+      msg.msg_iovlen++;
+      size += GST_BUFFER_SIZE (buf);
+    }
+
+    sink->bytes_to_serve += size;
+
+    /* grab lock while iterating and sending to clients, this should be
+     * fast as UDP never blocks */
+    g_mutex_lock (sink->client_lock);
+    GST_LOG_OBJECT (bsink, "about to send %d bytes", size);
+
+    for (clients = sink->clients; clients; clients = g_list_next (clients)) {
+      GstUDPClient *client;
+
+      client = (GstUDPClient *) clients->data;
+      no_clients++;
+      GST_LOG_OBJECT (sink, "sending %d bytes to client %p", size, client);
+
+      while (TRUE) {
+        msg.msg_name = (void *) &client->theiraddr;
+        msg.msg_namelen = sizeof (client->theiraddr);
+        ret = sendmsg (*client->sock, &msg, 0);
+
+        if (ret < 0) {
+          if (errno != EINTR && errno != EAGAIN) {
+            break;
+          }
+        } else {
+          num++;
+          client->bytes_sent += ret;
+          client->packets_sent++;
+          sink->bytes_served += ret;
+          break;
+        }
+      }
+    }
+    g_mutex_unlock (sink->client_lock);
+
+    g_free (iov);
+    msg.msg_iov = NULL;
+
+    GST_LOG_OBJECT (sink, "sent %d bytes to %d (of %d) clients", size, num,
+        no_clients);
+  }
+
+  gst_buffer_list_iterator_free (it);
 
   return GST_FLOW_OK;
 
-  /* ERRORS */
-send_error:
-  {
-    /* if sendto returns an error, something is seriously wrong */
-    g_mutex_unlock (sink->client_lock);
-    GST_DEBUG_OBJECT (sink, "got send error %d: %s", errno, g_strerror (errno));
-    GST_ELEMENT_ERROR (sink, STREAM, FAILED, (NULL),
-        ("Got send error %d: %s", errno, g_strerror (errno)));
-    return GST_FLOW_ERROR;
-  }
+invalid_list:
+  gst_buffer_list_iterator_free (it);
+  return GST_FLOW_ERROR;
 }
+#endif
 
 static void
 gst_multiudpsink_set_clients_string (GstMultiUDPSink * sink,
@@ -626,7 +699,6 @@ static gboolean
 gst_multiudpsink_init_send (GstMultiUDPSink * sink)
 {
   guint bc_val;
-  gint ret;
   GList *clients;
   GstUDPClient *client;
 
@@ -644,9 +716,8 @@ gst_multiudpsink_init_send (GstMultiUDPSink * sink)
   }
 
   bc_val = 1;
-  if ((ret =
-          setsockopt (sink->sock, SOL_SOCKET, SO_BROADCAST, &bc_val,
-              sizeof (bc_val))) < 0)
+  if (setsockopt (sink->sock, SOL_SOCKET, SO_BROADCAST, &bc_val,
+          sizeof (bc_val)) < 0)
     goto no_broadcast;
 
   sink->bytes_to_serve = 0;
@@ -659,7 +730,7 @@ gst_multiudpsink_init_send (GstMultiUDPSink * sink)
   for (clients = sink->clients; clients; clients = g_list_next (clients)) {
     client = (GstUDPClient *) clients->data;
     if (sink->auto_multicast && gst_udp_is_multicast (&client->theiraddr))
-      gst_udp_join_group (*(client->sock), &client->theiraddr);
+      gst_udp_join_group (*(client->sock), &client->theiraddr, NULL);
   }
   return TRUE;
 
@@ -711,7 +782,7 @@ gst_multiudpsink_add_internal (GstMultiUDPSink * sink, const gchar * host,
       GST_DEBUG_OBJECT (sink, "multicast address detected");
       if (sink->auto_multicast) {
         GST_DEBUG_OBJECT (sink, "joining multicast group");
-        gst_udp_join_group (*(client->sock), &client->theiraddr);
+        gst_udp_join_group (*(client->sock), &client->theiraddr, NULL);
       }
     } else {
       GST_DEBUG_OBJECT (sink, "normal address detected");

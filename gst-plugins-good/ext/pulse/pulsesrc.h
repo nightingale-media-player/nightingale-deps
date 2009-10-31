@@ -29,6 +29,7 @@
 #include <pulse/thread-mainloop.h>
 
 #include "pulsemixerctrl.h"
+#include "pulseprobe.h"
 
 G_BEGIN_DECLS
 
@@ -42,6 +43,8 @@ G_BEGIN_DECLS
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_PULSESRC))
 #define GST_IS_PULSESRC_CLASS(obj) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_PULSESRC))
+#define GST_PULSESRC_CAST(obj) \
+  ((GstPulseSrc *)(obj))
 
 typedef struct _GstPulseSrc GstPulseSrc;
 typedef struct _GstPulseSrcClass GstPulseSrcClass;
@@ -62,7 +65,15 @@ struct _GstPulseSrc
   const void *read_buffer;
   size_t read_buffer_length;
 
+  gchar *device_description;
+
   GstPulseMixerCtrl *mixer;
+  GstPulseProbe *probe;
+
+  gboolean corked;
+  gboolean operation_success;
+  gboolean paused;
+  gboolean in_read;
 };
 
 struct _GstPulseSrcClass

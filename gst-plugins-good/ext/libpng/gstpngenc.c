@@ -15,6 +15,11 @@
  * Boston, MA 02111-1307, USA.
  *
  */
+/**
+ * SECTION:element-pngenc
+ *
+ * Encodes png images.
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -111,10 +116,8 @@ static void
 gst_pngenc_class_init (GstPngEncClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
 
@@ -208,16 +211,9 @@ gst_pngenc_init (GstPngEnc * pngenc, GstPngEncClass * g_class)
 }
 
 static void
-user_flush_data (png_structp png_ptr)
+user_flush_data (png_structp png_ptr G_GNUC_UNUSED)
 {
-  GstPngEnc *pngenc;
-
-  pngenc = (GstPngEnc *) png_get_io_ptr (png_ptr);
-
-  gst_pad_push_event (pngenc->srcpad, gst_event_new_flush_start ());
-  gst_pad_push_event (pngenc->srcpad, gst_event_new_flush_stop ());
 }
-
 
 static void
 user_write_data (png_structp png_ptr, png_bytep data, png_uint_32 length)
@@ -312,8 +308,6 @@ gst_pngenc_chain (GstPad * pad, GstBuffer * buf)
   png_write_info (pngenc->png_struct_ptr, pngenc->png_info_ptr);
   png_write_image (pngenc->png_struct_ptr, row_pointers);
   png_write_end (pngenc->png_struct_ptr, NULL);
-
-  user_flush_data (pngenc->png_struct_ptr);
 
   encoded_buf = gst_buffer_create_sub (pngenc->buffer_out, 0, pngenc->written);
 

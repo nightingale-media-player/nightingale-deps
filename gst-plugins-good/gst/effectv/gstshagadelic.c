@@ -22,14 +22,28 @@
  * Boston, MA 02111-1307, USA.
  */
 
+/**
+ * SECTION:element-shagadelictv
+ *
+ * Oh behave, ShagedelicTV makes images shagadelic!
+ *
+ * <refsect2>
+ * <title>Example launch line</title>
+ * |[
+ * gst-launch -v videotestsrc ! shagadelictv ! ffmpegcolorspace ! autovideosink
+ * ]| This pipeline shows the effect of shagadelictv on a test stream.
+ * </refsect2>
+ */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
-#include <gst/video/gstvideofilter.h>
-
 #include <math.h>
 #include <string.h>
+
+#include "gstshagadelic.h"
+#include "gsteffectv.h"
 
 #include <gst/video/video.h>
 
@@ -37,65 +51,32 @@
 #define M_PI  3.14159265358979323846
 #endif
 
-#define GST_TYPE_SHAGADELICTV \
-  (gst_shagadelictv_get_type())
-#define GST_SHAGADELICTV(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_SHAGADELICTV,GstShagadelicTV))
-#define GST_SHAGADELICTV_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_SHAGADELICTV,GstShagadelicTVClass))
-#define GST_IS_SHAGADELICTV(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_SHAGADELICTV))
-#define GST_IS_SHAGADELICTV_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_SHAGADELICTV))
-
-typedef struct _GstShagadelicTV GstShagadelicTV;
-typedef struct _GstShagadelicTVClass GstShagadelicTVClass;
-
-struct _GstShagadelicTV
-{
-  GstVideoFilter videofilter;
-
-  gint width, height;
-  gint stat;
-  gchar *ripple;
-  gchar *spiral;
-  guchar phase;
-  gint rx, ry;
-  gint bx, by;
-  gint rvx, rvy;
-  gint bvx, bvy;
-};
-
-struct _GstShagadelicTVClass
-{
-  GstVideoFilterClass parent_class;
-};
-
-GType gst_shagadelictv_get_type (void);
+GST_BOILERPLATE (GstShagadelicTV, gst_shagadelictv, GstVideoFilter,
+    GST_TYPE_VIDEO_FILTER);
 
 static void gst_shagadelic_initialize (GstShagadelicTV * filter);
-
-static const GstElementDetails shagadelictv_details =
-GST_ELEMENT_DETAILS ("ShagadelicTV",
-    "Filter/Effect/Video",
-    "Oh behave, ShagedelicTV makes images shagadelic!",
-    "Wim Taymans <wim.taymans@chello.be>");
 
 static GstStaticPadTemplate gst_shagadelictv_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
     GST_STATIC_CAPS (GST_VIDEO_CAPS_BGRx)
+#else
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_xRGB)
+#endif
     );
 
 static GstStaticPadTemplate gst_shagadelictv_sink_template =
 GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
     GST_STATIC_CAPS (GST_VIDEO_CAPS_BGRx)
+#else
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_xRGB)
+#endif
     );
-
-static GstVideoFilterClass *parent_class = NULL;
 
 static gboolean
 gst_shagadelictv_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
@@ -114,46 +95,14 @@ gst_shagadelictv_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
     g_free (filter->ripple);
     g_free (filter->spiral);
 
-    filter->ripple = (gchar *) g_malloc (area * 4);
-    filter->spiral = (gchar *) g_malloc (area);
+    filter->ripple = (guint8 *) g_malloc (area * 4);
+    filter->spiral = (guint8 *) g_malloc (area);
 
     gst_shagadelic_initialize (filter);
     ret = TRUE;
   }
 
   return ret;
-}
-
-static gboolean
-gst_shagadelictv_get_unit_size (GstBaseTransform * btrans, GstCaps * caps,
-    guint * size)
-{
-  GstShagadelicTV *filter;
-  GstStructure *structure;
-  gboolean ret = FALSE;
-  gint width, height;
-
-  filter = GST_SHAGADELICTV (btrans);
-
-  structure = gst_caps_get_structure (caps, 0);
-
-  if (gst_structure_get_int (structure, "width", &width) &&
-      gst_structure_get_int (structure, "height", &height)) {
-    *size = width * height * 32 / 8;
-    ret = TRUE;
-    GST_DEBUG_OBJECT (filter, "our frame size is %d bytes (%dx%d)", *size,
-        width, height);
-  }
-
-  return ret;
-}
-
-static unsigned int
-fastrand (void)
-{
-  static unsigned int fastrand_val;
-
-  return (fastrand_val = fastrand_val * 1103515245 + 12345);
 }
 
 static void
@@ -218,17 +167,13 @@ static GstFlowReturn
 gst_shagadelictv_transform (GstBaseTransform * trans, GstBuffer * in,
     GstBuffer * out)
 {
-  GstShagadelicTV *filter;
+  GstShagadelicTV *filter = GST_SHAGADELICTV (trans);
   guint32 *src, *dest;
   gint x, y;
   guint32 v;
-  guchar r, g, b;
+  guint8 r, g, b;
   gint width, height;
   GstFlowReturn ret = GST_FLOW_OK;
-
-  filter = GST_SHAGADELICTV (trans);
-
-  gst_buffer_copy_metadata (out, in, GST_BUFFER_COPY_TIMESTAMPS);
 
   src = (guint32 *) GST_BUFFER_DATA (in);
   dest = (guint32 *) GST_BUFFER_DATA (out);
@@ -245,11 +190,11 @@ gst_shagadelictv_transform (GstBaseTransform * trans, GstBuffer * in,
  * v = *src++;
  * *dest++ = v & ((r<<16)|(g<<8)|b);
  */
-      r = (gchar) (filter->ripple[(filter->ry + y) * width * 2 + filter->rx +
-              x] + filter->phase * 2) >> 7;
-      g = (gchar) (filter->spiral[y * width + x] + filter->phase * 3) >> 7;
-      b = (gchar) (filter->ripple[(filter->by + y) * width * 2 + filter->bx +
-              x] - filter->phase) >> 7;
+      r = ((gint8) (filter->ripple[(filter->ry + y) * width * 2 + filter->rx +
+                  x] + filter->phase * 2)) >> 7;
+      g = ((gint8) (filter->spiral[y * width + x] + filter->phase * 3)) >> 7;
+      b = ((gint8) (filter->ripple[(filter->by + y) * width * 2 + filter->bx +
+                  x] - filter->phase)) >> 7;
       *dest++ = v & ((r << 16) | (g << 8) | b);
     }
   }
@@ -272,11 +217,30 @@ gst_shagadelictv_transform (GstBaseTransform * trans, GstBuffer * in,
 }
 
 static void
+gst_shagadelictv_finalize (GObject * object)
+{
+  GstShagadelicTV *filter = GST_SHAGADELICTV (object);
+
+  if (filter->ripple)
+    g_free (filter->ripple);
+  filter->ripple = NULL;
+
+  if (filter->spiral)
+    g_free (filter->spiral);
+  filter->spiral = NULL;
+
+  G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
 gst_shagadelictv_base_init (gpointer g_class)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
-  gst_element_class_set_details (element_class, &shagadelictv_details);
+  gst_element_class_set_details_simple (element_class, "ShagadelicTV",
+      "Filter/Effect/Video",
+      "Oh behave, ShagedelicTV makes images shagadelic!",
+      "Wim Taymans <wim.taymans@chello.be>");
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&gst_shagadelictv_sink_template));
@@ -285,54 +249,23 @@ gst_shagadelictv_base_init (gpointer g_class)
 }
 
 static void
-gst_shagadelictv_class_init (gpointer klass, gpointer class_data)
+gst_shagadelictv_class_init (GstShagadelicTVClass * klass)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *element_class;
-  GstBaseTransformClass *trans_class;
+  GObjectClass *gobject_class = (GObjectClass *) klass;
+  GstBaseTransformClass *trans_class = (GstBaseTransformClass *) klass;
 
-  gobject_class = (GObjectClass *) klass;
-  element_class = (GstElementClass *) klass;
-  trans_class = (GstBaseTransformClass *) klass;
-
-  parent_class = g_type_class_peek_parent (klass);
+  gobject_class->finalize = gst_shagadelictv_finalize;
 
   trans_class->set_caps = GST_DEBUG_FUNCPTR (gst_shagadelictv_set_caps);
-  trans_class->get_unit_size =
-      GST_DEBUG_FUNCPTR (gst_shagadelictv_get_unit_size);
   trans_class->transform = GST_DEBUG_FUNCPTR (gst_shagadelictv_transform);
 }
 
 static void
-gst_shagadelictv_init (GTypeInstance * instance, gpointer g_class)
+gst_shagadelictv_init (GstShagadelicTV * filter, GstShagadelicTVClass * klass)
 {
-  GstShagadelicTV *filter = GST_SHAGADELICTV (instance);
-
   filter->ripple = NULL;
   filter->spiral = NULL;
-}
 
-GType
-gst_shagadelictv_get_type (void)
-{
-  static GType shagadelictv_type = 0;
-
-  if (!shagadelictv_type) {
-    static const GTypeInfo shagadelictv_info = {
-      sizeof (GstShagadelicTVClass),
-      gst_shagadelictv_base_init,
-      NULL,
-      (GClassInitFunc) gst_shagadelictv_class_init,
-      NULL,
-      NULL,
-      sizeof (GstShagadelicTV),
-      0,
-      (GInstanceInitFunc) gst_shagadelictv_init,
-    };
-
-    shagadelictv_type =
-        g_type_register_static (GST_TYPE_VIDEO_FILTER, "GstShagadelicTV",
-        &shagadelictv_info, 0);
-  }
-  return shagadelictv_type;
+  gst_pad_use_fixed_caps (GST_BASE_TRANSFORM_SRC_PAD (filter));
+  gst_pad_use_fixed_caps (GST_BASE_TRANSFORM_SINK_PAD (filter));
 }

@@ -29,7 +29,7 @@
 
 /* elementfactory information */
 static const GstElementDetails gst_rtp_pcmudepay_details =
-GST_ELEMENT_DETAILS ("RTP packet depayloader",
+GST_ELEMENT_DETAILS ("RTP PCMU depayloader",
     "Codec/Depayloader/Network",
     "Extracts PCMU audio from RTP packets",
     "Edgard Lima <edgard.lima@indt.org.br>, Zeeshan Ali <zeenix@gmail.com>");
@@ -90,12 +90,8 @@ gst_rtp_pcmu_depay_base_init (gpointer klass)
 static void
 gst_rtp_pcmu_depay_class_init (GstRtpPcmuDepayClass * klass)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
 
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
   gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
@@ -121,11 +117,12 @@ gst_rtp_pcmu_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
   GstCaps *srccaps;
   GstStructure *structure;
   gboolean ret;
-  gint clock_rate = 8000;       /* default */
+  gint clock_rate;
 
   structure = gst_caps_get_structure (caps, 0);
 
-  gst_structure_get_int (structure, "clock-rate", &clock_rate);
+  if (!gst_structure_get_int (structure, "clock-rate", &clock_rate))
+    clock_rate = 8000;          /* default */
   depayload->clock_rate = clock_rate;
 
   srccaps = gst_caps_new_simple ("audio/x-mulaw",
@@ -139,29 +136,26 @@ gst_rtp_pcmu_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
 static GstBuffer *
 gst_rtp_pcmu_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 {
-  GstCaps *srccaps;
   GstBuffer *outbuf = NULL;
   guint len;
+  gboolean marker;
+
+  marker = gst_rtp_buffer_get_marker (buf);
 
   GST_DEBUG ("process : got %d bytes, mark %d ts %u seqn %d",
-      GST_BUFFER_SIZE (buf),
-      gst_rtp_buffer_get_marker (buf),
+      GST_BUFFER_SIZE (buf), marker,
       gst_rtp_buffer_get_timestamp (buf), gst_rtp_buffer_get_seq (buf));
-
-  srccaps = GST_PAD_CAPS (GST_BASE_RTP_DEPAYLOAD_SRCPAD (depayload));
-  if (!srccaps) {
-    /* Set the default caps */
-    srccaps = gst_caps_new_simple ("audio/x-mulaw",
-        "channels", G_TYPE_INT, 1, "rate", G_TYPE_INT, 8000, NULL);
-    gst_pad_set_caps (GST_BASE_RTP_DEPAYLOAD_SRCPAD (depayload), srccaps);
-    gst_caps_unref (srccaps);
-  }
 
   len = gst_rtp_buffer_get_payload_len (buf);
   outbuf = gst_rtp_buffer_get_payload_buffer (buf);
 
   GST_BUFFER_DURATION (outbuf) =
       gst_util_uint64_scale_int (len, GST_SECOND, depayload->clock_rate);
+
+  if (marker) {
+    /* mark start of talkspurt with DISCONT */
+    GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_DISCONT);
+  }
 
   return outbuf;
 }

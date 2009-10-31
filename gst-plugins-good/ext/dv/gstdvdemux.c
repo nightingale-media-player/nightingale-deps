@@ -30,24 +30,20 @@
 /**
  * SECTION:element-dvdemux
  *
- * <refsect2>
- * <para>
  * dvdemux splits raw DV into its audio and video components. The audio will be
  * decoded raw samples and the video will be encoded DV video.
- * </para>
- * <para>
- * This element can operate in both push and pull mode depending on the capabilities
- * of the upstream peer.
- * </para>
+ *
+ * This element can operate in both push and pull mode depending on the
+ * capabilities of the upstream peer.
+ *
+ * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch filesrc location=test.dv ! dvdemux name=demux ! queue ! audioconvert ! alsasink demux. ! queue ! dvdec ! xvimagesink
- * </programlisting>
- * This pipeline decodes and renders the raw DV stream to an audio and a videosink.
- * </para>
- * Last reviewed on 2006-02-27 (0.10.3)
+ * ]| This pipeline decodes and renders the raw DV stream to an audio and a videosink.
  * </refsect2>
+ *
+ * Last reviewed on 2006-02-27 (0.10.3)
  */
 
 /* DV output has two modes, normal and wide. The resolution is the same in both
@@ -208,9 +204,6 @@ gst_dvdemux_class_init (GstDVDemuxClass * klass)
 
   gstelement_class->change_state = GST_DEBUG_FUNCPTR (gst_dvdemux_change_state);
   gstelement_class->send_event = GST_DEBUG_FUNCPTR (gst_dvdemux_send_event);
-
-  /* table initialization, only do once */
-  dv_init (0, 0);
 }
 
 static void
@@ -294,34 +287,55 @@ gst_dvdemux_reset (GstDVDemux * dvdemux)
   gst_segment_init (&dvdemux->time_segment, GST_FORMAT_TIME);
 }
 
-static void
-gst_dvdemux_add_pads (GstDVDemux * dvdemux)
+static GstPad *
+gst_dvdemux_add_pad (GstDVDemux * dvdemux, GstStaticPadTemplate * template)
 {
-  dvdemux->videosrcpad =
-      gst_pad_new_from_static_template (&video_src_temp, "video");
-  gst_pad_set_query_function (dvdemux->videosrcpad,
-      GST_DEBUG_FUNCPTR (gst_dvdemux_src_query));
-  gst_pad_set_query_type_function (dvdemux->videosrcpad,
-      GST_DEBUG_FUNCPTR (gst_dvdemux_get_src_query_types));
-  gst_pad_set_event_function (dvdemux->videosrcpad,
-      GST_DEBUG_FUNCPTR (gst_dvdemux_handle_src_event));
-  gst_pad_use_fixed_caps (dvdemux->videosrcpad);
-  gst_pad_set_active (dvdemux->videosrcpad, TRUE);
-  gst_element_add_pad (GST_ELEMENT (dvdemux), dvdemux->videosrcpad);
+  gboolean no_more_pads;
+  GstPad *pad;
 
-  dvdemux->audiosrcpad =
-      gst_pad_new_from_static_template (&audio_src_temp, "audio");
-  gst_pad_set_query_function (dvdemux->audiosrcpad,
-      GST_DEBUG_FUNCPTR (gst_dvdemux_src_query));
-  gst_pad_set_query_type_function (dvdemux->audiosrcpad,
-      GST_DEBUG_FUNCPTR (gst_dvdemux_get_src_query_types));
-  gst_pad_set_event_function (dvdemux->audiosrcpad,
-      GST_DEBUG_FUNCPTR (gst_dvdemux_handle_src_event));
-  gst_pad_use_fixed_caps (dvdemux->audiosrcpad);
-  gst_pad_set_active (dvdemux->audiosrcpad, TRUE);
-  gst_element_add_pad (GST_ELEMENT (dvdemux), dvdemux->audiosrcpad);
+  pad = gst_pad_new_from_static_template (template, template->name_template);
 
-  gst_element_no_more_pads (GST_ELEMENT (dvdemux));
+  gst_pad_set_query_function (pad, GST_DEBUG_FUNCPTR (gst_dvdemux_src_query));
+
+  gst_pad_set_query_type_function (pad,
+      GST_DEBUG_FUNCPTR (gst_dvdemux_get_src_query_types));
+  gst_pad_set_event_function (pad,
+      GST_DEBUG_FUNCPTR (gst_dvdemux_handle_src_event));
+  gst_pad_use_fixed_caps (pad);
+  gst_pad_set_active (pad, TRUE);
+  gst_element_add_pad (GST_ELEMENT (dvdemux), pad);
+
+  no_more_pads =
+      (dvdemux->videosrcpad != NULL && template == &audio_src_temp) ||
+      (dvdemux->audiosrcpad != NULL && template == &video_src_temp);
+
+  if (no_more_pads)
+    gst_element_no_more_pads (GST_ELEMENT (dvdemux));
+
+  gst_pad_push_event (pad, gst_event_new_new_segment (FALSE,
+          dvdemux->byte_segment.rate, GST_FORMAT_TIME,
+          dvdemux->time_segment.start, dvdemux->time_segment.stop,
+          dvdemux->time_segment.start));
+
+  if (no_more_pads) {
+    gst_element_found_tags (GST_ELEMENT (dvdemux),
+        gst_tag_list_new_full (GST_TAG_CONTAINER_FORMAT, "DV", NULL));
+  }
+
+  return pad;
+}
+
+static void
+gst_dvdemux_remove_pads (GstDVDemux * dvdemux)
+{
+  if (dvdemux->videosrcpad) {
+    gst_element_remove_pad (GST_ELEMENT (dvdemux), dvdemux->videosrcpad);
+    dvdemux->videosrcpad = NULL;
+  }
+  if (dvdemux->audiosrcpad) {
+    gst_element_remove_pad (GST_ELEMENT (dvdemux), dvdemux->audiosrcpad);
+    dvdemux->audiosrcpad = NULL;
+  }
 }
 
 static gboolean
@@ -1002,7 +1016,7 @@ gst_dvdemux_handle_pull_seek (GstDVDemux * demux, GstPad * pad,
 
     /* convert input format to TIME */
     conv = GST_FORMAT_TIME;
-    if (!(res = gst_dvdemux_convert_src_pair (demux, pad,
+    if (!(gst_dvdemux_convert_src_pair (demux, pad,
                 format, cur, stop, conv, &cur, &stop)))
       goto no_format;
 
@@ -1167,13 +1181,19 @@ gst_dvdemux_handle_src_event (GstPad * pad, GstEvent * event)
       break;
     case GST_EVENT_QOS:
       /* we can't really (yet) do QoS */
-    case GST_EVENT_NAVIGATION:
-      /* no navigation either... */
-    default:
       res = FALSE;
       break;
+    case GST_EVENT_NAVIGATION:
+      /* no navigation either... */
+      res = FALSE;
+      break;
+    default:
+      res = gst_pad_push_event (dvdemux->sinkpad, event);
+      event = NULL;
+      break;
   }
-  gst_event_unref (event);
+  if (event)
+    gst_event_unref (event);
 
   gst_object_unref (dvdemux);
 
@@ -1186,33 +1206,10 @@ gst_dvdemux_demux_audio (GstDVDemux * dvdemux, GstBuffer * buffer,
     guint64 duration)
 {
   gint num_samples;
-  gint frequency, channels;
   GstFlowReturn ret;
   const guint8 *data;
 
-  frequency = dv_get_frequency (dvdemux->decoder);
-  channels = dv_get_num_channels (dvdemux->decoder);
-
   data = GST_BUFFER_DATA (buffer);
-
-  /* check if format changed */
-  if ((frequency != dvdemux->frequency) || (channels != dvdemux->channels)) {
-    GstCaps *caps;
-
-    dvdemux->frequency = frequency;
-    dvdemux->channels = channels;
-
-    /* and set new caps */
-    caps = gst_caps_new_simple ("audio/x-raw-int",
-        "rate", G_TYPE_INT, frequency,
-        "depth", G_TYPE_INT, 16,
-        "width", G_TYPE_INT, 16,
-        "signed", G_TYPE_BOOLEAN, TRUE,
-        "channels", G_TYPE_INT, channels,
-        "endianness", G_TYPE_INT, G_BYTE_ORDER, NULL);
-    gst_pad_set_caps (dvdemux->audiosrcpad, caps);
-    gst_caps_unref (caps);
-  }
 
   dv_decode_full_audio (dvdemux->decoder, data, dvdemux->audio_buffers);
 
@@ -1220,6 +1217,32 @@ gst_dvdemux_demux_audio (GstDVDemux * dvdemux, GstBuffer * buffer,
     gint16 *a_ptr;
     gint i, j;
     GstBuffer *outbuf;
+    gint frequency, channels;
+
+    if (dvdemux->audiosrcpad == NULL)
+      dvdemux->audiosrcpad = gst_dvdemux_add_pad (dvdemux, &audio_src_temp);
+
+    /* get initial format or check if format changed */
+    frequency = dv_get_frequency (dvdemux->decoder);
+    channels = dv_get_num_channels (dvdemux->decoder);
+
+    if ((frequency != dvdemux->frequency) || (channels != dvdemux->channels)) {
+      GstCaps *caps;
+
+      dvdemux->frequency = frequency;
+      dvdemux->channels = channels;
+
+      /* and set new caps */
+      caps = gst_caps_new_simple ("audio/x-raw-int",
+          "rate", G_TYPE_INT, frequency,
+          "depth", G_TYPE_INT, 16,
+          "width", G_TYPE_INT, 16,
+          "signed", G_TYPE_BOOLEAN, TRUE,
+          "channels", G_TYPE_INT, channels,
+          "endianness", G_TYPE_INT, G_BYTE_ORDER, NULL);
+      gst_pad_set_caps (dvdemux->audiosrcpad, caps);
+      gst_caps_unref (caps);
+    }
 
     outbuf = gst_buffer_new_and_alloc (num_samples *
         sizeof (gint16) * dvdemux->channels);
@@ -1261,6 +1284,9 @@ gst_dvdemux_demux_video (GstDVDemux * dvdemux, GstBuffer * buffer,
   gint height;
   gboolean wide;
   GstFlowReturn ret = GST_FLOW_OK;
+
+  if (dvdemux->videosrcpad == NULL)
+    dvdemux->videosrcpad = gst_dvdemux_add_pad (dvdemux, &video_src_temp);
 
   /* get params */
   /* framerate is already up-to-date */
@@ -1337,11 +1363,10 @@ gst_dvdemux_demux_frame (GstDVDemux * dvdemux, GstBuffer * buffer)
   if (G_UNLIKELY (dvdemux->need_segment)) {
     GstEvent *event;
     GstFormat format;
-    gboolean res;
 
     /* convert to time and store as start/end_timestamp */
     format = GST_FORMAT_TIME;
-    if (!(res = gst_dvdemux_convert_sink_pair (dvdemux,
+    if (!(gst_dvdemux_convert_sink_pair (dvdemux,
                 GST_FORMAT_BYTES, dvdemux->byte_segment.start,
                 dvdemux->byte_segment.stop, format,
                 &dvdemux->time_segment.start, &dvdemux->time_segment.stop)))
@@ -1353,7 +1378,7 @@ gst_dvdemux_demux_frame (GstDVDemux * dvdemux, GstBuffer * buffer)
 
     /* calculate current frame number */
     format = GST_FORMAT_DEFAULT;
-    if (!(res = gst_dvdemux_src_convert (dvdemux, dvdemux->videosrcpad,
+    if (!(gst_dvdemux_src_convert (dvdemux, dvdemux->videosrcpad,
                 GST_FORMAT_TIME, dvdemux->time_segment.start,
                 &format, &dvdemux->frame_offset)))
       goto segment_error;
@@ -1511,10 +1536,6 @@ gst_dvdemux_chain (GstPad * pad, GstBuffer * buffer)
     /* FIXME, adjust frame_offset and other counters */
   }
 
-  /* temporary hack? Can't do this from the state change */
-  if (G_UNLIKELY (!dvdemux->videosrcpad))
-    gst_dvdemux_add_pads (dvdemux);
-
   gst_adapter_push (dvdemux->adapter, buffer);
 
   /* Apparently dv_parse_header can read from the body of the frame
@@ -1551,10 +1572,6 @@ gst_dvdemux_loop (GstPad * pad)
   dvdemux = GST_DVDEMUX (gst_pad_get_parent (pad));
 
   if (G_UNLIKELY (g_atomic_int_get (&dvdemux->found_header) == 0)) {
-    /* add pads.. why is this again? */
-    if (!dvdemux->videosrcpad)
-      gst_dvdemux_add_pads (dvdemux);
-
     GST_DEBUG_OBJECT (dvdemux, "pulling first buffer");
     /* pull in NTSC sized buffer to figure out the frame
      * length */
@@ -1785,6 +1802,8 @@ gst_dvdemux_change_state (GstElement * element, GstStateChange transition)
       gst_adapter_clear (dvdemux->adapter);
       dv_decoder_free (dvdemux->decoder);
       dvdemux->decoder = NULL;
+
+      gst_dvdemux_remove_pads (dvdemux);
       break;
     case GST_STATE_CHANGE_READY_TO_NULL:
     {

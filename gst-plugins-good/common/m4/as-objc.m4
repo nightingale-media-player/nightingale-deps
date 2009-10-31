@@ -10,8 +10,8 @@ AC_CHECK_TOOLS(OBJC,
 AC_SUBST(OBJC)
 OBJC_LDFLAGS="-lobjc"
 AC_SUBST(OBJC_LDFLAGS)
-_AM_DEPENDENCIES(OBJC)
 if test "x$OBJC" != xnone ; then
+  _AM_DEPENDENCIES(OBJC)
   AC_MSG_CHECKING([if Objective C compiler works])
   cat >>conftest.m <<EOF
 #include <objc/Object.h>
@@ -47,6 +47,8 @@ EOF
   fi
   rm -f conftest.m a.out a.exe
   AC_MSG_RESULT([$result])
+else
+  _AM_DEPENDENCIES(OBJC)
 fi
 
 ])

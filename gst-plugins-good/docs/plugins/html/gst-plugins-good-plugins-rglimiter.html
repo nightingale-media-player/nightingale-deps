@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>rglimiter</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-rganalysis.html" title="rganalysis">
 <link rel="next" href="gst-plugins-good-plugins-rgvolume.html" title="rgvolume">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
@@ -23,15 +23,17 @@
 <th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-rgvolume.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-good-plugins-rglimiter.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-rglimiter.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-rglimiter.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-rglimiter.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-good-plugins-rglimiter.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-rglimiter.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-rglimiter.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-rglimiter.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry" title="rglimiter">
 <a name="gst-plugins-good-plugins-rglimiter"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -40,29 +42,39 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="gst-plugins-good-plugins-rglimiter.synopsis"></a><h2>Synopsis</h2>
 <a name="GstRgLimiter"></a><pre class="synopsis">
                     <a class="link" href="gst-plugins-good-plugins-rglimiter.html#GstRgLimiter-struct" title="GstRgLimiter">GstRgLimiter</a>;
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Object Hierarchy">
 <a name="gst-plugins-good-plugins-rglimiter.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
-   +----GstObject
-         +----GstElement
-               +----GstBaseTransform
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="../gstreamer-libs-0.10/GstBaseTransform.html"
+>GstBaseTransform</a>
                      +----GstRgLimiter
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Properties">
 <a name="gst-plugins-good-plugins-rglimiter.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-rglimiter.html#GstRgLimiter--enabled" title='The "enabled" property'>enabled</a>"                  gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-rglimiter.html#GstRgLimiter--enabled" title='The "enabled" property'>enabled</a>"                  <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Description">
 <a name="gst-plugins-good-plugins-rglimiter.description"></a><h2>Description</h2>
 <p>
 This element applies signal compression/limiting to raw audio data.  It
@@ -71,18 +83,18 @@ threshold of -6 dB.  This type of filter is mentioned in the proposed <a class="
 </p>
 <p>
 </p>
-<div class="refsect2" lang="en">
-<a name="id2580580"></a><h3>Example launch line</h3>
+<div class="refsect2" title="Example launch line">
+<a name="id553292"></a><h3>Example launch line</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch filesrc location=filename.ext ! decodebin ! audioconvert \
            ! rgvolume pre-amp=6.0 headroom=10.0 ! rglimiter \
            ! audioconvert ! audioresample ! alsasink
 </pre></div>Playback of a file
 </div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2611390"></a><h3>Element Information</h3>
+<div class="refsect2" title="Element Information">
+<a name="id577967"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -104,8 +116,29 @@ gst-launch filesrc location=filename.ext ! decodebin ! audioconvert \
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2627948"></a><h3>Element Pads</h3>
+<div class="refsect2" title="Element Pads">
+<a name="id545822"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-float, width=(int)32, channels=(int)[ 1, 2147483647 ], rate=(int)[ 1, 2147483647 ], endianness=(int)1234</td>
+</tr>
+</tbody>
+</table></div>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -127,61 +160,40 @@ gst-launch filesrc location=filename.ext ! decodebin ! audioconvert \
 </tr>
 </tbody>
 </table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>audio/x-raw-float, width=(int)32, channels=(int)[ 1, 2147483647 ], rate=(int)[ 1, 2147483647 ], endianness=(int)1234</td>
-</tr>
-</tbody>
-</table></div>
 </div>
 </div>
 <p>
-
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Details">
 <a name="gst-plugins-good-plugins-rglimiter.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="GstRgLimiter">
 <a name="GstRgLimiter-struct"></a><h3>GstRgLimiter</h3>
 <pre class="programlisting">typedef struct _GstRgLimiter GstRgLimiter;</pre>
 <p>
 Opaque data structure.</p>
 <p>
-
 </p>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Property Details">
 <a name="gst-plugins-good-plugins-rglimiter.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title='The "enabled" property'>
 <a name="GstRgLimiter--enabled"></a><h3>The <code class="literal">"enabled"</code> property</h3>
-<pre class="programlisting">  "enabled"                  gboolean              : Read / Write</pre>
+<pre class="programlisting">  "enabled"                  <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Enable processing.</p>
 <p>Default value: TRUE</p>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="See Also">
 <a name="gst-plugins-good-plugins-rglimiter.see-also"></a><h2>See Also</h2>
-<a class="link" href="gst-plugins-good-plugins-rgvolume.html#GstRgVolume"><span class="type">GstRgVolume</span></a>
+#GstRgVolume
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

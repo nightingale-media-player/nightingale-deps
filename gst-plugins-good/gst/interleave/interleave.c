@@ -47,12 +47,12 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch-0.10 filesrc location=file.mp3 ! decodebin ! audioconvert ! "audio/x-raw-int,channels=2" ! deinterleave name=d  interleave name=i ! audioconvert ! wavenc ! filesink location=test.wav    d.src0 ! queue ! audioconvert ! i.sink1    d.src1 ! queue ! audioconvert ! i.sink0
+ * gst-launch filesrc location=file.mp3 ! decodebin ! audioconvert ! "audio/x-raw-int,channels=2" ! deinterleave name=d  interleave name=i ! audioconvert ! wavenc ! filesink location=test.wav    d.src0 ! queue ! audioconvert ! i.sink1    d.src1 ! queue ! audioconvert ! i.sink0
  * ]| Decodes and deinterleaves a Stereo MP3 file into separate channels and
  * then interleaves the channels again to a WAV file with the channel with the
  * channels exchanged.
  * |[
- * gst-launch-0.10 interleave name=i ! audioconvert ! wavenc ! filesink location=file.wav  filesrc location=file1.wav ! decodebin ! audioconvert ! "audio/x-raw-int,channels=1" ! queue ! i.sink0   filesrc location=file2.wav ! decodebin ! audioconvert ! "audio/x-raw-int,channels=1" ! queue ! i.sink1
+ * gst-launch interleave name=i ! audioconvert ! wavenc ! filesink location=file.wav  filesrc location=file1.wav ! decodebin ! audioconvert ! "audio/x-raw-int,channels=1" ! queue ! i.sink0   filesrc location=file2.wav ! decodebin ! audioconvert ! "audio/x-raw-int,channels=1" ! queue ! i.sink1
  * ]| Interleaves two Mono WAV files to a single Stereo WAV file.
  * </refsect2>
  */
@@ -841,14 +841,14 @@ gst_interleave_sink_setcaps (GstPad * pad, GstCaps * caps)
 
 cannot_change_caps:
   {
-    GST_DEBUG_OBJECT (self, "caps of %" GST_PTR_FORMAT " already set, can't "
+    GST_WARNING_OBJECT (self, "caps of %" GST_PTR_FORMAT " already set, can't "
         "change", self->sinkcaps);
     gst_object_unref (self);
     return FALSE;
   }
 src_did_not_accept:
   {
-    GST_DEBUG_OBJECT (self, "src did not accept setcaps()");
+    GST_WARNING_OBJECT (self, "src did not accept setcaps()");
     gst_object_unref (self);
     return FALSE;
   }
@@ -1143,15 +1143,11 @@ forward_event_func (GstPad * pad, GValue * ret, GstEvent * event)
 static gboolean
 forward_event (GstInterleave * self, GstEvent * event)
 {
-  gboolean ret;
-
   GstIterator *it;
   GValue vret = { 0 };
 
   GST_LOG_OBJECT (self, "Forwarding event %p (%s)", event,
       GST_EVENT_TYPE_NAME (event));
-
-  ret = TRUE;
 
   g_value_init (&vret, G_TYPE_BOOLEAN);
   g_value_set_boolean (&vret, TRUE);
@@ -1161,9 +1157,7 @@ forward_event (GstInterleave * self, GstEvent * event)
   gst_iterator_free (it);
   gst_event_unref (event);
 
-  ret = g_value_get_boolean (&vret);
-
-  return ret;
+  return g_value_get_boolean (&vret);
 }
 
 
@@ -1232,19 +1226,12 @@ static GstFlowReturn
 gst_interleave_collected (GstCollectPads * pads, GstInterleave * self)
 {
   guint size;
-
   GstBuffer *outbuf;
-
   GstFlowReturn ret = GST_FLOW_OK;
-
   GSList *collected;
-
   guint nsamples;
-
   guint ncollected = 0;
-
   gboolean empty = TRUE;
-
   gint width = self->width / 8;
 
   g_return_val_if_fail (self->func != NULL, GST_FLOW_NOT_NEGOTIATED);

@@ -23,11 +23,11 @@
 
 #include <gst/gst.h>
 
-GType gst_edgetv_get_type (void);
-GType gst_agingtv_get_type (void);
-GType gst_dicetv_get_type (void);
-GType gst_warptv_get_type (void);
-GType gst_shagadelictv_get_type (void);
-GType gst_vertigotv_get_type (void);
-GType gst_revtv_get_type (void);
-GType gst_quarktv_get_type (void);
+static inline guint
+fastrand (void)
+{
+  static guint fastrand_val;
+
+  return (fastrand_val = fastrand_val * 1103515245 + 12345);
+}
+

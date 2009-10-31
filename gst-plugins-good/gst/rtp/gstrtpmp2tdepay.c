@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2005> Wim Taymans <wim@fluendo.com>
+ * Copyright (C) <2005> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -28,10 +28,10 @@
 
 /* elementfactory information */
 static const GstElementDetails gst_rtp_mp2tdepay_details =
-GST_ELEMENT_DETAILS ("RTP packet depayloader",
+GST_ELEMENT_DETAILS ("RTP MPEG Transport Stream depayloader",
     "Codec/Depayloader/Network",
     "Extracts MPEG2 TS from RTP packets (RFC 2250)",
-    "Wim Taymans <wim@fluendo.com>\n"
+    "Wim Taymans <wim.taymans@gmail.com>\n"
     "Thijs Vermeir <thijs.vermeir@barco.com>");
 
 /* RtpMP2TDepay signals and args */
@@ -89,10 +89,6 @@ static void gst_rtp_mp2t_depay_set_property (GObject * object, guint prop_id,
 static void gst_rtp_mp2t_depay_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
-static GstStateChangeReturn gst_rtp_mp2t_depay_change_state (GstElement *
-    element, GstStateChange transition);
-
-
 static void
 gst_rtp_mp2t_depay_base_init (gpointer klass)
 {
@@ -110,11 +106,9 @@ static void
 gst_rtp_mp2t_depay_class_init (GstRtpMP2TDepayClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
 
   gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
 
@@ -132,7 +126,6 @@ gst_rtp_mp2t_depay_class_init (GstRtpMP2TDepayClass * klass)
           "The amount of bytes that need to be skipped at the beginning of the payload",
           0, G_MAXUINT, 0, G_PARAM_READWRITE));
 
-  gstelement_class->change_state = gst_rtp_mp2t_depay_change_state;
 }
 
 static void
@@ -147,22 +140,21 @@ gst_rtp_mp2t_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
 {
   GstCaps *srccaps;
   GstStructure *structure;
-  GstRtpMP2TDepay *rtpmp2tdepay;
-  gint clock_rate = 90000;      /* default */
-
-  rtpmp2tdepay = GST_RTP_MP2T_DEPAY (depayload);
+  gint clock_rate;
+  gboolean res;
 
   structure = gst_caps_get_structure (caps, 0);
-  gst_structure_get_int (structure, "clock-rate", &clock_rate);
+  if (!gst_structure_get_int (structure, "clock-rate", &clock_rate))
+    clock_rate = 90000;         /* default */
   depayload->clock_rate = clock_rate;
 
   srccaps = gst_caps_new_simple ("video/mpegts",
       "packetsize", G_TYPE_INT, 188,
       "systemstream", G_TYPE_BOOLEAN, TRUE, NULL);
-  gst_pad_set_caps (GST_BASE_RTP_DEPAYLOAD_SRCPAD (depayload), srccaps);
+  res = gst_pad_set_caps (GST_BASE_RTP_DEPAYLOAD_SRCPAD (depayload), srccaps);
   gst_caps_unref (srccaps);
 
-  return TRUE;
+  return res;
 }
 
 static GstBuffer *
@@ -174,9 +166,6 @@ gst_rtp_mp2t_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 
   rtpmp2tdepay = GST_RTP_MP2T_DEPAY (depayload);
 
-  if (G_UNLIKELY (!gst_rtp_buffer_validate (buf)))
-    goto bad_packet;
-
   payload_len = gst_rtp_buffer_get_payload_len (buf);
 
   if (G_UNLIKELY (payload_len <= rtpmp2tdepay->skip_first_bytes))
@@ -185,7 +174,6 @@ gst_rtp_mp2t_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   outbuf =
       gst_rtp_buffer_get_payload_subbuffer (buf, rtpmp2tdepay->skip_first_bytes,
       -1);
-  gst_buffer_set_caps (outbuf, GST_PAD_CAPS (depayload->srcpad));
 
   GST_DEBUG ("gst_rtp_mp2t_depay_chain: pushing buffer of size %d",
       GST_BUFFER_SIZE (outbuf));
@@ -193,12 +181,6 @@ gst_rtp_mp2t_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   return outbuf;
 
   /* ERRORS */
-bad_packet:
-  {
-    GST_ELEMENT_WARNING (rtpmp2tdepay, STREAM, DECODE,
-        (NULL), ("Packet did not validate"));
-    return NULL;
-  }
 empty_packet:
   {
     GST_ELEMENT_WARNING (rtpmp2tdepay, STREAM, DECODE,
@@ -241,35 +223,6 @@ gst_rtp_mp2t_depay_get_property (GObject * object, guint prop_id,
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
-}
-
-static GstStateChangeReturn
-gst_rtp_mp2t_depay_change_state (GstElement * element,
-    GstStateChange transition)
-{
-  GstRtpMP2TDepay *rtpmp2tdepay;
-  GstStateChangeReturn ret;
-
-  rtpmp2tdepay = GST_RTP_MP2T_DEPAY (element);
-
-  switch (transition) {
-    case GST_STATE_CHANGE_NULL_TO_READY:
-      break;
-    case GST_STATE_CHANGE_READY_TO_PAUSED:
-      break;
-    default:
-      break;
-  }
-
-  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
-
-  switch (transition) {
-    case GST_STATE_CHANGE_READY_TO_NULL:
-      break;
-    default:
-      break;
-  }
-  return ret;
 }
 
 gboolean

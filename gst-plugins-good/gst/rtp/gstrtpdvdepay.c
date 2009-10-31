@@ -108,7 +108,6 @@ gst_rtp_dv_depay_class_init (GstRTPDVDepayClass * klass)
   GstElementClass *gstelement_class = (GstElementClass *) klass;
   GstBaseRTPDepayloadClass *gstbasertpdepayload_class =
       (GstBaseRTPDepayloadClass *) klass;
-  gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
 
   gstelement_class->change_state =
       GST_DEBUG_FUNCPTR (gst_rtp_dv_depay_change_state);
@@ -173,7 +172,7 @@ gst_rtp_dv_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
   GstStructure *structure;
   GstRTPDVDepay *rtpdvdepay;
   GstCaps *srccaps;
-  gint clock_rate = 90000;      /* default */
+  gint clock_rate;
   gboolean systemstream, ret;
   const gchar *encode, *media;
 
@@ -181,8 +180,9 @@ gst_rtp_dv_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
 
   structure = gst_caps_get_structure (caps, 0);
 
-  if (gst_structure_has_field (structure, "clock-rate"))
-    gst_structure_get_int (structure, "clock-rate", &clock_rate);
+  if (!gst_structure_get_int (structure, "clock-rate", &clock_rate))
+    clock_rate = 90000;         /* default */
+  depayload->clock_rate = clock_rate;
 
   /* we really need the encode property to figure out the frame size, it's also
    * required by the spec */
@@ -229,9 +229,6 @@ gst_rtp_dv_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
       rtpdvdepay->rate_denom, NULL);
   ret = gst_pad_set_caps (depayload->srcpad, srccaps);
   gst_caps_unref (srccaps);
-
-  depayload->clock_rate = clock_rate;
-  rtpdvdepay->negotiated = TRUE;
 
   return ret;
 
@@ -307,9 +304,6 @@ gst_rtp_dv_depay_process (GstBaseRTPDepayload * base, GstBuffer * in)
   GstRTPDVDepay *dvdepay = GST_RTP_DV_DEPAY (base);
   gboolean marker;
 
-  if (!dvdepay->negotiated)
-    goto not_negotiated;
-
   marker = gst_rtp_buffer_get_marker (in);
 
   /* Check if the received packet contains (the start of) a new frame, we do
@@ -361,14 +355,6 @@ gst_rtp_dv_depay_process (GstBaseRTPDepayload * base, GstBuffer * in)
     dvdepay->prev_ts = rtp_ts;
   }
   return out;
-
-  /* ERRORS */
-not_negotiated:
-  {
-    GST_ELEMENT_ERROR (dvdepay, STREAM, NOT_IMPLEMENTED,
-        (NULL), ("not negotiated"));
-    return NULL;
-  }
 }
 
 static void
@@ -381,7 +367,6 @@ gst_rtp_dv_depay_reset (GstRTPDVDepay * depay)
   depay->prev_ts = -1;
   depay->have_header = FALSE;
   depay->frame_nr = 0;
-  depay->negotiated = FALSE;
 }
 
 static GstStateChangeReturn

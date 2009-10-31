@@ -149,7 +149,6 @@ struct _GstAviMux {
   gboolean restart;
 
   /* tags */
-  GstTagList *tags;
   GstTagList *tags_snap;
 
   /* information about the AVI index ('idx') */

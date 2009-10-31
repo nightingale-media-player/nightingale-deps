@@ -27,12 +27,6 @@
 
 #include <FLAC/all.h>
 
-#if !defined(FLAC_API_VERSION_CURRENT) || FLAC_API_VERSION_CURRENT < 8
-#define LEGACY_FLAC
-#else
-#undef LEGACY_FLAC
-#endif 
-
 G_BEGIN_DECLS
 
 #define GST_TYPE_FLAC_DEC gst_flac_dec_get_type()
@@ -46,6 +40,8 @@ typedef struct _GstFlacDecClass GstFlacDecClass;
 
 struct _GstFlacDec {
   GstElement     element;
+
+  /* < private > */
 
 #if !defined(FLAC_API_VERSION_CURRENT) || FLAC_API_VERSION_CURRENT < 8
   FLAC__SeekableStreamDecoder *seekable_decoder; /* for pull-based operation  */
@@ -72,9 +68,13 @@ struct _GstFlacDec {
                                * samples/audio frames (DEFAULT format) */
   gboolean       running;
   gboolean       discont;
+  GstBuffer     *pending;     /* pending buffer, produced in seek */
+  guint          pending_samples;
   GstEvent      *close_segment;
   GstEvent      *start_segment;
   GstTagList    *tags;
+
+  GstFlowReturn  pull_flow;   /* last flow from pull_range */ /* STREAM_LOCK */
 
   GstFlowReturn  last_flow;   /* the last flow return received from either
                                * gst_pad_push or gst_pad_buffer_alloc */

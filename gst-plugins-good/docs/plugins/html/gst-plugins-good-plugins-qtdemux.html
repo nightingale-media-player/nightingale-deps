@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>qtdemux</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="prev" href="gst-plugins-good-plugins-pulsemixer.html" title="pulsemixer">
-<link rel="next" href="gst-plugins-good-plugins-rganalysis.html" title="rganalysis">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<link rel="prev" href="gst-plugins-good-plugins-quarktv.html" title="quarktv">
+<link rel="next" href="gst-plugins-good-plugins-radioactv.html" title="radioactv">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
@@ -17,21 +17,23 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-pulsemixer.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-quarktv.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-rganalysis.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-radioactv.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-good-plugins-qtdemux.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-qtdemux.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-qtdemux.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-qtdemux.signals" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-good-plugins-qtdemux.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-qtdemux.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-qtdemux.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-qtdemux.signals" class="shortcut">Signals</a>
+</td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry" title="qtdemux">
 <a name="gst-plugins-good-plugins-qtdemux"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -40,33 +42,35 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="gst-plugins-good-plugins-qtdemux.synopsis"></a><h2>Synopsis</h2>
 <a name="GstQTDemux"></a><pre class="synopsis">
                     <a class="link" href="gst-plugins-good-plugins-qtdemux.html#GstQTDemux-struct" title="GstQTDemux">GstQTDemux</a>;
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Object Hierarchy">
 <a name="gst-plugins-good-plugins-qtdemux.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
-   +----GstObject
-         +----GstElement
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
                +----GstQTDemux
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Signals">
 <a name="gst-plugins-good-plugins-qtdemux.signals"></a><h2>Signals</h2>
 <pre class="synopsis">
   "<a class="link" href="gst-plugins-good-plugins-qtdemux.html#GstQTDemux-got-redirect" title='The "got-redirect" signal'>got-redirect</a>"                                   
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Description">
 <a name="gst-plugins-good-plugins-qtdemux.description"></a><h2>Description</h2>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2627145"></a><h3>Example launch line</h3>
 <p>
 Demuxes a .mov file into raw or compressed audio and/or video streams.
 </p>
@@ -76,24 +80,23 @@ capabilities of the upstream elements.
 </p>
 <p>
 </p>
-<pre class="programlisting">
+<div class="refsect2" title="Example launch line">
+<a name="id518508"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch filesrc location=test.mov ! qtdemux name=demux  demux.audio_00 ! decodebin ! audioconvert ! audioresample ! autoaudiosink   demux.video_00 ! queue ! decodebin ! ffmpegcolorspace ! videoscale ! autovideosink
-</pre>
-<p>
-Play (parse and decode) a .mov file and try to output it to
+</pre></div> Play (parse and decode) a .mov file and try to output it to
 an automatically detected soundcard and videosink. If the MOV file contains
 compressed audio or video data, this will only work if you have the
 right decoder elements/plugins installed.
-</p>
 </div>
 <p>
 </p>
 <p>
 Last reviewed on 2006-12-29 (0.10.5)</p>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2627117"></a><h3>Element Information</h3>
+<div class="refsect2" title="Element Information">
+<a name="id477784"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -115,34 +118,26 @@ Last reviewed on 2006-12-29 (0.10.5)</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2585896"></a><h3>Element Pads</h3>
+<div class="refsect2" title="Element Pads">
+<a name="id575684"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
-<td>sink</td>
+<td>audio_%02d</td>
 </tr>
 <tr>
 <td><p><span class="term">direction</span></p></td>
-<td>sink</td>
+<td>source</td>
 </tr>
 <tr>
 <td><p><span class="term">presence</span></p></td>
-<td>always</td>
+<td>sometimes</td>
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/quicktime</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> audio/x-m4a</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> application/x-3gp</td>
+<td>ANY</td>
 </tr>
 </tbody>
 </table></div>
@@ -172,47 +167,60 @@ Last reviewed on 2006-12-29 (0.10.5)</p>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
-<td>audio_%02d</td>
+<td>sink</td>
 </tr>
 <tr>
 <td><p><span class="term">direction</span></p></td>
-<td>source</td>
+<td>sink</td>
 </tr>
 <tr>
 <td><p><span class="term">presence</span></p></td>
-<td>sometimes</td>
+<td>always</td>
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>ANY</td>
+<td>video/quicktime</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/mj2</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-m4a</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> application/x-3gp</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 </div>
 <p>
-
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Details">
 <a name="gst-plugins-good-plugins-qtdemux.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="GstQTDemux">
 <a name="GstQTDemux-struct"></a><h3>GstQTDemux</h3>
 <pre class="programlisting">typedef struct _GstQTDemux GstQTDemux;</pre>
 <p>
-
 </p>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Signal Details">
 <a name="gst-plugins-good-plugins-qtdemux.signal-details"></a><h2>Signal Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title='The "got-redirect" signal'>
 <a name="GstQTDemux-got-redirect"></a><h3>The <code class="literal">"got-redirect"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-qtdemux.html#GstQTDemux">GstQTDemux</a> *gstqtdemux,
-                                                        gchar      *arg1,
-                                                        gpointer    user_data)</pre>
+                                                        <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>      *arg1,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>    user_data)</pre>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -225,7 +233,6 @@ Last reviewed on 2006-12-29 (0.10.5)</p>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
 <td>
-
 </td>
 </tr>
 <tr>
@@ -239,6 +246,6 @@ Last reviewed on 2006-12-29 (0.10.5)</p>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

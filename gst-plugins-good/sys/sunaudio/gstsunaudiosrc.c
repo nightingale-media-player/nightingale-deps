@@ -24,18 +24,14 @@
 /**
  * SECTION:element-sunaudiosrc
  *
- * <refsect2>
- * <para>
  * sunaudiosrc is an audio source designed to work with the Sun Audio
  * interface available in Solaris.
- * </para>
+ *
+ * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
- * 
- * gst-launch sunaudiosrc ! filesink location=outfile 
- * </programlisting>
- * </para>
+ * |[
+ * gst-launch sunaudiosrc ! wavenc ! filesink location=audio.wav
+ * ]|
  * </refsect2>
  */
 
@@ -316,8 +312,8 @@ gst_sunaudiosrc_prepare (GstAudioSrc * asrc, GstRingBufferSpec * spec)
   GstSunAudioSrc *sunaudiosrc = GST_SUNAUDIO_SRC (asrc);
   audio_info_t ainfo;
   int ret;
-  int ctrl_fd = -1;
-  int ports;
+  GstSunAudioMixerCtrl *mixer;
+  struct audio_info audioinfo;
 
   ret = ioctl (sunaudiosrc->fd, AUDIO_GETINFO, &ainfo);
   if (ret == -1) {
@@ -337,8 +333,7 @@ gst_sunaudiosrc_prepare (GstAudioSrc * asrc, GstRingBufferSpec * spec)
   ainfo.record.encoding = AUDIO_ENCODING_LINEAR;
   ainfo.record.buffer_size = spec->buffer_time;
 
-  GstSunAudioMixerCtrl *mixer = sunaudiosrc->mixer;
-  struct audio_info audioinfo;
+  mixer = sunaudiosrc->mixer;
 
   if (ioctl (mixer->mixer_fd, AUDIO_GETINFO, &audioinfo) < 0) {
     g_warning ("Error getting audio device volume");

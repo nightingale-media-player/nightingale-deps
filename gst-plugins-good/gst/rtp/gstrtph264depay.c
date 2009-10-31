@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2006> Wim Taymans <wim@fluendo.com>
+ * Copyright (C) <2006> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -44,10 +44,10 @@ static const guint8 sync_bytes[] = { 0, 0, 0, 1 };
 
 /* elementfactory information */
 static const GstElementDetails gst_rtp_h264depay_details =
-GST_ELEMENT_DETAILS ("RTP packet depayloader",
+GST_ELEMENT_DETAILS ("RTP H264 depayloader",
     "Codec/Depayloader/Network",
     "Extracts H264 video from RTP packets (RFC 3984)",
-    "Wim Taymans <wim@fluendo.com>");
+    "Wim Taymans <wim.taymans@gmail.com>");
 
 static GstStaticPadTemplate gst_rtp_h264_depay_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
@@ -202,68 +202,22 @@ gst_rtp_h264_depay_get_property (GObject * object, guint prop_id,
   }
 }
 
-static const guint8 a2bin[256] = {
-  64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-  64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-  64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 62, 64, 64, 64, 63,
-  52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 64, 64, 64, 64, 64, 64,
-  64, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-  15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 64, 64, 64, 64, 64,
-  64, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
-  41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 64, 64, 64, 64, 64,
-  64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-  64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-  64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-  64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-  64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-  64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-  64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-  64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64
-};
-
-static guint
-decode_base64 (gchar * in, guint8 * out)
-{
-  guint8 v1, v2;
-  guint len = 0;
-
-  v1 = a2bin[(gint) * in];
-  while (v1 <= 63) {
-    /* read 4 bytes, write 3 bytes, invalid base64 are zeroes */
-    v2 = a2bin[(gint) * ++in];
-    *out++ = (v1 << 2) | ((v2 & 0x3f) >> 4);
-    v1 = (v2 > 63 ? 64 : a2bin[(gint) * ++in]);
-    *out++ = (v2 << 4) | ((v1 & 0x3f) >> 2);
-    v2 = (v1 > 63 ? 64 : a2bin[(gint) * ++in]);
-    *out++ = (v1 << 6) | (v2 & 0x3f);
-    v1 = (v2 > 63 ? 64 : a2bin[(gint) * ++in]);
-    len += 3;
-  }
-  /* move to '\0' */
-  while (*in != '\0')
-    in++;
-
-  /* subtract padding */
-  while (len > 0 && *--in == '=')
-    len--;
-
-  return len;
-}
-
 static gboolean
 gst_rtp_h264_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
 {
-  GstCaps *srccaps = NULL;
-  gint clock_rate = 90000;
+  GstCaps *srccaps;
+  gint clock_rate;
   GstStructure *structure = gst_caps_get_structure (caps, 0);
   GstRtpH264Depay *rtph264depay;
   const gchar *ps, *profile;
   GstBuffer *codec_data;
   guint8 *b64;
+  gboolean res;
 
   rtph264depay = GST_RTP_H264_DEPAY (depayload);
 
-  gst_structure_get_int (structure, "clock-rate", &clock_rate);
+  if (!gst_structure_get_int (structure, "clock-rate", &clock_rate))
+    clock_rate = 90000;
   depayload->clock_rate = clock_rate;
 
   srccaps = gst_caps_new_simple ("video/x-h264", NULL);
@@ -294,10 +248,16 @@ gst_rtp_h264_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
     b64 = GST_BUFFER_DATA (codec_data);
     total = 0;
     for (i = 0; params[i]; i++) {
-      GST_DEBUG_OBJECT (depayload, "decoding param %d", i);
+      guint save = 0;
+      gint state = 0;
+
+      GST_DEBUG_OBJECT (depayload, "decoding param %d (%s)", i, params[i]);
       memcpy (b64, sync_bytes, sizeof (sync_bytes));
       b64 += sizeof (sync_bytes);
-      len = decode_base64 (params[i], b64);
+      len =
+          g_base64_decode_step (params[i], strlen (params[i]), b64, &state,
+          &save);
+      GST_DEBUG_OBJECT (depayload, "decoded %d bytes", len);
       total += len + sizeof (sync_bytes);
       b64 += len;
     }
@@ -333,12 +293,16 @@ gst_rtp_h264_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
     /* start with 7 bytes header */
     len = 7;
     for (i = 0; params[i]; i++) {
-      gint nal_len;
+      gsize nal_len;
       guint8 *nalp;
+      guint save = 0;
+      gint state = 0;
 
       nal_len = strlen (params[i]);
       nalp = g_malloc (nal_len + 2);
-      nal_len = decode_base64 (params[i], nalp + 2);
+
+      nal_len =
+          g_base64_decode_step (params[i], nal_len, nalp + 2, &state, &save);
       nalp[0] = (nal_len >> 8) & 0xff;
       nalp[1] = nal_len & 0xff;
       len += nal_len + 2;
@@ -395,15 +359,16 @@ gst_rtp_h264_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
         "codec_data", GST_TYPE_BUFFER, codec_data, NULL);
   }
 
-  gst_pad_set_caps (depayload->srcpad, srccaps);
+  res = gst_pad_set_caps (depayload->srcpad, srccaps);
   gst_caps_unref (srccaps);
 
-  return TRUE;
+  return res;
 
   /* ERRORS */
 incomplete_caps:
   {
     GST_DEBUG_OBJECT (depayload, "we have incomplete caps");
+    gst_caps_unref (srccaps);
     return FALSE;
   }
 }
@@ -418,9 +383,6 @@ gst_rtp_h264_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   guint8 nal_unit_type;
 
   rtph264depay = GST_RTP_H264_DEPAY (depayload);
-
-  if (!gst_rtp_buffer_validate (buf))
-    goto bad_packet;
 
   /* flush remaining data on discont */
   if (GST_BUFFER_IS_DISCONT (buf)) {
@@ -668,12 +630,6 @@ gst_rtp_h264_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   return NULL;
 
   /* ERRORS */
-bad_packet:
-  {
-    GST_ELEMENT_WARNING (rtph264depay, STREAM, DECODE,
-        (NULL), ("Packet did not validate"));
-    return NULL;
-  }
 undefined_type:
   {
     GST_ELEMENT_WARNING (rtph264depay, STREAM, DECODE,

@@ -19,7 +19,7 @@ if test x"$2" = x ; then
 	srcfile="gstvideotemplate.c"
 fi
 
-id=`echo '$Id: make_filter,v 1.8 2004-04-19 22:51:57 ds Exp $' | sed \
+id=`echo '$Id$' | sed \
 	-e 's/\$I[d]: \([^$]*\)\$/\1/g'`
 echo $id
 

@@ -22,32 +22,24 @@
 /**
  * SECTION:element-wavpackenc
  *
- * <refsect2>
  * WavpackEnc encodes raw audio into a framed Wavpack stream.
  * <ulink url="http://www.wavpack.com/">Wavpack</ulink> is an open-source
  * audio codec that features both lossless and lossy encoding.
+ *
+ * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch audiotestsrc num-buffers=500 ! audioconvert ! wavpackenc ! filesink location=sinewave.wv
- * </programlisting>
- * This pipeline encodes audio from audiotestsrc into a Wavpack file. The audioconvert element is needed
+ * ]| This pipeline encodes audio from audiotestsrc into a Wavpack file. The audioconvert element is needed
  * as the Wavpack encoder only accepts input with 32 bit width (and every depth between 1 and 32 bits).
- * </para>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch cdda://1 ! audioconvert ! wavpackenc ! filesink location=track1.wv
- * </programlisting>
- * This pipeline encodes audio from an audio CD into a Wavpack file using
+ * ]| This pipeline encodes audio from an audio CD into a Wavpack file using
  * lossless encoding (the file output will be fairly large).
- * </para>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch cdda://1 ! audioconvert ! wavpackenc bitrate=128000 ! filesink location=track1.wv
- * </programlisting>
- * This pipeline encodes audio from an audio CD into a Wavpack file using
+ * ]| This pipeline encodes audio from an audio CD into a Wavpack file using
  * lossy encoding at a certain bitrate (the file will be fairly small).
- * </para>
  * </refsect2>
  */
 
@@ -62,7 +54,6 @@
 #include <wavpack/wavpack.h>
 #include "gstwavpackenc.h"
 #include "gstwavpackcommon.h"
-#include "md5.h"
 
 static GstFlowReturn gst_wavpack_enc_chain (GstPad * pad, GstBuffer * buffer);
 static gboolean gst_wavpack_enc_sink_set_caps (GstPad * pad, GstCaps * caps);
@@ -205,7 +196,21 @@ gst_wavpack_enc_joint_stereo_mode_get_type (void)
   return qtype;
 }
 
-GST_BOILERPLATE (GstWavpackEnc, gst_wavpack_enc, GstElement, GST_TYPE_ELEMENT);
+static void
+_do_init (GType object_type)
+{
+  const GInterfaceInfo preset_interface_info = {
+    NULL,                       /* interface_init */
+    NULL,                       /* interface_finalize */
+    NULL                        /* interface_data */
+  };
+
+  g_type_add_interface_static (object_type, GST_TYPE_PRESET,
+      &preset_interface_info);
+}
+
+GST_BOILERPLATE_FULL (GstWavpackEnc, gst_wavpack_enc, GstElement,
+    GST_TYPE_ELEMENT, _do_init);
 
 static void
 gst_wavpack_enc_base_init (gpointer klass)
@@ -299,7 +304,7 @@ gst_wavpack_enc_reset (GstWavpackEnc * enc)
   }
   enc->first_block_size = 0;
   if (enc->md5_context) {
-    g_free (enc->md5_context);
+    g_checksum_free (enc->md5_context);
     enc->md5_context = NULL;
   }
 
@@ -320,6 +325,9 @@ gst_wavpack_enc_reset (GstWavpackEnc * enc)
   enc->channels = 0;
   enc->channel_mask = 0;
   enc->need_channel_remap = FALSE;
+
+  enc->timestamp_offset = GST_CLOCK_TIME_NONE;
+  enc->next_ts = GST_CLOCK_TIME_NONE;
 }
 
 static void
@@ -510,8 +518,7 @@ gst_wavpack_enc_set_wp_config (GstWavpackEnc * enc)
   /* MD5, setup MD5 context */
   if ((enc->md5) && !(enc->md5_context)) {
     enc->wp_config->flags |= CONFIG_MD5_CHECKSUM;
-    enc->md5_context = g_new0 (MD5_CTX, 1);
-    MD5Init (enc->md5_context);
+    enc->md5_context = g_checksum_new (G_CHECKSUM_MD5);
   }
 
   /* Extra encode processing */
@@ -546,8 +553,8 @@ gst_wavpack_enc_push_block (void *id, void *data, int32_t count)
 
   pad = (wid->correction) ? enc->wvcsrcpad : enc->srcpad;
   flow =
-      (wid->correction) ? &enc->
-      wvcsrcpad_last_return : &enc->srcpad_last_return;
+      (wid->correction) ? &enc->wvcsrcpad_last_return : &enc->
+      srcpad_last_return;
 
   *flow = gst_pad_alloc_buffer_and_set_caps (pad, GST_BUFFER_OFFSET_NONE,
       count, GST_PAD_CAPS (pad), &buffer);
@@ -611,7 +618,7 @@ gst_wavpack_enc_push_block (void *id, void *data, int32_t count)
 
     /* set buffer timestamp, duration, offset, offset_end from
      * the wavpack header */
-    GST_BUFFER_TIMESTAMP (buffer) =
+    GST_BUFFER_TIMESTAMP (buffer) = enc->timestamp_offset +
         gst_util_uint64_scale_int (GST_SECOND, wph.block_index,
         enc->samplerate);
     GST_BUFFER_DURATION (buffer) =
@@ -705,6 +712,66 @@ gst_wavpack_enc_chain (GstPad * pad, GstBuffer * buf)
     GST_DEBUG ("setup of encoding context successfull");
   }
 
+  /* Save the timestamp of the first buffer. This will be later
+   * used as offset for all following buffers */
+  if (enc->timestamp_offset == GST_CLOCK_TIME_NONE) {
+    if (GST_BUFFER_TIMESTAMP_IS_VALID (buf)) {
+      enc->timestamp_offset = GST_BUFFER_TIMESTAMP (buf);
+      enc->next_ts = GST_BUFFER_TIMESTAMP (buf);
+    } else {
+      enc->timestamp_offset = 0;
+      enc->next_ts = 0;
+    }
+  }
+
+  /* Check if we have a continous stream, if not drop some samples or the buffer or
+   * insert some silence samples */
+  if (enc->next_ts != GST_CLOCK_TIME_NONE &&
+      GST_BUFFER_TIMESTAMP (buf) < enc->next_ts) {
+    guint64 diff = enc->next_ts - GST_BUFFER_TIMESTAMP (buf);
+    guint64 diff_bytes;
+
+    GST_WARNING_OBJECT (enc, "Buffer is older than previous "
+        "timestamp + duration (%" GST_TIME_FORMAT "< %" GST_TIME_FORMAT
+        "), cannot handle. Clipping buffer.",
+        GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)),
+        GST_TIME_ARGS (enc->next_ts));
+
+    diff_bytes =
+        GST_CLOCK_TIME_TO_FRAMES (diff, enc->samplerate) * enc->channels * 2;
+    if (diff_bytes >= GST_BUFFER_SIZE (buf)) {
+      gst_buffer_unref (buf);
+      return GST_FLOW_OK;
+    }
+    buf = gst_buffer_make_metadata_writable (buf);
+    GST_BUFFER_DATA (buf) += diff_bytes;
+    GST_BUFFER_SIZE (buf) -= diff_bytes;
+
+    GST_BUFFER_TIMESTAMP (buf) += diff;
+    if (GST_BUFFER_DURATION_IS_VALID (buf))
+      GST_BUFFER_DURATION (buf) -= diff;
+  }
+
+  /* Allow a diff of at most 5 ms */
+  if (enc->next_ts != GST_CLOCK_TIME_NONE
+      && GST_BUFFER_TIMESTAMP_IS_VALID (buf)) {
+    if (GST_BUFFER_TIMESTAMP (buf) != enc->next_ts &&
+        GST_BUFFER_TIMESTAMP (buf) - enc->next_ts > 5 * GST_MSECOND) {
+      GST_WARNING_OBJECT (enc,
+          "Discontinuity detected: %" G_GUINT64_FORMAT " > %" G_GUINT64_FORMAT,
+          GST_BUFFER_TIMESTAMP (buf) - enc->next_ts, 5 * GST_MSECOND);
+
+      WavpackFlushSamples (enc->wp_context);
+      enc->timestamp_offset += (GST_BUFFER_TIMESTAMP (buf) - enc->next_ts);
+    }
+  }
+
+  if (GST_BUFFER_TIMESTAMP_IS_VALID (buf)
+      && GST_BUFFER_DURATION_IS_VALID (buf))
+    enc->next_ts = GST_BUFFER_TIMESTAMP (buf) + GST_BUFFER_DURATION (buf);
+  else
+    enc->next_ts = GST_CLOCK_TIME_NONE;
+
   if (enc->need_channel_remap) {
     buf = gst_buffer_make_writable (buf);
     gst_wavpack_enc_fix_channel_order (enc, (gint32 *) GST_BUFFER_DATA (buf),
@@ -714,7 +781,8 @@ gst_wavpack_enc_chain (GstPad * pad, GstBuffer * buf)
   /* if we want to append the MD5 sum to the stream update it here
    * with the current raw samples */
   if (enc->md5) {
-    MD5Update (enc->md5_context, GST_BUFFER_DATA (buf), GST_BUFFER_SIZE (buf));
+    g_checksum_update (enc->md5_context, GST_BUFFER_DATA (buf),
+        GST_BUFFER_SIZE (buf));
   }
 
   /* encode and handle return values from encoding */
@@ -798,10 +866,14 @@ gst_wavpack_enc_sink_event (GstPad * pad, GstEvent * event)
 
       /* write the MD5 sum if we have to write one */
       if ((enc->md5) && (enc->md5_context)) {
-        guchar md5_digest[16];
+        guint8 md5_digest[16];
+        gsize digest_len = sizeof (md5_digest);
 
-        MD5Final (md5_digest, enc->md5_context);
-        WavpackStoreMD5Sum (enc->wp_context, md5_digest);
+        g_checksum_get_digest (enc->md5_context, md5_digest, &digest_len);
+        if (digest_len == sizeof (md5_digest))
+          WavpackStoreMD5Sum (enc->wp_context, md5_digest);
+        else
+          GST_WARNING_OBJECT (enc, "Calculating MD5 digest failed");
       }
 
       /* Try to rewrite the first frame with the correct sample number */

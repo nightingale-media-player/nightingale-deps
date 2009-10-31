@@ -5,16 +5,13 @@ DIE=0
 package=gst-plugins-good
 srcfile=gst/law/alaw.c
 
-# a quick cvs co to ease the transition
-if test ! -d common;
+# Make sure we have common
+if test ! -f common/gst-autogen.sh;
 then
-  echo "+ getting common/ from cvs"
-  if test -e CVS/Tag
-  then
-    TAG="-r `tail -c +2 CVS/Tag`"
-  fi
-  cvs co $TAG common
+  echo "+ Setting up common submodule"
+  git submodule init
 fi
+git submodule update
 
 # source helper functions
 if test ! -f common/gst-autogen.sh;
@@ -25,18 +22,26 @@ then
 fi
 . common/gst-autogen.sh
 
+# install pre-commit hook for doing clean commits
+if test ! \( -x .git/hooks/pre-commit -a -L .git/hooks/pre-commit \);
+then
+    rm -f .git/hooks/pre-commit
+    ln -s ../../common/hooks/pre-commit.hook .git/hooks/pre-commit
+fi
+
+
 CONFIGURE_DEF_OPT='--enable-maintainer-mode --enable-gtk-doc --enable-plugin-docs'
 
 autogen_options $@
 
-echo -n "+ check for build tools"
+printf "+ check for build tools"
 if test ! -z "$NOCHECK"; then echo " skipped"; else  echo; fi
 version_check "autoconf" "$AUTOCONF autoconf autoconf-2.54 autoconf-2.53 autoconf-2.52" \
               "ftp://ftp.gnu.org/pub/gnu/autoconf/" 2 52 || DIE=1
-version_check "automake" "$AUTOMAKE automake automake-1.9 automake-1.7 automake-1.6 automake-1.5" \
+version_check "automake" "$AUTOMAKE automake automake-1.11 automake-1.10 automake-1.9 automake-1.7 automake-1.6 automake-1.5" \
               "ftp://ftp.gnu.org/pub/gnu/automake/" 1 7 || DIE=1
 version_check "autopoint" "autopoint" \
-              "ftp://ftp.gnu.org/pub/gnu/gettext/" 0 11 5 || DIE=1
+              "ftp://ftp.gnu.org/pub/gnu/gettext/" 0 17 || DIE=1
 version_check "libtoolize" "$LIBTOOLIZE libtoolize glibtoolize" \
               "ftp://ftp.gnu.org/pub/gnu/libtool/" 1 5 0 || DIE=1
 version_check "pkg-config" "" \
@@ -72,15 +77,15 @@ fi
 tool_run "$autopoint --force"
 patch -p0 < common/gettext.patch
 
-tool_run "$aclocal" "-I m4 -I common/m4 $ACLOCAL_FLAGS"
 tool_run "$libtoolize" "--copy --force"
+tool_run "$aclocal" "-I m4 -I common/m4 $ACLOCAL_FLAGS"
 tool_run "$autoheader"
 
 # touch the stamp-h.in build stamp so we don't re-run autoheader in maintainer mode -- wingo
 echo timestamp > stamp-h.in 2> /dev/null
 
 tool_run "$autoconf"
-tool_run "$automake" "-a -c -Wno-portability"
+tool_run "$automake" "-a -c"
 
 # if enable exists, add an -enable option for each of the lines in that file
 if test -f enable; then

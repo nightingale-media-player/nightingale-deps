@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>interleave</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-id3v2mux.html" title="id3v2mux">
 <link rel="next" href="gst-plugins-good-plugins-jpegdec.html" title="jpegdec">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
@@ -23,15 +23,17 @@
 <th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-jpegdec.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-good-plugins-interleave.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-interleave.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-interleave.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-interleave.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-good-plugins-interleave.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-interleave.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-interleave.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-interleave.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry" title="interleave">
 <a name="gst-plugins-good-plugins-interleave"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -40,29 +42,39 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="gst-plugins-good-plugins-interleave.synopsis"></a><h2>Synopsis</h2>
 <a name="GstInterleave"></a><pre class="synopsis">
                     <a class="link" href="gst-plugins-good-plugins-interleave.html#GstInterleave-struct" title="GstInterleave">GstInterleave</a>;
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Object Hierarchy">
 <a name="gst-plugins-good-plugins-interleave.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
-   +----GstObject
-         +----GstElement
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
                +----GstInterleave
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Properties">
 <a name="gst-plugins-good-plugins-interleave.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-interleave.html#GstInterleave--channel-positions" title='The "channel-positions" property'>channel-positions</a>"        GValueArray*          : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-interleave.html#GstInterleave--channel-positions-from-input" title='The "channel-positions-from-input" property'>channel-positions-from-input</a>" gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-interleave.html#GstInterleave--channel-positions" title='The "channel-positions" property'>channel-positions</a>"        <a
+href="../gobject/gobject-Value-arrays.html#GValueArray"
+>GValueArray</a>*          : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-interleave.html#GstInterleave--channel-positions-from-input" title='The "channel-positions-from-input" property'>channel-positions-from-input</a>" <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Description">
 <a name="gst-plugins-good-plugins-interleave.description"></a><h2>Description</h2>
 <p>
 Merges separate mono inputs into one interleaved stream.
@@ -82,21 +94,21 @@ The channel number of every sinkpad in the out can be retrieved from the "channe
 </p>
 <p>
 </p>
-<div class="refsect2" lang="en">
-<a name="id2588958"></a><h3>Example launch line</h3>
+<div class="refsect2" title="Example launch line">
+<a name="id496653"></a><h3>Example launch line</h3>
 <div class="informalexample"><pre class="programlisting">
-gst-launch-0.10 filesrc location=file.mp3 ! decodebin ! audioconvert ! "audio/x-raw-int,channels=2" ! deinterleave name=d  interleave name=i ! audioconvert ! wavenc ! filesink location=test.wav    d.src0 ! queue ! audioconvert ! i.sink1    d.src1 ! queue ! audioconvert ! i.sink0
+gst-launch filesrc location=file.mp3 ! decodebin ! audioconvert ! "audio/x-raw-int,channels=2" ! deinterleave name=d  interleave name=i ! audioconvert ! wavenc ! filesink location=test.wav    d.src0 ! queue ! audioconvert ! i.sink1    d.src1 ! queue ! audioconvert ! i.sink0
 </pre></div> Decodes and deinterleaves a Stereo MP3 file into separate channels and
 then interleaves the channels again to a WAV file with the channel with the
 channels exchanged.
 <div class="informalexample"><pre class="programlisting">
-gst-launch-0.10 interleave name=i ! audioconvert ! wavenc ! filesink location=file.wav  filesrc location=file1.wav ! decodebin ! audioconvert ! "audio/x-raw-int,channels=1" ! queue ! i.sink0   filesrc location=file2.wav ! decodebin ! audioconvert ! "audio/x-raw-int,channels=1" ! queue ! i.sink1
+gst-launch interleave name=i ! audioconvert ! wavenc ! filesink location=file.wav  filesrc location=file1.wav ! decodebin ! audioconvert ! "audio/x-raw-int,channels=1" ! queue ! i.sink0   filesrc location=file2.wav ! decodebin ! audioconvert ! "audio/x-raw-int,channels=1" ! queue ! i.sink1
 </pre></div> Interleaves two Mono WAV files to a single Stereo WAV file.
 </div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2523697"></a><h3>Element Information</h3>
+<div class="refsect2" title="Element Information">
+<a name="id529958"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -118,33 +130,8 @@ gst-launch-0.10 interleave name=i ! audioconvert ! wavenc ! filesink location=fi
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2612706"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>sink%d</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>request</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)1, endianness=(int){ 1234, 4321 }, width=(int){ 8, 16, 24, 32 }, depth=(int)[ 1, 32 ], signed=(boolean)true</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> audio/x-raw-float, rate=(int)[ 1, 2147483647 ], channels=(int)1, endianness=(int){ 1234, 4321 }, width=(int){ 32, 64 }</td>
-</tr>
-</tbody>
-</table></div>
+<div class="refsect2" title="Element Pads">
+<a name="id542447"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -170,27 +157,52 @@ gst-launch-0.10 interleave name=i ! audioconvert ! wavenc ! filesink location=fi
 </tr>
 </tbody>
 </table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink%d</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)1, endianness=(int){ 1234, 4321 }, width=(int){ 8, 16, 24, 32 }, depth=(int)[ 1, 32 ], signed=(boolean)true</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-float, rate=(int)[ 1, 2147483647 ], channels=(int)1, endianness=(int){ 1234, 4321 }, width=(int){ 32, 64 }</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 </div>
 <p>
-
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Details">
 <a name="gst-plugins-good-plugins-interleave.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="GstInterleave">
 <a name="GstInterleave-struct"></a><h3>GstInterleave</h3>
 <pre class="programlisting">typedef struct _GstInterleave GstInterleave;</pre>
 <p>
-
 </p>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Property Details">
 <a name="gst-plugins-good-plugins-interleave.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title='The "channel-positions" property'>
 <a name="GstInterleave--channel-positions"></a><h3>The <code class="literal">"channel-positions"</code> property</h3>
-<pre class="programlisting">  "channel-positions"        GValueArray*          : Read / Write</pre>
+<pre class="programlisting">  "channel-positions"        <a
+href="../gobject/gobject-Value-arrays.html#GValueArray"
+>GValueArray</a>*          : Read / Write</pre>
 <p>
 Channel positions: This property controls the channel positions
 that are used on the src caps. The number of elements should be
@@ -203,31 +215,35 @@ These channel positions will only be used if they're valid and the
 number of elements is the same as the number of channels. If this
 is not given a NONE layout will be used.</p>
 <p>
-
 </p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title='The "channel-positions-from-input" property'>
 <a name="GstInterleave--channel-positions-from-input"></a><h3>The <code class="literal">"channel-positions-from-input"</code> property</h3>
-<pre class="programlisting">  "channel-positions-from-input" gboolean              : Read / Write</pre>
+<pre class="programlisting">  "channel-positions-from-input" <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>
-Channel positions from input: If this property is set to <code class="literal">TRUE</code> the channel
+Channel positions from input: If this property is set to <a
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
+><code class="literal">TRUE</code></a> the channel
 positions will be taken from the input caps if valid channel positions for
-the output can be constructed from them. If this is set to <code class="literal">TRUE</code> setting the
+the output can be constructed from them. If this is set to <a
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
+><code class="literal">TRUE</code></a> setting the
 channel-positions property overwrites this property again.</p>
 <p>
-
 </p>
 <p>Default value: TRUE</p>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="See Also">
 <a name="gst-plugins-good-plugins-interleave.see-also"></a><h2>See Also</h2>
 deinterleave
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

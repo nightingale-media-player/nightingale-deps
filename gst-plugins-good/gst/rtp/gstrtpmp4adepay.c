@@ -1,6 +1,6 @@
 /* GStreamer
  * Copyright (C) <2007> Nokia Corporation (contact <stefan.kost@nokia.com>)
- *               <2007> Wim Taymans <wim@fluendo.com>
+ *               <2007> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -31,18 +31,18 @@ GST_DEBUG_CATEGORY_STATIC (rtpmp4adepay_debug);
 
 /* elementfactory information */
 static const GstElementDetails gst_rtp_mp4adepay_details =
-GST_ELEMENT_DETAILS ("RTP packet parser",
+GST_ELEMENT_DETAILS ("RTP MPEG4 audio depayloader",
     "Codec/Depayloader/Network",
     "Extracts MPEG4 audio from RTP packets (RFC 3016)",
     "Nokia Corporation (contact <stefan.kost@nokia.com>), "
-    "Wim Taymans <wim@fluendo.com>");
+    "Wim Taymans <wim.taymans@gmail.com>");
 
 static GstStaticPadTemplate gst_rtp_mp4a_depay_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("audio/mpeg,"
-        "mpegversion = (int) 4," "framed = (boolean) false")
+        "mpegversion = (int) 4," "framed = (boolean) true")
     );
 
 static GstStaticPadTemplate gst_rtp_mp4a_depay_sink_template =
@@ -138,24 +138,25 @@ gst_rtp_mp4a_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
   GstRtpMP4ADepay *rtpmp4adepay;
   GstCaps *srccaps;
   const gchar *str;
-  gint clock_rate = 90000;      /* default */
-  gint object_type = 2;         /* AAC LC default */
+  gint clock_rate;
+  gint object_type;
   gint channels = 2;            /* default */
+  gboolean res;
 
   rtpmp4adepay = GST_RTP_MP4A_DEPAY (depayload);
 
   structure = gst_caps_get_structure (caps, 0);
 
-  if (gst_structure_has_field (structure, "clock-rate"))
-    gst_structure_get_int (structure, "clock-rate", &clock_rate);
+  if (!gst_structure_get_int (structure, "clock-rate", &clock_rate))
+    clock_rate = 90000;         /* default */
   depayload->clock_rate = clock_rate;
 
-  if (gst_structure_has_field (structure, "object"))
-    gst_structure_get_int (structure, "object", &object_type);
+  if (!gst_structure_get_int (structure, "object", &object_type))
+    object_type = 2;            /* AAC LC default */
 
   srccaps = gst_caps_new_simple ("audio/mpeg",
       "mpegversion", G_TYPE_INT, 4,
-      "framed", G_TYPE_BOOLEAN, FALSE, "channels", G_TYPE_INT, channels, NULL);
+      "framed", G_TYPE_BOOLEAN, TRUE, "channels", G_TYPE_INT, channels, NULL);
 
   if ((str = gst_structure_get_string (structure, "config"))) {
     GValue v = { 0 };
@@ -207,9 +208,9 @@ gst_rtp_mp4a_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
       for (i = 0; i < size; i++) {
         data[i] = ((data[i + 1] & 1) << 7) | ((data[i + 2] & 0xfe) >> 1);
       }
-      /* last bit, this is probably not needed. */
-      data[i] = ((data[i + 1] & 1) << 7);
-      GST_BUFFER_SIZE (buffer) = size + 1;
+
+      /* ignore remaining bit, we're only interested in full bytes */
+      GST_BUFFER_SIZE (buffer) = size;
 
       gst_caps_set_simple (srccaps,
           "codec_data", GST_TYPE_BUFFER, buffer, NULL);
@@ -219,10 +220,10 @@ gst_rtp_mp4a_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
     }
   }
 bad_config:
-  gst_pad_set_caps (depayload->srcpad, srccaps);
+  res = gst_pad_set_caps (depayload->srcpad, srccaps);
   gst_caps_unref (srccaps);
 
-  return TRUE;
+  return res;
 }
 
 static GstBuffer *
@@ -232,9 +233,6 @@ gst_rtp_mp4a_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   GstBuffer *outbuf;
 
   rtpmp4adepay = GST_RTP_MP4A_DEPAY (depayload);
-
-  if (!gst_rtp_buffer_validate (buf))
-    goto bad_packet;
 
   /* flush remaining data on discont */
   if (GST_BUFFER_IS_DISCONT (buf)) {
@@ -318,20 +316,17 @@ gst_rtp_mp4a_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
           ("Packet invalid"), ("Not all payload consumed: "
               "possible wrongly encoded packet."));
     }
+
+    gst_buffer_unref (outbuf);
   }
   return NULL;
 
   /* ERRORS */
-bad_packet:
-  {
-    GST_ELEMENT_WARNING (rtpmp4adepay, STREAM, DECODE,
-        ("Packet did not validate"), (NULL));
-    return NULL;
-  }
 wrong_size:
   {
     GST_ELEMENT_WARNING (rtpmp4adepay, STREAM, DECODE,
         ("Packet did not validate"), ("wrong packet size"));
+    gst_buffer_unref (outbuf);
     return NULL;
   }
 }

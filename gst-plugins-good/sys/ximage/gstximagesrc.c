@@ -20,23 +20,18 @@
 
 /**
  * SECTION:element-ximagesrc
- * @short_description: a source that captures your X Display
  *
- * <refsect2>
- * <para>
  * This element captures your X Display and creates raw RGB video.  It uses
  * the XDamage extension if available to only capture areas of the screen that
  * have changed since the last frame.  It uses the XFixes extension if
  * available to also capture your mouse pointer.  By default it will fixate to
  * 25 frames per second.
- * </para>
+ *
+ * <refsect2>
  * <title>Example pipelines</title>
- * <para>
- * <programlisting>
- * gst-launch -v ximagesrc ! video/x-raw-rgb,framerate=5/1 ! ffmpegcolorspace ! theoraenc ! oggmux ! filesink location=desktop.ogg
- * </programlisting>
- * Encodes your X display to an Ogg theora video at 5 frames per second.
- * </para>
+ * |[
+ * gst-launch ximagesrc ! video/x-raw-rgb,framerate=5/1 ! ffmpegcolorspace ! theoraenc ! oggmux ! filesink location=desktop.ogg
+ * ]| Encodes your X display to an Ogg theora video at 5 frames per second.
  * </refsect2>
  */
 
@@ -210,6 +205,8 @@ gst_ximage_src_start (GstBaseSrc * basesrc)
 
   s->last_frame_no = -1;
 #ifdef HAVE_XDAMAGE
+  if (s->last_ximage)
+    gst_buffer_unref (GST_BUFFER_CAST (s->last_ximage));
   s->last_ximage = NULL;
 #endif
   return gst_ximage_src_open_display (s, s->display_name);
@@ -220,7 +217,19 @@ gst_ximage_src_stop (GstBaseSrc * basesrc)
 {
   GstXImageSrc *src = GST_XIMAGE_SRC (basesrc);
 
+#ifdef HAVE_XDAMAGE
+  if (src->last_ximage)
+    gst_buffer_unref (GST_BUFFER_CAST (src->last_ximage));
+  src->last_ximage = NULL;
+#endif
+
   gst_ximage_src_clear_bufpool (src);
+
+#ifdef HAVE_XFIXES
+  if (src->cursor_image)
+    XFree (src->cursor_image);
+  src->cursor_image = NULL;
+#endif
 
   if (src->xcontext) {
     g_mutex_lock (src->x_lock);
@@ -516,7 +525,6 @@ gst_ximage_src_ximage_get (GstXImageSrc * ximagesrc)
       memcpy (GST_BUFFER_DATA (GST_BUFFER (ximage)),
           GST_BUFFER_DATA (GST_BUFFER (ximagesrc->last_ximage)),
           GST_BUFFER_SIZE (GST_BUFFER (ximage)));
-      have_frame = TRUE;
     }
 #ifdef HAVE_XFIXES
     /* re-get area where last mouse pointer was  but only if in our clipping
@@ -604,11 +612,12 @@ gst_ximage_src_ximage_get (GstXImageSrc * ximagesrc)
 
     GST_DEBUG_OBJECT (ximagesrc, "Using XFixes to draw cursor");
     /* get cursor */
+    if (ximagesrc->cursor_image)
+      XFree (ximagesrc->cursor_image);
     ximagesrc->cursor_image = XFixesGetCursorImage (ximagesrc->xcontext->disp);
     if (ximagesrc->cursor_image != NULL) {
       int cx, cy, i, j, count;
       int startx, starty, iwidth, iheight;
-      gboolean clipped = FALSE;
       gboolean cursor_in_image = TRUE;
 
       cx = ximagesrc->cursor_image->x - ximagesrc->cursor_image->xhot;
@@ -642,7 +651,6 @@ gst_ximage_src_ximage_get (GstXImageSrc * ximagesrc)
           iheight = (cy + ximagesrc->cursor_image->height < ximagesrc->endy) ?
               cy + ximagesrc->cursor_image->height - starty :
               ximagesrc->endy - starty;
-          clipped = TRUE;
         }
       } else {
         startx = cx;
@@ -922,19 +930,20 @@ gst_ximage_src_get_caps (GstBaseSrc * bs)
 {
   GstXImageSrc *s = GST_XIMAGE_SRC (bs);
   GstXContext *xcontext;
-  gint x, y, width, height;
+  gint width, height;
 
   if ((!s->xcontext) && (!gst_ximage_src_open_display (s, s->display_name)))
-    return gst_caps_copy (gst_pad_get_pad_template_caps (GST_BASE_SRC (s)->
-            srcpad));
+    return
+        gst_caps_copy (gst_pad_get_pad_template_caps (GST_BASE_SRC
+            (s)->srcpad));
 
   if (!gst_ximage_src_recalc (s))
-    return gst_caps_copy (gst_pad_get_pad_template_caps (GST_BASE_SRC (s)->
-            srcpad));
+    return
+        gst_caps_copy (gst_pad_get_pad_template_caps (GST_BASE_SRC
+            (s)->srcpad));
 
   xcontext = s->xcontext;
 
-  x = y = 0;
   width = xcontext->width;
   height = xcontext->height;
   if (s->endx > s->startx && s->endy > s->starty) {
@@ -942,8 +951,6 @@ gst_ximage_src_get_caps (GstBaseSrc * bs)
     if (s->startx < xcontext->width && s->endx < xcontext->width &&
         s->starty < xcontext->height && s->endy < xcontext->height) {
       /* values are fine */
-      x = s->startx;
-      y = s->starty;
       s->width = width = s->endx - s->startx;
       s->height = height = s->endy - s->starty;
     } else {

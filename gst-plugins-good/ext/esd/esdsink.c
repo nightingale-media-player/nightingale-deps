@@ -26,24 +26,20 @@
  * SECTION:element-esdsink
  * @see_also: #GstAlsaSink, #GstAutoAudioSink
  *
- * <refsect2>
- * <para>
  * This element outputs sound to an already-running Enlightened Sound Daemon
  * (ESound Daemon, esd). Note that a sound daemon will never be auto-spawned
  * through this element (regardless of the system configuration), since this
  * is actively prevented by the element. If you must use esd, you need to
  * make sure it is started automatically with your session or otherwise.
- * </para>
- * <para>
+ *
  * TODO: insert some comments about how sucky esd is and that all the cool
  * kids use pulseaudio or whatever these days.
- * </para>
- * <para>
- * Simple example pipeline that plays an Ogg/Vorbis file via esd:
- * <programlisting>
+ *
+ * <refsect2>
+ * <title>Example launch line</title>
+ * |[
  * gst-launch -v filesrc location=foo.ogg ! decodebin ! audioconvert ! audioresample ! esdsink
- * </programlisting>
- * </para>
+ * ]| play an Ogg/Vorbis audio file via esd
  * </refsect2>
  */
 
@@ -132,12 +128,10 @@ gst_esdsink_class_init (GstEsdSinkClass * klass)
 {
   GObjectClass *gobject_class;
   GstBaseSinkClass *gstbasesink_class;
-  GstBaseAudioSinkClass *gstbaseaudiosink_class;
   GstAudioSinkClass *gstaudiosink_class;
 
   gobject_class = (GObjectClass *) klass;
   gstbasesink_class = (GstBaseSinkClass *) klass;
-  gstbaseaudiosink_class = (GstBaseAudioSinkClass *) klass;
   gstaudiosink_class = (GstAudioSinkClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);

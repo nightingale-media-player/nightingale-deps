@@ -16,6 +16,11 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION:element-mulawdec
+ *
+ * This element decodes mulaw audio. Mulaw coding is also known as G.711.
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -24,7 +29,8 @@
 #include "mulaw-decode.h"
 #include "mulaw-conversion.h"
 
-extern GstPadTemplate *mulawdec_src_template, *mulawdec_sink_template;
+extern GstStaticPadTemplate mulaw_dec_src_factory;
+extern GstStaticPadTemplate mulaw_dec_sink_factory;
 
 /* Stereo signals and args */
 enum
@@ -82,6 +88,67 @@ mulawdec_sink_setcaps (GstPad * pad, GstCaps * caps)
   return ret;
 }
 
+static GstCaps *
+mulawdec_getcaps (GstPad * pad)
+{
+  GstMuLawDec *mulawdec;
+  GstPad *otherpad;
+  GstCaps *othercaps, *result;
+  const GstCaps *templ;
+  gchar *name;
+  gint i;
+
+  mulawdec = GST_MULAWDEC (GST_PAD_PARENT (pad));
+
+  /* figure out the name of the caps we are going to return */
+  if (pad == mulawdec->srcpad) {
+    name = "audio/x-raw-int";
+    otherpad = mulawdec->sinkpad;
+  } else {
+    name = "audio/x-mulaw";
+    otherpad = mulawdec->srcpad;
+  }
+  /* get caps from the peer, this can return NULL when there is no peer */
+  othercaps = gst_pad_peer_get_caps (otherpad);
+
+  /* get the template caps to make sure we return something acceptable */
+  templ = gst_pad_get_pad_template_caps (pad);
+
+  if (othercaps) {
+    /* there was a peer */
+    othercaps = gst_caps_make_writable (othercaps);
+
+    /* go through the caps and remove the fields we don't want */
+    for (i = 0; i < gst_caps_get_size (othercaps); i++) {
+      GstStructure *structure;
+
+      structure = gst_caps_get_structure (othercaps, i);
+
+      /* adjust the name */
+      gst_structure_set_name (structure, name);
+
+      if (pad == mulawdec->sinkpad) {
+        /* remove the fields we don't want */
+        gst_structure_remove_fields (structure, "width", "depth", "endianness",
+            "signed", NULL);
+      } else {
+        /* add fixed fields */
+        gst_structure_set (structure, "width", G_TYPE_INT, 16,
+            "depth", G_TYPE_INT, 16,
+            "endianness", G_TYPE_INT, G_BYTE_ORDER,
+            "signed", G_TYPE_BOOLEAN, TRUE, NULL);
+      }
+    }
+    /* filter against the allowed caps of the pad to return our result */
+    result = gst_caps_intersect (othercaps, templ);
+    gst_caps_unref (othercaps);
+  } else {
+    /* there was no peer, return the template caps */
+    result = gst_caps_copy (templ);
+  }
+  return result;
+}
+
 GType
 gst_mulawdec_get_type (void)
 {
@@ -117,8 +184,10 @@ gst_mulawdec_base_init (GstMuLawDecClass * klass)
       "Convert 8bit mu law to 16bit PCM",
       "Zaheer Abbas Merali <zaheerabbas at merali dot org>");
 
-  gst_element_class_add_pad_template (element_class, mulawdec_src_template);
-  gst_element_class_add_pad_template (element_class, mulawdec_sink_template);
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&mulaw_dec_src_factory));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&mulaw_dec_sink_factory));
   gst_element_class_set_details (element_class, &mulawdec_details);
 }
 
@@ -136,13 +205,16 @@ static void
 gst_mulawdec_init (GstMuLawDec * mulawdec)
 {
   mulawdec->sinkpad =
-      gst_pad_new_from_template (mulawdec_sink_template, "sink");
+      gst_pad_new_from_static_template (&mulaw_dec_sink_factory, "sink");
   gst_pad_set_setcaps_function (mulawdec->sinkpad, mulawdec_sink_setcaps);
+  gst_pad_set_getcaps_function (mulawdec->sinkpad, mulawdec_getcaps);
   gst_pad_set_chain_function (mulawdec->sinkpad, gst_mulawdec_chain);
   gst_element_add_pad (GST_ELEMENT (mulawdec), mulawdec->sinkpad);
 
-  mulawdec->srcpad = gst_pad_new_from_template (mulawdec_src_template, "src");
+  mulawdec->srcpad =
+      gst_pad_new_from_static_template (&mulaw_dec_src_factory, "src");
   gst_pad_use_fixed_caps (mulawdec->srcpad);
+  gst_pad_set_getcaps_function (mulawdec->srcpad, mulawdec_getcaps);
   gst_element_add_pad (GST_ELEMENT (mulawdec), mulawdec->srcpad);
 }
 
@@ -196,13 +268,14 @@ gst_mulawdec_chain (GstPad * pad, GstBuffer * buffer)
   /* ERRORS */
 not_negotiated:
   {
-    GST_ERROR_OBJECT (mulawdec, "no format negotiated");
+    GST_WARNING_OBJECT (mulawdec, "no input format set: not-negotiated");
     gst_buffer_unref (buffer);
     return GST_FLOW_NOT_NEGOTIATED;
   }
 alloc_failed:
   {
-    GST_ERROR_OBJECT (mulawdec, "pad alloc failed");
+    GST_DEBUG_OBJECT (mulawdec, "pad alloc failed, flow: %s",
+        gst_flow_get_name (ret));
     gst_buffer_unref (buffer);
     return ret;
   }

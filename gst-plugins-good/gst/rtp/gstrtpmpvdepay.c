@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2006> Wim Taymans <wim@fluendo.com>
+ * Copyright (C) <2006> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -31,10 +31,10 @@ GST_DEBUG_CATEGORY_STATIC (rtpmpvdepay_debug);
 
 /* elementfactory information */
 static const GstElementDetails gst_rtp_mpvdepay_details =
-GST_ELEMENT_DETAILS ("RTP packet depayloader",
+GST_ELEMENT_DETAILS ("RTP MPEG video depayloader",
     "Codec/Depayloader/Network",
     "Extracts MPEG video from RTP packets (RFC 2250)",
-    "Wim Taymans <wim@fluendo.com>");
+    "Wim Taymans <wim.taymans@gmail.com>");
 
 /* FIXME, we set the mpeg version to 2, we should ideally be looking at contents
  * of the stream to figure out the version */
@@ -68,9 +68,6 @@ static gboolean gst_rtp_mpv_depay_setcaps (GstBaseRTPDepayload * depayload,
 static GstBuffer *gst_rtp_mpv_depay_process (GstBaseRTPDepayload * depayload,
     GstBuffer * buf);
 
-static GstStateChangeReturn gst_rtp_mpv_depay_change_state (GstElement *
-    element, GstStateChange transition);
-
 static void
 gst_rtp_mpv_depay_base_init (gpointer klass)
 {
@@ -87,17 +84,11 @@ gst_rtp_mpv_depay_base_init (gpointer klass)
 static void
 gst_rtp_mpv_depay_class_init (GstRtpMPVDepayClass * klass)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
 
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
   gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
-
-  gstelement_class->change_state = gst_rtp_mpv_depay_change_state;
 
   gstbasertpdepayload_class->set_caps = gst_rtp_mpv_depay_setcaps;
   gstbasertpdepayload_class->process = gst_rtp_mpv_depay_process;
@@ -117,17 +108,23 @@ static gboolean
 gst_rtp_mpv_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
 {
   GstStructure *structure;
-  GstRtpMPVDepay *rtpmpvdepay;
-  gint clock_rate = 90000;      /* default */
-
-  rtpmpvdepay = GST_RTP_MPV_DEPAY (depayload);
+  gint clock_rate;
+  GstCaps *outcaps;
+  gboolean res;
 
   structure = gst_caps_get_structure (caps, 0);
 
-  gst_structure_get_int (structure, "clock-rate", &clock_rate);
+  if (!gst_structure_get_int (structure, "clock-rate", &clock_rate))
+    clock_rate = 90000;         /* default */
   depayload->clock_rate = clock_rate;
 
-  return TRUE;
+  outcaps = gst_caps_new_simple ("video/mpeg",
+      "mpegversion", G_TYPE_INT, 2,
+      "systemstream", G_TYPE_BOOLEAN, FALSE, NULL);
+  res = gst_pad_set_caps (depayload->srcpad, outcaps);
+  gst_caps_unref (outcaps);
+
+  return res;
 }
 
 static GstBuffer *
@@ -137,9 +134,6 @@ gst_rtp_mpv_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   GstBuffer *outbuf;
 
   rtpmpvdepay = GST_RTP_MPV_DEPAY (depayload);
-
-  if (!gst_rtp_buffer_validate (buf))
-    goto bad_packet;
 
   {
     gint payload_len, payload_header;
@@ -197,44 +191,13 @@ gst_rtp_mpv_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 
   return NULL;
 
-bad_packet:
-  {
-    GST_ELEMENT_WARNING (rtpmpvdepay, STREAM, DECODE,
-        (NULL), ("Packet did not validate."));
-    return NULL;
-  }
+  /* ERRORS */
 empty_packet:
   {
     GST_ELEMENT_WARNING (rtpmpvdepay, STREAM, DECODE,
         (NULL), ("Empty payload."));
     return NULL;
   }
-}
-
-static GstStateChangeReturn
-gst_rtp_mpv_depay_change_state (GstElement * element, GstStateChange transition)
-{
-  GstRtpMPVDepay *rtpmpvdepay;
-  GstStateChangeReturn ret;
-
-  rtpmpvdepay = GST_RTP_MPV_DEPAY (element);
-
-  switch (transition) {
-    case GST_STATE_CHANGE_NULL_TO_READY:
-      break;
-    default:
-      break;
-  }
-
-  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
-
-  switch (transition) {
-    case GST_STATE_CHANGE_READY_TO_NULL:
-      break;
-    default:
-      break;
-  }
-  return ret;
 }
 
 gboolean

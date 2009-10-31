@@ -19,23 +19,17 @@
 
 /**
  * SECTION:element-multipartmux
- * @short_description: Muxer that takes one or several digital streams
- * and muxes them to a single multipart stream.
  *
- * <refsect2>
- * <para>
  * MultipartMux uses the #GstCaps of the sink pad as the Content-type field for
  * incoming buffers when muxing them to a multipart stream. Most of the time 
  * multipart streams are sequential JPEG frames.
- * </para>
+ *
+ * <refsect2>
  * <title>Sample pipelines</title>
- * <para>
- * Here is a simple pipeline to mux 5 JPEG frames per second into a multipart
- * stream stored to a file :
- * <programlisting>
- * gst-launch videotestsrc ! video/x-raw-yuv, framerate=(fraction)5/1 ! jpegenc ! multipartmux ! filesink location=/tmp/test.multipart
- * </programlisting>
- * </para>
+ * |[
+ * gst-launch videotestsrc ! video/x-raw-yuv, framerate='(fraction)'5/1 ! jpegenc ! multipartmux ! filesink location=/tmp/test.multipart
+ * ]| a pipeline to mux 5 JPEG frames per second into a multipart stream
+ * stored to a file.
  * </refsect2>
  */
 
@@ -291,6 +285,9 @@ gst_multipart_mux_get_mime (GstMultipartMux * mux, GstStructure * s)
   GstMultipartMuxClass *klass;
   const gchar *mime;
   const gchar *name;
+  gint rate;
+  gint channels;
+  gint bitrate = 0;
 
   klass = GST_MULTIPART_MUX_GET_CLASS (mux);
 
@@ -299,8 +296,38 @@ gst_multipart_mux_get_mime (GstMultipartMux * mux, GstStructure * s)
   /* use hashtable to convert to mime type */
   mime = g_hash_table_lookup (klass->mimetypes, name);
   if (mime == NULL) {
-    /* no mime type mapping, use name */
-    mime = name;
+    if (!strcmp (name, "audio/x-adpcm"))
+      gst_structure_get_int (s, "bitrate", &bitrate);
+
+    switch (bitrate) {
+      case 16000:
+        mime = "audio/G726-16";
+        break;
+      case 24000:
+        mime = "audio/G726-24";
+        break;
+      case 32000:
+        mime = "audio/G726-32";
+        break;
+      case 40000:
+        mime = "audio/G726-40";
+        break;
+      default:
+        /* no mime type mapping, use name */
+        mime = name;
+        break;
+    }
+  }
+  /* RFC2046 requires audio/basic to be mulaw 8000Hz mono */
+  if (g_ascii_strcasecmp (mime, "audio/basic") == 0) {
+    if (gst_structure_get_int (s, "rate", &rate) &&
+        gst_structure_get_int (s, "channels", &channels)) {
+      if (rate != 8000 || channels != 1) {
+        mime = name;
+      }
+    } else {
+      mime = name;
+    }
   }
   return mime;
 }

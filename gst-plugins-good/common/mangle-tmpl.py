@@ -122,7 +122,7 @@ def get_elements(file):
                 elements[name] = {'description': description}
 
     return elements
-        
+
 def main():
     if not len(sys.argv) == 3:
         sys.stderr.write('Please specify the inspect/ dir and the tmpl/ dir')
@@ -148,7 +148,9 @@ def main():
 
         # put in an include if not yet there
         line = '<include xmlns="http://www.w3.org/2003/XInclude" href="' + \
-            'element-' + element + '-details.xml" />\n'
+            'element-' + element + '-details.xml">' + \
+            '<fallback xmlns="http://www.w3.org/2003/XInclude" />' + \
+            '</include>\n'
         section = tmpl.get_section("Long_Description")
         if not section[0]  == line:
             section.insert(0, line)

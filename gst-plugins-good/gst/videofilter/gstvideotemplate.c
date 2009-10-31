@@ -20,7 +20,7 @@
 
 /*
  * This file was (probably) generated from
- * $Id: gstvideotemplate.c,v 1.21 2006-09-16 21:57:28 ensonic Exp $
+ * $Id$
  * and
  * MAKEFILTERVERSION
  */

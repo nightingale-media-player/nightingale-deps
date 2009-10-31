@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>taginject</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="prev" href="gst-plugins-good-plugins-spectrum.html" title="spectrum">
+<link rel="prev" href="gst-plugins-good-plugins-streaktv.html" title="streaktv">
 <link rel="next" href="gst-plugins-good-plugins-udpsrc.html" title="udpsrc">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
@@ -17,21 +17,23 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-spectrum.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-streaktv.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-udpsrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-good-plugins-taginject.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-taginject.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-taginject.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-taginject.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-good-plugins-taginject.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-taginject.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-taginject.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-taginject.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry" title="taginject">
 <a name="gst-plugins-good-plugins-taginject"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -40,41 +42,59 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="gst-plugins-good-plugins-taginject.synopsis"></a><h2>Synopsis</h2>
 <a name="GstTagInject"></a><pre class="synopsis">
                     <a class="link" href="gst-plugins-good-plugins-taginject.html#GstTagInject-struct" title="GstTagInject">GstTagInject</a>;
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Object Hierarchy">
 <a name="gst-plugins-good-plugins-taginject.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
-   +----GstObject
-         +----GstElement
-               +----GstBaseTransform
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="../gstreamer-libs-0.10/GstBaseTransform.html"
+>GstBaseTransform</a>
                      +----GstTagInject
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Properties">
 <a name="gst-plugins-good-plugins-taginject.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-taginject.html#GstTagInject--tags" title='The "tags" property'>tags</a>"                     gchar*                : Write
+  "<a class="link" href="gst-plugins-good-plugins-taginject.html#GstTagInject--tags" title='The "tags" property'>tags</a>"                     <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Write
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Description">
 <a name="gst-plugins-good-plugins-taginject.description"></a><h2>Description</h2>
 <p>
 Element that injects new metadata tags, but passes incomming data through
 unmodified.
 </p>
+<p>
+</p>
+<div class="refsect2" title="Example launch lines">
+<a name="id571665"></a><h3>Example launch lines</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch audiotestsrc num-buffers=100 ! taginject tags="title=testsrc,artist=gstreamer" ! vorbisenc ! oggmux ! filesink location=test.ogg
-</pre></div>
-<div class="refsynopsisdiv">
+</pre></div> set title and artist
+<div class="informalexample"><pre class="programlisting">
+gst-launch audiotestsrc num-buffers=100 ! taginject tags="keywords=\"testone,audio\",title=\"audio testtone\"" ! vorbisenc ! oggmux ! filesink location=test.ogg
+</pre></div> set keywords and title demonstrating quoting of special chars
+</div>
+<div class="refsynopsisdiv" title="Synopsis">
 <h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2522049"></a><h3>Element Information</h3>
+<div class="refsect2" title="Element Information">
+<a name="id579945"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -96,8 +116,29 @@ gst-launch audiotestsrc num-buffers=100 ! taginject tags="title=testsrc,artist=g
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2636104"></a><h3>Element Pads</h3>
+<div class="refsect2" title="Element Pads">
+<a name="id594465"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -119,50 +160,29 @@ gst-launch audiotestsrc num-buffers=100 ! taginject tags="title=testsrc,artist=g
 </tr>
 </tbody>
 </table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>ANY</td>
-</tr>
-</tbody>
-</table></div>
 </div>
 </div>
 <p>
-
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Details">
 <a name="gst-plugins-good-plugins-taginject.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="GstTagInject">
 <a name="GstTagInject-struct"></a><h3>GstTagInject</h3>
 <pre class="programlisting">typedef struct _GstTagInject GstTagInject;</pre>
 <p>
 Opaque <a class="link" href="gst-plugins-good-plugins-taginject.html#GstTagInject"><span class="type">GstTagInject</span></a> data structure</p>
 <p>
-
 </p>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Property Details">
 <a name="gst-plugins-good-plugins-taginject.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title='The "tags" property'>
 <a name="GstTagInject--tags"></a><h3>The <code class="literal">"tags"</code> property</h3>
-<pre class="programlisting">  "tags"                     gchar*                : Write</pre>
+<pre class="programlisting">  "tags"                     <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Write</pre>
 <p>List of tags to inject into the target file.</p>
 <p>Default value: NULL</p>
 </div>
@@ -170,6 +190,6 @@ Opaque <a class="link" href="gst-plugins-good-plugins-taginject.html#GstTagInjec
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

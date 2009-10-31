@@ -20,33 +20,26 @@
 
 /**
  * SECTION:element-apedemux
- * @short_description: reads tag information from APE tag data blocks and
- * outputs them as GStreamer tag messages and events.
  *
- * <refsect2>
- * <para>
  * apedemux accepts data streams with APE tags at the start or at the end
  * (or both). The mime type of the data between the tag blocks is detected
  * using typefind functions, and the appropriate output mime type set on
- * outgoing buffers. 
- * </para>
- * <para>
+ * outgoing buffers.
+ *
  * The element is only able to read APE tags at the end of a stream from
  * a seekable stream, ie. when get_range mode is supported by the upstream
  * elements. If get_range operation is available, apedemux makes it available
  * downstream. This means that elements which require get_range mode, such as
  * wavparse or musepackdec, can operate on files containing APE tag
  * information.
- * </para>
+ *
+ * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch -t filesrc location=file.mpc ! apedemux ! fakesink
- * </programlisting>
- * This pipeline should read any available APE tag information and output it.
+ * ]| This pipeline should read any available APE tag information and output it.
  * The contents of the file inside the APE tag regions should be detected, and
  * the appropriate mime type set on buffers produced from apedemux.
- * </para>
  * </refsect2>
  */
 #ifdef HAVE_CONFIG_H
@@ -55,6 +48,7 @@
 
 #include <gst/gst.h>
 #include <gst/gst-i18n-plugin.h>
+#include <gst/pbutils/pbutils.h>
 
 #include "gstapedemux.h"
 
@@ -176,7 +170,6 @@ static GstTagList *
 ape_demux_parse_tags (const guint8 * data, gint size)
 {
   GstTagList *taglist = gst_tag_list_new ();
-  gboolean have_tag = FALSE;
 
   GST_LOG ("Reading tags from chunk of size %u bytes", size);
 
@@ -317,7 +310,6 @@ ape_demux_parse_tags (const guint8 * data, gint size)
         gst_tag_list_add_values (taglist, GST_TAG_MERGE_APPEND,
             gst_tag, &v, NULL);
         g_value_unset (&v);
-        have_tag = TRUE;
       }
     }
     GST_DEBUG ("Read tag %s: %s", tag, val);
@@ -359,6 +351,7 @@ gst_ape_demux_parse_tag (GstTagDemux * demux, GstBuffer * buffer,
   const guint8 *footer;
   gboolean have_header;
   gboolean end_tag = !start_tag;
+  GstCaps *sink_caps;
   guint version, footer_size;
 
   GST_LOG_OBJECT (demux, "Parsing buffer of size %u", GST_BUFFER_SIZE (buffer));
@@ -417,6 +410,11 @@ gst_ape_demux_parse_tag (GstTagDemux * demux, GstBuffer * buffer,
   }
 
   *tags = ape_demux_parse_tags (data, *tag_size - footer_size);
+
+  sink_caps = gst_static_pad_template_get_caps (&sink_factory);
+  gst_pb_utils_add_codec_description_to_tag_list (*tags,
+      GST_TAG_CONTAINER_FORMAT, sink_caps);
+  gst_caps_unref (sink_caps);
 
   return GST_TAG_DEMUX_RESULT_OK;
 }

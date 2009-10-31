@@ -31,7 +31,7 @@
 
 /* elementfactory information */
 static const GstElementDetails gst_rtp_pcma_pay_details =
-GST_ELEMENT_DETAILS ("RTP packet payloader",
+GST_ELEMENT_DETAILS ("RTP PCMA payloader",
     "Codec/Payloader/Network",
     "Payload-encodes PCMA audio into a RTP packet",
     "Edgard Lima <edgard.lima@indt.org.br>");
@@ -78,12 +78,8 @@ gst_rtp_pcma_pay_base_init (gpointer klass)
 static void
 gst_rtp_pcma_pay_class_init (GstRtpPmcaPayClass * klass)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseRTPPayloadClass *gstbasertppayload_class;
 
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
   gstbasertppayload_class = (GstBaseRTPPayloadClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
@@ -110,12 +106,14 @@ gst_rtp_pcma_pay_init (GstRtpPmcaPay * rtppcmapay, GstRtpPmcaPayClass * klass)
 static gboolean
 gst_rtp_pcma_pay_setcaps (GstBaseRTPPayload * payload, GstCaps * caps)
 {
+  gboolean res;
+
   payload->pt = GST_RTP_PAYLOAD_PCMA;
+
   gst_basertppayload_set_options (payload, "audio", FALSE, "PCMA", 8000);
+  res = gst_basertppayload_set_outcaps (payload, NULL);
 
-  gst_basertppayload_set_outcaps (payload, NULL);
-
-  return TRUE;
+  return res;
 }
 
 gboolean

@@ -21,17 +21,14 @@
 /**
  * SECTION:element-cairotimeoverlay
  *
- * <refsect2>
- * <para>
  * cairotimeoverlay renders the buffer timestamp for each frame on top of
  * the frame.
- * </para>
+ *
+ * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
- * gst-launch -v -m videotestsrc ! cairotimeoverlay ! autovideosink
- * </programlisting>
- * </para>
+ * |[
+ * gst-launch videotestsrc ! cairotimeoverlay ! autovideosink
+ * ]|
  * </refsect2>
  */
 
@@ -284,12 +281,8 @@ gst_cairo_time_overlay_base_init (gpointer g_class)
 static void
 gst_cairo_time_overlay_class_init (gpointer klass, gpointer class_data)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *element_class;
   GstBaseTransformClass *trans_class;
 
-  gobject_class = (GObjectClass *) klass;
-  element_class = (GstElementClass *) klass;
   trans_class = (GstBaseTransformClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);

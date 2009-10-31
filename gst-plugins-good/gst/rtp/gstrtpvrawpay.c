@@ -32,7 +32,7 @@ GST_DEBUG_CATEGORY_STATIC (rtpvrawpay_debug);
 
 /* elementfactory information */
 static const GstElementDetails gst_rtp_vrawpay_details =
-GST_ELEMENT_DETAILS ("RTP packet payloader",
+GST_ELEMENT_DETAILS ("RTP Raw Video payloader",
     "Codec/Payloader/Network",
     "Payload raw video as RTP packets (RFC 4175)",
     "Wim Taymans <wim.taymans@gmail.com>");
@@ -114,7 +114,6 @@ GST_STATIC_PAD_TEMPLATE ("src",
 static void gst_rtp_vraw_pay_class_init (GstRtpVRawPayClass * klass);
 static void gst_rtp_vraw_pay_base_init (GstRtpVRawPayClass * klass);
 static void gst_rtp_vraw_pay_init (GstRtpVRawPay * rtpvrawpay);
-static void gst_rtp_vraw_pay_finalize (GObject * object);
 
 static gboolean gst_rtp_vraw_pay_setcaps (GstBaseRTPPayload * payload,
     GstCaps * caps);
@@ -164,17 +163,11 @@ gst_rtp_vraw_pay_base_init (GstRtpVRawPayClass * klass)
 static void
 gst_rtp_vraw_pay_class_init (GstRtpVRawPayClass * klass)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseRTPPayloadClass *gstbasertppayload_class;
 
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
   gstbasertppayload_class = (GstBaseRTPPayloadClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
-
-  gobject_class->finalize = gst_rtp_vraw_pay_finalize;
 
   gstbasertppayload_class->set_caps = gst_rtp_vraw_pay_setcaps;
   gstbasertppayload_class->handle_buffer = gst_rtp_vraw_pay_handle_buffer;
@@ -186,16 +179,6 @@ gst_rtp_vraw_pay_class_init (GstRtpVRawPayClass * klass)
 static void
 gst_rtp_vraw_pay_init (GstRtpVRawPay * rtpvrawpay)
 {
-}
-
-static void
-gst_rtp_vraw_pay_finalize (GObject * object)
-{
-  GstRtpVRawPay *rtpvrawpay;
-
-  rtpvrawpay = GST_RTP_VRAW_PAY (object);
-
-  G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static gboolean
@@ -211,6 +194,7 @@ gst_rtp_vraw_pay_setcaps (GstBaseRTPPayload * payload, GstCaps * caps)
   GstVideoFormat sampling;
   const gchar *depthstr, *samplingstr, *colorimetrystr;
   gchar *wstr, *hstr;
+  gboolean interlaced;
 
   rtpvrawpay = GST_RTP_VRAW_PAY (payload);
 
@@ -228,6 +212,13 @@ gst_rtp_vraw_pay_setcaps (GstBaseRTPPayload * payload, GstCaps * caps)
   res &= gst_structure_get_int (s, "height", &height);
   if (!res)
     goto missing_dimension;
+
+  /* fail on interlaced video for now */
+  if (!gst_structure_get_boolean (s, "interlaced", &interlaced))
+    interlaced = FALSE;
+
+  if (interlaced)
+    goto interlaced;
 
   yp = up = vp = 0;
   xinc = yinc = 1;
@@ -333,14 +324,14 @@ gst_rtp_vraw_pay_setcaps (GstBaseRTPPayload * payload, GstCaps * caps)
   hstr = g_strdup_printf ("%d", rtpvrawpay->height);
 
   gst_basertppayload_set_options (payload, "video", TRUE, "RAW", 90000);
-  gst_basertppayload_set_outcaps (payload, "sampling", G_TYPE_STRING,
+  res = gst_basertppayload_set_outcaps (payload, "sampling", G_TYPE_STRING,
       samplingstr, "depth", G_TYPE_STRING, depthstr, "width", G_TYPE_STRING,
       wstr, "height", G_TYPE_STRING, hstr, "colorimetry", G_TYPE_STRING,
       colorimetrystr, NULL);
   g_free (wstr);
   g_free (hstr);
 
-  return TRUE;
+  return res;
 
   /* ERRORS */
 unknown_mask:
@@ -356,6 +347,11 @@ unknown_format:
 unknown_fourcc:
   {
     GST_ERROR_OBJECT (payload, "invalid or missing fourcc");
+    return FALSE;
+  }
+interlaced:
+  {
+    GST_ERROR_OBJECT (payload, "interlaced video not supported yet");
     return FALSE;
   }
 missing_dimension:
@@ -409,7 +405,7 @@ gst_rtp_vraw_pay_handle_buffer (GstBaseRTPPayload * payload, GstBuffer * buffer)
     GstBuffer *out;
     guint8 *outdata, *headers;
     gboolean next_line;
-    guint length, cont, pixels;
+    guint length, cont, pixels, fieldid;
 
     /* get the max allowed payload length size, we try to fill the complete MTU */
     left = gst_rtp_buffer_calc_payload_len (mtu, 0, 0);
@@ -421,6 +417,24 @@ gst_rtp_vraw_pay_handle_buffer (GstBaseRTPPayload * payload, GstBuffer * buffer)
 
     GST_LOG_OBJECT (rtpvrawpay, "created buffer of size %u for MTU %u", left,
         mtu);
+
+    /*
+     *   0                   1                   2                   3
+     *   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     *  |   Extended Sequence Number    |            Length             |
+     *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     *  |F|          Line No            |C|           Offset            |
+     *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     *  |            Length             |F|          Line No            |
+     *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     *  |C|           Offset            |                               .
+     *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               .
+     *  .                                                               .
+     *  .                 Two (partial) lines of video data             .
+     *  .                                                               .
+     *  +---------------------------------------------------------------+
+     */
 
     /* need 2 bytes for the extended sequence number */
     *outdata++ = 0;
@@ -456,8 +470,12 @@ gst_rtp_vraw_pay_handle_buffer (GstBaseRTPPayload * payload, GstBuffer * buffer)
       /* write length */
       *outdata++ = (length >> 8) & 0xff;
       *outdata++ = length & 0xff;
+
+      /* always 0 for now */
+      fieldid = 0x00;
+
       /* write line no */
-      *outdata++ = (line >> 8) & 0x7f;
+      *outdata++ = ((line >> 8) & 0x7f) | fieldid;
       *outdata++ = line & 0xff;
 
       if (next_line) {
@@ -583,6 +601,10 @@ gst_rtp_vraw_pay_handle_buffer (GstBaseRTPPayload * payload, GstBuffer * buffer)
     if (line >= height) {
       GST_LOG_OBJECT (rtpvrawpay, "frame complete, set marker");
       gst_rtp_buffer_set_marker (out, TRUE);
+    }
+    if (left > 0) {
+      GST_LOG_OBJECT (rtpvrawpay, "we have %u bytes left", left);
+      GST_BUFFER_SIZE (out) -= left;
     }
 
     /* push buffer */

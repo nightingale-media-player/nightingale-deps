@@ -21,23 +21,28 @@
 
 /**
  * SECTION:element-id3demux
- * @short_description: reads tag information from ID3v1 and ID3v2 (<= 2.4.0) data blocks and outputs them as GStreamer tag messages and events.
+ *
+ * id3demux accepts data streams with either (or both) ID3v2 regions at the
+ * start, or ID3v1 at the end. The mime type of the data between the tag blocks
+ * is detected using typefind functions, and the appropriate output mime type
+ * set on outgoing buffers. 
+ *
+ * The element is only able to read ID3v1 tags from a seekable stream, because
+ * they are at the end of the stream. That is, when get_range mode is supported
+ * by the upstream elements. If get_range operation is available, id3demux makes
+ * it available downstream. This means that elements which require get_range
+ * mode, such as wavparse, can operate on files containing ID3 tag information.
+ *
+ * This id3demux element replaced an older element with the same name which
+ * relied on libid3tag from the MAD project.
  *
  * <refsect2>
- * <para>
- * id3demux accepts data streams with either (or both) ID3v2 regions at the start, or ID3v1 at the end. The mime type of the data between the tag blocks is detected using typefind functions, and the appropriate output mime type set on outgoing buffers. 
- * </para><para>
- * The element is only able to read ID3v1 tags from a seekable stream, because they are at the end of the stream. That is, when get_range mode is supported by the upstream elements. If get_range operation is available, id3demux makes it available downstream. This means that elements which require get_range mode, such as wavparse, can operate on files containing ID3 tag information.
- * </para>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch filesrc location=file.mp3 ! id3demux ! fakesink -t
- * </programlisting>
- * This pipeline should read any available ID3 tag information and output it. The contents of the file inside the ID3 tag regions should be detected, and the appropriate mime type set on buffers produced from id3demux.
- * </para><para>
- * This id3demux element replaced an older element with the same name which relied on libid3tag from the MAD project.
- * </para>
+ * ]| This pipeline should read any available ID3 tag information and output it.
+ * The contents of the file inside the ID3 tag regions should be detected, and
+ * the appropriate mime type set on buffers produced from id3demux.
  * </refsect2>
  */
 #ifdef HAVE_CONFIG_H
@@ -46,6 +51,7 @@
 #include <gst/gst.h>
 #include <gst/gst-i18n-plugin.h>
 #include <gst/tag/tag.h>
+#include <gst/pbutils/pbutils.h>
 #include <string.h>
 
 #include "gstid3demux.h"
@@ -159,6 +165,17 @@ no_marker:
   }
 }
 
+static void
+gst_id3demux_add_container_format (GstTagList * tags)
+{
+  GstCaps *sink_caps;
+
+  sink_caps = gst_static_pad_template_get_caps (&sink_factory);
+  gst_pb_utils_add_codec_description_to_tag_list (tags,
+      GST_TAG_CONTAINER_FORMAT, sink_caps);
+  gst_caps_unref (sink_caps);
+}
+
 static GstTagDemuxResult
 gst_id3demux_parse_tag (GstTagDemux * demux, GstBuffer * buffer,
     gboolean start_tag, guint * tag_size, GstTagList ** tags)
@@ -168,16 +185,19 @@ gst_id3demux_parse_tag (GstTagDemux * demux, GstBuffer * buffer,
 
     res = id3demux_read_id3v2_tag (buffer, tag_size, tags);
 
-    if (G_LIKELY (res == ID3TAGS_READ_TAG))
+    if (G_LIKELY (res == ID3TAGS_READ_TAG)) {
+      gst_id3demux_add_container_format (*tags);
       return GST_TAG_DEMUX_RESULT_OK;
-    else
+    } else {
       return GST_TAG_DEMUX_RESULT_BROKEN_TAG;
+    }
   } else {
     *tags = gst_tag_list_new_from_id3v1 (GST_BUFFER_DATA (buffer));
 
     if (G_UNLIKELY (*tags == NULL))
       return GST_TAG_DEMUX_RESULT_BROKEN_TAG;
 
+    gst_id3demux_add_container_format (*tags);
     *tag_size = ID3V1_TAG_SIZE;
     return GST_TAG_DEMUX_RESULT_OK;
   }

@@ -22,17 +22,14 @@
  * SECTION:element-goom
  * @see_also: synaesthesia
  *
- * <refsect2>
- * <para>
  * Goom is an audio visualisation element. It creates warping structures
  * based on the incoming audio signal.
- * </para>
+ *
+ * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch -v audiotestsrc ! goom ! ffmpegcolorspace ! xvimagesink
- * </programlisting>
- * </para>
+ * ]|
  * </refsect2>
  */
 
@@ -46,9 +43,7 @@
 #include <gst/video/video.h>
 #include "goom.h"
 
-#ifdef HAVE_LIBOIL
 #include <liboil/liboil.h>
-#endif
 
 GST_DEBUG_CATEGORY (goom_debug);
 #define GST_CAT_DEFAULT goom_debug
@@ -597,9 +592,7 @@ plugin_init (GstPlugin * plugin)
 {
   GST_DEBUG_CATEGORY_INIT (goom_debug, "goom", 0, "goom visualisation element");
 
-#ifdef HAVE_LIBOIL
   oil_init ();
-#endif
 
   return gst_element_register (plugin, "goom", GST_RANK_NONE, GST_TYPE_GOOM);
 }

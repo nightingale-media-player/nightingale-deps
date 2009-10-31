@@ -347,9 +347,12 @@
 #define GST_MATROSKA_CODEC_ID_AUDIO_AC3            "A_AC3"
 #define GST_MATROSKA_CODEC_ID_AUDIO_AC3_BSID9      "A_AC3/BSID9"
 #define GST_MATROSKA_CODEC_ID_AUDIO_AC3_BSID10     "A_AC3/BSID10"
+#define GST_MATROSKA_CODEC_ID_AUDIO_EAC3           "A_EAC3"
 #define GST_MATROSKA_CODEC_ID_AUDIO_DTS            "A_DTS"
 #define GST_MATROSKA_CODEC_ID_AUDIO_VORBIS         "A_VORBIS"
 #define GST_MATROSKA_CODEC_ID_AUDIO_FLAC           "A_FLAC"
+/* FIXME: not yet in the spec */
+#define GST_MATROSKA_CODEC_ID_AUDIO_SPEEX          "A_SPEEX"
 #define GST_MATROSKA_CODEC_ID_AUDIO_ACM            "A_MS/ACM"
 #define GST_MATROSKA_CODEC_ID_AUDIO_TTA            "A_TTA1"
 #define GST_MATROSKA_CODEC_ID_AUDIO_WAVPACK4       "A_WAVPACK4"
@@ -374,7 +377,9 @@
 #define GST_MATROSKA_CODEC_ID_SUBTITLE_ASS       "S_TEXT/ASS" 
 #define GST_MATROSKA_CODEC_ID_SUBTITLE_USF       "S_TEXT/USF"
 #define GST_MATROSKA_CODEC_ID_SUBTITLE_VOBSUB    "S_VOBSUB"
+#define GST_MATROSKA_CODEC_ID_SUBTITLE_HDMVPGS   "S_HDMV/PGS"
 #define GST_MATROSKA_CODEC_ID_SUBTITLE_BMP       "S_IMAGE/BMP"
+#define GST_MATROSKA_CODEC_ID_SUBTITLE_KATE      "S_KATE"
 
 /*
  * Matroska tags. Strings.
@@ -462,11 +467,15 @@ struct _GstMatroskaTrackContext {
   guint         index;
   GstFlowReturn last_flow;
 
+  GArray       *index_table;
+
+  gint          index_writer_id;
+
   /* some often-used info */
   gchar        *codec_id, *codec_name, *name, *language;
-  gpointer      codec_priv;
+  guint8       *codec_priv;
   guint         codec_priv_size;
-  gpointer      codec_state;
+  guint8       *codec_state;
   guint         codec_state_size;
   GstMatroskaTrackType type;
   guint         uid, num;
@@ -486,6 +495,11 @@ struct _GstMatroskaTrackContext {
    * buffer from the codec_priv data before sending any data, and just
    * testing for time == 0 is not enough to detect that. Used by demuxer */
   gboolean      send_flac_headers;
+
+  /* Special flag for Speex, for which we need to reconstruct the header
+   * buffer from the codec_priv data before sending any data, and just
+   * testing for time == 0 is not enough to detect that. Used by demuxer */
+  gboolean      send_speex_headers;
 
   /* Special flag for VobSub, for which we have to send colour table info
    * (if available) first before sending any data, and just testing
@@ -517,6 +531,8 @@ typedef struct _GstMatroskaTrackVideoContext {
   gdouble       default_fps;
   GstMatroskaAspectRatioMode asr_mode;
   guint32       fourcc;
+
+  GstBuffer     *dirac_unit;
 } GstMatroskaTrackVideoContext;
 
 typedef struct _GstMatroskaTrackAudioContext {
@@ -554,6 +570,19 @@ typedef struct _Wavpack4Header {
   guint32 crc;           /* crc for actual decoded data                    */
 } Wavpack4Header;
 
+typedef enum {
+  GST_MATROSKA_TRACK_ENCODING_SCOPE_FRAME = (1<<0),
+  GST_MATROSKA_TRACK_ENCODING_SCOPE_CODEC_DATA = (1<<1),
+  GST_MATROSKA_TRACK_ENCODING_SCOPE_NEXT_CONTENT_ENCODING = (1<<2)
+} GstMatroskaTrackEncodingScope;
+
+typedef enum {
+  GST_MATROSKA_TRACK_COMPRESSION_ALGORITHM_ZLIB = 0,
+  GST_MATROSKA_TRACK_COMPRESSION_ALGORITHM_BZLIB = 1,
+  GST_MATROSKA_TRACK_COMPRESSION_ALGORITHM_LZO1X = 2,
+  GST_MATROSKA_TRACK_COMPRESSION_ALGORITHM_HEADERSTRIP = 3
+} GstMatroskaTrackCompressionAlgorithm;
+
 typedef struct _GstMatroskaTrackEncoding {
   guint   order;
   guint   scope     : 3;
@@ -566,12 +595,6 @@ typedef struct _GstMatroskaTrackEncoding {
 gboolean gst_matroska_track_init_video_context    (GstMatroskaTrackContext ** p_context);
 gboolean gst_matroska_track_init_audio_context    (GstMatroskaTrackContext ** p_context);
 gboolean gst_matroska_track_init_subtitle_context (GstMatroskaTrackContext ** p_context);
-
-
-/* FIXME: remove when we depend on core 0.10.21 */
-#ifndef GST_TAG_ATTACHMENT
-#define GST_TAG_ATTACHMENT "attachment"
-#endif
 
 void gst_matroska_register_tags (void);
 

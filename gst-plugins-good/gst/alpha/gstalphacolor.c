@@ -20,12 +20,8 @@
 /**
  * SECTION:element-alphacolor
  *
- * <refsect2>
- * <para>
  * The alphacolor element does memory-efficient (in-place) colourspace
  * conversion from RGBA to AYUV, preserving the alpha channel.
- * </para>
- * </refsect2>
  */
 
 #ifdef HAVE_CONFIG_H
@@ -87,12 +83,8 @@ gst_alpha_color_base_init (gpointer g_class)
 static void
 gst_alpha_color_class_init (GstAlphaColorClass * klass)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseTransformClass *gstbasetransform_class;
 
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
   gstbasetransform_class = (GstBaseTransformClass *) klass;
 
   gstbasetransform_class->transform_caps =
@@ -120,12 +112,9 @@ static GstCaps *
 gst_alpha_color_transform_caps (GstBaseTransform * btrans,
     GstPadDirection direction, GstCaps * caps)
 {
-  GstAlphaColor *alpha = NULL;
   const GstCaps *tmpl_caps = NULL;
   GstCaps *result = NULL, *local_caps = NULL;
   guint i;
-
-  alpha = GST_ALPHA_COLOR (btrans);
 
   local_caps = gst_caps_copy (caps);
 

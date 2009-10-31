@@ -23,6 +23,8 @@
 
 #include "gstrtpdepay.h"
 #include "gstrtpac3depay.h"
+#include "gstrtpceltdepay.h"
+#include "gstrtpceltpay.h"
 #include "gstrtpdvdepay.h"
 #include "gstrtpdvpay.h"
 #include "gstrtpilbcdepay.h"
@@ -49,6 +51,10 @@
 #include "gstrtph263pay.h"
 #include "gstrtph264depay.h"
 #include "gstrtph264pay.h"
+#include "gstrtpj2kdepay.h"
+#include "gstrtpj2kpay.h"
+#include "gstrtpjpegdepay.h"
+#include "gstrtpjpegpay.h"
 #include "gstrtpL16depay.h"
 #include "gstrtpL16pay.h"
 #include "gstasteriskh263.h"
@@ -61,6 +67,9 @@
 #include "gstrtpmp4apay.h"
 #include "gstrtpmp4gdepay.h"
 #include "gstrtpmp4gpay.h"
+#include "gstrtpqdmdepay.h"
+#include "gstrtpsirenpay.h"
+#include "gstrtpsirendepay.h"
 #include "gstrtpspeexpay.h"
 #include "gstrtpspeexdepay.h"
 #include "gstrtpsv3vdepay.h"
@@ -78,6 +87,12 @@ plugin_init (GstPlugin * plugin)
     return FALSE;
 
   if (!gst_rtp_ac3_depay_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_rtp_celt_depay_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_rtp_celt_pay_plugin_init (plugin))
     return FALSE;
 
   if (!gst_rtp_dv_depay_plugin_init (plugin))
@@ -158,6 +173,18 @@ plugin_init (GstPlugin * plugin)
   if (!gst_rtp_h264_pay_plugin_init (plugin))
     return FALSE;
 
+  if (!gst_rtp_j2k_depay_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_rtp_j2k_pay_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_rtp_jpeg_depay_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_rtp_jpeg_pay_plugin_init (plugin))
+    return FALSE;
+
   if (!gst_rtp_L16_pay_plugin_init (plugin))
     return FALSE;
 
@@ -192,6 +219,15 @@ plugin_init (GstPlugin * plugin)
     return FALSE;
 
   if (!gst_rtp_mp4g_pay_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_rtp_qdm2_depay_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_rtp_siren_pay_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_rtp_siren_depay_plugin_init (plugin))
     return FALSE;
 
   if (!gst_rtp_speex_pay_plugin_init (plugin))

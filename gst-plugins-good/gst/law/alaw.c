@@ -23,47 +23,43 @@
 #include "alaw-encode.h"
 #include "alaw-decode.h"
 
-static GstCaps *
-alaw_factory (void)
-{
-  return gst_caps_new_simple ("audio/x-alaw",
-      "rate", GST_TYPE_INT_RANGE, 8000, 192000,
-      "channels", GST_TYPE_INT_RANGE, 1, 2, NULL);
-}
+GstStaticPadTemplate alaw_dec_src_factory = GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("audio/x-raw-int, "
+        "rate = (int) [ 8000, 192000 ], "
+        "channels = (int) [ 1, 2 ], "
+        "endianness = (int) BYTE_ORDER, "
+        "width = (int) 16, " "depth = (int) 16, " "signed = (boolean) True")
+    );
 
-static GstCaps *
-linear_factory (void)
-{
-  return gst_caps_new_simple ("audio/x-raw-int",
-      "width", G_TYPE_INT, 16,
-      "depth", G_TYPE_INT, 16,
-      "endianness", G_TYPE_INT, G_BYTE_ORDER,
-      "signed", G_TYPE_BOOLEAN, TRUE,
-      "rate", GST_TYPE_INT_RANGE, 8000, 192000,
-      "channels", GST_TYPE_INT_RANGE, 1, 2, NULL);
-}
+GstStaticPadTemplate alaw_dec_sink_factory = GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("audio/x-alaw, "
+        "rate = [ 8000 , 192000 ], " "channels = [ 1 , 2 ]")
+    );
 
-GstPadTemplate *alawenc_src_template, *alawenc_sink_template;
-GstPadTemplate *alawdec_src_template, *alawdec_sink_template;
+GstStaticPadTemplate alaw_enc_sink_factory = GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("audio/x-raw-int, "
+        "rate = (int) [ 8000, 192000 ], "
+        "channels = (int) [ 1, 2 ], "
+        "endianness = (int) BYTE_ORDER, "
+        "width = (int) 16, " "depth = (int) 16, " "signed = (boolean) True")
+    );
+
+GstStaticPadTemplate alaw_enc_src_factory = GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("audio/x-alaw, "
+        "rate = [ 8000 , 192000 ], " "channels = [ 1 , 2 ]")
+    );
 
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  GstCaps *alaw_caps, *linear_caps;
-
-  alaw_caps = alaw_factory ();
-  linear_caps = linear_factory ();
-
-  alawenc_src_template =
-      gst_pad_template_new ("src", GST_PAD_SRC, GST_PAD_ALWAYS, alaw_caps);
-  alawenc_sink_template =
-      gst_pad_template_new ("sink", GST_PAD_SINK, GST_PAD_ALWAYS, linear_caps);
-
-  alawdec_src_template =
-      gst_pad_template_new ("src", GST_PAD_SRC, GST_PAD_ALWAYS, linear_caps);
-  alawdec_sink_template =
-      gst_pad_template_new ("sink", GST_PAD_SINK, GST_PAD_ALWAYS, alaw_caps);
-
   if (!gst_element_register (plugin, "alawenc",
           GST_RANK_NONE, GST_TYPE_ALAW_ENC) ||
       !gst_element_register (plugin, "alawdec",

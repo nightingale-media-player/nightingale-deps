@@ -40,28 +40,23 @@ G_BEGIN_DECLS
 #define GST_IS_MATROSKA_DEMUX_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_MATROSKA_DEMUX))
 
-/* The spec says that more than 127 stream is discouraged so
- * take this as a limit for now */
-#define GST_MATROSKA_DEMUX_MAX_STREAMS 127       
-
 typedef enum {
   GST_MATROSKA_DEMUX_STATE_START,
   GST_MATROSKA_DEMUX_STATE_HEADER,
   GST_MATROSKA_DEMUX_STATE_DATA
 } GstMatroskaDemuxState;
 
-typedef struct _GstMatroskaDemuxIndex {
-  guint64        pos;   /* of the corresponding *cluster*! */
-  guint16        track; /* reference to 'num' */
-  guint64        time;  /* in nanoseconds */
-} GstMatroskaDemuxIndex;
-
 typedef struct _GstMatroskaDemux {
   GstEbmlRead              parent;
 
+  /* < private > */
+
+  GstIndex                *element_index;
+  gint                     element_index_writer_id;
+
   /* pads */
   GstPad                  *sinkpad;
-  GstMatroskaTrackContext *src[GST_MATROSKA_DEMUX_MAX_STREAMS];
+  GPtrArray               *src;
   GstClock                *clock;
   guint                    num_streams;
   guint                    num_v_streams;
@@ -97,6 +92,9 @@ typedef struct _GstMatroskaDemux {
   GstSegment               segment;
   gboolean                 segment_running;
   gint64                   duration;
+
+  GstEvent                *close_segment;
+  GstEvent                *new_segment;
 } GstMatroskaDemux;
 
 typedef struct _GstMatroskaDemuxClass {

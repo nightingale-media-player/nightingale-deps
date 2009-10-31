@@ -258,8 +258,6 @@ poll_tags (GstElement * element)
   message = gst_bus_poll (bus, GST_MESSAGE_TAG, GST_SECOND);
   fail_unless (message != NULL, "Could not poll for TAG message: Timed out");
 
-  fail_unless (GST_MESSAGE_SRC (message) == GST_OBJECT (element));
-
   gst_message_parse_tag (message, &tag_list);
   gst_message_unref (message);
   gst_object_unref (bus);
@@ -735,48 +733,6 @@ GST_START_TEST (test_empty_buffers)
   push_buffer (test_buffer_const_float_stereo (44100, 0, 0.0, 0.0));
   send_eos_event (element);
   poll_eos (element);
-
-  cleanup_rganalysis (element);
-}
-
-GST_END_TEST;
-
-GST_START_TEST (test_gap_buffers)
-{
-  GstElement *element = setup_rganalysis ();
-  GstTagList *tag_list;
-  GstBuffer *buf;
-  gint accumulator = 0;
-  gint i;
-
-  set_playing_state (element);
-
-  for (i = 0; i < 60; i++) {
-    if (i % 3 == 0) {
-      /* We are cheating here; the element cannot know that these GAP buffers
-       * actually contain non-silence so it must skip them. */
-      buf = test_buffer_square_float_mono (&accumulator, 44100, 512, 0.25);
-      GST_BUFFER_FLAG_SET (buf, GST_BUFFER_FLAG_GAP);
-      push_buffer (buf);
-
-      /* Verify that the base class does not lift the GAP flag: */
-      fail_if (g_list_length (buffers) == 0);
-      if (GST_BUFFER_FLAG_IS_SET (buf, GST_BUFFER_FLAG_GAP))
-        fail_unless (GST_BUFFER_FLAG_IS_SET (buffers->data,
-                GST_BUFFER_FLAG_GAP));
-    } else {
-      push_buffer (test_buffer_const_float_mono (44100, 512, 0.0));
-    }
-  }
-
-  send_eos_event (element);
-  tag_list = poll_tags (element);
-  /* We pushed faked GAP buffers with non-silence and non-GAP buffers with
-   * silence, so the correct result is that the analysis only got silence: */
-  fail_unless_track_peak (tag_list, 0.0);
-  fail_unless_track_gain (tag_list, SILENCE_GAIN);
-
-  gst_tag_list_free (tag_list);
 
   cleanup_rganalysis (element);
 }
@@ -1820,7 +1776,6 @@ rganalysis_suite (void)
   tcase_add_test (tc_chain, test_no_buffer_album_1);
   tcase_add_test (tc_chain, test_no_buffer_album_2);
   tcase_add_test (tc_chain, test_empty_buffers);
-  tcase_add_test (tc_chain, test_gap_buffers);
 
   tcase_add_test (tc_chain, test_peak_float);
   tcase_add_test (tc_chain, test_peak_int16_16);

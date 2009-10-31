@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>id3v2mux</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-id3demux.html" title="id3demux">
 <link rel="next" href="gst-plugins-good-plugins-interleave.html" title="interleave">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
@@ -23,15 +23,17 @@
 <th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-interleave.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-good-plugins-id3v2mux.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-id3v2mux.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-id3v2mux.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-id3v2mux.implemented-interfaces" class="shortcut">Implemented Interfaces</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-good-plugins-id3v2mux.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-id3v2mux.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-id3v2mux.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-id3v2mux.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+</td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry" title="id3v2mux">
 <a name="gst-plugins-good-plugins-id3v2mux"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -40,65 +42,68 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="gst-plugins-good-plugins-id3v2mux.synopsis"></a><h2>Synopsis</h2>
 <a name="GstId3v2Mux"></a><pre class="synopsis">
                     <a class="link" href="gst-plugins-good-plugins-id3v2mux.html#GstId3v2Mux-struct" title="GstId3v2Mux">GstId3v2Mux</a>;
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Object Hierarchy">
 <a name="gst-plugins-good-plugins-id3v2mux.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
-   +----GstObject
-         +----GstElement
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
                +----GstTagLibMux
                      +----GstId3v2Mux
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Implemented Interfaces">
 <a name="gst-plugins-good-plugins-id3v2mux.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstId3v2Mux implements
- GstTagSetter.</p>
+ <a
+href="../gstreamer-0.10/GstTagSetter.html"
+>GstTagSetter</a>.</p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Description">
 <a name="gst-plugins-good-plugins-id3v2mux.description"></a><h2>Description</h2>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2569685"></a><p>
 This element adds ID3v2 tags to the beginning of a stream using the taglib
 library. More precisely, the tags written are ID3 version 2.4.0 tags (which
 means in practice that some hardware players or outdated programs might not
 be able to read them properly).
 </p>
 <p>
-Applications can set the tags to write using the <span class="type">GstTagSetter</span> interface.
+Applications can set the tags to write using the <a
+href="../gstreamer-0.10/GstTagSetter.html"
+><span class="type">GstTagSetter</span></a> interface.
 Tags sent by upstream elements will be picked up automatically (and merged
 according to the merge mode set via the tag setter interface).
 </p>
 <p>
-Here is a simple pipeline that transcodes a file from Ogg/Vorbis to mp3
-format with an ID3v2 that contains the same as the the Ogg/Vorbis file:
 </p>
-<pre class="programlisting">
+<div class="refsect2" title="Example pipelines">
+<a name="id468908"></a><h3>Example pipelines</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v filesrc location=foo.ogg ! decodebin ! audioconvert ! lame ! id3v2mux ! filesink location=foo.mp3
-</pre>
-<p>
-Make sure the Ogg/Vorbis file actually has comments to preserve.
-You can verify the tags were written using:
-</p>
-<pre class="programlisting">
+</pre></div> A pipeline that transcodes a file from Ogg/Vorbis to mp3 format with an
+ID3v2 that contains the same as the the Ogg/Vorbis file. Make sure the
+Ogg/Vorbis file actually has comments to preserve.
+<div class="informalexample"><pre class="programlisting">
 gst-launch -m filesrc location=foo.mp3 ! id3demux ! fakesink silent=TRUE 2&gt; /dev/null | grep taglist
-</pre>
-<p>
-</p>
+</pre></div> Verify that tags have been written.
 </div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2549352"></a><h3>Element Information</h3>
+<div class="refsect2" title="Element Information">
+<a name="id525861"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -120,29 +125,8 @@ gst-launch -m filesrc location=foo.mp3 ! id3demux ! fakesink silent=TRUE 2&gt; /
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2612298"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>ANY</td>
-</tr>
-</tbody>
-</table></div>
+<div class="refsect2" title="Element Pads">
+<a name="id500413"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -164,29 +148,50 @@ gst-launch -m filesrc location=foo.mp3 ! id3demux ! fakesink silent=TRUE 2&gt; /
 </tr>
 </tbody>
 </table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 </div>
 <p>
-
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Details">
 <a name="gst-plugins-good-plugins-id3v2mux.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="GstId3v2Mux">
 <a name="GstId3v2Mux-struct"></a><h3>GstId3v2Mux</h3>
 <pre class="programlisting">typedef struct _GstId3v2Mux GstId3v2Mux;</pre>
 <p>
-
 </p>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="See Also">
 <a name="gst-plugins-good-plugins-id3v2mux.see-also"></a><h2>See Also</h2>
-<a class="link" href="gst-plugins-good-plugins-id3demux.html#GstID3Demux"><span class="type">GstID3Demux</span></a>, <span class="type">GstTagSetter</span>
+#GstID3Demux, <a
+href="../gstreamer-0.10/GstTagSetter.html"
+><span class="type">GstTagSetter</span></a>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

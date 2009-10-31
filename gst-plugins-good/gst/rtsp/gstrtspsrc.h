@@ -51,6 +51,7 @@ G_BEGIN_DECLS
 #include <gst/rtsp/gstrtspconnection.h>
 #include <gst/rtsp/gstrtspmessage.h>
 #include <gst/rtsp/gstrtspurl.h>
+#include <gst/rtsp/gstrtsprange.h>
 
 #include "gstrtspext.h"
 
@@ -106,9 +107,12 @@ struct _GstRTSPStream {
   GstElement   *udpsrc[2];
   GstPad       *blockedpad;
 
-  /* our udp sink back to the server */
-  GstElement   *udpsink;
+  /* our udp sinks back to the server */
+  GstElement   *udpsink[2];
   GstPad       *rtcppad;
+
+  /* fakesrc for sending dummy data */
+  GstElement   *fakesrc;
 
   /* state */
   gint          pt;
@@ -127,6 +131,19 @@ struct _GstRTSPStream {
   guint         rr_bandwidth;
 };
 
+/**
+ * GstRTSPNatMethod:
+ * @GST_RTSP_NAT_NONE: none
+ * @GST_RTSP_NAT_DUMMY: send dummy packets
+ *
+ * Different methods for trying to traverse firewalls.
+ */
+typedef enum
+{
+  GST_RTSP_NAT_NONE,
+  GST_RTSP_NAT_DUMMY
+} GstRTSPNatMethod;
+
 struct _GstRTSPSrc {
   GstBin           parent;
 
@@ -137,6 +154,7 @@ struct _GstRTSPSrc {
   GstSegment       segment;
   gboolean         running;
   gboolean         need_range;
+  gboolean         skip;
   gint             free_channel;
   GstEvent        *close_segment;
   GstEvent        *start_segment;
@@ -169,6 +187,13 @@ struct _GstRTSPSrc {
   GTimeVal         *ptcp_timeout;
   guint             latency;
   guint             connection_speed;
+  GstRTSPNatMethod  nat_method;
+  gboolean          do_rtcp;
+  gchar            *proxy_host;
+  guint             proxy_port;
+  gchar            *proxy_user;
+  gchar            *proxy_passwd;
+  guint             rtp_blocksize;
 
   /* state */
   GstRTSPState       state;
@@ -177,6 +202,7 @@ struct _GstRTSPSrc {
   gboolean           tried_url_auth;
   gchar             *addr;
   gboolean           need_redirect;
+  GstRTSPTimeRange  *range;
 
   /* supported methods */
   gint               methods;
@@ -187,6 +213,7 @@ struct _GstRTSPSrc {
   gulong           session_ptmap_id;
 
   GstRTSPConnection  *connection;
+  gboolean            connected;
 
   /* a list of RTSP extensions as GstElement */
   GstRTSPExtensionList  *extensions;

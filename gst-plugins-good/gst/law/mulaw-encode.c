@@ -16,6 +16,11 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION:element-mulawenc
+ *
+ * This element encode mulaw audio. Mulaw coding is also known as G.711.
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -24,7 +29,8 @@
 #include "mulaw-encode.h"
 #include "mulaw-conversion.h"
 
-extern GstPadTemplate *mulawenc_src_template, *mulawenc_sink_template;
+extern GstStaticPadTemplate mulaw_enc_src_factory;
+extern GstStaticPadTemplate mulaw_enc_sink_factory;
 
 /* Stereo signals and args */
 enum
@@ -53,52 +59,60 @@ mulawenc_getcaps (GstPad * pad)
 {
   GstMuLawEnc *mulawenc;
   GstPad *otherpad;
-  GstCaps *base_caps, *othercaps;
+  GstCaps *othercaps, *result;
+  const GstCaps *templ;
+  gchar *name;
+  gint i;
 
   mulawenc = GST_MULAWENC (GST_PAD_PARENT (pad));
 
-  base_caps = gst_caps_copy (gst_pad_get_pad_template_caps (pad));
-
+  /* figure out the name of the caps we are going to return */
   if (pad == mulawenc->srcpad) {
+    name = "audio/x-mulaw";
     otherpad = mulawenc->sinkpad;
   } else {
+    name = "audio/x-raw-int";
     otherpad = mulawenc->srcpad;
   }
+  /* get caps from the peer, this can return NULL when there is no peer */
   othercaps = gst_pad_peer_get_caps (otherpad);
+
+  /* get the template caps to make sure we return something acceptable */
+  templ = gst_pad_get_pad_template_caps (pad);
+
   if (othercaps) {
-    GstStructure *structure;
-    const GValue *orate, *ochans;
-    const GValue *rate, *chans;
-    GValue irate = { 0 }, ichans = {
-    0};
+    /* there was a peer */
+    othercaps = gst_caps_make_writable (othercaps);
 
-    if (gst_caps_is_empty (othercaps) || gst_caps_is_any (othercaps))
-      goto done;
+    /* go through the caps and remove the fields we don't want */
+    for (i = 0; i < gst_caps_get_size (othercaps); i++) {
+      GstStructure *structure;
 
-    structure = gst_caps_get_structure (othercaps, 0);
-    orate = gst_structure_get_value (structure, "rate");
-    ochans = gst_structure_get_value (structure, "channels");
-    if (!orate || !ochans)
-      goto done;
+      structure = gst_caps_get_structure (othercaps, i);
 
-    structure = gst_caps_get_structure (base_caps, 0);
-    rate = gst_structure_get_value (structure, "rate");
-    chans = gst_structure_get_value (structure, "channels");
-    if (!rate || !chans)
-      goto done;
+      /* adjust the name */
+      gst_structure_set_name (structure, name);
 
-    gst_value_intersect (&irate, orate, rate);
-    gst_value_intersect (&ichans, ochans, chans);
-
-    /* Set the samplerate/channels on the to-be-returned caps */
-    structure = gst_caps_get_structure (base_caps, 0);
-    gst_structure_set_value (structure, "rate", &irate);
-    gst_structure_set_value (structure, "channels", &ichans);
-
-  done:
+      if (pad == mulawenc->srcpad) {
+        /* remove the fields we don't want */
+        gst_structure_remove_fields (structure, "width", "depth", "endianness",
+            "signed", NULL);
+      } else {
+        /* add fixed fields */
+        gst_structure_set (structure, "width", G_TYPE_INT, 16,
+            "depth", G_TYPE_INT, 16,
+            "endianness", G_TYPE_INT, G_BYTE_ORDER,
+            "signed", G_TYPE_BOOLEAN, TRUE, NULL);
+      }
+    }
+    /* filter against the allowed caps of the pad to return our result */
+    result = gst_caps_intersect (othercaps, templ);
     gst_caps_unref (othercaps);
+  } else {
+    /* there was no peer, return the template caps */
+    result = gst_caps_copy (templ);
   }
-  return base_caps;
+  return result;
 }
 
 static gboolean
@@ -170,8 +184,10 @@ gst_mulawenc_base_init (GstMuLawEncClass * klass)
       "Convert 16bit PCM to 8bit mu law",
       "Zaheer Abbas Merali <zaheerabbas at merali dot org>");
 
-  gst_element_class_add_pad_template (element_class, mulawenc_src_template);
-  gst_element_class_add_pad_template (element_class, mulawenc_sink_template);
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&mulaw_enc_src_factory));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&mulaw_enc_sink_factory));
   gst_element_class_set_details (element_class, &mulawenc_details);
 }
 
@@ -185,15 +201,17 @@ static void
 gst_mulawenc_init (GstMuLawEnc * mulawenc)
 {
   mulawenc->sinkpad =
-      gst_pad_new_from_template (mulawenc_sink_template, "sink");
+      gst_pad_new_from_static_template (&mulaw_enc_sink_factory, "sink");
   gst_pad_set_setcaps_function (mulawenc->sinkpad, mulawenc_setcaps);
   gst_pad_set_getcaps_function (mulawenc->sinkpad, mulawenc_getcaps);
   gst_pad_set_chain_function (mulawenc->sinkpad, gst_mulawenc_chain);
   gst_element_add_pad (GST_ELEMENT (mulawenc), mulawenc->sinkpad);
 
-  mulawenc->srcpad = gst_pad_new_from_template (mulawenc_src_template, "src");
+  mulawenc->srcpad =
+      gst_pad_new_from_static_template (&mulaw_enc_src_factory, "src");
   gst_pad_set_setcaps_function (mulawenc->srcpad, mulawenc_setcaps);
   gst_pad_set_getcaps_function (mulawenc->srcpad, mulawenc_getcaps);
+  gst_pad_use_fixed_caps (mulawenc->srcpad);
   gst_element_add_pad (GST_ELEMENT (mulawenc), mulawenc->srcpad);
 
   /* init rest */
@@ -225,17 +243,23 @@ gst_mulawenc_chain (GstPad * pad, GstBuffer * buffer)
 
   timestamp = GST_BUFFER_TIMESTAMP (buffer);
   duration = GST_BUFFER_DURATION (buffer);
+
+  ret = gst_pad_alloc_buffer_and_set_caps (mulawenc->srcpad,
+      GST_BUFFER_OFFSET_NONE, mulaw_size, GST_PAD_CAPS (mulawenc->srcpad),
+      &outbuf);
+  if (ret != GST_FLOW_OK)
+    goto alloc_failed;
+
   if (duration == -1) {
     duration = gst_util_uint64_scale_int (mulaw_size,
         GST_SECOND, mulawenc->rate * mulawenc->channels);
   }
 
-  ret =
-      gst_pad_alloc_buffer_and_set_caps (mulawenc->srcpad,
-      GST_BUFFER_OFFSET_NONE, mulaw_size, GST_PAD_CAPS (mulawenc->srcpad),
-      &outbuf);
-  if (ret != GST_FLOW_OK)
-    goto alloc_failed;
+  if (GST_BUFFER_SIZE (outbuf) < mulaw_size) {
+    /* pad-alloc can suggest a smaller size */
+    gst_buffer_unref (outbuf);
+    outbuf = gst_buffer_new_and_alloc (mulaw_size);
+  }
 
   mulaw_data = (guint8 *) GST_BUFFER_DATA (outbuf);
 

@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2007> Wim Taymans <wim@fluendo.com>
+ * Copyright (C) <2007> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -31,10 +31,10 @@ GST_DEBUG_CATEGORY_STATIC (rtpac3depay_debug);
 
 /* elementfactory information */
 static const GstElementDetails gst_rtp_ac3depay_details =
-GST_ELEMENT_DETAILS ("RTP packet depayloader",
+GST_ELEMENT_DETAILS ("RTP AC3 depayloader",
     "Codec/Depayloader/Network",
     "Extracts AC3 audio from RTP packets (RFC 4184)",
-    "Wim Taymans <wim@fluendo.com>");
+    "Wim Taymans <wim.taymans@gmail.com>");
 
 static GstStaticPadTemplate gst_rtp_ac3_depay_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
@@ -62,9 +62,6 @@ static gboolean gst_rtp_ac3_depay_setcaps (GstBaseRTPDepayload * depayload,
 static GstBuffer *gst_rtp_ac3_depay_process (GstBaseRTPDepayload * depayload,
     GstBuffer * buf);
 
-static GstStateChangeReturn gst_rtp_ac3_depay_change_state (GstElement *
-    element, GstStateChange transition);
-
 static void
 gst_rtp_ac3_depay_base_init (gpointer klass)
 {
@@ -81,15 +78,11 @@ gst_rtp_ac3_depay_base_init (gpointer klass)
 static void
 gst_rtp_ac3_depay_class_init (GstRtpAC3DepayClass * klass)
 {
-  GstElementClass *gstelement_class;
   GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
 
-  gstelement_class = (GstElementClass *) klass;
   gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
-
-  gstelement_class->change_state = gst_rtp_ac3_depay_change_state;
 
   gstbasertpdepayload_class->set_caps = gst_rtp_ac3_depay_setcaps;
   gstbasertpdepayload_class->process = gst_rtp_ac3_depay_process;
@@ -109,17 +102,21 @@ static gboolean
 gst_rtp_ac3_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
 {
   GstStructure *structure;
-  GstRtpAC3Depay *rtpac3depay;
-  gint clock_rate = 90000;      /* default */
-
-  rtpac3depay = GST_RTP_AC3_DEPAY (depayload);
+  gint clock_rate;
+  GstCaps *srccaps;
+  gboolean res;
 
   structure = gst_caps_get_structure (caps, 0);
 
-  gst_structure_get_int (structure, "clock-rate", &clock_rate);
+  if (!gst_structure_get_int (structure, "clock-rate", &clock_rate))
+    clock_rate = 90000;         /* default */
   depayload->clock_rate = clock_rate;
 
-  return TRUE;
+  srccaps = gst_caps_new_simple ("audio/ac3", NULL);
+  res = gst_pad_set_caps (depayload->srcpad, srccaps);
+  gst_caps_unref (srccaps);
+
+  return res;
 }
 
 struct frmsize_s
@@ -177,19 +174,14 @@ gst_rtp_ac3_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 
   rtpac3depay = GST_RTP_AC3_DEPAY (depayload);
 
-  if (!gst_rtp_buffer_validate (buf))
-    goto bad_packet;
-
   {
-    gint payload_len;
     guint8 *payload;
     guint16 FT, NF;
 
-    payload_len = gst_rtp_buffer_get_payload_len (buf);
-    payload = gst_rtp_buffer_get_payload (buf);
-
-    if (payload_len <= 2)
+    if (gst_rtp_buffer_get_payload_len (buf) < 2)
       goto empty_packet;
+
+    payload = gst_rtp_buffer_get_payload (buf);
 
     /* strip off header
      *
@@ -204,9 +196,6 @@ gst_rtp_ac3_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 
     GST_DEBUG_OBJECT (rtpac3depay, "FT: %d, NF: %d", FT, NF);
 
-    payload_len -= 2;
-    payload += 2;
-
     /* We don't bother with fragmented packets yet */
     outbuf = gst_rtp_buffer_get_payload_subbuffer (buf, 2, -1);
 
@@ -218,56 +207,13 @@ gst_rtp_ac3_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 
   return NULL;
 
-bad_packet:
-  {
-    GST_ELEMENT_WARNING (rtpac3depay, STREAM, DECODE,
-        ("Packet did not validate."), (NULL));
-    return NULL;
-  }
-#if 0
-bad_payload:
-  {
-    GST_ELEMENT_WARNING (rtpac3depay, STREAM, DECODE,
-        ("Unexpected payload type."), (NULL));
-    return NULL;
-  }
-#endif
+  /* ERRORS */
 empty_packet:
   {
     GST_ELEMENT_WARNING (rtpac3depay, STREAM, DECODE,
         ("Empty Payload."), (NULL));
     return NULL;
   }
-}
-
-static GstStateChangeReturn
-gst_rtp_ac3_depay_change_state (GstElement * element, GstStateChange transition)
-{
-  GstRtpAC3Depay *rtpac3depay;
-  GstStateChangeReturn ret;
-
-  rtpac3depay = GST_RTP_AC3_DEPAY (element);
-
-  /*
-     switch (transition) {
-     case GST_STATE_CHANGE_NULL_TO_READY:
-     break;
-     default:
-     break;
-     }
-   */
-
-  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
-
-  /*
-     switch (transition) {
-     case GST_STATE_CHANGE_READY_TO_NULL:
-     break;
-     default:
-     break;
-     }
-   */
-  return ret;
 }
 
 gboolean

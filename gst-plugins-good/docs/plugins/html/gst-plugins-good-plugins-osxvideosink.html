@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>osxvideosink</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-osxaudiosrc.html" title="osxaudiosrc">
 <link rel="next" href="gst-plugins-good-plugins-pngdec.html" title="pngdec">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
@@ -23,13 +23,15 @@
 <th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-pngdec.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-good-plugins-osxvideosink.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-osxvideosink.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-osxvideosink.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-good-plugins-osxvideosink.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-osxvideosink.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-osxvideosink.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry" title="osxvideosink">
 <a name="gst-plugins-good-plugins-osxvideosink"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -38,25 +40,29 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="gst-plugins-good-plugins-osxvideosink.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
                     <a class="link" href="gst-plugins-good-plugins-osxvideosink.html#GstOSXVideoSink" title="GstOSXVideoSink">GstOSXVideoSink</a>;
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Properties">
 <a name="gst-plugins-good-plugins-osxvideosink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-osxvideosink.html#GstOSXVideoSink--embed" title='The "embed" property'>embed</a>"                    gboolean              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-osxvideosink.html#GstOSXVideoSink--fullscreen" title='The "fullscreen" property'>fullscreen</a>"               gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-osxvideosink.html#GstOSXVideoSink--embed" title='The "embed" property'>embed</a>"                    <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-osxvideosink.html#GstOSXVideoSink--fullscreen" title='The "fullscreen" property'>fullscreen</a>"               <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Description">
 <a name="gst-plugins-good-plugins-osxvideosink.description"></a><h2>Description</h2>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2620406"></a><h3>Element Information</h3>
+<div class="refsect2" title="Element Information">
+<a name="id561878"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -78,56 +84,43 @@
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2620467"></a><h3>Element Pads</h3>
+<div class="refsect2" title="Element Pads">
+<a name="id576642"></a><h3>Element Pads</h3>
 </div>
 </div>
 <p>
-
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Details">
 <a name="gst-plugins-good-plugins-osxvideosink.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="GstOSXVideoSink">
 <a name="GstOSXVideoSink"></a><h3>GstOSXVideoSink</h3>
 <pre class="programlisting">typedef struct {
   /* Our element stuff */
   GstVideoSink videosink;
   GstOSXWindow *osxwindow;
-  
-  gint fps_n;
-  gint fps_d;
-  
-  GstTask *event_task;
-  GStaticRecMutex event_task_lock;
-
-  /* Unused */
-  gint pixel_width, pixel_height;
- 
-  GstClockTime time;
-  
-  gboolean embed;
-  gboolean fullscreen; 
-  gboolean sw_scaling_failed;
 } GstOSXVideoSink;
 </pre>
 <p>
-
 </p>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Property Details">
 <a name="gst-plugins-good-plugins-osxvideosink.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title='The "embed" property'>
 <a name="GstOSXVideoSink--embed"></a><h3>The <code class="literal">"embed"</code> property</h3>
-<pre class="programlisting">  "embed"                    gboolean              : Read / Write</pre>
+<pre class="programlisting">  "embed"                    <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>When enabled, it  can be embedded.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title='The "fullscreen" property'>
 <a name="GstOSXVideoSink--fullscreen"></a><h3>The <code class="literal">"fullscreen"</code> property</h3>
-<pre class="programlisting">  "fullscreen"               gboolean              : Read / Write</pre>
+<pre class="programlisting">  "fullscreen"               <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>When enabled, the view  is fullscreen.</p>
 <p>Default value: FALSE</p>
 </div>
@@ -135,6 +128,6 @@
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

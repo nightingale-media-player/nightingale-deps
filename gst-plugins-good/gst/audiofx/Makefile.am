@@ -9,10 +9,15 @@ libgstaudiofx_la_SOURCES = audiofx.c\
 	audioamplify.c \
 	audiodynamic.c \
 	audiokaraoke.c \
+	audiofxbaseiirfilter.c \
 	audiocheblimit.c \
 	audiochebband.c \
+	audioiirfilter.c \
+	audiofxbasefirfilter.c \
 	audiowsincband.c \
-	audiowsinclimit.c
+	audiowsinclimit.c \
+	audiofirfilter.c \
+	audioecho.c
 
 # flags used to compile this plugin
 libgstaudiofx_la_CFLAGS = $(GST_CFLAGS) \
@@ -26,6 +31,7 @@ libgstaudiofx_la_LIBADD = $(GST_LIBS) \
 	-lgstaudio-$(GST_MAJORMINOR) \
 	$(LIBM)
 libgstaudiofx_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+libgstaudiofx_la_LIBTOOLFLAGS = --tag=disable-static
 
 # headers we need but don't want installed
 noinst_HEADERS = audiopanorama.h \
@@ -33,9 +39,14 @@ noinst_HEADERS = audiopanorama.h \
 	audioamplify.h \
 	audiodynamic.h \
 	audiokaraoke.h \
+	audiofxbaseiirfilter.h \
 	audiocheblimit.h \
 	audiochebband.h \
+	audioiirfilter.h \
+	audiofxbasefirfilter.h \
 	audiowsincband.h \
         audiowsinclimit.h \
+	audiofirfilter.h \
+	audioecho.h \
 	math_compat.h
 

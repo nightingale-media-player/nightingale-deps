@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2005> Wim Taymans <wim@fluendo.com>
+ * Copyright (C) <2005> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -45,10 +45,10 @@ GST_DEBUG_CATEGORY_STATIC (rtpamrpay_debug);
 
 /* elementfactory information */
 static const GstElementDetails gst_rtp_amrpay_details =
-GST_ELEMENT_DETAILS ("RTP packet payloader",
+GST_ELEMENT_DETAILS ("RTP AMR payloader",
     "Codec/Payloader/Network",
     "Payload-encode AMR or AMR-WB audio into RTP packets (RFC 3267)",
-    "Wim Taymans <wim@fluendo.com>");
+    "Wim Taymans <wim.taymans@gmail.com>");
 
 static GstStaticPadTemplate gst_rtp_amr_pay_sink_template =
     GST_STATIC_PAD_TEMPLATE ("sink",
@@ -116,12 +116,8 @@ gst_rtp_amr_pay_base_init (gpointer klass)
 static void
 gst_rtp_amr_pay_class_init (GstRtpAMRPayClass * klass)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseRTPPayloadClass *gstbasertppayload_class;
 
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
   gstbasertppayload_class = (GstBaseRTPPayloadClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
@@ -211,7 +207,6 @@ gst_rtp_amr_pay_handle_buffer (GstBaseRTPPayload * basepayload,
   gint i, num_packets, num_nonempty_packets;
   gint amr_len;
   gint *frame_size;
-  gboolean discont;
 
   rtpamrpay = GST_RTP_AMR_PAY (basepayload);
   mtu = GST_BASE_RTP_PAYLOAD_MTU (rtpamrpay);
@@ -220,7 +215,6 @@ gst_rtp_amr_pay_handle_buffer (GstBaseRTPPayload * basepayload,
   data = GST_BUFFER_DATA (buffer);
   timestamp = GST_BUFFER_TIMESTAMP (buffer);
   duration = GST_BUFFER_DURATION (buffer);
-  discont = GST_BUFFER_IS_DISCONT (buffer);
 
   /* setup frame size pointer */
   if (rtpamrpay->mode == GST_RTP_AMR_P_MODE_NB)
@@ -279,11 +273,10 @@ gst_rtp_amr_pay_handle_buffer (GstBaseRTPPayload * basepayload,
     GST_BUFFER_DURATION (outbuf) = 20 * GST_MSECOND;
   }
 
-  if (discont) {
+  if (GST_BUFFER_IS_DISCONT (buffer)) {
     GST_DEBUG_OBJECT (basepayload, "discont, setting marker bit");
     GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_DISCONT);
     gst_rtp_buffer_set_marker (outbuf, TRUE);
-    discont = FALSE;
   }
 
   /* get payload, this is now writable */

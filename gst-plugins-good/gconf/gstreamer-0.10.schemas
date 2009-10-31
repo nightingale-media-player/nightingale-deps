@@ -170,7 +170,7 @@
       <applyto>/system/gstreamer/0.10/default/videosrc</applyto>
       <owner>gstreamer</owner>
       <type>string</type>
-      <default>v4lsrc</default>
+      <default>v4l2src</default>
       <locale name="C">
         <short>default GStreamer video source</short>
         <long>GStreamer can record video from any number of input elements.  Some possible choices are v4lsrc and videotestsrc. The video source can be a partial pipeline instead of just one element.</long>

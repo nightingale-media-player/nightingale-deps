@@ -18,7 +18,7 @@ if HAVE_CPU_I386
 ARCH_FILES = $(MMX_FILES)
 ARCH_CFLAGS = -DBUILD_MMX
 endif
-
+				
 libgstgoom_la_SOURCES =						\
 	gstgoom.c gstgoom.h					\
 	drawmethods.c drawmethods.h				\
@@ -40,8 +40,9 @@ libgstgoom_la_SOURCES =						\
 libgstgoom_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS) $(GOOM_FILTER_CFLAGS) $(LIBOIL_CFLAGS) $(ARCH_CFLAGS)
 libgstgoom_la_LIBADD = $(GST_BASE_LIBS) $(GST_LIBS) $(LIBM) $(LIBOIL_LIBS)
 libgstgoom_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+libgstgoom_la_LIBTOOLFLAGS = --tag=disable-static
 
-EXTRA_DIST = filters.c $(PPC_FILES) $(MMX_FILES)
+EXTRA_DIST = $(PPC_FILES) $(MMX_FILES)
 
 .NOTPARALLEL:
 

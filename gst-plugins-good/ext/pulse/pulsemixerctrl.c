@@ -93,10 +93,11 @@ gst_pulsemixer_ctrl_sink_info_cb (pa_context * context, const pa_sink_info * i,
   c->type = GST_PULSEMIXER_SINK;
 
   if (c->track) {
-    int i = g_atomic_int_get (&c->track->flags);
+    GstMixerTrackFlags flags = c->track->flags;
 
-    i = (i & ~GST_MIXER_TRACK_MUTE) | (c->muted ? GST_MIXER_TRACK_MUTE : 0);
-    g_atomic_int_set (&c->track->flags, i);
+    flags =
+        (flags & ~GST_MIXER_TRACK_MUTE) | (c->muted ? GST_MIXER_TRACK_MUTE : 0);
+    c->track->flags = flags;
   }
 
   c->operation_success = 1;
@@ -142,10 +143,11 @@ gst_pulsemixer_ctrl_source_info_cb (pa_context * context,
   c->type = GST_PULSEMIXER_SOURCE;
 
   if (c->track) {
-    int i = g_atomic_int_get (&c->track->flags);
+    GstMixerTrackFlags flags = c->track->flags;
 
-    i = (i & ~GST_MIXER_TRACK_MUTE) | (c->muted ? GST_MIXER_TRACK_MUTE : 0);
-    g_atomic_int_set (&c->track->flags, i);
+    flags =
+        (flags & ~GST_MIXER_TRACK_MUTE) | (c->muted ? GST_MIXER_TRACK_MUTE : 0);
+    c->track->flags = flags;
   }
 
   c->operation_success = 1;
@@ -157,7 +159,6 @@ gst_pulsemixer_ctrl_subscribe_cb (pa_context * context,
     pa_subscription_event_type_t t, uint32_t idx, void *userdata)
 {
   GstPulseMixerCtrl *c = GST_PULSEMIXER_CTRL (userdata);
-
   pa_operation *o = NULL;
 
   /* Called from the background thread! */
@@ -176,7 +177,7 @@ gst_pulsemixer_ctrl_subscribe_cb (pa_context * context,
         gst_pulsemixer_ctrl_source_info_cb, c);
 
   if (!o) {
-    GST_WARNING ("Failed to get sink info: %s",
+    GST_WARNING_OBJECT (c->object, "Failed to get sink info: %s",
         pa_strerror (pa_context_errno (c->context)));
     return;
   }
@@ -198,7 +199,7 @@ gst_pulsemixer_ctrl_success_cb (pa_context * context, int success,
 
 #define CHECK_DEAD_GOTO(c, label) do { \
 if (!(c)->context || pa_context_get_state((c)->context) != PA_CONTEXT_READY) { \
-    GST_WARNING("Not connected: %s", (c)->context ? pa_strerror(pa_context_errno((c)->context)) : "NULL"); \
+    GST_WARNING_OBJECT (c->object, "Not connected: %s", (c)->context ? pa_strerror(pa_context_errno((c)->context)) : "NULL"); \
     goto label; \
 } \
 } while(0);
@@ -207,9 +208,7 @@ static gboolean
 gst_pulsemixer_ctrl_open (GstPulseMixerCtrl * c)
 {
   int e;
-
   gchar *name = gst_pulse_client_name ();
-
   pa_operation *o = NULL;
 
   g_assert (c);
@@ -224,7 +223,7 @@ gst_pulsemixer_ctrl_open (GstPulseMixerCtrl * c)
 
   if (!(c->context =
           pa_context_new (pa_threaded_mainloop_get_api (c->mainloop), name))) {
-    GST_WARNING ("Failed to create context");
+    GST_WARNING_OBJECT (c->object, "Failed to create context");
     goto unlock_and_fail;
   }
 
@@ -234,7 +233,7 @@ gst_pulsemixer_ctrl_open (GstPulseMixerCtrl * c)
       gst_pulsemixer_ctrl_subscribe_cb, c);
 
   if (pa_context_connect (c->context, c->server, 0, NULL) < 0) {
-    GST_WARNING ("Failed to connect context: %s",
+    GST_WARNING_OBJECT (c->object, "Failed to connect context: %s",
         pa_strerror (pa_context_errno (c->context)));
     goto unlock_and_fail;
   }
@@ -243,7 +242,7 @@ gst_pulsemixer_ctrl_open (GstPulseMixerCtrl * c)
   pa_threaded_mainloop_wait (c->mainloop);
 
   if (pa_context_get_state (c->context) != PA_CONTEXT_READY) {
-    GST_WARNING ("Failed to connect context: %s",
+    GST_WARNING_OBJECT (c->object, "Failed to connect context: %s",
         pa_strerror (pa_context_errno (c->context)));
     goto unlock_and_fail;
   }
@@ -254,7 +253,7 @@ gst_pulsemixer_ctrl_open (GstPulseMixerCtrl * c)
           pa_context_subscribe (c->context,
               PA_SUBSCRIPTION_MASK_SINK | PA_SUBSCRIPTION_MASK_SOURCE,
               gst_pulsemixer_ctrl_success_cb, c))) {
-    GST_WARNING ("Failed to subscribe to events: %s",
+    GST_WARNING_OBJECT (c->object, "Failed to subscribe to events: %s",
         pa_strerror (pa_context_errno (c->context)));
     goto unlock_and_fail;
   }
@@ -266,10 +265,12 @@ gst_pulsemixer_ctrl_open (GstPulseMixerCtrl * c)
   }
 
   if (!c->operation_success) {
-    GST_WARNING ("Failed to subscribe to events: %s",
+    GST_WARNING_OBJECT (c->object, "Failed to subscribe to events: %s",
         pa_strerror (pa_context_errno (c->context)));
     goto unlock_and_fail;
   }
+  pa_operation_unref (o);
+  o = NULL;
 
   /* Get sink info */
 
@@ -277,7 +278,7 @@ gst_pulsemixer_ctrl_open (GstPulseMixerCtrl * c)
     if (!(o =
             pa_context_get_sink_info_by_name (c->context, c->device,
                 gst_pulsemixer_ctrl_sink_info_cb, c))) {
-      GST_WARNING ("Failed to get sink info: %s",
+      GST_WARNING_OBJECT (c->object, "Failed to get sink info: %s",
           pa_strerror (pa_context_errno (c->context)));
       goto unlock_and_fail;
     }
@@ -293,7 +294,7 @@ gst_pulsemixer_ctrl_open (GstPulseMixerCtrl * c)
 
     if (!c->operation_success && (c->type == GST_PULSEMIXER_SINK
             || pa_context_errno (c->context) != PA_ERR_NOENTITY)) {
-      GST_WARNING ("Failed to get sink info: %s",
+      GST_WARNING_OBJECT (c->object, "Failed to get sink info: %s",
           pa_strerror (pa_context_errno (c->context)));
       goto unlock_and_fail;
     }
@@ -303,7 +304,7 @@ gst_pulsemixer_ctrl_open (GstPulseMixerCtrl * c)
     if (!(o =
             pa_context_get_source_info_by_name (c->context, c->device,
                 gst_pulsemixer_ctrl_source_info_cb, c))) {
-      GST_WARNING ("Failed to get source info: %s",
+      GST_WARNING_OBJECT (c->object, "Failed to get source info: %s",
           pa_strerror (pa_context_errno (c->context)));
       goto unlock_and_fail;
     }
@@ -318,7 +319,7 @@ gst_pulsemixer_ctrl_open (GstPulseMixerCtrl * c)
     o = NULL;
 
     if (!c->operation_success) {
-      GST_WARNING ("Failed to get source info: %s",
+      GST_WARNING_OBJECT (c->object, "Failed to get source info: %s",
           pa_strerror (pa_context_errno (c->context)));
       goto unlock_and_fail;
     }
@@ -380,12 +381,13 @@ gst_pulsemixer_ctrl_close (GstPulseMixerCtrl * c)
 }
 
 GstPulseMixerCtrl *
-gst_pulsemixer_ctrl_new (const gchar * server, const gchar * device,
-    GstPulseMixerType type)
+gst_pulsemixer_ctrl_new (GObject * object, const gchar * server,
+    const gchar * device, GstPulseMixerType type)
 {
   GstPulseMixerCtrl *c = NULL;
 
   c = g_new (GstPulseMixerCtrl, 1);
+  c->object = g_object_ref (object);
   c->tracklist = NULL;
   c->server = g_strdup (server);
   c->device = g_strdup (device);
@@ -424,6 +426,7 @@ gst_pulsemixer_ctrl_free (GstPulseMixerCtrl * c)
   g_free (c->device);
   g_free (c->name);
   g_free (c->description);
+  g_object_unref (c->object);
   g_free (c);
 }
 
@@ -440,7 +443,6 @@ gst_pulsemixer_ctrl_timeout_event (pa_mainloop_api * a, pa_time_event * e,
     const struct timeval *tv, void *userdata)
 {
   pa_operation *o;
-
   GstPulseMixerCtrl *c = GST_PULSEMIXER_CTRL (userdata);
 
   if (c->update_volume) {
@@ -452,7 +454,7 @@ gst_pulsemixer_ctrl_timeout_event (pa_mainloop_api * a, pa_time_event * e,
           &c->volume, NULL, NULL);
 
     if (!o)
-      GST_WARNING ("Failed to set device volume: %s",
+      GST_WARNING_OBJECT (c->object, "Failed to set device volume: %s",
           pa_strerror (pa_context_errno (c->context)));
     else
       pa_operation_unref (o);
@@ -469,7 +471,7 @@ gst_pulsemixer_ctrl_timeout_event (pa_mainloop_api * a, pa_time_event * e,
           NULL, NULL);
 
     if (!o)
-      GST_WARNING ("Failed to set device mute: %s",
+      GST_WARNING_OBJECT (c->object, "Failed to set device mute: %s",
           pa_strerror (pa_context_errno (c->context)));
     else
       pa_operation_unref (o);
@@ -514,7 +516,6 @@ gst_pulsemixer_ctrl_set_volume (GstPulseMixerCtrl * c, GstMixerTrack * track,
     gint * volumes)
 {
   pa_cvolume v;
-
   int i;
 
   g_assert (c);
@@ -573,10 +574,11 @@ gst_pulsemixer_ctrl_set_mute (GstPulseMixerCtrl * c, GstMixerTrack * track,
   c->update_mute = TRUE;
 
   if (c->track) {
-    int i = g_atomic_int_get (&c->track->flags);
+    GstMixerTrackFlags flags = c->track->flags;
 
-    i = (i & ~GST_MIXER_TRACK_MUTE) | (c->muted ? GST_MIXER_TRACK_MUTE : 0);
-    g_atomic_int_set (&c->track->flags, i);
+    flags =
+        (flags & ~GST_MIXER_TRACK_MUTE) | (c->muted ? GST_MIXER_TRACK_MUTE : 0);
+    c->track->flags = flags;
   }
 
   restart_time_event (c);

@@ -56,6 +56,8 @@ typedef struct _BITMAPINFOHEADER {
   guint32 bi_clr_important;
 } BITMAPINFOHEADER;
 
+#define WAVEFORMATEX_SIZE 18
+
 typedef enum {
   GST_MATROSKA_MUX_STATE_START,
   GST_MATROSKA_MUX_STATE_HEADER,
@@ -84,6 +86,8 @@ GstMatroskaPad;
 
 typedef struct _GstMatroskaMux {
   GstElement     element;
+  
+  /* < private > */
 
   /* pads */
   GstPad        *srcpad;
@@ -129,15 +133,11 @@ typedef struct _GstMatroskaMux {
                  cluster_time,
                  cluster_pos;
 
-  /* tags */
-  GstTagList     *tags;
 } GstMatroskaMux;
 
 typedef struct _GstMatroskaMuxClass {
   GstElementClass parent;
 } GstMatroskaMuxClass;
-
-GType    gst_matroska_mux_get_type    (void);
 
 gboolean gst_matroska_mux_plugin_init (GstPlugin *plugin);
 

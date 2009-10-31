@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>spectrum</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-souphttpsrc.html" title="souphttpsrc">
-<link rel="next" href="gst-plugins-good-plugins-taginject.html" title="taginject">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<link rel="next" href="gst-plugins-good-plugins-speexenc.html" title="speexenc">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
@@ -21,64 +21,84 @@
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-taginject.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-speexenc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-good-plugins-spectrum.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-spectrum.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-spectrum.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-spectrum.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-good-plugins-spectrum.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-spectrum.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-spectrum.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-spectrum.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry" title="spectrum">
 <a name="gst-plugins-good-plugins-spectrum"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-spectrum.top_of_page"></a>spectrum</span></h2>
-<p>spectrum — audio spectrum analyzer</p>
+<p>spectrum — Run an FFT on the audio signal, output spectrum data</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="gst-plugins-good-plugins-spectrum.synopsis"></a><h2>Synopsis</h2>
 <a name="GstSpectrum"></a><pre class="synopsis">
                     <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum-struct" title="GstSpectrum">GstSpectrum</a>;
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Object Hierarchy">
 <a name="gst-plugins-good-plugins-spectrum.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
-   +----GstObject
-         +----GstElement
-               +----GstBaseTransform
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="../gstreamer-libs-0.10/GstBaseTransform.html"
+>GstBaseTransform</a>
                      +----<a
-href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstaudiofilter.html#GstAudioFilter"
+href="../gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstaudiofilter.html#GstAudioFilter"
 >GstAudioFilter</a>
                            +----GstSpectrum
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Properties">
 <a name="gst-plugins-good-plugins-spectrum.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--bands" title='The "bands" property'>bands</a>"                    guint                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--interval" title='The "interval" property'>interval</a>"                 guint64               : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--message" title='The "message" property'>message</a>"                  gboolean              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--threshold" title='The "threshold" property'>threshold</a>"                gint                  : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--message-magnitude" title='The "message-magnitude" property'>message-magnitude</a>"        gboolean              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--message-phase" title='The "message-phase" property'>message-phase</a>"            gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--bands" title='The "bands" property'>bands</a>"                    <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--interval" title='The "interval" property'>interval</a>"                 <a
+href="../glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--message" title='The "message" property'>message</a>"                  <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--threshold" title='The "threshold" property'>threshold</a>"                <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--message-magnitude" title='The "message-magnitude" property'>message-magnitude</a>"        <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--message-phase" title='The "message-phase" property'>message-phase</a>"            <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Description">
 <a name="gst-plugins-good-plugins-spectrum.description"></a><h2>Description</h2>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2638434"></a><h3>Example application</h3>
-<p>
 The Spectrum element analyzes the frequency spectrum of an audio signal.
-If the <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--message" title='The "message" property'><span class="type">"message"</span></a> property is <span class="type">TRUE</span>, it sends analysis results as
+If the <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--message" title='The "message" property'><span class="type">"message"</span></a> property is <a
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
+><span class="type">TRUE</span></a>, it sends analysis results as
 application messages named
 <code class="classname">"spectrum"</code> after each interval of time given
 by the <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--interval" title='The "interval" property'><span class="type">"interval"</span></a> property.
@@ -86,21 +106,56 @@ by the <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum-
 <p>
 The message's structure contains some combination of these fields:
 </p>
-<div class="itemizedlist"><ul type="disc">
-<li><p>
-  <span class="type">GstClockTime</span>
-  <code class="classname">"endtime"</code>:
-  the end time of the buffer that triggered the message. Always present.
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+  <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+><span class="type">GstClockTime</span></a>
+  <code class="classname">"timestamp"</code>:
+  the timestamp of the buffer that triggered the message.
   </p></li>
-<li><p>
-  <span class="type">GstValueList</span> of <span class="type">gfloat</span>
+<li class="listitem"><p>
+  <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+><span class="type">GstClockTime</span></a>
+  <code class="classname">"stream-time"</code>:
+  the stream time of the buffer.
+  </p></li>
+<li class="listitem"><p>
+  <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+><span class="type">GstClockTime</span></a>
+  <code class="classname">"running-time"</code>:
+  the running_time of the buffer.
+  </p></li>
+<li class="listitem"><p>
+  <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+><span class="type">GstClockTime</span></a>
+  <code class="classname">"duration"</code>:
+  the duration of the buffer.
+  </p></li>
+<li class="listitem"><p>
+  <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+><span class="type">GstClockTime</span></a>
+  <code class="classname">"endtime"</code>:
+  the end time of the buffer that triggered the message as stream time (this
+  is deprecated, as it can be calculated from stream-time + duration)
+  </p></li>
+<li class="listitem"><p>
+  <span class="type">GstValueList</span> of <a
+href="../glib/glib-Basic-Types.html#gfloat"
+><span class="type">gfloat</span></a>
   <code class="classname">"magnitude"</code>:
   the level for each frequency band in dB. All values below the value of the
   <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--threshold" title='The "threshold" property'><span class="type">"threshold"</span></a> property will be set to the threshold. Only present
   if the message-magnitude property is true.
   </p></li>
-<li><p>
-  <span class="type">GstValueList</span> of <span class="type">gfloat</span>
+<li class="listitem"><p>
+  <span class="type">GstValueList</span> of <a
+href="../glib/glib-Basic-Types.html#gfloat"
+><span class="type">gfloat</span></a>
   <code class="classname">"phase"</code>:
   The phase for each frequency band. The value is between -pi and pi. Only
   present if the message-phase property is true.
@@ -109,12 +164,10 @@ The message's structure contains some combination of these fields:
 <p>
 </p>
 <p>
-This element cannot be used with the gst-launch command in a sensible way.
-This sample code demonstrates how to use it in an application.
 </p>
-<p>
-</p>
-<pre class="programlisting">
+<div class="refsect2" title="Example application">
+<a name="id566907"></a><h3>Example application</h3>
+<div class="informalexample"><pre class="programlisting">
 /* GStreamer
  * Copyright (C) 2006 Stefan Kost &lt;ensonic@users.sf.net&gt;
  * Copyright (C) 2008 Jan Schmidt &lt;jan.schmidt@sun.com&gt;
@@ -239,17 +292,16 @@ main (int argc, char *argv[])
   return 0;
 }
 
-</pre>
-<p>
-</p>
-<p>
-Last reviewed on 2008-02-09 (0.10.6)
-</p>
+</pre></div>
 </div>
-<div class="refsynopsisdiv">
+<p>
+</p>
+<p>
+Last reviewed on 2009-01-14 (0.10.12)</p>
+<div class="refsynopsisdiv" title="Synopsis">
 <h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2523205"></a><h3>Element Information</h3>
+<div class="refsect2" title="Element Information">
+<a name="id583752"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -261,7 +313,7 @@ Last reviewed on 2008-02-09 (0.10.6)
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
-<td>Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Stefan Kost &lt;ensonic@users.sf.net&gt;, Sebastian Dröge &lt;slomo@circular-chaos.org&gt;</td>
+<td>Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Stefan Kost &lt;ensonic@users.sf.net&gt;, Sebastian Dröge &lt;sebastian.droege@collabora.co.uk&gt;</td>
 </tr>
 <tr>
 <td><p><span class="term">class</span></p></td>
@@ -271,8 +323,37 @@ Last reviewed on 2008-02-09 (0.10.6)
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2636321"></a><h3>Element Pads</h3>
+<div class="refsect2" title="Element Pads">
+<a name="id597494"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, width=(int)16, depth=(int)16, signed=(boolean)true, endianness=(int)1234, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, width=(int)32, depth=(int)32, signed=(boolean)true, endianness=(int)1234, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-float, width=(int){ 32, 64 }, endianness=(int)1234, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
+</tr>
+</tbody>
+</table></div>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -302,93 +383,74 @@ Last reviewed on 2008-02-09 (0.10.6)
 </tr>
 </tbody>
 </table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>audio/x-raw-int, width=(int)16, depth=(int)16, signed=(boolean)true, endianness=(int)1234, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> audio/x-raw-int, width=(int)32, depth=(int)32, signed=(boolean)true, endianness=(int)1234, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> audio/x-raw-float, width=(int){ 32, 64 }, endianness=(int)1234, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
-</tr>
-</tbody>
-</table></div>
 </div>
 </div>
 <p>
-
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Details">
 <a name="gst-plugins-good-plugins-spectrum.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title="GstSpectrum">
 <a name="GstSpectrum-struct"></a><h3>GstSpectrum</h3>
 <pre class="programlisting">typedef struct _GstSpectrum GstSpectrum;</pre>
 <p>
-
 </p>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1" title="Property Details">
 <a name="gst-plugins-good-plugins-spectrum.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2" title='The "bands" property'>
 <a name="GstSpectrum--bands"></a><h3>The <code class="literal">"bands"</code> property</h3>
-<pre class="programlisting">  "bands"                    guint                 : Read / Write</pre>
+<pre class="programlisting">  "bands"                    <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
 <p>Number of frequency bands.</p>
 <p>Default value: 128</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title='The "interval" property'>
 <a name="GstSpectrum--interval"></a><h3>The <code class="literal">"interval"</code> property</h3>
-<pre class="programlisting">  "interval"                 guint64               : Read / Write</pre>
+<pre class="programlisting">  "interval"                 <a
+href="../glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read / Write</pre>
 <p>Interval of time between message posts (in nanoseconds).</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 100000000</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title='The "message" property'>
 <a name="GstSpectrum--message"></a><h3>The <code class="literal">"message"</code> property</h3>
-<pre class="programlisting">  "message"                  gboolean              : Read / Write</pre>
+<pre class="programlisting">  "message"                  <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Whether to post a 'spectrum' element message on the bus for each passed interval.</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title='The "threshold" property'>
 <a name="GstSpectrum--threshold"></a><h3>The <code class="literal">"threshold"</code> property</h3>
-<pre class="programlisting">  "threshold"                gint                  : Read / Write</pre>
+<pre class="programlisting">  "threshold"                <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>dB threshold for result. All lower values will be set to this.</p>
 <p>Allowed values: &lt;= 0</p>
 <p>Default value: -60</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title='The "message-magnitude" property'>
 <a name="GstSpectrum--message-magnitude"></a><h3>The <code class="literal">"message-magnitude"</code> property</h3>
-<pre class="programlisting">  "message-magnitude"        gboolean              : Read / Write</pre>
+<pre class="programlisting">  "message-magnitude"        <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Whether to add a 'magnitude' field to the structure of any 'spectrum' element messages posted on the bus.</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2" title='The "message-phase" property'>
 <a name="GstSpectrum--message-phase"></a><h3>The <code class="literal">"message-phase"</code> property</h3>
-<pre class="programlisting">  "message-phase"            gboolean              : Read / Write</pre>
+<pre class="programlisting">  "message-phase"            <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Whether to add a 'phase' field to the structure of any 'spectrum' element messages posted on the bus.</p>
 <p>Default value: FALSE</p>
 </div>
@@ -396,6 +458,6 @@ Last reviewed on 2008-02-09 (0.10.6)
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

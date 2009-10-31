@@ -28,9 +28,9 @@
 
 /* elementfactory information */
 static const GstElementDetails gst_rtp_ilbc_depay_details =
-GST_ELEMENT_DETAILS ("RTP iLBC packet depayloader",
+GST_ELEMENT_DETAILS ("RTP iLBC depayloader",
     "Codec/Depayloader/Network",
-    "Extracts iLBC audio from RTP packets",
+    "Extracts iLBC audio from RTP packets (RFC 3952)",
     "Philippe Kalaf <philippe.kalaf@collabora.co.uk>");
 
 /* RtpiLBCDepay signals and args */
@@ -114,11 +114,9 @@ static void
 gst_rtp_ilbc_depay_class_init (GstRTPiLBCDepayClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
   gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
 
   gobject_class->set_property = gst_ilbc_depay_set_property;
@@ -137,10 +135,6 @@ static void
 gst_rtp_ilbc_depay_init (GstRTPiLBCDepay * rtpilbcdepay,
     GstRTPiLBCDepayClass * klass)
 {
-  GstBaseRTPDepayload *depayload;
-
-  depayload = GST_BASE_RTP_DEPAYLOAD (rtpilbcdepay);
-
   /* Set default mode */
   rtpilbcdepay->mode = DEFAULT_MODE;
 }
@@ -152,12 +146,16 @@ gst_rtp_ilbc_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
   GstCaps *srccaps;
   GstStructure *structure;
   const gchar *mode_str = NULL;
-  gint mode;
+  gint mode, clock_rate;
   gboolean ret;
 
   structure = gst_caps_get_structure (caps, 0);
 
   mode = rtpilbcdepay->mode;
+
+  if (!gst_structure_get_int (structure, "clock-rate", &clock_rate))
+    clock_rate = 8000;
+  depayload->clock_rate = clock_rate;
 
   /* parse mode, if we can */
   mode_str = gst_structure_get_string (structure, "mode");
@@ -176,9 +174,6 @@ gst_rtp_ilbc_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
   GST_DEBUG ("set caps on source: %" GST_PTR_FORMAT " (ret=%d)", srccaps, ret);
   gst_caps_unref (srccaps);
 
-  /* always fixed clock rate of 8000 */
-  depayload->clock_rate = 8000;
-
   return ret;
 }
 
@@ -186,13 +181,20 @@ static GstBuffer *
 gst_rtp_ilbc_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 {
   GstBuffer *outbuf;
+  gboolean marker;
+
+  marker = gst_rtp_buffer_get_marker (buf);
 
   GST_DEBUG ("process : got %d bytes, mark %d ts %u seqn %d",
-      GST_BUFFER_SIZE (buf),
-      gst_rtp_buffer_get_marker (buf),
+      GST_BUFFER_SIZE (buf), marker,
       gst_rtp_buffer_get_timestamp (buf), gst_rtp_buffer_get_seq (buf));
 
   outbuf = gst_rtp_buffer_get_payload_buffer (buf);
+
+  if (marker) {
+    /* mark start of talkspurt with DISCONT */
+    GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_DISCONT);
+  }
 
   return outbuf;
 }

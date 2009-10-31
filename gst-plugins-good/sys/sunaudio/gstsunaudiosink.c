@@ -24,17 +24,14 @@
 /**
  * SECTION:element-sunaudiosink
  *
- * <refsect2>
- * <para>
  * sunaudiosink is an audio sink designed to work with the Sun Audio
  * interface available in Solaris.
- * </para>
+ *
+ * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
- * gst-launch -v sinesrc ! sunaudiosink
- * </programlisting>
- * </para>
+ * |[
+ * gst-launch audiotestsrc volume=0.5 ! sunaudiosink
+ * ]|
  * </refsect2>
  */
 
@@ -206,7 +203,6 @@ gst_sunaudiosink_class_init (GstSunAudioSinkClass * klass)
 static void
 gst_sunaudiosink_init (GstSunAudioSink * sunaudiosink)
 {
-  GstBaseAudioSink *ba_sink = GST_BASE_AUDIO_SINK (sunaudiosink);
   const char *audiodev;
 
   GST_DEBUG_OBJECT (sunaudiosink, "initializing sunaudiosink");
@@ -509,10 +505,6 @@ gst_sunaudio_sink_do_delay (GstSunAudioSink * sink)
   return;
 
 write_error:
-  GST_ELEMENT_ERROR (sink, RESOURCE, OPEN_WRITE, (NULL),
-      ("Playback error on device '%s': %s", sink->device, strerror (errno)));
-  return;
-poll_failed:
   GST_ELEMENT_ERROR (sink, RESOURCE, OPEN_WRITE, (NULL),
       ("Playback error on device '%s': %s", sink->device, strerror (errno)));
   return;

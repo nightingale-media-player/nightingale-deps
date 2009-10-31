@@ -19,20 +19,15 @@
 
 /**
  * SECTION:element-equalizer-10bands
- * @short_description: 10-band equalizer
  *
- * <refsect2>
- * <para>
  * The 10 band equalizer element allows to change the gain of 10 equally distributed
  * frequency bands between 30 Hz and 15 kHz.
- * </para>
+ *
+ * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch filesrc location=song.ogg ! oggdemux ! vorbisdec ! audioconvert ! equalizer-10bands band2=3.0 ! alsasink
- * </programlisting>
- * This raises the volume of the 3rd band which is at 119 Hz by 3 db.
- * </para>
+ * ]| This raises the volume of the 3rd band which is at 119 Hz by 3 db.
  * </refsect2>
  */
 
@@ -66,8 +61,22 @@ static void gst_iir_equalizer_10bands_get_property (GObject * object,
 GST_DEBUG_CATEGORY_EXTERN (equalizer_debug);
 #define GST_CAT_DEFAULT equalizer_debug
 
-GST_BOILERPLATE (GstIirEqualizer10Bands, gst_iir_equalizer_10bands,
-    GstIirEqualizer, GST_TYPE_IIR_EQUALIZER);
+
+static void
+_do_init (GType object_type)
+{
+  const GInterfaceInfo preset_interface_info = {
+    NULL,                       /* interface_init */
+    NULL,                       /* interface_finalize */
+    NULL                        /* interface_data */
+  };
+
+  g_type_add_interface_static (object_type, GST_TYPE_PRESET,
+      &preset_interface_info);
+}
+
+GST_BOILERPLATE_FULL (GstIirEqualizer10Bands, gst_iir_equalizer_10bands,
+    GstIirEqualizer, GST_TYPE_IIR_EQUALIZER, _do_init);
 
 /* equalizer implementation */
 

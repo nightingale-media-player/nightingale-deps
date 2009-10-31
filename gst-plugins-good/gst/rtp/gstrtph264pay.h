@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2006> Wim Taymans <wim@fluendo.com>
+ * Copyright (C) <2006> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -56,11 +56,14 @@ struct _GstRtpH264Pay
 
   gboolean packetized;
   guint nal_length_size;
+  GArray *queue;
 
   gchar *profile_level_id;
   gchar *sprop_parameter_sets;
   gboolean update_caps;
   GstH264ScanMode scan_mode;
+
+  gboolean buffer_list;
 };
 
 struct _GstRtpH264PayClass

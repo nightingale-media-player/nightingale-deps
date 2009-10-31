@@ -1,7 +1,6 @@
+# keep target around, since it's referenced in the modules' Makefiles
 clean-local-check:
-	for i in `find . -name ".libs" -type d`; do \
-	  rm -rf $$i; \
-	done
+	@echo
 
 if HAVE_VALGRIND
 # hangs spectacularly on some machines, so let's not do this by default yet

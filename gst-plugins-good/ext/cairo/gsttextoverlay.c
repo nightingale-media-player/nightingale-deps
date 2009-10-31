@@ -17,6 +17,18 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION:element-cairotextoverlay
+ *
+ * cairotextoverlay renders the text on top of the video frames.
+ *
+ * <refsect2>
+ * <title>Example launch line</title>
+ * |[
+ * gst-launch videotestsrc ! cairotextoverlay text="hello" ! autovideosink
+ * ]|
+ * </refsect2>
+ */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -410,16 +422,15 @@ gst_text_overlay_render_text (GstCairoTextOverlay * overlay,
   if (textlen < 0)
     textlen = strlen (text);
 
-  string = g_strndup (text, textlen);
-
-  if (overlay->need_render) {
-    GST_DEBUG ("Rendering text '%s' on cairo RGBA surface", string);
-  } else {
+  if (!overlay->need_render) {
     GST_DEBUG ("Using previously rendered text.");
     g_return_if_fail (overlay->text_fill_image != NULL);
     g_return_if_fail (overlay->text_outline_image != NULL);
     return;
   }
+
+  string = g_strndup (text, textlen);
+  GST_DEBUG ("Rendering text '%s' on cairo RGBA surface", string);
 
   overlay->text_fill_image =
       g_realloc (overlay->text_fill_image,

@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2005> Wim Taymans <wim@fluendo.com>
+ * Copyright (C) <2005> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -51,7 +51,8 @@ struct _GstRtpH263PPay
   GstBaseRTPPayload    payload;
 
   GstAdapter          *adapter;
-  GstClockTime         first_ts;
+  GstClockTime         first_timestamp;
+  GstClockTime         first_duration;
   GstFragmentationMode fragmentation_mode;
 };
 

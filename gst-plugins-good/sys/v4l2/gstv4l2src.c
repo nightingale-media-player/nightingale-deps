@@ -24,23 +24,19 @@
 /**
  * SECTION:element-v4l2src
  *
+ * v4l2src can be used to capture video from v4l2 devices, like webcams and tv
+ * cards.
+ *
  * <refsect2>
- * v4l2src can be used to capture video from v4l2 devices, like webcams and tv cards.
  * <title>Example launch lines</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch v4l2src ! xvimagesink
- * </programlisting>
- * This pipeline shows the video captured from /dev/video0 tv card and for
+ * ]| This pipeline shows the video captured from /dev/video0 tv card and for
  * webcams.
- * </para>
- * <para>
- * <programlisting>
- * gst-launch-0.10 v4l2src ! jpegdec ! xvimagesink
- * </programlisting>
- * This pipeline shows the video captured from a webcam that delivers jpeg
+ * |[
+ * gst-launch v4l2src ! jpegdec ! xvimagesink
+ * ]| This pipeline shows the video captured from a webcam that delivers jpeg
  * images.
- * </para>
  * </refsect2>
  */
 
@@ -60,17 +56,23 @@
 #endif
 #include "gstv4l2vidorient.h"
 
+#include "gst/gst-i18n-plugin.h"
+
 static const GstElementDetails gst_v4l2src_details =
-GST_ELEMENT_DETAILS ("Video (video4linux2/raw) Source",
+GST_ELEMENT_DETAILS ("Video (video4linux2) Source",
     "Source/Video",
-    "Reads raw frames from a video4linux2 (BT8x8) device",
+    "Reads frames from a video4linux2 (BT8x8) device",
     "Ronald Bultje <rbultje@ronald.bitfreak.net>,"
-    " Edgard Lima <edgard.lima@indt.org.br>");
+    " Edgard Lima <edgard.lima@indt.org.br>,"
+    " Stefan Kost <ensonic@users.sf.net>");
 
 GST_DEBUG_CATEGORY (v4l2src_debug);
 #define GST_CAT_DEFAULT v4l2src_debug
 
-#define DEFAULT_PROP_ALWAYS_COPY        TRUE
+#define PROP_DEF_QUEUE_SIZE         2
+#define PROP_DEF_ALWAYS_COPY        TRUE
+
+#define DEFAULT_PROP_DEVICE   "/dev/video0"
 
 enum
 {
@@ -79,63 +81,6 @@ enum
   PROP_QUEUE_SIZE,
   PROP_ALWAYS_COPY
 };
-
-static const guint32 gst_v4l2_formats[] = {
-  /* from Linux 2.6.15 videodev2.h */
-  V4L2_PIX_FMT_RGB332,
-  V4L2_PIX_FMT_RGB555,
-  V4L2_PIX_FMT_RGB565,
-  V4L2_PIX_FMT_RGB555X,
-  V4L2_PIX_FMT_RGB565X,
-  V4L2_PIX_FMT_BGR24,
-  V4L2_PIX_FMT_RGB24,
-  V4L2_PIX_FMT_BGR32,
-  V4L2_PIX_FMT_RGB32,
-  V4L2_PIX_FMT_GREY,
-  V4L2_PIX_FMT_YVU410,
-  V4L2_PIX_FMT_YVU420,
-  V4L2_PIX_FMT_YUYV,
-  V4L2_PIX_FMT_UYVY,
-  V4L2_PIX_FMT_YUV422P,
-  V4L2_PIX_FMT_YUV411P,
-  V4L2_PIX_FMT_Y41P,
-
-  /* two planes -- one Y, one Cr + Cb interleaved  */
-  V4L2_PIX_FMT_NV12,
-  V4L2_PIX_FMT_NV21,
-
-  /*  The following formats are not defined in the V4L2 specification */
-  V4L2_PIX_FMT_YUV410,
-  V4L2_PIX_FMT_YUV420,
-  V4L2_PIX_FMT_YYUV,
-  V4L2_PIX_FMT_HI240,
-
-  /* see http://www.siliconimaging.com/RGB%20Bayer.htm */
-#ifdef V4L2_PIX_FMT_SBGGR8
-  V4L2_PIX_FMT_SBGGR8,
-#endif
-
-  /* compressed formats */
-  V4L2_PIX_FMT_MJPEG,
-  V4L2_PIX_FMT_JPEG,
-  V4L2_PIX_FMT_DV,
-  V4L2_PIX_FMT_MPEG,
-
-  /*  Vendor-specific formats   */
-  V4L2_PIX_FMT_WNVA,
-
-#ifdef V4L2_PIX_FMT_SN9C10X
-  V4L2_PIX_FMT_SN9C10X,
-#endif
-#ifdef V4L2_PIX_FMT_PWC1
-  V4L2_PIX_FMT_PWC1,
-#endif
-#ifdef V4L2_PIX_FMT_PWC2
-  V4L2_PIX_FMT_PWC2,
-#endif
-};
-
-#define GST_V4L2_FORMAT_COUNT (G_N_ELEMENTS (gst_v4l2_formats))
 
 GST_IMPLEMENT_V4L2_PROBE_METHODS (GstV4l2SrcClass, gst_v4l2src);
 GST_IMPLEMENT_V4L2_COLOR_BALANCE_METHODS (GstV4l2Src, gst_v4l2src);
@@ -235,24 +180,22 @@ GST_BOILERPLATE_FULL (GstV4l2Src, gst_v4l2src, GstPushSrc, GST_TYPE_PUSH_SRC,
     gst_v4l2src_init_interfaces);
 
 static void gst_v4l2src_dispose (GObject * object);
-
 static void gst_v4l2src_finalize (GstV4l2Src * v4l2src);
+
+/* element methods */
+static GstStateChangeReturn gst_v4l2src_change_state (GstElement * element,
+    GstStateChange transition);
 
 /* basesrc methods */
 static gboolean gst_v4l2src_start (GstBaseSrc * src);
-
+static gboolean gst_v4l2src_unlock (GstBaseSrc * src);
+static gboolean gst_v4l2src_unlock_stop (GstBaseSrc * src);
 static gboolean gst_v4l2src_stop (GstBaseSrc * src);
-
 static gboolean gst_v4l2src_set_caps (GstBaseSrc * src, GstCaps * caps);
-
 static GstCaps *gst_v4l2src_get_caps (GstBaseSrc * src);
-
 static gboolean gst_v4l2src_query (GstBaseSrc * bsrc, GstQuery * query);
-
 static GstFlowReturn gst_v4l2src_create (GstPushSrc * src, GstBuffer ** out);
-
 static void gst_v4l2src_fixate (GstBaseSrc * basesrc, GstCaps * caps);
-
 static gboolean gst_v4l2src_negotiate (GstBaseSrc * basesrc);
 
 static void gst_v4l2src_set_property (GObject * object, guint prop_id,
@@ -260,13 +203,10 @@ static void gst_v4l2src_set_property (GObject * object, guint prop_id,
 static void gst_v4l2src_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
-static GstCaps *gst_v4l2src_get_all_caps (void);
-
 static void
 gst_v4l2src_base_init (gpointer g_class)
 {
   GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
-
   GstV4l2SrcClass *gstv4l2src_class = GST_V4L2SRC_CLASS (g_class);
 
   gstv4l2src_class->v4l2_class_devices = NULL;
@@ -278,19 +218,19 @@ gst_v4l2src_base_init (gpointer g_class)
   gst_element_class_add_pad_template
       (gstelement_class,
       gst_pad_template_new ("src", GST_PAD_SRC, GST_PAD_ALWAYS,
-          gst_v4l2src_get_all_caps ()));
+          gst_v4l2_object_get_all_caps ()));
 }
 
 static void
 gst_v4l2src_class_init (GstV4l2SrcClass * klass)
 {
   GObjectClass *gobject_class;
-
+  GstElementClass *element_class;
   GstBaseSrcClass *basesrc_class;
-
   GstPushSrcClass *pushsrc_class;
 
   gobject_class = G_OBJECT_CLASS (klass);
+  element_class = GST_ELEMENT_CLASS (klass);
   basesrc_class = GST_BASE_SRC_CLASS (klass);
   pushsrc_class = GST_PUSH_SRC_CLASS (klass);
 
@@ -299,20 +239,25 @@ gst_v4l2src_class_init (GstV4l2SrcClass * klass)
   gobject_class->set_property = gst_v4l2src_set_property;
   gobject_class->get_property = gst_v4l2src_get_property;
 
-  gst_v4l2_object_install_properties_helper (gobject_class);
+  element_class->change_state = gst_v4l2src_change_state;
+
+  gst_v4l2_object_install_properties_helper (gobject_class,
+      DEFAULT_PROP_DEVICE);
   g_object_class_install_property (gobject_class, PROP_QUEUE_SIZE,
       g_param_spec_uint ("queue-size", "Queue size",
-          "Number of buffers to be enqueud in the driver",
-          GST_V4L2_MIN_BUFFERS, GST_V4L2_MAX_BUFFERS, GST_V4L2_MIN_BUFFERS,
+          "Number of buffers to be enqueud in the driver in streaming mode",
+          GST_V4L2_MIN_BUFFERS, GST_V4L2_MAX_BUFFERS, PROP_DEF_QUEUE_SIZE,
           G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, PROP_ALWAYS_COPY,
       g_param_spec_boolean ("always-copy", "Always Copy",
           "If the buffer will or not be used directly from mmap",
-          DEFAULT_PROP_ALWAYS_COPY, G_PARAM_READWRITE));
+          PROP_DEF_ALWAYS_COPY, G_PARAM_READWRITE));
 
   basesrc_class->get_caps = GST_DEBUG_FUNCPTR (gst_v4l2src_get_caps);
   basesrc_class->set_caps = GST_DEBUG_FUNCPTR (gst_v4l2src_set_caps);
   basesrc_class->start = GST_DEBUG_FUNCPTR (gst_v4l2src_start);
+  basesrc_class->unlock = GST_DEBUG_FUNCPTR (gst_v4l2src_unlock);
+  basesrc_class->unlock_stop = GST_DEBUG_FUNCPTR (gst_v4l2src_unlock_stop);
   basesrc_class->stop = GST_DEBUG_FUNCPTR (gst_v4l2src_stop);
   basesrc_class->query = GST_DEBUG_FUNCPTR (gst_v4l2src_query);
   basesrc_class->fixate = GST_DEBUG_FUNCPTR (gst_v4l2src_fixate);
@@ -326,14 +271,13 @@ gst_v4l2src_init (GstV4l2Src * v4l2src, GstV4l2SrcClass * klass)
 {
   /* fixme: give an update_fps_function */
   v4l2src->v4l2object = gst_v4l2_object_new (GST_ELEMENT (v4l2src),
+      V4L2_BUF_TYPE_VIDEO_CAPTURE, DEFAULT_PROP_DEVICE,
       gst_v4l2_get_input, gst_v4l2_set_input, NULL);
 
   /* number of buffers requested */
-  v4l2src->num_buffers = GST_V4L2_MIN_BUFFERS;
+  v4l2src->num_buffers = PROP_DEF_QUEUE_SIZE;
 
-  v4l2src->always_copy = DEFAULT_PROP_ALWAYS_COPY;
-
-  v4l2src->formats = NULL;
+  v4l2src->always_copy = PROP_DEF_ALWAYS_COPY;
 
   v4l2src->is_capturing = FALSE;
 
@@ -350,8 +294,8 @@ gst_v4l2src_dispose (GObject * object)
 {
   GstV4l2Src *v4l2src = GST_V4L2SRC (object);
 
-  if (v4l2src->formats) {
-    gst_v4l2src_clear_format_list (v4l2src);
+  if (v4l2src->probed_caps) {
+    gst_caps_unref (v4l2src->probed_caps);
   }
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
@@ -418,7 +362,6 @@ static void
 gst_v4l2src_fixate (GstBaseSrc * basesrc, GstCaps * caps)
 {
   GstStructure *structure;
-
   gint i;
 
   GST_DEBUG_OBJECT (basesrc, "fixating caps %" GST_PTR_FORMAT, caps);
@@ -458,16 +401,15 @@ static gboolean
 gst_v4l2src_negotiate (GstBaseSrc * basesrc)
 {
   GstCaps *thiscaps;
-
   GstCaps *caps = NULL;
-
   GstCaps *peercaps = NULL;
-
   gboolean result = FALSE;
 
   /* first see what is possible on our source pad */
   thiscaps = gst_pad_get_caps (GST_BASE_SRC_PAD (basesrc));
   GST_DEBUG_OBJECT (basesrc, "caps of src: %" GST_PTR_FORMAT, thiscaps);
+  LOG_CAPS (basesrc, thiscaps);
+
   /* nothing or anything is allowed, we're done */
   if (thiscaps == NULL || gst_caps_is_any (thiscaps))
     goto no_nego_needed;
@@ -475,6 +417,7 @@ gst_v4l2src_negotiate (GstBaseSrc * basesrc)
   /* get the peer caps */
   peercaps = gst_pad_peer_get_caps (GST_BASE_SRC_PAD (basesrc));
   GST_DEBUG_OBJECT (basesrc, "caps of peer: %" GST_PTR_FORMAT, peercaps);
+  LOG_CAPS (basesrc, peercaps);
   if (peercaps && !gst_caps_is_any (peercaps)) {
     GstCaps *icaps = NULL;
     int i;
@@ -485,6 +428,7 @@ gst_v4l2src_negotiate (GstBaseSrc * basesrc)
       GstCaps *ipcaps = gst_caps_copy_nth (peercaps, i);
 
       GST_DEBUG_OBJECT (basesrc, "peer: %" GST_PTR_FORMAT, ipcaps);
+      LOG_CAPS (basesrc, ipcaps);
 
       icaps = gst_caps_intersect (thiscaps, ipcaps);
       gst_caps_unref (ipcaps);
@@ -497,6 +441,7 @@ gst_v4l2src_negotiate (GstBaseSrc * basesrc)
     }
 
     GST_DEBUG_OBJECT (basesrc, "intersect: %" GST_PTR_FORMAT, icaps);
+    LOG_CAPS (basesrc, icaps);
     if (icaps) {
       /* If there are multiple intersections pick the one with the smallest
        * resolution strictly bigger then the first peer caps */
@@ -551,6 +496,7 @@ gst_v4l2src_negotiate (GstBaseSrc * basesrc)
     if (!gst_caps_is_empty (caps)) {
       gst_pad_fixate_caps (GST_BASE_SRC_PAD (basesrc), caps);
       GST_DEBUG_OBJECT (basesrc, "fixated to: %" GST_PTR_FORMAT, caps);
+      LOG_CAPS (basesrc, caps);
 
       if (gst_caps_is_any (caps)) {
         /* hmm, still anything, so element can do anything and
@@ -575,252 +521,13 @@ no_nego_needed:
   }
 }
 
-
-static GstStructure *
-gst_v4l2src_v4l2fourcc_to_structure (guint32 fourcc)
-{
-  GstStructure *structure = NULL;
-
-  /* FIXME: new FourCCs
-     camera: ZC0301 PC Camera
-     driver: zc0301
-     BA81, S910, PWC1, PWC2
-
-     camera:
-     driver:
-   */
-
-  switch (fourcc) {
-    case V4L2_PIX_FMT_MJPEG:   /* Motion-JPEG */
-    case V4L2_PIX_FMT_JPEG:    /* JFIF JPEG */
-      structure = gst_structure_new ("image/jpeg", NULL);
-      break;
-    case V4L2_PIX_FMT_RGB332:
-    case V4L2_PIX_FMT_RGB555:
-    case V4L2_PIX_FMT_RGB555X:
-    case V4L2_PIX_FMT_RGB565:
-    case V4L2_PIX_FMT_RGB565X:
-    case V4L2_PIX_FMT_RGB24:
-    case V4L2_PIX_FMT_BGR24:
-    case V4L2_PIX_FMT_RGB32:
-    case V4L2_PIX_FMT_BGR32:{
-      guint depth = 0, bpp = 0;
-
-      gint endianness = 0;
-
-      guint32 r_mask = 0, b_mask = 0, g_mask = 0;
-
-      switch (fourcc) {
-        case V4L2_PIX_FMT_RGB332:
-          bpp = depth = 8;
-          endianness = G_BYTE_ORDER;    /* 'like, whatever' */
-          r_mask = 0xe0;
-          g_mask = 0x1c;
-          b_mask = 0x03;
-          break;
-        case V4L2_PIX_FMT_RGB555:
-        case V4L2_PIX_FMT_RGB555X:
-          bpp = 16;
-          depth = 15;
-          endianness =
-              fourcc == V4L2_PIX_FMT_RGB555X ? G_BIG_ENDIAN : G_LITTLE_ENDIAN;
-          r_mask = 0x7c00;
-          g_mask = 0x03e0;
-          b_mask = 0x001f;
-          break;
-        case V4L2_PIX_FMT_RGB565:
-        case V4L2_PIX_FMT_RGB565X:
-          bpp = depth = 16;
-          endianness =
-              fourcc == V4L2_PIX_FMT_RGB565X ? G_BIG_ENDIAN : G_LITTLE_ENDIAN;
-          r_mask = 0xf800;
-          g_mask = 0x07e0;
-          b_mask = 0x001f;
-          break;
-        case V4L2_PIX_FMT_RGB24:
-          bpp = depth = 24;
-          endianness = G_BIG_ENDIAN;
-          r_mask = 0xff0000;
-          g_mask = 0x00ff00;
-          b_mask = 0x0000ff;
-          break;
-        case V4L2_PIX_FMT_BGR24:
-          bpp = depth = 24;
-          endianness = G_BIG_ENDIAN;
-          r_mask = 0x0000ff;
-          g_mask = 0x00ff00;
-          b_mask = 0xff0000;
-          break;
-        case V4L2_PIX_FMT_RGB32:
-          bpp = depth = 32;
-          endianness = G_BIG_ENDIAN;
-          r_mask = 0xff000000;
-          g_mask = 0x00ff0000;
-          b_mask = 0x0000ff00;
-          break;
-        case V4L2_PIX_FMT_BGR32:
-          bpp = depth = 32;
-          endianness = G_BIG_ENDIAN;
-          r_mask = 0x000000ff;
-          g_mask = 0x0000ff00;
-          b_mask = 0x00ff0000;
-          break;
-        default:
-          g_assert_not_reached ();
-          break;
-      }
-      structure = gst_structure_new ("video/x-raw-rgb",
-          "bpp", G_TYPE_INT, bpp,
-          "depth", G_TYPE_INT, depth,
-          "red_mask", G_TYPE_INT, r_mask,
-          "green_mask", G_TYPE_INT, g_mask,
-          "blue_mask", G_TYPE_INT, b_mask,
-          "endianness", G_TYPE_INT, endianness, NULL);
-      break;
-    }
-    case V4L2_PIX_FMT_GREY:    /*  8  Greyscale     */
-    case V4L2_PIX_FMT_YYUV:    /* 16  YUV 4:2:2     */
-    case V4L2_PIX_FMT_HI240:   /*  8  8-bit color   */
-      /* FIXME: get correct fourccs here */
-      break;
-    case V4L2_PIX_FMT_NV12:    /* 12  Y/CbCr 4:2:0  */
-    case V4L2_PIX_FMT_NV21:    /* 12  Y/CrCb 4:2:0  */
-    case V4L2_PIX_FMT_YVU410:
-    case V4L2_PIX_FMT_YUV410:
-    case V4L2_PIX_FMT_YUV420:  /* I420/IYUV */
-    case V4L2_PIX_FMT_YUYV:
-    case V4L2_PIX_FMT_YVU420:
-    case V4L2_PIX_FMT_UYVY:
-    case V4L2_PIX_FMT_Y41P:
-    case V4L2_PIX_FMT_YUV422P:
-    case V4L2_PIX_FMT_YUV411P:{
-      guint32 fcc = 0;
-
-      switch (fourcc) {
-        case V4L2_PIX_FMT_NV12:
-          fcc = GST_MAKE_FOURCC ('N', 'V', '1', '2');
-          break;
-        case V4L2_PIX_FMT_NV21:
-          fcc = GST_MAKE_FOURCC ('N', 'V', '2', '1');
-          break;
-        case V4L2_PIX_FMT_YVU410:
-          fcc = GST_MAKE_FOURCC ('Y', 'V', 'U', '9');
-          break;
-        case V4L2_PIX_FMT_YUV410:
-          fcc = GST_MAKE_FOURCC ('Y', 'U', 'V', '9');
-          break;
-        case V4L2_PIX_FMT_YUV420:
-          fcc = GST_MAKE_FOURCC ('I', '4', '2', '0');
-          break;
-        case V4L2_PIX_FMT_YUYV:
-          fcc = GST_MAKE_FOURCC ('Y', 'U', 'Y', '2');
-          break;
-        case V4L2_PIX_FMT_YVU420:
-          fcc = GST_MAKE_FOURCC ('Y', 'V', '1', '2');
-          break;
-        case V4L2_PIX_FMT_UYVY:
-          fcc = GST_MAKE_FOURCC ('U', 'Y', 'V', 'Y');
-          break;
-        case V4L2_PIX_FMT_Y41P:
-          fcc = GST_MAKE_FOURCC ('Y', '4', '1', 'P');
-          break;
-        case V4L2_PIX_FMT_YUV411P:
-          fcc = GST_MAKE_FOURCC ('Y', '4', '1', 'B');
-          break;
-        case V4L2_PIX_FMT_YUV422P:
-          fcc = GST_MAKE_FOURCC ('Y', '4', '2', 'B');
-          break;
-        default:
-          g_assert_not_reached ();
-          break;
-      }
-      structure = gst_structure_new ("video/x-raw-yuv",
-          "format", GST_TYPE_FOURCC, fcc, NULL);
-      break;
-    }
-    case V4L2_PIX_FMT_DV:
-      structure =
-          gst_structure_new ("video/x-dv", "systemstream", G_TYPE_BOOLEAN, TRUE,
-          NULL);
-      break;
-    case V4L2_PIX_FMT_MPEG:    /* MPEG          */
-      /* someone figure out the MPEG format used... */
-      break;
-    case V4L2_PIX_FMT_WNVA:    /* Winnov hw compres */
-      break;
-    case V4L2_PIX_FMT_SBGGR8:
-      structure = gst_structure_new ("video/x-raw-bayer", NULL);
-      break;
-    default:
-      GST_DEBUG ("Unknown fourcc 0x%08x %" GST_FOURCC_FORMAT,
-          fourcc, GST_FOURCC_ARGS (fourcc));
-      break;
-  }
-
-  return structure;
-}
-
-static struct v4l2_fmtdesc *
-gst_v4l2src_get_format_from_fourcc (GstV4l2Src * v4l2src, guint32 fourcc)
-{
-  struct v4l2_fmtdesc *fmt;
-
-  GSList *walk;
-
-  if (fourcc == 0)
-    return NULL;
-
-  walk = v4l2src->formats;
-  while (walk) {
-    fmt = (struct v4l2_fmtdesc *) walk->data;
-    if (fmt->pixelformat == fourcc)
-      return fmt;
-    /* special case for jpeg */
-    if ((fmt->pixelformat == V4L2_PIX_FMT_MJPEG && fourcc == V4L2_PIX_FMT_JPEG)
-        || (fmt->pixelformat == V4L2_PIX_FMT_JPEG
-            && fourcc == V4L2_PIX_FMT_MJPEG)) {
-      return fmt;
-    }
-    walk = g_slist_next (walk);
-  }
-
-  return NULL;
-}
-
-static GstCaps *
-gst_v4l2src_get_all_caps (void)
-{
-  static GstCaps *caps = NULL;
-
-  if (caps == NULL) {
-    GstStructure *structure;
-
-    guint i;
-
-    caps = gst_caps_new_empty ();
-    for (i = 0; i < GST_V4L2_FORMAT_COUNT; i++) {
-      structure = gst_v4l2src_v4l2fourcc_to_structure (gst_v4l2_formats[i]);
-      if (structure) {
-        gst_structure_set (structure,
-            "width", GST_TYPE_INT_RANGE, 1, GST_V4L2_MAX_SIZE,
-            "height", GST_TYPE_INT_RANGE, 1, GST_V4L2_MAX_SIZE,
-            "framerate", GST_TYPE_FRACTION_RANGE, 0, 1, 100, 1, NULL);
-        gst_caps_append_structure (caps, structure);
-      }
-    }
-  }
-
-  return caps;
-}
-
 static GstCaps *
 gst_v4l2src_get_caps (GstBaseSrc * src)
 {
   GstV4l2Src *v4l2src = GST_V4L2SRC (src);
-
   GstCaps *ret;
-
   GSList *walk;
+  GSList *formats;
 
   if (!GST_V4L2_IS_OPEN (v4l2src->v4l2object)) {
     /* FIXME: copy? */
@@ -832,25 +539,25 @@ gst_v4l2src_get_caps (GstBaseSrc * src)
   if (v4l2src->probed_caps)
     return gst_caps_ref (v4l2src->probed_caps);
 
-  if (!v4l2src->formats)
-    gst_v4l2src_fill_format_list (v4l2src);
+  formats = gst_v4l2_object_get_format_list (v4l2src->v4l2object);
 
   ret = gst_caps_new_empty ();
 
-  for (walk = v4l2src->formats; walk; walk = walk->next) {
+  for (walk = v4l2src->v4l2object->formats; walk; walk = walk->next) {
     struct v4l2_fmtdesc *format;
 
     GstStructure *template;
 
     format = (struct v4l2_fmtdesc *) walk->data;
 
-    template = gst_v4l2src_v4l2fourcc_to_structure (format->pixelformat);
+    template = gst_v4l2_object_v4l2fourcc_to_structure (format->pixelformat);
 
     if (template) {
       GstCaps *tmp;
 
-      tmp = gst_v4l2src_probe_caps_for_format (v4l2src, format->pixelformat,
-          template);
+      tmp =
+          gst_v4l2_object_probe_caps_for_format (v4l2src->v4l2object,
+          format->pixelformat, template);
       if (tmp)
         gst_caps_append (ret, tmp);
 
@@ -867,151 +574,13 @@ gst_v4l2src_get_caps (GstBaseSrc * src)
   return ret;
 }
 
-/* collect data for the given caps
- * @caps: given input caps
- * @format: location for the v4l format
- * @w/@h: location for width and height
- * @fps_n/@fps_d: location for framerate
- * @size: location for expected size of the frame or 0 if unknown
- */
-static gboolean
-gst_v4l2_get_caps_info (GstV4l2Src * v4l2src, GstCaps * caps,
-    struct v4l2_fmtdesc **format, gint * w, gint * h, guint * fps_n,
-    guint * fps_d, guint * size)
-{
-  GstStructure *structure;
-
-  const GValue *framerate;
-
-  guint32 fourcc;
-
-  const gchar *mimetype;
-
-  guint outsize;
-
-  /* default unknown values */
-  fourcc = 0;
-  outsize = 0;
-
-  structure = gst_caps_get_structure (caps, 0);
-
-  if (!gst_structure_get_int (structure, "width", w))
-    return FALSE;
-
-  if (!gst_structure_get_int (structure, "height", h))
-    return FALSE;
-
-  framerate = gst_structure_get_value (structure, "framerate");
-  if (!framerate)
-    return FALSE;
-
-  *fps_n = gst_value_get_fraction_numerator (framerate);
-  *fps_d = gst_value_get_fraction_denominator (framerate);
-
-  mimetype = gst_structure_get_name (structure);
-
-  if (!strcmp (mimetype, "video/x-raw-yuv")) {
-    gst_structure_get_fourcc (structure, "format", &fourcc);
-
-    switch (fourcc) {
-      case GST_MAKE_FOURCC ('I', '4', '2', '0'):
-      case GST_MAKE_FOURCC ('I', 'Y', 'U', 'V'):
-        fourcc = V4L2_PIX_FMT_YUV420;
-        outsize = GST_ROUND_UP_4 (*w) * GST_ROUND_UP_2 (*h);
-        outsize += 2 * ((GST_ROUND_UP_8 (*w) / 2) * (GST_ROUND_UP_2 (*h) / 2));
-        break;
-      case GST_MAKE_FOURCC ('Y', 'U', 'Y', '2'):
-        fourcc = V4L2_PIX_FMT_YUYV;
-        outsize = (GST_ROUND_UP_2 (*w) * 2) * *h;
-        break;
-      case GST_MAKE_FOURCC ('Y', '4', '1', 'P'):
-        fourcc = V4L2_PIX_FMT_Y41P;
-        outsize = (GST_ROUND_UP_2 (*w) * 2) * *h;
-        break;
-      case GST_MAKE_FOURCC ('U', 'Y', 'V', 'Y'):
-        fourcc = V4L2_PIX_FMT_UYVY;
-        outsize = (GST_ROUND_UP_2 (*w) * 2) * *h;
-        break;
-      case GST_MAKE_FOURCC ('Y', 'V', '1', '2'):
-        fourcc = V4L2_PIX_FMT_YVU420;
-        outsize = GST_ROUND_UP_4 (*w) * GST_ROUND_UP_2 (*h);
-        outsize += 2 * ((GST_ROUND_UP_8 (*w) / 2) * (GST_ROUND_UP_2 (*h) / 2));
-        break;
-      case GST_MAKE_FOURCC ('Y', '4', '1', 'B'):
-        fourcc = V4L2_PIX_FMT_YUV411P;
-        outsize = GST_ROUND_UP_4 (*w) * *h;
-        outsize += 2 * ((GST_ROUND_UP_8 (*w) / 4) * *h);
-        break;
-      case GST_MAKE_FOURCC ('Y', '4', '2', 'B'):
-        fourcc = V4L2_PIX_FMT_YUV422P;
-        outsize = GST_ROUND_UP_4 (*w) * *h;
-        outsize += 2 * ((GST_ROUND_UP_8 (*w) / 2) * *h);
-        break;
-      case GST_MAKE_FOURCC ('N', 'V', '1', '2'):
-        fourcc = V4L2_PIX_FMT_NV12;
-        outsize = GST_ROUND_UP_4 (*w) * GST_ROUND_UP_2 (*h);
-        outsize += (GST_ROUND_UP_4 (*w) * *h) / 2;
-        break;
-      case GST_MAKE_FOURCC ('N', 'V', '2', '1'):
-        fourcc = V4L2_PIX_FMT_NV21;
-        outsize = GST_ROUND_UP_4 (*w) * GST_ROUND_UP_2 (*h);
-        outsize += (GST_ROUND_UP_4 (*w) * *h) / 2;
-        break;
-    }
-  } else if (!strcmp (mimetype, "video/x-raw-rgb")) {
-    gint depth, endianness, r_mask;
-
-    gst_structure_get_int (structure, "depth", &depth);
-    gst_structure_get_int (structure, "endianness", &endianness);
-    gst_structure_get_int (structure, "red_mask", &r_mask);
-
-    switch (depth) {
-      case 8:
-        fourcc = V4L2_PIX_FMT_RGB332;
-        break;
-      case 15:
-        fourcc = (endianness == G_LITTLE_ENDIAN) ?
-            V4L2_PIX_FMT_RGB555 : V4L2_PIX_FMT_RGB555X;
-        break;
-      case 16:
-        fourcc = (endianness == G_LITTLE_ENDIAN) ?
-            V4L2_PIX_FMT_RGB565 : V4L2_PIX_FMT_RGB565X;
-        break;
-      case 24:
-        fourcc = (r_mask == 0xFF) ? V4L2_PIX_FMT_BGR24 : V4L2_PIX_FMT_RGB24;
-        break;
-      case 32:
-        fourcc = (r_mask == 0xFF) ? V4L2_PIX_FMT_BGR32 : V4L2_PIX_FMT_RGB32;
-        break;
-    }
-  } else if (strcmp (mimetype, "video/x-dv") == 0) {
-    fourcc = V4L2_PIX_FMT_DV;
-  } else if (strcmp (mimetype, "image/jpeg") == 0) {
-    fourcc = V4L2_PIX_FMT_JPEG;
-  } else if (strcmp (mimetype, "video/x-raw-bayer") == 0) {
-    fourcc = V4L2_PIX_FMT_SBGGR8;
-  }
-
-  if (fourcc == 0)
-    return FALSE;
-
-  *format = gst_v4l2src_get_format_from_fourcc (v4l2src, fourcc);
-  *size = outsize;
-
-  return TRUE;
-}
-
 static gboolean
 gst_v4l2src_set_caps (GstBaseSrc * src, GstCaps * caps)
 {
   GstV4l2Src *v4l2src;
-
   gint w = 0, h = 0;
-
   struct v4l2_fmtdesc *format;
-
   guint fps_n, fps_d;
-
   guint size;
 
   v4l2src = GST_V4L2SRC (src);
@@ -1030,8 +599,8 @@ gst_v4l2src_set_caps (GstBaseSrc * src, GstCaps * caps)
   }
 
   /* we want our own v4l2 type of fourcc codes */
-  if (!gst_v4l2_get_caps_info (v4l2src, caps, &format, &w, &h, &fps_n, &fps_d,
-          &size)) {
+  if (!gst_v4l2_object_get_caps_info (v4l2src->v4l2object, caps, &format, &w,
+          &h, &fps_n, &fps_d, &size)) {
     GST_DEBUG_OBJECT (v4l2src,
         "can't get capture format from caps %" GST_PTR_FORMAT, caps);
     return FALSE;
@@ -1071,20 +640,25 @@ gst_v4l2src_query (GstBaseSrc * bsrc, GstQuery * query)
       GstClockTime min_latency, max_latency;
 
       /* device must be open */
-      if (!GST_V4L2_IS_OPEN (src->v4l2object))
+      if (!GST_V4L2_IS_OPEN (src->v4l2object)) {
+        GST_WARNING_OBJECT (src,
+            "Can't give latency since device isn't open !");
         goto done;
+      }
 
       /* we must have a framerate */
-      if (src->fps_n <= 0 || src->fps_d <= 0)
+      if (src->fps_n <= 0 || src->fps_d <= 0) {
+        GST_WARNING_OBJECT (src,
+            "Can't give latency since framerate isn't fixated !");
         goto done;
+      }
 
       /* min latency is the time to capture one frame */
       min_latency =
           gst_util_uint64_scale_int (GST_SECOND, src->fps_d, src->fps_n);
 
       /* max latency is total duration of the frame buffer */
-      /* FIXME: what to use here? */
-      max_latency = 1 * min_latency;
+      max_latency = src->num_buffers * min_latency;
 
       GST_DEBUG_OBJECT (bsrc,
           "report latency min %" GST_TIME_FORMAT " max %" GST_TIME_FORMAT,
@@ -1116,11 +690,29 @@ gst_v4l2src_start (GstBaseSrc * src)
 {
   GstV4l2Src *v4l2src = GST_V4L2SRC (src);
 
-  /* open the device */
-  if (!gst_v4l2_object_start (v4l2src->v4l2object))
-    return FALSE;
-
   v4l2src->offset = 0;
+
+  return TRUE;
+}
+
+static gboolean
+gst_v4l2src_unlock (GstBaseSrc * src)
+{
+  GstV4l2Src *v4l2src = GST_V4L2SRC (src);
+
+  GST_LOG_OBJECT (src, "Flushing");
+  gst_poll_set_flushing (v4l2src->v4l2object->poll, TRUE);
+
+  return TRUE;
+}
+
+static gboolean
+gst_v4l2src_unlock_stop (GstBaseSrc * src)
+{
+  GstV4l2Src *v4l2src = GST_V4L2SRC (src);
+
+  GST_LOG_OBJECT (src, "No longer flushing");
+  gst_poll_set_flushing (v4l2src->v4l2object->poll, FALSE);
 
   return TRUE;
 }
@@ -1139,20 +731,53 @@ gst_v4l2src_stop (GstBaseSrc * src)
       return FALSE;
   }
 
-  /* close the device */
-  if (!gst_v4l2_object_stop (v4l2src->v4l2object))
-    return FALSE;
-
   v4l2src->fps_d = 0;
   v4l2src->fps_n = 0;
 
   return TRUE;
 }
 
+static GstStateChangeReturn
+gst_v4l2src_change_state (GstElement * element, GstStateChange transition)
+{
+  GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;
+  GstV4l2Src *v4l2src = GST_V4L2SRC (element);
+
+  switch (transition) {
+    case GST_STATE_CHANGE_NULL_TO_READY:
+      /* open the device */
+      if (!gst_v4l2_object_start (v4l2src->v4l2object))
+        return GST_STATE_CHANGE_FAILURE;
+      break;
+    default:
+      break;
+  }
+
+  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
+
+  switch (transition) {
+    case GST_STATE_CHANGE_READY_TO_NULL:
+      /* close the device */
+      if (!gst_v4l2_object_stop (v4l2src->v4l2object))
+        return GST_STATE_CHANGE_FAILURE;
+
+      if (v4l2src->probed_caps) {
+        gst_caps_unref (v4l2src->probed_caps);
+        v4l2src->probed_caps = NULL;
+      }
+      break;
+    default:
+      break;
+  }
+
+  return ret;
+}
+
 static GstFlowReturn
 gst_v4l2src_get_read (GstV4l2Src * v4l2src, GstBuffer ** buf)
 {
   gint amount;
+  gint ret;
 
   gint buffersize;
 
@@ -1161,8 +786,21 @@ gst_v4l2src_get_read (GstV4l2Src * v4l2src, GstBuffer ** buf)
   *buf = gst_buffer_new_and_alloc (buffersize);
 
   do {
+    ret = gst_poll_wait (v4l2src->v4l2object->poll, GST_CLOCK_TIME_NONE);
+    if (G_UNLIKELY (ret < 0)) {
+      if (errno == EBUSY)
+        goto stopped;
+      if (errno == ENXIO) {
+        GST_DEBUG_OBJECT (v4l2src,
+            "v4l2 device doesn't support polling. Disabling");
+        v4l2src->v4l2object->can_poll_device = FALSE;
+      } else {
+        if (errno != EAGAIN && errno != EINTR)
+          goto select_error;
+      }
+    }
     amount =
-        read (v4l2src->v4l2object->video_fd, GST_BUFFER_DATA (*buf),
+        v4l2_read (v4l2src->v4l2object->video_fd, GST_BUFFER_DATA (*buf),
         buffersize);
     if (amount == buffersize) {
       break;
@@ -1177,53 +815,26 @@ gst_v4l2src_get_read (GstV4l2Src * v4l2src, GstBuffer ** buf)
     }
   } while (TRUE);
 
-  GST_BUFFER_OFFSET (*buf) = v4l2src->offset++;
-  GST_BUFFER_OFFSET_END (*buf) = v4l2src->offset;
-  /* timestamps, LOCK to get clock and base time. */
-  {
-    GstClock *clock;
-
-    GstClockTime timestamp;
-
-    GST_OBJECT_LOCK (v4l2src);
-    if ((clock = GST_ELEMENT_CLOCK (v4l2src))) {
-      /* we have a clock, get base time and ref clock */
-      timestamp = GST_ELEMENT (v4l2src)->base_time;
-      gst_object_ref (clock);
-    } else {
-      /* no clock, can't set timestamps */
-      timestamp = GST_CLOCK_TIME_NONE;
-    }
-    GST_OBJECT_UNLOCK (v4l2src);
-
-    if (clock) {
-      GstClockTime latency;
-
-      /* the time now is the time of the clock minus the base time */
-      timestamp = gst_clock_get_time (clock) - timestamp;
-      gst_object_unref (clock);
-
-      latency =
-          gst_util_uint64_scale_int (GST_SECOND, v4l2src->fps_d,
-          v4l2src->fps_n);
-
-      if (timestamp > latency)
-        timestamp -= latency;
-      else
-        timestamp = 0;
-    }
-
-    /* FIXME: use the timestamp from the buffer itself! */
-    GST_BUFFER_TIMESTAMP (*buf) = timestamp;
-  }
+  /* we set the buffer metadata in gst_v4l2src_create() */
 
   return GST_FLOW_OK;
 
   /* ERRORS */
+select_error:
+  {
+    GST_ELEMENT_ERROR (v4l2src, RESOURCE, READ, (NULL),
+        ("select error %d: %s (%d)", ret, g_strerror (errno), errno));
+    return GST_FLOW_ERROR;
+  }
+stopped:
+  {
+    GST_DEBUG ("stop called");
+    return GST_FLOW_WRONG_STATE;
+  }
 read_error:
   {
-    GST_ELEMENT_ERROR (v4l2src, RESOURCE, SYNC,
-        (_("Error read()ing %d bytes on device '%s'."),
+    GST_ELEMENT_ERROR (v4l2src, RESOURCE, READ,
+        (_("Error reading %d bytes from device '%s'."),
             buffersize, v4l2src->v4l2object->videodev), GST_ERROR_SYSTEM);
     gst_buffer_unref (*buf);
     return GST_FLOW_ERROR;
@@ -1234,14 +845,9 @@ static GstFlowReturn
 gst_v4l2src_get_mmap (GstV4l2Src * v4l2src, GstBuffer ** buf)
 {
   GstBuffer *temp;
-
   GstFlowReturn ret;
-
   guint size;
-
-  guint count;
-
-  count = 0;
+  guint count = 0;
 
 again:
   ret = gst_v4l2src_grab_frame (v4l2src, &temp);
@@ -1272,7 +878,7 @@ done:
 size_error:
   {
     GST_ELEMENT_ERROR (v4l2src, RESOURCE, READ,
-        (_("Error read()ing %d bytes on device '%s'."),
+        (_("Error reading %d bytes on device '%s'."),
             v4l2src->frame_byte_size, v4l2src->v4l2object->videodev), (NULL));
     return GST_FLOW_ERROR;
   }
@@ -1282,13 +888,54 @@ static GstFlowReturn
 gst_v4l2src_create (GstPushSrc * src, GstBuffer ** buf)
 {
   GstV4l2Src *v4l2src = GST_V4L2SRC (src);
-
   GstFlowReturn ret;
 
   if (v4l2src->use_mmap) {
     ret = gst_v4l2src_get_mmap (v4l2src, buf);
   } else {
     ret = gst_v4l2src_get_read (v4l2src, buf);
+  }
+  /* set buffer metadata */
+  if (ret == GST_FLOW_OK && *buf) {
+    GstClock *clock;
+    GstClockTime timestamp;
+
+    GST_BUFFER_OFFSET (*buf) = v4l2src->offset++;
+    GST_BUFFER_OFFSET_END (*buf) = v4l2src->offset;
+
+    /* timestamps, LOCK to get clock and base time. */
+    GST_OBJECT_LOCK (v4l2src);
+    if ((clock = GST_ELEMENT_CLOCK (v4l2src))) {
+      /* we have a clock, get base time and ref clock */
+      timestamp = GST_ELEMENT (v4l2src)->base_time;
+      gst_object_ref (clock);
+    } else {
+      /* no clock, can't set timestamps */
+      timestamp = GST_CLOCK_TIME_NONE;
+    }
+    GST_OBJECT_UNLOCK (v4l2src);
+
+    if (clock) {
+      /* the time now is the time of the clock minus the base time */
+      timestamp = gst_clock_get_time (clock) - timestamp;
+      gst_object_unref (clock);
+
+      /* if we have a framerate adjust timestamp for frame latency */
+      if (v4l2src->fps_n > 0 && v4l2src->fps_d > 0) {
+        GstClockTime latency;
+
+        latency = gst_util_uint64_scale_int (GST_SECOND, v4l2src->fps_d,
+            v4l2src->fps_n);
+
+        if (timestamp > latency)
+          timestamp -= latency;
+        else
+          timestamp = 0;
+      }
+    }
+
+    /* FIXME: use the timestamp from the buffer itself! */
+    GST_BUFFER_TIMESTAMP (*buf) = timestamp;
   }
   return ret;
 }

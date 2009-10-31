@@ -24,7 +24,8 @@ win32-check-crlf:
 	@echo Checking win32 files for CR LF line endings ...; \
 	fail=0 ; \
 	for each in $(win32crlf) ; do \
-	  if ! (file $$each | grep CRLF >/dev/null) ; then \
+	  result=`perl -e 'print grep(/\r\n/,<>)' "$$each" | wc -l`; \
+	  if test "$$result" = 0 ; then \
 	    echo $$each must be fixed to have CRLF line endings ; \
 	    fail=1; \
 	  fi ; \
@@ -38,7 +39,7 @@ check-exports:
 	fail=0 ; \
 	for l in $(win32defs); do \
 	  libbase=`basename "$$l" ".def"`; \
-	  libso=`find "$(top_builddir)" -name "$$libbase-@GST_MAJORMINOR@.so"`; \
+	  libso=`find "$(top_builddir)" -name "$$libbase-@GST_MAJORMINOR@.so" | grep -v /_build/ | head -n1`; \
 	  libdef="$(top_srcdir)/win32/common/$$libbase.def"; \
 	  if test "x$$libso" != "x"; then \
 	    echo Checking symbols in $$libso; \
@@ -46,7 +47,14 @@ check-exports:
 	      fail=1; \
 	    fi; \
 	  fi; \
-	done
+	done ; \
+	if test $$fail != 0; then \
+	  echo '-----------------------------------------------------------'; \
+	  echo 'Run this to update the .def files:'; \
+	  echo 'make check-exports 2>&1 | patch -p1'; \
+	  echo '-----------------------------------------------------------'; \
+	fi; \
+	exit $$fail
 
 
 dist-hook: check-exports win32-check-crlf

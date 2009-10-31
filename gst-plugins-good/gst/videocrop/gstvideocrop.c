@@ -19,37 +19,31 @@
 
 /**
  * SECTION:element-videocrop
- * @see_also: GstVideoBox
+ * @see_also: #GstVideoBox
  *
- * <refsect2>
- * <para>
  * This element crops video frames, meaning it can remove parts of the
  * picture on the left, right, top or bottom of the picture and output
  * a smaller picture than the input picture, with the unwanted parts at the
  * border removed.
- * </para>
- * <para>
+ *
  * The videocrop element is similar to the videobox element, but its main
  * goal is to support a multitude of formats as efficiently as possible.
  * Unlike videbox, it cannot add borders to the picture and unlike videbox
  * it will always output images in exactly the same format as the input image.
- * </para>
- * <para>
+ *
  * If there is nothing to crop, the element will operate in pass-through mode.
- * </para>
- * <para>
+ *
  * Note that no special efforts are made to handle chroma-subsampled formats
  * in the case of odd-valued cropping and compensate for sub-unit chroma plane
- * shifts for such formats in the case where the "left" or "top" property is
- * set to an odd number. This doesn't matter for most use cases, but it might
- * matter for yours.
- * </para>
+ * shifts for such formats in the case where the #GstVideoCrop:left or
+ * #GstVideoCrop:top property is set to an odd number. This doesn't matter for 
+ * most use cases, but it might matter for yours.
+ *
+ * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch -v videotestsrc ! videocrop top=42 left=1 right=4 bottom=0 ! ximagesink
- * </programlisting>
- * </para>
+ * ]|
  * </refsect2>
  */
 
@@ -67,6 +61,7 @@
 #include <gst/video/video.h>
 
 #include "gstvideocrop.h"
+#include "gstaspectratiocrop.h"
 
 #include <string.h>
 
@@ -88,6 +83,12 @@ enum
 };
 
 /* the formats we support */
+#define GST_VIDEO_CAPS_GRAY "video/x-raw-gray, "			\
+    "bpp = (int) 8, "                                                  \
+    "width = " GST_VIDEO_SIZE_RANGE ", "                                \
+    "height = " GST_VIDEO_SIZE_RANGE ", "                               \
+    "framerate = " GST_VIDEO_FPS_RANGE
+
 #define VIDEO_CROP_CAPS                          \
   GST_VIDEO_CAPS_RGBx ";"                        \
   GST_VIDEO_CAPS_xRGB ";"                        \
@@ -107,7 +108,8 @@ enum
   GST_VIDEO_CAPS_YUV ("I420") ";"                \
   GST_VIDEO_CAPS_YUV ("YV12") ";"                \
   GST_VIDEO_CAPS_RGB_16 ";"                      \
-  GST_VIDEO_CAPS_RGB_15
+  GST_VIDEO_CAPS_RGB_15 ";"			 \
+  GST_VIDEO_CAPS_GRAY
 
 static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -137,6 +139,8 @@ static gboolean gst_video_crop_get_unit_size (GstBaseTransform * trans,
     GstCaps * caps, guint * size);
 static gboolean gst_video_crop_set_caps (GstBaseTransform * trans,
     GstCaps * in_caps, GstCaps * outcaps);
+static gboolean gst_video_crop_src_event (GstBaseTransform * trans,
+    GstEvent * event);
 
 static void
 gst_video_crop_base_init (gpointer g_class)
@@ -149,6 +153,52 @@ gst_video_crop_base_init (gpointer g_class)
       gst_static_pad_template_get (&sink_template));
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_template));
+}
+
+static gboolean
+gst_video_crop_src_event (GstBaseTransform * trans, GstEvent * event)
+{
+  GstEvent *new_event;
+  GstStructure *new_structure;
+  const GstStructure *structure;
+  const gchar *event_name;
+  double pointer_x;
+  double pointer_y;
+
+  GstVideoCrop *vcrop = GST_VIDEO_CROP (trans);
+  new_event = NULL;
+
+  GST_OBJECT_LOCK (vcrop);
+  if (GST_EVENT_TYPE (event) == GST_EVENT_NAVIGATION &&
+      (vcrop->crop_left != 0 || vcrop->crop_top != 0)) {
+    structure = gst_event_get_structure (event);
+    event_name = gst_structure_get_string (structure, "event");
+
+    if (event_name &&
+        (strcmp (event_name, "mouse-move") == 0 ||
+            strcmp (event_name, "mouse-button-press") == 0 ||
+            strcmp (event_name, "mouse-button-release") == 0)) {
+
+      if (gst_structure_get_double (structure, "pointer_x", &pointer_x) &&
+          gst_structure_get_double (structure, "pointer_y", &pointer_y)) {
+
+        new_structure = gst_structure_copy (structure);
+        gst_structure_set (new_structure,
+            "pointer_x", G_TYPE_DOUBLE, (double) (pointer_x + vcrop->crop_left),
+            "pointer_y", G_TYPE_DOUBLE, (double) (pointer_y + vcrop->crop_top),
+            NULL);
+
+        new_event = gst_event_new_navigation (new_structure);
+        gst_event_unref (event);
+      } else {
+        GST_WARNING_OBJECT (vcrop, "Failed to read navigation event");
+      }
+    }
+  }
+
+  GST_OBJECT_UNLOCK (vcrop);
+  return GST_BASE_TRANSFORM_CLASS (parent_class)->src_event (trans,
+      (new_event ? new_event : event));
 }
 
 static void
@@ -184,6 +234,7 @@ gst_video_crop_class_init (GstVideoCropClass * klass)
       GST_DEBUG_FUNCPTR (gst_video_crop_get_unit_size);
 
   basetransform_class->passthrough_on_same_caps = FALSE;
+  basetransform_class->src_event = GST_DEBUG_FUNCPTR (gst_video_crop_src_event);
 }
 
 static void
@@ -193,8 +244,6 @@ gst_video_crop_init (GstVideoCrop * vcrop, GstVideoCropClass * klass)
   vcrop->crop_left = 0;
   vcrop->crop_top = 0;
   vcrop->crop_bottom = 0;
-  vcrop->noop = TRUE;
-  GST_BASE_TRANSFORM (vcrop)->passthrough = vcrop->noop;
 }
 
 static gboolean
@@ -213,7 +262,8 @@ gst_video_crop_get_image_details_from_caps (GstVideoCrop * vcrop,
   details->width = width;
   details->height = height;
 
-  if (gst_structure_has_name (structure, "video/x-raw-rgb")) {
+  if (gst_structure_has_name (structure, "video/x-raw-rgb") ||
+      gst_structure_has_name (structure, "video/x-raw-gray")) {
     gint bpp = 0;
 
     if (!gst_structure_get_int (structure, "bpp", &bpp) || (bpp & 0x07) != 0)
@@ -432,17 +482,6 @@ gst_video_crop_transform (GstBaseTransform * trans, GstBuffer * inbuf,
 {
   GstVideoCrop *vcrop = GST_VIDEO_CROP (trans);
 
-  /* we should be operating in passthrough mode if there's nothing to do */
-  g_assert (vcrop->noop == FALSE);
-
-  GST_OBJECT_LOCK (vcrop);
-
-  if (G_UNLIKELY ((vcrop->crop_left + vcrop->crop_right) >= vcrop->in.width ||
-          (vcrop->crop_top + vcrop->crop_bottom) >= vcrop->in.height)) {
-    GST_OBJECT_UNLOCK (vcrop);
-    goto cropping_too_much;
-  }
-
   switch (vcrop->in.packing) {
     case VIDEO_CROP_PIXEL_FORMAT_PACKED_SIMPLE:
       gst_video_crop_transform_packed_simple (vcrop, inbuf, outbuf);
@@ -457,17 +496,7 @@ gst_video_crop_transform (GstBaseTransform * trans, GstBuffer * inbuf,
       g_assert_not_reached ();
   }
 
-  GST_OBJECT_UNLOCK (vcrop);
-
   return GST_FLOW_OK;
-
-cropping_too_much:
-  {
-    /* is there a better error code for this? */
-    GST_ELEMENT_ERROR (vcrop, LIBRARY, SETTINGS, (NULL),
-        ("Can't crop more pixels than there are"));
-    return GST_FLOW_ERROR;
-  }
 }
 
 static gint
@@ -537,14 +566,8 @@ gst_video_crop_transform_caps (GstBaseTransform * trans,
 
   GST_OBJECT_LOCK (vcrop);
 
-  GST_LOG_OBJECT (vcrop, "l=%d,r=%d,b=%d,t=%d noop=%d",
-      vcrop->crop_left, vcrop->crop_right, vcrop->crop_bottom,
-      vcrop->crop_top, vcrop->noop);
-
-  if (vcrop->noop) {
-    GST_OBJECT_UNLOCK (vcrop);
-    return gst_caps_ref (caps);
-  }
+  GST_LOG_OBJECT (vcrop, "l=%d,r=%d,b=%d,t=%d",
+      vcrop->crop_left, vcrop->crop_right, vcrop->crop_bottom, vcrop->crop_top);
 
   if (direction == GST_PAD_SRC) {
     dx = vcrop->crop_left + vcrop->crop_right;
@@ -606,39 +629,48 @@ gst_video_crop_set_caps (GstBaseTransform * trans, GstCaps * incaps,
 {
   GstVideoCrop *crop = GST_VIDEO_CROP (trans);
 
-  if (!gst_video_crop_get_image_details_from_caps (crop, &crop->in, incaps)) {
-    GST_DEBUG_OBJECT (crop, "failed to parse input caps %" GST_PTR_FORMAT,
-        incaps);
-    return FALSE;
-  }
+  if (!gst_video_crop_get_image_details_from_caps (crop, &crop->in, incaps))
+    goto wrong_input;
 
-  if (!gst_video_crop_get_image_details_from_caps (crop, &crop->out, outcaps)) {
-    GST_DEBUG_OBJECT (crop, "failed to parse output caps %" GST_PTR_FORMAT,
-        outcaps);
-    return FALSE;
-  }
+  if (!gst_video_crop_get_image_details_from_caps (crop, &crop->out, outcaps))
+    goto wrong_output;
+
+  if (G_UNLIKELY ((crop->crop_left + crop->crop_right) >= crop->in.width ||
+          (crop->crop_top + crop->crop_bottom) >= crop->in.height))
+    goto cropping_too_much;
 
   GST_LOG_OBJECT (crop, "incaps = %" GST_PTR_FORMAT ", outcaps = %"
       GST_PTR_FORMAT, incaps, outcaps);
 
-  return TRUE;
-}
+  if ((crop->crop_left | crop->crop_right | crop->
+          crop_top | crop->crop_bottom) == 0) {
+    GST_LOG_OBJECT (crop, "we are using passthrough");
+    gst_base_transform_set_passthrough (GST_BASE_TRANSFORM (crop), TRUE);
+  } else {
+    GST_LOG_OBJECT (crop, "we are not using passthrough");
+    gst_base_transform_set_passthrough (GST_BASE_TRANSFORM (crop), FALSE);
+  }
 
-/* This is extremely hackish, but the only way to force basetransform to
- * renegotiated at the moment. There should really be a basetransform
- * function for this */
-static void
-gst_videocrop_clear_negotiated_caps_locked (GstVideoCrop * crop)
-{
-  GST_LOG_OBJECT (crop, "clearing negotiated caps");
-  GST_BASE_TRANSFORM (crop)->negotiated = FALSE;
-  gst_caps_replace (&GST_PAD_CAPS (GST_BASE_TRANSFORM (crop)->srcpad), NULL);
-  gst_caps_replace (&GST_PAD_CAPS (GST_BASE_TRANSFORM (crop)->sinkpad), NULL);
-  gst_caps_replace (&GST_BASE_TRANSFORM (crop)->cache_caps1, NULL);
-  GST_BASE_TRANSFORM (crop)->cache_caps1_size = 0;
-  gst_caps_replace (&GST_BASE_TRANSFORM (crop)->cache_caps2, NULL);
-  GST_BASE_TRANSFORM (crop)->cache_caps2_size = 0;
-  GST_LOG_OBJECT (crop, "clearing caps done");
+  return TRUE;
+
+  /* ERROR */
+wrong_input:
+  {
+    GST_DEBUG_OBJECT (crop, "failed to parse input caps %" GST_PTR_FORMAT,
+        incaps);
+    return FALSE;
+  }
+wrong_output:
+  {
+    GST_DEBUG_OBJECT (crop, "failed to parse output caps %" GST_PTR_FORMAT,
+        outcaps);
+    return FALSE;
+  }
+cropping_too_much:
+  {
+    GST_DEBUG_OBJECT (crop, "we are cropping too much");
+    return FALSE;
+  }
 }
 
 static void
@@ -649,6 +681,10 @@ gst_video_crop_set_property (GObject * object, guint prop_id,
 
   video_crop = GST_VIDEO_CROP (object);
 
+  /* don't modify while we are transforming */
+  GST_BASE_TRANSFORM_LOCK (GST_BASE_TRANSFORM_CAST (video_crop));
+
+  /* protect with the object lock so that we can read them */
   GST_OBJECT_LOCK (video_crop);
   switch (prop_id) {
     case ARG_LEFT:
@@ -667,17 +703,14 @@ gst_video_crop_set_property (GObject * object, guint prop_id,
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
-
-  video_crop->noop = ((video_crop->crop_left | video_crop->crop_right |
-          video_crop->crop_top | video_crop->crop_bottom) == 0);
-
-  GST_LOG_OBJECT (video_crop, "l=%d,r=%d,b=%d,t=%d noop=%d",
-      video_crop->crop_left, video_crop->crop_right, video_crop->crop_bottom,
-      video_crop->crop_top, video_crop->noop);
-
-  GST_BASE_TRANSFORM (video_crop)->passthrough = video_crop->noop;
-  gst_videocrop_clear_negotiated_caps_locked (video_crop);
   GST_OBJECT_UNLOCK (video_crop);
+
+  GST_LOG_OBJECT (video_crop, "l=%d,r=%d,b=%d,t=%d",
+      video_crop->crop_left, video_crop->crop_right, video_crop->crop_bottom,
+      video_crop->crop_top);
+
+  gst_base_transform_reconfigure (GST_BASE_TRANSFORM (video_crop));
+  GST_BASE_TRANSFORM_UNLOCK (GST_BASE_TRANSFORM_CAST (video_crop));
 }
 
 static void
@@ -714,8 +747,13 @@ plugin_init (GstPlugin * plugin)
 {
   GST_DEBUG_CATEGORY_INIT (videocrop_debug, "videocrop", 0, "videocrop");
 
-  return gst_element_register (plugin, "videocrop", GST_RANK_NONE,
-      GST_TYPE_VIDEO_CROP);
+  if (gst_element_register (plugin, "videocrop", GST_RANK_NONE,
+          GST_TYPE_VIDEO_CROP)
+      && gst_element_register (plugin, "aspectratiocrop", GST_RANK_NONE,
+          GST_TYPE_ASPECT_RATIO_CROP))
+    return TRUE;
+
+  return FALSE;
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,

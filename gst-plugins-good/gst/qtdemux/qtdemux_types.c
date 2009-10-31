@@ -61,6 +61,8 @@ static const QtNodeType qt_node_types[] = {
       qtdemux_dump_stsd},
   {FOURCC_stts, "time-to-sample", 0,
       qtdemux_dump_stts},
+  {FOURCC_stps, "partial sync sample", 0,
+      qtdemux_dump_stps},
   {FOURCC_stss, "sync sample", 0,
       qtdemux_dump_stss},
   {FOURCC_stsc, "sample-to-chunk", 0,
@@ -78,6 +80,12 @@ static const QtNodeType qt_node_types[] = {
   {FOURCC_hint, "hint", 0,},
   {FOURCC_mp4a, "mp4a", 0,},
   {FOURCC_mp4v, "mp4v", 0,},
+  {FOURCC_mjp2, "mjp2", 0,},
+  {FOURCC_mhdr, "mhdr", QT_FLAG_CONTAINER,},
+  {FOURCC_jp2h, "jp2h", QT_FLAG_CONTAINER,},
+  {FOURCC_colr, "colr", 0,},
+  {FOURCC_fiel, "fiel", 0,},
+  {FOURCC_jp2x, "jp2x", 0,},
   {FOURCC_wave, "wave", QT_FLAG_CONTAINER},
   {FOURCC_appl, "appl", QT_FLAG_CONTAINER},
   {FOURCC_esds, "esds", 0},
@@ -87,17 +95,31 @@ static const QtNodeType qt_node_types[] = {
   {FOURCC_meta, "meta", 0, qtdemux_dump_unknown},
   {FOURCC_ilst, "ilst", QT_FLAG_CONTAINER,},
   {FOURCC__nam, "Name", QT_FLAG_CONTAINER,},
+  {FOURCC_titl, "Title", QT_FLAG_CONTAINER,},
   {FOURCC__ART, "Artist", QT_FLAG_CONTAINER,},
+  {FOURCC_auth, "Author", QT_FLAG_CONTAINER,},
+  {FOURCC_perf, "Performer", QT_FLAG_CONTAINER,},
   {FOURCC__wrt, "Writer", QT_FLAG_CONTAINER,},
   {FOURCC__grp, "Group", QT_FLAG_CONTAINER,},
   {FOURCC__alb, "Album", QT_FLAG_CONTAINER,},
+  {FOURCC_albm, "Album", QT_FLAG_CONTAINER,},
   {FOURCC__day, "Date", QT_FLAG_CONTAINER,},
+  {FOURCC__cpy, "Copyright", QT_FLAG_CONTAINER,},
+  {FOURCC__cmt, "Comment", QT_FLAG_CONTAINER,},
+  {FOURCC__des, "Description", QT_FLAG_CONTAINER,},
+  {FOURCC_dscp, "Description", QT_FLAG_CONTAINER,},
+  {FOURCC__req, "Requirement", QT_FLAG_CONTAINER,},
+  {FOURCC__enc, "Encoder", QT_FLAG_CONTAINER,},
   {FOURCC_gnre, "Genre", QT_FLAG_CONTAINER,},
   {FOURCC_trkn, "Track Number", QT_FLAG_CONTAINER,},
   {FOURCC_disc, "Disc Number", QT_FLAG_CONTAINER,},
   {FOURCC_disk, "Disc Number", QT_FLAG_CONTAINER,},
+  {FOURCC_cprt, "Copyright", QT_FLAG_CONTAINER,},
   {FOURCC_cpil, "cpil", QT_FLAG_CONTAINER,},
   {FOURCC_tmpo, "Tempo", QT_FLAG_CONTAINER,},
+  {FOURCC_covr, "Cover", QT_FLAG_CONTAINER,},
+  {FOURCC_keyw, "Keywords", QT_FLAG_CONTAINER,},
+  {FOURCC_kywd, "Keywords", QT_FLAG_CONTAINER,},
   {FOURCC__too, "too", QT_FLAG_CONTAINER,},
   {FOURCC_____, "----", QT_FLAG_CONTAINER,},
   {FOURCC_data, "data", 0, qtdemux_dump_unknown},
@@ -110,8 +132,11 @@ static const QtNodeType qt_node_types[] = {
   {FOURCC_ctts, "Composition time to sample", 0, qtdemux_dump_ctts},
   {FOURCC_XiTh, "XiTh", 0},
   {FOURCC_XdxT, "XdxT", 0},
+  {FOURCC_loci, "loci", 0},
+  {FOURCC_clsf, "clsf", 0},
   {0, "unknown", 0,},
 };
+
 static const int n_qt_node_types =
     sizeof (qt_node_types) / sizeof (qt_node_types[0]);
 
@@ -121,11 +146,12 @@ qtdemux_type_get (guint32 fourcc)
   int i;
 
   for (i = 0; i < n_qt_node_types; i++) {
-    if (qt_node_types[i].fourcc == fourcc)
+    if (G_UNLIKELY (qt_node_types[i].fourcc == fourcc))
       return qt_node_types + i;
   }
 
   GST_WARNING ("unknown QuickTime node type %" GST_FOURCC_FORMAT,
       GST_FOURCC_ARGS (fourcc));
+
   return qt_node_types + n_qt_node_types - 1;
 }

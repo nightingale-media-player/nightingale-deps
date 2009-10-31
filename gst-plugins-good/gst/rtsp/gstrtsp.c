@@ -45,23 +45,26 @@
 #include "config.h"
 #endif
 
+#include "gst/gst-i18n-plugin.h"
+
 #include "gstrtpdec.h"
 #include "gstrtspsrc.h"
-#include "gstrtspgoogle.h"
 
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
+#ifdef ENABLE_NLS
+  setlocale (LC_ALL, "");
+  bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+#endif /* ENABLE_NLS */
+
   if (!gst_element_register (plugin, "rtspsrc", GST_RANK_NONE,
           GST_TYPE_RTSPSRC))
     return FALSE;
   if (!gst_element_register (plugin, "rtpdec", GST_RANK_NONE, GST_TYPE_RTP_DEC))
     return FALSE;
 
-  if (!gst_element_register (plugin, "rtspgoogle", GST_RANK_SECONDARY,
-          GST_TYPE_RTSP_GOOGLE)) {
-    return FALSE;
-  }
   return TRUE;
 }
 

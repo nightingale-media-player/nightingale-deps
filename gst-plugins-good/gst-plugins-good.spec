@@ -4,7 +4,7 @@
 %define gst_minver   0.10.0
 
 Name: 		%{gstreamer}-plugins-good
-Version: 	0.10.10
+Version: 	0.10.16
 Release: 	1.gst
 Summary: 	GStreamer plug-ins with good code and licensing
 
@@ -31,17 +31,17 @@ BuildRequires: libjpeg-devel
 BuildRequires: libcaca-devel
 BuildRequires: libdv-devel
 BuildRequires: libpng-devel >= 1.2.0
-# @USE_MIKMOD_TRUE@BuildRequires: mikmod
 BuildRequires: glibc-devel
-# @USE_RAW1394_TRUE@BuildRequires: libraw1394-devel
-# @USE_RAW1394_TRUE@BuildRequires: libavc1394-devel
 BuildRequires:	speex-devel
 BuildRequires: hal-devel
 BuildRequires: libshout-devel >= 2.0
-# @USE_LADSPA_TRUE@BuildRequires: ladspa-devel
 BuildRequires:  aalib-devel >= 1.3
 Provides:       gstreamer-aasink = %{version}-%{release}
-Requires: wavpack-devel >= 4.32
+BuildRequires: pulseaudio-libs-devel
+BuildRequires: libavc1394-devel
+BuildRequires: libdc1394-devel
+BuildRequires: libiec61883-devel  
+BuildRequires: libraw1394-devel
 
 %description
 GStreamer is a streaming media framework, based on graphs of filters which
@@ -85,6 +85,8 @@ gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/gstreamer-%{maj
 %files -f gst-plugins-good-%{majorminor}.lang
 %defattr(-, root, root)
 %doc AUTHORS COPYING README REQUIREMENTS gst-plugins-good.doap
+%{_datadir}/gstreamer-%{majorminor}/presets/GstIirEqualizer10Bands.prs
+%{_datadir}/gstreamer-%{majorminor}/presets/GstIirEqualizer3Bands.prs
 
 # non-core plugins without external dependencies
 %{_libdir}/gstreamer-%{majorminor}/libgstalaw.so
@@ -98,6 +100,7 @@ gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/gstreamer-%{maj
 %{_libdir}/gstreamer-%{majorminor}/libgstmulaw.so
 %{_libdir}/gstreamer-%{majorminor}/libgstqtdemux.so
 %{_libdir}/gstreamer-%{majorminor}/libgstrtp.so
+%{_libdir}/gstreamer-%{majorminor}/libgstrtpmanager.so
 %{_libdir}/gstreamer-%{majorminor}/libgstrtsp.so
 %{_libdir}/gstreamer-%{majorminor}/libgstsmpte.so
 %{_libdir}/gstreamer-%{majorminor}/libgstudp.so
@@ -116,7 +119,6 @@ gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/gstreamer-%{maj
 %{_libdir}/gstreamer-%{majorminor}/libgstcutter.so
 %{_libdir}/gstreamer-%{majorminor}/libgstmultipart.so
 %{_libdir}/gstreamer-%{majorminor}/libgstid3demux.so
-@USE_CDIO_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgstcdio.so
 %{_libdir}/gstreamer-%{majorminor}/libgstgdkpixbuf.so
 %{_libdir}/gstreamer-%{majorminor}/libgstapetag.so
 %{_libdir}/gstreamer-%{majorminor}/libgstannodex.so
@@ -131,6 +133,11 @@ gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/gstreamer-%{maj
 %{_libdir}/gstreamer-%{majorminor}/libgstmultifile.so
 %{_libdir}/gstreamer-%{majorminor}/libgstspectrum.so
 %{_libdir}/gstreamer-%{majorminor}/libgstgoom2k1.so
+%{_libdir}/gstreamer-%{majorminor}/libgstinterleave.so
+%{_libdir}/gstreamer-%{majorminor}/libgstreplaygain.so
+%{_libdir}/gstreamer-%{majorminor}/libgstdeinterlace.so
+%{_libdir}/gstreamer-%{majorminor}/libgstflv.so
+%{_libdir}/gstreamer-%{majorminor}/libgsty4menc.so
 
 # sys plugins
 %{_libdir}/gstreamer-%{majorminor}/libgstvideo4linux2.so
@@ -140,21 +147,18 @@ gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/gstreamer-%{maj
 %{_libdir}/gstreamer-%{majorminor}/libgstesd.so
 %{_libdir}/gstreamer-%{majorminor}/libgstflac.so
 %{_libdir}/gstreamer-%{majorminor}/libgstjpeg.so
-# @USE_MIKMOD_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgstmikmod.so
 %{_libdir}/gstreamer-%{majorminor}/libgstpng.so
 %{_libdir}/gstreamer-%{majorminor}/libgstossaudio.so
-## @USE_RAW1394_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgst1394.so
 %{_libdir}/gstreamer-%{majorminor}/libgstspeex.so
 %{_libdir}/gstreamer-%{majorminor}/libgstgconfelements.so
 %{_libdir}/gstreamer-%{majorminor}/libgsthalelements.so
-# @USE_LADSPA_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgstladspa.so
 %{_libdir}/gstreamer-%{majorminor}/libgstshout2.so
 %{_libdir}/gstreamer-%{majorminor}/libgstaasink.so
 %{_libdir}/gstreamer-%{majorminor}/libgstdv.so
 %{_libdir}/gstreamer-%{majorminor}/libgst1394.so
 %{_libdir}/gstreamer-%{majorminor}/libgstwavpack.so
 %{_libdir}/gstreamer-%{majorminor}/libgstsouphttpsrc.so
-
+%{_libdir}/gstreamer-%{majorminor}/libgstpulse.so
 
 # schema files
 %{_sysconfdir}/gconf/schemas/gstreamer-%{majorminor}.schemas

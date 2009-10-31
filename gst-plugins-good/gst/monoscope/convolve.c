@@ -21,7 +21,7 @@
  * Note: 7th December 2004: This file used to be licensed under the GPL,
  *       but we got permission from Ralp Loader to relicense it to LGPL.
  * 
- *  $Id: convolve.c,v 1.6 2005-12-06 19:44:54 thomasvs Exp $
+ *  $Id$
  *
  */
 

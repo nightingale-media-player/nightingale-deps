@@ -1,6 +1,6 @@
 /* GStreamer
- * Copyright (C) 2005 Sebastien Moutte <sebastien@moutte.net>
- * Copyright (C) 2007-2009 Pioneers of the Inevitable <songbird@songbirdnest.com>
+ * Copyright (C)  2005 Sebastien Moutte <sebastien@moutte.net>
+ * Copyright (C) 2007 Pioneers of the Inevitable <songbird@songbirdnest.com>
  *
  * gstdirectsoundsink.h: 
  *
@@ -29,23 +29,12 @@
 #define __GST_DIRECTSOUNDSINK_H__
 
 #include <gst/gst.h>
-#include <gst/audio/gstbaseaudiosink.h>
-#include <gst/audio/gstringbuffer.h>
+#include <gst/audio/gstaudiosink.h>
 #include <gst/interfaces/mixer.h>
 
 #include <windows.h>
 #include <dxerr9.h>
-
-/* use directsound v8 */
-#ifdef DIRECTSOUND_VERSION
-  #undef DIRECTSOUND_VERSION
-#endif
-
-#define DIRECTSOUND_VERSION 0x0800
-
 #include <dsound.h>
-
-GST_DEBUG_CATEGORY_EXTERN (directsound_debug);
 
 G_BEGIN_DECLS
 #define GST_TYPE_DIRECTSOUND_SINK            (gst_directsound_sink_get_type())
@@ -53,109 +42,48 @@ G_BEGIN_DECLS
 #define GST_DIRECTSOUND_SINK_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_DIRECTSOUND_SINK,GstDirectSoundSinkClass))
 #define GST_IS_DIRECTSOUND_SINK(obj)         (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_DIRECTSOUND_SINK))
 #define GST_IS_DIRECTSOUND_SINK_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_DIRECTSOUND_SINK))
-
 typedef struct _GstDirectSoundSink GstDirectSoundSink;
 typedef struct _GstDirectSoundSinkClass GstDirectSoundSinkClass;
 
 #define GST_DSOUND_LOCK(obj)	(g_mutex_lock (obj->dsound_lock))
 #define GST_DSOUND_UNLOCK(obj)	(g_mutex_unlock (obj->dsound_lock))
 
-#define GST_TYPE_DIRECTSOUND_RING_BUFFER            (gst_directsound_ring_buffer_get_type())
-#define GST_DIRECTSOUND_RING_BUFFER(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_DIRECTSOUND_RING_BUFFER,GstDirectSoundRingBuffer))
-#define GST_DIRECTSOUND_RING_BUFFER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_DIRECTSOUND_RING_BUFFER,GstDirectSoundRingBufferClass))
-#define GST_DIRECTSOUND_RING_BUFFER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj),GST_TYPE_DIRECTSOUND_RING_BUFFER,GstDirectSoundRingBufferClass))
-#define GST_IS_DIRECTSOUND_RING_BUFFER(obj)         (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_DIRECTSOUND_RING_BUFFER))
-#define GST_IS_DIRECTSOUND_RING_BUFFER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_DIRECTSOUND_RING_BUFFER))
-
-typedef struct _GstDirectSoundRingBuffer GstDirectSoundRingBuffer;
-typedef struct _GstDirectSoundRingBufferClass GstDirectSoundRingBufferClass;
-
-/* 
- * DirectSound Sink
- */
 struct _GstDirectSoundSink
 {
-  /* base audio sink */
-  GstBaseAudioSink sink;
+  GstAudioSink sink;
 
-  /* ringbuffer */
-  GstDirectSoundRingBuffer *dsoundbuffer;
+  /* directsound object interface pointer */
+  LPDIRECTSOUND pDS;
 
-  /* current volume */
-  gdouble volume;
-};
+  /* directsound sound object interface pointer */
+  LPDIRECTSOUNDBUFFER pDSBSecondary;
 
-struct _GstDirectSoundSinkClass
-{
-  GstBaseAudioSinkClass parent_class;
-};
+  /* directSound buffer size */
+  guint buffer_size;
 
-GType gst_directsound_sink_get_type (void);
+  /* offset of the circular buffer where we must write next */
+  guint current_circular_offset;
 
+  guint bytes_per_sample;
 
-/*
- * DirectSound Ring Buffer
- */
-struct _GstDirectSoundRingBuffer {
-	GstRingBuffer object;
+  /* current volume setup by mixer interface */
+  glong volume;
 
-  /* sink element */
-  GstDirectSoundSink *dsoundsink;
+  /* tracks list of our mixer interface implementation */
+  GList *tracks;
 
   /* lock used to protect writes and resets */
   GMutex *dsound_lock;
 
-  /* directsound buffer waveformat description */
-  WAVEFORMATEX wave_format;
-
-  /* directsound object interface pointer */
-  LPDIRECTSOUND8 pDS8;
-
-  /* directsound sound object interface pointer */
-  LPDIRECTSOUNDBUFFER8 pDSB8;
-
-  /* directsound buffer size */
-  guint buffer_size;
-
-  /* directsound buffer write offset */
-  guint buffer_write_offset;
-
-  /* minimum buffer size before playback start */
-  guint min_buffer_size;
-
-  /* minimum sleep time for thread */
-  guint min_sleep_time;
-
-  /* ringbuffer bytes per sample */
-  guint bytes_per_sample;
-
-  /* ringbuffer segment size */
-  gint segsize;
-
-  /* ring buffer offset*/
-  guint segoffset;
-
-  /* thread */
-  HANDLE hThread;
-
-  /* thread suspended? */
-  gboolean suspended;
-
-  /* should run thread */
-  gboolean should_run;
-
-  /* are we currently flushing? */
-  gboolean flushing;
-
-  /* current volume */
-  gdouble volume;
+  gboolean first_buffer_after_reset;
 };
 
-struct _GstDirectSoundRingBufferClass {
-	GstRingBufferClass    parent_class;
+struct _GstDirectSoundSinkClass
+{
+  GstAudioSinkClass parent_class;
 };
 
-GType gst_directsound_ring_buffer_get_type (void);
+GType gst_directsound_sink_get_type (void);
 
 G_END_DECLS
 #endif /* __GST_DIRECTSOUNDSINK_H__ */

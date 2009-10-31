@@ -22,34 +22,27 @@
 
 /**
  * SECTION:element-multipartdemux
- * @short_description: Demuxer that takes a multipart digital stream as input
- * and demuxes one or many digital streams from it.
  * @see_also: #GstMultipartMux
  *
- * <refsect2>
- * <para>
  * MultipartDemux uses the Content-type field of incoming buffers to demux and 
  * push data to dynamic source pads. Most of the time multipart streams are 
  * sequential JPEG frames generated from a live source such as a network source
  * or a camera.
- * </para>
+ *
+ * The output buffers of the multipartdemux typically have no timestamps and are
+ * usually played as fast as possible (at the rate that the source provides the
+ * data).
+ *
+ * the content in multipart files is separated with a boundary string that can
+ * be configured specifically with the #GstMultipartDemux:boundary property
+ * otherwise it will be autodetected.
+ *
+ * <refsect2>
  * <title>Sample pipelines</title>
- * <para>
- * Here is a simple pipeline to demux a multipart file muxed with
- * #GstMultipartMux containing JPEG frames:
- * <programlisting>
+ * |[
  * gst-launch filesrc location=/tmp/test.multipart ! multipartdemux ! jpegdec ! ffmpegcolorspace ! ximagesink
- * </programlisting>
- * </para>
- * <para>
- * The output buffers of the multipartdemux typically have no timestamps and are usually 
- * played as fast as possible (at the rate that the source provides the data).
- * </para>
- * <para>
- * the content in multipart files is separated with a boundary string that can be 
- * configured specifically with the "boundary" property otherwise it will be 
- * autodetected. 
- * </para>
+ * ]| a simple pipeline to demux a multipart file muxed with #GstMultipartMux
+ * containing JPEG frames.
  * </refsect2>
  */
 
@@ -67,7 +60,7 @@ static const GstElementDetails gst_multipart_demux_details =
 GST_ELEMENT_DETAILS ("Multipart demuxer",
     "Codec/Demuxer",
     "demux multipart streams",
-    "Wim Taymans <wim@fluendo.com>, Sjoerd Simons <sjoerd@luon.net>");
+    "Wim Taymans <wim.taymans@gmail.com>, Sjoerd Simons <sjoerd@luon.net>");
 
 
 /* signals and args */
@@ -88,7 +81,7 @@ enum
 };
 
 static GstStaticPadTemplate multipart_demux_src_template_factory =
-GST_STATIC_PAD_TEMPLATE ("src",
+GST_STATIC_PAD_TEMPLATE ("src_%d",
     GST_PAD_SRC,
     GST_PAD_SOMETIMES,
     GST_STATIC_CAPS_ANY);
@@ -106,9 +99,22 @@ typedef struct
   const gchar *val;
 } GstNamesMap;
 
-/* convert from mime types to gst structure names. Add more when needed. */
+/* convert from mime types to gst structure names. Add more when needed. The
+ * mime-type is stored as lowercase */
 static const GstNamesMap gstnames[] = {
-  {"audio/basic", "audio/x-mulaw"},
+  /* RFC 2046 says audio/basic is mulaw, mono, 8000Hz */
+  {"audio/basic", "audio/x-mulaw, channels=1, rate=8000"},
+  {"audio/g726-16",
+      "audio/x-adpcm, bitrate=16000, layout=g726, channels=1, rate=8000"},
+  {"audio/g726-24",
+      "audio/x-adpcm, bitrate=24000, layout=g726, channels=1, rate=8000"},
+  {"audio/g726-32",
+      "audio/x-adpcm, bitrate=32000, layout=g726, channels=1, rate=8000"},
+  {"audio/g726-40",
+      "audio/x-adpcm, bitrate=40000, layout=g726, channels=1, rate=8000"},
+  /* Panasonic Network Cameras non-standard types */
+  {"audio/g726",
+      "audio/x-adpcm, bitrate=32000, layout=g726, channels=1, rate=8000"},
   {NULL, NULL}
 };
 
@@ -194,6 +200,12 @@ gst_multipart_demux_init (GstMultipartDemux * multipart,
   multipart->autoscan = DEFAULT_AUTOSCAN;
 }
 
+void
+gst_multipart_pad_free (GstMultipartPad * mppad)
+{
+  g_free (mppad->mime);
+  g_free (mppad);
+}
 
 static void
 gst_multipart_demux_finalize (GObject * object)
@@ -203,6 +215,8 @@ gst_multipart_demux_finalize (GObject * object)
   g_object_unref (demux->adapter);
   g_free (demux->boundary);
   g_free (demux->mime_type);
+  g_slist_foreach (demux->srcpads, (GFunc) gst_multipart_pad_free, NULL);
+  g_slist_free (demux->srcpads);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -221,7 +235,38 @@ gst_multipart_demux_get_gstname (GstMultipartDemux * demux, gchar * mimetype)
     /* no gst name mapping, use mime type */
     gstname = mimetype;
   }
+  GST_DEBUG_OBJECT (demux, "gst name for %s is %s", mimetype, gstname);
   return gstname;
+}
+
+static GstFlowReturn
+gst_multipart_combine_flows (GstMultipartDemux * demux, GstMultipartPad * pad,
+    GstFlowReturn ret)
+{
+  GSList *walk;
+
+  /* store the value */
+  pad->last_ret = ret;
+
+  /* any other error that is not-linked can be returned right
+   * away */
+  if (ret != GST_FLOW_NOT_LINKED)
+    goto done;
+
+  /* only return NOT_LINKED if all other pads returned NOT_LINKED */
+  for (walk = demux->srcpads; walk; walk = g_slist_next (walk)) {
+    GstMultipartPad *opad = (GstMultipartPad *) walk->data;
+
+    ret = opad->last_ret;
+    /* some other return value (must be SUCCESS but we can return
+     * other values as well) */
+    if (ret != GST_FLOW_NOT_LINKED)
+      goto done;
+  }
+  /* if we get here, all other pads were unlinked and we return
+   * NOT_LINKED then */
+done:
+  return ret;
 }
 
 static GstMultipartPad *
@@ -264,12 +309,14 @@ gst_multipart_find_pad_by_mime (GstMultipartDemux * demux, gchar * mime,
     /* take the mime type, convert it to the caps name */
     capsname = gst_multipart_demux_get_gstname (demux, mime);
     caps = gst_caps_from_string (capsname);
+    GST_DEBUG_OBJECT (demux, "caps for pad: %s", capsname);
     gst_pad_use_fixed_caps (pad);
     gst_pad_set_caps (pad, caps);
     gst_caps_unref (caps);
 
     mppad->pad = pad;
     mppad->mime = g_strdup (mime);
+    mppad->last_ret = GST_FLOW_OK;
 
     demux->srcpads = g_slist_prepend (demux->srcpads, mppad);
     demux->numpads++;
@@ -381,7 +428,7 @@ multipart_parse_header (GstMultipartDemux * multipart)
 
     if (len >= 14 && !g_ascii_strncasecmp ("content-type:", (gchar *) pos, 13)) {
       g_free (multipart->mime_type);
-      multipart->mime_type = g_strndup ((gchar *) pos + 14, len - 14);
+      multipart->mime_type = g_ascii_strdown ((gchar *) pos + 14, len - 14);
     } else if (len >= 15 &&
         !g_ascii_strncasecmp ("content-length:", (gchar *) pos, 15)) {
       multipart->content_length =
@@ -461,6 +508,7 @@ gst_multipart_demux_chain (GstPad * pad, GstBuffer * buf)
 {
   GstMultipartDemux *multipart;
   GstAdapter *adapter;
+  GstClockTime timestamp;
   gint size = 1;
   GstFlowReturn res;
 
@@ -468,6 +516,8 @@ gst_multipart_demux_chain (GstPad * pad, GstBuffer * buf)
   adapter = multipart->adapter;
 
   res = GST_FLOW_OK;
+
+  timestamp = GST_BUFFER_TIMESTAMP (buf);
 
   if (GST_BUFFER_FLAG_IS_SET (buf, GST_BUFFER_FLAG_DISCONT)) {
     gst_adapter_clear (adapter);
@@ -491,33 +541,47 @@ gst_multipart_demux_chain (GstPad * pad, GstBuffer * buf)
     if ((size = multipart_find_boundary (multipart, &datalen)) < 0) {
       goto nodata;
     }
-    srcpad =
-        gst_multipart_find_pad_by_mime (multipart,
-        multipart->mime_type, &created);
-    outbuf = gst_adapter_take_buffer (adapter, datalen);
-    gst_adapter_flush (adapter, size - datalen);
 
     /* Invalidate header info */
     multipart->header_completed = FALSE;
     multipart->content_length = -1;
 
-    gst_buffer_set_caps (outbuf, GST_PAD_CAPS (srcpad->pad));
-    if (created) {
-      GstEvent *event;
-
-      /* Push new segment, first buffer has 0 timestamp */
-      event = gst_event_new_new_segment (FALSE, 1.0, GST_FORMAT_TIME, 0, -1, 0);
-      gst_pad_push_event (srcpad->pad, event);
-      GST_BUFFER_TIMESTAMP (outbuf) = 0;
+    if (G_UNLIKELY (datalen <= 0)) {
+      GST_DEBUG_OBJECT (multipart, "skipping empty content.");
+      gst_adapter_flush (adapter, size - datalen);
     } else {
-      GST_BUFFER_TIMESTAMP (outbuf) = GST_BUFFER_TIMESTAMP (buf);
+      srcpad =
+          gst_multipart_find_pad_by_mime (multipart,
+          multipart->mime_type, &created);
+      outbuf = gst_adapter_take_buffer (adapter, datalen);
+      gst_adapter_flush (adapter, size - datalen);
+
+      gst_buffer_set_caps (outbuf, GST_PAD_CAPS (srcpad->pad));
+      if (created) {
+        GstTagList *tags;
+
+        /* Push new segment, first buffer has 0 timestamp */
+        gst_pad_push_event (srcpad->pad,
+            gst_event_new_new_segment (FALSE, 1.0, GST_FORMAT_TIME, 0, -1, 0));
+
+        tags =
+            gst_tag_list_new_full (GST_TAG_CONTAINER_FORMAT, "Multipart", NULL);
+        gst_pad_push_event (srcpad->pad, gst_event_new_tag (tags));
+
+        GST_BUFFER_TIMESTAMP (outbuf) = 0;
+      } else {
+        GST_BUFFER_TIMESTAMP (outbuf) = timestamp;
+      }
+      GST_DEBUG_OBJECT (multipart,
+          "pushing buffer with timestamp %" GST_TIME_FORMAT,
+          GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (outbuf)));
+      GST_DEBUG_OBJECT (multipart, "buffer has caps %" GST_PTR_FORMAT,
+          GST_BUFFER_CAPS (outbuf));
+      res = gst_pad_push (srcpad->pad, outbuf);
+      res = gst_multipart_combine_flows (multipart, srcpad, res);
+      if (res != GST_FLOW_OK)
+        break;
     }
-    GST_DEBUG_OBJECT (multipart,
-        "pushing buffer with timestamp %" GST_TIME_FORMAT,
-        GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (outbuf)));
-    res = gst_pad_push (srcpad->pad, outbuf);
-    if (res != GST_FLOW_OK)
-      break;
   }
 
 nodata:

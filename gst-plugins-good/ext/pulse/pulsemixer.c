@@ -21,16 +21,14 @@
 
 /**
  * SECTION:element-pulsemixer
- * @short_description: Element to control sound input and output levels for the PulseAudio sound server
  * @see_also: pulsesrc, pulsesink
  *
- * <refsect2>
- * <para>
  * This element lets you adjust sound input and output levels for the
  * PulseAudio sound server. It supports the GstMixer interface, which can be
  * used to obtain a list of available mixer tracks. Set the mixer element to
  * READY state before using the GstMixer interface on it.
- * </para>
+ *
+ * <refsect2>
  * <title>Example pipelines</title>
  * <para>
  * pulsemixer can't be used in a sensible way in gst-launch.
@@ -134,7 +132,6 @@ static void
 gst_pulsemixer_class_init (GstPulseMixerClass * g_class)
 {
   GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
-
   GObjectClass *gobject_class = G_OBJECT_CLASS (g_class);
 
   gstelement_class->change_state =
@@ -152,7 +149,7 @@ gst_pulsemixer_class_init (GstPulseMixerClass * g_class)
 
   g_object_class_install_property (gobject_class,
       PROP_DEVICE,
-      g_param_spec_string ("device", "Sink/Source",
+      g_param_spec_string ("device", "Device",
           "The PulseAudio sink or source to control", NULL,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
@@ -171,8 +168,8 @@ gst_pulsemixer_init (GstPulseMixer * this, GstPulseMixerClass * g_class)
   this->device = NULL;
 
   this->probe =
-      gst_pulseprobe_new (G_OBJECT_GET_CLASS (this), PROP_DEVICE, this->device,
-      TRUE, TRUE);
+      gst_pulseprobe_new (G_OBJECT (this), G_OBJECT_GET_CLASS (this),
+      PROP_DEVICE, this->device, TRUE, TRUE);
 }
 
 static void
@@ -200,22 +197,21 @@ static void
 gst_pulsemixer_set_property (GObject * object,
     guint prop_id, const GValue * value, GParamSpec * pspec)
 {
-
   GstPulseMixer *this = GST_PULSEMIXER (object);
 
   switch (prop_id) {
     case PROP_SERVER:
       g_free (this->server);
       this->server = g_value_dup_string (value);
+
+      if (this->probe)
+        gst_pulseprobe_set_server (this->probe, this->server);
+
       break;
 
     case PROP_DEVICE:
       g_free (this->device);
       this->device = g_value_dup_string (value);
-
-      if (this->probe)
-        gst_pulseprobe_set_server (this->probe, this->device);
-
       break;
 
     default:
@@ -228,33 +224,24 @@ static void
 gst_pulsemixer_get_property (GObject * object,
     guint prop_id, GValue * value, GParamSpec * pspec)
 {
-
   GstPulseMixer *this = GST_PULSEMIXER (object);
 
   switch (prop_id) {
-
     case PROP_SERVER:
       g_value_set_string (value, this->server);
       break;
-
     case PROP_DEVICE:
       g_value_set_string (value, this->device);
       break;
-
     case PROP_DEVICE_NAME:
-
       if (this->mixer) {
         char *t = g_strdup_printf ("%s: %s",
             this->mixer->type == GST_PULSEMIXER_SINK ? "Playback" : "Capture",
             this->mixer->description);
-
-        g_value_set_string (value, t);
-        g_free (t);
+        g_value_take_string (value, t);
       } else
         g_value_set_string (value, NULL);
-
       break;
-
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -268,21 +255,16 @@ gst_pulsemixer_change_state (GstElement * element, GstStateChange transition)
 
   switch (transition) {
     case GST_STATE_CHANGE_NULL_TO_READY:
-
       if (!this->mixer)
         this->mixer =
-            gst_pulsemixer_ctrl_new (this->server, this->device,
-            GST_PULSEMIXER_UNKNOWN);
-
+            gst_pulsemixer_ctrl_new (G_OBJECT (this), this->server,
+            this->device, GST_PULSEMIXER_UNKNOWN);
       break;
-
     case GST_STATE_CHANGE_READY_TO_NULL:
-
       if (this->mixer) {
         gst_pulsemixer_ctrl_free (this->mixer);
         this->mixer = NULL;
       }
-
       break;
 
     default:

@@ -66,7 +66,7 @@ do
   if wget -q -nc -O $PO_FILENAME $PO_URL; then
     if [ -f "po/$d.po" ]; then
       # ./po/foo.po exists, so let's check if ours matches the latest from the
-      # translation project website 
+      # translation project website
       if diff $PO_FILENAME "po/$d.po" >/dev/null; then
         echo "$d.po: up-to-date"
         rm -f $PO_FILENAME
@@ -93,12 +93,12 @@ if [ -n "$DOMAINS_UPDATED" ]; then
   echo "===================================================================="
   echo
   echo "Language domains updated    :$DOMAINS_UPDATED"
-  echo "Language domains to cvs add :$DOMAINS_TO_ADD"
+  echo "Language domains to git add :$DOMAINS_TO_ADD"
   echo
   echo "Source: http://translationproject.org/latest/$PACKAGE/"
   echo
   if [ -n "$DOMAINS_TO_ADD" ]; then
-    CMD_STRING="cvs add"
+    CMD_STRING="git add"
     for d in $DOMAINS_TO_ADD; do
       CMD_STRING="$CMD_STRING po/$d.po"
     done

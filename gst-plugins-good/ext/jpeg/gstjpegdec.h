@@ -57,6 +57,9 @@ struct GstJpegDecSourceMgr {
   GstJpegDec              *dec;
 };
 
+#define CINFO_GET_JPEGDEC(cinfo_ptr) \
+        (((struct GstJpegDecSourceMgr*)((cinfo_ptr)->src))->dec)
+
 /* Can't use GstBaseTransform, because GstBaseTransform
  * doesn't handle the N buffers in, 1 buffer out case,
  * but only the 1-in 1-out case */
@@ -75,7 +78,15 @@ struct _GstJpegDec {
   /* the (expected) timestamp of the next frame */
   guint64  next_ts;
 
-  GstSegment *segment;
+  GstSegment segment;
+
+  /* TRUE if the next output buffer should have the DISCONT flag set */
+  gboolean discont;
+
+  /* QoS stuff *//* with LOCK */
+  gdouble proportion;
+  GstClockTime earliest_time;
+  GstClockTime qos_duration;
 
   /* video state */
   gint framerate_numerator;
