@@ -197,6 +197,7 @@ static const GstTagEntryMatch tag_matches[] = {
   {GST_TAG_ALBUM, "TALB"},
   {GST_TAG_TRACK_NUMBER, "TRCK"},
   {GST_TAG_ARTIST, "TPE1"},
+  {GST_TAG_ALBUM_ARTIST, "TPE2"},
   {GST_TAG_COMPOSER, "TCOM"},
   {GST_TAG_COPYRIGHT, "TCOP"},
   {GST_TAG_COPYRIGHT_URI, "WCOP"},
@@ -382,7 +383,7 @@ gst_tag_list_new_from_id3v1 (const guint8 * data)
     gst_tag_list_add (list, GST_TAG_MERGE_REPLACE, GST_TAG_DATE, date, NULL);
     g_date_free (date);
   }
-  if (data[125] == 0) {
+  if (data[125] == 0 && data[126] != 0) {
     gst_tag_extract_id3v1_string (list, GST_TAG_COMMENT, (gchar *) & data[97],
         28);
     gst_tag_list_add (list, GST_TAG_MERGE_REPLACE, GST_TAG_TRACK_NUMBER,
@@ -391,7 +392,7 @@ gst_tag_list_new_from_id3v1 (const guint8 * data)
     gst_tag_extract_id3v1_string (list, GST_TAG_COMMENT, (gchar *) & data[97],
         30);
   }
-  if (data[127] < gst_tag_id3_genre_count ()) {
+  if (data[127] < gst_tag_id3_genre_count () && !gst_tag_list_is_empty (list)) {
     gst_tag_list_add (list, GST_TAG_MERGE_REPLACE, GST_TAG_GENRE,
         gst_tag_id3_genre_get (data[127]), NULL);
   }

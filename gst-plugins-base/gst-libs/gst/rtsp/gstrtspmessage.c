@@ -57,6 +57,7 @@
 
 #include <string.h>
 
+#include <gst/gstutils.h>
 #include "gstrtspmessage.h"
 
 typedef struct _RTSPKeyValue
@@ -81,9 +82,9 @@ key_value_foreach (GArray * array, GFunc func, gpointer user_data)
  * gst_rtsp_message_new:
  * @msg: a location for the new #GstRTSPMessage
  *
- * Create a new initialized #GstRTSPMessage.
+ * Create a new initialized #GstRTSPMessage. Free with gst_rtsp_message_free().
  *
- * Returns: a #GstRTSPResult. Free with gst_rtsp_message_free().
+ * Returns: a #GstRTSPResult.
  */
 GstRTSPResult
 gst_rtsp_message_new (GstRTSPMessage ** msg)
@@ -144,9 +145,9 @@ gst_rtsp_message_get_type (GstRTSPMessage * msg)
  * @uri: the uri of the request
  *
  * Create a new #GstRTSPMessage with @method and @uri and store the result
- * request message in @msg. 
+ * request message in @msg. Free with gst_rtsp_message_free().
  *
- * Returns: a #GstRTSPResult. Free with gst_rtsp_message_free().
+ * Returns: a #GstRTSPResult.
  */
 GstRTSPResult
 gst_rtsp_message_new_request (GstRTSPMessage ** msg, GstRTSPMethod method,
@@ -213,7 +214,8 @@ gst_rtsp_message_parse_request (GstRTSPMessage * msg,
     GstRTSPMethod * method, const gchar ** uri, GstRTSPVersion * version)
 {
   g_return_val_if_fail (msg != NULL, GST_RTSP_EINVAL);
-  g_return_val_if_fail (msg->type == GST_RTSP_MESSAGE_REQUEST, GST_RTSP_EINVAL);
+  g_return_val_if_fail (msg->type == GST_RTSP_MESSAGE_REQUEST ||
+      msg->type == GST_RTSP_MESSAGE_HTTP_REQUEST, GST_RTSP_EINVAL);
 
   if (method)
     *method = msg->type_data.request.method;
@@ -233,14 +235,14 @@ gst_rtsp_message_parse_request (GstRTSPMessage * msg,
  * @request: the request that triggered the response or #NULL
  *
  * Create a new response #GstRTSPMessage with @code and @reason and store the
- * result message in @msg. 
+ * result message in @msg. Free with gst_rtsp_message_free().
  *
  * When @reason is #NULL, the default reason for @code will be used.
  *
  * When @request is not #NULL, the relevant headers will be copied to the new
  * response message.
  *
- * Returns: a #GstRTSPResult. Free with gst_rtsp_message_free().
+ * Returns: a #GstRTSPResult.
  */
 GstRTSPResult
 gst_rtsp_message_new_response (GstRTSPMessage ** msg, GstRTSPStatusCode code,
@@ -291,34 +293,40 @@ gst_rtsp_message_init_response (GstRTSPMessage * msg, GstRTSPStatusCode code,
   msg->hdr_fields = g_array_new (FALSE, FALSE, sizeof (RTSPKeyValue));
 
   if (request) {
-    gchar *header;
+    if (request->type == GST_RTSP_MESSAGE_HTTP_REQUEST) {
+      msg->type = GST_RTSP_MESSAGE_HTTP_RESPONSE;
+      if (request->type_data.request.version != GST_RTSP_VERSION_INVALID)
+        msg->type_data.response.version = request->type_data.request.version;
+      else
+        msg->type_data.response.version = GST_RTSP_VERSION_1_1;
+    } else {
+      gchar *header;
 
-    /* copy CSEQ */
-    if (gst_rtsp_message_get_header (request, GST_RTSP_HDR_CSEQ, &header,
-            0) == GST_RTSP_OK) {
-      gst_rtsp_message_add_header (msg, GST_RTSP_HDR_CSEQ, header);
-    }
-
-    /* copy session id */
-    if (gst_rtsp_message_get_header (request, GST_RTSP_HDR_SESSION, &header,
-            0) == GST_RTSP_OK) {
-      char *pos;
-
-      header = g_strdup (header);
-      if ((pos = strchr (header, ';'))) {
-        *pos = '\0';
+      /* copy CSEQ */
+      if (gst_rtsp_message_get_header (request, GST_RTSP_HDR_CSEQ, &header,
+              0) == GST_RTSP_OK) {
+        gst_rtsp_message_add_header (msg, GST_RTSP_HDR_CSEQ, header);
       }
-      g_strchomp (header);
-      gst_rtsp_message_add_header (msg, GST_RTSP_HDR_SESSION, header);
-      g_free (header);
-    }
 
-    /* FIXME copy more headers? */
+      /* copy session id */
+      if (gst_rtsp_message_get_header (request, GST_RTSP_HDR_SESSION, &header,
+              0) == GST_RTSP_OK) {
+        char *pos;
+
+        header = g_strdup (header);
+        if ((pos = strchr (header, ';'))) {
+          *pos = '\0';
+        }
+        g_strchomp (header);
+        gst_rtsp_message_take_header (msg, GST_RTSP_HDR_SESSION, header);
+      }
+
+      /* FIXME copy more headers? */
+    }
   }
 
   return GST_RTSP_OK;
 }
-
 
 /**
  * gst_rtsp_message_parse_response:
@@ -340,8 +348,8 @@ gst_rtsp_message_parse_response (GstRTSPMessage * msg,
     GstRTSPStatusCode * code, const gchar ** reason, GstRTSPVersion * version)
 {
   g_return_val_if_fail (msg != NULL, GST_RTSP_EINVAL);
-  g_return_val_if_fail (msg->type == GST_RTSP_MESSAGE_RESPONSE,
-      GST_RTSP_EINVAL);
+  g_return_val_if_fail (msg->type == GST_RTSP_MESSAGE_RESPONSE ||
+      msg->type == GST_RTSP_MESSAGE_HTTP_RESPONSE, GST_RTSP_EINVAL);
 
   if (code)
     *code = msg->type_data.response.code;
@@ -359,9 +367,9 @@ gst_rtsp_message_parse_response (GstRTSPMessage * msg,
  * @channel: the channel
  *
  * Create a new data #GstRTSPMessage with @channel and store the
- * result message in @msg. 
+ * result message in @msg. Free with gst_rtsp_message_free().
  *
- * Returns: a #GstRTSPResult. Free with gst_rtsp_message_free().
+ * Returns: a #GstRTSPResult.
  */
 GstRTSPResult
 gst_rtsp_message_new_data (GstRTSPMessage ** msg, guint8 channel)
@@ -412,7 +420,7 @@ GstRTSPResult
 gst_rtsp_message_parse_data (GstRTSPMessage * msg, guint8 * channel)
 {
   g_return_val_if_fail (msg != NULL, GST_RTSP_EINVAL);
-  g_return_val_if_fail (msg->type != GST_RTSP_MESSAGE_DATA, GST_RTSP_EINVAL);
+  g_return_val_if_fail (msg->type == GST_RTSP_MESSAGE_DATA, GST_RTSP_EINVAL);
 
   if (channel)
     *channel = msg->type_data.data.channel;
@@ -424,7 +432,7 @@ gst_rtsp_message_parse_data (GstRTSPMessage * msg, guint8 * channel)
  * gst_rtsp_message_unset:
  * @msg: a #GstRTSPMessage
  *
- * Unset the concents of @msg so that it becomes an uninitialized
+ * Unset the contents of @msg so that it becomes an uninitialized
  * #GstRTSPMessage again. This function is mostly used in combination with 
  * gst_rtsp_message_init_request(), gst_rtsp_message_init_response() and
  * gst_rtsp_message_init_data() on stack allocated #GstRTSPMessage structures.
@@ -440,9 +448,11 @@ gst_rtsp_message_unset (GstRTSPMessage * msg)
     case GST_RTSP_MESSAGE_INVALID:
       break;
     case GST_RTSP_MESSAGE_REQUEST:
+    case GST_RTSP_MESSAGE_HTTP_REQUEST:
       g_free (msg->type_data.request.uri);
       break;
     case GST_RTSP_MESSAGE_RESPONSE:
+    case GST_RTSP_MESSAGE_HTTP_RESPONSE:
       g_free (msg->type_data.response.reason);
       break;
     case GST_RTSP_MESSAGE_DATA:
@@ -463,7 +473,7 @@ gst_rtsp_message_unset (GstRTSPMessage * msg)
   }
   g_free (msg->body);
 
-  memset (msg, 0, sizeof *msg);
+  memset (msg, 0, sizeof (GstRTSPMessage));
 
   return GST_RTSP_OK;
 }
@@ -491,18 +501,21 @@ gst_rtsp_message_free (GstRTSPMessage * msg)
 }
 
 /**
- * gst_rtsp_message_add_header:
+ * gst_rtsp_message_take_header:
  * @msg: a #GstRTSPMessage
  * @field: a #GstRTSPHeaderField
  * @value: the value of the header
  *
- * Add a header with key @field and @value to @msg.
+ * Add a header with key @field and @value to @msg. This function takes
+ * ownership of @value.
  *
  * Returns: a #GstRTSPResult.
+ *
+ * Since: 0.10.23
  */
 GstRTSPResult
-gst_rtsp_message_add_header (GstRTSPMessage * msg, GstRTSPHeaderField field,
-    const gchar * value)
+gst_rtsp_message_take_header (GstRTSPMessage * msg, GstRTSPHeaderField field,
+    gchar * value)
 {
   RTSPKeyValue key_value;
 
@@ -510,11 +523,29 @@ gst_rtsp_message_add_header (GstRTSPMessage * msg, GstRTSPHeaderField field,
   g_return_val_if_fail (value != NULL, GST_RTSP_EINVAL);
 
   key_value.field = field;
-  key_value.value = g_strdup (value);
+  key_value.value = value;
 
   g_array_append_val (msg->hdr_fields, key_value);
 
   return GST_RTSP_OK;
+}
+
+/**
+ * gst_rtsp_message_add_header:
+ * @msg: a #GstRTSPMessage
+ * @field: a #GstRTSPHeaderField
+ * @value: the value of the header
+ *
+ * Add a header with key @field and @value to @msg. This function takes a copy
+ * of @value.
+ *
+ * Returns: a #GstRTSPResult.
+ */
+GstRTSPResult
+gst_rtsp_message_add_header (GstRTSPMessage * msg, GstRTSPHeaderField field,
+    const gchar * value)
+{
+  return gst_rtsp_message_take_header (msg, field, g_strdup (value));
 }
 
 /**
@@ -539,9 +570,10 @@ gst_rtsp_message_remove_header (GstRTSPMessage * msg, GstRTSPHeaderField field,
   g_return_val_if_fail (msg != NULL, GST_RTSP_EINVAL);
 
   while (i < msg->hdr_fields->len) {
-    RTSPKeyValue key_value = g_array_index (msg->hdr_fields, RTSPKeyValue, i);
+    RTSPKeyValue *key_value = &g_array_index (msg->hdr_fields, RTSPKeyValue, i);
 
-    if (key_value.field == field && (indx == -1 || cnt++ == indx)) {
+    if (key_value->field == field && (indx == -1 || cnt++ == indx)) {
+      g_free (key_value->value);
       g_array_remove_index (msg->hdr_fields, i);
       res = GST_RTSP_OK;
       if (indx != -1)
@@ -560,7 +592,8 @@ gst_rtsp_message_remove_header (GstRTSPMessage * msg, GstRTSPHeaderField field,
  * @value: pointer to hold the result
  * @indx: the index of the header
  *
- * Get the @indx header value with key @field from @msg.
+ * Get the @indx header value with key @field from @msg. The result in @value
+ * stays valid as long as it remains present in @msg.
  *
  * Returns: #GST_RTSP_OK when @field was found, #GST_RTSP_ENOTIMPL if the key
  * was not found.
@@ -574,12 +607,16 @@ gst_rtsp_message_get_header (const GstRTSPMessage * msg,
 
   g_return_val_if_fail (msg != NULL, GST_RTSP_EINVAL);
 
-  for (i = 0; i < msg->hdr_fields->len; i++) {
-    RTSPKeyValue key_value = g_array_index (msg->hdr_fields, RTSPKeyValue, i);
+  /* no header initialized, there are no headers */
+  if (msg->hdr_fields == NULL)
+    return GST_RTSP_ENOTIMPL;
 
-    if (key_value.field == field && cnt++ == indx) {
+  for (i = 0; i < msg->hdr_fields->len; i++) {
+    RTSPKeyValue *key_value = &g_array_index (msg->hdr_fields, RTSPKeyValue, i);
+
+    if (key_value->field == field && cnt++ == indx) {
       if (value)
-        *value = key_value.value;
+        *value = key_value->value;
       return GST_RTSP_OK;
     }
   }
@@ -606,10 +643,13 @@ gst_rtsp_message_append_headers (const GstRTSPMessage * msg, GString * str)
   g_return_val_if_fail (str != NULL, GST_RTSP_EINVAL);
 
   for (i = 0; i < msg->hdr_fields->len; i++) {
-    RTSPKeyValue key_value = g_array_index (msg->hdr_fields, RTSPKeyValue, i);
-    const gchar *keystr = gst_rtsp_header_as_text (key_value.field);
+    RTSPKeyValue *key_value;
+    const gchar *keystr;
 
-    g_string_append_printf (str, "%s: %s\r\n", keystr, key_value.value);
+    key_value = &g_array_index (msg->hdr_fields, RTSPKeyValue, i);
+    keystr = gst_rtsp_header_as_text (key_value->field);
+
+    g_string_append_printf (str, "%s: %s\r\n", keystr, key_value->value);
   }
   return GST_RTSP_OK;
 }
@@ -712,38 +752,7 @@ gst_rtsp_message_steal_body (GstRTSPMessage * msg, guint8 ** data, guint * size)
 }
 
 static void
-dump_mem (guint8 * mem, guint size)
-{
-  guint i, j;
-  GString *string = g_string_sized_new (50);
-  GString *chars = g_string_sized_new (18);
-
-  i = j = 0;
-  while (i < size) {
-    if (g_ascii_isprint (mem[i]))
-      g_string_append_printf (chars, "%c", mem[i]);
-    else
-      g_string_append_printf (chars, ".");
-
-    g_string_append_printf (string, "%02x ", mem[i]);
-
-    j++;
-    i++;
-
-    if (j == 16 || i == size) {
-      g_print ("%08x (%p): %-48.48s %-16.16s\n", i - j, mem + i - j,
-          string->str, chars->str);
-      g_string_set_size (string, 0);
-      g_string_set_size (chars, 0);
-      j = 0;
-    }
-  }
-  g_string_free (string, TRUE);
-  g_string_free (chars, TRUE);
-}
-
-static void
-dump_key_value (gpointer data, gpointer user_data)
+dump_key_value (gpointer data, gpointer user_data G_GNUC_UNUSED)
 {
   RTSPKeyValue *key_value = (RTSPKeyValue *) data;
 
@@ -780,7 +789,7 @@ gst_rtsp_message_dump (GstRTSPMessage * msg)
       key_value_foreach (msg->hdr_fields, dump_key_value, NULL);
       g_print (" body:\n");
       gst_rtsp_message_get_body (msg, &data, &size);
-      dump_mem (data, size);
+      gst_util_dump_mem (data, size);
       break;
     case GST_RTSP_MESSAGE_RESPONSE:
       g_print ("RTSP response message %p\n", msg);
@@ -793,14 +802,41 @@ gst_rtsp_message_dump (GstRTSPMessage * msg)
       key_value_foreach (msg->hdr_fields, dump_key_value, NULL);
       gst_rtsp_message_get_body (msg, &data, &size);
       g_print (" body: length %d\n", size);
-      dump_mem (data, size);
+      gst_util_dump_mem (data, size);
+      break;
+    case GST_RTSP_MESSAGE_HTTP_REQUEST:
+      g_print ("HTTP request message %p\n", msg);
+      g_print (" request line:\n");
+      g_print ("   method:  '%s'\n",
+          gst_rtsp_method_as_text (msg->type_data.request.method));
+      g_print ("   uri:     '%s'\n", msg->type_data.request.uri);
+      g_print ("   version: '%s'\n",
+          gst_rtsp_version_as_text (msg->type_data.request.version));
+      g_print (" headers:\n");
+      key_value_foreach (msg->hdr_fields, dump_key_value, NULL);
+      g_print (" body:\n");
+      gst_rtsp_message_get_body (msg, &data, &size);
+      gst_util_dump_mem (data, size);
+      break;
+    case GST_RTSP_MESSAGE_HTTP_RESPONSE:
+      g_print ("HTTP response message %p\n", msg);
+      g_print (" status line:\n");
+      g_print ("   code:    '%d'\n", msg->type_data.response.code);
+      g_print ("   reason:  '%s'\n", msg->type_data.response.reason);
+      g_print ("   version: '%s'\n",
+          gst_rtsp_version_as_text (msg->type_data.response.version));
+      g_print (" headers:\n");
+      key_value_foreach (msg->hdr_fields, dump_key_value, NULL);
+      gst_rtsp_message_get_body (msg, &data, &size);
+      g_print (" body: length %d\n", size);
+      gst_util_dump_mem (data, size);
       break;
     case GST_RTSP_MESSAGE_DATA:
       g_print ("RTSP data message %p\n", msg);
       g_print (" channel: '%d'\n", msg->type_data.data.channel);
       g_print (" size:    '%d'\n", msg->body_size);
       gst_rtsp_message_get_body (msg, &data, &size);
-      dump_mem (data, size);
+      gst_util_dump_mem (data, size);
       break;
     default:
       g_print ("unsupported message type %d\n", msg->type);

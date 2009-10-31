@@ -56,11 +56,18 @@
   {
     color: #770000;
     font-size: 80%;
+    white-space: nowrap;
   }
-  div.refentry, div.chapter, div.reference, div.part, div.book, div.index, div.glossary, div.sect1, div.appendix, div.preface
+  div.refentry, div.chapter, div.reference, div.part, div.book, div.glossary, div.sect1, div.appendix, div.preface
   {
     position: relative;
     top: 3em;
+    z-index: 0;
+  }
+  div.glossary, div.index
+  {
+    position: relative;
+    top: 2em;
     z-index: 0;
   }
   div.refnamediv

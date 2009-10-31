@@ -4,7 +4,7 @@
 %define gst_minver  0.10.0
 
 Name: 		%{gstreamer}-plugins-base
-Version: 	0.10.22
+Version: 	0.10.25
 Release: 	1.gst
 Summary: 	GStreamer streaming media framework plug-ins
 
@@ -20,6 +20,8 @@ BuildRequires: 	  %{gstreamer}-devel >= %{gst_minver}
 
 BuildRequires:  gcc-c++
 BuildRequires:  gtk-doc >= 1.3
+BuildRequires:  liboil-devel >= 0.3.14 
+Requires:       liboil => 0.3.14 
 
 Requires:      gnome-vfs2 > 1.9.4.00
 BuildRequires: gnome-vfs2-devel > 1.9.4.00
@@ -27,6 +29,18 @@ Requires:      libogg >= 1.0
 Requires:      libvorbis >= 1.0
 BuildRequires: libogg-devel >= 1.0
 BuildRequires: libvorbis-devel >= 1.0
+BuildRequires:  libXv-devel
+Requires:       libXv-devel
+BuildRequires: alsa-lib-devel
+Requires:      alsa-lib
+BuildRequires: cdparanoia-devel
+Requires:      cdparanoia
+BuildRequires: libvisual-devel
+Requires:      libvisual
+BuildRequires: pango-devel
+Requires: pango
+BuildRequires: libtheora-devel >= 1.0
+Requires:      libtheora >= 1.0
 
 %description
 GStreamer is a streaming media framework, based on graphs of filters which
@@ -82,6 +96,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libgstfft-%{majorminor}.so.*
 %{_libdir}/libgstrtsp-%{majorminor}.so.*
 %{_libdir}/libgstsdp-%{majorminor}.so.*
+%{_libdir}/libgstapp-%{majorminor}.so.*
 
 # base plugins without external dependencies
 %{_libdir}/gstreamer-%{majorminor}/libgstadder.so
@@ -103,6 +118,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/gstreamer-%{majorminor}/libgstaudiotestsrc.so
 %{_libdir}/gstreamer-%{majorminor}/libgstgdp.so
 %{_libdir}/gstreamer-%{majorminor}/libgstqueue2.so
+%{_libdir}/gstreamer-%{majorminor}/libgstapp.so
 
 # Here are packages not in the base plugins package but not dependant
 # on an external lib
@@ -119,7 +135,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/gstreamer-%{majorminor}/libgstxvimagesink.so
 %{_libdir}/gstreamer-%{majorminor}/libgstlibvisual.so
 %{_libdir}/gstreamer-%{majorminor}/libgstpango.so
-%{_libdir}/gstreamer-%{majorminor}/libgstcdparanoia.so                                                                     
+%{_libdir}/gstreamer-%{majorminor}/libgstcdparanoia.so
+%{_libdir}/gstreamer-%{majorminor}/libgstgio.so
+# @USE_SCHRO_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgstschro.so                                                                     
 %package devel
 Summary: 	GStreamer Plugin Library Headers
 Group: 		Development/Libraries
@@ -153,7 +171,6 @@ GStreamer Plugins Base library development and header files.
 %{_includedir}/gstreamer-%{majorminor}/gst/interfaces/xoverlay.h
 %{_includedir}/gstreamer-%{majorminor}/gst/audio/gstaudiosrc.h
 %{_includedir}/gstreamer-%{majorminor}/gst/audio/gstbaseaudiosrc.h
-%{_includedir}/gstreamer-%{majorminor}/gst/audio/multichannel-enumtypes.h
 %{_includedir}/gstreamer-%{majorminor}/gst/rtp/gstbasertpaudiopayload.h
 %{_includedir}/gstreamer-%{majorminor}/gst/rtp/gstbasertpdepayload.h
 %{_includedir}/gstreamer-%{majorminor}/gst/rtp/gstrtpbuffer.h
@@ -193,6 +210,13 @@ GStreamer Plugins Base library development and header files.
 %{_includedir}/gstreamer-%{majorminor}/gst/rtp/gstrtppayloads.h
 %{_includedir}/gstreamer-%{majorminor}/gst/tag/gsttagdemux.h
 %{_includedir}/gstreamer-%{majorminor}/gst/pbutils/pbutils-enumtypes.h
+%{_includedir}/gstreamer-%{majorminor}/gst/app/gstappbuffer.h
+%{_includedir}/gstreamer-%{majorminor}/gst/app/gstappsink.h
+%{_includedir}/gstreamer-%{majorminor}/gst/app/gstappsrc.h
+%{_includedir}/gstreamer-%{majorminor}/gst/audio/audio-enumtypes.h
+%{_includedir}/gstreamer-%{majorminor}/gst/video/video-enumtypes.h
+%{_includedir}/gstreamer-%{majorminor}/gst/interfaces/streamvolume.h
+
 %{_libdir}/libgstfft-%{majorminor}.so
 %{_libdir}/libgstrtsp-%{majorminor}.so
 %{_libdir}/libgstsdp-%{majorminor}.so
@@ -205,22 +229,24 @@ GStreamer Plugins Base library development and header files.
 %{_libdir}/libgstnetbuffer-%{majorminor}.so
 %{_libdir}/libgstpbutils-%{majorminor}.so
 %{_libdir}/libgstcdda-%{majorminor}.so
+%{_libdir}/libgstapp-%{majorminor}.so
 
 # pkg-config files
 %{_libdir}/pkgconfig/gstreamer-plugins-base-%{majorminor}.pc
-%{_libdir}/pkgconfig/gstreamer-audio-0.10.pc
-%{_libdir}/pkgconfig/gstreamer-cdda-0.10.pc
-%{_libdir}/pkgconfig/gstreamer-fft-0.10.pc
-%{_libdir}/pkgconfig/gstreamer-floatcast-0.10.pc
-%{_libdir}/pkgconfig/gstreamer-interfaces-0.10.pc
-%{_libdir}/pkgconfig/gstreamer-netbuffer-0.10.pc
-%{_libdir}/pkgconfig/gstreamer-pbutils-0.10.pc
-%{_libdir}/pkgconfig/gstreamer-riff-0.10.pc
-%{_libdir}/pkgconfig/gstreamer-rtp-0.10.pc
-%{_libdir}/pkgconfig/gstreamer-rtsp-0.10.pc
-%{_libdir}/pkgconfig/gstreamer-sdp-0.10.pc
-%{_libdir}/pkgconfig/gstreamer-tag-0.10.pc
-%{_libdir}/pkgconfig/gstreamer-video-0.10.pc
+%{_libdir}/pkgconfig/gstreamer-audio-%{majorminor}.pc
+%{_libdir}/pkgconfig/gstreamer-cdda-%{majorminor}.pc
+%{_libdir}/pkgconfig/gstreamer-fft-%{majorminor}.pc
+%{_libdir}/pkgconfig/gstreamer-floatcast-%{majorminor}.pc
+%{_libdir}/pkgconfig/gstreamer-interfaces-%{majorminor}.pc
+%{_libdir}/pkgconfig/gstreamer-netbuffer-%{majorminor}.pc
+%{_libdir}/pkgconfig/gstreamer-pbutils-%{majorminor}.pc
+%{_libdir}/pkgconfig/gstreamer-riff-%{majorminor}.pc
+%{_libdir}/pkgconfig/gstreamer-rtp-%{majorminor}.pc
+%{_libdir}/pkgconfig/gstreamer-rtsp-%{majorminor}.pc
+%{_libdir}/pkgconfig/gstreamer-sdp-%{majorminor}.pc
+%{_libdir}/pkgconfig/gstreamer-tag-%{majorminor}.pc
+%{_libdir}/pkgconfig/gstreamer-video-%{majorminor}.pc
+%{_libdir}/pkgconfig/gstreamer-app-%{majorminor}.pc
 
 # gtk-doc documentation
 %doc %{_datadir}/gtk-doc/html/gst-plugins-base-libs-%{majorminor}

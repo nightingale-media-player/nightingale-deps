@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="prev" href="gst-plugins-base-plugins-vorbistag.html" title="vorbistag">
 <link rel="next" href="gst-plugins-base-plugins-xvimagesink.html" title="xvimagesink">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
@@ -23,15 +23,17 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-plugins-xvimagesink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-ximagesink.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-ximagesink.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-ximagesink.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-ximagesink.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-ximagesink.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-plugins-ximagesink.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-ximagesink.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-ximagesink.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-ximagesink.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-ximagesink.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-plugins-ximagesink"></a><div class="titlepage"></div>
@@ -54,9 +56,15 @@
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
-               +----GstBaseSink
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="/usr/share/gtk-doc/html/gstreamer-libs-0.10/GstBaseSink.html"
+>GstBaseSink</a>
                      +----<a
 href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstvideosink.html#GstVideoSink"
 >GstVideoSink</a>
@@ -67,11 +75,13 @@ href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-g
 <a name="gst-plugins-base-plugins-ximagesink.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstXImageSink implements
- GstImplementsInterface,  <a
-href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstnavigation.html#GstNavigation"
->GstNavigation</a> and  <a
+ <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstImplementsInterface.html"
+>GstImplementsInterface</a>,  <a
 href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"
->GstXOverlay</a>.</p>
+>GstXOverlay</a> and  <a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstnavigation.html#GstNavigation"
+>GstNavigation</a>.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-ximagesink.properties"></a><h2>Properties</h2>
@@ -108,7 +118,7 @@ own internal window and render into it.
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2809278"></a><h3>Scaling</h3>
+<a name="id2656863"></a><h3>Scaling</h3>
 <p>
 As standard XImage rendering to a drawable is not scaled, XImageSink will use
 reverse caps negotiation to try to get scaled video frames for the drawable.
@@ -127,7 +137,7 @@ geometry and return it with the new caps.
 </p>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2809308"></a><h3>Events</h3>
+<a name="id2656893"></a><h3>Events</h3>
 <p>
 XImageSink creates a thread to handle events coming from the drawable. There
 are several kind of events that can be grouped in 2 big categories: input 
@@ -144,7 +154,7 @@ frame with correct borders/aspect-ratio.
 </p>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2809330"></a><h3>Pixel aspect ratio</h3>
+<a name="id2656915"></a><h3>Pixel aspect ratio</h3>
 <p>
 When changing state to GST_STATE_READY, XImageSink will open a connection to
 the display specified in the <a class="link" href="gst-plugins-base-plugins-ximagesink.html#GstXImageSink--display" title='The "display" property'><span class="type">"display"</span></a> property or the default
@@ -162,7 +172,7 @@ then possible to enforce a specific pixel aspect ratio using the
 </p>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2809366"></a><h3>Examples</h3>
+<a name="id2656950"></a><h3>Examples</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch -v videotestsrc ! queue ! ximagesink
 </pre></div> A pipeline to test reverse negotiation. When the test video signal appears
@@ -190,7 +200,7 @@ some characters for your shell like '\(fraction\)'.
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2809421"></a><h3>Element Information</h3>
+<a name="id2657363"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -213,7 +223,57 @@ some characters for your shell like '\(fraction\)'.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2809484"></a><h3>Element Pads</h3>
+<a name="id2657426"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw-rgb, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2657505"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-ximagesink.html#plugin-ximagesink">ximagesink</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Julien Moutte &lt;julien@moutte.net&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Sink/Video</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2657567"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -238,7 +298,6 @@ some characters for your shell like '\(fraction\)'.
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -249,7 +308,6 @@ some characters for your shell like '\(fraction\)'.
 <p>
 The <a class="link" href="gst-plugins-base-plugins-ximagesink.html#GstXImageSink"><span class="type">GstXImageSink</span></a> data structure.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -316,6 +374,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

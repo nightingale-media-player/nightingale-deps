@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-sdp.html" title="SDP Library">
 <link rel="prev" href="gstreamer-sdp.html" title="SDP Library">
 <link rel="next" href="gstreamer-tag.html" title="Tag Support Library">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -37,9 +37,11 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-tag.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstsdpmessage.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstsdpmessage.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gstsdpmessage.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstsdpmessage.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstsdpmessage"></a><div class="titlepage"></div>
@@ -59,9 +61,9 @@
 enum                <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult" title="enum GstSDPResult">GstSDPResult</a>;
                     <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPOrigin" title="GstSDPOrigin">GstSDPOrigin</a>;
                     <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPConnection" title="GstSDPConnection">GstSDPConnection</a>;
-#define             <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-BWTYPE-CT:CAPS" title="GST_SDP_BWTYPE_CT">GST_SDP_BWTYPE_CT</a>
-#define             <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-BWTYPE-AS:CAPS" title="GST_SDP_BWTYPE_AS">GST_SDP_BWTYPE_AS</a>
-#define             <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-BWTYPE-EXT-PREFIX:CAPS" title="GST_SDP_BWTYPE_EXT_PREFIX">GST_SDP_BWTYPE_EXT_PREFIX</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-BWTYPE-CT--CAPS" title="GST_SDP_BWTYPE_CT">GST_SDP_BWTYPE_CT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-BWTYPE-AS--CAPS" title="GST_SDP_BWTYPE_AS">GST_SDP_BWTYPE_AS</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-BWTYPE-EXT-PREFIX--CAPS" title="GST_SDP_BWTYPE_EXT_PREFIX">GST_SDP_BWTYPE_EXT_PREFIX</a>
                     <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPBandwidth" title="GstSDPBandwidth">GstSDPBandwidth</a>;
                     <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPTime" title="GstSDPTime">GstSDPTime</a>;
                     <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPZone" title="GstSDPZone">GstSDPZone</a>;
@@ -362,7 +364,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a>               <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-attributes-len" title="gst_sdp_media_attributes_len ()">gst_sdp_media_attributes_len</a>        (const <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia" title="GstSDPMedia">GstSDPMedia</a> *media);
-const <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPAttribute" title="GstSDPAttribute">GstSDPAttribute</a>* <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-get-attribute" title="gst_sdp_media_get_attribute ()">gst_sdp_media_get_attribute</a>      (const <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia" title="GstSDPMedia">GstSDPMedia</a> *media,
+const <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPAttribute" title="GstSDPAttribute">GstSDPAttribute</a> * <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-get-attribute" title="gst_sdp_media_get_attribute ()">gst_sdp_media_get_attribute</a>     (const <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia" title="GstSDPMedia">GstSDPMedia</a> *media,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> idx);
@@ -395,7 +397,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id3158554"></a><p>
+<a name="id2896674"></a><p>
 The GstSDPMessage helper functions makes it easy to parse and create SDP
 messages.
 </p>
@@ -405,7 +407,6 @@ messages.
 <p>
 Last reviewed on 2007-07-24 (0.10.14)</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -420,18 +421,17 @@ Last reviewed on 2007-07-24 (0.10.14)</p>
 <p>
 Return values for the SDP functions.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-SDP-OK:CAPS"></a><span class="term"><code class="literal">GST_SDP_OK</code></span></p></td>
+<td><p><a name="GST-SDP-OK--CAPS"></a><span class="term"><code class="literal">GST_SDP_OK</code></span></p></td>
 <td> A successful return value
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-SDP-EINVAL:CAPS"></a><span class="term"><code class="literal">GST_SDP_EINVAL</code></span></p></td>
+<td><p><a name="GST-SDP-EINVAL--CAPS"></a><span class="term"><code class="literal">GST_SDP_EINVAL</code></span></p></td>
 <td> a function was given invalid parameters
 </td>
 </tr>
@@ -455,7 +455,6 @@ The contents of the SDP "o=" field which gives the originator of the session
 (their username and the address of the user's host) plus a session id and
 session version number.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -524,7 +523,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 The contents of the SDP "c=" field which contains connection data.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -570,35 +568,32 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-SDP-BWTYPE-CT:CAPS"></a><h3>GST_SDP_BWTYPE_CT</h3>
+<a name="GST-SDP-BWTYPE-CT--CAPS"></a><h3>GST_SDP_BWTYPE_CT</h3>
 <pre class="programlisting">#define GST_SDP_BWTYPE_CT 		"CT"
 </pre>
 <p>
 The Conference Total bandwidth modifier.</p>
 <p>
-
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-SDP-BWTYPE-AS:CAPS"></a><h3>GST_SDP_BWTYPE_AS</h3>
+<a name="GST-SDP-BWTYPE-AS--CAPS"></a><h3>GST_SDP_BWTYPE_AS</h3>
 <pre class="programlisting">#define GST_SDP_BWTYPE_AS 		"AS"
 </pre>
 <p>
 The Application-Specific Maximum bandwidth modifier.</p>
 <p>
-
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-SDP-BWTYPE-EXT-PREFIX:CAPS"></a><h3>GST_SDP_BWTYPE_EXT_PREFIX</h3>
+<a name="GST-SDP-BWTYPE-EXT-PREFIX--CAPS"></a><h3>GST_SDP_BWTYPE_EXT_PREFIX</h3>
 <pre class="programlisting">#define GST_SDP_BWTYPE_EXT_PREFIX 	"X-"
 </pre>
 <p>
 The extension prefix bandwidth modifier.</p>
 <p>
-
 </p>
 </div>
 <hr>
@@ -613,7 +608,6 @@ The extension prefix bandwidth modifier.</p>
 The contents of the SDP "b=" field which specifies the proposed bandwidth to
 be used by the session or media.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -648,7 +642,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 The contents of the SDP "t=" field which specify the start and stop times for
 a conference session.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -692,7 +685,6 @@ The contents of the SDP "z=" field which allows the sender to
 specify a list of time zone adjustments and offsets from the base
 time.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -726,7 +718,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 The contents of the SDP "k=" field which is used to convey encryption
 keys.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -759,7 +750,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 The contents of the SDP "a=" field which contains a key/value pair.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -800,7 +790,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 The contents of the SDP "m=" field with all related fields.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -901,7 +890,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Arrays.html#GArray"
 <p>
 The contents of the SDP message.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1012,7 +1000,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Arrays.html#GArray"
 <p>
 Allocate a new GstSDPMessage and store the result in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1043,7 +1030,6 @@ allocated on the stack. <a class="link" href="gst-plugins-base-libs-gstsdpmessag
 When this function is invoked on newly allocated data (with malloc or on the
 stack), its contents should be set to 0 before calling this function.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1070,7 +1056,6 @@ Free all resources allocated in <em class="parameter"><code>msg</code></em>. <em
 this function. This function should be used when <em class="parameter"><code>msg</code></em> was allocated on the
 stack and initialized with <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-init" title="gst_sdp_message_init ()"><code class="function">gst_sdp_message_init()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1097,7 +1082,6 @@ Free all resources allocated by <em class="parameter"><code>msg</code></em>. <em
 this function. This function should be used when <em class="parameter"><code>msg</code></em> was dynamically
 allocated with <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-new" title="gst_sdp_message_new ()"><code class="function">gst_sdp_message_new()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1129,7 +1113,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 Parse the contents of <em class="parameter"><code>size</code></em> bytes pointed to by <em class="parameter"><code>data</code></em> and store the result in
 <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1151,7 +1134,7 @@ Parse the contents of <em class="parameter"><code>size</code></em> bytes pointed
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK:CAPS"><span class="type">GST_SDP_OK</span></a> on success.
+<td> <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK--CAPS"><span class="type">GST_SDP_OK</span></a> on success.
 </td>
 </tr>
 </tbody>
@@ -1166,7 +1149,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Get the version in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1194,7 +1176,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Set the version in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1224,7 +1205,6 @@ Set the version in <em class="parameter"><code>msg</code></em>.</p>
 <p>
 Get the origin of <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1267,7 +1247,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Configure the SDP origin in <em class="parameter"><code>msg</code></em> with the given parameters.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1309,7 +1288,7 @@ Configure the SDP origin in <em class="parameter"><code>msg</code></em> with the
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK:CAPS"><span class="type">GST_SDP_OK</span></a>.
+<td> <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK--CAPS"><span class="type">GST_SDP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -1324,7 +1303,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Get the session name in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1352,7 +1330,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Set the session name in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1384,7 +1361,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Get the information in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1412,7 +1388,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Set the information in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1444,7 +1419,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Get the URI in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1472,7 +1446,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Set the URI in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1504,7 +1477,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the number of emails in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1534,7 +1506,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the email with number <em class="parameter"><code>idx</code></em> from <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1567,7 +1538,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Add <em class="parameter"><code>email</code></em> to the list of emails in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1599,7 +1569,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the number of phones in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1629,7 +1598,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the phone with number <em class="parameter"><code>idx</code></em> from <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1662,7 +1630,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Add <em class="parameter"><code>phone</code></em> to the list of phones in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1692,7 +1659,6 @@ Add <em class="parameter"><code>phone</code></em> to the list of phones in <em c
 <p>
 Get the connection of <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1732,7 +1698,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Configure the SDP connection in <em class="parameter"><code>msg</code></em> with the given parameters.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1785,7 +1750,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the number of bandwidth information in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1813,7 +1777,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the bandwidth at index <em class="parameter"><code>idx</code></em> from <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1849,7 +1812,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Add the specified bandwidth information to <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1886,7 +1848,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the number of time information entries in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1914,7 +1875,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get time information with index <em class="parameter"><code>idx</code></em> from <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1953,7 +1913,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Add time information <em class="parameter"><code>start</code></em> and <em class="parameter"><code>stop</code></em> to <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1995,7 +1954,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the number of time zone information entries in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2023,7 +1981,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get time zone information with index <em class="parameter"><code>idx</code></em> from <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2059,7 +2016,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Add time zone information to <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2094,7 +2050,6 @@ Add time zone information to <em class="parameter"><code>msg</code></em>.</p>
 <p>
 Get the encryption information from <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2125,7 +2080,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Adds the encryption information to <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2162,7 +2116,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the number of attributes in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2190,7 +2143,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the attribute at position <em class="parameter"><code>idx</code></em> in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2225,7 +2177,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Get the first attribute with key <em class="parameter"><code>key</code></em> in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2263,7 +2214,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the <em class="parameter"><code>nth</code></em> attribute with key <em class="parameter"><code>key</code></em> in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2304,7 +2254,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Add the attribute with <em class="parameter"><code>key</code></em> and <em class="parameter"><code>value</code></em> to <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2341,7 +2290,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the number of media descriptions in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2369,7 +2317,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the media description at index <em class="parameter"><code>idx</code></em> in <em class="parameter"><code>msg</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2402,7 +2349,6 @@ Adds <em class="parameter"><code>media</code></em> to the array of medias in <em
 the contents of <em class="parameter"><code>media</code></em> so that <em class="parameter"><code>media</code></em> will have to be reinitialized with
 <code class="function">gst_media_init()</code> before it can be used again.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2432,7 +2378,6 @@ the contents of <em class="parameter"><code>media</code></em> so that <em class=
 <p>
 Dump the parsed contents of <em class="parameter"><code>msg</code></em> to stdout.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2457,7 +2402,6 @@ Dump the parsed contents of <em class="parameter"><code>msg</code></em> to stdou
 <p>
 Allocate a new GstSDPMedia and store the result in <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2488,7 +2432,6 @@ allocated on the stack. <a class="link" href="gst-plugins-base-libs-gstsdpmessag
 When this function is invoked on newly allocated data (with malloc or on the
 stack), its contents should be set to 0 before calling this function.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2515,7 +2458,6 @@ Free all resources allocated in <em class="parameter"><code>media</code></em>. <
 this function. This function should be used when <em class="parameter"><code>media</code></em> was allocated on the
 stack and initialized with <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-init" title="gst_sdp_media_init ()"><code class="function">gst_sdp_media_init()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2542,7 +2484,6 @@ Free all resources allocated by <em class="parameter"><code>media</code></em>. <
 this function. This function should be used when <em class="parameter"><code>media</code></em> was dynamically
 allocated with <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-new" title="gst_sdp_media_new ()"><code class="function">gst_sdp_media_new()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2569,7 +2510,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Get the media description of <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2597,7 +2537,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Set the media description of <em class="parameter"><code>media</code></em> to <em class="parameter"><code>med</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2614,7 +2553,7 @@ Set the media description of <em class="parameter"><code>media</code></em> to <e
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK:CAPS"><span class="type">GST_SDP_OK</span></a>.
+<td> <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK--CAPS"><span class="type">GST_SDP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -2629,7 +2568,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the port number for <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2656,7 +2594,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the number of ports for <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2687,7 +2624,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Set the port information in <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2709,7 +2645,7 @@ Set the port information in <em class="parameter"><code>media</code></em>.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK:CAPS"><span class="type">GST_SDP_OK</span></a>.
+<td> <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK--CAPS"><span class="type">GST_SDP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -2724,7 +2660,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Get the transport protocol of <em class="parameter"><code>media</code></em></p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2752,7 +2687,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Set the media transport protocol of <em class="parameter"><code>media</code></em> to <em class="parameter"><code>proto</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2769,7 +2703,7 @@ Set the media transport protocol of <em class="parameter"><code>media</code></em
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK:CAPS"><span class="type">GST_SDP_OK</span></a>.
+<td> <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK--CAPS"><span class="type">GST_SDP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -2784,7 +2718,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the number of formats in <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2814,7 +2747,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the format information at position <em class="parameter"><code>idx</code></em> in <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2847,7 +2779,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Add the format information to <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2864,7 +2795,7 @@ Add the format information to <em class="parameter"><code>media</code></em>.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK:CAPS"><span class="type">GST_SDP_OK</span></a>.
+<td> <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK--CAPS"><span class="type">GST_SDP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -2879,7 +2810,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Get the information of <em class="parameter"><code>media</code></em></p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2907,7 +2837,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Set the media information of <em class="parameter"><code>media</code></em> to <em class="parameter"><code>information</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2924,7 +2853,7 @@ Set the media information of <em class="parameter"><code>media</code></em> to <e
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK:CAPS"><span class="type">GST_SDP_OK</span></a>.
+<td> <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK--CAPS"><span class="type">GST_SDP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -2939,7 +2868,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the number of connection fields in <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -2967,7 +2895,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the connection at position <em class="parameter"><code>idx</code></em> in <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -3012,7 +2939,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Add the given connection parameters to <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -3065,7 +2991,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the number of bandwidth fields in <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -3093,7 +3018,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the bandwidth at position <em class="parameter"><code>idx</code></em> in <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -3129,7 +3053,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Add the bandwidth information with <em class="parameter"><code>bwtype</code></em> and <em class="parameter"><code>bandwidth</code></em> to <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -3151,7 +3074,7 @@ Add the bandwidth information with <em class="parameter"><code>bwtype</code></em
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK:CAPS"><span class="type">GST_SDP_OK</span></a>.
+<td> <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK--CAPS"><span class="type">GST_SDP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -3164,7 +3087,6 @@ Add the bandwidth information with <em class="parameter"><code>bwtype</code></em
 <p>
 Get the encryption information from <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -3195,7 +3117,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Adds the encryption information to <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -3232,7 +3153,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the number of attribute fields in <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -3253,14 +3173,13 @@ Get the number of attribute fields in <em class="parameter"><code>media</code></
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-sdp-media-get-attribute"></a><h3>gst_sdp_media_get_attribute ()</h3>
-<pre class="programlisting">const <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPAttribute" title="GstSDPAttribute">GstSDPAttribute</a>* gst_sdp_media_get_attribute      (const <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia" title="GstSDPMedia">GstSDPMedia</a> *media,
+<pre class="programlisting">const <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPAttribute" title="GstSDPAttribute">GstSDPAttribute</a> * gst_sdp_media_get_attribute     (const <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia" title="GstSDPMedia">GstSDPMedia</a> *media,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> idx);</pre>
 <p>
 Get the attribute at position <em class="parameter"><code>idx</code></em> in <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -3295,7 +3214,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Get the first attribute value for <em class="parameter"><code>key</code></em> in <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -3333,7 +3251,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 Get the <em class="parameter"><code>nth</code></em> attribute value for <em class="parameter"><code>key</code></em> in <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -3374,7 +3291,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Add the attribute with <em class="parameter"><code>key</code></em> and <em class="parameter"><code>value</code></em> to <em class="parameter"><code>media</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -3396,7 +3312,7 @@ Add the attribute with <em class="parameter"><code>key</code></em> and <em class
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK:CAPS"><span class="type">GST_SDP_OK</span></a>.
+<td> <a class="link" href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK--CAPS"><span class="type">GST_SDP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -3406,6 +3322,6 @@ Add the attribute with <em class="parameter"><code>key</code></em> and <em class
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

@@ -17,27 +17,27 @@ CLEANFILES = $(BUILT_SOURCES)
 
 libgstaudio_@GST_MAJORMINOR@_la_SOURCES = \
 	audio.c \
+	gstringbuffer.c \
 	gstaudioclock.c \
 	mixerutils.c \
 	multichannel.c \
-	gstaudiofilter.c \
-	gstaudiosink.c \
-	gstaudiosrc.c \
 	gstbaseaudiosink.c \
 	gstbaseaudiosrc.c \
-	gstringbuffer.c
+	gstaudiofilter.c \
+	gstaudiosink.c \
+	gstaudiosrc.c
 nodist_libgstaudio_@GST_MAJORMINOR@_la_SOURCES = $(built_sources) $(built_headers)
 
 libgstaudio_@GST_MAJORMINOR@includedir = $(includedir)/gstreamer-@GST_MAJORMINOR@/gst/audio
 libgstaudio_@GST_MAJORMINOR@include_HEADERS = \
 	audio.h \
+	gstringbuffer.h \
 	gstaudioclock.h \
 	gstaudiofilter.h \
-	gstaudiosink.h \
-	gstaudiosrc.h \
 	gstbaseaudiosink.h \
 	gstbaseaudiosrc.h \
-	gstringbuffer.h \
+	gstaudiosink.h \
+	gstaudiosrc.h \
 	mixerutils.h \
 	multichannel.h
 
@@ -55,3 +55,51 @@ testchannels_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)
 testchannels_LDADD = $(GST_LIBS)
 
 include $(top_srcdir)/common/glib-gen.mak
+
+if HAVE_INTROSPECTION
+BUILT_GIRSOURCES = GstAudio-@GST_MAJORMINOR@.gir
+
+gir_headers=$(patsubst %,$(srcdir)/%, $(libgstaudio_@GST_MAJORMINOR@include_HEADERS))
+gir_headers+=$(patsubst %,$(builddir)/%, $(nodist_libgstaudio_@GST_MAJORMINOR@include_HEADERS))
+gir_sources=$(patsubst %,$(srcdir)/%, $(libgstaudio_@GST_MAJORMINOR@_la_SOURCES))
+gir_sources+=$(patsubst %,$(builddir)/%, $(nodist_libgstaudio_@GST_MAJORMINOR@_la_SOURCES))
+gir_cincludes=$(patsubst %,--c-include='gst/audio/%',$(libgstaudio_@GST_MAJORMINOR@include_HEADERS))
+gir_cincludes+=$(patsubst %,--c-include='gst/audio/%',$(nodist_libgstaudio_@GST_MAJORMINOR@include_HEADERS))
+
+GstAudio-@GST_MAJORMINOR@.gir: $(INTROSPECTION_SCANNER) libgstaudio-@GST_MAJORMINOR@.la
+	PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig" \
+		$(INTROSPECTION_SCANNER) -v --namespace GstAudio \
+		--nsversion=@GST_MAJORMINOR@ \
+		--strip-prefix=Gst \
+		-I$(top_srcdir)/gst-libs \
+		-I$(top_builddir)/gst-libs \
+		$(gir_cincludes) \
+		--add-include-path=`$(PKG_CONFIG) --variable=libdir gstreamer-0.10`/gst \
+		--add-include-path=`$(PKG_CONFIG) --variable=libdir gstreamer-base-0.10` \
+		--add-include-path=$(builddir)/../interfaces \
+		--library=gstaudio-0.10 \
+		--include=Gst-0.10 \
+		--include=GstBase-0.10 \
+		--include=GstInterfaces-0.10 \
+		--libtool="$(top_builddir)/libtool" \
+		--pkg gstreamer-0.10 \
+		--pkg gstreamer-base-0.10 \
+		--pkg gstreamer-interfaces-0.10 \
+		--output $@ \
+		$(gir_headers) \
+		$(gir_sources)
+
+# INTROSPECTION_GIRDIR/INTROSPECTION_TYPELIBDIR aren't the right place to
+# install anything - we need to install inside our prefix.
+girdir = $(datadir)/gir-1.0
+gir_DATA = $(BUILT_GIRSOURCES)
+
+typelibsdir = $(libdir)/girepository-1.0/
+
+typelibs_DATA = $(BUILT_GIRSOURCES:.gir=.typelib)
+
+%.typelib: %.gir $(INTROSPECTION_COMPILER)
+	$(INTROSPECTION_COMPILER) --includedir=$(srcdir) --includedir=$(builddir) --includedir=`$(PKG_CONFIG) --variable=libdir gstreamer-0.10`/gst --includedir=`$(PKG_CONFIG) --variable=libdir gstreamer-base-0.10` --includedir=$(builddir)/../interfaces $(INTROSPECTION_COMPILER_OPTS) $< -o $(@F)
+
+CLEANFILES += $(BUILT_GIRSOURCES) $(typelibs_DATA)
+endif

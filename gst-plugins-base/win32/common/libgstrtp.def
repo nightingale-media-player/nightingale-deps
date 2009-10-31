@@ -1,4 +1,5 @@
 EXPORTS
+	gst_base_rtp_audio_payload_flush
 	gst_base_rtp_audio_payload_get_adapter
 	gst_base_rtp_audio_payload_get_type
 	gst_base_rtp_audio_payload_push
@@ -13,6 +14,7 @@ EXPORTS
 	gst_basertppayload_get_type
 	gst_basertppayload_is_filled
 	gst_basertppayload_push
+	gst_basertppayload_push_list
 	gst_basertppayload_set_options
 	gst_basertppayload_set_outcaps
 	gst_rtcp_buffer_add_packet
@@ -33,6 +35,12 @@ EXPORTS
 	gst_rtcp_packet_bye_get_reason_len
 	gst_rtcp_packet_bye_get_ssrc_count
 	gst_rtcp_packet_bye_set_reason
+	gst_rtcp_packet_fb_get_media_ssrc
+	gst_rtcp_packet_fb_get_sender_ssrc
+	gst_rtcp_packet_fb_get_type
+	gst_rtcp_packet_fb_set_media_ssrc
+	gst_rtcp_packet_fb_set_sender_ssrc
+	gst_rtcp_packet_fb_set_type
 	gst_rtcp_packet_get_count
 	gst_rtcp_packet_get_length
 	gst_rtcp_packet_get_padding
@@ -81,6 +89,16 @@ EXPORTS
 	gst_rtp_buffer_get_ssrc
 	gst_rtp_buffer_get_timestamp
 	gst_rtp_buffer_get_version
+	gst_rtp_buffer_list_get_payload_len
+	gst_rtp_buffer_list_get_payload_type
+	gst_rtp_buffer_list_get_seq
+	gst_rtp_buffer_list_get_ssrc
+	gst_rtp_buffer_list_get_timestamp
+	gst_rtp_buffer_list_set_payload_type
+	gst_rtp_buffer_list_set_seq
+	gst_rtp_buffer_list_set_ssrc
+	gst_rtp_buffer_list_set_timestamp
+	gst_rtp_buffer_list_validate
 	gst_rtp_buffer_new_allocate
 	gst_rtp_buffer_new_allocate_len
 	gst_rtp_buffer_new_copy_data

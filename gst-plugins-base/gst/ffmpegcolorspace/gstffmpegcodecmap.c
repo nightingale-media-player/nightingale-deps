@@ -182,6 +182,9 @@ gst_ffmpeg_pixfmt_to_caps (enum PixelFormat pix_fmt, AVCodecContext * context)
     case PIX_FMT_UYVY422:
       fmt = GST_MAKE_FOURCC ('U', 'Y', 'V', 'Y');
       break;
+    case PIX_FMT_YVYU422:
+      fmt = GST_MAKE_FOURCC ('Y', 'V', 'Y', 'U');
+      break;
     case PIX_FMT_UYVY411:
       fmt = GST_MAKE_FOURCC ('I', 'Y', 'U', '1');
       break;
@@ -353,13 +356,35 @@ gst_ffmpeg_pixfmt_to_caps (enum PixelFormat pix_fmt, AVCodecContext * context)
       bpp = depth = 8;
       endianness = G_BYTE_ORDER;
       break;
+    case PIX_FMT_V308:
+      fmt = GST_MAKE_FOURCC ('v', '3', '0', '8');
+      break;
     case PIX_FMT_AYUV4444:
       fmt = GST_MAKE_FOURCC ('A', 'Y', 'U', 'V');
       break;
-    case PIX_FMT_GRAY8:
+    case PIX_FMT_GRAY8:{
+      GstCaps *tmp;
+
       bpp = depth = 8;
       caps = gst_ff_vid_caps_new (context, "video/x-raw-gray",
           "bpp", G_TYPE_INT, bpp, "depth", G_TYPE_INT, depth, NULL);
+      tmp = gst_ff_vid_caps_new (context, "video/x-raw-yuv",
+          "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('Y', '8', '0', '0'),
+          NULL);
+      gst_caps_append (caps, tmp);
+    }
+      break;
+    case PIX_FMT_GRAY16_L:
+      bpp = depth = 16;
+      caps = gst_ff_vid_caps_new (context, "video/x-raw-gray",
+          "bpp", G_TYPE_INT, bpp, "depth", G_TYPE_INT, depth,
+          "endianness", G_TYPE_INT, G_LITTLE_ENDIAN, NULL);
+      break;
+    case PIX_FMT_GRAY16_B:
+      bpp = depth = 16;
+      caps = gst_ff_vid_caps_new (context, "video/x-raw-gray",
+          "bpp", G_TYPE_INT, bpp, "depth", G_TYPE_INT, depth,
+          "endianness", G_TYPE_INT, G_BIG_ENDIAN, NULL);
       break;
     default:
       /* give up ... */
@@ -587,6 +612,9 @@ gst_ffmpeg_caps_to_pixfmt (const GstCaps * caps,
         case GST_MAKE_FOURCC ('U', 'Y', 'V', 'Y'):
           context->pix_fmt = PIX_FMT_UYVY422;
           break;
+        case GST_MAKE_FOURCC ('Y', 'V', 'Y', 'U'):
+          context->pix_fmt = PIX_FMT_YVYU422;
+          break;
         case GST_MAKE_FOURCC ('I', 'Y', 'U', '1'):
           context->pix_fmt = PIX_FMT_UYVY411;
           break;
@@ -614,11 +642,17 @@ gst_ffmpeg_caps_to_pixfmt (const GstCaps * caps,
         case GST_MAKE_FOURCC ('Y', 'V', 'U', '9'):
           context->pix_fmt = PIX_FMT_YVU410P;
           break;
+        case GST_MAKE_FOURCC ('v', '3', '0', '8'):
+          context->pix_fmt = PIX_FMT_V308;
+          break;
         case GST_MAKE_FOURCC ('A', 'Y', 'U', 'V'):
           context->pix_fmt = PIX_FMT_AYUV4444;
           break;
         case GST_MAKE_FOURCC ('Y', '4', '4', '4'):
           context->pix_fmt = PIX_FMT_YUV444P;
+          break;
+        case GST_MAKE_FOURCC ('Y', '8', '0', '0'):
+          context->pix_fmt = PIX_FMT_GRAY8;
           break;
       }
     }
@@ -710,6 +744,17 @@ gst_ffmpeg_caps_to_pixfmt (const GstCaps * caps,
         case 8:
           context->pix_fmt = PIX_FMT_GRAY8;
           break;
+        case 16:{
+          gint endianness = 0;
+
+          if (gst_structure_get_int (structure, "endianness", &endianness)) {
+            if (endianness == G_LITTLE_ENDIAN)
+              context->pix_fmt = PIX_FMT_GRAY16_L;
+            else if (endianness == G_BIG_ENDIAN)
+              context->pix_fmt = PIX_FMT_GRAY16_B;
+          }
+        }
+          break;
       }
     }
   }
@@ -756,13 +801,16 @@ gst_ffmpegcsp_caps_with_codectype (enum CodecType type,
  */
 int
 gst_ffmpegcsp_avpicture_fill (AVPicture * picture,
-    uint8_t * ptr, enum PixelFormat pix_fmt, int width, int height)
+    uint8_t * ptr, enum PixelFormat pix_fmt, int width, int height,
+    int interlaced)
 {
   int size, w2, h2, size2;
   int stride, stride2;
   PixFmtInfo *pinfo;
 
   pinfo = get_pix_fmt_info (pix_fmt);
+
+  picture->interlaced = interlaced;
 
   switch (pix_fmt) {
     case PIX_FMT_YUV420P:
@@ -850,7 +898,16 @@ gst_ffmpegcsp_avpicture_fill (AVPicture * picture,
     case PIX_FMT_RGB565:
     case PIX_FMT_YUV422:
     case PIX_FMT_UYVY422:
+    case PIX_FMT_YVYU422:
       stride = GST_ROUND_UP_4 (width * 2);
+      size = stride * height;
+      picture->data[0] = ptr;
+      picture->data[1] = NULL;
+      picture->data[2] = NULL;
+      picture->linesize[0] = stride;
+      return size;
+    case PIX_FMT_V308:
+      stride = GST_ROUND_UP_4 (width * 3);
       size = stride * height;
       picture->data[0] = ptr;
       picture->data[1] = NULL;
@@ -868,6 +925,15 @@ gst_ffmpegcsp_avpicture_fill (AVPicture * picture,
       return size + size / 2;
     case PIX_FMT_GRAY8:
       stride = GST_ROUND_UP_4 (width);
+      size = stride * height;
+      picture->data[0] = ptr;
+      picture->data[1] = NULL;
+      picture->data[2] = NULL;
+      picture->linesize[0] = stride;
+      return size;
+    case PIX_FMT_GRAY16_L:
+    case PIX_FMT_GRAY16_B:
+      stride = GST_ROUND_UP_4 (width * 2);
       size = stride * height;
       picture->data[0] = ptr;
       picture->data[1] = NULL;

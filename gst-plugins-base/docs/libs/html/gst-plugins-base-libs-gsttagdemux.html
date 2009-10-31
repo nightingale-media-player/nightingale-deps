@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="prev" href="gst-plugins-base-libs-gsttagid3.html" title="gsttagid3">
 <link rel="next" href="gstreamer-base-utils.html" title="Base Utils Library">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -37,9 +37,11 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-base-utils.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gsttagdemux.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gsttagdemux.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gsttagdemux.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gsttagdemux.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gsttagdemux"></a><div class="titlepage"></div>
@@ -67,7 +69,7 @@ enum                <a class="link" href="gst-plugins-base-libs-gsttagdemux.html
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id3188893"></a><h3>Deriving from GstTagDemux</h3>
+<a name="id2927526"></a><h3>Deriving from GstTagDemux</h3>
 <p>
 Provides a base class for demuxing tags at the beginning or end of a
 stream and handles things like typefinding, querying, seeking, and
@@ -111,7 +113,6 @@ Subclasses have to do four things:
 </p>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -125,18 +126,18 @@ Subclasses have to do four things:
 <p>
 Opaque <a class="link" href="gst-plugins-base-libs-gsttagdemux.html#GstTagDemux" title="GstTagDemux"><span class="type">GstTagDemux</span></a> structure.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><p><span class="term">GstElement <em class="structfield"><code>element</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> <em class="structfield"><code>element</code></em>;</span></p></td>
 <td> parent element
 </td>
 </tr></tbody>
 </table></div>
-<p class="since">Since  0.10.15
-</p>
+<p class="since">Since 0.10.15</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -177,13 +178,14 @@ Opaque <a class="link" href="gst-plugins-base-libs-gsttagdemux.html#GstTagDemux"
 The <a class="link" href="gst-plugins-base-libs-gsttagdemux.html#GstTagDemuxClass" title="GstTagDemuxClass"><span class="type">GstTagDemuxClass</span></a> structure.  See documentation at beginning of section
 for details about what subclasses need to override and do.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term">GstElementClass <em class="structfield"><code>parent_class</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html#GstElementClass"
+>GstElementClass</a> <em class="structfield"><code>parent_class</code></em>;</span></p></td>
 <td> the parent class.
 </td>
 </tr>
@@ -232,8 +234,7 @@ start tags are prefered over end tags.
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.15
-</p>
+<p class="since">Since 0.10.15</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -247,30 +248,28 @@ start tags are prefered over end tags.
 <p>
 Result values from the parse_tag virtual function.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-TAG-DEMUX-RESULT-BROKEN-TAG:CAPS"></a><span class="term"><code class="literal">GST_TAG_DEMUX_RESULT_BROKEN_TAG</code></span></p></td>
+<td><p><a name="GST-TAG-DEMUX-RESULT-BROKEN-TAG--CAPS"></a><span class="term"><code class="literal">GST_TAG_DEMUX_RESULT_BROKEN_TAG</code></span></p></td>
 <td> cannot parse tag, just skip it
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-TAG-DEMUX-RESULT-AGAIN:CAPS"></a><span class="term"><code class="literal">GST_TAG_DEMUX_RESULT_AGAIN</code></span></p></td>
+<td><p><a name="GST-TAG-DEMUX-RESULT-AGAIN--CAPS"></a><span class="term"><code class="literal">GST_TAG_DEMUX_RESULT_AGAIN</code></span></p></td>
 <td> call again with less or more data
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-TAG-DEMUX-RESULT-OK:CAPS"></a><span class="term"><code class="literal">GST_TAG_DEMUX_RESULT_OK</code></span></p></td>
+<td><p><a name="GST-TAG-DEMUX-RESULT-OK--CAPS"></a><span class="term"><code class="literal">GST_TAG_DEMUX_RESULT_OK</code></span></p></td>
 <td> parsed tag successfully
 </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.15
-</p>
+<p class="since">Since 0.10.15</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
@@ -280,6 +279,6 @@ GstApeDemux, GstID3Demux
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-interfaces.html" title="Interfaces Library">
 <link rel="prev" href="gst-plugins-base-libs-gstvideoorientation.html" title="gstvideoorientation">
 <link rel="next" href="gstreamer-netbuffer.html" title="Network Buffer Library">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -37,13 +37,15 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-netbuffer.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstxoverlay.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstxoverlay.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstxoverlay.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstxoverlay.prerequisites" class="shortcut">Prerequisites</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gstxoverlay.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstxoverlay.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstxoverlay.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstxoverlay.prerequisites" class="shortcut">Prerequisites</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstxoverlay"></a><div class="titlepage"></div>
@@ -90,14 +92,18 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <a name="gst-plugins-base-libs-gstxoverlay.prerequisites"></a><h2>Prerequisites</h2>
 <p>
 GstXOverlay requires
- GstImplementsInterface,  GstObject and  GstElement.</p>
+ <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstImplementsInterface.html"
+>GstImplementsInterface</a> and  <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstxoverlay.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id3065889"></a><p>
+<a name="id2785784"></a><p>
 The XOverlay interface is used for 2 main purposes :
 </p>
 <div class="itemizedlist"><ul type="disc">
@@ -109,7 +115,9 @@ a specific Window identifier for rendering.
 </p></li>
 <li><p>
 To force a redrawing of the latest video frame the video sink element
-displayed on the Window. Indeed if the <span class="type">GstPipeline</span> is in <span class="type">GST_STATE_PAUSED</span>
+displayed on the Window. Indeed if the <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPipeline.html"
+><span class="type">GstPipeline</span></a> is in <span class="type">GST_STATE_PAUSED</span>
 state, moving the Window around will damage its content. Application
 developers will want to handle the Expose events themselves and force the
 video sink element to refresh the Window's content.
@@ -127,7 +135,9 @@ clicks.
 Setting a specific Window identifier on the video sink element is the most
 flexible solution but it has some issues. Indeed the application needs to set
 its Window identifier at the right time to avoid internal Window creation
-from the video sink element. To solve this issue a <span class="type">GstMessage</span> is posted on
+from the video sink element. To solve this issue a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+><span class="type">GstMessage</span></a> is posted on
 the bus to inform the application that it should set the Window identifier
 immediately. Here is an example on how to do that correctly:
 </p>
@@ -171,7 +181,6 @@ main (int argc, char **argv)
 </p>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -182,7 +191,6 @@ main (int argc, char **argv)
 <p>
 Opaque <a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"><span class="type">GstXOverlay</span></a> data structure.</p>
 <p>
-
 </p>
 </div>
 <hr>
@@ -204,7 +212,6 @@ Opaque <a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"
 <p>
 <a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"><span class="type">GstXOverlay</span></a> interface</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -247,7 +254,6 @@ use this method to tell to a XOverlay to display video output to a
 specific XWindow. Passing 0 as the xwindow_id will tell the overlay to
 stop using that window and create an internal one.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -278,7 +284,6 @@ This will post a "have-xwindow-id" element message on the bus.
 <p>
 This function should only be used by video overlay plugin developers.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -309,7 +314,6 @@ window.
 <p>
 This function should only be used by video overlay plugin developers.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -328,7 +332,6 @@ This function should only be used by video overlay plugin developers.</p>
 Tell an overlay that it has been exposed. This will redraw the current frame
 in the drawable even if the pipeline is PAUSED.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -353,7 +356,6 @@ events are not propagated in the window hierarchy if a client is listening
 for them. This method allows you to disable events handling completely
 from the XOverlay.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -377,6 +379,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

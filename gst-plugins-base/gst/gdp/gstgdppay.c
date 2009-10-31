@@ -432,11 +432,28 @@ gst_gdp_pay_reset_streamheader (GstGDPPay * this)
 
       bufval = &g_array_index (buffers, GValue, i);
       buffer = g_value_peek_pointer (bufval);
+      /* this buffer is deserialized by gdpdepay as a regular buffer,
+         it needs IN_CAPS, because it's a streamheader - otherwise it
+         is mixed with regular data buffers */
+      GST_BUFFER_FLAG_SET (buffer, GST_BUFFER_FLAG_IN_CAPS);
+      GST_BUFFER_OFFSET (buffer) = GST_BUFFER_OFFSET_NONE;
+      GST_BUFFER_OFFSET_END (buffer) = GST_BUFFER_OFFSET_NONE;
+      GST_BUFFER_TIMESTAMP (buffer) = GST_CLOCK_TIME_NONE;
+
       outbuffer = gst_gdp_pay_buffer_from_buffer (this, buffer);
       if (!outbuffer) {
         g_value_unset (&array);
         goto no_buffer;
       }
+
+      /* Setting IN_CAPS as other GDP event buffers */
+      GST_DEBUG_OBJECT (this,
+          "Setting IN_CAPS flag on outgoing buffer %" GST_PTR_FORMAT,
+          outbuffer);
+      GST_BUFFER_FLAG_SET (outbuffer, GST_BUFFER_FLAG_IN_CAPS);
+      GST_BUFFER_OFFSET (outbuffer) = GST_BUFFER_OFFSET_NONE;
+      GST_BUFFER_OFFSET_END (outbuffer) = GST_BUFFER_OFFSET_NONE;
+      GST_BUFFER_TIMESTAMP (outbuffer) = GST_CLOCK_TIME_NONE;
 
       g_value_init (&value, GST_TYPE_BUFFER);
       gst_value_set_buffer (&value, outbuffer);
@@ -486,6 +503,7 @@ gst_gdp_pay_reset_streamheader (GstGDPPay * this)
     goto done;
   }
   if (this->tag_buf) {
+    gst_buffer_set_caps (this->tag_buf, caps);
     GST_DEBUG_OBJECT (this, "Pushing GDP tag buffer %p", this->tag_buf);
     /* we stored these bufs with refcount 1, so make sure we keep a ref */
     r = gst_pad_push (this->srcpad, gst_buffer_ref (this->tag_buf));
@@ -543,6 +561,7 @@ gst_gdp_queue_buffer (GstGDPPay * this, GstBuffer * buffer)
   if (this->sent_streamheader) {
     GST_LOG_OBJECT (this, "Pushing GDP buffer %p, caps %" GST_PTR_FORMAT,
         buffer, this->caps);
+    gst_buffer_set_caps (buffer, GST_PAD_CAPS (this->srcpad));
     return gst_pad_push (this->srcpad, buffer);
   }
 

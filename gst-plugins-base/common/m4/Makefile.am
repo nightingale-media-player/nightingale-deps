@@ -35,4 +35,5 @@ EXTRA_DIST = \
 	gst.m4 \
 	gtk-doc.m4 \
 	pkg.m4 \
-	check.m4
+	check.m4 \
+        shave.m4

@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-rtsp.html" title="RTSP Library">
 <link rel="prev" href="gst-plugins-base-libs-gstrtsptransport.html" title="gstrtsptransport">
 <link rel="next" href="gstreamer-sdp.html" title="SDP Library">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -37,9 +37,11 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-sdp.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstrtspurl.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstrtspurl.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gstrtspurl.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstrtspurl.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstrtspurl"></a><div class="titlepage"></div>
@@ -56,22 +58,22 @@
 
 #include &lt;gst/rtsp/gstrtspurl.h&gt;
 
-#define             <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GST-RTSP-DEFAULT-PORT:CAPS" title="GST_RTSP_DEFAULT_PORT">GST_RTSP_DEFAULT_PORT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GST-RTSP-DEFAULT-PORT--CAPS" title="GST_RTSP_DEFAULT_PORT">GST_RTSP_DEFAULT_PORT</a>
                     <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a>;
 <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#gst-rtsp-url-parse" title="gst_rtsp_url_parse ()">gst_rtsp_url_parse</a>                  (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *urlstr,
                                                          <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a> **url);
-<a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a>*         <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#gst-rtsp-url-copy" title="gst_rtsp_url_copy ()">gst_rtsp_url_copy</a>                   (<a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a> *url);
+<a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a>*         <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#gst-rtsp-url-copy" title="gst_rtsp_url_copy ()">gst_rtsp_url_copy</a>                   (const <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a> *url);
 void                <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#gst-rtsp-url-free" title="gst_rtsp_url_free ()">gst_rtsp_url_free</a>                   (<a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a> *url);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#gst-rtsp-url-get-request-uri" title="gst_rtsp_url_get_request_uri ()">gst_rtsp_url_get_request_uri</a>        (<a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a> *url);
+>gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#gst-rtsp-url-get-request-uri" title="gst_rtsp_url_get_request_uri ()">gst_rtsp_url_get_request_uri</a>        (const <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a> *url);
 <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#gst-rtsp-url-set-port" title="gst_rtsp_url_set_port ()">gst_rtsp_url_set_port</a>               (<a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a> *url,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
 >guint16</a> port);
-<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#gst-rtsp-url-get-port" title="gst_rtsp_url_get_port ()">gst_rtsp_url_get_port</a>               (<a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a> *url,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#gst-rtsp-url-get-port" title="gst_rtsp_url_get_port ()">gst_rtsp_url_get_port</a>               (const <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a> *url,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
 >guint16</a> *port);
@@ -82,7 +84,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id3154019"></a><p>
+<a name="id2892130"></a><p>
 Provides helper functions to handle RTSP urls.
 </p>
 </div>
@@ -90,19 +92,17 @@ Provides helper functions to handle RTSP urls.
  
 Last reviewed on 2007-07-25 (0.10.14)</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstrtspurl.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="GST-RTSP-DEFAULT-PORT:CAPS"></a><h3>GST_RTSP_DEFAULT_PORT</h3>
+<a name="GST-RTSP-DEFAULT-PORT--CAPS"></a><h3>GST_RTSP_DEFAULT_PORT</h3>
 <pre class="programlisting">#define GST_RTSP_DEFAULT_PORT       554
 </pre>
 <p>
 The default RTSP port to connect to.</p>
 <p>
-
 </p>
 </div>
 <hr>
@@ -122,7 +122,6 @@ The default RTSP port to connect to.</p>
 <p>
 This structure contains the result of a parsed RTSP URL</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -193,7 +192,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 Parse the RTSP <em class="parameter"><code>urlstr</code></em> into a newly allocated <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl"><span class="type">GstRTSPUrl</span></a>. Free after usage
 with <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#gst-rtsp-url-free" title="gst_rtsp_url_free ()"><code class="function">gst_rtsp_url_free()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -219,11 +217,10 @@ with <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#gst-rtsp-url-fr
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtsp-url-copy"></a><h3>gst_rtsp_url_copy ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a>*         gst_rtsp_url_copy                   (<a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a> *url);</pre>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a>*         gst_rtsp_url_copy                   (const <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a> *url);</pre>
 <p>
 Make a copy of <em class="parameter"><code>url</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -241,8 +238,7 @@ Make a copy of <em class="parameter"><code>url</code></em>.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.22
-</p>
+<p class="since">Since 0.10.22</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -251,7 +247,6 @@ Make a copy of <em class="parameter"><code>url</code></em>.</p>
 <p>
 Free the memory used by <em class="parameter"><code>url</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -267,11 +262,10 @@ Free the memory used by <em class="parameter"><code>url</code></em>.</p>
 <a name="gst-rtsp-url-get-request-uri"></a><h3>gst_rtsp_url_get_request_uri ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              gst_rtsp_url_get_request_uri        (<a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a> *url);</pre>
+>gchar</a>*              gst_rtsp_url_get_request_uri        (const <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a> *url);</pre>
 <p>
 Get a newly allocated string describing the request URI for <em class="parameter"><code>url</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -301,7 +295,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
 <p>
 Set the port number in <em class="parameter"><code>url</code></em> to <em class="parameter"><code>port</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -318,7 +311,7 @@ Set the port number in <em class="parameter"><code>url</code></em> to <em class=
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK--CAPS"><span class="type">GST_RTSP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -327,14 +320,13 @@ Set the port number in <em class="parameter"><code>url</code></em> to <em class=
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtsp-url-get-port"></a><h3>gst_rtsp_url_get_port ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_url_get_port               (<a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a> *url,
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_url_get_port               (const <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a> *url,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
 >guint16</a> *port);</pre>
 <p>
 Get the port number of <em class="parameter"><code>url</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -351,7 +343,7 @@ Get the port number of <em class="parameter"><code>url</code></em>.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK--CAPS"><span class="type">GST_RTSP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -361,6 +353,6 @@ Get the port number of <em class="parameter"><code>url</code></em>.</p>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

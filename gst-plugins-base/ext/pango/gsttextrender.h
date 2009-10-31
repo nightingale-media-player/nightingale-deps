@@ -2,7 +2,7 @@
 #define __GST_TEXT_RENDER_H__
 
 #include <gst/gst.h>
-#include <pango/pangoft2.h>
+#include <pango/pangocairo.h>
 
 G_BEGIN_DECLS
 
@@ -22,6 +22,48 @@ typedef struct _GstTextRender      GstTextRender;
 typedef struct _GstTextRenderClass GstTextRenderClass;
 
 /**
+ * GstTextRenderVAlign:
+ * @GST_TEXT_RENDER_VALIGN_BASELINE: draw text on the baseline
+ * @GST_TEXT_RENDER_VALIGN_BOTTOM: draw text on the bottom
+ * @GST_TEXT_RENDER_VALIGN_TOP: draw test on top
+ *
+ * Vertical alignment of the text.
+ */
+typedef enum {
+    GST_TEXT_RENDER_VALIGN_BASELINE,
+    GST_TEXT_RENDER_VALIGN_BOTTOM,
+    GST_TEXT_RENDER_VALIGN_TOP
+} GstTextRenderVAlign;
+
+/**
+ * GstTextRenderHAlign:
+ * @GST_TEXT_RENDER_HALIGN_LEFT: align text left
+ * @GST_TEXT_RENDER_HALIGN_CENTER: align text center
+ * @GST_TEXT_RENDER_HALIGN_RIGHT: align text right
+ *
+ * Horizontal alignment of the text.
+ */
+typedef enum {
+    GST_TEXT_RENDER_HALIGN_LEFT,
+    GST_TEXT_RENDER_HALIGN_CENTER,
+    GST_TEXT_RENDER_HALIGN_RIGHT
+} GstTextRenderHAlign;
+
+/**
+ * GstTextRenderLineAlign:
+ * @GST_TEXT_RENDER_LINE_ALIGN_LEFT: lines are left-aligned
+ * @GST_TEXT_RENDER_LINE_ALIGN_CENTER: lines are center-aligned
+ * @GST_TEXT_RENDER_LINE_ALIGN_RIGHT: lines are right-aligned
+ *
+ * Alignment of text lines relative to each other
+ */
+typedef enum {
+    GST_TEXT_RENDER_LINE_ALIGN_LEFT = PANGO_ALIGN_LEFT,
+    GST_TEXT_RENDER_LINE_ALIGN_CENTER = PANGO_ALIGN_CENTER,
+    GST_TEXT_RENDER_LINE_ALIGN_RIGHT = PANGO_ALIGN_RIGHT
+} GstTextRenderLineAlign;
+
+/**
  * GstTextRender:
  *
  * Opaque textrender data structure.
@@ -33,9 +75,20 @@ struct _GstTextRender {
     gint                  width;
     gint                  height;
     PangoLayout          *layout;
-    FT_Bitmap             bitmap;
-    gint                  bitmap_buffer_size;
+    gdouble               shadow_offset;
+    gdouble               outline_offset;
+    guchar               *text_image;
+    gint                  image_width;
+    gint                  image_height;
     gint                  baseline_y;
+    gboolean              use_ARGB;
+
+    GstTextRenderVAlign     valign;
+    GstTextRenderHAlign     halign;
+    GstTextRenderLineAlign  line_align;
+
+    gint xpad;
+    gint ypad;
 };
 
 struct _GstTextRenderClass {

@@ -2,7 +2,7 @@
 <SECTION>
 <FILE>gstappsrc</FILE>
 <TITLE>appsrc</TITLE>
-<INCLUDE>gst/app/appsrc.h</INCLUDE>
+<INCLUDE>gst/app/gstappsrc.h</INCLUDE>
 GstAppSrc
 GstAppStreamType
 gst_app_src_set_caps
@@ -15,29 +15,39 @@ gst_app_src_set_stream_type
 gst_app_src_get_stream_type
 gst_app_src_set_max_bytes
 gst_app_src_get_max_bytes
+gst_app_src_get_emit_signals
+gst_app_src_set_emit_signals
+GstAppSrcCallbacks
+gst_app_src_set_callbacks
 gst_app_src_push_buffer
 gst_app_src_end_of_stream
 <SUBSECTION Standard>
 GstAppSrcClass
 GST_APP_SRC
+GST_APP_SRC_CAST
 GST_IS_APP_SRC
 GST_TYPE_APP_SRC
 gst_app_src_get_type
 GST_APP_SRC_CLASS
 GST_IS_APP_SRC_CLASS
+GST_APP_BUFFER
+GST_APP_BUFFER_CLASS
+GST_IS_APP_BUFFER
+GST_IS_APP_BUFFER_CLASS
+GST_TYPE_APP_BUFFER
 <SUBSECTION Private>
+GstAppSrcPrivate
+GstAppBuffer
+GstAppBufferClass
+GstAppBufferFinalizeFunc
 gst_app_buffer_get_type
 gst_app_buffer_new
-gst_app_marshal_BOOLEAN__UINT64
-gst_app_marshal_ENUM__OBJECT
-gst_app_marshal_ENUM__VOID
-gst_app_marshal_VOID__UINT
 </SECTION>
 
 <SECTION>
 <FILE>gstappsink</FILE>
 <TITLE>appsink</TITLE>
-<INCLUDE>gst/app/appsink.h</INCLUDE>
+<INCLUDE>gst/app/gstappsink.h</INCLUDE>
 GstAppSink
 gst_app_sink_set_caps
 gst_app_sink_get_caps
@@ -50,9 +60,13 @@ gst_app_sink_set_drop
 gst_app_sink_get_drop
 gst_app_sink_pull_preroll
 gst_app_sink_pull_buffer
+GstAppSinkCallbacks
+gst_app_sink_set_callbacks
 <SUBSECTION Standard>
+GstAppSinkPrivate
 GstAppSinkClass
 GST_APP_SINK
+GST_APP_SINK_CAST
 GST_IS_APP_SINK
 GST_TYPE_APP_SINK
 gst_app_sink_get_type
@@ -376,6 +390,7 @@ gst_color_balance_list_channels
 gst_color_balance_get_value
 gst_color_balance_set_value
 gst_color_balance_value_changed
+gst_color_balance_get_balance_type
 <SUBSECTION Standard>
 GST_COLOR_BALANCE
 GST_COLOR_BALANCE_CLASS
@@ -429,6 +444,7 @@ gst_mixer_get_option
 gst_mixer_mixer_changed
 
 gst_mixer_get_mixer_flags
+gst_mixer_get_mixer_type
 
 gst_mixer_message_get_type
 gst_mixer_message_parse_mute_toggled
@@ -438,7 +454,6 @@ gst_mixer_message_parse_volume_changed
 gst_mixer_message_parse_options_list_changed
 
 <SUBSECTION Standard>
-GstMixer
 GstMixerClass
 GST_TYPE_MIXER
 GST_TYPE_MIXER_TYPE
@@ -494,16 +509,50 @@ gst_mixer_track_get_type
 <INCLUDE>gst/interfaces/navigation.h</INCLUDE>
 GstNavigation
 GstNavigationInterface
+GstNavigationCommand
+GstNavigationMessageType
+GstNavigationQueryType
 
 gst_navigation_send_event
 gst_navigation_send_key_event
 gst_navigation_send_mouse_event
+gst_navigation_send_command
+
+gst_navigation_message_get_type
+gst_navigation_message_new_angles_changed
+gst_navigation_message_new_commands_changed
+gst_navigation_message_new_mouse_over
+gst_navigation_message_parse_mouse_over
+gst_navigation_query_new_angles
+gst_navigation_query_get_type
+gst_navigation_query_new_commands
+gst_navigation_query_parse_angles
+gst_navigation_query_parse_commands_length
+gst_navigation_query_parse_commands_nth
+gst_navigation_query_set_angles
+gst_navigation_query_set_commands
+gst_navigation_query_set_commandsv
+
+GST_NAVIGATION_COMMAND_DVD_ANGLE_MENU
+GST_NAVIGATION_COMMAND_DVD_AUDIO_MENU
+GST_NAVIGATION_COMMAND_DVD_CHAPTER_MENU
+GST_NAVIGATION_COMMAND_DVD_MENU
+GST_NAVIGATION_COMMAND_DVD_ROOT_MENU
+GST_NAVIGATION_COMMAND_DVD_SUBPICTURE_MENU
+GST_NAVIGATION_COMMAND_DVD_TITLE_MENU
+
 <SUBSECTION Standard>
 GST_TYPE_NAVIGATION
 GST_NAVIGATION
 GST_NAVIGATION_GET_IFACE
+GST_TYPE_NAVIGATION_COMMAND
+GST_TYPE_NAVIGATION_MESSAGE_TYPE
+GST_TYPE_NAVIGATION_QUERY_TYPE
 GST_IS_NAVIGATION
 gst_navigation_get_type
+gst_navigation_message_type_get_type
+gst_navigation_query_type_get_type
+gst_navigation_command_get_type
 </SECTION>
 
 <SECTION>
@@ -528,6 +577,31 @@ GST_PROPERTY_PROBE
 GST_PROPERTY_PROBE_GET_IFACE
 GST_IS_PROPERTY_PROBE
 gst_property_probe_get_type
+</SECTION>
+
+<SECTION>
+<FILE>gststreamvolume</FILE>
+<INCLUDE>gst/interfaces/streamvolume.h</INCLUDE>
+GstStreamVolume
+GstStreamVolumeFormat
+
+gst_stream_volume_get_volume
+gst_stream_volume_set_volume
+
+gst_stream_volume_get_mute
+gst_stream_volume_set_mute
+
+gst_stream_volume_convert_volume
+
+<SUBSECTION Standard>
+GstStreamVolumeInterface
+GST_TYPE_STREAM_VOLUME
+GST_STREAM_VOLUME
+GST_STREAM_VOLUME_INTERFACE
+GST_STREAM_VOLUME_GET_INTERFACE
+GST_IS_STREAM_VOLUME
+GST_IS_STREAM_VOLUME_INTERFACE
+gst_stream_volume_get_type
 </SECTION>
 
 <SECTION>
@@ -646,15 +720,24 @@ gst_x_overlay_get_type
 <INCLUDE>gst/netbuffer/gstnetbuffer.h</INCLUDE>
 GstNetBuffer
 GstNetType
+GST_NETADDRESS_MAX_LEN
 GstNetAddress
 
 gst_netbuffer_new
-gst_netaddress_get_ip4_address
-gst_netaddress_get_ip6_address
 gst_netaddress_get_net_type
+
 gst_netaddress_set_ip4_address
+gst_netaddress_get_ip4_address
+
 gst_netaddress_set_ip6_address
+gst_netaddress_get_ip6_address
+
+gst_netaddress_get_address_bytes
+gst_netaddress_set_address_bytes
+
 gst_netaddress_equal
+
+gst_netaddress_to_string
 <SUBSECTION Standard>
 GstNetBufferClass
 GST_TYPE_NETBUFFER
@@ -941,6 +1024,7 @@ GST_BASE_RTP_PAYLOAD_SRCPAD
 
 gst_basertppayload_is_filled
 gst_basertppayload_push
+gst_basertppayload_push_list
 gst_basertppayload_set_options
 gst_basertppayload_set_outcaps
 <SUBSECTION Standard>
@@ -969,6 +1053,7 @@ GST_RTCP_VALID_VALUE
 GstRTCPType
 GstRTCPPacket
 GstRTCPSDESType
+GstRTCPFBType
 
 gst_rtcp_buffer_new_take_data
 gst_rtcp_buffer_new_copy_data
@@ -1021,6 +1106,15 @@ gst_rtcp_packet_bye_add_ssrcs
 gst_rtcp_packet_bye_get_reason_len
 gst_rtcp_packet_bye_get_reason
 gst_rtcp_packet_bye_set_reason
+
+gst_rtcp_packet_fb_get_type
+gst_rtcp_packet_fb_set_type
+
+gst_rtcp_packet_fb_get_sender_ssrc
+gst_rtcp_packet_fb_set_sender_ssrc
+
+gst_rtcp_packet_fb_get_media_ssrc
+gst_rtcp_packet_fb_set_media_ssrc
 
 gst_rtcp_ntp_to_unix
 gst_rtcp_unix_to_ntp
@@ -1140,6 +1234,24 @@ gst_rtp_buffer_get_payload
 gst_rtp_buffer_default_clock_rate
 gst_rtp_buffer_compare_seqnum
 gst_rtp_buffer_ext_timestamp
+gst_rtp_buffer_set_extension_data
+
+gst_rtp_buffer_list_validate
+
+gst_rtp_buffer_list_get_payload_len
+
+gst_rtp_buffer_list_get_payload_type
+gst_rtp_buffer_list_set_payload_type
+
+gst_rtp_buffer_list_get_seq
+gst_rtp_buffer_list_set_seq
+
+gst_rtp_buffer_list_get_ssrc
+gst_rtp_buffer_list_set_ssrc
+
+gst_rtp_buffer_list_get_timestamp
+gst_rtp_buffer_list_set_timestamp
+
 </SECTION>
 
 # rtsp
@@ -1161,6 +1273,7 @@ gst_rtsp_method_as_text
 gst_rtsp_version_as_text
 gst_rtsp_header_as_text
 gst_rtsp_status_as_text
+gst_rtsp_options_as_text
 gst_rtsp_find_header_field
 gst_rtsp_find_method
 </SECTION>
@@ -1193,17 +1306,47 @@ gst_rtsp_base64_decode_ip
 <INCLUDE>gst/rtsp/gstrtspconnection.h</INCLUDE>
 GstRTSPConnection
 gst_rtsp_connection_create
+gst_rtsp_connection_accept
 gst_rtsp_connection_connect
 gst_rtsp_connection_close
 gst_rtsp_connection_free
+
 gst_rtsp_connection_read
 gst_rtsp_connection_write
+gst_rtsp_connection_poll
+
 gst_rtsp_connection_send
 gst_rtsp_connection_receive
+
 gst_rtsp_connection_next_timeout
 gst_rtsp_connection_reset_timeout
+
 gst_rtsp_connection_flush
+
 gst_rtsp_connection_set_auth
+gst_rtsp_connection_set_auth_param
+gst_rtsp_connection_clear_auth_params
+
+gst_rtsp_connection_set_qos_dscp
+
+gst_rtsp_connection_set_ip
+gst_rtsp_connection_get_ip
+
+gst_rtsp_connection_get_url
+
+gst_rtsp_connection_set_tunneled
+gst_rtsp_connection_is_tunneled
+
+gst_rtsp_connection_get_tunnelid
+gst_rtsp_connection_do_tunnel
+
+GstRTSPWatch
+GstRTSPWatchFuncs
+gst_rtsp_watch_new
+gst_rtsp_watch_unref
+gst_rtsp_watch_attach
+gst_rtsp_watch_reset
+gst_rtsp_watch_queue_message
 </SECTION>
 
 <SECTION>
@@ -1226,6 +1369,7 @@ gst_rtsp_message_new_data
 gst_rtsp_message_init_data
 gst_rtsp_message_parse_data
 gst_rtsp_message_add_header
+gst_rtsp_message_take_header
 gst_rtsp_message_remove_header
 gst_rtsp_message_get_header
 gst_rtsp_message_append_headers
@@ -1259,6 +1403,7 @@ GstRTSPTimeRange
 GstRTSPTime
 GstRTSPTimeType
 gst_rtsp_range_parse
+gst_rtsp_range_to_string
 gst_rtsp_range_free
 </SECTION>
 
@@ -1529,12 +1674,16 @@ GST_VIDEO_RED_MASK_15_INT
 GST_VIDEO_RED_MASK_16
 GST_VIDEO_RED_MASK_16_INT
 GST_VIDEO_SIZE_RANGE
+GST_VIDEO_BUFFER_TFF
+GST_VIDEO_BUFFER_RFF
+GST_VIDEO_BUFFER_ONEFIELD
 GstVideoFormat
 gst_video_calculate_display_ratio
 gst_video_frame_rate
 gst_video_get_size
 gst_video_format_convert
 gst_video_format_new_caps
+gst_video_format_new_caps_interlaced
 gst_video_format_get_component_height
 gst_video_format_get_component_offset
 gst_video_format_get_component_width
@@ -1547,6 +1696,7 @@ gst_video_format_is_yuv
 gst_video_format_to_fourcc
 gst_video_format_from_fourcc
 gst_video_format_parse_caps
+gst_video_format_parse_caps_interlaced
 gst_video_parse_caps_framerate
 gst_video_parse_caps_pixel_aspect_ratio
 </SECTION>
@@ -1592,9 +1742,6 @@ gst_video_sink_get_type
 <SECTION>
 <FILE>private</FILE>
 <SUBSECTION Private>
-sha_init
-sha_final
-sha_update
 bind_textdomain_codeset
 bindtextdomain
 dcgettext
@@ -1605,13 +1752,6 @@ gettext
 gettext_noop
 ngettext
 textdomain
-SHA_BLOCKSIZE
-SHA_BYTE
-SHA_BYTE_ORDER
-SHA_DIGESTSIZE
-SHA_INFO
-SHA_LONG
-SHA_VERSION
 _
 N_
 </SECTION>

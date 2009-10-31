@@ -3,22 +3,22 @@ AC_PREREQ(2.52)
 dnl please read gstreamer/docs/random/autotools before changing this file
 
 dnl initialize autoconf
-dnl releases only do -Wall, cvs and prerelease does -Werror too
-dnl use a three digit version number for releases, and four for cvs/prerelease
-AC_INIT(GStreamer Base Plug-ins, 0.10.22,
+dnl releases only do -Wall, git and prerelease does -Werror too
+dnl use a three digit version number for releases, and four for git/prerelease
+AC_INIT(GStreamer Base Plug-ins, 0.10.25,
     http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer,
     gst-plugins-base)
 
 AG_GST_INIT
 
 dnl initialize automake
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([-Wno-portability])
 
 dnl define PACKAGE_VERSION_* variables
 AS_VERSION
 
 dnl check if this is a release version
-AS_NANO(GST_CVS="no", GST_CVS="yes")
+AS_NANO(GST_GIT="no", GST_GIT="yes")
 
 dnl can autoconf find the source ?
 AC_CONFIG_SRCDIR([gst/audiotestsrc/gstaudiotestsrc.c])
@@ -44,7 +44,7 @@ dnl - interfaces added/removed/changed -> increment CURRENT, REVISION = 0
 dnl - interfaces added -> increment AGE
 dnl - interfaces removed -> AGE = 0
 dnl sets GST_LT_LDFLAGS
-AS_LIBTOOL(GST, 16, 0, 16)
+AS_LIBTOOL(GST, 18, 0, 18)
 
 dnl FIXME: this macro doesn't actually work;
 dnl the generated libtool script has no support for the listed tags.
@@ -55,7 +55,7 @@ AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 
 dnl *** required versions of GStreamer stuff ***
-GST_REQ=0.10.21.1
+GST_REQ=0.10.25
 
 dnl *** autotools stuff ****
 
@@ -67,7 +67,7 @@ AC_SUBST(ACLOCAL_AMFLAGS, "-I m4 -I common/m4")
 
 dnl set up gettext
 dnl the version check needs to stay here because autopoint greps for it
-AM_GNU_GETTEXT_VERSION([0.14])
+AM_GNU_GETTEXT_VERSION([0.17])
 AM_GNU_GETTEXT([external])
 AG_GST_GETTEXT([gst-plugins-base-$GST_MAJORMINOR])
 
@@ -134,6 +134,9 @@ AM_PROG_CC_C_O
 AC_PATH_PROG(VALGRIND_PATH, valgrind, no)
 AM_CONDITIONAL(HAVE_VALGRIND, test ! "x$VALGRIND_PATH" = "xno")
 
+dnl check for gobject-introspection
+GOBJECT_INTROSPECTION_CHECK([0.6.3])
+
 dnl check for documentation tools
 GTK_DOC_CHECK([1.3])
 AS_PATH_PYTHON([2.1])
@@ -154,25 +157,17 @@ dnl used in gst/ffmpegcolorspace/mem.c
 dnl FIXME: could be fixed by redefining av_malloc and av_free to GLib's
 AC_CHECK_HEADERS([malloc.h])
 
-dnl used in gst/subparse/gstsubparse.c
-AC_CHECK_HEADERS([regex.h], HAVE_REGEX_H="yes", HAVE_REGEX_H="no")
-AM_CONDITIONAL(HAVE_REGEX_H, test "x$HAVE_REGEX_H" = "xyes")
-
-if test "x$HAVE_REGEX_H" = "xyes"; then
-  ac_cppflags_save="$CPPFLAGS"
-  CPPFLAGS="`$PKG_CONFIG --cflags libxml-2.0`"
-  AC_COMPILE_IFELSE(
-    AC_LANG_PROGRAM([
+ac_cppflags_save="$CPPFLAGS"
+CPPFLAGS="`$PKG_CONFIG --cflags libxml-2.0`"
+AC_COMPILE_IFELSE(
+  AC_LANG_PROGRAM([
 #include <libxml/HTMLparser.h>
                      ],[
 #ifndef LIBXML_HTML_ENABLED
 #error libxml2 has no HTML support
 #endif /* LIBXML_HTML_ENABLED */
-                     ]), HAVE_LIBXML_HTML="yes", HAVE_LIBXML_HTML="no")
-  CPPFLAGS="$ac_cppflags_save"
-else
-  HAVE_LIBXML_HTML="no"
-fi
+                   ]), HAVE_LIBXML_HTML="yes", HAVE_LIBXML_HTML="no")
+CPPFLAGS="$ac_cppflags_save"
 AM_CONDITIONAL(HAVE_LIBXML_HTML, test "x$HAVE_LIBXML_HTML" = "xyes")
 
 dnl used in gst/tcp
@@ -217,9 +212,6 @@ dnl *** checks for structures ***
 
 dnl *** checks for compiler characteristics ***
 
-dnl make sure we can use "inline" from C code
-AC_C_INLINE
-
 dnl *** checks for library functions ***
 
 dnl check for fseeko()
@@ -236,19 +228,20 @@ LIBS=$save_libs
 dnl Check for a way to display the function name in debug output
 AG_GST_CHECK_FUNCTION
 
+dnl *** checks for socket and nsl libraries ***
+AC_CHECK_FUNC(socket,,[AC_CHECK_LIB(socket,socket)])
+AC_CHECK_FUNC(gethostbyname,,[AC_CHECK_LIB(nsl,gethostbyname)])
+
 dnl *** checks for dependency libraries ***
 
 dnl GLib is required
-AG_GST_GLIB_CHECK([2.12])
+AG_GST_GLIB_CHECK([2.16])
 
-dnl liboil is optional, but must be > 0.3.14 if present and enabled
-translit(dnm, m, l) AM_CONDITIONAL(USE_LIBOIL, true)
-AG_GST_CHECK_FEATURE(LIBOIL, [liboil usage in some plugins],, [
-  PKG_CHECK_MODULES(LIBOIL, liboil-0.3 >= 0.3.14, HAVE_LIBOIL=yes, HAVE_LIBOIL=no)
-  if test "x$HAVE_LIBOIL" = "xyes"; then
-    AC_DEFINE_UNQUOTED(HAVE_LIBOIL, 1, [defined if liboil is present])
-  fi
-])
+dnl liboil is required
+PKG_CHECK_MODULES(LIBOIL, liboil-0.3 >= 0.3.14, HAVE_LIBOIL=yes, HAVE_LIBOIL=no)
+if test "x$HAVE_LIBOIL" != "xyes"; then
+  AC_ERROR([liboil-0.3.14 or later is required])
+fi
 
 dnl checks for gstreamer
 dnl uninstalled is selected preferentially -- see pkg-config(1)
@@ -266,11 +259,11 @@ AC_SUBST(GLIB_PREFIX)
 AC_SUBST(GST_PREFIX)
 
 dnl GTK is optional and only used in examples
-PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.12.0, HAVE_GTK=yes, HAVE_GTK=no)
+PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.14.0, HAVE_GTK=yes, HAVE_GTK=no)
 AM_CONDITIONAL(HAVE_GTK, test "x$HAVE_GTK" = "xyes")
 
 dnl some examples need gtk+-x11
-PKG_CHECK_MODULES(GTK_X11, gtk+-x11-2.0 >= 2.12.0,
+PKG_CHECK_MODULES(GTK_X11, gtk+-x11-2.0 >= 2.14.0,
     HAVE_GTK_X11=yes, HAVE_GTK_X11=no)
 AM_CONDITIONAL(HAVE_GTK_X11, test "x$HAVE_GTK_X11" = "xyes")
 
@@ -285,13 +278,34 @@ dnl set location of plugin directory
 AG_GST_SET_PLUGINDIR
 
 dnl define an ERROR_CFLAGS Makefile variable
-AG_GST_SET_ERROR_CFLAGS($GST_CVS)
+AG_GST_SET_ERROR_CFLAGS($GST_GIT)
 
 dnl define correct level for debugging messages
-AG_GST_SET_LEVEL_DEFAULT($GST_CVS)
+AG_GST_SET_LEVEL_DEFAULT($GST_GIT)
 
 dnl used in examples
 AG_GST_DEFAULT_ELEMENTS
+
+dnl behaviour of speex based audio resampler
+AC_MSG_CHECKING(which audio resample format to use for integer)
+AC_ARG_WITH([audioresample_format],
+        AS_HELP_STRING([--with-audioresample-format],[Which implementation should be used for integer audio resampling, int/float/auto, (default is auto)]),
+        [ac_cv_audioresample_format=$withval], [ac_cv_audioresample_format=auto])dnl
+AC_MSG_RESULT($ac_cv_audioresample_format)
+case $ac_cv_audioresample_format in
+  int)
+    AC_DEFINE(AUDIORESAMPLE_FORMAT_INT,1,[The int implementation should be used for integer audio resampling])
+    AC_SUBST(AUDIORESAMPLE_FORMAT_INT)
+  ;;
+  float)
+    AC_DEFINE(AUDIORESAMPLE_FORMAT_FLOAT,1,[The float implementation should be used for integer audio resampling])
+    AC_SUBST(AUDIORESAMPLE_FORMAT_FLOAT)
+  ;;
+  auto)
+    AC_DEFINE(AUDIORESAMPLE_FORMAT_AUTO,1,[The implementation that should be used for integer audio resampling witll be benchmarked at runtime])
+    AC_SUBST(AUDIORESAMPLE_FORMAT_AUTO)
+esac
+AM_CONDITIONAL(AUDIORESAMPLE_NEEDS_LIBOIL, test "$ac_cv_audioresample_format" = "auto")
 
 dnl *** plug-ins to include ***
 
@@ -304,7 +318,7 @@ AG_GST_CHECK_PLUGIN(audiotestsrc)
 AG_GST_CHECK_PLUGIN(ffmpegcolorspace)
 AG_GST_CHECK_PLUGIN(gdp)
 AG_GST_CHECK_PLUGIN(playback)
-AG_GST_CHECK_PLUGIN(speexresample)
+AG_GST_CHECK_PLUGIN(audioresample)
 AG_GST_CHECK_PLUGIN(subparse)
 AG_GST_CHECK_PLUGIN(tcp)
 AG_GST_CHECK_PLUGIN(typefind)
@@ -417,6 +431,29 @@ AG_GST_CHECK_FEATURE(GST_V4L, [Video 4 Linux], video4linux, [
   fi
 ])
 
+# Optional gudev for device probing
+AC_ARG_WITH([gudev],
+  AC_HELP_STRING([--with-gudev],
+    [device detection with gudev]),
+  [],
+  [with_gudev=check])
+if test x$HAVE_GST_V4L = xyes; then
+  if test x$with_gudev != xno; then
+      PKG_CHECK_MODULES(GUDEV, [ gudev-1.0 >= 143 ],
+          [ have_gudev=yes
+            AC_DEFINE(HAVE_GUDEV, 1,
+               [Whether gudev is available for device detection])
+            AC_DEFINE([G_UDEV_API_IS_SUBJECT_TO_CHANGE], 1, [I know the API is subject to change.])
+          ], [
+          have_gudev=no
+          ])
+  else
+    have_gudev=no
+  fi
+fi
+AC_SUBST(GUDEV_CFLAGS)
+AC_SUBST(GUDEV_LIBS)
+
 dnl *** ext plug-ins ***
 dnl keep this list sorted alphabetically !
 
@@ -461,6 +498,14 @@ AG_GST_CHECK_FEATURE(CDPARANOIA, [CDParanoia], cdparanoia, [
     AC_DEFINE_UNQUOTED(CDPARANOIA_HEADERS_IN_DIR, ,
                        defined if cdda headers are in a cdda/ directory)
   fi
+  if test "x$FOUND_CDPARANOIA" = "xyes";
+  then
+    AC_CHECK_LIB(cdda_paranoia,
+                 paranoia_cachemodel_size,
+                 : ,
+                 HAVE_CDPARANOIA=no)
+  fi
+
   AC_SUBST(CDPARANOIA_LIBS)
 ])
 dnl FIXME : add second check somehow if that is necessary
@@ -484,10 +529,9 @@ AG_GST_CHECK_FEATURE(GNOME_VFS, [GNOME VFS], gnomevfs, [
 ])
 
 dnl *** libgio ***
-USE_GIO=$BUILD_EXPERIMENTAL
 translit(dnm, m, l) AM_CONDITIONAL(USE_GIO, true)
 AG_GST_CHECK_FEATURE(GIO, [GIO library], gio, [
-  PKG_CHECK_MODULES(GIO, gio-2.0 >= 2.15.2, [
+  PKG_CHECK_MODULES(GIO, gio-2.0 >= 2.16, [
     HAVE_GIO="yes"
     GIO_MODULE_DIR="`$PKG_CONFIG --variable=giomoduledir gio-2.0`"
     AC_DEFINE_UNQUOTED(GIO_MODULE_DIR, "$GIO_MODULE_DIR",
@@ -541,7 +585,8 @@ AG_GST_CHECK_FEATURE(OGG, [Xiph Ogg library], ogg, [
 dnl *** pango ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_PANGO, true)
 AG_GST_CHECK_FEATURE(PANGO, [Pango font rendering], pango, [
-  AG_GST_PKG_CHECK_MODULES(PANGO, pango pangoft2)
+  AG_GST_PKG_CHECK_MODULES(PANGO, pango pangocairo)
+  PKG_CHECK_MODULES(PANGOCAIRO_1_15_4, pangocairo >= 1.15.4, [ AC_DEFINE(HAVE_PANGO_VERTICAL_WRITING, 1, [Defined if pango can write vertically])])
 ])
 
 dnl *** theora ***
@@ -630,7 +675,7 @@ fi
 AC_SUBST(PROFILE_CFLAGS)
 
 if test "x$PACKAGE_VERSION_NANO" = "x1"; then
-  dnl Define _only_ during CVS (not pre-releases or releases)
+  dnl Define _only_ when compiling a git version (not pre-releases or releases)
   DEPRECATED_CFLAGS="-DGST_DISABLE_DEPRECATED"
 else
   DEPRECATED_CFLAGS=""
@@ -675,10 +720,14 @@ dnl whatevertarget_LIBS and -L flags here affect the rest of the linking
 GST_PLUGIN_LDFLAGS="-module -avoid-version -export-symbols-regex '^[_]*gst_plugin_desc\$\$' $GST_ALL_LDFLAGS"
 AC_SUBST(GST_PLUGIN_LDFLAGS)
 
+SHAVE_INIT([common],[enable])
+
 dnl *** output files ***
 
 AC_CONFIG_FILES(
 Makefile
+common/shave
+common/shave-libtool
 gst-plugins-base.spec
 gst/Makefile
 gst/adder/Makefile
@@ -689,7 +738,7 @@ gst/audiotestsrc/Makefile
 gst/ffmpegcolorspace/Makefile
 gst/gdp/Makefile
 gst/playback/Makefile
-gst/speexresample/Makefile
+gst/audioresample/Makefile
 gst/subparse/Makefile
 gst/tcp/Makefile
 gst/typefind/Makefile
@@ -728,7 +777,6 @@ gst-libs/gst/tag/Makefile
 gst-libs/gst/pbutils/Makefile
 gst-libs/gst/video/Makefile
 tools/Makefile
-win32/common/config.h
 pkgconfig/Makefile
 pkgconfig/gstreamer-audio.pc
 pkgconfig/gstreamer-audio-uninstalled.pc
@@ -768,6 +816,8 @@ tests/examples/dynamic/Makefile
 tests/examples/seek/Makefile
 tests/examples/volume/Makefile
 tests/examples/snapshot/Makefile
+tests/examples/gio/Makefile
+tests/examples/v4l/Makefile
 tests/icles/Makefile
 docs/Makefile
 docs/design/Makefile
@@ -779,6 +829,49 @@ common/Makefile
 common/m4/Makefile
 m4/Makefile
 )
+
+dnl Create the config.h file for Visual Studio builds
+dnl Beware of spaces and /'s in some of the shell variable contents.
+sed \
+    -e 's/.*config.h.in.*autoheader.*/\/* Autogenerated config.h created for win32 Visual Studio builds *\/\n\n\/* PREFIX -- specifically added for Windows for easier moving *\/\n#define PREFIX "C:\\\\gstreamer"/' \
+    -e 's/.* GST_INSTALL_PLUGINS_HELPER/#define GST_INSTALL_PLUGINS_HELPER PREFIX "\\\\libexec\\\\gst-install-plugins-helper.exe"/' \
+    -e 's/.* GETTEXT_PACKAGE$/#define GETTEXT_PACKAGE "'$GETTEXT_PACKAGE'"/' \
+    -e 's/.* GST_DATADIR$/#define GST_DATADIR PREFIX "\\\\share"/' \
+    -e 's/.* GST_LEVEL_DEFAULT$/#define GST_LEVEL_DEFAULT GST_LEVEL_ERROR/' \
+    -e 's/.* GST_LICENSE$/#define GST_LICENSE "'$GST_LICENSE'"/' \
+    -e 's/.* GST_MAJORMINOR$/#define GST_MAJORMINOR "'$GST_MAJORMINOR'"/' \
+    -e "s,.* GST_PACKAGE_NAME$,#define GST_PACKAGE_NAME \"${GST_PACKAGE_NAME}\"," \
+    -e 's/.* GST_PACKAGE_ORIGIN$/#define GST_PACKAGE_ORIGIN "Unknown package origin"/' \
+    -e 's/.* HAVE_CPU_I386$/#define HAVE_CPU_I386 1/' \
+    -e 's/.* HAVE_FGETPOS$/#define HAVE_FGETPOS 1/' \
+    -e 's/.* HAVE_FSETPOS$/#define HAVE_FSETPOS 1/' \
+    -e 's/.* HAVE_LIBXML2$/#define HAVE_LIBXML2 1/' \
+    -e 's/.* HAVE_PROCESS_H$/#define HAVE_PROCESS_H 1/' \
+    -e 's/.* HAVE_STDLIB_H$/#define HAVE_STDLIB_H 1/' \
+    -e 's/.* HAVE_STRING_H$/#define HAVE_STRING_H 1/' \
+    -e 's/.* HAVE_SYS_STAT_H$/#define HAVE_SYS_STAT_H 1/' \
+    -e 's/.* HAVE_SYS_TYPES_H$/#define HAVE_SYS_TYPES_H 1/' \
+    -e 's/.* HAVE_WIN32$/#define HAVE_WIN32 1/' \
+    -e 's/.* HAVE_WINSOCK2_H$/#define HAVE_WINSOCK2_H 1/' \
+    -e 's/.* HOST_CPU$/#define HOST_CPU "i686"/' \
+    -e 's/.* LIBDIR$/#ifdef _DEBUG\n#  define LIBDIR PREFIX "\\\\debug\\\\lib"\n#else\n#  define LIBDIR PREFIX "\\\\lib"\n#endif/' \
+    -e 's/.* LOCALEDIR$/#define LOCALEDIR PREFIX "\\\\share\\\\locale"/' \
+    -e "s/.* PACKAGE$/#define PACKAGE \"$PACKAGE\"/" \
+    -e 's/.* PACKAGE_BUGREPORT$/#define PACKAGE_BUGREPORT "http:\/\/bugzilla.gnome.org\/enter_bug.cgi?product=GStreamer"/' \
+    -e "s/.* PACKAGE_NAME$/#define PACKAGE_NAME \"$PACKAGE_NAME\"/" \
+    -e "s/.* PACKAGE_STRING$/#define PACKAGE_STRING \"$PACKAGE_STRING\"/" \
+    -e 's/.* PACKAGE_TARNAME$/#define PACKAGE_TARNAME "'$PACKAGE_TARNAME'"/' \
+    -e 's/.* PACKAGE_VERSION$/#define PACKAGE_VERSION "'$PACKAGE_VERSION'"/' \
+    -e 's/.* PLUGINDIR$/#ifdef _DEBUG\n#  define PLUGINDIR PREFIX "\\\\debug\\\\lib\\\\gstreamer-0.10"\n#else\n#  define PLUGINDIR PREFIX "\\\\lib\\\\gstreamer-0.10"\n#endif/' \
+    -e 's/.* USE_BINARY_REGISTRY$/#define USE_BINARY_REGISTRY/' \
+    -e 's/.* VERSION$/#define VERSION "'$VERSION'"/' \
+    -e "s/.* DEFAULT_AUDIOSINK$/#define DEFAULT_AUDIOSINK \"directaudiosink\"/" \
+    -e "s/.* DEFAULT_VIDEOSINK$/#define DEFAULT_VIDEOSINK \"directdrawsink\"/" \
+    -e "s/.* DEFAULT_VISUALIZER$/#define DEFAULT_VISUALIZER \"goom\"/" \
+    config.h.in >win32/common/config.h-new
+
+
+
 AC_OUTPUT
 
 AG_GST_OUTPUT_PLUGINS

@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="prev" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html" title="gstpbutilsmissingplugins">
 <link rel="next" href="gstreamer-video.html" title="Video Library">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -37,9 +37,11 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-video.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstpbutilsinstallplugins.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstpbutilsinstallplugins.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gstpbutilsinstallplugins.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstpbutilsinstallplugins.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstpbutilsinstallplugins"></a><div class="titlepage"></div>
@@ -61,7 +63,7 @@ void                (<a class="link" href="gst-plugins-base-libs-gstpbutilsinsta
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> user_data);
-<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async" title="gst_install_plugins_async ()">gst_install_plugins_async</a>       (<a
+<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a>  <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async" title="gst_install_plugins_async ()">gst_install_plugins_async</a>      (<a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> **details,
                                                          <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a> *ctx,
@@ -69,13 +71,13 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> user_data);
-<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-sync" title="gst_install_plugins_sync ()">gst_install_plugins_sync</a>        (<a
+<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a>  <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-sync" title="gst_install_plugins_sync ()">gst_install_plugins_sync</a>       (<a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> **details,
                                                          <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a> *ctx);
 const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*        <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-return-get-name" title="gst_install_plugins_return_get_name ()">gst_install_plugins_return_get_name</a> (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> ret);
+>gchar</a> *       <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-return-get-name" title="gst_install_plugins_return_get_name ()">gst_install_plugins_return_get_name</a> (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> ret);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-installation-in-progress" title="gst_install_plugins_installation_in_progress ()">gst_install_plugins_installation_in_progress</a>
@@ -85,7 +87,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-supported" title="gst_install_plugins_supported ()">gst_install_plugins_supported</a>       (void);
 
                     <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a>;
-<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a>* <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-context-new" title="gst_install_plugins_context_new ()">gst_install_plugins_context_new</a>
+<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a> * <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-context-new" title="gst_install_plugins_context_new ()">gst_install_plugins_context_new</a>
                                                         (void);
 void                <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-context-free" title="gst_install_plugins_context_free ()">gst_install_plugins_context_free</a>    (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a> *ctx);
 void                <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-context-set-xid" title="gst_install_plugins_context_set_xid ()">gst_install_plugins_context_set_xid</a> (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a> *ctx,
@@ -99,7 +101,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id3197610"></a><h3>Overview</h3>
+<a name="id2936334"></a><h3>Overview</h3>
 <p>
 Using this API, applications can request the installation of missing
 GStreamer plugins. These may be missing decoders/demuxers or encoders/muxers
@@ -147,7 +149,9 @@ between GStreamer and the plugin installer application.
 Detail strings can be obtained using the function
 <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-installer-detail" title="gst_missing_plugin_message_get_installer_detail ()"><code class="function">gst_missing_plugin_message_get_installer_detail()</code></a> on a missing-plugin
 message. Such a message will either have been found by the application on
-a pipeline's <span class="type">GstBus</span>, or the application will have created it itself using
+a pipeline's <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstBus.html"
+><span class="type">GstBus</span></a>, or the application will have created it itself using
 <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-element-message-new" title="gst_missing_element_message_new ()"><code class="function">gst_missing_element_message_new()</code></a>, <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-decoder-message-new" title="gst_missing_decoder_message_new ()"><code class="function">gst_missing_decoder_message_new()</code></a>,
 <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-encoder-message-new" title="gst_missing_encoder_message_new ()"><code class="function">gst_missing_encoder_message_new()</code></a>, <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-uri-sink-message-new" title="gst_missing_uri_sink_message_new ()"><code class="function">gst_missing_uri_sink_message_new()</code></a>, or
 <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-uri-source-message-new" title="gst_missing_uri_source_message_new ()"><code class="function">gst_missing_uri_source_message_new()</code></a>.
@@ -178,7 +182,9 @@ If the necessary hooks for plugin installation are in place and an
 external installer application has in fact been called, the passed in
 function will be called with a result code as soon as the external installer
 has finished. If the result code indicates that new plugins have been
-installed, the application will want to call <code class="function">gst_update_registry()</code> so the
+installed, the application will want to call <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-Gst.html#gst-update-registry"
+><code class="function">gst_update_registry()</code></a> so the
 run-time plugin registry is updated and the new plugins are made available
 to the application.
 </p>
@@ -393,25 +399,25 @@ The installer should return one of the following exit codes when it exits:
 <div class="itemizedlist"><ul type="disc">
 <li><p>
     0 if all of the requested plugins could be installed
-    (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GST-INSTALL-PLUGINS-SUCCESS:CAPS"><span class="type">GST_INSTALL_PLUGINS_SUCCESS</span></a>)
+    (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GST-INSTALL-PLUGINS-SUCCESS--CAPS"><span class="type">GST_INSTALL_PLUGINS_SUCCESS</span></a>)
   </p></li>
 <li><p>
     1 if no appropriate installation candidate for any of the requested
     plugins could be found. Only return this if nothing has been installed
-    (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GST-INSTALL-PLUGINS-NOT-FOUND:CAPS"><span class="type">GST_INSTALL_PLUGINS_NOT_FOUND</span></a>)
+    (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GST-INSTALL-PLUGINS-NOT-FOUND--CAPS"><span class="type">GST_INSTALL_PLUGINS_NOT_FOUND</span></a>)
   </p></li>
 <li><p>
     2 if an error occured during the installation. The application will
     assume that the user will already have seen an error message by the
     installer in this case and will usually not show another one
-    (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GST-INSTALL-PLUGINS-ERROR:CAPS"><span class="type">GST_INSTALL_PLUGINS_ERROR</span></a>)
+    (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GST-INSTALL-PLUGINS-ERROR--CAPS"><span class="type">GST_INSTALL_PLUGINS_ERROR</span></a>)
   </p></li>
 <li><p>
     3 if some of the requested plugins could be installed, but not all
-    (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GST-INSTALL-PLUGINS-PARTIAL-SUCCESS:CAPS"><span class="type">GST_INSTALL_PLUGINS_PARTIAL_SUCCESS</span></a>)
+    (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GST-INSTALL-PLUGINS-PARTIAL-SUCCESS--CAPS"><span class="type">GST_INSTALL_PLUGINS_PARTIAL_SUCCESS</span></a>)
   </p></li>
 <li><p>
-    4 if the user aborted the installation (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GST-INSTALL-PLUGINS-USER-ABORT:CAPS"><span class="type">GST_INSTALL_PLUGINS_USER_ABORT</span></a>)
+    4 if the user aborted the installation (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GST-INSTALL-PLUGINS-USER-ABORT--CAPS"><span class="type">GST_INSTALL_PLUGINS_USER_ABORT</span></a>)
   </p></li>
 </ul></div>
 <p>
@@ -446,7 +452,9 @@ complex with additional fields, e.g.
 <code class="literal">audio/mpeg,mpegversion=(int){2,4}</code>, so they will not
 always exactly match the caps wanted by the application. It is up to the
 installer to deal with this (either by doing proper caps intersection using
-the GStreamer <span class="type">GstCaps</span> API, or by only taking into account the media type).
+the GStreamer <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a> API, or by only taking into account the media type).
 </p>
 <p>
 Another potential source of problems are plugins such as ladspa or
@@ -456,7 +464,6 @@ to handle (but usually not relevant for playback applications).
 </p>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -495,83 +502,81 @@ Result codes returned by <a class="link" href="gst-plugins-base-libs-gstpbutilsi
 These codes indicate success or failure of starting an external installer
 program and to what extent the requested plugins could be installed.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-INSTALL-PLUGINS-SUCCESS:CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_SUCCESS</code></span></p></td>
+<td><p><a name="GST-INSTALL-PLUGINS-SUCCESS--CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_SUCCESS</code></span></p></td>
 <td> all of the requested plugins could be
     installed
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-INSTALL-PLUGINS-NOT-FOUND:CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_NOT_FOUND</code></span></p></td>
+<td><p><a name="GST-INSTALL-PLUGINS-NOT-FOUND--CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_NOT_FOUND</code></span></p></td>
 <td> no appropriate installation candidate for
     any of the requested plugins could be found. Only return this if nothing
-    has been installed. Return <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GST-INSTALL-PLUGINS-PARTIAL-SUCCESS:CAPS"><span class="type">GST_INSTALL_PLUGINS_PARTIAL_SUCCESS</span></a> if
+    has been installed. Return <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GST-INSTALL-PLUGINS-PARTIAL-SUCCESS--CAPS"><span class="type">GST_INSTALL_PLUGINS_PARTIAL_SUCCESS</span></a> if
     some (but not all) of the requested plugins could be installed.
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-INSTALL-PLUGINS-ERROR:CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_ERROR</code></span></p></td>
+<td><p><a name="GST-INSTALL-PLUGINS-ERROR--CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_ERROR</code></span></p></td>
 <td> an error occured during the installation. If
     this happens, the  user has already seen an error message and another
     one should not be displayed
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-INSTALL-PLUGINS-PARTIAL-SUCCESS:CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_PARTIAL_SUCCESS</code></span></p></td>
+<td><p><a name="GST-INSTALL-PLUGINS-PARTIAL-SUCCESS--CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_PARTIAL_SUCCESS</code></span></p></td>
 <td> some of the requested plugins could
     be installed, but not all
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-INSTALL-PLUGINS-USER-ABORT:CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_USER_ABORT</code></span></p></td>
+<td><p><a name="GST-INSTALL-PLUGINS-USER-ABORT--CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_USER_ABORT</code></span></p></td>
 <td> the user has aborted the installation
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-INSTALL-PLUGINS-CRASHED:CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_CRASHED</code></span></p></td>
+<td><p><a name="GST-INSTALL-PLUGINS-CRASHED--CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_CRASHED</code></span></p></td>
 <td> the installer had an unclean exit code
     (ie. death by signal)
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-INSTALL-PLUGINS-INVALID:CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_INVALID</code></span></p></td>
+<td><p><a name="GST-INSTALL-PLUGINS-INVALID--CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_INVALID</code></span></p></td>
 <td> the helper returned an invalid status code
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-INSTALL-PLUGINS-STARTED-OK:CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_STARTED_OK</code></span></p></td>
+<td><p><a name="GST-INSTALL-PLUGINS-STARTED-OK--CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_STARTED_OK</code></span></p></td>
 <td> returned by <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async" title="gst_install_plugins_async ()"><code class="function">gst_install_plugins_async()</code></a> to
     indicate that everything went fine so far and the provided callback
     will be called with the result of the installation later
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-INSTALL-PLUGINS-INTERNAL-FAILURE:CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_INTERNAL_FAILURE</code></span></p></td>
+<td><p><a name="GST-INSTALL-PLUGINS-INTERNAL-FAILURE--CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_INTERNAL_FAILURE</code></span></p></td>
 <td> some internal failure has
     occured when trying to start the installer
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-INSTALL-PLUGINS-HELPER-MISSING:CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_HELPER_MISSING</code></span></p></td>
+<td><p><a name="GST-INSTALL-PLUGINS-HELPER-MISSING--CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_HELPER_MISSING</code></span></p></td>
 <td> the helper script to call the
     actual installer is not installed
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-INSTALL-PLUGINS-INSTALL-IN-PROGRESS:CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_INSTALL_IN_PROGRESS</code></span></p></td>
+<td><p><a name="GST-INSTALL-PLUGINS-INSTALL-IN-PROGRESS--CAPS"></a><span class="term"><code class="literal">GST_INSTALL_PLUGINS_INSTALL_IN_PROGRESS</code></span></p></td>
 <td> a previously-started plugin
     installation is still in progress, try again later
 </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.12
-</p>
+<p class="since">Since 0.10.12</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -585,7 +590,6 @@ The prototype of the callback function that will be called once the
 external plugin installer program has returned. You only need to provide
 a callback function if you are using the asynchronous interface.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -602,13 +606,12 @@ a callback function if you are using the asynchronous interface.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.12
-</p>
+<p class="since">Since 0.10.12</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-install-plugins-async"></a><h3>gst_install_plugins_async ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> gst_install_plugins_async       (<a
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a>  gst_install_plugins_async      (<a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> **details,
                                                          <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a> *ctx,
@@ -637,7 +640,6 @@ It is possible to request the installation of multiple missing plugins in
 one go (as might be required if there is a demuxer for a certain format
 installed but no suitable video decoder and no suitable audio decoder).</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -670,13 +672,12 @@ installed but no suitable video decoder and no suitable audio decoder).</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.12
-</p>
+<p class="since">Since 0.10.12</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-install-plugins-sync"></a><h3>gst_install_plugins_sync ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> gst_install_plugins_sync        (<a
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a>  gst_install_plugins_sync       (<a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> **details,
                                                          <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a> *ctx);</pre>
@@ -691,7 +692,6 @@ thread and marshal the result back asynchronously into the main thread
 using the other non-GLib main loop. You should almost always use
 <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async" title="gst_install_plugins_async ()"><code class="function">gst_install_plugins_async()</code></a> instead of this function.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -714,22 +714,20 @@ using the other non-GLib main loop. You should almost always use
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.12
-</p>
+<p class="since">Since 0.10.12</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-install-plugins-return-get-name"></a><h3>gst_install_plugins_return_get_name ()</h3>
 <pre class="programlisting">const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*        gst_install_plugins_return_get_name (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> ret);</pre>
+>gchar</a> *       gst_install_plugins_return_get_name (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> ret);</pre>
 <p>
 Convenience function to return the descriptive string associated
 with a status code.  This function returns English strings and
 should not be used for user messages. It is here only to assist
 in debugging.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -747,8 +745,7 @@ in debugging.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.12
-</p>
+<p class="since">Since 0.10.12</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -761,7 +758,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 Checks whether plugin installation (initiated by this application only)
 is currently in progress.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -772,8 +768,7 @@ is currently in progress.</p>
 </td>
 </tr></tbody>
 </table></div>
-<p class="since">Since  0.10.12
-</p>
+<p class="since">Since 0.10.12</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -787,7 +782,6 @@ current environment. This currently only checks whether the helper script
 that is to be provided by the distribution or operating system vendor
 exists.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -798,8 +792,7 @@ exists.</p>
 </td>
 </tr></tbody>
 </table></div>
-<p class="since">Since  0.10.15
-</p>
+<p class="since">Since 0.10.15</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -809,20 +802,17 @@ exists.</p>
 Opaque context structure for the plugin installation. Use the provided
 API to set details on it.</p>
 <p>
-
 </p>
-<p class="since">Since  0.10.12
-</p>
+<p class="since">Since 0.10.12</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-install-plugins-context-new"></a><h3>gst_install_plugins_context_new ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a>* gst_install_plugins_context_new
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a> * gst_install_plugins_context_new
                                                         (void);</pre>
 <p>
 Creates a new <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext"><span class="type">GstInstallPluginsContext</span></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -834,8 +824,7 @@ Creates a new <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugi
 </td>
 </tr></tbody>
 </table></div>
-<p class="since">Since  0.10.12
-</p>
+<p class="since">Since 0.10.12</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -844,7 +833,6 @@ Creates a new <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugi
 <p>
 Frees a <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext"><span class="type">GstInstallPluginsContext</span></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -854,8 +842,7 @@ Frees a <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.htm
 </td>
 </tr></tbody>
 </table></div>
-<p class="since">Since  0.10.12
-</p>
+<p class="since">Since 0.10.12</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -891,7 +878,6 @@ window like this:
 ...
 </pre>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -908,13 +894,12 @@ window like this:
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.12
-</p>
+<p class="since">Since 0.10.12</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

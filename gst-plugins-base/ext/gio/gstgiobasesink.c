@@ -1,7 +1,7 @@
 /* GStreamer
  *
  * Copyright (C) 2007 Rene Stadler <mail@renestadler.de>
- * Copyright (C) 2007 Sebastian Dröge <slomo@circular-chaos.org>
+ * Copyright (C) 2007-2009 Sebastian Dröge <sebastian.droege@collabora.co.uk>
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -62,13 +62,8 @@ gst_gio_base_sink_base_init (gpointer gclass)
 static void
 gst_gio_base_sink_class_init (GstGioBaseSinkClass * klass)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
-  GstBaseSinkClass *gstbasesink_class;
-
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
-  gstbasesink_class = (GstBaseSinkClass *) klass;
+  GObjectClass *gobject_class = (GObjectClass *) klass;
+  GstBaseSinkClass *gstbasesink_class = (GstBaseSinkClass *) klass;
 
   gobject_class->finalize = gst_gio_base_sink_finalize;
 
@@ -114,16 +109,23 @@ static gboolean
 gst_gio_base_sink_start (GstBaseSink * base_sink)
 {
   GstGioBaseSink *sink = GST_GIO_BASE_SINK (base_sink);
-
-  if (!G_IS_OUTPUT_STREAM (sink->stream)) {
-    GST_ELEMENT_ERROR (sink, RESOURCE, OPEN_WRITE, (NULL),
-        ("No stream given yet"));
-    return FALSE;
-  }
+  GstGioBaseSinkClass *gbsink_class = GST_GIO_BASE_SINK_GET_CLASS (sink);
 
   sink->position = 0;
 
-  GST_DEBUG_OBJECT (sink, "started stream");
+  /* FIXME: This will likely block */
+  sink->stream = gbsink_class->get_stream (sink);
+  if (G_UNLIKELY (!G_IS_OUTPUT_STREAM (sink->stream))) {
+    GST_ELEMENT_ERROR (sink, RESOURCE, OPEN_WRITE, (NULL),
+        ("No output stream provided by subclass"));
+    return FALSE;
+  } else if (G_UNLIKELY (g_output_stream_is_closed (sink->stream))) {
+    GST_ELEMENT_ERROR (sink, LIBRARY, FAILED, (NULL),
+        ("Output stream is already closed"));
+    return FALSE;
+  }
+
+  GST_DEBUG_OBJECT (sink, "started sink");
 
   return TRUE;
 }
@@ -132,10 +134,11 @@ static gboolean
 gst_gio_base_sink_stop (GstBaseSink * base_sink)
 {
   GstGioBaseSink *sink = GST_GIO_BASE_SINK (base_sink);
+  GstGioBaseSinkClass *klass = GST_GIO_BASE_SINK_GET_CLASS (sink);
   gboolean success;
   GError *err = NULL;
 
-  if (G_IS_OUTPUT_STREAM (sink->stream)) {
+  if (klass->close_on_stop && G_IS_OUTPUT_STREAM (sink->stream)) {
     GST_DEBUG_OBJECT (sink, "closing stream");
 
     /* FIXME: can block but unfortunately we can't use async operations
@@ -144,13 +147,29 @@ gst_gio_base_sink_stop (GstBaseSink * base_sink)
 
     if (!success && !gst_gio_error (sink, "g_output_stream_close", &err, NULL)) {
       GST_ELEMENT_WARNING (sink, RESOURCE, CLOSE, (NULL),
-          ("g_ooutput_stream_close failed: %s", err->message));
+          ("gio_output_stream_close failed: %s", err->message));
       g_clear_error (&err);
     } else if (!success) {
       GST_ELEMENT_WARNING (sink, RESOURCE, CLOSE, (NULL),
           ("g_output_stream_close failed"));
     } else {
       GST_DEBUG_OBJECT (sink, "g_outut_stream_close succeeded");
+    }
+
+    g_object_unref (sink->stream);
+    sink->stream = NULL;
+  } else {
+    success = g_output_stream_flush (sink->stream, sink->cancel, &err);
+
+    if (!success && !gst_gio_error (sink, "g_output_stream_flush", &err, NULL)) {
+      GST_ELEMENT_WARNING (sink, RESOURCE, CLOSE, (NULL),
+          ("gio_output_stream_flush failed: %s", err->message));
+      g_clear_error (&err);
+    } else if (!success) {
+      GST_ELEMENT_WARNING (sink, RESOURCE, CLOSE, (NULL),
+          ("g_output_stream_flush failed"));
+    } else {
+      GST_DEBUG_OBJECT (sink, "g_outut_stream_flush succeeded");
     }
 
     g_object_unref (sink->stream);
@@ -266,7 +285,7 @@ gst_gio_base_sink_render (GstBaseSink * base_sink, GstBuffer * buffer)
      * doesn't... */
     GST_ELEMENT_ERROR (sink, RESOURCE, WRITE, (NULL),
         ("Could not write to stream: (short write, only %"
-            G_GUINT64_FORMAT " bytes of %d bytes written)",
+            G_GSSIZE_FORMAT " bytes of %d bytes written)",
             written, GST_BUFFER_SIZE (buffer)));
     return GST_FLOW_ERROR;
   }

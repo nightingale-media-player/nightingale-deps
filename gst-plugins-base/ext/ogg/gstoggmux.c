@@ -106,7 +106,8 @@ static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE ("sink_%d",
     GST_STATIC_CAPS ("video/x-theora; "
         "audio/x-vorbis; audio/x-flac; audio/x-speex; audio/x-celt; "
         "application/x-ogm-video; application/x-ogm-audio; video/x-dirac; "
-        "video/x-smoke; text/x-cmml, encoded = (boolean) TRUE")
+        "video/x-smoke; text/x-cmml, encoded = (boolean) TRUE; "
+        "subtitle/x-kate; application/x-kate")
     );
 
 static void gst_ogg_mux_base_init (gpointer g_class);
@@ -149,10 +150,17 @@ gst_ogg_mux_get_type (void)
       0,
       (GInstanceInitFunc) gst_ogg_mux_init,
     };
+    static const GInterfaceInfo preset_info = {
+      NULL,
+      NULL,
+      NULL
+    };
 
     ogg_mux_type =
         g_type_register_static (GST_TYPE_ELEMENT, "GstOggMux", &ogg_mux_info,
         0);
+
+    g_type_add_interface_static (ogg_mux_type, GST_TYPE_PRESET, &preset_info);
   }
   return ogg_mux_type;
 }
@@ -493,7 +501,8 @@ gst_ogg_mux_push_buffer (GstOggMux * mux, GstBuffer * buffer)
 
   caps = gst_pad_get_negotiated_caps (mux->srcpad);
   gst_buffer_set_caps (buffer, caps);
-  gst_caps_unref (caps);
+  if (caps)
+    gst_caps_unref (caps);
 
   return gst_pad_push (mux->srcpad, buffer);
 }
@@ -831,14 +840,11 @@ static GList *
 gst_ogg_mux_get_headers (GstOggPad * pad)
 {
   GList *res = NULL;
-  GstOggMux *ogg_mux;
   GstStructure *structure;
   GstCaps *caps;
   GstPad *thepad;
 
   thepad = pad->collect.pad;
-
-  ogg_mux = GST_OGG_MUX (GST_PAD_PARENT (thepad));
 
   GST_LOG_OBJECT (thepad, "getting headers");
 
@@ -1125,15 +1131,16 @@ gst_ogg_mux_send_headers (GstOggMux * mux)
     gst_caps_unref (caps);
   }
   /* and send the buffers */
-  hwalk = hbufs;
-  while (hwalk) {
-    GstBuffer *buf = GST_BUFFER (hwalk->data);
+  while (hbufs != NULL) {
+    GstBuffer *buf = GST_BUFFER (hbufs->data);
 
-    hwalk = hwalk->next;
+    hbufs = g_list_delete_link (hbufs, hbufs);
 
     if ((ret = gst_ogg_mux_push_buffer (mux, buf)) != GST_FLOW_OK)
       break;
   }
+  /* free any remaining nodes/buffers in case we couldn't push them */
+  g_list_foreach (hbufs, (GFunc) gst_mini_object_unref, NULL);
   g_list_free (hbufs);
 
   return ret;
@@ -1161,8 +1168,8 @@ gst_ogg_mux_send_headers (GstOggMux * mux)
 static GstFlowReturn
 gst_ogg_mux_process_best_pad (GstOggMux * ogg_mux, GstOggPad * best)
 {
+  GstFlowReturn ret = GST_FLOW_OK;
   gboolean delta_unit;
-  GstFlowReturn ret;
   gint64 granulepos = 0;
   GstClockTime timestamp, gp_time;
 
@@ -1293,6 +1300,7 @@ gst_ogg_mux_process_best_pad (GstOggMux * ogg_mux, GstOggPad * best)
     }
 
     if (GST_BUFFER_IS_DISCONT (buf)) {
+      GST_LOG_OBJECT (pad->collect.pad, "got discont");
       packet.packetno++;
       /* No public API for this; hack things in */
       pad->stream.pageno++;
@@ -1441,7 +1449,7 @@ gst_ogg_mux_process_best_pad (GstOggMux * ogg_mux, GstOggPad * best)
     }
   }
 
-  return GST_FLOW_OK;
+  return ret;
 }
 
 /* all_pads_eos:
@@ -1675,6 +1683,6 @@ gst_ogg_mux_plugin_init (GstPlugin * plugin)
 {
   GST_DEBUG_CATEGORY_INIT (gst_ogg_mux_debug, "oggmux", 0, "ogg muxer");
 
-  return gst_element_register (plugin, "oggmux", GST_RANK_NONE,
+  return gst_element_register (plugin, "oggmux", GST_RANK_PRIMARY,
       GST_TYPE_OGG_MUX);
 }

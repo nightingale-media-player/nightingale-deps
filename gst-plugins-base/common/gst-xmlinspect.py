@@ -65,7 +65,7 @@ def output_pad_template(pt, indent=0):
     print  "PAD TEMPLATE", pt.name_template
     paddir = ("unknown","source","sink")
     padpres = ("always","sometimes","request")
-    
+
     d = {
       'name':        xmlencode(pt.name_template),
       'direction':   xmlencode(paddir[pt.direction]),
@@ -76,7 +76,7 @@ def output_pad_template(pt, indent=0):
 
     offset = get_offset(indent)
     return offset + ("\n" + offset).join(block.split("\n"))
-    
+
 def output_element_factory(elf, indent=0):
     print  "ELEMENT", elf.get_name()
 
@@ -101,7 +101,7 @@ def output_element_factory(elf, indent=0):
 def output_plugin(plugin, indent=0):
     print "PLUGIN", plugin.get_name()
     version = plugin.get_version()
-    
+
     elements = {}
     gst.debug('getting features for plugin %s' % plugin.get_name())
     registry = gst.registry_get_default()
@@ -111,7 +111,7 @@ def output_plugin(plugin, indent=0):
         if isinstance(feature, gst.ElementFactory):
             elements[feature.get_name()] = feature
     #gst.debug("got features")
-        
+
     elementsoutput = []
     keys = elements.keys()
     keys.sort()
@@ -136,7 +136,7 @@ def output_plugin(plugin, indent=0):
         'elements': "\n".join(elementsoutput),
     }
     block = PLUGIN_TEMPLATE % d
-    
+
     offset = get_offset(indent)
     return offset + ("\n" + offset).join(block.split("\n"))
 

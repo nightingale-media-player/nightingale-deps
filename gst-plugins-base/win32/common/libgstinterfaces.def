@@ -1,5 +1,6 @@
 EXPORTS
 	gst_color_balance_channel_get_type
+	gst_color_balance_get_balance_type
 	gst_color_balance_get_type
 	gst_color_balance_get_value
 	gst_color_balance_list_channels
@@ -8,6 +9,7 @@ EXPORTS
 	gst_color_balance_value_changed
 	gst_mixer_flags_get_type
 	gst_mixer_get_mixer_flags
+	gst_mixer_get_mixer_type
 	gst_mixer_get_option
 	gst_mixer_get_type
 	gst_mixer_get_volume
@@ -34,7 +36,32 @@ EXPORTS
 	gst_mixer_track_get_type
 	gst_mixer_type_get_type
 	gst_mixer_volume_changed
+	gst_navigation_command_get_type
+	gst_navigation_event_get_type
+	gst_navigation_event_parse_command
+	gst_navigation_event_parse_key_event
+	gst_navigation_event_parse_mouse_button_event
+	gst_navigation_event_parse_mouse_move_event
+	gst_navigation_event_type_get_type
 	gst_navigation_get_type
+	gst_navigation_message_get_type
+	gst_navigation_message_new_angles_changed
+	gst_navigation_message_new_commands_changed
+	gst_navigation_message_new_mouse_over
+	gst_navigation_message_parse_angles_changed
+	gst_navigation_message_parse_mouse_over
+	gst_navigation_message_type_get_type
+	gst_navigation_query_get_type
+	gst_navigation_query_new_angles
+	gst_navigation_query_new_commands
+	gst_navigation_query_parse_angles
+	gst_navigation_query_parse_commands_length
+	gst_navigation_query_parse_commands_nth
+	gst_navigation_query_set_angles
+	gst_navigation_query_set_commands
+	gst_navigation_query_set_commandsv
+	gst_navigation_query_type_get_type
+	gst_navigation_send_command
 	gst_navigation_send_event
 	gst_navigation_send_key_event
 	gst_navigation_send_mouse_event
@@ -49,6 +76,13 @@ EXPORTS
 	gst_property_probe_probe_and_get_values_name
 	gst_property_probe_probe_property
 	gst_property_probe_probe_property_name
+	gst_stream_volume_convert_volume
+	gst_stream_volume_format_get_type
+	gst_stream_volume_get_mute
+	gst_stream_volume_get_type
+	gst_stream_volume_get_volume
+	gst_stream_volume_set_mute
+	gst_stream_volume_set_volume
 	gst_tuner_channel_changed
 	gst_tuner_channel_flags_get_type
 	gst_tuner_channel_get_type

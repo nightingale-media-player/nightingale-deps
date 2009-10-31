@@ -69,13 +69,13 @@
 #include <gst/gstinfo.h>        /* For GST_STR_NULL */
 
 #ifdef G_OS_WIN32
-#ifdef _MSC_VER
-#include <Winsock2.h>
-#endif
 /* ws2_32.dll has getaddrinfo and freeaddrinfo on Windows XP and later.
  * minwg32 headers check WINVER before allowing the use of these */
 #ifndef WINVER
 #define WINVER 0x0501
+#endif
+#ifdef _MSC_VER
+#include <Winsock2.h>
 #endif
 #include <ws2tcpip.h>
 #else
@@ -329,14 +329,13 @@ is_multicast_address (const gchar * host_name, guint * family)
   struct addrinfo *ai;
   struct addrinfo *res;
   gboolean ret = FALSE;
-  int err;
 
   memset (&hints, 0, sizeof (hints));
   hints.ai_socktype = SOCK_DGRAM;
 
   g_return_val_if_fail (host_name, FALSE);
 
-  if ((err = getaddrinfo (host_name, NULL, &hints, &res)) < 0)
+  if (getaddrinfo (host_name, NULL, &hints, &res) < 0)
     return FALSE;
 
   for (ai = res; !ret && ai; ai = ai->ai_next) {

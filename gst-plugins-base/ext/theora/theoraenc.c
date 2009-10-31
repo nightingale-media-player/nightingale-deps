@@ -119,6 +119,7 @@ _ilog (unsigned int v)
 #define THEORA_DEF_KEYFRAME_MINDISTANCE 8
 #define THEORA_DEF_NOISE_SENSITIVITY    1
 #define THEORA_DEF_SHARPNESS            0
+#define THEORA_DEF_SPEEDLEVEL           1
 enum
 {
   ARG_0,
@@ -134,6 +135,7 @@ enum
   ARG_KEYFRAME_MINDISTANCE,
   ARG_NOISE_SENSITIVITY,
   ARG_SHARPNESS,
+  ARG_SPEEDLEVEL,
   /* FILL ME */
 };
 
@@ -167,7 +169,7 @@ GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("video/x-raw-yuv, "
-        "format = (fourcc) I420, "
+        "format = (fourcc) { I420, Y42B, Y444 }, "
         "framerate = (fraction) [0/1, MAX], "
         "width = (int) [ 1, MAX ], " "height = (int) [ 1, MAX ]")
     );
@@ -179,12 +181,28 @@ GST_STATIC_PAD_TEMPLATE ("src",
     GST_STATIC_CAPS ("video/x-theora")
     );
 
-GST_BOILERPLATE (GstTheoraEnc, gst_theora_enc, GstElement, GST_TYPE_ELEMENT);
+static void
+_do_init (GType object_type)
+{
+  const GInterfaceInfo preset_interface_info = {
+    NULL,                       /* interface_init */
+    NULL,                       /* interface_finalize */
+    NULL                        /* interface_data */
+  };
+
+  g_type_add_interface_static (object_type, GST_TYPE_PRESET,
+      &preset_interface_info);
+}
+
+GST_BOILERPLATE_FULL (GstTheoraEnc, gst_theora_enc, GstElement,
+    GST_TYPE_ELEMENT, _do_init);
 
 static gboolean theora_enc_sink_event (GstPad * pad, GstEvent * event);
+static gboolean theora_enc_src_event (GstPad * pad, GstEvent * event);
 static GstFlowReturn theora_enc_chain (GstPad * pad, GstBuffer * buffer);
 static GstStateChangeReturn theora_enc_change_state (GstElement * element,
     GstStateChange transition);
+static GstCaps *theora_enc_sink_getcaps (GstPad * pad);
 static gboolean theora_enc_sink_setcaps (GstPad * pad, GstCaps * caps);
 static void theora_enc_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
@@ -265,6 +283,12 @@ gst_theora_enc_class_init (GstTheoraEncClass * klass)
       g_param_spec_int ("sharpness", "Sharpness", "Sharpness", 0, 2,
           THEORA_DEF_SHARPNESS,
           (GParamFlags) G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, ARG_SPEEDLEVEL,
+      g_param_spec_int ("speed-level", "Speed level",
+          "Controls the amount of motion vector searching done while "
+          "encoding.  This property requires libtheora version >= 1.0",
+          0, 2, THEORA_DEF_SPEEDLEVEL,
+          (GParamFlags) G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gstelement_class->change_state = theora_enc_change_state;
   GST_DEBUG_CATEGORY_INIT (theoraenc_debug, "theoraenc", 0, "Theora encoder");
@@ -279,11 +303,13 @@ gst_theora_enc_init (GstTheoraEnc * enc, GstTheoraEncClass * g_class)
       gst_pad_new_from_static_template (&theora_enc_sink_factory, "sink");
   gst_pad_set_chain_function (enc->sinkpad, theora_enc_chain);
   gst_pad_set_event_function (enc->sinkpad, theora_enc_sink_event);
+  gst_pad_set_getcaps_function (enc->sinkpad, theora_enc_sink_getcaps);
   gst_pad_set_setcaps_function (enc->sinkpad, theora_enc_sink_setcaps);
   gst_element_add_pad (GST_ELEMENT (enc), enc->sinkpad);
 
   enc->srcpad =
       gst_pad_new_from_static_template (&theora_enc_src_factory, "src");
+  gst_pad_set_event_function (enc->srcpad, theora_enc_src_event);
   gst_element_add_pad (GST_ELEMENT (enc), enc->srcpad);
 
   gst_segment_init (&enc->segment, GST_FORMAT_UNDEFINED);
@@ -307,6 +333,8 @@ gst_theora_enc_init (GstTheoraEnc * enc, GstTheoraEncClass * g_class)
       "keyframe_frequency_force is %d, granule shift is %d",
       enc->info.keyframe_frequency_force, enc->granule_shift);
   enc->expected_ts = GST_CLOCK_TIME_NONE;
+
+  enc->speed_level = THEORA_DEF_SPEEDLEVEL;
 }
 
 static void
@@ -325,8 +353,16 @@ theora_enc_finalize (GObject * object)
 static void
 theora_enc_reset (GstTheoraEnc * enc)
 {
+  int result;
+
   theora_clear (&enc->state);
-  theora_encode_init (&enc->state, &enc->info);
+  result = theora_encode_init (&enc->state, &enc->info);
+  /* We ensure this function cannot fail. */
+  g_assert (result == 0);
+#ifdef TH_ENCCTL_SET_SPLEVEL
+  theora_control (&enc->state, TH_ENCCTL_SET_SPLEVEL, &enc->speed_level,
+      sizeof (enc->speed_level));
+#endif
 }
 
 static void
@@ -342,14 +378,85 @@ theora_enc_clear (GstTheoraEnc * enc)
   enc->expected_ts = GST_CLOCK_TIME_NONE;
 }
 
+static char *
+theora_enc_get_supported_formats (void)
+{
+  theora_state state;
+  theora_info info;
+  struct
+  {
+    theora_pixelformat pixelformat;
+    char *fourcc;
+  } formats[] = {
+    {
+    OC_PF_420, "I420"}, {
+    OC_PF_422, "Y42B"}, {
+    OC_PF_444, "Y444"}
+  };
+  GString *string = NULL;
+  guint i;
+
+  theora_info_init (&info);
+  info.width = 16;
+  info.height = 16;
+  info.fps_numerator = 25;
+  info.fps_denominator = 1;
+  for (i = 0; i < G_N_ELEMENTS (formats); i++) {
+    info.pixelformat = formats[i].pixelformat;
+
+    if (theora_encode_init (&state, &info) != 0)
+      continue;
+
+    GST_LOG ("format %s is supported", formats[i].fourcc);
+    theora_clear (&state);
+
+    if (string == NULL) {
+      string = g_string_new (formats[i].fourcc);
+    } else {
+      g_string_append (string, ", ");
+      g_string_append (string, formats[i].fourcc);
+    }
+  }
+  theora_info_clear (&info);
+
+  return string == NULL ? NULL : g_string_free (string, FALSE);
+}
+
+static GstCaps *
+theora_enc_sink_getcaps (GstPad * pad)
+{
+  GstCaps *caps;
+  char *supported_formats, *caps_string;
+
+  supported_formats = theora_enc_get_supported_formats ();
+  if (!supported_formats) {
+    GST_WARNING ("no supported formats found. Encoder disabled?");
+    return gst_caps_new_empty ();
+  }
+
+  caps_string = g_strdup_printf ("video/x-raw-yuv, "
+      "format = (fourcc) { %s }, "
+      "framerate = (fraction) [0/1, MAX], "
+      "width = (int) [ 1, MAX ], " "height = (int) [ 1, MAX ]",
+      supported_formats);
+  caps = gst_caps_from_string (caps_string);
+  g_free (caps_string);
+  g_free (supported_formats);
+  GST_DEBUG ("Supported caps: %" GST_PTR_FORMAT, caps);
+
+  return caps;
+}
+
 static gboolean
 theora_enc_sink_setcaps (GstPad * pad, GstCaps * caps)
 {
   GstStructure *structure = gst_caps_get_structure (caps, 0);
   GstTheoraEnc *enc = GST_THEORA_ENC (gst_pad_get_parent (pad));
+  guint32 fourcc;
   const GValue *par;
   gint fps_n, fps_d;
 
+  gst_structure_get_fourcc (structure, "format", &fourcc);
   gst_structure_get_int (structure, "width", &enc->width);
   gst_structure_get_int (structure, "height", &enc->height);
   gst_structure_get_fraction (structure, "framerate", &fps_n, &fps_d);
@@ -363,6 +470,19 @@ theora_enc_sink_setcaps (GstPad * pad, GstCaps * caps)
   enc->info_height = enc->info.height = (enc->height + 15) & ~15;
   enc->info.frame_width = enc->width;
   enc->info.frame_height = enc->height;
+  switch (fourcc) {
+    case GST_MAKE_FOURCC ('I', '4', '2', '0'):
+      enc->info.pixelformat = OC_PF_420;
+      break;
+    case GST_MAKE_FOURCC ('Y', '4', '2', 'B'):
+      enc->info.pixelformat = OC_PF_422;
+      break;
+    case GST_MAKE_FOURCC ('Y', '4', '4', '4'):
+      enc->info.pixelformat = OC_PF_444;
+      break;
+    default:
+      g_assert_not_reached ();
+  }
 
   /* center image if needed */
   if (enc->center) {
@@ -576,6 +696,21 @@ theora_enc_get_ogg_packet_end_time (GstTheoraEnc * enc, ogg_packet * op)
   return theora_granule_time (&enc->state, end_granule) * GST_SECOND;
 }
 
+static void
+theora_enc_force_keyframe (GstTheoraEnc * enc)
+{
+  GstClockTime next_ts;
+
+  /* make sure timestamps increment after resetting the decoder */
+  next_ts = enc->next_ts + enc->timestamp_offset;
+
+  theora_enc_reset (enc);
+  enc->granulepos_offset =
+      gst_util_uint64_scale (next_ts, enc->fps_n, GST_SECOND * enc->fps_d);
+  enc->timestamp_offset = next_ts;
+  enc->next_ts = 0;
+}
+
 static gboolean
 theora_enc_sink_event (GstPad * pad, GstEvent * event)
 {
@@ -626,19 +761,8 @@ theora_enc_sink_event (GstPad * pad, GstEvent * event)
 
       s = gst_event_get_structure (event);
 
-      if (gst_structure_has_name (s, "GstForceKeyUnit")) {
-        GstClockTime next_ts;
-
-        /* make sure timestamps increment after resetting the decoder */
-        next_ts = enc->next_ts + enc->timestamp_offset;
-
-        theora_enc_reset (enc);
-        enc->granulepos_offset =
-            gst_util_uint64_scale (next_ts, enc->fps_n,
-            GST_SECOND * enc->fps_d);
-        enc->timestamp_offset = next_ts;
-        enc->next_ts = 0;
-      }
+      if (gst_structure_has_name (s, "GstForceKeyUnit"))
+        theora_enc_force_keyframe (enc);
       res = gst_pad_push_event (enc->srcpad, event);
       break;
     }
@@ -646,6 +770,41 @@ theora_enc_sink_event (GstPad * pad, GstEvent * event)
       res = gst_pad_push_event (enc->srcpad, event);
       break;
   }
+  return res;
+}
+
+static gboolean
+theora_enc_src_event (GstPad * pad, GstEvent * event)
+{
+  GstTheoraEnc *enc;
+  gboolean res = TRUE;
+
+  enc = GST_THEORA_ENC (GST_PAD_PARENT (pad));
+
+  switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_CUSTOM_UPSTREAM:
+    {
+      const GstStructure *s;
+
+      s = gst_event_get_structure (event);
+
+      if (gst_structure_has_name (s, "GstForceKeyUnit")) {
+        GST_OBJECT_LOCK (enc);
+        enc->force_keyframe = TRUE;
+        GST_OBJECT_UNLOCK (enc);
+        /* consume the event */
+        res = TRUE;
+        gst_event_unref (event);
+      } else {
+        res = gst_pad_push_event (enc->sinkpad, event);
+      }
+      break;
+    }
+    default:
+      res = gst_pad_push_event (enc->sinkpad, event);
+      break;
+  }
+
   return res;
 }
 
@@ -679,6 +838,140 @@ theora_enc_is_discontinuous (GstTheoraEnc * enc, GstClockTime timestamp,
   return ret;
 }
 
+static void
+theora_enc_init_yuv_buffer (yuv_buffer * yuv, theora_pixelformat format,
+    guint8 * data, gint width, gint height)
+{
+  yuv->y = data;
+  yuv->y_width = width;
+  yuv->y_height = height;
+  yuv->y_stride = GST_ROUND_UP_4 (width);
+
+  switch (format) {
+    case OC_PF_444:
+      yuv->uv_width = width;
+      yuv->uv_height = height;
+      yuv->uv_stride = GST_ROUND_UP_4 (width);
+      yuv->u = yuv->y + height * yuv->y_stride;
+      yuv->v = yuv->u + height * yuv->uv_stride;
+      break;
+    case OC_PF_420:
+      yuv->uv_width = width / 2;
+      yuv->uv_height = height / 2;
+      yuv->uv_stride = GST_ROUND_UP_8 (width) / 2;
+      yuv->u = yuv->y + GST_ROUND_UP_2 (height) * yuv->y_stride;
+      yuv->v = yuv->u + GST_ROUND_UP_2 (height) / 2 * yuv->uv_stride;
+      break;
+    case OC_PF_422:
+      yuv->uv_width = width / 2;
+      yuv->uv_height = height;
+      yuv->uv_stride = GST_ROUND_UP_8 (width) / 2;
+      yuv->u = yuv->y + height * yuv->y_stride;
+      yuv->v = yuv->u + height * yuv->uv_stride;
+      break;
+    default:
+      g_assert_not_reached ();
+  }
+}
+
+/* NB: This function does no input checking */
+static void
+copy_plane (guint8 * dest, int dest_width, int dest_height, int dest_stride,
+    const guint8 * src, int src_width, int src_height, int src_stride,
+    int offset_x, int offset_y, GstTheoraEncBorderMode border, int black)
+{
+  int right_x, right_border, i;
+
+  /* fill top border */
+  if (border != BORDER_NONE) {
+    memset (dest, black, dest_stride * offset_y);
+  }
+  dest += dest_stride * offset_y;
+
+  right_x = src_width + offset_x;
+  right_border = dest_width - right_x;
+
+  /* copy source */
+  for (i = 0; i < src_height; i++) {
+    memcpy (dest + offset_x, src, src_width);
+    if (border != BORDER_NONE) {
+      memset (dest, black, offset_x);
+      memset (dest + right_x, black, right_border);
+    }
+
+    dest += dest_stride;
+    src += src_stride;
+  }
+
+  /* fill bottom border */
+  if (border != BORDER_NONE) {
+    memset (dest, black, dest_stride * (dest_height - src_height - offset_y));
+  }
+}
+
+static guint
+theora_format_get_bits_per_pixel (theora_pixelformat format)
+{
+  switch (format) {
+    case OC_PF_420:
+      return 12;
+    case OC_PF_422:
+      return 16;
+    case OC_PF_444:
+      return 24;
+    default:
+      g_assert_not_reached ();
+      return 0;
+  }
+}
+
+static GstBuffer *
+theora_enc_resize_buffer (GstTheoraEnc * enc, GstBuffer * buffer)
+{
+  yuv_buffer dest, src;
+  GstBuffer *newbuf;
+  int uv_offset_x;
+  int uv_offset_y;
+
+  if (enc->width == enc->info_width && enc->height == enc->info_height) {
+    GST_LOG_OBJECT (enc, "no cropping/conversion needed");
+    return buffer;
+  }
+
+  GST_LOG_OBJECT (enc, "cropping/conversion needed for strides");
+
+  newbuf = gst_buffer_new_and_alloc (enc->info_width * enc->info_height *
+      theora_format_get_bits_per_pixel (enc->info.pixelformat) / 8);
+  if (!newbuf) {
+    gst_buffer_unref (buffer);
+    return NULL;
+  }
+  GST_BUFFER_OFFSET (newbuf) = GST_BUFFER_OFFSET_NONE;
+  gst_buffer_set_caps (newbuf, GST_PAD_CAPS (enc->srcpad));
+
+  theora_enc_init_yuv_buffer (&src, enc->info.pixelformat,
+      GST_BUFFER_DATA (buffer), enc->width, enc->height);
+  theora_enc_init_yuv_buffer (&dest, enc->info.pixelformat,
+      GST_BUFFER_DATA (newbuf), enc->info_width, enc->info_height);
+
+  copy_plane (dest.y, dest.y_width, dest.y_height, dest.y_stride,
+      src.y, src.y_width, src.y_height, src.y_stride,
+      enc->offset_x, enc->offset_y, enc->border, 0);
+
+  uv_offset_x = enc->offset_x * dest.uv_width / dest.y_width;
+  uv_offset_y = enc->offset_y * dest.uv_height / dest.y_height;
+
+  copy_plane (dest.u, dest.uv_width, dest.uv_height, dest.uv_stride,
+      src.u, src.uv_width, src.uv_height, src.uv_stride,
+      uv_offset_x, uv_offset_y, enc->border, 128);
+  copy_plane (dest.v, dest.uv_width, dest.uv_height, dest.uv_stride,
+      src.v, src.uv_width, src.uv_height, src.uv_stride,
+      uv_offset_x, uv_offset_y, enc->border, 128);
+
+  gst_buffer_unref (buffer);
+  return newbuf;
+}
+
 static GstFlowReturn
 theora_enc_chain (GstPad * pad, GstBuffer * buffer)
 {
@@ -686,6 +979,7 @@ theora_enc_chain (GstPad * pad, GstBuffer * buffer)
   ogg_packet op;
   GstClockTime timestamp, duration, running_time;
   GstFlowReturn ret;
+  gboolean force_keyframe;
 
   enc = GST_THEORA_ENC (GST_PAD_PARENT (pad));
 
@@ -698,8 +992,39 @@ theora_enc_chain (GstPad * pad, GstBuffer * buffer)
    */
   timestamp = GST_BUFFER_TIMESTAMP (buffer);
   duration = GST_BUFFER_DURATION (buffer);
+
   running_time =
       gst_segment_to_running_time (&enc->segment, GST_FORMAT_TIME, timestamp);
+  if ((gint64) running_time < 0) {
+    GST_DEBUG_OBJECT (enc, "Dropping buffer, timestamp: %" GST_TIME_FORMAT,
+        GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buffer)));
+    gst_buffer_unref (buffer);
+    return GST_FLOW_OK;
+  }
+
+  /* see if we need to schedule a keyframe */
+  GST_OBJECT_LOCK (enc);
+  force_keyframe = enc->force_keyframe;
+  enc->force_keyframe = FALSE;
+  GST_OBJECT_UNLOCK (enc);
+
+  if (force_keyframe) {
+    GstClockTime stream_time;
+    GstStructure *s;
+
+    stream_time = gst_segment_to_stream_time (&enc->segment,
+        GST_FORMAT_TIME, timestamp);
+
+    s = gst_structure_new ("GstForceKeyUnit",
+        "timestamp", G_TYPE_UINT64, timestamp,
+        "stream-time", G_TYPE_UINT64, stream_time,
+        "running-time", G_TYPE_UINT64, running_time, NULL);
+
+    theora_enc_force_keyframe (enc);
+
+    gst_pad_push_event (enc->srcpad,
+        gst_event_new_custom (GST_EVENT_CUSTOM_DOWNSTREAM, s));
+  }
 
   /* make sure we copy the discont flag to the next outgoing buffer when it's
    * set on the incomming buffer */
@@ -804,151 +1129,13 @@ theora_enc_chain (GstPad * pad, GstBuffer * buffer)
   {
     yuv_buffer yuv;
     gint res;
-    gint y_size;
-    guint8 *pixels;
 
-    yuv.y_width = enc->info_width;
-    yuv.y_height = enc->info_height;
-    yuv.y_stride = enc->info_width;
+    buffer = theora_enc_resize_buffer (enc, buffer);
+    if (buffer == NULL)
+      return GST_FLOW_ERROR;
 
-    yuv.uv_width = enc->info_width / 2;
-    yuv.uv_height = enc->info_height / 2;
-    yuv.uv_stride = yuv.uv_width;
-
-    y_size = enc->info_width * enc->info_height;
-
-    if (enc->width == enc->info_width && enc->height == enc->info_height) {
-      GST_LOG_OBJECT (enc, "no cropping/conversion needed");
-      /* easy case, no cropping/conversion needed */
-      pixels = GST_BUFFER_DATA (buffer);
-
-      yuv.y = pixels;
-      yuv.u = yuv.y + y_size;
-      yuv.v = yuv.u + y_size / 4;
-    } else {
-      GstBuffer *newbuf;
-      gint i;
-      guchar *dest_y, *src_y;
-      guchar *dest_u, *src_u;
-      guchar *dest_v, *src_v;
-      gint src_y_stride, src_uv_stride;
-      gint dst_y_stride, dst_uv_stride;
-      gint width, height;
-      gint cwidth, cheight;
-      gint offset_x, right_x, right_border;
-
-      GST_LOG_OBJECT (enc, "cropping/conversion needed for strides");
-      /* source width/height */
-      width = enc->width;
-      height = enc->height;
-      /* soucre chroma width/height */
-      cwidth = width / 2;
-      cheight = height / 2;
-
-      /* source strides as defined in videotestsrc */
-      src_y_stride = GST_ROUND_UP_4 (width);
-      src_uv_stride = GST_ROUND_UP_8 (width) / 2;
-
-      /* destination strides from the real picture width */
-      dst_y_stride = enc->info_width;
-      dst_uv_stride = enc->info_width / 2;
-
-      newbuf = gst_buffer_new_and_alloc (y_size * 3 / 2);
-      if (!newbuf) {
-        ret = GST_FLOW_ERROR;
-        goto no_buffer;
-      }
-      GST_BUFFER_OFFSET (newbuf) = GST_BUFFER_OFFSET_NONE;
-      gst_buffer_set_caps (newbuf, GST_PAD_CAPS (enc->srcpad));
-
-      dest_y = yuv.y = GST_BUFFER_DATA (newbuf);
-      dest_u = yuv.u = yuv.y + y_size;
-      dest_v = yuv.v = yuv.u + y_size / 4;
-
-      src_y = GST_BUFFER_DATA (buffer);
-      src_u = src_y + src_y_stride * GST_ROUND_UP_2 (height);
-      src_v = src_u + src_uv_stride * GST_ROUND_UP_2 (height) / 2;
-
-      if (enc->border != BORDER_NONE) {
-        /* fill top border */
-        for (i = 0; i < enc->offset_y; i++) {
-          memset (dest_y, 0, dst_y_stride);
-          dest_y += dst_y_stride;
-        }
-      } else {
-        dest_y += dst_y_stride * enc->offset_y;
-      }
-
-      offset_x = enc->offset_x;
-      right_x = width + enc->offset_x;
-      right_border = dst_y_stride - right_x;
-
-      /* copy Y plane */
-      for (i = 0; i < height; i++) {
-        memcpy (dest_y + offset_x, src_y, width);
-        if (enc->border != BORDER_NONE) {
-          memset (dest_y, 0, offset_x);
-          memset (dest_y + right_x, 0, right_border);
-        }
-
-        dest_y += dst_y_stride;
-        src_y += src_y_stride;
-      }
-
-      if (enc->border != BORDER_NONE) {
-        /* fill bottom border */
-        for (i = height + enc->offset_y; i < enc->info.height; i++) {
-          memset (dest_y, 0, dst_y_stride);
-          dest_y += dst_y_stride;
-        }
-
-        /* fill top border chroma */
-        for (i = 0; i < enc->offset_y / 2; i++) {
-          memset (dest_u, 128, dst_uv_stride);
-          memset (dest_v, 128, dst_uv_stride);
-          dest_u += dst_uv_stride;
-          dest_v += dst_uv_stride;
-        }
-      } else {
-        dest_u += dst_uv_stride * enc->offset_y / 2;
-        dest_v += dst_uv_stride * enc->offset_y / 2;
-      }
-
-      offset_x = enc->offset_x / 2;
-      right_x = cwidth + offset_x;
-      right_border = dst_uv_stride - right_x;
-
-      /* copy UV planes */
-      for (i = 0; i < cheight; i++) {
-        memcpy (dest_v + offset_x, src_v, cwidth);
-        memcpy (dest_u + offset_x, src_u, cwidth);
-
-        if (enc->border != BORDER_NONE) {
-          memset (dest_u, 128, offset_x);
-          memset (dest_u + right_x, 128, right_border);
-          memset (dest_v, 128, offset_x);
-          memset (dest_v + right_x, 128, right_border);
-        }
-
-        dest_u += dst_uv_stride;
-        dest_v += dst_uv_stride;
-        src_u += src_uv_stride;
-        src_v += src_uv_stride;
-      }
-
-      if (enc->border != BORDER_NONE) {
-        /* fill bottom border */
-        for (i = cheight + enc->offset_y / 2; i < enc->info_height / 2; i++) {
-          memset (dest_u, 128, dst_uv_stride);
-          memset (dest_v, 128, dst_uv_stride);
-          dest_u += dst_uv_stride;
-          dest_v += dst_uv_stride;
-        }
-      }
-
-      gst_buffer_unref (buffer);
-      buffer = newbuf;
-    }
+    theora_enc_init_yuv_buffer (&yuv, enc->info.pixelformat,
+        GST_BUFFER_DATA (buffer), enc->info_width, enc->info_height);
 
     if (theora_enc_is_discontinuous (enc, running_time, duration)) {
       theora_enc_reset (enc);
@@ -961,6 +1148,8 @@ theora_enc_chain (GstPad * pad, GstBuffer * buffer)
     }
 
     res = theora_encode_YUVin (&enc->state, &yuv);
+    /* none of the failure cases can happen here */
+    g_assert (res == 0);
 
     ret = GST_FLOW_OK;
     while (theora_encode_packetout (&enc->state, 0, &op)) {
@@ -990,10 +1179,6 @@ header_buffer_alloc:
 header_push:
   {
     gst_buffer_unref (buffer);
-    return ret;
-  }
-no_buffer:
-  {
     return ret;
   }
 data_push:
@@ -1026,6 +1211,7 @@ theora_enc_change_state (GstElement * element, GstStateChange transition)
       theora_info_init (&enc->info);
       theora_comment_init (&enc->comment);
       enc->packetno = 0;
+      enc->force_keyframe = FALSE;
       break;
     case GST_STATE_CHANGE_PAUSED_TO_PLAYING:
       break;
@@ -1101,6 +1287,11 @@ theora_enc_set_property (GObject * object, guint prop_id,
     case ARG_SHARPNESS:
       enc->sharpness = g_value_get_int (value);
       break;
+    case ARG_SPEEDLEVEL:
+#ifdef TH_ENCCTL_SET_SPLEVEL
+      enc->speed_level = g_value_get_int (value);
+#endif
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -1149,6 +1340,9 @@ theora_enc_get_property (GObject * object, guint prop_id,
       break;
     case ARG_SHARPNESS:
       g_value_set_int (value, enc->sharpness);
+      break;
+    case ARG_SPEEDLEVEL:
+      g_value_set_int (value, enc->speed_level);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);

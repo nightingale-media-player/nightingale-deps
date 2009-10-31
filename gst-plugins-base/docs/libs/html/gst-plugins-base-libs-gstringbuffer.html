@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-audio.html" title="Audio Library">
 <link rel="prev" href="gst-plugins-base-libs-gstmultichannel.html" title="gstmultichannel">
 <link rel="next" href="gstreamer-cdda.html" title="CDDA Library">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -37,11 +37,13 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-cdda.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstringbuffer.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstringbuffer.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstringbuffer.object-hierarchy" class="shortcut">Object Hierarchy</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gstringbuffer.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstringbuffer.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstringbuffer.object-hierarchy" class="shortcut">Object Hierarchy</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstringbuffer"></a><div class="titlepage"></div>
@@ -75,10 +77,10 @@ enum                <a class="link" href="gst-plugins-base-libs-gstringbuffer.ht
 enum                <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GstRingBufferState" title="enum GstRingBufferState">GstRingBufferState</a>;
 enum                <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GstBufferFormat" title="enum GstBufferFormat">GstBufferFormat</a>;
 enum                <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GstBufferFormatType" title="enum GstBufferFormatType">GstBufferFormatType</a>;
-#define             <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GST-RING-BUFFER-BROADCAST:CAPS" title="GST_RING_BUFFER_BROADCAST()">GST_RING_BUFFER_BROADCAST</a>           (buf)
-#define             <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GST-RING-BUFFER-GET-COND:CAPS" title="GST_RING_BUFFER_GET_COND()">GST_RING_BUFFER_GET_COND</a>            (buf)
-#define             <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GST-RING-BUFFER-SIGNAL:CAPS" title="GST_RING_BUFFER_SIGNAL()">GST_RING_BUFFER_SIGNAL</a>              (buf)
-#define             <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GST-RING-BUFFER-WAIT:CAPS" title="GST_RING_BUFFER_WAIT()">GST_RING_BUFFER_WAIT</a>                (buf)
+#define             <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GST-RING-BUFFER-BROADCAST--CAPS" title="GST_RING_BUFFER_BROADCAST()">GST_RING_BUFFER_BROADCAST</a>           (buf)
+#define             <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GST-RING-BUFFER-GET-COND--CAPS" title="GST_RING_BUFFER_GET_COND()">GST_RING_BUFFER_GET_COND</a>            (buf)
+#define             <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GST-RING-BUFFER-SIGNAL--CAPS" title="GST_RING_BUFFER_SIGNAL()">GST_RING_BUFFER_SIGNAL</a>              (buf)
+#define             <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GST-RING-BUFFER-WAIT--CAPS" title="GST_RING_BUFFER_WAIT()">GST_RING_BUFFER_WAIT</a>                (buf)
 void                <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#gst-ring-buffer-set-callback" title="gst_ring_buffer_set_callback ()">gst_ring_buffer_set_callback</a>        (<a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer">GstRingBuffer</a> *buf,
                                                          <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GstRingBufferCallback" title="GstRingBufferCallback ()">GstRingBufferCallback</a> cb,
                                                          <a
@@ -155,11 +157,15 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#gst-ring-buffer-convert" title="gst_ring_buffer_convert ()">gst_ring_buffer_convert</a>             (<a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer">GstRingBuffer</a> *buf,
-                                                         GstFormat src_fmt,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstFormat.html#GstFormat"
+>GstFormat</a> src_fmt,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
 >gint64</a> src_val,
-                                                         GstFormat dest_fmt,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstFormat.html#GstFormat"
+>GstFormat</a> dest_fmt,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
 >gint64</a> *dest_val);
@@ -212,7 +218,9 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#gst-ring-buffer-parse-caps" title="gst_ring_buffer_parse_caps ()">gst_ring_buffer_parse_caps</a>          (<a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GstRingBufferSpec" title="GstRingBufferSpec">GstRingBufferSpec</a> *spec,
-                                                         GstCaps *caps);
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *caps);
 void                <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#gst-ring-buffer-set-flushing" title="gst_ring_buffer_set_flushing ()">gst_ring_buffer_set_flushing</a>        (<a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer">GstRingBuffer</a> *buf,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
@@ -225,7 +233,9 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
          +----GstRingBuffer
 </pre>
 </div>
@@ -234,7 +244,7 @@ href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id3008708"></a><p>
+<a name="id2716391"></a><p>
 This object is the base class for audio ringbuffers used by the base
 audio source and sink classes.
 </p>
@@ -251,7 +261,6 @@ implementations.
 <p>
 Last reviewed on 2006-02-02 (0.10.4)</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -277,7 +286,6 @@ Last reviewed on 2006-02-02 (0.10.4)</p>
 <p>
 The ringbuffer base class structure.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -304,7 +312,9 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 </td>
 </tr>
 <tr>
-<td><p><span class="term">GstBuffer *<em class="structfield"><code>data</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *<em class="structfield"><code>data</code></em>;</span></p></td>
 <td> data in the ringbuffer
 </td>
 </tr>
@@ -383,12 +393,17 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 
   /* ABI added */
   gboolean     (*activate)     (GstRingBuffer *buf, gboolean active);
+
+  guint        (*commit)       (GstRingBuffer * buf, guint64 *sample,
+                                guchar * data, gint in_samples, 
+                                gint out_samples, gint * accum);
+
+  void         (*clear_all)    (GstRingBuffer * buf);
 } GstRingBufferClass;
 </pre>
 <p>
 The vmethods that subclasses can override to implement the ringbuffer.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -449,6 +464,16 @@ The vmethods that subclasses can override to implement the ringbuffer.</p>
 consumed segments in the device. Since 0.10.22
 </td>
 </tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code>commit</code></em> ()</span></p></td>
+<td> write samples into the ringbuffer
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code>clear_all</code></em> ()</span></p></td>
+<td> clear the entire ringbuffer Since 0.10.24
+</td>
+</tr>
 </tbody>
 </table></div>
 </div>
@@ -494,13 +519,14 @@ consumed segments in the device. Since 0.10.22
 <p>
 The structure containing the format specification of the ringbuffer.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term">GstCaps *<em class="structfield"><code>caps</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *<em class="structfield"><code>caps</code></em>;</span></p></td>
 <td> The caps that generated the Spec.
 </td>
 </tr>
@@ -626,7 +652,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 This function is set with <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#gst-ring-buffer-set-callback" title="gst_ring_buffer_set_callback ()"><code class="function">gst_ring_buffer_set_callback()</code></a> and is
 called to fill the memory at <em class="parameter"><code>data</code></em> with <em class="parameter"><code>len</code></em> bytes of samples.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -667,28 +692,27 @@ called to fill the memory at <em class="parameter"><code>data</code></em> with <
 <p>
 The state of a segment in the ringbuffer.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-SEGSTATE-INVALID:CAPS"></a><span class="term"><code class="literal">GST_SEGSTATE_INVALID</code></span></p></td>
+<td><p><a name="GST-SEGSTATE-INVALID--CAPS"></a><span class="term"><code class="literal">GST_SEGSTATE_INVALID</code></span></p></td>
 <td> The content of the segment is invalid
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-SEGSTATE-EMPTY:CAPS"></a><span class="term"><code class="literal">GST_SEGSTATE_EMPTY</code></span></p></td>
+<td><p><a name="GST-SEGSTATE-EMPTY--CAPS"></a><span class="term"><code class="literal">GST_SEGSTATE_EMPTY</code></span></p></td>
 <td> The segment is empty
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-SEGSTATE-FILLED:CAPS"></a><span class="term"><code class="literal">GST_SEGSTATE_FILLED</code></span></p></td>
+<td><p><a name="GST-SEGSTATE-FILLED--CAPS"></a><span class="term"><code class="literal">GST_SEGSTATE_FILLED</code></span></p></td>
 <td> The segment contains valid data
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-SEGSTATE-PARTIAL:CAPS"></a><span class="term"><code class="literal">GST_SEGSTATE_PARTIAL</code></span></p></td>
+<td><p><a name="GST-SEGSTATE-PARTIAL--CAPS"></a><span class="term"><code class="literal">GST_SEGSTATE_PARTIAL</code></span></p></td>
 <td> The segment partially contains valid data
 </td>
 </tr>
@@ -707,23 +731,22 @@ The state of a segment in the ringbuffer.</p>
 <p>
 The state of the ringbuffer.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RING-BUFFER-STATE-STOPPED:CAPS"></a><span class="term"><code class="literal">GST_RING_BUFFER_STATE_STOPPED</code></span></p></td>
+<td><p><a name="GST-RING-BUFFER-STATE-STOPPED--CAPS"></a><span class="term"><code class="literal">GST_RING_BUFFER_STATE_STOPPED</code></span></p></td>
 <td> The ringbuffer is stopped
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RING-BUFFER-STATE-PAUSED:CAPS"></a><span class="term"><code class="literal">GST_RING_BUFFER_STATE_PAUSED</code></span></p></td>
+<td><p><a name="GST-RING-BUFFER-STATE-PAUSED--CAPS"></a><span class="term"><code class="literal">GST_RING_BUFFER_STATE_PAUSED</code></span></p></td>
 <td> The ringbuffer is paused
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RING-BUFFER-STATE-STARTED:CAPS"></a><span class="term"><code class="literal">GST_RING_BUFFER_STATE_STARTED</code></span></p></td>
+<td><p><a name="GST-RING-BUFFER-STATE-STARTED--CAPS"></a><span class="term"><code class="literal">GST_RING_BUFFER_STATE_STARTED</code></span></p></td>
 <td> The ringbuffer is started
 </td>
 </tr>
@@ -786,7 +809,6 @@ The state of the ringbuffer.</p>
 } GstBufferFormat;
 </pre>
 <p>
-
 </p>
 </div>
 <hr>
@@ -810,63 +832,62 @@ The state of the ringbuffer.</p>
 <p>
 The format of the samples in the ringbuffer.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-BUFTYPE-LINEAR:CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_LINEAR</code></span></p></td>
+<td><p><a name="GST-BUFTYPE-LINEAR--CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_LINEAR</code></span></p></td>
 <td> samples in linear PCM
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-BUFTYPE-FLOAT:CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_FLOAT</code></span></p></td>
+<td><p><a name="GST-BUFTYPE-FLOAT--CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_FLOAT</code></span></p></td>
 <td> samples in float 
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-BUFTYPE-MU-LAW:CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_MU_LAW</code></span></p></td>
+<td><p><a name="GST-BUFTYPE-MU-LAW--CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_MU_LAW</code></span></p></td>
 <td> samples in mulaw
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-BUFTYPE-A-LAW:CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_A_LAW</code></span></p></td>
+<td><p><a name="GST-BUFTYPE-A-LAW--CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_A_LAW</code></span></p></td>
 <td> samples in alaw
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-BUFTYPE-IMA-ADPCM:CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_IMA_ADPCM</code></span></p></td>
+<td><p><a name="GST-BUFTYPE-IMA-ADPCM--CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_IMA_ADPCM</code></span></p></td>
 <td> samples in ima adpcm
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-BUFTYPE-MPEG:CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_MPEG</code></span></p></td>
+<td><p><a name="GST-BUFTYPE-MPEG--CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_MPEG</code></span></p></td>
 <td> samples in mpeg audio format
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-BUFTYPE-GSM:CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_GSM</code></span></p></td>
+<td><p><a name="GST-BUFTYPE-GSM--CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_GSM</code></span></p></td>
 <td> samples in gsm format
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-BUFTYPE-IEC958:CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_IEC958</code></span></p></td>
+<td><p><a name="GST-BUFTYPE-IEC958--CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_IEC958</code></span></p></td>
 <td> samples in IEC958 frames (e.g. AC3)
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-BUFTYPE-AC3:CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_AC3</code></span></p></td>
+<td><p><a name="GST-BUFTYPE-AC3--CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_AC3</code></span></p></td>
 <td> samples in AC3 format
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-BUFTYPE-EAC3:CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_EAC3</code></span></p></td>
+<td><p><a name="GST-BUFTYPE-EAC3--CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_EAC3</code></span></p></td>
 <td> samples in EAC3 format
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-BUFTYPE-DTS:CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_DTS</code></span></p></td>
+<td><p><a name="GST-BUFTYPE-DTS--CAPS"></a><span class="term"><code class="literal">GST_BUFTYPE_DTS</code></span></p></td>
 <td> samples in DTS format
 </td>
 </tr>
@@ -875,76 +896,64 @@ The format of the samples in the ringbuffer.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-RING-BUFFER-BROADCAST:CAPS"></a><h3>GST_RING_BUFFER_BROADCAST()</h3>
+<a name="GST-RING-BUFFER-BROADCAST--CAPS"></a><h3>GST_RING_BUFFER_BROADCAST()</h3>
 <pre class="programlisting">#define GST_RING_BUFFER_BROADCAST(buf)(g_cond_broadcast (GST_RING_BUFFER_GET_COND (buf)))
 </pre>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>buf</code></em> :</span></p></td>
 <td>
-
-
 </td>
 </tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-RING-BUFFER-GET-COND:CAPS"></a><h3>GST_RING_BUFFER_GET_COND()</h3>
+<a name="GST-RING-BUFFER-GET-COND--CAPS"></a><h3>GST_RING_BUFFER_GET_COND()</h3>
 <pre class="programlisting">#define GST_RING_BUFFER_GET_COND(buf) (((GstRingBuffer *)buf)-&gt;cond)
 </pre>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>buf</code></em> :</span></p></td>
 <td>
-
-
 </td>
 </tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-RING-BUFFER-SIGNAL:CAPS"></a><h3>GST_RING_BUFFER_SIGNAL()</h3>
+<a name="GST-RING-BUFFER-SIGNAL--CAPS"></a><h3>GST_RING_BUFFER_SIGNAL()</h3>
 <pre class="programlisting">#define GST_RING_BUFFER_SIGNAL(buf)   (g_cond_signal (GST_RING_BUFFER_GET_COND (buf)))
 </pre>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>buf</code></em> :</span></p></td>
 <td>
-
-
 </td>
 </tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-RING-BUFFER-WAIT:CAPS"></a><h3>GST_RING_BUFFER_WAIT()</h3>
+<a name="GST-RING-BUFFER-WAIT--CAPS"></a><h3>GST_RING_BUFFER_WAIT()</h3>
 <pre class="programlisting">#define GST_RING_BUFFER_WAIT(buf)     (g_cond_wait (GST_RING_BUFFER_GET_COND (buf), GST_OBJECT_GET_LOCK (buf)))
 </pre>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>buf</code></em> :</span></p></td>
 <td>
-
-
 </td>
 </tr></tbody>
 </table></div>
@@ -964,7 +973,6 @@ will be called every time a segment has been written to a device.
 <p>
 MT safe.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -996,10 +1004,11 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
                                                          <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GstRingBufferSpec" title="GstRingBufferSpec">GstRingBufferSpec</a> *spec);</pre>
 <p>
 Allocate the resources for the ringbuffer. This function fills
-in the data pointer of the ring buffer with a valid <span class="type">GstBuffer</span>
+in the data pointer of the ring buffer with a valid <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+><span class="type">GstBuffer</span></a>
 to which samples can be written.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1033,7 +1042,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <p>
 Free the resources of the ringbuffer.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1062,7 +1070,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <p>
 Check if the ringbuffer is acquired and ready to use.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1092,9 +1099,11 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> active);</pre>
 <p>
-Activate <em class="parameter"><code>buf</code></em> to start or stop pulling data.</p>
+Activate <em class="parameter"><code>buf</code></em> to start or stop pulling data.
+</p>
 <p>
-
+MT safe.</p>
+<p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1118,10 +1127,7 @@ FALSE on error.
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.22.
-
-MT safe.
-</p>
+<p class="since">Since 0.10.22.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -1130,9 +1136,11 @@ MT safe.
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            gst_ring_buffer_is_active           (<a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer">GstRingBuffer</a> *buf);</pre>
 <p>
-Check if <em class="parameter"><code>buf</code></em> is activated.</p>
+Check if <em class="parameter"><code>buf</code></em> is activated.
+</p>
 <p>
-
+MT safe.</p>
+<p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1150,10 +1158,7 @@ Check if <em class="parameter"><code>buf</code></em> is activated.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.22.
-
-MT safe.
-</p>
+<p class="since">Since 0.10.22.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -1164,7 +1169,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <p>
 Start processing samples from the ringbuffer.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1193,7 +1197,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <p>
 Pause processing samples from the ringbuffer.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1222,7 +1225,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <p>
 Stop processing samples from the ringbuffer.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1262,7 +1264,6 @@ ringbuffer to the device but still not played.
 For capture ringbuffers this is the amount of samples in the device that are
 not yet transfered to the ringbuffer.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1293,7 +1294,6 @@ Get the number of samples that were processed by the ringbuffer
 since it was last started. This does not include the number of samples not
 yet processed (see <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#gst-ring-buffer-delay" title="gst_ring_buffer_delay ()"><code class="function">gst_ring_buffer_delay()</code></a>).</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1332,7 +1332,6 @@ This function will also clear the buffer with silence.
 <p>
 MT safe.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1369,7 +1368,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 Same as <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#gst-ring-buffer-commit-full" title="gst_ring_buffer_commit_full ()"><code class="function">gst_ring_buffer_commit_full()</code></a> but with a in_samples and out_samples
 equal to <em class="parameter"><code>len</code></em>, ignoring accum.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1447,9 +1445,11 @@ although it is recommended for optimal performance.
 <em class="parameter"><code>accum</code></em> will hold a temporary accumulator used in rate conversion and should be
 set to 0 when this function is first called. In case the commit operation is
 interrupted, one can resume the processing by passing the previously returned
-<em class="parameter"><code>accum</code></em> value back to this function.</p>
+<em class="parameter"><code>accum</code></em> value back to this function.
+</p>
 <p>
-
+MT safe.</p>
+<p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1494,10 +1494,7 @@ with a flush or stop.
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.11.
-
-MT safe.
-</p>
+<p class="since">Since 0.10.11.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -1505,11 +1502,15 @@ MT safe.
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            gst_ring_buffer_convert             (<a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer">GstRingBuffer</a> *buf,
-                                                         GstFormat src_fmt,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstFormat.html#GstFormat"
+>GstFormat</a> src_fmt,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
 >gint64</a> src_val,
-                                                         GstFormat dest_fmt,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstFormat.html#GstFormat"
+>GstFormat</a> dest_fmt,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
 >gint64</a> *dest_val);</pre>
@@ -1517,7 +1518,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
 Convert <em class="parameter"><code>src_val</code></em> in <em class="parameter"><code>src_fmt</code></em> to the equivalent value in <em class="parameter"><code>dest_fmt</code></em>. The result
 will be put in <em class="parameter"><code>dest_val</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1555,8 +1555,7 @@ will be put in <em class="parameter"><code>dest_val</code></em>.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.22.
-</p>
+<p class="since">Since 0.10.22.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -1577,7 +1576,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 Returns a pointer to memory where the data from segment <em class="parameter"><code>segment</code></em>
 can be found. This function is mostly used by subclasses.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1637,7 +1635,6 @@ the ringbuffer.
 <em class="parameter"><code>len</code></em> should not be a multiple of the segment size of the ringbuffer
 although it is recommended.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1687,7 +1684,6 @@ This function is used by subclasses.
 <p>
 MT safe.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1715,7 +1711,6 @@ Fill the ringbuffer with silence.
 <p>
 MT safe.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1740,7 +1735,6 @@ Subclasses should call this function to notify the fact that
 <p>
 MT safe.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1768,7 +1762,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 Close the audio device associated with the ring buffer. The ring buffer
 should already have been released via <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#gst-ring-buffer-release" title="gst_ring_buffer_release ()"><code class="function">gst_ring_buffer_release()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1799,7 +1792,6 @@ Open the audio device associated with the ring buffer. Does not perform any
 setup on the device. You must open the device before acquiring the ring
 buffer.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1828,7 +1820,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <p>
 Checks the status of the device associated with the ring buffer.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1857,9 +1848,11 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> allowed);</pre>
 <p>
 Tell the ringbuffer that it is allowed to start playback when
-the ringbuffer is filled with samples.</p>
+the ringbuffer is filled with samples. 
+</p>
 <p>
-
+MT safe.</p>
+<p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1876,10 +1869,7 @@ the ringbuffer is filled with samples.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.6
-
-MT safe.
-</p>
+<p class="since">Since 0.10.6</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -1887,11 +1877,12 @@ MT safe.
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            gst_ring_buffer_parse_caps          (<a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GstRingBufferSpec" title="GstRingBufferSpec">GstRingBufferSpec</a> *spec,
-                                                         GstCaps *caps);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *caps);</pre>
 <p>
 Parse <em class="parameter"><code>caps</code></em> into <em class="parameter"><code>spec</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1903,7 +1894,9 @@ Parse <em class="parameter"><code>caps</code></em> into <em class="parameter"><c
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
-<td> a <span class="type">GstCaps</span>
+<td> a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a>
 </td>
 </tr>
 <tr>
@@ -1927,7 +1920,6 @@ Set the ringbuffer to flushing mode or normal mode.
 <p>
 MT safe.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1948,11 +1940,11 @@ MT safe.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstringbuffer.see-also"></a><h2>See Also</h2>
-<a class="link" href="gst-plugins-base-libs-gstbaseaudiosink.html#GstBaseAudioSink"><span class="type">GstBaseAudioSink</span></a>, <a class="link" href="gst-plugins-base-libs-gstaudiosink.html#GstAudioSink"><span class="type">GstAudioSink</span></a>
+#GstBaseAudioSink, <a class="link" href="gst-plugins-base-libs-gstaudiosink.html#GstAudioSink"><span class="type">GstAudioSink</span></a>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

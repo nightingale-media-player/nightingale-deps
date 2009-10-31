@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="prev" href="gst-plugins-base-libs-gstpbutilsdescriptions.html" title="gstpbutilsdescriptions">
 <link rel="next" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html" title="gstpbutilsinstallplugins">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -37,9 +37,11 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstpbutilsmissingplugins.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstpbutilsmissingplugins.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gstpbutilsmissingplugins.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstpbutilsmissingplugins.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstpbutilsmissingplugins"></a><div class="titlepage"></div>
@@ -58,59 +60,93 @@
 
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-installer-detail" title="gst_missing_plugin_message_get_installer_detail ()">gst_missing_plugin_message_get_installer_detail</a>
-                                                        (GstMessage *msg);
+>gchar</a> *             <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-installer-detail" title="gst_missing_plugin_message_get_installer_detail ()">gst_missing_plugin_message_get_installer_detail</a>
+                                                        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+>GstMessage</a> *msg);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-description" title="gst_missing_plugin_message_get_description ()">gst_missing_plugin_message_get_description</a>
-                                                        (GstMessage *msg);
+>gchar</a> *             <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-description" title="gst_missing_plugin_message_get_description ()">gst_missing_plugin_message_get_description</a>
+                                                        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+>GstMessage</a> *msg);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-is-missing-plugin-message" title="gst_is_missing_plugin_message ()">gst_is_missing_plugin_message</a>       (GstMessage *msg);
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-is-missing-plugin-message" title="gst_is_missing_plugin_message ()">gst_is_missing_plugin_message</a>       (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+>GstMessage</a> *msg);
 
-GstMessage*         <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-decoder-message-new" title="gst_missing_decoder_message_new ()">gst_missing_decoder_message_new</a>     (GstElement *element,
-                                                         const GstCaps *decode_caps);
-GstMessage*         <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-encoder-message-new" title="gst_missing_encoder_message_new ()">gst_missing_encoder_message_new</a>     (GstElement *element,
-                                                         const GstCaps *encode_caps);
-GstMessage*         <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-uri-source-message-new" title="gst_missing_uri_source_message_new ()">gst_missing_uri_source_message_new</a>  (GstElement *element,
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+>GstMessage</a> *        <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-decoder-message-new" title="gst_missing_decoder_message_new ()">gst_missing_decoder_message_new</a>     (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *decode_caps);
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+>GstMessage</a> *        <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-encoder-message-new" title="gst_missing_encoder_message_new ()">gst_missing_encoder_message_new</a>     (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *encode_caps);
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+>GstMessage</a> *        <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-uri-source-message-new" title="gst_missing_uri_source_message_new ()">gst_missing_uri_source_message_new</a>  (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
                                                          const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *protocol);
-GstMessage*         <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-uri-sink-message-new" title="gst_missing_uri_sink_message_new ()">gst_missing_uri_sink_message_new</a>    (GstElement *element,
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+>GstMessage</a> *        <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-uri-sink-message-new" title="gst_missing_uri_sink_message_new ()">gst_missing_uri_sink_message_new</a>    (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
                                                          const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *protocol);
-GstMessage*         <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-element-message-new" title="gst_missing_element_message_new ()">gst_missing_element_message_new</a>     (GstElement *element,
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+>GstMessage</a> *        <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-element-message-new" title="gst_missing_element_message_new ()">gst_missing_element_message_new</a>     (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
                                                          const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *factory_name);
 
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-uri-source-installer-detail-new" title="gst_missing_uri_source_installer_detail_new ()">gst_missing_uri_source_installer_detail_new</a>
+>gchar</a> *             <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-uri-source-installer-detail-new" title="gst_missing_uri_source_installer_detail_new ()">gst_missing_uri_source_installer_detail_new</a>
                                                         (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *protocol);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-uri-sink-installer-detail-new" title="gst_missing_uri_sink_installer_detail_new ()">gst_missing_uri_sink_installer_detail_new</a>
+>gchar</a> *             <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-uri-sink-installer-detail-new" title="gst_missing_uri_sink_installer_detail_new ()">gst_missing_uri_sink_installer_detail_new</a>
                                                         (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *protocol);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-element-installer-detail-new" title="gst_missing_element_installer_detail_new ()">gst_missing_element_installer_detail_new</a>
+>gchar</a> *             <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-element-installer-detail-new" title="gst_missing_element_installer_detail_new ()">gst_missing_element_installer_detail_new</a>
                                                         (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *factory_name);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-decoder-installer-detail-new" title="gst_missing_decoder_installer_detail_new ()">gst_missing_decoder_installer_detail_new</a>
-                                                        (const GstCaps *decode_caps);
+>gchar</a> *             <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-decoder-installer-detail-new" title="gst_missing_decoder_installer_detail_new ()">gst_missing_decoder_installer_detail_new</a>
+                                                        (const <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *decode_caps);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-encoder-installer-detail-new" title="gst_missing_encoder_installer_detail_new ()">gst_missing_encoder_installer_detail_new</a>
-                                                        (const GstCaps *encode_caps);
+>gchar</a> *             <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-encoder-installer-detail-new" title="gst_missing_encoder_installer_detail_new ()">gst_missing_encoder_installer_detail_new</a>
+                                                        (const <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *encode_caps);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -118,7 +154,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id3193444"></a><p>
+<a name="id2932106"></a><p>
 Functions to create, recognise and parse missing-plugins messages for
 applications and elements.
 </p>
@@ -147,7 +183,6 @@ above.
 </p>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -156,8 +191,10 @@ above.
 <a name="gst-missing-plugin-message-get-installer-detail"></a><h3>gst_missing_plugin_message_get_installer_detail ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              gst_missing_plugin_message_get_installer_detail
-                                                        (GstMessage *msg);</pre>
+>gchar</a> *             gst_missing_plugin_message_get_installer_detail
+                                                        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+>GstMessage</a> *msg);</pre>
 <p>
 Returns an opaque string containing all the details about the missing
 element to be passed to an external installer called via
@@ -167,14 +204,15 @@ element to be passed to an external installer called via
 This function is mainly for applications that call external plugin
 installation mechanisms using one of the two above-mentioned functions.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
-<td> a missing-plugin <span class="type">GstMessage</span> of type <span class="type">GST_MESSAGE_ELEMENT</span>
+<td> a missing-plugin <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+><span class="type">GstMessage</span></a> of type <span class="type">GST_MESSAGE_ELEMENT</span>
 </td>
 </tr>
 <tr>
@@ -193,8 +231,10 @@ href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
 <a name="gst-missing-plugin-message-get-description"></a><h3>gst_missing_plugin_message_get_description ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              gst_missing_plugin_message_get_description
-                                                        (GstMessage *msg);</pre>
+>gchar</a> *             gst_missing_plugin_message_get_description
+                                                        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+>GstMessage</a> *msg);</pre>
 <p>
 Returns a localised string describing the missing feature, for use in
 error dialogs and the like. Should never return NULL unless <em class="parameter"><code>msg</code></em> is not
@@ -205,14 +245,15 @@ This function is mainly for applications that need a human-readable string
 describing a missing plugin, given a previously collected missing-plugin
 message</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
-<td> a missing-plugin <span class="type">GstMessage</span> of type <span class="type">GST_MESSAGE_ELEMENT</span>
+<td> a missing-plugin <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+><span class="type">GstMessage</span></a> of type <span class="type">GST_MESSAGE_ELEMENT</span>
 </td>
 </tr>
 <tr>
@@ -231,26 +272,29 @@ href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
 <a name="gst-is-missing-plugin-message"></a><h3>gst_is_missing_plugin_message ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_is_missing_plugin_message       (GstMessage *msg);</pre>
+>gboolean</a>            gst_is_missing_plugin_message       (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+>GstMessage</a> *msg);</pre>
 <p>
 Checks whether <em class="parameter"><code>msg</code></em> is a missing plugins message.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
-<td> a <span class="type">GstMessage</span>
+<td> a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+><span class="type">GstMessage</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> if <em class="parameter"><code>msg</code></em> is a missing-plugins message, otherwise <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE--CAPS"
 ><code class="literal">FALSE</code></a>.
 </td>
 </tr>
@@ -260,21 +304,28 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-missing-decoder-message-new"></a><h3>gst_missing_decoder_message_new ()</h3>
-<pre class="programlisting">GstMessage*         gst_missing_decoder_message_new     (GstElement *element,
-                                                         const GstCaps *decode_caps);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+>GstMessage</a> *        gst_missing_decoder_message_new     (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *decode_caps);</pre>
 <p>
 Creates a missing-plugin message for <em class="parameter"><code>element</code></em> to notify the application
 that a decoder element for a particular set of (fixed) caps is missing.
 This function is mainly for use in plugins.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
-<td> the <span class="type">GstElement</span> posting the message
+<td> the <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a> posting the message
 </td>
 </tr>
 <tr>
@@ -284,7 +335,9 @@ This function is mainly for use in plugins.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a new <span class="type">GstMessage</span>, or NULL on error
+<td> a new <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+><span class="type">GstMessage</span></a>, or NULL on error
 </td>
 </tr>
 </tbody>
@@ -293,21 +346,28 @@ This function is mainly for use in plugins.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-missing-encoder-message-new"></a><h3>gst_missing_encoder_message_new ()</h3>
-<pre class="programlisting">GstMessage*         gst_missing_encoder_message_new     (GstElement *element,
-                                                         const GstCaps *encode_caps);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+>GstMessage</a> *        gst_missing_encoder_message_new     (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *encode_caps);</pre>
 <p>
 Creates a missing-plugin message for <em class="parameter"><code>element</code></em> to notify the application
 that an encoder element for a particular set of (fixed) caps is missing.
 This function is mainly for use in plugins.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
-<td> the <span class="type">GstElement</span> posting the message
+<td> the <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a> posting the message
 </td>
 </tr>
 <tr>
@@ -317,7 +377,9 @@ This function is mainly for use in plugins.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a new <span class="type">GstMessage</span>, or NULL on error
+<td> a new <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+><span class="type">GstMessage</span></a>, or NULL on error
 </td>
 </tr>
 </tbody>
@@ -326,7 +388,11 @@ This function is mainly for use in plugins.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-missing-uri-source-message-new"></a><h3>gst_missing_uri_source_message_new ()</h3>
-<pre class="programlisting">GstMessage*         gst_missing_uri_source_message_new  (GstElement *element,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+>GstMessage</a> *        gst_missing_uri_source_message_new  (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
                                                          const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *protocol);</pre>
@@ -335,14 +401,15 @@ Creates a missing-plugin message for <em class="parameter"><code>element</code><
 that a source element for a particular URI protocol is missing. This
 function is mainly for use in plugins.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
-<td> the <span class="type">GstElement</span> posting the message
+<td> the <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a> posting the message
 </td>
 </tr>
 <tr>
@@ -353,7 +420,9 @@ function is mainly for use in plugins.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a new <span class="type">GstMessage</span>, or NULL on error
+<td> a new <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+><span class="type">GstMessage</span></a>, or NULL on error
 </td>
 </tr>
 </tbody>
@@ -362,7 +431,11 @@ function is mainly for use in plugins.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-missing-uri-sink-message-new"></a><h3>gst_missing_uri_sink_message_new ()</h3>
-<pre class="programlisting">GstMessage*         gst_missing_uri_sink_message_new    (GstElement *element,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+>GstMessage</a> *        gst_missing_uri_sink_message_new    (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
                                                          const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *protocol);</pre>
@@ -371,14 +444,15 @@ Creates a missing-plugin message for <em class="parameter"><code>element</code><
 that a sink element for a particular URI protocol is missing. This
 function is mainly for use in plugins.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
-<td> the <span class="type">GstElement</span> posting the message
+<td> the <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a> posting the message
 </td>
 </tr>
 <tr>
@@ -389,7 +463,9 @@ function is mainly for use in plugins.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a new <span class="type">GstMessage</span>, or NULL on error
+<td> a new <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+><span class="type">GstMessage</span></a>, or NULL on error
 </td>
 </tr>
 </tbody>
@@ -398,7 +474,11 @@ function is mainly for use in plugins.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-missing-element-message-new"></a><h3>gst_missing_element_message_new ()</h3>
-<pre class="programlisting">GstMessage*         gst_missing_element_message_new     (GstElement *element,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+>GstMessage</a> *        gst_missing_element_message_new     (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
                                                          const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *factory_name);</pre>
@@ -407,14 +487,15 @@ Creates a missing-plugin message for <em class="parameter"><code>element</code><
 that a certain required element is missing. This function is mainly for
 use in plugins.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
-<td> the <span class="type">GstElement</span> posting the message
+<td> the <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a> posting the message
 </td>
 </tr>
 <tr>
@@ -425,7 +506,9 @@ use in plugins.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a new <span class="type">GstMessage</span>, or NULL on error
+<td> a new <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
+><span class="type">GstMessage</span></a>, or NULL on error
 </td>
 </tr>
 </tbody>
@@ -436,7 +519,7 @@ use in plugins.</p>
 <a name="gst-missing-uri-source-installer-detail-new"></a><h3>gst_missing_uri_source_installer_detail_new ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              gst_missing_uri_source_installer_detail_new
+>gchar</a> *             gst_missing_uri_source_installer_detail_new
                                                         (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *protocol);</pre>
@@ -451,7 +534,6 @@ installation mechanisms using one of the two above-mentioned functions in
 the case where the application knows exactly what kind of plugin it is
 missing.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -473,15 +555,14 @@ href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.15
-</p>
+<p class="since">Since 0.10.15</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-missing-uri-sink-installer-detail-new"></a><h3>gst_missing_uri_sink_installer_detail_new ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              gst_missing_uri_sink_installer_detail_new
+>gchar</a> *             gst_missing_uri_sink_installer_detail_new
                                                         (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *protocol);</pre>
@@ -496,7 +577,6 @@ installation mechanisms using one of the two above-mentioned functions in
 the case where the application knows exactly what kind of plugin it is
 missing.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -518,15 +598,14 @@ href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.15
-</p>
+<p class="since">Since 0.10.15</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-missing-element-installer-detail-new"></a><h3>gst_missing_element_installer_detail_new ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              gst_missing_element_installer_detail_new
+>gchar</a> *             gst_missing_element_installer_detail_new
                                                         (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *factory_name);</pre>
@@ -541,7 +620,6 @@ installation mechanisms using one of the two above-mentioned functions in
 the case where the application knows exactly what kind of plugin it is
 missing.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -563,16 +641,17 @@ href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.15
-</p>
+<p class="since">Since 0.10.15</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-missing-decoder-installer-detail-new"></a><h3>gst_missing_decoder_installer_detail_new ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              gst_missing_decoder_installer_detail_new
-                                                        (const GstCaps *decode_caps);</pre>
+>gchar</a> *             gst_missing_decoder_installer_detail_new
+                                                        (const <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *decode_caps);</pre>
 <p>
 Returns an opaque string containing all the details about the missing
 element to be passed to an external installer called via
@@ -584,7 +663,6 @@ installation mechanisms using one of the two above-mentioned functions in
 the case where the application knows exactly what kind of plugin it is
 missing.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -605,16 +683,17 @@ href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.15
-</p>
+<p class="since">Since 0.10.15</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-missing-encoder-installer-detail-new"></a><h3>gst_missing_encoder_installer_detail_new ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              gst_missing_encoder_installer_detail_new
-                                                        (const GstCaps *encode_caps);</pre>
+>gchar</a> *             gst_missing_encoder_installer_detail_new
+                                                        (const <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *encode_caps);</pre>
 <p>
 Returns an opaque string containing all the details about the missing
 element to be passed to an external installer called via
@@ -626,7 +705,6 @@ installation mechanisms using one of the two above-mentioned functions in
 the case where the application knows exactly what kind of plugin it is
 missing.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -647,13 +725,12 @@ href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.15
-</p>
+<p class="since">Since 0.10.15</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

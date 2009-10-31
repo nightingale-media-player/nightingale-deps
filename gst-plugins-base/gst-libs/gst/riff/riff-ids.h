@@ -33,6 +33,7 @@ G_BEGIN_DECLS
 
 /* tags */
 #define GST_RIFF_TAG_RIFF GST_MAKE_FOURCC ('R','I','F','F')
+#define GST_RIFF_TAG_AVF0 GST_MAKE_FOURCC ('A','V','F','0')
 #define GST_RIFF_TAG_RIFX GST_MAKE_FOURCC ('R','I','F','X')
 #define GST_RIFF_TAG_LIST GST_MAKE_FOURCC ('L','I','S','T')
 #define GST_RIFF_TAG_avih GST_MAKE_FOURCC ('a','v','i','h')
@@ -326,6 +327,8 @@ typedef struct _gst_riff_strf_auds {       /* == WaveHeader (?) */
 #define GST_RIFF_WAVE_FORMAT_RT24           (0x0052)
 #define GST_RIFF_WAVE_FORMAT_PAC            (0x0053)
 #define GST_RIFF_WAVE_FORMAT_MPEGL3         (0x0055)
+#define GST_RIFF_WAVE_FORMAT_AMR_NB         (0x0057)
+#define GST_RIFF_WAVE_FORMAT_AMR_WB         (0x0058)
 #define GST_RIFF_WAVE_FORMAT_LUCENT_G723    (0x0059)
 #define GST_RIFF_WAVE_FORMAT_CIRRUS         (0x0060)
 #define GST_RIFF_WAVE_FORMAT_ADPCM_IMA_DK4  (0x0061)  /* not official */
@@ -339,7 +342,11 @@ typedef struct _gst_riff_strf_auds {       /* == WaveHeader (?) */
 #define GST_RIFF_WAVE_FORMAT_G726_ADPCM     (0x0064)
 #define GST_RIFF_WAVE_FORMAT_G722_ADPCM     (0x0065)
 #define GST_RIFF_WAVE_FORMAT_DSAT_DISPLAY   (0x0067)
+#define GST_RIFF_WAVE_FORMAT_ADPCM_IMA_WAV (0x0069)
+/* FIXME: where are these from? are they used at all? */
+#if 0
 #define GST_RIFF_WAVE_FORMAT_VOXWARE_BYTE_ALIGNED (0x0069)
+#endif
 #define GST_RIFF_WAVE_FORMAT_VOXWARE_AC8    (0x0070)
 #define GST_RIFF_WAVE_FORMAT_VOXWARE_AC10   (0x0071)
 #define GST_RIFF_WAVE_FORMAT_VOXWARE_AC16   (0x0072)
@@ -401,8 +408,10 @@ typedef struct _gst_riff_strf_auds {       /* == WaveHeader (?) */
 #define GST_RIFF_WAVE_FORMAT_IPI_RPELP      (0x0251)
 #define GST_RIFF_WAVE_FORMAT_CS2            (0x0260)
 #define GST_RIFF_WAVE_FORMAT_SONY_ATRAC3    (0x0270)
+#define GST_RIFF_WAVE_FORMAT_SIREN          (0x028E)
 #define GST_RIFF_WAVE_FORMAT_FM_TOWNS_SND   (0x0300)
 #define GST_RIFF_WAVE_FORMAT_BTV_DIGITAL    (0x0400)
+#define GST_RIFF_WAVE_FORMAT_IMC            (0x0401)
 #define GST_RIFF_WAVE_FORMAT_QDESIGN_MUSIC  (0x0450)
 #define GST_RIFF_WAVE_FORMAT_VME_VMPCM      (0x0680)
 #define GST_RIFF_WAVE_FORMAT_TPC            (0x0681)
@@ -416,14 +425,19 @@ typedef struct _gst_riff_strf_auds {       /* == WaveHeader (?) */
 #define GST_RIFF_WAVE_FORMAT_SOUNDSPACE_MUSICOMPRESS (0x1500)
 #define GST_RIFF_WAVE_FORMAT_A52            (0x2000)
 #define GST_RIFF_WAVE_FORMAT_DTS            (0x2001)
+#define GST_RIFF_WAVE_FORMAT_SONIC          (0x2048)
+#define GST_RIFF_WAVE_FORMAT_SONIC_LS       (0x2048)
+#define GST_RIFF_WAVE_FORMAT_AAC_AC         (0x4143)
 #define GST_RIFF_WAVE_FORMAT_VORBIS1        (0x674f)
 #define GST_RIFF_WAVE_FORMAT_VORBIS2        (0x6750)
 #define GST_RIFF_WAVE_FORMAT_VORBIS3        (0x6751)
 #define GST_RIFF_WAVE_FORMAT_VORBIS1PLUS    (0x676f)
 #define GST_RIFF_WAVE_FORMAT_VORBIS2PLUS    (0x6770)
 #define GST_RIFF_WAVE_FORMAT_VORBIS3PLUS    (0x6771)
+#define GST_RIFF_WAVE_FORMAT_AAC_pm         (0x706d)
 #define GST_RIFF_WAVE_FORMAT_GSM_AMR_CBR    (0x7A21)
 #define GST_RIFF_WAVE_FORMAT_GSM_AMR_VBR    (0x7A22)
+#define GST_RIFF_WAVE_FORMAT_FLAC           (0xF1AC)
 #define GST_RIFF_WAVE_FORMAT_EXTENSIBLE     (0xFFFE)
   guint16 channels;
   guint32 rate;

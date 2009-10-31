@@ -36,7 +36,6 @@ GST_ELEMENT_DETAILS ("StreamSelector",
     "Generic",
     "N-to-1 input stream_selectoring",
     "Julien Moutte <julien@moutte.net>\n"
-    "Ronald S. Bultje <rbultje@ronald.bitfreak.net>\n"
     "Jan Schmidt <thaytan@mad.scientist.com>\n"
     "Wim Taymans <wim.taymans@gmail.com>");
 
@@ -111,7 +110,6 @@ static GstPadClass *selector_pad_parent_class = NULL;
 static void gst_selector_pad_reset (GstSelectorPad * pad);
 static gboolean gst_selector_pad_event (GstPad * pad, GstEvent * event);
 static GstCaps *gst_selector_pad_getcaps (GstPad * pad);
-static GList *gst_selector_pad_get_linked_pads (GstPad * pad);
 static GstFlowReturn gst_selector_pad_chain (GstPad * pad, GstBuffer * buf);
 static GstFlowReturn gst_selector_pad_bufferalloc (GstPad * pad,
     guint64 offset, guint size, GstCaps * caps, GstBuffer ** buf);
@@ -143,7 +141,7 @@ gst_selector_pad_get_type (void)
     };
 
     selector_pad_type =
-        g_type_register_static (GST_TYPE_PAD, "GstSelectorPad",
+        g_type_register_static (GST_TYPE_PAD, "GstPlaybinSelectorPad",
         &selector_pad_info, 0);
   }
   return selector_pad_type;
@@ -228,23 +226,6 @@ gst_selector_pad_reset (GstSelectorPad * pad)
   pad->active = FALSE;
   pad->eos = FALSE;
   gst_segment_init (&pad->segment, GST_FORMAT_UNDEFINED);
-}
-
-/* strictly get the linked pad from the sinkpad. If the pad is active we return
- * the srcpad else we return NULL */
-static GList *
-gst_selector_pad_get_linked_pads (GstPad * pad)
-{
-  GstPad *otherpad;
-
-  otherpad = gst_stream_selector_get_linked_pad (pad, TRUE);
-  if (!otherpad)
-    return NULL;
-
-  /* need to drop the ref, internal linked pads is not MT safe */
-  gst_object_unref (otherpad);
-
-  return g_list_append (NULL, otherpad);
 }
 
 static gboolean
@@ -437,7 +418,6 @@ ignore:
 }
 
 static void gst_stream_selector_dispose (GObject * object);
-static void gst_stream_selector_finalize (GObject * object);
 
 static void gst_stream_selector_init (GstStreamSelector * sel);
 static void gst_stream_selector_base_init (GstStreamSelectorClass * klass);
@@ -452,7 +432,7 @@ static GstPad *gst_stream_selector_request_new_pad (GstElement * element,
     GstPadTemplate * templ, const gchar * unused);
 static void gst_stream_selector_release_pad (GstElement * element,
     GstPad * pad);
-static GList *gst_stream_selector_get_linked_pads (GstPad * pad);
+static GstIterator *gst_stream_selector_pad_iterate_linked_pads (GstPad * pad);
 static GstCaps *gst_stream_selector_getcaps (GstPad * pad);
 
 static GstElementClass *parent_class = NULL;
@@ -505,7 +485,6 @@ gst_stream_selector_class_init (GstStreamSelectorClass * klass)
   parent_class = g_type_class_peek_parent (klass);
 
   gobject_class->dispose = gst_stream_selector_dispose;
-  gobject_class->finalize = gst_stream_selector_finalize;
 
   gobject_class->set_property =
       GST_DEBUG_FUNCPTR (gst_stream_selector_set_property);
@@ -529,8 +508,8 @@ static void
 gst_stream_selector_init (GstStreamSelector * sel)
 {
   sel->srcpad = gst_pad_new ("src", GST_PAD_SRC);
-  gst_pad_set_internal_link_function (sel->srcpad,
-      GST_DEBUG_FUNCPTR (gst_stream_selector_get_linked_pads));
+  gst_pad_set_iterate_internal_links_function (sel->srcpad,
+      GST_DEBUG_FUNCPTR (gst_stream_selector_pad_iterate_linked_pads));
   gst_pad_set_getcaps_function (sel->srcpad,
       GST_DEBUG_FUNCPTR (gst_stream_selector_getcaps));
   gst_element_add_pad (GST_ELEMENT (sel), sel->srcpad);
@@ -551,16 +530,6 @@ gst_stream_selector_dispose (GObject * object)
   }
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
-}
-
-static void
-gst_stream_selector_finalize (GObject * object)
-{
-  GstStreamSelector *sel;
-
-  sel = GST_STREAM_SELECTOR (object);
-
-  G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
@@ -679,10 +648,7 @@ gst_stream_selector_getcaps (GstPad * pad)
 static gboolean
 gst_stream_selector_is_active_sinkpad (GstStreamSelector * sel, GstPad * pad)
 {
-  GstSelectorPad *selpad;
   gboolean res;
-
-  selpad = GST_SELECTOR_PAD_CAST (pad);
 
   GST_OBJECT_LOCK (sel);
   res = (pad == sel->active_sinkpad);
@@ -713,17 +679,23 @@ gst_stream_selector_activate_sinkpad (GstStreamSelector * sel, GstPad * pad)
   return active_sinkpad;
 }
 
-static GList *
-gst_stream_selector_get_linked_pads (GstPad * pad)
+static GstIterator *
+gst_stream_selector_pad_iterate_linked_pads (GstPad * pad)
 {
+  GstStreamSelector *sel = GST_STREAM_SELECTOR (gst_pad_get_parent (pad));
   GstPad *otherpad;
+  GstIterator *ret;
 
   otherpad = gst_stream_selector_get_linked_pad (pad, TRUE);
-  if (!otherpad)
-    return NULL;
-  /* need to drop the ref, internal linked pads is not MT safe */
-  gst_object_unref (otherpad);
-  return g_list_append (NULL, otherpad);
+  ret =
+      gst_iterator_new_single (GST_TYPE_PAD, otherpad,
+      (GstCopyFunction) gst_object_ref, (GFreeFunc) gst_object_unref);
+
+  if (otherpad)
+    gst_object_unref (otherpad);
+  gst_object_unref (sel);
+
+  return ret;
 }
 
 static GstPad *
@@ -751,8 +723,8 @@ gst_stream_selector_request_new_pad (GstElement * element,
       GST_DEBUG_FUNCPTR (gst_selector_pad_getcaps));
   gst_pad_set_chain_function (sinkpad,
       GST_DEBUG_FUNCPTR (gst_selector_pad_chain));
-  gst_pad_set_internal_link_function (sinkpad,
-      GST_DEBUG_FUNCPTR (gst_selector_pad_get_linked_pads));
+  gst_pad_set_iterate_internal_links_function (sinkpad,
+      GST_DEBUG_FUNCPTR (gst_stream_selector_pad_iterate_linked_pads));
   gst_pad_set_bufferalloc_function (sinkpad,
       GST_DEBUG_FUNCPTR (gst_selector_pad_bufferalloc));
 

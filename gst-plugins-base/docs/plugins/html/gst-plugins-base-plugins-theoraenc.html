@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="prev" href="gst-plugins-base-plugins-theoradec.html" title="theoradec">
 <link rel="next" href="gst-plugins-base-plugins-theoraparse.html" title="theoraparse">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
@@ -23,13 +23,17 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-plugins-theoraparse.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-theoraenc.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-theoraenc.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-theoraenc.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-theoraenc.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-plugins-theoraenc.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-theoraenc.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-theoraenc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-theoraenc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-theoraenc.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-plugins-theoraenc"></a><div class="titlepage"></div>
@@ -53,10 +57,22 @@ enum                <a class="link" href="gst-plugins-base-plugins-theoraenc.htm
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
                +----GstTheoraEnc
 </pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-theoraenc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstTheoraEnc implements
+ <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPreset.html"
+>GstPreset</a>.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-theoraenc.properties"></a><h2>Properties</h2>
@@ -95,6 +111,9 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
   "<a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--sharpness" title='The "sharpness" property'>sharpness</a>"                <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--speed-level" title='The "speed-level" property'>speed-level</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -124,7 +143,7 @@ variable bitrate (VBR) stream.
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2796559"></a><h3>Example pipeline</h3>
+<a name="id2637236"></a><h3>Example pipeline</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch -v videotestsrc num-buffers=1000 ! theoraenc ! oggmux ! filesink location=videotestsrc.ogg
 </pre></div> This example pipeline will encode a test video source to theora muxed in an
@@ -138,7 +157,7 @@ Last reviewed on 2006-03-01 (0.10.4)</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2796587"></a><h3>Element Information</h3>
+<a name="id2637265"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -161,7 +180,7 @@ Last reviewed on 2006-03-01 (0.10.4)</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2796650"></a><h3>Element Pads</h3>
+<a name="id2637328"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -179,7 +198,78 @@ Last reviewed on 2006-03-01 (0.10.4)</p>
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw-yuv, format=(fourcc)I420, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ]</td>
+<td>video/x-raw-yuv, format=(fourcc){ I420, Y42B, Y444 }, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-theora</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2637471"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-theora.html#plugin-theora">theora</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Wim Taymans &lt;wim@fluendo.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Encoder/Video</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2637534"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw-yuv, format=(fourcc){ I420, Y42B, Y444 }, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ]</td>
 </tr>
 </tbody>
 </table></div>
@@ -207,7 +297,6 @@ Last reviewed on 2006-03-01 (0.10.4)</p>
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -218,7 +307,6 @@ Last reviewed on 2006-03-01 (0.10.4)</p>
 <p>
 Opaque data structure.</p>
 <p>
-
 </p>
 </div>
 <hr>
@@ -235,23 +323,22 @@ GstTheoraEncBorderMode;
 <p>
 Border color to add when sizes not multiple of 16.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="BORDER-NONE:CAPS"></a><span class="term"><code class="literal">BORDER_NONE</code></span></p></td>
+<td><p><a name="BORDER-NONE--CAPS"></a><span class="term"><code class="literal">BORDER_NONE</code></span></p></td>
 <td> no border
 </td>
 </tr>
 <tr>
-<td><p><a name="BORDER-BLACK:CAPS"></a><span class="term"><code class="literal">BORDER_BLACK</code></span></p></td>
+<td><p><a name="BORDER-BLACK--CAPS"></a><span class="term"><code class="literal">BORDER_BLACK</code></span></p></td>
 <td> black border
 </td>
 </tr>
 <tr>
-<td><p><a name="BORDER-MIRROR:CAPS"></a><span class="term"><code class="literal">BORDER_MIRROR</code></span></p></td>
+<td><p><a name="BORDER-MIRROR--CAPS"></a><span class="term"><code class="literal">BORDER_MIRROR</code></span></p></td>
 <td> Mirror image in border
 </td>
 </tr>
@@ -374,6 +461,16 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <p>Allowed values: [0,2]</p>
 <p>Default value: 0</p>
 </div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTheoraEnc--speed-level"></a><h3>The <code class="literal">"speed-level"</code> property</h3>
+<pre class="programlisting">  "speed-level"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Controls the amount of motion vector searching done while encoding.  This property requires libtheora version &gt;= 1.0.</p>
+<p>Allowed values: [0,2]</p>
+<p>Default value: 1</p>
+</div>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-theoraenc.see-also"></a><h2>See Also</h2>
@@ -382,6 +479,6 @@ theoradec, oggmux
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

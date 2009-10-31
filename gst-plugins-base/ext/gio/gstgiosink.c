@@ -1,7 +1,7 @@
 /* GStreamer
  *
  * Copyright (C) 2007 Rene Stadler <mail@renestadler.de>
- * Copyright (C) 2007 Sebastian Dröge <slomo@circular-chaos.org>
+ * Copyright (C) 2007-2009 Sebastian Dröge <sebastian.droege@collabora.co.uk>
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -27,6 +27,23 @@
  * by an URI. This location can be specified using any protocol supported by
  * the GIO library or it's VFS backends. Common protocols are 'file', 'ftp',
  * or 'smb'.
+ *
+ * If the URI or #GFile already exists giosink will post a message of
+ * type %GST_MESSAGE_ELEMENT with name "file-exists" on the bus. The message
+ * also contains the #GFile and the corresponding URI.
+ * Applications can use the "file-exists" message to notify the user about
+ * the problem and to set a different target location or to remove the
+ * existing file. Note that right after the "file-exists" message a normal
+ * error message is posted on the bus which should be ignored if "file-exists"
+ * is handled by the application, for example by calling
+ * gst_bus_set_flushing(bus, TRUE) after the "file-exists" message was
+ * received and gst_bus_set_flushing(bus, FALSE) after the problem is
+ * resolved.
+ *
+ * Similar to the "file-exist" message a "not-mounted" message is posted
+ * on the bus if the target location is not mounted yet and needs to be
+ * mounted. This message can be used by application to mount the location
+ * and retry after the location was mounted successfully.
  * 
  * <refsect2>
  * <title>Example pipelines</title>
@@ -70,9 +87,9 @@ enum
 
 enum
 {
-  ARG_0,
-  ARG_LOCATION,
-  ARG_FILE
+  PROP_0,
+  PROP_LOCATION,
+  PROP_FILE
 };
 
 GST_BOILERPLATE_FULL (GstGioSink, gst_gio_sink, GstGioBaseSink,
@@ -83,7 +100,7 @@ static void gst_gio_sink_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_gio_sink_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
-static gboolean gst_gio_sink_start (GstBaseSink * base_sink);
+static GOutputStream *gst_gio_sink_get_stream (GstGioBaseSink * base_sink);
 
 static void
 gst_gio_sink_base_init (gpointer gclass)
@@ -96,25 +113,20 @@ gst_gio_sink_base_init (gpointer gclass)
       "Sink/File",
       "Write to any GIO-supported location",
       "Ren\xc3\xa9 Stadler <mail@renestadler.de>, "
-      "Sebastian Dröge <slomo@circular-chaos.org>");
+      "Sebastian Dröge <sebastian.droege@collabora.co.uk>");
 }
 
 static void
 gst_gio_sink_class_init (GstGioSinkClass * klass)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
-  GstBaseSinkClass *gstbasesink_class;
-
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
-  gstbasesink_class = (GstBaseSinkClass *) klass;
+  GObjectClass *gobject_class = (GObjectClass *) klass;
+  GstGioBaseSinkClass *gstgiobasesink_class = (GstGioBaseSinkClass *) klass;
 
   gobject_class->finalize = gst_gio_sink_finalize;
   gobject_class->set_property = gst_gio_sink_set_property;
   gobject_class->get_property = gst_gio_sink_get_property;
 
-  g_object_class_install_property (gobject_class, ARG_LOCATION,
+  g_object_class_install_property (gobject_class, PROP_LOCATION,
       g_param_spec_string ("location", "Location", "URI location to write to",
           NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
@@ -125,11 +137,13 @@ gst_gio_sink_class_init (GstGioSinkClass * klass)
    * 
    * Since: 0.10.20
    **/
-  g_object_class_install_property (gobject_class, ARG_FILE,
+  g_object_class_install_property (gobject_class, PROP_FILE,
       g_param_spec_object ("file", "File", "GFile to write to",
           G_TYPE_FILE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-  gstbasesink_class->start = GST_DEBUG_FUNCPTR (gst_gio_sink_start);
+  gstgiobasesink_class->get_stream =
+      GST_DEBUG_FUNCPTR (gst_gio_sink_get_stream);
+  gstgiobasesink_class->close_on_stop = TRUE;
 }
 
 static void
@@ -157,7 +171,7 @@ gst_gio_sink_set_property (GObject * object, guint prop_id,
   GstGioSink *sink = GST_GIO_SINK (object);
 
   switch (prop_id) {
-    case ARG_LOCATION:{
+    case PROP_LOCATION:{
       const gchar *uri = NULL;
 
       if (GST_STATE (sink) == GST_STATE_PLAYING ||
@@ -185,7 +199,7 @@ gst_gio_sink_set_property (GObject * object, guint prop_id,
       GST_OBJECT_UNLOCK (GST_OBJECT (sink));
       break;
     }
-    case ARG_FILE:
+    case PROP_FILE:
       if (GST_STATE (sink) == GST_STATE_PLAYING ||
           GST_STATE (sink) == GST_STATE_PAUSED) {
         GST_WARNING
@@ -214,7 +228,7 @@ gst_gio_sink_get_property (GObject * object, guint prop_id,
   GstGioSink *sink = GST_GIO_SINK (object);
 
   switch (prop_id) {
-    case ARG_LOCATION:{
+    case PROP_LOCATION:{
       gchar *uri;
 
       GST_OBJECT_LOCK (GST_OBJECT (sink));
@@ -228,7 +242,7 @@ gst_gio_sink_get_property (GObject * object, guint prop_id,
       GST_OBJECT_UNLOCK (GST_OBJECT (sink));
       break;
     }
-    case ARG_FILE:
+    case PROP_FILE:
       GST_OBJECT_LOCK (GST_OBJECT (sink));
       g_value_set_object (value, sink->file);
       GST_OBJECT_UNLOCK (GST_OBJECT (sink));
@@ -239,20 +253,19 @@ gst_gio_sink_get_property (GObject * object, guint prop_id,
   }
 }
 
-static gboolean
-gst_gio_sink_start (GstBaseSink * base_sink)
+static GOutputStream *
+gst_gio_sink_get_stream (GstGioBaseSink * bsink)
 {
-  GstGioSink *sink = GST_GIO_SINK (base_sink);
+  GstGioSink *sink = GST_GIO_SINK (bsink);
   GOutputStream *stream;
   GCancellable *cancel = GST_GIO_BASE_SINK (sink)->cancel;
-  gboolean success;
   GError *err = NULL;
   gchar *uri;
 
   if (sink->file == NULL) {
     GST_ELEMENT_ERROR (sink, RESOURCE, OPEN_WRITE, (NULL),
         ("No location or GFile given"));
-    return FALSE;
+    return NULL;
   }
 
   uri = g_file_get_uri (sink->file);
@@ -263,32 +276,44 @@ gst_gio_sink_start (GstBaseSink * base_sink)
       G_OUTPUT_STREAM (g_file_create (sink->file, G_FILE_CREATE_NONE, cancel,
           &err));
 
-  success = (stream != NULL);
+  if (!stream) {
+    if (!gst_gio_error (sink, "g_file_create", &err, NULL)) {
+      /*if (GST_GIO_ERROR_MATCHES (err, EXISTS)) */
+      /* FIXME: Retry with replace if overwrite == TRUE! */
 
-  if (!success && !gst_gio_error (sink, "g_file_create", &err, NULL)) {
+      if (GST_GIO_ERROR_MATCHES (err, NOT_FOUND)) {
+        GST_ELEMENT_ERROR (sink, RESOURCE, NOT_FOUND, (NULL),
+            ("Could not open location %s for writing: %s", uri, err->message));
+      } else if (GST_GIO_ERROR_MATCHES (err, EXISTS)) {
+        gst_element_post_message (GST_ELEMENT_CAST (sink),
+            gst_message_new_element (GST_OBJECT_CAST (sink),
+                gst_structure_new ("file-exists", "file", G_TYPE_FILE,
+                    sink->file, "uri", G_TYPE_STRING, uri, NULL)));
 
-    /*if (GST_GIO_ERROR_MATCHES (err, EXISTS)) */
-    /* FIXME: Retry with replace if overwrite == TRUE! */
+        GST_ELEMENT_ERROR (sink, RESOURCE, OPEN_WRITE, (NULL),
+            ("Location %s already exists: %s", uri, err->message));
+      } else if (GST_GIO_ERROR_MATCHES (err, NOT_MOUNTED)) {
+        gst_element_post_message (GST_ELEMENT_CAST (sink),
+            gst_message_new_element (GST_OBJECT_CAST (sink),
+                gst_structure_new ("not-mounted", "file", G_TYPE_FILE,
+                    sink->file, "uri", G_TYPE_STRING, uri, NULL)));
 
-    if (GST_GIO_ERROR_MATCHES (err, NOT_FOUND))
-      GST_ELEMENT_ERROR (sink, RESOURCE, NOT_FOUND, (NULL),
-          ("Could not open location %s for writing: %s", uri, err->message));
-    else
-      GST_ELEMENT_ERROR (sink, RESOURCE, OPEN_READ, (NULL),
-          ("Could not open location %s for writing: %s", uri, err->message));
+        GST_ELEMENT_ERROR (sink, RESOURCE, OPEN_WRITE, (NULL),
+            ("Location %s not mounted: %s", uri, err->message));
+      } else {
+        GST_ELEMENT_ERROR (sink, RESOURCE, OPEN_WRITE, (NULL),
+            ("Could not open location %s for writing: %s", uri, err->message));
+      }
 
+      g_clear_error (&err);
+    }
     g_free (uri);
-    g_clear_error (&err);
+    return NULL;
   }
-
-  if (!success)
-    return FALSE;
 
   GST_DEBUG_OBJECT (sink, "opened location %s", uri);
 
   g_free (uri);
 
-  gst_gio_base_sink_set_stream (GST_GIO_BASE_SINK (sink), stream);
-
-  return GST_BASE_SINK_CLASS (parent_class)->start (base_sink);
+  return stream;
 }

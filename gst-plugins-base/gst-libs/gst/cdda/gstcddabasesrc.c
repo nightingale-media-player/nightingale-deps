@@ -284,7 +284,44 @@ gst_cdda_base_src_finalize (GObject * obj)
   g_free (cddasrc->uri);
   g_free (cddasrc->device);
 
+  if (cddasrc->index)
+    gst_object_unref (cddasrc->index);
+
   G_OBJECT_CLASS (parent_class)->finalize (obj);
+}
+
+static void
+gst_cdda_base_src_set_device (GstCddaBaseSrc * src, const gchar * device)
+{
+  if (src->device)
+    g_free (src->device);
+  src->device = NULL;
+
+  if (!device)
+    return;
+
+  /* skip multiple slashes */
+  while (*device == '/' && *(device + 1) == '/')
+    device++;
+
+#ifdef __sun
+  /*
+   * On Solaris, /dev/rdsk is used for accessing the CD device, but some
+   * applications pass in /dev/dsk, so correct.
+   */
+  if (strncmp (device, "/dev/dsk", 8) == 0) {
+    gchar *rdsk_value;
+    rdsk_value = g_strdup_printf ("/dev/rdsk%s", device + 8);
+    src->device = g_strdup (rdsk_value);
+    g_free (rdsk_value);
+  } else {
+#endif
+    src->device = g_strdup (device);
+#ifdef __sun
+  }
+#endif
+
+  src->uri_track = 1;
 }
 
 static void
@@ -303,12 +340,7 @@ gst_cdda_base_src_set_property (GObject * object, guint prop_id,
     case ARG_DEVICE:{
       const gchar *dev = g_value_get_string (value);
 
-      g_free (src->device);
-      if (dev && *dev) {
-        src->device = g_strdup (dev);
-      } else {
-        src->device = NULL;
-      }
+      gst_cdda_base_src_set_device (src, dev);
       break;
     }
     case ARG_TRACK:{
@@ -907,7 +939,7 @@ gst_cdda_base_src_uri_get_uri (GstURIHandler * handler)
   g_free (src->uri);
 
   if (GST_OBJECT_FLAG_IS_SET (GST_BASE_SRC (src), GST_BASE_SRC_STARTED)) {
-    src->uri = g_strdup_printf ("cdda://%d", src->uri_track);
+    src->uri = g_strdup_printf ("cdda://%s#%d", src->device, src->uri_track);
   } else {
     src->uri = g_strdup ("cdda://1");
   }
@@ -920,31 +952,49 @@ gst_cdda_base_src_uri_get_uri (GstURIHandler * handler)
 /* Note: gst_element_make_from_uri() might call us with just 'cdda://' as
  * URI and expects us to return TRUE then (and this might be in any state) */
 
+/* We accept URIs of the format cdda://(device#track)|(track) */
+
 static gboolean
 gst_cdda_base_src_uri_set_uri (GstURIHandler * handler, const gchar * uri)
 {
   GstCddaBaseSrc *src = GST_CDDA_BASE_SRC (handler);
-  gchar *protocol, *location;
+  gchar *protocol;
+  const gchar *location;
+  gchar *track_number;
 
   GST_OBJECT_LOCK (src);
 
   protocol = gst_uri_get_protocol (uri);
-  if (!protocol || strcmp (protocol, "cdda") != 0) {
+  if (!protocol || g_ascii_strcasecmp (protocol, "cdda") != 0) {
     g_free (protocol);
     goto failed;
   }
   g_free (protocol);
 
-  location = gst_uri_get_location (uri);
-  if (location == NULL || *location == '\0') {
-    g_free (location);
-    location = g_strdup ("1");
+  location = uri + 7;
+  track_number = g_strrstr (location, "#");
+  src->uri_track = 0;
+  /* FIXME 0.11: ignore URI fragments that look like device paths for
+   * the benefit of rhythmbox and possibly other applications.
+   */
+  if (track_number && track_number[1] != '/') {
+    gchar *device, *nuri = g_strdup (uri);
+
+    track_number = nuri + (track_number - uri);
+    *track_number = '\0';
+    device = gst_uri_get_location (nuri);
+    gst_cdda_base_src_set_device (src, device);
+    g_free (device);
+    src->uri_track = strtol (track_number + 1, NULL, 10);
+    g_free (nuri);
+  } else {
+    if (*location == '\0')
+      src->uri_track = 1;
+    else
+      src->uri_track = strtol (location, NULL, 10);
   }
 
-  src->uri_track = strtol (location, NULL, 10);
-  g_free (location);
-
-  if (src->uri_track == 0)
+  if (src->uri_track < 1)
     goto failed;
 
   if (src->num_tracks > 0
@@ -1081,36 +1131,35 @@ cddb_sum (gint n)
   return ret;
 }
 
-#include "sha1.h"
-
 static void
 gst_cddabasesrc_calculate_musicbrainz_discid (GstCddaBaseSrc * src)
 {
   GString *s;
-  SHA_INFO sha;
+  GChecksum *sha;
   guchar digest[20];
   gchar *ptr;
   gchar tmp[9];
   gulong i;
   guint leadout_sector;
+  gsize digest_len;
 
   s = g_string_new (NULL);
 
   leadout_sector = src->tracks[src->num_tracks - 1].end + 1 + CD_MSF_OFFSET;
 
   /* generate SHA digest */
-  sha_init (&sha);
+  sha = g_checksum_new (G_CHECKSUM_SHA1);
   g_snprintf (tmp, sizeof (tmp), "%02X", src->tracks[0].num);
   g_string_append_printf (s, "%02X", src->tracks[0].num);
-  sha_update (&sha, (SHA_BYTE *) tmp, 2);
+  g_checksum_update (sha, (guchar *) tmp, 2);
 
   g_snprintf (tmp, sizeof (tmp), "%02X", src->tracks[src->num_tracks - 1].num);
   g_string_append_printf (s, " %02X", src->tracks[src->num_tracks - 1].num);
-  sha_update (&sha, (SHA_BYTE *) tmp, 2);
+  g_checksum_update (sha, (guchar *) tmp, 2);
 
   g_snprintf (tmp, sizeof (tmp), "%08X", leadout_sector);
   g_string_append_printf (s, " %08X", leadout_sector);
-  sha_update (&sha, (SHA_BYTE *) tmp, 8);
+  g_checksum_update (sha, (guchar *) tmp, 8);
 
   for (i = 0; i < 99; i++) {
     if (i < src->num_tracks) {
@@ -1118,15 +1167,17 @@ gst_cddabasesrc_calculate_musicbrainz_discid (GstCddaBaseSrc * src)
 
       g_snprintf (tmp, sizeof (tmp), "%08X", frame_offset);
       g_string_append_printf (s, " %08X", frame_offset);
-      sha_update (&sha, (SHA_BYTE *) tmp, 8);
+      g_checksum_update (sha, (guchar *) tmp, 8);
     } else {
-      sha_update (&sha, (SHA_BYTE *) "00000000", 8);
+      g_checksum_update (sha, (guchar *) "00000000", 8);
     }
   }
-  sha_final (digest, &sha);
+  digest_len = 20;
+  g_checksum_get_digest (sha, (guint8 *) & digest, &digest_len);
 
   /* re-encode to base64 */
-  ptr = g_base64_encode (digest, 20);
+  ptr = g_base64_encode (digest, digest_len);
+  g_checksum_free (sha);
   i = strlen (ptr);
 
   g_assert (i < sizeof (src->mb_discid) + 1);
@@ -1271,7 +1322,7 @@ gst_cdda_base_src_add_tags (GstCddaBaseSrc * src)
         GST_FORMAT_TIME, &duration);
 
     gst_tag_list_add (src->tracks[i].tags,
-        GST_TAG_MERGE_REPLACE_ALL,
+        GST_TAG_MERGE_REPLACE,
         GST_TAG_TRACK_NUMBER, i + 1,
         GST_TAG_TRACK_COUNT, src->num_tracks, GST_TAG_DURATION, duration, NULL);
   }
@@ -1285,7 +1336,7 @@ gst_cdda_base_src_add_tags (GstCddaBaseSrc * src)
    * gst_tag_list_get_value_index() rather than use tag names incl.
    * the track number ?? *////////////////////////////////////////
 
-  gst_tag_list_add (src->tags, GST_TAG_MERGE_REPLACE_ALL,
+  gst_tag_list_add (src->tags, GST_TAG_MERGE_REPLACE,
       GST_TAG_TRACK_COUNT, src->num_tracks, NULL);
 #if 0
   for (i = 0; i < src->num_tracks; ++i) {
@@ -1319,12 +1370,26 @@ static void
 gst_cdda_base_src_set_index (GstElement * element, GstIndex * index)
 {
   GstCddaBaseSrc *src = GST_CDDA_BASE_SRC (element);
+  GstIndex *old;
 
+  GST_OBJECT_LOCK (element);
+  old = src->index;
+  if (old == index) {
+    GST_OBJECT_UNLOCK (element);
+    return;
+  }
+  if (index)
+    gst_object_ref (index);
   src->index = index;
+  GST_OBJECT_UNLOCK (element);
+  if (old)
+    gst_object_unref (old);
 
-  gst_index_get_writer_id (index, GST_OBJECT (src), &src->index_id);
-  gst_index_add_format (index, src->index_id, track_format);
-  gst_index_add_format (index, src->index_id, sector_format);
+  if (index) {
+    gst_index_get_writer_id (index, GST_OBJECT (src), &src->index_id);
+    gst_index_add_format (index, src->index_id, track_format);
+    gst_index_add_format (index, src->index_id, sector_format);
+  }
 }
 
 
@@ -1332,8 +1397,14 @@ static GstIndex *
 gst_cdda_base_src_get_index (GstElement * element)
 {
   GstCddaBaseSrc *src = GST_CDDA_BASE_SRC (element);
+  GstIndex *index;
 
-  return src->index;
+  GST_OBJECT_LOCK (element);
+  if ((index = src->index))
+    gst_object_ref (index);
+  GST_OBJECT_UNLOCK (element);
+
+  return index;
 }
 
 static gint

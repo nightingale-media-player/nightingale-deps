@@ -19,9 +19,18 @@
  */
 
 /**
- * SECTION:tcpclientsrc
+ * SECTION:element-tcpclientsrc
  * @see_also: #tcpclientsink
  *
+ * <refsect2>
+ * <title>Example launch line</title>
+ * |[
+ * # server:
+ * nc -l -p 3000
+ * # client:
+ * gst-launch tcpclientsrc protocol=none port=3000 ! fdsink fd=2
+ * ]| everything you type in the server is shown on the client
+ * </refsect2>
  */
 
 #ifdef HAVE_CONFIG_H
@@ -142,8 +151,6 @@ gst_tcp_client_src_init (GstTCPClientSrc * this, GstTCPClientSrcClass * g_class)
   this->sock_fd.fd = -1;
   this->protocol = GST_TCP_PROTOCOL_NONE;
   this->caps = NULL;
-
-  gst_base_src_set_live (GST_BASE_SRC (this), TRUE);
 
   GST_OBJECT_FLAG_UNSET (this, GST_TCP_CLIENT_SRC_OPEN);
 }

@@ -99,11 +99,15 @@ struct _GstTheoraEnc
   GstClockTime expected_ts;
   gboolean next_discont;
 
+  gboolean force_keyframe;
+
   guint packetno;
   guint64 bytes_out;
   guint64 granulepos_offset;
   guint64 timestamp_offset;
   gint granule_shift;  
+
+  gint speed_level;
 };
 
 struct _GstTheoraEncClass

@@ -17,6 +17,7 @@ libgstplaybin_la_SOURCES = \
 	gstplaybasebin.c \
 	gstplay-enum.c \
 	gstfactorylists.c \
+	gstinputselector.c \
 	gstscreenshot.c \
 	gststreaminfo.c \
 	gststreamselector.c
@@ -26,6 +27,7 @@ libgstplaybin_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)
 libgstplaybin_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstplaybin_la_LIBADD = \
 	$(top_builddir)/gst-libs/gst/pbutils/libgstpbutils-@GST_MAJORMINOR@.la \
+	$(top_builddir)/gst-libs/gst/interfaces/libgstinterfaces-@GST_MAJORMINOR@.la \
 	$(GST_LIBS)
 libgstplaybin_la_LIBTOOLFLAGS = --tag=disable-static
 
@@ -59,6 +61,7 @@ noinst_HEADERS = \
 	gstplaysink.h \
 	gststreaminfo.h \
 	gstfactorylists.h \
+	gstinputselector.h \
 	gstplay-enum.h \
 	gstscreenshot.h \
 	gststreamselector.h

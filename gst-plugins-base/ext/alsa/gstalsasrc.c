@@ -201,15 +201,11 @@ static void
 gst_alsasrc_class_init (GstAlsaSrcClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseSrcClass *gstbasesrc_class;
-  GstBaseAudioSrcClass *gstbaseaudiosrc_class;
   GstAudioSrcClass *gstaudiosrc_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
   gstbasesrc_class = (GstBaseSrcClass *) klass;
-  gstbaseaudiosrc_class = (GstBaseAudioSrcClass *) klass;
   gstaudiosrc_class = (GstAudioSrcClass *) klass;
 
   gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_alsasrc_finalize);
@@ -741,6 +737,7 @@ gst_alsasrc_close (GstAudioSrc * asrc)
   GstAlsaSrc *alsa = GST_ALSA_SRC (asrc);
 
   snd_pcm_close (alsa->handle);
+  alsa->handle = NULL;
 
   if (alsa->mixer) {
     gst_alsa_mixer_free (alsa->mixer);

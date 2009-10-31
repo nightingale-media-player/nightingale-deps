@@ -209,6 +209,7 @@ struct _GstMultiFdSink {
   GstTCPProtocol protocol;
   guint mtu;
   gint qos_dscp;
+  gboolean handle_read;
 
   GArray *bufqueue;     /* global queue of buffers */
 
@@ -233,6 +234,8 @@ struct _GstMultiFdSink {
   gint   bytes_min;	/* min number of bytes to queue */
   gint64 time_min;	/* min time to queue */
   gint   buffers_min;   /* min number of buffers to queue */
+
+  gboolean resend_streamheader; /* resend streamheader if it changes */
 
   /* stats */
   gint buffers_queued;  /* number of queued buffers */

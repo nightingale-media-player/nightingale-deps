@@ -284,7 +284,7 @@
 <RANGE>[0,10]</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Volume</NICK>
-<BLURB>volume factor.</BLURB>
+<BLURB>volume factor, 1.0=100%.</BLURB>
 <DEFAULT>1</DEFAULT>
 </ARG>
 
@@ -839,6 +839,36 @@
 </ARG>
 
 <ARG>
+<NAME>GstMultiFdSink::handle-read</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Handle Read</NICK>
+<BLURB>Handle client reads and discard the data.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMultiFdSink::resend-streamheader</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Resend streamheader</NICK>
+<BLURB>Resend the streamheader if it changes in the caps.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMultiFdSink::num-fds</NAME>
+<TYPE>guint</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Number of fds</NICK>
+<BLURB>The current number of client file descriptors.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstDecodeBin::threaded</NAME>
 <TYPE>gboolean</TYPE>
 <RANGE></RANGE>
@@ -1169,6 +1199,16 @@
 </ARG>
 
 <ARG>
+<NAME>GstTheoraEnc::speed-level</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,2]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Speed level</NICK>
+<BLURB>Controls the amount of motion vector searching done while encoding.  This property requires libtheora version >= 1.0.</BLURB>
+<DEFAULT>1</DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstGnomeVFSSrc::handle</NAME>
 <TYPE>GnomeVFSHandle*</TYPE>
 <RANGE></RANGE>
@@ -1459,6 +1499,16 @@
 </ARG>
 
 <ARG>
+<NAME>GstVideoRate::skip-to-first</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Skip to first buffer</NICK>
+<BLURB>Don't produce buffers before the first one we receive.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstAudioRate::add</NAME>
 <TYPE>guint64</TYPE>
 <RANGE></RANGE>
@@ -1516,6 +1566,56 @@
 <NICK>font description</NICK>
 <BLURB>Pango font description of font to be used for rendering. See documentation of pango_font_description_from_string for syntax.</BLURB>
 <DEFAULT>""</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTextRender::halignment</NAME>
+<TYPE>GstTextRenderHAlign</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>horizontal alignment</NICK>
+<BLURB>Horizontal alignment of the text.</BLURB>
+<DEFAULT>center</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTextRender::line-alignment</NAME>
+<TYPE>GstTextRenderLineAlign</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>line alignment</NICK>
+<BLURB>Alignment of text lines relative to each other.</BLURB>
+<DEFAULT>center</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTextRender::valignment</NAME>
+<TYPE>GstTextRenderVAlign</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>vertical alignment</NICK>
+<BLURB>Vertical alignment of the text.</BLURB>
+<DEFAULT>baseline</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTextRender::xpad</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 0</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>horizontal paddding</NICK>
+<BLURB>Horizontal paddding when using left/right alignment.</BLURB>
+<DEFAULT>25</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTextRender::ypad</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 0</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>vertical padding</NICK>
+<BLURB>Vertical padding when using top/bottom alignment.</BLURB>
+<DEFAULT>25</DEFAULT>
 </ARG>
 
 <ARG>
@@ -1666,6 +1766,26 @@
 <NICK>Wait Text</NICK>
 <BLURB>Whether to wait for subtitles.</BLURB>
 <DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTextOverlay::auto-resize</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>auto resize</NICK>
+<BLURB>Automatically adjust font size to screen-size.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTextOverlay::vertical-render</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>vertical render</NICK>
+<BLURB>Vertical Render.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
 </ARG>
 
 <ARG>
@@ -1879,6 +1999,16 @@
 </ARG>
 
 <ARG>
+<NAME>GstCdParanoiaSrc::cache-size</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= -1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Cache size</NICK>
+<BLURB>Set CD cache size to n sectors (-1 = auto).</BLURB>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstSubParse::subtitle-encoding</NAME>
 <TYPE>gchar*</TYPE>
 <RANGE></RANGE>
@@ -1971,7 +2101,7 @@
 <ARG>
 <NAME>GstURIDecodeBin::connection-speed</NAME>
 <TYPE>guint</TYPE>
-<RANGE></RANGE>
+<RANGE><= 4294967</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Connection Speed</NICK>
 <BLURB>Network connection speed in kbps (0 = unknown).</BLURB>
@@ -2014,7 +2144,7 @@
 <RANGE>>= -1</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Buffer duration (ns)</NICK>
-<BLURB>Buffer duration when buffering network streams.</BLURB>
+<BLURB>Buffer duration when buffering network streams (-1 queue2 default value).</BLURB>
 <DEFAULT>-1</DEFAULT>
 </ARG>
 
@@ -2024,8 +2154,18 @@
 <RANGE>>= -1</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Buffer size (bytes)</NICK>
-<BLURB>Buffer size when buffering network streams.</BLURB>
+<BLURB>Buffer size when buffering network streams (-1 queue2 default value).</BLURB>
 <DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstURIDecodeBin::download</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Download</NICK>
+<BLURB>Attempt download buffering when buffering network streams.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
 </ARG>
 
 <ARG>
@@ -2114,7 +2254,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Temporary File Location</NICK>
-<BLURB>Location of a temporary file to store data in.</BLURB>
+<BLURB>Location to store temporary files in (Deprecated: Only read this property, use temp-tmpl to configure the name template).</BLURB>
 <DEFAULT>NULL</DEFAULT>
 </ARG>
 
@@ -2136,6 +2276,16 @@
 <NICK>Use Rate Estimate</NICK>
 <BLURB>Estimate the bitrate of the stream to calculate time level.</BLURB>
 <DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstQueue2::temp-template</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Temporary File Template</NICK>
+<BLURB>File template to store temporary files in, should contain directory and XXXXXX. (NULL == disabled).</BLURB>
+<DEFAULT>NULL</DEFAULT>
 </ARG>
 
 <ARG>
@@ -2171,7 +2321,7 @@
 <ARG>
 <NAME>GstPlayBin2::connection-speed</NAME>
 <TYPE>guint</TYPE>
-<RANGE></RANGE>
+<RANGE><= 4294967</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Connection Speed</NICK>
 <BLURB>Network connection speed in kbps (0 = unknown).</BLURB>
@@ -2269,16 +2419,6 @@
 </ARG>
 
 <ARG>
-<NAME>GstPlayBin2::stream-info</NAME>
-<TYPE>GValueArray*</TYPE>
-<RANGE></RANGE>
-<FLAGS>r</FLAGS>
-<NICK>StreamInfo GValueArray</NICK>
-<BLURB>value array of streaminfo.</BLURB>
-<DEFAULT></DEFAULT>
-</ARG>
-
-<ARG>
 <NAME>GstPlayBin2::subtitle-encoding</NAME>
 <TYPE>gchar*</TYPE>
 <RANGE></RANGE>
@@ -2344,7 +2484,7 @@
 <RANGE>[0,10]</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Volume</NICK>
-<BLURB>The audio volume.</BLURB>
+<BLURB>The audio volume, 1.0=100%.</BLURB>
 <DEFAULT>1</DEFAULT>
 </ARG>
 
@@ -2376,6 +2516,26 @@
 <NICK>Buffer size (bytes)</NICK>
 <BLURB>Buffer size when buffering network streams.</BLURB>
 <DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstPlayBin2::text-sink</NAME>
+<TYPE>GstElement*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Text plugin</NICK>
+<BLURB>the text output element to use (NULL = default textoverlay).</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstPlayBin2::subpic-sink</NAME>
+<TYPE>GstElement*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Subpicture plugin</NICK>
+<BLURB>the subpicture output element to use (NULL = default dvdspu).</BLURB>
+<DEFAULT></DEFAULT>
 </ARG>
 
 <ARG>
@@ -2746,5 +2906,95 @@
 <NICK>Stream Type</NICK>
 <BLURB>the type of the stream.</BLURB>
 <DEFAULT>Stream</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAppSrc::emit-signals</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Emit signals</NICK>
+<BLURB>Emit new-preroll and new-buffer signals.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioResample::filter-length</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 0</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Filter length</NICK>
+<BLURB>Length of the resample filter.</BLURB>
+<DEFAULT>64</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioResample::quality</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,10]</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Quality</NICK>
+<BLURB>Resample quality with 0 being the lowest and 10 being the best.</BLURB>
+<DEFAULT>4</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAdder::caps</NAME>
+<TYPE>GstCaps*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Target caps</NICK>
+<BLURB>Set target format for mixing (NULL means ANY). Setting this property takes a reference to the supplied GstCaps object.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstPlaySink::flags</NAME>
+<TYPE>GstPlayFlags</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Flags</NICK>
+<BLURB>Flags to control behaviour.</BLURB>
+<DEFAULT>Render the video stream|Render the audio stream|Render subtitles|Use software volume</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstPlaySink::mute</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Mute</NICK>
+<BLURB>Mute the audio channel without changing the volume.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstPlaySink::subtitle-font-desc</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>w</FLAGS>
+<NICK>Subtitle font description</NICK>
+<BLURB>Pango font description of font to be used for subtitle rendering.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstPlaySink::vis-plugin</NAME>
+<TYPE>GstElement*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Vis plugin</NICK>
+<BLURB>the visualization element to use (NULL = default).</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstPlaySink::volume</NAME>
+<TYPE>gdouble</TYPE>
+<RANGE>[0,10]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Volume</NICK>
+<BLURB>The audio volume, 1.0=100%.</BLURB>
+<DEFAULT>1</DEFAULT>
 </ARG>
 

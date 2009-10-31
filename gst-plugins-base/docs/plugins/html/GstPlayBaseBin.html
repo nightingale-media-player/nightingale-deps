@@ -7,7 +7,7 @@
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch03.html" title="gst-plugins-base Classes">
 <link rel="prev" href="ch03.html" title="gst-plugins-base Classes">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
@@ -22,15 +22,17 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
 <td> </td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#GstPlayBaseBin.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#GstPlayBaseBin.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#GstPlayBaseBin.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#GstPlayBaseBin.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#GstPlayBaseBin.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#GstPlayBaseBin.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#GstPlayBaseBin.description" class="shortcut">Description</a>
+                 | 
+                <a href="#GstPlayBaseBin.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#GstPlayBaseBin.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#GstPlayBaseBin.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="GstPlayBaseBin"></a><div class="titlepage"></div>
@@ -53,10 +55,18 @@ struct              <a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin-str
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
-               +----GstBin
-                     +----GstPipeline
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstBin.html"
+>GstBin</a>
+                     +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPipeline.html"
+>GstPipeline</a>
                            +----GstPlayBaseBin
                                  +----<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin">GstPlayBin</a>
 </pre>
@@ -65,7 +75,9 @@ href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 <a name="GstPlayBaseBin.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstPlayBaseBin implements
- GstChildProxy.</p>
+ <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstChildProxy.html"
+>GstChildProxy</a>.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="GstPlayBaseBin.properties"></a><h2>Properties</h2>
@@ -94,7 +106,9 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
   "<a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--queue-threshold" title='The "queue-threshold" property'>queue-threshold</a>"          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
 >guint64</a>               : Read / Write
-  "<a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--source" title='The "source" property'>source</a>"                   GstElement*           : Read
+  "<a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--source" title='The "source" property'>source</a>"                   <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>*           : Read
   "<a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--stream-info" title='The "stream-info" property'>stream-info</a>"              <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>              : Read
@@ -115,7 +129,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <div class="refsect1" lang="en">
 <a name="GstPlayBaseBin.description"></a><h2>Description</h2>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -124,7 +137,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <a name="GstPlayBaseBin-struct"></a><h3>struct GstPlayBaseBin</h3>
 <pre class="programlisting">struct GstPlayBaseBin;</pre>
 <p>
-
 </p>
 </div>
 </div>
@@ -135,8 +147,19 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <pre class="programlisting">  "connection-speed"         <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write</pre>
-<p>Network connection speed in kbps (0 = unknown).</p>
+<p>
+Network connection speed in kbps (0 = unknown)
+</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Note</h3>
+<p>
+Since version 0.10.10 in <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a>, at 0.10.15 moved to <a class="link" href="GstPlayBaseBin.html" title="GstPlayBaseBin"><span class="type">GstPlayBaseBin</span></a>
+</p>
+</div>
+<p>
+</p>
 <p>Default value: 0</p>
+<p>Since 0.10.10</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -211,7 +234,9 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstPlayBaseBin--source"></a><h3>The <code class="literal">"source"</code> property</h3>
-<pre class="programlisting">  "source"                   GstElement*           : Read</pre>
+<pre class="programlisting">  "source"                   <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>*           : Read</pre>
 <p>Source element.</p>
 </div>
 <hr>
@@ -261,6 +286,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

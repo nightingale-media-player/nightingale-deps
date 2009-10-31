@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="prev" href="gst-plugins-base-plugins-uridecodebin.html" title="uridecodebin">
 <link rel="next" href="gst-plugins-base-plugins-videoscale.html" title="videoscale">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
@@ -23,13 +23,15 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-plugins-videoscale.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-videorate.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-videorate.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-videorate.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-videorate.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-plugins-videorate.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-videorate.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-videorate.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-videorate.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-plugins-videorate"></a><div class="titlepage"></div>
@@ -52,8 +54,12 @@
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
                +----GstVideoRate
 </pre>
 </div>
@@ -76,6 +82,9 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
 >guint64</a>               : Read
   "<a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--silent" title='The "silent" property'>silent</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--skip-to-first" title='The "skip-to-first" property'>skip-to-first</a>"            <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
 </pre>
@@ -125,7 +134,7 @@ applications should be prepared for this.
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2745788"></a><h3>Example pipelines</h3>
+<a name="id2596801"></a><h3>Example pipelines</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch -v filesrc location=videotestsrc.ogg ! oggdemux ! theoradec ! videorate ! video/x-raw-yuv,framerate=15/1 ! xvimagesink
 </pre></div> Decode an Ogg/Theora file and adjust the framerate to 15 fps before playing.
@@ -142,7 +151,7 @@ Last reviewed on 2006-09-02 (0.10.11)</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2800563"></a><h3>Element Information</h3>
+<a name="id2644469"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -165,7 +174,102 @@ Last reviewed on 2006-09-02 (0.10.11)</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2800625"></a><h3>Element Pads</h3>
+<a name="id2644532"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw-yuv</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-rgb</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> image/jpeg</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> image/png</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw-yuv</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-rgb</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> image/jpeg</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> image/png</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2644754"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-videorate.html#plugin-videorate">videorate</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Wim Taymans &lt;wim@fluendo.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Filter/Effect/Video</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2644816"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -235,7 +339,6 @@ Last reviewed on 2006-09-02 (0.10.11)</p>
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -246,7 +349,6 @@ Last reviewed on 2006-09-02 (0.10.11)</p>
 <p>
 Opaque data structure.</p>
 <p>
-
 </p>
 </div>
 </div>
@@ -306,10 +408,23 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <p>Don't emit notify for dropped and duplicated frames.</p>
 <p>Default value: TRUE</p>
 </div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoRate--skip-to-first"></a><h3>The <code class="literal">"skip-to-first"</code> property</h3>
+<pre class="programlisting">  "skip-to-first"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>
+Don't produce buffers before the first one we receive.</p>
+<p>
+</p>
+<p>Default value: FALSE</p>
+<p>Since 0.10.25</p>
+</div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

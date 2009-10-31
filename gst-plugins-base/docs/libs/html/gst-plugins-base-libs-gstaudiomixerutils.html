@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-audio.html" title="Audio Library">
 <link rel="prev" href="gst-plugins-base-libs-gstaudiofilter.html" title="gstaudiofilter">
 <link rel="next" href="gst-plugins-base-libs-gstbaseaudiosink.html" title="gstbaseaudiosink">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -37,9 +37,11 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstbaseaudiosink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstaudiomixerutils.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstaudiomixerutils.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gstaudiomixerutils.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstaudiomixerutils.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstaudiomixerutils"></a><div class="titlepage"></div>
@@ -59,13 +61,13 @@
 
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            (<a class="link" href="gst-plugins-base-libs-gstaudiomixerutils.html#GstAudioMixerFilterFunc" title="GstAudioMixerFilterFunc ()">*GstAudioMixerFilterFunc</a>)          (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer" title="GstMixer">GstMixer</a> *mixer,
+>gboolean</a>            (<a class="link" href="gst-plugins-base-libs-gstaudiomixerutils.html#GstAudioMixerFilterFunc" title="GstAudioMixerFilterFunc ()">*GstAudioMixerFilterFunc</a>)          (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> user_data);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a>*              <a class="link" href="gst-plugins-base-libs-gstaudiomixerutils.html#gst-audio-default-registry-mixer-filter" title="gst_audio_default_registry_mixer_filter ()">gst_audio_default_registry_mixer_filter</a>
+>GList</a> *             <a class="link" href="gst-plugins-base-libs-gstaudiomixerutils.html#gst-audio-default-registry-mixer-filter" title="gst_audio_default_registry_mixer_filter ()">gst_audio_default_registry_mixer_filter</a>
                                                         (<a class="link" href="gst-plugins-base-libs-gstaudiomixerutils.html#GstAudioMixerFilterFunc" title="GstAudioMixerFilterFunc ()">GstAudioMixerFilterFunc</a> filter_func,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
@@ -80,13 +82,12 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2995676"></a><p>
+<a name="id2703048"></a><p>
 Provides some utility functions to detect available audio mixers
 on the system.
 </p>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -95,7 +96,7 @@ on the system.
 <a name="GstAudioMixerFilterFunc"></a><h3>GstAudioMixerFilterFunc ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            (*GstAudioMixerFilterFunc)          (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer" title="GstMixer">GstMixer</a> *mixer,
+>gboolean</a>            (*GstAudioMixerFilterFunc)          (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> user_data);</pre>
@@ -106,14 +107,15 @@ When the mixer element is passed to the callback function, it is opened
 and in READY state. If you decide to keep the element, you need to set it
 back to NULL state yourself (unless you want to keep it opened of course).</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>mixer</code></em> :</span></p></td>
-<td> a <span class="type">GstElement</span> implementing the <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer" title="GstMixer"><span class="type">GstMixer</span></a> interface
+<td> a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a> implementing the <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> interface
 </td>
 </tr>
 <tr>
@@ -134,7 +136,7 @@ back to NULL state yourself (unless you want to keep it opened of course).</p>
 <a name="gst-audio-default-registry-mixer-filter"></a><h3>gst_audio_default_registry_mixer_filter ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a>*              gst_audio_default_registry_mixer_filter
+>GList</a> *             gst_audio_default_registry_mixer_filter
                                                         (<a class="link" href="gst-plugins-base-libs-gstaudiomixerutils.html#GstAudioMixerFilterFunc" title="GstAudioMixerFilterFunc ()">GstAudioMixerFilterFunc</a> filter_func,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
@@ -150,7 +152,6 @@ Will traverse the default plugin registry in order of plugin rank and
 find usable audio mixer elements. The caller may optionally fine-tune
 the selection by specifying a filter function.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -158,14 +159,14 @@ the selection by specifying a filter function.</p>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>filter_func</code></em> :</span></p></td>
 <td> filter function, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
 ><span class="type">NULL</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>first</code></em> :</span></p></td>
 <td> set to <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><span class="type">TRUE</span></a> if you only want the first suitable mixer element
 </td>
 </tr>
@@ -178,9 +179,13 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a <a
 href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
-><span class="type">GList</span></a> of audio mixer <span class="type">GstElement</span>s. You must free each
+><span class="type">GList</span></a> of audio mixer <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>s. You must free each
          element in the list by setting it to NULL state and calling
-         <code class="function">gst_object_unref()</code>. After that the list itself should be freed
+         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html#gst-object-unref"
+><code class="function">gst_object_unref()</code></a>. After that the list itself should be freed
          using <a
 href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#g-list-free"
 ><code class="function">g_list_free()</code></a>.
@@ -189,13 +194,12 @@ href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#g-list-free"
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.2
-</p>
+<p class="since">Since 0.10.2</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

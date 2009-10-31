@@ -31,6 +31,7 @@
 #include <unistd.h>
 
 #include <gst/check/gstcheck.h>
+#include <gst/check/gstconsistencychecker.h>
 
 static GMainLoop *main_loop;
 
@@ -44,7 +45,16 @@ message_received (GstBus * bus, GstMessage * message, GstPipeline * bin)
     case GST_MESSAGE_EOS:
       g_main_loop_quit (main_loop);
       break;
-    case GST_MESSAGE_WARNING:
+    case GST_MESSAGE_WARNING:{
+      GError *gerror;
+      gchar *debug;
+
+      gst_message_parse_warning (message, &gerror, &debug);
+      gst_object_default_error (GST_MESSAGE_SRC (message), gerror, debug);
+      g_error_free (gerror);
+      g_free (debug);
+      break;
+    }
     case GST_MESSAGE_ERROR:{
       GError *gerror;
       gchar *debug;
@@ -54,6 +64,7 @@ message_received (GstBus * bus, GstMessage * message, GstPipeline * bin)
       g_error_free (gerror);
       g_free (debug);
       g_main_loop_quit (main_loop);
+      break;
     }
     default:
       break;
@@ -90,6 +101,8 @@ GST_START_TEST (test_event)
   GstBus *bus;
   GstEvent *seek_event;
   gboolean res;
+  GstPad *srcpad;
+  GstStreamConsistency *consist;
 
   GST_INFO ("preparing test");
 
@@ -115,6 +128,10 @@ GST_START_TEST (test_event)
   fail_unless (res == TRUE, NULL);
   res = gst_element_link (adder, sink);
   fail_unless (res == TRUE, NULL);
+
+  srcpad = gst_element_get_static_pad (adder, "src");
+  consist = gst_consistency_checker_new (srcpad);
+  gst_object_unref (srcpad);
 
   seek_event = gst_event_new_seek (1.0, GST_FORMAT_TIME,
       GST_SEEK_FLAG_SEGMENT | GST_SEEK_FLAG_FLUSH,
@@ -157,6 +174,7 @@ GST_START_TEST (test_event)
 
   /* cleanup */
   g_main_loop_unref (main_loop);
+  gst_consistency_checker_free (consist);
   gst_object_unref (G_OBJECT (bus));
   gst_object_unref (G_OBJECT (bin));
 }
@@ -192,11 +210,9 @@ test_play_twice_message_received (GstBus * bus, GstMessage * message,
             GST_CLOCK_TIME_NONE);
         fail_unless (res != GST_STATE_CHANGE_FAILURE, NULL);
 
-        res = gst_element_send_event (GST_ELEMENT (bin), play_seek_event);
+        res = gst_element_send_event (GST_ELEMENT (bin),
+            gst_event_ref (play_seek_event));
         fail_unless (res == TRUE, NULL);
-
-        /* event is now gone */
-        play_seek_event = NULL;
 
         res = gst_element_set_state (GST_ELEMENT (bin), GST_STATE_PLAYING);
         fail_unless (res != GST_STATE_CHANGE_FAILURE, NULL);
@@ -216,6 +232,8 @@ GST_START_TEST (test_play_twice)
   GstElement *bin, *src1, *src2, *adder, *sink;
   GstBus *bus;
   gboolean res;
+  GstPad *srcpad;
+  GstStreamConsistency *consist;
 
   GST_INFO ("preparing test");
 
@@ -238,6 +256,10 @@ GST_START_TEST (test_play_twice)
   fail_unless (res == TRUE, NULL);
   res = gst_element_link (adder, sink);
   fail_unless (res == TRUE, NULL);
+
+  srcpad = gst_element_get_static_pad (adder, "src");
+  consist = gst_consistency_checker_new (srcpad);
+  gst_object_unref (srcpad);
 
   play_seek_event = gst_event_new_seek (1.0, GST_FORMAT_TIME,
       GST_SEEK_FLAG_SEGMENT | GST_SEEK_FLAG_FLUSH,
@@ -268,6 +290,8 @@ GST_START_TEST (test_play_twice)
   res = gst_element_send_event (bin, gst_event_ref (play_seek_event));
   fail_unless (res == TRUE, NULL);
 
+  GST_INFO ("seeked");
+
   /* run pipeline */
   res = gst_element_set_state (bin, GST_STATE_PLAYING);
   fail_unless (res != GST_STATE_CHANGE_FAILURE, NULL);
@@ -281,6 +305,262 @@ GST_START_TEST (test_play_twice)
 
   /* cleanup */
   g_main_loop_unref (main_loop);
+  gst_consistency_checker_free (consist);
+  gst_event_ref (play_seek_event);
+  gst_object_unref (G_OBJECT (bus));
+  gst_object_unref (G_OBJECT (bin));
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_play_twice_then_add_and_play_again)
+{
+  GstElement *bin, *src1, *src2, *src3, *adder, *sink;
+  GstBus *bus;
+  gboolean res;
+  gint i;
+  GstPad *srcpad;
+  GstStreamConsistency *consist;
+
+  GST_INFO ("preparing test");
+
+  /* build pipeline */
+  bin = gst_pipeline_new ("pipeline");
+  bus = gst_element_get_bus (bin);
+  gst_bus_add_signal_watch_full (bus, G_PRIORITY_HIGH);
+
+  src1 = gst_element_factory_make ("audiotestsrc", "src1");
+  g_object_set (src1, "wave", 4, NULL); /* silence */
+  src2 = gst_element_factory_make ("audiotestsrc", "src2");
+  g_object_set (src2, "wave", 4, NULL); /* silence */
+  adder = gst_element_factory_make ("adder", "adder");
+  sink = gst_element_factory_make ("fakesink", "sink");
+  gst_bin_add_many (GST_BIN (bin), src1, src2, adder, sink, NULL);
+
+  srcpad = gst_element_get_static_pad (adder, "src");
+  consist = gst_consistency_checker_new (srcpad);
+  gst_object_unref (srcpad);
+
+  res = gst_element_link (src1, adder);
+  fail_unless (res == TRUE, NULL);
+  res = gst_element_link (src2, adder);
+  fail_unless (res == TRUE, NULL);
+  res = gst_element_link (adder, sink);
+  fail_unless (res == TRUE, NULL);
+
+  play_seek_event = gst_event_new_seek (1.0, GST_FORMAT_TIME,
+      GST_SEEK_FLAG_SEGMENT | GST_SEEK_FLAG_FLUSH,
+      GST_SEEK_TYPE_SET, (GstClockTime) 0,
+      GST_SEEK_TYPE_SET, (GstClockTime) 2 * GST_SECOND);
+
+  main_loop = g_main_loop_new (NULL, FALSE);
+  g_signal_connect (bus, "message::segment-done",
+      (GCallback) test_play_twice_message_received, bin);
+  g_signal_connect (bus, "message::error", (GCallback) message_received, bin);
+  g_signal_connect (bus, "message::warning", (GCallback) message_received, bin);
+  g_signal_connect (bus, "message::eos", (GCallback) message_received, bin);
+
+  /* run it twice */
+  for (i = 0; i < 2; i++) {
+    play_count = 0;
+
+    GST_INFO ("starting test-loop %d", i);
+
+    /* prepare playing */
+    res = gst_element_set_state (bin, GST_STATE_PAUSED);
+    fail_unless (res != GST_STATE_CHANGE_FAILURE, NULL);
+
+    /* wait for completion */
+    res =
+        gst_element_get_state (GST_ELEMENT (bin), NULL, NULL,
+        GST_CLOCK_TIME_NONE);
+    fail_unless (res != GST_STATE_CHANGE_FAILURE, NULL);
+
+    res = gst_element_send_event (bin, gst_event_ref (play_seek_event));
+    fail_unless (res == TRUE, NULL);
+
+    GST_INFO ("seeked");
+
+    /* run pipeline */
+    res = gst_element_set_state (bin, GST_STATE_PLAYING);
+    fail_unless (res != GST_STATE_CHANGE_FAILURE, NULL);
+
+    g_main_loop_run (main_loop);
+
+    res = gst_element_set_state (bin, GST_STATE_READY);
+    fail_unless (res != GST_STATE_CHANGE_FAILURE, NULL);
+
+    fail_unless (play_count == 2, NULL);
+
+    /* plug another source */
+    if (i == 0) {
+      src3 = gst_element_factory_make ("audiotestsrc", "src3");
+      g_object_set (src3, "wave", 4, NULL);     /* silence */
+      gst_bin_add (GST_BIN (bin), src3);
+
+      res = gst_element_link (src3, adder);
+      fail_unless (res == TRUE, NULL);
+    }
+
+    gst_consistency_checker_reset (consist);
+  }
+
+  res = gst_element_set_state (bin, GST_STATE_NULL);
+  fail_unless (res != GST_STATE_CHANGE_FAILURE, NULL);
+
+  /* cleanup */
+  g_main_loop_unref (main_loop);
+  gst_event_ref (play_seek_event);
+  gst_consistency_checker_free (consist);
+  gst_object_unref (G_OBJECT (bus));
+  gst_object_unref (G_OBJECT (bin));
+}
+
+GST_END_TEST;
+
+
+static void
+test_live_seeking_eos_message_received (GstBus * bus, GstMessage * message,
+    GstPipeline * bin)
+{
+  GST_INFO ("bus message from \"%" GST_PTR_FORMAT "\": %" GST_PTR_FORMAT,
+      GST_MESSAGE_SRC (message), message);
+
+  switch (message->type) {
+    case GST_MESSAGE_EOS:
+      g_main_loop_quit (main_loop);
+      break;
+    default:
+      g_assert_not_reached ();
+      break;
+  }
+}
+
+
+/* test failing seeks on live-sources */
+GST_START_TEST (test_live_seeking)
+{
+  GstElement *bin, *src1, *src2, *ac1, *ac2, *adder, *sink;
+  GstBus *bus;
+  gboolean res;
+  GstPad *srcpad;
+  gint i;
+  GstStreamConsistency *consist;
+
+  GST_INFO ("preparing test");
+  main_loop = NULL;
+  play_seek_event = NULL;
+
+  /* build pipeline */
+  bin = gst_pipeline_new ("pipeline");
+  bus = gst_element_get_bus (bin);
+  gst_bus_add_signal_watch_full (bus, G_PRIORITY_HIGH);
+
+  /* normal audiosources behave differently than audiotestsrc */
+#if 0
+  src1 = gst_element_factory_make ("audiotestsrc", "src1");
+  g_object_set (src1, "wave", 4, "is-live", TRUE, NULL);        /* silence */
+#else
+  src1 = gst_element_factory_make ("alsasrc", "src1");
+  if (!src1) {
+    GST_INFO ("no audiosrc, skipping");
+    goto cleanup;
+  }
+  /* Test that the audio source can get to paused, else skip */
+  res = gst_element_set_state (src1, GST_STATE_PAUSED);
+  (void) gst_element_set_state (src1, GST_STATE_NULL);
+  gst_object_unref (src1);
+
+  if (res == GST_STATE_CHANGE_FAILURE)
+    goto cleanup;
+  src1 = gst_element_factory_make ("alsasrc", "src1");
+
+  /* live sources ignore seeks, force eos after 2 sec (4 buffers half second
+   * each) - don't use autoaudiosrc, as then we can't set anything here */
+  g_object_set (src1, "num-buffers", 4, "blocksize", 44100, NULL);
+#endif
+  ac1 = gst_element_factory_make ("audioconvert", "ac1");
+  src2 = gst_element_factory_make ("audiotestsrc", "src2");
+  g_object_set (src2, "wave", 4, NULL); /* silence */
+  ac2 = gst_element_factory_make ("audioconvert", "ac2");
+  adder = gst_element_factory_make ("adder", "adder");
+  sink = gst_element_factory_make ("fakesink", "sink");
+  gst_bin_add_many (GST_BIN (bin), src1, ac1, src2, ac2, adder, sink, NULL);
+
+  res = gst_element_link (src1, ac1);
+  fail_unless (res == TRUE, NULL);
+  res = gst_element_link (ac1, adder);
+  fail_unless (res == TRUE, NULL);
+  res = gst_element_link (src2, ac2);
+  fail_unless (res == TRUE, NULL);
+  res = gst_element_link (ac2, adder);
+  fail_unless (res == TRUE, NULL);
+  res = gst_element_link (adder, sink);
+  fail_unless (res == TRUE, NULL);
+
+  play_seek_event = gst_event_new_seek (1.0, GST_FORMAT_TIME,
+      GST_SEEK_FLAG_FLUSH,
+      GST_SEEK_TYPE_SET, (GstClockTime) 0,
+      GST_SEEK_TYPE_SET, (GstClockTime) 2 * GST_SECOND);
+
+  main_loop = g_main_loop_new (NULL, FALSE);
+  g_signal_connect (bus, "message::error", (GCallback) message_received, bin);
+  g_signal_connect (bus, "message::warning", (GCallback) message_received, bin);
+  g_signal_connect (bus, "message::eos",
+      (GCallback) test_live_seeking_eos_message_received, bin);
+
+  srcpad = gst_element_get_static_pad (adder, "src");
+  consist = gst_consistency_checker_new (srcpad);
+  gst_object_unref (srcpad);
+
+  GST_INFO ("starting test");
+
+  /* run it twice */
+  for (i = 0; i < 2; i++) {
+
+    GST_INFO ("starting test-loop %d", i);
+
+    /* prepare playing */
+    res = gst_element_set_state (bin, GST_STATE_PAUSED);
+    fail_unless (res != GST_STATE_CHANGE_FAILURE);
+
+    /* wait for completion */
+    res =
+        gst_element_get_state (GST_ELEMENT (bin), NULL, NULL,
+        GST_CLOCK_TIME_NONE);
+    fail_unless (res != GST_STATE_CHANGE_FAILURE, NULL);
+
+    res = gst_element_send_event (bin, gst_event_ref (play_seek_event));
+#if 0
+    fail_unless (res == TRUE, NULL);
+#else
+    /* adder is picky, if a single seek fails it totaly fails */
+    fail_unless (res == FALSE, NULL);
+#endif
+
+    GST_INFO ("seeked");
+
+    /* run pipeline */
+    res = gst_element_set_state (bin, GST_STATE_PLAYING);
+    fail_unless (res != GST_STATE_CHANGE_FAILURE, NULL);
+
+    GST_INFO ("playing");
+
+    g_main_loop_run (main_loop);
+
+    res = gst_element_set_state (bin, GST_STATE_NULL);
+    fail_unless (res != GST_STATE_CHANGE_FAILURE, NULL);
+
+    gst_consistency_checker_reset (consist);
+  }
+
+  /* cleanup */
+cleanup:
+  GST_INFO ("cleaning up");
+  if (main_loop)
+    g_main_loop_unref (main_loop);
+  if (play_seek_event)
+    gst_event_unref (play_seek_event);
   gst_object_unref (G_OBJECT (bus));
   gst_object_unref (G_OBJECT (bin));
 }
@@ -292,6 +572,8 @@ GST_START_TEST (test_add_pad)
 {
   GstElement *bin, *src1, *src2, *adder, *sink;
   GstBus *bus;
+  GstPad *srcpad;
+  GstStreamConsistency *consist;
   gboolean res;
 
   GST_INFO ("preparing test");
@@ -316,6 +598,10 @@ GST_START_TEST (test_add_pad)
   fail_unless (res == TRUE, NULL);
   res = gst_element_link (adder, sink);
   fail_unless (res == TRUE, NULL);
+
+  srcpad = gst_element_get_static_pad (adder, "src");
+  consist = gst_consistency_checker_new (srcpad);
+  gst_object_unref (srcpad);
 
   main_loop = g_main_loop_new (NULL, FALSE);
   g_signal_connect (bus, "message::segment-done", (GCallback) message_received,
@@ -368,8 +654,9 @@ GST_START_TEST (test_remove_pad)
 {
   GstElement *bin, *src, *adder, *sink;
   GstBus *bus;
-  GstPad *pad;
+  GstPad *pad, *srcpad;
   gboolean res;
+  GstStreamConsistency *consist;
 
   GST_INFO ("preparing test");
 
@@ -393,6 +680,10 @@ GST_START_TEST (test_remove_pad)
   /* create an unconnected sinkpad in adder */
   pad = gst_element_get_request_pad (adder, "sink%d");
   fail_if (pad == NULL, NULL);
+
+  srcpad = gst_element_get_static_pad (adder, "src");
+  consist = gst_consistency_checker_new (srcpad);
+  gst_object_unref (srcpad);
 
   main_loop = g_main_loop_new (NULL, FALSE);
   g_signal_connect (bus, "message::segment-done", (GCallback) message_received,
@@ -450,6 +741,8 @@ adder_suite (void)
   suite_add_tcase (s, tc_chain);
   tcase_add_test (tc_chain, test_event);
   tcase_add_test (tc_chain, test_play_twice);
+  tcase_add_test (tc_chain, test_play_twice_then_add_and_play_again);
+  tcase_add_test (tc_chain, test_live_seeking);
   tcase_add_test (tc_chain, test_add_pad);
   tcase_add_test (tc_chain, test_remove_pad);
 

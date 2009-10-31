@@ -132,6 +132,78 @@ GST_START_TEST (test_rtp_buffer)
 
 GST_END_TEST;
 
+GST_START_TEST (test_rtp_buffer_validate_corrupt)
+{
+  GstBuffer *buf;
+  guint8 corrupt_rtp_packet[58] = {
+    0x90, 0x7a, 0xbf, 0x28, 0x3a, 0x8a, 0x0a, 0xf4, 0x69, 0x6b, 0x76, 0xc0,
+    0x21, 0xe0, 0xe0, 0x60, 0x81, 0x10, 0x84, 0x30, 0x21, 0x52, 0x06, 0xc2,
+    0xb8, 0x30, 0x10, 0x4c, 0x08, 0x62, 0x67, 0xc2, 0x6e, 0x1a, 0x53, 0x3f,
+    0xaf, 0xd6, 0x1b, 0x29, 0x40, 0xe0, 0xa5, 0x83, 0x01, 0x4b, 0x04, 0x02,
+    0xb0, 0x97, 0x63, 0x08, 0x10, 0x4b, 0x43, 0x85, 0x37, 0x2c
+  };
+
+  buf = gst_buffer_new ();
+  GST_BUFFER_DATA (buf) = corrupt_rtp_packet;
+  GST_BUFFER_SIZE (buf) = sizeof (corrupt_rtp_packet);
+  fail_if (gst_rtp_buffer_validate (buf));
+  gst_buffer_unref (buf);
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_rtp_buffer_list)
+{
+  GstBuffer *rtp_header;
+  GstBuffer *rtp_payload;
+  GstBufferList *list = NULL;
+  GstBufferListIterator *it;
+  guint i;
+
+  list = gst_buffer_list_new ();
+  it = gst_buffer_list_iterate (list);
+
+  /* Creating a list of two RTP packages */
+
+  /* Create first group to hold the rtp header and the payload */
+  gst_buffer_list_iterator_add_group (it);
+  rtp_header = gst_rtp_buffer_new_allocate (0, 0, 0);
+  gst_buffer_list_iterator_add (it, rtp_header);
+  rtp_payload = gst_buffer_new_and_alloc (42);
+  gst_buffer_list_iterator_add (it, rtp_payload);
+
+  /* Create second group to hold an rtp header and a payload */
+  gst_buffer_list_iterator_add_group (it);
+  rtp_header = gst_rtp_buffer_new_allocate (0, 0, 0);
+  gst_buffer_list_iterator_add (it, rtp_header);
+  rtp_payload = gst_buffer_new_and_alloc (42);
+  gst_buffer_list_iterator_add (it, rtp_payload);
+
+  gst_buffer_list_iterator_free (it);
+
+  /* Test SEQ number */
+  i = gst_rtp_buffer_list_set_seq (list, 1024);
+  fail_if (1026 != i);
+  fail_if (!gst_rtp_buffer_list_validate (list));
+
+  /* Timestamp */
+  gst_rtp_buffer_list_set_timestamp (list, 432191);
+  fail_unless_equals_int (gst_rtp_buffer_list_get_timestamp (list), 432191);
+
+  /* SSRC */
+  gst_rtp_buffer_list_set_ssrc (list, 0xf04043C2);
+  fail_unless_equals_int (gst_rtp_buffer_list_get_ssrc (list),
+      (gint) 0xf04043c2);
+
+  /* Payload type */
+  gst_rtp_buffer_list_set_payload_type (list, 127);
+  fail_unless_equals_int (gst_rtp_buffer_list_get_payload_type (list), 127);
+
+  gst_buffer_list_unref (list);
+}
+
+GST_END_TEST;
+
 GST_START_TEST (test_rtp_buffer_set_extension_data)
 {
   GstBuffer *buf;
@@ -368,10 +440,13 @@ rtp_suite (void)
 
   suite_add_tcase (s, tc_chain);
   tcase_add_test (tc_chain, test_rtp_buffer);
+  tcase_add_test (tc_chain, test_rtp_buffer_validate_corrupt);
   tcase_add_test (tc_chain, test_rtp_buffer_set_extension_data);
   tcase_add_test (tc_chain, test_rtp_seqnum_compare);
 
   tcase_add_test (tc_chain, test_rtcp_buffer);
+
+  tcase_add_test (tc_chain, test_rtp_buffer_list);
 
   return s;
 }

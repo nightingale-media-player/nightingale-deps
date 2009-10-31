@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="prev" href="gst-plugins-base-plugins-gnomevfssrc.html" title="gnomevfssrc">
 <link rel="next" href="gst-plugins-base-plugins-oggdemux.html" title="oggdemux">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
@@ -23,15 +23,17 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-plugins-oggdemux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-multifdsink.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-multifdsink.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-multifdsink.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-multifdsink.properties" class="shortcut">Properties</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-multifdsink.signals" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-plugins-multifdsink.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-multifdsink.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-multifdsink.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-multifdsink.properties" class="shortcut">Properties</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-multifdsink.signals" class="shortcut">Signals</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-plugins-multifdsink"></a><div class="titlepage"></div>
@@ -59,9 +61,15 @@ enum                <a class="link" href="gst-plugins-base-plugins-multifdsink.h
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
-               +----GstBaseSink
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="/usr/share/gtk-doc/html/gstreamer-libs-0.10/GstBaseSink.html"
+>GstBaseSink</a>
                      +----GstMultiFdSink
                            +----<a class="link" href="gst-plugins-base-plugins-tcpserversink.html#GstTCPServerSink">GstTCPServerSink</a>
 </pre>
@@ -117,6 +125,15 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
   "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--qos-dscp" title='The "qos-dscp" property'>qos-dscp</a>"                 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 >gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--handle-read" title='The "handle-read" property'>handle-read</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--resend-streamheader" title='The "resend-streamheader" property'>resend-streamheader</a>"      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--num-fds" title='The "num-fds" property'>num-fds</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -222,7 +239,7 @@ Last reviewed on 2006-09-12 (0.10.10)</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2784320"></a><h3>Element Information</h3>
+<a name="id2622761"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -245,7 +262,57 @@ Last reviewed on 2006-09-12 (0.10.10)</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2784384"></a><h3>Element Pads</h3>
+<a name="id2622824"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2622901"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-tcp.html#plugin-tcp">tcp</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Thomas Vander Stichele &lt;thomas at apestaart dot org&gt;, Wim Taymans &lt;wim@fluendo.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Sink/Network</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2622965"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -270,7 +337,6 @@ Last reviewed on 2006-09-12 (0.10.10)</p>
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -281,7 +347,6 @@ Last reviewed on 2006-09-12 (0.10.10)</p>
 <p>
 The multifdsink object structure.</p>
 <p>
-
 </p>
 </div>
 <hr>
@@ -299,28 +364,27 @@ The multifdsink object structure.</p>
 Possible values for the recovery procedure to use when a client consumes
 data too slow and has a backlag of more that soft-limit buffers.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RECOVER-POLICY-NONE:CAPS"></a><span class="term"><code class="literal">GST_RECOVER_POLICY_NONE</code></span></p></td>
+<td><p><a name="GST-RECOVER-POLICY-NONE--CAPS"></a><span class="term"><code class="literal">GST_RECOVER_POLICY_NONE</code></span></p></td>
 <td> no recovering is done
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RECOVER-POLICY-RESYNC-LATEST:CAPS"></a><span class="term"><code class="literal">GST_RECOVER_POLICY_RESYNC_LATEST</code></span></p></td>
+<td><p><a name="GST-RECOVER-POLICY-RESYNC-LATEST--CAPS"></a><span class="term"><code class="literal">GST_RECOVER_POLICY_RESYNC_LATEST</code></span></p></td>
 <td> client is moved to last buffer
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RECOVER-POLICY-RESYNC-SOFT-LIMIT:CAPS"></a><span class="term"><code class="literal">GST_RECOVER_POLICY_RESYNC_SOFT_LIMIT</code></span></p></td>
+<td><p><a name="GST-RECOVER-POLICY-RESYNC-SOFT-LIMIT--CAPS"></a><span class="term"><code class="literal">GST_RECOVER_POLICY_RESYNC_SOFT_LIMIT</code></span></p></td>
 <td> client is moved to the soft limit
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RECOVER-POLICY-RESYNC-KEYFRAME:CAPS"></a><span class="term"><code class="literal">GST_RECOVER_POLICY_RESYNC_KEYFRAME</code></span></p></td>
+<td><p><a name="GST-RECOVER-POLICY-RESYNC-KEYFRAME--CAPS"></a><span class="term"><code class="literal">GST_RECOVER_POLICY_RESYNC_KEYFRAME</code></span></p></td>
 <td> client is moved to latest keyframe
 </td>
 </tr>
@@ -344,39 +408,38 @@ data too slow and has a backlag of more that soft-limit buffers.</p>
 This enum defines the selection of the first buffer that is sent
 to a new client.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-SYNC-METHOD-LATEST:CAPS"></a><span class="term"><code class="literal">GST_SYNC_METHOD_LATEST</code></span></p></td>
+<td><p><a name="GST-SYNC-METHOD-LATEST--CAPS"></a><span class="term"><code class="literal">GST_SYNC_METHOD_LATEST</code></span></p></td>
 <td> client receives most recent buffer
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-SYNC-METHOD-NEXT-KEYFRAME:CAPS"></a><span class="term"><code class="literal">GST_SYNC_METHOD_NEXT_KEYFRAME</code></span></p></td>
+<td><p><a name="GST-SYNC-METHOD-NEXT-KEYFRAME--CAPS"></a><span class="term"><code class="literal">GST_SYNC_METHOD_NEXT_KEYFRAME</code></span></p></td>
 <td> client receives next keyframe
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-SYNC-METHOD-LATEST-KEYFRAME:CAPS"></a><span class="term"><code class="literal">GST_SYNC_METHOD_LATEST_KEYFRAME</code></span></p></td>
+<td><p><a name="GST-SYNC-METHOD-LATEST-KEYFRAME--CAPS"></a><span class="term"><code class="literal">GST_SYNC_METHOD_LATEST_KEYFRAME</code></span></p></td>
 <td> client receives latest keyframe (burst)
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-SYNC-METHOD-BURST:CAPS"></a><span class="term"><code class="literal">GST_SYNC_METHOD_BURST</code></span></p></td>
+<td><p><a name="GST-SYNC-METHOD-BURST--CAPS"></a><span class="term"><code class="literal">GST_SYNC_METHOD_BURST</code></span></p></td>
 <td> client receives specific amount of data
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-SYNC-METHOD-BURST-KEYFRAME:CAPS"></a><span class="term"><code class="literal">GST_SYNC_METHOD_BURST_KEYFRAME</code></span></p></td>
+<td><p><a name="GST-SYNC-METHOD-BURST-KEYFRAME--CAPS"></a><span class="term"><code class="literal">GST_SYNC_METHOD_BURST_KEYFRAME</code></span></p></td>
 <td> client receives specific amount of data 
                                        starting from latest keyframe
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-SYNC-METHOD-BURST-WITH-KEYFRAME:CAPS"></a><span class="term"><code class="literal">GST_SYNC_METHOD_BURST_WITH_KEYFRAME</code></span></p></td>
+<td><p><a name="GST-SYNC-METHOD-BURST-WITH-KEYFRAME--CAPS"></a><span class="term"><code class="literal">GST_SYNC_METHOD_BURST_WITH_KEYFRAME</code></span></p></td>
 <td> client receives specific amount of data from
                                        a keyframe, or if there is not enough data after
                                        the keyframe, starting before the keyframe
@@ -403,43 +466,42 @@ to a new client.</p>
 This specifies the reason why a client was removed from
 multifdsink and is received in the "client-removed" signal.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-CLIENT-STATUS-OK:CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_OK</code></span></p></td>
+<td><p><a name="GST-CLIENT-STATUS-OK--CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_OK</code></span></p></td>
 <td> client is ok
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-CLIENT-STATUS-CLOSED:CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_CLOSED</code></span></p></td>
+<td><p><a name="GST-CLIENT-STATUS-CLOSED--CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_CLOSED</code></span></p></td>
 <td> client closed the socket
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-CLIENT-STATUS-REMOVED:CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_REMOVED</code></span></p></td>
+<td><p><a name="GST-CLIENT-STATUS-REMOVED--CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_REMOVED</code></span></p></td>
 <td> client is removed
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-CLIENT-STATUS-SLOW:CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_SLOW</code></span></p></td>
+<td><p><a name="GST-CLIENT-STATUS-SLOW--CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_SLOW</code></span></p></td>
 <td> client is too slow
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-CLIENT-STATUS-ERROR:CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_ERROR</code></span></p></td>
+<td><p><a name="GST-CLIENT-STATUS-ERROR--CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_ERROR</code></span></p></td>
 <td> client is in error
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-CLIENT-STATUS-DUPLICATE:CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_DUPLICATE</code></span></p></td>
+<td><p><a name="GST-CLIENT-STATUS-DUPLICATE--CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_DUPLICATE</code></span></p></td>
 <td> same client added twice
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-CLIENT-STATUS-FLUSHING:CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_FLUSHING</code></span></p></td>
+<td><p><a name="GST-CLIENT-STATUS-FLUSHING--CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_FLUSHING</code></span></p></td>
 <td> client is flushing out the remaining buffers.
 </td>
 </tr>
@@ -465,18 +527,17 @@ information and timestamps. The None value indicates the data is
 sent/received as-is. In that case, format information and timestamping
 must be transmitted separately, or implicit in the bytestream itself.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-TCP-PROTOCOL-NONE:CAPS"></a><span class="term"><code class="literal">GST_TCP_PROTOCOL_NONE</code></span></p></td>
+<td><p><a name="GST-TCP-PROTOCOL-NONE--CAPS"></a><span class="term"><code class="literal">GST_TCP_PROTOCOL_NONE</code></span></p></td>
 <td> Raw data transmission
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-TCP-PROTOCOL-GDP:CAPS"></a><span class="term"><code class="literal">GST_TCP_PROTOCOL_GDP</code></span></p></td>
+<td><p><a name="GST-TCP-PROTOCOL-GDP--CAPS"></a><span class="term"><code class="literal">GST_TCP_PROTOCOL_GDP</code></span></p></td>
 <td> <span class="type">GstBuffers</span> are wrapped and sent/received using the
      GDP protocol.
 </td>
@@ -498,28 +559,27 @@ must be transmitted separately, or implicit in the bytestream itself.</p>
 <p>
 The units used to specify limits.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-TCP-UNIT-TYPE-UNDEFINED:CAPS"></a><span class="term"><code class="literal">GST_TCP_UNIT_TYPE_UNDEFINED</code></span></p></td>
+<td><p><a name="GST-TCP-UNIT-TYPE-UNDEFINED--CAPS"></a><span class="term"><code class="literal">GST_TCP_UNIT_TYPE_UNDEFINED</code></span></p></td>
 <td> undefined
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-TCP-UNIT-TYPE-BUFFERS:CAPS"></a><span class="term"><code class="literal">GST_TCP_UNIT_TYPE_BUFFERS</code></span></p></td>
+<td><p><a name="GST-TCP-UNIT-TYPE-BUFFERS--CAPS"></a><span class="term"><code class="literal">GST_TCP_UNIT_TYPE_BUFFERS</code></span></p></td>
 <td> buffers
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-TCP-UNIT-TYPE-TIME:CAPS"></a><span class="term"><code class="literal">GST_TCP_UNIT_TYPE_TIME</code></span></p></td>
+<td><p><a name="GST-TCP-UNIT-TYPE-TIME--CAPS"></a><span class="term"><code class="literal">GST_TCP_UNIT_TYPE_TIME</code></span></p></td>
 <td> timeunits (in nanoseconds)
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-TCP-UNIT-TYPE-BYTES:CAPS"></a><span class="term"><code class="literal">GST_TCP_UNIT_TYPE_BYTES</code></span></p></td>
+<td><p><a name="GST-TCP-UNIT-TYPE-BYTES--CAPS"></a><span class="term"><code class="literal">GST_TCP_UNIT_TYPE_BYTES</code></span></p></td>
 <td> bytes
 </td>
 </tr>
@@ -704,6 +764,33 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <p>Allowed values: [-1,63]</p>
 <p>Default value: -1</p>
 </div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstMultiFdSink--handle-read"></a><h3>The <code class="literal">"handle-read"</code> property</h3>
+<pre class="programlisting">  "handle-read"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Handle client reads and discard the data.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstMultiFdSink--resend-streamheader"></a><h3>The <code class="literal">"resend-streamheader"</code> property</h3>
+<pre class="programlisting">  "resend-streamheader"      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Resend the streamheader if it changes in the caps.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstMultiFdSink--num-fds"></a><h3>The <code class="literal">"num-fds"</code> property</h3>
+<pre class="programlisting">  "num-fds"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read</pre>
+<p>The current number of client file descriptors.</p>
+<p>Default value: 0</p>
+</div>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-multifdsink.signal-details"></a><h2>Signal Details</h2>
@@ -719,7 +806,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 <p>
 Hand the given open file descriptor to multifdsink to write to.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -753,7 +839,6 @@ Remove all file descriptors from multifdsink.  Since multifdsink did not
 open fd's itself, it does not explicitly close the fd.  The application
 should do so by connecting to the client-fd-removed callback.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -785,7 +870,6 @@ The given file descriptor was added to multifdsink. This signal will
 be emitted from the streaming thread so application should be prepared
 for that.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -828,7 +912,6 @@ be prepared for that.
 the get-stats signal from this callback. For the same reason it is
 not safe to <code class="function">close()</code> and reuse <em class="parameter"><code>fd</code></em> in this callback.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -871,7 +954,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 Get statistics about <em class="parameter"><code>fd</code></em>. This function returns a GValueArray to ease
 automatic wrapping for bindings.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -917,7 +999,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 <p>
 Remove the given open file descriptor from multifdsink.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -959,7 +1040,6 @@ In this callback, <em class="parameter"><code>gstmultifdsink</code></em> has rem
 associated with <em class="parameter"><code>fd</code></em> and it is therefore not possible to call get-stats
 with <em class="parameter"><code>fd</code></em>. It is however safe to <code class="function">close()</code> and reuse <em class="parameter"><code>fd</code></em> in the callback.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -980,8 +1060,7 @@ with <em class="parameter"><code>fd</code></em>. It is however safe to <code cla
 </tr>
 </tbody>
 </table></div>
-<p>Since  0.10.7
-</p>
+<p>Since 0.10.7</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -990,9 +1069,7 @@ with <em class="parameter"><code>fd</code></em>. It is however safe to <code cla
                                                         <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 >gint</a>            fd,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>        keyframe,
+                                                        <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstSyncMethod" title="enum GstSyncMethod">GstSyncMethod</a>   sync,
                                                         <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstTCPUnitType" title="enum GstTCPUnitType">GstTCPUnitType</a>  unit_type_min,
                                                         <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
@@ -1008,7 +1085,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 Hand the given open file descriptor to multifdsink to write to and
 specify the burst parameters for the new connection.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1024,8 +1100,8 @@ specify the burst parameters for the new connection.</p>
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>keyframe</code></em> :</span></p></td>
-<td>       start bursting from a keyframe
+<td><p><span class="term"><em class="parameter"><code>sync</code></em> :</span></p></td>
+<td>           the sync method to use
 </td>
 </tr>
 <tr>
@@ -1071,7 +1147,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 Remove the given open file descriptor from multifdsink after flushing all
 the pending data to the fd.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1101,6 +1176,6 @@ tcpserversink
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

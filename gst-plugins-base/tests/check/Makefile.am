@@ -21,7 +21,7 @@ $(CHECK_REGISTRY):
 	$(TESTS_ENVIRONMENT)
 
 # elements to ignore for the state tests
-STATE_IGNORE_ELEMENTS = cdio cdparanoiasrc libvisual_ alsasrc alsasink
+STATE_IGNORE_ELEMENTS = cdio cdparanoiasrc libvisual_ alsasrc alsamixer alsasink
 
 TESTS = $(check_PROGRAMS)
 
@@ -89,8 +89,10 @@ check_PROGRAMS = \
 	$(check_vorbis) \
 	$(check_theora) \
 	elements/adder	\
+	elements/appsink	\
 	elements/audioconvert \
 	elements/audiorate \
+	elements/audioresample \
 	elements/audiotestsrc \
 	elements/decodebin \
 	elements/ffmpegcolorspace \
@@ -99,8 +101,8 @@ check_PROGRAMS = \
 	elements/multifdsink \
 	elements/playbin \
 	$(check_subparse) \
-	elements/speexresample \
 	elements/videorate \
+	elements/videoscale \
 	elements/videotestsrc \
 	elements/volume \
 	generic/clock-selection \
@@ -110,6 +112,7 @@ check_PROGRAMS = \
 	libs/cddabasesrc \
 	libs/fft \
 	libs/mixer \
+	libs/navigation \
 	libs/netbuffer \
 	libs/pbutils \
 	libs/rtp \
@@ -127,7 +130,7 @@ VALGRIND_TO_FIX = \
 	libs/video
 
 # these tests don't even pass
-noinst_PROGRAMS = $(check_libvisual)
+noinst_PROGRAMS = $(check_libvisual) elements/playbin2
 
 AM_CFLAGS = $(GST_CFLAGS) $(GST_CHECK_CFLAGS)
 LDADD = $(GST_LIBS) $(GST_CHECK_LIBS)
@@ -179,6 +182,16 @@ libs_mixer_LDADD = \
         $(GST_BASE_LIBS) \
         $(LDADD)
 
+libs_navigation_CFLAGS = \
+	$(GST_PLUGINS_BASE_CFLAGS) \
+        $(GST_BASE_CFLAGS) \
+        $(AM_CFLAGS)
+
+libs_navigation_LDADD = \
+	$(top_builddir)/gst-libs/gst/interfaces/libgstinterfaces-@GST_MAJORMINOR@.la \
+        $(GST_BASE_LIBS) \
+        $(LDADD)
+
 libs_netbuffer_CFLAGS = \
 	$(GST_PLUGINS_BASE_CFLAGS) \
 	$(AM_CFLAGS)
@@ -203,6 +216,14 @@ libs_pbutils_CFLAGS = \
 	$(AM_CFLAGS)
 libs_pbutils_LDADD = \
 	$(top_builddir)/gst-libs/gst/pbutils/libgstpbutils-@GST_MAJORMINOR@.la $(LDADD)
+
+elements_appsink_CFLAGS = \
+	$(GST_PLUGINS_BASE_CFLAGS) \
+	$(AM_CFLAGS)
+
+elements_appsink_LDADD = \
+	$(top_builddir)/gst-libs/gst/app/libgstapp-@GST_MAJORMINOR@.la \
+	$(LDADD)
 
 elements_alsa_CFLAGS = \
 	$(GST_PLUGINS_BASE_CFLAGS) \
@@ -235,18 +256,21 @@ elements_gdppay_LDADD = $(GST_GDP_LIBS) $(LDADD)
 elements_playbin_LDADD = $(GST_BASE_LIBS) $(LDADD)
 elements_playbin_CFLAGS = $(GST_BASE_CFLAGS) $(AM_CFLAGS)
 
+elements_playbin2_LDADD = $(GST_BASE_LIBS) $(LDADD)
+elements_playbin2_CFLAGS = $(GST_BASE_CFLAGS) $(AM_CFLAGS)
+
 elements_decodebin_LDADD = $(GST_BASE_LIBS) $(LDADD)
 elements_decodebin_CFLAGS = $(GST_BASE_CFLAGS) $(AM_CFLAGS)
 
 elements_subparse_LDADD =  $(LDADD)
 elements_subparse_CFLAGS = $(CFLAGS) $(AM_CFLAGS)
 
-elements_speexresample_CFLAGS = \
+elements_audioresample_CFLAGS = \
 	$(GST_PLUGINS_BASE_CFLAGS) \
 	$(GST_BASE_CFLAGS) \
 	$(AM_CFLAGS)
 
-elements_speexresample_LDADD = \
+elements_audioresample_LDADD = \
 	$(top_builddir)/gst-libs/gst/audio/libgstaudio-@GST_MAJORMINOR@.la \
 	$(top_builddir)/gst-libs/gst/interfaces/libgstinterfaces-@GST_MAJORMINOR@.la \
 	$(GST_BASE_LIBS) \
@@ -256,6 +280,8 @@ elements_textoverlay_LDADD = $(GST_BASE_LIBS) $(LDADD)
 elements_textoverlay_CFLAGS = $(GST_BASE_CFLAGS) $(AM_CFLAGS)
 
 elements_volume_LDADD = \
+	$(top_builddir)/gst-libs/gst/interfaces/libgstinterfaces-@GST_MAJORMINOR@.la \
+	$(GST_PLUGINS_BASE_LIBS) \
 	$(GST_CONTROLLER_LIBS) \
 	$(GST_BASE_LIBS) \
 	$(LDADD)

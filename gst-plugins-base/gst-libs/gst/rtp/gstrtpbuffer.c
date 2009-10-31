@@ -69,20 +69,19 @@ typedef struct _GstRTPHeader
   guint8 csrclist[4];           /* optional CSRC list, 32 bits each */
 } GstRTPHeader;
 
-#define GST_RTP_HEADER_VERSION(buf)     (((GstRTPHeader *)(GST_BUFFER_DATA (buf)))->version)
-#define GST_RTP_HEADER_PADDING(buf)     (((GstRTPHeader *)(GST_BUFFER_DATA (buf)))->padding)
-#define GST_RTP_HEADER_EXTENSION(buf)   (((GstRTPHeader *)(GST_BUFFER_DATA (buf)))->extension)
-#define GST_RTP_HEADER_CSRC_COUNT(buf)  (((GstRTPHeader *)(GST_BUFFER_DATA (buf)))->csrc_count)
-#define GST_RTP_HEADER_MARKER(buf)      (((GstRTPHeader *)(GST_BUFFER_DATA (buf)))->marker)
-#define GST_RTP_HEADER_PAYLOAD_TYPE(buf)(((GstRTPHeader *)(GST_BUFFER_DATA (buf)))->payload_type)
-#define GST_RTP_HEADER_SEQ(buf)         (((GstRTPHeader *)(GST_BUFFER_DATA (buf)))->seq)
-#define GST_RTP_HEADER_TIMESTAMP(buf)   (((GstRTPHeader *)(GST_BUFFER_DATA (buf)))->timestamp)
-#define GST_RTP_HEADER_SSRC(buf)        (((GstRTPHeader *)(GST_BUFFER_DATA (buf)))->ssrc)
-#define GST_RTP_HEADER_CSRC_LIST_OFFSET(buf,i)  \
-    GST_BUFFER_DATA (buf) +                     \
-    G_STRUCT_OFFSET(GstRTPHeader, csrclist) +   \
+#define GST_RTP_HEADER_VERSION(data)      (((GstRTPHeader *)(data))->version)
+#define GST_RTP_HEADER_PADDING(data)      (((GstRTPHeader *)(data))->padding)
+#define GST_RTP_HEADER_EXTENSION(data)    (((GstRTPHeader *)(data))->extension)
+#define GST_RTP_HEADER_CSRC_COUNT(data)   (((GstRTPHeader *)(data))->csrc_count)
+#define GST_RTP_HEADER_MARKER(data)       (((GstRTPHeader *)(data))->marker)
+#define GST_RTP_HEADER_PAYLOAD_TYPE(data) (((GstRTPHeader *)(data))->payload_type)
+#define GST_RTP_HEADER_SEQ(data)          (((GstRTPHeader *)(data))->seq)
+#define GST_RTP_HEADER_TIMESTAMP(data)    (((GstRTPHeader *)(data))->timestamp)
+#define GST_RTP_HEADER_SSRC(data)         (((GstRTPHeader *)(data))->ssrc)
+#define GST_RTP_HEADER_CSRC_LIST_OFFSET(data,i)        \
+    data + G_STRUCT_OFFSET(GstRTPHeader, csrclist) +   \
     ((i) * sizeof(guint32))
-#define GST_RTP_HEADER_CSRC_SIZE(buf)   (GST_RTP_HEADER_CSRC_COUNT(buf) * sizeof (guint32))
+#define GST_RTP_HEADER_CSRC_SIZE(data)   (GST_RTP_HEADER_CSRC_COUNT(data) * sizeof (guint32))
 
 /**
  * gst_rtp_buffer_allocate_data:
@@ -101,6 +100,7 @@ gst_rtp_buffer_allocate_data (GstBuffer * buffer, guint payload_len,
     guint8 pad_len, guint8 csrc_count)
 {
   guint len;
+  guint8 *data;
 
   g_return_if_fail (csrc_count <= 15);
   g_return_if_fail (GST_IS_BUFFER (buffer));
@@ -108,22 +108,23 @@ gst_rtp_buffer_allocate_data (GstBuffer * buffer, guint payload_len,
   len = GST_RTP_HEADER_LEN + csrc_count * sizeof (guint32)
       + payload_len + pad_len;
 
-  GST_BUFFER_MALLOCDATA (buffer) = g_malloc (len);
-  GST_BUFFER_DATA (buffer) = GST_BUFFER_MALLOCDATA (buffer);
+  data = g_malloc (len);
+  GST_BUFFER_MALLOCDATA (buffer) = data;
+  GST_BUFFER_DATA (buffer) = data;
   GST_BUFFER_SIZE (buffer) = len;
 
   /* fill in defaults */
-  GST_RTP_HEADER_VERSION (buffer) = GST_RTP_VERSION;
-  GST_RTP_HEADER_PADDING (buffer) = FALSE;
-  GST_RTP_HEADER_EXTENSION (buffer) = FALSE;
-  GST_RTP_HEADER_CSRC_COUNT (buffer) = csrc_count;
-  memset (GST_RTP_HEADER_CSRC_LIST_OFFSET (buffer, 0), 0,
+  GST_RTP_HEADER_VERSION (data) = GST_RTP_VERSION;
+  GST_RTP_HEADER_PADDING (data) = FALSE;
+  GST_RTP_HEADER_EXTENSION (data) = FALSE;
+  GST_RTP_HEADER_CSRC_COUNT (data) = csrc_count;
+  memset (GST_RTP_HEADER_CSRC_LIST_OFFSET (data, 0), 0,
       csrc_count * sizeof (guint32));
-  GST_RTP_HEADER_MARKER (buffer) = FALSE;
-  GST_RTP_HEADER_PAYLOAD_TYPE (buffer) = 0;
-  GST_RTP_HEADER_SEQ (buffer) = 0;
-  GST_RTP_HEADER_TIMESTAMP (buffer) = 0;
-  GST_RTP_HEADER_SSRC (buffer) = 0;
+  GST_RTP_HEADER_MARKER (data) = FALSE;
+  GST_RTP_HEADER_PAYLOAD_TYPE (data) = 0;
+  GST_RTP_HEADER_SEQ (data) = 0;
+  GST_RTP_HEADER_TIMESTAMP (data) = 0;
+  GST_RTP_HEADER_SSRC (data) = 0;
 }
 
 /**
@@ -284,19 +285,18 @@ gst_rtp_buffer_calc_payload_len (guint packet_len, guint8 pad_len,
 }
 
 /**
- * gst_rtp_buffer_validate_data:
+ * validate_data:
  * @data: the data to validate
  * @len: the length of @data to validate
+ * @payload: the payload if @data represents the header only
+ * @payload_len: the len of the payload
  *
- * Check if the @data and @size point to the data of a valid RTP packet.
- * This function checks the length, version and padding of the packet data.
- * Use this function to validate a packet before using the other functions in
- * this module.
+ * Checks if @data is a valid RTP packet.
  *
- * Returns: TRUE if the data points to a valid RTP packet.
+ * Returns: TRUE if @data is a valid RTP packet
  */
-gboolean
-gst_rtp_buffer_validate_data (guint8 * data, guint len)
+static gboolean
+validate_data (guint8 * data, guint len, guint8 * payload, guint payload_len)
 {
   guint8 padding;
   guint8 csrc_count;
@@ -340,13 +340,17 @@ gst_rtp_buffer_validate_data (guint8 * data, guint len)
   }
 
   /* check for padding */
-  if (data[0] & 0x20)
-    padding = data[len - 1];
-  else
+  if (data[0] & 0x20) {
+    if (payload)
+      padding = payload[payload_len - 1];
+    else
+      padding = data[len - 1];
+  } else {
     padding = 0;
+  }
 
-  /* check if padding not bigger than packet and header */
-  if (G_UNLIKELY (len - header_len < padding))
+  /* check if padding and header not bigger than packet length */
+  if (G_UNLIKELY (len < padding + header_len))
     goto wrong_padding;
 
   return TRUE;
@@ -370,11 +374,29 @@ wrong_padding:
 }
 
 /**
+ * gst_rtp_buffer_validate_data:
+ * @data: the data to validate
+ * @len: the length of @data to validate
+ *
+ * Check if the @data and @size point to the data of a valid RTP packet.
+ * This function checks the length, version and padding of the packet data.
+ * Use this function to validate a packet before using the other functions in
+ * this module.
+ *
+ * Returns: TRUE if the data points to a valid RTP packet.
+ */
+gboolean
+gst_rtp_buffer_validate_data (guint8 * data, guint len)
+{
+  return validate_data (data, len, NULL, 0);
+}
+
+/**
  * gst_rtp_buffer_validate:
  * @buffer: the buffer to validate
  *
  * Check if the data pointed to by @buffer is a valid RTP packet using
- * gst_rtp_buffer_validate_data().
+ * validate_data().
  * Use this function to validate a packet before using the other functions in
  * this module.
  *
@@ -391,7 +413,94 @@ gst_rtp_buffer_validate (GstBuffer * buffer)
   data = GST_BUFFER_DATA (buffer);
   len = GST_BUFFER_SIZE (buffer);
 
-  return gst_rtp_buffer_validate_data (data, len);
+  return validate_data (data, len, NULL, 0);
+}
+
+/**
+ * gst_rtp_buffer_list_validate:
+ * @list: the buffer list to validate
+ *
+ * Check if all RTP packets in the @list are valid using validate_data().
+ * Use this function to validate an list before using the other functions in
+ * this module.
+ *
+ * Returns: TRUE if @list consists only of valid RTP packets.
+ *
+ * Since: 0.10.24
+ */
+gboolean
+gst_rtp_buffer_list_validate (GstBufferList * list)
+{
+  guint16 prev_seqnum = 0;
+  GstBufferListIterator *it;
+  guint i = 0;
+
+  g_return_val_if_fail (GST_IS_BUFFER_LIST (list), FALSE);
+
+  it = gst_buffer_list_iterate (list);
+  g_return_val_if_fail (it != NULL, FALSE);
+
+  /* iterate through all the RTP packets in the list */
+  while (gst_buffer_list_iterator_next_group (it)) {
+    GstBuffer *rtpbuf;
+    GstBuffer *paybuf;
+    guint8 *packet_header;
+    guint8 *packet_payload;
+    guint payload_size;
+    guint packet_size;
+
+    /* each group should consists of 2 buffers: one containing the RTP header
+     * and the other one the payload, FIXME, relax the requirement of only one
+     * payload buffer. */
+    if (gst_buffer_list_iterator_n_buffers (it) != 2)
+      goto invalid_list;
+
+    /* get the RTP header */
+    rtpbuf = gst_buffer_list_iterator_next (it);
+    packet_header = GST_BUFFER_DATA (rtpbuf);
+    if (packet_header == NULL)
+      goto invalid_list;
+
+    /* get the payload */
+    paybuf = gst_buffer_list_iterator_next (it);
+    packet_payload = GST_BUFFER_DATA (paybuf);
+    if (packet_payload == NULL) {
+      goto invalid_list;
+    }
+    payload_size = GST_BUFFER_SIZE (paybuf);
+    if (payload_size == 0) {
+      goto invalid_list;
+    }
+
+    /* the size of the RTP packet within the current group */
+    packet_size = GST_BUFFER_SIZE (rtpbuf) + payload_size;
+
+    /* check the sequence number */
+    if (G_UNLIKELY (i == 0)) {
+      prev_seqnum = g_ntohs (GST_RTP_HEADER_SEQ (packet_header));
+      i++;
+    } else {
+      if (++prev_seqnum != g_ntohs (GST_RTP_HEADER_SEQ (packet_header)))
+        goto invalid_list;
+    }
+
+    /* validate packet */
+    if (!validate_data (packet_header, packet_size, packet_payload,
+            payload_size)) {
+      goto invalid_list;
+    }
+  }
+
+  gst_buffer_list_iterator_free (it);
+
+  return TRUE;
+
+  /* ERRORS */
+invalid_list:
+  {
+    gst_buffer_list_iterator_free (it);
+    return FALSE;
+  }
 }
 
 /**
@@ -406,20 +515,20 @@ void
 gst_rtp_buffer_set_packet_len (GstBuffer * buffer, guint len)
 {
   guint oldlen;
+  guint8 *data;
 
   oldlen = GST_BUFFER_SIZE (buffer);
+  data = GST_BUFFER_DATA (buffer);
 
   if (oldlen < len) {
-    guint8 *newdata;
-
-    newdata = g_realloc (GST_BUFFER_MALLOCDATA (buffer), len);
-    GST_BUFFER_MALLOCDATA (buffer) = newdata;
-    GST_BUFFER_DATA (buffer) = newdata;
+    data = g_realloc (GST_BUFFER_MALLOCDATA (buffer), len);
+    GST_BUFFER_MALLOCDATA (buffer) = data;
+    GST_BUFFER_DATA (buffer) = data;
   }
   GST_BUFFER_SIZE (buffer) = len;
 
   /* remove any padding */
-  GST_RTP_HEADER_PADDING (buffer) = FALSE;
+  GST_RTP_HEADER_PADDING (data) = FALSE;
 }
 
 /**
@@ -449,10 +558,13 @@ guint
 gst_rtp_buffer_get_header_len (GstBuffer * buffer)
 {
   guint len;
+  guint8 *data;
 
-  len = GST_RTP_HEADER_LEN + GST_RTP_HEADER_CSRC_SIZE (buffer);
-  if (GST_RTP_HEADER_EXTENSION (buffer))
-    len += GST_READ_UINT16_BE (GST_BUFFER_DATA (buffer) + len + 2) * 4 + 4;
+  data = GST_BUFFER_DATA (buffer);
+
+  len = GST_RTP_HEADER_LEN + GST_RTP_HEADER_CSRC_SIZE (data);
+  if (GST_RTP_HEADER_EXTENSION (data))
+    len += GST_READ_UINT16_BE (data + len + 2) * 4 + 4;
 
   return len;
 }
@@ -468,7 +580,7 @@ gst_rtp_buffer_get_header_len (GstBuffer * buffer)
 guint8
 gst_rtp_buffer_get_version (GstBuffer * buffer)
 {
-  return GST_RTP_HEADER_VERSION (buffer);
+  return GST_RTP_HEADER_VERSION (GST_BUFFER_DATA (buffer));
 }
 
 /**
@@ -483,7 +595,7 @@ gst_rtp_buffer_set_version (GstBuffer * buffer, guint8 version)
 {
   g_return_if_fail (version < 0x04);
 
-  GST_RTP_HEADER_VERSION (buffer) = version;
+  GST_RTP_HEADER_VERSION (GST_BUFFER_DATA (buffer)) = version;
 }
 
 /**
@@ -497,7 +609,7 @@ gst_rtp_buffer_set_version (GstBuffer * buffer, guint8 version)
 gboolean
 gst_rtp_buffer_get_padding (GstBuffer * buffer)
 {
-  return GST_RTP_HEADER_PADDING (buffer);
+  return GST_RTP_HEADER_PADDING (GST_BUFFER_DATA (buffer));
 }
 
 /**
@@ -510,7 +622,7 @@ gst_rtp_buffer_get_padding (GstBuffer * buffer)
 void
 gst_rtp_buffer_set_padding (GstBuffer * buffer, gboolean padding)
 {
-  GST_RTP_HEADER_PADDING (buffer) = padding;
+  GST_RTP_HEADER_PADDING (GST_BUFFER_DATA (buffer)) = padding;
 }
 
 /**
@@ -526,10 +638,14 @@ gst_rtp_buffer_set_padding (GstBuffer * buffer, gboolean padding)
 void
 gst_rtp_buffer_pad_to (GstBuffer * buffer, guint len)
 {
+  guint8 *data;
+
+  data = GST_BUFFER_DATA (buffer);
+
   if (len > 0)
-    GST_RTP_HEADER_PADDING (buffer) = TRUE;
+    GST_RTP_HEADER_PADDING (data) = TRUE;
   else
-    GST_RTP_HEADER_PADDING (buffer) = FALSE;
+    GST_RTP_HEADER_PADDING (data) = FALSE;
 
   /* FIXME, set the padding byte at the end of the payload data */
 }
@@ -545,7 +661,7 @@ gst_rtp_buffer_pad_to (GstBuffer * buffer, guint len)
 gboolean
 gst_rtp_buffer_get_extension (GstBuffer * buffer)
 {
-  return GST_RTP_HEADER_EXTENSION (buffer);
+  return GST_RTP_HEADER_EXTENSION (GST_BUFFER_DATA (buffer));
 }
 
 /**
@@ -558,7 +674,7 @@ gst_rtp_buffer_get_extension (GstBuffer * buffer)
 void
 gst_rtp_buffer_set_extension (GstBuffer * buffer, gboolean extension)
 {
-  GST_RTP_HEADER_EXTENSION (buffer) = extension;
+  GST_RTP_HEADER_EXTENSION (GST_BUFFER_DATA (buffer)) = extension;
 }
 
 /**
@@ -586,12 +702,14 @@ gst_rtp_buffer_get_extension_data (GstBuffer * buffer, guint16 * bits,
   guint len;
   guint8 *pdata;
 
-  if (!GST_RTP_HEADER_EXTENSION (buffer))
+  pdata = GST_BUFFER_DATA (buffer);
+
+  if (!GST_RTP_HEADER_EXTENSION (pdata))
     return FALSE;
 
   /* move to the extension */
-  len = GST_RTP_HEADER_LEN + GST_RTP_HEADER_CSRC_SIZE (buffer);
-  pdata = GST_BUFFER_DATA (buffer) + len;
+  len = GST_RTP_HEADER_LEN + GST_RTP_HEADER_CSRC_SIZE (pdata);
+  pdata += len;
 
   if (bits)
     *bits = GST_READ_UINT16_BE (pdata);
@@ -625,9 +743,11 @@ gst_rtp_buffer_set_extension_data (GstBuffer * buffer, guint16 bits,
   guint32 min_size = 0;
   guint8 *data;
 
+  data = GST_BUFFER_DATA (buffer);
+
   /* check if the buffer is big enough to hold the extension */
   min_size =
-      GST_RTP_HEADER_LEN + GST_RTP_HEADER_CSRC_SIZE (buffer) + 4 +
+      GST_RTP_HEADER_LEN + GST_RTP_HEADER_CSRC_SIZE (data) + 4 +
       length * sizeof (guint32);
   if (G_UNLIKELY (min_size > GST_BUFFER_SIZE (buffer)))
     goto too_small;
@@ -635,8 +755,7 @@ gst_rtp_buffer_set_extension_data (GstBuffer * buffer, guint16 bits,
   /* now we can set the extension bit */
   gst_rtp_buffer_set_extension (buffer, TRUE);
 
-  data = GST_BUFFER_DATA (buffer) + GST_RTP_HEADER_LEN +
-      GST_RTP_HEADER_CSRC_SIZE (buffer);
+  data += GST_RTP_HEADER_LEN + GST_RTP_HEADER_CSRC_SIZE (data);
   GST_WRITE_UINT16_BE (data, bits);
   GST_WRITE_UINT16_BE (data + 2, length);
 
@@ -663,7 +782,29 @@ too_small:
 guint32
 gst_rtp_buffer_get_ssrc (GstBuffer * buffer)
 {
-  return g_ntohl (GST_RTP_HEADER_SSRC (buffer));
+  return g_ntohl (GST_RTP_HEADER_SSRC (GST_BUFFER_DATA (buffer)));
+}
+
+/**
+ * gst_rtp_buffer_list_get_ssrc:
+ * @list: the buffer list
+ *
+ * Get the SSRC of the first RTP packet in @list.
+ * All RTP packets within @list have the same SSRC.
+ *
+ * Returns: the SSRC of @list in host order.
+ *
+ * Since: 0.10.24
+ */
+guint32
+gst_rtp_buffer_list_get_ssrc (GstBufferList * list)
+{
+  GstBuffer *buffer;
+
+  buffer = gst_buffer_list_get (list, 0, 0);
+  g_return_val_if_fail (buffer != NULL, 0);
+
+  return g_ntohl (GST_RTP_HEADER_SSRC (GST_BUFFER_DATA (buffer)));
 }
 
 /**
@@ -676,7 +817,29 @@ gst_rtp_buffer_get_ssrc (GstBuffer * buffer)
 void
 gst_rtp_buffer_set_ssrc (GstBuffer * buffer, guint32 ssrc)
 {
-  GST_RTP_HEADER_SSRC (buffer) = g_htonl (ssrc);
+  GST_RTP_HEADER_SSRC (GST_BUFFER_DATA (buffer)) = g_htonl (ssrc);
+}
+
+static GstBufferListItem
+set_ssrc_header (GstBuffer ** buffer, guint group, guint idx, guint32 * ssrc)
+{
+  GST_RTP_HEADER_SSRC (GST_BUFFER_DATA (*buffer)) = g_htonl (*ssrc);
+  return GST_BUFFER_LIST_SKIP_GROUP;
+}
+
+/**
+ * gst_rtp_buffer_list_set_ssrc:
+ * @list: the buffer list
+ * @ssrc: the new SSRC
+ *
+ * Set the SSRC on each RTP packet in @list to @ssrc.
+ *
+ * Since: 0.10.24
+ */
+void
+gst_rtp_buffer_list_set_ssrc (GstBufferList * list, guint32 ssrc)
+{
+  gst_buffer_list_foreach (list, (GstBufferListFunc) set_ssrc_header, &ssrc);
 }
 
 /**
@@ -690,7 +853,7 @@ gst_rtp_buffer_set_ssrc (GstBuffer * buffer, guint32 ssrc)
 guint8
 gst_rtp_buffer_get_csrc_count (GstBuffer * buffer)
 {
-  return GST_RTP_HEADER_CSRC_COUNT (buffer);
+  return GST_RTP_HEADER_CSRC_COUNT (GST_BUFFER_DATA (buffer));
 }
 
 /**
@@ -705,9 +868,13 @@ gst_rtp_buffer_get_csrc_count (GstBuffer * buffer)
 guint32
 gst_rtp_buffer_get_csrc (GstBuffer * buffer, guint8 idx)
 {
-  g_return_val_if_fail (idx < GST_RTP_HEADER_CSRC_COUNT (buffer), 0);
+  guint8 *data;
 
-  return GST_READ_UINT32_BE (GST_RTP_HEADER_CSRC_LIST_OFFSET (buffer, idx));
+  data = GST_BUFFER_DATA (buffer);
+
+  g_return_val_if_fail (idx < GST_RTP_HEADER_CSRC_COUNT (data), 0);
+
+  return GST_READ_UINT32_BE (GST_RTP_HEADER_CSRC_LIST_OFFSET (data, idx));
 }
 
 /**
@@ -721,9 +888,13 @@ gst_rtp_buffer_get_csrc (GstBuffer * buffer, guint8 idx)
 void
 gst_rtp_buffer_set_csrc (GstBuffer * buffer, guint8 idx, guint32 csrc)
 {
-  g_return_if_fail (idx < GST_RTP_HEADER_CSRC_COUNT (buffer));
+  guint8 *data;
 
-  GST_WRITE_UINT32_BE (GST_RTP_HEADER_CSRC_LIST_OFFSET (buffer, idx), csrc);
+  data = GST_BUFFER_DATA (buffer);
+
+  g_return_if_fail (idx < GST_RTP_HEADER_CSRC_COUNT (data));
+
+  GST_WRITE_UINT32_BE (GST_RTP_HEADER_CSRC_LIST_OFFSET (data, idx), csrc);
 }
 
 /**
@@ -737,7 +908,7 @@ gst_rtp_buffer_set_csrc (GstBuffer * buffer, guint8 idx, guint32 csrc)
 gboolean
 gst_rtp_buffer_get_marker (GstBuffer * buffer)
 {
-  return GST_RTP_HEADER_MARKER (buffer);
+  return GST_RTP_HEADER_MARKER (GST_BUFFER_DATA (buffer));
 }
 
 /**
@@ -750,7 +921,7 @@ gst_rtp_buffer_get_marker (GstBuffer * buffer)
 void
 gst_rtp_buffer_set_marker (GstBuffer * buffer, gboolean marker)
 {
-  GST_RTP_HEADER_MARKER (buffer) = marker;
+  GST_RTP_HEADER_MARKER (GST_BUFFER_DATA (buffer)) = marker;
 }
 
 /**
@@ -764,7 +935,29 @@ gst_rtp_buffer_set_marker (GstBuffer * buffer, gboolean marker)
 guint8
 gst_rtp_buffer_get_payload_type (GstBuffer * buffer)
 {
-  return GST_RTP_HEADER_PAYLOAD_TYPE (buffer);
+  return GST_RTP_HEADER_PAYLOAD_TYPE (GST_BUFFER_DATA (buffer));
+}
+
+/**
+ * gst_rtp_buffer_list_get_payload_type:
+ * @list: the buffer list
+ *
+ * Get the payload type of the first RTP packet in @list.
+ * All packets in @list should have the same payload type.
+ *
+ * Returns: The payload type.
+ *
+ * Since: 0.10.24
+ */
+guint8
+gst_rtp_buffer_list_get_payload_type (GstBufferList * list)
+{
+  GstBuffer *buffer;
+
+  buffer = gst_buffer_list_get (list, 0, 0);
+  g_return_val_if_fail (buffer != NULL, 0);
+
+  return GST_RTP_HEADER_PAYLOAD_TYPE (GST_BUFFER_DATA (buffer));
 }
 
 /**
@@ -779,7 +972,32 @@ gst_rtp_buffer_set_payload_type (GstBuffer * buffer, guint8 payload_type)
 {
   g_return_if_fail (payload_type < 0x80);
 
-  GST_RTP_HEADER_PAYLOAD_TYPE (buffer) = payload_type;
+  GST_RTP_HEADER_PAYLOAD_TYPE (GST_BUFFER_DATA (buffer)) = payload_type;
+}
+
+static GstBufferListItem
+set_pt_header (GstBuffer ** buffer, guint group, guint idx, guint8 * pt)
+{
+  GST_RTP_HEADER_PAYLOAD_TYPE (GST_BUFFER_DATA (*buffer)) = *pt;
+  return GST_BUFFER_LIST_SKIP_GROUP;
+}
+
+/**
+ * gst_rtp_buffer_list_set_payload_type:
+ * @list: the buffer list
+ * @payload_type: the new type
+ *
+ * Set the payload type of each RTP packet in @list to @payload_type.
+ *
+ * Since: 0.10.24
+ */
+void
+gst_rtp_buffer_list_set_payload_type (GstBufferList * list, guint8 payload_type)
+{
+  g_return_if_fail (payload_type < 0x80);
+
+  gst_buffer_list_foreach (list, (GstBufferListFunc) set_pt_header,
+      &payload_type);
 }
 
 /**
@@ -793,7 +1011,7 @@ gst_rtp_buffer_set_payload_type (GstBuffer * buffer, guint8 payload_type)
 guint16
 gst_rtp_buffer_get_seq (GstBuffer * buffer)
 {
-  return g_ntohs (GST_RTP_HEADER_SEQ (buffer));
+  return g_ntohs (GST_RTP_HEADER_SEQ (GST_BUFFER_DATA (buffer)));
 }
 
 /**
@@ -806,8 +1024,57 @@ gst_rtp_buffer_get_seq (GstBuffer * buffer)
 void
 gst_rtp_buffer_set_seq (GstBuffer * buffer, guint16 seq)
 {
-  GST_RTP_HEADER_SEQ (buffer) = g_htons (seq);
+  GST_RTP_HEADER_SEQ (GST_BUFFER_DATA (buffer)) = g_htons (seq);
 }
+
+static GstBufferListItem
+set_seq_header (GstBuffer ** buffer, guint group, guint idx, guint16 * seq)
+{
+  GST_RTP_HEADER_SEQ (GST_BUFFER_DATA (*buffer)) = g_htons (*seq);
+  (*seq)++;
+  return GST_BUFFER_LIST_SKIP_GROUP;
+}
+
+/**
+ * gst_rtp_buffer_list_set_seq:
+ * @list: the buffer list
+ * @seq: the new sequence number
+ *
+ * Set the sequence number of each RTP packet in @list to @seq.
+ *
+ * Returns: The seq number of the last packet in the list + 1.
+ *
+ * Since: 0.10.24
+ */
+guint16
+gst_rtp_buffer_list_set_seq (GstBufferList * list, guint16 seq)
+{
+  gst_buffer_list_foreach (list, (GstBufferListFunc) set_seq_header, &seq);
+  return seq;
+}
+
+/**
+ * gst_rtp_buffer_list_get_seq:
+ * @list: the buffer list
+ *
+ * Get the sequence number of the first RTP packet in @list.
+ * All packets within @list have the same sequence number.
+ *
+ * Returns: The seq number
+ *
+ * Since: 0.10.24
+ */
+guint16
+gst_rtp_buffer_list_get_seq (GstBufferList * list)
+{
+  GstBuffer *buffer;
+
+  buffer = gst_buffer_list_get (list, 0, 0);
+  g_return_val_if_fail (buffer != NULL, 0);
+
+  return g_ntohl (GST_RTP_HEADER_SEQ (GST_BUFFER_DATA (buffer)));
+}
+
 
 /**
  * gst_rtp_buffer_get_timestamp:
@@ -820,7 +1087,29 @@ gst_rtp_buffer_set_seq (GstBuffer * buffer, guint16 seq)
 guint32
 gst_rtp_buffer_get_timestamp (GstBuffer * buffer)
 {
-  return g_ntohl (GST_RTP_HEADER_TIMESTAMP (buffer));
+  return g_ntohl (GST_RTP_HEADER_TIMESTAMP (GST_BUFFER_DATA (buffer)));
+}
+
+/**
+ * gst_rtp_buffer_list_get_timestamp:
+ * @list: the buffer list
+ *
+ * Get the timestamp of the first RTP packet in @list.
+ * All packets within @list have the same timestamp.
+ *
+ * Returns: The timestamp in host order.
+ *
+ * Since: 0.10.24
+ */
+guint32
+gst_rtp_buffer_list_get_timestamp (GstBufferList * list)
+{
+  GstBuffer *buffer;
+
+  buffer = gst_buffer_list_get (list, 0, 0);
+  g_return_val_if_fail (buffer != NULL, 0);
+
+  return g_ntohl (GST_RTP_HEADER_TIMESTAMP (GST_BUFFER_DATA (buffer)));
 }
 
 /**
@@ -833,7 +1122,32 @@ gst_rtp_buffer_get_timestamp (GstBuffer * buffer)
 void
 gst_rtp_buffer_set_timestamp (GstBuffer * buffer, guint32 timestamp)
 {
-  GST_RTP_HEADER_TIMESTAMP (buffer) = g_htonl (timestamp);
+  GST_RTP_HEADER_TIMESTAMP (GST_BUFFER_DATA (buffer)) = g_htonl (timestamp);
+}
+
+
+static GstBufferListItem
+set_timestamp_header (GstBuffer ** buffer, guint group, guint idx,
+    guint32 * timestamp)
+{
+  GST_RTP_HEADER_TIMESTAMP (GST_BUFFER_DATA (*buffer)) = g_htonl (*timestamp);
+  return GST_BUFFER_LIST_SKIP_GROUP;
+}
+
+/**
+ * gst_rtp_buffer_list_set_timestamp:
+ * @list: the buffer list
+ * @timestamp: the new timestamp
+ *
+ * Set the timestamp of each RTP packet in @list to @timestamp.
+ *
+ * Since: 0.10.24
+ */
+void
+gst_rtp_buffer_list_set_timestamp (GstBufferList * list, guint32 timestamp)
+{
+  gst_buffer_list_foreach (list, (GstBufferListFunc) set_timestamp_header,
+      &timestamp);
 }
 
 /**
@@ -907,13 +1221,53 @@ guint
 gst_rtp_buffer_get_payload_len (GstBuffer * buffer)
 {
   guint len, size;
+  guint8 *data;
 
   size = GST_BUFFER_SIZE (buffer);
+  data = GST_BUFFER_DATA (buffer);
 
   len = size - gst_rtp_buffer_get_header_len (buffer);
 
-  if (GST_RTP_HEADER_PADDING (buffer))
-    len -= GST_BUFFER_DATA (buffer)[size - 1];
+  if (GST_RTP_HEADER_PADDING (data))
+    len -= data[size - 1];
+
+  return len;
+}
+
+/**
+ * gst_rtp_buffer_list_get_payload_len:
+ * @list: the buffer list
+ *
+ * Get the length of the payload of the RTP packet in @list.
+ *
+ * Returns: The length of the payload in @list.
+ *
+ * Since: 0.10.24
+ */
+guint
+gst_rtp_buffer_list_get_payload_len (GstBufferList * list)
+{
+  guint len;
+  GstBufferListIterator *it;
+
+  it = gst_buffer_list_iterate (list);
+  len = 0;
+
+  while (gst_buffer_list_iterator_next_group (it)) {
+    guint i;
+    GstBuffer *buf;
+
+    i = 0;
+    while ((buf = gst_buffer_list_iterator_next (it))) {
+      /* skip the RTP header */
+      if (!i++)
+        continue;
+      /* take the size of the current buffer */
+      len += GST_BUFFER_SIZE (buf);
+    }
+  }
+
+  gst_buffer_list_iterator_free (it);
 
   return len;
 }

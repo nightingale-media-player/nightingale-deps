@@ -15,9 +15,9 @@ AC_DEFUN([AG_GST_BISON_CHECK],
   bison_version=`$BISON_PATH --version | head -n 1 |  sed 's/^[[^0-9]]*//' | sed 's/[[^0-9]]*$//' | cut -d' ' -f1`
   AC_MSG_CHECKING([bison version $bison_version >= $bison_min_version])
 
-  if perl -we "exit ((v$bison_version ge v$bison_min_version) ? 0 : 1)"; then 
+  if perl -we "exit ((v$bison_version ge v$bison_min_version) ? 0 : 1)"; then
     AC_MSG_RESULT([yes])
-  else 
+  else
     AC_MSG_ERROR([no])
   fi
 ])
@@ -29,10 +29,10 @@ AC_DEFUN([AG_GST_FLEX_CHECK],
   if test x$FLEX_PATH = xno; then
     AC_MSG_ERROR(Could not find flex)
   fi
-  
+
   dnl check flex version
   dnl we need version >= 2.5.31 for the reentrancy support
-  dnl in the parser. 
+  dnl in the parser.
   flex_min_version=2.5.31
   flex_version=`$FLEX_PATH --version | head -n 1 | sed 's/^.* //' | sed 's/[[a-zA-Z]]*$//' | cut -d' ' -f1`
   AC_MSG_CHECKING([flex version $flex_version >= $flex_min_version])

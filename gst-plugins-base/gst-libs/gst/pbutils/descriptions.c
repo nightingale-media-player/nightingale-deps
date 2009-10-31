@@ -65,7 +65,10 @@ static const FormatInfo formats[] = {
   {"application/vnd.rn-realmedia", "Realmedia", FLAG_CONTAINER},
   {"application/x-id3", N_("ID3 tag"), FLAG_CONTAINER},
   {"application/x-ape", N_("APE tag"), FLAG_CONTAINER},
+  {"application/x-apetag", N_("APE tag"), FLAG_CONTAINER},
   {"application/x-icy", N_("ICY internet radio"), FLAG_CONTAINER},
+  {"application/x-3gp", "3GP", FLAG_CONTAINER},
+  {"multipart/x-mixed-replace", "Multipart", FLAG_CONTAINER},
   {"video/x-fli", "FLI/FLC/FLX Animation", FLAG_CONTAINER},
   {"video/x-flv", "Flash", FLAG_CONTAINER},
   {"video/x-matroska", "Matroska", FLAG_CONTAINER},
@@ -73,6 +76,7 @@ static const FormatInfo formats[] = {
   {"video/x-msvideo", "AVI", FLAG_CONTAINER},
   {"video/x-quicktime", "Quicktime", FLAG_CONTAINER},
   {"video/quicktime", "Quicktime", FLAG_CONTAINER},
+  {"video/mj2", "Motion JPEG 2000", FLAG_CONTAINER},
 
   /* audio formats with static descriptions */
   {"audio/x-ac3", "AC-3 (ATSC A/52)", 0},
@@ -119,6 +123,7 @@ static const FormatInfo formats[] = {
   {"audio/x-shorten", "Shorten Lossless", 0},
   {"audio/x-sid", "Sid", 0},
   {"audio/x-sipro", "Sipro/ACELP.NET Voice", 0},
+  {"audio/x-siren", "Siren", 0},
   {"audio/x-spc", "SNES-SPC700 Sound File Data", 0},
   {"audio/x-speex", "Speex", 0},
   {"audio/x-svx", "Amiga IFF / SVX8 / SV16", 0},
@@ -197,6 +202,9 @@ static const FormatInfo formats[] = {
   {"image/tiff", "TIFF", 0},
   {"image/x-cmu-raster", "CMU Raster Format", 0},
   {"image/x-icon", "ICO", 0},
+  {"image/x-j2c", "JPEG 2000", 0},
+  {"image/x-jpc", "JPEG 2000", 0},
+  {"image/jp2", "JPEG 2000", 0},
   {"image/x-xcf", "XFC", 0},
   {"image/x-pixmap", "XPM", 0},
   {"image/x-xpixmap", "XPM", 0},
@@ -207,8 +215,13 @@ static const FormatInfo formats[] = {
   /* subtitle formats with static descriptions */
   {"application/x-subtitle-sami", N_("Sami subtitle format"), 0},
   {"application/x-subtitle-tmplayer", N_("TMPlayer subtitle format"), 0},
-  {"application/x-kate", N_("Kate subtitle format"), 0},
+  {"application/x-kate", "Kate", 0},
+  {"subtitle/x-kate", N_("Kate subtitle format"), 0},
   /* add variant field to typefinder? { "application/x-subtitle", N_("subtitle"), 0}, */
+
+  /* non-audio/video/container formats */
+  {"hdv/aux-v", "HDV AUX-V", 0},
+  {"hdv/aux-a", "HDV AUX-A", 0},
 
   /* formats with dynamic descriptions */
   {"audio/mpeg", NULL, 0},

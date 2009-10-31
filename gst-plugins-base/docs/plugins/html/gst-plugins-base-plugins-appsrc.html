@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="prev" href="gst-plugins-base-plugins-adder.html" title="adder">
 <link rel="next" href="gst-plugins-base-plugins-appsink.html" title="appsink">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
@@ -23,17 +23,19 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-plugins-appsink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-appsrc.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-appsrc.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-appsrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-appsrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-appsrc.properties" class="shortcut">Properties</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-appsrc.signals" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-plugins-appsrc.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-appsrc.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-appsrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-appsrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-appsrc.properties" class="shortcut">Properties</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-appsrc.signals" class="shortcut">Signals</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-plugins-appsrc"></a><div class="titlepage"></div>
@@ -56,9 +58,15 @@
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
-               +----GstBaseSrc
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="/usr/share/gtk-doc/html/gstreamer-libs-0.10/GstBaseSrc.html"
+>GstBaseSrc</a>
                      +----GstAppSrc
 </pre>
 </div>
@@ -66,7 +74,9 @@ href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 <a name="gst-plugins-base-plugins-appsrc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstAppSrc implements
- GstURIHandler.</p>
+ <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstUriHandler.html#GstURIHandler"
+>GstURIHandler</a>.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-appsrc.properties"></a><h2>Properties</h2>
@@ -74,8 +84,12 @@ GstAppSrc implements
   "<a class="link" href="gst-plugins-base-plugins-appsrc.html#GstAppSrc--block" title='The "block" property'>block</a>"                    <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-appsrc.html#GstAppSrc--caps" title='The "caps" property'>caps</a>"                     GstCaps*              : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-appsrc.html#GstAppSrc--format" title='The "format" property'>format</a>"                   GstFormat             : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-appsrc.html#GstAppSrc--caps" title='The "caps" property'>caps</a>"                     <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a>*              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-appsrc.html#GstAppSrc--format" title='The "format" property'>format</a>"                   <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstFormat.html#GstFormat"
+>GstFormat</a>             : Read / Write
   "<a class="link" href="gst-plugins-base-plugins-appsrc.html#GstAppSrc--is-live" title='The "is-live" property'>is-live</a>"                  <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>              : Read / Write
@@ -92,8 +106,11 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
 >gint64</a>                : Read / Write
   "<a class="link" href="gst-plugins-base-plugins-appsrc.html#GstAppSrc--stream-type" title='The "stream-type" property'>stream-type</a>"              <a
-href="/usr/share/gtk-doc/html/gst-plugins-bad-plugins-0.10/gst-plugins-bad-plugins-appsrc.html#GstAppStreamType"
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-appsrc.html#GstAppStreamType"
 >GstAppStreamType</a>      : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-appsrc.html#GstAppSrc--emit-signals" title='The "emit-signals" property'>emit-signals</a>"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -115,12 +132,14 @@ external API functions.
 </p>
 <p>
 For the documentation of the API, please see the
-libgstapp section in the
+<a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-appsrc.html"
+>libgstapp</a> section in the
 GStreamer Plugins Base Libraries documentation.</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2762782"></a><h3>Element Information</h3>
+<a name="id2576701"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -143,7 +162,57 @@ GStreamer Plugins Base Libraries documentation.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2762845"></a><h3>Element Pads</h3>
+<a name="id2555285"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2555362"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-app.html#plugin-app">app</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>David Schleef &lt;ds@schleef.org&gt;, Wim Taymans &lt;wim.taymans@gmail.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Generic/Src</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2555424"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -168,7 +237,6 @@ GStreamer Plugins Base Libraries documentation.</p>
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -177,7 +245,6 @@ GStreamer Plugins Base Libraries documentation.</p>
 <a name="GstAppSrc-struct"></a><h3>GstAppSrc</h3>
 <pre class="programlisting">typedef struct _GstAppSrc GstAppSrc;</pre>
 <p>
-
 </p>
 </div>
 </div>
@@ -194,13 +261,17 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstAppSrc--caps"></a><h3>The <code class="literal">"caps"</code> property</h3>
-<pre class="programlisting">  "caps"                     GstCaps*              : Read / Write</pre>
+<pre class="programlisting">  "caps"                     <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a>*              : Read / Write</pre>
 <p>The allowed caps for the src pad.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstAppSrc--format"></a><h3>The <code class="literal">"format"</code> property</h3>
-<pre class="programlisting">  "format"                   GstFormat             : Read / Write</pre>
+<pre class="programlisting">  "format"                   <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstFormat.html#GstFormat"
+>GstFormat</a>             : Read / Write</pre>
 <p>The format of the segment events and seek.</p>
 <p>Default value: GST_FORMAT_BYTES</p>
 </div>
@@ -256,24 +327,34 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
 <div class="refsect2" lang="en">
 <a name="GstAppSrc--stream-type"></a><h3>The <code class="literal">"stream-type"</code> property</h3>
 <pre class="programlisting">  "stream-type"              <a
-href="/usr/share/gtk-doc/html/gst-plugins-bad-plugins-0.10/gst-plugins-bad-plugins-appsrc.html#GstAppStreamType"
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-appsrc.html#GstAppStreamType"
 >GstAppStreamType</a>      : Read / Write</pre>
 <p>the type of the stream.</p>
 <p>Default value: Stream</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstAppSrc--emit-signals"></a><h3>The <code class="literal">"emit-signals"</code> property</h3>
+<pre class="programlisting">  "emit-signals"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Emit new-preroll and new-buffer signals.</p>
+<p>Default value: TRUE</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-appsrc.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstAppSrc-end-of-stream"></a><h3>The <code class="literal">"end-of-stream"</code> signal</h3>
-<pre class="programlisting">GstFlowReturn       user_function                      (<a class="link" href="gst-plugins-base-plugins-appsrc.html#GstAppSrc">GstAppSrc</a> *appsrc,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       user_function                      (<a class="link" href="gst-plugins-base-plugins-appsrc.html#GstAppSrc">GstAppSrc</a> *appsrc,
                                                         <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>   user_data)      : Run Last / Action</pre>
 <p>
 Notify <em class="parameter"><code>appsrc</code></em> that no more buffer are available.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -302,7 +383,6 @@ Signal that the source has enough data. It is recommended that the
 application stops calling push-buffer until the need-data signal is
 emited again to avoid excessive buffer queueing.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -341,7 +421,6 @@ pushed into <em class="parameter"><code>appsrc</code></em>.
 You can call push-buffer multiple times until the enough-data signal is
 fired.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -366,8 +445,12 @@ fired.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstAppSrc-push-buffer"></a><h3>The <code class="literal">"push-buffer"</code> signal</h3>
-<pre class="programlisting">GstFlowReturn       user_function                      (<a class="link" href="gst-plugins-base-plugins-appsrc.html#GstAppSrc">GstAppSrc</a> *appsrc,
-                                                        GstBuffer *buffer,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       user_function                      (<a class="link" href="gst-plugins-base-plugins-appsrc.html#GstAppSrc">GstAppSrc</a> *appsrc,
+                                                        <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                         <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>   user_data)      : Run Last / Action</pre>
@@ -380,7 +463,6 @@ buffer so the buffer needs to be unreffed after calling this function.
 When the block property is TRUE, this function can block until free space
 becomes available in the queue.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -419,7 +501,6 @@ Seek to the given offset. The next push-buffer should produce buffers from
 the new <em class="parameter"><code>offset</code></em>.
 This callback is only called for seekable stream types.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -441,7 +522,7 @@ This callback is only called for seekable stream types.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> if the seek succeeded.
 </td>
 </tr>
@@ -452,6 +533,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

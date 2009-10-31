@@ -7,8 +7,8 @@
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-interfaces.html" title="Interfaces Library">
 <link rel="prev" href="gst-plugins-base-libs-gstnavigation.html" title="gstnavigation">
-<link rel="next" href="gst-plugins-base-libs-gsttuner.html" title="gsttuner">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<link rel="next" href="gst-plugins-base-libs-gststreamvolume.html" title="gststreamvolume">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -35,15 +35,17 @@
 <td><a accesskey="u" href="gstreamer-interfaces.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-base-libs-gsttuner.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-libs-gststreamvolume.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstpropertyprobe.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstpropertyprobe.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstpropertyprobe.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstpropertyprobe.signals" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gstpropertyprobe.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstpropertyprobe.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstpropertyprobe.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstpropertyprobe.signals" class="shortcut">Signals</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstpropertyprobe"></a><div class="titlepage"></div>
@@ -64,22 +66,22 @@
                     <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbeInterface" title="GstPropertyProbeInterface">GstPropertyProbeInterface</a>;
 const <a
 href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a>*        <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-properties" title="gst_property_probe_get_properties ()">gst_property_probe_get_properties</a>   (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe);
+>GList</a> *       <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-properties" title="gst_property_probe_get_properties ()">gst_property_probe_get_properties</a>   (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe);
 const <a
 href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
->GParamSpec</a>*   <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-property" title="gst_property_probe_get_property ()">gst_property_probe_get_property</a>     (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+>GParamSpec</a> *  <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-property" title="gst_property_probe_get_property ()">gst_property_probe_get_property</a>     (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name);
 <a
 href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
->GValueArray</a>*        <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-values" title="gst_property_probe_get_values ()">gst_property_probe_get_values</a>       (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+>GValueArray</a> *       <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-values" title="gst_property_probe_get_values ()">gst_property_probe_get_values</a>       (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const <a
 href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
 >GParamSpec</a> *pspec);
 <a
 href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
->GValueArray</a>*        <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-values-name" title="gst_property_probe_get_values_name ()">gst_property_probe_get_values_name</a>  (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+>GValueArray</a> *       <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-values-name" title="gst_property_probe_get_values_name ()">gst_property_probe_get_values_name</a>  (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name);
@@ -97,14 +99,14 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name);
 <a
 href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
->GValueArray</a>*        <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-probe-and-get-values" title="gst_property_probe_probe_and_get_values ()">gst_property_probe_probe_and_get_values</a>
+>GValueArray</a> *       <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-probe-and-get-values" title="gst_property_probe_probe_and_get_values ()">gst_property_probe_probe_and_get_values</a>
                                                         (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const <a
 href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
 >GParamSpec</a> *pspec);
 <a
 href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
->GValueArray</a>*        <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-probe-and-get-values-name" title="gst_property_probe_probe_and_get_values_name ()">gst_property_probe_probe_and_get_values_name</a>
+>GValueArray</a> *       <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-probe-and-get-values-name" title="gst_property_probe_probe_and_get_values_name ()">gst_property_probe_probe_and_get_values_name</a>
                                                         (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
@@ -142,7 +144,6 @@ property. It's primary use is to autodetect device-names in several elements.
 <p>
 The interface is implemented by many hardware sources and sinks.</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -153,7 +154,6 @@ The interface is implemented by many hardware sources and sinks.</p>
 <p>
 Opaque <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"><span class="type">GstPropertyProbe</span></a> data structure.</p>
 <p>
-
 </p>
 </div>
 <hr>
@@ -182,7 +182,6 @@ Opaque <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstProp
 <p>
 <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"><span class="type">GstPropertyProbe</span></a> interface.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -201,7 +200,7 @@ href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GTypeInterfa
 </tr>
 <tr>
 <td><p><span class="term"><em class="structfield"><code>get_properties</code></em> ()</span></p></td>
-<td> virtual method to get list of pobable properties
+<td> virtual method to get list of probable properties
 </td>
 </tr>
 <tr>
@@ -227,11 +226,10 @@ href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GTypeInterfa
 <a name="gst-property-probe-get-properties"></a><h3>gst_property_probe_get_properties ()</h3>
 <pre class="programlisting">const <a
 href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a>*        gst_property_probe_get_properties   (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe);</pre>
+>GList</a> *       gst_property_probe_get_properties   (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe);</pre>
 <p>
 Get a list of properties for which probing is supported.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -255,7 +253,7 @@ by this element.
 <a name="gst-property-probe-get-property"></a><h3>gst_property_probe_get_property ()</h3>
 <pre class="programlisting">const <a
 href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
->GParamSpec</a>*   gst_property_probe_get_property     (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+>GParamSpec</a> *  gst_property_probe_get_property     (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name);</pre>
@@ -264,7 +262,6 @@ Get <a
 href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
 ><span class="type">GParamSpec</span></a> for a property for which probing is supported.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -284,7 +281,7 @@ href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
 <td> the <a
 href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
 ><span class="type">GParamSpec</span></a> of <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>.
 </td>
 </tr>
@@ -296,7 +293,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
 <a name="gst-property-probe-get-values"></a><h3>gst_property_probe_get_values ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
->GValueArray</a>*        gst_property_probe_get_values       (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+>GValueArray</a> *       gst_property_probe_get_values       (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const <a
 href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
 >GParamSpec</a> *pspec);</pre>
@@ -304,7 +301,6 @@ href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
 Gets the possible (probed) values for the given property,
 requires the property to have been probed before.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -334,14 +330,13 @@ href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
 <a name="gst-property-probe-get-values-name"></a><h3>gst_property_probe_get_values_name ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
->GValueArray</a>*        gst_property_probe_get_values_name  (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+>GValueArray</a> *       gst_property_probe_get_values_name  (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name);</pre>
 <p>
 Same as <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-values" title="gst_property_probe_get_values ()"><code class="function">gst_property_probe_get_values()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -380,7 +375,6 @@ changed. This might be, for example, because a new device was
 added, and thus device probing needs to be refreshed to display
 the new device.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -417,7 +411,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Same as <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-needs-probe" title="gst_property_probe_needs_probe ()"><code class="function">gst_property_probe_needs_probe()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -445,7 +438,7 @@ Same as <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-pr
 <a name="gst-property-probe-probe-and-get-values"></a><h3>gst_property_probe_probe_and_get_values ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
->GValueArray</a>*        gst_property_probe_probe_and_get_values
+>GValueArray</a> *       gst_property_probe_probe_and_get_values
                                                         (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const <a
 href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
@@ -455,7 +448,6 @@ Check whether the given property requires a new probe. If so,
 fo the probe. After that, retrieve a value list. Meant as a
 utility function that wraps the above functions.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -485,7 +477,7 @@ href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
 <a name="gst-property-probe-probe-and-get-values-name"></a><h3>gst_property_probe_probe_and_get_values_name ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
->GValueArray</a>*        gst_property_probe_probe_and_get_values_name
+>GValueArray</a> *       gst_property_probe_probe_and_get_values_name
                                                         (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
@@ -493,7 +485,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Same as <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-probe-and-get-values" title="gst_property_probe_probe_and_get_values ()"><code class="function">gst_property_probe_probe_and_get_values()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -526,7 +517,6 @@ href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
 <p>
 Runs a probe on the property specified by <code class="literal">pspec</code></p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -557,7 +547,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Runs a probe on the property specified by <code class="literal">name</code>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -590,7 +579,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 <p>
 </p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -613,6 +601,6 @@ href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

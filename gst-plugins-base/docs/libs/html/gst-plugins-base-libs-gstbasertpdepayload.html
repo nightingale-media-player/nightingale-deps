@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-rtp.html" title="RTP Library">
 <link rel="prev" href="gst-plugins-base-libs-gstbasertpaudiopayload.html" title="gstbasertpaudiopayload">
 <link rel="next" href="gst-plugins-base-libs-gstbasertppayload.html" title="gstbasertppayload">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -37,13 +37,15 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstbasertppayload.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstbasertpdepayload.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstbasertpdepayload.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstbasertpdepayload.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstbasertpdepayload.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gstbasertpdepayload.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstbasertpdepayload.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstbasertpdepayload.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstbasertpdepayload.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstbasertpdepayload"></a><div class="titlepage"></div>
@@ -62,15 +64,23 @@
 
                     <a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload-struct" title="GstBaseRTPDepayload">GstBaseRTPDepayload</a>;
                     <a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayloadClass" title="GstBaseRTPDepayloadClass">GstBaseRTPDepayloadClass</a>;
-#define             <a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GST-BASE-RTP-DEPAYLOAD-SINKPAD:CAPS" title="GST_BASE_RTP_DEPAYLOAD_SINKPAD()">GST_BASE_RTP_DEPAYLOAD_SINKPAD</a>      (depayload)
-#define             <a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GST-BASE-RTP-DEPAYLOAD-SRCPAD:CAPS" title="GST_BASE_RTP_DEPAYLOAD_SRCPAD()">GST_BASE_RTP_DEPAYLOAD_SRCPAD</a>       (depayload)
-GstFlowReturn       <a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#gst-base-rtp-depayload-push" title="gst_base_rtp_depayload_push ()">gst_base_rtp_depayload_push</a>         (<a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload">GstBaseRTPDepayload</a> *filter,
-                                                         GstBuffer *out_buf);
-GstFlowReturn       <a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#gst-base-rtp-depayload-push-ts" title="gst_base_rtp_depayload_push_ts ()">gst_base_rtp_depayload_push_ts</a>      (<a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload">GstBaseRTPDepayload</a> *filter,
+#define             <a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GST-BASE-RTP-DEPAYLOAD-SINKPAD--CAPS" title="GST_BASE_RTP_DEPAYLOAD_SINKPAD()">GST_BASE_RTP_DEPAYLOAD_SINKPAD</a>      (depayload)
+#define             <a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GST-BASE-RTP-DEPAYLOAD-SRCPAD--CAPS" title="GST_BASE_RTP_DEPAYLOAD_SRCPAD()">GST_BASE_RTP_DEPAYLOAD_SRCPAD</a>       (depayload)
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       <a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#gst-base-rtp-depayload-push" title="gst_base_rtp_depayload_push ()">gst_base_rtp_depayload_push</a>         (<a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload">GstBaseRTPDepayload</a> *filter,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *out_buf);
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       <a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#gst-base-rtp-depayload-push-ts" title="gst_base_rtp_depayload_push_ts ()">gst_base_rtp_depayload_push_ts</a>      (<a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload">GstBaseRTPDepayload</a> *filter,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
 >guint32</a> timestamp,
-                                                         GstBuffer *out_buf);
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *out_buf);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -79,8 +89,12 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
                +----GstBaseRTPDepayload
 </pre>
 </div>
@@ -97,12 +111,11 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id3092973"></a><p>
+<a name="id2815664"></a><p>
 Provides a base class for RTP depayloaders
 </p>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -111,7 +124,6 @@ Provides a base class for RTP depayloaders
 <a name="GstBaseRTPDepayload-struct"></a><h3>GstBaseRTPDepayload</h3>
 <pre class="programlisting">typedef struct _GstBaseRTPDepayload GstBaseRTPDepayload;</pre>
 <p>
-
 </p>
 </div>
 <hr>
@@ -145,43 +157,36 @@ Provides a base class for RTP depayloaders
 } GstBaseRTPDepayloadClass;
 </pre>
 <p>
-
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-BASE-RTP-DEPAYLOAD-SINKPAD:CAPS"></a><h3>GST_BASE_RTP_DEPAYLOAD_SINKPAD()</h3>
+<a name="GST-BASE-RTP-DEPAYLOAD-SINKPAD--CAPS"></a><h3>GST_BASE_RTP_DEPAYLOAD_SINKPAD()</h3>
 <pre class="programlisting">#define GST_BASE_RTP_DEPAYLOAD_SINKPAD(depayload) (GST_BASE_RTP_DEPAYLOAD (depayload)-&gt;sinkpad)
 </pre>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>depayload</code></em> :</span></p></td>
 <td>
-
-
 </td>
 </tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-BASE-RTP-DEPAYLOAD-SRCPAD:CAPS"></a><h3>GST_BASE_RTP_DEPAYLOAD_SRCPAD()</h3>
+<a name="GST-BASE-RTP-DEPAYLOAD-SRCPAD--CAPS"></a><h3>GST_BASE_RTP_DEPAYLOAD_SRCPAD()</h3>
 <pre class="programlisting">#define GST_BASE_RTP_DEPAYLOAD_SRCPAD(depayload)  (GST_BASE_RTP_DEPAYLOAD (depayload)-&gt;srcpad)
 </pre>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>depayload</code></em> :</span></p></td>
 <td>
-
-
 </td>
 </tr></tbody>
 </table></div>
@@ -189,8 +194,12 @@ Provides a base class for RTP depayloaders
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-rtp-depayload-push"></a><h3>gst_base_rtp_depayload_push ()</h3>
-<pre class="programlisting">GstFlowReturn       gst_base_rtp_depayload_push         (<a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload">GstBaseRTPDepayload</a> *filter,
-                                                         GstBuffer *out_buf);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       gst_base_rtp_depayload_push         (<a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload">GstBaseRTPDepayload</a> *filter,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *out_buf);</pre>
 <p>
 Push <em class="parameter"><code>out_buf</code></em> to the peer of <em class="parameter"><code>filter</code></em>. This function takes ownership of
 <em class="parameter"><code>out_buf</code></em>.
@@ -199,7 +208,6 @@ Push <em class="parameter"><code>out_buf</code></em> to the peer of <em class="p
 Unlike <a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#gst-base-rtp-depayload-push-ts" title="gst_base_rtp_depayload_push_ts ()"><code class="function">gst_base_rtp_depayload_push_ts()</code></a>, this function will not apply
 any timestamp on the outgoing buffer.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -211,12 +219,16 @@ any timestamp on the outgoing buffer.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>out_buf</code></em> :</span></p></td>
-<td> a <span class="type">GstBuffer</span>
+<td> a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+><span class="type">GstBuffer</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GstFlowReturn</span>.
+<td> a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html#GstFlowReturn"
+><span class="type">GstFlowReturn</span></a>.
 </td>
 </tr>
 </tbody>
@@ -225,11 +237,15 @@ any timestamp on the outgoing buffer.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-rtp-depayload-push-ts"></a><h3>gst_base_rtp_depayload_push_ts ()</h3>
-<pre class="programlisting">GstFlowReturn       gst_base_rtp_depayload_push_ts      (<a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload">GstBaseRTPDepayload</a> *filter,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       gst_base_rtp_depayload_push_ts      (<a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload">GstBaseRTPDepayload</a> *filter,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
 >guint32</a> timestamp,
-                                                         GstBuffer *out_buf);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *out_buf);</pre>
 <p>
 Push <em class="parameter"><code>out_buf</code></em> to the peer of <em class="parameter"><code>filter</code></em>. This function takes ownership of
 <em class="parameter"><code>out_buf</code></em>.
@@ -239,7 +255,6 @@ Unlike <a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#gst-
 on the outgoing buffer, using the configured clock_rate to convert the
 timestamp to a valid GStreamer clock time.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -256,12 +271,16 @@ timestamp to a valid GStreamer clock time.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>out_buf</code></em> :</span></p></td>
-<td> a <span class="type">GstBuffer</span>
+<td> a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+><span class="type">GstBuffer</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GstFlowReturn</span>.
+<td> a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html#GstFlowReturn"
+><span class="type">GstFlowReturn</span></a>.
 </td>
 </tr>
 </tbody>
@@ -282,6 +301,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

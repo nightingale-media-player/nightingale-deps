@@ -60,19 +60,19 @@ static const GstElementDetails gst_ogm_audio_parse_details =
 GST_ELEMENT_DETAILS ("OGM audio stream parser",
     "Codec/Decoder/Audio",
     "parse an OGM audio header and stream",
-    "Ronald Bultje <rbultje@ronald.bitfreak.net>");
+    "GStreamer maintainers <gstreamer-devel@lists.sourceforge.net>");
 
 static const GstElementDetails gst_ogm_video_parse_details =
 GST_ELEMENT_DETAILS ("OGM video stream parser",
     "Codec/Decoder/Video",
     "parse an OGM video header and stream",
-    "Ronald Bultje <rbultje@ronald.bitfreak.net>");
+    "GStreamer maintainers <gstreamer-devel@lists.sourceforge.net>");
 
 static const GstElementDetails gst_ogm_text_parse_details =
 GST_ELEMENT_DETAILS ("OGM text stream parser",
     "Codec/Decoder/Subtitle",
     "parse an OGM text header and stream",
-    "Ronald Bultje <rbultje@ronald.bitfreak.net>");
+    "GStreamer maintainers <gstreamer-devel@lists.sourceforge.net>");
 
 typedef struct _stream_header_video
 {
@@ -664,6 +664,15 @@ gst_ogm_parse_stream_header (GstOgmParse * ogm, const guint8 * data, guint size)
       gst_pad_push_event (ogm->srcpad, event);
     }
     g_list_free (cached_events);
+
+    {
+      GstTagList *tags;
+
+      tags = gst_tag_list_new ();
+      gst_tag_list_add (tags, GST_TAG_MERGE_APPEND, GST_TAG_SUBTITLE_CODEC,
+          "Ogm", NULL);
+      gst_element_found_tags_for_pad (GST_ELEMENT (ogm), ogm->srcpad, tags);
+    }
   }
 
   gst_caps_unref (caps);

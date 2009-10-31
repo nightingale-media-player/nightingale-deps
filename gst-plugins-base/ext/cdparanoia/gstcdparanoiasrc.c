@@ -43,13 +43,15 @@ enum
   PROP_READ_SPEED,
   PROP_PARANOIA_MODE,
   PROP_SEARCH_OVERLAP,
-  PROP_GENERIC_DEVICE
+  PROP_GENERIC_DEVICE,
+  PROP_CACHE_SIZE
 };
 
 #define DEFAULT_READ_SPEED              -1
 #define DEFAULT_SEARCH_OVERLAP          -1
 #define DEFAULT_PARANOIA_MODE            PARANOIA_MODE_FRAGMENT
 #define DEFAULT_GENERIC_DEVICE           NULL
+#define DEFAULT_CACHE_SIZE              -1
 
 GST_DEBUG_CATEGORY_STATIC (gst_cd_paranoia_src_debug);
 #define GST_CAT_DEFAULT gst_cd_paranoia_src_debug
@@ -125,6 +127,7 @@ gst_cd_paranoia_src_init (GstCdParanoiaSrc * src, GstCdParanoiaSrcClass * klass)
   src->paranoia_mode = DEFAULT_PARANOIA_MODE;
   src->read_speed = DEFAULT_READ_SPEED;
   src->generic_device = g_strdup (DEFAULT_GENERIC_DEVICE);
+  src->cache_size = DEFAULT_CACHE_SIZE;
 }
 
 static void
@@ -157,6 +160,18 @@ gst_cd_paranoia_src_class_init (GstCdParanoiaSrcClass * klass)
       g_param_spec_int ("search-overlap", "Search overlap",
           "Force minimum overlap search during verification to n sectors", -1,
           75, DEFAULT_SEARCH_OVERLAP,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  /**
+   * GstCdParanoiaSrc:cache-size
+   *
+   * Set CD cache size to n sectors (-1 = auto)
+   *
+   * Since: 0.10.24
+   */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_CACHE_SIZE,
+      g_param_spec_int ("cache-size", "Cache size",
+          "Set CD cache size to n sectors (-1 = auto)", -1,
+          G_MAXINT, DEFAULT_CACHE_SIZE,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /* FIXME: we don't really want signals for this, but messages on the bus,
@@ -193,7 +208,7 @@ static gboolean
 gst_cd_paranoia_src_open (GstCddaBaseSrc * cddabasesrc, const gchar * device)
 {
   GstCdParanoiaSrc *src = GST_CD_PARANOIA_SRC (cddabasesrc);
-  gint i;
+  gint i, cache_size;
 
   GST_DEBUG_OBJECT (src, "trying to open device %s (generic-device=%s) ...",
       device, GST_STR_NULL (src->generic_device));
@@ -242,9 +257,23 @@ gst_cd_paranoia_src_open (GstCddaBaseSrc * cddabasesrc, const gchar * device)
     goto init_failed;
 
   paranoia_modeset (src->p, src->paranoia_mode);
+  GST_INFO_OBJECT (src, "set paranoia mode to 0x%02x", src->paranoia_mode);
 
-  if (src->search_overlap != -1)
+  if (src->search_overlap != -1) {
     paranoia_overlapset (src->p, src->search_overlap);
+    GST_INFO_OBJECT (src, "search overlap set to %u", src->search_overlap);
+  }
+
+  cache_size = src->cache_size;
+  if (cache_size == -1) {
+    /* if paranoia mode is low (the default), assume we're doing playback */
+    if (src->paranoia_mode <= PARANOIA_MODE_FRAGMENT)
+      cache_size = 150;
+    else
+      cache_size = paranoia_cachemodel_size (src->p, -1);
+  }
+  paranoia_cachemodel_size (src->p, cache_size);
+  GST_INFO_OBJECT (src, "set cachemodel size to %u", cache_size);
 
   src->next_sector = -1;
 
@@ -442,6 +471,10 @@ gst_cd_paranoia_src_set_property (GObject * object, guint prop_id,
       src->search_overlap = g_value_get_int (value);
       break;
     }
+    case PROP_CACHE_SIZE:{
+      src->cache_size = g_value_get_int (value);
+      break;
+    }
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -470,6 +503,9 @@ gst_cd_paranoia_src_get_property (GObject * object, guint prop_id,
       break;
     case PROP_SEARCH_OVERLAP:
       g_value_set_int (value, src->search_overlap);
+      break;
+    case PROP_CACHE_SIZE:
+      g_value_set_int (value, src->cache_size);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -505,4 +541,4 @@ GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
     "cdparanoia",
     "Read audio from CD in paranoid mode",
-    plugin_init, VERSION, "GPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)
+    plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

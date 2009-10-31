@@ -127,6 +127,7 @@
 #include <gst/gstinfo.h>
 GST_DEBUG_CATEGORY_STATIC (gst_debug_xvimagesink);
 #define GST_CAT_DEFAULT gst_debug_xvimagesink
+GST_DEBUG_CATEGORY_STATIC (GST_CAT_PERFORMANCE);
 
 typedef struct
 {
@@ -277,8 +278,8 @@ beach:
   xvimage->xvimagesink = NULL;
   gst_object_unref (xvimagesink);
 
-  GST_MINI_OBJECT_CLASS (xvimage_buffer_parent_class)->
-      finalize (GST_MINI_OBJECT (xvimage));
+  GST_MINI_OBJECT_CLASS (xvimage_buffer_parent_class)->finalize (GST_MINI_OBJECT
+      (xvimage));
 
   return;
 
@@ -583,12 +584,29 @@ gst_xvimagesink_xvimage_new (GstXvImageSink * xvimagesink, GstCaps * caps)
     switch (xvimage->im_format) {
       case GST_MAKE_FOURCC ('I', '4', '2', '0'):
       case GST_MAKE_FOURCC ('Y', 'V', '1', '2'):
+      {
+        gint pitches[3];
+        gint offsets[3];
+        guint plane;
+
+        offsets[0] = 0;
+        pitches[0] = GST_ROUND_UP_4 (xvimage->width);
+        offsets[1] = offsets[0] + pitches[0] * GST_ROUND_UP_2 (xvimage->height);
+        pitches[1] = GST_ROUND_UP_8 (xvimage->width) / 2;
+        offsets[2] =
+            offsets[1] + pitches[1] * GST_ROUND_UP_2 (xvimage->height) / 2;
+        pitches[2] = GST_ROUND_UP_8 (pitches[0]) / 2;
+
         expected_size =
-            GST_ROUND_UP_2 (xvimage->height) * GST_ROUND_UP_4 (xvimage->width);
-        expected_size +=
-            GST_ROUND_UP_2 (xvimage->height) * GST_ROUND_UP_8 (xvimage->width) /
-            2;
+            offsets[2] + pitches[2] * GST_ROUND_UP_2 (xvimage->height) / 2;
+
+        for (plane = 0; plane < xvimage->xvimage->num_planes; plane++) {
+          GST_DEBUG_OBJECT (xvimagesink,
+              "Plane %u has a expected pitch of %d bytes, " "offset of %d",
+              plane, pitches[plane], offsets[plane]);
+        }
         break;
+      }
       case GST_MAKE_FOURCC ('Y', 'U', 'Y', '2'):
       case GST_MAKE_FOURCC ('U', 'Y', 'V', 'Y'):
         expected_size = xvimage->height * GST_ROUND_UP_4 (xvimage->width * 2);
@@ -772,7 +790,7 @@ gst_xvimagesink_xvimage_put (GstXvImageSink * xvimagesink,
   if (xvimage && xvimagesink->cur_image != xvimage) {
     if (xvimagesink->cur_image) {
       GST_LOG_OBJECT (xvimagesink, "unreffing %p", xvimagesink->cur_image);
-      gst_buffer_unref (xvimagesink->cur_image);
+      gst_buffer_unref (GST_BUFFER_CAST (xvimagesink->cur_image));
     }
     GST_LOG_OBJECT (xvimagesink, "reffing %p as our current image", xvimage);
     xvimagesink->cur_image =
@@ -889,6 +907,47 @@ gst_xvimagesink_xwindow_decorate (GstXvImageSink * xvimagesink,
   return TRUE;
 }
 
+static void
+gst_xvimagesink_xwindow_set_title (GstXvImageSink * xvimagesink,
+    GstXWindow * xwindow, const gchar * media_title)
+{
+  if (media_title) {
+    g_free (xvimagesink->media_title);
+    xvimagesink->media_title = g_strdup (media_title);
+  }
+  if (xwindow) {
+    /* we have a window */
+    if (xwindow->internal) {
+      XTextProperty xproperty;
+      const gchar *app_name;
+      const gchar *title = NULL;
+      gchar *title_mem = NULL;
+
+      /* set application name as a title */
+      app_name = g_get_application_name ();
+
+      if (app_name && xvimagesink->media_title) {
+        title = title_mem = g_strconcat (xvimagesink->media_title, " : ",
+            app_name, NULL);
+      } else if (app_name) {
+        title = app_name;
+      } else if (xvimagesink->media_title) {
+        title = xvimagesink->media_title;
+      }
+
+      if (title) {
+        if ((XStringListToTextProperty (((char **) &title), 1,
+                    &xproperty)) != 0) {
+          XSetWMName (xvimagesink->xcontext->disp, xwindow->win, &xproperty);
+          XFree (xproperty.value);
+        }
+
+        g_free (title_mem);
+      }
+    }
+  }
+}
+
 /* This function handles a GstXWindow creation
  * The width and height are the actual pixel size on the display */
 static GstXWindow *
@@ -916,6 +975,9 @@ gst_xvimagesink_xwindow_new (GstXvImageSink * xvimagesink,
   /* We have to do that to prevent X from redrawing the background on
    * ConfigureNotify. This takes away flickering of video when resizing. */
   XSetWindowBackgroundPixmap (xvimagesink->xcontext->disp, xwindow->win, None);
+
+  /* set application name as a title */
+  gst_xvimagesink_xwindow_set_title (xvimagesink, xwindow, NULL);
 
   if (xvimagesink->handle_events) {
     Atom wm_delete;
@@ -1391,31 +1453,34 @@ gst_xvimagesink_get_xv_support (GstXvImageSink * xvimagesink,
          */
         const Atom atom = XInternAtom (xcontext->disp, colorkey, False);
         guint32 ckey = 0;
-        guint32 keymask;
-        gint bits;
         gboolean set_attr = TRUE;
         guint cr, cg, cb;
 
-        /* Count the bits in the colorkey mask 'max' value */
-        bits = 0;
-        for (keymask = (guint32) (attr[i].max_value);
-            keymask != 0; keymask >>= 1)
-          bits++;
-
         /* set a colorkey in the right format RGB565/RGB888
-         * note that the colorkey is independent from the display
-         * depth (xcontext->depth). We only handle these 2 cases, because
-         * they're the only types of devices we've encountered. If we don't
-         * recognise it, leave it alone  */
+         * We only handle these 2 cases, because they're the only types of
+         * devices we've encountered. If we don't recognise it, leave it alone
+         */
         cr = (xvimagesink->colorkey >> 16);
         cg = (xvimagesink->colorkey >> 8) & 0xFF;
         cb = (xvimagesink->colorkey) & 0xFF;
-        if (bits == 16)
-          ckey = (cr << 11) | (cg << 5) | cb;
-        else if (bits == 24 || bits == 32)
-          ckey = (cr << 16) | (cg << 8) | cb;
-        else
-          set_attr = FALSE;
+        switch (xcontext->depth) {
+          case 16:             /* RGB 565 */
+            cr >>= 3;
+            cg >>= 2;
+            cb >>= 3;
+            ckey = (cr << 11) | (cg << 5) | cb;
+            break;
+          case 24:
+          case 32:             /* RGB 888 / ARGB 8888 */
+            ckey = (cr << 16) | (cg << 8) | cb;
+            break;
+          default:
+            GST_DEBUG_OBJECT (xvimagesink,
+                "Unknown bit depth %d for Xv Colorkey - not adjusting",
+                xcontext->depth);
+            set_attr = FALSE;
+            break;
+        }
 
         if (set_attr) {
           ckey = CLAMP (ckey, (guint32) attr[i].min_value,
@@ -1426,9 +1491,6 @@ gst_xvimagesink_get_xv_support (GstXvImageSink * xvimagesink,
 
           XvSetPortAttribute (xcontext->disp, xcontext->xv_port_id, atom,
               (gint) ckey);
-        } else {
-          GST_DEBUG_OBJECT (xvimagesink,
-              "Unknown bit depth %d for Xv Colorkey - not adjusting", bits);
         }
         todo--;
         xvimagesink->have_colorkey = TRUE;
@@ -2192,12 +2254,16 @@ gst_xvimagesink_change_state (GstElement * element, GstStateChange transition)
       gst_xvimagesink_update_colorbalance (xvimagesink);
       break;
     case GST_STATE_CHANGE_READY_TO_PAUSED:
-      g_mutex_lock (xvimagesink->flow_lock);
-      if (xvimagesink->xwindow)
-        gst_xvimagesink_xwindow_clear (xvimagesink, xvimagesink->xwindow);
-      g_mutex_unlock (xvimagesink->flow_lock);
+      g_mutex_lock (xvimagesink->pool_lock);
+      xvimagesink->pool_invalid = FALSE;
+      g_mutex_unlock (xvimagesink->pool_lock);
       break;
     case GST_STATE_CHANGE_PAUSED_TO_PLAYING:
+      break;
+    case GST_STATE_CHANGE_PAUSED_TO_READY:
+      g_mutex_lock (xvimagesink->pool_lock);
+      xvimagesink->pool_invalid = TRUE;
+      g_mutex_unlock (xvimagesink->pool_lock);
       break;
     default:
       break;
@@ -2247,11 +2313,11 @@ gst_xvimagesink_get_times (GstBaseSink * bsink, GstBuffer * buf,
 }
 
 static GstFlowReturn
-gst_xvimagesink_show_frame (GstBaseSink * bsink, GstBuffer * buf)
+gst_xvimagesink_show_frame (GstVideoSink * vsink, GstBuffer * buf)
 {
   GstXvImageSink *xvimagesink;
 
-  xvimagesink = GST_XVIMAGESINK (bsink);
+  xvimagesink = GST_XVIMAGESINK (vsink);
 
   /* If this buffer has been allocated using our buffer management we simply
      put the ximage which is in the PRIVATE pointer */
@@ -2261,7 +2327,8 @@ gst_xvimagesink_show_frame (GstBaseSink * bsink, GstBuffer * buf)
             GST_XVIMAGE_BUFFER_CAST (buf)))
       goto no_window;
   } else {
-    GST_LOG_OBJECT (xvimagesink, "slow copy into bufferpool buffer %p", buf);
+    GST_CAT_LOG_OBJECT (GST_CAT_PERFORMANCE, xvimagesink,
+        "slow copy into bufferpool buffer %p", buf);
     /* Else we have to copy the data into our private image, */
     /* if we have one... */
     if (!xvimagesink->xvimage) {
@@ -2311,6 +2378,37 @@ no_window:
   }
 }
 
+static gboolean
+gst_xvimagesink_event (GstBaseSink * sink, GstEvent * event)
+{
+  GstXvImageSink *xvimagesink = GST_XVIMAGESINK (sink);
+
+  switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_TAG:{
+      GstTagList *l;
+      gchar *title = NULL;
+
+      gst_event_parse_tag (event, &l);
+      gst_tag_list_get_string (l, GST_TAG_TITLE, &title);
+
+      if (title) {
+        GST_DEBUG_OBJECT (xvimagesink, "got tags, title='%s'", title);
+        gst_xvimagesink_xwindow_set_title (xvimagesink, xvimagesink->xwindow,
+            title);
+
+        g_free (title);
+      }
+      break;
+    }
+    default:
+      break;
+  }
+  if (GST_BASE_SINK_CLASS (parent_class)->event)
+    return GST_BASE_SINK_CLASS (parent_class)->event (sink, event);
+  else
+    return TRUE;
+}
+
 /* Buffer management */
 
 static GstFlowReturn
@@ -2323,12 +2421,17 @@ gst_xvimagesink_buffer_alloc (GstBaseSink * bsink, guint64 offset, guint size,
   GstCaps *intersection = NULL;
   GstStructure *structure = NULL;
   gint width, height, image_format;
+  GstCaps *new_caps;
 
   xvimagesink = GST_XVIMAGESINK (bsink);
 
+  g_mutex_lock (xvimagesink->pool_lock);
+  if (G_UNLIKELY (xvimagesink->pool_invalid))
+    goto invalid;
+
   if (G_LIKELY (xvimagesink->xcontext->last_caps &&
           gst_caps_is_equal (caps, xvimagesink->xcontext->last_caps))) {
-    GST_DEBUG_OBJECT (xvimagesink,
+    GST_LOG_OBJECT (xvimagesink,
         "buffer alloc for same last_caps, reusing caps");
     intersection = gst_caps_ref (caps);
     image_format = xvimagesink->xcontext->last_format;
@@ -2353,7 +2456,7 @@ gst_xvimagesink_buffer_alloc (GstBaseSink * bsink, guint64 offset, guint size,
 
   if (gst_caps_is_empty (intersection)) {
     /* So we don't support this kind of buffer, let's define one we'd like */
-    GstCaps *new_caps = gst_caps_copy (caps);
+    new_caps = gst_caps_copy (caps);
 
     structure = gst_caps_get_structure (new_caps, 0);
 
@@ -2379,15 +2482,8 @@ gst_xvimagesink_buffer_alloc (GstBaseSink * bsink, guint64 offset, guint size,
       gst_caps_unref (intersection);
       intersection = gst_caps_intersect (xvimagesink->xcontext->caps, new_caps);
 
-      if (gst_caps_is_empty (intersection)) {
-        GST_WARNING_OBJECT (xvimagesink, "we were requested a buffer with "
-            "caps %" GST_PTR_FORMAT ", but our xcontext caps %" GST_PTR_FORMAT
-            " are completely incompatible with those caps", new_caps,
-            xvimagesink->xcontext->caps);
-        gst_caps_unref (new_caps);
-        ret = GST_FLOW_UNEXPECTED;
-        goto beach;
-      }
+      if (gst_caps_is_empty (intersection))
+        goto incompatible;
     }
 
     /* Clean this copy */
@@ -2411,12 +2507,8 @@ gst_xvimagesink_buffer_alloc (GstBaseSink * bsink, guint64 offset, guint size,
   structure = gst_caps_get_structure (intersection, 0);
   if (!gst_structure_get_int (structure, "width", &width) ||
       !gst_structure_get_int (structure, "height", &height) ||
-      image_format == -1) {
-    GST_WARNING_OBJECT (xvimagesink, "invalid caps for buffer allocation %"
-        GST_PTR_FORMAT, intersection);
-    ret = GST_FLOW_UNEXPECTED;
-    goto beach;
-  }
+      image_format == -1)
+    goto invalid_caps;
 
   /* Store our caps and format as the last_caps to avoid expensive
    * caps intersection next time */
@@ -2426,8 +2518,6 @@ gst_xvimagesink_buffer_alloc (GstBaseSink * bsink, guint64 offset, guint size,
   xvimagesink->xcontext->last_height = height;
 
 reuse_last_caps:
-
-  g_mutex_lock (xvimagesink->pool_lock);
 
   /* Walking through the pool cleaning unusable images and searching for a
      suitable one */
@@ -2453,8 +2543,6 @@ reuse_last_caps:
     }
   }
 
-  g_mutex_unlock (xvimagesink->pool_lock);
-
   if (!xvimage) {
     /* We found no suitable image in the pool. Creating... */
     GST_DEBUG_OBJECT (xvimagesink, "no usable image in pool, creating xvimage");
@@ -2467,6 +2555,7 @@ reuse_last_caps:
       xvimage = NULL;
     }
   }
+  g_mutex_unlock (xvimagesink->pool_lock);
 
   if (xvimage) {
     /* Make sure the buffer is cleared of any previously used flags */
@@ -2482,6 +2571,34 @@ beach:
   }
 
   return ret;
+
+  /* ERRORS */
+invalid:
+  {
+    GST_DEBUG_OBJECT (xvimagesink, "the pool is flushing");
+    ret = GST_FLOW_WRONG_STATE;
+    g_mutex_unlock (xvimagesink->pool_lock);
+    goto beach;
+  }
+incompatible:
+  {
+    GST_WARNING_OBJECT (xvimagesink, "we were requested a buffer with "
+        "caps %" GST_PTR_FORMAT ", but our xcontext caps %" GST_PTR_FORMAT
+        " are completely incompatible with those caps", new_caps,
+        xvimagesink->xcontext->caps);
+    gst_caps_unref (new_caps);
+    ret = GST_FLOW_NOT_NEGOTIATED;
+    g_mutex_unlock (xvimagesink->pool_lock);
+    goto beach;
+  }
+invalid_caps:
+  {
+    GST_WARNING_OBJECT (xvimagesink, "invalid caps for buffer allocation %"
+        GST_PTR_FORMAT, intersection);
+    ret = GST_FLOW_NOT_NEGOTIATED;
+    g_mutex_unlock (xvimagesink->pool_lock);
+    goto beach;
+  }
 }
 
 /* Interfaces stuff */
@@ -3123,16 +3240,22 @@ gst_xvimagesink_reset (GstXvImageSink * xvimagesink)
   xvimagesink->event_thread = NULL;
   GST_OBJECT_UNLOCK (xvimagesink);
 
+  /* invalidate the pool, current allocations continue, new buffer_alloc fails
+   * with wrong_state */
+  g_mutex_lock (xvimagesink->pool_lock);
+  xvimagesink->pool_invalid = TRUE;
+  g_mutex_unlock (xvimagesink->pool_lock);
+
   /* Wait for our event thread to finish before we clean up our stuff. */
   if (thread)
     g_thread_join (thread);
 
   if (xvimagesink->cur_image) {
-    gst_buffer_unref (xvimagesink->cur_image);
+    gst_buffer_unref (GST_BUFFER_CAST (xvimagesink->cur_image));
     xvimagesink->cur_image = NULL;
   }
   if (xvimagesink->xvimage) {
-    gst_buffer_unref (xvimagesink->xvimage);
+    gst_buffer_unref (GST_BUFFER_CAST (xvimagesink->xvimage));
     xvimagesink->xvimage = NULL;
   }
 
@@ -3181,6 +3304,8 @@ gst_xvimagesink_finalize (GObject * object)
     xvimagesink->pool_lock = NULL;
   }
 
+  g_free (xvimagesink->media_title);
+
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -3218,7 +3343,11 @@ gst_xvimagesink_init (GstXvImageSink * xvimagesink)
   xvimagesink->handle_expose = TRUE;
   xvimagesink->autopaint_colorkey = TRUE;
 
-  xvimagesink->colorkey = (1 << 16) | (2 << 8) | 3;
+  /* on 16bit displays this becomes r,g,b = 1,2,3
+   * on 24bit displays this becomes r,g,b = 8,8,16
+   * as a port atom value
+   */
+  xvimagesink->colorkey = (8 << 16) | (8 << 8) | 16;
   xvimagesink->draw_borders = TRUE;
 }
 
@@ -3239,10 +3368,12 @@ gst_xvimagesink_class_init (GstXvImageSinkClass * klass)
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
   GstBaseSinkClass *gstbasesink_class;
+  GstVideoSinkClass *videosink_class;
 
   gobject_class = (GObjectClass *) klass;
   gstelement_class = (GstElementClass *) klass;
   gstbasesink_class = (GstBaseSinkClass *) klass;
+  videosink_class = (GstVideoSinkClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
 
@@ -3361,8 +3492,9 @@ gst_xvimagesink_class_init (GstXvImageSinkClass * klass)
   gstbasesink_class->buffer_alloc =
       GST_DEBUG_FUNCPTR (gst_xvimagesink_buffer_alloc);
   gstbasesink_class->get_times = GST_DEBUG_FUNCPTR (gst_xvimagesink_get_times);
-  gstbasesink_class->preroll = GST_DEBUG_FUNCPTR (gst_xvimagesink_show_frame);
-  gstbasesink_class->render = GST_DEBUG_FUNCPTR (gst_xvimagesink_show_frame);
+  gstbasesink_class->event = GST_DEBUG_FUNCPTR (gst_xvimagesink_event);
+
+  videosink_class->show_frame = GST_DEBUG_FUNCPTR (gst_xvimagesink_show_frame);
 }
 
 /* ============================================================= */
@@ -3452,6 +3584,7 @@ plugin_init (GstPlugin * plugin)
 
   GST_DEBUG_CATEGORY_INIT (gst_debug_xvimagesink, "xvimagesink", 0,
       "xvimagesink element");
+  GST_DEBUG_CATEGORY_GET (GST_CAT_PERFORMANCE, "GST_PERFORMANCE");
 
   return TRUE;
 }

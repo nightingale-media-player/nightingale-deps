@@ -23,7 +23,6 @@
  * 
  * This library includes general definitions and functions, useful for
  * all typed FFT classes.
- *
  */
 
 #include <glib.h>

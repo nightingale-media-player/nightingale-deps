@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="prev" href="gst-plugins-base-plugins-audioresample.html" title="audioresample">
 <link rel="next" href="gst-plugins-base-plugins-cdparanoiasrc.html" title="cdparanoiasrc">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
@@ -23,13 +23,15 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-plugins-cdparanoiasrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-audiotestsrc.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-audiotestsrc.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-audiotestsrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-audiotestsrc.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-plugins-audiotestsrc.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-audiotestsrc.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-audiotestsrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-audiotestsrc.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-plugins-audiotestsrc"></a><div class="titlepage"></div>
@@ -53,9 +55,15 @@ enum                <a class="link" href="gst-plugins-base-plugins-audiotestsrc.
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
-               +----GstBaseSrc
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="/usr/share/gtk-doc/html/gstreamer-libs-0.10/GstBaseSrc.html"
+>GstBaseSrc</a>
                      +----GstAudioTestSrc
 </pre>
 </div>
@@ -95,7 +103,7 @@ different waveforms and allows to set the base frequency and volume.
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2766137"></a><h3>Example launch line</h3>
+<a name="id2556730"></a><h3>Example launch line</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch audiotestsrc ! audioconvert ! alsasink
 </pre></div> This pipeline produces a sine with default frequency, 440 Hz, and the
@@ -109,7 +117,7 @@ the saw wave is correct.
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2766170"></a><h3>Element Information</h3>
+<a name="id2556764"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -132,7 +140,7 @@ the saw wave is correct.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2766232"></a><h3>Element Pads</h3>
+<a name="id2556827"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -150,22 +158,79 @@ the saw wave is correct.
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)16, depth=(int)16, rate=(int)[ 1, 2147483647 ], channels=(int)1</td>
+<td>audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)16, depth=(int)16, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2 ]</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
-<td> audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)32, depth=(int)32, rate=(int)[ 1, 2147483647 ], channels=(int)1</td>
+<td> audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)32, depth=(int)32, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2 ]</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
-<td> audio/x-raw-float, endianness=(int)1234, width=(int){ 32, 64 }, rate=(int)[ 1, 2147483647 ], channels=(int)1</td>
+<td> audio/x-raw-float, endianness=(int)1234, width=(int){ 32, 64 }, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2556938"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-audiotestsrc.html#plugin-audiotestsrc">audiotestsrc</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Stefan Kost &lt;ensonic@users.sf.net&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Source/Audio</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2557001"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)16, depth=(int)16, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)32, depth=(int)32, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-float, endianness=(int)1234, width=(int){ 32, 64 }, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2 ]</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -176,7 +241,6 @@ the saw wave is correct.
 <p>
 audiotestsrc object structure.</p>
 <p>
-
 </p>
 </div>
 <hr>
@@ -191,60 +255,65 @@ audiotestsrc object structure.</p>
   GST_AUDIO_TEST_SRC_WAVE_WHITE_NOISE,
   GST_AUDIO_TEST_SRC_WAVE_PINK_NOISE,
   GST_AUDIO_TEST_SRC_WAVE_SINE_TAB,
-  GST_AUDIO_TEST_SRC_WAVE_TICKS
+  GST_AUDIO_TEST_SRC_WAVE_TICKS,
+  GST_AUDIO_TEST_SRC_WAVE_GAUSSIAN_WHITE_NOISE
 } GstAudioTestSrcWave; 
 </pre>
 <p>
 Different types of supported sound waves.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-SINE:CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SINE</code></span></p></td>
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-SINE--CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SINE</code></span></p></td>
 <td> a sine wave
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-SQUARE:CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SQUARE</code></span></p></td>
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-SQUARE--CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SQUARE</code></span></p></td>
 <td> a square wave
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-SAW:CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SAW</code></span></p></td>
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-SAW--CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SAW</code></span></p></td>
 <td> a saw wave
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-TRIANGLE:CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_TRIANGLE</code></span></p></td>
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-TRIANGLE--CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_TRIANGLE</code></span></p></td>
 <td> a tringle wave
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-SILENCE:CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SILENCE</code></span></p></td>
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-SILENCE--CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SILENCE</code></span></p></td>
 <td> silence
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-WHITE-NOISE:CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_WHITE_NOISE</code></span></p></td>
-<td> white noise
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-WHITE-NOISE--CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_WHITE_NOISE</code></span></p></td>
+<td> white uniform noise
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-PINK-NOISE:CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_PINK_NOISE</code></span></p></td>
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-PINK-NOISE--CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_PINK_NOISE</code></span></p></td>
 <td> pink noise
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-SINE-TAB:CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SINE_TAB</code></span></p></td>
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-SINE-TAB--CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SINE_TAB</code></span></p></td>
 <td> sine wave using a table
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-TICKS:CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_TICKS</code></span></p></td>
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-TICKS--CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_TICKS</code></span></p></td>
 <td> periodic ticks
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-GAUSSIAN-WHITE-NOISE--CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_GAUSSIAN_WHITE_NOISE</code></span></p></td>
+<td> white (zero mean) Gaussian noise;  volume sets the standard deviation of the noise in units of the range of values of the sample type, e.g. volume=0.1 produces noise with a standard deviation of 0.1*32767=3277 with 16-bit integer samples, or 0.1*1.0=0.1 with floating-point samples.
 </td>
 </tr>
 </tbody>
@@ -329,6 +398,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

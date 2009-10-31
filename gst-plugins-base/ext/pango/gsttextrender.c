@@ -1,6 +1,7 @@
 /* GStreamer
  * Copyright (C) <1999> Erik Walthinsen <omega@cse.ogi.edu>
  * Copyright (C) <2003> David Schleef <ds@schleef.org>
+ * Copyright (C) <2009> Young-Ho Cha <ganadist@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -46,29 +47,51 @@
 #include <gst/video/video.h>
 
 #include "gsttextrender.h"
+#include <string.h>
+
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
+# define CAIRO_ARGB_A 3
+# define CAIRO_ARGB_R 2
+# define CAIRO_ARGB_G 1
+# define CAIRO_ARGB_B 0
+#else
+# define CAIRO_ARGB_A 0
+# define CAIRO_ARGB_R 1
+# define CAIRO_ARGB_G 2
+# define CAIRO_ARGB_B 3
+#endif
 
 GST_DEBUG_CATEGORY_EXTERN (pango_debug);
 #define GST_CAT_DEFAULT pango_debug
 
-static const GstElementDetails text_render_details =
-GST_ELEMENT_DETAILS ("Text renderer",
-    "Filter/Editor/Video",
-    "Renders a text string to an image bitmap",
-    "David Schleef <ds@schleef.org>, "
-    "Ronald S. Bultje <rbultje@ronald.bitfreak.net>");
+#define MINIMUM_OUTLINE_OFFSET 1.0
+
+#define DEFAULT_PROP_VALIGNMENT GST_TEXT_RENDER_VALIGN_BASELINE
+#define DEFAULT_PROP_HALIGNMENT GST_TEXT_RENDER_HALIGN_CENTER
+#define DEFAULT_PROP_LINE_ALIGNMENT GST_TEXT_RENDER_LINE_ALIGN_CENTER
+#define DEFAULT_PROP_XPAD       25
+#define DEFAULT_PROP_YPAD       25
+
+#define DEFAULT_RENDER_WIDTH 720
+#define DEFAULT_RENDER_HEIGHT 576
 
 enum
 {
-  ARG_0,
-  ARG_FONT_DESC
+  PROP_0,
+  PROP_HALIGNMENT,
+  PROP_VALIGNMENT,
+  PROP_LINE_ALIGNMENT,
+  PROP_XPAD,
+  PROP_YPAD,
+  PROP_FONT_DESC
 };
 
 
 static GstStaticPadTemplate src_template_factory =
-GST_STATIC_PAD_TEMPLATE ("src",
+    GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV ("AYUV"))
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV ("AYUV") ";" GST_VIDEO_CAPS_ARGB)
     );
 
 static GstStaticPadTemplate sink_template_factory =
@@ -78,13 +101,77 @@ static GstStaticPadTemplate sink_template_factory =
     GST_STATIC_CAPS ("text/x-pango-markup; text/plain")
     );
 
-GST_BOILERPLATE (GstTextRender, gst_text_render, GstElement, GST_TYPE_ELEMENT)
+#define GST_TYPE_TEXT_RENDER_VALIGN (gst_text_render_valign_get_type())
+static GType
+gst_text_render_valign_get_type (void)
+{
+  static GType text_render_valign_type = 0;
+  static const GEnumValue text_render_valign[] = {
+    {GST_TEXT_RENDER_VALIGN_BASELINE, "baseline", "baseline"},
+    {GST_TEXT_RENDER_VALIGN_BOTTOM, "bottom", "bottom"},
+    {GST_TEXT_RENDER_VALIGN_TOP, "top", "top"},
+    {0, NULL, NULL},
+  };
 
-     static void gst_text_render_finalize (GObject * object);
-     static void gst_text_render_set_property (GObject * object,
+  if (!text_render_valign_type) {
+    text_render_valign_type =
+        g_enum_register_static ("GstTextRenderVAlign", text_render_valign);
+  }
+  return text_render_valign_type;
+}
+
+#define GST_TYPE_TEXT_RENDER_HALIGN (gst_text_render_halign_get_type())
+static GType
+gst_text_render_halign_get_type (void)
+{
+  static GType text_render_halign_type = 0;
+  static const GEnumValue text_render_halign[] = {
+    {GST_TEXT_RENDER_HALIGN_LEFT, "left", "left"},
+    {GST_TEXT_RENDER_HALIGN_CENTER, "center", "center"},
+    {GST_TEXT_RENDER_HALIGN_RIGHT, "right", "right"},
+    {0, NULL, NULL},
+  };
+
+  if (!text_render_halign_type) {
+    text_render_halign_type =
+        g_enum_register_static ("GstTextRenderHAlign", text_render_halign);
+  }
+  return text_render_halign_type;
+}
+
+#define GST_TYPE_TEXT_RENDER_LINE_ALIGN (gst_text_render_line_align_get_type())
+static GType
+gst_text_render_line_align_get_type (void)
+{
+  static GType text_render_line_align_type = 0;
+  static const GEnumValue text_render_line_align[] = {
+    {GST_TEXT_RENDER_LINE_ALIGN_LEFT, "left", "left"},
+    {GST_TEXT_RENDER_LINE_ALIGN_CENTER, "center", "center"},
+    {GST_TEXT_RENDER_LINE_ALIGN_RIGHT, "right", "right"},
+    {0, NULL, NULL}
+  };
+
+  if (!text_render_line_align_type) {
+    text_render_line_align_type =
+        g_enum_register_static ("GstTextRenderLineAlign",
+        text_render_line_align);
+  }
+  return text_render_line_align_type;
+}
+
+static void gst_text_render_adjust_values_with_fontdesc (GstTextRender *
+    render, PangoFontDescription * desc);
+
+GST_BOILERPLATE (GstTextRender, gst_text_render, GstElement, GST_TYPE_ELEMENT);
+
+static void gst_text_render_finalize (GObject * object);
+static void gst_text_render_set_property (GObject * object,
     guint prop_id, const GValue * value, GParamSpec * pspec);
+static void gst_text_render_get_property (GObject * object,
+    guint prop_id, GValue * value, GParamSpec * pspec);
 
-     static void gst_text_render_base_init (gpointer g_class)
+static void
+gst_text_render_base_init (gpointer g_class)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
@@ -93,74 +180,171 @@ GST_BOILERPLATE (GstTextRender, gst_text_render, GstElement, GST_TYPE_ELEMENT)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sink_template_factory));
 
-  gst_element_class_set_details (element_class, &text_render_details);
+  gst_element_class_set_details_simple (element_class, "Text renderer",
+      "Filter/Editor/Video",
+      "Renders a text string to an image bitmap",
+      "David Schleef <ds@schleef.org>, "
+      "GStreamer maintainers <gstreamer-devel@lists.sourceforge.net>");
 }
 
 static void
 gst_text_render_class_init (GstTextRenderClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
+  PangoFontMap *fontmap;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
 
   gobject_class->finalize = gst_text_render_finalize;
   gobject_class->set_property = gst_text_render_set_property;
+  gobject_class->get_property = gst_text_render_get_property;
 
-  klass->pango_context = pango_ft2_get_context (72, 72);
-  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_FONT_DESC,
+  fontmap = pango_cairo_font_map_get_default ();
+  klass->pango_context =
+      pango_cairo_font_map_create_context (PANGO_CAIRO_FONT_MAP (fontmap));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_FONT_DESC,
       g_param_spec_string ("font-desc", "font description",
           "Pango font description of font "
           "to be used for rendering. "
           "See documentation of "
           "pango_font_description_from_string"
           " for syntax.", "", G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
-}
-
-
-static void
-resize_bitmap (GstTextRender * render, gint width, gint height)
-{
-  FT_Bitmap *bitmap = &render->bitmap;
-  gint pitch = (width | 3) + 1;
-  gint size = pitch * height;
-
-  /* no need to keep reallocating; just keep the maximum size so far */
-  if (size <= render->bitmap_buffer_size) {
-    bitmap->rows = height;
-    bitmap->width = width;
-    bitmap->pitch = pitch;
-    memset (bitmap->buffer, 0, render->bitmap_buffer_size);
-    return;
-  }
-  if (!bitmap->buffer) {
-    /* initialize */
-    bitmap->pixel_mode = ft_pixel_mode_grays;
-    bitmap->num_grays = 256;
-  }
-  if (bitmap->buffer)
-    bitmap->buffer = g_realloc (bitmap->buffer, size);
-  else
-    bitmap->buffer = g_malloc (size);
-  bitmap->rows = height;
-  bitmap->width = width;
-  bitmap->pitch = pitch;
-  memset (bitmap->buffer, 0, size);
-  render->bitmap_buffer_size = size;
+  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_VALIGNMENT,
+      g_param_spec_enum ("valignment", "vertical alignment",
+          "Vertical alignment of the text", GST_TYPE_TEXT_RENDER_VALIGN,
+          DEFAULT_PROP_VALIGNMENT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_HALIGNMENT,
+      g_param_spec_enum ("halignment", "horizontal alignment",
+          "Horizontal alignment of the text", GST_TYPE_TEXT_RENDER_HALIGN,
+          DEFAULT_PROP_HALIGNMENT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_XPAD,
+      g_param_spec_int ("xpad", "horizontal paddding",
+          "Horizontal paddding when using left/right alignment", 0, G_MAXINT,
+          DEFAULT_PROP_XPAD, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_YPAD,
+      g_param_spec_int ("ypad", "vertical padding",
+          "Vertical padding when using top/bottom alignment", 0, G_MAXINT,
+          DEFAULT_PROP_YPAD, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_LINE_ALIGNMENT,
+      g_param_spec_enum ("line-alignment", "line alignment",
+          "Alignment of text lines relative to each other.",
+          GST_TYPE_TEXT_RENDER_LINE_ALIGN, DEFAULT_PROP_LINE_ALIGNMENT,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
-gst_text_render_render_text (GstTextRender * render)
+gst_text_render_adjust_values_with_fontdesc (GstTextRender * render,
+    PangoFontDescription * desc)
 {
+  gint font_size = pango_font_description_get_size (desc) / PANGO_SCALE;
+
+  render->shadow_offset = (double) (font_size) / 13.0;
+  render->outline_offset = (double) (font_size) / 15.0;
+  if (render->outline_offset < MINIMUM_OUTLINE_OFFSET)
+    render->outline_offset = MINIMUM_OUTLINE_OFFSET;
+}
+
+static void
+gst_text_render_render_pangocairo (GstTextRender * render)
+{
+  cairo_t *cr;
+  cairo_surface_t *surface;
+  cairo_t *cr_shadow;
+  cairo_surface_t *surface_shadow;
   PangoRectangle ink_rect, logical_rect;
+  gint width, height;
 
   pango_layout_get_pixel_extents (render->layout, &ink_rect, &logical_rect);
-  resize_bitmap (render, ink_rect.width, ink_rect.height + ink_rect.y);
-  pango_ft2_render_layout (&render->bitmap, render->layout, -ink_rect.x, 0);
-  render->baseline_y = ink_rect.y;
+
+  width = logical_rect.width + render->shadow_offset;
+  height = logical_rect.height + logical_rect.y + render->shadow_offset;
+
+  surface_shadow = cairo_image_surface_create (CAIRO_FORMAT_A8, width, height);
+  cr_shadow = cairo_create (surface_shadow);
+
+  /* clear shadow surface */
+  cairo_set_operator (cr_shadow, CAIRO_OPERATOR_CLEAR);
+  cairo_paint (cr_shadow);
+  cairo_set_operator (cr_shadow, CAIRO_OPERATOR_OVER);
+
+  /* draw shadow text */
+  cairo_save (cr_shadow);
+  cairo_set_source_rgba (cr_shadow, 0.0, 0.0, 0.0, 0.5);
+  cairo_translate (cr_shadow, render->shadow_offset, render->shadow_offset);
+  pango_cairo_show_layout (cr_shadow, render->layout);
+  cairo_restore (cr_shadow);
+
+  /* draw outline text */
+  cairo_save (cr_shadow);
+  cairo_set_source_rgb (cr_shadow, 0.0, 0.0, 0.0);
+  cairo_set_line_width (cr_shadow, render->outline_offset);
+  pango_cairo_layout_path (cr_shadow, render->layout);
+  cairo_stroke (cr_shadow);
+  cairo_restore (cr_shadow);
+
+  cairo_destroy (cr_shadow);
+
+  render->text_image = g_realloc (render->text_image, 4 * width * height);
+
+  surface = cairo_image_surface_create_for_data (render->text_image,
+      CAIRO_FORMAT_ARGB32, width, height, width * 4);
+  cr = cairo_create (surface);
+  cairo_set_operator (cr, CAIRO_OPERATOR_CLEAR);
+  cairo_paint (cr);
+  cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
+
+  /* set default color */
+  cairo_set_source_rgb (cr, 1.0, 1.0, 1.0);
+
+  cairo_save (cr);
+  /* draw text */
+  pango_cairo_show_layout (cr, render->layout);
+  cairo_restore (cr);
+
+  /* composite shadow with offset */
+  cairo_set_operator (cr, CAIRO_OPERATOR_DEST_OVER);
+  cairo_set_source_surface (cr, surface_shadow, 0.0, 0.0);
+  cairo_paint (cr);
+
+  cairo_destroy (cr);
+  cairo_surface_destroy (surface_shadow);
+  cairo_surface_destroy (surface);
+  render->image_width = width;
+  render->image_height = height;
+}
+
+static void
+gst_text_render_check_argb (GstTextRender * render)
+{
+  GstCaps *peer_caps;
+  peer_caps = gst_pad_get_allowed_caps (render->srcpad);
+  if (G_LIKELY (peer_caps)) {
+    guint i = 0, n = 0;
+
+    n = gst_caps_get_size (peer_caps);
+    GST_DEBUG_OBJECT (render, "peer allowed caps (%u structure(s)) are %"
+        GST_PTR_FORMAT, n, peer_caps);
+
+    /* Check if AYUV or ARGB is first */
+    for (i = 0; i < n; i++) {
+      GstStructure *s = gst_caps_get_structure (peer_caps, i);
+      if (gst_structure_has_name (s, "video/x-raw-rgb") &&
+          gst_structure_has_field (s, "alpha_mask")) {
+        render->use_ARGB = TRUE;
+        break;
+      } else if (gst_structure_has_name (s, "video/x-raw-yuv")) {
+        guint fourcc;
+        if (gst_structure_get_fourcc (s, "format", &fourcc) &&
+            fourcc == GST_MAKE_FOURCC ('A', 'Y', 'U', 'V')) {
+          render->use_ARGB = FALSE;
+          break;
+        }
+      }
+    }
+    gst_caps_unref (peer_caps);
+  }
 }
 
 static gboolean
@@ -177,11 +361,13 @@ gst_text_render_setcaps (GstPad * pad, GstCaps * caps)
 
   GST_DEBUG ("Got caps %" GST_PTR_FORMAT, caps);
 
-  if (width >= render->bitmap.width && height >= render->bitmap.rows) {
+  if (width >= render->image_width && height >= render->image_height) {
     render->width = width;
     render->height = height;
     ret = TRUE;
   }
+
+  gst_text_render_check_argb (render);
 
   gst_object_unref (render);
   return ret;
@@ -194,47 +380,84 @@ gst_text_render_fixate_caps (GstPad * pad, GstCaps * caps)
   GstStructure *s = gst_caps_get_structure (caps, 0);
 
   GST_DEBUG ("Fixating caps %" GST_PTR_FORMAT, caps);
-  gst_structure_fixate_field_nearest_int (s, "width", render->bitmap.width);
-  gst_structure_fixate_field_nearest_int (s, "height", render->bitmap.rows);
+  gst_structure_fixate_field_nearest_int (s, "width", render->image_width);
+  gst_structure_fixate_field_nearest_int (s, "height", render->image_height);
   GST_DEBUG ("Fixated to    %" GST_PTR_FORMAT, caps);
 
   gst_object_unref (render);
 }
 
+#define CAIRO_UNPREMULTIPLY(a,r,g,b) G_STMT_START { \
+  b = (a > 0) ? MIN ((b * 255 + a / 2) / a, 255) : 0; \
+  g = (a > 0) ? MIN ((g * 255 + a / 2) / a, 255) : 0; \
+  r = (a > 0) ? MIN ((r * 255 + a / 2) / a, 255) : 0; \
+} G_STMT_END
+
 static void
-gst_text_renderer_bitmap_to_ayuv (GstTextRender * render, FT_Bitmap * bitmap,
-    guchar * pixbuf)
+gst_text_renderer_image_to_ayuv (GstTextRender * render, guchar * pixbuf,
+    int xpos, int ypos, int stride)
 {
   int y;                        /* text bitmap coordinates */
-  int rowinc, bit_rowinc;
   guchar *p, *bitp;
-  guchar v;
+  guchar a, r, g, b;
+  int width, height;
 
-  rowinc = render->width - bitmap->width;
-  bit_rowinc = bitmap->pitch - bitmap->width;
+  width = render->image_width;
+  height = render->image_height;
+  bitp = render->text_image;
 
-  bitp = bitmap->buffer;
-  p = pixbuf;
-
-  for (y = 0; y < bitmap->rows; y++) {
+  for (y = 0; y < height; y++) {
     int n;
+    p = pixbuf + (ypos + y) * stride + xpos * 4;
+    for (n = 0; n < width; n++) {
+      b = bitp[CAIRO_ARGB_B];
+      g = bitp[CAIRO_ARGB_G];
+      r = bitp[CAIRO_ARGB_R];
+      a = bitp[CAIRO_ARGB_A];
+      bitp += 4;
 
-    for (n = bitmap->width; n > 0; --n) {
-      v = *bitp;
-      if (v) {
-        p[0] = v;
-        p[1] = 255;
-        p[2] = 0x80;
-        p[3] = 0x80;
-      }
-      p += 4;
-      bitp++;
+      /* Cairo uses pre-multiplied ARGB, unpremultiply it */
+      CAIRO_UNPREMULTIPLY (a, r, g, b);
+
+      *p++ = a;
+      *p++ = CLAMP ((int) (((19595 * r) >> 16) + ((38470 * g) >> 16) +
+              ((7471 * b) >> 16)), 0, 255);
+      *p++ = CLAMP ((int) (-((11059 * r) >> 16) - ((21709 * g) >> 16) +
+              ((32768 * b) >> 16) + 128), 0, 255);
+      *p++ = CLAMP ((int) (((32768 * r) >> 16) - ((27439 * g) >> 16) -
+              ((5329 * b) >> 16) + 128), 0, 255);
     }
-    p += rowinc * 4;
-    bitp += bit_rowinc;
   }
 }
 
+static void
+gst_text_renderer_image_to_argb (GstTextRender * render, guchar * pixbuf,
+    int xpos, int ypos, int stride)
+{
+  int i, j;
+  guchar *p, *bitp;
+  int width, height;
+
+  width = render->image_width;
+  height = render->image_height;
+  bitp = render->text_image;
+
+  for (i = 0; i < height; i++) {
+    p = pixbuf + (ypos + i) * stride + xpos * 4;
+    for (j = 0; j < width; j++) {
+      p[0] = bitp[CAIRO_ARGB_A];
+      p[1] = bitp[CAIRO_ARGB_R];
+      p[2] = bitp[CAIRO_ARGB_G];
+      p[3] = bitp[CAIRO_ARGB_B];
+
+      /* Cairo uses pre-multiplied ARGB, unpremultiply it */
+      CAIRO_UNPREMULTIPLY (p[0], p[1], p[2], p[3]);
+
+      bitp += 4;
+      p += 4;
+    }
+  }
+}
 
 static GstFlowReturn
 gst_text_render_chain (GstPad * pad, GstBuffer * inbuf)
@@ -246,6 +469,7 @@ gst_text_render_chain (GstPad * pad, GstBuffer * inbuf)
   guint8 *data = GST_BUFFER_DATA (inbuf);
   guint size = GST_BUFFER_SIZE (inbuf);
   gint n;
+  gint xpos, ypos;
 
   render = GST_TEXT_RENDER (gst_pad_get_parent (pad));
 
@@ -259,12 +483,19 @@ gst_text_render_chain (GstPad * pad, GstBuffer * inbuf)
   /* render text */
   GST_DEBUG ("rendering '%*s'", size, data);
   pango_layout_set_markup (render->layout, (gchar *) data, size);
-  gst_text_render_render_text (render);
+  gst_text_render_render_pangocairo (render);
 
-  caps = gst_caps_new_simple ("video/x-raw-yuv", "format", GST_TYPE_FOURCC,
-      GST_MAKE_FOURCC ('A', 'Y', 'U', 'V'), "width", G_TYPE_INT,
-      render->bitmap.width, "height", G_TYPE_INT, render->bitmap.rows,
-      "framerate", GST_TYPE_FRACTION, 1, 1, NULL);
+  gst_text_render_check_argb (render);
+
+  if (!render->use_ARGB) {
+    caps =
+        gst_video_format_new_caps (GST_VIDEO_FORMAT_AYUV, render->width,
+        render->height, 1, 1, 1, 1);
+  } else {
+    caps =
+        gst_video_format_new_caps (GST_VIDEO_FORMAT_ARGB, render->width,
+        render->height, 1, 1, 1, 1);
+  }
 
   if (!gst_pad_set_caps (render->srcpad, caps)) {
     gst_caps_unref (caps);
@@ -273,8 +504,7 @@ gst_text_render_chain (GstPad * pad, GstBuffer * inbuf)
     goto done;
   }
 
-  GST_DEBUG ("Allocating AYUV buffer WxH = %dx%d", render->width,
-      render->height);
+  GST_DEBUG ("Allocating buffer WxH = %dx%d", render->width, render->height);
   ret =
       gst_pad_alloc_buffer_and_set_caps (render->srcpad, GST_BUFFER_OFFSET_NONE,
       render->width * render->height * 4, caps, &outbuf);
@@ -285,14 +515,52 @@ gst_text_render_chain (GstPad * pad, GstBuffer * inbuf)
   gst_buffer_copy_metadata (outbuf, inbuf, GST_BUFFER_COPY_TIMESTAMPS);
   data = GST_BUFFER_DATA (outbuf);
 
-  for (n = 0; n < render->width * render->height; n++) {
-    data[n * 4] = 0;
-    data[n * 4 + 1] = 0;
-    data[n * 4 + 2] = data[n * 4 + 3] = 128;
+  if (render->use_ARGB) {
+    memset (data, 0, render->width * render->height * 4);
+  } else {
+    for (n = 0; n < render->width * render->height; n++) {
+      data[n * 4] = data[n * 4 + 1] = 0;
+      data[n * 4 + 2] = data[n * 4 + 3] = 128;
+    }
   }
 
-  if (render->bitmap.buffer) {
-    gst_text_renderer_bitmap_to_ayuv (render, &render->bitmap, data);
+  switch (render->halign) {
+    case GST_TEXT_RENDER_HALIGN_LEFT:
+      xpos = render->xpad;
+      break;
+    case GST_TEXT_RENDER_HALIGN_CENTER:
+      xpos = (render->width - render->image_width) / 2;
+      break;
+    case GST_TEXT_RENDER_HALIGN_RIGHT:
+      xpos = render->width - render->image_width - render->xpad;
+      break;
+    default:
+      xpos = 0;
+  }
+
+  switch (render->valign) {
+    case GST_TEXT_RENDER_VALIGN_BOTTOM:
+      ypos = render->height - render->image_height - render->ypad;
+      break;
+    case GST_TEXT_RENDER_VALIGN_BASELINE:
+      ypos = render->height - (render->image_height + render->ypad);
+      break;
+    case GST_TEXT_RENDER_VALIGN_TOP:
+      ypos = render->ypad;
+      break;
+    default:
+      ypos = render->ypad;
+      break;
+  }
+
+  if (render->text_image) {
+    if (render->use_ARGB) {
+      gst_text_renderer_image_to_argb (render, data, xpos, ypos,
+          render->width * 4);
+    } else {
+      gst_text_renderer_image_to_ayuv (render, data, xpos, ypos,
+          render->width * 4);
+    }
   }
 
   ret = gst_pad_push (render->srcpad, outbuf);
@@ -310,7 +578,7 @@ gst_text_render_finalize (GObject * object)
 {
   GstTextRender *render = GST_TEXT_RENDER (object);
 
-  g_free (render->bitmap.buffer);
+  g_free (render->text_image);
 
   if (render->layout)
     g_object_unref (render->layout);
@@ -339,11 +607,24 @@ gst_text_render_init (GstTextRender * render, GstTextRenderClass * klass)
       GST_DEBUG_FUNCPTR (gst_text_render_fixate_caps));
   gst_pad_set_setcaps_function (render->srcpad,
       GST_DEBUG_FUNCPTR (gst_text_render_setcaps));
+
   gst_element_add_pad (GST_ELEMENT (render), render->srcpad);
 
+  render->line_align = DEFAULT_PROP_LINE_ALIGNMENT;
   render->layout =
       pango_layout_new (GST_TEXT_RENDER_GET_CLASS (render)->pango_context);
-  memset (&render->bitmap, 0, sizeof (render->bitmap));
+  pango_layout_set_alignment (render->layout,
+      (PangoAlignment) render->line_align);
+
+  render->halign = DEFAULT_PROP_HALIGNMENT;
+  render->valign = DEFAULT_PROP_VALIGNMENT;
+  render->xpad = DEFAULT_PROP_XPAD;
+  render->ypad = DEFAULT_PROP_YPAD;
+
+  render->width = DEFAULT_RENDER_WIDTH;
+  render->height = DEFAULT_RENDER_HEIGHT;
+
+  render->use_ARGB = FALSE;
 }
 
 static void
@@ -353,7 +634,24 @@ gst_text_render_set_property (GObject * object, guint prop_id,
   GstTextRender *render = GST_TEXT_RENDER (object);
 
   switch (prop_id) {
-    case ARG_FONT_DESC:
+    case PROP_VALIGNMENT:
+      render->valign = g_value_get_enum (value);
+      break;
+    case PROP_HALIGNMENT:
+      render->halign = g_value_get_enum (value);
+      break;
+    case PROP_LINE_ALIGNMENT:
+      render->line_align = g_value_get_enum (value);
+      pango_layout_set_alignment (render->layout,
+          (PangoAlignment) render->line_align);
+      break;
+    case PROP_XPAD:
+      render->xpad = g_value_get_int (value);
+      break;
+    case PROP_YPAD:
+      render->ypad = g_value_get_int (value);
+      break;
+    case PROP_FONT_DESC:
     {
       PangoFontDescription *desc;
 
@@ -362,8 +660,9 @@ gst_text_render_set_property (GObject * object, guint prop_id,
         GST_LOG ("font description set: %s", g_value_get_string (value));
         GST_OBJECT_LOCK (render);
         pango_layout_set_font_description (render->layout, desc);
+        gst_text_render_adjust_values_with_fontdesc (render, desc);
         pango_font_description_free (desc);
-        gst_text_render_render_text (render);
+        gst_text_render_render_pangocairo (render);
         GST_OBJECT_UNLOCK (render);
       } else {
         GST_WARNING ("font description parse failed: %s",
@@ -373,6 +672,34 @@ gst_text_render_set_property (GObject * object, guint prop_id,
     }
 
     default:
+      break;
+  }
+}
+
+static void
+gst_text_render_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec)
+{
+  GstTextRender *render = GST_TEXT_RENDER (object);
+
+  switch (prop_id) {
+    case PROP_VALIGNMENT:
+      g_value_set_enum (value, render->valign);
+      break;
+    case PROP_HALIGNMENT:
+      g_value_set_enum (value, render->halign);
+      break;
+    case PROP_LINE_ALIGNMENT:
+      g_value_set_enum (value, render->line_align);
+      break;
+    case PROP_XPAD:
+      g_value_set_int (value, render->xpad);
+      break;
+    case PROP_YPAD:
+      g_value_set_int (value, render->ypad);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
 }

@@ -50,17 +50,17 @@ EOF
 
     dnl check if we can process docbook stuff
     AS_DOCBOOK(have_docbook=yes, have_docbook=no)
- 
+
     dnl check for extra tools
     AC_CHECK_PROG(HAVE_DVIPS, dvips, yes, no)
     AC_CHECK_PROG(HAVE_XMLLINT, xmllint, yes, no)
- 
+
     dnl check for image conversion tools
     AC_CHECK_PROG(HAVE_FIG2DEV, fig2dev, yes, no)
     if test "x$HAVE_FIG2DEV" = "xno" ; then
       AC_MSG_WARN([Did not find fig2dev (from xfig), images will not be generated.])
     fi
- 
+
     dnl The following is a hack: if fig2dev doesn't display an error message
     dnl for the desired type, we assume it supports it.
     HAVE_FIG2DEV_EPS=no
@@ -84,11 +84,11 @@ EOF
         HAVE_FIG2DEV_PDF=yes
       fi
     fi
-  
+
     AC_CHECK_PROG(HAVE_PNGTOPNM, pngtopnm, yes, no)
     AC_CHECK_PROG(HAVE_PNMTOPS,  pnmtops,  yes, no)
     AC_CHECK_PROG(HAVE_EPSTOPDF, epstopdf, yes, no)
-  
+
     dnl check if we can generate HTML
     if test "x$HAVE_DOCBOOK2HTML" = "xyes" && \
        test "x$enable_docbook" = "xyes" && \
@@ -100,7 +100,7 @@ EOF
       DOC_HTML=no
       AC_MSG_NOTICE(Will not output HTML documentation)
     fi
-    
+
     dnl check if we can generate PS
     if test "x$HAVE_DOCBOOK2PS" = "xyes" && \
        test "x$enable_docbook" = "xyes" && \
@@ -116,7 +116,7 @@ EOF
       DOC_PS=no
       AC_MSG_NOTICE(Will not output PS documentation)
     fi
-    
+
     dnl check if we can generate PDF - using only ps2pdf
     if test "x$DOC_PS" = "xyes" && \
        test "x$enable_docbook" = "xyes" && \

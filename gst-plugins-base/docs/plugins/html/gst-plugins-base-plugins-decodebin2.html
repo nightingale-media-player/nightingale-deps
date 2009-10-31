@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="prev" href="gst-plugins-base-plugins-decodebin.html" title="decodebin">
 <link rel="next" href="gst-plugins-base-plugins-ffmpegcolorspace.html" title="ffmpegcolorspace">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
@@ -23,17 +23,19 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-plugins-ffmpegcolorspace.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-decodebin2.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-decodebin2.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-decodebin2.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-decodebin2.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-decodebin2.properties" class="shortcut">Properties</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-decodebin2.signals" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-plugins-decodebin2.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-decodebin2.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-decodebin2.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-decodebin2.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-decodebin2.properties" class="shortcut">Properties</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-decodebin2.signals" class="shortcut">Signals</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-plugins-decodebin2"></a><div class="titlepage"></div>
@@ -56,9 +58,15 @@ struct              <a class="link" href="gst-plugins-base-plugins-decodebin2.ht
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
-               +----GstBin
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstBin.html"
+>GstBin</a>
                      +----GstDecodeBin2
 </pre>
 </div>
@@ -66,16 +74,22 @@ href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 <a name="gst-plugins-base-plugins-decodebin2.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstDecodeBin2 implements
- GstChildProxy.</p>
+ <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstChildProxy.html"
+>GstChildProxy</a>.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-decodebin2.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2--caps" title='The "caps" property'>caps</a>"                     GstCaps*              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2--caps" title='The "caps" property'>caps</a>"                     <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a>*              : Read / Write
   "<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2--subtitle-encoding" title='The "subtitle-encoding" property'>subtitle-encoding</a>"        <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a>*                : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2--sink-caps" title='The "sink-caps" property'>sink-caps</a>"                GstCaps*              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2--sink-caps" title='The "sink-caps" property'>sink-caps</a>"                <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a>*              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -94,7 +108,9 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-decodebin2.description"></a><h2>Description</h2>
 <p>
-<span class="type">GstBin</span> that auto-magically constructs a decoding pipeline using available
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstBin.html"
+><span class="type">GstBin</span></a> that auto-magically constructs a decoding pipeline using available
 decoders and demuxers via auto-plugging.
 </p>
 <p>
@@ -108,7 +124,7 @@ decodebin2 instead of the older <a class="link" href="gst-plugins-base-plugins-d
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2772250"></a><h3>Element Information</h3>
+<a name="id2610412"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -131,7 +147,78 @@ decodebin2 instead of the older <a class="link" href="gst-plugins-base-plugins-d
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2772843"></a><h3>Element Pads</h3>
+<a name="id2610475"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src%d</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>sometimes</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2610615"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-uridecodebin.html#plugin-uridecodebin">uridecodebin</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Edward Hervey &lt;edward@fluendo.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Generic/Bin/Decoder</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2610678"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -177,7 +264,6 @@ decodebin2 instead of the older <a class="link" href="gst-plugins-base-plugins-d
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -188,7 +274,6 @@ decodebin2 instead of the older <a class="link" href="gst-plugins-base-plugins-d
 <p>
 The opaque <span class="type">DecodeBin2</span> data structure</p>
 <p>
-
 </p>
 </div>
 </div>
@@ -196,7 +281,9 @@ The opaque <span class="type">DecodeBin2</span> data structure</p>
 <a name="gst-plugins-base-plugins-decodebin2.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstDecodeBin2--caps"></a><h3>The <code class="literal">"caps"</code> property</h3>
-<pre class="programlisting">  "caps"                     GstCaps*              : Read / Write</pre>
+<pre class="programlisting">  "caps"                     <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a>*              : Read / Write</pre>
 <p>The caps on which to stop decoding.</p>
 </div>
 <hr>
@@ -211,7 +298,9 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDecodeBin2--sink-caps"></a><h3>The <code class="literal">"sink-caps"</code> property</h3>
-<pre class="programlisting">  "sink-caps"                GstCaps*              : Read / Write</pre>
+<pre class="programlisting">  "sink-caps"                <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a>*              : Read / Write</pre>
 <p>The caps of the input data. (NULL = use typefind element).</p>
 </div>
 </div>
@@ -222,8 +311,12 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            user_function                      (<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *bin,
-                                                        GstPad        *pad,
-                                                        GstCaps       *caps,
+                                                        <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html"
+>GstPad</a>        *pad,
+                                                        <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a>       *caps,
                                                         <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>       user_data)      : Run Last</pre>
@@ -231,7 +324,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 This signal is emitted whenever decodebin2 finds a new stream. It is
 emitted before looking for any elements that can handle that stream.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -243,12 +335,16 @@ emitted before looking for any elements that can handle that stream.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
-<td> The <span class="type">GstPad</span>.
+<td> The <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html"
+><span class="type">GstPad</span></a>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
-<td> The <span class="type">GstCaps</span> found.
+<td> The <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a> found.
 </td>
 </tr>
 <tr>
@@ -258,10 +354,10 @@ emitted before looking for any elements that can handle that stream.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><span class="type">TRUE</span></a> if you wish decodebin2 to look for elements that can
 handle the given <em class="parameter"><code>caps</code></em>. If <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE--CAPS"
 ><span class="type">FALSE</span></a>, those caps will be considered as
 final and the pad will be exposed as such (see 'new-decoded-pad'
 signal).
@@ -276,8 +372,12 @@ signal).
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
 >GValueArray</a>*        user_function                      (<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *bin,
-                                                        GstPad        *pad,
-                                                        GstCaps       *caps,
+                                                        <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html"
+>GstPad</a>        *pad,
+                                                        <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a>       *caps,
                                                         <a
 href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
 >GValueArray</a>   *factories,
@@ -285,7 +385,9 @@ href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>       user_data)      : Run Last</pre>
 <p>
-Once decodebin2 has found the possible <span class="type">GstElementFactory</span> objects to try
+Once decodebin2 has found the possible <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElementFactory.html"
+><span class="type">GstElementFactory</span></a> objects to try
 for <em class="parameter"><code>caps</code></em> on <em class="parameter"><code>pad</code></em>, this signal is emited. The purpose of the signal is for
 the application to perform additional sorting or filtering on the element
 factory array.
@@ -293,7 +395,6 @@ factory array.
 <p>
 The callee should copy and modify <em class="parameter"><code>factories</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -305,19 +406,25 @@ The callee should copy and modify <em class="parameter"><code>factories</code></
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
-<td> The <span class="type">GstPad</span>.
+<td> The <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html"
+><span class="type">GstPad</span></a>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
-<td> The <span class="type">GstCaps</span>.
+<td> The <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>factories</code></em> :</span></p></td>
 <td> A <a
 href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
-><span class="type">GValueArray</span></a> of possible <span class="type">GstElementFactory</span> to use.
+><span class="type">GValueArray</span></a> of possible <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElementFactory.html"
+><span class="type">GstElementFactory</span></a> to use.
 </td>
 </tr>
 <tr>
@@ -326,7 +433,9 @@ href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> A new sorted array of <span class="type">GstElementFactory</span> objects.
+<td> A new sorted array of <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElementFactory.html"
+><span class="type">GstElementFactory</span></a> objects.
 </td>
 </tr>
 </tbody>
@@ -336,7 +445,9 @@ href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
 <div class="refsect2" lang="en">
 <a name="GstDecodeBin2-new-decoded-pad"></a><h3>The <code class="literal">"new-decoded-pad"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *bin,
-                                                        GstPad        *pad,
+                                                        <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html"
+>GstPad</a>        *pad,
                                                         <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>       islast,
@@ -347,7 +458,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 This signal gets emitted as soon as a new pad of the same type as one of
 the valid 'raw' types is added.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -365,7 +475,7 @@ the valid 'raw' types is added.</p>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>islast</code></em> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><span class="type">TRUE</span></a> if this is the last pad to be added. Deprecated.
 </td>
 </tr>
@@ -380,14 +490,15 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <div class="refsect2" lang="en">
 <a name="GstDecodeBin2-removed-decoded-pad"></a><h3>The <code class="literal">"removed-decoded-pad"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *bin,
-                                                        GstPad        *pad,
+                                                        <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html"
+>GstPad</a>        *pad,
                                                         <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>       user_data)      : Run Last</pre>
 <p>
 This signal is emitted when a 'final' caps pad has been removed.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -413,8 +524,12 @@ This signal is emitted when a 'final' caps pad has been removed.</p>
 <div class="refsect2" lang="en">
 <a name="GstDecodeBin2-unknown-type"></a><h3>The <code class="literal">"unknown-type"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *bin,
-                                                        GstPad        *pad,
-                                                        GstCaps       *caps,
+                                                        <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html"
+>GstPad</a>        *pad,
+                                                        <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a>       *caps,
                                                         <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>       user_data)      : Run Last</pre>
@@ -422,7 +537,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 This signal is emitted when a pad for which there is no further possible
 decoding is added to the decodebin.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -440,7 +554,9 @@ decoding is added to the decodebin.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
-<td> The <span class="type">GstCaps</span> of the pad that cannot be resolved.
+<td> The <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a> of the pad that cannot be resolved.
 </td>
 </tr>
 <tr>
@@ -456,15 +572,19 @@ decoding is added to the decodebin.</p>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
 >GValueArray</a>*        user_function                      (<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *bin,
-                                                        GstPad        *pad,
-                                                        GstCaps       *caps,
+                                                        <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html"
+>GstPad</a>        *pad,
+                                                        <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a>       *caps,
                                                         <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>       user_data)      : Run Last</pre>
 <p>
 This function is emited when an array of possible factories for <em class="parameter"><code>caps</code></em> on
 <em class="parameter"><code>pad</code></em> is needed. Decodebin2 will by default return an array with all
-compatible factories, sorted by rank. 
+compatible factories, sorted by rank.
 </p>
 <p>
 If this function returns NULL, <em class="parameter"><code>pad</code></em> will be exposed as a final caps.
@@ -473,7 +593,6 @@ If this function returns NULL, <em class="parameter"><code>pad</code></em> will 
 If this function returns an empty array, the pad will be considered as 
 having an unhandled type media type.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -485,12 +604,16 @@ having an unhandled type media type.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
-<td> The <span class="type">GstPad</span>.
+<td> The <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html"
+><span class="type">GstPad</span></a>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
-<td> The <span class="type">GstCaps</span> found.
+<td> The <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a> found.
 </td>
 </tr>
 <tr>
@@ -513,17 +636,41 @@ by default tried in the returned order or based on the index returned by
 <div class="refsect2" lang="en">
 <a name="GstDecodeBin2-autoplug-select"></a><h3>The <code class="literal">"autoplug-select"</code> signal</h3>
 <pre class="programlisting"><a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstAutoplugSelectResult" title="enum GstAutoplugSelectResult">GstAutoplugSelectResult</a>user_function                      (<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a>     *bin,
-                                                        GstPad            *pad,
-                                                        GstCaps           *caps,
-                                                        GstElementFactory *factories,
+                                                        <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html"
+>GstPad</a>            *pad,
+                                                        <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a>           *caps,
+                                                        <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElementFactory.html"
+>GstElementFactory</a> *factory,
                                                         <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>           user_data)      : Run Last</pre>
 <p>
 This signal is emitted once decodebin2 has found all the possible
-<span class="type">GstElementFactory</span> that can be used to handle the given <em class="parameter"><code>caps</code></em>.</p>
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElementFactory.html"
+><span class="type">GstElementFactory</span></a> that can be used to handle the given <em class="parameter"><code>caps</code></em>. For each of
+those factories, this signal is emited.
+</p>
 <p>
-
+The signal handler should return a <span class="type">GST_TYPE_AUTOPLUG_SELECT_RESULT</span> enum
+value indicating what decodebin2 should do next.
+</p>
+<p>
+A value of <a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GST-AUTOPLUG-SELECT-TRY--CAPS"><span class="type">GST_AUTOPLUG_SELECT_TRY</span></a> will try to autoplug an element from
+<em class="parameter"><code>factory</code></em>.
+</p>
+<p>
+A value of <a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GST-AUTOPLUG-SELECT-EXPOSE--CAPS"><span class="type">GST_AUTOPLUG_SELECT_EXPOSE</span></a> will expose <em class="parameter"><code>pad</code></em> without plugging
+any element to it.
+</p>
+<p>
+A value of <a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GST-AUTOPLUG-SELECT-SKIP--CAPS"><span class="type">GST_AUTOPLUG_SELECT_SKIP</span></a> will skip <em class="parameter"><code>factory</code></em> and move to the
+next factory.</p>
+<p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -535,20 +682,23 @@ This signal is emitted once decodebin2 has found all the possible
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
-<td> The <span class="type">GstPad</span>.
+<td> The <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html"
+><span class="type">GstPad</span></a>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
-<td> The <span class="type">GstCaps</span>.
+<td> The <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a>.
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>factories</code></em> :</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>factory</code></em> :</span></p></td>
 <td> A <a
-href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
-><span class="type">GValueArray</span></a> of possible <span class="type">GstElementFactory</span> to use, sorted by
-rank (higher ranks come first).
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElementFactory.html"
+><span class="type">GstElementFactory</span></a> to use
 </td>
 </tr>
 <tr>
@@ -557,12 +707,9 @@ rank (higher ranks come first).
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> A <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
-><span class="type">gint</span></a> indicating what factory index from the <em class="parameter"><code>factories</code></em> array
-that you wish decodebin2 to use for trying to decode the given <em class="parameter"><code>caps</code></em>.
-Return -1 to stop selection of a factory and expose the pad as a raw type. 
-The default handler always returns the first possible factory (index 0).
+<td> a <span class="type">GST_TYPE_AUTOPLUG_SELECT_RESULT</span> that indicates the required
+operation. the default handler will always return
+<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GST-AUTOPLUG-SELECT-TRY--CAPS"><span class="type">GST_AUTOPLUG_SELECT_TRY</span></a>.
 </td>
 </tr>
 </tbody>
@@ -578,7 +725,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 <p>
 This signal is emitted once decodebin2 has finished decoding all the data.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -594,13 +740,12 @@ This signal is emitted once decodebin2 has finished decoding all the data.</p>
 </tr>
 </tbody>
 </table></div>
-<p>Since  0.10.16
-</p>
+<p>Since 0.10.16</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

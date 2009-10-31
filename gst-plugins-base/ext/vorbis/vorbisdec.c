@@ -40,7 +40,7 @@
 #  include "config.h"
 #endif
 
-#include "vorbisdec.h"
+#include "gstvorbisdec.h"
 #include <string.h>
 #include <gst/audio/audio.h>
 #include <gst/tag/tag.h>
@@ -547,6 +547,18 @@ vorbis_dec_sink_event (GstPad * pad, GstEvent * event)
       }
       break;
     }
+    case GST_EVENT_TAG:
+    {
+      if (dec->initialized)
+        /* and forward */
+        ret = gst_pad_push_event (dec->srcpad, event);
+      else {
+        /* store it to send once we're initialized */
+        dec->pendingevents = g_list_append (dec->pendingevents, event);
+        ret = TRUE;
+      }
+      break;
+    }
     default:
       ret = gst_pad_push_event (dec->srcpad, event);
       break;
@@ -693,8 +705,9 @@ vorbis_handle_comment_packet (GstVorbisDec * vd, ogg_packet * packet)
 
   GST_DEBUG_OBJECT (vd, "parsing comment packet");
 
-  buf = gst_buffer_new_and_alloc (packet->bytes);
+  buf = gst_buffer_new ();
   GST_BUFFER_DATA (buf) = packet->packet;
+  GST_BUFFER_SIZE (buf) = packet->bytes;
 
   list =
       gst_tag_list_from_vorbiscomment_buffer (buf, (guint8 *) "\003vorbis", 7,
@@ -713,25 +726,26 @@ vorbis_handle_comment_packet (GstVorbisDec * vd, ogg_packet * packet)
     vd->taglist = gst_tag_list_new ();
   }
   if (encoder) {
-    gst_tag_list_add (vd->taglist, GST_TAG_MERGE_REPLACE,
-        GST_TAG_ENCODER, encoder, NULL);
+    if (encoder[0])
+      gst_tag_list_add (vd->taglist, GST_TAG_MERGE_REPLACE,
+          GST_TAG_ENCODER, encoder, NULL);
     g_free (encoder);
   }
   gst_tag_list_add (vd->taglist, GST_TAG_MERGE_REPLACE,
       GST_TAG_ENCODER_VERSION, vd->vi.version,
       GST_TAG_AUDIO_CODEC, "Vorbis", NULL);
-  if (vd->vi.bitrate_nominal > 0) {
+  if (vd->vi.bitrate_nominal > 0 && vd->vi.bitrate_nominal <= 0x7FFFFFFF) {
     gst_tag_list_add (vd->taglist, GST_TAG_MERGE_REPLACE,
         GST_TAG_NOMINAL_BITRATE, (guint) vd->vi.bitrate_nominal, NULL);
     bitrate = vd->vi.bitrate_nominal;
   }
-  if (vd->vi.bitrate_upper > 0) {
+  if (vd->vi.bitrate_upper > 0 && vd->vi.bitrate_upper <= 0x7FFFFFFF) {
     gst_tag_list_add (vd->taglist, GST_TAG_MERGE_REPLACE,
         GST_TAG_MAXIMUM_BITRATE, (guint) vd->vi.bitrate_upper, NULL);
     if (!bitrate)
       bitrate = vd->vi.bitrate_upper;
   }
-  if (vd->vi.bitrate_lower > 0) {
+  if (vd->vi.bitrate_lower > 0 && vd->vi.bitrate_lower <= 0x7FFFFFFF) {
     gst_tag_list_add (vd->taglist, GST_TAG_MERGE_REPLACE,
         GST_TAG_MINIMUM_BITRATE, (guint) vd->vi.bitrate_lower, NULL);
     if (!bitrate)
@@ -760,11 +774,16 @@ static GstFlowReturn
 vorbis_handle_type_packet (GstVorbisDec * vd)
 {
   GList *walk;
+  gint res;
 
   g_assert (vd->initialized == FALSE);
 
-  vorbis_synthesis_init (&vd->vd, &vd->vi);
-  vorbis_block_init (&vd->vd, &vd->vb);
+  if (G_UNLIKELY ((res = vorbis_synthesis_init (&vd->vd, &vd->vi))))
+    goto synthesis_init_error;
+
+  if (G_UNLIKELY ((res = vorbis_block_init (&vd->vd, &vd->vb))))
+    goto block_init_error;
+
   vd->initialized = TRUE;
 
   if (vd->pendingevents) {
@@ -779,21 +798,35 @@ vorbis_handle_type_packet (GstVorbisDec * vd)
     gst_pad_push_event (vd->srcpad, gst_event_new_tag (vd->taglist));
     vd->taglist = NULL;
   }
-
   return GST_FLOW_OK;
+
+  /* ERRORS */
+synthesis_init_error:
+  {
+    GST_ELEMENT_ERROR (GST_ELEMENT (vd), STREAM, DECODE,
+        (NULL), ("couldn't initialize synthesis (%d)", res));
+    return GST_FLOW_ERROR;
+  }
+block_init_error:
+  {
+    GST_ELEMENT_ERROR (GST_ELEMENT (vd), STREAM, DECODE,
+        (NULL), ("couldn't initialize block (%d)", res));
+    return GST_FLOW_ERROR;
+  }
 }
 
 static GstFlowReturn
 vorbis_handle_header_packet (GstVorbisDec * vd, ogg_packet * packet)
 {
   GstFlowReturn res;
+  gint ret;
 
   GST_DEBUG_OBJECT (vd, "parsing header packet");
 
   /* Packetno = 0 if the first byte is exactly 0x01 */
   packet->b_o_s = (packet->packet[0] == 0x1) ? 1 : 0;
 
-  if (vorbis_synthesis_headerin (&vd->vi, &vd->vc, packet))
+  if ((ret = vorbis_synthesis_headerin (&vd->vi, &vd->vc, packet)))
     goto header_read_error;
 
   switch (packet->packet[0]) {
@@ -818,7 +851,7 @@ vorbis_handle_header_packet (GstVorbisDec * vd, ogg_packet * packet)
 header_read_error:
   {
     GST_ELEMENT_ERROR (GST_ELEMENT (vd), STREAM, DECODE,
-        (NULL), ("couldn't read header packet"));
+        (NULL), ("couldn't read header packet (%d)", ret));
     return GST_FLOW_ERROR;
   }
 }

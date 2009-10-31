@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="prev" href="gst-plugins-base-plugins-videotestsrc.html" title="videotestsrc">
 <link rel="next" href="gst-plugins-base-plugins-vorbisdec.html" title="vorbisdec">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
@@ -23,15 +23,17 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-plugins-vorbisdec.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-volume.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-volume.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-volume.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-volume.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-volume.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-plugins-volume.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-volume.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-volume.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-volume.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-volume.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-plugins-volume"></a><div class="titlepage"></div>
@@ -54,9 +56,15 @@
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
-               +----GstBaseTransform
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="/usr/share/gtk-doc/html/gstreamer-libs-0.10/GstBaseTransform.html"
+>GstBaseTransform</a>
                      +----<a
 href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstaudiofilter.html#GstAudioFilter"
 >GstAudioFilter</a>
@@ -67,9 +75,13 @@ href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-g
 <a name="gst-plugins-base-plugins-volume.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstVolume implements
- GstImplementsInterface and  <a
+ <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstImplementsInterface.html"
+>GstImplementsInterface</a>,  <a
 href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstmixer.html#GstMixer"
->GstMixer</a>.</p>
+>GstMixer</a> and  <a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gststreamvolume.html#GstStreamVolume"
+>GstStreamVolume</a>.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-volume.properties"></a><h2>Properties</h2>
@@ -90,7 +102,7 @@ The volume element changes the volume of the audio data.
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2801707"></a><h3>Example launch line</h3>
+<a name="id2644273"></a><h3>Example launch line</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch -v -m audiotestsrc ! volume volume=0.5 ! level ! fakesink silent=TRUE
 </pre></div> This pipeline shows that the level of audiotestsrc has been halved
@@ -100,7 +112,7 @@ the same pipeline without the volume element.
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2801696"></a><h3>Element Information</h3>
+<a name="id2644254"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -123,7 +135,110 @@ the same pipeline without the volume element.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2738449"></a><h3>Element Pads</h3>
+<a name="id2574015"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-float, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int){ 32, 64 }</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, channels=(int)[ 1, 2147483647 ], rate=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)8, depth=(int)8, signed=(boolean)true</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, channels=(int)[ 1, 2147483647 ], rate=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)16, depth=(int)16, signed=(boolean)true</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, channels=(int)[ 1, 2147483647 ], rate=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)24, depth=(int)24, signed=(boolean)true</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, channels=(int)[ 1, 2147483647 ], rate=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)32, depth=(int)32, signed=(boolean)true</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-float, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int){ 32, 64 }</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, channels=(int)[ 1, 2147483647 ], rate=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)8, depth=(int)8, signed=(boolean)true</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, channels=(int)[ 1, 2147483647 ], rate=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)16, depth=(int)16, signed=(boolean)true</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, channels=(int)[ 1, 2147483647 ], rate=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)24, depth=(int)24, signed=(boolean)true</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, channels=(int)[ 1, 2147483647 ], rate=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)32, depth=(int)32, signed=(boolean)true</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2652453"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-volume.html#plugin-volume">volume</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Andy Wingo &lt;wingo@pobox.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Filter/Effect/Audio</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2652516"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -201,7 +316,6 @@ the same pipeline without the volume element.
 </div>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -212,7 +326,6 @@ the same pipeline without the volume element.
 <p>
 Opaque data structure.</p>
 <p>
-
 </p>
 </div>
 </div>
@@ -232,7 +345,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <pre class="programlisting">  "volume"                   <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
 >gdouble</a>               : Read / Write</pre>
-<p>volume factor.</p>
+<p>volume factor, 1.0=100%.</p>
 <p>Allowed values: [0,10]</p>
 <p>Default value: 1</p>
 </div>
@@ -240,6 +353,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

@@ -179,6 +179,9 @@ enum
 #define DEFAULT_BURST_VALUE             0
 
 #define DEFAULT_QOS_DSCP                -1
+#define DEFAULT_HANDLE_READ             TRUE
+
+#define DEFAULT_RESEND_STREAMHEADER      TRUE
 
 enum
 {
@@ -210,6 +213,12 @@ enum
   PROP_BURST_VALUE,
 
   PROP_QOS_DSCP,
+
+  PROP_HANDLE_READ,
+
+  PROP_RESEND_STREAMHEADER,
+
+  PROP_NUM_FDS,
 
   PROP_LAST
 };
@@ -485,9 +494,38 @@ gst_multi_fd_sink_class_init (GstMultiFdSinkClass * klass)
           DEFAULT_BURST_VALUE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_QOS_DSCP,
-      g_param_spec_int ("qos_dscp", "QoS diff srv code point",
+      g_param_spec_int ("qos-dscp", "QoS diff srv code point",
           "Quality of Service, differentiated services code point (-1 default)",
-          -1, 63, DEFAULT_QOS_DSCP, G_PARAM_READWRITE));
+          -1, 63, DEFAULT_QOS_DSCP,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  /**
+   * GstMultiFdSink::handle-read
+   *
+   * Handle read requests from clients and discard the data.
+   *
+   * Since: 0.10.23
+   */
+  g_object_class_install_property (gobject_class, PROP_HANDLE_READ,
+      g_param_spec_boolean ("handle-read", "Handle Read",
+          "Handle client reads and discard the data",
+          DEFAULT_HANDLE_READ, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  /**
+   * GstMultiFdSink::resend-streamheader
+   *
+   * Resend the streamheaders to existing clients when they change.
+   *
+   * Since: 0.10.23
+   */
+  g_object_class_install_property (gobject_class, PROP_RESEND_STREAMHEADER,
+      g_param_spec_boolean ("resend-streamheader", "Resend streamheader",
+          "Resend the streamheader if it changes in the caps",
+          DEFAULT_RESEND_STREAMHEADER,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (gobject_class, PROP_NUM_FDS,
+      g_param_spec_uint ("num-fds", "Number of fds",
+          "The current number of client file descriptors.",
+          0, G_MAXUINT, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   /**
    * GstMultiFdSink::add:
@@ -505,7 +543,7 @@ gst_multi_fd_sink_class_init (GstMultiFdSinkClass * klass)
    * GstMultiFdSink::add-full:
    * @gstmultifdsink: the multifdsink element to emit this signal on
    * @fd:             the file descriptor to add to multifdsink
-   * @keyframe:       start bursting from a keyframe
+   * @sync:           the sync method to use
    * @unit_type_min:  the unit-type of @value_min
    * @value_min:      the minimum amount of data to burst expressed in
    *                  @unit_type_min units.
@@ -520,8 +558,8 @@ gst_multi_fd_sink_class_init (GstMultiFdSinkClass * klass)
       g_signal_new ("add-full", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION, G_STRUCT_OFFSET (GstMultiFdSinkClass,
           add_full), NULL, NULL,
-      gst_tcp_marshal_VOID__INT_BOOLEAN_INT_UINT64_INT_UINT64, G_TYPE_NONE, 6,
-      G_TYPE_INT, G_TYPE_BOOLEAN, GST_TYPE_UNIT_TYPE, G_TYPE_UINT64,
+      gst_tcp_marshal_VOID__INT_ENUM_INT_UINT64_INT_UINT64, G_TYPE_NONE, 6,
+      G_TYPE_INT, GST_TYPE_SYNC_METHOD, GST_TYPE_UNIT_TYPE, G_TYPE_UINT64,
       GST_TYPE_UNIT_TYPE, G_TYPE_UINT64);
   /**
    * GstMultiFdSink::remove:
@@ -678,6 +716,9 @@ gst_multi_fd_sink_init (GstMultiFdSink * this, GstMultiFdSinkClass * klass)
   this->def_burst_value = DEFAULT_BURST_VALUE;
 
   this->qos_dscp = DEFAULT_QOS_DSCP;
+  this->handle_read = DEFAULT_HANDLE_READ;
+
+  this->resend_streamheader = DEFAULT_RESEND_STREAMHEADER;
 
   this->header_flags = 0;
 }
@@ -701,29 +742,31 @@ setup_dscp_client (GstMultiFdSink * sink, GstTCPClient * client)
 {
   gint tos;
   gint ret;
-  struct sockaddr_storage ssaddr;
-  socklen_t slen = sizeof (ssaddr);
+  union gst_sockaddr
+  {
+    struct sockaddr sa;
+    struct sockaddr_in6 sa_in6;
+    struct sockaddr_storage sa_stor;
+  } sa;
+  socklen_t slen = sizeof (sa);
   gint af;
 
   /* don't touch */
   if (sink->qos_dscp < 0)
     return 0;
 
-  if ((ret =
-          getsockname (client->fd.fd, (struct sockaddr *) &ssaddr,
-              &slen)) < 0) {
+  if ((ret = getsockname (client->fd.fd, &sa.sa, &slen)) < 0) {
     GST_DEBUG_OBJECT (sink, "could not get sockname: %s", g_strerror (errno));
     return ret;
   }
 
-  af = ssaddr.ss_family;
+  af = sa.sa.sa_family;
 
   /* if this is an IPv4-mapped address then do IPv4 QoS */
   if (af == AF_INET6) {
-    struct sockaddr_in6 *saddr6 = (struct sockaddr_in6 *) &ssaddr;
 
     GST_DEBUG_OBJECT (sink, "check IP6 socket");
-    if (IN6_IS_ADDR_V4MAPPED (&(saddr6->sin6_addr))) {
+    if (IN6_IS_ADDR_V4MAPPED (&(sa.sa_in6.sin6_addr))) {
       GST_DEBUG_OBJECT (sink, "mapped to IPV4");
       af = AF_INET;
     }
@@ -839,9 +882,11 @@ gst_multi_fd_sink_add_full (GstMultiFdSink * sink, int fd,
   gst_poll_add_fd (sink->fdset, &client->fd);
 
   /* we don't try to read from write only fds */
-  flags = fcntl (fd, F_GETFL, 0);
-  if ((flags & O_ACCMODE) != O_WRONLY) {
-    gst_poll_fd_ctl_read (sink->fdset, &client->fd, TRUE);
+  if (sink->handle_read) {
+    flags = fcntl (fd, F_GETFL, 0);
+    if ((flags & O_ACCMODE) != O_WRONLY) {
+      gst_poll_fd_ctl_read (sink->fdset, &client->fd, TRUE);
+    }
   }
   /* figure out the mode, can't use send() for non sockets */
   res = fstat (fd, &statbuf);
@@ -1347,14 +1392,21 @@ gst_multi_fd_sink_client_queue_buffer (GstMultiFdSink * sink,
           send_streamheader = TRUE;
         } else {
           /* both old and new caps have streamheader set */
-          sh1 = gst_structure_get_value (s, "streamheader");
-          s = gst_caps_get_structure (caps, 0);
-          sh2 = gst_structure_get_value (s, "streamheader");
-          if (gst_value_compare (sh1, sh2) != GST_VALUE_EQUAL) {
+          if (!sink->resend_streamheader) {
             GST_DEBUG_OBJECT (sink,
-                "[fd %5d] new streamheader different from old, sending",
+                "[fd %5d] asked to not resend the streamheader, not sending",
                 client->fd.fd);
-            send_streamheader = TRUE;
+            send_streamheader = FALSE;
+          } else {
+            sh1 = gst_structure_get_value (s, "streamheader");
+            s = gst_caps_get_structure (caps, 0);
+            sh2 = gst_structure_get_value (s, "streamheader");
+            if (gst_value_compare (sh1, sh2) != GST_VALUE_EQUAL) {
+              GST_DEBUG_OBJECT (sink,
+                  "[fd %5d] new streamheader different from old, sending",
+                  client->fd.fd);
+              send_streamheader = TRUE;
+            }
           }
         }
       }
@@ -2307,11 +2359,12 @@ restart:
     GstBuffer *buf;
 
     /* no point in searching beyond the soft-max if any. */
-    if (soft_max_buffers) {
+    if (soft_max_buffers > 0) {
       limit = MIN (limit, soft_max_buffers);
     }
-    GST_LOG_OBJECT (sink, "extending queue to include sync point, now at %d",
-        max_buffer_usage);
+    GST_LOG_OBJECT (sink,
+        "extending queue to include sync point, now at %d, limit is %d",
+        max_buffer_usage, limit);
     for (i = 0; i < limit; i++) {
       buf = g_array_index (sink->bufqueue, GstBuffer *, i);
       if (is_sync_frame (sink, buf)) {
@@ -2411,6 +2464,7 @@ gst_multi_fd_sink_handle_clients (GstMultiFdSink * sink)
                 fd, g_strerror (errno), errno);
             if (errno == EBADF) {
               client->status = GST_CLIENT_STATUS_ERROR;
+              /* releases the CLIENTS lock */
               gst_multi_fd_sink_remove_client_link (sink, clients);
             }
           }
@@ -2660,6 +2714,12 @@ gst_multi_fd_sink_set_property (GObject * object, guint prop_id,
       multifdsink->qos_dscp = g_value_get_int (value);
       setup_dscp (multifdsink);
       break;
+    case PROP_HANDLE_READ:
+      multifdsink->handle_read = g_value_get_boolean (value);
+      break;
+    case PROP_RESEND_STREAMHEADER:
+      multifdsink->resend_streamheader = g_value_get_boolean (value);
+      break;
 
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2738,6 +2798,15 @@ gst_multi_fd_sink_get_property (GObject * object, guint prop_id, GValue * value,
       break;
     case PROP_QOS_DSCP:
       g_value_set_int (value, multifdsink->qos_dscp);
+      break;
+    case PROP_HANDLE_READ:
+      g_value_set_boolean (value, multifdsink->handle_read);
+      break;
+    case PROP_RESEND_STREAMHEADER:
+      g_value_set_boolean (value, multifdsink->resend_streamheader);
+      break;
+    case PROP_NUM_FDS:
+      g_value_set_uint (value, g_hash_table_size (multifdsink->fd_hash));
       break;
 
     default:

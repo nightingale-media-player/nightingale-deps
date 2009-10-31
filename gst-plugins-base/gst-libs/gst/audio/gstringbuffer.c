@@ -52,6 +52,9 @@ static void gst_ring_buffer_dispose (GObject * object);
 static void gst_ring_buffer_finalize (GObject * object);
 
 static gboolean gst_ring_buffer_pause_unlocked (GstRingBuffer * buf);
+static void default_clear_all (GstRingBuffer * buf);
+static guint default_commit (GstRingBuffer * buf, guint64 * sample,
+    guchar * data, gint in_samples, gint out_samples, gint * accum);
 
 static GstObjectClass *parent_class = NULL;
 
@@ -88,15 +91,18 @@ static void
 gst_ring_buffer_class_init (GstRingBufferClass * klass)
 {
   GObjectClass *gobject_class;
-  GstObjectClass *gstobject_class;
+  GstRingBufferClass *gstringbuffer_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstobject_class = (GstObjectClass *) klass;
+  gstringbuffer_class = (GstRingBufferClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
 
   gobject_class->dispose = GST_DEBUG_FUNCPTR (gst_ring_buffer_dispose);
   gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_ring_buffer_finalize);
+
+  gstringbuffer_class->clear_all = GST_DEBUG_FUNCPTR (default_clear_all);
+  gstringbuffer_class->commit = GST_DEBUG_FUNCPTR (default_commit);
 }
 
 static void
@@ -217,6 +223,65 @@ build_linear_format (int depth, int width, int unsignd, int big_endian)
   return formats;
 }
 
+#ifndef GST_DISABLE_GST_DEBUG
+static const gchar *format_type_names[] = {
+  "linear",
+  "float",
+  "mu law",
+  "a law",
+  "ima adpcm",
+  "mpeg",
+  "gsm",
+  "iec958",
+  "ac3",
+  "eac3",
+  "dts"
+};
+
+static const gchar *format_names[] = {
+  "unknown",
+  "s8",
+  "u8",
+  "s16_le",
+  "s16_be",
+  "u16_le",
+  "u16_be",
+  "s24_le",
+  "s24_be",
+  "u24_le",
+  "u24_be",
+  "s32_le",
+  "s32_be",
+  "u32_le",
+  "u32_be",
+  "s24_3le",
+  "s24_3be",
+  "u24_3le",
+  "u24_3be",
+  "s20_3le",
+  "s20_3be",
+  "u20_3le",
+  "u20_3be",
+  "s18_3le",
+  "s18_3be",
+  "u18_3le",
+  "u18_3be",
+  "float32_le",
+  "float32_be",
+  "float64_le",
+  "float64_be",
+  "mu_law",
+  "a_law",
+  "ima_adpcm",
+  "mpeg",
+  "gsm",
+  "iec958",
+  "ac3",
+  "eac3",
+  "dts"
+};
+#endif
+
 /**
  * gst_ring_buffer_debug_spec_caps:
  * @spec: the spec to debug
@@ -229,8 +294,10 @@ gst_ring_buffer_debug_spec_caps (GstRingBufferSpec * spec)
   gint i, bytes;
 
   GST_DEBUG ("spec caps: %p %" GST_PTR_FORMAT, spec->caps, spec->caps);
-  GST_DEBUG ("parsed caps: type:         %d", spec->type);
-  GST_DEBUG ("parsed caps: format:       %d", spec->format);
+  GST_DEBUG ("parsed caps: type:         %d, '%s'", spec->type,
+      format_type_names[spec->type]);
+  GST_DEBUG ("parsed caps: format:       %d, '%s'", spec->format,
+      format_names[spec->format]);
   GST_DEBUG ("parsed caps: width:        %d", spec->width);
   GST_DEBUG ("parsed caps: depth:        %d", spec->depth);
   GST_DEBUG ("parsed caps: sign:         %d", spec->sign);
@@ -901,12 +968,12 @@ gst_ring_buffer_is_acquired (GstRingBuffer * buf)
  *
  * Activate @buf to start or stop pulling data.
  *
+ * MT safe.
+ *
  * Returns: TRUE if the device could be activated in the requested mode,
  * FALSE on error.
  *
  * Since: 0.10.22.
- *
- * MT safe.
  */
 gboolean
 gst_ring_buffer_activate (GstRingBuffer * buf, gboolean active)
@@ -970,11 +1037,11 @@ activate_failed:
  *
  * Check if @buf is activated.
  *
+ * MT safe.
+ *
  * Returns: TRUE if the device is active.
  *
  * Since: 0.10.22.
- *
- * MT safe.
  */
 gboolean
 gst_ring_buffer_is_active (GstRingBuffer * buf)
@@ -1008,9 +1075,10 @@ gst_ring_buffer_set_flushing (GstRingBuffer * buf, gboolean flushing)
   GST_OBJECT_LOCK (buf);
   buf->abidata.ABI.flushing = flushing;
 
-  gst_ring_buffer_clear_all (buf);
   if (flushing) {
     gst_ring_buffer_pause_unlocked (buf);
+  } else {
+    gst_ring_buffer_clear_all (buf);
   }
   GST_OBJECT_UNLOCK (buf);
 }
@@ -1351,20 +1419,10 @@ gst_ring_buffer_set_sample (GstRingBuffer * buf, guint64 sample)
       buf->segbase);
 }
 
-/**
- * gst_ring_buffer_clear_all:
- * @buf: the #GstRingBuffer to clear
- *
- * Fill the ringbuffer with silence.
- *
- * MT safe.
- */
-void
-gst_ring_buffer_clear_all (GstRingBuffer * buf)
+static void
+default_clear_all (GstRingBuffer * buf)
 {
   gint i;
-
-  g_return_if_fail (GST_IS_RING_BUFFER (buf));
 
   /* not fatal, we just are not negotiated yet */
   if (G_UNLIKELY (buf->spec.segtotal <= 0))
@@ -1377,10 +1435,34 @@ gst_ring_buffer_clear_all (GstRingBuffer * buf)
   }
 }
 
+/**
+ * gst_ring_buffer_clear_all:
+ * @buf: the #GstRingBuffer to clear
+ *
+ * Fill the ringbuffer with silence.
+ *
+ * MT safe.
+ */
+void
+gst_ring_buffer_clear_all (GstRingBuffer * buf)
+{
+  GstRingBufferClass *rclass;
+
+  g_return_if_fail (GST_IS_RING_BUFFER (buf));
+
+  rclass = GST_RING_BUFFER_GET_CLASS (buf);
+
+  if (G_LIKELY (rclass->clear_all))
+    rclass->clear_all (buf);
+}
+
 
 static gboolean
 wait_segment (GstRingBuffer * buf)
 {
+  gint segments;
+  gboolean wait = TRUE;
+
   /* buffer must be started now or we deadlock since nobody is reading */
   if (G_UNLIKELY (g_atomic_int_get (&buf->state) !=
           GST_RING_BUFFER_STATE_STARTED)) {
@@ -1389,7 +1471,13 @@ wait_segment (GstRingBuffer * buf)
       goto no_start;
 
     GST_DEBUG_OBJECT (buf, "start!");
+    segments = g_atomic_int_get (&buf->segdone);
     gst_ring_buffer_start (buf);
+
+    /* After starting, the writer may have wrote segments already and then we
+     * don't need to wait anymore */
+    if (G_LIKELY (g_atomic_int_get (&buf->segdone) != segments))
+      wait = FALSE;
   }
 
   /* take lock first, then update our waiting flag */
@@ -1401,16 +1489,18 @@ wait_segment (GstRingBuffer * buf)
           GST_RING_BUFFER_STATE_STARTED))
     goto not_started;
 
-  if (g_atomic_int_compare_and_exchange (&buf->waiting, 0, 1)) {
-    GST_DEBUG_OBJECT (buf, "waiting..");
-    GST_RING_BUFFER_WAIT (buf);
+  if (G_LIKELY (wait)) {
+    if (g_atomic_int_compare_and_exchange (&buf->waiting, 0, 1)) {
+      GST_DEBUG_OBJECT (buf, "waiting..");
+      GST_RING_BUFFER_WAIT (buf);
 
-    if (G_UNLIKELY (buf->abidata.ABI.flushing))
-      goto flushing;
+      if (G_UNLIKELY (buf->abidata.ABI.flushing))
+        goto flushing;
 
-    if (G_UNLIKELY (g_atomic_int_get (&buf->state) !=
-            GST_RING_BUFFER_STATE_STARTED))
-      goto not_started;
+      if (G_UNLIKELY (g_atomic_int_get (&buf->state) !=
+              GST_RING_BUFFER_STATE_STARTED))
+        goto not_started;
+    }
   }
   GST_OBJECT_UNLOCK (buf);
 
@@ -1497,7 +1587,7 @@ G_STMT_START {					\
       memcpy (d, se, bps);			\
     se -= bps;					\
     *accum += outr;				\
-    while ((*accum << 1) >= inr) {		\
+    while (d < de && (*accum << 1) >= inr) {	\
       *accum -= inr;				\
       d += bps;					\
     }						\
@@ -1515,7 +1605,7 @@ G_STMT_START {					\
       memcpy (d, se, bps);			\
     d += bps;					\
     *accum += inr;				\
-    while ((*accum << 1) >= outr) {		\
+    while (s <= se && (*accum << 1) >= outr) {	\
       *accum -= outr;				\
       se -= bps;				\
     }						\
@@ -1525,43 +1615,8 @@ G_STMT_START {					\
   GST_DEBUG ("rev_down end %d/%d",*accum,*toprocess);	\
 } G_STMT_END
 
-/**
- * gst_ring_buffer_commit_full:
- * @buf: the #GstRingBuffer to commit
- * @sample: the sample position of the data
- * @data: the data to commit
- * @in_samples: the number of samples in the data to commit
- * @out_samples: the number of samples to write to the ringbuffer
- * @accum: accumulator for rate conversion.
- *
- * Commit @in_samples samples pointed to by @data to the ringbuffer @buf. 
- *
- * @in_samples and @out_samples define the rate conversion to perform on the the
- * samples in @data. For negative rates, @out_samples must be negative and
- * @in_samples positive.
- *
- * When @out_samples is positive, the first sample will be written at position @sample
- * in the ringbuffer. When @out_samples is negative, the last sample will be written to
- * @sample in reverse order.
- *
- * @out_samples does not need to be a multiple of the segment size of the ringbuffer
- * although it is recommended for optimal performance. 
- *
- * @accum will hold a temporary accumulator used in rate conversion and should be
- * set to 0 when this function is first called. In case the commit operation is
- * interrupted, one can resume the processing by passing the previously returned
- * @accum value back to this function.
- *
- * Returns: The number of samples written to the ringbuffer or -1 on error. The
- * number of samples written can be less than @out_samples when @buf was interrupted
- * with a flush or stop.
- *
- * Since: 0.10.11.
- *
- * MT safe.
- */
-guint
-gst_ring_buffer_commit_full (GstRingBuffer * buf, guint64 * sample,
+static guint
+default_commit (GstRingBuffer * buf, guint64 * sample,
     guchar * data, gint in_samples, gint out_samples, gint * accum)
 {
   gint segdone;
@@ -1572,10 +1627,6 @@ gst_ring_buffer_commit_full (GstRingBuffer * buf, guint64 * sample,
   gint inr, outr;
   gboolean reverse;
 
-  if (G_UNLIKELY (in_samples == 0 || out_samples == 0))
-    return in_samples;
-
-  g_return_val_if_fail (GST_IS_RING_BUFFER (buf), -1);
   g_return_val_if_fail (buf->data != NULL, -1);
   g_return_val_if_fail (data != NULL, -1);
 
@@ -1622,8 +1673,8 @@ gst_ring_buffer_commit_full (GstRingBuffer * buf, guint64 * sample,
       diff = writeseg - segdone;
 
       GST_DEBUG
-          ("pointer at %d, write to %d-%d, diff %d, segtotal %d, segsize %d",
-          segdone, writeseg, sampleoff, diff, segtotal, segsize);
+          ("pointer at %d, write to %d-%d, diff %d, segtotal %d, segsize %d, base %d",
+          segdone, writeseg, sampleoff, diff, segtotal, segsize, buf->segbase);
 
       /* segment too far ahead, writer too slow, we need to drop, hopefully UNLIKELY */
       if (G_UNLIKELY (diff < 0)) {
@@ -1691,6 +1742,61 @@ not_started:
     GST_DEBUG_OBJECT (buf, "stopped processing");
     goto done;
   }
+}
+
+/**
+ * gst_ring_buffer_commit_full:
+ * @buf: the #GstRingBuffer to commit
+ * @sample: the sample position of the data
+ * @data: the data to commit
+ * @in_samples: the number of samples in the data to commit
+ * @out_samples: the number of samples to write to the ringbuffer
+ * @accum: accumulator for rate conversion.
+ *
+ * Commit @in_samples samples pointed to by @data to the ringbuffer @buf. 
+ *
+ * @in_samples and @out_samples define the rate conversion to perform on the the
+ * samples in @data. For negative rates, @out_samples must be negative and
+ * @in_samples positive.
+ *
+ * When @out_samples is positive, the first sample will be written at position @sample
+ * in the ringbuffer. When @out_samples is negative, the last sample will be written to
+ * @sample in reverse order.
+ *
+ * @out_samples does not need to be a multiple of the segment size of the ringbuffer
+ * although it is recommended for optimal performance. 
+ *
+ * @accum will hold a temporary accumulator used in rate conversion and should be
+ * set to 0 when this function is first called. In case the commit operation is
+ * interrupted, one can resume the processing by passing the previously returned
+ * @accum value back to this function.
+ *
+ * MT safe.
+ *
+ * Returns: The number of samples written to the ringbuffer or -1 on error. The
+ * number of samples written can be less than @out_samples when @buf was interrupted
+ * with a flush or stop.
+ *
+ * Since: 0.10.11.
+ */
+guint
+gst_ring_buffer_commit_full (GstRingBuffer * buf, guint64 * sample,
+    guchar * data, gint in_samples, gint out_samples, gint * accum)
+{
+  GstRingBufferClass *rclass;
+  guint res = -1;
+
+  g_return_val_if_fail (GST_IS_RING_BUFFER (buf), -1);
+
+  if (G_UNLIKELY (in_samples == 0 || out_samples == 0))
+    return in_samples;
+
+  rclass = GST_RING_BUFFER_GET_CLASS (buf);
+
+  if (G_LIKELY (rclass->commit))
+    res = rclass->commit (buf, sample, data, in_samples, out_samples, accum);
+
+  return res;
 }
 
 /**
@@ -1956,9 +2062,9 @@ gst_ring_buffer_clear (GstRingBuffer * buf, gint segment)
  * Tell the ringbuffer that it is allowed to start playback when
  * the ringbuffer is filled with samples. 
  *
- * Since: 0.10.6
- *
  * MT safe.
+ *
+ * Since: 0.10.6
  */
 void
 gst_ring_buffer_may_start (GstRingBuffer * buf, gboolean allowed)

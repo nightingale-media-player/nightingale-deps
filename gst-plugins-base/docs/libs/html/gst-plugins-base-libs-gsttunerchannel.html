@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-interfaces.html" title="Interfaces Library">
 <link rel="prev" href="gst-plugins-base-libs-gsttuner.html" title="gsttuner">
 <link rel="next" href="gst-plugins-base-libs-gsttunernorm.html" title="gsttunernorm">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -37,13 +37,15 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gsttunernorm.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gsttunerchannel.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gsttunerchannel.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gsttunerchannel.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gsttunerchannel.signals" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gsttunerchannel.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gsttunerchannel.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gsttunerchannel.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gsttunerchannel.signals" class="shortcut">Signals</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gsttunerchannel"></a><div class="titlepage"></div>
@@ -63,7 +65,7 @@ interface.</p>
 
                     <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel-struct" title="GstTunerChannel">GstTunerChannel</a>;
 enum                <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannelFlags" title="enum GstTunerChannelFlags">GstTunerChannelFlags</a>;
-#define             <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GST-TUNER-CHANNEL-HAS-FLAG:CAPS" title="GST_TUNER_CHANNEL_HAS_FLAG()">GST_TUNER_CHANNEL_HAS_FLAG</a>          (channel, flag)
+#define             <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GST-TUNER-CHANNEL-HAS-FLAG--CAPS" title="GST_TUNER_CHANNEL_HAS_FLAG()">GST_TUNER_CHANNEL_HAS_FLAG</a>          (channel, flag)
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -87,7 +89,7 @@ href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id3059814"></a><p>The <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel"><span class="type">GstTunerChannel</span></a> object is provided by an element implementing
+<a name="id2779656"></a><p>The <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel"><span class="type">GstTunerChannel</span></a> object is provided by an element implementing
 the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> interface.
 </p>
 <p>
@@ -98,7 +100,6 @@ frequency, and range of the reported signal strength.
 </p>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -118,7 +119,6 @@ frequency, and range of the reported signal strength.
 <p>
 </p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -187,29 +187,28 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 An enumeration for flags indicating the available capabilities
 of a <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel"><span class="type">GstTunerChannel</span></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-TUNER-CHANNEL-INPUT:CAPS"></a><span class="term"><code class="literal">GST_TUNER_CHANNEL_INPUT</code></span></p></td>
+<td><p><a name="GST-TUNER-CHANNEL-INPUT--CAPS"></a><span class="term"><code class="literal">GST_TUNER_CHANNEL_INPUT</code></span></p></td>
 <td> The channel is for input
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-TUNER-CHANNEL-OUTPUT:CAPS"></a><span class="term"><code class="literal">GST_TUNER_CHANNEL_OUTPUT</code></span></p></td>
+<td><p><a name="GST-TUNER-CHANNEL-OUTPUT--CAPS"></a><span class="term"><code class="literal">GST_TUNER_CHANNEL_OUTPUT</code></span></p></td>
 <td> The channel is for output
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-TUNER-CHANNEL-FREQUENCY:CAPS"></a><span class="term"><code class="literal">GST_TUNER_CHANNEL_FREQUENCY</code></span></p></td>
+<td><p><a name="GST-TUNER-CHANNEL-FREQUENCY--CAPS"></a><span class="term"><code class="literal">GST_TUNER_CHANNEL_FREQUENCY</code></span></p></td>
 <td> The channel has a frequency setting
                               and signal strength.
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-TUNER-CHANNEL-AUDIO:CAPS"></a><span class="term"><code class="literal">GST_TUNER_CHANNEL_AUDIO</code></span></p></td>
+<td><p><a name="GST-TUNER-CHANNEL-AUDIO--CAPS"></a><span class="term"><code class="literal">GST_TUNER_CHANNEL_AUDIO</code></span></p></td>
 <td> The channel carries audio.
 </td>
 </tr>
@@ -218,12 +217,11 @@ of a <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerCh
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-TUNER-CHANNEL-HAS-FLAG:CAPS"></a><h3>GST_TUNER_CHANNEL_HAS_FLAG()</h3>
+<a name="GST-TUNER-CHANNEL-HAS-FLAG--CAPS"></a><h3>GST_TUNER_CHANNEL_HAS_FLAG()</h3>
 <pre class="programlisting">#define             GST_TUNER_CHANNEL_HAS_FLAG(channel, flag)</pre>
 <p>
 Macro to check if the given flag is set on a channel</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -256,7 +254,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 <p>
 Reports that the current frequency has changed.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -294,7 +291,6 @@ Reports that the signal strength has changed.
 <p>
 See Also: <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-signal-strength" title="gst_tuner_signal_strength ()"><code class="function">gst_tuner_signal_strength()</code></a></p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -320,6 +316,6 @@ See Also: <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-si
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

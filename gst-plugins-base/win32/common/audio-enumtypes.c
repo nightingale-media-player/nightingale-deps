@@ -10,70 +10,74 @@
 GType
 gst_audio_channel_position_get_type (void)
 {
-  static GType etype = 0;
-  if (etype == 0) {
+  static volatile gsize g_define_type_id__volatile = 0;
+  if (g_once_init_enter (&g_define_type_id__volatile)) {
     static const GEnumValue values[] = {
       {GST_AUDIO_CHANNEL_POSITION_INVALID, "GST_AUDIO_CHANNEL_POSITION_INVALID",
-            "invalid"},
+          "invalid"},
       {GST_AUDIO_CHANNEL_POSITION_FRONT_MONO,
-            "GST_AUDIO_CHANNEL_POSITION_FRONT_MONO", "front-mono"},
+          "GST_AUDIO_CHANNEL_POSITION_FRONT_MONO", "front-mono"},
       {GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
-            "GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT", "front-left"},
+          "GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT", "front-left"},
       {GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
-            "GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT", "front-right"},
+          "GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT", "front-right"},
       {GST_AUDIO_CHANNEL_POSITION_REAR_CENTER,
-            "GST_AUDIO_CHANNEL_POSITION_REAR_CENTER", "rear-center"},
+          "GST_AUDIO_CHANNEL_POSITION_REAR_CENTER", "rear-center"},
       {GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
-            "GST_AUDIO_CHANNEL_POSITION_REAR_LEFT", "rear-left"},
+          "GST_AUDIO_CHANNEL_POSITION_REAR_LEFT", "rear-left"},
       {GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT,
-            "GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT", "rear-right"},
+          "GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT", "rear-right"},
       {GST_AUDIO_CHANNEL_POSITION_LFE, "GST_AUDIO_CHANNEL_POSITION_LFE", "lfe"},
       {GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
-            "GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER", "front-center"},
+          "GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER", "front-center"},
       {GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT_OF_CENTER,
             "GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT_OF_CENTER",
-            "front-left-of-center"},
+          "front-left-of-center"},
       {GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT_OF_CENTER,
             "GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT_OF_CENTER",
-            "front-right-of-center"},
+          "front-right-of-center"},
       {GST_AUDIO_CHANNEL_POSITION_SIDE_LEFT,
-            "GST_AUDIO_CHANNEL_POSITION_SIDE_LEFT", "side-left"},
+          "GST_AUDIO_CHANNEL_POSITION_SIDE_LEFT", "side-left"},
       {GST_AUDIO_CHANNEL_POSITION_SIDE_RIGHT,
-            "GST_AUDIO_CHANNEL_POSITION_SIDE_RIGHT", "side-right"},
+          "GST_AUDIO_CHANNEL_POSITION_SIDE_RIGHT", "side-right"},
       {GST_AUDIO_CHANNEL_POSITION_NONE, "GST_AUDIO_CHANNEL_POSITION_NONE",
-            "none"},
+          "none"},
       {GST_AUDIO_CHANNEL_POSITION_NUM, "GST_AUDIO_CHANNEL_POSITION_NUM", "num"},
       {0, NULL, NULL}
     };
-    etype = g_enum_register_static ("GstAudioChannelPosition", values);
+    GType g_define_type_id =
+        g_enum_register_static ("GstAudioChannelPosition", values);
+    g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
   }
-  return etype;
+  return g_define_type_id__volatile;
 }
 
 /* enumerations from "gstringbuffer.h" */
 GType
 gst_ring_buffer_state_get_type (void)
 {
-  static GType etype = 0;
-  if (etype == 0) {
+  static volatile gsize g_define_type_id__volatile = 0;
+  if (g_once_init_enter (&g_define_type_id__volatile)) {
     static const GEnumValue values[] = {
       {GST_RING_BUFFER_STATE_STOPPED, "GST_RING_BUFFER_STATE_STOPPED",
-            "stopped"},
+          "stopped"},
       {GST_RING_BUFFER_STATE_PAUSED, "GST_RING_BUFFER_STATE_PAUSED", "paused"},
       {GST_RING_BUFFER_STATE_STARTED, "GST_RING_BUFFER_STATE_STARTED",
-            "started"},
+          "started"},
       {0, NULL, NULL}
     };
-    etype = g_enum_register_static ("GstRingBufferState", values);
+    GType g_define_type_id =
+        g_enum_register_static ("GstRingBufferState", values);
+    g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
   }
-  return etype;
+  return g_define_type_id__volatile;
 }
 
 GType
 gst_ring_buffer_seg_state_get_type (void)
 {
-  static GType etype = 0;
-  if (etype == 0) {
+  static volatile gsize g_define_type_id__volatile = 0;
+  if (g_once_init_enter (&g_define_type_id__volatile)) {
     static const GEnumValue values[] = {
       {GST_SEGSTATE_INVALID, "GST_SEGSTATE_INVALID", "invalid"},
       {GST_SEGSTATE_EMPTY, "GST_SEGSTATE_EMPTY", "empty"},
@@ -81,16 +85,18 @@ gst_ring_buffer_seg_state_get_type (void)
       {GST_SEGSTATE_PARTIAL, "GST_SEGSTATE_PARTIAL", "partial"},
       {0, NULL, NULL}
     };
-    etype = g_enum_register_static ("GstRingBufferSegState", values);
+    GType g_define_type_id =
+        g_enum_register_static ("GstRingBufferSegState", values);
+    g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
   }
-  return etype;
+  return g_define_type_id__volatile;
 }
 
 GType
 gst_buffer_format_type_get_type (void)
 {
-  static GType etype = 0;
-  if (etype == 0) {
+  static volatile gsize g_define_type_id__volatile = 0;
+  if (g_once_init_enter (&g_define_type_id__volatile)) {
     static const GEnumValue values[] = {
       {GST_BUFTYPE_LINEAR, "GST_BUFTYPE_LINEAR", "linear"},
       {GST_BUFTYPE_FLOAT, "GST_BUFTYPE_FLOAT", "float"},
@@ -105,16 +111,18 @@ gst_buffer_format_type_get_type (void)
       {GST_BUFTYPE_DTS, "GST_BUFTYPE_DTS", "dts"},
       {0, NULL, NULL}
     };
-    etype = g_enum_register_static ("GstBufferFormatType", values);
+    GType g_define_type_id =
+        g_enum_register_static ("GstBufferFormatType", values);
+    g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
   }
-  return etype;
+  return g_define_type_id__volatile;
 }
 
 GType
 gst_buffer_format_get_type (void)
 {
-  static GType etype = 0;
-  if (etype == 0) {
+  static volatile gsize g_define_type_id__volatile = 0;
+  if (g_once_init_enter (&g_define_type_id__volatile)) {
     static const GEnumValue values[] = {
       {GST_UNKNOWN, "GST_UNKNOWN", "unknown"},
       {GST_S8, "GST_S8", "s8"},
@@ -158,9 +166,10 @@ gst_buffer_format_get_type (void)
       {GST_DTS, "GST_DTS", "dts"},
       {0, NULL, NULL}
     };
-    etype = g_enum_register_static ("GstBufferFormat", values);
+    GType g_define_type_id = g_enum_register_static ("GstBufferFormat", values);
+    g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
   }
-  return etype;
+  return g_define_type_id__volatile;
 }
 
 /* Generated data ends here */

@@ -19,8 +19,8 @@
  */
 
 
-#ifndef __SPEEX_RESAMPLE_H__
-#define __SPEEX_RESAMPLE_H__
+#ifndef __AUDIO_RESAMPLE_H__
+#define __AUDIO_RESAMPLE_H__
 
 #include <gst/gst.h>
 #include <gst/base/gstbasetransform.h>
@@ -31,7 +31,7 @@
 G_BEGIN_DECLS
 
 #define GST_TYPE_AUDIO_RESAMPLE \
-  (gst_speex_resample_get_type())
+  (gst_audio_resample_get_type())
 #define GST_AUDIO_RESAMPLE(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_AUDIO_RESAMPLE,GstAudioResample))
 #define GST_AUDIO_RESAMPLE_CLASS(klass) \
@@ -58,9 +58,11 @@ struct _GstAudioResample {
 
   gboolean need_discont;
 
-  guint64 next_offset;
-  GstClockTime next_ts;
-  GstClockTime next_upstream_ts;
+  GstClockTime t0;
+  guint64 in_offset0;
+  guint64 out_offset0;
+  guint64 next_in_offset;
+  guint64 next_out_offset;
   
   gint channels;
   gint inrate;
@@ -83,8 +85,8 @@ struct _GstAudioResampleClass {
   GstBaseTransformClass parent_class;
 };
 
-GType gst_speex_resample_get_type(void);
+GType gst_audio_resample_get_type(void);
 
 G_END_DECLS
 
-#endif /* __SPEEX_RESAMPLE_H__ */
+#endif /* __AUDIO_RESAMPLE_H__ */

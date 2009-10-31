@@ -87,6 +87,14 @@ struct _GstAdder {
   gboolean        segment_pending;
   guint64         segment_position;
   gdouble         segment_rate;
+  /* src event handling */
+  gboolean        flush_stop_pending;
+  
+  /* target caps */
+  GstCaps *filter_caps;
+
+  /* Pending inline events */
+  GList *pending_events;
 };
 
 struct _GstAdderClass {

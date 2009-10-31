@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-rtp.html" title="RTP Library">
 <link rel="prev" href="gst-plugins-base-libs-gstbasertpdepayload.html" title="gstbasertpdepayload">
 <link rel="next" href="gst-plugins-base-libs-gstrtppayloads.html" title="gstrtppayloads">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -37,13 +37,15 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstrtppayloads.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstbasertppayload.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstbasertppayload.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstbasertppayload.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstbasertppayload.properties" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gstbasertppayload.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstbasertppayload.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstbasertppayload.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstbasertppayload.properties" class="shortcut">Properties</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstbasertppayload"></a><div class="titlepage"></div>
@@ -62,19 +64,31 @@
 
                     <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload-struct" title="GstBaseRTPPayload">GstBaseRTPPayload</a>;
                     <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayloadClass" title="GstBaseRTPPayloadClass">GstBaseRTPPayloadClass</a>;
-#define             <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GST-BASE-RTP-PAYLOAD-MTU:CAPS" title="GST_BASE_RTP_PAYLOAD_MTU()">GST_BASE_RTP_PAYLOAD_MTU</a>            (payload)
-#define             <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GST-BASE-RTP-PAYLOAD-PT:CAPS" title="GST_BASE_RTP_PAYLOAD_PT()">GST_BASE_RTP_PAYLOAD_PT</a>             (payload)
-#define             <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GST-BASE-RTP-PAYLOAD-SINKPAD:CAPS" title="GST_BASE_RTP_PAYLOAD_SINKPAD()">GST_BASE_RTP_PAYLOAD_SINKPAD</a>        (payload)
-#define             <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GST-BASE-RTP-PAYLOAD-SRCPAD:CAPS" title="GST_BASE_RTP_PAYLOAD_SRCPAD()">GST_BASE_RTP_PAYLOAD_SRCPAD</a>         (payload)
+#define             <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GST-BASE-RTP-PAYLOAD-MTU--CAPS" title="GST_BASE_RTP_PAYLOAD_MTU()">GST_BASE_RTP_PAYLOAD_MTU</a>            (payload)
+#define             <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GST-BASE-RTP-PAYLOAD-PT--CAPS" title="GST_BASE_RTP_PAYLOAD_PT()">GST_BASE_RTP_PAYLOAD_PT</a>             (payload)
+#define             <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GST-BASE-RTP-PAYLOAD-SINKPAD--CAPS" title="GST_BASE_RTP_PAYLOAD_SINKPAD()">GST_BASE_RTP_PAYLOAD_SINKPAD</a>        (payload)
+#define             <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GST-BASE-RTP-PAYLOAD-SRCPAD--CAPS" title="GST_BASE_RTP_PAYLOAD_SRCPAD()">GST_BASE_RTP_PAYLOAD_SRCPAD</a>         (payload)
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#gst-basertppayload-is-filled" title="gst_basertppayload_is_filled ()">gst_basertppayload_is_filled</a>        (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> size,
-                                                         GstClockTime duration);
-GstFlowReturn       <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#gst-basertppayload-push" title="gst_basertppayload_push ()">gst_basertppayload_push</a>             (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
-                                                         GstBuffer *buffer);
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> duration);
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#gst-basertppayload-push" title="gst_basertppayload_push ()">gst_basertppayload_push</a>             (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#gst-basertppayload-push-list" title="gst_basertppayload_push_list ()">gst_basertppayload_push_list</a>        (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list);
 void                <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#gst-basertppayload-set-options" title="gst_basertppayload_set_options ()">gst_basertppayload_set_options</a>      (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
@@ -103,8 +117,12 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
   <a
 href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
 >GObject</a>
-   +----GstObject
-         +----GstElement
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
                +----GstBaseRTPPayload
                      +----<a class="link" href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a>
 </pre>
@@ -121,6 +139,9 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
   "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--mtu" title='The "mtu" property'>mtu</a>"                      <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--perfect-rtptime" title='The "perfect-rtptime" property'>perfect-rtptime</a>"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
   "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--pt" title='The "pt" property'>pt</a>"                       <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a>                 : Read / Write
@@ -146,12 +167,11 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id3095007"></a><p>
+<a name="id2817784"></a><p>
 Provides a base class for RTP payloaders
 </p>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -160,7 +180,6 @@ Provides a base class for RTP payloaders
 <a name="GstBaseRTPPayload-struct"></a><h3>GstBaseRTPPayload</h3>
 <pre class="programlisting">typedef struct _GstBaseRTPPayload GstBaseRTPPayload;</pre>
 <p>
-
 </p>
 </div>
 <hr>
@@ -172,26 +191,24 @@ Provides a base class for RTP payloaders
   /* receive caps on the sink pad, configure the payloader. */
   gboolean      (*set_caps)             (GstBaseRTPPayload *payload, GstCaps *caps);
   /* handle a buffer, perform 0 or more gst_basertppayload_push() on
-   * the RTP buffers */
-  GstFlowReturn (*handle_buffer)        (GstBaseRTPPayload *payload, 
+   * the RTP buffers. This function takes ownership of the buffer. */
+  GstFlowReturn (*handle_buffer)        (GstBaseRTPPayload *payload,
                                          GstBuffer *buffer);
   gboolean      (*handle_event)         (GstPad * pad, GstEvent * event);
   GstCaps *     (*get_caps)             (GstBaseRTPPayload *payload, GstPad * pad);
 } GstBaseRTPPayloadClass;
 </pre>
 <p>
-
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-BASE-RTP-PAYLOAD-MTU:CAPS"></a><h3>GST_BASE_RTP_PAYLOAD_MTU()</h3>
+<a name="GST-BASE-RTP-PAYLOAD-MTU--CAPS"></a><h3>GST_BASE_RTP_PAYLOAD_MTU()</h3>
 <pre class="programlisting">#define GST_BASE_RTP_PAYLOAD_MTU(payload) (GST_BASE_RTP_PAYLOAD (payload)-&gt;mtu)
 </pre>
 <p>
 Get access to the configured MTU of <em class="parameter"><code>payload</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -204,13 +221,12 @@ Get access to the configured MTU of <em class="parameter"><code>payload</code></
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-BASE-RTP-PAYLOAD-PT:CAPS"></a><h3>GST_BASE_RTP_PAYLOAD_PT()</h3>
+<a name="GST-BASE-RTP-PAYLOAD-PT--CAPS"></a><h3>GST_BASE_RTP_PAYLOAD_PT()</h3>
 <pre class="programlisting">#define GST_BASE_RTP_PAYLOAD_PT(payload)  (GST_BASE_RTP_PAYLOAD (payload)-&gt;pt)
 </pre>
 <p>
 Get access to the configured payload type of <em class="parameter"><code>payload</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -223,13 +239,12 @@ Get access to the configured payload type of <em class="parameter"><code>payload
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-BASE-RTP-PAYLOAD-SINKPAD:CAPS"></a><h3>GST_BASE_RTP_PAYLOAD_SINKPAD()</h3>
+<a name="GST-BASE-RTP-PAYLOAD-SINKPAD--CAPS"></a><h3>GST_BASE_RTP_PAYLOAD_SINKPAD()</h3>
 <pre class="programlisting">#define GST_BASE_RTP_PAYLOAD_SINKPAD(payload) (GST_BASE_RTP_PAYLOAD (payload)-&gt;sinkpad)
 </pre>
 <p>
 Get access to the sinkpad of <em class="parameter"><code>payload</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -242,13 +257,12 @@ Get access to the sinkpad of <em class="parameter"><code>payload</code></em>.</p
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-BASE-RTP-PAYLOAD-SRCPAD:CAPS"></a><h3>GST_BASE_RTP_PAYLOAD_SRCPAD()</h3>
+<a name="GST-BASE-RTP-PAYLOAD-SRCPAD--CAPS"></a><h3>GST_BASE_RTP_PAYLOAD_SRCPAD()</h3>
 <pre class="programlisting">#define GST_BASE_RTP_PAYLOAD_SRCPAD(payload)  (GST_BASE_RTP_PAYLOAD (payload)-&gt;srcpad)
 </pre>
 <p>
 Get access to the srcpad of <em class="parameter"><code>payload</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -268,12 +282,13 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> size,
-                                                         GstClockTime duration);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> duration);</pre>
 <p>
-Check if the packet with <em class="parameter"><code>size</code></em> and <em class="parameter"><code>duration</code></em> would exceed the configure
+Check if the packet with <em class="parameter"><code>size</code></em> and <em class="parameter"><code>duration</code></em> would exceed the configured
 maximum size.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -296,7 +311,7 @@ maximum size.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> if the packet of <em class="parameter"><code>size</code></em> and <em class="parameter"><code>duration</code></em> would exceed the
 configured MTU or max_ptime.
 </td>
@@ -307,8 +322,12 @@ configured MTU or max_ptime.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-basertppayload-push"></a><h3>gst_basertppayload_push ()</h3>
-<pre class="programlisting">GstFlowReturn       gst_basertppayload_push             (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
-                                                         GstBuffer *buffer);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       gst_basertppayload_push             (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);</pre>
 <p>
 Push <em class="parameter"><code>buffer</code></em> to the peer element of the payloader. The SSRC, payload type,
 seqnum and timestamp of the RTP buffer will be updated first.
@@ -316,7 +335,6 @@ seqnum and timestamp of the RTP buffer will be updated first.
 <p>
 This function takes ownership of <em class="parameter"><code>buffer</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -328,16 +346,64 @@ This function takes ownership of <em class="parameter"><code>buffer</code></em>.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
-<td> a <span class="type">GstBuffer</span>
+<td> a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+><span class="type">GstBuffer</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GstFlowReturn</span>.
+<td> a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html#GstFlowReturn"
+><span class="type">GstFlowReturn</span></a>.
 </td>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-basertppayload-push-list"></a><h3>gst_basertppayload_push_list ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       gst_basertppayload_push_list        (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list);</pre>
+<p>
+Push <em class="parameter"><code>list</code></em> to the peer element of the payloader. The SSRC, payload type,
+seqnum and timestamp of the RTP buffer will be updated first.
+</p>
+<p>
+This function takes ownership of <em class="parameter"><code>list</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>payload</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload"><span class="type">GstBaseRTPPayload</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>list</code></em> :</span></p></td>
+<td> a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+><span class="type">GstBufferList</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html#GstFlowReturn"
+><span class="type">GstFlowReturn</span></a>.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.24</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -360,7 +426,6 @@ Set the rtp options of the payloader. These options will be set in the caps
 of the payloader. Subclasses must call this method before calling
 <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#gst-basertppayload-push" title="gst_basertppayload_push ()"><code class="function">gst_basertppayload_push()</code></a> or <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#gst-basertppayload-set-outcaps" title="gst_basertppayload_set_outcaps ()"><code class="function">gst_basertppayload_set_outcaps()</code></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -382,7 +447,7 @@ of the payloader. Subclasses must call this method before calling
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>encoding_name</code></em> :</span></p></td>
-<td> the encoding name 
+<td> the encoding name
 </td>
 </tr>
 <tr>
@@ -410,7 +475,6 @@ Configure the output caps with the optional parameters.
 Variable arguments should be in the form field name, field type
 (as a GType), value(s).  The last variable argument should be NULL.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -423,7 +487,7 @@ Variable arguments should be in the form field name, field type
 <tr>
 <td><p><span class="term"><em class="parameter"><code>fieldname</code></em> :</span></p></td>
 <td> the first field name or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
 ><code class="literal">NULL</code></a>
 </td>
 </tr>
@@ -435,7 +499,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> if the caps could be set.
 </td>
 </tr>
@@ -473,6 +537,15 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>Maximum size of one packet.</p>
 <p>Allowed values: &gt;= 28</p>
 <p>Default value: 1400</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstBaseRTPPayload--perfect-rtptime"></a><h3>The <code class="literal">"perfect-rtptime"</code> property</h3>
+<pre class="programlisting">  "perfect-rtptime"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Generate perfect RTP timestamps when possible.</p>
+<p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -535,6 +608,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

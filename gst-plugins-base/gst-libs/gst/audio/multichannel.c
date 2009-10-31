@@ -16,6 +16,13 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION:gstmultichannel
+ * @short_description: Support for multichannel audio elements
+ *
+ * This module contains some helper functions and a enum to work with
+ * multichannel audio.
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"

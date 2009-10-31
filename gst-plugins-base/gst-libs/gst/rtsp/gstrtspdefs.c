@@ -66,6 +66,12 @@ extern int h_errno;
 #include <netdb.h>
 #endif
 
+struct rtsp_header
+{
+  const gchar *name;
+  gboolean multiple;
+};
+
 static const gchar *rtsp_results[] = {
   "OK",
   /* errors */
@@ -83,6 +89,8 @@ static const gchar *rtsp_results[] = {
   "Network error: %s",
   "Host is not a valid IP address",
   "Timeout while waiting for server response",
+  "Tunnel GET request received",
+  "Tunnel POST request received",
   "Unknown error (%d)",
   NULL
 };
@@ -99,68 +107,106 @@ static const gchar *rtsp_methods[] = {
   "SETUP",
   "SET_PARAMETER",
   "TEARDOWN",
+  "GET",
+  "POST",
   NULL
 };
 
-static const gchar *rtsp_headers[] = {
-  "Accept",                     /* Accept               R      opt.      entity */
-  "Accept-Encoding",            /* Accept-Encoding      R      opt.      entity */
-  "Accept-Language",            /* Accept-Language      R      opt.      all */
-  "Allow",                      /* Allow                r      opt.      all */
-  "Authorization",              /* Authorization        R      opt.      all */
-  "Bandwidth",                  /* Bandwidth            R      opt.      all */
-  "Blocksize",                  /* Blocksize            R      opt.      all but OPTIONS, TEARDOWN */
-  "Cache-Control",              /* Cache-Control        g      opt.      SETUP */
-  "Conference",                 /* Conference           R      opt.      SETUP */
-  "Connection",                 /* Connection           g      req.      all */
-  "Content-Base",               /* Content-Base         e      opt.      entity */
-  "Content-Encoding",           /* Content-Encoding     e      req.      SET_PARAMETER, DESCRIBE, ANNOUNCE */
-  "Content-Language",           /* Content-Language     e      req.      DESCRIBE, ANNOUNCE */
-  "Content-Length",             /* Content-Length       e      req.      SET_PARAMETER, ANNOUNCE, entity */
-  "Content-Location",           /* Content-Location     e      opt.      entity */
-  "Content-Type",               /* Content-Type         e      req.      SET_PARAMETER, ANNOUNCE, entity */
-  "CSeq",                       /* CSeq                 g      req.      all */
-  "Date",                       /* Date                 g      opt.      all */
-  "Expires",                    /* Expires              e      opt.      DESCRIBE, ANNOUNCE */
-  "From",                       /* From                 R      opt.      all */
-  "If-Modified-Since",          /* If-Modified-Since    R      opt.      DESCRIBE, SETUP */
-  "Last-Modified",              /* Last-Modified        e      opt.      entity */
-  "Proxy-Authenticate",         /* Proxy-Authenticate */
-  "Proxy-Require",              /* Proxy-Require        R      req.      all */
-  "Public",                     /* Public               r      opt.      all */
-  "Range",                      /* Range                Rr     opt.      PLAY, PAUSE, RECORD */
-  "Referer",                    /* Referer              R      opt.      all */
-  "Require",                    /* Require              R      req.      all */
-  "Retry-After",                /* Retry-After          r      opt.      all */
-  "RTP-Info",                   /* RTP-Info             r      req.      PLAY */
-  "Scale",                      /* Scale                Rr     opt.      PLAY, RECORD */
-  "Session",                    /* Session              Rr     req.      all but SETUP, OPTIONS */
-  "Server",                     /* Server               r      opt.      all */
-  "Speed",                      /* Speed                Rr     opt.      PLAY */
-  "Transport",                  /* Transport            Rr     req.      SETUP */
-  "Unsupported",                /* Unsupported          r      req.      all */
-  "User-Agent",                 /* User-Agent           R      opt.      all */
-  "Via",                        /* Via                  g      opt.      all */
-  "WWW-Authenticate",           /* WWW-Authenticate     r      opt.      all */
+static struct rtsp_header rtsp_headers[] = {
+  {"Accept", TRUE},
+  {"Accept-Encoding", TRUE},
+  {"Accept-Language", TRUE},
+  {"Allow", TRUE},
+  {"Authorization", FALSE},
+  {"Bandwidth", FALSE},
+  {"Blocksize", FALSE},
+  {"Cache-Control", TRUE},
+  {"Conference", FALSE},
+  {"Connection", TRUE},
+  {"Content-Base", FALSE},
+  {"Content-Encoding", TRUE},
+  {"Content-Language", TRUE},
+  {"Content-Length", FALSE},
+  {"Content-Location", FALSE},
+  {"Content-Type", FALSE},
+  {"CSeq", FALSE},
+  {"Date", FALSE},
+  {"Expires", FALSE},
+  {"From", FALSE},
+  {"If-Modified-Since", FALSE},
+  {"Last-Modified", FALSE},
+  {"Proxy-Authenticate", TRUE},
+  {"Proxy-Require", TRUE},
+  {"Public", TRUE},
+  {"Range", FALSE},
+  {"Referer", FALSE},
+  {"Require", TRUE},
+  {"Retry-After", FALSE},
+  {"RTP-Info", TRUE},
+  {"Scale", FALSE},
+  {"Session", FALSE},
+  {"Server", FALSE},
+  {"Speed", FALSE},
+  {"Transport", TRUE},
+  {"Unsupported", FALSE},
+  {"User-Agent", FALSE},
+  {"Via", TRUE},
+  {"WWW-Authenticate", TRUE},
 
   /* Real extensions */
-  "ClientChallenge",            /* ClientChallenge */
-  "RealChallenge1",             /* RealChallenge1 */
-  "RealChallenge2",             /* RealChallenge2 */
-  "RealChallenge3",             /* RealChallenge3 */
-  "Subscribe",                  /* Subscribe */
-  "Alert",                      /* Alert */
-  "ClientID",                   /* ClientID */
-  "CompanyID",                  /* CompanyID */
-  "GUID",                       /* GUID */
-  "RegionData",                 /* RegionData */
-  "SupportsMaximumASMBandwidth",        /* SupportsMaximumASMBandwidth */
-  "Language",                   /* Language */
-  "PlayerStarttime",            /* PlayerStarttime */
+  {"ClientChallenge", FALSE},
+  {"RealChallenge1", FALSE},
+  {"RealChallenge2", FALSE},
+  {"RealChallenge3", FALSE},
+  {"Subscribe", FALSE},
+  {"Alert", FALSE},
+  {"ClientID", FALSE},
+  {"CompanyID", FALSE},
+  {"GUID", FALSE},
+  {"RegionData", FALSE},
+  {"SupportsMaximumASMBandwidth", FALSE},
+  {"Language", FALSE},
+  {"PlayerStarttime", FALSE},
 
-  "Location",                   /* Location */
+  /* Since 0.10.16 */
+  {"Location", FALSE},
 
-  NULL
+  /* Since 0.10.23 */
+  {"ETag", FALSE},
+  {"If-Match", TRUE},
+
+  /* WM extensions [MS-RTSP] Since 0.10.23 */
+  {"Accept-Charset", TRUE},
+  {"Supported", TRUE},
+  {"Vary", TRUE},
+  {"X-Accelerate-Streaming", FALSE},
+  {"X-Accept-Authentication", FALSE},
+  {"X-Accept-Proxy-Authentication", FALSE},
+  {"X-Broadcast-Id", FALSE},
+  {"X-Burst-Streaming", FALSE},
+  {"X-Notice", FALSE},
+  {"X-Player-Lag-Time", FALSE},
+  {"X-Playlist", FALSE},
+  {"X-Playlist-Change-Notice", FALSE},
+  {"X-Playlist-Gen-Id", FALSE},
+  {"X-Playlist-Seek-Id", FALSE},
+  {"X-Proxy-Client-Agent", FALSE},
+  {"X-Proxy-Client-Verb", FALSE},
+  {"X-Receding-PlaylistChange", FALSE},
+  {"X-RTP-Info", FALSE},
+  {"X-StartupProfile", FALSE},
+
+  /* Since 0.10.24 */
+  {"Timestamp", FALSE},
+
+  /* Since 0.10.25 */
+  {"Authentication-Info", FALSE},
+  {"Host", FALSE},
+  {"Pragma", TRUE},
+  {"X-Server-IP-Address", FALSE},
+  {"X-Sessioncookie", FALSE},
+
+  {NULL, FALSE}
 };
 
 #define DEF_STATUS(c, t) \
@@ -260,8 +306,8 @@ gst_rtsp_strresult (GstRTSPResult result)
       break;
     case -GST_RTSP_ENET:
       res = g_strdup_printf (rtsp_results[idx], hstrerror (h_errno));
-      break;
 #endif
+      break;
     case -GST_RTSP_ELAST:
       res = g_strdup_printf (rtsp_results[idx], result);
       break;
@@ -311,6 +357,9 @@ gst_rtsp_version_as_text (GstRTSPVersion version)
     case GST_RTSP_VERSION_1_0:
       return "1.0";
 
+    case GST_RTSP_VERSION_1_1:
+      return "1.1";
+
     default:
       return "0.0";
   }
@@ -330,7 +379,7 @@ gst_rtsp_header_as_text (GstRTSPHeaderField field)
   if (field == GST_RTSP_HDR_INVALID)
     return NULL;
   else
-    return rtsp_headers[field - 1];
+    return rtsp_headers[field - 1].name;
 }
 
 /**
@@ -366,8 +415,8 @@ gst_rtsp_find_header_field (const gchar * header)
 {
   gint idx;
 
-  for (idx = 0; rtsp_headers[idx]; idx++) {
-    if (g_ascii_strcasecmp (rtsp_headers[idx], header) == 0) {
+  for (idx = 0; rtsp_headers[idx].name; idx++) {
+    if (g_ascii_strcasecmp (rtsp_headers[idx].name, header) == 0) {
       return idx + 1;
     }
   }
@@ -394,4 +443,70 @@ gst_rtsp_find_method (const gchar * method)
     }
   }
   return GST_RTSP_INVALID;
+}
+
+/**
+ * gst_rtsp_options_as_text:
+ * @options: one or more #GstRTSPMethod
+ *
+ * Convert @options to a string.
+ *
+ * Returns: a new string of @options. g_free() after usage.
+ *
+ * Since: 0.10.23
+ */
+gchar *
+gst_rtsp_options_as_text (GstRTSPMethod options)
+{
+  GString *str;
+
+  str = g_string_new ("");
+
+  if (options & GST_RTSP_OPTIONS)
+    g_string_append (str, "OPTIONS, ");
+  if (options & GST_RTSP_DESCRIBE)
+    g_string_append (str, "DESCRIBE, ");
+  if (options & GST_RTSP_ANNOUNCE)
+    g_string_append (str, "ANNOUNCE, ");
+  if (options & GST_RTSP_GET_PARAMETER)
+    g_string_append (str, "GET_PARAMETER, ");
+  if (options & GST_RTSP_PAUSE)
+    g_string_append (str, "PAUSE, ");
+  if (options & GST_RTSP_PLAY)
+    g_string_append (str, "PLAY, ");
+  if (options & GST_RTSP_RECORD)
+    g_string_append (str, "RECORD, ");
+  if (options & GST_RTSP_REDIRECT)
+    g_string_append (str, "REDIRECT, ");
+  if (options & GST_RTSP_SETUP)
+    g_string_append (str, "SETUP, ");
+  if (options & GST_RTSP_SET_PARAMETER)
+    g_string_append (str, "SET_PARAMETER, ");
+  if (options & GST_RTSP_TEARDOWN)
+    g_string_append (str, "TEARDOWN, ");
+
+  /* remove trailing ", " if there is one */
+  if (str->len > 2)
+    str = g_string_truncate (str, str->len - 2);
+
+  return g_string_free (str, FALSE);
+}
+
+/**
+ * gst_rtsp_header_allow_multiple:
+ * @field: a #GstRTSPHeaderField
+ *
+ * Check whether @field may appear multiple times in a message.
+ *
+ * Returns: %TRUE if multiple headers are allowed.
+ *
+ * Since: 0.10.25
+ */
+gboolean
+gst_rtsp_header_allow_multiple (GstRTSPHeaderField field)
+{
+  if (field == GST_RTSP_HDR_INVALID)
+    return FALSE;
+  else
+    return rtsp_headers[field - 1].multiple;
 }

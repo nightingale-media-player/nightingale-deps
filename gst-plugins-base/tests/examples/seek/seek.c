@@ -26,6 +26,7 @@
 #endif
 
 #include <stdlib.h>
+#include <math.h>
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <gst/gst.h>
@@ -65,6 +66,9 @@ GST_DEBUG_CATEGORY_STATIC (seek_debug);
 #define SEEK_TIMEOUT 40 * GST_MSECOND
 
 #define DEFAULT_VIDEO_HEIGHT 300
+
+/* the state to go to when stop is pressed */
+#define STOP_STATE      GST_STATE_READY
 
 
 static GList *seekable_pads = NULL;
@@ -107,9 +111,17 @@ static gboolean need_streams = TRUE;
 static GtkWidget *video_combo, *audio_combo, *text_combo, *vis_combo;
 static GtkWidget *vis_checkbox, *video_checkbox, *audio_checkbox;
 static GtkWidget *text_checkbox, *mute_checkbox, *volume_spinbutton;
-static GtkWidget *skip_checkbox, *video_window;
+static GtkWidget *skip_checkbox, *video_window, *download_checkbox;
+static GtkWidget *rate_spinbutton;
 
-GList *paths = NULL, *l = NULL;
+static GStaticMutex state_mutex = G_STATIC_MUTEX_INIT;
+
+static GtkWidget *format_combo, *step_amount_spinbutton, *step_rate_spinbutton;
+static GtkWidget *shuttle_checkbox, *step_button;
+static GtkWidget *shuttle_hscale;
+static GtkAdjustment *shuttle_adjustment;
+
+static GList *paths = NULL, *l = NULL;
 
 /* we keep an array of the visualisation entries so that we can easily switch
  * with the combo box index. */
@@ -121,6 +133,8 @@ typedef struct
 static GArray *vis_entries;
 
 static void clear_streams (GstElement * pipeline);
+static void volume_notify_cb (GstElement * pipeline, GParamSpec * arg,
+    gpointer user_dat);
 
 /* pipeline construction */
 
@@ -638,29 +652,32 @@ static GstElement *
 make_mp3_pipeline (const gchar * location)
 {
   GstElement *pipeline;
-  GstElement *src, *decoder, *osssink, *queue;
+  GstElement *src, *parser, *decoder, *audiosink, *queue;
   GstPad *seekable;
 
   pipeline = gst_pipeline_new ("app");
 
   src = gst_element_factory_make_or_warn (SOURCE, "src");
+  parser = gst_element_factory_make_or_warn ("mp3parse", "parse");
   decoder = gst_element_factory_make_or_warn ("mad", "dec");
   queue = gst_element_factory_make_or_warn ("queue", "queue");
-  osssink = gst_element_factory_make_or_warn (ASINK, "sink");
+  audiosink = gst_element_factory_make_or_warn (ASINK, "sink");
 
-  seekable_elements = g_list_prepend (seekable_elements, osssink);
+  seekable_elements = g_list_prepend (seekable_elements, audiosink);
 
   g_object_set (G_OBJECT (src), "location", location, NULL);
-  //g_object_set (G_OBJECT (osssink), "fragment", 0x00180008, NULL);
+  //g_object_set (G_OBJECT (audiosink), "fragment", 0x00180008, NULL);
 
   gst_bin_add (GST_BIN (pipeline), src);
+  gst_bin_add (GST_BIN (pipeline), parser);
   gst_bin_add (GST_BIN (pipeline), decoder);
   gst_bin_add (GST_BIN (pipeline), queue);
-  gst_bin_add (GST_BIN (pipeline), osssink);
+  gst_bin_add (GST_BIN (pipeline), audiosink);
 
-  gst_element_link (src, decoder);
+  gst_element_link (src, parser);
+  gst_element_link (parser, decoder);
   gst_element_link (decoder, queue);
-  gst_element_link (queue, osssink);
+  gst_element_link (queue, audiosink);
 
   seekable = gst_element_get_static_pad (queue, "src");
   seekable_pads = g_list_prepend (seekable_pads, seekable);
@@ -921,7 +938,12 @@ make_playerbin_pipeline (const gchar * location)
 static GstElement *
 make_playerbin2_pipeline (const gchar * location)
 {
-  return construct_playerbin ("playbin2", location);
+  GstElement *pipeline = construct_playerbin ("playbin2", location);
+
+  /* FIXME: this is not triggered, playbin2 is not forwarding it from the sink */
+  g_signal_connect (pipeline, "notify::volume", G_CALLBACK (volume_notify_cb),
+      NULL);
+  return pipeline;
 }
 
 #ifndef GST_DISABLE_PARSE
@@ -988,6 +1010,13 @@ format_value (GtkScale * scale, gdouble value)
 
   return g_strdup_printf ("%02" G_GINT64_FORMAT ":%02" G_GINT64_FORMAT ":%02"
       G_GINT64_FORMAT, seconds / 60, seconds % 60, subseconds % 100);
+}
+
+
+static gchar *
+shuttle_format_value (GtkScale * scale, gdouble value)
+{
+  return g_strdup_printf ("%0.*g", gtk_scale_get_digits (scale), value);
 }
 
 typedef struct
@@ -1142,20 +1171,6 @@ update_fill (gpointer data)
         gint percent;
 
         gst_query_parse_buffering_percent (query, &busy, &percent);
-
-        if (buffering && !busy) {
-          /* if we were buffering but not anymore, start playing */
-          if (state == GST_STATE_PLAYING && !is_live) {
-            fprintf (stderr, "setting pipeline to PLAYING ...\n");
-            gst_element_set_state (pipeline, GST_STATE_PLAYING);
-            gtk_statusbar_pop (GTK_STATUSBAR (statusbar), status_id);
-            gtk_statusbar_push (GTK_STATUSBAR (statusbar), status_id,
-                "Playing");
-          }
-          state = GST_STATE_PAUSED;
-          buffering = FALSE;
-        }
-
         gst_query_parse_buffering_range (query, &format, &start, &stop, NULL);
 
         GST_DEBUG ("start %" G_GINT64_FORMAT ", stop %" G_GINT64_FORMAT,
@@ -1206,11 +1221,17 @@ update_scale (gpointer data)
     }
     query_rates ();
   }
+
   if (position >= duration)
     duration = position;
 
   if (duration > 0) {
     set_scale (position * 100.0 / duration);
+  }
+
+  /* FIXME: see make_playerbin2_pipeline() and volume_notify_cb() */
+  if (pipeline_type == 16) {
+    g_object_notify (G_OBJECT (pipeline), "volume");
   }
 
   return TRUE;
@@ -1391,7 +1412,7 @@ start_seek (GtkWidget * widget, GdkEventButton * event, gpointer user_data)
   }
 
   if (changed_id == 0 && flush_seek && scrub) {
-    changed_id = gtk_signal_connect (GTK_OBJECT (hscale),
+    changed_id = g_signal_connect (GTK_OBJECT (hscale),
         "value_changed", G_CALLBACK (seek_cb), pipeline);
   }
 
@@ -1452,6 +1473,7 @@ play_cb (GtkButton * button, gpointer data)
     state = GST_STATE_PLAYING;
     gtk_statusbar_push (GTK_STATUSBAR (statusbar), status_id, "Playing");
   }
+
   return;
 
 failed:
@@ -1464,6 +1486,7 @@ failed:
 static void
 pause_cb (GtkButton * button, gpointer data)
 {
+  g_static_mutex_lock (&state_mutex);
   if (state != GST_STATE_PAUSED) {
     GstStateChangeReturn ret;
 
@@ -1483,10 +1506,13 @@ pause_cb (GtkButton * button, gpointer data)
     state = GST_STATE_PAUSED;
     gtk_statusbar_push (GTK_STATUSBAR (statusbar), status_id, "Paused");
   }
+  g_static_mutex_unlock (&state_mutex);
+
   return;
 
 failed:
   {
+    g_static_mutex_unlock (&state_mutex);
     g_print ("PAUSE failed\n");
     gtk_statusbar_push (GTK_STATUSBAR (statusbar), status_id, "Pause failed");
   }
@@ -1495,17 +1521,18 @@ failed:
 static void
 stop_cb (GtkButton * button, gpointer data)
 {
-  if (state != GST_STATE_READY) {
+  if (state != STOP_STATE) {
     GstStateChangeReturn ret;
 
     g_print ("READY pipeline\n");
     gtk_statusbar_pop (GTK_STATUSBAR (statusbar), status_id);
 
-    ret = gst_element_set_state (pipeline, GST_STATE_READY);
+    g_static_mutex_lock (&state_mutex);
+    ret = gst_element_set_state (pipeline, STOP_STATE);
     if (ret == GST_STATE_CHANGE_FAILURE)
       goto failed;
 
-    state = GST_STATE_READY;
+    state = STOP_STATE;
     gtk_statusbar_push (GTK_STATUSBAR (statusbar), status_id, "Stopped");
 
     is_live = FALSE;
@@ -1516,6 +1543,7 @@ stop_cb (GtkButton * button, gpointer data)
 
     if (pipeline_type == 16)
       clear_streams (pipeline);
+    g_static_mutex_unlock (&state_mutex);
 
 #if 0
     /* if one uses parse_launch, play, stop and play again it fails as all the
@@ -1534,7 +1562,7 @@ stop_cb (GtkButton * button, gpointer data)
 
       pipeline = pipelines[pipeline_type].func (pipeline_spec);
       g_assert (pipeline);
-      gst_element_set_state (pipeline, GST_STATE_READY);
+      gst_element_set_state (pipeline, STOP_STATE);
       connect_bus_signals (pipeline);
     }
 #endif
@@ -1543,6 +1571,7 @@ stop_cb (GtkButton * button, gpointer data)
 
 failed:
   {
+    g_static_mutex_unlock (&state_mutex);
     g_print ("STOP failed\n");
     gtk_statusbar_push (GTK_STATUSBAR (statusbar), status_id, "Stop failed");
   }
@@ -1605,6 +1634,8 @@ rate_spinbutton_changed_cb (GtkSpinButton * button, GstPipeline * pipeline)
 
   rate = gtk_spin_button_get_value (button);
 
+  GST_DEBUG ("rate changed to %lf", rate);
+
   flags = 0;
   if (flush_seek)
     flags |= GST_SEEK_FLAG_FLUSH;
@@ -1617,7 +1648,7 @@ rate_spinbutton_changed_cb (GtkSpinButton * button, GstPipeline * pipeline)
   if (skip_seek)
     flags |= GST_SEEK_FLAG_SKIP;
 
-  if (rate >= 0) {
+  if (rate >= 0.0) {
     s_event = gst_event_new_seek (rate,
         GST_FORMAT_TIME, flags, GST_SEEK_TYPE_SET, position,
         GST_SEEK_TYPE_SET, GST_CLOCK_TIME_NONE);
@@ -1626,8 +1657,6 @@ rate_spinbutton_changed_cb (GtkSpinButton * button, GstPipeline * pipeline)
         GST_FORMAT_TIME, flags, GST_SEEK_TYPE_SET, G_GINT64_CONSTANT (0),
         GST_SEEK_TYPE_SET, position);
   }
-
-  GST_DEBUG ("rate changed to %lf", rate);
 
   res = send_event (s_event);
 
@@ -1702,6 +1731,15 @@ mute_toggle_cb (GtkToggleButton * button, GstPipeline * pipeline)
 }
 
 static void
+download_toggle_cb (GtkToggleButton * button, GstPipeline * pipeline)
+{
+  gboolean state;
+
+  state = gtk_toggle_button_get_active (button);
+  update_flag (pipeline, 7, state);
+}
+
+static void
 clear_streams (GstElement * pipeline)
 {
   gint i;
@@ -1729,7 +1767,7 @@ update_streams (GstPipeline * pipeline)
 
   if (pipeline_type == 16 && need_streams) {
     GstTagList *tags;
-    gchar *name;
+    gchar *name, *str;
     gint active_idx;
     gboolean state;
 
@@ -1746,6 +1784,11 @@ update_streams (GstPipeline * pipeline)
     active_idx = 0;
     for (i = 0; i < n_video; i++) {
       g_signal_emit_by_name (pipeline, "get-video-tags", i, &tags);
+      if (tags) {
+        str = gst_structure_to_string ((GstStructure *) tags);
+        g_print ("video %d: %s\n", i, str);
+        g_free (str);
+      }
       /* find good name for the label */
       name = g_strdup_printf ("video %d", i + 1);
       gtk_combo_box_append_text (GTK_COMBO_BOX (video_combo), name);
@@ -1758,6 +1801,11 @@ update_streams (GstPipeline * pipeline)
     active_idx = 0;
     for (i = 0; i < n_audio; i++) {
       g_signal_emit_by_name (pipeline, "get-audio-tags", i, &tags);
+      if (tags) {
+        str = gst_structure_to_string ((GstStructure *) tags);
+        g_print ("audio %d: %s\n", i, str);
+        g_free (str);
+      }
       /* find good name for the label */
       name = g_strdup_printf ("audio %d", i + 1);
       gtk_combo_box_append_text (GTK_COMBO_BOX (audio_combo), name);
@@ -1770,9 +1818,14 @@ update_streams (GstPipeline * pipeline)
     active_idx = 0;
     for (i = 0; i < n_text; i++) {
       g_signal_emit_by_name (pipeline, "get-text-tags", i, &tags);
+
       name = NULL;
       if (tags) {
         const GValue *value;
+
+        str = gst_structure_to_string ((GstStructure *) tags);
+        g_print ("text %d: %s\n", i, str);
+        g_free (str);
 
         /* get the language code if we can */
         value = gst_tag_list_get_value_index (tags, GST_TAG_LANGUAGE_CODE, 0);
@@ -1798,22 +1851,34 @@ update_streams (GstPipeline * pipeline)
 static void
 video_combo_cb (GtkComboBox * combo, GstPipeline * pipeline)
 {
-  g_object_set (pipeline, "current-video", gtk_combo_box_get_active (combo),
-      NULL);
+  gint active;
+
+  active = gtk_combo_box_get_active (combo);
+
+  g_print ("setting current video track %d\n", active);
+  g_object_set (pipeline, "current-video", active, NULL);
 }
 
 static void
 audio_combo_cb (GtkComboBox * combo, GstPipeline * pipeline)
 {
-  g_object_set (pipeline, "current-audio", gtk_combo_box_get_active (combo),
-      NULL);
+  gint active;
+
+  active = gtk_combo_box_get_active (combo);
+
+  g_print ("setting current audio track %d\n", active);
+  g_object_set (pipeline, "current-audio", active, NULL);
 }
 
 static void
 text_combo_cb (GtkComboBox * combo, GstPipeline * pipeline)
 {
-  g_object_set (pipeline, "current-text", gtk_combo_box_get_active (combo),
-      NULL);
+  gint active;
+
+  active = gtk_combo_box_get_active (combo);
+
+  g_print ("setting current text track %d\n", active);
+  g_object_set (pipeline, "current-text", active, NULL);
 }
 
 static gboolean
@@ -1886,6 +1951,22 @@ volume_spinbutton_changed_cb (GtkSpinButton * button, GstPipeline * pipeline)
 }
 
 static void
+volume_notify_cb (GstElement * pipeline, GParamSpec * arg, gpointer user_dat)
+{
+  gdouble cur_volume, new_volume;
+
+  g_object_get (pipeline, "volume", &new_volume, NULL);
+  cur_volume = gtk_spin_button_get_value (GTK_SPIN_BUTTON (volume_spinbutton));
+  if (fabs (cur_volume - new_volume) > 0.001) {
+    g_signal_handlers_block_by_func (volume_spinbutton,
+        volume_spinbutton_changed_cb, pipeline);
+    gtk_spin_button_set_value (GTK_SPIN_BUTTON (volume_spinbutton), new_volume);
+    g_signal_handlers_unblock_by_func (volume_spinbutton,
+        volume_spinbutton_changed_cb, pipeline);
+  }
+}
+
+static void
 shot_cb (GtkButton * button, gpointer data)
 {
   GstBuffer *buffer;
@@ -1948,6 +2029,42 @@ shot_cb (GtkButton * button, gpointer data)
   }
 }
 
+/* called when the Step button is pressed */
+static void
+step_cb (GtkButton * button, gpointer data)
+{
+  GstEvent *event;
+  GstFormat format;
+  guint64 amount;
+  gdouble rate;
+  gboolean flush, res;
+  gint active;
+
+  active = gtk_combo_box_get_active (GTK_COMBO_BOX (format_combo));
+  amount =
+      gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON
+      (step_amount_spinbutton));
+  rate = gtk_spin_button_get_value (GTK_SPIN_BUTTON (step_rate_spinbutton));
+  flush = TRUE;
+
+  switch (active) {
+    case 0:
+      format = GST_FORMAT_BUFFERS;
+      break;
+    case 1:
+      format = GST_FORMAT_TIME;
+      amount *= GST_MSECOND;
+      break;
+    default:
+      format = GST_FORMAT_UNDEFINED;
+      break;
+  }
+
+  event = gst_event_new_step (format, amount, rate, flush, FALSE);
+
+  res = send_event (event);
+}
+
 static void
 message_received (GstBus * bus, GstMessage * message, GstPipeline * pipeline)
 {
@@ -1965,6 +2082,140 @@ message_received (GstBus * bus, GstMessage * message, GstPipeline * pipeline)
     g_free (sstr);
   } else {
     g_print ("no message details\n");
+  }
+}
+
+static gboolean shuttling = FALSE;
+static gdouble shuttle_rate = 0.0;
+static gdouble play_rate = 1.0;
+
+static void
+do_shuttle (GstElement * element)
+{
+  guint64 duration;
+
+  if (shuttling)
+    duration = 40 * GST_MSECOND;
+  else
+    duration = -1;
+
+  gst_element_send_event (element,
+      gst_event_new_step (GST_FORMAT_TIME, duration, shuttle_rate, FALSE,
+          FALSE));
+}
+
+static void
+msg_sync_step_done (GstBus * bus, GstMessage * message, GstElement * element)
+{
+  GstFormat format;
+  guint64 amount;
+  gdouble rate;
+  gboolean flush;
+  gboolean intermediate;
+  guint64 duration;
+  gboolean eos;
+
+  gst_message_parse_step_done (message, &format, &amount, &rate, &flush,
+      &intermediate, &duration, &eos);
+
+  if (eos) {
+    g_print ("stepped till EOS\n");
+    return;
+  }
+
+  if (g_static_mutex_trylock (&state_mutex)) {
+    if (shuttling)
+      do_shuttle (element);
+    g_static_mutex_unlock (&state_mutex);
+  } else {
+    /* ignore step messages that come while we are doing a state change */
+    g_print ("state change is busy\n");
+  }
+}
+
+static void
+shuttle_toggled (GtkToggleButton * button, GstElement * element)
+{
+  gboolean active;
+
+  active = gtk_toggle_button_get_active (button);
+
+  if (active != shuttling) {
+    shuttling = active;
+    g_print ("shuttling %s\n", shuttling ? "active" : "inactive");
+    if (active) {
+      shuttle_rate = 0.0;
+      play_rate = 1.0;
+      pause_cb (NULL, NULL);
+      gst_element_get_state (element, NULL, NULL, -1);
+    }
+  }
+}
+
+static void
+shuttle_rate_switch (GstElement * element)
+{
+  GstSeekFlags flags;
+  GstEvent *s_event;
+  gboolean res;
+
+  if (state == GST_STATE_PLAYING) {
+    /* pause when we need to */
+    pause_cb (NULL, NULL);
+    gst_element_get_state (element, NULL, NULL, -1);
+  }
+
+  if (play_rate == 1.0)
+    play_rate = -1.0;
+  else
+    play_rate = 1.0;
+
+  g_print ("rate changed to %lf %" GST_TIME_FORMAT "\n", play_rate,
+      GST_TIME_ARGS (position));
+
+  flags = GST_SEEK_FLAG_FLUSH;
+  flags |= GST_SEEK_FLAG_ACCURATE;
+
+  if (play_rate >= 0.0) {
+    s_event = gst_event_new_seek (play_rate,
+        GST_FORMAT_TIME, flags, GST_SEEK_TYPE_SET, position,
+        GST_SEEK_TYPE_SET, GST_CLOCK_TIME_NONE);
+  } else {
+    s_event = gst_event_new_seek (play_rate,
+        GST_FORMAT_TIME, flags, GST_SEEK_TYPE_SET, G_GINT64_CONSTANT (0),
+        GST_SEEK_TYPE_SET, position);
+  }
+  res = send_event (s_event);
+  if (res) {
+    gst_element_get_state (element, NULL, NULL, SEEK_TIMEOUT);
+  } else {
+    g_print ("seek failed\n");
+  }
+}
+
+static void
+shuttle_value_changed (GtkRange * range, GstElement * element)
+{
+  gdouble rate;
+
+  rate = gtk_adjustment_get_value (shuttle_adjustment);
+
+  if (rate == 0.0) {
+    g_print ("rate 0.0, pause\n");
+    pause_cb (NULL, NULL);
+    gst_element_get_state (element, NULL, NULL, -1);
+  } else {
+    g_print ("rate changed %0.3g\n", rate);
+
+    if ((rate < 0.0 && play_rate > 0.0) || (rate > 0.0 && play_rate < 0.0)) {
+      shuttle_rate_switch (element);
+    }
+
+    shuttle_rate = ABS (rate);
+    if (state != GST_STATE_PLAYING) {
+      do_shuttle (element);
+      play_cb (NULL, NULL);
+    }
   }
 }
 
@@ -2090,6 +2341,8 @@ do_download_buffering (gint percent)
     if (state == GST_STATE_PLAYING && !is_live) {
       fprintf (stderr, "Downloading, setting pipeline to PAUSED ...\n");
       gst_element_set_state (pipeline, GST_STATE_PAUSED);
+      /* user has to manually start the playback */
+      state = GST_STATE_PAUSED;
     }
   }
 }
@@ -2115,6 +2368,15 @@ msg_buffering (GstBus * bus, GstMessage * message, GstPipeline * data)
       do_stream_buffering (percent);
       break;
   }
+}
+
+static void
+msg_clock_lost (GstBus * bus, GstMessage * message, GstPipeline * data)
+{
+  g_print ("clock lost! PAUSE and PLAY to select a new clock\n");
+
+  gst_element_set_state (pipeline, GST_STATE_PAUSED);
+  gst_element_set_state (pipeline, GST_STATE_PLAYING);
 }
 
 #ifdef HAVE_X
@@ -2145,6 +2407,17 @@ bus_sync_handler (GstBus * bus, GstMessage * message, GstPipeline * data)
 }
 #endif
 
+static gboolean
+handle_expose_cb (GtkWidget * widget, GdkEventExpose * event, gpointer data)
+{
+  if (state < GST_STATE_PAUSED) {
+    gdk_draw_rectangle (widget->window, widget->style->black_gc, TRUE,
+        0, 0, widget->allocation.width, widget->allocation.height);
+  }
+  return FALSE;
+}
+
+
 static void
 msg_eos (GstBus * bus, GstMessage * message, GstPipeline * data)
 {
@@ -2162,6 +2435,13 @@ msg_eos (GstBus * bus, GstMessage * message, GstPipeline * data)
 }
 
 static void
+msg_step_done (GstBus * bus, GstMessage * message, GstPipeline * data)
+{
+  if (!shuttling)
+    message_received (bus, message, data);
+}
+
+static void
 connect_bus_signals (GstElement * pipeline)
 {
   GstBus *bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
@@ -2173,6 +2453,7 @@ connect_bus_signals (GstElement * pipeline)
 #endif
 
   gst_bus_add_signal_watch_full (bus, G_PRIORITY_HIGH);
+  gst_bus_enable_sync_message_emission (bus);
 
   g_signal_connect (bus, "message::state-changed",
       (GCallback) msg_state_changed, pipeline);
@@ -2182,6 +2463,8 @@ connect_bus_signals (GstElement * pipeline)
       pipeline);
 
   g_signal_connect (bus, "message::new-clock", (GCallback) message_received,
+      pipeline);
+  g_signal_connect (bus, "message::clock-lost", (GCallback) msg_clock_lost,
       pipeline);
   g_signal_connect (bus, "message::error", (GCallback) message_received,
       pipeline);
@@ -2196,6 +2479,12 @@ connect_bus_signals (GstElement * pipeline)
       pipeline);
   g_signal_connect (bus, "message::buffering", (GCallback) msg_buffering,
       pipeline);
+//  g_signal_connect (bus, "message::step-done", (GCallback) msg_step_done,
+//      pipeline);
+  g_signal_connect (bus, "message::step-start", (GCallback) msg_step_done,
+      pipeline);
+  g_signal_connect (bus, "sync-message::step-done",
+      (GCallback) msg_sync_step_done, pipeline);
 
   gst_object_unref (bus);
 }
@@ -2257,12 +2546,12 @@ print_usage (int argc, char **argv)
 int
 main (int argc, char **argv)
 {
-  GtkWidget *window, *hbox, *vbox, *panel, *boxes, *flagtable, *boxes2;
+  GtkWidget *window, *hbox, *vbox, *panel, *expander, *pb2vbox, *boxes,
+      *flagtable, *boxes2, *step;
   GtkWidget *play_button, *pause_button, *stop_button, *shot_button;
   GtkWidget *accurate_checkbox, *key_checkbox, *loop_checkbox, *flush_checkbox;
-  GtkWidget *scrub_checkbox, *play_scrub_checkbox, *rate_spinbutton;
-  GtkWidget *rate_label;
-  GtkTooltips *tips;
+  GtkWidget *scrub_checkbox, *play_scrub_checkbox;
+  GtkWidget *rate_label, *volume_label;
   GOptionEntry options[] = {
     {"stats", 's', 0, G_OPTION_ARG_NONE, &stats,
         "Show pad stats", NULL},
@@ -2322,9 +2611,10 @@ main (int argc, char **argv)
   g_assert (pipeline);
 
   /* initialize gui elements ... */
-  tips = gtk_tooltips_new ();
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   video_window = gtk_drawing_area_new ();
+  g_signal_connect (G_OBJECT (video_window), "expose-event",
+      G_CALLBACK (handle_expose_cb), NULL);
   gtk_widget_set_double_buffered (video_window, FALSE);
   statusbar = gtk_statusbar_new ();
   status_id = gtk_statusbar_get_context_id (GTK_STATUSBAR (statusbar), "seek");
@@ -2351,45 +2641,96 @@ main (int argc, char **argv)
   gtk_spin_button_set_digits (GTK_SPIN_BUTTON (rate_spinbutton), 3);
   rate_label = gtk_label_new ("Rate");
 
-  gtk_tooltips_set_tip (tips, accurate_checkbox,
-      "accurate position is requested, this might be considerably slower for some formats",
-      NULL);
-  gtk_tooltips_set_tip (tips, key_checkbox,
-      "seek to the nearest keyframe. This might be faster but less accurate",
-      NULL);
-  gtk_tooltips_set_tip (tips, loop_checkbox, "loop playback", NULL);
-  gtk_tooltips_set_tip (tips, flush_checkbox, "flush pipeline after seeking",
-      NULL);
-  gtk_tooltips_set_tip (tips, rate_spinbutton, "define the playback rate, "
-      "negative value trigger reverse playback", NULL);
-  gtk_tooltips_set_tip (tips, scrub_checkbox, "show images while seeking",
-      NULL);
-  gtk_tooltips_set_tip (tips, play_scrub_checkbox, "play video while seeking",
-      NULL);
-  gtk_tooltips_set_tip (tips, skip_checkbox,
-      "Skip frames while playing at high frame rates", NULL);
+  gtk_widget_set_tooltip_text (accurate_checkbox,
+      "accurate position is requested, this might be considerably slower for some formats");
+  gtk_widget_set_tooltip_text (key_checkbox,
+      "seek to the nearest keyframe. This might be faster but less accurate");
+  gtk_widget_set_tooltip_text (loop_checkbox, "loop playback");
+  gtk_widget_set_tooltip_text (flush_checkbox, "flush pipeline after seeking");
+  gtk_widget_set_tooltip_text (rate_spinbutton, "define the playback rate, "
+      "negative value trigger reverse playback");
+  gtk_widget_set_tooltip_text (scrub_checkbox, "show images while seeking");
+  gtk_widget_set_tooltip_text (play_scrub_checkbox, "play video while seeking");
+  gtk_widget_set_tooltip_text (skip_checkbox,
+      "Skip frames while playing at high frame rates");
 
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (flush_checkbox), TRUE);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (scrub_checkbox), TRUE);
 
   gtk_spin_button_set_value (GTK_SPIN_BUTTON (rate_spinbutton), rate);
 
+  /* step expander */
+  {
+    GtkWidget *hbox;
+
+    step = gtk_expander_new ("step options");
+    hbox = gtk_hbox_new (FALSE, 0);
+
+    format_combo = gtk_combo_box_new_text ();
+    gtk_combo_box_append_text (GTK_COMBO_BOX (format_combo), "frames");
+    gtk_combo_box_append_text (GTK_COMBO_BOX (format_combo), "time (ms)");
+    gtk_combo_box_set_active (GTK_COMBO_BOX (format_combo), 0);
+    gtk_box_pack_start (GTK_BOX (hbox), format_combo, FALSE, FALSE, 2);
+
+    step_amount_spinbutton = gtk_spin_button_new_with_range (1, 1000, 1);
+    gtk_spin_button_set_digits (GTK_SPIN_BUTTON (step_amount_spinbutton), 0);
+    gtk_spin_button_set_value (GTK_SPIN_BUTTON (step_amount_spinbutton), 1.0);
+    gtk_box_pack_start (GTK_BOX (hbox), step_amount_spinbutton, FALSE, FALSE,
+        2);
+
+    step_rate_spinbutton = gtk_spin_button_new_with_range (0.0, 100, 0.1);
+    gtk_spin_button_set_digits (GTK_SPIN_BUTTON (step_rate_spinbutton), 3);
+    gtk_spin_button_set_value (GTK_SPIN_BUTTON (step_rate_spinbutton), 1.0);
+    gtk_box_pack_start (GTK_BOX (hbox), step_rate_spinbutton, FALSE, FALSE, 2);
+
+    step_button = gtk_button_new_from_stock (GTK_STOCK_MEDIA_FORWARD);
+    gtk_button_set_label (GTK_BUTTON (step_button), "Step");
+    gtk_box_pack_start (GTK_BOX (hbox), step_button, FALSE, FALSE, 2);
+
+    g_signal_connect (G_OBJECT (step_button), "clicked", G_CALLBACK (step_cb),
+        pipeline);
+
+    /* shuttle scale */
+    shuttle_checkbox = gtk_check_button_new_with_label ("Shuttle");
+    gtk_box_pack_start (GTK_BOX (hbox), shuttle_checkbox, FALSE, FALSE, 2);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (shuttle_checkbox), FALSE);
+    g_signal_connect (GTK_OBJECT (shuttle_checkbox),
+        "toggled", G_CALLBACK (shuttle_toggled), pipeline);
+
+    shuttle_adjustment =
+        GTK_ADJUSTMENT (gtk_adjustment_new (0.0, -3.00, 4.0, 0.1, 1.0, 1.0));
+    shuttle_hscale = gtk_hscale_new (shuttle_adjustment);
+    gtk_scale_set_digits (GTK_SCALE (shuttle_hscale), 2);
+    gtk_scale_set_value_pos (GTK_SCALE (shuttle_hscale), GTK_POS_TOP);
+    gtk_range_set_update_policy (GTK_RANGE (shuttle_hscale),
+        GTK_UPDATE_CONTINUOUS);
+    g_signal_connect (GTK_OBJECT (shuttle_hscale), "value_changed",
+        G_CALLBACK (shuttle_value_changed), pipeline);
+    g_signal_connect (GTK_OBJECT (shuttle_hscale), "format_value",
+        G_CALLBACK (shuttle_format_value), pipeline);
+
+    gtk_box_pack_start (GTK_BOX (hbox), shuttle_hscale, TRUE, TRUE, 2);
+
+    gtk_container_add (GTK_CONTAINER (step), hbox);
+  }
+
   /* seek bar */
   adjustment =
       GTK_ADJUSTMENT (gtk_adjustment_new (0.0, 0.00, 100.0, 0.1, 1.0, 1.0));
   hscale = gtk_hscale_new (adjustment);
   gtk_scale_set_digits (GTK_SCALE (hscale), 2);
+  gtk_scale_set_value_pos (GTK_SCALE (hscale), GTK_POS_RIGHT);
 #if GTK_CHECK_VERSION(2,12,0)
   gtk_range_set_show_fill_level (GTK_RANGE (hscale), TRUE);
   gtk_range_set_fill_level (GTK_RANGE (hscale), 100.0);
 #endif
   gtk_range_set_update_policy (GTK_RANGE (hscale), GTK_UPDATE_CONTINUOUS);
 
-  gtk_signal_connect (GTK_OBJECT (hscale),
+  g_signal_connect (GTK_OBJECT (hscale),
       "button_press_event", G_CALLBACK (start_seek), pipeline);
-  gtk_signal_connect (GTK_OBJECT (hscale),
+  g_signal_connect (GTK_OBJECT (hscale),
       "button_release_event", G_CALLBACK (stop_seek), pipeline);
-  gtk_signal_connect (GTK_OBJECT (hscale),
+  g_signal_connect (GTK_OBJECT (hscale),
       "format_value", G_CALLBACK (format_value), pipeline);
 
   if (pipeline_type == 16) {
@@ -2417,6 +2758,8 @@ main (int argc, char **argv)
     audio_checkbox = gtk_check_button_new_with_label ("Audio");
     text_checkbox = gtk_check_button_new_with_label ("Text");
     mute_checkbox = gtk_check_button_new_with_label ("Mute");
+    download_checkbox = gtk_check_button_new_with_label ("Download");
+    volume_label = gtk_label_new ("Volume");
     volume_spinbutton = gtk_spin_button_new_with_range (0, 10.0, 0.1);
     gtk_spin_button_set_value (GTK_SPIN_BUTTON (volume_spinbutton), 1.0);
     gtk_box_pack_start (GTK_BOX (boxes), video_checkbox, TRUE, TRUE, 2);
@@ -2424,12 +2767,15 @@ main (int argc, char **argv)
     gtk_box_pack_start (GTK_BOX (boxes), text_checkbox, TRUE, TRUE, 2);
     gtk_box_pack_start (GTK_BOX (boxes), vis_checkbox, TRUE, TRUE, 2);
     gtk_box_pack_start (GTK_BOX (boxes), mute_checkbox, TRUE, TRUE, 2);
+    gtk_box_pack_start (GTK_BOX (boxes), download_checkbox, TRUE, TRUE, 2);
+    gtk_box_pack_start (GTK_BOX (boxes), volume_label, TRUE, TRUE, 2);
     gtk_box_pack_start (GTK_BOX (boxes), volume_spinbutton, TRUE, TRUE, 2);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (vis_checkbox), FALSE);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (audio_checkbox), TRUE);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (video_checkbox), TRUE);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (text_checkbox), TRUE);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (mute_checkbox), FALSE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (download_checkbox), FALSE);
     g_signal_connect (G_OBJECT (vis_checkbox), "toggled",
         G_CALLBACK (vis_toggle_cb), pipeline);
     g_signal_connect (G_OBJECT (audio_checkbox), "toggled",
@@ -2440,13 +2786,15 @@ main (int argc, char **argv)
         G_CALLBACK (text_toggle_cb), pipeline);
     g_signal_connect (G_OBJECT (mute_checkbox), "toggled",
         G_CALLBACK (mute_toggle_cb), pipeline);
+    g_signal_connect (G_OBJECT (download_checkbox), "toggled",
+        G_CALLBACK (download_toggle_cb), pipeline);
     g_signal_connect (G_OBJECT (volume_spinbutton), "value_changed",
         G_CALLBACK (volume_spinbutton_changed_cb), pipeline);
     /* playbin2 panel for snapshot */
     boxes2 = gtk_hbox_new (FALSE, 0);
     shot_button = gtk_button_new_from_stock (GTK_STOCK_SAVE);
-    gtk_tooltips_set_tip (tips, shot_button,
-        "save a screenshot .png in the current directory", NULL);
+    gtk_widget_set_tooltip_text (shot_button,
+        "save a screenshot .png in the current directory");
     g_signal_connect (G_OBJECT (shot_button), "clicked", G_CALLBACK (shot_cb),
         pipeline);
     vis_combo = gtk_combo_box_new_text ();
@@ -2487,10 +2835,15 @@ main (int argc, char **argv)
   gtk_table_attach_defaults (GTK_TABLE (flagtable), rate_spinbutton, 4, 5, 1,
       2);
   if (panel && boxes && boxes2) {
-    gtk_box_pack_start (GTK_BOX (vbox), panel, FALSE, FALSE, 2);
-    gtk_box_pack_start (GTK_BOX (vbox), boxes, FALSE, FALSE, 2);
-    gtk_box_pack_start (GTK_BOX (vbox), boxes2, FALSE, FALSE, 2);
+    expander = gtk_expander_new ("playbin2 options");
+    pb2vbox = gtk_vbox_new (FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (pb2vbox), panel, FALSE, FALSE, 2);
+    gtk_box_pack_start (GTK_BOX (pb2vbox), boxes, FALSE, FALSE, 2);
+    gtk_box_pack_start (GTK_BOX (pb2vbox), boxes2, FALSE, FALSE, 2);
+    gtk_container_add (GTK_CONTAINER (expander), pb2vbox);
+    gtk_box_pack_start (GTK_BOX (vbox), expander, FALSE, FALSE, 2);
   }
+  gtk_box_pack_start (GTK_BOX (vbox), step, FALSE, FALSE, 2);
   gtk_box_pack_start (GTK_BOX (vbox), hscale, FALSE, FALSE, 2);
   gtk_box_pack_start (GTK_BOX (vbox), statusbar, FALSE, FALSE, 2);
 

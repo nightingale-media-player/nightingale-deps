@@ -32,13 +32,14 @@
  * their base_init function to easily configure the set of caps/formats that
  * the element is able to handle.
  *
- * Derived classes should override the GstAudioFilter::setup() and
- * GstBaseTransform::transform_ip() and/or GstBaseTransform::transform()
+ * Derived classes should override the #GstAudioFilterClass.setup() and
+ * #GstBaseTransformClass.transform_ip() and/or
+ * #GstBaseTransformClass.transform()
  * virtual functions in their class_init function.
  *
- * Since: 0.10.12
- *
  * Last reviewed on 2007-02-03 (0.10.11.1)
+ *
+ * Since: 0.10.12
  */
 
 #ifdef HAVE_CONFIG_H
@@ -164,8 +165,6 @@ gst_audio_filter_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
   GstAudioFilter *filter;
   gboolean ret = TRUE;
 
-  g_assert (gst_caps_is_equal (incaps, outcaps));
-
   filter = GST_AUDIO_FILTER (btrans);
 
   GST_LOG_OBJECT (filter, "caps: %" GST_PTR_FORMAT, incaps);
@@ -219,16 +218,19 @@ gst_audio_filter_class_add_pad_templates (GstAudioFilterClass * klass,
     const GstCaps * allowed_caps)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+  GstPadTemplate *pad_template;
 
   g_return_if_fail (GST_IS_AUDIO_FILTER_CLASS (klass));
   g_return_if_fail (allowed_caps != NULL);
   g_return_if_fail (GST_IS_CAPS (allowed_caps));
 
-  gst_element_class_add_pad_template (element_class,
-      gst_pad_template_new ("src", GST_PAD_SRC, GST_PAD_ALWAYS,
-          gst_caps_copy (allowed_caps)));
+  pad_template = gst_pad_template_new ("src", GST_PAD_SRC, GST_PAD_ALWAYS,
+      gst_caps_copy (allowed_caps));
+  gst_element_class_add_pad_template (element_class, pad_template);
+  gst_object_unref (pad_template);
 
-  gst_element_class_add_pad_template (element_class,
-      gst_pad_template_new ("sink", GST_PAD_SINK, GST_PAD_ALWAYS,
-          gst_caps_copy (allowed_caps)));
+  pad_template = gst_pad_template_new ("sink", GST_PAD_SINK, GST_PAD_ALWAYS,
+      gst_caps_copy (allowed_caps));
+  gst_element_class_add_pad_template (element_class, pad_template);
+  gst_object_unref (pad_template);
 }

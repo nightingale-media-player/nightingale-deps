@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="prev" href="gst-plugins-base-libs-gsttagvorbis.html" title="gsttagvorbis">
 <link rel="next" href="gst-plugins-base-libs-gsttagdemux.html" title="gsttagdemux">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -37,9 +37,11 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gsttagdemux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gsttagid3.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gsttagid3.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gsttagid3.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gsttagid3.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gsttagid3"></a><div class="titlepage"></div>
@@ -62,20 +64,22 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a>               <a class="link" href="gst-plugins-base-libs-gsttagid3.html#gst-tag-id3-genre-count" title="gst_tag_id3_genre_count ()">gst_tag_id3_genre_count</a>             (void);
 const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*        <a class="link" href="gst-plugins-base-libs-gsttagid3.html#gst-tag-id3-genre-get" title="gst_tag_id3_genre_get ()">gst_tag_id3_genre_get</a>               (const <a
+>gchar</a> *       <a class="link" href="gst-plugins-base-libs-gsttagid3.html#gst-tag-id3-genre-get" title="gst_tag_id3_genre_get ()">gst_tag_id3_genre_get</a>               (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> id);
-GstTagList*         <a class="link" href="gst-plugins-base-libs-gsttagid3.html#gst-tag-list-new-from-id3v1" title="gst_tag_list_new_from_id3v1 ()">gst_tag_list_new_from_id3v1</a>         (const <a
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstTagList.html#GstTagList"
+>GstTagList</a> *        <a class="link" href="gst-plugins-base-libs-gsttagid3.html#gst-tag-list-new-from-id3v1" title="gst_tag_list_new_from_id3v1 ()">gst_tag_list_new_from_id3v1</a>         (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 >guint8</a> *data);
 const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*        <a class="link" href="gst-plugins-base-libs-gsttagid3.html#gst-tag-from-id3-tag" title="gst_tag_from_id3_tag ()">gst_tag_from_id3_tag</a>                (const <a
+>gchar</a> *       <a class="link" href="gst-plugins-base-libs-gsttagid3.html#gst-tag-from-id3-tag" title="gst_tag_from_id3_tag ()">gst_tag_from_id3_tag</a>                (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *id3_tag);
 const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*        <a class="link" href="gst-plugins-base-libs-gsttagid3.html#gst-tag-from-id3-user-tag" title="gst_tag_from_id3_user_tag ()">gst_tag_from_id3_user_tag</a>           (const <a
+>gchar</a> *       <a class="link" href="gst-plugins-base-libs-gsttagid3.html#gst-tag-from-id3-user-tag" title="gst_tag_from_id3_user_tag ()">gst_tag_from_id3_user_tag</a>           (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *type,
                                                          const <a
@@ -83,7 +87,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *id3_user_tag);
 const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*        <a class="link" href="gst-plugins-base-libs-gsttagid3.html#gst-tag-to-id3-tag" title="gst_tag_to_id3_tag ()">gst_tag_to_id3_tag</a>                  (const <a
+>gchar</a> *       <a class="link" href="gst-plugins-base-libs-gsttagid3.html#gst-tag-to-id3-tag" title="gst_tag_to_id3_tag ()">gst_tag_to_id3_tag</a>                  (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *gst_tag);
 </pre>
@@ -93,13 +97,12 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id3187533"></a><p>
+<a name="id2926158"></a><p>
 Contains various utility functions for plugins to parse or create
 ID3 tags and map ID3v2 identifiers to and from GStreamer identifiers.
 </p>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -113,7 +116,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 Gets the number of ID3v1 genres that can be identified. Winamp genres are 
 included.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -129,13 +131,12 @@ included.</p>
 <a name="gst-tag-id3-genre-get"></a><h3>gst_tag_id3_genre_get ()</h3>
 <pre class="programlisting">const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*        gst_tag_id3_genre_get               (const <a
+>gchar</a> *       gst_tag_id3_genre_get               (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> id);</pre>
 <p>
 Gets the ID3v1 genre name for a given ID.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -156,14 +157,17 @@ Gets the ID3v1 genre name for a given ID.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-new-from-id3v1"></a><h3>gst_tag_list_new_from_id3v1 ()</h3>
-<pre class="programlisting">GstTagList*         gst_tag_list_new_from_id3v1         (const <a
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstTagList.html#GstTagList"
+>GstTagList</a> *        gst_tag_list_new_from_id3v1         (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 >guint8</a> *data);</pre>
 <p>
-Parses the data containing an ID3v1 tag and returns a <span class="type">GstTagList</span> from the
+Parses the data containing an ID3v1 tag and returns a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstTagList.html#GstTagList"
+><span class="type">GstTagList</span></a> from the
 parsed data.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -186,13 +190,12 @@ parsed data.</p>
 <a name="gst-tag-from-id3-tag"></a><h3>gst_tag_from_id3_tag ()</h3>
 <pre class="programlisting">const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*        gst_tag_from_id3_tag                (const <a
+>gchar</a> *       gst_tag_from_id3_tag                (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *id3_tag);</pre>
 <p>
 Looks up the GStreamer tag for a ID3v2 tag.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -215,7 +218,7 @@ Looks up the GStreamer tag for a ID3v2 tag.</p>
 <a name="gst-tag-from-id3-user-tag"></a><h3>gst_tag_from_id3_user_tag ()</h3>
 <pre class="programlisting">const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*        gst_tag_from_id3_user_tag           (const <a
+>gchar</a> *       gst_tag_from_id3_user_tag           (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *type,
                                                          const <a
@@ -225,7 +228,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 Looks up the GStreamer tag for an ID3v2 user tag (e.g. description in
 TXXX frame or owner in UFID frame).</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -253,13 +255,12 @@ TXXX frame or owner in UFID frame).</p>
 <a name="gst-tag-to-id3-tag"></a><h3>gst_tag_to_id3_tag ()</h3>
 <pre class="programlisting">const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*        gst_tag_to_id3_tag                  (const <a
+>gchar</a> *       gst_tag_to_id3_tag                  (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *gst_tag);</pre>
 <p>
 Looks up the ID3v2 tag for a GStreamer tag.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -280,11 +281,11 @@ Looks up the ID3v2 tag for a GStreamer tag.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gsttagid3.see-also"></a><h2>See Also</h2>
-<span class="type">GstTagList</span>
+#GstTagList
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

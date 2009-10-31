@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-rtp.html" title="RTP Library">
 <link rel="prev" href="gst-plugins-base-libs-gstrtppayloads.html" title="gstrtppayloads">
 <link rel="next" href="gst-plugins-base-libs-gstrtcpbuffer.html" title="gstrtcpbuffer">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -37,9 +37,11 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstrtcpbuffer.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstrtpbuffer.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstrtpbuffer.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gstrtpbuffer.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstrtpbuffer.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstrtpbuffer"></a><div class="titlepage"></div>
@@ -56,8 +58,10 @@
 
 #include &lt;gst/rtp/gstrtpbuffer.h&gt;
 
-#define             <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#GST-RTP-VERSION:CAPS" title="GST_RTP_VERSION">GST_RTP_VERSION</a>
-void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-allocate-data" title="gst_rtp_buffer_allocate_data ()">gst_rtp_buffer_allocate_data</a>        (GstBuffer *buffer,
+#define             <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#GST-RTP-VERSION--CAPS" title="GST_RTP_VERSION">GST_RTP_VERSION</a>
+void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-allocate-data" title="gst_rtp_buffer_allocate_data ()">gst_rtp_buffer_allocate_data</a>        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> payload_len,
@@ -67,19 +71,25 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 >guint8</a> csrc_count);
-GstBuffer*          <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-new-take-data" title="gst_rtp_buffer_new_take_data ()">gst_rtp_buffer_new_take_data</a>        (<a
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a>*          <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-new-take-data" title="gst_rtp_buffer_new_take_data ()">gst_rtp_buffer_new_take_data</a>        (<a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> data,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> len);
-GstBuffer*          <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-new-copy-data" title="gst_rtp_buffer_new_copy_data ()">gst_rtp_buffer_new_copy_data</a>        (<a
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a>*          <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-new-copy-data" title="gst_rtp_buffer_new_copy_data ()">gst_rtp_buffer_new_copy_data</a>        (<a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> data,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> len);
-GstBuffer*          <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-new-allocate" title="gst_rtp_buffer_new_allocate ()">gst_rtp_buffer_new_allocate</a>         (<a
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a>*          <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-new-allocate" title="gst_rtp_buffer_new_allocate ()">gst_rtp_buffer_new_allocate</a>         (<a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> payload_len,
                                                          <a
@@ -88,7 +98,9 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 >guint8</a> csrc_count);
-GstBuffer*          <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-new-allocate-len" title="gst_rtp_buffer_new_allocate_len ()">gst_rtp_buffer_new_allocate_len</a>     (<a
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a>*          <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-new-allocate-len" title="gst_rtp_buffer_new_allocate_len ()">gst_rtp_buffer_new_allocate_len</a>     (<a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> packet_len,
                                                          <a
@@ -126,7 +138,9 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 >guint8</a> csrc_count);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-validate" title="gst_rtp_buffer_validate ()">gst_rtp_buffer_validate</a>             (GstBuffer *buffer);
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-validate" title="gst_rtp_buffer_validate ()">gst_rtp_buffer_validate</a>             (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-validate-data" title="gst_rtp_buffer_validate_data ()">gst_rtp_buffer_validate_data</a>        (<a
@@ -135,44 +149,66 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> len);
-void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-packet-len" title="gst_rtp_buffer_set_packet_len ()">gst_rtp_buffer_set_packet_len</a>       (GstBuffer *buffer,
+void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-packet-len" title="gst_rtp_buffer_set_packet_len ()">gst_rtp_buffer_set_packet_len</a>       (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> len);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a>               <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-packet-len" title="gst_rtp_buffer_get_packet_len ()">gst_rtp_buffer_get_packet_len</a>       (GstBuffer *buffer);
+>guint</a>               <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-packet-len" title="gst_rtp_buffer_get_packet_len ()">gst_rtp_buffer_get_packet_len</a>       (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a>               <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-header-len" title="gst_rtp_buffer_get_header_len ()">gst_rtp_buffer_get_header_len</a>       (GstBuffer *buffer);
+>guint</a>               <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-header-len" title="gst_rtp_buffer_get_header_len ()">gst_rtp_buffer_get_header_len</a>       (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
->guint8</a>              <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-version" title="gst_rtp_buffer_get_version ()">gst_rtp_buffer_get_version</a>          (GstBuffer *buffer);
-void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-version" title="gst_rtp_buffer_set_version ()">gst_rtp_buffer_set_version</a>          (GstBuffer *buffer,
+>guint8</a>              <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-version" title="gst_rtp_buffer_get_version ()">gst_rtp_buffer_get_version</a>          (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);
+void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-version" title="gst_rtp_buffer_set_version ()">gst_rtp_buffer_set_version</a>          (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 >guint8</a> version);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-padding" title="gst_rtp_buffer_get_padding ()">gst_rtp_buffer_get_padding</a>          (GstBuffer *buffer);
-void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-padding" title="gst_rtp_buffer_set_padding ()">gst_rtp_buffer_set_padding</a>          (GstBuffer *buffer,
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-padding" title="gst_rtp_buffer_get_padding ()">gst_rtp_buffer_get_padding</a>          (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);
+void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-padding" title="gst_rtp_buffer_set_padding ()">gst_rtp_buffer_set_padding</a>          (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> padding);
-void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-pad-to" title="gst_rtp_buffer_pad_to ()">gst_rtp_buffer_pad_to</a>               (GstBuffer *buffer,
+void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-pad-to" title="gst_rtp_buffer_pad_to ()">gst_rtp_buffer_pad_to</a>               (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> len);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-extension" title="gst_rtp_buffer_get_extension ()">gst_rtp_buffer_get_extension</a>        (GstBuffer *buffer);
-void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-extension" title="gst_rtp_buffer_set_extension ()">gst_rtp_buffer_set_extension</a>        (GstBuffer *buffer,
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-extension" title="gst_rtp_buffer_get_extension ()">gst_rtp_buffer_get_extension</a>        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);
+void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-extension" title="gst_rtp_buffer_set_extension ()">gst_rtp_buffer_set_extension</a>        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> extension);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-extension-data" title="gst_rtp_buffer_get_extension_data ()">gst_rtp_buffer_get_extension_data</a>   (GstBuffer *buffer,
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-extension-data" title="gst_rtp_buffer_get_extension_data ()">gst_rtp_buffer_get_extension_data</a>   (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
 >guint16</a> *bits,
@@ -184,21 +220,31 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> *wordlen);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
->guint32</a>             <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-ssrc" title="gst_rtp_buffer_get_ssrc ()">gst_rtp_buffer_get_ssrc</a>             (GstBuffer *buffer);
-void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-ssrc" title="gst_rtp_buffer_set_ssrc ()">gst_rtp_buffer_set_ssrc</a>             (GstBuffer *buffer,
+>guint32</a>             <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-ssrc" title="gst_rtp_buffer_get_ssrc ()">gst_rtp_buffer_get_ssrc</a>             (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);
+void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-ssrc" title="gst_rtp_buffer_set_ssrc ()">gst_rtp_buffer_set_ssrc</a>             (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
 >guint32</a> ssrc);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
->guint8</a>              <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-csrc-count" title="gst_rtp_buffer_get_csrc_count ()">gst_rtp_buffer_get_csrc_count</a>       (GstBuffer *buffer);
+>guint8</a>              <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-csrc-count" title="gst_rtp_buffer_get_csrc_count ()">gst_rtp_buffer_get_csrc_count</a>       (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
->guint32</a>             <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-csrc" title="gst_rtp_buffer_get_csrc ()">gst_rtp_buffer_get_csrc</a>             (GstBuffer *buffer,
+>guint32</a>             <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-csrc" title="gst_rtp_buffer_get_csrc ()">gst_rtp_buffer_get_csrc</a>             (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 >guint8</a> idx);
-void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-csrc" title="gst_rtp_buffer_set_csrc ()">gst_rtp_buffer_set_csrc</a>             (GstBuffer *buffer,
+void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-csrc" title="gst_rtp_buffer_set_csrc ()">gst_rtp_buffer_set_csrc</a>             (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 >guint8</a> idx,
@@ -207,35 +253,59 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
 >guint32</a> csrc);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-marker" title="gst_rtp_buffer_get_marker ()">gst_rtp_buffer_get_marker</a>           (GstBuffer *buffer);
-void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-marker" title="gst_rtp_buffer_set_marker ()">gst_rtp_buffer_set_marker</a>           (GstBuffer *buffer,
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-marker" title="gst_rtp_buffer_get_marker ()">gst_rtp_buffer_get_marker</a>           (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);
+void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-marker" title="gst_rtp_buffer_set_marker ()">gst_rtp_buffer_set_marker</a>           (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> marker);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
->guint8</a>              <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-payload-type" title="gst_rtp_buffer_get_payload_type ()">gst_rtp_buffer_get_payload_type</a>     (GstBuffer *buffer);
-void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-payload-type" title="gst_rtp_buffer_set_payload_type ()">gst_rtp_buffer_set_payload_type</a>     (GstBuffer *buffer,
+>guint8</a>              <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-payload-type" title="gst_rtp_buffer_get_payload_type ()">gst_rtp_buffer_get_payload_type</a>     (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);
+void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-payload-type" title="gst_rtp_buffer_set_payload_type ()">gst_rtp_buffer_set_payload_type</a>     (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 >guint8</a> payload_type);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
->guint16</a>             <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-seq" title="gst_rtp_buffer_get_seq ()">gst_rtp_buffer_get_seq</a>              (GstBuffer *buffer);
-void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-seq" title="gst_rtp_buffer_set_seq ()">gst_rtp_buffer_set_seq</a>              (GstBuffer *buffer,
+>guint16</a>             <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-seq" title="gst_rtp_buffer_get_seq ()">gst_rtp_buffer_get_seq</a>              (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);
+void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-seq" title="gst_rtp_buffer_set_seq ()">gst_rtp_buffer_set_seq</a>              (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
 >guint16</a> seq);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
->guint32</a>             <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-timestamp" title="gst_rtp_buffer_get_timestamp ()">gst_rtp_buffer_get_timestamp</a>        (GstBuffer *buffer);
-void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-timestamp" title="gst_rtp_buffer_set_timestamp ()">gst_rtp_buffer_set_timestamp</a>        (GstBuffer *buffer,
+>guint32</a>             <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-timestamp" title="gst_rtp_buffer_get_timestamp ()">gst_rtp_buffer_get_timestamp</a>        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);
+void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-timestamp" title="gst_rtp_buffer_set_timestamp ()">gst_rtp_buffer_set_timestamp</a>        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
 >guint32</a> timestamp);
-GstBuffer*          <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-payload-buffer" title="gst_rtp_buffer_get_payload_buffer ()">gst_rtp_buffer_get_payload_buffer</a>   (GstBuffer *buffer);
-GstBuffer*          <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-payload-subbuffer" title="gst_rtp_buffer_get_payload_subbuffer ()">gst_rtp_buffer_get_payload_subbuffer</a>
-                                                        (GstBuffer *buffer,
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a>*          <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-payload-buffer" title="gst_rtp_buffer_get_payload_buffer ()">gst_rtp_buffer_get_payload_buffer</a>   (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a>*          <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-payload-subbuffer" title="gst_rtp_buffer_get_payload_subbuffer ()">gst_rtp_buffer_get_payload_subbuffer</a>
+                                                        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> offset,
@@ -244,10 +314,14 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> len);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a>               <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-payload-len" title="gst_rtp_buffer_get_payload_len ()">gst_rtp_buffer_get_payload_len</a>      (GstBuffer *buffer);
+>guint</a>               <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-payload-len" title="gst_rtp_buffer_get_payload_len ()">gst_rtp_buffer_get_payload_len</a>      (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>            <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-payload" title="gst_rtp_buffer_get_payload ()">gst_rtp_buffer_get_payload</a>          (GstBuffer *buffer);
+>gpointer</a>            <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-payload" title="gst_rtp_buffer_get_payload ()">gst_rtp_buffer_get_payload</a>          (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);
 <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
 >guint32</a>             <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-default-clock-rate" title="gst_rtp_buffer_default_clock_rate ()">gst_rtp_buffer_default_clock_rate</a>   (<a
@@ -269,6 +343,75 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
 >guint32</a> timestamp);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-extension-data" title="gst_rtp_buffer_set_extension_data ()">gst_rtp_buffer_set_extension_data</a>   (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> bits,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> length);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-list-validate" title="gst_rtp_buffer_list_validate ()">gst_rtp_buffer_list_validate</a>        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-list-get-payload-len" title="gst_rtp_buffer_list_get_payload_len ()">gst_rtp_buffer_list_get_payload_len</a> (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a>              <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-list-get-payload-type" title="gst_rtp_buffer_list_get_payload_type ()">gst_rtp_buffer_list_get_payload_type</a>
+                                                        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list);
+void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-list-set-payload-type" title="gst_rtp_buffer_list_set_payload_type ()">gst_rtp_buffer_list_set_payload_type</a>
+                                                        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> payload_type);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a>             <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-list-get-seq" title="gst_rtp_buffer_list_get_seq ()">gst_rtp_buffer_list_get_seq</a>         (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a>             <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-list-set-seq" title="gst_rtp_buffer_list_set_seq ()">gst_rtp_buffer_list_set_seq</a>         (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> seq);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a>             <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-list-get-ssrc" title="gst_rtp_buffer_list_get_ssrc ()">gst_rtp_buffer_list_get_ssrc</a>        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list);
+void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-list-set-ssrc" title="gst_rtp_buffer_list_set_ssrc ()">gst_rtp_buffer_list_set_ssrc</a>        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> ssrc);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a>             <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-list-get-timestamp" title="gst_rtp_buffer_list_get_timestamp ()">gst_rtp_buffer_list_get_timestamp</a>   (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list);
+void                <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-list-set-timestamp" title="gst_rtp_buffer_list_set_timestamp ()">gst_rtp_buffer_list_set_timestamp</a>   (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> timestamp);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -276,10 +419,14 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id3102331"></a><p>
+<a name="id2826463"></a><p>
 The GstRTPBuffer helper functions makes it easy to parse and create regular 
-<span class="type">GstBuffer</span> objects that contain RTP payloads. These buffers are typically of
-'application/x-rtp' <span class="type">GstCaps</span>.
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+><span class="type">GstBuffer</span></a> objects that contain RTP payloads. These buffers are typically of
+'application/x-rtp' <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a>.
 </p>
 </div>
 <p>
@@ -287,25 +434,25 @@ The GstRTPBuffer helper functions makes it easy to parse and create regular
 <p>
 Last reviewed on 2006-07-17 (0.10.10)</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstrtpbuffer.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="GST-RTP-VERSION:CAPS"></a><h3>GST_RTP_VERSION</h3>
+<a name="GST-RTP-VERSION--CAPS"></a><h3>GST_RTP_VERSION</h3>
 <pre class="programlisting">#define GST_RTP_VERSION 2
 </pre>
 <p>
 The supported RTP version 2.</p>
 <p>
-
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-allocate-data"></a><h3>gst_rtp_buffer_allocate_data ()</h3>
-<pre class="programlisting">void                gst_rtp_buffer_allocate_data        (GstBuffer *buffer,
+<pre class="programlisting">void                gst_rtp_buffer_allocate_data        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> payload_len,
@@ -321,14 +468,15 @@ a payload length of <em class="parameter"><code>payload_len</code></em> and padd
 MALLOCDATA of <em class="parameter"><code>buffer</code></em> will be overwritten and will not be freed. 
 All other RTP header fields will be set to 0/FALSE.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
-<td> a <span class="type">GstBuffer</span>
+<td> a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+><span class="type">GstBuffer</span></a>
 </td>
 </tr>
 <tr>
@@ -352,7 +500,9 @@ All other RTP header fields will be set to 0/FALSE.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-new-take-data"></a><h3>gst_rtp_buffer_new_take_data ()</h3>
-<pre class="programlisting">GstBuffer*          gst_rtp_buffer_new_take_data        (<a
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a>*          gst_rtp_buffer_new_take_data        (<a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> data,
                                                          <a
@@ -363,7 +513,6 @@ Create a new buffer and set the data and size of the buffer to <em class="parame
 respectively. <em class="parameter"><code>data</code></em> will be freed when the buffer is unreffed, so this
 function transfers ownership of <em class="parameter"><code>data</code></em> to the new buffer.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -389,7 +538,9 @@ function transfers ownership of <em class="parameter"><code>data</code></em> to 
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-new-copy-data"></a><h3>gst_rtp_buffer_new_copy_data ()</h3>
-<pre class="programlisting">GstBuffer*          gst_rtp_buffer_new_copy_data        (<a
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a>*          gst_rtp_buffer_new_copy_data        (<a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> data,
                                                          <a
@@ -400,7 +551,6 @@ Create a new buffer and set the data to a copy of <em class="parameter"><code>le
 bytes of <em class="parameter"><code>data</code></em> and the size to <em class="parameter"><code>len</code></em>. The data will be freed when the buffer
 is freed.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -426,7 +576,9 @@ is freed.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-new-allocate"></a><h3>gst_rtp_buffer_new_allocate ()</h3>
-<pre class="programlisting">GstBuffer*          gst_rtp_buffer_new_allocate         (<a
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a>*          gst_rtp_buffer_new_allocate         (<a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> payload_len,
                                                          <a
@@ -440,7 +592,6 @@ Allocate a new <span class="type">Gstbuffer</span> with enough data to hold an R
 a payload length of <em class="parameter"><code>payload_len</code></em> and padding of <em class="parameter"><code>pad_len</code></em>.
 All other RTP header fields will be set to 0/FALSE.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -472,7 +623,9 @@ parameters.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-new-allocate-len"></a><h3>gst_rtp_buffer_new_allocate_len ()</h3>
-<pre class="programlisting">GstBuffer*          gst_rtp_buffer_new_allocate_len     (<a
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a>*          gst_rtp_buffer_new_allocate_len     (<a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> packet_len,
                                                          <a
@@ -482,12 +635,13 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 >guint8</a> csrc_count);</pre>
 <p>
-Create a new <span class="type">GstBuffer</span> that can hold an RTP packet that is exactly
+Create a new <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+><span class="type">GstBuffer</span></a> that can hold an RTP packet that is exactly
 <em class="parameter"><code>packet_len</code></em> long. The length of the payload depends on <em class="parameter"><code>pad_len</code></em> and
 <em class="parameter"><code>csrc_count</code></em> and can be calculated with <a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-calc-payload-len" title="gst_rtp_buffer_calc_payload_len ()"><code class="function">gst_rtp_buffer_calc_payload_len()</code></a>.
 All RTP header fields will be set to 0/FALSE.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -527,7 +681,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 Calculate the header length of an RTP packet with <em class="parameter"><code>csrc_count</code></em> CSRC entries.
 An RTP packet can have at most 15 CSRC entries.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -563,7 +716,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 Calculate the total length of an RTP packet with a payload size of <em class="parameter"><code>payload_len</code></em>,
 a padding of <em class="parameter"><code>pad_len</code></em> and a <em class="parameter"><code>csrc_count</code></em> CSRC entries.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -609,7 +761,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 Calculate the length of the payload of an RTP packet with size <em class="parameter"><code>packet_len</code></em>,
 a padding of <em class="parameter"><code>pad_len</code></em> and a <em class="parameter"><code>csrc_count</code></em> CSRC entries.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -642,14 +793,15 @@ a padding of <em class="parameter"><code>pad_len</code></em> and a <em class="pa
 <a name="gst-rtp-buffer-validate"></a><h3>gst_rtp_buffer_validate ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_rtp_buffer_validate             (GstBuffer *buffer);</pre>
+>gboolean</a>            gst_rtp_buffer_validate             (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);</pre>
 <p>
 Check if the data pointed to by <em class="parameter"><code>buffer</code></em> is a valid RTP packet using
-<a class="link" href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-validate-data" title="gst_rtp_buffer_validate_data ()"><code class="function">gst_rtp_buffer_validate_data()</code></a>.
+<code class="function">validate_data()</code>.
 Use this function to validate a packet before using the other functions in
 this module.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -684,7 +836,6 @@ This function checks the length, version and padding of the packet data.
 Use this function to validate a packet before using the other functions in
 this module.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -710,7 +861,9 @@ this module.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-set-packet-len"></a><h3>gst_rtp_buffer_set_packet_len ()</h3>
-<pre class="programlisting">void                gst_rtp_buffer_set_packet_len       (GstBuffer *buffer,
+<pre class="programlisting">void                gst_rtp_buffer_set_packet_len       (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> len);</pre>
@@ -718,7 +871,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 Set the total <em class="parameter"><code>buffer</code></em> size to <em class="parameter"><code>len</code></em>. The data in the buffer will be made
 larger if needed. Any padding will be removed from the packet.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -741,11 +893,12 @@ larger if needed. Any padding will be removed from the packet.</p>
 <a name="gst-rtp-buffer-get-packet-len"></a><h3>gst_rtp_buffer_get_packet_len ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a>               gst_rtp_buffer_get_packet_len       (GstBuffer *buffer);</pre>
+>guint</a>               gst_rtp_buffer_get_packet_len       (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);</pre>
 <p>
 Return the total length of the packet in <em class="parameter"><code>buffer</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -768,12 +921,13 @@ Return the total length of the packet in <em class="parameter"><code>buffer</cod
 <a name="gst-rtp-buffer-get-header-len"></a><h3>gst_rtp_buffer_get_header_len ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a>               gst_rtp_buffer_get_header_len       (GstBuffer *buffer);</pre>
+>guint</a>               gst_rtp_buffer_get_header_len       (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);</pre>
 <p>
 Return the total length of the header in <em class="parameter"><code>buffer</code></em>. This include the length of
 the fixed header, the CSRC list and the extension header.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -796,11 +950,12 @@ the fixed header, the CSRC list and the extension header.</p>
 <a name="gst-rtp-buffer-get-version"></a><h3>gst_rtp_buffer_get_version ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
->guint8</a>              gst_rtp_buffer_get_version          (GstBuffer *buffer);</pre>
+>guint8</a>              gst_rtp_buffer_get_version          (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);</pre>
 <p>
 Get the version number of the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -821,14 +976,15 @@ Get the version number of the RTP packet in <em class="parameter"><code>buffer</
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-set-version"></a><h3>gst_rtp_buffer_set_version ()</h3>
-<pre class="programlisting">void                gst_rtp_buffer_set_version          (GstBuffer *buffer,
+<pre class="programlisting">void                gst_rtp_buffer_set_version          (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 >guint8</a> version);</pre>
 <p>
 Set the version of the RTP packet in <em class="parameter"><code>buffer</code></em> to <em class="parameter"><code>version</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -851,11 +1007,12 @@ Set the version of the RTP packet in <em class="parameter"><code>buffer</code></
 <a name="gst-rtp-buffer-get-padding"></a><h3>gst_rtp_buffer_get_padding ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_rtp_buffer_get_padding          (GstBuffer *buffer);</pre>
+>gboolean</a>            gst_rtp_buffer_get_padding          (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);</pre>
 <p>
 Check if the padding bit is set on the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -876,14 +1033,15 @@ Check if the padding bit is set on the RTP packet in <em class="parameter"><code
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-set-padding"></a><h3>gst_rtp_buffer_set_padding ()</h3>
-<pre class="programlisting">void                gst_rtp_buffer_set_padding          (GstBuffer *buffer,
+<pre class="programlisting">void                gst_rtp_buffer_set_padding          (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> padding);</pre>
 <p>
 Set the padding bit on the RTP packet in <em class="parameter"><code>buffer</code></em> to <em class="parameter"><code>padding</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -904,7 +1062,9 @@ Set the padding bit on the RTP packet in <em class="parameter"><code>buffer</cod
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-pad-to"></a><h3>gst_rtp_buffer_pad_to ()</h3>
-<pre class="programlisting">void                gst_rtp_buffer_pad_to               (GstBuffer *buffer,
+<pre class="programlisting">void                gst_rtp_buffer_pad_to               (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> len);</pre>
@@ -915,7 +1075,6 @@ Set the amount of padding in the RTP packet in <em class="parameter"><code>buffe
 <p>
 NOTE: This function does not work correctly.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -938,11 +1097,12 @@ NOTE: This function does not work correctly.</p>
 <a name="gst-rtp-buffer-get-extension"></a><h3>gst_rtp_buffer_get_extension ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_rtp_buffer_get_extension        (GstBuffer *buffer);</pre>
+>gboolean</a>            gst_rtp_buffer_get_extension        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);</pre>
 <p>
 Check if the extension bit is set on the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -963,14 +1123,15 @@ Check if the extension bit is set on the RTP packet in <em class="parameter"><co
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-set-extension"></a><h3>gst_rtp_buffer_set_extension ()</h3>
-<pre class="programlisting">void                gst_rtp_buffer_set_extension        (GstBuffer *buffer,
+<pre class="programlisting">void                gst_rtp_buffer_set_extension        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> extension);</pre>
 <p>
 Set the extension bit on the RTP packet in <em class="parameter"><code>buffer</code></em> to <em class="parameter"><code>extension</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -993,7 +1154,9 @@ Set the extension bit on the RTP packet in <em class="parameter"><code>buffer</c
 <a name="gst-rtp-buffer-get-extension-data"></a><h3>gst_rtp_buffer_get_extension_data ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_rtp_buffer_get_extension_data   (GstBuffer *buffer,
+>gboolean</a>            gst_rtp_buffer_get_extension_data   (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
 >guint16</a> *bits,
@@ -1010,11 +1173,10 @@ the length of <em class="parameter"><code>data</code></em> in 32 bits words.
 </p>
 <p>
 If <em class="parameter"><code>buffer</code></em> did not contain an extension, this function will return <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE--CAPS"
 ><code class="literal">FALSE</code></a>
 with <em class="parameter"><code>bits</code></em>, <em class="parameter"><code>data</code></em> and <em class="parameter"><code>wordlen</code></em> unchanged.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1047,19 +1209,19 @@ with <em class="parameter"><code>bits</code></em>, <em class="parameter"><code>d
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.15
-</p>
+<p class="since">Since 0.10.15</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-get-ssrc"></a><h3>gst_rtp_buffer_get_ssrc ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
->guint32</a>             gst_rtp_buffer_get_ssrc             (GstBuffer *buffer);</pre>
+>guint32</a>             gst_rtp_buffer_get_ssrc             (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);</pre>
 <p>
 Get the SSRC of the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1080,14 +1242,15 @@ Get the SSRC of the RTP packet in <em class="parameter"><code>buffer</code></em>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-set-ssrc"></a><h3>gst_rtp_buffer_set_ssrc ()</h3>
-<pre class="programlisting">void                gst_rtp_buffer_set_ssrc             (GstBuffer *buffer,
+<pre class="programlisting">void                gst_rtp_buffer_set_ssrc             (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
 >guint32</a> ssrc);</pre>
 <p>
 Set the SSRC on the RTP packet in <em class="parameter"><code>buffer</code></em> to <em class="parameter"><code>ssrc</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1110,11 +1273,12 @@ Set the SSRC on the RTP packet in <em class="parameter"><code>buffer</code></em>
 <a name="gst-rtp-buffer-get-csrc-count"></a><h3>gst_rtp_buffer_get_csrc_count ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
->guint8</a>              gst_rtp_buffer_get_csrc_count       (GstBuffer *buffer);</pre>
+>guint8</a>              gst_rtp_buffer_get_csrc_count       (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);</pre>
 <p>
 Get the CSRC count of the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1137,14 +1301,15 @@ Get the CSRC count of the RTP packet in <em class="parameter"><code>buffer</code
 <a name="gst-rtp-buffer-get-csrc"></a><h3>gst_rtp_buffer_get_csrc ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
->guint32</a>             gst_rtp_buffer_get_csrc             (GstBuffer *buffer,
+>guint32</a>             gst_rtp_buffer_get_csrc             (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 >guint8</a> idx);</pre>
 <p>
 Get the CSRC at index <em class="parameter"><code>idx</code></em> in <em class="parameter"><code>buffer</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1170,7 +1335,9 @@ Get the CSRC at index <em class="parameter"><code>idx</code></em> in <em class="
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-set-csrc"></a><h3>gst_rtp_buffer_set_csrc ()</h3>
-<pre class="programlisting">void                gst_rtp_buffer_set_csrc             (GstBuffer *buffer,
+<pre class="programlisting">void                gst_rtp_buffer_set_csrc             (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 >guint8</a> idx,
@@ -1180,7 +1347,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
 <p>
 Modify the CSRC at index <em class="parameter"><code>idx</code></em> in <em class="parameter"><code>buffer</code></em> to <em class="parameter"><code>csrc</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1208,11 +1374,12 @@ Modify the CSRC at index <em class="parameter"><code>idx</code></em> in <em clas
 <a name="gst-rtp-buffer-get-marker"></a><h3>gst_rtp_buffer_get_marker ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_rtp_buffer_get_marker           (GstBuffer *buffer);</pre>
+>gboolean</a>            gst_rtp_buffer_get_marker           (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);</pre>
 <p>
 Check if the marker bit is set on the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1233,14 +1400,15 @@ Check if the marker bit is set on the RTP packet in <em class="parameter"><code>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-set-marker"></a><h3>gst_rtp_buffer_set_marker ()</h3>
-<pre class="programlisting">void                gst_rtp_buffer_set_marker           (GstBuffer *buffer,
+<pre class="programlisting">void                gst_rtp_buffer_set_marker           (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> marker);</pre>
 <p>
 Set the marker bit on the RTP packet in <em class="parameter"><code>buffer</code></em> to <em class="parameter"><code>marker</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1263,11 +1431,12 @@ Set the marker bit on the RTP packet in <em class="parameter"><code>buffer</code
 <a name="gst-rtp-buffer-get-payload-type"></a><h3>gst_rtp_buffer_get_payload_type ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
->guint8</a>              gst_rtp_buffer_get_payload_type     (GstBuffer *buffer);</pre>
+>guint8</a>              gst_rtp_buffer_get_payload_type     (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);</pre>
 <p>
 Get the payload type of the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1288,14 +1457,15 @@ Get the payload type of the RTP packet in <em class="parameter"><code>buffer</co
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-set-payload-type"></a><h3>gst_rtp_buffer_set_payload_type ()</h3>
-<pre class="programlisting">void                gst_rtp_buffer_set_payload_type     (GstBuffer *buffer,
+<pre class="programlisting">void                gst_rtp_buffer_set_payload_type     (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 >guint8</a> payload_type);</pre>
 <p>
 Set the payload type of the RTP packet in <em class="parameter"><code>buffer</code></em> to <em class="parameter"><code>payload_type</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1318,11 +1488,12 @@ Set the payload type of the RTP packet in <em class="parameter"><code>buffer</co
 <a name="gst-rtp-buffer-get-seq"></a><h3>gst_rtp_buffer_get_seq ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
->guint16</a>             gst_rtp_buffer_get_seq              (GstBuffer *buffer);</pre>
+>guint16</a>             gst_rtp_buffer_get_seq              (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);</pre>
 <p>
 Get the sequence number of the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1343,14 +1514,15 @@ Get the sequence number of the RTP packet in <em class="parameter"><code>buffer<
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-set-seq"></a><h3>gst_rtp_buffer_set_seq ()</h3>
-<pre class="programlisting">void                gst_rtp_buffer_set_seq              (GstBuffer *buffer,
+<pre class="programlisting">void                gst_rtp_buffer_set_seq              (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
 >guint16</a> seq);</pre>
 <p>
 Set the sequence number of the RTP packet in <em class="parameter"><code>buffer</code></em> to <em class="parameter"><code>seq</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1373,11 +1545,12 @@ Set the sequence number of the RTP packet in <em class="parameter"><code>buffer<
 <a name="gst-rtp-buffer-get-timestamp"></a><h3>gst_rtp_buffer_get_timestamp ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
->guint32</a>             gst_rtp_buffer_get_timestamp        (GstBuffer *buffer);</pre>
+>guint32</a>             gst_rtp_buffer_get_timestamp        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);</pre>
 <p>
 Get the timestamp of the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1398,14 +1571,15 @@ Get the timestamp of the RTP packet in <em class="parameter"><code>buffer</code>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-set-timestamp"></a><h3>gst_rtp_buffer_set_timestamp ()</h3>
-<pre class="programlisting">void                gst_rtp_buffer_set_timestamp        (GstBuffer *buffer,
+<pre class="programlisting">void                gst_rtp_buffer_set_timestamp        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
 >guint32</a> timestamp);</pre>
 <p>
 Set the timestamp of the RTP packet in <em class="parameter"><code>buffer</code></em> to <em class="parameter"><code>timestamp</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1426,13 +1600,16 @@ Set the timestamp of the RTP packet in <em class="parameter"><code>buffer</code>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-get-payload-buffer"></a><h3>gst_rtp_buffer_get_payload_buffer ()</h3>
-<pre class="programlisting">GstBuffer*          gst_rtp_buffer_get_payload_buffer   (GstBuffer *buffer);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a>*          gst_rtp_buffer_get_payload_buffer   (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);</pre>
 <p>
 Create a buffer of the payload of the RTP packet in <em class="parameter"><code>buffer</code></em>. This function
 will internally create a subbuffer of <em class="parameter"><code>buffer</code></em> so that a memcpy can be
 avoided.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1453,8 +1630,12 @@ avoided.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-get-payload-subbuffer"></a><h3>gst_rtp_buffer_get_payload_subbuffer ()</h3>
-<pre class="programlisting">GstBuffer*          gst_rtp_buffer_get_payload_subbuffer
-                                                        (GstBuffer *buffer,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a>*          gst_rtp_buffer_get_payload_subbuffer
+                                                        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 >guint</a> offset,
@@ -1466,7 +1647,6 @@ Create a subbuffer of the payload of the RTP packet in <em class="parameter"><co
 are skipped in the payload and the subbuffer will be of size <em class="parameter"><code>len</code></em>.
 If <em class="parameter"><code>len</code></em> is -1 the total payload starting from <em class="parameter"><code>offset</code></em> if subbuffered.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1494,19 +1674,19 @@ If <em class="parameter"><code>len</code></em> is -1 the total payload starting 
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.10
-</p>
+<p class="since">Since 0.10.10</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtp-buffer-get-payload-len"></a><h3>gst_rtp_buffer_get_payload_len ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a>               gst_rtp_buffer_get_payload_len      (GstBuffer *buffer);</pre>
+>guint</a>               gst_rtp_buffer_get_payload_len      (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);</pre>
 <p>
 Get the length of the payload of the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1529,12 +1709,13 @@ Get the length of the payload of the RTP packet in <em class="parameter"><code>b
 <a name="gst-rtp-buffer-get-payload"></a><h3>gst_rtp_buffer_get_payload ()</h3>
 <pre class="programlisting"><a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>            gst_rtp_buffer_get_payload          (GstBuffer *buffer);</pre>
+>gpointer</a>            gst_rtp_buffer_get_payload          (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer);</pre>
 <p>
 Get a pointer to the payload data in <em class="parameter"><code>buffer</code></em>. This pointer is valid as long
 as a reference to <em class="parameter"><code>buffer</code></em> is held.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1563,7 +1744,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
 <p>
 Get the default clock-rate for the static payload type <em class="parameter"><code>payload_type</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1582,8 +1762,7 @@ the clock-rate is undefined.
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.13
-</p>
+<p class="since">Since 0.10.13</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -1600,7 +1779,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
 Compare two sequence numbers, taking care of wraparounds. This function
 returns the difference between <em class="parameter"><code>seqnum1</code></em> and <em class="parameter"><code>seqnum2</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1624,8 +1802,7 @@ are equal or a positive value if <em class="parameter"><code>seqnum1</code></em>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.15
-</p>
+<p class="since">Since 0.10.15</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -1646,7 +1823,6 @@ method, <em class="parameter"><code>exttimestamp</code></em> should point to a l
 This function makes sure that the returned value is a constantly increasing
 value even in the case where there is a timestamp wraparound.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1669,17 +1845,381 @@ value even in the case where there is a timestamp wraparound.</p>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.15
+<p class="since">Since 0.10.15</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-rtp-buffer-set-extension-data"></a><h3>gst_rtp_buffer_set_extension_data ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_rtp_buffer_set_extension_data   (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> bits,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> length);</pre>
+<p>
+Set the extension bit of the rtp buffer and fill in the <em class="parameter"><code>bits</code></em> and <em class="parameter"><code>length</code></em> of the
+extension header. It will refuse to set the extension data if the buffer is not
+large enough.</p>
+<p>
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>bits</code></em> :</span></p></td>
+<td> the bits specific for the extension
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>length</code></em> :</span></p></td>
+<td> the length that counts the number of 32-bit words in
+the extension, excluding the extension header ( therefore zero is a valid length)
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> True if done.
+
+Since : 0.10.18
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-rtp-buffer-list-validate"></a><h3>gst_rtp_buffer_list_validate ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_rtp_buffer_list_validate        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list);</pre>
+<p>
+Check if all RTP packets in the <em class="parameter"><code>list</code></em> are valid using <code class="function">validate_data()</code>.
+Use this function to validate an list before using the other functions in
+this module.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>list</code></em> :</span></p></td>
+<td> the buffer list to validate
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> TRUE if <em class="parameter"><code>list</code></em> consists only of valid RTP packets.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.24</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-rtp-buffer-list-get-payload-len"></a><h3>gst_rtp_buffer_list_get_payload_len ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               gst_rtp_buffer_list_get_payload_len (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list);</pre>
+<p>
+Get the length of the payload of the RTP packet in <em class="parameter"><code>list</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>list</code></em> :</span></p></td>
+<td> the buffer list
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The length of the payload in <em class="parameter"><code>list</code></em>.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.24</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-rtp-buffer-list-get-payload-type"></a><h3>gst_rtp_buffer_list_get_payload_type ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a>              gst_rtp_buffer_list_get_payload_type
+                                                        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list);</pre>
+<p>
+Get the payload type of the first RTP packet in <em class="parameter"><code>list</code></em>.
+All packets in <em class="parameter"><code>list</code></em> should have the same payload type.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>list</code></em> :</span></p></td>
+<td> the buffer list
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The payload type.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.24</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-rtp-buffer-list-set-payload-type"></a><h3>gst_rtp_buffer_list_set_payload_type ()</h3>
+<pre class="programlisting">void                gst_rtp_buffer_list_set_payload_type
+                                                        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> payload_type);</pre>
+<p>
+Set the payload type of each RTP packet in <em class="parameter"><code>list</code></em> to <em class="parameter"><code>payload_type</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>list</code></em> :</span></p></td>
+<td> the buffer list
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>payload_type</code></em> :</span></p></td>
+<td> the new type
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.24</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-rtp-buffer-list-get-seq"></a><h3>gst_rtp_buffer_list_get_seq ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a>             gst_rtp_buffer_list_get_seq         (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list);</pre>
+<p>
+Get the sequence number of the first RTP packet in <em class="parameter"><code>list</code></em>.
+All packets within <em class="parameter"><code>list</code></em> have the same sequence number.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>list</code></em> :</span></p></td>
+<td> the buffer list
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The seq number
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.24</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-rtp-buffer-list-set-seq"></a><h3>gst_rtp_buffer_list_set_seq ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a>             gst_rtp_buffer_list_set_seq         (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> seq);</pre>
+<p>
+Set the sequence number of each RTP packet in <em class="parameter"><code>list</code></em> to <em class="parameter"><code>seq</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>list</code></em> :</span></p></td>
+<td> the buffer list
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>seq</code></em> :</span></p></td>
+<td> the new sequence number
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The seq number of the last packet in the list + 1.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.24</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-rtp-buffer-list-get-ssrc"></a><h3>gst_rtp_buffer_list_get_ssrc ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a>             gst_rtp_buffer_list_get_ssrc        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list);</pre>
+<p>
+Get the SSRC of the first RTP packet in <em class="parameter"><code>list</code></em>.
+All RTP packets within <em class="parameter"><code>list</code></em> have the same SSRC.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>list</code></em> :</span></p></td>
+<td> the buffer list
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the SSRC of <em class="parameter"><code>list</code></em> in host order.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.24</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-rtp-buffer-list-set-ssrc"></a><h3>gst_rtp_buffer_list_set_ssrc ()</h3>
+<pre class="programlisting">void                gst_rtp_buffer_list_set_ssrc        (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> ssrc);</pre>
+<p>
+Set the SSRC on each RTP packet in <em class="parameter"><code>list</code></em> to <em class="parameter"><code>ssrc</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>list</code></em> :</span></p></td>
+<td> the buffer list
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
+<td> the new SSRC
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.24</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-rtp-buffer-list-get-timestamp"></a><h3>gst_rtp_buffer_list_get_timestamp ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a>             gst_rtp_buffer_list_get_timestamp   (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list);</pre>
+<p>
+Get the timestamp of the first RTP packet in <em class="parameter"><code>list</code></em>.
+All packets within <em class="parameter"><code>list</code></em> have the same timestamp.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>list</code></em> :</span></p></td>
+<td> the buffer list
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The timestamp in host order.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.24</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-rtp-buffer-list-set-timestamp"></a><h3>gst_rtp_buffer_list_set_timestamp ()</h3>
+<pre class="programlisting">void                gst_rtp_buffer_list_set_timestamp   (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBufferList.html#GstBufferList"
+>GstBufferList</a> *list,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> timestamp);</pre>
+<p>
+Set the timestamp of each RTP packet in <em class="parameter"><code>list</code></em> to <em class="parameter"><code>timestamp</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>list</code></em> :</span></p></td>
+<td> the buffer list
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>timestamp</code></em> :</span></p></td>
+<td> the new timestamp
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.24</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstrtpbuffer.see-also"></a><h2>See Also</h2>
-<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload"><span class="type">GstBaseRTPPayload</span></a>, <a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload"><span class="type">GstBaseRTPDepayload</span></a>, gstrtcpbuffer
+#GstBaseRTPPayload, <a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload"><span class="type">GstBaseRTPDepayload</span></a>, gstrtcpbuffer
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

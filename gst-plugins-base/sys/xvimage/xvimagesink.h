@@ -250,6 +250,7 @@ struct _GstXvImageSink {
   GValue *par;
 
   GMutex *pool_lock;
+  gboolean pool_invalid;
   GSList *image_pool;
 
   gboolean synchronous;
@@ -282,6 +283,9 @@ struct _GstXvImageSink {
   gboolean have_autopaint_colorkey;
   gboolean have_colorkey;
   gboolean have_double_buffer;
+  
+  /* stream metadata */
+  gchar *media_title;
 };
 
 struct _GstXvImageSinkClass {

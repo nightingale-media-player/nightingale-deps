@@ -47,7 +47,7 @@ static const GstElementDetails ffmpegcsp_details =
 GST_ELEMENT_DETAILS ("FFMPEG Colorspace converter",
     "Filter/Converter/Video",
     "Converts video from one colorspace to another",
-    "Ronald Bultje <rbultje@ronald.bitfreak.net>");
+    "GStreamer maintainers <gstreamer-devel@lists.sourceforge.net>");
 
 
 /* Stereo signals and args */
@@ -139,11 +139,8 @@ static GstCaps *
 gst_ffmpegcsp_transform_caps (GstBaseTransform * btrans,
     GstPadDirection direction, GstCaps * caps)
 {
-  GstFFMpegCsp *space;
   GstCaps *template;
   GstCaps *result;
-
-  space = GST_FFMPEGCSP (btrans);
 
   template = gst_ffmpegcsp_codectype_to_caps (CODEC_TYPE_VIDEO, NULL);
   result = gst_caps_intersect (caps, template);
@@ -221,6 +218,9 @@ gst_ffmpegcsp_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
 
   space->width = ctx->width = in_width;
   space->height = ctx->height = in_height;
+
+  space->interlaced = FALSE;
+  gst_structure_get_boolean (structure, "interlaced", &space->interlaced);
 
   /* get from format */
   ctx->pix_fmt = PIX_FMT_NB;
@@ -338,11 +338,9 @@ static void
 gst_ffmpegcsp_class_init (GstFFMpegCspClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseTransformClass *gstbasetransform_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
   gstbasetransform_class = (GstBaseTransformClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
@@ -379,15 +377,12 @@ static gboolean
 gst_ffmpegcsp_get_unit_size (GstBaseTransform * btrans, GstCaps * caps,
     guint * size)
 {
-  GstFFMpegCsp *space = NULL;
   GstStructure *structure = NULL;
   AVCodecContext *ctx = NULL;
   gboolean ret = TRUE;
   gint width, height;
 
   g_assert (size);
-
-  space = GST_FFMPEGCSP (btrans);
 
   structure = gst_caps_get_structure (caps, 0);
   gst_structure_get_int (structure, "width", &width);
@@ -451,7 +446,8 @@ gst_ffmpegcsp_transform (GstBaseTransform * btrans, GstBuffer * inbuf,
 
   /* fill from with source data */
   gst_ffmpegcsp_avpicture_fill (&space->from_frame,
-      GST_BUFFER_DATA (inbuf), space->from_pixfmt, space->width, space->height);
+      GST_BUFFER_DATA (inbuf), space->from_pixfmt, space->width, space->height,
+      space->interlaced);
 
   /* fill optional palette */
   if (space->palette)
@@ -459,7 +455,8 @@ gst_ffmpegcsp_transform (GstBaseTransform * btrans, GstBuffer * inbuf,
 
   /* fill target frame */
   gst_ffmpegcsp_avpicture_fill (&space->to_frame,
-      GST_BUFFER_DATA (outbuf), space->to_pixfmt, space->width, space->height);
+      GST_BUFFER_DATA (outbuf), space->to_pixfmt, space->width, space->height,
+      space->interlaced);
 
   /* and convert */
   result = img_convert (&space->to_frame, space->to_pixfmt,

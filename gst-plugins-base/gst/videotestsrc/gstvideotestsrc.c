@@ -41,10 +41,7 @@
 
 #include <string.h>
 #include <stdlib.h>
-
-#ifdef HAVE_LIBOIL
 #include <liboil/liboil.h>
-#endif
 
 GST_DEBUG_CATEGORY_STATIC (video_test_src_debug);
 #define GST_CAT_DEFAULT video_test_src_debug
@@ -494,9 +491,6 @@ static GstCaps *
 gst_video_test_src_getcaps (GstBaseSrc * bsrc)
 {
   static GstCaps *capslist = NULL;
-  GstVideoTestSrc *videotestsrc;
-
-  videotestsrc = GST_VIDEO_TEST_SRC (bsrc);
 
   if (!capslist) {
     GstCaps *caps;
@@ -774,6 +768,8 @@ gst_video_test_src_create (GstPushSrc * psrc, GstBuffer ** buffer)
     gst_buffer_set_caps (outbuf, GST_PAD_CAPS (GST_BASE_SRC_PAD (psrc)));
   }
 
+  memset (GST_BUFFER_DATA (outbuf), 0, GST_BUFFER_SIZE (outbuf));
+
   if (src->pattern_type == GST_VIDEO_TEST_SRC_BLINK) {
     if (src->n_frames & 0x1) {
       gst_video_test_src_white (src, (void *) GST_BUFFER_DATA (outbuf),
@@ -840,9 +836,7 @@ gst_video_test_src_start (GstBaseSrc * basesrc)
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-#ifdef HAVE_LIBOIL
   oil_init ();
-#endif
 
   GST_DEBUG_CATEGORY_INIT (video_test_src_debug, "videotestsrc", 0,
       "Video Test Source");

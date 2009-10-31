@@ -113,11 +113,11 @@ too_small:
  *          by the read size by this function.
  * @fourcc: fourcc (returned by this function0 of the chunk.
  * @chunk_data: buffer (returned by the function) containing the
- *              chunk data.
+ *              chunk data, which may be NULL if chunksize == 0
  *
  * Reads a single chunk.
  *
- * Returns: the fourcc tag of this chunk, or FALSE on error
+ * Returns: FALSE on error, TRUE otherwise
  */
 gboolean
 gst_riff_parse_chunk (GstElement * element, GstBuffer * buf,
@@ -153,6 +153,10 @@ gst_riff_parse_chunk (GstElement * element, GstBuffer * buf,
   GST_DEBUG_OBJECT (element, "fourcc=%" GST_FOURCC_FORMAT ", size=%u",
       GST_FOURCC_ARGS (fourcc), size);
 
+  /* be paranoid: size may be nonsensical value here, such as (guint) -1 */
+  if (G_UNLIKELY (size > G_MAXINT))
+    goto bogus_size;
+
   if (bufsize < size + 8 + offset) {
     GST_DEBUG_OBJECT (element,
         "Needed chunk data (%d) is more than available (%d), shortcutting",
@@ -181,6 +185,11 @@ too_small:
     GST_DEBUG_OBJECT (element,
         "Failed to parse chunk header (offset %d, %d available, %d needed)",
         offset, bufsize, 8);
+    return FALSE;
+  }
+bogus_size:
+  {
+    GST_ERROR_OBJECT (element, "Broken file: bogus chunk size %u", size);
     return FALSE;
   }
 }
@@ -217,7 +226,7 @@ gst_riff_parse_file_header (GstElement * element,
 
   data = GST_BUFFER_DATA (buf);
   tag = GST_READ_UINT32_LE (data);
-  if (tag != GST_RIFF_TAG_RIFF)
+  if (tag != GST_RIFF_TAG_RIFF && tag != GST_RIFF_TAG_AVF0)
     goto not_riff;
 
   *doctype = GST_READ_UINT32_LE (data + 8);
@@ -719,8 +728,11 @@ gst_riff_parse_info (GstElement * element,
       }
     }
 
-    if (tsize & 1)
+    if (tsize & 1) {
       tsize++;
+      if (tsize > size)
+        tsize = size;
+    }
 
     data += tsize;
     size -= tsize;

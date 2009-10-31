@@ -99,7 +99,7 @@ GST_ELEMENT_DETAILS ("GnomeVFS Source",
     "Source/File",
     "Read from any GnomeVFS-supported file",
     "Bastien Nocera <hadess@hadess.net>\n"
-    "Ronald S. Bultje <rbultje@ronald.bitfreak.net>");
+    "GStreamer maintainers <gstreamer-devel@lists.sourceforge.net>");
 
 static GStaticMutex count_lock = G_STATIC_MUTEX_INIT;
 static gint ref_count = 0;
@@ -194,11 +194,9 @@ static void
 gst_gnome_vfs_src_class_init (GstGnomeVFSSrcClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseSrcClass *gstbasesrc_class;
 
   gobject_class = G_OBJECT_CLASS (klass);
-  gstelement_class = GST_ELEMENT_CLASS (klass);
   gstbasesrc_class = GST_BASE_SRC_CLASS (klass);
 
   parent_class = g_type_class_peek_parent (klass);

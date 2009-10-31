@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-rtsp.html" title="RTSP Library">
 <link rel="prev" href="gst-plugins-base-libs-gstrtspmessage.html" title="gstrtspmessage">
 <link rel="next" href="gst-plugins-base-libs-gstrtsptransport.html" title="gstrtsptransport">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -37,9 +37,11 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstrtsptransport.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstrtsprange.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstrtsprange.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gstrtsprange.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstrtsprange.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstrtsprange"></a><div class="titlepage"></div>
@@ -64,6 +66,9 @@ enum                <a class="link" href="gst-plugins-base-libs-gstrtsprange.htm
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *rangestr,
                                                          <a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange" title="GstRTSPTimeRange">GstRTSPTimeRange</a> **range);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *             <a class="link" href="gst-plugins-base-libs-gstrtsprange.html#gst-rtsp-range-to-string" title="gst_rtsp_range_to_string ()">gst_rtsp_range_to_string</a>            (const <a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange" title="GstRTSPTimeRange">GstRTSPTimeRange</a> *range);
 void                <a class="link" href="gst-plugins-base-libs-gstrtsprange.html#gst-rtsp-range-free" title="gst_rtsp_range_free ()">gst_rtsp_range_free</a>                 (<a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange" title="GstRTSPTimeRange">GstRTSPTimeRange</a> *range);
 </pre>
 </div>
@@ -72,7 +77,7 @@ void                <a class="link" href="gst-plugins-base-libs-gstrtsprange.htm
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id3149173"></a><p>
+<a name="id2886273"></a><p>
 Provides helper functions to deal with time ranges.
 </p>
 </div>
@@ -80,7 +85,6 @@ Provides helper functions to deal with time ranges.
  
 Last reviewed on 2007-07-25 (0.10.14)</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -99,33 +103,32 @@ Last reviewed on 2007-07-25 (0.10.14)</p>
 <p>
 Different possible time range units.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RTSP-RANGE-SMPTE:CAPS"></a><span class="term"><code class="literal">GST_RTSP_RANGE_SMPTE</code></span></p></td>
+<td><p><a name="GST-RTSP-RANGE-SMPTE--CAPS"></a><span class="term"><code class="literal">GST_RTSP_RANGE_SMPTE</code></span></p></td>
 <td> SMPTE timecode
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-RANGE-SMPTE-30-DROP:CAPS"></a><span class="term"><code class="literal">GST_RTSP_RANGE_SMPTE_30_DROP</code></span></p></td>
+<td><p><a name="GST-RTSP-RANGE-SMPTE-30-DROP--CAPS"></a><span class="term"><code class="literal">GST_RTSP_RANGE_SMPTE_30_DROP</code></span></p></td>
 <td> 29.97 frames per second
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-RANGE-SMPTE-25:CAPS"></a><span class="term"><code class="literal">GST_RTSP_RANGE_SMPTE_25</code></span></p></td>
+<td><p><a name="GST-RTSP-RANGE-SMPTE-25--CAPS"></a><span class="term"><code class="literal">GST_RTSP_RANGE_SMPTE_25</code></span></p></td>
 <td> 25 frames per second
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-RANGE-NPT:CAPS"></a><span class="term"><code class="literal">GST_RTSP_RANGE_NPT</code></span></p></td>
+<td><p><a name="GST-RTSP-RANGE-NPT--CAPS"></a><span class="term"><code class="literal">GST_RTSP_RANGE_NPT</code></span></p></td>
 <td> Normal play time 
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-RANGE-CLOCK:CAPS"></a><span class="term"><code class="literal">GST_RTSP_RANGE_CLOCK</code></span></p></td>
+<td><p><a name="GST-RTSP-RANGE-CLOCK--CAPS"></a><span class="term"><code class="literal">GST_RTSP_RANGE_CLOCK</code></span></p></td>
 <td> Absolute time expressed as ISO 8601 timestamps
 </td>
 </tr>
@@ -145,7 +148,6 @@ Different possible time range units.</p>
 <p>
 A time range.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -179,7 +181,6 @@ A time range.</p>
 <p>
 A time indication.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -211,23 +212,22 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
 <p>
 Possible time types.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RTSP-TIME-SECONDS:CAPS"></a><span class="term"><code class="literal">GST_RTSP_TIME_SECONDS</code></span></p></td>
+<td><p><a name="GST-RTSP-TIME-SECONDS--CAPS"></a><span class="term"><code class="literal">GST_RTSP_TIME_SECONDS</code></span></p></td>
 <td> seconds
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-TIME-NOW:CAPS"></a><span class="term"><code class="literal">GST_RTSP_TIME_NOW</code></span></p></td>
+<td><p><a name="GST-RTSP-TIME-NOW--CAPS"></a><span class="term"><code class="literal">GST_RTSP_TIME_NOW</code></span></p></td>
 <td> now
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-TIME-END:CAPS"></a><span class="term"><code class="literal">GST_RTSP_TIME_END</code></span></p></td>
+<td><p><a name="GST-RTSP-TIME-END--CAPS"></a><span class="term"><code class="literal">GST_RTSP_TIME_END</code></span></p></td>
 <td> end
 </td>
 </tr>
@@ -244,7 +244,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Parse <em class="parameter"><code>rangestr</code></em> to a <a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange" title="GstRTSPTimeRange"><span class="type">GstRTSPTimeRange</span></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -261,11 +260,41 @@ Parse <em class="parameter"><code>rangestr</code></em> to a <a class="link" href
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> on success.
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK--CAPS"><span class="type">GST_RTSP_OK</span></a> on success.
 </td>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-rtsp-range-to-string"></a><h3>gst_rtsp_range_to_string ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *             gst_rtsp_range_to_string            (const <a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange" title="GstRTSPTimeRange">GstRTSPTimeRange</a> *range);</pre>
+<p>
+Convert <em class="parameter"><code>range</code></em> into a string representation.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>range</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange" title="GstRTSPTimeRange"><span class="type">GstRTSPTimeRange</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The string representation of <em class="parameter"><code>range</code></em>. <a
+href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
+><code class="function">g_free()</code></a> after usage.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.23</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -274,7 +303,6 @@ Parse <em class="parameter"><code>rangestr</code></em> to a <a class="link" href
 <p>
 Free the memory alocated by <em class="parameter"><code>range</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -289,6 +317,6 @@ Free the memory alocated by <em class="parameter"><code>range</code></em>.</p>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

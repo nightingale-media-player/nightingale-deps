@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-rtsp.html" title="RTSP Library">
 <link rel="prev" href="gst-plugins-base-libs-gstrtsprange.html" title="gstrtsprange">
 <link rel="next" href="gst-plugins-base-libs-gstrtspurl.html" title="gstrtspurl">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -37,9 +37,11 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstrtspurl.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstrtsptransport.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstrtsptransport.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gstrtsptransport.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstrtsptransport.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstrtsptransport"></a><div class="titlepage"></div>
@@ -88,7 +90,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id3150988"></a><p>
+<a name="id2888362"></a><p>
 Provides helper functions to deal with RTSP transport strings.
 </p>
 </div>
@@ -96,7 +98,6 @@ Provides helper functions to deal with RTSP transport strings.
  
 Last reviewed on 2007-07-25 (0.10.14)</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -112,23 +113,22 @@ Last reviewed on 2007-07-25 (0.10.14)</p>
 <p>
 The transfer mode to use.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RTSP-TRANS-UNKNOWN:CAPS"></a><span class="term"><code class="literal">GST_RTSP_TRANS_UNKNOWN</code></span></p></td>
+<td><p><a name="GST-RTSP-TRANS-UNKNOWN--CAPS"></a><span class="term"><code class="literal">GST_RTSP_TRANS_UNKNOWN</code></span></p></td>
 <td> invalid tansport mode
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-TRANS-RTP:CAPS"></a><span class="term"><code class="literal">GST_RTSP_TRANS_RTP</code></span></p></td>
+<td><p><a name="GST-RTSP-TRANS-RTP--CAPS"></a><span class="term"><code class="literal">GST_RTSP_TRANS_RTP</code></span></p></td>
 <td> transfer RTP data
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-TRANS-RDT:CAPS"></a><span class="term"><code class="literal">GST_RTSP_TRANS_RDT</code></span></p></td>
+<td><p><a name="GST-RTSP-TRANS-RDT--CAPS"></a><span class="term"><code class="literal">GST_RTSP_TRANS_RDT</code></span></p></td>
 <td> transfer RDT (RealMedia) data
 </td>
 </tr>
@@ -147,23 +147,22 @@ The transfer mode to use.</p>
 <p>
 The transfer profile to use.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RTSP-PROFILE-UNKNOWN:CAPS"></a><span class="term"><code class="literal">GST_RTSP_PROFILE_UNKNOWN</code></span></p></td>
+<td><p><a name="GST-RTSP-PROFILE-UNKNOWN--CAPS"></a><span class="term"><code class="literal">GST_RTSP_PROFILE_UNKNOWN</code></span></p></td>
 <td> invalid profile
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-PROFILE-AVP:CAPS"></a><span class="term"><code class="literal">GST_RTSP_PROFILE_AVP</code></span></p></td>
+<td><p><a name="GST-RTSP-PROFILE-AVP--CAPS"></a><span class="term"><code class="literal">GST_RTSP_PROFILE_AVP</code></span></p></td>
 <td> the Audio/Visual profile
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-PROFILE-SAVP:CAPS"></a><span class="term"><code class="literal">GST_RTSP_PROFILE_SAVP</code></span></p></td>
+<td><p><a name="GST-RTSP-PROFILE-SAVP--CAPS"></a><span class="term"><code class="literal">GST_RTSP_PROFILE_SAVP</code></span></p></td>
 <td> the secure Audio/Visual profile
 </td>
 </tr>
@@ -177,35 +176,40 @@ The transfer profile to use.</p>
   GST_RTSP_LOWER_TRANS_UNKNOWN   = 0,
   GST_RTSP_LOWER_TRANS_UDP       = (1 &lt;&lt; 0),
   GST_RTSP_LOWER_TRANS_UDP_MCAST = (1 &lt;&lt; 1),
-  GST_RTSP_LOWER_TRANS_TCP       = (1 &lt;&lt; 2)
+  GST_RTSP_LOWER_TRANS_TCP       = (1 &lt;&lt; 2),
+  GST_RTSP_LOWER_TRANS_HTTP      = (1 &lt;&lt; 4)
 } GstRTSPLowerTrans;
 </pre>
 <p>
 The different transport methods.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RTSP-LOWER-TRANS-UNKNOWN:CAPS"></a><span class="term"><code class="literal">GST_RTSP_LOWER_TRANS_UNKNOWN</code></span></p></td>
+<td><p><a name="GST-RTSP-LOWER-TRANS-UNKNOWN--CAPS"></a><span class="term"><code class="literal">GST_RTSP_LOWER_TRANS_UNKNOWN</code></span></p></td>
 <td> invalid transport flag
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-LOWER-TRANS-UDP:CAPS"></a><span class="term"><code class="literal">GST_RTSP_LOWER_TRANS_UDP</code></span></p></td>
+<td><p><a name="GST-RTSP-LOWER-TRANS-UDP--CAPS"></a><span class="term"><code class="literal">GST_RTSP_LOWER_TRANS_UDP</code></span></p></td>
 <td> stream data over UDP
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-LOWER-TRANS-UDP-MCAST:CAPS"></a><span class="term"><code class="literal">GST_RTSP_LOWER_TRANS_UDP_MCAST</code></span></p></td>
+<td><p><a name="GST-RTSP-LOWER-TRANS-UDP-MCAST--CAPS"></a><span class="term"><code class="literal">GST_RTSP_LOWER_TRANS_UDP_MCAST</code></span></p></td>
 <td> stream data over UDP multicast
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-LOWER-TRANS-TCP:CAPS"></a><span class="term"><code class="literal">GST_RTSP_LOWER_TRANS_TCP</code></span></p></td>
+<td><p><a name="GST-RTSP-LOWER-TRANS-TCP--CAPS"></a><span class="term"><code class="literal">GST_RTSP_LOWER_TRANS_TCP</code></span></p></td>
 <td> stream data over TCP
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-RTSP-LOWER-TRANS-HTTP--CAPS"></a><span class="term"><code class="literal">GST_RTSP_LOWER_TRANS_HTTP</code></span></p></td>
+<td> stream data tunneled over HTTP. Since: 0.10.23
 </td>
 </tr>
 </tbody>
@@ -241,8 +245,103 @@ The different transport methods.</p>
 <p>
 A structure holding the RTSP transport values.</p>
 <p>
-
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransMode" title="enum GstRTSPTransMode">GstRTSPTransMode</a> <em class="structfield"><code>trans</code></em>;</span></p></td>
+<td> the transport mode
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPProfile" title="enum GstRTSPProfile">GstRTSPProfile</a> <em class="structfield"><code>profile</code></em>;</span></p></td>
+<td> the tansport profile
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPLowerTrans" title="enum GstRTSPLowerTrans">GstRTSPLowerTrans</a> <em class="structfield"><code>lower_transport</code></em>;</span></p></td>
+<td> the lower transport
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *<em class="structfield"><code>destination</code></em>;</span></p></td>
+<td> the destination ip/hostname
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *<em class="structfield"><code>source</code></em>;</span></p></td>
+<td> the source ip/hostname
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> <em class="structfield"><code>layers</code></em>;</span></p></td>
+<td> the number of layers
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> <em class="structfield"><code>mode_play</code></em>;</span></p></td>
+<td> if play mode was selected
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> <em class="structfield"><code>mode_record</code></em>;</span></p></td>
+<td> if record mode was selected
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> <em class="structfield"><code>append</code></em>;</span></p></td>
+<td> is append mode was selected
+</td>
+</tr>
+<tr>
+<td><p><span class="term">GstRTSPRange <em class="structfield"><code>interleaved</code></em>;</span></p></td>
+<td> the interleave range
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> <em class="structfield"><code>ttl</code></em>;</span></p></td>
+<td> the time to live for multicast UDP
+</td>
+</tr>
+<tr>
+<td><p><span class="term">GstRTSPRange <em class="structfield"><code>port</code></em>;</span></p></td>
+<td> the port pair for multicast sessions
+</td>
+</tr>
+<tr>
+<td><p><span class="term">GstRTSPRange <em class="structfield"><code>client_port</code></em>;</span></p></td>
+<td> the client port pair for receiving data
+</td>
+</tr>
+<tr>
+<td><p><span class="term">GstRTSPRange <em class="structfield"><code>server_port</code></em>;</span></p></td>
+<td> the server port pair for receiving data
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> <em class="structfield"><code>ssrc</code></em>;</span></p></td>
+<td> the ssrc that the sender/receiver will use
+</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -252,7 +351,6 @@ A structure holding the RTSP transport values.</p>
 Allocate a new initialized <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport" title="GstRTSPTransport"><span class="type">GstRTSPTransport</span></a>. Use <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-free" title="gst_rtsp_transport_free ()"><code class="function">gst_rtsp_transport_free()</code></a>
 after usage.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -277,7 +375,6 @@ after usage.</p>
 <p>
 Initialize <em class="parameter"><code>transport</code></em> so that it can be used.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -289,7 +386,7 @@ Initialize <em class="parameter"><code>transport</code></em> so that it can be u
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>. 
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK--CAPS"><span class="type">GST_RTSP_OK</span></a>. 
 </td>
 </tr>
 </tbody>
@@ -305,7 +402,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Parse the RTSP transport string <em class="parameter"><code>str</code></em> into <em class="parameter"><code>transport</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -338,7 +434,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 Convert <em class="parameter"><code>transport</code></em> into a string that can be used to signal the transport in
 an RTSP SETUP response.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -351,7 +446,7 @@ an RTSP SETUP response.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a string describing the RTSP transport or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
 ><span class="type">NULL</span></a> when the transport
 is invalid.
 </td>
@@ -368,9 +463,10 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> **mime);</pre>
 <p>
 Get the mime type of the transport mode <em class="parameter"><code>trans</code></em>. This mime type is typically
-used to generate <span class="type">GstCaps</span> on buffers.</p>
+used to generate <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a> on buffers.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -387,7 +483,7 @@ used to generate <span class="type">GstCaps</span> on buffers.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>. 
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK--CAPS"><span class="type">GST_RTSP_OK</span></a>. 
 </td>
 </tr>
 </tbody>
@@ -413,11 +509,10 @@ selected one.
 </p>
 <p>
 <em class="parameter"><code>manager</code></em> will contain an element name or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL--CAPS"
 ><span class="type">NULL</span></a> when no manager is
 needed/available for <em class="parameter"><code>trans</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -439,7 +534,7 @@ needed/available for <em class="parameter"><code>trans</code></em>.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>. 
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK--CAPS"><span class="type">GST_RTSP_OK</span></a>. 
 </td>
 </tr>
 </tbody>
@@ -452,7 +547,6 @@ needed/available for <em class="parameter"><code>trans</code></em>.</p>
 <p>
 Free the memory used by <em class="parameter"><code>transport</code></em>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -464,7 +558,7 @@ Free the memory used by <em class="parameter"><code>transport</code></em>.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK--CAPS"><span class="type">GST_RTSP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -474,6 +568,6 @@ Free the memory used by <em class="parameter"><code>transport</code></em>.</p>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

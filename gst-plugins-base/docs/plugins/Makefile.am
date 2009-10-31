@@ -7,11 +7,11 @@ GST_DOC_SCANOBJ = $(top_srcdir)/common/gstdoc-scangobj
 MODULE=gst-plugins-base
 DOC_MODULE=$(MODULE)-plugins
 
-# for upload.mak
+# for upload-doc.mak
 DOC=$(MODULE)-plugins
 FORMATS=html
 html: html-build.stamp
-include $(top_srcdir)/common/upload.mak
+include $(top_srcdir)/common/upload-doc.mak
 
 # generated basefiles
 #basefiles = \
@@ -94,10 +94,10 @@ EXTRA_HFILES = \
 	$(top_srcdir)/ext/theora/gsttheoradec.h \
 	$(top_srcdir)/ext/theora/gsttheoraenc.h \
 	$(top_srcdir)/ext/theora/gsttheoraparse.h \
-	$(top_srcdir)/ext/vorbis/vorbisdec.h \
-	$(top_srcdir)/ext/vorbis/vorbisenc.h \
-	$(top_srcdir)/ext/vorbis/vorbisparse.h \
-	$(top_srcdir)/ext/vorbis/vorbistag.h \
+	$(top_srcdir)/ext/vorbis/gstvorbisdec.h \
+	$(top_srcdir)/ext/vorbis/gstvorbisenc.h \
+	$(top_srcdir)/ext/vorbis/gstvorbisparse.h \
+	$(top_srcdir)/ext/vorbis/gstvorbistag.h \
 	$(top_srcdir)/gst/adder/gstadder.h \
 	$(top_srcdir)/gst/audioconvert/audioconvert.h \
 	$(top_srcdir)/gst/audioconvert/gstaudioconvert.h \
@@ -106,7 +106,7 @@ EXTRA_HFILES = \
 	$(top_srcdir)/gst/gdp/gstgdpdepay.h \
 	$(top_srcdir)/gst/gdp/gstgdppay.h \
 	$(top_srcdir)/gst/playback/gstplay-enum.h \
-	$(top_srcdir)/gst/speexresample/gstspeexresample.h \
+	$(top_srcdir)/gst/audioresample/gstaudioresample.h \
 	$(top_srcdir)/gst/tcp/gstmultifdsink.h \
 	$(top_srcdir)/gst/tcp/gsttcpclientsrc.h \
 	$(top_srcdir)/gst/tcp/gsttcpclientsink.h \
@@ -137,8 +137,8 @@ extra_files =
 GTKDOC_CFLAGS = $(GST_BASE_CFLAGS) -I$(top_builddir) -I$(top_builddir)/gst-libs
 GTKDOC_LIBS = $(SCANOBJ_DEPS) $(GST_BASE_LIBS)
 
-GTKDOC_CC=$(LIBTOOL) --mode=compile $(CC)
-GTKDOC_LD=$(LIBTOOL) --mode=link $(CC)
+GTKDOC_CC=$(LIBTOOL) --tag=CC --mode=compile $(CC)
+GTKDOC_LD=$(LIBTOOL) --tag=CC --mode=link $(CC)
 
 # If you need to override some of the declarations, place them in this file
 # and uncomment this line.

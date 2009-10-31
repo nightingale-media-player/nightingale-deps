@@ -75,15 +75,27 @@ gst_rtsp_url_get_type (void)
   return id;
 }
 
+static const gchar *rtsp_url_schemes[] = {
+  "rtsp",
+  "rtspu",
+  "rtspt",
+  "rtsph",
+  NULL
+};
 
-#define RTSP_PROTO      "rtsp://"
-#define RTSP_PROTO_LEN  7
-#define RTSPU_PROTO     "rtspu://"
-#define RTSPU_PROTO_LEN 8
-#define RTSPT_PROTO     "rtspt://"
-#define RTSPT_PROTO_LEN 8
+static GstRTSPLowerTrans rtsp_url_transports[] = {
+  GST_RTSP_LOWER_TRANS_TCP | GST_RTSP_LOWER_TRANS_UDP |
+      GST_RTSP_LOWER_TRANS_UDP_MCAST,
+  GST_RTSP_LOWER_TRANS_UDP | GST_RTSP_LOWER_TRANS_UDP_MCAST,
+  GST_RTSP_LOWER_TRANS_TCP,
+  GST_RTSP_LOWER_TRANS_HTTP | GST_RTSP_LOWER_TRANS_TCP,
+};
 
-/* format is rtsp[u]://[user:passwd@]host[:port]/abspath[?query] */
+/* format is rtsp[u]://[user:passwd@]host[:port]/abspath[?query] where host
+ * is a host name, an IPv4 dotted decimal address ("aaa.bbb.ccc.ddd") or an
+ * [IPv6] address ("[aabb:ccdd:eeff:gghh::sstt]" note the brackets around the
+ * address to allow the distinction between ':' as an IPv6 hexgroup separator
+ * and as a host/port separator) */
 
 /**
  * gst_rtsp_url_parse:
@@ -100,6 +112,8 @@ gst_rtsp_url_parse (const gchar * urlstr, GstRTSPUrl ** url)
 {
   GstRTSPUrl *res;
   gchar *p, *delim, *at, *col;
+  gchar *host_end = NULL;
+  guint scheme;
 
   g_return_val_if_fail (urlstr != NULL, GST_RTSP_EINVAL);
   g_return_val_if_fail (url != NULL, GST_RTSP_EINVAL);
@@ -107,18 +121,20 @@ gst_rtsp_url_parse (const gchar * urlstr, GstRTSPUrl ** url)
   res = g_new0 (GstRTSPUrl, 1);
 
   p = (gchar *) urlstr;
-  if (g_str_has_prefix (p, RTSP_PROTO)) {
-    res->transports =
-        GST_RTSP_LOWER_TRANS_TCP | GST_RTSP_LOWER_TRANS_UDP |
-        GST_RTSP_LOWER_TRANS_UDP_MCAST;
-    p += RTSP_PROTO_LEN;
-  } else if (g_str_has_prefix (p, RTSPU_PROTO)) {
-    res->transports = GST_RTSP_LOWER_TRANS_UDP | GST_RTSP_LOWER_TRANS_UDP_MCAST;
-    p += RTSPU_PROTO_LEN;
-  } else if (g_str_has_prefix (p, RTSPT_PROTO)) {
-    res->transports = GST_RTSP_LOWER_TRANS_TCP;
-    p += RTSPT_PROTO_LEN;
-  } else
+
+  col = strstr (p, "://");
+  if (col == NULL)
+    goto invalid;
+
+  for (scheme = 0; rtsp_url_schemes[scheme] != NULL; scheme++) {
+    if (g_ascii_strncasecmp (rtsp_url_schemes[scheme], p, col - p) == 0) {
+      res->transports = rtsp_url_transports[scheme];
+      p = col + 3;
+      break;
+    }
+  }
+
+  if (res->transports == GST_RTSP_LOWER_TRANS_UNKNOWN)
     goto invalid;
 
   delim = strpbrk (p, "/?");
@@ -142,39 +158,52 @@ gst_rtsp_url_parse (const gchar * urlstr, GstRTSPUrl ** url)
     p = at + 1;
   }
 
-  col = strchr (p, ':');
-  /* we have a ':' and a delimiter but the ':' is after the delimiter, it's
-   * not really part of the hostname */
-  if (col && delim && col >= delim)
-    col = NULL;
+  if (*p == '[') {
+    res->family = GST_RTSP_FAM_INET6;
 
-  if (col) {
-    res->host = g_strndup (p, col - p);
-    p = col + 1;
-    res->port = strtoul (p, (char **) &p, 10);
-    if (delim)
-      p = delim;
+    /* we have an IPv6 address in the URL, find the ending ] which must be
+     * before any delimiter */
+    host_end = strchr (++p, ']');
+    if (!host_end || (delim && host_end >= delim))
+      goto invalid;
+
+    /* a port specifier must follow the address immediately */
+    col = host_end[1] == ':' ? host_end + 1 : NULL;
   } else {
-    /* no port specified, set to 0. _get_port() will return the default port. */
-    res->port = 0;
-    if (!delim) {
-      res->host = g_strdup (p);
-      p = NULL;
+    res->family = GST_RTSP_FAM_INET;
+
+    col = strchr (p, ':');
+
+    /* we have a ':' and a delimiter but the ':' is after the delimiter, it's
+     * not really part of the hostname */
+    if (col && delim && col >= delim)
+      col = NULL;
+
+    host_end = col ? col : delim;
+  }
+
+  if (!host_end)
+    res->host = g_strdup (p);
+  else {
+    res->host = g_strndup (p, host_end - p);
+
+    if (col) {
+      res->port = strtoul (col + 1, NULL, 10);
     } else {
-      res->host = g_strndup (p, delim - p);
-      p = delim;
+      /* no port specified, set to 0. gst_rtsp_url_get_port() will return the
+       * default port */
+      res->port = 0;
     }
   }
+  p = delim;
 
   if (p && *p == '/') {
     delim = strchr (p, '?');
-    if (!delim) {
+    if (!delim)
       res->abspath = g_strdup (p);
-      p = NULL;
-    } else {
+    else
       res->abspath = g_strndup (p, delim - p);
-      p = delim;
-    }
+    p = delim;
   } else {
     res->abspath = g_strdup ("/");
   }
@@ -205,7 +234,7 @@ invalid:
  * Since: 0.10.22
  */
 GstRTSPUrl *
-gst_rtsp_url_copy (GstRTSPUrl * url)
+gst_rtsp_url_copy (const GstRTSPUrl * url)
 {
   GstRTSPUrl *res;
 
@@ -274,7 +303,7 @@ gst_rtsp_url_set_port (GstRTSPUrl * url, guint16 port)
  * Returns: #GST_RTSP_OK.
  */
 GstRTSPResult
-gst_rtsp_url_get_port (GstRTSPUrl * url, guint16 * port)
+gst_rtsp_url_get_port (const GstRTSPUrl * url, guint16 * port)
 {
   g_return_val_if_fail (url != NULL, GST_RTSP_EINVAL);
   g_return_val_if_fail (port != NULL, GST_RTSP_EINVAL);
@@ -297,18 +326,27 @@ gst_rtsp_url_get_port (GstRTSPUrl * url, guint16 * port)
  * Returns: a string with the request URI. g_free() after usage.
  */
 gchar *
-gst_rtsp_url_get_request_uri (GstRTSPUrl * url)
+gst_rtsp_url_get_request_uri (const GstRTSPUrl * url)
 {
   gchar *uri;
+  gchar *pre_host;
+  gchar *post_host;
+  gchar *pre_query;
+  gchar *query;
 
   g_return_val_if_fail (url != NULL, NULL);
 
+  pre_host = url->family == GST_RTSP_FAM_INET6 ? "[" : "";
+  post_host = url->family == GST_RTSP_FAM_INET6 ? "]" : "";
+  pre_query = url->query ? "?" : "";
+  query = url->query ? url->query : "";
+
   if (url->port != 0) {
-    uri = g_strdup_printf ("rtsp://%s:%u%s%s%s", url->host, url->port,
-        url->abspath, url->query ? "?" : "", url->query ? url->query : "");
+    uri = g_strdup_printf ("rtsp://%s%s%s:%u%s%s%s", pre_host, url->host,
+        post_host, url->port, url->abspath, pre_query, query);
   } else {
-    uri = g_strdup_printf ("rtsp://%s%s%s%s", url->host, url->abspath,
-        url->query ? "?" : "", url->query ? url->query : "");
+    uri = g_strdup_printf ("rtsp://%s%s%s%s%s%s", pre_host, url->host,
+        post_host, url->abspath, pre_query, query);
   }
 
   return uri;

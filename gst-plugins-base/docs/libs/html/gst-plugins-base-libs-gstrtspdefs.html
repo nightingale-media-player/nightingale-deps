@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-rtsp.html" title="RTSP Library">
 <link rel="prev" href="gst-plugins-base-libs-gstrtspconnection.html" title="gstrtspconnection">
 <link rel="next" href="gst-plugins-base-libs-gstrtspmessage.html" title="gstrtspmessage">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -37,9 +37,11 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstrtspmessage.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstrtspdefs.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstrtspdefs.description" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gstrtspdefs.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstrtspdefs.description" class="shortcut">Description</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstrtspdefs"></a><div class="titlepage"></div>
@@ -56,14 +58,14 @@
 
 #include &lt;gst/rtsp/gstrtspdefs.h&gt;
 
-#define             <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-CHECK:CAPS" title="GST_RTSP_CHECK()">GST_RTSP_CHECK</a>                      (stmt, label)
+#define             <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-CHECK--CAPS" title="GST_RTSP_CHECK()">GST_RTSP_CHECK</a>                      (stmt, label)
 enum                <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>;
 enum                <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPFamily" title="enum GstRTSPFamily">GstRTSPFamily</a>;
 enum                <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPState" title="enum GstRTSPState">GstRTSPState</a>;
 enum                <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPVersion" title="enum GstRTSPVersion">GstRTSPVersion</a>;
 enum                <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod">GstRTSPMethod</a>;
 enum                <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPAuthMethod" title="enum GstRTSPAuthMethod">GstRTSPAuthMethod</a>;
-#define             <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-AUTH-MAX:CAPS" title="GST_RTSP_AUTH_MAX">GST_RTSP_AUTH_MAX</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-AUTH-MAX--CAPS" title="GST_RTSP_AUTH_MAX">GST_RTSP_AUTH_MAX</a>
 enum                <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField">GstRTSPHeaderField</a>;
 enum                <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode" title="enum GstRTSPStatusCode">GstRTSPStatusCode</a>;
 <a
@@ -81,6 +83,9 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a>*        <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-status-as-text" title="gst_rtsp_status_as_text ()">gst_rtsp_status_as_text</a>             (<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode" title="enum GstRTSPStatusCode">GstRTSPStatusCode</a> code);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-options-as-text" title="gst_rtsp_options_as_text ()">gst_rtsp_options_as_text</a>            (<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod">GstRTSPMethod</a> options);
 <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField">GstRTSPHeaderField</a>  <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-find-header-field" title="gst_rtsp_find_header_field ()">gst_rtsp_find_header_field</a>          (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *header);
@@ -94,7 +99,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id3134884"></a><p>
+<a name="id2870650"></a><p>
 Provides common defines for the RTSP library. 
 </p>
 </div>
@@ -102,19 +107,17 @@ Provides common defines for the RTSP library.
  
 Last reviewed on 2007-07-24 (0.10.14)</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstrtspdefs.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="GST-RTSP-CHECK:CAPS"></a><h3>GST_RTSP_CHECK()</h3>
+<a name="GST-RTSP-CHECK--CAPS"></a><h3>GST_RTSP_CHECK()</h3>
 <pre class="programlisting">#define             GST_RTSP_CHECK(stmt, label)</pre>
 <p>
 Macro that checks the return value of <em class="parameter"><code>stmt</code></em> and jumps to <em class="parameter"><code>label</code></em> when it does
-not equal <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.</p>
+not equal <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK--CAPS"><span class="type">GST_RTSP_OK</span></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -152,95 +155,106 @@ not equal <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-
   GST_RTSP_ENET        = -12,
   GST_RTSP_ENOTIP      = -13,
   GST_RTSP_ETIMEOUT    = -14,
+  GST_RTSP_ETGET       = -15,
+  GST_RTSP_ETPOST      = -16,
 
-  GST_RTSP_ELAST       = -15
+  GST_RTSP_ELAST       = -17
 } GstRTSPResult;
 </pre>
 <p>
 Result codes from the RTSP functions.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RTSP-OK:CAPS"></a><span class="term"><code class="literal">GST_RTSP_OK</code></span></p></td>
+<td><p><a name="GST-RTSP-OK--CAPS"></a><span class="term"><code class="literal">GST_RTSP_OK</code></span></p></td>
 <td> no error
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ERROR:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ERROR</code></span></p></td>
+<td><p><a name="GST-RTSP-ERROR--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ERROR</code></span></p></td>
 <td> some unspecified error occured
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-EINVAL:CAPS"></a><span class="term"><code class="literal">GST_RTSP_EINVAL</code></span></p></td>
+<td><p><a name="GST-RTSP-EINVAL--CAPS"></a><span class="term"><code class="literal">GST_RTSP_EINVAL</code></span></p></td>
 <td> invalid arguments were provided to a function
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-EINTR:CAPS"></a><span class="term"><code class="literal">GST_RTSP_EINTR</code></span></p></td>
+<td><p><a name="GST-RTSP-EINTR--CAPS"></a><span class="term"><code class="literal">GST_RTSP_EINTR</code></span></p></td>
 <td> an operation was canceled
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ENOMEM:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ENOMEM</code></span></p></td>
+<td><p><a name="GST-RTSP-ENOMEM--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ENOMEM</code></span></p></td>
 <td> no memory was available for the operation
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ERESOLV:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ERESOLV</code></span></p></td>
+<td><p><a name="GST-RTSP-ERESOLV--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ERESOLV</code></span></p></td>
 <td> a host resolve error occured
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ENOTIMPL:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ENOTIMPL</code></span></p></td>
+<td><p><a name="GST-RTSP-ENOTIMPL--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ENOTIMPL</code></span></p></td>
 <td> function not implemented
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ESYS:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ESYS</code></span></p></td>
+<td><p><a name="GST-RTSP-ESYS--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ESYS</code></span></p></td>
 <td> a system error occured, errno contains more details
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-EPARSE:CAPS"></a><span class="term"><code class="literal">GST_RTSP_EPARSE</code></span></p></td>
+<td><p><a name="GST-RTSP-EPARSE--CAPS"></a><span class="term"><code class="literal">GST_RTSP_EPARSE</code></span></p></td>
 <td> a persing error occured
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-EWSASTART:CAPS"></a><span class="term"><code class="literal">GST_RTSP_EWSASTART</code></span></p></td>
+<td><p><a name="GST-RTSP-EWSASTART--CAPS"></a><span class="term"><code class="literal">GST_RTSP_EWSASTART</code></span></p></td>
 <td> windows networking could not start
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-EWSAVERSION:CAPS"></a><span class="term"><code class="literal">GST_RTSP_EWSAVERSION</code></span></p></td>
+<td><p><a name="GST-RTSP-EWSAVERSION--CAPS"></a><span class="term"><code class="literal">GST_RTSP_EWSAVERSION</code></span></p></td>
 <td> windows networking stack has wrong version
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-EEOF:CAPS"></a><span class="term"><code class="literal">GST_RTSP_EEOF</code></span></p></td>
+<td><p><a name="GST-RTSP-EEOF--CAPS"></a><span class="term"><code class="literal">GST_RTSP_EEOF</code></span></p></td>
 <td> end-of-file was reached
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ENET:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ENET</code></span></p></td>
+<td><p><a name="GST-RTSP-ENET--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ENET</code></span></p></td>
 <td> a network problem occured, h_errno contains more details
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ENOTIP:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ENOTIP</code></span></p></td>
+<td><p><a name="GST-RTSP-ENOTIP--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ENOTIP</code></span></p></td>
 <td> the host is not an IP host
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ETIMEOUT:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ETIMEOUT</code></span></p></td>
+<td><p><a name="GST-RTSP-ETIMEOUT--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ETIMEOUT</code></span></p></td>
 <td> a timeout occured
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ELAST:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ELAST</code></span></p></td>
+<td><p><a name="GST-RTSP-ETGET--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ETGET</code></span></p></td>
+<td> the tunnel GET request has been performed
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-RTSP-ETPOST--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ETPOST</code></span></p></td>
+<td> the tunnel POST request has been performed
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-RTSP-ELAST--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ELAST</code></span></p></td>
 <td> last error
 </td>
 </tr>
@@ -259,23 +273,22 @@ Result codes from the RTSP functions.</p>
 <p>
 The possible network families.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RTSP-FAM-NONE:CAPS"></a><span class="term"><code class="literal">GST_RTSP_FAM_NONE</code></span></p></td>
+<td><p><a name="GST-RTSP-FAM-NONE--CAPS"></a><span class="term"><code class="literal">GST_RTSP_FAM_NONE</code></span></p></td>
 <td> unknown network family
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-FAM-INET:CAPS"></a><span class="term"><code class="literal">GST_RTSP_FAM_INET</code></span></p></td>
+<td><p><a name="GST-RTSP-FAM-INET--CAPS"></a><span class="term"><code class="literal">GST_RTSP_FAM_INET</code></span></p></td>
 <td> internet
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-FAM-INET6:CAPS"></a><span class="term"><code class="literal">GST_RTSP_FAM_INET6</code></span></p></td>
+<td><p><a name="GST-RTSP-FAM-INET6--CAPS"></a><span class="term"><code class="literal">GST_RTSP_FAM_INET6</code></span></p></td>
 <td> internet V6
 </td>
 </tr>
@@ -297,38 +310,37 @@ The possible network families.</p>
 <p>
 The different RTSP states.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RTSP-STATE-INVALID:CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_INVALID</code></span></p></td>
+<td><p><a name="GST-RTSP-STATE-INVALID--CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_INVALID</code></span></p></td>
 <td> invalid state
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-STATE-INIT:CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_INIT</code></span></p></td>
+<td><p><a name="GST-RTSP-STATE-INIT--CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_INIT</code></span></p></td>
 <td> initializing
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-STATE-READY:CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_READY</code></span></p></td>
+<td><p><a name="GST-RTSP-STATE-READY--CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_READY</code></span></p></td>
 <td> ready for operation
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-STATE-SEEKING:CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_SEEKING</code></span></p></td>
+<td><p><a name="GST-RTSP-STATE-SEEKING--CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_SEEKING</code></span></p></td>
 <td> seeking in progress
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-STATE-PLAYING:CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_PLAYING</code></span></p></td>
+<td><p><a name="GST-RTSP-STATE-PLAYING--CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_PLAYING</code></span></p></td>
 <td> playing
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-STATE-RECORDING:CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_RECORDING</code></span></p></td>
+<td><p><a name="GST-RTSP-STATE-RECORDING--CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_RECORDING</code></span></p></td>
 <td> recording
 </td>
 </tr>
@@ -340,25 +352,30 @@ The different RTSP states.</p>
 <a name="GstRTSPVersion"></a><h3>enum GstRTSPVersion</h3>
 <pre class="programlisting">typedef enum {
   GST_RTSP_VERSION_INVALID = 0x00,
-  GST_RTSP_VERSION_1_0     = 0x10
+  GST_RTSP_VERSION_1_0     = 0x10,
+  GST_RTSP_VERSION_1_1     = 0x11
 } GstRTSPVersion;
 </pre>
 <p>
 The supported RTSP versions.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RTSP-VERSION-INVALID:CAPS"></a><span class="term"><code class="literal">GST_RTSP_VERSION_INVALID</code></span></p></td>
+<td><p><a name="GST-RTSP-VERSION-INVALID--CAPS"></a><span class="term"><code class="literal">GST_RTSP_VERSION_INVALID</code></span></p></td>
 <td> unknown/invalid version
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-VERSION-1-0:CAPS"></a><span class="term"><code class="literal">GST_RTSP_VERSION_1_0</code></span></p></td>
+<td><p><a name="GST-RTSP-VERSION-1-0--CAPS"></a><span class="term"><code class="literal">GST_RTSP_VERSION_1_0</code></span></p></td>
 <td> version 1.0
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-RTSP-VERSION-1-1--CAPS"></a><span class="term"><code class="literal">GST_RTSP_VERSION_1_1</code></span></p></td>
+<td> version 1.1. Since 0.10.25
 </td>
 </tr>
 </tbody>
@@ -379,75 +396,86 @@ The supported RTSP versions.</p>
   GST_RTSP_REDIRECT         = (1 &lt;&lt;  7),
   GST_RTSP_SETUP            = (1 &lt;&lt;  8),
   GST_RTSP_SET_PARAMETER    = (1 &lt;&lt;  9),
-  GST_RTSP_TEARDOWN         = (1 &lt;&lt; 10)
+  GST_RTSP_TEARDOWN         = (1 &lt;&lt; 10),
+  GST_RTSP_GET              = (1 &lt;&lt; 11),
+  GST_RTSP_POST             = (1 &lt;&lt; 12)
 } GstRTSPMethod;
 </pre>
 <p>
 The different supported RTSP methods.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RTSP-INVALID:CAPS"></a><span class="term"><code class="literal">GST_RTSP_INVALID</code></span></p></td>
+<td><p><a name="GST-RTSP-INVALID--CAPS"></a><span class="term"><code class="literal">GST_RTSP_INVALID</code></span></p></td>
 <td> invalid method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-DESCRIBE:CAPS"></a><span class="term"><code class="literal">GST_RTSP_DESCRIBE</code></span></p></td>
+<td><p><a name="GST-RTSP-DESCRIBE--CAPS"></a><span class="term"><code class="literal">GST_RTSP_DESCRIBE</code></span></p></td>
 <td> the DESCRIBE method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ANNOUNCE:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ANNOUNCE</code></span></p></td>
+<td><p><a name="GST-RTSP-ANNOUNCE--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ANNOUNCE</code></span></p></td>
 <td> the ANNOUNCE method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-GET-PARAMETER:CAPS"></a><span class="term"><code class="literal">GST_RTSP_GET_PARAMETER</code></span></p></td>
+<td><p><a name="GST-RTSP-GET-PARAMETER--CAPS"></a><span class="term"><code class="literal">GST_RTSP_GET_PARAMETER</code></span></p></td>
 <td> the GET_PARAMETER method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-OPTIONS:CAPS"></a><span class="term"><code class="literal">GST_RTSP_OPTIONS</code></span></p></td>
+<td><p><a name="GST-RTSP-OPTIONS--CAPS"></a><span class="term"><code class="literal">GST_RTSP_OPTIONS</code></span></p></td>
 <td> the OPTIONS method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-PAUSE:CAPS"></a><span class="term"><code class="literal">GST_RTSP_PAUSE</code></span></p></td>
+<td><p><a name="GST-RTSP-PAUSE--CAPS"></a><span class="term"><code class="literal">GST_RTSP_PAUSE</code></span></p></td>
 <td> the PAUSE method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-PLAY:CAPS"></a><span class="term"><code class="literal">GST_RTSP_PLAY</code></span></p></td>
+<td><p><a name="GST-RTSP-PLAY--CAPS"></a><span class="term"><code class="literal">GST_RTSP_PLAY</code></span></p></td>
 <td> the PLAY method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-RECORD:CAPS"></a><span class="term"><code class="literal">GST_RTSP_RECORD</code></span></p></td>
+<td><p><a name="GST-RTSP-RECORD--CAPS"></a><span class="term"><code class="literal">GST_RTSP_RECORD</code></span></p></td>
 <td> the RECORD method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-REDIRECT:CAPS"></a><span class="term"><code class="literal">GST_RTSP_REDIRECT</code></span></p></td>
+<td><p><a name="GST-RTSP-REDIRECT--CAPS"></a><span class="term"><code class="literal">GST_RTSP_REDIRECT</code></span></p></td>
 <td> the REDIRECT method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-SETUP:CAPS"></a><span class="term"><code class="literal">GST_RTSP_SETUP</code></span></p></td>
+<td><p><a name="GST-RTSP-SETUP--CAPS"></a><span class="term"><code class="literal">GST_RTSP_SETUP</code></span></p></td>
 <td> the SETUP method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-SET-PARAMETER:CAPS"></a><span class="term"><code class="literal">GST_RTSP_SET_PARAMETER</code></span></p></td>
+<td><p><a name="GST-RTSP-SET-PARAMETER--CAPS"></a><span class="term"><code class="literal">GST_RTSP_SET_PARAMETER</code></span></p></td>
 <td> the SET_PARAMETER method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-TEARDOWN:CAPS"></a><span class="term"><code class="literal">GST_RTSP_TEARDOWN</code></span></p></td>
+<td><p><a name="GST-RTSP-TEARDOWN--CAPS"></a><span class="term"><code class="literal">GST_RTSP_TEARDOWN</code></span></p></td>
 <td> the TEARDOWN method
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-RTSP-GET--CAPS"></a><span class="term"><code class="literal">GST_RTSP_GET</code></span></p></td>
+<td> the GET method (HTTP). Since 0.10.25
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-RTSP-POST--CAPS"></a><span class="term"><code class="literal">GST_RTSP_POST</code></span></p></td>
+<td> the POST method (HTTP). Since 0.10.25
 </td>
 </tr>
 </tbody>
@@ -465,23 +493,22 @@ The different supported RTSP methods.</p>
 <p>
 Authentication methods, ordered by strength</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RTSP-AUTH-NONE:CAPS"></a><span class="term"><code class="literal">GST_RTSP_AUTH_NONE</code></span></p></td>
+<td><p><a name="GST-RTSP-AUTH-NONE--CAPS"></a><span class="term"><code class="literal">GST_RTSP_AUTH_NONE</code></span></p></td>
 <td> no authentication
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-AUTH-BASIC:CAPS"></a><span class="term"><code class="literal">GST_RTSP_AUTH_BASIC</code></span></p></td>
+<td><p><a name="GST-RTSP-AUTH-BASIC--CAPS"></a><span class="term"><code class="literal">GST_RTSP_AUTH_BASIC</code></span></p></td>
 <td> basic authentication
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-AUTH-DIGEST:CAPS"></a><span class="term"><code class="literal">GST_RTSP_AUTH_DIGEST</code></span></p></td>
+<td><p><a name="GST-RTSP-AUTH-DIGEST--CAPS"></a><span class="term"><code class="literal">GST_RTSP_AUTH_DIGEST</code></span></p></td>
 <td> digest authentication
 </td>
 </tr>
@@ -490,13 +517,12 @@ Authentication methods, ordered by strength</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="GST-RTSP-AUTH-MAX:CAPS"></a><h3>GST_RTSP_AUTH_MAX</h3>
+<a name="GST-RTSP-AUTH-MAX--CAPS"></a><h3>GST_RTSP_AUTH_MAX</h3>
 <pre class="programlisting">#define GST_RTSP_AUTH_MAX GST_RTSP_AUTH_DIGEST
 </pre>
 <p>
 Strongest available authentication method</p>
 <p>
-
 </p>
 </div>
 <hr>
@@ -567,12 +593,47 @@ Strongest available authentication method</p>
   GST_RTSP_HDR_PLAYER_START_TIME,   /* PlayerStarttime */
 
   /* Since 0.10.16 */
-  GST_RTSP_HDR_LOCATION             /* Location */
+  GST_RTSP_HDR_LOCATION,            /* Location */
 
+  /* Since 0.10.23 */
+  GST_RTSP_HDR_ETAG,                /* ETag */
+  GST_RTSP_HDR_IF_MATCH,            /* If-Match */
+
+  /* WM extensions [MS-RTSP] Since 0.10.23 */
+  GST_RTSP_HDR_ACCEPT_CHARSET,      /* Accept-Charset */
+  GST_RTSP_HDR_SUPPORTED,           /* Supported */
+  GST_RTSP_HDR_VARY,                /* Vary */
+  GST_RTSP_HDR_X_ACCELERATE_STREAMING,    /* X-Accelerate-Streaming */
+  GST_RTSP_HDR_X_ACCEPT_AUTHENT,    /* X-Accept-Authentication */
+  GST_RTSP_HDR_X_ACCEPT_PROXY_AUTHENT,    /* X-Accept-Proxy-Authentication */
+  GST_RTSP_HDR_X_BROADCAST_ID,      /* X-Broadcast-Id */
+  GST_RTSP_HDR_X_BURST_STREAMING,   /* X-Burst-Streaming */
+  GST_RTSP_HDR_X_NOTICE,            /* X-Notice */
+  GST_RTSP_HDR_X_PLAYER_LAG_TIME,   /* X-Player-Lag-Time */
+  GST_RTSP_HDR_X_PLAYLIST,          /* X-Playlist */
+  GST_RTSP_HDR_X_PLAYLIST_CHANGE_NOTICE,  /* X-Playlist-Change-Notice */
+  GST_RTSP_HDR_X_PLAYLIST_GEN_ID,   /* X-Playlist-Gen-Id */
+  GST_RTSP_HDR_X_PLAYLIST_SEEK_ID,  /* X-Playlist-Seek-Id */
+  GST_RTSP_HDR_X_PROXY_CLIENT_AGENT,      /* X-Proxy-Client-Agent */
+  GST_RTSP_HDR_X_PROXY_CLIENT_VERB, /* X-Proxy-Client-Verb */
+  GST_RTSP_HDR_X_RECEDING_PLAYLISTCHANGE, /* X-Receding-PlaylistChange */
+  GST_RTSP_HDR_X_RTP_INFO,          /* X-RTP-Info */
+  GST_RTSP_HDR_X_STARTUPPROFILE,    /* X-StartupProfile */
+
+  /* Since 0.10.24 */
+  GST_RTSP_HDR_TIMESTAMP,           /* Timestamp */
+
+  /* Since 0.10.25 */
+  GST_RTSP_HDR_AUTHENTICATION_INFO, /* Authentication-Info */
+  GST_RTSP_HDR_HOST,                /* Host */
+  GST_RTSP_HDR_PRAGMA,              /* Pragma */
+  GST_RTSP_HDR_X_SERVER_IP_ADDRESS, /* X-Server-IP-Address */
+  GST_RTSP_HDR_X_SESSIONCOOKIE,     /* X-Sessioncookie */
+
+  GST_RTSP_HDR_LAST
 } GstRTSPHeaderField;
 </pre>
 <p>
-
 </p>
 </div>
 <hr>
@@ -627,7 +688,6 @@ Strongest available authentication method</p>
 } GstRTSPStatusCode;
 </pre>
 <p>
-
 </p>
 </div>
 <hr>
@@ -639,7 +699,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Convert <em class="parameter"><code>result</code></em> in a human readable string.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -668,7 +727,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Convert <em class="parameter"><code>method</code></em> to a string.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -695,7 +753,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Convert <em class="parameter"><code>version</code></em> to a string.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -722,7 +779,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Convert <em class="parameter"><code>field</code></em> to a string.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -749,7 +805,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Convert <em class="parameter"><code>code</code></em> to a string.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -769,6 +824,36 @@ Convert <em class="parameter"><code>code</code></em> to a string.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
+<a name="gst-rtsp-options-as-text"></a><h3>gst_rtsp_options_as_text ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              gst_rtsp_options_as_text            (<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod">GstRTSPMethod</a> options);</pre>
+<p>
+Convert <em class="parameter"><code>options</code></em> to a string.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>options</code></em> :</span></p></td>
+<td> one or more <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod"><span class="type">GstRTSPMethod</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a new string of <em class="parameter"><code>options</code></em>. <a
+href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
+><code class="function">g_free()</code></a> after usage.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.23</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
 <a name="gst-rtsp-find-header-field"></a><h3>gst_rtsp_find_header_field ()</h3>
 <pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField">GstRTSPHeaderField</a>  gst_rtsp_find_header_field          (const <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
@@ -776,7 +861,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Convert <em class="parameter"><code>header</code></em> to a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField"><span class="type">GstRTSPHeaderField</span></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -804,7 +888,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 <p>
 Convert <em class="parameter"><code>method</code></em> to a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod"><span class="type">GstRTSPMethod</span></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -816,7 +899,7 @@ Convert <em class="parameter"><code>method</code></em> to a <a class="link" href
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod"><span class="type">GstRTSPMethod</span></a> for <em class="parameter"><code>method</code></em> or <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-INVALID:CAPS"><span class="type">GST_RTSP_INVALID</span></a> if the
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod"><span class="type">GstRTSPMethod</span></a> for <em class="parameter"><code>method</code></em> or <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-INVALID--CAPS"><span class="type">GST_RTSP_INVALID</span></a> if the
 method is unknown.
 </td>
 </tr>
@@ -831,6 +914,6 @@ gstrtspurl, gstrtspconnection
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

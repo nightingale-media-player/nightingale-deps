@@ -26,7 +26,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/types.h>
-#include <regex.h>
+#include <glib.h>
 
 #include "gstsubparse.h"
 #include "gstssaparse.h"
@@ -57,7 +57,7 @@ GST_ELEMENT_DETAILS ("Subtitle parser",
     "Codec/Parser/Subtitle",
     "Parses subtitle (.sub) files into text streams",
     "Gustavo J. A. M. Carneiro <gjc@inescporto.pt>\n"
-    "Ronald S. Bultje <rbultje@ronald.bitfreak.net>");
+    "GStreamer maintainers <gstreamer-devel@lists.sourceforge.net>");
 
 #ifndef GST_DISABLE_XML
 static GstStaticPadTemplate sink_templ = GST_STATIC_PAD_TEMPLATE ("sink",
@@ -85,6 +85,7 @@ static void gst_sub_parse_class_init (GstSubParseClass * klass);
 static void gst_sub_parse_init (GstSubParse * subparse);
 
 static gboolean gst_sub_parse_src_event (GstPad * pad, GstEvent * event);
+static gboolean gst_sub_parse_src_query (GstPad * pad, GstQuery * query);
 static gboolean gst_sub_parse_sink_event (GstPad * pad, GstEvent * event);
 
 static GstStateChangeReturn gst_sub_parse_change_state (GstElement * element,
@@ -149,7 +150,7 @@ gst_sub_parse_dispose (GObject * object)
   }
 
   if (subparse->adapter) {
-    gst_object_unref (subparse->adapter);
+    g_object_unref (subparse->adapter);
     subparse->adapter = NULL;
   }
 
@@ -200,6 +201,8 @@ gst_sub_parse_init (GstSubParse * subparse)
   subparse->srcpad = gst_pad_new_from_static_template (&src_templ, "src");
   gst_pad_set_event_function (subparse->srcpad,
       GST_DEBUG_FUNCPTR (gst_sub_parse_src_event));
+  gst_pad_set_query_function (subparse->srcpad,
+      GST_DEBUG_FUNCPTR (gst_sub_parse_src_query));
   gst_element_add_pad (GST_ELEMENT (subparse), subparse->srcpad);
 
   subparse->textbuf = g_string_new (NULL);
@@ -215,6 +218,58 @@ gst_sub_parse_init (GstSubParse * subparse)
 /*
  * Source pad functions.
  */
+
+static gboolean
+gst_sub_parse_src_query (GstPad * pad, GstQuery * query)
+{
+  GstSubParse *self = GST_SUBPARSE (gst_pad_get_parent (pad));
+  gboolean ret = FALSE;
+
+  GST_DEBUG ("Handling %s query", GST_QUERY_TYPE_NAME (query));
+
+  switch (GST_QUERY_TYPE (query)) {
+    case GST_QUERY_POSITION:{
+      GstFormat fmt;
+
+      gst_query_parse_position (query, &fmt, NULL);
+      if (fmt != GST_FORMAT_TIME) {
+        ret = gst_pad_peer_query (self->sinkpad, query);
+      } else {
+        ret = TRUE;
+        gst_query_set_position (query, GST_FORMAT_TIME,
+            self->segment.last_stop);
+      }
+    }
+    case GST_QUERY_SEEKING:
+    {
+      GstFormat fmt;
+      gboolean seekable = FALSE;
+
+      ret = TRUE;
+
+      gst_query_parse_seeking (query, &fmt, NULL, NULL, NULL);
+      if (fmt == GST_FORMAT_TIME) {
+        GstQuery *peerquery = gst_query_new_seeking (GST_FORMAT_BYTES);
+
+        seekable = gst_pad_peer_query (self->sinkpad, peerquery);
+        if (seekable)
+          gst_query_parse_seeking (peerquery, NULL, &seekable, NULL, NULL);
+        gst_query_unref (peerquery);
+      }
+
+      gst_query_set_seeking (query, fmt, seekable, seekable ? 0 : -1, -1);
+
+      break;
+    }
+    default:
+      ret = gst_pad_peer_query (self->sinkpad, query);
+      break;
+  }
+
+  gst_object_unref (self);
+
+  return ret;
+}
 
 static gboolean
 gst_sub_parse_src_event (GstPad * pad, GstEvent * event)
@@ -317,6 +372,31 @@ gst_sub_parse_get_property (GObject * object, guint prop_id,
 }
 
 static gchar *
+gst_sub_parse_get_format_description (GstSubParseFormat format)
+{
+  switch (format) {
+    case GST_SUB_PARSE_FORMAT_MDVDSUB:
+      return "MicroDVD";
+    case GST_SUB_PARSE_FORMAT_SUBRIP:
+      return "SubRip";
+    case GST_SUB_PARSE_FORMAT_MPSUB:
+      return "MPSub";
+    case GST_SUB_PARSE_FORMAT_SAMI:
+      return "SAMI";
+    case GST_SUB_PARSE_FORMAT_TMPLAYER:
+      return "TMPlayer";
+    case GST_SUB_PARSE_FORMAT_MPL2:
+      return "MPL2";
+    case GST_SUB_PARSE_FORMAT_SUBVIEWER:
+      return "SubViewer";
+    default:
+    case GST_SUB_PARSE_FORMAT_UNKNOWN:
+      break;
+  }
+  return NULL;
+}
+
+static gchar *
 gst_convert_to_utf8 (const gchar * str, gsize len, const gchar * encoding,
     gsize * consumed, GError ** err)
 {
@@ -381,7 +461,7 @@ convert_encoding (GstSubParse * self, const gchar * str, gsize len,
       return ret;
 
     GST_WARNING_OBJECT (self, "could not convert string from '%s' to UTF-8: %s",
-        encoding, err->message);
+        self->detected_encoding, err->message);
     g_free (self->detected_encoding);
     self->detected_encoding = NULL;
     g_error_free (err);
@@ -729,11 +809,61 @@ subrip_fix_up_markup (gchar ** p_txt)
   }
 }
 
+static gboolean
+parse_subrip_time (const gchar * ts_string, GstClockTime * t)
+{
+  gchar s[128] = { '\0', };
+  gchar *end, *p;
+  guint hour, min, sec, msec, len;
+
+  while (*ts_string == ' ')
+    ++ts_string;
+
+  g_strlcpy (s, ts_string, sizeof (s));
+  if ((end = strstr (s, "-->")))
+    *end = '\0';
+  g_strchomp (s);
+
+  /* ms may be in these formats:
+   * hh:mm:ss,500 = 500ms
+   * hh:mm:ss,  5 =   5ms
+   * hh:mm:ss, 5  =  50ms
+   * hh:mm:ss, 50 =  50ms
+   * hh:mm:ss,5   = 500ms
+   * and the same with . instead of ,.
+   * sscanf() doesn't differentiate between '  5' and '5' so munge
+   * the white spaces within the timestamp to '0' (I'm sure there's a
+   * way to make sscanf() do this for us, but how?)
+   */
+  g_strdelimit (s, " ", '0');
+  g_strdelimit (s, ".", ',');
+
+  /* make sure we have exactly three digits after he comma */
+  p = strchr (s, ',');
+  g_assert (p != NULL);
+  ++p;
+  len = strlen (p);
+  if (len > 3) {
+    p[3] = '\0';
+  } else
+    while (len < 3) {
+      g_strlcat (&p[len], "0", 2);
+      ++len;
+    }
+
+  GST_LOG ("parsing timestamp '%s'", s);
+  if (sscanf (s, "%u:%u:%u,%u", &hour, &min, &sec, &msec) != 4) {
+    GST_WARNING ("failed to parse subrip timestamp string '%s'", s);
+    return FALSE;
+  }
+
+  *t = ((hour * 3600) + (min * 60) + sec) * GST_SECOND + msec * GST_MSECOND;
+  return TRUE;
+}
+
 static gchar *
 parse_subrip (ParserState * state, const gchar * line)
 {
-  guint h1, m1, s1, ms1;
-  guint h2, m2, s2, ms2;
   int subnum;
   gchar *ret;
 
@@ -744,21 +874,24 @@ parse_subrip (ParserState * state, const gchar * line)
         state->state = 1;
       return NULL;
     case 1:
+    {
+      GstClockTime ts_start, ts_end;
+      gchar *end_time;
+
       /* looking for start_time --> end_time */
-      if (sscanf (line, "%u:%u:%u,%u --> %u:%u:%u,%u",
-              &h1, &m1, &s1, &ms1, &h2, &m2, &s2, &ms2) == 8) {
+      if ((end_time = strstr (line, " --> ")) &&
+          parse_subrip_time (line, &ts_start) &&
+          parse_subrip_time (end_time + strlen (" --> "), &ts_end) &&
+          state->start_time <= ts_end) {
         state->state = 2;
-        state->start_time =
-            (((guint64) h1) * 3600 + m1 * 60 + s1) * GST_SECOND +
-            ms1 * GST_MSECOND;
-        state->duration =
-            (((guint64) h2) * 3600 + m2 * 60 + s2) * GST_SECOND +
-            ms2 * GST_MSECOND - state->start_time;
+        state->start_time = ts_start;
+        state->duration = ts_end - ts_start;
       } else {
-        GST_DEBUG ("error parsing subrip time line");
+        GST_DEBUG ("error parsing subrip time line '%s'", line);
         state->state = 0;
       }
       return NULL;
+    }
     case 2:
     {
       /* No need to parse that text if it's out of segment */
@@ -969,6 +1102,44 @@ parser_state_dispose (ParserState * state)
 #endif
 }
 
+/* regex type enum */
+typedef enum
+{
+  GST_SUB_PARSE_REGEX_UNKNOWN = 0,
+  GST_SUB_PARSE_REGEX_MDVDSUB = 1,
+  GST_SUB_PARSE_REGEX_SUBRIP = 2,
+} GstSubParseRegex;
+
+static gpointer
+gst_sub_parse_data_format_autodetect_regex_once (GstSubParseRegex regtype)
+{
+  gpointer result = NULL;
+  GError *gerr = NULL;
+  switch (regtype) {
+    case GST_SUB_PARSE_REGEX_MDVDSUB:
+      result =
+          (gpointer) g_regex_new ("^\\{[0-9]+\\}\\{[0-9]+\\}", 0, 0, &gerr);
+      if (result == NULL) {
+        g_warning ("Compilation of mdvd regex failed: %s", gerr->message);
+        g_error_free (gerr);
+      }
+      break;
+    case GST_SUB_PARSE_REGEX_SUBRIP:
+      result = (gpointer) g_regex_new ("^([ 0-9]){0,3}[0-9]\\s*(\x0d)?\x0a"
+          "[ 0-9][0-9]:[ 0-9][0-9]:[ 0-9][0-9][,.][ 0-9]{0,2}[0-9]"
+          " +--> +([ 0-9])?[0-9]:[ 0-9][0-9]:[ 0-9][0-9][,.][ 0-9]{0,2}[0-9]",
+          0, 0, &gerr);
+      if (result == NULL) {
+        g_warning ("Compilation of subrip regex failed: %s", gerr->message);
+        g_error_free (gerr);
+      }
+      break;
+    default:
+      GST_WARNING ("Trying to allocate regex of unknown type %u", regtype);
+  }
+  return result;
+}
+
 /*
  * FIXME: maybe we should pass along a second argument, the preceding
  * text buffer, because that is how this originally worked, even though
@@ -978,33 +1149,29 @@ parser_state_dispose (ParserState * state)
 static GstSubParseFormat
 gst_sub_parse_data_format_autodetect (gchar * match_str)
 {
-  static gboolean need_init_regexps = TRUE;
-  static regex_t mdvd_rx;
-  static regex_t subrip_rx;
   guint n1, n2, n3;
 
-  /* initialize the regexps used the first time around */
-  if (need_init_regexps) {
-    int err;
-    char errstr[128];
+  static GOnce mdvd_rx_once = G_ONCE_INIT;
+  static GOnce subrip_rx_once = G_ONCE_INIT;
 
-    need_init_regexps = FALSE;
-    if ((err = regcomp (&mdvd_rx, "^\\{[0-9]+\\}\\{[0-9]+\\}",
-                REG_EXTENDED | REG_NEWLINE | REG_NOSUB) != 0) ||
-        (err = regcomp (&subrip_rx, "^([ 0-9]){0,3}[0-9](\x0d)?\x0a"
-                "[ 0-9][0-9]:[ 0-9][0-9]:[ 0-9][0-9],[ 0-9]{2}[0-9]"
-                " --> ([ 0-9])?[0-9]:[ 0-9][0-9]:[ 0-9][0-9],[ 0-9]{2}[0-9]",
-                REG_EXTENDED | REG_NEWLINE | REG_NOSUB)) != 0) {
-      regerror (err, &subrip_rx, errstr, 127);
-      GST_WARNING ("Compilation of subrip regex failed: %s", errstr);
-    }
-  }
+  GRegex *mdvd_grx;
+  GRegex *subrip_grx;
 
-  if (regexec (&mdvd_rx, match_str, 0, NULL, 0) == 0) {
+  g_once (&mdvd_rx_once,
+      (GThreadFunc) gst_sub_parse_data_format_autodetect_regex_once,
+      (gpointer) GST_SUB_PARSE_REGEX_MDVDSUB);
+  g_once (&subrip_rx_once,
+      (GThreadFunc) gst_sub_parse_data_format_autodetect_regex_once,
+      (gpointer) GST_SUB_PARSE_REGEX_SUBRIP);
+
+  mdvd_grx = (GRegex *) mdvd_rx_once.retval;
+  subrip_grx = (GRegex *) subrip_rx_once.retval;
+
+  if (g_regex_match (mdvd_grx, match_str, 0, NULL) == TRUE) {
     GST_LOG ("MicroDVD (frame based) format detected");
     return GST_SUB_PARSE_FORMAT_MDVDSUB;
   }
-  if (regexec (&subrip_rx, match_str, 0, NULL, 0) == 0) {
+  if (g_regex_match (subrip_grx, match_str, 0, NULL) == TRUE) {
     GST_LOG ("SubRip (time based) format detected");
     return GST_SUB_PARSE_FORMAT_SUBRIP;
   }
@@ -1048,7 +1215,7 @@ gst_sub_parse_format_autodetect (GstSubParse * self)
   gchar *data;
   GstSubParseFormat format;
 
-  if (strlen (self->textbuf->str) < 35) {
+  if (strlen (self->textbuf->str) < 30) {
     GST_DEBUG ("File too small to be a subtitles file");
     return NULL;
   }
@@ -1058,6 +1225,7 @@ gst_sub_parse_format_autodetect (GstSubParse * self)
   g_free (data);
 
   self->parser_type = format;
+  self->subtitle_codec = gst_sub_parse_get_format_description (format);
   parser_state_init (&self->state);
 
   switch (format) {
@@ -1168,9 +1336,19 @@ handle_buffer (GstSubParse * self, GstBuffer * buf)
       return GST_FLOW_UNEXPECTED;
     }
     gst_caps_unref (caps);
+
+    /* push tags */
+    if (self->subtitle_codec != NULL) {
+      GstTagList *tags;
+
+      tags = gst_tag_list_new ();
+      gst_tag_list_add (tags, GST_TAG_MERGE_APPEND, GST_TAG_SUBTITLE_CODEC,
+          self->subtitle_codec, NULL);
+      gst_element_found_tags_for_pad (GST_ELEMENT (self), self->srcpad, tags);
+    }
   }
 
-  while ((line = get_next_line (self)) && !self->flushing) {
+  while (!self->flushing && (line = get_next_line (self))) {
     guint offset = 0;
 
     /* Set segment on our parser state machine */

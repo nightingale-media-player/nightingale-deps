@@ -1,7 +1,7 @@
 /* GStreamer
  *
  * Copyright (C) 2007 Rene Stadler <mail@renestadler.de>
- * Copyright (C) 2007 Sebastian Dröge <slomo@circular-chaos.org>
+ * Copyright (C) 2007-2009 Sebastian Dröge <sebastian.droege@collabora.co.uk>
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -79,8 +79,8 @@ enum
 
 enum
 {
-  ARG_0,
-  ARG_STREAM
+  PROP_0,
+  PROP_STREAM
 };
 
 GST_BOILERPLATE (GstGioStreamSink, gst_gio_stream_sink, GstGioBaseSink,
@@ -91,42 +91,38 @@ static void gst_gio_stream_sink_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_gio_stream_sink_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
+static GOutputStream *gst_gio_stream_sink_get_stream (GstGioBaseSink * bsink);
 
 static void
 gst_gio_stream_sink_base_init (gpointer gclass)
 {
-  static GstElementDetails element_details = {
-    "GIO stream sink",
-    "Sink",
-    "Write to any GIO stream",
-    "Sebastian Dröge <slomo@circular-chaos.org>"
-  };
   GstElementClass *element_class = GST_ELEMENT_CLASS (gclass);
 
   GST_DEBUG_CATEGORY_INIT (gst_gio_stream_sink_debug, "gio_stream_sink", 0,
       "GIO stream sink");
 
-  gst_element_class_set_details (element_class, &element_details);
+  gst_element_class_set_details_simple (element_class, "GIO stream sink",
+      "Sink",
+      "Write to any GIO stream",
+      "Sebastian Dröge <sebastian.droege@collabora.co.uk>");
 }
 
 static void
 gst_gio_stream_sink_class_init (GstGioStreamSinkClass * klass)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
-  GstBaseSinkClass *gstbasesink_class;
-
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
-  gstbasesink_class = (GstBaseSinkClass *) klass;
+  GObjectClass *gobject_class = (GObjectClass *) klass;
+  GstGioBaseSinkClass *ggbsink_class = (GstGioBaseSinkClass *) klass;
 
   gobject_class->finalize = gst_gio_stream_sink_finalize;
   gobject_class->set_property = gst_gio_stream_sink_set_property;
   gobject_class->get_property = gst_gio_stream_sink_get_property;
 
-  g_object_class_install_property (gobject_class, ARG_STREAM,
+  g_object_class_install_property (gobject_class, PROP_STREAM,
       g_param_spec_object ("stream", "Stream", "Stream to write to",
           G_TYPE_OUTPUT_STREAM, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  ggbsink_class->get_stream =
+      GST_DEBUG_FUNCPTR (gst_gio_stream_sink_get_stream);
 }
 
 static void
@@ -138,6 +134,13 @@ gst_gio_stream_sink_init (GstGioStreamSink * sink,
 static void
 gst_gio_stream_sink_finalize (GObject * object)
 {
+  GstGioStreamSink *sink = GST_GIO_STREAM_SINK (object);
+
+  if (sink->stream) {
+    g_object_unref (sink->stream);
+    sink->stream = NULL;
+  }
+
   GST_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
@@ -148,18 +151,20 @@ gst_gio_stream_sink_set_property (GObject * object, guint prop_id,
   GstGioStreamSink *sink = GST_GIO_STREAM_SINK (object);
 
   switch (prop_id) {
-    case ARG_STREAM:{
+    case PROP_STREAM:{
       GObject *stream;
 
       if (GST_STATE (sink) == GST_STATE_PLAYING ||
-          GST_STATE (sink) == GST_STATE_PAUSED)
+          GST_STATE (sink) == GST_STATE_PAUSED) {
+        GST_WARNING
+            ("Setting a new stream not supported in PLAYING or PAUSED state");
         break;
+      }
 
       stream = g_value_dup_object (value);
-      if (G_IS_OUTPUT_STREAM (stream))
-        gst_gio_base_sink_set_stream (GST_GIO_BASE_SINK (sink),
-            G_OUTPUT_STREAM (stream));
-
+      if (sink->stream)
+        g_object_unref (sink->stream);
+      sink->stream = G_OUTPUT_STREAM (stream);
       break;
     }
     default:
@@ -175,11 +180,19 @@ gst_gio_stream_sink_get_property (GObject * object, guint prop_id,
   GstGioStreamSink *sink = GST_GIO_STREAM_SINK (object);
 
   switch (prop_id) {
-    case ARG_STREAM:
+    case PROP_STREAM:
       g_value_set_object (value, GST_GIO_BASE_SINK (sink)->stream);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
+}
+
+static GOutputStream *
+gst_gio_stream_sink_get_stream (GstGioBaseSink * bsink)
+{
+  GstGioStreamSink *sink = GST_GIO_STREAM_SINK (bsink);
+
+  return (sink->stream) ? g_object_ref (sink->stream) : NULL;
 }

@@ -6,9 +6,9 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-interfaces.html" title="Interfaces Library">
-<link rel="prev" href="gst-plugins-base-libs-gstpropertyprobe.html" title="gstpropertyprobe">
+<link rel="prev" href="gst-plugins-base-libs-gststreamvolume.html" title="gststreamvolume">
 <link rel="next" href="gst-plugins-base-libs-gsttunerchannel.html" title="gsttunerchannel">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -31,21 +31,23 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-base-libs-gstpropertyprobe.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-libs-gststreamvolume.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="gstreamer-interfaces.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gsttunerchannel.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gsttuner.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gsttuner.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gsttuner.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gsttuner.prerequisites" class="shortcut">Prerequisites</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gsttuner.signals" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gsttuner.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gsttuner.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gsttuner.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gsttuner.prerequisites" class="shortcut">Prerequisites</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gsttuner.signals" class="shortcut">Signals</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gsttuner"></a><div class="titlepage"></div>
@@ -66,14 +68,14 @@
                     <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTunerClass" title="GstTunerClass">GstTunerClass</a>;
 const <a
 href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a>*        <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-list-channels" title="gst_tuner_list_channels ()">gst_tuner_list_channels</a>             (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner);
-<a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel">GstTunerChannel</a>*    <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-get-channel" title="gst_tuner_get_channel ()">gst_tuner_get_channel</a>               (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner);
+>GList</a> *       <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-list-channels" title="gst_tuner_list_channels ()">gst_tuner_list_channels</a>             (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner);
+<a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel">GstTunerChannel</a> *   <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-get-channel" title="gst_tuner_get_channel ()">gst_tuner_get_channel</a>               (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner);
 void                <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-set-channel" title="gst_tuner_set_channel ()">gst_tuner_set_channel</a>               (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner,
                                                          <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel">GstTunerChannel</a> *channel);
 const <a
 href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a>*        <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-list-norms" title="gst_tuner_list_norms ()">gst_tuner_list_norms</a>                (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner);
-<a class="link" href="gst-plugins-base-libs-gsttunernorm.html#GstTunerNorm">GstTunerNorm</a>*       <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-get-norm" title="gst_tuner_get_norm ()">gst_tuner_get_norm</a>                  (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner);
+>GList</a> *       <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-list-norms" title="gst_tuner_list_norms ()">gst_tuner_list_norms</a>                (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner);
+<a class="link" href="gst-plugins-base-libs-gsttunernorm.html#GstTunerNorm">GstTunerNorm</a> *      <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-get-norm" title="gst_tuner_get_norm ()">gst_tuner_get_norm</a>                  (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner);
 void                <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-set-norm" title="gst_tuner_set_norm ()">gst_tuner_set_norm</a>                  (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner,
                                                          <a class="link" href="gst-plugins-base-libs-gsttunernorm.html#GstTunerNorm">GstTunerNorm</a> *norm);
 <a
@@ -89,11 +91,11 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 >gint</a>                <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-signal-strength" title="gst_tuner_signal_strength ()">gst_tuner_signal_strength</a>           (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner,
                                                          <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel">GstTunerChannel</a> *channel);
-<a class="link" href="gst-plugins-base-libs-gsttunernorm.html#GstTunerNorm">GstTunerNorm</a>*       <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-find-norm-by-name" title="gst_tuner_find_norm_by_name ()">gst_tuner_find_norm_by_name</a>         (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner,
+<a class="link" href="gst-plugins-base-libs-gsttunernorm.html#GstTunerNorm">GstTunerNorm</a> *      <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-find-norm-by-name" title="gst_tuner_find_norm_by_name ()">gst_tuner_find_norm_by_name</a>         (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *norm);
-<a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel">GstTunerChannel</a>*    <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-find-channel-by-name" title="gst_tuner_find_channel_by_name ()">gst_tuner_find_channel_by_name</a>      (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner,
+<a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel">GstTunerChannel</a> *   <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-find-channel-by-name" title="gst_tuner_find_channel_by_name ()">gst_tuner_find_channel_by_name</a>      (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *channel);
@@ -124,7 +126,11 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <a name="gst-plugins-base-libs-gsttuner.prerequisites"></a><h2>Prerequisites</h2>
 <p>
 GstTuner requires
- GstImplementsInterface,  GstObject and  GstElement.</p>
+ <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstImplementsInterface.html"
+>GstImplementsInterface</a> and  <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gsttuner.signals"></a><h2>Signals</h2>
@@ -140,7 +146,7 @@ GstTuner requires
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id3053846"></a><p>
+<a name="id2773576"></a><p>
 The GstTuner interface is provided by elements that have the ability to
 tune into multiple input signals, for example TV or radio capture cards.
 </p>
@@ -180,7 +186,6 @@ via a signal.
 </p>
 </div>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -189,7 +194,6 @@ via a signal.
 <a name="GstTuner-struct"></a><h3>GstTuner</h3>
 <pre class="programlisting">typedef struct _GstTuner GstTuner;</pre>
 <p>
-
 </p>
 </div>
 <hr>
@@ -234,7 +238,6 @@ via a signal.
 } GstTunerClass;
 </pre>
 <p>
-
 </p>
 </div>
 <hr>
@@ -242,21 +245,22 @@ via a signal.
 <a name="gst-tuner-list-channels"></a><h3>gst_tuner_list_channels ()</h3>
 <pre class="programlisting">const <a
 href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a>*        gst_tuner_list_channels             (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner);</pre>
+>GList</a> *       gst_tuner_list_channels             (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner);</pre>
 <p>
 Retrieve a <a
 href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
 ><span class="type">GList</span></a> of <span class="type">GstTunerChannels</span> available
 (e.g. 'composite', 's-video', ...) from the given tuner object.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>tuner</code></em> :</span></p></td>
-<td> the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> (a <span class="type">GstElement</span>) to get the channels from.
+<td> the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> (a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>) to get the channels from.
 </td>
 </tr>
 <tr>
@@ -271,18 +275,19 @@ href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tuner-get-channel"></a><h3>gst_tuner_get_channel ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel">GstTunerChannel</a>*    gst_tuner_get_channel               (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner);</pre>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel">GstTunerChannel</a> *   gst_tuner_get_channel               (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner);</pre>
 <p>
 Retrieve the current channel from the tuner.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>tuner</code></em> :</span></p></td>
-<td> the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> (a <span class="type">GstElement</span>) to get the current channel from.
+<td> the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> (a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>) to get the current channel from.
 </td>
 </tr>
 <tr>
@@ -301,14 +306,15 @@ Retrieve the current channel from the tuner.</p>
 <p>
 Tunes the object to the given channel.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>tuner</code></em> :</span></p></td>
-<td> the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> (a <span class="type">GstElement</span>) that owns the channel.
+<td> the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> (a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>) that owns the channel.
 </td>
 </tr>
 <tr>
@@ -324,19 +330,20 @@ Tunes the object to the given channel.</p>
 <a name="gst-tuner-list-norms"></a><h3>gst_tuner_list_norms ()</h3>
 <pre class="programlisting">const <a
 href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a>*        gst_tuner_list_norms                (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner);</pre>
+>GList</a> *       gst_tuner_list_norms                (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner);</pre>
 <p>
 Retrieve a GList of available <a class="link" href="gst-plugins-base-libs-gsttunernorm.html#GstTunerNorm"><span class="type">GstTunerNorm</span></a> settings for the currently
 tuned channel on the given tuner object.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>tuner</code></em> :</span></p></td>
-<td> the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> (*a <span class="type">GstElement</span>) to get the list of norms from.
+<td> the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> (*a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>) to get the list of norms from.
 </td>
 </tr>
 <tr>
@@ -352,19 +359,20 @@ tuned channel on the given tuner object.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tuner-get-norm"></a><h3>gst_tuner_get_norm ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gsttunernorm.html#GstTunerNorm">GstTunerNorm</a>*       gst_tuner_get_norm                  (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner);</pre>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gsttunernorm.html#GstTunerNorm">GstTunerNorm</a> *      gst_tuner_get_norm                  (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner);</pre>
 <p>
 Get the current video norm from the given tuner object for the
 currently selected channel.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>tuner</code></em> :</span></p></td>
-<td> the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> (a <span class="type">GstElement</span>) to get the current norm from.
+<td> the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> (a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>) to get the current norm from.
 </td>
 </tr>
 <tr>
@@ -383,14 +391,15 @@ currently selected channel.</p>
 <p>
 Changes the video norm on this tuner to the given norm.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>tuner</code></em> :</span></p></td>
-<td> the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> (a <span class="type">GstElement</span>) to set the norm on.
+<td> the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> (a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>) to set the norm on.
 </td>
 </tr>
 <tr>
@@ -413,14 +422,15 @@ Retrieve the current frequency from the given channel. As for
 <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-set-frequency" title="gst_tuner_set_frequency ()"><code class="function">gst_tuner_set_frequency()</code></a>, the <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel"><span class="type">GstTunerChannel</span></a> must support frequency
 operations, as indicated by the GST_TUNER_CHANNEL_FREQUENCY flag.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>tuner</code></em> :</span></p></td>
-<td> The <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> (a <span class="type">GstElement</span>) that owns the given channel.
+<td> The <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> (a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>) that owns the given channel.
 </td>
 </tr>
 <tr>
@@ -447,7 +457,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
 <p>
 Sets a tuning frequency on the given tuner/channel. Note that this
 requires the given channel to be a "tuning" channel, which can be
-checked using <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GST-TUNER-CHANNEL-HAS-FLAG:CAPS" title="GST_TUNER_CHANNEL_HAS_FLAG()"><code class="function">GST_TUNER_CHANNEL_HAS_FLAG()</code></a>, with the proper flag
+checked using <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GST-TUNER-CHANNEL-HAS-FLAG--CAPS" title="GST_TUNER_CHANNEL_HAS_FLAG()"><code class="function">GST_TUNER_CHANNEL_HAS_FLAG()</code></a>, with the proper flag
 being GST_TUNER_CHANNEL_FREQUENCY.
 </p>
 <p>
@@ -456,14 +466,15 @@ frequency_multiplicator provided in the <a class="link" href="gst-plugins-base-l
 valid range is provided in the min_frequency and max_frequency properties
 of the <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel"><span class="type">GstTunerChannel</span></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>tuner</code></em> :</span></p></td>
-<td> The <span class="type">Gsttuner</span> (a <span class="type">GstElement</span>) that owns the given channel.
+<td> The <span class="type">Gsttuner</span> (a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>) that owns the given channel.
 </td>
 </tr>
 <tr>
@@ -490,21 +501,22 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 Get the strength of the signal on this channel. Note that this
 requires the current channel to be a "tuning" channel, i.e. a
 channel on which frequency can be set. This can be checked using
-<a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GST-TUNER-CHANNEL-HAS-FLAG:CAPS" title="GST_TUNER_CHANNEL_HAS_FLAG()"><code class="function">GST_TUNER_CHANNEL_HAS_FLAG()</code></a>, and the appropriate flag to check
+<a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GST-TUNER-CHANNEL-HAS-FLAG--CAPS" title="GST_TUNER_CHANNEL_HAS_FLAG()"><code class="function">GST_TUNER_CHANNEL_HAS_FLAG()</code></a>, and the appropriate flag to check
 for is GST_TUNER_CHANNEL_FREQUENCY.
 </p>
 <p>
 The valid range of the signal strength is indicated in the 
 min_signal and max_signal properties of the <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel"><span class="type">GstTunerChannel</span></a>.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>tuner</code></em> :</span></p></td>
-<td> the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> (a <span class="type">GstElement</span>) that owns the given channel.
+<td> the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> (a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>) that owns the given channel.
 </td>
 </tr>
 <tr>
@@ -523,14 +535,13 @@ min_signal and max_signal properties of the <a class="link" href="gst-plugins-ba
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tuner-find-norm-by-name"></a><h3>gst_tuner_find_norm_by_name ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gsttunernorm.html#GstTunerNorm">GstTunerNorm</a>*       gst_tuner_find_norm_by_name         (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner,
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gsttunernorm.html#GstTunerNorm">GstTunerNorm</a> *      gst_tuner_find_norm_by_name         (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *norm);</pre>
 <p>
 Look up a <a class="link" href="gst-plugins-base-libs-gsttunernorm.html#GstTunerNorm"><span class="type">GstTunerNorm</span></a> by name.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -557,14 +568,13 @@ is available.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tuner-find-channel-by-name"></a><h3>gst_tuner_find_channel_by_name ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel">GstTunerChannel</a>*    gst_tuner_find_channel_by_name      (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner,
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel">GstTunerChannel</a> *   gst_tuner_find_channel_by_name      (<a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a> *tuner,
                                                          <a
 href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
 >gchar</a> *channel);</pre>
 <p>
 Look up a <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel"><span class="type">GstTunerChannel</span></a> by name.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -597,7 +607,6 @@ is available.
 Called by elements implementing the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> interface when the
 current channel changes. Fires the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner-channel-changed" title='The "channel-changed" signal'><span class="type">"channel-changed"</span></a> signal.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -624,7 +633,6 @@ current channel changes. Fires the <a class="link" href="gst-plugins-base-libs-g
 Called by elements implementing the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> interface when the
 current norm changes. Fires the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner-norm-changed" title='The "norm-changed" signal'><span class="type">"norm-changed"</span></a> signal.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -656,7 +664,6 @@ configured frequency changes. Fires the <a class="link" href="gst-plugins-base-l
 signal on the tuner, and the <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel-frequency-changed" title='The "frequency-changed" signal'><span class="type">"frequency-changed"</span></a> signal
 on the channel.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -693,7 +700,6 @@ incoming signal strength changes. Fires the <a class="link" href="gst-plugins-ba
 signal on the tuner and the <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel-signal-changed" title='The "signal-changed" signal'><span class="type">"signal-changed"</span></a> signal on 
 the channel.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -729,7 +735,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 <p>
 Reports that the current <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel"><span class="type">GstTunerChannel</span></a> has changed.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -765,7 +770,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 <p>
 Reports that the current frequency has changed.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -798,7 +802,6 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 <p>
 Reports that the current <a class="link" href="gst-plugins-base-libs-gsttunernorm.html#GstTunerNorm"><span class="type">GstTunerNorm</span></a> has changed.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -837,7 +840,6 @@ Reports that the signal strength has changed.
 <p>
 See Also: <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-signal-strength" title="gst_tuner_signal_strength ()"><code class="function">gst_tuner_signal_strength()</code></a></p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -868,6 +870,6 @@ See Also: <a class="link" href="gst-plugins-base-libs-gsttuner.html#gst-tuner-si
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

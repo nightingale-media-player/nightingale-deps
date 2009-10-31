@@ -66,7 +66,7 @@ GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("video/x-raw-yuv, "
-        "format = (fourcc) I420, "
+        "format = (fourcc) { I420, Y42B, Y444 }, "
         "framerate = (fraction) [0/1, MAX], "
         "width = (int) [ 1, MAX ], " "height = (int) [ 1, MAX ]")
     );
@@ -249,11 +249,14 @@ _theora_granule_start_time (GstTheoraDec * dec, gint64 granulepos)
 
   /* invalid granule results in invalid time */
   if (granulepos == -1)
-    return -1;
+    return GST_CLOCK_TIME_NONE;
 
   /* get framecount */
-  framecount = _theora_granule_frame (dec, granulepos);
+  if ((framecount = _theora_granule_frame (dec, granulepos)) < 0)
+    return GST_CLOCK_TIME_NONE;
 
+  if (framecount < 0)
+    return GST_CLOCK_TIME_NONE;
   return gst_util_uint64_scale_int (framecount * GST_SECOND,
       dec->info.fps_denominator, dec->info.fps_numerator);
 }
@@ -343,8 +346,8 @@ theora_dec_src_convert (GstPad * pad,
     case GST_FORMAT_BYTES:
       switch (*dest_format) {
         case GST_FORMAT_DEFAULT:
-          *dest_value = gst_util_uint64_scale_int (src_value, 2,
-              dec->info.height * dec->info.width * 3);
+          *dest_value = gst_util_uint64_scale_int (src_value, 8,
+              dec->info.height * dec->info.width * dec->output_bpp);
           break;
         case GST_FORMAT_TIME:
           /* seems like a rather silly conversion, implement me if you like */
@@ -355,7 +358,7 @@ theora_dec_src_convert (GstPad * pad,
     case GST_FORMAT_TIME:
       switch (*dest_format) {
         case GST_FORMAT_BYTES:
-          scale = 3 * (dec->info.width * dec->info.height) / 2;
+          scale = dec->output_bpp * (dec->info.width * dec->info.height) / 8;
         case GST_FORMAT_DEFAULT:
           *dest_value = scale * gst_util_uint64_scale (src_value,
               dec->info.fps_numerator, dec->info.fps_denominator * GST_SECOND);
@@ -372,7 +375,7 @@ theora_dec_src_convert (GstPad * pad,
           break;
         case GST_FORMAT_BYTES:
           *dest_value = gst_util_uint64_scale_int (src_value,
-              3 * dec->info.width * dec->info.height, 2);
+              dec->output_bpp * dec->info.width * dec->info.height, 8);
           break;
         default:
           res = FALSE;
@@ -718,6 +721,18 @@ theora_dec_sink_event (GstPad * pad, GstEvent * event)
       }
       break;
     }
+    case GST_EVENT_TAG:
+    {
+      if (dec->have_header)
+        /* and forward */
+        ret = gst_pad_push_event (dec->srcpad, event);
+      else {
+        /* store it to send once we're initialized */
+        dec->pendingevents = g_list_append (dec->pendingevents, event);
+        ret = TRUE;
+      }
+      break;
+    }
     default:
       ret = gst_pad_push_event (dec->srcpad, event);
       break;
@@ -741,6 +756,7 @@ theora_dec_setcaps (GstPad * pad, GstCaps * caps)
 {
   GstTheoraDec *dec;
   GstStructure *s;
+  const GValue *codec_data;
 
   dec = GST_THEORA_DEC (gst_pad_get_parent (pad));
 
@@ -749,6 +765,49 @@ theora_dec_setcaps (GstPad * pad, GstCaps * caps)
   /* parse the par, this overrides the encoded par */
   dec->have_par = gst_structure_get_fraction (s, "pixel-aspect-ratio",
       &dec->par_num, &dec->par_den);
+
+  if ((codec_data = gst_structure_get_value (s, "codec_data"))) {
+    if (G_VALUE_TYPE (codec_data) == GST_TYPE_BUFFER) {
+      GstBuffer *buffer;
+      guint8 *data;
+      guint size;
+      guint offset;
+
+      buffer = gst_value_get_buffer (codec_data);
+
+      offset = 0;
+      size = GST_BUFFER_SIZE (buffer);
+      data = GST_BUFFER_DATA (buffer);
+
+      while (size > 2) {
+        guint psize;
+        GstBuffer *buf;
+
+        psize = (data[0] << 8) | data[1];
+        /* skip header */
+        data += 2;
+        size -= 2;
+        offset += 2;
+
+        /* make sure we don't read too much */
+        psize = MIN (psize, size);
+
+        buf = gst_buffer_create_sub (buffer, offset, psize);
+
+        /* first buffer is a discont buffer */
+        if (offset == 2)
+          GST_BUFFER_FLAG_SET (buf, GST_BUFFER_FLAG_DISCONT);
+
+        /* now feed it to the decoder we can ignore the error */
+        theora_dec_chain (pad, buf);
+
+        /* skip the data */
+        size -= psize;
+        data += psize;
+        offset += psize;
+      }
+    }
+  }
 
   gst_object_unref (dec);
 
@@ -764,8 +823,9 @@ theora_handle_comment_packet (GstTheoraDec * dec, ogg_packet * packet)
 
   GST_DEBUG_OBJECT (dec, "parsing comment packet");
 
-  buf = gst_buffer_new_and_alloc (packet->bytes);
-  memcpy (GST_BUFFER_DATA (buf), packet->packet, packet->bytes);
+  buf = gst_buffer_new ();
+  GST_BUFFER_SIZE (buf) = packet->bytes;
+  GST_BUFFER_DATA (buf) = packet->packet;
 
   list =
       gst_tag_list_from_vorbiscomment_buffer (buf, (guint8 *) "\201theora", 7,
@@ -805,6 +865,7 @@ theora_handle_type_packet (GstTheoraDec * dec, ogg_packet * packet)
   GstFlowReturn ret = GST_FLOW_OK;
   guint32 bitstream_version;
   GList *walk;
+  guint32 fourcc;
 
   GST_DEBUG_OBJECT (dec, "fps %d/%d, PAR %d/%d",
       dec->info.fps_numerator, dec->info.fps_denominator,
@@ -840,10 +901,18 @@ theora_handle_type_packet (GstTheoraDec * dec, ogg_packet * packet)
   GST_DEBUG_OBJECT (dec, "frame dimension %dx%d, offset %d:%d",
       dec->info.frame_width, dec->info.frame_height,
       dec->info.offset_x, dec->info.offset_y);
-  if (dec->info.pixelformat != OC_PF_420) {
-    GST_ELEMENT_ERROR (GST_ELEMENT (dec), STREAM, DECODE,
-        (NULL), ("pixel formats other than 4:2:0 not yet supported"));
 
+  if (dec->info.pixelformat == OC_PF_420) {
+    dec->output_bpp = 12;       /* Average bits per pixel. */
+    fourcc = GST_MAKE_FOURCC ('I', '4', '2', '0');
+  } else if (dec->info.pixelformat == OC_PF_422) {
+    dec->output_bpp = 16;
+    fourcc = GST_MAKE_FOURCC ('Y', '4', '2', 'B');
+  } else if (dec->info.pixelformat == OC_PF_444) {
+    dec->output_bpp = 24;
+    fourcc = GST_MAKE_FOURCC ('Y', '4', '4', '4');
+  } else {
+    GST_ERROR_OBJECT (dec, "Invalid pixel format %d", dec->info.pixelformat);
     return GST_FLOW_ERROR;
   }
 
@@ -883,7 +952,7 @@ theora_handle_type_packet (GstTheoraDec * dec, ogg_packet * packet)
   theora_decode_init (&dec->state, &dec->info);
 
   caps = gst_caps_new_simple ("video/x-raw-yuv",
-      "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('I', '4', '2', '0'),
+      "format", GST_TYPE_FOURCC, fourcc,
       "framerate", GST_TYPE_FRACTION,
       dec->info.fps_numerator, dec->info.fps_denominator,
       "pixel-aspect-ratio", GST_TYPE_FRACTION, par_num, par_den,
@@ -1058,6 +1127,194 @@ theora_dec_push_reverse (GstTheoraDec * dec, GstBuffer * buf)
   return result;
 }
 
+/* Allocate buffer and copy image data into Y444 format */
+static GstFlowReturn
+theora_handle_444_image (GstTheoraDec * dec, yuv_buffer * yuv, GstBuffer ** out)
+{
+  gint width = dec->width;
+  gint height = dec->height;
+  gint out_size;
+  gint stride;
+  GstFlowReturn result;
+  int i, plane;
+
+  stride = GST_ROUND_UP_4 (width);
+  out_size = stride * height * 3;
+
+  /* now copy over the area contained in offset_x,offset_y,
+   * frame_width, frame_height */
+  result =
+      gst_pad_alloc_buffer_and_set_caps (dec->srcpad, GST_BUFFER_OFFSET_NONE,
+      out_size, GST_PAD_CAPS (dec->srcpad), out);
+  if (G_UNLIKELY (result != GST_FLOW_OK))
+    goto no_buffer;
+
+  {
+    guchar *dest, *src;
+
+    for (plane = 0; plane < 3; plane++) {
+      dest = GST_BUFFER_DATA (*out) + plane * stride * height;
+
+      src = (plane == 0 ? yuv->y : (plane == 1 ? yuv->u : yuv->v)) +
+          dec->offset_x + dec->offset_y * yuv->y_stride;
+
+      for (i = 0; i < height; i++) {
+        memcpy (dest, src, width);
+
+        dest += stride;
+        src += yuv->y_stride;
+      }
+    }
+  }
+
+no_buffer:
+  {
+    GST_DEBUG_OBJECT (dec, "could not get buffer, reason: %s",
+        gst_flow_get_name (result));
+    return result;
+  }
+}
+
+
+/* Allocate buffer and copy image data into Y42B format */
+static GstFlowReturn
+theora_handle_422_image (GstTheoraDec * dec, yuv_buffer * yuv, GstBuffer ** out)
+{
+  gint width = dec->width;
+  gint uvwidth = dec->width / 2;
+  gint height = dec->height;
+  gint out_size;
+  gint ystride, uvstride;
+  GstFlowReturn result;
+  int i;
+  guint8 *dst, *src;
+
+  ystride = GST_ROUND_UP_4 (width);
+  uvstride = GST_ROUND_UP_8 (width) / 2;
+  out_size = ystride * height + uvstride * height * 2;
+
+  /* now copy over the area contained in offset_x,offset_y,
+   * frame_width, frame_height */
+  result =
+      gst_pad_alloc_buffer_and_set_caps (dec->srcpad, GST_BUFFER_OFFSET_NONE,
+      out_size, GST_PAD_CAPS (dec->srcpad), out);
+  if (G_UNLIKELY (result != GST_FLOW_OK))
+    goto no_buffer;
+
+  dst = GST_BUFFER_DATA (*out);
+
+  src = yuv->y;
+  for (i = 0; i < height; i++) {
+    memcpy (dst, src, width);
+    src += yuv->y_stride;
+    dst += ystride;
+  }
+
+  src = yuv->u;
+  for (i = 0; i < height; i++) {
+    memcpy (dst, src, uvwidth);
+    src += yuv->uv_stride;
+    dst += uvstride;
+  }
+
+  src = yuv->v;
+  for (i = 0; i < height; i++) {
+    memcpy (dst, src, uvwidth);
+    src += yuv->uv_stride;
+    dst += uvstride;
+  }
+
+no_buffer:
+  {
+    GST_DEBUG_OBJECT (dec, "could not get buffer, reason: %s",
+        gst_flow_get_name (result));
+    return result;
+  }
+}
+
+/* Allocate buffer and copy image data into I420 format */
+static GstFlowReturn
+theora_handle_420_image (GstTheoraDec * dec, yuv_buffer * yuv, GstBuffer ** out)
+{
+  gint width = dec->width;
+  gint height = dec->height;
+  gint cwidth = width / 2;
+  gint cheight = height / 2;
+  gint out_size;
+  gint stride_y, stride_uv;
+  GstFlowReturn result;
+  int i;
+
+  /* should get the stride from the caps, for now we round up to the nearest
+   * multiple of 4 because some element needs it. chroma needs special 
+   * treatment, see videotestsrc. */
+  stride_y = GST_ROUND_UP_4 (width);
+  stride_uv = GST_ROUND_UP_8 (width) / 2;
+
+  out_size =
+      stride_y * GST_ROUND_UP_2 (height) + stride_uv * GST_ROUND_UP_2 (height);
+
+  /* now copy over the area contained in offset_x,offset_y,
+   * frame_width, frame_height */
+  result =
+      gst_pad_alloc_buffer_and_set_caps (dec->srcpad, GST_BUFFER_OFFSET_NONE,
+      out_size, GST_PAD_CAPS (dec->srcpad), out);
+  if (G_UNLIKELY (result != GST_FLOW_OK))
+    goto no_buffer;
+
+  /* copy the visible region to the destination. This is actually pretty
+   * complicated and gstreamer doesn't support all the needed caps to do this
+   * correctly. For example, when we have an odd offset, we should only combine
+   * 1 row/column of luma samples with one chroma sample in colorspace conversion. 
+   * We compensate for this by adding a black border around the image when the
+   * offset or size is odd (see above).
+   */
+  {
+    guchar *dest_y, *src_y;
+    guchar *dest_u, *src_u;
+    guchar *dest_v, *src_v;
+    gint offset;
+
+    dest_y = GST_BUFFER_DATA (*out);
+    dest_u = dest_y + stride_y * GST_ROUND_UP_2 (height);
+    dest_v = dest_u + stride_uv * GST_ROUND_UP_2 (height) / 2;
+
+    GST_LOG_OBJECT (dec, "plane 0, offset 0");
+    GST_LOG_OBJECT (dec, "plane 1, offset %d", dest_u - dest_y);
+    GST_LOG_OBJECT (dec, "plane 2, offset %d", dest_v - dest_y);
+
+    src_y = yuv->y + dec->offset_x + dec->offset_y * yuv->y_stride;
+
+    for (i = 0; i < height; i++) {
+      memcpy (dest_y, src_y, width);
+
+      dest_y += stride_y;
+      src_y += yuv->y_stride;
+    }
+
+    offset = dec->offset_x / 2 + dec->offset_y / 2 * yuv->uv_stride;
+
+    src_u = yuv->u + offset;
+    src_v = yuv->v + offset;
+
+    for (i = 0; i < cheight; i++) {
+      memcpy (dest_u, src_u, cwidth);
+      memcpy (dest_v, src_v, cwidth);
+
+      dest_u += stride_uv;
+      src_u += yuv->uv_stride;
+      dest_v += stride_uv;
+      src_v += yuv->uv_stride;
+    }
+  }
+no_buffer:
+  {
+    GST_DEBUG_OBJECT (dec, "could not get buffer, reason: %s",
+        gst_flow_get_name (result));
+    return result;
+  }
+}
+
 static GstFlowReturn
 theora_handle_data_packet (GstTheoraDec * dec, ogg_packet * packet,
     GstClockTime outtime)
@@ -1065,12 +1322,7 @@ theora_handle_data_packet (GstTheoraDec * dec, ogg_packet * packet,
   /* normal data packet */
   yuv_buffer yuv;
   GstBuffer *out;
-  guint i;
   gboolean keyframe;
-  gint out_size;
-  gint stride_y, stride_uv;
-  gint width, height;
-  gint cwidth, cheight;
   GstFlowReturn result;
 
   if (G_UNLIKELY (!dec->have_header))
@@ -1121,68 +1373,18 @@ theora_handle_data_packet (GstTheoraDec * dec, ogg_packet * packet,
           || (yuv.y_height != dec->info.height)))
     goto wrong_dimensions;
 
-  width = dec->width;
-  height = dec->height;
-  cwidth = width / 2;
-  cheight = height / 2;
-
-  /* should get the stride from the caps, for now we round up to the nearest
-   * multiple of 4 because some element needs it. chroma needs special 
-   * treatment, see videotestsrc. */
-  stride_y = GST_ROUND_UP_4 (width);
-  stride_uv = GST_ROUND_UP_8 (width) / 2;
-
-  out_size = stride_y * height + stride_uv * cheight * 2;
-
-  /* now copy over the area contained in offset_x,offset_y,
-   * frame_width, frame_height */
-  result =
-      gst_pad_alloc_buffer_and_set_caps (dec->srcpad, GST_BUFFER_OFFSET_NONE,
-      out_size, GST_PAD_CAPS (dec->srcpad), &out);
-  if (G_UNLIKELY (result != GST_FLOW_OK))
-    goto no_buffer;
-
-  /* copy the visible region to the destination. This is actually pretty
-   * complicated and gstreamer doesn't support all the needed caps to do this
-   * correctly. For example, when we have an odd offset, we should only combine
-   * 1 row/column of luma samples with one chroma sample in colorspace conversion. 
-   * We compensate for this by adding a black border around the image when the
-   * offset or size is odd (see above).
-   */
-  {
-    guchar *dest_y, *src_y;
-    guchar *dest_u, *src_u;
-    guchar *dest_v, *src_v;
-    gint offset;
-
-    dest_y = GST_BUFFER_DATA (out);
-    dest_u = dest_y + stride_y * height;
-    dest_v = dest_u + stride_uv * cheight;
-
-    src_y = yuv.y + dec->offset_x + dec->offset_y * yuv.y_stride;
-
-    for (i = 0; i < height; i++) {
-      memcpy (dest_y, src_y, width);
-
-      dest_y += stride_y;
-      src_y += yuv.y_stride;
-    }
-
-    offset = dec->offset_x / 2 + dec->offset_y / 2 * yuv.uv_stride;
-
-    src_u = yuv.u + offset;
-    src_v = yuv.v + offset;
-
-    for (i = 0; i < cheight; i++) {
-      memcpy (dest_u, src_u, cwidth);
-      memcpy (dest_v, src_v, cwidth);
-
-      dest_u += stride_uv;
-      src_u += yuv.uv_stride;
-      dest_v += stride_uv;
-      src_v += yuv.uv_stride;
-    }
+  if (dec->info.pixelformat == OC_PF_420) {
+    result = theora_handle_420_image (dec, &yuv, &out);
+  } else if (dec->info.pixelformat == OC_PF_422) {
+    result = theora_handle_422_image (dec, &yuv, &out);
+  } else if (dec->info.pixelformat == OC_PF_444) {
+    result = theora_handle_444_image (dec, &yuv, &out);
+  } else {
+    g_assert_not_reached ();
   }
+
+  if (result != GST_FLOW_OK)
+    return result;
 
   GST_BUFFER_OFFSET (out) = dec->frame_nr;
   if (dec->frame_nr != -1)
@@ -1245,12 +1447,6 @@ wrong_dimensions:
     GST_ELEMENT_ERROR (GST_ELEMENT (dec), STREAM, FORMAT,
         (NULL), ("dimensions of image do not match header"));
     return GST_FLOW_ERROR;
-  }
-no_buffer:
-  {
-    GST_DEBUG_OBJECT (dec, "could not get buffer, reason: %s",
-        gst_flow_get_name (result));
-    return result;
   }
 }
 

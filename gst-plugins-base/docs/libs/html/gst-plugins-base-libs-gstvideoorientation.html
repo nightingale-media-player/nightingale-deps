@@ -8,7 +8,7 @@
 <link rel="up" href="gstreamer-interfaces.html" title="Interfaces Library">
 <link rel="prev" href="gst-plugins-base-libs-gsttunernorm.html" title="gsttunernorm">
 <link rel="next" href="gst-plugins-base-libs-gstxoverlay.html" title="gstxoverlay">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-app.html" title="App Library">
@@ -37,13 +37,15 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstxoverlay.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstvideoorientation.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstvideoorientation.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstvideoorientation.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstvideoorientation.prerequisites" class="shortcut">Prerequisites</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gstvideoorientation.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstvideoorientation.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstvideoorientation.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstvideoorientation.prerequisites" class="shortcut">Prerequisites</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstvideoorientation"></a><div class="titlepage"></div>
@@ -124,7 +126,11 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 <a name="gst-plugins-base-libs-gstvideoorientation.prerequisites"></a><h2>Prerequisites</h2>
 <p>
 GstVideoOrientation requires
- GstImplementsInterface,  GstObject and  GstElement.</p>
+ <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstImplementsInterface.html"
+>GstImplementsInterface</a> and  <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstvideoorientation.description"></a><h2>Description</h2>
@@ -132,7 +138,6 @@ GstVideoOrientation requires
 The interface allows unified access to control flipping and autocenter
 operation of video-sources or operators.</p>
 <p>
-
 </p>
 </div>
 <div class="refsect1" lang="en">
@@ -143,7 +148,6 @@ operation of video-sources or operators.</p>
 <p>
 Opaque <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> data structure.</p>
 <p>
-
 </p>
 </div>
 <hr>
@@ -167,7 +171,6 @@ Opaque <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstV
 <p>
 <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientationInterface" title="GstVideoOrientationInterface"><span class="type">GstVideoOrientationInterface</span></a> interface.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -234,14 +237,15 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <p>
 Get the horizontal centering offset from the given object.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>video_orientation</code></em> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
+<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>
 </td>
 </tr>
 <tr>
@@ -252,14 +256,13 @@ Get the horizontal centering offset from the given object.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> in case the element supports centering
 </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.11
-</p>
+<p class="since">Since 0.10.11</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -272,17 +275,18 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> *flip);</pre>
 <p>
 Get the horizontal flipping state (<a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> for flipped) from the given object.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>video_orientation</code></em> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
+<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>
 </td>
 </tr>
 <tr>
@@ -293,14 +297,13 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> in case the element supports flipping
 </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.11
-</p>
+<p class="since">Since 0.10.11</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -314,14 +317,15 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <p>
 Get the vertical centering offset from the given object.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>video_orientation</code></em> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
+<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>
 </td>
 </tr>
 <tr>
@@ -332,14 +336,13 @@ Get the vertical centering offset from the given object.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> in case the element supports centering
 </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.11
-</p>
+<p class="since">Since 0.10.11</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -352,17 +355,18 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> *flip);</pre>
 <p>
 Get the vertical flipping state (<a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> for flipped) from the given object.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>video_orientation</code></em> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
+<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>
 </td>
 </tr>
 <tr>
@@ -373,14 +377,13 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> in case the element supports flipping
 </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.11
-</p>
+<p class="since">Since 0.10.11</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -394,14 +397,15 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <p>
 Set the horizontal centering offset for the given object.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>video_orientation</code></em> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
+<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>
 </td>
 </tr>
 <tr>
@@ -412,14 +416,13 @@ Set the horizontal centering offset for the given object.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> in case the element supports centering
 </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.11
-</p>
+<p class="since">Since 0.10.11</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -432,17 +435,18 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> flip);</pre>
 <p>
 Set the horizontal flipping state (<a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> for flipped) for the given object.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>video_orientation</code></em> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
+<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>
 </td>
 </tr>
 <tr>
@@ -453,14 +457,13 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> in case the element supports flipping
 </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.11
-</p>
+<p class="since">Since 0.10.11</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -474,14 +477,15 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
 <p>
 Set the vertical centering offset for the given object.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>video_orientation</code></em> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
+<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>
 </td>
 </tr>
 <tr>
@@ -492,14 +496,13 @@ Set the vertical centering offset for the given object.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> in case the element supports centering
 </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.11
-</p>
+<p class="since">Since 0.10.11</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -512,17 +515,18 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
 >gboolean</a> flip);</pre>
 <p>
 Set the vertical flipping state (<a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> for flipped) for the given object.</p>
 <p>
-
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>video_orientation</code></em> :</span></p></td>
-<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
+<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>
 </td>
 </tr>
 <tr>
@@ -533,19 +537,18 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
 ><code class="literal">TRUE</code></a> in case the element supports flipping
 </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since  0.10.11
-</p>
+<p class="since">Since 0.10.11</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

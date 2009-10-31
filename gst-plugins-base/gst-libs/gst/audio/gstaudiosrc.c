@@ -158,11 +158,9 @@ static void
 gst_audioringbuffer_class_init (GstAudioRingBufferClass * klass)
 {
   GObjectClass *gobject_class;
-  GstObjectClass *gstobject_class;
   GstRingBufferClass *gstringbuffer_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstobject_class = (GstObjectClass *) klass;
   gstringbuffer_class = (GstRingBufferClass *) klass;
 
   ring_parent_class = g_type_class_peek_parent (klass);
@@ -199,6 +197,8 @@ audioringbuffer_thread_func (GstRingBuffer * buf)
   GstAudioSrcClass *csrc;
   GstAudioRingBuffer *abuf = GST_AUDIORING_BUFFER (buf);
   ReadFunc readfunc;
+  GstMessage *message;
+  GValue val = { 0 };
 
   src = GST_AUDIO_SRC (GST_OBJECT_PARENT (buf));
   csrc = GST_AUDIO_SRC_GET_CLASS (src);
@@ -209,26 +209,35 @@ audioringbuffer_thread_func (GstRingBuffer * buf)
   if (readfunc == NULL)
     goto no_function;
 
+  g_value_init (&val, G_TYPE_POINTER);
+  g_value_set_pointer (&val, src->thread);
+  message = gst_message_new_stream_status (GST_OBJECT_CAST (buf),
+      GST_STREAM_STATUS_TYPE_ENTER, GST_ELEMENT_CAST (src));
+  gst_message_set_stream_status_object (message, &val);
+  GST_DEBUG_OBJECT (src, "posting ENTER stream status");
+  gst_element_post_message (GST_ELEMENT_CAST (src), message);
+
   while (TRUE) {
     gint left, len;
     guint8 *readptr;
     gint readseg;
 
     if (gst_ring_buffer_prepare_read (buf, &readseg, &readptr, &len)) {
-      gint read = 0;
+      gint read;
 
       left = len;
       do {
-        read = readfunc (src, readptr + read, left);
+        read = readfunc (src, readptr, left);
         GST_LOG_OBJECT (src, "transfered %d bytes of %d to segment %d", read,
             left, readseg);
         if (read < 0 || read > left) {
           GST_WARNING_OBJECT (src,
-              "error reading data (reason: %s), skipping segment",
+              "error reading data %d (reason: %s), skipping segment", read,
               g_strerror (errno));
           break;
         }
         left -= read;
+        readptr += read;
       } while (left > 0);
 
       /* we read one segment */
@@ -250,6 +259,7 @@ audioringbuffer_thread_func (GstRingBuffer * buf)
   }
 
   /* Will never be reached */
+  g_assert_not_reached ();
   return;
 
   /* ERROR */
@@ -262,6 +272,11 @@ stop_running:
   {
     GST_OBJECT_UNLOCK (abuf);
     GST_DEBUG ("stop running, exit thread");
+    message = gst_message_new_stream_status (GST_OBJECT_CAST (buf),
+        GST_STREAM_STATUS_TYPE_LEAVE, GST_ELEMENT_CAST (src));
+    gst_message_set_stream_status_object (message, &val);
+    GST_DEBUG_OBJECT (src, "posting LEAVE stream status");
+    gst_element_post_message (GST_ELEMENT_CAST (src), message);
     return;
   }
 }
@@ -414,10 +429,6 @@ gst_audioringbuffer_release (GstRingBuffer * buf)
 static gboolean
 gst_audioringbuffer_start (GstRingBuffer * buf)
 {
-  GstAudioSrc *src;
-
-  src = GST_AUDIO_SRC (GST_OBJECT_PARENT (buf));
-
   GST_DEBUG ("start, sending signal");
   GST_AUDIORING_BUFFER_SIGNAL (buf);
 
@@ -492,20 +503,14 @@ gst_audio_src_base_init (gpointer g_class)
 static void
 gst_audio_src_class_init (GstAudioSrcClass * klass)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
-  GstBaseSrcClass *gstbasesrc_class;
-  GstPushSrcClass *gstpushsrc_class;
   GstBaseAudioSrcClass *gstbaseaudiosrc_class;
 
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
-  gstbasesrc_class = (GstBaseSrcClass *) klass;
-  gstpushsrc_class = (GstPushSrcClass *) klass;
   gstbaseaudiosrc_class = (GstBaseAudioSrcClass *) klass;
 
   gstbaseaudiosrc_class->create_ringbuffer =
       GST_DEBUG_FUNCPTR (gst_audio_src_create_ringbuffer);
+
+  g_type_class_ref (GST_TYPE_AUDIORING_BUFFER);
 }
 
 static void

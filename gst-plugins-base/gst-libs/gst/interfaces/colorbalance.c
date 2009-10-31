@@ -185,6 +185,24 @@ gst_color_balance_get_value (GstColorBalance * balance,
 }
 
 /**
+ * gst_color_balance_get_balance_type:
+ * @balance: The #GstColorBalance implementation
+ *
+ * Get the #GstColorBalanceType of this implementation.
+ *
+ * Returns: A the #GstColorBalanceType.
+ *
+ * Since: 0.10.24
+ */
+GstColorBalanceType
+gst_color_balance_get_balance_type (GstColorBalance * balance)
+{
+  GstColorBalanceClass *klass = GST_COLOR_BALANCE_GET_CLASS (balance);
+
+  return klass->balance_type;
+}
+
+/**
  * gst_color_balance_value_changed:
  * @balance: A #GstColorBalance instance
  * @channel: A #GstColorBalanceChannel whose value has changed

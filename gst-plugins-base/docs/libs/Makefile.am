@@ -7,11 +7,11 @@ DOCS_ARE_INCOMPLETE_PLEASE_FIXME=yespleasedo
 #DOC_MODULE=gst-plugins-libs-@GST_MAJORMINOR@
 DOC_MODULE=gst-plugins-base-libs
 
-# for upload.mak
+# for upload-doc.mak
 DOC=gst-plugins-base-libs
 FORMATS=html
 html: html-build.stamp
-include $(top_srcdir)/common/upload.mak
+include $(top_srcdir)/common/upload-doc.mak
 
 # generated basefiles
 #basefiles = \
@@ -94,8 +94,8 @@ extra_files =
 GTKDOC_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS)
 GTKDOC_LIBS = $(SCANOBJ_DEPS) $(GST_BASE_LIBS)
 
-GTKDOC_CC=$(LIBTOOL) --mode=compile $(CC)
-GTKDOC_LD=$(LIBTOOL) --mode=link $(CC)
+GTKDOC_CC=$(LIBTOOL) --tag=CC --mode=compile $(CC)
+GTKDOC_LD=$(LIBTOOL) --tag=CC --mode=link $(CC)
 
 # If you need to override some of the declarations, place them in this file
 # and uncomment this line.

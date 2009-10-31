@@ -1,6 +1,6 @@
 prefix=
 exec_prefix=
-libdir=${pcfiledir}/../gst-libs/gst/tag
+libdir=${pcfiledir}/../gst-libs/gst/app
 includedir=${pcfiledir}/../gst-libs
 
 Name: GStreamer Application Library, Uninstalled
@@ -9,5 +9,5 @@ Version: @VERSION@
 Requires: gstreamer-@GST_MAJORMINOR@ gstreamer-base-@GST_MAJORMINOR@
 
 Libs: -L${libdir} ${libdir}/libgstapp-@GST_MAJORMINOR@.la
-Cflags: -I${includedir}
+Cflags: -I${includedir} -I@srcdir@/../gst-libs
 

@@ -75,6 +75,8 @@ enum PixelFormat {
     PIX_FMT_RGB565,    ///< always stored in cpu endianness 
     PIX_FMT_RGB555,    ///< always stored in cpu endianness, most significant bit to 1 
     PIX_FMT_GRAY8,
+    PIX_FMT_GRAY16_L,
+    PIX_FMT_GRAY16_B,
     PIX_FMT_MONOWHITE, ///< 0 is white 
     PIX_FMT_MONOBLACK, ///< 0 is black 
     PIX_FMT_PAL8,      ///< 8 bit with RGBA palette 
@@ -84,7 +86,9 @@ enum PixelFormat {
     PIX_FMT_XVMC_MPEG2_MC,///< XVideo Motion Acceleration via common packet passing(xvmc_render.h)
     PIX_FMT_XVMC_MPEG2_IDCT,
     PIX_FMT_UYVY422,   ///< Packed pixel, Cb Y0 Cr Y1 
+    PIX_FMT_YVYU422,   ///< Packed pixel, Y0 Cr Y1 Cb 
     PIX_FMT_UYVY411,   ///< Packed pixel, Cb Y0 Y1 Cr Y2 Y3
+    PIX_FMT_V308,      ///< Packed pixel, Y0 Cb Cr
 
     PIX_FMT_AYUV4444,  ///< Packed pixel, A0 Y0 Cb Cr
     PIX_FMT_NB
@@ -186,6 +190,7 @@ typedef struct AVCodecContext {
 typedef struct AVPicture {
     uint8_t *data[4];
     int linesize[4];       ///< number of bytes per line
+    int interlaced;
 } AVPicture;
 
 /**

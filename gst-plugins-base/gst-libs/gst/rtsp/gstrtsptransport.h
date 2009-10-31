@@ -81,6 +81,7 @@ typedef enum {
  * @GST_RTSP_LOWER_TRANS_UDP: stream data over UDP
  * @GST_RTSP_LOWER_TRANS_UDP_MCAST: stream data over UDP multicast
  * @GST_RTSP_LOWER_TRANS_TCP: stream data over TCP
+ * @GST_RTSP_LOWER_TRANS_HTTP: stream data tunneled over HTTP. Since: 0.10.23
  *
  * The different transport methods.
  */
@@ -88,7 +89,8 @@ typedef enum {
   GST_RTSP_LOWER_TRANS_UNKNOWN   = 0,
   GST_RTSP_LOWER_TRANS_UDP       = (1 << 0),
   GST_RTSP_LOWER_TRANS_UDP_MCAST = (1 << 1),
-  GST_RTSP_LOWER_TRANS_TCP       = (1 << 2)
+  GST_RTSP_LOWER_TRANS_TCP       = (1 << 2),
+  GST_RTSP_LOWER_TRANS_HTTP      = (1 << 4)
 } GstRTSPLowerTrans;
 
 /**
@@ -106,6 +108,21 @@ typedef struct
 
 /**
  * GstRTSPTransport:
+ * @trans: the transport mode
+ * @profile: the tansport profile
+ * @lower_transport: the lower transport
+ * @destination: the destination ip/hostname
+ * @source: the source ip/hostname
+ * @layers: the number of layers
+ * @mode_play: if play mode was selected
+ * @mode_record: if record mode was selected
+ * @append: is append mode was selected
+ * @interleaved: the interleave range
+ * @ttl: the time to live for multicast UDP
+ * @port: the port pair for multicast sessions
+ * @client_port: the client port pair for receiving data
+ * @server_port: the server port pair for receiving data
+ * @ssrc: the ssrc that the sender/receiver will use
  *
  * A structure holding the RTSP transport values.
  */
