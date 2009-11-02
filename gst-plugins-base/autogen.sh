@@ -41,7 +41,7 @@ version_check "autoconf" "$AUTOCONF autoconf autoconf259 autoconf257 autoconf-2.
 version_check "automake" "$AUTOMAKE automake automake-1.11 automake-1.10 automake-1.9 automake19 automake-1.7 automake-1.6 automake-1.5" \
               "ftp://ftp.gnu.org/pub/gnu/automake/" 1 7 || DIE=1
 version_check "autopoint" "autopoint" \
-              "ftp://ftp.gnu.org/pub/gnu/gettext/" 0 17 || DIE=1
+              "ftp://ftp.gnu.org/pub/gnu/gettext/" 0 14 || DIE=1
 version_check "libtoolize" "$LIBTOOLIZE libtoolize glibtoolize" \
               "ftp://ftp.gnu.org/pub/gnu/libtool/" 1 5 0 || DIE=1
 version_check "pkg-config" "" \
