@@ -108,6 +108,13 @@ static PreferredFilter preferred_mpegaudio_filters[] = {
   {0}
 };
 
+static const char * xp_mp3_decoder_filename = 
+  "l3codecx.ax";
+
+typedef HRESULT (STDAPICALLTYPE* dll_register_proc_t)();
+static const char * dll_register_server_proc_name = 
+  "DllRegisterServer";
+
 static const AudioCodecEntry audio_dec_codecs[] = {
   {"dshowadec_wma1", "Windows Media Audio 7",
    WAVE_FORMAT_MSAUDIO1,
@@ -217,14 +224,14 @@ HRESULT AudioFakeSink::DoRenderSample(IMediaSample *pMediaSample)
         MIN ((unsigned int)size, GST_BUFFER_SIZE (out_buf)));
 
     /* we have to remove some heading samples */
-    if ((GstClockTime) clip_start > buf_start) {
+    if (clip_start > buf_start) {
       start_offset = (guint)gst_util_uint64_scale_int (clip_start - buf_start,
           mDec->rate, GST_SECOND) * mDec->depth / 8 * mDec->channels;
     }
     else
       start_offset = 0;
     /* we have to remove some trailing samples */
-    if ((GstClockTime) clip_stop < buf_stop) {
+    if (clip_stop < buf_stop) {
       stop_offset = (guint)gst_util_uint64_scale_int (buf_stop - clip_stop,
           mDec->rate, GST_SECOND) * mDec->depth / 8 * mDec->channels;
     }
@@ -263,11 +270,23 @@ HRESULT AudioFakeSink::DoRenderSample(IMediaSample *pMediaSample)
 done:
   return S_OK;
 }
+#define GUID_FORMAT "0x%.8x 0x%.4x 0x%.4x 0x%.2x 0x%.2x 0x%.2x 0x%.2x 0x%.2x 0x%.2x 0x%.2x 0x%.2x"
+#define GUID_ARGS(g) g.Data1, g.Data2, g.Data3, \
+  g.Data4[0], g.Data4[1], g.Data4[2], g.Data4[3], \
+  g.Data4[4], g.Data4[5], g.Data4[6], g.Data4[7]
 
+static void printMediaType (AM_MEDIA_TYPE *mt)
+{
+  GST_WARNING (":: majortype: "GUID_FORMAT, GUID_ARGS(mt->majortype));
+  GST_WARNING (":: subtype: "GUID_FORMAT, GUID_ARGS(mt->subtype));
+}
+    
 HRESULT AudioFakeSink::CheckMediaType(const CMediaType *pmt)
 {
   if(pmt != NULL)
   {
+    printMediaType((AM_MEDIA_TYPE *)pmt);
+
     /* The Vista MP3 decoder (and possibly others?) outputs an 
      * AM_MEDIA_TYPE with the wrong cbFormat. So, rather than using
      * CMediaType.operator==, we implement a sufficient check ourselves.
@@ -358,7 +377,13 @@ gst_dshowaudiodec_class_init (GstDshowAudioDecClass * klass)
   gstelement_class->change_state =
       GST_DEBUG_FUNCPTR (gst_dshowaudiodec_change_state);
 
-  parent_class = (GstElementClass *) g_type_class_peek_parent (klass);
+  if (!parent_class)
+    parent_class = (GstElementClass *)g_type_class_ref (GST_TYPE_ELEMENT);
+
+  if (!dshowaudiodec_debug) {
+    GST_DEBUG_CATEGORY_INIT (dshowaudiodec_debug, "dshowaudiodec", 0,
+        "Directshow filter audio decoder");
+  }
 }
 
 static void
@@ -401,18 +426,23 @@ gst_dshowaudiodec_init (GstDshowAudioDec * adec,
   adec->layer = 0;
   adec->codec_data = NULL;
 
+  adec->check_mp3_frames = FALSE;
+  adec->first_frame = TRUE;
+
   adec->last_ret = GST_FLOW_OK;
 
-  hr = CoInitialize (0);
-  if (SUCCEEDED(hr)) {
-    adec->comInitialized = TRUE;
-  }
+  adec->comthread = gst_comtaskthread_init ();
 }
 
 static void
 gst_dshowaudiodec_dispose (GObject * object)
 {
   GstDshowAudioDec *adec = (GstDshowAudioDec *) (object);
+
+  if (adec->good_mp3_frame) {
+    gst_buffer_unref (adec->good_mp3_frame);
+    adec->good_mp3_frame = NULL;
+  }
 
   if (adec->segment) {
     gst_segment_free (adec->segment);
@@ -424,9 +454,9 @@ gst_dshowaudiodec_dispose (GObject * object)
     adec->codec_data = NULL;
   }
 
-  if (adec->comInitialized) {
-    CoUninitialize ();
-    adec->comInitialized = FALSE;
+  if (adec->comthread) {
+    gst_comtaskthread_destroy (adec->comthread);
+    adec->comthread = NULL;
   }
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
@@ -510,10 +540,91 @@ end:
   return ret;
 }
 
-static GstFlowReturn
-gst_dshowaudiodec_chain (GstPad * pad, GstBuffer * buffer)
+static gboolean
+gst_dshowaudiodec_skip_mp3_frame (GstDshowAudioDec *adec, GstBuffer *inbuf)
 {
-  GstDshowAudioDec *adec = (GstDshowAudioDec *) gst_pad_get_parent (pad);
+  guint8 *data = GST_BUFFER_DATA (inbuf);
+  int bytes_in_sequence = 0;
+  int i;
+  /* We look for LAME3.9x for any digit x */
+  const char *lame_identifier = "LAME3.9"; 
+
+  if (adec->first_frame) {
+    /* Skip the frame if it's a Xing/LAME header too, these sometimes
+     * cause problems for the decoder. Logic for finding this header
+     * taken from mp3parse
+     */
+    int offset;
+    if (adec->mpegaudioversion == 1) {
+      if (adec->channels == 1)
+        offset = 0x11;
+      else
+        offset = 0x20;
+    } else {
+      if (adec->channels == 1)
+        offset = 0x11;
+      else
+        offset = 0x20;
+    }
+    offset += 4;
+
+    if (GST_BUFFER_SIZE (inbuf) > offset + 4) {
+      guint32 header = GST_READ_UINT32_LE (data + offset);
+      if (header == GST_MAKE_FOURCC ('X', 'i', 'n' , 'g') ||
+          header == GST_MAKE_FOURCC ('I', 'n', 'f' , 'o'))
+      {
+        adec->seen_bad_mp3_frames = TRUE;
+        return TRUE;
+      }
+    }
+  }
+
+  /* Check if the buffer ends with a sequence of bytes matching the
+   * particular sequence LAME creates that the XP mp3 decoder fails
+   * on: 10 or more bytes of 0x55 and optionally 'LAME3.9x' somewhere
+   * in there
+   */
+  for (i = GST_BUFFER_SIZE (inbuf) - 1; i >= 0; i--) {
+    if (data[i] == 0x55) {
+      bytes_in_sequence++;
+    }
+    else if (isdigit(data[i]) && i >= (sizeof(lame_identifier))) {
+      if (!memcmp (data + i - sizeof(lame_identifier), lame_identifier, sizeof(lame_identifier))) {
+        bytes_in_sequence += sizeof(lame_identifier) + 1;
+        i -= sizeof(lame_identifier) + 1;
+      }
+      else
+        break;
+    }
+    else
+      break;
+  }
+
+  if (bytes_in_sequence >= 120) {
+    GST_WARNING ("Skipping frame: has weird LAME padding");
+    adec->seen_bad_mp3_frames = TRUE;
+    return TRUE;
+  }
+  else {
+    if (!adec->good_mp3_frame)
+      adec->good_mp3_frame = gst_buffer_ref (inbuf);
+    return FALSE;
+  }
+}
+
+struct ChainData
+{
+  GstDshowAudioDec *adec;
+  GstBuffer        *buf;
+};
+
+static void
+gst_dshowaudiodec_chain_task (void *arg, void *ret)
+{
+  gboolean *result = (gboolean *)ret;
+  struct ChainData *cdata = (struct ChainData *)arg;
+  GstDshowAudioDec *adec = cdata->adec;
+  GstBuffer *buffer = cdata->buf;
   bool discont = FALSE;
 
   if (!adec->setup) {
@@ -544,6 +655,12 @@ gst_dshowaudiodec_chain (GstPad * pad, GstBuffer * buffer)
     discont = TRUE;
   }
 
+  if (adec->check_mp3_frames) {
+    if (gst_dshowaudiodec_skip_mp3_frame (adec, buffer)) {
+      goto beach;
+    }
+  }
+
   /* push the buffer to the directshow decoder */
   adec->fakesrc->GetOutputPin()->PushBuffer (
       GST_BUFFER_DATA (buffer), GST_BUFFER_TIMESTAMP (buffer),
@@ -551,9 +668,29 @@ gst_dshowaudiodec_chain (GstPad * pad, GstBuffer * buffer)
       GST_BUFFER_SIZE (buffer), (bool)discont);
 
 beach:
+  if (adec->first_frame)
+    adec->first_frame = FALSE;
+
   gst_buffer_unref (buffer);
+
+  *result = adec->last_ret;
+}
+
+static GstFlowReturn
+gst_dshowaudiodec_chain (GstPad * pad, GstBuffer * buffer)
+{
+  GstFlowReturn ret;
+  GstDshowAudioDec *adec = (GstDshowAudioDec *) gst_pad_get_parent (pad);
+  struct ChainData chain_data;
+  chain_data.adec = adec;
+  chain_data.buf = buffer;
+
+  gst_comtaskthread_do_task (adec->comthread, gst_dshowaudiodec_chain_task,
+          &chain_data, &ret);
+
   gst_object_unref (adec);
-  return adec->last_ret;
+
+  return ret;
 }
 
 static gboolean
@@ -600,8 +737,6 @@ gst_dshowaudiodec_sink_event (GstPad * pad, GstEvent * event)
       break;
   }
 
-  gst_object_unref (adec);
-
   return ret;
 }
 
@@ -613,6 +748,12 @@ gst_dshowaudiodec_flush (GstDshowAudioDec * adec)
 
   /* flush dshow decoder and reset timestamp */
   adec->fakesrc->GetOutputPin()->Flush();
+
+  if (adec->seen_bad_mp3_frames && adec->good_mp3_frame) {
+    adec->fakesrc->GetOutputPin()->PushBuffer (
+        GST_BUFFER_DATA (adec->good_mp3_frame), -1, -1,
+        GST_BUFFER_SIZE (adec->good_mp3_frame), TRUE);
+  }
 
   adec->timestamp = GST_CLOCK_TIME_NONE;
   adec->last_ret = GST_FLOW_OK;
@@ -647,7 +788,7 @@ dshowaudiodec_set_input_format (GstDshowAudioDec *adec, GstCaps *caps)
    * decoder which doesn't need this */
   if (adec->layer == 1 || adec->layer == 2) {
     MPEG1WAVEFORMAT *mpeg1_format;
-    int samples, version;
+    int samples;
     GstStructure *structure = gst_caps_get_structure (caps, 0);
 
     size = sizeof (MPEG1WAVEFORMAT);
@@ -679,11 +820,11 @@ dshowaudiodec_set_input_format (GstDshowAudioDec *adec, GstCaps *caps)
         break;
     };
 
-    gst_structure_get_int (structure, "mpegaudioversion", &version);
+    gst_structure_get_int (structure, "mpegaudioversion", &adec->mpegaudioversion);
     if (adec->layer == 1) {
       samples = 384;
     } else {
-      if (version == 1) {
+      if (adec->mpegaudioversion == 1) {
         samples = 576;
       } else {
         samples = 1152;
@@ -720,6 +861,13 @@ dshowaudiodec_set_input_format (GstDshowAudioDec *adec, GstCaps *caps)
       mp3format->nBlockSize = 1;
       mp3format->nFramesPerBlock = 1;
       mp3format->nCodecDelay = 0;
+
+      /* The XP decoder also has problems with some MP3 frames. If it tries
+       * to decode one, then forever after it outputs silence.
+       * If we recognise such a frame, just skip decoding it.
+       */
+     if (adec->decoder_is_xp_mp3)
+        adec->check_mp3_frames = TRUE;
     }
     else {
       format = (WAVEFORMATEX *)g_malloc0 (size);
@@ -788,10 +936,18 @@ dshowadec_free_mediatype (AM_MEDIA_TYPE *mediatype)
   g_free (mediatype);
 }
 
-static gboolean
-gst_dshowaudiodec_setup_graph (GstDshowAudioDec * adec, GstCaps *caps)
+struct SetupInfo {
+  GstDshowAudioDec *adec;
+  GstCaps          *caps;
+};
+
+static void
+gst_dshowaudiodec_setup_graph_task (void *arg, void *ret)
 {
-  gboolean ret = FALSE;
+  struct SetupInfo *setupinfo = (struct SetupInfo *)arg;
+  GstDshowAudioDec * adec = setupinfo->adec;
+  GstCaps *caps = setupinfo->caps;
+  gboolean *result = (gboolean *)ret;
   GstDshowAudioDecClass *klass =
       (GstDshowAudioDecClass *) G_OBJECT_GET_CLASS (adec);
   HRESULT hres;
@@ -803,6 +959,8 @@ gst_dshowaudiodec_setup_graph (GstDshowAudioDec * adec, GstCaps *caps)
   const AudioCodecEntry *codec_entry = klass->entry;
   CComQIPtr<IBaseFilter> srcfilter;
   CComQIPtr<IBaseFilter> sinkfilter;
+
+  *result = FALSE;
 
   input_mediatype = dshowaudiodec_set_input_format (adec, caps);
 
@@ -888,14 +1046,25 @@ gst_dshowaudiodec_setup_graph (GstDshowAudioDec * adec, GstCaps *caps)
     goto end;
   }
 
-  ret = TRUE;
+  *result = TRUE;
   adec->setup = TRUE;
 end:
   if (input_mediatype)
     dshowadec_free_mediatype (input_mediatype);
   if (output_mediatype)
     dshowadec_free_mediatype (output_mediatype);
+}
 
+static gboolean
+gst_dshowaudiodec_setup_graph (GstDshowAudioDec * adec, GstCaps *caps)
+{
+  gboolean ret;
+  struct SetupInfo setup;
+  setup.adec = adec;
+  setup.caps = caps;
+
+  gst_comtaskthread_do_task (adec->comthread,
+          gst_dshowaudiodec_setup_graph_task, &setup, &ret);
   return ret;
 }
 
@@ -942,9 +1111,11 @@ gst_dshowaudiodec_get_filter_settings (GstDshowAudioDec * adec)
   return ret;
 }
 
-static gboolean
-gst_dshowaudiodec_create_graph_and_filters (GstDshowAudioDec * adec)
+static void
+gst_dshowaudiodec_create_graph_and_filters_task (void *arg, void *ret)
 {
+  GstDshowAudioDec * adec = (GstDshowAudioDec *)arg;
+  gboolean *result = (gboolean *)ret;
   HRESULT hres;
   GstDshowAudioDecClass *klass =
       (GstDshowAudioDecClass *) G_OBJECT_GET_CLASS (adec);
@@ -975,15 +1146,20 @@ gst_dshowaudiodec_create_graph_and_filters (GstDshowAudioDec * adec)
   adec->fakesrc->AddRef();
 
   /* create decoder filter */
+  GUID filterclsid = {0};
   adec->decfilter = gst_dshow_find_filter (MEDIATYPE_Audio,
           insubtype,
           MEDIATYPE_Audio,
           outsubtype,
-          klass->entry->preferred_filters);
+          klass->entry->preferred_filters, &filterclsid);
   if (adec->decfilter == NULL) {
     GST_ELEMENT_ERROR (adec, STREAM, FAILED,
         ("Can't create an instance of the decoder filter"), (NULL));
     goto error;
+  }
+
+  if (IsEqualGUID (filterclsid, CLSID_XP_MP3_DECODER)) {
+    adec->decoder_is_xp_mp3 = TRUE;
   }
 
   /* create fake sink filter */
@@ -1015,7 +1191,8 @@ gst_dshowaudiodec_create_graph_and_filters (GstDshowAudioDec * adec)
     goto error;
   }
 
-  return TRUE;
+  *result = TRUE;
+  return;
 
 error:
   if (adec->fakesrc) {
@@ -1030,12 +1207,24 @@ error:
   adec->mediafilter = 0;
   adec->filtergraph = 0;
 
-  return FALSE;
+  *result = FALSE;
 }
 
 static gboolean
-gst_dshowaudiodec_destroy_graph_and_filters (GstDshowAudioDec * adec)
+gst_dshowaudiodec_create_graph_and_filters (GstDshowAudioDec * adec)
 {
+  gboolean ret;
+  gst_comtaskthread_do_task (adec->comthread,
+          gst_dshowaudiodec_create_graph_and_filters_task, adec, &ret);
+  return ret;
+}
+
+static void
+gst_dshowaudiodec_destroy_graph_and_filters_task (void *arg, void *ret)
+{
+  GstDshowAudioDec *adec = (GstDshowAudioDec *)arg;
+  gboolean *result = (gboolean *)ret;
+
   if (adec->mediafilter) {
     adec->mediafilter->Stop();
   }
@@ -1067,7 +1256,16 @@ gst_dshowaudiodec_destroy_graph_and_filters (GstDshowAudioDec * adec)
 
   adec->setup = FALSE;
 
-  return TRUE;
+  *result = TRUE;
+}
+
+static gboolean
+gst_dshowaudiodec_destroy_graph_and_filters (GstDshowAudioDec * adec)
+{
+  gboolean ret;
+  gst_comtaskthread_do_task (adec->comthread,
+          gst_dshowaudiodec_destroy_graph_and_filters_task, adec, &ret);
+  return ret;
 }
 
 gboolean
@@ -1086,11 +1284,68 @@ dshow_adec_register (GstPlugin * plugin)
   };
   gint i;
   HRESULT hr;
+  OSVERSIONINFO osvi;
+  
+  UINT len = 0;
+  HMODULE hDll = NULL;
+  BOOL success = FALSE;
+  char system_folder[MAX_PATH] = {0};
+
+  dll_register_proc_t dll_register_proc = NULL;
 
   GST_DEBUG_CATEGORY_INIT (dshowaudiodec_debug, "dshowaudiodec", 0,
       "Directshow filter audio decoder");
 
+  /* Plugin registration is called from the main thread. Initialize COM here
+     in case nothing else has.
+
+     Other than this, all other COM work is done on a dedicated thread which
+     ensures proper COM initialization/uninitialization and usage semantics
+   */
   hr = CoInitialize(0);
+
+  // ensure that the mp3 decoder is loaded on windows xp.
+
+  // first, get the windows version.
+  ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+  osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+
+  success = GetVersionEx(&osvi);
+
+  // if the major version is less than 6, we'll have the decoder available.
+  if (success && 
+      (osvi.dwMajorVersion < 6) &&
+      GetSystemDirectoryA (system_folder, MAX_PATH)) {
+    char path[512] = {0};
+
+    success = FALSE;
+
+    strcat(path, system_folder);
+    strcat(path, "\\");
+    strcat(path, xp_mp3_decoder_filename);
+    
+    hDll = LoadLibraryExA(path, NULL, 0);
+
+    if (hDll) {
+      dll_register_proc = 
+        (dll_register_proc_t) GetProcAddress (hDll, 
+                                              dll_register_server_proc_name);
+      if(dll_register_proc) {
+        HRESULT hr2;
+        hr2 = dll_register_proc();
+
+        if (SUCCEEDED(hr2)) {
+          success = TRUE;
+          GST_DEBUG ("Registering %s", path);
+        }
+      }
+    }
+
+    if (!success) {
+      GST_DEBUG ("Failed to register %s", path);
+    }
+  }
+  
   for (i = 0; i < sizeof (audio_dec_codecs) / sizeof (AudioCodecEntry); i++) {
     GType type;
     CComPtr<IBaseFilter> filter;
@@ -1101,7 +1356,7 @@ dshow_adec_register (GstPlugin * plugin)
             insubtype,
             MEDIATYPE_Audio,
             outsubtype,
-            audio_dec_codecs[i].preferred_filters);
+            audio_dec_codecs[i].preferred_filters, NULL);
 
     if (filter) 
     {

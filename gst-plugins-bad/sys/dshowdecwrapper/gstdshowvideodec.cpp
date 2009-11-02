@@ -410,7 +410,13 @@ gst_dshowvideodec_class_init (GstDshowVideoDecClass * klass)
   gstelement_class->change_state =
       GST_DEBUG_FUNCPTR (gst_dshowvideodec_change_state);
 
-  parent_class = (GstElementClass *) g_type_class_peek_parent (klass);
+  if (!parent_class)
+    parent_class = (GstElementClass *)g_type_class_ref (GST_TYPE_ELEMENT);
+
+  if (!dshowvideodec_debug) {
+    GST_DEBUG_CATEGORY_INIT (dshowvideodec_debug, "dshowvideodec", 0,
+        "Directshow filter video decoder");
+  }
 }
 
 static void
@@ -700,7 +706,7 @@ gst_dshowvideodec_sink_setcaps (GstPad * pad, GstCaps * caps)
       "height", G_TYPE_INT, vdec->height, NULL);
 
   if (vdec->fps_n && vdec->fps_d) {
-      gst_caps_set_simple (caps_out,
+      gst_caps_set_simple (caps_out, 
           "framerate", GST_TYPE_FRACTION, vdec->fps_n, vdec->fps_d, NULL);
   }
 
@@ -1024,7 +1030,8 @@ gst_dshowvideodec_create_graph_and_filters (GstDshowVideoDec * vdec)
           klass->entry->input_subtype,
           klass->entry->output_majortype,
           klass->entry->output_subtype,
-          klass->entry->preferred_filters);
+          klass->entry->preferred_filters,
+          NULL);
   if (vdec->decfilter == NULL) {
     GST_ELEMENT_ERROR (vdec, STREAM, FAILED, ("Can't create an instance "
             "of the decoder filter"), (NULL));
@@ -1189,7 +1196,8 @@ dshow_vdec_register (GstPlugin * plugin)
             video_dec_codecs[i].input_subtype,
             video_dec_codecs[i].output_majortype,
             video_dec_codecs[i].output_subtype,
-            video_dec_codecs[i].preferred_filters);
+            video_dec_codecs[i].preferred_filters,
+            NULL);
     if (filter != NULL) {
 
       GST_DEBUG ("Registering %s", video_dec_codecs[i].element_name);
