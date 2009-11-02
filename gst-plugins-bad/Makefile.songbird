@@ -36,6 +36,7 @@ SB_VENDOR_TARGET_VERSION = 0.10.20
 include $(CURDIR)/../songbird-vendor-defs.mk
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
+        --disable-shave \
         --disable-examples \
         --disable-tests \
         --disable-gtk-doc \
@@ -64,7 +65,7 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-sndfile --disable-soundtouch --disable-swfdec \
         --disable-theoradec --disable-timidity --disable-wildmidi \
         --disable-wininet  --disable-x264 --disable-xvid \
-        --disable-dccp
+        --disable-dccp --disable-legacyresample --disable-frei0r
 
 DIRECTSHOW_LIBS_ROOT = $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)/DirectShowBaseClasses
 

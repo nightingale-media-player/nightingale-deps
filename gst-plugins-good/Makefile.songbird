@@ -36,6 +36,7 @@ SB_VENDOR_TARGET_VERSION = 0.10.20
 include $(CURDIR)/../songbird-vendor-defs.mk
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
+        --disable-shave \
         --disable-dependency-tracking \
         --disable-examples \
         --disable-tests \
@@ -50,7 +51,7 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-dv1394 --disable-aalib --disable-libcaca \
         --disable-libdv --disable-shout2 --disable-soup \
         --disable-speex --disable-sunaudio --disable-taglib \
-        --disable-wavpack
+        --disable-wavpack --disable-deinterlace
 
 ifeq (linux-i686,$(SB_TARGET_ARCH))
   SB_VENDOR_TARGET_DEPENDENT_DEBS := \
