@@ -7,6 +7,9 @@ AC_INIT(GStreamer Bad Plug-ins, 0.10.16,
     http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer,
     gst-plugins-bad)
 
+dnl sets target_* variables
+AC_CANONICAL_TARGET
+
 AG_GST_INIT
 
 dnl initialize automake
@@ -1720,6 +1723,36 @@ GST_PLUGIN_LDFLAGS="-module -avoid-version -export-symbols-regex '^[_]*gst_plugi
 AC_SUBST(GST_PLUGIN_LDFLAGS)
 
 SHAVE_INIT([common],[enable])
+
+dnl Songbird-specific stuff to set up things to link mozillasrc properly
+AM_CONDITIONAL(USE_MOZILLA, true)
+
+AC_ARG_WITH(mozilla,
+        [  --with-mozilla=PATH     Specify path to Mozilla installation ],
+        [
+          MOZILLA_CFLAGS="-I$withval/include/necko -I$withval/include/xpcom -I$withval/include/string -I$withval/include/nspr -I$withval/include -I$withval/include/windowwatcher"
+          MOZILLA_LIBS="-L$withval/lib -lxpcomglue_s -lxpcom -lplds4 -lplc4 -lnspr4"
+        ],
+        [
+          MOZILLA_CFLAGS=""
+          MOZILLA_LIBS=""
+        ]
+)
+
+AC_ARG_WITH(xul-framework,
+        [  --with-xul-framework=PATH     Specify path to XUL.framework for OSX only ],
+        [
+          MOZILLA_LIBS="-Wl,-executable_path,$withval $MOZILLA_LIBS"
+        ], 
+        [
+          MOZILLA_LIBS="$MOZILLA_LIBS"
+        ]
+)
+
+AC_SUBST(MOZILLA_CFLAGS)
+AC_SUBST(MOZILLA_LIBS)
+
+dnl End Songbird-specific bits
 
 dnl *** output files ***
 

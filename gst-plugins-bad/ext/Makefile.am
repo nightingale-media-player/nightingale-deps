@@ -214,6 +214,12 @@ else
 MIMIC_DIR=
 endif
 
+if USE_MOZILLA
+MOZILLA_DIR=mozilla
+else
+MOZILLA_DIR=
+endif
+
 if USE_MPLEX
 MPLEX_DIR=mplex
 else
@@ -399,10 +405,11 @@ SUBDIRS=\
 	$(LCS_DIR) \
 	$(LIBFAME_DIR) \
 	$(LIBMMS_DIR) \
-	$(MODPLUG_DIR) \
-	$(MPEG2ENC_DIR) \
 	$(METADATA_DIR) \
 	$(MIMIC_DIR) \
+	$(MODPLUG_DIR) \
+	$(MOZILLA_DIR) \
+	$(MPEG2ENC_DIR) \
 	$(MPLEX_DIR) \
 	$(MUSEPACK_DIR) \
 	$(MUSICBRAINZ_DIR) \
@@ -452,9 +459,10 @@ DIST_SUBDIRS = \
 	lv2 \
 	dts \
 	divx \
-	modplug \
 	metadata \
 	mimic \
+	modplug \
+    mozilla \
 	mpeg2enc \
 	mplex \
 	musepack \
