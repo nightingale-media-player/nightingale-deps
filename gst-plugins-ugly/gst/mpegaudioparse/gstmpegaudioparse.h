@@ -108,6 +108,11 @@ struct _GstMPEGAudioParse {
   guint32 xing_vbr_scale;
   guint   xing_bitrate;
 
+  /* Gapless trim info */
+  gint trim_start;
+  gint trim_end;
+  gboolean unknown_incoming_format;
+
   /* VBRI info */
   guint32 vbri_frames;
   GstClockTime vbri_total_time;
@@ -115,6 +120,9 @@ struct _GstMPEGAudioParse {
   guint vbri_bitrate;
   guint vbri_seek_points;
   guint32 *vbri_seek_table;
+
+  /* iTunes info */
+  guint32 itunsmpb_total_samples;
 
   /* Accurate seeking */
   GList *seek_table;
