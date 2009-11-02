@@ -449,6 +449,47 @@ gst_base_audio_sink_query (GstElement * element, GstQuery * query)
       }
       break;
     }
+    case GST_QUERY_POSITION:
+    {
+      GstFormat format;
+      gst_query_parse_position (query, &format, NULL);
+      if (format == GST_FORMAT_TIME) {
+        GstState state;
+        GST_OBJECT_LOCK (element);
+        state = GST_STATE (element);
+        GST_OBJECT_UNLOCK (element);
+
+        if (state == GST_STATE_PAUSED) {
+          res = GST_ELEMENT_CLASS (parent_class)->query (element, query);
+          if (res && basesink->ringbuffer && basesink->ringbuffer->spec.rate) {
+            /* In PAUSED, basesink doesn't include the latency of the
+             * ringbuffer in its position reporting, so add that here.
+             */
+            GstClockTime position;
+            GstRingBufferSpec *spec;
+            guint64 latency_samples;
+
+            gst_query_parse_position (query, &format, &position);
+            spec = &basesink->ringbuffer->spec;
+
+            latency_samples = (guint64)spec->seglatency * spec->segsize / spec->bytes_per_sample;
+            latency_samples += gst_ring_buffer_delay (basesink->ringbuffer);
+
+            position -= gst_util_uint64_scale_int (latency_samples,
+              GST_SECOND, spec->rate);
+
+            gst_query_set_position (query, format, position);
+
+            return TRUE;
+          }
+        }
+      }
+
+      /* Otherwise, just use basesink's query implementation */
+      res = GST_ELEMENT_CLASS (parent_class)->query (element, query);
+
+      break;
+    }
     default:
       res = GST_ELEMENT_CLASS (parent_class)->query (element, query);
       break;
