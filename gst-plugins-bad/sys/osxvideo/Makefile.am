@@ -1,3 +1,4 @@
+OBJC=gcc
 
 plugin_LTLIBRARIES = libgstosxvideosrc.la
 
