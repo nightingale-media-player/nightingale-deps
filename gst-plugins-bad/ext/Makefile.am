@@ -366,6 +366,12 @@ else
 XVID_DIR=
 endif
 
+if USE_ASFMUX
+ASF_DIR=asfmux
+else
+ASF_DIR=
+endif
+
 if USE_ZBAR
 ZBAR_DIR=zbar
 else
@@ -379,6 +385,7 @@ SUBDIRS=\
 	$(APEXSINK_DIR) \
 	$(ARTS_DIR) \
 	$(ARTSC_DIR) \
+	$(ASF_DIR) \
 	$(AUDIOFILE_DIR) \
 	$(AUDIORESAMPLE_DIR) \
 	$(BZ2_DIR) \
@@ -440,6 +447,7 @@ DIST_SUBDIRS = \
 	amrwbenc \
 	assrender \
 	apexsink \
+	asfmux \
 	bz2 \
 	cdaudio \
 	celt \

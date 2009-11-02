@@ -695,6 +695,13 @@ int main(void)
   LIBS="$saved_LIBS"
 ])
 
+dnl *** ASFMUX ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_ASFMUX, true)
+AG_GST_CHECK_FEATURE(ASFMUX, [asf muxer], asfmux, [
+  AC_CHECK_FILE([$srcdir/ext/asfmux/asfmux.c], [
+      HAVE_ASFMUX="yes"], [HAVE_ASFMUX="no"])
+])
+
 dnl *** BZ2 ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_BZ2, true)
 AG_GST_CHECK_FEATURE(BZ2, [bz2 library], bz2, [
@@ -1687,6 +1694,7 @@ AM_CONDITIONAL(USE_ALSA, false)
 AM_CONDITIONAL(USE_ASSRENDER, false)
 AM_CONDITIONAL(USE_AMRWB, false)
 AM_CONDITIONAL(USE_APEXSINK, false)
+AM_CONDITIONAL(USE_ASFMUX, false)
 AM_CONDITIONAL(USE_BZ2, false)
 AM_CONDITIONAL(USE_CDAUDIO, false)
 AM_CONDITIONAL(USE_CELT, false)
@@ -1927,6 +1935,7 @@ ext/alsaspdif/Makefile
 ext/amrwbenc/Makefile
 ext/assrender/Makefile
 ext/apexsink/Makefile
+ext/asfmux/Makefile
 ext/bz2/Makefile
 ext/cdaudio/Makefile
 ext/celt/Makefile
