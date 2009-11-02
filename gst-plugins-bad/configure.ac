@@ -1957,9 +1957,10 @@ ext/lv2/Makefile
 ext/libmms/Makefile
 ext/Makefile
 ext/metadata/Makefile
-ext/modplug/Makefile
-ext/mpeg2enc/Makefile
 ext/mimic/Makefile
+ext/modplug/Makefile
+ext/mozilla/Makefile
+ext/mpeg2enc/Makefile
 ext/mplex/Makefile
 ext/musepack/Makefile
 ext/musicbrainz/Makefile
