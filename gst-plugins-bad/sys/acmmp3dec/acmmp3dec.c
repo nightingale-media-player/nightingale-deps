@@ -110,36 +110,36 @@ acmmp3dec_caps_from_format (WAVEFORMATEX * fmt)
 }
 
 gboolean
-acmmp3dec_set_input_format (ACMMP3Dec * dec)
+acmmp3dec_set_input_format (MPEGLAYER3WAVEFORMAT *infmt, int channels, int rate)
 {
-  dec->infmt.wfx.wFormatTag = WAVE_FORMAT_MPEGLAYER3;
-  dec->infmt.wfx.nChannels = dec->channels;
-  dec->infmt.wfx.nSamplesPerSec = dec->rate;
-  dec->infmt.wfx.nAvgBytesPerSec = 8000;        /* Has to be set, but actual
+  infmt->wfx.wFormatTag = WAVE_FORMAT_MPEGLAYER3;
+  infmt->wfx.nChannels = channels;
+  infmt->wfx.nSamplesPerSec = rate;
+  infmt->wfx.nAvgBytesPerSec = 8000;        /* Has to be set, but actual
                                                    value doesn't matter */
-  dec->infmt.wfx.nBlockAlign = 1;
-  dec->infmt.wfx.wBitsPerSample = 0;
-  dec->infmt.wfx.cbSize = MPEGLAYER3_WFX_EXTRA_BYTES;
-  dec->infmt.wID = MPEGLAYER3_ID_MPEG;
-  dec->infmt.fdwFlags = MPEGLAYER3_FLAG_PADDING_OFF;
-  dec->infmt.nBlockSize = 1;    /* Needs to be non-zero, actual
+  infmt->wfx.nBlockAlign = 1;
+  infmt->wfx.wBitsPerSample = 0;
+  infmt->wfx.cbSize = MPEGLAYER3_WFX_EXTRA_BYTES;
+  infmt->wID = MPEGLAYER3_ID_MPEG;
+  infmt->fdwFlags = MPEGLAYER3_FLAG_PADDING_OFF;
+  infmt->nBlockSize = 1;    /* Needs to be non-zero, actual
                                    value doesn't matter */
-  dec->infmt.nFramesPerBlock = 1;
-  dec->infmt.nCodecDelay = 0;
+  infmt->nFramesPerBlock = 1;
+  infmt->nCodecDelay = 0;
 
   return TRUE;
 }
 
 gboolean
-acmmp3dec_set_output_format (ACMMP3Dec * dec)
+acmmp3dec_set_output_format (WAVEFORMATEX *outfmt, int channels, int rate)
 {
-  dec->outfmt.wFormatTag = WAVE_FORMAT_PCM;
-  dec->outfmt.nChannels = dec->channels;
-  dec->outfmt.nSamplesPerSec = dec->rate;
-  dec->outfmt.nAvgBytesPerSec = 2 * dec->channels * dec->rate;
-  dec->outfmt.nBlockAlign = 2 * dec->channels;
-  dec->outfmt.wBitsPerSample = 16;
-  dec->outfmt.cbSize = 0;
+  outfmt->wFormatTag = WAVE_FORMAT_PCM;
+  outfmt->nChannels = channels;
+  outfmt->nSamplesPerSec = rate;
+  outfmt->nAvgBytesPerSec = 2 * channels * rate;
+  outfmt->nBlockAlign = 2 * channels;
+  outfmt->wBitsPerSample = 16;
+  outfmt->cbSize = 0;
 
   return TRUE;
 }
@@ -150,14 +150,21 @@ acmmp3dec_setup (ACMMP3Dec * dec)
   MMRESULT res;
   int destBufferSize;
 
-  acmmp3dec_set_input_format (dec);
-  acmmp3dec_set_output_format (dec);
+  /* For some unknown reason, we have to do this again here, or acmStreamOpen
+   * can fail - even though we ensured that it was working earlier (though on
+   * a different thread)
+   */
+  acmmp3dec_ensure_codec();
 
-  res =
-      acmStreamOpen (&dec->stream, NULL, (LPWAVEFORMATEX) & dec->infmt,
-      &dec->outfmt, 0, 0, 0, 0);
+  acmmp3dec_set_input_format (&dec->infmt, dec->channels, dec->rate);
+  acmmp3dec_set_output_format (&dec->outfmt, dec->channels, dec->rate);
+
+  res = acmStreamOpen (&dec->stream, NULL, &dec->infmt, &dec->outfmt,
+      0, 0, 0, 0);
   if (res) {
     GST_WARNING_OBJECT (dec, "Failed to open ACM stream: %d", res);
+    GST_ELEMENT_ERROR (dec, LIBRARY, INIT, 
+            ("Failed to initialise ACM MP3 decoder (l3codeca.acm)"), (NULL));
     return FALSE;
   }
 
@@ -172,7 +179,7 @@ acmmp3dec_setup (ACMMP3Dec * dec)
 
   /* Ask what buffer size we need to use for our output */
   acmStreamSize (dec->stream, ACM_BUFFER_SIZE,
-      (LPDWORD) & destBufferSize, ACM_STREAMSIZEF_SOURCE);
+      &destBufferSize, ACM_STREAMSIZEF_SOURCE);
 
   dec->header.pbDst = (BYTE *) g_malloc (destBufferSize);
   dec->header.cbDstLength = destBufferSize;
@@ -405,7 +412,7 @@ acmmp3dec_class_init (ACMMP3DecClass * klass)
 }
 
 static void
-acmmp3dec_base_init (gpointer klass)
+acmmp3dec_base_init (ACMMP3DecClass * klass)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
 
@@ -417,9 +424,87 @@ acmmp3dec_base_init (gpointer klass)
 }
 
 static gboolean
+acmmp3dec_test_mp3(void)
+{
+  MPEGLAYER3WAVEFORMAT infmt;
+  WAVEFORMATEX outfmt;
+  MMRESULT res;
+
+  acmmp3dec_set_input_format (&infmt, 2, 44100);
+  acmmp3dec_set_output_format (&outfmt, 2, 44100);
+
+  res = acmStreamOpen (NULL, NULL, &infmt, &outfmt, 0, 0, 0, 
+      ACM_STREAMOPENF_QUERY);
+  if (res) {
+    GST_WARNING ("Failed to open ACM stream: %d", res);
+    return FALSE;
+  }
+
+  GST_DEBUG ("ACM decode is supported");
+  return TRUE;
+}
+
+  
+/* Try to make sure the acm mp3 decoder is functional.
+ * If it isn't, try to load it explicitly from l3codeca.acm
+ */
+static gboolean
+acmmp3dec_ensure_codec(void)
+{
+  static const char * mp3_decoder_filename = "l3codeca.acm";
+  char system_folder[MAX_PATH] = {0};
+
+  /* First, let's see if we can create an MP3 decoder - if we can, we don't
+   * need to do anything else */
+  if (acmmp3dec_test_mp3()) {
+    GST_DEBUG ("MP3 decode appears functional");
+    return TRUE;
+  }
+
+  if (GetSystemDirectoryA (system_folder, MAX_PATH)) {
+    char path[MAX_PATH] = {0};
+    HMODULE mod = NULL;
+
+    strcat(path, system_folder);
+    strcat(path, "\\");
+    strcat(path, mp3_decoder_filename);
+
+    mod = LoadLibraryExA(path, NULL, 0);
+
+    if (mod) {
+      FARPROC func = GetProcAddress (mod, "DriverProc");
+      if (func) {
+	HACMDRIVERID driverid;
+        MMRESULT res = acmDriverAdd (&driverid, mod, (LPARAM) func, 0, 
+            ACM_DRIVERADDF_FUNCTION);
+        if (!res) {
+          GST_DEBUG ("Added driver");
+          /* Try this again, return whatever it says */
+          return acmmp3dec_test_mp3();
+        }
+
+        GST_WARNING ("Failed to add ACM driver: %d", res);
+      }
+      else {
+        GST_WARNING ("Failed to find 'DriverProc' in ACM");
+      }
+    }
+  }
+
+  GST_WARNING ("Failed to add l3codeca.acm");
+  return FALSE;
+}
+
+static gboolean
 plugin_init (GstPlugin * plugin)
 {
   GST_DEBUG_CATEGORY_INIT (acmmp3dec_debug, "acmmp3dec", 0, "ACM Decoders");
+
+  if (!acmmp3dec_ensure_codec()) {
+    /* If we couldn't set up mp3 decoding, error out... */
+    GST_WARNING ("No MP3 decoding support in ACM found");
+    return FALSE;
+  }
 
   GST_INFO ("Registering ACM MP3 decoder");
   if (!gst_element_register (plugin, "acmmp3dec", GST_RANK_PRIMARY,
