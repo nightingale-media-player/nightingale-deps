@@ -81,9 +81,11 @@ typedef struct dts_state_s dca_state_t;
 
 #include "gstdtsdec.h"
 
+#ifdef HAVE_LIBOIL
 #include <liboil/liboil.h>
 #include <liboil/liboilcpu.h>
 #include <liboil/liboilfunction.h>
+#endif
 
 static const GstElementDetails gst_dtsdec_details =
 GST_ELEMENT_DETAILS ("DTS audio decoder",
@@ -168,7 +170,7 @@ gst_dtsdec_class_init (GstDtsDecClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
-  guint cpuflags;
+  guint cpuflags = 0;
 
   gobject_class = (GObjectClass *) klass;
   gstelement_class = (GstElementClass *) klass;
@@ -190,9 +192,11 @@ gst_dtsdec_class_init (GstDtsDecClass * klass)
       g_param_spec_boolean ("drc", "Dynamic Range Compression",
           "Use Dynamic Range Compression", FALSE, G_PARAM_READWRITE));
 
+  klass->dts_cpuflags = 0;
+
+#ifdef HAVE_LIBOIL
   oil_init ();
 
-  klass->dts_cpuflags = 0;
   cpuflags = oil_cpu_get_flags ();
   if (cpuflags & OIL_IMPL_FLAG_MMX)
     klass->dts_cpuflags |= MM_ACCEL_X86_MMX;
@@ -200,6 +204,7 @@ gst_dtsdec_class_init (GstDtsDecClass * klass)
     klass->dts_cpuflags |= MM_ACCEL_X86_3DNOW;
   if (cpuflags & OIL_IMPL_FLAG_MMXEXT)
     klass->dts_cpuflags |= MM_ACCEL_X86_MMXEXT;
+#endif
 
   GST_LOG ("CPU flags: dts=%08x, liboil=%08x", klass->dts_cpuflags, cpuflags);
 }

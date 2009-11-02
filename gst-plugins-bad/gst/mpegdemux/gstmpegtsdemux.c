@@ -48,12 +48,18 @@
 #include <string.h>
 #include <stdlib.h>
 
+#ifdef HAVE_LIBOIL
 #include <liboil/liboil.h>
+#endif
 
 #include "gstmpegdefs.h"
 #include "gstmpegtsdemux.h"
 #include "flutspatinfo.h"
 #include "flutspmtinfo.h"
+
+#ifndef HAVE_LIBOIL
+#define oil_memcpy memcpy
+#endif
 
 GST_DEBUG_CATEGORY_STATIC (gstmpegtsdemux_debug);
 #define GST_CAT_DEFAULT (gstmpegtsdemux_debug)
@@ -332,7 +338,10 @@ gst_mpegts_demux_init (GstMpegTSDemux * demux)
   demux->pcr[1] = -1;
   demux->cache_duration = GST_CLOCK_TIME_NONE;
   demux->base_pts = GST_CLOCK_TIME_NONE;
+
+#ifdef HAVE_LIBOIL
   oil_init ();
+#endif
 }
 
 static void
