@@ -88,9 +88,16 @@ else
 DSHOW_DIRS=
 endif
 
+if USE_DMO
+DMO_DIR=dmoenc
+else
+DMO_DIR=
+endif
+
 SUBDIRS = $(ACM_DIR) \
           $(DIRECTDRAW_DIR) \
           $(DIRECTSOUND_DIR) \
+          $(DMO_DIR) \
           $(DSHOW_DIRS) \
           $(DVB_DIR) \
           $(FBDEV_DIR) \
@@ -107,6 +114,7 @@ DIST_SUBDIRS = acmenc \
                directsound \
                dvb \
                fbdev \
+               dmoenc \
                dshowdecwrapper \
                dshowsrcwrapper \
                dshowvideosink \

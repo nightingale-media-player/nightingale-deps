@@ -1611,6 +1611,16 @@ AG_GST_CHECK_FEATURE(ACM, [Windows ACM library], acm, [
       ], [HAVE_ACM="no"])
 ])
 
+dnl *** DMO ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_DMO, true)
+AG_GST_CHECK_FEATURE(DMO, [Windows DMO library], dmo, [
+  AC_MSG_CHECKING([Checking for DMO support])
+  AC_CHECK_HEADERS([windows.h dmo.h],
+      [HAVE_DMO="yes"
+       AC_SUBST(DMO_CFLAGS)
+      ], [HAVE_DMO="no"])
+])
+
 dnl *** vdpau ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_VDPAU, true)
 AG_GST_CHECK_FEATURE(VDPAU, [VDPAU], vdpau, [
@@ -1686,6 +1696,7 @@ AM_CONDITIONAL(USE_DIRECTFB, false)
 AM_CONDITIONAL(USE_DIRAC, false)
 AM_CONDITIONAL(USE_DTS, false)
 AM_CONDITIONAL(USE_DIVX, false)
+AM_CONDITIONAL(USE_DMO, false)
 AM_CONDITIONAL(USE_DVDNAV, false)
 AM_CONDITIONAL(USE_METADATA, false)
 AM_CONDITIONAL(USE_FAAC, false)
@@ -1888,6 +1899,7 @@ sys/acmenc/Makefile
 sys/acmmp3dec/Makefile
 sys/directdraw/Makefile
 sys/directsound/Makefile
+sys/dmoenc/Makefile
 sys/dshowsrcwrapper/Makefile
 sys/dshowvideosink/Makefile
 sys/dvb/Makefile
