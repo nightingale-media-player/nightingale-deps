@@ -42,7 +42,11 @@
 #include <gst/base/gstbasetransform.h>
 #include <gst/video/video.h>
 #include <math.h>
+
+#ifdef HAVE_LIBOIL
 #include <liboil/liboil.h>
+#endif
+
 #include <string.h>
 
 GST_DEBUG_CATEGORY_STATIC (videobox_debug);
@@ -521,6 +525,50 @@ gst_video_box_get_unit_size (GstBaseTransform * trans, GstCaps * caps,
 
   return TRUE;
 }
+
+#ifndef HAVE_LIBOIL
+#include "_stdint.h"
+
+/* gst_splat_* functions written based on the liboil documentation, then 
+ * we add #defines to make it match the callers elsewhere in this file.
+ *
+ * The others map directly to memcpy, so we just define it that way directly.
+ */
+#define oil_copy_u8(dest,src,n) memcpy(dest,src,n)
+#define oil_memcpy(dest,src,n) memcpy(dest,src,n)
+
+#define oil_splat_u8 gst_splat_u8
+#define oil_splat_u8_ns gst_splat_u8_ns
+#define oil_splat_u32_ns gst_splat_u32_ns
+
+static void gst_splat_u8 (uint8_t *dest, int dstr, uint8_t *param, int n)
+{
+  int i;
+  uint8_t *dst = dest;
+  uint8_t val = *param;
+  for(i=0;i<n;i++){
+    *dst = val;
+    dst += dstr;
+  }
+}
+
+static void gst_splat_u8_ns (uint8_t *dest, uint8_t *param, int n)
+{
+  int i;
+  for(i=0;i<n;i++){
+    dest[i] = *param;
+  }
+}
+
+static void gst_splat_u32_ns (uint32_t *dest, uint32_t *param, int n)
+{
+  int i;
+  for(i=0;i<n;i++){
+    dest[i] = *param;
+  }
+}
+
+#endif
 
 static const guint8 yuv_colors_Y[VIDEO_BOX_FILL_LAST] = { 16, 150, 29 };
 static const guint8 yuv_colors_U[VIDEO_BOX_FILL_LAST] = { 128, 46, 255 };
@@ -1173,7 +1221,9 @@ invalid_format:
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
+#ifdef HAVE_LIBOIL
   oil_init ();
+#endif
 
   return gst_element_register (plugin, "videobox", GST_RANK_NONE,
       GST_TYPE_VIDEO_BOX);

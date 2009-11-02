@@ -307,6 +307,9 @@ static gboolean
 plugin_init (GstPlugin * plugin)
 {
   GST_DEBUG_CATEGORY_INIT (gamma_debug, "gamma", 0, "gamma");
+#ifdef HAVE_LIBOIL
+  oil_init();
+#endif
 
   return gst_element_register (plugin, "gamma", GST_RANK_NONE, GST_TYPE_GAMMA);
 }
