@@ -49,9 +49,11 @@
 #include <a52dec/mm_accel.h>
 #include "gsta52dec.h"
 
+#ifdef HAVE_LIBOIL
 #include <liboil/liboil.h>
 #include <liboil/liboilcpu.h>
 #include <liboil/liboilfunction.h>
+#endif
 
 /* elementfactory information */
 static GstElementDetails gst_a52dec_details = {
@@ -151,7 +153,7 @@ gst_a52dec_class_init (GstA52DecClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
-  guint cpuflags;
+  guint cpuflags = 0;
 
   gobject_class = (GObjectClass *) klass;
   gstelement_class = (GstElementClass *) klass;
@@ -199,6 +201,8 @@ gst_a52dec_class_init (GstA52DecClass * klass)
 #else
   klass->a52_cpuflags = 0;
 #endif
+
+#ifdef HAVE_LIBOIL
   cpuflags = oil_cpu_get_flags ();
   if (cpuflags & OIL_IMPL_FLAG_MMX)
     klass->a52_cpuflags |= MM_ACCEL_X86_MMX;
@@ -206,6 +210,7 @@ gst_a52dec_class_init (GstA52DecClass * klass)
     klass->a52_cpuflags |= MM_ACCEL_X86_3DNOW;
   if (cpuflags & OIL_IMPL_FLAG_MMXEXT)
     klass->a52_cpuflags |= MM_ACCEL_X86_MMXEXT;
+#endif
 
   GST_LOG ("CPU flags: a52=%08x, liboil=%08x", klass->a52_cpuflags, cpuflags);
 }
