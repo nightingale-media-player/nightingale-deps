@@ -41,7 +41,10 @@
 
 #include <string.h>
 #include <stdlib.h>
+
+#ifdef HAVE_LIBOIL
 #include <liboil/liboil.h>
+#endif
 
 GST_DEBUG_CATEGORY_STATIC (video_test_src_debug);
 #define GST_CAT_DEFAULT video_test_src_debug
@@ -836,7 +839,9 @@ gst_video_test_src_start (GstBaseSrc * basesrc)
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
+#ifdef HAVE_LIBOIL
   oil_init ();
+#endif
 
   GST_DEBUG_CATEGORY_INIT (video_test_src_debug, "videotestsrc", 0,
       "Video Test Source");

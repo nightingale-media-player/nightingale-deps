@@ -55,7 +55,10 @@
 #include <string.h>
 
 #include <gst/video/video.h>
+
+#ifdef HAVE_LIBOIL
 #include <liboil/liboil.h>
+#endif
 
 #include "gstvideoscale.h"
 #include "vs_image.h"
@@ -1013,7 +1016,9 @@ gst_video_scale_src_event (GstBaseTransform * trans, GstEvent * event)
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
+#ifdef HAVE_LIBOIL
   oil_init ();
+#endif
 
   if (!gst_element_register (plugin, "videoscale", GST_RANK_NONE,
           GST_TYPE_VIDEO_SCALE))

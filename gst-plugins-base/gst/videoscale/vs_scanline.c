@@ -27,7 +27,95 @@
 
 #include "vs_scanline.h"
 
+#ifdef HAVE_LIBOIL
 #include <liboil/liboil.h>
+#else
+#include "_stdint.h"
+
+/* Code for these liboil-replacement functions taken from the upstream 
+ * revision 1.1 of this file, modified to use a scaling factor of 8 
+ * rather than 16, and to match what the liboil API does in other ways where
+ * the calling code has since changed.
+ *
+ * The #defines are to match the liboil API used by callers in this file.
+ */
+#define oil_resample_linear_u8 gst_resample_linear_u8
+#define oil_merge_linear_u8 gst_merge_linear_u8
+#define oil_resample_linear_argb gst_resample_linear_argb
+
+static void gst_resample_linear_u8 (uint8_t *dest, uint8_t *src, int n,
+        uint32_t *in)
+{
+  int acc = in[0];
+  int i;
+  int j;
+  int x;
+
+  for (i = 0; i < n; i++) {
+    j = acc >> 16;
+    x = (acc & 0xffff)>>8;
+    dest[i] = (src[j] * (256 - x) + src[j + 1] * x) >> 8;
+
+    acc += in[1];
+  }
+  in[0] = acc;
+}
+
+static void gst_merge_linear_u8 (uint8_t *dest, uint8_t *src1, uint8_t *src2,
+    uint32_t *src3, int n)
+{
+  int i;
+  int x = *src3;
+ 
+  for (i = 0; i < n; i++) {
+    dest[i] = (src1[i] * (256 - x) + src2[i] * x) >> 8;
+  }
+}
+
+static void
+gst_resample_linear_argb (uint32_t *dest, uint32_t *src, int n, uint32_t *in)
+{
+  int acc = in[0];
+  int i;
+  int j;
+  int x;
+  uint8_t *d = (uint8_t *)dest;
+  uint8_t *s = (uint8_t *)src;
+
+  for (i = 0; i < n; i++) {
+    j = acc >> 16;
+    x = (acc & 0xffff)>>8;
+    d[i * 4 + 0] = (s[j * 4 + 0] * (256 - x) + s[j * 4 + 4] * x) >> 8;
+    d[i * 4 + 1] = (s[j * 4 + 1] * (256 - x) + s[j * 4 + 5] * x) >> 8;
+    d[i * 4 + 2] = (s[j * 4 + 2] * (256 - x) + s[j * 4 + 6] * x) >> 8;
+    d[i * 4 + 3] = (s[j * 4 + 3] * (256 - x) + s[j * 4 + 7] * x) >> 8;
+
+    acc += in[1];
+  }
+ 
+  in[0] = acc;
+}
+
+/* This function written from scratch based on the liboil documentation */
+#define oil_merge_linear_argb gst_merge_linear_argb
+static void gst_merge_linear_argb (uint32_t *dest, uint32_t *src1, uint32_t *src2, 
+        uint32_t *src3, int n)
+{
+  int i;
+  int x = *src3;
+  uint8_t *d = (uint8_t *)dest;
+  uint8_t *s1 = (uint8_t *)src1;
+  uint8_t *s2 = (uint8_t *)src2;
+ 
+  for (i = 0; i < n; i++) {
+    d[i*4 + 0] = (s1[i*4+0] * (256 - x) + s2[i*4+0] * x) >> 8;
+    d[i*4 + 1] = (s1[i*4+1] * (256 - x) + s2[i*4+1] * x) >> 8;
+    d[i*4 + 2] = (s1[i*4+2] * (256 - x) + s2[i*4+2] * x) >> 8;
+    d[i*4 + 3] = (s1[i*4+3] * (256 - x) + s2[i*4+3] * x) >> 8;
+  }
+}
+
+#endif /* HAVE_LIBOIL */
 
 /* greyscale, i.e., single componenet */
 

@@ -50,10 +50,12 @@
 #include <gst/audio/audio.h>
 #include <gst/base/gstbasetransform.h>
 
+#ifdef HAVE_LIBOIL
 #if defined AUDIORESAMPLE_FORMAT_AUTO
 #define OIL_ENABLE_UNSTABLE_API
 #include <liboil/liboilprofile.h>
 #include <liboil/liboil.h>
+#endif
 #endif
 
 GST_DEBUG_CATEGORY (audio_resample_debug);
@@ -1338,6 +1340,7 @@ gst_audio_resample_get_property (GObject * object, guint prop_id,
   }
 }
 
+#ifdef HAVE_LIBOIL
 #if defined AUDIORESAMPLE_FORMAT_AUTO
 #define BENCHMARK_SIZE 512
 
@@ -1450,17 +1453,20 @@ error:
   return FALSE;
 }
 #endif
+#endif
 
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
   GST_DEBUG_CATEGORY_INIT (audio_resample_debug, "audioresample", 0,
       "audio resampling element");
+#ifdef HAVE_LIBOIL
 #if defined AUDIORESAMPLE_FORMAT_AUTO
   oil_init ();
 
   if (!_benchmark_integer_resampling ())
     return FALSE;
+#endif
 #endif
 
   if (!gst_element_register (plugin, "audioresample", GST_RANK_PRIMARY,

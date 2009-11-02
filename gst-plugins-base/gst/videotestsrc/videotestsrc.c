@@ -25,8 +25,10 @@
 
 #include "gstvideotestsrc.h"
 #include "videotestsrc.h"
-#include <liboil/liboil.h>
 
+#ifdef HAVE_LIBOIL
+#include <liboil/liboil.h>
+#endif
 
 #include <string.h>
 #include <stdlib.h>
@@ -35,6 +37,46 @@
 #ifndef M_PI
 #define M_PI  3.14159265358979323846
 #endif
+
+#ifndef HAVE_LIBOIL
+#include "_stdint.h"
+
+/* Fairly trivial functions written based on the liboil documentation. The
+ * #defines here are to match the liboil function names as used by callers
+ * elsewhere in this file.
+ */
+#define oil_splat_u8 gst_splat_u8
+#define oil_splat_u8_ns gst_splat_u8_ns
+#define oil_splat_u16_ns gst_splat_u16_ns
+
+static void gst_splat_u8 (uint8_t *dest, int dstr, uint8_t *param, int n)
+{
+  int i;
+  uint8_t *dst = dest;
+  uint8_t val = *param;
+  for(i=0;i<n;i++){
+    *dst = val;
+    dst += dstr;
+  }
+}
+
+static void gst_splat_u8_ns (uint8_t *dest, uint8_t *param, int n)
+{
+  int i;
+  for(i=0;i<n;i++){
+    dest[i] = *param;
+  }
+}
+
+static void gst_splat_u16_ns (uint16_t *dest, uint16_t *param, int n)
+{
+  int i;
+  for(i=0;i<n;i++){
+    dest[i] = *param;
+  }
+}
+
+#endif /* HAVE_LIBOIL */
 
 static unsigned char
 random_char (void)
