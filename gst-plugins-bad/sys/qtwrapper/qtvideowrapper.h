@@ -42,46 +42,27 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
+#ifndef __GST_QTVIDEOWRAPPER_H__
+#define __GST_QTVIDEOWRAPPER_H__
 
-#include "qtwrapper.h"
-#include <stdio.h>
-
-GST_DEBUG_CATEGORY (qtwrapper_debug);
-
-static gboolean
-plugin_init (GstPlugin * plugin)
-{
-  gboolean res;
-  OSErr status;
-
-  GST_DEBUG_CATEGORY_INIT (qtwrapper_debug, "qtwrapper",
-      0, "QuickTime codecs wrappers");
-
-  /* Initialize quicktime environment */
+#include <gst/gst.h>
 #ifdef G_OS_WIN32
-  /* Only required on win32 */
-  InitializeQTML (0);
+#include <Movies.h>
+#include <QTML.h>
+#else
+#include <Quicktime/Movies.h>
 #endif
 
-  status = EnterMovies ();
-  if (status) {
-    GST_ERROR ("Error initializing QuickTime environment: %d", status);
-    return FALSE;
-  }
+/* Set following to 1 if you want to have extra debug in form of
+ * memory dumps */
+#define DEBUG_DUMP 0
 
-  GST_INFO ("Registering video decoders");
-  res = qtwrapper_video_decoders_register (plugin);
-  GST_INFO ("Registering audio decoders");
-  res &= qtwrapper_audio_decoders_register (plugin);
+GST_DEBUG_CATEGORY_EXTERN (qtvideowrapper_debug);
+#define GST_CAT_DEFAULT qtvideowrapper_debug
 
-  return res;
-}
+G_BEGIN_DECLS
 
-GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
-    GST_VERSION_MINOR,
-    "qtwrapper",
-    "QuickTime codecs wrapper",
-    plugin_init, VERSION, "LGPL", "GStreamer", "http://gstreamer.net/")
+extern gboolean qtwrapper_video_decoders_register (GstPlugin *);
+
+G_END_DECLS
+#endif /* __GST_QTVIDEOWRAPPER_H__ */

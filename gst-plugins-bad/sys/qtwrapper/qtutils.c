@@ -51,6 +51,61 @@
 
 #include "qtutils.h"
 
+#ifdef G_OS_WIN32
+#include <windows.h>
+#include <QTML.h>
+
+gboolean
+quicktime_os_specific_init ()
+{
+  /* As of QuickTime 7.6.4 (comes with iTunes 9), the QTSystem directory MUST be
+     in the DLL search path when we call InitializeQTML. So, figure out the path
+     for that, and add it. */
+  HKEY key;
+  OSErr status;
+
+  LONG ret = RegOpenKey (
+          HKEY_LOCAL_MACHINE,
+          L"SOFTWARE\\Apple Computer, Inc.\\QuickTime",
+          &key);
+
+  if (ret == ERROR_SUCCESS) {
+    wchar_t buffer[4096] = { 0 };
+    DWORD len = sizeof (buffer);
+    ret = RegQueryValueEx (
+            key,
+            L"QTSysDir",
+            0,
+            NULL,
+            (LPBYTE)buffer,
+            &len);
+    if (ret == ERROR_SUCCESS) {
+      /* Add the quicktime system dir to the DLL search path if we found it */
+      SetDllDirectory (buffer);
+    }
+
+    RegCloseKey (key);
+  }
+
+  /* Actually load QT */
+  status = InitializeQTML (0);
+  if (status) {
+    GST_WARNING ("InitializeQTML failed: %d", status);
+    return FALSE;
+  }
+
+  return TRUE;
+}
+#else
+gboolean
+quicktime_os_specific_init ()
+{
+  /* Nothing needed here */
+  return TRUE;
+}
+#endif
+
+
 gboolean
 get_name_info_from_component (Component componentID,
     ComponentDescription * desc, gchar ** name, gchar ** info)
@@ -387,9 +442,7 @@ dump_codec_decompress_params (CodecDecompressParams * params)
   GST_LOG ("capabilities:%p", params->capabilities);
   GST_LOG ("port:%p", params->port);
   GST_LOG ("dstPixMap");
-#if DEBUG_DUMP
   gst_util_dump_mem ((const guchar *) &params->dstPixMap, sizeof (PixMap));
-#endif
 
   GST_LOG ("maskBits:%p", params->maskBits);
   GST_LOG ("mattePixMap:%p", params->mattePixMap);

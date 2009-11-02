@@ -42,7 +42,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "qtwrapper.h"
 #include "codecmapping.h"
 #include "qtutils.h"
 
@@ -53,7 +52,7 @@ audio_caps_from_string (gchar * str)
 
   res = gst_caps_from_string (str);
   gst_caps_set_simple (res,
-      "rate", GST_TYPE_INT_RANGE, 8000, 96000,
+      "rate", GST_TYPE_INT_RANGE, 1, 192000,
       "channels", GST_TYPE_INT_RANGE, 1, 2, NULL);
 
   return res;

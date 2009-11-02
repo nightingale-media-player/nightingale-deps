@@ -1,5 +1,5 @@
 /*
- * GStreamer QuickTime video decoder codecs wrapper
+ * GStreamer QuickTime codecs wrapper
  * Copyright <2006, 2007> Fluendo <gstreamer@fluendo.com>
  * Copyright <2006, 2007> Pioneers of the Inevitable <songbird@songbirdnest.com>
  *
@@ -42,12 +42,27 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
+#ifndef __GST_QTAUDIOWRAPPER_H__
+#define __GST_QTAUDIOWRAPPER_H__
+
+#include <gst/gst.h>
+#ifdef G_OS_WIN32
+#include <Movies.h>
+#include <QTML.h>
+#else
+#include <Quicktime/Movies.h>
 #endif
 
-#include "qtvideowrapper.h"
-#include "qtutils.h"
+/* Set following to 1 if you want to have extra debug in form of
+ * memory dumps */
+#define DEBUG_DUMP 0
 
-ImageDescription *image_description_from_codec_data (GstBuffer * buf,
-    guint32 codec);
+GST_DEBUG_CATEGORY_EXTERN (qtaudiowrapper_debug);
+#define GST_CAT_DEFAULT qtaudiowrapper_debug
+
+G_BEGIN_DECLS
+
+extern gboolean qtwrapper_audio_decoders_register (GstPlugin *);
+
+G_END_DECLS
+#endif /* __GST_QTAUDIOWRAPPER_H__ */

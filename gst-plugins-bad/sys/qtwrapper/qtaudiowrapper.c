@@ -1,5 +1,5 @@
 /*
- * GStreamer QuickTime video decoder codecs wrapper
+ * GStreamer QuickTime codecs wrapper
  * Copyright <2006, 2007> Fluendo <gstreamer@fluendo.com>
  * Copyright <2006, 2007> Pioneers of the Inevitable <songbird@songbirdnest.com>
  *
@@ -43,11 +43,48 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#  include <config.h>
 #endif
 
-#include "qtvideowrapper.h"
-#include "qtutils.h"
+#include "qtaudiowrapper.h"
+#include <stdio.h>
 
-ImageDescription *image_description_from_codec_data (GstBuffer * buf,
-    guint32 codec);
+#ifdef G_OS_WIN32
+#include <windows.h>
+#endif
+
+GST_DEBUG_CATEGORY (qtaudiowrapper_debug);
+
+static gboolean
+plugin_init (GstPlugin * plugin)
+{
+  gboolean res;
+  OSErr status;
+
+  GST_DEBUG_CATEGORY_INIT (qtaudiowrapper_debug, "qtaudiowrapper",
+      0, "QuickTime audio codec wrappers");
+
+  /* Initialize quicktime environment */
+  res = quicktime_os_specific_init ();
+  if (!res) {
+    GST_ERROR ("Error initializing OS-specific QuickTime");
+    return FALSE;
+  }
+
+  status = EnterMovies ();
+  if (status) {
+    GST_ERROR ("Error initializing QuickTime environment: %d", status);
+    return FALSE;
+  }
+
+  GST_INFO ("Registering audio decoders");
+  res = qtwrapper_audio_decoders_register (plugin);
+
+  return res;
+}
+
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "qtaudiowrapper",
+    "QuickTime audio codec wrapper",
+    plugin_init, VERSION, "LGPL", "GStreamer", "http://gstreamer.net/")
