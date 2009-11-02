@@ -491,6 +491,37 @@ AG_GST_CHECK_FEATURE(QUICKTIME, [QuickTime wrapper], qtwrapper, [
   AC_SUBST(QUICKTIME_LDFLAGS)
 ])
 
+dnl check for DirectShow
+
+AC_ARG_WITH(windows-sdk,
+        [ --with-windows-sdk=PATH   Specify path to Windows SDK installation ],
+        [ WINDOWS_SDK_DIR=$withval ],
+        [ WINDOWS_SDK_DIR="" ]
+)
+AC_SUBST(WINDOWS_SDK_DIR)
+
+AC_ARG_WITH(directshow-libs,
+        [ --with-directshow-libs=PATH   Specify path to DirectShow base class libraries ],
+        [ DIRECTSHOW_LIB_DIR=$withval ],
+        [ DIRECTSHOW_LIB_DIR="" ]
+)
+AC_SUBST(DIRECTSHOW_LIB_DIR)
+
+translit(dnm, m, l) AM_CONDITIONAL(USE_DIRECTSHOW, true)
+AG_GST_CHECK_FEATURE(DIRECTSHOW, [DirectShow plug-in], dshowdecwrapper, [
+  HAVE_DIRECTSHOW="no"
+  save_CFLAGS="$CFLAGS"
+  # -TP to compile as C++
+  CFLAGS="$CFLAGS -I$WINDOWS_SDK_DIR/Samples/Multimedia/DirectShow/BaseClasses -TP"
+  AC_MSG_CHECKING(for DirectShow Base classes)
+  AC_CHECK_HEADER([streams.h],
+    [HAVE_DIRECTSHOW="yes"],
+    [HAVE_DIRECTSHOW="no"])
+  AC_MSG_RESULT($HAVE_DIRECTSHOW)
+  CFLAGS=$save_CFLAGS
+  AC_SUBST(HAVE_DIRECTSHOW)
+])
+
 dnl check for Video CD
 translit(dnm, m, l) AM_CONDITIONAL(USE_VCD, true)
 AG_GST_CHECK_FEATURE(VCD, [Video CD], vcdsrc, [

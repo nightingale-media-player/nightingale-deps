@@ -82,8 +82,41 @@ else
 VDPAU_DIR=
 endif
 
-SUBDIRS = $(ACM_DIR) $(DIRECTDRAW_DIR) $(DIRECTSOUND_DIR) $(DVB_DIR) $(FBDEV_DIR) $(OSS4_DIR) $(OSX_VIDEO_DIR) $(QT_DIR) $(VCD_DIR) $(VDPAU_DIR) $(WININET_DIR)
+if USE_DIRECTSHOW
+DSHOW_DIRS=dshowdecwrapper dshowvideosink
+else
+DSHOW_DIRS=
+endif
 
-DIST_SUBDIRS = acmenc acmmp3dec directdraw directsound dvb fbdev dshowdecwrapper dshowsrcwrapper dshowvideosink \
-			   oss4 osxvideo qtwrapper vcd vdpau wasapi wininet winks winscreencap
+SUBDIRS = $(ACM_DIR) \
+          $(DIRECTDRAW_DIR) \
+          $(DIRECTSOUND_DIR) \
+          $(DSHOW_DIRS) \
+          $(DVB_DIR) \
+          $(FBDEV_DIR) \
+          $(OSS4_DIR) \
+          $(OSX_VIDEO_DIR) \
+          $(QT_DIR) \
+          $(VCD_DIR) \
+          $(VDPAU_DIR) \
+          $(WININET_DIR)
+
+DIST_SUBDIRS = acmenc \
+               acmmp3dec \
+               directdraw \
+               directsound \
+               dvb \
+               fbdev \
+               dshowdecwrapper \
+               dshowsrcwrapper \
+               dshowvideosink \
+			   oss4 \
+               osxvideo \
+               qtwrapper \
+               vcd \
+               vdpau \
+               wasapi \
+               wininet \
+               winks \
+               winscreencap
 
