@@ -737,6 +737,9 @@ gst_base_audio_sink_setcaps (GstBaseSink * bsink, GstCaps * caps)
 
   gst_ring_buffer_debug_spec_buff (spec);
 
+  /* After a caps change, we don't want to align the next sample */
+  sink->next_sample = -1;
+
   return TRUE;
 
   /* ERRORS */
