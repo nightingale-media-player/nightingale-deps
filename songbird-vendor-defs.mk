@@ -226,6 +226,11 @@ ifeq (Darwin,$(SB_VENDOR_ARCH))
    SB_VENDOR_TARGET_DEP_MODULES += glib gettext
 endif
 
+ifeq (Linux,$(SB_VENDOR_ARCH))
+   # We need this on linux, as the system may provide a too-old version
+   SB_VENDOR_TARGET_DEP_MODULES += glib
+endif
+
 # Turn on libtool, but only for linux, and only when we're regenerating the
 # (gstreamer, right now) makefiles.
 ifeq (linux-i686_regen-makefiles,$(SB_TARGET_ARCH)_$(MAKECMDGOALS))
