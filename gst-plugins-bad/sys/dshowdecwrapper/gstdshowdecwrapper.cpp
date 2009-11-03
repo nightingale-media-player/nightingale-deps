@@ -56,10 +56,8 @@ plugin_init (GstPlugin * plugin)
   if (!dshow_adec_register (plugin))
     return FALSE;
 
-#if 0
   if (!dshow_vdec_register (plugin))
     return FALSE;
-#endif
 
   return TRUE;
 }
