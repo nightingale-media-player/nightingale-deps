@@ -142,6 +142,18 @@ GTK_DOC_CHECK([1.3])
 AS_PATH_PYTHON([2.1])
 AG_GST_PLUGIN_DOCS([1.3],[2.1])
 
+dnl check if tests are enabled
+AG_GST_CHECK_FEATURE(BUILDING_TESTS, [building of all tests],,
+  HAVE_EXTERNAL=yes, enabled,
+  [
+    AC_MSG_NOTICE(building tests)
+    BUILD_TESTS="yes"
+  ],[
+    AC_MSG_WARN(tests entirely disabled)
+    BUILD_TESTS="no"
+  ])
+AM_CONDITIONAL(BUILD_TESTS, test "x$BUILD_TESTS" = "xyes")
+
 dnl *** checks for libraries ***
 
 dnl libm, for sin() etc.

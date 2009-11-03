@@ -6,12 +6,18 @@ else
 SUBDIRS_EXT =
 endif
 
+if BUILD_TESTS
+TESTS_DIR = tests
+else
+TESTS_DIR =
+endif
+
 SUBDIRS = 			\
 	pkgconfig		\
 	gst-libs 		\
 	gst sys $(SUBDIRS_EXT) 	\
 	tools 			\
-	tests 			\
+	$(TESTS_DIR)    \
 	docs			\
 	po 			\
 	common 			\
