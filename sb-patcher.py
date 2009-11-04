@@ -89,7 +89,14 @@ def extract_fixed_revisions(files, patches):
       fixedRevision = re.match('r(\d+):(.*)', patch)
       if fixedRevision and fixedRevision.group(2) not in patches:
         patch = fixedRevision.group(2)
-        revision = get_changelog(["-r", fixedRevision.group(1)])[0]
+        log = get_changelog(["-r", fixedRevision.group(1)])
+        if len(log) > 0:
+          revision = log[0]
+        else:
+          revision = Revision(fixedRevision.group(1),
+                              "unknown",
+                              "unknown",
+                              "unknown")
         set_patch_revision(patches, patch, revision)
 
 
