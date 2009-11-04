@@ -1,4 +1,4 @@
-linux-i686: glib
-linux-x86_64: glib
-macosx-i686: glib
-windows-i686-msvc8: gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly
+linux-i686: glib gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad
+linux-x86_64: glib gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad
+macosx-i686: glib gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad
+windows-i686-msvc8: gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad 
