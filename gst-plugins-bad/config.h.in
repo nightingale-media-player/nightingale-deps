@@ -1,8 +1,5 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
-/* Define if building universal (internal helper macro) */
-#undef AC_APPLE_UNIVERSAL_BUILD
-
 /* Define if an old libdts is used */
 #undef DTS_OLD
 
@@ -52,6 +49,9 @@
 /* Define to enable AirPort Express Wireless sink (used by apexsink). */
 #undef HAVE_APEXSINK
 
+/* Define to enable asf muxer (used by asfmux). */
+#undef HAVE_ASFMUX
+
 /* Define to enable ASS/SSA renderer (used by assrender). */
 #undef HAVE_ASSRENDER
 
@@ -66,14 +66,6 @@
 
 /* Define if libcelt 0.4 is installed */
 #undef HAVE_CELT_0_4
-
-/* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
-   CoreFoundation framework. */
-#undef HAVE_CFLOCALECOPYCURRENT
-
-/* Define to 1 if you have the MacOS X function CFPreferencesCopyAppValue in
-   the CoreFoundation framework. */
-#undef HAVE_CFPREFERENCESCOPYAPPVALUE
 
 /* Define to enable Cog plugin (used by cog). */
 #undef HAVE_COG
@@ -136,6 +128,9 @@
 /* Define to enable directfb (used by dfbvideosink ). */
 #undef HAVE_DIRECTFB
 
+/* Define to enable DirectShow plug-in (used by dshowdecwrapper). */
+#undef HAVE_DIRECTSHOW
+
 /* Define to enable DirectSound (used by directsoundsrc). */
 #undef HAVE_DIRECTSOUND
 
@@ -144,6 +139,12 @@
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
+
+/* Define to enable Windows DMO library (used by dmo). */
+#undef HAVE_DMO
+
+/* Define to 1 if you have the <dmo.h> header file. */
+#undef HAVE_DMO_H
 
 /* define for working do while(0) macros */
 #undef HAVE_DOWHILE_MACROS
@@ -196,7 +197,7 @@
 /* Define to enable GSM library (used by gsmenc gsmdec). */
 #undef HAVE_GSM
 
-/* Define if you have the iconv() function and it works. */
+/* Define if you have the iconv() function. */
 #undef HAVE_ICONV
 
 /* Define to 1 if you have the <inttypes.h> header file. */
@@ -234,6 +235,9 @@
 
 /* Define to 1 if you have the `nsl' library (-lnsl). */
 #undef HAVE_LIBNSL
+
+/* Define to enable liboil usage in some plugins. */
+#undef HAVE_LIBOIL
 
 /* Define to 1 if you have the `socket' library (-lsocket). */
 #undef HAVE_LIBSOCKET
@@ -440,19 +444,19 @@
 /* directory where plugins are located */
 #undef PLUGINDIR
 
-/* The size of `char', as computed by sizeof. */
+/* The size of a `char', as computed by sizeof. */
 #undef SIZEOF_CHAR
 
-/* The size of `int', as computed by sizeof. */
+/* The size of a `int', as computed by sizeof. */
 #undef SIZEOF_INT
 
-/* The size of `long', as computed by sizeof. */
+/* The size of a `long', as computed by sizeof. */
 #undef SIZEOF_LONG
 
-/* The size of `short', as computed by sizeof. */
+/* The size of a `short', as computed by sizeof. */
 #undef SIZEOF_SHORT
 
-/* The size of `void*', as computed by sizeof. */
+/* The size of a `void*', as computed by sizeof. */
 #undef SIZEOF_VOIDP
 
 /* Define to 1 if you have the ANSI C header files. */
@@ -464,17 +468,9 @@
 /* Version number of package */
 #undef VERSION
 
-/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
-   significant byte first (like Motorola and SPARC, unlike Intel). */
-#if defined AC_APPLE_UNIVERSAL_BUILD
-# if defined __BIG_ENDIAN__
-#  define WORDS_BIGENDIAN 1
-# endif
-#else
-# ifndef WORDS_BIGENDIAN
-#  undef WORDS_BIGENDIAN
-# endif
-#endif
+/* Define to 1 if your processor stores words with the most significant byte
+   first (like Motorola and SPARC, unlike Intel and VAX). */
+#undef WORDS_BIGENDIAN
 
 /* Define to 1 if the X Window System is missing or not being used. */
 #undef X_DISPLAY_MISSING

@@ -1,8 +1,5 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
-/* Define if building universal (internal helper macro) */
-#undef AC_APPLE_UNIVERSAL_BUILD
-
 /* Default audio sink */
 #undef DEFAULT_AUDIOSINK
 
@@ -60,14 +57,6 @@
 
 /* Define to enable Cairo graphics rendering (used by cairo). */
 #undef HAVE_CAIRO
-
-/* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
-   CoreFoundation framework. */
-#undef HAVE_CFLOCALECOPYCURRENT
-
-/* Define to 1 if you have the MacOS X function CFPreferencesCopyAppValue in
-   the CoreFoundation framework. */
-#undef HAVE_CFPREFERENCESCOPYAPPVALUE
 
 /* Define to 1 if you have the `cosh' function. */
 #undef HAVE_COSH
@@ -175,7 +164,7 @@
 /* Define to enable HAL libraries (used by halelements). */
 #undef HAVE_HAL
 
-/* Define if you have the iconv() function and it works. */
+/* Define if you have the iconv() function. */
 #undef HAVE_ICONV
 
 /* Define to 1 if you have the <inttypes.h> header file. */
@@ -192,6 +181,9 @@
 
 /* Define to enable libdv DV demuxer/decoder (used by dv). */
 #undef HAVE_LIBDV
+
+/* Define to enable liboil usage in some plugins. */
+#undef HAVE_LIBOIL
 
 /* Define to enable Portable Network Graphics library (used by png). */
 #undef HAVE_LIBPNG
@@ -347,28 +339,25 @@
 /* Define to the one symbol short name of this package. */
 #undef PACKAGE_TARNAME
 
-/* Define to the home page for this package. */
-#undef PACKAGE_URL
-
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
 /* directory where plugins are located */
 #undef PLUGINDIR
 
-/* The size of `char', as computed by sizeof. */
+/* The size of a `char', as computed by sizeof. */
 #undef SIZEOF_CHAR
 
-/* The size of `int', as computed by sizeof. */
+/* The size of a `int', as computed by sizeof. */
 #undef SIZEOF_INT
 
-/* The size of `long', as computed by sizeof. */
+/* The size of a `long', as computed by sizeof. */
 #undef SIZEOF_LONG
 
-/* The size of `short', as computed by sizeof. */
+/* The size of a `short', as computed by sizeof. */
 #undef SIZEOF_SHORT
 
-/* The size of `void*', as computed by sizeof. */
+/* The size of a `void*', as computed by sizeof. */
 #undef SIZEOF_VOIDP
 
 /* defined if speex 1.0.x API detected */
@@ -383,17 +372,9 @@
 /* old wavpack API */
 #undef WAVPACK_OLD_API
 
-/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
-   significant byte first (like Motorola and SPARC, unlike Intel). */
-#if defined AC_APPLE_UNIVERSAL_BUILD
-# if defined __BIG_ENDIAN__
-#  define WORDS_BIGENDIAN 1
-# endif
-#else
-# ifndef WORDS_BIGENDIAN
-#  undef WORDS_BIGENDIAN
-# endif
-#endif
+/* Define to 1 if your processor stores words with the most significant byte
+   first (like Motorola and SPARC, unlike Intel and VAX). */
+#undef WORDS_BIGENDIAN
 
 /* Define to 1 if the X Window System is missing or not being used. */
 #undef X_DISPLAY_MISSING
