@@ -24,6 +24,7 @@
  *   Robert Ginda, <rginda@netscape.com>, original author
  *   Chiaki Koufugata, chiaki@mozilla.gr.jp, UI i18n
  *   James Ross, silver@warwickcompsoc.co.uk
+ *   Gijs Kruitbosch, gijskruitbosch@gmail.com
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -179,6 +180,7 @@ function initCommands()
          ["stats",             cmdSimpleCommand,    CMD_NEED_SRV | CMD_CONSOLE],
          ["squery",            cmdSquery,           CMD_NEED_SRV | CMD_CONSOLE],
          ["sslserver",         cmdSSLServer,                       CMD_CONSOLE],
+         ["ssl-exception",     cmdSSLException,                              0],
          ["stalk",             cmdStalk,                           CMD_CONSOLE],
          ["supports",          cmdSupports,         CMD_NEED_SRV | CMD_CONSOLE],
          ["sync-font",         cmdSync,                                      0],
@@ -279,7 +281,10 @@ function initCommands()
     var restList = ["reason", "action", "text", "message", "params", "font",
                     "expression", "ircCommand", "prefValue", "newTopic", "file",
                     "password", "commandList", "commands", "description"];
+    var stateList = ["connect"];
+
     client.commandManager.argTypes.__aliasTypes__(restList, "rest");
+    client.commandManager.argTypes.__aliasTypes__(stateList, "state");
     client.commandManager.argTypes["plugin"] = parsePlugin;
 }
 
@@ -1052,7 +1057,7 @@ function cmdChanUserMode(e)
     }
     else if (e.nicknameList)
     {
-        for (i = 0; i < e.nicknameList.length; i++)
+        for (var i = 0; i < e.nicknameList.length; i++)
         {
             user = e.channel.getUser(e.nicknameList[i]);
             if (!user)
@@ -1466,7 +1471,7 @@ function cmdNetworks(e)
     var netnames = keys(client.networks).sort();
     var lastname = netnames[netnames.length - 1];
 
-    for (n in netnames)
+    for (var n in netnames)
     {
         var net = client.networks[netnames[n]];
         var a = document.createElementNS(XHTML_NS, "html:a");
@@ -1568,6 +1573,28 @@ function cmdSSLServer(e)
     }
 
     return client.connectToNetwork(name, true);
+}
+
+function cmdSSLException(e)
+{
+    var opts = "chrome,centerscreen,modal";
+    var location = e.hostname ? e.hostname + ':' + e.port : undefined;
+    var args = {location: location, prefetchCert: true};
+
+    window.openDialog("chrome://pippki/content/exceptionDialog.xul",
+                      "", opts, args);
+
+    if (!args.exceptionAdded)
+        return;
+
+    if (e.connect)
+    {
+        // When we come via the inline button, we just want to reconnect
+        if (e.source == "mouse")
+            dispatch("reconnect");
+        else
+            dispatch("sslserver " + e.hostname + " " + e.port);
+    }
 }
 
 
@@ -2307,13 +2334,21 @@ function cmdGotoURL(e)
 {
     const EXT_PROTO_SVC = "@mozilla.org/uriloader/external-protocol-service;1";
 
-    if (e.url.search(/^ircs?:/i) == 0)
+    if (/^ircs?:/.test(e.url))
     {
         gotoIRCURL(e.url);
         return;
     }
 
-    if (e.url.search(/^x-cz-command:/i) == 0)
+    if (/^x-irc-dcc-(chat|file):[0-9a-fA-F]+$/.test(e.url))
+    {
+        var view = client.dcc.findByID(e.url.substr(15));
+        if (view)
+            dispatch("set-current-view", {view: view});
+        return;
+    }
+
+    if (/^x-cz-command:/.test(e.url))
     {
         var ary = e.url.match(/^x-cz-command:(.*)$/i);
         // Do the escaping dance:
@@ -3616,7 +3651,7 @@ function cmdSave(e)
                     && wbp.currentState == nsIWBP.PERSIST_STATE_FINISHED)
                 {
                     // Let the user know:
-                    pm = [e.sourceObject.viewName, e.filename];
+                    pm = [e.sourceObject.viewName, getURLSpecFromFile(file)];
                     display(getMsg(MSG_SAVE_SUCCESSFUL, pm), MT_INFO);
                 }
                 /* Check if we've finished. WebBrowserPersist screws up when we
@@ -3627,7 +3662,7 @@ function cmdSave(e)
                 {
                     if (wbp)
                         wbp.progressListener = null;
-                    pm = [e.sourceObject.viewName, e.filename];
+                    pm = [e.sourceObject.viewName, getURLSpecFromFile(file)];
                     display(getMsg(MSG_SAVE_SUCCESSFUL, pm), MT_INFO);
                 }
             }
@@ -3700,7 +3735,7 @@ function cmdSave(e)
         }
         catch (ex)
         {
-            // try to use it as an url
+            // try to use it as a URL
             try
             {
                 file = getFileFromURLSpec(e.filename);
@@ -4528,7 +4563,9 @@ function cmdDCCDecline(e)
 
 function cmdDCCShowFile(e)
 {
-    var f = nsLocalFile(e.file);
+    var f = getFileFromURLSpec(e.file);
+    if (f)
+        f = nsLocalFile(f.path);
     if (f && f.parent && f.parent.exists())
     {
         try
@@ -4617,28 +4654,28 @@ function cmdFindAgain(e)
 
 function cmdURLs(e)
 {
-    if (client.prefs["urls.list"].length == 0)
+    var urls = client.urlLogger.read().reverse();
+
+    if (urls.length == 0)
     {
         display(MSG_URLS_NONE);
     }
     else
     {
-        /* Store the current URL list, so we can put it back afterwards. This
-         * is needed because the process of displaying the list changes the
-         * list! (think about it for a second)
+        /* Temporarily remove the URL logger to avoid changing the list when
+         * displaying it.
          */
-        var oldList = client.prefs["urls.list"];
-        client.prefs["urls.list"] = new Array();
+        var logger = client.urlLogger;
+        delete client.urlLogger;
 
         var num = e.number || client.prefs["urls.display"];
-        if (num > oldList.length)
-            num = oldList.length;
+        if (num > urls.length)
+            num = urls.length;
         display(getMsg(MSG_URLS_HEADER, num));
 
         for (var i = 0; i < num; i++)
-            display(getMsg(MSG_URLS_ITEM, [i + 1, oldList[i]]));
+            display(getMsg(MSG_URLS_ITEM, [i + 1, urls[i]]));
 
-        // Restore old URL list so displaying it has no effect.
-        client.prefs["urls.list"] = oldList;
+        client.urlLogger = logger;
     }
 }

@@ -164,7 +164,7 @@ def extract_mar(filename, work_dir):
     saved_path = os.getcwd()
     try:
         os.chdir(work_dir)
-        exec_shell_cmd("mar -x "+filename)    
+        exec_shell_cmd('mar -x "'+filename+'"')    
     finally:
         os.chdir(saved_path)
 
@@ -186,7 +186,7 @@ def create_partial_patch_for_file(from_marfile_entry, to_marfile_entry, shas, pa
             os.makedirs(patch_file_dir)
 
         # Create bzip'd patch file
-        exec_shell_cmd("mbsdiff "+from_marfile_entry.abs_path+" "+to_marfile_entry.abs_path+" "+patch_file_abs_path)
+        exec_shell_cmd('mbsdiff "'+from_marfile_entry.abs_path+'" "'+to_marfile_entry.abs_path+'" "'+patch_file_abs_path+'"')
         bzip_file(patch_file_abs_path)
 
         # Create bzip's full file
@@ -340,7 +340,7 @@ def decode_filename(filepath):
     """
     try:
       m = re.search(
-        '(?P<product>\w+)(-)(?P<version>\w+\.\w+)(\.)(?P<locale>.+?)(\.)(?P<platform>.+?)(\.)(?P<type>\w+)(.mar)',
+        '(?P<product>\w+)(-)(?P<version>\w+\.\w+(\.\w+){0,2})(\.)(?P<locale>.+?)(\.)(?P<platform>.+?)(\.)(?P<type>\w+)(.mar)',
       os.path.basename(filepath))
       return m.groupdict()
     except Exception, exc:

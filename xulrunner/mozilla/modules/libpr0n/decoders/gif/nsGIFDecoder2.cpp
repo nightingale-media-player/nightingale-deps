@@ -407,11 +407,16 @@ void nsGIFDecoder2::EndImageFrame()
     if (mGIFStruct.images_decoded)
       mImageContainer->AppendFrame(mImageFrame);
     mImageContainer->EndFrameDecode(mGIFStruct.images_decoded, mGIFStruct.delay_time);
-    mGIFStruct.images_decoded++; 
-
-    if (mObserver)
-      mObserver->OnStopFrame(nsnull, mImageFrame);
   }
+
+  // Unconditionally increment images_decoded, because we unconditionally
+  // append frames in BeginImageFrame(). This ensures that images_decoded
+  // always refers to the frame in mImageContainer we're currently decoding,
+  // even if some of them weren't decoded properly and thus are blank.
+  mGIFStruct.images_decoded++;
+
+  if (mObserver)
+    mObserver->OnStopFrame(nsnull, mImageFrame);
 
   // Release reference to this frame
   mImageFrame = nsnull;
@@ -471,8 +476,16 @@ PRUint32 nsGIFDecoder2::OutputRow()
     PRUint8 *from = rowp + mGIFStruct.width;
     PRUint32 *to = ((PRUint32*)rowp) + mGIFStruct.width;
     PRUint32 *cmap = mColormap;
-    for (PRUint32 c = mGIFStruct.width; c > 0; c--) {
-      *--to = cmap[*--from];
+    if (mColorMask == 0xFF) {
+      for (PRUint32 c = mGIFStruct.width; c > 0; c--) {
+        *--to = cmap[*--from];
+      }
+    } else {
+      // Make sure that pixels within range of colormap.
+      PRUint8 mask = mColorMask;
+      for (PRUint32 c = mGIFStruct.width; c > 0; c--) {
+        *--to = cmap[(*--from) & mask];
+      }
     }
   
     // check for alpha (only for first frame)
@@ -1045,15 +1058,14 @@ nsresult nsGIFDecoder2::GifWrite(const PRUint8 *buf, PRUint32 len)
       PRUint32 depth = mGIFStruct.global_colormap_depth;
       if (q[8] & 0x80)
         depth = (q[8]&0x07) + 1;
-      // Make sure the transparent pixel is within colormap space
       PRUint32 realDepth = depth;
       while (mGIFStruct.tpixel >= (1 << realDepth) && (realDepth < 8)) {
         realDepth++;
       } 
+      // Mask to limit the color values within the colormap
+      mColorMask = 0xFF >> (8 - realDepth);
       BeginImageFrame(realDepth);
-      
-      // handle allocation error
-      if (!mImageFrame) {
+      if (!mImageData) {
         mGIFStruct.state = gif_error;
         break;
       }

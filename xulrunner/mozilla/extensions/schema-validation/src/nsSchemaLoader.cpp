@@ -3223,7 +3223,13 @@ nsSchemaLoader::ProcessFacet(nsISVSchemaErrorHandler* aErrorHandler,
 
   nsAutoString valueStr;
   aElement->GetAttribute(NS_LITERAL_STRING("value"), valueStr);
-  if (valueStr.IsEmpty()) {
+
+  /*
+   * Enumerations contain data depending on the base type. Some base types allow empty
+   * content (e.g. xsd:string), others don't.
+   * XXX: Check the requirements of the base type for the enumeration value.
+   */
+  if (aTagName != nsSchemaAtoms::sEnumeration_atom && valueStr.IsEmpty()) {
     nsAutoString elementName;
     rv = aElement->GetTagName(elementName);
     NS_ENSURE_SUCCESS(rv, rv);

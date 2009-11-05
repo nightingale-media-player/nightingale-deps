@@ -151,7 +151,12 @@
  * #define MALLOC your_malloc, where your_malloc(n) acts like malloc(n)
  *  if memory is available and otherwise does something you deem
  *  appropriate.  If MALLOC is undefined, malloc will be invoked
- *  directly -- and assumed always to succeed.
+ *  directly -- and assumed always to succeed.  Similarly, if you
+ *  want something other than the system's free() to be called to
+ *  recycle memory acquired from MALLOC, #define FREE to be the
+ *  name of the alternate routine.  (FREE or free is only called in
+ *  pathological cases, e.g., in a dtoa call after a dtoa return in
+ *  mode 3 with thousands of digits requested.)
  * #define Omit_Private_Memory to omit logic (added Jan. 1998) for making
  *  memory allocations from a private pool of memory when possible.
  *  When used, the private pool is PRIVATE_MEM bytes long: 2000 bytes,
@@ -326,7 +331,7 @@ static PRLock *freelist_lock;
 #define RELEASE_DTOA_LOCK()   /*nothing*/
 #endif
 
-#define Kmax 15
+#define Kmax 7
 
 struct Bigint {
     struct Bigint *next;  /* Free list link */
@@ -406,16 +411,16 @@ static Bigint *Balloc(int32 k)
     }
 #endif
 
-    if ((rv = freelist[k]) != NULL)
+    if (k <= Kmax && (rv = freelist[k]))
         freelist[k] = rv->next;
-    if (rv == NULL) {
+    else {
         x = 1 << k;
 #ifdef Omit_Private_Memory
         rv = (Bigint *)MALLOC(sizeof(Bigint) + (x-1)*sizeof(ULong));
 #else
         len = (sizeof(Bigint) + (x-1)*sizeof(ULong) + sizeof(double) - 1)
             /sizeof(double);
-        if (pmem_next - private_mem + len <= PRIVATE_mem) {
+        if (k <= Kmax && pmem_next - private_mem + len <= PRIVATE_mem) {
             rv = (Bigint*)pmem_next;
             pmem_next += len;
             }
@@ -434,8 +439,16 @@ static Bigint *Balloc(int32 k)
 static void Bfree(Bigint *v)
 {
     if (v) {
-        v->next = freelist[v->k];
-        freelist[v->k] = v;
+        if (v->k > Kmax)
+#ifdef FREE
+                FREE((void*)v);
+#else
+                free((void*)v);
+#endif
+        else {
+                v->next = freelist[v->k];
+                freelist[v->k] = v;
+        }
     }
 }
 

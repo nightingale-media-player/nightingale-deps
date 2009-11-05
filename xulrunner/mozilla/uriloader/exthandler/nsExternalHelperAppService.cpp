@@ -1021,6 +1021,19 @@ nsExternalAppHandler::nsExternalAppHandler(nsIMIMEInfo * aMIMEInfo,
   // replace platform specific path separator and illegal characters to avoid any confusion
   mSuggestedFileName.ReplaceChar(FILE_PATH_SEPARATOR FILE_ILLEGAL_CHARACTERS, '_');
   mTempFileExtension.ReplaceChar(FILE_PATH_SEPARATOR FILE_ILLEGAL_CHARACTERS, '_');
+
+  // Remove unsafe bidi characters which might have spoofing implications (bug 511521).
+  const PRUnichar unsafeBidiCharacters[] = {
+    PRUnichar(0x202a), // Left-to-Right Embedding
+    PRUnichar(0x202b), // Right-to-Left Embedding
+    PRUnichar(0x202c), // Pop Directional Formatting
+    PRUnichar(0x202d), // Left-to-Right Override
+    PRUnichar(0x202e)  // Right-to-Left Override
+  };
+  for (int i = 0; i < NS_ARRAY_LENGTH(unsafeBidiCharacters); ++i) {
+    mSuggestedFileName.ReplaceChar(unsafeBidiCharacters[i], '_');
+    mTempFileExtension.ReplaceChar(unsafeBidiCharacters[i], '_');
+  }
   
   // Make sure extension is correct.
   EnsureSuggestedFileName();
@@ -1792,6 +1805,19 @@ nsresult nsExternalAppHandler::ExecuteDesiredAction()
         if (NS_SUCCEEDED(rv))
           rv = OpenWithApplication();
       }
+      else
+      {
+        // Cancel the download and report an error.  We do not want to end up in
+        // a state where it appears that we have a normal download that is
+        // pointing to a file that we did not actually create.
+        nsAutoString path;
+        mTempFile->GetPath(path);
+        SendStatusChange(kWriteError, rv, nsnull, path);
+        Cancel(rv);
+
+        // We still need to notify if we have a progress listener, so we cannot
+        // return at this point.
+      }
     }
     else // Various unknown actions go here too
     {
@@ -1804,7 +1830,7 @@ nsresult nsExternalAppHandler::ExecuteDesiredAction()
         gExtProtSvc->FixFilePermissions(destfile);
       }
     }
-    
+
     // Notify dialog that download is complete.
     // By waiting till this point, it ensures that the progress dialog doesn't indicate
     // success until we're really done.
@@ -1820,7 +1846,7 @@ nsresult nsExternalAppHandler::ExecuteDesiredAction()
         nsIWebProgressListener::STATE_IS_NETWORK, NS_OK);
     }
   }
-  
+
   return rv;
 }
 

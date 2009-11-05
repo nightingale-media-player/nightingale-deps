@@ -201,6 +201,8 @@ public:
                               nsIContent** aResult);
 #endif
 
+  virtual NS_HIDDEN_(void) Destroy();
+
   nsresult ChangeContentEditableCount(nsIContent *aElement, PRInt32 aChange);
 
   virtual EditingState GetEditingState()

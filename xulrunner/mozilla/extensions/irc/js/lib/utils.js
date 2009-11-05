@@ -1441,7 +1441,7 @@ function strftime(format, time)
 
             if ("pad" in tbranch)
             {
-                var padwith = (padwith in tbranch) ? tbranch.padwith : "0";
+                var padwith = ("padwith" in tbranch) ? tbranch.padwith : "0";
                 rpl = padNumber(rpl, tbranch.pad, padwith);
             }
         }
@@ -1494,3 +1494,34 @@ function strftime(format, time)
     }
     return format.replace(/%%/, "%");
 }
+
+// This used to be strres.js, copied here to help remove that...
+var strBundleService = null;
+function srGetStrBundle(path)
+{
+    const STRBSCID = "@mozilla.org/intl/stringbundle;1";
+    const STRBSIF = "nsIStringBundleService";
+    var strBundle = null;
+    if (!strBundleService)
+    {
+        try
+        {
+            strBundleService = getService(STRBSCID, STRBSIF);
+        }
+        catch (ex)
+        {
+            dump("\n--** strBundleService failed: " + ex + "\n");
+            return null;
+        }
+    }
+
+    strBundle = strBundleService.createBundle(path); 
+    if (!strBundle)
+        dump("\n--** strBundle createInstance failed **--\n");
+
+    return strBundle;
+}
+
+// No-op window.getAttention if it's not found, this is for in-a-tab mode.
+if (typeof getAttention == "undefined")
+    getAttention = function() {};

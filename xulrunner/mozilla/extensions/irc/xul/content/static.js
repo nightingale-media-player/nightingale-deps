@@ -25,6 +25,7 @@
  *   Chiaki Koufugata chiaki@mozilla.gr.jp UI i18n
  *   Samuel Sieb, samuel@sieb.net, MIRC color codes, munger menu, and various
  *   James Ross, silver@warwickcompsoc.co.uk
+ *   Gijs Kruitbosch, gijskruitbosch@gmail.com
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -396,6 +397,42 @@ function initStatic()
     if (client.inputHistoryLogger)
         client.inputHistory = client.inputHistoryLogger.read().reverse();
 
+    // Set up URL collector.
+    var urlsFile = new nsLocalFile(client.prefs["profilePath"]);
+    urlsFile.append("urls.txt");
+    try
+    {
+        client.urlLogger = new TextLogger(urlsFile.path,
+                                          client.prefs["urls.store.max"]);
+    }
+    catch (ex)
+    {
+        msg = getMsg(MSG_ERR_URLS_NOT_WRITABLE, urlsFile.path);
+        setTimeout("client.display(" + msg.quote() + ", MT_ERROR)", 0);
+        dd(formatException(ex));
+        client.urlLogger = null;
+    }
+
+    // Migrate old list preference to file.
+    try
+    {
+        // Throws if the preference doesn't exist.
+        if (client.urlLogger)
+            var urls = client.prefManager.prefBranch.getCharPref("urls.list");
+    }
+    catch (ex)
+    {
+    }
+    if (urls)
+    {
+        // Add the old URLs to the new file.
+        urls = client.prefManager.stringToArray(urls);
+        for (var i = 0; i < urls.length; i++)
+            client.urlLogger.append(urls[i]);
+        // Completely purge the old preference.
+        client.prefManager.prefBranch.clearUserPref("urls.list");
+    }
+
     client.defaultCompletion = client.COMMAND_CHAR + "help ";
 
     client.deck = document.getElementById('output-deck');
@@ -742,19 +779,22 @@ function processStartupScripts()
 {
     client.plugins = new Array();
     var scripts = client.prefs["initialScripts"];
+    var basePath = getURLSpecFromFile(client.prefs["profilePath"]); 
+    var baseURL = client.iosvc.newURI(basePath, null, null);
     for (var i = 0; i < scripts.length; ++i)
     {
-        if (scripts[i].search(/^file:|chrome:/i) != 0)
+        var url = client.iosvc.newURI(scripts[i], null, baseURL);
+        if (url.scheme != "file" && url.scheme != "chrome")
         {
             display(getMsg(MSG_ERR_INVALID_SCHEME, scripts[i]), MT_ERROR);
             continue;
         }
 
-        var path = getFileFromURLSpec(scripts[i]);
+        var path = getFileFromURLSpec(url.spec);
 
         if (!path.exists())
         {
-            display(getMsg(MSG_ERR_ITEM_NOT_FOUND, scripts[i]), MT_WARN);
+            display(getMsg(MSG_ERR_ITEM_NOT_FOUND, url.spec), MT_WARN);
             continue;
         }
 
@@ -1206,6 +1246,89 @@ function getUserlistContext(cx)
         }
     }
     cx.userCount = cx.userList.length;
+
+    return cx;
+}
+
+function getViewsContext(cx)
+{
+    function addView(view)
+    {
+        // We only need the view to have messages, so we accept hidden views.
+        if (!("messages" in view))
+            return;
+
+        var url = view.getURL();
+        if (url in urls)
+            return;
+
+        var label = view.viewName;
+        if (!getTabForObject(view))
+            label = getMsg(MSG_VIEW_HIDDEN, [label]);
+
+        var types = ["IRCClient", "IRCNetwork", "IRCDCCChat",
+                     "IRCDCCFileTransfer"];
+        var typesNetwork = ["IRCNetwork", "IRCChannel", "IRCUser"];
+        var group = String(arrayIndexOf(types, view.TYPE));
+        if (arrayIndexOf(typesNetwork, view.TYPE) != -1)
+            group = "1-" + getObjectDetails(view).network.viewName;
+
+        var sort = group + "-" + view.viewName;
+        if (view.TYPE == "IRCNetwork")
+            sort = group;
+
+        cx.views.push({url: url, label: label, group: group, sort: sort});
+        urls[url] = true
+    };
+
+    function sortViews(a, b)
+    {
+        if (a.sort < b.sort)
+            return -1;
+        if (a.sort > b.sort)
+            return 1;
+        return 0;
+    };
+
+    if (!cx)
+        cx = new Object();
+    cx.__proto__ = getObjectDetails(client.currentObject);
+
+    cx.views = new Array();
+    var urls = new Object();
+
+    /* XXX The code here works its way through all the open views *and* any
+     * possibly visible objects in the object model. This is necessary because
+     * occasionally objects get removed from the object model while still
+     * having a view open. See bug 459318 for one such case. Note that we
+     * won't be able to correctly switch to the "lost" view but showing it is
+     * less confusing than not.
+     */
+
+    for (var i in client.viewsArray)
+        addView(client.viewsArray[i].source);
+
+    addView(client);
+    for (var n in client.networks)
+    {
+        addView(client.networks[n]);
+        for (var s in client.networks[n].servers) {
+            var server = client.networks[n].servers[s];
+            for (var c in server.channels)
+                addView(server.channels[c]);
+            for (var u in server.users)
+                addView(server.users[u]);
+        }
+    }
+
+    for (var u in client.dcc.users)
+        addView(client.dcc.users[u]);
+    for (var i = 0; i < client.dcc.chats.length; i++)
+        addView(client.dcc.chats[i]);
+    for (var i = 0; i < client.dcc.files.length; i++)
+        addView(client.dcc.files[i]);
+
+    cx.views.sort(sortViews);
 
     return cx;
 }
@@ -2334,7 +2457,7 @@ function updateNetwork()
     {
         if (o.server.me)
             nick = o.server.me.unicodeName;
-        lag = (o.server.lag != -1) ? o.server.lag : MSG_UNKNOWN;
+        lag = (o.server.lag != -1) ? o.server.lag.toFixed(2) : MSG_UNKNOWN;
     }
     client.statusBar["header-url"].setAttribute("value",
                                                  client.currentObject.getURL());

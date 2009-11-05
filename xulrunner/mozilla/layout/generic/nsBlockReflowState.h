@@ -220,7 +220,7 @@ public:
   nsFrameList mOverflowPlaceholders;
 
   // Track child overflow continuations.
-  nsOverflowContinuationTracker mOverflowTracker;
+  nsOverflowContinuationTracker* mOverflowTracker;
 
   //----------------------------------------
 

@@ -693,6 +693,7 @@ protected:
     };
 
     nsTArray<nsDelayedBroadcastUpdate> mDelayedBroadcasters;
+    PRPackedBool                       mHandlingDelayedBroadcasters;
 
     void MaybeBroadcast();
 private:

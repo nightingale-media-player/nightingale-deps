@@ -70,7 +70,6 @@ function initPrefs()
     scriptPath.append("scripts");
     if (!scriptPath.exists())
         mkdir(scriptPath);
-    client.prefManager.scriptPath = scriptPath;
 
     var logPath = profilePath.clone();
     logPath.append("logs");
@@ -179,7 +178,7 @@ function initPrefs()
          ["font.size",          0,        "appearance.misc"],
          ["identd.enabled",     false,    client.prefManager.identGroup],
          ["initialURLs",        [],       "startup.initialURLs"],
-         ["initialScripts",     [getURLSpecFromFile(scriptPath.path)],
+         ["initialScripts",     ["scripts/"],
                                           "startup.initialScripts"],
          ["instrumentation.key", 0,       "hidden"],
          ["instrumentation.ceip", false,  "hidden"],
@@ -259,7 +258,6 @@ function initPrefs()
          ["timestamps",         false,        "appearance.timestamps"],
          ["timestamps.display", "[%H:%M]",    "appearance.timestamps"],
          ["timestamps.log",     "[%Y-%m-%d %H:%M:%S]", "hidden"],
-         ["urls.list",          [],       "hidden"],
          ["urls.store.max",     100,      "global"],
          ["urls.display",       10,       "hidden"],
          ["username",           "chatzilla", ".ident"],
@@ -819,6 +817,14 @@ function onPrefChanged(prefName, newValue, oldValue)
 
         case "inputSpellcheck":
             updateSpellcheck(newValue);
+            break;
+
+        case "urls.store.max":
+            if (client.urlLogger)
+            {
+                client.urlLogger.autoLimit = newValue;
+                client.urlLogger.limit(newValue);
+            }
             break;
 
         default:

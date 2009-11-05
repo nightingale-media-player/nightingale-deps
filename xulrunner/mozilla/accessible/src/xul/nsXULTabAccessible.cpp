@@ -41,6 +41,7 @@
 #include "nsIDocument.h"
 #include "nsIFrame.h"
 #include "nsIDOMDocument.h"
+#include "nsIDOMDocumentXBL.h"
 #include "nsIDOMXULSelectCntrlEl.h"
 #include "nsIDOMXULSelectCntrlItemEl.h"
 
@@ -167,7 +168,18 @@ nsXULTabAccessible::GetAccessibleRelated(PRUint32 aRelationType,
     NS_ENSURE_TRUE(document, NS_ERROR_FAILURE);
 
     nsCOMPtr<nsIDOMElement> linkedPanel;
-    document->GetElementById(linkedPanelID, getter_AddRefs(linkedPanel));
+    if (content->GetBindingParent()) {
+      nsCOMPtr<nsIDOMDocumentXBL> documentXBL(do_QueryInterface(document));
+      nsCOMPtr<nsIDOMElement> bindingParent =
+        do_QueryInterface(content->GetBindingParent());
+      documentXBL->GetAnonymousElementByAttribute(bindingParent,
+                                                  NS_LITERAL_STRING("id"),
+                                                  linkedPanelID,
+                                                  getter_AddRefs(linkedPanel));
+    }
+    else {
+      document->GetElementById(linkedPanelID, getter_AddRefs(linkedPanel));
+    }
     if (linkedPanel) {
       nsCOMPtr<nsIDOMNode> linkedPanelNode(do_QueryInterface(linkedPanel));
       GetAccService()->GetAccessibleInWeakShell(linkedPanelNode, mWeakShell,

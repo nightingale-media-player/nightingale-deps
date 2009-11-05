@@ -269,6 +269,36 @@ PR_IMPLEMENT(PRInt32) PR_GetNumberOfProcessors( void )
     return(numCpus);
 } /* end PR_GetNumberOfProcessors() */
 
+#ifdef DARWIN
+
+/*
+ * Manually define the host_basic_info structure in Mac OS X 10.4 or later
+ * so that we can compile against Mac OS X 10.2 and 10.3 SDKs.
+ */
+
+#pragma pack(4)
+
+struct host_basic_info_new {
+    integer_t max_cpus;
+    integer_t avail_cpus;
+    natural_t memory_size;
+    cpu_type_t cpu_type;
+    cpu_subtype_t cpu_subtype;
+    /*cpu_threadtype_t*/ integer_t cpu_threadtype;
+    integer_t physical_cpu;
+    integer_t physical_cpu_max;
+    integer_t logical_cpu;
+    integer_t logical_cpu_max;
+    uint64_t max_mem;
+};
+
+#pragma pack()
+
+#define HOST_BASIC_INFO_NEW_COUNT ((mach_msg_type_number_t) \
+    (sizeof(struct host_basic_info_new)/sizeof(integer_t)))
+
+#endif /* DARWIN */
+
 /*
 ** PR_GetPhysicalMemorySize()
 ** 
@@ -299,15 +329,20 @@ PR_IMPLEMENT(PRUint64) PR_GetPhysicalMemorySize(void)
 
 #elif defined(DARWIN)
 
-    struct host_basic_info hInfo;
-    mach_msg_type_number_t count = HOST_BASIC_INFO_COUNT;
+    struct host_basic_info_new hInfo;
+    mach_msg_type_number_t count = HOST_BASIC_INFO_NEW_COUNT;
 
     int result = host_info(mach_host_self(),
                            HOST_BASIC_INFO,
                            (host_info_t) &hInfo,
                            &count);
-    if (result == KERN_SUCCESS)
-        bytes = hInfo.max_mem;
+    if (result == KERN_SUCCESS) {
+        if (count >= HOST_BASIC_INFO_NEW_COUNT) {
+            bytes = hInfo.max_mem;
+        } else {
+            bytes = hInfo.memory_size;
+        }
+    }
 
 #elif defined(WIN32)
 

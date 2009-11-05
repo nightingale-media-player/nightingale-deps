@@ -51,6 +51,8 @@
 #include "nsStringAPI.h"
 #include "nsIDOMElement.h"
 
+#include <stdio.h>
+
 #define NS_SCHEMA_2001_NAMESPACE "http://www.w3.org/2001/XMLSchema"
 #define NS_SCHEMA_1999_NAMESPACE "http://www.w3.org/1999/XMLSchema"
 #define NS_SOAP_1_1_ENCODING_NAMESPACE \
@@ -66,6 +68,9 @@
   PR_BEGIN_MACRO                                           \
   if (aErrorHandler) {                                     \
     aErrorHandler->OnError(status, statusMessage);         \
+  } else {                                                 \
+    printf("Error while loading schema: %s\n",             \
+           NS_ConvertUTF16toUTF8(statusMessage).get());    \
   }                                                        \
   PR_END_MACRO
 

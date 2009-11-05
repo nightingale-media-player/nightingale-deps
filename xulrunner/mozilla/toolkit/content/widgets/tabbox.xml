@@ -348,7 +348,19 @@
                 if (tabpanels) {
                   // find an id 
                   var linkedPanelId = tab.linkedPanel;
-                  var linkedPanel = linkedPanelId ? document.getElementById(linkedPanelId) : null;
+                  var linkedPanel = null;
+                  if (linkedPanelId) {
+                    var ownerDoc = tab.ownerDocument;
+                    var bindingParent = ownerDoc.getBindingParent(tab);
+                    if (bindingParent) {
+                      linkedPanel =
+                        ownerDoc.getAnonymousElementByAttribute(bindingParent,
+                                                                "id",
+                                                                linkedPanelId);
+                    }
+                    else
+                      linkedPanel = ownerDoc.getElementById(linkedPanelId);
+                  }
                   if (linkedPanel)
                     tabpanels.selectedPanel = linkedPanel;
                   else

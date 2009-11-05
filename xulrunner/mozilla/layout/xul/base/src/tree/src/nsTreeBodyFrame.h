@@ -127,12 +127,12 @@ public:
   friend class nsTreeColumn;
 
   struct ScrollParts {
-    nsIScrollbarFrame* mVScrollbar;
-    nsIContent*        mVScrollbarContent;
-    nsIScrollbarFrame* mHScrollbar;
-    nsIContent*        mHScrollbarContent;
-    nsIFrame*          mColumnsFrame;
-    nsIScrollableView* mColumnsScrollableView;
+    nsIScrollbarFrame*   mVScrollbar;
+    nsCOMPtr<nsIContent> mVScrollbarContent;
+    nsIScrollbarFrame*   mHScrollbar;
+    nsCOMPtr<nsIContent> mHScrollbarContent;
+    nsIFrame*            mColumnsFrame;
+    nsIScrollableView*   mColumnsScrollableView;
   };
 
   void PaintTreeBody(nsIRenderingContext& aRenderingContext,
@@ -315,10 +315,10 @@ protected:
   void UpdateScrollbars(const ScrollParts& aParts);
 
   // Update the maxpos of the scrollbar.
-  void InvalidateScrollbars(const ScrollParts& aParts);
+  void InvalidateScrollbars(const ScrollParts& aParts, nsWeakFrame& aWeakColumnsFrame);
 
   // Check overflow and generate events.
-  void CheckOverflow(const ScrollParts& aParts);
+  void CheckOverflow(const ScrollParts& aParts, nsWeakFrame& aWeakColumnsFrame);
 
   // Calls UpdateScrollbars, Invalidate aNeedsFullInvalidation if PR_TRUE,
   // InvalidateScrollbars and finally CheckOverflow.

@@ -225,7 +225,7 @@ function onMessageViewMouseDown(e)
     {
         return true;
     }
-        
+
     var cx = getMessagesContext(null, e.target);
     var command = getEventCommand(e);
     if (!client.commandManager.isCommandSatisfied(cx, command))
@@ -241,7 +241,7 @@ function getEventCommand(e)
         return client.prefs["messages.metaClick"];
     if (e.ctrlKey)
         return client.prefs["messages.ctrlClick"];
-    
+
     return client.prefs["messages.click"];
 }
 
@@ -310,7 +310,7 @@ function onTooltip(event)
     var XLinkTitleText = null;
 
     var element = document.tooltipNode;
-    while (element)
+    while (element && (element != document.documentElement))
     {
         if (element.nodeType == Node.ELEMENT_NODE)
         {
@@ -502,7 +502,7 @@ function onTabCompleteRequest (e)
                 /* then list possible completions, */
                 display(getMsg(MSG_FMT_MATCHLIST,
                                [matches.length, word,
-                                matches.join(MSG_COMMASP)]));
+                                matches.sort().join(MSG_COMMASP)]));
             }
             else
             {
@@ -567,7 +567,8 @@ function onWindowKeyPress(e)
         case 34: /* Page Down */
             // Control-Page Up => previous tab (all platforms)
             // Control-Page Down => next tab (all platforms)
-            if (e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey)
+            if ((e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) ||
+                (e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey))
             {
                 cycleView(2 * code - 67);
                 e.preventDefault();
@@ -1202,7 +1203,7 @@ function my_showtonet (e)
         case "422": /* no MOTD */
             this.busy = false;
             updateProgress();
-            
+
             /* Some servers (wrongly) dont send 251, so try
                auto-perform after the MOTD as well */
             this.doAutoPerform();
@@ -1926,14 +1927,22 @@ function my_sconnect (e)
 
     if (this.prefs["identd.enabled"])
     {
-        if (jsenv.HAS_SERVER_SOCKETS)
-            client.ident.addNetwork(this, e.server);
-        else
+        try
+        {
+            if (jsenv.HAS_SERVER_SOCKETS)
+                client.ident.addNetwork(this, e.server);
+            else
+                display(MSG_IDENT_SERVER_NOT_POSSIBLE, MT_WARN);
+        }
+        catch (ex)
+        {
             display(MSG_IDENT_SERVER_NOT_POSSIBLE, MT_WARN);
+            dd(formatException(ex));
+        }
     }
 
     this.NICK_RETRIES = this.prefs["nicknameList"].length + 3;
-    
+
     // When connection begins, autoperform has not been sent
     this.autoPerformSent = false;
 }
@@ -2009,6 +2018,7 @@ function my_netdisconnect (e)
 {
     var msg, msgNetwork;
     var msgType = MT_ERROR;
+    var retrying = true;
 
     if (typeof e.disconnectStatus != "undefined")
     {
@@ -2061,6 +2071,24 @@ function my_netdisconnect (e)
                                  [this.getURL(), e.server.getURL(),
                                   formatException(e.exception)]);
                 }
+                retrying = false;
+                break;
+
+            // Group all certificate errors together.
+            // The exception adding dialog will explain the reasons.
+            case SEC_ERROR_EXPIRED_CERTIFICATE:
+            case SEC_ERROR_UNKNOWN_ISSUER:
+            case SEC_ERROR_UNTRUSTED_ISSUER:
+            case SEC_ERROR_UNTRUSTED_CERT:
+            case SEC_ERROR_EXPIRED_ISSUER_CERTIFICATE:
+            case SEC_ERROR_CA_CERT_INVALID:
+            case SEC_ERROR_INADEQUATE_KEY_USAGE:
+            case SSL_ERROR_BAD_CERT_DOMAIN:
+                var cmd = "ssl-exception";
+                cmd += " " + e.server.hostname + " " + e.server.port;
+                cmd += " true";
+                msg = getMsg(MSG_INVALID_CERT, [this.getURL(), cmd]);
+                retrying = false;
                 break;
 
             default:
@@ -2087,9 +2115,7 @@ function my_netdisconnect (e)
     }
     // We won't reconnect if the error was really bad, or if the user doesn't
     // want us to do so.
-    else if (((typeof e.disconnectStatus != "undefined") &&
-              (e.disconnectStatus == NS_ERROR_ABORT)) ||
-             !this.stayingPower)
+    else if (!retrying || !this.stayingPower)
     {
         msgNetwork = msg;
     }
@@ -2124,7 +2150,7 @@ function my_netdisconnect (e)
     }
 
     /* If we were connected ok, put an error on all tabs. If we were only
-     * /trying/ to connect, and failed, just put it on the network tab. 
+     * /trying/ to connect, and failed, just put it on the network tab.
      */
     client.munger.getRule(".inline-buttons").enabled = true;
     if (this.state == NET_ONLINE)
@@ -3237,16 +3263,19 @@ function my_dccfiledisconnect(e)
 
     if (this.state.dir == DCC_DIR_GETTING)
     {
-        var cmd = "dcc-file-show " + this.localPath;
+        var localURL = getURLSpecFromFile(this.localPath);
+        var cmd = "dcc-show-file " + localURL;
         var msgId = (client.platform == "Mac") ? MSG_DCCFILE_CLOSED_SAVED_MAC :
                                                  MSG_DCCFILE_CLOSED_SAVED;
-        msg = getMsg(msgId, this._getParams().concat(this.localPath, cmd));
+        msg = getMsg(msgId, this._getParams().concat(localURL, cmd));
     }
     else
     {
         msg = getMsg(MSG_DCCFILE_CLOSED_SENT, this._getParams());
     }
+    client.munger.getRule(".inline-buttons").enabled = true;
     this.display(msg, "DCC-FILE");
+    client.munger.getRule(".inline-buttons").enabled = false;
 }
 
 var CopyPasteHandler = new Object();
@@ -3373,5 +3402,3 @@ function ule_sortByMode(a, b)
     var bName = b._userObj.sortName.toLowerCase();
     return (aName < bName ? -1 : 1);
 }
-
-

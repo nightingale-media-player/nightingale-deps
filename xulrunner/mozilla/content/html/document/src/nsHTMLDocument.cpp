@@ -242,6 +242,14 @@ public:
     if (mNameContentList && mNameContentList != NAME_NOT_VALID) {
       NS_RELEASE(mNameContentList);
     }
+
+    if (mIdContentList.Count() != 1 ||
+        mIdContentList[0] != ID_NOT_IN_DOCUMENT) {
+      for (PRInt32 i = 0; i < mIdContentList.Count(); ++i) {
+        nsIContent* content = static_cast<nsIContent*>(mIdContentList[i]);
+        NS_RELEASE(content);
+      }
+    }
   }
 
   nsIContent* GetIdContent() {
@@ -253,8 +261,11 @@ public:
   PRBool RemoveIdContent(nsIContent* aContent) {
     // XXXbz should this ever Compact() I guess when all the content is gone
     // we'll just get cleaned up in the natural order of things...
-    return mIdContentList.RemoveElement(aContent) &&
-      mIdContentList.Count() == 0;
+    if (!mIdContentList.RemoveElement(aContent)) {
+      return PR_FALSE;
+    }
+    NS_RELEASE(aContent);
+    return mIdContentList.Count() == 0;
   }
 
   void FlagIDNotInDocument() {
@@ -264,10 +275,13 @@ public:
     mIdContentList.AppendElement(ID_NOT_IN_DOCUMENT);
   }
 
+  void Traverse(nsCycleCollectionTraversalCallback* cb);
+
   nsCOMPtr<nsIAtom> mKey;
   nsBaseContentList *mNameContentList;
   nsRefPtr<nsContentList> mDocAllList;
 private:
+  // The content nodes are stored addrefed.
   nsSmallVoidArray mIdContentList;
 };
 
@@ -282,12 +296,20 @@ IdAndNameMapEntry::AddIdContent(nsIContent* aContent)
 
   if (GetIdContent() == ID_NOT_IN_DOCUMENT) {
     NS_ASSERTION(mIdContentList.Count() == 1, "Bogus count");
-    return mIdContentList.ReplaceElementAt(aContent, 0);
+    if (!mIdContentList.ReplaceElementAt(aContent, 0)) {
+      return PR_FALSE;
+    }
+    NS_ADDREF(aContent);
+    return PR_TRUE;
   }
 
   // Common case
   if (mIdContentList.Count() == 0) {
-    return mIdContentList.AppendElement(aContent);
+    if (!mIdContentList.AppendElement(aContent)) {
+      return PR_FALSE;
+    }
+    NS_ADDREF(aContent);
+    return PR_TRUE;
   }
 
   // We seem to have multiple content nodes for the same id, or we're doing our
@@ -314,7 +336,11 @@ IdAndNameMapEntry::AddIdContent(nsIContent* aContent)
     }
   } while (start != end);
   
-  return mIdContentList.InsertElementAt(aContent, start);
+  if (!mIdContentList.InsertElementAt(aContent, start)) {
+    return PR_FALSE;
+  }
+  NS_ADDREF(aContent);
+  return PR_TRUE;
 }
 
 
@@ -388,13 +414,24 @@ IdAndNameMapEntryTraverse(PLDHashTable *table, PLDHashEntryHdr *hdr,
   nsCycleCollectionTraversalCallback *cb =
     static_cast<nsCycleCollectionTraversalCallback*>(arg);
   IdAndNameMapEntry *entry = static_cast<IdAndNameMapEntry*>(hdr);
-
-  if (entry->mNameContentList != NAME_NOT_VALID)
-    cb->NoteXPCOMChild(entry->mNameContentList);
-
-  cb->NoteXPCOMChild(static_cast<nsIDOMNodeList*>(entry->mDocAllList));
+  entry->Traverse(cb);
 
   return PL_DHASH_NEXT;
+}
+
+void
+IdAndNameMapEntry::Traverse(nsCycleCollectionTraversalCallback* cb)
+{
+  if (mNameContentList != NAME_NOT_VALID)
+    cb->NoteXPCOMChild(mNameContentList);
+
+  cb->NoteXPCOMChild(static_cast<nsIDOMNodeList*>(mDocAllList));
+
+  if (mIdContentList.Count() != 1 || mIdContentList[0] != ID_NOT_IN_DOCUMENT) {
+    for (PRInt32 i = 0; i < mIdContentList.Count(); ++i) {
+      cb->NoteXPCOMChild(static_cast<nsIContent*>(mIdContentList[i]));
+    }
+  }
 }
 
 NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN_INHERITED(nsHTMLDocument, nsDocument)
@@ -3027,8 +3064,13 @@ nsHTMLDocument::GetSelection(nsAString& aReturn)
     consoleService->LogStringMessage(NS_LITERAL_STRING("Deprecated method document.getSelection() called.  Please use window.getSelection() instead.").get());
   }
 
-  nsIDOMWindow *window = GetWindow();
-  NS_ENSURE_TRUE(window, NS_OK);
+  nsCOMPtr<nsIDOMWindow> window = do_QueryInterface(GetScopeObject());
+  nsCOMPtr<nsPIDOMWindow> pwin = do_QueryInterface(window);
+  NS_ENSURE_TRUE(pwin, NS_OK);
+  NS_ASSERTION(pwin->IsInnerWindow(), "Should have inner window here!");
+  NS_ENSURE_TRUE(pwin->GetOuterWindow() &&
+                 pwin->GetOuterWindow()->GetCurrentInnerWindow() == pwin,
+                 NS_OK);
 
   nsCOMPtr<nsISelection> selection;
   nsresult rv = window->GetSelection(getter_AddRefs(selection));
@@ -4800,3 +4842,13 @@ nsHTMLDocument::CreateElem(nsIAtom *aName, nsIAtom *aPrefix,
                                 aDocumentDefaultType, aResult);
 }
 #endif
+
+void
+nsHTMLDocument::Destroy()
+{
+  nsDocument::Destroy();
+
+  // Try really really hard to make sure we don't leak things through
+  // mIdAndNameHashTable
+  InvalidateHashTables();
+}

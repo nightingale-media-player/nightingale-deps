@@ -2889,11 +2889,17 @@ nsXFormsUtils::GetTime(nsAString & aResult, PRBool aUTC)
       return NS_OK;
     }
 
-    int gmtoffsethour = time.tm_params.tp_gmt_offset < 0 ?
-                        -1*time.tm_params.tp_gmt_offset / 3600 :
-                        time.tm_params.tp_gmt_offset / 3600;
+    int gmtoffsethour = time.tm_params.tp_gmt_offset / 3600;
     int remainder = time.tm_params.tp_gmt_offset%3600;
     int gmtoffsetminute = remainder ? remainder/60 : 00;
+    // adjust gmtoffsethour for daylight savings time.
+    int dstoffset = time.tm_params.tp_dst_offset / 3600;
+    gmtoffsethour += dstoffset;
+    if (gmtoffsethour < 0) {
+      // Make the gmtoffsethour positive; we'll add the plus or minus
+      // to the time zone string.
+      gmtoffsethour *= -1;
+    }
   
     char zone_location[40];
     const int zoneBufSize = sizeof(zone_location);

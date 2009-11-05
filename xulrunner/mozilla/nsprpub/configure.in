@@ -50,7 +50,7 @@ dnl = Defaults
 dnl ========================================================
 MOD_MAJOR_VERSION=4
 MOD_MINOR_VERSION=7
-MOD_PATCH_VERSION=5
+MOD_PATCH_VERSION=6
 NSPR_MODNAME=nspr20
 _HAVE_PTHREADS=
 USE_PTHREADS=
@@ -996,7 +996,6 @@ case "$target" in
     AC_DEFINE(XP_UNIX)
     AC_DEFINE(DARWIN)
     AC_DEFINE(HAVE_BSD_FLOCK)
-    AC_DEFINE(HAVE_SOCKLEN_T)
     CFLAGS="$CFLAGS -Wmost -fno-common"
     case "${target_cpu}" in
         i*86*)
@@ -1142,6 +1141,20 @@ tools are selected during the Xcode/Developer Tools installation.])
                 fi
             fi
         fi
+    fi
+
+    AC_MSG_CHECKING(for socklen_t)
+    AC_CACHE_VAL(ac_cv_socklen_t,
+        [AC_TRY_COMPILE([#include <stdio.h>
+                         #include <sys/socket.h>],
+                        [socklen_t foo = 0;],
+                        [ac_cv_socklen_t=true],
+                        [ac_cv_socklen_t=false])])
+    if test "$ac_cv_socklen_t" = true ; then
+        AC_DEFINE(HAVE_SOCKLEN_T)
+        AC_MSG_RESULT(yes)
+    else
+        AC_MSG_RESULT(no)
     fi
     ;;
 

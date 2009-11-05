@@ -694,9 +694,11 @@ nsXULDocument::SynchronizeBroadcastListener(nsIDOMElement   *aBroadcaster,
     nsCOMPtr<nsIContent> broadcaster = do_QueryInterface(aBroadcaster);
     nsCOMPtr<nsIContent> listener = do_QueryInterface(aListener);
 
-	// We may be copying event handlers etc, so we must also copy
-	// the script-type to the listener.
-	listener->SetScriptTypeID(broadcaster->GetScriptTypeID());
+    PRBool notify = mInitialLayoutComplete || mHandlingDelayedBroadcasters;
+
+    // We may be copying event handlers etc, so we must also copy
+    // the script-type to the listener.
+    listener->SetScriptTypeID(broadcaster->GetScriptTypeID());
 
     if (aAttr.EqualsLiteral("*")) {
         PRUint32 count = broadcaster->GetAttrCount();
@@ -721,7 +723,7 @@ nsXULDocument::SynchronizeBroadcastListener(nsIDOMElement   *aBroadcaster,
             nsAutoString value;
             if (broadcaster->GetAttr(nameSpaceID, name, value)) {
               listener->SetAttr(nameSpaceID, name, attributes[count].mPrefix,
-                                value, mInitialLayoutComplete);
+                                value, notify);
             }
 
 #if 0
@@ -740,11 +742,9 @@ nsXULDocument::SynchronizeBroadcastListener(nsIDOMElement   *aBroadcaster,
 
         nsAutoString value;
         if (broadcaster->GetAttr(kNameSpaceID_None, name, value)) {
-            listener->SetAttr(kNameSpaceID_None, name, value,
-                              mInitialLayoutComplete);
+            listener->SetAttr(kNameSpaceID_None, name, value, notify);
         } else {
-            listener->UnsetAttr(kNameSpaceID_None, name,
-                                mInitialLayoutComplete);
+            listener->UnsetAttr(kNameSpaceID_None, name, notify);
         }
 
 #if 0
@@ -3256,12 +3256,15 @@ nsXULDocument::MaybeBroadcast()
         }
         PRUint32 length = mDelayedBroadcasters.Length();
         nsTArray<nsDelayedBroadcastUpdate> delayedBroadcasters;
+        PRBool oldValue = mHandlingDelayedBroadcasters;
+        mHandlingDelayedBroadcasters = PR_TRUE;
         mDelayedBroadcasters.SwapElements(delayedBroadcasters);
         for (PRUint32 i = 0; i < length; ++i) {
             SynchronizeBroadcastListener(delayedBroadcasters[i].mBroadcaster,
                                          delayedBroadcasters[i].mListener,
                                          delayedBroadcasters[i].mAttr);
         }
+        mHandlingDelayedBroadcasters = oldValue;
     }
 }
 

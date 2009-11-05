@@ -75,6 +75,7 @@
 #include "nsToolkitCompsCID.h"
 #include "nsEmbedCID.h"
 #include "nsIDOMNSEditableElement.h"
+#include "nsIDOMNSEvent.h"
 
 NS_INTERFACE_MAP_BEGIN(nsFormFillController)
   NS_INTERFACE_MAP_ENTRY(nsIFormFillController)
@@ -546,6 +547,10 @@ nsFormFillController::StopSearch()
 NS_IMETHODIMP
 nsFormFillController::HandleEvent(nsIDOMEvent* aEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aEvent))
+    return NS_OK;
+
   nsAutoString type;
   aEvent->GetType(type);
 
@@ -593,6 +598,10 @@ nsFormFillController::RemoveForDOMDocumentEnumerator(nsISupports* aKey,
 NS_IMETHODIMP
 nsFormFillController::Focus(nsIDOMEvent* aEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aEvent))
+    return NS_OK;
+
   nsCOMPtr<nsIDOMEventTarget> target;
   aEvent->GetTarget(getter_AddRefs(target));
   
@@ -632,6 +641,10 @@ nsFormFillController::Focus(nsIDOMEvent* aEvent)
 NS_IMETHODIMP
 nsFormFillController::Blur(nsIDOMEvent* aEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aEvent))
+    return NS_OK;
+
   if (mFocusedInput)
     StopControllingInput();
   
@@ -644,18 +657,30 @@ nsFormFillController::Blur(nsIDOMEvent* aEvent)
 NS_IMETHODIMP
 nsFormFillController::KeyDown(nsIDOMEvent* aEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aEvent))
+    return NS_OK;
+
   return NS_OK;
 } 
 
 NS_IMETHODIMP
 nsFormFillController::KeyUp(nsIDOMEvent* aEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aEvent))
+    return NS_OK;
+
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsFormFillController::KeyPress(nsIDOMEvent* aEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aEvent))
+    return NS_OK;
+
   NS_ASSERTION(mController, "should have a controller!");
   if (!mFocusedInput || !mController)
     return NS_OK;
@@ -733,6 +758,10 @@ nsFormFillController::KeyPress(nsIDOMEvent* aEvent)
 NS_IMETHODIMP
 nsFormFillController::HandleStartComposition(nsIDOMEvent* aCompositionEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aCompositionEvent))
+    return NS_OK;
+
   NS_ASSERTION(mController, "should have a controller!");
 
   if (mController && mFocusedInput)
@@ -744,6 +773,10 @@ nsFormFillController::HandleStartComposition(nsIDOMEvent* aCompositionEvent)
 NS_IMETHODIMP
 nsFormFillController::HandleEndComposition(nsIDOMEvent* aCompositionEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aCompositionEvent))
+    return NS_OK;
+
   NS_ASSERTION(mController, "should have a controller!");
 
   if (mController && mFocusedInput)
@@ -755,6 +788,10 @@ nsFormFillController::HandleEndComposition(nsIDOMEvent* aCompositionEvent)
 NS_IMETHODIMP
 nsFormFillController::HandleQueryComposition(nsIDOMEvent* aCompositionEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aCompositionEvent))
+    return NS_OK;
+
   return NS_OK;
 }
 
@@ -776,6 +813,10 @@ nsFormFillController::HandleQueryCaretRect(nsIDOMEvent* aCompostionEvent)
 NS_IMETHODIMP
 nsFormFillController::Submit(nsIDOMEvent* aEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aEvent))
+    return NS_OK;
+
   if (mFocusedInput)
     StopControllingInput();
 
@@ -785,24 +826,40 @@ nsFormFillController::Submit(nsIDOMEvent* aEvent)
 NS_IMETHODIMP
 nsFormFillController::Reset(nsIDOMEvent* aEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aEvent))
+    return NS_OK;
+
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsFormFillController::Change(nsIDOMEvent* aEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aEvent))
+    return NS_OK;
+
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsFormFillController::Select(nsIDOMEvent* aEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aEvent))
+    return NS_OK;
+
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsFormFillController::Input(nsIDOMEvent* aEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aEvent))
+    return NS_OK;
+
   if (mSuppressOnInput || !mController || !mFocusedInput)
     return NS_OK;
 
@@ -815,6 +872,10 @@ nsFormFillController::Input(nsIDOMEvent* aEvent)
 NS_IMETHODIMP
 nsFormFillController::MouseDown(nsIDOMEvent* aMouseEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aMouseEvent))
+    return NS_OK;
+
   if (!mFocusedInput)
     return NS_OK;
 
@@ -862,30 +923,50 @@ nsFormFillController::MouseDown(nsIDOMEvent* aMouseEvent)
 NS_IMETHODIMP
 nsFormFillController::MouseUp(nsIDOMEvent* aMouseEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aMouseEvent))
+    return NS_OK;
+
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsFormFillController::MouseClick(nsIDOMEvent* aMouseEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aMouseEvent))
+    return NS_OK;
+
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsFormFillController::MouseDblClick(nsIDOMEvent* aMouseEvent)
 { 
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aMouseEvent))
     return NS_OK;
+
+  return NS_OK;
 }
 
 NS_IMETHODIMP
 nsFormFillController::MouseOver(nsIDOMEvent* aMouseEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aMouseEvent))
+    return NS_OK;
+
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsFormFillController::MouseOut(nsIDOMEvent* aMouseEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aMouseEvent))
+    return NS_OK;
+
   return NS_OK;
 }
 
@@ -894,6 +975,10 @@ nsFormFillController::MouseOut(nsIDOMEvent* aMouseEvent)
 NS_IMETHODIMP
 nsFormFillController::ContextMenu(nsIDOMEvent* aContextMenuEvent)
 {
+  // Drop untrusted events from content
+  if (!IsEventTrusted(aContextMenuEvent))
+    return NS_OK;
+
   if (mFocusedPopup)
     mFocusedPopup->ClosePopup();
   return NS_OK;
@@ -953,6 +1038,9 @@ nsFormFillController::AddWindowListeners(nsIDOMWindow *aWindow)
   target->AddEventListener(NS_LITERAL_STRING("contextmenu"),
                            static_cast<nsIDOMContextMenuListener *>(this),
                            PR_TRUE);
+
+  // Note that any additional listeners added should ensure that they ignore
+  // untrusted events, which might be sent by content that's up to no good.
 }
 
 void
@@ -1132,6 +1220,21 @@ nsFormFillController::GetIndexOfDocShell(nsIDocShell *aDocShell)
   }
     
   return -1;
+}
+
+PRBool
+nsFormFillController::IsEventTrusted(nsIDOMEvent *aEvent)
+{
+  nsresult rv;
+
+  nsCOMPtr<nsIDOMNSEvent> nsevent = do_QueryInterface(aEvent);
+  if (!nsevent)
+    return PR_FALSE;
+
+  PRBool isTrusted;
+  rv = nsevent->GetIsTrusted(&isTrusted);
+  NS_ENSURE_SUCCESS(rv, PR_FALSE);
+  return isTrusted;
 }
 
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsFormHistory, Init)

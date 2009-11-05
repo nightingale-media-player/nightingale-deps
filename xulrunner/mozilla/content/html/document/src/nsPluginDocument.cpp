@@ -153,11 +153,22 @@ NS_IMPL_ISUPPORTS_INHERITED1(nsPluginDocument, nsMediaDocument,
 void
 nsPluginDocument::SetScriptGlobalObject(nsIScriptGlobalObject* aScriptGlobalObject)
 {
-  if (!aScriptGlobalObject) {
+  // Set the script global object on the superclass before doing
+  // anything that might require it....
+  nsMediaDocument::SetScriptGlobalObject(aScriptGlobalObject);
+
+  if (aScriptGlobalObject) {
+    if (!mPluginContent) {
+      // Create synthetic document
+#ifdef DEBUG
+      nsresult rv =
+#endif
+        CreateSyntheticPluginDocument();
+      NS_ASSERTION(NS_SUCCEEDED(rv), "failed to create synthetic document");
+    }
+  } else {
     mStreamListener = nsnull;
   }
-
-  nsMediaDocument::SetScriptGlobalObject(aScriptGlobalObject);
 }
 
 
@@ -179,6 +190,17 @@ nsPluginDocument::StartDocumentLoad(const char*         aCommand,
                                     PRBool              aReset,
                                     nsIContentSink*     aSink)
 {
+  // do not allow message panes to host full-page plugins
+  // returning an error causes helper apps to take over
+  nsCOMPtr<nsIDocShellTreeItem> dsti (do_QueryInterface(aContainer));
+  if (dsti) {
+    PRBool isMsgPane = PR_FALSE;
+    dsti->NameEquals(NS_LITERAL_STRING("messagepane").get(), &isMsgPane);
+    if (isMsgPane) {
+      return NS_ERROR_FAILURE;
+    }
+  }
+
   nsresult rv =
     nsMediaDocument::StartDocumentLoad(aCommand, aChannel, aLoadGroup,
                                        aContainer, aDocListener, aReset,
@@ -188,12 +210,6 @@ nsPluginDocument::StartDocumentLoad(const char*         aCommand,
   }
 
   rv = aChannel->GetContentType(mMimeType);
-  if (NS_FAILED(rv)) {
-    return rv;
-  }
-
-  // Create synthetic document
-  rv = CreateSyntheticPluginDocument();
   if (NS_FAILED(rv)) {
     return rv;
   }
@@ -211,16 +227,14 @@ nsPluginDocument::StartDocumentLoad(const char*         aCommand,
 nsresult
 nsPluginDocument::CreateSyntheticPluginDocument()
 {
-  // do not allow message panes to host full-page plugins
-  // returning an error causes helper apps to take over
-  nsCOMPtr<nsIDocShellTreeItem> dsti (do_QueryReferent(mDocumentContainer));
-  if (dsti) {
-    PRBool isMsgPane = PR_FALSE;
-    dsti->NameEquals(NS_LITERAL_STRING("messagepane").get(), &isMsgPane);
-    if (isMsgPane) {
-      return NS_ERROR_FAILURE;
-    }
+#ifdef DEBUG
+  PRBool didInitialReflow = PR_FALSE;
+  nsIPresShell *shell = GetPrimaryShell();
+  if (shell) {
+    shell->GetDidInitialReflow(&didInitialReflow);
   }
+  NS_ASSERTION(!didInitialReflow, "Creating synthetic plugin document content too late");
+#endif
 
   // make our generic document
   nsresult rv = nsMediaDocument::CreateSyntheticDocument();
