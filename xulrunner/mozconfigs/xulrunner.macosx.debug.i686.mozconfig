@@ -1,6 +1,6 @@
 mk_add_options MOZ_CO_PROJECT=xulrunner
 mk_add_options MOZ_CO_MODULE=mozilla/other-licenses/bsdiff,mozilla/tools/update-packaging
-mk_add_options MOZ_CO_TAG=FIREFOX_3_0_14_RELEASE
+mk_add_options MOZ_CO_TAG=FIREFOX_3_0_15_RELEASE
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/compiled/xulrunner-debug
 mk_add_options MOZ_MAKE_FLAGS=-j2
 export MOZ_DEBUG_SYMBOLS=1
@@ -19,3 +19,4 @@ ac_add_options --disable-dbus
 ac_add_options --with-glib-prefix=/tools/sb-vendor-glib
 ac_add_options --disable-safe-browsing
 ac_add_options --disable-url-classifier
+ac_add_options --disable-mochitest

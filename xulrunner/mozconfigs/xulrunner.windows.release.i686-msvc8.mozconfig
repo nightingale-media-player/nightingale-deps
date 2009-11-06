@@ -1,6 +1,6 @@
 mk_add_options MOZ_CO_PROJECT=xulrunner
 mk_add_options MOZ_CO_MODULE=mozilla/other-licenses/bsdiff,mozilla/tools/update-packaging
-mk_add_options MOZ_CO_TAG=FIREFOX_3_0_14_RELEASE
+mk_add_options MOZ_CO_TAG=FIREFOX_3_0_15_RELEASE
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/compiled/xulrunner-release
 export MOZ_DEBUG_SYMBOLS=1
 export MOZILLA_OFFICIAL=1
@@ -18,4 +18,6 @@ ac_add_options --enable-jemalloc
 ac_add_options --disable-safe-browsing
 ac_add_options --disable-url-classifier
 ac_add_options --enable-splashscreen
+ac_add_options --disable-mochitest
+
 export WIN32_CRT_SRC_DIR="/d/msvc8/VC/crt/src"
