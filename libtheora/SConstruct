@@ -1,88 +1,47 @@
-# SCons build specification
 # see http://www.scons.org if you do not have this tool
+from os.path import join
 import SCons
 
-## primary source lists
+# TODO: should use lamda and map to work on python 1.5
+def path(prefix, list): return [join(prefix, x) for x in list]
 
 encoder_sources = """
-        enc/dct_encode.c
-        enc/encapiwrapper.c
-        enc/encode.c
-        enc/encoder_huffman.c
-        enc/encoder_idct.c
-        enc/encoder_toplevel.c
-        enc/encoder_quant.c
-        enc/blockmap.c
-        enc/dct.c
-        enc/dct_decode.c
-        enc/frarray.c
-        enc/frinit.c
-        enc/mcomp.c
-        enc/misc_common.c
-        enc/pb.c
-        enc/pp.c
-        enc/reconstruct.c
-        enc/scan.c
-        enc/dsp.c
+	apiwrapper.c
+	fragment.c
+	idct.c
+	internal.c
+	state.c
+	quant.c
+	analyze.c
+	encfrag.c
+	encapiwrapper.c
+	encinfo.c
+	encode.c
+	enquant.c
+	fdct.c
+	huffenc.c
+	mathops.c
+	mcenc.c
+	rate.c
+	tokenize.c
 """
 
 decoder_sources = """
-        dec/apiwrapper.c
-        dec/bitpack.c
-        dec/decapiwrapper.c
-        dec/decinfo.c
-        dec/decode.c
-        dec/dequant.c
-        dec/fragment.c
-        dec/huffdec.c
-        dec/idct.c
-        dec/info.c
-        dec/internal.c
-        dec/quant.c
-        dec/state.c
+        apiwrapper.c
+	bitpack.c
+        decapiwrapper.c
+        decinfo.c
+        decode.c
+        dequant.c
+        fragment.c
+        huffdec.c
+        idct.c
+        info.c
+        internal.c
+        quant.c
+        state.c
 """
 
-# optional platform-dependent sources
-
-decoder_x86_32_sources = """
-        dec/x86/mmxidct.c
-        dec/x86/mmxfrag.c
-        dec/x86/mmxstate.c
-        dec/x86/x86state.c
-"""
-encoder_x86_32_sources = """
-	enc/x86_32/dct_decode_mmx.c
-	enc/x86_32/dsp_mmx.c
-	enc/x86_32/dsp_mmxext.c
-	enc/x86_32/recon_mmx.c
-	enc/x86_32/idct_mmx.c
-	enc/x86_32/fdct_mmx.c
-"""
-decoder_x86_64_sources = """
-        dec/x86/mmxidct.c
-        dec/x86/mmxfrag.c
-        dec/x86/mmxstate.c
-        dec/x86/x86state.c
-"""
-encoder_x86_64_sources = """
-	enc/x86_64/dct_decode_mmx.c
-	enc/x86_64/dsp_mmx.c
-	enc/x86_64/dsp_mmxext.c
-	enc/x86_64/recon_mmx.c
-	enc/x86_64/idct_mmx.c
-	enc/x86_64/fdct_mmx.c
-  """
-
-inst_headers = """
-	theora.h
-	theoradec.h
-	theoraenc.h
-	codec.h
-  """
-
-## Conditional configuration machinery
-
-# Build environment
 env = Environment()
 if env['CC'] == 'gcc':
   env.Append(CCFLAGS=["-g", "-O2", "-Wall", "-Wno-parentheses"])
@@ -110,13 +69,13 @@ def CheckSDL(context):
 host_x86_32_test = """
     int main(int argc, char **argv) {
 #if !defined(__i386__)
-  #error __i386__ not defined
+  #error not an x86 host: preprocessor macro __i386__ not defined
 #endif
   return 0;
     }
     """
 def CheckHost_x86_32(context):
-  context.Message('Checking for an x86_32 host...')
+  context.Message('Checking for an x86 host...')
   result = context.TryCompile(host_x86_32_test, '.c')
   context.Result(result)
   return result
@@ -124,7 +83,7 @@ def CheckHost_x86_32(context):
 host_x86_64_test = """
     int main(int argc, char **argv) {
 #if !defined(__x86_64__)
-  #error __x86_64__ not defined
+  #error not an x86_64 host: preprocessor macro __x86_64__ not defined
 #endif
   return 0;
     }
@@ -135,7 +94,6 @@ def CheckHost_x86_64(context):
   context.Result(result)
   return result
 
-# Conditional configuration
 conf = Configure(env, custom_tests = {
   'CheckPKGConfig' : CheckPKGConfig,
   'CheckPKG' : CheckPKG,
@@ -143,7 +101,7 @@ conf = Configure(env, custom_tests = {
   'CheckHost_x86_32' : CheckHost_x86_32,
   'CheckHost_x86_64' : CheckHost_x86_64,
   })
-
+  
 if not conf.CheckPKGConfig('0.15.0'): 
    print 'pkg-config >= 0.15.0 not found.' 
    Exit(1)
@@ -169,28 +127,48 @@ if build_player_example and not conf.CheckSDL():
   build_player_example=False
 
 if conf.CheckHost_x86_32():
-  decoder_sources += decoder_x86_32_sources
-  encoder_sources += encoder_x86_32_sources
+  env.Append(CPPDEFINES='OC_X86_ASM')
+  decoder_sources += """
+        x86/mmxidct.c
+        x86/mmxfrag.c
+        x86/mmxstate.c
+        x86/x86state.c
+  """
+  encoder_sources += """
+	x86/mmxencfrag.c
+	x86/mmxfdct.c
+	x86/x86enc.c
+	x86/mmxfrag.c
+	x86/mmxidct.c
+	x86/mmxstate.c
+	x86/x86state.c
+  """
 elif conf.CheckHost_x86_64():
-  decoder_sources += decoder_x86_64_sources
-  encoder_sources += encoder_x86_64_sources
+  env.Append(CPPDEFINES=['OC_X86_ASM', 'OC_X86_64_ASM'])
+  decoder_sources += """
+        x86/mmxidct.c
+        x86/mmxfrag.c
+        x86/mmxstate.c
+        x86/x86state.c
+  """
+  encoder_sources += """
+	x86/mmxencfrag.c
+	x86/mmxfdct.c
+	x86/x86enc.c
+	x86/sse2fdct.c
+	x86/mmxfrag.c
+	x86/mmxidct.c
+	x86/mmxstate.c
+	x86/x86state.c
+  """
 
-# library source assignments
-libtheoradec_Sources = Split(decoder_sources)
-libtheoraenc_Sources = Split(encoder_sources)
-libtheora_Sources = Split(decoder_sources + encoder_sources)
-
-# Complete configuration
 env = conf.Finish()
-
-## Search paths
-
-# TODO: should use lamda and map to work on python 1.5
-from os.path import join
-def path(prefix, list): return [join(prefix, x) for x in list]
 
 env.Append(CPPPATH=['include'])
 env.ParseConfig('pkg-config --cflags --libs ogg')
+
+libtheoradec_Sources = Split(decoder_sources)
+libtheoraenc_Sources = Split(encoder_sources)
 
 libtheoradec_a = env.Library('lib/theoradec',
 	path('lib', libtheoradec_Sources))
@@ -200,44 +178,48 @@ libtheoradec_so = env.SharedLibrary('lib/theoradec',
 libtheoraenc_a = env.Library('lib/theoraenc',
 	path('lib', libtheoraenc_Sources))
 libtheoraenc_so = env.SharedLibrary('lib/theoraenc',
-	path('lib', libtheoraenc_Sources))
+	path('lib', libtheoraenc_Sources) + [libtheoradec_so])
 
-libtheora_a = env.Library('lib/theora',
-	path('lib', libtheora_Sources))
-libtheora_so = env.SharedLibrary('lib/theora',
-	path('lib', libtheora_Sources))
-
-## Install
-
-prefix='/usr/local'
-lib_dir = join(prefix, 'lib')
+#installing
+prefix='/usr'
+lib_dir = prefix + '/lib'
 env.Alias('install', prefix)
-env.Install(lib_dir, [libtheora_a, libtheora_so])
 env.Install(lib_dir, [libtheoradec_a, libtheoradec_so])
 env.Install(lib_dir, [libtheoraenc_a, libtheoraenc_so])
-inc_dir = join(prefix, 'include')
-env.Install( join(inc_dir, 'theora'),
-  path('include/theora', Split(inst_headers)) )
 
 # example programs
-dump_video = env.Copy()
-dump_video_Sources = Split("""dump_video.c ../lib/libtheora.a""")
+dump_video = env.Clone()
+dump_video_Sources = Split("""dump_video.c ../lib/libtheoradec.a""")
 dump_video.Program('examples/dump_video', path('examples', dump_video_Sources))
 
+dump_psnr = env.Clone()
+dump_psnr.Append(LIBS='m')
+dump_psnr_Sources = Split("""dump_psnr.c ../lib/libtheoradec.a""")
+dump_psnr.Program('examples/dump_psnr', path('examples', dump_psnr_Sources))
+
 if have_vorbis:
-  encex = dump_video.Copy()
+  encex = dump_video.Clone()
   encex.ParseConfig('pkg-config --cflags --libs vorbisenc vorbis')
-  encex_Sources = Split("""encoder_example.c
-	../lib/libtheoraenc.a ../lib/libtheoradec.a""")
+  encex_Sources = Split("""
+	encoder_example.c
+	../lib/libtheoraenc.a 
+	../lib/libtheoradec.a
+  """)
   encex.Program('examples/encoder_example', path('examples', encex_Sources))
 
   if build_player_example:
-    plyex = encex.Copy()
-    plyex_Sources = Split("""player_example.c ../lib/libtheora.a""")
+    plyex = encex.Clone()
+    plyex_Sources = Split("""
+	player_example.c
+	../lib/libtheoradec.a
+    """)
     plyex.ParseConfig('sdl-config --cflags --libs')
     plyex.Program('examples/player_example', path('examples', plyex_Sources))
 
-png2theora = env.Copy()
-png2theora_Sources = Split("""png2theora.c ../lib/libtheora.a""")
+png2theora = env.Clone()
+png2theora_Sources = Split("""png2theora.c
+	../lib/libtheoraenc.a
+	../lib/libtheoradec.a
+""")
 png2theora.ParseConfig('pkg-config --cflags --libs libpng')
 png2theora.Program('examples/png2theora', path('examples', png2theora_Sources))

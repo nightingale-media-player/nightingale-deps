@@ -5,13 +5,13 @@
  * GOVERNED BY A BSD-STYLE SOURCE LICENSE INCLUDED WITH THIS SOURCE *
  * IN 'COPYING'. PLEASE READ THESE TERMS BEFORE DISTRIBUTING.       *
  *                                                                  *
- * THE Theora SOURCE CODE IS COPYRIGHT (C) 2002-2008                *
+ * THE Theora SOURCE CODE IS COPYRIGHT (C) 2002-2009                *
  * by the Xiph.Org Foundation http://www.xiph.org/                  *
  *                                                                  *
  ********************************************************************
 
   function: routines for validating encoder granulepos generation
-  last mod: $Id: granulepos.c 14750 2008-04-16 17:50:15Z giles $
+  last mod: $Id: granulepos.c 16503 2009-08-22 18:14:02Z giles $
 
  ********************************************************************/
 
@@ -94,7 +94,11 @@ granulepos_test_encode (int frequency)
       printf("th_encode_ycbcr_in() returned %d\n", result);
       FAIL ("negative error code submitting frame for compression");
     }
-    th_encode_packetout (te, frame >= frequency * 2, &op);
+    result = th_encode_packetout (te, frame >= frequency * 2, &op);
+    if (result <= 0) {
+      printf("th_encode_packetout() returned %d\n", result);
+      FAIL("failed to retrieve compressed frame");
+    }
     if ((long long int)op.granulepos < last_granule)
       FAIL ("encoder returned a decreasing granulepos value");
     last_granule = op.granulepos;
@@ -103,7 +107,7 @@ granulepos_test_encode (int frequency)
     tframe = th_granule_frame (te, op.granulepos);
     ttime = th_granule_time(te, op.granulepos);
 #if DEBUG
-    printf("++ frame %d granulepos %lld %d:%d %d %.3lfs\n", 
+    printf("++ frame %d granulepos %lld %d:%d %d %.3lfs\n",
 	frame, (long long int)op.granulepos, keyframe, keydist,
 	tframe, th_granule_time (te, op.granulepos));
 #endif

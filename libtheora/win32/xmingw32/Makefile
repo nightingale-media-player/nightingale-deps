@@ -33,8 +33,9 @@ ENCODER_EXAMPLE_TARGET = encoder_example.exe
 # The compiler tools to use
 # The is no standard mingw prefix, so try to guess
 MINGW_PREFIX := $(or $(strip $(foreach exeprefix, \
-	i686-mingw32 i586-mingw32msvc i386-mingw32 no-mingw32, \
-	$(if $(shell which $(exeprefix)-gcc), $(exeprefix) ))))
+	i686-mingw32 i686-pc-mingw32 i586-mingw32msvc i386-mingw32 \
+	no-mingw32, \
+	$(if $(shell which $(exeprefix)-gcc 2>/dev/null), $(exeprefix) ))))
 CC = $(MINGW_PREFIX)-gcc
 RC = $(MINGW_PREFIX)-windres
 DLLTOOL = $(MINGW_PREFIX)-dlltool
@@ -53,8 +54,8 @@ CINCLUDE = -D_REENTRANT
 #  -ffast-math, or additional flags, depending on your system and compiler.
 # The correct -march=<architecture> flag will also generate much better code
 #  on newer architectures.
-CFLAGS = -Wall -Wno-parentheses -DUSE_ASM
-RELEASE_CFLAGS = ${CFLAGS} -mtune=nocona -O3 -fomit-frame-pointer -fforce-addr \
+CFLAGS = -Wall -Wno-parentheses -DOC_X86_ASM
+RELEASE_CFLAGS = ${CFLAGS} -mtune=native -O3 -fomit-frame-pointer -fforce-addr \
  -finline-functions
 # The -g flag will generally include debugging information.
 DEBUG_CFLAGS = ${CFLAGS} -g
@@ -69,86 +70,55 @@ WORKDIR = objs
 
 # C source file lists
 
-LIBTHEORABASE_CHEADERS = \
-internal.h \
-dec/apiwrapper.h \
-dec/dct.h \
-dec/idct.h \
-dec/huffman.h \
-dec/ocintrin.h \
-dec/quant.h \
-../include/theora/codec.h \
-../include/theora/theora.h \
-
 LIBTHEORADEC_CSOURCES = \
-dec/apiwrapper.c \
-dec/bitpack.c \
-dec/decapiwrapper.c \
-dec/decinfo.c \
-dec/decode.c \
-dec/dequant.c \
-dec/fragment.c \
-dec/huffdec.c \
-dec/idct.c \
-dec/info.c \
-dec/internal.c \
-dec/quant.c \
-dec/state.c \
-$(if $(findstring -DUSE_ASM,${CFLAGS}), \
-dec/x86/mmxstate.c \
-dec/x86/x86state.c \
-dec/x86/mmxidct.c \
-dec/x86/mmxfrag.c \
+apiwrapper.c \
+bitpack.c \
+decapiwrapper.c \
+decinfo.c \
+decode.c \
+dequant.c \
+fragment.c \
+huffdec.c \
+idct.c \
+info.c \
+internal.c \
+quant.c \
+state.c \
+$(if $(findstring -DOC_X86_ASM,${CFLAGS}), \
+x86/mmxidct.c \
+x86/mmxfrag.c \
+x86/mmxstate.c \
+x86/x86state.c \
 )
-
-LIBTHEORADEC_CHEADERS =   \
-${LIBTHEORABASE_CHEADERS} \
-dec/apiwrapper.h \
-dec/decint.h \
-dec/dequant.h \
-dec/huffdec.h \
 
 LIBTHEORAENC_CSOURCES = \
-dec/internal.c \
-enc/blockmap.c \
-enc/dct.c \
-enc/dct_decode.c \
-enc/dct_encode.c \
-enc/dsp.c \
-enc/encapiwrapper.c \
-enc/encode.c \
-enc/encoder_huffman.c \
-enc/encoder_idct.c \
-enc/encoder_quant.c \
-enc/encoder_toplevel.c \
-enc/frarray.c \
-enc/frinit.c \
-enc/mcomp.c \
-enc/misc_common.c \
-enc/pb.c \
-enc/pp.c \
-enc/reconstruct.c \
-enc/scan.c \
-$(if $(findstring -DUSE_ASM,${CFLAGS}), \
-enc/x86_32/dct_decode_mmx.c \
-enc/x86_32/dsp_mmx.c \
-enc/x86_32/dsp_mmxext.c \
-enc/x86_32/recon_mmx.c \
-enc/x86_32/idct_mmx.c \
-enc/x86_32/fdct_mmx.c \
+apiwrapper.c \
+fragment.c \
+idct.c \
+internal.c \
+state.c \
+quant.c \
+analyze.c \
+fdct.c \
+encfrag.c \
+encapiwrapper.c \
+encinfo.c \
+encode.c \
+enquant.c \
+huffenc.c \
+mathops.c \
+mcenc.c \
+rate.c \
+tokenize.c \
+$(if $(findstring -DOC_X86_ASM,${CFLAGS}), \
+x86/mmxfrag.c \
+x86/mmxidct.c \
+x86/mmxstate.c \
+x86/x86state.c \
+x86/mmxencfrag.c \
+x86/mmxfdct.c \
+x86/x86enc.c \
 )
-
-LIBTHEORAENC_CHEADERS = \
-cpu.h \
-enc/block_inline.h \
-enc/hufftables.h \
-enc/codec_internal.h \
-enc/pp.h \
-enc/dsp.h \
-enc/quant_lookup.h \
-enc/encoder_huffman.h \
-enc/toplevel_lookup.h \
-enc/encoder_lookup.h \
 
 
 DUMP_VIDEO_CSOURCES = dump_video.c
@@ -158,7 +128,7 @@ PLAYER_EXAMPLE_CSOURCES = player_example.c
 # Create object file list.
 LIBTHEORADEC_OBJS:= ${LIBTHEORADEC_CSOURCES:%.c=${WORKDIR}/%.o}
 LIBTHEORADECD_OBJS:= ${LIBTHEORADEC_CSOURCES:%.c=${WORKDIR}/%.do}
-LIBTHEORAENC_OBJS:= ${LIBTHEORAENC_CSOURCES:%.c=${WORKDIR}/%.o}
+LIBTHEORAENC_OBJS:=  ${LIBTHEORAENC_CSOURCES:%.c=${WORKDIR}/%.o}
 LIBTHEORAENCD_OBJS:= ${LIBTHEORAENC_CSOURCES:%.c=${WORKDIR}/%.do}
 DUMP_VIDEO_OBJS:= ${DUMP_VIDEO_CSOURCES:%.c=${WORKDIR}/%.o}
 ENCODER_EXAMPLE_OBJS:= ${ENCODER_EXAMPLE_CSOURCES:%.c=${WORKDIR}/%.o}
@@ -181,15 +151,13 @@ ALL_DEPS:= ${ALL_DEPS:%.do=%.dd}
 ALL_DEPS:= ${ALL_DEPS:%.rco=%.d}
 # Prepend source path to file names.
 LIBTHEORADEC_CSOURCES:= ${LIBTHEORADEC_CSOURCES:%=${LIBSRCDIR}/%}
-LIBTHEORADEC_CHEADERS:= ${LIBTHEORADEC_CHEADERS:%=${LIBSRCDIR}/%}
 LIBTHEORAENC_CSOURCES:= ${LIBTHEORAENC_CSOURCES:%=${LIBSRCDIR}/%}
-LIBTHEORAENC_CHEADERS:= ${LIBTHEORAENC_CHEADERS:%=${LIBSRCDIR}/%}
 DUMP_VIDEO_CSOURCES:= ${DUMP_VIDEO_CSOURCES:%=${BINSRCDIR}/%}
 ENCODER_EXAMPLE_CSOURCES:= ${ENCODER_EXAMPLE_CSOURCES:%=${BINSRCDIR}/%}
 PLAYER_EXAMPLE_CSOURCES:= ${PLAYER_EXAMPLE_CSOURCES:%=${BINSRCDIR}/%}
 ALL_CSOURCES:= ${LIBTHEORADEC_CSOURCES} ${LIBTHEORAENC_CSOURCES} \
- ${DUMP_VIDEO_CSOURCES} ${ENCODER_EXAMPLE_CSOURCES} \
- ${PLAYER_EXAMPLE_CSOURCES}
+ ${DUMP_VIDEO_CSOURCES} ${PLAYER_EXAMPLE_CSOURCES} \
+ ${ENCODER_EXAMPLE_CSOURCES}
 LIBTHEORAENC_RCO:= ${WORKDIR}/${LIBTHEORAENC_TARGET:%.dll=%.rco}
 LIBTHEORAENCD_RCO:= ${WORKDIR}/${LIBTHEORAENCD_TARGET:%.dll=%.rco}
 LIBTHEORAENC70_RCO:= ${WORKDIR}/${LIBTHEORAENC70_TARGET:%.dll=%.rco}
@@ -377,10 +345,7 @@ ${PLAYER_EXAMPLE_TARGET}: ${PLAYER_EXAMPLE_OBJS} ${LIBTHEORADEC_TARGET}
 # Remove all targets.
 clean:
 	-rm $(sort ${ALL_OBJS} ${ALL_DEPS} ${ALL_TARGETS} ${IMPLIB_TARGETS})
-	-rmdir ${WORKDIR}/enc/x86_32
-	-rmdir ${WORKDIR}/enc
-	-rmdir ${WORKDIR}/dec/x86
-	-rmdir ${WORKDIR}/dec
+	-rmdir ${WORKDIR}/x86
 	-rmdir ${WORKDIR}
 
 # Make everything depend on changes in the Makefile

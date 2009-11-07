@@ -27,7 +27,7 @@ dist_docdir = $(distdir)/libtheora
 dist-hook:
 	if test -d libtheora; then \
 	  mkdir $(dist_docdir); \
-	  echo -n "copying built documentation..."; \
+	  echo -n "copying built documenation..."; \
 	  for dir in libtheora/*; do \
 	    b=`basename $$dir`; \
 	    if test $$b != ".svn"; then \

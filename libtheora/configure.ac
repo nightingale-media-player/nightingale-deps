@@ -4,13 +4,13 @@ dnl ------------------------------------------------
 dnl Initialization and Versioning
 dnl ------------------------------------------------
 
-AC_INIT(libtheora,[1.0])
+AC_INIT(libtheora,[1.1.1])
 
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
 AM_CONFIG_HEADER([config.h])
-AC_CONFIG_SRCDIR([lib/enc/dct.c])
+AC_CONFIG_SRCDIR([lib/fdct.c])
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
 
@@ -22,22 +22,22 @@ dnl - interfaces added -> increment AGE
 dnl - interfaces removed -> AGE = 0
 
 TH_LIB_CURRENT=3
-TH_LIB_REVISION=4
+TH_LIB_REVISION=10
 TH_LIB_AGE=3
 AC_SUBST(TH_LIB_CURRENT)
 AC_SUBST(TH_LIB_REVISION)
 AC_SUBST(TH_LIB_AGE)
 
-THDEC_LIB_CURRENT=1
-THDEC_LIB_REVISION=1
-THDEC_LIB_AGE=0
+THDEC_LIB_CURRENT=2
+THDEC_LIB_REVISION=4
+THDEC_LIB_AGE=1
 AC_SUBST(THDEC_LIB_CURRENT)
 AC_SUBST(THDEC_LIB_REVISION)
 AC_SUBST(THDEC_LIB_AGE)
 
-THENC_LIB_CURRENT=1
-THENC_LIB_REVISION=1
-THENC_LIB_AGE=0
+THENC_LIB_CURRENT=2
+THENC_LIB_REVISION=2
+THENC_LIB_AGE=1
 AC_SUBST(THENC_LIB_CURRENT)
 AC_SUBST(THENC_LIB_REVISION)
 AC_SUBST(THENC_LIB_AGE)
@@ -71,42 +71,54 @@ if test $HAVE_DOXYGEN = "false"; then
 fi
 
 dnl Check for tools used to build the format specification
-AC_CHECK_PROG(HAVE_PDFLATEX, pdflatex, yes)
-AC_CHECK_PROG(HAVE_BIBTEX, bibtex, yes)
-AC_CHECK_PROG(HAVE_TRANSFIG, fig2dev, yes)
 BUILD_SPEC="false"
-if test -r doc/spec/spec.tex; then
- if test "x$HAVE_PDFLATEX" = "xyes"; then
-  if test "x$HAVE_BIBTEX" = "xyes"; then
-    if test "x$HAVE_TRANSFIG" = "xyes"; then
-      tex_pkg_list=`fgrep usepackage doc/spec/spec.tex | grep \{ | grep -v ltablex`
-      tex_pkg_ok="yes"
-      for pkg_line in $tex_pkg_list; do
-	pkg_name=`echo $pkg_line | sed -e 's/.*{\(.*\)}.*/\1/'`
-	AC_MSG_CHECKING([for Tex package $pkg_name])
-        cat >conftest.tex <<_ACEOF
+ac_build_spec=yes
+AC_ARG_ENABLE(spec,
+     [  --disable-spec          do not build spec ],
+     [
+       if test "x$enableval" = "xno"; then
+         ac_build_spec=$enableval
+       fi
+     ], [
+       ac_build_spec=yes
+     ] )
+if test "x$ac_build_spec" = "xyes"; then
+  AC_CHECK_PROG(HAVE_PDFLATEX, pdflatex, yes)
+  AC_CHECK_PROG(HAVE_BIBTEX, bibtex, yes)
+  AC_CHECK_PROG(HAVE_TRANSFIG, fig2dev, yes)
+  if test -r doc/spec/spec.tex; then
+   if test "x$HAVE_PDFLATEX" = "xyes"; then
+    if test "x$HAVE_BIBTEX" = "xyes"; then
+      if test "x$HAVE_TRANSFIG" = "xyes"; then
+        tex_pkg_list=`fgrep usepackage doc/spec/spec.tex | grep \{ | grep -v ltablex`
+        tex_pkg_ok="yes"
+        for pkg_line in $tex_pkg_list; do
+	  pkg_name=`echo $pkg_line | sed -e 's/.*{\(.*\)}.*/\1/'`
+	  AC_MSG_CHECKING([for Tex package $pkg_name])
+          cat >conftest.tex <<_ACEOF
 \\documentclass{book}
 $pkg_line
 \\begin{document}
 Hello World.
 \\end{document}
 _ACEOF
-	if pdflatex -interaction batchmode -halt-on-error conftest < /dev/null > /dev/null 2>&1; then
-          AC_MSG_RESULT([ok])
-        else
-	  tex_pkg_ok="no"
-	  AC_MSG_RESULT([no])
+	  if pdflatex -interaction batchmode -halt-on-error conftest < /dev/null > /dev/null 2>&1; then
+            AC_MSG_RESULT([ok])
+          else
+	    tex_pkg_ok="no"
+	    AC_MSG_RESULT([no])
+          fi
+        done
+        if test -w conftest.tex; then rm conftest.tex; fi
+        if test -w conftest.tex; then rm conftest.aux; fi
+        if test -w conftest.pdf; then rm conftest.pdf; fi
+        if test "x$tex_pkg_ok" = "xyes"; then
+          BUILD_SPEC="true"
         fi
-      done
-      if test -w conftest.tex; then rm conftest.tex; fi
-      if test -w conftest.tex; then rm conftest.aux; fi
-      if test -w conftest.pdf; then rm conftest.pdf; fi
-      if test "x$tex_pkg_ok" = "xyes"; then
-        BUILD_SPEC="true"
       fi
     fi
+   fi
   fi
- fi
 fi
 AM_CONDITIONAL(BUILD_SPEC, $BUILD_SPEC)
 if test $BUILD_SPEC = "false"; then
@@ -168,40 +180,22 @@ AC_ARG_ENABLE(asm,
     [  --disable-asm           disable assembly optimizations ],
     [ ac_enable_asm=$enableval ], [ ac_enable_asm=yes] )
 
-# early gcc doesn't support named parameters; disable asm in this case
-if ! test -z "$GCC"; then
-    AC_MSG_CHECKING([if the compiler version supports named asm params])
-    gcc_version=`${CC} -dumpversion`
-    gcc_version_major=`echo ${gcc_version} | cut -f 1 -d '.'`
-    gcc_version_minor=`echo ${gcc_version} | cut -f 2 -d '.'`
-    if test "${gcc_version_major}" -lt 3; then
-      ac_enable_asm=no
-      AC_MSG_RESULT([no (${gcc_version})])
-    elif test "${gcc_version_major}" -eq 3 -a "${gcc_version_minor}" -lt 1; then
-      ac_enable_asm=no
-      AC_MSG_RESULT([no (${gcc_version})])
-    else
-      AC_MSG_RESULT([ok (${gcc_version})])
-    fi
-fi
 if test "x${ac_enable_asm}" = xyes; then
   cpu_optimization="no optimization for your platform, please send a patch"
   case $target_cpu in
   i[[3456]]86)
     cpu_x86_32=yes 
     cpu_optimization="32 bit x86"
-    AC_DEFINE([USE_ASM], [],  [make use of asm optimization])
+    AC_DEFINE([OC_X86_ASM], [],  [make use of x86 asm optimization])
     if test "x$target_vendor" = "xapple"; then
       THEORA_LDFLAGS="$THEORA_LDFLAGS  -Wl,-read_only_relocs,suppress"
     fi
-    
-    AC_DEFINE([OC_X86ASM], [], [enable x86 assambler optimization])
       ;;
   x86_64)
     cpu_x86_64=yes
     cpu_optimization="64 bit x86"
-    AC_DEFINE([USE_ASM], [],  [make use of asm optimization])  
-    AC_DEFINE([OC_X86ASM], [], [enable x86 assambler optimization])
+    AC_DEFINE([OC_X86_ASM], [],  [make use of x86 asm optimization])
+    AC_DEFINE([OC_X86_64_ASM], [],  [make use of x86_64 asm optimization])
     ;;
   esac
 else
@@ -209,23 +203,11 @@ else
 fi
 AM_CONDITIONAL([CPU_x86_64], [test x$cpu_x86_64 = xyes])
 AM_CONDITIONAL([CPU_x86_32], [test x$cpu_x86_32 = xyes])
-AM_CONDITIONAL(OC_X86ASM,[test x$ac_enable_asm = xyes])
-
-visualstudio=no
-
-case "$target_os" in
-  *cygwin*|*mingw*|*msvc*)
-    if test "$GCC" != "yes"; then
-      visualstudio=yes
-    fi
-  ;;
-esac
-AM_CONDITIONAL(COMPILER_visualstudio, [test x$visualstudio = xyes])
 
 # Test whenever ld supports -version-script
 AC_PROG_LD
 AC_PROG_LD_GNU
-AC_MSG_CHECKING([library symbol versioning support])
+AC_MSG_CHECKING([how to control symbol export])
 
 THDEC_VERSION_ARG=""
 THENC_VERSION_ARG=""
@@ -238,13 +220,13 @@ if test "x$lt_cv_prog_gnu_ld" = "xyes"; then
     THENC_VERSION_ARG="-export-symbols \$(top_srcdir)/win32/xmingw32/libtheoraenc-all.def"
     THENC_VERSION_ARG="$THENC_VERSION_ARG -ltheoradec"
     THC_VERSION_ARG="-export-symbols \$(top_srcdir)/win32/libtheora.def"
-    AC_MSG_RESULT([no])
+    AC_MSG_RESULT([-export-symbols])
     ;;
   linux* | solaris* )
     THDEC_VERSION_ARG='-Wl,--version-script=$(srcdir)/Version_script-dec'
     THENC_VERSION_ARG='-Wl,--version-script=$(srcdir)/Version_script-enc'
     TH_VERSION_ARG='-Wl,--version-script=$(srcdir)/Version_script'
-    AC_MSG_RESULT([yes])
+    AC_MSG_RESULT([--version-script])
     ;;
   *)
     # build without versioning
@@ -252,8 +234,18 @@ if test "x$lt_cv_prog_gnu_ld" = "xyes"; then
     ;;
  esac
 else
+ case "$target_os" in
+  darwin*)
+    THDEC_VERSION_ARG='-Wl,-exported_symbols_list,$(srcdir)/theoradec.exp'
+    THENC_VERSION_ARG='-Wl,-exported_symbols_list,$(srcdir)/theoraenc.exp'
+    TH_VERSION_ARG='-Wl,-exported_symbols_list,$(srcdir)/theora.exp'
+    AC_MSG_RESULT([-exported_symbols_list])
+    ;;
+  *)
     # build without versioning
     AC_MSG_RESULT([no])
+    ;;
+ esac
 fi
  
 THEORADEC_LDFLAGS="$THEORA_LDFLAGS $THDEC_VERSION_ARG"
@@ -328,7 +320,6 @@ AM_PATH_SDL(,[
 
 dnl check for OSS
 HAVE_OSS=no
-
 AC_CHECK_HEADERS([sys/soundcard.h soundcard.h machine/soundcard.h],[
   HAVE_OSS=yes
   break
@@ -336,6 +327,15 @@ AC_CHECK_HEADERS([sys/soundcard.h soundcard.h machine/soundcard.h],[
 if test x$HAVE_OSS != xyes; then
   AC_MSG_WARN([OSS audio support not found -- not compiling player_example])
 fi
+
+dnl OpenBSD needs -lossaudio to use the oss interface
+OSS_LIBS=
+case "$target_os" in
+  openbsd*)
+    OSS_LIBS='-lossaudio'
+    ;;
+esac
+AC_SUBST(OSS_LIBS)
 
 dnl check for libpng
 HAVE_PNG=no
@@ -345,6 +345,25 @@ then
 fi
 AC_SUBST(PNG_CFLAGS)
 AC_SUBST(PNG_LIBS)
+
+dnl check for libcairo
+HAVE_CAIRO=no
+AC_ARG_ENABLE(telemetry,
+    [  --enable-telemetry      enable debugging output controls ],
+    [ ac_enable_telemetry=$enableval ], [ ac_enable_telemetry=no] )
+
+if test "x${ac_enable_telemetry}" = xyes; then
+   if test "x$HAVE_PKG_CONFIG" = "xyes"
+   then
+     PKG_CHECK_MODULES(CAIRO, cairo, HAVE_CAIRO=yes, HAVE_CAIRO=no)
+     AC_DEFINE([HAVE_CAIRO], [],  [libcairo is available for visual debugging output])  
+   fi
+   if test x$HAVE_CAIRO != xyes; then
+     AC_MSG_WARN([libcairo not found -- not compiling telemetry output support ])
+   fi
+   AC_SUBST(CAIRO_CFLAGS)
+   AC_SUBST(CAIRO_LIBS)
+fi
 
 dnl --------------------------------------------------
 dnl Overall build configuration options
@@ -406,6 +425,9 @@ dnl --------------------------------------------------
 dnl Check for library functions
 dnl --------------------------------------------------
 
+dnl OpenBSD needs -lcompat for ftime() used by dump_video.c
+AC_SEARCH_LIBS([ftime], [compat])
+
 dnl substitute the included getopt if the system doesn't support long options
 AC_CHECK_FUNC(getopt_long,
               [GETOPT_OBJS=''],
@@ -413,10 +435,10 @@ AC_CHECK_FUNC(getopt_long,
 AC_SUBST(GETOPT_OBJS)
 
 if test x$HAVE_SDL = xyes -a x$HAVE_OSS = xyes -a x$HAVE_VORBIS = xyes; then
-  BUILDABLE_EXAMPLES="$BUILDABLE_EXAMPLES player_example"
+  BUILDABLE_EXAMPLES="$BUILDABLE_EXAMPLES player_example\$(EXEEXT)"
 fi
 if test x$HAVE_PNG = xyes; then
-  BUILDABLE_EXAMPLES="$BUILDABLE_EXAMPLES png2theora"
+  BUILDABLE_EXAMPLES="$BUILDABLE_EXAMPLES png2theora\$(EXEEXT)"
 fi
 AC_SUBST(BUILDABLE_EXAMPLES)
 
@@ -469,6 +491,7 @@ AC_MSG_RESULT([
     Encoding support: ........... ${ac_enable_encode}
     Floating point support: ..... ${ac_enable_float}
     Assembly optimization: ...... ${cpu_optimization}
+    Debugging telemetry: ........ ${ac_enable_telemetry}
     Build example code: ......... ${ac_enable_examples}
     API Documentation: .......... ${doc_build}
     Format Documentation: ....... ${spec_build}

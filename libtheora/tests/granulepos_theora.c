@@ -5,13 +5,13 @@
  * GOVERNED BY A BSD-STYLE SOURCE LICENSE INCLUDED WITH THIS SOURCE *
  * IN 'COPYING'. PLEASE READ THESE TERMS BEFORE DISTRIBUTING.       *
  *                                                                  *
- * THE Theora SOURCE CODE IS COPYRIGHT (C) 2002-2007                *
+ * THE Theora SOURCE CODE IS COPYRIGHT (C) 2002-2009                *
  * by the Xiph.Org Foundation http://www.xiph.org/                  *
  *                                                                  *
  ********************************************************************
 
   function: routines for validating encoder granulepos generation
-  last mod: $Id: granulepos_theora.c 14750 2008-04-16 17:50:15Z giles $
+  last mod: $Id: granulepos_theora.c 16503 2009-08-22 18:14:02Z giles $
 
  ********************************************************************/
 
