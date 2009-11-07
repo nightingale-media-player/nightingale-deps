@@ -11,7 +11,7 @@
  ********************************************************************
 
  function: metrics and quantization code for LSP VQ codebooks
- last mod: $Id: lspdata.c 13293 2007-07-24 00:09:47Z xiphmont $
+ last mod: $Id: lspdata.c 16037 2009-05-26 21:10:58Z xiphmont $
 
  ********************************************************************/
 
@@ -54,15 +54,15 @@ void vqext_quantize(vqgen *v,quant_meta *q){
       
       _now(v,j)[k]=now;
       if(now<0){
-	/* be paranoid; this should be impossible */
-	fprintf(stderr,"fault; quantized value<0\n");
-	exit(1);
+        /* be paranoid; this should be impossible */
+        fprintf(stderr,"fault; quantized value<0\n");
+        exit(1);
       }
 
       if(now>maxquant){
-	/* be paranoid; this should be impossible */
-	fprintf(stderr,"fault; quantized value>max\n");
-	exit(1);
+        /* be paranoid; this should be impossible */
+        fprintf(stderr,"fault; quantized value>max\n");
+        exit(1);
       }
       last=(now*delta)+mindel+last;
     }

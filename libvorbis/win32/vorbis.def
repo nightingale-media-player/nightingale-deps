@@ -1,5 +1,5 @@
 ;
-; $Id: vorbis.def 13284 2007-07-20 03:47:48Z tterribe $
+; $Id: vorbis.def 15530 2008-11-24 18:50:32Z giles $
 ; 
 LIBRARY
 EXPORTS
@@ -55,3 +55,5 @@ vorbis_encode_setup_vbr
 vorbis_encode_init_vbr
 vorbis_encode_setup_init
 vorbis_encode_ctl
+;
+vorbis_version_string

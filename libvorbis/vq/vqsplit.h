@@ -11,7 +11,7 @@
  ********************************************************************
 
  function: build a VQ codebook decision tree 
- last mod: $Id: vqsplit.h 13293 2007-07-24 00:09:47Z xiphmont $
+ last mod: $Id: vqsplit.h 16037 2009-05-26 21:10:58Z xiphmont $
 
  ********************************************************************/
 
@@ -23,11 +23,11 @@
 extern void vqsp_book(vqgen *v,codebook *b,long *quantlist);
 extern int vqenc_entry(codebook *b,float *val);
 extern int lp_split(float *pointlist,long totalpoints,
-		    codebook *b,
-		    long *entryindex,long entries, 
-		    long *pointindex,long points,
-		    long *membership,long *reventry,
-		    long depth, long *pointsofar);
+                    codebook *b,
+                    long *entryindex,long entries, 
+                    long *pointindex,long points,
+                    long *membership,long *reventry,
+                    long depth, long *pointsofar);
 
 #endif
 

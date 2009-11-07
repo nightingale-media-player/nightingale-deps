@@ -5,34 +5,34 @@
  * GOVERNED BY A BSD-STYLE SOURCE LICENSE INCLUDED WITH THIS SOURCE *
  * IN 'COPYING'. PLEASE READ THESE TERMS BEFORE DISTRIBUTING.       *
  *                                                                  *
- * THE OggVorbis SOURCE CODE IS (C) COPYRIGHT 1994-2007             *
+ * THE OggVorbis SOURCE CODE IS (C) COPYRIGHT 1994-2009             *
  * by the Xiph.Org Foundation http://www.xiph.org/                  *
  *                                                                  *
  ********************************************************************
 
- function: 22kHz settings 
- last mod: $Id: setup_22.h 13293 2007-07-24 00:09:47Z xiphmont $
+ function: 22kHz settings
+ last mod: $Id: setup_22.h 16227 2009-07-08 06:58:46Z xiphmont $
 
  ********************************************************************/
 
-static double rate_mapping_22[4]={
+static const double rate_mapping_22[4]={
   15000.,20000.,44000.,86000.
 };
 
-static double rate_mapping_22_uncoupled[4]={
+static const double rate_mapping_22_uncoupled[4]={
   16000.,28000.,50000.,90000.
 };
 
-static double _psy_lowpass_22[4]={9.5,11.,30.,99.};
+static const double _psy_lowpass_22[4]={9.5,11.,30.,99.};
 
-ve_setup_data_template ve_setup_22_stereo={
+static const ve_setup_data_template ve_setup_22_stereo={
   3,
   rate_mapping_22,
   quality_mapping_16,
   2,
   19000,
   26000,
-  
+
   blocksize_16_short,
   blocksize_16_long,
 
@@ -50,7 +50,7 @@ ve_setup_data_template ve_setup_22_stereo={
   _psy_noisebias_16_short,
   _psy_noisebias_16,
   _psy_noise_suppress,
-  
+
   _psy_compand_8,
   _psy_compand_8_mapping,
   _psy_compand_8_mapping,
@@ -61,7 +61,7 @@ ve_setup_data_template ve_setup_22_stereo={
 
   _psy_ath_floater_16,
   _psy_ath_abs_16,
-  
+
   _psy_lowpass_22,
 
   _psy_global_44,
@@ -76,14 +76,14 @@ ve_setup_data_template ve_setup_22_stereo={
   _mapres_template_16_stereo
 };
 
-ve_setup_data_template ve_setup_22_uncoupled={
+static const ve_setup_data_template ve_setup_22_uncoupled={
   3,
   rate_mapping_22_uncoupled,
   quality_mapping_16,
   -1,
   19000,
   26000,
-  
+
   blocksize_16_short,
   blocksize_16_long,
 
@@ -95,13 +95,13 @@ ve_setup_data_template ve_setup_22_uncoupled={
   _vp_tonemask_adj_16,
   _vp_tonemask_adj_16,
 
-  _psy_noiseguards_8,
+  _psy_noiseguards_16,
   _psy_noisebias_16_impulse,
   _psy_noisebias_16_short,
   _psy_noisebias_16_short,
   _psy_noisebias_16,
   _psy_noise_suppress,
-  
+
   _psy_compand_8,
   _psy_compand_8_mapping,
   _psy_compand_8_mapping,
@@ -112,7 +112,7 @@ ve_setup_data_template ve_setup_22_uncoupled={
 
   _psy_ath_floater_16,
   _psy_ath_abs_16,
-  
+
   _psy_lowpass_22,
 
   _psy_global_44,

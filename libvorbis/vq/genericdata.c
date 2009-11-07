@@ -11,7 +11,7 @@
  ********************************************************************
 
  function: generic euclidian distance metric for VQ codebooks
- last mod: $Id: genericdata.c 13293 2007-07-24 00:09:47Z xiphmont $
+ last mod: $Id: genericdata.c 16037 2009-05-26 21:10:58Z xiphmont $
 
  ********************************************************************/
 
@@ -24,7 +24,7 @@
 char *vqext_booktype="GENERICdata";  
 int vqext_aux=0;                
 quant_meta q={0,0,0,0};          /* non sequence data; each scalar 
-				    independent */
+                                    independent */
 
 void vqext_quantize(vqgen *v,quant_meta *q){
   vqgen_quantize(v,q);

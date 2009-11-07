@@ -1,3 +1,38 @@
+libvorbis 1.2.3 (2009-07-09) -- "Xiph.Org libVorbis I 20090709"
+
+ * correct a vorbisfile bug that prevented proper playback of
+   Vorbis files where all audio in a logical stream is in a
+   single page
+ * Additional decode setup hardening against malicious streams
+ * Add 'OV_EXCLUDE_STATIC_CALLBACKS' define for developers who 
+   wish to avoid avoid unused symbol warnings from the static
+   callbacks defined in vorbisfile.h
+
+libvorbis 1.2.2 (2009-06-24) -- "Xiph.Org libVorbis I 20090624"
+
+ * define VENDOR and ENCODER strings
+ * seek correctly in files bigger than 2 GB (Windows)
+ * fix regression from CVE-2008-1420; 1.0b1 files work again
+ * mark all tables as constant to reduce memory occupation
+ * additional decoder hardening against malicious streams
+ * substantially reduce amount of seeking performed by Vorbisfile
+ * Multichannel decode bugfix 
+ * build system updates
+ * minor specification clarifications/fixes
+
+libvorbis 1.2.1 (unreleased) -- "Xiph.Org libVorbis I 20080501"
+
+ * Improved robustness with corrupt streams.
+ * New ov_read_filter() vorbisfile call allows filtering decoded
+   audio as floats before converting to integer samples.
+ * Fix an encoder bug with multichannel streams.
+ * Replaced RTP payload format draft with RFC 5215.
+ * Bare bones self test under 'make check'.
+ * Fix a problem encoding some streams between 14 and 28 kHz.
+ * Fix a numerical instability in the edge extrapolation filter.
+ * Build system improvements.
+ * Specification correction.
+
 libvorbis 1.2.0 (2007-07-25) -- "Xiph.Org libVorbis I 20070622"
 
  * new ov_fopen() convenience call that avoids the common
