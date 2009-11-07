@@ -9,7 +9,7 @@
 <table border=0 width=100%>
 <tr>
 <td><p class=tiny>libogg documentation</p></td>
-<td align=right><p class=tiny>libogg release 1.0 - 20000615</p></td>
+<td align=right><p class=tiny>libogg release 1.1.4 - 20090520</p></td>
 </tr>
 </table>
 
@@ -43,7 +43,7 @@ int ogg_stream_flush(<a href="ogg_stream_state.html">ogg_stream_state</a> *os, <
 
 <h3>Return Values</h3>
 <blockquote>
-<li>0 means that all packet data has already been flushed into pages, and there are no packets to put into the page.</li>
+<li>0 means that all packet data has already been flushed into pages, and there are no packets to put into the page.  0 is also returned in the case of an <a href="ogg_stream_state.html">ogg_stream_state</a> that has been cleared explicitly or implicitly due to an internal error.</li>
 <li>
 Nonzero means that remaining packets have successfully been flushed into the page.</li>
 </blockquote>
@@ -53,11 +53,11 @@ Nonzero means that remaining packets have successfully been flushed into the pag
 <hr noshade>
 <table border=0 width=100%>
 <tr valign=top>
-<td><p class=tiny>copyright &copy; 2000 xiph.org</p></td>
-<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/index.html">Ogg Vorbis</a><br><a href="mailto:team@xiph.org">team@xiph.org</a></p></td>
+<td><p class=tiny>copyright &copy; 2000-2009 Xiph.Org</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/">Ogg Container Format</a></p></td>
 </tr><tr>
 <td><p class=tiny>libogg documentation</p></td>
-<td align=right><p class=tiny>libogg release 1.0 - 20000615</p></td>
+<td align=right><p class=tiny>libogg release 1.1.4 - 20090520</p></td>
 </tr>
 </table>
 
