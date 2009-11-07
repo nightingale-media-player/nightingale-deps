@@ -31,7 +31,7 @@
 #include "tbytevector.h"
 
 #include <string>
-#include <ostream>
+#include <iostream>
 
 /*!
  * \relates TagLib::String
@@ -226,6 +226,13 @@ namespace TagLib {
     int find(const String &s, int offset = 0) const;
 
     /*!
+     * Finds the last occurrence of pattern \a s in this string, searched backwards,
+     * either from the end of the string or starting from \a offset. If the pattern
+     * is not found, -1 is returned.
+     */
+    int rfind(const String &s, int offset = -1) const;
+
+    /*!
      * Returns true if the strings starts with the substring \a s.
      */
     bool startsWith(const String &s) const;
@@ -301,11 +308,6 @@ namespace TagLib {
      * Returns true if the file only uses characters required by (7-bit) ASCII.
      */
     bool isAscii() const;
-    
-    /*!
-     * Returns true if the Unicode string can't be trusted to really be correct
-     */
-    bool shouldGuessCharacterSet() const;
 
     /*!
      * Converts the base-10 integer \a n to a string.

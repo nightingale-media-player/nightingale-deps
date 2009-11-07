@@ -243,7 +243,7 @@ UserTextIdentificationFrame *UserTextIdentificationFrame::find(
 {
   FrameList l = tag->frameList("TXXX");
   for(FrameList::Iterator it = l.begin(); it != l.end(); ++it) {
-    UserTextIdentificationFrame *f = static_cast<UserTextIdentificationFrame *>(*it);
+    UserTextIdentificationFrame *f = dynamic_cast<UserTextIdentificationFrame *>(*it);
     if(f && f->description() == description)
       return f;
   }

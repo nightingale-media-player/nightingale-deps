@@ -1,3 +1,4 @@
+DEFS = -DMAKE_TAGLIB_LIB @DEFS@
 INCLUDES = \
 	-I$(top_srcdir)/taglib \
 	-I$(top_srcdir)/taglib/toolkit \
@@ -10,6 +11,8 @@ libframes_la_SOURCES = \
 	attachedpictureframe.cpp \
 	commentsframe.cpp \
 	generalencapsulatedobjectframe.cpp \
+	popularimeterframe.cpp \
+	privateframe.cpp \
 	relativevolumeframe.cpp \
 	textidentificationframe.cpp \
 	uniquefileidentifierframe.cpp \
@@ -21,6 +24,8 @@ taglib_include_HEADERS = \
 	attachedpictureframe.h \
 	commentsframe.h \
 	generalencapsulatedobjectframe.h \
+	popularimeterframe.h \
+	privateframe.h \
 	relativevolumeframe.h \
 	textidentificationframe.h \
 	uniquefileidentifierframe.h \

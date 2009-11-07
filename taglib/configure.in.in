@@ -38,7 +38,7 @@ dnl Perform program name transformation
 AC_ARG_PROGRAM
 
 dnl Automake doc recommends to do this only here. (Janos)
-AM_INIT_AUTOMAKE(taglib,1.4)
+AM_INIT_AUTOMAKE(taglib,1.6.1)
 
 dnl almost the same like KDE_SET_PEFIX but the path is /usr/local
 dnl
@@ -56,6 +56,7 @@ KDE_CONF_FILES
 dnl without this order in this file, automake will be confused!
 dnl
 AM_CONFIG_HEADER(config.h)
+AM_CONFIG_HEADER(taglib/taglib_config.h)
 
 dnl checks for programs.
 dnl first check for c/c++ compilers
@@ -125,6 +126,20 @@ AC_DEFUN([AC_NO_CPPUNIT],
         AC_DEFINE(HAVE_CPPUNIT, 0, [have cppunit])
         have_cppunit=false
 ])
+
+AC_ARG_ENABLE([mp4],
+    [AS_HELP_STRING([--enable-mp4], [add MP4 support])],
+    [
+        AC_DEFINE([WITH_MP4], [1], [With MP4 support])
+        AC_DEFINE([TAGLIB_WITH_MP4], [1], [With MP4 support])
+    ])
+
+AC_ARG_ENABLE([asf],
+    [AS_HELP_STRING([--enable-asf], [add ASF support])],
+    [
+        AC_DEFINE([WITH_ASF], [1], [With ASF support])
+        AC_DEFINE([TAGLIB_WITH_ASF], [1], [With ASF support])
+    ])
 
 AC_LANG_SAVE
 AC_LANG_CPLUSPLUS

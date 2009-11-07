@@ -60,5 +60,17 @@
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
+/* With ASF support */
+#undef TAGLIB_WITH_ASF
+
+/* With MP4 support */
+#undef TAGLIB_WITH_MP4
+
 /* Version number of package */
 #undef VERSION
+
+/* With ASF support */
+#undef WITH_ASF
+
+/* With MP4 support */
+#undef WITH_MP4

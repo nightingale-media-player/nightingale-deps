@@ -35,7 +35,7 @@ namespace TagLib {
 
   inline unsigned short byteSwap(unsigned short x)
   {
-    return ((x) >> 8) & 0xff | ((x) & 0xff) << 8;
+    return (((x) >> 8) & 0xff) | (((x) & 0xff) << 8);
   }
 
   inline unsigned short combine(unsigned char c1, unsigned char c2)
@@ -52,20 +52,17 @@ public:
   StringPrivate(const wstring &s) :
     RefCounter(),
     data(s),
-    CString(0),
-    trustCharset(true) {}
+    CString(0) {}
 
   StringPrivate() :
     RefCounter(),
-    CString(0),
-    trustCharset(true) {}
+    CString(0) {}
 
   ~StringPrivate() {
     delete [] CString;
   }
 
   wstring data;
-  bool trustCharset;
 
   /*!
    * This is only used to hold the a pointer to the most recent value of
@@ -296,6 +293,17 @@ int String::find(const String &s, int offset) const
     return -1;
 }
 
+int String::rfind(const String &s, int offset) const
+{
+  wstring::size_type position =
+    d->data.rfind(s.d->data, offset == -1 ? wstring::npos : offset);
+
+  if(position != wstring::npos)
+    return position;
+  else
+    return -1;
+}
+
 bool String::startsWith(const String &s) const
 {
   if(s.length() > length())
@@ -311,7 +319,6 @@ String String::substr(uint position, uint n) const
 
   String s;
   s.d->data = d->data.substr(position, n);
-  s.d->trustCharset = d->trustCharset;
   return s;
 }
 
@@ -319,14 +326,12 @@ String &String::append(const String &s)
 {
   detach();
   d->data += s.d->data;
-  d->trustCharset &= s.d->trustCharset;
   return *this;
 }
 
 String String::upper() const
 {
   String s;
-  s.d->trustCharset = d->trustCharset;
 
   static int shift = 'A' - 'a';
 
@@ -369,7 +374,7 @@ ByteVector String::data(Type t) const
   case Latin1:
   {
     for(wstring::const_iterator it = d->data.begin(); it != d->data.end(); it++)
-      v.append(*it < 256 ? char(*it) : '?');
+      v.append(char(*it));
     break;
   }
   case UTF8:
@@ -464,7 +469,7 @@ String String::stripWhiteSpace() const
   } while(*end == '\t' || *end == '\n' ||
           *end == '\f' || *end == '\r' || *end == ' ');
 
-  return String(wstring(begin, end + 1), d->trustCharset ? UTF16BE : Latin1);
+  return String(wstring(begin, end + 1));
 }
 
 bool String::isLatin1() const
@@ -483,11 +488,6 @@ bool String::isAscii() const
       return false;
   }
   return true;
-}
-
-bool String::shouldGuessCharacterSet() const
-{
-  return !d->trustCharset;
 }
 
 String String::number(int n) // static
@@ -521,6 +521,8 @@ String String::number(int n) // static
 
 TagLib::wchar &String::operator[](int i)
 {
+  detach();
+
   return d->data[i];
 }
 
@@ -539,7 +541,6 @@ String &String::operator+=(const String &s)
   detach();
 
   d->data += s.d->data;
-  d->trustCharset &= s.d->trustCharset;
   return *this;
 }
 
@@ -557,7 +558,6 @@ String &String::operator+=(const char *s)
 
   for(int i = 0; s[i] != 0; i++)
     d->data += uchar(s[i]);
-  d->trustCharset = false;
   return *this;
 }
 
@@ -571,8 +571,9 @@ String &String::operator+=(wchar_t c)
 
 String &String::operator+=(char c)
 {
+  detach();
+
   d->data += uchar(c);
-  d->trustCharset = false;
   return *this;
 }
 
@@ -602,7 +603,6 @@ String &String::operator=(const std::string &s)
     *targetIt = uchar(*it);
     ++targetIt;
   }
-  d->trustCharset = false;
 
   return *this;
 }
@@ -629,7 +629,6 @@ String &String::operator=(char c)
     delete d;
   d = new StringPrivate;
   d->data += uchar(c);
-  d->trustCharset = false;
   return *this;
 }
 
@@ -638,7 +637,6 @@ String &String::operator=(wchar_t c)
   if(d->deref())
     delete d;
   d = new StringPrivate;
-  d->trustCharset = true;
   d->data += c;
   return *this;
 }
@@ -658,8 +656,6 @@ String &String::operator=(const char *s)
     *targetIt = uchar(s[i]);
     ++targetIt;
   }
-  
-  d->trustCharset = false;
 
   return *this;
 }
@@ -684,7 +680,6 @@ String &String::operator=(const ByteVector &v)
   // If we hit a null in the ByteVector, shrink the string again.
 
   d->data.resize(i);
-  d->trustCharset = false;
 
   return *this;
 }
@@ -712,7 +707,6 @@ void String::detach()
 
 void String::prepare(Type t)
 {
-  d->trustCharset = (t != Latin1);
   switch(t) {
   case UTF16:
   {

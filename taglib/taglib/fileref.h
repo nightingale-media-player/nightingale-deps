@@ -26,8 +26,8 @@
 #ifndef TAGLIB_FILEREF_H
 #define TAGLIB_FILEREF_H
 
-#include <tfile.h>
-#include <tstringlist.h>
+#include "tfile.h"
+#include "tstringlist.h"
 
 #include "taglib_export.h"
 #include "audioproperties.h"
@@ -91,10 +91,8 @@ namespace TagLib {
 
     class TAGLIB_EXPORT FileTypeResolver
     {
+      TAGLIB_IGNORE_MISSING_DESTRUCTOR
     public:
-      // do not fix compiler warning about missing virtual destructor
-      // since this would not be binary compatible
-      // let Scott fix it whenever he thinks BIC changes can next be applied
       /*!
        * This method must be overridden to provide an additional file type
        * resolver.  If the resolver is able to determine the file type it should

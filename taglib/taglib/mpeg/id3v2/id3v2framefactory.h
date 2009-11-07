@@ -154,7 +154,6 @@ namespace TagLib {
                         Frame::Header *header) const;
 
       void updateGenre(TextIdentificationFrame *frame) const;
-      String genreAsString(String genre) const;
 
       static FrameFactory *factory;
 

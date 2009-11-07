@@ -63,12 +63,6 @@ namespace TagLib {
     {
     public:
       /*!
-       * Contructs a Vorbis file object without reading a file.  Allows object
-       * fields to be set up before reading.
-       */
-      File();
-
-      /*!
        * Contructs a Vorbis file from \a file.  If \a readProperties is true the
        * file's audio properties will also be read using \a propertiesStyle.  If
        * false, \a propertiesStyle is ignored.
@@ -94,19 +88,13 @@ namespace TagLib {
        */
       virtual Properties *audioProperties() const;
 
-      /*!
-       * Reads from Vorbis file.  If \a readProperties is true the file's audio
-       * properties will also be read using \a propertiesStyle.  If false,
-       * \a propertiesStyle is ignored.
-       */
-      void read(bool readProperties = true,
-                Properties::ReadStyle propertiesStyle = Properties::Average);
-
       virtual bool save();
 
     private:
       File(const File &);
       File &operator=(const File &);
+
+      void read(bool readProperties, Properties::ReadStyle propertiesStyle);
 
       class FilePrivate;
       FilePrivate *d;

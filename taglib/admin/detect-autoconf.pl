@@ -220,11 +220,11 @@ $unsermake = which('unsermake') if ($ENV{'UNSERMAKE'} ne 'no');
 
 ($automake_suffix) = $automake =~ /.*automake(.*)$/;
 
-# Use unsermake if we found it.
-$automake = "$unsermake -c" if $unsermake;
-
 # Find matching automake companions.
 $aclocal = findProgram('aclocal', $automake_suffix);
+
+# Use unsermake if we found it.
+$automake = "$unsermake -c" if ($unsermake and $aclocal);
 
 $which = findWhich();
 
@@ -233,8 +233,7 @@ for $i (qw'autoconf autoheader autom4te automake aclocal')
 {
     unless(${$i})
     {
-	print "# Unable to find $i!!\n";
-	exit 1;
+	print STDERR "# Unable to find $i!!\n";
     }
 }
 

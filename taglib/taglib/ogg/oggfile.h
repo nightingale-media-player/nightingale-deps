@@ -37,7 +37,6 @@ namespace TagLib {
   namespace Ogg {
 
     class PageHeader;
-    class Page;
 
     //! An implementation of TagLib::File with some helpers for Ogg based formats
 
@@ -83,12 +82,6 @@ namespace TagLib {
 
     protected:
       /*!
-       * Contructs an Ogg file object without reading a file.  Allows object
-       * fields to be set up before reading.
-       */
-      File();
-
-      /*!
        * Contructs an Ogg file from \a file.  If \a readProperties is true the
        * file's audio properties will also be read using \a propertiesStyle.  If
        * false, \a propertiesStyle is ignored.
@@ -107,7 +100,6 @@ namespace TagLib {
        * Reads the next page and updates the internal "current page" pointer.
        */
       bool nextPage();
-      Page* getNextPage(long offset);
       void writePageGroup(const List<int> &group);
 
       class FilePrivate;

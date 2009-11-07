@@ -12,8 +12,7 @@ INCLUDES = \
 	-I$(top_srcdir)/taglib/mpeg \
 	-I$(top_srcdir)/taglib/mpeg/id3v1 \
 	-I$(top_srcdir)/taglib/mpeg/id3v2 \
-	-I$(top_srcdir)/bindings/c \
-	-I$(top_srcdir)/taglib/m4a
+	-I$(top_srcdir)/bindings/c
 
 LDADD = ../taglib/libtag.la
 tagreader_c_LDADD = ../bindings/c/libtag_c.la

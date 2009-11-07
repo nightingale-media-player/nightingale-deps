@@ -3,7 +3,12 @@
 #include <stdio.h>
 #include <tag.h>
 #include <fileref.h>
+#include <oggflacfile.h>
+#include <vorbisfile.h>
 #include "utils.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 using namespace std;
 using namespace TagLib;
@@ -11,11 +16,21 @@ using namespace TagLib;
 class TestFileRef : public CppUnit::TestFixture
 {
   CPPUNIT_TEST_SUITE(TestFileRef);
+#ifdef TAGLIB_WITH_ASF
+  CPPUNIT_TEST(testASF);
+#endif
   CPPUNIT_TEST(testMusepack);
   CPPUNIT_TEST(testVorbis);
   CPPUNIT_TEST(testSpeex);
   CPPUNIT_TEST(testFLAC);
   CPPUNIT_TEST(testMP3);
+  CPPUNIT_TEST(testOGA_FLAC);
+  CPPUNIT_TEST(testOGA_Vorbis);
+#ifdef TAGLIB_WITH_MP4
+  CPPUNIT_TEST(testMP4_1);
+  CPPUNIT_TEST(testMP4_2);
+  CPPUNIT_TEST(testMP4_3);
+#endif
   CPPUNIT_TEST(testTrueAudio);
   CPPUNIT_TEST_SUITE_END();
 
@@ -29,9 +44,6 @@ public:
     CPPUNIT_ASSERT(!f->isNull());
     f->tag()->setArtist("test artist");
     f->tag()->setTitle("test title");
-    f->tag()->setAlbumArtist("test album artist");
-    f->tag()->setComposer("test composer");
-    f->tag()->setLyrics("test lyrics");
     f->tag()->setGenre("Test!");
     f->tag()->setAlbum("albummmm");
     f->tag()->setTrack(5);
@@ -43,9 +55,6 @@ public:
     CPPUNIT_ASSERT(!f->isNull());
     CPPUNIT_ASSERT_EQUAL(f->tag()->artist(), String("test artist"));
     CPPUNIT_ASSERT_EQUAL(f->tag()->title(), String("test title"));
-    CPPUNIT_ASSERT_EQUAL(f->tag()->albumArtist(), String("test album artist"));
-    CPPUNIT_ASSERT_EQUAL(f->tag()->composer(), String("test composer"));
-    CPPUNIT_ASSERT_EQUAL(f->tag()->lyrics(), String("test lyrics"));
     CPPUNIT_ASSERT_EQUAL(f->tag()->genre(), String("Test!"));
     CPPUNIT_ASSERT_EQUAL(f->tag()->album(), String("albummmm"));
     CPPUNIT_ASSERT_EQUAL(f->tag()->track(), TagLib::uint(5));
@@ -74,9 +83,15 @@ public:
 
   void testMusepack()
   {
-    // TODO: uncomment this
-    //fileRefSave("click", ".mpc");
+    fileRefSave("click", ".mpc");
   }
+
+#ifdef TAGLIB_WITH_ASF
+  void testASF()
+  {
+    fileRefSave("silence-1", ".wma");
+  }
+#endif
 
   void testVorbis()
   {
@@ -101,6 +116,37 @@ public:
   void testTrueAudio()
   {
     fileRefSave("empty", ".tta");
+  }
+
+#ifdef TAGLIB_WITH_MP4
+  void testMP4_1()
+  {
+    fileRefSave("has-tags", ".m4a");
+  }
+
+  void testMP4_2()
+  {
+    fileRefSave("no-tags", ".m4a");
+  }
+
+  void testMP4_3()
+  {
+    fileRefSave("no-tags", ".3g2");
+  }
+#endif
+
+  void testOGA_FLAC()
+  {
+      FileRef *f = new FileRef("data/empty_flac.oga");
+      CPPUNIT_ASSERT(dynamic_cast<Ogg::Vorbis::File *>(f->file()) == NULL);
+      CPPUNIT_ASSERT(dynamic_cast<Ogg::FLAC::File *>(f->file()) != NULL);
+  }
+
+  void testOGA_Vorbis()
+  {
+      FileRef *f = new FileRef("data/empty_vorbis.oga");
+      CPPUNIT_ASSERT(dynamic_cast<Ogg::Vorbis::File *>(f->file()) != NULL);
+      CPPUNIT_ASSERT(dynamic_cast<Ogg::FLAC::File *>(f->file()) == NULL);
   }
 
 };

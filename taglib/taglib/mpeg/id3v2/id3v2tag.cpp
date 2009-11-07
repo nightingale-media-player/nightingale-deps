@@ -35,7 +35,6 @@
 #include "id3v1genres.h"
 
 #include "frames/textidentificationframe.h"
-#include "frames/unsynchronizedlyricsframe.h"
 #include "frames/commentsframe.h"
 
 using namespace TagLib;
@@ -44,8 +43,7 @@ using namespace ID3v2;
 class ID3v2::Tag::TagPrivate
 {
 public:
-  TagPrivate() : file(0), tagOffset(-1), extendedHeader(0), footer(0), paddingSize(0),
-                 track(0), totalTracks(0), disc(0), totalDiscs(0)
+  TagPrivate() : file(0), tagOffset(-1), extendedHeader(0), footer(0), paddingSize(0)
   {
     frameList.setAutoDelete(true);
   }
@@ -67,11 +65,6 @@ public:
 
   FrameListMap frameListMap;
   FrameList frameList;
-  
-  uint track;
-  uint totalTracks;
-  uint disc;
-  uint totalDiscs;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -101,50 +94,44 @@ ID3v2::Tag::~Tag()
   delete d;
 }
 
-/* Standard, no-brainer version of the get property function */
-String ID3v2::Tag::getTextFrame(const String &property) const
-{
-  if(!d->frameListMap[property.data(String::UTF8)].isEmpty())
-    return d->frameListMap[property.data(String::UTF8)].front()->toString();
-  return String::null;
-}
 
 String ID3v2::Tag::title() const
 {
-  return getTextFrame("TIT2");
+  if(!d->frameListMap["TIT2"].isEmpty())
+    return d->frameListMap["TIT2"].front()->toString();
+  return String::null;
 }
 
 String ID3v2::Tag::artist() const
 {
-  return getTextFrame("TPE1");
-}
-
-String ID3v2::Tag::albumArtist() const
-{
-  return getTextFrame("TPE2");
+  if(!d->frameListMap["TPE1"].isEmpty())
+    return d->frameListMap["TPE1"].front()->toString();
+  return String::null;
 }
 
 String ID3v2::Tag::album() const
 {
-  return getTextFrame("TALB");
+  if(!d->frameListMap["TALB"].isEmpty())
+    return d->frameListMap["TALB"].front()->toString();
+  return String::null;
 }
 
 String ID3v2::Tag::comment() const
 {
-  CommentsFrame *f = CommentsFrame::findByDescription(this, "");
-  if (f) {
-    return f->toString();
-  }
-  else {
-    return String::null;
-  }
-}
+  const FrameList &comments = d->frameListMap["COMM"];
 
-String ID3v2::Tag::lyrics() const
-{
-  if(!d->frameListMap["USLT"].isEmpty())
-    return (static_cast<ID3v2::UnsynchronizedLyricsFrame *>(d->frameListMap["USLT"].front())->text());
-  return String::null;
+  if(comments.isEmpty())
+    return String::null;
+
+  for(FrameList::ConstIterator it = comments.begin(); it != comments.end(); ++it)
+  {
+    CommentsFrame *frame = dynamic_cast<CommentsFrame *>(*it);
+
+    if(frame && frame->description().isEmpty())
+      return (*it)->toString();
+  }
+
+  return comments.front()->toString();
 }
 
 String ID3v2::Tag::genre() const
@@ -153,7 +140,8 @@ String ID3v2::Tag::genre() const
   // should be separated by " / " instead of " ".  For the moment to keep
   // the behavior the same as released versions it is being left with " ".
 
-  if(d->frameListMap["TCON"].isEmpty() || !(d->frameListMap["TCON"].front()))
+  if(d->frameListMap["TCON"].isEmpty() ||
+     !dynamic_cast<TextIdentificationFrame *>(d->frameListMap["TCON"].front()))
   {
     return String::null;
   }
@@ -172,6 +160,9 @@ String ID3v2::Tag::genre() const
   StringList genres;
 
   for(StringList::Iterator it = fields.begin(); it != fields.end(); ++it) {
+
+    if((*it).isEmpty())
+      continue;
 
     bool isNumber = true;
 
@@ -195,134 +186,6 @@ String ID3v2::Tag::genre() const
   return genres.toString();
 }
 
-String ID3v2::Tag::producer() const
-{
-  /*
-   * ID3v2.4 lists "Involved People" (non-performers) in an alternating list of
-   * role/person, role/person.
-   * ID3v2.3 mooshes everyone together into IPLS (involved person list)
-   */
-  
-  /*
-   * DISABLED: See bug 9086.
-   *
-   * 
-  if(!d->frameListMap["TIPL"].isEmpty())
-  {
-    printf("TIPL\n");
-    TextIdentificationFrame *f = static_cast<TextIdentificationFrame *>(
-      d->frameListMap["TIPL"].front());
-  
-    StringList fields = f->fieldList();
-    // loop increments twice to skip involved-person names and only check roles.
-    // you know, just in case someone named "Producer" is your recording tech.
-    for(StringList::Iterator it = fields.begin(); it != fields.end(); ++it) {
-      
-      StringList::Iterator next = it;
-      if (it != fields.end()) { next++; }
-      printf("\tTIPL: %s=>%s\n", *it, *next);
-      
-      if((*it).upper() == String("PRODUCER")) {
-        return *(++it); // the next field will be the producer
-      }
-      // don't run over the end, but do skip over the names
-      else if (it != fields.end()) {
-          ++it;
-      }
-    }
-  }
- */
-
-  /*
-   * Now try the ID3v2.3 "IPLS" frame.
-   */
-  /*
-   * DISABLED: See bug 9086.
-   *
-   * 
-  
-  if(!d->frameListMap["IPLS"].isEmpty())
-  {
-    printf("IPLS\n");
-    TextIdentificationFrame *f = static_cast<TextIdentificationFrame *>(
-      d->frameListMap["IPLS"].front());
-    printf("IPLSFRAME\n");
-    StringList fields = f->fieldList();
-    printf("IPLSFIELDLIST\n");
-    // loop increments twice to skip involved-person names and only check roles.
-    // you know, just in case someone named "Producer" is your recording tech.
-    for(StringList::Iterator it = fields.begin(); it != fields.end(); ++it) {
-      StringList::Iterator next = it;
-      if (it != fields.end()) { next++; }
-      printf("\tIPLS: %s=>%s\n", *it, *next);
-      
-      if((*it).upper() == String("PRODUCER")) {
-        return *(++it); // the next field will be the producer
-      }
-      // don't run over the end, but do skip over the names
-      else if (it != fields.end()) {
-          ++it;
-      }
-    }
-  }
-  */
-  /*
-   * Give up. We can't find it.
-   */
-  return String::null;
-}
-
-String ID3v2::Tag::composer() const
-{
-  return getTextFrame("TCOM");
-}
-
-String ID3v2::Tag::conductor() const
-{
-  return getTextFrame("TPE3");
-}
-
-String ID3v2::Tag::lyricist() const
-{
-  return getTextFrame("TEXT");
-}
-
-String ID3v2::Tag::recordLabel() const
-{
-  return getTextFrame("TPUB");
-}
-
-String ID3v2::Tag::rating() const
-{
-  // find() isn't, but could be const.
-  UserTextIdentificationFrame* f = 
-    UserTextIdentificationFrame::find(const_cast<Tag*>(this), String("rating"));
-  if (f) {
-    return f->fieldList()[1]; // fieldList includes description as the first field.
-  }
-  return String::null;
-}
-
-String ID3v2::Tag::language() const
-{
-  return getTextFrame("TLAN");
-}
-
-String ID3v2::Tag::key() const
-{
-  return getTextFrame("TKEY");
-}
-
-String ID3v2::Tag::license() const
-{
-  return getTextFrame("TCOP");
-}
-
-String ID3v2::Tag::licenseUrl() const
-{
-  return getTextFrame("WCOP");
-}
-
 TagLib::uint ID3v2::Tag::year() const
 {
   if(!d->frameListMap["TDRC"].isEmpty())
@@ -330,151 +193,11 @@ TagLib::uint ID3v2::Tag::year() const
   return 0;
 }
 
-// TODO: probably ought to not require people to read these values
-//       prior to being able to store them.
 TagLib::uint ID3v2::Tag::track() const
 {
-  if(d->frameListMap["TRCK"].isEmpty())
-    return 0;
-
-  String trackDetails = d->frameListMap["TRCK"].front()->toString();
-
-  uint value = 0;
-  bool isNumber = true;
-
-  for(String::ConstIterator charIt = trackDetails.begin();
-      isNumber && charIt != trackDetails.end();
-      ++charIt)
-  {
-      isNumber = *charIt >= '0' && *charIt <= '9';
-      if (isNumber) {
-        value = value * 10 + (*charIt - '0');
-      }
-  }
-  
-  d->track = value;
-
-  return value;
-}
-
-TagLib::uint ID3v2::Tag::totalTracks() const
-{
-  if(d->frameListMap["TRCK"].isEmpty())
-    return 0;  
-  
-  String trackDetails = d->frameListMap["TRCK"].front()->toString();
-
-  uint value = 0;
-  bool isNumber = true;
-  bool reachedSecondNumber = false;
-  bool foundSeparator = false;
-
-  // TODO: right now we treat " 33" as a totalTracks number
-  //       but not as a track number. this might be ungood.
-  for(String::ConstIterator charIt = trackDetails.begin();
-      (!reachedSecondNumber || isNumber) && charIt != trackDetails.end();
-      ++charIt)
-  {
-      isNumber = *charIt >= '0' && *charIt <= '9';
-      if (isNumber && foundSeparator) {
-        reachedSecondNumber = true;
-      }
-      else if (!isNumber) {
-        foundSeparator = true;
-      }
-      
-      if (reachedSecondNumber && isNumber) {
-        value = value * 10 + (*charIt - '0');
-      }
-  }
-
-  d->totalTracks = value;
-
-  return value;
-}
-
-TagLib::uint ID3v2::Tag::disc() const
-{
-  if(d->frameListMap["TPOS"].isEmpty())
-    return 0;
-
-  String trackDetails = d->frameListMap["TPOS"].front()->toString();
-
-  uint value = 0;
-  bool isNumber = true;
-  for(String::ConstIterator charIt = trackDetails.begin();
-      isNumber && charIt != trackDetails.end();
-      ++charIt)
-  {
-      isNumber = *charIt >= '0' && *charIt <= '9';
-      if (isNumber) {
-        value = value * 10 + (*charIt - '0');
-      }
-  }
-  
-  d->disc = value;
-
-  return value;
-}
-
-TagLib::uint ID3v2::Tag::totalDiscs() const
-{
-  if(d->frameListMap["TPOS"].isEmpty())
-    return 0;  
-  
-  String trackDetails = d->frameListMap["TPOS"].front()->toString();
-
-  uint value = 0;
-  bool isNumber = true;
-  bool reachedSecondNumber = false;
-  bool foundSeparator = false;
-
-  for(String::ConstIterator charIt = trackDetails.begin();
-      (!reachedSecondNumber || isNumber) && charIt != trackDetails.end();
-      ++charIt)
-  {
-      isNumber = *charIt >= '0' && *charIt <= '9';
-      if (isNumber && foundSeparator) {
-        reachedSecondNumber = true;
-      }
-      else if (!isNumber) {
-        foundSeparator = true;
-      }
-      
-      if (reachedSecondNumber && isNumber) {
-        value = value * 10 + (*charIt - '0');
-      }
-  }
-
-  d->totalDiscs = value;
-
-  return value;
-}
-
-TagLib::uint ID3v2::Tag::bpm() const
-{
-  if(!d->frameListMap["TBPM"].isEmpty())
-    return d->frameListMap["TBPM"].front()->toString().toInt();
+  if(!d->frameListMap["TRCK"].isEmpty())
+    return d->frameListMap["TRCK"].front()->toString().toInt();
   return 0;
-}
-
-// TODO: weak
-bool ID3v2::Tag::isCompilation() const
-{
-  /* iTunes uses a TCMP frame containing the string "1" if it's part of a 
-   * compilation.
-   * It does not use a TCMP frame at all if it's not a compilation
-   *
-   * We previously wrote out 'true' for the contents of this frame, so support
-   * that also.
-   */
-  if(!d->frameListMap["TCMP"].isEmpty()) {
-    String tcmp = d->frameListMap["TCMP"].front()->toString();
-    if (tcmp == String("1") || tcmp == String("true")) {
-      return true;
-    }
-  }
-  return false;
 }
 
 void ID3v2::Tag::setTitle(const String &s)
@@ -487,11 +210,6 @@ void ID3v2::Tag::setArtist(const String &s)
   setTextFrame("TPE1", s);
 }
 
-void ID3v2::Tag::setAlbumArtist(const String &s)
-{
-  setTextFrame("TPE2", s);
-}
-
 void ID3v2::Tag::setAlbum(const String &s)
 {
   setTextFrame("TALB", s);
@@ -499,44 +217,20 @@ void ID3v2::Tag::setAlbum(const String &s)
 
 void ID3v2::Tag::setComment(const String &s)
 {
-  // This function ignores all COMM with descriptions.
-  // This could be considered an ITUNES_HACK as they use it to store things like replaygain.
-  CommentsFrame *f = NULL;
-
-  // Remove all comments on empty input string.
   if(s.isEmpty()) {
-    while(f = CommentsFrame::findByDescription(this, ""))
-      removeFrame(f, true);
+    removeFrames("COMM");
     return;
   }
 
-  // Otherwise set the first comment with no description.
-  f = CommentsFrame::findByDescription(this, "");
-  if (!f) {
-    f = new CommentsFrame(d->factory->defaultTextEncoding());
-    addFrame(f);
-  }
-
-  f->setText(s);
-}
-
-void ID3v2::Tag::setLyrics(const String &s)
-{
-  if(s.isEmpty()) {
-    removeFrames("USLT");
-    return;
-  }
-
-  if(!d->frameListMap["USLT"].isEmpty())
-    d->frameListMap["USLT"].front()->setText(s);
+  if(!d->frameListMap["COMM"].isEmpty())
+    d->frameListMap["COMM"].front()->setText(s);
   else {
-    UnsynchronizedLyricsFrame *f = new UnsynchronizedLyricsFrame(d->factory->defaultTextEncoding());
+    CommentsFrame *f = new CommentsFrame(d->factory->defaultTextEncoding());
     addFrame(f);
     f->setText(s);
   }
 }
 
-// TODO: this is (oddly) no good either
 void ID3v2::Tag::setGenre(const String &s)
 {
   if(s.isEmpty()) {
@@ -563,95 +257,6 @@ void ID3v2::Tag::setGenre(const String &s)
 #endif
 }
 
-void ID3v2::Tag::setProducer(const String &s)
-{
-  /*
-   * DISABLED: SEE BUG 9086
-   * 
-  if(d->frameListMap["TIPL"].isEmpty())
-  {
-    return String::null;
-  }
-
-  // ID3v2.4 lists "Involved People" (non-performers) in an alternating list of
-  // role/person, role/person.
-  // here we look up the producer in the first TIPL frame.
-
-  TextIdentificationFrame *f = static_cast<TextIdentificationFrame *>(
-    d->frameListMap["TIPL"].front());
-
-  StringList fields = f->fieldList();
-  // loop increments twice to skip involved-person names and only check roles.
-  // you know, just in case someone named "Producer" is your recording tech.
-  for(StringList::Iterator it = fields.begin(); it != fields.end(); ++it, ++it) {
-    if(*it.upper() == String("PRODUCER")) {
-      ++it; // the next field will be the producer
-    }
-  }
-
-  // i guess we didn't find it.
-  return String::null;
-  */
-
-  // no, don't do that, that's ridiculous.  
-  //setTextFrame("TIPL", s);
-}
-
-
-void ID3v2::Tag::setComposer(const String &s)
-{
-  setTextFrame("TCOM", s);
-}
-
-void ID3v2::Tag::setConductor(const String &s)
-{
-  setTextFrame("TPE3", s);
-}
-
-void ID3v2::Tag::setLyricist(const String &s)
-{
-  setTextFrame("TEXT", s);
-}
-
-void ID3v2::Tag::setRecordLabel(const String &s)
-{
-  setTextFrame("TPUB", s);
-}
-
-void ID3v2::Tag::setRating(const String &s)
-{
-  // find() isn't, but could be const.
-  UserTextIdentificationFrame* f = 
-    UserTextIdentificationFrame::find(this, String("rating"));
-  if (!f) {
-    f = new UserTextIdentificationFrame(d->factory->defaultTextEncoding());
-    addFrame(f);
-    f->setDescription("rating");
-  }
-  
-  f->setText(s);
-}
-
-void ID3v2::Tag::setLanguage(const String &s)
-{
-  setTextFrame("TLAN", s);
-}
-
-void ID3v2::Tag::setKey(const String &s)
-{
-  setTextFrame("TKEY", s);
-}
-
-void ID3v2::Tag::setLicense(const String &s)
-{
-  setTextFrame("TCOP", s);
-}
-
-void ID3v2::Tag::setLicenseUrl(const String &s)
-{
-  setTextFrame("WCOP", s);
-}
-
 void ID3v2::Tag::setYear(uint i)
 {
   if(i <= 0) {
@@ -663,66 +268,11 @@ void ID3v2::Tag::setYear(uint i)
 
 void ID3v2::Tag::setTrack(uint i)
 {
-  if(i <= 0 && d->totalTracks == 0) {
-    removeFrames("TRCK");
-    return;
-  }
-  
-  d->track = i;
-  setTextFrame("TRCK", Tag::splitNumberRender(i, d->totalTracks));
-}
-
-void ID3v2::Tag::setTotalTracks(uint i)
-{
-  if(i <= 0 && d->track == 0) {
-    removeFrames("TRCK");
-    return;
-  }
-  
-  d->totalTracks = i;
-
-  setTextFrame("TRCK", Tag::splitNumberRender(d->track, i));
-}
-
-void ID3v2::Tag::setDisc(uint i)
-{
-  if(i <= 0 && d->totalDiscs == 0) {
-    removeFrames("TPOS");
-    return;
-  }
-  
-  d->disc = i;
-  setTextFrame("TPOS", Tag::splitNumberRender(i, d->totalDiscs));
-}
-
-void ID3v2::Tag::setTotalDiscs(uint i)
-{
-  if(i <= 0 && d->disc == 0) {
-    removeFrames("TPOS");
-    return;
-  }
-  
-  setTextFrame("TPOS", Tag::splitNumberRender(d->disc, i));
-}
-
-void ID3v2::Tag::setBpm(uint i)
-{
   if(i <= 0) {
-    removeFrames("TBPM");
+    removeFrames("TRCK");
     return;
   }
-  setTextFrame("TBPM", String::number(i));
-}
-
-// TODO: make this an iTunes hack thing and use something more
-//       "speccish"? compiletime option?
-void ID3v2::Tag::setIsCompilation(bool i)
-{
-  if(!i) {
-    removeFrames("TCMP");
-    return;
-  }
-  setTextFrame("TCMP", String::number(1));
+  setTextFrame("TRCK", String::number(i));
 }
 
 bool ID3v2::Tag::isEmpty() const
@@ -802,6 +352,11 @@ ByteVector ID3v2::Tag::render() const
   // Loop through the frames rendering them and adding them to the tagData.
 
   for(FrameList::Iterator it = d->frameList.begin(); it != d->frameList.end(); it++) {
+    if ((*it)->header()->frameID().size() != 4) {
+      debug("A frame of unsupported or unknown type \'"
+          + String((*it)->header()->frameID()) + "\' has been discarded");
+      continue;
+    }
     if(!(*it)->header()->tagAlterPreservation())
       tagData.append((*it)->render());
   }
@@ -901,7 +456,7 @@ void ID3v2::Tag::parse(const ByteVector &origData)
 
     // Checks to make sure that frame parsed correctly.
 
-    if(frame->size() < 0) {
+    if(frame->size() <= 0) {
       delete frame;
       return;
     }

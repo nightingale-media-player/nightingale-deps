@@ -26,14 +26,18 @@
 #ifndef TAGLIB_EXPORT_H
 #define TAGLIB_EXPORT_H
 
-#if (defined(_WIN32) || defined(_WIN64)) && !defined(TAGLIB_STATIC_LIB)
+#if !defined(TAGLIB_STATIC) && (defined(_WIN32) || defined(_WIN64))
 #ifdef MAKE_TAGLIB_LIB
 #define TAGLIB_EXPORT __declspec(dllexport)
 #else
 #define TAGLIB_EXPORT __declspec(dllimport)
 #endif
+#elif defined(__GNUC__) && (__GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ >= 1)
+#define TAGLIB_EXPORT __attribute__ ((visibility("default")))
 #else
 #define TAGLIB_EXPORT
 #endif
+
+#include "taglib_config.h"
 
 #endif

@@ -23,19 +23,27 @@
  *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <tfile.h>
 #include <tstring.h>
+#include <tdebug.h>
 
 #include "fileref.h"
+#include "asffile.h"
 #include "mpegfile.h"
 #include "vorbisfile.h"
 #include "flacfile.h"
 #include "oggflacfile.h"
 #include "mpcfile.h"
+#include "mp4file.h"
 #include "wavpackfile.h"
 #include "speexfile.h"
 #include "trueaudiofile.h"
-#include "mp4file.h"
+#include "aifffile.h"
+#include "wavfile.h"
 
 using namespace TagLib;
 
@@ -59,7 +67,7 @@ List<const FileRef::FileTypeResolver *> FileRef::FileRefPrivate::fileTypeResolve
 
 FileRef::FileRef()
 {
-    d = new FileRefPrivate(0);
+  d = new FileRefPrivate(0);
 }
 
 FileRef::FileRef(FileName fileName, bool readAudioProperties,
@@ -86,11 +94,19 @@ FileRef::~FileRef()
 
 Tag *FileRef::tag() const
 {
+  if(isNull()) {
+    debug("FileRef::tag() - Called without a valid file.");
+    return 0;
+  }
   return d->file->tag();
 }
 
 AudioProperties *FileRef::audioProperties() const
 {
+  if(isNull()) {
+    debug("FileRef::audioProperties() - Called without a valid file.");
+    return 0;
+  }
   return d->file->audioProperties();
 }
 
@@ -101,6 +117,10 @@ File *FileRef::file() const
 
 bool FileRef::save()
 {
+  if(isNull()) {
+    debug("FileRef::save() - Called without a valid file.");
+    return false;
+  }
   return d->file->save();
 }
 
@@ -122,8 +142,20 @@ StringList FileRef::defaultFileExtensions()
   l.append("wv");
   l.append("spx");
   l.append("tta");
+#ifdef TAGLIB_WITH_MP4
   l.append("m4a");
+  l.append("m4b");
   l.append("m4p");
+  l.append("3g2");
+  l.append("mp4");
+#endif
+#ifdef TAGLIB_WITH_ASF
+  l.append("wma");
+  l.append("asf");
+#endif
+  l.append("aif");
+  l.append("aiff");
+  l.append("wav");
 
   return l;
 }
@@ -183,36 +215,45 @@ File *FileRef::create(FileName fileName, bool readAudioProperties,
   // updated.  However at some point that list should be created at the same time
   // that a default file type resolver is created.
 
-  if(s.size() > 4) {
-    if(s.substr(s.size() - 4, 4).upper() == ".OGG")
-      return new Ogg::Vorbis::File(fileName, readAudioProperties, audioPropertiesStyle);
-    if(s.substr(s.size() - 4, 4).upper() == ".MP3")
+  int pos = s.rfind(".");
+  if(pos != -1) {
+    String ext = s.substr(pos + 1).upper();
+    if(ext == "MP3")
       return new MPEG::File(fileName, readAudioProperties, audioPropertiesStyle);
-    if(s.substr(s.size() - 4, 4).upper() == ".OGA") {
-      // because OGA can contain many things, we special-case it here to attempt first
-      // reading as a FLAC file, then as a Vorbis file.
-      // this is kinda lousy, and it would really be better to have proper sniffing.
-      Ogg::FLAC::File* guess = new Ogg::FLAC::File(fileName, readAudioProperties, audioPropertiesStyle);
-      if (guess->isValid()) {
-        return guess;
-      }
+    if(ext == "OGG")
+      return new Ogg::Vorbis::File(fileName, readAudioProperties, audioPropertiesStyle);
+    if(ext == "OGA") {
+      /* .oga can be any audio in the Ogg container. First try FLAC, then Vorbis. */
+      File *file = new Ogg::FLAC::File(fileName, readAudioProperties, audioPropertiesStyle);
+      if (file->isValid())
+        return file;
       return new Ogg::Vorbis::File(fileName, readAudioProperties, audioPropertiesStyle);
     }
-    if(s.substr(s.size() - 5, 5).upper() == ".FLAC")
+    if(ext == "FLAC")
       return new FLAC::File(fileName, readAudioProperties, audioPropertiesStyle);
-    if(s.substr(s.size() - 4, 4).upper() == ".MPC")
+    if(ext == "MPC")
       return new MPC::File(fileName, readAudioProperties, audioPropertiesStyle);
-    if(s.substr(s.size() - 3, 3).upper() == ".WV")
+    if(ext == "WV")
       return new WavPack::File(fileName, readAudioProperties, audioPropertiesStyle);
-    if(s.substr(s.size() - 4, 4).upper() == ".SPX")
+    if(ext == "SPX")
       return new Ogg::Speex::File(fileName, readAudioProperties, audioPropertiesStyle);
-    if(s.substr(s.size() - 4, 4).upper() == ".TTA")
+    if(ext == "TTA")
       return new TrueAudio::File(fileName, readAudioProperties, audioPropertiesStyle);
-    if(s.substr(s.size() - 4, 4).upper() == ".M4A")
+#ifdef TAGLIB_WITH_MP4
+    if(ext == "M4A" || ext == "M4B" || ext == "M4P" || ext == "MP4" || ext == "3G2")
       return new MP4::File(fileName, readAudioProperties, audioPropertiesStyle);
-    if(s.substr(s.size() - 4, 4).upper() == ".M4P")
-      return new MP4::File(fileName, readAudioProperties, audioPropertiesStyle);
-  }  
+#endif
+#ifdef TAGLIB_WITH_ASF
+    if(ext == "WMA" || ext == "ASF")
+      return new ASF::File(fileName, readAudioProperties, audioPropertiesStyle);
+#endif
+    if(ext == "AIF")
+      return new RIFF::AIFF::File(fileName, readAudioProperties, audioPropertiesStyle);
+    if(ext == "WAV")
+      return new RIFF::WAV::File(fileName, readAudioProperties, audioPropertiesStyle);
+    if(ext == "AIFF")
+      return new RIFF::AIFF::File(fileName, readAudioProperties, audioPropertiesStyle);
+  }
 
   return 0;
 }

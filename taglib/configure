@@ -1521,6 +1521,8 @@ Optional Features:
   --enable-fast-install[=PKGS]
                           optimize for fast installation [default=yes]
   --disable-libtool-lock  avoid locking (might break parallel builds)
+  --enable-mp4            add MP4 support
+  --enable-asf            add ASF support
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -2467,7 +2469,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=taglib
- VERSION=1.4
+ VERSION=1.6.1
 
 
 cat >>confdefs.h <<_ACEOF
@@ -2645,6 +2647,8 @@ fi
 
 
 ac_config_headers="$ac_config_headers config.h"
+
+ac_config_headers="$ac_config_headers taglib/taglib_config.h"
 
 
 DEPDIR="${am__leading_dot}deps"
@@ -8074,7 +8078,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 8077 "configure"' > conftest.$ac_ext
+  echo '#line 8081 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -9815,11 +9819,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9818: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9822: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9822: \$? = $ac_status" >&5
+   echo "$as_me:9826: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -10048,11 +10052,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10051: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10055: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:10055: \$? = $ac_status" >&5
+   echo "$as_me:10059: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -10115,11 +10119,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10118: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10122: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:10122: \$? = $ac_status" >&5
+   echo "$as_me:10126: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -12201,7 +12205,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 12204 "configure"
+#line 12208 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12299,7 +12303,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 12302 "configure"
+#line 12306 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14460,11 +14464,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14463: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14467: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:14467: \$? = $ac_status" >&5
+   echo "$as_me:14471: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -14527,11 +14531,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14530: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14534: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:14534: \$? = $ac_status" >&5
+   echo "$as_me:14538: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15830,7 +15834,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 15833 "configure"
+#line 15837 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -15928,7 +15932,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 15931 "configure"
+#line 15935 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -16751,11 +16755,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16754: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16758: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16758: \$? = $ac_status" >&5
+   echo "$as_me:16762: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -16818,11 +16822,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16821: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16825: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16825: \$? = $ac_status" >&5
+   echo "$as_me:16829: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18786,11 +18790,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18789: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18793: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:18793: \$? = $ac_status" >&5
+   echo "$as_me:18797: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -19019,11 +19023,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:19022: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:19026: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:19026: \$? = $ac_status" >&5
+   echo "$as_me:19030: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -19086,11 +19090,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:19089: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:19093: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:19093: \$? = $ac_status" >&5
+   echo "$as_me:19097: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -21172,7 +21176,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 21175 "configure"
+#line 21179 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -21270,7 +21274,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 21273 "configure"
+#line 21277 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -22478,6 +22482,40 @@ fi
 
 
 
+# Check whether --enable-mp4 was given.
+if test "${enable_mp4+set}" = set; then
+  enableval=$enable_mp4;
+
+cat >>confdefs.h <<\_ACEOF
+#define WITH_MP4 1
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define TAGLIB_WITH_MP4 1
+_ACEOF
+
+
+fi
+
+
+# Check whether --enable-asf was given.
+if test "${enable_asf+set}" = set; then
+  enableval=$enable_asf;
+
+cat >>confdefs.h <<\_ACEOF
+#define WITH_ASF 1
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define TAGLIB_WITH_ASF 1
+_ACEOF
+
+
+fi
+
+
 
  ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
@@ -22708,7 +22746,11 @@ ac_config_files="$ac_config_files taglib/Makefile"
 
 ac_config_files="$ac_config_files taglib/ape/Makefile"
 
+ac_config_files="$ac_config_files taglib/asf/Makefile"
+
 ac_config_files="$ac_config_files taglib/flac/Makefile"
+
+ac_config_files="$ac_config_files taglib/mp4/Makefile"
 
 ac_config_files="$ac_config_files taglib/mpc/Makefile"
 
@@ -22727,6 +22769,12 @@ ac_config_files="$ac_config_files taglib/ogg/flac/Makefile"
 ac_config_files="$ac_config_files taglib/ogg/speex/Makefile"
 
 ac_config_files="$ac_config_files taglib/ogg/vorbis/Makefile"
+
+ac_config_files="$ac_config_files taglib/riff/Makefile"
+
+ac_config_files="$ac_config_files taglib/riff/aiff/Makefile"
+
+ac_config_files="$ac_config_files taglib/riff/wav/Makefile"
 
 ac_config_files="$ac_config_files taglib/toolkit/Makefile"
 
@@ -23348,6 +23396,7 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
+    "taglib/taglib_config.h") CONFIG_HEADERS="$CONFIG_HEADERS taglib/taglib_config.h" ;;
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "bindings/Makefile") CONFIG_FILES="$CONFIG_FILES bindings/Makefile" ;;
@@ -23355,7 +23404,9 @@ do
     "examples/Makefile") CONFIG_FILES="$CONFIG_FILES examples/Makefile" ;;
     "taglib/Makefile") CONFIG_FILES="$CONFIG_FILES taglib/Makefile" ;;
     "taglib/ape/Makefile") CONFIG_FILES="$CONFIG_FILES taglib/ape/Makefile" ;;
+    "taglib/asf/Makefile") CONFIG_FILES="$CONFIG_FILES taglib/asf/Makefile" ;;
     "taglib/flac/Makefile") CONFIG_FILES="$CONFIG_FILES taglib/flac/Makefile" ;;
+    "taglib/mp4/Makefile") CONFIG_FILES="$CONFIG_FILES taglib/mp4/Makefile" ;;
     "taglib/mpc/Makefile") CONFIG_FILES="$CONFIG_FILES taglib/mpc/Makefile" ;;
     "taglib/mpeg/Makefile") CONFIG_FILES="$CONFIG_FILES taglib/mpeg/Makefile" ;;
     "taglib/mpeg/id3v1/Makefile") CONFIG_FILES="$CONFIG_FILES taglib/mpeg/id3v1/Makefile" ;;
@@ -23365,6 +23416,9 @@ do
     "taglib/ogg/flac/Makefile") CONFIG_FILES="$CONFIG_FILES taglib/ogg/flac/Makefile" ;;
     "taglib/ogg/speex/Makefile") CONFIG_FILES="$CONFIG_FILES taglib/ogg/speex/Makefile" ;;
     "taglib/ogg/vorbis/Makefile") CONFIG_FILES="$CONFIG_FILES taglib/ogg/vorbis/Makefile" ;;
+    "taglib/riff/Makefile") CONFIG_FILES="$CONFIG_FILES taglib/riff/Makefile" ;;
+    "taglib/riff/aiff/Makefile") CONFIG_FILES="$CONFIG_FILES taglib/riff/aiff/Makefile" ;;
+    "taglib/riff/wav/Makefile") CONFIG_FILES="$CONFIG_FILES taglib/riff/wav/Makefile" ;;
     "taglib/toolkit/Makefile") CONFIG_FILES="$CONFIG_FILES taglib/toolkit/Makefile" ;;
     "taglib/trueaudio/Makefile") CONFIG_FILES="$CONFIG_FILES taglib/trueaudio/Makefile" ;;
     "taglib/wavpack/Makefile") CONFIG_FILES="$CONFIG_FILES taglib/wavpack/Makefile" ;;
@@ -24014,21 +24068,22 @@ echo "$as_me: $ac_file is unchanged" >&6;}
   fi
   rm -f "$tmp/out12"
 # Compute $ac_file's index in $config_headers.
+_am_arg=$ac_file
 _am_stamp_count=1
 for _am_header in $config_headers :; do
   case $_am_header in
-    $ac_file | $ac_file:* )
+    $_am_arg | $_am_arg:* )
       break ;;
     * )
       _am_stamp_count=`expr $_am_stamp_count + 1` ;;
   esac
 done
-echo "timestamp for $ac_file" >`$as_dirname -- $ac_file ||
-$as_expr X$ac_file : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
-	 X$ac_file : 'X\(//\)[^/]' \| \
-	 X$ac_file : 'X\(//\)$' \| \
-	 X$ac_file : 'X\(/\)' \| . 2>/dev/null ||
-echo X$ac_file |
+echo "timestamp for $_am_arg" >`$as_dirname -- "$_am_arg" ||
+$as_expr X"$_am_arg" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
+	 X"$_am_arg" : 'X\(//\)[^/]' \| \
+	 X"$_am_arg" : 'X\(//\)$' \| \
+	 X"$_am_arg" : 'X\(/\)' \| . 2>/dev/null ||
+echo X"$_am_arg" |
     sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{
 	    s//\1/
 	    q
@@ -24065,7 +24120,7 @@ echo "$as_me: executing $ac_file commands" >&6;}
   # each Makefile.in and add a new line on top of each file to say so.
   # Grep'ing the whole file is not good either: AIX grep has a line
   # limit of 2048, but all sed's we know have understand at least 4000.
-  if sed 10q "$mf" | grep '^#.*generated by automake' > /dev/null 2>&1; then
+  if sed -n 's,^#.*generated by automake.*,X,p' "$mf" | grep X >/dev/null 2>&1; then
     dirpart=`$as_dirname -- "$mf" ||
 $as_expr X"$mf" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
 	 X"$mf" : 'X\(//\)[^/]' \| \

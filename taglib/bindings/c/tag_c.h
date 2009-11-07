@@ -35,6 +35,8 @@ extern "C" {
 #else
 #define TAGLIB_C_EXPORT __declspec(dllimport)
 #endif
+#elif defined(__GNUC__) && (__GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ >= 1)
+#define TAGLIB_C_EXPORT __attribute__ ((visibility("default")))
 #else
 #define TAGLIB_C_EXPORT
 #endif
@@ -89,7 +91,9 @@ typedef enum {
   TagLib_File_OggFlac,
   TagLib_File_WavPack,
   TagLib_File_Speex,
-  TagLib_File_TrueAudio
+  TagLib_File_TrueAudio,
+  TagLib_File_MP4,
+  TagLib_File_ASF
 } TagLib_File_Type;
 
 /*!

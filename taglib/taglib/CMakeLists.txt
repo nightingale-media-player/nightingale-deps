@@ -2,12 +2,13 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_SOURCE_DIR}/toolkit
+    ${CMAKE_CURRENT_SOURCE_DIR}/asf
     ${CMAKE_CURRENT_SOURCE_DIR}/mpeg
     ${CMAKE_CURRENT_SOURCE_DIR}/ogg
     ${CMAKE_CURRENT_SOURCE_DIR}/ogg/flac
     ${CMAKE_CURRENT_SOURCE_DIR}/flac
-    ${CMAKE_CURRENT_SOURCE_DIR}/common
     ${CMAKE_CURRENT_SOURCE_DIR}/mpc
+    ${CMAKE_CURRENT_SOURCE_DIR}/mp4
     ${CMAKE_CURRENT_SOURCE_DIR}/ogg/vorbis
     ${CMAKE_CURRENT_SOURCE_DIR}/ogg/speex
     ${CMAKE_CURRENT_SOURCE_DIR}/mpeg/id3v2
@@ -15,8 +16,9 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_SOURCE_DIR}/ape
     ${CMAKE_CURRENT_SOURCE_DIR}/wavpack
     ${CMAKE_CURRENT_SOURCE_DIR}/trueaudio
-    ${CMAKE_CURRENT_SOURCE_DIR}/m4a
-    ${CMAKE_CURRENT_BINARY_DIR}/taglib
+    ${CMAKE_CURRENT_SOURCE_DIR}/riff
+    ${CMAKE_CURRENT_SOURCE_DIR}/riff/aiff
+    ${CMAKE_CURRENT_SOURCE_DIR}/riff/wav
     ${CMAKE_CURRENT_BINARY_DIR}/..
 )
 if(ZLIB_FOUND)
@@ -24,17 +26,16 @@ if(ZLIB_FOUND)
 endif(ZLIB_FOUND)
 
 ADD_SUBDIRECTORY( toolkit )
+ADD_SUBDIRECTORY( asf )
 ADD_SUBDIRECTORY( mpeg )
 ADD_SUBDIRECTORY( ogg )
 ADD_SUBDIRECTORY( flac )
-ADD_SUBDIRECTORY( common )
 ADD_SUBDIRECTORY( ape )
 ADD_SUBDIRECTORY( mpc )
+ADD_SUBDIRECTORY( mp4 )
 ADD_SUBDIRECTORY( wavpack )
 ADD_SUBDIRECTORY( trueaudio )
-ADD_SUBDIRECTORY( m4a )
-
-
+ADD_SUBDIRECTORY( riff )
 
 ########### next target ###############
 
@@ -66,6 +67,8 @@ SET(frames_SRCS
 mpeg/id3v2/frames/attachedpictureframe.cpp
 mpeg/id3v2/frames/commentsframe.cpp
 mpeg/id3v2/frames/generalencapsulatedobjectframe.cpp
+mpeg/id3v2/frames/popularimeterframe.cpp
+mpeg/id3v2/frames/privateframe.cpp
 mpeg/id3v2/frames/relativevolumeframe.cpp
 mpeg/id3v2/frames/textidentificationframe.cpp
 mpeg/id3v2/frames/uniquefileidentifierframe.cpp
@@ -92,10 +95,6 @@ flac/flacfile.cpp
 flac/flacproperties.cpp
 )
 
-SET(common_SRCS
-common/flacpicture.cpp
-)
-
 SET(oggflacs_SRCS
 ogg/flac/oggflacfile.cpp
 )
@@ -104,6 +103,19 @@ SET(mpc_SRCS
 mpc/mpcfile.cpp
 mpc/mpcproperties.cpp
 )
+
+IF(WITH_MP4)
+SET(mp4_SRCS
+mp4/mp4file.cpp
+mp4/mp4atom.cpp
+mp4/mp4tag.cpp
+mp4/mp4item.cpp
+mp4/mp4properties.cpp
+mp4/mp4coverart.cpp
+)
+ELSE(WITH_MP4)
+SET(mp4_SRCS)
+ENDIF(WITH_MP4)
 
 SET(ape_SRCS
 ape/apetag.cpp
@@ -126,46 +138,29 @@ trueaudio/trueaudiofile.cpp
 trueaudio/trueaudioproperties.cpp
 )
 
-SET(m4a_SRCS
-m4a/mp4file.cpp
-m4a/mp4itunestag.cpp
-m4a/mp4isobox.cpp
-m4a/mp4isofullbox.cpp
-m4a/mp4skipbox.cpp
-m4a/mp4moovbox.cpp
-m4a/mp4mvhdbox.cpp
-m4a/mp4trakbox.cpp
-m4a/mp4mdiabox.cpp
-m4a/mp4minfbox.cpp
-m4a/mp4stblbox.cpp
-m4a/mp4stsdbox.cpp
-m4a/mp4sampleentry.cpp
-m4a/mp4audiosampleentry.cpp
-m4a/mp4hdlrbox.cpp
-m4a/mp4ilstbox.cpp
-m4a/boxfactory.cpp
-m4a/mp4fourcc.cpp
-m4a/mp4udtabox.cpp
-m4a/mp4metabox.cpp
-m4a/mp4tagsproxy.cpp
-m4a/mp4propsproxy.cpp
-m4a/mp4audioproperties.cpp
-m4a/mp4metadatabox.cpp
-m4a/mp4containerbox.cpp
-m4a/itunesnambox.cpp
-m4a/itunesartbox.cpp
-m4a/itunesaartbox.cpp
-m4a/itunesalbbox.cpp
-m4a/itunesgenbox.cpp
-m4a/itunestrknbox.cpp
-m4a/itunesdaybox.cpp
-m4a/itunescmtbox.cpp
-m4a/itunesgrpbox.cpp
-m4a/ituneswrtbox.cpp
-m4a/itunesdiskbox.cpp
-m4a/itunestmpobox.cpp
-m4a/itunescvrbox.cpp
-m4a/itunesdatabox.cpp
+IF(WITH_ASF)
+SET(asf_SRCS
+asf/asftag.cpp
+asf/asffile.cpp
+asf/asfproperties.cpp
+asf/asfattribute.cpp
+)
+ELSE(WITH_ASF)
+SET(asf_SRCS)
+ENDIF(WITH_ASF)
+
+SET(riff_SRCS
+riff/rifffile.cpp
+)
+
+SET(aiff_SRCS
+riff/aiff/aifffile.cpp
+riff/aiff/aiffproperties.cpp
+)
+
+SET(wav_SRCS
+riff/wav/wavfile.cpp
+riff/wav/wavproperties.cpp
 )
 
 SET(toolkit_SRCS
@@ -175,14 +170,13 @@ toolkit/tbytevector.cpp
 toolkit/tbytevectorlist.cpp
 toolkit/tfile.cpp
 toolkit/tdebug.cpp
-toolkit/tlocalfileio.cpp
 toolkit/unicode.cpp
 )
 
-SET(tag_LIB_SRCS ${mpeg_SRCS} ${id3v1_SRCS} ${id3v2_SRCS} ${frames_SRCS}
-     ${ogg_SRCS} ${vorbis_SRCS} ${oggflacs_SRCS} ${mpc_SRCS} ${ape_SRCS}
-     ${toolkit_SRCS} ${flacs_SRCS} ${common_SRCS} ${wavpack_SRCS}
-     ${speex_SRCS} ${trueaudio_SRCS} ${m4a_SRCS}
+SET(tag_LIB_SRCS ${mpeg_SRCS} ${id3v1_SRCS} ${id3v2_SRCS} ${frames_SRCS} ${ogg_SRCS}
+		 ${vorbis_SRCS} ${oggflacs_SRCS} ${mpc_SRCS} ${ape_SRCS} ${toolkit_SRCS} ${flacs_SRCS}
+		 ${wavpack_SRCS} ${speex_SRCS} ${trueaudio_SRCS} ${riff_SRCS} ${aiff_SRCS} ${wav_SRCS}
+		 ${mp4_SRCS} ${asf_SRCS}
 		 tag.cpp
 		 tagunion.cpp
 		 fileref.cpp
@@ -190,8 +184,12 @@ SET(tag_LIB_SRCS ${mpeg_SRCS} ${id3v1_SRCS} ${id3v2_SRCS} ${frames_SRCS}
 )
 
 
-ADD_LIBRARY(tag SHARED ${tag_LIB_SRCS})
-ADD_LIBRARY(tag_s STATIC ${tag_LIB_SRCS})
+if(ENABLE_STATIC)
+    add_library(tag STATIC ${tag_LIB_SRCS})
+    set_target_properties(tag PROPERTIES COMPILE_DEFINITIONS TAGLIB_STATIC)
+else(ENABLE_STATIC)
+    add_library(tag SHARED ${tag_LIB_SRCS})
+endif(ENABLE_STATIC)
 
 TARGET_LINK_LIBRARIES(tag )
 if(ZLIB_FOUND)
@@ -203,17 +201,11 @@ SET_TARGET_PROPERTIES(tag PROPERTIES
         SOVERSION ${TAGLIB_LIB_MAJOR_VERSION}
         INSTALL_NAME_DIR ${LIB_INSTALL_DIR}
         DEFINE_SYMBOL MAKE_TAGLIB_LIB
+        LINK_INTERFACE_LIBRARIES ""
 )
 INSTALL(TARGETS tag
 	LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-	RUNTIME DESTINATION bin
-	ARCHIVE DESTINATION  ${LIB_INSTALL_DIR}
-)
-
-SET_TARGET_PROPERTIES(tag_s PROPERTIES
-        COMPILE_FLAGS -DTAGLIB_STATIC_LIB
-)
-INSTALL(TARGETS tag_s
+	RUNTIME DESTINATION ${BIN_INSTALL_DIR}
 	ARCHIVE DESTINATION  ${LIB_INSTALL_DIR}
 )
 

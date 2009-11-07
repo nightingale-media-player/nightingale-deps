@@ -28,8 +28,8 @@
 #ifndef TAGLIB_GENERALENCAPSULATEDOBJECT_H
 #define TAGLIB_GENERALENCAPSULATEDOBJECT_H
 
-#include <id3v2frame.h>
-#include <id3v2header.h>
+#include "id3v2frame.h"
+#include "id3v2header.h"
 #include "taglib_export.h"
 
 namespace TagLib {
@@ -61,6 +61,10 @@ namespace TagLib {
 
       /*!
        * Constructs a GeneralEncapsulatedObjectFrame frame based on \a data.
+       *
+       * \warning This is \em not data for the encapsulated object, for that use
+       * setObject().  This constructor is used when reading the frame from the
+       * disk.
        */
       explicit GeneralEncapsulatedObjectFrame(const ByteVector &data);
 
