@@ -71,7 +71,7 @@ for d in $PACKAGES; do
    svn_load_dirs.pl \
     -no_user_input \
     -commit_mesg "Rebuild of $d $platform binaries; generated at vendor repo revision $vrev, vendor-binaries repo revision $vbrev" \
-     https://svn.songbirdnest.com/vendor-binaries/$branchString/$platform $d $platform/$d;
+     svn://svn.songbirdnest.com/vendor-binaries/$branchString/$platform $d $platform/$d;
 done
 
 if [[ $platform != "linux-x86_64" ]]; then
