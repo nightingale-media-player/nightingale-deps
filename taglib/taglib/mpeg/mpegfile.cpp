@@ -333,7 +333,7 @@ long MPEG::File::nextFrameOffset(long position)
     if(foundLastSyncPattern && secondSynchByte(buffer[0]))
       return position - 1;
 
-    for(uint i = 0; i < buffer.size() - 1; i++) {
+    for(int i = 0; i < ((int) buffer.size()) - 1; i++) {
       if(uchar(buffer[i]) == 0xff && secondSynchByte(buffer[i + 1]))
         return position + i;
     }
