@@ -33,7 +33,7 @@
 SB_VENDOR_TARGET_DEP_MODULES :=
 
 SB_VENDOR_TARGET := taglib
-SB_VENDOR_TARGET_VERSION := 1.5
+SB_VENDOR_TARGET_VERSION := 1.6.1
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
@@ -67,6 +67,17 @@ else
       CMAKE_CXX_FLAGS_RELEASE += -gstabs+
    endif
 endif
+
+# This makefile fixes OS X 10.6, by forcing a 10.4u SDK / GCC4.0 build
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+  CMAKE_ARGS += -DCMAKE_OSX_SYSROOT:PATH=/Developer/SDKs/MacOSX10.4u.sdk
+  CMAKE_ARGS += -DCMAKE_CXX_COMPILER:PATH=/usr/bin/c++-4.0
+endif
+
+# Build a static taglib.
+CMAKE_ARGS += -DENABLE_STATIC=ON
+CMAKE_ARGS += -DWITH_ASF=ON
+CMAKE_ARGS += -DWITH_MP4=ON
 
 ifeq (debug,$(SB_BUILD_TYPE))
   CMAKE_ARGS += -DCMAKE_BUILD_TYPE=Debug
