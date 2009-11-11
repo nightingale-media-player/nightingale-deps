@@ -308,6 +308,12 @@ namespace TagLib {
      * Returns true if the file only uses characters required by (7-bit) ASCII.
      */
     bool isAscii() const;
+    
+    /*!
+     * Returns the Type the string was originally constructed with, as a hint
+     * about the contents of the string.
+     */
+    Type type() const;
 
     /*!
      * Converts the base-10 integer \a n to a string.

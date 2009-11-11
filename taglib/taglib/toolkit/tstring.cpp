@@ -52,17 +52,20 @@ public:
   StringPrivate(const wstring &s) :
     RefCounter(),
     data(s),
-    CString(0) {}
+    CString(0),
+    type(UTF16) {}
 
   StringPrivate() :
     RefCounter(),
-    CString(0) {}
+    CString(0),
+    type(Latin1) {}
 
   ~StringPrivate() {
     delete [] CString;
   }
 
   wstring data;
+  Type type;
 
   /*!
    * This is only used to hold the a pointer to the most recent value of
@@ -319,6 +322,7 @@ String String::substr(uint position, uint n) const
 
   String s;
   s.d->data = d->data.substr(position, n);
+  s.d->type = d->type;
   return s;
 }
 
@@ -469,7 +473,7 @@ String String::stripWhiteSpace() const
   } while(*end == '\t' || *end == '\n' ||
           *end == '\f' || *end == '\r' || *end == ' ');
 
-  return String(wstring(begin, end + 1));
+  return String(wstring(begin, end + 1), d->type);
 }
 
 bool String::isLatin1() const
@@ -488,6 +492,11 @@ bool String::isAscii() const
       return false;
   }
   return true;
+}
+
+String::Type String::type() const
+{
+  return d->type;
 }
 
 String String::number(int n) // static
@@ -637,6 +646,7 @@ String &String::operator=(wchar_t c)
   if(d->deref())
     delete d;
   d = new StringPrivate;
+  d->type = UTF16;
   d->data += c;
   return *this;
 }
@@ -707,6 +717,7 @@ void String::detach()
 
 void String::prepare(Type t)
 {
+  d->type = t;
   switch(t) {
   case UTF16:
   {
