@@ -51,7 +51,7 @@ TagLib::uint SynchData::toUInt(const ByteVector &data)
      * way... */
     sum = 0;
     for(int i = 0; i <= last; i++)
-      sum |= data[i] << ((last - i) * 8);
+      sum |= ((unsigned char)data[i]) << ((last - i) * 8);
   }
 
   return sum;
