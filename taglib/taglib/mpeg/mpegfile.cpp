@@ -496,8 +496,17 @@ long MPEG::File::findID3v2()
 
       long location = buffer.find(ID3v2::Header::fileIdentifier());
       if(location >= 0) {
-        seek(originalPosition);
-        return bufferOffset + location;
+        if (location + 4 < buffer.size()) 
+        {
+          // Check that this is actually plausibly ID3v2, by checking the
+          // version number. Major version must be <=4, minor version < 10
+          if ((unsigned char)buffer[location+3] <=4 &&
+              (unsigned char)buffer[location+4] < 10)
+          {
+            seek(originalPosition);
+            return bufferOffset + location;
+          }
+        }
       }
 
       int firstSynchByte = buffer.find(char(uchar(255)));
