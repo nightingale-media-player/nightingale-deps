@@ -79,7 +79,7 @@ namespace TagLib {
     /*!
      * Concatenate the list of strings into one string separated by \a separator.
      */
-    String toString(const String &separator = " ") const;
+    String toString(const String &separator = String(" ", String::UTF8)) const;
 
     /*!
      * Appends \a s to the end of the list and returns a reference to the

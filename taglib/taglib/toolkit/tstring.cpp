@@ -53,19 +53,19 @@ public:
     RefCounter(),
     data(s),
     CString(0),
-    type(UTF16) {}
+    trustCharset(true) {}
 
   StringPrivate() :
     RefCounter(),
     CString(0),
-    type(Latin1) {}
+    trustCharset(true) {}
 
   ~StringPrivate() {
     delete [] CString;
   }
 
   wstring data;
-  Type type;
+  bool trustCharset;
 
   /*!
    * This is only used to hold the a pointer to the most recent value of
@@ -322,7 +322,7 @@ String String::substr(uint position, uint n) const
 
   String s;
   s.d->data = d->data.substr(position, n);
-  s.d->type = d->type;
+  s.d->trustCharset = d->trustCharset;
   return s;
 }
 
@@ -330,12 +330,14 @@ String &String::append(const String &s)
 {
   detach();
   d->data += s.d->data;
+  d->trustCharset &= s.d->trustCharset;
   return *this;
 }
 
 String String::upper() const
 {
   String s;
+  s.d->trustCharset = d->trustCharset;
 
   static int shift = 'A' - 'a';
 
@@ -473,7 +475,7 @@ String String::stripWhiteSpace() const
   } while(*end == '\t' || *end == '\n' ||
           *end == '\f' || *end == '\r' || *end == ' ');
 
-  return String(wstring(begin, end + 1), d->type);
+  return String(wstring(begin, end + 1), d->trustCharset ? UTF16BE : Latin1);
 }
 
 bool String::isLatin1() const
@@ -494,9 +496,9 @@ bool String::isAscii() const
   return true;
 }
 
-String::Type String::type() const
+bool String::shouldGuessCharacterSet() const
 {
-  return d->type;
+  return !d->trustCharset;
 }
 
 String String::number(int n) // static
@@ -550,6 +552,7 @@ String &String::operator+=(const String &s)
   detach();
 
   d->data += s.d->data;
+  d->trustCharset &= s.d->trustCharset;
   return *this;
 }
 
@@ -567,6 +570,7 @@ String &String::operator+=(const char *s)
 
   for(int i = 0; s[i] != 0; i++)
     d->data += uchar(s[i]);
+  d->trustCharset = false;
   return *this;
 }
 
@@ -583,6 +587,7 @@ String &String::operator+=(char c)
   detach();
 
   d->data += uchar(c);
+  d->trustCharset = false;
   return *this;
 }
 
@@ -612,6 +617,7 @@ String &String::operator=(const std::string &s)
     *targetIt = uchar(*it);
     ++targetIt;
   }
+  d->trustCharset = false;
 
   return *this;
 }
@@ -638,6 +644,7 @@ String &String::operator=(char c)
     delete d;
   d = new StringPrivate;
   d->data += uchar(c);
+  d->trustCharset = false;
   return *this;
 }
 
@@ -646,7 +653,7 @@ String &String::operator=(wchar_t c)
   if(d->deref())
     delete d;
   d = new StringPrivate;
-  d->type = UTF16;
+  d->trustCharset = true;
   d->data += c;
   return *this;
 }
@@ -666,6 +673,8 @@ String &String::operator=(const char *s)
     *targetIt = uchar(s[i]);
     ++targetIt;
   }
+  
+  d->trustCharset = false;
 
   return *this;
 }
@@ -690,6 +699,7 @@ String &String::operator=(const ByteVector &v)
   // If we hit a null in the ByteVector, shrink the string again.
 
   d->data.resize(i);
+  d->trustCharset = false;
 
   return *this;
 }
@@ -717,7 +727,7 @@ void String::detach()
 
 void String::prepare(Type t)
 {
-  d->type = t;
+  d->trustCharset = (t != Latin1);
   switch(t) {
   case UTF16:
   {

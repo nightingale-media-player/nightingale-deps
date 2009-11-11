@@ -310,10 +310,9 @@ namespace TagLib {
     bool isAscii() const;
     
     /*!
-     * Returns the Type the string was originally constructed with, as a hint
-     * about the contents of the string.
+     * Returns true if the Unicode string can't be trusted to really be correct
      */
-    Type type() const;
+    bool shouldGuessCharacterSet() const;
 
     /*!
      * Converts the base-10 integer \a n to a string.
