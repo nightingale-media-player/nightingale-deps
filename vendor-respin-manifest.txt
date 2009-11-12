@@ -1,4 +1,4 @@
-linux-i686:  xulrunner
-linux-x86_64: xulrunner
-macosx-i686: xulrunner
-windows-i686-msvc8: gst-plugins-ugly
+linux-i686:  xulrunner taglib
+linux-x86_64: xulrunner taglib
+macosx-i686: xulrunner taglib
+windows-i686-msvc8: gst-plugins-ugly taglib
