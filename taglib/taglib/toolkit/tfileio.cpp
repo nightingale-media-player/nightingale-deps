@@ -21,13 +21,13 @@
 
 #include "tfileio.h"
 
-#if WIN32
+#if _WIN32
 #include <windows.h>
 #endif
 
 using namespace TagLib;
 
-#if WIN32
+#if _WIN32
 
 FileName::FileName(const char* name) : m_name(name) {
   wchar_t *buffer = new wchar_t[m_name.length() + 1];
