@@ -160,7 +160,10 @@ ifneq (,$(SB_VENDOR_BUILD_LOG))
 endif
 
 regen-makefiles: setup_environment
-ifneq (,$(filter-out gst, $(SB_VENDOR_TARGET)))
+ifneq (,$(filter $(SB_REGEN_MAKEFILE_PKGS),$(SB_VENDOR_TARGET)))
+   ifeq (,$(filter gst%,$(SB_VENDOR_TARGET)))
+	   $(MKDIR) common/m4
+   endif
 	$(CP) $(SB_VENDOR_BINARIES_DIR)/libtool/release/share/aclocal/* $(CURDIR)/common/m4
 	@echo This command may fail. This is apparently OK.
 	-./autogen.sh

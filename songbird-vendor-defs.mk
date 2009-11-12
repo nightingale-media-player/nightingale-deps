@@ -334,6 +334,15 @@ else
    SB_VENDOR_BREAKPAD_STORE_PATH = $(SB_CONFIGURE_PREFIX)
 endif
 
+# These are packages for which the regen-makefiles target is enabled; 
+# other vendor packages don't need this step, so it's a no-op
+SB_REGEN_MAKEFILE_PKGS = flac\
+                         gst% \
+                         libogg \
+                         libvorbis \
+                         libtheora \
+                         $(NULL)
+
 # Turn on/off symbol generation; 'default' means "for release builds only,
 # for all non-x86_64 platforms, generate a symbol bundle."
 #
