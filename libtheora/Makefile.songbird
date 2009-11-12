@@ -33,18 +33,22 @@
 SB_VENDOR_TARGET_DEP_MODULES := ogg
 
 SB_VENDOR_TARGET = libtheora
-SB_VENDOR_TARGET_VERSION = 1.0.0
+SB_VENDOR_TARGET_VERSION = 1.1.1
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
 ifeq (Msys,$(SB_VENDOR_ARCH))
-  SB_CC = $(CURDIR)/../clwrapper.py
-  SB_CXX = $(CURDIR)/../clwrapper.py
+   SB_CC = $(CURDIR)/../clwrapper.py
+   SB_CXX = $(CURDIR)/../clwrapper.py
+   SB_USE_MOZCRT = 1
 endif
 
-SB_VENDOR_TARGET_DYLIB_FIXUPS := \
-      libtheora.0 \
-      libtheoraenc.1 \
-      libtheoradec.1
+SB_ACLOCAL_FLAGS += -I common/m4 \
+                    $(NULL)
+
+SB_VENDOR_TARGET_DYLIB_FIXUPS := libtheora.0 \
+                                 libtheoraenc.1 \
+                                 libtheoradec.1 \
+                                 $(NULL)
 
 include $(CURDIR)/../songbird-vendor-rules.mk

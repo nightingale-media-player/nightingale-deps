@@ -33,19 +33,23 @@
 SB_VENDOR_TARGET_DEP_MODULES := 
 
 SB_VENDOR_TARGET = libogg
-SB_VENDOR_TARGET_VERSION = 1.1.3
+SB_VENDOR_TARGET_VERSION = 1.1.4
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
-SB_VENDOR_TARGET_CONFIGURE_OPTS := \
-      --disable-docs
+SB_VENDOR_TARGET_CONFIGURE_OPTS := --disable-docs \
+                                   $(NULL)
 
 ifeq (Msys,$(SB_VENDOR_ARCH))
-  SB_CC = $(CURDIR)/../clwrapper.py
-  SB_CXX = $(CURDIR)/../clwrapper.py
+   SB_CC = $(CURDIR)/../clwrapper.py
+   SB_CXX = $(CURDIR)/../clwrapper.py
+   SB_USE_MOZCRT = 1
 endif
 
-SB_VENDOR_TARGET_DYLIB_FIXUPS := \
-      libogg.0
+SB_ACLOCAL_FLAGS += -I common/m4 \
+                    $(NULL)
+
+SB_VENDOR_TARGET_DYLIB_FIXUPS := libogg.0 \
+                                 $(NULL)
 
 include $(CURDIR)/../songbird-vendor-rules.mk

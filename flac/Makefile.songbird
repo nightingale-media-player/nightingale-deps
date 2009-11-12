@@ -37,25 +37,29 @@ SB_VENDOR_TARGET_VERSION = 1.2.1
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
-SB_VENDOR_TARGET_CONFIGURE_OPTS := \
-      --disable-ogg \
-      --disable-cpplibs \
-      --disable-rpath \
-      --disable-doxygen-docs \
-      --disable-oggtest \
-      --disable-asm-optimizations 
+SB_VENDOR_TARGET_CONFIGURE_OPTS := --disable-ogg \
+                                   --disable-cpplibs \
+                                   --disable-rpath \
+                                   --disable-doxygen-docs \
+                                   --disable-oggtest \
+                                   --disable-asm-optimizations \
+                                   $(NULL)
 
 SB_CFLAGS += -DFLAC_API_EXPORTS
 
 SB_CXXFLAGS += $(SB_CFLAGS)
 
-SB_VENDOR_TARGET_DYLIB_FIXUPS := \
-      libFLAC
+SB_VENDOR_TARGET_DYLIB_FIXUPS := libFLAC \
+                                 $(NULL)
+
+SB_ACLOCAL_FLAGS += -I common/m4 \
+                    $(NULL)
 
 ifeq (Msys,$(SB_VENDOR_ARCH))
-  # use clwrapper in libtool-based modules for symbol generation (see bug 6486)
-  SB_CC = $(CURDIR)/../clwrapper.py
-  SB_CXX = $(CURDIR)/../clwrapper.py
+   # use clwrapper in libtool-based modules for symbol generation (see bug 6486)
+   SB_CC = $(CURDIR)/../clwrapper.py
+   SB_CXX = $(CURDIR)/../clwrapper.py
+   SB_USE_MOZCRT = 1
 endif
 
 include $(CURDIR)/../songbird-vendor-rules.mk

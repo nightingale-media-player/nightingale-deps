@@ -160,19 +160,23 @@ ifneq (,$(SB_VENDOR_BUILD_LOG))
 endif
 
 regen-makefiles: setup_environment
-ifneq (,$(filter $(SB_REGEN_MAKEFILE_PKGS),$(SB_VENDOR_TARGET)))
-   ifeq (,$(filter gst%,$(SB_VENDOR_TARGET)))
-	   $(MKDIR) common/m4
+ifeq (linux-i686,$(SB_TARGET_ARCH))
+   ifneq (,$(filter $(SB_REGEN_MAKEFILE_PKGS),$(SB_VENDOR_TARGET)))
+      ifeq (,$(filter gst%,$(SB_VENDOR_TARGET)))
+	      $(MKDIR) common/m4
+      endif
+	   $(CP) $(SB_VENDOR_BINARIES_DIR)/libtool/release/share/aclocal/* $(CURDIR)/common/m4
+	   @echo This command may fail. This is apparently OK.
+	   -./autogen.sh
+	   @echo Regenerated $(SB_VENDOR_TARGET) makefiles are ready to check in
+	   @echo NOTICE: beware newly generated files which may have to be svn added:
+	   @echo 
+	   @$(SVN) stat | $(GREP) ^? | $(AWK) '{print $$2}' | $(GREP) -v ^common | $(GREP) -v ^m4 | $(GREP) -v autom4te.cache | $(GREP) -v autoregen.sh | $(GREP) -v stamp-h.in
+   else
+	   @echo This package does not require makfiles to be regenerated. Doing nothing.
    endif
-	$(CP) $(SB_VENDOR_BINARIES_DIR)/libtool/release/share/aclocal/* $(CURDIR)/common/m4
-	@echo This command may fail. This is apparently OK.
-	-./autogen.sh
-	@echo Regenerated $(SB_VENDOR_TARGET) makefiles are ready to check in
-	@echo NOTICE: beware newly generated files which may have to be svn added: 
-	@echo 
-	@$(SVN) stat | $(GREP) ^? | $(AWK) '{print $$2}' | $(GREP) -v ^common | $(GREP) -v ^m4 | $(GREP) -v autom4te.cache | $(GREP) -v autoregen.sh | $(GREP) -v stamp-h.in
 else
-	@echo Currently, only gstreamer-related packages need makefiles regenerated. Doing nothing.
+	@echo The regen-makefiles target can only be run on linux-i686.
 endif
 
 # We strip .so's on Linux *and* Mac because libtool gets confused and on the
