@@ -891,10 +891,10 @@ String ID3v2::Tag::getNameForRole(const TagLib::ByteVector &frame, const String 
  */
 void ID3v2::Tag::setNameForRole(const TagLib::ByteVector &frame, const String &role, const String &s)
 {
-  if(s.isEmpty() && d->frameListMap[frame].isEmpty()) {
+  if(s.isEmpty() && !d->frameListMap[frame].isEmpty()) {
     TextIdentificationFrame *f = static_cast<TextIdentificationFrame *>(
       d->frameListMap[frame].front());
-      
+
     StringList fields = f->fieldList();
     // loop increments twice to skip involved-person names and only check roles.
     // you know, just in case someone named "Producer" is your recording tech.
@@ -902,7 +902,9 @@ void ID3v2::Tag::setNameForRole(const TagLib::ByteVector &frame, const String &r
       if((*it).upper() == role) {
         // Erase this field and the next one.
         it = fields.erase(it);
-        it = fields.erase(it);
+        if (it != fields.end()) {
+          it = fields.erase(it);
+        }
         return;
       }
     }
@@ -920,12 +922,13 @@ void ID3v2::Tag::setNameForRole(const TagLib::ByteVector &frame, const String &r
     const String::Type encoding = d->factory->defaultTextEncoding();
     TextIdentificationFrame *f = new TextIdentificationFrame(frame, encoding);
     addFrame(f);
-    StringList *fields = new StringList(role);
+    StringList *fields = new StringList();
+    fields->append(role);
     fields->append(s);
     f->setText(*fields);
     return;
   }
-
+  
   // ID3v2.4 lists "Involved People" (non-performers) in an alternating list of
   // role/person, role/person. See if we can find the producer in the first TIPL frame.
   TextIdentificationFrame *f = static_cast<TextIdentificationFrame *>(
@@ -935,14 +938,14 @@ void ID3v2::Tag::setNameForRole(const TagLib::ByteVector &frame, const String &r
   // loop increments twice to skip involved-person names and only check roles.
   // you know, just in case someone named "Producer" is your recording tech.
   for(StringList::Iterator it = fields.begin(); it != fields.end(); ++it, ++it) {
-    if((*it).upper() == role) {
+    if((*it).upper() == role.upper()) {
       ++it; // the next field will be the producer
       *it = s;
       f->setText(fields);
       return;
     }
   }
-    
+
   // We didn't find a producer, so add it to the beginning.
   fields.append(role);
   fields.append(s);
