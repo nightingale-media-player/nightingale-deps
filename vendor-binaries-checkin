@@ -69,6 +69,7 @@ for d in $PACKAGES; do
    symbolsFound=
    echo "Checking $d in with vrev $vrev, vbrev $vbrev..."
    svn_load_dirs.pl \
+    -svn_username=birdbuilder \
     -no_user_input \
     -commit_mesg "Rebuild of $d $platform binaries; generated at vendor repo revision $vrev, vendor-binaries repo revision $vbrev" \
      svn://svn.songbirdnest.com/vendor-binaries/$branchString/$platform $d $platform/$d;
