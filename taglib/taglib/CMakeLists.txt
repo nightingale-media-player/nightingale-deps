@@ -7,6 +7,7 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_SOURCE_DIR}/ogg
     ${CMAKE_CURRENT_SOURCE_DIR}/ogg/flac
     ${CMAKE_CURRENT_SOURCE_DIR}/flac
+    ${CMAKE_CURRENT_SOURCE_DIR}/common
     ${CMAKE_CURRENT_SOURCE_DIR}/mpc
     ${CMAKE_CURRENT_SOURCE_DIR}/mp4
     ${CMAKE_CURRENT_SOURCE_DIR}/ogg/vorbis
@@ -30,6 +31,7 @@ ADD_SUBDIRECTORY( asf )
 ADD_SUBDIRECTORY( mpeg )
 ADD_SUBDIRECTORY( ogg )
 ADD_SUBDIRECTORY( flac )
+ADD_SUBDIRECTORY( common )
 ADD_SUBDIRECTORY( ape )
 ADD_SUBDIRECTORY( mpc )
 ADD_SUBDIRECTORY( mp4 )
@@ -93,6 +95,10 @@ ogg/vorbis/vorbisproperties.cpp
 SET(flacs_SRCS
 flac/flacfile.cpp
 flac/flacproperties.cpp
+)
+
+SET(common_SRCS
+common/flacpicture.cpp
 )
 
 SET(oggflacs_SRCS
@@ -176,7 +182,7 @@ toolkit/unicode.cpp
 SET(tag_LIB_SRCS ${mpeg_SRCS} ${id3v1_SRCS} ${id3v2_SRCS} ${frames_SRCS} ${ogg_SRCS}
 		 ${vorbis_SRCS} ${oggflacs_SRCS} ${mpc_SRCS} ${ape_SRCS} ${toolkit_SRCS} ${flacs_SRCS}
 		 ${wavpack_SRCS} ${speex_SRCS} ${trueaudio_SRCS} ${riff_SRCS} ${aiff_SRCS} ${wav_SRCS}
-		 ${mp4_SRCS} ${asf_SRCS}
+		 ${mp4_SRCS} ${asf_SRCS} ${common_SRCS}
 		 tag.cpp
 		 tagunion.cpp
 		 fileref.cpp

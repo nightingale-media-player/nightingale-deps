@@ -9,6 +9,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/../taglib/mpeg/id3v2/frames
   ${CMAKE_CURRENT_SOURCE_DIR}/../taglib/mpeg
   ${CMAKE_CURRENT_SOURCE_DIR}/../taglib/mp4
+  ${CMAKE_CURRENT_SOURCE_DIR}/../taglib/common
   ${CMAKE_CURRENT_SOURCE_DIR}/../taglib/riff
   ${CMAKE_CURRENT_SOURCE_DIR}/../taglib/riff/aiff
   ${CMAKE_CURRENT_SOURCE_DIR}/../taglib/trueaudio
