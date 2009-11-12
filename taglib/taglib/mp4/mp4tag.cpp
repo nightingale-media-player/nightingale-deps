@@ -211,10 +211,9 @@ MP4::Tag::parseCovr(MP4::Atom *atom, TagLib::File *file)
       debug("MP4: Unexpected atom \"" + name + "\", expecting \"data\"");
       return;
     }
-    if(flags == MP4::CoverArt::PNG || flags == MP4::CoverArt::JPEG) {
-      value.append(MP4::CoverArt(MP4::CoverArt::Format(flags),
-                                 data.mid(pos + 16, length - 16)));
-    }
+    
+    value.append(MP4::CoverArt(MP4::CoverArt::Format(flags),
+                               data.mid(pos + 16, length - 16)));
     pos += length;
   }
   if(value.size() > 0)
