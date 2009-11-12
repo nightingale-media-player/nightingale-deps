@@ -429,27 +429,85 @@ ByteVector &ByteVector::replace(const ByteVector &pattern, const ByteVector &wit
   if(pattern.size() == 0 || pattern.size() > size())
     return *this;
 
+  const int originalSize = size();
   const int patternSize = pattern.size();
   const int withSize = with.size();
 
-  int offset = find(pattern);
+  // Count the number of matches first
+  int matches = 0;
+  int pos = find(pattern);
+  int prevPos = pos;
+  while(pos >= 0) {
+    matches++;
+    pos = find(pattern, pos + patternSize);
+  }
 
-  while(offset >= 0) {
-
-    const int originalSize = size();
-
+  if (matches == 0)
+    return *this;
+  else if (matches == 1) {
+    // Fast track for a common case
     if(withSize > patternSize)
       resize(originalSize + withSize - patternSize);
 
     if(patternSize != withSize)
-      ::memcpy(data() + offset + withSize, mid(offset + patternSize).data(), originalSize - offset - patternSize);
+      ::memmove(data() + prevPos + withSize, data() + prevPos + patternSize, originalSize - prevPos - patternSize);
 
     if(withSize < patternSize)
       resize(originalSize + withSize - patternSize);
 
-    ::memcpy(data() + offset, with.data(), withSize);
+    ::memcpy(data() + prevPos, with.data(), withSize);
+  }
+  else {
+    if(withSize > patternSize) {
+      // Data size will be increased after the replacement - resize the vector
+      // first and search then for the pattern starting from the end of the
+      // data (rfind). Move each unchanged block (from pos to prevPos) by offset
+      // bytes towards the end of the vector. First block found moves by
+      // (withSize - patternSize) * matches bytes, last one doesn't move at all.
+      int offset = (withSize - patternSize) * matches;
 
-    offset = find(pattern, offset + withSize);
+      resize(originalSize + offset);
+
+      prevPos = offset;
+      pos = rfind(pattern, prevPos);
+      while (pos >= 0) {
+        ::memmove(data() + size() - pos + offset, data() + size() - pos, prevPos - pos);
+        ::memcpy(data() + size() - prevPos + offset, with.data(), withSize);
+        offset -= withSize - patternSize;
+        prevPos = pos + patternSize;
+        pos = rfind(pattern, prevPos);
+      }
+    }
+    else {
+      // Data size will be decreased after the replacement or stays the same -
+      // move data first, resize then. Search for the pattern and move each
+      // unchanged block (from prevPos to pos) by -offset bytes towards the
+      // start of the vector (value of offset variable is negative). First block
+      // found doesn't move at all, last one has to move by
+      // (withSize - patternSize) * matches bytes.
+      int offset = 0;
+
+      prevPos = 0;
+      pos = find(pattern, prevPos);
+      while (pos >= 0) {
+        if (offset && patternSize != withSize)
+          ::memmove(data() + prevPos + offset, data() + prevPos, pos - prevPos);
+        ::memcpy(data() + pos + offset, with.data(), withSize);
+        prevPos = pos + patternSize;
+        offset += withSize - patternSize;
+        pos = find(pattern, prevPos);
+      }
+
+      // Move last block as well, goes from end of last match to end of data.
+      if (patternSize != withSize) {
+        pos = originalSize;
+        offset += withSize - patternSize;
+        ::memmove(data() + prevPos + offset, data() + prevPos, pos - prevPos);
+      }
+
+      if (patternSize != withSize)
+        resize(originalSize + offset);
+    }
   }
 
   return *this;
