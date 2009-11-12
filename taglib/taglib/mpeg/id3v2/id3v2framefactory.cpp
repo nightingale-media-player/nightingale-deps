@@ -45,6 +45,8 @@
 #include "frames/popularimeterframe.h"
 #include "frames/privateframe.h"
 
+#include <string.h>
+
 using namespace TagLib;
 using namespace ID3v2;
 
@@ -292,62 +294,94 @@ bool FrameFactory::updateFrame(Frame::Header *header) const
     // ID3v2.2 only used 3 bytes for the frame ID, so we need to convert all of
     // the frames to their 4 byte ID3v2.4 equivalent.
 
-    convertFrame("BUF", "RBUF", header);
-    convertFrame("CNT", "PCNT", header);
-    convertFrame("COM", "COMM", header);
-    convertFrame("CRA", "AENC", header);
-    convertFrame("ETC", "ETCO", header);
-    convertFrame("GEO", "GEOB", header);
-    convertFrame("IPL", "TIPL", header);
-    convertFrame("MCI", "MCDI", header);
-    convertFrame("MLL", "MLLT", header);
-    convertFrame("POP", "POPM", header);
-    convertFrame("REV", "RVRB", header);
-    convertFrame("SLT", "SYLT", header);
-    convertFrame("STC", "SYTC", header);
-    convertFrame("TAL", "TALB", header);
-    convertFrame("TBP", "TBPM", header);
-    convertFrame("TCM", "TCOM", header);
-    convertFrame("TCO", "TCON", header);
-    convertFrame("TCR", "TCOP", header);
-    convertFrame("TDA", "TDRC", header);
-    convertFrame("TDY", "TDLY", header);
-    convertFrame("TEN", "TENC", header);
-    convertFrame("TFT", "TFLT", header);
-    convertFrame("TKE", "TKEY", header);
-    convertFrame("TLA", "TLAN", header);
-    convertFrame("TLE", "TLEN", header);
-    convertFrame("TMT", "TMED", header);
-    convertFrame("TOA", "TOAL", header);
-    convertFrame("TOF", "TOFN", header);
-    convertFrame("TOL", "TOLY", header);
-    convertFrame("TOR", "TDOR", header);
-    convertFrame("TOT", "TOAL", header);
-    convertFrame("TP1", "TPE1", header);
-    convertFrame("TP2", "TPE2", header);
-    convertFrame("TP3", "TPE3", header);
-    convertFrame("TP4", "TPE4", header);
-    convertFrame("TPA", "TPOS", header);
-    convertFrame("TPB", "TPUB", header);
-    convertFrame("TRC", "TSRC", header);
-    convertFrame("TRD", "TDRC", header);
-    convertFrame("TRK", "TRCK", header);
-    convertFrame("TSS", "TSSE", header);
-    convertFrame("TT1", "TIT1", header);
-    convertFrame("TT2", "TIT2", header);
-    convertFrame("TT3", "TIT3", header);
-    convertFrame("TXT", "TOLY", header);
-    convertFrame("TXX", "TXXX", header);
-    convertFrame("TYE", "TDRC", header);
-    convertFrame("UFI", "UFID", header);
-    convertFrame("ULT", "USLT", header);
-    convertFrame("WAF", "WOAF", header);
-    convertFrame("WAR", "WOAR", header);
-    convertFrame("WAS", "WOAS", header);
-    convertFrame("WCM", "WCOM", header);
-    convertFrame("WCP", "WCOP", header);
-    convertFrame("WPB", "WPUB", header);
-    convertFrame("WXX", "WXXX", header);
+    /* Some messy macro magic, because otherwise this is a pain... */
+#define CONVERTFRAME(from,to, header)      \
+    if(header->frameID() == (from)) {      \
+      convertFrame((from), (to), header);  \
+      handled = true;                      \
+    }
+
+    bool handled = false;
+
+    CONVERTFRAME("BUF", "RBUF", header);
+    CONVERTFRAME("CNT", "PCNT", header);
+    CONVERTFRAME("COM", "COMM", header);
+    CONVERTFRAME("CRA", "AENC", header);
+    CONVERTFRAME("ETC", "ETCO", header);
+    CONVERTFRAME("GEO", "GEOB", header);
+    CONVERTFRAME("IPL", "TIPL", header);
+    CONVERTFRAME("MCI", "MCDI", header);
+    CONVERTFRAME("MLL", "MLLT", header);
+    CONVERTFRAME("POP", "POPM", header);
+    CONVERTFRAME("REV", "RVRB", header);
+    CONVERTFRAME("SLT", "SYLT", header);
+    CONVERTFRAME("STC", "SYTC", header);
+    CONVERTFRAME("TAL", "TALB", header);
+    CONVERTFRAME("TBP", "TBPM", header);
+    CONVERTFRAME("TCM", "TCOM", header);
+    CONVERTFRAME("TCO", "TCON", header);
+    CONVERTFRAME("TCR", "TCOP", header);
+    CONVERTFRAME("TDA", "TDRC", header);
+    CONVERTFRAME("TDY", "TDLY", header);
+    CONVERTFRAME("TEN", "TENC", header);
+    CONVERTFRAME("TFT", "TFLT", header);
+    CONVERTFRAME("TKE", "TKEY", header);
+    CONVERTFRAME("TLA", "TLAN", header);
+    CONVERTFRAME("TLE", "TLEN", header);
+    CONVERTFRAME("TMT", "TMED", header);
+    CONVERTFRAME("TOA", "TOAL", header);
+    CONVERTFRAME("TOF", "TOFN", header);
+    CONVERTFRAME("TOL", "TOLY", header);
+    CONVERTFRAME("TOR", "TDOR", header);
+    CONVERTFRAME("TOT", "TOAL", header);
+    CONVERTFRAME("TP1", "TPE1", header);
+    CONVERTFRAME("TP2", "TPE2", header);
+    CONVERTFRAME("TP3", "TPE3", header);
+    CONVERTFRAME("TP4", "TPE4", header);
+    CONVERTFRAME("TPA", "TPOS", header);
+    CONVERTFRAME("TPB", "TPUB", header);
+    CONVERTFRAME("TRC", "TSRC", header);
+    CONVERTFRAME("TRD", "TDRC", header);
+    CONVERTFRAME("TRK", "TRCK", header);
+    CONVERTFRAME("TSS", "TSSE", header);
+    CONVERTFRAME("TT1", "TIT1", header);
+    CONVERTFRAME("TT2", "TIT2", header);
+    CONVERTFRAME("TT3", "TIT3", header);
+    CONVERTFRAME("TXT", "TOLY", header);
+    CONVERTFRAME("TXX", "TXXX", header);
+    CONVERTFRAME("TYE", "TDRC", header);
+    CONVERTFRAME("UFI", "UFID", header);
+    CONVERTFRAME("ULT", "USLT", header);
+    CONVERTFRAME("WAF", "WOAF", header);
+    CONVERTFRAME("WAR", "WOAR", header);
+    CONVERTFRAME("WAS", "WOAS", header);
+    CONVERTFRAME("WCM", "WCOM", header);
+    CONVERTFRAME("WCP", "WCOP", header);
+    CONVERTFRAME("WPB", "WPUB", header);
+    CONVERTFRAME("WXX", "WXXX", header);
+
+    // PIC is handled by a special case
+    // in ::AttachedPictureFrameV22 below.
+    if(header->frameID() == "PIC") {
+      handled = true;
+    }
+
+    /* If we didn't manage to discard the header OR convert it,
+     * then convert it mechanically, just to avoid corrupting
+     * the ID3 header as a whole */
+    if (!handled) {
+      char oldFrameType[4];
+      char newFrameType[5];
+
+      memcpy (oldFrameType, header->frameID().data(), 3);
+      oldFrameType[3] = 0;
+
+      memcpy (newFrameType, header->frameID().data(), 3);
+      newFrameType[3] = ' ';
+      newFrameType[4] = 0;
+
+      convertFrame(oldFrameType, newFrameType, header);
+    }
 
     break;
   }
