@@ -65,6 +65,12 @@ public:
   MP4::Properties *properties;
 };
 
+// File-less constructor variant to allow configuration of object properties before reading.
+MP4::File::File()
+{
+  d = new FilePrivate;
+}
+
 MP4::File::File(FileName file, bool readProperties, AudioProperties::ReadStyle audioPropertiesStyle)
     : TagLib::File(file)
 {

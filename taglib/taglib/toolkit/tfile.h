@@ -29,28 +29,13 @@
 #include "taglib_export.h"
 #include "taglib.h"
 #include "tbytevector.h"
+#include "tfileio.h"
 
 namespace TagLib {
 
   class String;
   class Tag;
   class AudioProperties;
-
-#ifdef _WIN32
-  class TAGLIB_EXPORT FileName
-  {
-  public:
-    FileName(const wchar_t *name) : m_wname(name) {}
-    FileName(const char *name) : m_name(name) {}
-    operator const wchar_t *() const { return m_wname.c_str(); }
-    operator const char *() const { return m_name.c_str(); }
-  private:
-    std::string m_name;
-    std::wstring m_wname;
-  };
-#else
-  typedef const char *FileName;
-#endif
 
   //! A file class with some useful methods for tag manipulation
 
@@ -60,19 +45,51 @@ namespace TagLib {
    * ByteVector and a binary search method for finding patterns in a file.
    */
 
-  class TAGLIB_EXPORT File
+  class TAGLIB_EXPORT File : public TagLib::FileIO
   {
   public:
-    /*!
-     * Position in the file used for seeking.
-     */
-    enum Position {
-      //! Seek from the beginning of the file.
-      Beginning,
-      //! Seek from the current position in the file.
-      Current,
-      //! Seek from the end of the file.
-      End
+    
+  //! A class for pluggable file I/O type resolution.
+
+  /*!
+   * This class is used to extend TagLib's very basic file name based file I/O
+   * type resolution.
+   *
+   * This can be accomplished with:
+   *
+   * \code
+   *
+   * class MyFileIOTypeResolver : FileIOTypeResolver
+   * {
+   *   TagLib::FileIO *createFileIO(FileName fileName)
+   *   {
+   *     if(someCheckForAnHTTPFile(fileName))
+   *       return new MyHTTPFileIO(fileName);
+   *     return 0;
+   *   }
+   * }
+   *
+   * File::addFileIOTypeResolver(new MyFileIOTypeResolver);
+   *
+   * \endcode
+   *
+   * Naturally a less contrived example would be slightly more complex.  This
+   * can be used to add new file I/O types to TagLib.
+   */
+
+    class FileIOTypeResolver
+    {
+    public:
+      /*!
+       * This method must be overriden to provide an additional file I/O type
+       * resolver.  If the resolver is able to determine the file I/O type it
+       * should return a valid File I/O object; if not it should return 0.
+       *
+       * \note The created file I/O is then owned by the File and should not be
+       * deleted.  Deletion will happen automatically when the File passes out
+       * of scope.
+       */
+      virtual FileIO *createFileIO(FileName fileName) const = 0;
     };
 
     /*!
@@ -81,9 +98,30 @@ namespace TagLib {
     virtual ~File();
 
     /*!
+     * Opens the \a file.  \a file should be a be a C-string in the local file
+     * system encoding.
+     *
+     * \note Constructor is protected since this class should only be
+     * instantiated through subclasses.
+     */
+    void open(FileName file);
+
+    /*!
      * Returns the file name in the local file system encoding.
      */
     FileName name() const;
+
+    /*!
+     * Returns the maximum number of bytes to scan when scanning for frames or
+     * tags.
+     */
+    long getMaxScanBytes();
+
+    /*!
+     * Sets the maximum number of bytes to scan when scanning for frames or
+     * tags to \a maxScanBytes.
+     */
+    void setMaxScanBytes(long maxScanBytes);
 
     /*!
      * Returns a pointer to this file's tag.  This should be reimplemented in
@@ -198,7 +236,7 @@ namespace TagLib {
      *
      * \see Position
      */
-    void seek(long offset, Position p = Beginning);
+    int seek(long offset, Position p = Beginning);
 
     /*!
      * Reset the end-of-file and error flags on the file.
@@ -216,21 +254,56 @@ namespace TagLib {
     long length();
 
     /*!
-     * Returns true if \a file can be opened for reading.  If the file does not
+     * Returns true if the file can be opened for reading.  If the file does not
      * exist, this will return false.
-     *
-     * \deprecated
      */
-    static bool isReadable(const char *file);
+     bool isReadable();
 
     /*!
-     * Returns true if \a file can be opened for writing.
-     *
-     * \deprecated
+     * Returns true if the file can be opened for writing.
      */
-    static bool isWritable(const char *name);
+    bool isWritable();
+
+    /*!
+     * Return a temporary file to use, creating it if necessary
+     */
+    virtual FileIO* tempFile();
+
+    /*!
+     * Close any previously allocated temporary files
+     * \param overwrite If true, will attempt to replace this file
+     */
+    virtual bool closeTempFile( bool overwrite );
+
+    /*!
+     * Adds \a resolver to the list of FileIOTypeResolvers used by TagLib.  Each
+     * additional FileIOTypeResolver is added to the front of a list of
+     * resolvers that are tried.  If the FileIOTypeResolver returns zero the
+     * next resolver is tried.
+     *
+     * Returns a pointer to the added resolver (the same one that's passed in --
+     * this is mostly so that static inialializers have something to use for
+     * assignment).
+     *
+     * \see FileIOTypeResolver
+     */
+    static const FileIOTypeResolver *addFileIOTypeResolver(const FileIOTypeResolver *resolver);
+
+    /*!
+     * Removes \a resolver from the list of FileIOTypeResolvers used by TagLib.
+     */
+    static void removeFileIOTypeResolver(const FileIOTypeResolver *resolver);
 
   protected:
+    /*!
+     * Construct a File object without opening a file.  Allows object fields to
+     * be set up before opening file.
+     *
+     * \note Constructor is protected since this class should only be
+     * instantiated through subclasses.
+     */
+    File();
+
     /*!
      * Construct a File object and opens the \a file.  \a file should be a
      * be a C-string in the local file system encoding.

@@ -49,6 +49,12 @@ namespace TagLib {
     {
     public:
       /*!
+       * Contructs a MP4 file object without reading a file.  Allows object
+       * fields to be set up before reading.
+       */
+      File();
+      
+      /*!
        * Contructs a MP4 file from \a file.  If \a readProperties is true the
        * file's audio properties will also be read using \a propertiesStyle.  If
        * false, \a propertiesStyle is ignored.
@@ -87,9 +93,10 @@ namespace TagLib {
        */
       bool save();
 
-    private:
+      void read(bool readProperties = true,
+                Properties::ReadStyle propertiesStyle = Properties::Average);
 
-      void read(bool readProperties, Properties::ReadStyle audioPropertiesStyle);
+    private:
       bool checkValid(const MP4::AtomList &list);
 
       class FilePrivate;

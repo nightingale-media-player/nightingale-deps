@@ -86,6 +86,9 @@ namespace TagLib {
        */
       virtual bool save();
 
+      void read(bool readProperties = true,
+                Properties::ReadStyle propertiesStyle = Properties::Average);
+
     private:
 
       int readBYTE();
@@ -94,7 +97,6 @@ namespace TagLib {
       long long readQWORD();
       static ByteVector renderString(const String &str, bool includeLength = false);
       String readString(int len);
-      void read(bool readProperties, Properties::ReadStyle propertiesStyle);
 
       friend class Attribute;
 

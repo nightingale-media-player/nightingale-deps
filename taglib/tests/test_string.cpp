@@ -23,6 +23,7 @@
  */
 
 #include <cppunit/extensions/HelperMacros.h>
+#include <string.h> /* strcmp, memcmp */
 #include <tstring.h>
 #include <string.h>
 

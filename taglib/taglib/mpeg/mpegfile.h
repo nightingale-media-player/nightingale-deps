@@ -31,6 +31,12 @@
 
 #include "mpegproperties.h"
 
+#if _MSC_VER
+  typedef unsigned __int64 ulonglong;
+#else
+  typedef unsigned long long ulonglong;
+#endif
+
 namespace TagLib {
 
   namespace ID3v2 { class Tag; class FrameFactory; }
@@ -68,6 +74,12 @@ namespace TagLib {
         //! Matches all tag types.
         AllTags = 0xffff
       };
+
+      /*!
+       * Contructs an MPEG file object without reading a file.  Allows object
+       * fields to be set up before reading.
+       */
+      File(ID3v2::FrameFactory *frameFactory = NULL);
 
       /*!
        * Contructs an MPEG file from \a file.  If \a readProperties is true the
@@ -120,6 +132,14 @@ namespace TagLib {
        * were read then this will return a null pointer.
        */
       virtual Properties *audioProperties() const;
+
+      /*!
+       * Reads from MPEG file.  If \a readProperties is true the file's audio
+       * properties will also be read using \a propertiesStyle.  If false,
+       * \a propertiesStyle is ignored.
+       */
+      void read(bool readProperties = true,
+                Properties::ReadStyle propertiesStyle = Properties::Average);
 
       /*!
        * Save the file.  If at least one tag -- ID3v1 or ID3v2 -- exists this
@@ -256,7 +276,6 @@ namespace TagLib {
       File(const File &);
       File &operator=(const File &);
 
-      void read(bool readProperties, Properties::ReadStyle propertiesStyle);
       long findID3v2();
       long findID3v1();
       void findAPE();

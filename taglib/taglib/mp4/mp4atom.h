@@ -40,7 +40,7 @@ namespace TagLib {
     class Atom;
     typedef TagLib::List<Atom *> AtomList;
 
-    class Atom
+    class TAGLIB_EXPORT Atom
     {
     public:
         Atom(File *file);
@@ -58,7 +58,7 @@ namespace TagLib {
     };
 
     //! Root-level atoms
-    class Atoms
+    class TAGLIB_EXPORT Atoms
     {
     public:
         Atoms(File *file);
