@@ -62,6 +62,7 @@ void usage()
   cout << "  -a <artist>"  << endl;
   cout << "  -A <album>"   << endl;
   cout << "  -c <comment>" << endl;
+  cout << "  -r <rating>"  << endl;
   cout << "  -g <genre>"   << endl;
   cout << "  -y <year>"    << endl;
   cout << "  -T <track>"   << endl;
@@ -114,6 +115,9 @@ int main(int argc, char *argv[])
           break;
         case 'g':
           t->setGenre(value);
+          break;
+        case 'r':
+          t->setRating(value);
           break;
         case 'y':
           t->setYear(value.toInt());

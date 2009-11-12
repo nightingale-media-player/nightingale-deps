@@ -38,7 +38,7 @@ class ASF::Tag::TagPrivate
 public:
   String title;
   String artist;
-  String copyright;
+  String license;
   String comment;
   String rating;
   AttributeListMap attributeListMap;
@@ -77,15 +77,31 @@ ASF::Tag::album() const
 }
 
 String
-ASF::Tag::copyright() const
+ASF::Tag::albumArtist() const
 {
-  return d->copyright;
+  if(d->attributeListMap.contains("WM/AlbumArtist"))
+    return d->attributeListMap["WM/AlbumArtist"][0].toString();
+  return String::null;
+}
+
+String
+ASF::Tag::license() const
+{
+  return d->license;
 }
 
 String
 ASF::Tag::comment() const
 {
   return d->comment;
+}
+
+String
+ASF::Tag::lyrics() const
+{
+  if(d->attributeListMap.contains("WM/Lyrics"))
+    return d->attributeListMap["WM/Lyrics"][0].toString();
+  return String::null;
 }
 
 String
@@ -112,11 +128,67 @@ ASF::Tag::track() const
   return 0;
 }
 
+unsigned int
+ASF::Tag::disc() const
+{
+  if(d->attributeListMap.contains("WM/PartOfSet"))
+    return d->attributeListMap["WM/PartOfSet"][0].toString().toInt();
+  return 0;
+}
+
+unsigned int
+ASF::Tag::bpm() const
+{
+  if(d->attributeListMap.contains("WM/BeatsPerMinute"))
+    return d->attributeListMap["WM/BeatsPerMinute"][0].toString().toInt();
+  return 0;
+}
+
 String
 ASF::Tag::genre() const
 {
   if(d->attributeListMap.contains("WM/Genre"))
     return d->attributeListMap["WM/Genre"][0].toString();
+  return String::null;
+}
+
+String
+ASF::Tag::producer() const
+{
+  if(d->attributeListMap.contains("WM/Producer"))
+    return d->attributeListMap["WM/Producer"][0].toString();
+  return String::null;
+}
+
+String
+ASF::Tag::composer() const
+{
+  if(d->attributeListMap.contains("WM/Composer"))
+    return d->attributeListMap["WM/Composer"][0].toString();
+  return String::null;
+}
+
+String
+ASF::Tag::conductor() const
+{
+  if(d->attributeListMap.contains("WM/Conductor"))
+    return d->attributeListMap["WM/Conductor"][0].toString();
+  return String::null;
+}
+
+String
+ASF::Tag::lyricist() const
+{
+  if(d->attributeListMap.contains("WM/Writer"))
+    return d->attributeListMap["WM/Writer"][0].toString();
+  return String::null;
+}
+
+String
+ASF::Tag::recordLabel() const
+{
+  if(d->attributeListMap.contains("WM/Publisher"))
+    return d->attributeListMap["WM/Publisher"][0].toString();
   return String::null;
 }
 
@@ -133,15 +205,27 @@ ASF::Tag::setArtist(const String &value)
 }
 
 void
-ASF::Tag::setCopyright(const String &value)
+ASF::Tag::setAlbumArtist(const String &value)
 {
-  d->copyright = value;
+  setAttribute("WM/AlbumArtist", value);
+}
+
+void
+ASF::Tag::setLicense(const String &value)
+{
+  d->license = value;
 }
 
 void
 ASF::Tag::setComment(const String &value)
 {
   d->comment = value;
+}
+
+void
+ASF::Tag::setLyrics(const String &value)
+{
+  setAttribute("WM/Lyrics", value);
 }
 
 void
@@ -163,6 +247,36 @@ ASF::Tag::setGenre(const String &value)
 }
 
 void
+ASF::Tag::setProducer(const String &value)
+{
+  setAttribute("WM/Producer", value);
+}
+
+void
+ASF::Tag::setComposer(const String &value)
+{
+  setAttribute("WM/Composer", value);
+}
+
+void
+ASF::Tag::setConductor(const String &value)
+{
+  setAttribute("WM/Conductor", value);
+}
+
+void
+ASF::Tag::setLyricist(const String &value)
+{
+  setAttribute("WM/Writer", value);
+}
+
+void
+ASF::Tag::setRecordLabel(const String &value)
+{
+  setAttribute("WM/Publisher", value);
+}
+
+void
 ASF::Tag::setYear(uint value)
 {
   setAttribute("WM/Year", String::number(value));
@@ -172,6 +286,18 @@ void
 ASF::Tag::setTrack(uint value)
 {
   setAttribute("WM/TrackNumber", String::number(value));
+}
+
+void
+ASF::Tag::setDisc(uint value)
+{
+  setAttribute("WM/PartOfSet", String::number(value));
+}
+
+void
+ASF::Tag::setBpm(uint value)
+{
+  setAttribute("WM/BeatsPerMinute", String::number(value));
 }
 
 ASF::AttributeListMap&
@@ -206,7 +332,7 @@ void ASF::Tag::addAttribute(const String &name, const Attribute &attribute)
 
 bool ASF::Tag::isEmpty() const {
   return TagLib::Tag::isEmpty() &&
-         copyright().isEmpty() &&
+         license().isEmpty() &&
          rating().isEmpty() &&
          d->attributeListMap.isEmpty();
 }

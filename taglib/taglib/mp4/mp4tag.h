@@ -48,21 +48,57 @@ namespace TagLib {
         ~Tag();
         bool save();
 
-        String title() const;
-        String artist() const;
-        String album() const;
-        String comment() const;
-        String genre() const;
-        uint year() const;
-        uint track() const;
-
-        void setTitle(const String &value);
-        void setArtist(const String &value);
-        void setAlbum(const String &value);
-        void setComment(const String &value);
-        void setGenre(const String &value);
-        void setYear(uint value);
-        void setTrack(uint value);
+      // Reimplementations.
+      virtual String title() const;
+      virtual String artist() const;
+      virtual String albumArtist() const;
+      virtual String album() const;
+      virtual String comment() const;
+      virtual String lyrics() const;
+      virtual String genre() const;
+      virtual String producer() const;
+      virtual String composer() const;
+      virtual String conductor() const;
+      virtual String lyricist() const;
+      virtual String recordLabel() const;
+      virtual String rating() const { return String::null; };
+      virtual String language() const { return String::null; };
+      virtual String key() const { return String::null; };
+      virtual String license() const;
+      virtual String licenseUrl() const { return String::null; };
+      virtual uint year() const;
+      virtual uint track() const;
+      virtual uint totalTracks() const { return 0; };
+      virtual uint disc() const;
+      virtual uint totalDiscs() const { return 0; };
+      virtual uint bpm() const;
+      virtual bool isCompilation() const { return false; };
+  
+  
+      virtual void setTitle(const String &s);
+      virtual void setArtist(const String &s);
+      virtual void setAlbumArtist(const String &s);
+      virtual void setAlbum(const String &s);
+      virtual void setComment(const String &s);
+      virtual void setLyrics(const String &s);
+      virtual void setGenre(const String &s);
+      virtual void setProducer(const String &s);
+      virtual void setComposer(const String &s);
+      virtual void setConductor(const String &s);
+      virtual void setLyricist(const String &s);
+      virtual void setRecordLabel(const String &s);
+      virtual void setRating(const String &s) {};
+      virtual void setLanguage(const String &s) {};
+      virtual void setKey(const String &s) {};
+      virtual void setLicense(const String &s);
+      virtual void setLicenseUrl(const String &s) {};
+      virtual void setYear(uint i);
+      virtual void setTrack(uint i);
+      virtual void setTotalTracks(uint i) {};
+      virtual void setDisc(uint i);
+      virtual void setTotalDiscs(uint i) {};
+      virtual void setBpm(uint i);
+      virtual void setIsCompilation(bool i) {};
 
         ItemListMap &itemListMap();
 

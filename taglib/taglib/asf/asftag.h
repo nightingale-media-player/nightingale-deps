@@ -49,100 +49,57 @@ namespace TagLib {
 
       virtual ~Tag();
 
-      /*!
-       * Returns the track name.
-       */
+      // Reimplementations.
       virtual String title() const;
-
-      /*!
-       * Returns the artist name.
-       */
       virtual String artist() const;
-
-      /*!
-       * Returns the album name; if no album name is present in the tag
-       * String::null will be returned.
-       */
+      virtual String albumArtist() const;
       virtual String album() const;
-
-      /*!
-       * Returns the track comment.
-       */
       virtual String comment() const;
-
-      /*!
-       * Returns the genre name; if no genre is present in the tag String::null
-       * will be returned.
-       */
+      virtual String lyrics() const;
       virtual String genre() const;
-
-      /*!
-       * Returns the rating.
-       */
+      virtual String producer() const;
+      virtual String composer() const;
+      virtual String conductor() const;
+      virtual String lyricist() const;
+      virtual String recordLabel() const;
       virtual String rating() const;
-
-      /*!
-       * Returns the genre name; if no genre is present in the tag String::null
-       * will be returned.
-       */
-      virtual String copyright() const;
-
-      /*!
-       * Returns the year; if there is no year set, this will return 0.
-       */
+      virtual String language() const { return String::null; }; // xx todo
+      virtual String key() const { return String::null; };      /// todo
+      virtual String license() const;
+      virtual String licenseUrl() const { return String::null; }; // todo
       virtual uint year() const;
-
-      /*!
-       * Returns the track number; if there is no track number set, this will
-       * return 0.
-       */
       virtual uint track() const;
-
-      /*!
-       * Sets the title to \a s.
-       */
+      virtual uint totalTracks() const { return 0; }; // todo
+      virtual uint disc() const;
+      virtual uint totalDiscs() const { return 0; }; // todo
+      virtual uint bpm() const;
+      virtual bool isCompilation() const { return false; }; // todo
+  
+  
       virtual void setTitle(const String &s);
-
-      /*!
-       * Sets the artist to \a s.
-       */
       virtual void setArtist(const String &s);
-
-      /*!
-       * Sets the album to \a s.  If \a s is String::null then this value will be
-       * cleared.
-       */
+      virtual void setAlbumArtist(const String &s);
       virtual void setAlbum(const String &s);
-
-      /*!
-       * Sets the comment to \a s.
-       */
       virtual void setComment(const String &s);
-
-      /*!
-       * Sets the rating to \a s. 
-       */
-      virtual void setRating(const String &s);
-
-      /*!
-       * Sets the copyright to \a s. 
-       */
-      virtual void setCopyright(const String &s);
-
-      /*!
-       * Sets the genre to \a s. 
-       */
+      virtual void setLyrics(const String &s);
       virtual void setGenre(const String &s);
-
-      /*!
-       * Sets the year to \a i.  If \a s is 0 then this value will be cleared.
-       */
+      virtual void setProducer(const String &s);
+      virtual void setComposer(const String &s);
+      virtual void setConductor(const String &s);
+      virtual void setLyricist(const String &s);
+      virtual void setRecordLabel(const String &s);
+      virtual void setRating(const String &s);
+      virtual void setLanguage(const String &s) {};
+      virtual void setKey(const String &s) {};
+      virtual void setLicense(const String &s);
+      virtual void setLicenseUrl(const String &s) {};
       virtual void setYear(uint i);
-
-      /*!
-       * Sets the track to \a i.  If \a s is 0 then this value will be cleared.
-       */
       virtual void setTrack(uint i);
+      virtual void setTotalTracks(uint i) {};
+      virtual void setDisc(uint i);
+      virtual void setTotalDiscs(uint i) {};
+      virtual void setBpm(uint i);
+      virtual void setIsCompilation(bool i) {};
 
       /*!
        * Returns true if the tag does not contain any data.  This should be

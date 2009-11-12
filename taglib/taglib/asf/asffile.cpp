@@ -208,12 +208,12 @@ ASF::File::ContentDescriptionObject::parse(ASF::File *file, uint /*size*/)
   file->d->contentDescriptionObject = this;
   int titleLength = file->readWORD();
   int artistLength = file->readWORD();
-  int copyrightLength = file->readWORD();
+  int licenseLength = file->readWORD();
   int commentLength = file->readWORD();
   int ratingLength = file->readWORD();
   file->d->tag->setTitle(file->readString(titleLength));
   file->d->tag->setArtist(file->readString(artistLength));
-  file->d->tag->setCopyright(file->readString(copyrightLength));
+  file->d->tag->setLicense(file->readString(licenseLength));
   file->d->tag->setComment(file->readString(commentLength));
   file->d->tag->setRating(file->readString(ratingLength));
 }
@@ -223,7 +223,7 @@ ASF::File::ContentDescriptionObject::render(ASF::File *file)
 {
   ByteVector v1 = file->renderString(file->d->tag->title());
   ByteVector v2 = file->renderString(file->d->tag->artist());
-  ByteVector v3 = file->renderString(file->d->tag->copyright());
+  ByteVector v3 = file->renderString(file->d->tag->license());
   ByteVector v4 = file->renderString(file->d->tag->comment());
   ByteVector v5 = file->renderString(file->d->tag->rating());
   data.clear();

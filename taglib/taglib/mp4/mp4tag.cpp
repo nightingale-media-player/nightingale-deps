@@ -553,6 +553,75 @@ MP4::Tag::album() const
 }
 
 String
+MP4::Tag::albumArtist() const
+{
+  if(d->items.contains("aART"))
+    return d->items["aART"].toStringList().toString(", ");
+  return String::null;
+}
+
+String
+MP4::Tag::producer() const
+{
+  if(d->items.contains("----:com.apple.iTunes:PRODUCER"))
+    return d->items["----:com.apple.iTunes:PRODUCER"]
+            .toStringList().toString(", ");
+  return String::null;
+}
+
+
+String
+MP4::Tag::conductor() const
+{
+  if(d->items.contains("----:com.apple.iTunes:CONDUCTOR"))
+    return d->items["----:com.apple.iTunes:CONDUCTOR"]
+            .toStringList().toString(", ");
+  return String::null;
+}
+
+String
+MP4::Tag::composer() const
+{
+  if(d->items.contains("\251wrt"))
+    return d->items["\251wrt"].toStringList().toString(", ");
+  return String::null;
+}
+
+String
+MP4::Tag::lyricist() const
+{
+  if(d->items.contains("----:com.apple.iTunes:LYRICIST"))
+    return d->items["----:com.apple.iTunes:LYRICIST"]
+            .toStringList().toString(", ");
+  return String::null;
+}
+
+String
+MP4::Tag::recordLabel() const
+{
+  if(d->items.contains("----:com.apple.iTunes:LABEL"))
+    return d->items["----:com.apple.iTunes:LABEL"]
+            .toStringList().toString(", ");
+  return String::null;
+}
+
+String
+MP4::Tag::lyrics() const
+{
+  if(d->items.contains("\251lyr"))
+    return d->items["\251lyr"].toStringList().toString(", ");
+  return String::null;
+}
+
+String
+MP4::Tag::license() const
+{
+  if(d->items.contains("cprt"))
+    return d->items["cprt"].toStringList().toString(", ");
+  return String::null;
+}
+
+String
 MP4::Tag::comment() const
 {
   if(d->items.contains("\251cmt"))
@@ -577,6 +646,15 @@ MP4::Tag::year() const
 }
 
 unsigned int
+MP4::Tag::bpm() const
+{
+  if(d->items.contains("tmpo")) {
+    return d->items["tmpo"].toInt();
+  }
+  return 0;
+}
+
+unsigned int
 MP4::Tag::track() const
 {
   if(d->items.contains("trkn"))
@@ -584,46 +662,199 @@ MP4::Tag::track() const
   return 0;
 }
 
+unsigned int
+MP4::Tag::disc() const
+{
+  if(d->items.contains("disk"))
+    return d->items["disk"].toIntPair().first;
+  return 0;
+}
+
 void
 MP4::Tag::setTitle(const String &value)
 {
+  if (value.isEmpty()) {
+    d->items.erase("\251nam");
+    return;
+  }
+
   d->items["\251nam"] = StringList(value);
 }
 
 void
 MP4::Tag::setArtist(const String &value)
 {
+  if (value.isEmpty()) {
+    d->items.erase("\251ART");
+    return;
+  }
+  
   d->items["\251ART"] = StringList(value);
 }
 
 void
 MP4::Tag::setAlbum(const String &value)
 {
+  if (value.isEmpty()) {
+    d->items.erase("\251alb");
+    return;
+  }
+  
   d->items["\251alb"] = StringList(value);
 }
 
 void
 MP4::Tag::setComment(const String &value)
 {
+  if (value.isEmpty()) {
+    d->items.erase("\251cmt");
+    return;
+  }
+  
   d->items["\251cmt"] = StringList(value);
 }
 
 void
 MP4::Tag::setGenre(const String &value)
 {
+  if (value.isEmpty()) {
+    d->items.erase("\251gen");
+    return;
+  }
+  
   d->items["\251gen"] = StringList(value);
+}
+
+void
+MP4::Tag::setAlbumArtist(const String &value)
+{
+  if (value.isEmpty()) {
+    d->items.erase("aART");
+    return;
+  }
+  
+  d->items["aART"] = StringList(value);
+}
+
+void
+MP4::Tag::setProducer(const String &value)
+{
+  if (value.isEmpty()) {
+    d->items.erase("----:com.apple.iTunes:PRODUCER");
+    return;
+  }
+  
+  d->items["----:com.apple.iTunes:PRODUCER"] = StringList(value);
+}
+
+void
+MP4::Tag::setComposer(const String &value)
+{
+  if (value.isEmpty()) {
+    d->items.erase("\251wrt");
+    return;
+  }
+  
+  d->items["\251wrt"] = StringList(value);
+}
+
+void
+MP4::Tag::setConductor(const String &value)
+{
+  if (value.isEmpty()) {
+    d->items.erase("----:com.apple.iTunes:CONDUCTOR");
+    return;
+  }
+  
+  d->items["----:com.apple.iTunes:CONDUCTOR"] = StringList(value);
+}
+
+void
+MP4::Tag::setLyricist(const String &value)
+{
+  if (value.isEmpty()) {
+    d->items.erase("----:com.apple.iTunes:LYRICIST");
+    return;
+  }
+  
+  d->items["----:com.apple.iTunes:LYRICIST"] = StringList(value);
+}
+
+void
+MP4::Tag::setLyrics(const String &value)
+{
+  if (value.isEmpty()) {
+    d->items.erase("\251lyr");
+    return;
+  }
+  
+  d->items["\251lyr"] = StringList(value);
+}
+
+void
+MP4::Tag::setLicense(const String &value)
+{
+  if (value.isEmpty()) {
+    d->items.erase("cprt");
+    return;
+  }
+  
+  d->items["cprt"] = StringList(value);
+}
+
+void
+MP4::Tag::setRecordLabel(const String &value)
+{
+  if (value.isEmpty()) {
+    d->items.erase("----:com.apple.iTunes:LABEL");
+    return;
+  }
+  
+  d->items["----:com.apple.iTunes:LABEL"] = StringList(value);
 }
 
 void
 MP4::Tag::setYear(uint value)
 {
+  if (value == 0) {
+    d->items.erase("\251day");
+    return;
+  }
+  
   d->items["\251day"] = StringList(String::number(value));
 }
 
 void
 MP4::Tag::setTrack(uint value)
 {
+  if (value == 0) {
+    d->items.erase("trkn");
+    return;
+  }
+  
   d->items["trkn"] = MP4::Item(value, 0);
+}
+
+void
+MP4::Tag::setDisc(uint value)
+{
+  if (value == 0) {
+    d->items.erase("disk");
+    return;
+  }
+  
+  d->items["disk"] = MP4::Item(value, 0);
+}
+
+void
+MP4::Tag::setBpm(uint value)
+{
+  if (value == 0) {
+    d->items.erase("tmpo");
+    return;
+  }
+  
+  d->items["tmpo"] = MP4::Item((int)value);
 }
 
 MP4::ItemListMap &

@@ -58,25 +58,32 @@ Ogg::XiphComment::~XiphComment()
   delete d;
 }
 
+/* Standard, no-brainer version of the get property function */
+String Ogg::XiphComment::stringProperty(const String &property) const
+{
+  if(d->fieldListMap[property].isEmpty())
+    return String::null;
+  return d->fieldListMap[property].front();
+}
+
 String Ogg::XiphComment::title() const
 {
-  if(d->fieldListMap["TITLE"].isEmpty())
-    return String::null;
-  return d->fieldListMap["TITLE"].front();
+  return stringProperty("TITLE");
 }
 
 String Ogg::XiphComment::artist() const
 {
-  if(d->fieldListMap["ARTIST"].isEmpty())
-    return String::null;
-  return d->fieldListMap["ARTIST"].front();
+  return stringProperty("ARTIST");
+}
+
+String Ogg::XiphComment::albumArtist() const
+{
+  return stringProperty("ALBUMARTIST");
 }
 
 String Ogg::XiphComment::album() const
 {
-  if(d->fieldListMap["ALBUM"].isEmpty())
-    return String::null;
-  return d->fieldListMap["ALBUM"].front();
+  return stringProperty("ALBUM");
 }
 
 String Ogg::XiphComment::comment() const
@@ -94,11 +101,64 @@ String Ogg::XiphComment::comment() const
   return String::null;
 }
 
+String Ogg::XiphComment::lyrics() const
+{
+  return stringProperty("LYRICS");
+}
+
 String Ogg::XiphComment::genre() const
 {
-  if(d->fieldListMap["GENRE"].isEmpty())
-    return String::null;
-  return d->fieldListMap["GENRE"].front();
+  return stringProperty("GENRE");
+}
+
+String Ogg::XiphComment::producer() const
+{
+  return stringProperty("PRODUCER");
+}
+
+String Ogg::XiphComment::composer() const
+{
+  return stringProperty("COMPOSER");
+}
+
+String Ogg::XiphComment::conductor() const
+{
+  return stringProperty("CONDUCTOR");
+}
+
+String Ogg::XiphComment::lyricist() const
+{
+  return stringProperty("LYRICIST");
+}
+
+String Ogg::XiphComment::recordLabel() const
+{
+  return stringProperty("RECORDLABEL");
+}
+
+String Ogg::XiphComment::rating() const
+{
+  return stringProperty("RATING");
+}
+
+String Ogg::XiphComment::language() const
+{
+  return stringProperty("LANGUAGE");
+}
+
+String Ogg::XiphComment::key() const
+{
+  return stringProperty("KEY");
+}
+
+String Ogg::XiphComment::license() const
+{
+  return stringProperty("LICENSE");
+}
+
+String Ogg::XiphComment::licenseUrl() const
+{
+  return stringProperty("LICENSEURL");
 }
 
 TagLib::uint Ogg::XiphComment::year() const
@@ -162,6 +222,42 @@ void Ogg::XiphComment::setArtwork(List<TagLib::FlacPicture*> artworkList)
   }
 }
 
+TagLib::uint Ogg::XiphComment::totalTracks() const
+{
+  if(d->fieldListMap["TOTALTRACKS"].isEmpty())
+    return 0;
+  return d->fieldListMap["TOTALTRACKS"].front().toInt();
+}
+
+TagLib::uint Ogg::XiphComment::disc() const
+{
+  if(d->fieldListMap["DISCNUMBER"].isEmpty())
+    return 0;
+  return d->fieldListMap["DISCNUMBER"].front().toInt();
+}
+
+TagLib::uint Ogg::XiphComment::totalDiscs() const
+{
+  if(d->fieldListMap["TOTALDISCS"].isEmpty())
+    return 0;
+  return d->fieldListMap["TOTALDISCS"].front().toInt();
+}
+
+TagLib::uint Ogg::XiphComment::bpm() const
+{
+  if(d->fieldListMap["BPM"].isEmpty())
+    return 0;
+  return d->fieldListMap["BPM"].front().toInt();
+}
+
+bool Ogg::XiphComment::isCompilation() const
+{
+  // we only test for the *existence* of the COMPILATION field
+  if(d->fieldListMap["COMPILATION"].isEmpty())
+    return false;
+  return true;
+}
+
 void Ogg::XiphComment::setTitle(const String &s)
 {
   addField("TITLE", s);
@@ -170,6 +266,11 @@ void Ogg::XiphComment::setTitle(const String &s)
 void Ogg::XiphComment::setArtist(const String &s)
 {
   addField("ARTIST", s);
+}
+
+void Ogg::XiphComment::setAlbumArtist(const String &s)
+{
+  addField("ALBUMARTIST", s);
 }
 
 void Ogg::XiphComment::setAlbum(const String &s)
@@ -182,9 +283,64 @@ void Ogg::XiphComment::setComment(const String &s)
   addField(d->commentField.isEmpty() ? "DESCRIPTION" : d->commentField, s);
 }
 
+void Ogg::XiphComment::setLyrics(const String &s)
+{
+  addField("LYRICS", s);
+}
+
 void Ogg::XiphComment::setGenre(const String &s)
 {
   addField("GENRE", s);
+}
+
+void Ogg::XiphComment::setProducer(const String &s)
+{
+  addField("PRODUCER", s);
+}
+
+void Ogg::XiphComment::setComposer(const String &s)
+{
+  addField("COMPOSER", s);
+}
+
+void Ogg::XiphComment::setConductor(const String &s)
+{
+  addField("CONDUCTOR", s);
+}
+
+void Ogg::XiphComment::setLyricist(const String &s)
+{
+  addField("LYRICIST", s);
+}
+
+void Ogg::XiphComment::setRecordLabel(const String &s)
+{
+  addField("RECORDLABEL", s);
+}
+
+void Ogg::XiphComment::setRating(const String &s)
+{
+  addField("RATING", s);
+}
+
+void Ogg::XiphComment::setLanguage(const String &s)
+{
+  addField("LANGUAGE", s);
+}
+
+void Ogg::XiphComment::setKey(const String &s)
+{
+  addField("KEY", s);
+}
+
+void Ogg::XiphComment::setLicense(const String &s)
+{
+  addField("LICENSE", s);
+}
+
+void Ogg::XiphComment::setLicenseUrl(const String &s)
+{
+  addField("LICENSEURL", s);
 }
 
 void Ogg::XiphComment::setYear(uint i)
@@ -204,6 +360,47 @@ void Ogg::XiphComment::setTrack(uint i)
   else
     addField("TRACKNUMBER", String::number(i));
 }
+
+void Ogg::XiphComment::setTotalTracks(uint i)
+{
+  if(i == 0)
+    removeField("TOTALTRACKS");
+  else
+    addField("TOTALTRACKS", String::number(i));
+}
+
+void Ogg::XiphComment::setDisc(uint i)
+{
+  if(i == 0)
+    removeField("DISCNUMBER");
+  else
+    addField("DISCNUMBER", String::number(i));
+}
+
+void Ogg::XiphComment::setTotalDiscs(uint i)
+{
+  if(i == 0)
+    removeField("TOTALDISCS");
+  else
+    addField("TOTALDISCS", String::number(i));
+}
+
+void Ogg::XiphComment::setBpm(uint i)
+{
+  if(i == 0)
+    removeField("BPM");
+  else
+    addField("BPM", String::number(i));
+}
+
+void Ogg::XiphComment::setIsCompilation(bool i)
+{
+  if(i == false)
+    removeField("COMPILATION");
+  else
+    addField("COMPILATION", "YES"); // TODO: check this
+}
+
 
 bool Ogg::XiphComment::isEmpty() const
 {
