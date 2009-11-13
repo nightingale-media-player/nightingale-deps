@@ -20,6 +20,12 @@ EXTRA_DIST = \
 
 lib_LTLIBRARIES = libtheoradec.la libtheoraenc.la libtheora.la
 
+if COMPILER_visualstudio
+arch_dir = x86_vc
+else
+arch_dir = x86
+endif
+
 if THEORA_DISABLE_ENCODE
 encoder_uniq_sources = \
 	encoder_disabled.c
@@ -28,18 +34,18 @@ encoder_sources = \
 	$(encoder_uniq_sources)
 else
 encoder_uniq_x86_sources = \
-	x86/mmxencfrag.c \
-	x86/mmxfdct.c \
-	x86/x86enc.c
+	$(arch_dir)/mmxencfrag.c \
+	$(arch_dir)/mmxfdct.c \
+	$(arch_dir)/x86enc.c
 
 encoder_uniq_x86_64_sources = \
-	x86/sse2fdct.c
+	$(arch_dir)/sse2fdct.c
 
 encoder_shared_x86_sources = \
-	x86/mmxfrag.c \
-	x86/mmxidct.c \
-	x86/mmxstate.c \
-	x86/x86state.c
+	$(arch_dir)/mmxfrag.c \
+	$(arch_dir)/mmxidct.c \
+	$(arch_dir)/mmxstate.c \
+	$(arch_dir)/x86state.c
 
 encoder_shared_x86_64_sources =
 
@@ -88,10 +94,10 @@ encoder_sources = \
 endif
 
 decoder_x86_sources = \
-	x86/mmxidct.c \
-	x86/mmxfrag.c \
-	x86/mmxstate.c \
-	x86/x86state.c
+	$(arch_dir)/mmxidct.c \
+	$(arch_dir)/mmxfrag.c \
+	$(arch_dir)/mmxstate.c \
+	$(arch_dir)/x86state.c
 if CPU_x86_64
 decoder_arch_sources = $(decoder_x86_sources)
 else
