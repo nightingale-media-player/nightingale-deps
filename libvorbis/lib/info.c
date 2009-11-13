@@ -34,6 +34,17 @@
 #define GENERAL_VENDOR_STRING "Xiph.Org libVorbis 1.2.3"
 #define ENCODE_VENDOR_STRING "Xiph.Org libVorbis I 20090709"
 
+
+void *vorbis_ogg_calloc(size_t nmemb, size_t size) 
+{ 
+  return _ogg_calloc(nmemb, size); 
+} 
+
+void *vorbis_ogg_malloc(size_t size) 
+{ 
+  return _ogg_malloc(size); 
+} 
+
 /* helpers */
 static int ilog2(unsigned int v){
   int ret=0;

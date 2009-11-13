@@ -27,6 +27,11 @@
 #include "os.h"
 #include "misc.h"
 
+#undef _ogg_malloc 
+#undef _ogg_calloc 
+#define _ogg_malloc(size) vorbis_ogg_malloc(size) 
+#define _ogg_calloc(n, size) vorbis_ogg_calloc(n, size) 
+
 /* careful with this; it's using static array sizing to make managing
    all the modes a little less annoying.  If we use a residue backend
    with > 12 partition types, or a different division of iteration,
