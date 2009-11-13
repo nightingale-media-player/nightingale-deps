@@ -39,6 +39,7 @@ include $(CURDIR)/../songbird-vendor-defs.mk
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := --disable-docs \
                                    --disable-oggtest \
+                                   --disable-tests \
                                    $(NULL)
 
 SB_ACLOCAL_FLAGS += -I common/m4 \

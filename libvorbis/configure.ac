@@ -78,6 +78,12 @@ fi
 
 AM_CONDITIONAL(BUILD_DOCS, [test "x$enable_docs" = xyes])
 
+ac_enable_tests=yes
+AC_ARG_ENABLE(tests,
+     [  --disable-tests      disable tests ],
+     [ ac_enable_tests=$enableval ], [ ac_enable_tests=yes] )
+AM_CONDITIONAL(VORBIS_ENABLE_TESTS, [test "x${ac_enable_tests}" != xno])
+
 dnl --------------------------------------------------
 dnl Set build flags based on environment
 dnl --------------------------------------------------
