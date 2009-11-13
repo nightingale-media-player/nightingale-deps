@@ -859,15 +859,16 @@ String ID3v2::Tag::getNameForRole(const TagLib::ByteVector &frame, const String 
   TextIdentificationFrame *f = dynamic_cast<TextIdentificationFrame *>(
     d->frameListMap[frame].front());
 
-  StringList fields = f->fieldList();
   // loop increments twice to skip involved-person names and only check roles.
   // you know, just in case someone named "Producer" is your recording tech.
+  StringList fields = f->fieldList();
   for(StringList::Iterator it = fields.begin(); it != fields.end(); it++) {
-    StringList::Iterator next = it;
-    if (it != fields.end()) { next++; }
-    
-    if((*it).upper() == role) {
-      return *(++it); // the next field will be the producer
+    if((*it).upper() == role.upper()) {
+      // be sure there's actually a value at the end.
+      if (++it != fields.end()) {
+        return *it;
+      }
+      break;
     }
     // don't run over the end, but do skip over the names
     else if (it != fields.end()) {
