@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-AUTOMAKE_OPTIONS = foreign 1.6 dist-zip
+AUTOMAKE_OPTIONS = foreign 1.9 dist-zip
 
 SUBDIRS = src include doc
 
