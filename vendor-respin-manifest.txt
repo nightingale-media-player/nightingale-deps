@@ -1,4 +1,4 @@
-linux-i686: taglib 
-linux-x86_64: taglib 
-macosx-i686: taglib 
-windows-i686-msvc8: taglib 
+linux-i686: libogg flac libvorbis libtheora
+linux-x86_64: libogg flac libvorbis libtheora
+macosx-i686: libogg flac libvorbis libtheora
+windows-i686-msvc8: libogg flac libvorbis libtheora
