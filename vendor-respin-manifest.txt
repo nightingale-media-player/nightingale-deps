@@ -1,4 +1,4 @@
-linux-i686: libogg flac libvorbis libtheora
-linux-x86_64: libogg flac libvorbis libtheora
-macosx-i686: libogg flac libvorbis libtheora
-windows-i686-msvc8: libogg flac libvorbis libtheora
+linux-i686: flac libtheora
+linux-x86_64: flac libtheora
+macosx-i686: flac libtheora
+windows-i686-msvc8: flac libtheora
