@@ -28,7 +28,7 @@
 # distclean: remove everything except what goes in the distribution
 #
 
-AUTOMAKE_OPTIONS = foreign 1.7
+AUTOMAKE_OPTIONS = foreign 1.9
 
 SUBDIRS = doc include m4 man src test build obj
 
