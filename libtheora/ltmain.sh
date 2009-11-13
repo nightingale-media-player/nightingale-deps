@@ -116,9 +116,9 @@ $lt_unset CDPATH
 
 : ${CP="cp -f"}
 : ${ECHO="echo"}
-: ${EGREP="/bin/grep -E"}
-: ${FGREP="/bin/grep -F"}
-: ${GREP="/bin/grep"}
+: ${EGREP="grep -E"}
+: ${FGREP="grep -F"}
+: ${GREP="grep"}
 : ${LN_S="ln -s"}
 : ${MAKE="make"}
 : ${MKDIR="mkdir"}
@@ -1059,6 +1059,36 @@ func_infer_tag ()
 }
 
 
+# func_dashL_to_envvar deplibs_variable deplibs...
+func_dashL_to_envvar ()
+{
+  deplibs_variable=$1
+  shift
+  tmp_libs=
+  for deplib; do
+    case $deplib in
+    -L*)
+      func_stripname '-L' '' "$deplib"
+      env_path=$func_stripname_result
+      case $host_os in
+      mingw*)
+	env_path=`cmd \\\\/C echo "$env_path " | $SED -e 's/"\(.*\) " *$/\1/'`
+	;;
+      cygwin*)
+	env_path=`cygpath -w "$env_path"`
+	;;
+      esac
+      eval $dashL_envvar="\"\$$dashL_envvar $dashL_envvar_spec$env_path\""
+      ;;
+    *)
+      tmp_libs="$tmp_libs $deplib"
+      ;;
+    esac
+  done
+  eval $deplibs_variable="\"$tmp_libs\""
+}
+
+
 
 # func_write_libtool_object output_name pic_name nonpic_name
 # Create a libtool object file (analogous to a ".la" file),
@@ -1283,6 +1313,10 @@ func_mode_compile ()
     if test "$pic_mode" = no && test "$deplibs_check_method" != pass_all; then
       # non-PIC code in shared libraries is not supported
       pic_mode=default
+    fi
+
+    if test -n "$compile_tag"; then
+      base_compile="$base_compile $compile_tag"
     fi
 
     # Calculate the filename of the output object if compiler does
@@ -2598,8 +2632,15 @@ func_extract_an_archive ()
     $opt_debug
     f_ex_an_ar_dir="$1"; shift
     f_ex_an_ar_oldlib="$1"
-    func_show_eval "(cd \$f_ex_an_ar_dir && $AR x \"\$f_ex_an_ar_oldlib\")" 'exit $?'
-    if ($AR t "$f_ex_an_ar_oldlib" | sort | sort -uc >/dev/null 2>&1); then
+    if test "X$ar_extract_one_by_one" != "Xyes"; then
+      func_show_eval "(cd \$f_ex_an_ar_dir && $AR ${AR_XFLAGS}${AR_SEP}\"\$f_ex_an_ar_oldlib\")" 'exit $?'
+    else
+      $AR ${AR_TFLAGS}${AR_SEP}"$f_ex_an_ar_oldlib" | while read name
+      do
+	func_show_eval "(cd \$f_ex_an_ar_dir && $AR ${AR_XFLAGS}${AR_SEP}\$name \"\$f_ex_an_ar_oldlib\")" 'exit $?'
+      done
+    fi
+    if ($AR ${AR_TFLAGS}${AR_SEP}"$f_ex_an_ar_oldlib" | sort | sort -uc >/dev/null 2>&1); then
      :
     else
       func_fatal_error "object name conflicts in archive: $f_ex_an_ar_dir/$f_ex_an_ar_oldlib"
@@ -6036,6 +6077,13 @@ func_mode_link ()
 	      *) tmp_libs="$tmp_libs $deplib" ;;
 	      esac
 	      ;;
+	    -l*)
+	      if test -n "$dashl_xform" -a "$linkmode" = prog; then
+		func_stripname '-l' '' "$deplib"
+		deplib=`$ECHO "X$func_stripname_result" | $Xsed -e $dashl_xform`
+	      fi
+	      tmp_libs="$tmp_libs $deplib"
+	      ;;
 	    *) tmp_libs="$tmp_libs $deplib" ;;
 	    esac
 	  done
@@ -6647,8 +6695,20 @@ EOF
 	      fi
 	      if test -n "$a_deplib" ; then
 		libname=`eval "\\$ECHO \"$libname_spec\""`
+		if test -n "$file_magic_glob"; then
+		  libnameglob=`$ECHO "X$libname" | $Xsed -e $file_magic_glob`
+		else
+		  libnameglob=$libname
+		fi
+		test "$want_nocaseglob" == yes && nocaseglob=`shopt -p nocaseglob`
 		for i in $lib_search_path $sys_lib_search_path $shlib_search_path; do
-		  potential_libs=`ls $i/$libname[.-]* 2>/dev/null`
+		  if test "$want_nocaseglob" == yes; then
+		    shopt -s nocaseglob
+		    potential_libs=`ls $i/$libnameglob[.-]* 2>/dev/null`
+		    $nocaseglob
+		  else
+		    potential_libs=`ls $i/$libnameglob[.-]* 2>/dev/null`
+		  fi
 		  for potent_lib in $potential_libs; do
 		      # Follow soft links.
 		      if ls -lLd "$potent_lib" 2>/dev/null |
@@ -6671,6 +6731,9 @@ EOF
 		      if eval $file_magic_cmd \"\$potlib\" 2>/dev/null |
 			 $SED -e 10q |
 			 $EGREP "$file_magic_regex" > /dev/null; then
+			if test -n "$dashl_xform"; then
+			  a_deplib=`$ECHO "X$name" | $Xsed -e $dashl_xform`
+			fi
 			newdeplibs="$newdeplibs $a_deplib"
 			a_deplib=""
 			break 2
@@ -7329,6 +7392,19 @@ EOF
 	  test "X$libobjs" = "X " && libobjs=
 	fi
 
+	case $pass/$dashL_envvar in
+	link/) ;;
+	link/*)
+	  # Move all -L options to the environment variable
+	  # specified by $dashL_envvar.
+	  eval save_dashL_envvar="\"\$$dashL_envvar\""
+	  eval cmds=\"\$cmds~$dashL_envvar="$save_dashL_envvar"\"
+
+	  func_dashL_to_envvar deplibs $deplibs
+	  export $dashL_envvar
+	  ;;
+	esac
+
 	save_ifs="$IFS"; IFS='~'
 	for cmd in $cmds; do
 	  IFS="$save_ifs"
@@ -7556,6 +7632,25 @@ EOF
       done
       compile_deplibs="$new_libs"
 
+
+      case $pass/$dashL_envvar in
+      link/) ;;
+      link/*)
+	# Move all -L options to the environment variable
+	# specified by $dashL_envvar.
+	eval save_dashL_envvar="\"\$$dashL_envvar\""
+
+	func_dashL_to_envvar compile_deplibs $compile_deplibs
+	eval prepend_dashL_envvar="$dashL_envvar=\\\"\$$dashL_envvar\\\""
+	compile_command="$prepend_dashL_envvar $compile_command"
+	eval $dashL_envvar="\"$save_dashL_envvar\""
+
+	func_dashL_to_envvar finalize_deplibs $finalize_deplibs
+	eval prepend_dashL_envvar="$dashL_envvar=\\\"\$$dashL_envvar\\\""
+	finalize_command="$prepend_dashL_envvar $finalize_command"
+	eval $dashL_envvar="\"$save_dashL_envvar\""
+	;;
+      esac
 
       compile_command="$compile_command $compile_deplibs"
       finalize_command="$finalize_command $finalize_deplibs"
@@ -7963,6 +8058,15 @@ EOF
 	len=$func_len_result
 	if test "$len" -lt "$max_cmd_len" || test "$max_cmd_len" -le -1; then
 	  cmds=$old_archive_cmds
+	elif test -n "$archiver_list_spec"; then
+	  func_verbose "using command file archive linking..."
+	  for obj in $oldobjs; do
+	    $ECHO \""$obj"\"
+	  done > $output_objdir/$libname.libcmd
+	  save_oldobjs="$oldobjs"
+	  oldobjs=" $archiver_list_spec$output_objdir/$libname.libcmd"
+	  eval cmds=\"\$old_archive_cmds\"
+	  oldobjs="$save_oldobjs"
 	else
 	  # the command line is too long to link in one step, link in parts
 	  func_verbose "using piecewise archive linking..."
