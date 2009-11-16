@@ -85,6 +85,7 @@ encoder_sources = \
 	apiwrapper.c \
 	fragment.c \
 	idct.c \
+	info.c \
 	internal.c \
 	state.c \
 	quant.c \
