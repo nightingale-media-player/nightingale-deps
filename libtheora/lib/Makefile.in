@@ -105,7 +105,7 @@ am__libtheoradec_la_SOURCES_DIST = apiwrapper.c bitpack.c \
 	Version_script-dec theoradec.exp
 am_libtheoradec_la_OBJECTS = $(am__objects_3)
 libtheoradec_la_OBJECTS = $(am_libtheoradec_la_OBJECTS)
-libtheoraenc_la_LIBADD =
+libtheoraenc_la_DEPENDENCIES = libtheoradec.la
 am__libtheoraenc_la_SOURCES_DIST = apiwrapper.c fragment.c idct.c \
 	internal.c state.c quant.c $(arch_dir)/mmxfrag.c \
 	$(arch_dir)/mmxidct.c $(arch_dir)/mmxstate.c \
@@ -461,7 +461,8 @@ libtheoradec_la_SOURCES = \
 
 libtheoradec_la_LDFLAGS = \
   -version-info @THDEC_LIB_CURRENT@:@THDEC_LIB_REVISION@:@THDEC_LIB_AGE@ \
-  @THEORADEC_LDFLAGS@ @CAIRO_LIBS@
+  @THEORADEC_LDFLAGS@ @CAIRO_LIBS@ \
+  -no-undefined
 
 libtheoraenc_la_SOURCES = \
 	$(encoder_sources) \
@@ -469,8 +470,10 @@ libtheoraenc_la_SOURCES = \
 
 libtheoraenc_la_LDFLAGS = \
   -version-info @THENC_LIB_CURRENT@:@THENC_LIB_REVISION@:@THENC_LIB_AGE@ \
-  @THEORAENC_LDFLAGS@ $(OGG_LIBS)
+  @THEORAENC_LDFLAGS@ $(OGG_LIBS) \
+  -no-undefined
 
+libtheoraenc_la_LIBADD = libtheoradec.la
 libtheora_la_SOURCES = \
 	$(decoder_sources) \
 	$(encoder_uniq_sources) \
@@ -478,7 +481,8 @@ libtheora_la_SOURCES = \
 
 libtheora_la_LDFLAGS = \
   -version-info @TH_LIB_CURRENT@:@TH_LIB_REVISION@:@TH_LIB_AGE@ \
-  @THEORA_LDFLAGS@ @CAIRO_LIBS@ $(OGG_LIBS)
+  @THEORA_LDFLAGS@ @CAIRO_LIBS@ $(OGG_LIBS) \
+  -no-undefined
 
 all: all-am
 
