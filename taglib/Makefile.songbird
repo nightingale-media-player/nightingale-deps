@@ -91,7 +91,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
   CMAKE_MAKEFILE_TYPE := NMake Makefiles
 
   # Used by -rules; defaults to $(MAKE), BUT NOT FOR Win32 CMAKE!!
-  SUBMAKE_CMD = call-nmake.py
+  SUBMAKE_CMD = $(CURDIR)/../call-nmake.py
 else
   CMAKE_MAKEFILE_TYPE := Unix Makefiles
 endif
