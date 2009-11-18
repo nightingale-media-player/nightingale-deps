@@ -40,6 +40,13 @@ SPACE := $(EMPTY) $(EMPTY)
 
 ## vendor-autodefs.mk
 
+# This is a weird function that will merely echos a command and then calls it; it's
+# useful for bash shell loops that we don't want to echo the entire loop for, but 
+# we still want make-like behavior (print the command, then run it)
+define sh_make
+echo $1; $1
+endef
+
 # Initialize variables...
 
 SB_CONFIGURE_OPTS :=
@@ -231,8 +238,8 @@ ifeq (Linux,$(SB_VENDOR_ARCH))
    SB_VENDOR_TARGET_DEP_MODULES += glib
 endif
 
-# Turn on libtool, but only for linux, and only when we're regenerating the
-# (gstreamer, right now) makefiles.
+# Turn on libtool, but only for linux, and only when we're regenerating
+# makefiles.
 ifeq (linux-i686_regen-makefiles,$(SB_TARGET_ARCH)_$(MAKECMDGOALS))
    SB_VENDOR_TARGET_DEP_MODULES += libtool
 endif
