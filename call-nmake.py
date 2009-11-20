@@ -18,6 +18,8 @@ def main(argv):
    o = OptionParser()
    o.add_option('-C', '--chdir', dest='runningDir', default=os.getcwd(),
                 help="Directory to chdir into first; like gmake's -C")
+   o.add_option('-f', dest='makefile', default="Makefile",
+                help="Specifies filename as a makefile.")
 
    (options, args) = o.parse_args()
 
@@ -29,7 +31,7 @@ def main(argv):
       del os.environ['MAKEFLAGS']
 
    os.chdir(options.runningDir)
-   return subprocess.call((nmakeCmd,) + tuple(args))
+   return subprocess.call((nmakeCmd, "-f", options.makefile) + tuple(args))
 
 if __name__ == '__main__':
    sys.exit(main(sys.argv[1:]))
