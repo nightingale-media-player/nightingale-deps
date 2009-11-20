@@ -124,7 +124,7 @@ namespace TagLib {
         TagLib::ByteVector renderCovr(const ByteVector &name, Item &item);
 
         void updateParents(AtomList &path, long delta, int ignore = 0);
-        void updateOffsets(long delta, long offset);
+        void updateOffsets(long delta, unsigned long offset);
 
         void saveNew(TagLib::ByteVector &data);
         void saveExisting(TagLib::ByteVector &data, AtomList &path);
