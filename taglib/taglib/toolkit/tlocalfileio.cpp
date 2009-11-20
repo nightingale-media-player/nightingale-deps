@@ -459,9 +459,9 @@ bool LocalFileIO::closeTempFile( bool overwrite )
   }
   FileName tempName = d->tempFile->name();
   d->close();
+#ifdef _WIN32
   delete d->tempFile;
   d->tempFile = NULL;
-#ifdef _WIN32
   if ( !::MoveFileExW(tempName, d->name, MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING) )
   {
     debug( "Failed to rename file! " + String::number(GetLastError()) );
@@ -475,6 +475,8 @@ bool LocalFileIO::closeTempFile( bool overwrite )
     unlink(tempName);
     succeeded = false;
   }
+  delete d->tempFile;
+  d->tempFile = NULL;
 #endif
   d->open();
   return succeeded;
