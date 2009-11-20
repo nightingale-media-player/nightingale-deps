@@ -80,11 +80,26 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
       $(error Could not find QuickTime SDK: $(QUICKTIME_SDK_ROOT)) 
    endif
 
+   # from mozilla/config/rules.mk (the Java rules section)
+   # note that an extra slash was added between root-path and non-root-path to
+   # account for non-standard mount points in msys
+   # (C:/ vs C:/foo with missing trailing slash)
+   # Cygwin and MSYS have their own special path form, but /LIBPATH: expects
+   # them to be in the DOS form (i.e. e:/builds/...).  This function
+   # does the appropriate conversion on Windows, but is a noop on other systems.
+   # We use 'pwd -W' to get DOS form of the path.  However, since the given path
+   # could be a file or a non-existent path, we cannot call 'pwd -W' directly
+   # on the path.  Instead, we extract the root path (i.e. "c:/"), call 'pwd -W'
+   # on it, then merge with the rest of the path.
+   root-path = $(shell echo $(1) | sed -e "s|\(/[^/]*\)/\?\(.*\)|\1|")
+   non-root-path = $(shell echo $(1) | sed -e "s|\(/[^/]*\)/\?\(.*\)|\2|")
+   normalizepath = $(if $(filter /%,$(1)),$(shell cd $(call root-path,$(1)) && pwd -W)/$(call non-root-path,$(1)),$(1))
+
    ifeq (debug,$(SB_BUILD_TYPE))
       ifeq (1,$(SB_USE_MOZCRT))
          SB_CFLAGS += -MDd
-         SB_LDFLAGS += -L$(MOZSDK_DIR)/lib -NODEFAULTLIB:msvcrt \
-          -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt19d
+         SB_LDFLAGS += -LIBPATH:$(call normalizepath,$(MOZSDK_DIR))/lib \
+          -NODEFAULTLIB:msvcrt -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt19d
       else
          SB_CFLAGS += -MTd
       endif
@@ -93,8 +108,8 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
    ifeq (release,$(SB_BUILD_TYPE))
       ifeq (1,$(SB_USE_MOZCRT))
          SB_CFLAGS += -MD
-         SB_LDFLAGS += -L$(MOZSDK_DIR)/lib -NODEFAULTLIB:msvcrt \
-          -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt19
+         SB_LDFLAGS += -LIBPATH:$(call normalizepath,$(MOZSDK_DIR))/lib \
+          -NODEFAULTLIB:msvcrt -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt19
       else
          SB_CFLAGS += -MT
       endif
