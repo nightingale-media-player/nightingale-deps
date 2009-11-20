@@ -35,7 +35,7 @@ SB_VENDOR_TARGET_VERSION = 1.9.0.15
 
 SB_VENDOR_TARGET_DEP_MODULES := $(NULL)
 
-SB_XR_BRANCH ?= trunk
+SB_BRANCH ?= trunk
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
@@ -53,7 +53,7 @@ HAVE_XR_release_BUILD = test -d $(CURDIR)/mozilla/compiled/xulrunner-release
 HAVE_XR_debug_BUILD = test -d $(CURDIR)/mozilla/compiled/xulrunner-debug
 
 xr-all: xr-clean xr-build-debug xr-build-release xr-symbols xr-packaging
-ifdef XR_CLEAN_OBJDIRS
+ifdef SB_AUTOCLEAN_OBJDIRS
 	$(RM) -rf $(CURDIR)/mozilla/compiled
 else
 	echo "Define XP_CLEAN_OBJDIRS to remove the (relatively large) xulrunner object directories (assuming if you don't need them and want to recover some space."
@@ -92,13 +92,13 @@ xr-packaging-%:
       fi; \
    fi
 	@if $(HAVE_XR_$*_BUILD); then \
-      $(call sh_make,$(XR_PACKAGE_DEPS) $(SB_XR_PLATFORM)-$(SB_XR_ARCH) $(SB_XR_BRANCH) $*); \
+      $(call sh_make,$(XR_PACKAGE_DEPS) $(SB_XR_PLATFORM)-$(SB_XR_ARCH) $(SB_BRANCH) $*); \
       $(call sh_make,$(RM) -r $(SB_VENDOR_BINARIES_DIR)/mozilla/$*); \
       $(call sh_make,$(MKDIR) $(SB_VENDOR_BINARIES_DIR)/mozilla/$*); \
-      $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_XR_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/mozilla/$* $(SB_VENDOR_BINARIES_DIR)/mozilla/$*); \
+      $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/mozilla/$* $(SB_VENDOR_BINARIES_DIR)/mozilla/$*); \
       $(call sh_make,$(RM) -r $(SB_VENDOR_BINARIES_DIR)/xulrunner/$*); \
       $(call sh_make,$(MKDIR) $(SB_VENDOR_BINARIES_DIR)/xulrunner/$*); \
-      $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_XR_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/xulrunner/$* $(SB_VENDOR_BINARIES_DIR)/xulrunner/$*); \
+      $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/xulrunner/$* $(SB_VENDOR_BINARIES_DIR)/xulrunner/$*); \
    fi
 
 xr-build-%:
