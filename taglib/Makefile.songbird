@@ -46,13 +46,19 @@ endif
 SB_ZLIB_DIR := $(SB_VENDOR_BINARIES_DIR)/zlib/$(SB_BUILD_TYPE)
 
 ifeq (Msys,$(SB_VENDOR_ARCH))
-  CMAKE_C_FLAGS := -Zc:wchar_t- -Zi -EHsc
-  CMAKE_CXX_FLAGS := -Zc:wchar_t- -Zi -EHsc
+  # On Windows, we need to use the mozilla CRT because we need to link this
+  # into an XPCOM component; otherwise, we end up using a mix of static and
+  # dynamic CRTs and symbols end up missing.  This also means we need to
+  # match the MSVCP80 (C++ standard library) configuration too - and Mozilla
+  # builds with -D_STATIC_CPPLIB (statically linked C++ library).
+  SB_USE_MOZCRT = 1
+  CMAKE_C_FLAGS := -Zc:wchar_t- -Zi -EHsc -D_STATIC_CPPLIB
+  CMAKE_CXX_FLAGS := $(CMAKE_C_FLAGS)
 
-  CMAKE_C_FLAGS_DEBUG := $(CMAKE_C_FLAGS) -MTd
-  CMAKE_C_FLAGS_RELEASE := $(CMAKE_C_FLAGS) -MT
-  CMAKE_CXX_FLAGS_DEBUG := $(CMAKE_CXX_FLAGS) -MTd
-  CMAKE_CXX_FLAGS_RELEASE := $(CMAKE_CXX_FLAGS) -MT
+  CMAKE_C_FLAGS_DEBUG := $(CMAKE_C_FLAGS) -MDd
+  CMAKE_C_FLAGS_RELEASE := $(CMAKE_C_FLAGS) -MD
+  CMAKE_CXX_FLAGS_DEBUG := $(CMAKE_CXX_FLAGS) -MDd
+  CMAKE_CXX_FLAGS_RELEASE := $(CMAKE_CXX_FLAGS) -MD
 
   CMAKE_ZLIB_FLAGS := -DZLIB_INCLUDE_DIR:PATH="$(SB_ZLIB_DIR)/include" \
    -DZLIB_LIBRARY:FILEPATH="$(SB_ZLIB_DIR)/lib/zlib.lib"

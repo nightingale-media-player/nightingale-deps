@@ -18,16 +18,22 @@ SB_VENDOR_BUILD_DEPS ?= 0
 
 world: $(SB_VENDOR_WORLD)
 
-TIER1 = sb-gettext sb-glib sb-sqlite
-TIER2 = sb-libogg sb-libvorbis sb-libtheora sb-flac sb-taglib
-TIER3 = sb-gstreamer
-TIER4 = sb-gst-plugins-good sb-gst-plugins-bad sb-gst-plugins-ugly
+TIER1 := sb-gettext sb-glib sb-sqlite
+TIER2 := sb-libogg sb-libvorbis sb-libtheora sb-flac sb-taglib
+TIER3 := sb-gstreamer
+TIER4 := sb-gst-plugins-good sb-gst-plugins-bad sb-gst-plugins-ugly
 
 # All borked; need to separate out platform detection stuff...
 ifeq (macosx,$(SB_PLATFORM))
   GLIB_DEP = sb-glib
 else
   GLIB_DEP = $(NULL)
+endif
+ifeq (windows,$(SB_PLATFORM))
+  ZLIB_DEP = sb-zlib
+  TIER1 += sb-zlib
+else
+  ZLIB_DEP = $(NULL)
 endif
 
 GLIB_DEP = $(error Set your GLIB_DEP)
@@ -50,7 +56,7 @@ ifneq (0,$(SB_VENDOR_BUILD_DEPS))
    sb-gst-plugins-bad: sb-gst-plugins-base
    sb-gst-plugins-ugly: sb-gst-plugins-base
 
-   sb-taglib: $(NULL)
+   sb-taglib: $(ZLIB_DEP)
 endif
 
 SB_VENDOR_PACKAGE_DIR = $(CURDIR)/$(subst sb-,$(NULL),$@)
