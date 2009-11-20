@@ -68,16 +68,18 @@ ifdef SB_USE_MOZCRT
 endif
 
 ifeq (Msys,$(SB_VENDOR_ARCH))
-   ifeq (,$(wildcard $(WINDOWS_SDK_ROOT)))
-      $(error Could not find Windows SDK: $(WINDOWS_SDK_ROOT)) 
-   endif
+   ifneq (,$(DISABLE_SDK_CHECKS))
+      ifeq (,$(wildcard $(WINDOWS_SDK_ROOT)))
+         $(error Could not find Windows SDK: $(WINDOWS_SDK_ROOT)) 
+      endif
 
-   ifeq (,$(wildcard $(DIRECTX_SDK_ROOT)))
-      $(error Could not find DirectX SDK: $(DIRECTX_SDK_ROOT)) 
-   endif
+      ifeq (,$(wildcard $(DIRECTX_SDK_ROOT)))
+         $(error Could not find DirectX SDK: $(DIRECTX_SDK_ROOT)) 
+      endif
 
-   ifeq (,$(wildcard $(QUICKTIME_SDK_ROOT)))
-      $(error Could not find QuickTime SDK: $(QUICKTIME_SDK_ROOT)) 
+      ifeq (,$(wildcard $(QUICKTIME_SDK_ROOT)))
+         $(error Could not find QuickTime SDK: $(QUICKTIME_SDK_ROOT)) 
+      endif
    endif
 
    # from mozilla/config/rules.mk (the Java rules section)
