@@ -66,5 +66,6 @@ export FINAL_RELEASE_INSTALL_DIR = $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
 # export some other things Makefile.songbird.proxy uses
 export CP
 export MKDIR
+export SB_VENDOR_CHECKOUT
 
 include $(CURDIR)/../songbird-vendor-rules.mk

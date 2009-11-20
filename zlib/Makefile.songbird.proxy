@@ -31,7 +31,7 @@
 ################################################################################
 
 zlib.lib zlib.h zconf.h:
-	$(SB_VENDOR_BUILD_ROOT) call-nmake.py -f win32/Makefile.msc $(MAKEOVERRIDES) $@
+	$(SB_VENDOR_CHECKOUT)/call-nmake.py -f win32/Makefile.msc $(MAKEOVERRIDES) $@
 
 install:: zlib.lib
 	$(MKDIR) $(FINAL_DEBUG_INSTALL_DIR)/lib/
