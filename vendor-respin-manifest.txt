@@ -1,4 +1,4 @@
-linux-i686: taglib
-linux-x86_64: taglib
-macosx-i686: taglib
-windows-i686-msvc8: taglib
+linux-i686: gst-plugins-bad 
+linux-x86_64: gst-plugins-bad
+macosx-i686: gst-plugins-bad
+windows-i686-msvc8: gst-plugins-bad
