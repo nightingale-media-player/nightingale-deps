@@ -872,7 +872,9 @@ String ID3v2::Tag::getNameForRole(const TagLib::ByteVector &frame, const String 
     }
     // don't run over the end, but do skip over the names
     else if (it != fields.end()) {
-        ++it;
+      if (++it == fields.end()) {
+        break;
+      }
     }
   }
 
