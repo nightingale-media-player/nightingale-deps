@@ -3477,7 +3477,7 @@ nsIntRect nsIFrame::GetScreenRectExternal() const
 
 nsIntRect nsIFrame::GetScreenRect() const
 {
-  nsRect r = GetScreenRectInAppUnits().ScaleRoundOutInverse(PresContext()->AppUnitsPerDevPixel());
+  nsRect r = GetScreenRectInAppUnits().ScaleRoundOutInverse(PresContext()->AppUnitsPerCSSPixel());
   // nsRect and nsIntRect are not necessarily the same
   return nsIntRect(r.x, r.y, r.width, r.height);
 }
