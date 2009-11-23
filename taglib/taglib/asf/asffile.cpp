@@ -368,6 +368,12 @@ ASF::File::HeaderExtensionObject::render(ASF::File *file)
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
+// File-less constructor variant to allow configuration of object properties before reading.
+ASF::File::File()
+{
+  d = new FilePrivate;
+}
+
 ASF::File::File(FileName file, bool readProperties, Properties::ReadStyle propertiesStyle) 
   : TagLib::File(file)
 {

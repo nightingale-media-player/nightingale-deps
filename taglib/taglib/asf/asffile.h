@@ -46,6 +46,11 @@ namespace TagLib {
     class TAGLIB_EXPORT File : public TagLib::File
     {
     public:
+      /*!
+       * Contructs a ASF file object without reading a file.  Allows object
+       * fields to be set up before reading.
+       */
+      File();
 
       /*!
        * Contructs an ASF file from \a file.  If \a readProperties is true the
