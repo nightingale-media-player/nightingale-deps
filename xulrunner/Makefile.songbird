@@ -53,10 +53,10 @@ HAVE_XR_release_BUILD = test -d $(CURDIR)/mozilla/compiled/xulrunner-release
 HAVE_XR_debug_BUILD = test -d $(CURDIR)/mozilla/compiled/xulrunner-debug
 
 xr-all: xr-clean xr-build-debug xr-build-release xr-symbols xr-packaging
-ifdef SB_AUTOCLEAN_OBJDIRS
+ifdef SB_VENDOR_AUTOCLEAN_OBJDIRS
 	$(RM) -rf $(CURDIR)/mozilla/compiled
 else
-	echo "Define XP_CLEAN_OBJDIRS to remove the (relatively large) xulrunner object directories (assuming if you don't need them and want to recover some space."
+	echo "Define SB_VENDOR_AUTOCLEAN_OBJDIRS to remove the (relatively large) xulrunner object directories (assuming if you don't need them and want to recover some space.)" 1>&2
 endif
 
 xr-symbols:

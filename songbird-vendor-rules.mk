@@ -384,7 +384,13 @@ else
           $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)) || true
 endif
 
-build: setup_environment clean_build_dir setup_build module_setup_build
+ifdef SB_VENDOR_AUTOCLEAN_OBJDIRS
+   CLEAN_BUILD_DIR_TGT = clean_build_dir
+else
+   CLEAN_BUILD_DIR_TGT =
+endif
+
+build: setup_environment $(CLEAN_BUILD_DIR_TGT) setup_build module_setup_build
 	# We do this RUN_CONFIGURE insanity to support cmake
 ifeq (1,$(SB_RUN_CONFIGURE))
 	cd $(SB_VENDOR_BUILD_DIR) && \
