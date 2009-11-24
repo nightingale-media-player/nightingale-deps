@@ -23,11 +23,6 @@ AC_CANONICAL_TARGET
 # Don't require all the GNU mandated files
 AM_INIT_AUTOMAKE([-Wall -Werror ansi2knr no-dist foreign])
 
-# Make --enable-silent-rules the default.
-# To get verbose build output you may configure
-# with --disable-silent-rules or use "make V=1".
-AM_SILENT_RULES([yes])
-
 # This is required when using the de-ANSI-fication feature.
 AM_C_PROTOTYPES
 
