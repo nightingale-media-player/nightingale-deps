@@ -147,6 +147,8 @@ endif
   export VORBIS_LIBS = $(SB_VORBIS_LIBS)
   export FLAC_CFLAGS = $(SB_FLAC_CFLAGS)
   export FLAC_LIBS = $(SB_FLAC_LIBS)
+  export JPEG_CFLAGS = $(SB_JPEG_CFLAGS)
+  export JPEG_LIBS = $(SB_JPEG_LIBS)
 
   ifeq (Darwin,$(SB_VENDOR_ARCH))
     export MACOSX_DEPLOYMENT_TARGET=10.4
@@ -198,7 +200,7 @@ ifeq (linux-i686,$(SB_TARGET_ARCH))
 	   @echo 
 	   @$(SVN) stat | $(GREP) ^? | $(AWK) '{print $$2}' | $(GREP) -v ^common | $(GREP) -v ^m4 | $(GREP) -v autom4te.cache | $(GREP) -v autoregen.sh | $(GREP) -v stamp-h.in
    else
-	   @echo This package does not require makfiles to be regenerated. Doing nothing.
+	   @echo This package does not require makefiles to be regenerated. Doing nothing.
    endif
 else
 	@echo The regen-makefiles target can only be run on linux-i686.
@@ -450,6 +452,8 @@ endif
 	@echo OGG_LIBS = $(OGG_LIBS)
 	@echo FLAC_CFLAGS = $(FLAC_CFLAGS)
 	@echo FLAC_LIBS = $(FLAC_LIBS)
+	@echo JPEG_CFLAGS = $(JPEG_CFLAGS)
+	@echo JPEG_LIBS = $(JPEG_LIBS)
 	@echo
 	@echo Platform- and Module- specific settings
 	@echo ---------------------------------------
