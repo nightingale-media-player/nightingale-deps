@@ -859,10 +859,8 @@ String ID3v2::Tag::getNameForRole(const TagLib::ByteVector &frame, const String 
   TextIdentificationFrame *f = dynamic_cast<TextIdentificationFrame *>(
     d->frameListMap[frame].front());
 
-  // loop increments twice to skip involved-person names and only check roles.
-  // you know, just in case someone named "Producer" is your recording tech.
   StringList fields = f->fieldList();
-  for(StringList::Iterator it = fields.begin(); it != fields.end(); it++) {
+  for(StringList::Iterator it = fields.begin(); it != fields.end(); ++it) {
     if((*it).upper() == role.upper()) {
       // be sure there's actually a value at the end.
       if (++it != fields.end()) {
@@ -870,11 +868,9 @@ String ID3v2::Tag::getNameForRole(const TagLib::ByteVector &frame, const String 
       }
       break;
     }
-    // don't run over the end, but do skip over the names
-    else if (it != fields.end()) {
-      if (++it == fields.end()) {
-        break;
-      }
+    // If we aren't at the end, skip the next field
+    else if (++it == fields.end()) {
+      break;
     }
   }
 
@@ -899,16 +895,18 @@ void ID3v2::Tag::setNameForRole(const TagLib::ByteVector &frame, const String &r
       d->frameListMap[frame].front());
 
     StringList fields = f->fieldList();
-    // loop increments twice to skip involved-person names and only check roles.
-    // you know, just in case someone named "Producer" is your recording tech.
-    for(StringList::Iterator it = fields.begin(); it != fields.end(); ++it, ++it) {
-      if((*it).upper() == role) {
+    for(StringList::Iterator it = fields.begin(); it != fields.end(); ++it) {
+      if((*it).upper() == role.upper()) {
         // Erase this field and the next one.
         it = fields.erase(it);
         if (it != fields.end()) {
           it = fields.erase(it);
         }
         return;
+      }
+      // If we aren't at the end, skip the next field
+      else if (++it == fields.end()) {
+        break;
       }
     }
 
@@ -940,12 +938,21 @@ void ID3v2::Tag::setNameForRole(const TagLib::ByteVector &frame, const String &r
   StringList fields = f->fieldList();
   // loop increments twice to skip involved-person names and only check roles.
   // you know, just in case someone named "Producer" is your recording tech.
-  for(StringList::Iterator it = fields.begin(); it != fields.end(); ++it, ++it) {
+  for(StringList::Iterator it = fields.begin(); it != fields.end(); ++it) {
     if((*it).upper() == role.upper()) {
-      ++it; // the next field will be the producer
+      ++it; // the next field should contain the producer
+      if (it == fields.end()) {
+        // This shouldn't happen, but means there's a dangling "producer"
+        // with no value at the end.
+        fields.append(s);
+      }
       *it = s;
       f->setText(fields);
       return;
+    }
+    // If we aren't at the end, skip the next field
+    else if (++it == fields.end()) {
+      break;
     }
   }
 
