@@ -103,6 +103,10 @@ xr-packaging-%:
 
 xr-build-%:
 	$(MKDIR) $(SB_VENDOR_BUILD_DIR)
+ifeq (macosx-i686,$(SB_XR_PLATFORM)-$(SB_XR_ARCH))
+	@echo Fixing up pkg-config .pc files in glib and libIDL...
+	$(FIND) -L $(SB_VENDOR_BINARIES_DIR)/glib $(SB_VENDOR_BINARIES_DIR)/libIDL -type f -name '*.pc' -exec $(SB_VENDOR_CHECKOUT)/fix-pkg-config-paths.pl -p $(SB_XR_PLATFORM)-$(SB_XR_ARCH) {} \;
+endif
 	@echo Setting up xulrunner $*-mode build...
 	$(CP) $(CURDIR)/mozconfigs/$(MOZCONFIG) $(CURDIR)/mozilla/.mozconfig
 	$(RM) -r $(CURDIR)/mozilla/compiled/xulrunner-$*
@@ -113,3 +117,10 @@ xr-build-%:
 
 include $(CURDIR)/../songbird-vendor-rules.mk
 
+# We do export these because we normally do this in the setup_environment
+# target, but we don't call setup_environment for XR builds; also, we don't
+# want to export everything (the CC variables, etc.) for XR builds, so
+# we're very narrow in our exports here.
+export PKG_CONFIG_PATH = $(SB_PKG_CONFIG_PATH)
+export PATH = $(SB_PATH)
+export DYLD_LIBRARY_PATH = $(SB_DYLD_LIBRARY_PATH)
