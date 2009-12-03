@@ -1,4 +1,4 @@
-linux-i686: libjpeg
-linux-x86_64: libjpeg
-macosx-i686: libjpeg
+linux-i686:  libjpeg
+linux-x86_64:  libjpeg
+macosx-i686:  libjpeg
 windows-i686-msvc8: libjpeg
