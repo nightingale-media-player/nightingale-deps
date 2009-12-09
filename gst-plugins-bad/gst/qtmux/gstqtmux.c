@@ -1610,6 +1610,22 @@ gst_qt_mux_audio_sink_set_caps (GstPad * pad, GstCaps * caps)
     entry.fourcc = FOURCC_ulaw;
     entry.samples_per_packet = 1023;
     entry.bytes_per_sample = 2;
+  } else if (strcmp (mimetype, "audio/x-adpcm") == 0) {
+    gint blocksize;
+    if (!gst_structure_get_int (structure, "block_align", &blocksize)) {
+      GST_DEBUG_OBJECT (qtmux, "broken caps, block_align missing");
+      goto refuse_caps;
+    }
+    /* Currently only supports WAV-style IMA ADPCM, for which the codec id is
+       0x11 */
+    entry.fourcc = MS_WAVE_FOURCC (0x11);
+    /* 4 byte header per channel (including one sample). 2 samples per byte
+       remaining. Simplifying gives the following (samples per block per
+       channel) */
+    entry.samples_per_packet = 2 * blocksize / channels - 7;
+    entry.bytes_per_sample = 2;
+
+    ext_atom = build_ima_adpcm_extension (channels, rate, blocksize);
   }
 
   if (!entry.fourcc)

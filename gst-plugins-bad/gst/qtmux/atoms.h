@@ -646,7 +646,8 @@ AtomInfo *   build_jp2h_extension        (AtomTRAK * trak, gint width, gint heig
                                           guint32 fourcc);
 AtomInfo *   build_amr_extension         ();
 AtomInfo *   build_h263_extension        ();
-
+AtomInfo *   build_ima_adpcm_extension   (gint channels, gint rate,
+                                          gint blocksize);
 
 /*
  * Meta tags functions
