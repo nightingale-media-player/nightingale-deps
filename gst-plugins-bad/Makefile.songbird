@@ -132,7 +132,9 @@ HAVE_EXTRAS ?= 1
 
 SB_ASFMUX_SRC_DIR = $(SB_VENDOR_BUILD_DIR)/ext/asfmux
 SB_ASFMUX_CHECKOUT_DIR = $(CURDIR)/sb-asfmux-checkout
-SB_ASFMUX_SRC_SVNURL = https://svn.songbirdnest.com/client/$(if $(SB_BRANCH),branches/$(SB_BRANCH),trunk)/extras/gst-plugins/asfmux
+# To support svn:// on build machines and https for everyone else (right now)
+SB_SVN_URL_SCHEMA ?= https
+SB_ASFMUX_SRC_SVNURL = $(SB_SVN_URL_SCHEMA)://svn.songbirdnest.com/client/$(if $(SB_BRANCH),branches/$(SB_BRANCH),trunk)/extras/gst-plugins/asfmux
 
 sb-asfmux-plugin-src:
 ifeq (1,$(HAVE_EXTRAS))
