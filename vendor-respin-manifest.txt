@@ -1,4 +1,4 @@
-linux-i686:  gst-plugins-good
-linux-x86_64:  gst-plugins-good
-macosx-i686:  gst-plugins-good
-windows-i686-msvc8:  gst-plugins-good
+linux-i686: gst-plugins-bad
+linux-x86_64: gst-plugins-bad
+macosx-i686: gst-plugins-bad
+windows-i686-msvc8: gst-plugins-bad
