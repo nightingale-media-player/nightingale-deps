@@ -152,10 +152,10 @@ GetLine(FILE *file, const char * prompt)
         /*
          * We set it to zero to avoid complaining about inappropriate ioctl
          * for device in the case of EOF. Looks like errno == 251 if line is
-         * finished with EOF and errno == 25 if there is nothing left
-         * to read.
+         * finished with EOF and errno == 25 (EINVAL on mac) if there is
+         * nothing left to read.
          */
-        if (errno == 251 || errno == 25)
+        if (errno == 251 || errno == 25 || errno == EINVAL)
             errno = 0;
         if (!linep)
             return NULL;
@@ -267,6 +267,7 @@ Process(JSContext *cx, JSObject *obj, char *filename, JSBool forceTTY)
     char *buffer;
     int lineno;
     int startline;
+    size_t size;
     FILE *file;
 
     if (forceTTY || !filename || strcmp(filename, "-") == 0) {
@@ -316,8 +317,9 @@ Process(JSContext *cx, JSObject *obj, char *filename, JSBool forceTTY)
     lineno = 1;
     hitEOF = JS_FALSE;
     buffer = NULL;
+    size = 0;
     do {
-        size_t size, len;
+        size_t len;
 
         /*
          * Accumulate lines until we get a 'compilable unit' - one that either
@@ -326,6 +328,7 @@ Process(JSContext *cx, JSObject *obj, char *filename, JSBool forceTTY)
          * coincides with the end of a line.
          */
         startline = lineno;
+        len = 0;
         do {
             char *line;
 

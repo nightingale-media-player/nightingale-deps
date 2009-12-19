@@ -41,6 +41,11 @@
 
 #import <AppKit/AppKit.h>
 
+#ifdef MOZ_LOGGING
+#define FORCE_PR_LOG /* Allow logging in the release build */
+#endif /* MOZ_LOGGING */
+#include "prlog.h"
+
 #include "gfxPlatformMac.h"
 #include "gfxQuartzFontCache.h"
 #include "gfxAtsuiFonts.h"
@@ -52,6 +57,12 @@
 @interface NSFont (MozillaCategory)
 - (ATSUFontID)_atsFontID;
 @end
+
+#ifdef PR_LOGGING
+static PRLogModuleInfo *gFontInfoLog = PR_NewLogModule("fontInfoLog");
+#endif /* PR_LOGGING */
+
+#define LOG(args) PR_LOG(gFontInfoLog, PR_LOG_DEBUG, args)
 
 // font info loader constants
 //////////////////////////////////////////////////////////////
@@ -115,8 +126,6 @@ static NSString* GetNSStringForString(const nsAString& aSrc)
     return [NSString stringWithCharacters:aSrc.BeginReading()
                      length:aSrc.Length()];
 }
-
-static PRLogModuleInfo *gFontInfoLog = PR_NewLogModule("fontInfoLog");
 
 void
 gfxQuartzFontCache::GenerateFontListKey(const nsAString& aKeyName, nsAString& aResult)
@@ -678,7 +687,14 @@ MacOSFamilyEntry::ReadOtherFamilyNames(AddOtherFamilyNameFunctor& aOtherFamilyFu
     NSString *familyName = GetNSStringForString(mName);
 
     // read in other family names for the first face in the list
-    MacOSFontEntry *fe = mAvailableFonts[0];
+    MacOSFontEntry *fe;
+    
+    // bug 514114 - sanity-check the font entry before use
+    if (mAvailableFonts.Length() == 0 || !(fe = mAvailableFonts[0])) {
+      LOG(("(fontinit-otherfamily) family with no names (%s)\n", 
+            NS_ConvertUTF16toUTF8(mName).get()));
+      return;
+    }
 
     mHasOtherFamilyNames = ReadOtherFamilyNamesForFace(aOtherFamilyFunctor, this, familyName, fe->GetFontID());
     
@@ -729,7 +745,14 @@ void SingleFaceFamily::ReadOtherFamilyNames(AddOtherFamilyNameFunctor& aOtherFam
     NSString *familyName = GetNSStringForString(mName);
 
     // read in other family names for the first face in the list
-    MacOSFontEntry *fe = mAvailableFonts[0];
+    MacOSFontEntry *fe;
+
+    // bug 514114 - sanity-check the font entry before use
+    if (mAvailableFonts.Length() == 0 || !(fe = mAvailableFonts[0])) {
+      LOG(("(fontinit-otherfamily) family with no names (%s)\n", 
+           NS_ConvertUTF16toUTF8(mName).get()));
+      return;
+    }
 
     // read in other names, using the full font names as the family names
     mHasOtherFamilyNames = ReadOtherFamilyNamesForFace(aOtherFamilyFunctor, this, familyName, fe->GetFontID(), true);    
@@ -785,15 +808,22 @@ gfxQuartzFontCache::InitFontList()
         // make a nsString
         GetStringForNSString(availableFamily, availableFamilyName);
         
-        // create a family entry
-        MacOSFamilyEntry *familyEntry = new MacOSFamilyEntry(availableFamilyName);
-        if (!familyEntry) break;
-        
         // create a font entry for each face
         NSArray *fontfaces = [fontManager availableMembersOfFontFamily:availableFamily];  // returns an array of [psname, style name, weight, traits] elements, goofy api
         int faceCount = [fontfaces count];
         int faceIndex;
-
+        
+        if (faceCount == 0) {
+            NS_WARNING("font family with no faces!");
+            LOG(("(fontinit) family with no faces (%s)\n", 
+                 NS_ConvertUTF16toUTF8(availableFamilyName).get()));
+            continue;
+        }
+        
+        // create a family entry
+        MacOSFamilyEntry *familyEntry = new MacOSFamilyEntry(availableFamilyName);
+        if (!familyEntry) break;
+        
         for (faceIndex = 0; faceIndex < faceCount; faceIndex++) {
             NSArray *face = [fontfaces objectAtIndex:faceIndex];
             NSString *psname = [face objectAtIndex:INDEX_FONT_POSTSCRIPT_NAME];
@@ -820,9 +850,15 @@ gfxQuartzFontCache::InitFontList()
             familyEntry->AddFontEntry(fontEntry);
         }
         
-        // add the family entry to the hash table
-        ToLowerCase(availableFamilyName);
-        mFontFamilies.Put(availableFamilyName, familyEntry);
+        if (familyEntry->mAvailableFonts.Length() != 0) {
+            // add the family entry to the hash table
+            ToLowerCase(availableFamilyName);
+            mFontFamilies.Put(availableFamilyName, familyEntry);
+        } else {
+            // weird family with no faces
+            NS_WARNING("font family with no faces!");
+            delete familyEntry;
+        }
     }
     
     InitSingleFaceList();

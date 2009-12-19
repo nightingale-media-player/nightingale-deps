@@ -68,7 +68,7 @@ class nsIDocumentCharsetInfo;
 class nsICacheEntryDescriptor;
 
 class nsHTMLDocument : public nsDocument,
-                       public nsIHTMLDocument,
+                       public nsIHTMLDocument_1_9_1_BRANCH,
                        public nsIDOMHTMLDocument,
                        public nsIDOMNSHTMLDocument
 {
@@ -192,6 +192,10 @@ public:
   PRBool IsXHTML()
   {
     return mDefaultNamespaceID == kNameSpaceID_XHTML;
+  }
+  virtual void SetDocWriteDisabled(PRBool aDisabled)
+  {
+    mDisableDocWrite = aDisabled;
   }
 
 #ifdef DEBUG
@@ -343,6 +347,8 @@ protected:
   PRPackedBool mIsFrameset;
 
   PRPackedBool mTooDeepWriteRecursion;
+
+  PRPackedBool mDisableDocWrite;
 
   PRBool IdTableIsLive() const {
     // live if we've had over 63 misses

@@ -284,8 +284,7 @@ NS_IMPL_RELEASE(nsTreeSelection)
 
 NS_IMETHODIMP nsTreeSelection::GetTree(nsITreeBoxObject * *aTree)
 {
-  NS_IF_ADDREF(mTree);
-  *aTree = mTree;
+  NS_IF_ADDREF(*aTree = mTree);
   return NS_OK;
 }
 
@@ -295,7 +294,10 @@ NS_IMETHODIMP nsTreeSelection::SetTree(nsITreeBoxObject * aTree)
     mSelectTimer->Cancel();
     mSelectTimer = nsnull;
   }
-  mTree = aTree; // WEAK
+
+  // Make sure aTree really implements nsITreeBoxObject!
+  mTree = do_QueryInterface(aTree);
+  NS_ENSURE_STATE(mTree || !aTree);
   return NS_OK;
 }
 
@@ -305,6 +307,7 @@ NS_IMETHODIMP nsTreeSelection::GetSingle(PRBool* aSingle)
     return NS_ERROR_NULL_POINTER;
 
   nsCOMPtr<nsIBoxObject> boxObject = do_QueryInterface(mTree);
+  NS_ENSURE_STATE(boxObject);
 
   nsCOMPtr<nsIDOMElement> element;
   boxObject->GetElement(getter_AddRefs(element));

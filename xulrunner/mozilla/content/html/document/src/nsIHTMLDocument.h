@@ -194,4 +194,20 @@ public:
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIHTMLDocument, NS_IHTMLDOCUMENT_IID)
 
+// 498ec6d4-a724-4779-9ede-9c71923c2da6
+#define NS_IHTMLDOCUMENT_1_9_1_BRANCH_IID \
+{ 0x498ec6d4, 0xa724, 0x4779, \
+  { 0x9e, 0xde, 0x9c, 0x71, 0x92, 0x3c, 0x2d, 0xa6 } }
+
+class nsIHTMLDocument_1_9_1_BRANCH : public nsIHTMLDocument
+{
+public:
+  NS_DECLARE_STATIC_IID_ACCESSOR(NS_IHTMLDOCUMENT_1_9_1_BRANCH_IID)
+
+  virtual void SetDocWriteDisabled(PRBool aDisabled) = 0;
+};
+
+NS_DEFINE_STATIC_IID_ACCESSOR(nsIHTMLDocument_1_9_1_BRANCH,
+                              NS_IHTMLDOCUMENT_1_9_1_BRANCH_IID)
+
 #endif /* nsIHTMLDocument_h___ */

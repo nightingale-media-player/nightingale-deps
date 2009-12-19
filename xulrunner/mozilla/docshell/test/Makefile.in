@@ -70,6 +70,9 @@ _TEST_FILES = \
 		test_bug402210.html \
 		test_bug475636.html \
 		file_bug475636.sjs \
+ 		test_bug529119-1.html \
+ 		test_bug529119-2.html \
+ 		bug529119-window.html \
 		$(NULL)
 
 libs:: $(_TEST_FILES)

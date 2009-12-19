@@ -8340,7 +8340,9 @@ nsCSSFrameConstructor::FindFrameForContentSibling(nsIContent* aContent,
                                                   PRBool aPrevSibling)
 {
   nsIFrame* sibling = mPresShell->GetPrimaryFrameFor(aContent);
-  if (!sibling) {
+  if (!sibling || sibling->GetContent() != aContent) {
+    // XXX the GetContent() != aContent check is needed due to bug 135040.
+    // Remove it once that's fixed.
     return nsnull;
   }
 
@@ -9121,7 +9123,16 @@ nsCSSFrameConstructor::ContentInserted(nsIContent*            aContainer,
       // Get the correct parentFrame and prevSibling - if a
       // letter-frame is present, use its parent.
       if (parentFrame->GetType() == nsGkAtoms::letterFrame) {
-        parentFrame = parentFrame->GetParent();
+        // If parentFrame is out of flow, then we actually want the parent of
+        // the placeholder frame.
+        if (parentFrame->GetStateBits() & NS_FRAME_OUT_OF_FLOW) {
+          nsPlaceholderFrame* placeholderFrame =
+            state.mFrameManager->GetPlaceholderFrameFor(parentFrame);
+          NS_ASSERTION(placeholderFrame, "No placeholder for out-of-flow?");
+          parentFrame = placeholderFrame->GetParent();
+        } else {
+          parentFrame = parentFrame->GetParent();
+        }
         container = parentFrame->GetContent();
       }
 

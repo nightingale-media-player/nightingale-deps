@@ -1065,7 +1065,7 @@ nsresult nsGIFDecoder2::GifWrite(const PRUint8 *buf, PRUint32 len)
       // Mask to limit the color values within the colormap
       mColorMask = 0xFF >> (8 - realDepth);
       BeginImageFrame(realDepth);
-      if (!mImageData) {
+      if (!mImageData || !mImageFrame) {
         mGIFStruct.state = gif_error;
         break;
       }

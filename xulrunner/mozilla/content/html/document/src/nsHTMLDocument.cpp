@@ -458,10 +458,11 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLDocument, nsDocument)
 
 // QueryInterface implementation for nsHTMLDocument
 NS_INTERFACE_TABLE_HEAD_CYCLE_COLLECTION_INHERITED(nsHTMLDocument)
-  NS_INTERFACE_TABLE_INHERITED3(nsHTMLDocument,
+  NS_INTERFACE_TABLE_INHERITED4(nsHTMLDocument,
                                 nsIHTMLDocument,
                                 nsIDOMHTMLDocument,
-                                nsIDOMNSHTMLDocument)
+                                nsIDOMNSHTMLDocument,
+                                nsIHTMLDocument_1_9_1_BRANCH)
   NS_INTERFACE_TABLE_TO_MAP_SEGUE
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLDocument)
 NS_INTERFACE_MAP_END_INHERITING(nsDocument)
@@ -2081,7 +2082,7 @@ nsHTMLDocument::SetCookie(const nsAString& aCookie)
 nsresult
 nsHTMLDocument::OpenCommon(const nsACString& aContentType, PRBool aReplace)
 {
-  if (IsXHTML()) {
+  if (IsXHTML() || mDisableDocWrite) {
     // No calling document.open() on XHTML
 
     return NS_ERROR_DOM_NOT_SUPPORTED_ERR;
@@ -2460,7 +2461,7 @@ nsHTMLDocument::WriteCommon(const nsAString& aText,
     (mWriteLevel > NS_MAX_DOCUMENT_WRITE_DEPTH || mTooDeepWriteRecursion);
   NS_ENSURE_STATE(!mTooDeepWriteRecursion);
 
-  if (IsXHTML()) {
+  if (IsXHTML() || mDisableDocWrite) {
     // No calling document.write*() on XHTML!
 
     return NS_ERROR_DOM_NOT_SUPPORTED_ERR;

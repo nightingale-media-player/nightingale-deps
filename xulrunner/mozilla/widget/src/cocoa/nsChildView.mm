@@ -2731,7 +2731,18 @@ NSEvent* gLastDragEvent = nil;
   paintEvent.region = rgn;
 
   nsAutoRetainCocoaObject kungFuDeathGrip(self);
+#ifdef MOZ_MACBROWSER
+  PRBool painted = mGeckoChild->DispatchWindowEvent(paintEvent);
+  if (!painted && [self isOpaque]) {
+    // Gecko refused to draw, but we've claimed to be opaque, so we have to
+    // draw something--fill with white.
+    CGContextSetRGBFillColor(cgContext, 1, 1, 1, 1);
+    CGContextFillRect(cgContext, CGRectMake(aRect.origin.x, aRect.origin.y,
+                                            aRect.size.width, aRect.size.height));
+  }
+#else
   mGeckoChild->DispatchWindowEvent(paintEvent);
+#endif
   if (!mGeckoChild)
     return;
 

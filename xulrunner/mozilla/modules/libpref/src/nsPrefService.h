@@ -21,6 +21,7 @@
  *
  * Contributor(s):
  *   Brian Nesse <bnesse@netscape.com>
+ *   Mats Palmgren <matspal@gmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -79,11 +80,9 @@ protected:
 
 private:
   nsCOMPtr<nsIPrefBranch2> mRootBranch;
-  nsCOMPtr<nsIFile>       mCurrentFile;
-  PRPackedBool            mDontWriteUserPrefs;
+  nsCOMPtr<nsIFile>        mCurrentFile;
 #if MOZ_PROFILESHARING
   nsCOMPtr<nsIFile>       mCurrentSharedFile;
-  PRPackedBool            mDontWriteSharedUserPrefs;
 #endif
 };
 
