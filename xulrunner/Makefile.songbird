@@ -33,7 +33,9 @@
 SB_VENDOR_TARGET = xulrunner
 SB_VENDOR_TARGET_VERSION = 1.9.0.16
 
-SB_VENDOR_TARGET_DEP_MODULES := $(NULL)
+SB_VENDOR_TARGET_DEP_MODULES := glib \
+                                libIDL \
+                                $(NULL)
 
 SB_BRANCH ?= trunk
 

@@ -462,6 +462,19 @@ ifneq (,$(call enable-sb-lib, glib))
 endif
 
 #
+# libIDL
+#
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+   ifneq (,$(call enable-sb-lib, libIDL))
+      $(info Enabling Songbird vendor lib: libIDL)
+      SB_LIBIDL_DIR := $(call find-dep-dir, libIDL)
+      SB_PATH += $(SB_LIBIDL_DIR)/bin
+      SB_PKG_CONFIG_PATH += $(SB_LIBIDL_DIR)/lib/pkgconfig
+      SB_DYLD_LIBRARY_PATH += $(SB_LIBIDL_DIR)/lib
+   endif
+endif
+
+#
 # gstreamer
 #
 ifneq (,$(call enable-sb-lib, gstreamer))
