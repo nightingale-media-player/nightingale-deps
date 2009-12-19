@@ -101,7 +101,7 @@ xr-packaging-%:
       $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/xulrunner/$* $(SB_VENDOR_BINARIES_DIR)/xulrunner/$*); \
    fi
 
-xr-build-%:
+xr-build-%: setup_environment
 	$(MKDIR) $(SB_VENDOR_BUILD_DIR)
 ifeq (macosx-i686,$(SB_XR_PLATFORM)-$(SB_XR_ARCH))
 	@echo Fixing up pkg-config .pc files in glib and libIDL...
@@ -117,10 +117,10 @@ endif
 
 include $(CURDIR)/../songbird-vendor-rules.mk
 
-# We do export these because we normally do this in the setup_environment
-# target, but we don't call setup_environment for XR builds; also, we don't
-# want to export everything (the CC variables, etc.) for XR builds, so
-# we're very narrow in our exports here.
+# Because we use different target names for XR, we don't trip the standard
+# export of variables; but that's ok, because , we don't want to export
+# everything (the CC variables, etc.) for XR builds, so we're very narrow
+# in our exports here, and we do it all manually.
 export PKG_CONFIG_PATH = $(SB_PKG_CONFIG_PATH)
 export PATH = $(SB_PATH)
 export DYLD_LIBRARY_PATH = $(SB_DYLD_LIBRARY_PATH)
