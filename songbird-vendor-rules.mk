@@ -385,6 +385,17 @@ else
           $(RM) -v $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET) && \
           $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)) || true
 endif
+ifeq (xulrunner,$(SB_VENDOR_TARGET))
+   ifeq (Msys,$(SB_VENDOR_ARCH))
+	   (test -e $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/.msyscp && \
+          $(RM) -rf $(SB_VENDOR_BINARIES_DIR)/mozilla && \
+          $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/mozilla) || true
+   else
+	   (test -h $(SB_VENDOR_BINARIES_DIR)/mozilla && \
+          $(RM) -v $(SB_VENDOR_BINARIES_DIR)/mozilla && \
+          $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/mozilla) || true
+   endif
+endif
 
 ifdef SB_VENDOR_AUTOCLEAN_OBJDIRS
    CLEAN_BUILD_DIR_TGT = clean_build_dir
