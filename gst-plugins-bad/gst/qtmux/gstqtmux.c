@@ -1560,7 +1560,7 @@ gst_qt_mux_audio_sink_set_caps (GstPad * pad, GstCaps * caps)
 
     if (depth <= 8) {
       endianness = G_BYTE_ORDER;
-    } else if (!gst_structure_get_boolean (structure,
+    } else if (!gst_structure_get_int (structure,
             "endianness", &endianness)) {
       GST_DEBUG_OBJECT (qtmux, "broken caps, endianness field missing");
       goto refuse_caps;
@@ -1624,6 +1624,15 @@ gst_qt_mux_audio_sink_set_caps (GstPad * pad, GstCaps * caps)
        channel) */
     entry.samples_per_packet = 2 * blocksize / channels - 7;
     entry.bytes_per_sample = 2;
+
+    entry.bytes_per_frame = blocksize;
+    entry.bytes_per_packet = blocksize / channels;
+    /* ADPCM has constant size packets */
+    constant_size = 1;
+    /* TODO: I don't really understand why this helps, but it does! Constant
+     * size and compression_id of -2 seem to be incompatible, and other files
+     * in the wild use this too. */
+    entry.compression_id = -1;
 
     ext_atom = build_ima_adpcm_extension (channels, rate, blocksize);
   }
