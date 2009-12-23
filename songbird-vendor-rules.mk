@@ -376,6 +376,10 @@ else
 	       $(LN) -sv $(SB_VENDOR_BINARIES_CHECKOUT)/$(tgt) \
 	            $(SB_VENDOR_BINARIES_DIR); ))
 endif
+ifneq (Msys,$(SB_VENDOR_ARCH))
+	@echo Fixing up pkg-config .pc files for first time use...
+	$(FIND) $(SB_VENDOR_BINARIES_CHECKOUT) -type f -name '*.pc' -exec $(SB_VENDOR_CHECKOUT)/fix-pkg-config-paths.pl -p $(SB_TARGET_ARCH) {} \;
+endif
 ifeq (Msys,$(SB_VENDOR_ARCH))
 	(test -e $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/.msyscp && \
           $(RM) -rf $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET) && \
