@@ -12,7 +12,7 @@ my $MUNGED_MARKER = '# PC FILE MUNGED';
 
 sub Usage {
    print STDERR <<__END_USAGE__;
-Usage: $0 [-f] -p [TOKEN] [full path to libtool .la file]
+Usage: $0 [-f] -p [TOKEN] [full path to libtool .pc file]
 
 If the supplied .pc file has a previouly munged marker in it, it will not be
 modified unless -f is supplied.
@@ -36,7 +36,11 @@ sub main {
 
    my $pcFile = $ARGV[0];
    
-   if ($pcFile !~ /\.pc$/ || !(-f $pcFile)) {
+   if (!$forceMunge && $pcFile !~ /\.pc$/) {
+      Usage();
+      return 1;
+   }
+   elsif (!(-f $pcFile)) {
       Usage();
       return 1;
    }

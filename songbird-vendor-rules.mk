@@ -180,6 +180,9 @@ endif
 
 regen-makefiles: setup_environment
 ifeq (linux-i686,$(SB_TARGET_ARCH))
+	@echo Fixing up libtoolize for use...
+	$(SB_VENDOR_CHECKOUT)/fix-pkg-config-paths.pl -f -p $(SB_TARGET_ARCH) $(SB_VENDOR_BINARIES_DIR)/libtool/release/bin/libtoolize
+	$(CHMOD) 0755 $(SB_VENDOR_BINARIES_DIR)/libtool/release/bin/libtoolize
    ifneq (,$(filter $(SB_REGEN_MAKEFILE_PKGS),$(SB_VENDOR_TARGET)))
       ifeq (,$(filter gst%,$(SB_VENDOR_TARGET)))
 	      $(MKDIR) common/m4
@@ -198,7 +201,7 @@ ifeq (linux-i686,$(SB_TARGET_ARCH))
 	   @echo Regenerated $(SB_VENDOR_TARGET) makefiles are ready to check in
 	   @echo NOTICE: beware newly generated files which may have to be svn added:
 	   @echo 
-	   @$(SVN) stat | $(GREP) ^? | $(AWK) '{print $$2}' | $(GREP) -v ^common | $(GREP) -v ^m4 | $(GREP) -v autom4te.cache | $(GREP) -v autoregen.sh | $(GREP) -v stamp-h.in
+	   -@$(SVN) stat | $(GREP) ^? | $(AWK) '{print $$2}' | $(GREP) -v ^common | $(GREP) -v ^m4 | $(GREP) -v autom4te.cache | $(GREP) -v autoregen.sh | $(GREP) -v stamp-h.in
    else
 	   @echo This package does not require makefiles to be regenerated. Doing nothing.
    endif
