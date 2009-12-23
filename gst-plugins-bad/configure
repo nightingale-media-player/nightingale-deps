@@ -460,7 +460,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar PACKAGE_VERSION_MAJOR PACKAGE_VERSION_MINOR PACKAGE_VERSION_MICRO PACKAGE_VERSION_NANO PACKAGE_VERSION_RELEASE MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT GST_MAJORMINOR AS ac_ct_AS DLLTOOL ac_ct_DLLTOOL OBJDUMP ac_ct_OBJDUMP LIBTOOL CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE SED EGREP FGREP GREP LD DUMPBIN ac_ct_DUMPBIN NM LN_S AR ac_ct_AR AR_FLAGS AR_TFLAGS AR_SEP RANLIB ac_ct_RANLIB lt_ECHO DSYMUTIL ac_ct_DSYMUTIL NMEDIT ac_ct_NMEDIT LIPO ac_ct_LIPO OTOOL ac_ct_OTOOL OTOOL64 ac_ct_OTOOL64 CPP ACLOCAL_AMFLAGS MKINSTALLDIRS USE_NLS MSGFMT GMSGFMT XGETTEXT MSGMERGE LIBICONV LTLIBICONV INTLLIBS LIBINTL LTLIBINTL POSUB GETTEXT_PACKAGE LOCALEDIR PKG_CONFIG ac_pt_PKG_CONFIG VALGRIND_CFLAGS VALGRIND_LIBS GCOV_CFLAGS GCOV_LIBS GCOV CXXFLAGS FFLAGS CCASFLAGS GST_GCOV_ENABLED_TRUE GST_GCOV_ENABLED_FALSE BUILD_EXAMPLES_TRUE BUILD_EXAMPLES_FALSE GST_PACKAGE_NAME GST_PACKAGE_ORIGIN GST_PLUGINS_ALL GST_PLUGINS_SELECTED USE_EXTERNAL_TRUE USE_EXTERNAL_FALSE BUILD_EXTERNAL_TRUE BUILD_EXTERNAL_FALSE USE_EXPERIMENTAL_TRUE USE_EXPERIMENTAL_FALSE BUILD_EXPERIMENTAL_TRUE BUILD_EXPERIMENTAL_FALSE HAVE_CPU_I386_TRUE HAVE_CPU_I386_FALSE HAVE_CPU_PPC_TRUE HAVE_CPU_PPC_FALSE HAVE_CPU_PPC64_TRUE HAVE_CPU_PPC64_FALSE HAVE_CPU_ALPHA_TRUE HAVE_CPU_ALPHA_FALSE HAVE_CPU_ARM_TRUE HAVE_CPU_ARM_FALSE HAVE_CPU_SPARC_TRUE HAVE_CPU_SPARC_FALSE HAVE_CPU_HPPA_TRUE HAVE_CPU_HPPA_FALSE HAVE_CPU_MIPS_TRUE HAVE_CPU_MIPS_FALSE HAVE_CPU_S390_TRUE HAVE_CPU_S390_FALSE HAVE_CPU_IA64_TRUE HAVE_CPU_IA64_FALSE HAVE_CPU_M68K_TRUE HAVE_CPU_M68K_FALSE HAVE_CPU_X86_64_TRUE HAVE_CPU_X86_64_FALSE HAVE_CPU_CRIS_TRUE HAVE_CPU_CRIS_FALSE HAVE_CPU_CRISV32_TRUE HAVE_CPU_CRISV32_FALSE CXX ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP HAVE_CXX OBJC ac_ct_OBJC OBJC_LDFLAGS OBJCDEPMODE am__fastdepOBJC_TRUE am__fastdepOBJC_FALSE VALGRIND_PATH HAVE_VALGRIND_TRUE HAVE_VALGRIND_FALSE HTML_DIR GTKDOC_CHECK ENABLE_GTK_DOC_TRUE ENABLE_GTK_DOC_FALSE GTK_DOC_USE_LIBTOOL_TRUE GTK_DOC_USE_LIBTOOL_FALSE PYTHON PYTHON_VERSION PYTHON_PREFIX PYTHON_EXEC_PREFIX PYTHON_PLATFORM pythondir pkgpythondir pyexecdir pkgpyexecdir ENABLE_PLUGIN_DOCS_TRUE ENABLE_PLUGIN_DOCS_FALSE LIBM HAVE_UNISTD_H_TRUE HAVE_UNISTD_H_FALSE HAVE_PTHREAD_H_TRUE HAVE_PTHREAD_H_FALSE GLIB_REQ GLIB_CFLAGS GLIB_LIBS LIBOIL_CFLAGS LIBOIL_LIBS USE_LIBOIL_TRUE USE_LIBOIL_FALSE GST_CFLAGS GST_LIBS GST_TOOLS_DIR GST_PLUGINS_DIR GST_BASE_CFLAGS GST_BASE_LIBS GST_GDP_CFLAGS GST_GDP_LIBS GST_CHECK_CFLAGS GST_CHECK_LIBS GST_CONTROLLER_CFLAGS GST_CONTROLLER_LIBS GST_PLUGINS_BASE_CFLAGS GST_PLUGINS_BASE_LIBS GSTPB_PLUGINS_DIR HAVE_GST_CHECK_TRUE HAVE_GST_CHECK_FALSE GLIB_PREFIX GST_PREFIX GSTPB_PREFIX GTK_CFLAGS GTK_LIBS HAVE_GTK_TRUE HAVE_GTK_FALSE GLADE_CFLAGS GLADE_LIBS HAVE_GLADE HAVE_GLADE_TRUE HAVE_GLADE_FALSE X11_CFLAGS X11_LIBS HAVE_X11 HAVE_X11_TRUE HAVE_X11_FALSE GST_LICENSE LIBDIR PLUGINDIR plugindir ERROR_CFLAGS ERROR_CXXFLAGS GST_LEVEL_DEFAULT USE_PLUGIN_AACPARSE_TRUE USE_PLUGIN_AACPARSE_FALSE USE_PLUGIN_ADPCMDEC_TRUE USE_PLUGIN_ADPCMDEC_FALSE USE_PLUGIN_AIFFPARSE_TRUE USE_PLUGIN_AIFFPARSE_FALSE USE_PLUGIN_AMRPARSE_TRUE USE_PLUGIN_AMRPARSE_FALSE USE_PLUGIN_ASFMUX_TRUE USE_PLUGIN_ASFMUX_FALSE USE_PLUGIN_AUTOCONVERT_TRUE USE_PLUGIN_AUTOCONVERT_FALSE USE_PLUGIN_CAMERABIN_TRUE USE_PLUGIN_CAMERABIN_FALSE USE_PLUGIN_LEGACYRESAMPLE_TRUE USE_PLUGIN_LEGACYRESAMPLE_FALSE USE_PLUGIN_BAYER_TRUE USE_PLUGIN_BAYER_FALSE USE_PLUGIN_CDXAPARSE_TRUE USE_PLUGIN_CDXAPARSE_FALSE USE_PLUGIN_DCCP_TRUE USE_PLUGIN_DCCP_FALSE USE_PLUGIN_DEBUGUTILS_TRUE USE_PLUGIN_DEBUGUTILS_FALSE USE_PLUGIN_DTMF_TRUE USE_PLUGIN_DTMF_FALSE USE_PLUGIN_DVDSPU_TRUE USE_PLUGIN_DVDSPU_FALSE USE_PLUGIN_FESTIVAL_TRUE USE_PLUGIN_FESTIVAL_FALSE USE_PLUGIN_FREEZE_TRUE USE_PLUGIN_FREEZE_FALSE USE_PLUGIN_FREI0R_TRUE USE_PLUGIN_FREI0R_FALSE USE_PLUGIN_H264PARSE_TRUE USE_PLUGIN_H264PARSE_FALSE USE_PLUGIN_HDVPARSE_TRUE USE_PLUGIN_HDVPARSE_FALSE USE_PLUGIN_ID3TAG_TRUE USE_PLUGIN_ID3TAG_FALSE USE_PLUGIN_LIBRFB_TRUE USE_PLUGIN_LIBRFB_FALSE USE_PLUGIN_LIVEADDER_TRUE USE_PLUGIN_LIVEADDER_FALSE USE_PLUGIN_MPEGDEMUX_TRUE USE_PLUGIN_MPEGDEMUX_FALSE USE_PLUGIN_MPEGTSMUX_TRUE USE_PLUGIN_MPEGTSMUX_FALSE USE_PLUGIN_MPEGPSMUX_TRUE USE_PLUGIN_MPEGPSMUX_FALSE USE_PLUGIN_MPEG4VIDEOPARSE_TRUE USE_PLUGIN_MPEG4VIDEOPARSE_FALSE USE_PLUGIN_MPEGVIDEOPARSE_TRUE USE_PLUGIN_MPEGVIDEOPARSE_FALSE USE_PLUGIN_MVE_TRUE USE_PLUGIN_MVE_FALSE USE_PLUGIN_MXF_TRUE USE_PLUGIN_MXF_FALSE USE_PLUGIN_NSF_TRUE USE_PLUGIN_NSF_FALSE USE_PLUGIN_NUVDEMUX_TRUE USE_PLUGIN_NUVDEMUX_FALSE USE_PLUGIN_PCAPPARSE_TRUE USE_PLUGIN_PCAPPARSE_FALSE USE_PLUGIN_PNM_TRUE USE_PLUGIN_PNM_FALSE USE_PLUGIN_QTMUX_TRUE USE_PLUGIN_QTMUX_FALSE USE_PLUGIN_RAWPARSE_TRUE USE_PLUGIN_RAWPARSE_FALSE USE_PLUGIN_REAL_TRUE USE_PLUGIN_REAL_FALSE USE_PLUGIN_RTPMUX_TRUE USE_PLUGIN_RTPMUX_FALSE USE_PLUGIN_SCALETEMPO_TRUE USE_PLUGIN_SCALETEMPO_FALSE USE_PLUGIN_SDP_TRUE USE_PLUGIN_SDP_FALSE USE_PLUGIN_SELECTOR_TRUE USE_PLUGIN_SELECTOR_FALSE USE_PLUGIN_SHAPEWIPE_TRUE USE_PLUGIN_SHAPEWIPE_FALSE USE_PLUGIN_SIREN_TRUE USE_PLUGIN_SIREN_FALSE USE_PLUGIN_SPEED_TRUE USE_PLUGIN_SPEED_FALSE USE_PLUGIN_SUBENC_TRUE USE_PLUGIN_SUBENC_FALSE USE_PLUGIN_STEREO_TRUE USE_PLUGIN_STEREO_FALSE USE_PLUGIN_TTA_TRUE USE_PLUGIN_TTA_FALSE USE_PLUGIN_VALVE_TRUE USE_PLUGIN_VALVE_FALSE USE_PLUGIN_VIDEOMEASURE_TRUE USE_PLUGIN_VIDEOMEASURE_FALSE USE_PLUGIN_VIDEOSIGNAL_TRUE USE_PLUGIN_VIDEOSIGNAL_FALSE USE_PLUGIN_VMNC_TRUE USE_PLUGIN_VMNC_FALSE GIO_CFLAGS GIO_LIBS WIN32_LIBS HAVE_WINSOCK2_H_TRUE HAVE_WINSOCK2_H_FALSE DCCP_LIBS XDG_LIBS DIRECTX_CFLAGS DIRECTX_LDFLAGS DIRECTSOUND_LIBS HAVE_DIRECTSOUND USE_DIRECTSOUND_TRUE USE_DIRECTSOUND_FALSE DIRECTDRAW_LIBS HAVE_DIRECTDRAW USE_DIRECTDRAW_TRUE USE_DIRECTDRAW_FALSE USE_OSX_VIDEO_TRUE USE_OSX_VIDEO_FALSE QUICKTIME_CFLAGS QUICKTIME_LDFLAGS USE_QUICKTIME_TRUE USE_QUICKTIME_FALSE WINDOWS_SDK_DIR DIRECTSHOW_LIB_DIR HAVE_DIRECTSHOW USE_DIRECTSHOW_TRUE USE_DIRECTSHOW_FALSE USE_VCD_TRUE USE_VCD_FALSE ALSA_CFLAGS ALSA_LIBS USE_ALSA_TRUE USE_ALSA_FALSE ASSRENDER_CFLAGS ASSRENDER_LIBS USE_ASSRENDER_TRUE USE_ASSRENDER_FALSE AMRWB_LIBS HAVE_AMRWB USE_AMRWB_TRUE USE_AMRWB_FALSE APEXSINK_LIBS APEXSINK_CFLAGS USE_APEXSINK_TRUE USE_APEXSINK_FALSE USE_ASFMUX_TRUE USE_ASFMUX_FALSE HAVE_BZ2 BZ2_LIBS USE_BZ2_TRUE USE_BZ2_FALSE CDAUDIO_CONFIG CDAUDIO_LIBS CDAUDIO_CFLAGS USE_CDAUDIO_TRUE USE_CDAUDIO_FALSE CELT_CFLAGS CELT_LIBS USE_CELT_TRUE USE_CELT_FALSE COG_CFLAGS COG_LIBS ORCC USE_COG_TRUE USE_COG_FALSE LIBDC1394_CFLAGS LIBDC1394_LIBS USE_DC1394_TRUE USE_DC1394_FALSE DIRECTFB_CFLAGS DIRECTFB_LIBS USE_DIRECTFB_TRUE USE_DIRECTFB_FALSE DIRAC_CFLAGS DIRAC_LIBS USE_DIRAC_TRUE USE_DIRAC_FALSE HAVE_DTS DTS_LIBS USE_DTS_TRUE USE_DTS_FALSE DIVXENC_LIBS DIVXDEC_LIBS USE_DIVX_TRUE USE_DIVX_FALSE DVDNAV_CONFIG DVDNAV_LIBS DVDNAV_CFLAGS USE_DVDNAV_TRUE USE_DVDNAV_FALSE EXIF_CFLAGS EXIF_LIBS IPTC_CFLAGS IPTC_LIBS XMP_CFLAGS XMP_LIBS XMP_1_99_5_CFLAGS XMP_1_99_5_LIBS METADATA_CFLAGS METADATA_LIBS USE_METADATA_TRUE USE_METADATA_FALSE HAVE_FAAC FAAC_LIBS USE_FAAC_TRUE USE_FAAC_FALSE HAVE_FAAD FAAD_LIBS FAAD_IS_NEAAC USE_FAAD_TRUE USE_FAAD_FALSE USE_FBDEV_TRUE USE_FBDEV_FALSE HAVE_GSM GSM_LIBS USE_GSM_TRUE USE_GSM_FALSE IVORBIS_LIBS IVORBIS_CFLAGS USE_IVORBIS_TRUE USE_IVORBIS_FALSE JACK_CFLAGS JACK_LIBS USE_JACK_TRUE USE_JACK_FALSE HAVE_JP2K JP2K_LIBS USE_JP2K_TRUE USE_JP2K_FALSE KATE_CFLAGS KATE_LIBS TIGER_CFLAGS TIGER_LIBS USE_TIGER_TRUE USE_TIGER_FALSE USE_KATE_TRUE USE_KATE_FALSE LRDF_CFLAGS LRDF_LIBS USE_LADSPA_TRUE USE_LADSPA_FALSE SLV2_CFLAGS SLV2_LIBS USE_LV2_TRUE USE_LV2_FALSE LIBMMS_CFLAGS LIBMMS_LIBS USE_LIBMMS_TRUE USE_LIBMMS_FALSE MODPLUG_CFLAGS MODPLUG_LIBS USE_MODPLUG_TRUE USE_MODPLUG_FALSE MIMIC_CFLAGS MIMIC_LIBS USE_MIMIC_TRUE USE_MIMIC_FALSE MJPEG_CFLAGS MJPEG_LIBS MPEG2ENC_CFLAGS MPEG2ENC_LIBS USE_MPEG2ENC_TRUE USE_MPEG2ENC_FALSE MPLEX_CFLAGS MPLEX_LIBS USE_MPLEX_TRUE USE_MPLEX_FALSE MUSEPACK_LIBS USE_MUSEPACK_TRUE USE_MUSEPACK_FALSE MUSICBRAINZ_CFLAGS MUSICBRAINZ_LIBS USE_MUSICBRAINZ_TRUE USE_MUSICBRAINZ_FALSE GMYTH_CFLAGS GMYTH_LIBS USE_MYTHTV_TRUE USE_MYTHTV_FALSE X_CFLAGS X_PRE_LIBS X_LIBS X_EXTRA_LIBS HAVE_X HAVE_NAS NAS_CFLAGS NAS_LIBS USE_NAS_TRUE USE_NAS_FALSE NEON_CFLAGS NEON_LIBS USE_NEON_TRUE USE_NEON_FALSE OFA_CFLAGS OFA_LIBS USE_OFA_TRUE USE_OFA_FALSE RSVG_CFLAGS RSVG_LIBS USE_RSVG_TRUE USE_RSVG_FALSE TIMIDITY_CFLAGS TIMIDITY_LIBS USE_TIMIDITY_TRUE USE_TIMIDITY_FALSE WILDMIDI_CFLAGS WILDMIDI_LIBS USE_WILDMIDI_TRUE USE_WILDMIDI_FALSE SDL_CONFIG SDL_CFLAGS SDL_LIBS USE_SDL_TRUE USE_SDL_FALSE SNDFILE_CFLAGS SNDFILE_LIBS USE_SNDFILE_TRUE USE_SNDFILE_FALSE SOUNDTOUCH_CFLAGS SOUNDTOUCH_LIBS USE_SOUNDTOUCH_TRUE USE_SOUNDTOUCH_FALSE SPC_LIBS USE_SPC_TRUE USE_SPC_FALSE GME_LIBS USE_GME_TRUE USE_GME_FALSE SWFDEC_CFLAGS SWFDEC_LIBS USE_SWFDEC_TRUE USE_SWFDEC_FALSE THEORADEC_CFLAGS THEORADEC_LIBS USE_THEORADEC_TRUE USE_THEORADEC_FALSE XVID_LIBS USE_XVID_TRUE USE_XVID_FALSE USE_DVB_TRUE USE_DVB_FALSE USE_OSS4_TRUE USE_OSS4_FALSE USE_WININET_TRUE USE_WININET_FALSE USE_ACM_TRUE USE_ACM_FALSE DMO_CFLAGS USE_DMO_TRUE USE_DMO_FALSE VDPAU_CFLAGS VDPAU_LIBS USE_VDPAU_TRUE USE_VDPAU_FALSE SCHRO_CFLAGS SCHRO_LIBS USE_SCHRO_TRUE USE_SCHRO_FALSE ZBAR_CFLAGS ZBAR_LIBS USE_ZBAR_TRUE USE_ZBAR_FALSE PROFILE_CFLAGS DEPRECATED_CFLAGS GST_OPTION_CFLAGS GST_OPTION_CXXFLAGS GST_CXXFLAGS GST_ALL_LDFLAGS GST_PLUGIN_LDFLAGS shavedir MAKEFLAGS AM_MAKEFLAGS FC F77 V Q USE_MOZILLA_TRUE USE_MOZILLA_FALSE MOZILLA_CFLAGS MOZILLA_LIBS LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar PACKAGE_VERSION_MAJOR PACKAGE_VERSION_MINOR PACKAGE_VERSION_MICRO PACKAGE_VERSION_NANO PACKAGE_VERSION_RELEASE MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT GST_MAJORMINOR AS ac_ct_AS DLLTOOL ac_ct_DLLTOOL OBJDUMP ac_ct_OBJDUMP LIBTOOL CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE SED EGREP FGREP GREP LD DUMPBIN ac_ct_DUMPBIN NM LN_S AR ac_ct_AR AR_FLAGS AR_TFLAGS AR_SEP RANLIB ac_ct_RANLIB lt_ECHO DSYMUTIL ac_ct_DSYMUTIL NMEDIT ac_ct_NMEDIT LIPO ac_ct_LIPO OTOOL ac_ct_OTOOL OTOOL64 ac_ct_OTOOL64 CPP ACLOCAL_AMFLAGS MKINSTALLDIRS USE_NLS MSGFMT GMSGFMT XGETTEXT MSGMERGE LIBICONV LTLIBICONV INTLLIBS LIBINTL LTLIBINTL POSUB GETTEXT_PACKAGE LOCALEDIR PKG_CONFIG ac_pt_PKG_CONFIG VALGRIND_CFLAGS VALGRIND_LIBS GCOV_CFLAGS GCOV_LIBS GCOV CXXFLAGS FFLAGS CCASFLAGS GST_GCOV_ENABLED_TRUE GST_GCOV_ENABLED_FALSE BUILD_EXAMPLES_TRUE BUILD_EXAMPLES_FALSE GST_PACKAGE_NAME GST_PACKAGE_ORIGIN GST_PLUGINS_ALL GST_PLUGINS_SELECTED USE_EXTERNAL_TRUE USE_EXTERNAL_FALSE BUILD_EXTERNAL_TRUE BUILD_EXTERNAL_FALSE USE_EXPERIMENTAL_TRUE USE_EXPERIMENTAL_FALSE BUILD_EXPERIMENTAL_TRUE BUILD_EXPERIMENTAL_FALSE HAVE_CPU_I386_TRUE HAVE_CPU_I386_FALSE HAVE_CPU_PPC_TRUE HAVE_CPU_PPC_FALSE HAVE_CPU_PPC64_TRUE HAVE_CPU_PPC64_FALSE HAVE_CPU_ALPHA_TRUE HAVE_CPU_ALPHA_FALSE HAVE_CPU_ARM_TRUE HAVE_CPU_ARM_FALSE HAVE_CPU_SPARC_TRUE HAVE_CPU_SPARC_FALSE HAVE_CPU_HPPA_TRUE HAVE_CPU_HPPA_FALSE HAVE_CPU_MIPS_TRUE HAVE_CPU_MIPS_FALSE HAVE_CPU_S390_TRUE HAVE_CPU_S390_FALSE HAVE_CPU_IA64_TRUE HAVE_CPU_IA64_FALSE HAVE_CPU_M68K_TRUE HAVE_CPU_M68K_FALSE HAVE_CPU_X86_64_TRUE HAVE_CPU_X86_64_FALSE HAVE_CPU_CRIS_TRUE HAVE_CPU_CRIS_FALSE HAVE_CPU_CRISV32_TRUE HAVE_CPU_CRISV32_FALSE CXX ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP HAVE_CXX OBJC ac_ct_OBJC OBJC_LDFLAGS OBJCDEPMODE am__fastdepOBJC_TRUE am__fastdepOBJC_FALSE VALGRIND_PATH HAVE_VALGRIND_TRUE HAVE_VALGRIND_FALSE HTML_DIR GTKDOC_CHECK ENABLE_GTK_DOC_TRUE ENABLE_GTK_DOC_FALSE GTK_DOC_USE_LIBTOOL_TRUE GTK_DOC_USE_LIBTOOL_FALSE PYTHON PYTHON_VERSION PYTHON_PREFIX PYTHON_EXEC_PREFIX PYTHON_PLATFORM pythondir pkgpythondir pyexecdir pkgpyexecdir ENABLE_PLUGIN_DOCS_TRUE ENABLE_PLUGIN_DOCS_FALSE LIBM HAVE_UNISTD_H_TRUE HAVE_UNISTD_H_FALSE HAVE_PTHREAD_H_TRUE HAVE_PTHREAD_H_FALSE GLIB_REQ GLIB_CFLAGS GLIB_LIBS LIBOIL_CFLAGS LIBOIL_LIBS USE_LIBOIL_TRUE USE_LIBOIL_FALSE GST_CFLAGS GST_LIBS GST_TOOLS_DIR GST_PLUGINS_DIR GST_BASE_CFLAGS GST_BASE_LIBS GST_GDP_CFLAGS GST_GDP_LIBS GST_CHECK_CFLAGS GST_CHECK_LIBS GST_CONTROLLER_CFLAGS GST_CONTROLLER_LIBS GST_PLUGINS_BASE_CFLAGS GST_PLUGINS_BASE_LIBS GSTPB_PLUGINS_DIR HAVE_GST_CHECK_TRUE HAVE_GST_CHECK_FALSE GLIB_PREFIX GST_PREFIX GSTPB_PREFIX GTK_CFLAGS GTK_LIBS HAVE_GTK_TRUE HAVE_GTK_FALSE GLADE_CFLAGS GLADE_LIBS HAVE_GLADE HAVE_GLADE_TRUE HAVE_GLADE_FALSE X11_CFLAGS X11_LIBS HAVE_X11 HAVE_X11_TRUE HAVE_X11_FALSE GST_LICENSE LIBDIR PLUGINDIR plugindir ERROR_CFLAGS ERROR_CXXFLAGS GST_LEVEL_DEFAULT USE_PLUGIN_AACPARSE_TRUE USE_PLUGIN_AACPARSE_FALSE USE_PLUGIN_ADPCMDEC_TRUE USE_PLUGIN_ADPCMDEC_FALSE USE_PLUGIN_ADPCMENC_TRUE USE_PLUGIN_ADPCMENC_FALSE USE_PLUGIN_AIFFPARSE_TRUE USE_PLUGIN_AIFFPARSE_FALSE USE_PLUGIN_AMRPARSE_TRUE USE_PLUGIN_AMRPARSE_FALSE USE_PLUGIN_ASFMUX_TRUE USE_PLUGIN_ASFMUX_FALSE USE_PLUGIN_AUTOCONVERT_TRUE USE_PLUGIN_AUTOCONVERT_FALSE USE_PLUGIN_CAMERABIN_TRUE USE_PLUGIN_CAMERABIN_FALSE USE_PLUGIN_LEGACYRESAMPLE_TRUE USE_PLUGIN_LEGACYRESAMPLE_FALSE USE_PLUGIN_BAYER_TRUE USE_PLUGIN_BAYER_FALSE USE_PLUGIN_CDXAPARSE_TRUE USE_PLUGIN_CDXAPARSE_FALSE USE_PLUGIN_DCCP_TRUE USE_PLUGIN_DCCP_FALSE USE_PLUGIN_DEBUGUTILS_TRUE USE_PLUGIN_DEBUGUTILS_FALSE USE_PLUGIN_DTMF_TRUE USE_PLUGIN_DTMF_FALSE USE_PLUGIN_DVDSPU_TRUE USE_PLUGIN_DVDSPU_FALSE USE_PLUGIN_FESTIVAL_TRUE USE_PLUGIN_FESTIVAL_FALSE USE_PLUGIN_FREEZE_TRUE USE_PLUGIN_FREEZE_FALSE USE_PLUGIN_FREI0R_TRUE USE_PLUGIN_FREI0R_FALSE USE_PLUGIN_H264PARSE_TRUE USE_PLUGIN_H264PARSE_FALSE USE_PLUGIN_HDVPARSE_TRUE USE_PLUGIN_HDVPARSE_FALSE USE_PLUGIN_ID3TAG_TRUE USE_PLUGIN_ID3TAG_FALSE USE_PLUGIN_LIBRFB_TRUE USE_PLUGIN_LIBRFB_FALSE USE_PLUGIN_LIVEADDER_TRUE USE_PLUGIN_LIVEADDER_FALSE USE_PLUGIN_MPEGDEMUX_TRUE USE_PLUGIN_MPEGDEMUX_FALSE USE_PLUGIN_MPEGTSMUX_TRUE USE_PLUGIN_MPEGTSMUX_FALSE USE_PLUGIN_MPEGPSMUX_TRUE USE_PLUGIN_MPEGPSMUX_FALSE USE_PLUGIN_MPEG4VIDEOPARSE_TRUE USE_PLUGIN_MPEG4VIDEOPARSE_FALSE USE_PLUGIN_MPEGVIDEOPARSE_TRUE USE_PLUGIN_MPEGVIDEOPARSE_FALSE USE_PLUGIN_MVE_TRUE USE_PLUGIN_MVE_FALSE USE_PLUGIN_MXF_TRUE USE_PLUGIN_MXF_FALSE USE_PLUGIN_NSF_TRUE USE_PLUGIN_NSF_FALSE USE_PLUGIN_NUVDEMUX_TRUE USE_PLUGIN_NUVDEMUX_FALSE USE_PLUGIN_PCAPPARSE_TRUE USE_PLUGIN_PCAPPARSE_FALSE USE_PLUGIN_PNM_TRUE USE_PLUGIN_PNM_FALSE USE_PLUGIN_QTMUX_TRUE USE_PLUGIN_QTMUX_FALSE USE_PLUGIN_RAWPARSE_TRUE USE_PLUGIN_RAWPARSE_FALSE USE_PLUGIN_REAL_TRUE USE_PLUGIN_REAL_FALSE USE_PLUGIN_RTPMUX_TRUE USE_PLUGIN_RTPMUX_FALSE USE_PLUGIN_SCALETEMPO_TRUE USE_PLUGIN_SCALETEMPO_FALSE USE_PLUGIN_SDP_TRUE USE_PLUGIN_SDP_FALSE USE_PLUGIN_SELECTOR_TRUE USE_PLUGIN_SELECTOR_FALSE USE_PLUGIN_SHAPEWIPE_TRUE USE_PLUGIN_SHAPEWIPE_FALSE USE_PLUGIN_SIREN_TRUE USE_PLUGIN_SIREN_FALSE USE_PLUGIN_SPEED_TRUE USE_PLUGIN_SPEED_FALSE USE_PLUGIN_SUBENC_TRUE USE_PLUGIN_SUBENC_FALSE USE_PLUGIN_STEREO_TRUE USE_PLUGIN_STEREO_FALSE USE_PLUGIN_TTA_TRUE USE_PLUGIN_TTA_FALSE USE_PLUGIN_VALVE_TRUE USE_PLUGIN_VALVE_FALSE USE_PLUGIN_VIDEOMEASURE_TRUE USE_PLUGIN_VIDEOMEASURE_FALSE USE_PLUGIN_VIDEOSIGNAL_TRUE USE_PLUGIN_VIDEOSIGNAL_FALSE USE_PLUGIN_VMNC_TRUE USE_PLUGIN_VMNC_FALSE GIO_CFLAGS GIO_LIBS WIN32_LIBS HAVE_WINSOCK2_H_TRUE HAVE_WINSOCK2_H_FALSE DCCP_LIBS XDG_LIBS DIRECTX_CFLAGS DIRECTX_LDFLAGS DIRECTSOUND_LIBS HAVE_DIRECTSOUND USE_DIRECTSOUND_TRUE USE_DIRECTSOUND_FALSE DIRECTDRAW_LIBS HAVE_DIRECTDRAW USE_DIRECTDRAW_TRUE USE_DIRECTDRAW_FALSE USE_OSX_VIDEO_TRUE USE_OSX_VIDEO_FALSE QUICKTIME_CFLAGS QUICKTIME_LDFLAGS USE_QUICKTIME_TRUE USE_QUICKTIME_FALSE WINDOWS_SDK_DIR DIRECTSHOW_LIB_DIR HAVE_DIRECTSHOW USE_DIRECTSHOW_TRUE USE_DIRECTSHOW_FALSE USE_VCD_TRUE USE_VCD_FALSE ALSA_CFLAGS ALSA_LIBS USE_ALSA_TRUE USE_ALSA_FALSE ASSRENDER_CFLAGS ASSRENDER_LIBS USE_ASSRENDER_TRUE USE_ASSRENDER_FALSE AMRWB_LIBS HAVE_AMRWB USE_AMRWB_TRUE USE_AMRWB_FALSE APEXSINK_LIBS APEXSINK_CFLAGS USE_APEXSINK_TRUE USE_APEXSINK_FALSE USE_ASFMUX_TRUE USE_ASFMUX_FALSE HAVE_BZ2 BZ2_LIBS USE_BZ2_TRUE USE_BZ2_FALSE CDAUDIO_CONFIG CDAUDIO_LIBS CDAUDIO_CFLAGS USE_CDAUDIO_TRUE USE_CDAUDIO_FALSE CELT_CFLAGS CELT_LIBS USE_CELT_TRUE USE_CELT_FALSE COG_CFLAGS COG_LIBS ORCC USE_COG_TRUE USE_COG_FALSE LIBDC1394_CFLAGS LIBDC1394_LIBS USE_DC1394_TRUE USE_DC1394_FALSE DIRECTFB_CFLAGS DIRECTFB_LIBS USE_DIRECTFB_TRUE USE_DIRECTFB_FALSE DIRAC_CFLAGS DIRAC_LIBS USE_DIRAC_TRUE USE_DIRAC_FALSE HAVE_DTS DTS_LIBS USE_DTS_TRUE USE_DTS_FALSE DIVXENC_LIBS DIVXDEC_LIBS USE_DIVX_TRUE USE_DIVX_FALSE DVDNAV_CONFIG DVDNAV_LIBS DVDNAV_CFLAGS USE_DVDNAV_TRUE USE_DVDNAV_FALSE EXIF_CFLAGS EXIF_LIBS IPTC_CFLAGS IPTC_LIBS XMP_CFLAGS XMP_LIBS XMP_1_99_5_CFLAGS XMP_1_99_5_LIBS METADATA_CFLAGS METADATA_LIBS USE_METADATA_TRUE USE_METADATA_FALSE HAVE_FAAC FAAC_LIBS USE_FAAC_TRUE USE_FAAC_FALSE HAVE_FAAD FAAD_LIBS FAAD_IS_NEAAC USE_FAAD_TRUE USE_FAAD_FALSE USE_FBDEV_TRUE USE_FBDEV_FALSE HAVE_GSM GSM_LIBS USE_GSM_TRUE USE_GSM_FALSE IVORBIS_LIBS IVORBIS_CFLAGS USE_IVORBIS_TRUE USE_IVORBIS_FALSE JACK_CFLAGS JACK_LIBS USE_JACK_TRUE USE_JACK_FALSE HAVE_JP2K JP2K_LIBS USE_JP2K_TRUE USE_JP2K_FALSE KATE_CFLAGS KATE_LIBS TIGER_CFLAGS TIGER_LIBS USE_TIGER_TRUE USE_TIGER_FALSE USE_KATE_TRUE USE_KATE_FALSE LRDF_CFLAGS LRDF_LIBS USE_LADSPA_TRUE USE_LADSPA_FALSE SLV2_CFLAGS SLV2_LIBS USE_LV2_TRUE USE_LV2_FALSE LIBMMS_CFLAGS LIBMMS_LIBS USE_LIBMMS_TRUE USE_LIBMMS_FALSE MODPLUG_CFLAGS MODPLUG_LIBS USE_MODPLUG_TRUE USE_MODPLUG_FALSE MIMIC_CFLAGS MIMIC_LIBS USE_MIMIC_TRUE USE_MIMIC_FALSE MJPEG_CFLAGS MJPEG_LIBS MPEG2ENC_CFLAGS MPEG2ENC_LIBS USE_MPEG2ENC_TRUE USE_MPEG2ENC_FALSE MPLEX_CFLAGS MPLEX_LIBS USE_MPLEX_TRUE USE_MPLEX_FALSE MUSEPACK_LIBS USE_MUSEPACK_TRUE USE_MUSEPACK_FALSE MUSICBRAINZ_CFLAGS MUSICBRAINZ_LIBS USE_MUSICBRAINZ_TRUE USE_MUSICBRAINZ_FALSE GMYTH_CFLAGS GMYTH_LIBS USE_MYTHTV_TRUE USE_MYTHTV_FALSE X_CFLAGS X_PRE_LIBS X_LIBS X_EXTRA_LIBS HAVE_X HAVE_NAS NAS_CFLAGS NAS_LIBS USE_NAS_TRUE USE_NAS_FALSE NEON_CFLAGS NEON_LIBS USE_NEON_TRUE USE_NEON_FALSE OFA_CFLAGS OFA_LIBS USE_OFA_TRUE USE_OFA_FALSE RSVG_CFLAGS RSVG_LIBS USE_RSVG_TRUE USE_RSVG_FALSE TIMIDITY_CFLAGS TIMIDITY_LIBS USE_TIMIDITY_TRUE USE_TIMIDITY_FALSE WILDMIDI_CFLAGS WILDMIDI_LIBS USE_WILDMIDI_TRUE USE_WILDMIDI_FALSE SDL_CONFIG SDL_CFLAGS SDL_LIBS USE_SDL_TRUE USE_SDL_FALSE SNDFILE_CFLAGS SNDFILE_LIBS USE_SNDFILE_TRUE USE_SNDFILE_FALSE SOUNDTOUCH_CFLAGS SOUNDTOUCH_LIBS USE_SOUNDTOUCH_TRUE USE_SOUNDTOUCH_FALSE SPC_LIBS USE_SPC_TRUE USE_SPC_FALSE GME_LIBS USE_GME_TRUE USE_GME_FALSE SWFDEC_CFLAGS SWFDEC_LIBS USE_SWFDEC_TRUE USE_SWFDEC_FALSE THEORADEC_CFLAGS THEORADEC_LIBS USE_THEORADEC_TRUE USE_THEORADEC_FALSE XVID_LIBS USE_XVID_TRUE USE_XVID_FALSE USE_DVB_TRUE USE_DVB_FALSE USE_OSS4_TRUE USE_OSS4_FALSE USE_WININET_TRUE USE_WININET_FALSE USE_ACM_TRUE USE_ACM_FALSE DMO_CFLAGS USE_DMO_TRUE USE_DMO_FALSE VDPAU_CFLAGS VDPAU_LIBS USE_VDPAU_TRUE USE_VDPAU_FALSE SCHRO_CFLAGS SCHRO_LIBS USE_SCHRO_TRUE USE_SCHRO_FALSE ZBAR_CFLAGS ZBAR_LIBS USE_ZBAR_TRUE USE_ZBAR_FALSE PROFILE_CFLAGS DEPRECATED_CFLAGS GST_OPTION_CFLAGS GST_OPTION_CXXFLAGS GST_CXXFLAGS GST_ALL_LDFLAGS GST_PLUGIN_LDFLAGS shavedir MAKEFLAGS AM_MAKEFLAGS FC F77 V Q USE_MOZILLA_TRUE USE_MOZILLA_FALSE MOZILLA_CFLAGS MOZILLA_LIBS LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -1432,6 +1432,7 @@ Optional Features:
   --disable-liboil             disable liboil usage in some plugins
   --disable-aacparse    disable dependency-less aacparse plugin
   --disable-adpcmdec    disable dependency-less adpcmdec plugin
+  --disable-adpcmenc    disable dependency-less adpcmenc plugin
   --disable-aiffparse   disable dependency-less aiffparse plugin
   --disable-amrparse    disable dependency-less amrparse plugin
   --disable-asfmux      disable dependency-less asfmux plugin
@@ -4583,13 +4584,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:4586: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:4587: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:4589: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:4590: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:4592: output\"" >&5)
+  (eval echo "\"\$as_me:4593: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -5264,7 +5265,7 @@ if test "${lt_cv_ar_interface+set}" = set; then
 else
   lt_cv_ar_interface="ar"
   printf "$lt_simple_compile_test_code" > conftest.$ac_ext
-  (eval echo "\"\$as_me:5267: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:5268: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
   (eval "$AR -NOLOGO -OUT:conftest.lib conftest.$ac_objext" &>conftest.err)
@@ -5849,7 +5850,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 5852 "configure"' > conftest.$ac_ext
+  echo '#line 5853 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7626,11 +7627,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7629: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7630: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:7633: \$? = $ac_status" >&5
+   echo "$as_me:7634: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -7965,11 +7966,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7968: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7969: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:7972: \$? = $ac_status" >&5
+   echo "$as_me:7973: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8070,11 +8071,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8073: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8074: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8077: \$? = $ac_status" >&5
+   echo "$as_me:8078: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -8125,11 +8126,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8128: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8129: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8132: \$? = $ac_status" >&5
+   echo "$as_me:8133: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11011,7 +11012,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11014 "configure"
+#line 11015 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11107,7 +11108,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11110 "configure"
+#line 11111 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -18525,11 +18526,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18528: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18529: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:18532: \$? = $ac_status" >&5
+   echo "$as_me:18533: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -18624,11 +18625,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18627: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18628: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18631: \$? = $ac_status" >&5
+   echo "$as_me:18632: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18676,11 +18677,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18679: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18680: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18683: \$? = $ac_status" >&5
+   echo "$as_me:18684: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -28034,6 +28035,50 @@ if echo " $GST_PLUGINS_SELECTED " | grep -i " adpcmdec " > /dev/null; then
 else
   USE_PLUGIN_ADPCMDEC_TRUE='#'
   USE_PLUGIN_ADPCMDEC_FALSE=
+fi
+
+
+
+  GST_PLUGINS_ALL="$GST_PLUGINS_ALL adpcmenc"
+
+
+
+  # Check whether --enable-adpcmenc or --disable-adpcmenc was given.
+if test "${enable_adpcmenc+set}" = set; then
+  enableval="$enable_adpcmenc"
+
+      case "${enableval}" in
+        yes) gst_use_adpcmenc=yes ;;
+        no) gst_use_adpcmenc=no ;;
+        *) { { echo "$as_me:$LINENO: error: bad value ${enableval} for --enable-adpcmenc" >&5
+echo "$as_me: error: bad value ${enableval} for --enable-adpcmenc" >&2;}
+   { (exit 1); exit 1; }; } ;;
+       esac
+
+else
+  gst_use_adpcmenc=yes
+fi;
+  if test x$gst_use_adpcmenc = xno; then
+    { echo "$as_me:$LINENO: disabling dependency-less plugin adpcmenc" >&5
+echo "$as_me: disabling dependency-less plugin adpcmenc" >&6;}
+    WITHOUT_PLUGINS="$WITHOUT_PLUGINS adpcmenc"
+  fi
+
+
+  if [ -z "$WITH_PLUGINS" ] || echo " $WITH_PLUGINS " | tr , ' ' | grep -i " adpcmenc " > /dev/null; then
+    GST_PLUGINS_SELECTED="$GST_PLUGINS_SELECTED adpcmenc"
+  fi
+  if echo " $WITHOUT_PLUGINS " | tr , ' ' | grep -i " adpcmenc " > /dev/null; then
+    GST_PLUGINS_SELECTED=`echo " $GST_PLUGINS_SELECTED " | $SED -e 's/ adpcmenc / /'`
+  fi
+
+
+if echo " $GST_PLUGINS_SELECTED " | grep -i " adpcmenc " > /dev/null; then
+  USE_PLUGIN_ADPCMENC_TRUE=
+  USE_PLUGIN_ADPCMENC_FALSE='#'
+else
+  USE_PLUGIN_ADPCMENC_TRUE='#'
+  USE_PLUGIN_ADPCMENC_FALSE=
 fi
 
 
@@ -52268,7 +52313,7 @@ fi;
 
 
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ac_config_files="$ac_config_files Makefile common/Makefile common/shave common/shave-libtool common/m4/Makefile gst-plugins-bad.spec gst/Makefile gst/aacparse/Makefile gst/adpcmdec/Makefile gst/aiffparse/Makefile gst/amrparse/Makefile gst/asfmux/Makefile gst/autoconvert/Makefile gst/bayer/Makefile gst/camerabin/Makefile gst/cdxaparse/Makefile gst/dccp/Makefile gst/debugutils/Makefile gst/dtmf/Makefile gst/dvdspu/Makefile gst/festival/Makefile gst/freeze/Makefile gst/frei0r/Makefile gst/h264parse/Makefile gst/hdvparse/Makefile gst/id3tag/Makefile gst/legacyresample/Makefile gst/librfb/Makefile gst/liveadder/Makefile gst/mpegdemux/Makefile gst/mpegtsmux/Makefile gst/mpegtsmux/tsmux/Makefile gst/mpegpsmux/Makefile gst/mpeg4videoparse/Makefile gst/mpegvideoparse/Makefile gst/mve/Makefile gst/mxf/Makefile gst/nsf/Makefile gst/nuvdemux/Makefile gst/pcapparse/Makefile gst/pnm/Makefile gst/qtmux/Makefile gst/rawparse/Makefile gst/real/Makefile gst/rtpmux/Makefile gst/scaletempo/Makefile gst/sdp/Makefile gst/selector/Makefile gst/shapewipe/Makefile gst/siren/Makefile gst/speed/Makefile gst/subenc/Makefile gst/stereo/Makefile gst/tta/Makefile gst/valve/Makefile gst/videomeasure/Makefile gst/videosignal/Makefile gst/vmnc/Makefile gst-libs/Makefile gst-libs/gst/Makefile gst-libs/gst/interfaces/Makefile gst-libs/gst/signalprocessor/Makefile gst-libs/gst/video/Makefile sys/Makefile sys/dshowdecwrapper/Makefile sys/acmenc/Makefile sys/acmmp3dec/Makefile sys/directdraw/Makefile sys/directsound/Makefile sys/dmoenc/Makefile sys/dshowsrcwrapper/Makefile sys/dshowvideosink/Makefile sys/dvb/Makefile sys/fbdev/Makefile sys/oss4/Makefile sys/osxvideo/Makefile sys/qtwrapper/Makefile sys/vcd/Makefile sys/vdpau/Makefile sys/wasapi/Makefile sys/wininet/Makefile sys/winks/Makefile sys/winscreencap/Makefile tests/Makefile tests/check/Makefile tests/examples/Makefile tests/examples/camerabin/Makefile tests/examples/directfb/Makefile tests/examples/mxf/Makefile tests/examples/scaletempo/Makefile tests/examples/shapewipe/Makefile tests/examples/switch/Makefile tests/icles/Makefile ext/alsaspdif/Makefile ext/amrwbenc/Makefile ext/assrender/Makefile ext/apexsink/Makefile ext/asfmux/Makefile ext/bz2/Makefile ext/cdaudio/Makefile ext/celt/Makefile ext/cog/Makefile ext/dc1394/Makefile ext/dirac/Makefile ext/directfb/Makefile ext/divx/Makefile ext/dts/Makefile ext/faac/Makefile ext/faad/Makefile ext/gsm/Makefile ext/ivorbis/Makefile ext/jack/Makefile ext/jp2k/Makefile ext/kate/Makefile ext/ladspa/Makefile ext/lv2/Makefile ext/libmms/Makefile ext/Makefile ext/metadata/Makefile ext/mimic/Makefile ext/modplug/Makefile ext/mozilla/Makefile ext/mpeg2enc/Makefile ext/mplex/Makefile ext/musepack/Makefile ext/musicbrainz/Makefile ext/mythtv/Makefile ext/nas/Makefile ext/neon/Makefile ext/ofa/Makefile ext/rsvg/Makefile ext/resindvd/Makefile ext/schroedinger/Makefile ext/sdl/Makefile ext/sndfile/Makefile ext/soundtouch/Makefile ext/gme/Makefile ext/spc/Makefile ext/swfdec/Makefile ext/theora/Makefile ext/timidity/Makefile ext/xvid/Makefile ext/zbar/Makefile po/Makefile.in docs/Makefile docs/plugins/Makefile docs/plugins/figures/Makefile docs/version.entities m4/Makefile win32/common/config.h"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ac_config_files="$ac_config_files Makefile common/Makefile common/shave common/shave-libtool common/m4/Makefile gst-plugins-bad.spec gst/Makefile gst/aacparse/Makefile gst/adpcmdec/Makefile gst/adpcmenc/Makefile gst/aiffparse/Makefile gst/amrparse/Makefile gst/asfmux/Makefile gst/autoconvert/Makefile gst/bayer/Makefile gst/camerabin/Makefile gst/cdxaparse/Makefile gst/dccp/Makefile gst/debugutils/Makefile gst/dtmf/Makefile gst/dvdspu/Makefile gst/festival/Makefile gst/freeze/Makefile gst/frei0r/Makefile gst/h264parse/Makefile gst/hdvparse/Makefile gst/id3tag/Makefile gst/legacyresample/Makefile gst/librfb/Makefile gst/liveadder/Makefile gst/mpegdemux/Makefile gst/mpegtsmux/Makefile gst/mpegtsmux/tsmux/Makefile gst/mpegpsmux/Makefile gst/mpeg4videoparse/Makefile gst/mpegvideoparse/Makefile gst/mve/Makefile gst/mxf/Makefile gst/nsf/Makefile gst/nuvdemux/Makefile gst/pcapparse/Makefile gst/pnm/Makefile gst/qtmux/Makefile gst/rawparse/Makefile gst/real/Makefile gst/rtpmux/Makefile gst/scaletempo/Makefile gst/sdp/Makefile gst/selector/Makefile gst/shapewipe/Makefile gst/siren/Makefile gst/speed/Makefile gst/subenc/Makefile gst/stereo/Makefile gst/tta/Makefile gst/valve/Makefile gst/videomeasure/Makefile gst/videosignal/Makefile gst/vmnc/Makefile gst-libs/Makefile gst-libs/gst/Makefile gst-libs/gst/interfaces/Makefile gst-libs/gst/signalprocessor/Makefile gst-libs/gst/video/Makefile sys/Makefile sys/dshowdecwrapper/Makefile sys/acmenc/Makefile sys/acmmp3dec/Makefile sys/directdraw/Makefile sys/directsound/Makefile sys/dmoenc/Makefile sys/dshowsrcwrapper/Makefile sys/dshowvideosink/Makefile sys/dvb/Makefile sys/fbdev/Makefile sys/oss4/Makefile sys/osxvideo/Makefile sys/qtwrapper/Makefile sys/vcd/Makefile sys/vdpau/Makefile sys/wasapi/Makefile sys/wininet/Makefile sys/winks/Makefile sys/winscreencap/Makefile tests/Makefile tests/check/Makefile tests/examples/Makefile tests/examples/camerabin/Makefile tests/examples/directfb/Makefile tests/examples/mxf/Makefile tests/examples/scaletempo/Makefile tests/examples/shapewipe/Makefile tests/examples/switch/Makefile tests/icles/Makefile ext/alsaspdif/Makefile ext/amrwbenc/Makefile ext/assrender/Makefile ext/apexsink/Makefile ext/asfmux/Makefile ext/bz2/Makefile ext/cdaudio/Makefile ext/celt/Makefile ext/cog/Makefile ext/dc1394/Makefile ext/dirac/Makefile ext/directfb/Makefile ext/divx/Makefile ext/dts/Makefile ext/faac/Makefile ext/faad/Makefile ext/gsm/Makefile ext/ivorbis/Makefile ext/jack/Makefile ext/jp2k/Makefile ext/kate/Makefile ext/ladspa/Makefile ext/lv2/Makefile ext/libmms/Makefile ext/Makefile ext/metadata/Makefile ext/mimic/Makefile ext/modplug/Makefile ext/mozilla/Makefile ext/mpeg2enc/Makefile ext/mplex/Makefile ext/musepack/Makefile ext/musicbrainz/Makefile ext/mythtv/Makefile ext/nas/Makefile ext/neon/Makefile ext/ofa/Makefile ext/rsvg/Makefile ext/resindvd/Makefile ext/schroedinger/Makefile ext/sdl/Makefile ext/sndfile/Makefile ext/soundtouch/Makefile ext/gme/Makefile ext/spc/Makefile ext/swfdec/Makefile ext/theora/Makefile ext/timidity/Makefile ext/xvid/Makefile ext/zbar/Makefile po/Makefile.in docs/Makefile docs/plugins/Makefile docs/plugins/figures/Makefile docs/version.entities m4/Makefile win32/common/config.h"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -52645,6 +52690,13 @@ if test -z "${USE_PLUGIN_ADPCMDEC_TRUE}" && test -z "${USE_PLUGIN_ADPCMDEC_FALSE
   { { echo "$as_me:$LINENO: error: conditional \"USE_PLUGIN_ADPCMDEC\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"USE_PLUGIN_ADPCMDEC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${USE_PLUGIN_ADPCMENC_TRUE}" && test -z "${USE_PLUGIN_ADPCMENC_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"USE_PLUGIN_ADPCMENC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"USE_PLUGIN_ADPCMENC\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -54726,6 +54778,7 @@ do
   "gst/Makefile" ) CONFIG_FILES="$CONFIG_FILES gst/Makefile" ;;
   "gst/aacparse/Makefile" ) CONFIG_FILES="$CONFIG_FILES gst/aacparse/Makefile" ;;
   "gst/adpcmdec/Makefile" ) CONFIG_FILES="$CONFIG_FILES gst/adpcmdec/Makefile" ;;
+  "gst/adpcmenc/Makefile" ) CONFIG_FILES="$CONFIG_FILES gst/adpcmenc/Makefile" ;;
   "gst/aiffparse/Makefile" ) CONFIG_FILES="$CONFIG_FILES gst/aiffparse/Makefile" ;;
   "gst/amrparse/Makefile" ) CONFIG_FILES="$CONFIG_FILES gst/amrparse/Makefile" ;;
   "gst/asfmux/Makefile" ) CONFIG_FILES="$CONFIG_FILES gst/asfmux/Makefile" ;;
@@ -55210,6 +55263,8 @@ s,@USE_PLUGIN_AACPARSE_TRUE@,$USE_PLUGIN_AACPARSE_TRUE,;t t
 s,@USE_PLUGIN_AACPARSE_FALSE@,$USE_PLUGIN_AACPARSE_FALSE,;t t
 s,@USE_PLUGIN_ADPCMDEC_TRUE@,$USE_PLUGIN_ADPCMDEC_TRUE,;t t
 s,@USE_PLUGIN_ADPCMDEC_FALSE@,$USE_PLUGIN_ADPCMDEC_FALSE,;t t
+s,@USE_PLUGIN_ADPCMENC_TRUE@,$USE_PLUGIN_ADPCMENC_TRUE,;t t
+s,@USE_PLUGIN_ADPCMENC_FALSE@,$USE_PLUGIN_ADPCMENC_FALSE,;t t
 s,@USE_PLUGIN_AIFFPARSE_TRUE@,$USE_PLUGIN_AIFFPARSE_TRUE,;t t
 s,@USE_PLUGIN_AIFFPARSE_FALSE@,$USE_PLUGIN_AIFFPARSE_FALSE,;t t
 s,@USE_PLUGIN_AMRPARSE_TRUE@,$USE_PLUGIN_AMRPARSE_TRUE,;t t

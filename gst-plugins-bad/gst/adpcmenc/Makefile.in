@@ -14,7 +14,6 @@
 
 @SET_MAKE@
 
-
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -38,9 +37,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-subdir = ext/nas
-DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in
+subdir = gst/adpcmenc
+DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-auto-alt.m4 \
@@ -88,10 +86,10 @@ am__installdirs = "$(DESTDIR)$(plugindir)"
 pluginLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(plugin_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-libgstnassink_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+libgstadpcmenc_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am_libgstnassink_la_OBJECTS = libgstnassink_la-nassink.lo
-libgstnassink_la_OBJECTS = $(am_libgstnassink_la_OBJECTS)
+am_libgstadpcmenc_la_OBJECTS = libgstadpcmenc_la-adpcmenc.lo
+libgstadpcmenc_la_OBJECTS = $(am_libgstadpcmenc_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -103,9 +101,8 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libgstnassink_la_SOURCES)
-DIST_SOURCES = $(libgstnassink_la_SOURCES)
-HEADERS = $(noinst_HEADERS)
+SOURCES = $(libgstadpcmenc_la_SOURCES)
+DIST_SOURCES = $(libgstadpcmenc_la_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -771,17 +768,17 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-plugin_LTLIBRARIES = libgstnassink.la
-libgstnassink_la_SOURCES = nassink.c
-libgstnassink_la_CFLAGS = \
-	$(GST_CFLAGS) $(GST_PLUGINS_BASE_CFLAGS) $(NAS_CFLAGS)
+plugin_LTLIBRARIES = libgstadpcmenc.la
 
-libgstnassink_la_LIBADD = \
-	$(GST_PLUGINS_BASE_LIBS) -lgstaudio-$(GST_MAJORMINOR) $(NAS_LIBS)
+# sources used to compile this plug-in
+libgstadpcmenc_la_SOURCES = adpcmenc.c
 
-libgstnassink_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-libgstnassink_la_LIBTOOLFLAGS = --tag=disable-static
-noinst_HEADERS = nassink.h
+# flags used to compile this plugin
+# add other _CFLAGS and _LIBS as needed
+libgstadpcmenc_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS)
+libgstadpcmenc_la_LIBADD = $(GST_LIBS) $(GST_BASE_LIBS)
+libgstadpcmenc_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+libgstadpcmenc_la_LIBTOOLFLAGS = --tag=disable-static
 all: all-am
 
 .SUFFIXES:
@@ -795,9 +792,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  ext/nas/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  gst/adpcmenc/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  ext/nas/Makefile
+	  $(AUTOMAKE) --gnu  gst/adpcmenc/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -842,8 +839,8 @@ clean-pluginLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libgstnassink.la: $(libgstnassink_la_OBJECTS) $(libgstnassink_la_DEPENDENCIES) 
-	$(LINK) -rpath $(plugindir) $(libgstnassink_la_LDFLAGS) $(libgstnassink_la_OBJECTS) $(libgstnassink_la_LIBADD) $(LIBS)
+libgstadpcmenc.la: $(libgstadpcmenc_la_OBJECTS) $(libgstadpcmenc_la_DEPENDENCIES) 
+	$(LINK) -rpath $(plugindir) $(libgstadpcmenc_la_LDFLAGS) $(libgstadpcmenc_la_OBJECTS) $(libgstadpcmenc_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -851,7 +848,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstnassink_la-nassink.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstadpcmenc_la-adpcmenc.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -874,12 +871,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-libgstnassink_la-nassink.lo: nassink.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstnassink_la_CFLAGS) $(CFLAGS) -MT libgstnassink_la-nassink.lo -MD -MP -MF "$(DEPDIR)/libgstnassink_la-nassink.Tpo" -c -o libgstnassink_la-nassink.lo `test -f 'nassink.c' || echo '$(srcdir)/'`nassink.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstnassink_la-nassink.Tpo" "$(DEPDIR)/libgstnassink_la-nassink.Plo"; else rm -f "$(DEPDIR)/libgstnassink_la-nassink.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='nassink.c' object='libgstnassink_la-nassink.lo' libtool=yes @AMDEPBACKSLASH@
+libgstadpcmenc_la-adpcmenc.lo: adpcmenc.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstadpcmenc_la_CFLAGS) $(CFLAGS) -MT libgstadpcmenc_la-adpcmenc.lo -MD -MP -MF "$(DEPDIR)/libgstadpcmenc_la-adpcmenc.Tpo" -c -o libgstadpcmenc_la-adpcmenc.lo `test -f 'adpcmenc.c' || echo '$(srcdir)/'`adpcmenc.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstadpcmenc_la-adpcmenc.Tpo" "$(DEPDIR)/libgstadpcmenc_la-adpcmenc.Plo"; else rm -f "$(DEPDIR)/libgstadpcmenc_la-adpcmenc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='adpcmenc.c' object='libgstadpcmenc_la-adpcmenc.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstnassink_la_CFLAGS) $(CFLAGS) -c -o libgstnassink_la-nassink.lo `test -f 'nassink.c' || echo '$(srcdir)/'`nassink.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstadpcmenc_la_CFLAGS) $(CFLAGS) -c -o libgstadpcmenc_la-adpcmenc.lo `test -f 'adpcmenc.c' || echo '$(srcdir)/'`adpcmenc.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -968,7 +965,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES)
 installdirs:
 	for dir in "$(DESTDIR)$(plugindir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
