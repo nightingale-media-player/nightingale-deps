@@ -496,6 +496,21 @@ bool String::isAscii() const
   return true;
 }
 
+bool String::isInt() const
+{
+  // An empty string is not an int.
+  if (d->data.size() == 0) {
+    return false;
+  }
+  
+  for(wstring::const_iterator it = d->data.begin(); it != d->data.end(); ++it) {
+    if (*it < '0' || *it > '9')
+      return false;
+  }
+
+  return true;
+}
+
 bool String::shouldGuessCharacterSet() const
 {
   return !d->trustCharset;

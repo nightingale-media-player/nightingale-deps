@@ -177,16 +177,7 @@ String ID3v2::Tag::genre() const
     if((*it).isEmpty())
       continue;
 
-    bool isNumber = true;
-
-    for(String::ConstIterator charIt = (*it).begin();
-        isNumber && charIt != (*it).end();
-        ++charIt)
-    {
-      isNumber = *charIt >= '0' && *charIt <= '9';
-    }
-
-    if(isNumber) {
+    if((*it).isInt()) {
       int number = (*it).toInt();
       if(number >= 0 && number <= 255)
         *it = ID3v1::genre(number);
