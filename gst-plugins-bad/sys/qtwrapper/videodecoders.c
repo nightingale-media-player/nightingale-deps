@@ -410,6 +410,11 @@ open_decoder (QTWrapperVideoDecoder * qtwrapper, GstCaps * caps,
     desc = new_image_description (qtwrapper, NULL, width, height);
   }
 
+  if (!desc) {
+    GST_WARNING_OBJECT (qtwrapper, "Couldn't determine description for video");
+    goto beach;
+  }
+
 #if DEBUG_DUMP
   dump_image_description (desc);
 #endif
