@@ -151,6 +151,11 @@ class StepBox(components.Adapter):
         if text is None:
             log.msg("getText() gave None", urlbase)
             text = []
+
+        # Remove the property name, since they make the page unreadable.
+        if text[0].startswith('set props:'):
+           text[1] = ''
+
         text = text[:]
         logs = self.original.getLogs()
         for num in range(len(logs)):
