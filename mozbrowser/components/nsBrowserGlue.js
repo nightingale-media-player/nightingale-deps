@@ -502,6 +502,7 @@ BrowserGlue.prototype = {
                      getService(Ci.nsIPrefBranch);
 
     var importBookmarks = false;
+    var importBookmarksHTML = false;
     var restoreDefaultBookmarks = false;
     try {
       restoreDefaultBookmarks = prefBranch.getBoolPref("browser.bookmarks.restore_default_bookmarks");
@@ -515,7 +516,8 @@ BrowserGlue.prototype = {
     }
     else {
       try {
-        importBookmarks = prefBranch.getBoolPref("browser.places.importBookmarksHTML");
+        importBookmarks = importBookmarksHTML =
+          prefBranch.getBoolPref("browser.places.importBookmarksHTML");
       } catch(ex) {}
     }
 
@@ -559,11 +561,12 @@ BrowserGlue.prototype = {
           // Report the error, but ignore it.
           Cu.reportError(err);
         }
-        prefBranch.setBoolPref("browser.places.importBookmarksHTML", false);
-        if (restoreDefaultBookmarks)
-          prefBranch.setBoolPref("browser.bookmarks.restore_default_bookmarks",
-                                 false);
       }
+      if (importBookmarksHTML)
+        prefBranch.setBoolPref("browser.places.importBookmarksHTML", false);
+      if (restoreDefaultBookmarks)
+        prefBranch.setBoolPref("browser.bookmarks.restore_default_bookmarks",
+                               false);
     }
 
     // Initialize bookmark archiving on idle.
