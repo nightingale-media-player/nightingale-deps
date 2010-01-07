@@ -370,8 +370,6 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
 	       $(MSYS_CP) $(SB_VENDOR_BINARIES_CHECKOUT)/$(tgt) \
 	             $(SB_VENDOR_BINARIES_DIR)/$(tgt) --exclude=.svn && \
 	             $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/$(tgt)/.msyscp ; ))
-	@echo Fixing up libtools .la files for first-time use...
-	$(FIND) $(SB_VENDOR_BINARIES_DIR)/ -type f -name '*.la' -exec $(SB_VENDOR_CHECKOUT)/fix-win32-libtool-la-paths.pl -f {} \;
 else
 	$(foreach tgt, \
 	  $(SB_VENDOR_BINARIES_TARGETS), \
@@ -379,8 +377,10 @@ else
 	       $(LN) -sv $(SB_VENDOR_BINARIES_CHECKOUT)/$(tgt) \
 	            $(SB_VENDOR_BINARIES_DIR); ))
 endif
-ifneq (Msys,$(SB_VENDOR_ARCH))
 	@echo Fixing up pkg-config .pc files for first time use...
+ifeq (Msys,$(SB_VENDOR_ARCH))
+	$(FIND) $(SB_VENDOR_BINARIES_DIR) -type f -name '*.pc' -exec $(SB_VENDOR_CHECKOUT)/fix-pkg-config-paths.pl -p $(SB_TARGET_ARCH) {} \;
+else
 	$(FIND) $(SB_VENDOR_BINARIES_CHECKOUT) -type f -name '*.pc' -exec $(SB_VENDOR_CHECKOUT)/fix-pkg-config-paths.pl -p $(SB_TARGET_ARCH) {} \;
 endif
 ifeq (Msys,$(SB_VENDOR_ARCH))
