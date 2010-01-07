@@ -75,23 +75,27 @@ static void gst_dshowvideosink_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
 /* GstElement methods */
-static GstStateChangeReturn gst_dshowvideosink_change_state (GstElement * element, GstStateChange transition);
+static GstStateChangeReturn gst_dshowvideosink_change_state (
+        GstElement * element, GstStateChange transition);
 
 /* GstBaseSink methods */
 static gboolean gst_dshowvideosink_start (GstBaseSink * bsink);
 static gboolean gst_dshowvideosink_stop (GstBaseSink * bsink);
 static gboolean gst_dshowvideosink_unlock (GstBaseSink * bsink);
 static gboolean gst_dshowvideosink_unlock_stop (GstBaseSink * bsink);
-static gboolean gst_dshowvideosink_set_caps (GstBaseSink * bsink, GstCaps * caps);
+static gboolean gst_dshowvideosink_set_caps (GstBaseSink * bsink,
+        GstCaps * caps);
 static GstCaps *gst_dshowvideosink_get_caps (GstBaseSink * bsink);
-static GstFlowReturn gst_dshowvideosink_render (GstBaseSink *sink, GstBuffer *buffer);
+static GstFlowReturn gst_dshowvideosink_render (GstBaseSink *sink,
+        GstBuffer *buffer);
 
 /* GstXOverlay methods */
-static void gst_dshowvideosink_set_window_id (GstXOverlay * overlay, ULONG window_id);
+static void gst_dshowvideosink_set_window_id (GstXOverlay * overlay,
+        ULONG window_id);
 
 /* TODO: event, preroll, buffer_alloc? 
- * buffer_alloc won't generally be all that useful because the renderers require a 
- * different stride to GStreamer's implicit values. 
+ * buffer_alloc won't generally be all that useful because the renderers
+ * require a different stride to GStreamer's implicit values. 
  */
 
 static gboolean
@@ -165,7 +169,8 @@ gst_dshowvideosink_class_init (GstDshowVideoSinkClass * klass)
   gobject_class->get_property =
       GST_DEBUG_FUNCPTR (gst_dshowvideosink_get_property);
 
-  gstelement_class->change_state = GST_DEBUG_FUNCPTR (gst_dshowvideosink_change_state);
+  gstelement_class->change_state =
+      GST_DEBUG_FUNCPTR (gst_dshowvideosink_change_state);
 
   gstbasesink_class->get_caps = GST_DEBUG_FUNCPTR (gst_dshowvideosink_get_caps);
   gstbasesink_class->set_caps = GST_DEBUG_FUNCPTR (gst_dshowvideosink_set_caps);
@@ -212,7 +217,8 @@ gst_dshowvideosink_clear (GstDshowVideoSink *sink)
 }
 
 static void
-gst_dshowvideosink_init (GstDshowVideoSink * sink, GstDshowVideoSinkClass * klass)
+gst_dshowvideosink_init (GstDshowVideoSink * sink,
+        GstDshowVideoSinkClass * klass)
 {
   HRESULT hr;
 
@@ -352,7 +358,8 @@ dump_all_pin_media_types (IBaseFilter *filter)
     PIN_DIRECTION pindir;
     hres = pin->QueryDirection (&pindir);
 
-    GST_INFO ("Found a pin with direction: %s", (pindir == PINDIR_INPUT)? "input": "output");
+    GST_INFO ("Found a pin with direction: %s",
+            (pindir == PINDIR_INPUT)? "input": "output");
     dump_available_media_types (pin);
 
     hres = pin->QueryInterface (
@@ -370,7 +377,8 @@ dump_all_pin_media_types (IBaseFilter *filter)
 }
 
 gboolean 
-gst_dshow_get_pin_from_filter (IBaseFilter *filter, PIN_DIRECTION pindir, IPin **pin)
+gst_dshow_get_pin_from_filter (IBaseFilter *filter, PIN_DIRECTION pindir,
+        IPin **pin)
 {
   gboolean ret = FALSE;
   IEnumPins *enumpins = NULL;
@@ -405,21 +413,25 @@ gst_dshowvideosink_handle_event (GstDshowVideoSink *sink)
   if (sink->filter_media_event) {
     long evCode;
     LONG_PTR param1, param2;
-    while (SUCCEEDED (sink->filter_media_event->GetEvent(&evCode, &param1, &param2, 0)))
+    while (SUCCEEDED (sink->filter_media_event->GetEvent(&evCode,
+                    &param1, &param2, 0)))
     {
-      GST_INFO_OBJECT (sink, "Received DirectShow graph event code 0x%x", evCode);
+      GST_INFO_OBJECT (sink, "Received DirectShow graph event code 0x%x",
+              evCode);
       sink->filter_media_event->FreeEventParams(evCode, param1, param2);
     }
   }
 }
 
 /* WNDPROC for application-supplied windows */
-LRESULT APIENTRY WndProcHook (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT APIENTRY WndProcHook (HWND hWnd, UINT message, WPARAM wParam,
+        LPARAM lParam)
 {
   /* Handle certain actions specially on the window passed to us.
    * Then forward back to the original window.
    */
-  GstDshowVideoSink *sink = (GstDshowVideoSink *)GetProp (hWnd, L"GstDShowVideoSink");
+  GstDshowVideoSink *sink = (GstDshowVideoSink *)GetProp (hWnd,
+          L"GstDShowVideoSink");
 
   switch (message) {
     case WM_GRAPH_NOTIFY:
@@ -448,15 +460,13 @@ LRESULT APIENTRY WndProcHook (HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 LRESULT APIENTRY 
 WndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-  GstDshowVideoSink *sink = (GstDshowVideoSink *)GetWindowLongPtr (hWnd, GWLP_USERDATA);
+  GstDshowVideoSink *sink = (GstDshowVideoSink *)GetWindowLongPtr (hWnd,
+          GWLP_USERDATA);
 
   if (!sink) {
-    /* I think these happen before we have a chance to set our userdata pointer */
-    GST_DEBUG ("No sink!");
+    /* These happen before we have a chance to set our userdata pointer */
     return DefWindowProc (hWnd, message, wParam, lParam);
   }
-
-  //GST_DEBUG_OBJECT (sink, "Got a window message for %x, %x", hWnd, message);
 
   switch (message) {
     case WM_GRAPH_NOTIFY:
@@ -570,7 +580,9 @@ gst_dshowvideosink_window_thread (GstDshowVideoSink * sink)
 
   /* Set the renderer's clipping window */
   if (!sink->renderersupport->SetRendererWindow (video_window)) {
-    GST_WARNING_OBJECT (sink, "Failed to set video clipping window on filter %p", sink->renderersupport);
+    GST_WARNING_OBJECT (sink,
+            "Failed to set video clipping window on filter %p",
+            sink->renderersupport);
   }
 
   /* Now show the window, as appropriate */
@@ -626,7 +638,8 @@ failed:
   return FALSE;
 }
 
-static void gst_dshowvideosink_set_window_id (GstXOverlay * overlay, ULONG window_id)
+static void gst_dshowvideosink_set_window_id (GstXOverlay * overlay,
+        ULONG window_id)
 {
   GstDshowVideoSink *sink = GST_DSHOWVIDEOSINK (overlay);
   HWND videowindow = (HWND)window_id;
@@ -643,14 +656,18 @@ static void gst_dshowvideosink_set_window_id (GstXOverlay * overlay, ULONG windo
 static void gst_dshowvideosink_set_window_for_renderer (GstDshowVideoSink *sink)
 {
   /* Application has requested a specific window ID */
-  sink->prevWndProc = (WNDPROC) SetWindowLong (sink->window_id, GWL_WNDPROC, (LONG)WndProcHook);
-  GST_DEBUG_OBJECT (sink, "Set wndproc to %p from %p", WndProcHook, sink->prevWndProc);
+  sink->prevWndProc = (WNDPROC) SetWindowLong (sink->window_id, GWL_WNDPROC,
+          (LONG)WndProcHook);
+  GST_DEBUG_OBJECT (sink, "Set wndproc to %p from %p", WndProcHook,
+          sink->prevWndProc);
   SetProp (sink->window_id, L"GstDShowVideoSink", sink);
   /* This causes the new WNDPROC to become active */
-  SetWindowPos (sink->window_id, 0, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+  SetWindowPos (sink->window_id, 0, 0, 0, 0, 0,
+          SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 
   if (!sink->renderersupport->SetRendererWindow (sink->window_id)) {
-    GST_WARNING_OBJECT (sink, "Failed to set HWND %x on renderer", sink->window_id);
+    GST_WARNING_OBJECT (sink, "Failed to set HWND %x on renderer",
+            sink->window_id);
     return;
   }
 
@@ -693,7 +710,8 @@ gst_dshowvideosink_prepare_window (GstDshowVideoSink *sink)
   else {
     hres = sink->filter_media_event->SetNotifyWindow ((OAHWND)sink->window_id,
             WM_GRAPH_NOTIFY, 0);
-    GST_DEBUG_OBJECT (sink, "SetNotifyWindow(%p) returned %x", sink->window_id, hres);
+    GST_DEBUG_OBJECT (sink, "SetNotifyWindow(%p) returned %x",
+            sink->window_id, hres);
   }
 }
 
@@ -708,8 +726,8 @@ gst_dshowvideosink_connect_graph (GstDshowVideoSink *sink)
 
   srcpin = sink->fakesrc->GetOutputPin();
 
-  gst_dshow_get_pin_from_filter (sink->renderersupport->GetFilter(), PINDIR_INPUT, 
-      &sinkpin);
+  gst_dshow_get_pin_from_filter (sink->renderersupport->GetFilter(),
+          PINDIR_INPUT, &sinkpin);
   if (!sinkpin) {
     GST_WARNING_OBJECT (sink, "Cannot get input pin from Renderer");
     return FALSE;
@@ -839,8 +857,8 @@ gst_dshowvideosink_stop_graph (GstDshowVideoSink *sink)
 
   sink->filter_graph->Disconnect(sink->fakesrc->GetOutputPin());
 
-  gst_dshow_get_pin_from_filter (sink->renderersupport->GetFilter(), PINDIR_INPUT, 
-      &sinkpin);
+  gst_dshow_get_pin_from_filter (sink->renderersupport->GetFilter(),
+          PINDIR_INPUT, &sinkpin);
   sink->filter_graph->Disconnect(sinkpin);
   sinkpin->Release();
 
@@ -850,7 +868,8 @@ gst_dshowvideosink_stop_graph (GstDshowVideoSink *sink)
     /* Return control of application window */
     SetWindowLong (sink->window_id, GWL_WNDPROC, (LONG)sink->prevWndProc);
     RemoveProp (sink->window_id, L"GstDShowVideoSink");
-    SetWindowPos (sink->window_id, 0, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+    SetWindowPos (sink->window_id, 0, 0, 0, 0, 0,
+            SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
     sink->prevWndProc = NULL;
   }
   sink->connected = FALSE;
@@ -865,7 +884,8 @@ done:
 }
 
 static GstStateChangeReturn
-gst_dshowvideosink_change_state (GstElement * element, GstStateChange transition)
+gst_dshowvideosink_change_state (GstElement * element,
+        GstStateChange transition)
 {
   GstDshowVideoSink *sink = GST_DSHOWVIDEOSINK (element);
   GstStateChangeReturn ret, rettmp;
@@ -953,13 +973,15 @@ public:
     hres = filter->QueryInterface (
           IID_IVMRFilterConfig9, (void **) &config);
     if (FAILED (hres)) {
-      GST_WARNING_OBJECT (sink, "VMR9 filter config interface missing: %x", hres);
+      GST_WARNING_OBJECT (sink, "VMR9 filter config interface missing: %x",
+              hres);
       return FALSE;
     }
 
     hres = config->SetRenderingMode (VMR9Mode_Windowless);
     if (FAILED (hres)) {
-      GST_WARNING_OBJECT (sink, "VMR9 couldn't be set to windowless mode: %x", hres);
+      GST_WARNING_OBJECT (sink, "VMR9 couldn't be set to windowless mode: %x",
+              hres);
       return FALSE;
     }
     else {
@@ -971,7 +993,8 @@ public:
     hres = filter->QueryInterface (
           IID_IVMRWindowlessControl9, (void **) &control);
     if (FAILED (hres)) {
-      GST_WARNING_OBJECT (sink, "VMR9 windowless control interface missing: %x", hres);
+      GST_WARNING_OBJECT (sink, "VMR9 windowless control interface missing: %x",
+              hres);
       return FALSE;
     }
 
@@ -988,7 +1011,9 @@ public:
     video_window = window;
     HRESULT hres = control->SetVideoClippingWindow (video_window);
     if (FAILED (hres)) {
-      GST_WARNING_OBJECT (sink, "Failed to set video clipping window on filter %p: %x", filter, hres);
+      GST_WARNING_OBJECT (sink,
+              "Failed to set video clipping window on filter %p: %x",
+              filter, hres);
       return FALSE;
     }
     return TRUE;
@@ -1078,13 +1103,15 @@ public:
     hres = filter->QueryInterface (
           IID_IVMRFilterConfig, (void **) &config);
     if (FAILED (hres)) {
-      GST_WARNING_OBJECT (sink, "VMR filter config interface missing: %x", hres);
+      GST_WARNING_OBJECT (sink, "VMR filter config interface missing: %x",
+              hres);
       return FALSE;
     }
 
     hres = config->SetRenderingMode (VMRMode_Windowless);
     if (FAILED (hres)) {
-      GST_WARNING_OBJECT (sink, "VMR couldn't be set to windowless mode: %x", hres);
+      GST_WARNING_OBJECT (sink, "VMR couldn't be set to windowless mode: %x",
+              hres);
       return FALSE;
     }
     else {
@@ -1094,7 +1121,8 @@ public:
     hres = filter->QueryInterface (
           IID_IVMRWindowlessControl, (void **) &control);
     if (FAILED (hres)) {
-      GST_WARNING_OBJECT (sink, "VMR windowless control interface missing: %x", hres);
+      GST_WARNING_OBJECT (sink, "VMR windowless control interface missing: %x",
+              hres);
       return FALSE;
     }
 
@@ -1111,7 +1139,9 @@ public:
     video_window = window;
     HRESULT hres = control->SetVideoClippingWindow (video_window);
     if (FAILED (hres)) {
-      GST_WARNING_OBJECT (sink, "Failed to set video clipping window on filter %p: %x", filter, hres);
+      GST_WARNING_OBJECT (sink,
+              "Failed to set video clipping window on filter %p: %x",
+              filter, hres);
       return FALSE;
     }
     return TRUE;
@@ -1168,7 +1198,8 @@ gst_dshowvideosink_create_renderer (GstDshowVideoSink *sink)
       support = new VMR7Support (sink);
     }
     else {
-      GST_ERROR_OBJECT (sink, "Unknown sink type '%s'", sink->preferredrenderer);
+      GST_ERROR_OBJECT (sink, "Unknown sink type '%s'",
+              sink->preferredrenderer);
       return FALSE;
     }
 
@@ -1220,7 +1251,8 @@ gst_dshowvideosink_build_filtergraph (GstDshowVideoSink *sink)
       IID_IFilterGraph, (LPVOID *) & sink->filter_graph);
   if (FAILED (hres)) {
     GST_ERROR_OBJECT (sink, 
-          "Can't create an instance of the dshow graph manager (error=%x)", hres);
+          "Can't create an instance of the dshow graph manager (error=%x)",
+          hres);
     goto error;
   }
 
@@ -1306,7 +1338,8 @@ gst_dshowvideosink_set_caps (GstBaseSink * bsink, GstCaps * caps)
   }
 
   if (!gst_caps_to_directshow_media_type (caps, &sink->mediatype)) {
-    GST_WARNING_OBJECT (sink, "Cannot convert caps to AM_MEDIA_TYPE, rejecting");
+    GST_WARNING_OBJECT (sink,
+            "Cannot convert caps to AM_MEDIA_TYPE, rejecting");
     return FALSE;
   }
 
@@ -1371,7 +1404,8 @@ gst_dshowvideosink_render (GstBaseSink *bsink, GstBuffer *buffer)
 
   GST_DEBUG_OBJECT (sink, "Pushing buffer through fakesrc->renderer");
   ret = sink->fakesrc->GetOutputPin()->PushBuffer (buffer);
-  GST_DEBUG_OBJECT (sink, "Done pushing buffer through fakesrc->renderer: %s", gst_flow_get_name(ret));
+  GST_DEBUG_OBJECT (sink, "Done pushing buffer through fakesrc->renderer: %s",
+          gst_flow_get_name(ret));
 
   return ret;
 }
@@ -1416,16 +1450,20 @@ video_media_type_to_caps (AM_MEDIA_TYPE *mediatype)
   /* TODO: Add  RGB types. */
   if (IsEqualGUID (mediatype->subtype, MEDIASUBTYPE_YUY2))
     caps = gst_caps_new_simple ("video/x-raw-yuv", 
-            "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('Y', 'U', 'Y', '2'), NULL);
+            "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('Y', 'U', 'Y', '2'),
+            NULL);
   else if (IsEqualGUID (mediatype->subtype, MEDIASUBTYPE_UYVY))
     caps = gst_caps_new_simple ("video/x-raw-yuv", 
-            "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('U', 'Y', 'V', 'Y'), NULL);
+            "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('U', 'Y', 'V', 'Y'),
+            NULL);
   else if (IsEqualGUID (mediatype->subtype, MEDIASUBTYPE_YUYV))
     caps = gst_caps_new_simple ("video/x-raw-yuv", 
-            "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('Y', 'U', 'Y', 'V'), NULL);
+            "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('Y', 'U', 'Y', 'V'),
+            NULL);
   else if (IsEqualGUID (mediatype->subtype, MEDIASUBTYPE_YV12))
     caps = gst_caps_new_simple ("video/x-raw-yuv", 
-            "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('Y', 'V', '1', '2'), NULL);
+            "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('Y', 'V', '1', '2'),
+            NULL);
 
   if (!caps) {
     GST_DEBUG ("No subtype known; cannot continue");
@@ -1548,7 +1586,8 @@ gst_caps_to_directshow_media_type (GstCaps *caps, AM_MEDIA_TYPE *mediatype)
 
     {
       int par_n, par_d;
-      VIDEOINFOHEADER *vi = (VIDEOINFOHEADER *)CoTaskMemAlloc (sizeof (VIDEOINFOHEADER));
+      VIDEOINFOHEADER *vi = (VIDEOINFOHEADER *)CoTaskMemAlloc (
+              sizeof (VIDEOINFOHEADER));
       memset (vi, 0, sizeof (VIDEOINFOHEADER));
 
       mediatype->formattype = FORMAT_VideoInfo;
@@ -1557,7 +1596,8 @@ gst_caps_to_directshow_media_type (GstCaps *caps, AM_MEDIA_TYPE *mediatype)
 
       mediatype->lSampleSize = width * height * bpp / 8;
 
-      GST_INFO ("Set mediatype format: size %d, sample size %d", mediatype->cbFormat, mediatype->lSampleSize);
+      GST_INFO ("Set mediatype format: size %d, sample size %d",
+              mediatype->cbFormat, mediatype->lSampleSize);
 
       vi->rcSource.top = 0;
       vi->rcSource.left = 0;
@@ -1566,13 +1606,15 @@ gst_caps_to_directshow_media_type (GstCaps *caps, AM_MEDIA_TYPE *mediatype)
 
       vi->rcTarget.top = 0;
       vi->rcTarget.left = 0;
-      if (gst_structure_get_fraction (s, "pixel-aspect-ratio", &par_n, &par_d)) {
+      if (gst_structure_get_fraction (s, "pixel-aspect-ratio", &par_n, &par_d))
+      {
         /* To handle non-square pixels, we set the target rectangle to a 
          * different size than the source rectangle.
          * There might be a better way, but this seems to work. */
         vi->rcTarget.bottom = height;
         vi->rcTarget.right = width * par_n / par_d;
-        GST_DEBUG ("Got PAR: set target right to %d from width %d", vi->rcTarget.right, width);
+        GST_DEBUG ("Got PAR: set target right to %d from width %d",
+                vi->rcTarget.right, width);
       }
       else {
         GST_DEBUG ("No PAR found");
