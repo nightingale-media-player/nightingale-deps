@@ -621,7 +621,7 @@ struct ChainData
 static void
 gst_dshowaudiodec_chain_task (void *arg, void *ret)
 {
-  gboolean *result = (gboolean *)ret;
+  GstFlowReturn *result = (GstFlowReturn *)ret;
   struct ChainData *cdata = (struct ChainData *)arg;
   GstDshowAudioDec *adec = cdata->adec;
   GstBuffer *buffer = cdata->buf;

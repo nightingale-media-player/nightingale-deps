@@ -78,7 +78,8 @@ static gboolean gst_dshowvideodec_create_graph_and_filters (GstDshowVideoDec *
     vdec);
 static gboolean gst_dshowvideodec_destroy_graph_and_filters (GstDshowVideoDec *
     vdec);
-static gboolean gst_dshowvideodec_flush (GstDshowVideoDec * adec);
+static gboolean gst_dshowvideodec_setup_graph (GstDshowVideoDec * vdec, GstBuffer *extradata);
+static gboolean gst_dshowvideodec_flush (GstDshowVideoDec * vdec);
 static gboolean gst_dshowvideodec_get_filter_output_format (GstDshowVideoDec *
     vdec, const GUID subtype, VIDEOINFOHEADER ** format, guint * size);
 
@@ -457,10 +458,7 @@ gst_dshowvideodec_init (GstDshowVideoDec * vdec,
 
   vdec->setup = FALSE;
 
-  hr = CoInitialize (0);
-  if (SUCCEEDED(hr)) {
-    vdec->comInitialized = TRUE;
-  }
+  vdec->comthread = gst_comtaskthread_init ();
 }
 
 static void
@@ -473,9 +471,9 @@ gst_dshowvideodec_dispose (GObject * object)
     vdec->segment = NULL;
   }
 
-  if (vdec->comInitialized) {
-    CoUninitialize ();
-    vdec->comInitialized = FALSE;
+  if (vdec->comthread) {
+    gst_comtaskthread_destroy (vdec->comthread);
+    vdec->comthread = NULL;
   }
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
@@ -514,21 +512,10 @@ static gboolean
 gst_dshowvideodec_sink_setcaps (GstPad * pad, GstCaps * caps)
 {
   gboolean ret = FALSE;
-  HRESULT hres;
   GstStructure *s = gst_caps_get_structure (caps, 0);
   GstDshowVideoDec *vdec = (GstDshowVideoDec *) gst_pad_get_parent (pad);
-  GstDshowVideoDecClass *klass =
-      (GstDshowVideoDecClass *) G_OBJECT_GET_CLASS (vdec);
   GstBuffer *extradata = NULL;
   const GValue *v = NULL;
-  guint size = 0;
-  GstCaps *caps_out;
-  AM_MEDIA_TYPE output_mediatype, input_mediatype;
-  VIDEOINFOHEADER *input_vheader = NULL, *output_vheader = NULL;
-  CComPtr<IPin> output_pin;
-  CComPtr<IPin> input_pin;
-  IBaseFilter *srcfilter = NULL;
-  IBaseFilter *sinkfilter = NULL;
   const GValue *fps, *par;
 
   /* read data */
@@ -561,6 +548,40 @@ gst_dshowvideodec_sink_setcaps (GstPad * pad, GstCaps * caps)
 
   if ((v = gst_structure_get_value (s, "codec_data")))
     extradata = gst_value_get_buffer (v);
+
+  ret = gst_dshowvideodec_setup_graph (vdec, extradata);
+
+end:
+  gst_object_unref (vdec);
+
+  return ret;
+}
+
+struct SetupInfo {
+  GstDshowVideoDec *vdec;
+  GstBuffer        *extradata;
+};
+
+static void gst_dshowvideodec_setup_graph_task (void *arg, void *ret)
+{
+  struct SetupInfo *setupinfo = (struct SetupInfo *)arg;
+  GstDshowVideoDec * vdec = setupinfo->vdec;
+  GstBuffer *extradata = setupinfo->extradata;
+  gboolean *result = (gboolean *)ret;
+
+  CComPtr<IPin> output_pin;
+  CComPtr<IPin> input_pin;
+  IBaseFilter *srcfilter = NULL;
+  IBaseFilter *sinkfilter = NULL;
+  GstDshowVideoDecClass *klass =
+      (GstDshowVideoDecClass *) G_OBJECT_GET_CLASS (vdec);
+  AM_MEDIA_TYPE output_mediatype, input_mediatype;
+  VIDEOINFOHEADER *input_vheader = NULL, *output_vheader = NULL;
+  guint size = 0;
+  GstCaps *caps_out;
+  HRESULT hres;
+
+  *result = FALSE;
 
   /* define the input type format */
   memset (&input_mediatype, 0, sizeof (AM_MEDIA_TYPE));
@@ -728,17 +749,29 @@ gst_dshowvideodec_sink_setcaps (GstPad * pad, GstCaps * caps)
     goto end;
   }
 
-  ret = TRUE;
+  *result = TRUE;
 end:
-  gst_object_unref (vdec);
   if (input_vheader)
     g_free (input_vheader);
   if (srcfilter)
     srcfilter->Release();
   if (sinkfilter)
     sinkfilter->Release();
+}
+
+static gboolean
+gst_dshowvideodec_setup_graph (GstDshowVideoDec * vdec, GstBuffer *extradata)
+{
+  gboolean ret;
+  struct SetupInfo setup;
+  setup.vdec = vdec;
+  setup.extradata = extradata;
+
+  gst_comtaskthread_do_task (vdec->comthread,
+          gst_dshowvideodec_setup_graph_task, &setup, &ret);
   return ret;
 }
+
 
 static gboolean
 gst_dshowvideodec_sink_event (GstPad * pad, GstEvent * event)
@@ -789,10 +822,19 @@ gst_dshowvideodec_sink_event (GstPad * pad, GstEvent * event)
   return ret;
 }
 
-static GstFlowReturn
-gst_dshowvideodec_chain (GstPad * pad, GstBuffer * buffer)
+struct ChainData
 {
-  GstDshowVideoDec *vdec = (GstDshowVideoDec *) gst_pad_get_parent (pad);
+  GstDshowVideoDec *vdec;
+  GstBuffer        *buf;
+};
+
+static void
+gst_dshowvideodec_chain_task (void *arg, void *ret)
+{
+  GstFlowReturn *result = (GstFlowReturn *)ret;
+  struct ChainData *cdata = (struct ChainData *)arg;
+  GstDshowVideoDec *vdec = cdata->vdec;
+  GstBuffer *buffer = cdata->buf;
   bool discont = FALSE;
   GstClockTime stop;
 
@@ -810,7 +852,7 @@ gst_dshowvideodec_chain (GstPad * pad, GstBuffer * buffer)
   }
 
   /* check if duration is valid and use duration only when it's valid
-     /* because dshow is not decoding frames having stop smaller than start */
+   * because dshow is not decoding frames having stop smaller than start */
   if (GST_BUFFER_DURATION_IS_VALID (buffer)) {
     stop = GST_BUFFER_TIMESTAMP (buffer) + GST_BUFFER_DURATION (buffer);
   } else {
@@ -838,9 +880,25 @@ gst_dshowvideodec_chain (GstPad * pad, GstBuffer * buffer)
 
 beach:
   gst_buffer_unref (buffer);
+
+  *result = vdec->last_ret;
+}
+
+static GstFlowReturn
+gst_dshowvideodec_chain (GstPad * pad, GstBuffer * buffer)
+{
+  GstDshowVideoDec *vdec = (GstDshowVideoDec *) gst_pad_get_parent (pad);
+  GstFlowReturn ret;
+  struct ChainData chain_data;
+  chain_data.vdec = vdec;
+  chain_data.buf = buffer;
+
+  gst_comtaskthread_do_task (vdec->comthread, gst_dshowvideodec_chain_task,
+          &chain_data, &ret);
+
   gst_object_unref (vdec);
 
-  return vdec->last_ret;
+  return ret;
 }
 
 static GstCaps *
@@ -984,15 +1042,16 @@ gst_dshowvideodec_get_filter_output_format (GstDshowVideoDec * vdec,
   return ret;
 }
 
-static gboolean
-gst_dshowvideodec_create_graph_and_filters (GstDshowVideoDec * vdec)
+static void
+gst_dshowvideodec_create_graph_and_filters_task (void *arg, void *ret)
 {
+  GstDshowVideoDec *vdec = (GstDshowVideoDec *)arg;
+  gboolean *result = (gboolean *)ret;
   HRESULT hres = S_FALSE;
   GstDshowVideoDecClass *klass =
       (GstDshowVideoDecClass *) G_OBJECT_GET_CLASS (vdec);
   IBaseFilter *srcfilter = NULL;
   IBaseFilter *sinkfilter = NULL;
-  gboolean ret = FALSE;
 
   /* create the filter graph manager object */
   hres = CoCreateInstance (CLSID_FilterGraph, NULL, CLSCTX_INPROC,
@@ -1074,14 +1133,14 @@ gst_dshowvideodec_create_graph_and_filters (GstDshowVideoDec * vdec)
 
   vdec->setup = TRUE;
 
-  ret = TRUE;
+  *result = TRUE;
 
 done:
   if (srcfilter)
     srcfilter->Release();
   if (sinkfilter)
     sinkfilter->Release();
-  return ret;
+  return;
 
 error:
   if (vdec->fakesrc) {
@@ -1105,12 +1164,27 @@ error:
     vdec->filtergraph = NULL;
   }
 
+  *result = FALSE;
+
   goto done;
 }
 
 static gboolean
-gst_dshowvideodec_destroy_graph_and_filters (GstDshowVideoDec * vdec)
+gst_dshowvideodec_create_graph_and_filters (GstDshowVideoDec * vdec)
 {
+  gboolean ret;
+  gst_comtaskthread_do_task (vdec->comthread,
+          gst_dshowvideodec_create_graph_and_filters_task, vdec, &ret);
+  return ret;
+}
+
+
+static void
+gst_dshowvideodec_destroy_graph_and_filters_task (void *arg, void *ret)
+{
+  GstDshowVideoDec *vdec = (GstDshowVideoDec *)arg;
+  gboolean *result = (gboolean *)ret;
+
   HRESULT hres;
 
   if (vdec->mediafilter) {
@@ -1162,7 +1236,16 @@ gst_dshowvideodec_destroy_graph_and_filters (GstDshowVideoDec * vdec)
 
   vdec->setup = FALSE;
 
-  return TRUE;
+  *result = TRUE;
+}
+
+static gboolean
+gst_dshowvideodec_destroy_graph_and_filters (GstDshowVideoDec * vdec)
+{
+  gboolean ret;
+  gst_comtaskthread_do_task (vdec->comthread,
+          gst_dshowvideodec_destroy_graph_and_filters_task, vdec, &ret);
+  return ret;
 }
 
 gboolean
@@ -1200,6 +1283,7 @@ dshow_vdec_register (GstPlugin * plugin)
             NULL);
     if (filter != NULL) {
 
+      // TODO: free filter?
       GST_DEBUG ("Registering %s", video_dec_codecs[i].element_name);
 
       tmp = &video_dec_codecs[i];

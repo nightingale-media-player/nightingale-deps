@@ -50,6 +50,8 @@
 #include "gstdshowutil.h"
 #include "gstdshowfakesrc.h"
 
+#include "comtaskthread.h"
+
 G_BEGIN_DECLS
 
 typedef struct {
@@ -88,6 +90,9 @@ struct _GstDshowVideoDec
   GstCaps *srccaps;
   
   GstFlowReturn last_ret;
+
+  /* COM thread helper */
+  GstCOMTaskThread *comthread;
 
   /* list of dshow mediatypes coresponding to the caps list */
   GList *mediatypes;
