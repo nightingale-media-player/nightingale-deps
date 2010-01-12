@@ -180,7 +180,8 @@ static const VideoCodecEntry video_dec_codecs[] = {
    "video/x-wmv, wmvversion = (int) 3, " "format = (fourcc) WMV3",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
    "video/x-raw-yuv, format=(fourcc)YUY2",
-   preferred_wmv_filters},
+   preferred_wmv_filters,
+   GST_RANK_PRIMARY},
 
   {"dshowvdec_wmvp", "Windows Media Video 9 Image",
    GST_MAKE_FOURCC ('W', 'M', 'V', 'P'),
