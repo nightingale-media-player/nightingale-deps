@@ -850,8 +850,10 @@ qtwrapper_video_decoders_register (GstPlugin * plugin)
       /* Store params in type qdata */
       g_type_set_qdata (type, QTWRAPPER_VDEC_PARAMS_QDATA, (gpointer) params);
 
-      /* register type */
-      if (!gst_element_register (plugin, type_name, GST_RANK_MARGINAL, type)) {
+      /* register type. Register as MARGINAL+1 - these decoders don't all work
+         as well as a native decoder, but some are better than e.g. some of the
+         directshow-wrapper decoders, which are marked MARGINAL. */
+      if (!gst_element_register (plugin, type_name, GST_RANK_MARGINAL + 1, type)) {
         g_warning ("Failed to register %s", type_name);;
         g_type_set_qdata (type, QTWRAPPER_VDEC_PARAMS_QDATA, NULL);
         g_free (params);

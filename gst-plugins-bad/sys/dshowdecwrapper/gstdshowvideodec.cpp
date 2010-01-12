@@ -95,10 +95,13 @@ static gboolean gst_dshowvideodec_get_filter_output_format (GstDshowVideoDec *
 #define GUID_MEDIASUBTYPE_MP42  {0x3234504d, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
 #define GUID_MEDIASUBTYPE_MP43  {0x3334504d, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
 #define GUID_MEDIASUBTYPE_M4S2  {0x3253344d, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
+
+#ifdef OPTIONAL_CODECS
 #define GUID_MEDIASUBTYPE_XVID  {0x44495658, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
 #define GUID_MEDIASUBTYPE_DX50  {0x30355844, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
 #define GUID_MEDIASUBTYPE_DIVX  {0x58564944, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
 #define GUID_MEDIASUBTYPE_DIV3  {0x33564944, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
+#endif
 
 #define GUID_MEDIASUBTYPE_MPG4          {0x3447504d, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
 #define GUID_MEDIASUBTYPE_MPEG1Payload  {0xe436eb81, 0x524f, 0x11ce, {0x9f, 0x53, 0x00, 0x20, 0xaf, 0x0b, 0xa7, 0x70}}
@@ -123,15 +126,23 @@ static PreferredFilter preferred_cinepack_filters[] = {
 };
 
 /* Various MPEG-4 video variants */
+
+// This is the decoder for MS-MPEG4v1 and MS-MPEG4v2
 // MPG4, mpg4, MP42, mp42
-static PreferredFilter preferred_mpeg4_filters[] = {
+static PreferredFilter preferred_msmpeg4_1_2_filters[] = {
   {&CLSID_CMpeg4DecMediaObject, &DMOCATEGORY_VIDEO_DECODER}, {0}};
-// MP4S, mp4s, M4S2, m4s2
-static PreferredFilter preferred_mp4s_filters[] = {
-  {&CLSID_CMpeg4sDecMediaObject, &DMOCATEGORY_VIDEO_DECODER}, {0}};
+
+// This is the decoder for MS-MPEG4v3
 // MP43, mp43
-static PreferredFilter preferred_mp43_filters[] = {
+static PreferredFilter preferred_msmpeg4_3_filters[] = {
   {&CLSID_CMpeg43DecMediaObject, &DMOCATEGORY_VIDEO_DECODER}, {0}};
+
+// This is the MPEG4-spec-compliant decoder. In theory at least...
+// MP4S, mp4s, M4S2, m4s2
+// According to the documentation, this also handles MP4V, mp4v, but in practice
+// it doesn't seem to.
+static PreferredFilter preferred_mpeg4_filters[] = {
+  {&CLSID_CMpeg4sDecMediaObject, &DMOCATEGORY_VIDEO_DECODER}, {0}};
 
 static const GUID CLSID_MPEG_VIDEO_DECODER = 
   {0xFEB50740, 0x7BEF, 0x11CE, 
@@ -143,13 +154,16 @@ static PreferredFilter preferred_mpeg1_filters[] = {
 
 /* video codecs array */
 static const VideoCodecEntry video_dec_codecs[] = {
+
+  /* Primary rank for all the WMV codecs; these work well */
   {"dshowvdec_wmv1", "Windows Media Video 7",
    GST_MAKE_FOURCC ('W', 'M', 'V', '1'),
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_WMVV1,
    "video/x-wmv, wmvversion = (int) 1",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
    "video/x-raw-yuv, format=(fourcc)YUY2",
-   preferred_wmv_filters},
+   preferred_wmv_filters,
+   GST_RANK_PRIMARY},
 
   {"dshowvdec_wmv2", "Windows Media Video 8",
    GST_MAKE_FOURCC ('W', 'M', 'V', '2'),
@@ -157,7 +171,8 @@ static const VideoCodecEntry video_dec_codecs[] = {
    "video/x-wmv, wmvversion = (int) 2",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
    "video/x-raw-yuv, format=(fourcc)YUY2",
-   preferred_wmv_filters},
+   preferred_wmv_filters,
+   GST_RANK_PRIMARY},
 
   {"dshowvdec_wmv3", "Windows Media Video 9",
    GST_MAKE_FOURCC ('W', 'M', 'V', '3'),
@@ -173,7 +188,8 @@ static const VideoCodecEntry video_dec_codecs[] = {
    "video/x-wmv, wmvversion = (int) 3, " "format = (fourcc) WMVP",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
    "video/x-raw-yuv, format=(fourcc)YUY2",
-   preferred_wmv_filters},
+   preferred_wmv_filters,
+   GST_RANK_PRIMARY},
 
   {"dshowvdec_wmva", "Windows Media Video 9 Advanced",
    GST_MAKE_FOURCC ('W', 'M', 'V', 'A'),
@@ -181,8 +197,10 @@ static const VideoCodecEntry video_dec_codecs[] = {
    "video/x-wmv, wmvversion = (int) 3, " "format = (fourcc) WMVA",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
    "video/x-raw-yuv, format=(fourcc)YUY2",
-   preferred_wmv_filters},
+   preferred_wmv_filters,
+   GST_RANK_PRIMARY},
 
+  /* Secondary rank for now; haven't tested this much */
   {"dshowvdec_cinepak", "Cinepack",
    0x64697663,
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_CVID,
@@ -191,15 +209,18 @@ static const VideoCodecEntry video_dec_codecs[] = {
    "video/x-raw-rgb, bpp=(int)32, depth=(int)24, "
        "endianness=(int)4321, red_mask=(int)65280, "
        "green_mask=(int)16711680, blue_mask=(int)-16777216",
-   preferred_cinepack_filters},
+   preferred_cinepack_filters,
+   GST_RANK_SECONDARY},
 
+  /* Primary for the MS-MPEG4 variants too; these are also pretty good. */
   {"dshowvdec_msmpeg41", "Microsoft ISO MPEG-4 version 1",
    GST_MAKE_FOURCC ('M', 'P', '4', 'S'),
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_MP4S,
    "video/x-msmpeg, msmpegversion=(int)41",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
    "video/x-raw-yuv, format=(fourcc)YUY2",
-   preferred_mp4s_filters},
+   preferred_msmpeg4_1_2_filters,
+   GST_RANK_PRIMARY},
 
   {"dshowvdec_msmpeg42", "Microsoft ISO MPEG-4 version 2",
    GST_MAKE_FOURCC ('M', 'P', '4', '2'),
@@ -207,7 +228,8 @@ static const VideoCodecEntry video_dec_codecs[] = {
    "video/x-msmpeg, msmpegversion=(int)42",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
    "video/x-raw-yuv, format=(fourcc)YUY2",
-   preferred_mpeg4_filters},
+   preferred_msmpeg4_1_2_filters,
+   GST_RANK_PRIMARY},
 
   {"dshowvdec_msmpeg43", "Microsoft ISO MPEG-4 version 3",
    GST_MAKE_FOURCC ('M', 'P', '4', '3'),
@@ -215,7 +237,8 @@ static const VideoCodecEntry video_dec_codecs[] = {
    "video/x-msmpeg, msmpegversion=(int)43",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
    "video/x-raw-yuv, format=(fourcc)YUY2",
-   preferred_mp43_filters},
+   preferred_msmpeg4_3_filters,
+   GST_RANK_PRIMARY},
 
   {"dshowvdec_msmpeg4", "Microsoft ISO MPEG-4 version 1.1",
    GST_MAKE_FOURCC ('M', '4', 'S', '2'),
@@ -223,8 +246,10 @@ static const VideoCodecEntry video_dec_codecs[] = {
    "video/x-msmpeg, msmpegversion=(int)4",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
    "video/x-raw-yuv, format=(fourcc)YUY2",
-   preferred_mp4s_filters},
+   preferred_mpeg4_filters,
+   GST_RANK_PRIMARY},
 
+  /* Not really tested, so give it secondary rank */
   {"dshowvdec_mpeg1",
    "MPEG-1 Video",
    GST_MAKE_FOURCC ('M', 'P', 'E', 'G'),
@@ -233,45 +258,64 @@ static const VideoCodecEntry video_dec_codecs[] = {
        "parsed= (boolean) true, " "systemstream= (boolean) false",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
    "video/x-raw-yuv, format=(fourcc)YUY2",
-   preferred_mpeg1_filters},
-   
+   preferred_mpeg1_filters,
+   GST_RANK_SECONDARY},
+
+  /* This only actually handles a subset (SP) of MPEG4-2, and we don't currently
+     have a way to distinguish this based on caps.
+     So, give it a very low rank. */
+  /* TODO: Note that we get an _awful_ error message if this gets tried on e.g.
+     an ASP file. Improve the error message. */
   {"dshowvdec_mpeg4", "MPEG-4 Video",
-   GST_MAKE_FOURCC ('M', 'P', 'G', '4'),
-   GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_MPG4,
-   "video/mpeg, msmpegversion=(int)4",
+   GST_MAKE_FOURCC ('M', 'P', '4', 'S'),
+   GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_MP4S,
+   "video/mpeg, mpegversion=(int)4",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
    "video/x-raw-yuv, format=(fourcc)YUY2",
-   preferred_mpeg4_filters},
+   preferred_mpeg4_filters,
+   GST_RANK_MARGINAL},
 
+#ifdef OPTIONAL_CODECS
   /* The rest of these have no preferred filter; windows doesn't come
-   * with anything appropriate */
+   * with anything appropriate. Unfortunately, we can't easily query if the user
+   * has the right thing installed - DirectShow will happily give us a filter
+   * that promises to accept these, but then will fail at runtime. I think this
+   * is because these are all special fourcc-in-GUID GUIDs, not real random
+   * GUIDs - and directshow is probably giving us some sort of DirectShow-VFW
+   * bridge filter.
+   */
   {"dshowvdec_xvid", "XVID Video",
    GST_MAKE_FOURCC ('X', 'V', 'I', 'D'),
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_XVID,
    "video/x-xvid",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
-   "video/x-raw-yuv, format=(fourcc)YUY2"},
+   "video/x-raw-yuv, format=(fourcc)YUY2",
+   GST_RANK_MARGINAL},
 
   {"dshowvdec_divx5", "DIVX 5.0 Video",
    GST_MAKE_FOURCC ('D', 'X', '5', '0'),
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_DX50,
    "video/x-divx, divxversion=(int)5",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
-   "video/x-raw-yuv, format=(fourcc)YUY2"},
+   "video/x-raw-yuv, format=(fourcc)YUY2",
+   GST_RANK_MARGINAL},
 
   {"dshowvdec_divx4", "DIVX 4.0 Video",
    GST_MAKE_FOURCC ('D', 'I', 'V', 'X'),
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_DIVX,
    "video/x-divx, divxversion=(int)4",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
-   "video/x-raw-yuv, format=(fourcc)YUY2"},
+   "video/x-raw-yuv, format=(fourcc)YUY2",
+   GST_RANK_MARGINAL},
 
   {"dshowvdec_divx3", "DIVX 3.0 Video",
    GST_MAKE_FOURCC ('D', 'I', 'V', '3'),
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_DIV3,
    "video/x-divx, divxversion=(int)3",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
-   "video/x-raw-yuv, format=(fourcc)YUY2"}
+   "video/x-raw-yuv, format=(fourcc)YUY2",
+   GST_RANK_MARGINAL}
+#endif
 };
 
 HRESULT VideoFakeSink::DoRenderSample(IMediaSample *pMediaSample)
@@ -1291,7 +1335,7 @@ dshow_vdec_register (GstPlugin * plugin)
           g_type_register_static (GST_TYPE_ELEMENT,
           video_dec_codecs[i].element_name, &info, (GTypeFlags)0);
       if (!gst_element_register (plugin, video_dec_codecs[i].element_name,
-              GST_RANK_PRIMARY, type)) {
+              video_dec_codecs[i].rank, type)) {
         return FALSE;
       }
       GST_DEBUG ("Registered %s", video_dec_codecs[i].element_name);

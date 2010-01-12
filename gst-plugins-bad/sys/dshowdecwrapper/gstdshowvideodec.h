@@ -65,6 +65,7 @@ typedef struct {
   GUID output_subtype;
   gchar *srccaps;
   PreferredFilter *preferred_filters;
+  gint rank;
 } VideoCodecEntry;
 
 #define GST_TYPE_DSHOWVIDEODEC               (gst_dshowvideodec_get_type())
