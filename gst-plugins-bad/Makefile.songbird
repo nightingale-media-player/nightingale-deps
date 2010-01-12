@@ -46,7 +46,7 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-deinterlace --disable-dvdspu --disable-festival \
         --disable-filter --disable-flv --disable-freeze \
         --disable-h264parse --disable-librfb --disable-modplug \
-        --disable-mpeg4videoparse --disable-mpegtsparse \
+        --disable-mpegtsparse \
         --disable-mpegvideoparse --disable-mve --disable-nsf \
         --disable-nuvdemux --disable-rawparse --disable-real \
         --disable-speed --disable-speexresample --disable-stereo \
