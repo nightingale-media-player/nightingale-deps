@@ -187,8 +187,12 @@ struct _GstBaseSinkClass {
   /* Render a BufferList */
   GstFlowReturn (*render_list)  (GstBaseSink *sink, GstBufferList *buffer_list);
 
+  /* subclass can override decision on whether prerolling is required.
+     with PREROLL_LOCK */
+  gboolean      (*needs_preroll)(GstBaseSink *sink);
+
   /*< private >*/
-  gpointer       _gst_reserved[GST_PADDING_LARGE-5];
+  gpointer       _gst_reserved[GST_PADDING_LARGE-6];
 };
 
 GType gst_base_sink_get_type(void);

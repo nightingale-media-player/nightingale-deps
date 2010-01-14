@@ -3220,14 +3220,24 @@ gst_base_sink_get_times (GstBaseSink * basesink, GstBuffer * buffer,
 static gboolean
 gst_base_sink_needs_preroll (GstBaseSink * basesink)
 {
-  gboolean is_prerolled, res;
+  gboolean is_prerolled, needs_preroll, res;
+  GstBaseSinkClass *bclass;
+
+  bclass = GST_BASE_SINK_GET_CLASS (basesink);
 
   /* we have 2 cases where the PREROLL_LOCK is released:
    *  1) we are blocking in the PREROLL_LOCK and thus are prerolled.
    *  2) we are syncing on the clock
    */
   is_prerolled = basesink->have_preroll || basesink->priv->received_eos;
-  res = !is_prerolled;
+
+  if (G_LIKELY (bclass->needs_preroll)) {
+    needs_preroll = bclass->needs_preroll (basesink);
+  }
+  else {
+    needs_preroll = TRUE;
+  }
+  res = needs_preroll && !is_prerolled ;
 
   GST_DEBUG_OBJECT (basesink, "have_preroll: %d, EOS: %d => needs preroll: %d",
       basesink->have_preroll, basesink->priv->received_eos, res);
