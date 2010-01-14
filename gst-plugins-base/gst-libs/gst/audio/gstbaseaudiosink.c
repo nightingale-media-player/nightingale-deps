@@ -133,6 +133,7 @@ static GstStateChangeReturn gst_base_audio_sink_change_state (GstElement *
     element, GstStateChange transition);
 static gboolean gst_base_audio_sink_activate_pull (GstBaseSink * basesink,
     gboolean active);
+static gboolean gst_base_audio_sink_needs_preroll (GstBaseSink * basesink);
 static gboolean gst_base_audio_sink_query (GstElement * element, GstQuery *
     query);
 
@@ -228,6 +229,8 @@ gst_base_audio_sink_class_init (GstBaseAudioSinkClass * klass)
       GST_DEBUG_FUNCPTR (gst_base_audio_sink_async_play);
   gstbasesink_class->activate_pull =
       GST_DEBUG_FUNCPTR (gst_base_audio_sink_activate_pull);
+  gstbasesink_class->needs_preroll =
+      GST_DEBUG_FUNCPTR (gst_base_audio_sink_needs_preroll);
 
   /* ref class from a thread-safe context to work around missing bit of
    * thread-safety in GObject */
@@ -879,6 +882,42 @@ wrong_state:
     GST_DEBUG_OBJECT (sink, "ringbuffer in wrong state");
     GST_ELEMENT_ERROR (sink, STREAM, FORMAT, (NULL), ("sink not negotiated."));
     return GST_FLOW_NOT_NEGOTIATED;
+  }
+}
+
+static gboolean
+gst_base_audio_sink_is_empty (GstBaseAudioSink * sink)
+{
+  guint64 sample;
+  gint writeseg, segdone, sps;
+  gint diff;
+
+  /* assume we can append to the previous sample */
+  sample = sink->next_sample;
+  /* no previous sample, try to insert at position 0 */
+  if (sample == -1)
+    sample = 0;
+
+  sps = sink->ringbuffer->samples_per_seg;
+
+  /* figure out the segment and the offset inside the segment where
+   * the next sample would be written. */
+  writeseg = sample / sps;
+
+  /* get the currently processed segment */
+  segdone = g_atomic_int_get (&sink->ringbuffer->segdone)
+      - sink->ringbuffer->segbase;
+
+  /* see how far away it is from the write segment */
+  diff = writeseg - segdone;
+
+  if (diff == 0) {
+    GST_DEBUG_OBJECT (sink, "ringbuffer is empty");
+    return TRUE;
+  }
+  else {
+    GST_DEBUG_OBJECT (sink, "ringbuffer is not empty");
+    return FALSE;
   }
 }
 
@@ -1801,6 +1840,22 @@ gst_base_audio_sink_activate_pull (GstBaseSink * basesink, gboolean active)
   return ret;
 }
 
+static gboolean
+gst_base_audio_sink_needs_preroll (GstBaseSink * basesink)
+{
+  GstBaseAudioSink *sink;
+  gboolean is_empty;
+
+  sink = GST_BASE_AUDIO_SINK (basesink);
+
+  is_empty = gst_base_audio_sink_is_empty (sink);
+
+  /* We only need to wait for preroll if the ringbuffer is empty. Otherwise,
+     we can treat the contents of the ringbuffer as preroll data.
+   */
+  return is_empty;
+}
+
 /* should be called with the LOCK */
 static GstStateChangeReturn
 gst_base_audio_sink_async_play (GstBaseSink * basesink)
@@ -1850,8 +1905,12 @@ gst_base_audio_sink_change_state (GstElement * element,
       GST_OBJECT_UNLOCK (sink);
 
       gst_ring_buffer_may_start (sink->ringbuffer, TRUE);
-      if (GST_BASE_SINK_CAST (sink)->pad_mode == GST_ACTIVATE_PULL) {
-        /* we always start the ringbuffer in pull mode immediatly */
+      if (!gst_base_audio_sink_is_empty (sink) ||
+              GST_BASE_SINK_CAST (sink)->pad_mode == GST_ACTIVATE_PULL)
+      {
+        /* we always start the ringbuffer in pull mode immediately.
+         * we also start immediately if we already have content in the ring
+         * buffer. */
         gst_ring_buffer_start (sink->ringbuffer);
       }
       break;
@@ -1911,3 +1970,4 @@ open_failed:
     return GST_STATE_CHANGE_FAILURE;
   }
 }
+
