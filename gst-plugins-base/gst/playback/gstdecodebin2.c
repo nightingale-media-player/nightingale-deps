@@ -1820,11 +1820,11 @@ gst_decode_group_new (GstDecodeBin * dbin, gboolean use_queue)
 
   if (mq) {
     /* we first configure the multiqueue to buffer an unlimited number of
-     * buffers up to 5 seconds or, when no timestamps are present, up to 2 MB of
+     * buffers up to 5 seconds or, when no timestamps are present, up to 8 MB of
      * memory. When this queue overruns, we assume the group is complete and can
      * be exposed. */
     g_object_set (G_OBJECT (mq),
-        "max-size-bytes", (guint) 2 * 1024 * 1024,
+        "max-size-bytes", (guint) 8 * 1024 * 1024,
         "max-size-time", (guint64) 0, "max-size-buffers", (guint) 0, NULL);
     /* will expose the group */
     group->overrunsig = g_signal_connect (G_OBJECT (mq), "overrun",
@@ -2181,7 +2181,7 @@ gst_decode_group_expose (GstDecodeGroup * group)
     /* update runtime limits. At runtime, we try to keep the amount of buffers
      * in the queues as low as possible (but at least 5 buffers). */
     g_object_set (G_OBJECT (group->multiqueue),
-        "max-size-bytes", 2 * 1024 * 1024, "max-size-buffers", 5, NULL);
+        "max-size-bytes", 8 * 1024 * 1024, "max-size-buffers", 5, NULL);
     /* we can now disconnect any overrun signal, which is used to expose the
      * group. */
     if (group->overrunsig) {
