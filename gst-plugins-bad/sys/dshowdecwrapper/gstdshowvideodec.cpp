@@ -348,6 +348,7 @@ HRESULT VideoFakeSink::DoRenderSample(IMediaSample *pMediaSample)
       GST_DEBUG_OBJECT (mDec,
         "buffer is out of segment, start %" GST_TIME_FORMAT " stop %"
         GST_TIME_FORMAT, GST_TIME_ARGS (start), GST_TIME_ARGS (stop));
+      mDec->last_ret = GST_FLOW_OK;
       goto done;
     }
 
