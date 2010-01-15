@@ -85,6 +85,8 @@ if __name__ == "__main__":
 			# now let's convert -L<PATH> to -LIBPATH:<PATH>
 			# and -l<libname> to <libname>.lib
 			# and put them at the end (linker options)
+        if "-g" in fargs:
+                fargs[fargs.index("-g")] = "-Zi"
 
 	# ok, and an extra round to make sur all include paths are valid windows path
 	#for i in range(len(fargs)):
