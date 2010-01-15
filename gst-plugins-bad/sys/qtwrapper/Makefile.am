@@ -9,8 +9,10 @@ libgstqtaudiowrapper_la_SOURCES = \
 
 # flags used to compile this plugin
 # add other _CFLAGS and _LIBS as needed
-libgstqtaudiowrapper_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) $(QUICKTIME_CFLAGS)
-libgstqtaudiowrapper_la_LIBADD = $(GST_LIBS) $(GST_BASE_LIBS)
+libgstqtaudiowrapper_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
+    $(GST_PLUGINS_BASE_CFLAGS) $(QUICKTIME_CFLAGS)
+libgstqtaudiowrapper_la_LIBADD = $(GST_LIBS) $(GST_BASE_LIBS) \
+    $(GST_PLUGINS_BASE_LIBS) -lgstaudio-@GST_MAJORMINOR@
 libgstqtaudiowrapper_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) $(QUICKTIME_LDFLAGS)
 
 libgstqtvideowrapper_la_SOURCES = \

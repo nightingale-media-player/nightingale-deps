@@ -50,6 +50,7 @@
 #include <string.h>
 
 #include <gst/gst.h>
+#include <gst/audio/multichannel.h>
 #include "qtaudiowrapper.h"
 #include "codecmapping.h"
 #include "qtutils.h"
@@ -302,12 +303,13 @@ write_len (guint8 * buf, int val)
   return 4;
 }
 
-static void
+static AudioChannelLayout*
 aac_parse_codec_data (GstBuffer * codec_data, guint * channels, guint *rate)
 {
   guint8 *data = GST_BUFFER_DATA (codec_data);
   int codec_channels;
   int codec_rate;
+  AudioChannelLayout *layout = NULL;
   unsigned int rateindex;
   int rates[] = 
     { 96000, 88200, 64000, 48000, 44100, 32000, 
@@ -315,7 +317,7 @@ aac_parse_codec_data (GstBuffer * codec_data, guint * channels, guint *rate)
 
   if (GST_BUFFER_SIZE (codec_data) < 2) {
     GST_WARNING ("Cannot parse codec_data for channel count");
-    return;
+    return NULL;
   }
 
   codec_channels = (data[1] & 0x7f) >> 3;
@@ -326,6 +328,50 @@ aac_parse_codec_data (GstBuffer * codec_data, guint * channels, guint *rate)
   } else {
     GST_INFO ("Retaining channel count %d", codec_channels);
   }
+
+  if (codec_channels == 0) {
+    GST_WARNING ("Don't know how to deal with AOT channel configuration");
+  } else if (codec_channels < 3) {
+    GST_DEBUG ("No need to set channel positions for %i channels",
+            codec_channels);
+  } else if (codec_channels > 7) {
+    GST_WARNING ("Don't know how to deal with reserved channel configuration %i",
+            codec_channels);
+  } else {
+    guint n = 0;
+    const gsize buffer_size = sizeof (AudioChannelLayout) +
+            sizeof (AudioChannelDescription) * (codec_channels - 1);
+    layout = (AudioChannelLayout *) g_malloc0 (buffer_size);
+    /* channel flags are initialized to kAudioChannelFlags_AllOff (which is 0) */
+    layout->mChannelLayoutTag =
+        kAudioChannelLayoutTag_DiscreteInOrder | codec_channels;
+    layout->mNumberChannelDescriptions = codec_channels;
+
+    layout->mChannelDescriptions[n++].mChannelLabel = kAudioChannelLabel_Center;
+    layout->mChannelDescriptions[n++].mChannelLabel = kAudioChannelLabel_Left;
+    layout->mChannelDescriptions[n++].mChannelLabel = kAudioChannelLabel_Right;
+    if (codec_channels == 4) {
+      layout->mChannelDescriptions[n++].mChannelLabel =
+              kAudioChannelLabel_CenterSurround;
+    } else if (codec_channels > 4) {
+      if (codec_channels == 7) {
+        layout->mChannelDescriptions[n++].mChannelLabel =
+                kAudioChannelLabel_LeftSurroundDirect;
+        layout->mChannelDescriptions[n++].mChannelLabel =
+                kAudioChannelLabel_RightSurroundDirect;
+      }
+      layout->mChannelDescriptions[n++].mChannelLabel =
+              kAudioChannelLabel_LeftSurround;
+      layout->mChannelDescriptions[n++].mChannelLabel =
+              kAudioChannelLabel_RightSurround;
+      if (codec_channels > 5) {
+        layout->mChannelDescriptions[n++].mChannelLabel =
+                kAudioChannelLabel_LFEScreen;
+      }
+    }
+  }
+
+  GST_MEMDUMP ("codec data:", data, GST_BUFFER_SIZE (codec_data));
 
   rateindex = ((data[0] & 0x7) << 1) | ((data[1] & 0x80) >> 7);
   if (rateindex < sizeof (rates) / sizeof(*rates))
@@ -339,6 +385,8 @@ aac_parse_codec_data (GstBuffer * codec_data, guint * channels, guint *rate)
   } else {
     GST_INFO ("Retaining rate %d", codec_rate);
   }
+
+  return layout;
 }
 
 /* The AAC decoder requires the entire mpeg4 audio elementary stream 
@@ -440,6 +488,7 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
   const GValue *value;
   GstBuffer *codec_data = NULL;
   gboolean have_esds = FALSE;
+  AudioChannelLayout *input_layout = NULL;
 
   /* Clean up any existing decoder */
   close_decoder (qtwrapper);
@@ -466,7 +515,8 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
      * header, so parse that out of the codec data if we can. The wrong sample 
      * rate is also occasionally found.
      */
-    aac_parse_codec_data (codec_data, (guint *) &channels, (guint *) &rate);
+    input_layout = aac_parse_codec_data (codec_data, (guint *) &channels,
+            (guint *) &rate);
   }
 
   /* If the quicktime demuxer gives us a full esds atom, use that instead of 
@@ -552,7 +602,17 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
     goto beach;
   }
 
-  /* TODO: we can select a channel layout here, figure out if we want to */
+  /* Set the input channel layout, if we know about it */
+  if (input_layout) {
+    const gsize buffer_size = sizeof (AudioChannelLayout) +
+            sizeof (AudioChannelDescription) * (channels - 1);
+    status = QTSetComponentProperty (qtwrapper->adec, kQTPropertyClass_SCAudio,
+            kQTSCAudioPropertyID_InputChannelLayout, buffer_size, input_layout);
+    if (status) {
+      GST_WARNING_OBJECT (qtwrapper,
+          "Error setting input channel layout: %ld", status);
+    }
+  }
 
   /* if we have codec_data, give it to the converter ! */
   if (codec_data) {
@@ -688,9 +748,73 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
       "rate", G_TYPE_INT, qtwrapper->samplerate, "channels", G_TYPE_INT,
       qtwrapper->channels, NULL);
 
+  /* If we have input layout, set an output layout too, if we can */
+  if (input_layout) {
+    guint32 i;
+    const gsize qt_buffer_size = sizeof (AudioChannelLayout) +
+            sizeof (AudioChannelDescription) * (channels - 1);
+    GstAudioChannelPosition *output_position =
+            g_malloc (sizeof(GstAudioChannelPosition) * qtwrapper->channels);
+    for (i = 0; i < qtwrapper->channels; ++i) {
+      switch (input_layout->mChannelDescriptions[i].mChannelLabel) {
+      case kAudioChannelLabel_Left:
+        output_position[i] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
+        break;
+      case kAudioChannelLabel_Right:
+        output_position[i] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
+        break;
+      case kAudioChannelLabel_Center:
+        output_position[i] = GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER;
+        break;
+      case kAudioChannelLabel_LFEScreen:
+        output_position[i] = GST_AUDIO_CHANNEL_POSITION_LFE;
+        break;
+      case kAudioChannelLabel_LeftSurround:
+        output_position[i] = GST_AUDIO_CHANNEL_POSITION_REAR_LEFT;
+        break;
+      case kAudioChannelLabel_RightSurround:
+        output_position[i] = GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT;
+        break;
+      case kAudioChannelLabel_LeftCenter:
+        output_position[i] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT_OF_CENTER;
+        break;
+      case kAudioChannelLabel_RightCenter:
+        output_position[i] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT_OF_CENTER;
+        break;
+      case kAudioChannelLabel_CenterSurround:
+        output_position[i] = GST_AUDIO_CHANNEL_POSITION_REAR_CENTER;
+        break;
+      case kAudioChannelLabel_LeftSurroundDirect:
+        output_position[i] = GST_AUDIO_CHANNEL_POSITION_SIDE_LEFT;
+        break;
+      case kAudioChannelLabel_RightSurroundDirect:
+        output_position[i] = GST_AUDIO_CHANNEL_POSITION_SIDE_RIGHT;
+        break;
+      }
+    }
+    GST_MEMDUMP_OBJECT (qtwrapper, "ouput channel positions", output_position,
+            sizeof(GstAudioChannelPosition) * qtwrapper->channels);
+    GST_MEMDUMP_OBJECT (qtwrapper, "output QT channel layout", input_layout,
+            qt_buffer_size);
+
+    status = QTSetComponentProperty (qtwrapper->adec, kQTPropertyClass_SCAudio,
+            kQTSCAudioPropertyID_ChannelLayout, qt_buffer_size, input_layout);
+    if (status) {
+      GST_WARNING_OBJECT (qtwrapper,
+          "Error setting quicktime output channel layout: %ld", status);
+    } else {
+      GstStructure *str = gst_caps_get_structure (*othercaps, 0);
+      gst_audio_set_channel_positions (str, output_position);
+    }
+    g_free (output_position);
+  }
+
   ret = TRUE;
 
 beach:
+  if (input_layout) {
+    g_free (input_layout);
+  }
   return ret;
 }
 
