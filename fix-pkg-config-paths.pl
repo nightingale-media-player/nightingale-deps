@@ -102,7 +102,7 @@ sub main {
    foreach my $line (@currentPcFileContents) {
       if ($line =~ /^prefix=(.+)/) {
          my (undef, $extension) = split(/$pivotToken/, $1);
-         my $newPrefix = realpath(catfile($newRoot, $pivotToken, $extension));
+         my $newPrefix = canonpath(catfile($newRoot, $pivotToken, $extension));
          $line = "prefix=$newPrefix\n";
       }
 
