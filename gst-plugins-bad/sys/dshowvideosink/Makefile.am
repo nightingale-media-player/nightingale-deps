@@ -1,6 +1,7 @@
 plugin_LTLIBRARIES = libgstdshowvideosink.la
 
-libgstdshowvideosink_la_SOURCES = dshowvideofakesrc.cpp dshowvideosink.cpp
+libgstdshowvideosink_la_SOURCES = dshowvideofakesrc.cpp dshowvideosink.cpp \
+   comtaskthread.c
 
 libgstdshowvideosink_la_CFLAGS = $(GST_CFLAGS) -I$(top_srcdir)/gst-libs/gst
 libgstdshowvideosink_la_CXXFLAGS = $(GST_CFLAGS) $(GST_PLUGINS_BASE_CFLAGS) \

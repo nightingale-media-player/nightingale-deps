@@ -214,19 +214,17 @@ gst_dshowvideosink_clear (GstDshowVideoSink *sink)
   sink->window_id = NULL;
 
   sink->connected = FALSE;
+
+  sink->comthread = NULL;
 }
 
 static void
 gst_dshowvideosink_init (GstDshowVideoSink * sink,
         GstDshowVideoSinkClass * klass)
 {
-  HRESULT hr;
-
   gst_dshowvideosink_clear (sink);
 
-  hr = CoInitialize (0);
-  if (SUCCEEDED(hr))
-    sink->comInitialized = TRUE;
+  sink->comthread = gst_comtaskthread_init ();
 
   /* TODO: Copied from GstVideoSink; should we use that as base class? */
   /* 20ms is more than enough, 80-130ms is noticable */
@@ -242,9 +240,9 @@ gst_dshowvideosink_finalize (GObject * gobject)
   if (sink->preferredrenderer)
     g_free (sink->preferredrenderer);
 
-  if (sink->comInitialized) {
-    CoUninitialize ();
-    sink->comInitialized = FALSE;
+  if (sink->comthread) {
+    gst_comtaskthread_destroy (sink->comthread);
+    sink->comthread = NULL;
   }
 
   G_OBJECT_CLASS (parent_class)->finalize (gobject);
@@ -408,8 +406,13 @@ gst_dshow_get_pin_from_filter (IBaseFilter *filter, PIN_DIRECTION pindir,
 }
 
 static void 
-gst_dshowvideosink_handle_event (GstDshowVideoSink *sink)
+gst_dshowvideosink_handle_event (gpointer arg, gpointer _ret)
 {
+  GstDshowVideoSink *sink = (GstDshowVideoSink *)arg;
+  if (g_thread_self () != sink->comthread->thread) {
+    GST_ERROR_OBJECT (sink, "%s not on COM thread", __FUNCTION__);
+  }
+
   if (sink->filter_media_event) {
     long evCode;
     LONG_PTR param1, param2;
@@ -433,9 +436,17 @@ LRESULT APIENTRY WndProcHook (HWND hWnd, UINT message, WPARAM wParam,
   GstDshowVideoSink *sink = (GstDshowVideoSink *)GetProp (hWnd,
           L"GstDShowVideoSink");
 
+  /* This will always happen on the window process thread, which is never
+   * supposed to be the COM task thread.
+   */
+  if (g_thread_self () == sink->comthread->thread) {
+    GST_ERROR_OBJECT (sink, "%s should not be on COM thread", __FUNCTION__);
+  }
+
   switch (message) {
     case WM_GRAPH_NOTIFY:
-      gst_dshowvideosink_handle_event (sink);
+      gst_comtaskthread_do_task (sink->comthread,
+              gst_dshowvideosink_handle_event, sink, NULL);
       return 0;
     case WM_PAINT:
       sink->renderersupport->PaintWindow ();
@@ -468,10 +479,15 @@ WndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return DefWindowProc (hWnd, message, wParam, lParam);
   }
 
+  if (g_thread_self () != sink->window_thread) {
+    GST_ERROR_OBJECT (sink, "%s not on window thread", __FUNCTION__);
+  }
+
   switch (message) {
     case WM_GRAPH_NOTIFY:
       GST_LOG_OBJECT (sink, "GRAPH_NOTIFY WINDOW MESSAGE");
-      gst_dshowvideosink_handle_event (sink);
+      gst_comtaskthread_do_task (sink->comthread,
+              gst_dshowvideosink_handle_event, sink, NULL);
       return 0;
     case WM_PAINT:
       sink->renderersupport->PaintWindow ();
@@ -502,6 +518,10 @@ gst_dshowvideosink_window_thread (GstDshowVideoSink * sink)
   int width, height;
   int offx, offy;
   DWORD exstyle, style;
+  /* Whether CoInitialize has succeeded on the window_thread and therefore
+   * needs to be uninitialized
+   */
+  gboolean com_initialized;
 
   memset (&WndClass, 0, sizeof (WNDCLASS));
   WndClass.style = CS_HREDRAW | CS_VREDRAW;
@@ -513,6 +533,14 @@ gst_dshowvideosink_window_thread (GstDshowVideoSink * sink)
   WndClass.lpfnWndProc = WndProc;
   WndClass.hCursor = LoadCursor (NULL, IDC_ARROW);
   RegisterClass (&WndClass);
+
+  /* if CoInitializeEx fails, there's not much we can do anyway; just record
+   * whether we need to uninitialize it on the other end.
+   */
+  com_initialized = SUCCEEDED (CoInitializeEx (NULL, COINIT_MULTITHREADED));
+  if (!com_initialized) {
+    GST_WARNING_OBJECT (sink, "CoInitializeEx failed on the window thread");
+  }
 
   if (sink->full_screen) {
     /* This doesn't seem to work, it returns the wrong values! But when we
@@ -567,10 +595,13 @@ gst_dshowvideosink_window_thread (GstDshowVideoSink * sink)
       WndClass.hInstance, NULL);
   if (video_window == NULL) {
     GST_ERROR_OBJECT (sink, "Failed to create window!");
+    if (com_initialized) {
+      CoUninitialize ();
+    }
     return NULL;
   }
 
-  SetWindowLongPtr (video_window, GWLP_USERDATA, (LONG)sink);
+  SetWindowLongPtr (video_window, GWLP_USERDATA, (LONG_PTR)sink);
 
   sink->window_id = video_window;
 
@@ -607,6 +638,10 @@ gst_dshowvideosink_window_thread (GstDshowVideoSink * sink)
       break;
     }
     DispatchMessage (&msg);
+  }
+
+  if (com_initialized) {
+    CoUninitialize ();
   }
 
   return NULL;
@@ -653,17 +688,26 @@ static void gst_dshowvideosink_set_window_id (GstXOverlay * overlay,
   sink->window_id = videowindow;
 }
 
-static void gst_dshowvideosink_set_window_for_renderer (GstDshowVideoSink *sink)
+static void
+gst_dshowvideosink_set_window_for_renderer (GstDshowVideoSink *sink)
 {
+  if (g_thread_self () != sink->comthread->thread) {
+    GST_ERROR_OBJECT (sink, "%s not on COM thread", __FUNCTION__);
+  }
+
   /* Application has requested a specific window ID */
-  sink->prevWndProc = (WNDPROC) SetWindowLong (sink->window_id, GWL_WNDPROC,
-          (LONG)WndProcHook);
+  sink->prevWndProc = (WNDPROC) SetWindowLongPtr (sink->window_id, GWLP_WNDPROC,
+          (LONG_PTR)WndProcHook);
   GST_DEBUG_OBJECT (sink, "Set wndproc to %p from %p", WndProcHook,
           sink->prevWndProc);
   SetProp (sink->window_id, L"GstDShowVideoSink", sink);
-  /* This causes the new WNDPROC to become active */
+  /* This causes the new WNDPROC to become active; however, we must do so
+   * asynchronously because the window message thread may be blocked on this
+   * thread due to gst_comtaskthread_do_task, meaning there would be a
+   * deadlock. */
   SetWindowPos (sink->window_id, 0, 0, 0, 0, 0,
-          SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+          SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED |
+          SWP_ASYNCWINDOWPOS);
 
   if (!sink->renderersupport->SetRendererWindow (sink->window_id)) {
     GST_WARNING_OBJECT (sink, "Failed to set HWND %x on renderer",
@@ -678,13 +722,12 @@ static void gst_dshowvideosink_set_window_for_renderer (GstDshowVideoSink *sink)
 }
 
 static void
-gst_dshowvideosink_prepare_window (GstDshowVideoSink *sink)
+gst_dshowvideosink_prepare_window_task (gpointer arg, gpointer _ret)
 {
   HRESULT hres;
-
-  /* Give the app a last chance to supply a window id */
-  if (!sink->window_id) {
-    gst_x_overlay_prepare_xwindow_id (GST_X_OVERLAY (sink));
+  GstDshowVideoSink *sink = (GstDshowVideoSink *)arg;
+  if (g_thread_self () != sink->comthread->thread) {
+    GST_ERROR_OBJECT (sink, "%s not on COM thread", __FUNCTION__);
   }
 
   /* If the app supplied one, use it. Otherwise, go ahead
@@ -714,15 +757,36 @@ gst_dshowvideosink_prepare_window (GstDshowVideoSink *sink)
             sink->window_id, hres);
   }
 }
+static void
+gst_dshowvideosink_prepare_window (GstDshowVideoSink *sink)
+{
+  if (g_thread_self () == sink->comthread->thread) {
+    GST_ERROR_OBJECT (sink, "%s should not be on COM thread", __FUNCTION__);
+  }
 
-static gboolean
-gst_dshowvideosink_connect_graph (GstDshowVideoSink *sink)
+  /* Give the app a last chance to supply a window id */
+  if (!sink->window_id) {
+    gst_x_overlay_prepare_xwindow_id (GST_X_OVERLAY (sink));
+  }
+
+  gst_comtaskthread_do_task (sink->comthread,
+          gst_dshowvideosink_prepare_window_task, sink, NULL);
+}
+
+static void
+gst_dshowvideosink_connect_graph (gpointer arg, gpointer _ret)
 {
   HRESULT hres;
   IPin *srcpin;
   IPin *sinkpin;
 
+  GstDshowVideoSink *sink = (GstDshowVideoSink *)arg;
+  gboolean *ret = (gboolean *)_ret;
+
   GST_INFO_OBJECT (sink, "Connecting DirectShow pins");
+  if (g_thread_self () != sink->comthread->thread) {
+    GST_ERROR_OBJECT (sink, "%s not on COM thread", __FUNCTION__);
+  }
 
   srcpin = sink->fakesrc->GetOutputPin();
 
@@ -730,7 +794,8 @@ gst_dshowvideosink_connect_graph (GstDshowVideoSink *sink)
           PINDIR_INPUT, &sinkpin);
   if (!sinkpin) {
     GST_WARNING_OBJECT (sink, "Cannot get input pin from Renderer");
-    return FALSE;
+    *ret = FALSE;
+    return;
   }
 
   /* Be warned that this call WILL deadlock unless you call it from
@@ -742,32 +807,26 @@ gst_dshowvideosink_connect_graph (GstDshowVideoSink *sink)
   if (FAILED (hres)) {
     GST_WARNING_OBJECT (sink, "Could not connect pins: %x", hres);
     sinkpin->Release();
-    return FALSE;
+    *ret = FALSE;
+    return;
   }
   sinkpin->Release();
-  return TRUE;
+  *ret = TRUE;
+  return;
 }
 
-static GstStateChangeReturn
-gst_dshowvideosink_start_graph (GstDshowVideoSink *sink)
+static void
+gst_dshowvideosink_start_graph_task (gpointer arg, gpointer _ret)
 {
   IMediaControl *control = NULL;
   HRESULT hres;
-  GstStateChangeReturn ret;
 
-  GST_DEBUG_OBJECT (sink, "Connecting and starting DirectShow graph");
+  GstDshowVideoSink *sink = (GstDshowVideoSink *)arg;
+  GstStateChangeReturn *ret = (GstStateChangeReturn *)_ret;
 
-  if (!sink->connected) {
-    /* This is fine; this just means we haven't connected yet.
-     * That's normal for the first time this is called. 
-     * So, create a window (or start using an application-supplied
-     * one, then connect the graph */
-    gst_dshowvideosink_prepare_window (sink);
-    if (!gst_dshowvideosink_connect_graph (sink)) {
-      ret = GST_STATE_CHANGE_FAILURE;
-      goto done;
-    }
-    sink->connected = TRUE;
+  GST_DEBUG_OBJECT (sink, "starting DirectShow graph");
+  if (g_thread_self () != sink->comthread->thread) {
+    GST_ERROR_OBJECT (sink, "%s not on COM thread", __FUNCTION__);
   }
 
   hres = sink->filter_graph->QueryInterface(
@@ -775,8 +834,9 @@ gst_dshowvideosink_start_graph (GstDshowVideoSink *sink)
 
   if (FAILED (hres)) {
     GST_WARNING_OBJECT (sink, "Failed to get IMediaControl interface");
-    ret = GST_STATE_CHANGE_FAILURE;
-    goto done;
+    *ret = GST_STATE_CHANGE_FAILURE;
+    /* we don't have a handle to the control yet, so don't cleanup */
+    return;
   }
 
   GST_INFO_OBJECT (sink, "Running DirectShow graph");
@@ -784,31 +844,63 @@ gst_dshowvideosink_start_graph (GstDshowVideoSink *sink)
   if (FAILED (hres)) {
     GST_ERROR_OBJECT (sink,
         "Failed to run the directshow graph (error=%x)", hres);
-    ret = GST_STATE_CHANGE_FAILURE;
+    *ret = GST_STATE_CHANGE_FAILURE;
     goto done;
   }
   
   GST_DEBUG_OBJECT (sink, "DirectShow graph is now running");
-  ret = GST_STATE_CHANGE_SUCCESS;
+  *ret = GST_STATE_CHANGE_SUCCESS;
 
 done:
   if (control)
     control->Release();
-
-  return ret;
 }
 static GstStateChangeReturn
-gst_dshowvideosink_pause_graph (GstDshowVideoSink *sink)
+gst_dshowvideosink_start_graph (GstDshowVideoSink *sink)
+{
+  GST_DEBUG_OBJECT (sink, "Connecting DirectShow graph");
+  if (g_thread_self () == sink->comthread->thread) {
+    GST_ERROR_OBJECT (sink, "%s should not be on COM thread", __FUNCTION__);
+  }
+
+  if (!sink->connected) {
+    /* This is fine; this just means we haven't connected yet.
+     * That's normal for the first time this is called.
+     * So, create a window (or start using an application-supplied
+     * one, then connect the graph */
+    gst_dshowvideosink_prepare_window (sink);
+    gboolean connected;
+    gst_comtaskthread_do_task (sink->comthread,
+            gst_dshowvideosink_connect_graph, sink, &connected);
+    if (!connected) {
+      return GST_STATE_CHANGE_FAILURE;
+    }
+    sink->connected = TRUE;
+  }
+
+  GstStateChangeReturn ret;
+  gst_comtaskthread_do_task (sink->comthread,
+          gst_dshowvideosink_start_graph_task, sink, &ret);
+  return ret;
+}
+static void
+gst_dshowvideosink_pause_graph (gpointer arg, gpointer _ret)
 {
   IMediaControl *control = NULL;
-  GstStateChangeReturn ret;
   HRESULT hres;
+
+  GstDshowVideoSink *sink = (GstDshowVideoSink *)arg;
+  GstStateChangeReturn *ret = (GstStateChangeReturn *)_ret;
+
+  if (g_thread_self () != sink->comthread->thread) {
+    GST_ERROR_OBJECT (sink, "%s not on COM thread", __FUNCTION__);
+  }
 
   hres = sink->filter_graph->QueryInterface(
           IID_IMediaControl, (void **) &control);
   if (FAILED (hres)) {
     GST_WARNING_OBJECT (sink, "Failed to get IMediaControl interface");
-    ret = GST_STATE_CHANGE_FAILURE;
+    *ret = GST_STATE_CHANGE_FAILURE;
     goto done;
   }
 
@@ -817,32 +909,35 @@ gst_dshowvideosink_pause_graph (GstDshowVideoSink *sink)
   if (FAILED (hres)) {
     GST_WARNING_OBJECT (sink,
         "Can't pause the directshow graph (error=%x)", hres);
-    ret = GST_STATE_CHANGE_FAILURE;
+    *ret = GST_STATE_CHANGE_FAILURE;
     goto done;
   }
 
-  ret = GST_STATE_CHANGE_SUCCESS;
+  *ret = GST_STATE_CHANGE_SUCCESS;
 
 done:
   if (control)
     control->Release();
-
-  return ret;
 }
 
-static GstStateChangeReturn
-gst_dshowvideosink_stop_graph (GstDshowVideoSink *sink)
+static void
+gst_dshowvideosink_stop_graph (gpointer arg, gpointer _ret)
 {
   IMediaControl *control = NULL;
-  GstStateChangeReturn ret;
   HRESULT hres;
   IPin *sinkpin;
+  GstDshowVideoSink *sink = (GstDshowVideoSink *) arg;
+  GstStateChangeReturn *ret = (GstStateChangeReturn*) _ret;
+
+  if (g_thread_self () != sink->comthread->thread) {
+    GST_ERROR_OBJECT (sink, "%s not on COM thread", __FUNCTION__);
+  }
 
   hres = sink->filter_graph->QueryInterface(
           IID_IMediaControl, (void **) &control);
   if (FAILED (hres)) {
     GST_WARNING_OBJECT (sink, "Failed to get IMediaControl interface");
-    ret = GST_STATE_CHANGE_FAILURE;
+    *ret = GST_STATE_CHANGE_FAILURE;
     goto done;
   }
 
@@ -851,7 +946,7 @@ gst_dshowvideosink_stop_graph (GstDshowVideoSink *sink)
   if (FAILED (hres)) {
     GST_WARNING_OBJECT (sink,
         "Can't stop the directshow graph (error=%x)", hres);
-    ret = GST_STATE_CHANGE_FAILURE;
+    *ret = GST_STATE_CHANGE_FAILURE;
     goto done;
   }
 
@@ -866,21 +961,25 @@ gst_dshowvideosink_stop_graph (GstDshowVideoSink *sink)
 
   if (sink->window_id) {
     /* Return control of application window */
-    SetWindowLong (sink->window_id, GWL_WNDPROC, (LONG)sink->prevWndProc);
+    SetWindowLongPtr (sink->window_id, GWLP_WNDPROC,
+            (LONG_PTR)sink->prevWndProc);
     RemoveProp (sink->window_id, L"GstDShowVideoSink");
+    /* call SetWindowPos to make the GWLP_WNDPROC setting take effect; we need
+     * to call this asynchronously because the window message thread may be
+     * blocked on this thread due to gst_comtaskthread_do_task, meaning there
+     * would be a deadlock. */
     SetWindowPos (sink->window_id, 0, 0, 0, 0, 0,
-            SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+            SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED |
+            SWP_ASYNCWINDOWPOS);
     sink->prevWndProc = NULL;
   }
   sink->connected = FALSE;
 
-  ret = GST_STATE_CHANGE_SUCCESS;
+  *ret = GST_STATE_CHANGE_SUCCESS;
 
 done:
   if (control)
     control->Release();
-
-  return ret;
 }
 
 static GstStateChangeReturn
@@ -906,12 +1005,14 @@ gst_dshowvideosink_change_state (GstElement * element,
 
   switch (transition) {
     case GST_STATE_CHANGE_PLAYING_TO_PAUSED:
-      rettmp = gst_dshowvideosink_pause_graph (sink);
+      gst_comtaskthread_do_task (sink->comthread,
+          gst_dshowvideosink_pause_graph, sink, &rettmp);
       if (rettmp == GST_STATE_CHANGE_FAILURE)
         ret = rettmp;
       break;
     case GST_STATE_CHANGE_PAUSED_TO_READY:
-      rettmp = gst_dshowvideosink_stop_graph (sink);
+      gst_comtaskthread_do_task (sink->comthread,
+          gst_dshowvideosink_stop_graph, sink, &rettmp);
       if (rettmp == GST_STATE_CHANGE_FAILURE)
         ret = rettmp;
       break;
@@ -1187,6 +1288,9 @@ gst_dshowvideosink_create_renderer (GstDshowVideoSink *sink)
   GST_DEBUG_OBJECT (sink, "Trying to create renderer '%s'", "VMR9");
 
   RendererSupport *support = NULL;
+  if (g_thread_self () != sink->comthread->thread) {
+    GST_ERROR_OBJECT (sink, "%s not on COM thread", __FUNCTION__);
+  }
 
   if (sink->preferredrenderer) {
     if (!strcmp (sink->preferredrenderer, "VMR9")) {
@@ -1228,15 +1332,17 @@ done:
   return TRUE;
 }
 
-static gboolean
-gst_dshowvideosink_build_filtergraph (GstDshowVideoSink *sink)
+static void
+gst_dshowvideosink_build_filtergraph (gpointer arg, gpointer _ret)
 {
   HRESULT hres;
   gboolean comInit = FALSE;
-  
-  hres = CoInitialize(0);
-  if (SUCCEEDED (hres))
-    comInit = TRUE;
+  GstDshowVideoSink *sink = (GstDshowVideoSink*)arg;
+  gboolean *ret = (gboolean*)_ret;
+
+  if (g_thread_self () != sink->comthread->thread) {
+    GST_ERROR_OBJECT (sink, "%s not on COM thread", __FUNCTION__);
+  }
 
   /* Build our DirectShow FilterGraph, looking like: 
    *
@@ -1289,9 +1395,8 @@ gst_dshowvideosink_build_filtergraph (GstDshowVideoSink *sink)
     goto error;
   }
 
-  if (comInit)
-    CoUninitialize();
-  return TRUE;
+  *ret = TRUE;
+  return;
 
 error:
   if (sink->fakesrc) {
@@ -1309,10 +1414,8 @@ error:
     sink->filter_media_event = NULL;
   }
 
-  if (comInit)
-    CoUninitialize();
-
-  return FALSE;
+  *ret = FALSE;
+  return;
 }
 
 static gboolean
@@ -1322,7 +1425,24 @@ gst_dshowvideosink_start (GstBaseSink * bsink)
   GstDshowVideoSink *sink = GST_DSHOWVIDEOSINK (bsink);
 
   /* Just build the filtergraph; we don't link or otherwise configure it yet */
-  return gst_dshowvideosink_build_filtergraph (sink);
+  gboolean ret = FALSE;
+  gst_comtaskthread_do_task (sink->comthread,
+      gst_dshowvideosink_build_filtergraph, sink, &ret);
+  return ret;
+}
+
+struct SetCapsData {
+  VideoFakeSrcPin * pin;
+  AM_MEDIA_TYPE * mediaType;
+};
+
+static void
+gst_dshowvideosink_set_caps_task (gpointer arg, gpointer _ret)
+{
+  SetCapsData *capsData = (SetCapsData*) arg;
+  gboolean *ret = (gboolean *)_ret;
+  capsData->pin->SetMediaType (capsData->mediaType);
+  *ret = TRUE;
 }
 
 static gboolean
@@ -1347,7 +1467,12 @@ gst_dshowvideosink_set_caps (GstBaseSink * bsink, GstCaps * caps)
   /* Now we have an AM_MEDIA_TYPE describing what we're going to send.
    * We set this on our DirectShow fakesrc's output pin. 
    */
-  sink->fakesrc->GetOutputPin()->SetMediaType (&sink->mediatype);
+  SetCapsData capsData;
+  gboolean ret;
+  capsData.pin = sink->fakesrc->GetOutputPin ();
+  capsData.mediaType = &sink->mediatype;
+  gst_comtaskthread_do_task (sink->comthread,
+      gst_dshowvideosink_set_caps_task, &capsData, &ret);
   GST_DEBUG_OBJECT (sink, "Configured output pin media type");
 
   return TRUE;

@@ -25,6 +25,8 @@
 
 #include "dshowvideofakesrc.h"
 
+#include "comtaskthread.h"
+
 #include <dshow.h>
 
 #include "d3d9.h"
@@ -95,7 +97,8 @@ struct _GstDshowVideoSink
   /* If we use an app-supplied window, we need to hook its WNDPROC */
   WNDPROC prevWndProc;
 
-  gboolean comInitialized;
+  /* COM thread helper */ 
+  GstCOMTaskThread *comthread;
 };
 
 struct _GstDshowVideoSinkClass
