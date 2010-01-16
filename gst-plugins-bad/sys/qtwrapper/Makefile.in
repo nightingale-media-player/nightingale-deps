@@ -89,7 +89,7 @@ pluginLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(plugin_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libgstqtaudiowrapper_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_libgstqtaudiowrapper_la_OBJECTS =  \
 	libgstqtaudiowrapper_la-qtaudiowrapper.lo \
 	libgstqtaudiowrapper_la-qtutils.lo \
@@ -800,8 +800,12 @@ libgstqtaudiowrapper_la_SOURCES = \
 
 # flags used to compile this plugin
 # add other _CFLAGS and _LIBS as needed
-libgstqtaudiowrapper_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) $(QUICKTIME_CFLAGS)
-libgstqtaudiowrapper_la_LIBADD = $(GST_LIBS) $(GST_BASE_LIBS)
+libgstqtaudiowrapper_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
+    $(GST_PLUGINS_BASE_CFLAGS) $(QUICKTIME_CFLAGS)
+
+libgstqtaudiowrapper_la_LIBADD = $(GST_LIBS) $(GST_BASE_LIBS) \
+    $(GST_PLUGINS_BASE_LIBS) -lgstaudio-@GST_MAJORMINOR@
+
 libgstqtaudiowrapper_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) $(QUICKTIME_LDFLAGS)
 libgstqtvideowrapper_la_SOURCES = \
 	qtvideowrapper.c		\
