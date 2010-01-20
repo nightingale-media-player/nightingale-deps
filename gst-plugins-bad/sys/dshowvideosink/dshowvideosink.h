@@ -89,6 +89,7 @@ struct _GstDshowVideoSink
   HWND window_id;
 
   gboolean connected;
+  gboolean window_prepared;
 
   /* If we create our own window, we run it from another thread */
   GThread *window_thread;

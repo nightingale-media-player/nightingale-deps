@@ -35,11 +35,14 @@ typedef void (* TaskFunc)(gpointer arg, gpointer ret);
 typedef struct {
   GThread *thread;
 
-  GCond *cond;
+  /* this lock is used to ensure only one thread is running at a time */
   GMutex *lock;
 
+  /* this condition is signalled to wake the calling thread */
+  GCond *cond;
+
+  /* This condition is signalled to wake the task thread */
   GCond *thread_cond;
-  GMutex *thread_lock;
 
   gint running;
 

@@ -88,6 +88,8 @@ static gboolean gst_dshowvideosink_set_caps (GstBaseSink * bsink,
 static GstCaps *gst_dshowvideosink_get_caps (GstBaseSink * bsink);
 static GstFlowReturn gst_dshowvideosink_render (GstBaseSink *sink,
         GstBuffer *buffer);
+static GstFlowReturn gst_dshowvideosink_preroll (GstBaseSink *bsink,
+        GstBuffer *buffer);
 
 /* GstXOverlay methods */
 static void gst_dshowvideosink_set_window_id (GstXOverlay * overlay,
@@ -179,6 +181,7 @@ gst_dshowvideosink_class_init (GstDshowVideoSinkClass * klass)
   gstbasesink_class->unlock = GST_DEBUG_FUNCPTR (gst_dshowvideosink_unlock);
   gstbasesink_class->unlock_stop =
       GST_DEBUG_FUNCPTR (gst_dshowvideosink_unlock_stop);
+  gstbasesink_class->preroll = GST_DEBUG_FUNCPTR (gst_dshowvideosink_preroll);
   gstbasesink_class->render = GST_DEBUG_FUNCPTR (gst_dshowvideosink_render);
 
   /* Add properties */
@@ -214,6 +217,7 @@ gst_dshowvideosink_clear (GstDshowVideoSink *sink)
   sink->window_id = NULL;
 
   sink->connected = FALSE;
+  sink->window_prepared = FALSE;
 
   sink->comthread = NULL;
 }
@@ -696,11 +700,11 @@ gst_dshowvideosink_set_window_for_renderer (GstDshowVideoSink *sink)
   }
 
   /* Application has requested a specific window ID */
+  SetProp (sink->window_id, L"GstDShowVideoSink", sink);
   sink->prevWndProc = (WNDPROC) SetWindowLongPtr (sink->window_id, GWLP_WNDPROC,
           (LONG_PTR)WndProcHook);
   GST_DEBUG_OBJECT (sink, "Set wndproc to %p from %p", WndProcHook,
           sink->prevWndProc);
-  SetProp (sink->window_id, L"GstDShowVideoSink", sink);
   /* This causes the new WNDPROC to become active; however, we must do so
    * asynchronously because the window message thread may be blocked on this
    * thread due to gst_comtaskthread_do_task, meaning there would be a
@@ -756,6 +760,8 @@ gst_dshowvideosink_prepare_window_task (gpointer arg, gpointer _ret)
     GST_DEBUG_OBJECT (sink, "SetNotifyWindow(%p) returned %x",
             sink->window_id, hres);
   }
+
+  sink->window_prepared = TRUE;
 }
 static void
 gst_dshowvideosink_prepare_window (GstDshowVideoSink *sink)
@@ -815,8 +821,43 @@ gst_dshowvideosink_connect_graph (gpointer arg, gpointer _ret)
   return;
 }
 
+static GstStateChangeReturn
+gst_dshowvideosink_setup_graph (GstDshowVideoSink *sink)
+{
+  GstStateChangeReturn ret;
+
+  GST_DEBUG_OBJECT (sink, "Connecting DirectShow graph");
+  if (g_thread_self () == sink->comthread->thread) {
+    GST_ERROR_OBJECT (sink, "%s should not be on COM thread", __FUNCTION__);
+  }
+
+  if (!sink->window_prepared) {
+    gst_dshowvideosink_prepare_window (sink);
+  }
+
+  if (!sink->connected) {
+    /* This is fine; this just means we haven't connected yet.
+     * That's normal for the first time this is called.
+     * So, create a window (or start using an application-supplied
+     * one, then connect the graph */
+    gboolean connected;
+    gst_comtaskthread_do_task (sink->comthread,
+            gst_dshowvideosink_connect_graph, sink, &connected);
+    if (!connected) {
+      ret = GST_STATE_CHANGE_FAILURE;
+      goto done;
+    }
+    sink->connected = TRUE;
+  }
+
+  ret = GST_STATE_CHANGE_SUCCESS;
+
+done:
+  return ret;
+}
+
 static void
-gst_dshowvideosink_start_graph_task (gpointer arg, gpointer _ret)
+gst_dshowvideosink_run_graph_task (gpointer arg, gpointer _ret)
 {
   IMediaControl *control = NULL;
   HRESULT hres;
@@ -855,34 +896,7 @@ done:
   if (control)
     control->Release();
 }
-static GstStateChangeReturn
-gst_dshowvideosink_start_graph (GstDshowVideoSink *sink)
-{
-  GST_DEBUG_OBJECT (sink, "Connecting DirectShow graph");
-  if (g_thread_self () == sink->comthread->thread) {
-    GST_ERROR_OBJECT (sink, "%s should not be on COM thread", __FUNCTION__);
-  }
 
-  if (!sink->connected) {
-    /* This is fine; this just means we haven't connected yet.
-     * That's normal for the first time this is called.
-     * So, create a window (or start using an application-supplied
-     * one, then connect the graph */
-    gst_dshowvideosink_prepare_window (sink);
-    gboolean connected;
-    gst_comtaskthread_do_task (sink->comthread,
-            gst_dshowvideosink_connect_graph, sink, &connected);
-    if (!connected) {
-      return GST_STATE_CHANGE_FAILURE;
-    }
-    sink->connected = TRUE;
-  }
-
-  GstStateChangeReturn ret;
-  gst_comtaskthread_do_task (sink->comthread,
-          gst_dshowvideosink_start_graph_task, sink, &ret);
-  return ret;
-}
 static void
 gst_dshowvideosink_pause_graph (gpointer arg, gpointer _ret)
 {
@@ -974,6 +988,7 @@ gst_dshowvideosink_stop_graph (gpointer arg, gpointer _ret)
     sink->prevWndProc = NULL;
   }
   sink->connected = FALSE;
+  sink->window_prepared = FALSE;
 
   *ret = GST_STATE_CHANGE_SUCCESS;
 
@@ -991,11 +1006,27 @@ gst_dshowvideosink_change_state (GstElement * element,
 
   switch (transition) {
     case GST_STATE_CHANGE_NULL_TO_READY:
+      GST_DEBUG_OBJECT (sink, "Changing state NULL -> READY");
       break;
     case GST_STATE_CHANGE_READY_TO_PAUSED:
+      GST_DEBUG_OBJECT (sink, "Changing state READY -> PAUSED");
+      if (sink->connected) {
+        gst_comtaskthread_do_task (sink->comthread,
+                gst_dshowvideosink_pause_graph, sink, &ret);
+        if (ret == GST_STATE_CHANGE_FAILURE)
+          return ret;
+      }
       break;
     case GST_STATE_CHANGE_PAUSED_TO_PLAYING:
-      ret = gst_dshowvideosink_start_graph (sink);
+      GST_DEBUG_OBJECT (sink, "Changing state PAUSED -> PLAYING");
+      if (!sink->connected) {
+        gst_dshowvideosink_setup_graph (sink);
+        if (ret == GST_STATE_CHANGE_FAILURE)
+          return ret;
+      }
+
+      gst_comtaskthread_do_task (sink->comthread,
+              gst_dshowvideosink_run_graph_task, sink, &ret);
       if (ret == GST_STATE_CHANGE_FAILURE)
         return ret;
       break;
@@ -1005,18 +1036,21 @@ gst_dshowvideosink_change_state (GstElement * element,
 
   switch (transition) {
     case GST_STATE_CHANGE_PLAYING_TO_PAUSED:
+      GST_DEBUG_OBJECT (sink, "Changing state PLAYING -> PAUSED");
       gst_comtaskthread_do_task (sink->comthread,
           gst_dshowvideosink_pause_graph, sink, &rettmp);
       if (rettmp == GST_STATE_CHANGE_FAILURE)
         ret = rettmp;
       break;
     case GST_STATE_CHANGE_PAUSED_TO_READY:
+      GST_DEBUG_OBJECT (sink, "Changing state PAUSED -> READY");
       gst_comtaskthread_do_task (sink->comthread,
           gst_dshowvideosink_stop_graph, sink, &rettmp);
       if (rettmp == GST_STATE_CHANGE_FAILURE)
         ret = rettmp;
       break;
     case GST_STATE_CHANGE_READY_TO_NULL:
+      GST_DEBUG_OBJECT (sink, "Changing state READY -> NULL");
       gst_dshowvideosink_clear (sink);
       break;
   }
@@ -1514,6 +1548,57 @@ gst_dshowvideosink_stop (GstBaseSink * bsink)
   }
 
   return TRUE;
+}
+
+struct PrerollData {
+  GstDshowVideoSink *sink;
+  GstBuffer *buffer;
+};
+void
+gst_dshowvideosink_preroll_task (gpointer arg, gpointer _ret)
+{
+  PrerollData *data = (PrerollData *)arg;
+  GstFlowReturn *ret = (GstFlowReturn *)_ret;
+
+  *ret = data->sink->fakesrc->GetOutputPin()->PushBuffer (data->buffer);
+}
+
+static GstFlowReturn 
+gst_dshowvideosink_preroll (GstBaseSink *bsink, GstBuffer *buffer)
+{
+  GstDshowVideoSink *sink = GST_DSHOWVIDEOSINK (bsink);
+  GstFlowReturn ret;
+  PrerollData data;
+  if (!sink->connected) {
+    return GST_FLOW_OK;
+  }
+
+  if (sink->window_closed) {
+    GST_WARNING_OBJECT (sink, "Window has been closed, stopping");
+    return GST_FLOW_ERROR;
+  }
+
+  gst_comtaskthread_do_task (sink->comthread,
+          gst_dshowvideosink_run_graph_task, sink, &ret);
+  if (ret == GST_STATE_CHANGE_FAILURE)
+    goto done;
+
+  GST_DEBUG_OBJECT (sink, "Pushing buffer through fakesrc->renderer");
+  data.sink = sink;
+  data.buffer = buffer;
+  gst_comtaskthread_do_task (sink->comthread,
+          gst_dshowvideosink_preroll_task, &data, &ret);
+  if (ret == GST_STATE_CHANGE_FAILURE)
+    goto done;
+  GST_DEBUG_OBJECT (sink, "Done pushing buffer through fakesrc->renderer: %s", gst_flow_get_name(ret));
+
+  gst_comtaskthread_do_task (sink->comthread,
+          gst_dshowvideosink_pause_graph, sink, &ret);
+  if (ret == GST_STATE_CHANGE_FAILURE)
+    goto done;
+
+done:
+  return ret;
 }
 
 static GstFlowReturn 

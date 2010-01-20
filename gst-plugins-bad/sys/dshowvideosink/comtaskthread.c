@@ -64,34 +64,25 @@ comtaskthread_com_uninitialize (gpointer arg, gpointer ret)
   }
 }
 
-static void
-comtaskthread_wake (GstCOMTaskThread *task)
-{
-  g_mutex_lock (task->thread_lock);
-  g_cond_signal (task->thread_cond);
-  g_mutex_unlock (task->thread_lock);
-}
-
 static gpointer
 comtaskthread_thread (gpointer data)
 {
   GstCOMTaskThread *task = (GstCOMTaskThread *)data;
 
+  g_mutex_lock (task->lock);
   while (g_atomic_int_get (&task->running)) {
-    g_mutex_lock (task->thread_lock);
 
     if (task->func) {
       task->func (task->func_arg, task->func_ret);
 
       /* Tell caller that we're done */
-      g_mutex_lock (task->lock);
       g_cond_signal (task->cond);
-      g_mutex_unlock (task->lock);
     }
 
-    g_cond_wait (task->thread_cond, task->thread_lock);
-    g_mutex_unlock (task->thread_lock);
+    g_cond_wait (task->thread_cond, task->lock);
   }
+  g_cond_broadcast (task->cond);
+  g_mutex_unlock (task->lock);
 
   return NULL;
 }
@@ -105,7 +96,6 @@ gst_comtaskthread_init(void)
   task->lock = g_mutex_new ();
   task->cond = g_cond_new ();
   task->thread_cond = g_cond_new ();
-  task->thread_lock = g_mutex_new ();
 
   g_atomic_int_set (&task->running, 1); 
   task->thread = g_thread_create (comtaskthread_thread, task, TRUE, NULL);
@@ -132,13 +122,14 @@ gst_comtaskthread_destroy(GstCOMTaskThread *task)
   gst_comtaskthread_do_task (task, comtaskthread_com_uninitialize, task, NULL);
 
   task->running = FALSE;
-  comtaskthread_wake (task);
+  g_mutex_lock (task->lock);
+  g_cond_signal (task->thread_cond);
+  g_cond_wait (task->cond, task->lock);
 
   g_thread_join (task->thread);
 
   g_mutex_free (task->lock);
   g_cond_free (task->cond);
-  g_mutex_free (task->thread_lock);
   g_cond_free (task->thread_cond);
 
   g_free (task);
@@ -155,7 +146,7 @@ gst_comtaskthread_do_task (GstCOMTaskThread *task, TaskFunc func, void *arg,
   task->func_arg = arg;
   task->func_ret = ret;
 
-  comtaskthread_wake (task);
+  g_cond_signal (task->thread_cond);
 
   /* Wait until the task thread signals that it is done */
   g_cond_wait (task->cond, task->lock);
