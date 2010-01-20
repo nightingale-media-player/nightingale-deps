@@ -552,8 +552,10 @@ adpcmdec_init (ADPCMDec * dec, ADPCMDecClass * klass)
   gst_pad_set_event_function (dec->sinkpad,
       GST_DEBUG_FUNCPTR (adpcmdec_sink_event));
   gst_element_add_pad (GST_ELEMENT (dec), dec->sinkpad);
+
   dec->srcpad =
       gst_pad_new_from_static_template (&adpcmdec_src_template, "src");
+  gst_pad_use_fixed_caps (dec->srcpad);
   gst_element_add_pad (GST_ELEMENT (dec), dec->srcpad);
 }
 

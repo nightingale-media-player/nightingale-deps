@@ -486,9 +486,7 @@ gst_dshowvideodec_init (GstDshowVideoDec * vdec,
   vdec->srcpad =
       gst_pad_new_from_template (gst_element_class_get_pad_template
       (element_class, "src"), "src");
-/* needed to implement caps negociation on our src pad */
-/*  gst_pad_set_getcaps_function (vdec->srcpad, gst_dshowvideodec_src_getcaps);
-  gst_pad_set_setcaps_function (vdec->srcpad, gst_dshowvideodec_src_setcaps);*/
+  gst_pad_use_fixed_caps (vdec->srcpad);
   gst_element_add_pad (GST_ELEMENT (vdec), vdec->srcpad);
 
   vdec->fakesrc = NULL;

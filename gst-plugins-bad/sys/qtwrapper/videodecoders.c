@@ -236,6 +236,7 @@ qtwrapper_video_decoder_init (QTWrapperVideoDecoder * qtwrapper)
 
   /* src pad */
   qtwrapper->srcpad = gst_pad_new_from_static_template (&src_templ, "src");
+  gst_pad_use_fixed_caps (qtwrapper->srcpad);
   gst_element_add_pad (GST_ELEMENT (qtwrapper), qtwrapper->srcpad);
 
   qtwrapper->lock = g_mutex_new ();

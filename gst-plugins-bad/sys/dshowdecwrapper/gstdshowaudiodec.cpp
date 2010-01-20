@@ -406,6 +406,7 @@ gst_dshowaudiodec_init (GstDshowAudioDec * adec,
   adec->srcpad =
       gst_pad_new_from_template (gst_element_class_get_pad_template
       (element_class, "src"), "src");
+  gst_pad_use_fixed_caps (adec->srcpad);
   gst_element_add_pad (GST_ELEMENT (adec), adec->srcpad);
 
   adec->fakesrc = NULL;

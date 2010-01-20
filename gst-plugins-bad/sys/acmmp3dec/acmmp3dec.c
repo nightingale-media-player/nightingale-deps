@@ -400,6 +400,7 @@ acmmp3dec_init (ACMMP3Dec * dec, ACMMP3DecClass * decclass)
 
   dec->srcpad =
       gst_pad_new_from_static_template (&acmmp3dec_src_template, "src");
+  gst_pad_use_fixed_caps (dec->srcpad);
   gst_element_add_pad (GST_ELEMENT (dec), dec->srcpad);
 
 }
