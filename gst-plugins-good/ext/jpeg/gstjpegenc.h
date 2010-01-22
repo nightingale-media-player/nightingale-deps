@@ -69,6 +69,11 @@ struct _GstJpegEnc {
   gint quality;
   gint smoothing;
   gint idct_method;
+
+  /* cached return state for any problems that may occur in callbacks */
+  GstFlowReturn last_ret;
+
+  GstBuffer* output_buffer;
 };
 
 struct _GstJpegEncClass {
