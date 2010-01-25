@@ -94,6 +94,7 @@ gst_comtaskthread_init(void)
   gboolean *ret;
 
   task->lock = g_mutex_new ();
+  task->task_lock = g_mutex_new ();
   task->cond = g_cond_new ();
   task->thread_cond = g_cond_new ();
 
@@ -129,6 +130,7 @@ gst_comtaskthread_destroy(GstCOMTaskThread *task)
   g_thread_join (task->thread);
 
   g_mutex_free (task->lock);
+  g_mutex_free (task->task_lock);
   g_cond_free (task->cond);
   g_cond_free (task->thread_cond);
 
@@ -139,6 +141,11 @@ void
 gst_comtaskthread_do_task (GstCOMTaskThread *task, TaskFunc func, void *arg,
     void *ret)
 {
+  /* Lock task_lock to make sure this function is not entered in parallel;
+   * otherwise it is possible to race where two tasks have been requested before
+   * the task thread wakes up, causing one task to be lost.
+   */
+  g_mutex_lock (task->task_lock);
   g_mutex_lock (task->lock);
 
   /* Set the function to run, and then wake up the thread to run it */
@@ -152,5 +159,6 @@ gst_comtaskthread_do_task (GstCOMTaskThread *task, TaskFunc func, void *arg,
   g_cond_wait (task->cond, task->lock);
 
   g_mutex_unlock (task->lock);
+  g_mutex_unlock (task->task_lock);
 }
 

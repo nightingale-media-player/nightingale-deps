@@ -38,6 +38,9 @@ typedef struct {
   /* this lock is used to ensure only one thread is running at a time */
   GMutex *lock;
 
+  /* this lock is used to ensure only one task is running at a time */
+  GMutex *task_lock;
+
   /* this condition is signalled to wake the calling thread */
   GCond *cond;
 
