@@ -402,7 +402,11 @@ StreamListener::OnStopRequest(nsIRequest *req, nsISupports *ctxt,
      don't have much information at this point about what sort of failure it
      was, so this will have to do.
    */
-  if (NS_FAILED (status)) {
+
+  /* If we cancelled the request explicitly, we pass NS_BINDING_ABORTED as the
+     status code. This should not be treated as an error from the network stack
+   */
+  if (status != NS_BINDING_ABORTED && NS_FAILED (status)) {
     GST_ELEMENT_ERROR (mSrc, RESOURCE, READ,
         ("Could not read from URL %s", mSrc->location), 
         ("nsresult %d", status));
