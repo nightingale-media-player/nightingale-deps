@@ -1248,15 +1248,22 @@ gst_qt_mux_add_buffer (GstQTMux * qtmux, GstQTPad * pad, GstBuffer * buf)
   last_dts = gst_util_uint64_scale (pad->last_dts,
       atom_trak_get_timescale (pad->trak), GST_SECOND);
 
-  /* raw audio has many samples per buffer (= chunk) */
   if (pad->sample_size) {
+    /* Constant size packets: usually raw audio (with many samples per
+     * buffer (= chunk)), but can also be fixed-packet-size codecs like ADPCM */
     sample_size = pad->sample_size;
     if (GST_BUFFER_SIZE (last_buf) % sample_size != 0)
       goto fragmented_sample;
     /* note: qt raw audio storage warps it implicitly into a timewise
      * perfect stream, discarding buffer times */
-    nsamples = GST_BUFFER_SIZE (last_buf) / sample_size;
+    if (GST_BUFFER_DURATION (last_buf) != GST_CLOCK_TIME_NONE) {
+      nsamples = gst_util_uint64_scale_round (GST_BUFFER_DURATION (last_buf),
+          atom_trak_get_timescale (pad->trak), GST_SECOND);
+    } else {
+      nsamples = GST_BUFFER_SIZE (last_buf) / sample_size;
+    }
     duration = GST_BUFFER_DURATION (last_buf) / nsamples;
+
     /* timescale = samplerate */
     scaled_duration = 1;
     pad->last_dts += duration * nsamples;
@@ -1674,7 +1681,7 @@ adjust_rate (guint64 rate)
   while (rate >= 10000)
     rate /= 10;
 
-  while (rate < 1000)
+  while (rate && rate < 1000)
     rate *= 10;
 
   return (guint32) rate;
