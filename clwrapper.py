@@ -18,13 +18,18 @@ def fix_link_args(fargs):
 	linkerargs = []
 	fargs.extend(os.getenv("LDFLAGS", "").split())
 	for i in range(len(fargs)):
-		if fargs[i].startswith("-L") and not fargs[i].startswith("-LIBPATH"):
+		if fargs[i].startswith("-L") and not \
+                   fargs[i].startswith("-LIBPATH"):
 			libpath = fargs[i][2:]
 			# make sure the path is a windows path
 			linkerargs.append("-LIBPATH:%s" % winpath(libpath))
 		elif fargs[i].startswith("-l") and not fargs[i] == "-link":
 			libname = fargs[i][2:]
 			linkerargs.append("%s.lib" % libname)
+                elif fargs[i].startswith("-NODEFAULTLIB") or \
+                     fargs[i].startswith("-DEFAULTLIB") or \
+                     fargs[i].startswith("-LIBPATH"):
+			linkerargs.append(fargs[i])
 		else:
 			cargs.append(fargs[i])
 	resultargs = ["cl"] + cargs[1:] + ["-link"] + linkerargs

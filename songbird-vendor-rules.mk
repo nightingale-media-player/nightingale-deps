@@ -44,6 +44,19 @@ ifneq (,$(PKG_CONFIG_PATH))
   SB_PKG_CONFIG_PATH := $(SB_PKG_CONFIG_PATH):$(PKG_CONFIG_PATH)
 endif
 
+# This flag only means anything on Win32 right now, so assert that...
+ifdef SB_USE_MOZCRT
+   ifneq (Msys,$(SB_VENDOR_ARCH))
+      $(error SB_USE_MOZCRT is only meaningful on Win32.)
+   endif
+
+   # Add the mozsdk lib dir (containing mozcrt19.dll) to the runtime
+   # path, so that the configure tests that create executables are
+   # actually runnable; we do this up here because SB_PATH's assignment-type
+   # below.
+   SB_PATH += $(MOZSDK_DIR)/lib
+endif
+
 SB_PATH := $(subst $(SPACE),:,$(strip $(SB_PATH))):$(PATH)
 
 SB_DYLD_LIBRARY_PATH := $(subst $(SPACE),:,$(strip $(SB_DYLD_LIBRARY_PATH)))
@@ -59,13 +72,6 @@ BUILD_TARGET_SET = $(if \
                        build_requested,)
 
 SB_RUN_CONFIGURE ?= 1
-
-# This flag only means anything on Win32 right now, so assert that...
-ifdef SB_USE_MOZCRT
-   ifneq (Msys,$(SB_VENDOR_ARCH))
-      $(error SB_USE_MOZCRT is only meaningful on Win32.)
-   endif
-endif
 
 ifeq (Msys,$(SB_VENDOR_ARCH))
    ifneq (,$(DISABLE_SDK_CHECKS))
