@@ -1689,9 +1689,9 @@ atom_stsz_copy_data (AtomSTSZ * stsz, guint8 ** buffer, guint64 * size,
 
   prop_copy_uint32 (stsz->sample_size, buffer, size, offset);
   prop_copy_uint32 (stsz->table_size, buffer, size, offset);
-  /* minimize realloc */
-  prop_copy_ensure_buffer (buffer, size, offset, 4 * stsz->table_size);
   if (stsz->sample_size == 0) {
+    /* minimize realloc */
+    prop_copy_ensure_buffer (buffer, size, offset, 4 * stsz->table_size);
     for (walker = g_list_last (stsz->entries); walker != NULL;
         walker = g_list_previous (walker)) {
       prop_copy_uint32 ((guint32) GPOINTER_TO_UINT (walker->data), buffer, size,
