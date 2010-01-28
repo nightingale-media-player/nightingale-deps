@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+<?xml-stylesheet href="chrome://mochikit/content/tests/SimpleTest/test.css"
+                 type="text/css"?>
+
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        title="Accessibility Group Attributes ('level', 'setsize', 'posinset') Test.">
+
+  <script type="application/javascript" 
+          src="chrome://mochikit/content/MochiKit/packed.js"></script>
+  <script type="application/javascript"
+          src="chrome://mochikit/content/tests/SimpleTest/SimpleTest.js" />
+
+  <script type="application/javascript"
+          src="chrome://mochikit/content/a11y/accessible/common.js" />
+  <script type="application/javascript"
+          src="chrome://mochikit/content/a11y/accessible/attributes.js" />
+
+  <script type="application/javascript">
+  <![CDATA[
+    function doTest()
+    {
+      //////////////////////////////////////////////////////////////////////////
+      // xul:listbox (bug 417317)
+      testGroupAttrs("item1", "1", "2");
+      testGroupAttrs("item2", "2", "2");
+
+      //////////////////////////////////////////////////////////////////////////
+      // xul:menu (bug 443881)
+      var menu1 = document.getElementById("menu_item1");
+      menu1.open = true;
+
+      window.setTimeout(function() {
+        var menu2 = document.getElementById("menu_item2");
+        menu2.open = true;
+
+        window.setTimeout(function() {
+          testGroupAttrs("menu_item1.1", "1", "1");
+          testGroupAttrs("menu_item1.2", "1", "3");
+          testGroupAttrs("menu_item1.4", "2", "3");
+          testGroupAttrs("menu_item2", "3", "3");
+          testGroupAttrs("menu_item2.1", "1", "2", "1");
+          testGroupAttrs("menu_item2.2", "2", "2", "1");
+
+          SimpleTest.finish();
+        }, 200);
+      }, 200);
+
+      //////////////////////////////////////////////////////////////////////////
+      // ARIA menu (bug 441888)
+      testGroupAttrs("aria-menuitem", "1", "3");
+      testGroupAttrs("aria-menuitemcheckbox", "2", "3");
+      testGroupAttrs("aria-menuitemradio", "3", "3");
+      testGroupAttrs("aria-menuitem2", "1", "1");
+    }
+
+    SimpleTest.waitForExplicitFinish();
+    addLoadEvent(doTest);
+  ]]>
+  </script>
+
+  <body xmlns="http://www.w3.org/1999/xhtml">
+    <a target="_blank"
+       href="https://bugzilla.mozilla.org/show_bug.cgi?id=417317"
+       title="Certain types of LISTITEM accessibles no longer get attributes set like 'x of y', regression from fix for bug 389926">
+      Mozilla Bug 417317
+    </a><br/>
+    <a target="_blank"
+       href="https://bugzilla.mozilla.org/show_bug.cgi?id=443881"
+       title="take into account separators in xul menus when group attributes are calculating">
+      Mozilla Bug 443881
+    </a><br/>
+    <a target="_blank"
+       href="https://bugzilla.mozilla.org/show_bug.cgi?id=441888"
+       title="ARIA checked menu items are not included in the total list of menu items">
+      Mozilla Bug 441888
+    </a><br/>
+
+    <p id="display"></p>
+    <div id="content" style="display: none">
+    </div>
+    <pre id="test">
+    </pre>
+  </body>
+
+  <listbox>
+    <listitem label="item1" id="item1"/>
+    <listitem label="item2" id="item2"/>
+  </listbox>
+
+  <menubar>
+    <menu label="item1" id="menu_item1">
+      <menupopup>
+        <menuitem label="item1.1" id="menu_item1.1"/>
+        <menuseparator/>
+        <menuitem label="item1.2" id="menu_item1.2"/>
+        <menuitem label="item1.3" hidden="true"/>
+        <menuitem label="item1.4" id="menu_item1.4"/>
+        <menu label="item2" id="menu_item2">
+          <menupopup>
+            <menuitem label="item2.1" id="menu_item2.1"/>
+            <menuitem label="item2.2" id="menu_item2.2"/>
+          </menupopup>
+        </menu>
+      </menupopup>
+    </menu>
+  </menubar>
+
+  <vbox>
+    <description role="menuitem" id="aria-menuitem"
+                 value="conventional menuitem"/>
+    <description role="menuitemcheckbox" id="aria-menuitemcheckbox"
+                 value="conventional checkbox menuitem"/>
+    <description role="menuitem" hidden="true"/>
+    <description role="menuitemradio" id="aria-menuitemradio"
+                 value="conventional radio menuitem"/>
+    <description role="separator"
+                 value="conventional separator"/>
+    <description role="menuitem" id="aria-menuitem2"
+                 value="conventional menuitem"/>
+  </vbox>
+</window>
+

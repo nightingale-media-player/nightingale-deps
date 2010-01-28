@@ -1,0 +1,3 @@
+toolkit.jar:
+    content/global/nsHelperAppDlg.xul (helperAppDlg/nsHelperAppDlg.xul)
+    content/global/nsProgressDialog.xul  (progressDlg/nsProgressDialog.xul)

@@ -1,0 +1,222 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is mozilla.org code.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsISupports.idl"
+#include "nsIPluginStreamListener.idl"
+
+interface nsIPluginInstanceOwner;
+interface nsIOutputStream;
+
+%{C++
+#include "nsplugindefs.h"
+#include "nsString.h"
+struct JSContext;
+struct JSObject;
+
+#define NPRUNTIME_JSCLASS_NAME "NPObject JS wrapper class"
+%}
+
+[ptr] native JSContextPtr(JSContext);
+[ptr] native JSObjectPtr(JSObject);
+
+[uuid(67D606F4-1D6D-4FE2-A2D6-10BDA65788E1)]
+interface nsIPluginInstance : nsISupports
+{
+    /**
+     * Initializes a newly created plugin instance.
+     * 
+     * @param aOwner - the plugin instance owner
+     * @param aMime - the mime type for the instance
+     * @result      - NS_OK if this operation was successful
+     */
+    void initialize(in nsIPluginInstanceOwner aOwner, in string aMIMEType);
+
+    /**
+     * Called to instruct the plugin instance to start. This will be
+     * called after the plugin is first created and initialized, and
+     * may be called after the plugin is stopped (via the Stop method)
+     * if the plugin instance is returned to in the browser window's
+     * history.
+     *
+     * @result - NS_OK if this operation was successful
+     */
+    void start();
+
+    /**
+     * Called to instruct the plugin instance to stop, thereby
+     * suspending its state.  This method will be called whenever the
+     * browser window goes on to display another page and the page
+     * containing the plugin goes into the window's history list.
+     *
+     * @result - NS_OK if this operation was successful
+     */
+    void stop();
+
+    /**
+     * Called when the window containing the plugin instance changes.
+     *
+     * (Corresponds to NPP_SetWindow.)
+     *
+     * @param aWindow - the plugin window structure
+     * @result        - NS_OK if this operation was successful
+     */
+    void setWindow(in nsPluginWindowPtr aWindow);
+
+    /**
+     * Called to tell the plugin that the initial src/data stream is
+     * ready.  Expects the plugin to return a nsIPluginStreamListener.
+     *
+     * (Corresponds to NPP_NewStream.)
+     *
+     * @param aListener - listener the browser will use to give the plugin the data
+     * @result          - NS_OK if this operation was successful
+     */
+    void newStreamToPlugin(out nsIPluginStreamListener aListener);
+
+    /**
+     * This operation is called by the plugin instance when it wishes to send
+     * a stream of data to the browser. It constructs a new output stream to which
+     * the plugin may send the data. When complete, the Close and Release methods
+     * should be called on the output stream.
+     *
+     * (Corresponds to NPN_NewStream.)
+     *
+     * @param aType   - MIME type of the stream to create
+     * @param aTarget - the target window name to receive the data
+     * @param aResult - the resulting output stream
+     * @result        - NS_OK if this operation was successful
+     */
+    void newStreamFromPlugin(in string aType, in string aTarget, out nsIOutputStream aResult);
+
+    /**
+     * Called to instruct the plugin instance to print itself to a printer.
+     *
+     * (Corresponds to NPP_Print.)
+     *
+     * @param aPlatformPrint - platform-specific printing information
+     * @result               - NS_OK if this operation was successful
+     */
+    void print(in nsPluginPrintPtr aPlatformPrint);
+
+    /**
+     * Returns the value of a variable associated with the plugin instance.
+     *
+     * @param aVariable - the plugin instance variable to get
+     * @param aValue    - the address of where to store the resulting value
+     * @result          - NS_OK if this operation was successful
+     */
+    void getValue(in nsPluginInstanceVariable aVariable, in voidPtr aValue);
+
+    /**
+     * Handles an event.
+     *
+     * Note that for Unix and Mac the nsPluginEvent structure is different
+     * from the old NPEvent structure -- it's no longer the native event
+     * record, but is instead a struct. This was done for future extensibility,
+     * and so that the Mac could receive the window argument too. For Windows
+     * and OS2, it's always been a struct, so there's no change for them.
+     *
+     * (Corresponds to NPP_HandleEvent.)
+     *
+     * @param aEvent   - the event to be handled
+     * @param aHandled - set to PR_TRUE if event was handled
+     * @result - NS_OK if this operation was successful
+     */
+    void handleEvent(in nsPluginEventPtr aEvent, out boolean aHandled);
+
+    /** 
+     * Corresponds to NPN_InvalidateRect
+     */
+    void invalidateRect(in nsPluginRectPtr aRect);
+
+    /** 
+     * Corresponds to NPN_InvalidateRegion
+     */
+    void invalidateRegion(in nsPluginRegion aRegion);
+
+    /** 
+     * Corresponds to NPN_ForceRedraw
+     */
+    void forceRedraw();
+    
+    /**
+     * Returns the MIME type of the plugin instance. 
+     *
+     * (Corresponds to NPP_New's MIMEType argument.)
+     *
+     * @param aMIMEType - resulting MIME type
+     * @result          - NS_OK if this operation was successful
+     */
+    void getMIMEType([const, shared] out string aValue);
+
+    /**
+     * Get the JavaScript context to this plugin instance.
+     *
+     * @param aJSContext - the resulting JavaScript context
+     * @result           - NS_OK if this operation was successful
+     */
+    readonly attribute JSContextPtr JSContext;
+
+    attribute nsIPluginInstanceOwner owner;
+    
+    /**
+     * This operation causes status information to be displayed on the window
+     * associated with the plugin instance. 
+     *
+     * (Corresponds to NPN_Status.)
+     *
+     * @param aMessage - the status message to display
+     * @result         - NS_OK if this operation was successful
+     */
+    void showStatus(in string aMessage);
+
+    /**
+     * Drop our reference to our owner.
+     */
+    void invalidateOwner();
+
+    JSObjectPtr GetJSObject(in JSContextPtr cx);
+
+    readonly attribute AString formValue;
+
+    void pushPopupsEnabledState(in boolean aEnabled);
+    void popPopupsEnabledState();
+
+    readonly attribute PRUint16 pluginAPIVersion;
+
+    void defineJavaProperties();
+};

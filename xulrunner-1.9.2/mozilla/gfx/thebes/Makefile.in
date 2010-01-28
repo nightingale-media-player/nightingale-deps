@@ -1,0 +1,21 @@
+
+DEPTH		= ../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+MODULE	= thebes
+
+DIRS	= public src mochitest
+
+ifdef ENABLE_TESTS
+ifndef MOZ_ENABLE_LIBXUL
+ifndef BUILD_STATIC_LIBS
+TOOL_DIRS  += test
+endif
+endif
+endif
+
+include $(topsrcdir)/config/rules.mk
