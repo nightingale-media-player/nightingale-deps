@@ -892,11 +892,14 @@ gst_base_audio_sink_is_empty (GstBaseAudioSink * sink)
   gint writeseg, segdone, sps;
   gint diff;
 
-  /* assume we can append to the previous sample */
+  /* If we haven't acquired the ringbuffer yet, it must be empty */
+  if (!gst_ring_buffer_is_acquired (sink->ringbuffer))
+    return TRUE;
+
   sample = sink->next_sample;
-  /* no previous sample, try to insert at position 0 */
+  /* no previous sample: we're resyncing so report that we're empty. */
   if (sample == -1)
-    sample = 0;
+    return TRUE;
 
   sps = sink->ringbuffer->samples_per_seg;
 
