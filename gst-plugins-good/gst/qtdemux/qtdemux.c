@@ -5577,7 +5577,10 @@ gst_qtdemux_handle_esds (GstQTDemux * qtdemux, QtDemuxStream * stream,
         };
 
         channels = (data_ptr[1] & 0x7f) >> 3;
-        if (channels <= 7) {
+        /* The esds only gives the actual number of channels for values between
+         * zero and six (inclusive). If it doesn't, then just let the
+         * container's value go through and hope it's correct. */
+        if (channels > 0 && channels < 7) {
           stream->n_channels = channels;
         }
 
