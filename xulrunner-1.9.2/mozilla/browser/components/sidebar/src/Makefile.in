@@ -35,14 +35,15 @@
 #
 # ***** END LICENSE BLOCK *****
 
-DEPTH		= ../../../..
+
+DEPTH		= ../../../../../..
 topsrcdir	= @top_srcdir@
 srcdir		= @srcdir@
 VPATH		= @srcdir@
 
-include $(DEPTH)/config/autoconf.mk
+include $(DEPTH)/build/autodefs.mk
 
-EXTRA_PP_COMPONENTS = nsSidebar.js
+SONGBIRD_COMPONENTS = $(srcdir)/nsSidebar.js
 
-include $(topsrcdir)/config/rules.mk
+include $(topsrcdir)/build/rules.mk
 

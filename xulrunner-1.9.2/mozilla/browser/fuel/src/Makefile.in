@@ -35,15 +35,14 @@
 #
 # ***** END LICENSE BLOCK *****
 
-DEPTH     = ../../..
+DEPTH     = ../../../../..
 topsrcdir = @top_srcdir@
 srcdir    = @srcdir@
 VPATH     = @srcdir@
 
-include $(DEPTH)/config/autoconf.mk
+include $(DEPTH)/build/autodefs.mk
 
-MODULE = fuel
+SONGBIRD_PP_RESOURCES = $(srcdir)/fuelApplication.js
+SONGBIRD_PP_DIR = $(SONGBIRD_COMPONENTSDIR)
 
-EXTRA_PP_COMPONENTS = fuelApplication.js
-
-include $(topsrcdir)/config/rules.mk
+include $(topsrcdir)/build/rules.mk

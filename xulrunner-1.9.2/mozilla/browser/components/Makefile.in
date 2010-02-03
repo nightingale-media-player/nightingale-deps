@@ -35,61 +35,30 @@
 #
 # ***** END LICENSE BLOCK *****
 
-DEPTH		= ../..
+DEPTH		= ../../../..
 topsrcdir	= @top_srcdir@
 srcdir		= @srcdir@
 VPATH		= @srcdir@
 
-include $(DEPTH)/config/autoconf.mk
+include $(DEPTH)/build/autodefs.mk
 
-MODULE = browsercomps
-XPIDL_MODULE = browsercompsbase
-
-XPIDLSRCS = \
-	nsIBrowserHandler.idl \
+XPIDL_SRCS =  \
 	nsIBrowserGlue.idl \
 	$(NULL)
 
-EXTRA_PP_COMPONENTS = \
-	nsBrowserContentHandler.js \
-	nsBrowserGlue.js \
+XPIDL_MODULE = browsercompsbase.xpt
+XPIDL_MODULE_TYPELIBS = $(XPIDL_SRCS:.idl=.xpt)
+
+SONGBIRD_COMPONENTS = \
+	$(XPIDL_MODULE) \
 	$(NULL)
 
-EXTRA_JS_MODULES = distribution.js
-
-DIRS = \
-	about \
-	certerror \
-	dirprovider \
-	microsummaries \
-	preferences \
-	search \
-	sessionstore \
-	shell \
-	sidebar \
-	feeds \
-	places \
-	privatebrowsing \
+SONGBIRD_PP_RESOURCES = \
+	$(srcdir)/nsBrowserGlue.js \
 	$(NULL)
 
-ifndef WINCE
-DIRS += migration
-endif
+SONGBIRD_PP_DIR = $(SONGBIRD_COMPONENTSDIR)
 
-ifeq ($(MOZ_WIDGET_TOOLKIT),windows) 
-ifndef WINCE
-DIRS += wintaskbar
-endif
-endif
+GARBAGE = $(XPIDL_MODULE_TYPELIBS)
 
-ifdef MOZ_SAFE_BROWSING
-DIRS += safebrowsing
-endif
-
-DIRS += build
-
-ifdef MOZILLA_OFFICIAL
-DEFINES += -DOFFICIAL_BUILD=1
-endif
-
-include $(topsrcdir)/config/rules.mk
+include $(topsrcdir)/build/rules.mk

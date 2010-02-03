@@ -35,16 +35,18 @@
 #
 # ***** END LICENSE BLOCK *****
 
-DEPTH     = ../../..
+DEPTH     = ../../../../..
 topsrcdir = @top_srcdir@
 srcdir    = @srcdir@
 VPATH     = @srcdir@
 
-include $(DEPTH)/config/autoconf.mk
+include $(DEPTH)/build/autodefs.mk
 
-MODULE        = fuel
-XPIDL_MODULE  = fuel
+XPIDL_SRCS = fuelIApplication.idl
 
-XPIDLSRCS = fuelIApplication.idl
+XPIDL_MODULE  = fuel.xpt
+XPIDL_MODULE_TYPELIBS = $(XPIDL_SRCS:.idl=.xpt)
 
-include $(topsrcdir)/config/rules.mk
+SONGBIRD_COMPONENTS = $(XPIDL_MODULE)
+
+include $(topsrcdir)/build/rules.mk
