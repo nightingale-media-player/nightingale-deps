@@ -72,8 +72,28 @@
 #include "nsUnicharUtils.h"
 
 // font info loader constants
-static const PRUint32 kDelayBeforeLoadingCmaps = 8 * 1000; // 8secs
-static const PRUint32 kIntervalBetweenLoadingCmaps = 150; // 150ms
+//////////////////////////////////////////////////////////////
+// XXX Songbird Bug 14448, BMO 469909 - Enumerating all fonts
+// ends up memory mapping in 10mb worth of data, significantly 
+// increasing perceived memory usage right after startup.
+// This memory is freed after 10 minutes or so... but in the
+// meantime but it makes us look bad. 
+// 
+// Worst case, we hit a character that triggers the system 
+// fallback case, look through all fonts, and can't 
+// find the character in any of them.  This would hang
+// for a few seconds if the CMAPS weren't already 
+// loaded.
+//
+// If we hit this case in the default UI or a session restore 
+// page, then we're screwed no matter what.  Firefox chooses
+// to start loading the CMAPs 8 seconds after launch, but 
+// for Songbird we're pushing this back to 5 minutes.  
+// It doesn't *really* matter, we're just increasing the odds
+// somewhat.
+//////////////////////////////////////////////////////////////
+static const PRUint32 kDelayBeforeLoadingCmaps = 5 * 60 * 1000; // 5 minutes 
+static const PRUint32 kIntervalBetweenLoadingCmaps = 500; // 500ms
 static const PRUint32 kNumFontsPerSlice = 10; // read in info 10 fonts at a time
 
 static PRLogModuleInfo *gFontListLog = PR_NewLogModule("fontListLog");
