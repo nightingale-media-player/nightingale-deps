@@ -84,6 +84,7 @@ var gIoService = null;
 const XMLNS = "http://www.w3.org/XML/1998/namespace";
 const RSS090NS = "http://my.netscape.com/rdf/simple/0.9/";
 const WAIROLE_NS = "http://www.w3.org/2005/01/wai-rdf/GUIRoleTaxonomy#";
+const ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd";
 
 /***** Some general utils *****/
 function strToURI(link, base) {
@@ -223,7 +224,9 @@ var gNamespaces = {
   "http://purl.org/rss/1.0/modules/wiki/":"wiki", 
   "http://www.w3.org/XML/1998/namespace":"xml",
   "http://search.yahoo.com/mrss/":"media",
-  "http://search.yahoo.com/mrss":"media"
+  "http://search.yahoo.com/mrss":"media",
+  "http://www.itunes.com/dtds/podcast-1.0.dtd":"itunes",
+  "http://rssnamespace.org/feedburner/ext/1.0":"feedburner"
 }
 
 // We allow a very small set of namespaces in XHTML content,
@@ -883,6 +886,13 @@ function rssArrayElement(s) {
   return str;
 }
 
+// post-process an itunes:category, map it to the Atom fields.
+function itunesCatTerm(s, cat) {
+  cat.setPropertyAsAString("scheme", ITUNES_NS);
+  cat.setPropertyAsAString("term", cat.getPropertyAsAString("text"));
+  return cat;
+} 
+
 /***** Some feed utils from TBird *****/
 
 /**
@@ -1188,6 +1198,7 @@ function FeedProcessor() {
   this._extensionHandler = null;
   this._xhtmlHandler = null;
   this._haveSentResult = false;
+  this._namespaces = {};
   
   // http://www.w3.org/WAI/PF/GUI/ uses QNames in content :(
   this._waiPrefixes = {};
@@ -1241,11 +1252,15 @@ function FeedProcessor() {
                                         rssAuthor, true),
       "dc:creator": new ElementInfo("authors", Cc[PERSON_CONTRACTID],
                                     rssAuthor, true),
+      "itunes:author": new ElementInfo("authors", Cc[PERSON_CONTRACTID],
+                                       rssAuthor, true),
       "dc:author": new ElementInfo("authors", Cc[PERSON_CONTRACTID],
                                    rssAuthor, true),
       "dc:contributor": new ElementInfo("contributors", Cc[PERSON_CONTRACTID],
                                          rssAuthor, true),
       "category": new ElementInfo("categories", null, rssCatTerm, true),
+      "media:category": new ElementInfo("categories", null, rssCatTerm, true),
+      "itunes:category": new ElementInfo("categories", null, itunesCatTerm, true),
       "cloud": new ElementInfo("cloud", null, null, false),
       "image": new ElementInfo("image", null, null, false),
       "textInput": new ElementInfo("textInput", null, null, false),
@@ -1262,6 +1277,8 @@ function FeedProcessor() {
                                     rssAuthor, true),
       "dc:author": new ElementInfo("authors", Cc[PERSON_CONTRACTID],
                                    rssAuthor, true),
+      "itunes:author": new ElementInfo("authors", Cc[PERSON_CONTRACTID],
+                                       rssAuthor, true),
       "dc:contributor": new ElementInfo("contributors", Cc[PERSON_CONTRACTID],
                                          rssAuthor, true),
       "category": new ElementInfo("categories", null, rssCatTerm, true),
@@ -1376,6 +1393,24 @@ FeedProcessor.prototype = {
     this._result.doc.baseURI = 
       this._xmlBaseStack[this._xmlBaseStack.length - 1];
     this._result.doc.fields = this._feed;
+
+    if (!this._result.doc.attributes) {
+      this._result.doc.attributes =
+        Cc["@mozilla.org/saxparser/attributes;1" ]
+          .createInstance(Ci.nsISAXMutableAttributes);
+    }
+    
+    let attributes = this._result.doc.attributes;
+    for (let prefix in this._namespaces) {
+      if (attributes.getIndexFromQName("xmlns:" + prefix) == -1) {
+        attributes.addAttribute("http://www.w3.org/2000/xmlns/",
+                                prefix,
+                                "xmlns:" + prefix,
+                                "CDATA",
+                                this._namespaces[prefix]);
+      }
+    }
+
     this._result.version = version;
   },
 
@@ -1618,6 +1653,7 @@ FeedProcessor.prototype = {
   // don't conflict with the ones we've defined, throw them in a 
   // dictionary to check.
   startPrefixMapping: function FP_startPrefixMapping(prefix, uri) {
+    this._namespaces[prefix] = uri;
     // Thanks for QNames in content, W3C
     // This will even be a perf hit for every single feed
     // http://www.w3.org/WAI/PF/GUI/
