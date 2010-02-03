@@ -37,17 +37,22 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include <stdio.h>
+#include <limits.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
 #include "mar.h"
 
 #ifdef XP_WIN
 #include <direct.h>
 #define chdir _chdir
+#define PATH_MAX _MAX_PATH
 #else
 #include <unistd.h>
 #endif
 
 static void print_usage() {
-    printf("usage: mar [-C dir] {-c|-x|-t} archive.mar [files...]\n");
+    printf("usage: mar [-C dir] [-f filelist.txt] {-c|-x|-t} archive.mar [files...]\n");
 }
 
 static int mar_test_callback(MarFile *mar, const MarItem *item, void *unused) {
@@ -72,20 +77,100 @@ static int mar_test(const char *path) {
 int main(int argc, char **argv) {
   int command;
 
+  char *fileManifest = NULL;
+  char **fileList = NULL;
+  char **fileListEntry = NULL;
+  char fileName[PATH_MAX];
+  int fileListCount = 0;
+  unsigned int fileListBufferMax = 100;
+  unsigned int fileNameLen = 0;
+  FILE *fileManifestDesc = NULL;
+
   if (argc < 3) {
     print_usage();
     return -1;
   }
 
   if (argv[1][1] == 'C') {
-    chdir(argv[2]);
+    if (chdir(argv[2])) {
+      fprintf(stderr, "Failed to chdir to %s (%s)\n", argv[2], strerror(errno));
+      print_usage();
+      return -1;
+    }
     argv += 2;
     argc -= 2;
   }
 
+  if (argv[1][1] == 'f') {
+    fileManifest = argv[2];
+    argv += 2;
+    argc -= 2;
+  }
+
+  /* We assume when we get here there are _at least_ two arguments left: 
+   * the command (-x, -t, -c) and the mar file to operate on; there could be
+   * more (list of files) */
+ 
+  if (argc < 2) {
+    print_usage();
+    return -1;
+  }
+
   switch (argv[1][1]) {
   case 'c':
-    return mar_create(argv[2], argc - 3, argv + 3);
+    if (fileManifest) {
+      if ((fileManifestDesc = fopen(fileManifest, "r"))) {
+        fileListEntry = fileList = (char**)malloc(fileListBufferMax * 
+         sizeof(char*));
+        memset(fileList, 0, fileListBufferMax * sizeof(char*));
+
+        while (fgets(fileName, PATH_MAX, fileManifestDesc)) {
+          fileNameLen = strlen(fileName);
+          /* strip newline */
+          if ('\n' == fileName[fileNameLen - 1]) {
+            if (1 == fileNameLen)
+              continue;
+            --fileNameLen;
+          } else if (0 == fileNameLen) {
+            continue;
+          }
+
+          *fileListEntry = malloc(fileNameLen + 1);
+          memcpy(*fileListEntry, fileName, fileNameLen); 
+          (*fileListEntry)[fileNameLen] = '\0';
+          fileListCount++;
+          fileListEntry++;
+
+          if (fileListCount > fileListBufferMax) {
+            fprintf(stderr, "Assertion failed: fileListCount overrun");
+            exit(1);
+          }
+          if (fileListBufferMax == fileListCount) {
+            fileListBufferMax *= 2;
+            fileList = realloc(fileList, fileListBufferMax * sizeof(char*));
+
+            fileListEntry = fileList + fileListCount;
+            memset(fileListEntry, 0, (fileListBufferMax * sizeof(char*)) / 2);
+          }
+        }
+        fclose(fileManifestDesc);
+      }
+      else {
+        fprintf(stderr, "Error: file manifest open() failed: %s (%s)\n",
+         fileManifest, strerror(errno));
+        return -1;
+      }
+    }
+    else {
+      fileList = argv + 3;
+      fileListCount = argc - 3;
+      if (fileListCount <= 0) {
+        print_usage();
+        return -1;
+      }
+    }
+
+    return mar_create(argv[2], fileListCount, fileList);
   case 't':
     return mar_test(argv[2]);
   case 'x':
