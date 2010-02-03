@@ -202,6 +202,23 @@ nsClipboard::GetNativeClipboardData(nsITransferable* aTransferable, PRInt32 aWhi
       if (!pString)
         continue;
 
+      // Asking the pasteboard for |NSStringPboardType| when a file is in the clipboard
+      // will only return the leaf name of the file. To be consistent with other platforms,
+      // Look to see if a file exists in the |NSFilenamesPboardType| array with the leafname
+      // of |pString|.
+      NSArray *filepaths = [cocoaPasteboard propertyListForType:NSFilenamesPboardType];
+      if (filepaths) {
+        PRBool doSearch = PR_TRUE;
+        NSString *curFilepath = nil;
+        NSEnumerator *filepathsEnum = [filepaths objectEnumerator];
+        while ((curFilepath = [filepathsEnum nextObject]) && doSearch) {
+          if ([[curFilepath lastPathComponent] isEqualToString:pString]) {
+            pString = curFilepath;
+            doSearch = PR_FALSE;
+          }
+        }
+      }
+
       NSData* stringData = [pString dataUsingEncoding:NSUnicodeStringEncoding];
       unsigned int dataLength = [stringData length];
       void* clipboardDataPtr = malloc(dataLength);
@@ -229,6 +246,23 @@ nsClipboard::GetNativeClipboardData(nsITransferable* aTransferable, PRInt32 aWhi
       aTransferable->SetTransferData(flavorStr, genericDataWrapper, dataLength);
       free(clipboardDataPtr);
       break;
+    }
+    else if (flavorStr.EqualsLiteral(kFileMime)) {
+      // Thankfully, |NSFilenamesPboardType| returns an |NSArray *| containing full paths
+      // of all the files in the clipboard. 
+      NSArray *filenamesArray = [cocoaPasteboard propertyListForType:NSFilenamesPboardType];
+      if (!filenamesArray || (filenamesArray && [filenamesArray count] == 0))
+        continue;
+
+      // Ideally, this would return an array of |nsILocalFile| objects. But to match consitency
+      // with other platforms, just return the first file in the array.
+      nsCString filepath([(NSString *)[filenamesArray objectAtIndex:0] UTF8String]);
+      nsCOMPtr<nsILocalFile> file;
+      rv = NS_NewNativeLocalFile(filepath, PR_FALSE, getter_AddRefs(file));
+      NS_ENSURE_SUCCESS(rv, rv);
+
+      rv = aTransferable->SetTransferData(flavorStr, file, sizeof(nsILocalFile *));
+      NS_ENSURE_SUCCESS(rv, rv);
     }
     else if (flavorStr.EqualsLiteral(kJPEGImageMime) ||
              flavorStr.EqualsLiteral(kPNGImageMime) ||
@@ -347,7 +381,15 @@ nsClipboard::HasDataMatchingFlavors(const char** aFlavorList, PRUint32 aLength,
         *outResult = PR_TRUE;
         break;
       }
-    } else if (!strcmp(aFlavorList[i], kJPEGImageMime) ||
+    }
+    else if (!strcmp(aFlavorList[i], kFileMime)) {
+      NSArray *filenamesList = [generalPBoard propertyListForType:NSFilenamesPboardType];
+      if (filenamesList) {
+        *outResult = PR_TRUE;
+        break;
+      }
+    }
+    else if (!strcmp(aFlavorList[i], kJPEGImageMime) ||
                !strcmp(aFlavorList[i], kPNGImageMime) ||
                !strcmp(aFlavorList[i], kGIFImageMime)) {
       NSString* availableType = [generalPBoard availableTypeFromArray:
