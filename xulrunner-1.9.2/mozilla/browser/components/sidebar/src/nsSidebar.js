@@ -1,3 +1,4 @@
+/*
 # -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
 # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
@@ -40,6 +41,7 @@
 # the terms of any one of the MPL, the GPL or the LGPL.
 #
 # ***** END LICENSE BLOCK *****
+*/
 
 /*
  * No magic constructor behaviour, as is de rigeur for XPCOM.
@@ -117,6 +119,7 @@ function (aTitle, aContentURL, aCustomizeURL, aPersist)
     var WINMEDSVC = Components.classes['@mozilla.org/appshell/window-mediator;1']
                               .getService(Components.interfaces.nsIWindowMediator);
     var win = WINMEDSVC.getMostRecentWindow( "navigator:browser" );
+    if (!win) return;
                                                                                 
     if (!sidebarURLSecurityCheck(aContentURL))
       return;
@@ -202,15 +205,18 @@ function (aDescriptionURL)
   // description anyway.
   var WINMEDSVC = Components.classes['@mozilla.org/appshell/window-mediator;1']
                             .getService(Components.interfaces.nsIWindowMediator);
-  var win = WINMEDSVC.getMostRecentWindow("navigator:browser");
+  var win = WINMEDSVC.getMostRecentWindow("Songbird:Main");
   var browser = win.document.getElementById("content");
   var iconURL = "";
   // Use documentURIObject in the check for shouldLoadFavIcon so that we
   // do the right thing with about:-style error pages.  Bug 453442
   if (browser.shouldLoadFavIcon(browser.selectedBrowser
                                        .contentDocument
-                                       .documentURIObject))
-    iconURL = win.gProxyFavIcon.getAttribute("src");
+                                       .documentURIObject)) {
+    //iconURL = win.gProxyFavIcon.getAttribute("src");
+    // XXX Songbird: no proxy favicon
+    iconURL = browser.selectedBrowser.mIconURL;
+  }
   
   if (!this.validateSearchEngine(aDescriptionURL, iconURL))
     return;
@@ -236,6 +242,8 @@ function (aSearchURL)
 nsSidebar.prototype.addMicrosummaryGenerator =
 function (generatorURL)
 {
+    // XXX Songbird: no microsummaries
+    throw Components.Exception(Components.results.NS_ERROR_NOT_IMPLEMENTED);
     debug("addMicrosummaryGenerator(" + generatorURL + ")");
 
     if (!/^https?:/i.test(generatorURL))
