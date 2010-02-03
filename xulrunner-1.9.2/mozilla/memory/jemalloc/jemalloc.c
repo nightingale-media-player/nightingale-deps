@@ -1637,6 +1637,12 @@ static __thread uint32_t balance_x;
 PRN_DEFINE(balance, balance_x, 1297, 1301)
 #endif
 
+#ifdef MOZ_MEMORY_WINDOWS
+#define moz_getpid() GetCurrentProcessId()
+#else
+#define moz_getpid() getpid()
+#endif
+
 #ifdef MALLOC_UTRACE
 static int
 utrace(const void *addr, size_t len)
@@ -1646,15 +1652,15 @@ utrace(const void *addr, size_t len)
 	assert(len == sizeof(malloc_utrace_t));
 
 	if (ut->p == NULL && ut->s == 0 && ut->r == NULL)
-		malloc_printf("%d x USER malloc_init()\n", getpid());
+		malloc_printf("%d x USER malloc_init()\n", moz_getpid());
 	else if (ut->p == NULL && ut->r != NULL) {
-		malloc_printf("%d x USER %p = malloc(%zu)\n", getpid(), ut->r,
+		malloc_printf("%d x USER %p = malloc(%zu)\n", moz_getpid(), ut->r,
 		    ut->s);
 	} else if (ut->p != NULL && ut->r != NULL) {
-		malloc_printf("%d x USER %p = realloc(%p, %zu)\n", getpid(),
+		malloc_printf("%d x USER %p = realloc(%p, %zu)\n", moz_getpid(),
 		    ut->r, ut->p, ut->s);
 	} else
-		malloc_printf("%d x USER free(%p)\n", getpid(), ut->p);
+		malloc_printf("%d x USER free(%p)\n", moz_getpid(), ut->p);
 
 	return (0);
 }
@@ -6183,7 +6189,48 @@ _msize(const void *ptr)
 
 	return malloc_usable_size(ptr);
 }
+
+#ifdef MOZ_DEBUG
+size_t __crtDebugFillThreshold = 0;
+int __crtDebugCheckCount = 0;
+int _crtDbgFlag = 0;
+_CRTIMP long _crtBreakAlloc = -1L;
+
+// #if 0
+int __cdecl
+_heap_init(int flags)
+{
+	return 1; /* COMPLETELY fake... */
+}
+// #endif
+
+void *
+_malloc_dbg(size_t size, int r0, const char* r1, int r2)
+{
+        return malloc(size);
+}
+
+void
+_free_dbg(void *ptr, int r0)
+{
+        return free(ptr);
+} 
+
+void *
+_calloc_dbg(size_t n, size_t s, int r0, const char* r1, int r2)
+{
+        return calloc(n, s);
+} 
+
+void *
+_realloc_dbg(void *userdata, size_t s, int b, const char* r1, int r2)
+{
+        return realloc(userdata, s);
+} 
+ 
 #endif
+ 
+#endif /* MOZ_MEMORY_WINDOWS */
 
 /*
  * End non-standard functions.

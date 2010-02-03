@@ -42,6 +42,7 @@ dnl   Mac OS X 10.4 support
 dnl   Giorgio Maone <g.maone@informaction.com>
 dnl   MSVC l10n compatible version check
 dnl   Ben Turner <mozilla@songbirdnest.com>
+dnl   J. Paul Reed <mozpreed@sigkill.com> 
 dnl
 dnl Alternatively, the contents of this file may be used under the terms of
 dnl either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -6681,9 +6682,16 @@ if test "$MOZ_MEMORY"; then
     WIN32_CUSTOM_CRT_DIR="$_objdir_win/memory/jemalloc/crtsrc/build/intel"
     dnl Statically link the C++ stdlib.  We only use this for Breakpad anyway.
     AC_DEFINE(_STATIC_CPPLIB)
-    MOZ_MEMORY_LDFLAGS="-MANIFEST:NO -LIBPATH:\"$WIN32_CUSTOM_CRT_DIR\" -NODEFAULTLIB:msvcrt -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt19"
+    MOZ_MEMORY_LDFLAGS="-MANIFEST:NO -LIBPATH:\"$WIN32_CUSTOM_CRT_DIR\" -NODEFAULTLIB:msvcrt -NODEFAULTLIB:msvcrtd"
+    if test -z $MOZ_DEBUG; then
+      MOZ_MEMORY_LDFLAGS="$MOZ_MEMORY_LDFLAGS -DEFAULTLIB:mozcrt19"
+    else
+      MOZ_MEMORY_LDFLAGS="$MOZ_MEMORY_LDFLAGS -DEFAULTLIB:mozcrt19d"
+    fi
     dnl Also pass this to NSPR/NSS
     DLLFLAGS="$DLLFLAGS $MOZ_MEMORY_LDFLAGS"
+    CFLAGS="$CFLAGS -I\"$WIN32_CUSTOM_CRT_DIR\""
+    CXXFLAGS="$CXXFLAGS -I\"$WIN32_CUSTOM_CRT_DIR\""
     export DLLFLAGS
     ;;
   *wince)

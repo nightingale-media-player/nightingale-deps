@@ -242,6 +242,34 @@ OS_LDFLAGS += $(_DEBUG_LDFLAGS)
 
 # XXX: What does this? Bug 482434 filed for better explanation.
 ifeq ($(OS_ARCH)_$(GNU_CC),WINNT_)
+
+# jemalloc doesn't provide a static CRT to link against anyway
+# (memory/jemalloc/Makefile.in deletes the static .libs), so if static linking
+# was requested in the build system, automatically disable MOZ_MEMORY; see 
+# Songbird bug 10724, comment 3.
+ifdef USE_STATIC_LIBS
+  DISABLE_MOZ_MEMORY = 1
+endif
+
+ifeq ($(MOZ_MEMORY)_$(DISABLE_MOZ_MEMORY),1_)
+
+MOZ_MEMORY_LDFLAGS += -NODEFAULTLIB:libcmt -NODEFAULTLIB:libcmtd
+OS_CXXFLAGS += -D_STATIC_CPPLIB=1
+
+ifeq ($(MOZ_DEBUG),1)
+  # We need to throw extra symbols away, even in debug builds, when using
+  # jemalloc; otherwise, we get conflicts between libcmtd in crashreporter's
+  # (shared) library (which we statically compile crashreporter.exe against)
+  # and the final xul.dll link; in release mode, this is the default.
+  MOZ_MEMORY_LDFLAGS += -DEFAULTLIB:mozcrt19d
+else
+  MOZ_MEMORY_LDFLAGS += -DEFAULTLIB:mozcrt19
+endif # MOZ_DEBUG
+
+OS_LDFLAGS += $(MOZ_MEMORY_LDFLAGS)
+
+endif # MOZ_MEMORY && !DISABLE_MOZ_MEMORY
+
 ifdef MOZ_DEBUG
 ifneq (,$(MOZ_BROWSE_INFO)$(MOZ_BSCFILE))
 OS_CFLAGS += -FR
