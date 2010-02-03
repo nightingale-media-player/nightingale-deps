@@ -111,6 +111,7 @@
 #include <process.h>
 #include <commctrl.h>
 #include <unknwn.h>
+#include <shellapi.h>
 
 #include "prlog.h"
 #include "prtime.h"
@@ -4371,6 +4372,16 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM &wParam, LPARAM &lParam,
       PRInt32 maxHeight = maxTrackHeight;
 
       PRInt32 left = -1, top = -1;
+      
+      PR_LOG(gWindowsLog, PR_LOG_DEBUG, (
+        "WM_GETMINMAXINFO: mIsChromeHidden(%s) mSizeMode(%s) mIsMaximizing(%s)",
+        (mIsChromeHidden ? "true" : "false"),
+        (mSizeMode == nsSizeMode_Normal ? "normal" :
+         mSizeMode == nsSizeMode_Minimized ? "minimized" :
+         mSizeMode == nsSizeMode_Maximized ? "maximized" :
+         "unknown"),
+        (mIsMaximizing ? "true" : "false")
+        ));
 
       // Restrict the window from covering the taskbar if chrome is hidden
       // (because the OS doesn't do this for us) and the size mode is set to
@@ -4403,6 +4414,50 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM &wParam, LPARAM &lParam,
             hasWorkArea = PR_TRUE;
           }
         }
+        
+        HMONITOR selfMon = ::MonitorFromWindow(mWnd, MONITOR_DEFAULTTONEAREST),
+                 targetMon;
+        
+        if (hasWorkArea) {
+          // adjust for the task bar
+          APPBARDATA appbarData = {sizeof(APPBARDATA)};
+          appbarData.hWnd = mWnd;
+          HWND wnd;
+
+          appbarData.uEdge = ABE_TOP;
+          wnd = (HWND)::SHAppBarMessage(ABM_GETAUTOHIDEBAR, &appbarData);
+          if (wnd) {
+            targetMon = ::MonitorFromWindow(wnd, MONITOR_DEFAULTTONEAREST);
+            if (targetMon == selfMon) {
+              workArea.top += 1;
+            }
+          }
+          appbarData.uEdge = ABE_RIGHT;
+          wnd = (HWND)::SHAppBarMessage(ABM_GETAUTOHIDEBAR, &appbarData);
+          if (wnd) {
+            targetMon = ::MonitorFromWindow(wnd, MONITOR_DEFAULTTONEAREST);
+            if (targetMon == selfMon) {
+              workArea.right -= 1;
+            }
+          }
+          appbarData.uEdge = ABE_BOTTOM;
+          wnd = (HWND)::SHAppBarMessage(ABM_GETAUTOHIDEBAR, &appbarData);
+          if (wnd) {
+            targetMon = ::MonitorFromWindow(wnd, MONITOR_DEFAULTTONEAREST);
+            if (targetMon == selfMon) {
+              workArea.bottom -= 1;
+            }
+          }
+          appbarData.uEdge = ABE_LEFT;
+          wnd = (HWND)::SHAppBarMessage(ABM_GETAUTOHIDEBAR, &appbarData);
+          if (wnd) {
+            targetMon = ::MonitorFromWindow(wnd, MONITOR_DEFAULTTONEAREST);
+            if (targetMon == selfMon) {
+              workArea.left += 1;
+            }
+          }
+        }
+
         if (hasWorkArea) {
           PRInt32 workWidth = workArea.right - workArea.left;
           maxWidth = PR_MIN(workWidth, mSizeConstraints.maxWidth);
@@ -6161,6 +6216,28 @@ void nsWindow::OnSettingsChange(WPARAM wParam, LPARAM lParam)
   if (mWindowType == eWindowType_dialog ||
       mWindowType == eWindowType_toplevel )
     nsWindowGfx::OnSettingsChangeGfx(wParam);
+
+  const wchar_t kTraySettings[] = L"TraySettings";
+  if (wParam == 0 && lParam &&
+      !(wcsncmp(kTraySettings, (LPWSTR)lParam, NS_ARRAY_LENGTH(kTraySettings))))
+  {
+    if (mIsChromeHidden && mSizeMode == nsSizeMode_Maximized) {
+      // we need to handle WM_GETMINMAXINFO, but while the taskbar was changed
+      // Windows does not send a message.  Let's manually size the window.
+      MINMAXINFO mmi;
+      memset((void*)&mmi, -1, sizeof(MINMAXINFO));
+      mmi.ptMaxPosition.x = mmi.ptMaxPosition.y = LONG_MIN;
+      mmi.ptMaxSize.x = mmi.ptMaxSize.y = LONG_MAX;
+      LRESULT lr = ::SendMessage(mWnd, WM_GETMINMAXINFO, NULL, (LPARAM)&mmi);
+      if (!lr && !(mmi.ptMaxPosition.x == LONG_MIN && mmi.ptMaxPosition.y == LONG_MIN &&
+                   mmi.ptMaxSize.x == LONG_MAX && mmi.ptMaxSize.y == LONG_MAX))
+      {
+        // there was a size restriction, move it
+        ::MoveWindow(mWnd, mmi.ptMaxPosition.x, mmi.ptMaxPosition.y,
+                     mmi.ptMaxSize.x, mmi.ptMaxSize.y, TRUE);
+      }
+    }
+  }
 }
 
 // Scrolling helper function for handling plugins.  
