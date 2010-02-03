@@ -14,8 +14,8 @@
 -->
       </handler>
 
-      <handler event="keypress" key=" " modifiers="shift" command="cmd_scrollPageUp" />
-      <handler event="keypress" key=" " command="cmd_scrollPageDown" />
+      <handler event="keypress" key=" " modifiers="shift" command="cmd_control_playpause" />
+      <handler event="keypress" key=" " command="cmd_control_playpause" />
 
       <handler event="keypress" keycode="VK_UP" command="cmd_scrollLineUp" />
       <handler event="keypress" keycode="VK_DOWN" command="cmd_scrollLineDown" />
