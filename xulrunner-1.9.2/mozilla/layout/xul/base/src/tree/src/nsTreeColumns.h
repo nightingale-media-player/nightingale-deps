@@ -181,6 +181,9 @@ protected:
   nsTreeColumn* GetFirstColumn() { EnsureColumns(); return mFirstColumn; }
   nsTreeColumn* GetPrimaryColumn();
 
+  // Get the width of all the current columns
+  PRInt32 GetColumnsWidth();
+
 private:
   nsITreeBoxObject* mTree;
 

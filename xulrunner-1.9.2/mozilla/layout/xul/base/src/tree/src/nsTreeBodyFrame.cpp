@@ -2525,8 +2525,18 @@ nsTreeBodyFrame::CalcHorzWidth(const ScrollParts& aParts)
 {
   // Compute the adjustment to the last column. This varies depending on the
   // visibility of the columnpicker and the scrollbar.
-  if (aParts.mColumnsFrame)
-    mAdjustWidth = mRect.width - aParts.mColumnsFrame->GetRect().width;
+  if (aParts.mColumnsFrame) {    
+    // Only compute the adjustment if the columns view width is overlowing into the scrollbar
+    // frame. Also, only allow the max offset for the adjustment to be the width of the column frame.
+    PRInt32 colViewWidth = nsPresContext::CSSPixelsToAppUnits(mColumns->GetColumnsWidth());
+    PRInt32 widthOffset =  mRect.width - colViewWidth;
+    if (widthOffset < 0) {
+      PRInt32 colFrameOffset = mRect.width - aParts.mColumnsFrame->GetRect().width;
+      mAdjustWidth = PR_MAX(widthOffset, colFrameOffset); 
+    }
+    else
+      mAdjustWidth = 0;
+  }
   else
     mAdjustWidth = 0;
 

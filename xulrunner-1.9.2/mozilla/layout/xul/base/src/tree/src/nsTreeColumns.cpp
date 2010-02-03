@@ -687,3 +687,28 @@ nsTreeColumns::EnsureColumns()
     }
   }
 }
+
+PRInt32
+nsTreeColumns::GetColumnsWidth()
+{
+  PRInt32 width = 0;
+  
+  PRInt32 colCount = 0;
+  nsresult rv = GetCount(&colCount);
+  NS_ENSURE_SUCCESS(rv, width);
+
+  for (PRInt32 i = 0; i < colCount; i++) {
+    nsCOMPtr<nsITreeColumn> curTreeCol;
+    rv = GetColumnAt(i, getter_AddRefs(curTreeCol));
+    if (NS_SUCCEEDED(rv) && curTreeCol) {
+      PRInt32 curTreeColWidth = 0;
+      rv = curTreeCol->GetWidth(&curTreeColWidth);
+      if (NS_SUCCEEDED(rv)) {
+        width += curTreeColWidth;
+      }
+    }
+  }
+
+  return width;
+}
+
