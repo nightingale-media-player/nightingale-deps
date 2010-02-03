@@ -49,7 +49,7 @@ foreach my $arg (@ARGV) {
 }
 my $defines = join(' ', @ARGV[ $ddindex .. $#ARGV ]);
 
-getopts("d:s:t:c:j:f:avqlD:o:p:xz:e");
+getopts("d:s:t:c:j:f:avqlD:o:p:xz:em:");
 
 my $baseFilesDir = ".";
 if (defined($::opt_s)) {
@@ -79,6 +79,11 @@ if (defined($::opt_d)) {
 my $jarDir = $chromeDir;
 if (defined($::opt_j)) {
     $jarDir = $::opt_j;
+}
+
+my $jarMode = 0644;
+if (defined($::opt_m)) {
+    $jarMode = oct(((3 == length($::opt_m)) ? "0$::opt_m" : $::opt_m))
 }
 
 my $verbose = 0;
@@ -305,6 +310,7 @@ sub JarIt
         $err = $? >> 8;
         zipErrorCheck($err,$lockfile);
     }
+    chmod($jarMode, $jarchive);
     mozUnlock($lockfile) if (!$nofilelocks);
     chdir($oldDir);
     #print "cd $oldDir\n";
@@ -373,10 +379,11 @@ sub UniqIt
 
     print FILE map("$_\n", keys(%lines));
     close(FILE) or my $err = 1;
+    chmod($jarMode, $manifest) or my $err = 1;
     mozUnlock($lockfile) if (!$nofilelocks);
 
     if ($err) {
-        die "error: can't close $manifest: $!";
+        die "error: can't close and/or chmod $manifest: $!";
     }
 }
 
