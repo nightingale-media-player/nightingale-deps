@@ -39,6 +39,10 @@
 #define nsResizerFrame_h___
 
 #include "nsTitleBarFrame.h"
+#include "nsCOMPtr.h"
+
+class nsIBaseWindow;
+class nsPresContext;
 
 class nsResizerFrame : public nsTitleBarFrame 
 {
@@ -65,9 +69,12 @@ protected:
   Direction GetDirection();
   static void AdjustDimensions(PRInt32* aPos, PRInt32* aSize,
                         PRInt32 aMovement, PRInt8 aResizerDirection);
+  static nsresult GetWindowFromPresContext(nsPresContext* aPresContext,
+                                           nsIBaseWindow** _retval);
+  PRBool IsDisabled(nsPresContext* aPresContext);
 
 protected:
-	nsIntRect mWidgetRect;
+  nsCOMPtr<nsIBaseWindow> mResizingWindow;
 }; // class nsResizerFrame
 
 #endif /* nsResizerFrame_h___ */

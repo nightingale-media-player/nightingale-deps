@@ -21,6 +21,7 @@
  *
  * Contributor(s):
  *   Original Author: Eric J. Burley (ericb@neoplanet.com)
+ *   Ben Turner <mozilla@songbirdnest.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -54,6 +55,7 @@
 #include "nsGUIEvent.h"
 #include "nsEventDispatcher.h"
 #include "nsContentUtils.h"
+#include "nsIPresShell.h"
 
 //
 // NS_NewResizerFrame
@@ -99,28 +101,33 @@ nsResizerFrame::HandleEvent(nsPresContext* aPresContext,
 
          nsresult rv = NS_OK;
 
-         // ask the widget implementation to begin a resize drag if it can
-         rv = aEvent->widget->BeginResizeDrag(aEvent, 
-             direction.mHorizontal, direction.mVertical);
+         if (!IsDisabled(aPresContext)) {
+           // ask the widget implementation to begin a resize drag if it can
+           rv = aEvent->widget->BeginResizeDrag(aEvent, 
+               direction.mHorizontal, direction.mVertical);
 
-         if (rv == NS_ERROR_NOT_IMPLEMENTED) {
-           // there's no native resize support, 
-           // we need to window resizing ourselves
+           if (rv == NS_ERROR_NOT_IMPLEMENTED) {
+             // there's no native resize support, 
+             // we need to window resizing ourselves
 
-           // we're tracking.
-           mTrackingMouseMove = PR_TRUE;
+             rv = GetWindowFromPresContext(aPresContext,
+                                           getter_AddRefs(mResizingWindow));
+             NS_ENSURE_SUCCESS(rv, rv);
+ 
+             // we're tracking.
+             mTrackingMouseMove = PR_TRUE;
 
-           // start capture.
-           aEvent->widget->CaptureMouse(PR_TRUE);
-           CaptureMouseEvents(aPresContext,PR_TRUE);
+             // start capture.
+             aEvent->widget->CaptureMouse(PR_TRUE);
+             CaptureMouseEvents(aPresContext,PR_TRUE);
 
-           // remember current mouse coordinates.
-           mLastPoint = aEvent->refPoint;
-           aEvent->widget->GetScreenBounds(mWidgetRect);
+             // remember current mouse coordinates.
+             mLastPoint = aEvent->refPoint;
+           }
+
+           *aEventStatus = nsEventStatus_eConsumeNoDefault;
+           doDefault = PR_FALSE;
          }
-
-         *aEventStatus = nsEventStatus_eConsumeNoDefault;
-         doDefault = PR_FALSE;
        }
      }
      break;
@@ -135,6 +142,9 @@ nsResizerFrame::HandleEvent(nsPresContext* aPresContext,
          // we're done tracking.
          mTrackingMouseMove = PR_FALSE;
 
+         // Clear all cached data
+         mResizingWindow = nsnull;
+         
          // end capture
          aEvent->widget->CaptureMouse(PR_FALSE);
          CaptureMouseEvents(aPresContext,PR_FALSE);
@@ -146,28 +156,12 @@ nsResizerFrame::HandleEvent(nsPresContext* aPresContext,
      break;
 
    case NS_MOUSE_MOVE: {
-       if(mTrackingMouseMove)
+       if(mTrackingMouseMove && !IsDisabled(aPresContext))
        {
-         // get the document and the window - should this be cached?
-         nsPIDOMWindow *domWindow =
-           aPresContext->PresShell()->GetDocument()->GetWindow();
-         NS_ENSURE_TRUE(domWindow, NS_ERROR_FAILURE);
-
-         nsCOMPtr<nsIDocShellTreeItem> docShellAsItem =
-           do_QueryInterface(domWindow->GetDocShell());
-         NS_ENSURE_TRUE(docShellAsItem, NS_ERROR_FAILURE);
-
-         nsCOMPtr<nsIDocShellTreeOwner> treeOwner;
-         docShellAsItem->GetTreeOwner(getter_AddRefs(treeOwner));
-
-         nsCOMPtr<nsIBaseWindow> window(do_QueryInterface(treeOwner));
-
-         if (!window) {
-           return NS_OK;
-         }
+         NS_ENSURE_STATE(mResizingWindow);
 
          PRInt32 x,y,cx,cy;
-         window->GetPositionAndSize(&x,&y,&cx,&cy);
+         mResizingWindow->GetPositionAndSize(&x,&y,&cx,&cy);
          nsIntPoint oldWindowTopLeft(x, y);
 
          // both MouseMove and direction are negative when pointing to the
@@ -177,10 +171,56 @@ nsResizerFrame::HandleEvent(nsPresContext* aPresContext,
          AdjustDimensions(&x, &cx, mouseMove.x, direction.mHorizontal);
          AdjustDimensions(&y, &cy, mouseMove.y, direction.mVertical);
 
+         // Figure out the size constraints
+         nsresult rv;
+         nsCOMPtr<nsIWidget> mainWidget;
+         rv = mResizingWindow->GetMainWidget(getter_AddRefs(mainWidget));
+         NS_ENSURE_SUCCESS(rv, rv);
+
+         SizeConstraints sizeConstraints;
+         rv = mainWidget->GetSizeConstraints(&sizeConstraints.minWidth,
+                                             &sizeConstraints.maxWidth,
+                                             &sizeConstraints.minHeight,
+                                             &sizeConstraints.maxHeight);
+         NS_ENSURE_SUCCESS(rv, rv);
+
+         // It would be nice to simply pass the new size on to the window but
+         // we have to have a way to keep the window from moving
+         // inappropriately when size constraints are in effect. Also platform
+         // support for size constraints may not exist everywhere, so we go on
+         // and do all the necessary calculations here. This will make resizers
+         // support size constraints even if native window decorations don't.
+       
+         // Check if a width constraint is set
+         if (cx < sizeConstraints.minWidth ||
+             cx > sizeConstraints.maxWidth) {
+           // Always fix the size
+           PRInt32 oldCX = cx;
+           cx = PR_MAX(sizeConstraints.minWidth,
+                       PR_MIN(sizeConstraints.maxWidth, cx));
+           if (direction.mHorizontal == -1) {
+             // Move as far as possible
+             x -= cx - oldCX;
+           }
+         }
+
+         // Check if a height constraint is set
+         if (cy < sizeConstraints.minHeight ||
+             cy > sizeConstraints.maxHeight) {
+           // Always fix the size
+           PRInt32 oldCY = cy;
+           cy = PR_MAX(sizeConstraints.minHeight,
+                       PR_MIN(sizeConstraints.maxHeight, cy));
+           if (direction.mVertical == -1) {
+             // Move as far as possible
+             y -= cy - oldCY;
+           }
+         }
+
          // remember the last mouse point, relative to the *new* window
          mLastPoint = aEvent->refPoint + (oldWindowTopLeft - nsIntPoint(x, y));
 
-         window->SetPositionAndSize(x,y,cx,cy,PR_TRUE); // do the repaint.
+         mResizingWindow->SetPositionAndSize(x,y,cx,cy,PR_TRUE); // do the repaint.
 
          *aEventStatus = nsEventStatus_eConsumeNoDefault;
 
@@ -192,7 +232,7 @@ nsResizerFrame::HandleEvent(nsPresContext* aPresContext,
 
 
     case NS_MOUSE_CLICK:
-      if (NS_IS_MOUSE_LEFT_CLICK(aEvent))
+      if (NS_IS_MOUSE_LEFT_CLICK(aEvent) && !IsDisabled(aPresContext))
       {
         MouseClicked(aPresContext, aEvent);
       }
@@ -265,4 +305,70 @@ nsResizerFrame::MouseClicked(nsPresContext* aPresContext, nsGUIEvent *aEvent)
   nsContentUtils::DispatchXULCommand(mContent,
                                      aEvent ?
                                        NS_IS_TRUSTED_EVENT(aEvent) : PR_FALSE);
+}
+
+
+nsresult
+nsResizerFrame::GetWindowFromPresContext(nsPresContext* aPresContext,
+                                         nsIBaseWindow** _retval)
+{
+  NS_ENSURE_ARG_POINTER(aPresContext);
+  NS_ENSURE_ARG_POINTER(_retval);
+
+  nsIPresShell* presShell = aPresContext->PresShell();
+  NS_ENSURE_STATE(presShell);
+
+  nsIDocument* document = presShell->GetDocument();
+  NS_ENSURE_STATE(document);
+
+  nsPIDOMWindow* domWindow = document->GetWindow();
+  NS_ENSURE_STATE(domWindow);
+
+  nsIDocShell* docShell = domWindow->GetDocShell();
+  NS_ENSURE_STATE(docShell);
+
+  nsresult rv;
+  nsCOMPtr<nsIDocShellTreeItem> docShellAsItem =
+    do_QueryInterface(docShell, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsIDocShellTreeOwner> treeOwner;
+  rv = docShellAsItem->GetTreeOwner(getter_AddRefs(treeOwner));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsIBaseWindow> baseWindow = do_QueryInterface(treeOwner, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  NS_ADDREF(*_retval = baseWindow);
+  return NS_OK;
+}
+
+PRBool
+nsResizerFrame::IsDisabled(nsPresContext* aPresContext)
+{
+  PRBool isDisabled = PR_FALSE;
+  if (GetContent())
+    isDisabled = GetContent()->AttrValueIs(kNameSpaceID_None, nsGkAtoms::disabled,
+                                           nsGkAtoms::_true, eCaseMatters);
+
+  if (isDisabled)
+    return PR_TRUE;
+
+  // Resizers shouldn't be active if the window is maximized
+  nsresult rv;
+  nsCOMPtr<nsIBaseWindow> baseWindow = mResizingWindow;
+  if (!baseWindow) {
+    rv = GetWindowFromPresContext(aPresContext, getter_AddRefs(baseWindow));
+    NS_ENSURE_SUCCESS(rv, PR_FALSE);
+  }
+
+  nsCOMPtr<nsIWidget> mainWidget;
+  rv = baseWindow->GetMainWidget(getter_AddRefs(mainWidget));
+  NS_ENSURE_SUCCESS(rv, PR_FALSE);
+
+  PRInt32 sizeMode;
+  rv = mainWidget->GetSizeMode(&sizeMode);
+  NS_ENSURE_SUCCESS(rv, PR_FALSE);
+
+  return sizeMode == nsSizeMode_Maximized;
 }

@@ -143,6 +143,10 @@ public:
   NS_IMETHOD              OnIMESelectionChange(void) { return NS_ERROR_NOT_IMPLEMENTED; }
   NS_IMETHOD              OnDefaultButtonLoaded(const nsIntRect &aButtonRect) { return NS_ERROR_NOT_IMPLEMENTED; }
   NS_IMETHOD              OverrideSystemMouseScrollSpeed(PRInt32 aOriginalDelta, PRBool aIsHorizontal, PRInt32 &aOverriddenDelta);
+  NS_IMETHOD              SetSizeConstraints(PRInt32 aMinWidth, PRInt32 aMaxWidth,
+                                             PRInt32 aMinHeight, PRInt32 aMaxHeight);
+  NS_IMETHOD              GetSizeConstraints(PRInt32* aMinWidth, PRInt32* aMaxWidth,
+                                             PRInt32* aMinHeight, PRInt32* aMaxHeight);
 
 protected:
 

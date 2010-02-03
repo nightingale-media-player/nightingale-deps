@@ -58,6 +58,7 @@
 #include "gfxWindowsSurface.h"
 #include "nsWindowDbg.h"
 #include "cairo.h"
+#include "nsRect.h"
 
 #if !defined(WINCE)
 #include "nsWinGesture.h"
@@ -124,6 +125,10 @@ public:
   NS_IMETHOD              Show(PRBool bState);
   NS_IMETHOD              IsVisible(PRBool & aState);
   NS_IMETHOD              ConstrainPosition(PRBool aAllowSlop, PRInt32 *aX, PRInt32 *aY);
+  NS_IMETHOD              SetSizeConstraints(PRInt32 aMinWidth, PRInt32 aMaxWidth,
+                                             PRInt32 aMinHeight, PRInt32 aMaxHeight);
+  NS_IMETHOD              GetSizeConstraints(PRInt32* aMinWidth, PRInt32* aMaxWidth,
+                                             PRInt32* aMinHeight, PRInt32* aMaxHeight);
   NS_IMETHOD              Move(PRInt32 aX, PRInt32 aY);
   NS_IMETHOD              Resize(PRInt32 aWidth, PRInt32 aHeight, PRBool aRepaint);
   NS_IMETHOD              Resize(PRInt32 aX, PRInt32 aY, PRInt32 aWidth, PRInt32 aHeight, PRBool aRepaint);
@@ -267,6 +272,7 @@ protected:
    * Window utilities
    */
   static BOOL             SetNSWindowPtr(HWND aWnd, nsWindow * ptr);
+  void                    EnsureSizeConstraints(WINDOWPOS* aInfo); 
   LPARAM                  lParamToScreen(LPARAM lParam);
   LPARAM                  lParamToClient(LPARAM lParam);
   nsWindow*               GetParentWindow(PRBool aIncludeOwner);
@@ -417,6 +423,11 @@ protected:
   PRPackedBool          mIsInMouseCapture;
   PRPackedBool          mInScrollProcessing;
   PRPackedBool          mUnicodeWidget;
+
+  PRPackedBool          mIsChromeHidden;
+  PRPackedBool          mIsMaximizing;
+  PRPackedBool          mWasMaximized;
+
   PRPackedBool          mPainting;
   char                  mLeadByte;
   PRUint32              mBlurSuppressLevel;
@@ -427,6 +438,10 @@ protected:
   HIMC                  mOldIMC;
   PRUint32              mIMEEnabled;
   nsNativeDragTarget*   mNativeDragTarget;
+
+  // window sizing constraints (see SetSizeContraints, nsIWidget.h)
+  SizeConstraints       mSizeConstraints;
+
   HKL                   mLastKeyboardLayout;
   nsPopupType           mPopupType;
   WindowHook            mWindowHook;
