@@ -31,7 +31,7 @@
 ################################################################################
 
 SB_VENDOR_TARGET = xulrunner
-SB_VENDOR_TARGET_VERSION = 1.9.0.17
+SB_VENDOR_TARGET_VERSION = 1.9.2
 
 # We set this up here, but it turns out that it's only for Win32 and Mac; Linux
 # ignores is (see the block after the rules.mk include)
@@ -73,7 +73,7 @@ ifndef XR_DISABLE_SYMBOLS
 	# Only build symbols for release builds 
 	$(MAKE) -C $(CURDIR)/mozilla/compiled/xulrunner-release buildsymbols
    ifneq (linux-x86_64,$(SB_TARGET_ARCH))
-	   $(MV) $(CURDIR)/mozilla/compiled/xulrunner-release/dist/crashreporter-symbols/crashreporter-symbols-xulrunner-$(SB_VENDOR_TARGET_VERSION)-*.zip $(SB_VENDOR_BUILD_DIR)
+	   $(MV) $(CURDIR)/mozilla/compiled/xulrunner-release/dist/xulrunner-$(SB_VENDOR_TARGET_VERSION).*.crashreporter-symbols.zip $(SB_VENDOR_BUILD_DIR)
    endif
 endif
 
