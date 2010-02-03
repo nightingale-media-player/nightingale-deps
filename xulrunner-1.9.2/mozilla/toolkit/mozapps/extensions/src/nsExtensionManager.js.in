@@ -5705,6 +5705,7 @@ ExtensionItemUpdater.prototype = {
   _updateType         : 0,
   _items              : [],
   _listener           : null,
+  _requiredItems      : [],
 
   /* ExtensionItemUpdater
 #
@@ -5741,6 +5742,30 @@ ExtensionItemUpdater.prototype = {
                                                                  aUpdateType,
                                                                  aAppVersion,
                                                                  aPlatformVersion) {
+
+    // XXX Songbird: force update addons listed in distribution.ini
+
+    { /* for scope (let) */
+      function enumerate(UTF8Enumerator) {
+        while (UTF8Enumerator.hasMore())
+          yield UTF8Enumerator.getNext();
+      }
+
+      let iniFile = getDirNoCreate("resource:app", ["distribution"]);
+      iniFile.append("distribution.ini");
+      if (iniFile.exists()) {
+        let ini = Cc["@mozilla.org/xpcom/ini-parser-factory;1"]
+                    .getService(Ci.nsIINIParserFactory)
+                    .createINIParser(iniFile);
+        this._requiredItems = [];
+        for each (let key in enumerate(ini.getKeys("Update"))) {
+          if (/^addon.required.\d+/(key)) {
+            this._requiredItems.push(ini.getString("Update", key));
+          }
+        }
+      }
+    } /* end let scope */
+
     if (aUpdateCheckType == Ci.nsIExtensionManager.UPDATE_NOTIFY_NEWVERSION) {
       this._listener = aListener;
       this._appVersion = aAppVersion ? aAppVersion : gApp.version;
@@ -5867,7 +5892,18 @@ ExtensionItemUpdater.prototype = {
   },
 
   checkForDone: function ExtensionItemUpdater_checkForDone(item, status) {
-    if (this._listener) {
+    // XXX Songbird: keep track of required addons with available updates
+    let requiredIndex = this._requiredItems.indexOf(item.id);
+    if (requiredIndex != -1) {
+      // this is a required addon, don't invoke any listeners, just update it
+      if (status & Ci.nsIAddonUpdateCheckListener.STATUS_UPDATE) {
+        // we need to keep track of the item
+        this._requiredItems[requiredIndex] = item;
+      } else {
+        // don't care
+        this._requiredItems.splice(requiredIndex, 1);
+      }
+    } else if (this._listener) {
       try {
         this._listener.onAddonUpdateEnded(item, status);
       }
@@ -5881,6 +5917,38 @@ ExtensionItemUpdater.prototype = {
       }
       catch (e) {
         LOG("ExtensionItemUpdater:checkForDone: Failure in listener's onUpdateEnded: " + e);
+      }
+
+      // XXX Songbird:  go through and install updates for the "required" addons
+      let urls = [], hashes = [];
+      for each (let item in this._requiredItems) {
+        if (!("id" in item)) {
+          LOG("Didn't have any information on " + item);
+          continue;
+        }
+        LOG("Forcing update for " + item.id);
+  
+        // manually have the install manager download things, don't go through
+        // nsIExtensionManager::addDownload(); this way we won't get prompted
+        // to abort when attempting to quit, etc.
+        urls.push(item.xpiURL);
+        hashes.push(item.xpiHash ? item.xpiHash : null);
+        // if this is an update remove the update metadata to prevent it from
+        // being updated during an install.
+        this._emDS.setItemProperties(item.id, {
+          availableUpdateURL: null,
+          availableUpdateHash: null,
+          availableUpdateVersion: null,
+          availableUpdateInfo: null
+        });
+        this._emDS.updateProperty(item.id, "availableUpdateURL");
+        this._emDS.updateProperty(item.id, "updateable");
+      }
+      LOG("Forcing updates for " + urls.length + " items: " + urls + " / " + hashes);
+      if (urls.length > 0) {
+        let xpimgr = Cc["@mozilla.org/xpinstall/install-manager;1"]
+                       .createInstance(Ci.nsIXPInstallManager);
+        xpimgr.initManagerWithHashes(urls, hashes, urls.length, null);
       }
     }
   },
