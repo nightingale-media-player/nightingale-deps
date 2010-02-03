@@ -15,7 +15,7 @@
 
   <binding id="menulist" display="xul:menu"
            extends="chrome://global/content/bindings/menulist.xml#menulist-base">
-    <content sizetopopup="pref">
+    <content sizetopopup="pref" mousethrough="never">
       <xul:hbox class="menulist-label-box" flex="1">
         <xul:image class="menulist-icon" xbl:inherits="src=image,src"/>
         <xul:label class="menulist-label" xbl:inherits="value=label,crop,accesskey" crop="right" flex="1"/>
@@ -407,7 +407,7 @@
   </binding>
 
   <binding id="menulist-editable" extends="chrome://global/content/bindings/menulist.xml#menulist">
-    <content sizetopopup="pref">
+    <content sizetopopup="pref" mousethrough="never">
       <xul:hbox class="menulist-editable-box textbox-input-box" xbl:inherits="context,disabled,readonly,focused" flex="1">
         <html:input class="menulist-editable-input" flex="1" anonid="input" allowevents="true"
                     xbl:inherits="value=label,value,disabled,tabindex,readonly"/>
@@ -603,7 +603,7 @@
 
   <binding id="menulist-compact" display="xul:menu"
            extends="chrome://global/content/bindings/menulist.xml#menulist">
-    <content sizetopopup="false">
+    <content sizetopopup="false" mousethrough="never">
       <xul:dropmarker class="menulist-dropmarker" type="menu" xbl:inherits="disabled,open"/>
       <xul:image class="menulist-icon" xbl:inherits="src=image,src"/>
       <xul:label class="menulist-label" xbl:inherits="value=label,crop,accesskey" crop="right" flex="1"/>
@@ -613,7 +613,7 @@
 
   <binding id="menulist-description" display="xul:menu"
            extends="chrome://global/content/bindings/menulist.xml#menulist">
-    <content sizetopopup="pref">
+    <content sizetopopup="pref" mousethrough="never">
       <xul:hbox class="menulist-label-box" flex="1">
         <xul:image class="menulist-icon" xbl:inherits="src=image,src"/>
         <xul:label class="menulist-label" xbl:inherits="value=label,crop,accesskey" crop="right" flex="1"/>

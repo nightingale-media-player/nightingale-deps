@@ -17,7 +17,7 @@
       <stylesheet src="chrome://global/skin/textbox.css"/>
     </resources>
 
-    <content>
+    <content mousethrough="never">
       <children/>
       <xul:hbox class="textbox-input-box" flex="1" xbl:inherits="context,spellcheck">
         <html:input class="textbox-input" flex="1" anonid="input"
