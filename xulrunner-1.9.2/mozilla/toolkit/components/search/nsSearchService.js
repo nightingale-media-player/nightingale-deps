@@ -846,6 +846,7 @@ function EngineURL(aType, aMethod, aTemplate) {
     // Disable these for now, see bug 295018
     // case "file":
     // case "resource":
+    case "chrome": // XXX Songbird: allow chrome search engines
       this.template = aTemplate;
       break;
     default:
@@ -1061,6 +1062,8 @@ Engine.prototype = {
   _name: null,
   // The engine type. See engine types (TYPE_) defined above.
   _type: null,
+  // XXX Songbird: Space delimited keyword string
+  _tags: "",
   // The name of the charset used to submit the search terms.
   _queryCharset: null,
   // A URL string pointing to the engine's search form.
@@ -1327,6 +1330,15 @@ Engine.prototype = {
         return;
     }
 
+    // If we don't yet have a file, get one now. The only case where we would
+    // already have a file is if this is an update and _file was set above.
+    if (!aEngine._file) {
+      var uuidGenerator = Cc["@mozilla.org/uuid-generator;1"]
+                            .getService(Ci.nsIUUIDGenerator);
+      var uuid = uuidGenerator.generateUUID();
+      aEngine._file = getSanitizedFile(uuid.toString());
+    }
+
     try {
       // Initialize the engine from the obtained data
       aEngine._initFromData();
@@ -1363,11 +1375,6 @@ Engine.prototype = {
         return;
       aEngine._useNow = confirmation.useNow;
     }
-
-    // If we don't yet have a file, get one now. The only case where we would
-    // already have a file is if this is an update and _file was set above.
-    if (!aEngine._file)
-      aEngine._file = getSanitizedFile(aEngine.name);
 
     if (engineToUpdate) {
       // Keep track of the last modified date, so that we can make conditional
@@ -1445,6 +1452,8 @@ Engine.prototype = {
         + this.name + "\".");
     // Only accept remote icons from http[s] or ftp
     switch (uri.scheme) {
+      // XXX Songbird: Accept chrome icons. Needed for library stub.
+      case "chrome":
       case "data":
         this._iconURI = uri;
         notifyAction(this, SEARCH_ENGINE_CHANGED);
@@ -1705,6 +1714,14 @@ Engine.prototype = {
           break;
         case "IconUpdateUrl":
           this._iconUpdateURL = child.textContent;
+          break;
+        
+        // XXX Songbird: extensions for the internal search
+        case "Alias":
+          this.alias = child.textContent;
+          break;
+        case "Tags":
+          this._tags = child.textContent;
           break;
       }
     }
@@ -2364,6 +2381,11 @@ Engine.prototype = {
     return this._type;
   },
 
+  // XXX Songbird: engine tags
+  get tags() {
+    return this._tags;
+  },
+  
   get searchForm() {
     if (!this._searchForm) {
       // No searchForm specified in the engine definition file, use the prePath
@@ -2701,6 +2723,14 @@ SearchService.prototype = {
 
   _addEngineToStore: function SRCH_SVC_addEngineToStore(aEngine) {
     LOG("_addEngineToStore: Adding engine: \"" + aEngine.name + "\"");
+
+    // XXX Songbird HACK
+    // For now any engines with special songbird tags should be hidden by default
+    // This is to ensure that if an extension adds a programmatic search engine
+    // the search engine will not show up after the extension is uninstalled
+    if (aEngine.tags.indexOf("songbird") > -1) {
+      aEngine.hidden = true;
+    }
 
     // See if there is an existing engine with the same name. However, if this
     // engine is updating another engine, it's allowed to have the same name.
