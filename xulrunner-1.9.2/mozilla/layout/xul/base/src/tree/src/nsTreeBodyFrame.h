@@ -294,6 +294,11 @@ protected:
   // coordinate system of this frame.
   PRInt32 GetRowAt(nscoord aX, nscoord aY);
 
+  // An internal visible hit test.  Returns true if coordinates are in visible
+  // space of frame, even if they're not in a tree row.  aX and aY are expected
+  // to be in app units in the coordinate system of this frame.
+  PRBool IsInVisibleSpace(nscoord aX, nscoord aY);
+
   // Check for bidi characters in the text, and if there are any, ensure
   // that the prescontext is in bidi mode.
   void CheckTextForBidi(nsAutoString& aText);
