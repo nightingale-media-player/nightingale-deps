@@ -109,14 +109,61 @@ nsFilePicker::~nsFilePicker()
 #ifndef WINCE_WINDOWS_MOBILE
 int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
 {
-  if (uMsg == BFFM_INITIALIZED)
-  {
-    PRUnichar * filePath = (PRUnichar *) lpData;
-    if (filePath)
-      ::SendMessageW(hwnd, BFFM_SETSELECTIONW,
-                     TRUE /* true because lpData is a path string */,
-                     lpData);
+  switch (uMsg) {
+    case BFFM_INITIALIZED:
+    {
+      PRUnichar * filePath = (PRUnichar *) lpData;
+      if (filePath)
+        ::SendMessageW(hwnd, BFFM_SETSELECTIONW,
+                       TRUE /* true because lpData is a path string */,
+                       lpData);
+    }
+    break;
+
+    case BFFM_VALIDATEFAILEDW:
+    {
+      nsresult rv;
+
+      // Get the file picker string bundle
+      nsCOMPtr<nsIStringBundleService>
+        sbs = do_GetService(NS_STRINGBUNDLE_CONTRACTID, &rv);
+      NS_ENSURE_SUCCESS(rv, 1);
+      nsCOMPtr<nsIStringBundle> bundle;
+      rv = sbs->CreateBundle("chrome://global/locale/filepicker.properties",
+                             getter_AddRefs(bundle));
+      NS_ENSURE_SUCCESS(rv, 1);
+
+      // Get the error title and message
+      const PRUnichar* formatStrings[] =
+      {
+        (PRUnichar*) lParam
+      };
+      nsXPIDLString title;
+      rv = bundle->FormatStringFromName
+                     (NS_LITERAL_STRING("errorDirDoesntExistTitle").get(),
+                      formatStrings,
+                      NS_ARRAY_LENGTH(formatStrings),
+                      getter_Copies(title));
+      NS_ENSURE_SUCCESS(rv, 1);
+      nsXPIDLString message;
+      rv = bundle->FormatStringFromName
+                     (NS_LITERAL_STRING("errorDirDoesntExistMessage").get(),
+                      formatStrings,
+                      NS_ARRAY_LENGTH(formatStrings),
+                      getter_Copies(message));
+      NS_ENSURE_SUCCESS(rv, 1);
+
+      // Alert the user
+      MessageBoxW(hwnd, message.get(), title.get(), MB_ICONERROR);
+
+      return 1;
+    }
+    break;
+
+    default:
+      break;
   }
+
   return 0;
 }
 #endif
@@ -162,18 +209,19 @@ NS_IMETHODIMP nsFilePicker::ShowW(PRInt16 *aReturnVal)
     browserInfo.pidlRoot       = nsnull;
     browserInfo.pszDisplayName = (LPWSTR)dirBuffer;
     browserInfo.lpszTitle      = mTitle.get();
-    browserInfo.ulFlags        = BIF_USENEWUI | BIF_RETURNONLYFSDIRS;
+    browserInfo.ulFlags        = BIF_USENEWUI |
+                                 BIF_RETURNONLYFSDIRS |
+                                 BIF_VALIDATE;
+    browserInfo.lpfn           = &BrowseCallbackProc;
     if (initialDir.Length())
     {
       // the dialog is modal so that |initialDir.get()| will be valid in 
       // BrowserCallbackProc. Thus, we don't need to clone it.
       browserInfo.lParam       = (LPARAM) initialDir.get();
-      browserInfo.lpfn         = &BrowseCallbackProc;
     }
     else
     {
-    browserInfo.lParam         = nsnull;
-      browserInfo.lpfn         = nsnull;
+      browserInfo.lParam       = nsnull;
     }
     browserInfo.iImage         = nsnull;
 
