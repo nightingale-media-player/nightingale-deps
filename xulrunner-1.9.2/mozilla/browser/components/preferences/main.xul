@@ -43,16 +43,17 @@
 <!DOCTYPE overlay [
   <!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd">
   <!ENTITY % mainDTD SYSTEM "chrome://browser/locale/preferences/main.dtd">
+  <!ENTITY % songbirdDTD SYSTEM "chrome://songbird/locale/songbird.dtd">
   %brandDTD;
   %mainDTD;
+  %songbirdDTD;
 ]>
 
 <overlay id="MainPaneOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
            
   <prefpane id="paneMain" 
-            onpaneload="gMainPane.init();"
-            helpTopic="prefs-main">
+            onpaneload="gMainPane.init();">
 
     <script type="application/x-javascript" src="chrome://browser/content/preferences/main.js"/>
 
@@ -60,9 +61,11 @@
       <!-- XXX Button preferences -->
 
       <!-- Startup -->
+      <!-- XXX SONGBIRD: we always open your previous tabs, don't handle this pref 
       <preference id="browser.startup.page"
                   name="browser.startup.page"
                   type="int"/>
+      -->
       <preference id="browser.startup.homepage"
                   name="browser.startup.homepage"
                   type="wstring"/>
@@ -100,8 +103,9 @@
 
     <!-- Startup -->
     <groupbox id="startupGroup">
-      <caption label="&startup.label;"/>
+      <caption label="&prefs.homepage.label;"/>
 
+      <!-- XXX SONGBIRD: we always open your previous tabs, don't show this ui 
       <hbox align="center">
         <label value="&startupPage.label;" accesskey="&startupPage.accesskey;"
                control="browserStartupPage"/>
@@ -114,8 +118,11 @@
         </menulist>
       </hbox>
       <separator class="thin"/>
+      -->
       <hbox align="center">
-        <label value="&location.label;" accesskey="&location.accesskey;" control="browserHomePage"/>
+        <label value="&prefs.homepage.url.label;"
+               accesskey="&prefs.homepage.url.accesskey;"
+               control="browserHomePage"/><!-- XXX Songbird modified string -->
         <textbox id="browserHomePage" class="padded uri-element" flex="1"
                  type="autocomplete" autocompletesearch="history"
                  preference="browser.startup.homepage"/>
@@ -127,10 +134,12 @@
                 oncommand="gMainPane.setHomePageToCurrent();"
                 id="useCurrent"
                 preference="pref.browser.homepage.disable_button.current_page"/>
+        <!-- XXX SONGBIRD: we don't want this feature anyway
         <button label="&useBookmark.label;" accesskey="&useBookmark.accesskey;"
                 oncommand="gMainPane.setHomePageToBookmark();"
                 id="useBookmark"
                 preference="pref.browser.homepage.disable_button.bookmark_page"/>
+        -->
         <button label="&restoreDefault.label;" accesskey="&restoreDefault.accesskey;"
                 oncommand="gMainPane.restoreDefaultHomePage();"
                 id="restoreDefaultHomePage"
