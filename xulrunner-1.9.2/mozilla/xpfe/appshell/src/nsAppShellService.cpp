@@ -320,11 +320,23 @@ nsAppShellService::JustCreateTopWindow(nsIXULWindow *aParent,
   // windows opened from nsPromptService::DoDialog() still are sheets.  This
   // fixes bmo bug 395465 (see nsCocoaWindow::StandardCreate() and
   // nsCocoaWindow::SetModal()).
-  PRUint32 sheetMask = nsIWebBrowserChrome::CHROME_OPENAS_DIALOG |
-                       nsIWebBrowserChrome::CHROME_MODAL |
-                       nsIWebBrowserChrome::CHROME_OPENAS_CHROME;
-  if (aParent && ((aChromeMask & sheetMask) == sheetMask))
-    widgetInitData.mWindowType = eWindowType_sheet;
+  // 
+  // @songbird -> Only use sheets when |showChrome == true|:
+  nsCOMPtr<nsIPrefBranch> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID);
+  if (prefs) {
+    char *showChrome = nsnull;
+    prefs->GetCharPref("songbird.accessibility.enabled", &showChrome);
+    if (showChrome != nsnull) {
+      if (strcmp(showChrome, "0")) {
+        PRUint32 sheetMask = nsIWebBrowserChrome::CHROME_OPENAS_DIALOG |
+                             nsIWebBrowserChrome::CHROME_MODAL |
+                             nsIWebBrowserChrome::CHROME_OPENAS_CHROME;
+        if (aParent && ((aChromeMask & sheetMask) == sheetMask))
+          widgetInitData.mWindowType = eWindowType_sheet;
+      }
+      NS_Free(showChrome);
+    }
+  }
 #endif
 
   widgetInitData.mContentType = eContentTypeUI;                
