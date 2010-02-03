@@ -130,9 +130,12 @@ var FullZoom = {
     os.addObserver(this, "private-browsing", true);
 
     // Retrieve the initial status of the Private Browsing mode.
-    this._inPrivateBrowsing = Cc["@mozilla.org/privatebrowsing;1"].
-                              getService(Ci.nsIPrivateBrowsingService).
-                              privateBrowsingEnabled;
+    // XXX Songbird: allow not having private browsing support
+    if ("@mozilla.org/privatebrowsing;1" in Cc) {
+      this._inPrivateBrowsing = Cc["@mozilla.org/privatebrowsing;1"].
+                                getService(Ci.nsIPrivateBrowsingService).
+                                privateBrowsingEnabled;
+    }
 
     this._siteSpecificPref =
       this._prefBranch.getBoolPref("browser.zoom.siteSpecific");
