@@ -69,6 +69,11 @@ ifeq ($(OS_ARCH),SunOS)
 SOLARIS_JEMALLOC_LDFLAGS =
 endif
 
+# We're compiling statically; don't link against the DLL on Win32
+ifeq ($(OS_ARCH),WINNT)
+OS_LDFLAGS += -NODEFAULTLIB:MSVCRT -NODEFAULTLIB:MSVCRTD
+endif
+
 # Compile directly against the static lib, so we can use the tools
 # during the build without the shared library path being set.
 ifeq (,$(filter-out WINNT WINCE,$(OS_ARCH)))

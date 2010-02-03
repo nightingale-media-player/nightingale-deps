@@ -40,6 +40,8 @@ topsrcdir	= @top_srcdir@
 srcdir		= @srcdir@
 VPATH		= @srcdir@
 
+USE_STATIC_LIBS = 1
+
 include $(DEPTH)/config/autoconf.mk
 
 USE_STATIC_LIBS = 1
