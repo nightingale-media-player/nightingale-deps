@@ -58,8 +58,8 @@ ABS_topsrcdir   := $(shell cd $(topsrcdir); pwd)
 ifneq ($(ABS_topsrcdir),$(MOZ_BUILD_ROOT))
 ifdef MOZ_PLUGINS
 export::
-	rsync -a --exclude CVS/ $(srcdir)/$(JEP_PLUGIN_BUNDLE) .
-	rsync -a --exclude CVS/ $(srcdir)/$(MRJ_PLUGIN_BUNDLE) .
+	rsync -a --exclude "CVS/" --exclude ".svn/" $(srcdir)/$(JEP_PLUGIN_BUNDLE) .
+	rsync -a --exclude "CVS/" --exclude ".svn/" $(srcdir)/$(MRJ_PLUGIN_BUNDLE) .
 
 GARBAGE_DIRS += $(JEP_PLUGIN_BUNDLE) $(MRJ_PLUGIN_BUNDLE)
 endif

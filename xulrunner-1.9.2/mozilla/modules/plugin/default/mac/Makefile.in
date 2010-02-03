@@ -63,7 +63,7 @@ unexport CC CXX
 ABS_topsrcdir   := $(shell cd $(topsrcdir); pwd)
 ifneq ($(ABS_topsrcdir),$(MOZ_BUILD_ROOT))
 export::
-	rsync -a --exclude .DS_Store --exclude "CVS/" $(srcdir)/$(PROJECT) .
+	rsync -a --exclude .DS_Store --exclude "CVS/" --exclude ".svn/" $(srcdir)/$(PROJECT) .
 	ln -fs $(srcdir)/English.lproj
 	ln -fs $(srcdir)/DefaultPlugin.mm
 	ln -fs $(srcdir)/Info.plist
