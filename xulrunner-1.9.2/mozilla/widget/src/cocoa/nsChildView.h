@@ -160,6 +160,11 @@ enum {
   BOOL mIsTransparent;
   PRIntervalTime mLastShadowInvalidation;
   BOOL mNeedsShadowInvalidation;
+  
+  // Since the native modal event loop can not be used with the gecko modal
+  // loop, we have to simulate the event ourselves. In order to accomplish this
+  // this view must disable click through to prevent window ordering.
+  BOOL mDisableView;
 
   // Holds our drag service across multiple drag calls. The reference to the
   // service is obtained when the mouse enters the view and is released when
@@ -228,6 +233,8 @@ enum {
 - (void)magnifyWithEvent:(NSEvent *)anEvent;
 - (void)rotateWithEvent:(NSEvent *)anEvent;
 - (void)endGestureWithEvent:(NSEvent *)anEvent;
+
+- (void)setViewDisabled:(BOOL)inIsDisabled;
 @end
 
 
