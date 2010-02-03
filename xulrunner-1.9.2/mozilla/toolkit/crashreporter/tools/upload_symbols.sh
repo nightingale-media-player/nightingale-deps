@@ -50,17 +50,30 @@ set -e
 : ${SYMBOL_SERVER_HOST?} ${SYMBOL_SERVER_USER?} ${SYMBOL_SERVER_PATH?} ${1?"You must specify a symbol archive to upload"}
 hash=`openssl dgst -sha1 "$1" | sed 's/^.*)=//' | sed 's/\ //g'`
 archive="${hash}-"`basename "$1" | sed 's/\ //g'`
-echo "Transferring symbols... $1"
+
+SERVER_PATH=$2
+if test -z $SERVER_PATH; then
+  SERVER_PATH=$SYMBOL_SERVER_PATH
+fi
+
+echo "Transferring symbol package ${1}..."
+ssh -2 ${SYMBOL_SERVER_PORT:+-p $SYMBOL_SERVER_PORT} \
+  ${SYMBOL_SERVER_SSH_KEY:+-i "$SYMBOL_SERVER_SSH_KEY"} \
+  -l ${SYMBOL_SERVER_USER} ${SYMBOL_SERVER_HOST} \
+  "set -e; 
+   umask 0022; 
+   mkdir -pv ${SERVER_PATH};"
+
 scp ${SYMBOL_SERVER_PORT:+-P $SYMBOL_SERVER_PORT} \
   ${SYMBOL_SERVER_SSH_KEY:+-i "$SYMBOL_SERVER_SSH_KEY"} "$1" \
-  ${SYMBOL_SERVER_USER}@${SYMBOL_SERVER_HOST}:"${SYMBOL_SERVER_PATH}/${archive}"
-echo "Unpacking symbols on remote host..."
+  ${SYMBOL_SERVER_USER}@${SYMBOL_SERVER_HOST}:"${SERVER_PATH}/${archive}"
+echo "Unpacking symbols on remote host in directory ${SERVER_PATH}..."
 ssh -2 ${SYMBOL_SERVER_PORT:+-p $SYMBOL_SERVER_PORT} \
   ${SYMBOL_SERVER_SSH_KEY:+-i "$SYMBOL_SERVER_SSH_KEY"} \
   -l ${SYMBOL_SERVER_USER} ${SYMBOL_SERVER_HOST} \
   "set -e;
    umask 0022;
-   cd ${SYMBOL_SERVER_PATH};
+   cd ${SERVER_PATH};
    unzip -o '$archive';
    rm -v '$archive';"
 echo "Symbol transfer completed"
