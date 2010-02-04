@@ -734,4 +734,4 @@ function NSGetModule(aCompMgr, aFileSpec) {
   return XPCOMUtils.generateModule([Application]);
 }
 
-#include extApplication.js
+#include ../../../mozexthelper/extApplication.js
