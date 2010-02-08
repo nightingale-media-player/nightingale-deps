@@ -323,16 +323,18 @@ aac_parse_codec_data (GstBuffer * codec_data, guint * channels, guint *rate)
 
   codec_channels = (data[1] & 0x7f) >> 3;
 
-  if (*channels != codec_channels) {
+  if (codec_channels == 0) {
+    GST_DEBUG ("AOT configuration not supported: "
+               "using container channel count %d instead", *channels);
+    codec_channels = *channels;
+  } else if (*channels != codec_channels) {
     GST_INFO ("Overwriting channels %d with %d", *channels, codec_channels);
     *channels = codec_channels;
   } else {
     GST_INFO ("Retaining channel count %d", codec_channels);
   }
 
-  if (codec_channels == 0) {
-    GST_WARNING ("Don't know how to deal with AOT channel configuration");
-  } else if (codec_channels < 3) {
+  if (codec_channels < 3) {
     GST_DEBUG ("No need to set channel positions for %i channels",
             codec_channels);
   } else if (codec_channels > 7) {
