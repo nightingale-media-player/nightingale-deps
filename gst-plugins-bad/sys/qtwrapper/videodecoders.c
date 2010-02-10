@@ -88,6 +88,7 @@ struct _QTWrapperVideoDecoder
   GstClockTime last_duration;
   GstBuffer *prevbuf;
   GstBuffer *buf_to_push;
+  GstBuffer *decode_buf;
   gboolean flushing;
   gboolean framebuffering;
 
@@ -568,7 +569,6 @@ decompressCb (void *decompressionTrackingRefCon,
   if ((decompressionTrackingFlags & kICMDecompressionTracking_EmittingFrame)
       && pixelBuffer) {
     guint8 *addr;
-    GstBuffer *outbuf;
     size_t size;
     GstClockTime outtime;
 
@@ -590,19 +590,9 @@ decompressCb (void *decompressionTrackingRefCon,
       GST_WARNING ("Couldn't lock base adress on pixel buffer !");
     addr = CVPixelBufferGetBaseAddress (pixelBuffer);
 
-    /* allocate buffer */
-    qtwrapper->lastret =
-        gst_pad_alloc_buffer (qtwrapper->srcpad, GST_BUFFER_OFFSET_NONE,
-        (gint) qtwrapper->outsize, GST_PAD_CAPS (qtwrapper->srcpad), &outbuf);
-    if (G_UNLIKELY (qtwrapper->lastret != GST_FLOW_OK)) {
-      GST_LOG ("gst_pad_alloc_buffer() returned %s",
-          gst_flow_get_name (qtwrapper->lastret));
-      goto beach;
-    }
-
-    /* copy data */
+    /* copy data into the buffer we allocated earlier */
     GST_LOG ("copying data in buffer from %p to %p",
-        addr, GST_BUFFER_DATA (outbuf));
+        addr, GST_BUFFER_DATA (qtwrapper->decode_buf));
     if (G_UNLIKELY ((qtwrapper->width * 2) !=
             CVPixelBufferGetBytesPerRow (pixelBuffer))) {
       guint i;
@@ -614,44 +604,45 @@ decompressCb (void *decompressionTrackingRefCon,
 
       /* special copy for stride handling */
       for (i = 0; i < qtwrapper->height; i++)
-        g_memmove (GST_BUFFER_DATA (outbuf) + realpixels * i,
+        g_memmove (GST_BUFFER_DATA (qtwrapper->decode_buf) + realpixels * i,
             addr + stride * i, realpixels);
 
     } else
-      g_memmove (GST_BUFFER_DATA (outbuf), addr, (int) qtwrapper->outsize);
+      g_memmove (GST_BUFFER_DATA (qtwrapper->decode_buf), addr, (int) qtwrapper->outsize);
 
     /* Release CVPixelBuffer */
     CVPixelBufferUnlockBaseAddress (pixelBuffer, 0);
     CVPixelBufferRelease (pixelBuffer);
 
     /* Set proper timestamp ! */
-    gst_buffer_set_caps (outbuf, GST_PAD_CAPS (qtwrapper->srcpad));
-    GST_BUFFER_TIMESTAMP (outbuf) = qtwrapper->last_ts;
-    GST_BUFFER_DURATION (outbuf) = qtwrapper->last_duration;
-    GST_BUFFER_SIZE (outbuf) = (int) qtwrapper->outsize;
+    gst_buffer_set_caps (qtwrapper->decode_buf, GST_PAD_CAPS (qtwrapper->srcpad));
+    GST_BUFFER_TIMESTAMP (qtwrapper->decode_buf) = qtwrapper->last_ts;
+    GST_BUFFER_DURATION (qtwrapper->decode_buf) = qtwrapper->last_duration;
+    GST_BUFFER_SIZE (qtwrapper->decode_buf) = (int) qtwrapper->outsize;
 
     /* See if we push buffer downstream */
     if (G_LIKELY (!qtwrapper->framebuffering)) {
       GST_LOG ("No buffering needed, pushing buffer downstream");
-      qtwrapper->buf_to_push = outbuf;
+      qtwrapper->buf_to_push = qtwrapper->decode_buf;
     } else {
       /* Check if we push the current buffer or the stored buffer */
       if (!qtwrapper->prevbuf) {
         GST_LOG ("Storing buffer");
-        qtwrapper->prevbuf = outbuf;
+        qtwrapper->prevbuf = qtwrapper->decode_buf;
       } else if (GST_BUFFER_TIMESTAMP (qtwrapper->prevbuf) >
-          GST_BUFFER_TIMESTAMP (outbuf)) {
+          GST_BUFFER_TIMESTAMP (qtwrapper->decode_buf)) {
         GST_LOG ("Newly decoded buffer is earliest, pushing that one !");
-        qtwrapper->buf_to_push = outbuf;
+        qtwrapper->buf_to_push = qtwrapper->decode_buf;
       } else {
         GstBuffer *tmp;
 
         tmp = qtwrapper->prevbuf;
-        qtwrapper->prevbuf = outbuf;
+        qtwrapper->prevbuf = qtwrapper->decode_buf;
         GST_LOG ("Stored buffer is earliest, pushing that one !");
         qtwrapper->buf_to_push = tmp;
       }
     }
+    qtwrapper->decode_buf = NULL;
   }
 
 beach:
@@ -704,6 +695,21 @@ qtwrapper_video_decoder_chain (GstPad * pad, GstBuffer * buf)
   qtwrapper->last_ts = GST_BUFFER_TIMESTAMP (buf);
   qtwrapper->last_duration = GST_BUFFER_DURATION (buf);
 
+  /* allocate buffer for the output frame. We have to do this here rather
+     than in the decode callback because that callback is called with the Big
+     QT Lock held.
+   */
+  qtwrapper->lastret =
+      gst_pad_alloc_buffer (qtwrapper->srcpad, GST_BUFFER_OFFSET_NONE,
+      (gint) qtwrapper->outsize, GST_PAD_CAPS (qtwrapper->srcpad),
+      &qtwrapper->decode_buf);
+  if (G_UNLIKELY (qtwrapper->lastret != GST_FLOW_OK)) {
+    GST_WARNING_OBJECT (qtwrapper, "gst_pad_alloc_buffer() returned %s",
+        gst_flow_get_name (qtwrapper->lastret));
+    ret = GST_FLOW_ERROR;
+    goto beach;
+  }
+
   status = ICMDecompressionSessionDecodeFrame (qtwrapper->decsession,
       GST_BUFFER_DATA (buf), GST_BUFFER_SIZE (buf), NULL, &frameTime, buf);
   MAC_UNLOCK (qtwrapper);
@@ -715,14 +721,21 @@ qtwrapper_video_decoder_chain (GstPad * pad, GstBuffer * buf)
     goto beach;
   }
 
-  /* Decoder managed to give us a frame, now push it. */
   if (qtwrapper->buf_to_push)
   {
+    /* Decoder managed to give us a frame, now push it. */
     ret = gst_pad_push (qtwrapper->srcpad, qtwrapper->buf_to_push);
     qtwrapper->buf_to_push = NULL;
   }
 
 beach:
+  /* If we didn't do anything with this buffer, then unref it - that means the
+     decoder didn't give us an output buffer */
+  if (qtwrapper->decode_buf) {
+    gst_buffer_unref (qtwrapper->decode_buf);
+    qtwrapper->decode_buf = NULL;
+  }
+
   gst_object_unref (qtwrapper);
   return ret;
 }
