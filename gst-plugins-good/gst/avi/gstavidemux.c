@@ -2768,6 +2768,38 @@ gst_avi_demux_calculate_durations_from_index (GstAviDemux * avi)
   gst_segment_set_duration (&avi->segment, GST_FORMAT_TIME, total);
 }
 
+/* push EOS to any pads that have not already received EOS.
+ * Returns TRUE if at least one pad accepted the event or if no events
+ * were sent. */
+static gboolean
+gst_avi_demux_push_eos (GstAviDemux * avi)
+{
+  gboolean result = FALSE;
+  gboolean sent = FALSE;
+  gint i;
+  GstEvent *event = gst_event_new_eos ();
+
+  GST_DEBUG_OBJECT (avi, "sending %s event to %d streams",
+      GST_EVENT_TYPE_NAME (event), avi->num_streams);
+
+  for (i = 0; i < avi->num_streams; i++) {
+    GstAviStream *stream = &avi->stream[i];
+
+    if (stream->pad && !stream->has_eos) {
+      sent = TRUE;
+      stream->has_eos = TRUE;
+      result = result ||
+          gst_pad_push_event (stream->pad, gst_event_ref (event));
+    }
+  }
+  gst_event_unref (event);
+
+  if (sent)
+    return result;
+  else
+    return TRUE;
+}
+
 /* returns FALSE if there are no pads to deliver event to,
  * otherwise TRUE (whatever the outcome of event sending),
  * takes ownership of the event. */
@@ -4180,7 +4212,16 @@ gst_avi_demux_advance (GstAviDemux * avi, GstAviStream * stream,
   /* ERROR */
 eos:
   {
+    gboolean bret;
     GST_DEBUG_OBJECT (avi, "we are EOS");
+    /* Push an eos event for this stream if we have a pad */
+    if (stream->pad) {
+      stream->has_eos = TRUE;
+      bret = gst_pad_push_event (stream->pad, gst_event_new_eos ());
+      if (!bret)
+        return GST_FLOW_ERROR;
+    }
+
     /* setting current_timestamp to -1 marks EOS */
     stream->current_timestamp = -1;
     return GST_FLOW_UNEXPECTED;
@@ -4731,8 +4772,7 @@ pause:
     }
     if (push_eos) {
       GST_INFO_OBJECT (avi, "sending eos");
-      if (!gst_avi_demux_push_event (avi, gst_event_new_eos ()) &&
-          (res == GST_FLOW_UNEXPECTED)) {
+      if (!gst_avi_demux_push_eos (avi) && (res == GST_FLOW_UNEXPECTED)) {
         GST_ELEMENT_ERROR (avi, STREAM, DEMUX,
             (NULL), ("got eos but no streams (yet)"));
       }
