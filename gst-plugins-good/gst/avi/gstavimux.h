@@ -46,6 +46,9 @@ G_BEGIN_DECLS
 /* this allows indexing up to 64GB avi file */
 #define GST_AVI_SUPERINDEX_COUNT    32
 
+/* max size */
+#define GST_AVI_MAX_SIZE    0x40000000
+
 typedef struct _gst_avi_superindex_entry {
   guint64 offset;
   guint32 size;
@@ -61,7 +64,14 @@ typedef struct _gst_riff_strh_full {
   gint16  bottom;
 } gst_riff_strh_full;
 
-typedef struct _GstAviPad {
+typedef struct _GstAviPad GstAviPad;
+typedef struct _GstAviMux GstAviMux;
+typedef struct _GstAviMuxClass GstAviMuxClass;
+
+typedef GstFlowReturn (*GstAviPadHook) (GstAviMux * avi, GstAviPad * avipad,
+                                        GstBuffer * buffer);
+
+struct _GstAviPad {
   /* do not extend, link to it */
   /* is NULL if original sink request pad has been removed */
   GstCollectData *collect;
@@ -80,7 +90,10 @@ typedef struct _GstAviPad {
   gst_avi_superindex_entry idx[GST_AVI_SUPERINDEX_COUNT];
   gint idx_index;
   gchar *idx_tag;
-} GstAviPad;
+
+  /* stream specific hook */
+  GstAviPadHook hook;
+};
 
 typedef struct _GstAviVideoPad {
   GstAviPad parent;
@@ -102,6 +115,12 @@ typedef struct _GstAviAudioPad {
   /* audio info for bps calculation */
   guint32 audio_size;
   guint64 audio_time;
+
+  /* counts the number of samples to put in indx chunk
+   * useful for raw audio where usually there are more than
+   * 1 sample in each GstBuffer */
+  gint samples;
+
   /* extra data */
   GstBuffer *auds_codec_data;
 } GstAviAudioPad;
@@ -112,9 +131,6 @@ typedef struct _GstAviCollectData {
 
   GstAviPad      *avipad;
 } GstAviCollectData;
-
-typedef struct _GstAviMux GstAviMux;
-typedef struct _GstAviMuxClass GstAviMuxClass;
 
 struct _GstAviMux {
   GstElement element;

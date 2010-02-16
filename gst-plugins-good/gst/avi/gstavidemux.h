@@ -47,20 +47,19 @@ G_BEGIN_DECLS
   ((((chunkid) & 0xff) - '0') * 10 + \
    (((chunkid) >> 8) & 0xff) - '0')
 
-#define GST_AVI_INDEX_ENTRY_FLAG_KEYFRAME 1
 
-/* 48 bytes */
+/* new index entries 24 bytes */
 typedef struct {
-  guint          index_nr;      /* = (entry-index_entries)/sizeof(gst_avi_index_entry); */
-  guchar         stream_nr;
-  guchar         flags;
-  guint64        ts;
-  guint64        dur;           /* =entry[1].ts-entry->ts */
-  guint64        offset;
-  guint64        bytes_before;  /* calculated */
-  guint32        frames_before; /* calculated */
-  guint32        size;          /* could be read from the chunk (if we don't split) */
-} gst_avi_index_entry;
+  guint32        flags;
+  guint32        size;    /* bytes of the data */
+  guint64        offset;  /* data offset in file */
+  guint64        total;   /* total bytes before */
+} GstAviIndexEntry;
+
+#define GST_AVI_KEYFRAME 1
+#define ENTRY_IS_KEYFRAME(e) ((e)->flags == GST_AVI_KEYFRAME)
+#define ENTRY_SET_KEYFRAME(e) ((e)->flags = GST_AVI_KEYFRAME)
+#define ENTRY_UNSET_KEYFRAME(e) ((e)->flags = 0)
 
 typedef struct {
   /* index of this streamcontext */
@@ -68,6 +67,7 @@ typedef struct {
 
   /* pad*/
   GstPad        *pad;
+  gboolean       exposed;
 
   /* stream info and headers */
   gst_riff_strh *strh;
@@ -80,16 +80,27 @@ typedef struct {
   GstBuffer     *extradata, *initdata;
   gchar         *name;
 
-  /* current position (byte, frame, time) and other status vars */
-  guint          current_frame;
-  guint64        current_byte;
+  /* the start/step/stop entries */
+  guint          start_entry;
+  guint          step_entry;
+  guint          stop_entry;
+
+  /* current index entry */
+  guint          current_entry;
+  /* position (byte, frame, time) for current_entry */
+  guint          current_total;
+  GstClockTime   current_timestamp;
+  GstClockTime   current_ts_end;
+  guint64        current_offset;
+  guint64        current_offset_end;
+
   GstFlowReturn  last_flow;
   gboolean       discont;
 
   /* stream length */
   guint64        total_bytes;
-  guint32        total_frames;
   guint32        total_blocks;
+  guint          n_keyframes;
   /* stream length according to index */
   GstClockTime   idx_duration;
   /* stream length according to header */
@@ -104,8 +115,15 @@ typedef struct {
   gboolean       superindex;
   guint64       *indexes;
 
+  /* new indexes */
+  GstAviIndexEntry *index;     /* array with index entries */
+  guint             idx_n;     /* number of entries */
+  guint             idx_max;   /* max allocated size of entries */
+
   GstTagList	*taglist;
-} avi_stream_context;
+
+  gint           index_id;
+} GstAviStream;
 
 typedef enum {
   GST_AVI_DEMUX_START,
@@ -132,40 +150,45 @@ typedef struct _GstAviDemux {
   GstAviDemuxState state;
   GstAviDemuxHeaderState header_state;
   guint64        offset;
+  gboolean       abort_buffering;
 
-  /* index */
-  gst_avi_index_entry *index_entries;
-  guint          index_size;
+  /* when we loaded the indexes */
+  gboolean       have_index;
+  /* index offset in the file */
   guint64        index_offset;
-  guint          current_entry;
-  guint          reverse_start_index;
-  guint          reverse_stop_index;
 
   /* streams */
+  GstAviStream   stream[GST_AVI_DEMUX_MAX_STREAMS];
   guint          num_streams;
   guint          num_v_streams;
   guint          num_a_streams;
   guint          num_t_streams;  /* subtitle text streams */
 
-  avi_stream_context stream[GST_AVI_DEMUX_MAX_STREAMS];
+  guint          main_stream; /* used for seeking */
 
   /* for streaming mode */
-  gboolean      streaming;
-  gboolean      have_eos;
+  gboolean       streaming;
+  gboolean       have_eos;
   GstAdapter    *adapter;
+  guint          todrop;
 
   /* some stream info for length */
   gst_riff_avih *avih;
+  GstClockTime   duration;
 
   /* segment in TIME */
   GstSegment     segment;
   gboolean       segment_running;
 
   /* pending tags/events */
-  GstEvent      *seek_event;
+  GstEvent      *seg_event;
   GstTagList	*globaltags;
-  gboolean	got_tags;
+  gboolean	 got_tags;
 
+  /* gst index support */
+  GstIndex      *element_index;
+  gint           index_id;
+  gboolean       seekable;
 } GstAviDemux;
 
 typedef struct _GstAviDemuxClass {

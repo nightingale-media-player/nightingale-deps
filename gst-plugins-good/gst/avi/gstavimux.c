@@ -83,7 +83,7 @@ static const GstElementDetails gst_avi_mux_details =
 GST_ELEMENT_DETAILS ("Avi muxer",
     "Codec/Muxer",
     "Muxes audio and video into an avi stream",
-    "Ronald Bultje <rbultje@ronald.bitfreak.net>");
+    "GStreamer maintainers <gstreamer-devel@lists.sourceforge.net>");
 
 static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -150,7 +150,11 @@ static GstStaticPadTemplate video_sink_factory =
         "video/x-wmv, "
         "width = (int) [ 16, 4096 ], "
         "height = (int) [ 16, 4096 ], " "framerate = (fraction) [ 0, MAX ], "
-        "wmvversion = (int) [ 1, 3]")
+        "wmvversion = (int) [ 1, 3];"
+        "image/x-jpc, "
+        "width = (int) [ 1, 2147483647 ], "
+        "height = (int) [ 1, 2147483647 ], "
+        "framerate = (fraction) [ 0, MAX ]")
     );
 
 static GstStaticPadTemplate audio_sink_factory =
@@ -170,6 +174,7 @@ static GstStaticPadTemplate audio_sink_factory =
         "rate = (int) [ 1000, 96000 ], " "channels = (int) [ 1, 2 ]; "
         "audio/mpeg, "
         "mpegversion = (int) 4, "
+        "stream-format = (string) raw, "
         "rate = (int) [ 1000, 96000 ], " "channels = (int) [ 1, 2 ]; "
 /*#if 0 VC6 doesn't support #if here ...
         "audio/x-vorbis, "
@@ -337,6 +342,8 @@ gst_avi_mux_pad_reset (GstAviPad * avipad, gboolean free)
     memset (&(vidpad->vprp), 0, sizeof (gst_riff_vprp));
   } else {
     GstAviAudioPad *audpad = (GstAviAudioPad *) avipad;
+
+    audpad->samples = 0;
 
     avipad->hdr.type = GST_MAKE_FOURCC ('a', 'u', 'd', 's');
     if (audpad->auds_codec_data) {
@@ -605,6 +612,8 @@ gst_avi_mux_vidsink_set_caps (GstPad * pad, GstCaps * vscaps)
             break;
         }
       }
+    } else if (!strcmp (mimetype, "image/x-jpc")) {
+      avipad->vids.compression = GST_MAKE_FOURCC ('M', 'J', '2', 'C');
     }
 
     if (!avipad->vids.compression)
@@ -627,6 +636,96 @@ refuse_caps:
     GST_WARNING_OBJECT (avimux, "refused caps %" GST_PTR_FORMAT, vscaps);
     gst_object_unref (avimux);
     return FALSE;
+  }
+}
+
+static GstFlowReturn
+gst_avi_mux_audsink_scan_mpeg_audio (GstAviMux * avimux, GstAviPad * avipad,
+    GstBuffer * buffer)
+{
+  guint8 *data;
+  guint size;
+  guint spf;
+  guint32 header;
+  gulong layer;
+  gulong version;
+  gint lsf, mpg25;
+
+  data = GST_BUFFER_DATA (buffer);
+  size = GST_BUFFER_SIZE (buffer);
+
+  if (size < 4)
+    goto not_parsed;
+
+  header = GST_READ_UINT32_BE (data);
+
+  if ((header & 0xffe00000) != 0xffe00000)
+    goto not_parsed;
+
+  /* thanks go to mp3parse */
+  if (header & (1 << 20)) {
+    lsf = (header & (1 << 19)) ? 0 : 1;
+    mpg25 = 0;
+  } else {
+    lsf = 1;
+    mpg25 = 1;
+  }
+
+  version = 1 + lsf + mpg25;
+  layer = 4 - ((header >> 17) & 0x3);
+
+  /* see http://www.codeproject.com/audio/MPEGAudioInfo.asp */
+  if (layer == 1)
+    spf = 384;
+  else if (layer == 2)
+    spf = 1152;
+  else if (version == 1) {
+    spf = 1152;
+  } else {
+    /* MPEG-2 or "2.5" */
+    spf = 576;
+  }
+
+  if (G_UNLIKELY (avipad->hdr.scale <= 1))
+    avipad->hdr.scale = spf;
+  else if (G_UNLIKELY (avipad->hdr.scale != spf)) {
+    GST_WARNING_OBJECT (avimux, "input mpeg audio has varying frame size");
+    goto cbr_fallback;
+  }
+
+  return GST_FLOW_OK;
+
+  /* EXITS */
+not_parsed:
+  {
+    GST_WARNING_OBJECT (avimux, "input mpeg audio is not parsed");
+    /* fall-through */
+  }
+cbr_fallback:
+  {
+    GST_WARNING_OBJECT (avimux, "falling back to CBR muxing");
+    avipad->hdr.scale = 1;
+    /* no need to check further */
+    avipad->hook = NULL;
+    return GST_FLOW_OK;
+  }
+}
+
+static void
+gst_avi_mux_audsink_set_fields (GstAviMux * avimux, GstAviAudioPad * avipad)
+{
+  if (avipad->parent.hdr.scale > 1) {
+    /* vbr case: fixed duration per frame/chunk */
+    avipad->parent.hdr.rate = avipad->auds.rate;
+    avipad->parent.hdr.samplesize = 0;
+    /* FIXME ?? some rumours say this should be largest audio chunk size */
+    avipad->auds.blockalign = avipad->parent.hdr.scale;
+  } else {
+    /* by spec, hdr.rate is av_bps related, is calculated that way in stop_file,
+     * and reduces to sample rate in PCM like cases */
+    avipad->parent.hdr.rate = avipad->auds.av_bps / avipad->auds.blockalign;
+    avipad->parent.hdr.samplesize = avipad->auds.blockalign;
+    avipad->parent.hdr.scale = 1;
   }
 }
 
@@ -723,8 +822,10 @@ gst_avi_mux_audsink_set_caps (GstPad * pad, GstCaps * vscaps)
       switch (mpegversion) {
         case 1:{
           gint layer = 3;
+          gboolean parsed = FALSE;
 
           gst_structure_get_int (structure, "layer", &layer);
+          gst_structure_get_boolean (structure, "parsed", &parsed);
           switch (layer) {
             case 3:
               avipad->auds.format = GST_RIFF_WAVE_FORMAT_MPEGL3;
@@ -734,12 +835,45 @@ gst_avi_mux_audsink_set_caps (GstPad * pad, GstCaps * vscaps)
               avipad->auds.format = GST_RIFF_WAVE_FORMAT_MPEGL12;
               break;
           }
+          if (parsed) {
+            /* treat as VBR, should also cover CBR case;
+             * setup hook to parse frame header and determine spf */
+            avipad->parent.hook = gst_avi_mux_audsink_scan_mpeg_audio;
+          } else {
+            GST_WARNING_OBJECT (avimux, "unparsed MPEG audio input (?), "
+                "doing CBR muxing");
+          }
           break;
         }
         case 4:
-          GST_WARNING ("AAC");
+        {
+          GstBuffer *codec_data_buf = avipad->auds_codec_data;
+          const gchar *stream_format;
+          guint codec;
+
+          stream_format = gst_structure_get_string (structure, "stream-format");
+          if (stream_format) {
+            if (strcmp (stream_format, "raw") != 0) {
+              GST_WARNING_OBJECT (avimux, "AAC's stream format '%s' is not "
+                  "supported, please use 'raw'", stream_format);
+              break;
+            }
+          } else {
+            GST_WARNING_OBJECT (avimux, "AAC's stream-format not specified, "
+                "assuming 'raw'");
+          }
+
+          /* vbr case needs some special handling */
+          if (!codec_data_buf || GST_BUFFER_SIZE (codec_data_buf) < 2) {
+            GST_WARNING_OBJECT (avimux, "no (valid) codec_data for AAC audio");
+            break;
+          }
           avipad->auds.format = GST_RIFF_WAVE_FORMAT_AAC;
+          /* need to determine frame length */
+          codec = GST_READ_UINT16_BE (GST_BUFFER_DATA (codec_data_buf));
+          avipad->parent.hdr.scale = (codec & 0x4) ? 960 : 1024;
           break;
+        }
       }
     } else if (!strcmp (mimetype, "audio/x-vorbis")) {
       avipad->auds.format = GST_RIFF_WAVE_FORMAT_VORBIS3;
@@ -787,11 +921,7 @@ gst_avi_mux_audsink_set_caps (GstPad * pad, GstCaps * vscaps)
   if (!avipad->auds.format)
     goto refuse_caps;
 
-  /* by spec, hdr.rate is av_bps related, is calculated that way in stop_file,
-   * and reduces to sample rate in PCM like cases */
-  avipad->parent.hdr.rate = avipad->auds.av_bps / avipad->auds.blockalign;
-  avipad->parent.hdr.samplesize = avipad->auds.blockalign;
-  avipad->parent.hdr.scale = 1;
+  gst_avi_mux_audsink_set_fields (avimux, avipad);
 
   gst_object_unref (avimux);
   return TRUE;
@@ -894,7 +1024,7 @@ too_late:
   }
 wrong_template:
   {
-    g_warning ("avimuxx: this is not our template!\n");
+    g_warning ("avimux: this is not our template!\n");
     return NULL;
   }
 }
@@ -1285,8 +1415,16 @@ gst_avi_mux_riff_get_avi_header (GstAviMux * avimux)
     GST_BUFFER_SIZE (buffer) += 12;
     buffdata = GST_BUFFER_DATA (buffer) + highmark;
 
-    /* update list size */
-    GST_WRITE_UINT32_LE (ptr, highmark - startsize - 4);
+    if (highmark - startsize - 4 == 4) {
+      /* no tags writen, remove the empty INFO LIST as it is useless
+       * and prevents playback in vlc */
+      highmark -= 12;
+      buffdata = GST_BUFFER_DATA (buffer) + highmark;
+      /* no need to erase the writen data, it will be overwriten anyway */
+    } else {
+      /* update list size */
+      GST_WRITE_UINT32_LE (ptr, highmark - startsize - 4);
+    }
   }
 
   /* avi data header */
@@ -1345,8 +1483,8 @@ gst_avi_mux_riff_get_header (GstAviPad * avipad, guint32 video_frame_size)
 
 /* write an odml index chunk in the movi list */
 static GstFlowReturn
-gst_avi_mux_write_avix_index (GstAviMux * avimux, gchar * code,
-    gchar * chunk, gst_avi_superindex_entry * super_index,
+gst_avi_mux_write_avix_index (GstAviMux * avimux, GstAviPad * avipad,
+    gchar * code, gchar * chunk, gst_avi_superindex_entry * super_index,
     gint * super_index_count)
 {
   GstFlowReturn res;
@@ -1355,6 +1493,17 @@ gst_avi_mux_write_avix_index (GstAviMux * avimux, gchar * code,
   gst_riff_index_entry *entry;
   gint i;
   guint32 size, entry_count;
+  gboolean is_pcm = FALSE;
+  guint32 pcm_samples = 0;
+
+  /* check if it is pcm */
+  if (avipad && !avipad->is_video) {
+    GstAviAudioPad *audiopad = (GstAviAudioPad *) avipad;
+    if (audiopad->auds.format == GST_RIFF_WAVE_FORMAT_PCM) {
+      pcm_samples = audiopad->samples;
+      is_pcm = TRUE;
+    }
+  }
 
   /* allocate the maximum possible */
   buffer = gst_buffer_new_and_alloc (32 + 8 * avimux->idx_index);
@@ -1406,7 +1555,11 @@ gst_avi_mux_write_avix_index (GstAviMux * avimux, gchar * code,
     i = *super_index_count;
     super_index[i].offset = GUINT64_TO_LE (avimux->total_data);
     super_index[i].size = GUINT32_TO_LE (size);
-    super_index[i].duration = GUINT32_TO_LE (entry_count);
+    if (is_pcm) {
+      super_index[i].duration = GUINT32_TO_LE (pcm_samples);
+    } else {
+      super_index[i].duration = GUINT32_TO_LE (entry_count);
+    }
     (*super_index_count)++;
   } else
     GST_WARNING_OBJECT (avimux, "No more room in superindex of stream %s",
@@ -1425,15 +1578,26 @@ gst_avi_mux_write_avix_index (GstAviMux * avimux, gchar * code,
 /* some other usable functions (thankyou xawtv ;-) ) */
 
 static void
-gst_avi_mux_add_index (GstAviMux * avimux, gchar * code, guint32 flags,
+gst_avi_mux_add_index (GstAviMux * avimux, GstAviPad * avipad, guint32 flags,
     guint32 size)
 {
+  gchar *code = avipad->tag;
   if (avimux->idx_index == avimux->idx_count) {
     avimux->idx_count += 256;
     avimux->idx =
         g_realloc (avimux->idx,
         avimux->idx_count * sizeof (gst_riff_index_entry));
   }
+
+  /* in case of pcm audio, we need to count the number of samples for
+   * putting in the indx entries */
+  if (!avipad->is_video) {
+    GstAviAudioPad *audiopad = (GstAviAudioPad *) avipad;
+    if (audiopad->auds.format == GST_RIFF_WAVE_FORMAT_PCM) {
+      audiopad->samples += size / audiopad->auds.blockalign;
+    }
+  }
+
   memcpy (&(avimux->idx[avimux->idx_index].id), code, 4);
   avimux->idx[avimux->idx_index].flags = GUINT32_TO_LE (flags);
   avimux->idx[avimux->idx_index].offset = GUINT32_TO_LE (avimux->idx_offset);
@@ -1493,7 +1657,7 @@ gst_avi_mux_bigfile (GstAviMux * avimux, gboolean last)
 
     node = node->next;
 
-    res = gst_avi_mux_write_avix_index (avimux, avipad->tag,
+    res = gst_avi_mux_write_avix_index (avimux, avipad, avipad->tag,
         avipad->idx_tag, avipad->idx, &avipad->idx_index);
     if (res != GST_FLOW_OK)
       return res;
@@ -1535,6 +1699,15 @@ gst_avi_mux_bigfile (GstAviMux * avimux, gboolean last)
   avimux->numx_frames = 0;
   avimux->datax_size = 4;       /* movi tag */
   avimux->idx_index = 0;
+  node = avimux->sinkpads;
+  while (node) {
+    GstAviPad *avipad = (GstAviPad *) node->data;
+    node = node->next;
+    if (!avipad->is_video) {
+      GstAviAudioPad *audiopad = (GstAviAudioPad *) avipad;
+      audiopad->samples = 0;
+    }
+  }
 
   header = gst_avi_mux_riff_get_avix_header (0);
   avimux->total_data += GST_BUFFER_SIZE (header);
@@ -1661,10 +1834,11 @@ gst_avi_mux_stop_file (GstAviMux * avimux)
               (NULL));
           audpad->auds.av_bps = 0;
         }
-        avipad->hdr.rate = audpad->auds.av_bps * avipad->hdr.scale;
       }
+      gst_avi_mux_audsink_set_fields (avimux, audpad);
       avimux->avi_hdr.max_bps += audpad->auds.av_bps;
-      avipad->hdr.length = (audpad->audio_time * avipad->hdr.rate) / GST_SECOND;
+      avipad->hdr.length = gst_util_uint64_scale (audpad->audio_time,
+          avipad->hdr.rate, avipad->hdr.scale * GST_SECOND);
     } else {
       GstAviVideoPad *vidpad = (GstAviVideoPad *) avipad;
 
@@ -1773,7 +1947,7 @@ gst_avi_mux_do_buffer (GstAviMux * avimux, GstAviPad * avipad)
 
   /* need to restart or start a next avix chunk ? */
   if ((avimux->is_bigfile ? avimux->datax_size : avimux->data_size) +
-      GST_BUFFER_SIZE (data) > 1024 * 1024 * 2000) {
+      GST_BUFFER_SIZE (data) > GST_AVI_MAX_SIZE) {
     if (avimux->enable_large_avi) {
       if ((res = gst_avi_mux_bigfile (avimux, FALSE)) != GST_FLOW_OK)
         return res;
@@ -1796,6 +1970,13 @@ gst_avi_mux_do_buffer (GstAviMux * avimux, GstAviPad * avipad)
     avimux->data_size += total_size;
   }
 
+  if (G_UNLIKELY (avipad->hook))
+    avipad->hook (avimux, avipad, data);
+
+  /* the suggested buffer size is the max frame size */
+  if (avipad->hdr.bufsize < GST_BUFFER_SIZE (data))
+    avipad->hdr.bufsize = GST_BUFFER_SIZE (data);
+
   if (avipad->is_video) {
     avimux->total_frames++;
 
@@ -1816,7 +1997,7 @@ gst_avi_mux_do_buffer (GstAviMux * avimux, GstAviPad * avipad)
     audpad->audio_time += GST_BUFFER_DURATION (data);
   }
 
-  gst_avi_mux_add_index (avimux, avipad->tag, flags, GST_BUFFER_SIZE (data));
+  gst_avi_mux_add_index (avimux, avipad, flags, GST_BUFFER_SIZE (data));
 
   /* prepare buffers for sending */
   gst_buffer_set_caps (header, GST_PAD_CAPS (avimux->srcpad));
@@ -1849,7 +2030,7 @@ gst_avi_mux_do_one_buffer (GstAviMux * avimux)
   GstAviPad *avipad, *best_pad;
   GSList *node;
   GstBuffer *buffer;
-  GstClockTime time, best_time;
+  GstClockTime time, best_time, delay;
 
   node = avimux->sinkpads;
   best_pad = NULL;
@@ -1866,12 +2047,14 @@ gst_avi_mux_do_one_buffer (GstAviMux * avimux)
     time = GST_BUFFER_TIMESTAMP (buffer);
     gst_buffer_unref (buffer);
 
+    delay = avipad->is_video ? GST_SECOND / 2 : 0;
+
     /* invalid timestamp buffers pass first,
      * these are probably initialization buffers */
     if (best_pad == NULL || !GST_CLOCK_TIME_IS_VALID (time)
-        || (GST_CLOCK_TIME_IS_VALID (best_time) && time < best_time)) {
+        || (GST_CLOCK_TIME_IS_VALID (best_time) && time + delay < best_time)) {
       best_pad = avipad;
-      best_time = time;
+      best_time = time + delay;
     }
   }
 
