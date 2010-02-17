@@ -90,6 +90,7 @@ static gboolean gst_dshowvideodec_get_filter_output_format (GstDshowVideoDec *
 #define GUID_MEDIASUBTYPE_WMVV3 {0x33564d57, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
 #define GUID_MEDIASUBTYPE_WMVP  {0x50564d57, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
 #define GUID_MEDIASUBTYPE_WMVA  {0x41564d57, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
+#define GUID_MEDIASUBTYPE_WVC1  {0x31435657, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
 #define GUID_MEDIASUBTYPE_CVID  {0x64697663, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
 #define GUID_MEDIASUBTYPE_MP4S  {0x5334504d, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
 #define GUID_MEDIASUBTYPE_MP42  {0x3234504d, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
@@ -196,6 +197,15 @@ static const VideoCodecEntry video_dec_codecs[] = {
    GST_MAKE_FOURCC ('W', 'M', 'V', 'A'),
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_WMVA,
    "video/x-wmv, wmvversion = (int) 3, " "format = (fourcc) WMVA",
+   GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
+   "video/x-raw-yuv, format=(fourcc)YUY2",
+   preferred_wmv_filters,
+   GST_RANK_PRIMARY},
+
+  {"dshowvdec_vc1", "Windows Media Video VC1",
+   GST_MAKE_FOURCC ('W', 'V', 'C', '1'),
+   GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_WVC1,
+   "video/x-wmv, wmvversion = (int) 3, " "format = (fourcc) WVC1",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
    "video/x-raw-yuv, format=(fourcc)YUY2",
    preferred_wmv_filters,
