@@ -1656,10 +1656,11 @@ CSSLoaderImpl::DoSheetComplete(SheetLoadData* aLoadData, nsresult aStatus,
     data = data->mNext;
   }
 
-  // Now that it's marked complete, put the sheet in our cache
+  // Now that it's marked complete, put the sheet in our cache, but
+  // only if we parsed it case-sensitively.
   if (NS_SUCCEEDED(aStatus) && aLoadData->mURI) {
 #ifdef MOZ_XUL
-    if (IsChromeURI(aLoadData->mURI)) {
+    if (IsChromeURI(aLoadData->mURI) && mCaseSensitive) {
       nsXULPrototypeCache* cache = nsXULPrototypeCache::GetInstance();
       if (cache && cache->IsEnabled()) {
         if (!cache->GetStyleSheet(aLoadData->mURI)) {

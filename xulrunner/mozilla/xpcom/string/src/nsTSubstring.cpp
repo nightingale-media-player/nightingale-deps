@@ -597,18 +597,14 @@ nsTSubstring_CharT::SetCapacity( size_type capacity )
 void
 nsTSubstring_CharT::SetLength( size_type length )
   {
-    if (mLength == length) {
-      mFlags &= ~F_VOIDED;  // mutation clears voided flag
-      return;
-    }
-
     SetCapacity(length);
 
     // XXX(darin): SetCapacity may fail, but it doesn't give us a way to find
     // out.  We should improve that.  For now we just verify that the capacity
     // changed as expected as a means of error checking.
  
-    if (Capacity() >= length)
+    size_type capacity = Capacity();
+    if (capacity != size_type(-1) && capacity >= length)
       mLength = length;
   }
 

@@ -74,6 +74,7 @@ class nsPresContext;
 struct nsTimeout;
 class nsScriptObjectHolder;
 class nsXBLPrototypeHandler;
+class nsIArray;
 
 #define NS_PIDOMWINDOW_IID \
 { 0x909852b5, 0xb9e6, 0x4d94, \
@@ -432,8 +433,36 @@ protected:
   nsPIDOMWindow         *mOuterWindow;
 };
 
-
 NS_DEFINE_STATIC_IID_ACCESSOR(nsPIDOMWindow, NS_PIDOMWINDOW_IID)
+
+
+#define NS_PIDOMWINDOW_1_9_0_IID \
+{ 0x76cdc610, 0x324f, 0x4d5c, \
+  { 0x8d, 0x3b, 0x6f, 0xee, 0x1d, 0x88, 0xba, 0xfc } }
+
+class nsPIDOMWindow_1_9_0 : public nsPIDOMWindow
+{
+public:
+  NS_DECLARE_STATIC_IID_ACCESSOR(NS_PIDOMWINDOW_1_9_0_IID)
+
+  /**
+   * Set a arguments for this window. This will be set on the window
+   * right away (if there's an existing document) and it will also be
+   * installed on the window when the next document is loaded. Each
+   * language impl is responsible for converting to an array of args
+   * as appropriate for that language.
+   */
+  virtual nsresult SetArguments(nsIArray *aArguments, nsIPrincipal *aOrigin) = 0;
+
+protected:
+  nsPIDOMWindow_1_9_0(nsPIDOMWindow *aOuterWindow)
+    : nsPIDOMWindow(aOuterWindow)
+  {
+  }
+};
+
+NS_DEFINE_STATIC_IID_ACCESSOR(nsPIDOMWindow_1_9_0, NS_PIDOMWINDOW_1_9_0_IID)
+
 
 #ifdef _IMPL_NS_LAYOUT
 PopupControlState

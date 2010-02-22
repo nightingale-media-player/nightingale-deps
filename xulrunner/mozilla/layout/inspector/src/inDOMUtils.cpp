@@ -157,7 +157,9 @@ inDOMUtils::GetCSSStyleRules(nsIDOMElement *aElement,
 
   nsRuleNode* ruleNode = nsnull;
   nsCOMPtr<nsIContent> content = do_QueryInterface(aElement);
-  mCSSUtils->GetRuleNodeForContent(content, &ruleNode);
+  nsRefPtr<nsStyleContext> styleContext;
+  mCSSUtils->GetRuleNodeForContent(content, getter_AddRefs(styleContext),
+                                   &ruleNode);
   if (!ruleNode) {
     // This can fail for content nodes that are not in the document or
     // if the document they're in doesn't have a presshell.  Bail out.

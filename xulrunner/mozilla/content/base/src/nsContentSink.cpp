@@ -1369,7 +1369,7 @@ void
 nsContentSink::BeginUpdate(nsIDocument *aDocument, nsUpdateType aUpdateType)
 {
   // Remember nested updates from updates that we started.
-  if (mInNotification && mUpdatesInNotification < 2) {
+  if (mInNotification > 0 && mUpdatesInNotification < 2) {
     ++mUpdatesInNotification;
   }
 

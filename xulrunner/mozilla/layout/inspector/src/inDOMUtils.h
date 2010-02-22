@@ -54,7 +54,7 @@ public:
   virtual ~inDOMUtils();
 
 protected:
-  nsCOMPtr<nsIInspectorCSSUtils> mCSSUtils;
+  nsCOMPtr<nsIInspectorCSSUtils_MOZILLA_1_9_BRANCH> mCSSUtils;
 
 };
 

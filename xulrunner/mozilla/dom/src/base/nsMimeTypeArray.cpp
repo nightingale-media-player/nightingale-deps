@@ -224,14 +224,14 @@ nsresult nsMimeTypeArray::GetMimeTypes()
       PRUint32 mimeTypeIndex = 0;
       PRUint32 k;
       for (k = 0; k < pluginCount; k++) {
-        nsIDOMPlugin* plugin = nsnull;
-        if (pluginArray->Item(k, &plugin) == NS_OK) {
+        nsCOMPtr<nsIDOMPlugin> plugin;
+        if (NS_SUCCEEDED(pluginArray->Item(k, getter_AddRefs(plugin))) &&
+            plugin) {
           PRUint32 mimeTypeCount = 0;
           if (plugin->GetLength(&mimeTypeCount) == NS_OK) {
             for (PRUint32 j = 0; j < mimeTypeCount; j++)
               plugin->Item(j, &mMimeTypeArray[mimeTypeIndex++]);
           }
-          NS_RELEASE(plugin);
         }
       }
     }

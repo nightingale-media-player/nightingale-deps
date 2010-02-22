@@ -48,7 +48,7 @@
 
 class nsIPresShell;
 
-class nsInspectorCSSUtils : public nsIInspectorCSSUtils {
+class nsInspectorCSSUtils : public nsIInspectorCSSUtils_MOZILLA_1_9_BRANCH {
 
 public:
 
@@ -69,6 +69,11 @@ public:
     static already_AddRefed<nsStyleContext>
     GetStyleContextForContent(nsIContent* aContent, nsIAtom* aPseudo,
                               nsIPresShell* aPresShell);
+
+    // nsIInspectorCSSUtils_MOZILLA_1_9_BRANCH
+    NS_IMETHOD GetRuleNodeForContent(nsIContent* aContent,
+                                     nsStyleContext** aStyleContext,
+                                     nsRuleNode** aRuleNode);
 
 private:
     static nsStyleContext* GetStyleContextForFrame(nsIFrame* aFrame);

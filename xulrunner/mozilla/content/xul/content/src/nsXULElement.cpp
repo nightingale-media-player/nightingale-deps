@@ -1441,7 +1441,7 @@ nsXULElement::UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, PRBool aNotify)
     }
 
     if (hasMutationListeners) {
-        mozAutoRemovableBlockerRemover blockerRemover;
+        mozAutoRemovableBlockerRemover blockerRemover(GetOwnerDoc());
 
         nsMutationEvent mutation(PR_TRUE, NS_MUTATION_ATTRMODIFIED);
 

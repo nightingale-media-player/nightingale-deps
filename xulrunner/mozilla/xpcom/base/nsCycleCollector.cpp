@@ -1283,6 +1283,9 @@ GCGraphBuilder::AddNode(void *s, nsCycleCollectionParticipant *aParticipant
                        )
 {
     PtrToNodeEntry *e = static_cast<PtrToNodeEntry*>(PL_DHashTableOperate(&mPtrToNodeMap, s, PL_DHASH_ADD));
+    if (!e)
+        return nsnull;
+
     PtrInfo *result;
     if (!e->mNode) {
         // New entry.

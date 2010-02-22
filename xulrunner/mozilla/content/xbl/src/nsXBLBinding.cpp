@@ -578,6 +578,9 @@ ChangeDocumentForDefaultContent(nsISupports* aKey,
 void
 nsXBLBinding::GenerateAnonymousContent()
 {
+  NS_ASSERTION(!nsContentUtils::IsSafeToRunScript(),
+               "Someone forgot a script blocker");
+
   // Fetch the content element for this binding.
   nsIContent* content =
     mPrototypeBinding->GetImmediateChild(nsGkAtoms::content);
@@ -648,14 +651,9 @@ nsXBLBinding::GenerateAnonymousContent()
     }
 
     if (hasContent || hasInsertionPoints) {
-      nsIDocument *document = mBoundElement->GetOwnerDoc();
-      if (!document) {
-        return;
-      }
-
       nsCOMPtr<nsIDOMNode> clonedNode;
       nsCOMArray<nsINode> nodesWithProperties;
-      nsNodeUtils::Clone(content, PR_TRUE, document->NodeInfoManager(),
+      nsNodeUtils::Clone(content, PR_TRUE, doc->NodeInfoManager(),
                          nodesWithProperties, getter_AddRefs(clonedNode));
 
       mContent = do_QueryInterface(clonedNode);
@@ -1138,53 +1136,56 @@ nsXBLBinding::ChangeDocument(nsIDocument* aOldDocument, nsIDocument* aNewDocumen
       UnhookEventHandlers();
     }
 
-    // Then do our ancestors.  This reverses the construction order, so that at
-    // all times things are consistent as far as everyone is concerned.
-    if (mNextBinding) {
-      mNextBinding->ChangeDocument(aOldDocument, aNewDocument);
-    }
-
-    // Update the anonymous content.
-    // XXXbz why not only for style bindings?
-    nsIContent *anonymous = mContent;
-    if (anonymous) {
-      // Also kill the default content within all our insertion points.
-      if (mInsertionPointTable)
-        mInsertionPointTable->Enumerate(ChangeDocumentForDefaultContent,
-                                        nsnull);
-
-#ifdef MOZ_XUL
-      nsCOMPtr<nsIXULDocument> xuldoc(do_QueryInterface(aOldDocument));
-#endif
-
+    {
       nsAutoScriptBlocker scriptBlocker;
-      // Unbind the _kids_ of the anonymous content, not just the anonymous
-      // content itself, since they are bound to some other parent.  Basically
-      // we want to undo the mess that InstallAnonymousContent created.
-      PRUint32 childCount = anonymous->GetChildCount();
-      for (PRUint32 i = 0; i < childCount; i++) {
-        anonymous->GetChildAt(i)->UnbindFromTree();
+
+      // Then do our ancestors.  This reverses the construction order, so that at
+      // all times things are consistent as far as everyone is concerned.
+      if (mNextBinding) {
+        mNextBinding->ChangeDocument(aOldDocument, aNewDocument);
       }
-      
-      anonymous->UnbindFromTree(); // Kill it.
+
+      // Update the anonymous content.
+      // XXXbz why not only for style bindings?
+      nsIContent *anonymous = mContent;
+      if (anonymous) {
+        // Also kill the default content within all our insertion points.
+        if (mInsertionPointTable)
+          mInsertionPointTable->Enumerate(ChangeDocumentForDefaultContent,
+                                          nsnull);
 
 #ifdef MOZ_XUL
-      // To make XUL templates work (and other XUL-specific stuff),
-      // we'll need to notify it using its add & remove APIs. Grab the
-      // interface now...
-      if (xuldoc)
-        xuldoc->RemoveSubtreeFromDocument(anonymous);
+        nsCOMPtr<nsIXULDocument> xuldoc(do_QueryInterface(aOldDocument));
+#endif
+
+        // Unbind the _kids_ of the anonymous content, not just the anonymous
+        // content itself, since they are bound to some other parent.  Basically
+        // we want to undo the mess that InstallAnonymousContent created.
+        PRUint32 childCount = anonymous->GetChildCount();
+        for (PRUint32 i = 0; i < childCount; i++) {
+          anonymous->GetChildAt(i)->UnbindFromTree();
+        }
+      
+        anonymous->UnbindFromTree(); // Kill it.
+
+#ifdef MOZ_XUL
+        // To make XUL templates work (and other XUL-specific stuff),
+        // we'll need to notify it using its add & remove APIs. Grab the
+        // interface now...
+        if (xuldoc)
+          xuldoc->RemoveSubtreeFromDocument(anonymous);
 #endif
     }
 
-    // Make sure that henceforth we don't claim that mBoundElement's children
-    // have insertion parents in the old document.
-    nsBindingManager* bindingManager = aOldDocument->BindingManager();
-    for (PRUint32 i = mBoundElement->GetChildCount(); i > 0; --i) {
-      NS_ASSERTION(mBoundElement->GetChildAt(i-1),
-                   "Must have child at i for 0 <= i < GetChildCount()!");
-      bindingManager->SetInsertionParent(mBoundElement->GetChildAt(i-1),
-                                         nsnull);
+      // Make sure that henceforth we don't claim that mBoundElement's children
+      // have insertion parents in the old document.
+      nsBindingManager* bindingManager = aOldDocument->BindingManager();
+      for (PRUint32 i = mBoundElement->GetChildCount(); i > 0; --i) {
+        NS_ASSERTION(mBoundElement->GetChildAt(i-1),
+                     "Must have child at i for 0 <= i < GetChildCount()!");
+        bindingManager->SetInsertionParent(mBoundElement->GetChildAt(i-1),
+                                           nsnull);
+      }
     }
   }
 }

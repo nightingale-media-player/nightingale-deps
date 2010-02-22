@@ -1069,6 +1069,19 @@ private:
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIDocument, NS_IDOCUMENT_IID)
 
+#define NS_IDOCUMENT_MOZILLA_1_9_2_BRANCH_IID               \
+  { 0x149e42ac, 0x0d6d, 0x4eaf,                             \
+      { 0x9a, 0x99, 0xc3, 0x69, 0x8d, 0x8f, 0xee, 0x2c } }
+class nsIDocument_MOZILLA_1_9_2_BRANCH : public nsISupports {
+public:
+  NS_DECLARE_STATIC_IID_ACCESSOR(NS_IDOCUMENT_MOZILLA_1_9_2_BRANCH_IID)
+
+  virtual nsISupports* GetCurrentContentSink() = 0;
+};
+
+NS_DEFINE_STATIC_IID_ACCESSOR(nsIDocument_MOZILLA_1_9_2_BRANCH,
+                              NS_IDOCUMENT_MOZILLA_1_9_2_BRANCH_IID)
+
 /**
  * mozAutoSubtreeModified batches DOM mutations so that a DOMSubtreeModified
  * event is dispatched, if necessary, when the outermost mozAutoSubtreeModified

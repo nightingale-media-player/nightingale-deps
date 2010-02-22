@@ -51,6 +51,7 @@ struct nsRect;
 class nsIContent;
 class nsIDOMElement;
 class nsIArray;
+class nsStyleContext;
 
 // 35dfc2a6-b069-4014-ad4b-01927e77d828
 #define NS_IINSPECTORCSSUTILS_IID \
@@ -77,7 +78,8 @@ public:
     NS_IMETHOD GetRuleNodeRule(nsRuleNode *aNode, nsIStyleRule **aRule) = 0;
     NS_IMETHOD IsRuleNodeRoot(nsRuleNode *aNode, PRBool *aIsRoot) = 0;
 
-    // Hooks to methods that need nsStyleContext
+    // Hooks to methods that need nsStyleContext.  Don't call this.
+    // Use nsIInspectorCSSUtils_MOZILLA_1_9_BRANCH instead.
     NS_IMETHOD GetRuleNodeForContent(nsIContent* aContent,
                                      nsRuleNode** aParent) = 0;
 
@@ -86,5 +88,22 @@ public:
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIInspectorCSSUtils, NS_IINSPECTORCSSUTILS_IID)
+
+
+#define NS_IINSPECTORCSSUTILS_MOZILLA_1_9_BRANCH_IID                \
+{ 0x0a03de47, 0x0b6d, 0x4cdb,                                       \
+ { 0xaa, 0xe3, 0xf4, 0x7f, 0x16, 0x1e, 0x54, 0x2a } }
+
+class nsIInspectorCSSUtils_MOZILLA_1_9_BRANCH : public nsIInspectorCSSUtils {
+public:
+    NS_DECLARE_STATIC_IID_ACCESSOR(NS_IINSPECTORCSSUTILS_MOZILLA_1_9_BRANCH_IID)
+
+    NS_IMETHOD GetRuleNodeForContent(nsIContent* aContent,
+                                     nsStyleContext** aStyleContext,
+                                     nsRuleNode** aRuleNode) = 0;
+};
+
+NS_DEFINE_STATIC_IID_ACCESSOR(nsIInspectorCSSUtils_MOZILLA_1_9_BRANCH,
+                              NS_IINSPECTORCSSUTILS_MOZILLA_1_9_BRANCH_IID)
 
 #endif /* nsIInspectorCSSUtils_h___ */

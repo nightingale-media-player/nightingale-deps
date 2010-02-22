@@ -2673,6 +2673,27 @@ PresShell::NotifyDestroyingFrame(nsIFrame* aFrame)
 
     // Remove frame properties
     mPresContext->PropertyTable()->DeleteAllPropertiesFor(aFrame);
+
+    if (aFrame == mCurrentEventFrame) {
+      mCurrentEventContent = aFrame->GetContent();
+      mCurrentEventFrame = nsnull;
+    }
+  
+  #ifdef NS_DEBUG
+    if (aFrame == mDrawEventTargetFrame) {
+      mDrawEventTargetFrame = nsnull;
+    }
+  #endif
+  
+    for (int i=0; i < mCurrentEventFrameStack.Count(); i++) {
+      if (aFrame == mCurrentEventFrameStack.ElementAt(i)) {
+        //One of our stack frames was deleted.  Get its content so that when we
+        //pop it we can still get its new frame from its content
+        nsIContent *currentEventContent = aFrame->GetContent();
+        mCurrentEventContentStack.ReplaceObjectAt(currentEventContent, i);
+        mCurrentEventFrameStack.ReplaceElementAt(nsnull, i);
+      }
+    }
   }
 
   return NS_OK;
@@ -3447,27 +3468,6 @@ NS_IMETHODIMP
 PresShell::ClearFrameRefs(nsIFrame* aFrame)
 {
   mPresContext->EventStateManager()->ClearFrameRefs(aFrame);
-  
-  if (aFrame == mCurrentEventFrame) {
-    mCurrentEventContent = aFrame->GetContent();
-    mCurrentEventFrame = nsnull;
-  }
-
-#ifdef NS_DEBUG
-  if (aFrame == mDrawEventTargetFrame) {
-    mDrawEventTargetFrame = nsnull;
-  }
-#endif
-
-  for (int i=0; i<mCurrentEventFrameStack.Count(); i++) {
-    if (aFrame == (nsIFrame*)mCurrentEventFrameStack.ElementAt(i)) {
-      //One of our stack frames was deleted.  Get its content so that when we
-      //pop it we can still get its new frame from its content
-      nsIContent *currentEventContent = aFrame->GetContent();
-      mCurrentEventContentStack.ReplaceObjectAt(currentEventContent, i);
-      mCurrentEventFrameStack.ReplaceElementAt(nsnull, i);
-    }
-  }
 
   nsWeakFrame* weakFrame = mWeakFrames;
   while (weakFrame) {

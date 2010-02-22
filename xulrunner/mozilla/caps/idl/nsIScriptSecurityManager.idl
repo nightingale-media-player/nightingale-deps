@@ -335,6 +335,33 @@ interface nsIScriptSecurityManager_1_9_0_BRANCH : nsIScriptSecurityManager
                                                                    out JSStackFramePtr fp);
 };
 
+[scriptable, uuid(83db3256-5ff6-4703-a21d-8a5f7c8af4b0)]
+interface nsIScriptSecurityManager_1_9_2 : nsIScriptSecurityManager_1_9_0_BRANCH
+{
+    /**
+     * If no scripted code is running "above" (or called from) fp, then
+     * instead of looking at cx->globalObject, we will return |principal|.
+     * This function only affects |cx|. If someone pushes another context onto
+     * the context stack, then it supercedes this call.
+     * NOTE: If |fp| is non-null popContextPrincipal must be called before fp
+     * has finished executing.
+     *
+     * @param cx The context to clamp.
+     * @param fp The frame pointer to clamp at. May be 'null'.
+     * @param principal The principal to clamp to.
+     */
+    [noscript] void pushContextPrincipal(in JSContextPtr cx,
+                                         in JSStackFramePtr fp,
+                                         in nsIPrincipal principal);
+
+    /**
+     * Removes a clamp set by pushContextPrincipal from cx. This must be
+     * called in a stack-like fashion (e.g., given two contexts |a| and |b|,
+     * it is not legal to do: push(a) push(b) pop(a)).
+     */
+    [noscript] void popContextPrincipal(in JSContextPtr cx);
+};
+
 %{C++
 #define NS_SCRIPTSECURITYMANAGER_CONTRACTID "@mozilla.org/scriptsecuritymanager;1"
 #define NS_SCRIPTSECURITYMANAGER_CLASSNAME "scriptsecuritymanager"

@@ -42,6 +42,7 @@
 /* Sharable code and data for wrapper around JSObjects. */
 
 #include "xpcprivate.h"
+#include "XPCWrapper.h"
 
 NS_IMPL_THREADSAFE_ISUPPORTS1(nsXPCWrappedJSClass, nsIXPCWrappedJSClass)
 
@@ -1122,6 +1123,8 @@ nsXPCWrappedJSClass::CallMethod(nsXPCWrappedJS* wrapper, uint16 methodIndex,
     XPCContext* xpcc;
     JSContext* cx;
     JSObject* thisObj;
+    JSBool popPrincipal = JS_FALSE;
+    nsIScriptSecurityManager_1_9_2* ssm = nsnull;
 
     // Make sure not to set the callee on ccx until after we've gone through
     // the whole nsIXPCFunctionThisTranslator bit.  That code uses ccx to
@@ -1449,8 +1452,6 @@ nsXPCWrappedJSClass::CallMethod(nsXPCWrappedJS* wrapper, uint16 methodIndex,
             *sp++ = val;
     }
 
-
-
     readyToDoTheCall = JS_TRUE;
 
 pre_call_clean_up:
@@ -1512,6 +1513,31 @@ pre_call_clean_up:
 
     JS_ClearPendingException(cx);
 
+    if(XPCPerThreadData::IsMainThread(ccx))
+    {
+        ssm = XPCWrapper::GetSecurityManager();
+        if(ssm)
+        {
+            nsCOMPtr<nsIPrincipal> objPrincipal;
+            ssm->GetObjectPrincipal(ccx, obj, getter_AddRefs(objPrincipal));
+            if(objPrincipal)
+            {
+                JSStackFrame* fp = nsnull;
+                nsresult rv =
+                    ssm->PushContextPrincipal(ccx, JS_FrameIterator(ccx, &fp),
+                                              objPrincipal);
+                if(NS_FAILED(rv))
+                {
+                    JS_ReportOutOfMemory(ccx);
+                    retval = NS_ERROR_OUT_OF_MEMORY;
+                    goto done;
+                }
+
+                popPrincipal = JS_TRUE;
+            }
+        }
+    }
+
     if(XPT_MD_IS_GETTER(info->flags))
         success = JS_GetProperty(cx, obj, name, &result);
     else if(XPT_MD_IS_SETTER(info->flags))
@@ -1548,7 +1574,10 @@ pre_call_clean_up:
         }
     }
 
-    if (!success)
+    if(popPrincipal)
+        ssm->PopContextPrincipal(ccx);
+
+    if(!success)
     {
         PRBool forceReport;
         if(NS_FAILED(mInfo->IsFunction(&forceReport)))

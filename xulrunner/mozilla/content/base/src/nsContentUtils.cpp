@@ -4319,3 +4319,34 @@ nsAutoGCRoot::Shutdown()
 {
   NS_IF_RELEASE(sJSRuntimeService);
 }
+
+mozAutoRemovableBlockerRemover::mozAutoRemovableBlockerRemover(nsIDocument* aDocument)
+{
+  mNestingLevel = nsContentUtils::GetRemovableScriptBlockerLevel();
+  mDocument = aDocument;
+  nsCOMPtr<nsIDocument_MOZILLA_1_9_2_BRANCH> branchDocument =
+    do_QueryInterface(aDocument);
+  nsISupports* sink =
+    branchDocument ? branchDocument->GetCurrentContentSink() : nsnull;
+  mObserver = do_QueryInterface(sink);
+  for (PRUint32 i = 0; i < mNestingLevel; ++i) {
+    if (mObserver) {
+      mObserver->EndUpdate(mDocument, UPDATE_CONTENT_MODEL);
+    }
+    nsContentUtils::RemoveRemovableScriptBlocker();
+  }
+
+  NS_ASSERTION(nsContentUtils::IsSafeToRunScript(), "killing mutation events");
+}
+
+mozAutoRemovableBlockerRemover::~mozAutoRemovableBlockerRemover()
+{
+  NS_ASSERTION(nsContentUtils::GetRemovableScriptBlockerLevel() == 0,
+               "Should have had none");
+  for (PRUint32 i = 0; i < mNestingLevel; ++i) {
+    nsContentUtils::AddRemovableScriptBlocker();
+    if (mObserver) {
+      mObserver->BeginUpdate(mDocument, UPDATE_CONTENT_MODEL);
+    }
+  }
+}

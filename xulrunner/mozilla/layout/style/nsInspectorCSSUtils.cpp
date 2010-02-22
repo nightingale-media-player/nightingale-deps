@@ -65,7 +65,8 @@ nsInspectorCSSUtils::~nsInspectorCSSUtils()
     nsCSSProps::ReleaseTable();
 }
 
-NS_IMPL_ISUPPORTS1(nsInspectorCSSUtils, nsIInspectorCSSUtils)
+NS_IMPL_ISUPPORTS2(nsInspectorCSSUtils, nsIInspectorCSSUtils,
+                   nsIInspectorCSSUtils_MOZILLA_1_9_BRANCH)
 
 NS_IMETHODIMP
 nsInspectorCSSUtils::LookupCSSProperty(const nsAString& aName, nsCSSProperty *aProp)
@@ -162,6 +163,16 @@ NS_IMETHODIMP
 nsInspectorCSSUtils::GetRuleNodeForContent(nsIContent* aContent,
                                            nsRuleNode** aRuleNode)
 {
+    nsRefPtr<nsStyleContext> styleContext;
+    return GetRuleNodeForContent(aContent, getter_AddRefs(styleContext),
+                                 aRuleNode);
+}
+
+NS_IMETHODIMP
+nsInspectorCSSUtils::GetRuleNodeForContent(nsIContent* aContent,
+                                           nsStyleContext** aStyleContext,
+                                           nsRuleNode** aRuleNode)
+{
     *aRuleNode = nsnull;
 
     nsIDocument* doc = aContent->GetDocument();
@@ -173,6 +184,7 @@ nsInspectorCSSUtils::GetRuleNodeForContent(nsIContent* aContent,
     nsRefPtr<nsStyleContext> sContext =
         GetStyleContextForContent(aContent, nsnull, presShell);
     *aRuleNode = sContext->GetRuleNode();
+    sContext.forget(aStyleContext);
     return NS_OK;
 }
 

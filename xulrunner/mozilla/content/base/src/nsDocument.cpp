@@ -923,6 +923,7 @@ NS_INTERFACE_TABLE_HEAD(nsDocument)
     NS_INTERFACE_TABLE_ENTRY(nsDocument, nsISupportsWeakReference)
     NS_INTERFACE_TABLE_ENTRY(nsDocument, nsIRadioGroupContainer)
     NS_INTERFACE_TABLE_ENTRY(nsDocument, nsIMutationObserver)
+    NS_INTERFACE_TABLE_ENTRY(nsDocument, nsIDocument_MOZILLA_1_9_2_BRANCH)
     // nsNodeSH::PreCreate() depends on the identity pointer being the
     // same as nsINode (which nsIDocument inherits), so if you change
     // the below line, make sure nsNodeSH::PreCreate() still does the
@@ -5970,7 +5971,7 @@ nsDocument::MutationEventDispatched(nsINode* aTarget)
 
     PRInt32 realTargetCount = realTargets.Count();
     for (PRInt32 k = 0; k < realTargetCount; ++k) {
-      mozAutoRemovableBlockerRemover blockerRemover;
+      mozAutoRemovableBlockerRemover blockerRemover(this);
 
       nsMutationEvent mutation(PR_TRUE, NS_MUTATION_SUBTREEMODIFIED);
       nsEventDispatcher::Dispatch(realTargets[k], nsnull, &mutation);
@@ -6104,4 +6105,10 @@ nsDocument::SetScriptTypeID(PRUint32 aScriptType)
 {
     NS_ERROR("Can't change default script type for a document");
     return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+nsISupports*
+nsDocument::GetCurrentContentSink()
+{
+  return mParser ? mParser->GetContentSink() : nsnull;
 }

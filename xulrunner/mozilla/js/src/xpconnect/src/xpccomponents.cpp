@@ -2804,7 +2804,18 @@ nsXPCComponents_Utils::LookupMethod()
 
     JSObject* obj = JSVAL_TO_OBJECT(argv[0]);
 
+    {
+        XPCWrappedNative *wn =
+            XPCWrappedNative::GetWrappedNativeOfJSObject(cx, obj);
+        if(!wn)
+            return NS_ERROR_XPC_BAD_CONVERT_JS;
+
+        obj = wn->GetFlatJSObject();
+    }
+
     OBJ_TO_INNER_OBJECT(cx, obj);
+    if(!obj)
+        return NS_ERROR_XPC_BAD_CONVERT_JS;
 
     // second param must be a string
     if(!JSVAL_IS_STRING(argv[1]))

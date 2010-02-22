@@ -803,7 +803,6 @@ jsd_ClearExecutionHook(JSDContext*           jsdc,
     jsdhook = _findHook(jsdc, jsdscript, pc);
     if( ! jsdhook )
     {
-        JS_ASSERT(0);
         JSD_UNLOCK();
         return JS_FALSE;
     }
