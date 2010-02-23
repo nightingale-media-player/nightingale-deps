@@ -1,4 +1,4 @@
-linux-i686: gst-plugins-good gst-plugins-bad
-linux-x86_64: gst-plugins-good gst-plugins-bad 
-macosx-i686: gst-plugins-good gst-plugins-bad 
-windows-i686-msvc8: gst-plugins-good gst-plugins-bad 
+linux-i686: xulrunner
+linux-x86_64: xulrunner
+macosx-i686: xulrunner
+windows-i686-msvc8: xulrunner
