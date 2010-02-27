@@ -77,7 +77,6 @@ struct _QTWrapperVideoDecoder
   ComponentInstance instance;
   CodecInfo codecinfo;
   ImageDescriptionHandle idesc;
-  CodecDecompressParams *dparams;
   CodecCapabilities codeccaps;
   guint64 frameNumber;
   ICMDecompressionSessionRef decsession;
@@ -123,6 +122,8 @@ static GstFlowReturn qtwrapper_video_decoder_chain (GstPad * pad,
     GstBuffer * buf);
 static gboolean qtwrapper_video_decoder_sink_event (GstPad * pad,
     GstEvent * event);
+static GstStateChangeReturn qtwrapper_video_decoder_change_state (
+    GstElement * element, GstStateChange transition);
 
 static void qtwrapper_video_decoder_finalize (GObject * object);
 static void decompressCb (void *decompressionTrackingRefCon,
@@ -188,11 +189,15 @@ static void
 qtwrapper_video_decoder_class_init (QTWrapperVideoDecoderClass * klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+  GstElementClass *gstelement_class = GST_ELEMENT_CLASS (klass);
 
   parent_class = g_type_class_peek_parent (klass);
 
   gobject_class->finalize =
       GST_DEBUG_FUNCPTR (qtwrapper_video_decoder_finalize);
+
+  gstelement_class->change_state =
+      GST_DEBUG_FUNCPTR (qtwrapper_video_decoder_change_state);
 }
 
 static void
@@ -343,10 +348,14 @@ beach:
  *
  * Close and free decoder
  */
-#if 0
 static void
 close_decoder (QTWrapperVideoDecoder * qtwrapper)
 {
+  if (qtwrapper->decsession) {
+    ICMDecompressionSessionRelease (qtwrapper->decsession);
+    qtwrapper->decsession = NULL;
+  }
+
   if (qtwrapper->idesc) {
     DisposeHandle ((Handle) qtwrapper->idesc);
     qtwrapper->idesc = NULL;
@@ -356,14 +365,8 @@ close_decoder (QTWrapperVideoDecoder * qtwrapper)
     gst_buffer_unref (qtwrapper->prevbuf);
     qtwrapper->prevbuf = NULL;
   }
-
-  if (qtwrapper->dparams) {
-    g_free (qtwrapper->dparams);
-    qtwrapper->dparams = NULL;
-  }
-
 }
-#endif
+
 /* open_decoder
  *
  * Attempt to initialize the ImageDecompressorComponent with the given
@@ -704,6 +707,7 @@ qtwrapper_video_decoder_chain (GstPad * pad, GstBuffer * buf)
       (gint) qtwrapper->outsize, GST_PAD_CAPS (qtwrapper->srcpad),
       &qtwrapper->decode_buf);
   if (G_UNLIKELY (qtwrapper->lastret != GST_FLOW_OK)) {
+    MAC_UNLOCK (qtwrapper);
     GST_WARNING_OBJECT (qtwrapper, "gst_pad_alloc_buffer() returned %s",
         gst_flow_get_name (qtwrapper->lastret));
     ret = GST_FLOW_ERROR;
@@ -775,6 +779,43 @@ qtwrapper_video_decoder_sink_event (GstPad * pad, GstEvent * event)
   res = gst_pad_push_event (qtwrapper->srcpad, event);
 
   gst_object_unref (qtwrapper);
+  return res;
+}
+
+static GstStateChangeReturn
+qtwrapper_video_decoder_change_state (GstElement * element,
+    GstStateChange transition)
+{
+  QTWrapperVideoDecoder *qtwrapper = (QTWrapperVideoDecoder *)element;
+  GstStateChangeReturn res;
+
+  switch (transition) {
+    case GST_STATE_CHANGE_NULL_TO_READY:
+      break;
+    case GST_STATE_CHANGE_READY_TO_PAUSED:
+      break;
+    case GST_STATE_CHANGE_PAUSED_TO_PLAYING:
+      break;
+    default:
+      break;
+  }
+
+  res = parent_class->change_state (element, transition);
+
+  switch (transition) {
+    case GST_STATE_CHANGE_PLAYING_TO_PAUSED:
+      break;
+    case GST_STATE_CHANGE_PAUSED_TO_READY:
+      MAC_LOCK (qtwrapper);
+      close_decoder (qtwrapper);
+      MAC_UNLOCK (qtwrapper);
+      break;
+    case GST_STATE_CHANGE_READY_TO_NULL:
+      break;
+    default:
+      break;
+  }
+
   return res;
 }
 
@@ -892,3 +933,4 @@ qtwrapper_video_decoders_register (GstPlugin * plugin)
 
   return res;
 }
+
