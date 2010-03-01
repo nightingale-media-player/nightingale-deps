@@ -374,8 +374,23 @@ nsProxyObject::AddRef()
 NS_IMETHODIMP_(nsrefcnt)
 nsProxyObject::Release()
 {
-    nsAutoLock lock(nsProxyObjectManager::GetInstance()->GetLock());
-    return LockedRelease();
+    // Add another reference to the proxy object manager so that it isn't
+    // destroyed while the lock is held.  This is required because LockedRelease
+    // will release a reference to the proxy object manager.
+    nsProxyObjectManager *pom = nsProxyObjectManager::GetInstance();
+    pom->AddRef();
+
+    // Release with the proxy object manager lock held.
+    nsrefcnt refcnt;
+    {
+        nsAutoLock lock(pom->GetLock());
+        refcnt = LockedRelease();
+    }
+
+    // Release the proxy object manager.
+    pom->Release();
+
+    return refcnt;
 }
 
 nsrefcnt
