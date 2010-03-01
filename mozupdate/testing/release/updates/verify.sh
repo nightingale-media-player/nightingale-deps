@@ -88,6 +88,10 @@ do
   channel=""
   from=""
   to=""
+  from_user=""
+  from_pass=""
+  to_user=""
+  to_pass=""
   eval $entry
   for locale in $locales
   do
@@ -123,7 +127,7 @@ do
         fi
         from_path=`echo $from | sed "s/%locale%/${locale}/"`
         to_path=`echo $to | sed "s/%locale%/${locale}/"`
-        download_builds "${from_path}" "${to_path}"
+        download_builds "${from_path}" "${to_path}" "${from_user}" "${from_pass}" "${to_user}" "${to_pass}"
         err=$?
         if [ "$err" != "0" ]; then
           echo "FAIL: download_builds returned non-zero exit code: $err"
