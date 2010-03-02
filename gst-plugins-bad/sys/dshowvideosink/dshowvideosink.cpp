@@ -218,8 +218,6 @@ gst_dshowvideosink_clear (GstDshowVideoSink *sink)
 
   sink->connected = FALSE;
   sink->window_prepared = FALSE;
-
-  sink->comthread = NULL;
 }
 
 static void
