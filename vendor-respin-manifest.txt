@@ -1,4 +1,4 @@
-linux-i686: gst-plugins-bad(20277, 20296)
+linux-i686: gst-plugins-bad(20277 20296)
 linux-x86_64: taglib
 macosx-i686: taglib
 windows-i686-msvc8: taglib
