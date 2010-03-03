@@ -671,8 +671,10 @@ qtwrapper_video_decoder_chain (GstPad * pad, GstBuffer * buf)
   ICMFrameTimeRecord frameTime = { {0} };
   OSStatus status;
   guint64 intime;
+  QTWrapperVideoDecoderClass *oclass;
 
   qtwrapper = (QTWrapperVideoDecoder *) gst_pad_get_parent (pad);
+  oclass = (QTWrapperVideoDecoderClass *) (G_OBJECT_GET_CLASS (qtwrapper));
 
   intime = gst_util_uint64_scale (GST_BUFFER_TIMESTAMP (buf), 600, GST_SECOND);
 
@@ -712,6 +714,21 @@ qtwrapper_video_decoder_chain (GstPad * pad, GstBuffer * buf)
         gst_flow_get_name (qtwrapper->lastret));
     ret = GST_FLOW_ERROR;
     goto beach;
+  }
+
+  if (oclass->componentSubType == QT_MAKE_FOURCC_LE ('S', 'V', 'Q', '3'))
+  {
+    /* The SVQ3 decoder will sometimes do 4 byte reads that can go beyond the
+       end of the allocated buffer (by up to 3 bytes). We provide a buffer
+       that has that extra size so that it won't crash when it does that - but
+       we only tell the decoder that the original size (the amount of valid
+       data) is actually there */
+    GstBuffer *newbuf = gst_buffer_new_and_alloc (GST_BUFFER_SIZE (buf) + 3);
+    GST_BUFFER_SIZE (newbuf) = GST_BUFFER_SIZE (buf);
+    memcpy (GST_BUFFER_DATA (newbuf), GST_BUFFER_DATA (buf),
+            GST_BUFFER_SIZE (buf));
+    gst_buffer_unref (buf);
+    buf = newbuf;
   }
 
   status = ICMDecompressionSessionDecodeFrame (qtwrapper->decsession,
