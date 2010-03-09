@@ -2163,20 +2163,15 @@ mp3parse_handle_seek (GstMPEGAudioParse * mp3parse, GstEvent * event)
           start_node = start_node->next) {
         entry = start_node->data;
 
-        if (seek_ts >= entry->timestamp) {
+        // If no match is found, use the last entry.
+        if (seek_ts >= entry->timestamp || !start_node->next) {
           start_entry = entry;
           break;
         }
       }
 
-      if (!start_entry) {
-        start_entry = mp3parse->seek_table->data;
-        start = start_entry->timestamp;
-        byte_cur = start_entry->byte;
-      } else {
-        start = start_entry->timestamp;
-        byte_cur = start_entry->byte;
-      }
+      start = start_entry->timestamp;
+      byte_cur = start_entry->byte;
 
       for (stop_node = mp3parse->seek_table; stop_node;
           stop_node = stop_node->next) {
