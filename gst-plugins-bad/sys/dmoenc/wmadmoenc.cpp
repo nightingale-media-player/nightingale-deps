@@ -587,7 +587,7 @@ wmadmoenc_finish_stream_task (void *data, void *ret)
   GstFlowReturn *retval = (GstFlowReturn *)ret;
 
   if (!enc->dmo) {
-    GST_WARNING_OBJECT (enc, "Empty encoder object\n");
+    GST_WARNING_OBJECT (enc, "Empty encoder object");
     *retval = GST_FLOW_OK;
     return;
   }
