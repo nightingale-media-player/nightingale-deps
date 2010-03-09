@@ -586,6 +586,12 @@ wmadmoenc_finish_stream_task (void *data, void *ret)
   WMADMOEnc * enc = (WMADMOEnc *)data;
   GstFlowReturn *retval = (GstFlowReturn *)ret;
 
+  if (!enc->dmo) {
+    GST_WARNING_OBJECT (enc, "Empty encoder object\n");
+    *retval = GST_FLOW_OK;
+    return;
+  }
+
   HRESULT hr = enc->dmo->Discontinuity (0);
   if (FAILED (hr)) {
     GST_WARNING_OBJECT (enc, "Failed in Discontinuity(): %x", hr);
