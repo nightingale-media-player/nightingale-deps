@@ -2785,11 +2785,15 @@ gst_avi_demux_push_eos (GstAviDemux * avi)
   for (i = 0; i < avi->num_streams; i++) {
     GstAviStream *stream = &avi->stream[i];
 
-    if (stream->pad && !stream->has_eos) {
-      sent = TRUE;
-      stream->has_eos = TRUE;
-      result = result ||
-          gst_pad_push_event (stream->pad, gst_event_ref (event));
+    if (stream->pad) {
+      if (stream->has_eos) {
+        result = TRUE;
+      } else {
+        sent = TRUE;
+        stream->has_eos = TRUE;
+        result = result ||
+            gst_pad_push_event (stream->pad, gst_event_ref (event));
+      }
     }
   }
   gst_event_unref (event);
@@ -4216,10 +4220,11 @@ eos:
     GST_DEBUG_OBJECT (avi, "we are EOS");
     /* Push an eos event for this stream if we have a pad */
     if (stream->pad) {
-      stream->has_eos = TRUE;
       bret = gst_pad_push_event (stream->pad, gst_event_new_eos ());
-      if (!bret)
-        return GST_FLOW_ERROR;
+      if (bret) {
+        stream->has_eos = TRUE;
+        GST_DEBUG_OBJECT (avi, "Has EOS");
+      }
     }
 
     /* setting current_timestamp to -1 marks EOS */
