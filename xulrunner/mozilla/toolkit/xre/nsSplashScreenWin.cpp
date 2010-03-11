@@ -177,7 +177,7 @@ nsSplashScreenWin::ThreadProc(LPVOID splashScreen)
         (WS_EX_NOACTIVATE /* | WS_EX_TOPMOST | WS_EX_TOOLWINDOW*/,
          TEXT("MozillaSplashScreen"),
          TEXT("Starting up..."),
-         WS_POPUP | WS_BORDER,
+         WS_POPUP,
          (screenWidth - sp->mWidth) / 2,
          (screenHeight - sp->mHeight) / 2,
          sp->mWidth, sp->mHeight,
