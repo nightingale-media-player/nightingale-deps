@@ -44,6 +44,7 @@ struct _GstOSXImage;
     BOOL fullscreen;
     NSOpenGLContext* fullScreenContext; 
     NSOpenGLContext* actualContext;
+    id delegate;  // weak
 }
 - (void) drawQuad;
 - (void) drawRect: (NSRect) rect;
@@ -56,6 +57,7 @@ struct _GstOSXImage;
 - (void) setFullScreen: (BOOL) flag;
 - (void) reshape;
 - (void) setVideoSize: (int) w: (int) h;
+- (void) setDelegate: (id) aDelegate;
 
 @end
 
@@ -68,3 +70,4 @@ struct _GstOSXImage;
 - (GstGLView *) gstView;
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(unsigned int)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)flag screen:(NSScreen *)aScreen;
 @end
+

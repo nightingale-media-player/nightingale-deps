@@ -383,6 +383,17 @@
   [self initTextures];
 }
 
+- (void) setDelegate: (id) aDelegate {
+  delegate = aDelegate;
+}
+
+- (void) mouseMoved: (NSEvent *) theEvent {
+  SEL selector = @selector(mouseMoved:);
+  if (delegate && [delegate respondsToSelector:selector]) {
+    [delegate mouseMoved:theEvent];
+  }
+}
+
 - (void) dealloc {
   GST_LOG ("dealloc called");
   if (data) g_free(data);
@@ -395,6 +406,7 @@
     fullScreenContext = nil;
   }
 
+  delegate = nil;
   [super dealloc];
 }
 @end
