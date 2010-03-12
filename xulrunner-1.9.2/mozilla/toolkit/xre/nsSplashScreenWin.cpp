@@ -177,7 +177,7 @@ nsSplashScreenWin::ThreadProc(LPVOID splashScreen)
 	       horizPad + sp->mWidth,
 	       vertPad  + sp->mHeight };
 
-    DWORD winStyle = (WS_POPUP | WS_BORDER);
+    DWORD winStyle = WS_POPUP;
     DWORD winStyleEx = WS_EX_NOACTIVATE;
 
     if(!::AdjustWindowRectEx(&r, winStyle, FALSE, winStyleEx))
