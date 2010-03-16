@@ -56,7 +56,7 @@ struct _GstOSXImage;
 - (char*) getTextureBuffer;
 - (void) setFullScreen: (BOOL) flag;
 - (void) reshape;
-- (void) setVideoSize: (int) w: (int) h;
+- (void) setVideoSize: (NSSize) aSize;
 - (void) setDelegate: (id) aDelegate;
 
 @end

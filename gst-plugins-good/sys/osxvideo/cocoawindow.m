@@ -69,7 +69,7 @@
   width = size.width;
   height = size.height;
 
-  [gstview setVideoSize: (int) width:(int) height];
+  [gstview setVideoSize:size];
 
   [super setContentSize:size];
 }
@@ -371,11 +371,11 @@
   }
 }
 
-- (void) setVideoSize: (int) w:(int) h {
-  GST_LOG ("width:%d, height:%d", w, h);
+- (void) setVideoSize: (NSSize) aSize {
+  GST_LOG ("width:%f, height:%f", aSize.width, aSize.height);
 
-  width = w;
-  height = h;
+  width = aSize.width;
+  height = aSize.height;
 
 //  if (data) g_free(data);
 

@@ -117,12 +117,20 @@ enum
 //
 - (void)releaseGstGLView:(GstGLView *)aView;
 
+//
+// @brief Set the video size of a |GstGLView|. If the caller is not on the main
+//        thread, the method will ensure that the object is sized on the
+//        main thread.
+//
+- (void)setGstGLViewVideoSize:(GstGLView *)aView size:(NSSize)aSize;
+
 @end
 
 
 @interface GstThreadService (Private)
 - (void)_proxyCreateView:(NSString *)aStringRect;
 - (void)_proxyReleaseView:(GstGLView *)aView;
+- (void)_proxySetVideoSize:(NSString *)aStringSize;
 @end
 
 @implementation GstThreadService
@@ -154,6 +162,20 @@ enum
   }
 }
 
+- (void)setGstGLViewVideoSize:(GstGLView *)aView size:(NSSize)aSize
+{
+  if ([NSThread inMainThread]) {
+    [aView setVideoSize:aSize]; 
+  }
+  else {
+    NSString *sizeStr = NSStringFromSize(aSize);
+    mView = aView;
+    [self performSelectorOnMainThread:@selector(_proxySetVideoSize:)
+                           withObject:sizeStr
+                        waitUntilDone:YES];
+  }
+}
+
 - (void)_proxyCreateView:(NSString *)aStringRect
 {
   mView = [[GstGLView alloc] initWithFrame:NSRectFromString(aStringRect)];
@@ -162,6 +184,15 @@ enum
 - (void)_proxyReleaseView:(GstGLView *)aView
 {
   [mView release];
+}
+
+- (void)_proxySetVideoSize:(NSString *)aStringRect
+{
+  if (!mView) {
+    return;
+  }
+
+  [mView setVideoSize:NSSizeFromString(aStringRect)];
 }
 
 @end
@@ -253,8 +284,12 @@ gst_osx_video_sink_osxwindow_resize (GstOSXVideoSink * osxvideosink,
 
   /* Directly resize the underlying view */
   GST_DEBUG_OBJECT (osxvideosink, "Calling setVideoSize on %p", osxwindow->gstview); 
-  [osxwindow->gstview setVideoSize:width :height];
 
+  GstThreadService *gstThreadService = [[GstThreadService alloc] init];
+  [gstThreadService setGstGLViewVideoSize:osxwindow->gstview
+                                     size:NSMakeSize(width, height)];
+  [gstThreadService release]; 
+  
   [pool release];
 }
 
