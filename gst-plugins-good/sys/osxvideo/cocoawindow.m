@@ -39,7 +39,7 @@
 /* Debugging category */
 #include <gst/gstinfo.h>
 
-@ implementation GstOSXVideoSinkWindow
+@implementation GstOSXVideoSinkWindow
 
 /* The object has to be released */
 - (id) initWithContentRect: (NSRect) rect

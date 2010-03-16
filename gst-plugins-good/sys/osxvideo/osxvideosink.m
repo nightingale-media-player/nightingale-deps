@@ -40,6 +40,7 @@
 
 #include "osxvideosink.h"
 #include <unistd.h>
+#include <pthread.h>
 #import "cocoawindow.h"
 
 GST_DEBUG_CATEGORY (gst_debug_osx_video_sink);
@@ -72,6 +73,100 @@ enum
   ARG_EMBED
 };
 
+//
+// @brief Utility category entry for |NSThread|.
+//
+@interface NSThread (GstUtls)
+
+//
+// @returns True if the caller is on the main thread, false if not.
+// @note The 10.5 SDK and greater provide a |isMainThread| method.
+//
++ (BOOL)inMainThread;
+
+@end
+
+@implementation NSThread (GstUtls)
+
++ (BOOL)inMainThread
+{
+  return (pthread_main_np() == 1);
+}
+
+@end
+
+//
+// @brief Helper ObjC class to ensure that view objects are created and
+//        released on the main thread.
+//
+@interface GstThreadService : NSObject
+{
+  NSView *mView;  // weak
+}
+
+//
+// @brief Create a |GstGlView| with a given rectangle. Calling this method
+//        to create the view will ensure that the view will be created on
+//        the main thread.
+//
+- (NSView *)createGstGLViewWithRect:(NSRect)aRect;
+
+//
+// @brief Release a |GstGLView|. If the caller is not on the main thread,
+//        the method will ensure that the object is released on the main thread.
+//
+- (void)releaseGstGLView:(GstGLView *)aView;
+
+@end
+
+
+@interface GstThreadService (Private)
+- (void)_proxyCreateView:(NSString *)aStringRect;
+- (void)_proxyReleaseView:(GstGLView *)aView;
+@end
+
+@implementation GstThreadService
+
+- (NSView *)createGstGLViewWithRect:(NSRect)aRect
+{
+  if ([NSThread inMainThread]) {
+    return [[GstGLView alloc] initWithFrame:aRect];
+  }
+  else {
+    NSString *frameStr = NSStringFromRect(aRect);
+    [self performSelectorOnMainThread:@selector(_proxyCreateView:)
+                           withObject:frameStr
+                        waitUntilDone:YES];
+    return mView;
+  }
+}
+
+- (void)releaseGstGLView:(GstGLView *)aView
+{
+  if ([NSThread inMainThread]) {
+    [aView release];
+  }
+  else {
+    mView = aView;
+    [self performSelectorOnMainThread:@selector(_proxyReleaseView:)
+                           withObject:aView
+                        waitUntilDone:YES];
+  }
+}
+
+- (void)_proxyCreateView:(NSString *)aStringRect
+{
+  mView = [[GstGLView alloc] initWithFrame:NSRectFromString(aStringRect)];
+}
+
+- (void)_proxyReleaseView:(GstGLView *)aView
+{
+  [mView release];
+}
+
+@end
+
+
 static GstVideoSinkClass *parent_class = NULL;
 
 /* This function handles osx window creation */
@@ -100,7 +195,12 @@ gst_osx_video_sink_osxwindow_new (GstOSXVideoSink * osxvideosink, gint width,
   rect.origin.y = 0.0;
   rect.size.width = (float) osxwindow->width;
   rect.size.height = (float) osxwindow->height;
-  osxwindow->gstview =[[GstGLView alloc] initWithFrame:rect];
+
+  // Use the special thread service class to ensure that the view is created
+  // on the main thread.
+  GstThreadService *gstThreadService = [[GstThreadService alloc] init];
+  osxwindow->gstview = [gstThreadService createGstGLViewWithRect:rect];
+  [gstThreadService release];
 
   s = gst_structure_new ("have-ns-view",
 	   "nsview", G_TYPE_POINTER, osxwindow->gstview,
@@ -125,7 +225,11 @@ gst_osx_video_sink_osxwindow_destroy (GstOSXVideoSink * osxvideosink)
   pool = [[NSAutoreleasePool alloc] init];
 
   if (osxvideosink->osxwindow) {
-    [osxvideosink->osxwindow->gstview release];
+    // Ensure that the gstview is released on the main thread by using the
+    // ObjC thread service helper class.
+    GstThreadService *gstThreadService = [[GstThreadService alloc] init];
+    [gstThreadService releaseGstGLView:osxvideosink->osxwindow->gstview];
+    [gstThreadService release];
 
     g_free (osxvideosink->osxwindow);
     osxvideosink->osxwindow = NULL;
