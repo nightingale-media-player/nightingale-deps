@@ -1,4 +1,4 @@
-linux-i686: gst-plugins-bad(20277 20296)
-linux-x86_64: gst-plugins-bad(20277 20296)
-macosx-i686: gst-plugins-bad(20277 20278 20296 20262)
-windows-i686-msvc8:   gst-plugins-bad(20277 20278 20296 20262 19948)
+linux-i686: xulrunner(20276 20546)
+linux-x86_64: xulrunner(20276 20546)
+macosx-i686: xulrunner(20276 20546 20511)
+windows-i686-msvc8: xulrunner(20276 20546 20511 20319)
