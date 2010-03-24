@@ -161,6 +161,7 @@ endif
 
 export::
 	$(INSTALL) $(srcdir)/cursors $(DIST)/bin/res
+	$(FIND) $(DIST)/bin/res -type d -name '.svn' -exec rm -rfv {} \;
 
 $(RESOURCE): nsMacWidget.r
 	/Developer/Tools/Rez -i /Developer/Headers/FlatCarbon -useDF $< -o $@
