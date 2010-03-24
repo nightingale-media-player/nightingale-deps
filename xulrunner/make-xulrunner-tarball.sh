@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -x
+set -e
 
 TAR=${TAR:-tar}
 CP=${CP:-cp}
