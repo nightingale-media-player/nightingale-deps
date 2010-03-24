@@ -462,6 +462,12 @@ function readStatusFile(dir) {
  *          The state value to write.
  */
 function writeStatusFile(dir, state) {
+  try {
+    var os = getObserverService();
+    os.notifyObservers(dir, "update-service-pre-update-status", state);
+  } catch (e) {
+    /* ignore */
+  }
   var statusFile = dir.clone();
   statusFile.append(FILE_UPDATE_STATUS);
   writeStringToFile(statusFile, state);
