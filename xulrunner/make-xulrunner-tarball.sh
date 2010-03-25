@@ -48,7 +48,7 @@ $RM -fv $all_xpts
 popd > /dev/null
 
 notice "creating tarball in dest..."
-echo $TAR -cjvh --owner=0 --group=0 --numeric-owner -p -f "$tarball" *
-$TAR -cjvh --owner=0 --group=0 --numeric-owner -p -f "$tarball" *
+echo $TAR -cjvh --owner=0 --group=0 --exclude='CVS' --exclude='.hg' --exclude='.svn' --numeric-owner -p -f "$tarball" *
+$TAR -cjvh --owner=0 --group=0 --exclude='CVS' --exclude='.hg' --exclude='.svn' --numeric-owner -p -f "$tarball" *
 
 notice "done."
