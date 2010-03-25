@@ -1,4 +1,4 @@
-linux-i686: xulrunner(20276 20546 20600)
-linux-x86_64: xulrunner(20276 20546 20600)
-macosx-i686:  xulrunner(19902)
-windows-i686-msvc8: xulrunner(20276 20546 20511 20319 20600)
+linux-i686: gst-plugins-good(19031) gst-plugins-ugly(20402)
+linux-x86_64: gst-plugins-good(19031) gst-plugins-ugly(20402)
+macosx-i686: gst-plugins-good(19031, 20442, 20443) gst-plugins-ugly(20402)
+windows-i686-msvc8: gst-plugins-good(19031) gst-plugins-ugly(20402)
