@@ -1,6 +1,6 @@
 # -*- test-case-name: buildbot.test.test_slavecommand -*-
 
-import os, re, signal, shutil, types, time
+import os, platform, re, signal, shutil, types, time
 from stat import ST_CTIME, ST_MTIME, ST_SIZE
 
 from zope.interface import implements
@@ -1515,6 +1515,12 @@ class SVN(SourceBase):
     """
 
     header = "svn operation"
+    svnArgs = [ '--non-interactive', '--no-auth-cache' ]
+
+    def __init__(self):
+        # On MacOS 10.5.x, the standard arguments cause svn to hang
+        if platform.system() == 'Darwin' and platform.release() == '9.8.0':
+           self.svnArgs = []
 
     def setup(self, args):
         SourceBase.setup(self, args)
@@ -1533,8 +1539,9 @@ class SVN(SourceBase):
         revision = self.args['revision'] or 'HEAD'
         # update: possible for mode in ('copy', 'update')
         d = os.path.join(self.builder.basedir, self.srcdir)
-        command = [self.vcexe, 'update', '--revision', str(revision),
-                   '--non-interactive', '--no-auth-cache']
+        command = ([self.vcexe, 'update', '--revision', str(revision)] +
+         self.svnArgs)
+
         c = ShellCommand(self.builder, command, d,
                          sendRC=False, timeout=self.timeout,
                          keepStdout=True)
@@ -1545,14 +1552,14 @@ class SVN(SourceBase):
         revision = self.args['revision'] or 'HEAD'
         d = self.builder.basedir
         if self.mode == "export":
-            command = [self.vcexe, 'export', '--revision', str(revision),
-                       '--non-interactive', '--no-auth-cache',
-                       self.svnurl, self.srcdir]
+            command = ([self.vcexe, 'export', '--revision', str(revision)] +
+                       self.svnArgs +
+                       [self.svnurl, self.srcdir])
         else:
             # mode=='clobber', or copy/update on a broken workspace
-            command = [self.vcexe, 'checkout', '--revision', str(revision),
-                       '--non-interactive', '--no-auth-cache',
-                       self.svnurl, self.srcdir]
+            command = ([self.vcexe, 'checkout', '--revision', str(revision),
+                       self.svnArgs +
+                       [self.svnurl, self.srcdir])
         c = ShellCommand(self.builder, command, d,
                          sendRC=False, timeout=self.timeout,
                          keepStdout=True)
