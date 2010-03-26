@@ -97,6 +97,7 @@ static GstBuffer *
 wmvdmoenc_get_codec_data (DMO_MEDIA_TYPE *fmt, IMediaObject *enc)
 {
   IWMCodecPrivateData* privdata = NULL;
+  HRESULT hr;
   GstBuffer *buffer = NULL;
   DWORD datalen = 0;
   BYTE* data = NULL;
