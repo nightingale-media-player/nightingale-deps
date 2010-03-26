@@ -88,7 +88,8 @@ LTLIBRARIES = $(plugin_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libgstdmoenc_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am_libgstdmoenc_la_OBJECTS = libgstdmoenc_la-wmadmoenc.lo \
+am_libgstdmoenc_la_OBJECTS = libgstdmoenc_la-dmoenc.lo \
+	libgstdmoenc_la-wmadmoenc.lo libgstdmoenc_la-wmvdmoenc.lo \
 	libgstdmoenc_la-comtaskthread.lo
 libgstdmoenc_la_OBJECTS = $(am_libgstdmoenc_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -402,6 +403,7 @@ PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
+PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PACKAGE_VERSION_MAJOR = @PACKAGE_VERSION_MAJOR@
 PACKAGE_VERSION_MICRO = @PACKAGE_VERSION_MICRO@
@@ -700,6 +702,7 @@ X11_CFLAGS = @X11_CFLAGS@
 X11_LIBS = @X11_LIBS@
 XDG_LIBS = @XDG_LIBS@
 XGETTEXT = @XGETTEXT@
+XMKMF = @XMKMF@
 XMP_1_99_5_CFLAGS = @XMP_1_99_5_CFLAGS@
 XMP_1_99_5_LIBS = @XMP_1_99_5_LIBS@
 XMP_CFLAGS = @XMP_CFLAGS@
@@ -712,21 +715,10 @@ X_PRE_LIBS = @X_PRE_LIBS@
 ZBAR_CFLAGS = @ZBAR_CFLAGS@
 ZBAR_LIBS = @ZBAR_LIBS@
 ac_ct_AR = @ac_ct_AR@
-ac_ct_AS = @ac_ct_AS@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
-ac_ct_DLLTOOL = @ac_ct_DLLTOOL@
-ac_ct_DSYMUTIL = @ac_ct_DSYMUTIL@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
-ac_ct_LIPO = @ac_ct_LIPO@
-ac_ct_NMEDIT = @ac_ct_NMEDIT@
 ac_ct_OBJC = @ac_ct_OBJC@
-ac_ct_OBJDUMP = @ac_ct_OBJDUMP@
-ac_ct_OTOOL = @ac_ct_OTOOL@
-ac_ct_OTOOL64 = @ac_ct_OTOOL64@
-ac_ct_RANLIB = @ac_ct_RANLIB@
-ac_ct_STRIP = @ac_ct_STRIP@
-ac_pt_PKG_CONFIG = @ac_pt_PKG_CONFIG@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
@@ -745,27 +737,34 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
+datarootdir = @datarootdir@
+docdir = @docdir@
+dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
+htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
+localedir = @localedir@
 localstatedir = @localstatedir@
 lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
+pdfdir = @pdfdir@
 pkgpyexecdir = @pkgpyexecdir@
 pkgpythondir = @pkgpythondir@
 plugindir = @plugindir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
+psdir = @psdir@
 pyexecdir = @pyexecdir@
 pythondir = @pythondir@
 sbindir = @sbindir@
@@ -778,7 +777,7 @@ target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
 plugin_LTLIBRARIES = libgstdmoenc.la
-libgstdmoenc_la_SOURCES = wmadmoenc.cpp comtaskthread.c
+libgstdmoenc_la_SOURCES = dmoenc.cpp wmadmoenc.cpp wmvdmoenc.cpp comtaskthread.c
 libgstdmoenc_la_CXXFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
 	$(GST_PLUGINS_BASE_CFLAGS) $(ACMENC_CFLAGS)
 
@@ -869,7 +868,9 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstdmoenc_la-comtaskthread.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstdmoenc_la-dmoenc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstdmoenc_la-wmadmoenc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstdmoenc_la-wmvdmoenc.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -920,12 +921,26 @@ libgstdmoenc_la-comtaskthread.lo: comtaskthread.c
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
 
+libgstdmoenc_la-dmoenc.lo: dmoenc.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstdmoenc_la_CXXFLAGS) $(CXXFLAGS) -MT libgstdmoenc_la-dmoenc.lo -MD -MP -MF "$(DEPDIR)/libgstdmoenc_la-dmoenc.Tpo" -c -o libgstdmoenc_la-dmoenc.lo `test -f 'dmoenc.cpp' || echo '$(srcdir)/'`dmoenc.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libgstdmoenc_la-dmoenc.Tpo" "$(DEPDIR)/libgstdmoenc_la-dmoenc.Plo"; else rm -f "$(DEPDIR)/libgstdmoenc_la-dmoenc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='dmoenc.cpp' object='libgstdmoenc_la-dmoenc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstdmoenc_la_CXXFLAGS) $(CXXFLAGS) -c -o libgstdmoenc_la-dmoenc.lo `test -f 'dmoenc.cpp' || echo '$(srcdir)/'`dmoenc.cpp
+
 libgstdmoenc_la-wmadmoenc.lo: wmadmoenc.cpp
 @am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstdmoenc_la_CXXFLAGS) $(CXXFLAGS) -MT libgstdmoenc_la-wmadmoenc.lo -MD -MP -MF "$(DEPDIR)/libgstdmoenc_la-wmadmoenc.Tpo" -c -o libgstdmoenc_la-wmadmoenc.lo `test -f 'wmadmoenc.cpp' || echo '$(srcdir)/'`wmadmoenc.cpp; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libgstdmoenc_la-wmadmoenc.Tpo" "$(DEPDIR)/libgstdmoenc_la-wmadmoenc.Plo"; else rm -f "$(DEPDIR)/libgstdmoenc_la-wmadmoenc.Tpo"; exit 1; fi
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='wmadmoenc.cpp' object='libgstdmoenc_la-wmadmoenc.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstdmoenc_la_CXXFLAGS) $(CXXFLAGS) -c -o libgstdmoenc_la-wmadmoenc.lo `test -f 'wmadmoenc.cpp' || echo '$(srcdir)/'`wmadmoenc.cpp
+
+libgstdmoenc_la-wmvdmoenc.lo: wmvdmoenc.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstdmoenc_la_CXXFLAGS) $(CXXFLAGS) -MT libgstdmoenc_la-wmvdmoenc.lo -MD -MP -MF "$(DEPDIR)/libgstdmoenc_la-wmvdmoenc.Tpo" -c -o libgstdmoenc_la-wmvdmoenc.lo `test -f 'wmvdmoenc.cpp' || echo '$(srcdir)/'`wmvdmoenc.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libgstdmoenc_la-wmvdmoenc.Tpo" "$(DEPDIR)/libgstdmoenc_la-wmvdmoenc.Plo"; else rm -f "$(DEPDIR)/libgstdmoenc_la-wmvdmoenc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='wmvdmoenc.cpp' object='libgstdmoenc_la-wmvdmoenc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstdmoenc_la_CXXFLAGS) $(CXXFLAGS) -c -o libgstdmoenc_la-wmvdmoenc.lo `test -f 'wmvdmoenc.cpp' || echo '$(srcdir)/'`wmvdmoenc.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo

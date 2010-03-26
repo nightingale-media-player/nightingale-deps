@@ -1,4 +1,4 @@
-/* GStreamer
+/* Windows DMO encoder wrapper for GStreamer
  * Copyright (C) 2009 Pioneers of the Inevitable <songbird@songbirdnest.com>
  *
  * Authors: Michael Smith <msmith@songbirdnest.com>
@@ -23,140 +23,12 @@
 #include "config.h"
 #endif
 
-#include <windows.h>
-#include <dmo.h>
-#include <wmcodecdsp.h>
-#include <uuids.h>
-#include <wmsdk.h>
-
-#include <gst/gst.h>
 #include <gst/riff/riff-media.h>
 
+#include "dmoenc.h"
 #include "comtaskthread.h"
 
-#define GST_CAT_DEFAULT wmadmoenc_debug
-GST_DEBUG_CATEGORY_STATIC (wmadmoenc_debug);
-
-#define GST_TYPE_WMADMOENC \
-      (wmadmoenc_get_type ())
-#define GST_WMADMOENC(obj) \
-      (G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_WMADMOENC, WMADMOEnc))
-#define GST_WMADMOENC_CLASS(klass) \
-      (G_TYPE_CHECK_CLASS_CAST ((klass), GST_TYPE_WMADMOENC, WMADMOEncClass))
-#define GST_IS_WMADMOENC(obj) \
-      (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_WMADMOENC))
-#define GST_IS_WMADMOENC_CLASS(klass) \
-      (G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_WMADMOENC))
-
 #define DEFAULT_BITRATE 128000
-
-/* IMediaBuffer implementation, based on sample implementation in docs */
-class MediaBuffer : public IMediaBuffer
-{
-private:
-  GstBuffer   *m_buf;
-  const DWORD  m_maxlength;
-  LONG         m_refcount;
-
-  MediaBuffer(GstBuffer *buf) :
-      m_buf(buf),
-      m_maxlength(GST_BUFFER_SIZE (buf)),
-      m_refcount(1)
-  {
-    gst_buffer_ref (m_buf);
-  }
-
-  virtual ~MediaBuffer()
-  {
-    gst_buffer_unref (m_buf);
-  }
-
-public:
-
-  // Function to create a new IMediaBuffer object and return 
-  // an AddRef'd interface pointer.
-  static IMediaBuffer * Create(GstBuffer *buf)
-  {
-    IMediaBuffer *buffer = new MediaBuffer (buf);
-    return buffer;
-  }
-
-  // IUnknown methods.
-  STDMETHODIMP QueryInterface(REFIID riid, void **ppv)
-  {
-    if (ppv == NULL) 
-    {
-      return E_POINTER;
-    }
-    else if (IsEqualGUID (riid, IID_IMediaBuffer) ||
-             IsEqualGUID (riid, IID_IUnknown))
-    {
-      *ppv = static_cast<IMediaBuffer *>(this);
-      AddRef();
-      return S_OK;
-    }
-    else
-    {
-      *ppv = NULL;
-      return E_NOINTERFACE;
-    }
-  }
-
-  STDMETHODIMP_(ULONG) AddRef()
-  {
-    return InterlockedIncrement(&m_refcount);
-  }
-
-  STDMETHODIMP_(ULONG) Release()
-  {
-    LONG lRef = InterlockedDecrement(&m_refcount);
-    if (lRef == 0) 
-    {
-      delete this;
-      // m_cRef is no longer valid! Return lRef.
-    }
-    return lRef;  
-  }
-
-  // IMediaBuffer methods.
-  STDMETHODIMP SetLength(DWORD cbLength)
-  {
-    if (cbLength > m_maxlength) 
-    {
-      return E_INVALIDARG;
-    }
-    GST_BUFFER_SIZE (m_buf) = cbLength;
-    return S_OK;
-  }
-
-  STDMETHODIMP GetMaxLength(DWORD *pcbMaxLength)
-  {
-    if (pcbMaxLength == NULL) 
-    {
-      return E_POINTER;
-    }
-    *pcbMaxLength = m_maxlength;
-    return S_OK;
-  }
-
-  STDMETHODIMP GetBufferAndLength(BYTE **ppbBuffer, DWORD *pcbLength)
-  {
-    // Either parameter can be NULL, but not both.
-    if (ppbBuffer == NULL && pcbLength == NULL) 
-    {
-      return E_POINTER;
-    }
-    if (ppbBuffer) 
-    {
-      *ppbBuffer = GST_BUFFER_DATA (m_buf);
-    }
-    if (pcbLength) 
-    {
-      *pcbLength = GST_BUFFER_SIZE (m_buf);
-    }
-    return S_OK;
-  }
-};
 
 /* GObject properties */
 enum
@@ -753,22 +625,4 @@ wmadmoenc_base_init (gpointer klass)
 
   gst_element_class_set_details (element_class, &details);
 }
-
-static gboolean
-plugin_init (GstPlugin * plugin)
-{
-  GST_DEBUG_CATEGORY_INIT (wmadmoenc_debug, "wmadmoenc", 0, "WMA DMO Encoder");
-
-  return gst_element_register (plugin, "wmadmoenc", GST_RANK_NONE,
-      wmadmoenc_get_type ());
-}
-
-extern "C" {
-
-GST_PLUGIN_DEFINE (GST_VERSION_MAJOR, GST_VERSION_MINOR,
-    "wmadmoenc",
-    "WMA DMO Encoder", plugin_init, VERSION, "LGPL", "GStreamer",
-    "http://gstreamer.net/")
-}
-
 

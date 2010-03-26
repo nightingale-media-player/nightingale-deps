@@ -1,6 +1,6 @@
 plugin_LTLIBRARIES = libgstdmoenc.la
 
-libgstdmoenc_la_SOURCES = wmadmoenc.cpp comtaskthread.c
+libgstdmoenc_la_SOURCES = dmoenc.cpp wmadmoenc.cpp wmvdmoenc.cpp comtaskthread.c
 libgstdmoenc_la_CXXFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
 	$(GST_PLUGINS_BASE_CFLAGS) $(ACMENC_CFLAGS)
 libgstdmoenc_la_CFLAGS = $(GST_CFLAGS)
