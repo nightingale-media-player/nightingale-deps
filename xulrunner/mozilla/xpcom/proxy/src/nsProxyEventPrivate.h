@@ -300,6 +300,7 @@ private:
     ~nsProxyObjectManager();
 
     static nsProxyObjectManager* mInstance;
+    static PRBool mIsShutdown;
     nsHashtable  mProxyObjectMap;
     nsClassHashtable<nsIDHashKey, nsProxyEventClass> mProxyClassMap;
     PRLock *mProxyCreationLock;

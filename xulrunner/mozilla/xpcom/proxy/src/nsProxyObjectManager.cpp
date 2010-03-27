@@ -97,6 +97,7 @@ protected:
 /////////////////////////////////////////////////////////////////////////
 
 nsProxyObjectManager* nsProxyObjectManager::mInstance = nsnull;
+PRBool nsProxyObjectManager::mIsShutdown = PR_FALSE;
 
 NS_IMPL_THREADSAFE_ISUPPORTS1(nsProxyObjectManager, nsIProxyObjectManager)
 
@@ -120,12 +121,23 @@ nsProxyObjectManager::~nsProxyObjectManager()
 PRBool
 nsProxyObjectManager::IsManagerShutdown()
 {
-    return mInstance == nsnull;
+    return mIsShutdown || (mInstance == nsnull);
 }
 
 nsProxyObjectManager *
 nsProxyObjectManager::GetInstance()
 {
+    NS_PRECONDITION(!mIsShutdown,
+                    "proxy object manager being used after shutdown");
+
+    // mInstance must never be set to null before its destructor is called.
+    // If an nsProxyObject exists and mInstance is set to null, the
+    // nsProxyObject release method will call GetInstance, causing a second POM
+    // instance to be created.  The nsProxyObject will then release the second
+    // POM instead of the original one that nsProxyObject::nsProxyObject
+    // addref'ed.
+    // This will only happen if an nsProxyObject is held after POM shutdown.
+    // This is illegal, but we should try not to crash if we can avoid it.
     if (!mInstance) 
         mInstance = new nsProxyObjectManager();
     return mInstance;
@@ -134,7 +146,7 @@ nsProxyObjectManager::GetInstance()
 void
 nsProxyObjectManager::Shutdown()
 {
-    mInstance = nsnull;
+    mIsShutdown = PR_TRUE;
 }
 
 NS_IMETHODIMP 

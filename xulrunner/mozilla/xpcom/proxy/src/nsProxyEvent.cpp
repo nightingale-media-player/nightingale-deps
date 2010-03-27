@@ -348,6 +348,8 @@ nsProxyObject::nsProxyObject(nsIEventTarget *target, PRInt32 proxyType,
                  "Non-canonical nsISupports passed to nsProxyObject constructor");
 #endif
 
+    // Add a reference to the POM.  GetInstance had better return the same POM
+    // object when we release it.
     nsProxyObjectManager *pom = nsProxyObjectManager::GetInstance();
     NS_ASSERTION(pom, "Creating a proxy without a global proxy-object-manager.");
     pom->AddRef();
@@ -374,23 +376,29 @@ nsProxyObject::AddRef()
 NS_IMETHODIMP_(nsrefcnt)
 nsProxyObject::Release()
 {
-    // Add another reference to the proxy object manager so that it isn't
-    // destroyed while the lock is held.  This is required because LockedRelease
-    // will release a reference to the proxy object manager.
     nsProxyObjectManager *pom = nsProxyObjectManager::GetInstance();
-    pom->AddRef();
-
-    // Release with the proxy object manager lock held.
-    nsrefcnt refcnt;
     {
         nsAutoLock lock(pom->GetLock());
-        refcnt = LockedRelease();
+
+        NS_PRECONDITION(!nsProxyObjectManager::IsManagerShutdown(),
+                        "proxy object manager is shutdown");
+        NS_PRECONDITION(0 != mRefCnt, "dup release");
+        --mRefCnt;
+        NS_LOG_RELEASE(this, mRefCnt, "nsProxyObject");
+        if (mRefCnt)
+            return mRefCnt;
+
+        pom->LockedRemove(this);
     }
 
-    // Release the proxy object manager.
+    delete this;
+
+    // release the POM outside of the lock so that we aren't holding the lock
+    // when we release the POM (see bug 549388) that we addref'ed in
+    // nsProxyObject::nsProxyObject
     pom->Release();
 
-    return refcnt;
+    return 0;
 }
 
 nsrefcnt
@@ -404,6 +412,8 @@ nsProxyObject::LockedAddRef()
 nsrefcnt
 nsProxyObject::LockedRelease()
 {
+    NS_PRECONDITION(!nsProxyObjectManager::IsManagerShutdown(),
+                    "proxy object manager is shutdown");
     NS_PRECONDITION(0 != mRefCnt, "dup release");
     --mRefCnt;
     NS_LOG_RELEASE(this, mRefCnt, "nsProxyObject");
@@ -413,6 +423,9 @@ nsProxyObject::LockedRelease()
     nsProxyObjectManager *pom = nsProxyObjectManager::GetInstance();
     pom->LockedRemove(this);
 
+    // whoever calls LockedRelease had better hold a reference to the POM or
+    // else the POM lock may get destroyed when we release the POM (see bug
+    // 549388) that we addref'ed in nsProxyObject::nsProxyObject
     nsAutoUnlock unlock(pom->GetLock());
     delete this;
     pom->Release();
