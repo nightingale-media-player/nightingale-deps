@@ -1557,7 +1557,7 @@ class SVN(SourceBase):
                        [self.svnurl, self.srcdir])
         else:
             # mode=='clobber', or copy/update on a broken workspace
-            command = ([self.vcexe, 'checkout', '--revision', str(revision),
+            command = ([self.vcexe, 'checkout', '--revision', str(revision)],
                        self.svnArgs +
                        [self.svnurl, self.srcdir])
         c = ShellCommand(self.builder, command, d,
