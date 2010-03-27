@@ -215,6 +215,12 @@ else
 	@echo The regen-makefiles target can only be run on linux-i686.
 endif
 
+clean-regen-makefiles:
+	@echo Removing autoconf generated files...
+	$(RM) -r $(AUTOCONF_GENERATED_TRASH)
+	@echo Removing build-log.txt...
+	$(RM) build-log.txt
+
 # We strip .so's on Linux *and* Mac because libtool gets confused and on the
 # mac, generates some libraries with the .so extension.
 strip_build:

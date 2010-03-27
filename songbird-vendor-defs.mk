@@ -341,6 +341,33 @@ else
    SB_VENDOR_BREAKPAD_STORE_PATH = $(SB_CONFIGURE_PREFIX)
 endif
 
+# Detritus autoconf dumps in the source dirs when we regenerate makefiles; 
+# that we should remove when we're checking them in
+
+AUTOCONF_GENERATED_TRASH = autoregen.sh \
+                           autom4te.cache \
+                           stamp-h.in \
+                           m4/xsize.m4 \
+                           m4/wint_t.m4 \
+                           m4/wchar_t.m4 \
+                           m4/ulonglong.m4 \
+                           m4/size_max.m4 \
+                           m4/signed.m4 \
+                           m4/printf-posix.m4 \
+                           m4/longlong.m4 \
+                           m4/longdouble.m4 \
+                           m4/isc-posix.m4 \
+                           m4/inttypes.m4 \
+                           m4/intmax.m4 \
+                           common/m4/lt~obsolete.m4 \
+                           common/m4/ltversion.m4 \
+                           common/m4/ltsugar.m4 \
+                           common/m4/ltoptions.m4 \
+                           common/m4/ltdl.m4 \
+                           common/m4/libtool.m4 \
+                           common/m4/argz.m4 \
+                           $(NULL)
+
 # These are packages for which the regen-makefiles target is enabled; 
 # other vendor packages don't need this step, so it's a no-op
 SB_REGEN_MAKEFILE_PKGS = flac\
