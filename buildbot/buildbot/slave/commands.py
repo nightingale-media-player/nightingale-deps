@@ -1517,10 +1517,11 @@ class SVN(SourceBase):
     header = "svn operation"
     svnArgs = [ '--non-interactive', '--no-auth-cache' ]
 
-    def __init__(self):
+    def __init__(self, builder, stepId, args):
         # On MacOS 10.5.x, the standard arguments cause svn to hang
         if platform.system() == 'Darwin' and platform.release() == '9.8.0':
            self.svnArgs = []
+        SourceBase.__init__(self, builder, stepId, args)
 
     def setup(self, args):
         SourceBase.setup(self, args)
@@ -1557,7 +1558,7 @@ class SVN(SourceBase):
                        [self.svnurl, self.srcdir])
         else:
             # mode=='clobber', or copy/update on a broken workspace
-            command = ([self.vcexe, 'checkout', '--revision', str(revision)],
+            command = ([self.vcexe, 'checkout', '--revision', str(revision)] +
                        self.svnArgs +
                        [self.svnurl, self.srcdir])
         c = ShellCommand(self.builder, command, d,
