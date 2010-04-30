@@ -2791,8 +2791,10 @@ gst_avi_demux_push_eos (GstAviDemux * avi)
       } else {
         sent = TRUE;
         stream->has_eos = TRUE;
-        result = result ||
-            gst_pad_push_event (stream->pad, gst_event_ref (event));
+        /* Push event downstream. Result is true if it succeeded on at least
+           one pad */
+        if (gst_pad_push_event (stream->pad, gst_event_ref (event)))
+          result = TRUE;
       }
     }
   }
