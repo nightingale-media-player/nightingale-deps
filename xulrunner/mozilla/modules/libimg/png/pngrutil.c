@@ -209,6 +209,95 @@ png_crc_error(png_structp png_ptr)
 
 #if defined(PNG_READ_zTXt_SUPPORTED) || defined(PNG_READ_iTXt_SUPPORTED) || \
     defined(PNG_READ_iCCP_SUPPORTED)
+static png_size_t
+png_inflate(png_structp png_ptr, const png_byte *data, png_size_t size,
+	png_bytep output, png_size_t output_size)
+{
+   png_size_t count = 0;
+
+   png_ptr->zstream.next_in = (png_bytep)data; /* const_cast: VALID */
+   png_ptr->zstream.avail_in = size;
+
+   while (1)
+   {
+      int ret, avail;
+
+      /* Reset the output buffer each time round - we empty it
+       * after every inflate call.
+       */
+      png_ptr->zstream.next_out = png_ptr->zbuf;
+      png_ptr->zstream.avail_out = png_ptr->zbuf_size;
+
+      ret = inflate(&png_ptr->zstream, Z_NO_FLUSH);
+      avail = png_ptr->zbuf_size - png_ptr->zstream.avail_out;
+
+      /* First copy/count any new output - but only if we didn't
+       * get an error code.
+       */
+      if ((ret == Z_OK || ret == Z_STREAM_END) && avail > 0)
+      {
+         if (output != 0 && output_size > count)
+	 {
+	    int copy = output_size - count;
+	    if (avail < copy) copy = avail;
+	    png_memcpy(output + count, png_ptr->zbuf, copy);
+	 }
+         count += avail;
+      }
+
+      if (ret == Z_OK)
+         continue;
+
+      /* Termination conditions - always reset the zstream, it
+       * must be left in inflateInit state.
+       */
+      png_ptr->zstream.avail_in = 0;
+      inflateReset(&png_ptr->zstream);
+
+      if (ret == Z_STREAM_END)
+         return count; /* NOTE: may be zero. */
+
+      /* Now handle the error codes - the API always returns 0
+       * and the error message is dumped into the uncompressed
+       * buffer if available.
+       */
+      {
+         char *msg, umsg[52];
+	 if (png_ptr->zstream.msg != 0)
+	    msg = png_ptr->zstream.msg;
+	 else
+	 {
+#if !defined(PNG_NO_STDIO) && !defined(_WIN32_WCE)
+	    switch (ret)
+	    {
+	 case Z_BUF_ERROR:
+	    msg = "Buffer error in compressed datastream in %s chunk";
+	    break;
+	 case Z_DATA_ERROR:
+	    msg = "Data error in compressed datastream in %s chunk";
+	    break;
+	 default:
+	    msg = "Incomplete compressed datastream in %s chunk";
+	    break;
+	    }
+
+	    png_snprintf(umsg, sizeof umsg, msg, png_ptr->chunk_name);
+	    msg = umsg;
+#else
+	    msg = "Damaged compressed datastream in chunk other than IDAT";
+#endif
+	 }
+
+         png_warning(png_ptr, msg);
+      }
+
+      /* 0 means an error - notice that this code simple ignores
+       * zero length compressed chunks as a result.
+       */
+      return 0;
+   }
+}
+
 /*
  * Decompress trailing data in a chunk.  The assumption is that chunkdata
  * points at an allocated area holding the contents of a chunk with a
@@ -221,165 +310,98 @@ png_decompress_chunk(png_structp png_ptr, int comp_type,
                               png_size_t chunklength,
                               png_size_t prefix_size, png_size_t *newlength)
 {
-   static PNG_CONST char msg[] = "Error decoding compressed text";
-   png_charp text;
-   png_size_t text_size;
-
-   if (comp_type == PNG_COMPRESSION_TYPE_BASE)
+   /* The caller should guarantee this */
+   if (prefix_size > chunklength)
    {
-      int ret = Z_OK;
-      png_ptr->zstream.next_in = (png_bytep)(png_ptr->chunkdata + prefix_size);
-      png_ptr->zstream.avail_in = (uInt)(chunklength - prefix_size);
-      png_ptr->zstream.next_out = png_ptr->zbuf;
-      png_ptr->zstream.avail_out = (uInt)png_ptr->zbuf_size;
-
-      text_size = 0;
-      text = NULL;
-
-      while (png_ptr->zstream.avail_in)
-      {
-         ret = inflate(&png_ptr->zstream, Z_PARTIAL_FLUSH);
-         if (ret != Z_OK && ret != Z_STREAM_END)
-         {
-            if (png_ptr->zstream.msg != NULL)
-               png_warning(png_ptr, png_ptr->zstream.msg);
-            else
-               png_warning(png_ptr, msg);
-            inflateReset(&png_ptr->zstream);
-            png_ptr->zstream.avail_in = 0;
-
-            if (text ==  NULL)
-            {
-               text_size = prefix_size + png_sizeof(msg) + 1;
-               text = (png_charp)png_malloc_warn(png_ptr, text_size);
-               if (text ==  NULL)
-                 {
-                    png_free(png_ptr, png_ptr->chunkdata);
-                    png_ptr->chunkdata = NULL;
-                    png_error(png_ptr, "Not enough memory to decompress chunk");
-                 }
-               png_memcpy(text, png_ptr->chunkdata, prefix_size);
-            }
-
-            text[text_size - 1] = 0x00;
-
-            /* Copy what we can of the error message into the text chunk */
-            text_size = (png_size_t)(chunklength -
-              (text - png_ptr->chunkdata) - 1);
-            if (text_size > png_sizeof(msg))
-               text_size = png_sizeof(msg);
-            png_memcpy(text + prefix_size, msg, text_size);
-            break;
-         }
-         if (!png_ptr->zstream.avail_out || ret == Z_STREAM_END)
-         {
-            if (text == NULL)
-            {
-               text_size = prefix_size +
-                   png_ptr->zbuf_size - png_ptr->zstream.avail_out;
-               text = (png_charp)png_malloc_warn(png_ptr, text_size + 1);
-               if (text ==  NULL)
-               {
-                  png_free(png_ptr, png_ptr->chunkdata);
-                  png_ptr->chunkdata = NULL;
-                  png_error(png_ptr,
-                    "Not enough memory to decompress chunk.");
-               }
-               png_memcpy(text + prefix_size, png_ptr->zbuf,
-                    text_size - prefix_size);
-               png_memcpy(text, png_ptr->chunkdata, prefix_size);
-               *(text + text_size) = 0x00;
-            }
-            else
-            {
-               png_charp tmp;
-
-               tmp = text;
-               text = (png_charp)png_malloc_warn(png_ptr,
-                  (png_uint_32)(text_size +
-                  png_ptr->zbuf_size - png_ptr->zstream.avail_out + 1));
-               if (text == NULL)
-               {
-                  png_free(png_ptr, tmp);
-                  png_free(png_ptr, png_ptr->chunkdata);
-                  png_ptr->chunkdata = NULL;
-                  png_error(png_ptr,
-                    "Not enough memory to decompress chunk..");
-               }
-               png_memcpy(text, tmp, text_size);
-               png_free(png_ptr, tmp);
-               png_memcpy(text + text_size, png_ptr->zbuf,
-                  (png_ptr->zbuf_size - png_ptr->zstream.avail_out));
-               text_size += png_ptr->zbuf_size - png_ptr->zstream.avail_out;
-               *(text + text_size) = 0x00;
-            }
-            if (ret == Z_STREAM_END)
-               break;
-            else
-            {
-               png_ptr->zstream.next_out = png_ptr->zbuf;
-               png_ptr->zstream.avail_out = (uInt)png_ptr->zbuf_size;
-            }
-         }
-      }
-      if (ret != Z_STREAM_END)
-      {
-#if !defined(PNG_NO_STDIO) && !defined(_WIN32_WCE)
-         char umsg[52];
-
-         if (ret == Z_BUF_ERROR)
-            png_snprintf(umsg, 52,
-                "Buffer error in compressed datastream in %s chunk",
-                png_ptr->chunk_name);
-         else if (ret == Z_DATA_ERROR)
-            png_snprintf(umsg, 52,
-                "Data error in compressed datastream in %s chunk",
-                png_ptr->chunk_name);
-         else
-            png_snprintf(umsg, 52,
-                "Incomplete compressed datastream in %s chunk",
-                png_ptr->chunk_name);
-         png_warning(png_ptr, umsg);
-#else
-         png_warning(png_ptr,
-            "Incomplete compressed datastream in chunk other than IDAT");
-#endif
-         text_size = prefix_size;
-         if (text ==  NULL)
-         {
-            text = (png_charp)png_malloc_warn(png_ptr, text_size+1);
-            if (text == NULL)
-              {
-                png_free(png_ptr, png_ptr->chunkdata);
-                png_ptr->chunkdata = NULL;
-                png_error(png_ptr, "Not enough memory for text.");
-              }
-            png_memcpy(text, png_ptr->chunkdata, prefix_size);
-         }
-         *(text + text_size) = 0x00;
-      }
-
-      inflateReset(&png_ptr->zstream);
-      png_ptr->zstream.avail_in = 0;
-
-      png_free(png_ptr, png_ptr->chunkdata);
-      png_ptr->chunkdata = text;
-      *newlength=text_size;
+      /* The recovery is to delete the chunk. */
+      png_warning(png_ptr, "invalid chunklength");
+      prefix_size = 0; /* To delete everything */
    }
+
+   else if (comp_type == PNG_COMPRESSION_TYPE_BASE)
+   {
+      png_size_t expanded_size = png_inflate(png_ptr,
+		(png_bytep)(png_ptr->chunkdata + prefix_size),
+                chunklength - prefix_size,
+		0/*output*/, 0/*output size*/);
+
+      /* Now check the limits on this chunk - if the limit fails the
+       * compressed data will be removed, the prefix will remain.
+       */
+      if (prefix_size + expanded_size >= 3999999L)
+         png_warning(png_ptr, "Exceeded size limit while expanding chunk");
+
+      /* If the size is zero either there was an error and a message
+       * has already been output (warning) or the size really is zero
+       * and we have nothing to do - the code will exit through the
+       * error case below.
+       */
+      else if (expanded_size > 0)
+      {
+         /* Success (maybe) - really uncompress the chunk. */
+	 png_size_t new_size = 0;
+	 png_charp text = png_malloc_warn(png_ptr,
+			prefix_size + expanded_size + 1);
+
+         if (text != NULL)
+         {
+	    png_memcpy(text, png_ptr->chunkdata, prefix_size);
+	    new_size = png_inflate(png_ptr,
+                (png_bytep)(png_ptr->chunkdata + prefix_size),
+		chunklength - prefix_size,
+                (png_bytep)(text + prefix_size), expanded_size);
+	    text[prefix_size + expanded_size] = 0; /* just in case */
+
+	    if (new_size == expanded_size)
+	    {
+	       png_free(png_ptr, png_ptr->chunkdata);
+	       png_ptr->chunkdata = text;
+	       *newlength = prefix_size + expanded_size;
+	       return; /* The success return! */
+	    }
+      
+	    png_warning(png_ptr, "png_inflate logic error");
+	    png_free(png_ptr, text);
+	 }
+	 else
+          png_warning(png_ptr, "Not enough memory to decompress chunk");
+      }
+   }
+
    else /* if (comp_type != PNG_COMPRESSION_TYPE_BASE) */
    {
-#if !defined(PNG_NO_STDIO) && !defined(_WIN32_WCE)
       char umsg[50];
 
-      png_snprintf(umsg, 50, "Unknown zTXt compression type %d", comp_type);
+#if !defined(PNG_NO_STDIO) && !defined(_WIN32_WCE)
+      png_snprintf(umsg, sizeof umsg, "Unknown zTXt compression type %d", comp_type);
       png_warning(png_ptr, umsg);
 #else
       png_warning(png_ptr, "Unknown zTXt compression type");
 #endif
 
-      *(png_ptr->chunkdata + prefix_size) = 0x00;
-      *newlength = prefix_size;
+      /* The recovery is to simply drop the data. */
    }
+
+   /* Generic error return - leave the prefix, delete the compressed
+    * data, reallocate the chunkdata to remove the potentially large
+    * amount of compressed data.
+    */
+   {
+      png_charp text = png_malloc_warn(png_ptr, prefix_size + 1);
+      if (text != NULL)
+      {
+	 if (prefix_size > 0)
+            png_memcpy(text, png_ptr->chunkdata, prefix_size);
+	 png_free(png_ptr, png_ptr->chunkdata);
+	 png_ptr->chunkdata = text;
+
+	 /* This is an extra zero in the 'uncompressed' part. */
+	 *(png_ptr->chunkdata + prefix_size) = 0x00;
+      }
+      /* Ignore a malloc error here - it is safe. */
+   }
+
+   *newlength = prefix_size;
 }
 #endif
 

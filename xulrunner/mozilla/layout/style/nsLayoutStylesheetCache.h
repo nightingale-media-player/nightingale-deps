@@ -67,10 +67,12 @@ private:
   void InitFromProfile();
   static void LoadSheetFile(nsIFile* aFile, nsCOMPtr<nsICSSStyleSheet> &aSheet);
   static void LoadSheet(nsIURI* aURI, nsCOMPtr<nsICSSStyleSheet> &aSheet,
-                        PRBool aEnableUnsafeRules);
+                        PRBool aEnableUnsafeRules,
+                        PRBool aUseCaseSensitiveLoader);
 
   static nsLayoutStylesheetCache* gStyleCache;
   static nsICSSLoader_1_9_0_BRANCH* gCSSLoader;
+  static nsICSSLoader_1_9_0_BRANCH* gCaseSensitiveCSSLoader;
   nsCOMPtr<nsICSSStyleSheet> mScrollbarsSheet;
   nsCOMPtr<nsICSSStyleSheet> mFormsSheet;
   nsCOMPtr<nsICSSStyleSheet> mUserContentSheet;

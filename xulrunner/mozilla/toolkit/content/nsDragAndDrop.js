@@ -603,10 +603,6 @@ var nsDragAndDrop = {
    **/
   dragDropSecurityCheck: function (aEvent, aDragSession, aDraggedText)
     {
-      var sourceDoc = aDragSession.sourceDocument;
-      if (!sourceDoc)
-        return;
-
       // Strip leading and trailing whitespace, then try to create a
       // URI from the dropped string. If that succeeds, we're
       // dropping a URI and we need to do a security check to make
@@ -635,8 +631,11 @@ var nsDragAndDrop = {
       var secMan = Components.classes["@mozilla.org/scriptsecuritymanager;1"]
                              .getService(nsIScriptSecurityManager);
 
+      var sourceDoc = aDragSession.sourceDocument;
+      var sourceURI = sourceDoc ? sourceDoc.documentURI : "file:///";
+
       try {
-        secMan.checkLoadURIStr(sourceDoc.documentURI, aDraggedText,
+        secMan.checkLoadURIStr(sourceURI, aDraggedText,
                                nsIScriptSecurityManager.STANDARD);
       } catch (e) {
         // Stop event propagation right here.

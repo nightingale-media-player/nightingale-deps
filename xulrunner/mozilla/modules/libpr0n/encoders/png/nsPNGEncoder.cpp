@@ -135,7 +135,7 @@ NS_IMETHODIMP nsPNGEncoder::StartImageEncode(PRUint32 aWidth,
 
   // initialize
   mPNG = png_create_write_struct(PNG_LIBPNG_VER_STRING,
-                                 png_voidp_NULL,
+                                 nsnull,
                                  ErrorCallback,
                                  ErrorCallback);
   if (! mPNG)

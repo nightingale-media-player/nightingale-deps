@@ -670,8 +670,9 @@ NP_Initialize(NPNetscapeFuncs* nsTable, NPPluginFuncs* pluginFuncs)
 #ifdef OJI
         pluginFuncs->javaClass  = Private_GetJavaClass();
 #endif
-        // This function is supposedly loaded magically, but that doesn't
-        // seem to be true.
+        /* This function is supposedly loaded magically, but that doesn't
+         * seem to be true.
+         */
         pluginFuncs->getvalue      = NewNPP_GetValueProc(NP_GetValue);
 
         err = NPP_Initialize();

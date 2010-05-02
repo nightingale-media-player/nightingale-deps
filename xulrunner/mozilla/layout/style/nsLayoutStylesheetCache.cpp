@@ -84,7 +84,7 @@ nsLayoutStylesheetCache::ScrollbarsSheet()
 
     // Scrollbars don't need access to unsafe rules
     if (sheetURI)
-      LoadSheet(sheetURI, gStyleCache->mScrollbarsSheet, PR_FALSE);
+      LoadSheet(sheetURI, gStyleCache->mScrollbarsSheet, PR_FALSE, PR_TRUE);
     NS_ASSERTION(gStyleCache->mScrollbarsSheet, "Could not load scrollbars.css.");
   }
 
@@ -105,7 +105,7 @@ nsLayoutStylesheetCache::FormsSheet()
 
     // forms.css needs access to unsafe rules
     if (sheetURI)
-      LoadSheet(sheetURI, gStyleCache->mFormsSheet, PR_TRUE);
+      LoadSheet(sheetURI, gStyleCache->mFormsSheet, PR_TRUE, PR_FALSE);
 
     NS_ASSERTION(gStyleCache->mFormsSheet, "Could not load forms.css.");
   }
@@ -137,6 +137,7 @@ void
 nsLayoutStylesheetCache::Shutdown()
 {
   NS_IF_RELEASE(gCSSLoader);
+  NS_IF_RELEASE(gCaseSensitiveCSSLoader);
   NS_IF_RELEASE(gStyleCache);
 }
 
@@ -159,6 +160,7 @@ nsLayoutStylesheetCache::nsLayoutStylesheetCache()
 nsLayoutStylesheetCache::~nsLayoutStylesheetCache()
 {
   gCSSLoader = nsnull;
+  gCaseSensitiveCSSLoader = nsnull;
   gStyleCache = nsnull;
 }
 
@@ -207,24 +209,32 @@ nsLayoutStylesheetCache::LoadSheetFile(nsIFile* aFile, nsCOMPtr<nsICSSStyleSheet
   nsCOMPtr<nsIURI> uri;
   NS_NewFileURI(getter_AddRefs(uri), aFile);
 
-  LoadSheet(uri, aSheet, PR_FALSE);
+  LoadSheet(uri, aSheet, PR_FALSE, PR_FALSE);
 }
 
 void
 nsLayoutStylesheetCache::LoadSheet(nsIURI* aURI, nsCOMPtr<nsICSSStyleSheet> &aSheet,
-                                   PRBool aEnableUnsafeRules)
+                                   PRBool aEnableUnsafeRules,
+                                   PRBool aUseCaseSensitiveLoader)
 {
   if (!aURI) {
     NS_ERROR("Null URI. Out of memory?");
     return;
   }
 
-  if (!gCSSLoader)
-    NS_NewCSSLoader(&gCSSLoader);
+  nsICSSLoader_1_9_0_BRANCH** cssLoader =
+    aUseCaseSensitiveLoader ? &gCaseSensitiveCSSLoader : &gCSSLoader;
 
-  if (gCSSLoader) {
-    gCSSLoader->LoadSheetSync(aURI, aEnableUnsafeRules, PR_TRUE,
-                              getter_AddRefs(aSheet));
+  if (!*cssLoader) {
+    NS_NewCSSLoader(cssLoader);
+    if (aUseCaseSensitiveLoader) {
+      (*cssLoader)->SetCaseSensitive(PR_TRUE);
+    }
+  }
+
+  if (*cssLoader) {
+    (*cssLoader)->LoadSheetSync(aURI, aEnableUnsafeRules, PR_TRUE,
+                                getter_AddRefs(aSheet));
   }
 }  
 
@@ -233,3 +243,6 @@ nsLayoutStylesheetCache::gStyleCache = nsnull;
 
 nsICSSLoader_1_9_0_BRANCH*
 nsLayoutStylesheetCache::gCSSLoader = nsnull;
+
+nsICSSLoader_1_9_0_BRANCH*
+nsLayoutStylesheetCache::gCaseSensitiveCSSLoader = nsnull;

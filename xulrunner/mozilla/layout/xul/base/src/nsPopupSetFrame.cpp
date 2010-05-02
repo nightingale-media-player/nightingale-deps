@@ -265,7 +265,13 @@ nsPopupSetFrame::RemovePopupFrame(nsIFrame* aPopup)
 nsresult
 nsPopupSetFrame::AddPopupFrameList(nsIFrame* aPopupFrameList)
 {
-  for (nsIFrame* kid = aPopupFrameList; kid; kid = kid->GetNextSibling()) {
+  while (aPopupFrameList) {
+    nsIFrame* kid = aPopupFrameList;
+    aPopupFrameList = aPopupFrameList->GetNextSibling();
+    // Clears out prev/next sibling points appropriately. Every frame
+    // in our popup list has null next and prev pointers, they're logically
+    // each in their own list.
+    kid->SetNextSibling(nsnull);
     nsresult rv = AddPopupFrame(kid);
     NS_ENSURE_SUCCESS(rv, rv);
   }

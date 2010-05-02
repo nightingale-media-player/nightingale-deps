@@ -886,6 +886,7 @@ NS_IMETHODIMP nsChromeRegistry::RefreshSkins()
     do_CreateInstance(kCSSLoaderCID);
   if (!cssLoader)
     return NS_OK;
+  cssLoader->SetCaseSensitive(PR_TRUE);
 
   nsCOMPtr<nsIWindowMediator> windowMediator
     (do_GetService(NS_WINDOWMEDIATOR_CONTRACTID));

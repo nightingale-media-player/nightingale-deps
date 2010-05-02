@@ -49,7 +49,7 @@ if [ $# = 0 ]; then
   exit 1
 fi
 
-requested_forced_updates='components/components.list Contents/MacOS/components/components.list mozilla-runtime libmozsqlite3.so'
+requested_forced_updates='components/components.list Contents/MacOS/components/components.list'
 
 use_mar_manifest=
 

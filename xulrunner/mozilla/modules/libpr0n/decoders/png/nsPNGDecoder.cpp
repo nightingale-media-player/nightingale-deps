@@ -66,6 +66,14 @@ static void PNGAPI frame_info_callback(png_structp png_ptr, png_uint_32 frame_nu
 static void PNGAPI end_callback(png_structp png_ptr, png_infop info_ptr);
 static void PNGAPI error_callback(png_structp png_ptr, png_const_charp error_msg);
 static void PNGAPI warning_callback(png_structp png_ptr, png_const_charp warning_msg);
+#ifdef PNG_USER_MEM_SUPPORTED
+static png_voidp PNGAPI malloc_callback(png_structp png_ptr,
+# if PNG_LIBPNG_VER < 10400
+                                        png_size_t size);
+# else
+                                        png_alloc_size_t size);
+# endif
+#endif
 
 #ifdef PR_LOGGING
 static PRLogModuleInfo *gPNGLog = PR_NewLogModule("PNGDecoder");
@@ -231,8 +239,21 @@ NS_IMETHODIMP nsPNGDecoder::Init(imgILoad *aLoad)
   /* Initialize the container's source image header. */
   /* Always decode to 24 bit pixdepth */
 
-  mPNG = png_create_read_struct(PNG_LIBPNG_VER_STRING, 
-                                NULL, error_callback, warning_callback);
+#ifdef PNG_USER_MEM_SUPPORTED
+  if (gfxPlatform::GetCMSMode() != eCMSMode_Off) {
+    mPNG = png_create_read_struct_2(PNG_LIBPNG_VER_STRING,
+                                    NULL,
+                                    error_callback,
+                                    warning_callback,
+                                    NULL,
+                                    malloc_callback,
+                                    NULL);
+  } else
+#endif
+    mPNG = png_create_read_struct(PNG_LIBPNG_VER_STRING,
+                                  NULL, error_callback,
+                                  warning_callback);
+
   if (!mPNG) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
@@ -243,14 +264,28 @@ NS_IMETHODIMP nsPNGDecoder::Init(imgILoad *aLoad)
     return NS_ERROR_OUT_OF_MEMORY;
   }
 
-#if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
+#ifndef MOZPNGCONF_H
+# if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED) || \
+    defined(PNG_HANDLE_AS_UNKNOWN_SUPPORTED)
   /* Ignore unused chunks */
   if (!gfxPlatform::IsCMSEnabled()) {
     png_set_keep_unknown_chunks(mPNG, 1, color_chunks, 2);
   }
   png_set_keep_unknown_chunks(mPNG, 1, unused_chunks,
      (int)sizeof(unused_chunks)/5);   
+# endif
+  
+# if PNG_LIBPNG_VER < 10401
+#  if defined(PNG_WRITE_SUPPORTED)
+  if (gfxPlatform::GetCMSMode() != eCMSMode_Off) {
+    /* Increase speed of decompressing large iCCP chunks (default buffer
+       size is 8192) */
+    png_set_compression_buffer_size(mPNG, (png_size_t)32768L);
+  }
+#  endif
+# endif
 #endif
+
 
   /* use this as libpng "progressive pointer" (retrieve in callbacks) */
   png_set_progressive_read_fn(mPNG, static_cast<png_voidp>(this),
@@ -661,6 +696,30 @@ info_callback(png_structp png_ptr, png_infop info_ptr)
       longjmp(decoder->mPNG->jmpbuf, 5); // NS_ERROR_OUT_OF_MEMORY
     }
   }
+
+#ifdef PNG_USER_MEM_SUPPORTED
+  /* Revert to the default memory allocator */
+  if (gfxPlatform::GetCMSMode() != eCMSMode_Off)
+     png_set_mem_fn(decoder->mPNG, NULL, NULL, NULL);
+#endif
+
+#ifndef MOZPNGCONF_H
+# if PNG_LIBPNG_VER < 10401
+#  if defined(PNG_WRITE_SUPPORTED)
+  /* Revert to the default zlib buffer size */
+  if (gfxPlatform::GetCMSMode() != eCMSMode_Off) {
+    png_set_compression_buffer_size(decoder->mPNG, (png_size_t)8192);
+  }
+#  endif
+# endif
+#endif
+
+  /* Reject any ancillary chunk after IDAT with a bad CRC (bug #397593).
+   * It would be better to show the default frame (if one has already been
+   * successfully decoded) before bailing, but it's simpler to just bail
+   * out with an error message.
+   */
+  png_set_crc_action(png_ptr, NULL, PNG_CRC_ERROR_QUIT);
   
   if (png_get_first_frame_is_hidden(png_ptr, info_ptr))
     decoder->mFrame = nsnull;
@@ -873,3 +932,48 @@ warning_callback(png_structp png_ptr, png_const_charp warning_msg)
 {
   PR_LOG(gPNGLog, PR_LOG_WARNING, ("libpng warning: %s\n", warning_msg));
 }
+
+#ifdef PNG_USER_MEM_SUPPORTED
+/* Replacement libpng memory allocator that has a 4MB limit */
+# if PNG_LIBPNG_VER < 10400
+png_voidp malloc_callback(png_structp png_ptr, png_size_t size) {
+# else
+png_voidp malloc_callback(png_structp png_ptr, png_alloc_size_t size) {
+# endif
+
+  png_voidp ret;
+
+  if (png_ptr == NULL || size == 0)
+    return (png_voidp) (NULL);
+
+#ifdef PNG_MAX_MALLOC_64K
+  if (size > (png_uint_32)65536L) {
+         return NULL;
+  }
+#endif
+  if (size > (png_uint_32)4000000L) {
+         return NULL;
+  }
+#if defined(__TURBOC__) && !defined(__FLAT__)
+   if (size != (unsigned long)size)
+      ret = NULL;
+   else
+      ret = farmalloc(size);
+#else
+#  if defined(_MSC_VER) && defined(MAXSEG_64K)
+   if (size != (unsigned long)size)
+      ret = NULL;
+   else
+      ret = halloc(size, 1);
+#  else
+   if (size != (size_t)size)
+      ret = NULL;
+   else
+      ret = malloc((size_t)size);
+#  endif
+#endif
+
+   return (ret);
+}
+#endif /* PNG_USER_MEM_SUPPORTED */
+

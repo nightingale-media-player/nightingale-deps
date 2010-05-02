@@ -23,6 +23,7 @@
  *   Tony Chang <tony@ponderer.org> (original author)
  *   Brett Wilson <brettw@gmail.com>
  *   Dave Camp <dcamp@mozilla.com>
+ *   David Dahl <ddahl@mozilla.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -131,7 +132,12 @@ static const PRLogModuleInfo *gUrlClassifierDbServiceLog = nsnull;
 // want to change schema, or to recover from updating bugs.  When an
 // implementation version change is detected, the database is scrapped
 // and we start over.
-#define IMPLEMENTATION_VERSION 5
+
+// https://wiki.mozilla.org/Urlclassifier-notes lists the implementation 
+// versions that have been used.  When updating the implementation version, 
+// please make sure to update  this page as well.
+
+#define IMPLEMENTATION_VERSION 8
 
 #define MAX_HOST_COMPONENTS 5
 #define MAX_PATH_COMPONENTS 4
@@ -2496,10 +2502,8 @@ nsUrlClassifierDBServiceWorker::SubChunk(PRUint32 tableId,
 
   LOG(("Subbing %d entries in chunk %d in table %d", entries.Length(), chunkNum, tableId));
 
-  nsAutoTArray<nsUrlClassifierEntry, 5> existingEntries;
-  nsUrlClassifierDomainHash lastKey;
-
   for (PRUint32 i = 0; i < entries.Length(); i++) {
+    nsAutoTArray<nsUrlClassifierEntry, 5> existingEntries;
     nsUrlClassifierEntry& thisEntry = entries[i];
 
     HandlePendingLookups();
@@ -2508,15 +2512,10 @@ nsUrlClassifierDBServiceWorker::SubChunk(PRUint32 tableId,
     PRBool haveAdds = (mCachedAddChunks.BinaryIndexOf(thisEntry.mAddChunkId) !=
                        mCachedAddChunks.NoIndex);
 
-    if (i == 0 || lastKey != thisEntry.mKey) {
-      existingEntries.Clear();
-      lastKey = thisEntry.mKey;
-
-      if (haveAdds) {
-        rv = mMainStore.ReadEntries(thisEntry.mKey, thisEntry.mTableId,
-                                    thisEntry.mAddChunkId, existingEntries);
-        NS_ENSURE_SUCCESS(rv, rv);
-      }
+    if (haveAdds) {
+      rv = mMainStore.ReadEntries(thisEntry.mKey, thisEntry.mTableId,
+                                  thisEntry.mAddChunkId, existingEntries);
+      NS_ENSURE_SUCCESS(rv, rv);
     }
 
     PRUint32 writeEntry = PR_TRUE;
