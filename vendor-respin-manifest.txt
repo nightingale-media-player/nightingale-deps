@@ -4,4 +4,4 @@
 linux-i686: xulrunner(21009 20614 20899)
 linux-x86_64: xulrunner(21009 20614 20899)
 macosx-i686: xulrunner(21009 20614 20899)
-windows-i686-msvc8: xulrunner(21009 20614 20899)
+windows-i686-msvc8:  xulrunner(21009 20614 20899)
