@@ -84,3 +84,62 @@ void LaunchChild(int argc, char **argv)
   [child launch];
   [pool release];
 }
+
+void
+LaunchMacPostProcess(const char* aAppExe)
+{
+  // Launch helper to perform post processing for the update; this is the Mac
+  // analogue of LaunchWinPostProcess (PostUpdateWin).
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+  // Find the app bundle containing the executable path given
+  NSString *path = [NSString stringWithUTF8String:aAppExe];
+  NSBundle *bundle;
+  do {
+    path = [path stringByDeletingLastPathComponent];
+    bundle = [NSBundle bundleWithPath:path];
+  } while ((!bundle || ![bundle bundleIdentifier]) && [path length] > 1);
+  if (!bundle) {
+    // No bundle found for the app being launched
+    [pool release];
+    return;
+  }
+
+  NSString *plistPath = [bundle pathForResource:@"updater" ofType:@"plist"];
+  if (!plistPath) {
+    [pool release];
+    return;
+  }
+  NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:plistPath];
+  if (!plist) {
+    // the file does not exist; there is nothing to run
+    [pool release];
+    return;
+  }
+
+  NSDictionary *dict = [plist valueForKey:@"PostUpdateMac"];
+  if (!dict) {
+    [pool release];
+    return;
+  }
+  NSString *exeArg = [dict valueForKey:@"ExeArg"];
+  NSString *exeRelPath = [dict valueForKey:@"ExeRelPath"];
+  if (!exeArg || !exeRelPath) {
+    [pool release];
+    return;
+  }
+  
+  NSString *resourcePath = [bundle resourcePath];
+  NSString *exefullpath = [resourcePath stringByAppendingPathComponent:exeRelPath];
+
+  NSTask *task = [[NSTask alloc] init];
+  [task setLaunchPath:exefullpath];
+  [task setArguments:[NSArray arrayWithObject:exeArg]];
+  [task launch];
+  [task waitUntilExit];
+  // ignore the return value of the task, there's nothing we can do with it
+  [task release];
+
+  [pool release];  
+}
+

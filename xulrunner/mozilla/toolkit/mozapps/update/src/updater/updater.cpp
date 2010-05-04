@@ -101,8 +101,9 @@
 #include <errno.h>
 
 #if defined(XP_MACOSX)
-// This function is defined in launchchild_osx.mm
+// These functions are defined in launchchild_osx.mm
 void LaunchChild(int argc, char **argv);
+void LaunchMacPostProcess(const char* aAppExe);
 #endif
 
 #ifndef _O_BINARY
@@ -287,9 +288,7 @@ private:
 
 static NS_tchar* gSourcePath;
 static ArchiveReader gArchiveReader;
-#ifdef XP_WIN
-static bool gSucceeded = FALSE;
-#endif
+static bool gSucceeded = false;
 
 static const char kWhitespace[] = " \t";
 static const char kNL[] = "\r\n";
@@ -1327,6 +1326,10 @@ int NS_main(int argc, NS_tchar **argv)
       return 0;
   }
 #endif
+#ifdef XP_MACOSX
+  if (gSucceeded && argc > 4)
+    LaunchMacPostProcess(argv[4]);
+#endif /* XP_MACOSX */
 
   // The callback to execute is given as the last N arguments of our command
   // line.  The first of those arguments specifies the working directory for
@@ -1433,10 +1436,8 @@ ActionList::Finish(int status)
     a = a->mNext;
   }
 
-#ifdef XP_WIN
   if (status == OK)
-    gSucceeded = TRUE;
-#endif
+    gSucceeded = true;
 
   UpdateProgressUI(100.0f);
 }
