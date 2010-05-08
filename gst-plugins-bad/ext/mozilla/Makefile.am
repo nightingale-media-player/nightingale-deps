@@ -1,11 +1,11 @@
-plugin_LTLIBRARIES = libgstmozillasrc.la
+plugin_LTLIBRARIES = libgstmozilla.la
 
-libgstmozillasrc_la_SOURCES = mozillasrc.cpp
-libgstmozillasrc_la_CXXFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS) \
+libgstmozilla_la_SOURCES = mozillaplugin.cpp mozillasrc.cpp mozillasink.cpp
+libgstmozilla_la_CXXFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS) \
 							   $(MOZILLA_CFLAGS) -fshort-wchar
 
 #-I/usr/include/xulrunner-1.9.0.1/unstable -I/usr/include/nspr 
-libgstmozillasrc_la_LIBADD = \
+libgstmozilla_la_LIBADD = \
 	$(GST_LIBS) \
 	$(GST_BASE_LIBS) \
 	$(GST_PLUGINS_BASE_LIBS) \
@@ -15,4 +15,4 @@ libgstmozillasrc_la_LIBADD = \
 
 #	-L/usr/lib/xulrunner-devel-1.9.0.1/lib -lxpcomglue_s -lxul -lxpcom -lplds4 -lplc4 -lnspr4 -lpthread -ldl
 
-libgstmozillasrc_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+libgstmozilla_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)

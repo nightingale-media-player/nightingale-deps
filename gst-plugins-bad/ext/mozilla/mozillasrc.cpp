@@ -39,16 +39,7 @@
 #include <nsIWindowWatcher.h>
 #include <nsIAuthPrompt.h>
 
-#define GST_TYPE_MOZILLA_SRC \
-  (gst_mozilla_src_get_type())
-#define GST_MOZILLA_SRC(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_MOZILLA_SRC,GstMozillaSrc))
-#define GST_MOZILLA_SRC_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_MOZILLA_SRC,GstMozillaSrcClass))
-#define GST_IS_MOZILLA_SRC(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_MOZILLA_SRC))
-#define GST_IS_MOZILLA_SRC_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_MOZILLA_SRC))
+#include "mozillaplugin.h"
 
 typedef struct _GstMozillaSrc GstMozillaSrc;
 typedef struct _GstMozillaSrcClass GstMozillaSrcClass;
@@ -96,8 +87,6 @@ struct _GstMozillaSrc {
 struct _GstMozillaSrcClass {
   GstPushSrcClass parent_class;
 };
-
-static GType gst_mozilla_src_get_type (void);
 
 GST_DEBUG_CATEGORY_STATIC (mozillasrc_debug);
 #define GST_CAT_DEFAULT mozillasrc_debug
@@ -1180,19 +1169,3 @@ gst_mozilla_src_uri_handler_init (gpointer g_iface, gpointer iface_data)
   iface->get_uri = gst_mozilla_src_uri_get_uri;
   iface->set_uri = gst_mozilla_src_uri_set_uri;
 }
-
-static gboolean
-plugin_init (GstPlugin * plugin)
-{
-  return gst_element_register (plugin, "mozillasrc", GST_RANK_PRIMARY+1,
-      GST_TYPE_MOZILLA_SRC);
-}
-
-extern "C" {
-  GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
-      GST_VERSION_MINOR,
-      "mozilla",
-      "Mozilla source",
-      plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)
-}
-
