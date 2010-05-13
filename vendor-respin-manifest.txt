@@ -1,7 +1,7 @@
 ##
 ## Format: packageOne(num num num), packageTwo(num num)
 ##
-linux-i686: gst-plugins-base(21066)
-linux-x86_64: gst-plugins-base(21066)
-macosx-i686: gst-plugins-base(21066)
-windows-i686-msvc8: gst-plugins-base(21066)
+linux-i686: gst-plugins-good(20834), gst-plugins-bad(21152 20550)
+linux-x86_64: gst-plugins-good(20834), gst-plugins-bad(21152 20550)
+macosx-i686: gst-plugins-good(20834), gst-plugins-bad(21152 20550)
+windows-i686-msvc8: gst-plugins-good(20834), gst-plugins-bad(21152 20550)
