@@ -86,11 +86,12 @@ am__installdirs = "$(DESTDIR)$(plugindir)"
 pluginLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(plugin_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-libgstmozillasrc_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+libgstmozilla_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_libgstmozillasrc_la_OBJECTS = libgstmozillasrc_la-mozillasrc.lo
-libgstmozillasrc_la_OBJECTS = $(am_libgstmozillasrc_la_OBJECTS)
+am_libgstmozilla_la_OBJECTS = libgstmozilla_la-mozillaplugin.lo \
+	libgstmozilla_la-mozillasrc.lo libgstmozilla_la-mozillasink.lo
+libgstmozilla_la_OBJECTS = $(am_libgstmozilla_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -102,8 +103,8 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libgstmozillasrc_la_SOURCES)
-DIST_SOURCES = $(libgstmozillasrc_la_SOURCES)
+SOURCES = $(libgstmozilla_la_SOURCES)
+DIST_SOURCES = $(libgstmozilla_la_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -769,14 +770,14 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-plugin_LTLIBRARIES = libgstmozillasrc.la
-libgstmozillasrc_la_SOURCES = mozillasrc.cpp
-libgstmozillasrc_la_CXXFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS) \
+plugin_LTLIBRARIES = libgstmozilla.la
+libgstmozilla_la_SOURCES = mozillaplugin.cpp mozillasrc.cpp mozillasink.cpp
+libgstmozilla_la_CXXFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS) \
 							   $(MOZILLA_CFLAGS) -fshort-wchar
 
 
 #-I/usr/include/xulrunner-1.9.0.1/unstable -I/usr/include/nspr 
-libgstmozillasrc_la_LIBADD = \
+libgstmozilla_la_LIBADD = \
 	$(GST_LIBS) \
 	$(GST_BASE_LIBS) \
 	$(GST_PLUGINS_BASE_LIBS) \
@@ -786,7 +787,7 @@ libgstmozillasrc_la_LIBADD = \
 
 
 #	-L/usr/lib/xulrunner-devel-1.9.0.1/lib -lxpcomglue_s -lxul -lxpcom -lplds4 -lplc4 -lnspr4 -lpthread -ldl
-libgstmozillasrc_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+libgstmozilla_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 all: all-am
 
 .SUFFIXES:
@@ -847,8 +848,8 @@ clean-pluginLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libgstmozillasrc.la: $(libgstmozillasrc_la_OBJECTS) $(libgstmozillasrc_la_DEPENDENCIES) 
-	$(CXXLINK) -rpath $(plugindir) $(libgstmozillasrc_la_LDFLAGS) $(libgstmozillasrc_la_OBJECTS) $(libgstmozillasrc_la_LIBADD) $(LIBS)
+libgstmozilla.la: $(libgstmozilla_la_OBJECTS) $(libgstmozilla_la_DEPENDENCIES) 
+	$(CXXLINK) -rpath $(plugindir) $(libgstmozilla_la_LDFLAGS) $(libgstmozilla_la_OBJECTS) $(libgstmozilla_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -856,7 +857,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstmozillasrc_la-mozillasrc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstmozilla_la-mozillaplugin.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstmozilla_la-mozillasink.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstmozilla_la-mozillasrc.Plo@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -879,12 +882,26 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
 
-libgstmozillasrc_la-mozillasrc.lo: mozillasrc.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstmozillasrc_la_CXXFLAGS) $(CXXFLAGS) -MT libgstmozillasrc_la-mozillasrc.lo -MD -MP -MF "$(DEPDIR)/libgstmozillasrc_la-mozillasrc.Tpo" -c -o libgstmozillasrc_la-mozillasrc.lo `test -f 'mozillasrc.cpp' || echo '$(srcdir)/'`mozillasrc.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libgstmozillasrc_la-mozillasrc.Tpo" "$(DEPDIR)/libgstmozillasrc_la-mozillasrc.Plo"; else rm -f "$(DEPDIR)/libgstmozillasrc_la-mozillasrc.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='mozillasrc.cpp' object='libgstmozillasrc_la-mozillasrc.lo' libtool=yes @AMDEPBACKSLASH@
+libgstmozilla_la-mozillaplugin.lo: mozillaplugin.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstmozilla_la_CXXFLAGS) $(CXXFLAGS) -MT libgstmozilla_la-mozillaplugin.lo -MD -MP -MF "$(DEPDIR)/libgstmozilla_la-mozillaplugin.Tpo" -c -o libgstmozilla_la-mozillaplugin.lo `test -f 'mozillaplugin.cpp' || echo '$(srcdir)/'`mozillaplugin.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libgstmozilla_la-mozillaplugin.Tpo" "$(DEPDIR)/libgstmozilla_la-mozillaplugin.Plo"; else rm -f "$(DEPDIR)/libgstmozilla_la-mozillaplugin.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='mozillaplugin.cpp' object='libgstmozilla_la-mozillaplugin.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstmozillasrc_la_CXXFLAGS) $(CXXFLAGS) -c -o libgstmozillasrc_la-mozillasrc.lo `test -f 'mozillasrc.cpp' || echo '$(srcdir)/'`mozillasrc.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstmozilla_la_CXXFLAGS) $(CXXFLAGS) -c -o libgstmozilla_la-mozillaplugin.lo `test -f 'mozillaplugin.cpp' || echo '$(srcdir)/'`mozillaplugin.cpp
+
+libgstmozilla_la-mozillasrc.lo: mozillasrc.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstmozilla_la_CXXFLAGS) $(CXXFLAGS) -MT libgstmozilla_la-mozillasrc.lo -MD -MP -MF "$(DEPDIR)/libgstmozilla_la-mozillasrc.Tpo" -c -o libgstmozilla_la-mozillasrc.lo `test -f 'mozillasrc.cpp' || echo '$(srcdir)/'`mozillasrc.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libgstmozilla_la-mozillasrc.Tpo" "$(DEPDIR)/libgstmozilla_la-mozillasrc.Plo"; else rm -f "$(DEPDIR)/libgstmozilla_la-mozillasrc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='mozillasrc.cpp' object='libgstmozilla_la-mozillasrc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstmozilla_la_CXXFLAGS) $(CXXFLAGS) -c -o libgstmozilla_la-mozillasrc.lo `test -f 'mozillasrc.cpp' || echo '$(srcdir)/'`mozillasrc.cpp
+
+libgstmozilla_la-mozillasink.lo: mozillasink.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstmozilla_la_CXXFLAGS) $(CXXFLAGS) -MT libgstmozilla_la-mozillasink.lo -MD -MP -MF "$(DEPDIR)/libgstmozilla_la-mozillasink.Tpo" -c -o libgstmozilla_la-mozillasink.lo `test -f 'mozillasink.cpp' || echo '$(srcdir)/'`mozillasink.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libgstmozilla_la-mozillasink.Tpo" "$(DEPDIR)/libgstmozilla_la-mozillasink.Plo"; else rm -f "$(DEPDIR)/libgstmozilla_la-mozillasink.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='mozillasink.cpp' object='libgstmozilla_la-mozillasink.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstmozilla_la_CXXFLAGS) $(CXXFLAGS) -c -o libgstmozilla_la-mozillasink.lo `test -f 'mozillasink.cpp' || echo '$(srcdir)/'`mozillasink.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo
