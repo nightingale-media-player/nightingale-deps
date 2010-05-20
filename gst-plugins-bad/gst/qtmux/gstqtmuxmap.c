@@ -251,7 +251,8 @@ gst_qt_mux_map_check_tracks (AtomMOOV * moov, gint * _video, gint * _audio,
  *   (but that might need ftyp rewriting at the end) */
 void
 gst_qt_mux_map_format_to_header (GstQTMuxFormat format, GstBuffer ** _prefix,
-    guint32 * _major, guint32 * _version, GList ** _compatible, AtomMOOV * moov)
+    guint32 * _major, guint32 * _version, GList ** _compatible, AtomMOOV * moov,
+    const GstTagList * taglist)
 {
   static guint32 qt_brands[] = { 0 };
   static guint32 mp4_brands[] = { FOURCC_mp41, FOURCC_isom, FOURCC_iso2, 0 };
@@ -285,14 +286,20 @@ gst_qt_mux_map_format_to_header (GstQTMuxFormat format, GstBuffer ** _prefix,
       gboolean has_h264;
 
       gst_qt_mux_map_check_tracks (moov, &video, &audio, &has_h264);
-      /* only track restriction really matters for Basic Profile */
-      if (video <= 1 && audio <= 1) {
-        /* it seems only newer spec knows about H264 */
-        major = has_h264 ? FOURCC_3gp6 : FOURCC_3gp4;
-        version = has_h264 ? 0x100 : 0x200;
+      /* Putting covert art in 3GP requires 3GP7. */
+      if (gst_structure_has_field (taglist, GST_TAG_IMAGE)) {
+        major = FOURCC_3gp7;
+        version = 0;
       } else {
-        major = FOURCC_3gg6;
-        version = 0x100;
+        /* only track restriction really matters for Basic Profile */
+        if (video <= 1 && audio <= 1) {
+          /* it seems only newer spec knows about H264 */
+          major = has_h264 ? FOURCC_3gp6 : FOURCC_3gp4;
+          version = has_h264 ? 0x100 : 0x200;
+        } else {
+          major = FOURCC_3gg6;
+          version = 0x100;
+        }
       }
       comp = gpp_brands;
       break;

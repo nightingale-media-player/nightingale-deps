@@ -190,6 +190,7 @@ G_BEGIN_DECLS
 #define FOURCC_albm     GST_MAKE_FOURCC('a','l','b','m')
 #define FOURCC_loci     GST_MAKE_FOURCC('l','o','c','i')
 #define FOURCC_kywd     GST_MAKE_FOURCC('k','y','w','d')
+#define FOURCC_ID32     GST_MAKE_FOURCC('I','D','3','2')
 
 /* For Microsoft Wave formats embedded in quicktime, the FOURCC is
    'm', 's', then the 16 bit wave codec id */

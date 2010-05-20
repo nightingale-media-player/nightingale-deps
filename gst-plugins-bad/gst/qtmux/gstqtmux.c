@@ -457,11 +457,11 @@ gst_qt_mux_add_mp4_cover (GstQTMux * qtmux, const GstTagList * list,
 
   caps = gst_buffer_get_caps (buf);
   if (!caps) {
-    GST_WARNING_OBJECT (qtmux, "preview image without caps");
+    GST_WARNING_OBJECT (qtmux, "image without caps");
     goto done;
   }
 
-  GST_DEBUG_OBJECT (qtmux, "preview image caps %" GST_PTR_FORMAT, caps);
+  GST_DEBUG_OBJECT (qtmux, "image caps %" GST_PTR_FORMAT, caps);
 
   structure = gst_caps_get_structure (caps, 0);
   if (gst_structure_has_name (structure, "image/jpeg"))
@@ -471,7 +471,7 @@ gst_qt_mux_add_mp4_cover (GstQTMux * qtmux, const GstTagList * list,
   gst_caps_unref (caps);
 
   if (!flags) {
-    GST_WARNING_OBJECT (qtmux, "preview image format not supported");
+    GST_WARNING_OBJECT (qtmux, "image format not supported");
     goto done;
   }
 
@@ -479,6 +479,45 @@ gst_qt_mux_add_mp4_cover (GstQTMux * qtmux, const GstTagList * list,
       " -> image size %d", GST_FOURCC_ARGS (fourcc), GST_BUFFER_SIZE (buf));
   atom_moov_add_tag (qtmux->moov, fourcc, flags, GST_BUFFER_DATA (buf),
       GST_BUFFER_SIZE (buf));
+done:
+  g_value_unset (&value);
+}
+
+static void
+gst_qt_mux_add_3gp_cover (GstQTMux * qtmux, const GstTagList * list,
+    const char *tag, const char *tag2, guint32 fourcc)
+{
+  GValue value = { 0, };
+  GstBuffer *buf;
+  GstCaps *caps;
+  GstStructure *structure;
+  const gchar *name;
+
+  g_return_if_fail (gst_tag_get_type (tag) == GST_TYPE_BUFFER);
+
+  if (!gst_tag_list_copy_value (&value, list, tag))
+    return;
+
+  buf = gst_value_get_buffer (&value);
+  if (!buf)
+    goto done;
+
+  caps = gst_buffer_get_caps (buf);
+  if (!caps) {
+    GST_WARNING_OBJECT (qtmux, "image without caps");
+    goto done;
+  }
+
+  GST_DEBUG_OBJECT (qtmux, "image caps %" GST_PTR_FORMAT, caps);
+
+  structure = gst_caps_get_structure (caps, 0);
+  /* The caps name is the mime type for all the image types; no need to map
+     it */
+  name = gst_structure_get_name (structure);
+
+  GST_DEBUG_OBJECT (qtmux, "Adding tag %" GST_FOURCC_FORMAT
+      " -> image size %d", GST_FOURCC_ARGS (fourcc), GST_BUFFER_SIZE (buf));
+  atom_moov_add_id3_image (qtmux->moov, buf, name);
 done:
   g_value_unset (&value);
 }
@@ -673,7 +712,7 @@ static const GstTagToFourcc tag_matches_mp4[] = {
       gst_qt_mux_add_mp4_tag},
   {FOURCC_disk, GST_TAG_ALBUM_VOLUME_NUMBER, GST_TAG_ALBUM_VOLUME_COUNT,
       gst_qt_mux_add_mp4_tag},
-  {FOURCC_covr, GST_TAG_PREVIEW_IMAGE, NULL, gst_qt_mux_add_mp4_cover},
+  {FOURCC_covr, GST_TAG_IMAGE, NULL, gst_qt_mux_add_mp4_cover},
   {0, NULL,}
 };
 
@@ -688,6 +727,7 @@ static const GstTagToFourcc tag_matches_3gp[] = {
   {FOURCC_yrrc, GST_TAG_DATE, NULL, gst_qt_mux_add_3gp_date},
   {FOURCC_albm, GST_TAG_ALBUM, GST_TAG_TRACK_NUMBER, gst_qt_mux_add_3gp_str},
   {FOURCC_loci, GST_TAG_GEO_LOCATION_NAME, NULL, gst_qt_mux_add_3gp_location},
+  {FOURCC_covr, GST_TAG_IMAGE, NULL, gst_qt_mux_add_3gp_cover},
   {0, NULL,}
 };
 
@@ -1141,6 +1181,7 @@ gst_qt_mux_start_file (GstQTMux * qtmux)
   guint32 major, version;
   GList *comp;
   GstBuffer *prefix;
+  const GstTagList *tags;
 
   GST_DEBUG_OBJECT (qtmux, "starting file");
 
@@ -1148,11 +1189,15 @@ gst_qt_mux_start_file (GstQTMux * qtmux)
   gst_pad_push_event (qtmux->srcpad,
       gst_event_new_new_segment (FALSE, 1.0, GST_FORMAT_BYTES, 0, -1, 0));
 
+  GST_OBJECT_LOCK (qtmux);
+  tags = gst_tag_setter_get_tag_list (GST_TAG_SETTER (qtmux));
+  GST_OBJECT_UNLOCK (qtmux);
+
   /* init and send context and ftyp based on current property state */
   if (qtmux->ftyp)
     atom_ftyp_free (qtmux->ftyp);
   gst_qt_mux_map_format_to_header (qtmux_klass->format, &prefix, &major,
-      &version, &comp, qtmux->moov);
+      &version, &comp, qtmux->moov, tags);
   qtmux->ftyp = atom_ftyp_new (qtmux->context, major, version, comp);
   if (comp)
     g_list_free (comp);

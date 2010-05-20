@@ -1009,6 +1009,28 @@ atom_ilst_free (AtomILST * ilst)
   g_free (ilst);
 }
 
+static AtomID32 *
+atom_id32_new (void)
+{
+  AtomID32 *id32 = g_new0 (AtomID32, 1);
+  guint8 flags[3] = { 0, 0, 0 };
+
+  atom_full_init (&id32->header, FOURCC_ID32, 0, 0, 0, flags);
+
+  return id32;
+}
+
+static void
+atom_id32_free (AtomID32 * id32)
+{
+  atom_full_clear (&id32->header);
+  if (id32->data) {
+    g_free (id32->data);
+    id32->data = NULL;
+  }
+  g_free (id32);
+}
+
 static void
 atom_meta_init (AtomMETA * meta)
 {
@@ -1036,9 +1058,15 @@ atom_meta_free (AtomMETA * meta)
 {
   atom_full_clear (&meta->header);
   atom_hdlr_clear (&meta->hdlr);
-  if (meta->ilst)
+  if (meta->ilst) {
     atom_ilst_free (meta->ilst);
-  meta->ilst = NULL;
+    meta->ilst = NULL;
+  }
+  if (meta->id32) {
+    atom_id32_free (meta->id32);
+    meta->id32 = NULL;
+  }
+
   g_free (meta);
 }
 
@@ -1184,6 +1212,11 @@ atom_moov_free (AtomMOOV * moov)
   if (moov->udta) {
     atom_udta_free (moov->udta);
     moov->udta = NULL;
+  }
+
+  if (moov->meta) {
+    atom_meta_free (moov->meta);
+    moov->meta = NULL;
   }
 
   g_free (moov);
@@ -2129,6 +2162,24 @@ atom_ilst_copy_data (AtomILST * ilst, guint8 ** buffer, guint64 * size,
 }
 
 static guint64
+atom_id32_copy_data (AtomID32 * id32, guint8 ** buffer, guint64 * size,
+    guint64 * offset)
+{
+  guint64 original_offset = *offset;
+
+  if (!atom_full_copy_data (&id32->header, buffer, size, offset)) {
+    return 0;
+  }
+
+  prop_copy_uint8_array (id32->language, sizeof (id32->language),
+      buffer, size, offset);
+  prop_copy_uint8_array (id32->data, id32->datalen, buffer, size, offset);
+
+  atom_write_size (buffer, size, offset, original_offset);
+  return *offset - original_offset;
+}
+
+static guint64
 atom_meta_copy_data (AtomMETA * meta, guint8 ** buffer, guint64 * size,
     guint64 * offset)
 {
@@ -2142,6 +2193,11 @@ atom_meta_copy_data (AtomMETA * meta, guint8 ** buffer, guint64 * size,
   }
   if (meta->ilst) {
     if (!atom_ilst_copy_data (meta->ilst, buffer, size, offset)) {
+      return 0;
+    }
+  }
+  if (meta->id32) {
+    if (!atom_id32_copy_data (meta->id32, buffer, size, offset)) {
       return 0;
     }
   }
@@ -2196,6 +2252,12 @@ atom_moov_copy_data (AtomMOOV * atom, guint8 ** buffer, guint64 * size,
 
   if (atom->udta) {
     if (!atom_udta_copy_data (atom->udta, buffer, size, offset)) {
+      return 0;
+    }
+  }
+
+  if (atom->meta) {
+    if (!atom_meta_copy_data (atom->meta, buffer, size, offset)) {
       return 0;
     }
   }
@@ -2578,6 +2640,72 @@ atom_moov_add_tag (AtomMOOV * moov, guint32 fourcc, guint32 flags,
   atom_moov_append_tag (moov,
       build_atom_info_wrapper ((Atom *) tag, atom_tag_copy_data,
           atom_tag_free));
+}
+
+void
+atom_moov_add_id3_image (AtomMOOV * moov, GstBuffer * image,
+    const gchar * mimetype)
+{
+  AtomID32 *id3;
+  guint32 id3size;
+  guint32 framesize;
+  guint32 mimesize;
+  guint32 offset;
+
+  moov->meta = atom_meta_new ();
+  moov->meta->hdlr.component_type = 0;
+  moov->meta->hdlr.handler_type = FOURCC_ID32;
+
+  id3 = atom_id32_new ();
+  moov->meta->id32 = id3;
+
+  id3->language[0] = 0x15;
+  id3->language[1] = 0xc7;
+
+  /* We just use a special micro-id3-muxer here that can just handle putting
+     an image in there. */
+  mimesize = strlen (mimetype);
+  id3->datalen = 24 + mimesize + GST_BUFFER_SIZE (image);
+  id3->data = g_malloc (id3->datalen);
+
+  /* ID3v2 header */
+
+  /* ID3v2 size field excludes the header */
+  id3size = id3->datalen - 10;
+  id3->data[0] = 'I';
+  id3->data[1] = 'D';
+  id3->data[2] = '3';
+  id3->data[3] = 3;
+  id3->data[4] = 0;
+  id3->data[5] = 0;
+  id3->data[6] = (id3size >> 21) & 0x7f;
+  id3->data[7] = (id3size >> 14) & 0x7f;
+  id3->data[8] = (id3size >> 7) & 0x7f;
+  id3->data[9] = (id3size >> 0) & 0x7f;
+
+  /* ID3 frame header for APIC frame */
+
+  /* Frame size field does not include the frame header */
+  framesize = id3size - 10;
+  id3->data[10] = 'A';
+  id3->data[11] = 'P';
+  id3->data[12] = 'I';
+  id3->data[13] = 'C';
+  /* We're writing ID3v2.3, so don't use a syncsafe value for length */
+  GST_WRITE_UINT32_BE (id3->data + 14, framesize);
+  /* Flags */
+  id3->data[18] = 0;
+  id3->data[19] = 0;
+  /* Text encoding. Use 8859-1 here; it's only a mimetype (we don't use the
+     description field) */
+  id3->data[20] = 0;
+  /* Mime type, including one byte string terminator */
+  memcpy (id3->data + 21, mimetype, mimesize + 1);
+  offset = 22 + mimesize;
+  id3->data[offset++] = 3;      /* Mark as preview image */
+  id3->data[offset++] = 0;      /* Description; just use null terminator */
+
+  memcpy (id3->data + offset, GST_BUFFER_DATA (image), GST_BUFFER_SIZE (image));
 }
 
 void

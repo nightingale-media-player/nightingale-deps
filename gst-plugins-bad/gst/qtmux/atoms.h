@@ -499,11 +499,21 @@ typedef struct _AtomTag
   AtomTagData data;
 } AtomTag;
 
+typedef struct _AtomID32
+{
+  AtomFull header;
+
+  guint8  language[2];
+  guint32 datalen;
+  guint8 *data;
+} AtomID32;
+
 typedef struct _AtomMETA
 {
   AtomFull header;
   AtomHDLR hdlr;
   AtomILST *ilst;
+  AtomID32 *id32;
 } AtomMETA;
 
 typedef struct _AtomUDTA
@@ -539,7 +549,9 @@ typedef struct _AtomMOOV
 
   /* list of AtomTRAK */
   GList *traks;
+
   AtomUDTA *udta;
+  AtomMETA *meta;
 } AtomMOOV;
 
 typedef struct _AtomWAVE
@@ -665,6 +677,8 @@ void atom_moov_add_3gp_str_int_tag   (AtomMOOV * moov, guint32 fourcc, const gch
                                       gint16 ivalue);
 void atom_moov_add_3gp_tag           (AtomMOOV * moov, guint32 fourcc, guint8 * data,
                                       guint size);
+void atom_moov_add_id3_image (AtomMOOV * moov, GstBuffer *image,
+                              const gchar *mimetype);
 
 #define GST_QT_MUX_DEFAULT_TAG_LANGUAGE   "eng"
 guint16  language_code               (const char * lang);
