@@ -7,4 +7,4 @@ libgstid3demux_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) -lgsttag-@GST_MAJORMINOR@ \
 libgstid3demux_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstid3demux_la_LIBTOOLFLAGS = --tag=disable-static
 
-noinst_HEADERS = gstid3demux.h id3tags.h
+noinst_HEADERS = gstid3demux.h
