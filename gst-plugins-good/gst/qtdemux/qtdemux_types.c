@@ -134,6 +134,7 @@ static const QtNodeType qt_node_types[] = {
   {FOURCC_XdxT, "XdxT", 0},
   {FOURCC_loci, "loci", 0},
   {FOURCC_clsf, "clsf", 0},
+  {FOURCC_ID32, "ID3v2 tag", 0},
   {0, "unknown", 0,},
 };
 

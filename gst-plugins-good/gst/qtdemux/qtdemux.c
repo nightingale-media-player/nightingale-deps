@@ -48,6 +48,7 @@
 #include "gst/gst-i18n-plugin.h"
 
 #include <gst/tag/tag.h>
+#include <gst/tag/gstid3v2tag.h>
 
 #include "qtdemux_types.h"
 #include "qtdemux_dump.h"
@@ -5396,6 +5397,100 @@ qtdemux_parse_redirects (GstQTDemux * qtdemux)
   return TRUE;
 }
 
+/* Parse a top-level 'meta' atom for metadata.
+ * Currently handles ID3v2 metadata */
+static void
+qtdemux_parse_meta (GstQTDemux * qtdemux, GNode * meta)
+{
+  GNode *hdlr;
+  GNode *id32;
+  guint32 len;
+
+  hdlr = qtdemux_tree_get_child_by_type (meta, FOURCC_hdlr);
+  if (hdlr != NULL) {
+    guint32 handler_type;
+
+    len = QT_UINT32 ((guint8 *) hdlr->data);
+    if (len < 20) {
+      GST_WARNING_OBJECT (qtdemux, "Skipping hdlr, too short");
+      return;
+    }
+    /* First we check that this hdlr atom is of type "ID32". If it is, then the
+       meta atom should include 1 or more ID32 atoms (perhaps for different
+       languages) */
+    handler_type = QT_FOURCC ((guint8 *) hdlr->data + 16);
+    if (handler_type == FOURCC_ID32) {
+      id32 = qtdemux_tree_get_sibling_by_type (hdlr, FOURCC_ID32);
+      while (id32) {
+        GstTagList *taglist;
+        GstBuffer *id3data = gst_buffer_new ();
+        guint id3len;
+        ID3TagsResult id3res;
+
+        len = QT_UINT32 ((guint8 *) id32->data);
+        if (len < 14) {
+          GST_WARNING_OBJECT (qtdemux, "Skipping hdlr, too short");
+          return;
+        }
+
+        /* Get a buffer pointing to the actual ID3v2 data.
+           Skip over the 8 byte atom header, 4 byte flag/version word,
+           and 2 byte language indicator. */
+        id3data = gst_buffer_new ();
+        GST_BUFFER_DATA (id3data) = ((guint8 *) id32->data) + 14;
+        GST_BUFFER_SIZE (id3data) = QT_UINT32 ((guint8 *) id32->data) - 14;
+
+        id3res = gst_tag_id3v2_read (id3data, &id3len, &taglist);
+        gst_buffer_unref (id3data);
+
+        if (id3res != ID3TAGS_READ_TAG) {
+          GST_WARNING_OBJECT (qtdemux, "Failed to read ID3v2 tag");
+          return;
+        } else if (id3len != GST_BUFFER_SIZE (id3data)) {
+          GST_WARNING_OBJECT (qtdemux, "ID3v2 tag was wrong length");
+          return;
+        } else {
+          GST_DEBUG_OBJECT (qtdemux, "Found ID3v2 tags");
+          if (qtdemux->tag_list) {
+            /* prioritize native tags using _KEEP mode */
+            gst_tag_list_insert (qtdemux->tag_list, taglist,
+                GST_TAG_MERGE_KEEP);
+            gst_tag_list_free (taglist);
+          } else {
+            qtdemux->tag_list = taglist;
+          }
+        }
+        id32 = qtdemux_tree_get_sibling_by_type (id32, FOURCC_ID32);
+      }
+    } else {
+      GST_LOG_OBJECT (qtdemux, "Skipping meta, handler is for different atom");
+    }
+  } else {
+    GST_LOG_OBJECT (qtdemux, "first meta child is not hdlr atom");
+  }
+}
+
+static void
+qtdemux_parse_metadata (GstQTDemux * qtdemux)
+{
+  GNode *udta;
+  GNode *meta;
+
+  udta = qtdemux_tree_get_child_by_type (qtdemux->moov_node, FOURCC_udta);
+  if (udta) {
+    qtdemux_parse_udta (qtdemux, udta);
+  } else {
+    GST_LOG_OBJECT (qtdemux, "No udta node found.");
+  }
+
+  meta = qtdemux_tree_get_child_by_type (qtdemux->moov_node, FOURCC_meta);
+  if (udta) {
+    qtdemux_parse_meta (qtdemux, meta);
+  } else {
+    GST_LOG_OBJECT (qtdemux, "No meta node found.");
+  }
+}
+
 static GstTagList *
 qtdemux_add_container_format (GstQTDemux * qtdemux, GstTagList * tags)
 {
@@ -5431,7 +5526,6 @@ qtdemux_parse_tree (GstQTDemux * qtdemux)
 {
   GNode *mvhd;
   GNode *trak;
-  GNode *udta;
   gint64 duration;
 
   mvhd = qtdemux_tree_get_child_by_type (qtdemux->moov_node, FOURCC_mvhd);
@@ -5461,12 +5555,7 @@ qtdemux_parse_tree (GstQTDemux * qtdemux)
 
   /* find and push tags, we do this after adding the pads so we can push the
    * tags downstream as well. */
-  udta = qtdemux_tree_get_child_by_type (qtdemux->moov_node, FOURCC_udta);
-  if (udta) {
-    qtdemux_parse_udta (qtdemux, udta);
-  } else {
-    GST_LOG_OBJECT (qtdemux, "No udta node found.");
-  }
+  qtdemux_parse_metadata (qtdemux);
 
   /* FIXME: tags must be pushed after the initial newsegment event */
   qtdemux->tag_list = qtdemux_add_container_format (qtdemux, qtdemux->tag_list);
@@ -5672,7 +5761,6 @@ gst_qtdemux_handle_esds (GstQTDemux * qtdemux, QtDemuxStream * stream,
         buffer, NULL);
     gst_buffer_unref (buffer);
   }
-
 }
 
 #define _codec(name) \

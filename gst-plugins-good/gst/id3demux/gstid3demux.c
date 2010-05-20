@@ -55,7 +55,6 @@
 #include <string.h>
 
 #include "gstid3demux.h"
-#include "id3tags.h"
 
 static const GstElementDetails gst_id3demux_details =
 GST_ELEMENT_DETAILS ("ID3 tag demuxer",
@@ -145,7 +144,7 @@ gst_id3demux_identify_tag (GstTagDemux * demux, GstBuffer * buf,
     if (data[0] != 'I' || data[1] != 'D' || data[2] != '3')
       goto no_marker;
 
-    *tag_size = id3demux_calc_id3v2_tag_size (buf);
+    *tag_size = gst_tag_id3v2_size (buf);
   } else {
     if (data[0] != 'T' || data[1] != 'A' || data[2] != 'G')
       goto no_marker;
@@ -183,7 +182,7 @@ gst_id3demux_parse_tag (GstTagDemux * demux, GstBuffer * buffer,
   if (start_tag) {
     ID3TagsResult res;          /* FIXME: make id3tags.c return tagmuxresult values */
 
-    res = id3demux_read_id3v2_tag (buffer, tag_size, tags);
+    res = gst_tag_id3v2_read (buffer, tag_size, tags);
 
     if (G_LIKELY (res == ID3TAGS_READ_TAG)) {
       gst_id3demux_add_container_format (*tags);
