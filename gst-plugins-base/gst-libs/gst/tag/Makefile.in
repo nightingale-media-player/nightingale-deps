@@ -98,7 +98,8 @@ am_libgsttag_@GST_MAJORMINOR@_la_OBJECTS =  \
 	libgsttag_@GST_MAJORMINOR@_la-gstvorbistag.lo \
 	libgsttag_@GST_MAJORMINOR@_la-gstid3tag.lo \
 	libgsttag_@GST_MAJORMINOR@_la-tags.lo \
-	libgsttag_@GST_MAJORMINOR@_la-gsttagdemux.lo
+	libgsttag_@GST_MAJORMINOR@_la-gsttagdemux.lo \
+	libgsttag_@GST_MAJORMINOR@_la-gstid3v2tag.lo
 libgsttag_@GST_MAJORMINOR@_la_OBJECTS =  \
 	$(am_libgsttag_@GST_MAJORMINOR@_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -523,12 +524,12 @@ libgsttagincludedir = \
 	$(includedir)/gstreamer-@GST_MAJORMINOR@/gst/tag
 
 libgsttaginclude_HEADERS = \
-	tag.h gsttagdemux.h
+	tag.h gsttagdemux.h gstid3v2tag.h
 
 lib_LTLIBRARIES = libgsttag-@GST_MAJORMINOR@.la
-libgsttag_@GST_MAJORMINOR@_la_SOURCES = gstvorbistag.c gstid3tag.c tags.c gsttagdemux.c
+libgsttag_@GST_MAJORMINOR@_la_SOURCES = gstvorbistag.c gstid3tag.c tags.c gsttagdemux.c gstid3v2tag.c
 libgsttag_@GST_MAJORMINOR@_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS)
-libgsttag_@GST_MAJORMINOR@_la_LIBADD = $(GST_BASE_LIBS) $(GST_LIBS) 
+libgsttag_@GST_MAJORMINOR@_la_LIBADD = $(GST_BASE_LIBS) $(GST_LIBS) $(ZLIB_LIBS)
 libgsttag_@GST_MAJORMINOR@_la_LDFLAGS = $(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
 noinst_HEADERS = gsttageditingprivate.h
 @HAVE_INTROSPECTION_TRUE@BUILT_GIRSOURCES = GstTag-@GST_MAJORMINOR@.gir
@@ -613,6 +614,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgsttag_@GST_MAJORMINOR@_la-gstid3tag.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgsttag_@GST_MAJORMINOR@_la-gstid3v2tag.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgsttag_@GST_MAJORMINOR@_la-gsttagdemux.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgsttag_@GST_MAJORMINOR@_la-gstvorbistag.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgsttag_@GST_MAJORMINOR@_la-tags.Plo@am__quote@
@@ -665,6 +667,13 @@ libgsttag_@GST_MAJORMINOR@_la-gsttagdemux.lo: gsttagdemux.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gsttagdemux.c' object='libgsttag_@GST_MAJORMINOR@_la-gsttagdemux.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgsttag_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgsttag_@GST_MAJORMINOR@_la-gsttagdemux.lo `test -f 'gsttagdemux.c' || echo '$(srcdir)/'`gsttagdemux.c
+
+libgsttag_@GST_MAJORMINOR@_la-gstid3v2tag.lo: gstid3v2tag.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgsttag_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgsttag_@GST_MAJORMINOR@_la-gstid3v2tag.lo -MD -MP -MF "$(DEPDIR)/libgsttag_@GST_MAJORMINOR@_la-gstid3v2tag.Tpo" -c -o libgsttag_@GST_MAJORMINOR@_la-gstid3v2tag.lo `test -f 'gstid3v2tag.c' || echo '$(srcdir)/'`gstid3v2tag.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgsttag_@GST_MAJORMINOR@_la-gstid3v2tag.Tpo" "$(DEPDIR)/libgsttag_@GST_MAJORMINOR@_la-gstid3v2tag.Plo"; else rm -f "$(DEPDIR)/libgsttag_@GST_MAJORMINOR@_la-gstid3v2tag.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstid3v2tag.c' object='libgsttag_@GST_MAJORMINOR@_la-gstid3v2tag.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgsttag_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgsttag_@GST_MAJORMINOR@_la-gstid3v2tag.lo `test -f 'gstid3v2tag.c' || echo '$(srcdir)/'`gstid3v2tag.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
