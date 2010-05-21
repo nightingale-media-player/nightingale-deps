@@ -91,9 +91,8 @@ pluginLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(plugin_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libgstid3demux_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_libgstid3demux_la_OBJECTS = libgstid3demux_la-gstid3demux.lo \
-	libgstid3demux_la-id3tags.lo libgstid3demux_la-id3v2frames.lo
+	$(am__DEPENDENCIES_1)
+am_libgstid3demux_la_OBJECTS = libgstid3demux_la-gstid3demux.lo
 libgstid3demux_la_OBJECTS = $(am_libgstid3demux_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -628,14 +627,14 @@ shavedir = @shavedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 plugin_LTLIBRARIES = libgstid3demux.la
-libgstid3demux_la_SOURCES = gstid3demux.c id3tags.c id3v2frames.c
+libgstid3demux_la_SOURCES = gstid3demux.c
 libgstid3demux_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS) 
 libgstid3demux_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) -lgsttag-@GST_MAJORMINOR@ \
-	-lgstpbutils-@GST_MAJORMINOR@ $(GST_BASE_LIBS) $(ZLIB_LIBS)
+	-lgstpbutils-@GST_MAJORMINOR@ $(GST_BASE_LIBS)
 
 libgstid3demux_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstid3demux_la_LIBTOOLFLAGS = --tag=disable-static
-noinst_HEADERS = gstid3demux.h id3tags.h
+noinst_HEADERS = gstid3demux.h
 all: all-am
 
 .SUFFIXES:
@@ -706,8 +705,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstid3demux_la-gstid3demux.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstid3demux_la-id3tags.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstid3demux_la-id3v2frames.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -736,20 +733,6 @@ libgstid3demux_la-gstid3demux.lo: gstid3demux.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstid3demux.c' object='libgstid3demux_la-gstid3demux.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstid3demux_la_CFLAGS) $(CFLAGS) -c -o libgstid3demux_la-gstid3demux.lo `test -f 'gstid3demux.c' || echo '$(srcdir)/'`gstid3demux.c
-
-libgstid3demux_la-id3tags.lo: id3tags.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstid3demux_la_CFLAGS) $(CFLAGS) -MT libgstid3demux_la-id3tags.lo -MD -MP -MF "$(DEPDIR)/libgstid3demux_la-id3tags.Tpo" -c -o libgstid3demux_la-id3tags.lo `test -f 'id3tags.c' || echo '$(srcdir)/'`id3tags.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstid3demux_la-id3tags.Tpo" "$(DEPDIR)/libgstid3demux_la-id3tags.Plo"; else rm -f "$(DEPDIR)/libgstid3demux_la-id3tags.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='id3tags.c' object='libgstid3demux_la-id3tags.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstid3demux_la_CFLAGS) $(CFLAGS) -c -o libgstid3demux_la-id3tags.lo `test -f 'id3tags.c' || echo '$(srcdir)/'`id3tags.c
-
-libgstid3demux_la-id3v2frames.lo: id3v2frames.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstid3demux_la_CFLAGS) $(CFLAGS) -MT libgstid3demux_la-id3v2frames.lo -MD -MP -MF "$(DEPDIR)/libgstid3demux_la-id3v2frames.Tpo" -c -o libgstid3demux_la-id3v2frames.lo `test -f 'id3v2frames.c' || echo '$(srcdir)/'`id3v2frames.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstid3demux_la-id3v2frames.Tpo" "$(DEPDIR)/libgstid3demux_la-id3v2frames.Plo"; else rm -f "$(DEPDIR)/libgstid3demux_la-id3v2frames.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='id3v2frames.c' object='libgstid3demux_la-id3v2frames.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstid3demux_la_CFLAGS) $(CFLAGS) -c -o libgstid3demux_la-id3v2frames.lo `test -f 'id3v2frames.c' || echo '$(srcdir)/'`id3v2frames.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
