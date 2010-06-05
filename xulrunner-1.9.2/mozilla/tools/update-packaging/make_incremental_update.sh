@@ -17,6 +17,7 @@ print_usage() {
   notice "  -h  show this help text"
   notice "  -f  clobber this file in the installation"
   notice "      Must be a path to a file to clobber in the partial update."
+  notice "  -m  use a file manifest for the mar tool"
   notice ""
 }
 
@@ -50,12 +51,16 @@ fi
 
 requested_forced_updates='components/components.list Contents/MacOS/components/components.list'
 
-while getopts "hf:" flag
+use_mar_manifest=
+
+while getopts "mhf:" flag
 do
    case "$flag" in
       h) print_usage; exit 0
       ;;
       f) requested_forced_updates="$requested_forced_updates $OPTARG"
+      ;;
+      m) use_mar_manifest=1
       ;;
       ?) print_usage; exit 1
       ;;
@@ -99,6 +104,10 @@ popd
 
 num_oldfiles=${#oldfiles[*]}
 
+if [ -n "$use_mar_manifest" ]; then
+   echo "update.manifest" >> "$workdir/mar.manifest"
+fi
+
 for ((i=0; $i<$num_oldfiles; i=$i+1)); do
   f="${oldfiles[$i]}"
 
@@ -117,6 +126,10 @@ for ((i=0; $i<$num_oldfiles; i=$i+1)); do
       $BZIP2 -cz9 "$newdir/$f" > "$workdir/$f"
       make_add_instruction "$f" >> $manifest
       archivefiles="$archivefiles \"$f\""
+      if [ -n "$use_mar_manifest" ]; then
+        echo "$f" >> "$workdir/mar.manifest"
+      fi
+
       continue 1
     fi
 
@@ -138,10 +151,16 @@ for ((i=0; $i<$num_oldfiles; i=$i+1)); do
         mv -f "$patchfile" "$workdir/$f.patch"
         rm -f "$workdir/$f"
         archivefiles="$archivefiles \"$f.patch\""
+        if [ -n "$use_mar_manifest" ]; then
+          echo "$f.patch" >> "$workdir/mar.manifest"
+        fi
       else
         make_add_instruction "$f" >> $manifest
         rm -f "$patchfile"
         archivefiles="$archivefiles \"$f\""
+        if [ -n "$use_mar_manifest" ]; then
+          echo "$f" >> "$workdir/mar.manifest"
+        fi
       fi
     fi
   else
@@ -169,6 +188,9 @@ for ((i=0; $i<$num_newfiles; i=$i+1)); do
 
   make_add_instruction "$f" >> "$manifest"
   archivefiles="$archivefiles \"$f\""
+  if [ -n "$use_mar_manifest" ]; then
+    echo "$f" >> "$workdir/mar.manifest"
+  fi
 done
 
 # Append remove instructions for any dead files.
@@ -176,7 +198,14 @@ append_remove_instructions "$newdir" >> $manifest
 
 $BZIP2 -z9 "$manifest" && mv -f "$manifest.bz2" "$manifest"
 
-eval "$MAR -C \"$workdir\" -c output.mar $archivefiles"
+if [ -n "$use_mar_manifest" ]; then
+   echo "$MAR -C \"$workdir\" -f mar.manifest -c output.mar"
+   eval "$MAR -C \"$workdir\" -f mar.manifest -c output.mar"
+else
+   echo "$MAR -C \"$workdir\" -c output.mar $archivefiles"
+   eval "$MAR -C \"$workdir\" -c output.mar $archivefiles"
+fi
+
 mv -f "$workdir/output.mar" "$archive"
 
 # cleanup

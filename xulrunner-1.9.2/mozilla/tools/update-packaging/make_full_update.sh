@@ -24,8 +24,15 @@ if [ $1 = -h ]; then
   notice ""
   notice "Options:"
   notice "  -h  show this help text"
+  notice "  -m  use a file manifest for the mar tool"
   notice ""
   exit 1
+fi
+
+use_mar_manfiest=
+if [ $1 = -m ]; then
+   use_mar_manfiest=1
+   shift 1
 fi
 
 # -----------------------------------------------------------------------------
@@ -51,6 +58,10 @@ popd
 > $manifest
 
 num_files=${#files[*]}
+  
+if [ -n "$use_mar_manifest" ]; then
+   echo "update.manifest" >> "$workdir/mar.manifest"
+fi
 
 for ((i=0; $i<$num_files; i=$i+1)); do
   f="${files[$i]}"
@@ -64,6 +75,10 @@ for ((i=0; $i<$num_files; i=$i+1)); do
   $BZIP2 -cz9 "$targetdir/$f" > "$workdir/$f"
   copy_perm "$targetdir/$f" "$workdir/$f"
 
+  if [ -n "$use_mar_manifest" ]; then
+     echo "$f" >> "$workdir/mar.manifest"
+  fi
+
   targetfiles="$targetfiles \"$f\""
 done
 
@@ -72,7 +87,14 @@ append_remove_instructions "$targetdir" >> $manifest
 
 $BZIP2 -z9 "$manifest" && mv -f "$manifest.bz2" "$manifest"
 
-eval "$MAR -C \"$workdir\" -c output.mar $targetfiles"
+if [ -n "$use_mar_manifest" ]; then
+   echo "$MAR -C \"$workdir\" -f mar.manifest -c output.mar"
+   eval "$MAR -C \"$workdir\" -f mar.manifest -c output.mar"
+else
+   echo "$MAR -C \"$workdir\" -c output.mar $targetfiles"
+   eval "$MAR -C \"$workdir\" -c output.mar $targetfiles"
+fi
+
 mv -f "$workdir/output.mar" "$archive"
 
 # cleanup
