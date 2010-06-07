@@ -1,7 +1,7 @@
 ##
 ## Format: packageOne(num num num), packageTwo(num num)
 ##
-linux-i686: xulrunner-1.9.2(20319 20529 20511 20899)
+linux-i686:  xulrunner-1.9.2(20319 20529 20511 20899)
 linux-x86_64: gst-plugins-base(21146 21222)
-macosx-i686: xulrunner-1.9.2(20319 20529 20511 20899)
-windows-i686-msvc8: xulrunner-1.9.2(20319 20529 20511 20899)
+macosx-i686:  xulrunner-1.9.2(20319 20529 20511 20899)
+windows-i686-msvc8:  xulrunner-1.9.2(20319 20529 20511 20899)
