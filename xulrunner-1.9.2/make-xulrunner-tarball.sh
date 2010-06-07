@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 TAR=${TAR:-tar}
 CP=${CP:-cp}
 FIND=${FIND:-find}
@@ -36,8 +38,17 @@ $FIND "$permFixDir" -not -perm +0111 -exec chmod 0644 {} \;
 
 cd "$permFixDir"
 
+notice "Creating mega xpt out of all .xpts..."
+pushd components > /dev/null
+all_xpts=$($FIND . -name '*.xpt')
+echo ../xpt_link xulrunner.xpt $all_xpts
+../xpt_link xulrunner.xpt $all_xpts
+echo $RM -fv $all_xpts
+$RM -fv $all_xpts
+popd > /dev/null
+
 notice "creating tarball in dest..."
-echo $TAR -cjvh --owner=0 --group=0 --numeric-owner -p -f "$tarball" *
-$TAR -cjvh --owner=0 --group=0 --numeric-owner -p -f "$tarball" *
+echo $TAR -cjvh --owner=0 --group=0 --exclude='CVS' --exclude='.hg' --exclude='.svn' --numeric-owner -p -f "$tarball" *
+$TAR -cjvh --owner=0 --group=0 --exclude='CVS' --exclude='.hg' --exclude='.svn' --numeric-owner -p -f "$tarball" *
 
 notice "done."
