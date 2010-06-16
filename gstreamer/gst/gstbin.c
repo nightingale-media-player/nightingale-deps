@@ -2073,11 +2073,12 @@ gst_bin_element_set_state (GstBin * bin, GstElement * element,
 
   /* Try not to change the state of elements that are already in the state we're
    * going to */
-  if (!(child_pending != GST_STATE_VOID_PENDING ||
-          (child_pending == GST_STATE_VOID_PENDING &&
-              ((pending > child_current && next > child_current) ||
-                  (pending < child_current && next < child_current)))))
+  if (((next < current) && (next > child_current)) ||
+      ((next > current) && (next < child_current)))
+  {
+    ret = GST_STATE_CHANGE_SUCCESS;
     goto unneeded;
+  }
 
   /* the element was busy with an upwards async state change, we must wait for
    * an ASYNC_DONE message before we attemp to change the state. */
