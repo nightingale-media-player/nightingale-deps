@@ -129,9 +129,9 @@
 
   self = [super initWithFrame: frame pixelFormat:fmt];
 
-   actualContext = [self openGLContext];
-   [actualContext makeCurrentContext];
-   [actualContext update];
+  actualContext = [self openGLContext];
+  [actualContext makeCurrentContext];
+  [actualContext update];
 
   /* Black background */
   glClearColor (0.0, 0.0, 0.0, 0.0);
