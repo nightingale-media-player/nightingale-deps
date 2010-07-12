@@ -1117,7 +1117,12 @@ BrowserGlue.prototype = {
   // get this contractID registered for certain categories via XPCOMUtils
   _xpcom_categories: [
     // make BrowserGlue a startup observer
-    { category: "app-startup", service: true }
+    { category: "app-startup", service: true },
+    { /* when component registration *didn't* run (i.e. second run), we need
+       * to get invoked via this topic to be able to apply the default prefs
+       * before the chrome registry initializes
+       */
+      category: "prefservice:after-app-defaults", service: true }
   ]
 }
 
@@ -1247,5 +1252,9 @@ GeolocationPrompt.prototype = {
 
 //module initialization
 function NSGetModule(aCompMgr, aFileSpec) {
+  /* on runs with component registration (e.g. safe mode), we need to manually
+   * load the default prefs in order to happen before the chrome registry loads
+   */
+  BrowserGlueServiceFactory.createInstance(null)._onAppDefaults();
   return XPCOMUtils.generateModule([BrowserGlue, GeolocationPrompt]);
 }
