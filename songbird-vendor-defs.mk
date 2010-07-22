@@ -405,10 +405,10 @@ $(SB_VENDOR_BINARIES_DIR)/$(strip $1)/$(SB_BUILD_TYPE)
 endef
 
 # Mozilla SDK settings
-MOZSDK_DIR = $(call find-dep-dir, mozilla)
+MOZSDK_DIR = $(call find-dep-dir, mozilla-1.9.2)
 MOZSDK_BIN_DIR = $(MOZSDK_DIR)/bin
 MOZSDK_SCRIPTS_DIR = $(MOZSDK_DIR)/scripts
-MOZ_XR_DIR = $(call find-dep-dir, xulrunner)
+MOZ_XR_DIR = $(call find-dep-dir, xulrunner-1.9.2)
 
 # Supporting SDK paths on Win32
 ifeq (Msys,$(SB_VENDOR_ARCH))
