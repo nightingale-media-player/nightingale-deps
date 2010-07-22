@@ -31,7 +31,7 @@
 ################################################################################
 
 SB_VENDOR_TARGET = xulrunner
-SB_VENDOR_TARGET_VERSION = 1.9.2.2
+SB_VENDOR_TARGET_VERSION = 1.9.2.3
 
 # We set this up here, but it turns out that it's only for Win32 and Mac; Linux
 # ignores is (see the block after the rules.mk include)
