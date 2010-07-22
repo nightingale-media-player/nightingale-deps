@@ -3570,6 +3570,7 @@ nsDOMClassInfo::Init()
 
   DOM_CLASSINFO_MAP_BEGIN(File, nsIDOMFile)
     DOM_CLASSINFO_MAP_ENTRY(nsIDOMFile)
+    DOM_CLASSINFO_MAP_ENTRY(nsIDOMFile_1_9_2_BRANCH)
   DOM_CLASSINFO_MAP_END
 
   DOM_CLASSINFO_MAP_BEGIN(FileException, nsIDOMFileException)
@@ -6508,7 +6509,9 @@ nsWindowSH::NewResolve(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
 
     JSBool ok = ::JS_DefineUCProperty(cx, obj, ::JS_GetStringChars(str),
                                       ::JS_GetStringLength(str), v, nsnull,
-                                      nsnull, JSPROP_ENUMERATE);
+                                      nsnull,
+                                      JSPROP_PERMANENT |
+                                      JSPROP_ENUMERATE);
 
     if (!ok) {
       return NS_ERROR_FAILURE;
@@ -7360,12 +7363,15 @@ nsEventReceiverSH::AddEventListenerHelper(JSContext *cx, JSObject *obj,
     return JS_FALSE;
   }
 
-  OBJ_TO_INNER_OBJECT(cx, obj);
-
   nsresult rv = sXPConnect->GetJSObjectOfWrapper(cx, obj, &obj);
   if (NS_FAILED(rv)) {
     nsDOMClassInfo::ThrowJSException(cx, rv);
 
+    return JS_FALSE;
+  }
+
+  OBJ_TO_INNER_OBJECT(cx, obj);
+  if (!obj) {
     return JS_FALSE;
   }
 
@@ -8271,7 +8277,9 @@ nsDocumentSH::NewResolve(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
     JSString *str = JSVAL_TO_STRING(id);
     JSBool ok = ::JS_DefineUCProperty(cx, obj, ::JS_GetStringChars(str),
                                       ::JS_GetStringLength(str), v, nsnull,
-                                      nsnull, JSPROP_ENUMERATE);
+                                      nsnull,
+                                      JSPROP_PERMANENT |
+                                      JSPROP_ENUMERATE);
 
     if (!ok) {
       return NS_ERROR_FAILURE;

@@ -1599,6 +1599,7 @@ NS_IMETHODIMP nsWebBrowser::ScrollByPages(PRInt32 aNumPages)
 
 NS_IMETHODIMP nsWebBrowser::SetDocShell(nsIDocShell* aDocShell)
 {
+     nsCOMPtr<nsIDocShell> kungFuDeathGrip(mDocShell);
      if(aDocShell)
      {
          NS_ENSURE_TRUE(!mDocShell, NS_ERROR_FAILURE);

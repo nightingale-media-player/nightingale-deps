@@ -68,6 +68,7 @@
 NS_INTERFACE_MAP_BEGIN(nsDOMFile)
   NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIDOMFile)
   NS_INTERFACE_MAP_ENTRY(nsIDOMFile)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMFile_1_9_2_BRANCH)
   NS_INTERFACE_MAP_ENTRY(nsIDOMFileInternal)
   NS_INTERFACE_MAP_ENTRY(nsICharsetDetectionObserver)
   NS_DOM_INTERFACE_MAP_ENTRY_CLASSINFO(File)
@@ -106,6 +107,16 @@ NS_IMETHODIMP
 nsDOMFile::GetName(nsAString &aFileName)
 {
   return mFile->GetLeafName(aFileName);
+}
+
+NS_IMETHODIMP
+nsDOMFile::GetMozFullPath(nsAString &aFileName)
+{
+  if (nsContentUtils::IsCallerTrustedForCapability("UniversalFileRead")) {
+    return mFile->GetPath(aFileName);
+  }
+  aFileName.Truncate();
+  return NS_OK;
 }
 
 NS_IMETHODIMP

@@ -220,7 +220,11 @@ nsHTMLAreaElement::UnbindFromTree(PRBool aDeep, PRBool aNullParent)
 {
   if (IsInDoc()) {
     RegUnRegAccessKey(PR_FALSE);
-    GetCurrentDoc()->ForgetLink(this);
+    // Wallpaper null check see bug 480300
+    nsIDocument* doc = GetCurrentDoc();
+    if (doc)
+      doc->ForgetLink(this);
+
     // If this link is ever reinserted into a document, it might
     // be under a different xml:base, so forget the cached state now
     mLinkState = eLinkState_Unknown;

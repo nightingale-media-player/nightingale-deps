@@ -102,6 +102,8 @@ PKG_INST_PATH = install/sea/
 PKG_UPDATE_BASENAME = $(PKG_BASENAME)
 PKG_UPDATE_PATH = update/
 COMPLETE_MAR = $(PKG_UPDATE_PATH)$(PKG_UPDATE_BASENAME).complete.mar
+# PARTIAL_MAR needs to be processed by $(wildcard) before you use it.
+PARTIAL_MAR = $(PKG_UPDATE_PATH)$(PKG_UPDATE_BASENAME).partial.*.mar
 PKG_LANGPACK_BASENAME = $(MOZ_PKG_APPNAME)-$(MOZ_PKG_VERSION).$(AB_CD).langpack
 PKG_LANGPACK_PATH = install/
 LANGPACK = $(PKG_LANGPACK_PATH)$(PKG_LANGPACK_BASENAME).xpi
@@ -140,6 +142,8 @@ PKG_INST_PATH = $(PKG_PATH)
 PKG_UPDATE_BASENAME = $(MOZ_PKG_APPNAME_LC)-$(MOZ_PKG_VERSION)
 PKG_UPDATE_PATH = update/$(PKG_PATH)
 COMPLETE_MAR = $(PKG_UPDATE_PATH)$(PKG_UPDATE_BASENAME).complete.mar
+# PARTIAL_MAR needs to be processed by $(wildcard) before you use it.
+PARTIAL_MAR = $(PKG_UPDATE_PATH)$(PKG_UPDATE_BASENAME).partial.*.mar
 PKG_LANGPACK_BASENAME = $(AB_CD)
 PKG_LANGPACK_PATH = $(MOZ_PKG_PLATFORM)/xpi/
 LANGPACK = $(PKG_LANGPACK_PATH)$(PKG_LANGPACK_BASENAME).xpi
@@ -153,3 +157,11 @@ SYMBOL_ARCHIVE_BASENAME = $(PKG_BASENAME).crashreporter-symbols
 
 # Test package naming
 TEST_PACKAGE = $(PKG_BASENAME).tests.tar.bz2
+
+ifneq (,$(wildcard $(DIST)/bin/application.ini))
+BUILDID = $(shell $(PYTHON) $(topsrcdir)/config/printconfigsetting.py $(DIST)/bin/application.ini App BuildID)
+else
+BUILDID = $(shell $(PYTHON) $(topsrcdir)/config/printconfigsetting.py $(DIST)/bin/platform.ini Build BuildID)
+endif
+
+MOZ_SOURCE_STAMP = $(shell hg -R $(topsrcdir) parent --template="{node|short}\n" 2>/dev/null)

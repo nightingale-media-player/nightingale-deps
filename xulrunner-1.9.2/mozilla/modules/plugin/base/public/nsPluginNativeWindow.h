@@ -103,7 +103,7 @@ public:
     SetPluginInstance(aPluginInstance);
     return NS_OK;
   }
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
 #define MOZ_COMPOSITED_PLUGINS
 #endif
 #ifdef MOZ_COMPOSITED_PLUGINS

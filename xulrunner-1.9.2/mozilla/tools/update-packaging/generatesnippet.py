@@ -66,6 +66,14 @@ def main():
                       action="store",
                       dest="product",
                       help="[Required] This option is used to generate the URL to download the MAR file.")
+    parser.add_option("--platform",
+                      action="store",
+                      dest="platform",
+                      help="[Required] This option is used to indicate which target platform.")
+    parser.add_option("--branch",
+                      action="store",
+                      dest="branch",
+                      help="This option is used to indicate which branch name to use for FTP file names.")
     parser.add_option("--download-base-URL",
                       action="store",
                       dest="downloadBaseURL",
@@ -80,18 +88,24 @@ def main():
     for req, msg in (('marPath', "the absolute path to the where the MAR file is"),
                      ('applicationIniFile', "the absolute path to the application.ini file."),
                      ('locale', "a locale."),
-                     ('product', "specify a product.")):
+                     ('product', "specify a product."),
+                     ('platform', "specify the platform.")):
         if not hasattr(options, req):
             parser.error('You must specify %s' % msg)
 
     if not options.downloadBaseURL or options.downloadBaseURL == '':
         options.downloadBaseURL = 'http://ftp.mozilla.org/pub/mozilla.org/%s/nightly' % options.product
 
+    if not options.branch or options.branch == '':
+        options.branch = None
+
     snippet = generateSnippet(options.marPath,
                               options.applicationIniFile,
                               options.locale,
                               options.downloadBaseURL,
-                              options.product)
+                              options.product,
+                              options.platform,
+                              options.branch)
     f = open(os.path.join(options.marPath, 'complete.update.snippet'), 'wb')
     f.write(snippet)
     f.close()
@@ -101,7 +115,7 @@ def main():
         print snippet
 
 def generateSnippet(abstDistDir, applicationIniFile, locale,
-                    downloadBaseURL, product):
+                    downloadBaseURL, product, platform, branch):
     # Let's extract information from application.ini
     c = ConfigParser()
     try:
@@ -110,13 +124,13 @@ def generateSnippet(abstDistDir, applicationIniFile, locale,
        sys.exit(stderror) 
     buildid = c.get("App", "BuildID")
     appVersion = c.get("App", "Version")
-    branchName = c.get("App", "SourceRepository").split('/')[-1]
+    branchName = branch or c.get("App", "SourceRepository").split('/')[-1]
 
     marFileName = '%s-%s.%s.%s.complete.mar' % (
         product,
         appVersion,
         locale,
-        getPlatform())
+        platform)
     # Let's determine the hash and the size of the MAR file
     # This function exits the script if the file does not exist
     (completeMarHash, completeMarSize) = getFileHashAndSize(
@@ -147,14 +161,6 @@ sha1
             appVersion=appVersion)
 
     return snippet
-
-def getPlatform():
-    if platform.system() == "Linux":
-        return "linux-i686"
-    elif platform.system() in ("Windows", "Microsoft"):
-        return "win32"
-    elif platform.system() == "Darwin":
-        return "mac"
 
 def getFileHashAndSize(filepath):
     sha1Hash = 'UNKNOWN'

@@ -5,7 +5,7 @@ The summary
 
 1) start the server, with python server.py
 2) Get a file of all tests available by getting http://localhost:8000/
-3) Use that file as an argument to mozilla -f (this requires either a 
+3) Use that file as an argument to mozilla -f (this requires either a
 debug build or a build with --enable-perf-metrics)
 4) Look at the results of http://localhost:8000/id/report
 
@@ -13,7 +13,7 @@ Detail
 ======
 
 Each run gets a unique ID number, which is used to map a test run to a 
-database of results. Every test (which lives in the tests/ directory) is 
+database of results. Every test (which lives in the tests/ directory) is
 enumerated in step 2. Adding a new test is as simple as just creating the 
 directory and addiing the appropriate files.
 

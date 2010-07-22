@@ -765,10 +765,16 @@ png_push_save_buffer(png_structp png_ptr)
       {
         png_error(png_ptr, "Potential overflow of save_buffer");
       }
+
       new_max = png_ptr->save_buffer_size + png_ptr->current_buffer_size + 256;
       old_buffer = png_ptr->save_buffer;
-      png_ptr->save_buffer = (png_bytep)png_malloc(png_ptr,
-         (png_uint_32)new_max);
+      png_ptr->save_buffer = (png_bytep)png_malloc_warn(png_ptr,
+         (png_size_t)new_max);
+      if (png_ptr->save_buffer == NULL)
+      {
+        png_free(png_ptr, old_buffer);
+        png_error(png_ptr, "Insufficient memory for save_buffer");
+      }
       png_memcpy(png_ptr->save_buffer, old_buffer, png_ptr->save_buffer_size);
       png_free(png_ptr, old_buffer);
       png_ptr->save_buffer_max = new_max;

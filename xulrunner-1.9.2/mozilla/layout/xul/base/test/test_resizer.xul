@@ -16,11 +16,13 @@ XUL <resizer> tests
 
   <!-- test code goes here -->
   <script type="application/javascript"><![CDATA[
-    // GTK has a native drag resizing implementation so we can't test that here
     if (navigator.platform.indexOf("Mac") == 0 || navigator.platform.indexOf("Win") == 0) {
       SimpleTest.waitForExplicitFinish();
 
       window.open("window_resizer.xul", "_blank", "left=200,top=200,outerWidth=300,outerHeight=300");
+    } else {
+      // Skip window_resizer.xul tests.
+      todo(false, "GTK has a native drag resizing implementation so we can't test that here.");
     }
    ]]></script>
 </window>

@@ -4172,6 +4172,14 @@ nsContentUtils::CheckSecurityBeforeLoad(nsIURI* aURIToLoad,
   return aLoadingPrincipal->CheckMayLoad(aURIToLoad, PR_TRUE);
 }
 
+PRBool
+nsContentUtils::IsSystemPrincipal(nsIPrincipal* aPrincipal)
+{
+  PRBool isSystem;
+  nsresult rv = sSecurityManager->IsSystemPrincipal(aPrincipal, &isSystem);
+  return NS_SUCCEEDED(rv) && isSystem;
+}
+
 /* static */
 void
 nsContentUtils::TriggerLink(nsIContent *aContent, nsPresContext *aPresContext,

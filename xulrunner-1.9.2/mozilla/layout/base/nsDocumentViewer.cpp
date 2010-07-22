@@ -2338,13 +2338,17 @@ DocumentViewerImpl::FindContainerView()
 {
   nsIView* containerView = nsnull;
 
+  nsCOMPtr<nsIContent> containerElement;
+  nsCOMPtr<nsIDocShellTreeItem> docShellItem = do_QueryReferent(mContainer);
+  nsCOMPtr<nsPIDOMWindow> pwin(do_GetInterface(docShellItem));
+  if (pwin) {
+    containerElement = do_QueryInterface(pwin->GetFrameElementInternal());
+  }
+        
   if (mParentWidget) {
     containerView = nsIView::GetViewFor(mParentWidget);
-  } else if (mContainer) {
-    nsCOMPtr<nsIDocShellTreeItem> docShellItem = do_QueryReferent(mContainer);
-    nsCOMPtr<nsPIDOMWindow> pwin(do_GetInterface(docShellItem));
-    if (pwin) {
-      nsCOMPtr<nsIContent> content = do_QueryInterface(pwin->GetFrameElementInternal());
+  } else {
+    if (mContainer) {
       nsCOMPtr<nsIPresShell> parentPresShell;
       if (docShellItem) {
         nsCOMPtr<nsIDocShellTreeItem> parentDocShellItem;
@@ -2354,12 +2358,12 @@ DocumentViewerImpl::FindContainerView()
           parentDocShell->GetPresShell(getter_AddRefs(parentPresShell));
         }
       }
-      if (!content) {
+      if (!containerElement) {
         NS_WARNING("Subdocument container has no content");
       } else if (!parentPresShell) {
         NS_WARNING("Subdocument container has no presshell");
       } else {
-        nsIFrame* f = parentPresShell->GetRealPrimaryFrameFor(content);
+        nsIFrame* f = parentPresShell->GetRealPrimaryFrameFor(containerElement);
         if (f) {
           nsIFrame* subdocFrame = f->GetContentInsertionFrame();
           // subdocFrame might not be a subdocument frame; the frame
@@ -2385,24 +2389,15 @@ DocumentViewerImpl::FindContainerView()
   if (!containerView)
     return nsnull;
 
+  if (containerElement &&
+      containerElement->HasAttr(kNameSpaceID_None, nsGkAtoms::transparent))
+    return containerView;
+
   nsIWidget* outerWidget = containerView->GetNearestWidget(nsnull);
   if (outerWidget &&
       outerWidget->GetTransparencyMode() == eTransparencyTransparent)
     return containerView;
 
-  // see if the containerView has already been hooked into a foreign view manager hierarchy
-  // if it has, then we have to hook into the hierarchy too otherwise bad things will happen.
-  nsIViewManager* containerVM = containerView->GetViewManager();
-  nsIView* pView = containerView;
-  do {
-    pView = pView->GetParent();
-  } while (pView && pView->GetViewManager() == containerVM);
-  if (pView)
-    return containerView;
-
-  // OK, so the container is not already hooked up into a foreign view manager hierarchy.
-  // That means we can choose not to hook ourselves up.
-  //
   // If the parent container is a chrome shell and we are a content shell
   // then we won't hook into its view
   // tree. This will improve performance a little bit (especially given scrolling/painting perf bugs)

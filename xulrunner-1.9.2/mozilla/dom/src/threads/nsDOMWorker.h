@@ -235,10 +235,7 @@ public:
 private:
   ~nsDOMWorker();
 
-  nsresult PostMessageInternal(const nsAString& aMessage,
-                               PRBool aIsJSON,
-                               PRBool aIsPrimitive,
-                               PRBool aToInner);
+  nsresult PostMessageInternal(PRBool aToInner);
 
   PRBool CompileGlobalObject(JSContext* aCx);
 

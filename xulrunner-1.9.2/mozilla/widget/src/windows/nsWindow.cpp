@@ -378,7 +378,6 @@ nsWindow::nsWindow() : nsBaseWidget()
   mHas3DBorder          = PR_FALSE;
   mIsInMouseCapture     = PR_FALSE;
   mIsTopWidgetWindow    = PR_FALSE;
-  mInScrollProcessing   = PR_FALSE;
   mUnicodeWidget        = PR_TRUE;
   mWindowType           = eWindowType_child;
   mBorderStyle          = eBorderStyle_default;
@@ -408,11 +407,6 @@ nsWindow::nsWindow() : nsBaseWidget()
   mBackground           = ::GetSysColor(COLOR_BTNFACE);
   mBrush                = ::CreateSolidBrush(NSRGB_2_COLOREF(mBackground));
   mForeground           = ::GetSysColor(COLOR_WINDOWTEXT);
-
-#ifdef WINCE_WINDOWS_MOBILE
-  mInvalidatedRegion = do_CreateInstance(kRegionCID);
-  mInvalidatedRegion->Init();
-#endif
 
 #if MOZ_WINSDK_TARGETVER >= MOZ_NTDDI_WIN7
   mTaskbarPreview = nsnull;
@@ -2160,12 +2154,7 @@ NS_METHOD nsWindow::Invalidate(PRBool aIsSynchronous)
                          nsCAutoString("noname"),
                          (PRInt32) mWnd);
 #endif // WIDGET_DEBUG_OUTPUT
-#ifdef WINCE_WINDOWS_MOBILE
-    // We need to keep track of our own invalidated region for Windows CE
-    RECT r;
-    GetClientRect(mWnd, &r);
-    AddRECTToRegion(r, mInvalidatedRegion);
-#endif
+
     VERIFY(::InvalidateRect(mWnd, NULL, FALSE));
 
     if (aIsSynchronous) {
@@ -2196,10 +2185,6 @@ NS_METHOD nsWindow::Invalidate(const nsIntRect & aRect, PRBool aIsSynchronous)
     rect.right  = aRect.x + aRect.width;
     rect.bottom = aRect.y + aRect.height;
 
-#ifdef WINCE_WINDOWS_MOBILE
-    // We need to keep track of our own invalidated region for Windows CE
-    AddRECTToRegion(rect, mInvalidatedRegion);
-#endif
     VERIFY(::InvalidateRect(mWnd, &rect, FALSE));
 
     if (aIsSynchronous) {
@@ -2216,20 +2201,45 @@ nsWindow::MakeFullScreen(PRBool aFullScreen)
   RECT rc;
   if (aFullScreen) {
     SetForegroundWindow(mWnd);
-    SHFullScreen(mWnd, SHFS_HIDETASKBAR | SHFS_HIDESTARTICON);
-    SetRect(&rc, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
+    if (nsWindowCE::sMenuBarShown) {
+      SIPINFO sipInfo;
+      memset(&sipInfo, 0, sizeof(SIPINFO));
+      sipInfo.cbSize = sizeof(SIPINFO);
+      if (SipGetInfo(&sipInfo))
+        SetRect(&rc, 0, 0, GetSystemMetrics(SM_CXSCREEN), 
+                sipInfo.rcVisibleDesktop.bottom);
+      else
+        SetRect(&rc, 0, 0, GetSystemMetrics(SM_CXSCREEN), 
+                GetSystemMetrics(SM_CYSCREEN));
+      RECT menuBarRect;
+      if (GetWindowRect(nsWindowCE::sSoftKeyMenuBarHandle, &menuBarRect) && 
+          menuBarRect.top < rc.bottom)
+        rc.bottom = menuBarRect.top;
+      SHFullScreen(mWnd, SHFS_HIDETASKBAR | SHFS_HIDESTARTICON | SHFS_SHOWSIPBUTTON);
+    } else {
+      
+      SHFullScreen(mWnd, SHFS_HIDETASKBAR | SHFS_HIDESTARTICON | SHFS_HIDESIPBUTTON);
+      SetRect(&rc, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
+    }
   }
   else {
     SHFullScreen(mWnd, SHFS_SHOWTASKBAR | SHFS_SHOWSTARTICON);
     SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, FALSE);
   }
-  MoveWindow(mWnd, rc.left, rc.top, rc.right-rc.left, rc.bottom-rc.top, TRUE);
 
   if (aFullScreen)
     mSizeMode = nsSizeMode_Fullscreen;
-#endif
+
+  // nsBaseWidget hides the chrome and resizes the window, replicate that here
+  HideWindowChrome(aFullScreen);
+  Resize(rc.left, rc.top, rc.right-rc.left, rc.bottom-rc.top, PR_TRUE);
+
+  return NS_OK;
+
+#else
 
   return nsBaseWidget::MakeFullScreen(aFullScreen);
+#endif
 }
 
 /**************************************************************
@@ -2929,16 +2939,18 @@ nsWindow::OverrideSystemMouseScrollSpeed(PRInt32 aOriginalDelta,
   // on the document of SystemParametersInfo in MSDN.
   const PRInt32 kSystemDefaultScrollingSpeed = 3;
 
+  PRInt32 absOriginDelta = PR_ABS(aOriginalDelta);
+
   // Compute the simple overridden speed.
-  PRInt32 computedOverriddenDelta;
+  PRInt32 absComputedOverriddenDelta;
   nsresult rv =
-    nsBaseWidget::OverrideSystemMouseScrollSpeed(aOriginalDelta, aIsHorizontal,
-                                                 computedOverriddenDelta);
+    nsBaseWidget::OverrideSystemMouseScrollSpeed(absOriginDelta, aIsHorizontal,
+                                                 absComputedOverriddenDelta);
   NS_ENSURE_SUCCESS(rv, rv);
 
   aOverriddenDelta = aOriginalDelta;
 
-  if (computedOverriddenDelta == aOriginalDelta) {
+  if (absComputedOverriddenDelta == absOriginDelta) {
     // We don't override now.
     return NS_OK;
   }
@@ -2972,14 +2984,23 @@ nsWindow::OverrideSystemMouseScrollSpeed(PRInt32 aOriginalDelta,
   // driver might accelerate the scrolling speed already.  If so, we shouldn't
   // override the scrolling speed for preventing the unexpected high speed
   // scrolling.
-  PRInt32 deltaLimit;
+  PRInt32 absDeltaLimit;
   rv =
     nsBaseWidget::OverrideSystemMouseScrollSpeed(kSystemDefaultScrollingSpeed,
-                                                 aIsHorizontal, deltaLimit);
+                                                 aIsHorizontal, absDeltaLimit);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  aOverriddenDelta = PR_MIN(computedOverriddenDelta, deltaLimit);
+  // If the given delta is larger than our computed limitation value, the delta
+  // was accelerated by the mouse driver.  So, we should do nothing here.
+  if (absDeltaLimit <= absOriginDelta) {
+    return NS_OK;
+  }
 
+  absComputedOverriddenDelta =
+    PR_MIN(absComputedOverriddenDelta, absDeltaLimit);
+
+  aOverriddenDelta = (aOriginalDelta > 0) ? absComputedOverriddenDelta :
+                                            -absComputedOverriddenDelta;
   return NS_OK;
 }
 
@@ -4273,8 +4294,8 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM &wParam, LPARAM &lParam,
 
 #if defined(WINCE_HAVE_SOFTKB)
         if (mIsTopWidgetWindow && sSoftKeyboardState)
-          nsWindowCE::ToggleSoftKB(fActive);
-        if (nsWindowCE::sShowSIPButton != TRI_TRUE && WA_INACTIVE != fActive) {
+          nsWindowCE::ToggleSoftKB(mWnd, fActive);
+        if (nsWindowCE::sShowSIPButton == TRI_FALSE && WA_INACTIVE != fActive) {
           HWND hWndSIPB = FindWindowW(L"MS_SIPBUTTON", NULL ); 
           if (hWndSIPB)
             ShowWindow(hWndSIPB, SW_HIDE);
@@ -4546,10 +4567,9 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM &wParam, LPARAM &lParam,
       getWheelInfo = PR_TRUE;
 #else
       switch (wParam) {
-        case SPI_SIPMOVE:
         case SPI_SETSIPINFO:
         case SPI_SETCURRENTIM:
-          nsWindowCE::NotifySoftKbObservers();
+          nsWindowCE::OnSoftKbSettingsChange(mWnd);
           break;
         case SETTINGCHANGE_RESET:
           if (mWindowType == eWindowType_invisible) {
@@ -6164,6 +6184,11 @@ void nsWindow::OnDestroy()
     SetupTranslucentWindowMemoryBitmap(eTransparencyOpaque);
 #endif
 
+#if defined(WINCE_HAVE_SOFTKB)
+  // Revert the changes made for the software keyboard settings
+  nsWindowCE::ResetSoftKB(mWnd);
+#endif
+
   // Clear the main HWND.
   mWnd = NULL;
 }
@@ -6257,6 +6282,11 @@ PRBool nsWindow::HandleScrollingPlugins(UINT aMsg, WPARAM aWParam,
   point.x = GET_X_LPARAM(dwPoints);
   point.y = GET_Y_LPARAM(dwPoints);
 
+  static PRBool sIsProcessing = PR_FALSE;
+  if (sIsProcessing) {
+    return PR_TRUE;  // the caller should handle this.
+  }
+
   static PRBool sMayBeUsingLogitechMouse = PR_FALSE;
   if (aMsg == WM_MOUSEHWHEEL) {
     // Logitech (Logicool) mouse driver (confirmed with 4.82.11 and MX-1100)
@@ -6321,20 +6351,15 @@ PRBool nsWindow::HandleScrollingPlugins(UINT aMsg, WPARAM aWParam,
         // message themselves, some will forward directly back to us, while 
         // others will call DefWndProc, which itself still forwards back to us.
         // So if we have sent it once, we need to handle it ourself.
-        if (mInScrollProcessing) {
-          destWnd = parentWnd;
-          destWindow = parentWindow;
-        } else {
-          // First time we have seen this message.
-          // Call the child - either it will consume it, or
-          // it will wind it's way back to us,triggering the destWnd case above
-          // either way,when the call returns,we are all done with the message,
-          mInScrollProcessing = PR_TRUE;
-          if (0 == ::SendMessageW(destWnd, aMsg, aWParam, aLParam))
-            aHandled = PR_TRUE;
-          destWnd = nsnull;
-          mInScrollProcessing = PR_FALSE;
-        }
+
+        // First time we have seen this message.
+        // Call the child - either it will consume it, or
+        // it will wind it's way back to us,triggering the destWnd case above
+        // either way,when the call returns,we are all done with the message,
+        sIsProcessing = PR_TRUE;
+        if (0 == ::SendMessageW(destWnd, aMsg, aWParam, aLParam))
+          aHandled = PR_TRUE;
+        sIsProcessing = PR_FALSE;
         return PR_FALSE; // break, but continue processing
       }
       parentWnd = ::GetParent(parentWnd);
@@ -6344,7 +6369,9 @@ PRBool nsWindow::HandleScrollingPlugins(UINT aMsg, WPARAM aWParam,
     return PR_FALSE;
   if (destWnd != mWnd) {
     if (destWindow) {
+      sIsProcessing = PR_TRUE;
       aHandled = destWindow->ProcessMessage(aMsg, aWParam, aLParam, aRetValue);
+      sIsProcessing = PR_FALSE;
       aQuitProcessing = PR_TRUE;
       return PR_FALSE; // break, and stop processing
     }
@@ -6412,11 +6439,6 @@ HBRUSH nsWindow::OnControlColor()
 // Can be overriden. Controls auto-erase of background.
 PRBool nsWindow::AutoErase(HDC dc)
 {
-#ifdef WINCE_WINDOWS_MOBILE
-  RECT wrect;
-  GetClipBox(dc, &wrect);
-  AddRECTToRegion(wrect, mInvalidatedRegion);
-#endif
   return PR_FALSE;
 }
 
@@ -6499,7 +6521,7 @@ NS_IMETHODIMP nsWindow::SetIMEEnabled(PRUint32 aState)
 
 #if defined(WINCE_HAVE_SOFTKB)
   sSoftKeyboardState = (aState != nsIWidget::IME_STATUS_DISABLED);
-  nsWindowCE::ToggleSoftKB(sSoftKeyboardState);
+  nsWindowCE::ToggleSoftKB(mWnd, sSoftKeyboardState);
 #endif
 
   if (!enable != !mOldIMC)

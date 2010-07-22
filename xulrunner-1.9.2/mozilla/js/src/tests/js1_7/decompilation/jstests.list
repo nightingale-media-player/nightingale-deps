@@ -21,7 +21,7 @@ skip script regress-352022.js # obsolete test
 script regress-352025.js
 skip script regress-352026.js # obsolete test
 script regress-352068.js
-script regress-352079.js
+fails script regress-352079.js # bug 535393
 script regress-352198.js
 script regress-352217.js
 script regress-352266.js

@@ -181,7 +181,7 @@ enum { XKeyPress = KeyPress };
 #undef KeyPress
 #endif
 
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
 #define MOZ_COMPOSITED_PLUGINS 1
 
 #include "gfxXlibSurface.h"
@@ -498,7 +498,7 @@ public:
     return strncmp(GetPluginName(), aPluginName, strlen(aPluginName)) == 0;
   }
 
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
   nsresult SetAbsoluteScreenPosition(nsIDOMElement* element,
                                      nsIDOMClientRect* position,
                                      nsIDOMClientRect* clip);
@@ -593,17 +593,13 @@ private:
 #ifdef OJI
   PRUint32 mThreadID;
 #endif
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
 
   // On hildon, we attempt to use NPImageExpose which allows us faster
   // painting.
 
   // used to keep track of how big our buffer is.
   nsIntSize mPluginSize;
-
-  // the element that was passed into SetAbsoluteScreenPosition().
-  // This will be the element we use to determine which Window we draw into.
-  nsCOMPtr<nsIDOMElement> mBlitParentElement;
 
   // The absolute position on the screen to draw to.
   gfxRect mAbsolutePosition;
@@ -684,12 +680,7 @@ nsObjectFrame::Init(nsIContent*      aContent,
   PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG,
          ("Initializing nsObjectFrame %p for content %p\n", this, aContent));
 
-  nsresult rv = nsObjectFrameSuper::Init(aContent, aParent, aPrevInFlow);
-
-  if (NS_SUCCEEDED(rv)) {
-    NotifyPluginEventObservers(NS_LITERAL_STRING("init").get());
-  }
-  return rv;
+  return nsObjectFrameSuper::Init(aContent, aParent, aPrevInFlow);
 }
 
 void
@@ -698,10 +689,6 @@ nsObjectFrame::Destroy()
   NS_ASSERTION(!mPreventInstantiation ||
                (mContent && mContent->GetCurrentDoc()->GetDisplayDocument()),
                "about to crash due to bug 136927");
-
-  NotifyPluginEventObservers(NS_LITERAL_STRING("destroy").get());
-
-  PresContext()->RootPresContext()->UnregisterPluginForGeometryUpdates(this);
 
   // we need to finish with the plugin before native window is destroyed
   // doing this in the destructor is too late.
@@ -780,6 +767,11 @@ nsObjectFrame::CreateWidget(nscoord aWidth,
   viewMan->ResizeView(view, r);
   viewMan->MoveViewTo(view, origin.x, origin.y);
 
+  nsRootPresContext* rpc = PresContext()->GetRootPresContext();
+  if (!rpc) {
+    return NS_ERROR_FAILURE;
+  }
+
   if (!aViewOnly && !mWidget && usewidgets) {
     mInnerView = viewMan->CreateView(GetContentRect() - GetPosition(), view);
     if (!mInnerView) {
@@ -793,7 +785,6 @@ nsObjectFrame::CreateWidget(nscoord aWidth,
     if (NS_FAILED(rv))
       return rv;
 
-    nsRootPresContext* rpc = PresContext()->RootPresContext();
     // XXX this breaks plugins in popups ... do we care?
     nsIWidget* parentWidget =
       rpc->PresShell()->FrameManager()->GetRootFrame()->GetWindow();
@@ -813,9 +804,6 @@ nsObjectFrame::CreateWidget(nscoord aWidth,
 
     mWidget->EnableDragDrop(PR_TRUE);
 
-    rpc->RegisterPluginForGeometryUpdates(this);
-    rpc->UpdatePluginGeometry(this);
-
     // If this frame has an ancestor with a widget which is not
     // the root prescontext's widget, then this plugin should not be
     // displayed, so don't show the widget. If we show the widget, the
@@ -827,6 +815,9 @@ nsObjectFrame::CreateWidget(nscoord aWidth,
   }
 
   if (mWidget) {
+    rpc->RegisterPluginForGeometryUpdates(this);
+    rpc->UpdatePluginGeometry(this);
+
     // Here we set the background color for this widget because some plugins will use 
     // the child window background color when painting. If it's not set, it may default to gray
     // Sometimes, a frame doesn't have a background color or is transparent. In this
@@ -1069,7 +1060,7 @@ nsObjectFrame::FixupWindow(const nsSize& aSize)
   window->clipRect.bottom = presContext->AppUnitsToDevPixels(aSize.height);
   window->clipRect.right = presContext->AppUnitsToDevPixels(aSize.width);
 #endif
-  NotifyPluginEventObservers(NS_LITERAL_STRING("reflow").get());
+  NotifyPluginReflowObservers();
 }
 
 void
@@ -1268,16 +1259,18 @@ nsObjectFrame::ComputeWidgetGeometry(const nsRegion& aRegion,
   if (!mWidget)
     return;
 
-  nsIWidget::Configuration* configuration =
-    aConfigurations->AppendElement();
+  nsPresContext* presContext = PresContext();
+  nsRootPresContext* rootPC = presContext->GetRootPresContext();
+  if (!rootPC)
+    return;
+
+  nsIWidget::Configuration* configuration = aConfigurations->AppendElement();
   if (!configuration)
     return;
   configuration->mChild = mWidget;
 
-  nsPresContext* presContext = PresContext();
   PRInt32 appUnitsPerDevPixel = presContext->AppUnitsPerDevPixel();
-  nsIFrame* rootFrame =
-    presContext->RootPresContext()->PresShell()->FrameManager()->GetRootFrame();
+  nsIFrame* rootFrame = rootPC->PresShell()->FrameManager()->GetRootFrame();
   nsRect bounds = GetContentRect() + GetParent()->GetOffsetTo(rootFrame);
   configuration->mBounds = bounds.ToNearestPixels(appUnitsPerDevPixel);
 
@@ -1299,7 +1292,7 @@ nsObjectFrame::SetAbsoluteScreenPosition(nsIDOMElement* element,
                                          nsIDOMClientRect* position,
                                          nsIDOMClientRect* clip)
 {
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
   if (!mInstanceOwner)
     return NS_ERROR_NOT_AVAILABLE;
   return mInstanceOwner->SetAbsoluteScreenPosition(element, position, clip);
@@ -1308,14 +1301,17 @@ nsObjectFrame::SetAbsoluteScreenPosition(nsIDOMElement* element,
 #endif
 }
 
-void
-nsObjectFrame::NotifyPluginEventObservers(const PRUnichar *eventType)
-{
-  nsCOMPtr<nsIDOMElement> e = do_QueryInterface(mContent);
-  if (!e)
-    return;
+nsresult
+nsObjectFrame::PluginEventNotifier::Run() {
   nsCOMPtr<nsIObserverService> obsSvc = do_GetService("@mozilla.org/observer-service;1");
-  obsSvc->NotifyObservers(e, "plugin-changed-event", eventType);
+  obsSvc->NotifyObservers(nsnull, "plugin-changed-event", mEventType.get());
+  return NS_OK;
+}
+
+void
+nsObjectFrame::NotifyPluginReflowObservers()
+{
+  nsContentUtils::AddScriptRunner(new PluginEventNotifier(NS_LITERAL_STRING("reflow")));
 }
 
 void
@@ -2164,7 +2160,7 @@ GetMIMEType(nsIPluginInstance *aPluginInstance)
 static PRBool
 DoDelayedStop(nsPluginInstanceOwner *aInstanceOwner, PRBool aDelayedStop)
 {
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
   // Don't delay stop on Maemo/Hildon (bug 530739).
   if (aDelayedStop && aInstanceOwner->MatchPluginName("Shockwave Flash"))
     return PR_FALSE;
@@ -2326,6 +2322,12 @@ nsObjectFrame::StopPluginInternal(PRBool aDelayedStop)
 {
   if (!mInstanceOwner) {
     return;
+  }
+
+  if (mWidget) {
+    nsRootPresContext* rootPC = PresContext()->GetRootPresContext();
+    NS_ASSERTION(rootPC, "unable to unregister the plugin frame");
+    rootPC->UnregisterPluginForGeometryUpdates(this);
   }
 
   // Transfer the reference to the instance owner onto the stack so
@@ -2526,9 +2528,10 @@ nsPluginInstanceOwner::nsPluginInstanceOwner()
   mThreadID = NS_PTR_TO_INT32(PR_GetCurrentThread());
 #endif
 
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
   mPluginSize = nsIntSize(0,0);
   mXlibSurfGC = None;
+  mBlitWindow = nsnull;
   mSharedXImage = nsnull;
   mSharedSegmentInfo.shmaddr = nsnull;
 #endif
@@ -2586,7 +2589,7 @@ nsPluginInstanceOwner::~nsPluginInstanceOwner()
     mInstance->InvalidateOwner();
   }
 
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
   ReleaseXShm();
 #endif
 }
@@ -2818,7 +2821,7 @@ NS_IMETHODIMP nsPluginInstanceOwner::InvalidateRect(nsPluginRect *invalidRect)
   if (!mOwner || !invalidRect || !mWidgetVisible)
     return NS_ERROR_FAILURE;
 
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
   PRBool simpleImageRender = PR_FALSE;
   mInstance->GetValue(nsPluginInstanceVariable_WindowlessLocalBool,
                       &simpleImageRender);
@@ -4434,6 +4437,9 @@ nsEventStatus nsPluginInstanceOwner::ProcessEvent(const nsGUIEvent& anEvent)
         case NS_MOUSE_BUTTON_UP:
           carbonEvent.what = mouseUp;
           break;
+        default:
+          pluginWidget->EndDrawPlugin();
+          return nsEventStatus_eIgnore;
         }
       }
 
@@ -4928,7 +4934,7 @@ void nsPluginInstanceOwner::Paint(gfxContext* aContext,
   if (!mInstance || !mOwner)
     return;
 
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
   // through to be able to paint the context passed in.  This allows
   // us to handle plugins that do not self invalidate (slowly, but
   // accurately), and it allows us to reduce flicker.
@@ -5019,7 +5025,7 @@ DepthOfVisual(const Screen* screen, const Visual* visual)
 }
 #endif
 
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
 
 static GdkWindow* GetClosestWindow(nsIDOMElement *element)
 {
@@ -5070,7 +5076,6 @@ nsPluginInstanceOwner::ReleaseXShm()
 PRBool
 nsPluginInstanceOwner::SetupXShm()
 {
-  mBlitWindow = GDK_WINDOW_XWINDOW(GetClosestWindow(mBlitParentElement));
   if (!mBlitWindow)
     return PR_FALSE;
 
@@ -5165,7 +5170,7 @@ void
 nsPluginInstanceOwner::NativeImageDraw(nsPluginRect* invalidRect)
 {
   // if we haven't been positioned yet, ignore
-  if (!mBlitParentElement)
+  if (!mBlitWindow)
     return;
 
   // if the clip rect is zero, we have nothing to do.
@@ -5181,6 +5186,10 @@ nsPluginInstanceOwner::NativeImageDraw(nsPluginRect* invalidRect)
   // if the plugin is hidden, nothing to draw.
   if (absPosHeight == 0 || absPosWidth == 0)
     return;
+
+  // Making X or DOM method calls can cause our frame to go
+  // away, which might kill us...
+  nsCOMPtr<nsIPluginInstanceOwner> kungFuDeathGrip(this);
 
   PRBool sizeChanged = (mPluginSize.width != absPosWidth ||
                         mPluginSize.height != absPosHeight);
@@ -5737,9 +5746,10 @@ void nsPluginInstanceOwner::SetPluginHost(nsIPluginHost* aHost)
   mPluginHost = aHost;
 }
 
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
 PRBool nsPluginInstanceOwner::UpdateVisibility(PRBool aVisible)
 {
+  // NOTE: Death grip must be held by caller.
   if (!mInstance)
     return PR_TRUE;
 
@@ -5880,16 +5890,25 @@ void nsPluginInstanceOwner::FixUpURLS(const nsString &name, nsAString &value)
   }
 }
 
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
 nsresult
 nsPluginInstanceOwner::SetAbsoluteScreenPosition(nsIDOMElement* element,
                                                  nsIDOMClientRect* position,
                                                  nsIDOMClientRect* clip)
 {
-  if ((mBlitParentElement && (mBlitParentElement != element)) ||
-      !position || !clip)
+  if (!element || !position || !clip)
     return NS_ERROR_FAILURE;
   
+  // Making X or DOM method calls can cause our frame to go
+  // away, which might kill us...
+  nsCOMPtr<nsIPluginInstanceOwner> kungFuDeathGrip(this);
+
+  if (!mBlitWindow) {
+    mBlitWindow = GDK_WINDOW_XWINDOW(GetClosestWindow(element));
+    if (!mBlitWindow)
+      return NS_ERROR_FAILURE;
+  }
+
   float left, top, width, height;
   position->GetLeft(&left);
   position->GetTop(&top);
@@ -5904,8 +5923,6 @@ nsPluginInstanceOwner::SetAbsoluteScreenPosition(nsIDOMElement* element,
   clip->GetHeight(&height);
 
   mAbsolutePositionClip = gfxRect(left, top, width, height);
-
-  mBlitParentElement = element;
 
   UpdateVisibility(!(width == 0 && height == 0));
 

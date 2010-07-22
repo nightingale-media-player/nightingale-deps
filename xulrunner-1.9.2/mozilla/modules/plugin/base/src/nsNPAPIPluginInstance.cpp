@@ -1618,7 +1618,7 @@ NS_IMETHODIMP nsNPAPIPluginInstance::GetValue(nsPluginInstanceVariable variable,
       break;
 #endif
 
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
      case nsPluginInstanceVariable_WindowlessLocalBool:
       *(PRBool *)value = mWindowlessLocal;
       break;

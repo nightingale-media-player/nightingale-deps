@@ -91,10 +91,10 @@ CSRCS = \
 	secasn1e.c \
 	secasn1u.c \
 	secitem.c \
+	secload.c \
 	secoid.c \
 	sectime.c \
 	secport.c \
-	secinit.c \
 	templates.c \
 	utf8.c \
 	$(NULL)

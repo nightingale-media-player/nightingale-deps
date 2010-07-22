@@ -3890,8 +3890,10 @@ nsBlockFrame::ReflowInlineFrame(nsBlockReflowState& aState,
     
     // If we just ended a first-letter frame or reflowed a placeholder then 
     // don't split the line and don't stop the line reflow...
-    if (!(frameReflowStatus & NS_INLINE_BREAK_FIRST_LETTER_COMPLETE) && 
-        nsGkAtoms::placeholderFrame != frameType) {
+    // But if we are going to stop anyways we'd better split the line.
+    if ((!(frameReflowStatus & NS_INLINE_BREAK_FIRST_LETTER_COMPLETE) && 
+         nsGkAtoms::placeholderFrame != frameType) ||
+        *aLineReflowStatus == LINE_REFLOW_STOP) {
       // Split line after the current frame
       *aLineReflowStatus = LINE_REFLOW_STOP;
       rv = SplitLine(aState, aLineLayout, aLine, aFrame->GetNextSibling(), aLineReflowStatus);
@@ -5736,14 +5738,14 @@ nsBlockFrame::StealFrame(nsPresContext* aPresContext,
           if (searchingOverflowList) {
             // Erase line, but avoid making the overflow line list empty
             nsLineList* lineList = RemoveOverflowLines();
-            lineList->erase(line);
+            line = lineList->erase(line);
             if (!lineList->empty()) {
               nsresult rv = SetOverflowLines(lineList);
               NS_ENSURE_SUCCESS(rv, rv);
             }
           }
           else {
-            mLines.erase(line);
+            line = mLines.erase(line);
           }
           lineBox->Destroy(aPresContext->PresShell());
           if (line != line_end) {

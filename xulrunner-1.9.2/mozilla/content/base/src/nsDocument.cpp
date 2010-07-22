@@ -7539,7 +7539,10 @@ nsDocument::MaybePreLoadImage(nsIURI* uri)
   // Early exit if the img is already present in the img-cache
   // which indicates that the "real" load has already started and
   // that we shouldn't preload it.
-  if (nsContentUtils::IsImageInCache(uri)) {
+  PRInt16 blockingStatus;
+  if (nsContentUtils::IsImageInCache(uri) ||
+      !nsContentUtils::CanLoadImage(uri, static_cast<nsIDocument *>(this),
+                                    this, NodePrincipal(), &blockingStatus)) {
     return;
   }
 
@@ -7561,6 +7564,7 @@ nsDocument::MaybePreLoadImage(nsIURI* uri)
     mPreloadingImages.AppendObject(request);
   }
 }
+
 class nsDelayedEventDispatcher : public nsRunnable
 {
 public:

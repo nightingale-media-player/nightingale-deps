@@ -2115,7 +2115,8 @@ nsLayoutUtils::ComputeWidthDependentValue(
     return aCoord.GetCoordValue();
   }
   if (eStyleUnit_Percent == aCoord.GetUnit()) {
-    return NSToCoordFloor(aContainingBlockWidth * aCoord.GetPercentValue());
+    return NSToCoordFloorClamped(aContainingBlockWidth *
+                                 aCoord.GetPercentValue());
   }
   NS_ASSERTION(aCoord.GetUnit() == eStyleUnit_None ||
                aCoord.GetUnit() == eStyleUnit_Auto,
@@ -2146,7 +2147,8 @@ nsLayoutUtils::ComputeWidthValue(
     result -= aContentEdgeToBoxSizing;
   } else if (eStyleUnit_Percent == aCoord.GetUnit()) {
     NS_ASSERTION(aCoord.GetPercentValue() >= 0.0f, "width less than zero");
-    result = NSToCoordFloor(aContainingBlockWidth * aCoord.GetPercentValue()) -
+    result = NSToCoordFloorClamped(aContainingBlockWidth *
+                                   aCoord.GetPercentValue()) -
              aContentEdgeToBoxSizing;
   } else if (eStyleUnit_Enumerated == aCoord.GetUnit()) {
     PRInt32 val = aCoord.GetIntValue();
@@ -2203,7 +2205,8 @@ nsLayoutUtils::ComputeHeightDependentValue(
                     "unexpected 'containing block height'");
 
     if (NS_AUTOHEIGHT != aContainingBlockHeight) {
-      return NSToCoordFloor(aContainingBlockHeight * aCoord.GetPercentValue());
+      return NSToCoordFloorClamped(aContainingBlockHeight *
+                                   aCoord.GetPercentValue());
     }
   }
   NS_ASSERTION(aCoord.GetUnit() == eStyleUnit_None ||

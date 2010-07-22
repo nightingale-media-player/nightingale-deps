@@ -2577,15 +2577,10 @@ static const PRInt32 sShadowInvalidationInterval = 100;
 
       // add to the region
       rgn->Union((PRInt32)r.origin.x, (PRInt32)r.origin.y, (PRInt32)r.size.width, (PRInt32)r.size.height);
-
-      // to the context for clipping
-      targetContext->Rectangle(gfxRect(r.origin.x, r.origin.y, r.size.width, r.size.height));
     }
   } else {
     rgn->Union(aRect.origin.x, aRect.origin.y, aRect.size.width, aRect.size.height);
-    targetContext->Rectangle(gfxRect(aRect.origin.x, aRect.origin.y, aRect.size.width, aRect.size.height));
   }
-  targetContext->Clip();
 
   // Subtract child view rectangles from the region
   NSArray* subviews = [self subviews];
@@ -2596,6 +2591,18 @@ static const PRInt32 sShadowInvalidationInterval = 100;
     NSRect frame = [view frame];
     rgn->Subtract(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
   }
+
+  nsRegionRectSet* rgnRects = nsnull;
+  rgn->GetRects(&rgnRects);
+  if (!rgnRects)
+    return;
+
+  for (PRUint32 i = 0; i < rgnRects->mNumRects; ++i) {
+    const nsRegionRect& r = rgnRects->mRects[i];
+    targetContext->Rectangle(gfxRect(r.x, r.y, r.width, r.height));
+  }
+  rgn->FreeRects(rgnRects);
+  targetContext->Clip();
 
   nsPaintEvent paintEvent(PR_TRUE, NS_PAINT, mGeckoChild);
   paintEvent.renderingContext = rc;

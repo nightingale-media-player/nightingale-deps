@@ -539,6 +539,8 @@ nsresult nsZipArchive::BuildFileList()
 
   //-- Read the central directory headers
   buf = startp + centralOffset;
+  if (endp - buf < PRInt32(sizeof(PRUint32)))
+      return NS_ERROR_FILE_CORRUPTED;
   PRUint32 sig = xtolong(buf);
   while (sig == CENTRALSIG) {
     // Make sure there is enough data available.

@@ -86,7 +86,7 @@
 #include "nsIGnomeVFSService.h"
 #endif
 
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
 #include <glib.h>
 #include <hildon-uri.h>
 #include <hildon-mime.h>
@@ -1661,7 +1661,7 @@ NS_IMETHODIMP
 nsLocalFile::Launch()
 {
 #ifdef MOZ_WIDGET_GTK2
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO==5)
     const PRInt32 kHILDON_SUCCESS = 1;
     DBusError err;
     dbus_error_init(&err);

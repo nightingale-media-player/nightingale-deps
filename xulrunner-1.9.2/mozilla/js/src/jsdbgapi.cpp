@@ -1817,11 +1817,13 @@ JS_GetGlobalDebugHooks(JSRuntime *rt)
     return &rt->globalDebugHooks;
 }
 
+const JSDebugHooks js_NullDebugHooks = {};
+
 JS_PUBLIC_API(JSDebugHooks *)
 JS_SetContextDebugHooks(JSContext *cx, const JSDebugHooks *hooks)
 {
     JS_ASSERT(hooks);
-    if (hooks != &cx->runtime->globalDebugHooks)
+    if (hooks != &cx->runtime->globalDebugHooks && hooks != &js_NullDebugHooks)
         js_LeaveTrace(cx);
 
 #ifdef JS_TRACER
@@ -1834,6 +1836,12 @@ JS_SetContextDebugHooks(JSContext *cx, const JSDebugHooks *hooks)
     JS_UNLOCK_GC(cx->runtime);
 #endif
     return old;
+}
+
+JS_PUBLIC_API(JSDebugHooks *)
+JS_ClearContextDebugHooks(JSContext *cx)
+{
+    return JS_SetContextDebugHooks(cx, &js_NullDebugHooks);
 }
 
 #ifdef MOZ_SHARK

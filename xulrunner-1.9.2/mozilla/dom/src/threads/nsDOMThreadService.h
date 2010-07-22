@@ -108,6 +108,9 @@ public:
   static nsIThreadJSContextStack* ThreadJSContextStack();
   static nsIXPCSecurityManager* WorkerSecurityManager();
 
+  static jsval ShareStringAsJSVal(JSContext* aCx,
+                                  const nsAString& aString);
+
   void CancelWorkersForGlobal(nsIScriptGlobalObject* aGlobalObject);
   void SuspendWorkersForGlobal(nsIScriptGlobalObject* aGlobalObject);
   void ResumeWorkersForGlobal(nsIScriptGlobalObject* aGlobalObject);
@@ -140,6 +143,7 @@ private:
                      PRBool aRemove);
 
   void TriggerOperationCallbackForPool(nsDOMWorkerPool* aPool);
+  void RescheduleSuspendedWorkerForPool(nsDOMWorkerPool* aPool);
 
   void NoteEmptyPool(nsDOMWorkerPool* aPool);
 
@@ -161,6 +165,8 @@ private:
 
   static PRUint32 GetWorkerCloseHandlerTimeoutMS();
 
+  PRBool QueueSuspendedWorker(nsDOMWorkerRunnable* aRunnable);
+
   // Our internal thread pool.
   nsCOMPtr<nsIThreadPool> mThreadPool;
 
@@ -177,6 +183,10 @@ private:
   // A list of active JSContexts that we've created. Always protected with
   // mMonitor.
   nsTArray<JSContext*> mJSContexts;
+
+  // A list of worker runnables that were never started because the worker was
+  // suspended. Always protected with mMonitor.
+  nsTArray<nsDOMWorkerRunnable*> mSuspendedWorkers;
 
   nsString mAppName;
   nsString mAppVersion;

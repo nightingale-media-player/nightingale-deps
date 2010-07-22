@@ -12682,9 +12682,14 @@ TraceRecorder::traverseScopeChain(JSObject *obj, LIns *obj_ins, JSObject *target
             JSClass* cls = STOBJ_GET_CLASS(searchObj);
             if (cls == &js_BlockClass) {
                 foundBlockObj = true;
-            } else if (cls == &js_CallClass &&
-                       JSFUN_HEAVYWEIGHT_TEST(js_GetCallObjectFunction(searchObj)->flags)) {
-                foundCallObj = true;
+            } else if (cls == &js_CallClass) {
+                // If the function that owns this call object is not heavyweight, then
+                // we can't be sure it will always be there, which means the scope chain
+                // does not have a definite length, so abort.
+                if (JSFUN_HEAVYWEIGHT_TEST(js_GetCallObjectFunction(searchObj)->flags))
+                    foundCallObj = true;
+                else
+                    ABORT_TRACE("found call object for non-heavyweight function on scope chain");
             }
         }
 

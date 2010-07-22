@@ -1677,6 +1677,9 @@ _evaluate(NPP npp, NPObject* npobj, NPString *script, NPVariant *result)
   JSContext *cx = GetJSContextFromDoc(doc);
   NS_ENSURE_TRUE(cx, false);
 
+  nsCOMPtr<nsIScriptContext> scx = GetScriptContextFromJSContext(cx);
+  NS_ENSURE_TRUE(scx, false);
+
   JSObject *obj =
     nsNPObjWrapper::GetNewOrUsed(npp, cx, npobj);
 
@@ -1702,9 +1705,6 @@ _evaluate(NPP npp, NPObject* npobj, NPString *script, NPVariant *result)
 
   NS_ConvertUTF8toUTF16 utf16script(script->UTF8Characters,
                                     script->UTF8Length);
-
-  nsCOMPtr<nsIScriptContext> scx = GetScriptContextFromJSContext(cx);
-  NS_ENSURE_TRUE(scx, false);
 
   nsIPrincipal *principal = doc->NodePrincipal();
 
@@ -2186,7 +2186,7 @@ _getvalue(NPP npp, NPNVariable variable, void *result)
     return NPERR_GENERIC_ERROR;
   }
 
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
   case NPNVSupportsWindowlessLocal: {
     *(NPBool*)result = PR_TRUE;
     return NPERR_NO_ERROR;
@@ -2310,7 +2310,7 @@ _setvalue(NPP npp, NPPVariable variable, void *result)
 #endif
     }
 
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
     case NPPVpluginWindowlessLocalBool: {
       NPBool bWindowlessLocal = (result != nsnull);
       return inst->SetWindowlessLocal(bWindowlessLocal);
@@ -2458,7 +2458,7 @@ _pushpopupsenabledstate(NPP npp, NPBool enabled)
     NPN_PLUGIN_LOG(PLUGIN_LOG_ALWAYS,("NPN_pushpopupsenabledstate called from the wrong thread\n"));
     return;
   }
-  nsNPAPIPluginInstance *inst = (nsNPAPIPluginInstance *)npp->ndata;
+  nsNPAPIPluginInstance *inst = npp ? (nsNPAPIPluginInstance *)npp->ndata : NULL;
   if (!inst)
     return;
 
@@ -2472,7 +2472,7 @@ _poppopupsenabledstate(NPP npp)
     NPN_PLUGIN_LOG(PLUGIN_LOG_ALWAYS,("NPN_poppopupsenabledstate called from the wrong thread\n"));
     return;
   }
-  nsNPAPIPluginInstance *inst = (nsNPAPIPluginInstance *)npp->ndata;
+  nsNPAPIPluginInstance *inst = npp ? (nsNPAPIPluginInstance *)npp->ndata : NULL;
   if (!inst)
     return;
 

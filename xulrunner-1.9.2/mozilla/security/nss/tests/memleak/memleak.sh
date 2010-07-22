@@ -17,7 +17,7 @@
 #
 # The Initial Developer of the Original Code is
 # Sun Microsystems, Inc.
-# Portions created by the Initial Developer are Copyright (C) 2006-2007
+# Portions created by the Initial Developer are Copyright (C) 2006-2009
 # the Initial Developer. All Rights Reserved.
 #
 # Contributor(s):
@@ -426,6 +426,7 @@ run_strsclnt()
 			"Tstclnt produced a returncode of ${ret} - FAILED"
 	fi
 	
+	sleep 20
 	kill $(jobs -p) 2> /dev/null
 }
 

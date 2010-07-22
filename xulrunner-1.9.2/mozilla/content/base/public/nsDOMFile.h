@@ -54,12 +54,14 @@ class nsIFile;
 class nsIInputStream;
 
 class nsDOMFile : public nsIDOMFile,
+                  public nsIDOMFile_1_9_2_BRANCH,
                   public nsIDOMFileInternal,
                   public nsICharsetDetectionObserver
 {
 public:
   NS_DECL_ISUPPORTS
   NS_DECL_NSIDOMFILE
+  NS_DECL_NSIDOMFILE_1_9_2_BRANCH
   NS_DECL_NSIDOMFILEINTERNAL
 
   nsDOMFile(nsIFile *aFile)

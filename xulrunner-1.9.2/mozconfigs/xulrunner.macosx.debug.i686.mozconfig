@@ -1,5 +1,4 @@
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/compiled/xulrunner-debug
-mk_add_options MOZ_MAKE_FLAGS=-j2
 export MOZ_DEBUG_SYMBOLS=1
 export MOZILLA_OFFICIAL=1
 export BUILD_OFFICIAL=1

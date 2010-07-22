@@ -398,6 +398,14 @@ NS_IMETHODIMP imgContainer::GetFrameColormap(PRUint32 framenum, PRUint32 **aPale
   return NS_OK;
 }
 
+void imgContainer::DeleteImgFrame(PRUint32 framenum)
+{
+  NS_ABORT_IF_FALSE(framenum < mFrames.Length(), "Deleting invalid frame!");
+
+  delete mFrames[framenum];
+  mFrames[framenum] = nsnull;
+}
+
 nsresult imgContainer::InternalAddFrameHelper(PRUint32 framenum, imgFrame *aFrame,
                                               PRUint8 **imageData, PRUint32 *imageLength,
                                               PRUint32 **paletteData, PRUint32 *paletteLength)
@@ -540,7 +548,7 @@ NS_IMETHODIMP imgContainer::EnsureCleanFrame(PRUint32 aFrameNum, PRInt32 aX, PRI
   nsIntRect rect = frame->GetRect();
   if (rect.x != aX || rect.y != aY || rect.width != aWidth || rect.height != aHeight ||
       frame->GetFormat() != aFormat) {
-    delete frame;
+    DeleteImgFrame(aFrameNum);
     return InternalAddFrame(aFrameNum, aX, aY, aWidth, aHeight, aFormat, 
                             /* aPaletteDepth = */ 0, imageData, imageLength,
                             /* aPaletteData = */ nsnull, 
@@ -1227,7 +1235,7 @@ nsresult imgContainer::DoComposite(imgFrame** aFrameToUse,
         // Note: Frame 1 never gets into DoComposite(), so (aNextFrameIndex - 1) will
         // always be a valid frame number.
         if (mAnim->lastCompositedFrameIndex != aNextFrameIndex - 1) {
-          if (isFullPrevFrame && !aPrevFrame->GetIsPaletted())
+          if (isFullPrevFrame && !aPrevFrame->GetIsPaletted()) {
             // Just copy the bits
             CopyFrameImage(aPrevFrame, mAnim->compositingFrame);
           } else {
@@ -1240,6 +1248,7 @@ nsresult imgContainer::DoComposite(imgFrame** aFrameToUse,
             DrawFrameTo(aPrevFrame, mAnim->compositingFrame, prevFrameRect);
           }
         }
+    }
   } else if (needToBlankComposite) {
     // If we just created the composite, it could have anything in it's
     // buffers. Clear them

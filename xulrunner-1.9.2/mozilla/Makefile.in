@@ -219,12 +219,6 @@ deliver: rebase signnss
 
 endif # WINNT
 
-ifneq (,$(wildcard $(DIST)/bin/application.ini))
-BUILDID = $(shell $(PYTHON) $(srcdir)/config/printconfigsetting.py $(DIST)/bin/application.ini App BuildID)
-else
-BUILDID = $(shell $(PYTHON) $(srcdir)/config/printconfigsetting.py $(DIST)/bin/platform.ini Build BuildID)
-endif
-
 #XXX: this is a hack, since we don't want to clobber for MSVC
 # PGO support, but we can't do this test in client.mk
 ifneq ($(OS_ARCH)_$(GNU_CC), WINNT_)

@@ -54,3 +54,9 @@ interface nsIDOMFile : nsISupports
   DOMString getAsDataURL();             // raises(FileException) on retrieval
   DOMString getAsBinary();              // raises(FileException) on retrieval
 };
+
+[scriptable, uuid(fc41a294-8c9a-4639-b8ed-7c04f8017ef6)]
+interface nsIDOMFile_1_9_2_BRANCH: nsISupports
+{
+  readonly attribute DOMString mozFullPath;
+};

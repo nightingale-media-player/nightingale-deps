@@ -26,7 +26,7 @@
 
 SimpleTest.waitForExplicitFinish();
 
-var expected = [ "one", "_extra2", "tab", "one", "tabbutton2", "tabbutton", "two" ];
+var expected = [ "one", "_extra2", "tab", "one", "tabbutton2", "tabbutton", "two", "textbox-yes", "one" ];
 // non-Mac will always focus the default button if any of the dialog buttons
 // would be focused
 if (navigator.platform.indexOf("Mac") == -1)
@@ -52,7 +52,9 @@ function runTest()
       return;
 
     var match = false;
-    if (expectedFocus[0] == "_")
+    if (expectedFocus == "textbox-yes")
+      match = (win.document.activeElement == win.document.getElementById(expectedFocus).inputField);
+    else if (expectedFocus[0] == "_")
       match = (win.document.activeElement.dlgType == expectedFocus.substring(1));
     else
       match = (win.document.activeElement.id == expectedFocus);

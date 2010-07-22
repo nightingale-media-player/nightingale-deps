@@ -43,6 +43,10 @@
 #include <string>
 #include <sstream>
 
+#ifdef XP_WIN
+#include <float.h>
+#endif
+
 #define PLUGIN_NAME        "Test Plug-in"
 #define PLUGIN_DESCRIPTION "Plug-in for testing purposes."
 #define PLUGIN_VERSION     "1.0.0.0"
@@ -79,6 +83,7 @@ static bool getLastMouseY(NPObject* npobj, const NPVariant* args, uint32_t argCo
 static bool getPaintCount(NPObject* npobj, const NPVariant* args, uint32_t argCount, NPVariant* result);
 static bool doInternalConsistencyCheck(NPObject* npobj, const NPVariant* args, uint32_t argCount, NPVariant* result);
 static bool setColor(NPObject* npobj, const NPVariant* args, uint32_t argCount, NPVariant* result);
+static bool enableFPExceptions(NPObject* npobj, const NPVariant* args, uint32_t argCount, NPVariant* result);
 
 static const NPUTF8* sPluginMethodIdentifierNames[] = {
   "setUndefinedValueTest",
@@ -97,6 +102,7 @@ static const NPUTF8* sPluginMethodIdentifierNames[] = {
   "getPaintCount",
   "doInternalConsistencyCheck",
   "setColor",
+  "enableFPExceptions",
 };
 static NPIdentifier sPluginMethodIdentifiers[ARRAY_LENGTH(sPluginMethodIdentifierNames)];
 static const ScriptableFunction sPluginMethodFunctions[ARRAY_LENGTH(sPluginMethodIdentifierNames)] = {
@@ -116,6 +122,7 @@ static const ScriptableFunction sPluginMethodFunctions[ARRAY_LENGTH(sPluginMetho
   getPaintCount,
   doInternalConsistencyCheck,
   setColor,
+  enableFPExceptions,
 };
 
 static char* NPN_GetURLNotifyCookie = "NPN_GetURLNotify_Cookie";
@@ -1324,4 +1331,16 @@ setColor(NPObject* npobj, const NPVariant* args, uint32_t argCount, NPVariant* r
   NPN_InvalidateRect(npp, &r);
 
   return true;
+}
+
+static bool enableFPExceptions(NPObject* npobj, const NPVariant* args, uint32_t argCount, NPVariant* result)
+{
+  VOID_TO_NPVARIANT(*result);
+
+#if defined(XP_WIN) && defined(_M_IX86)
+  _control87(0, _MCW_EM);
+  return true;
+#else
+  return false;
+#endif
 }

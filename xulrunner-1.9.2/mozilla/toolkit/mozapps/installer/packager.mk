@@ -434,6 +434,7 @@ make-package: stage-package $(PACKAGE_XULRUNNER)
 	@echo "Compressing..."
 	$(NSINSTALL) -D $(DIST)/$(PKG_PATH)
 	cd $(DIST) && $(MAKE_PACKAGE)
+	@echo "$(BUILDID) $(MOZ_SOURCE_STAMP)" > $(DIST)/$(PKG_PATH)/$(PKG_BASENAME).txt
 
 # The install target will install the application to prefix/lib/appname-version
 # In addition if INSTALL_SDK is set, it will install the development headers,
@@ -519,9 +520,11 @@ upload:
 		$(call QUOTED_WILDCARD,$(DIST)/$(PACKAGE)) \
 		$(call QUOTED_WILDCARD,$(INSTALLER_PACKAGE)) \
 		$(call QUOTED_WILDCARD,$(DIST)/$(COMPLETE_MAR)) \
+		$(call QUOTED_WILDCARD,$(wildcard $(DIST)/$(PARTIAL_MAR))) \
 		$(call QUOTED_WILDCARD,$(DIST)/$(PKG_PATH)$(TEST_PACKAGE)) \
 		$(call QUOTED_WILDCARD,$(DIST)/$(PKG_PATH)$(SYMBOL_ARCHIVE_BASENAME).zip) \
 		$(call QUOTED_WILDCARD,$(DIST)/$(SDK)) \
+		$(call QUOTED_WILDCARD,$(DIST)/$(PKG_PATH)/$(PKG_BASENAME).txt) \
 		$(if $(UPLOAD_EXTRA_FILES), $(foreach f, $(UPLOAD_EXTRA_FILES), $(wildcard $(DIST)/$(f))))
 
 ifndef MOZ_PKG_SRCDIR

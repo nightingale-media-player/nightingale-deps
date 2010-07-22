@@ -221,7 +221,8 @@ NS_IMPL_ISUPPORTS0(nsNTLMSessionState)
 
 //-----------------------------------------------------------------------------
 
-NS_IMPL_ISUPPORTS1(nsHttpNTLMAuth, nsIHttpAuthenticator)
+NS_IMPL_ISUPPORTS2(nsHttpNTLMAuth, nsIHttpAuthenticator,
+                                   nsIHttpAuthenticator_1_9_2)
 
 NS_IMETHODIMP
 nsHttpNTLMAuth::ChallengeReceived(nsIHttpChannel *channel,
@@ -325,11 +326,45 @@ nsHttpNTLMAuth::GenerateCredentials(nsIHttpChannel  *httpChannel,
                                     nsISupports    **sessionState,
                                     nsISupports    **continuationState,
                                     char           **creds)
-
 {
     LOG(("nsHttpNTLMAuth::GenerateCredentials\n"));
 
+    PRUint32 unused;
+    return GenerateCredentials_1_9_2(httpChannel,
+                                     challenge,
+                                     isProxyAuth,
+                                     domain,
+                                     user,
+                                     pass,
+                                     sessionState,
+                                     continuationState,
+                                     &unused,
+                                     creds);
+}
+
+NS_IMETHODIMP
+nsHttpNTLMAuth::GenerateCredentials_1_9_2(nsIHttpChannel  *httpChannel,
+                                          const char      *challenge,
+                                          PRBool           isProxyAuth,
+                                          const PRUnichar *domain,
+                                          const PRUnichar *user,
+                                          const PRUnichar *pass,
+                                          nsISupports    **sessionState,
+                                          nsISupports    **continuationState,
+                                          PRUint32        *flags,
+                                          char           **creds)
+{
+    LOG(("nsHttpNTLMAuth::GenerateCredentials_1_9_2\n"));
+
     *creds = nsnull;
+    *flags = 0;
+
+    // if user or password is empty, ChallengeReceived returned
+    // identityInvalid = PR_FALSE, that means we are using default user
+    // credentials; see  nsAuthSSPI::Init method for explanation of this 
+    // condition
+    if (!user || !pass)
+        *flags = USING_INTERNAL_IDENTITY;
 
     nsresult rv;
     nsCOMPtr<nsIAuthModule> module = do_QueryInterface(*continuationState, &rv);

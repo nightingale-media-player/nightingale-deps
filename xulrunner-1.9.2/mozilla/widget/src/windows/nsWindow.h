@@ -347,7 +347,6 @@ protected:
   void                    OnWindowPosChanged(WINDOWPOS *wp, PRBool& aResult);
 #if defined(CAIRO_HAS_DDRAW_SURFACE)
   PRBool                  OnPaintImageDDraw16();
-  HRESULT                 PaintRectImageDDraw16(RECT aRect, nsPaintEvent* aEvent);
 #endif // defined(CAIRO_HAS_DDRAW_SURFACE)
   PRBool                  OnMouseWheel(UINT msg, WPARAM wParam, LPARAM lParam, 
                                        PRBool& result, PRBool& getWheelInfo,
@@ -421,7 +420,6 @@ protected:
   PRPackedBool          mInDtor;
   PRPackedBool          mIsVisible;
   PRPackedBool          mIsInMouseCapture;
-  PRPackedBool          mInScrollProcessing;
   PRPackedBool          mUnicodeWidget;
 
   PRPackedBool          mIsChromeHidden;
@@ -446,9 +444,6 @@ protected:
   nsPopupType           mPopupType;
   WindowHook            mWindowHook;
   PRPackedBool          mDisplayPanFeedback;
-#ifdef WINCE_WINDOWS_MOBILE
-  nsCOMPtr<nsIRegion>   mInvalidatedRegion; 
-#endif
   static PRUint32       sInstanceCount;
   static TriStateBool   sCanQuit;
   static nsWindow*      sCurrentWindow;
@@ -512,7 +507,6 @@ protected:
 #endif
 
 #if defined(WINCE_HAVE_SOFTKB)
-  static PRBool         sSoftKeyMenuBar;
   static PRBool         sSoftKeyboardState;
 #endif // defined(WINCE_HAVE_SOFTKB)
 

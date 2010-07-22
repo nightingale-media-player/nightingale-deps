@@ -64,6 +64,8 @@ quartz-minimize-gradient-repeat.patch: reduce the number of gradient stop repeti
 
 quartz-first-stop.patch: return the first stop for negative positions on the gradient line of a nonrepeating linear gradient
 
+premultiply-alpha-solid-gradients.patch: bug 539165; multiply the solid color by the alpha component before using it for a solid surface
+
 ==== pixman patches ====
 
 pixman-neon.patch: add ARM NEON optimized compositing functions

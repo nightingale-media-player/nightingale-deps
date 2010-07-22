@@ -37,7 +37,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5) && defined (MOZ_ENABLE_GNOMEVFS)
 #include <glib.h>
 #include <hildon-uri.h>
 #include <hildon-mime.h>
@@ -55,7 +55,7 @@ nsresult
 nsMIMEInfoUnix::LoadUriInternal(nsIURI * aURI)
 {
   nsresult rv = nsGNOMERegistry::LoadURL(aURI);
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5) && defined (MOZ_ENABLE_GNOMEVFS)
   if (NS_FAILED(rv)){
     HildonURIAction *action = hildon_uri_get_default_action(mType.get(), nsnull);
     if (action) {
@@ -84,7 +84,7 @@ nsMIMEInfoUnix::GetHasDefaultHandler(PRBool *_retval)
   if (*_retval)
     return NS_OK;
 
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5) && defined (MOZ_ENABLE_GNOMEVFS)
   HildonURIAction *action = hildon_uri_get_default_action(mType.get(), nsnull);
   if (action) {
     *_retval = PR_TRUE;
@@ -121,7 +121,7 @@ nsMIMEInfoUnix::LaunchDefaultWithFile(nsIFile *aFile)
   return LaunchWithIProcess(mDefaultApplication, nativePath);
 }
 
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5) && defined (MOZ_ENABLE_GNOMEVFS)
 
 /* This method tries to launch the associated default handler for the given 
  * mime/file via hildon specific APIs (in this case hildon_mime_open_file* 

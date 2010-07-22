@@ -327,7 +327,7 @@ typedef enum {
   , NPPVpluginDrawingModel = 1000
 #endif
 
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
   , NPPVpluginWindowlessLocalBool = 2002
 #endif
 } NPPVariable;
@@ -369,7 +369,7 @@ typedef enum {
   , NPNVsupportsCoreGraphicsBool = 2001
 #endif
 
-#ifdef MOZ_PLATFORM_HILDON
+#if (MOZ_PLATFORM_MAEMO == 5)
   , NPNVSupportsWindowlessLocal = 2002
 #endif
 

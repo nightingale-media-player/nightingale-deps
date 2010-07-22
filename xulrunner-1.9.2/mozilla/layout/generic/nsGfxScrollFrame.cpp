@@ -1792,13 +1792,13 @@ nsGfxScrollFrameInner::ViewPositionDidChange(nsIScrollableView* aScrollable,
   nsPoint childOffset = mScrolledFrame->GetView()->GetOffsetTo(mOuter->GetView());
   mScrolledFrame->SetPosition(childOffset);
 
-  nsRootPresContext* rootPresContext = mOuter->PresContext()->RootPresContext();
+  nsRootPresContext* rootPresContext = mOuter->PresContext()->GetRootPresContext();
   // Only update plugin geometry if we're scrolling in the root widget.
   // In particular if we're scrolling inside a popup widget, we don't
   // want to update plugins since they don't belong to this widget (we
   // don't display windowed plugins in popups).
-  if (mOuter->GetWindow() ==
-      rootPresContext->FrameManager()->GetRootFrame()->GetWindow()) {
+  if (rootPresContext && mOuter->GetWindow() ==
+        rootPresContext->FrameManager()->GetRootFrame()->GetWindow()) {
     rootPresContext->GetPluginGeometryUpdates(mOuter, aConfigurations);
   }
 }

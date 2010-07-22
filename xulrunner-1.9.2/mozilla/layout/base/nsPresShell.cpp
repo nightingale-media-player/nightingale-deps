@@ -4654,7 +4654,10 @@ PresShell::UnsuppressAndInvalidate()
     nsRect rect(nsPoint(0, 0), rootFrame->GetSize());
     rootFrame->Invalidate(rect);
 
-    mPresContext->RootPresContext()->UpdatePluginGeometry(rootFrame);
+    nsRootPresContext* rootPC = mPresContext->GetRootPresContext();
+    if (rootPC) {
+      rootPC->UpdatePluginGeometry(rootFrame);
+    }
   }
 
   // now that painting is unsuppressed, focus may be set on the document
@@ -6155,8 +6158,8 @@ PresShell::HandleEvent(nsIView         *aView,
       return NS_OK;
 
     nsPresContext* framePresContext = frame->PresContext();
-    nsPresContext* rootPresContext = framePresContext->RootPresContext();
-    NS_ASSERTION(rootPresContext == mPresContext->RootPresContext(),
+    nsPresContext* rootPresContext = framePresContext->GetRootPresContext();
+    NS_ASSERTION(rootPresContext == mPresContext->GetRootPresContext(),
                  "How did we end up outside the connected prescontext/viewmanager hierarchy?"); 
     // If we aren't starting our event dispatch from the root frame of the root prescontext,
     // then someone must be capturing the mouse. In that case we don't want to search the popup
@@ -6170,10 +6173,13 @@ PresShell::HandleEvent(nsIView         *aView,
         nsTArray<nsIFrame*> popups = pm->GetVisiblePopups();
         PRUint32 i;
         // Search from top to bottom
+        nsIDocument* doc = frame->PresContext()->GetPresShell()->GetDocument();
         for (i = 0; i < popups.Length(); i++) {
           nsIFrame* popup = popups[i];
           if (popup->GetOverflowRect().Contains(
-              nsLayoutUtils::GetEventCoordinatesRelativeTo(aEvent, popup))) {
+              nsLayoutUtils::GetEventCoordinatesRelativeTo(aEvent, popup)) &&
+              !nsContentUtils::ContentIsCrossDocDescendantOf(
+                 doc, popup->GetContent())) {
             // The event should target the popup
             frame = popup;
             break;
@@ -6612,8 +6618,13 @@ PresShell::AdjustContextMenuKeyEvent(nsMouseEvent* aEvent)
   // Use the root view manager's widget since it's most likely to have one,
   // and the coordinates returned by GetCurrentItemAndPositionForElement
   // are relative to the root of the root view manager.
-  mPresContext->RootPresContext()->PresShell()->GetViewManager()->
-    GetRootWidget(getter_AddRefs(aEvent->widget));
+  nsRootPresContext* rootPC = mPresContext->GetRootPresContext();
+  if (rootPC) {
+    rootPC->PresShell()->GetViewManager()->
+      GetRootWidget(getter_AddRefs(aEvent->widget));
+  } else {
+    aEvent->widget = nsnull;
+  }
   aEvent->refPoint.x = 0;
   aEvent->refPoint.y = 0;
 
@@ -6758,6 +6769,10 @@ PresShell::PrepareToUseCaretPosition(nsIWidget* aEventWidget, nsIntPoint& aTarge
   nsPresContext* presContext = GetPresContext();
   aTargetPt.x = presContext->AppUnitsToDevPixels(viewDelta.x + caretCoords.x + caretCoords.width);
   aTargetPt.y = presContext->AppUnitsToDevPixels(viewDelta.y + caretCoords.y + caretCoords.height);
+
+  // make sure rounding doesn't return a pixel which is outside the caret
+  // (e.g. one line lower)
+  aTargetPt.y -= 1;
 
   return PR_TRUE;
 }
@@ -7329,7 +7344,10 @@ PresShell::DoReflow(nsIFrame* target, PRBool aInterruptible)
     PostReflowEvent();
   }
 
-  mPresContext->RootPresContext()->UpdatePluginGeometry(target);
+  nsRootPresContext* rootPC = mPresContext->GetRootPresContext();
+  if (rootPC) {
+    rootPC->UpdatePluginGeometry(target);
+  }
 
   return !interrupted;
 }

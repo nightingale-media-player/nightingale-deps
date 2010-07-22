@@ -4879,7 +4879,10 @@ nsCSSFrameConstructor::FindMathMLData(nsIContent* aContent,
 
   // Handle <math> specially, because it sometimes produces inlines
   if (aTag == nsGkAtoms::math) {
-    if (aStyleContext->GetStyleDisplay()->mDisplay == NS_STYLE_DISPLAY_BLOCK) {
+    // This needs to match the test in EnsureBlockDisplay in
+    // nsRuleNode.cpp.  Though the behavior here for the display:table
+    // case is pretty weird...
+    if (aStyleContext->GetStyleDisplay()->IsBlockOutside()) {
       static const FrameConstructionData sBlockMathData =
         FCDATA_DECL(FCDATA_FORCE_NULL_ABSPOS_CONTAINER |
                     FCDATA_WRAP_KIDS_IN_BLOCKS |
@@ -7913,7 +7916,10 @@ nsCSSFrameConstructor::ProcessRestyledFrames(nsStyleChangeList& aChangeList)
     // can require plugin clipping to change. If we requested a reflow,
     // we don't need to do this since the reflow will do it for us.
     nsIFrame* rootFrame = mPresShell->FrameManager()->GetRootFrame();
-    presContext->RootPresContext()->UpdatePluginGeometry(rootFrame);
+    nsRootPresContext* rootPC = presContext->GetRootPresContext();
+    if (rootPC) {
+      rootPC->UpdatePluginGeometry(rootFrame);
+    }
   }
 
   // cleanup references and verify the style tree.  Note that the latter needs
@@ -9068,6 +9074,14 @@ nsCSSFrameConstructor::MaybeRecreateContainerForFrameRemoval(nsIFrame* aFrame,
     // When we remove the legend for a fieldset, we should reframe
     // the fieldset to ensure another legend is used, if there is one
     *aResult = RecreateFramesForContent(aFrame->GetParent()->GetContent(), PR_FALSE);
+    return PR_TRUE;
+  }
+
+  nsIContent* content = aFrame->GetContent();
+  if (content && content->IsRootOfNativeAnonymousSubtree()) {
+    // We can't handle reconstructing the root of a native anonymous subtree,
+    // so reconstruct the parent.
+    *aResult = RecreateFramesForContent(content->GetParent(), PR_FALSE);
     return PR_TRUE;
   }
 

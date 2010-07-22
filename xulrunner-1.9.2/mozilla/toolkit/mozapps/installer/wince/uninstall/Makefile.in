@@ -50,7 +50,11 @@ CPPSRCS = \
 	$(srcdir)/../../../update/src/updater/readstrings.cpp \
 	$(NULL)
 
+OS_LIBS += aygshell.lib commctrl.lib
+
 LOCAL_INCLUDES += -I$(srcdir)/.. -I$(srcdir)/../../../update/src/updater
+
+RCINCLUDE = Uninstall.rc
 
 # Statically link the CRT when possible
 USE_STATIC_LIBS = 1
