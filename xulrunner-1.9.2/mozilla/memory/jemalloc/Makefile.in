@@ -69,10 +69,10 @@ MOZ_CRT_PDB = $(CRT_OBJ_DIR)/build/intel/$(MOZ_CRT_DLL_NAME).pdb
 WIN32_CRT_SRC_MEM_HEADERS=crtdbg.h malloc.h xdebug xlocale
 
 # copy the CRT DLL to dist/bin,
-# copy the import lib and pdb to dist/lib
+# copy everything to dist/lib
 libs:: $(MOZ_CRT_DLL) $(MOZ_CRT_IMPORT_LIB) $(MOZ_CRT_PDB)
 	$(INSTALL) $(MOZ_CRT_DLL) $(FINAL_TARGET)
-	$(INSTALL) $(MOZ_CRT_IMPORT_LIB) $(MOZ_CRT_PDB) $(DIST)/lib
+	$(INSTALL) $(MOZ_CRT_DLL) $(MOZ_CRT_IMPORT_LIB) $(MOZ_CRT_PDB) $(DIST)/lib
 
 $(MOZ_CRT_IMPORT_LIB): $(MOZ_CRT_DLL)
 
