@@ -1,6 +1,6 @@
 ##
 ## Format: packageOne(num num num), packageTwo(num num)
 ##
-linux-i686: xulrunner(21639 21542 21541)
-macosx-i686: xulrunner(21639 21542 21541)
-windows-i686-msvc8: xulrunner(21639 21542 21541)
+linux-i686: xulrunner-1.9.2(21639 21542 21541)
+macosx-i686: xulrunner-1.9.2(21639 21542 21541)
+windows-i686-msvc8: xulrunner-1.9.2(21639 21542 21541)
