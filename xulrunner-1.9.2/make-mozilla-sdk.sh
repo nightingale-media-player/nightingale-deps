@@ -1,7 +1,8 @@
 #!/bin/sh
 
 # bin_files are relative to $objdir/dist/bin/
-bin_files="regxpcom*
+bin_files=" redit*
+           js*
            xpidl*
            xpt_dump*
            xpt_link*

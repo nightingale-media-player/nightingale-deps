@@ -2,11 +2,12 @@
 
 set -e
 
-TAR=${TAR:-tar}
+CHMOD=${CHMOD:-chmod}
 CP=${CP:-cp}
 FIND=${FIND:-find}
+GREP=${GREP:-grep}
 RM=${RM:-rm}
-CHMOD=${CHMOD:-chmod}
+TAR=${TAR:-tar}
 
 notice() {
   echo $* 1>&2
@@ -47,8 +48,13 @@ echo $RM -fv $all_xpts
 $RM -fv $all_xpts
 popd > /dev/null
 
+# Ensure there are no .pdbs in the xulrunner release tarballs...
+if test -n "$($GREP release ${tarballname})"; then
+   EXTRA_TAR_FLAGS="--exclude='*.pdb'"
+fi
+
 notice "creating tarball in dest..."
-echo $TAR -cjvh --owner=0 --group=0 --exclude='CVS' --exclude='.hg' --exclude='.svn' --numeric-owner -p -f "$tarball" *
-$TAR -cjvh --owner=0 --group=0 --exclude='CVS' --exclude='.hg' --exclude='.svn' --numeric-owner -p -f "$tarball" *
+echo $TAR -cjvh --owner=0 --group=0 --exclude='CVS' --exclude='.hg' --exclude='.svn' $EXTRA_TAR_FLAGS --numeric-owner -p -f "$tarball" *
+$TAR -cjvh --owner=0 --group=0 --exclude='CVS' --exclude='.hg' --exclude='.svn' $EXTRA_TAR_FLAGS --numeric-owner -p -f "$tarball" *
 
 notice "done."
