@@ -48,23 +48,4 @@ DISABLE_IMPLICIT_SUBDIRS = 1
 
 JAR_MANIFEST = jar.mn
 
-XPIDL_SRCS = nsIBrowserSearchService.idl \
-             $(NULL)
-
-XPIDL_MODULE = browsersearch.xpt
-XPIDL_MODULE_TYPELIBS = $(XPIDL_SRCS:.idl=.xpt)
-
-PPDEFINES += -DMOZ_DISTRIBUTION_ID=\"Songbird\"
-
-SONGBIRD_PP_RESOURCES = $(srcdir)/nsSearchService.js \
-                        $(NULL)
-
-SONGBIRD_PP_DIR = $(SONGBIRD_COMPONENTSDIR)
-
-SONGBIRD_COMPONENTS = $(srcdir)/nsSearchSuggestions.js \
-                      $(XPIDL_MODULE) \
-                      $(NULL)
-
-GARBAGE = $(XPIDL_MODULE_TYPELIBS)
-
 include $(topsrcdir)/build/rules.mk
