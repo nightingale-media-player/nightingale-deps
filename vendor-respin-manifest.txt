@@ -1,7 +1,6 @@
 ##
 ## Format: packageOne(num num num), packageTwo(num num)
 ##
-linux-i686: gstreamer(21467)
-linux-x86_64: gst-plugins-base(21146 21222)
-macosx-i686: gstreamer(21467)
-windows-i686-msvc8: gstreamer(21467)
+linux-i686: xulrunner(21639 21542 21541)
+macosx-i686: xulrunner(21639 21542 21541)
+windows-i686-msvc8: xulrunner(21639 21542 21541)
