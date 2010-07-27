@@ -49,7 +49,7 @@ $RM -fv $all_xpts
 popd > /dev/null
 
 # Ensure there are no .pdbs in the xulrunner release tarballs...
-if test -n "$($GREP release ${tarballname})"; then
+if test -n "$(echo "$destBasename" | $GREP release)"; then
    EXTRA_TAR_FLAGS="--exclude='*.pdb'"
 fi
 
