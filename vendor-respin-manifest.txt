@@ -3,4 +3,4 @@
 ##
 linux-i686: gstreamer(21539)
 macosx-i686: gstreamer(21539), gst-plugins-good(21591)
-windows-i686-msvc8: gstreamer(21539), gst-plugins-bad(20309)
+windows-i686-msvc8: gstreamer(21539)
