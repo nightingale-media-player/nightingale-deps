@@ -93,7 +93,9 @@ const CACHE_INVALIDATION_DELAY = 1000;
 
 // Current cache version. This should be incremented if the format of the cache
 // file is modified.
-const CACHE_VERSION = 6;
+// XXX Specific cache version to make sure the cache file can pick up Songbird
+//     extensions. Please update when Mozilla increases the cache version.
+const CACHE_VERSION = 106;
 
 const ICON_DATAURL_PREFIX = "data:image/x-icon;base64,";
 
@@ -992,9 +994,11 @@ EngineURL.prototype = {
  *        Boolean indicating whether the engine should be treated as read-only.
  *        Read only engines cannot be serialized to file.
  */
-function Engine(aLocation, aSourceDataType, aIsReadOnly) {
+function Engine(aLocation, aSourceDataType, aIsReadOnly, aTags) {
   this._dataType = aSourceDataType;
   this._readOnly = aIsReadOnly;
+  // XXX Songbird: Set the tags properly during Engine construction.
+  this._tags = aTags;
   this._urls = [];
 
   if (aLocation.type) {
@@ -2089,7 +2093,9 @@ Engine.prototype = {
       description: this.description,
       __searchForm: this.__searchForm,
       _iconURL: this._iconURL,
-      _urls: [url._serializeToJSON() for each(url in this._urls)] 
+      _urls: [url._serializeToJSON() for each(url in this._urls)],
+      // XXX Songbird: cache tags
+      tags: this._tags
     };
 
     if (this._file instanceof Ci.nsILocalFile)
@@ -2803,7 +2809,7 @@ SearchService.prototype = {
         let engine;
         if (json.filePath)
           engine = new Engine({type: "filePath", value: json.filePath}, json._dataType,
-                               json._readOnly);
+                               json._readOnly, json.tags);
         else if (json._url)
           engine = new Engine({type: "uri", value: json._url}, json._dataType, json._readOnly);
 
