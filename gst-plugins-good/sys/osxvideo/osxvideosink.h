@@ -59,17 +59,15 @@ typedef struct _GstOSXVideoSinkClass GstOSXVideoSinkClass;
 
 #define GST_TYPE_OSXVIDEOBUFFER (gst_osxvideobuffer_get_type())
 
-/* OSXWindow stuff */
-struct _GstOSXWindow {
-  gint width, height;
-  gboolean internal;
-  GstGLView* gstview;
-};
-
 struct _GstOSXVideoSink {
   /* Our element stuff */
   GstVideoSink videosink;
-  GstOSXWindow *osxwindow;
+
+  /* Current size of video */
+  gint width, height;
+
+  /* Our NSView subclass that we draw into */
+  GstGLView *gstview;
 };
 
 struct _GstOSXVideoSinkClass {
