@@ -2734,7 +2734,7 @@ SearchService.prototype = {
     // For now any engines with special songbird tags should be hidden by default
     // This is to ensure that if an extension adds a programmatic search engine
     // the search engine will not show up after the extension is uninstalled
-    if (aEngine.tags.indexOf("songbird") > -1) {
+    if (aEngine.tags && aEngine.tags.indexOf("songbird") > -1) {
       aEngine.hidden = true;
     }
 
