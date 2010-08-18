@@ -2171,6 +2171,14 @@ Engine.prototype = {
       this._urls[i]._serializeToElement(doc, docElem);
     docElem.appendChild(doc.createTextNode("\n"));
 
+    // XXX Songbird: extensions for the internal search
+    if (this._tags) {
+      appendTextNode(MOZSEARCH_NS_10, "Tags", this._tags);
+    }
+    if (this.alias) {
+      appendTextNode(MOZSEARCH_NS_10, "Alias", this.alias);
+    }
+
     return doc;
   },
 
