@@ -1253,43 +1253,6 @@ UpdateService.prototype = {
     if (updates.length == 0)
       return null;
 
-    // XXX Songbird: Don't offer updates if they will prevent required addons
-    // from running
-
-    var requiredItems = [];
-    var em = Components.classes["@mozilla.org/extensions/manager;1"]
-                       .getService(Components.interfaces.nsIExtensionManager);
-    { /* for scope (let) */
-      function enumerate(UTF8Enumerator) {
-        while (UTF8Enumerator.hasMore())
-          yield UTF8Enumerator.getNext();
-      }
-
-      let iniFile = getFile("XCurProcD", ["distribution", "distribution.ini"]);
-      if (iniFile.exists()) {
-        ini = Components.classes["@mozilla.org/xpcom/ini-parser-factory;1"]
-                        .getService(Components.interfaces.nsIINIParserFactory)
-                        .createINIParser(iniFile);
-        for each (let key in enumerate(ini.getKeys("Update"))) {
-          if (/^addon.required.\d+/(key)) {
-            requiredItems.push(ini.getString("Update", key));
-          }
-        }
-      }
-    } /* end let scope */
-    function allowUpdate(update) {
-      let items = em.getIncompatibleItemList("", update.version,
-                                             update.platformVersion,
-                                             nsIUpdateItem.TYPE_ANY, false,
-                                             { });
-      for each (let item in items) {
-        if (requiredItems.indexOf(item.id) != -1) {
-          return false;
-        }
-      }
-      return true;
-    }
-
     // Choose the newest of the available minor and major updates.
     var majorUpdate = null, minorUpdate = null;
     var newestMinor = updates[0], newestMajor = updates[0];
@@ -1301,17 +1264,11 @@ UpdateService.prototype = {
       if (vc.compare(updates[i].extensionVersion, gApp.version) < 0)
         continue;
       if (updates[i].type == "major" &&
-          vc.compare(newestMajor.version, updates[i].version) <= 0) {
-        if (allowUpdate(updates[i])) {
-          majorUpdate = newestMajor = updates[i];
-        }
-      }
+          vc.compare(newestMajor.version, updates[i].version) <= 0)
+        majorUpdate = newestMajor = updates[i];
       if (updates[i].type == "minor" &&
-          vc.compare(newestMinor.version, updates[i].version) <= 0) {
-        if (allowUpdate(updates[i])) {
-          minorUpdate = newestMinor = updates[i];
-        }
-      }
+          vc.compare(newestMinor.version, updates[i].version) <= 0)
+        minorUpdate = newestMinor = updates[i];
     }
 
     // IMPORTANT
@@ -2007,14 +1964,6 @@ Checker.prototype = {
     var url = this.getUpdateURL(force);
     if (!url || (!this.enabled && !force))
       return;
-
-    // XXX Songbird: force an extension update on looking for an app update
-    if (getPref("getCharPref", "distribution.id", null)) {
-      // this has a distribution, force an addon update
-      Components.classes["@mozilla.org/extensions/manager;1"]
-                .getService(Components.interfaces.nsITimerCallback)
-                .notify(null);
-    }
 
     this._request = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].
                     createInstance(Ci.nsIXMLHttpRequest);
