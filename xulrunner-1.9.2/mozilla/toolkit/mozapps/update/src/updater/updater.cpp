@@ -43,13 +43,14 @@
  *
  *  contents = 1*( line )
  *  line     = method LWS *( param LWS ) CRLF
- *  method   = "add" | "remove" | "patch"
+ *  method   = "add" | "remove" | "rmdir" | "rmrfdir" | "patch"
  *  CRLF     = "\r\n"
  *  LWS      = 1*( " " | "\t" )
  */
 
 #if defined(XP_WIN)
 # include <windows.h>
+# include <shellapi.h>
 # include <direct.h>
 # include <io.h>
 # define F_OK 00
@@ -59,38 +60,47 @@
 #ifndef WINCE
 # define putenv _putenv
 #endif
-# define snprintf _snprintf
+# define snprintf(str, sz, fmt, ...) _snprintf_s(str, sz, _TRUNCATE, fmt, __VA_ARGS__)
 # define fchmod(a,b)
 
 # define NS_T(str) L ## str
-# define NS_tsnprintf _snwprintf
+# define NS_tsnprintf(str, sz, fmt, ...) _snwprintf_s(str, sz, _TRUNCATE, fmt, __VA_ARGS__)
 # define NS_tstrrchr wcsrchr
+# define NS_tstrstr wcsstr
+# define NS_tstrlen wcslen
 # define NS_taccess _waccess
 # define NS_tchdir _wchdir
 # define NS_tchmod _wchmod
 # define NS_tmkdir(path, perms) _wmkdir(path)
 # define NS_tremove _wremove
+# define NS_trename _wrename
 # define NS_tfopen _wfopen
 # define NS_tatoi _wtoi64
 #ifndef WINCE
 # define stat _stat
 #endif
 # define NS_tstat _wstat
+# define S_ISDIR(s)   (((s) & _S_IFMT) == _S_IFDIR)
+# define S_ISREG(s)   (((s) & _S_IFMT) == _S_IFREG)
 # define BACKUP_EXT L".moz-backup"
 # define CALLBACK_BACKUP_EXT L".moz-callback"
 # define LOG_S "%S"
 #else
 # include <sys/wait.h>
 # include <unistd.h>
+# include <fts.h>
 
 # define NS_T(str) str
 # define NS_tsnprintf snprintf
 # define NS_tstrrchr strrchr
+# define NS_tstrstr strstr
+# define NS_tstrlen strlen
 # define NS_taccess access
 # define NS_tchdir chdir
 # define NS_tchmod chmod
 # define NS_tmkdir mkdir
 # define NS_tremove remove
+# define NS_trename rename
 # define NS_tfopen fopen
 # define NS_tatoi atoi
 # define NS_tstat stat
@@ -180,6 +190,12 @@ void LaunchChild(int argc, char **argv);
   }
 #endif
 #endif
+
+// RemoveDir class flags, to change its behavior
+//
+// Other (currently unimplimented) possibilities include ignoring failures
+// on non-recursive rmdirs. 
+#define REMOVEDIR_RECURSIVE          (1 << 0)
 
 char *BigBuffer = NULL;
 int BigBufferSize = 262144;
@@ -543,7 +559,17 @@ static int ensure_parent_dir(const NS_tchar *path)
 
 static int copy_file(const NS_tchar *spath, const NS_tchar *dpath)
 {
-  int rv = ensure_parent_dir(dpath);
+  // copy_file can't reasonably copy anything but files; complain if we're
+  // asked to do so...
+  struct stat spathInfo;
+  int rv = NS_tstat(spath, &spathInfo);
+  if (rv)
+    return READ_ERROR;
+
+  if (!S_ISREG(spathInfo.st_mode))
+    return UNEXPECTED_ERROR;
+
+  rv = ensure_parent_dir(dpath);
   if (rv)
     return rv;
 
@@ -638,6 +664,99 @@ static void backup_finish(const NS_tchar *path, int status)
     backup_restore(path);
 }
 
+// C library symnatics, so 0 is success
+static int recursive_rmdir(const NS_tchar *path)
+{
+  int errnum = OK;
+
+#ifdef XP_WIN  // {
+  NS_tchar fullPath[MAXPATHLEN] = { 0 };
+  NS_tchar fullPathDoubleNull[MAXPATHLEN + 1] = { 0 };
+
+  if (!_wfullpath(fullPath, path, MAXPATHLEN))
+    return UNEXPECTED_ERROR;
+  
+  NS_tsnprintf(fullPathDoubleNull, MAXPATHLEN + 1, NS_T("%s\0"), fullPath);
+
+  SHFILEOPSTRUCT recursiveDirectoryDelete = {
+    NULL,
+    FO_DELETE,
+    fullPathDoubleNull,
+    NULL,
+    FOF_NOCONFIRMATION | FOF_NOERRORUI | FOF_SILENT,
+    false,
+    NULL,
+    NS_T("") };
+
+  errnum = SHFileOperation(&recursiveDirectoryDelete);
+
+#else // }{ 
+
+  FTS *delDir;
+  FTSENT *delDirEntry;
+  char pathCopy[MAXPATHLEN];
+  NS_tsnprintf(pathCopy, MAXPATHLEN, NS_T("%s"), path);
+  char* const pathArgv[] = {pathCopy, NULL};
+
+  if (!(delDir = fts_open(pathArgv, FTS_PHYSICAL | FTS_NOSTAT, NULL)))
+    return UNEXPECTED_ERROR;
+
+  while ((delDirEntry = fts_read(delDir)) != NULL) {
+    switch (delDirEntry->fts_info) {
+      /* Things which are weird to have in our directory structure,
+       * but which we'll try to remove anyway... */
+
+      case FTS_SL:
+      case FTS_SLNONE:
+      case FTS_DEFAULT:
+        LOG(("non-file/non-directory entry found: %s\n",
+         delDirEntry->fts_path));
+        
+        /* FALLTHROUGH */
+
+      /* Files and directories */
+      case FTS_F:
+      case FTS_NSOK:
+      case FTS_DP:
+        errnum = NS_tremove(delDirEntry->fts_accpath);
+        goto checkRv;
+
+      /* Various Errors */
+      case FTS_DNR:
+      case FTS_NS:
+        /* ENOENT is an acceptable error for FTS_DNR and FTS_NS; it means
+         * we're racing with ourselves, which is weird, but... we were
+         * going to remove it anyway... */
+
+        if (ENOENT == delDirEntry->fts_errno) {
+          errnum = OK;
+          goto checkRv;
+        }
+
+        /* FALLTHROUGH */
+      case FTS_ERR:
+        errnum = UNEXPECTED_ERROR;
+        LOG(("fts_read() error: %s (%d)\n", delDirEntry->fts_path,
+         delDirEntry->fts_errno));
+        goto checkRv;
+
+      default:
+        errnum = OK;
+        goto checkRv;
+    }
+
+    checkRv:
+      if (errnum != OK)
+        break;
+  } 
+
+  fts_close(delDir);
+#endif // } ndef XP_WIN
+
+  return errnum;
+}
+
+
 //-----------------------------------------------------------------------------
 
 static int DoUpdate();
@@ -722,6 +841,14 @@ RemoveFile::Prepare()
     return OK;
   }
 
+  // Make sure that we're actually a file...
+  struct stat fileInfo;
+  rv = NS_tstat(mDestFile, &fileInfo);
+  if (rv)
+    return READ_ERROR;
+  if (!S_ISREG(fileInfo.st_mode))
+    return UNEXPECTED_ERROR;
+
 #ifndef WINCE
   NS_tchar *slash = (NS_tchar *) NS_tstrrchr(mDestFile, NS_T('/'));
   if (slash) {
@@ -784,6 +911,204 @@ RemoveFile::Finish(int status)
   LOG(("FINISH REMOVE %s\n", mFile));
 
   backup_finish(mDestFile, status);
+}
+
+class RemoveDir : public Action
+{
+public:
+  RemoveDir() : mParsedDir(NULL), mDir(NULL), mSkip(0), mFlags(0) 
+   { mDirNoSlash[0] = NULL; }
+  RemoveDir(int flags) : mParsedDir(NULL), mDir(NULL), mSkip(0) 
+   { mDirNoSlash[0] = NULL; mFlags = flags; }
+
+  virtual int Parse(char *line);
+  virtual int Prepare(); // check that the source dir exists
+  virtual int Execute();
+  virtual void Finish(int status);
+
+private:
+  bool IsRecursive() { return mFlags & REMOVEDIR_RECURSIVE; }
+
+  const char* mParsedDir;
+  char mDirNoSlash[MAXPATHLEN];
+  const NS_tchar* mDir;
+  int mSkip;
+  int mFlags;
+};
+
+int
+RemoveDir::Parse(char *line)
+{
+  // format "<deaddir>/"
+
+  mParsedDir = mstrtok(kQuote, &line);
+  if (!mParsedDir)
+    return PARSE_ERROR;
+
+  // Ensure the last character is a directory separator, then chop it off.
+  // we do this because:
+  //
+  // 1. in Prepare(), apparently Win32's _wstat will return ENOENT if
+  // there's a trailing slash.
+  //
+  // 2. In the Execute() and Finish() steps for recursive directory
+  // deletions, we append .moz-backup to it
+  // 
+  // *******************************************************************
+  // NOTE: We're still talking in terms of char's here, not NS_tchar's,
+  //       so NO NS_t*() functions or NS_T()s!!
+  // *******************************************************************
+  //
+
+  if (strlen(mParsedDir) == 0 || mParsedDir[strlen(mParsedDir) - 1] != '/')
+    return PARSE_ERROR;
+
+  snprintf(mDirNoSlash, sizeof(mDirNoSlash), "%s", mParsedDir);
+  mDirNoSlash[strlen(mDirNoSlash) - 1] = '\0';
+
+#ifdef XP_WIN
+  mDir = get_wide_path(mDirNoSlash);
+  if (!mDir)
+    return PARSE_ERROR;
+#else
+  mDir = mDirNoSlash;
+#endif
+
+  // ********************************************************************
+  // Ok, now we're converted; start using NS_tfoo() and NS_T() to your 
+  // heart's content
+  // ********************************************************************
+
+  // Do not allow '..' in any directory paths to be deleted.
+  if (NS_tstrstr(mDir, NS_T("..")) != NULL)
+    return PARSE_ERROR;
+
+  return OK;
+}
+
+int
+RemoveDir::Prepare()
+{
+  if (IsRecursive())
+    LOG(("PREPARE REMOVERECURSIVEDIR %s\n", mParsedDir));
+  else
+    LOG(("PREPARE REMOVEDIR %s\n", mParsedDir));
+
+  // We expect the directory to exist if we are to remove it.
+  int rv = NS_taccess(mDir, F_OK);
+  if (rv) {
+    LOG(("directory does not exist; skipping\n"));
+    mSkip = 1;
+    mProgressCost = 0;
+    return OK;
+  }
+
+  // Make sure that we're actually a dir...
+  struct stat dirInfo;
+  rv = NS_tstat(mDir, &dirInfo);
+  if (rv)
+    return READ_ERROR;
+  if (!S_ISDIR(dirInfo.st_mode)) {
+    LOG(("path present, but not a directory; bailing\n"));
+    return UNEXPECTED_ERROR;
+  }
+
+  rv = NS_taccess(mDir, W_OK);
+
+  if (rv) {
+    LOG(("access failed: %d,%d\n", rv, errno));
+    return WRITE_ERROR;
+  }
+
+  return OK;
+}
+
+int
+RemoveDir::Execute()
+{
+  if (IsRecursive())
+    LOG(("EXECUTE REMOVERECURSIVEDIR %s\n", mParsedDir));
+  else
+    LOG(("EXECUTE REMOVEDIR %s\n", mParsedDir));
+
+  if (mSkip)
+    return OK;
+
+  // We expect the directory to exist if we are to remove it.  We check here 
+  // as well as in PREPARE since we might have been asked to remove the same 
+  // directory more than once: bug 311099.
+  int rv = NS_taccess(mDir, F_OK);
+  if (rv) {
+    LOG(("directory does not exist; skipping\n"));
+    mSkip = 1;
+    return OK;
+  }
+
+  // rename the directory now; we'll delete it in Finish.
+  //
+  // If we're not a recursive directory deletion, the prep is to do-nothing;
+  // this is so files within the directory can be backed up and rolled-back,
+  // as they're expecting.
+  if (IsRecursive()) {
+    NS_tchar backup[MAXPATHLEN];
+    NS_tsnprintf(backup, sizeof(backup), NS_T("%s" BACKUP_EXT), mDir);
+
+    rv = NS_trename(mDir, backup);
+
+    if (rv) {
+      LOG(("directory rename(%s) failed: %d,%d\n", mParsedDir, rv, errno));
+      return UNEXPECTED_ERROR;
+    }
+  }
+
+  return OK;
+}
+
+void
+RemoveDir::Finish(int status)
+{
+  if (IsRecursive())
+    LOG(("FINISH REMOVERECURSIVEDIR %s: ", mParsedDir));
+  else
+    LOG(("FINISH REMOVEDIR: %s: ", mParsedDir));
+
+  int rv = OK;
+
+  if (mSkip) {
+    LOG(("Skipped.\n"));
+    return;
+  }
+
+  NS_tchar backup[MAXPATHLEN];
+  NS_tsnprintf(backup, sizeof(backup), NS_T("%s" BACKUP_EXT), mDir);
+
+  if (OK == status) {
+    if (IsRecursive()) {
+      rv = recursive_rmdir(backup);
+    } else {
+    // We have to do this insanity because ensure_remove() uses remove(),
+    // which on Win32 calls _wremove, but _wremove is documented to
+    // specifically not handle paths that are, in fact, directories.
+#ifdef XP_WIN
+      rv = _wrmdir(mDir);
+#else
+      rv = ensure_remove(mDir);
+#endif
+    }
+  } else {
+    if (IsRecursive()) {
+      rv = NS_trename(backup, mDir);
+
+      if (rv) {
+        LOG(("directory restore (%s): %d,%d ", mParsedDir, rv, errno));
+      }
+    }
+  }
+
+  if (rv)
+    LOG(("FAILED: %d,%d\n", rv, errno));
+  else
+    LOG(("OK\n"));
 }
 
 class AddFile : public Action
@@ -1225,7 +1550,7 @@ LaunchWinPostProcess(const WCHAR *appExe)
   wcscpy(slash + 1, L"uninstall.update");
 
   WCHAR slogFile[MAXPATHLEN];
-  _snwprintf(slogFile, MAXPATHLEN, L"%s/update.log", gSourcePath);
+  _snwprintf_s(slogFile, MAXPATHLEN, _TRUNCATE, L"%s/update.log", gSourcePath);
 
   WCHAR dummyArg[13];
   wcscpy(dummyArg, L"argv0ignored ");
@@ -1831,6 +2156,12 @@ int DoUpdate()
     Action *action = NULL;
     if (strcmp(token, "remove") == 0) {
       action = new RemoveFile();
+    }
+    else if (strcmp(token, "rmdir") == 0) {
+      action = new RemoveDir();
+    }
+    else if (strcmp(token, "rmrfdir") == 0) {
+      action = new RemoveDir(REMOVEDIR_RECURSIVE);
     }
     else if (strcmp(token, "add") == 0) {
       action = new AddFile();

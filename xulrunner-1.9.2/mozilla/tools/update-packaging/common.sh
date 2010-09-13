@@ -78,13 +78,16 @@ append_remove_instructions() {
     for ((i=0; $i<$num_files; i=$i+1)); do
       # Trim whitespace (including trailing carriage returns)
       f=$(echo ${files[$i]} | tr "|" " " | sed 's/^ *\(.*\) *$/\1/' | tr -d '\r')
-      # Exclude any blank lines or any lines ending with a slash, which indicate
-      # directories.  The updater doesn't know how to remove entire directories.
+      # Exclude blank lines.
       if [ -n "$f" ]; then
-        if [ $(echo "$f" | grep -c '\/$') = 0 ]; then
-          echo "remove \"$prefix$f\""
+        if [ $(echo "$f" | grep -c '\/$') = 1 ]; then
+          echo "rmdir \"$prefix$f\""
+        elif [ $(echo "$f" | grep -c '\/\*$') = 1 ]; then
+          # Remove the *
+          g=$(echo "$f" | sed -e 's:\*$::')
+          echo "rmrfdir \"$prefix$g\""
         else
-          notice "ignoring remove instruction for directory: $f"
+          echo "remove \"$prefix$f\""
         fi
       fi
     done
