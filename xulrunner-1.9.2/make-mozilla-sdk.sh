@@ -1,4 +1,10 @@
-#!/bin/sh
+#!/usr/bin/env bash
+
+CP=${CP:-cp}
+MAKE=${MAKE:-make}
+MKDIR=${MKDIR:-mkdir}
+PERL=${PERL:-perl}
+RM=${RM:-rm}
 
 # bin_files are relative to $objdir/dist/bin/
 bin_files=" redit*
@@ -102,7 +108,12 @@ breakpad_bin_files_win="toolkit/crashreporter/tools/win32/dump_syms.exe"
 breakpad_bin_files_nix="dump_syms"
 
 notice() {
-  echo $* 1>&2
+  echo "$*" 1>&2
+}
+
+shellExec() {
+  echo "$*";
+  eval $*;
 }
 
 if [ $# != 3 ]; then
@@ -110,17 +121,9 @@ if [ $# != 3 ]; then
   exit 1
 fi
 
-MAKE=make
-CP=cp
 case `uname -s` in
   CYGWIN*|MINGW*)
     is_windows="1"
-    ;;
-  SunOS)
-    MAKE=gmake
-	if [ -x /usr/gnu/bin/cp ]; then
-		CP=/usr/gnu/bin/cp
-	fi
     ;;
 esac
 
@@ -141,7 +144,7 @@ temp1=`dirname "$relsdkdir"`
 temp2=`basename "$relsdkdir"`
 sdkdir="`cd \"$temp1\" 2>/dev/null && pwd || echo \"$temp1\"`/$temp2"
 
-mkdir -p "$sdkdir"
+$MKDIR -p "$sdkdir"
 
 # build in bsdiff to enable partial update patches (binary diffs)
 if test -d "$objdir"/other-licenses/bsdiff; then
@@ -150,19 +153,19 @@ if test -d "$objdir"/other-licenses/bsdiff; then
 fi
 
 notice "copying binary files..."
-cd "$sdkdir" && mkdir -p bin
+cd "$sdkdir" && $MKDIR -p bin
 cd "$distdir/bin" && $CP -Lfp $bin_files "$sdkdir/bin"
 cd "$distdir/host/bin" && $CP -Lfp $update_bin_files "$sdkdir/bin"
 
 # breakpad binaries differ by platform
 if test -n "$is_windows"; then
-cd "$srcdir" && $CP -Lfp $breakpad_bin_files_win "$sdkdir/bin"
+  cd "$srcdir" && $CP -Lfp $breakpad_bin_files_win "$sdkdir/bin"
 else
-cd "$distdir/host/bin" && $CP -Lfp $breakpad_bin_files_nix "$sdkdir/bin"
+  cd "$distdir/host/bin" && $CP -Lfp $breakpad_bin_files_nix "$sdkdir/bin"
 fi
 
 notice "copying library files..."
-cd "$sdkdir" && mkdir -p lib
+cd "$sdkdir" && $MKDIR -p lib
 # some os don't have all these files, so silence errors
 cd "$distdir/lib" && $CP -Lfp $lib_files "$sdkdir/lib" 2>/dev/null
 
@@ -171,19 +174,19 @@ notice "copying symbol files..."
 cd "$objdir" && $CP -Lfp $symbol_files "$sdkdir/lib" 2>/dev/null
 
 notice "copying include files..."
-cd "$sdkdir" && mkdir -p include
+cd "$sdkdir" && $MKDIR -p include
 cd "$distdir/include" && $CP -RLfp * "$sdkdir/include"
 
 notice "copying idl files..."
-cd "$sdkdir" && mkdir -p idl
+cd "$sdkdir" && $MKDIR -p idl
 cd "$distdir/idl" && $CP -Lfp * "$sdkdir/idl"
 
 notice "copying frozen sdk..."
-cd "$sdkdir" && mkdir -p frozen
+cd "$sdkdir" && $MKDIR -p frozen
 cd "$distdir/sdk" && $CP -RLfp * "$sdkdir/frozen"
 
 notice "copying scripts..."
-cd "$sdkdir" && mkdir -p scripts
+cd "$sdkdir" && $MKDIR -p scripts
 cd "$srcdir" && $CP -Lfp $build_script_files "$sdkdir/scripts"
 if test -d "$srcdir"/tools/update-packaging; then
   cd "$srcdir/tools/update-packaging" && $CP -Lfp $update_script_files "$sdkdir/scripts"
@@ -194,8 +197,8 @@ notice "performing post-processing..."
 
 # bump WINVER and _WIN32_WINNT to 0x501 on windows
 if test -n "$is_windows"; then
-cd "$sdkdir/include" && perl -p -i.bak -e 's/WINVER 0x500/WINVER 0x501/g;s/_WIN32_WINNT 0x500/_WIN32_WINNT 0x501/g' ./mozilla-config.h
-cd "$sdkdir/include" && rm -f ./mozilla-config.h.bak
+  cd "$sdkdir/include" && $PERL -p -i.bak -e 's/WINVER 0x500/WINVER 0x501/g;s/_WIN32_WINNT 0x500/_WIN32_WINNT 0x501/g' ./mozilla-config.h
+  cd "$sdkdir/include" && $RM -f ./mozilla-config.h.bak
 fi
 
 notice "done."

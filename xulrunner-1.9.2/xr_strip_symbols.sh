@@ -1,18 +1,24 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ $# != 1 ]; then
   echo "usage: xr_strip_symbols.sh <windows|linux|macosx>"
   exit
 fi
 
+set -e
+
 plat=$1
 
-if [ ${plat} = "macosx" ]; then
-strip="strip -x -S"
-elif [ ${plat} = "linux" ]; then
-strip="strip -v"
-elif [ ${plat} = "windows" ]; then
-exit
+if test -n "$STRIP"; then
+  strip="$STRIP"
+else
+  if [ ${plat} = "macosx" ]; then
+    strip="strip -x -S"
+  elif [ ${plat} = "linux" ]; then
+    strip="strip -v"
+  elif [ ${plat} = "windows" ]; then
+    exit
+  fi
 fi
 
 # Expect to be in the mozilla source directory.

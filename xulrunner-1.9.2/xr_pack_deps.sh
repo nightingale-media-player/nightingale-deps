@@ -1,4 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -e
+
+MKDIR=${MKDIR:-mkdir}
+
+shellExec() {
+  echo "$*";
+  eval $*;
+}
 
 if [ $# != 3 ]; then
   echo "usage: xr_pack_deps.sh <windows-i686-msvc8|linux-x86_64|linux-i686|macosx-ppc|macosx-i686>"
@@ -17,15 +26,15 @@ if [ "$3" != "debug" ] && [ "$3" != "release" ]; then
 fi
 
 # create destination directories
-mkdir -p songbird/$tree/dependencies/$plat/mozilla/$buildMode/
-mkdir -p songbird/$tree/dependencies/$plat/xulrunner/$buildMode/
+$MKDIR -p songbird/$tree/dependencies/$plat/mozilla/$buildMode/
+$MKDIR -p songbird/$tree/dependencies/$plat/xulrunner/$buildMode/
 
 # make mozilla sdk
-./make-mozilla-sdk.sh mozilla/ \
+shellExec ./make-mozilla-sdk.sh mozilla/ \
                       mozilla/compiled/xulrunner-$buildMode/ \
                       songbird/$tree/dependencies/$plat/mozilla/$buildMode/
 
 # make xulrunner tarball
-./make-xulrunner-tarball.sh mozilla/compiled/xulrunner-$buildMode/dist/bin/ \
+shellExec ./make-xulrunner-tarball.sh mozilla/compiled/xulrunner-$buildMode/dist/bin/ \
                             songbird/$tree/dependencies/$plat/xulrunner/$buildMode/ \
                             xulrunner.tar.bz2
