@@ -406,15 +406,16 @@ else
           $(RM) -v $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET) && \
           $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)) || true
 endif
-ifeq (xulrunner,$(SB_VENDOR_TARGET))
+# If we're currently building xulrunner, also clean up the Moz SDK dir...
+ifeq ($(SB_VENDOR_XR_TARGET),$(SB_VENDOR_TARGET))
    ifeq (Msys,$(SB_VENDOR_ARCH))
-	   (test -e $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/.msyscp && \
-          $(RM) -rf $(SB_VENDOR_BINARIES_DIR)/mozilla && \
-          $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/mozilla) || true
+	   (test -e $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_MOZSDK_TARGET)/.msyscp && \
+          $(RM) -rf $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_MOZSDK_TARGET) && \
+          $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_MOZSDK_TARGET)) || true
    else
-	   (test -h $(SB_VENDOR_BINARIES_DIR)/mozilla && \
-          $(RM) -v $(SB_VENDOR_BINARIES_DIR)/mozilla && \
-          $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/mozilla) || true
+	   (test -h $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_MOZSDK_TARGET) && \
+          $(RM) -v $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_MOZSDK_TARGET) && \
+          $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_MOZSDK_TARGET)) || true
    endif
 endif
 

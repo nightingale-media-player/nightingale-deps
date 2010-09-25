@@ -25,12 +25,18 @@
 #
 ################################################################################
 #
-# Makefile for building Songbird vendor: xulrunner
+# Makefile for building Songbird vendor: xulrunner-1.9.2
 #
 ################################################################################
 ################################################################################
 
-SB_VENDOR_TARGET = xulrunner
+##
+## WARNING ##
+##
+## SB_VENDOR_XR_TARGET in songbird-vendor-defs.mk MUST MATCH the
+## SB_VENDOR_TARGET below
+
+SB_VENDOR_TARGET = xulrunner-1.9.2
 SB_VENDOR_TARGET_VERSION = 1.9.2.3
 
 # We set this up here, but it turns out that it's only for Win32 and Mac; Linux
@@ -42,6 +48,10 @@ SB_VENDOR_TARGET_DEP_MODULES := glib \
 SB_BRANCH ?= trunk
 
 include $(CURDIR)/../songbird-vendor-defs.mk
+
+ifneq ($(SB_VENDOR_XR_TARGET),$(SB_VENDOR_TARGET))
+   $(error SB_VENDOR_XR_TARGET in songbird-vendor-defs.mk and SB_VENDOR_TARGET in Makefile.songbird need to match for Xulrunner. Bailing)
+endif
 
 SB_XR_PLATFORM := $(shell echo $(SB_TARGET_ARCH) | $(CUT) -d- -f 1)
 SB_XR_ARCH := $(shell echo $(SB_TARGET_ARCH) | $(CUT) -d- -f 2-)
@@ -79,7 +89,7 @@ endif
 
 xr-packaging: xr-packaging-debug xr-packaging-release
 ifneq (,$(SB_VENDOR_BUILD_LOG))
-	$(CP) $(CURDIR)/$(SB_VENDOR_BUILD_LOG) $(SB_VENDOR_BINARIES_DIR)/xulrunner-1.9.2
+	$(CP) $(CURDIR)/$(SB_VENDOR_BUILD_LOG) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
 endif
 
 xr-clean: FORCE
@@ -87,12 +97,12 @@ xr-clean: FORCE
 	$(RM) -rf $(CURDIR)/mozilla/compiled
 
 xr-packaging-%:
-	@echo "Packaging up $*-mode xulrunner..."
+	@echo "Packaging up $*-mode $(SB_VENDOR_TARGET)..."
 	@if test "release" = "$*"; then \
       if $(HAVE_XR_release_BUILD); then \
          cd $(CURDIR)/mozilla && $(XR_STRIP_SYMBOLS) $(SB_XR_PLATFORM); \
       else \
-         echo "Could not find release build to strip symbols in" 1>&2; \
+         echo "Could not find release build to strip symbols in. Skipping." 1>&2; \
       fi; \
    fi
 	@if $(HAVE_XR_$*_BUILD); then \
