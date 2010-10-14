@@ -1345,7 +1345,7 @@ NS_IMETHODIMP nsWindow::GetSizeConstraints(PRInt32* aMinWidth,
 
     unit = position->mMaxHeight.GetUnit();
     if (eStyleUnit_Coord != unit) {
-      coordTwips = nscoord_MIN;
+      coordTwips = nscoord_MAX;
     } else {
       coordTwips = position->mMaxHeight.GetCoordValue();
     }
