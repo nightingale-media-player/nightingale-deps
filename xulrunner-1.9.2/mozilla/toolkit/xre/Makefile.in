@@ -105,7 +105,7 @@ CPPSRCS = \
 	$(NULL)
 
 ifdef MOZ_SPLASHSCREEN
-ifeq ($(OS_ARCH),WINCE)
+ifeq ($(OS_ARCH),WINNT)
 CPPSRCS += nsSplashScreenWin.cpp
 else
 CPPSRCS += nsSplashScreenDummy.cpp

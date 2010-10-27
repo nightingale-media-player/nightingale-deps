@@ -2735,6 +2735,8 @@ XRE_main(int argc, char* argv[], const nsXREAppData* aAppData)
     }
   }
 
+  MOZ_SPLASHSCREEN_UPDATE(10);
+
   ScopedAppData appData(aAppData);
   gAppData = &appData;
 
