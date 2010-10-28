@@ -39,6 +39,7 @@
 #include "nsSplashScreen.h"
 
 #include <windows.h>
+#include <stdlib.h>
 
 static ATOM gSplashScreenClass = 0;
 
