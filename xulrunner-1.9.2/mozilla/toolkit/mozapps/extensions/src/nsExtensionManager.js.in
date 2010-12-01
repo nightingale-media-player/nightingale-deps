@@ -2107,16 +2107,41 @@ var StartupCache = {
           if (!InstallLocations.get(parts[0]))
             continue;
           // If the entry doesn't have the addon version, this was from before
-          // Songbird 1.9 and needs to be refreshed.
-          if (parts.length < 6)
-            continue;
-          try {
-            // the version string was escaped; unescape it.
-            parts[5] = decodeURIComponent(parts[5]);
+          // Songbird 1.9 and needs to be refreshed.  We want to make sure we
+          // read it in, though, so that we don't attempt to re-install the
+          // (now possibly incompatible) addon - see songbird bug 22877 
+          if (parts.length < 6) {
+            LOG("upgrading extensions.cache for " + parts[1] + "...");
+            var location = InstallLocations.get(parts[0]);
+            if (!location) {
+              LOG("Failed to find location " + parts[0]);
+              continue;
+            }
+            var installRDF = location.getItemFile(parts[1], FILE_INSTALL_MANIFEST);
+            if (!installRDF) {
+              LOG("Failed to get install.RDF from " + parts[1]);
+              continue;
+            }
+            if (!installRDF.exists()) {
+              LOG("install.rdf " + installRDF.path + " does not exist");
+              continue;
+            }
+            var installManifest = getInstallManifest(installRDF);
+            if (!installManifest) {
+              LOG("Failed to parse manifest");
+              continue;
+            }
+            parts[5] = getManifestProperty(installManifest, "version");
           }
-          catch (e) {
-            // failed to decode the version string; ignore the entry
-            continue;
+          else {
+            try {
+              // the version string was escaped; unescape it.
+              parts[5] = decodeURIComponent(parts[5]);
+            }
+            catch (e) {
+              // failed to decode the version string; ignore the entry
+              continue;
+            }
           }
           var op = parts[4];
           this._putRaw(parts[0], parts[1], parts[2], parts[3], op, parts[5], true);
