@@ -537,7 +537,7 @@ gst_plugin_load_file (const gchar * filename, GError ** error)
   GModule *module;
   gboolean ret;
   gpointer ptr;
-  struct stat file_status;
+  GStatBuf file_status;
   GstRegistry *registry;
   gboolean new_plugin = TRUE;
 
@@ -1333,7 +1333,7 @@ gst_plugin_ext_dep_extract_env_vars_paths (GstPlugin * plugin,
 }
 
 static guint
-gst_plugin_ext_dep_get_hash_from_stat_entry (struct stat *s)
+gst_plugin_ext_dep_get_hash_from_stat_entry (GStatBuf *s)
 {
   if (!(s->st_mode & (S_IFDIR | S_IFREG)))
     return (guint) - 1;
@@ -1390,7 +1390,7 @@ gst_plugin_ext_dep_scan_dir_and_match_names (GstPlugin * plugin,
    * the same order, and not in a random order */
   while ((entry = g_dir_read_name (dir))) {
     gboolean have_match;
-    struct stat s;
+    GStatBuf s;
     gchar *full_path;
     guint fhash;
 
@@ -1447,7 +1447,7 @@ gst_plugin_ext_dep_scan_path_with_filenames (GstPlugin * plugin,
    * and going through each entry to see if it matches one of our filenames. */
   if (!recurse_into_dirs && !partial_names) {
     for (i = 0; filenames[i] != NULL; ++i) {
-      struct stat s;
+      GStatBuf s;
       gchar *full_path;
       guint fhash;
 

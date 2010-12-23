@@ -108,6 +108,8 @@
 #include "gstmarshal.h"
 #include "gstfilter.h"
 
+#include "glib-compat-private.h"
+
 #define GST_CAT_DEFAULT GST_CAT_REGISTRY
 
 /* the one instance of the default registry and the mutex protecting the
@@ -810,7 +812,7 @@ gst_registry_scan_path_level (GstRegistry * registry, const gchar * path,
     return FALSE;
 
   while ((dirent = g_dir_read_name (dir))) {
-    struct stat file_status;
+    GStatBuf file_status;
 
     filename = g_build_filename (path, dirent, NULL);
     if (g_stat (filename, &file_status) < 0) {

@@ -11,6 +11,15 @@
 G_BEGIN_DECLS
 
 /* copies */
+#if !GLIB_CHECK_VERSION(2,25,0)
+
+#if defined (_MSC_VER) && !defined(_WIN64)
+typedef struct _stat32 GStatBuf;
+#else
+typedef struct stat GStatBuf;
+#endif
+
+#endif
 
 /* adaptations */
 
