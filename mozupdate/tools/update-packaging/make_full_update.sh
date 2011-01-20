@@ -16,6 +16,8 @@ if [ $# = 0 ]; then
   print_usage
   exit 1
 fi
+  
+force_add_extensions=0
 
 if [ $1 = -h ]; then
   print_usage
@@ -24,8 +26,12 @@ if [ $1 = -h ]; then
   notice ""
   notice "Options:"
   notice "  -h  show this help text"
+  notice "  -e  treat extensions as not-optional, and always add them"
   notice ""
   exit 1
+elif [ $1 = -e ]; then
+  force_add_extensions=1
+  shift
 fi
 
 # -----------------------------------------------------------------------------
@@ -57,7 +63,12 @@ for ((i=0; $i<$num_files; i=$i+1)); do
 
   notice "processing $f"
 
-  make_add_instruction "$f" >> $manifest
+  # This regex for extensions comes from common.sh:39
+  if [ "$force_add_extensions" = "1" -a $(echo "$f" | grep -c 'extensions/.*/') = "1" ]; then
+    make_add_instruction "$f" "$force_add_extensions" >> $manifest
+  else
+    make_add_instruction "$f" >> $manifest
+  fi
 
   dir=$(dirname "$f")
   mkdir -p "$workdir/$dir"
