@@ -183,10 +183,8 @@ for ((i=0; $i<$num_newfiles; i=$i+1)); do
   archivefiles="$archivefiles \"$f\""
 done
 
-# XXXredfive - this caused us to remove files twice 0.2.5.1->0.3
-#   Songbird->songbird
 # Append remove instructions for any dead files.
-#append_remove_instructions "$newdir" >> $manifest
+append_remove_instructions "$newdir" >> $manifest
 
 $BZIP2 -z9 "$manifest" && mv -f "$manifest.bz2" "$manifest"
 
