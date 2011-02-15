@@ -1,6 +1,6 @@
 ##
 ## Format: packageOne(num num num), packageTwo(num num)
 ##
-linux-i686: xulrunner-1.9.2(22877)
-macosx-i686: xulrunner-1.9.2(22877)
-windows-i686-msvc8:  xulrunner-1.9.2(22877)
+linux-i686: taglib(22958), gstreamer(21814)
+macosx-i686: taglib(22958), gstreamer(21814)
+windows-i686-msvc8:  taglib(22958), gstreamer(21814)
