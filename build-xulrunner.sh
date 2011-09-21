@@ -49,6 +49,5 @@ fi
 # and don't want to rewrite this whole build system
 export SB_VENDOR_BUILD_ROOT=`pwd`
 
-# change this if we do a version bump
 cd "xulrunner-$XUL"
 make -f Makefile.songbird
