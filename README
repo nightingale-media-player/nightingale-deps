@@ -1,2 +1,19 @@
-Dependencies (just xulrunner) for Nightingale. Other libs should 
-come from the distro's own libraries.
+Nightingale is a community based fork of the Songbird Web/Media player
+distributed under the GNU GPL and portions (xulrunner and mozilla libs)
+licensed under the Mozilla MPL/BSD license. 
+
+This is what's left of the needed dependencies (just xulrunner) 
+for Nightingale. Other libs should come from the distro's own libraries.
+Hopefully, in the future, this won't be necessary and we'll be able
+to build against the system xulrunner.
+
+Contributions:
+
+To join in and help, please visit http://getnightingale.com/forum
+or jump into #nightingale on irc.mozilla.org.
+
+Contributors:
+
+ilikenwf/Matt Parnell
+Mook
+GeekShadow
