@@ -1,5 +1,5 @@
 # NOTE: If you've already built once successfully, then don't use this
-# script to repackage! Instead go to xulrunner-$XUL and 
+# script to repackage! Instead go to xulrunner and 
 # make -f Makefile.songbird xr-packaging
 
 # XUL Version
@@ -9,8 +9,8 @@ XUL="6.0.2"
 export SB_VENDOR_BUILD_ROOT=`pwd`
 
 # xul source directory
-if [ ! -d "xulrunner-$XUL/mozilla" ] ; then
-    mkdir "xulrunner-$XUL/mozilla"
+if [ ! -d "xulrunner/mozilla" ] ; then
+    mkdir "xulrunner/mozilla"
 fi
 
 # output directory
@@ -19,8 +19,8 @@ if [ ! -d linux\-`arch` ]; then
 fi
 
 # get the source files if this is a fresh build or new version
-if [ ! -f "xulrunner-$XUL/xulrunner-$XUL.source.tar.bz2" ] ; then
-	cd "xulrunner-$XUL"
+if [ ! -f "xulrunner/xulrunner-$XUL.source.tar.bz2" ] ; then
+	cd "xulrunner"
 	
 	# remove any old source archives, if we're updating
 	rm "xulrunner-*.source.tar.bz2" &> /dev/null
@@ -34,7 +34,7 @@ if [ ! -f "xulrunner-$XUL/xulrunner-$XUL.source.tar.bz2" ] ; then
 	
 	mv "mozilla-release" mozilla
 else
-	cd "xulrunner-$XUL"
+	cd "xulrunner"
 	
 	rm -rf mozilla
 	
