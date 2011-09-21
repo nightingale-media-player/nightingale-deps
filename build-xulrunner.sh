@@ -24,6 +24,9 @@ fi
 if [ ! -f "xulrunner-$XUL/xulrunner-$XUL.source.tar.bz2" ] ; then
 	cd "xulrunner-$XUL"
 	
+	# remove any old source archives, if we're updating
+	rm "xulrunner-*.source.tar.bz2" &> /dev/null
+	
 	wget "https://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/$XUL/source/xulrunner-$XUL.source.tar.bz2"
 	
 	tar xvf "xulrunner-$XUL.source.tar.bz2"
