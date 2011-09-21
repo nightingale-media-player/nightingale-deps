@@ -44,6 +44,6 @@ else
 
 fi
 
-make -f Makefile.songbird xr-packaging
+make -f Makefile.songbird
 
 cp -a $SB_VENDOR_BUILD_ROOT/oldscripts/* $SB_VENDOR_BUILD_ROOT/linux\-`arch`/mozilla\-$XUL/scripts
