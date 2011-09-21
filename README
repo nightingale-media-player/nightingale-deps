@@ -17,3 +17,18 @@ Contributors:
 ilikenwf/Matt Parnell
 Mook
 GeekShadow
+
+===========================
+BUILDING:
+===========================
+If this is your first build, simply sh build-xulrunner.sh
+
+When completed (a good wait), the directory linux-[ARCH] will contain
+your dependencies, which you should link, copy, or move to your 
+nightingale (or songbird) dependencies directory.
+
+IMPORTANT NOTE: If you've already built once successfully, then don't 
+use build-xulrunner.sh unless you want to rebuild from scratch
+(A LONG WAIT)! Instead go to xulrunner-$XUL and do
+
+make -f Makefile.songbird xr-packaging
