@@ -5,19 +5,17 @@
 # XUL Version
 XUL="6.0.2"
 
-# output directory
-if [ ! -d linux\-`arch` ]; then
-    mkdir linux\-`arch`
-fi
-
-# build directory
-if [ ! -d build ] ; then
-    mkdir build
-fi
+# Top level build path
+export SB_VENDOR_BUILD_ROOT=`pwd`
 
 # xul source directory
 if [ ! -d "xulrunner-$XUL/mozilla" ] ; then
     mkdir "xulrunner-$XUL/mozilla"
+fi
+
+# output directory
+if [ ! -d linux\-`arch` ]; then
+    mkdir linux\-`arch`
 fi
 
 # get the source files if this is a fresh build or new version
@@ -35,19 +33,18 @@ if [ ! -f "xulrunner-$XUL/xulrunner-$XUL.source.tar.bz2" ] ; then
 	rm -rf mozilla
 	
 	mv "mozilla-release" mozilla
-else
-	cd "xulrunner-$XUL"
+#else
+#	cd "xulrunner-$XUL"
 	
-	rm -rf mozilla
+#	rm -rf mozilla
 	
-	tar xvf "xulrunner-$XUL.source.tar.bz2"
+#	tar xvf "xulrunner-$XUL.source.tar.bz2"
 	
-	mv "mozilla-release" mozilla
+#	mv "mozilla-release" mozilla
 
 fi
-
+cd "xulrunner-$XUL"
 # build path ...just because we're lazy 
 # and don't want to rewrite this whole build system
-export SB_VENDOR_BUILD_ROOT=`pwd`
 
-make -f Makefile.songbird
+make -f Makefile.songbird xr-packaging

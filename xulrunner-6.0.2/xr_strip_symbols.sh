@@ -12,13 +12,7 @@ plat=$1
 if test -n "$STRIP"; then
   strip="$STRIP"
 else
-  if [ ${plat} = "macosx" ]; then
-    strip="strip -x -S"
-  elif [ ${plat} = "linux" ]; then
-    strip="strip -v"
-  elif [ ${plat} = "windows" ]; then
-    exit
-  fi
+  strip="strip -v"
 fi
 
 # Expect to be in the mozilla source directory.
