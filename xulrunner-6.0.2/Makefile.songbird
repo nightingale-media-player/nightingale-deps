@@ -84,11 +84,16 @@ ifndef XR_DISABLE_SYMBOLS
 	$(MAKE) -C $(CURDIR)/mozilla/compiled/xulrunner-release buildsymbols
 endif
 
+xr-packaging: xr-packaging-debug xr-packaging-release
+ifneq (,$(SB_VENDOR_BUILD_LOG))
+	$(CP) $(CURDIR)/$(SB_VENDOR_BUILD_LOG) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
+endif
+
 xr-clean: FORCE
 	$(RM) -rf $(CURDIR)/songbird
 	$(RM) -rf $(CURDIR)/mozilla/compiled
 
-xr-packaging:
+xr-packaging-%:
 	@echo "Packaging up $*-mode $(SB_VENDOR_TARGET)..."
 	@if test "release" = "$*"; then \
       if $(HAVE_XR_release_BUILD); then \
