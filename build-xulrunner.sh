@@ -33,18 +33,17 @@ if [ ! -f "xulrunner-$XUL/xulrunner-$XUL.source.tar.bz2" ] ; then
 	rm -rf mozilla
 	
 	mv "mozilla-release" mozilla
-#else
-#	cd "xulrunner-$XUL"
+else
+	cd "xulrunner-$XUL"
 	
-#	rm -rf mozilla
+	rm -rf mozilla
 	
-#	tar xvf "xulrunner-$XUL.source.tar.bz2"
+	tar xvf "xulrunner-$XUL.source.tar.bz2"
 	
-#	mv "mozilla-release" mozilla
+	mv "mozilla-release" mozilla
 
 fi
-cd "xulrunner-$XUL"
-# build path ...just because we're lazy 
-# and don't want to rewrite this whole build system
 
 make -f Makefile.songbird xr-packaging
+
+cp -a $SB_VENDOR_BUILD_ROOT/oldscripts/* $SB_VENDOR_BUILD_ROOT/linux\-`arch`/mozilla\-$XUL/scripts
