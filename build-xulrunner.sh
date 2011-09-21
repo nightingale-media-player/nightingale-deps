@@ -35,8 +35,6 @@ if [ ! -f "xulrunner-$XUL/xulrunner-$XUL.source.tar.bz2" ] ; then
 	rm -rf mozilla
 	
 	mv "mozilla-release" mozilla
-	
-	cd ../../
 else
 	cd "xulrunner-$XUL"
 	
@@ -52,5 +50,4 @@ fi
 # and don't want to rewrite this whole build system
 export SB_VENDOR_BUILD_ROOT=`pwd`
 
-cd "xulrunner-$XUL"
 make -f Makefile.songbird
