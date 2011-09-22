@@ -1,4 +1,4 @@
-# NOTE: If you've already built once successfully, then don't use this
+a# NOTE: If you've already built once successfully, then don't use this
 # script to repackage! Instead go to xulrunner and 
 # make -f Makefile.songbird xr-packaging
 
@@ -7,11 +7,6 @@ XUL="6.0.2"
 
 # Top level build path
 export SB_VENDOR_BUILD_ROOT=`pwd`
-
-# xul source directory
-if [ ! -d "xulrunner/mozilla" ] ; then
-    mkdir "xulrunner/mozilla"
-fi
 
 # output directory
 if [ ! -d linux\-`arch` ]; then
@@ -26,7 +21,6 @@ if [ ! -f "xulrunner/xulrunner-$XUL.source.tar.bz2" ] ; then
 	rm "xulrunner-*.source.tar.bz2" &> /dev/null
 	
 	wget "https://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/$XUL/source/xulrunner-$XUL.source.tar.bz2"
-	
 	tar xvf "xulrunner-$XUL.source.tar.bz2"
 	
 	# just in case the directory exists already
@@ -35,11 +29,9 @@ if [ ! -f "xulrunner/xulrunner-$XUL.source.tar.bz2" ] ; then
 	mv "mozilla-release" mozilla
 else
 	cd "xulrunner"
-	
 	rm -rf mozilla
 	
 	tar xvf "xulrunner-$XUL.source.tar.bz2"
-	
 	mv "mozilla-release" mozilla
 
 fi
