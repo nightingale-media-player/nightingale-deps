@@ -3,4 +3,4 @@
 ##
 linux-i686: taglib(22958), gstreamer(21814)
 macosx-i686: taglib(22958), gstreamer(21814)
-windows-i686-msvc8:  taglib(22958), gstreamer(21814)
+windows-i686-msvc8:  gst-plugins-bad(24902)
