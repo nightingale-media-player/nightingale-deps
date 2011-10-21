@@ -1,6 +1,6 @@
 /*
  * GStreamer DirectShow codecs wrapper
- * Copyright <2006, 2007, 2008> Fluendo <gstreamer@fluendo.com>
+ * Copyright <2006, 2007, 2008, 2009, 2010> Fluendo <support@fluendo.com>
  * Copyright <2006, 2007, 2008> Pioneers of the Inevitable <songbird@songbirdnest.com>
  * Copyright <2007,2008> Sebastien Moutte <sebastien@moutte.net>
  *
@@ -50,8 +50,6 @@
 #include "gstdshowutil.h"
 #include "gstdshowfakesrc.h"
 
-#include "comtaskthread.h"
-
 G_BEGIN_DECLS
 
 typedef struct {
@@ -65,7 +63,6 @@ typedef struct {
   GUID output_subtype;
   gchar *srccaps;
   PreferredFilter *preferred_filters;
-  gint rank;
 } VideoCodecEntry;
 
 #define GST_TYPE_DSHOWVIDEODEC               (gst_dshowvideodec_get_type())
@@ -92,9 +89,6 @@ struct _GstDshowVideoDec
   
   GstFlowReturn last_ret;
 
-  /* COM thread helper */
-  GstCOMTaskThread *comthread;
-
   /* list of dshow mediatypes coresponding to the caps list */
   GList *mediatypes;
 
@@ -119,6 +113,11 @@ struct _GstDshowVideoDec
   gboolean setup;
 
   gboolean comInitialized;
+  GMutex   *com_init_lock;
+  GMutex   *com_deinit_lock;
+  GCond    *com_initialized;
+  GCond    *com_uninitialize;
+  GCond    *com_uninitialized;
 };
 
 struct _GstDshowVideoDecClass
@@ -138,7 +137,7 @@ class VideoFakeSink :  public CBaseRenderer
 public:
   VideoFakeSink(GstDshowVideoDec *dec) : 
       m_hres(S_OK),
-      CBaseRenderer(CLSID_VideoFakeSink, L"VideoFakeSink", NULL, &m_hres),
+      CBaseRenderer(CLSID_VideoFakeSink, _T("VideoFakeSink"), NULL, &m_hres),
       mDec(dec) 
   {};
   virtual ~VideoFakeSink() {};

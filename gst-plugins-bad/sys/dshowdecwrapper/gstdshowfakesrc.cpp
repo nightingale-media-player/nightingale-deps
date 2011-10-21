@@ -100,50 +100,31 @@ STDMETHODIMP FakeOutputPin::PushBuffer(byte *buffer,
 {
   IMediaSample *pSample = NULL;
   
-  while (size) {
-    if (start != -1) {
-      start /= 100;
-      stop /= 100;
-    }
+  if (start != -1) {
+    start /= 100;
+    stop /= 100;
+  }
 
-    HRESULT hres = GetDeliveryBuffer(&pSample, NULL, NULL, 0);
-    if (hres == S_OK && pSample)
+  HRESULT hres = GetDeliveryBuffer(&pSample, NULL, NULL, 0);
+  if (hres == S_OK && pSample)
+  {
+    BYTE *sample_buffer;
+    pSample->GetPointer(&sample_buffer);
+    if(sample_buffer)
     {
-      BYTE *sample_buffer;
-      long buffer_length = pSample->GetSize();
-      int chunk_size = (buffer_length < size) ? buffer_length : size;
-      pSample->GetPointer(&sample_buffer);
-
-      if(sample_buffer)
-      {
-        
-        memcpy (sample_buffer, buffer, chunk_size);
-        pSample->SetActualDataLength(chunk_size);
-      }
-      else
-        break;
-
-      pSample->SetDiscontinuity(discont);
-    
-      pSample->SetSyncPoint(TRUE);
-      pSample->SetPreroll(FALSE);
-  
-      if (start != -1)
-        pSample->SetTime(&start, &stop);
-
-      hres = Deliver(pSample);
-      pSample->Release();
-
-      /* If we have more chunks to send, then don't mark as discont or with
-       * timestamp */
-      discont = FALSE;
-      start = stop = -1;
-
-      size -= chunk_size;
-      buffer += chunk_size;
+      memcpy (sample_buffer, buffer, size);
+      pSample->SetActualDataLength(size);
     }
-    else
-      break;
+    pSample->SetDiscontinuity(discont);
+    
+    pSample->SetSyncPoint(TRUE);
+    pSample->SetPreroll(FALSE);
+  
+    if (start != -1)
+      pSample->SetTime(&start, &stop);
+
+    hres = Deliver(pSample);
+    pSample->Release();
   }
 
   return S_OK;
@@ -189,4 +170,3 @@ FakeOutputPin *FakeSrc::GetOutputPin()
 {
   return m_pOutputPin;
 }
-

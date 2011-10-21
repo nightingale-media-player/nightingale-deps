@@ -54,8 +54,7 @@ gst_dshow_get_pin_from_filter (IBaseFilter *filter, PIN_DIRECTION pindir)
 IBaseFilter * 
 gst_dshow_find_filter(CLSID input_majortype, CLSID input_subtype, 
                       CLSID output_majortype, CLSID output_subtype, 
-                      PreferredFilter *preferred_filters,
-                      CLSID *filterclsid)
+                      PreferredFilter *preferred_filters)
 {
   HRESULT hres;
   GUID inTypes[2];
@@ -84,11 +83,8 @@ gst_dshow_find_filter(CLSID input_majortype, CLSID input_subtype,
           if (SUCCEEDED(hres)) {
             hres = wrapper->Init (*preferred_filters->filter_guid, 
                 *preferred_filters->dmo_category);
-            if (SUCCEEDED(hres)) {
-              if (filterclsid)
-                *filterclsid = *preferred_filters->filter_guid;
+            if (SUCCEEDED(hres))
               return filter;
-            }
           }
           filter->Release();
         }
@@ -98,11 +94,8 @@ gst_dshow_find_filter(CLSID input_majortype, CLSID input_subtype,
         hres = CoCreateInstance (*preferred_filters->filter_guid, 
           NULL, CLSCTX_INPROC,
           IID_IBaseFilter, (void **)&filter);
-        if (SUCCEEDED(hres)) {
-          if (filterclsid)
-            *filterclsid = *preferred_filters->filter_guid;
+        if (SUCCEEDED(hres))
           return filter;
-        }
       }
 
       /* Continue to the next filter */
