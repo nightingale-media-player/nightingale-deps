@@ -7,7 +7,8 @@ PERL=${PERL:-perl}
 RM=${RM:-rm}
 
 # bin_files are relative to $objdir/dist/bin/
-bin_files="js*"
+bin_files="js*
+xpidl*"
 
 # lib_files are relative to $objdir/dist/lib/
 lib_files="*js3250.*
