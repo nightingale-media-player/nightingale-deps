@@ -9,7 +9,7 @@ set -e
 USE="TARBALL"
 
 # XUL Version
-export XUL="9.0.1"
+export XUL="6.0.2"
 
 # Top level build path
 export SB_VENDOR_BUILD_ROOT="$(cd "$(dirname "$0")" && pwd)"
