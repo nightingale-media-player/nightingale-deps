@@ -3,5 +3,5 @@ xulrunner*/mozilla/*
 xulrunner*/xulrunner*.source.tar.bz2
 xulrunner*/linux*/
 build/
-linux-i686/*
-linux-x86_64/*
+linux-i686*/*
+linux-x86_64*/*

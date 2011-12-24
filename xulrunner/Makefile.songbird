@@ -36,8 +36,9 @@
 ## SB_VENDOR_XR_TARGET in songbird-vendor-defs.mk MUST MATCH the
 ## SB_VENDOR_TARGET below
 
-SB_VENDOR_TARGET = xulrunner-6.0.2
-SB_VENDOR_TARGET_VERSION = 6.0.2.1
+
+SB_VENDOR_TARGET = xulrunner-${XUL}
+SB_VENDOR_TARGET_VERSION = ${XUL}
 
 # We set this up here, but it turns out that it's only for Win32 and Mac; Linux
 # ignores is (see the block after the rules.mk include)

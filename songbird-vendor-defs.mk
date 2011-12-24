@@ -269,7 +269,7 @@ $(SB_VENDOR_BINARIES_DIR)/$(strip $1)/$(SB_BUILD_TYPE)
 endef
 
 # XULRunner Vendor Target dir
-SB_VENDOR_XR_TARGET = xulrunner-6.0.2
+SB_VENDOR_XR_TARGET = xulrunner-${XUL}
 SB_VENDOR_MOZSDK_TARGET = $(subst xulrunner,mozilla,$(SB_VENDOR_XR_TARGET))
 
 # Mozilla SDK settings
