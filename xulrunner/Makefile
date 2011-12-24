@@ -8,7 +8,7 @@
 # Copyright(c) 2007 POTI, Inc.
 # http://www.songbirdnest.com
 # 
-# This file may be licensed under the terms of of the
+# This file may be licensed under the terms of of the0
 # GNU General Public License Version 2 (the "GPL").
 # 
 # Software distributed under the License is distributed 
@@ -105,10 +105,10 @@ xr-packaging-%:
    fi
 	@if $(HAVE_XR_$*_BUILD); then \
       $(call sh_make,$(XR_PACKAGE_DEPS) $(SB_XR_PLATFORM)-$(SB_XR_ARCH) $(SB_BRANCH) $*); \
-      $(call sh_make,$(RM) -r $(SB_VENDOR_BINARIES_DIR)/mozilla-6.0.2/$*); \
-      $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/mozilla/$* $(SB_VENDOR_BINARIES_DIR)/mozilla-6.0.2/); \
-      $(call sh_make,$(RM) -r $(SB_VENDOR_BINARIES_DIR)/xulrunner-6.0.2/$*); \
-      $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/xulrunner/$* $(SB_VENDOR_BINARIES_DIR)/xulrunner-6.0.2/); \
+      $(call sh_make,$(RM) -r $(SB_VENDOR_BINARIES_DIR)/mozilla-${XUL}/$*); \
+      $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/mozilla/$* $(SB_VENDOR_BINARIES_DIR)/mozilla-${XUL}/); \
+      $(call sh_make,$(RM) -r $(SB_VENDOR_BINARIES_DIR)/xulrunner-${XUL}/$*); \
+      $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/xulrunner/$* $(SB_VENDOR_BINARIES_DIR)/xulrunner-${XUL}/); \
    fi
 
 xr-build-%: setup_environment

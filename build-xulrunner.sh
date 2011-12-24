@@ -73,6 +73,6 @@ elif [ $USE = "TARBALL" ] ; then
 	use_tarball
 fi
 
-make -f Makefile.songbird
+make
 
 cp -a "$SB_VENDOR_BUILD_ROOT/oldscripts/"* "$SB_VENDOR_BUILD_ROOT/linux-$(arch)/mozilla-$XUL/scripts"
