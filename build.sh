@@ -18,7 +18,7 @@ export SB_VENDOR_BUILD_ROOT="$(cd "$(dirname "$0")" && pwd)"
 mkdir -p "linux-$(arch)"
 
 cd "xulrunner"
-svn co "http://publicsvn.songbirdnest.com/vendor/trunk/xulrunner-${XUL}/mozilla/"
+#svn co "http://publicsvn.songbirdnest.com/vendor/trunk/xulrunner-${XUL}/mozilla/"
 
 # fix for kernels > 3.X on versions of xul without security setup for them
 case $OSTYPE in
