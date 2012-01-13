@@ -7,8 +7,13 @@ PERL=${PERL:-perl}
 RM=${RM:-rm}
 
 # bin_files are relative to $objdir/dist/bin/
-bin_files="js*
-xpidl*"
+bin_files=" redit*
+           js*
+           xpidl*
+           xpt_dump*
+           xpt_link*
+           mozcrt19*
+"
 
 # lib_files are relative to $objdir/dist/lib/
 lib_files="*js3250.*
@@ -17,7 +22,7 @@ lib_files="*js3250.*
            *nspr4.*
            *unicharutil_external_s.*
            *xpcom.*
-           *xpcomglue_s*
+           *xpcomglue_s.*
            *mozjs*
            *mozcrt19*
            *xul*
@@ -26,7 +31,6 @@ lib_files="*js3250.*
            *nss3*
            *nssutil3*
            *sqlite3*
-           *mozalloc*
 "
 
 # symbol_files are relative to $objdir
@@ -77,11 +81,18 @@ update_script_files="common.sh
 "
 
 # build_scripts are relative to $srcdir
-build_script_files="build/autoconf/acoutput-fast.pl
+build_script_files="build/cygwin-wrapper
+                    build/autoconf/acoutput-fast.pl
                     build/autoconf/make-makefile
+                    build/macosx/universal/fix-buildconfig
+                    build/macosx/universal/unify
+                    build/package/mac_osx/make-diskimage
+                    build/package/mac_osx/mozilla.dsstore
+                    config/build-list.pl
                     config/configobj.py
+                    config/make-jars.pl
                     config/mozLock.pm
-                    config/Preprocessor.py
+                    config/preprocessor.pl
                     config/printconfigsetting.py
 "
 
@@ -89,6 +100,12 @@ build_script_files="build/autoconf/acoutput-fast.pl
 breakpad_script_files="toolkit/crashreporter/tools/symbolstore.py
                        toolkit/crashreporter/tools/upload_symbols.sh
 "
+
+# windows breakpad binary files are relative to $srcdir
+breakpad_bin_files_win="toolkit/crashreporter/tools/win32/dump_syms.exe"
+
+# other breakpad binary files are relative to $objdir/dist/host/bin/
+breakpad_bin_files_nix="dump_syms"
 
 notice() {
   echo "$*" 1>&2
@@ -103,6 +120,12 @@ if [ $# != 3 ]; then
   notice "usage: make-mozilla-sdk.sh [mozilla-src-dir] [mozilla-obj-dir] [songbird-sdk-dir]"
   exit 1
 fi
+
+case `uname -s` in
+  CYGWIN*|MINGW*)
+    is_windows="1"
+    ;;
+esac
 
 relsrcdir="$1"
 temp1=`dirname "$relsrcdir"`
@@ -134,11 +157,12 @@ cd "$sdkdir" && $MKDIR -p bin
 cd "$distdir/bin" && $CP -Lfp $bin_files "$sdkdir/bin"
 cd "$distdir/host/bin" && $CP -Lfp $update_bin_files "$sdkdir/bin"
 
-# POSSIBLY BROKEN
-cd "$srcdir/xulrunner/tools" && $CP -Lfpa *redit* "$sdkdir/bin"
-
-# POSSIBLY BROKEN - breakpad binaries
-cd "$objdir/toolkit/crashreporter/google-breakpad/src/tools/linux" && $CP -Lfpa *dump_syms* "$sdkdir/bin"
+# breakpad binaries differ by platform
+if test -n "$is_windows"; then
+  cd "$srcdir" && $CP -Lfp $breakpad_bin_files_win "$sdkdir/bin"
+else
+  cd "$distdir/host/bin" && $CP -Lfp $breakpad_bin_files_nix "$sdkdir/bin"
+fi
 
 notice "copying library files..."
 cd "$sdkdir" && $MKDIR -p lib
@@ -170,5 +194,11 @@ fi
 cd "$srcdir" && $CP -Lfp $breakpad_script_files "$sdkdir/scripts"
 
 notice "performing post-processing..."
+
+# bump WINVER and _WIN32_WINNT to 0x501 on windows
+if test -n "$is_windows"; then
+  cd "$sdkdir/include" && $PERL -p -i.bak -e 's/WINVER 0x500/WINVER 0x501/g;s/_WIN32_WINNT 0x500/_WIN32_WINNT 0x501/g' ./mozilla-config.h
+  cd "$sdkdir/include" && $RM -f ./mozilla-config.h.bak
+fi
 
 notice "done."

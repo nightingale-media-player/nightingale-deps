@@ -8,7 +8,7 @@
 # Copyright(c) 2007 POTI, Inc.
 # http://www.songbirdnest.com
 # 
-# This file may be licensed under the terms of of the0
+# This file may be licensed under the terms of of the
 # GNU General Public License Version 2 (the "GPL").
 # 
 # Software distributed under the License is distributed 
@@ -25,7 +25,7 @@
 #
 ################################################################################
 #
-# Makefile for building Songbird vendor: xulrunner
+# Makefile for building Songbird vendor: xulrunner-1.9.2
 #
 ################################################################################
 ################################################################################
@@ -36,9 +36,8 @@
 ## SB_VENDOR_XR_TARGET in songbird-vendor-defs.mk MUST MATCH the
 ## SB_VENDOR_TARGET below
 
-
-SB_VENDOR_TARGET = xulrunner-${XUL}
-SB_VENDOR_TARGET_VERSION = ${XUL}
+SB_VENDOR_TARGET = xulrunner-1.9.2
+SB_VENDOR_TARGET_VERSION = 1.9.2.3
 
 # We set this up here, but it turns out that it's only for Win32 and Mac; Linux
 # ignores is (see the block after the rules.mk include)
@@ -67,7 +66,7 @@ XR_CLENAUP = $(CURDIR)/xr_cleanup.sh
 HAVE_XR_release_BUILD = test -d $(CURDIR)/mozilla/compiled/xulrunner-release
 HAVE_XR_debug_BUILD = test -d $(CURDIR)/mozilla/compiled/xulrunner-debug
 
-xr-all: xr-clean xr-build-release xr-symbols xr-packaging
+xr-all: xr-clean xr-build-debug xr-build-release xr-symbols xr-packaging
 ifdef SB_VENDOR_AUTOCLEAN_OBJDIRS
 	$(RM) -rf $(CURDIR)/mozilla/compiled
 else
@@ -83,6 +82,9 @@ ifndef XR_DISABLE_SYMBOLS
    fi
 	# Only build symbols for release builds 
 	$(MAKE) -C $(CURDIR)/mozilla/compiled/xulrunner-release buildsymbols
+   ifneq (linux-x86_64,$(SB_TARGET_ARCH))
+	   $(MV) $(CURDIR)/mozilla/compiled/xulrunner-release/dist/xulrunner-$(SB_VENDOR_TARGET_VERSION).*.crashreporter-symbols.zip $(SB_VENDOR_BUILD_DIR)
+   endif
 endif
 
 xr-packaging: xr-packaging-debug xr-packaging-release
@@ -105,14 +107,18 @@ xr-packaging-%:
    fi
 	@if $(HAVE_XR_$*_BUILD); then \
       $(call sh_make,$(XR_PACKAGE_DEPS) $(SB_XR_PLATFORM)-$(SB_XR_ARCH) $(SB_BRANCH) $*); \
-      $(call sh_make,$(RM) -r $(SB_VENDOR_BINARIES_DIR)/mozilla-${XUL}/$*); \
-      $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/mozilla/$* $(SB_VENDOR_BINARIES_DIR)/mozilla-${XUL}/); \
-      $(call sh_make,$(RM) -r $(SB_VENDOR_BINARIES_DIR)/xulrunner-${XUL}/$*); \
-      $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/xulrunner/$* $(SB_VENDOR_BINARIES_DIR)/xulrunner-${XUL}/); \
+      $(call sh_make,$(RM) -r $(SB_VENDOR_BINARIES_DIR)/mozilla-1.9.2/$*); \
+      $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/mozilla/$* $(SB_VENDOR_BINARIES_DIR)/mozilla-1.9.2/); \
+      $(call sh_make,$(RM) -r $(SB_VENDOR_BINARIES_DIR)/xulrunner-1.9.2/$*); \
+      $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/xulrunner/$* $(SB_VENDOR_BINARIES_DIR)/xulrunner-1.9.2/); \
    fi
 
 xr-build-%: setup_environment
 	$(MKDIR) $(SB_VENDOR_BUILD_DIR)
+ifeq (macosx-i686,$(SB_XR_PLATFORM)-$(SB_XR_ARCH))
+	@echo Fixing up pkg-config .pc files in glib and libIDL...
+	$(FIND) -L $(SB_VENDOR_BINARIES_DIR)/glib $(SB_VENDOR_BINARIES_DIR)/libIDL -type f -name '*.pc' -exec $(SB_VENDOR_CHECKOUT)/fix-pkg-config-paths.pl -p $(SB_XR_PLATFORM)-$(SB_XR_ARCH) {} \;
+endif
 	@echo Setting up xulrunner $*-mode build...
 	$(CP) $(CURDIR)/mozconfigs/$(MOZCONFIG) $(CURDIR)/mozilla/.mozconfig
 	$(RM) -r $(CURDIR)/mozilla/compiled/xulrunner-$*
@@ -122,3 +128,16 @@ xr-build-%: setup_environment
 .PHONY: xr-% FORCE
 
 include $(CURDIR)/../songbird-vendor-rules.mk
+
+# Because we use different target names for XR, we don't trip the standard
+# export of variables; but that's ok, because , we don't want to export
+# everything (the CC variables, etc.) for XR builds, so we're very narrow
+# in our exports here, and we do it all manually; we also do it only for
+# Win32 and Mac, since the XR build will find the necessary dependent libs
+# (glib and libIDL) by itself on the Linux machines.
+
+ifneq (Linux,$(SB_VENDOR_ARCH))
+   export PKG_CONFIG_PATH = $(SB_PKG_CONFIG_PATH)
+   export PATH = $(SB_PATH)
+   export DYLD_LIBRARY_PATH = $(SB_DYLD_LIBRARY_PATH)
+endif

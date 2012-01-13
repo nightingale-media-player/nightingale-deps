@@ -50,8 +50,7 @@ if test -e xulrunner.xpt; then
    notice "xulrunner.xpt already exists. Skipping mega xpt creation."
 else
    all_xpts=$($FIND . -name '*.xpt')
-   [ -z "${PYTHON}" ] && PYTHON="$(which python2 2>/dev/null || which python)"
-   shellExec $PYTHON ../../sdk/bin/xpt.py link xulrunner.xpt $all_xpts
+   shellExec ../xpt_link xulrunner.xpt $all_xpts
    shellExec $RM -f $all_xpts
 fi
 popd > /dev/null

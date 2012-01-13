@@ -10,7 +10,7 @@ shellExec() {
 }
 
 if [ $# != 3 ]; then
-  echo "usage: xr_pack_deps.sh <linux-x86_64|linux-i686>"
+  echo "usage: xr_pack_deps.sh <windows-i686-msvc8|linux-x86_64|linux-i686|macosx-ppc|macosx-i686>"
   echo "                       <trunk|SONGBIRD_0_2|SONGBIRD_0_3|SONGBIRD_0_4>"
   echo "                       <release|debug>"
   exit
