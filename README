@@ -21,6 +21,10 @@ GeekShadow
 ===========================
 BUILDING:
 ===========================
+
+Since this is a legacy version of xulrunner, you'll need to install
+(or build if it doesn't exist for your distro) autoconf2.13!
+
 If this is your first build, simply sh build-xulrunner.sh
 
 When completed (a good wait), the directory linux-[ARCH] will contain
