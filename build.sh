@@ -1,3 +1,5 @@
+TODO: put the finished archive in {os}_arch/{release|debug}/xulrunner.tar.bz2 rather than just in the file root!
+
 # NOTE: If you've already built once successfully, then don't use this
 # script to repackage! Instead go to xulrunner and 
 # make -f Makefile.songbird xr-packaging
