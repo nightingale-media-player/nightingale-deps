@@ -19,11 +19,13 @@ mkdir -p "linux-$(arch)"
 
 # sqlite
 cd sqlite
+aclocal
 make
 cd ../
 
 # taglib
 cd taglib
+aclocal
 make
 cd ../
 
