@@ -20,12 +20,19 @@ mkdir -p "linux-$(arch)"
 # sqlite
 cd sqlite
 aclocal
+./configure --disable-tcl \
+			--disable-amalgamation \
+			--disable-load-extension \
+			--enable-threadsafe \
+			--enable-cross-thread-connections \
+			--enable-tempstore=only
 make
 cd ../
 
 # taglib
 cd taglib
 aclocal
+./configure
 make
 cd ../
 
