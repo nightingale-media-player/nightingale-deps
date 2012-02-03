@@ -5,5 +5,5 @@ xulrunner*/linux*/
 build/
 linux-i686*/*
 linux-x86_64*/*
-sqlite/autom4te.cache/
-sqlite/configure
+*/autom4te.cache/
+*/configure
