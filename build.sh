@@ -17,6 +17,16 @@ export SB_VENDOR_BUILD_ROOT="$(cd "$(dirname "$0")" && pwd)"
 # output directory
 mkdir -p "linux-$(arch)"
 
+# sqlite
+cd sqlite
+make
+cd ../
+
+# taglib
+cd taglib
+make
+cd ../
+
 cd "xulrunner"
 if [ ! -f "xulrunner/mozilla" ]; then
 	svn co "http://publicsvn.songbirdnest.com/vendor/trunk/xulrunner-${XUL}/mozilla/"
