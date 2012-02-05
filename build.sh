@@ -35,4 +35,4 @@ case $OSTYPE in
 esac
 
 # build Xulrunner
-make
+make release
