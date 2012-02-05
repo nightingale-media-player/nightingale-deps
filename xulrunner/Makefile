@@ -66,7 +66,7 @@ XR_CLENAUP = $(CURDIR)/xr_cleanup.sh
 HAVE_XR_release_BUILD = test -d $(CURDIR)/mozilla/compiled/xulrunner-release
 HAVE_XR_debug_BUILD = test -d $(CURDIR)/mozilla/compiled/xulrunner-debug
 
-xr-all: xr-clean xr-build-debug xr-build-release xr-symbols xr-packaging
+xr-all: xr-clean xr-build-release xr-symbols xr-packaging
 ifdef SB_VENDOR_AUTOCLEAN_OBJDIRS
 	$(RM) -rf $(CURDIR)/mozilla/compiled
 else
@@ -87,7 +87,7 @@ ifndef XR_DISABLE_SYMBOLS
    endif
 endif
 
-xr-packaging: xr-packaging-debug xr-packaging-release
+xr-packaging: xr-packaging-release
 ifneq (,$(SB_VENDOR_BUILD_LOG))
 	$(CP) $(CURDIR)/$(SB_VENDOR_BUILD_LOG) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
 endif
