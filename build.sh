@@ -17,8 +17,16 @@ export SB_VENDOR_BUILD_ROOT="$(cd "$(dirname "$0")" && pwd)"
 # output directory
 mkdir -p "linux-$(arch)"
 
+# on OSX, we want 32 bit builds
+arch_flags="-m32 -arch i386"
+export CFLAGS="$arch_flags" 
+export CXXFLAGS="$arch_flags" 
+export CPPFLAGS="$arch_flags"
+export LDFLAGS="$arch_flags" 
+export OBJCFLAGS="$arch_flags"
+
 cd "xulrunner"
-if [ ! -f "xulrunner/mozilla" ]; then
+if [ ! -d "xulrunner/mozilla" ]; then
 	svn co "http://publicsvn.songbirdnest.com/vendor/trunk/xulrunner-${XUL}/mozilla/"
 fi
 
