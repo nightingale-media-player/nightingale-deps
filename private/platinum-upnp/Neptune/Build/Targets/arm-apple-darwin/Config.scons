@@ -1,0 +1,11 @@
+env['ENV']['PATH'] = ['/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin', '/Developer/usr/bin', '/usr/bin', '/bin', '/usr/sbin', '/sbin']
+
+### Load the tools
+LoadTool('gcc-generic', env)
+
+universal_flags =  [('-arch', 'armv6'), ('-isysroot', '/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS2.0.sdk'), '-miphoneos-version-min=2.0']
+env.AppendUnique(CCFLAGS   = universal_flags)
+
+### Neptune System Files
+env['NPT_SYSTEM_SOURCES']={'System/StdC':'*.cpp', 'System/Bsd':'*.cpp', 'System/Posix':'*.cpp', 'System/Null':'NptNullSerialPort.cpp'}
+
