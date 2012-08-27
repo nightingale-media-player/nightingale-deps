@@ -28,6 +28,9 @@ export OBJCFLAGS="$arch_flags"
 cd "xulrunner"
 if [ ! -d "xulrunner/mozilla" ]; then
 	svn co "http://publicsvn.songbirdnest.com/vendor/trunk/xulrunner-${XUL}/mozilla/"
+else
+	cd "xulrunner/mozilla"
+	svn up
 fi
 
 # fix for kernels > 3.X on versions of xul without security setup for them
