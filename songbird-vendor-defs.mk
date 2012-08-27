@@ -88,9 +88,7 @@ ifeq (Linux,$(SB_VENDOR_ARCH))
    endif
 endif
 
-ifneq (1,$(SB_ARCH_DETECTED))
-   $(error Unsupported vendor build environment ($(SB_VENDOR_ARCH), $(SB_VENDOR_SUBARCH), $(SB_VENDOR_OS))) 
-endif
+
 
 #
 # System tools we rely on for the vendor build process; allow them to be
