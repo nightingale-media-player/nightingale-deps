@@ -15,7 +15,7 @@ export XUL="1.9.2"
 export SB_VENDOR_BUILD_ROOT="$(cd "$(dirname "$0")" && pwd)"
 
 # output directory
-mkdir -p "linux-$(arch)"
+mkdir -p "darwin"
 
 # on OSX, we want 32 bit builds
 arch_flags="-m32 -arch i386"
@@ -32,18 +32,6 @@ else
 	cd "xulrunner/mozilla"
 	svn up
 fi
-
-# fix for kernels > 3.X on versions of xul without security setup for them
-case $OSTYPE in
-	linux*)
-		if [ ! -f mozilla/security/coreconf/Linux$(uname -r|sed -e 's/\-.*//'|grep -o "[0-9]\.[0-9]").mk ]; then
-			ln -s $(pwd)/mozilla/security/coreconf/Linux2.6.mk $(pwd)/mozilla/security/coreconf/Linux$(uname -r|sed -e 's/\-.*//'|grep -o "[0-9]\.[0-9]").mk
-		fi
-	;;
-	*)
-		# weee! xulrunner already has security coreconf for our kernel!
-	;;
-esac
 
 # build Xulrunner
 make release
