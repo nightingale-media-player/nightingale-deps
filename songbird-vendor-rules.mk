@@ -166,7 +166,7 @@ endif
 regen-makefiles: setup_environment
 ifeq (linux-i686,$(SB_TARGET_ARCH))
 	@echo Fixing up libtoolize for use...
-	$(SB_VENDOR_CHECKOUT)/fix-pkg-config-paths.pl -f -p $(SB_TARGET_ARCH) $(SB_VENDOR_BINARIES_DIR)/libtool/release/bin/libtoolize
+	$(SB_VENDOR_BUILD_ROOT)/fix-pkg-config-paths.pl -f -p $(SB_TARGET_ARCH) libtoolize
 	$(CHMOD) 0755 $(SB_VENDOR_BINARIES_DIR)/libtool/release/bin/libtoolize
    ifneq (,$(filter $(SB_REGEN_MAKEFILE_PKGS),$(SB_VENDOR_TARGET)))
       ifeq (,$(filter gst%,$(SB_VENDOR_TARGET)))
@@ -362,7 +362,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
 	             $(SB_VENDOR_BINARIES_DIR)/$(tgt) --exclude=.svn && \
 	             $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/$(tgt)/.msyscp ; ))
 	@echo Fixing up libtools .la files for first-time use...
-	$(FIND) $(SB_VENDOR_BINARIES_DIR)/ -type f -name '*.la' -exec $(SB_VENDOR_CHECKOUT)/fix-win32-libtool-la-paths.pl -f {} \;
+	$(FIND) $(SB_VENDOR_BINARIES_DIR)/ -type f -name '*.la' -exec $(SB_VENDOR_BUILD_ROOT)/fix-win32-libtool-la-paths.pl -f {} \;
 else
 	$(foreach tgt, \
 	  $(SB_VENDOR_BINARIES_TARGETS), \
@@ -372,9 +372,9 @@ else
 endif
 	@echo Fixing up pkg-config .pc files for first time use...
 ifeq (Msys,$(SB_VENDOR_ARCH))
-	$(FIND) $(SB_VENDOR_BINARIES_DIR) -type f -name '*.pc' -exec $(SB_VENDOR_CHECKOUT)/fix-pkg-config-paths.pl -p $(SB_TARGET_ARCH) {} \;
+	$(FIND) $(SB_VENDOR_BINARIES_DIR) -type f -name '*.pc' -exec $(SB_VENDOR_BUILD_ROOT)/fix-pkg-config-paths.pl -p $(SB_TARGET_ARCH) {} \;
 else
-	$(FIND) -L $(SB_VENDOR_BINARIES_CHECKOUT) -type f -name '*.pc' -exec $(SB_VENDOR_CHECKOUT)/fix-pkg-config-paths.pl -p $(SB_TARGET_ARCH) {} \;
+	$(FIND) -L $(SB_VENDOR_BUILD_ROOT) -type f -name '*.pc' -exec $(SB_VENDOR_BUILD_ROOT)/fix-pkg-config-paths.pl -p $(SB_TARGET_ARCH) {} \;
 endif
 ifeq (Msys,$(SB_VENDOR_ARCH))
 	(test -e $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/.msyscp && \
@@ -407,15 +407,14 @@ endif
 build: setup_environment $(CLEAN_BUILD_DIR_TGT) setup_build module_setup_build
 	# We do this RUN_CONFIGURE insanity to support cmake
 ifeq (1,$(SB_RUN_CONFIGURE))
-	cd $(SB_VENDOR_BUILD_DIR) && \
+	cd $(SB_VENDOR_BUILD_DIR)/xulrunner/mozilla && \
           $(CONFIGURE) --prefix=$(SB_CONFIGURE_PREFIX) \
           $(SB_VENDOR_TARGET_CONFIGURE_OPTS) \
-          $(SB_CONFIGURE_OPTS) \
-          -C
+          $(SB_CONFIGURE_OPTS)
 endif
 	# We do this submake-cmd insanity to support cmake
-	$(SUBMAKE_CMD) -C $(SB_VENDOR_BUILD_DIR)
-	$(SUBMAKE_CMD) -C $(SB_VENDOR_BUILD_DIR) install
+	$(SUBMAKE_CMD) -C $(SB_VENDOR_BUILD_DIR)/xulrunner/mozilla
+	$(SUBMAKE_CMD) -C $(SB_VENDOR_BUILD_DIR)/xulrunner/mozilla install
 
 $(SB_VENDOR_TARGET_BINARY_DEPS_DIR): $(SB_VENDOR_TARGET_DEPENDENT_DEBS)
 	$(MKDIR) $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)
@@ -484,10 +483,13 @@ endif
 	@echo =============================
 	@echo 
 	@echo 
-	$(MKDIR) $(SB_VENDOR_BUILD_DIR)
-	# TODO: this kinda sucks; fix this; also, now it sucks with the msys
-	# stuff in a cross-platform way.
-	$(MSYS_CP) $(SB_TARGET_SRC_DIR) $(SB_VENDOR_BUILD_DIR) --exclude=.svn
+ifeq (Linux,$(SB_VENDOR_ARCH))
+	$(MKDIR) -p $(SB_VENDOR_BUILD_DIR)
+	cp -u -r $(SB_TARGET_SRC_DIR) $(SB_VENDOR_BUILD_DIR)
+	rm -rf `find $(SB_VENDOR_BUILD_DIR) -type d -name .svn`
+else
+	$(MSYS_CP) $(SB_TARGET_SRC_DIR) $(SB_VENDOR_BUILD_DIR)
+endif
 
 clean_build_dir:
 	$(RM) -rf $(SB_VENDOR_BUILD_DIR)
