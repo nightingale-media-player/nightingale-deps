@@ -116,7 +116,7 @@ void nsPNGDecoder::CreateFrame(png_uint_32 x_offset, png_uint_32 y_offset,
   nsresult rv = mImage->AppendFrame(x_offset, y_offset, width, height, format,
                                     &mImageData, &imageDataLength);
   if (NS_FAILED(rv))
-    longjmp(png_jmpbuf(mPNG), 5); // NS_ERROR_OUT_OF_MEMORY
+    longjmp(mPNG->jmpbuf, 5); // NS_ERROR_OUT_OF_MEMORY
 
   mFrameRect.x = x_offset;
   mFrameRect.y = y_offset;
@@ -371,7 +371,7 @@ static NS_METHOD ReadDataOut(nsIInputStream* in,
   }
 
   // we need to do the setjmp here otherwise bad things will happen
-  if (setjmp(png_jmpbuf(decoder->mPNG))) {
+  if (setjmp(decoder->mPNG->jmpbuf)) {
     png_destroy_read_struct(&decoder->mPNG, &decoder->mInfo, NULL);
 
     decoder->mError = PR_TRUE;
@@ -438,8 +438,7 @@ PNGGetColorProfile(png_structp png_ptr, png_infop info_ptr,
   // First try to see if iCCP chunk is present
   if (png_get_valid(png_ptr, info_ptr, PNG_INFO_iCCP)) {
     png_uint_32 profileLen;
-    png_bytep profileData;
-	png_charp profileName;
+    char *profileData, *profileName;
     int compression;
 
     png_get_iCCP(png_ptr, info_ptr, &profileName, &compression,
@@ -547,7 +546,7 @@ info_callback(png_structp png_ptr, png_infop info_ptr)
   /* limit image dimensions (bug #251381) */
 #define MOZ_PNG_MAX_DIMENSION 1000000L
   if (width > MOZ_PNG_MAX_DIMENSION || height > MOZ_PNG_MAX_DIMENSION)
-    longjmp(png_jmpbuf(decoder->mPNG), 1);
+    longjmp(decoder->mPNG->jmpbuf, 1);
 #undef MOZ_PNG_MAX_DIMENSION
 
   if (color_type == PNG_COLOR_TYPE_PALETTE)
@@ -663,7 +662,7 @@ info_callback(png_structp png_ptr, png_infop info_ptr)
     // the image hasn't been inited yet
     decoder->mImage->Init(width, height, decoder->mObserver);
   } else if (containerWidth != PRInt32(width) || containerHeight != PRInt32(height)) {
-    longjmp(png_jmpbuf(decoder->mPNG), 5); // NS_ERROR_UNEXPECTED
+    longjmp(decoder->mPNG->jmpbuf, 5); // NS_ERROR_UNEXPECTED
   }
 
   if (decoder->mObserver)
@@ -689,14 +688,14 @@ info_callback(png_structp png_ptr, png_infop info_ptr)
     decoder->mCMSLine =
       (PRUint8 *)nsMemory::Alloc(bpp[channels] * width);
     if (!decoder->mCMSLine)
-      longjmp(png_jmpbuf(decoder->mPNG), 5); // NS_ERROR_OUT_OF_MEMORY
+      longjmp(decoder->mPNG->jmpbuf, 5); // NS_ERROR_OUT_OF_MEMORY
   }
 
   if (interlace_type == PNG_INTERLACE_ADAM7) {
     if (height < PR_INT32_MAX / (width * channels))
       decoder->interlacebuf = (PRUint8 *)nsMemory::Alloc(channels * width * height);
     if (!decoder->interlacebuf) {
-      longjmp(png_jmpbuf(decoder->mPNG), 5); // NS_ERROR_OUT_OF_MEMORY
+      longjmp(decoder->mPNG->jmpbuf, 5); // NS_ERROR_OUT_OF_MEMORY
     }
   }
   
@@ -718,7 +717,7 @@ info_callback(png_structp png_ptr, png_infop info_ptr)
    * successfully decoded) before bailing, but it's simpler to just bail
    * out with an error message.
    */
-  png_set_crc_action(png_ptr, PNG_CRC_NO_CHANGE, PNG_CRC_ERROR_QUIT);
+  png_set_crc_action(png_ptr, NULL, PNG_CRC_ERROR_QUIT);
   
   return;
 }
@@ -913,7 +912,7 @@ void
 error_callback(png_structp png_ptr, png_const_charp error_msg)
 {
   PR_LOG(gPNGLog, PR_LOG_ERROR, ("libpng error: %s\n", error_msg));
-  longjmp(png_jmpbuf(png_ptr), 1);
+  longjmp(png_ptr->jmpbuf, 1);
 }
 
 
