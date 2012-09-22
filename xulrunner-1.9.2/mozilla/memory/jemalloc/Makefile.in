@@ -142,8 +142,8 @@ endif # MOZ_DEBUG
 # that  not all the standard symbols are exported; looks like MSFT
 # never updated the sample.def files; could probably fix if someone
 # were ever bored enough. :-)
-	#rm -f $(addsuffix .lib, $(addprefix $(CRT_OBJ_DIR)/build/intel/, $(MOZ_CRT_STATIC_LIBS)))
-	#rm -f $(addsuffix .pdb, $(addprefix $(CRT_OBJ_DIR)/build/intel/, $(MOZ_CRT_STATIC_LIBS)))
+	rm -f $(addsuffix .lib, $(addprefix $(CRT_OBJ_DIR)/build/intel/, $(MOZ_CRT_STATIC_LIBS)))
+	rm -f $(addsuffix .pdb, $(addprefix $(CRT_OBJ_DIR)/build/intel/, $(MOZ_CRT_STATIC_LIBS)))
 
 # but still export jemalloc.h
 EXPORTS = jemalloc.h
@@ -165,7 +165,7 @@ ifeq ($(OS_ARCH),Darwin)
 FORCE_SHARED_LIB= 1
 else
 DIST_INSTALL = 1
-FORCE_SHARED_LIB= 1
+FORCE_STATIC_LIB= 1
 endif
 
 EXPORTS = jemalloc.h
