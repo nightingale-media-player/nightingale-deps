@@ -2,8 +2,6 @@
 
 
 export DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-export CC=gcc-4.7
 export SB_VENDOR_BINARIES_CO_ROOT=$DIR
 export SB_VENDOR_BUILD_ROOT=$DIR
 export CXXFLAGS="-fpermissive"
@@ -17,7 +15,8 @@ case $OSTYPE in
 	# linux is easy, as all it requires right now is xulrunner, sqlite, and taglib
 	# we'll get to a point where this is unnecessary on linux altogether in the future
 	linux*)
-	
+        export CC=gcc-4.7
+
 		if [ ! -d "linux-$(uname -m)" ]; then
 			mkdir -p "linux-$(uname -m)"
 			mkdir -p "checkout/linux-$(uname -m)"
@@ -45,6 +44,16 @@ case $OSTYPE in
 		
 		echo -e "Done! Provided there were no errors, you can \nfind your deps in the linux-$(uname -m) directory. Copy or link it into [nightingale build directory]/dependencies and you're ready to build!\n"
 	;;
+    darwin*)
+        export CC=gcc-mp-4.7
+        if [ ! -d "macosx-i686" ]; then
+            mkdir -p "macosx-i686"
+            mkdir -p "checkout/macosx-i686"
+            mkdir "build"
+        fi
+
+        make
+    ;;
 	*)
 		echo "Lazy buildscript for your OS coming soon."
 	;;
