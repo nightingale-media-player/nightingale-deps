@@ -301,7 +301,7 @@ EXTHDR += \
 all:	sqlite3.h libsqlite3.a sqlite3$(EXE)
 
 libsqlite3.a:	$(LIBOBJ)
-	$(AR) libsqlite3.a $(LIBOBJ)
+	$(AR) -cr libsqlite3.a $(LIBOBJ)
 	$(RANLIB) libsqlite3.a
 
 sqlite3$(EXE):	$(TOP)/src/shell.c libsqlite3.a sqlite3.h
