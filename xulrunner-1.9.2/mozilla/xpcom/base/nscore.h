@@ -210,7 +210,7 @@
 #define NS_IMPORT_(type) NS_EXTERNAL_VIS_(type)
 #define NS_EXPORT NS_EXTERNAL_VIS
 #define NS_EXPORT_(type) NS_EXTERNAL_VIS_(type)
-#define NS_IMETHOD_(type) virtual IMETHOD_VISIBILITY type NS_DEFCALL
+#define NS_IMETHOD_(type) virtual type
 #define NS_IMETHODIMP_(type) type
 #define NS_METHOD_(type) type
 #define NS_CALLBACK_(_type, _name) _type (* _name)
