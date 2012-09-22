@@ -1,6 +1,3 @@
-mk_add_options MOZ_CO_PROJECT=xulrunner
-mk_add_options MOZ_CO_MODULE=mozilla/other-licenses/bsdiff,mozilla/tools/update-packaging
-mk_add_options MOZ_CO_TAG=FIREFOX_3_0_19_RELEASE
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/compiled/xulrunner-debug
 export MOZ_DEBUG_SYMBOLS=1
 export MOZILLA_OFFICIAL=1
@@ -17,6 +14,3 @@ ac_add_options --enable-jemalloc
 ac_add_options --disable-safe-browsing
 ac_add_options --disable-url-classifier
 ac_add_options --disable-mochitest
-
-# The Crash Reporter is not implemented on x86_64 at the moment.
-ac_add_options --disable-crashreporter
