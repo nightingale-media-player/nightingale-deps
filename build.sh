@@ -62,6 +62,15 @@ case $OSTYPE in
 
 		make
     ;;
+    msys*)
+		if [ ! -d "windows-i686-msvc8" ]; then
+			mkdir -p "windows-i686-msvc8"
+			mkdir -p "checkout/windows-i686-msvc8"
+			mkdir "build"
+		fi
+
+		make
+    ;;
 	*)
 		echo "Lazy buildscript for your OS coming soon."
 	;;
