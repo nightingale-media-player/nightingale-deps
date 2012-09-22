@@ -74,6 +74,10 @@ ifeq (Darwin,$(SB_VENDOR_ARCH))
       SB_TARGET_ARCH := macosx-i686
       SB_ARCH_DETECTED := 1
    endif
+   ifeq (x86_64,$(SB_VENDOR_SUBARCH))
+      SB_TARGET_ARCH := macosx-i686
+      SB_ARCH_DETECTED := 1
+   endif
    ifeq (ppc,$(SB_VENDOR_SUBARCH))
       SB_TARGET_ARCH := macosx-ppc
       SB_ARCH_DETECTED := 1
