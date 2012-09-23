@@ -1,0 +1,15 @@
+Nightingale Build Dependencies
+================================
+
+This repo is based on the SVN dependencies from Songbird. Currently,
+this repo only works 100% for sure with Linux. Linux only requires the
+sqlite, taglib, and xulrunner dependencies.
+
+Right now, both debug and release versions of these three dependencies 
+will be built, in the future build.sh will allow you to choose.
+
+Building
+================================
+
+To build, simply run build.sh if on Linux. Mac and Windows support coming
+soon.
