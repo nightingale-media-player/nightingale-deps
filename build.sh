@@ -24,17 +24,13 @@ case $OSTYPE in
 			mkdir "build"
 		fi
 
-		cd "xulrunner"
-		if [ ! -d "xulrunner/mozilla" ]; then
-			svn co "http://publicsvn.songbirdnest.com/vendor/trunk/xulrunner-${XUL}/mozilla/"
-		fi
-
+		cd "xulrunner-1.9.2"
 		# fix for kernels > 3.X on versions of xul without security setup for them
 		if [ ! -f mozilla/security/coreconf/Linux$(uname -r|sed -e 's/\-.*//'|grep -o "[0-9]\.[0-9]").mk ]; then
 			ln -s $(pwd)/mozilla/security/coreconf/Linux2.6.mk $(pwd)/mozilla/security/coreconf/Linux$(uname -r|sed -e 's/\-.*//'|grep -o "[0-9]\.[0-9]").mk
 		fi
-		
 		cd ../
+		
 		echo -e "Building sqlite...\n"
 		cd sqlite && make -f Makefile.songbird
 		cd ../
