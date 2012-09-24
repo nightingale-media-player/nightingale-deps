@@ -3,7 +3,7 @@
 
 export DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export SB_VENDOR_BINARIES_CO_ROOT=$DIR
-export SB_VENDOR_BUILD_ROOT=$DIR/build
+export SB_VENDOR_BUILD_ROOT=$DIR
 
 # Currently, we build both debug and release, which takes a lot longer,
 # especially on xulrunner... TODO: make it optional to build debug
