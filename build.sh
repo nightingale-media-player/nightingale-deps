@@ -29,16 +29,16 @@ case $OSTYPE in
 		fi
 		cd ../
 
+		echo -e "Building xulrunner 1.9.2...\n"
+		cd xulrunner-1.9.2 && make -f Makefile.songbird
+		cd ../
+
 		echo -e "Building sqlite...\n"
 		cd sqlite && make -f Makefile.songbird
 		cd ../
 
 		echo -e "Building taglib...\n"
 		cd taglib && make -f Makefile.songbird
-		cd ../
-
-		echo -e "Building xulrunner 1.9.2...\n"
-		cd xulrunner-1.9.2 && make -f Makefile.songbird
 		cd ../
 		
 		echo -e "Done! Provided there were no errors, you can \nfind your deps in the linux-$(uname -m) directory. Copy or link it into [nightingale build directory]/dependencies and you're ready to build!\n"
