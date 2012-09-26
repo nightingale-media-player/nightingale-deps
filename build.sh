@@ -30,7 +30,7 @@ case $OSTYPE in
 		cd ../
 
 		echo -e "Building xulrunner 1.9.2...\n"
-		cd xulrunner-1.9.2 && make -f Makefile.songbird
+		cd xulrunner-1.9.2 && make -f Makefile.songbird xr-all
 		cd ../
 
 		echo -e "Building sqlite...\n"
