@@ -12,7 +12,7 @@ case $OSTYPE in
 	# we'll get to a point where this is unnecessary on linux altogether in the future
 	linux*)
 		export CC=gcc-4.7
-		export CXXFLAGS="-fpermissive"
+		export CXXFLAGS="-fpermissive -O2 -fomit-frame-pointer -pipe"
 		export CFLAGS=$CXXFLAGS
 		export CCFLAGS=$CXXFLAGS
 
