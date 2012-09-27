@@ -472,7 +472,7 @@ setup_build: \
 	@echo Paths
 	@echo -----
 	@echo PKG_CONFIG_PATH = $(PKG_CONFIG_PATH)
-	@echo PATH = $(PATH)
+	@echo PATH = "$(PATH)"
 ifeq (Msys,$(SB_VENDOR_ARCH))
 	@echo LIBS = $(LIBS)
 endif

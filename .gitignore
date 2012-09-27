@@ -13,3 +13,4 @@ xulrunner*/mozilla/other-licenses/ply/ply/*.pyc
 xulrunner*/mozilla/security/coreconf/Linux3.*.mk
 xulrunner*/mozilla/security/manager/.nss.checkout
 xulrunner*/mozilla/xpcom/idl-parser/*.pyc
+*/build-log.txt
