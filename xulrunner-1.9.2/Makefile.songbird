@@ -82,7 +82,7 @@ ifndef XR_DISABLE_SYMBOLS
    fi
 	# Only build symbols for release builds 
 	$(MAKE) -C $(CURDIR)/mozilla/compiled/xulrunner-release buildsymbols
-   ifneq (linux-x86_64,$(SB_TARGET_ARCH))
+   ifneq (,$(filter-out linux-%,$(SB_TARGET_ARCH)))
 	   $(MV) $(CURDIR)/mozilla/compiled/xulrunner-release/dist/xulrunner-$(SB_VENDOR_TARGET_VERSION).*.crashreporter-symbols.zip $(SB_VENDOR_BUILD_DIR)
    endif
 endif

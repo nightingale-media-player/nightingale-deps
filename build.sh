@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 export DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export SB_VENDOR_BINARIES_CO_ROOT=$DIR
 export SB_VENDOR_BUILD_ROOT=$DIR
@@ -11,7 +13,6 @@ case $OSTYPE in
 	# linux is easy, as all it requires right now is xulrunner, sqlite, and taglib
 	# we'll get to a point where this is unnecessary on linux altogether in the future
 	linux*)
-		export CC=gcc-4.7
 		export CXXFLAGS="-fpermissive -O2 -fomit-frame-pointer -pipe"
 		export CFLAGS=$CXXFLAGS
 		export CCFLAGS=$CXXFLAGS
@@ -30,16 +31,13 @@ case $OSTYPE in
 		cd ../
 
 		echo -e "Building xulrunner 1.9.2...\n"
-		cd xulrunner-1.9.2 && make -f Makefile.songbird xr-all
-		cd ../
+		make -C xulrunner-1.9.2 -f Makefile.songbird xr-all
 
 		echo -e "Building sqlite...\n"
-		cd sqlite && make -f Makefile.songbird
-		cd ../
-
+		make -C sqlite -f Makefile.songbird
+		
 		echo -e "Building taglib...\n"
-		cd taglib && make -f Makefile.songbird
-		cd ../
+		make -C taglib -f Makefile.songbird
 		
 		echo -e "Done! Provided there were no errors, you can \nfind your deps in the linux-$(uname -m) directory. Copy or link it into [nightingale build directory]/dependencies and you're ready to build!\n"
 	;;
