@@ -14,7 +14,6 @@ ac_add_options --enable-jemalloc
 ac_add_options --disable-safe-browsing
 ac_add_options --disable-url-classifier
 ac_add_options --disable-mochitest
-ac_add_options --disable-crashreporter
 ac_add_options --disable-necko-wifi
 
 export BUILD_OFFICIAL=1
