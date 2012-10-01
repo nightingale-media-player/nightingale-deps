@@ -1,4 +1,4 @@
-TODO: put the finished archive in {os}_arch/{release|debug}/xulrunner.tar.bz2 rather than just in the file root!
+#TODO: put the finished archive in {os}_arch/{release|debug}/xulrunner.tar.bz2 rather than just in the file root!
 
 # NOTE: If you've already built once successfully, then don't use this
 # script to repackage! Instead go to xulrunner and 
@@ -11,13 +11,13 @@ set -e
 USE="TARBALL"
 
 # XUL Version
-export XUL="6.0.2"
+export XUL="15.0.1"
 
 # Top level build path
 export SB_VENDOR_BUILD_ROOT="$(cd "$(dirname "$0")" && pwd)"
 
 # output directory
-mkdir -p "linux-$(arch)"
+mkdir -p "linux-$(uname -m)"
 
 cd "xulrunner"
 # just in case the directory exists already
