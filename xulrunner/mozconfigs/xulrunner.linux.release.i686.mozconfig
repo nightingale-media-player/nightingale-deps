@@ -1,12 +1,14 @@
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/compiled/xulrunner-release
-export MOZ_DEBUG_SYMBOLS=1
-export MOZILLA_OFFICIAL=1
-export BUILD_OFFICIAL=1
+export MOZ_DEBUG_SYMBOLS=1 #for now only, i think we ought to maybe disable this and breakpad later -ilikenwf
 export CFLAGS="-gstabs+"
-export CXXFLAGS="-gstabs+"
+export CXXFLAGS="-gstabs+ -O2 -fomit-frame-pointer -pipe"
+export BUILD_OFFICIAL=1
+export MOZILLA_OFFICIAL=1
+mk_add_options BUILD_OFFICIAL=1
+mk_add_options MOZILLA_OFFICIAL=1
+ac_add_options --enable-optimize="-O2 -fomit-frame-pointer -pipe"
 ac_add_options --enable-application=xulrunner
 ac_add_options --with-xulrunner-stub-name=nightingale-bin
-ac_add_options --enable-optimize
 ac_add_options --disable-debug
 ac_add_options --disable-tests
 ac_add_options --disable-javaxpcom
@@ -17,3 +19,20 @@ ac_add_options --enable-jemalloc
 ac_add_options --disable-safe-browsing
 ac_add_options --disable-url-classifier
 ac_add_options --disable-mochitest
+ac_add_options --disable-crashreporter
+ac_add_options --disable-necko-wifi
+
+#testing
+ac_add_options --enable-plaintext-editor-only
+ac_add_options --disable-mailnews
+ac_add_options --disable-composer
+ac_add_options --disable-jsd
+ac_add_options --disable-logging
+ac_add_options --disable-ldap
+ac_add_options --enable-strip
+ac_add_options --enable-strip-libs
+ac_add_options --disable-printing
+ac_add_options --disable-mathml
+ac_add_options --disable-gnomevfs 
+ac_add_options --disable-gnomeui
+ac_add_options --disable-libnotify
