@@ -69,6 +69,36 @@ SB_VENDOR_OS := $(shell uname -o 2>&1)
 
 SB_ARCH_DETECTED := 0
 
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+   ifeq (i386,$(SB_VENDOR_SUBARCH))
+      SB_TARGET_ARCH := macosx-i686
+      SB_ARCH_DETECTED := 1
+   endif
+   ifeq (x86_64,$(SB_VENDOR_SUBARCH))
+      SB_TARGET_ARCH := macosx-i686
+      SB_ARCH_DETECTED := 1
+   endif
+   ifeq (ppc,$(SB_VENDOR_SUBARCH))
+      SB_TARGET_ARCH := macosx-ppc
+      SB_ARCH_DETECTED := 1
+   endif
+endif
+
+ifeq (SunOS,$(SB_VENDOR_ARCH))
+   ifeq (i86pc,$(SB_VENDOR_SUBARCH))
+      SB_TARGET_ARCH := solaris-i386
+      SB_ARCH_DETECTED := 1
+   endif
+   ifeq (x86_64,$(SB_VENDOR_SUBARCH))
+      SB_TARGET_ARCH := solaris-x86_64
+      SB_ARCH_DETECTED := 1
+   endif
+   ifneq (,$(filter sun4u sun4v,$(SB_VENDOR_SUBARCH)))
+      SB_TARGET_ARCH := solaris-sparc
+      SB_ARCH_DETECTED := 1
+   endif
+endif
+
 ifeq (Linux,$(SB_VENDOR_ARCH))
    ifeq (i686,$(SB_VENDOR_SUBARCH))
       SB_TARGET_ARCH := linux-i686
@@ -88,6 +118,14 @@ ifeq (Linux,$(SB_VENDOR_ARCH))
    endif
 endif
 
+ifeq (Msys,$(SB_VENDOR_OS))
+   SB_TARGET_ARCH := windows-i686-msvc8
+   SB_ARCH_DETECTED := 1
+   # We redefine SB_VENDOR_ARCH here to make it more useful to us; in Msys,
+   # uname returns some some long, difficult string to compare against...
+   SB_VENDOR_ARCH := Msys
+endif
+
 ifneq (1,$(SB_ARCH_DETECTED))
    $(error Unsupported vendor build environment ($(SB_VENDOR_ARCH), $(SB_VENDOR_SUBARCH), $(SB_VENDOR_OS))) 
 endif
@@ -104,6 +142,7 @@ CMAKE ?= cmake
 CONFIGURE ?= ./configure
 CP ?= cp
 CUT ?= cut
+MSYS_CP ?= $(SB_VENDOR_CHECKOUT)/msys-recursive-cp
 FIND ?= find
 GREP ?= grep
 LN ?= ln
@@ -123,12 +162,79 @@ SUBMAKE_CMD = $(MAKE)
 # DUMP_SYMS_ARGS := --vcs-info -V
 DUMP_SYMS_ARGS := --vcs-info
 
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+   STRIP ?= strip -x -S
+   DUMP_SYMS ?= $(MOZSDK_BIN_DIR)/dump_syms
+   OTOOL ?= otool
+   INSTALL_NAME_TOOL ?= install_name_tool
+
+   ifeq (i386,$(SB_VENDOR_SUBARCH))
+      DUMP_SYMS_ARGS += -a i386
+   else
+   ifeq (ppc,$(SB_VENDOR_SUBARCH))
+      DUMP_SYMS_ARGS += -a ppc
+   endif
+   endif
+endif
 ifeq (Linux,$(SB_VENDOR_ARCH))
    STRIP ?= strip -v
    DUMP_SYMS ?= $(MOZSDK_BIN_DIR)/dump_syms
    INSTALL_NAME_TOOL ?= echo install_name_tool called on Linux && exit 1;
    OTOOL ?= echo otool called on Linux && exit 1;
    SB_AR ?= ar
+endif
+ifeq (Msys,$(SB_VENDOR_ARCH))
+   DUMP_SYMS ?= $(MOZSDK_BIN_DIR)/dump_syms.exe
+   DUMP_SYMS_ARGS += --copy
+   # Strip isn't needed/available on Win32; error out
+   STRIP ?= echo strip called on Win32 && exit 1;
+   INSTALL_NAME_TOOL ?= echo install_name_tool called on Win32 && exit 1;
+   OTOOL ?= echo otool called on Win32 && exit 1;
+
+   SB_CC = cl
+   SB_CXX = cl
+   SB_LD = link
+   SB_OBJDUMP = objdump
+endif
+
+#
+# On certain platforms, we need some extra information/flag munging
+#
+
+ifeq (Msys,$(SB_VENDOR_ARCH))
+   _MSVC_VER_FILTER := s|.* \([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*|\1|p
+   CC_VERSION := $(shell cl -v 2>&1 | sed -ne "$(_MSVC_VER_FILTER)")
+   _CC_MAJOR_VERSION := $(shell echo $(CC_VERSION) | awk -F\. '{ print $$1 }')
+   _CC_MINOR_VERSION := $(shell echo $(CC_VERSION) | awk -F\. '{ print $$2 }')
+   _MSC_VER := $(_CC_MAJOR_VERSION)$(_CC_MINOR_VERSION)
+
+   SB_CFLAGS += -D_MSC_VER=$(_MSC_VER) -DWIN32 -D__NO_CTYPE \
+     -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS \
+     -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055
+
+   SB_CFLAGS += -Zi 
+   SB_CXXFLAGS += -Zi
+   SB_LDFLAGS += -DEBUG
+
+   CONFIGURE_TARGET = i686-pc-mingw32
+
+   # We need these for all builds on Win32, since the system doesn't provide
+   # it...
+   SB_VENDOR_TARGET_DEP_MODULES += iconv glib gettext
+endif
+
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+  SB_CFLAGS += -fnested-functions \
+               -gstabs+ \
+               -isysroot $(MACOSX_SDK) \
+               -D__MACOSX__ \
+               -D__APPLE__
+
+  SB_LDFLAGS += -headerpad_max_install_names -isysroot $(MACOSX_SDK) \
+   -Wl,-syslibroot,$(MACOSX_SDK)
+
+   # We need these for all builds on OSX, since the system doesn't provide them
+   SB_VENDOR_TARGET_DEP_MODULES += glib gettext
 endif
 
 ifeq (Linux,$(SB_VENDOR_ARCH))
@@ -184,14 +290,42 @@ ifeq (,$(SB_VENDOR_BUILD_ROOT))
    $(error Must define SB_VENDOR_BUILD_ROOT)
 endif
 
+SB_VENDOR_BINARIES_CO_ROOT ?= $(SB_VENDOR_BUILD_ROOT)/checkout
+SB_VENDOR_CHECKOUT ?= $(realpath $(CURDIR)/..)
+
 ifeq (,$(wildcard $(SB_VENDOR_BUILD_ROOT)))
    $(error SB_VENDOR_BUILD_ROOT ($(SB_VENDOR_BUILD_ROOT)) does not exist...)
+endif
+
+ifeq (,$(wildcard $(SB_VENDOR_BINARIES_CO_ROOT)))
+   $(error SB_VENDOR_BINARIES_CO_ROOT $(SB_VENDOR_BINARIES_CO_ROOT) does not exist...)
 endif
 
 SB_VENDOR_DIR ?= $(realpath $(CURDIR)/..)
 SB_TARGET_SRC_DIR := $(CURDIR)
 
 SB_VENDOR_BINARIES_DIR := $(SB_VENDOR_BUILD_ROOT)/$(SB_TARGET_ARCH)
+SB_VENDOR_BINARIES_CHECKOUT := $(SB_VENDOR_BINARIES_CO_ROOT)/$(SB_TARGET_ARCH)
+
+# SunOS doesn't have GNU's find, so it gets different (all shell-quoted)
+# arguments
+ifneq (,$(filter SunOS, $(SB_VENDOR_ARCH)))
+   SB_VENDOR_BINARIES_TARGETS_FIND = $(FIND) $(SB_VENDOR_BINARIES_CHECKOUT) \( -type d -a \! -name . -prune \) -o -type d
+else
+   SB_VENDOR_BINARIES_TARGETS_FIND = $(FIND) $(SB_VENDOR_BINARIES_CHECKOUT) -maxdepth 1 -mindepth 1 -type d -not -name .svn
+endif
+
+ifneq (,$(filter Darwin SunOS,$(SB_VENDOR_ARCH)))
+   SB_VENDOR_BINARIES_TARGETS_FIND += -exec basename {} \;
+else
+   SB_VENDOR_BINARIES_TARGETS_FIND += -printf '%f '
+endif
+
+SB_VENDOR_BINARIES_TARGETS := $(shell $(SB_VENDOR_BINARIES_TARGETS_FIND))
+
+ifeq (,$(wildcard $(SB_VENDOR_BINARIES_DIR)))
+   $(error SB_VENDOR_BINARIES_DIR $(SB_VENDOR_BINARIES_DIR) does not exist...)
+endif
 
 # Where we'll build this stuff
 SB_VENDOR_BUILD_DIR = $(SB_VENDOR_BUILD_ROOT)/build/$(SB_VENDOR_TARGET)/$(SB_BUILD_TYPE)
@@ -240,7 +374,13 @@ AUTOCONF_GENERATED_TRASH = autoregen.sh \
 
 # These are packages for which the regen-makefiles target is enabled; 
 # other vendor packages don't need this step, so it's a no-op
-SB_REGEN_MAKEFILE_PKGS = $(NULL)
+SB_REGEN_MAKEFILE_PKGS = flac\
+                         gst% \
+                         libjpeg \
+                         libogg \
+                         libvorbis \
+                         libtheora \
+                         $(NULL)
 
 # Turn on/off symbol generation; 'default' means "for release builds only,
 # for all non-x86_64 platforms, generate a symbol bundle."
@@ -278,6 +418,17 @@ MOZSDK_BIN_DIR = $(MOZSDK_DIR)/bin
 MOZSDK_SCRIPTS_DIR = $(MOZSDK_DIR)/scripts
 MOZ_XR_DIR = $(call find-dep-dir, $(SB_VENDOR_XR_TARGET))
 
+# Supporting SDK paths on Win32
+ifeq (Msys,$(SB_VENDOR_ARCH))
+   DIRECTX_SDK_ROOT ?= /d/ms-sdks/directx-aug08
+   WINDOWS_SDK_ROOT ?= /d/ms-sdks/Windows/v6.0
+   QUICKTIME_SDK_ROOT ?= /d/ms-sdks/QuickTimeSDK
+endif
+
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+   MACOSX_SDK ?= /Developer/SDKs/MacOSX10.4u.sdk
+endif
+
 #
 # Dependent library section; this is where we define and point the build system
 # at our copies of various tools that are checked in.
@@ -286,3 +437,196 @@ MOZ_XR_DIR = $(call find-dep-dir, $(SB_VENDOR_XR_TARGET))
 define enable-sb-lib
 $(filter $1, $(filter-out $(SB_VENDOR_TARGET), $(SB_VENDOR_TARGET_DEP_MODULES)))
 endef
+
+#
+# GNU libtool
+#
+ifneq (,$(call enable-sb-lib, libtool))
+   $(info Enabling Songbird vendor lib: libtool)
+   SB_LIBTOOL_DIR = $(call find-dep-dir, libtool)
+   SB_PATH += $(SB_LIBTOOL_DIR)/bin
+   ACLOCAL_FLAGS += -I $(SB_LIBTOOL_DIR)/share/aclocal
+endif
+
+#
+# GNU Gettext 
+#
+ifneq (,$(call enable-sb-lib, gettext))
+   $(info Enabling Songbird vendor lib: gettext)
+   SB_GETTEXT_DIR = $(call find-dep-dir, gettext)
+   SB_LDFLAGS += -L$(SB_GETTEXT_DIR)/lib -lintl
+   SB_CFLAGS += -I$(SB_GETTEXT_DIR)/include
+   SB_CPPFLAGS += -I$(SB_GETTEXT_DIR)/include
+   SB_PATH += $(SB_GETTEXT_DIR)/bin
+
+   ifeq (Darwin,$(SB_VENDOR_ARCH))
+      SB_DYLD_LIBRARY_PATH += $(SB_GETTEXT_DIR)/lib
+   endif
+endif
+
+#
+# GNU iconv
+#
+ifneq (,$(call enable-sb-lib, iconv))
+   $(info Enabling Songbird vendor lib: iconv)
+   SB_ICONV_DIR := $(call find-dep-dir, libiconv)
+   SB_LDFLAGS += -L$(SB_ICONV_DIR)/lib -liconv
+   SB_CFLAGS += -I$(SB_ICONV_DIR)/include
+   SB_PATH += $(SB_ICONV_DIR)/bin
+
+   ifeq (Darwin,$(SB_VENDOR_ARCH))
+      LDFLAGS += -Wl,-dylib_file -Wl,libiconv.dylib:$(SB_ICONV_DIR)/lib/libiconv.dylib
+   endif
+endif
+
+#
+# Glib
+# 
+ifneq (,$(call enable-sb-lib, glib))
+   $(info Enabling Songbird vendor lib: glib)
+   SB_GLIB_DIR := $(call find-dep-dir, glib)
+   SB_PATH += $(SB_GLIB_DIR)/bin
+   SB_PKG_CONFIG_PATH += $(SB_GLIB_DIR)/lib/pkgconfig
+
+   GLIB_PARTS := glib gobject gmodule gthread
+
+   ifeq (Darwin,$(SB_VENDOR_ARCH))
+      LDFLAGS += $(foreach GLIB_PART, $(GLIB_PARTS), -Wl,-dylib_file -Wl,libgobject-2.0.dylib:$(SB_GLIB_DIR)/lib/lib$(GLIB_PART)-2.0.dylib)
+      SB_DYLD_LIBRARY_PATH += $(SB_GLIB_DIR)/lib
+   endif
+endif
+
+#
+# libIDL
+#
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+   ifneq (,$(call enable-sb-lib, libIDL))
+      $(info Enabling Songbird vendor lib: libIDL)
+      SB_LIBIDL_DIR := $(call find-dep-dir, libIDL)
+      SB_PATH += $(SB_LIBIDL_DIR)/bin
+      SB_PKG_CONFIG_PATH += $(SB_LIBIDL_DIR)/lib/pkgconfig
+      SB_DYLD_LIBRARY_PATH += $(SB_LIBIDL_DIR)/lib
+   endif
+endif
+
+#
+# gstreamer
+#
+ifneq (,$(call enable-sb-lib, gstreamer))
+   $(info Enabling Songbird vendor lib: gstreamer)
+   SB_GSTREAMER_DIR = $(call find-dep-dir, gstreamer)
+   SB_PATH += $(SB_GSTREAMER_DIR)/bin
+   SB_PKG_CONFIG_PATH += $(SB_GSTREAMER_DIR)/lib/pkgconfig
+  
+   # A list of basic dylibs on mac that need to be fixed up across all the
+   # gstreamer modules; these are built by various parts of gstreamer and 
+   # base
+   GST_BASE_DYLIBS = audio cdda fft interfaces netbuffer pbutils riff \
+    rtp rtsp sdp tag video
+endif
+
+#
+# gstreamer-plugins-base
+#
+ifneq (,$(call enable-sb-lib, gst-plugins-base))
+   $(info Enabling Songbird vendor lib: gst-plugins-base)
+   SB_GST_PLUGINS_BASE_DIR = $(call find-dep-dir, gst-plugins-base)
+   SB_PATH += $(SB_GST_PLUGINS_BASE_DIR)/bin
+   SB_PKG_CONFIG_PATH += $(SB_GST_PLUGINS_BASE_DIR)/lib/pkgconfig
+endif
+
+#
+# libogg
+#
+ifneq (,$(call enable-sb-lib, ogg))
+   $(info Enabling Songbird vendor lib: ogg)
+   SB_LIBOGG_DIR = $(call find-dep-dir, libogg)
+   SB_OGG_LIBS = -L$(SB_LIBOGG_DIR)/lib -logg
+   SB_OGG_CFLAGS := -I$(SB_LIBOGG_DIR)/include
+   SB_PKG_CONFIG_PATH += $(SB_LIBOGG_DIR)/lib/pkgconfig
+
+   ifeq (Msys, $(SB_VENDOR_ARCH))
+      SB_PATH += $(SB_LIBOGG_DIR)/bin
+      ifeq (debug, $(SB_BUILD_TYPE))
+         SB_LIBOGG_LIBS += -Wl,-Zi
+      endif
+   endif
+endif
+
+#
+# libtheora
+#
+ifneq (,$(call enable-sb-lib, theora))
+   $(info Enabling Songbird vendor lib: theora)
+   SB_LIBTHEORA_DIR = $(call find-dep-dir, libtheora)
+   SB_THEORA_LIBS := -L$(SB_LIBTHEORA_DIR)/lib -ltheora
+   SB_THEORA_LIBS += $(SB_OGG_LIBS)
+   SB_THEORA_CFLAGS = -I$(SB_LIBTHEORA_DIR)/include
+   SB_THEORA_CFLAGS += $(SB_OGG_CFLAGS)
+   SB_PKG_CONFIG_PATH += $(SB_LIBTHEORA_DIR)/lib/pkgconfig
+
+   ifeq (Msys,$(SB_VENDOR_ARCH))
+      SB_PATH += $(SB_LIBTHEORA_DIR)/bin
+      ifeq (debug,$(SB_BUILD_TYPE))
+         SB_THEORA_LIBS += -Wl,-Zi
+      endif
+  endif
+endif
+
+#
+# libvorbis
+#
+ifneq (,$(call enable-sb-lib, vorbis))
+   $(info Enabling Songbird vendor lib: vorbis)
+   SB_LIBVORBIS_DIR = $(call find-dep-dir, libvorbis)
+   SB_VORBIS_LIBS := -L$(SB_LIBVORBIS_DIR)/lib -lvorbis -lvorbisenc
+   SB_VORBIS_LIBS += $(SB_OGG_LIBS)
+   SB_VORBIS_CFLAGS = -I$(SB_LIBVORBIS_DIR)/include
+   SB_VORBIS_CFLAGS += $(SB_OGG_CFLAGS)
+   SB_PKG_CONFIG_PATH += $(SB_LIBVORBIS_DIR)/lib/pkgconfig
+
+   ifeq (Msys, $(SB_VENDOR_ARCH))
+      SB_PATH += $(SB_LIBVORBIS_DIR)/bin
+      ifeq (debug, $(SB_BUILD_TYPE))
+         SB_VORBIS_LIBS += -Wl,-Zi
+      endif
+   endif
+endif
+
+#
+# libFLAC
+#
+ifneq (,$(call enable-sb-lib, flac))
+   $(info Enabling Songbird vendor lib: flac)
+   SB_LIBFLAC_DIR = $(call find-dep-dir, flac)
+   SB_LDFLAGS += -L$(SB_LIBFLAC_DIR)/lib
+   ifeq (Msys,$(SB_VENDOR_ARCH))
+      SB_FLAC_LIBS += -lFLAC-8
+      SB_PATH += $(SB_LIBFLAC_DIR)/bin
+      ifeq (debug,$(SB_BUILD_TYPE))
+         SB_FLAC_LIBS += -Wl,-Zi
+      endif
+   endif
+   SB_CPPFLAGS += -I$(SB_LIBFLAC_DIR)/include
+   SB_PKG_CONFIG_PATH += $(SB_LIBFLAC_DIR)/lib/pkgconfig
+endif
+
+#
+# libjpeg
+#
+ifneq (,$(call enable-sb-lib, jpeg))
+   $(info Enabling Songbird vendor lib: jpeg)
+   SB_LIBJPEG_DIR = $(call find-dep-dir, libjpeg)
+   SB_LDFLAGS += -L$(SB_LIBJPEG_DIR)/lib
+
+   SB_CFLAGS = -I$(SB_LIBJPEG_DIR)/include
+
+   ifeq (Msys,$(SB_VENDOR_ARCH))
+      SB_JPEG_LIBS += "-ljpeg-7"
+      SB_PATH += $(SB_LIBJPEG_DIR)/bin
+      ifeq (debug,$(SB_BUILD_TYPE))
+         SB_JPEG_LIBS += -Wl,-Zi
+      endif
+  endif
+endif
+

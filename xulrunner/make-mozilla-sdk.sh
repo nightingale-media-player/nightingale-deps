@@ -83,6 +83,7 @@ build_script_files="build/autoconf/acoutput-fast.pl
                     config/mozLock.pm
                     config/Preprocessor.py
                     config/printconfigsetting.py
+                    config/JarMaker.py
 "
 
 # breakpad script files are relative to $srcdir

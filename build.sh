@@ -9,15 +9,19 @@ set -e
 # Use HG or TARBALL to fetch the sources?
 # Really, just use whichever suits you or is fastest
 USE="TARBALL"
+ARCH="$(uname -m)"
 
 # XUL Version
 export XUL="15.0.1"
 
 # Top level build path
 export SB_VENDOR_BUILD_ROOT="$(cd "$(dirname "$0")" && pwd)"
+mkdir -p "checkout/linux-$ARCH"
+mkdir build
+
 
 # output directory
-mkdir -p "linux-$(uname -m)"
+mkdir -p "linux-$ARCH"
 
 cd "xulrunner"
 # just in case the directory exists already
@@ -88,6 +92,6 @@ case $OSTYPE in
 esac
 
 # build Xulrunner
-make
+make xr-all
 
-cp -a "$SB_VENDOR_BUILD_ROOT/oldscripts/"* "$SB_VENDOR_BUILD_ROOT/linux-$(arch)/mozilla-$XUL/scripts"
+cp -a "$SB_VENDOR_BUILD_ROOT/oldscripts/"* "$SB_VENDOR_BUILD_ROOT/linux-$ARCH/mozilla-$XUL/scripts"

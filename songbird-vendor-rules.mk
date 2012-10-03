@@ -73,6 +73,21 @@ BUILD_TARGET_SET = $(if \
 
 SB_RUN_CONFIGURE ?= 1
 
+ifeq (Msys,$(SB_VENDOR_ARCH))
+   ifneq (,$(DISABLE_SDK_CHECKS))
+      ifeq (,$(wildcard $(WINDOWS_SDK_ROOT)))
+         $(error Could not find Windows SDK: $(WINDOWS_SDK_ROOT)) 
+      endif
+
+      ifeq (,$(wildcard $(DIRECTX_SDK_ROOT)))
+         $(error Could not find DirectX SDK: $(DIRECTX_SDK_ROOT)) 
+      endif
+
+      ifeq (,$(wildcard $(QUICKTIME_SDK_ROOT)))
+         $(error Could not find QuickTime SDK: $(QUICKTIME_SDK_ROOT)) 
+      endif
+   endif
+
    # from mozilla/config/rules.mk (the Java rules section)
    # note that an extra slash was added between root-path and non-root-path to
    # account for non-standard mount points in msys
@@ -108,6 +123,7 @@ SB_RUN_CONFIGURE ?= 1
       endif
       SB_CFLAGS += -UDEBUG -DNDEBUG
    endif
+endif
 
 # TODO: define these as a list of exportable targets and expand that, so
 # we can match the printouts in -rules.mk
@@ -139,6 +155,11 @@ endif
   export FLAC_LIBS = $(SB_FLAC_LIBS)
   export JPEG_CFLAGS = $(SB_JPEG_CFLAGS)
   export JPEG_LIBS = $(SB_JPEG_LIBS)
+
+  ifeq (Darwin,$(SB_VENDOR_ARCH))
+    export MACOSX_DEPLOYMENT_TARGET=10.4
+    export DYLD_LIBRARY_PATH = $(SB_DYLD_LIBRARY_PATH)
+  endif
 endif
 
 # This is for libtool and automake; we manage running configure outselves, so
@@ -451,7 +472,7 @@ setup_build: \
 	@echo Paths
 	@echo -----
 	@echo PKG_CONFIG_PATH = $(PKG_CONFIG_PATH)
-	@echo PATH = $(PATH)
+	@echo PATH = "$(PATH)"
 ifeq (Msys,$(SB_VENDOR_ARCH))
 	@echo LIBS = $(LIBS)
 endif
