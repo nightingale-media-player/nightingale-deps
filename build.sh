@@ -94,4 +94,5 @@ esac
 # build Xulrunner
 make xr-all
 
-cp -a "$SB_VENDOR_BUILD_ROOT/oldscripts/"* "$SB_VENDOR_BUILD_ROOT/linux-$ARCH/mozilla-$XUL/scripts"
+cp -a "oldscripts/*" "linux-$ARCH/mozilla-$XUL/scripts/"
+cp -a "oldscripts/*" "linux-$ARCH/mozilla-$XUL/release/scripts/"
