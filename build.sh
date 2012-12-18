@@ -42,8 +42,10 @@ case $OSTYPE in
 		echo -e "Done! Provided there were no errors, you can \nfind your deps in the linux-$(uname -m) directory. Copy or link it into [nightingale build directory]/dependencies and you're ready to build!\n"
 	;;
     darwin*)
-		export CC=gcc-mp-4.7
-		export CXX=$CC
+        export CC="llvm-gcc"
+        export CXX=$CC
+        export HOST_CC=$CC
+        export HOST_CXX=$CC
 		arch_flags="-m32 -fpermissive -arch i386"
 		export CFLAGS="$arch_flags" 
 		export CXXFLAGS="$arch_flags" 
