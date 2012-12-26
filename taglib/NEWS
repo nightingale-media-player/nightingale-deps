@@ -1,3 +1,105 @@
+TagLib 1.8 (Sep 6, 2012)
+==============================
+
+1.8:
+
+ * Added support for OWNE ID3 frames.
+ * Changed key validation in the new PropertyMap API.
+ * ID3v1::Tag::setStringHandler will no londer delete the previous handler,
+   the caller is responsible for this.
+ * File objects will also no longer delete the passed IOStream objects. It
+   should be done in the caller code after the File object is no longer
+   used.
+ * Added ID3v2::Tag::setLatin1StringHandler for custom handling of
+   latin1-encoded text in ID3v2 frames.
+ * Fixed validation of ID3v2 frame IDs (IDs with '0' were ignored).
+
+1.8 BETA:
+
+ * New API for accessing tags by name.
+ * New abstract I/O stream layer to allow custom I/O handlers.
+ * Support for writing ID3v2.3 tags.
+ * Support for various module file formats (MOD, S3M, IT, XM).
+ * Support for MP4 and ASF is now enabled by default.
+ * Started using atomic int operations for reference counting.
+ * Added methods for checking if WMA and MP4 files are DRM-protected.
+ * Added taglib_free to the C bindings.
+ * New method to allow removing pictures from FLAC files.
+ * Support for reading audio properties from ALAC and Musepack SV8 files.
+ * Added replay-gain information to Musepack audio properties.
+ * Support for APEv2 binary tags.
+ * Many AudioProperties subclasses now provide information about the total number of samples.
+ * Various small bug fixes.
+
+TagLib 1.7.2 (Apr 20, 2012)
+===========================
+
+ * Fixed division by zero while parsing corrupted MP4 files (CVE-2012-2396).
+ * Fixed compilation on Haiku.
+
+TagLib 1.7.1 (Mar 17, 2012)
+===========================
+
+ * Improved parsing of corrupted WMA, RIFF and OGG files.
+ * Fixed a memory leak in the WMA parser.
+ * Fixed a memory leak in the FLAC parser.
+ * Fixed a possible division by zero in the APE parser.
+ * Added detection of TTA2 files.
+ * Fixed saving of multiple identically named tags to Vorbis Comments.
+
+TagLib 1.7 (Mar 11, 2011)
+=========================
+
+1.7:
+
+ * Fixed memory leaks in the FLAC file format parser.
+ * Fixed bitrate calculation for WAV files.
+
+1.7 RC1:
+
+ * Support for reading/writing tags from Monkey's Audio files. (BUG:210404)
+ * Support for reading/writing embedded pictures from WMA files.
+ * Support for reading/writing embedded pictures from FLAC files (BUG:218696).
+ * Implemented APE::Tag::isEmpty() to check for all APE tags, not just the
+   basic ones.
+ * Added reading of WAV audio length. (BUG:116033)
+ * Exposed FLAC MD5 signature of the uncompressed audio stream via
+   FLAC::Properties::signature(). (BUG:160172)
+ * Added function ByteVector::toHex() for hex-encoding of byte vectors.
+ * WavPack reader now tries to get the audio length by finding the final
+   block, if the header doesn't have the information. (BUG:258016)
+ * Fixed a memory leak in the ID3v2.2 PIC frame parser. (BUG:257007)
+ * Fixed writing of RIFF files with even chunk sizes. (BUG:243954)
+ * Fixed compilation on MSVC 2010.
+ * Removed support for building using autoconf/automake.
+ * API docs can be now built using "make docs".
+
+TagLib 1.6.3 (Apr 17, 2010)
+===========================
+
+ * Fixed definitions of the TAGLIB_WITH_MP4 and TAGLIB_WITH_ASF macros.
+ * Fixed upgrading of ID3v2.3 genre frame with ID3v1 code 0 (Blues).
+ * New method `int String::toInt(bool *ok)` which can return whether the
+   conversion to a number was successfull.
+ * Fixed parsing of incorrectly written lengths in ID3v2 (affects mainly
+   compressed frames). (BUG:231075)
+
+TagLib 1.6.2 (Apr 9, 2010)
+==========================
+
+ * Read Vorbis Comments from the first FLAC metadata block, if there are
+   multipe ones. (BUG:211089)
+ * Fixed a memory leak in FileRef's OGA format detection.
+ * Fixed compilation with the Sun Studio compiler. (BUG:215225)
+ * Handle WM/TrackNumber attributes with DWORD content in WMA files.
+   (BUG:218526)
+ * More strict check if something is a valid MP4 file. (BUG:216819)
+ * Correctly save MP4 int-pair atoms with flags set to 0.
+ * Fixed compilation of the test runner on Windows.
+ * Store ASF attributes larger than 64k in the metadata library object.
+ * Ignore trailing non-data atoms when parsing MP4 covr atoms.
+ * Don't upgrade ID3v2.2 frame TDA to TDRC. (BUG:228968)
+
 TagLib 1.6.1 (Oct 31, 2009)
 ===========================
 

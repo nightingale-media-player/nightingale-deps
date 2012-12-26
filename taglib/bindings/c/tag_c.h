@@ -79,6 +79,11 @@ TAGLIB_C_EXPORT void taglib_set_strings_unicode(BOOL unicode);
  */
 TAGLIB_C_EXPORT void taglib_set_string_management_enabled(BOOL management);
 
+/*!
+ * Explicitly free a string returned from TagLib
+ */
+TAGLIB_C_EXPORT void taglib_free(void* pointer);
+
 /*******************************************************************************
  * File API
  ******************************************************************************/
@@ -99,7 +104,7 @@ typedef enum {
 /*!
  * Creates a TagLib file based on \a filename.  TagLib will try to guess the file
  * type.
- * 
+ *
  * \returns NULL if the file type cannot be determined or the file cannot
  * be opened.
  */

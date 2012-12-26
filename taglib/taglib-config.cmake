@@ -35,7 +35,7 @@ do
 	  flags="$flags -I$includedir/taglib"
 	  ;;
     --version)
-	  echo 1.6.1
+	  echo ${TAGLIB_LIB_MAJOR_VERSION}.${TAGLIB_LIB_MINOR_VERSION}.${TAGLIB_LIB_PATCH_VERSION} 
 	  ;;
     --prefix)
 	  echo $prefix

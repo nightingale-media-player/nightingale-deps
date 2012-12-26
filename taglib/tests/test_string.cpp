@@ -23,7 +23,6 @@
  */
 
 #include <cppunit/extensions/HelperMacros.h>
-#include <string.h> /* strcmp, memcmp */
 #include <tstring.h>
 #include <string.h>
 
@@ -41,6 +40,8 @@ class TestString : public CppUnit::TestFixture
   CPPUNIT_TEST(testUTF16DecodeEmptyWithBOM);
   CPPUNIT_TEST(testAppendCharDetach);
   CPPUNIT_TEST(testAppendStringDetach);
+  CPPUNIT_TEST(testToInt);
+  CPPUNIT_TEST(testSubstr);
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -164,6 +165,40 @@ public:
     CPPUNIT_ASSERT_EQUAL(3, String("foo.bar").rfind(".", 6));
     CPPUNIT_ASSERT_EQUAL(3, String("foo.bar").rfind(".", 7));
     CPPUNIT_ASSERT_EQUAL(3, String("foo.bar").rfind("."));
+  }
+
+  void testToInt()
+  {
+    bool ok;
+    CPPUNIT_ASSERT_EQUAL(String("123").toInt(&ok), 123);
+    CPPUNIT_ASSERT_EQUAL(ok, true);
+
+    CPPUNIT_ASSERT_EQUAL(String("-123").toInt(&ok), -123);
+    CPPUNIT_ASSERT_EQUAL(ok, true);
+
+    CPPUNIT_ASSERT_EQUAL(String("abc").toInt(&ok), 0);
+    CPPUNIT_ASSERT_EQUAL(ok, false);
+
+    CPPUNIT_ASSERT_EQUAL(String("1x").toInt(&ok), 1);
+    CPPUNIT_ASSERT_EQUAL(ok, false);
+
+    CPPUNIT_ASSERT_EQUAL(String("").toInt(&ok), 0);
+    CPPUNIT_ASSERT_EQUAL(ok, false);
+
+    CPPUNIT_ASSERT_EQUAL(String("-").toInt(&ok), 0);
+    CPPUNIT_ASSERT_EQUAL(ok, false);
+
+    CPPUNIT_ASSERT_EQUAL(String("123").toInt(), 123);
+    CPPUNIT_ASSERT_EQUAL(String("-123").toInt(), -123);
+    CPPUNIT_ASSERT_EQUAL(String("123aa").toInt(), 123);
+    CPPUNIT_ASSERT_EQUAL(String("-123aa").toInt(), -123);
+  }
+
+  void testSubstr()
+  {
+    CPPUNIT_ASSERT_EQUAL(String("01"), String("0123456").substr(0, 2));
+    CPPUNIT_ASSERT_EQUAL(String("12"), String("0123456").substr(1, 2));
+    CPPUNIT_ASSERT_EQUAL(String("123456"), String("0123456").substr(1, 200));
   }
 
 };
