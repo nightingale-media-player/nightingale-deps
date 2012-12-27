@@ -227,7 +227,6 @@ ifeq (Darwin,$(SB_VENDOR_ARCH))
   SB_CFLAGS += -gstabs+ \
                -isysroot $(MACOSX_SDK) \
                -D__MACOSX__ \
-			   -L /opt/local/lib \
                -D__APPLE__
 
   SB_LDFLAGS += -headerpad_max_install_names -isysroot $(MACOSX_SDK) \
