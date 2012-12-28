@@ -30,31 +30,29 @@
 
 #include "gstbufferstraw.h"
 
-static GCond cond;
-static GMutex lock;
+static GCond *cond = NULL;
+static GMutex *lock = NULL;
 static GstBuffer *buf = NULL;
 static gulong id;
 
 /* called for every buffer.  Waits until the global "buf" variable is unset,
  * then sets it to the buffer received, and signals. */
-static GstPadProbeReturn
-buffer_probe (GstPad * pad, GstPadProbeInfo * info, gpointer unused)
+static gboolean
+buffer_probe (GstPad * pad, GstBuffer * buffer, gpointer unused)
 {
-  GstBuffer *buffer = GST_PAD_PROBE_INFO_BUFFER (info);
-
-  g_mutex_lock (&lock);
+  g_mutex_lock (lock);
 
   while (buf != NULL)
-    g_cond_wait (&cond, &lock);
+    g_cond_wait (cond, lock);
 
   /* increase the refcount because we store it globally for others to use */
   buf = gst_buffer_ref (buffer);
 
-  g_cond_signal (&cond);
+  g_cond_signal (cond);
 
-  g_mutex_unlock (&lock);
+  g_mutex_unlock (lock);
 
-  return GST_PAD_PROBE_OK;
+  return TRUE;
 }
 
 /**
@@ -83,8 +81,10 @@ gst_buffer_straw_start_pipeline (GstElement * bin, GstPad * pad)
 {
   GstStateChangeReturn ret;
 
-  id = gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_BUFFER,
-      buffer_probe, NULL, NULL);
+  id = gst_pad_add_buffer_probe (pad, G_CALLBACK (buffer_probe), NULL);
+
+  cond = g_cond_new ();
+  lock = g_mutex_new ();
 
   ret = gst_element_set_state (bin, GST_STATE_PLAYING);
   fail_if (ret == GST_STATE_CHANGE_FAILURE, "Could not start test pipeline");
@@ -114,17 +114,17 @@ gst_buffer_straw_get_buffer (GstElement * bin, GstPad * pad)
 {
   GstBuffer *ret;
 
-  g_mutex_lock (&lock);
+  g_mutex_lock (lock);
 
   while (buf == NULL)
-    g_cond_wait (&cond, &lock);
+    g_cond_wait (cond, lock);
 
   ret = buf;
   buf = NULL;
 
-  g_cond_signal (&cond);
+  g_cond_signal (cond);
 
-  g_mutex_unlock (&lock);
+  g_mutex_unlock (lock);
 
   return ret;
 }
@@ -145,14 +145,14 @@ gst_buffer_straw_stop_pipeline (GstElement * bin, GstPad * pad)
 {
   GstStateChangeReturn ret;
 
-  g_mutex_lock (&lock);
+  g_mutex_lock (lock);
   if (buf)
     gst_buffer_unref (buf);
   buf = NULL;
-  gst_pad_remove_probe (pad, (guint) id);
+  gst_pad_remove_buffer_probe (pad, (guint) id);
   id = 0;
-  g_cond_signal (&cond);
-  g_mutex_unlock (&lock);
+  g_cond_signal (cond);
+  g_mutex_unlock (lock);
 
   ret = gst_element_set_state (bin, GST_STATE_NULL);
   fail_if (ret == GST_STATE_CHANGE_FAILURE, "Could not stop test pipeline");
@@ -161,9 +161,15 @@ gst_buffer_straw_stop_pipeline (GstElement * bin, GstPad * pad)
     fail_if (ret != GST_STATE_CHANGE_SUCCESS, "Could not stop test pipeline");
   }
 
-  g_mutex_lock (&lock);
+  g_mutex_lock (lock);
   if (buf)
     gst_buffer_unref (buf);
   buf = NULL;
-  g_mutex_unlock (&lock);
+  g_mutex_unlock (lock);
+
+  g_mutex_free (lock);
+  g_cond_free (cond);
+
+  lock = NULL;
+  cond = NULL;
 }

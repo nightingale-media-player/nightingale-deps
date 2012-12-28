@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0'?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
           "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY % image-entities SYSTEM "image.entities">
@@ -17,25 +17,22 @@
 <!ENTITY BUILDING_DEBUG       SYSTEM "building-debug.xml">
 <!ENTITY BUILDING_PADS        SYSTEM "building-pads.xml">
 <!ENTITY BUILDING_CHAINFN     SYSTEM "building-chainfn.xml">
-<!ENTITY BUILDING_EVENTFN     SYSTEM "building-eventfn.xml">
-<!ENTITY BUILDING_QUERYFN     SYSTEM "building-queryfn.xml">
 <!ENTITY BUILDING_STATE       SYSTEM "building-state.xml">
 <!ENTITY BUILDING_PROPS       SYSTEM "building-props.xml">
 <!ENTITY BUILDING_SIGNALS     SYSTEM "building-signals.xml">
 <!ENTITY BUILDING_TESTAPP     SYSTEM "building-testapp.xml">
 
 <!-- Part 3: Advanced Filter Concepts -->
-<!ENTITY ADVANCED_REQUEST     SYSTEM "advanced-request.xml">
-<!ENTITY ADVANCED_SCHEDULING  SYSTEM "advanced-scheduling.xml">
 <!ENTITY ADVANCED_NEGOTIATION SYSTEM "advanced-negotiation.xml">
-<!ENTITY ADVANCED_ALLOCATION  SYSTEM "advanced-allocation.xml">
+<!ENTITY ADVANCED_SCHEDULING  SYSTEM "advanced-scheduling.xml">
 <!ENTITY ADVANCED_TYPES       SYSTEM "advanced-types.xml">
-<!ENTITY ADVANCED_EVENTS      SYSTEM "advanced-events.xml">
+<!ENTITY ADVANCED_REQUEST     SYSTEM "advanced-request.xml">
 <!ENTITY ADVANCED_CLOCK       SYSTEM "advanced-clock.xml">
-<!ENTITY ADVANCED_QOS         SYSTEM "advanced-qos.xml">
 <!ENTITY ADVANCED_DPARAMS     SYSTEM "advanced-dparams.xml">
+<!ENTITY ADVANCED_MIDI        SYSTEM "advanced-midi.xml">
 <!ENTITY ADVANCED_INTERFACES  SYSTEM "advanced-interfaces.xml">
 <!ENTITY ADVANCED_TAGGING     SYSTEM "advanced-tagging.xml">
+<!ENTITY ADVANCED_EVENTS      SYSTEM "advanced-events.xml">
 
 <!-- Part 4: Creating special element types -->
 <!ENTITY OTHER_BASE           SYSTEM "other-base.xml">
@@ -98,7 +95,7 @@
         guide have contained no explicit example code, perhaps making things a
         bit abstract and difficult to understand. In contrast, this section will
         present both applications and code by following the development of an
-        example audio filter plugin called <quote>MyFilter</quote>.
+        example audio filter plugin called <quote>ExampleFilter</quote>.
       </para>
       <para>
         The example filter element will begin with a single input pad and a 
@@ -120,8 +117,6 @@
     &BUILDING_BOILER;
     &BUILDING_PADS;
     &BUILDING_CHAINFN;
-    &BUILDING_EVENTFN;
-    &BUILDING_QUERYFN;
     &BUILDING_STATE;
     &BUILDING_PROPS;
     &BUILDING_SIGNALS;
@@ -143,17 +138,16 @@
       </para>
     </partintro>
 
-    &ADVANCED_REQUEST;
-    &ADVANCED_SCHEDULING;
     &ADVANCED_NEGOTIATION;
-    &ADVANCED_ALLOCATION;
+    &ADVANCED_SCHEDULING;
     &ADVANCED_TYPES;
-    &ADVANCED_EVENTS;
+    &ADVANCED_REQUEST;
     &ADVANCED_CLOCK;
-    &ADVANCED_QOS;
     &ADVANCED_DPARAMS;
+    &ADVANCED_MIDI;
     &ADVANCED_INTERFACES;
     &ADVANCED_TAGGING;
+    &ADVANCED_EVENTS;
 
     <!-- FIXME: add querying, event handling and conversion -->
 

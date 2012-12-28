@@ -42,7 +42,7 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_STATIC_CAPS_ANY);
 
 static gboolean
-event_func (GstPad * pad, GstObject * parent, GstEvent * event)
+event_func (GstPad * pad, GstEvent * event)
 {
   if (GST_EVENT_TYPE (event) == GST_EVENT_EOS) {
     have_eos = TRUE;
@@ -62,8 +62,8 @@ setup_identity (void)
   GST_DEBUG ("setup_identity");
 
   identity = gst_check_setup_element ("identity");
-  mysrcpad = gst_check_setup_src_pad (identity, &srctemplate);
-  mysinkpad = gst_check_setup_sink_pad (identity, &sinktemplate);
+  mysrcpad = gst_check_setup_src_pad (identity, &srctemplate, NULL);
+  mysinkpad = gst_check_setup_sink_pad (identity, &sinktemplate, NULL);
   gst_pad_set_event_function (mysinkpad, event_func);
   gst_pad_set_active (mysrcpad, TRUE);
   gst_pad_set_active (mysinkpad, TRUE);
@@ -95,8 +95,7 @@ GST_START_TEST (test_one_buffer)
 
   buffer = gst_buffer_new_and_alloc (4);
   ASSERT_BUFFER_REFCOUNT (buffer, "buffer", 1);
-
-  gst_buffer_fill (buffer, 0, "data", 4);
+  memcpy (GST_BUFFER_DATA (buffer), "data", 4);
 
   /* pushing gives away my reference ... */
   fail_unless (gst_pad_push (mysrcpad, buffer) == GST_FLOW_OK,

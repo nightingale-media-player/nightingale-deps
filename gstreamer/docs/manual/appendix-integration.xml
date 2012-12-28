@@ -23,15 +23,16 @@
         <para>
           For audio input and output, &GStreamer; provides input and
           output elements for several audio subsystems. Amongst others,
-          &GStreamer; includes elements for ALSA (alsasrc,
-          alsasink), OSS (osssrc, osssink) Pulesaudio (pulsesrc, pulsesink)
-          and Sun audio (sunaudiosrc, sunaudiomixer, sunaudiosink).
+          &GStreamer; includes elements for ALSA (alsasrc, alsamixer,
+          alsasink), OSS (osssrc, ossmixer, osssink) and Sun audio
+          (sunaudiosrc, sunaudiomixer, sunaudiosink).
         </para>
       </listitem>
       <listitem>
         <para>
           For video input, &GStreamer; contains source elements for
-          Video4linux2 (v4l2src, v4l2element, v4l2sink).
+          Video4linux (v4lsrc, v4lmjpegsrc, v4lelement and v4lmjpegisnk)
+          and Video4linux2 (v4l2src, v4l2element).
         </para>
       </listitem>
       <listitem>
@@ -110,6 +111,11 @@ main (gint argc, gchar **argv)
   GOptionContext *context;
   GOptionGroup *gstreamer_group, *gtk_group;
   GError *err = NULL;
+
+  /* we must initialise the threading system before using any
+   * other GLib funtion, such as g_option_context_new() */
+  if (!g_thread_supported ())
+    g_thread_init (NULL);
 
   context = g_option_context_new ("gtk-demo-app");
 
@@ -230,7 +236,7 @@ main (gint argc, gchar **argv)
 
     <warning>
 <para>
-Note: this section is out of date. GStreamer-1.0 has much better
+Note: this section is out of date. GStreamer-0.10 has much better
 support for win32 than previous versions though and should usually compile
 and work out-of-the-box both using MSYS/MinGW or Microsoft compilers. The
 <ulink url="http://gstreamer.freedesktop.org">GStreamer web site</ulink> and the
@@ -267,7 +273,7 @@ available in your system PATH.</para>
 <listitem><para>libiconv</para></listitem>
 </itemizedlist>
 
-<para>Work is being done to provide pre-compiled GStreamer-1.0 libraries as
+<para>Work is being done to provide pre-compiled GStreamer-0.10 libraries as
 a packages for win32. Check the <ulink url="http://gstreamer.freedesktop.org">
 GStreamer web site</ulink> and check our
 <ulink url="http://news.gmane.org/gmane.comp.video.gstreamer.devel">mailing list
@@ -295,7 +301,7 @@ for convenience (people who don't want to install GNU tools).</para>
   <sect2 id="section-win32-install">
 <title>Installation on the system</title>
 
-<para>FIXME: This section needs be updated for GStreamer-1.0.</para>
+<para>FIXME: This section needs be updated for GStreamer-0.10.</para>
 
 <!--
 <para>By default, GStreamer needs a registry. You have to generate it using "gst-register.exe". It will create

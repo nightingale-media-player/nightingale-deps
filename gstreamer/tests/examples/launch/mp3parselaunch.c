@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <gst/gst.h>
 
@@ -7,46 +6,35 @@ event_loop (GstElement * pipe)
 {
   GstBus *bus;
   GstMessage *message = NULL;
-  gboolean running = TRUE;
 
   bus = gst_element_get_bus (GST_ELEMENT (pipe));
 
-  while (running) {
+  while (TRUE) {
     message = gst_bus_poll (bus, GST_MESSAGE_ANY, -1);
 
     g_assert (message != NULL);
 
     switch (message->type) {
       case GST_MESSAGE_EOS:
-        running = FALSE;
-        break;
-      case GST_MESSAGE_WARNING:{
-        GError *gerror;
-        gchar *debug;
-
-        gst_message_parse_warning (message, &gerror, &debug);
-        gst_object_default_error (GST_MESSAGE_SRC (message), gerror, debug);
-        g_error_free (gerror);
-        g_free (debug);
-        break;
-      }
+        gst_message_unref (message);
+        return;
+      case GST_MESSAGE_WARNING:
       case GST_MESSAGE_ERROR:{
         GError *gerror;
         gchar *debug;
 
         gst_message_parse_error (message, &gerror, &debug);
         gst_object_default_error (GST_MESSAGE_SRC (message), gerror, debug);
+        gst_message_unref (message);
         g_error_free (gerror);
         g_free (debug);
-        running = FALSE;
-        break;
+        return;
       }
       default:
+        gst_message_unref (message);
         break;
     }
-    gst_message_unref (message);
   }
-  gst_object_unref (bus);
 }
 
 int

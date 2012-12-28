@@ -24,7 +24,7 @@
 
 
 static GstElement *
-setup_pipeline (const gchar * pipe_descr)
+setup_pipeline (gchar * pipe_descr)
 {
   GstElement *pipeline;
 
@@ -43,7 +43,7 @@ setup_pipeline (const gchar * pipe_descr)
  * the poll call will time out after half a second.
  */
 static void
-run_pipeline (GstElement * pipeline, const gchar * descr,
+run_pipeline (GstElement * pipeline, gchar * descr,
     GstMessageType message_types, GstMessageType tmessage)
 {
   GstBus *bus;
@@ -97,37 +97,33 @@ done:
 
 GST_START_TEST (test_2_elements)
 {
-  const gchar *s;
+  gchar *s;
 
   s = "fakesrc can-activate-push=false ! fakesink can-activate-pull=true";
   run_pipeline (setup_pipeline (s), s,
       GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED |
-      GST_MESSAGE_STREAM_STATUS | GST_MESSAGE_ASYNC_DONE |
-      GST_MESSAGE_STREAM_START, GST_MESSAGE_UNKNOWN);
+      GST_MESSAGE_STREAM_STATUS | GST_MESSAGE_ASYNC_DONE, GST_MESSAGE_UNKNOWN);
 
   s = "fakesrc can-activate-push=true ! fakesink can-activate-pull=false";
   run_pipeline (setup_pipeline (s), s,
       GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED |
-      GST_MESSAGE_STREAM_STATUS | GST_MESSAGE_ASYNC_DONE |
-      GST_MESSAGE_STREAM_START, GST_MESSAGE_UNKNOWN);
+      GST_MESSAGE_STREAM_STATUS | GST_MESSAGE_ASYNC_DONE, GST_MESSAGE_UNKNOWN);
 
   s = "fakesrc can-activate-push=false num-buffers=10 ! fakesink can-activate-pull=true";
   run_pipeline (setup_pipeline (s), s,
       GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED |
-      GST_MESSAGE_STREAM_STATUS | GST_MESSAGE_ASYNC_DONE |
-      GST_MESSAGE_STREAM_START, GST_MESSAGE_EOS);
+      GST_MESSAGE_STREAM_STATUS | GST_MESSAGE_ASYNC_DONE, GST_MESSAGE_EOS);
 
   s = "fakesrc can-activate-push=true num-buffers=10 ! fakesink can-activate-pull=false";
   run_pipeline (setup_pipeline (s), s,
       GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED |
-      GST_MESSAGE_STREAM_STATUS | GST_MESSAGE_ASYNC_DONE |
-      GST_MESSAGE_STREAM_START, GST_MESSAGE_EOS);
+      GST_MESSAGE_STREAM_STATUS | GST_MESSAGE_ASYNC_DONE, GST_MESSAGE_EOS);
 
   s = "fakesrc can-activate-push=false ! fakesink can-activate-pull=false";
   ASSERT_CRITICAL (run_pipeline (setup_pipeline (s), s,
           GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED |
-          GST_MESSAGE_STREAM_STATUS | GST_MESSAGE_ASYNC_DONE |
-          GST_MESSAGE_STREAM_START, GST_MESSAGE_UNKNOWN));
+          GST_MESSAGE_STREAM_STATUS | GST_MESSAGE_ASYNC_DONE,
+          GST_MESSAGE_UNKNOWN));
 }
 
 GST_END_TEST;
@@ -151,7 +147,7 @@ check_state_change_return (GstElement * pipeline, GstState state,
 
 GST_START_TEST (test_state_change_returns)
 {
-  const gchar *s;
+  gchar *s;
   GstElement *pipeline;
 
   s = "fakesrc can-activate-pull=false ! fakesink";
@@ -192,55 +188,49 @@ GST_END_TEST;
 G_GNUC_UNUSED
 GST_START_TEST (test_tee)
 {
-  const gchar *s;
+  gchar *s;
 
   s = "fakesrc can-activate-push=true ! tee ! fakesink can-activate-push=true";
   run_pipeline (setup_pipeline (s), s,
-      GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED |
-      GST_MESSAGE_STREAM_START, GST_MESSAGE_UNKNOWN);
+      GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED, GST_MESSAGE_UNKNOWN);
 
   s = "fakesrc can-activate-push=true num-buffers=10 ! tee ! fakesink can-activate-push=true";
   run_pipeline (setup_pipeline (s), s,
-      GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED |
-      GST_MESSAGE_STREAM_START, GST_MESSAGE_EOS);
+      GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED, GST_MESSAGE_EOS);
 
   s = "fakesrc can-activate-push=false can-activate-pull=true ! tee ! fakesink can-activate-pull=true";
   ASSERT_CRITICAL (run_pipeline (setup_pipeline (s), s,
-          GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED |
-          GST_MESSAGE_STREAM_START, GST_MESSAGE_UNKNOWN));
+          GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED,
+          GST_MESSAGE_UNKNOWN));
 
   s = "fakesrc can-activate-push=false can-activate-pull=true "
       "! tee pull-mode=single ! fakesink can-activate-pull=true";
   run_pipeline (setup_pipeline (s), s,
-      GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED |
-      GST_MESSAGE_STREAM_START, GST_MESSAGE_UNKNOWN);
+      GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED, GST_MESSAGE_UNKNOWN);
 
   s = "fakesrc can-activate-push=false can-activate-pull=true num-buffers=10 "
       "! tee pull-mode=single ! fakesink can-activate-pull=true";
   run_pipeline (setup_pipeline (s), s,
-      GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED |
-      GST_MESSAGE_STREAM_START, GST_MESSAGE_EOS);
+      GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED, GST_MESSAGE_EOS);
 
   s = "fakesrc can-activate-push=false can-activate-pull=true "
       "! tee name=t pull-mode=single ! fakesink can-activate-pull=true "
       "t. ! queue ! fakesink can-activate-pull=true can-activate-push=false";
   ASSERT_CRITICAL (run_pipeline (setup_pipeline (s), s,
-          GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED |
-          GST_MESSAGE_STREAM_START, GST_MESSAGE_UNKNOWN));
+          GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED,
+          GST_MESSAGE_UNKNOWN));
 
   s = "fakesrc can-activate-push=false can-activate-pull=true "
       "! tee name=t pull-mode=single ! fakesink can-activate-pull=true "
       "t. ! queue ! fakesink";
   run_pipeline (setup_pipeline (s), s,
-      GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED |
-      GST_MESSAGE_STREAM_START, GST_MESSAGE_UNKNOWN);
+      GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED, GST_MESSAGE_UNKNOWN);
 
   s = "fakesrc can-activate-push=false can-activate-pull=true num-buffers=10 "
       "! tee name=t pull-mode=single ! fakesink can-activate-pull=true "
       "t. ! queue ! fakesink";
   run_pipeline (setup_pipeline (s), s,
-      GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED |
-      GST_MESSAGE_STREAM_START, GST_MESSAGE_EOS);
+      GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED, GST_MESSAGE_EOS);
 }
 
 GST_END_TEST;
@@ -249,8 +239,26 @@ static void
 got_handoff (GstElement * sink, GstBuffer * buf, GstPad * pad, gpointer unused)
 {
   gst_element_post_message
-      (sink, gst_message_new_application (NULL,
-          gst_structure_new_empty ("foo")));
+      (sink, gst_message_new_application (NULL, gst_structure_new ("foo",
+              NULL)));
+}
+
+static void
+assert_live_count (GType type, gint live)
+{
+  GstAllocTrace *trace;
+  const gchar *name;
+
+  if (gst_alloc_trace_available ()) {
+    name = g_type_name (type);
+    fail_if (name == NULL);
+    trace = gst_alloc_trace_get (name);
+    if (trace) {
+      g_return_if_fail (trace->live == live);
+    }
+  } else {
+    g_print ("\nSkipping live count tests; recompile with traces to enable\n");
+  }
 }
 
 GST_START_TEST (test_stop_from_app)
@@ -260,6 +268,8 @@ GST_START_TEST (test_stop_from_app)
   GstStateChangeReturn ret;
   GstMessageType rmessage;
   GstMessage *message;
+
+  assert_live_count (GST_TYPE_BUFFER, 0);
 
   fakesrc = gst_element_factory_make ("fakesrc", NULL);
   fakesink = gst_element_factory_make ("fakesink", NULL);
@@ -306,6 +316,8 @@ GST_START_TEST (test_stop_from_app)
   gst_element_set_state (pipeline, GST_STATE_NULL);
   gst_object_unref (pipeline);
   gst_object_unref (bus);
+
+  assert_live_count (GST_TYPE_BUFFER, 0);
 }
 
 GST_END_TEST;

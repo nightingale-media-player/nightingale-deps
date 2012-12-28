@@ -95,12 +95,10 @@ static const gchar *test_lines[] = {
   "filesrc location=music.ogg ! tee ! identity silent=true ! identity silent=true ! fakesink silent=true",
   "filesrc location=http://domain.com/music.mp3 ! identity silent=true ! fakesink silent=true",
   "filesrc location=movie.avi ! tee name=demuxer ! ( queue ! identity silent=true ! fakesink silent=true ) ( demuxer. ! queue ! identity silent=true ! fakesink silent=true )",
-  "fakesrc ! video/x-raw ! fakesink silent=true",
-  "fakesrc !   video/raw,  format=(string)YUY2; video/raw, format=(string)YV12 ! fakesink silent=true",
-  "fakesrc ! audio/x-raw, width=[16,  32], depth={16, 24, 32}, signed=TRUE ! fakesink silent=true",
+  "fakesrc ! video/x-raw-yuv ! fakesink silent=true",
+  "fakesrc !   video/raw,  format=(fourcc)YUY2; video/raw, format=(fourcc)YV12 ! fakesink silent=true",
+  "fakesrc ! audio/x-raw-int, width=[16,  32], depth={16, 24, 32}, signed=TRUE ! fakesink silent=true",
   "fakesrc ! identity silent=true ! identity silent=true ! identity silent=true ! fakesink silent=true",
-  "fakesrc name=100 fakesink name=101 silent=true 100. ! 101.",
-  "fakesrc ! 1dentity ! fakesink silent=true",
   NULL
 };
 
@@ -108,18 +106,6 @@ GST_START_TEST (test_launch_lines)
 {
   GstElement *pipeline;
   const gchar **s;
-  GType type;
-  GstElementFactory *efac;
-
-  efac = gst_element_factory_find ("identity");
-  fail_unless (efac != NULL);
-  efac =
-      GST_ELEMENT_FACTORY (gst_plugin_feature_load (GST_PLUGIN_FEATURE (efac)));
-  fail_unless (efac != NULL);
-  type = gst_element_factory_get_element_type (efac);
-  fail_unless (type != 0);
-  g_object_unref (efac);
-  fail_unless (gst_element_register (NULL, "1dentity", GST_RANK_NONE, type));
 
   for (s = test_lines; *s != NULL; s++) {
     pipeline = setup_pipeline (*s);
@@ -135,7 +121,7 @@ GST_END_TEST;
 #define PIPELINE4  "fakesrc num-buffers=4 .src ! identity silent=true !.sink identity silent=true .src ! .sink fakesink silent=true"
 #define PIPELINE5  "fakesrc num-buffers=4 name=src identity silent=true name=id1 identity silent=true name = id2 fakesink silent=true name =sink src. ! id1. id1.! id2.sink id2.src!sink.sink"
 #define PIPELINE6  "pipeline.(name=\"john\" fakesrc num-buffers=4 ( bin. ( ! queue ! identity silent=true !( queue ! fakesink silent=true )) ))"
-#define PIPELINE7  "fakesrc num-buffers=4 ! tee name=tee .src_%u! queue ! fakesink silent=true tee.src_%u ! queue ! fakesink silent=true queue name =\"foo\" ! fakesink silent=true tee.src_%u ! foo."
+#define PIPELINE7  "fakesrc num-buffers=4 ! tee name=tee .src%d! queue ! fakesink silent=true tee.src%d ! queue ! fakesink silent=true queue name =\"foo\" ! fakesink silent=true tee.src%d ! foo."
 /* aggregator is borked
  * #define PIPELINE8  "fakesrc num-buffers=4 ! tee name=tee1 .src0,src1 ! .sink0, sink1 aggregator ! fakesink silent=true"
  * */
@@ -145,8 +131,6 @@ GST_END_TEST;
 #define PIPELINE11 "fakesink silent=true name = sink identity silent=true name=id ( fakesrc num-buffers=\"4\" ! id. ) id. ! sink."
 #define PIPELINE12 "file:///tmp/test.file ! fakesink silent=true"
 #define PIPELINE13 "fakesrc ! file:///tmp/test.file"
-#define PIPELINE14 "capsfilter caps=application/x-rtp,sprop-parameter-sets=(string)\"x\\,x\""
-#define PIPELINE15 "capsfilter caps=application/x-rtp,sprop-parameter-sets=(string)\"x\\\"x\\,x\""
 
 GST_START_TEST (test_launch_lines2)
 {
@@ -286,19 +270,6 @@ GST_START_TEST (test_launch_lines2)
   /* Checks handling of a assignment followed by error inside a bin. 
    * This should warn, but ignore the error and carry on */
   cur = setup_pipeline ("( filesrc blocksize=4 location=/dev/null @ )");
-  gst_object_unref (cur);
-
-  /**
-   * Checks if characters inside quotes are not escaped.
-  */
-  cur = setup_pipeline (PIPELINE14);
-  gst_object_unref (cur);
-
-  /**
-   * Checks if escaped quotes inside quotes are not treated as end string quotes.
-   * This would make the rest of characters to be escaped incorrectly.
-   */
-  cur = setup_pipeline (PIPELINE15);
   gst_object_unref (cur);
 }
 
@@ -495,12 +466,26 @@ typedef struct _GstParseTestElementClass
 static GstStaticPadTemplate test_element_pad_template =
 GST_STATIC_PAD_TEMPLATE ("src", GST_PAD_SRC,
     GST_PAD_SOMETIMES, GST_STATIC_CAPS ("application/x-test-caps"));
-#define gst_parse_test_element_parent_class parent_class
-G_DEFINE_TYPE (GstParseTestElement, gst_parse_test_element, GST_TYPE_BIN);
+
+GST_BOILERPLATE (GstParseTestElement, gst_parse_test_element, GstBin,
+    GST_TYPE_BIN);
 
 static GstStateChangeReturn
 gst_parse_test_element_change_state (GstElement * element,
     GstStateChange transition);
+
+static void
+gst_parse_test_element_base_init (gpointer g_class)
+{
+  static const GstElementDetails cdfoo_details =
+      GST_ELEMENT_DETAILS ("Test element for parse launch tests",
+      "Source",
+      "Test element for parse launch tests in core",
+      "GStreamer Devel <gstreamer-devel@lists.sf.net>");
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+
+  gst_element_class_set_details (element_class, &cdfoo_details);
+}
 
 static void
 gst_parse_test_element_class_init (GstParseTestElementClass * klass)
@@ -510,16 +495,12 @@ gst_parse_test_element_class_init (GstParseTestElementClass * klass)
   gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&test_element_pad_template));
 
-  gst_element_class_set_metadata (gstelement_class,
-      "Test element for parse launch tests", "Source",
-      "Test element for parse launch tests in core",
-      "GStreamer Devel <gstreamer-devel@lists.sf.net>");
-
   gstelement_class->change_state = gst_parse_test_element_change_state;
 }
 
 static void
-gst_parse_test_element_init (GstParseTestElement * src)
+gst_parse_test_element_init (GstParseTestElement * src,
+    GstParseTestElementClass * klass)
 {
   /* Create a fakesrc and add it to ourselves */
   src->fakesrc = gst_element_factory_make ("fakesrc", NULL);
@@ -653,17 +634,6 @@ GST_START_TEST (test_flags)
 
 GST_END_TEST;
 
-GST_START_TEST (test_parsing)
-{
-  GstElement *pipeline;
-
-  /* make sure we don't read beyond the end of the string */
-  pipeline = gst_parse_launch_full ("filesrc location=x\\", NULL, 0, NULL);
-  gst_object_unref (pipeline);
-}
-
-GST_END_TEST;
-
 static Suite *
 parse_suite (void)
 {
@@ -681,7 +651,6 @@ parse_suite (void)
   tcase_add_test (tc_chain, delayed_link);
   tcase_add_test (tc_chain, test_flags);
   tcase_add_test (tc_chain, test_missing_elements);
-  tcase_add_test (tc_chain, test_parsing);
   return s;
 }
 

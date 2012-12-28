@@ -59,15 +59,13 @@ struct _GstFdSink {
   int fd;
   guint64 bytes_written;
   guint64 current_pos;
-
-  gboolean seekable;
 };
 
 struct _GstFdSinkClass {
   GstBaseSinkClass parent_class;
 };
 
-G_GNUC_INTERNAL GType gst_fd_sink_get_type (void);
+GType gst_fd_sink_get_type(void);
 
 G_END_DECLS
 

@@ -39,7 +39,6 @@ G_BEGIN_DECLS
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_TEE))
 #define GST_IS_TEE_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_TEE))
-#define GST_TEE_CAST(obj) ((GstTee*) obj)
 
 typedef struct _GstTee 		GstTee;
 typedef struct _GstTeeClass 	GstTeeClass;
@@ -67,17 +66,19 @@ struct _GstTee {
 
   /*< private >*/
   /* lock protecting dynamic pads */
-  GMutex          dyn_lock;
+  GMutex         *dyn_lock;
 
   GstPad         *sinkpad;
   GstPad         *allocpad;
-  guint           pad_counter;
+  gint            pad_counter;
 
   gboolean        has_chain;
+  gboolean        has_sink_loop;
   gboolean        silent;
   gchar          *last_message;
 
-  GstPadMode      sink_mode;
+  guint64         offset;
+  GstActivateMode sink_mode;
   GstTeePullMode  pull_mode;
   GstPad         *pull_pad;
 };
@@ -86,7 +87,7 @@ struct _GstTeeClass {
   GstElementClass parent_class;
 };
 
-G_GNUC_INTERNAL GType	gst_tee_get_type	(void);
+GType 	gst_tee_get_type	(void);
 
 G_END_DECLS
 

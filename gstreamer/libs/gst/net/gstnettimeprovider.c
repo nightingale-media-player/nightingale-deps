@@ -42,14 +42,39 @@
 #include "gstnettimeprovider.h"
 #include "gstnettimepacket.h"
 
+#include <glib.h>
+
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
+#if defined (_MSC_VER) && _MSC_VER >= 1400
+#include <io.h>
+#endif
+
+#ifndef G_OS_WIN32
+#include <sys/ioctl.h>
+#endif
+
+#ifdef HAVE_FIONREAD_IN_SYS_FILIO
+#include <sys/filio.h>
+#endif
+
 GST_DEBUG_CATEGORY_STATIC (ntp_debug);
 #define GST_CAT_DEFAULT (ntp_debug)
+
+#ifdef G_OS_WIN32
+#define close(sock) closesocket(sock)
+#endif
 
 #define DEFAULT_ADDRESS         "0.0.0.0"
 #define DEFAULT_PORT            5637
 
-#define IS_ACTIVE(self) (g_atomic_int_get (&((self)->priv->active)))
+#define IS_ACTIVE(self) (g_atomic_int_get (&((self)->active.active)))
 
+#ifdef G_OS_WIN32
+#define setsockopt(sock, sol_flags, reuse_flags, ru, sizeofru) setsockopt (sock, sol_flags, reuse_flags, (char *)ru, sizeofru)
+#endif
 enum
 {
   PROP_0,
@@ -57,6 +82,7 @@ enum
   PROP_ADDRESS,
   PROP_CLOCK,
   PROP_ACTIVE
+      /* FILL ME */
 };
 
 #define GST_NET_TIME_PROVIDER_GET_PRIVATE(obj)  \
@@ -64,17 +90,8 @@ enum
 
 struct _GstNetTimeProviderPrivate
 {
-  gchar *address;
-  int port;
-
-  GThread *thread;
-
-  GstClock *clock;
-
-  gboolean active;              /* ATOMIC */
-
-  GSocket *socket;
-  GCancellable *cancel;
+  GstPollFD sock;
+  GstPoll *fdset;
 };
 
 static gboolean gst_net_time_provider_start (GstNetTimeProvider * bself);
@@ -88,12 +105,29 @@ static void gst_net_time_provider_set_property (GObject * object, guint prop_id,
 static void gst_net_time_provider_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
-#define _do_init \
+#define _do_init(type) \
   GST_DEBUG_CATEGORY_INIT (ntp_debug, "nettime", 0, "Network time provider");
 
-#define gst_net_time_provider_parent_class parent_class
-G_DEFINE_TYPE_WITH_CODE (GstNetTimeProvider, gst_net_time_provider,
+GST_BOILERPLATE_FULL (GstNetTimeProvider, gst_net_time_provider, GstObject,
     GST_TYPE_OBJECT, _do_init);
+
+#ifdef G_OS_WIN32
+static int
+inet_aton (const char *c, struct in_addr *paddr)
+{
+  paddr->s_addr = inet_addr (c);
+  if (paddr->s_addr == INADDR_NONE)
+    return 0;
+
+  return 1;
+}
+#endif
+
+static void
+gst_net_time_provider_base_init (gpointer g_class)
+{
+  /* Do nothing here */
+}
 
 static void
 gst_net_time_provider_class_init (GstNetTimeProviderClass * klass)
@@ -129,14 +163,27 @@ gst_net_time_provider_class_init (GstNetTimeProviderClass * klass)
 }
 
 static void
-gst_net_time_provider_init (GstNetTimeProvider * self)
+gst_net_time_provider_init (GstNetTimeProvider * self,
+    GstNetTimeProviderClass * g_class)
 {
+#ifdef G_OS_WIN32
+  WSADATA w;
+  int error = WSAStartup (0x0202, &w);
+
+  if (error) {
+    GST_DEBUG_OBJECT (self, "Error on WSAStartup");
+  }
+  if (w.wVersion != 0x0202) {
+    WSACleanup ();
+  }
+#endif
   self->priv = GST_NET_TIME_PROVIDER_GET_PRIVATE (self);
 
-  self->priv->port = DEFAULT_PORT;
-  self->priv->address = g_strdup (DEFAULT_ADDRESS);
-  self->priv->thread = NULL;
-  self->priv->active = TRUE;
+  self->port = DEFAULT_PORT;
+  self->priv->sock.fd = -1;
+  self->address = g_strdup (DEFAULT_ADDRESS);
+  self->thread = NULL;
+  self->active.active = TRUE;
 }
 
 static void
@@ -144,17 +191,26 @@ gst_net_time_provider_finalize (GObject * object)
 {
   GstNetTimeProvider *self = GST_NET_TIME_PROVIDER (object);
 
-  if (self->priv->thread) {
+  if (self->thread) {
     gst_net_time_provider_stop (self);
-    g_assert (self->priv->thread == NULL);
+    g_assert (self->thread == NULL);
   }
 
-  g_free (self->priv->address);
-  self->priv->address = NULL;
+  if (self->priv->fdset) {
+    gst_poll_free (self->priv->fdset);
+    self->priv->fdset = NULL;
+  }
 
-  if (self->priv->clock)
-    gst_object_unref (self->priv->clock);
-  self->priv->clock = NULL;
+  g_free (self->address);
+  self->address = NULL;
+
+  if (self->clock)
+    gst_object_unref (self->clock);
+  self->clock = NULL;
+
+#ifdef G_OS_WIN32
+  WSACleanup ();
+#endif
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -163,56 +219,75 @@ static gpointer
 gst_net_time_provider_thread (gpointer data)
 {
   GstNetTimeProvider *self = data;
-  GCancellable *cancel = self->priv->cancel;
-  GSocket *socket = self->priv->socket;
+  struct sockaddr_in tmpaddr;
+  socklen_t len;
   GstNetTimePacket *packet;
-  GError *err = NULL;
-
-  GST_INFO_OBJECT (self, "time provider thread is running");
+  gint ret;
 
   while (TRUE) {
-    GSocketAddress *sender_addr = NULL;
+    GST_LOG_OBJECT (self, "doing select");
+    ret = gst_poll_wait (self->priv->fdset, GST_CLOCK_TIME_NONE);
+    GST_LOG_OBJECT (self, "select returned %d", ret);
 
-    GST_LOG_OBJECT (self, "waiting on socket");
-    if (!g_socket_condition_wait (socket, G_IO_IN, cancel, &err)) {
-      GST_INFO_OBJECT (self, "socket error: %s", err->message);
+    if (ret <= 0) {
+      if (errno == EBUSY) {
+        GST_LOG_OBJECT (self, "stop");
+        goto stopped;
+      } else if (errno != EAGAIN && errno != EINTR)
+        goto select_error;
+      else
+        continue;
+    } else {
+      /* got data in */
+      len = sizeof (struct sockaddr);
 
-      if (err->code == G_IO_ERROR_CANCELLED)
-        break;
+      packet = gst_net_time_packet_receive (self->priv->sock.fd,
+          (struct sockaddr *) &tmpaddr, &len);
 
-      /* try again */
-      g_usleep (G_USEC_PER_SEC / 10);
-      g_error_free (err);
-      err = NULL;
-      continue;
-    }
+      if (!packet)
+        goto receive_error;
 
-    /* got data in */
-    packet = gst_net_time_packet_receive (socket, &sender_addr, &err);
+      if (IS_ACTIVE (self)) {
+        /* do what we were asked to and send the packet back */
+        packet->remote_time = gst_clock_get_time (self->clock);
 
-    if (err != NULL) {
-      GST_DEBUG_OBJECT (self, "receive error: %s", err->message);
-      g_usleep (G_USEC_PER_SEC / 10);
-      g_error_free (err);
-      err = NULL;
-      continue;
-    }
+        /* ignore errors */
+        gst_net_time_packet_send (packet, self->priv->sock.fd,
+            (struct sockaddr *) &tmpaddr, len);
+      }
 
-    if (IS_ACTIVE (self)) {
-      /* do what we were asked to and send the packet back */
-      packet->remote_time = gst_clock_get_time (self->priv->clock);
-
-      /* ignore errors */
-      gst_net_time_packet_send (packet, socket, sender_addr, NULL);
-      g_object_unref (sender_addr);
       g_free (packet);
+
+      continue;
     }
+
+    g_assert_not_reached ();
+
+    /* log errors and keep going */
+  select_error:
+    {
+      GST_DEBUG_OBJECT (self, "select error %d: %s (%d)", ret,
+          g_strerror (errno), errno);
+      continue;
+    }
+  stopped:
+    {
+      GST_DEBUG_OBJECT (self, "shutting down");
+      /* close socket */
+      return NULL;
+    }
+  receive_error:
+    {
+      GST_DEBUG_OBJECT (self, "receive error");
+      continue;
+    }
+
+    g_assert_not_reached ();
+
   }
 
-  if (err != NULL)
-    g_error_free (err);
+  g_assert_not_reached ();
 
-  GST_INFO_OBJECT (self, "time provider thread is stopping");
   return NULL;
 }
 
@@ -221,25 +296,25 @@ gst_net_time_provider_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec)
 {
   GstNetTimeProvider *self = GST_NET_TIME_PROVIDER (object);
-  GstClock **clock_p = &self->priv->clock;
+  GstClock **clock_p = &self->clock;
 
   switch (prop_id) {
     case PROP_PORT:
-      self->priv->port = g_value_get_int (value);
+      self->port = g_value_get_int (value);
       break;
     case PROP_ADDRESS:
-      g_free (self->priv->address);
+      g_free (self->address);
       if (g_value_get_string (value) == NULL)
-        self->priv->address = g_strdup (DEFAULT_ADDRESS);
+        self->address = g_strdup (DEFAULT_ADDRESS);
       else
-        self->priv->address = g_strdup (g_value_get_string (value));
+        self->address = g_strdup (g_value_get_string (value));
       break;
     case PROP_CLOCK:
       gst_object_replace ((GstObject **) clock_p,
           (GstObject *) g_value_get_object (value));
       break;
     case PROP_ACTIVE:
-      g_atomic_int_set (&self->priv->active, g_value_get_boolean (value));
+      g_atomic_int_set (&self->active.active, g_value_get_boolean (value));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -255,13 +330,13 @@ gst_net_time_provider_get_property (GObject * object, guint prop_id,
 
   switch (prop_id) {
     case PROP_PORT:
-      g_value_set_int (value, self->priv->port);
+      g_value_set_int (value, self->port);
       break;
     case PROP_ADDRESS:
-      g_value_set_string (value, self->priv->address);
+      g_value_set_string (value, self->address);
       break;
     case PROP_CLOCK:
-      g_value_set_object (value, self->priv->clock);
+      g_value_set_object (value, self->clock);
       break;
     case PROP_ACTIVE:
       g_value_set_boolean (value, IS_ACTIVE (self));
@@ -275,86 +350,107 @@ gst_net_time_provider_get_property (GObject * object, guint prop_id,
 static gboolean
 gst_net_time_provider_start (GstNetTimeProvider * self)
 {
-  GSocketAddress *socket_addr, *bound_addr;
-  GInetAddress *inet_addr;
-  GSocket *socket;
-  GError *err = NULL;
+  gint ru;
+  struct sockaddr_in my_addr;
+  guint len;
   int port;
+  gint ret;
+  GError *error;
 
-  if (self->priv->address) {
-    inet_addr = g_inet_address_new_from_string (self->priv->address);
-    if (inet_addr == NULL)
-      goto invalid_address;
-  } else {
-    inet_addr = g_inet_address_new_any (G_SOCKET_FAMILY_IPV4);
-  }
-
-  GST_LOG_OBJECT (self, "creating socket");
-  socket = g_socket_new (g_inet_address_get_family (inet_addr),
-      G_SOCKET_TYPE_DATAGRAM, G_SOCKET_PROTOCOL_UDP, &err);
-
-  if (err != NULL)
+  if ((ret = socket (AF_INET, SOCK_DGRAM, 0)) < 0)
     goto no_socket;
 
-  GST_DEBUG_OBJECT (self, "binding on port %d", self->priv->port);
-  socket_addr = g_inet_socket_address_new (inet_addr, self->priv->port);
-  g_socket_bind (socket, socket_addr, TRUE, &err);
-  g_object_unref (socket_addr);
-  g_object_unref (inet_addr);
+  self->priv->sock.fd = ret;
 
-  if (err != NULL)
+  ru = 1;
+  ret =
+      setsockopt (self->priv->sock.fd, SOL_SOCKET, SO_REUSEADDR, &ru,
+      sizeof (ru));
+  if (ret < 0)
+    goto setsockopt_error;
+
+  memset (&my_addr, 0, sizeof (my_addr));
+  my_addr.sin_family = AF_INET; /* host byte order */
+  my_addr.sin_port = htons ((gint16) self->port);       /* short, network byte order */
+  my_addr.sin_addr.s_addr = INADDR_ANY;
+  if (self->address)
+    inet_aton (self->address, &my_addr.sin_addr);
+
+  GST_DEBUG_OBJECT (self, "binding on port %d", self->port);
+  ret =
+      bind (self->priv->sock.fd, (struct sockaddr *) &my_addr,
+      sizeof (my_addr));
+  if (ret < 0)
     goto bind_error;
 
-  bound_addr = g_socket_get_local_address (socket, NULL);
-  port = g_inet_socket_address_get_port (G_INET_SOCKET_ADDRESS (bound_addr));
-  GST_DEBUG_OBJECT (self, "bound on UDP port %d", port);
-  g_object_unref (bound_addr);
+  len = sizeof (my_addr);
+#ifdef G_OS_WIN32
+  ret =
+      getsockname (self->priv->sock.fd, (struct sockaddr *) &my_addr,
+      (gint *) & len);
+#else
+  ret = getsockname (self->priv->sock.fd, (struct sockaddr *) &my_addr, &len);
+#endif
+  if (ret < 0)
+    goto getsockname_error;
 
-  if (port != self->priv->port) {
-    self->priv->port = port;
-    GST_DEBUG_OBJECT (self, "notifying port %d", port);
+  port = ntohs (my_addr.sin_port);
+  GST_DEBUG_OBJECT (self, "bound, on port %d", port);
+
+  if (port != self->port) {
+    self->port = port;
+    GST_DEBUG_OBJECT (self, "notifying %d", port);
     g_object_notify (G_OBJECT (self), "port");
   }
 
-  self->priv->socket = socket;
-  self->priv->cancel = g_cancellable_new ();
+  gst_poll_add_fd (self->priv->fdset, &self->priv->sock);
+  gst_poll_fd_ctl_read (self->priv->fdset, &self->priv->sock, TRUE);
 
-  self->priv->thread = g_thread_try_new ("GstNetTimeProvider",
-      gst_net_time_provider_thread, self, &err);
-
-  if (err != NULL)
+  self->thread = g_thread_create (gst_net_time_provider_thread, self, TRUE,
+      &error);
+  if (!self->thread)
     goto no_thread;
 
   return TRUE;
 
   /* ERRORS */
-invalid_address:
-  {
-    GST_ERROR_OBJECT (self, "invalid address: %s", self->priv->address);
-    return FALSE;
-  }
 no_socket:
   {
-    GST_ERROR_OBJECT (self, "could not create socket: %s", err->message);
-    g_error_free (err);
-    g_object_unref (inet_addr);
+    GST_ERROR_OBJECT (self, "socket failed %d: %s (%d)", ret,
+        g_strerror (errno), errno);
+    return FALSE;
+  }
+setsockopt_error:
+  {
+    close (self->priv->sock.fd);
+    self->priv->sock.fd = -1;
+    GST_ERROR_OBJECT (self, "setsockopt failed %d: %s (%d)", ret,
+        g_strerror (errno), errno);
     return FALSE;
   }
 bind_error:
   {
-    GST_ERROR_OBJECT (self, "bind failed: %s", err->message);
-    g_error_free (err);
-    g_object_unref (socket);
+    close (self->priv->sock.fd);
+    self->priv->sock.fd = -1;
+    GST_ERROR_OBJECT (self, "bind failed %d: %s (%d)", ret,
+        g_strerror (errno), errno);
+    return FALSE;
+  }
+getsockname_error:
+  {
+    close (self->priv->sock.fd);
+    self->priv->sock.fd = -1;
+    GST_ERROR_OBJECT (self, "getsockname failed %d: %s (%d)", ret,
+        g_strerror (errno), errno);
     return FALSE;
   }
 no_thread:
   {
-    GST_ERROR_OBJECT (self, "could not create thread: %s", err->message);
-    g_error_free (err);
-    g_object_unref (self->priv->socket);
-    self->priv->socket = NULL;
-    g_object_unref (self->priv->cancel);
-    self->priv->cancel = NULL;
+    gst_poll_remove_fd (self->priv->fdset, &self->priv->sock);
+    close (self->priv->sock.fd);
+    self->priv->sock.fd = -1;
+    GST_ERROR_OBJECT (self, "could not create thread: %s", error->message);
+    g_error_free (error);
     return FALSE;
   }
 }
@@ -362,21 +458,15 @@ no_thread:
 static void
 gst_net_time_provider_stop (GstNetTimeProvider * self)
 {
-  g_return_if_fail (self->priv->thread != NULL);
+  gst_poll_set_flushing (self->priv->fdset, TRUE);
+  g_thread_join (self->thread);
+  self->thread = NULL;
 
-  GST_INFO_OBJECT (self, "stopping..");
-  g_cancellable_cancel (self->priv->cancel);
-
-  g_thread_join (self->priv->thread);
-  self->priv->thread = NULL;
-
-  g_object_unref (self->priv->cancel);
-  self->priv->cancel = NULL;
-
-  g_object_unref (self->priv->socket);
-  self->priv->socket = NULL;
-
-  GST_INFO_OBJECT (self, "stopped");
+  if (self->priv->sock.fd != -1) {
+    gst_poll_remove_fd (self->priv->fdset, &self->priv->sock);
+    close (self->priv->sock.fd);
+    self->priv->sock.fd = -1;
+  }
 }
 
 /**
@@ -401,12 +491,22 @@ gst_net_time_provider_new (GstClock * clock, const gchar * address, gint port)
   ret = g_object_new (GST_TYPE_NET_TIME_PROVIDER, "clock", clock, "address",
       address, "port", port, NULL);
 
+  if ((ret->priv->fdset = gst_poll_new (TRUE)) == NULL)
+    goto no_fdset;
+
   if (!gst_net_time_provider_start (ret))
     goto failed_start;
 
   /* all systems go, cap'n */
   return ret;
 
+no_fdset:
+  {
+    GST_ERROR_OBJECT (ret, "could not create an fdset: %s (%d)",
+        g_strerror (errno), errno);
+    gst_object_unref (ret);
+    return NULL;
+  }
 failed_start:
   {
     /* already printed a nice error */

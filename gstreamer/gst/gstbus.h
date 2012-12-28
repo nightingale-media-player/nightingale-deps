@@ -72,7 +72,7 @@ typedef enum
  * GstBusSyncHandler:
  * @bus: the #GstBus that sent the message
  * @message: the #GstMessage
- * @user_data: user data that has been given, when registering the handler
+ * @data: user data that has been given, when registering the handler
  *
  * Handler will be invoked synchronously, when a new message has been injected
  * into the bus. This function is mostly used internally. Only one sync handler
@@ -83,13 +83,13 @@ typedef enum
  *
  * Returns: #GstBusSyncReply stating what to do with the message
  */
-typedef GstBusSyncReply (*GstBusSyncHandler)    (GstBus * bus, GstMessage * message, gpointer user_data);
+typedef GstBusSyncReply (*GstBusSyncHandler) 	(GstBus * bus, GstMessage * message, gpointer data);
 
 /**
  * GstBusFunc:
  * @bus: the #GstBus that sent the message
  * @message: the #GstMessage
- * @user_data: user data that has been given, when registering the handler
+ * @data: user data that has been given, when registering the handler
  *
  * Specifies the type of function passed to gst_bus_add_watch() or
  * gst_bus_add_watch_full(), which is called from the mainloop when a message
@@ -103,7 +103,7 @@ typedef GstBusSyncReply (*GstBusSyncHandler)    (GstBus * bus, GstMessage * mess
  *
  * Returns: %FALSE if the event source should be removed.
  */
-typedef gboolean        (*GstBusFunc)           (GstBus * bus, GstMessage * message, gpointer user_data);
+typedef gboolean 	(*GstBusFunc)	 	(GstBus * bus, GstMessage * message, gpointer data);
 
 /**
  * GstBus:
@@ -112,12 +112,21 @@ typedef gboolean        (*GstBusFunc)           (GstBus * bus, GstMessage * mess
  */
 struct _GstBus
 {
-  GstObject         object;
+  GstObject 	    object;
+
+  /*< private >*/
+  GQueue           *queue;
+  GMutex           *queue_lock;
+
+  GstBusSyncHandler sync_handler;
+  gpointer 	    sync_handler_data;
+
+  guint             signal_watch_id;
+  guint             num_signal_watchers;
 
   /*< private >*/
   GstBusPrivate    *priv;
-
-  gpointer _gst_reserved[GST_PADDING];
+  gpointer _gst_reserved[GST_PADDING - 1];
 };
 
 struct _GstBusClass
@@ -125,58 +134,58 @@ struct _GstBusClass
   GstObjectClass parent_class;
 
   /* signals */
-  void (*message)       (GstBus *bus, GstMessage *message);
+  void (*message)  	(GstBus *bus, GstMessage *message);
   void (*sync_message)  (GstBus *bus, GstMessage *message);
 
   /*< private >*/
   gpointer _gst_reserved[GST_PADDING];
 };
 
-GType                   gst_bus_get_type                (void);
+GType 			gst_bus_get_type 		(void);
 
-GstBus*                 gst_bus_new                     (void);
+GstBus*			gst_bus_new	 		(void);
 
-gboolean                gst_bus_post                    (GstBus * bus, GstMessage * message);
+gboolean 		gst_bus_post 			(GstBus * bus, GstMessage * message);
 
-gboolean                gst_bus_have_pending            (GstBus * bus);
-GstMessage *            gst_bus_peek                    (GstBus * bus);
-GstMessage *            gst_bus_pop                     (GstBus * bus);
-GstMessage *            gst_bus_pop_filtered            (GstBus * bus, GstMessageType types);
-GstMessage *            gst_bus_timed_pop               (GstBus * bus, GstClockTime timeout);
-GstMessage *            gst_bus_timed_pop_filtered      (GstBus * bus, GstClockTime timeout, GstMessageType types);
-void                    gst_bus_set_flushing            (GstBus * bus, gboolean flushing);
+gboolean 		gst_bus_have_pending 		(GstBus * bus);
+GstMessage *		gst_bus_peek 			(GstBus * bus);
+GstMessage *		gst_bus_pop 			(GstBus * bus);
+GstMessage *		gst_bus_pop_filtered		(GstBus * bus, GstMessageType types);
+GstMessage *		gst_bus_timed_pop 		(GstBus * bus, GstClockTime timeout);
+GstMessage *		gst_bus_timed_pop_filtered 	(GstBus * bus, GstClockTime timeout, GstMessageType types);
+void			gst_bus_set_flushing		(GstBus * bus, gboolean flushing);
 
 /* synchronous dispatching */
-void                    gst_bus_set_sync_handler        (GstBus * bus, GstBusSyncHandler func,
-                                                         gpointer user_data, GDestroyNotify notify);
+void 			gst_bus_set_sync_handler 	(GstBus * bus, GstBusSyncHandler func,
+    							 gpointer data);
 /* GSource based dispatching */
-GSource *               gst_bus_create_watch            (GstBus * bus);
-guint                   gst_bus_add_watch_full          (GstBus * bus,
-                                                         gint priority,
-                                                         GstBusFunc func,
-                                                         gpointer user_data,
-                                                         GDestroyNotify notify);
-guint                   gst_bus_add_watch               (GstBus * bus,
-                                                         GstBusFunc func,
-                                                         gpointer user_data);
+GSource *		gst_bus_create_watch 		(GstBus * bus);
+guint 			gst_bus_add_watch_full 		(GstBus * bus,
+    							 gint priority,
+    							 GstBusFunc func,
+							 gpointer user_data,
+							 GDestroyNotify notify);
+guint 			gst_bus_add_watch 		(GstBus * bus,
+    							 GstBusFunc func,
+							 gpointer user_data);
 
 /* polling the bus */
-GstMessage*             gst_bus_poll                    (GstBus *bus, GstMessageType events,
-                                                         GstClockTime timeout);
+GstMessage*		gst_bus_poll			(GstBus *bus, GstMessageType events,
+                                                         GstClockTimeDiff timeout);
 
 /* signal based dispatching helper functions. */
-gboolean                gst_bus_async_signal_func       (GstBus *bus, GstMessage *message,
-                                                         gpointer data);
-GstBusSyncReply         gst_bus_sync_signal_handler     (GstBus *bus, GstMessage *message,
-                                                         gpointer data);
+gboolean		gst_bus_async_signal_func	(GstBus *bus, GstMessage *message,
+							 gpointer data);
+GstBusSyncReply		gst_bus_sync_signal_handler	(GstBus *bus, GstMessage *message,
+							 gpointer data);
 
 /* convenience api to add/remove a gsource that emits the async signals */
-void                    gst_bus_add_signal_watch        (GstBus * bus);
-void                    gst_bus_add_signal_watch_full   (GstBus * bus, gint priority);
-void                    gst_bus_remove_signal_watch     (GstBus * bus);
+void 			gst_bus_add_signal_watch 	(GstBus * bus);
+void 			gst_bus_add_signal_watch_full 	(GstBus * bus, gint priority);
+void 			gst_bus_remove_signal_watch 	(GstBus * bus);
 
-void                    gst_bus_enable_sync_message_emission (GstBus * bus);
-void                    gst_bus_disable_sync_message_emission (GstBus * bus);
+void			gst_bus_enable_sync_message_emission (GstBus * bus);
+void			gst_bus_disable_sync_message_emission (GstBus * bus);
 
 G_END_DECLS
 

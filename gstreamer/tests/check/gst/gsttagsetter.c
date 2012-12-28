@@ -27,9 +27,23 @@
 typedef GstElement GstDummyEnc;
 typedef GstElementClass GstDummyEncClass;
 
-GType gst_dummy_enc_get_type (void);
-G_DEFINE_TYPE_WITH_CODE (GstDummyEnc, gst_dummy_enc,
-    GST_TYPE_ELEMENT, G_IMPLEMENT_INTERFACE (GST_TYPE_TAG_SETTER, NULL));
+static void gst_dummy_enc_add_interfaces (GType enc_type);
+
+GST_BOILERPLATE_FULL (GstDummyEnc, gst_dummy_enc, GstElement,
+    GST_TYPE_ELEMENT, gst_dummy_enc_add_interfaces);
+
+static void
+gst_dummy_enc_add_interfaces (GType enc_type)
+{
+  static const GInterfaceInfo tag_setter_info = { NULL, NULL, NULL };
+
+  g_type_add_interface_static (enc_type, GST_TYPE_TAG_SETTER, &tag_setter_info);
+}
+
+static void
+gst_dummy_enc_base_init (gpointer g_class)
+{
+}
 
 static void
 gst_dummy_enc_class_init (GstDummyEncClass * klass)
@@ -37,7 +51,7 @@ gst_dummy_enc_class_init (GstDummyEncClass * klass)
 }
 
 static void
-gst_dummy_enc_init (GstDummyEnc * enc)
+gst_dummy_enc_init (GstDummyEnc * enc, GstDummyEncClass * klass)
 {
 }
 
@@ -90,13 +104,13 @@ GST_START_TEST (test_merge)
 
   setter = GST_TAG_SETTER (enc);
 
-  list1 = gst_tag_list_new_empty ();
+  list1 = gst_tag_list_new ();
   gst_tag_list_add (list1, GST_TAG_MERGE_APPEND, GST_TAG_ARTIST, "artist1",
       NULL);
   gst_tag_setter_merge_tags (setter, list1, GST_TAG_MERGE_APPEND);
   assert_tag_setter_list_length (setter, 1);
 
-  list2 = gst_tag_list_new_empty ();
+  list2 = gst_tag_list_new ();
   gst_tag_list_add (list2, GST_TAG_MERGE_APPEND, GST_TAG_ARTIST, "artist2",
       GST_TAG_TITLE, "title1", NULL);
   gst_tag_setter_merge_tags (setter, list2, GST_TAG_MERGE_APPEND);
@@ -112,8 +126,8 @@ GST_START_TEST (test_merge)
       NULL);
   assert_tag_setter_list_length (setter, 2);
 
-  gst_tag_list_unref (list2);
-  gst_tag_list_unref (list1);
+  gst_tag_list_free (list2);
+  gst_tag_list_free (list1);
 
   g_object_unref (enc);
 }
@@ -135,8 +149,8 @@ GST_START_TEST (test_merge_modes)
       fail_unless (enc != NULL);
 
       setter = GST_TAG_SETTER (enc);
-      list1 = gst_tag_list_new_empty ();
-      list2 = gst_tag_list_new_empty ();
+      list1 = gst_tag_list_new ();
+      list2 = gst_tag_list_new ();
 
       /* i = 0: -     -
        * i = 1: list1 -
@@ -160,9 +174,9 @@ GST_START_TEST (test_merge_modes)
       fail_unless_equals_int (tag_list_length (gst_tag_setter_get_tag_list
               (setter)), tag_list_length (merged));
 
-      gst_tag_list_unref (list1);
-      gst_tag_list_unref (list2);
-      gst_tag_list_unref (merged);
+      gst_tag_list_free (list1);
+      gst_tag_list_free (list2);
+      gst_tag_list_free (merged);
       gst_object_unref (enc);
     }
   }
@@ -185,8 +199,8 @@ GST_START_TEST (test_merge_modes_skip_empty)
       fail_unless (enc != NULL);
 
       setter = GST_TAG_SETTER (enc);
-      list1 = gst_tag_list_new_empty ();
-      list2 = gst_tag_list_new_empty ();
+      list1 = gst_tag_list_new ();
+      list2 = gst_tag_list_new ();
 
       if (i == 1) {
         gst_tag_list_add (list2, GST_TAG_MERGE_APPEND, GST_TAG_ARTIST,
@@ -200,125 +214,13 @@ GST_START_TEST (test_merge_modes_skip_empty)
       fail_unless_equals_int (tag_list_length (gst_tag_setter_get_tag_list
               (setter)), tag_list_length (merged));
 
-      gst_tag_list_unref (list1);
-      gst_tag_list_unref (list2);
-      gst_tag_list_unref (merged);
+      gst_tag_list_free (list1);
+      gst_tag_list_free (list2);
+      gst_tag_list_free (merged);
       gst_object_unref (enc);
     }
   }
 }
-
-GST_END_TEST static int spin_and_wait = 1;
-static int threads_running = 0;
-
-#define THREADS_TEST_SECONDS 1.5
-
-static gpointer
-test_threads_thread_func1 (gpointer data)
-{
-  GstTagSetter *setter = GST_TAG_SETTER (data);
-  GTimer *timer;
-
-  timer = g_timer_new ();
-
-  g_atomic_int_inc (&threads_running);
-  while (g_atomic_int_get (&spin_and_wait))
-    g_usleep (0);
-
-  GST_INFO ("Go!");
-  g_timer_start (timer);
-
-  while (g_timer_elapsed (timer, NULL) < THREADS_TEST_SECONDS) {
-    gst_tag_setter_add_tags (setter, GST_TAG_MERGE_APPEND, GST_TAG_ARTIST,
-        "some artist", GST_TAG_TITLE, "some title", GST_TAG_TRACK_NUMBER, 6,
-        NULL);
-  }
-
-  g_timer_destroy (timer);
-  GST_INFO ("Done");
-
-  return NULL;
-}
-
-static gpointer
-test_threads_thread_func2 (gpointer data)
-{
-  GstTagSetter *setter = GST_TAG_SETTER (data);
-  GTimer *timer;
-
-  timer = g_timer_new ();
-
-  g_atomic_int_inc (&threads_running);
-  while (g_atomic_int_get (&spin_and_wait))
-    g_usleep (0);
-
-  GST_INFO ("Go!");
-  g_timer_start (timer);
-
-  while (g_timer_elapsed (timer, NULL) < THREADS_TEST_SECONDS) {
-    gst_tag_setter_add_tags (setter, GST_TAG_MERGE_PREPEND, GST_TAG_CODEC,
-        "MP42", GST_TAG_COMMENT, "deep insights go here", GST_TAG_TRACK_COUNT,
-        10, NULL);
-  }
-
-  g_timer_destroy (timer);
-  GST_INFO ("Done");
-
-  return NULL;
-}
-
-static gpointer
-test_threads_thread_func3 (gpointer data)
-{
-  GstTagSetter *setter = GST_TAG_SETTER (data);
-  GTimer *timer;
-
-  timer = g_timer_new ();
-
-  g_atomic_int_inc (&threads_running);
-  while (g_atomic_int_get (&spin_and_wait))
-    g_usleep (0);
-
-  GST_INFO ("Go!");
-  g_timer_start (timer);
-
-  while (g_timer_elapsed (timer, NULL) < THREADS_TEST_SECONDS) {
-    gst_tag_setter_reset_tags (setter);
-  }
-
-  g_timer_destroy (timer);
-  GST_INFO ("Done");
-
-  return NULL;
-}
-
-GST_START_TEST (test_threads)
-{
-  GstTagSetter *setter;
-  GThread *threads[3];
-
-  setter = GST_TAG_SETTER (g_object_new (GST_TYPE_DUMMY_ENC, NULL));
-
-  spin_and_wait = TRUE;
-  threads[0] = g_thread_try_new ("gst-check", test_threads_thread_func1,
-      setter, NULL);
-  threads[1] = g_thread_try_new ("gst-check", test_threads_thread_func2,
-      setter, NULL);
-  threads[2] = g_thread_try_new ("gst-check", test_threads_thread_func3,
-      setter, NULL);
-
-  while (g_atomic_int_get (&threads_running) < 3)
-    g_usleep (10);
-
-  g_atomic_int_set (&spin_and_wait, FALSE);
-
-  g_thread_join (threads[0]);
-  g_thread_join (threads[1]);
-  g_thread_join (threads[2]);
-
-  g_object_unref (G_OBJECT (setter));
-}
-
 GST_END_TEST static Suite *
 gst_tag_setter_suite (void)
 {
@@ -329,7 +231,6 @@ gst_tag_setter_suite (void)
   tcase_add_test (tc_chain, test_merge);
   tcase_add_test (tc_chain, test_merge_modes);
   tcase_add_test (tc_chain, test_merge_modes_skip_empty);
-  tcase_add_test (tc_chain, test_threads);
 
   return s;
 }

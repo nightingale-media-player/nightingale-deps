@@ -28,10 +28,10 @@
 G_BEGIN_DECLS
 
 
-#define GST_TYPE_CHILD_PROXY               (gst_child_proxy_get_type ())
-#define GST_CHILD_PROXY(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_CHILD_PROXY, GstChildProxy))
-#define GST_IS_CHILD_PROXY(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_CHILD_PROXY))
-#define GST_CHILD_PROXY_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), GST_TYPE_CHILD_PROXY, GstChildProxyInterface))
+#define GST_TYPE_CHILD_PROXY			(gst_child_proxy_get_type ())
+#define GST_CHILD_PROXY(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_CHILD_PROXY, GstChildProxy))
+#define GST_IS_CHILD_PROXY(obj)	                (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_CHILD_PROXY))
+#define GST_CHILD_PROXY_GET_INTERFACE(obj)	(G_TYPE_INSTANCE_GET_INTERFACE ((obj), GST_TYPE_CHILD_PROXY, GstChildProxyInterface))
 
 /**
  * GstChildProxy:
@@ -44,8 +44,7 @@ typedef struct _GstChildProxyInterface GstChildProxyInterface;
 /**
  * GstChildProxyInterface:
  * @parent: parent interface type.
- * @get_child_by_name:  virtual method to fetch the child by name
- * @get_child_by_index: virtual method to fetch the child by index
+ * @get_child_by_index: virtual method to fetch the child
  * @get_children_count: virtual method to get the children count
  *
  * #GstChildProxy interface.
@@ -55,50 +54,37 @@ struct _GstChildProxyInterface
   GTypeInterface parent;
 
   /* methods */
-  GObject * (*get_child_by_name)  (GstChildProxy * parent, const gchar * name);
-  GObject * (*get_child_by_index) (GstChildProxy * parent, guint index);
-  guint     (*get_children_count) (GstChildProxy * parent);
+  GstObject *(*get_child_by_index) (GstChildProxy * parent, guint index);
+  guint (*get_children_count) (GstChildProxy * parent);
   /*< private >*/
   /* signals */
-  void      (*child_added)        (GstChildProxy * parent, GObject * child, const gchar * name);
-  void      (*child_removed)      (GstChildProxy * parent, GObject * child, const gchar * name);
+  void (*child_added) (GstChildProxy * parent, GstObject * child);
+  void (*child_removed) (GstChildProxy * parent, GstObject * child);
 
   /*< private >*/
   gpointer _gst_reserved[GST_PADDING];
 };
 
-GType     gst_child_proxy_get_type (void);
+GType gst_child_proxy_get_type (void);
 
-GObject * gst_child_proxy_get_child_by_name  (GstChildProxy * parent, const gchar * name);
+GstObject *gst_child_proxy_get_child_by_name (GstChildProxy * parent, const gchar * name);
+GstObject *gst_child_proxy_get_child_by_index (GstChildProxy * parent, guint index);
+guint gst_child_proxy_get_children_count (GstChildProxy * parent);
 
-guint     gst_child_proxy_get_children_count (GstChildProxy * parent);
-GObject * gst_child_proxy_get_child_by_index (GstChildProxy * parent, guint index);
-
-gboolean  gst_child_proxy_lookup             (GstChildProxy *object, const gchar *name,
-                                              GObject **target, GParamSpec **pspec);
-
-void      gst_child_proxy_get_property       (GstChildProxy * object, const gchar *name,
-                                              GValue *value);
-void      gst_child_proxy_get_valist         (GstChildProxy * object,
-                                              const gchar * first_property_name,
-                                              va_list var_args);
-void      gst_child_proxy_get                (GstChildProxy * object,
-                                              const gchar * first_property_name,
-                                              ...) G_GNUC_NULL_TERMINATED;
-
-void      gst_child_proxy_set_property       (GstChildProxy * object, const gchar *name,
-                                              const GValue *value);
-void      gst_child_proxy_set_valist         (GstChildProxy* object,
-                                              const gchar * first_property_name,
-                                              va_list var_args);
-void      gst_child_proxy_set                (GstChildProxy * object,
-                                              const gchar * first_property_name,
-                                              ...) G_GNUC_NULL_TERMINATED;
-
-void      gst_child_proxy_child_added        (GstChildProxy * parent, GObject * child,
-                                              const gchar *name);
-void      gst_child_proxy_child_removed      (GstChildProxy * parent, GObject * child,
-                                              const gchar *name);
+gboolean gst_child_proxy_lookup (GstObject *object, const gchar *name,
+    GstObject **target, GParamSpec **pspec);
+void gst_child_proxy_get_property (GstObject * object, const gchar *name, GValue *value);
+void gst_child_proxy_get_valist (GstObject * object,
+    const gchar * first_property_name, va_list var_args);
+void gst_child_proxy_get (GstObject * object, const gchar * first_property_name,
+    ...) G_GNUC_NULL_TERMINATED;
+void gst_child_proxy_set_property (GstObject * object, const gchar *name, const GValue *value);
+void gst_child_proxy_set_valist (GstObject* object,
+    const gchar * first_property_name, va_list var_args);
+void gst_child_proxy_set (GstObject * object, const gchar * first_property_name,
+    ...) G_GNUC_NULL_TERMINATED;
+void gst_child_proxy_child_added (GstObject * object, GstObject *  child);
+void gst_child_proxy_child_removed (GstObject * object, GstObject *  child);
 
 G_END_DECLS
 

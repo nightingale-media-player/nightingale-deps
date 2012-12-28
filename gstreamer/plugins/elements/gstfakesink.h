@@ -82,6 +82,7 @@ struct _GstFakeSink {
   gchar			*last_message;
   gint                  num_buffers;
   gint                  num_buffers_left;
+  GStaticRecMutex       notify_lock;
 };
 
 struct _GstFakeSinkClass {
@@ -92,7 +93,7 @@ struct _GstFakeSinkClass {
   void (*preroll_handoff) (GstElement *element, GstBuffer *buf, GstPad *pad);
 };
 
-G_GNUC_INTERNAL GType gst_fake_sink_get_type (void);
+GType gst_fake_sink_get_type (void);
 
 G_END_DECLS
 

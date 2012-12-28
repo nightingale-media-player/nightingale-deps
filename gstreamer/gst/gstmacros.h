@@ -16,6 +16,13 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION:gstmacros
+ * @short_description: Various portabillity helper macros
+ *
+ * A set of macros complementing the glib portability macros.
+ */
+
 #ifndef __GST_MACROS_H__
 #define __GST_MACROS_H__
 
@@ -37,14 +44,6 @@ G_BEGIN_DECLS
 #else
 # define GST_INLINE_FUNC extern
 # undef GST_CAN_INLINE
-#endif
-
-#if (!defined(__STDC_VERSION__) || __STDC_VERSION__ < 199901L) && !defined(restrict)
-#  if defined(__GNUC__) && __GNUC__ >= 4
-#    define restrict __restrict__
-#  else
-#    define restrict
-#  endif
 #endif
 
 G_END_DECLS

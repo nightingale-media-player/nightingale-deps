@@ -22,9 +22,25 @@
 #define __GST_NET_TIME_PACKET_H__
 
 #include <gst/gst.h>
-#include <gio/gio.h>
 
 G_BEGIN_DECLS
+
+#include <errno.h>
+#include <string.h>
+#include <sys/types.h>
+
+#ifdef G_OS_WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#ifndef socklen_t
+#define socklen_t int
+#endif
+#else
+#include <netdb.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#endif
 
 /**
  * GST_NET_TIME_PACKET_SIZE:
@@ -47,22 +63,14 @@ struct _GstNetTimePacket {
   GstClockTime remote_time;
 };
 
-GType gst_net_time_packet_get_type(void);
+GstNetTimePacket*	gst_net_time_packet_new 	(const guint8 *buffer);
+guint8*			gst_net_time_packet_serialize	(const GstNetTimePacket *packet);
 
-GstNetTimePacket*       gst_net_time_packet_new         (const guint8 *buffer);
-GstNetTimePacket*       gst_net_time_packet_copy        (const GstNetTimePacket *packet);
-void                    gst_net_time_packet_free        (GstNetTimePacket *packet);
-
-guint8*                 gst_net_time_packet_serialize   (const GstNetTimePacket *packet);
-
-GstNetTimePacket*	gst_net_time_packet_receive     (GSocket         * socket,
-                                                         GSocketAddress ** src_address,
-                                                         GError         ** error);
-
-gboolean                gst_net_time_packet_send        (const GstNetTimePacket * packet,
-                                                         GSocket                * socket,
-                                                         GSocketAddress         * dest_address,
-                                                         GError                ** error);
+GstNetTimePacket*	gst_net_time_packet_receive	(gint fd, struct sockaddr *addr,
+                                                         socklen_t *len);
+gint			gst_net_time_packet_send	(const GstNetTimePacket *packet,
+                                                         gint fd, struct sockaddr *addr,
+                                                         socklen_t len);
 
 G_END_DECLS
 

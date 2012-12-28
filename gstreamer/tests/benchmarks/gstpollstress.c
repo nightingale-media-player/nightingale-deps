@@ -18,14 +18,12 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <gst/gst.h>
-#include "gst/glib-compat-private.h"
 
 static GstPoll *set;
 static GList *fds = NULL;
-static GMutex fdlock;
+static GMutex *fdlock;
 static GTimer *timer;
 
 #define MAX_THREADS  100
@@ -37,7 +35,7 @@ mess_some_more (void)
   gint random;
   gint removed = 0;
 
-  g_mutex_lock (&fdlock);
+  g_mutex_lock (fdlock);
 
   for (walk = fds; walk;) {
     GstPollFD *fd = (GstPollFD *) walk->data;
@@ -106,7 +104,7 @@ mess_some_more (void)
     }
   }
 
-  g_mutex_unlock (&fdlock);
+  g_mutex_unlock (fdlock);
 }
 
 static void *
@@ -124,15 +122,16 @@ run_test (void *threadid)
     } else {
       mess_some_more ();
       if (g_timer_elapsed (timer, NULL) > 0.5) {
-        g_mutex_lock (&fdlock);
-        g_print ("active fds :%u\n", g_list_length (fds));
+        g_mutex_lock (fdlock);
+        g_print ("active fds :%d\n", g_list_length (fds));
         g_timer_start (timer);
-        g_mutex_unlock (&fdlock);
+        g_mutex_unlock (fdlock);
       }
       g_usleep (1);
     }
   }
 
+  g_thread_exit (NULL);
   return NULL;
 }
 
@@ -145,7 +144,7 @@ main (gint argc, gchar * argv[])
 
   gst_init (&argc, &argv);
 
-  g_mutex_init (&fdlock);
+  fdlock = g_mutex_new ();
   timer = g_timer_new ();
 
   if (argc != 2) {
@@ -160,11 +159,9 @@ main (gint argc, gchar * argv[])
   for (t = 0; t < num_threads; t++) {
     GError *error = NULL;
 
-    threads[t] = g_thread_try_new ("pollstresstest", run_test,
-        GINT_TO_POINTER (t), &error);
-
+    threads[t] = g_thread_create (run_test, GINT_TO_POINTER (t), TRUE, &error);
     if (error) {
-      printf ("ERROR: g_thread_try_new() %s\n", error->message);
+      printf ("ERROR: g_thread_create() %s\n", error->message);
       exit (-1);
     }
   }

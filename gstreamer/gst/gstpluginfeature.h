@@ -26,7 +26,6 @@
 
 #include <glib-object.h>
 #include <gst/gstobject.h>
-#include <gst/gstplugin.h>
 
 G_BEGIN_DECLS
 
@@ -39,17 +38,20 @@ G_BEGIN_DECLS
 #define GST_PLUGIN_FEATURE_CAST(obj)            ((GstPluginFeature*)(obj))
 
 /**
- * GstPluginFeature:
+ * GST_PLUGIN_FEATURE_NAME:
+ * @feature: The feature to query
  *
- * Opaque #GstPluginFeature structure.
+ * Get the name of the feature
  */
+#define GST_PLUGIN_FEATURE_NAME(feature)  (GST_PLUGIN_FEATURE (feature)->name)
+
 typedef struct _GstPluginFeature GstPluginFeature;
 typedef struct _GstPluginFeatureClass GstPluginFeatureClass;
 
 /**
  * GstRank:
  * @GST_RANK_NONE: will be chosen last or not at all
- * @GST_RANK_MARGINAL: unlikely to be chosen
+ * @GST_RANK_MARGINAL: unlikly to be chosen
  * @GST_RANK_SECONDARY: likely to be chosen
  * @GST_RANK_PRIMARY: will be chosen first
  *
@@ -69,25 +71,42 @@ typedef enum {
 } GstRank;
 
 /**
- * gst_plugin_feature_get_name:
- * @feature: a #GstPluginFeature to get the name of @feature.
+ * GstPluginFeature:
  *
- * Returns the name of @feature.
- * For a nameless plugin feature, this returns NULL.
- *
- * Returns: (transfer none): the name of @feature. MT safe.
- *
+ * Opaque #GstPluginFeature structure.
  */
-#define                 gst_plugin_feature_get_name(feature)      GST_OBJECT_NAME(feature)
+struct _GstPluginFeature {
+  GstObject      object;
+
+  /*< private >*/
+  gboolean       loaded;
+  gchar         *name;
+  guint          rank;
+
+  const gchar   *plugin_name;
+
+  /*< private >*/
+  gpointer _gst_reserved[GST_PADDING];
+};
+
+struct _GstPluginFeatureClass {
+  GstObjectClass        parent_class;
+
+  /*< private >*/
+  gpointer _gst_reserved[GST_PADDING];
+};
 
 /**
- * gst_plugin_feature_set_name:
- * @feature: a #GstPluginFeature to set the name of.
- * @name: the new name
+ * GstTypeNameData:
+ * @name: a name
+ * @type: a GType
  *
- * Sets the name of the plugin feature, getting rid of the old name if there was one.
+ * Structure used for filtering based on @name and @type.
  */
-#define                 gst_plugin_feature_set_name(feature,name) gst_object_set_name(GST_OBJECT_CAST(feature),name)
+typedef struct {
+  const gchar   *name;
+  GType          type;
+} GstTypeNameData;
 
 /**
  * GstPluginFeatureFilter:
@@ -109,34 +128,20 @@ GType           gst_plugin_feature_get_type             (void);
 GstPluginFeature *
                 gst_plugin_feature_load                 (GstPluginFeature *feature);
 
-void            gst_plugin_feature_set_rank             (GstPluginFeature *feature, guint rank);
-guint           gst_plugin_feature_get_rank             (GstPluginFeature *feature);
+gboolean        gst_plugin_feature_type_name_filter     (GstPluginFeature *feature,
+                                                         GstTypeNameData *data);
 
-GstPlugin     * gst_plugin_feature_get_plugin           (GstPluginFeature *feature);
+void            gst_plugin_feature_set_rank             (GstPluginFeature *feature, guint rank);
+void            gst_plugin_feature_set_name             (GstPluginFeature *feature, const gchar *name);
+guint           gst_plugin_feature_get_rank             (GstPluginFeature *feature);
+G_CONST_RETURN gchar *gst_plugin_feature_get_name       (GstPluginFeature *feature);
 
 void            gst_plugin_feature_list_free            (GList *list);
-GList          *gst_plugin_feature_list_copy            (GList *list) G_GNUC_MALLOC;
-void            gst_plugin_feature_list_debug           (GList *list);
-
-/**
- * GST_PLUGIN_FEATURE_LIST_DEBUG:
- * @list: (transfer none) (element-type Gst.PluginFeature): a #GList of
- *     plugin features
- *
- * Debug the plugin feature names in @list.
- */
-#ifndef GST_DISABLE_GST_DEBUG
-#define GST_PLUGIN_FEATURE_LIST_DEBUG(list) gst_plugin_feature_list_debug(list)
-#else
-#define GST_PLUGIN_FEATURE_LIST_DEBUG(list)
-#endif
 
 gboolean        gst_plugin_feature_check_version        (GstPluginFeature *feature,
                                                          guint             min_major,
                                                          guint             min_minor,
                                                          guint             min_micro);
-gint            gst_plugin_feature_rank_compare_func    (gconstpointer p1,
-							 gconstpointer p2);
 
 G_END_DECLS
 

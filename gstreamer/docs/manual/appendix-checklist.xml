@@ -74,7 +74,7 @@
       For example, <option>--gst-debug=oggdemux:5</option> would turn
       on debugging for the Ogg demuxer element. You can use wildcards as
       well. A debugging level of 0 will turn off all debugging, and a level
-      of 9 will turn on all debugging. Intermediate values only turn on
+      of 5 will turn on all debugging. Intermediate values only turn on
       some debugging (based on message severity; 2, for example, will only
       display errors and warnings). Here's a list of all available options:
     </para>
@@ -105,11 +105,11 @@
        </listitem>
        <listitem>
          <para>
-          <option>--gst-debug-no-color</option> will disable color debugging.
+          <option>--gst-debug-no-color</option> will disable color debugging
           You can also set the GST_DEBUG_NO_COLOR environment variable to 1
           if you want to disable colored debug output permanently. Note that
           if you are disabling color purely to avoid messing up your pager
-          output, try using <command>less -R</command>.
+          output, trying using <command>less -R</command>.
          </para>
        </listitem>
        <listitem>
@@ -132,7 +132,7 @@
     <para>
       &GStreamer; contains a bunch of conversion plugins that most
       applications will find useful. Specifically, those are videoscalers
-      (videoscale), colorspace convertors (videoconvert), audio format
+      (videoscale), colorspace convertors (ffmpegcolorspace), audio format
       convertors and channel resamplers (audioconvert) and audio samplerate
       convertors (audioresample). Those convertors don't do anything when not
       required, they will act in passthrough mode. They will activate when
@@ -155,7 +155,7 @@
         <command>gst-launch</command> is a simple script-like commandline
         application that can be used to test pipelines. For example, the
         command <command>gst-launch audiotestsrc ! audioconvert ! 
-        audio/x-raw,channels=2 ! alsasink</command> will run
+        audio/x-raw-int,channels=2 ! alsasink</command> will run
         a pipeline which generates a sine-wave audio stream and plays it
         to your ALSA audio card. <command>gst-launch</command> also allows
         the use of threads (will be used automatically as required or as queue
@@ -165,7 +165,7 @@
         or even omit the padname to automatically select a pad. Using
         all this, the pipeline
         <command>gst-launch filesrc location=file.ogg ! oggdemux name=d
-         d. ! queue ! theoradec ! videoconvert ! xvimagesink
+         d. ! queue ! theoradec ! ffmpegcolorspace ! xvimagesink
          d. ! queue ! vorbisdec ! audioconvert ! audioresample ! alsasink
         </command> will play an Ogg file
         containing a Theora video-stream and a Vorbis audio-stream. You can
@@ -185,6 +185,14 @@
         of what it does. See the manual page of <command>gst-inspect</command>
         for more information.
       </para>
+    </sect2>
+
+    <sect2 id="section-applications-gst-editor">
+      <title>GstEditor</title>
+      <para> 
+        GstEditor is a set of widgets to display a graphical representation of a 
+        pipeline.
+      </para> 
     </sect2>
 
   </sect1>

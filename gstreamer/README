@@ -140,7 +140,7 @@ PLATFORMS
 - MacOSX is reported to work; specific audio and video sinks have been written
 - Windows support is experimental but improving.  Output sinks have been
   written but are not yet included in the code. We support
-  - MSys/MinGW builds
+  - MSys/MingW builds
   - Microsoft Visual Studio 6 builds (see win32/README.txt)
 
 INSTALLING FROM PACKAGES
@@ -154,7 +154,7 @@ Only in cases where you:
 - want to hack on GStreamer
 - want to verify that a bug has been fixed
 - do not have a sane distribution
-should you choose to build from source tarballs or git.
+should you choose to build from source tarballs or CVS.
 
 Find more information about the various packages at
 http://gstreamer.freedesktop.org/download/
@@ -190,13 +190,13 @@ COMPILING FROM SOURCE TARBALLS
   functionality you're probably looking for by now, so go on and read
   that README.
 
-COMPILING FROM GIT
+COMPILING FROM CVS
 ------------------
 
-When building from git sources, you will need to run autogen.sh to generate 
+When building from CVS sources, you will need to run autogen.sh to generate 
 the build system files.
 
-You will need a set of additional tools typical for building from git,
+You will need a set of additional tools typical for building from CVS,
 including:
 - autoconf
 - automake
@@ -219,8 +219,8 @@ the last passed options as a handy shortcut.  Use it.
 After the autogen.sh stage, you can follow the directions listed in
 "COMPILING FROM SOURCE"
 
-You can also run your whole git stack uninstalled.  The script in
-the gstreamer module /scripts/gst-uninstalled) is helpful in setting
+You can also run your whole cvs stack uninstalled.  The script in
+the gstreamer module /docs/faq/gst-uninstalled) is helpful in setting
 up your environment for this.
 
 PLUG-IN DEPENDENCIES AND LICENSES

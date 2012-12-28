@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE book PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "">
+<book xmlns="http://www.devhelp.net/book" title="GStreamer 0.10 Library Reference Manual" link="index.html" author="" name="gstreamer-libs">
+  <chapters>
+    <sub name="GStreamer Libraries" link="gstreamer-libs.html">
+      <sub name="GStreamer Base and Utillity Classes" link="gstreamer-base.html">
+        <sub name="GstBaseSrc" link="GstBaseSrc.html"/>
+        <sub name="GstBaseSink" link="GstBaseSink.html"/>
+        <sub name="GstBaseTransform" link="GstBaseTransform.html"/>
+        <sub name="GstPushSrc" link="GstPushSrc.html"/>
+        <sub name="GstAdapter" link="GstAdapter.html"/>
+        <sub name="GstBitReader" link="gstreamer-libs-GstBitReader.html"/>
+        <sub name="GstByteReader" link="gstreamer-libs-GstByteReader.html"/>
+        <sub name="GstCollectPads" link="GstCollectPads.html"/>
+        <sub name="GstTypeFindHelper" link="gstreamer-libs-GstTypeFindHelper.html"/>
+        <sub name="GstDataQueue" link="gstreamer-libs-GstDataQueue.html"/>
+      </sub>
+      <sub name="GStreamer Dynamic Parameter Control" link="gstreamer-control.html">
+        <sub name="GstController" link="GstController.html"/>
+        <sub name="GstControlSource" link="GstControlSource.html"/>
+        <sub name="GstInterpolationControlSource" link="GstInterpolationControlSource.html"/>
+        <sub name="GstLFOControlSource" link="GstLFOControlSource.html"/>
+        <sub name="GstControllerGObject" link="gstreamer-libs-GstControllerGObject.html"/>
+      </sub>
+      <sub name="GStreamer Data Protocol" link="gstreamer-dataprotocol.html">
+        <sub name="gstdataprotocol" link="gstreamer-libs-gstdataprotocol.html"/>
+      </sub>
+      <sub name="GStreamer Network Classes" link="gstreamer-net.html">
+        <sub name="GstNetClientClock" link="GstNetClientClock.html"/>
+        <sub name="GstNetTimePacket" link="gstreamer-libs-GstNetTimePacket.html"/>
+        <sub name="GstNetTimeProvider" link="GstNetTimeProvider.html"/>
+      </sub>
+      <sub name="GStreamer Check Unit Testing" link="gstreamer-check.html">
+        <sub name="GstCheck" link="gstreamer-libs-GstCheck.html"/>
+        <sub name="GstBufferStraw" link="gstreamer-libs-GstBufferStraw.html"/>
+      </sub>
+    </sub>
+    <sub name="Object Hierarchy" link="gstreamer-hierarchy.html"/>
+    <sub name="API Index" link="api-index-full.html"/>
+    <sub name="Index of deprecated API" link="api-index-deprecated.html"/>
+  </chapters>
+  <functions>
+    <function name="Controlled shutdown of live sources in applications" link="GstBaseSrc.html#id2766687"/>
+    <function name="GstBaseSrc" link="GstBaseSrc.html#GstBaseSrc-struct"/>
+    <function name="GstBaseSrcClass" link="GstBaseSrc.html#GstBaseSrcClass"/>
+    <function name="enum GstBaseSrcFlags" link="GstBaseSrc.html#GstBaseSrcFlags"/>
+    <function name="gst_base_src_wait_playing ()" link="GstBaseSrc.html#gst-base-src-wait-playing"/>
+    <function name="gst_base_src_is_live ()" link="GstBaseSrc.html#gst-base-src-is-live"/>
+    <function name="gst_base_src_set_live ()" link="GstBaseSrc.html#gst-base-src-set-live"/>
+    <function name="gst_base_src_set_format ()" link="GstBaseSrc.html#gst-base-src-set-format"/>
+    <function name="gst_base_src_query_latency ()" link="GstBaseSrc.html#gst-base-src-query-latency"/>
+    <function name="gst_base_src_get_blocksize ()" link="GstBaseSrc.html#gst-base-src-get-blocksize"/>
+    <function name="gst_base_src_set_blocksize ()" link="GstBaseSrc.html#gst-base-src-set-blocksize"/>
+    <function name="gst_base_src_get_do_timestamp ()" link="GstBaseSrc.html#gst-base-src-get-do-timestamp"/>
+    <function name="gst_base_src_set_do_timestamp ()" link="GstBaseSrc.html#gst-base-src-set-do-timestamp"/>
+    <function name="GST_BASE_SRC_PAD()" link="GstBaseSrc.html#GST-BASE-SRC-PAD--CAPS"/>
+    <function name="The &quot;blocksize&quot; property" link="GstBaseSrc.html#GstBaseSrc--blocksize"/>
+    <function name="The &quot;do-timestamp&quot; property" link="GstBaseSrc.html#GstBaseSrc--do-timestamp"/>
+    <function name="The &quot;num-buffers&quot; property" link="GstBaseSrc.html#GstBaseSrc--num-buffers"/>
+    <function name="The &quot;typefind&quot; property" link="GstBaseSrc.html#GstBaseSrc--typefind"/>
+    <function name="GstBaseSink" link="GstBaseSink.html#GstBaseSink-struct"/>
+    <function name="GstBaseSinkClass" link="GstBaseSink.html#GstBaseSinkClass"/>
+    <function name="gst_base_sink_query_latency ()" link="GstBaseSink.html#gst-base-sink-query-latency"/>
+    <function name="gst_base_sink_get_latency ()" link="GstBaseSink.html#gst-base-sink-get-latency"/>
+    <function name="gst_base_sink_do_preroll ()" link="GstBaseSink.html#gst-base-sink-do-preroll"/>
+    <function name="gst_base_sink_wait_preroll ()" link="GstBaseSink.html#gst-base-sink-wait-preroll"/>
+    <function name="gst_base_sink_wait_clock ()" link="GstBaseSink.html#gst-base-sink-wait-clock"/>
+    <function name="gst_base_sink_wait_eos ()" link="GstBaseSink.html#gst-base-sink-wait-eos"/>
+    <function name="gst_base_sink_set_sync ()" link="GstBaseSink.html#gst-base-sink-set-sync"/>
+    <function name="gst_base_sink_get_sync ()" link="GstBaseSink.html#gst-base-sink-get-sync"/>
+    <function name="gst_base_sink_set_max_lateness ()" link="GstBaseSink.html#gst-base-sink-set-max-lateness"/>
+    <function name="gst_base_sink_get_max_lateness ()" link="GstBaseSink.html#gst-base-sink-get-max-lateness"/>
+    <function name="gst_base_sink_set_qos_enabled ()" link="GstBaseSink.html#gst-base-sink-set-qos-enabled"/>
+    <function name="gst_base_sink_is_qos_enabled ()" link="GstBaseSink.html#gst-base-sink-is-qos-enabled"/>
+    <function name="gst_base_sink_set_async_enabled ()" link="GstBaseSink.html#gst-base-sink-set-async-enabled"/>
+    <function name="gst_base_sink_is_async_enabled ()" link="GstBaseSink.html#gst-base-sink-is-async-enabled"/>
+    <function name="gst_base_sink_set_ts_offset ()" link="GstBaseSink.html#gst-base-sink-set-ts-offset"/>
+    <function name="gst_base_sink_get_ts_offset ()" link="GstBaseSink.html#gst-base-sink-get-ts-offset"/>
+    <function name="gst_base_sink_set_render_delay ()" link="GstBaseSink.html#gst-base-sink-set-render-delay"/>
+    <function name="gst_base_sink_get_render_delay ()" link="GstBaseSink.html#gst-base-sink-get-render-delay"/>
+    <function name="gst_base_sink_get_last_buffer ()" link="GstBaseSink.html#gst-base-sink-get-last-buffer"/>
+    <function name="gst_base_sink_set_blocksize ()" link="GstBaseSink.html#gst-base-sink-set-blocksize"/>
+    <function name="gst_base_sink_get_blocksize ()" link="GstBaseSink.html#gst-base-sink-get-blocksize"/>
+    <function name="GST_BASE_SINK_PAD()" link="GstBaseSink.html#GST-BASE-SINK-PAD--CAPS"/>
+    <function name="The &quot;async&quot; property" link="GstBaseSink.html#GstBaseSink--async"/>
+    <function name="The &quot;blocksize&quot; property" link="GstBaseSink.html#GstBaseSink--blocksize"/>
+    <function name="The &quot;last-buffer&quot; property" link="GstBaseSink.html#GstBaseSink--last-buffer"/>
+    <function name="The &quot;max-lateness&quot; property" link="GstBaseSink.html#GstBaseSink--max-lateness"/>
+    <function name="The &quot;preroll-queue-len&quot; property" link="GstBaseSink.html#GstBaseSink--preroll-queue-len"/>
+    <function name="The &quot;qos&quot; property" link="GstBaseSink.html#GstBaseSink--qos"/>
+    <function name="The &quot;render-delay&quot; property" link="GstBaseSink.html#GstBaseSink--render-delay"/>
+    <function name="The &quot;sync&quot; property" link="GstBaseSink.html#GstBaseSink--sync"/>
+    <function name="The &quot;ts-offset&quot; property" link="GstBaseSink.html#GstBaseSink--ts-offset"/>
+    <function name="Use Cases" link="GstBaseTransform.html#id2825137"/>
+    <function name="Sub-class settable flags on GstBaseTransform" link="GstBaseTransform.html#id2845452"/>
+    <function name="GstBaseTransform" link="GstBaseTransform.html#GstBaseTransform-struct"/>
+    <function name="GstBaseTransformClass" link="GstBaseTransform.html#GstBaseTransformClass"/>
+    <function name="gst_base_transform_is_passthrough ()" link="GstBaseTransform.html#gst-base-transform-is-passthrough"/>
+    <function name="gst_base_transform_set_passthrough ()" link="GstBaseTransform.html#gst-base-transform-set-passthrough"/>
+    <function name="gst_base_transform_is_in_place ()" link="GstBaseTransform.html#gst-base-transform-is-in-place"/>
+    <function name="gst_base_transform_set_in_place ()" link="GstBaseTransform.html#gst-base-transform-set-in-place"/>
+    <function name="gst_base_transform_is_qos_enabled ()" link="GstBaseTransform.html#gst-base-transform-is-qos-enabled"/>
+    <function name="gst_base_transform_set_qos_enabled ()" link="GstBaseTransform.html#gst-base-transform-set-qos-enabled"/>
+    <function name="gst_base_transform_update_qos ()" link="GstBaseTransform.html#gst-base-transform-update-qos"/>
+    <function name="gst_base_transform_set_gap_aware ()" link="GstBaseTransform.html#gst-base-transform-set-gap-aware"/>
+    <function name="gst_base_transform_suggest ()" link="GstBaseTransform.html#gst-base-transform-suggest"/>
+    <function name="gst_base_transform_reconfigure ()" link="GstBaseTransform.html#gst-base-transform-reconfigure"/>
+    <function name="GST_BASE_TRANSFORM_SINK_NAME" link="GstBaseTransform.html#GST-BASE-TRANSFORM-SINK-NAME--CAPS"/>
+    <function name="GST_BASE_TRANSFORM_SRC_NAME" link="GstBaseTransform.html#GST-BASE-TRANSFORM-SRC-NAME--CAPS"/>
+    <function name="GST_BASE_TRANSFORM_SINK_PAD()" link="GstBaseTransform.html#GST-BASE-TRANSFORM-SINK-PAD--CAPS"/>
+    <function name="GST_BASE_TRANSFORM_SRC_PAD()" link="GstBaseTransform.html#GST-BASE-TRANSFORM-SRC-PAD--CAPS"/>
+    <function name="GST_BASE_TRANSFORM_FLOW_DROPPED" link="GstBaseTransform.html#GST-BASE-TRANSFORM-FLOW-DROPPED--CAPS"/>
+    <function name="GST_BASE_TRANSFORM_LOCK()" link="GstBaseTransform.html#GST-BASE-TRANSFORM-LOCK--CAPS"/>
+    <function name="GST_BASE_TRANSFORM_UNLOCK()" link="GstBaseTransform.html#GST-BASE-TRANSFORM-UNLOCK--CAPS"/>
+    <function name="The &quot;qos&quot; property" link="GstBaseTransform.html#GstBaseTransform--qos"/>
+    <function name="GstPushSrc" link="GstPushSrc.html#GstPushSrc-struct"/>
+    <function name="GstAdapter" link="GstAdapter.html#GstAdapter-struct"/>
+    <function name="gst_adapter_new ()" link="GstAdapter.html#gst-adapter-new"/>
+    <function name="gst_adapter_clear ()" link="GstAdapter.html#gst-adapter-clear"/>
+    <function name="gst_adapter_push ()" link="GstAdapter.html#gst-adapter-push"/>
+    <function name="gst_adapter_peek ()" link="GstAdapter.html#gst-adapter-peek"/>
+    <function name="gst_adapter_copy ()" link="GstAdapter.html#gst-adapter-copy"/>
+    <function name="gst_adapter_flush ()" link="GstAdapter.html#gst-adapter-flush"/>
+    <function name="gst_adapter_available ()" link="GstAdapter.html#gst-adapter-available"/>
+    <function name="gst_adapter_available_fast ()" link="GstAdapter.html#gst-adapter-available-fast"/>
+    <function name="gst_adapter_take ()" link="GstAdapter.html#gst-adapter-take"/>
+    <function name="gst_adapter_take_buffer ()" link="GstAdapter.html#gst-adapter-take-buffer"/>
+    <function name="gst_adapter_prev_timestamp ()" link="GstAdapter.html#gst-adapter-prev-timestamp"/>
+    <function name="gst_adapter_masked_scan_uint32 ()" link="GstAdapter.html#gst-adapter-masked-scan-uint32"/>
+    <function name="GstBitReader" link="gstreamer-libs-GstBitReader.html#GstBitReader"/>
+    <function name="GST_BIT_READER_INIT()" link="gstreamer-libs-GstBitReader.html#GST-BIT-READER-INIT--CAPS"/>
+    <function name="GST_BIT_READER_INIT_FROM_BUFFER()" link="gstreamer-libs-GstBitReader.html#GST-BIT-READER-INIT-FROM-BUFFER--CAPS"/>
+    <function name="gst_bit_reader_new ()" link="gstreamer-libs-GstBitReader.html#gst-bit-reader-new"/>
+    <function name="gst_bit_reader_new_from_buffer ()" link="gstreamer-libs-GstBitReader.html#gst-bit-reader-new-from-buffer"/>
+    <function name="gst_bit_reader_free ()" link="gstreamer-libs-GstBitReader.html#gst-bit-reader-free"/>
+    <function name="gst_bit_reader_init ()" link="gstreamer-libs-GstBitReader.html#gst-bit-reader-init"/>
+    <function name="gst_bit_reader_init_from_buffer ()" link="gstreamer-libs-GstBitReader.html#gst-bit-reader-init-from-buffer"/>
+    <function name="gst_bit_reader_get_pos ()" link="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-pos"/>
+    <function name="gst_bit_reader_get_remaining ()" link="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-remaining"/>
+    <function name="gst_bit_reader_set_pos ()" link="gstreamer-libs-GstBitReader.html#gst-bit-reader-set-pos"/>
+    <function name="gst_bit_reader_skip ()" link="gstreamer-libs-GstBitReader.html#gst-bit-reader-skip"/>
+    <function name="gst_bit_reader_skip_to_byte ()" link="gstreamer-libs-GstBitReader.html#gst-bit-reader-skip-to-byte"/>
+    <function name="gst_bit_reader_get_bits_uint16 ()" link="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-bits-uint16"/>
+    <function name="gst_bit_reader_get_bits_uint32 ()" link="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-bits-uint32"/>
+    <function name="gst_bit_reader_get_bits_uint64 ()" link="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-bits-uint64"/>
+    <function name="gst_bit_reader_get_bits_uint8 ()" link="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-bits-uint8"/>
+    <function name="gst_bit_reader_peek_bits_uint16 ()" link="gstreamer-libs-GstBitReader.html#gst-bit-reader-peek-bits-uint16"/>
+    <function name="gst_bit_reader_peek_bits_uint32 ()" link="gstreamer-libs-GstBitReader.html#gst-bit-reader-peek-bits-uint32"/>
+    <function name="gst_bit_reader_peek_bits_uint64 ()" link="gstreamer-libs-GstBitReader.html#gst-bit-reader-peek-bits-uint64"/>
+    <function name="gst_bit_reader_peek_bits_uint8 ()" link="gstreamer-libs-GstBitReader.html#gst-bit-reader-peek-bits-uint8"/>
+    <function name="GstByteReader" link="gstreamer-libs-GstByteReader.html#GstByteReader"/>
+    <function name="GST_BYTE_READER_INIT()" link="gstreamer-libs-GstByteReader.html#GST-BYTE-READER-INIT--CAPS"/>
+    <function name="GST_BYTE_READER_INIT_FROM_BUFFER()" link="gstreamer-libs-GstByteReader.html#GST-BYTE-READER-INIT-FROM-BUFFER--CAPS"/>
+    <function name="gst_byte_reader_new ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-new"/>
+    <function name="gst_byte_reader_new_from_buffer ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-new-from-buffer"/>
+    <function name="gst_byte_reader_free ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-free"/>
+    <function name="gst_byte_reader_init ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-init"/>
+    <function name="gst_byte_reader_init_from_buffer ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-init-from-buffer"/>
+    <function name="gst_byte_reader_get_pos ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-pos"/>
+    <function name="gst_byte_reader_get_remaining ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-remaining"/>
+    <function name="gst_byte_reader_set_pos ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-set-pos"/>
+    <function name="gst_byte_reader_skip ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-skip"/>
+    <function name="gst_byte_reader_get_int8 ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int8"/>
+    <function name="gst_byte_reader_get_int16_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int16-be"/>
+    <function name="gst_byte_reader_get_int16_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int16-le"/>
+    <function name="gst_byte_reader_get_int24_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int24-be"/>
+    <function name="gst_byte_reader_get_int24_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int24-le"/>
+    <function name="gst_byte_reader_get_int32_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int32-be"/>
+    <function name="gst_byte_reader_get_int32_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int32-le"/>
+    <function name="gst_byte_reader_get_int64_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int64-be"/>
+    <function name="gst_byte_reader_get_int64_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int64-le"/>
+    <function name="gst_byte_reader_get_uint8 ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint8"/>
+    <function name="gst_byte_reader_get_uint16_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint16-be"/>
+    <function name="gst_byte_reader_get_uint16_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint16-le"/>
+    <function name="gst_byte_reader_get_uint24_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint24-be"/>
+    <function name="gst_byte_reader_get_uint24_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint24-le"/>
+    <function name="gst_byte_reader_get_uint32_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint32-be"/>
+    <function name="gst_byte_reader_get_uint32_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint32-le"/>
+    <function name="gst_byte_reader_get_uint64_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint64-be"/>
+    <function name="gst_byte_reader_get_uint64_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint64-le"/>
+    <function name="gst_byte_reader_peek_int8 ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int8"/>
+    <function name="gst_byte_reader_peek_int16_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int16-be"/>
+    <function name="gst_byte_reader_peek_int16_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int16-le"/>
+    <function name="gst_byte_reader_peek_int24_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int24-be"/>
+    <function name="gst_byte_reader_peek_int24_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int24-le"/>
+    <function name="gst_byte_reader_peek_int32_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int32-be"/>
+    <function name="gst_byte_reader_peek_int32_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int32-le"/>
+    <function name="gst_byte_reader_peek_int64_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int64-be"/>
+    <function name="gst_byte_reader_peek_int64_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int64-le"/>
+    <function name="gst_byte_reader_peek_uint8 ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint8"/>
+    <function name="gst_byte_reader_peek_uint16_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint16-be"/>
+    <function name="gst_byte_reader_peek_uint16_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint16-le"/>
+    <function name="gst_byte_reader_peek_uint24_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint24-be"/>
+    <function name="gst_byte_reader_peek_uint24_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint24-le"/>
+    <function name="gst_byte_reader_peek_uint32_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint32-be"/>
+    <function name="gst_byte_reader_peek_uint32_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint32-le"/>
+    <function name="gst_byte_reader_peek_uint64_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint64-be"/>
+    <function name="gst_byte_reader_peek_uint64_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint64-le"/>
+    <function name="gst_byte_reader_get_float32_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-float32-le"/>
+    <function name="gst_byte_reader_get_float32_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-float32-be"/>
+    <function name="gst_byte_reader_get_float64_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-float64-le"/>
+    <function name="gst_byte_reader_get_float64_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-float64-be"/>
+    <function name="gst_byte_reader_peek_float32_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-float32-le"/>
+    <function name="gst_byte_reader_peek_float32_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-float32-be"/>
+    <function name="gst_byte_reader_peek_float64_le ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-float64-le"/>
+    <function name="gst_byte_reader_peek_float64_be ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-float64-be"/>
+    <function name="gst_byte_reader_get_data ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-data"/>
+    <function name="gst_byte_reader_dup_data ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-dup-data"/>
+    <function name="gst_byte_reader_peek_data ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-data"/>
+    <function name="gst_byte_reader_masked_scan_uint32 ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-masked-scan-uint32"/>
+    <function name="gst_byte_reader_get_string()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-string"/>
+    <function name="gst_byte_reader_get_string_utf8 ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-string-utf8"/>
+    <function name="gst_byte_reader_peek_string()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-string"/>
+    <function name="gst_byte_reader_peek_string_utf8 ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-string-utf8"/>
+    <function name="gst_byte_reader_dup_string()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-dup-string"/>
+    <function name="gst_byte_reader_dup_string_utf8 ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-dup-string-utf8"/>
+    <function name="gst_byte_reader_dup_string_utf16 ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-dup-string-utf16"/>
+    <function name="gst_byte_reader_dup_string_utf32 ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-dup-string-utf32"/>
+    <function name="gst_byte_reader_skip_string()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-skip-string"/>
+    <function name="gst_byte_reader_skip_string_utf8 ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-skip-string-utf8"/>
+    <function name="gst_byte_reader_skip_string_utf16 ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-skip-string-utf16"/>
+    <function name="gst_byte_reader_skip_string_utf32 ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-skip-string-utf32"/>
+    <function name="gst_byte_reader_skip_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-skip-unchecked"/>
+    <function name="gst_byte_reader_get_int8_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int8-unchecked"/>
+    <function name="gst_byte_reader_get_int16_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int16-be-unchecked"/>
+    <function name="gst_byte_reader_get_int16_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int16-le-unchecked"/>
+    <function name="gst_byte_reader_get_int24_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int24-be-unchecked"/>
+    <function name="gst_byte_reader_get_int24_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int24-le-unchecked"/>
+    <function name="gst_byte_reader_get_int32_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int32-be-unchecked"/>
+    <function name="gst_byte_reader_get_int32_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int32-le-unchecked"/>
+    <function name="gst_byte_reader_get_int64_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int64-be-unchecked"/>
+    <function name="gst_byte_reader_get_int64_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int64-le-unchecked"/>
+    <function name="gst_byte_reader_get_uint8_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint8-unchecked"/>
+    <function name="gst_byte_reader_get_uint16_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint16-be-unchecked"/>
+    <function name="gst_byte_reader_get_uint16_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint16-le-unchecked"/>
+    <function name="gst_byte_reader_get_uint24_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint24-be-unchecked"/>
+    <function name="gst_byte_reader_get_uint24_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint24-le-unchecked"/>
+    <function name="gst_byte_reader_get_uint32_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint32-be-unchecked"/>
+    <function name="gst_byte_reader_get_uint32_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint32-le-unchecked"/>
+    <function name="gst_byte_reader_get_uint64_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint64-be-unchecked"/>
+    <function name="gst_byte_reader_get_uint64_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint64-le-unchecked"/>
+    <function name="gst_byte_reader_peek_int8_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int8-unchecked"/>
+    <function name="gst_byte_reader_peek_int16_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int16-be-unchecked"/>
+    <function name="gst_byte_reader_peek_int16_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int16-le-unchecked"/>
+    <function name="gst_byte_reader_peek_int24_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int24-be-unchecked"/>
+    <function name="gst_byte_reader_peek_int24_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int24-le-unchecked"/>
+    <function name="gst_byte_reader_peek_int32_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int32-be-unchecked"/>
+    <function name="gst_byte_reader_peek_int32_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int32-le-unchecked"/>
+    <function name="gst_byte_reader_peek_int64_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int64-be-unchecked"/>
+    <function name="gst_byte_reader_peek_int64_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int64-le-unchecked"/>
+    <function name="gst_byte_reader_peek_uint8_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint8-unchecked"/>
+    <function name="gst_byte_reader_peek_uint16_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint16-be-unchecked"/>
+    <function name="gst_byte_reader_peek_uint16_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint16-le-unchecked"/>
+    <function name="gst_byte_reader_peek_uint24_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint24-be-unchecked"/>
+    <function name="gst_byte_reader_peek_uint24_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint24-le-unchecked"/>
+    <function name="gst_byte_reader_peek_uint32_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint32-be-unchecked"/>
+    <function name="gst_byte_reader_peek_uint32_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint32-le-unchecked"/>
+    <function name="gst_byte_reader_peek_uint64_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint64-be-unchecked"/>
+    <function name="gst_byte_reader_peek_uint64_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint64-le-unchecked"/>
+    <function name="gst_byte_reader_get_float32_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-float32-le-unchecked"/>
+    <function name="gst_byte_reader_get_float32_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-float32-be-unchecked"/>
+    <function name="gst_byte_reader_get_float64_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-float64-le-unchecked"/>
+    <function name="gst_byte_reader_get_float64_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-float64-be-unchecked"/>
+    <function name="gst_byte_reader_peek_float32_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-float32-le-unchecked"/>
+    <function name="gst_byte_reader_peek_float32_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-float32-be-unchecked"/>
+    <function name="gst_byte_reader_peek_float64_le_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-float64-le-unchecked"/>
+    <function name="gst_byte_reader_peek_float64_be_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-float64-be-unchecked"/>
+    <function name="gst_byte_reader_dup_data_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-dup-data-unchecked"/>
+    <function name="gst_byte_reader_get_data_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-data-unchecked"/>
+    <function name="gst_byte_reader_peek_data_unchecked ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-data-unchecked"/>
+    <function name="GstCollectData" link="GstCollectPads.html#GstCollectData"/>
+    <function name="GstCollectPads" link="GstCollectPads.html#GstCollectPads-struct"/>
+    <function name="GstCollectPadsFunction ()" link="GstCollectPads.html#GstCollectPadsFunction"/>
+    <function name="GstCollectDataDestroyNotify ()" link="GstCollectPads.html#GstCollectDataDestroyNotify"/>
+    <function name="gst_collect_pads_new ()" link="GstCollectPads.html#gst-collect-pads-new"/>
+    <function name="gst_collect_pads_set_function ()" link="GstCollectPads.html#gst-collect-pads-set-function"/>
+    <function name="gst_collect_pads_add_pad ()" link="GstCollectPads.html#gst-collect-pads-add-pad"/>
+    <function name="gst_collect_pads_add_pad_full ()" link="GstCollectPads.html#gst-collect-pads-add-pad-full"/>
+    <function name="gst_collect_pads_remove_pad ()" link="GstCollectPads.html#gst-collect-pads-remove-pad"/>
+    <function name="gst_collect_pads_is_active ()" link="GstCollectPads.html#gst-collect-pads-is-active"/>
+    <function name="gst_collect_pads_collect ()" link="GstCollectPads.html#gst-collect-pads-collect"/>
+    <function name="gst_collect_pads_collect_range ()" link="GstCollectPads.html#gst-collect-pads-collect-range"/>
+    <function name="gst_collect_pads_start ()" link="GstCollectPads.html#gst-collect-pads-start"/>
+    <function name="gst_collect_pads_stop ()" link="GstCollectPads.html#gst-collect-pads-stop"/>
+    <function name="gst_collect_pads_set_flushing ()" link="GstCollectPads.html#gst-collect-pads-set-flushing"/>
+    <function name="gst_collect_pads_peek ()" link="GstCollectPads.html#gst-collect-pads-peek"/>
+    <function name="gst_collect_pads_pop ()" link="GstCollectPads.html#gst-collect-pads-pop"/>
+    <function name="gst_collect_pads_available ()" link="GstCollectPads.html#gst-collect-pads-available"/>
+    <function name="gst_collect_pads_read ()" link="GstCollectPads.html#gst-collect-pads-read"/>
+    <function name="gst_collect_pads_read_buffer ()" link="GstCollectPads.html#gst-collect-pads-read-buffer"/>
+    <function name="gst_collect_pads_take_buffer ()" link="GstCollectPads.html#gst-collect-pads-take-buffer"/>
+    <function name="gst_collect_pads_flush ()" link="GstCollectPads.html#gst-collect-pads-flush"/>
+    <function name="gst_type_find_helper ()" link="gstreamer-libs-GstTypeFindHelper.html#gst-type-find-helper"/>
+    <function name="gst_type_find_helper_for_buffer ()" link="gstreamer-libs-GstTypeFindHelper.html#gst-type-find-helper-for-buffer"/>
+    <function name="gst_type_find_helper_for_extension ()" link="gstreamer-libs-GstTypeFindHelper.html#gst-type-find-helper-for-extension"/>
+    <function name="GstTypeFindHelperGetRangeFunction ()" link="gstreamer-libs-GstTypeFindHelper.html#GstTypeFindHelperGetRangeFunction"/>
+    <function name="gst_type_find_helper_get_range ()" link="gstreamer-libs-GstTypeFindHelper.html#gst-type-find-helper-get-range"/>
+    <function name="GstDataQueue" link="gstreamer-libs-GstDataQueue.html#GstDataQueue"/>
+    <function name="GstDataQueueSize" link="gstreamer-libs-GstDataQueue.html#GstDataQueueSize"/>
+    <function name="GstDataQueueCheckFullFunction ()" link="gstreamer-libs-GstDataQueue.html#GstDataQueueCheckFullFunction"/>
+    <function name="GstDataQueueItem" link="gstreamer-libs-GstDataQueue.html#GstDataQueueItem"/>
+    <function name="gst_data_queue_new ()" link="gstreamer-libs-GstDataQueue.html#gst-data-queue-new"/>
+    <function name="gst_data_queue_push ()" link="gstreamer-libs-GstDataQueue.html#gst-data-queue-push"/>
+    <function name="gst_data_queue_pop ()" link="gstreamer-libs-GstDataQueue.html#gst-data-queue-pop"/>
+    <function name="gst_data_queue_flush ()" link="gstreamer-libs-GstDataQueue.html#gst-data-queue-flush"/>
+    <function name="gst_data_queue_set_flushing ()" link="gstreamer-libs-GstDataQueue.html#gst-data-queue-set-flushing"/>
+    <function name="gst_data_queue_drop_head ()" link="gstreamer-libs-GstDataQueue.html#gst-data-queue-drop-head"/>
+    <function name="gst_data_queue_is_full ()" link="gstreamer-libs-GstDataQueue.html#gst-data-queue-is-full"/>
+    <function name="gst_data_queue_is_empty ()" link="gstreamer-libs-GstDataQueue.html#gst-data-queue-is-empty"/>
+    <function name="gst_data_queue_get_level ()" link="gstreamer-libs-GstDataQueue.html#gst-data-queue-get-level"/>
+    <function name="gst_data_queue_limits_changed ()" link="gstreamer-libs-GstDataQueue.html#gst-data-queue-limits-changed"/>
+    <function name="GstController" link="GstController.html#GstController-struct"/>
+    <function name="gst_controller_init ()" link="GstController.html#gst-controller-init"/>
+    <function name="gst_controller_new ()" link="GstController.html#gst-controller-new"/>
+    <function name="gst_controller_new_list ()" link="GstController.html#gst-controller-new-list"/>
+    <function name="gst_controller_new_valist ()" link="GstController.html#gst-controller-new-valist"/>
+    <function name="gst_controller_remove_properties ()" link="GstController.html#gst-controller-remove-properties"/>
+    <function name="gst_controller_remove_properties_list ()" link="GstController.html#gst-controller-remove-properties-list"/>
+    <function name="gst_controller_remove_properties_valist ()" link="GstController.html#gst-controller-remove-properties-valist"/>
+    <function name="gst_controller_set_disabled ()" link="GstController.html#gst-controller-set-disabled"/>
+    <function name="gst_controller_set_property_disabled ()" link="GstController.html#gst-controller-set-property-disabled"/>
+    <function name="gst_controller_suggest_next_sync ()" link="GstController.html#gst-controller-suggest-next-sync"/>
+    <function name="gst_controller_sync_values ()" link="GstController.html#gst-controller-sync-values"/>
+    <function name="gst_controller_get_control_source ()" link="GstController.html#gst-controller-get-control-source"/>
+    <function name="gst_controller_set_control_source ()" link="GstController.html#gst-controller-set-control-source"/>
+    <function name="gst_controller_get ()" link="GstController.html#gst-controller-get"/>
+    <function name="gst_controller_get_value_arrays ()" link="GstController.html#gst-controller-get-value-arrays"/>
+    <function name="gst_controller_get_value_array ()" link="GstController.html#gst-controller-get-value-array"/>
+    <function name="gst_controller_set ()" link="GstController.html#gst-controller-set"/>
+    <function name="gst_controller_set_from_list ()" link="GstController.html#gst-controller-set-from-list"/>
+    <function name="gst_controller_unset ()" link="GstController.html#gst-controller-unset"/>
+    <function name="gst_controller_unset_all ()" link="GstController.html#gst-controller-unset-all"/>
+    <function name="gst_controller_get_all ()" link="GstController.html#gst-controller-get-all"/>
+    <function name="gst_controller_set_interpolation_mode ()" link="GstController.html#gst-controller-set-interpolation-mode"/>
+    <function name="The &quot;control-rate&quot; property" link="GstController.html#GstController--control-rate"/>
+    <function name="GstControlSource" link="GstControlSource.html#GstControlSource-struct"/>
+    <function name="GstControlSourceClass" link="GstControlSource.html#GstControlSourceClass"/>
+    <function name="GstControlSourceBind ()" link="GstControlSource.html#GstControlSourceBind"/>
+    <function name="GstControlSourceGetValue ()" link="GstControlSource.html#GstControlSourceGetValue"/>
+    <function name="GstControlSourceGetValueArray ()" link="GstControlSource.html#GstControlSourceGetValueArray"/>
+    <function name="GstTimedValue" link="GstControlSource.html#GstTimedValue"/>
+    <function name="GstValueArray" link="GstControlSource.html#GstValueArray"/>
+    <function name="gst_control_source_bind ()" link="GstControlSource.html#gst-control-source-bind"/>
+    <function name="gst_control_source_get_value ()" link="GstControlSource.html#gst-control-source-get-value"/>
+    <function name="gst_control_source_get_value_array ()" link="GstControlSource.html#gst-control-source-get-value-array"/>
+    <function name="GstInterpolationControlSource" link="GstInterpolationControlSource.html#GstInterpolationControlSource-struct"/>
+    <function name="enum GstInterpolateMode" link="GstInterpolationControlSource.html#GstInterpolateMode"/>
+    <function name="gst_interpolation_control_source_new ()" link="GstInterpolationControlSource.html#gst-interpolation-control-source-new"/>
+    <function name="gst_interpolation_control_source_set ()" link="GstInterpolationControlSource.html#gst-interpolation-control-source-set"/>
+    <function name="gst_interpolation_control_source_set_from_list ()" link="GstInterpolationControlSource.html#gst-interpolation-control-source-set-from-list"/>
+    <function name="gst_interpolation_control_source_set_interpolation_mode ()" link="GstInterpolationControlSource.html#gst-interpolation-control-source-set-interpolation-mode"/>
+    <function name="gst_interpolation_control_source_get_all ()" link="GstInterpolationControlSource.html#gst-interpolation-control-source-get-all"/>
+    <function name="gst_interpolation_control_source_unset ()" link="GstInterpolationControlSource.html#gst-interpolation-control-source-unset"/>
+    <function name="gst_interpolation_control_source_unset_all ()" link="GstInterpolationControlSource.html#gst-interpolation-control-source-unset-all"/>
+    <function name="gst_interpolation_control_source_get_count ()" link="GstInterpolationControlSource.html#gst-interpolation-control-source-get-count"/>
+    <function name="GstLFOControlSource" link="GstLFOControlSource.html#GstLFOControlSource-struct"/>
+    <function name="enum GstLFOWaveform" link="GstLFOControlSource.html#GstLFOWaveform"/>
+    <function name="gst_lfo_control_source_new ()" link="GstLFOControlSource.html#gst-lfo-control-source-new"/>
+    <function name="The &quot;amplitude&quot; property" link="GstLFOControlSource.html#GstLFOControlSource--amplitude"/>
+    <function name="The &quot;frequency&quot; property" link="GstLFOControlSource.html#GstLFOControlSource--frequency"/>
+    <function name="The &quot;offset&quot; property" link="GstLFOControlSource.html#GstLFOControlSource--offset"/>
+    <function name="The &quot;timeshift&quot; property" link="GstLFOControlSource.html#GstLFOControlSource--timeshift"/>
+    <function name="The &quot;waveform&quot; property" link="GstLFOControlSource.html#GstLFOControlSource--waveform"/>
+    <function name="gst_object_control_properties ()" link="gstreamer-libs-GstControllerGObject.html#gst-object-control-properties"/>
+    <function name="gst_object_uncontrol_properties ()" link="gstreamer-libs-GstControllerGObject.html#gst-object-uncontrol-properties"/>
+    <function name="gst_object_get_controller ()" link="gstreamer-libs-GstControllerGObject.html#gst-object-get-controller"/>
+    <function name="gst_object_set_controller ()" link="gstreamer-libs-GstControllerGObject.html#gst-object-set-controller"/>
+    <function name="gst_object_suggest_next_sync ()" link="gstreamer-libs-GstControllerGObject.html#gst-object-suggest-next-sync"/>
+    <function name="gst_object_sync_values ()" link="gstreamer-libs-GstControllerGObject.html#gst-object-sync-values"/>
+    <function name="gst_object_get_control_source ()" link="gstreamer-libs-GstControllerGObject.html#gst-object-get-control-source"/>
+    <function name="gst_object_set_control_source ()" link="gstreamer-libs-GstControllerGObject.html#gst-object-set-control-source"/>
+    <function name="gst_object_get_value_arrays ()" link="gstreamer-libs-GstControllerGObject.html#gst-object-get-value-arrays"/>
+    <function name="gst_object_get_value_array ()" link="gstreamer-libs-GstControllerGObject.html#gst-object-get-value-array"/>
+    <function name="gst_object_get_control_rate ()" link="gstreamer-libs-GstControllerGObject.html#gst-object-get-control-rate"/>
+    <function name="gst_object_set_control_rate ()" link="gstreamer-libs-GstControllerGObject.html#gst-object-set-control-rate"/>
+    <function name="enum GstDPHeaderFlag" link="gstreamer-libs-gstdataprotocol.html#GstDPHeaderFlag"/>
+    <function name="enum GstDPPayloadType" link="gstreamer-libs-gstdataprotocol.html#GstDPPayloadType"/>
+    <function name="GST_DP_HEADER_LENGTH" link="gstreamer-libs-gstdataprotocol.html#GST-DP-HEADER-LENGTH--CAPS"/>
+    <function name="enum GstDPVersion" link="gstreamer-libs-gstdataprotocol.html#GstDPVersion"/>
+    <function name="GST_DP_VERSION_MAJOR" link="gstreamer-libs-gstdataprotocol.html#GST-DP-VERSION-MAJOR--CAPS"/>
+    <function name="GST_DP_VERSION_MINOR" link="gstreamer-libs-gstdataprotocol.html#GST-DP-VERSION-MINOR--CAPS"/>
+    <function name="gst_dp_init ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-init"/>
+    <function name="GstDPHeaderFromBufferFunction ()" link="gstreamer-libs-gstdataprotocol.html#GstDPHeaderFromBufferFunction"/>
+    <function name="GstDPPacketFromCapsFunction ()" link="gstreamer-libs-gstdataprotocol.html#GstDPPacketFromCapsFunction"/>
+    <function name="GstDPPacketFromEventFunction ()" link="gstreamer-libs-gstdataprotocol.html#GstDPPacketFromEventFunction"/>
+    <function name="GstDPPacketizer" link="gstreamer-libs-gstdataprotocol.html#GstDPPacketizer"/>
+    <function name="gst_dp_packetizer_new ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-packetizer-new"/>
+    <function name="gst_dp_packetizer_free ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-packetizer-free"/>
+    <function name="gst_dp_crc ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-crc"/>
+    <function name="gst_dp_header_payload_length ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-header-payload-length"/>
+    <function name="gst_dp_header_payload_type ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-header-payload-type"/>
+    <function name="gst_dp_header_from_buffer ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-header-from-buffer"/>
+    <function name="gst_dp_packet_from_caps ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-packet-from-caps"/>
+    <function name="gst_dp_packet_from_event ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-packet-from-event"/>
+    <function name="gst_dp_buffer_from_header ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-buffer-from-header"/>
+    <function name="gst_dp_caps_from_packet ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-caps-from-packet"/>
+    <function name="gst_dp_event_from_packet ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-event-from-packet"/>
+    <function name="gst_dp_validate_header ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-validate-header"/>
+    <function name="gst_dp_validate_payload ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-validate-payload"/>
+    <function name="gst_dp_validate_packet ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-validate-packet"/>
+    <function name="GstNetClientClock" link="GstNetClientClock.html#GstNetClientClock-struct"/>
+    <function name="gst_net_client_clock_new ()" link="GstNetClientClock.html#gst-net-client-clock-new"/>
+    <function name="The &quot;address&quot; property" link="GstNetClientClock.html#GstNetClientClock--address"/>
+    <function name="The &quot;port&quot; property" link="GstNetClientClock.html#GstNetClientClock--port"/>
+    <function name="GstNetTimePacket" link="gstreamer-libs-GstNetTimePacket.html#GstNetTimePacket"/>
+    <function name="GST_NET_TIME_PACKET_SIZE" link="gstreamer-libs-GstNetTimePacket.html#GST-NET-TIME-PACKET-SIZE--CAPS"/>
+    <function name="gst_net_time_packet_new ()" link="gstreamer-libs-GstNetTimePacket.html#gst-net-time-packet-new"/>
+    <function name="gst_net_time_packet_receive ()" link="gstreamer-libs-GstNetTimePacket.html#gst-net-time-packet-receive"/>
+    <function name="gst_net_time_packet_send ()" link="gstreamer-libs-GstNetTimePacket.html#gst-net-time-packet-send"/>
+    <function name="gst_net_time_packet_serialize ()" link="gstreamer-libs-GstNetTimePacket.html#gst-net-time-packet-serialize"/>
+    <function name="GstNetTimeProvider" link="GstNetTimeProvider.html#GstNetTimeProvider-struct"/>
+    <function name="gst_net_time_provider_new ()" link="GstNetTimeProvider.html#gst-net-time-provider-new"/>
+    <function name="The &quot;active&quot; property" link="GstNetTimeProvider.html#GstNetTimeProvider--active"/>
+    <function name="The &quot;address&quot; property" link="GstNetTimeProvider.html#GstNetTimeProvider--address"/>
+    <function name="The &quot;clock&quot; property" link="GstNetTimeProvider.html#GstNetTimeProvider--clock"/>
+    <function name="The &quot;port&quot; property" link="GstNetTimeProvider.html#GstNetTimeProvider--port"/>
+    <function name="GST_START_TEST()" link="gstreamer-libs-GstCheck.html#GST-START-TEST--CAPS"/>
+    <function name="GST_END_TEST" link="gstreamer-libs-GstCheck.html#GST-END-TEST--CAPS"/>
+    <function name="ASSERT_BUFFER_REFCOUNT()" link="gstreamer-libs-GstCheck.html#ASSERT-BUFFER-REFCOUNT--CAPS"/>
+    <function name="ASSERT_CAPS_REFCOUNT()" link="gstreamer-libs-GstCheck.html#ASSERT-CAPS-REFCOUNT--CAPS"/>
+    <function name="ASSERT_CRITICAL()" link="gstreamer-libs-GstCheck.html#ASSERT-CRITICAL--CAPS"/>
+    <function name="ASSERT_WARNING()" link="gstreamer-libs-GstCheck.html#ASSERT-WARNING--CAPS"/>
+    <function name="ASSERT_MINI_OBJECT_REFCOUNT()" link="gstreamer-libs-GstCheck.html#ASSERT-MINI-OBJECT-REFCOUNT--CAPS"/>
+    <function name="ASSERT_OBJECT_REFCOUNT()" link="gstreamer-libs-GstCheck.html#ASSERT-OBJECT-REFCOUNT--CAPS"/>
+    <function name="ASSERT_OBJECT_REFCOUNT_BETWEEN()" link="gstreamer-libs-GstCheck.html#ASSERT-OBJECT-REFCOUNT-BETWEEN--CAPS"/>
+    <function name="ASSERT_SET_STATE()" link="gstreamer-libs-GstCheck.html#ASSERT-SET-STATE--CAPS"/>
+    <function name="fail_unless_equals_int()" link="gstreamer-libs-GstCheck.html#fail-unless-equals-int"/>
+    <function name="fail_unless_equals_float()" link="gstreamer-libs-GstCheck.html#fail-unless-equals-float"/>
+    <function name="fail_unless_equals_string()" link="gstreamer-libs-GstCheck.html#fail-unless-equals-string"/>
+    <function name="fail_unless_equals_uint64()" link="gstreamer-libs-GstCheck.html#fail-unless-equals-uint64"/>
+    <function name="fail_unless_message_error()" link="gstreamer-libs-GstCheck.html#fail-unless-message-error"/>
+    <function name="assert_equals_int()" link="gstreamer-libs-GstCheck.html#assert-equals-int"/>
+    <function name="assert_equals_float()" link="gstreamer-libs-GstCheck.html#assert-equals-float"/>
+    <function name="assert_equals_string()" link="gstreamer-libs-GstCheck.html#assert-equals-string"/>
+    <function name="assert_equals_uint64()" link="gstreamer-libs-GstCheck.html#assert-equals-uint64"/>
+    <function name="assert_message_error()" link="gstreamer-libs-GstCheck.html#assert-message-error"/>
+    <function name="gst_check_init ()" link="gstreamer-libs-GstCheck.html#gst-check-init"/>
+    <function name="gst_check_message_error ()" link="gstreamer-libs-GstCheck.html#gst-check-message-error"/>
+    <function name="gst_check_setup_element ()" link="gstreamer-libs-GstCheck.html#gst-check-setup-element"/>
+    <function name="gst_check_setup_sink_pad ()" link="gstreamer-libs-GstCheck.html#gst-check-setup-sink-pad"/>
+    <function name="gst_check_setup_src_pad ()" link="gstreamer-libs-GstCheck.html#gst-check-setup-src-pad"/>
+    <function name="gst_check_setup_sink_pad_by_name ()" link="gstreamer-libs-GstCheck.html#gst-check-setup-sink-pad-by-name"/>
+    <function name="gst_check_setup_src_pad_by_name ()" link="gstreamer-libs-GstCheck.html#gst-check-setup-src-pad-by-name"/>
+    <function name="gst_check_teardown_pad_by_name ()" link="gstreamer-libs-GstCheck.html#gst-check-teardown-pad-by-name"/>
+    <function name="gst_check_teardown_element ()" link="gstreamer-libs-GstCheck.html#gst-check-teardown-element"/>
+    <function name="gst_check_teardown_sink_pad ()" link="gstreamer-libs-GstCheck.html#gst-check-teardown-sink-pad"/>
+    <function name="gst_check_teardown_src_pad ()" link="gstreamer-libs-GstCheck.html#gst-check-teardown-src-pad"/>
+    <function name="gst_check_drop_buffers ()" link="gstreamer-libs-GstCheck.html#gst-check-drop-buffers"/>
+    <function name="gst_check_caps_equal ()" link="gstreamer-libs-GstCheck.html#gst-check-caps-equal"/>
+    <function name="gst_check_element_push_buffer_list ()" link="gstreamer-libs-GstCheck.html#gst-check-element-push-buffer-list"/>
+    <function name="gst_check_element_push_buffer ()" link="gstreamer-libs-GstCheck.html#gst-check-element-push-buffer"/>
+    <function name="gst_check_run_suite ()" link="gstreamer-libs-GstCheck.html#gst-check-run-suite"/>
+    <function name="gst_buffer_straw_start_pipeline ()" link="gstreamer-libs-GstBufferStraw.html#gst-buffer-straw-start-pipeline"/>
+    <function name="gst_buffer_straw_get_buffer ()" link="gstreamer-libs-GstBufferStraw.html#gst-buffer-straw-get-buffer"/>
+    <function name="gst_buffer_straw_stop_pipeline ()" link="gstreamer-libs-GstBufferStraw.html#gst-buffer-straw-stop-pipeline"/>
+  </functions>
+</book>

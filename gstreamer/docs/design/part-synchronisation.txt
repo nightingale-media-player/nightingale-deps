@@ -8,11 +8,11 @@ Synchronisation in a GstPipeline is achieved using the following 3 components:
 
  - a GstClock, which is global for all elements in a GstPipeline.
  - Timestamps on a GstBuffer.
- - the SEGMENT event preceding the buffers.
+ - the NEW_SEGMENT event preceding the buffers.
 
 
 A GstClock
-~~~~~~~~~~
+----------
 
 This object provides a counter that represents the current time in nanoseconds.
 This value is called the absolute_time.
@@ -33,7 +33,7 @@ A GstClock always counts time upwards and does not necessarily start at 0.
 
 
 Running time
-~~~~~~~~~~~~
+------------
 
 After a pipeline selected a clock it will maintain the running_time based on the
 selected clock. This running_time represents the total time spent in the PLAYING
@@ -55,7 +55,7 @@ to PAUSED and restores this time based on the current absolute_time when going
 back to PLAYING. This allows for both clocks that progress when in the PAUSED
 state (systemclock) and clocks that don't (audioclock).
 
-The clock and pipeline now provide a running_time to all elements that want to
+The clock and pipeline now provides a running_time to all elements that want to
 perform synchronisation. Indeed, the running time can be observed in each
 element (during the PLAYING state) as:
   
@@ -66,9 +66,9 @@ This value is monotonically increasing at the rate of the clock.
 
 
 Timestamps
-~~~~~~~~~~
+----------
  
-The GstBuffer timestamps and the preceeding SEGMENT event (See
+The GstBuffer timestamps and the preceeding NEW_SEGMENT event (See
 part-streams.txt) define a transformation of the buffer timestamps to
 running_time as follows:
 
@@ -77,42 +77,42 @@ The following notation is used:
  B: GstBuffer 
   - B.timestamp = buffer timestamp (GST_BUFFER_TIMESTAMP)
 
- S:  SEGMENT event preceeding the buffers.
-  - S.start: start field in the SEGMENT event
-  - S.stop: stop field in the SEGMENT event
-  - S.rate: rate field of SEGMENT event
-  - S.abs_rate: absolute value of rate field of SEGMENT event
-  - S.time: time field in the SEGMENT event
-  - S.base: a base time for the time.
-  - S.offset: an offset to apply to S.start or S.stop
+ NS:  NEWSEGMENT event preceeding the buffers.
+  - NS.start: start field in the NEWSEGMENT event
+  - NS.stop: stop field in the NEWSEGMENT event
+  - NS.rate: rate field of NEWSEGMENT event
+  - NS.abs_rate: absolute value of rate field of NEWSEGMENT event
+  - NS.time: time field in the NEWSEGMENT event
+  - NS.accum: total accumulated time of all previous NEWSEGMENT events. This
+              field is kept in the GstSegment structure.
 
-Valid buffers for synchronisation are those with B.timestamp between S.start
-and S.stop (after applying the S.offset). All other buffers outside this range
-should be dropped or clipped to these boundaries (see also part-segments.txt).
+Valid buffers for synchronisation are those with B.timestamp between NS.start
+and NS.stop. All other buffers outside this range should be dropped or clipped
+to these boundaries (see also part-segments.txt).
 
 The following transformation to running_time exist:
 
-  if (S.rate > 0.0)
-    B.running_time = (B.timestamp - (S.start + S.offset)) / S.abs_rate + S.base
-  else
-    B.running_time = ((S.stop - S.offset) - B.timestamp) / S.abs_rate + S.base
+    if (NS.rate > 0.0)
+      B.running_time = (B.timestamp - NS.start) / NS.abs_rate + NS.accum
+    else
+      B.running_time = (NS.stop - B.timestamp) / NS.abs_rate + NS.accum
 
-We write B.running_time as the running_time obtained from the SEGMENT event
+We write B.running_time as the running_time obtained from the NEWSEGMENT event
 and the buffers of that segment.
 
 The first displayable buffer will yield a value of 0 (since B.timestamp ==
-S.start and S.offset and S.base == 0).
+NS.start and NS.accum == 0).
 
-For S.rate > 1.0, the timestamps will be scaled down to increase the playback
+For NS.rate > 1.0, the timestamps will be scaled down to increase the playback
 rate. Likewise, a rate between 0.0 and 1.0 will slow down playback.
 
-For negative rates, timestamps are received stop S.stop to S.start so that the
+For negative rates, timestamps are received stop NS.stop to NS.start so that the
 first buffer received will be transformed into B.running_time of 0 (B.timestamp ==
-S.stop and S.accum == 0).
+NS.stop and NS.accum == 0).
 
 
 Synchronisation
-~~~~~~~~~~~~~~~
+---------------
 
 As we have seen, we can get a running_time:
 
@@ -120,10 +120,10 @@ As we have seen, we can get a running_time:
 
     C.running_time = absolute_time - base_time
 
- - using the buffer timestamp and the preceeding SEGMENT event as (assuming
+ - using the buffer timestamp and the preceeding NEWSEGMENT event as (assuming
    positive playback rate):
 
-    B.running_time = (B.timestamp - (S.start + S.offset)) / S.abs_rate + S.base
+    B.running_time = (B.timestamp - NS.start) / NS.abs_rate + NS.accum
 
 We prefix C. and B. before the two running times to note how they were
 calculated.
@@ -154,14 +154,14 @@ the sink (See also part-clocks.txt).
 For multiple streams this means that buffers with the same running_time are to
 be displayed at the same time. 
 
-A demuxer must make sure that the SEGMENT it emits on its output pads yield
+A demuxer must make sure that the NEWSEGMENT it emits on its output pads yield
 the same running_time for buffers that should be played synchronized. This
-usually means sending the same SEGMENT on all pads and making sure that the
+usually means sending the same NEWSEGMENT on all pads and making sure that the
 synchronized buffers have the same timestamps.
 
 
 Stream time
-~~~~~~~~~~~
+-----------
 
 The stream time is also known as the position in the stream and is a value
 between 0 and the total duration of the media file.
@@ -172,12 +172,12 @@ It is the stream time that is used for:
   - the position used in seek events/queries
   - the position used to synchronize controller values
 
-Stream time is calculated using the buffer times and the preceeding SEGMENT
+Stream time is calculated using the buffer times and the preceeding NEWSEGMENT
 event as follows:
 
-    stream_time = (B.timestamp - S.start) * S.abs_applied_rate + S.time
+    stream_time = (B.timestamp - NS.start) * NS.abs_applied_rate + NS.time
  
-For negative rates, B.timestamp will go backwards from S.stop to S.start,
+For negative rates, B.timestamp will go backwards from NS.stop to NS.start,
 making the stream time go backwards.
 
 In the PLAYING state, it is also possible to use the pipeline clock to derive
@@ -187,24 +187,21 @@ Give the two formulas above to match the clock times with buffer timestamps
 allows us to rewrite the above formula for stream_time (and for positive rates).
 
     C.running_time = absolute_time - base_time
-    B.running_time = (B.timestamp - (S.start + S.offset)) / S.abs_rate + S.base
+    B.running_time = (B.timestamp - NS.start) / NS.abs_rate + NS.accum
 
   =>
-    (B.timestamp - (S.start + S.offset)) / S.abs_rate + S.base = absolute_time - base_time;
+    (B.timestamp - NS.start) / NS.abs_rate + NS.accum = absolute_time - base_time;
 
   =>
-    (B.timestamp - (S.start + S.offset)) / S.abs_rate = absolute_time - base_time - S.base;
+    (B.timestamp - NS.start) / NS.abs_rate = absolute_time - base_time - NS.accum;
 
   =>
-    (B.timestamp - (S.start + S.offset)) = (absolute_time - base_time - S.base) * S.abs_rate
+    (B.timestamp - NS.start) = (absolute_time - base_time - NS.accum) * NS.abs_rate
+
+  filling (B.timestamp - NS.start) in the above formule for stream time
 
   =>
-    (B.timestamp - S.start) = S.offset + (absolute_time - base_time - S.base) * S.abs_rate
-
-  filling (B.timestamp - S.start) in the above formule for stream time
-
-  =>
-    stream_time = (S.offset + (absolute_time - base_time - S.base) * S.abs_rate) * S.abs_applied_rate + S.time
+    stream_time = (absolute_time - base_time - NS.accum) * NS.abs_rate * NS.abs_applied_rate + NS.time
 
 This last formula is typically used in sinks to report the current position in
 an accurate and efficient way.

@@ -6,11 +6,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gstreamer 0.8.4\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2012-12-18 00:21+0000\n"
+"POT-Creation-Date: 2009-10-05 12:38+0100\n"
 "PO-Revision-Date: 2004-08-07 23:46+0200\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <begraj@hotmail.com>\n"
-"Language: sq\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -78,7 +77,7 @@ msgstr ""
 msgid "Disable updating the registry"
 msgstr ""
 
-msgid "Disable spawning a helper process while scanning the registry"
+msgid "Disable the use of fork() while scanning the registry"
 msgstr ""
 
 msgid "GStreamer Options"
@@ -88,8 +87,32 @@ msgstr ""
 msgid "Show GStreamer Options"
 msgstr "Printo versionin e GStreamer"
 
+#, c-format
+msgid "Error writing registry cache to %s: %s"
+msgstr ""
+
+#, c-format
+msgid "Error re-scanning registry %s: %s"
+msgstr ""
+
+#, c-format
+msgid "Error re-scanning registry %s"
+msgstr ""
+
 msgid "Unknown option"
 msgstr ""
+
+#, c-format
+msgid "ERROR: from element %s: %s\n"
+msgstr "GABIM: nga elementi %s: %s\n"
+
+#, c-format
+msgid ""
+"Additional debug info:\n"
+"%s\n"
+msgstr ""
+"Informacione shtesë të debug:\n"
+"%s\n"
 
 msgid "GStreamer encountered a general core library error."
 msgstr "GStreamer ndeshi në një gabim të përgjithshëm të librarisë bazë."
@@ -119,7 +142,7 @@ msgid "Internal GStreamer error: thread problem."
 msgstr "Gabim i brendshëm i GStreamer: problem i thread.  Raporto bug."
 
 #, fuzzy
-msgid "GStreamer error: negotiation problem."
+msgid "Internal GStreamer error: negotiation problem."
 msgstr "Gabim i brendshëm i GStreamer: problem negocimi.  Raporto bug."
 
 #, fuzzy
@@ -142,7 +165,7 @@ msgid "Your GStreamer installation is missing a plug-in."
 msgstr ""
 
 #, fuzzy
-msgid "GStreamer error: clock problem."
+msgid "Internal GStreamer error: clock problem."
 msgstr "Gabim i brendshëm i GStreamer: problem kërkimi.  Raporto bug."
 
 msgid ""
@@ -162,9 +185,6 @@ msgstr "E pamundur mbyllja e librarisë mbështetëse."
 #, fuzzy
 msgid "Could not configure supporting library."
 msgstr "E pamundur mbyllja e librarisë mbështetëse."
-
-msgid "Encoding error."
-msgstr ""
 
 #, fuzzy
 msgid "GStreamer encountered a general resource error."
@@ -317,14 +337,6 @@ msgstr "data"
 msgid "date the data was created (as a GDate structure)"
 msgstr "data e krijimit të së dhënës (në ditë të kalendarit Julian)"
 
-#, fuzzy
-msgid "datetime"
-msgstr "data"
-
-#, fuzzy
-msgid "date and time the data was created (as a GstDateTime structure)"
-msgstr "data e krijimit të së dhënës (në ditë të kalendarit Julian)"
-
 msgid "genre"
 msgstr "lloji"
 
@@ -418,13 +430,6 @@ msgstr "copyright"
 #, fuzzy
 msgid "URI to the copyright notice of the data"
 msgstr "shënime mbi të drejtat e së dhënës"
-
-#, fuzzy
-msgid "encoded by"
-msgstr "kodifikuesi"
-
-msgid "name of the encoding person or organization"
-msgstr ""
 
 msgid "contact"
 msgstr "kontakti"
@@ -575,13 +580,7 @@ msgstr ""
 msgid "language code"
 msgstr ""
 
-msgid "language code for this stream, conforming to ISO-639-1 or ISO-639-2"
-msgstr ""
-
-msgid "language name"
-msgstr ""
-
-msgid "freeform name of the language this stream is in"
+msgid "language code for this stream, conforming to ISO-639-1"
 msgstr ""
 
 msgid "image"
@@ -591,7 +590,6 @@ msgstr ""
 msgid "image related to this stream"
 msgstr "kodifikuesi i përdorur për të kodifikuar këtë fluks"
 
-#. TRANSLATORS: 'preview image' = image that shows a preview of the full image
 msgid "preview image"
 msgstr ""
 
@@ -653,172 +651,8 @@ msgid ""
 "according to WGS84 (zero is average sea level)"
 msgstr ""
 
-#, fuzzy
-msgid "geo location country"
-msgstr "pozicioni"
-
-msgid "country (english name) where the media has been recorded or produced"
-msgstr ""
-
-#, fuzzy
-msgid "geo location city"
-msgstr "pozicioni"
-
-msgid "city (english name) where the media has been recorded or produced"
-msgstr ""
-
-#, fuzzy
-msgid "geo location sublocation"
-msgstr "pozicioni"
-
-msgid ""
-"a location within a city where the media has been produced or created (e.g. "
-"the neighborhood)"
-msgstr ""
-
-#, fuzzy
-msgid "geo location horizontal error"
-msgstr "pozicioni"
-
-msgid "expected error of the horizontal positioning measures (in meters)"
-msgstr ""
-
-#, fuzzy
-msgid "geo location movement speed"
-msgstr "pozicioni"
-
-msgid ""
-"movement speed of the capturing device while performing the capture in m/s"
-msgstr ""
-
-#, fuzzy
-msgid "geo location movement direction"
-msgstr "pozicioni"
-
-msgid ""
-"indicates the movement direction of the device performing the capture of a "
-"media. It is represented as degrees in floating point representation, 0 "
-"means the geographic north, and increases clockwise"
-msgstr ""
-
-#, fuzzy
-msgid "geo location capture direction"
-msgstr "pozicioni"
-
-msgid ""
-"indicates the direction the device is pointing to when capturing  a media. "
-"It is represented as degrees in floating point  representation, 0 means the "
-"geographic north, and increases clockwise"
-msgstr ""
-
-#. TRANSLATORS: 'show name' = 'TV/radio/podcast show name' here
-msgid "show name"
-msgstr ""
-
-msgid "Name of the tv/podcast/series show the media is from"
-msgstr ""
-
-#. TRANSLATORS: 'show sortname' = 'TV/radio/podcast show name as used for sorting purposes' here
-msgid "show sortname"
-msgstr ""
-
-msgid ""
-"Name of the tv/podcast/series show the media is from, for sorting purposes"
-msgstr ""
-
-#, fuzzy
-msgid "episode number"
-msgstr "numri i diskut"
-
-msgid "The episode number in the season the media is part of"
-msgstr ""
-
-#, fuzzy
-msgid "season number"
-msgstr "numri i diskut"
-
-msgid "The season number of the show the media is part of"
-msgstr ""
-
-#, fuzzy
-msgid "lyrics"
-msgstr "liçenca"
-
-msgid "The lyrics of the media, commonly used for songs"
-msgstr ""
-
-msgid "composer sortname"
-msgstr ""
-
-#, fuzzy
-msgid "person(s) who composed the recording, for sorting purposes"
-msgstr "personi(at) përgjegjës për regjistrimin"
-
-msgid "grouping"
-msgstr ""
-
-msgid ""
-"Groups related media that spans multiple tracks, like the different pieces "
-"of a concerto. It is a higher level than a track, but lower than an album"
-msgstr ""
-
-#, fuzzy
-msgid "user rating"
-msgstr "kohëzgjatja"
-
-msgid ""
-"Rating attributed by a user. The higher the rank, the more the user likes "
-"this media"
-msgstr ""
-
-msgid "device manufacturer"
-msgstr ""
-
-#, fuzzy
-msgid "Manufacturer of the device used to create this media"
-msgstr "versioni i kodifikuesit të përdorur për të kodifikuar këtë fluks"
-
-msgid "device model"
-msgstr ""
-
-#, fuzzy
-msgid "Model of the device used to create this media"
-msgstr "versioni i kodifikuesit të përdorur për të kodifikuar këtë fluks"
-
-#, fuzzy
-msgid "application name"
-msgstr "pozicioni"
-
-#, fuzzy
-msgid "Application used to create the media"
-msgstr "versioni i kodifikuesit të përdorur për të kodifikuar këtë fluks"
-
-msgid "application data"
-msgstr ""
-
-msgid "Arbitrary application data to be serialized into the media"
-msgstr ""
-
-msgid "image orientation"
-msgstr ""
-
-msgid "How the image should be rotated or flipped before display"
-msgstr ""
-
 msgid ", "
 msgstr ", "
-
-#, c-format
-msgid "ERROR: from element %s: %s\n"
-msgstr "GABIM: nga elementi %s: %s\n"
-
-#, c-format
-msgid ""
-"Additional debug info:\n"
-"%s\n"
-msgstr ""
-"Informacione shtesë të debug:\n"
-"%s\n"
 
 #, c-format
 msgid "specified empty bin \"%s\", not allowed"
@@ -937,17 +771,6 @@ msgstr "File \"%s\" është një socket."
 msgid "Failed after iterations as requested."
 msgstr "Dështoi mbas përsëritjeve sikurse të kërkuara."
 
-msgid "No Temp directory specified."
-msgstr ""
-
-#, fuzzy, c-format
-msgid "Could not create temp file \"%s\"."
-msgstr "E pamundur marrja/vendosja e rregullimeve nga/në burim."
-
-#, fuzzy
-msgid "Error while writing to download file."
-msgstr "Gabim gjatë shkrimit tek file \"%s\"."
-
 msgid "caps"
 msgstr "mbrojtëse"
 
@@ -956,6 +779,9 @@ msgstr "u zbuluan mundësi në fluks"
 
 msgid "minimum"
 msgstr "minimum"
+
+msgid "maximum"
+msgstr "maksimum"
 
 msgid "force caps"
 msgstr ""
@@ -980,37 +806,13 @@ msgstr "titulli"
 msgid "controllable"
 msgstr ""
 
-msgid "changeable in NULL, READY, PAUSED or PLAYING state"
-msgstr ""
-
-msgid "changeable only in NULL, READY or PAUSED state"
-msgstr ""
-
-msgid "changeable only in NULL or READY state"
-msgstr ""
-
-msgid "Blacklisted files:"
-msgstr ""
-
 #, fuzzy
 msgid "Total count: "
 msgstr "numërimi i pjesës"
 
 #, c-format
-msgid "%d blacklisted file"
-msgid_plural "%d blacklisted files"
-msgstr[0] ""
-msgstr[1] ""
-
-#, c-format
 msgid "%d plugin"
 msgid_plural "%d plugins"
-msgstr[0] ""
-msgstr[1] ""
-
-#, c-format
-msgid "%d blacklist entry"
-msgid_plural "%d blacklist entries"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1023,25 +825,13 @@ msgstr[1] "karakteristikat"
 msgid "Print all elements"
 msgstr "Printo të gjithë elementët"
 
-msgid "Print list of blacklisted files"
-msgstr ""
-
 msgid ""
-"Print a machine-parsable list of features the specified plugin or all "
-"plugins provide.\n"
+"Print a machine-parsable list of features the specified plugin provides.\n"
 "                                       Useful in connection with external "
 "automatic plugin installation mechanisms"
 msgstr ""
 
 msgid "List the plugin contents"
-msgstr ""
-
-msgid "Check if the specified element or plugin exists"
-msgstr ""
-
-msgid ""
-"When checking if an element or plugin exists, also check that its version is "
-"at least the version specified"
 msgstr ""
 
 msgid "Print supported URI schemes, with the elements that implement them"
@@ -1055,8 +845,29 @@ msgstr "E pamundur hapja e file \"%s\" në shkrim."
 msgid "No such element or plugin '%s'\n"
 msgstr "asnjë element burues për URI \"%s\""
 
-msgid "Index statistics"
+msgid "Usage: gst-xmllaunch <file.xml> [ element.property=value ... ]\n"
+msgstr "Përdorimi: gst-xmllaunch <file.xml> [ element.property=vlera ... ]\n"
+
+#, c-format
+msgid "ERROR: parse of xml file '%s' failed.\n"
+msgstr "GABIM: analizimi i file xml '%s' dështoi.\n"
+
+#, c-format
+msgid "ERROR: no toplevel pipeline element in file '%s'.\n"
+msgstr "GABIM: asnjë element i pipline të toplevel tek file '%s'.\n"
+
+#, fuzzy
+msgid "WARNING: only one toplevel element is supported at this time.\n"
+msgstr "KUJDES: vetëm një element toplevel suportohet aktualisht."
+
+#, c-format
+msgid "ERROR: could not parse command line argument %d: %s.\n"
 msgstr ""
+"GABIM: i pamundur analizimi i argumentit %d të rreshtit të komandës: %s.\n"
+
+#, c-format
+msgid "WARNING: element named '%s' not found.\n"
+msgstr "KUJDES: elementi me emrin '%s' nuk u gjet.\n"
 
 #, c-format
 msgid "Got message #%u from element \"%s\" (%s): "
@@ -1093,17 +904,6 @@ msgstr "NDRYSHIM I GJETUR      : u gjet nga elementi \"%s\".\n"
 msgid "FOUND TAG\n"
 msgstr ""
 
-#, fuzzy, c-format
-msgid "FOUND TOC      : found by element \"%s\".\n"
-msgstr "NDRYSHIM I GJETUR      : u gjet nga elementi \"%s\".\n"
-
-#, fuzzy, c-format
-msgid "FOUND TOC      : found by object \"%s\".\n"
-msgstr "NDRYSHIM I GJETUR      : u gjet nga elementi \"%s\".\n"
-
-msgid "FOUND TOC\n"
-msgstr ""
-
 #, c-format
 msgid ""
 "INFO:\n"
@@ -1136,15 +936,8 @@ msgstr ""
 msgid "Interrupt: Stopping pipeline ...\n"
 msgstr ""
 
-#, fuzzy, c-format
-msgid "Missing element: %s\n"
-msgstr "asnjë element \"%s\""
-
 msgid "Output tags (also known as metadata)"
 msgstr "Tags e output (njohur gjithashtu si metadata)"
-
-msgid "Output TOC (chapters and editions)"
-msgstr ""
 
 msgid "Output status information and property notifications"
 msgstr "Njoftime të informacioneve dhe pronësisë së kondicionit të daljes"
@@ -1162,13 +955,19 @@ msgstr "Mos jep informacionin e gjendjes së LLOJIT"
 msgid "TYPE1,TYPE2,..."
 msgstr "LLOJI1,LLOJI2,..."
 
+msgid "Save xml representation of pipeline to FILE and exit"
+msgstr "Ruaj prezantimin xml të pipeline tek FILE dhe dil"
+
+msgid "FILE"
+msgstr "FILE"
+
 msgid "Do not install a fault handler"
 msgstr "Mos instalo një ushqyes të dëmtuar"
 
-msgid "Force EOS on sources before shutting the pipeline down"
-msgstr ""
+msgid "Print alloc trace (if enabled at compile time)"
+msgstr "Printo shenjat e alloc (nëse aktivuar në kohën e kompilimit)"
 
-msgid "Gather and print index statistics"
+msgid "Force EOS on sources before shutting the pipeline down"
 msgstr ""
 
 #, c-format
@@ -1214,16 +1013,10 @@ msgstr "GABIM: pipeline nuk dëshiron të luajë.\n"
 msgid "EOS on shutdown enabled -- Forcing EOS on the pipeline\n"
 msgstr ""
 
-msgid "EOS on shutdown enabled -- waiting for EOS after Error\n"
-msgstr ""
-
 msgid "Waiting for EOS...\n"
 msgstr ""
 
 msgid "EOS received - stopping pipeline...\n"
-msgstr ""
-
-msgid "Interrupt while waiting for EOS - stopping pipeline...\n"
 msgstr ""
 
 msgid "An error happened while waiting for EOS\n"
@@ -1241,40 +1034,6 @@ msgstr ""
 #, fuzzy
 msgid "Freeing pipeline ...\n"
 msgstr "DUKE ZBATUAR pipeline ...\n"
-
-#~ msgid "Print alloc trace (if enabled at compile time)"
-#~ msgstr "Printo shenjat e alloc (nëse aktivuar në kohën e kompilimit)"
-
-#~ msgid "Usage: gst-xmllaunch <file.xml> [ element.property=value ... ]\n"
-#~ msgstr ""
-#~ "Përdorimi: gst-xmllaunch <file.xml> [ element.property=vlera ... ]\n"
-
-#~ msgid "ERROR: parse of xml file '%s' failed.\n"
-#~ msgstr "GABIM: analizimi i file xml '%s' dështoi.\n"
-
-#~ msgid "ERROR: no toplevel pipeline element in file '%s'.\n"
-#~ msgstr "GABIM: asnjë element i pipline të toplevel tek file '%s'.\n"
-
-#, fuzzy
-#~ msgid "WARNING: only one toplevel element is supported at this time.\n"
-#~ msgstr "KUJDES: vetëm një element toplevel suportohet aktualisht."
-
-#~ msgid "ERROR: could not parse command line argument %d: %s.\n"
-#~ msgstr ""
-#~ "GABIM: i pamundur analizimi i argumentit %d të rreshtit të komandës: %s.\n"
-
-#~ msgid "WARNING: element named '%s' not found.\n"
-#~ msgstr "KUJDES: elementi me emrin '%s' nuk u gjet.\n"
-
-#~ msgid "Save xml representation of pipeline to FILE and exit"
-#~ msgstr "Ruaj prezantimin xml të pipeline tek FILE dhe dil"
-
-#~ msgid "FILE"
-#~ msgstr "FILE"
-
-#, fuzzy
-#~ msgid "Do not install signal handlers for SIGUSR1 and SIGUSR2"
-#~ msgstr "Mos instalo një ushqyes të dëmtuar"
 
 #~ msgid "Disable accelerated CPU instructions"
 #~ msgstr "Ç'aktivo instruksionet e përshpejtimit të CPU"

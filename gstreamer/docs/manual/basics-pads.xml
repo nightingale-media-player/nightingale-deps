@@ -37,7 +37,7 @@
       request. The meaning of those three types is exactly as it says:
       always pads always exist, sometimes pad exist only in certain
       cases (and can disappear randomly), and on-request pads appear
-      only if explicitly requested by applications.
+      only if explicitely requested by applications.
     </para>
 
     <sect2 id="section-pads-dynamic">
@@ -118,14 +118,6 @@ main (int   argc,
 <!-- example-begin pad.c d -->
 }
       <!-- example-end pad.c d --></programlisting>
-      <para>
-        It is not uncommon to add elements to the pipeline only from within
-        the "pad-added" callback. If you do this, don't
-        forget to set the state of the newly-added elements to the target
-        state of the pipeline using
-        <function>gst_element_set_state ()</function> or
-        <function>gst_element_sync_state_with_parent ()</function>.
-      </para>
     </sect2>
 
     <sect2 id="section-pads-request">
@@ -224,7 +216,7 @@ link_to_multiplexer (GstPad     *tolink_pad,
     <sect2 id="section-caps-structure">
       <title>Dissecting capabilities</title>
       <para>
-        A pad's capabilities are described in a <classname>GstCaps</classname>
+        A pads capabilities are described in a <classname>GstCaps</classname>
         object. Internally, a <ulink type="http"
         url="../../gstreamer/html/gstreamer-GstCaps.html"><classname>GstCaps</classname></ulink>
         will contain one or more <ulink type="http"
@@ -241,26 +233,27 @@ link_to_multiplexer (GstPad     *tolink_pad,
         <command>gst-inspect vorbisdec</command>. You will see two pads:
         a source and a sink pad. Both of these pads are always available,
         and both have capabilities attached to them. The sink pad will
-        accept vorbis-encoded audio data, with the media type
+        accept vorbis-encoded audio data, with the mime-type
         <quote>audio/x-vorbis</quote>. The source pad will be used
         to send raw (decoded) audio samples to the next element, with
-        a raw audio media type (in this case,
-	<quote>audio/x-raw</quote>).  The source pad will also
+        a raw audio mime-type (in this case, 
+	<quote>audio/x-raw-int</quote>) The source pad will also
         contain properties for the audio samplerate and the amount of
         channels, plus some more that you don't need to worry about
         for now.
       </para>
       <programlisting>
-
 Pad Templates:
   SRC template: 'src'
     Availability: Always
     Capabilities:
-      audio/x-raw
-                 format: F32LE
-                   rate: [ 1, 2147483647 ]
-               channels: [ 1, 256 ]
-
+      audio/x-raw-float
+                   rate: [ 8000, 50000 ]
+               channels: [ 1, 2 ]
+             endianness: 1234
+                  width: 32
+          buffer-frames: 0
+ 
   SINK template: 'sink'
     Availability: Always
     Capabilities:
@@ -434,7 +427,7 @@ Pad Templates:
           You can do caps filtering by inserting a capsfilter element into
           your pipeline and setting its <quote>caps</quote> property. Caps
           filters are often placed after converter elements like audioconvert,
-          audioresample, videoconvert or videoscale to force those
+          audioresample, ffmpegcolorspace or videoscale to force those
           converters to convert data to a specific output format at a
           certain point in a stream.
         </para>
@@ -527,8 +520,8 @@ link_elements_with_filter (GstElement *element1, GstElement *element2)
   gboolean link_ok;
   GstCaps *caps;
 
-  caps = gst_caps_new_simple ("video/x-raw",
-  	      "format", G_TYPE_STRING, "I420",
+  caps = gst_caps_new_simple ("video/x-raw-yuv",
+  	      "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('I', '4', '2', '0'),
 	      "width", G_TYPE_INT, 384,
 	      "height", G_TYPE_INT, 288,
 	      "framerate", GST_TYPE_FRACTION, 25, 1,
@@ -546,7 +539,7 @@ link_elements_with_filter (GstElement *element1, GstElement *element2)
       </programlisting>
       This will force the data flow between those two elements to
       a certain video format, width, height and framerate (or the linking
-      will fail if that cannot be achieved in the context of the elements
+      will fail if that cannot be achieved in the context of the elments
       involved). Keep in mind that when you use <function>
       gst_element_link_filtered ()</function> it will automatically create
       a <classname>capsfilter</classname> element for you and insert it into
@@ -568,12 +561,12 @@ link_elements_with_filter (GstElement *element1, GstElement *element2)
   GstCaps *caps;
                                                                                 
   caps = gst_caps_new_full (
-      gst_structure_new ("video/x-raw",
+      gst_structure_new ("video/x-raw-yuv",
 			 "width", G_TYPE_INT, 384,
 			 "height", G_TYPE_INT, 288,
 			 "framerate", GST_TYPE_FRACTION, 25, 1,
 			 NULL),
-      gst_structure_new ("video/x-bayer",
+      gst_structure_new ("video/x-raw-rgb",
 			 "width", G_TYPE_INT, 384,
 			 "height", G_TYPE_INT, 288,
 			 "framerate", GST_TYPE_FRACTION, 25, 1,
@@ -592,10 +585,8 @@ link_elements_with_filter (GstElement *element1, GstElement *element2)
       </programlisting>
       <para>
         See the API references for the full API of
-	<ulink type="http"
-	  url="&URLAPI;GstStructure.html"><classname>GstStructure</classname></ulink>
-	and <ulink type="http"
-	  url="&URLAPI;GstCaps.html"><classname>GstCaps</classname></ulink>.
+        <classname>GstStructure</classname> and
+        <classname>GstCaps</classname>.
       </para>
     </sect2>
   </sect1>

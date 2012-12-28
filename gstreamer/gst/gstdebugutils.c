@@ -28,7 +28,7 @@
  * - use labels like : element [ label="{element | <src> src | <sink> sink}"]
  * - point to record-connectors : element1:src -> element2:sink
  * - we use head/tail labels for pad-caps right now
- *   - this does not work well, as dot seems to not look at their size when
+ *   - this does not work well, as dot seems to not llok at their sizen when
  *     doing the layout
  *   - we could add the caps to the pad itself, then we should use one line per
  *     caps (simple caps = one line)
@@ -54,7 +54,7 @@
 
 /*** PIPELINE GRAPHS **********************************************************/
 
-extern const gchar *priv_gst_dump_dot_dir;      /* NULL *//* set from gst.c */
+const gchar *priv_gst_dump_dot_dir;     /* NULL *//* set from gst.c */
 
 const gchar spaces[] = {
   "                                "    /* 32 */
@@ -66,10 +66,10 @@ const gchar spaces[] = {
 extern GstClockTime _priv_gst_info_start_time;
 
 static gchar *
-debug_dump_make_object_name (GstObject * obj)
+debug_dump_make_object_name (GstObject * element)
 {
-  return g_strcanon (g_strdup_printf ("%s_%p", GST_OBJECT_NAME (obj), obj),
-      G_CSET_A_2_Z G_CSET_a_2_z G_CSET_DIGITS "_", '_');
+  return g_strcanon (g_strdup_printf ("%s_%p", GST_OBJECT_NAME (element),
+          element), G_CSET_A_2_Z G_CSET_a_2_z G_CSET_DIGITS "_", '_');
 }
 
 static gchar *
@@ -77,13 +77,11 @@ debug_dump_get_element_state (GstElement * element)
 {
   gchar *state_name = NULL;
   const gchar *state_icons = "~0-=>";
-  GstState state = GST_STATE_VOID_PENDING, pending = GST_STATE_VOID_PENDING;
+  GstState state = 0, pending = 0;
 
   gst_element_get_state (element, &state, &pending, 0);
   if (pending == GST_STATE_VOID_PENDING) {
-    gboolean is_locked = gst_element_is_locked_state (element);
-    state_name = g_strdup_printf ("\\n[%c]%s", state_icons[state],
-        (is_locked ? "(locked)" : ""));
+    state_name = g_strdup_printf ("\\n[%c]", state_icons[state]);
   } else {
     state_name = g_strdup_printf ("\\n[%c] -> [%c]", state_icons[state],
         state_icons[pending]);
@@ -138,14 +136,14 @@ debug_dump_get_element_params (GstElement * element)
 }
 
 static void
-debug_dump_pad (GstPad * pad, const gchar * color_name,
-    const gchar * element_name, GstDebugGraphDetails details, FILE * out,
-    const gint indent)
+debug_dump_pad (GstPad * pad, gchar * color_name, gchar * element_name,
+    FILE * out, const gint indent)
 {
   GstPadTemplate *pad_templ;
   GstPadPresence presence;
-  gchar *pad_name;
-  const gchar *style_name;
+  gchar *pad_name, *style_name;
+  gchar pad_flags[6];
+  const gchar *activation_mode = "-><";
   const gchar *spc = &spaces[MAX (sizeof (spaces) - (1 + indent * 2), 0)];
 
   pad_name = debug_dump_make_object_name (GST_OBJECT (pad));
@@ -160,29 +158,16 @@ debug_dump_pad (GstPad * pad, const gchar * color_name,
       style_name = "filled,dashed";
     }
   }
-  if (details & GST_DEBUG_GRAPH_SHOW_STATES) {
-    gchar pad_flags[4];
-    const gchar *activation_mode = "-><";
+  /* check if pad flags */
+  pad_flags[0] = GST_OBJECT_FLAG_IS_SET (pad, GST_PAD_BLOCKED) ? 'B' : 'b';
+  pad_flags[1] = GST_OBJECT_FLAG_IS_SET (pad, GST_PAD_FLUSHING) ? 'F' : 'f';
+  pad_flags[2] = GST_OBJECT_FLAG_IS_SET (pad, GST_PAD_IN_GETCAPS) ? 'G' : 'g';
+  pad_flags[3] = GST_OBJECT_FLAG_IS_SET (pad, GST_PAD_IN_SETCAPS) ? 's' : 's';
+  pad_flags[4] = GST_OBJECT_FLAG_IS_SET (pad, GST_PAD_BLOCKING) ? 'B' : 'b';
+  pad_flags[5] = '\0';
 
-    /* check if pad flags */
-    pad_flags[0] =
-        GST_OBJECT_FLAG_IS_SET (pad, GST_PAD_FLAG_BLOCKED) ? 'B' : 'b';
-    pad_flags[1] =
-        GST_OBJECT_FLAG_IS_SET (pad, GST_PAD_FLAG_FLUSHING) ? 'F' : 'f';
-    pad_flags[2] =
-        GST_OBJECT_FLAG_IS_SET (pad, GST_PAD_FLAG_BLOCKING) ? 'B' : 'b';
-    pad_flags[3] = '\0';
-
-    fprintf (out,
-        "%s  %s_%s [color=black, fillcolor=\"%s\", label=\"%s\\n[%c][%s]\", height=\"0.2\", style=\"%s\"];\n",
-        spc, element_name, pad_name, color_name, GST_OBJECT_NAME (pad),
-        activation_mode[pad->mode], pad_flags, style_name);
-  } else {
-    fprintf (out,
-        "%s  %s_%s [color=black, fillcolor=\"%s\", label=\"%s\", height=\"0.2\", style=\"%s\"];\n",
-        spc, element_name, pad_name, color_name, GST_OBJECT_NAME (pad),
-        style_name);
-  }
+  fprintf (out, "%s  %s_%s [color=black, fillcolor=\"%s\", label=\"%s\\n[%c][%s]\", height=\"0.2\", style=\"%s\"];\n", spc, element_name, pad_name, color_name, GST_OBJECT_NAME (pad), activation_mode[pad->mode],      /* NONE/PUSH/PULL */
+      pad_flags, style_name);
 
   g_free (pad_name);
 }
@@ -196,7 +181,7 @@ debug_dump_element_pad (GstPad * pad, GstElement * element,
   GstPadDirection dir;
   gchar *element_name;
   gchar *target_element_name;
-  const gchar *color_name;
+  gchar *color_name;
 
   dir = gst_pad_get_direction (pad);
   element_name = debug_dump_make_object_name (GST_OBJECT (element));
@@ -207,33 +192,19 @@ debug_dump_element_pad (GstPad * pad, GstElement * element,
     /* output target-pad so that it belongs to this element */
     if ((tmp_pad = gst_ghost_pad_get_target (GST_GHOST_PAD (pad)))) {
       if ((target_pad = gst_pad_get_peer (tmp_pad))) {
-        gchar *pad_name, *target_pad_name;
-        const gchar *spc = &spaces[MAX (sizeof (spaces) - (1 + indent * 2), 0)];
-
         if ((target_element = gst_pad_get_parent_element (target_pad))) {
           target_element_name =
               debug_dump_make_object_name (GST_OBJECT (target_element));
         } else {
-          target_element_name = g_strdup ("");
+          target_element_name = "";
         }
-        debug_dump_pad (target_pad, color_name, target_element_name, details,
-            out, indent);
-        /* src ghostpad relationship */
-        pad_name = debug_dump_make_object_name (GST_OBJECT (pad));
-        target_pad_name = debug_dump_make_object_name (GST_OBJECT (target_pad));
-        if (dir == GST_PAD_SRC) {
-          fprintf (out, "%s%s_%s -> %s_%s [style=dashed, minlen=0]\n", spc,
-              target_element_name, target_pad_name, element_name, pad_name);
-        } else {
-          fprintf (out, "%s%s_%s -> %s_%s [style=dashed, minlen=0]\n", spc,
-              element_name, pad_name, target_element_name, target_pad_name);
-        }
-        g_free (target_pad_name);
-        g_free (target_element_name);
-        if (target_element)
+        debug_dump_pad (target_pad, color_name, target_element_name, out,
+            indent);
+        if (target_element) {
+          g_free (target_element_name);
           gst_object_unref (target_element);
+        }
         gst_object_unref (target_pad);
-        g_free (pad_name);
       }
       gst_object_unref (tmp_pad);
     }
@@ -243,7 +214,7 @@ debug_dump_element_pad (GstPad * pad, GstElement * element,
             GST_PAD_SINK) ? "#aaaaff" : "#cccccc");
   }
   /* pads */
-  debug_dump_pad (pad, color_name, element_name, details, out, indent);
+  debug_dump_pad (pad, color_name, element_name, out, indent);
   g_free (element_name);
 }
 
@@ -252,7 +223,6 @@ string_append_field (GQuark field, const GValue * value, gpointer ptr)
 {
   GString *str = (GString *) ptr;
   gchar *value_str = gst_value_serialize (value);
-  gchar *esc_value_str;
 
   /* some enums can become really long */
   if (strlen (value_str) > 25) {
@@ -261,7 +231,7 @@ string_append_field (GQuark field, const GValue * value, gpointer ptr)
     /* truncate */
     value_str[25] = '\0';
 
-    /* mirror any brackets and quotes */
+    /* mirror any brackets */
     if (value_str[0] == '<')
       value_str[pos--] = '>';
     if (value_str[0] == '[')
@@ -270,8 +240,6 @@ string_append_field (GQuark field, const GValue * value, gpointer ptr)
       value_str[pos--] = ')';
     if (value_str[0] == '{')
       value_str[pos--] = '}';
-    if (value_str[0] == '"')
-      value_str[pos--] = '"';
     if (pos != 24)
       value_str[pos--] = ' ';
     /* elippsize */
@@ -279,18 +247,16 @@ string_append_field (GQuark field, const GValue * value, gpointer ptr)
     value_str[pos--] = '.';
     value_str[pos--] = '.';
   }
-  esc_value_str = g_strescape (value_str, NULL);
-
   g_string_append_printf (str, "  %18s: %s\\l", g_quark_to_string (field),
-      esc_value_str);
+      value_str);
 
   g_free (value_str);
-  g_free (esc_value_str);
   return TRUE;
 }
 
 static gchar *
-debug_dump_describe_caps (GstCaps * caps, GstDebugGraphDetails details)
+debug_dump_describe_caps (GstCaps * caps, GstDebugGraphDetails details,
+    gboolean * need_free)
 {
   gchar *media = NULL;
 
@@ -298,6 +264,7 @@ debug_dump_describe_caps (GstCaps * caps, GstDebugGraphDetails details)
 
     if (gst_caps_is_any (caps) || gst_caps_is_empty (caps)) {
       media = gst_caps_to_string (caps);
+      *need_free = TRUE;
 
     } else {
       GString *str = NULL;
@@ -320,14 +287,16 @@ debug_dump_describe_caps (GstCaps * caps, GstDebugGraphDetails details)
       }
 
       media = g_string_free (str, FALSE);
+      *need_free = TRUE;
     }
 
   } else {
     if (GST_CAPS_IS_SIMPLE (caps))
       media =
-          g_strdup (gst_structure_get_name (gst_caps_get_structure (caps, 0)));
+          (gchar *) gst_structure_get_name (gst_caps_get_structure (caps, 0));
     else
-      media = g_strdup ("*");
+      media = "*";
+    *need_free = FALSE;
   }
   return media;
 }
@@ -336,64 +305,150 @@ static void
 debug_dump_element_pad_link (GstPad * pad, GstElement * element,
     GstDebugGraphDetails details, FILE * out, const gint indent)
 {
-  GstElement *peer_element;
-  GstPad *peer_pad;
+  GstElement *peer_element, *target_element;
+  GstPad *peer_pad, *target_pad, *tmp_pad;
   GstCaps *caps, *peer_caps;
+  gboolean free_caps, free_peer_caps;
+  gboolean free_media, free_media_src, free_media_sink;
   gchar *media = NULL;
   gchar *media_src = NULL, *media_sink = NULL;
   gchar *pad_name, *element_name;
   gchar *peer_pad_name, *peer_element_name;
+  gchar *target_pad_name, *target_element_name;
   const gchar *spc = &spaces[MAX (sizeof (spaces) - (1 + indent * 2), 0)];
 
   if ((peer_pad = gst_pad_get_peer (pad))) {
+    free_media = free_media_src = free_media_sink = FALSE;
     if ((details & GST_DEBUG_GRAPH_SHOW_MEDIA_TYPE) ||
         (details & GST_DEBUG_GRAPH_SHOW_CAPS_DETAILS)
         ) {
-      caps = gst_pad_get_current_caps (pad);
-      if (!caps)
-        caps = gst_pad_get_pad_template_caps (pad);
-      peer_caps = gst_pad_get_current_caps (peer_pad);
-      if (!peer_caps)
-        peer_caps = gst_pad_get_pad_template_caps (peer_pad);
-
-      media = debug_dump_describe_caps (caps, details);
-      /* check if peer caps are different */
-      if (peer_caps && !gst_caps_is_equal (caps, peer_caps)) {
-        gchar *tmp;
-
-        tmp = debug_dump_describe_caps (peer_caps, details);
-        if (gst_pad_get_direction (pad) == GST_PAD_SRC) {
-          media_src = media;
-          media_sink = tmp;
-        } else {
-          media_src = tmp;
-          media_sink = media;
+      if ((caps = gst_pad_get_negotiated_caps (pad))) {
+        free_caps = TRUE;
+      } else {
+        free_caps = FALSE;
+        if (!(caps = (GstCaps *)
+                gst_pad_get_pad_template_caps (pad))) {
+          /* this should not happen */
+          media = "?";
         }
-        media = NULL;
       }
-      gst_caps_unref (peer_caps);
-      gst_caps_unref (caps);
+      if ((peer_caps = gst_pad_get_negotiated_caps (peer_pad))) {
+        free_peer_caps = TRUE;
+      } else {
+        free_peer_caps = FALSE;
+        peer_caps = (GstCaps *) gst_pad_get_pad_template_caps (peer_pad);
+      }
+      if (caps) {
+        media = debug_dump_describe_caps (caps, details, &free_media);
+        /* check if peer caps are different */
+        if (peer_caps && !gst_caps_is_equal (caps, peer_caps)) {
+          gchar *tmp;
+          gboolean free_tmp;
+
+          tmp = debug_dump_describe_caps (peer_caps, details, &free_tmp);
+          if (gst_pad_get_direction (pad) == GST_PAD_SRC) {
+            media_src = media;
+            free_media_src = free_media;
+            media_sink = tmp;
+            free_media_sink = free_tmp;
+          } else {
+            media_src = tmp;
+            free_media_src = free_tmp;
+            media_sink = media;
+            free_media_sink = free_media;
+          }
+          media = NULL;
+          free_media = FALSE;
+        }
+        if (free_caps) {
+          gst_caps_unref (caps);
+        }
+      }
+      if (free_peer_caps && peer_caps) {
+        gst_caps_unref (peer_caps);
+      }
     }
 
     pad_name = debug_dump_make_object_name (GST_OBJECT (pad));
     if (element) {
       element_name = debug_dump_make_object_name (GST_OBJECT (element));
     } else {
-      element_name = g_strdup ("");
+      element_name = "";
     }
     peer_pad_name = debug_dump_make_object_name (GST_OBJECT (peer_pad));
     if ((peer_element = gst_pad_get_parent_element (peer_pad))) {
       peer_element_name =
           debug_dump_make_object_name (GST_OBJECT (peer_element));
     } else {
-      peer_element_name = g_strdup ("");
+      peer_element_name = "";
+    }
+
+    if (GST_IS_GHOST_PAD (pad)) {
+      if ((tmp_pad = gst_ghost_pad_get_target (GST_GHOST_PAD (pad)))) {
+        if ((target_pad = gst_pad_get_peer (tmp_pad))) {
+          target_pad_name =
+              debug_dump_make_object_name (GST_OBJECT (target_pad));
+          if ((target_element = gst_pad_get_parent_element (target_pad))) {
+            target_element_name =
+                debug_dump_make_object_name (GST_OBJECT (target_element));
+          } else {
+            target_element_name = "";
+          }
+          /* src ghostpad relationship */
+          fprintf (out, "%s%s_%s -> %s_%s [style=dashed, minlen=0]\n", spc,
+              target_element_name, target_pad_name, element_name, pad_name);
+
+          g_free (target_pad_name);
+          if (target_element) {
+            g_free (target_element_name);
+            gst_object_unref (target_element);
+          }
+          gst_object_unref (target_pad);
+        }
+        gst_object_unref (tmp_pad);
+      }
+    }
+    if (GST_IS_GHOST_PAD (peer_pad)) {
+      if ((tmp_pad = gst_ghost_pad_get_target (GST_GHOST_PAD (peer_pad)))) {
+        if ((target_pad = gst_pad_get_peer (tmp_pad))) {
+          target_pad_name =
+              debug_dump_make_object_name (GST_OBJECT (target_pad));
+          if ((target_element = gst_pad_get_parent_element (target_pad))) {
+            target_element_name =
+                debug_dump_make_object_name (GST_OBJECT (target_element));
+          } else {
+            target_element_name = "";
+          }
+          /* sink ghostpad relationship */
+          fprintf (out, "%s%s_%s -> %s_%s [style=dashed, minlen=0]\n", spc,
+              peer_element_name, peer_pad_name,
+              target_element_name, target_pad_name);
+          /* FIXME: we are missing links from the proxy pad
+           * theoretically we need to:
+           * pad=gst_object_ref(target_pad);
+           * goto line 280: if ((peer_pad = gst_pad_get_peer (pad)))
+           * as this would be ugly we need to refactor ...
+           */
+          debug_dump_element_pad_link (target_pad, target_element, details, out,
+              indent);
+          g_free (target_pad_name);
+          if (target_element) {
+            g_free (target_element_name);
+            gst_object_unref (target_element);
+          }
+          gst_object_unref (target_pad);
+        }
+        gst_object_unref (tmp_pad);
+      }
     }
 
     /* pad link */
     if (media) {
       fprintf (out, "%s%s_%s -> %s_%s [label=\"%s\"]\n", spc,
           element_name, pad_name, peer_element_name, peer_pad_name, media);
-      g_free (media);
+      if (free_media) {
+        g_free (media);
+      }
     } else if (media_src && media_sink) {
       /* dot has some issues with placement of head and taillabels,
        * we need an empty label to make space */
@@ -402,53 +457,25 @@ debug_dump_element_pad_link (GstPad * pad, GstElement * element,
           "headlabel=\"%s\", taillabel=\"%s\"]\n",
           spc, element_name, pad_name, peer_element_name, peer_pad_name,
           media_src, media_sink);
-      g_free (media_src);
-      g_free (media_sink);
+      if (free_media_src)
+        g_free (media_src);
+      if (free_media_sink)
+        g_free (media_sink);
     } else {
       fprintf (out, "%s%s_%s -> %s_%s\n", spc,
           element_name, pad_name, peer_element_name, peer_pad_name);
     }
 
     g_free (pad_name);
-    g_free (element_name);
-    g_free (peer_pad_name);
-    g_free (peer_element_name);
-    if (peer_element)
-      gst_object_unref (peer_element);
-    gst_object_unref (peer_pad);
-  }
-}
-
-static void
-debug_dump_element_pads (GstIterator * pad_iter, GstPad * pad,
-    GstElement * element, GstDebugGraphDetails details, FILE * out,
-    const gint indent, guint * src_pads, guint * sink_pads)
-{
-  GValue item = { 0, };
-  gboolean pads_done;
-  GstPadDirection dir;
-
-  pads_done = FALSE;
-  while (!pads_done) {
-    switch (gst_iterator_next (pad_iter, &item)) {
-      case GST_ITERATOR_OK:
-        pad = g_value_get_object (&item);
-        debug_dump_element_pad (pad, element, details, out, indent);
-        dir = gst_pad_get_direction (pad);
-        if (dir == GST_PAD_SRC)
-          (*src_pads)++;
-        else if (dir == GST_PAD_SINK)
-          (*sink_pads)++;
-        g_value_reset (&item);
-        break;
-      case GST_ITERATOR_RESYNC:
-        gst_iterator_resync (pad_iter);
-        break;
-      case GST_ITERATOR_ERROR:
-      case GST_ITERATOR_DONE:
-        pads_done = TRUE;
-        break;
+    if (element) {
+      g_free (element_name);
     }
+    g_free (peer_pad_name);
+    if (peer_element) {
+      g_free (peer_element_name);
+      gst_object_unref (peer_element);
+    }
+    gst_object_unref (peer_pad);
   }
 }
 
@@ -458,7 +485,7 @@ debug_dump_element_pads (GstIterator * pad_iter, GstPad * pad,
  * @out: file to write to
  * @indent: level of graph indentation
  *
- * Helper for gst_debug_bin_to_dot_file() to recursively dump a pipeline.
+ * Helper for _gst_debug_bin_to_dot_file() to recursively dump a pipeline.
  */
 static void
 debug_dump_element (GstBin * bin, GstDebugGraphDetails details, FILE * out,
@@ -466,10 +493,9 @@ debug_dump_element (GstBin * bin, GstDebugGraphDetails details, FILE * out,
 {
   GstIterator *element_iter, *pad_iter;
   gboolean elements_done, pads_done;
-  GValue item = { 0, };
-  GValue item2 = { 0, };
   GstElement *element;
-  GstPad *pad = NULL;
+  GstPad *pad;
+  GstPadDirection dir;
   guint src_pads, sink_pads;
   gchar *element_name;
   gchar *state_name = NULL;
@@ -479,9 +505,8 @@ debug_dump_element (GstBin * bin, GstDebugGraphDetails details, FILE * out,
   element_iter = gst_bin_iterate_elements (bin);
   elements_done = FALSE;
   while (!elements_done) {
-    switch (gst_iterator_next (element_iter, &item)) {
+    switch (gst_iterator_next (element_iter, (gpointer) & element)) {
       case GST_ITERATOR_OK:
-        element = g_value_get_object (&item);
         element_name = debug_dump_make_object_name (GST_OBJECT (element));
 
         if (details & GST_DEBUG_GRAPH_SHOW_STATES) {
@@ -511,14 +536,28 @@ debug_dump_element (GstBin * bin, GstDebugGraphDetails details, FILE * out,
         g_free (element_name);
 
         src_pads = sink_pads = 0;
-        if ((pad_iter = gst_element_iterate_sink_pads (element))) {
-          debug_dump_element_pads (pad_iter, pad, element, details, out, indent,
-              &src_pads, &sink_pads);
-          gst_iterator_free (pad_iter);
-        }
-        if ((pad_iter = gst_element_iterate_src_pads (element))) {
-          debug_dump_element_pads (pad_iter, pad, element, details, out, indent,
-              &src_pads, &sink_pads);
+        if ((pad_iter = gst_element_iterate_pads (element))) {
+          pads_done = FALSE;
+          while (!pads_done) {
+            switch (gst_iterator_next (pad_iter, (gpointer) & pad)) {
+              case GST_ITERATOR_OK:
+                debug_dump_element_pad (pad, element, details, out, indent);
+                dir = gst_pad_get_direction (pad);
+                if (dir == GST_PAD_SRC)
+                  src_pads++;
+                else if (dir == GST_PAD_SINK)
+                  sink_pads++;
+                gst_object_unref (pad);
+                break;
+              case GST_ITERATOR_RESYNC:
+                gst_iterator_resync (pad_iter);
+                break;
+              case GST_ITERATOR_ERROR:
+              case GST_ITERATOR_DONE:
+                pads_done = TRUE;
+                break;
+            }
+          }
           gst_iterator_free (pad_iter);
         }
         if (GST_IS_BIN (element)) {
@@ -539,27 +578,14 @@ debug_dump_element (GstBin * bin, GstDebugGraphDetails details, FILE * out,
         if ((pad_iter = gst_element_iterate_pads (element))) {
           pads_done = FALSE;
           while (!pads_done) {
-            switch (gst_iterator_next (pad_iter, &item2)) {
+            switch (gst_iterator_next (pad_iter, (gpointer) & pad)) {
               case GST_ITERATOR_OK:
-                pad = g_value_get_object (&item2);
-                if (gst_pad_is_linked (pad)) {
-                  if (gst_pad_get_direction (pad) == GST_PAD_SRC) {
-                    debug_dump_element_pad_link (pad, element, details, out,
-                        indent);
-                  } else {
-                    GstPad *peer_pad = gst_pad_get_peer (pad);
-
-                    if (peer_pad) {
-                      if (!GST_IS_GHOST_PAD (peer_pad)
-                          && GST_IS_PROXY_PAD (peer_pad)) {
-                        debug_dump_element_pad_link (peer_pad, NULL, details,
-                            out, indent);
-                      }
-                      gst_object_unref (peer_pad);
-                    }
-                  }
+                if (gst_pad_is_linked (pad)
+                    && gst_pad_get_direction (pad) == GST_PAD_SRC) {
+                  debug_dump_element_pad_link (pad, element, details, out,
+                      indent);
                 }
-                g_value_reset (&item2);
+                gst_object_unref (pad);
                 break;
               case GST_ITERATOR_RESYNC:
                 gst_iterator_resync (pad_iter);
@@ -570,10 +596,9 @@ debug_dump_element (GstBin * bin, GstDebugGraphDetails details, FILE * out,
                 break;
             }
           }
-          g_value_unset (&item2);
           gst_iterator_free (pad_iter);
         }
-        g_value_reset (&item);
+        gst_object_unref (element);
         break;
       case GST_ITERATOR_RESYNC:
         gst_iterator_resync (element_iter);
@@ -584,13 +609,11 @@ debug_dump_element (GstBin * bin, GstDebugGraphDetails details, FILE * out,
         break;
     }
   }
-
-  g_value_unset (&item);
   gst_iterator_free (element_iter);
 }
 
 /*
- * gst_debug_bin_to_dot_file:
+ * _gst_debug_bin_to_dot_file:
  * @bin: the top-level pipeline that should be analyzed
  * @file_name: output base filename (e.g. "myplayer")
  *
@@ -602,7 +625,7 @@ debug_dump_element (GstBin * bin, GstDebugGraphDetails details, FILE * out,
  * </programlisting></informalexample>
  */
 void
-gst_debug_bin_to_dot_file (GstBin * bin, GstDebugGraphDetails details,
+_gst_debug_bin_to_dot_file (GstBin * bin, GstDebugGraphDetails details,
     const gchar * file_name)
 {
   gchar *full_file_name = NULL;
@@ -667,16 +690,16 @@ gst_debug_bin_to_dot_file (GstBin * bin, GstDebugGraphDetails details,
 }
 
 /*
- * gst_debug_bin_to_dot_file_with_ts:
+ * _gst_debug_bin_to_dot_file_with_ts:
  * @bin: the top-level pipeline that should be analyzed
  * @file_name: output base filename (e.g. "myplayer")
  *
- * This works like gst_debug_bin_to_dot_file(), but adds the current timestamp
+ * This works like _gst_debug_bin_to_dot_file(), but adds the current timestamp
  * to the filename, so that it can be used to take multiple snapshots.
  */
 void
-gst_debug_bin_to_dot_file_with_ts (GstBin * bin,
-    GstDebugGraphDetails details, const gchar * file_name)
+_gst_debug_bin_to_dot_file_with_ts (GstBin * bin, GstDebugGraphDetails details,
+    const gchar * file_name)
 {
   gchar *ts_file_name = NULL;
   GstClockTime elapsed;
@@ -699,19 +722,19 @@ gst_debug_bin_to_dot_file_with_ts (GstBin * bin,
       g_strdup_printf ("%u.%02u.%02u.%09u-%s", GST_TIME_ARGS (elapsed),
       file_name);
 
-  gst_debug_bin_to_dot_file (bin, details, ts_file_name);
+  _gst_debug_bin_to_dot_file (bin, details, ts_file_name);
   g_free (ts_file_name);
 }
 #else /* !GST_DISABLE_GST_DEBUG */
 #ifndef GST_REMOVE_DISABLED
 void
-gst_debug_bin_to_dot_file (GstBin * bin, GstDebugGraphDetails details,
+_gst_debug_bin_to_dot_file (GstBin * bin, GstDebugGraphDetails details,
     const gchar * file_name)
 {
 }
 
 void
-gst_debug_bin_to_dot_file_with_ts (GstBin * bin, GstDebugGraphDetails details,
+_gst_debug_bin_to_dot_file_with_ts (GstBin * bin, GstDebugGraphDetails details,
     const gchar * file_name)
 {
 }

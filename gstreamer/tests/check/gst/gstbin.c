@@ -21,7 +21,6 @@
  */
 
 #include <gst/check/gstcheck.h>
-#include <gst/base/gstbasesrc.h>
 
 static void
 pop_async_done (GstBus * bus)
@@ -57,35 +56,12 @@ pop_messages (GstBus * bus, int count)
   GST_DEBUG ("popped %d messages", count);
 }
 
-static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
-    GST_PAD_SRC,
-    GST_PAD_ALWAYS,
-    GST_STATIC_CAPS_ANY);
-
-static gpointer
-push_one_eos (GstPad * pad)
-{
-  GST_DEBUG_OBJECT (pad, "Pushing EOS event");
-  gst_pad_push_event (pad, gst_event_new_eos ());
-
-  return NULL;
-}
-
-static gpointer
-push_one_stream_start (GstPad * pad)
-{
-  GST_DEBUG_OBJECT (pad, "Pushing STREAM_START event");
-  gst_pad_push_event (pad, gst_event_new_stream_start ("test"));
-
-  return NULL;
-}
-
 GST_START_TEST (test_interface)
 {
   GstBin *bin, *bin2;
   GstElement *filesrc;
   GstIterator *it;
-  GValue item = { 0, };
+  gpointer item;
 
   bin = GST_BIN (gst_bin_new (NULL));
   fail_unless (bin != NULL, "Could not create bin");
@@ -101,8 +77,8 @@ GST_START_TEST (test_interface)
   it = gst_bin_iterate_all_by_interface (bin, GST_TYPE_URI_HANDLER);
   fail_unless (it != NULL);
   fail_unless (gst_iterator_next (it, &item) == GST_ITERATOR_OK);
-  fail_unless (g_value_get_object (&item) == (gpointer) filesrc);
-  g_value_reset (&item);
+  fail_unless (item == (gpointer) filesrc);
+  gst_object_unref (GST_OBJECT (item));
   fail_unless (gst_iterator_next (it, &item) == GST_ITERATOR_DONE);
   gst_iterator_free (it);
 
@@ -113,8 +89,8 @@ GST_START_TEST (test_interface)
   it = gst_bin_iterate_all_by_interface (bin, GST_TYPE_URI_HANDLER);
   fail_unless (it != NULL);
   fail_unless (gst_iterator_next (it, &item) == GST_ITERATOR_OK);
-  fail_unless (g_value_get_object (&item) == (gpointer) filesrc);
-  g_value_reset (&item);
+  fail_unless (item == (gpointer) filesrc);
+  gst_object_unref (GST_OBJECT (item));
   fail_unless (gst_iterator_next (it, &item) == GST_ITERATOR_DONE);
   gst_iterator_free (it);
 
@@ -127,8 +103,8 @@ GST_START_TEST (test_interface)
       GST_ELEMENT (bin2), gst_element_factory_make ("identity", NULL), NULL);
   it = gst_bin_iterate_all_by_interface (bin, GST_TYPE_URI_HANDLER);
   fail_unless (gst_iterator_next (it, &item) == GST_ITERATOR_OK);
-  fail_unless (g_value_get_object (&item) == (gpointer) filesrc);
-  g_value_reset (&item);
+  fail_unless (item == (gpointer) filesrc);
+  gst_object_unref (GST_OBJECT (item));
   fail_unless (gst_iterator_next (it, &item) == GST_ITERATOR_DONE);
   gst_iterator_free (it);
 
@@ -136,130 +112,15 @@ GST_START_TEST (test_interface)
   gst_bin_add (bin2, gst_element_factory_make ("filesrc", NULL));
   it = gst_bin_iterate_all_by_interface (bin, GST_TYPE_URI_HANDLER);
   fail_unless (gst_iterator_next (it, &item) == GST_ITERATOR_OK);
-  g_value_reset (&item);
+  gst_object_unref (GST_OBJECT (item));
   fail_unless (gst_iterator_next (it, &item) == GST_ITERATOR_OK);
-  g_value_reset (&item);
+  gst_object_unref (GST_OBJECT (item));
   fail_unless (gst_iterator_next (it, &item) == GST_ITERATOR_OK);
-  g_value_reset (&item);
+  gst_object_unref (GST_OBJECT (item));
   fail_unless (gst_iterator_next (it, &item) == GST_ITERATOR_DONE);
-  g_value_unset (&item);
   gst_iterator_free (it);
 
   gst_object_unref (bin);
-}
-
-GST_END_TEST;
-
-GST_START_TEST (test_eos)
-{
-  GstBus *bus;
-  GstElement *pipeline, *sink1, *sink2;
-  GstMessage *message;
-  GstPad *pad1, *pad2;
-  GThread *thread1, *thread2;
-
-  pipeline = gst_pipeline_new ("test_eos");
-  bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
-
-  sink1 = gst_element_factory_make ("fakesink", "sink1");
-  sink2 = gst_element_factory_make ("fakesink", "sink2");
-
-  gst_bin_add_many (GST_BIN (pipeline), sink1, sink2, NULL);
-
-  pad1 = gst_check_setup_src_pad_by_name (sink1, &srctemplate, "sink");
-  pad2 = gst_check_setup_src_pad_by_name (sink2, &srctemplate, "sink");
-
-  gst_pad_set_active (pad1, TRUE);
-  gst_pad_set_active (pad2, TRUE);
-
-  fail_if (gst_element_set_state (GST_ELEMENT (pipeline),
-          GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE);
-
-  /* Send one EOS to sink1 */
-  thread1 = g_thread_new ("thread1", (GThreadFunc) push_one_eos, pad1);
-
-  /* Make sure the EOS message is not sent */
-  message =
-      gst_bus_poll (bus, GST_MESSAGE_ERROR | GST_MESSAGE_EOS, 2 * GST_SECOND);
-  fail_if (message != NULL);
-
-  /* Send one EOS to sink2 */
-  thread2 = g_thread_new ("thread2", (GThreadFunc) push_one_eos, pad2);
-
-  /* Make sure the EOS message is sent then */
-  message = gst_bus_poll (bus, GST_MESSAGE_ERROR | GST_MESSAGE_EOS, -1);
-  fail_if (message == NULL);
-  fail_unless (GST_MESSAGE_TYPE (message) == GST_MESSAGE_EOS);
-  gst_message_unref (message);
-
-  /* Cleanup */
-  g_thread_join (thread1);
-  g_thread_join (thread2);
-
-  gst_element_set_state (GST_ELEMENT (pipeline), GST_STATE_NULL);
-  gst_pad_set_active (pad1, FALSE);
-  gst_pad_set_active (pad2, FALSE);
-  gst_check_teardown_src_pad (sink1);
-  gst_check_teardown_src_pad (sink2);
-  gst_object_unref (pipeline);
-}
-
-GST_END_TEST;
-
-GST_START_TEST (test_stream_start)
-{
-  GstBus *bus;
-  GstElement *pipeline, *sink1, *sink2;
-  GstMessage *message;
-  GstPad *pad1, *pad2;
-  GThread *thread1, *thread2;
-
-  pipeline = gst_pipeline_new ("test_stream_start");
-  bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
-
-  sink1 = gst_element_factory_make ("fakesink", "sink1");
-  sink2 = gst_element_factory_make ("fakesink", "sink2");
-
-  gst_bin_add_many (GST_BIN (pipeline), sink1, sink2, NULL);
-
-  pad1 = gst_check_setup_src_pad_by_name (sink1, &srctemplate, "sink");
-  pad2 = gst_check_setup_src_pad_by_name (sink2, &srctemplate, "sink");
-
-  gst_pad_set_active (pad1, TRUE);
-  gst_pad_set_active (pad2, TRUE);
-
-  fail_if (gst_element_set_state (GST_ELEMENT (pipeline),
-          GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE);
-
-  /* Send one STREAM_START to sink1 */
-  thread1 = g_thread_new ("thread1", (GThreadFunc) push_one_stream_start, pad1);
-
-  /* Make sure the STREAM_START message is not sent */
-  message =
-      gst_bus_poll (bus, GST_MESSAGE_ERROR | GST_MESSAGE_STREAM_START,
-      2 * GST_SECOND);
-  fail_if (message != NULL);
-
-  /* Send one STREAM_START to sink2 */
-  thread2 = g_thread_new ("thread2", (GThreadFunc) push_one_stream_start, pad2);
-
-  /* Make sure the STREAM_START message is sent then */
-  message =
-      gst_bus_poll (bus, GST_MESSAGE_ERROR | GST_MESSAGE_STREAM_START, -1);
-  fail_if (message == NULL);
-  fail_unless (GST_MESSAGE_TYPE (message) == GST_MESSAGE_STREAM_START);
-  gst_message_unref (message);
-
-  /* Cleanup */
-  g_thread_join (thread1);
-  g_thread_join (thread2);
-
-  gst_element_set_state (GST_ELEMENT (pipeline), GST_STATE_NULL);
-  gst_pad_set_active (pad1, FALSE);
-  gst_pad_set_active (pad2, FALSE);
-  gst_check_teardown_src_pad (sink1);
-  gst_check_teardown_src_pad (sink2);
-  gst_object_unref (pipeline);
 }
 
 GST_END_TEST;
@@ -419,12 +280,7 @@ GST_START_TEST (test_message_state_changed_children)
   ASSERT_OBJECT_REFCOUNT (sink, "sink", 1);
   ASSERT_OBJECT_REFCOUNT (pipeline, "pipeline", 1);
 
-  /* change state to PAUSED, spawning four messages */
-  /* STATE_CHANGED (NULL => READY)
-   * STREAM_START
-   * ASYNC_DONE
-   * STATE_CHANGED (READY => PAUSED)
-   */
+  /* change state to PAUSED, spawning three messages */
   GST_DEBUG ("setting pipeline to PAUSED");
   ret = gst_element_set_state (GST_ELEMENT (pipeline), GST_STATE_PAUSED);
   fail_unless (ret == GST_STATE_CHANGE_ASYNC);
@@ -437,9 +293,9 @@ GST_START_TEST (test_message_state_changed_children)
 
   /* wait for async thread to settle down */
   GST_DEBUG ("waiting for refcount");
-  while (GST_OBJECT_REFCOUNT_VALUE (pipeline) > 4)
+  while (GST_OBJECT_REFCOUNT_VALUE (pipeline) > 3)
     THREAD_SWITCH ();
-  GST_DEBUG ("refcount <= 4 now");
+  GST_DEBUG ("refcount <= 3 now");
 
   /* each object is referenced by a message;
    * base_src is blocked in the push and has an extra refcount.
@@ -450,9 +306,9 @@ GST_START_TEST (test_message_state_changed_children)
   /* refcount can be 4 if the bin is still processing the async_done message of
    * the sink. */
   ASSERT_OBJECT_REFCOUNT_BETWEEN (sink, "sink", 2, 3);
-  /* 3 or 4 is valid, because the pipeline might still be posting 
+  /* 2 or 3 is valid, because the pipeline might still be posting 
    * its state_change message */
-  ASSERT_OBJECT_REFCOUNT_BETWEEN (pipeline, "pipeline", 3, 4);
+  ASSERT_OBJECT_REFCOUNT_BETWEEN (pipeline, "pipeline", 2, 3);
 
   pop_messages (bus, 3);
   pop_async_done (bus);
@@ -587,51 +443,6 @@ GST_START_TEST (test_watch_for_state_change)
 }
 
 GST_END_TEST;
-
-GST_START_TEST (test_state_change_error_message)
-{
-  GstElement *src, *sink, *bin;
-  GstBus *bus;
-  GstStateChangeReturn ret;
-
-  bin = gst_element_factory_make ("bin", NULL);
-  fail_unless (bin != NULL, "Could not create bin");
-
-  bus = g_object_new (gst_bus_get_type (), NULL);
-  gst_element_set_bus (GST_ELEMENT_CAST (bin), bus);
-
-  src = gst_element_factory_make ("fakesrc", NULL);
-  fail_if (src == NULL, "Could not create fakesrc");
-  sink = gst_element_factory_make ("fakesink", NULL);
-  fail_if (sink == NULL, "Could not create fakesink");
-
-  /* add but don't link elements */
-  gst_bin_add (GST_BIN (bin), sink);
-  gst_bin_add (GST_BIN (bin), src);
-
-  /* change state, this should succeed */
-  ret = gst_element_set_state (GST_ELEMENT (bin), GST_STATE_PAUSED);
-  fail_unless (ret == GST_STATE_CHANGE_ASYNC);
-
-  /* now wait, the streaming thread will error because the source is not
-   * linked. */
-  ret = gst_element_get_state (GST_ELEMENT (bin), NULL, NULL,
-      GST_CLOCK_TIME_NONE);
-  fail_unless (ret == GST_STATE_CHANGE_FAILURE);
-
-  gst_bus_set_flushing (bus, TRUE);
-
-  /* setting bin to NULL flushes the bus automatically */
-  ret = gst_element_set_state (GST_ELEMENT (bin), GST_STATE_NULL);
-  fail_unless (ret == GST_STATE_CHANGE_SUCCESS);
-
-  /* clean up */
-  gst_object_unref (bus);
-  gst_object_unref (bin);
-}
-
-GST_END_TEST;
-
 
 /* adding an element with linked pads to a bin unlinks the
  * pads */
@@ -854,7 +665,7 @@ GST_START_TEST (test_children_state_change_order_semi_sink)
   fail_unless (gst_element_link (identity, sink) == TRUE);
 
   /* this is not very nice but should work just fine in this case. */
-  GST_OBJECT_FLAG_UNSET (sink, GST_ELEMENT_FLAG_SINK);  /* <======== */
+  GST_OBJECT_FLAG_UNSET (sink, GST_ELEMENT_IS_SINK);    /* <======== */
 
   ret = gst_element_set_state (pipeline, GST_STATE_PLAYING);
   fail_if (ret != GST_STATE_CHANGE_ASYNC, "State change to PLAYING not ASYNC");
@@ -1031,7 +842,7 @@ GST_START_TEST (test_iterate_sorted)
 {
   GstElement *src, *tee, *identity, *sink1, *sink2, *pipeline, *bin;
   GstIterator *it;
-  GValue elem = { 0, };
+  gpointer elem;
 
   pipeline = gst_pipeline_new (NULL);
   fail_unless (pipeline != NULL, "Could not create pipeline");
@@ -1066,21 +877,19 @@ GST_START_TEST (test_iterate_sorted)
 
   it = gst_bin_iterate_sorted (GST_BIN (pipeline));
   fail_unless (gst_iterator_next (it, &elem) == GST_ITERATOR_OK);
-  fail_unless (g_value_get_object (&elem) == (gpointer) sink2);
-  g_value_reset (&elem);
+  fail_unless (elem == sink2);
+  gst_object_unref (elem);
 
   fail_unless (gst_iterator_next (it, &elem) == GST_ITERATOR_OK);
-  fail_unless (g_value_get_object (&elem) == (gpointer) identity);
-  g_value_reset (&elem);
+  fail_unless (elem == identity);
+  gst_object_unref (elem);
 
   fail_unless (gst_iterator_next (it, &elem) == GST_ITERATOR_OK);
-  fail_unless (g_value_get_object (&elem) == (gpointer) bin);
-  g_value_reset (&elem);
+  fail_unless (elem == bin);
+  gst_object_unref (elem);
 
-  g_value_unset (&elem);
   gst_iterator_free (it);
 
-  ASSERT_OBJECT_REFCOUNT (pipeline, "pipeline", 1);
   gst_object_unref (pipeline);
 }
 
@@ -1132,7 +941,7 @@ GST_START_TEST (test_link_structure_change)
 
   /* use the sync signal handler to link elements while the pipeline is still
    * doing the state change */
-  gst_bus_set_sync_handler (bus, gst_bus_sync_signal_handler, pipeline, NULL);
+  gst_bus_set_sync_handler (bus, gst_bus_sync_signal_handler, pipeline);
   g_object_connect (bus, "signal::sync-message::state-changed",
       G_CALLBACK (test_link_structure_change_state_changed_sync_cb), pipeline,
       NULL);
@@ -1152,382 +961,15 @@ GST_START_TEST (test_link_structure_change)
   gst_element_get_state (pipeline, NULL, NULL, GST_CLOCK_TIME_NONE);
 
   /* the state change will be done on src only if the pipeline correctly resyncs
-   * after that fakesrc has been linked to identity */
+   * after that filesrc has been linked to identity */
   gst_element_get_state (src, &state, NULL, 0);
   fail_unless_equals_int (state, GST_STATE_READY);
 
-  /* clean up */
-  gst_element_set_state (pipeline, GST_STATE_NULL);
   gst_object_unref (bus);
   gst_object_unref (pipeline);
 }
 
 GST_END_TEST;
-
-static GstBusSyncReply
-sync_handler_remove_sink (GstBus * bus, GstMessage * message, gpointer data)
-{
-  if (GST_MESSAGE_TYPE (message) == GST_MESSAGE_ERROR) {
-    GstElement *child;
-
-    child = gst_bin_get_by_name (GST_BIN (data), "fakesink");
-    fail_unless (child != NULL, "Could not find fakesink");
-
-    gst_bin_remove (GST_BIN (data), child);
-    gst_object_unref (child);
-  }
-  return GST_BUS_PASS;
-}
-
-GST_START_TEST (test_state_failure_remove)
-{
-  GstElement *src, *sink, *pipeline;
-  GstBus *bus;
-  GstStateChangeReturn ret;
-
-  pipeline = gst_pipeline_new (NULL);
-  fail_unless (pipeline != NULL, "Could not create pipeline");
-
-  src = gst_element_factory_make ("fakesrc", "fakesrc");
-  fail_unless (src != NULL, "Could not create fakesrc");
-
-  sink = gst_element_factory_make ("fakesink", "fakesink");
-  fail_unless (sink != NULL, "Could not create fakesink");
-
-  g_object_set (sink, "state-error", 1, NULL);
-
-  gst_bin_add (GST_BIN (pipeline), src);
-  gst_bin_add (GST_BIN (pipeline), sink);
-
-  gst_element_link (src, sink);
-
-  bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
-  fail_unless (bus != NULL, "Could not get bus");
-
-  gst_bus_set_sync_handler (bus, sync_handler_remove_sink, pipeline, NULL);
-
-  ret = gst_element_set_state (pipeline, GST_STATE_READY);
-  fail_unless (ret == GST_STATE_CHANGE_SUCCESS,
-      "did not get state change success");
-
-  gst_element_set_state (pipeline, GST_STATE_NULL);
-
-  gst_object_unref (bus);
-  gst_object_unref (pipeline);
-}
-
-GST_END_TEST;
-
-GST_START_TEST (test_many_bins)
-{
-  GstStateChangeReturn ret;
-  GstElement *src, *sink, *pipeline, *last_bin = NULL;
-  gint i;
-
-#define NUM_BINS 2000
-
-  pipeline = gst_pipeline_new (NULL);
-  fail_unless (pipeline != NULL, "Could not create pipeline");
-
-  src = gst_element_factory_make ("fakesrc", "fakesrc");
-  fail_unless (src != NULL, "Could not create fakesrc");
-  g_object_set (src, "num-buffers", 3, NULL);
-
-  sink = gst_element_factory_make ("fakesink", "fakesink");
-  fail_unless (sink != NULL, "Could not create fakesink");
-
-  gst_bin_add (GST_BIN (pipeline), src);
-  gst_bin_add (GST_BIN (pipeline), sink);
-
-  for (i = 0; i < NUM_BINS; ++i) {
-    GstElement *bin, *identity;
-    GstPad *srcpad, *sinkpad;
-
-    bin = gst_bin_new (NULL);
-    fail_unless (bin != NULL, "Could not create bin %d", i);
-    identity = gst_element_factory_make ("identity", "identity");
-    fail_unless (identity != NULL, "Could not create identity %d", i);
-    g_object_set (identity, "silent", TRUE, NULL);
-    gst_bin_add (GST_BIN (bin), identity);
-    sinkpad = gst_element_get_static_pad (identity, "sink");
-    srcpad = gst_element_get_static_pad (identity, "src");
-    gst_element_add_pad (bin, gst_ghost_pad_new ("sink", sinkpad));
-    gst_element_add_pad (bin, gst_ghost_pad_new ("src", srcpad));
-    gst_object_unref (sinkpad);
-    gst_object_unref (srcpad);
-
-    gst_bin_add (GST_BIN (pipeline), bin);
-
-    if (last_bin == NULL) {
-      srcpad = gst_element_get_static_pad (src, "src");
-    } else {
-      srcpad = gst_element_get_static_pad (last_bin, "src");
-    }
-    sinkpad = gst_element_get_static_pad (bin, "sink");
-    gst_pad_link_full (srcpad, sinkpad, GST_PAD_LINK_CHECK_NOTHING);
-    gst_object_unref (sinkpad);
-    gst_object_unref (srcpad);
-
-
-    last_bin = bin;
-
-    /* insert some queues to limit the number of function calls in a row */
-    if ((i % 100) == 0) {
-      GstElement *q = gst_element_factory_make ("queue", NULL);
-
-      GST_LOG ("bin #%d, inserting queue", i);
-      gst_bin_add (GST_BIN (pipeline), q);
-      fail_unless (gst_element_link (last_bin, q));
-      last_bin = q;
-    }
-  }
-
-  fail_unless (gst_element_link (last_bin, sink));
-
-  ret = gst_element_set_state (pipeline, GST_STATE_PLAYING);
-  fail_unless_equals_int (ret, GST_STATE_CHANGE_ASYNC);
-
-  for (i = 0; i < 15; ++i) {
-    GST_INFO ("waiting for preroll ...");
-    ret = gst_element_get_state (pipeline, NULL, NULL, GST_SECOND);
-    if (ret != GST_STATE_CHANGE_ASYNC)
-      break;
-  }
-  fail_unless_equals_int (ret, GST_STATE_CHANGE_SUCCESS);
-
-  gst_element_set_state (pipeline, GST_STATE_NULL);
-  gst_object_unref (pipeline);
-}
-
-GST_END_TEST;
-
-static GstPadProbeReturn
-fakesrc_pad_blocked_cb (GstPad * pad, GstPadProbeInfo * info, void *arg)
-{
-  GstPipeline *pipeline = (GstPipeline *) arg;
-  GstElement *src, *sink;
-
-  src = gst_bin_get_by_name (GST_BIN (pipeline), "fakesrc");
-  fail_unless (src != NULL, "Could not get fakesrc");
-
-  sink = gst_element_factory_make ("fakesink", "fakesink");
-  fail_unless (sink != NULL, "Could not create fakesink");
-
-  g_object_set (sink, "state-error", 1, NULL);
-  gst_bin_add (GST_BIN (pipeline), sink);
-
-  gst_element_link (src, sink);
-  gst_element_sync_state_with_parent (sink);
-  gst_object_unref (src);
-
-  return GST_PAD_PROBE_REMOVE;
-}
-
-GST_START_TEST (test_state_failure_unref)
-{
-  GstElement *src, *pipeline;
-  GstPad *srcpad;
-  GstBus *bus;
-  GstStateChangeReturn ret;
-  GstMessage *msg;
-
-  pipeline = gst_pipeline_new (NULL);
-  fail_unless (pipeline != NULL, "Could not create pipeline");
-
-  src = gst_element_factory_make ("fakesrc", "fakesrc");
-  fail_unless (src != NULL, "Could not create fakesrc");
-
-  srcpad = gst_element_get_static_pad (src, "src");
-  fail_unless (srcpad != NULL, "Could not get fakesrc srcpad");
-
-  gst_pad_add_probe (srcpad, GST_PAD_PROBE_TYPE_BLOCK_DOWNSTREAM,
-      fakesrc_pad_blocked_cb, pipeline, NULL);
-  gst_object_unref (srcpad);
-
-  gst_bin_add (GST_BIN (pipeline), src);
-
-  bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
-  fail_unless (bus != NULL, "Could not get bus");
-
-  gst_element_set_state (pipeline, GST_STATE_PLAYING);
-
-  /* Wait for an error message from our fakesink (added from the
-     pad block callback). */
-  msg = gst_bus_poll (bus, GST_MESSAGE_ERROR, GST_SECOND);
-  fail_if (msg == NULL, "No error message within 1 second");
-  gst_message_unref (msg);
-
-  /* Check that after this failure, we can still stop, and then unref, the
-     pipeline. This should always be possible. */
-  ret = gst_element_set_state (pipeline, GST_STATE_NULL);
-  fail_unless (ret == GST_STATE_CHANGE_SUCCESS, "downward state change failed");
-
-  gst_object_unref (bus);
-  gst_object_unref (pipeline);
-}
-
-GST_END_TEST;
-
-static void
-on_sync_bus_error (GstBus * bus, GstMessage * msg)
-{
-  fail_if (msg != NULL);
-}
-
-GST_START_TEST (test_state_change_skip)
-{
-  GstElement *sink, *pipeline;
-  GstStateChangeReturn ret;
-  GstBus *bus;
-
-  pipeline = gst_pipeline_new (NULL);
-  fail_unless (pipeline != NULL, "Could not create pipeline");
-
-  bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
-  fail_unless (bus != NULL, "Could not get bus");
-
-  /* no errors */
-  gst_bus_enable_sync_message_emission (bus);
-  g_signal_connect (bus, "sync-message::error", (GCallback) on_sync_bus_error,
-      NULL);
-
-  sink = gst_element_factory_make ("fakesink", "fakesink");
-  fail_unless (sink != NULL, "Could not create fakesink");
-  gst_element_set_state (sink, GST_STATE_PAUSED);
-
-  g_object_set (sink, "state-error", 5, NULL);
-
-  gst_bin_add (GST_BIN (pipeline), sink);
-  gst_element_set_state (pipeline, GST_STATE_PLAYING);
-
-  g_object_set (sink, "state-error", 0, NULL);
-
-  /* Check that after this failure, we can still stop, and then unref, the
-     pipeline. This should always be possible. */
-  ret = gst_element_set_state (pipeline, GST_STATE_NULL);
-  fail_unless (ret == GST_STATE_CHANGE_SUCCESS, "downward state change failed");
-
-  gst_object_unref (pipeline);
-  gst_object_unref (bus);
-}
-
-GST_END_TEST;
-
-GST_START_TEST (test_duration_is_max)
-{
-  GstElement *bin, *src[3], *sink[3];
-  GstStateChangeReturn state_res;
-  GstFormat format = GST_FORMAT_BYTES;
-  gboolean res;
-  gint64 duration;
-
-  GST_INFO ("preparing test");
-
-  /* build pipeline */
-  bin = gst_pipeline_new ("pipeline");
-
-  /* 3 sources, an adder and a fakesink */
-  src[0] = gst_element_factory_make ("fakesrc", NULL);
-  src[1] = gst_element_factory_make ("fakesrc", NULL);
-  src[2] = gst_element_factory_make ("fakesrc", NULL);
-  sink[0] = gst_element_factory_make ("fakesink", NULL);
-  sink[1] = gst_element_factory_make ("fakesink", NULL);
-  sink[2] = gst_element_factory_make ("fakesink", NULL);
-  gst_bin_add_many (GST_BIN (bin), src[0], src[1], src[2], sink[0], sink[1],
-      sink[2], NULL);
-
-  gst_element_link (src[0], sink[0]);
-  gst_element_link (src[1], sink[1]);
-  gst_element_link (src[2], sink[2]);
-
-  /* irks, duration is reset on basesrc */
-  state_res = gst_element_set_state (bin, GST_STATE_PAUSED);
-  fail_unless (state_res != GST_STATE_CHANGE_FAILURE, NULL);
-
-  /* set durations on src */
-  GST_BASE_SRC (src[0])->segment.duration = 1000;
-  GST_BASE_SRC (src[1])->segment.duration = 3000;
-  GST_BASE_SRC (src[2])->segment.duration = 2000;
-
-  /* set to playing */
-  state_res = gst_element_set_state (bin, GST_STATE_PLAYING);
-  fail_unless (state_res != GST_STATE_CHANGE_FAILURE, NULL);
-
-  /* wait for completion */
-  state_res =
-      gst_element_get_state (GST_ELEMENT (bin), NULL, NULL,
-      GST_CLOCK_TIME_NONE);
-  fail_unless (state_res != GST_STATE_CHANGE_FAILURE, NULL);
-
-  res = gst_element_query_duration (GST_ELEMENT (bin), format, &duration);
-  fail_unless (res, NULL);
-
-  ck_assert_int_eq (duration, 3000);
-
-  gst_element_set_state (bin, GST_STATE_NULL);
-  gst_object_unref (bin);
-}
-
-GST_END_TEST;
-
-GST_START_TEST (test_duration_unknown_overrides)
-{
-  GstElement *bin, *src[3], *sink[3];
-  GstStateChangeReturn state_res;
-  GstFormat format = GST_FORMAT_BYTES;
-  gboolean res;
-  gint64 duration;
-
-  GST_INFO ("preparing test");
-
-  /* build pipeline */
-  bin = gst_pipeline_new ("pipeline");
-
-  /* 3 sources, an adder and a fakesink */
-  src[0] = gst_element_factory_make ("fakesrc", NULL);
-  src[1] = gst_element_factory_make ("fakesrc", NULL);
-  src[2] = gst_element_factory_make ("fakesrc", NULL);
-  sink[0] = gst_element_factory_make ("fakesink", NULL);
-  sink[1] = gst_element_factory_make ("fakesink", NULL);
-  sink[2] = gst_element_factory_make ("fakesink", NULL);
-  gst_bin_add_many (GST_BIN (bin), src[0], src[1], src[2], sink[0], sink[1],
-      sink[2], NULL);
-
-  gst_element_link (src[0], sink[0]);
-  gst_element_link (src[1], sink[1]);
-  gst_element_link (src[2], sink[2]);
-
-  /* irks, duration is reset on basesrc */
-  state_res = gst_element_set_state (bin, GST_STATE_PAUSED);
-  fail_unless (state_res != GST_STATE_CHANGE_FAILURE, NULL);
-
-  /* set durations on src */
-  GST_BASE_SRC (src[0])->segment.duration = GST_CLOCK_TIME_NONE;
-  GST_BASE_SRC (src[1])->segment.duration = 3000;
-  GST_BASE_SRC (src[2])->segment.duration = 2000;
-
-  /* set to playing */
-  state_res = gst_element_set_state (bin, GST_STATE_PLAYING);
-  fail_unless (state_res != GST_STATE_CHANGE_FAILURE, NULL);
-
-  /* wait for completion */
-  state_res =
-      gst_element_get_state (GST_ELEMENT (bin), NULL, NULL,
-      GST_CLOCK_TIME_NONE);
-  fail_unless (state_res != GST_STATE_CHANGE_FAILURE, NULL);
-
-  res = gst_element_query_duration (GST_ELEMENT (bin), format, &duration);
-  fail_unless (res, NULL);
-
-  ck_assert_int_eq (duration, GST_CLOCK_TIME_NONE);
-
-  gst_element_set_state (bin, GST_STATE_NULL);
-  gst_object_unref (bin);
-}
-
-GST_END_TEST;
-
-
 
 static Suite *
 gst_bin_suite (void)
@@ -1539,8 +981,6 @@ gst_bin_suite (void)
 
   suite_add_tcase (s, tc_chain);
   tcase_add_test (tc_chain, test_interface);
-  tcase_add_test (tc_chain, test_eos);
-  tcase_add_test (tc_chain, test_stream_start);
   tcase_add_test (tc_chain, test_children_state_change_order_flagged_sink);
   tcase_add_test (tc_chain, test_children_state_change_order_semi_sink);
   tcase_add_test (tc_chain, test_children_state_change_order_two_sink);
@@ -1548,20 +988,10 @@ gst_bin_suite (void)
   tcase_add_test (tc_chain, test_message_state_changed_child);
   tcase_add_test (tc_chain, test_message_state_changed_children);
   tcase_add_test (tc_chain, test_watch_for_state_change);
-  tcase_add_test (tc_chain, test_state_change_error_message);
   tcase_add_test (tc_chain, test_add_linked);
   tcase_add_test (tc_chain, test_add_self);
   tcase_add_test (tc_chain, test_iterate_sorted);
   tcase_add_test (tc_chain, test_link_structure_change);
-  tcase_add_test (tc_chain, test_state_failure_remove);
-  tcase_add_test (tc_chain, test_state_failure_unref);
-  tcase_add_test (tc_chain, test_state_change_skip);
-  tcase_add_test (tc_chain, test_duration_is_max);
-  tcase_add_test (tc_chain, test_duration_unknown_overrides);
-
-  /* fails on OSX build bot for some reason, and is a bit silly anyway */
-  if (0)
-    tcase_add_test (tc_chain, test_many_bins);
 
   return s;
 }

@@ -22,6 +22,18 @@
 #include <gst/gst.h>
 
 #define BUFFER_COUNT (1000)
+#define SRC_ELEMENT "fakesrc"
+#define SINK_ELEMENT "fakesink"
+
+
+static GstClockTime
+gst_get_current_time (void)
+{
+  GTimeVal tv;
+
+  g_get_current_time (&tv);
+  return GST_TIMEVAL_TO_TIME (tv);
+}
 
 gint
 main (gint argc, gchar * argv[])
@@ -31,6 +43,7 @@ main (gint argc, gchar * argv[])
   GSList *saved_src_list, *src_list, *new_src_list;
   guint complexity_order, n_elements, i, j, max_this_level;
   GstClockTime start, end;
+  gboolean all_srcs_linked;
 
   gst_init (&argc, &argv);
 
@@ -42,7 +55,7 @@ main (gint argc, gchar * argv[])
   complexity_order = atoi (argv[1]);
   n_elements = atoi (argv[2]);
 
-  start = gst_util_get_timestamp ();
+  start = gst_get_current_time ();
 
   pipeline = gst_element_factory_make ("pipeline", NULL);
   g_assert (pipeline);
@@ -56,16 +69,22 @@ main (gint argc, gchar * argv[])
   new_src_list = NULL;
 
   max_this_level = 1;
+  j = 0;
+  i = 0;
+  all_srcs_linked = FALSE;
   for (i = 0, j = 0; i < n_elements; i++, j++) {
     if (j >= max_this_level) {
       g_slist_free (saved_src_list);
       saved_src_list = g_slist_reverse (new_src_list);
       new_src_list = NULL;
       j = 0;
+      all_srcs_linked = FALSE;
       max_this_level *= complexity_order;
     }
 
     if (!src_list) {
+      if (j)
+        all_srcs_linked = TRUE;
       src_list = saved_src_list;
     }
 
@@ -89,40 +108,29 @@ main (gint argc, gchar * argv[])
   g_slist_free (saved_src_list);
   g_slist_free (new_src_list);
 
-  end = gst_util_get_timestamp ();
-  g_print ("%" GST_TIME_FORMAT " - creating and linking %u elements\n",
+  end = gst_get_current_time ();
+  g_print ("%" GST_TIME_FORMAT " - creating and linking %d elements\n",
       GST_TIME_ARGS (end - start), i);
 
-  start = gst_util_get_timestamp ();
+  start = gst_get_current_time ();
   if (gst_element_set_state (pipeline,
-          GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE)
+          GST_STATE_PLAYING) != GST_STATE_CHANGE_SUCCESS)
     g_assert_not_reached ();
-  if (gst_element_get_state (pipeline, NULL, NULL,
-          GST_CLOCK_TIME_NONE) == GST_STATE_CHANGE_FAILURE)
-    g_assert_not_reached ();
-  end = gst_util_get_timestamp ();
+  end = gst_get_current_time ();
   g_print ("%" GST_TIME_FORMAT " - setting pipeline to playing\n",
       GST_TIME_ARGS (end - start));
 
-  start = gst_util_get_timestamp ();
+  start = gst_get_current_time ();
   msg = gst_bus_poll (gst_element_get_bus (pipeline),
       GST_MESSAGE_EOS | GST_MESSAGE_ERROR, -1);
-  end = gst_util_get_timestamp ();
+  end = gst_get_current_time ();
   gst_message_unref (msg);
-  g_print ("%" GST_TIME_FORMAT " - putting %d buffers through\n",
+  g_print ("%" GST_TIME_FORMAT " - putting %u buffers through\n",
       GST_TIME_ARGS (end - start), BUFFER_COUNT);
 
-  start = gst_util_get_timestamp ();
-  if (gst_element_set_state (pipeline,
-          GST_STATE_NULL) != GST_STATE_CHANGE_SUCCESS)
-    g_assert_not_reached ();
-  end = gst_util_get_timestamp ();
-  g_print ("%" GST_TIME_FORMAT " - setting pipeline to NULL\n",
-      GST_TIME_ARGS (end - start));
-
-  start = gst_util_get_timestamp ();
+  start = gst_get_current_time ();
   g_object_unref (pipeline);
-  end = gst_util_get_timestamp ();
+  end = gst_get_current_time ();
   g_print ("%" GST_TIME_FORMAT " - unreffing pipeline\n",
       GST_TIME_ARGS (end - start));
 

@@ -45,12 +45,10 @@ GST_START_TEST (test_initialization)
   GstBuffer *buffer = gst_buffer_new ();
   GstByteReader reader = GST_BYTE_READER_INIT (data, 4);
   GstByteReader *reader2;
-  guint8 x = 0;
-  GstMapInfo info;
+  guint8 x;
 
-  gst_buffer_insert_memory (buffer, -1,
-      gst_memory_new_wrapped (GST_MEMORY_FLAG_READONLY, data, 4, 0, 4, NULL,
-          NULL));
+  GST_BUFFER_DATA (buffer) = data;
+  GST_BUFFER_SIZE (buffer) = 4;
 
   fail_unless (gst_byte_reader_get_uint8 (&reader, &x));
   fail_unless_equals_int (x, 0x01);
@@ -65,13 +63,11 @@ GST_START_TEST (test_initialization)
   fail_unless (gst_byte_reader_get_uint8 (&reader, &x));
   fail_unless_equals_int (x, 0x02);
 
-  fail_unless (gst_buffer_map (buffer, &info, GST_MAP_READ));
-  gst_byte_reader_init (&reader, info.data, info.size);
+  gst_byte_reader_init_from_buffer (&reader, buffer);
   fail_unless (gst_byte_reader_get_uint8 (&reader, &x));
   fail_unless_equals_int (x, 0x01);
   fail_unless (gst_byte_reader_get_uint8 (&reader, &x));
   fail_unless_equals_int (x, 0x02);
-  gst_buffer_unmap (buffer, &info);
 
   reader2 = gst_byte_reader_new (data, 4);
   fail_unless (gst_byte_reader_get_uint8 (reader2, &x));
@@ -80,14 +76,12 @@ GST_START_TEST (test_initialization)
   fail_unless_equals_int (x, 0x02);
   gst_byte_reader_free (reader2);
 
-  fail_unless (gst_buffer_map (buffer, &info, GST_MAP_READ));
-  reader2 = gst_byte_reader_new (info.data, info.size);
+  reader2 = gst_byte_reader_new_from_buffer (buffer);
   fail_unless (gst_byte_reader_get_uint8 (reader2, &x));
   fail_unless_equals_int (x, 0x01);
   fail_unless (gst_byte_reader_get_uint8 (reader2, &x));
   fail_unless_equals_int (x, 0x02);
   gst_byte_reader_free (reader2);
-  gst_buffer_unmap (buffer, &info);
 
   gst_buffer_unref (buffer);
 }
@@ -136,7 +130,7 @@ GST_START_TEST (test_get_uint_le)
     0xfe, 0xdc, 0xba, 0x09, 0x87, 0x65, 0x43, 0x21
   };
   GstByteReader reader = GST_BYTE_READER_INIT (data, 16);
-  guint8 a = 0;
+  guint8 a;
   guint16 b = 0;
   guint32 c = 0;
   guint64 d = 0;
@@ -179,7 +173,7 @@ GST_START_TEST (test_get_uint_be)
     0xfe, 0xdc, 0xba, 0x09, 0x87, 0x65, 0x43, 0x21
   };
   GstByteReader reader = GST_BYTE_READER_INIT (data, 16);
-  guint8 a = 0;
+  guint8 a;
   guint16 b = 0;
   guint32 c = 0;
   guint64 d = 0;
@@ -267,7 +261,7 @@ GST_START_TEST (test_get_int_le)
     0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
   };
   GstByteReader reader = GST_BYTE_READER_INIT (data, 16);
-  gint8 a = 0;
+  gint8 a;
   gint16 b = 0;
   gint32 c = 0;
   gint64 d = 0;
@@ -311,7 +305,7 @@ GST_START_TEST (test_get_int_be)
     0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
   };
   GstByteReader reader = GST_BYTE_READER_INIT (data, 16);
-  gint8 a = 0;
+  gint8 a;
   gint16 b = 0;
   gint32 c = 0;
   gint64 d = 0;
@@ -385,8 +379,8 @@ GST_START_TEST (test_get_float_le)
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0xbf,
   };
   GstByteReader reader = GST_BYTE_READER_INIT (data, 24);
-  gfloat a = 0.0;
-  gdouble b = 0.0;
+  gfloat a;
+  gdouble b;
 
   PEEK_CHECK (&reader, a, 32, le, 1.0);
   GET_CHECK (&reader, a, 32, le, 1.0);
@@ -411,8 +405,8 @@ GST_START_TEST (test_get_float_be)
     0xbf, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
   };
   GstByteReader reader = GST_BYTE_READER_INIT (data, 24);
-  gfloat a = 0.0;
-  gdouble b = 0.0;
+  gfloat a;
+  gdouble b;
 
   PEEK_CHECK (&reader, a, 32, be, 1.0);
   GET_CHECK (&reader, a, 32, be, 1.0);
@@ -439,7 +433,7 @@ GST_START_TEST (test_position_tracking)
     0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
   };
   GstByteReader reader = GST_BYTE_READER_INIT (data, 16);
-  guint8 a = 0;
+  guint8 a;
 
   fail_unless_equals_int (gst_byte_reader_get_pos (&reader), 0);
   fail_unless_equals_int (gst_byte_reader_get_remaining (&reader), 16);
@@ -541,7 +535,7 @@ GST_START_TEST (test_scan)
   do_scan (&reader, 0x00ffffff, 0xffffffff, 0x65, 99, -1);
 
   /* flush some bytes */
-  fail_unless (gst_byte_reader_skip (&reader, 0x20));
+  gst_byte_reader_skip (&reader, 0x20);
 
   do_scan (&reader, 0xffffffff, 0x20212223, 0, 100, 0);
   do_scan (&reader, 0xffffffff, 0x20212223, 0, 4, 0);

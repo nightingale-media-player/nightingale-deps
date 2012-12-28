@@ -1,8 +1,8 @@
 
-/*** block a  from ../../../docs/manual/highlevel-playback.xml ***/
+/*** block a  from ../../../docs/manual/highlevel-components.xml ***/
 #include <gst/gst.h>
 
-/*** block b  from ../../../docs/manual/highlevel-playback.xml ***/
+/*** block b  from ../../../docs/manual/highlevel-components.xml ***/
 static gboolean
 my_bus_callback (GstBus     *bus,
 		 GstMessage *message,
@@ -36,12 +36,13 @@ my_bus_callback (GstBus     *bus,
   return TRUE;
 }
 
-/*** block c  from ../../../docs/manual/highlevel-playback.xml ***/
+/*** block c  from ../../../docs/manual/highlevel-components.xml ***/
 GstElement *pipeline, *audio;
 
 static void
 cb_newpad (GstElement *decodebin,
 	   GstPad     *pad,
+	   gboolean    last,
 	   gpointer    data)
 {
   GstCaps *caps;
@@ -56,7 +57,7 @@ cb_newpad (GstElement *decodebin,
   }
 
   /* check media type */
-  caps = gst_pad_query_caps (pad, NULL);
+  caps = gst_pad_get_caps (pad);
   str = gst_caps_get_structure (caps, 0);
   if (!g_strrstr (gst_structure_get_name (str), "audio")) {
     gst_caps_unref (caps);
@@ -67,8 +68,6 @@ cb_newpad (GstElement *decodebin,
 
   /* link'n'play */
   gst_pad_link (pad, audiopad);
-
-  g_object_unref (audiopad);
 }
 
 gint
@@ -100,7 +99,7 @@ main (gint   argc,
   src = gst_element_factory_make ("filesrc", "source");
   g_object_set (G_OBJECT (src), "location", argv[1], NULL);
   dec = gst_element_factory_make ("decodebin", "decoder");
-  g_signal_connect (dec, "pad-added", G_CALLBACK (cb_newpad), NULL);
+  g_signal_connect (dec, "new-decoded-pad", G_CALLBACK (cb_newpad), NULL);
   gst_bin_add_many (GST_BIN (pipeline), src, dec, NULL);
   gst_element_link (src, dec);
 

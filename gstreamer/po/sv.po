@@ -1,18 +1,17 @@
 # Swedish messages for gstreamer.
-# Copyright (C) 2004-2011 Free Software Foundation, Inc.
+# Copyright (C) 2004, 2005, 2007, 2008, 2009 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gstreamer package.
 # Christian Rose <menthos@menthos.com>, 2004, 2005.
-# Daniel Nylander <po@danielnylander.se>, 2007, 2008, 2009, 2010, 2011.
+# Daniel Nylander <po@danielnylander.se>, 2007, 2008, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer 0.10.31.2\n"
+"Project-Id-Version: gstreamer 0.10.24.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2012-12-18 00:21+0000\n"
-"PO-Revision-Date: 2011-01-09 19:46+0100\n"
+"POT-Creation-Date: 2009-10-05 12:38+0100\n"
+"PO-Revision-Date: 2009-09-18 17:34+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
-"Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -78,8 +77,8 @@ msgstr ""
 msgid "Disable updating the registry"
 msgstr "Inaktivera uppdatering av registret"
 
-msgid "Disable spawning a helper process while scanning the registry"
-msgstr "Inaktivera start av en hjälpprocess vid avsökning av registret"
+msgid "Disable the use of fork() while scanning the registry"
+msgstr "Inaktivera användningen av fork() vid avsökning av registret"
 
 msgid "GStreamer Options"
 msgstr "GStreamer-alternativ"
@@ -87,8 +86,32 @@ msgstr "GStreamer-alternativ"
 msgid "Show GStreamer Options"
 msgstr "Visa GStreamer-alternativ"
 
+#, c-format
+msgid "Error writing registry cache to %s: %s"
+msgstr "Fel vid skrivning av registercache till %s: %s"
+
+#, c-format
+msgid "Error re-scanning registry %s: %s"
+msgstr "Fel vid återsökning av registret %s: %s"
+
+#, c-format
+msgid "Error re-scanning registry %s"
+msgstr "Fel vid återsökning av registret %s"
+
 msgid "Unknown option"
 msgstr "Okänt alternativ"
+
+#, c-format
+msgid "ERROR: from element %s: %s\n"
+msgstr "FEL: från element %s: %s\n"
+
+#, c-format
+msgid ""
+"Additional debug info:\n"
+"%s\n"
+msgstr ""
+"Ytterligare felsökningsinformation:\n"
+"%s\n"
 
 msgid "GStreamer encountered a general core library error."
 msgstr "GStreamer stötte på ett allmänt fel i kärnbibliotek."
@@ -107,7 +130,7 @@ msgid ""
 "proper error message with the reason for the failure."
 msgstr ""
 "GStreamer-fel: tillståndsändring misslyckades och några element misslyckades "
-"med att skicka ett korrekt felmeddelande med anledningen till felet."
+"med att posta ett korrekt felmeddelande med anledningen till felet."
 
 # Richard Hult säger: "Pad" i gstreamer betyder ungefär "kontakt", man
 # kopplar ihop två element via deras "pads".
@@ -117,8 +140,7 @@ msgstr "Internt GStreamer-fel: kontaktproblem."
 msgid "Internal GStreamer error: thread problem."
 msgstr "Internt GStreamer-fel: trådproblem."
 
-#, fuzzy
-msgid "GStreamer error: negotiation problem."
+msgid "Internal GStreamer error: negotiation problem."
 msgstr "Internt GStreamer-fel: förhandlingsproblem."
 
 msgid "Internal GStreamer error: event problem."
@@ -137,8 +159,7 @@ msgstr "Internt GStreamer-fel: taggproblem."
 msgid "Your GStreamer installation is missing a plug-in."
 msgstr "Din GStreamer-installation saknar en insticksmodul."
 
-#, fuzzy
-msgid "GStreamer error: clock problem."
+msgid "Internal GStreamer error: clock problem."
 msgstr "Internt GStreamer-fel: klockproblem."
 
 msgid ""
@@ -159,9 +180,6 @@ msgstr "Kunde inte stänga stödbibliotek."
 
 msgid "Could not configure supporting library."
 msgstr "Kunde inte konfigurera stödbibliotek."
-
-msgid "Encoding error."
-msgstr "Kodningsfel."
 
 msgid "GStreamer encountered a general resource error."
 msgstr "GStreamer stötte på ett allmänt resursfel."
@@ -309,12 +327,6 @@ msgstr "datum"
 msgid "date the data was created (as a GDate structure)"
 msgstr "datum då dessa data skapades (som en GDate-struktur)"
 
-msgid "datetime"
-msgstr "datumtid"
-
-msgid "date and time the data was created (as a GstDateTime structure)"
-msgstr "datum och tid då dessa data skapades (som en GstDateTime-struktur)"
-
 msgid "genre"
 msgstr "genre"
 
@@ -407,13 +419,6 @@ msgstr "Uri till copyrightnotis"
 
 msgid "URI to the copyright notice of the data"
 msgstr "Uri till copyrightnotis för datat"
-
-#, fuzzy
-msgid "encoded by"
-msgstr "kodare"
-
-msgid "name of the encoding person or organization"
-msgstr ""
 
 msgid "contact"
 msgstr "kontakt"
@@ -561,16 +566,8 @@ msgstr "referensnivå för förstärkningsvärden för spår och album"
 msgid "language code"
 msgstr "språkkod"
 
-#, fuzzy
-msgid "language code for this stream, conforming to ISO-639-1 or ISO-639-2"
+msgid "language code for this stream, conforming to ISO-639-1"
 msgstr "språkkod för detta ström, enligt ISO-639-1"
-
-#, fuzzy
-msgid "language name"
-msgstr "språkkod"
-
-msgid "freeform name of the language this stream is in"
-msgstr ""
 
 msgid "image"
 msgstr "bild"
@@ -578,7 +575,6 @@ msgstr "bild"
 msgid "image related to this stream"
 msgstr "bild relaterad till den här strömmen"
 
-#. TRANSLATORS: 'preview image' = image that shows a preview of the full image
 msgid "preview image"
 msgstr "förhandsvisningsbild"
 
@@ -647,171 +643,8 @@ msgstr ""
 "höjd i meter för geografisk plats där mediet har spelats in eller "
 "producerats enligt WGS84 (noll för genomsnittlig havsnivå)"
 
-msgid "geo location country"
-msgstr "land för geografisk plats"
-
-msgid "country (english name) where the media has been recorded or produced"
-msgstr "land (engelskt namn) där mediet har spelats in eller producerats"
-
-msgid "geo location city"
-msgstr "stad för geografisk plats"
-
-msgid "city (english name) where the media has been recorded or produced"
-msgstr "stad (engelskt namn) där mediet har spelats in eller producerats"
-
-msgid "geo location sublocation"
-msgstr "specifik plats för geografisk plats"
-
-#, fuzzy
-msgid ""
-"a location within a city where the media has been produced or created (e.g. "
-"the neighborhood)"
-msgstr ""
-"en plats inom en stad där mediet har producerats eller skapats (t.ex. "
-"närområde)"
-
-msgid "geo location horizontal error"
-msgstr "fel i horisontell geografisk plats"
-
-msgid "expected error of the horizontal positioning measures (in meters)"
-msgstr "förväntat fel i horisontell positioneringsmätning (i meter)"
-
-msgid "geo location movement speed"
-msgstr "förflyttningshastighet för geografisk plats"
-
-msgid ""
-"movement speed of the capturing device while performing the capture in m/s"
-msgstr "förflyttningshastighet för fångstenheten när mediat skapas (i meter/s)"
-
-msgid "geo location movement direction"
-msgstr "förflyttningsriktning för geografisk plats"
-
-msgid ""
-"indicates the movement direction of the device performing the capture of a "
-"media. It is represented as degrees in floating point representation, 0 "
-"means the geographic north, and increases clockwise"
-msgstr ""
-"indikerar riktningen som enheten förflyttas när mediat skapas. Det "
-"representeras som grader i flyttalsrepresentation, 0 betyder geografiskt "
-"nordlig riktning och ökar medsols"
-
-msgid "geo location capture direction"
-msgstr "fångstriktning för geografisk plats"
-
-msgid ""
-"indicates the direction the device is pointing to when capturing  a media. "
-"It is represented as degrees in floating point  representation, 0 means the "
-"geographic north, and increases clockwise"
-msgstr ""
-"indikerar riktningen som enheten pekar mot när mediat skapas. Det "
-"representeras som grader i flyttalsrepresentation, 0 betyder geografiskt "
-"nordlig riktning och ökar medsols"
-
-#. TRANSLATORS: 'show name' = 'TV/radio/podcast show name' here
-msgid "show name"
-msgstr "visningsnamn"
-
-msgid "Name of the tv/podcast/series show the media is from"
-msgstr "Namn på tv-program/poddsändning/serie som mediat kommer från"
-
-#. TRANSLATORS: 'show sortname' = 'TV/radio/podcast show name as used for sorting purposes' here
-msgid "show sortname"
-msgstr "visa sorteringsnamn"
-
-msgid ""
-"Name of the tv/podcast/series show the media is from, for sorting purposes"
-msgstr ""
-"Namn på tv-program/poddsändning/serie som mediat kommer från, för "
-"sorteringsändamål"
-
-msgid "episode number"
-msgstr "avsnittsnummer"
-
-msgid "The episode number in the season the media is part of"
-msgstr "Avsnittsnumret i säsongen som mediat är en del av"
-
-msgid "season number"
-msgstr "säsongsnummer"
-
-msgid "The season number of the show the media is part of"
-msgstr "Säsongsnumret för programmet som mediat är en del av"
-
-msgid "lyrics"
-msgstr "låttexter"
-
-msgid "The lyrics of the media, commonly used for songs"
-msgstr "Låttexter för mediat, används oftast för låtar"
-
-msgid "composer sortname"
-msgstr "sorteringsnamn för kompositör"
-
-msgid "person(s) who composed the recording, for sorting purposes"
-msgstr "person(er) som komponerade inspelningen, för sorteringsändamål"
-
-msgid "grouping"
-msgstr "gruppering"
-
-msgid ""
-"Groups related media that spans multiple tracks, like the different pieces "
-"of a concerto. It is a higher level than a track, but lower than an album"
-msgstr ""
-"Grupprelaterade media som spänner över flera spår, såsom olika delar av en "
-"konsert. Det är en högre nivå än ett spår, men lägre än ett album"
-
-msgid "user rating"
-msgstr "användarbetyg"
-
-msgid ""
-"Rating attributed by a user. The higher the rank, the more the user likes "
-"this media"
-msgstr ""
-"Betyg angivit av en användare. Desto högre ranking, desto mer gillar "
-"användaren detta media"
-
-msgid "device manufacturer"
-msgstr "enhetstillverkare"
-
-msgid "Manufacturer of the device used to create this media"
-msgstr "Tillverkare av enheten som använts för att skapa detta media"
-
-msgid "device model"
-msgstr "enhetsmodell"
-
-msgid "Model of the device used to create this media"
-msgstr "Modell av enheten som använts för att skapa detta media"
-
-msgid "application name"
-msgstr "programnamn"
-
-msgid "Application used to create the media"
-msgstr "Programmet som använts för att skapa detta media"
-
-msgid "application data"
-msgstr "programdata"
-
-msgid "Arbitrary application data to be serialized into the media"
-msgstr "Godtycklig programdata att serialisera inuti detta media"
-
-msgid "image orientation"
-msgstr "bildorientering"
-
-msgid "How the image should be rotated or flipped before display"
-msgstr "Hur bilden ska roteras eller vändas före visning"
-
 msgid ", "
 msgstr ", "
-
-#, c-format
-msgid "ERROR: from element %s: %s\n"
-msgstr "FEL: från element %s: %s\n"
-
-#, c-format
-msgid ""
-"Additional debug info:\n"
-"%s\n"
-msgstr ""
-"Ytterligare felsökningsinformation:\n"
-"%s\n"
 
 # Osäker.
 #, c-format
@@ -934,16 +767,6 @@ msgstr "Filen \"%s\" är ett uttag."
 msgid "Failed after iterations as requested."
 msgstr "Misslyckades efter iterationer som begärt."
 
-msgid "No Temp directory specified."
-msgstr "Ingen temporärkatalog angiven."
-
-#, c-format
-msgid "Could not create temp file \"%s\"."
-msgstr "Kunde inte skapa temporärfilen \"%s\"."
-
-msgid "Error while writing to download file."
-msgstr "Fel vid skrivning till hämtningsfilen."
-
 # Osäker. Jag tror "caps" är kort för "capabilities".
 msgid "caps"
 msgstr "förmågor"
@@ -953,6 +776,9 @@ msgstr "detekterade förmågor i strömmen"
 
 msgid "minimum"
 msgstr "minimum"
+
+msgid "maximum"
+msgstr "maximum"
 
 msgid "force caps"
 msgstr "tvinga förmågor"
@@ -975,38 +801,14 @@ msgstr "skrivbar"
 msgid "controllable"
 msgstr "kontrollerbar"
 
-msgid "changeable in NULL, READY, PAUSED or PLAYING state"
-msgstr "ändringsbart i tillstånden NULL, READY, PAUSED eller PLAYING"
-
-msgid "changeable only in NULL, READY or PAUSED state"
-msgstr "ändringsbart endast i tillstånden NULL, READY eller PAUSED"
-
-msgid "changeable only in NULL or READY state"
-msgstr "ändringsbart endast i tillstånden NULL eller READY"
-
-msgid "Blacklisted files:"
-msgstr "Svartlistade filer:"
-
 msgid "Total count: "
 msgstr "Totalt antal: "
-
-#, c-format
-msgid "%d blacklisted file"
-msgid_plural "%d blacklisted files"
-msgstr[0] "%d svartlistad fil"
-msgstr[1] "%d svartlistade filer"
 
 #, c-format
 msgid "%d plugin"
 msgid_plural "%d plugins"
 msgstr[0] "%d insticksmodul"
 msgstr[1] "%d insticksmoduler"
-
-#, c-format
-msgid "%d blacklist entry"
-msgid_plural "%d blacklist entries"
-msgstr[0] "%d svartlistad post"
-msgstr[1] "%d svartlistade poster"
 
 #, c-format
 msgid "%d feature"
@@ -1017,32 +819,18 @@ msgstr[1] "%d funktioner"
 msgid "Print all elements"
 msgstr "Skriv ut alla element"
 
-msgid "Print list of blacklisted files"
-msgstr "Skriv ut lista över svartlistade filer"
-
 msgid ""
-"Print a machine-parsable list of features the specified plugin or all "
-"plugins provide.\n"
+"Print a machine-parsable list of features the specified plugin provides.\n"
 "                                       Useful in connection with external "
 "automatic plugin installation mechanisms"
 msgstr ""
 "Skriv ut en maskintolkningsbar lista över funktioner som den angivna "
-"insticksmodulen\n"
-"                                       eller alla insticksmoduler "
-"tillhandahåller. Användbart\n"
-"                                       tillsammans med externa mekanismer "
-"för automatisk installation av insticksmoduler"
+"insticksmodulen tillhandahåller.\n"
+"                                       Användbart tillsammans med externa "
+"mekanismer för automatisk installation av insticksmodul"
 
 msgid "List the plugin contents"
 msgstr "Lista insticksmodulens innehåll"
-
-msgid "Check if the specified element or plugin exists"
-msgstr ""
-
-msgid ""
-"When checking if an element or plugin exists, also check that its version is "
-"at least the version specified"
-msgstr ""
 
 msgid "Print supported URI schemes, with the elements that implement them"
 msgstr ""
@@ -1057,8 +845,27 @@ msgstr "Kunde inte läsa in fil för insticksmodul: %s\n"
 msgid "No such element or plugin '%s'\n"
 msgstr "Inget sådant element eller insticksmodul \"%s\"\n"
 
-msgid "Index statistics"
-msgstr ""
+msgid "Usage: gst-xmllaunch <file.xml> [ element.property=value ... ]\n"
+msgstr "Användning: gst-xmllaunch <fil.xml> [ element.egenskap=värde ... ]\n"
+
+#, c-format
+msgid "ERROR: parse of xml file '%s' failed.\n"
+msgstr "FEL: tolkning av xml-filen \"%s\" misslyckades.\n"
+
+#, c-format
+msgid "ERROR: no toplevel pipeline element in file '%s'.\n"
+msgstr "FEL: inget rörledningselement på översta nivån i filen \"%s\".\n"
+
+msgid "WARNING: only one toplevel element is supported at this time.\n"
+msgstr "VARNING: endast ett element på översta nivån stöds just nu.\n"
+
+#, c-format
+msgid "ERROR: could not parse command line argument %d: %s.\n"
+msgstr "FEL: kunde inte tolka kommandoradsargumentet %d: %s.\n"
+
+#, c-format
+msgid "WARNING: element named '%s' not found.\n"
+msgstr "VARNING: elementet med namnet \"%s\" hittades inte.\n"
 
 #, c-format
 msgid "Got message #%u from element \"%s\" (%s): "
@@ -1095,18 +902,6 @@ msgstr "HITTADE TAGG   : hittat av objektet \"%s\".\n"
 msgid "FOUND TAG\n"
 msgstr "HITTADE TAGG\n"
 
-#, fuzzy, c-format
-msgid "FOUND TOC      : found by element \"%s\".\n"
-msgstr "HITTADE TAGG   : hittat av elementet \"%s\".\n"
-
-#, fuzzy, c-format
-msgid "FOUND TOC      : found by object \"%s\".\n"
-msgstr "HITTADE TAGG   : hittat av objektet \"%s\".\n"
-
-#, fuzzy
-msgid "FOUND TOC\n"
-msgstr "HITTADE TAGG\n"
-
 #, c-format
 msgid ""
 "INFO:\n"
@@ -1141,15 +936,8 @@ msgstr "Ställer in tillståndet till %s enligt begäran från %s...\n"
 msgid "Interrupt: Stopping pipeline ...\n"
 msgstr "Avbrott: Stoppar rörledningen ...\n"
 
-#, fuzzy, c-format
-msgid "Missing element: %s\n"
-msgstr "inget \"%s\"-element"
-
 msgid "Output tags (also known as metadata)"
 msgstr "Utmatningstaggar (även känt som metadata)"
-
-msgid "Output TOC (chapters and editions)"
-msgstr ""
 
 msgid "Output status information and property notifications"
 msgstr "Skriv ut statusinformation och egenskapsnotifieringar"
@@ -1166,14 +954,20 @@ msgstr "Skriv inte ut statusinformation av TYP"
 msgid "TYPE1,TYPE2,..."
 msgstr "TYP1,TYP2,..."
 
+msgid "Save xml representation of pipeline to FILE and exit"
+msgstr "Spara xml-representation av rörledningen i FIL och avsluta"
+
+msgid "FILE"
+msgstr "FIL"
+
 msgid "Do not install a fault handler"
 msgstr "Installera inte en felhanterare"
 
+msgid "Print alloc trace (if enabled at compile time)"
+msgstr "Skriv ut alloc-spår (om aktiverat vid kompileringen)"
+
 msgid "Force EOS on sources before shutting the pipeline down"
 msgstr "Tvinga EOS på källor innan rörledningen stängs av"
-
-msgid "Gather and print index statistics"
-msgstr ""
 
 #, c-format
 msgid "ERROR: pipeline could not be constructed: %s.\n"
@@ -1217,20 +1011,12 @@ msgstr "FEL: rörledningen vill inte spela.\n"
 msgid "EOS on shutdown enabled -- Forcing EOS on the pipeline\n"
 msgstr "EOS vid avständning aktiverad -- Tvingar EOS på rörledningen\n"
 
-#, fuzzy
-msgid "EOS on shutdown enabled -- waiting for EOS after Error\n"
-msgstr "EOS vid avständning aktiverad -- Tvingar EOS på rörledningen\n"
-
 # EOS = End Of Stream
 msgid "Waiting for EOS...\n"
 msgstr "Väntar på EOS...\n"
 
 msgid "EOS received - stopping pipeline...\n"
 msgstr "EOS togs emot - stoppar rörledning...\n"
-
-#, fuzzy
-msgid "Interrupt while waiting for EOS - stopping pipeline...\n"
-msgstr "Avbrott: Stoppar rörledningen ...\n"
 
 msgid "An error happened while waiting for EOS\n"
 msgstr "Ett fel inträffade vid väntan på EOS\n"
@@ -1247,46 +1033,6 @@ msgstr "Ställer in rörledningen till NULL...\n"
 
 msgid "Freeing pipeline ...\n"
 msgstr "Frigör rörledning ...\n"
-
-#~ msgid "Print alloc trace (if enabled at compile time)"
-#~ msgstr "Skriv ut alloc-spår (om aktiverat vid kompileringen)"
-
-#~ msgid "Usage: gst-xmllaunch <file.xml> [ element.property=value ... ]\n"
-#~ msgstr ""
-#~ "Användning: gst-xmllaunch <fil.xml> [ element.egenskap=värde ... ]\n"
-
-#~ msgid "ERROR: parse of xml file '%s' failed.\n"
-#~ msgstr "FEL: tolkning av xml-filen \"%s\" misslyckades.\n"
-
-#~ msgid "ERROR: no toplevel pipeline element in file '%s'.\n"
-#~ msgstr "FEL: inget rörledningselement på översta nivån i filen \"%s\".\n"
-
-#~ msgid "WARNING: only one toplevel element is supported at this time.\n"
-#~ msgstr "VARNING: endast ett element på översta nivån stöds just nu.\n"
-
-#~ msgid "ERROR: could not parse command line argument %d: %s.\n"
-#~ msgstr "FEL: kunde inte tolka kommandoradsargumentet %d: %s.\n"
-
-#~ msgid "WARNING: element named '%s' not found.\n"
-#~ msgstr "VARNING: elementet med namnet \"%s\" hittades inte.\n"
-
-#~ msgid "Save xml representation of pipeline to FILE and exit"
-#~ msgstr "Spara xml-representation av rörledningen i FIL och avsluta"
-
-#~ msgid "FILE"
-#~ msgstr "FIL"
-
-#~ msgid "Do not install signal handlers for SIGUSR1 and SIGUSR2"
-#~ msgstr "Installera inte signalhanterare för SIGUSR1 och SIGUSR2"
-
-#~ msgid "Error writing registry cache to %s: %s"
-#~ msgstr "Fel vid skrivning av registercache till %s: %s"
-
-#~ msgid "Error re-scanning registry %s: %s"
-#~ msgstr "Fel vid återsökning av registret %s: %s"
-
-#~ msgid "Error re-scanning registry %s"
-#~ msgstr "Fel vid återsökning av registret %s"
 
 #~ msgid "Internal GStreamer error: state change failed."
 #~ msgstr "Internt GStreamer-fel: tillståndsändring misslyckades."

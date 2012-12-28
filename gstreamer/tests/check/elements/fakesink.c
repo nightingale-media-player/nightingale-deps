@@ -57,8 +57,7 @@ chain_async (GstPad * pad, GstBuffer * buffer)
   chain_data->buffer = buffer;
   chain_data->ret = GST_FLOW_ERROR;
 
-  thread =
-      g_thread_try_new ("gst-check", chain_async_buffer, chain_data, &error);
+  thread = g_thread_create (chain_async_buffer, chain_data, TRUE, &error);
   if (error != NULL) {
     g_warning ("could not create thread reason: %s", error->message);
     g_free (chain_data);
@@ -100,19 +99,14 @@ GST_START_TEST (test_clipping)
 
   /* send segment */
   {
-    GstEvent *event;
-    GstSegment segment;
+    GstEvent *segment;
     gboolean eret;
 
     GST_DEBUG ("sending segment");
-    gst_segment_init (&segment, GST_FORMAT_TIME);
-    segment.start = 1 * GST_SECOND;
-    segment.stop = 5 * GST_SECOND;
-    segment.time = 1 * GST_SECOND;
+    segment = gst_event_new_new_segment (FALSE,
+        1.0, GST_FORMAT_TIME, 1 * GST_SECOND, 5 * GST_SECOND, 1 * GST_SECOND);
 
-    event = gst_event_new_segment (&segment);
-
-    eret = gst_pad_send_event (sinkpad, event);
+    eret = gst_pad_send_event (sinkpad, segment);
     fail_if (eret == FALSE);
   }
 
@@ -264,18 +258,14 @@ GST_START_TEST (test_preroll_sync)
 
   /* send segment */
   {
-    GstEvent *event;
-    GstSegment segment;
+    GstEvent *segment;
     gboolean eret;
 
     GST_DEBUG ("sending segment");
-    gst_segment_init (&segment, GST_FORMAT_TIME);
-    segment.start = 0 * GST_SECOND;
-    segment.stop = 102 * GST_SECOND;
-    segment.time = 0 * GST_SECOND;
+    segment = gst_event_new_new_segment (FALSE,
+        1.0, GST_FORMAT_TIME, 0 * GST_SECOND, 102 * GST_SECOND, 0 * GST_SECOND);
 
-    event = gst_event_new_segment (&segment);
-    eret = gst_pad_send_event (sinkpad, event);
+    eret = gst_pad_send_event (sinkpad, segment);
     fail_if (eret == FALSE);
   }
 
@@ -344,7 +334,7 @@ GST_START_TEST (test_preroll_sync)
 
     /* should be wrong state now */
     fret = chain_async_return (data);
-    fail_if (fret != GST_FLOW_FLUSHING);
+    fail_if (fret != GST_FLOW_WRONG_STATE);
   }
   gst_element_set_state (pipeline, GST_STATE_NULL);
   gst_element_get_state (pipeline, NULL, NULL, GST_CLOCK_TIME_NONE);
@@ -428,18 +418,14 @@ GST_START_TEST (test_eos)
 
   /* send segment, this should fail */
   {
-    GstEvent *event;
-    GstSegment segment;
+    GstEvent *segment;
     gboolean eret;
 
     GST_DEBUG ("sending segment");
-    gst_segment_init (&segment, GST_FORMAT_TIME);
-    segment.start = 0 * GST_SECOND;
-    segment.stop = 2 * GST_SECOND;
-    segment.time = 0 * GST_SECOND;
-    event = gst_event_new_segment (&segment);
+    segment = gst_event_new_new_segment (FALSE,
+        1.0, GST_FORMAT_TIME, 0 * GST_SECOND, 2 * GST_SECOND, 0 * GST_SECOND);
 
-    eret = gst_pad_send_event (sinkpad, event);
+    eret = gst_pad_send_event (sinkpad, segment);
     fail_if (eret == TRUE);
   }
 
@@ -454,9 +440,9 @@ GST_START_TEST (test_eos)
 
     GST_DEBUG ("sending buffer");
 
-    /* buffer after EOS is not EOS */
+    /* buffer after EOS is not UNEXPECTED */
     fret = gst_pad_chain (sinkpad, buffer);
-    fail_unless (fret == GST_FLOW_EOS);
+    fail_unless (fret == GST_FLOW_UNEXPECTED);
   }
 
   /* flush, EOS state is flushed again. */
@@ -470,25 +456,21 @@ GST_START_TEST (test_eos)
     fail_unless (eret == TRUE);
 
     GST_DEBUG ("sending FLUSH_STOP");
-    event = gst_event_new_flush_stop (TRUE);
+    event = gst_event_new_flush_stop ();
     eret = gst_pad_send_event (sinkpad, event);
     fail_unless (eret == TRUE);
   }
 
   /* send segment, this should now work again */
   {
-    GstEvent *event;
-    GstSegment segment;
+    GstEvent *segment;
     gboolean eret;
 
     GST_DEBUG ("sending segment");
-    gst_segment_init (&segment, GST_FORMAT_TIME);
-    segment.start = 0 * GST_SECOND;
-    segment.stop = 2 * GST_SECOND;
-    segment.time = 0 * GST_SECOND;
-    event = gst_event_new_segment (&segment);
+    segment = gst_event_new_new_segment (FALSE,
+        1.0, GST_FORMAT_TIME, 0 * GST_SECOND, 2 * GST_SECOND, 0 * GST_SECOND);
 
-    eret = gst_pad_send_event (sinkpad, event);
+    eret = gst_pad_send_event (sinkpad, segment);
     fail_unless (eret == TRUE);
   }
 
@@ -542,22 +524,18 @@ GST_START_TEST (test_eos2)
 
   /* send segment, this should work */
   {
-    GstEvent *event;
-    GstSegment segment;
+    GstEvent *segment;
     gboolean eret;
 
     GST_DEBUG ("sending segment");
-    gst_segment_init (&segment, GST_FORMAT_TIME);
-    segment.start = 0 * GST_SECOND;
-    segment.stop = 2 * GST_SECOND;
-    segment.time = 0 * GST_SECOND;
-    event = gst_event_new_segment (&segment);
+    segment = gst_event_new_new_segment (FALSE,
+        1.0, GST_FORMAT_TIME, 0 * GST_SECOND, 2 * GST_SECOND, 0 * GST_SECOND);
 
-    eret = gst_pad_send_event (sinkpad, event);
+    eret = gst_pad_send_event (sinkpad, segment);
     fail_if (eret == FALSE);
   }
 
-  /* send buffer that should return EOS */
+  /* send buffer that should return UNEXPECTED */
   {
     GstBuffer *buffer;
     GstFlowReturn fret;
@@ -568,12 +546,12 @@ GST_START_TEST (test_eos2)
 
     GST_DEBUG ("sending buffer");
 
-    /* this buffer will generate EOS */
+    /* this buffer will generate UNEXPECTED */
     fret = gst_pad_chain (sinkpad, buffer);
-    fail_unless (fret == GST_FLOW_EOS);
+    fail_unless (fret == GST_FLOW_UNEXPECTED);
   }
 
-  /* send buffer that should return EOS */
+  /* send buffer that should return UNEXPECTED */
   {
     GstBuffer *buffer;
     GstFlowReturn fret;
@@ -585,7 +563,7 @@ GST_START_TEST (test_eos2)
     GST_DEBUG ("sending buffer");
 
     fret = gst_pad_chain (sinkpad, buffer);
-    fail_unless (fret == GST_FLOW_EOS);
+    fail_unless (fret == GST_FLOW_UNEXPECTED);
   }
 
   gst_element_set_state (pipeline, GST_STATE_NULL);
@@ -604,6 +582,7 @@ GST_START_TEST (test_position)
   GstPad *sinkpad;
   GstStateChangeReturn ret;
   gboolean qret;
+  GstFormat qformat;
   gint64 qcur;
   GstBuffer *buffer;
   GstFlowReturn fret;
@@ -627,14 +606,16 @@ GST_START_TEST (test_position)
   fail_if (sinkpad == NULL);
 
   /* do position query, this should fail, we have nothing received yet */
-  qret = gst_element_query_position (sink, GST_FORMAT_TIME, &qcur);
+  qformat = GST_FORMAT_TIME;
+  qret = gst_element_query_position (sink, &qformat, &qcur);
   fail_unless (qret == FALSE);
 
   ret = gst_element_set_state (pipeline, GST_STATE_READY);
   fail_unless (ret == GST_STATE_CHANGE_SUCCESS);
 
   /* do position query, this should fail, we have nothing received yet */
-  qret = gst_element_query_position (sink, GST_FORMAT_TIME, &qcur);
+  qformat = GST_FORMAT_TIME;
+  qret = gst_element_query_position (sink, &qformat, &qcur);
   fail_unless (qret == FALSE);
 
   /* make pipeline and element ready to accept data */
@@ -642,19 +623,15 @@ GST_START_TEST (test_position)
   fail_unless (ret == GST_STATE_CHANGE_ASYNC);
 
   /* do position query, this should fail, we have nothing received yet */
-  qret = gst_element_query_position (sink, GST_FORMAT_TIME, &qcur);
+  qformat = GST_FORMAT_TIME;
+  qret = gst_element_query_position (sink, &qformat, &qcur);
   fail_unless (qret == FALSE);
 
   /* send segment, this should work */
   {
-    GstSegment segment;
-
     GST_DEBUG ("sending segment");
-    gst_segment_init (&segment, GST_FORMAT_TIME);
-    segment.start = 1 * GST_SECOND;
-    segment.stop = 3 * GST_SECOND;
-    segment.time = 1 * GST_SECOND;
-    event = gst_event_new_segment (&segment);
+    event = gst_event_new_new_segment (FALSE,
+        1.0, GST_FORMAT_TIME, 1 * GST_SECOND, 3 * GST_SECOND, 1 * GST_SECOND);
 
     eret = gst_pad_send_event (sinkpad, event);
     fail_if (eret == FALSE);
@@ -662,7 +639,8 @@ GST_START_TEST (test_position)
 
   /* FIXME, do position query, this should succeed with the time value from the
    * segment. */
-  qret = gst_element_query_position (sink, GST_FORMAT_TIME, &qcur);
+  qformat = GST_FORMAT_TIME;
+  qret = gst_element_query_position (sink, &qformat, &qcur);
   fail_unless (qret == TRUE);
   fail_unless (qcur == 1 * GST_SECOND);
 
@@ -682,7 +660,8 @@ GST_START_TEST (test_position)
 
   /* do position query, this should succeed with the time value from the
    * segment. */
-  qret = gst_element_query_position (sink, GST_FORMAT_TIME, &qcur);
+  qformat = GST_FORMAT_TIME;
+  qret = gst_element_query_position (sink, &qformat, &qcur);
   fail_unless (qret == TRUE);
   fail_unless (qcur == 1 * GST_SECOND);
 
@@ -697,37 +676,34 @@ GST_START_TEST (test_position)
 
   /* preroll buffer is flushed out */
   fret = chain_async_return (data);
-  fail_unless (fret == GST_FLOW_FLUSHING);
+  fail_unless (fret == GST_FLOW_WRONG_STATE);
 
   /* do position query, this should succeed with the time value from the
    * segment before the flush. */
-  qret = gst_element_query_position (sink, GST_FORMAT_TIME, &qcur);
+  qformat = GST_FORMAT_TIME;
+  qret = gst_element_query_position (sink, &qformat, &qcur);
   fail_unless (qret == TRUE);
   fail_unless (qcur == 1 * GST_SECOND);
 
   /* stop flushing, timing is affected now */
   {
     GST_DEBUG ("sending flush_stop");
-    event = gst_event_new_flush_stop (TRUE);
+    event = gst_event_new_flush_stop ();
 
     eret = gst_pad_send_event (sinkpad, event);
     fail_if (eret == FALSE);
   }
 
   /* do position query, this should fail, the segment is flushed */
-  qret = gst_element_query_position (sink, GST_FORMAT_TIME, &qcur);
+  qformat = GST_FORMAT_TIME;
+  qret = gst_element_query_position (sink, &qformat, &qcur);
   fail_unless (qret == FALSE);
 
   /* send segment, this should work */
   {
-    GstSegment segment;
-
     GST_DEBUG ("sending segment");
-    gst_segment_init (&segment, GST_FORMAT_TIME);
-    segment.start = 2 * GST_SECOND;
-    segment.stop = 4 * GST_SECOND;
-    segment.time = 1 * GST_SECOND;
-    event = gst_event_new_segment (&segment);
+    event = gst_event_new_new_segment (FALSE,
+        1.0, GST_FORMAT_TIME, 2 * GST_SECOND, 4 * GST_SECOND, 1 * GST_SECOND);
 
     eret = gst_pad_send_event (sinkpad, event);
     fail_if (eret == FALSE);
@@ -749,7 +725,8 @@ GST_START_TEST (test_position)
 
   /* do position query, this should succeed with the time value from the
    * segment. */
-  qret = gst_element_query_position (sink, GST_FORMAT_TIME, &qcur);
+  qformat = GST_FORMAT_TIME;
+  qret = gst_element_query_position (sink, &qformat, &qcur);
   fail_unless (qret == TRUE);
   fail_unless (qcur == 1 * GST_SECOND);
 
@@ -758,7 +735,8 @@ GST_START_TEST (test_position)
 
   /* position now is increasing but never exceeds the boundaries of the segment */
   for (i = 0; i < 5; i++) {
-    qret = gst_element_query_position (sink, GST_FORMAT_TIME, &qcur);
+    qformat = GST_FORMAT_TIME;
+    qret = gst_element_query_position (sink, &qformat, &qcur);
     GST_DEBUG ("position %" GST_TIME_FORMAT, GST_TIME_ARGS (qcur));
     fail_unless (qret == TRUE);
     fail_unless (qcur >= 1 * GST_SECOND && qcur <= 3 * GST_SECOND);
@@ -771,7 +749,8 @@ GST_START_TEST (test_position)
 
   /* after rendering the position must be bigger then the stream_time of the
    * buffer */
-  qret = gst_element_query_position (sink, GST_FORMAT_TIME, &qcur);
+  qformat = GST_FORMAT_TIME;
+  qret = gst_element_query_position (sink, &qformat, &qcur);
   fail_unless (qret == TRUE);
   fail_unless (qcur >= 2 * GST_SECOND && qcur <= 3 * GST_SECOND);
 
@@ -785,38 +764,35 @@ GST_START_TEST (test_position)
   }
 
   /* this should now just report the stream time of the last buffer */
-  qret = gst_element_query_position (sink, GST_FORMAT_TIME, &qcur);
+  qformat = GST_FORMAT_TIME;
+  qret = gst_element_query_position (sink, &qformat, &qcur);
   fail_unless (qret == TRUE);
   fail_unless (qcur == 2 * GST_SECOND);
 
   {
     GST_DEBUG ("sending flush_stop");
-    event = gst_event_new_flush_stop (TRUE);
+    event = gst_event_new_flush_stop ();
 
     eret = gst_pad_send_event (sinkpad, event);
     fail_if (eret == FALSE);
   }
 
   /* do position query, this should fail, the segment is flushed */
-  qret = gst_element_query_position (sink, GST_FORMAT_TIME, &qcur);
+  qformat = GST_FORMAT_TIME;
+  qret = gst_element_query_position (sink, &qformat, &qcur);
   fail_unless (qret == FALSE);
 
   /* send segment, this should work */
   {
-    GstSegment segment;
-
     GST_DEBUG ("sending segment");
-    gst_segment_init (&segment, GST_FORMAT_TIME);
-    segment.start = 2 * GST_SECOND;
-    segment.stop = 4 * GST_SECOND;
-    segment.time = 1 * GST_SECOND;
-    event = gst_event_new_segment (&segment);
+    event = gst_event_new_new_segment (FALSE,
+        1.0, GST_FORMAT_TIME, 2 * GST_SECOND, 4 * GST_SECOND, 1 * GST_SECOND);
 
     eret = gst_pad_send_event (sinkpad, event);
     fail_if (eret == FALSE);
   }
 
-  /* send buffer that should return EOS */
+  /* send buffer that should return UNEXPECTED */
   buffer = gst_buffer_new ();
   GST_BUFFER_TIMESTAMP (buffer) = 3 * GST_SECOND;
   GST_BUFFER_DURATION (buffer) = 1 * GST_SECOND;
@@ -832,12 +808,13 @@ GST_START_TEST (test_position)
 
   /* preroll buffer is rendered, we expect no more buffer after this one */
   fret = chain_async_return (data);
-  fail_unless (fret == GST_FLOW_EOS);
+  fail_unless (fret == GST_FLOW_UNEXPECTED);
 
   /* do position query, this should succeed with the stream time of the buffer
    * against the clock. Since the buffer is synced against the clock, the time
    * should be at least the stream time of the buffer. */
-  qret = gst_element_query_position (sink, GST_FORMAT_TIME, &qcur);
+  qformat = GST_FORMAT_TIME;
+  qret = gst_element_query_position (sink, &qformat, &qcur);
   fail_unless (qret == TRUE);
   fail_unless (qcur >= 2 * GST_SECOND && qcur <= 3 * GST_SECOND);
 
@@ -845,7 +822,8 @@ GST_START_TEST (test_position)
    * against the segment */
   g_usleep (2 * G_USEC_PER_SEC);
 
-  qret = gst_element_query_position (sink, GST_FORMAT_TIME, &qcur);
+  qformat = GST_FORMAT_TIME;
+  qret = gst_element_query_position (sink, &qformat, &qcur);
   fail_unless (qret == TRUE);
   fail_unless (qcur == 3 * GST_SECOND);
 
@@ -857,20 +835,23 @@ GST_START_TEST (test_position)
   /* we report the time of the last start of the buffer. This is slightly
    * incorrect, we should report the exact time when we paused but there is no
    * record of that anywhere */
-  qret = gst_element_query_position (sink, GST_FORMAT_TIME, &qcur);
+  qformat = GST_FORMAT_TIME;
+  qret = gst_element_query_position (sink, &qformat, &qcur);
   fail_unless (qret == TRUE);
-  fail_unless (qcur >= 4 * GST_SECOND);
+  fail_unless (qcur == 2 * GST_SECOND);
 
   ret = gst_element_set_state (pipeline, GST_STATE_READY);
   fail_unless (ret == GST_STATE_CHANGE_SUCCESS);
 
   /* fails again because we are in the wrong state */
-  qret = gst_element_query_position (sink, GST_FORMAT_TIME, &qcur);
+  qformat = GST_FORMAT_TIME;
+  qret = gst_element_query_position (sink, &qformat, &qcur);
   fail_unless (qret == FALSE);
 
   gst_element_set_state (pipeline, GST_STATE_NULL);
 
-  qret = gst_element_query_position (sink, GST_FORMAT_TIME, &qcur);
+  qformat = GST_FORMAT_TIME;
+  qret = gst_element_query_position (sink, &qformat, &qcur);
   fail_unless (qret == FALSE);
 
   gst_object_unref (sinkpad);
@@ -883,8 +864,17 @@ GST_END_TEST;
 typedef GstPushSrc OOBSource;
 typedef GstPushSrcClass OOBSourceClass;
 
-GType oob_source_get_type (void);
-G_DEFINE_TYPE (OOBSource, oob_source, GST_TYPE_PUSH_SRC);
+GST_BOILERPLATE (OOBSource, oob_source, GstPushSrc, GST_TYPE_PUSH_SRC);
+
+static void
+oob_source_base_init (gpointer g_class)
+{
+  static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("src",
+      GST_PAD_SRC, GST_PAD_ALWAYS, GST_STATIC_CAPS_ANY);
+
+  gst_element_class_add_pad_template (GST_ELEMENT_CLASS (g_class),
+      gst_static_pad_template_get (&sinktemplate));
+}
 
 static GstFlowReturn
 oob_source_create (GstPushSrc * src, GstBuffer ** p_buf)
@@ -900,24 +890,18 @@ oob_source_create (GstPushSrc * src, GstBuffer ** p_buf)
 static void
 oob_source_class_init (OOBSourceClass * klass)
 {
-  static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("src",
-      GST_PAD_SRC, GST_PAD_ALWAYS, GST_STATIC_CAPS_ANY);
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
   GstPushSrcClass *pushsrc_class = GST_PUSH_SRC_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sinktemplate));
 
   pushsrc_class->create = GST_DEBUG_FUNCPTR (oob_source_create);
 }
 
 static void
-oob_source_init (OOBSource * src)
+oob_source_init (OOBSource * src, OOBSourceClass * g_class)
 {
   /* nothing to do */
 }
 
-#define NOTIFY_RACE_NUM_PIPELINES 10
+#define NOTIFY_RACE_NUM_PIPELINES 20
 
 typedef struct
 {
@@ -930,7 +914,6 @@ typedef struct
 static void
 test_notify_race_setup_pipeline (NotifyRacePipeline * p)
 {
-  GST_DEBUG ("Creating pipeline");
   p->pipe = gst_pipeline_new ("pipeline");
   p->src = g_object_new (oob_source_get_type (), NULL);
 
@@ -943,10 +926,8 @@ test_notify_race_setup_pipeline (NotifyRacePipeline * p)
   gst_bin_add (GST_BIN (p->pipe), p->sink);
   gst_element_link_many (p->src, p->queue, p->sink, NULL);
 
-  GST_DEBUG ("Setting pipeline to PLAYING");
   fail_unless_equals_int (gst_element_set_state (p->pipe, GST_STATE_PLAYING),
       GST_STATE_CHANGE_ASYNC);
-  GST_DEBUG ("Getting state");
   fail_unless_equals_int (gst_element_get_state (p->pipe, NULL, NULL, -1),
       GST_STATE_CHANGE_SUCCESS);
 }
@@ -967,14 +948,12 @@ GST_START_TEST (test_notify_race)
   int i;
 
   for (i = 0; i < G_N_ELEMENTS (pipelines); ++i) {
-    GST_DEBUG ("Starting up pipeline %d", i);
     test_notify_race_setup_pipeline (&pipelines[i]);
   }
 
   g_usleep (2 * G_USEC_PER_SEC);
 
   for (i = 0; i < G_N_ELEMENTS (pipelines); ++i) {
-    GST_DEBUG ("Cleaning up pipeline %d", i);
     test_notify_race_cleanup_pipeline (&pipelines[i]);
   }
 }

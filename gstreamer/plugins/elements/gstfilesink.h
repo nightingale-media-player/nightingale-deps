@@ -24,8 +24,6 @@
 #ifndef __GST_FILE_SINK_H__
 #define __GST_FILE_SINK_H__
 
-#include <stdio.h>
-
 #include <gst/gst.h>
 #include <gst/base/gstbasesink.h>
 
@@ -72,7 +70,7 @@ struct _GstFileSinkClass {
   GstBaseSinkClass parent_class;
 };
 
-G_GNUC_INTERNAL GType gst_file_sink_get_type (void);
+GType gst_file_sink_get_type(void);
 
 G_END_DECLS
 

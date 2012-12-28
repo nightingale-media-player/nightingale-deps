@@ -1,9 +1,9 @@
 <plugin>
   <name>coreelements</name>
-  <description> GStreamer core elements</description>
+  <description>standard GStreamer elements</description>
   <filename>../../plugins/elements/.libs/libgstcoreelements.so</filename>
   <basename>libgstcoreelements.so</basename>
-  <version>1.0.4</version>
+  <version>0.10.25</version>
   <license>LGPL</license>
   <source>gstreamer</source>
   <package>GStreamer source release</package>
@@ -35,7 +35,7 @@
       <longname>Fake Sink</longname>
       <class>Sink</class>
       <description>Black hole for data</description>
-      <author>Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Wim Taymans &lt;wim@fluendo.com&gt;, Mr. &apos;frag-me-more&apos; Vanderwingo &lt;wingo@fluendo.com&gt;</author>
+      <author>Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Wim Taymans &lt;wim@fluendo.com&gt;, Mr. 'frag-me-more' Vanderwingo &lt;wingo@fluendo.com&gt;</author>
       <pads>
         <caps>
           <name>sink</name>
@@ -121,27 +121,6 @@
       </pads>
     </element>
     <element>
-      <name>funnel</name>
-      <longname>Funnel pipe fitting</longname>
-      <class>Generic</class>
-      <description>N-to-1 pipe fitting</description>
-      <author>Olivier Crete &lt;olivier.crete@collabora.co.uk&gt;</author>
-      <pads>
-        <caps>
-          <name>sink_%u</name>
-          <direction>sink</direction>
-          <presence>request</presence>
-          <details>ANY</details>
-        </caps>
-        <caps>
-          <name>src</name>
-          <direction>source</direction>
-          <presence>always</presence>
-          <details>ANY</details>
-        </caps>
-      </pads>
-    </element>
-    <element>
       <name>identity</name>
       <longname>Identity</longname>
       <class>Generic</class>
@@ -163,27 +142,6 @@
       </pads>
     </element>
     <element>
-      <name>input-selector</name>
-      <longname>Input selector</longname>
-      <class>Generic</class>
-      <description>N-to-1 input stream selector</description>
-      <author>Julien Moutte &lt;julien@moutte.net&gt;, Jan Schmidt &lt;thaytan@mad.scientist.com&gt;, Wim Taymans &lt;wim.taymans@gmail.com&gt;</author>
-      <pads>
-        <caps>
-          <name>sink_%u</name>
-          <direction>sink</direction>
-          <presence>request</presence>
-          <details>ANY</details>
-        </caps>
-        <caps>
-          <name>src</name>
-          <direction>source</direction>
-          <presence>always</presence>
-          <details>ANY</details>
-        </caps>
-      </pads>
-    </element>
-    <element>
       <name>multiqueue</name>
       <longname>MultiQueue</longname>
       <class>Generic</class>
@@ -191,35 +149,14 @@
       <author>Edward Hervey &lt;edward@fluendo.com&gt;</author>
       <pads>
         <caps>
-          <name>sink_%u</name>
-          <direction>sink</direction>
-          <presence>request</presence>
-          <details>ANY</details>
-        </caps>
-        <caps>
-          <name>src_%u</name>
+          <name>src%d</name>
           <direction>source</direction>
           <presence>sometimes</presence>
           <details>ANY</details>
         </caps>
-      </pads>
-    </element>
-    <element>
-      <name>output-selector</name>
-      <longname>Output selector</longname>
-      <class>Generic</class>
-      <description>1-to-N output stream selector</description>
-      <author>Stefan Kost &lt;stefan.kost@nokia.com&gt;</author>
-      <pads>
         <caps>
-          <name>sink</name>
+          <name>sink%d</name>
           <direction>sink</direction>
-          <presence>always</presence>
-          <details>ANY</details>
-        </caps>
-        <caps>
-          <name>src_%u</name>
-          <direction>source</direction>
           <presence>request</presence>
           <details>ANY</details>
         </caps>
@@ -247,27 +184,6 @@
       </pads>
     </element>
     <element>
-      <name>queue2</name>
-      <longname>Queue 2</longname>
-      <class>Generic</class>
-      <description>Simple data queue</description>
-      <author>Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Wim Taymans &lt;wim.taymans@gmail.com&gt;</author>
-      <pads>
-        <caps>
-          <name>sink</name>
-          <direction>sink</direction>
-          <presence>always</presence>
-          <details>ANY</details>
-        </caps>
-        <caps>
-          <name>src</name>
-          <direction>source</direction>
-          <presence>always</presence>
-          <details>ANY</details>
-        </caps>
-      </pads>
-    </element>
-    <element>
       <name>tee</name>
       <longname>Tee pipe fitting</longname>
       <class>Generic</class>
@@ -275,15 +191,15 @@
       <author>Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Wim Taymans &lt;wim@fluendo.com&gt;</author>
       <pads>
         <caps>
-          <name>sink</name>
-          <direction>sink</direction>
-          <presence>always</presence>
+          <name>src%d</name>
+          <direction>source</direction>
+          <presence>request</presence>
           <details>ANY</details>
         </caps>
         <caps>
-          <name>src_%u</name>
-          <direction>source</direction>
-          <presence>request</presence>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
           <details>ANY</details>
         </caps>
       </pads>
@@ -294,27 +210,6 @@
       <class>Generic</class>
       <description>Finds the media type of a stream</description>
       <author>Benjamin Otte &lt;in7y118@public.uni-hamburg.de&gt;</author>
-      <pads>
-        <caps>
-          <name>sink</name>
-          <direction>sink</direction>
-          <presence>always</presence>
-          <details>ANY</details>
-        </caps>
-        <caps>
-          <name>src</name>
-          <direction>source</direction>
-          <presence>always</presence>
-          <details>ANY</details>
-        </caps>
-      </pads>
-    </element>
-    <element>
-      <name>valve</name>
-      <longname>Valve element</longname>
-      <class>Filter</class>
-      <description>Drops buffers and events or lets them through</description>
-      <author>Olivier Crete &lt;olivier.crete@collabora.co.uk&gt;</author>
       <pads>
         <caps>
           <name>sink</name>

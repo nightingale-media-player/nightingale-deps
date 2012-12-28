@@ -34,13 +34,6 @@
  * native preset format of those wrapped plugins.
  * One method that is useful to be overridden is gst_preset_get_property_names().
  * With that one can control which properties are saved and in which order.
- *
- * The default implementation supports presets located in a system directory, 
- * application specific directory and in the users home directory. When getting
- * a list of presets individual presets are read and overlaid in 1) system, 
- * 2) application and 3) user order. Whenever an earlier entry is newer, the
- * later entries will be updated. 
- * 
  */
 /* FIXME:
  * - non racyness
@@ -55,6 +48,10 @@
  *      wide
  *     - can we use a lock inside a names shared memory segment?
  *
+ * - need to add support for GstChildProxy
+ *   we can do this in a next iteration, the format is flexible enough
+ *   http://www.buzztard.org/index.php/Preset_handling_interface
+ *
  * - should there be a 'preset-list' property to get the preset list
  *   (and to connect a notify:: to to listen for changes)
  *   we could use gnome_vfs_monitor_add() to monitor the user preset_file.
@@ -62,16 +59,33 @@
  * - should there be a 'preset-name' property so that we can set a preset via
  *   gst-launch, or should we handle this with special syntax in gst-launch:
  *   gst-launch element preset:<preset-name> property=value ...
- *   - this would allow to have preset-bundles too (a preset on bins that
+ *   - this would alloow to hanve preset-bundles too (a preset on bins that
  *     specifies presets for children
+ *
+ * - GstChildProxy suport
+ *   - if we stick with GParamSpec **_list_properties()
+ *     we need to use g_param_spec_set_qdata() to specify the instance on each GParamSpec
+ *     OBJECT_LOCK(obj);  // ChildProxy needs GstIterator support
+ *     num=gst_child_proxy_get_children_count(obj);
+ *     for(i=0;i<num;i++) {
+ *       child=gst_child_proxy_get_child_by_index(obj,i);
+ *       // v1 ----
+ *       g_object_class_list_properties(child,&num);
+ *       // foreach prop
+ *       //   g_param_spec_set_qdata(prop, quark, (gpointer)child);
+ *       //   add to result
+ *       // v2 ----
+ *       // children have to implement preset-iface too tag the returned GParamSpec* with the owner
+ *       props=gst_preset_list_properties(child);
+ *       // add props to result
+ *     }
+ *     OBJECT_UNLOCK(obj);
+ *
  */
 
 #include "gst_private.h"
 
 #include "gstpreset.h"
-#include "gstchildproxy.h"
-#include "gstinfo.h"
-#include "gstvalue.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -90,17 +104,10 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 #define PRESET_HEADER_VERSION "version"
 
 static GQuark preset_user_path_quark = 0;
-static GQuark preset_app_path_quark = 0;
 static GQuark preset_system_path_quark = 0;
 static GQuark preset_quark = 0;
 
 /*static GQuark property_list_quark = 0;*/
-
-/* the application can set a custom path that is checked in addition to standard
- * system and user dirs. This helps to develop new presets first local to the
- * application.
- */
-static gchar *preset_app_dir = NULL;
 
 /* default iface implementation */
 
@@ -110,23 +117,22 @@ static gboolean gst_preset_default_save_presets_file (GstPreset * preset);
  * preset_get_paths:
  * @preset: a #GObject that implements #GstPreset
  * @preset_user_path: location for path or %NULL
- * @preset_app_path: location for path or %NULL
  * @preset_system_path: location for path or %NULL
  *
- * Fetch the preset_path for user local, application specific and system wide
- * settings. Don't free after use.
+ * Fetch the preset_path for user local and system wide settings. Don't free
+ * after use.
  *
  * Returns: %FALSE if no paths could be found.
  */
 static gboolean
 preset_get_paths (GstPreset * preset, const gchar ** preset_user_path,
-    const gchar ** preset_app_path, const gchar ** preset_system_path)
+    const gchar ** preset_system_path)
 {
   GType type = G_TYPE_FROM_INSTANCE (preset);
   gchar *preset_path;
   const gchar *element_name;
 
-  /* we use the element name when we must construct the paths */
+  /* we use the element name when we must contruct the paths */
   element_name = G_OBJECT_TYPE_NAME (preset);
   GST_INFO_OBJECT (preset, "element_name: '%s'", element_name);
 
@@ -135,9 +141,9 @@ preset_get_paths (GstPreset * preset, const gchar ** preset_user_path,
     if (!(preset_path = g_type_get_qdata (type, preset_user_path_quark))) {
       gchar *preset_dir;
 
-      /* user presets go in  user's XDG data directory. */
-      preset_dir = g_build_filename (g_get_user_data_dir (),
-          "gstreamer-" GST_API_VERSION, "presets", NULL);
+      /* user presets go in '$HOME/.gstreamer-0.10/presets/GstSimSyn.prs' */
+      preset_dir = g_build_filename (g_get_home_dir (),
+          ".gstreamer-" GST_MAJORMINOR, "presets", NULL);
       GST_INFO_OBJECT (preset, "user_preset_dir: '%s'", preset_dir);
       preset_path =
           g_strdup_printf ("%s" G_DIR_SEPARATOR_S "%s.prs", preset_dir,
@@ -153,29 +159,13 @@ preset_get_paths (GstPreset * preset, const gchar ** preset_user_path,
     *preset_user_path = preset_path;
   }
 
-  if (preset_app_path) {
-    if (preset_app_dir) {
-      if (!(preset_path = g_type_get_qdata (type, preset_system_path_quark))) {
-        preset_path = g_strdup_printf ("%s" G_DIR_SEPARATOR_S "%s.prs",
-            preset_app_dir, element_name);
-        GST_INFO_OBJECT (preset, "application_preset_path: '%s'", preset_path);
-
-        /* cache the preset path to the type */
-        g_type_set_qdata (type, preset_app_path_quark, preset_path);
-      }
-      *preset_app_path = preset_path;
-    } else {
-      *preset_app_path = NULL;
-    }
-  }
-
   if (preset_system_path) {
     /* preset system path requested, see if we have it cached in the qdata */
     if (!(preset_path = g_type_get_qdata (type, preset_system_path_quark))) {
       gchar *preset_dir;
 
-      /* system presets in '$GST_DATADIR/gstreamer-1.0/presets/GstAudioPanorama.prs' */
-      preset_dir = g_build_filename (GST_DATADIR, "gstreamer-" GST_API_VERSION,
+      /* system presets in '$GST_DATADIR/gstreamer-0.10/presets/GstAudioPanorama.prs' */
+      preset_dir = g_build_filename (GST_DATADIR, "gstreamer-" GST_MAJORMINOR,
           "presets", NULL);
       GST_INFO_OBJECT (preset, "system_preset_dir: '%s'", preset_dir);
       preset_path = g_strdup_printf ("%s" G_DIR_SEPARATOR_S "%s.prs",
@@ -203,30 +193,10 @@ preset_skip_property (GParamSpec * property)
   return FALSE;
 }
 
-static guint64
-preset_parse_version (const gchar * str_version)
-{
-  guint major, minor, micro, nano;
-  gint num;
-
-  major = minor = micro = nano = 0;
-
-  /* parse version (e.g. 0.10.15.1) to guint64 */
-  num = sscanf (str_version, "%u.%u.%u.%u", &major, &minor, &micro, &nano);
-  /* make sure we have at least "major.minor" */
-  if (num > 1) {
-    guint64 version;
-
-    version = ((((major << 8 | minor) << 8) | micro) << 8) | nano;
-    GST_DEBUG ("version %s -> %" G_GUINT64_FORMAT, str_version, version);
-    return version;
-  }
-  return G_GUINT64_CONSTANT (0);
-}
-
+/* caller must free @preset_version after use */
 static GKeyFile *
 preset_open_and_parse_header (GstPreset * preset, const gchar * preset_path,
-    guint64 * preset_version)
+    gchar ** preset_version)
 {
   GKeyFile *in;
   GError *error = NULL;
@@ -254,12 +224,9 @@ preset_open_and_parse_header (GstPreset * preset, const gchar * preset_path,
   g_free (name);
 
   /* get the version now so that the caller can check it */
-  if (preset_version) {
-    gchar *str =
+  if (preset_version)
+    *preset_version =
         g_key_file_get_value (in, PRESET_HEADER, PRESET_HEADER_VERSION, NULL);
-    *preset_version = preset_parse_version (str);
-    g_free (str);
-  }
 
   return in;
 
@@ -281,6 +248,26 @@ wrong_name:
     g_key_file_free (in);
     return NULL;
   }
+}
+
+static guint64
+preset_parse_version (const gchar * str_version)
+{
+  gint major, minor, micro, nano, num;
+
+  major = minor = micro = nano = 0;
+
+  /* parse version (e.g. 0.10.15.1) to guint64 */
+  num = sscanf (str_version, "%d.%d.%d.%d", &major, &minor, &micro, &nano);
+  /* make sure we have atleast "major.minor" */
+  if (num > 1) {
+    guint64 version;
+
+    version = ((((major << 8 | minor) << 8) | micro) << 8) | nano;
+    GST_DEBUG ("version %s -> %" G_GUINT64_FORMAT, str_version, version);
+    return version;
+  }
+  return G_GUINT64_CONSTANT (0);
 }
 
 static void
@@ -341,69 +328,56 @@ preset_get_keyfile (GstPreset * preset)
 
   /* first see if the have a cached version for the type */
   if (!(presets = g_type_get_qdata (type, preset_quark))) {
-    const gchar *preset_user_path, *preset_app_path, *preset_system_path;
-    guint64 version_system = G_GUINT64_CONSTANT (0);
-    guint64 version_app = G_GUINT64_CONSTANT (0);
-    guint64 version_user = G_GUINT64_CONSTANT (0);
-    guint64 version = G_GUINT64_CONSTANT (0);
-    gboolean merged = FALSE;
-    GKeyFile *in_user, *in_app = NULL, *in_system;
+    const gchar *preset_user_path, *preset_system_path;
+    gchar *str_version_user = NULL, *str_version_system = NULL;
+    gboolean updated_from_system = FALSE;
+    GKeyFile *in_user, *in_system;
 
-    preset_get_paths (preset, &preset_user_path, &preset_app_path,
-        &preset_system_path);
+    preset_get_paths (preset, &preset_user_path, &preset_system_path);
 
-    /* try to load the user, app and system presets, we do this to get the
-     * versions of all files. */
+    /* try to load the user and system presets, we do this to get the versions
+     * of both files. */
     in_user = preset_open_and_parse_header (preset, preset_user_path,
-        &version_user);
-    if (preset_app_path) {
-      in_app = preset_open_and_parse_header (preset, preset_app_path,
-          &version_app);
-    }
+        &str_version_user);
     in_system = preset_open_and_parse_header (preset, preset_system_path,
-        &version_system);
+        &str_version_system);
 
     /* compare version to check for merge */
     if (in_system) {
-      presets = in_system;
-      version = version_system;
-    }
-    if (in_app) {
-      /* if system version is higher, merge */
-      if (version > version_app) {
-        preset_merge (presets, in_app);
-        g_key_file_free (in_app);
-      } else {
-        if (presets)
-          g_key_file_free (presets);
-        presets = in_app;
-        version = version_system;
+      /* keep system presets if there is no user preset or when the system
+       * version is higher than the user version. */
+      if (!in_user) {
+        presets = in_system;
+      } else if (preset_parse_version (str_version_system) >
+          preset_parse_version (str_version_user)) {
+        presets = in_system;
+        updated_from_system = TRUE;
       }
     }
     if (in_user) {
-      /* if system or app version is higher, merge */
-      if (version > version_user) {
+      if (updated_from_system) {
+        /* merge user on top of system presets */
         preset_merge (presets, in_user);
         g_key_file_free (in_user);
-        merged = TRUE;
       } else {
-        if (presets)
-          g_key_file_free (presets);
+        /* keep user presets */
         presets = in_user;
       }
     }
-
-    if (!presets) {
-      /* we did not load a user, app or system presets file, create a new one */
+    if (!in_user && !in_system) {
+      /* we did not load a user or system presets file, create a new one */
       presets = g_key_file_new ();
       g_key_file_set_string (presets, PRESET_HEADER, PRESET_HEADER_ELEMENT_NAME,
           G_OBJECT_TYPE_NAME (preset));
     }
 
+    g_free (str_version_user);
+    g_free (str_version_system);
+
     /* attach the preset to the type */
     g_type_set_qdata (type, preset_quark, (gpointer) presets);
 
-    if (merged) {
+    if (updated_from_system) {
       gst_preset_default_save_presets_file (preset);
     }
   }
@@ -462,66 +436,42 @@ static gchar **
 gst_preset_default_get_property_names (GstPreset * preset)
 {
   GParamSpec **props;
-  guint i, j = 0, n_props;
+  guint i, j, n_props;
   GObjectClass *gclass;
-  gboolean is_child_proxy;
-  gchar **result = NULL;
+  gchar **result;
 
   gclass = G_OBJECT_CLASS (GST_ELEMENT_GET_CLASS (preset));
-  is_child_proxy = GST_IS_CHILD_PROXY (preset);
 
-  /* get a list of object properties */
+  /* get a list of normal properties. 
+   * FIXME, change this for childproxy support. */
   props = g_object_class_list_properties (gclass, &n_props);
-  if (props) {
-    /* allocate array big enough to hold the worst case, including a terminating
-     * NULL pointer. */
-    result = g_new (gchar *, n_props + 1);
+  if (!props)
+    goto no_properties;
 
-    /* now filter out the properties that we can use for presets */
-    GST_DEBUG_OBJECT (preset, "  filtering properties: %u", n_props);
-    for (i = 0; i < n_props; i++) {
-      if (preset_skip_property (props[i]))
-        continue;
-      GST_DEBUG_OBJECT (preset, "    using: %s", props[i]->name);
-      result[j++] = g_strdup (props[i]->name);
-    }
-    g_free (props);
+  /* allocate array big enough to hold the worst case, including a terminating
+   * NULL pointer. */
+  result = g_new (gchar *, n_props + 1);
+
+  /* now filter out the properties that we can use for presets */
+  GST_DEBUG_OBJECT (preset, "  filtering properties: %u", n_props);
+  for (i = j = 0; i < n_props; i++) {
+    if (preset_skip_property (props[i]))
+      continue;
+
+    /* copy and increment out pointer */
+    result[j++] = g_strdup (props[i]->name);
   }
+  result[j] = NULL;
+  g_free (props);
 
-  if (is_child_proxy) {
-    guint c, n_children;
-    GObject *child;
-
-    n_children = gst_child_proxy_get_children_count ((GstChildProxy *) preset);
-    for (c = 0; c < n_children; c++) {
-      child = gst_child_proxy_get_child_by_index ((GstChildProxy *) preset, c);
-      gclass = G_OBJECT_CLASS (GST_ELEMENT_GET_CLASS (child));
-
-      props = g_object_class_list_properties (gclass, &n_props);
-      if (props) {
-        /* resize property name array */
-        result = g_renew (gchar *, result, j + n_props + 1);
-
-        /* now filter out the properties that we can use for presets */
-        GST_DEBUG_OBJECT (preset, "  filtering properties: %u", n_props);
-        for (i = 0; i < n_props; i++) {
-          if (preset_skip_property (props[i]))
-            continue;
-          GST_DEBUG_OBJECT (preset, "    using: %s::%s",
-              GST_OBJECT_NAME (child), props[i]->name);
-          result[j++] = g_strdup_printf ("%s::%s", GST_OBJECT_NAME (child),
-              props[i]->name);
-        }
-        g_free (props);
-      }
-    }
-  }
-  if (!result) {
-    GST_INFO_OBJECT (preset, "object has no properties");
-  } else {
-    result[j] = NULL;
-  }
   return result;
+
+  /* ERRORS */
+no_properties:
+  {
+    GST_INFO_OBJECT (preset, "object has no properties");
+    return NULL;
+  }
 }
 
 /* load the presets of @name for the instance @preset. Returns %FALSE if something
@@ -533,7 +483,6 @@ gst_preset_default_load_preset (GstPreset * preset, const gchar * name)
   gchar **props;
   guint i;
   GObjectClass *gclass;
-  gboolean is_child_proxy;
 
   /* get the presets from the type */
   if (!(presets = preset_get_keyfile (preset)))
@@ -550,14 +499,13 @@ gst_preset_default_load_preset (GstPreset * preset, const gchar * name)
     goto no_properties;
 
   gclass = G_OBJECT_CLASS (GST_ELEMENT_GET_CLASS (preset));
-  is_child_proxy = GST_IS_CHILD_PROXY (preset);
 
   /* for each of the property names, find the preset parameter and try to
    * configure the property with its value */
   for (i = 0; props[i]; i++) {
     gchar *str;
     GValue gvalue = { 0, };
-    GParamSpec *property = NULL;
+    GParamSpec *property;
 
     /* check if we have a settings for this element property */
     if (!(str = g_key_file_get_value (presets, name, props[i], NULL))) {
@@ -569,13 +517,8 @@ gst_preset_default_load_preset (GstPreset * preset, const gchar * name)
     GST_DEBUG_OBJECT (preset, "setting value '%s' for property '%s'", str,
         props[i]);
 
-    if (is_child_proxy) {
-      gst_child_proxy_lookup ((GstChildProxy *) preset, props[i], NULL,
-          &property);
-    } else {
-      property = g_object_class_find_property (gclass, props[i]);
-    }
-    if (!property) {
+    /* FIXME, change for childproxy to get the property and element.  */
+    if (!(property = g_object_class_find_property (gclass, props[i]))) {
       /* the parameter was in the keyfile, the element said it supported it but
        * then the property was not found in the element. This should not happen. */
       GST_WARNING_OBJECT (preset, "property '%s' not in object", props[i]);
@@ -587,12 +530,8 @@ gst_preset_default_load_preset (GstPreset * preset, const gchar * name)
      * the object property */
     g_value_init (&gvalue, property->value_type);
     if (gst_value_deserialize (&gvalue, str)) {
-      if (is_child_proxy) {
-        gst_child_proxy_set_property ((GstChildProxy *) preset, props[i],
-            &gvalue);
-      } else {
-        g_object_set_property ((GObject *) preset, props[i], &gvalue);
-      }
+      /* FIXME, change for childproxy support */
+      g_object_set_property (G_OBJECT (preset), props[i], &gvalue);
     } else {
       GST_WARNING_OBJECT (preset,
           "deserialization of value '%s' for property '%s' failed", str,
@@ -636,7 +575,7 @@ gst_preset_default_save_presets_file (GstPreset * preset)
   gchar *data;
   gsize data_size;
 
-  preset_get_paths (preset, &preset_path, NULL, NULL);
+  preset_get_paths (preset, &preset_path, NULL);
 
   /* get the presets from the type */
   if (!(presets = preset_get_keyfile (preset)))
@@ -712,7 +651,6 @@ gst_preset_default_save_preset (GstPreset * preset, const gchar * name)
   gchar **props;
   guint i;
   GObjectClass *gclass;
-  gboolean is_child_proxy;
 
   GST_INFO_OBJECT (preset, "saving new preset: %s", name);
 
@@ -725,22 +663,16 @@ gst_preset_default_save_preset (GstPreset * preset, const gchar * name)
     goto no_properties;
 
   gclass = G_OBJECT_CLASS (GST_ELEMENT_GET_CLASS (preset));
-  is_child_proxy = GST_IS_CHILD_PROXY (preset);
 
   /* loop over the object properties and store the property value in the
    * keyfile */
   for (i = 0; props[i]; i++) {
     GValue gvalue = { 0, };
     gchar *str;
-    GParamSpec *property = NULL;
+    GParamSpec *property;
 
-    if (is_child_proxy) {
-      gst_child_proxy_lookup ((GstChildProxy *) preset, props[i], NULL,
-          &property);
-    } else {
-      property = g_object_class_find_property (gclass, props[i]);
-    }
-    if (!property) {
+    /* FIXME, change for childproxy to get the property and element.  */
+    if (!(property = g_object_class_find_property (gclass, props[i]))) {
       /* the element said it supported the property but then it does not have
        * that property. This should not happen. */
       GST_WARNING_OBJECT (preset, "property '%s' not in object", props[i]);
@@ -748,12 +680,8 @@ gst_preset_default_save_preset (GstPreset * preset, const gchar * name)
     }
 
     g_value_init (&gvalue, property->value_type);
-    if (is_child_proxy) {
-      gst_child_proxy_get_property ((GstChildProxy *) preset, props[i],
-          &gvalue);
-    } else {
-      g_object_get_property ((GObject *) preset, props[i], &gvalue);
-    }
+    /* FIXME, change for childproxy */
+    g_object_get_property (G_OBJECT (preset), props[i], &gvalue);
 
     if ((str = gst_value_serialize (&gvalue))) {
       g_key_file_set_string (presets, name, props[i], (gpointer) str);
@@ -939,8 +867,9 @@ no_presets:
  *
  * Get a copy of preset names as a NULL terminated string array.
  *
- * Returns: (transfer full) (array zero-terminated=1) (element-type gchar*):
- *     list with names, ue g_strfreev() after usage.
+ * Returns: list with names, ue g_strfreev() after usage.
+ *
+ * Since: 0.10.20
  */
 gchar **
 gst_preset_get_preset_names (GstPreset * preset)
@@ -956,8 +885,9 @@ gst_preset_get_preset_names (GstPreset * preset)
  *
  * Get a the names of the GObject properties that can be used for presets.
  *
- * Returns: (transfer full) (array zero-terminated=1) (element-type gchar*): an
- *   array of property names which should be freed with g_strfreev() after use.
+ * Returns: an array of property names which should be freed with g_strfreev() after use.
+ *
+ * Since: 0.10.20
  */
 gchar **
 gst_preset_get_property_names (GstPreset * preset)
@@ -975,6 +905,8 @@ gst_preset_get_property_names (GstPreset * preset)
  * Load the given preset.
  *
  * Returns: %TRUE for success, %FALSE if e.g. there is no preset with that @name
+ *
+ * Since: 0.10.20
  */
 gboolean
 gst_preset_load_preset (GstPreset * preset, const gchar * name)
@@ -990,10 +922,12 @@ gst_preset_load_preset (GstPreset * preset, const gchar * name)
  * @preset: a #GObject that implements #GstPreset
  * @name: preset name to save
  *
- * Save the current object settings as a preset under the given name. If there
- * is already a preset by this @name it will be overwritten.
+ * Save the current preset under the given name. If there is already a preset by
+ * this @name it will be overwritten.
  *
  * Returns: %TRUE for success, %FALSE
+ *
+ * Since: 0.10.20
  */
 gboolean
 gst_preset_save_preset (GstPreset * preset, const gchar * name)
@@ -1014,6 +948,8 @@ gst_preset_save_preset (GstPreset * preset, const gchar * name)
  * overwritten.
  *
  * Returns: %TRUE for success, %FALSE if e.g. there is no preset with @old_name
+ *
+ * Since: 0.10.20
  */
 gboolean
 gst_preset_rename_preset (GstPreset * preset, const gchar * old_name,
@@ -1035,6 +971,8 @@ gst_preset_rename_preset (GstPreset * preset, const gchar * old_name,
  * Delete the given preset.
  *
  * Returns: %TRUE for success, %FALSE if e.g. there is no preset with that @name
+ *
+ * Since: 0.10.20
  */
 gboolean
 gst_preset_delete_preset (GstPreset * preset, const gchar * name)
@@ -1057,6 +995,8 @@ gst_preset_delete_preset (GstPreset * preset, const gchar * name)
  * @value will unset an existing value.
  *
  * Returns: %TRUE for success, %FALSE if e.g. there is no preset with that @name
+ *
+ * Since: 0.10.20
  */
 gboolean
 gst_preset_set_meta (GstPreset * preset, const gchar * name, const gchar * tag,
@@ -1074,13 +1014,15 @@ gst_preset_set_meta (GstPreset * preset, const gchar * name, const gchar * tag,
  * @preset: a #GObject that implements #GstPreset
  * @name: preset name
  * @tag: meta data item name
- * @value: (out callee-allocates): value
+ * @value: value
  *
  * Gets the @value for an existing meta data @tag. Meta data @tag names can be
  * something like e.g. "comment". Returned values need to be released when done.
  *
  * Returns: %TRUE for success, %FALSE if e.g. there is no preset with that @name
  * or no value for the given @tag
+ *
+ * Since: 0.10.20
  */
 gboolean
 gst_preset_get_meta (GstPreset * preset, const gchar * name, const gchar * tag,
@@ -1092,42 +1034,6 @@ gst_preset_get_meta (GstPreset * preset, const gchar * name, const gchar * tag,
   g_return_val_if_fail (value, FALSE);
 
   return GST_PRESET_GET_INTERFACE (preset)->get_meta (preset, name, tag, value);
-}
-
-/**
- * gst_preset_set_app_dir:
- * @app_dir: the application specific preset dir
- *
- * Sets an extra directory as an absolute path that should be considered when
- * looking for presets. Any presets in the application dir will shadow the 
- * system presets.
- *
- * Returns: %TRUE for success, %FALSE if the dir already has been set
- */
-gboolean
-gst_preset_set_app_dir (const gchar * app_dir)
-{
-  g_return_val_if_fail (app_dir, FALSE);
-
-  if (!preset_app_dir) {
-    preset_app_dir = g_strdup (app_dir);
-    return TRUE;
-  }
-  return FALSE;
-}
-
-/**
- * gst_preset_get_app_dir:
- *
- * Gets the directory for application specific presets if set by the
- * application.
- *
- * Returns: the directory or %NULL, don't free or modify the string
- */
-const gchar *
-gst_preset_get_app_dir (void)
-{
-  return preset_app_dir;
 }
 
 /* class internals */
@@ -1161,7 +1067,6 @@ gst_preset_base_init (gpointer g_class)
     preset_quark = g_quark_from_static_string ("GstPreset::presets");
     preset_user_path_quark =
         g_quark_from_static_string ("GstPreset::user_path");
-    preset_app_path_quark = g_quark_from_static_string ("GstPreset::app_path");
     preset_system_path_quark =
         g_quark_from_static_string ("GstPreset::system_path");
 

@@ -140,6 +140,9 @@ struct _GstFakeSrc {
   gboolean	 sync;
   GstClock	*clock;
 
+  gint		 num_buffers;
+  gint		 rt_num_buffers; /* we are going to change this at runtime */
+  gint64	 buffer_count;
   gboolean	 silent;
   gboolean	 signal_handoffs;
   gboolean	 dump;
@@ -159,7 +162,7 @@ struct _GstFakeSrcClass {
   void (*handoff) (GstElement *element, GstBuffer *buf, GstPad *pad);
 };
 
-G_GNUC_INTERNAL GType gst_fake_src_get_type (void);
+GType gst_fake_src_get_type (void);
 
 G_END_DECLS
 

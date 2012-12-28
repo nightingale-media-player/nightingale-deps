@@ -26,11 +26,11 @@
 
 #define fail_unless_collected(expected)           \
 G_STMT_START {                                    \
-  g_mutex_lock (&lock);                           \
+  g_mutex_lock (lock);                            \
   while (expected == TRUE && collected == FALSE)  \
-    g_cond_wait (&cond,& lock);                   \
+    g_cond_wait (cond, lock);                     \
   fail_unless_equals_int (collected, expected);   \
-  g_mutex_unlock (&lock);                         \
+  g_mutex_unlock (lock);                          \
 } G_STMT_END;
 
 typedef struct
@@ -62,16 +62,16 @@ static GstPad *srcpad1, *srcpad2;
 static GstPad *sinkpad1, *sinkpad2;
 static TestData *data1, *data2;
 
-static GMutex lock;
-static GCond cond;
+static GMutex *lock;
+static GCond *cond;
 
 static GstFlowReturn
 collected_cb (GstCollectPads * pads, gpointer user_data)
 {
-  g_mutex_lock (&lock);
+  g_mutex_lock (lock);
   collected = TRUE;
-  g_cond_signal (&cond);
-  g_mutex_unlock (&lock);
+  g_cond_signal (cond);
+  g_mutex_unlock (lock);
 
   return GST_FLOW_OK;
 }
@@ -79,19 +79,10 @@ collected_cb (GstCollectPads * pads, gpointer user_data)
 static gpointer
 push_buffer (gpointer user_data)
 {
-  GstFlowReturn flow;
-  GstCaps *caps;
   TestData *test_data = (TestData *) user_data;
 
-  gst_pad_push_event (test_data->pad, gst_event_new_stream_start ("test"));
-
-  caps = gst_caps_new_empty_simple ("foo/x-bar");
-  gst_pad_push_event (test_data->pad, gst_event_new_caps (caps));
-  gst_caps_unref (caps);
-
-  flow = gst_pad_push (test_data->pad, test_data->buffer);
-  fail_unless (flow == GST_FLOW_OK, "got flow %s instead of OK",
-      gst_flow_get_name (flow));
+  fail_unless (gst_pad_push (test_data->pad, test_data->buffer)
+      == GST_FLOW_OK);
 
   return NULL;
 }
@@ -119,11 +110,8 @@ setup (void)
   fail_unless (gst_pad_link (srcpad1, sinkpad1) == GST_PAD_LINK_OK);
   fail_unless (gst_pad_link (srcpad2, sinkpad2) == GST_PAD_LINK_OK);
 
-  gst_pad_set_active (sinkpad1, TRUE);
-  gst_pad_set_active (sinkpad2, TRUE);
-  gst_pad_set_active (srcpad1, TRUE);
-  gst_pad_set_active (srcpad2, TRUE);
-
+  cond = g_cond_new ();
+  lock = g_mutex_new ();
   data1 = NULL;
   data2 = NULL;
   collected = FALSE;
@@ -135,15 +123,17 @@ teardown (void)
   gst_object_unref (sinkpad1);
   gst_object_unref (sinkpad2);
   gst_object_unref (collect);
+  g_cond_free (cond);
+  g_mutex_free (lock);
 }
 
 GST_START_TEST (test_pad_add_remove)
 {
   ASSERT_CRITICAL (gst_collect_pads_add_pad (collect, sinkpad1,
-          sizeof (BadCollectData), NULL, TRUE));
+          sizeof (BadCollectData)));
 
   data1 = (TestData *) gst_collect_pads_add_pad (collect,
-      sinkpad1, sizeof (TestData), NULL, TRUE);
+      sinkpad1, sizeof (TestData));
   fail_unless (data1 != NULL);
 
   fail_unless (gst_collect_pads_remove_pad (collect, sinkpad2) == FALSE);
@@ -158,11 +148,11 @@ GST_START_TEST (test_collect)
   GThread *thread1, *thread2;
 
   data1 = (TestData *) gst_collect_pads_add_pad (collect,
-      sinkpad1, sizeof (TestData), NULL, TRUE);
+      sinkpad1, sizeof (TestData));
   fail_unless (data1 != NULL);
 
   data2 = (TestData *) gst_collect_pads_add_pad (collect,
-      sinkpad2, sizeof (TestData), NULL, TRUE);
+      sinkpad2, sizeof (TestData));
   fail_unless (data2 != NULL);
 
   buf1 = gst_buffer_new ();
@@ -174,13 +164,13 @@ GST_START_TEST (test_collect)
   /* push buffers on the pads */
   data1->pad = srcpad1;
   data1->buffer = buf1;
-  thread1 = g_thread_try_new ("gst-check", push_buffer, data1, NULL);
+  thread1 = g_thread_create (push_buffer, data1, TRUE, NULL);
   /* here thread1 is blocked and srcpad1 has a queued buffer */
   fail_unless_collected (FALSE);
 
   data2->pad = srcpad2;
   data2->buffer = buf2;
-  thread2 = g_thread_try_new ("gst-check", push_buffer, data2, NULL);
+  thread2 = g_thread_create (push_buffer, data2, TRUE, NULL);
 
   /* now both pads have a buffer */
   fail_unless_collected (TRUE);
@@ -209,11 +199,11 @@ GST_START_TEST (test_collect_eos)
   GThread *thread1, *thread2;
 
   data1 = (TestData *) gst_collect_pads_add_pad (collect,
-      sinkpad1, sizeof (TestData), NULL, TRUE);
+      sinkpad1, sizeof (TestData));
   fail_unless (data1 != NULL);
 
   data2 = (TestData *) gst_collect_pads_add_pad (collect,
-      sinkpad2, sizeof (TestData), NULL, TRUE);
+      sinkpad2, sizeof (TestData));
   fail_unless (data2 != NULL);
 
   buf1 = gst_buffer_new ();
@@ -224,13 +214,13 @@ GST_START_TEST (test_collect_eos)
   /* push a buffer on srcpad1 and EOS on srcpad2 */
   data1->pad = srcpad1;
   data1->buffer = buf1;
-  thread1 = g_thread_try_new ("gst-check", push_buffer, data1, NULL);
+  thread1 = g_thread_create (push_buffer, data1, TRUE, NULL);
   /* here thread1 is blocked and srcpad1 has a queued buffer */
   fail_unless_collected (FALSE);
 
   data2->pad = srcpad2;
   data2->event = gst_event_new_eos ();
-  thread2 = g_thread_try_new ("gst-check", push_event, data2, NULL);
+  thread2 = g_thread_create (push_event, data2, TRUE, NULL);
   /* now sinkpad1 has a buffer and sinkpad2 has EOS */
   fail_unless_collected (TRUE);
 
@@ -258,14 +248,12 @@ GST_START_TEST (test_collect_twice)
   GThread *thread1, *thread2;
 
   data1 = (TestData *) gst_collect_pads_add_pad (collect,
-      sinkpad1, sizeof (TestData), NULL, TRUE);
+      sinkpad1, sizeof (TestData));
   fail_unless (data1 != NULL);
 
   data2 = (TestData *) gst_collect_pads_add_pad (collect,
-      sinkpad2, sizeof (TestData), NULL, TRUE);
+      sinkpad2, sizeof (TestData));
   fail_unless (data2 != NULL);
-
-  GST_INFO ("round 1");
 
   buf1 = gst_buffer_new ();
 
@@ -275,14 +263,14 @@ GST_START_TEST (test_collect_twice)
   /* queue a buffer */
   data1->pad = srcpad1;
   data1->buffer = buf1;
-  thread1 = g_thread_try_new ("gst-check", push_buffer, data1, NULL);
+  thread1 = g_thread_create (push_buffer, data1, TRUE, NULL);
   /* here thread1 is blocked and srcpad1 has a queued buffer */
   fail_unless_collected (FALSE);
 
   /* push EOS on the other pad */
   data2->pad = srcpad2;
   data2->event = gst_event_new_eos ();
-  thread2 = g_thread_try_new ("gst-check", push_event, data2, NULL);
+  thread2 = g_thread_create (push_event, data2, TRUE, NULL);
 
   /* one of the pads has a buffer, the other has EOS */
   fail_unless_collected (TRUE);
@@ -301,13 +289,7 @@ GST_START_TEST (test_collect_twice)
   gst_collect_pads_stop (collect);
   collected = FALSE;
 
-  GST_INFO ("round 2");
-
   buf2 = gst_buffer_new ();
-
-  /* clear EOS from pads */
-  gst_pad_push_event (srcpad1, gst_event_new_flush_stop (TRUE));
-  gst_pad_push_event (srcpad2, gst_event_new_flush_stop (TRUE));
 
   /* start collect pads */
   gst_collect_pads_start (collect);
@@ -315,13 +297,13 @@ GST_START_TEST (test_collect_twice)
   /* push buffers on the pads */
   data1->pad = srcpad1;
   data1->buffer = buf1;
-  thread1 = g_thread_try_new ("gst-check", push_buffer, data1, NULL);
+  thread1 = g_thread_create (push_buffer, data1, TRUE, NULL);
   /* here thread1 is blocked and srcpad1 has a queued buffer */
   fail_unless_collected (FALSE);
 
   data2->pad = srcpad2;
   data2->buffer = buf2;
-  thread2 = g_thread_try_new ("gst-check", push_buffer, data2, NULL);
+  thread2 = g_thread_create (push_buffer, data2, TRUE, NULL);
 
   /* now both pads have a buffer */
   fail_unless_collected (TRUE);

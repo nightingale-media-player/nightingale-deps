@@ -1,5 +1,5 @@
 What to do when a plugin is missing
------------------------------------
+===================================
 
 The mechanism and API described in this document requires GStreamer core and
 gst-plugins-base versions >= 0.10.12. Further information on some aspects of
@@ -40,7 +40,7 @@ A three step process:
   There is not much useful information we can give about how to resolve this 
   issue. It is possible to use the first N bytes of the data to determine the
   type (and needed plugin) on the server. We don't explore this option in this
-  document yet, but the proposal is flexible enough to accommodate this in the
+  document yet, but the proposal is flexible enough to accomodate this in the
   future should the need arise.
 
  - missing demuxer
@@ -168,7 +168,7 @@ A three step process:
              e.g. urisource-http or urisource-mms
 
          - element-$(ELEMENT_REQUIRED),
-             e.g. element-videoconvert
+             e.g. element-ffmpegcolorspace
 
          - decoder-$(CAPS_REQUIRED)
              e.g. decoder-audio/x-vorbis or

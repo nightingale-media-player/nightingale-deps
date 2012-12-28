@@ -7,11 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gstreamer-0.8.0\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2012-12-18 00:21+0000\n"
+"POT-Creation-Date: 2009-10-05 12:38+0100\n"
 "PO-Revision-Date: 2004-03-19 18:40+0200\n"
 "Last-Translator: Metin Amiroff <metin@karegen.com>\n"
 "Language-Team: Azerbaijani <translation-team-az@lists.sourceforge.net>\n"
-"Language: az\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -70,7 +69,7 @@ msgstr ""
 msgid "Disable updating the registry"
 msgstr ""
 
-msgid "Disable spawning a helper process while scanning the registry"
+msgid "Disable the use of fork() while scanning the registry"
 msgstr ""
 
 msgid "GStreamer Options"
@@ -80,7 +79,29 @@ msgstr ""
 msgid "Show GStreamer Options"
 msgstr "GStreamer buraxılışını göstər"
 
+#, c-format
+msgid "Error writing registry cache to %s: %s"
+msgstr ""
+
+#, c-format
+msgid "Error re-scanning registry %s: %s"
+msgstr ""
+
+#, c-format
+msgid "Error re-scanning registry %s"
+msgstr ""
+
 msgid "Unknown option"
+msgstr ""
+
+#, c-format
+msgid "ERROR: from element %s: %s\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Additional debug info:\n"
+"%s\n"
 msgstr ""
 
 msgid "GStreamer encountered a general core library error."
@@ -104,7 +125,7 @@ msgstr ""
 msgid "Internal GStreamer error: thread problem."
 msgstr ""
 
-msgid "GStreamer error: negotiation problem."
+msgid "Internal GStreamer error: negotiation problem."
 msgstr ""
 
 msgid "Internal GStreamer error: event problem."
@@ -122,7 +143,7 @@ msgstr ""
 msgid "Your GStreamer installation is missing a plug-in."
 msgstr ""
 
-msgid "GStreamer error: clock problem."
+msgid "Internal GStreamer error: clock problem."
 msgstr ""
 
 msgid ""
@@ -140,9 +161,6 @@ msgid "Could not close supporting library."
 msgstr ""
 
 msgid "Could not configure supporting library."
-msgstr ""
-
-msgid "Encoding error."
 msgstr ""
 
 msgid "GStreamer encountered a general resource error."
@@ -287,13 +305,6 @@ msgstr "tarix"
 msgid "date the data was created (as a GDate structure)"
 msgstr ""
 
-#, fuzzy
-msgid "datetime"
-msgstr "tarix"
-
-msgid "date and time the data was created (as a GstDateTime structure)"
-msgstr ""
-
 msgid "genre"
 msgstr ""
 
@@ -385,12 +396,6 @@ msgstr "müəllif hüququ"
 #, fuzzy
 msgid "URI to the copyright notice of the data"
 msgstr "mə'lumatın müəllif hüququ qeydi"
-
-msgid "encoded by"
-msgstr ""
-
-msgid "name of the encoding person or organization"
-msgstr ""
 
 msgid "contact"
 msgstr "əlaqə"
@@ -537,13 +542,7 @@ msgstr ""
 msgid "language code"
 msgstr ""
 
-msgid "language code for this stream, conforming to ISO-639-1 or ISO-639-2"
-msgstr ""
-
-msgid "language name"
-msgstr ""
-
-msgid "freeform name of the language this stream is in"
+msgid "language code for this stream, conforming to ISO-639-1"
 msgstr ""
 
 msgid "image"
@@ -552,7 +551,6 @@ msgstr ""
 msgid "image related to this stream"
 msgstr ""
 
-#. TRANSLATORS: 'preview image' = image that shows a preview of the full image
 msgid "preview image"
 msgstr ""
 
@@ -611,157 +609,8 @@ msgid ""
 "according to WGS84 (zero is average sea level)"
 msgstr ""
 
-msgid "geo location country"
-msgstr ""
-
-msgid "country (english name) where the media has been recorded or produced"
-msgstr ""
-
-msgid "geo location city"
-msgstr ""
-
-msgid "city (english name) where the media has been recorded or produced"
-msgstr ""
-
-msgid "geo location sublocation"
-msgstr ""
-
-msgid ""
-"a location within a city where the media has been produced or created (e.g. "
-"the neighborhood)"
-msgstr ""
-
-msgid "geo location horizontal error"
-msgstr ""
-
-msgid "expected error of the horizontal positioning measures (in meters)"
-msgstr ""
-
-msgid "geo location movement speed"
-msgstr ""
-
-msgid ""
-"movement speed of the capturing device while performing the capture in m/s"
-msgstr ""
-
-msgid "geo location movement direction"
-msgstr ""
-
-msgid ""
-"indicates the movement direction of the device performing the capture of a "
-"media. It is represented as degrees in floating point representation, 0 "
-"means the geographic north, and increases clockwise"
-msgstr ""
-
-msgid "geo location capture direction"
-msgstr ""
-
-msgid ""
-"indicates the direction the device is pointing to when capturing  a media. "
-"It is represented as degrees in floating point  representation, 0 means the "
-"geographic north, and increases clockwise"
-msgstr ""
-
-#. TRANSLATORS: 'show name' = 'TV/radio/podcast show name' here
-msgid "show name"
-msgstr ""
-
-msgid "Name of the tv/podcast/series show the media is from"
-msgstr ""
-
-#. TRANSLATORS: 'show sortname' = 'TV/radio/podcast show name as used for sorting purposes' here
-msgid "show sortname"
-msgstr ""
-
-msgid ""
-"Name of the tv/podcast/series show the media is from, for sorting purposes"
-msgstr ""
-
-msgid "episode number"
-msgstr ""
-
-msgid "The episode number in the season the media is part of"
-msgstr ""
-
-msgid "season number"
-msgstr ""
-
-msgid "The season number of the show the media is part of"
-msgstr ""
-
-#, fuzzy
-msgid "lyrics"
-msgstr "lisenziya"
-
-msgid "The lyrics of the media, commonly used for songs"
-msgstr ""
-
-msgid "composer sortname"
-msgstr ""
-
-#, fuzzy
-msgid "person(s) who composed the recording, for sorting purposes"
-msgstr "ifa edən şəxs(lər)"
-
-msgid "grouping"
-msgstr ""
-
-msgid ""
-"Groups related media that spans multiple tracks, like the different pieces "
-"of a concerto. It is a higher level than a track, but lower than an album"
-msgstr ""
-
-#, fuzzy
-msgid "user rating"
-msgstr "sürəklik"
-
-msgid ""
-"Rating attributed by a user. The higher the rank, the more the user likes "
-"this media"
-msgstr ""
-
-msgid "device manufacturer"
-msgstr ""
-
-msgid "Manufacturer of the device used to create this media"
-msgstr ""
-
-msgid "device model"
-msgstr ""
-
-msgid "Model of the device used to create this media"
-msgstr ""
-
-msgid "application name"
-msgstr ""
-
-msgid "Application used to create the media"
-msgstr ""
-
-msgid "application data"
-msgstr ""
-
-msgid "Arbitrary application data to be serialized into the media"
-msgstr ""
-
-msgid "image orientation"
-msgstr ""
-
-msgid "How the image should be rotated or flipped before display"
-msgstr ""
-
 msgid ", "
 msgstr ", "
-
-#, c-format
-msgid "ERROR: from element %s: %s\n"
-msgstr ""
-
-#, c-format
-msgid ""
-"Additional debug info:\n"
-"%s\n"
-msgstr ""
 
 #, c-format
 msgid "specified empty bin \"%s\", not allowed"
@@ -880,16 +729,6 @@ msgstr ""
 msgid "Failed after iterations as requested."
 msgstr ""
 
-msgid "No Temp directory specified."
-msgstr ""
-
-#, c-format
-msgid "Could not create temp file \"%s\"."
-msgstr ""
-
-msgid "Error while writing to download file."
-msgstr ""
-
 msgid "caps"
 msgstr ""
 
@@ -898,6 +737,9 @@ msgstr ""
 
 msgid "minimum"
 msgstr "minimal"
+
+msgid "maximum"
+msgstr "maksimal"
 
 msgid "force caps"
 msgstr ""
@@ -920,36 +762,12 @@ msgstr ""
 msgid "controllable"
 msgstr ""
 
-msgid "changeable in NULL, READY, PAUSED or PLAYING state"
-msgstr ""
-
-msgid "changeable only in NULL, READY or PAUSED state"
-msgstr ""
-
-msgid "changeable only in NULL or READY state"
-msgstr ""
-
-msgid "Blacklisted files:"
-msgstr ""
-
 msgid "Total count: "
 msgstr ""
 
 #, c-format
-msgid "%d blacklisted file"
-msgid_plural "%d blacklisted files"
-msgstr[0] ""
-msgstr[1] ""
-
-#, c-format
 msgid "%d plugin"
 msgid_plural "%d plugins"
-msgstr[0] ""
-msgstr[1] ""
-
-#, c-format
-msgid "%d blacklist entry"
-msgid_plural "%d blacklist entries"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -962,25 +780,13 @@ msgstr[1] ""
 msgid "Print all elements"
 msgstr ""
 
-msgid "Print list of blacklisted files"
-msgstr ""
-
 msgid ""
-"Print a machine-parsable list of features the specified plugin or all "
-"plugins provide.\n"
+"Print a machine-parsable list of features the specified plugin provides.\n"
 "                                       Useful in connection with external "
 "automatic plugin installation mechanisms"
 msgstr ""
 
 msgid "List the plugin contents"
-msgstr ""
-
-msgid "Check if the specified element or plugin exists"
-msgstr ""
-
-msgid ""
-"When checking if an element or plugin exists, also check that its version is "
-"at least the version specified"
 msgstr ""
 
 msgid "Print supported URI schemes, with the elements that implement them"
@@ -994,7 +800,26 @@ msgstr ""
 msgid "No such element or plugin '%s'\n"
 msgstr ""
 
-msgid "Index statistics"
+msgid "Usage: gst-xmllaunch <file.xml> [ element.property=value ... ]\n"
+msgstr ""
+
+#, c-format
+msgid "ERROR: parse of xml file '%s' failed.\n"
+msgstr ""
+
+#, c-format
+msgid "ERROR: no toplevel pipeline element in file '%s'.\n"
+msgstr ""
+
+msgid "WARNING: only one toplevel element is supported at this time.\n"
+msgstr ""
+
+#, c-format
+msgid "ERROR: could not parse command line argument %d: %s.\n"
+msgstr ""
+
+#, c-format
+msgid "WARNING: element named '%s' not found.\n"
 msgstr ""
 
 #, c-format
@@ -1033,17 +858,6 @@ msgid "FOUND TAG\n"
 msgstr ""
 
 #, c-format
-msgid "FOUND TOC      : found by element \"%s\".\n"
-msgstr ""
-
-#, c-format
-msgid "FOUND TOC      : found by object \"%s\".\n"
-msgstr ""
-
-msgid "FOUND TOC\n"
-msgstr ""
-
-#, c-format
 msgid ""
 "INFO:\n"
 "%s\n"
@@ -1075,14 +889,7 @@ msgstr ""
 msgid "Interrupt: Stopping pipeline ...\n"
 msgstr ""
 
-#, c-format
-msgid "Missing element: %s\n"
-msgstr ""
-
 msgid "Output tags (also known as metadata)"
-msgstr ""
-
-msgid "Output TOC (chapters and editions)"
 msgstr ""
 
 msgid "Output status information and property notifications"
@@ -1100,13 +907,19 @@ msgstr ""
 msgid "TYPE1,TYPE2,..."
 msgstr ""
 
+msgid "Save xml representation of pipeline to FILE and exit"
+msgstr ""
+
+msgid "FILE"
+msgstr "FAYL"
+
 msgid "Do not install a fault handler"
 msgstr ""
 
-msgid "Force EOS on sources before shutting the pipeline down"
+msgid "Print alloc trace (if enabled at compile time)"
 msgstr ""
 
-msgid "Gather and print index statistics"
+msgid "Force EOS on sources before shutting the pipeline down"
 msgstr ""
 
 #, c-format
@@ -1150,16 +963,10 @@ msgstr ""
 msgid "EOS on shutdown enabled -- Forcing EOS on the pipeline\n"
 msgstr ""
 
-msgid "EOS on shutdown enabled -- waiting for EOS after Error\n"
-msgstr ""
-
 msgid "Waiting for EOS...\n"
 msgstr ""
 
 msgid "EOS received - stopping pipeline...\n"
-msgstr ""
-
-msgid "Interrupt while waiting for EOS - stopping pipeline...\n"
 msgstr ""
 
 msgid "An error happened while waiting for EOS\n"
@@ -1176,9 +983,6 @@ msgstr ""
 
 msgid "Freeing pipeline ...\n"
 msgstr ""
-
-#~ msgid "FILE"
-#~ msgstr "FAYL"
 
 #~ msgid "')"
 #~ msgstr "')"

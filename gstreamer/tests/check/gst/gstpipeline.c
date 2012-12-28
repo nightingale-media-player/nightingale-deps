@@ -38,7 +38,6 @@ GST_START_TEST (test_async_state_change_empty)
   fail_unless_equals_int (gst_element_set_state (GST_ELEMENT (pipeline),
           GST_STATE_PLAYING), GST_STATE_CHANGE_SUCCESS);
 
-  gst_element_set_state (GST_ELEMENT (pipeline), GST_STATE_NULL);
   gst_object_unref (pipeline);
 }
 
@@ -61,7 +60,6 @@ GST_START_TEST (test_async_state_change_fake_ready)
   fail_unless_equals_int (gst_element_set_state (GST_ELEMENT (pipeline),
           GST_STATE_READY), GST_STATE_CHANGE_SUCCESS);
 
-  gst_element_set_state (GST_ELEMENT (pipeline), GST_STATE_NULL);
   gst_object_unref (pipeline);
 }
 
@@ -126,9 +124,6 @@ GST_START_TEST (test_get_bus)
   bus = gst_pipeline_get_bus (pipeline);
   ASSERT_OBJECT_REFCOUNT (pipeline, "pipeline after get_bus", 1);
   ASSERT_OBJECT_REFCOUNT (bus, "bus", 2);
-
-  /* bindings don't like the floating flag to be set here */
-  fail_if (g_object_is_floating (bus));
 
   gst_object_unref (pipeline);
 
@@ -239,22 +234,13 @@ GST_START_TEST (test_bus)
 
 GST_END_TEST;
 
-static GMutex probe_lock;
-static GCond probe_cond;
+static GMutex *probe_lock;
+static GCond *probe_cond;
 
-static GstPadProbeReturn
-sink_pad_probe (GstPad * pad, GstPadProbeInfo * info, gpointer user_data)
+static gboolean
+sink_pad_probe (GstPad * pad, GstBuffer * buffer,
+    GstClockTime * first_timestamp)
 {
-  GstClockTime *first_timestamp = user_data;
-  GstBuffer *buffer;
-
-  fail_unless ((GST_PAD_PROBE_INFO_TYPE (info) & GST_PAD_PROBE_TYPE_BUFFER));
-
-  buffer = GST_BUFFER (info->data);
-
-  GST_LOG_OBJECT (pad, "buffer with timestamp %" GST_TIME_FORMAT,
-      GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buffer)));
-
   fail_if (GST_BUFFER_TIMESTAMP (buffer) == GST_CLOCK_TIME_NONE,
       "testing if buffer timestamps are right, but got CLOCK_TIME_NONE");
 
@@ -262,11 +248,11 @@ sink_pad_probe (GstPad * pad, GstPadProbeInfo * info, gpointer user_data)
     *first_timestamp = GST_BUFFER_TIMESTAMP (buffer);
   }
 
-  g_mutex_lock (&probe_lock);
-  g_cond_signal (&probe_cond);
-  g_mutex_unlock (&probe_lock);
+  g_mutex_lock (probe_lock);
+  g_cond_signal (probe_cond);
+  g_mutex_unlock (probe_lock);
 
-  return GST_PAD_PROBE_OK;
+  return TRUE;
 }
 
 GST_START_TEST (test_base_time)
@@ -288,8 +274,7 @@ GST_START_TEST (test_base_time)
   gst_element_link (fakesrc, fakesink);
 
   sink = gst_element_get_static_pad (fakesink, "sink");
-  gst_pad_add_probe (sink, GST_PAD_PROBE_TYPE_BUFFER, sink_pad_probe,
-      &observed, NULL);
+  gst_pad_add_buffer_probe (sink, G_CALLBACK (sink_pad_probe), &observed);
 
   fail_unless (gst_element_set_state (pipeline, GST_STATE_PAUSED)
       == GST_STATE_CHANGE_NO_PREROLL, "expected no-preroll from live pipeline");
@@ -300,6 +285,9 @@ GST_START_TEST (test_base_time)
 
   fail_unless (gst_element_get_start_time (pipeline) == 0,
       "stream time doesn't start off at 0");
+
+  probe_lock = g_mutex_new ();
+  probe_cond = g_cond_new ();
 
   /* test the first: that base time is being distributed correctly, timestamps
      are correct relative to the running clock and base time */
@@ -313,10 +301,10 @@ GST_START_TEST (test_base_time)
             GST_CLOCK_TIME_NONE)
         == GST_STATE_CHANGE_SUCCESS, "failed state change");
 
-    g_mutex_lock (&probe_lock);
+    g_mutex_lock (probe_lock);
     while (observed == GST_CLOCK_TIME_NONE)
-      g_cond_wait (&probe_cond, &probe_lock);
-    g_mutex_unlock (&probe_lock);
+      g_cond_wait (probe_cond, probe_lock);
+    g_mutex_unlock (probe_lock);
 
     /* now something a little more than lower was distributed as the base time,
      * and the buffer was timestamped between 0 and upper-base
@@ -386,10 +374,10 @@ GST_START_TEST (test_base_time)
             GST_CLOCK_TIME_NONE)
         == GST_STATE_CHANGE_SUCCESS, "failed state change");
 
-    g_mutex_lock (&probe_lock);
+    g_mutex_lock (probe_lock);
     while (observed == GST_CLOCK_TIME_NONE)
-      g_cond_wait (&probe_cond, &probe_lock);
-    g_mutex_unlock (&probe_lock);
+      g_cond_wait (probe_cond, probe_lock);
+    g_mutex_unlock (probe_lock);
 
     /* now the base time should have advanced by more than WAIT_TIME compared
      * to what it was. The buffer will be timestamped between the last stream
@@ -458,10 +446,10 @@ GST_START_TEST (test_base_time)
             GST_CLOCK_TIME_NONE)
         == GST_STATE_CHANGE_SUCCESS, "failed state change");
 
-    g_mutex_lock (&probe_lock);
+    g_mutex_lock (probe_lock);
     while (observed == GST_CLOCK_TIME_NONE)
-      g_cond_wait (&probe_cond, &probe_lock);
-    g_mutex_unlock (&probe_lock);
+      g_cond_wait (probe_cond, probe_lock);
+    g_mutex_unlock (probe_lock);
 
     /* now the base time should be the same as it was, and the timestamp should
      * be more than WAIT_TIME past what it was.
@@ -497,8 +485,6 @@ GST_START_TEST (test_base_time)
         GST_TIME_ARGS (observed), GST_TIME_ARGS (oldobserved));
   }
 
-  gst_element_set_state (pipeline, GST_STATE_NULL);
-
   gst_object_unref (sink);
   gst_object_unref (clock);
   gst_object_unref (pipeline);
@@ -532,44 +518,12 @@ GST_START_TEST (test_concurrent_create)
   int i;
 
   for (i = 0; i < G_N_ELEMENTS (threads); ++i) {
-    threads[i] = g_thread_try_new ("gst-check", pipeline_thread, NULL, NULL);
+    threads[i] = g_thread_create (pipeline_thread, NULL, TRUE, NULL);
   }
   for (i = 0; i < G_N_ELEMENTS (threads); ++i) {
     if (threads[i])
       g_thread_join (threads[i]);
   }
-}
-
-GST_END_TEST;
-
-GST_START_TEST (test_pipeline_in_pipeline)
-{
-  GstElement *pipeline, *bin, *fakesrc, *fakesink;
-  GstMessage *msg;
-
-  pipeline = gst_element_factory_make ("pipeline", "pipeline");
-  bin = gst_element_factory_make ("pipeline", "pipeline-as-bin");
-  fakesrc = gst_element_factory_make ("fakesrc", "fakesrc");
-  fakesink = gst_element_factory_make ("fakesink", "fakesink");
-
-  fail_unless (pipeline && bin && fakesrc && fakesink);
-
-  g_object_set (fakesrc, "num-buffers", 100, NULL);
-
-  gst_bin_add (GST_BIN (pipeline), bin);
-  gst_bin_add_many (GST_BIN (bin), fakesrc, fakesink, NULL);
-  gst_element_link (fakesrc, fakesink);
-
-  fail_unless_equals_int (gst_element_set_state (pipeline, GST_STATE_PLAYING),
-      GST_STATE_CHANGE_ASYNC);
-
-  msg = gst_bus_timed_pop_filtered (GST_ELEMENT_BUS (pipeline), -1,
-      GST_MESSAGE_EOS);
-  gst_message_unref (msg);
-
-  gst_element_set_state (pipeline, GST_STATE_NULL);
-
-  gst_object_unref (pipeline);
 }
 
 GST_END_TEST;
@@ -590,7 +544,6 @@ gst_pipeline_suite (void)
   tcase_add_test (tc_chain, test_bus);
   tcase_add_test (tc_chain, test_base_time);
   tcase_add_test (tc_chain, test_concurrent_create);
-  tcase_add_test (tc_chain, test_pipeline_in_pipeline);
 
   return s;
 }

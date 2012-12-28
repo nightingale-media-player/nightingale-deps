@@ -102,20 +102,23 @@ gst_preset_test_class_init (GObjectClass * klass)
 static void
 gst_preset_test_base_init (GstPresetTestClass * klass)
 {
+  static const GstElementDetails details = {
+    "Element for unit tests",
+    "Testing",
+    "Use in unit tests",
+    "Stefan Kost <stefan.kost@nokia.com>"
+  };
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
 
-  gst_element_class_set_metadata (element_class,
-      "Element for unit tests",
-      "Testing", "Use in unit tests", "Stefan Kost <stefan.kost@nokia.com>");
+  gst_element_class_set_details (element_class, &details);
 }
 
 static GType
 gst_preset_test_get_type (void)
 {
-  static volatile gsize preset_test_type = 0;
+  static GType type = 0;
 
-  if (g_once_init_enter (&preset_test_type)) {
-    GType type;
+  if (type == 0) {
     const GTypeInfo info = {
       sizeof (GstPresetTestClass),
       (GBaseInitFunc) gst_preset_test_base_init,        /* base_init */
@@ -135,9 +138,8 @@ gst_preset_test_get_type (void)
     };
     type = g_type_register_static (GST_TYPE_ELEMENT, "GstPresetTest", &info, 0);
     g_type_add_interface_static (type, GST_TYPE_PRESET, &preset_interface_info);
-    g_once_init_leave (&preset_test_type, type);
   }
-  return preset_test_type;
+  return type;
 }
 
 static gboolean
@@ -248,8 +250,8 @@ remove_preset_file (void)
 {
   gchar *preset_file_name;
 
-  preset_file_name = g_build_filename (g_get_user_data_dir (),
-      "gstreamer-" GST_API_VERSION, "presets", "GstPresetTest.prs", NULL);
+  preset_file_name = g_build_filename (g_get_home_dir (),
+      ".gstreamer-" GST_MAJORMINOR, "presets", "GstPresetTest.prs", NULL);
   g_unlink (preset_file_name);
   g_free (preset_file_name);
 }
@@ -281,9 +283,9 @@ gst_preset_suite (void)
   gchar *gst_dir;
   gboolean can_write = FALSE;
 
-  /* check if we can create presets */
-  gst_dir = g_build_filename (g_get_user_data_dir (),
-      "gstreamer-" GST_API_VERSION, NULL);
+  /* cehck if we can create presets */
+  gst_dir = g_build_filename (g_get_home_dir (),
+      ".gstreamer-" GST_MAJORMINOR, NULL);
   can_write = (g_access (gst_dir, R_OK | W_OK | X_OK) == 0);
   g_free (gst_dir);
 

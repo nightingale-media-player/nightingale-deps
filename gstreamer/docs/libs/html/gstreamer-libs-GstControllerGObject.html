@@ -1,0 +1,657 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GstControllerGObject</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer 0.10 Library Reference Manual">
+<link rel="up" href="gstreamer-control.html" title="GStreamer Dynamic Parameter Control">
+<link rel="prev" href="GstLFOControlSource.html" title="GstLFOControlSource">
+<link rel="next" href="gstreamer-dataprotocol.html" title="GStreamer Data Protocol">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gstreamer-libs.html" title="Part I. GStreamer Libraries">
+<link rel="chapter" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
+<link rel="chapter" href="gstreamer-control.html" title="GStreamer Dynamic Parameter Control">
+<link rel="chapter" href="gstreamer-dataprotocol.html" title="GStreamer Data Protocol">
+<link rel="chapter" href="gstreamer-net.html" title="GStreamer Network Classes">
+<link rel="chapter" href="gstreamer-check.html" title="GStreamer Check Unit Testing">
+<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="GstLFOControlSource.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="gstreamer-control.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer 0.10 Library Reference Manual</th>
+<td><a accesskey="n" href="gstreamer-dataprotocol.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gstreamer-libs-GstControllerGObject.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gstreamer-libs-GstControllerGObject.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gstreamer-libs-GstControllerGObject"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gstreamer-libs-GstControllerGObject.top_of_page"></a>GstControllerGObject</span></h2>
+<p>GstControllerGObject — #GObject convinience methods for using dynamic properties</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gstreamer-libs-GstControllerGObject.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;libs/controller/gstcontroller.h&gt;
+
+<a class="link" href="GstController.html" title="GstController">GstController</a> *     <a class="link" href="gstreamer-libs-GstControllerGObject.html#gst-object-control-properties" title="gst_object_control_properties ()">gst_object_control_properties</a>       (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object,
+                                                         ...);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstControllerGObject.html#gst-object-uncontrol-properties" title="gst_object_uncontrol_properties ()">gst_object_uncontrol_properties</a>     (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object,
+                                                         ...);
+<a class="link" href="GstController.html" title="GstController">GstController</a> *     <a class="link" href="gstreamer-libs-GstControllerGObject.html#gst-object-get-controller" title="gst_object_get_controller ()">gst_object_get_controller</a>           (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstControllerGObject.html#gst-object-set-controller" title="gst_object_set_controller ()">gst_object_set_controller</a>           (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object,
+                                                         <a class="link" href="GstController.html" title="GstController">GstController</a> *controller);
+<a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a>        <a class="link" href="gstreamer-libs-GstControllerGObject.html#gst-object-suggest-next-sync" title="gst_object_suggest_next_sync ()">gst_object_suggest_next_sync</a>        (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstControllerGObject.html#gst-object-sync-values" title="gst_object_sync_values ()">gst_object_sync_values</a>              (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> timestamp);
+<a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a> *  <a class="link" href="gstreamer-libs-GstControllerGObject.html#gst-object-get-control-source" title="gst_object_get_control_source ()">gst_object_get_control_source</a>       (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *property_name);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstControllerGObject.html#gst-object-set-control-source" title="gst_object_set_control_source ()">gst_object_set_control_source</a>       (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *property_name,
+                                                         <a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a> *csource);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstControllerGObject.html#gst-object-get-value-arrays" title="gst_object_get_value_arrays ()">gst_object_get_value_arrays</a>         (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> timestamp,
+                                                         <a
+href="../glib/glib-Singly-Linked-Lists.html#GSList"
+>GSList</a> *value_arrays);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstControllerGObject.html#gst-object-get-value-array" title="gst_object_get_value_array ()">gst_object_get_value_array</a>          (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> timestamp,
+                                                         <a class="link" href="GstControlSource.html#GstValueArray" title="GstValueArray">GstValueArray</a> *value_array);
+<a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a>        <a class="link" href="gstreamer-libs-GstControllerGObject.html#gst-object-get-control-rate" title="gst_object_get_control_rate ()">gst_object_get_control_rate</a>         (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object);
+void                <a class="link" href="gstreamer-libs-GstControllerGObject.html#gst-object-set-control-rate" title="gst_object_set_control_rate ()">gst_object_set_control_rate</a>         (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> control_rate);
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gstreamer-libs-GstControllerGObject.description"></a><h2>Description</h2>
+<p>
+These methods allow to use some <a class="link" href="GstController.html" title="GstController"><span class="type">GstController</span></a> functionallity directly from
+the <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+><span class="type">GObject</span></a> class.</p>
+<p>
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gstreamer-libs-GstControllerGObject.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="gst-object-control-properties"></a><h3>gst_object_control_properties ()</h3>
+<pre class="programlisting"><a class="link" href="GstController.html" title="GstController">GstController</a> *     gst_object_control_properties       (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object,
+                                                         ...);</pre>
+<p>
+Convenience function for GObject
+</p>
+<p>
+Creates a GstController that allows you to dynamically control one, or more, GObject properties.
+If the given GObject already has a GstController, it adds the given properties to the existing
+controller and returns that controller.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>object</code></em> :</span></p></td>
+<td> the object of which some properties should be controlled
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#NULL--CAPS"
+><code class="literal">NULL</code></a> terminated list of property names that should be controlled
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The GstController with which the user can control the given properties dynamically or NULL if
+one or more of the given properties aren't available, or cannot be controlled, for the given element.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.9</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-object-uncontrol-properties"></a><h3>gst_object_uncontrol_properties ()</h3>
+<pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_object_uncontrol_properties     (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object,
+                                                         ...);</pre>
+<p>
+Convenience function for GObject
+</p>
+<p>
+Removes the given element's properties from it's controller</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>object</code></em> :</span></p></td>
+<td> the object of which some properties should not be controlled anymore
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#NULL--CAPS"
+><code class="literal">NULL</code></a> terminated list of property names that should be controlled
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
+><code class="literal">FALSE</code></a> if one of the given property names isn't handled by the
+controller, <a
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
+><code class="literal">TRUE</code></a> otherwise
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.9</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-object-get-controller"></a><h3>gst_object_get_controller ()</h3>
+<pre class="programlisting"><a class="link" href="GstController.html" title="GstController">GstController</a> *     gst_object_get_controller           (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object);</pre>
+<p>
+Gets the controller for the given GObject</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>object</code></em> :</span></p></td>
+<td> the object that has controlled properties
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the controller handling some of the given element's properties, <a
+href="../glib/glib-Standard-Macros.html#NULL--CAPS"
+><code class="literal">NULL</code></a> if no controller
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.9</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-object-set-controller"></a><h3>gst_object_set_controller ()</h3>
+<pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_object_set_controller           (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object,
+                                                         <a class="link" href="GstController.html" title="GstController">GstController</a> *controller);</pre>
+<p>
+Sets the controller on the given GObject</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>object</code></em> :</span></p></td>
+<td> the object that should get the controller
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>controller</code></em> :</span></p></td>
+<td> the controller object to plug in
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
+><code class="literal">FALSE</code></a> if the GObject already has an controller, <a
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
+><code class="literal">TRUE</code></a> otherwise
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.9</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-object-suggest-next-sync"></a><h3>gst_object_suggest_next_sync ()</h3>
+<pre class="programlisting"><a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a>        gst_object_suggest_next_sync        (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object);</pre>
+<p>
+Convenience function for GObject</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>object</code></em> :</span></p></td>
+<td> the object that has controlled properties
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> same thing as <a class="link" href="GstController.html#gst-controller-suggest-next-sync" title="gst_controller_suggest_next_sync ()"><code class="function">gst_controller_suggest_next_sync()</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.13</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-object-sync-values"></a><h3>gst_object_sync_values ()</h3>
+<pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_object_sync_values              (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> timestamp);</pre>
+<p>
+Convenience function for GObject</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>object</code></em> :</span></p></td>
+<td> the object that has controlled properties
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>timestamp</code></em> :</span></p></td>
+<td> the time that should be processed
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> same thing as <a class="link" href="GstController.html#gst-controller-sync-values" title="gst_controller_sync_values ()"><code class="function">gst_controller_sync_values()</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.9</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-object-get-control-source"></a><h3>gst_object_get_control_source ()</h3>
+<pre class="programlisting"><a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a> *  gst_object_get_control_source       (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *property_name);</pre>
+<p>
+Gets the corresponding <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a> for the property. This should be unreferenced
+again after use.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>object</code></em> :</span></p></td>
+<td> the object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>property_name</code></em> :</span></p></td>
+<td> name of the property for which the <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a> should be get
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a> for <em class="parameter"><code>property_name</code></em> or NULL if the property is not
+controlled by this controller or no <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a> was assigned yet.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.14</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-object-set-control-source"></a><h3>gst_object_set_control_source ()</h3>
+<pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_object_set_control_source       (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *property_name,
+                                                         <a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a> *csource);</pre>
+<p>
+Sets the <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a> for <em class="parameter"><code>property_name</code></em>. If there already was a <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a>
+for this property it will be unreferenced.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>object</code></em> :</span></p></td>
+<td> the controller object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>property_name</code></em> :</span></p></td>
+<td> name of the property for which the <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a> should be set
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>csource</code></em> :</span></p></td>
+<td> the <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a> that should be used for the property
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
+><code class="literal">FALSE</code></a> if the given property isn't handled by the controller or the new <a class="link" href="GstControlSource.html" title="GstControlSource"><span class="type">GstControlSource</span></a>
+couldn't be bound to the property, <a
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
+><code class="literal">TRUE</code></a> if everything worked as expected.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.14</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-object-get-value-arrays"></a><h3>gst_object_get_value_arrays ()</h3>
+<pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_object_get_value_arrays         (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> timestamp,
+                                                         <a
+href="../glib/glib-Singly-Linked-Lists.html#GSList"
+>GSList</a> *value_arrays);</pre>
+<p>
+Function to be able to get an array of values for one or more given element
+properties.
+</p>
+<p>
+If the GstValueArray-&gt;values array in list nodes is NULL, it will be created
+by the function.
+The type of the values in the array are the same as the property's type.
+</p>
+<p>
+The g_object_* functions are just convenience functions for GObject</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>object</code></em> :</span></p></td>
+<td> the object that has controlled properties
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>timestamp</code></em> :</span></p></td>
+<td> the time that should be processed
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value_arrays</code></em> :</span></p></td>
+<td> list to return the control-values in
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
+><code class="literal">TRUE</code></a> if the given array(s) could be filled, <a
+href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
+><code class="literal">FALSE</code></a> otherwise
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.9</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-object-get-value-array"></a><h3>gst_object_get_value_array ()</h3>
+<pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_object_get_value_array          (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> timestamp,
+                                                         <a class="link" href="GstControlSource.html#GstValueArray" title="GstValueArray">GstValueArray</a> *value_array);</pre>
+<p>
+Function to be able to get an array of values for one element properties
+</p>
+<p>
+If the GstValueArray-&gt;values array is NULL, it will be created by the function.
+The type of the values in the array are the same as the property's type.
+</p>
+<p>
+The g_object_* functions are just convenience functions for GObject</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>object</code></em> :</span></p></td>
+<td> the object that has controlled properties
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>timestamp</code></em> :</span></p></td>
+<td> the time that should be processed
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value_array</code></em> :</span></p></td>
+<td> array to put control-values in
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
+><code class="literal">TRUE</code></a> if the given array(s) could be filled, <a
+href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
+><code class="literal">FALSE</code></a> otherwise
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.9</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-object-get-control-rate"></a><h3>gst_object_get_control_rate ()</h3>
+<pre class="programlisting"><a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a>        gst_object_get_control_rate         (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object);</pre>
+<p>
+Obtain the control-rate for this <em class="parameter"><code>object</code></em>. Audio processing <a
+href="../gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>
+objects will use this rate to sub-divide their processing loop and call
+<a class="link" href="gstreamer-libs-GstControllerGObject.html#gst-object-sync-values" title="gst_object_sync_values ()"><code class="function">gst_object_sync_values()</code></a> inbetween. The length of the processing segment
+should be up to <em class="parameter"><code>control</code></em>-rate nanoseconds.
+</p>
+<p>
+If the <em class="parameter"><code>object</code></em> is not under property control, this will return
+<a
+href="../gstreamer-0.10/GstClock.html#GST-CLOCK-TIME-NONE--CAPS"
+><code class="literal">GST_CLOCK_TIME_NONE</code></a>. This allows the element to avoid the sub-dividing.
+</p>
+<p>
+The control-rate is not expected to change if the element is in
+<code class="literal">GST_STATE_PAUSED</code> or <code class="literal">GST_STATE_PLAYING</code>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>object</code></em> :</span></p></td>
+<td> the object that has controlled properties
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the control rate in nanoseconds
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.10</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-object-set-control-rate"></a><h3>gst_object_set_control_rate ()</h3>
+<pre class="programlisting">void                gst_object_set_control_rate         (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *object,
+                                                         <a
+href="../gstreamer-0.10/GstClock.html#GstClockTime"
+>GstClockTime</a> control_rate);</pre>
+<p>
+Change the control-rate for this <em class="parameter"><code>object</code></em>. Audio processing <a
+href="../gstreamer-0.10/GstElement.html"
+><span class="type">GstElement</span></a>
+objects will use this rate to sub-divide their processing loop and call
+<a class="link" href="gstreamer-libs-GstControllerGObject.html#gst-object-sync-values" title="gst_object_sync_values ()"><code class="function">gst_object_sync_values()</code></a> inbetween. The length of the processing segment
+should be up to <em class="parameter"><code>control</code></em>-rate nanoseconds.
+</p>
+<p>
+The control-rate should not change if the element is in <code class="literal">GST_STATE_PAUSED</code> or
+<code class="literal">GST_STATE_PLAYING</code>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>object</code></em> :</span></p></td>
+<td> the object that has controlled properties
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>control_rate</code></em> :</span></p></td>
+<td> the new control-rate in nanoseconds.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.10.10</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gstreamer-libs-GstControllerGObject.see-also"></a><h2>See Also</h2>
+#GstController
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.11</div>
+</body>
+</html>

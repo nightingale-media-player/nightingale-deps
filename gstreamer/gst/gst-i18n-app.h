@@ -23,10 +23,9 @@
 #ifndef __GST_I18N_APP_H__
 #define __GST_I18N_APP_H__
 
-#ifdef ENABLE_NLS
-
-#include <locale.h>  /* some people need it and some people don't */
 #include "gettext.h" /* included with gettext distribution and copied */
+
+#ifdef ENABLE_NLS
 
 /* we want to use shorthand _() for translating and N_() for marking */
 #define _(String) gettext (String)
@@ -37,7 +36,6 @@
 
 #define _(String) String
 #define N_(String) String
-#define ngettext(Singular,Plural,Count) ((Count>1)?Plural:Singular)
 
 #endif
 

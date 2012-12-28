@@ -691,8 +691,6 @@ GST_START_TEST (test_added_async2)
 
   /* add source, don't add sink yet */
   gst_bin_add (GST_BIN (pipeline), src);
-  /* need to lock state here or the pipeline might go in error */
-  gst_element_set_locked_state (src, TRUE);
 
   ret = gst_element_set_state (pipeline, GST_STATE_PAUSED);
   fail_unless (ret == GST_STATE_CHANGE_SUCCESS, "no SUCCESS state return");
@@ -760,18 +758,16 @@ GST_START_TEST (test_add_live)
 
 GST_END_TEST;
 
-static GMutex blocked_lock;
-static GCond blocked_cond;
+static GMutex *blocked_lock;
+static GCond *blocked_cond;
 
-static GstPadProbeReturn
-pad_blocked_cb (GstPad * pad, GstPadProbeInfo * info, gpointer user_data)
+static void
+pad_blocked_cb (GstPad * pad, gboolean blocked, gpointer user_data)
 {
-  g_mutex_lock (&blocked_lock);
-  GST_DEBUG ("srcpad blocked: %d, sending signal", info->type);
-  g_cond_signal (&blocked_cond);
-  g_mutex_unlock (&blocked_lock);
-
-  return GST_PAD_PROBE_OK;
+  g_mutex_lock (blocked_lock);
+  GST_DEBUG ("srcpad blocked: %d, sending signal", blocked);
+  g_cond_signal (blocked_cond);
+  g_mutex_unlock (blocked_lock);
 }
 
 GST_START_TEST (test_add_live2)
@@ -780,7 +776,9 @@ GST_START_TEST (test_add_live2)
   GstStateChangeReturn ret;
   GstState current, pending;
   GstPad *srcpad, *sinkpad;
-  gulong id;
+
+  blocked_lock = g_mutex_new ();
+  blocked_cond = g_cond_new ();
 
   pipeline = gst_pipeline_new ("pipeline");
   src = gst_element_factory_make ("fakesrc", "src");
@@ -794,13 +792,12 @@ GST_START_TEST (test_add_live2)
   ret = gst_element_set_state (pipeline, GST_STATE_PLAYING);
   fail_unless (ret == GST_STATE_CHANGE_ASYNC, "no ASYNC state return");
 
-  g_mutex_lock (&blocked_lock);
+  g_mutex_lock (blocked_lock);
 
   GST_DEBUG ("blocking srcpad");
   /* block source pad */
   srcpad = gst_element_get_static_pad (src, "src");
-  id = gst_pad_add_probe (srcpad, GST_PAD_PROBE_TYPE_BLOCK_DOWNSTREAM,
-      pad_blocked_cb, NULL, NULL);
+  gst_pad_set_blocked_async (srcpad, TRUE, pad_blocked_cb, NULL);
 
   /* set source to PAUSED without adding it to the pipeline */
   ret = gst_element_set_state (src, GST_STATE_PAUSED);
@@ -814,8 +811,8 @@ GST_START_TEST (test_add_live2)
   gst_bin_add (GST_BIN (pipeline), src);
 
   /* wait for pad blocked, this means the source is now PLAYING. */
-  g_cond_wait (&blocked_cond, &blocked_lock);
-  g_mutex_unlock (&blocked_lock);
+  g_cond_wait (blocked_cond, blocked_lock);
+  g_mutex_unlock (blocked_lock);
 
   GST_DEBUG ("linking pads");
 
@@ -828,7 +825,7 @@ GST_START_TEST (test_add_live2)
   GST_DEBUG ("unblocking srcpad");
 
   /* and unblock */
-  gst_pad_remove_probe (srcpad, id);
+  gst_pad_set_blocked_async (srcpad, FALSE, pad_blocked_cb, NULL);
 
   GST_DEBUG ("getting state");
 
@@ -842,6 +839,8 @@ GST_START_TEST (test_add_live2)
   ret = gst_element_set_state (pipeline, GST_STATE_NULL);
   fail_unless (ret == GST_STATE_CHANGE_SUCCESS, "not SUCCESS");
 
+  g_cond_free (blocked_cond);
+  g_mutex_free (blocked_lock);
   gst_object_unref (pipeline);
 }
 
@@ -897,14 +896,10 @@ GST_START_TEST (test_bin_live)
   gst_object_unref (pipeline);
 }
 
-GST_END_TEST static gpointer
+GST_END_TEST static void
 send_eos (GstPad * sinkpad)
 {
-  gboolean ret;
-
-  ret = gst_pad_send_event (sinkpad, gst_event_new_eos ());
-
-  return GINT_TO_POINTER (ret);
+  gst_pad_send_event (sinkpad, gst_event_new_eos ());
 }
 
 /* push a buffer with a very long duration in a fakesink, then push an EOS
@@ -933,7 +928,7 @@ GST_START_TEST (test_fake_eos)
   fail_unless (ret == GST_STATE_CHANGE_ASYNC, "no ASYNC state return");
 
   /* push buffer of 100 seconds, since it has a timestamp of 0, it should be
-   * rendered immediately and the chain function should return immediately */
+   * rendered immediatly and the chain function should return immediatly */
   buffer = gst_buffer_new_and_alloc (10);
   GST_BUFFER_TIMESTAMP (buffer) = 0;
   GST_BUFFER_DURATION (buffer) = 100 * GST_SECOND;
@@ -947,8 +942,7 @@ GST_START_TEST (test_fake_eos)
   /* push EOS, this will block for up to 100 seconds, until the previous
    * buffer has finished. We therefore push it in another thread so we can do
    * something else while it blocks. */
-  thread =
-      g_thread_try_new ("gst-check", (GThreadFunc) send_eos, sinkpad, NULL);
+  thread = g_thread_create ((GThreadFunc) send_eos, sinkpad, TRUE, NULL);
   fail_if (thread == NULL, "no thread");
 
   /* wait a while so that the thread manages to start and push the EOS */
@@ -976,9 +970,6 @@ GST_START_TEST (test_fake_eos)
   ret = gst_element_set_state (pipeline, GST_STATE_NULL);
   fail_unless (ret == GST_STATE_CHANGE_SUCCESS, "no SUCCESS state return");
 
-  /* we can join now */
-  g_thread_join (thread);
-
   gst_object_unref (pipeline);
 }
 
@@ -1002,13 +993,15 @@ static GstBusSyncReply
 async_done_func (GstBus * bus, GstMessage * msg, GstElement * sink)
 {
   if (GST_MESSAGE_TYPE (msg) == GST_MESSAGE_ASYNC_DONE) {
+    GstFormat format;
     gint64 position;
 
     GST_DEBUG ("we have ASYNC_DONE now");
     fail_unless (have_preroll == TRUE, "no preroll buffer received");
 
     /* get the position now */
-    gst_element_query_position (sink, GST_FORMAT_TIME, &position);
+    format = GST_FORMAT_TIME;
+    gst_element_query_position (sink, &format, &position);
 
     GST_DEBUG ("we have position %" GST_TIME_FORMAT, GST_TIME_ARGS (position));
 
@@ -1045,18 +1038,20 @@ send_buffer (GstPad * sinkpad)
 GST_START_TEST (test_async_done)
 {
   GstElement *sink;
+  GstBuffer *buffer;
   GstEvent *event;
   GstStateChangeReturn ret;
   GstPad *sinkpad;
-  gboolean res;
+  GstFlowReturn res;
   GstBus *bus;
   GThread *thread;
+  GstFormat format;
   gint64 position;
   gboolean qret;
-  GstSegment segment;
 
   sink = gst_element_factory_make ("fakesink", "sink");
   g_object_set (G_OBJECT (sink), "sync", TRUE, NULL);
+  g_object_set (G_OBJECT (sink), "preroll-queue-len", 2, NULL);
   g_object_set (G_OBJECT (sink), "signal-handoffs", TRUE, NULL);
 
   g_signal_connect (sink, "preroll-handoff", (GCallback) async_done_handoff,
@@ -1070,30 +1065,53 @@ GST_START_TEST (test_async_done)
   /* set bus on element synchronously listen for ASYNC_DONE */
   bus = gst_bus_new ();
   gst_element_set_bus (sink, bus);
-  gst_bus_set_sync_handler (bus, (GstBusSyncHandler) async_done_func, sink,
-      NULL);
+  gst_bus_set_sync_handler (bus, (GstBusSyncHandler) async_done_func, sink);
 
   /* make newsegment, this sets the position to 10sec when the buffer prerolls */
   GST_DEBUG ("sending segment");
-  gst_segment_init (&segment, GST_FORMAT_TIME);
-  segment.time = 10 * GST_SECOND;
-
-  event = gst_event_new_segment (&segment);
+  event =
+      gst_event_new_new_segment (FALSE, 1.0, GST_FORMAT_TIME, 0, -1,
+      10 * GST_SECOND);
   res = gst_pad_send_event (sinkpad, event);
-  fail_unless (res == TRUE);
 
   /* We have not yet received any buffers so we are still in the READY state,
    * the position is therefore still not queryable. */
+  format = GST_FORMAT_TIME;
   position = -1;
-  qret = gst_element_query_position (sink, GST_FORMAT_TIME, &position);
+  qret = gst_element_query_position (sink, &format, &position);
   fail_unless (qret == TRUE, "position wrong");
+  fail_unless (position == 10 * GST_SECOND, "position is wrong");
+
+  /* Since we are paused and the preroll queue has a length of 2, this function
+   * will return immediatly, the preroll handoff will be called and the stream
+   * position should now be 10 seconds. */
+  GST_DEBUG ("pushing first buffer");
+  buffer = gst_buffer_new_and_alloc (10);
+  GST_BUFFER_TIMESTAMP (buffer) = 1 * GST_SECOND;
+  GST_BUFFER_DURATION (buffer) = 100 * GST_SECOND;
+  res = gst_pad_chain (sinkpad, buffer);
+  fail_unless (res == GST_FLOW_OK, "no OK flow return");
+
+  /* scond buffer, will not block either but position should still be 10
+   * seconds */
+  GST_DEBUG ("pushing second buffer");
+  buffer = gst_buffer_new_and_alloc (10);
+  GST_BUFFER_TIMESTAMP (buffer) = 100 * GST_SECOND;
+  GST_BUFFER_DURATION (buffer) = 100 * GST_SECOND;
+  res = gst_pad_chain (sinkpad, buffer);
+  fail_unless (res == GST_FLOW_OK, "no OK flow return");
+
+  /* check if position is still 10 seconds */
+  format = GST_FORMAT_TIME;
+  gst_element_query_position (sink, &format, &position);
+  GST_DEBUG ("first buffer position %" GST_TIME_FORMAT,
+      GST_TIME_ARGS (position));
   fail_unless (position == 10 * GST_SECOND, "position is wrong");
 
   /* last buffer, blocks because preroll queue is filled. Start the push in a
    * new thread so that we can check the position */
   GST_DEBUG ("starting thread");
-  thread =
-      g_thread_try_new ("gst-check", (GThreadFunc) send_buffer, sinkpad, NULL);
+  thread = g_thread_create ((GThreadFunc) send_buffer, sinkpad, TRUE, NULL);
   fail_if (thread == NULL, "no thread");
 
   GST_DEBUG ("waiting 1 second");
@@ -1103,7 +1121,8 @@ GST_START_TEST (test_async_done)
   /* check if position is still 10 seconds. This is racy because  the above
    * thread might not yet have started the push, because of the above sleep,
    * this is very unlikely, though. */
-  gst_element_query_position (sink, GST_FORMAT_TIME, &position);
+  format = GST_FORMAT_TIME;
+  gst_element_query_position (sink, &format, &position);
   GST_DEBUG ("second buffer position %" GST_TIME_FORMAT,
       GST_TIME_ARGS (position));
   fail_unless (position == 10 * GST_SECOND, "position is wrong");
@@ -1118,10 +1137,11 @@ GST_START_TEST (test_async_done)
   GST_DEBUG ("joining thread");
   g_thread_join (thread);
 
-  gst_element_query_position (sink, GST_FORMAT_TIME, &position);
+  format = GST_FORMAT_TIME;
+  gst_element_query_position (sink, &format, &position);
   GST_DEBUG ("last buffer position %" GST_TIME_FORMAT,
       GST_TIME_ARGS (position));
-  fail_unless (position == 310 * GST_SECOND, "position is wrong");
+  fail_unless (position == 210 * GST_SECOND, "position is wrong");
 
   gst_object_unref (sinkpad);
 
@@ -1137,12 +1157,14 @@ static GstBusSyncReply
 async_done_eos_func (GstBus * bus, GstMessage * msg, GstElement * sink)
 {
   if (GST_MESSAGE_TYPE (msg) == GST_MESSAGE_ASYNC_DONE) {
+    GstFormat format;
     gint64 position;
 
     GST_DEBUG ("we have ASYNC_DONE now");
 
     /* get the position now */
-    gst_element_query_position (sink, GST_FORMAT_TIME, &position);
+    format = GST_FORMAT_TIME;
+    gst_element_query_position (sink, &format, &position);
 
     GST_DEBUG ("we have position %" GST_TIME_FORMAT, GST_TIME_ARGS (position));
 
@@ -1165,13 +1187,13 @@ GST_START_TEST (test_async_done_eos)
   GstPad *sinkpad;
   gboolean res;
   GstBus *bus;
-  gboolean qret;
-  GstSegment segment;
+  GstFormat format;
   gint64 position;
-  GThread *thread;
+  gboolean qret;
 
   sink = gst_element_factory_make ("fakesink", "sink");
   g_object_set (G_OBJECT (sink), "sync", TRUE, NULL);
+  g_object_set (G_OBJECT (sink), "preroll-queue-len", 1, NULL);
 
   sinkpad = gst_element_get_static_pad (sink, "sink");
 
@@ -1181,181 +1203,42 @@ GST_START_TEST (test_async_done_eos)
   /* set bus on element synchronously listen for ASYNC_DONE */
   bus = gst_bus_new ();
   gst_element_set_bus (sink, bus);
-  gst_bus_set_sync_handler (bus, (GstBusSyncHandler) async_done_eos_func, sink,
-      NULL);
+  gst_bus_set_sync_handler (bus, (GstBusSyncHandler) async_done_eos_func, sink);
 
   /* make newsegment, this sets the position to 10sec when the buffer prerolls */
   GST_DEBUG ("sending segment");
-  gst_segment_init (&segment, GST_FORMAT_TIME);
-  segment.time = 10 * GST_SECOND;
-  event = gst_event_new_segment (&segment);
+  event =
+      gst_event_new_new_segment (FALSE, 1.0, GST_FORMAT_TIME, 0, -1,
+      10 * GST_SECOND);
   res = gst_pad_send_event (sinkpad, event);
-  fail_unless (res == TRUE);
 
   /* We have not yet received any buffers so we are still in the READY state,
    * the position is therefore still not queryable. */
+  format = GST_FORMAT_TIME;
   position = -1;
-  qret = gst_element_query_position (sink, GST_FORMAT_TIME, &position);
+  qret = gst_element_query_position (sink, &format, &position);
   fail_unless (qret == TRUE, "position wrong");
   fail_unless (position == 10 * GST_SECOND, "position is wrong");
 
   /* Since we are paused and the preroll queue has a length of 1, this function
-   * will return immediately. The EOS will complete the preroll and the
+   * will return immediatly. The EOS will complete the preroll and the  
    * position should now be 10 seconds. */
   GST_DEBUG ("pushing EOS");
-  GST_DEBUG ("starting thread");
-  thread =
-      g_thread_try_new ("gst-check", (GThreadFunc) send_eos, sinkpad, NULL);
-  fail_if (thread == NULL, "no thread");
-
-  /* wait for preroll */
-  gst_element_get_state (sink, NULL, NULL, -1);
+  event = gst_event_new_eos ();
+  res = gst_pad_send_event (sinkpad, event);
+  fail_unless (res == TRUE, "no TRUE return");
 
   /* check if position is still 10 seconds */
-  gst_element_query_position (sink, GST_FORMAT_TIME, &position);
+  format = GST_FORMAT_TIME;
+  gst_element_query_position (sink, &format, &position);
   GST_DEBUG ("EOS position %" GST_TIME_FORMAT, GST_TIME_ARGS (position));
   fail_unless (position == 10 * GST_SECOND, "position is wrong");
 
-  gst_element_set_state (sink, GST_STATE_NULL);
-  g_thread_join (thread);
-
   gst_object_unref (sinkpad);
+
+  gst_element_set_state (sink, GST_STATE_NULL);
   gst_object_unref (sink);
   gst_object_unref (bus);
-}
-
-GST_END_TEST;
-
-static GMutex preroll_lock;
-static GCond preroll_cond;
-
-static void
-test_async_false_seek_preroll (GstElement * elem, GstBuffer * buf,
-    GstPad * pad, gpointer data)
-{
-  g_mutex_lock (&preroll_lock);
-  GST_DEBUG ("Got preroll buffer %p", buf);
-  g_cond_signal (&preroll_cond);
-  g_mutex_unlock (&preroll_lock);
-}
-
-static void
-test_async_false_seek_handoff (GstElement * elem, GstBuffer * buf,
-    GstPad * pad, gpointer data)
-{
-  /* should never be reached, we never go to PLAYING */
-  GST_DEBUG ("Got handoff buffer %p", buf);
-  fail_unless (FALSE);
-}
-
-GST_START_TEST (test_async_false_seek)
-{
-  GstElement *pipeline, *source, *sink;
-
-  /* Create gstreamer elements */
-  pipeline = gst_pipeline_new ("test-pipeline");
-  source = gst_element_factory_make ("fakesrc", "file-source");
-  sink = gst_element_factory_make ("fakesink", "audio-output");
-
-  g_object_set (G_OBJECT (sink), "async", FALSE, NULL);
-  g_object_set (G_OBJECT (sink), "num-buffers", 10, NULL);
-  g_object_set (G_OBJECT (sink), "signal-handoffs", TRUE, NULL);
-
-  g_signal_connect (sink, "handoff", G_CALLBACK (test_async_false_seek_handoff),
-      NULL);
-  g_signal_connect (sink, "preroll-handoff",
-      G_CALLBACK (test_async_false_seek_preroll), NULL);
-
-  /* we add all elements into the pipeline */
-  gst_bin_add_many (GST_BIN (pipeline), source, sink, NULL);
-
-  /* we link the elements together */
-  gst_element_link (source, sink);
-
-  GST_DEBUG ("Now pausing");
-  g_mutex_lock (&preroll_lock);
-  gst_element_set_state (pipeline, GST_STATE_PAUSED);
-
-  /* wait for preroll */
-  GST_DEBUG ("wait for preroll");
-  g_cond_wait (&preroll_cond, &preroll_lock);
-  g_mutex_unlock (&preroll_lock);
-
-  g_mutex_lock (&preroll_lock);
-  GST_DEBUG ("Seeking");
-  fail_unless (gst_element_seek (pipeline, 1.0, GST_FORMAT_BYTES,
-          GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, 0, GST_SEEK_TYPE_SET, -1));
-
-  GST_DEBUG ("wait for new preroll");
-  /* this either prerolls or fails */
-  g_cond_wait (&preroll_cond, &preroll_lock);
-  g_mutex_unlock (&preroll_lock);
-
-  GST_DEBUG ("bring pipe to state NULL");
-  gst_element_set_state (pipeline, GST_STATE_NULL);
-
-  GST_DEBUG ("Deleting pipeline");
-  gst_object_unref (GST_OBJECT (pipeline));
-}
-
-GST_END_TEST;
-
-static GMutex handoff_lock;
-static GCond handoff_cond;
-
-static void
-test_async_false_seek_in_playing_handoff (GstElement * elem, GstBuffer * buf,
-    GstPad * pad, gpointer data)
-{
-  g_mutex_lock (&handoff_lock);
-  GST_DEBUG ("Got handoff buffer %p", buf);
-  g_cond_signal (&handoff_cond);
-  g_mutex_unlock (&handoff_lock);
-}
-
-GST_START_TEST (test_async_false_seek_in_playing)
-{
-  GstElement *pipeline, *source, *sink;
-
-  /* Create gstreamer elements */
-  pipeline = gst_pipeline_new ("test-pipeline");
-  source = gst_element_factory_make ("fakesrc", "fake-source");
-  sink = gst_element_factory_make ("fakesink", "fake-output");
-
-  g_object_set (G_OBJECT (sink), "async", FALSE, NULL);
-  g_object_set (G_OBJECT (sink), "signal-handoffs", TRUE, NULL);
-
-  g_signal_connect (sink, "handoff",
-      G_CALLBACK (test_async_false_seek_in_playing_handoff), NULL);
-
-  /* we add all elements into the pipeline */
-  gst_bin_add_many (GST_BIN (pipeline), source, sink, NULL);
-
-  /* we link the elements together */
-  gst_element_link (source, sink);
-
-  GST_DEBUG ("Now playing");
-  gst_element_set_state (pipeline, GST_STATE_PLAYING);
-
-  g_mutex_lock (&handoff_lock);
-  GST_DEBUG ("wait for handoff buffer");
-  g_cond_wait (&handoff_cond, &handoff_lock);
-  g_mutex_unlock (&handoff_lock);
-
-  GST_DEBUG ("Seeking");
-  fail_unless (gst_element_seek (source, 1.0, GST_FORMAT_BYTES,
-          GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, 0, GST_SEEK_TYPE_SET, -1));
-
-  g_mutex_lock (&handoff_lock);
-  GST_DEBUG ("wait for handoff buffer");
-  g_cond_wait (&handoff_cond, &handoff_lock);
-  g_mutex_unlock (&handoff_lock);
-
-  GST_DEBUG ("bring pipe to state NULL");
-  gst_element_set_state (pipeline, GST_STATE_NULL);
-
-  GST_DEBUG ("Deleting pipeline");
-  gst_object_unref (GST_OBJECT (pipeline));
 }
 
 GST_END_TEST;
@@ -1393,8 +1276,6 @@ gst_sinks_suite (void)
   tcase_add_test (tc_chain, test_fake_eos);
   tcase_add_test (tc_chain, test_async_done);
   tcase_add_test (tc_chain, test_async_done_eos);
-  tcase_add_test (tc_chain, test_async_false_seek);
-  tcase_add_test (tc_chain, test_async_false_seek_in_playing);
 
   return s;
 }

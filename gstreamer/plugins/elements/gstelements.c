@@ -34,76 +34,55 @@
 #include "gstfdsink.h"
 #include "gstfilesink.h"
 #include "gstfilesrc.h"
-#include "gstfunnel.h"
 #include "gstidentity.h"
-#include "gstinputselector.h"
-#include "gstoutputselector.h"
-#include "gstmultiqueue.h"
 #include "gstqueue.h"
-#include "gstqueue2.h"
 #include "gsttee.h"
 #include "gsttypefindelement.h"
-#include "gstvalve.h"
+#include "gstmultiqueue.h"
+
+struct _elements_entry
+{
+  const gchar *name;
+  guint rank;
+    GType (*type) (void);
+};
+
+
+static struct _elements_entry _elements[] = {
+  {"capsfilter", GST_RANK_NONE, gst_capsfilter_get_type},
+  {"fakesrc", GST_RANK_NONE, gst_fake_src_get_type},
+  {"fakesink", GST_RANK_NONE, gst_fake_sink_get_type},
+#ifdef HAVE_SYS_SOCKET_H
+  {"fdsrc", GST_RANK_NONE, gst_fd_src_get_type},
+  {"fdsink", GST_RANK_NONE, gst_fd_sink_get_type},
+#endif
+  {"filesrc", GST_RANK_PRIMARY, gst_file_src_get_type},
+  {"identity", GST_RANK_NONE, gst_identity_get_type},
+  {"queue", GST_RANK_NONE, gst_queue_get_type},
+  {"filesink", GST_RANK_PRIMARY, gst_file_sink_get_type},
+  {"tee", GST_RANK_NONE, gst_tee_get_type},
+  {"typefind", GST_RANK_NONE, gst_type_find_element_get_type},
+  {"multiqueue", GST_RANK_NONE, gst_multi_queue_get_type},
+  {NULL, 0},
+};
 
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  if (!gst_element_register (plugin, "capsfilter", GST_RANK_NONE,
-          gst_capsfilter_get_type ()))
-    return FALSE;
-  if (!gst_element_register (plugin, "fakesrc", GST_RANK_NONE,
-          gst_fake_src_get_type ()))
-    return FALSE;
-  if (!gst_element_register (plugin, "fakesink", GST_RANK_NONE,
-          gst_fake_sink_get_type ()))
-    return FALSE;
-#if defined(HAVE_SYS_SOCKET_H) || defined(_MSC_VER)
-  if (!gst_element_register (plugin, "fdsrc", GST_RANK_NONE,
-          gst_fd_src_get_type ()))
-    return FALSE;
-  if (!gst_element_register (plugin, "fdsink", GST_RANK_NONE,
-          gst_fd_sink_get_type ()))
-    return FALSE;
-#endif
-  if (!gst_element_register (plugin, "filesrc", GST_RANK_PRIMARY,
-          gst_file_src_get_type ()))
-    return FALSE;
-  if (!gst_element_register (plugin, "funnel", GST_RANK_NONE,
-          gst_funnel_get_type ()))
-    return FALSE;
-  if (!gst_element_register (plugin, "identity", GST_RANK_NONE,
-          gst_identity_get_type ()))
-    return FALSE;
-  if (!gst_element_register (plugin, "input-selector", GST_RANK_NONE,
-          gst_input_selector_get_type ()))
-    return FALSE;
-  if (!gst_element_register (plugin, "output-selector", GST_RANK_NONE,
-          gst_output_selector_get_type ()))
-    return FALSE;
-  if (!gst_element_register (plugin, "queue", GST_RANK_NONE,
-          gst_queue_get_type ()))
-    return FALSE;
-  if (!gst_element_register (plugin, "queue2", GST_RANK_NONE,
-          gst_queue2_get_type ()))
-    return FALSE;
-  if (!gst_element_register (plugin, "filesink", GST_RANK_PRIMARY,
-          gst_file_sink_get_type ()))
-    return FALSE;
-  if (!gst_element_register (plugin, "tee", GST_RANK_NONE, gst_tee_get_type ()))
-    return FALSE;
-  if (!gst_element_register (plugin, "typefind", GST_RANK_NONE,
-          gst_type_find_element_get_type ()))
-    return FALSE;
-  if (!gst_element_register (plugin, "multiqueue", GST_RANK_NONE,
-          gst_multi_queue_get_type ()))
-    return FALSE;
-  if (!gst_element_register (plugin, "valve", GST_RANK_NONE,
-          gst_valve_get_type ()))
-    return FALSE;
+  struct _elements_entry *my_elements = _elements;
+
+  while ((*my_elements).name) {
+    if (!gst_element_register (plugin, (*my_elements).name, (*my_elements).rank,
+            ((*my_elements).type) ()))
+      return FALSE;
+    my_elements++;
+  }
 
   return TRUE;
 }
 
-GST_PLUGIN_DEFINE (GST_VERSION_MAJOR, GST_VERSION_MINOR, coreelements,
-    " GStreamer core elements", plugin_init, VERSION, GST_LICENSE,
-    GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "coreelements",
+    "standard GStreamer elements",
+    plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

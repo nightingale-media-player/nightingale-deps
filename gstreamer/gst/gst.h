@@ -34,23 +34,21 @@
 #include <gst/gstbin.h>
 #include <gst/gstbuffer.h>
 #include <gst/gstbufferlist.h>
-#include <gst/gstbufferpool.h>
 #include <gst/gstcaps.h>
 #include <gst/gstchildproxy.h>
 #include <gst/gstclock.h>
-#include <gst/gstcontrolsource.h>
-#include <gst/gstdatetime.h>
 #include <gst/gstdebugutils.h>
 #include <gst/gstelement.h>
-#include <gst/gstelementmetadata.h>
 #include <gst/gsterror.h>
 #include <gst/gstevent.h>
 #include <gst/gstghostpad.h>
+#include <gst/gstindex.h>
+#include <gst/gstindexfactory.h>
 #include <gst/gstinfo.h>
+#include <gst/gstinterface.h>
 #include <gst/gstiterator.h>
+#include <gst/gstmarshal.h>
 #include <gst/gstmessage.h>
-#include <gst/gstmemory.h>
-#include <gst/gstmeta.h>
 #include <gst/gstminiobject.h>
 #include <gst/gstobject.h>
 #include <gst/gstpad.h>
@@ -61,7 +59,6 @@
 #include <gst/gstpreset.h>
 #include <gst/gstquery.h>
 #include <gst/gstregistry.h>
-#include <gst/gstsample.h>
 #include <gst/gstsegment.h>
 #include <gst/gststructure.h>
 #include <gst/gstsystemclock.h>
@@ -69,13 +66,13 @@
 #include <gst/gsttagsetter.h>
 #include <gst/gsttask.h>
 #include <gst/gsttaskpool.h>
-#include <gst/gsttoc.h>
-#include <gst/gsttocsetter.h>
+#include <gst/gsttrace.h>
 #include <gst/gsttypefind.h>
 #include <gst/gsttypefindfactory.h>
 #include <gst/gsturi.h>
 #include <gst/gstutils.h>
 #include <gst/gstvalue.h>
+#include <gst/gstxml.h>
 
 #include <gst/gstparse.h>
 
@@ -87,7 +84,6 @@ G_BEGIN_DECLS
 void		gst_init			(int *argc, char **argv[]);
 gboolean	gst_init_check			(int *argc, char **argv[],
 						 GError ** err);
-gboolean        gst_is_initialized              (void);
 GOptionGroup *	gst_init_get_option_group	(void);
 void		gst_deinit			(void);
 
@@ -101,7 +97,7 @@ void            gst_segtrap_set_enabled         (gboolean enabled);
 gboolean        gst_registry_fork_is_enabled    (void);
 void            gst_registry_fork_set_enabled   (gboolean enabled);
 
-gboolean        gst_update_registry             (void);
+gboolean        gst_update_registry (void);
 
 G_END_DECLS
 

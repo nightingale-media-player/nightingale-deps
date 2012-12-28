@@ -27,16 +27,16 @@
 GST_START_TEST (test_from_string_int)
 {
   const char *strings[] = {
-    "video/x-raw, width = (int) 123456",
-    "video/x-raw, stride = (int) -123456",
-    "video/x-raw, red_mask = (int) 0xFFFF",
-    "video/x-raw, red_mask = (int) 0x0000FFFF",
-    "video/x-raw, red_mask = (int) 0x7FFFFFFF",
-    "video/x-raw, red_mask = (int) 0x80000000",
-    "video/x-raw, red_mask = (int) 0xFF000000",
+    "video/x-raw-rgb, width = (int) 123456",
+    "video/x-raw-rgb, stride = (int) -123456",
+    "video/x-raw-rgb, red_mask = (int) 0xFFFF",
+    "video/x-raw-rgb, red_mask = (int) 0x0000FFFF",
+    "video/x-raw-rgb, red_mask = (int) 0x7FFFFFFF",
+    "video/x-raw-rgb, red_mask = (int) 0x80000000",
+    "video/x-raw-rgb, red_mask = (int) 0xFF000000",
     /* result from
-     * gst-launch ... ! "video/x-raw, red_mask=(int)0xFF000000" ! ... */
-    "video/x-raw,\\ red_mask=(int)0xFF000000",
+     * gst-launch ... ! "video/x-raw-rgb, red_mask=(int)0xFF000000" ! ... */
+    "video/x-raw-rgb,\\ red_mask=(int)0xFF000000",
   };
   gint results[] = {
     123456,
@@ -64,49 +64,6 @@ GST_START_TEST (test_from_string_int)
     fail_unless (gst_structure_get_int (structure, name, &value));
     fail_unless (value == results[i],
         "Value %d is not the expected result %d for string %s",
-        value, results[i], s);
-
-    /* cleanup */
-    gst_structure_free (structure);
-  }
-}
-
-GST_END_TEST;
-
-GST_START_TEST (test_from_string_uint)
-{
-  const char *strings[] = {
-    "taglist, bar = (uint) 123456",
-    "taglist, bar = (uint) 0xFFFF",
-    "taglist, bar = (uint) 0x0000FFFF",
-    "taglist, bar = (uint) 0x7FFFFFFF",
-    "taglist, bar = (uint) 0x80000000",
-    "taglist, bar = (uint) 0xFF000000"
-  };
-  guint results[] = {
-    123456,
-    0xFFFF,
-    0xFFFF,
-    0x7FFFFFFF,
-    0x80000000,
-    0xFF000000,
-  };
-  GstStructure *structure;
-  int i;
-
-  for (i = 0; i < G_N_ELEMENTS (strings); ++i) {
-    const char *s;
-    const gchar *name;
-    guint value;
-
-    s = strings[i];
-
-    structure = gst_structure_from_string (s, NULL);
-    fail_if (structure == NULL, "Could not get structure from string %s", s);
-    name = gst_structure_nth_field_name (structure, 0);
-    fail_unless (gst_structure_get_uint (structure, name, &value));
-    fail_unless (value == results[i],
-        "Value %u is not the expected result %u for string %s",
         value, results[i], s);
 
     /* cleanup */
@@ -159,9 +116,11 @@ GST_START_TEST (test_from_string)
   fail_unless_equals_int (g_value_get_boolean (val), TRUE);
   gst_structure_free (structure);
 
+  /* This should still work for now (FIXME: 0.11) */
   s = "0.10:decoder-video/mpeg, abc=(boolean)false";
-  ASSERT_CRITICAL (structure = gst_structure_from_string (s, NULL));
-  fail_unless (structure == NULL, "Could not get structure from string %s", s);
+  structure = gst_structure_from_string (s, NULL);
+  fail_if (structure == NULL, "Could not get structure from string %s", s);
+  gst_structure_free (structure);
 
   /* make sure we bail out correctly in case of an error or if parsing fails */
   s = "***foo***, abc=(boolean)false";
@@ -183,13 +142,25 @@ GST_START_TEST (test_to_string)
 {
   GstStructure *st1;
 
-  ASSERT_CRITICAL (st1 = gst_structure_new_empty ("Foo\nwith-newline"));
+  ASSERT_CRITICAL (st1 = gst_structure_new ("Foo\nwith-newline", NULL));
   fail_unless (st1 == NULL);
 
-  ASSERT_CRITICAL (st1 = gst_structure_new_empty ("Foo with whitespace"));
+  /* FIXME 0.11: re-enable this */
+#if 0
+  ASSERT_CRITICAL (st1 = gst_structure_new ("Foo with whitespace", NULL));
   fail_unless (st1 == NULL);
-  ASSERT_CRITICAL (st1 = gst_structure_new_empty ("1st"));
+  ASSERT_CRITICAL (st1 = gst_structure_new ("1st", NULL));
   fail_unless (st1 == NULL);
+#else
+  st1 = gst_structure_new ("Foo with whitespace is still allowed", NULL);
+  fail_unless (st1 != NULL);
+  gst_structure_free (st1);
+
+  /* structure names starting with a number are also still allowed */
+  st1 = gst_structure_new ("1st", NULL);
+  fail_unless (st1 != NULL);
+  gst_structure_free (st1);
+#endif
 }
 
 GST_END_TEST;
@@ -233,7 +204,7 @@ GST_START_TEST (test_complete_structure)
   GstStructure *structure;
   const gchar *s;
 
-  s = "GstEventSeek, rate=(double)1, format=(GstFormat)GST_FORMAT_TIME, flags=(GstSeekFlags)GST_SEEK_FLAGS_NONE, start_type=(GstSeekType)GST_SEEK_TYPE_SET, start=(gint64)1000000000, stop_type=(GstSeekType)GST_SEEK_TYPE_NONE, stop=(gint64)0";
+  s = "GstEventSeek, rate=(double)1, format=(GstFormat)GST_FORMAT_TIME, flags=(GstSeekFlags)GST_SEEK_FLAGS_NONE, cur_type=(GstSeekType)GST_SEEK_TYPE_SET, cur=(gint64)1000000000, stop_type=(GstSeekType)GST_SEEK_TYPE_NONE, stop=(gint64)0";
   structure = gst_structure_from_string (s, NULL);
   fail_if (structure == NULL, "Could not get structure from string %s", s);
   /* FIXME: TODO: add checks for correct serialization of members ? */
@@ -284,24 +255,26 @@ GST_START_TEST (test_structure_new)
   gboolean bool;
   gint num, den;
   GstClockTime clocktime;
+  guint32 fourcc;
 
   s = gst_structure_new ("name",
       "key", G_TYPE_STRING, "value",
       "bool", G_TYPE_BOOLEAN, TRUE,
       "fraction", GST_TYPE_FRACTION, 1, 5,
-      "clocktime", GST_TYPE_CLOCK_TIME, GST_CLOCK_TIME_NONE, NULL);
+      "clocktime", GST_TYPE_CLOCK_TIME, GST_CLOCK_TIME_NONE,
+      "fourcc", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('f', 'o', 'u', 'r'), NULL);
 
   fail_unless (gst_structure_get_field_type (s, "unknown") == G_TYPE_INVALID);
   /* test setting a different name */
   gst_structure_set_name (s, "newname");
   fail_unless (strcmp (gst_structure_get_string (s, "key"), "value") == 0);
   fail_unless (gst_structure_has_field (s, "key"));
-  fail_unless_equals_int (gst_structure_n_fields (s), 4);
+  fail_unless_equals_int (gst_structure_n_fields (s), 5);
   /* test removing a field */
   gst_structure_remove_field (s, "key");
   fail_if (gst_structure_get_string (s, "key"));
   fail_if (gst_structure_has_field (s, "key"));
-  fail_unless_equals_int (gst_structure_n_fields (s), 3);
+  fail_unless_equals_int (gst_structure_n_fields (s), 4);
 
   fail_unless (gst_structure_get_boolean (s, "bool", &bool));
   fail_unless (bool);
@@ -313,16 +286,18 @@ GST_START_TEST (test_structure_new)
   fail_unless (gst_structure_get_clock_time (s, "clocktime", &clocktime));
   fail_unless_equals_uint64 (clocktime, GST_CLOCK_TIME_NONE);
 
+  fail_unless (gst_structure_get_fourcc (s, "fourcc", &fourcc));
+
   gst_structure_free (s);
 
   domain = g_quark_from_static_string ("test");
   e = g_error_new (domain, 0, "a test error");
-  s = gst_structure_new ("name", "key", G_TYPE_ERROR, e, NULL);
+  s = gst_structure_new ("name", "key", GST_TYPE_G_ERROR, e, NULL);
   g_error_free (e);
   gst_structure_free (s);
 
-  ASSERT_CRITICAL (gst_structure_free (gst_structure_new_empty
-          ("0.10:decoder-video/mpeg")));
+  /* This should still work for now (FIXME 0.11) */
+  gst_structure_free (gst_structure_new ("0.10:decoder-video/mpeg", NULL));
 
   /* make sure we bail out correctly in case of an error or if parsing fails */
   ASSERT_CRITICAL (s = gst_structure_new ("^joo\nba\ndoo^",
@@ -369,7 +344,7 @@ GST_START_TEST (test_fixate_frac_list)
   gst_value_set_fraction (&frac, 10, 1);
   gst_value_list_append_value (&list, &frac);
 
-  s = gst_structure_new_empty ("name");
+  s = gst_structure_new ("name", NULL);
   gst_structure_set_value (s, "frac", &list);
   g_value_unset (&frac);
   g_value_unset (&list);
@@ -402,24 +377,6 @@ GST_START_TEST (test_fixate_frac_list)
 }
 
 GST_END_TEST;
-
-GST_START_TEST (test_is_subset)
-{
-  GstStructure *s1, *s2;
-
-  s1 = gst_structure_from_string ("test/test, channels=(int){ 1, 2 }", NULL);
-  fail_if (s1 == NULL);
-  s2 = gst_structure_from_string ("test/test, channels=(int)[ 1, 2 ]", NULL);
-  fail_if (s2 == NULL);
-
-  fail_unless (gst_structure_is_subset (s1, s2));
-
-  gst_structure_free (s1);
-  gst_structure_free (s2);
-}
-
-GST_END_TEST;
-
 
 GST_START_TEST (test_structure_nested)
 {
@@ -467,8 +424,7 @@ GST_END_TEST;
 GST_START_TEST (test_structure_nested_from_and_to_string)
 {
   GstStructure *s;
-  const gchar *str1;
-  gchar *str2, *end = NULL;
+  gchar *str1, *str2, *end = NULL;
 
   str1 = "main"
       ", main-sub1=(structure)\"type-b\\,\\ machine-type\\=\\(int\\)0\\;\""
@@ -505,23 +461,17 @@ GST_START_TEST (test_vararg_getters)
   GstBuffer *buf, *buf2;
   gboolean ret;
   GstCaps *caps, *caps2;
-  GstMapInfo info;
   gdouble d;
   gint64 i64;
   gchar *c;
   gint i, num, denom;
-  guint8 *data;
 
   buf = gst_buffer_new_and_alloc (3);
+  GST_BUFFER_DATA (buf)[0] = 0xf0;
+  GST_BUFFER_DATA (buf)[1] = 0x66;
+  GST_BUFFER_DATA (buf)[2] = 0x0d;
 
-  fail_unless (gst_buffer_map (buf, &info, GST_MAP_WRITE));
-  data = info.data;
-  data[0] = 0xf0;
-  data[1] = 0x66;
-  data[2] = 0x0d;
-  gst_buffer_unmap (buf, &info);
-
-  caps = gst_caps_new_empty_simple ("video/x-foo");
+  caps = gst_caps_new_simple ("video/x-foo", NULL);
 
   s = gst_structure_new ("test", "int", G_TYPE_INT, 12345678, "string",
       G_TYPE_STRING, "Hello World!", "buf", GST_TYPE_BUFFER, buf, "caps",
@@ -615,7 +565,6 @@ gst_structure_suite (void)
 
   suite_add_tcase (s, tc_chain);
   tcase_add_test (tc_chain, test_from_string_int);
-  tcase_add_test (tc_chain, test_from_string_uint);
   tcase_add_test (tc_chain, test_from_string);
   tcase_add_test (tc_chain, test_to_string);
   tcase_add_test (tc_chain, test_to_from_string);
@@ -624,7 +573,6 @@ gst_structure_suite (void)
   tcase_add_test (tc_chain, test_structure_new);
   tcase_add_test (tc_chain, test_fixate);
   tcase_add_test (tc_chain, test_fixate_frac_list);
-  tcase_add_test (tc_chain, test_is_subset);
   tcase_add_test (tc_chain, test_structure_nested);
   tcase_add_test (tc_chain, test_structure_nested_from_and_to_string);
   tcase_add_test (tc_chain, test_vararg_getters);

@@ -57,10 +57,9 @@ GST_START_TEST (test_functioning)
   GstNetTimePacket *packet;
   GstClock *clock;
   GstClockTime local;
-  GSocketAddress *server_addr;
-  GInetAddress *addr;
-  GSocket *socket;
-  gint port = -1;
+  struct sockaddr_in servaddr;
+  gint port = -1, sockfd, ret;
+  socklen_t len;
 
   clock = gst_system_clock_obtain ();
   fail_unless (clock != NULL, "failed to get system clock");
@@ -70,24 +69,29 @@ GST_START_TEST (test_functioning)
   g_object_get (ntp, "port", &port, NULL);
   fail_unless (port > 0);
 
-  socket = g_socket_new (G_SOCKET_FAMILY_IPV4, G_SOCKET_TYPE_DATAGRAM,
-      G_SOCKET_PROTOCOL_UDP, NULL);
-  fail_unless (socket != NULL, "could not create socket");
+  sockfd = socket (AF_INET, SOCK_DGRAM, 0);
+  fail_if (sockfd < 0, "socket failed");
 
-  addr = g_inet_address_new_from_string ("127.0.0.1");
-  server_addr = g_inet_socket_address_new (addr, port);
-  g_object_unref (addr);
+  memset (&servaddr, 0, sizeof (servaddr));
+  servaddr.sin_family = AF_INET;
+  servaddr.sin_port = htons (port);
+  inet_aton ("127.0.0.1", &servaddr.sin_addr);
 
   packet = gst_net_time_packet_new (NULL);
   fail_unless (packet != NULL, "failed to create packet");
 
   packet->local_time = local = gst_clock_get_time (clock);
 
-  fail_unless (gst_net_time_packet_send (packet, socket, server_addr, NULL));
+  len = sizeof (servaddr);
+  ret = gst_net_time_packet_send (packet, sockfd,
+      (struct sockaddr *) &servaddr, len);
+
+  fail_unless (ret == GST_NET_TIME_PACKET_SIZE, "failed to send packet");
 
   g_free (packet);
 
-  packet = gst_net_time_packet_receive (socket, NULL, NULL);
+  packet = gst_net_time_packet_receive (sockfd, (struct sockaddr *) &servaddr,
+      &len);
 
   fail_unless (packet != NULL, "failed to receive packet");
   fail_unless (packet->local_time == local, "local time is not the same");
@@ -97,8 +101,7 @@ GST_START_TEST (test_functioning)
 
   g_free (packet);
 
-  g_object_unref (socket);
-  g_object_unref (server_addr);
+  close (sockfd);
 
   gst_object_unref (ntp);
   gst_object_unref (clock);

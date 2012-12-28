@@ -37,14 +37,16 @@ static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_STATIC_CAPS_ANY);
 
 static gboolean
-event_func (GstPad * pad, GstObject * parent, GstEvent * event)
+event_func (GstPad * pad, GstEvent * event)
 {
   if (GST_EVENT_TYPE (event) == GST_EVENT_EOS) {
     have_eos = TRUE;
+    gst_event_unref (event);
+    return TRUE;
   }
 
   gst_event_unref (event);
-  return TRUE;
+  return FALSE;
 }
 
 static GstElement *
@@ -54,7 +56,7 @@ setup_fdsrc (void)
 
   GST_DEBUG ("setup_fdsrc");
   fdsrc = gst_check_setup_element ("fdsrc");
-  mysinkpad = gst_check_setup_sink_pad (fdsrc, &sinktemplate);
+  mysinkpad = gst_check_setup_sink_pad (fdsrc, &sinktemplate, NULL);
   gst_pad_set_event_function (mysinkpad, event_func);
   gst_pad_set_active (mysinkpad, TRUE);
   return fdsrc;
@@ -74,11 +76,7 @@ GST_START_TEST (test_num_buffers)
   gint pipe_fd[2];
   gchar data[4096];
 
-#ifndef G_OS_WIN32
   fail_if (pipe (pipe_fd) < 0);
-#else
-  fail_if (_pipe (pipe_fd, 2048, _O_BINARY) < 0);
-#endif
 
   src = setup_fdsrc ();
   g_object_set (G_OBJECT (src), "num-buffers", 3, NULL);
@@ -115,11 +113,7 @@ GST_START_TEST (test_nonseeking)
   gchar data[4096];
   gboolean seekable;
 
-#ifndef G_OS_WIN32
   fail_if (pipe (pipe_fd) < 0);
-#else
-  fail_if (_pipe (pipe_fd, 2048, _O_BINARY) < 0);
-#endif
 
   src = setup_fdsrc ();
   g_object_set (G_OBJECT (src), "num-buffers", 3, NULL);

@@ -71,19 +71,14 @@
 #endif
 
 #include <sys/stat.h>
-#ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
-#endif
 #include <fcntl.h>
 #include <stdio.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #ifdef _MSC_VER
-#undef stat
-#define stat _stat
-#define fstat _fstat
-#define S_ISREG(m)	(((m)&S_IFREG)==S_IFREG)
+#include <io.h>
 #endif
 #include <stdlib.h>
 #include <errno.h>
@@ -113,11 +108,23 @@ enum
 
 static void gst_fd_src_uri_handler_init (gpointer g_iface, gpointer iface_data);
 
-#define _do_init \
-  G_IMPLEMENT_INTERFACE (GST_TYPE_URI_HANDLER, gst_fd_src_uri_handler_init); \
+static void
+_do_init (GType fd_src_type)
+{
+  static const GInterfaceInfo urihandler_info = {
+    gst_fd_src_uri_handler_init,
+    NULL,
+    NULL
+  };
+
+  g_type_add_interface_static (fd_src_type, GST_TYPE_URI_HANDLER,
+      &urihandler_info);
+
   GST_DEBUG_CATEGORY_INIT (gst_fd_src_debug, "fdsrc", 0, "fdsrc element");
-#define gst_fd_src_parent_class parent_class
-G_DEFINE_TYPE_WITH_CODE (GstFdSrc, gst_fd_src, GST_TYPE_PUSH_SRC, _do_init);
+}
+
+GST_BOILERPLATE_FULL (GstFdSrc, gst_fd_src, GstPushSrc, GST_TYPE_PUSH_SRC,
+    _do_init);
 
 static void gst_fd_src_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
@@ -137,17 +144,30 @@ static gboolean gst_fd_src_query (GstBaseSrc * src, GstQuery * query);
 static GstFlowReturn gst_fd_src_create (GstPushSrc * psrc, GstBuffer ** outbuf);
 
 static void
+gst_fd_src_base_init (gpointer g_class)
+{
+  GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
+
+  gst_element_class_set_details_simple (gstelement_class,
+      "Filedescriptor Source",
+      "Source/File",
+      "Read from a file descriptor", "Erik Walthinsen <omega@cse.ogi.edu>");
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&srctemplate));
+}
+
+static void
 gst_fd_src_class_init (GstFdSrcClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseSrcClass *gstbasesrc_class;
   GstPushSrcClass *gstpush_src_class;
 
   gobject_class = G_OBJECT_CLASS (klass);
-  gstelement_class = GST_ELEMENT_CLASS (klass);
   gstbasesrc_class = GST_BASE_SRC_CLASS (klass);
   gstpush_src_class = GST_PUSH_SRC_CLASS (klass);
+
+  parent_class = g_type_class_peek_parent (klass);
 
   gobject_class->set_property = gst_fd_src_set_property;
   gobject_class->get_property = gst_fd_src_get_property;
@@ -160,19 +180,14 @@ gst_fd_src_class_init (GstFdSrcClass * klass)
    * GstFdSrc:timeout
    *
    * Post a message after timeout microseconds
+   *
+   * Since: 0.10.21
    */
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_TIMEOUT,
       g_param_spec_uint64 ("timeout", "Timeout",
           "Post a message after timeout microseconds (0 = disabled)", 0,
           G_MAXUINT64, DEFAULT_TIMEOUT,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-  gst_element_class_set_static_metadata (gstelement_class,
-      "Filedescriptor Source",
-      "Source/File",
-      "Read from a file descriptor", "Erik Walthinsen <omega@cse.ogi.edu>");
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&srctemplate));
 
   gstbasesrc_class->start = GST_DEBUG_FUNCPTR (gst_fd_src_start);
   gstbasesrc_class->stop = GST_DEBUG_FUNCPTR (gst_fd_src_stop);
@@ -187,12 +202,11 @@ gst_fd_src_class_init (GstFdSrcClass * klass)
 }
 
 static void
-gst_fd_src_init (GstFdSrc * fdsrc)
+gst_fd_src_init (GstFdSrc * fdsrc, GstFdSrcClass * klass)
 {
-  fdsrc->new_fd = DEFAULT_FD;
+  fdsrc->new_fd = 0;
   fdsrc->seekable_fd = FALSE;
-  fdsrc->fd = -1;
-  fdsrc->size = -1;
+  fdsrc->fd = DEFAULT_FD;
   fdsrc->timeout = DEFAULT_TIMEOUT;
   fdsrc->uri = g_strdup_printf ("fd://0");
   fdsrc->curoffset = 0;
@@ -210,12 +224,9 @@ gst_fd_src_dispose (GObject * obj)
 }
 
 static void
-gst_fd_src_update_fd (GstFdSrc * src, guint64 size)
+gst_fd_src_update_fd (GstFdSrc * src)
 {
   struct stat stat_results;
-
-  GST_DEBUG_OBJECT (src, "fdset %p, old_fd %d, new_fd %d", src->fdset, src->fd,
-      src->new_fd);
 
   /* we need to always update the fdset since it may not have existed when
    * gst_fd_src_update_fd () was called earlier */
@@ -224,7 +235,6 @@ gst_fd_src_update_fd (GstFdSrc * src, guint64 size)
 
     if (src->fd >= 0) {
       fd.fd = src->fd;
-      /* this will log a harmless warning, if it was never added */
       gst_poll_remove_fd (src->fdset, &fd);
     }
 
@@ -233,14 +243,10 @@ gst_fd_src_update_fd (GstFdSrc * src, guint64 size)
     gst_poll_fd_ctl_read (src->fdset, &fd, TRUE);
   }
 
-
   if (src->fd != src->new_fd) {
     GST_INFO_OBJECT (src, "Updating to fd %d", src->new_fd);
 
     src->fd = src->new_fd;
-
-    GST_INFO_OBJECT (src, "Setting size to fd %" G_GUINT64_FORMAT, size);
-    src->size = size;
 
     g_free (src->uri);
     src->uri = g_strdup_printf ("fd://%d", src->fd);
@@ -257,8 +263,6 @@ gst_fd_src_update_fd (GstFdSrc * src, guint64 size)
 
     GST_INFO_OBJECT (src, "marking fd %d as seekable", src->fd);
     src->seekable_fd = TRUE;
-
-    gst_base_src_set_dynamic_size (GST_BASE_SRC (src), TRUE);
   }
   return;
 
@@ -266,7 +270,6 @@ not_seekable:
   {
     GST_INFO_OBJECT (src, "marking fd %d as NOT seekable", src->fd);
     src->seekable_fd = FALSE;
-    gst_base_src_set_dynamic_size (GST_BASE_SRC (src), FALSE);
   }
 }
 
@@ -280,7 +283,7 @@ gst_fd_src_start (GstBaseSrc * bsrc)
   if ((src->fdset = gst_poll_new (TRUE)) == NULL)
     goto socket_pair;
 
-  gst_fd_src_update_fd (src, -1);
+  gst_fd_src_update_fd (src);
 
   return TRUE;
 
@@ -347,7 +350,7 @@ gst_fd_src_set_property (GObject * object, guint prop_id, const GValue * value,
       GST_OBJECT_LOCK (object);
       if (GST_STATE (GST_ELEMENT (src)) <= GST_STATE_READY) {
         GST_DEBUG_OBJECT (src, "state ready or lower, updating to use new fd");
-        gst_fd_src_update_fd (src, -1);
+        gst_fd_src_update_fd (src);
       } else {
         GST_DEBUG_OBJECT (src, "state above ready, not updating to new fd yet");
       }
@@ -390,23 +393,22 @@ gst_fd_src_create (GstPushSrc * psrc, GstBuffer ** outbuf)
   GstBuffer *buf;
   gssize readbytes;
   guint blocksize;
-  GstMapInfo info;
+  GstClockTime timeout;
 
 #ifndef HAVE_WIN32
-  GstClockTime timeout;
   gboolean try_again;
   gint retval;
 #endif
 
   src = GST_FD_SRC (psrc);
 
-#ifndef HAVE_WIN32
   if (src->timeout > 0) {
     timeout = src->timeout * GST_USECOND;
   } else {
     timeout = GST_CLOCK_TIME_NONE;
   }
 
+#ifndef HAVE_WIN32
   do {
     try_again = FALSE;
 
@@ -439,27 +441,25 @@ gst_fd_src_create (GstPushSrc * psrc, GstBuffer ** outbuf)
   blocksize = GST_BASE_SRC (src)->blocksize;
 
   /* create the buffer */
-  buf = gst_buffer_new_allocate (NULL, blocksize, NULL);
-  if (G_UNLIKELY (buf == NULL))
-    goto alloc_failed;
-
-  gst_buffer_map (buf, &info, GST_MAP_WRITE);
+  buf = gst_buffer_try_new_and_alloc (blocksize);
+  if (G_UNLIKELY (buf == NULL)) {
+    GST_ERROR_OBJECT (src, "Failed to allocate %u bytes", blocksize);
+    return GST_FLOW_ERROR;
+  }
 
   do {
-    readbytes = read (src->fd, info.data, blocksize);
+    readbytes = read (src->fd, GST_BUFFER_DATA (buf), blocksize);
     GST_LOG_OBJECT (src, "read %" G_GSSIZE_FORMAT, readbytes);
   } while (readbytes == -1 && errno == EINTR);  /* retry if interrupted */
 
   if (readbytes < 0)
     goto read_error;
 
-  gst_buffer_unmap (buf, &info);
-  gst_buffer_resize (buf, 0, readbytes);
-
   if (readbytes == 0)
     goto eos;
 
   GST_BUFFER_OFFSET (buf) = src->curoffset;
+  GST_BUFFER_SIZE (buf) = readbytes;
   GST_BUFFER_TIMESTAMP (buf) = GST_CLOCK_TIME_NONE;
   src->curoffset += readbytes;
 
@@ -482,26 +482,20 @@ poll_error:
 stopped:
   {
     GST_DEBUG_OBJECT (psrc, "Poll stopped");
-    return GST_FLOW_FLUSHING;
+    return GST_FLOW_WRONG_STATE;
   }
 #endif
-alloc_failed:
-  {
-    GST_ERROR_OBJECT (src, "Failed to allocate %u bytes", blocksize);
-    return GST_FLOW_ERROR;
-  }
 eos:
   {
     GST_DEBUG_OBJECT (psrc, "Read 0 bytes. EOS.");
     gst_buffer_unref (buf);
-    return GST_FLOW_EOS;
+    return GST_FLOW_UNEXPECTED;
   }
 read_error:
   {
     GST_ELEMENT_ERROR (src, RESOURCE, READ, (NULL),
         ("read on file descriptor: %s.", g_strerror (errno)));
     GST_DEBUG_OBJECT (psrc, "Error reading from fd");
-    gst_buffer_unmap (buf, &info);
     gst_buffer_unref (buf);
     return GST_FLOW_ERROR;
   }
@@ -543,11 +537,6 @@ gst_fd_src_get_size (GstBaseSrc * bsrc, guint64 * size)
   GstFdSrc *src = GST_FD_SRC (bsrc);
   struct stat stat_results;
 
-  if (src->size != -1) {
-    *size = src->size;
-    return TRUE;
-  }
-
   if (!src->seekable_fd) {
     /* If it isn't seekable, we won't know the length (but fstat will still
      * succeed, and wrongly say our length is zero. */
@@ -585,7 +574,7 @@ gst_fd_src_do_seek (GstBaseSrc * bsrc, GstSegment * segment)
   if (G_UNLIKELY (res < 0 || res != offset))
     goto seek_failed;
 
-  segment->position = segment->start;
+  segment->last_stop = segment->start;
   segment->time = segment->start;
 
   return TRUE;
@@ -598,38 +587,33 @@ seek_failed:
 /*** GSTURIHANDLER INTERFACE *************************************************/
 
 static GstURIType
-gst_fd_src_uri_get_type (GType type)
+gst_fd_src_uri_get_type (void)
 {
   return GST_URI_SRC;
 }
 
-static const gchar *const *
-gst_fd_src_uri_get_protocols (GType type)
+static gchar **
+gst_fd_src_uri_get_protocols (void)
 {
-  static const gchar *protocols[] = { "fd", NULL };
+  static gchar *protocols[] = { "fd", NULL };
 
   return protocols;
 }
 
-static gchar *
+static const gchar *
 gst_fd_src_uri_get_uri (GstURIHandler * handler)
 {
   GstFdSrc *src = GST_FD_SRC (handler);
 
-  /* FIXME: make thread-safe */
-  return g_strdup (src->uri);
+  return src->uri;
 }
 
 static gboolean
-gst_fd_src_uri_set_uri (GstURIHandler * handler, const gchar * uri,
-    GError ** err)
+gst_fd_src_uri_set_uri (GstURIHandler * handler, const gchar * uri)
 {
-  gchar *protocol, *q;
+  gchar *protocol;
   GstFdSrc *src = GST_FD_SRC (handler);
   gint fd;
-  guint64 size = (guint64) - 1;
-
-  GST_INFO_OBJECT (src, "checking uri %s", uri);
 
   protocol = gst_uri_get_protocol (uri);
   if (strcmp (protocol, "fd") != 0) {
@@ -641,26 +625,11 @@ gst_fd_src_uri_set_uri (GstURIHandler * handler, const gchar * uri,
   if (sscanf (uri, "fd://%d", &fd) != 1 || fd < 0)
     return FALSE;
 
-  if ((q = g_strstr_len (uri, -1, "?"))) {
-    gchar *sp;
-
-    GST_INFO_OBJECT (src, "found ?");
-
-    if ((sp = g_strstr_len (q, -1, "size="))) {
-      if (sscanf (sp, "size=%" G_GUINT64_FORMAT, &size) != 1) {
-        GST_INFO_OBJECT (src, "parsing size failed");
-        size = -1;
-      } else {
-        GST_INFO_OBJECT (src, "found size %" G_GUINT64_FORMAT, size);
-      }
-    }
-  }
-
   src->new_fd = fd;
 
   GST_OBJECT_LOCK (src);
   if (GST_STATE (GST_ELEMENT (src)) <= GST_STATE_READY) {
-    gst_fd_src_update_fd (src, size);
+    gst_fd_src_update_fd (src);
   }
   GST_OBJECT_UNLOCK (src);
 

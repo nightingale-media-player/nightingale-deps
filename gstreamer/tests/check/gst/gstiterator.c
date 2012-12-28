@@ -41,16 +41,16 @@ GST_START_TEST (test_manual_iteration)
 {
   GList *l;
   guint32 cookie = 0;
-  GMutex m;
+  GMutex *m;
   GstIterator *iter;
   GstIteratorResult res;
-  GValue item = { 0, };
+  gpointer item;
   gint i = 0;
 
   l = make_list_of_ints (NUM_ELEMENTS);
-  g_mutex_init (&m);
+  m = g_mutex_new ();
 
-  iter = gst_iterator_new_list (G_TYPE_POINTER, &m, &cookie, &l, NULL, NULL);
+  iter = gst_iterator_new_list (G_TYPE_INT, m, &cookie, &l, NULL, NULL, NULL);
 
   fail_unless (iter != NULL);
 
@@ -58,8 +58,7 @@ GST_START_TEST (test_manual_iteration)
     res = gst_iterator_next (iter, &item);
     if (i < NUM_ELEMENTS) {
       fail_unless (res == GST_ITERATOR_OK);
-      fail_unless (GPOINTER_TO_INT (g_value_get_pointer (&item)) == i);
-      g_value_reset (&item);
+      fail_unless (GPOINTER_TO_INT (item) == i);
       i++;
       continue;
     } else {
@@ -67,10 +66,10 @@ GST_START_TEST (test_manual_iteration)
       break;
     }
   }
+
   /* clean up */
-  g_value_unset (&item);
   gst_iterator_free (iter);
-  g_mutex_clear (&m);
+  g_mutex_free (m);
   g_list_free (l);
 }
 
@@ -80,17 +79,17 @@ GST_START_TEST (test_resync)
 {
   GList *l;
   guint32 cookie = 0;
-  GMutex m;
+  GMutex *m;
   GstIterator *iter;
   GstIteratorResult res;
-  GValue item = { 0, };
+  gpointer item;
   gint i = 0;
   gboolean hacked_list = FALSE;
 
   l = make_list_of_ints (NUM_ELEMENTS);
-  g_mutex_init (&m);
+  m = g_mutex_new ();
 
-  iter = gst_iterator_new_list (G_TYPE_POINTER, &m, &cookie, &l, NULL, NULL);
+  iter = gst_iterator_new_list (G_TYPE_INT, m, &cookie, &l, NULL, NULL, NULL);
 
   fail_unless (iter != NULL);
 
@@ -98,14 +97,12 @@ GST_START_TEST (test_resync)
     res = gst_iterator_next (iter, &item);
     if (i < NUM_ELEMENTS / 2) {
       fail_unless (res == GST_ITERATOR_OK);
-      fail_unless (GPOINTER_TO_INT (g_value_get_pointer (&item)) == i);
-      g_value_reset (&item);
+      fail_unless (GPOINTER_TO_INT (item) == i);
       i++;
       continue;
     } else if (!hacked_list) {
       /* here's where we test resync */
       fail_unless (res == GST_ITERATOR_OK);
-      g_value_reset (&item);
       l = g_list_prepend (l, GINT_TO_POINTER (-1));
       cookie++;
       hacked_list = TRUE;
@@ -115,26 +112,23 @@ GST_START_TEST (test_resync)
       gst_iterator_resync (iter);
       res = gst_iterator_next (iter, &item);
       fail_unless (res == GST_ITERATOR_OK);
-      fail_unless (GPOINTER_TO_INT (g_value_get_pointer (&item)) == -1);
-      g_value_reset (&item);
+      fail_unless (GPOINTER_TO_INT (item) == -1);
       break;
     }
   }
 
   /* clean up */
-  g_value_unset (&item);
   gst_iterator_free (iter);
-  g_mutex_clear (&m);
+  g_mutex_free (m);
   g_list_free (l);
 }
 
 GST_END_TEST;
 
 static gboolean
-add_fold_func (const GValue * item, GValue * ret, gpointer user_data)
+add_fold_func (gpointer item, GValue * ret, gpointer user_data)
 {
-  g_value_set_int (ret,
-      g_value_get_int (ret) + GPOINTER_TO_INT (g_value_get_pointer (item)));
+  g_value_set_int (ret, g_value_get_int (ret) + GPOINTER_TO_INT (item));
   return TRUE;
 }
 
@@ -142,15 +136,15 @@ GST_START_TEST (test_fold)
 {
   GList *l;
   guint32 cookie = 0;
-  GMutex m;
+  GMutex *m;
   GstIterator *iter;
   GstIteratorResult res;
   gint i, expected;
   GValue ret = { 0, };
 
   l = make_list_of_ints (NUM_ELEMENTS);
-  g_mutex_init (&m);
-  iter = gst_iterator_new_list (G_TYPE_POINTER, &m, &cookie, &l, NULL, NULL);
+  m = g_mutex_new ();
+  iter = gst_iterator_new_list (G_TYPE_INT, m, &cookie, &l, NULL, NULL, NULL);
   fail_unless (iter != NULL);
 
   expected = 0;
@@ -167,7 +161,7 @@ GST_START_TEST (test_fold)
 
   /* clean up */
   gst_iterator_free (iter);
-  g_mutex_clear (&m);
+  g_mutex_free (m);
   g_list_free (l);
 }
 
@@ -176,34 +170,28 @@ GST_END_TEST;
 GST_START_TEST (test_single)
 {
   GstIterator *it;
-  GstStructure *s = gst_structure_new_empty ("test");
-  GValue v = { 0, };
+  GstStructure *s = gst_structure_new ("test", NULL);
   GstStructure *i;
 
-  g_value_init (&v, GST_TYPE_STRUCTURE);
-  g_value_set_boxed (&v, s);
-  it = gst_iterator_new_single (GST_TYPE_STRUCTURE, &v);
-  g_value_reset (&v);
+  it = gst_iterator_new_single (GST_TYPE_STRUCTURE, s,
+      (GstCopyFunction) gst_structure_copy, (GFreeFunc) gst_structure_free);
 
-  fail_unless (gst_iterator_next (it, &v) == GST_ITERATOR_OK);
-  i = g_value_get_boxed (&v);
+  fail_unless (gst_iterator_next (it, (gpointer *) & i) == GST_ITERATOR_OK);
   fail_unless (strcmp (gst_structure_get_name (s),
           gst_structure_get_name (i)) == 0);
+  gst_structure_free (i);
   i = NULL;
-  g_value_reset (&v);
-
-  fail_unless (gst_iterator_next (it, &v) == GST_ITERATOR_DONE);
-  fail_unless (g_value_get_boxed (&v) == NULL);
+  fail_unless (gst_iterator_next (it, (gpointer *) & i) == GST_ITERATOR_DONE);
+  fail_unless (i == NULL);
 
   gst_iterator_free (it);
   gst_structure_free (s);
 
-  it = gst_iterator_new_single (GST_TYPE_STRUCTURE, NULL);
+  it = gst_iterator_new_single (GST_TYPE_STRUCTURE, NULL,
+      (GstCopyFunction) gst_structure_copy, (GFreeFunc) gst_structure_free);
 
-  fail_unless (gst_iterator_next (it, &v) == GST_ITERATOR_DONE);
-  fail_unless (g_value_get_boxed (&v) == NULL);
-
-  g_value_reset (&v);
+  fail_unless (gst_iterator_next (it, (gpointer *) & i) == GST_ITERATOR_DONE);
+  fail_unless (i == NULL);
 
   gst_iterator_free (it);
 }

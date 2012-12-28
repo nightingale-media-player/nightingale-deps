@@ -34,7 +34,7 @@ static void
 setup (void)
 {
   list = gst_buffer_list_new ();
-  caps = gst_caps_new_empty_simple ("text/plain");
+  caps = gst_caps_new_simple ("text/plain", NULL);
 }
 
 static void
@@ -44,70 +44,107 @@ cleanup (void)
   gst_buffer_list_unref (list);
 }
 
-#if 0
 static GstBuffer *
-buffer_from_string (const gchar * str)
+buffer_from_string (gchar * str)
 {
-  gsize size;
+  guint size;
   GstBuffer *buf;
-  gpointer data;
 
   size = strlen (str);
   buf = gst_buffer_new_and_alloc (size);
   gst_buffer_set_caps (buf, caps);
   GST_BUFFER_TIMESTAMP (buf) = TIMESTAMP;
-
-  data = gst_buffer_map (buf, NULL, NULL, GST_MAP_WRITE);
-  memcpy (data, str, size);
-  gst_buffer_unmap (buf, data, size);
+  memcpy (GST_BUFFER_DATA (buf), str, size);
+  GST_BUFFER_SIZE (buf) = size;
 
   return buf;
 }
 
-static void
-check_buffer (GstBuffer * buf, gsize size, const gchar * data)
-{
-  gchar *bdata;
-  gsize bsize, csize, msize;
-
-  bdata = gst_buffer_map (buf, &bsize, &msize, GST_MAP_READ);
-  csize = size ? size : bsize;
-  GST_DEBUG ("%lu %lu %lu", bsize, csize, msize);
-  fail_unless (bsize == csize);
-  fail_unless (memcmp (bdata, data, csize) == 0);
-  gst_buffer_unmap (buf, bdata, bsize);
-}
-#endif
-
 GST_START_TEST (test_add_and_iterate)
 {
+  GstBufferListIterator *it;
   GstBuffer *buf1;
   GstBuffer *buf2;
+  GstBuffer *buf3;
+  GstBuffer *buf4;
+  GstBuffer *buf;
 
   /* buffer list is initially empty */
-  fail_unless (gst_buffer_list_length (list) == 0);
+  fail_unless (gst_buffer_list_n_groups (list) == 0);
 
-  ASSERT_CRITICAL (gst_buffer_list_insert (list, 0, NULL));
-  ASSERT_CRITICAL (gst_buffer_list_insert (NULL, 0, NULL));
+  it = gst_buffer_list_iterate (list);
 
+  ASSERT_CRITICAL (gst_buffer_list_iterator_add (it, NULL));
+  ASSERT_CRITICAL (gst_buffer_list_iterator_add (NULL, NULL));
+
+  /* cannot add buffer without adding a group first */
   buf1 = gst_buffer_new ();
+  ASSERT_CRITICAL (gst_buffer_list_iterator_add (it, buf1));
 
   /* add a group of 2 buffers */
-  fail_unless (gst_buffer_list_length (list) == 0);
-  ASSERT_CRITICAL (gst_buffer_list_insert (list, -1, NULL));
+  fail_unless (gst_buffer_list_iterator_n_buffers (it) == 0);
+  gst_buffer_list_iterator_add_group (it);
+  fail_unless (gst_buffer_list_n_groups (list) == 1);
+  ASSERT_CRITICAL (gst_buffer_list_iterator_add (it, NULL));
   ASSERT_BUFFER_REFCOUNT (buf1, "buf1", 1);
-  gst_buffer_list_add (list, buf1);
+  gst_buffer_list_iterator_add (it, buf1);
   ASSERT_BUFFER_REFCOUNT (buf1, "buf1", 1);     /* list takes ownership */
-  fail_unless (gst_buffer_list_length (list) == 1);
+  fail_unless (gst_buffer_list_n_groups (list) == 1);
+  fail_unless (gst_buffer_list_iterator_n_buffers (it) == 0);
   buf2 = gst_buffer_new ();
-  gst_buffer_list_add (list, buf2);
+  gst_buffer_list_iterator_add (it, buf2);
   ASSERT_BUFFER_REFCOUNT (buf2, "buf2", 1);
-  fail_unless (gst_buffer_list_length (list) == 2);
+  fail_unless (gst_buffer_list_n_groups (list) == 1);
+  fail_unless (gst_buffer_list_iterator_n_buffers (it) == 0);
+
+  /* add another group of 2 buffers */
+  gst_buffer_list_iterator_add_group (it);
+  fail_unless (gst_buffer_list_n_groups (list) == 2);
+  buf3 = gst_buffer_new ();
+  gst_buffer_list_iterator_add (it, buf3);
+  ASSERT_BUFFER_REFCOUNT (buf3, "buf3", 1);
+  fail_unless (gst_buffer_list_n_groups (list) == 2);
+  fail_unless (gst_buffer_list_iterator_n_buffers (it) == 0);
+  buf4 = gst_buffer_new ();
+  gst_buffer_list_iterator_add (it, buf4);
+  ASSERT_BUFFER_REFCOUNT (buf4, "buf4", 1);
+  fail_unless (gst_buffer_list_n_groups (list) == 2);
+  fail_unless (gst_buffer_list_iterator_n_buffers (it) == 0);
+
+  /* freeing iterator does not affect list */
+  gst_buffer_list_iterator_free (it);
+  fail_unless (gst_buffer_list_n_groups (list) == 2);
+
+  /* create a new iterator */
+  it = gst_buffer_list_iterate (list);
+
+  /* iterate list */
+  fail_unless (gst_buffer_list_iterator_next (it) == NULL);
+  fail_unless (gst_buffer_list_iterator_next_group (it));
+  fail_unless (gst_buffer_list_iterator_n_buffers (it) == 2);
+  buf = gst_buffer_list_iterator_next (it);
+  fail_unless (buf == buf1);
+  fail_unless (gst_buffer_list_iterator_n_buffers (it) == 1);
+  buf = gst_buffer_list_iterator_next (it);
+  fail_unless (buf == buf2);
+  fail_unless (gst_buffer_list_iterator_n_buffers (it) == 0);
+  fail_unless (gst_buffer_list_iterator_next (it) == NULL);
+  fail_unless (gst_buffer_list_iterator_next_group (it));
+  fail_unless (gst_buffer_list_iterator_n_buffers (it) == 2);
+  buf = gst_buffer_list_iterator_next (it);
+  fail_unless (buf == buf3);
+  fail_unless (gst_buffer_list_iterator_n_buffers (it) == 1);
+  buf = gst_buffer_list_iterator_next (it);
+  fail_unless (buf == buf4);
+  fail_unless (gst_buffer_list_iterator_n_buffers (it) == 0);
+  fail_unless (gst_buffer_list_iterator_next (it) == NULL);
+  fail_if (gst_buffer_list_iterator_next_group (it));
+
+  gst_buffer_list_iterator_free (it);
 }
 
 GST_END_TEST;
 
-#if 0
 GST_START_TEST (test_make_writable)
 {
   GstBufferListIterator *it;
@@ -435,7 +472,7 @@ GST_START_TEST (test_do)
           gst_buffer_list_iterator_do (it,
               (GstBufferListDoFunction) gst_buffer_ref, NULL)));
   fail_unless (buf == NULL);
-  data = (char *) "data";
+  data = "data";
   ASSERT_CRITICAL ((buf = gst_buffer_list_iterator_do (it, do_data_func,
               data)));
   fail_unless (buf == NULL);
@@ -509,7 +546,9 @@ GST_START_TEST (test_merge)
   gst_buffer_unref (buf);
   fail_unless (GST_BUFFER_CAPS (merged_buf) == caps);
   fail_unless (GST_BUFFER_TIMESTAMP (merged_buf) == TIMESTAMP);
-  check_buffer (merged_buf, 3, "One");
+  fail_unless (GST_BUFFER_SIZE (merged_buf) == 3);
+  fail_unless (memcmp (GST_BUFFER_DATA (merged_buf), "One",
+          GST_BUFFER_SIZE (merged_buf)) == 0);
   gst_buffer_unref (merged_buf);
 
   /* add another buffer to the same group */
@@ -520,13 +559,17 @@ GST_START_TEST (test_merge)
   ASSERT_BUFFER_REFCOUNT (merged_buf, "merged_buf", 1);
   fail_unless (GST_BUFFER_CAPS (merged_buf) == caps);
   fail_unless (GST_BUFFER_TIMESTAMP (merged_buf) == TIMESTAMP);
-  check_buffer (merged_buf, 8, "OneGroup");
+  fail_unless (GST_BUFFER_SIZE (merged_buf) == 8);
+  fail_unless (memcmp (GST_BUFFER_DATA (merged_buf), "OneGroup",
+          GST_BUFFER_SIZE (merged_buf)) == 0);
 
   /* merging the same group again should return a new buffer with merged data */
   buf = gst_buffer_list_iterator_merge_group (merge_it);
   ASSERT_BUFFER_REFCOUNT (buf, "buf", 1);
   fail_unless (buf != merged_buf);
-  check_buffer (buf, 8, "OneGroup");
+  fail_unless (GST_BUFFER_SIZE (buf) == 8);
+  fail_unless (memcmp (GST_BUFFER_DATA (buf), "OneGroup",
+          GST_BUFFER_SIZE (buf)) == 0);
   gst_buffer_unref (buf);
   gst_buffer_unref (merged_buf);
 
@@ -540,7 +583,9 @@ GST_START_TEST (test_merge)
   ASSERT_BUFFER_REFCOUNT (merged_buf, "merged_buf", 1);
   fail_unless (GST_BUFFER_CAPS (merged_buf) == caps);
   fail_unless (GST_BUFFER_TIMESTAMP (merged_buf) == TIMESTAMP);
-  check_buffer (merged_buf, 8, "OneGroup");
+  fail_unless (GST_BUFFER_SIZE (merged_buf) == 8);
+  fail_unless (memcmp (GST_BUFFER_DATA (merged_buf), "OneGroup",
+          GST_BUFFER_SIZE (merged_buf)) == 0);
   gst_buffer_unref (merged_buf);
 
   /* merge the second group */
@@ -549,7 +594,9 @@ GST_START_TEST (test_merge)
   ASSERT_BUFFER_REFCOUNT (merged_buf, "merged_buf", 1);
   fail_unless (GST_BUFFER_CAPS (merged_buf) == caps);
   fail_unless (GST_BUFFER_TIMESTAMP (merged_buf) == TIMESTAMP);
-  check_buffer (merged_buf, 12, "AnotherGroup");
+  fail_unless (GST_BUFFER_SIZE (merged_buf) == 12);
+  fail_unless (memcmp (GST_BUFFER_DATA (merged_buf), "AnotherGroup",
+          GST_BUFFER_SIZE (merged_buf)) == 0);
   gst_buffer_unref (merged_buf);
 
   gst_buffer_list_iterator_free (merge_it);
@@ -562,7 +609,8 @@ GST_START_TEST (test_merge)
   buf = gst_buffer_list_iterator_steal (it);
   gst_buffer_list_iterator_free (it);
   fail_unless (buf != NULL);
-  check_buffer (buf, 0, "Group");
+  fail_unless (memcmp (GST_BUFFER_DATA (buf), "Group",
+          GST_BUFFER_SIZE (buf)) == 0);
   gst_buffer_unref (buf);
   merge_it = gst_buffer_list_iterate (list);
   fail_unless (gst_buffer_list_iterator_next_group (merge_it));
@@ -570,7 +618,9 @@ GST_START_TEST (test_merge)
   ASSERT_BUFFER_REFCOUNT (merged_buf, "merged_buf", 1);
   fail_unless (GST_BUFFER_CAPS (merged_buf) == caps);
   fail_unless (GST_BUFFER_TIMESTAMP (merged_buf) == TIMESTAMP);
-  check_buffer (merged_buf, 3, "One");
+  fail_unless (GST_BUFFER_SIZE (merged_buf) == 3);
+  fail_unless (memcmp (GST_BUFFER_DATA (merged_buf), "One",
+          GST_BUFFER_SIZE (merged_buf)) == 0);
   gst_buffer_unref (merged_buf);
 
   /* steal the first buffer too and merge the first group again */
@@ -579,7 +629,8 @@ GST_START_TEST (test_merge)
   fail_unless (gst_buffer_list_iterator_next (it) != NULL);
   buf = gst_buffer_list_iterator_steal (it);
   fail_unless (buf != NULL);
-  check_buffer (buf, 3, "One");
+  fail_unless (memcmp (GST_BUFFER_DATA (buf), "One",
+          GST_BUFFER_SIZE (buf)) == 0);
   gst_buffer_unref (buf);
   gst_buffer_list_iterator_free (it);
   fail_unless (gst_buffer_list_iterator_merge_group (merge_it) == NULL);
@@ -715,43 +766,6 @@ GST_START_TEST (test_foreach)
 
 GST_END_TEST;
 
-GST_START_TEST (test_list)
-{
-  GstBufferListIterator *it;
-  GList *l = NULL;
-  gint i;
-
-  for (i = 0; i < 10; i++) {
-    gchar name[10];
-    g_snprintf (name, 10, "%d", i);
-    l = g_list_append (l, buffer_from_string (name));
-  }
-
-  /* add buffers to the list */
-  it = gst_buffer_list_iterate (list);
-  gst_buffer_list_iterator_add_group (it);
-  gst_buffer_list_iterator_add_list (it, l);
-
-  /* add a buffer */
-  gst_buffer_list_iterator_add (it, buffer_from_string ("10"));
-
-  /* add another list */
-  l = g_list_append (NULL, buffer_from_string ("11"));
-  gst_buffer_list_iterator_add_list (it, l);
-
-  for (i = 0; i < 12; i++) {
-    GstBuffer *buf;
-    gchar name[10];
-
-    buf = gst_buffer_list_get (list, 0, i);
-    g_snprintf (name, 10, "%d", i);
-    check_buffer (buf, 0, name);
-  }
-  gst_buffer_list_iterator_free (it);
-}
-
-GST_END_TEST;
-#endif
 
 static Suite *
 gst_buffer_list_suite (void)
@@ -762,7 +776,6 @@ gst_buffer_list_suite (void)
   suite_add_tcase (s, tc_chain);
   tcase_add_checked_fixture (tc_chain, setup, cleanup);
   tcase_add_test (tc_chain, test_add_and_iterate);
-#if 0
   tcase_add_test (tc_chain, test_make_writable);
   tcase_add_test (tc_chain, test_copy);
   tcase_add_test (tc_chain, test_steal);
@@ -770,8 +783,6 @@ gst_buffer_list_suite (void)
   tcase_add_test (tc_chain, test_do);
   tcase_add_test (tc_chain, test_merge);
   tcase_add_test (tc_chain, test_foreach);
-  tcase_add_test (tc_chain, test_list);
-#endif
 
   return s;
 }

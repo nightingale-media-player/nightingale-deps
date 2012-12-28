@@ -24,8 +24,12 @@
     <itemizedlist>
       <listitem>
         <para>
-          Pointers to memory objects. Memory objects encapsulate a region
-          in the memory.
+          A pointer to a piece of memory.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          The size of the memory.
         </para>
       </listitem>
       <listitem>

@@ -49,7 +49,7 @@ GST_START_TEST (info_ptr_format_printf_extension)
   /* set up our own log function to make sure the code in gstinfo is actually
    * executed without GST_DEBUG being set or it being output to stdout */
   gst_debug_remove_log_function (gst_debug_log_default);
-  gst_debug_add_log_function (printf_extension_log_func, NULL, NULL);
+  gst_debug_add_log_function (printf_extension_log_func, NULL);
 
   gst_debug_set_default_threshold (GST_LEVEL_LOG);
 
@@ -105,7 +105,7 @@ GST_START_TEST (info_ptr_format_printf_extension)
 
   /* clean up */
   gst_debug_set_default_threshold (GST_LEVEL_NONE);
-  gst_debug_add_log_function (gst_debug_log_default, NULL, NULL);
+  gst_debug_add_log_function (gst_debug_log_default, NULL);
   gst_debug_remove_log_function (printf_extension_log_func);
 }
 
@@ -117,7 +117,7 @@ GST_START_TEST (info_segment_format_printf_extension)
   /* set up our own log function to make sure the code in gstinfo is actually
    * executed without GST_DEBUG being set or it being output to stdout */
   gst_debug_remove_log_function (gst_debug_log_default);
-  gst_debug_add_log_function (printf_extension_log_func, NULL, NULL);
+  gst_debug_add_log_function (printf_extension_log_func, NULL);
 
   gst_debug_set_default_threshold (GST_LEVEL_LOG);
 
@@ -127,13 +127,10 @@ GST_START_TEST (info_segment_format_printf_extension)
 
     gst_segment_init (&segment, GST_FORMAT_TIME);
 
-    segment.rate = 1.0;
-    segment.applied_rate = 2.0;
-    segment.start = 0;
-    segment.stop = 5 * 60 * GST_SECOND;
-    segment.time = 0;
+    gst_segment_set_newsegment_full (&segment, FALSE, 1.0, 2.0,
+        GST_FORMAT_TIME, 0, 5 * 60 * GST_SECOND, 0);
 
-    segment.position = 2 * GST_SECOND;
+    segment.last_stop = 2 * GST_SECOND;
     segment.duration = 90 * 60 * GST_SECOND;
 
     GST_LOG ("TIME: %" GST_SEGMENT_FORMAT, &segment);
@@ -145,11 +142,8 @@ GST_START_TEST (info_segment_format_printf_extension)
 
     gst_segment_init (&segment, GST_FORMAT_BYTES);
 
-    segment.rate = 1.0;
-    segment.applied_rate = 1.0;
-    segment.start = 0;
-    segment.stop = 9999999;
-    segment.time = 0;
+    gst_segment_set_newsegment_full (&segment, FALSE, 1.0, 1.0,
+        GST_FORMAT_BYTES, 0, 9999999, 0);
 
     GST_LOG ("BYTE: %" GST_SEGMENT_FORMAT, &segment);
   }
@@ -160,11 +154,8 @@ GST_START_TEST (info_segment_format_printf_extension)
 
     gst_segment_init (&segment, 98765432);
 
-    segment.rate = 1.0;
-    segment.applied_rate = 1.0;
-    segment.start = 0;
-    segment.stop = 987654321;
-    segment.time = 0;
+    gst_segment_set_newsegment_full (&segment, FALSE, 1.0, 1.0,
+        GST_FORMAT_BYTES, 0, 987654321, 0);
 
     GST_LOG ("UNKNOWN: %" GST_SEGMENT_FORMAT, &segment);
   }
@@ -183,7 +174,7 @@ GST_START_TEST (info_segment_format_printf_extension)
 
   /* clean up */
   gst_debug_set_default_threshold (GST_LEVEL_NONE);
-  gst_debug_add_log_function (gst_debug_log_default, NULL, NULL);
+  gst_debug_add_log_function (gst_debug_log_default, NULL);
   gst_debug_remove_log_function (printf_extension_log_func);
 }
 

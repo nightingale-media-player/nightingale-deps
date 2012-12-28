@@ -74,19 +74,8 @@ sync_bus_handler (GstBus * bus, GstMessage * message, GstElement * bin)
       path = gst_object_get_path_string (GST_OBJECT (owner));
       g_message ("owner:  %s", path);
       g_free (path);
-
-      if (G_VALUE_HOLDS_OBJECT (val)) {
-        g_message ("object: type %s, value %p", G_VALUE_TYPE_NAME (val),
-            g_value_get_object (val));
-      } else if (G_VALUE_HOLDS_POINTER (val)) {
-        g_message ("object: type %s, value %p", G_VALUE_TYPE_NAME (val),
-            g_value_get_pointer (val));
-      } else if (G_IS_VALUE (val)) {
-        g_message ("object: type %s", G_VALUE_TYPE_NAME (val));
-      } else {
-        g_message ("object: (null)");
-        break;
-      }
+      g_message ("object: type %s, value %p", G_VALUE_TYPE_NAME (val),
+          g_value_get_object (val));
 
       /* see if we know how to deal with this object */
       if (G_VALUE_TYPE (val) == GST_TYPE_TASK) {
@@ -154,8 +143,7 @@ main (int argc, char *argv[])
 
   /* get the bus, we need to install a sync handler */
   bus = gst_pipeline_get_bus (GST_PIPELINE (bin));
-  gst_bus_set_sync_handler (bus, (GstBusSyncHandler) sync_bus_handler, bin,
-      NULL);
+  gst_bus_set_sync_handler (bus, (GstBusSyncHandler) sync_bus_handler, bin);
 
   /* start playing */
   ret = gst_element_set_state (bin, GST_STATE_PLAYING);

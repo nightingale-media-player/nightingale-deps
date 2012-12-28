@@ -38,13 +38,7 @@ G_BEGIN_DECLS
 typedef struct _GstTaskPool GstTaskPool;
 typedef struct _GstTaskPoolClass GstTaskPoolClass;
 
-/**
- * GstTaskPoolFunction:
- * @user_data: user data for the task function
- *
- * Task function, see gst_task_pool_push().
- */
-typedef void   (*GstTaskPoolFunction)          (void *user_data);
+typedef void   (*GstTaskPoolFunction)          (void *data);
 
 /**
  * GstTaskPool:
@@ -90,7 +84,7 @@ GType           gst_task_pool_get_type    (void);
 GstTaskPool *   gst_task_pool_new         (void);
 void            gst_task_pool_prepare     (GstTaskPool *pool, GError **error);
 
-gpointer        gst_task_pool_push        (GstTaskPool *pool, GstTaskPoolFunction func,
+gpointer        gst_task_pool_push        (GstTaskPool *pool, GstTaskPoolFunction func, 
                                            gpointer user_data, GError **error);
 void            gst_task_pool_join        (GstTaskPool *pool, gpointer id);
 

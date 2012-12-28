@@ -23,20 +23,15 @@
 GST_START_TEST (test_protocol_case)
 {
   GstElement *element;
-  GError *err = NULL;
 
-  element = gst_element_make_from_uri (GST_URI_SRC, "file:///foo/bar", NULL,
-      &err);
+  element = gst_element_make_from_uri (GST_URI_SRC, "file:///foo/bar", NULL);
 
   /* no element? probably no registry, bail out */
-  if (element == NULL && err->code == GST_URI_ERROR_UNSUPPORTED_PROTOCOL) {
-    g_error_free (err);
+  if (element == NULL)
     return;
-  }
 
   gst_object_unref (element);
-  element = gst_element_make_from_uri (GST_URI_SRC, "FILE:///foo/bar", NULL,
-      NULL);
+  element = gst_element_make_from_uri (GST_URI_SRC, "FILE:///foo/bar", NULL);
   fail_unless (element != NULL,
       "Got source for 'file://' URI but not for 'FILE://' URI");
   gst_object_unref (element);
@@ -110,60 +105,6 @@ GST_END_TEST;
 
 #endif /* G_OS_WIN32 */
 
-GST_START_TEST (test_uri_misc)
-{
-  /* require at least two characters for the protocol */
-  fail_if (gst_uri_is_valid ("B:\\foo.txt"));
-  fail_if (gst_uri_is_valid ("B:/foo.txt"));
-  fail_if (gst_uri_is_valid ("B://foo.txt"));
-  fail_if (gst_uri_is_valid ("B:foo.txt"));
-
-  fail_unless (gst_uri_is_valid ("fd://0"));
-  fail_unless (gst_uri_is_valid ("AB:\\foo.txt"));
-  fail_unless (gst_uri_is_valid ("AB:/foo.txt"));
-  fail_unless (gst_uri_is_valid ("AB://foo.txt"));
-  fail_unless (gst_uri_is_valid ("AB:foo.txt"));
-
-  fail_unless (gst_uri_is_valid ("ABC:/foo.txt"));
-  fail_unless (gst_uri_is_valid ("ABC://foo.txt"));
-  fail_unless (gst_uri_is_valid ("ABC:foo.txt"));
-
-  fail_unless (gst_uri_is_valid ("ABCD:/foo.txt"));
-  fail_unless (gst_uri_is_valid ("ABCD://foo.txt"));
-  fail_unless (gst_uri_is_valid ("ABCD:foo.txt"));
-}
-
-GST_END_TEST;
-
-GST_START_TEST (test_element_make_from_uri)
-{
-  GstElement *element;
-  GError *err = NULL;
-
-  element = gst_element_make_from_uri (GST_URI_SRC, "foo://", NULL, NULL);
-  fail_unless (element == NULL);
-
-  element = gst_element_make_from_uri (GST_URI_SRC, "foo://", NULL, &err);
-  fail_unless (element == NULL);
-  fail_unless (err != NULL);
-  fail_unless (err->code == GST_URI_ERROR_UNSUPPORTED_PROTOCOL);
-  g_error_free (err);
-  err = NULL;
-
-  if (gst_registry_check_feature_version (gst_registry_get (), "filesrc",
-          GST_VERSION_MAJOR, GST_VERSION_MINOR, GST_VERSION_MICRO)) {
-    element = gst_element_make_from_uri (GST_URI_SRC, "file://host/foo", NULL,
-        &err);
-    fail_unless (element == NULL);
-    fail_unless (err != NULL);
-    fail_unless (err->code == GST_URI_ERROR_BAD_URI);
-    g_error_free (err);
-    err = NULL;
-  }
-}
-
-GST_END_TEST;
-
 static Suite *
 gst_uri_suite (void)
 {
@@ -175,8 +116,6 @@ gst_uri_suite (void)
   suite_add_tcase (s, tc_chain);
   tcase_add_test (tc_chain, test_protocol_case);
   tcase_add_test (tc_chain, test_uri_get_location);
-  tcase_add_test (tc_chain, test_uri_misc);
-  tcase_add_test (tc_chain, test_element_make_from_uri);
 #ifdef G_OS_WIN32
   tcase_add_test (tc_chain, test_win32_uri);
 #endif

@@ -153,7 +153,8 @@ main (int argc, char *argv[])
   textdomain (GETTEXT_PACKAGE);
 #endif
 
-  g_set_prgname ("gst-typefind-" GST_API_VERSION);
+  if (!g_thread_supported ())
+    g_thread_init (NULL);
 
   ctx = g_option_context_new ("FILES");
   g_option_context_add_main_entries (ctx, options, GETTEXT_PACKAGE);
@@ -164,7 +165,7 @@ main (int argc, char *argv[])
   }
   g_option_context_free (ctx);
 
-  gst_tools_print_version ();
+  gst_tools_print_version ("gst-typefind");
 
   if (filenames == NULL || *filenames == NULL) {
     g_print ("Please give a filename to typefind\n\n");

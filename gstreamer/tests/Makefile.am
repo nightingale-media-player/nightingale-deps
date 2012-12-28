@@ -1,11 +1,5 @@
 EXTRA_DIST = README
 
-if BUILD_BENCHMARKS
-SUBDIRS_BENCHMARKS = benchmarks
-else
-SUBDIRS_BENCHMARKS =
-endif
-
 if BUILD_TESTS
 ## SUBDIRS_TESTS = tests testsuite
 ## FIXME: write tests from scratch
@@ -27,7 +21,7 @@ SUBDIRS_EXAMPLES =
 endif
 
 SUBDIRS = \
-	$(SUBDIRS_BENCHMARKS) \
+	benchmarks	\
 	$(SUBDIRS_CHECK) \
 	misc		\
 	$(SUBDIRS_TESTS) \

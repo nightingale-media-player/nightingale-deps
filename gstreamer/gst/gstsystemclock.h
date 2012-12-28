@@ -57,6 +57,7 @@ typedef enum {
 
 /**
  * GstSystemClock:
+ * @clock: The parent clock
  *
  * The default implementation of a #GstClock that uses the system time.
  */
@@ -64,9 +65,13 @@ struct _GstSystemClock {
   GstClock       clock;
 
   /*< private >*/
+  GThread       *thread;        /* thread for async notify */
+  gboolean       stopping;
+
+  /* ABI added */
   GstSystemClockPrivate *priv;
 
-  gpointer _gst_reserved[GST_PADDING];
+  gpointer _gst_reserved[GST_PADDING - 1];
 };
 
 struct _GstSystemClockClass {

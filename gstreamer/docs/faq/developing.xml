@@ -19,12 +19,12 @@ If you're not familiar with pkg-config to compile and link a small
 one-file program, pass the --cflags and --libs arguments to pkg-config.
 For example:
 <programlisting>
-$ libtool --mode=link gcc `pkg-config --cflags --libs gstreamer-&GST_API_VERSION;` -o myprog myprog.c
+$ libtool --mode=link gcc `pkg-config --cflags --libs gstreamer-&GST_MAJORMINOR;` -o myprog myprog.c
 </programlisting>
 would be sufficient for a gstreamer-only program. 
 If (for example) your app also used GTK+ 2.0, you could use
 <programlisting>
-$ libtool --mode=link gcc `pkg-config --cflags --libs gstreamer-&GST_API_VERSION; gtk+-2.0` -o myprog myprog.c
+$ libtool --mode=link gcc `pkg-config --cflags --libs gstreamer-&GST_MAJORMINOR; gtk+-2.0` -o myprog myprog.c
 </programlisting>
 Those are back-ticks (on the same key with the tilde on US keyboards), 
 not single quotes.
@@ -45,9 +45,12 @@ or integrate with autoconf using the pkg.m4 macro (providing PKG_CONFIG_CHECK).
         <para>
 It is possible to develop and compile against an uninstalled copy of
 gstreamer and gst-plugins-* (for example, against gits checkouts).
-The easiest way to do this is to use a bash script like  this:
-<ulink url="http://cgit.freedesktop.org/gstreamer/gstreamer/tree/scripts/gst-uninstalled">latest version of gst-uninstalled</ulink>.
+The easiest way to do this is to use a bash script like this (also:
+<ulink url="http://cgit.freedesktop.org/gstreamer/gstreamer/tree/docs/faq/gst-uninstalled">lastest version of gst-uninstalled</ulink>):
 
+<programlisting>
+&gst-uninstalled;
+</programlisting>
 If you put this script in your path, and symlink it to gst-git (if you want
 to develop against git master) or to gst-released (if you want to develop
 against the lastest release of each module), it will automatically use the

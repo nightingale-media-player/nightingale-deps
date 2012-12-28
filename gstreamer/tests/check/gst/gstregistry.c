@@ -34,11 +34,6 @@ plugin_name_cmp (GstPlugin * a, GstPlugin * b)
   return strcmp (name_a, name_b);
 }
 
-static gint
-plugin_ptr_cmp (GstPlugin * a, GstPlugin * b)
-{
-  return (a == b) ? 0 : 1;
-}
 
 static void
 print_plugin (const gchar * marker, GstRegistry * registry, GstPlugin * plugin)
@@ -48,9 +43,8 @@ print_plugin (const gchar * marker, GstRegistry * registry, GstPlugin * plugin)
 
   name = gst_plugin_get_name (plugin);
 
-  GST_DEBUG ("%s: plugin %p %d %s file: %s", marker, plugin,
-      GST_OBJECT_REFCOUNT (plugin), name,
-      GST_STR_NULL (gst_plugin_get_filename (plugin)));
+  GST_DEBUG ("%s: plugin %p %d %s", marker, plugin,
+      GST_OBJECT_REFCOUNT (plugin), name);
 
   features = gst_registry_get_feature_list_by_plugin (registry, name);
   for (f = features; f != NULL; f = f->next) {
@@ -59,7 +53,7 @@ print_plugin (const gchar * marker, GstRegistry * registry, GstPlugin * plugin)
     feature = GST_PLUGIN_FEATURE (f->data);
 
     GST_LOG ("%s:    feature: %p %s", marker, feature,
-        GST_OBJECT_NAME (feature));
+        gst_plugin_feature_get_name (feature));
   }
   gst_plugin_feature_list_free (features);
 }
@@ -71,12 +65,12 @@ GST_START_TEST (test_registry_update)
   GstRegistry *registry;
   GList *plugins_before, *plugins_after, *l;
 
-  registry = gst_registry_get ();
+  registry = gst_registry_get_default ();
   fail_unless (registry != NULL);
   ASSERT_OBJECT_REFCOUNT (registry, "default registry", 1);
 
   /* refcount should still be 1 the second time */
-  registry = gst_registry_get ();
+  registry = gst_registry_get_default ();
   fail_unless (registry != NULL);
   ASSERT_OBJECT_REFCOUNT (registry, "default registry", 1);
 
@@ -99,16 +93,16 @@ GST_START_TEST (test_registry_update)
     ASSERT_OBJECT_REFCOUNT (plugin, "plugin", 2);
   }
 
-  GST_LOG (" ----- calling gst_update_registry -----");
-
   fail_unless (gst_update_registry () != FALSE, "registry update failed");
 
-  GST_LOG (" ----- registry updated -----");
+  GST_LOG (" -----------------------------------");
+  GST_LOG ("          registry updated          ");
+  GST_LOG (" -----------------------------------");
 
   /* static plugins should have the same refcount as before (ie. 2), whereas
-   * file-based plugins *may* have been replaced by a newly-created object
-   * if the on-disk file changed (and was not yet loaded). There should be
-   * only one reference left for those, and that's ours */
+   * file-based plugins should have been replaced by a newly-created objects
+   * (when reading the updated registry.xml file), so there should be only one
+   * reference left for those, and that's ours */
   for (l = plugins_before; l; l = l->next) {
     GstPlugin *plugin;
 
@@ -117,8 +111,8 @@ GST_START_TEST (test_registry_update)
     print_plugin ("before2", registry, plugin);
 
     if (gst_plugin_get_filename (plugin)) {
-      /* file-based plugin. */
-      ASSERT_OBJECT_REFCOUNT_BETWEEN (plugin, "plugin", 1, 2);
+      /* file-based plugin */
+      ASSERT_OBJECT_REFCOUNT (plugin, "plugin", 1);
     } else {
       /* static plugin */
       ASSERT_OBJECT_REFCOUNT (plugin, "plugin", 2);
@@ -129,27 +123,20 @@ GST_START_TEST (test_registry_update)
 
   plugins_after = gst_registry_get_plugin_list (registry);
   for (l = plugins_after; l; l = l->next) {
-    GstPlugin *plugin = GST_PLUGIN (l->data);
+    GstPlugin *plugin;
+
+    plugin = GST_PLUGIN (l->data);
 
     print_plugin ("after  ", registry, plugin);
 
     /* file-based plugins should have a refcount of 2 (one for the registry,
-     * one for us for the list) or 3 (one for the registry, one for the before
-     * list, one for the after list), static plugins should have one of 3
-     * (one for the registry, one for the new list and one for the old list).
+     * one for us for the list), static plugins should have one of 3 (one for
+     * the registry, one for the new list and one for the old list).
      * This implicitly also makes sure that all static plugins are the same
-     * objects as they were before. Non-static ones may or may not have been
+     * objects as they were before and that all non-static ones have been
      * replaced by new objects */
     if (gst_plugin_get_filename (plugin)) {
-      if (g_list_find_custom (plugins_before, plugin,
-              (GCompareFunc) plugin_ptr_cmp) != NULL) {
-        /* Same plugin existed in the before list. Refcount must be 3 */
-        ASSERT_OBJECT_REFCOUNT (plugin, "plugin", 3);
-      } else {
-        /* This plugin is newly created, so should only exist in the after list
-         * and the registry: Refcount must be 2 */
-        ASSERT_OBJECT_REFCOUNT (plugin, "plugin", 2);
-      }
+      ASSERT_OBJECT_REFCOUNT (plugin, "plugin", 2);
     } else {
       ASSERT_OBJECT_REFCOUNT (plugin, "plugin", 3);
     }
@@ -178,11 +165,10 @@ GST_START_TEST (test_registry_update)
 
   new_identity = gst_registry_lookup_feature (registry, "identity");
   fail_unless (new_identity != NULL, "Can't find plugin feature 'identity'");
-  fail_unless (old_identity == new_identity, "Old and new 'identity' feature "
-      "objects should be the same, but are different objects");
+  fail_unless (old_identity != new_identity, "Old and new 'identity' feature "
+      "should be different but are the same object");
 
-  /* One ref each for: the registry, old_identity, new_identity */
-  ASSERT_OBJECT_REFCOUNT (old_identity, "old identity feature after update", 3);
+  ASSERT_OBJECT_REFCOUNT (old_identity, "old identity feature after update", 1);
 
   new_pipeline = gst_registry_lookup_feature (registry, "pipeline");
   fail_unless (new_pipeline != NULL, "Can't find plugin feature 'pipeline'");

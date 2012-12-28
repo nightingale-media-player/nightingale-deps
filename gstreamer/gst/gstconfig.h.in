@@ -54,11 +54,14 @@
 
 #if 0
 #define GST_DISABLE_GST_DEBUG 1
+#define GST_DISABLE_LOADSAVE 1
 #define GST_DISABLE_PARSE 1
 #define GST_DISABLE_TRACE 1
 #define GST_DISABLE_ALLOC_TRACE 1
 #define GST_DISABLE_REGISTRY 1
 #define GST_DISABLE_PLUGIN 1
+#define GST_DISABLE_XML 1
+#define GST_DISABLE_LOADSAVE_REGISTRY 1
 #define GST_HAVE_GLIB_2_8 1
 #endif
 
@@ -77,6 +80,14 @@
  * Configures the inclusion of the debugging subsystem
  */
 @GST_DISABLE_GST_DEBUG_DEFINE@
+
+/**
+ * GST_DISABLE_LOADSAVE:
+ *
+ * Configures the inclusion of the plugin graph xml-serialisation
+ * (was used in 0.8 by gst-editor)
+ */
+@GST_DISABLE_LOADSAVE_DEFINE@
 
 /**
  * GST_DISABLE_PARSE:
@@ -110,6 +121,14 @@
  */
 @GST_DISABLE_REGISTRY_DEFINE@
 
+/**
+ * GST_DISABLE_XML:
+ *
+ * Configures the use libxml2. This setting is derived from the settings of
+ * %GST_DISABLE_LOADSAVE and %GST_DISABLE_REGISTRY (in the xml registry case).
+ */
+@GST_DISABLE_XML_DEFINE@
+
 /* FIXME: test and document these! */
 /* Configures the use of external plugins */
 @GST_DISABLE_PLUGIN_DEFINE@
@@ -127,6 +146,8 @@
  *
  * printf format type used to debug GStreamer segments.
  * This can only be used on pointers to GstSegment structures.
+ *
+ * Since: 0.10.10
  */
 @GST_PRINTF_EXTENSION_SEGMENT_FORMAT_DEFINE@
 
@@ -135,36 +156,23 @@
  * header files so we know whether we can use G_GNUC_PRINTF or not */
 @GST_USING_PRINTF_EXTENSION_DEFINE@
 
-/* GST_DISABLE_PRINTF_EXTENSION:
- *
- * Define this to debug your debug log messages and make gcc spew warnings
- * if printf format string and arguments don't match up (this is usually
- * not the case when libc and gcc are used because printf format warnings
- * have to be disabled when the printf extension mechanism is in use).
- *
- * Note that using this option disables 'pretty logging' of GStreamer objects
- * like caps, tags, structures, events, pads etc., so that only their address
- * will be printed in the log.
- *
- * This define only disables use of the special registered printf format
- * extensions in the code compiled with it defined. It does not stop
- * GStreamer from registering these extensions in the first place if it
- * was compiled against a libc that supports this.
- *
- * (not official API)
- */
-/* If GLib is not using the system printf, we can't use the registered
- * extensions because the GLib-internal printf won't know how to parse them */
-#if defined(GST_DISABLE_PRINTF_EXTENSION) || !defined(GLIB_USING_SYSTEM_PRINTF)
-  #undef GST_PTR_FORMAT
-  #define GST_PTR_FORMAT "p"
-  #undef GST_SEGMENT_FORMAT
-  #define GST_SEGMENT_FORMAT "p"
-  #undef GST_USING_PRINTF_EXTENSION
-#endif
-
 /* whether or not the CPU supports unaligned access */
 @GST_HAVE_UNALIGNED_ACCESS_DEFINE@
+
+/* FIXME: 0.11 (remove)
+ * whether or not we are using glib 2.8 api, e.g. atomic gobject
+ * refcounting */
+@GST_HAVE_GLIB_2_8_DEFINE@
+
+/***** Deal with XML stuff, we have to handle both loadsave and registry *****/
+/* FIXME: move include to where we need it */
+/*#if (! (defined(GST_DISABLE_LOADSAVE) && defined(GST_DISABLE_REGISTRY)) )*/
+#ifndef GST_DISABLE_XML
+# include <libxml/parser.h>
+#else
+  /* FIXME: 0.11 (replace by GST_DISABLE_XML) */
+# define GST_DISABLE_LOADSAVE_REGISTRY
+#endif
 
 /**
  * GST_EXPORT:
@@ -191,11 +199,7 @@
 #endif
 #else /* not _MSC_VER */
 #define GST_PLUGIN_EXPORT
-#if (defined(__SUNPRO_C) && (__SUNPRO_C >= 0x590))
-#define GST_EXPORT extern __attribute__ ((visibility ("default")))
-#else
 #define GST_EXPORT extern
-#endif
 #endif
 
 #endif /* __GST_CONFIG_H__ */

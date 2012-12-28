@@ -1,8 +1,8 @@
 
-/*** block a  from ../../../docs/manual/highlevel-playback.xml ***/
+/*** block a  from ../../../docs/manual/highlevel-components.xml ***/
 #include <gst/gst.h>
 
-/*** block b  from ../../../docs/manual/highlevel-playback.xml ***/
+/*** block b  from ../../../docs/manual/highlevel-components.xml ***/
 static gboolean
 my_bus_callback (GstBus     *bus,
 		 GstMessage *message,
@@ -36,7 +36,7 @@ my_bus_callback (GstBus     *bus,
   return TRUE;
 }
 
-/*** block c  from ../../../docs/manual/highlevel-playback.xml ***/
+/*** block c  from ../../../docs/manual/highlevel-components.xml ***/
 gint
 main (gint   argc,
       gchar *argv[])

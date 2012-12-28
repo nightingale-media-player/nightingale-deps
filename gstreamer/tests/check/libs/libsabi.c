@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) 2012 Wim Taymans <wim.taymans@gmail.com>
+ * Copyright (C) 2005 Wim Taymans <wim@fluendo.com>
  *
  * libsabi.c: Unit test for ABI compatibility
  *
@@ -23,22 +23,13 @@
 #include <gst/check/gstcheck.h>
 
 #include <gst/base/gstadapter.h>
-#include <gst/base/gstbaseparse.h>
 #include <gst/base/gstbasesink.h>
 #include <gst/base/gstbasesrc.h>
 #include <gst/base/gstbasetransform.h>
-#include <gst/base/gstbitreader.h>
-#include <gst/base/gstbytereader.h>
-#include <gst/base/gstbytewriter.h>
 #include <gst/base/gstcollectpads.h>
 #include <gst/base/gstpushsrc.h>
 #include <gst/base/gsttypefindhelper.h>
-#include <gst/controller/gstinterpolationcontrolsource.h>
-#include <gst/controller/gstlfocontrolsource.h>
-#include <gst/controller/gsttriggercontrolsource.h>
-#include <gst/controller/gstargbcontrolbinding.h>
-#include <gst/controller/gstdirectcontrolbinding.h>
-#include <gst/controller/gsttimedvaluecontrolsource.h>
+#include <gst/controller/gstcontroller.h>
 #include <gst/net/gstnet.h>
 #include <gst/net/gstnetclientclock.h>
 #include <gst/net/gstnettimepacket.h>
@@ -68,14 +59,9 @@
 #include "struct_sparc.h"
 #define HAVE_ABI_SIZES TRUE
 #else
-#ifdef HAVE_CPU_ARM
-#include "struct_arm.h"
-#define HAVE_ABI_SIZES TRUE
-#else
 /* in case someone wants to generate a new arch */
 #include "struct_i386.h"
 #define HAVE_ABI_SIZES FALSE
-#endif
 #endif
 #endif
 #endif

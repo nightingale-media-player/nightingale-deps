@@ -22,7 +22,6 @@
 
 #include "gst_private.h"
 #include "gstquark.h"
-#include "gstelementmetadata.h"
 
 /* These strings must match order and number declared in the GstQuarkId
  * enum in gstquark.h! */
@@ -34,39 +33,21 @@ static const gchar *_quark_strings[] = {
   "gerror", "debug", "buffer-percent", "buffering-mode",
   "avg-in-rate", "avg-out-rate", "buffering-left",
   "estimated-total", "old-state", "new-state", "pending-state",
-  "clock", "ready", "position", "reset-time", "live", "min-latency",
+  "clock", "ready", "position", "new-base-time", "live", "min-latency",
   "max-latency", "busy", "type", "owner", "update", "applied-rate",
   "start", "stop", "minsize", "maxsize", "async", "proportion",
   "diff", "timestamp", "flags", "cur-type", "cur", "stop-type",
-  "latency", "uri", "object", "taglist", "GstEventSegment",
+  "latency", "uri", "object", "taglist", "GstEventNewsegment",
   "GstEventBufferSize", "GstEventQOS", "GstEventSeek", "GstEventLatency",
   "GstMessageError", "GstMessageWarning", "GstMessageInfo",
-  "GstMessageBuffering", "GstMessageStateChanged", "GstMessageClockProvide",
+  "GstMessageBuffering", "GstMessageState", "GstMessageClockProvide",
   "GstMessageClockLost", "GstMessageNewClock", "GstMessageStructureChange",
-  "GstMessageSegmentStart", "GstMessageSegmentDone",
-  "GstMessageDurationChanged",
-  "GstMessageAsyncDone", "GstMessageRequestState", "GstMessageStreamStatus",
+  "GstMessageSegmentStart", "GstMessageSegmentDone", "GstMessageDuration",
+  "GstMessageAsyncStart", "GstMessageRequestState", "GstMessageStreamStatus",
   "GstQueryPosition", "GstQueryDuration", "GstQueryLatency", "GstQueryConvert",
   "GstQuerySegment", "GstQuerySeeking", "GstQueryFormats", "GstQueryBuffering",
   "GstQueryURI", "GstEventStep", "GstMessageStepDone", "amount", "flush",
-  "intermediate", "GstMessageStepStart", "active", "eos", "sink-message",
-  "message", "GstMessageQOS", "running-time", "stream-time", "jitter",
-  "quality", "processed", "dropped", "buffering-ranges", "GstMessageProgress",
-  "code", "text", "percent", "timeout", "GstBufferPoolConfig", "caps", "size",
-  "min-buffers", "max-buffers", "prefix", "padding", "align", "time",
-  "GstQueryAllocation", "need-pool", "meta", "pool", "GstEventCaps",
-  "GstEventReconfigure", "segment", "GstQueryScheduling", "pull-mode",
-  "allocator", "GstEventFlushStop", "options", "GstQueryAcceptCaps",
-  "result", "GstQueryCaps", "filter", "modes", "GstEventStreamConfig",
-  "setup-data", "stream-headers", "GstEventGap", "GstQueryDrain", "params",
-  "GstEventTocSelect", "uid", "GstQueryToc", GST_ELEMENT_METADATA_LONGNAME,
-  GST_ELEMENT_METADATA_KLASS, GST_ELEMENT_METADATA_DESCRIPTION,
-  GST_ELEMENT_METADATA_AUTHOR, "toc", "toc-entry", "updated", "extend-uid",
-  "uid", "tags", "sub-entries", "info", "GstMessageTag", "GstEventTag",
-  "GstMessageResetTime",
-  "GstMessageToc", "GstEventTocGlobal", "GstEventTocCurrent",
-  "GstEventSegmentDone",
-  "GstEventStreamStart", "stream-id"
+  "intermediate", "GstMessageStepStart", "active", "eos"
 };
 
 GQuark _priv_gst_quark_table[GST_QUARK_MAX];

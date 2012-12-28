@@ -37,7 +37,7 @@
 #include "gstformat.h"
 #include "gstenumtypes.h"
 
-static GMutex mutex;
+static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
 static GList *_gst_formats = NULL;
 static GHashTable *_nick_to_format = NULL;
 static GHashTable *_format_to_nick = NULL;
@@ -49,15 +49,15 @@ static GstFormatDefinition standard_definitions[] = {
   {GST_FORMAT_TIME, "time", "Time", 0},
   {GST_FORMAT_BUFFERS, "buffers", "Buffers", 0},
   {GST_FORMAT_PERCENT, "percent", "Percent", 0},
-  {GST_FORMAT_UNDEFINED, NULL, NULL, 0}
+  {0, NULL, NULL, 0}
 };
 
 void
-_priv_gst_format_initialize (void)
+_gst_format_initialize (void)
 {
   GstFormatDefinition *standards = standard_definitions;
 
-  g_mutex_lock (&mutex);
+  g_static_mutex_lock (&mutex);
   if (_nick_to_format == NULL) {
     _nick_to_format = g_hash_table_new (g_str_hash, g_str_equal);
     _format_to_nick = g_hash_table_new (NULL, NULL);
@@ -65,8 +65,7 @@ _priv_gst_format_initialize (void)
 
   while (standards->nick) {
     standards->quark = g_quark_from_static_string (standards->nick);
-    g_hash_table_insert (_nick_to_format, (gpointer) standards->nick,
-        standards);
+    g_hash_table_insert (_nick_to_format, standards->nick, standards);
     g_hash_table_insert (_format_to_nick, GINT_TO_POINTER (standards->value),
         standards);
 
@@ -76,7 +75,7 @@ _priv_gst_format_initialize (void)
   }
   /* getting the type registers the enum */
   g_type_class_ref (gst_format_get_type ());
-  g_mutex_unlock (&mutex);
+  g_static_mutex_unlock (&mutex);
 }
 
 /**
@@ -144,26 +143,26 @@ gst_format_register (const gchar * nick, const gchar * description)
   GstFormatDefinition *format;
   GstFormat query;
 
-  g_return_val_if_fail (nick != NULL, GST_FORMAT_UNDEFINED);
-  g_return_val_if_fail (description != NULL, GST_FORMAT_UNDEFINED);
+  g_return_val_if_fail (nick != NULL, 0);
+  g_return_val_if_fail (description != NULL, 0);
 
   query = gst_format_get_by_nick (nick);
   if (query != GST_FORMAT_UNDEFINED)
     return query;
 
-  g_mutex_lock (&mutex);
-  format = g_slice_new (GstFormatDefinition);
-  format->value = (GstFormat) _n_values;
+  g_static_mutex_lock (&mutex);
+  format = g_new0 (GstFormatDefinition, 1);
+  format->value = _n_values;
   format->nick = g_strdup (nick);
   format->description = g_strdup (description);
   format->quark = g_quark_from_static_string (format->nick);
 
-  g_hash_table_insert (_nick_to_format, (gpointer) format->nick, format);
+  g_hash_table_insert (_nick_to_format, format->nick, format);
   g_hash_table_insert (_format_to_nick, GINT_TO_POINTER (format->value),
       format);
   _gst_formats = g_list_append (_gst_formats, format);
   _n_values++;
-  g_mutex_unlock (&mutex);
+  g_static_mutex_unlock (&mutex);
 
   return format->value;
 }
@@ -182,11 +181,11 @@ gst_format_get_by_nick (const gchar * nick)
 {
   GstFormatDefinition *format;
 
-  g_return_val_if_fail (nick != NULL, GST_FORMAT_UNDEFINED);
+  g_return_val_if_fail (nick != NULL, 0);
 
-  g_mutex_lock (&mutex);
+  g_static_mutex_lock (&mutex);
   format = g_hash_table_lookup (_nick_to_format, nick);
-  g_mutex_unlock (&mutex);
+  g_static_mutex_unlock (&mutex);
 
   if (format != NULL)
     return format->value;
@@ -196,7 +195,7 @@ gst_format_get_by_nick (const gchar * nick)
 
 /**
  * gst_formats_contains:
- * @formats: (array zero-terminated=1): The format array to search
+ * @formats: The format array to search
  * @format: the format to find
  *
  * See if the given format is inside the format array.
@@ -234,9 +233,9 @@ gst_format_get_details (GstFormat format)
 {
   const GstFormatDefinition *result;
 
-  g_mutex_lock (&mutex);
+  g_static_mutex_lock (&mutex);
   result = g_hash_table_lookup (_format_to_nick, GINT_TO_POINTER (format));
-  g_mutex_unlock (&mutex);
+  g_static_mutex_unlock (&mutex);
 
   return result;
 }
@@ -247,18 +246,19 @@ gst_format_get_details (GstFormat format)
  * Iterate all the registered formats. The format definition is read
  * only.
  *
- * Returns: (transfer full): a GstIterator of #GstFormatDefinition.
+ * Returns: A GstIterator of #GstFormatDefinition.
  */
 GstIterator *
 gst_format_iterate_definitions (void)
 {
   GstIterator *result;
 
-  g_mutex_lock (&mutex);
+  g_static_mutex_lock (&mutex);
   /* FIXME: register a boxed type for GstFormatDefinition */
   result = gst_iterator_new_list (G_TYPE_POINTER,
-      &mutex, &_n_values, &_gst_formats, NULL, NULL);
-  g_mutex_unlock (&mutex);
+      g_static_mutex_get_mutex (&mutex), &_n_values, &_gst_formats,
+      NULL, NULL, NULL);
+  g_static_mutex_unlock (&mutex);
 
   return result;
 }
