@@ -1,19 +1,21 @@
 /* intl-compat.c - Stub functions to call gettext functions from GNU gettext
    Library.
-   Copyright (C) 1995, 2000-2003, 2005 Free Software Foundation, Inc.
+   Copyright (C) 1995, 2000-2003 Software Foundation, Inc.
 
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU Lesser General Public License as published by
-   the Free Software Foundation; either version 2.1 of the License, or
-   (at your option) any later version.
+   This program is free software; you can redistribute it and/or modify it
+   under the terms of the GNU Library General Public License as published
+   by the Free Software Foundation; either version 2, or (at your option)
+   any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU Lesser General Public License for more details.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Library General Public License for more details.
 
-   You should have received a copy of the GNU Lesser General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   You should have received a copy of the GNU Library General Public
+   License along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+   USA.  */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -47,9 +49,7 @@
 /* When building a DLL, we must export some functions.  Note that because
    the functions are only defined for binary backward compatibility, we
    don't need to use __declspec(dllimport) in any case.  */
-#if HAVE_VISIBILITY && BUILDING_DLL
-# define DLL_EXPORTED __attribute__((__visibility__("default")))
-#elif defined _MSC_VER && BUILDING_DLL
+#if defined _MSC_VER && BUILDING_DLL
 # define DLL_EXPORTED __declspec(dllexport)
 #else
 # define DLL_EXPORTED
@@ -91,7 +91,7 @@ ngettext (const char *msgid1, const char *msgid2, unsigned long int n)
 DLL_EXPORTED
 char *
 dngettext (const char *domainname,
-           const char *msgid1, const char *msgid2, unsigned long int n)
+	   const char *msgid1, const char *msgid2, unsigned long int n)
 {
   return libintl_dngettext (domainname, msgid1, msgid2, n);
 }
@@ -100,8 +100,8 @@ dngettext (const char *domainname,
 DLL_EXPORTED
 char *
 dcngettext (const char *domainname,
-            const char *msgid1, const char *msgid2, unsigned long int n,
-            int category)
+	    const char *msgid1, const char *msgid2, unsigned long int n,
+	    int category)
 {
   return libintl_dcngettext (domainname, msgid1, msgid2, n, category);
 }

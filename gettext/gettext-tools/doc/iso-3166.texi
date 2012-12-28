@@ -28,8 +28,6 @@ Austria.
 Australia.
 @item AW
 Aruba.
-@item AX
-Aaland Islands.
 @item AZ
 Azerbaijan.
 @item BA
@@ -77,7 +75,7 @@ Cocos (Keeling) Islands.
 @item CD
 Congo (Dem. Rep.).
 @item CF
-Central African Republic.
+Central African Rep..
 @item CG
 Congo (Rep.).
 @item CH
@@ -96,6 +94,8 @@ China.
 Colombia.
 @item CR
 Costa Rica.
+@item CS
+Serbia and Montenegro.
 @item CU
 Cuba.
 @item CV
@@ -147,15 +147,13 @@ France.
 @item GA
 Gabon.
 @item GB
-Britain (United Kingdom).
+Britain (UK).
 @item GD
 Grenada.
 @item GE
 Georgia.
 @item GF
 French Guiana.
-@item GG
-Guernsey.
 @item GH
 Ghana.
 @item GI
@@ -200,8 +198,6 @@ Indonesia.
 Ireland.
 @item IL
 Israel.
-@item IM
-Isle of Man.
 @item IN
 India.
 @item IO
@@ -214,8 +210,6 @@ Iran.
 Iceland.
 @item IT
 Italy.
-@item JE
-Jersey.
 @item JM
 Jamaica.
 @item JO
@@ -272,8 +266,6 @@ Morocco.
 Monaco.
 @item MD
 Moldova.
-@item ME
-Montenegro.
 @item MG
 Madagascar.
 @item MH
@@ -370,8 +362,6 @@ Qatar.
 Reunion.
 @item RO
 Romania.
-@item RS
-Serbia.
 @item RU
 Russia.
 @item RW
@@ -461,7 +451,7 @@ Uzbekistan.
 @item VA
 Vatican City.
 @item VC
-St Vincent and the Grenadines.
+St Vincent.
 @item VE
 Venezuela.
 @item VG

@@ -12,18 +12,7 @@ tmpfiles=""
 trap 'rm -fr $tmpfiles' 1 2 3 15
 
 # Test whether we can build and test C# programs.
-test "${CSHARP_CHOICE}" != no || {
-  echo "Skipping test: configured with --disable-csharp"
-  exit 77
-}
-test "${BUILDCSHARP}" = yes || {
-  echo "Skipping test: C# compiler not found"
-  exit 77
-}
-test "${TESTCSHARP}" = yes || {
-  echo "Skipping test: C# engine not found"
-  exit 77
-}
+test "${TESTCSHARP}" = yes || exit 77
 
 tmpfiles="$tmpfiles program.cs"
 cat <<\EOF > program.cs
@@ -43,22 +32,17 @@ class Program {
     Console.WriteLine(catalog.GetString("'Your command, please?', asked the waiter."));
     Console.WriteLine(String.Format(catalog.GetPluralString("a piece of cake","{0} pieces of cake",n), n));
     Console.WriteLine(String.Format(catalog.GetString("{0} is replaced by {1}."), "FF", "EUR"));
-    Console.WriteLine(String.Format(catalog.GetParticularPluralString("++","a piece of cake","{0} pieces of cake",n), n));
-    Console.WriteLine(String.Format(catalog.GetParticularString("++","{0} is replaced by {1}."), "FF", "EUR"));
   }
 }
 EOF
 
 tmpfiles="$tmpfiles program.exe"
-: ${CSHARPCOMP="/bin/sh ../csharpcomp.sh"}
+: ${CSHARPCOMP="/bin/sh ../lib/csharpcomp.sh"}
 ${CSHARPCOMP} -o program.exe -L ../../gettext-runtime/intl-csharp -l GNU.Gettext program.cs || exit 1
 
-tmpfiles="$tmpfiles prog.tmp prog.pot"
+tmpfiles="$tmpfiles prog.pot"
 : ${XGETTEXT=xgettext}
-${XGETTEXT} -o prog.tmp --omit-header --no-location program.cs
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < prog.tmp > prog.pot
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+${XGETTEXT} -o prog.pot --omit-header --no-location program.cs
 
 tmpfiles="$tmpfiles prog.ok"
 cat <<EOF > prog.ok
@@ -72,18 +56,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, csharp-format
-msgid "{0} is replaced by {1}."
-msgstr ""
-
-#, csharp-format
-msgctxt "++"
-msgid "a piece of cake"
-msgid_plural "{0} pieces of cake"
-msgstr[0] ""
-msgstr[1] ""
-
-#, csharp-format
-msgctxt "++"
 msgid "{0} is replaced by {1}."
 msgstr ""
 EOF
@@ -112,28 +84,11 @@ msgstr[1] "{0} morceaux de gateau"
 #, csharp-format
 msgid "{0} is replaced by {1}."
 msgstr "{1} remplace {0}."
-
-# Euphemistic formulation.
-#, csharp-format
-msgctxt "++"
-msgid "a piece of cake"
-msgid_plural "{0} pieces of cake"
-msgstr[0] "un morceau de gateau succulent"
-msgstr[1] "{0} morceaux de gateau succulent"
-
-# Euphemistic formulation.
-#, csharp-format
-msgctxt "++"
-msgid "{0} is replaced by {1}."
-msgstr "Le nouveau {1} remplace le vieux {0}."
 EOF
 
-tmpfiles="$tmpfiles fr.po.tmp fr.po.new"
+tmpfiles="$tmpfiles fr.po.new"
 : ${MSGMERGE=msgmerge}
-${MSGMERGE} -q -o fr.po.tmp fr.po prog.pot
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < fr.po.tmp > fr.po.new
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+${MSGMERGE} -q -o fr.po.new fr.po prog.pot
 
 : ${DIFF=diff}
 ${DIFF} fr.po fr.po.new || exit 1
@@ -163,11 +118,6 @@ if test $LOCALE_FR_UTF8 != none; then
   esac
 fi
 if test $LOCALE_FR = none && test $LOCALE_FR_UTF8 = none; then
-  if test -f /usr/bin/localedef; then
-    echo "Skipping test: no french locale is installed"
-  else
-    echo "Skipping test: no french locale is supported"
-  fi
   rm -fr $tmpfiles; exit 77
 fi
 
@@ -177,20 +127,16 @@ cat <<\EOF > prog.ok
 «Votre commande, s'il vous plait», dit le garçon.
 2 morceaux de gateau
 EUR remplace FF.
-2 morceaux de gateau succulent
-Le nouveau EUR remplace le vieux FF.
 EOF
 cat <<\EOF > prog.oku
 Â«Votre commande, s'il vous plaitÂ», dit le garÃ§on.
 2 morceaux de gateau
 EUR remplace FF.
-2 morceaux de gateau succulent
-Le nouveau EUR remplace le vieux FF.
 EOF
 
 : ${LOCALE_FR=fr_FR}
 : ${LOCALE_FR_UTF8=fr_FR.UTF-8}
-: ${CSHARPEXEC="/bin/sh ../csharpexec.sh"}
+: ${CSHARPEXEC="/bin/sh ../lib/csharpexec.sh"}
 if test $LOCALE_FR != none; then
   LANGUAGE= LC_ALL=$LOCALE_FR ${CSHARPEXEC} -L ../../gettext-runtime/intl-csharp program.exe 2 > prog.out || exit 1
   ${DIFF} prog.ok prog.out || exit 1

@@ -1,4 +1,5 @@
 dnl Example for use of GNU gettext.
+dnl Copyright (C) 2003 Free Software Foundation, Inc.
 dnl This file is in the public domain.
 dnl
 dnl Configuration file - processed by autoconf.
@@ -21,10 +22,8 @@ AC_SUBST(BUILDJAVAEXE)
 AM_CONDITIONAL([USEJEXE], [test $BUILDJAVAEXE = yes])
 AC_PROG_RANLIB
 
-dnl Check whether we can execute Java programs.
-gt_JAVAEXEC([TestAWT], [$srcdir/m4])
-dnl Check whether we can build Java programs.
-gt_JAVACOMP([1.3])
+dnl Check whether we can build Java programs at all.
+gt_JAVACOMP
 AC_CHECK_PROG(JAR, jar, jar)
 if test -n "$HAVE_JAVACOMP" && test -n "$JAR"; then
   BUILDJAVA=yes
@@ -32,6 +31,9 @@ else
   BUILDJAVA=no
 fi
 AC_SUBST(BUILDJAVA)
+
+dnl Check whether we can execute Java programs.
+gt_JAVAEXEC([TestAWT], [$srcdir/m4])
 if test -n "$HAVE_JAVAEXEC" && test $BUILDJAVA = yes; then
   TESTJAVA=yes
 else

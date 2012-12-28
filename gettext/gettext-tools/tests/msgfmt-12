@@ -27,11 +27,9 @@ tmpfiles="$tmpfiles mf-12.mo"
 ${MSGFMT} -o mf-12.mo mf-12.po
 test $? = 0 || { rm -fr $tmpfiles; exit 1; }
 
-tmpfiles="$tmpfiles mf-12.tmp mf-12.out"
+tmpfiles="$tmpfiles mf-12.out"
 : ${MSGUNFMT=msgunfmt}
-${MSGUNFMT} -o mf-12.tmp mf-12.mo
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < mf-12.tmp > mf-12.out
+${MSGUNFMT} mf-12.mo -o mf-12.out
 test $? = 0 || { rm -fr $tmpfiles; exit 1; }
 
 tmpfiles="$tmpfiles mf-12.ok"
@@ -42,11 +40,9 @@ msgstr "Content-Type: text/plain; charset=ISO-8859-1\n"
 msgid "<PRIXFAST16> errors"
 msgstr "<PRIXFAST16> Fehler"
 
-#, c-format
 msgid "File size is: %<PRId64>"
 msgstr "Dateigröße ist: %<PRId64>"
 
-#, c-format
 msgid "File age is %10<PRIdMAX> microseconds"
 msgstr "Datei ist %10<PRIdMAX> Mikrosekunden alt."
 EOF

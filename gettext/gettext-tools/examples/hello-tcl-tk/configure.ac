@@ -1,4 +1,5 @@
 dnl Example for use of GNU gettext.
+dnl Copyright (C) 2003 Free Software Foundation, Inc.
 dnl This file is in the public domain.
 dnl
 dnl Configuration file - processed by autoconf.

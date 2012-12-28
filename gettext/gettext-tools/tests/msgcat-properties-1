@@ -18,14 +18,12 @@ cat <<\EOF > mcat-p-1.in2
 Congratulations\!=Herzlichen Gl\u00fcckwunsch\!
 EOF
 
-tmpfiles="$tmpfiles mcat-p-1.tmp mcat-p-1.out"
-rm -f mcat-p-1.tmp
+tmpfiles="$tmpfiles mcat-p-1.out"
+rm -f mcat-p-1.out
 
 : ${MSGCAT=msgcat}
 ${MSGCAT} --use-first --more-than=0 --properties-input --properties-output \
-    -o mcat-p-1.tmp mcat-p-1.in1 mcat-p-1.in2
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < mcat-p-1.tmp > mcat-p-1.out
+    mcat-p-1.in1 mcat-p-1.in2 -o mcat-p-1.out
 test $? = 0 || { rm -fr $tmpfiles; exit 1; }
 
 tmpfiles="$tmpfiles mcat-p-1.ok"

@@ -9,23 +9,20 @@ trap 'rm -fr $tmpfiles' 1 2 3 15
 
 tmpfiles="$tmpfiles prog.php"
 cat <<\EOF > prog.php
-<?php
+<?
   setlocale (LC_ALL, "");
   textdomain ("prog");
   bindtextdomain ("prog", ".");
   echo _("'Your command, please?', asked the waiter.");
   echo "\n";
-  printf(_("%s is replaced by %s."), "FF", "EUR");
+  echo printf(_("%s is replaced by %s."), "FF", "EUR");
   echo "\n";
 ?>
 EOF
 
-tmpfiles="$tmpfiles prog.tmp prog.pot"
+tmpfiles="$tmpfiles prog.pot"
 : ${XGETTEXT=xgettext}
-${XGETTEXT} -o prog.tmp --omit-header --no-location prog.php
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < prog.tmp > prog.pot
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+${XGETTEXT} -o prog.pot --omit-header --no-location prog.php
 
 tmpfiles="$tmpfiles prog.ok"
 cat <<EOF > prog.ok
@@ -54,12 +51,9 @@ msgid "%s is replaced by %s."
 msgstr "%2$s remplace %1$s."
 EOF
 
-tmpfiles="$tmpfiles fr.po.tmp fr.po.new"
+tmpfiles="$tmpfiles fr.po.new"
 : ${MSGMERGE=msgmerge}
-${MSGMERGE} -q -o fr.po.tmp fr.po prog.pot
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < fr.po.tmp > fr.po.new
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+${MSGMERGE} -q -o fr.po.new fr.po prog.pot
 
 : ${DIFF=diff}
 ${DIFF} fr.po fr.po.new || exit 1
@@ -71,18 +65,11 @@ test -d fr/LC_MESSAGES || mkdir fr/LC_MESSAGES
 : ${MSGFMT=msgfmt}
 ${MSGFMT} -o fr/LC_MESSAGES/prog.mo fr.po
 
-# Test for presence of php version 4.0 or newer with gettext support.
-(php -v) >/dev/null 2>/dev/null
-test $? -le 1 \
-  || { echo "Skipping test: php not found"; rm -fr $tmpfiles; exit 77; }
-case `php -v | sed -n -e 1p | sed -e 's/^[^0-9]*//'` in
+# Test for presence of php version 4.0 or newer.
+case `(php -v) 2>/dev/null` in
   [4-9].*) ;;
-  *) echo "Skipping test: php version too old"; rm -fr $tmpfiles; exit 77;;
+  *) rm -fr $tmpfiles; exit 77;;
 esac
-{ php -m | grep '^gettext$' >/dev/null; } \
-  || { echo "Skipping test: php was built without gettext support"
-       rm -fr $tmpfiles; exit 77
-     }
 
 # Test which of the fr_FR locales are installed.
 : ${LOCALE_FR=fr_FR}
@@ -104,11 +91,6 @@ if test $LOCALE_FR_UTF8 != none; then
   esac
 fi
 if test $LOCALE_FR = none && test $LOCALE_FR_UTF8 = none; then
-  if test -f /usr/bin/localedef; then
-    echo "Skipping test: no french locale is installed"
-  else
-    echo "Skipping test: no french locale is supported"
-  fi
   rm -fr $tmpfiles; exit 77
 fi
 

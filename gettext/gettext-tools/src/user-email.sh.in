@@ -1,12 +1,12 @@
 #!/bin/sh
 # Prints the user's email address, with confirmation from the user.
 #
-# Copyright (C) 2001-2003, 2005 Free Software Foundation, Inc.
+# Copyright (C) 2001-2003 Free Software Foundation, Inc.
 #
-# This program is free software: you can redistribute it and/or modify
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or
-# (at your option) any later version.
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,12 +14,12 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 # Prerequisites for using @libdir@ and @localedir@.
 prefix="@prefix@"
 exec_prefix="@exec_prefix@"
-datarootdir="@datarootdir@"
 datadir="@datadir@"
 # Set variables libdir, localedir.
 libdir="@libdir@"
@@ -94,9 +94,6 @@ files=""
 
 # ----------------------- BEGIN MAILER SPECIFIC CODE -----------------------
 
-# Mozilla Thunderbird addresses
-files="$files .thunderbird/*/prefs.js"
-
 # Mozilla addresses
 files="$files .mozilla/*/prefs.js"
 
@@ -116,10 +113,7 @@ files="$files .kde2/share/config/emaildefaults"
 # KDE kmail addresses
 files="$files .kde2/share/config/kmailrc"
 
-# GNOME evolution 2 addresses
-files="$files .gconf/apps/evolution/mail/%gconf.xml"
-
-# GNOME evolution 1 addresses
+# GNOME evolution addresses
 files="$files evolution/config.xmldb"
 
 # GNOME balsa addresses
@@ -165,8 +159,8 @@ if test -n "$files"; then
 
 # ----------------------- BEGIN MAILER SPECIFIC CODE -----------------------
 
-      # Mozilla and Mozilla Thunderbird addresses
-      .mozilla/*/prefs.js | .thunderbird/*/prefs.js)
+      # Mozilla addresses
+      .mozilla/*/prefs.js)
         addresses="$addresses "`grep -h '^user_pref("mail\.identity\..*\.useremail", ".*");$' $file 2>/dev/null | sed -e 's/^user_pref("mail\.identity\..*\.useremail", "\(.*\)");$/\1/'`
         ;;
 
@@ -202,13 +196,7 @@ if test -n "$files"; then
         addresses="$addresses "`grep -h '^Email Address=' $file 2>/dev/null | sed -e 's/^Email Address=//'`
         ;;
 
-      # GNOME evolution 2 addresses
-      .gconf/apps/evolution/mail/%gconf.xml)
-        sedexpr0='s,^.*&lt;addr-spec&gt;\(.*\)&lt;/addr-spec&gt;.*$,\1,p'
-        addresses="$addresses "`sed -n -e "$sedexpr0" < $file`
-        ;;
-
-      # GNOME evolution 1 addresses
+      # GNOME evolution addresses
       evolution/config.xmldb)
         sedexpr0='s/^.*<entry name="identity_address_[0-9]*" type="string" value="\([^"]*\)".*$/\1/p'
         sedexpr1='s/\(..\)/\\x\1/g'
@@ -235,15 +223,7 @@ if test -n "$files"; then
 
       # mutt addresses
       .muttrc)
-        mutt_addresses=`grep -h '^set from="[^"]*"[ 	]*$' $file 2>/dev/null | sed -e 's/^set from="\([^"]*\)"[ 	]*$/\1/'`
-        if test -n "$mutt_addresses"; then
-          addresses="$addresses $mutt_addresses"
-        else
-          # mutt uses $EMAIL as fallback.
-          if test -n "$EMAIL"; then
-            addresses="$addresses $EMAIL"
-          fi
-        fi
+        addresses="$addresses "`grep -h '^set from="[^"]*"[ 	]*$' $file 2>/dev/null | sed -e 's/^set from="\([^"]*\)"[ 	]*$/\1/'`
         ;;
 
       # pine addresses

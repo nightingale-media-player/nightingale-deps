@@ -24,12 +24,9 @@ cat <<\EOF > prog.scm
 (format #t "~A~%" (format #f (gettext "~A is replaced by ~A.") "FF" "EUR"))
 EOF
 
-tmpfiles="$tmpfiles prog.tmp prog.pot"
+tmpfiles="$tmpfiles prog.pot"
 : ${XGETTEXT=xgettext}
-${XGETTEXT} -o prog.tmp --omit-header --no-location prog.scm
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < prog.tmp > prog.pot
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+${XGETTEXT} -o prog.pot --omit-header --no-location prog.scm
 
 tmpfiles="$tmpfiles prog.ok"
 cat <<EOF > prog.ok
@@ -73,12 +70,9 @@ msgid "~A is replaced by ~A."
 msgstr "~1@*~A remplace ~0@*~A."
 EOF
 
-tmpfiles="$tmpfiles fr.po.tmp fr.po.new"
+tmpfiles="$tmpfiles fr.po.new"
 : ${MSGMERGE=msgmerge}
-${MSGMERGE} -q -o fr.po.tmp fr.po prog.pot
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < fr.po.tmp > fr.po.new
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+${MSGMERGE} -q -o fr.po.new fr.po prog.pot
 
 : ${DIFF=diff}
 ${DIFF} fr.po fr.po.new || exit 1
@@ -92,10 +86,10 @@ ${MSGFMT} -o fr/LC_MESSAGES/prog.mo fr.po
 
 # Test for presence of guile version 1.7 or newer.
 (guile --version) >/dev/null 2>/dev/null \
-  || { echo "Skipping test: guile not found"; rm -fr $tmpfiles; exit 77; }
+  || { rm -fr $tmpfiles; exit 77; }
 case `guile --version | sed -e 1q | sed -e 's/^[^0-9]*//'` in
   0.* | 1.[0-6] | 1.[0-6].* )
-    echo "Skipping test: guile version too old"; rm -fr $tmpfiles; exit 77;;
+    rm -fr $tmpfiles; exit 77;;
 esac
 
 # Test which of the fr_FR locales are installed.
@@ -118,15 +112,10 @@ if test $LOCALE_FR_UTF8 != none; then
   esac
 fi
 if test $LOCALE_FR = none && test $LOCALE_FR_UTF8 = none; then
-  if test -f /usr/bin/localedef; then
-    echo "Skipping test: no french locale is installed"
-  else
-    echo "Skipping test: no french locale is supported"
-  fi
   rm -fr $tmpfiles; exit 77
 fi
 
-tmpfiles="$tmpfiles prog.ok prog.oku prog.out prog.err"
+tmpfiles="$tmpfiles prog.ok prog.oku prog.out"
 : ${DIFF=diff}
 cat <<\EOF > prog.ok
 «Votre commande, s'il vous plait», dit le garçon.
@@ -142,13 +131,11 @@ EOF
 : ${LOCALE_FR=fr_FR}
 : ${LOCALE_FR_UTF8=fr_FR.UTF-8}
 if test $LOCALE_FR != none; then
-  LANGUAGE= LC_ALL=$LOCALE_FR guile -s prog.scm 2 > prog.out 2>prog.err || { cat prog.err 1>&2; exit 1; }
-  grep -v '^;;;' prog.err 1>&2
+  LANGUAGE= LC_ALL=$LOCALE_FR guile -s prog.scm 2 > prog.out || exit 1
   ${DIFF} prog.ok prog.out || exit 1
 fi
 if test $LOCALE_FR_UTF8 != none; then
-  LANGUAGE= LC_ALL=$LOCALE_FR_UTF8 guile -s prog.scm 2 > prog.out 2>prog.err || { cat prog.err 1>&2; exit 1; }
-  grep -v '^;;;' prog.err 1>&2
+  LANGUAGE= LC_ALL=$LOCALE_FR_UTF8 guile -s prog.scm 2 > prog.out || exit 1
   ${DIFF} prog.oku prog.out || exit 1
 fi
 

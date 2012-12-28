@@ -1,11 +1,11 @@
 /* Writing Java .properties files.
-   Copyright (C) 2003, 2005-2009 Free Software Foundation, Inc.
+   Copyright (C) 2003 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2003.
 
-   This program is free software: you can redistribute it and/or modify
+   This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +13,8 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program; if not, write to the Free Software Foundation,
+   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -33,8 +34,7 @@
 #include "msgl-ascii.h"
 #include "msgl-iconv.h"
 #include "po-charset.h"
-#include "unistr.h"
-#include "ostream.h"
+#include "utf8-ucs4.h"
 #include "write-po.h"
 #include "xalloc.h"
 
@@ -70,13 +70,13 @@ conv_to_java (const char *string)
 
     while (str < str_limit)
       {
-        ucs4_t uc;
-        str += u8_mbtouc (&uc, (const unsigned char *) str, str_limit - str);
-        length += (uc <= 0x007f ? 1 : uc < 0x10000 ? 6 : 12);
+	unsigned int uc;
+	str += u8_mbtouc (&uc, (const unsigned char *) str, str_limit - str);
+	length += (uc <= 0x007f ? 1 : uc < 0x10000 ? 6 : 12);
       }
   }
 
-  result = XNMALLOC (length + 1, char);
+  result = (char *) xmalloc (length + 1);
 
   {
     char *newstr = result;
@@ -85,36 +85,36 @@ conv_to_java (const char *string)
 
     while (str < str_limit)
       {
-        ucs4_t uc;
-        str += u8_mbtouc (&uc, (const unsigned char *) str, str_limit - str);
-        if (uc <= 0x007f)
-          /* ASCII characters can be output literally.
-             We could treat non-ASCII ISO-8859-1 characters (0x0080..0x00FF)
-             the same way, but there is no point in doing this; Sun's
-             nativetoascii doesn't do it either.  */
-          *newstr++ = uc;
-        else if (uc < 0x10000)
-          {
-            /* Single UCS-2 'char'  */
-            sprintf (newstr, "\\u%c%c%c%c",
-                     hexdigit[(uc >> 12) & 0x0f], hexdigit[(uc >> 8) & 0x0f],
-                     hexdigit[(uc >> 4) & 0x0f], hexdigit[uc & 0x0f]);
-            newstr += 6;
-          }
-        else
-          {
-            /* UTF-16 surrogate: two 'char's.  */
-            ucs4_t uc1 = 0xd800 + ((uc - 0x10000) >> 10);
-            ucs4_t uc2 = 0xdc00 + ((uc - 0x10000) & 0x3ff);
-            sprintf (newstr, "\\u%c%c%c%c",
-                     hexdigit[(uc1 >> 12) & 0x0f], hexdigit[(uc1 >> 8) & 0x0f],
-                     hexdigit[(uc1 >> 4) & 0x0f], hexdigit[uc1 & 0x0f]);
-            newstr += 6;
-            sprintf (newstr, "\\u%c%c%c%c",
-                     hexdigit[(uc2 >> 12) & 0x0f], hexdigit[(uc2 >> 8) & 0x0f],
-                     hexdigit[(uc2 >> 4) & 0x0f], hexdigit[uc2 & 0x0f]);
-            newstr += 6;
-          }
+	unsigned int uc;
+	str += u8_mbtouc (&uc, (const unsigned char *) str, str_limit - str);
+	if (uc <= 0x007f)
+	  /* ASCII characters can be output literally.
+	     We could treat non-ASCII ISO-8859-1 characters (0x0080..0x00FF)
+	     the same way, but there is no point in doing this; Sun's
+	     nativetoascii doesn't do it either.  */
+	  *newstr++ = uc;
+	else if (uc < 0x10000)
+	  {
+	    /* Single UCS-2 'char'  */
+	    sprintf (newstr, "\\u%c%c%c%c",
+		     hexdigit[(uc >> 12) & 0x0f], hexdigit[(uc >> 8) & 0x0f],
+		     hexdigit[(uc >> 4) & 0x0f], hexdigit[uc & 0x0f]);
+	    newstr += 6;
+	  }
+	else
+	  {
+	    /* UTF-16 surrogate: two 'char's.  */
+	    unsigned int uc1 = 0xd800 + ((uc - 0x10000) >> 10);
+	    unsigned int uc2 = 0xdc00 + ((uc - 0x10000) & 0x3ff);
+	    sprintf (newstr, "\\u%c%c%c%c",
+		     hexdigit[(uc1 >> 12) & 0x0f], hexdigit[(uc1 >> 8) & 0x0f],
+		     hexdigit[(uc1 >> 4) & 0x0f], hexdigit[uc1 & 0x0f]);
+	    newstr += 6;
+	    sprintf (newstr, "\\u%c%c%c%c",
+		     hexdigit[(uc2 >> 12) & 0x0f], hexdigit[(uc2 >> 8) & 0x0f],
+		     hexdigit[(uc2 >> 4) & 0x0f], hexdigit[uc2 & 0x0f]);
+	    newstr += 6;
+	  }
       }
     *newstr = '\0';
   }
@@ -122,9 +122,9 @@ conv_to_java (const char *string)
   return result;
 }
 
-/* Writes a key or value to the stream, without newline.  */
+/* Writes a key or value to the file, without newline.  */
 static void
-write_escaped_string (ostream_t stream, const char *str, bool in_key)
+write_escaped_string (FILE *fp, const char *str, bool in_key)
 {
   static const char hexdigit[] = "0123456789abcdef";
   const char *str_limit = str + strlen (str);
@@ -132,114 +132,110 @@ write_escaped_string (ostream_t stream, const char *str, bool in_key)
 
   while (str < str_limit)
     {
-      ucs4_t uc;
+      unsigned int uc;
       str += u8_mbtouc (&uc, (const unsigned char *) str, str_limit - str);
       /* Whitespace must be escaped.  */
       if (uc == 0x0020 && (first || in_key))
-        ostream_write_str (stream, "\\ ");
+	{
+	  putc ('\\', fp);
+	  putc (' ', fp);
+	}
       else if (uc == 0x0009)
-        ostream_write_str (stream, "\\t");
+	{
+	  putc ('\\', fp);
+	  putc ('t', fp);
+	}
       else if (uc == 0x000a)
-        ostream_write_str (stream, "\\n");
+	{
+	  putc ('\\', fp);
+	  putc ('n', fp);
+	}
       else if (uc == 0x000d)
-        ostream_write_str (stream, "\\r");
+	{
+	  putc ('\\', fp);
+	  putc ('r', fp);
+	}
       else if (uc == 0x000c)
-        ostream_write_str (stream, "\\f");
+	{
+	  putc ('\\', fp);
+	  putc ('f', fp);
+	}
       else if (/* Backslash must be escaped.  */
-               uc == '\\'
-               /* Possible comment introducers must be escaped.  */
-               || uc == '#' || uc == '!'
-               /* Key terminators must be escaped.  */
-               || uc == '=' || uc == ':')
-        {
-          char seq[2];
-          seq[0] = '\\';
-          seq[1] = uc;
-          ostream_write_mem (stream, seq, 2);
-        }
+	       uc == '\\'
+	       /* Possible comment introducers must be escaped.  */
+	       || uc == '#' || uc == '!'
+	       /* Key terminators must be escaped.  */
+	       || uc == '=' || uc == ':')
+	{
+	  putc ('\\', fp);
+	  putc (uc, fp);
+	}
       else if (uc >= 0x0020 && uc <= 0x007e)
-        {
-          /* ASCII characters can be output literally.
-             We could treat non-ASCII ISO-8859-1 characters (0x0080..0x00FF)
-             the same way, but there is no point in doing this; Sun's
-             nativetoascii doesn't do it either.  */
-          char seq[1];
-          seq[0] = uc;
-          ostream_write_mem (stream, seq, 1);
-        }
+	{
+	  /* ASCII characters can be output literally.
+	     We could treat non-ASCII ISO-8859-1 characters (0x0080..0x00FF)
+	     the same way, but there is no point in doing this; Sun's
+	     nativetoascii doesn't do it either.  */
+	  putc (uc, fp);
+	}
       else if (uc < 0x10000)
-        {
-          /* Single UCS-2 'char'  */
-          char seq[6];
-          seq[0] = '\\';
-          seq[1] = 'u';
-          seq[2] = hexdigit[(uc >> 12) & 0x0f];
-          seq[3] = hexdigit[(uc >> 8) & 0x0f];
-          seq[4] = hexdigit[(uc >> 4) & 0x0f];
-          seq[5] = hexdigit[uc & 0x0f];
-          ostream_write_mem (stream, seq, 6);
-        }
+	{
+	  /* Single UCS-2 'char'  */
+	  fprintf (fp, "\\u%c%c%c%c",
+		   hexdigit[(uc >> 12) & 0x0f], hexdigit[(uc >> 8) & 0x0f],
+		   hexdigit[(uc >> 4) & 0x0f], hexdigit[uc & 0x0f]);
+	}
       else
-        {
-          /* UTF-16 surrogate: two 'char's.  */
-          ucs4_t uc1 = 0xd800 + ((uc - 0x10000) >> 10);
-          ucs4_t uc2 = 0xdc00 + ((uc - 0x10000) & 0x3ff);
-          char seq[6];
-          seq[0] = '\\';
-          seq[1] = 'u';
-          seq[2] = hexdigit[(uc1 >> 12) & 0x0f];
-          seq[3] = hexdigit[(uc1 >> 8) & 0x0f];
-          seq[4] = hexdigit[(uc1 >> 4) & 0x0f];
-          seq[5] = hexdigit[uc1 & 0x0f];
-          ostream_write_mem (stream, seq, 6);
-          seq[0] = '\\';
-          seq[1] = 'u';
-          seq[2] = hexdigit[(uc2 >> 12) & 0x0f];
-          seq[3] = hexdigit[(uc2 >> 8) & 0x0f];
-          seq[4] = hexdigit[(uc2 >> 4) & 0x0f];
-          seq[5] = hexdigit[uc2 & 0x0f];
-          ostream_write_mem (stream, seq, 6);
-        }
+	{
+	  /* UTF-16 surrogate: two 'char's.  */
+	  unsigned int uc1 = 0xd800 + ((uc - 0x10000) >> 10);
+	  unsigned int uc2 = 0xdc00 + ((uc - 0x10000) & 0x3ff);
+	  fprintf (fp, "\\u%c%c%c%c",
+		   hexdigit[(uc1 >> 12) & 0x0f], hexdigit[(uc1 >> 8) & 0x0f],
+		   hexdigit[(uc1 >> 4) & 0x0f], hexdigit[uc1 & 0x0f]);
+	  fprintf (fp, "\\u%c%c%c%c",
+		   hexdigit[(uc2 >> 12) & 0x0f], hexdigit[(uc2 >> 8) & 0x0f],
+		   hexdigit[(uc2 >> 4) & 0x0f], hexdigit[uc2 & 0x0f]);
+	}
       first = false;
     }
 }
 
-/* Writes a message to the stream.  */
+/* Writes a message to the file.  */
 static void
-write_message (ostream_t stream, const message_ty *mp,
-               size_t page_width, bool debug)
+write_message (FILE *fp, const message_ty *mp, size_t page_width, bool debug)
 {
   /* Print translator comment if available.  */
-  message_print_comment (mp, stream);
+  message_print_comment (mp, fp);
 
   /* Print xgettext extracted comments.  */
-  message_print_comment_dot (mp, stream);
+  message_print_comment_dot (mp, fp);
 
   /* Print the file position comments.  */
-  message_print_comment_filepos (mp, stream, false, page_width);
+  message_print_comment_filepos (mp, fp, false, page_width);
 
   /* Print flag information in special comment.  */
-  message_print_comment_flags (mp, stream, debug);
+  message_print_comment_flags (mp, fp, debug);
 
   /* Put a comment mark if the message is the header or untranslated or
      fuzzy.  */
-  if (is_header (mp)
+  if (mp->msgid[0] == '\0'
       || mp->msgstr[0] == '\0'
-      || (mp->is_fuzzy && !is_header (mp)))
-    ostream_write_str (stream, "!");
+      || (mp->is_fuzzy && mp->msgid[0] != '\0'))
+    putc ('!', fp);
 
   /* Now write the untranslated string and the translated string.  */
-  write_escaped_string (stream, mp->msgid, true);
-  ostream_write_str (stream, "=");
-  write_escaped_string (stream, mp->msgstr, false);
+  write_escaped_string (fp, mp->msgid, true);
+  putc ('=', fp);
+  write_escaped_string (fp, mp->msgstr, false);
 
-  ostream_write_str (stream, "\n");
+  putc ('\n', fp);
 }
 
-/* Writes an entire message list to the stream.  */
+/* Writes an entire message list to the file.  */
 static void
-write_properties (ostream_t stream, message_list_ty *mlp,
-                  const char *canon_encoding, size_t page_width, bool debug)
+write_properties (FILE *fp, message_list_ty *mlp, const char *canon_encoding,
+		  size_t page_width, bool debug)
 {
   bool blank_line;
   size_t j, i;
@@ -251,11 +247,11 @@ write_properties (ostream_t stream, message_list_ty *mlp,
       message_ty *mp = mlp->item[j];
 
       if (mp->comment != NULL)
-        for (i = 0; i < mp->comment->nitems; ++i)
-          mp->comment->item[i] = conv_to_java (mp->comment->item[i]);
+	for (i = 0; i < mp->comment->nitems; ++i)
+	  mp->comment->item[i] = conv_to_java (mp->comment->item[i]);
       if (mp->comment_dot != NULL)
-        for (i = 0; i < mp->comment_dot->nitems; ++i)
-          mp->comment_dot->item[i] = conv_to_java (mp->comment_dot->item[i]);
+	for (i = 0; i < mp->comment_dot->nitems; ++i)
+	  mp->comment_dot->item[i] = conv_to_java (mp->comment_dot->item[i]);
     }
 
   /* Loop through the messages.  */
@@ -265,21 +261,21 @@ write_properties (ostream_t stream, message_list_ty *mlp,
       const message_ty *mp = mlp->item[j];
 
       if (mp->msgid_plural == NULL && !mp->obsolete)
-        {
-          if (blank_line)
-            ostream_write_str (stream, "\n");
+	{
+	  if (blank_line)
+	    putc ('\n', fp);
 
-          write_message (stream, mp, page_width, debug);
+	  write_message (fp, mp, page_width, debug);
 
-          blank_line = true;
-        }
+	  blank_line = true;
+	}
     }
 }
 
 /* Output the contents of a PO file in Java .properties syntax.  */
-static void
-msgdomain_list_print_properties (msgdomain_list_ty *mdlp, ostream_t stream,
-                                 size_t page_width, bool debug)
+void
+msgdomain_list_print_properties (msgdomain_list_ty *mdlp, FILE *fp,
+				 size_t page_width, bool debug)
 {
   message_list_ty *mlp;
 
@@ -287,19 +283,5 @@ msgdomain_list_print_properties (msgdomain_list_ty *mdlp, ostream_t stream,
     mlp = mdlp->item[0]->messages;
   else
     mlp = message_list_alloc (false);
-  write_properties (stream, mlp, mdlp->encoding, page_width, debug);
+  write_properties (fp, mlp, mdlp->encoding, page_width, debug);
 }
-
-/* Describes a PO file in Java .properties syntax.  */
-const struct catalog_output_format output_format_properties =
-{
-  msgdomain_list_print_properties,      /* print */
-  true,                                 /* requires_utf8 */
-  false,                                /* supports_color */
-  false,                                /* supports_multiple_domains */
-  false,                                /* supports_contexts */
-  false,                                /* supports_plurals */
-  false,                                /* sorts_obsoletes_to_end */
-  true,                                 /* alternative_is_po */
-  true                                  /* alternative_is_java_class */
-};

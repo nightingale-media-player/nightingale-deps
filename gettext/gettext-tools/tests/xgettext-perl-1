@@ -144,23 +144,17 @@ sub testFunc($\$;*@) { }
 If you have gettext()'d foo bar test3'...
 =cut
 
-gettext "Before slash-slash";
-print $foo // 'undef';
-gettext "After slash-slash";
-
 __END__
 gettext "Discarded!";
 EOF
 
-tmpfiles="$tmpfiles xg-pl-1.tmp.po xg-pl-1.po"
+tmpfiles="$tmpfiles xg-pl-1.po"
 : ${XGETTEXT=xgettext}
 ${XGETTEXT} --omit-header -n \
   -k_ --flag=_:1:pass-perl-format --flag=_:1:pass-perl-brace-format \
   -k%__ --flag=%__:1:pass-perl-format --flag=%__:1:pass-perl-brace-format \
   -k\$__ --flag=\$__:1:pass-perl-format --flag=\$__:1:pass-perl-brace-format \
-  -d xg-pl-1.tmp xg-pl-1.pl
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < xg-pl-1.tmp.po > xg-pl-1.po
+  xg-pl-1.pl -d xg-pl-1
 test $? = 0 || { rm -fr $tmpfiles; exit 1; }
 
 tmpfiles="$tmpfiles xg-pl-1.ok"
@@ -322,14 +316,6 @@ msgstr ""
 #: xg-pl-1.pl:114 xg-pl-1.pl:116 xg-pl-1.pl:118
 #, perl-format, no-perl-brace-format
 msgid "Left as an %exercise to {maintainer}."
-msgstr ""
-
-#: xg-pl-1.pl:138
-msgid "Before slash-slash"
-msgstr ""
-
-#: xg-pl-1.pl:140
-msgid "After slash-slash"
 msgstr ""
 EOF
 

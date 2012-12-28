@@ -1,4 +1,5 @@
 # Example for use of GNU gettext.
+# Copyright (C) 2003 Free Software Foundation, Inc.
 # This file is in the public domain.
 #
 # Makefile configuration - processed by automake.
@@ -17,6 +18,7 @@ bin_PROGRAMS = hello
 hello_SOURCES = hello.c
 
 # Define a C macro LOCALEDIR indicating where catalogs will be installed.
+localedir = $(datadir)/locale
 DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
 
 # Make sure the gnome.h include file is found.

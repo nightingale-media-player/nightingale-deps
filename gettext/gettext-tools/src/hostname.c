@@ -1,11 +1,11 @@
 /* Display hostname in various forms.
-   Copyright (C) 2001-2003, 2006-2007, 2012 Free Software Foundation, Inc.
+   Copyright (C) 2001-2003 Free Software Foundation, Inc.
    Written by Bruno Haible <haible@clisp.cons.org>, 2001.
 
-   This program is free software: you can redistribute it and/or modify
+   This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +13,8 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program; if not, write to the Free Software Foundation,
+   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 
 #ifdef HAVE_CONFIG_H
@@ -28,13 +29,16 @@
 #include <locale.h>
 
 #if defined _WIN32 || defined __WIN32__
-# define WIN32_NATIVE
+# undef WIN32   /* avoid warning on mingw32 */
+# define WIN32
 #endif
 
 /* Get gethostname().  */
-#include <unistd.h>
+#if HAVE_UNISTD_H
+# include <unistd.h>
+#endif
 
-#ifdef WIN32_NATIVE
+#ifdef WIN32
 /* Native Woe32 API lacks gethostname() but has GetComputerName() instead.  */
 # include <windows.h>
 #else
@@ -85,7 +89,7 @@
 #include "relocatable.h"
 #include "basename.h"
 #include "xalloc.h"
-#include "propername.h"
+#include "exit.h"
 #include "gettext.h"
 
 #define _(str) gettext (str)
@@ -145,10 +149,10 @@ main (int argc, char *argv[])
 
   /* Parse command line options.  */
   while ((optchar = getopt_long (argc, argv, "fhisV", long_options, NULL))
-         != EOF)
+	 != EOF)
     switch (optchar)
     {
-    case '\0':          /* Long option.  */
+    case '\0':		/* Long option.  */
       break;
     case 'f':
       format = long_format;
@@ -176,12 +180,11 @@ main (int argc, char *argv[])
       printf ("%s (GNU %s) %s\n", basename (program_name), PACKAGE, VERSION);
       /* xgettext: no-wrap */
       printf (_("Copyright (C) %s Free Software Foundation, Inc.\n\
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\
-This is free software: you are free to change and redistribute it.\n\
-There is NO WARRANTY, to the extent permitted by law.\n\
+This is free software; see the source for copying conditions.  There is NO\n\
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 "),
-              "2001-2003, 2006-2007");
-      printf (_("Written by %s.\n"), proper_name ("Bruno Haible"));
+	      "2001-2003");
+      printf (_("Written by %s.\n"), "Bruno Haible");
       exit (EXIT_SUCCESS);
     }
 
@@ -204,8 +207,8 @@ static void
 usage (int status)
 {
   if (status != EXIT_SUCCESS)
-    fprintf (stderr, _("Try '%s --help' for more information.\n"),
-             program_name);
+    fprintf (stderr, _("Try `%s --help' for more information.\n"),
+	     program_name);
   else
     {
       printf (_("\
@@ -232,12 +235,8 @@ Informative output:\n"));
       printf (_("\
   -V, --version               output version information and exit\n"));
       printf ("\n");
-      /* TRANSLATORS: The placeholder indicates the bug-reporting address
-         for this package.  Please add _another line_ saying
-         "Report translation bugs to <...>\n" with the address for translation
-         bugs (typically your translation team's web or email address).  */
       fputs (_("Report bugs to <bug-gnu-gettext@gnu.org>.\n"),
-             stdout);
+	     stdout);
     }
 
   exit (status);
@@ -247,7 +246,7 @@ Informative output:\n"));
 static char *
 xgethostname ()
 {
-#ifdef WIN32_NATIVE
+#ifdef WIN32
   char hostname[MAX_COMPUTERNAME_LENGTH+1];
   DWORD size = sizeof (hostname);
 
@@ -289,25 +288,25 @@ xgethostname ()
 # elif HAVE_IN6_S6_ADDR16
 #  define ipv6_ntop(buffer,addr) \
      sprintf (buffer, "%x:%x:%x:%x:%x:%x:%x:%x", \
-              ntohs ((addr).s6_addr16[0]), \
-              ntohs ((addr).s6_addr16[1]), \
-              ntohs ((addr).s6_addr16[2]), \
-              ntohs ((addr).s6_addr16[3]), \
-              ntohs ((addr).s6_addr16[4]), \
-              ntohs ((addr).s6_addr16[5]), \
-              ntohs ((addr).s6_addr16[6]), \
-              ntohs ((addr).s6_addr16[7]))
+	      ntohs ((addr).s6_addr16[0]), \
+	      ntohs ((addr).s6_addr16[1]), \
+	      ntohs ((addr).s6_addr16[2]), \
+	      ntohs ((addr).s6_addr16[3]), \
+	      ntohs ((addr).s6_addr16[4]), \
+	      ntohs ((addr).s6_addr16[5]), \
+	      ntohs ((addr).s6_addr16[6]), \
+	      ntohs ((addr).s6_addr16[7]))
 # else
 #  define ipv6_ntop(buffer,addr) \
      sprintf (buffer, "%x:%x:%x:%x:%x:%x:%x:%x", \
-              ((addr).s6_addr[0] << 8) | (addr).s6_addr[1], \
-              ((addr).s6_addr[2] << 8) | (addr).s6_addr[3], \
-              ((addr).s6_addr[4] << 8) | (addr).s6_addr[5], \
-              ((addr).s6_addr[6] << 8) | (addr).s6_addr[7], \
-              ((addr).s6_addr[8] << 8) | (addr).s6_addr[9], \
-              ((addr).s6_addr[10] << 8) | (addr).s6_addr[11], \
-              ((addr).s6_addr[12] << 8) | (addr).s6_addr[13], \
-              ((addr).s6_addr[14] << 8) | (addr).s6_addr[15])
+	      ((addr).s6_addr[0] << 8) | (addr).s6_addr[1], \
+	      ((addr).s6_addr[2] << 8) | (addr).s6_addr[3], \
+	      ((addr).s6_addr[4] << 8) | (addr).s6_addr[5], \
+	      ((addr).s6_addr[6] << 8) | (addr).s6_addr[7], \
+	      ((addr).s6_addr[8] << 8) | (addr).s6_addr[9], \
+	      ((addr).s6_addr[10] << 8) | (addr).s6_addr[11], \
+	      ((addr).s6_addr[12] << 8) | (addr).s6_addr[13], \
+	      ((addr).s6_addr[14] << 8) | (addr).s6_addr[15])
 # endif
 #endif
 
@@ -335,7 +334,7 @@ print_hostname ()
       /* Print only the part before the first dot.  */
       dot = strchr (hostname, '.');
       if (dot != NULL)
-        *dot = '\0';
+	*dot = '\0';
       printf ("%s\n", hostname);
       break;
 
@@ -344,15 +343,15 @@ print_hostname ()
 #if HAVE_GETHOSTBYNAME
       h = gethostbyname (hostname);
       if (h != NULL)
-        {
-          printf ("%s\n", h->h_name);
-          if (h->h_aliases != NULL)
-            for (i = 0; h->h_aliases[i] != NULL; i++)
-              printf ("%s\n", h->h_aliases[i]);
-        }
+	{
+	  printf ("%s\n", h->h_name);
+	  if (h->h_aliases != NULL)
+	    for (i = 0; h->h_aliases[i] != NULL; i++)
+	      printf ("%s\n", h->h_aliases[i]);
+	}
       else
 #endif
-        printf ("%s\n", hostname);
+	printf ("%s\n", hostname);
       break;
 
     case ip_format:
@@ -360,24 +359,24 @@ print_hostname ()
 #if HAVE_GETHOSTBYNAME
       h = gethostbyname (hostname);
       if (h != NULL && h->h_addr_list != NULL)
-        for (i = 0; h->h_addr_list[i] != NULL; i++)
-          {
+	for (i = 0; h->h_addr_list[i] != NULL; i++)
+	  {
 #if HAVE_IPV6
-            if (h->h_addrtype == AF_INET6)
-              {
-                char buffer[45+1];
-                ipv6_ntop (buffer, *(const struct in6_addr*) h->h_addr_list[i]);
-                printf("[%s]\n", buffer);
-              }
-            else
+	    if (h->h_addrtype == AF_INET6)
+	      {
+		char buffer[45+1];
+		ipv6_ntop (buffer, *(const struct in6_addr*) h->h_addr_list[i]);
+		printf("[%s]\n", buffer);
+	      }
+	    else
 #endif
-            if (h->h_addrtype == AF_INET)
-              {
-                char buffer[15+1];
-                ipv4_ntop (buffer, *(const struct in_addr*) h->h_addr_list[i]);
-                printf("[%s]\n", buffer);
-              }
-          }
+	    if (h->h_addrtype == AF_INET)
+	      {
+		char buffer[15+1];
+		ipv4_ntop (buffer, *(const struct in_addr*) h->h_addr_list[i]);
+		printf("[%s]\n", buffer);
+	      }
+	  }
 #endif
       break;
 

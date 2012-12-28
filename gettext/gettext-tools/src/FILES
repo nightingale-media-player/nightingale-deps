@@ -19,10 +19,6 @@ file-list.c
                 Reading a file list from a file. Used by those programs which
                 accept multiple file arguments and have a --files-from option.
 
-lang-table.h
-lang-table.c
-                Language names according to ISO 639.
-
 pos.h
                 Source file positions.
 
@@ -38,32 +34,22 @@ msgl-ascii.c
 
 po-error.h
 po-error.c
-po-xerror.h
-po-xerror.c
                 Error handling during writing and reading of PO files.
 
-+-------------- Writing PO files
-| color.h
-| color.c
-|               Color and style handling.
-| write-catalog.h
-| write-catalog.c
-|               Output of a list-of-messages.
-| write-po.h
-| write-po.c
-|               Output of a list-of-messages to a PO file.
-| write-properties.h
-| write-properties.c
-|               Output of a list-of-messages to a Java .properties file.
-| write-stringtable.h
-| write-stringtable.c
-|               Output of a list-of-messages to a NeXTstep/GNUstep .strings
-|               file.
-+-------------- Writing PO files
+write-po.h
+write-po.c
+                Output of a list-of-messages to a PO file.
+write-properties.h
+write-properties.c
+                Output of a list-of-messages to a Java .properties file.
+write-stringtable.h
+write-stringtable.c
+                Output of a list-of-messages to a NeXTstep/GNUstep .strings
+                file.
 
 +-------------- Reading PO files
-| open-catalog.h
-| open-catalog.c
+| open-po.h
+| open-po.c
 |               Opening PO files for reading.
 |
 | po-charset.h
@@ -74,37 +60,32 @@ po-xerror.c
 | po-lex.c
 |               Lexical analysis of PO files.
 |
-| read-catalog-abstract.h
+| read-po-abstract.h
 | po-gram.h
 | po-gram-gen.y
-| read-po.h
-| read-po.c
 | read-properties.h
 | read-properties.c
 | read-stringtable.h
 | read-stringtable.c
-| read-catalog-abstract.c
+| read-po-abstract.c
 |               Parsing of PO files and Java .properties and NeXTstep/GNUstep
 |              .strings files.
-|         read-catalog-abstract.h
+|         read-po-abstract.h
 |                       General parser structure.
 |         po-gram.h
 |         po-gram-gen.y
 |                       Parsing of PO files, based on po-lex.{h,c}.
-|         read-po.h
-|         read-po.c
-|                       Parsing of PO files.
 |         read-properties.h
 |         read-properties.c
 |                       Parsing of Java .properties files.
 |         read-stringtable.h
 |         read-stringtable.c
 |                       Parsing of NeXTstep/GNUstep .strings files.
-|         read-catalog-abstract.c
+|         read-po-abstract.c
 |                       Top-level parser functions and callbacks.
 |
-| read-catalog.h
-| read-catalog.c
+| read-po.h
+| read-po.c
 |               Reading of a PO file, returning a list-of-messages.
 |
 +-------------- Reading PO files
@@ -131,10 +112,6 @@ msgcmp.c        Main source for the 'msgcmp' program.
 |               Main source for the 'msgmerge' program.
 |
 +-------------- The 'msgmerge' program
-
-msgl-header.h
-msgl-header.c
-                Message list header manipulation.
 
 msgcomm.c       Main source for the 'msgcomm' program.
 msgattrib.c     Main source for the 'msgattrib' program.
@@ -211,7 +188,6 @@ plural-table.c
 format.h        Declarations of the language dependent format string handlers.
 format-invalid.h  Declarations of some error messages for invalid strings.
 format-c.c             Format string handling for C.
-format-c-parse.h         Format string handling for C, parsing routine.
 format-sh.c            Format string handling for Shell.
 format-python.c        Format string handling for Python.
 format-lisp.c          Format string handling for Common Lisp.
@@ -228,27 +204,16 @@ format-perl.c          Format string handling for Perl.
 format-perl-brace.c    Format string handling for Perl, braced syntax.
 format-php.c           Format string handling for PHP.
 format-gcc-internal.c  Format string handling GCC internal.
-format-gfc-internal.c  Format string handling GFC internal.
 format-qt.c            Format string handling for Qt.
-format-qt-plural.c     Format string handling for Qt plural forms.
-format-kde.c           Format string handling for KDE.
-format-boost.c         Format string handling for Boost.
 format.c        Table of the language dependent format string handlers.
-
-plural-exp.c
-                Parsing plural expressions.
-plural-eval.h
-plural-eval.c
-                Evaluating plural expressions.
-plural-distrib.h
-                Value distribution of plural expressions.
-msgl-check.h
-msgl-check.c
-                Checking of messages.
 
 +-------------- The 'msgfmt' program
 | msgfmt.h
 |               Declarations.
+| plural.c
+|               Parsing plural expressions.
+| plural-eval.c
+|               Evaluating plursl expressions.
 | write-mo.h
 | write-mo.c
 |               Generating GNU .mo files.
@@ -337,3 +302,11 @@ msgl-check.c
 |               Main source for the 'xgettext' program.
 |
 +-------------- The 'xgettext' program
+
++-------------- The 'gettextpo' library
+|
+| gettext-po.h
+| gettext-po.c
+|               Public API for reading PO files.
+|
++-------------- The 'gettextpo' library

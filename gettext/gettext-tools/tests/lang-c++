@@ -8,14 +8,8 @@ tmpfiles=""
 trap 'rm -fr $tmpfiles' 1 2 3 15
 
 # Test whether a C++ compiler is found and libasprintf is built.
-test "${CXX}" != ":" || {
-  echo "Skipping test: no C++ compiler found"
-  exit 77
-}
-test "${TESTLIBASPRINTF}" = yes || {
-  echo "Skipping test: configured with --disable-libasprintf"
-  exit 77
-}
+test "${CXX}" != ":" || exit 77
+test "${TESTLIBASPRINTF}" = yes || exit 77
 
 tmpfiles="$tmpfiles prog.cc"
 cat <<\EOF > prog.cc
@@ -44,8 +38,10 @@ int main (int argc, char *argv[])
 
   xsetenv ("LC_ALL", argv[1], 1);
   if (setlocale (LC_ALL, "") == NULL)
-    // Couldn't set locale.
-    exit (77);
+    {
+      cerr << "Couldn't set locale." << endl;
+      exit (77);
+    }
 
   textdomain ("prog");
   bindtextdomain ("prog", ".");
@@ -65,23 +61,14 @@ top_builddir=..
 tmpfiles="$tmpfiles prog.${OBJEXT} prog${EXEEXT}"
 # Compile in two steps from .cc to .o and from .o to 'prog'. This way,
 # relinking is faster because doesn't need to redo the first step.
-# Put the -I flags before ${CXXFLAGS} ${CPPFLAGS}, to make sure that libintl.h
-# is found in the build directory, regardless of -I options present in
-# ${CXXFLAGS} or ${CPPFLAGS}.
-${CXX} -I.. -I../../gettext-runtime/libasprintf -I$top_srcdir/gnulib-lib -I../intl ${CXXFLAGS} ${CPPFLAGS} -c prog.cc \
+${CXX} ${CXXFLAGS} ${CPPFLAGS} -c prog.cc -I.. -I../../gettext-runtime/libasprintf -I$top_srcdir/lib -I../intl \
   || exit 1
-# Remove the -Wl,--disable-auto-import option here that is added by
-# woe32-dll.m4. Cygwin 1.7.2 does not support it in C++ mode: It gives
-# a link error about 'std::cout'.
-${LIBTOOL} --quiet --mode=link --tag=CXX ${CXX} ${CXXFLAGS} `echo "X ${LDFLAGS} " | sed -e 's/^X//' -e 's/ -Wl,--disable-auto-import / /'` -o prog prog.${OBJEXT} ../../gettext-runtime/libasprintf/libasprintf.la ../gnulib-lib/libgettextlib.la ${LTLIBINTL} \
+${LIBTOOL} --quiet --mode=link ${CXX} ${CXXFLAGS} ${LDFLAGS} -o prog prog.${OBJEXT} ../../gettext-runtime/libasprintf/libasprintf.la ../lib/libgettextlib.la ${LTLIBINTL} \
   || exit 1
 
-tmpfiles="$tmpfiles prog.tmp prog.pot"
+tmpfiles="$tmpfiles prog.pot"
 : ${XGETTEXT=xgettext}
-${XGETTEXT} -o prog.tmp --omit-header --no-location -k_ prog.cc
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < prog.tmp > prog.pot
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+${XGETTEXT} -o prog.pot --omit-header --no-location -k_ prog.cc
 
 tmpfiles="$tmpfiles prog.ok"
 cat <<EOF > prog.ok
@@ -125,12 +112,9 @@ msgid "%s is replaced by %s."
 msgstr "%2$s remplace %1$s."
 EOF
 
-tmpfiles="$tmpfiles fr.po.tmp fr.po.new"
+tmpfiles="$tmpfiles fr.po.new"
 : ${MSGMERGE=msgmerge}
-${MSGMERGE} -q -o fr.po.tmp fr.po prog.pot
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < fr.po.tmp > fr.po.new
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+${MSGMERGE} -q -o fr.po.new fr.po prog.pot
 
 : ${DIFF=diff}
 ${DIFF} fr.po fr.po.new || exit 1
@@ -174,11 +158,6 @@ if test $LOCALE_FR_UTF8 != none; then
   esac
 fi
 if test $LOCALE_FR = none && test $LOCALE_FR_UTF8 = none; then
-  if test -f /usr/bin/localedef; then
-    echo "Skipping test: no french locale is installed"
-  else
-    echo "Skipping test: no french locale is supported"
-  fi
   rm -fr $tmpfiles; exit 77
 fi
 

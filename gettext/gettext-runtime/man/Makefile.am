@@ -1,10 +1,10 @@
 ## Makefile for the gettext-runtime/man subdirectory of GNU gettext
-## Copyright (C) 2001-2003, 2006, 2009 Free Software Foundation, Inc.
+## Copyright (C) 2001-2003 Free Software Foundation, Inc.
 ##
-## This program is free software: you can redistribute it and/or modify
+## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
-## (at your option) any later version.
+## the Free Software Foundation; either version 2, or (at your option)
+## any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,13 +12,19 @@
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program.  If not, see <http://www.gnu.org/licenses/>.
+## along with this program; if not, write to the Free Software Foundation,
+## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 ## Process this file with automake to produce Makefile.in.
 
 VERSION = @VERSION@
+mandir = @mandir@
+docdir = @docdir@
+htmldir = $(docdir)
 
-AUTOMAKE_OPTIONS = 1.11 gnits
+localedir = $(datadir)/locale
+
+AUTOMAKE_OPTIONS = 1.2 gnits
 EXTRA_DIST =
 
 # A manual page for each of the bin_PROGRAMS in src/Makefile.am.
@@ -36,8 +42,7 @@ textdomain.3 bindtextdomain.3 bind_textdomain_codeset.3
 man_MAN3IN = gettext.3.in ngettext.3.in \
 textdomain.3.in bindtextdomain.3.in bind_textdomain_codeset.3.in
 man_MAN3LINK = dgettext.3 dcgettext.3 dngettext.3 dcngettext.3
-man_MANS = $(man_MAN1)
-notrans_man_MANS = $(man_MAN3) $(man_MAN3LINK)
+man_MANS = $(man_MAN1) $(man_MAN3) $(man_MAN3LINK)
 
 man_HTMLGEN = gettext.1.html ngettext.1.html
 man_HTMLIN = gettext.1.html.in ngettext.1.html.in
@@ -159,17 +164,27 @@ bind_textdomain_codeset.3.html: bind_textdomain_codeset.3.in
 	$(MAN2HTML) $(srcdir)/bind_textdomain_codeset.3.in | sed -e '/CreationDate:/d' > t-$@
 	mv t-$@ $@
 
-install-html-local:
-	$(mkdir_p) $(DESTDIR)$(htmldir)
+install-html:
+	$(mkinstalldirs) $(DESTDIR)$(htmldir)
 	for file in $(man_HTML); do \
 	  if test -f $$file; then dir=.; else dir=$(srcdir); fi; \
 	  $(INSTALL_DATA) $$dir/$$file $(DESTDIR)$(htmldir)/$$file; \
 	done
 
 installdirs-html:
-	$(mkdir_p) $(DESTDIR)$(htmldir)
+	$(mkinstalldirs) $(DESTDIR)$(htmldir)
 
 uninstall-html:
 	for file in $(man_HTML); do \
 	  $(RM) $(DESTDIR)$(htmldir)/$$file; \
 	done
+
+
+# VMS support.
+
+EXTRA_DIST += Makefile.vms
+
+
+# Woe32 support.
+
+EXTRA_DIST += Makefile.msvc

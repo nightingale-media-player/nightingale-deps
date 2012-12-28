@@ -1,29 +1,28 @@
 # Swedish messages for hello-perl.
-# Copyright Â© 2006 Yoyodyne, Inc.
-# Jan DjÃ¤rv <jan.h.d@swipnet.se>, 2003, 2006
-# Revision: 1.9
+# Copyright © 2003 Free Software Foundation, Inc.
+# Jan Djärv <jan.h.d@swipnet.se>, 2003
+# Revision: 1.6
 msgid ""
 msgstr ""
-"Project-Id-Version: hello-perl 0.15-pre5\n"
+"Project-Id-Version: hello-perl 0.13.1\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
-"PO-Revision-Date: 2006-07-04 12:39+0200\n"
-"Last-Translator: Jan DjÃ¤rv <jan.h.d@swipnet.se>\n"
-"Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
-"Language: sv\n"
+"PO-Revision-Date: 2003-12-20 22:33+0100\n"
+"Last-Translator: Jan Djärv <jan.h.d@swipnet.se>\n"
+"Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: hello-1.pl.in:17 hello-2.pl.in:12
+#: hello-1.pl.in:18 hello-2.pl.in:13
 msgid "Hello, world!"
-msgstr "Hej vÃ¤rlden!"
+msgstr "Hej världen!"
 
-#: hello-1.pl.in:19
+#: hello-1.pl.in:20
 #, perl-format
 msgid "This program is running as process number %d."
-msgstr "Detta program kÃ¶r som process nummer %d."
+msgstr "Detta program kör som process nummer %d."
 
-#: hello-2.pl.in:14
+#: hello-2.pl.in:15
 #, perl-brace-format
 msgid "This program is running as process number {pid}."
-msgstr "Detta program kÃ¶r som process nummer {pid}."
+msgstr "Detta program kör som process nummer {pid}."

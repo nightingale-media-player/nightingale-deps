@@ -8,16 +8,6 @@ msgfilter [@var{option}] @var{filter} [@var{filter-option}]
 The @code{msgfilter} program applies a filter to all translations of a
 translation catalog.
 
-@vindex MSGFILTER_MSGCTXT@r{, environment variable}
-@vindex MSGFILTER_MSGID@r{, environment variable}
-@vindex MSGFILTER_LOCATION@r{, environment variable}
-During each @var{filter} invocation, the environment variable
-@code{MSGFILTER_MSGID} is bound to the message's msgid, and the environment
-variable @code{MSGFILTER_LOCATION} is bound to the location in the PO file
-of the message.  If the message has a context, the environment variable
-@code{MSGFILTER_MSGCTXT} is bound to the message's msgctxt, otherwise it is
-unbound.
-
 @subsection Input file location
 
 @table @samp
@@ -57,12 +47,10 @@ or if it is @samp{-}.
 
 The @var{filter} can be any program that reads a translation from standard
 input and writes a modified translation to standard output.  A frequently
-used filter is @samp{sed}.  A few particular built-in filters are also
-recognized.
+used filter is @samp{sed}.
 
 @cindex @code{msgfilter} filter and catalog encoding
-Note: If the filter is not a built-in filter, you have to care about encodings:
-It is your responsibility to ensure that the @var{filter} can cope
+Note: It is your responsibility to ensure that the @var{filter} can cope
 with input encoded in the translation catalog's encoding.  If the
 @var{filter} wants input in a particular encoding, you can in a first step
 convert the translation catalog to that encoding using the @samp{msgconv}
@@ -106,21 +94,6 @@ Suppress automatic printing of pattern space.
 
 @end table
 
-@subsection Built-in @var{filter}s
-
-@pindex recode-sr-latin
-@cindex @code{recode-sr-latin} program
-The filter @samp{recode-sr-latin} is recognized as a built-in filter.
-The command @samp{recode-sr-latin} converts Serbian text, written in the
-Cyrillic script, to the Latin script.
-The command @samp{msgfilter recode-sr-latin} applies this conversion to the
-translations of a PO file.  Thus, it can be used to convert an @file{sr.po}
-file to an @file{sr@@latin.po} file.
-
-The use of built-in filters is not sensitive to the current locale's encoding.
-Moreover, when used with a built-in filter, @samp{msgfilter} can automatically
-convert the message catalog to the UTF-8 encoding when needed.
-
 @subsection Input file syntax
 
 @table @samp
@@ -143,17 +116,6 @@ Assume the input file is a NeXTstep/GNUstep localized resource file in
 @c --no-escape and --escape omitted on purpose.  They are not useful.
 
 @table @samp
-@item --color
-@itemx --color=@var{when}
-@opindex --color@r{, @code{msgfilter} option}
-Specify whether or when to use colors and other text attributes.
-See @ref{The --color option} for details.
-
-@item --style=@var{style_file}
-@opindex --style@r{, @code{msgfilter} option}
-Specify the CSS style rule file to use for @code{--color}.
-See @ref{The --style option} for details.
-
 @item --force-po
 @opindex --force-po@r{, @code{msgfilter} option}
 Always write an output file even if it contains no message.
@@ -164,7 +126,7 @@ Write the .po file using indented style.
 
 @item --keep-header
 @opindex --keep-header@r{, @code{msgfilter} option}
-Keep the header entry, i.e.@: the message with @samp{msgid ""}, unmodified,
+Keep the header entry, i.e. the message with @samp{msgid ""}, unmodified,
 instead of filtering it.  By default, the header entry is subject to
 filtering like any other message.
 
@@ -240,17 +202,3 @@ Display this help and exit.
 Output version information and exit.
 
 @end table
-
-@subsection Examples
-
-To convert German translations to Swiss orthography (in an UTF-8 locale):
-
-@smallexample
-msgconv -t UTF-8 de.po | msgfilter sed -e 's/@ss{}/ss/g'
-@end smallexample
-
-To convert Serbian translations in Cyrillic script to Latin script:
-
-@smallexample
-msgfilter recode-sr-latin < sr.po
-@end smallexample

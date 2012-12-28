@@ -1,11 +1,11 @@
 /* Reading tcl/msgcat .msg files.
-   Copyright (C) 2002-2003, 2005-2008, 2011 Free Software Foundation, Inc.
+   Copyright (C) 2002-2003 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2002.
 
-   This program is free software: you can redistribute it and/or modify
+   This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +13,8 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program; if not, write to the Free Software Foundation,
+   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -29,14 +30,14 @@
 
 #include "msgunfmt.h"
 #include "relocatable.h"
-#include "concat-filename.h"
+#include "pathname.h"
 #include "sh-quote.h"
-#include "spawn-pipe.h"
+#include "pipe.h"
 #include "wait-process.h"
-#include "read-catalog.h"
 #include "read-po.h"
-#include "xmalloca.h"
+#include "xallocsa.h"
 #include "error.h"
+#include "exit.h"
 #include "gettext.h"
 
 #define _(str) gettext (str)
@@ -69,24 +70,24 @@ msgdomain_read_tcl (const char *locale_name, const char *directory)
   if (gettextdatadir == NULL || gettextdatadir[0] == '\0')
     gettextdatadir = relocate (GETTEXTDATADIR);
 
-  tclscript = xconcatenated_filename (gettextdatadir, "msgunfmt.tcl", NULL);
+  tclscript = concatenated_pathname (gettextdatadir, "msgunfmt.tcl", NULL);
 
   /* Convert the locale name to lowercase and remove any encoding.  */
   len = strlen (locale_name);
-  frobbed_locale_name = (char *) xmalloca (len + 1);
+  frobbed_locale_name = (char *) xallocsa (len + 1);
   memcpy (frobbed_locale_name, locale_name, len + 1);
   for (p = frobbed_locale_name; *p != '\0'; p++)
     if (*p >= 'A' && *p <= 'Z')
       *p = *p - 'A' + 'a';
     else if (*p == '.')
       {
-        *p = '\0';
-        break;
+	*p = '\0';
+	break;
       }
 
-  file_name = xconcatenated_filename (directory, frobbed_locale_name, ".msg");
+  file_name = concatenated_pathname (directory, frobbed_locale_name, ".msg");
 
-  freea (frobbed_locale_name);
+  freesa (frobbed_locale_name);
 
   /* Prepare arguments.  */
   argv[0] = "tclsh";
@@ -103,29 +104,28 @@ msgdomain_read_tcl (const char *locale_name, const char *directory)
 
   /* Open a pipe to the Tcl interpreter.  */
   child = create_pipe_in ("tclsh", "tclsh", argv, DEV_NULL, false, true, true,
-                          fd);
+			  fd);
 
   fp = fdopen (fd[0], "r");
   if (fp == NULL)
     error (EXIT_FAILURE, errno, _("fdopen() failed"));
 
   /* Read the message list.  */
-  mdlp = read_catalog_stream (fp, "(pipe)", "(pipe)", &input_format_po);
+  mdlp = read_po (fp, "(pipe)", "(pipe)");
 
   fclose (fp);
 
   /* Remove zombie process from process list, and retrieve exit status.  */
-  exitstatus =
-    wait_subprocess (child, "tclsh", false, false, true, true, NULL);
+  exitstatus = wait_subprocess (child, "tclsh", false, false, true, true);
   if (exitstatus != 0)
     {
       if (exitstatus == 2)
-        /* Special exitcode provided by msgunfmt.tcl.  */
-        error (EXIT_FAILURE, ENOENT,
-               _("error while opening \"%s\" for reading"), file_name);
+	/* Special exitcode provided by msgunfmt.tcl.  */
+	error (EXIT_FAILURE, ENOENT,
+	       _("error while opening \"%s\" for reading"), file_name);
       else
-        error (EXIT_FAILURE, 0, _("%s subprocess failed with exit code %d"),
-               "tclsh", exitstatus);
+	error (EXIT_FAILURE, 0, _("%s subprocess failed with exit code %d"),
+	       "tclsh", exitstatus);
     }
 
   free (tclscript);
@@ -137,20 +137,20 @@ msgdomain_read_tcl (const char *locale_name, const char *directory)
       size_t j;
 
       for (j = 0; j < mlp->nitems; j++)
-        if (is_header (mlp->item[j]))
-          {
-            /* Found the header entry.  */
-            if (j > 0)
-              {
-                message_ty *header = mlp->item[j];
-                size_t i;
+	if (mlp->item[j]->msgid[0] == '\0')
+	  {
+	    /* Found the header entry.  */
+	    if (j > 0)
+	      {
+		message_ty *header = mlp->item[j];
+		size_t i;
 
-                for (i = j; i > 0; i--)
-                  mlp->item[i] = mlp->item[i - 1];
-                mlp->item[0] = header;
-              }
-            break;
-          }
+		for (i = j; i > 0; i--)
+		  mlp->item[i] = mlp->item[i - 1];
+		mlp->item[0] = header;
+	      }
+	    break;
+	  }
     }
 
   return mdlp;

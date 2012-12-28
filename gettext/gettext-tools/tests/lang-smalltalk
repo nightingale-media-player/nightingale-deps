@@ -33,12 +33,9 @@ run
 Main new run!
 EOF
 
-tmpfiles="$tmpfiles prog.tmp prog.pot"
+tmpfiles="$tmpfiles prog.pot"
 : ${XGETTEXT=xgettext}
-${XGETTEXT} -o prog.tmp --omit-header --no-location prog.st
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < prog.tmp > prog.pot
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+${XGETTEXT} -o prog.pot --omit-header --no-location prog.st
 
 tmpfiles="$tmpfiles prog.ok"
 cat <<EOF > prog.ok
@@ -82,12 +79,9 @@ msgid "%1 is replaced by %2."
 msgstr "%2 remplace %1."
 EOF
 
-tmpfiles="$tmpfiles fr.po.tmp fr.po.new"
+tmpfiles="$tmpfiles fr.po.new"
 : ${MSGMERGE=msgmerge}
-${MSGMERGE} -q -o fr.po.tmp fr.po prog.pot
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < fr.po.tmp > fr.po.new
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+${MSGMERGE} -q -o fr.po.new fr.po prog.pot
 
 : ${DIFF=diff}
 ${DIFF} fr.po fr.po.new || exit 1
@@ -101,54 +95,38 @@ ${MSGFMT} -o fr/LC_MESSAGES/prog.mo fr.po
 
 # Test for presence of gst version 2.0.6 or newer.
 (gst --version) >/dev/null 2>/dev/null \
-  || { echo "Skipping test: gst not found"; rm -fr $tmpfiles; exit 77; }
+  || { rm -fr $tmpfiles; exit 77; }
 case `gst --version | sed -n -e 1p | sed -e 's/^[^0-9]*//'` in
   0.* | 1.* | 2.0 | 2.0.[0-5] | 2.1 | 2.1.[0-1])
-    echo "Skipping test: gst version too old"; rm -fr $tmpfiles; exit 77;;
+    rm -fr $tmpfiles; exit 77;;
 esac
 
-tmpfiles="$tmpfiles prog.ok prog.oku prog.ok2 prog.oku2 prog.out"
+tmpfiles="$tmpfiles prog.ok prog.oku prog.out"
 : ${DIFF=diff}
 cat <<\EOF > prog.ok
+Loading package I18N
 «Votre commande, s'il vous plait», dit le garçon.
 2 morceaux de gateau
 EUR remplace FF.
 EOF
 cat <<\EOF > prog.oku
+Loading package I18N
 Â«Votre commande, s'il vous plaitÂ», dit le garÃ§on.
 2 morceaux de gateau
 EUR remplace FF.
 EOF
-# gst versions older than 2.3 also print "Loading package I18N".
-{ echo 'Loading package I18N'; cat prog.ok; } > prog.ok2
-{ echo 'Loading package I18N'; cat prog.oku; } > prog.oku2
-# gst version 3.0.3 also prints "Loading package Iconv" and
-# "Loading package I18N".
-{ echo 'Loading package Iconv'; echo 'Loading package I18N'; cat prog.ok; } > prog.ok3
-{ echo 'Loading package Iconv'; echo 'Loading package I18N'; cat prog.oku; } > prog.oku3
 
 : ${LOCALE_FR=fr_FR}
 : ${LOCALE_FR_UTF8=fr_FR.UTF-8}
 if test $LOCALE_FR != none; then
   LANGUAGE= LC_ALL=$LOCALE_FR gst -Q prog.st > prog.out || exit 1
-  ${DIFF} prog.ok prog.out > /dev/null ||
-    ${DIFF} prog.ok2 prog.out > /dev/null ||
-      ${DIFF} prog.ok3 prog.out > /dev/null ||
-        { ${DIFF} prog.ok prog.out; exit 1; }
+  ${DIFF} prog.ok prog.out || exit 1
 fi
 if test $LOCALE_FR_UTF8 != none; then
   LANGUAGE= LC_ALL=$LOCALE_FR_UTF8 gst -Q prog.st > prog.out || exit 1
-  ${DIFF} prog.oku prog.out > /dev/null ||
-    ${DIFF} prog.oku2 prog.out > /dev/null ||
-      ${DIFF} prog.oku3 prog.out > /dev/null ||
-        { ${DIFF} prog.oku prog.out; exit 1; }
+  ${DIFF} prog.oku prog.out || exit 1
 fi
 if test $LOCALE_FR = none && test $LOCALE_FR_UTF8 = none; then
-  if test -f /usr/bin/localedef; then
-    echo "Skipping test: no french locale is installed"
-  else
-    echo "Skipping test: no french locale is supported"
-  fi
   rm -fr $tmpfiles; exit 77
 fi
 

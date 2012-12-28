@@ -1,6 +1,7 @@
 #!@GUILE@ -s
 !#
 ;;; Example for use of GNU gettext.
+;;; Copyright (C) 2004-2005 Free Software Foundation, Inc.
 ;;; This file is in the public domain.
 
 ;;; Source code of the GNU guile program.

@@ -23,8 +23,10 @@ int main (int argc, char *argv[])
 
   xsetenv ("LC_ALL", argv[1], 1);
   if (setlocale (LC_ALL, "") == NULL)
-    /* Couldn't set locale.  */
-    exit (77);
+    {
+      fprintf (stderr, "Couldn't set locale.\n");
+      exit (77);
+    }
 
   textdomain ("prog");
   bindtextdomain ("prog", ".");
@@ -46,18 +48,12 @@ EOF
 top_builddir=..
 
 tmpfiles="$tmpfiles prog.${OBJEXT} prog${EXEEXT}"
-# Put the -I flags before ${CFLAGS} ${CPPFLAGS}, to make sure that libintl.h
-# is found in the build directory, regardless of -I options present in
-# ${CFLAGS} or ${CPPFLAGS}.
-${LIBTOOL} --quiet --mode=link ${CC} -I.. -I$top_srcdir/gnulib-lib ../gnulib-lib/libgettextlib.la -I../intl ${CFLAGS} ${CPPFLAGS} ${LDFLAGS} -o prog prog.c ${LTLIBINTL} \
+${LIBTOOL} --quiet --mode=link ${CC} ${CFLAGS} ${CPPFLAGS} ${LDFLAGS} -o prog prog.c -I.. -I$top_srcdir/lib ../lib/libgettextlib.la -I../intl ${LTLIBINTL} \
   || exit 1
 
-tmpfiles="$tmpfiles prog.tmp prog.pot"
+tmpfiles="$tmpfiles prog.pot"
 : ${XGETTEXT=xgettext}
-${XGETTEXT} -o prog.tmp --omit-header --no-location -k_ prog.c
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < prog.tmp > prog.pot
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+${XGETTEXT} -o prog.pot --omit-header --no-location -k_ prog.c
 
 tmpfiles="$tmpfiles prog.ok"
 cat <<EOF > prog.ok
@@ -103,12 +99,9 @@ msgid "%s is replaced by %s."
 msgstr "%2$s remplace %1$s."
 EOF
 
-tmpfiles="$tmpfiles fr.po.tmp fr.po.new"
+tmpfiles="$tmpfiles fr.po.new"
 : ${MSGMERGE=msgmerge}
-${MSGMERGE} -q -o fr.po.tmp fr.po prog.pot
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < fr.po.tmp > fr.po.new
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+${MSGMERGE} -q -o fr.po.new fr.po prog.pot
 
 : ${DIFF=diff}
 ${DIFF} fr.po fr.po.new || exit 1
@@ -152,11 +145,6 @@ if test $LOCALE_FR_UTF8 != none; then
   esac
 fi
 if test $LOCALE_FR = none && test $LOCALE_FR_UTF8 = none; then
-  if test -f /usr/bin/localedef; then
-    echo "Skipping test: no french locale is installed"
-  else
-    echo "Skipping test: no french locale is supported"
-  fi
   rm -fr $tmpfiles; exit 77
 fi
 

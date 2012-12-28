@@ -1,11 +1,11 @@
 /* Edit translations using a subprocess.
-   Copyright (C) 2001-2010, 2012 Free Software Foundation, Inc.
+   Copyright (C) 2001-2005 Free Software Foundation, Inc.
    Written by Bruno Haible <haible@clisp.cons.org>, 2001.
 
-   This program is free software: you can redistribute it and/or modify
+   This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,13 +13,16 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program; if not, write to the Free Software Foundation,
+   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
+#include <errno.h>
+#include <fcntl.h>
 #include <getopt.h>
 #include <limits.h>
 #include <locale.h>
@@ -27,42 +30,54 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#include <sys/time.h>
-#include <unistd.h>
+
+#if HAVE_SYS_TIME_H
+# include <sys/time.h>
+#endif
+
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#elif defined _MSC_VER || defined __MINGW32__
+# include <io.h>
+#endif
+
+/* Get fd_set (on AIX) or select() declaration (on EMX).  */
+#if defined (_AIX) || defined (__EMX__)
+# include <sys/select.h>
+#endif
 
 #include "closeout.h"
 #include "dir-list.h"
 #include "error.h"
-#include "xvasprintf.h"
 #include "error-progname.h"
 #include "progname.h"
 #include "relocatable.h"
 #include "basename.h"
 #include "message.h"
-#include "read-catalog.h"
 #include "read-po.h"
-#include "read-properties.h"
-#include "read-stringtable.h"
-#include "write-catalog.h"
 #include "write-po.h"
-#include "write-properties.h"
-#include "write-stringtable.h"
-#include "color.h"
 #include "msgl-charset.h"
 #include "xalloc.h"
+#include "exit.h"
 #include "findprog.h"
-#include "pipe-filter.h"
-#include "xsetenv.h"
-#include "filters.h"
-#include "msgl-iconv.h"
-#include "po-charset.h"
-#include "propername.h"
+#include "pipe.h"
+#include "wait-process.h"
 #include "gettext.h"
 
 #define _(str) gettext (str)
 
 
-/* We use a child process, and communicate through a bidirectional pipe.  */
+/* We use a child process, and communicate through a bidirectional pipe.
+   To avoid deadlocks, let the child process decide when it wants to read
+   or to write, and let the parent behave accordingly.  The parent uses
+   select() to know whether it must write or read.  On platforms without
+   select(), we use non-blocking I/O.  (This means the parent is busy
+   looping while waiting for the child.  Not good.)  */
+
+/* On BeOS select() works only on sockets, not on normal file descriptors.  */
+#ifdef __BEOS__
+# undef HAVE_SELECT
+#endif
 
 
 /* Force output of PO file even if empty.  */
@@ -78,17 +93,13 @@ static const char *sub_name;
 static const char *sub_path;
 
 /* Argument list for the subprogram.  */
-static const char **sub_argv;
+static char **sub_argv;
 static int sub_argc;
-
-/* Filter function.  */
-static void (*filter) (const char *str, size_t len, char **resultp, size_t *lengthp);
 
 /* Long options.  */
 static const struct option long_options[] =
 {
   { "add-location", no_argument, &line_comment, 1 },
-  { "color", optional_argument, NULL, CHAR_MAX + 6 },
   { "directory", required_argument, NULL, 'D' },
   { "escape", no_argument, NULL, 'E' },
   { "force-po", no_argument, &force_po, 1 },
@@ -107,7 +118,6 @@ static const struct option long_options[] =
   { "strict", no_argument, NULL, 'S' },
   { "stringtable-input", no_argument, NULL, CHAR_MAX + 4 },
   { "stringtable-output", no_argument, NULL, CHAR_MAX + 5 },
-  { "style", required_argument, NULL, CHAR_MAX + 7 },
   { "version", no_argument, NULL, 'V' },
   { "width", required_argument, NULL, 'w', },
   { NULL, 0, NULL, 0 }
@@ -117,10 +127,9 @@ static const struct option long_options[] =
 /* Forward declaration of local functions.  */
 static void usage (int status)
 #if defined __GNUC__ && ((__GNUC__ == 2 && __GNUC_MINOR__ >= 5) || __GNUC__ > 2)
-        __attribute__ ((noreturn))
+	__attribute__ ((noreturn))
 #endif
 ;
-static void generic_filter (const char *str, size_t len, char **resultp, size_t *lengthp);
 static msgdomain_list_ty *process_msgdomain_list (msgdomain_list_ty *mdlp);
 
 
@@ -133,11 +142,9 @@ main (int argc, char **argv)
   char *output_file;
   const char *input_file;
   msgdomain_list_ty *result;
-  catalog_input_format_ty input_syntax = &input_format_po;
-  catalog_output_format_ty output_syntax = &output_format_po;
   bool sort_by_filepos = false;
   bool sort_by_msgid = false;
-  int i;
+  size_t i;
 
   /* Set program name for messages.  */
   set_program_name (argv[0]);
@@ -150,7 +157,6 @@ main (int argc, char **argv)
 
   /* Set the text message domain.  */
   bindtextdomain (PACKAGE, relocate (LOCALEDIR));
-  bindtextdomain ("bison-runtime", relocate (BISON_LOCALEDIR));
   textdomain (PACKAGE);
 
   /* Ensure that write errors on stdout are detected.  */
@@ -165,104 +171,95 @@ main (int argc, char **argv)
   /* The '+' in the options string causes option parsing to terminate when
      the first non-option, i.e. the subprogram name, is encountered.  */
   while ((opt = getopt_long (argc, argv, "+D:EFhi:o:pPsVw:", long_options,
-                             NULL))
-         != EOF)
+			     NULL))
+	 != EOF)
     switch (opt)
       {
-      case '\0':                /* Long option.  */
-        break;
+      case '\0':		/* Long option.  */
+	break;
 
       case 'D':
-        dir_list_append (optarg);
-        break;
+	dir_list_append (optarg);
+	break;
 
       case 'E':
-        message_print_style_escape (true);
-        break;
+	message_print_style_escape (true);
+	break;
 
       case 'F':
-        sort_by_filepos = true;
-        break;
+	sort_by_filepos = true;
+	break;
 
       case 'h':
-        do_help = true;
-        break;
+	do_help = true;
+	break;
 
       case 'i':
-        if (input_file != NULL)
-          {
-            error (EXIT_SUCCESS, 0, _("at most one input file allowed"));
-            usage (EXIT_FAILURE);
-          }
-        input_file = optarg;
-        break;
+	if (input_file != NULL)
+	  {
+	    error (EXIT_SUCCESS, 0, _("at most one input file allowed"));
+	    usage (EXIT_FAILURE);
+	  }
+	input_file = optarg;
+	break;
 
       case 'o':
-        output_file = optarg;
-        break;
+	output_file = optarg;
+	break;
 
       case 'p':
-        output_syntax = &output_format_properties;
-        break;
+	message_print_syntax_properties ();
+	break;
 
       case 'P':
-        input_syntax = &input_format_properties;
-        break;
+	input_syntax = syntax_properties;
+	break;
 
       case 's':
-        sort_by_msgid = true;
-        break;
+	sort_by_msgid = true;
+	break;
 
       case 'S':
-        message_print_style_uniforum ();
-        break;
+	message_print_style_uniforum ();
+	break;
 
       case 'V':
-        do_version = true;
-        break;
+	do_version = true;
+	break;
 
       case 'w':
-        {
-          int value;
-          char *endp;
-          value = strtol (optarg, &endp, 10);
-          if (endp != optarg)
-            message_page_width_set (value);
-        }
-        break;
+	{
+	  int value;
+	  char *endp;
+	  value = strtol (optarg, &endp, 10);
+	  if (endp != optarg)
+	    message_page_width_set (value);
+	}
+	break;
 
       case CHAR_MAX + 1:
-        message_print_style_indent ();
-        break;
+	message_print_style_indent ();
+	break;
 
       case CHAR_MAX + 2:
-        message_print_style_escape (false);
-        break;
+	message_print_style_escape (false);
+	break;
 
       case CHAR_MAX + 3: /* --no-wrap */
-        message_page_width_ignore ();
-        break;
+	message_page_width_ignore ();
+	break;
 
       case CHAR_MAX + 4: /* --stringtable-input */
-        input_syntax = &input_format_stringtable;
-        break;
+	input_syntax = syntax_stringtable;
+	break;
 
       case CHAR_MAX + 5: /* --stringtable-output */
-        output_syntax = &output_format_stringtable;
-        break;
-
-      case CHAR_MAX + 6: /* --color */
-        if (handle_color_option (optarg) || color_test_mode)
-          usage (EXIT_FAILURE);
-        break;
-
-      case CHAR_MAX + 7: /* --style */
-        handle_style_option (optarg);
-        break;
+	message_print_syntax_stringtable ();
+	break;
 
       default:
-        usage (EXIT_FAILURE);
-        break;
+	usage (EXIT_FAILURE);
+	break;
       }
 
   /* Version information is requested.  */
@@ -271,12 +268,11 @@ main (int argc, char **argv)
       printf ("%s (GNU %s) %s\n", basename (program_name), PACKAGE, VERSION);
       /* xgettext: no-wrap */
       printf (_("Copyright (C) %s Free Software Foundation, Inc.\n\
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\
-This is free software: you are free to change and redistribute it.\n\
-There is NO WARRANTY, to the extent permitted by law.\n\
+This is free software; see the source for copying conditions.  There is NO\n\
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 "),
-              "2001-2010");
-      printf (_("Written by %s.\n"), proper_name ("Bruno Haible"));
+	      "2001-2005");
+      printf (_("Written by %s.\n"), "Bruno Haible");
       exit (EXIT_SUCCESS);
     }
 
@@ -292,15 +288,15 @@ There is NO WARRANTY, to the extent permitted by law.\n\
   /* Verify selected options.  */
   if (!line_comment && sort_by_filepos)
     error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
-           "--no-location", "--sort-by-file");
+	   "--no-location", "--sort-by-file");
 
   if (sort_by_msgid && sort_by_filepos)
     error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
-           "--sort-output", "--sort-by-file");
+	   "--sort-output", "--sort-by-file");
 
   /* Build argument list for the program.  */
   sub_argc = argc - optind;
-  sub_argv = XNMALLOC (sub_argc + 1, const char *);
+  sub_argv = (char **) xmalloc ((sub_argc + 1) * sizeof (char *));
   for (i = 0; i < sub_argc; i++)
     sub_argv[i] = argv[optind + i];
   sub_argv[i] = NULL;
@@ -309,24 +305,24 @@ There is NO WARRANTY, to the extent permitted by law.\n\
   if (strcmp (sub_name, "sed") == 0)
     {
       if (sub_argc == 1)
-        error (EXIT_FAILURE, 0,
-               _("at least one sed script must be specified"));
+	error (EXIT_FAILURE, 0,
+	       _("at least one sed script must be specified"));
 
       /* Replace GNU sed specific options with portable sed options.  */
       for (i = 1; i < sub_argc; i++)
-        {
-          if (strcmp (sub_argv[i], "--expression") == 0)
-            sub_argv[i] = "-e";
-          else if (strcmp (sub_argv[i], "--file") == 0)
-            sub_argv[i] = "-f";
-          else if (strcmp (sub_argv[i], "--quiet") == 0
-                   || strcmp (sub_argv[i], "--silent") == 0)
-            sub_argv[i] = "-n";
+	{
+	  if (strcmp (sub_argv[i], "--expression") == 0)
+	    sub_argv[i] = "-e";
+	  else if (strcmp (sub_argv[i], "--file") == 0)
+	    sub_argv[i] = "-f";
+	  else if (strcmp (sub_argv[i], "--quiet") == 0
+		   || strcmp (sub_argv[i], "--silent") == 0)
+	    sub_argv[i] = "-n";
 
-          if (strcmp (sub_argv[i], "-e") == 0
-              || strcmp (sub_argv[i], "-f") == 0)
-            i++;
-        }
+	  if (strcmp (sub_argv[i], "-e") == 0
+	      || strcmp (sub_argv[i], "-f") == 0)
+	    i++;
+	}
     }
 
   /* By default, input comes from standard input.  */
@@ -334,31 +330,18 @@ There is NO WARRANTY, to the extent permitted by law.\n\
     input_file = "-";
 
   /* Read input file.  */
-  result = read_catalog_file (input_file, input_syntax);
+  result = read_po_file (input_file);
 
-  /* Recognize special programs as built-ins.  */
-  if (strcmp (sub_name, "recode-sr-latin") == 0 && sub_argc == 1)
-    {
-      filter = serbian_to_latin;
+  /* Warn if the current locale is not suitable for this PO file.  */
+  compare_po_locale_charsets (result);
 
-      /* Convert the input to UTF-8 first.  */
-      result = iconv_msgdomain_list (result, po_charset_utf8, true, input_file);
-    }
-  else
-    {
-      filter = generic_filter;
+  /* Attempt to locate the program.
+     This is an optimization, to avoid that spawn/exec searches the PATH
+     on every call.  */
+  sub_path = find_in_path (sub_name);
 
-      /* Warn if the current locale is not suitable for this PO file.  */
-      compare_po_locale_charsets (result);
-
-      /* Attempt to locate the program.
-         This is an optimization, to avoid that spawn/exec searches the PATH
-         on every call.  */
-      sub_path = find_in_path (sub_name);
-
-      /* Finish argument list for the program.  */
-      sub_argv[0] = sub_path;
-    }
+  /* Finish argument list for the program.  */
+  sub_argv[0] = (char *) sub_path;
 
   /* Apply the subprogram.  */
   result = process_msgdomain_list (result);
@@ -370,7 +353,7 @@ There is NO WARRANTY, to the extent permitted by law.\n\
     msgdomain_list_sort_by_msgid (result);
 
   /* Write the merged message list out.  */
-  msgdomain_list_print (result, output_file, output_syntax, force_po, false);
+  msgdomain_list_print (result, output_file, force_po, false);
 
   exit (EXIT_SUCCESS);
 }
@@ -381,8 +364,8 @@ static void
 usage (int status)
 {
   if (status != EXIT_SUCCESS)
-    fprintf (stderr, _("Try '%s --help' for more information.\n"),
-             program_name);
+    fprintf (stderr, _("Try `%s --help' for more information.\n"),
+	     program_name);
   else
     {
       printf (_("\
@@ -438,12 +421,6 @@ Input file syntax:\n"));
       printf (_("\
 Output details:\n"));
       printf (_("\
-      --color                 use colors and other text attributes always\n\
-      --color=WHEN            use colors and other text attributes if WHEN.\n\
-                              WHEN may be 'always', 'never', 'auto', or 'html'.\n"));
-      printf (_("\
-      --style=STYLEFILE       specify CSS style rule file for --color\n"));
-      printf (_("\
       --no-escape             do not use C escapes in output (default)\n"));
       printf (_("\
   -E, --escape                use C escapes in output, no extended chars\n"));
@@ -480,110 +457,232 @@ Informative output:\n"));
       printf (_("\
   -V, --version               output version information and exit\n"));
       printf ("\n");
-      /* TRANSLATORS: The placeholder indicates the bug-reporting address
-         for this package.  Please add _another line_ saying
-         "Report translation bugs to <...>\n" with the address for translation
-         bugs (typically your translation team's web or email address).  */
       fputs (_("Report bugs to <bug-gnu-gettext@gnu.org>.\n"),
-             stdout);
+	     stdout);
     }
 
   exit (status);
 }
 
 
-/* Callbacks called from pipe_filter_ii_execute.  */
+#ifdef EINTR
 
-struct locals
+/* EINTR handling for close(), read(), write(), select().
+   These functions can return -1/EINTR even though we don't have any
+   signal handlers set up, namely when we get interrupted via SIGSTOP.  */
+
+static inline int
+nonintr_close (int fd)
 {
-  /* String being written.  */
-  const char *str;
-  size_t len;
-  /* String being read and accumulated.  */
-  char *result;
-  size_t allocated;
-  size_t length;
-};
+  int retval;
 
-static const void *
-prepare_write (size_t *num_bytes_p, void *private_data)
-{
-  struct locals *l = (struct locals *) private_data;
+  do
+    retval = close (fd);
+  while (retval < 0 && errno == EINTR);
 
-  if (l->len > 0)
-    {
-      *num_bytes_p = l->len;
-      return l->str;
-    }
-  else
-    return NULL;
+  return retval;
 }
+#define close nonintr_close
 
-static void
-done_write (void *data_written, size_t num_bytes_written, void *private_data)
+static inline ssize_t
+nonintr_read (int fd, void *buf, size_t count)
 {
-  struct locals *l = (struct locals *) private_data;
+  ssize_t retval;
 
-  l->str += num_bytes_written;
-  l->len -= num_bytes_written;
+  do
+    retval = read (fd, buf, count);
+  while (retval < 0 && errno == EINTR);
+
+  return retval;
 }
+#define read nonintr_read
 
-static void *
-prepare_read (size_t *num_bytes_p, void *private_data)
+static inline ssize_t
+nonintr_write (int fd, const void *buf, size_t count)
 {
-  struct locals *l = (struct locals *) private_data;
+  ssize_t retval;
 
-  if (l->length == l->allocated)
-    {
-      l->allocated = l->allocated + (l->allocated >> 1);
-      l->result = (char *) xrealloc (l->result, l->allocated);
-    }
-  *num_bytes_p = l->allocated - l->length;
-  return l->result + l->length;
+  do
+    retval = write (fd, buf, count);
+  while (retval < 0 && errno == EINTR);
+
+  return retval;
 }
+#undef write /* avoid warning on VMS */
+#define write nonintr_write
 
-static void
-done_read (void *data_read, size_t num_bytes_read, void *private_data)
+# if HAVE_SELECT
+
+static inline int
+nonintr_select (int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds,
+		struct timeval *timeout)
 {
-  struct locals *l = (struct locals *) private_data;
+  int retval;
 
-  l->length += num_bytes_read;
+  do
+    retval = select (n, readfds, writefds, exceptfds, timeout);
+  while (retval < 0 && errno == EINTR);
+
+  return retval;
 }
+#undef select /* avoid warning on VMS */
+#define select nonintr_select
+
+# endif
+
+#endif
 
 
-/* Process a string STR of size LEN bytes through the subprogram.
-   Store the freshly allocated result at *RESULTP and its length at *LENGTHP.
- */
-static void
-generic_filter (const char *str, size_t len, char **resultp, size_t *lengthp)
-{
-  struct locals l;
+/* Non-blocking I/O.  */
+#ifndef O_NONBLOCK
+# define O_NONBLOCK O_NDELAY
+#endif
+#if HAVE_SELECT
+# define IS_EAGAIN(errcode) 0
+#else
+# ifdef EWOULDBLOCK
+#  define IS_EAGAIN(errcode) ((errcode) == EAGAIN || (errcode) == EWOULDBLOCK)
+# else
+#  define IS_EAGAIN(errcode) ((errcode) == EAGAIN)
+# endif
+#endif
 
-  l.str = str;
-  l.len = len;
-  l.allocated = len + (len >> 2) + 1;
-  l.result = XNMALLOC (l.allocated, char);
-  l.length = 0;
-
-  pipe_filter_ii_execute (sub_name, sub_path, sub_argv, false, true,
-                          prepare_write, done_write, prepare_read, done_read,
-                          &l);
-
-  *resultp = l.result;
-  *lengthp = l.length;
-}
-
-
-/* Process a string STR of size LEN bytes, then remove NUL bytes.
+/* Process a string STR of size LEN bytes through the subprogram, then
+   remove NUL bytes.
    Store the freshly allocated result at *RESULTP and its length at *LENGTHP.
  */
 static void
 process_string (const char *str, size_t len, char **resultp, size_t *lengthp)
 {
+#if defined _MSC_VER || defined __MINGW32__
+  /* Native Woe32 API.  */
+  /* Not yet implemented.  */
+  error (EXIT_FAILURE, 0, _("Not yet implemented."));
+#else
+  pid_t child;
+  int fd[2];
   char *result;
+  size_t allocated;
   size_t length;
+  int exitstatus;
 
-  filter (str, len, &result, &length);
+  /* Open a bidirectional pipe to a subprocess.  */
+  child = create_pipe_bidi (sub_name, sub_path, sub_argv, false, true, true,
+			    fd);
+
+  /* Enable non-blocking I/O.  This permits the read() and write() calls
+     to return -1/EAGAIN without blocking; this is important for polling
+     if HAVE_SELECT is not defined.  It also permits the read() and write()
+     calls to return after partial reads/writes; this is important if
+     HAVE_SELECT is defined, because select() only says that some data
+     can be read or written, not how many.  Without non-blocking I/O,
+     Linux 2.2.17 and BSD systems prefer to block instead of returning
+     with partial results.  */
+  {
+    int fcntl_flags;
+
+    if ((fcntl_flags = fcntl (fd[1], F_GETFL, 0)) < 0
+	|| fcntl (fd[1], F_SETFL, fcntl_flags | O_NONBLOCK) < 0
+	|| (fcntl_flags = fcntl (fd[0], F_GETFL, 0)) < 0
+	|| fcntl (fd[0], F_SETFL, fcntl_flags | O_NONBLOCK) < 0)
+      error (EXIT_FAILURE, errno,
+	     _("cannot set up nonblocking I/O to %s subprocess"), sub_name);
+  }
+
+  allocated = len + (len >> 2) + 1;
+  result = (char *) xmalloc (allocated);
+  length = 0;
+
+  for (;;)
+    {
+#if HAVE_SELECT
+      int n;
+      fd_set readfds;
+      fd_set writefds;
+
+      FD_ZERO (&readfds);
+      FD_SET (fd[0], &readfds);
+      n = fd[0] + 1;
+      if (str != NULL)
+	{
+	  FD_ZERO (&writefds);
+	  FD_SET (fd[1], &writefds);
+	  if (n <= fd[1])
+	    n = fd[1] + 1;
+	}
+
+      n = select (n, &readfds, (str != NULL ? &writefds : NULL), NULL, NULL);
+      if (n < 0)
+	error (EXIT_FAILURE, errno,
+	       _("communication with %s subprocess failed"), sub_name);
+      if (str != NULL && FD_ISSET (fd[1], &writefds))
+	goto try_write;
+      if (FD_ISSET (fd[0], &readfds))
+	goto try_read;
+      /* How could select() return if none of the two descriptors is ready?  */
+      abort ();
+#endif
+
+      /* Attempt to write.  */
+#if HAVE_SELECT
+    try_write:
+#endif
+      if (str != NULL)
+	{
+	  if (len > 0)
+	    {
+	      ssize_t nwritten = write (fd[1], str, len);
+	      if (nwritten < 0 && !IS_EAGAIN (errno))
+		error (EXIT_FAILURE, errno,
+		       _("write to %s subprocess failed"), sub_name);
+	      if (nwritten > 0)
+		{
+		  str += nwritten;
+		  len -= nwritten;
+		}
+	    }
+	  else
+	    {
+	      /* Tell the child there is nothing more the parent will send.  */
+	      close (fd[1]);
+	      str = NULL;
+	    }
+	}
+#if HAVE_SELECT
+      continue;
+#endif
+
+      /* Attempt to read.  */
+#if HAVE_SELECT
+    try_read:
+#endif
+      if (length == allocated)
+	{
+	  allocated = allocated + (allocated >> 1);
+	  result = (char *) xrealloc (result, allocated);
+	}
+      {
+	ssize_t nread = read (fd[0], result + length, allocated - length);
+	if (nread < 0 && !IS_EAGAIN (errno))
+	  error (EXIT_FAILURE, errno,
+		 _("read from %s subprocess failed"), sub_name);
+	if (nread > 0)
+	  length += nread;
+	if (nread == 0 && str == NULL)
+	  break;
+      }
+#if HAVE_SELECT
+      continue;
+#endif
+    }
+
+  close (fd[0]);
+
+  /* Remove zombie process from process list.  */
+  exitstatus = wait_subprocess (child, sub_name, false, false, true, true);
+  if (exitstatus != 0)
+    error (EXIT_FAILURE, 0, _("%s subprocess terminated with exit code %d"),
+	   sub_name, exitstatus);
 
   /* Remove NUL bytes from result.  */
   {
@@ -592,20 +691,21 @@ process_string (const char *str, size_t len, char **resultp, size_t *lengthp)
 
     for (; p < pend; p++)
       if (*p == '\0')
-        {
-          char *q;
+	{
+	  char *q;
 
-          q = p;
-          for (; p < pend; p++)
-            if (*p != '\0')
-              *q++ = *p;
-          length = q - result;
-          break;
-        }
+	  q = p;
+	  for (; p < pend; p++)
+	    if (*p != '\0')
+	      *q++ = *p;
+	  length = q - result;
+	  break;
+	}
   }
 
   *resultp = result;
   *lengthp = length;
+#endif
 }
 
 
@@ -614,7 +714,6 @@ process_message (message_ty *mp)
 {
   const char *msgstr = mp->msgstr;
   size_t msgstr_len = mp->msgstr_len;
-  char *location;
   size_t nsubstrings;
   char **substrings;
   size_t total_len;
@@ -624,30 +723,8 @@ process_message (message_ty *mp)
   size_t k;
 
   /* Keep the header entry unmodified, if --keep-header was given.  */
-  if (is_header (mp) && keep_header)
+  if (mp->msgid[0] == '\0' && keep_header)
     return;
-
-  /* Set environment variables for the subprocess.
-     Note: These environment variables, especially MSGEXEC_MSGCTXT and
-     MSGEXEC_MSGCTXT, may contain non-ASCII characters.  The subprocess
-     may not interpret these values correctly if the locale encoding is
-     different from the PO file's encoding.  We want about this situation,
-     above.
-     On Unix, this problem is often harmless.  On Windows, however, - both
-     native Windows and Cygwin - the values of environment variables *must*
-     be in the encoding that is the value of GetACP(), because the system
-     may convert the environment from char** to wchar_t** before spawning
-     the subprocess and back from wchar_t** to char** in the subprocess,
-     and it does so using the GetACP() codepage.  */
-  if (mp->msgctxt != NULL)
-    xsetenv ("MSGFILTER_MSGCTXT", mp->msgctxt, 1);
-  else
-    unsetenv ("MSGFILTER_MSGCTXT");
-  xsetenv ("MSGFILTER_MSGID", mp->msgid, 1);
-  location = xasprintf ("%s:%ld", mp->pos.file_name,
-                        (long) mp->pos.line_number);
-  xsetenv ("MSGFILTER_LOCATION", location, 1);
-  free (location);
 
   /* Count NUL delimited substrings.  */
   for (p = msgstr, nsubstrings = 0;
@@ -655,7 +732,7 @@ process_message (message_ty *mp)
        p += strlen (p) + 1, nsubstrings++);
 
   /* Process each NUL delimited substring separately.  */
-  substrings = XNMALLOC (nsubstrings, char *);
+  substrings = (char **) xmalloc (nsubstrings * sizeof (char *));
   for (p = msgstr, k = 0, total_len = 0; k < nsubstrings; k++)
     {
       char *result;
@@ -671,7 +748,7 @@ process_message (message_ty *mp)
     }
 
   /* Concatenate the results, including the NUL after each.  */
-  total_str = XNMALLOC (total_len, char);
+  total_str = (char *) xmalloc (total_len);
   for (k = 0, q = total_str; k < nsubstrings; k++)
     {
       size_t length = strlen (substrings[k]);

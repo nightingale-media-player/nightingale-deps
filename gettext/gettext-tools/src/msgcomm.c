@@ -1,12 +1,12 @@
 /* GNU gettext - internationalization aids
-   Copyright (C) 1997-1998, 2000-2007, 2009-2012 Free Software Foundation, Inc.
+   Copyright (C) 1997-1998, 2000-2005 Free Software Foundation, Inc.
 
    This file was written by Peter Miller <millerp@canb.auug.org.au>
 
-   This program is free software: you can redistribute it and/or modify
+   This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,7 +14,8 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program; if not, write to the Free Software Foundation,
+   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -36,17 +37,10 @@
 #include "relocatable.h"
 #include "basename.h"
 #include "message.h"
-#include "read-catalog.h"
 #include "read-po.h"
-#include "read-properties.h"
-#include "read-stringtable.h"
-#include "write-catalog.h"
 #include "write-po.h"
-#include "write-properties.h"
-#include "write-stringtable.h"
-#include "color.h"
 #include "msgl-cat.h"
-#include "propername.h"
+#include "exit.h"
 #include "gettext.h"
 
 
@@ -64,7 +58,6 @@ static const char *to_code;
 static const struct option long_options[] =
 {
   { "add-location", no_argument, &line_comment, 1 },
-  { "color", optional_argument, NULL, CHAR_MAX + 5 },
   { "directory", required_argument, NULL, 'D' },
   { "escape", no_argument, NULL, 'E' },
   { "files-from", required_argument, NULL, 'f' },
@@ -84,7 +77,6 @@ static const struct option long_options[] =
   { "strict", no_argument, NULL, 'S' },
   { "stringtable-input", no_argument, NULL, CHAR_MAX + 3 },
   { "stringtable-output", no_argument, NULL, CHAR_MAX + 4 },
-  { "style", required_argument, NULL, CHAR_MAX + 6 },
   { "to-code", required_argument, NULL, 't' },
   { "unique", no_argument, NULL, 'u' },
   { "version", no_argument, NULL, 'V' },
@@ -98,7 +90,7 @@ static const struct option long_options[] =
 /* Forward declaration of local functions.  */
 static void usage (int status)
 #if defined __GNUC__ && ((__GNUC__ == 2 && __GNUC_MINOR__ > 4) || __GNUC__ > 2)
-        __attribute__ ((noreturn))
+	__attribute__ ((noreturn))
 #endif
 ;
 
@@ -111,8 +103,6 @@ main (int argc, char *argv[])
   bool do_help = false;
   bool do_version = false;
   msgdomain_list_ty *result;
-  catalog_input_format_ty input_syntax = &input_format_po;
-  catalog_output_format_ty output_syntax = &output_format_po;
   bool sort_by_msgid = false;
   bool sort_by_filepos = false;
   const char *files_from = NULL;
@@ -130,7 +120,6 @@ main (int argc, char *argv[])
 
   /* Set the text message domain.  */
   bindtextdomain (PACKAGE, relocate (LOCALEDIR));
-  bindtextdomain ("bison-runtime", relocate (BISON_LOCALEDIR));
   textdomain (PACKAGE);
 
   /* Ensure that write errors on stdout are detected.  */
@@ -142,134 +131,125 @@ main (int argc, char *argv[])
   use_first = false;
 
   while ((optchar = getopt_long (argc, argv, "<:>:D:eEf:Fhino:pPst:uVw:",
-                                 long_options, NULL)) != EOF)
+				 long_options, NULL)) != EOF)
     switch (optchar)
       {
-      case '\0':                /* Long option.  */
-        break;
+      case '\0':		/* Long option.  */
+	break;
 
       case '>':
-        {
-          int value;
-          char *endp;
-          value = strtol (optarg, &endp, 10);
-          if (endp != optarg)
-            more_than = value;
-        }
-        break;
+	{
+	  int value;
+	  char *endp;
+	  value = strtol (optarg, &endp, 10);
+	  if (endp != optarg)
+	    more_than = value;
+	}
+	break;
 
       case '<':
-        {
-          int value;
-          char *endp;
-          value = strtol (optarg, &endp, 10);
-          if (endp != optarg)
-            less_than = value;
-        }
-        break;
+	{
+	  int value;
+	  char *endp;
+	  value = strtol (optarg, &endp, 10);
+	  if (endp != optarg)
+	    less_than = value;
+	}
+	break;
 
       case 'D':
-        dir_list_append (optarg);
-        break;
+	dir_list_append (optarg);
+	break;
 
       case 'e':
-        message_print_style_escape (false);
-        break;
+	message_print_style_escape (false);
+	break;
 
       case 'E':
-        message_print_style_escape (true);
-        break;
+	message_print_style_escape (true);
+	break;
 
       case 'f':
-        files_from = optarg;
-        break;
+	files_from = optarg;
+	break;
 
       case 'F':
-        sort_by_filepos = true;
-        break;
+	sort_by_filepos = true;
+	break;
 
       case 'h':
-        do_help = true;
-        break;
+	do_help = true;
+	break;
 
       case 'i':
-        message_print_style_indent ();
-        break;
+	message_print_style_indent ();
+	break;
 
       case 'n':
-        line_comment = 1;
-        break;
+	line_comment = 1;
+	break;
 
       case 'o':
-        output_file = optarg;
-        break;
+	output_file = optarg;
+	break;
 
       case 'p':
-        output_syntax = &output_format_properties;
-        break;
+	message_print_syntax_properties ();
+	break;
 
       case 'P':
-        input_syntax = &input_format_properties;
-        break;
+	input_syntax = syntax_properties;
+	break;
 
       case 's':
-        sort_by_msgid = true;
-        break;
+	sort_by_msgid = true;
+	break;
 
       case 'S':
-        message_print_style_uniforum ();
-        break;
+	message_print_style_uniforum ();
+	break;
 
       case 't':
-        to_code = optarg;
-        break;
+	to_code = optarg;
+	break;
 
       case 'u':
-        less_than = 2;
-        break;
+	less_than = 2;
+	break;
 
       case 'V':
-        do_version = true;
-        break;
+	do_version = true;
+	break;
 
       case 'w':
-        {
-          int value;
-          char *endp;
-          value = strtol (optarg, &endp, 10);
-          if (endp != optarg)
-            message_page_width_set (value);
-        }
-        break;
+	{
+	  int value;
+	  char *endp;
+	  value = strtol (optarg, &endp, 10);
+	  if (endp != optarg)
+	    message_page_width_set (value);
+	}
+	break;
 
       case CHAR_MAX + 1:
-        omit_header = true;
-        break;
+	omit_header = true;
+	break;
 
       case CHAR_MAX + 2: /* --no-wrap */
-        message_page_width_ignore ();
-        break;
+	message_page_width_ignore ();
+	break;
 
       case CHAR_MAX + 3: /* --stringtable-input */
-        input_syntax = &input_format_stringtable;
-        break;
+	input_syntax = syntax_stringtable;
+	break;
 
       case CHAR_MAX + 4: /* --stringtable-output */
-        output_syntax = &output_format_stringtable;
-        break;
-
-      case CHAR_MAX + 5: /* --color */
-        if (handle_color_option (optarg) || color_test_mode)
-          usage (EXIT_FAILURE);
-        break;
-
-      case CHAR_MAX + 6: /* --style */
-        handle_style_option (optarg);
-        break;
+	message_print_syntax_stringtable ();
+	break;
 
       default:
-        usage (EXIT_FAILURE);
-        /* NOTREACHED */
+	usage (EXIT_FAILURE);
+	/* NOTREACHED */
       }
 
   /* Version information requested.  */
@@ -278,12 +258,11 @@ main (int argc, char *argv[])
       printf ("%s (GNU %s) %s\n", basename (program_name), PACKAGE, VERSION);
       /* xgettext: no-wrap */
       printf (_("Copyright (C) %s Free Software Foundation, Inc.\n\
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\
-This is free software: you are free to change and redistribute it.\n\
-There is NO WARRANTY, to the extent permitted by law.\n\
+This is free software; see the source for copying conditions.  There is NO\n\
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 "),
-              "1995-1998, 2000-2010");
-      printf (_("Written by %s.\n"), proper_name ("Peter Miller"));
+	      "1995-1998, 2000-2005");
+      printf (_("Written by %s.\n"), "Peter Miller");
       exit (EXIT_SUCCESS);
     }
 
@@ -294,11 +273,11 @@ There is NO WARRANTY, to the extent permitted by law.\n\
   /* Verify selected options.  */
   if (!line_comment && sort_by_filepos)
     error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
-           "--no-location", "--sort-by-file");
+	   "--no-location", "--sort-by-file");
 
   if (sort_by_msgid && sort_by_filepos)
     error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
-           "--sort-output", "--sort-by-file");
+	   "--sort-output", "--sort-by-file");
 
   /* Determine list of files we have to process.  */
   if (files_from != NULL)
@@ -323,13 +302,13 @@ There is NO WARRANTY, to the extent permitted by law.\n\
     less_than = INT_MAX;
   if (more_than >= less_than || less_than < 2)
     error (EXIT_FAILURE, 0,
-           _("impossible selection criteria specified (%d < n < %d)"),
-           more_than, less_than);
+	   _("impossible selection criteria specified (%d < n < %d)"),
+	   more_than, less_than);
 
   /* Read input files, then filter, convert and merge messages.  */
   allow_duplicates = true;
   msgcomm_mode = true;
-  result = catenate_msgdomain_list (file_list, input_syntax, to_code);
+  result = catenate_msgdomain_list (file_list, to_code);
 
   string_list_free (file_list);
 
@@ -340,7 +319,7 @@ There is NO WARRANTY, to the extent permitted by law.\n\
     msgdomain_list_sort_by_msgid (result);
 
   /* Write the PO file.  */
-  msgdomain_list_print (result, output_file, output_syntax, force_po, false);
+  msgdomain_list_print (result, output_file, force_po, false);
 
   exit (EXIT_SUCCESS);
 }
@@ -351,8 +330,8 @@ static void
 usage (int status)
 {
   if (status != EXIT_SUCCESS)
-    fprintf (stderr, _("Try '%s --help' for more information.\n"),
-             program_name);
+    fprintf (stderr, _("Try `%s --help' for more information.\n"),
+	     program_name);
   else
     {
       printf (_("\
@@ -366,7 +345,7 @@ By using the --more-than option, greater commonality may be requested\n\
 before messages are printed.  Conversely, the --less-than option may be\n\
 used to specify less commonality before messages are printed (i.e.\n\
 --less-than=2 will only print the unique messages).  Translations,\n\
-comments and extracted comments will be preserved, but only from the first\n\
+comments and extract comments will be preserved, but only from the first\n\
 PO file to define them.  File positions from all PO files will be\n\
 cumulated.\n\
 "));
@@ -416,12 +395,6 @@ Input file syntax:\n"));
       printf (_("\
 Output details:\n"));
       printf (_("\
-      --color                 use colors and other text attributes always\n\
-      --color=WHEN            use colors and other text attributes if WHEN.\n\
-                              WHEN may be 'always', 'never', 'auto', or 'html'.\n"));
-      printf (_("\
-      --style=STYLEFILE       specify CSS style rule file for --color\n"));
-      printf (_("\
   -e, --no-escape             do not use C escapes in output (default)\n"));
       printf (_("\
   -E, --escape                use C escapes in output, no extended chars\n"));
@@ -449,7 +422,7 @@ Output details:\n"));
       printf (_("\
   -F, --sort-by-file          sort output by file location\n"));
       printf (_("\
-      --omit-header           don't write header with 'msgid \"\"' entry\n"));
+      --omit-header           don't write header with `msgid \"\"' entry\n"));
       printf ("\n");
       printf (_("\
 Informative output:\n"));
@@ -458,12 +431,8 @@ Informative output:\n"));
       printf (_("\
   -V, --version               output version information and exit\n"));
       printf ("\n");
-      /* TRANSLATORS: The placeholder indicates the bug-reporting address
-         for this package.  Please add _another line_ saying
-         "Report translation bugs to <...>\n" with the address for translation
-         bugs (typically your translation team's web or email address).  */
       fputs (_("Report bugs to <bug-gnu-gettext@gnu.org>.\n"),
-             stdout);
+	     stdout);
     }
 
   exit (status);

@@ -1,11 +1,11 @@
 /* YCP and Smalltalk format strings.
-   Copyright (C) 2001-2004, 2006-2007, 2009 Free Software Foundation, Inc.
+   Copyright (C) 2001-2004 Free Software Foundation, Inc.
    Written by Bruno Haible <haible@clisp.cons.org>, 2001.
 
-   This program is free software: you can redistribute it and/or modify
+   This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +13,8 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program; if not, write to the Free Software Foundation,
+   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -25,7 +26,7 @@
 #include "format.h"
 #include "c-ctype.h"
 #include "xalloc.h"
-#include "xvasprintf.h"
+#include "xerror.h"
 #include "format-invalid.h"
 #include "gettext.h"
 
@@ -47,10 +48,8 @@ struct spec
 
 
 static void *
-format_parse (const char *format, bool translated, char *fdi,
-              char **invalid_reason)
+format_parse (const char *format, bool translated, char **invalid_reason)
 {
-  const char *const format_start = format;
   struct spec spec;
   struct spec *result;
 
@@ -60,44 +59,34 @@ format_parse (const char *format, bool translated, char *fdi,
   for (; *format != '\0';)
     if (*format++ == '%')
       {
-        /* A directive.  */
-        FDI_SET (format - 1, FMTDIR_START);
-        spec.directives++;
+	/* A directive.  */
+	spec.directives++;
 
-        if (*format == '%')
-          format++;
-        else if (*format >= '1' && *format <= '9')
-          {
-            unsigned int number = *format - '1';
+	if (*format == '%')
+	  format++;
+	else if (*format >= '1' && *format <= '9')
+	  {
+	    unsigned int number = *format - '1';
 
-            while (spec.arg_count <= number)
-              spec.args_used[spec.arg_count++] = false;
-            spec.args_used[number] = true;
+	    while (spec.arg_count <= number)
+	      spec.args_used[spec.arg_count++] = false;
+	    spec.args_used[number] = true;
 
-            format++;
-          }
-        else
-          {
-            if (*format == '\0')
-              {
-                *invalid_reason = INVALID_UNTERMINATED_DIRECTIVE ();
-                FDI_SET (format - 1, FMTDIR_ERROR);
-              }
-            else
-              {
-                *invalid_reason =
-                  (c_isprint (*format)
-                   ? xasprintf (_("In the directive number %u, the character '%c' is not a digit between 1 and 9."), spec.directives, *format)
-                   : xasprintf (_("The character that terminates the directive number %u is not a digit between 1 and 9."), spec.directives));
-                FDI_SET (format, FMTDIR_ERROR);
-              }
-            goto bad_format;
-          }
-
-        FDI_SET (format - 1, FMTDIR_END);
+	    format++;
+	  }
+	else
+	  {
+	    *invalid_reason =
+	      (*format == '\0'
+	       ? INVALID_UNTERMINATED_DIRECTIVE ()
+	       : (c_isprint (*format)
+		  ? xasprintf (_("In the directive number %u, the character '%c' is not a digit between 1 and 9."), spec.directives, *format)
+		  : xasprintf (_("The character that terminates the directive number %u is not a digit between 1 and 9."), spec.directives)));
+	    goto bad_format;
+	  }
       }
 
-  result = XMALLOC (struct spec);
+  result = (struct spec *) xmalloc (sizeof (struct spec));
   *result = spec;
   return result;
 
@@ -123,8 +112,8 @@ format_get_number_of_directives (void *descr)
 
 static bool
 format_check (void *msgid_descr, void *msgstr_descr, bool equality,
-              formatstring_error_logger_t error_logger,
-              const char *pretty_msgid, const char *pretty_msgstr)
+	      formatstring_error_logger_t error_logger,
+	      const char *pretty_msgstr)
 {
   struct spec *spec1 = (struct spec *) msgid_descr;
   struct spec *spec2 = (struct spec *) msgstr_descr;
@@ -137,19 +126,15 @@ format_check (void *msgid_descr, void *msgstr_descr, bool equality,
       bool arg_used2 = (i < spec2->arg_count && spec2->args_used[i]);
 
       if (equality ? (arg_used1 != arg_used2) : (!arg_used1 && arg_used2))
-        {
-          if (error_logger)
-            {
-              if (arg_used1)
-                error_logger (_("a format specification for argument %u doesn't exist in '%s'"),
-                              i + 1, pretty_msgstr);
-              else
-                error_logger (_("a format specification for argument %u, as in '%s', doesn't exist in '%s'"),
-                              i + 1, pretty_msgstr, pretty_msgid);
-            }
-          err = true;
-          break;
-        }
+	{
+	  if (error_logger)
+	    error_logger (arg_used1
+			  ? _("a format specification for argument %u doesn't exist in '%s'")
+			  : _("a format specification for argument %u, as in '%s', doesn't exist in 'msgid'"),
+			  i + 1, pretty_msgstr);
+	  err = true;
+	  break;
+	}
     }
 
   return err;
@@ -161,7 +146,6 @@ struct formatstring_parser formatstring_ycp =
   format_parse,
   format_free,
   format_get_number_of_directives,
-  NULL,
   format_check
 };
 
@@ -171,7 +155,6 @@ struct formatstring_parser formatstring_smalltalk =
   format_parse,
   format_free,
   format_get_number_of_directives,
-  NULL,
   format_check
 };
 
@@ -182,6 +165,7 @@ struct formatstring_parser formatstring_smalltalk =
    format_parse for strings read from standard input.  */
 
 #include <stdio.h>
+#include "getline.h"
 
 static void
 format_print (void *descr)
@@ -199,11 +183,11 @@ format_print (void *descr)
   for (i = 0; i < spec->arg_count; i++)
     {
       if (i > 0)
-        printf (" ");
+	printf (" ");
       if (spec->args_used[i])
-        printf ("*");
+	printf ("*");
       else
-        printf ("_");
+	printf ("_");
     }
   printf (")");
 }
@@ -221,17 +205,17 @@ main ()
 
       line_len = getline (&line, &line_size, stdin);
       if (line_len < 0)
-        break;
+	break;
       if (line_len > 0 && line[line_len - 1] == '\n')
-        line[--line_len] = '\0';
+	line[--line_len] = '\0';
 
       invalid_reason = NULL;
-      descr = format_parse (line, false, NULL, &invalid_reason);
+      descr = format_parse (line, false, &invalid_reason);
 
       format_print (descr);
       printf ("\n");
       if (descr == NULL)
-        printf ("%s\n", invalid_reason);
+	printf ("%s\n", invalid_reason);
 
       free (invalid_reason);
       free (line);
@@ -243,7 +227,7 @@ main ()
 /*
  * For Emacs M-x compile
  * Local Variables:
- * compile-command: "/bin/sh ../libtool --tag=CC --mode=link gcc -o a.out -static -O -g -Wall -I.. -I../gnulib-lib -I../intl -DHAVE_CONFIG_H -DTEST format-ycp.c ../gnulib-lib/libgettextlib.la"
+ * compile-command: "/bin/sh ../libtool --mode=link gcc -o a.out -static -O -g -Wall -I.. -I../lib -I../intl -DHAVE_CONFIG_H -DTEST format-ycp.c ../lib/libgettextlib.la"
  * End:
  */
 

@@ -62,15 +62,13 @@ msgid "memory exhausted"
 msgstr "virtueller Speicher erschöpft"
 EOF
 
-tmpfiles="$tmpfiles mcomm-test22.tmp mcomm-test22.out"
-rm -f mcomm-test22.tmp
+tmpfiles="$tmpfiles mcomm-test22.out"
+rm -f mcomm-test22.out
 
 : ${MSGCOMM=msgcomm}
 
-${MSGCOMM} --less-than=2 -o mcomm-test22.tmp \
+${MSGCOMM} --less-than=2 -o mcomm-test22.out \
     mcomm-test22.in1 mcomm-test22.in2
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < mcomm-test22.tmp > mcomm-test22.out
 test $? = 0 || { rm -fr $tmpfiles; exit 1; }
 
 tmpfiles="$tmpfiles mcomm-test22.ok"

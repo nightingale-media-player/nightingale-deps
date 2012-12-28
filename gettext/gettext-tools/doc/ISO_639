@@ -11,8 +11,6 @@ Sinhalese corrected, 1995-10-10 by Michael Everson
 Faeroese corrected to Faroese, 1995-11-18 by Keld Simonsen
 Updated from http://lcweb.loc.gov/standards/iso639-2/codechanges.html,
 2004-01-18 by Bruno Haible
-Updated from http://www.loc.gov/standards/iso639-2/index.html
-2008-04-25 by Bruno Haible
 
 Two-letter lower-case symbols are used.
 The Registration Authority for ISO 639 is Infoterm, Osterreichisches
@@ -32,7 +30,7 @@ ay Aymara
 az Azerbaijani
 
 ba Bashkir
-be Belarusian
+be Byelorussian; Belarusian
 bg Bulgarian
 bh Bihari
 bi Bislama
@@ -54,7 +52,7 @@ cy Welsh
 
 da Danish
 de German
-dv Divehi; Maldivian
+dv Divehi
 dz Dzongkha; Bhutani
 
 ee @'Ew@'e
@@ -71,16 +69,16 @@ fi Finnish
 fj Fijian; Fiji
 fo Faroese
 fr French
-fy Western Frisian
+fy Frisian
 
 ga Irish
-gd Scottish Gaelic
-gl Galician
+gd Scots; Gaelic
+gl Gallegan; Galician
 gn Guarani
 gu Gujarati
 gv Manx
 
-ha Hausa
+ha Hausa (?)
 he Hebrew (formerly iw)
 hi Hindi
 ho Hiri Motu
@@ -92,10 +90,10 @@ hz Herero
 
 ia Interlingua
 id Indonesian (formerly in)
-ie Interlingue; Occidental
+ie Interlingue
 ig Igbo
-ii Sichuan Yi; Nuosu
-ik Inupiak; Inupiaq
+ii Sichuan Yi
+ik Inupiak
 io Ido
 is Icelandic
 it Italian
@@ -106,11 +104,11 @@ jv Javanese
 
 ka Georgian
 kg Kongo
-ki Kikuyu; Gikuyu
-kj Kuanyama; Kwanyama
+ki Kikuyu
+kj Kuanyama
 kk Kazakh
 kl Kalaallisut; Greenlandic
-km Central Khmer; Cambodian
+km Khmer; Cambodian
 kn Kannada
 ko Korean
 kr Kanuri
@@ -121,7 +119,7 @@ kw Cornish
 ky Kirghiz
 
 la Latin
-lb Letzeburgesch; Luxembourgish
+lb Letzeburgesch
 lg Ganda
 li Limburgish; Limburger; Limburgan
 ln Lingala
@@ -131,7 +129,7 @@ lu Luba-Katanga
 lv Latvian; Lettish
 
 mg Malagasy
-mh Marshallese
+mh Marshall
 mi Maori
 mk Macedonian
 ml Malayalam
@@ -151,7 +149,7 @@ nl Dutch
 nn Norwegian Nynorsk
 no Norwegian
 nr Ndebele, South
-nv Navajo; Navaho
+nv Navajo
 ny Chichewa; Nyanja
 
 oc Occitan; Proven@,{c}al
@@ -163,12 +161,12 @@ os Ossetian; Ossetic
 pa Panjabi; Punjabi
 pi Pali
 pl Polish
-ps Pashto; Pushto
+ps Pashto, Pushto
 pt Portuguese
 
 qu Quechua
 
-rm Romansh
+rm Rhaeto-Romance
 rn Rundi; Kirundi
 ro Romanian
 ru Russian
@@ -179,7 +177,7 @@ sc Sardinian
 sd Sindhi
 se Northern Sami
 sg Sango; Sangro
-si Sinhala; Sinhalese
+si Sinhalese
 sk Slovak
 sl Slovenian
 sm Samoan
@@ -201,7 +199,7 @@ ti Tigrinya
 tk Turkmen
 tl Tagalog
 tn Tswana; Setswana
-to Tonga
+to Tonga (?)
 tr Turkish
 ts Tsonga
 tt Tatar

@@ -1,165 +1,156 @@
-# GNU gettext-runtimeì˜ í•œêµ­ì–´ ë©”ì‹œì§€
-# Copyright (C) 1996, 1997, 2001, 2002, 2003, 2006, 2009, 2010 Free Software Foundation, Inc.
-# This file is distributed under the same license as the gettext package.
-#
+# GNU gettext-runtimeÀÇ ÇÑ±¹¾î ¸Ş½ÃÁö
+# Copyright (C) 1996, 1997, 2001, 2002, 2003 Free Software Foundation, Inc.
 # Bang Jun-Young <bangjy@geocities.com>, 1995-1997.
-# Changwoo Ryu <cwryu@debian.org>, 2001-2006, 2009, 2010.
+# Changwoo Ryu <cwryu@debian.org>, 2001-2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: GNU gettext-runtime 0.18\n"
+"Project-Id-Version: GNU gettext-runtime 0.13-pre1\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
-"POT-Creation-Date: 2012-12-25 14:19+0900\n"
-"PO-Revision-Date: 2010-05-15 23:27+0900\n"
+"POT-Creation-Date: 2005-01-14 13:07+0100\n"
+"PO-Revision-Date: 2003-11-21 04:26+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
-"Language: ko\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=EUC-KR\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: gnulib-lib/closeout.c:66
+#: ../gettext-tools/lib/closeout.c:64
 msgid "write error"
-msgstr "ì“°ê¸° ì˜¤ë¥˜"
+msgstr "¾²±â ¿À·ù"
 
-#: gnulib-lib/error.c:188
+#: ../gettext-tools/lib/error.c:121
 msgid "Unknown system error"
-msgstr "ì•Œ ìˆ˜ ì—†ëŠ” ì‹œìŠ¤í…œ ì˜¤ë¥˜"
+msgstr "¾Ë ¼ö ¾ø´Â ½Ã½ºÅÛ ¿À·ù"
 
-#: gnulib-lib/getopt.c:547 gnulib-lib/getopt.c:576
-#, fuzzy, c-format
-msgid "%s: option '%s' is ambiguous; possibilities:"
-msgstr "%s: '%s' ì˜µì…˜ì€ ëª¨í˜¸í•œ ì˜µì…˜ì…ë‹ˆë‹¤\n"
-
-#: gnulib-lib/getopt.c:624 gnulib-lib/getopt.c:628
+#: ../gettext-tools/lib/getopt.c:551 ../gettext-tools/lib/getopt.c:570
 #, c-format
-msgid "%s: option '--%s' doesn't allow an argument\n"
-msgstr "%s: '--%s' ì˜µì…˜ì€ ì¸ìˆ˜ë¥¼ í—ˆìš©í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤\n"
+msgid "%s: option `%s' is ambiguous\n"
+msgstr "%s: `%s'Àº(´Â) ¸ğÈ£ÇÑ ¿É¼ÇÀÔ´Ï´Ù\n"
 
-#: gnulib-lib/getopt.c:637 gnulib-lib/getopt.c:642
+#: ../gettext-tools/lib/getopt.c:603 ../gettext-tools/lib/getopt.c:607
 #, c-format
-msgid "%s: option '%c%s' doesn't allow an argument\n"
-msgstr "%s: '%c%s' ì˜µì…˜ì€ ì¸ìˆ˜ë¥¼ í—ˆìš©í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤\n"
+msgid "%s: option `--%s' doesn't allow an argument\n"
+msgstr "%s: `--%s' ¿É¼ÇÀº ÀÎ¼ö¸¦ Çã¿ëÇÏÁö ¾Ê½À´Ï´Ù\n"
 
-#: gnulib-lib/getopt.c:685 gnulib-lib/getopt.c:704
+#: ../gettext-tools/lib/getopt.c:616 ../gettext-tools/lib/getopt.c:621
 #, c-format
-msgid "%s: option '--%s' requires an argument\n"
-msgstr "%s: '--%s' ì˜µì…˜ì€ ì¸ìˆ˜ê°€ í•„ìš”í•©ë‹ˆë‹¤\n"
+msgid "%s: option `%c%s' doesn't allow an argument\n"
+msgstr "%s: `%c%s' ¿É¼ÇÀº ÀÎ¼ö¸¦ Çã¿ëÇÏÁö ¾Ê½À´Ï´Ù\n"
 
-#: gnulib-lib/getopt.c:742 gnulib-lib/getopt.c:745
+#: ../gettext-tools/lib/getopt.c:667 ../gettext-tools/lib/getopt.c:689
+#: ../gettext-tools/lib/getopt.c:1020 ../gettext-tools/lib/getopt.c:1042
 #, c-format
-msgid "%s: unrecognized option '--%s'\n"
-msgstr "%s: ì¸ì‹í•  ìˆ˜ ì—†ëŠ” ì˜µì…˜ '--%s'\n"
+msgid "%s: option `%s' requires an argument\n"
+msgstr "%s: `%s' ¿É¼ÇÀº ÀÎ¼ö°¡ ÇÊ¿äÇÕ´Ï´Ù\n"
 
-#: gnulib-lib/getopt.c:753 gnulib-lib/getopt.c:756
+#: ../gettext-tools/lib/getopt.c:727 ../gettext-tools/lib/getopt.c:730
 #, c-format
-msgid "%s: unrecognized option '%c%s'\n"
-msgstr "%s: ì¸ì‹í•  ìˆ˜ ì—†ëŠ” ì˜µì…˜ '%c%s'\n"
+msgid "%s: unrecognized option `--%s'\n"
+msgstr "%s: ÀÎ½ÄÇÒ ¼ö ¾ø´Â ¿É¼Ç `--%s'\n"
 
-#: gnulib-lib/getopt.c:805 gnulib-lib/getopt.c:808
+#: ../gettext-tools/lib/getopt.c:738 ../gettext-tools/lib/getopt.c:741
 #, c-format
-msgid "%s: invalid option -- '%c'\n"
-msgstr "%s: ì˜ëª»ëœ ì˜µì…˜ -- '%c'\n"
+msgid "%s: unrecognized option `%c%s'\n"
+msgstr "%s: ÀÎ½ÄÇÒ ¼ö ¾ø´Â ¿É¼Ç `%c%s'\n"
 
-#: gnulib-lib/getopt.c:861 gnulib-lib/getopt.c:878 gnulib-lib/getopt.c:1088
-#: gnulib-lib/getopt.c:1106
+#: ../gettext-tools/lib/getopt.c:796 ../gettext-tools/lib/getopt.c:799
 #, c-format
-msgid "%s: option requires an argument -- '%c'\n"
-msgstr "%s: ì´ ì˜µì…˜ì€ ì¸ìˆ˜ê°€ í•„ìš”í•©ë‹ˆë‹¤ -- '%c'\n"
+msgid "%s: illegal option -- %c\n"
+msgstr "%s: Àß¸øµÈ ¿É¼Ç -- %c\n"
 
-#: gnulib-lib/getopt.c:934 gnulib-lib/getopt.c:950
+#: ../gettext-tools/lib/getopt.c:805 ../gettext-tools/lib/getopt.c:808
 #, c-format
-msgid "%s: option '-W %s' is ambiguous\n"
-msgstr "%s: '-W %s' ì˜µì…˜ì€ ëª¨í˜¸í•œ ì˜µì…˜ì…ë‹ˆë‹¤\n"
+msgid "%s: invalid option -- %c\n"
+msgstr "%s: ºÎÀûÀıÇÑ ¿É¼Ç -- %c\n"
 
-#: gnulib-lib/getopt.c:974 gnulib-lib/getopt.c:992
+#: ../gettext-tools/lib/getopt.c:863 ../gettext-tools/lib/getopt.c:882
+#: ../gettext-tools/lib/getopt.c:1095 ../gettext-tools/lib/getopt.c:1116
 #, c-format
-msgid "%s: option '-W %s' doesn't allow an argument\n"
-msgstr "%s: '-W %s' ì˜µì…˜ì€ ì¸ìˆ˜ë¥¼ í—ˆìš©í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤\n"
+msgid "%s: option requires an argument -- %c\n"
+msgstr "%s: ÀÌ ¿É¼ÇÀº ÀÎ¼ö°¡ ÇÊ¿äÇÕ´Ï´Ù -- %c\n"
 
-#: gnulib-lib/getopt.c:1013 gnulib-lib/getopt.c:1031
+#: ../gettext-tools/lib/getopt.c:935 ../gettext-tools/lib/getopt.c:954
 #, c-format
-msgid "%s: option '-W %s' requires an argument\n"
-msgstr "%s: '-W %s' ì˜µì…˜ì€ ì¸ìˆ˜ê°€ í•„ìš”í•©ë‹ˆë‹¤\n"
+msgid "%s: option `-W %s' is ambiguous\n"
+msgstr "%s: `-W %s'Àº(´Â) ¸ğÈ£ÇÑ ¿É¼ÇÀÔ´Ï´Ù\n"
 
-#: gnulib-lib/xmalloc.c:37
+#: ../gettext-tools/lib/getopt.c:978 ../gettext-tools/lib/getopt.c:999
+#, c-format
+msgid "%s: option `-W %s' doesn't allow an argument\n"
+msgstr "%s: `-W %s' ¿É¼ÇÀº ÀÎ¼ö¸¦ Çã¿ëÇÏÁö ¾Ê½À´Ï´Ù\n"
+
+#: ../gettext-tools/lib/xmalloc.c:41
 #, c-format
 msgid "memory exhausted"
-msgstr "ë©”ëª¨ë¦¬ê°€ ë°”ë‹¥ë‚¬ìŠµë‹ˆë‹¤"
+msgstr "¸Ş¸ğ¸®°¡ ¹Ù´Ú³µ½À´Ï´Ù"
 
-#: src/envsubst.c:112 src/gettext.c:133 src/ngettext.c:123
+#: src/envsubst.c:113 src/gettext.c:135 src/ngettext.c:125
 #, c-format, no-wrap
 msgid ""
 "Copyright (C) %s Free Software Foundation, Inc.\n"
-"License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n"
-"This is free software: you are free to change and redistribute it.\n"
-"There is NO WARRANTY, to the extent permitted by law.\n"
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
 msgstr ""
 "Copyright (C) %s Free Software Foundation, Inc.\n"
-"License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n"
-"This is free software: you are free to change and redistribute it.\n"
-"There is NO WARRANTY, to the extent permitted by law.\n"
+"ÀÌ ÇÁ·Î±×·¥Àº ÀÚÀ¯ ¼ÒÇÁÆ®¿ş¾îÀÔ´Ï´Ù.  º¹»ç Á¶°ÇÀº ¼Ò½º¸¦ ÂüÁ¶ÇÏ½Ê½Ã¿À. »óÇ°¼º\n"
+"ÀÌ³ª Æ¯Á¤ ¸ñÀû¿¡ ´ëÇÑ ÀûÇÕ¼ºÀ» ºñ·ÔÇÏ¿©, ¾î¶°ÇÑ º¸Áõµµ ÇÏÁö ¾Ê½À´Ï´Ù.\n"
 
-#: src/envsubst.c:118 src/gettext.c:139 src/ngettext.c:129
+#: src/envsubst.c:118 src/gettext.c:140 src/ngettext.c:130
 #, c-format
 msgid "Written by %s.\n"
-msgstr "%sì´(ê°€) ë§Œë“¤ì—ˆìŠµë‹ˆë‹¤.\n"
+msgstr "%sÀÌ(°¡) ¸¸µé¾ú½À´Ï´Ù.\n"
 
-#. This is a proper name. See the gettext manual, section Names.
-#: src/envsubst.c:118
-msgid "Bruno Haible"
-msgstr "Bruno Haible"
-
-#: src/envsubst.c:127 src/gettext.c:157 src/ngettext.c:141
+#: src/envsubst.c:127 src/gettext.c:158 src/ngettext.c:142
 #, c-format
 msgid "too many arguments"
-msgstr "ì¸ìˆ˜ê°€ ë„ˆë¬´ ë§ìŒ"
+msgstr "ÀÎ¼ö°¡ ³Ê¹« ¸¹À½"
 
-#: src/envsubst.c:138 src/gettext.c:167 src/ngettext.c:153
+#: src/envsubst.c:138 src/gettext.c:168 src/ngettext.c:154
 #, c-format
 msgid "missing arguments"
-msgstr "ì¸ìˆ˜ê°€ ë¹ ì¡ŒìŒ"
+msgstr "ÀÎ¼ö°¡ ºüÁ³À½"
 
-#: src/envsubst.c:171 src/gettext.c:238 src/ngettext.c:207
-#, fuzzy, c-format
-msgid "Try '%s --help' for more information.\n"
-msgstr "ë” ë§ì€ ì •ë³´ë¥¼ ë³´ë ¤ë©´ `%s --help' í•˜ì‹­ì‹œì˜¤.\n"
+#: src/envsubst.c:171 src/gettext.c:239 src/ngettext.c:208
+#, c-format
+msgid "Try `%s --help' for more information.\n"
+msgstr "´õ ¸¹Àº Á¤º¸¸¦ º¸·Á¸é `%s --help' ÇÏ½Ê½Ã¿À\n"
 
 #: src/envsubst.c:176
 #, c-format, no-wrap
 msgid "Usage: %s [OPTION] [SHELL-FORMAT]\n"
-msgstr "ì‚¬ìš©ë²•: %s [<ì˜µì…˜>] [<ì‰˜-í˜•ì‹>]\n"
+msgstr "»ç¿ë¹ı: %s [<¿É¼Ç>] [<½©-Çü½Ä>]\n"
 
 #: src/envsubst.c:181
 #, c-format, no-wrap
 msgid "Substitutes the values of environment variables.\n"
-msgstr "í™˜ê²½ ë³€ìˆ˜ ê°’ì„ ì¹˜í™˜í•©ë‹ˆë‹¤.\n"
+msgstr "È¯°æ º¯¼ö °ªÀ» Ä¡È¯ÇÕ´Ï´Ù.\n"
 
 #: src/envsubst.c:185
 #, c-format, no-wrap
 msgid "Operation mode:\n"
-msgstr "ë™ì‘ ëª¨ë“œ:\n"
+msgstr "µ¿ÀÛ ¸ğµå:\n"
 
 #: src/envsubst.c:188
 #, c-format, no-wrap
 msgid "  -v, --variables             output the variables occurring in SHELL-FORMAT\n"
-msgstr "  -v, --variables             <ì‰˜-í˜•ì‹>ì— ë‚˜ì˜¤ëŠ” ë³€ìˆ˜ë¥¼ ì¶œë ¥í•©ë‹ˆë‹¤\n"
+msgstr "  -v, --variables             <½©-Çü½Ä>¿¡ ³ª¿À´Â º¯¼ö¸¦ Ãâ·ÂÇÕ´Ï´Ù\n"
 
 #: src/envsubst.c:192
 #, c-format, no-wrap
 msgid "Informative output:\n"
-msgstr "ì •ë³´ ì¶œë ¥:\n"
+msgstr "Á¤º¸ Ãâ·Â:\n"
 
 #: src/envsubst.c:195
 #, c-format, no-wrap
 msgid "  -h, --help                  display this help and exit\n"
-msgstr "  -h, --help                  ì´ ë„ì›€ë§ì„ í‘œì‹œí•˜ê³  ëë‚©ë‹ˆë‹¤\n"
+msgstr "  -h, --help                  ÀÌ µµ¿ò¸»À» Ç¥½ÃÇÏ°í ³¡³³´Ï´Ù\n"
 
 #: src/envsubst.c:198
 #, c-format, no-wrap
 msgid "  -V, --version               output version information and exit\n"
-msgstr "  -V, --version               ë²„ì „ ì •ë³´ë¥¼ í‘œì‹œí•˜ê³  ëë‚©ë‹ˆë‹¤\n"
+msgstr "  -V, --version               ¹öÀü Á¤º¸¸¦ Ç¥½ÃÇÏ°í ³¡³³´Ï´Ù\n"
 
 #: src/envsubst.c:202
 #, c-format, no-wrap
@@ -171,10 +162,10 @@ msgid ""
 "substituted; otherwise all environment variables references occurring in\n"
 "standard input are substituted.\n"
 msgstr ""
-"ì¼ë°˜ ë™ì‘ ëª¨ë“œì—ì„œëŠ”, í‘œì¤€ ì…ë ¥ì„ í‘œì¤€ ì¶œë ¥ìœ¼ë¡œ ë³µì‚¬í•©ë‹ˆë‹¤. ì´ ë•Œ, $ë³€ìˆ˜ í˜¹ì€\n"
-"${ë³€ìˆ˜} í˜•ì‹ì˜ í™˜ê²½ ë³€ìˆ˜ëŠ” í•´ë‹¹ë˜ëŠ” í™˜ê²½ ë³€ìˆ˜ ê°’ìœ¼ë¡œ ì¹˜í™˜í•©ë‹ˆë‹¤.  ë§Œì•½\n"
-"<ì‰˜-í˜•ì‹>ì„ ì“°ë©´, <ì‰˜-í˜•ì‹>ì—ì„œ ì‚¬ìš©í•œ í™˜ê²½ ë³€ìˆ˜ë§Œ ì¹˜í™˜í•©ë‹ˆë‹¤; <ì‰˜-í˜•ì‹>ì„\n"
-"ì“°ì§€ ì•Šìœ¼ë©´ í‘œì¤€ ì…ë ¥ì˜ ëª¨ë“  í™˜ê²½ ë³€ìˆ˜ë¥¼ ì¹˜í™˜í•©ë‹ˆë‹¤.\n"
+"ÀÏ¹İ µ¿ÀÛ ¸ğµå¿¡¼­´Â, Ç¥ÁØ ÀÔ·ÂÀ» Ç¥ÁØ Ãâ·ÂÀ¸·Î º¹»çÇÕ´Ï´Ù. ÀÌ ¶§, $º¯¼ö È¤Àº\n"
+"${º¯¼ö} Çü½ÄÀÇ È¯°æ º¯¼ö´Â ÇØ´çµÇ´Â È¯°æ º¯¼ö °ªÀ¸·Î Ä¡È¯ÇÕ´Ï´Ù.  ¸¸¾à\n"
+"<½©-Çü½Ä>À» ¾²¸é, <½©-Çü½Ä>¿¡¼­ »ç¿ëÇÑ È¯°æ º¯¼ö¸¸ Ä¡È¯ÇÕ´Ï´Ù; <½©-Çü½Ä>À»\n"
+"¾²Áö ¾ÊÀ¸¸é Ç¥ÁØ ÀÔ·ÂÀÇ ¸ğµç È¯°æ º¯¼ö¸¦ Ä¡È¯ÇÕ´Ï´Ù.\n"
 
 #: src/envsubst.c:211
 #, c-format, no-wrap
@@ -182,46 +173,37 @@ msgid ""
 "When --variables is used, standard input is ignored, and the output consists\n"
 "of the environment variables that are referenced in SHELL-FORMAT, one per line.\n"
 msgstr ""
-"--variables ì˜µì…˜ì„ ì‚¬ìš©í•˜ë©´, í‘œì¤€ ì…ë ¥ì„ ë¬´ì‹œí•˜ê³ , <ì‰˜-í˜•ì‹>ì— ì°¸ì¡°ëœ í™˜ê²½ ë³€ìˆ˜ë¥¼\n"
-"í•œ ì¤„ì— í•˜ë‚˜ì”© ì¶œë ¥í•©ë‹ˆë‹¤.\n"
+"--variables ¿É¼ÇÀ» »ç¿ëÇÏ¸é, Ç¥ÁØ ÀÔ·ÂÀ» ¹«½ÃÇÏ°í, <½©-Çü½Ä>¿¡ ÂüÁ¶µÈ È¯°æ º¯¼ö¸¦\n"
+"ÇÑ ÁÙ¿¡ ÇÏ³ª¾¿ Ãâ·ÂÇÕ´Ï´Ù.\n"
 
-#. TRANSLATORS: The placeholder indicates the bug-reporting address
-#. for this package.  Please add _another line_ saying
-#. "Report translation bugs to <...>\n" with the address for translation
-#. bugs (typically your translation team's web or email address).
-#: src/envsubst.c:219 src/gettext.c:279 src/ngettext.c:245
+#: src/envsubst.c:215 src/gettext.c:276 src/ngettext.c:242
 msgid "Report bugs to <bug-gnu-gettext@gnu.org>.\n"
-msgstr "<bug-gnu-gettext@gnu.org>ë¡œ ë¬¸ì œì ì„ ì•Œë ¤ ì£¼ì‹­ì‹œì˜¤.\n"
+msgstr "<bug-gnu-gettext@gnu.org>·Î ¹®Á¦Á¡À» ¾Ë·Á ÁÖ½Ê½Ã¿À.\n"
 
-#: src/envsubst.c:442
+#: src/envsubst.c:438
 #, c-format
 msgid "error while reading \"%s\""
-msgstr "\"%s\"ì„(ë¥¼) ì½ëŠ” ë™ì•ˆ ì˜¤ë¥˜ ë°œìƒ"
+msgstr "\"%s\"À»(¸¦) ÀĞ´Â µ¿¾È ¿À·ù ¹ß»ı"
 
-#: src/envsubst.c:443
+#: src/envsubst.c:439
 msgid "standard input"
-msgstr "í‘œì¤€ ì…ë ¥"
+msgstr "Ç¥ÁØ ÀÔ·Â"
 
-#. This is a proper name. See the gettext manual, section Names.
-#: src/gettext.c:139 src/ngettext.c:129
-msgid "Ulrich Drepper"
-msgstr "Ulrich Drepper"
-
-#: src/gettext.c:243
+#: src/gettext.c:244
 #, c-format, no-wrap
 msgid ""
 "Usage: %s [OPTION] [[TEXTDOMAIN] MSGID]\n"
 "or:    %s [OPTION] -s [MSGID]...\n"
 msgstr ""
-"ì‚¬ìš©ë²•: %s [<ì˜µì…˜>] [[<TEXTDOMAIN>] <MSGID>]\n"
-"í˜¹ì€:   %s [<ì˜µì…˜>] -s [<MSGID>]...\n"
+"»ç¿ë¹ı: %s [<¿É¼Ç>] [[<TEXTDOMAIN>] <MSGID>]\n"
+"È¤Àº:   %s [<¿É¼Ç>] -s [<MSGID>]...\n"
 
-#: src/gettext.c:249
+#: src/gettext.c:250
 #, c-format, no-wrap
 msgid "Display native language translation of a textual message.\n"
-msgstr "ì£¼ì–´ì§„ ë©”ì‹œì§€ì— ëŒ€í•œ ê³ ìœ ì–´ ë²ˆì—­ë¬¸ì„ í‘œì‹œí•©ë‹ˆë‹¤.\n"
+msgstr "ÁÖ¾îÁø ¸Ş¼¼Áö¿¡ ´ëÇÑ °íÀ¯¾î ¹ø¿ª¹®À» Ç¥½ÃÇÕ´Ï´Ù.\n"
 
-#: src/gettext.c:253
+#: src/gettext.c:254
 #, c-format, no-wrap
 msgid ""
 "  -d, --domain=TEXTDOMAIN   retrieve translated messages from TEXTDOMAIN\n"
@@ -233,51 +215,51 @@ msgid ""
 "  [TEXTDOMAIN] MSGID        retrieve translated message corresponding\n"
 "                            to MSGID from TEXTDOMAIN\n"
 msgstr ""
-"  -d, --domain=<TEXTDOMAIN> ë²ˆì—­ëœ ë©”ì‹œì§€ë¥¼ <TEXTDOMAIN>ì—ì„œ ë¶ˆëŸ¬ì˜µë‹ˆë‹¤\n"
-"  -e                        ëª‡ëª‡ ì´ìŠ¤ì¼€ì´í”„ ë¬¸ìì—´ì˜ í™•ì¥ì„ ê°€ëŠ¥ì¼€ í•©ë‹ˆë‹¤\n"
-"  -E                        (í˜¸í™˜ì„±ì„ ìœ„í•´ ë¬´ì‹œë¨)\n"
-"  -h, --help                ì´ ë„ì›€ë§ì„ ë³´ì—¬ì£¼ê³  ì¢…ë£Œí•©ë‹ˆë‹¤\n"
-"  -n                        ë”°ë¼ë¶™ëŠ” ì¤„ë°”ê¿ˆ ë¬¸ìë¥¼ ì œê±°í•©ë‹ˆë‹¤\n"
-"  -V, --version             ë²„ì „ ì •ë³´ë¥¼ í‘œì‹œí•˜ê³  ì¢…ë£Œí•©ë‹ˆë‹¤\n"
-"  [<TEXTDOMAIN>] <MSGID>    <MSGID>ì— ëŒ€ì‘í•˜ëŠ” ë²ˆì—­ëœ ë©”ì‹œì§€ë¥¼ <TEXTDOMAIN>ì—ì„œ\n"
-"                            ë¶ˆëŸ¬ì˜µë‹ˆë‹¤\n"
+"  -d, --domain=<TEXTDOMAIN> ¹ø¿ªµÈ ¸Ş½ÃÁö¸¦ <TEXTDOMAIN>¿¡¼­ ºÒ·¯¿É´Ï´Ù\n"
+"  -e                        ¸î¸î ÀÌ½ºÄÉÀÌÇÁ ¹®ÀÚ¿­ÀÇ È®ÀåÀ» °¡´ÉÄÉ ÇÕ´Ï´Ù\n"
+"  -E                        (È£È¯¼ºÀ» À§ÇØ ¹«½ÃµÊ)\n"
+"  -h, --help                ÀÌ µµ¿ò¸»À» º¸¿©ÁÖ°í Á¾·áÇÕ´Ï´Ù\n"
+"  -n                        µû¶óºÙ´Â ÁÙ¹Ù²Ş ¹®ÀÚ¸¦ Á¦°ÅÇÕ´Ï´Ù\n"
+"  -V, --version             ¹öÀü Á¤º¸¸¦ Ç¥½ÃÇÏ°í Á¾·áÇÕ´Ï´Ù\n"
+"  [<TEXTDOMAIN>] <MSGID>    <MSGID>¿¡ ´ëÀÀÇÏ´Â ¹ø¿ªµÈ ¸Ş½ÃÁö¸¦ <TEXTDOMAIN>¿¡¼­\n"
+"                            ºÒ·¯¿É´Ï´Ù\n"
 
-#: src/gettext.c:264
-#, fuzzy, c-format, no-wrap
+#: src/gettext.c:265
+#, c-format, no-wrap
 msgid ""
 "If the TEXTDOMAIN parameter is not given, the domain is determined from the\n"
 "environment variable TEXTDOMAIN.  If the message catalog is not found in the\n"
 "regular directory, another location can be specified with the environment\n"
 "variable TEXTDOMAINDIR.\n"
-"When used with the -s option the program behaves like the 'echo' command.\n"
+"When used with the -s option the program behaves like the `echo' command.\n"
 "But it does not simply copy its arguments to stdout.  Instead those messages\n"
 "found in the selected catalog are translated.\n"
 "Standard search directory: %s\n"
 msgstr ""
-"<TEXTDOMAIN> ì¸ìê°€ ì£¼ì–´ì§€ì§€ ì•Šìœ¼ë©´, ë„ë©”ì¸ì€ TEXTDOMAIN \n"
-"í™˜ê²½ ë³€ìˆ˜ë¡œ ê²°ì •ë©ë‹ˆë‹¤.  ë©”ì‹œì§€ ëª©ë¡ì´ ì¼ë°˜ì ì¸ ë””ë ‰í„°ë¦¬ì— \n"
-"ì—†ë‹¤ë©´, í™˜ê²½ ë³€ìˆ˜ TEXTDOMAINDIRë¡œ ë‹¤ë¥¸ ìœ„ì¹˜ë¥¼ ì§€ì •í•  ìˆ˜ \n"
-"ìˆìŠµë‹ˆë‹¤.\n"
-"-s ì˜µì…˜ì´ ì“°ì´ë©´ í”„ë¡œê·¸ë¨ì€ `echo' ëª…ë ¹ì²˜ëŸ¼ ë™ì‘í•©ë‹ˆë‹¤. ê·¸ëŸ¬ë‚˜ \n"
-"ë‹¨ìˆœíˆ ì¸ìˆ˜ë¥¼ í‘œì¤€ì¶œë ¥ì— ë³µì‚¬í•˜ì§€ëŠ” ì•ŠìŠµë‹ˆë‹¤.  ëŒ€ì‹ ì— ì§€ì •í•œ \n"
-"ëª©ë¡ì—ì„œ ë²ˆì—­ë˜ì–´ ìˆëŠ” ë©”ì‹œì§€ë§Œì´ ì¶œë ¥ë©ë‹ˆë‹¤.\n"
-"ê¸°ë³¸ íƒìƒ‰ ë””ë ‰í„°ë¦¬: %s\n"
+"<TEXTDOMAIN> ÀÎÀÚ°¡ ÁÖ¾îÁöÁö ¾ÊÀ¸¸é, µµ¸ŞÀÎÀº TEXTDOMAIN \n"
+"È¯°æ º¯¼ö·Î °áÁ¤µË´Ï´Ù.  ¸Ş½ÃÁö ¸ñ·ÏÀÌ ÀÏ¹İÀûÀÎ µğ·ºÅä¸®¿¡ \n"
+"¾ø´Ù¸é, È¯°æ º¯¼ö TEXTDOMAINDIR·Î ´Ù¸¥ À§Ä¡¸¦ ÁöÁ¤ÇÒ ¼ö \n"
+"ÀÖ½À´Ï´Ù.\n"
+"-s ¿É¼ÇÀÌ ¾²ÀÌ¸é ÇÁ·Î±×·¥Àº `echo' ¸í·ÉÃ³·³ µ¿ÀÛÇÕ´Ï´Ù. ±×·¯³ª \n"
+"´Ü¼øÈ÷ ÀÎ¼ö¸¦ Ç¥ÁØÃâ·Â¿¡ º¹»çÇÏÁö´Â ¾Ê½À´Ï´Ù.  ´ë½Å¿¡ ÁöÁ¤ÇÑ \n"
+"¸ñ·Ï¿¡¼­ ¹ø¿ªµÇ¾î ÀÖ´Â ¸Ş½ÃÁö¸¸ÀÌ Ãâ·ÂµË´Ï´Ù.\n"
+"±âº» Å½»ö µğ·ºÅä¸®: %s\n"
 
-#: src/ngettext.c:212
+#: src/ngettext.c:213
 #, c-format, no-wrap
 msgid "Usage: %s [OPTION] [TEXTDOMAIN] MSGID MSGID-PLURAL COUNT\n"
-msgstr "ì‚¬ìš©ë²•: %s [<ì˜µì…˜>] [<TEXTDOMAIN>] <MSGID> <MSGID-PLURAL> <ê°œìˆ˜>\n"
+msgstr "»ç¿ë¹ı: %s [<¿É¼Ç>] [<TEXTDOMAIN>] <MSGID> <MSGID-PLURAL> <°³¼ö>\n"
 
-#: src/ngettext.c:217
+#: src/ngettext.c:218
 #, c-format, no-wrap
 msgid ""
 "Display native language translation of a textual message whose grammatical\n"
 "form depends on a number.\n"
 msgstr ""
-"ìˆ«ìì— ë”°ë¼ ë¬¸ë²•ì´ ë‹¬ë¼ì§€ëŠ”, ì£¼ì–´ì§„ ë©”ì‹œì§€ì— ëŒ€í•œ ê³ ìœ ì–´ ë²ˆì—­ë¬¸ì„\n"
-"í‘œì‹œí•©ë‹ˆë‹¤.\n"
+"¼ıÀÚ¿¡ µû¶ó ¹®¹ıÀÌ ´Ş¶óÁö´Â, ÁÖ¾îÁø ¸Ş¼¼Áö¿¡ ´ëÇÑ °íÀ¯¾î ¹ø¿ª¹®À»\n"
+"Ç¥½ÃÇÕ´Ï´Ù.\n"
 
-#: src/ngettext.c:222
+#: src/ngettext.c:223
 #, c-format, no-wrap
 msgid ""
 "  -d, --domain=TEXTDOMAIN   retrieve translated message from TEXTDOMAIN\n"
@@ -289,16 +271,16 @@ msgid ""
 "  MSGID MSGID-PLURAL        translate MSGID (singular) / MSGID-PLURAL (plural)\n"
 "  COUNT                     choose singular/plural form based on this value\n"
 msgstr ""
-"  -d, --domain=TEXTDOMAIN   ë²ˆì—­ëœ ë©”ì‹œì§€ë¥¼ TEXTDOMAINì—ì„œ ë¶ˆëŸ¬ì˜µë‹ˆë‹¤\n"
-"  -e                        ëª‡ëª‡ ì´ìŠ¤ì¼€ì´í”„ ë¬¸ìì—´ì˜ í™•ì¥ì„ ê°€ëŠ¥ì¼€ í•©ë‹ˆë‹¤\n"
-"  -E                        (í˜¸í™˜ì„±ì„ ìœ„í•´ ë¬´ì‹œë¨)\n"
-"  -h, --help                ì´ ë„ì›€ë§ì„ ë³´ì—¬ì£¼ê³  ëë‚©ë‹ˆë‹¤\n"
-"  -V, --version             ë²„ì „ ì •ë³´ë¥¼ í‘œì‹œí•˜ê³  ëë‚©ë‹ˆë‹¤\n"
-"  [TEXTDOMAIN]              ë²ˆì—­ëœ ë©”ì‹œì§€ë¥¼ TEXTDOMAINì—ì„œ ë¶ˆëŸ¬ì˜µë‹ˆë‹¤\n"
-"  MSGID MSGID-ë³µìˆ˜í˜•        MSGID(ë‹¨ìˆ˜) / MSGID-ë³µìˆ˜í˜•(ë³µìˆ˜)ì„ ë²ˆì—­í•©ë‹ˆë‹¤\n"
-"  ê°œìˆ˜                      ì´ ê°’ì— ë”°ë¼ ë‹¨ìˆ˜/ë³µìˆ˜ë¥¼ ê²°ì •í•©ë‹ˆë‹¤\n"
+"  -d, --domain=TEXTDOMAIN   ¹ø¿ªµÈ ¸Ş½ÃÁö¸¦ TEXTDOMAIN¿¡¼­ ºÒ·¯¿É´Ï´Ù\n"
+"  -e                        ¸î¸î ÀÌ½ºÄÉÀÌÇÁ ¹®ÀÚ¿­ÀÇ È®ÀåÀ» °¡´ÉÄÉ ÇÕ´Ï´Ù\n"
+"  -E                        (È£È¯¼ºÀ» À§ÇØ ¹«½ÃµÊ)\n"
+"  -h, --help                ÀÌ µµ¿ò¸»À» º¸¿©ÁÖ°í ³¡³³´Ï´Ù\n"
+"  -V, --version             ¹öÀü Á¤º¸¸¦ Ç¥½ÃÇÏ°í ³¡³³´Ï´Ù\n"
+"  [TEXTDOMAIN]              ¹ø¿ªµÈ ¸Ş½ÃÁö¸¦ TEXTDOMAIN¿¡¼­ ºÒ·¯¿É´Ï´Ù\n"
+"  MSGID MSGID-º¹¼öÇü        MSGID(´Ü¼ö) / MSGID-º¹¼öÇü(º¹¼ö)À» ¹ø¿ªÇÕ´Ï´Ù\n"
+"  °³¼ö                      ÀÌ °ª¿¡ µû¶ó ´Ü¼ö/º¹¼ö¸¦ °áÁ¤ÇÕ´Ï´Ù\n"
 
-#: src/ngettext.c:233
+#: src/ngettext.c:234
 #, c-format, no-wrap
 msgid ""
 "If the TEXTDOMAIN parameter is not given, the domain is determined from the\n"
@@ -307,8 +289,8 @@ msgid ""
 "variable TEXTDOMAINDIR.\n"
 "Standard search directory: %s\n"
 msgstr ""
-"TEXTDOMAIN ë§¤ê°œë³€ìˆ˜ê°€ ì£¼ì–´ì§€ì§€ ì•Šìœ¼ë©´ ë„ë©”ì¸ì€ TEXTDOMAIN í™˜ê²½ ë³€ìˆ˜ë¡œë¶€í„°\n"
-"ê²°ì •ë©ë‹ˆë‹¤.  ë©”ì‹œì§€ ëª©ë¡ì´ ì¼ë°˜ì ì¸ ë””ë ‰í„°ë¦¬ì— ìˆì§€ ì•Šìœ¼ë©´ í™˜ê²½ ë³€ìˆ˜\n"
-"TEXTDOMAINDIRë¡œ ë‹¤ë¥¸ ìœ„ì¹˜ë¥¼ ì§€ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.\n"
+"TEXTDOMAIN ¸Å°³º¯¼ö°¡ ÁÖ¾îÁöÁö ¾ÊÀ¸¸é µµ¸ŞÀÎÀº TEXTDOMAIN È¯°æ º¯¼ö·ÎºÎÅÍ\n"
+"°áÁ¤µË´Ï´Ù.  ¸Ş½ÃÁö ¸ñ·ÏÀÌ ÀÏ¹İÀûÀÎ µğ·ºÅä¸®¿¡ ÀÖÁö ¾ÊÀ¸¸é È¯°æ º¯¼ö\n"
+"TEXTDOMAINDIR·Î ´Ù¸¥ À§Ä¡¸¦ ÁöÁ¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.\n"
 "\n"
-"í‘œì¤€ íƒìƒ‰ ë””ë ‰í„°ë¦¬: %s\n"
+"Ç¥ÁØ Å½»ö µğ·ºÅä¸®: %s\n"

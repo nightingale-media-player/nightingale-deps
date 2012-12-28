@@ -8,7 +8,6 @@
   s/\&/and/g
   s/ô/@^{o}/g
   s/é/e/g
-  s/Å/Aa/g
   x
   s/^\(..\).*/@item \1/
   G

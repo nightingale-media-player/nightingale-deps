@@ -1,10 +1,10 @@
 ## Makefile for the gettext-tools/doc subdirectory of GNU gettext
-## Copyright (C) 1995-1997, 2001-2007, 2009 Free Software Foundation, Inc.
+## Copyright (C) 1995-1997, 2001-2005 Free Software Foundation, Inc.
 ##
-## This program is free software: you can redistribute it and/or modify
+## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
-## (at your option) any later version.
+## the Free Software Foundation; either version 2, or (at your option)
+## any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,16 +12,20 @@
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program.  If not, see <http://www.gnu.org/licenses/>.
+## along with this program; if not, write to the Free Software Foundation,
+## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 ## Process this file with automake to produce Makefile.in.
+
+docdir = @docdir@
+dvidir = $(docdir)
+psdir = $(docdir)
+pdfdir = $(docdir)
+htmldir = $(docdir)
 
 AUTOMAKE_OPTIONS = 1.2 gnits
 EXTRA_DIST =
 MOSTLYCLEANFILES =
-
-# List of -I options referring to directories that contain texinfo
-# sources used by this directory.
 TEXINCLUDES = -I $(top_srcdir)/../gettext-runtime/doc
 
 SED = sed
@@ -36,8 +40,7 @@ gettext_TEXINFOS = \
   xgettext.texi msginit.texi msgmerge.texi msgcat.texi msgconv.texi \
   msggrep.texi msgfilter.texi msguniq.texi msgcomm.texi msgcmp.texi \
   msgattrib.texi msgen.texi msgexec.texi msgfmt.texi msgunfmt.texi \
-  gettextize.texi autopoint.texi iso-639.texi iso-639-2.texi iso-3166.texi \
-  gpl.texi lgpl.texi fdl.texi \
+  gettextize.texi autopoint.texi iso-639.texi iso-3166.texi \
   $(top_srcdir)/../gettext-runtime/doc/rt-gettext.texi \
   $(top_srcdir)/../gettext-runtime/doc/rt-ngettext.texi \
   $(top_srcdir)/../gettext-runtime/doc/rt-envsubst.texi
@@ -48,20 +51,13 @@ doc_DATA = FAQ.html tutorial.html
 EXTRA_DIST += $(doc_DATA)
 
 EXTRA_DIST += \
-  iso-639.sed iso-639-2.sed iso-3166.sed \
-  ISO_639 ISO_639-2 ISO_3166 ISO_3166_de \
-  texi2html \
+  iso-639.sed iso-3166.sed ISO_639 ISO_3166 ISO_3166_de texi2html \
   ChangeLog.0
 
 iso-639.texi: ISO_639 iso-639.sed
 	$(SED) -f $(srcdir)/iso-639.sed $(srcdir)/ISO_639 > iso-639.tmp
 	rm -f $(srcdir)/iso-639.texi
 	mv iso-639.tmp $(srcdir)/iso-639.texi
-
-iso-639-2.texi: ISO_639-2 iso-639-2.sed
-	$(SED) -f $(srcdir)/iso-639-2.sed $(srcdir)/ISO_639-2 > iso-639-2.tmp
-	rm -f $(srcdir)/iso-639-2.texi
-	mv iso-639-2.tmp $(srcdir)/iso-639-2.texi
 
 iso-3166.texi: ISO_3166 iso-3166.sed
 	$(SED) -f $(srcdir)/iso-3166.sed $(srcdir)/ISO_3166 > iso-3166.tmp
@@ -94,18 +90,16 @@ all-local: html-local
 install-data-local: install-html
 installdirs-local: installdirs-html
 uninstall-local: uninstall-html
-dist-hook: dist-html
+# Hidden from automake, but really activated. Works around an automake-1.5 bug.
+#distdir: dist-html
 
 html-local: html-split
-# Override of automake's definition. The HTML files we want to distribute are
-# not the ones that automake knows about, and we cannot define HTMLS to a value
-# containing wildcards.
 install-html: install-html-split
-	@:
 uninstall-html: uninstall-html-split
 dist-html: dist-html-split
 
-# CLEANFILES: gettext.{dvi,ps,pdf,html} are already known to automake.
+CLEANFILES = gettext.pdf gettext.html
+# gettext.dvi and gettext.ps are already known to automake.
 MAINTAINERCLEANFILES = gettext_*.html
 
 
@@ -115,10 +109,12 @@ MAINTAINERCLEANFILES = gettext_*.html
 #TEXI2DVI = texi2dvi
 TEXI2DVI = texi2dvi $(TEXINCLUDES)
 
-# The install-dvi target is already defined by automake.
+install-dvi: gettext.dvi
+	$(mkinstalldirs) $(DESTDIR)$(dvidir)
+	$(INSTALL_DATA) `if test -f gettext.dvi; then echo .; else echo $(srcdir); fi`/gettext.dvi $(DESTDIR)$(dvidir)/gettext.dvi
 
 installdirs-dvi:
-	$(mkdir_p) $(DESTDIR)$(dvidir)
+	$(mkinstalldirs) $(DESTDIR)$(dvidir)
 
 uninstall-dvi:
 	$(RM) $(DESTDIR)$(dvidir)/gettext.dvi
@@ -146,10 +142,12 @@ DVIPS = @DVIPS@ -D600
 gettext.ps: gettext.dvi
 	$(DVIPS) -o $@ `if test -f gettext.dvi; then echo gettext.dvi; else echo $(srcdir)/gettext.dvi; fi`
 
-# The install-ps target is already defined by automake.
+install-ps: gettext.ps
+	$(mkinstalldirs) $(DESTDIR)$(psdir)
+	$(INSTALL_DATA) `if test -f gettext.ps; then echo .; else echo $(srcdir); fi`/gettext.ps $(DESTDIR)$(psdir)/gettext.ps
 
 installdirs-ps:
-	$(mkdir_p) $(DESTDIR)$(psdir)
+	$(mkinstalldirs) $(DESTDIR)$(psdir)
 
 uninstall-ps:
 	$(RM) $(DESTDIR)$(psdir)/gettext.ps
@@ -160,11 +158,14 @@ uninstall-ps:
 # Override of automake's definition:
 #TEXI2PDF = @TEXI2PDF@
 TEXI2PDF = @TEXI2PDF@ $(TEXINCLUDES)
+SUFFIXES = .pdf
 
-# The install-pdf target is already defined by automake.
+install-pdf: gettext.pdf
+	$(mkinstalldirs) $(DESTDIR)$(pdfdir)
+	$(INSTALL_DATA) `if test -f gettext.pdf; then echo .; else echo $(srcdir); fi`/gettext.pdf $(DESTDIR)$(pdfdir)/gettext.pdf
 
 installdirs-pdf:
-	$(mkdir_p) $(DESTDIR)$(pdfdir)
+	$(mkinstalldirs) $(DESTDIR)$(pdfdir)
 
 uninstall-pdf:
 	$(RM) $(DESTDIR)$(pdfdir)/gettext.pdf
@@ -179,30 +180,29 @@ html-split: gettext_toc.html
 
 # Override of automake's definition.
 # We want to use texi2html, not makeinfo --html.
-# Newer versions of texi2html also need the options --no-menu --no-sec-nav.
 gettext.html: gettext.texi version.texi $(gettext_TEXINFOS)
-	$(TEXI2HTML) $(TEXINCLUDES) -number -monolithic `if test -f gettext.texi; then echo gettext.texi; else echo $(srcdir)/gettext.texi; fi`
+	$(TEXI2HTML) $(TEXINCLUDES) -expandinfo -number -monolithic `if test -f gettext.texi; then echo gettext.texi; else echo $(srcdir)/gettext.texi; fi`
 
 gettext_toc.html: gettext.texi version.texi $(gettext_TEXINFOS)
 	case "@PERL@" in \
 	  *"/missing perl") \
-	     $(TEXI2HTML) $(TEXINCLUDES) -number -split_chapter `if test -f gettext.texi; then echo gettext.texi; else echo $(srcdir)/gettext.texi; fi` || exit 0 ;; \
+	     $(TEXI2HTML) $(TEXINCLUDES) -expandinfo -number -split_chapter `if test -f gettext.texi; then echo gettext.texi; else echo $(srcdir)/gettext.texi; fi` || exit 0 ;; \
 	  *) $(RM) gettext_*.html ; \
-	     $(TEXI2HTML) $(TEXINCLUDES) -number -split_chapter `if test -f gettext.texi; then echo gettext.texi; else echo $(srcdir)/gettext.texi; fi` ;; \
+	     $(TEXI2HTML) $(TEXINCLUDES) -expandinfo -number -split_chapter `if test -f gettext.texi; then echo gettext.texi; else echo $(srcdir)/gettext.texi; fi` ;; \
 	esac
 
 install-html-monolithic: gettext.html
-	$(mkdir_p) $(DESTDIR)$(htmldir)
+	$(mkinstalldirs) $(DESTDIR)$(htmldir)
 	$(INSTALL_DATA) `if test -f gettext.html; then echo .; else echo $(srcdir); fi`/gettext.html $(DESTDIR)$(htmldir)/gettext.html
 
 install-html-split: gettext_toc.html
-	$(mkdir_p) $(DESTDIR)$(htmldir)
+	$(mkinstalldirs) $(DESTDIR)$(htmldir)
 	for file in `if test -f gettext_toc.html; then echo .; else echo $(srcdir); fi`/gettext_*.html; do \
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/`basename $$file`; \
 	done
 
 installdirs-html:
-	$(mkdir_p) $(DESTDIR)$(htmldir)
+	$(mkinstalldirs) $(DESTDIR)$(htmldir)
 
 uninstall-html-monolithic:
 	$(RM) $(DESTDIR)$(htmldir)/gettext.html
@@ -211,16 +211,26 @@ uninstall-html-split:
 	$(RM) $(DESTDIR)$(htmldir)/gettext_*.html
 
 dist-html-monolithic:
-	$(mkdir_p) $(distdir)/
+	$(mkinstalldirs) $(distdir)/
 	file=gettext.html; \
 	if test -f $$file; then d=.; else d=$(srcdir); fi; \
 	cp -p $$d/$$file $(distdir)/$$file || exit 1
 
 # We would like to put gettext_*.html into EXTRA_DIST, but it doesn't work.
-dist-html-split: gettext_toc.html
-	$(mkdir_p) $(distdir)/
+dist-html-split:
+	$(mkinstalldirs) $(distdir)/
 	file=gettext_toc.html; \
 	if test -f $$file; then d=.; else d=$(srcdir); fi; \
 	for file in `cd $$d && echo gettext_*.html`; do \
 	  cp -p $$d/$$file $(distdir)/$$file || exit 1; \
 	done
+
+
+# VMS support.
+
+EXTRA_DIST += Makefile.vms
+
+
+# Woe32 support.
+
+EXTRA_DIST += Makefile.msvc

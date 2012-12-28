@@ -3,12 +3,9 @@
 tmpfiles=""
 trap 'rm -fr $tmpfiles' 1 2 3 15
 
-tmpfiles="$tmpfiles cake.tmp cake.pot"
+tmpfiles="$tmpfiles cake.pot"
 : ${XGETTEXT=xgettext}
-${XGETTEXT} -o cake.tmp --omit-header --no-location ${top_srcdir}/tests/plural-1-prg.c
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < cake.tmp > cake.pot
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+${XGETTEXT} -o cake.pot --omit-header --no-location ${top_srcdir}/tests/plural-1-prg.c
 
 tmpfiles="$tmpfiles cake.ok"
 cat <<EOF > cake.ok
@@ -32,12 +29,9 @@ msgstr[0] "un morceau de gateau"
 msgstr[1] "%d morceaux de gateau"
 EOF
 
-tmpfiles="$tmpfiles fr.po.tmp fr.po.new"
+tmpfiles="$tmpfiles fr.po.new"
 : ${MSGMERGE=msgmerge}
-${MSGMERGE} -q -o fr.po.tmp fr.po cake.pot
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < fr.po.tmp > fr.po.new
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+${MSGMERGE} -q -o fr.po.new fr.po cake.pot
 
 : ${DIFF=diff}
 ${DIFF} fr.po fr.po.new || exit 1
@@ -49,32 +43,26 @@ test -d fr/LC_MESSAGES || mkdir fr/LC_MESSAGES
 : ${MSGFMT=msgfmt}
 ${MSGFMT} -o fr/LC_MESSAGES/cake.mo fr.po
 
-tmpfiles="$tmpfiles fr.po.tmp fr.po.un"
+tmpfiles="$tmpfiles fr.po.tmp"
 : ${MSGUNFMT=msgunfmt}
-${MSGUNFMT} -o fr.po.tmp fr/LC_MESSAGES/cake.mo
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
-LC_ALL=C tr -d '\r' < fr.po.tmp > fr.po.un
-test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+${MSGUNFMT} fr/LC_MESSAGES/cake.mo -o fr.po.tmp
 
 tmpfiles="$tmpfiles fr.po.strip"
 sed 1,2d < fr.po > fr.po.strip
 
 : ${DIFF=diff}
-${DIFF} fr.po.strip fr.po.un || exit 1
+${DIFF} fr.po.strip fr.po.tmp || exit 1
 
-tmpfiles="$tmpfiles cake.ok cake.tmp cake.out"
+tmpfiles="$tmpfiles cake.ok cake.out"
 : ${DIFF=diff}
 echo 'un morceau de gateau' > cake.ok
-LANGUAGE= ./cake fr 1 > cake.tmp || exit 1
-LC_ALL=C tr -d '\r' < cake.tmp > cake.out || exit 1
+LANGUAGE= ./cake fr 1 > cake.out || exit 1
 ${DIFF} cake.ok cake.out || exit 1
 echo '2 morceaux de gateau' > cake.ok
-LANGUAGE= ./cake fr 2 > cake.tmp || exit 1
-LC_ALL=C tr -d '\r' < cake.tmp > cake.out || exit 1
+LANGUAGE= ./cake fr 2 > cake.out || exit 1
 ${DIFF} cake.ok cake.out || exit 1
 echo '10 morceaux de gateau' > cake.ok
-LANGUAGE= ./cake fr 10 > cake.tmp || exit 1
-LC_ALL=C tr -d '\r' < cake.tmp > cake.out || exit 1
+LANGUAGE= ./cake fr 10 > cake.out || exit 1
 ${DIFF} cake.ok cake.out || exit 1
 
 rm -fr $tmpfiles
