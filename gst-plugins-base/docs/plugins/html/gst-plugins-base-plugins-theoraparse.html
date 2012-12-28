@@ -3,13 +3,16 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>theoraparse</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
-<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="prev" href="gst-plugins-base-plugins-theoraenc.html" title="theoraenc">
 <link rel="next" href="gst-plugins-base-plugins-timeoverlay.html" title="timeoverlay">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -17,20 +20,20 @@
 <td><a accesskey="p" href="gst-plugins-base-plugins-theoraenc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Base Plugins 1.0 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-plugins-timeoverlay.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-base-plugins-theoraparse.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-theoraparse.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-theoraparse.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-theoraparse.properties" class="shortcut">Properties</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-theoraparse.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-theoraparse.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-theoraparse.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
-<div class="refentry">
+<div class="refentry" lang="en">
 <a name="gst-plugins-base-plugins-theoraparse"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -41,31 +44,78 @@
 </tr></table></div>
 <div class="refsynopsisdiv">
 <a name="gst-plugins-base-plugins-theoraparse.synopsis"></a><h2>Synopsis</h2>
-<a name="GstTheoraParse"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-base-plugins-theoraparse.html#GstTheoraParse-struct" title="struct GstTheoraParse">GstTheoraParse</a>;
+<a name="GstTheoraParse"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-base-plugins-theoraparse.html#GstTheoraParse-struct" title="GstTheoraParse">GstTheoraParse</a>;
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-theoraparse.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----GstTheoraParse
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----GstTheoraParse
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-theoraparse.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-theoraparse.html#GstTheoraParse--synchronization-points" title='The "synchronization-points" property'>synchronization-points</a>"   <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Value-arrays.html#GValueArray"><span class="type">GValueArray</span></a>*          : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-theoraparse.html#GstTheoraParse--synchronization-points" title='The "synchronization-points" property'>synchronization-points</a>"   <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
+>GValueArray</a>*          : Read / Write
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-theoraparse.description"></a><h2>Description</h2>
+<p>
+The theoraparse element will parse the header packets of the Theora
+stream and put them as the streamheader in the caps. This is used in the
+multifdsink case where you want to stream live theora streams to multiple
+clients, each client has to receive the streamheaders first before they can
+consume the theora packets.
+</p>
+<p>
+This element also makes sure that the buffers that it pushes out are properly
+timestamped and that their offset and offset_end are set. The buffers that
+theoraparse outputs have all of the metadata that oggmux expects to receive,
+which allows you to (for example) remux an ogg/theora file.
+</p>
+<p>
+In addition, this element allows you to fix badly synchronized streams. You
+pass in an array of (granule time, buffer time) synchronization points via
+the synchronization-points GValueArray property, and this element will adjust
+the granulepos values that it outputs. The adjustment will be made by
+offsetting all buffers that it outputs by a specified amount, and updating
+that offset from the value array whenever a keyframe is processed.
+</p>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2572877"></a><h3>Example pipelines</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v filesrc location=video.ogg ! oggdemux ! theoraparse ! fakesink
+</pre></div> This pipeline shows that the streamheader is set in the caps, and that each
+buffer has the timestamp, duration, offset, and offset_end set.
+<div class="informalexample"><pre class="programlisting">
+gst-launch filesrc location=video.ogg ! oggdemux ! theoraparse \
+           ! oggmux ! filesink location=video-remuxed.ogg
+</pre></div> This pipeline shows remuxing. video-remuxed.ogg might not be exactly the same
+as video.ogg, but they should produce exactly the same decoded data.
+</div>
+<p>
+</p>
+<p>
+Last reviewed on 2008-05-28 (0.10.20)</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2">
-<a name="idp9686672"></a><h3>Element Information</h3>
+<div class="refsect2" lang="en">
+<a name="id2590098"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -87,8 +137,79 @@
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
-<a name="idp11264560"></a><h3>Element Pads</h3>
+<div class="refsect2" lang="en">
+<a name="id2634182"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-theora</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-theora</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2642955"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-theora.html#plugin-theora">theora</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Andy Wingo &lt;wingo@pobox.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Parser/Video</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2643016"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -136,26 +257,34 @@
 <p>
 </p>
 </div>
-<div class="refsect1">
+<div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-theoraparse.details"></a><h2>Details</h2>
-<div class="refsect2">
-<a name="GstTheoraParse-struct"></a><h3>struct GstTheoraParse</h3>
-<pre class="programlisting">struct GstTheoraParse;</pre>
+<div class="refsect2" lang="en">
+<a name="GstTheoraParse-struct"></a><h3>GstTheoraParse</h3>
+<pre class="programlisting">typedef struct _GstTheoraParse GstTheoraParse;</pre>
+<p>
+Opaque data structure.</p>
 <p>
 </p>
 </div>
 </div>
-<div class="refsect1">
+<div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-theoraparse.property-details"></a><h2>Property Details</h2>
-<div class="refsect2">
+<div class="refsect2" lang="en">
 <a name="GstTheoraParse--synchronization-points"></a><h3>The <code class="literal">"synchronization-points"</code> property</h3>
-<pre class="programlisting">  "synchronization-points"   <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Value-arrays.html#GValueArray"><span class="type">GValueArray</span></a>*          : Read / Write</pre>
+<pre class="programlisting">  "synchronization-points"   <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
+>GValueArray</a>*          : Read / Write</pre>
 <p>An array of (granuletime, buffertime) pairs.</p>
 </div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-theoraparse.see-also"></a><h2>See Also</h2>
+theoradec, oggdemux, vorbisparse
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

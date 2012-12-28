@@ -17,11 +17,25 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+/**
+ * SECTION:element-appsink
+ * 
+ * Appsink is a sink plugin that supports many different methods for making
+ * the application get a handle on the GStreamer data in a pipeline. Unlike
+ * most GStreamer elements, Appsink provides external API functions.
+ *
+ * For the documentation of the API, please see the
+ * <link linkend="gst-plugins-base-libs-appsink">libgstapp</link> section in
+ * the GStreamer Plugins Base Libraries documentation.
+ *
+ * Since: 0.10.22
+ */
+
+
 /**
  * SECTION:gstappsink
- * @short_description: Easy way for applications to extract samples from a
- *     pipeline
- * @see_also: #GstSample, #GstBaseSink, appsrc
+ * @see_also: #GstBaseSink, appsrc
  *
  * Appsink is a sink plugin that supports many different methods for making
  * the application get a handle on the GStreamer data in a pipeline. Unlike
@@ -30,13 +44,13 @@
  * appsink can be used by linking to the gstappsink.h header file to access the
  * methods or by using the appsink action signals and properties.
  *
- * The normal way of retrieving samples from appsink is by using the
- * gst_app_sink_pull_sample() and gst_app_sink_pull_preroll() methods.
- * These methods block until a sample becomes available in the sink or when the
+ * The normal way of retrieving buffers from appsink is by using the
+ * gst_app_sink_pull_buffer() and gst_app_sink_pull_preroll() methods.
+ * These methods block until a buffer becomes available in the sink or when the
  * sink is shut down or reaches EOS.
  *
  * Appsink will internally use a queue to collect buffers from the streaming
- * thread. If the application is not pulling samples fast enough, this queue
+ * thread. If the application is not pulling buffers fast enough, this queue
  * will consume a lot of memory over time. The "max-buffers" property can be
  * used to limit the queue size. The "drop" property controls whether the
  * streaming thread blocks or if older buffers are dropped when the maximum
@@ -44,14 +58,14 @@
  * affect real-time performance and should be avoided.
  *
  * If a blocking behaviour is not desirable, setting the "emit-signals" property
- * to %TRUE will make appsink emit the "new-sample" and "new-preroll" signals
- * when a sample can be pulled without blocking.
+ * to %TRUE will make appsink emit the "new-buffer" and "new-preroll" signals
+ * when a buffer can be pulled without blocking.
  *
  * The "caps" property on appsink can be used to control the formats that
  * appsink can receive. This property can contain non-fixed caps, the format of
- * the pulled samples can be obtained by getting the sample caps.
+ * the pulled buffers can be obtained by getting the buffer caps.
  *
- * If one of the pull-preroll or pull-sample methods return %NULL, the appsink
+ * If one of the pull-preroll or pull-buffer methods return %NULL, the appsink
  * is stopped or in the EOS state. You can check for the EOS state with the
  * "eos" property or with the gst_app_sink_is_eos() method.
  *
@@ -59,6 +73,8 @@
  * to avoid polling.
  *
  * Last reviewed on 2008-12-17 (0.10.22)
+ *
+ * Since: 0.10.22
  */
 
 #ifdef HAVE_CONFIG_H
@@ -68,27 +84,23 @@
 #include <gst/gst.h>
 #include <gst/base/gstbasesink.h>
 #include <gst/gstbuffer.h>
+#include <gst/gstbufferlist.h>
 
 #include <string.h>
 
-#include "gstapp-marshal.h"
 #include "gstappsink.h"
 
 struct _GstAppSinkPrivate
 {
   GstCaps *caps;
   gboolean emit_signals;
-  guint num_buffers;
   guint max_buffers;
   gboolean drop;
 
-  GCond cond;
-  GMutex mutex;
+  GCond *cond;
+  GMutex *mutex;
   GQueue *queue;
   GstBuffer *preroll;
-  GstCaps *preroll_caps;
-  GstCaps *last_caps;
-  GstSegment last_segment;
   gboolean flushing;
   gboolean unlock;
   gboolean started;
@@ -107,11 +119,13 @@ enum
   /* signals */
   SIGNAL_EOS,
   SIGNAL_NEW_PREROLL,
-  SIGNAL_NEW_SAMPLE,
+  SIGNAL_NEW_BUFFER,
+  SIGNAL_NEW_BUFFER_LIST,
 
   /* actions */
   SIGNAL_PULL_PREROLL,
-  SIGNAL_PULL_SAMPLE,
+  SIGNAL_PULL_BUFFER,
+  SIGNAL_PULL_BUFFER_LIST,
 
   LAST_SIGNAL
 };
@@ -154,29 +168,88 @@ static gboolean gst_app_sink_unlock_stop (GstBaseSink * bsink);
 static gboolean gst_app_sink_start (GstBaseSink * psink);
 static gboolean gst_app_sink_stop (GstBaseSink * psink);
 static gboolean gst_app_sink_event (GstBaseSink * sink, GstEvent * event);
-static gboolean gst_app_sink_query (GstBaseSink * bsink, GstQuery * query);
 static GstFlowReturn gst_app_sink_preroll (GstBaseSink * psink,
     GstBuffer * buffer);
+static GstFlowReturn gst_app_sink_render_common (GstBaseSink * psink,
+    GstMiniObject * data, gboolean is_list);
 static GstFlowReturn gst_app_sink_render (GstBaseSink * psink,
     GstBuffer * buffer);
-static gboolean gst_app_sink_setcaps (GstBaseSink * sink, GstCaps * caps);
-static GstCaps *gst_app_sink_getcaps (GstBaseSink * psink, GstCaps * filter);
+static GstFlowReturn gst_app_sink_render_list (GstBaseSink * psink,
+    GstBufferList * list);
+static GstCaps *gst_app_sink_getcaps (GstBaseSink * psink);
+static GstMiniObject *gst_app_sink_pull_object (GstAppSink * appsink);
 
 static guint gst_app_sink_signals[LAST_SIGNAL] = { 0 };
 
-#define gst_app_sink_parent_class parent_class
-G_DEFINE_TYPE_WITH_CODE (GstAppSink, gst_app_sink, GST_TYPE_BASE_SINK,
-    G_IMPLEMENT_INTERFACE (GST_TYPE_URI_HANDLER,
-        gst_app_sink_uri_handler_init));
+static void
+_do_init (GType filesrc_type)
+{
+  static const GInterfaceInfo urihandler_info = {
+    gst_app_sink_uri_handler_init,
+    NULL,
+    NULL
+  };
+  g_type_add_interface_static (filesrc_type, GST_TYPE_URI_HANDLER,
+      &urihandler_info);
+}
+
+GST_BOILERPLATE_FULL (GstAppSink, gst_app_sink, GstBaseSink, GST_TYPE_BASE_SINK,
+    _do_init);
+
+/* Can't use glib-genmarshal for this, as it doesn't know how to handle
+ * GstMiniObject-based types, which are a new fundamental type */
+static void
+gst_app_marshal_BUFFER__VOID (GClosure * closure,
+    GValue * return_value,
+    guint n_param_values,
+    const GValue * param_values,
+    gpointer invocation_hint, gpointer marshal_data)
+{
+  typedef GstBuffer *(*GMarshalFunc_BUFFER__VOID) (gpointer data1,
+      gpointer data2);
+  register GMarshalFunc_BUFFER__VOID callback;
+  register GCClosure *cc = (GCClosure *) closure;
+  register gpointer data1, data2;
+  GstBuffer *v_return;
+
+  g_return_if_fail (return_value != NULL);
+  g_return_if_fail (n_param_values == 1);
+
+  if (G_CCLOSURE_SWAP_DATA (closure)) {
+    data1 = closure->data;
+    data2 = g_value_peek_pointer (param_values + 0);
+  } else {
+    data1 = g_value_peek_pointer (param_values + 0);
+    data2 = closure->data;
+  }
+  callback =
+      (GMarshalFunc_BUFFER__VOID) (marshal_data ? marshal_data : cc->callback);
+
+  v_return = callback (data1, data2);
+
+  gst_value_take_buffer (return_value, v_return);
+}
+
+static void
+gst_app_sink_base_init (gpointer g_class)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+
+  GST_DEBUG_CATEGORY_INIT (app_sink_debug, "appsink", 0, "appsink element");
+
+  gst_element_class_set_details_simple (element_class, "AppSink",
+      "Generic/Sink", "Allow the application to get access to raw buffer",
+      "David Schleef <ds@schleef.org>, Wim Taymans <wim.taymans@gmail.com>");
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&gst_app_sink_template));
+}
 
 static void
 gst_app_sink_class_init (GstAppSinkClass * klass)
 {
   GObjectClass *gobject_class = (GObjectClass *) klass;
-  GstElementClass *element_class = (GstElementClass *) klass;
   GstBaseSinkClass *basesink_class = (GstBaseSinkClass *) klass;
-
-  GST_DEBUG_CATEGORY_INIT (app_sink_debug, "appsink", 0, "appsink element");
 
   gobject_class->dispose = gst_app_sink_dispose;
   gobject_class->finalize = gst_app_sink_finalize;
@@ -196,8 +269,7 @@ gst_app_sink_class_init (GstAppSinkClass * klass)
 
   g_object_class_install_property (gobject_class, PROP_EMIT_SIGNALS,
       g_param_spec_boolean ("emit-signals", "Emit signals",
-          "Emit new-preroll, new-buffer and new-buffer-list signals",
-          DEFAULT_PROP_EMIT_SIGNALS,
+          "Emit new-preroll and new-buffer signals", DEFAULT_PROP_EMIT_SIGNALS,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_MAX_BUFFERS,
@@ -213,9 +285,9 @@ gst_app_sink_class_init (GstAppSinkClass * klass)
 
   /**
    * GstAppSink::eos:
-   * @appsink: the appsink element that emitted the signal
+   * @appsink: the appsink element that emited the signal
    *
-   * Signal that the end-of-stream has been reached. This signal is emitted from
+   * Signal that the end-of-stream has been reached. This signal is emited from
    * the steaming thread.
    */
   gst_app_sink_signals[SIGNAL_EOS] =
@@ -224,108 +296,145 @@ gst_app_sink_class_init (GstAppSinkClass * klass)
       NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0, G_TYPE_NONE);
   /**
    * GstAppSink::new-preroll:
-   * @appsink: the appsink element that emitted the signal
+   * @appsink: the appsink element that emited the signal
    *
-   * Signal that a new preroll sample is available.
+   * Signal that a new preroll buffer is available. 
    *
-   * This signal is emitted from the steaming thread and only when the
-   * "emit-signals" property is %TRUE.
+   * This signal is emited from the steaming thread and only when the
+   * "emit-signals" property is %TRUE. 
    *
-   * The new preroll sample can be retrieved with the "pull-preroll" action
+   * The new preroll buffer can be retrieved with the "pull-preroll" action
    * signal or gst_app_sink_pull_preroll() either from this signal callback
    * or from any other thread.
    *
-   * Note that this signal is only emitted when the "emit-signals" property is
+   * Note that this signal is only emited when the "emit-signals" property is
    * set to %TRUE, which it is not by default for performance reasons.
    */
   gst_app_sink_signals[SIGNAL_NEW_PREROLL] =
       g_signal_new ("new-preroll", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
       G_STRUCT_OFFSET (GstAppSinkClass, new_preroll),
-      NULL, NULL, __gst_app_marshal_ENUM__VOID, GST_TYPE_FLOW_RETURN, 0,
-      G_TYPE_NONE);
+      NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0, G_TYPE_NONE);
   /**
-   * GstAppSink::new-sample:
+   * GstAppSink::new-buffer:
    * @appsink: the appsink element that emited the signal
    *
-   * Signal that a new sample is available.
+   * Signal that a new buffer is available.
    *
-   * This signal is emitted from the steaming thread and only when the
-   * "emit-signals" property is %TRUE.
+   * This signal is emited from the steaming thread and only when the
+   * "emit-signals" property is %TRUE. 
    *
-   * The new sample can be retrieved with the "pull-sample" action
-   * signal or gst_app_sink_pull_sample() either from this signal callback
+   * The new buffer can be retrieved with the "pull-buffer" action
+   * signal or gst_app_sink_pull_buffer() either from this signal callback
    * or from any other thread.
    *
-   * Note that this signal is only emitted when the "emit-signals" property is
+   * Note that this signal is only emited when the "emit-signals" property is
    * set to %TRUE, which it is not by default for performance reasons.
    */
-  gst_app_sink_signals[SIGNAL_NEW_SAMPLE] =
-      g_signal_new ("new-sample", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
-      G_STRUCT_OFFSET (GstAppSinkClass, new_sample),
-      NULL, NULL, __gst_app_marshal_ENUM__VOID, GST_TYPE_FLOW_RETURN, 0,
-      G_TYPE_NONE);
+  gst_app_sink_signals[SIGNAL_NEW_BUFFER] =
+      g_signal_new ("new-buffer", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
+      G_STRUCT_OFFSET (GstAppSinkClass, new_buffer),
+      NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0, G_TYPE_NONE);
+  /**
+   * GstAppSink::new-buffer-list:
+   * @appsink: the appsink element that emited the signal
+   *
+   * Signal that a new bufferlist is available.
+   *
+   * This signal is emited from the steaming thread and only when the
+   * "emit-signals" property is %TRUE. 
+   *
+   * The new buffer can be retrieved with the "pull-buffer-list" action
+   * signal or gst_app_sink_pull_buffe_listr() either from this signal callback
+   * or from any other thread.
+   *
+   * Note that this signal is only emited when the "emit-signals" property is
+   * set to %TRUE, which it is not by default for performance reasons.
+   */
+  gst_app_sink_signals[SIGNAL_NEW_BUFFER_LIST] =
+      g_signal_new ("new-buffer-list", G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GstAppSinkClass, new_buffer_list),
+      NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0, G_TYPE_NONE);
 
   /**
    * GstAppSink::pull-preroll:
    * @appsink: the appsink element to emit this signal on
    *
-   * Get the last preroll sample in @appsink. This was the sample that caused the
-   * appsink to preroll in the PAUSED state. This sample can be pulled many times
+   * Get the last preroll buffer in @appsink. This was the buffer that caused the
+   * appsink to preroll in the PAUSED state. This buffer can be pulled many times
    * and remains available to the application even after EOS.
    *
    * This function is typically used when dealing with a pipeline in the PAUSED
-   * state. Calling this function after doing a seek will give the sample right
+   * state. Calling this function after doing a seek will give the buffer right
    * after the seek position.
    *
-   * Note that the preroll sample will also be returned as the first sample
-   * when calling gst_app_sink_pull_sample() or the "pull-sample" action signal.
+   * Note that the preroll buffer will also be returned as the first buffer
+   * when calling gst_app_sink_pull_buffer() or the "pull-buffer" action signal.
    *
    * If an EOS event was received before any buffers, this function returns
-   * %NULL. Use gst_app_sink_is_eos () to check for the EOS condition.
+   * %NULL. Use gst_app_sink_is_eos () to check for the EOS condition. 
    *
-   * This function blocks until a preroll sample or EOS is received or the appsink
-   * element is set to the READY/NULL state.
+   * This function blocks until a preroll buffer or EOS is received or the appsink
+   * element is set to the READY/NULL state. 
    *
-   * Returns: a #GstSample or NULL when the appsink is stopped or EOS.
+   * Returns: a #GstBuffer or NULL when the appsink is stopped or EOS.
    */
   gst_app_sink_signals[SIGNAL_PULL_PREROLL] =
       g_signal_new ("pull-preroll", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION, G_STRUCT_OFFSET (GstAppSinkClass,
-          pull_preroll), NULL, NULL, __gst_app_marshal_BOXED__VOID,
-      GST_TYPE_SAMPLE, 0, G_TYPE_NONE);
+          pull_preroll), NULL, NULL, gst_app_marshal_BUFFER__VOID,
+      GST_TYPE_BUFFER, 0, G_TYPE_NONE);
   /**
-   * GstAppSink::pull-sample:
+   * GstAppSink::pull-buffer:
    * @appsink: the appsink element to emit this signal on
    *
-   * This function blocks until a sample or EOS becomes available or the appsink
-   * element is set to the READY/NULL state.
+   * This function blocks until a buffer or EOS becomes available or the appsink
+   * element is set to the READY/NULL state. 
    *
-   * This function will only return samples when the appsink is in the PLAYING
-   * state. All rendered samples will be put in a queue so that the application
-   * can pull samples at its own rate.
+   * This function will only return buffers when the appsink is in the PLAYING
+   * state. All rendered buffers will be put in a queue so that the application
+   * can pull buffers at its own rate. 
    *
-   * Note that when the application does not pull samples fast enough, the
-   * queued samples could consume a lot of memory, especially when dealing with
+   * Note that when the application does not pull buffers fast enough, the
+   * queued buffers could consume a lot of memory, especially when dealing with
    * raw video frames. It's possible to control the behaviour of the queue with
    * the "drop" and "max-buffers" properties.
    *
    * If an EOS event was received before any buffers, this function returns
-   * %NULL. Use gst_app_sink_is_eos () to check for the EOS condition.
+   * %NULL. Use gst_app_sink_is_eos () to check for the EOS condition. 
    *
-   * Returns: a #GstSample or NULL when the appsink is stopped or EOS.
+   * Returns: a #GstBuffer or NULL when the appsink is stopped or EOS.
    */
-  gst_app_sink_signals[SIGNAL_PULL_SAMPLE] =
-      g_signal_new ("pull-sample", G_TYPE_FROM_CLASS (klass),
+  gst_app_sink_signals[SIGNAL_PULL_BUFFER] =
+      g_signal_new ("pull-buffer", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION, G_STRUCT_OFFSET (GstAppSinkClass,
-          pull_sample), NULL, NULL, __gst_app_marshal_BOXED__VOID,
-      GST_TYPE_SAMPLE, 0, G_TYPE_NONE);
-
-  gst_element_class_set_static_metadata (element_class, "AppSink",
-      "Generic/Sink", "Allow the application to get access to raw buffer",
-      "David Schleef <ds@schleef.org>, Wim Taymans <wim.taymans@gmail.com>");
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_app_sink_template));
+          pull_buffer), NULL, NULL, gst_app_marshal_BUFFER__VOID,
+      GST_TYPE_BUFFER, 0, G_TYPE_NONE);
+  /**
+   * GstAppSink::pull-buffer-list:
+   * @appsink: the appsink element to emit this signal on
+   *
+   * This function blocks until a buffer list or EOS becomes available or the appsink
+   * element is set to the READY/NULL state. 
+   *
+   * This function will only return bufferlists when the appsink is in the PLAYING
+   * state. All rendered bufferlists will be put in a queue so that the application
+   * can pull bufferlists at its own rate. 
+   *
+   * Note that when the application does not pull bufferlists fast enough, the
+   * queued bufferlists could consume a lot of memory, especially when dealing with
+   * raw video frames. It's possible to control the behaviour of the queue with
+   * the "drop" and "max-buffers" properties.
+   *
+   * If an EOS event was received before any buffers, this function returns
+   * %NULL. Use gst_app_sink_is_eos () to check for the EOS condition. 
+   *
+   * Returns: a #GstBufferList or NULL when the appsink is stopped or EOS.
+   */
+  gst_app_sink_signals[SIGNAL_PULL_BUFFER_LIST] =
+      g_signal_new ("pull-buffer-list", G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION, G_STRUCT_OFFSET (GstAppSinkClass,
+          pull_buffer_list), NULL, NULL, gst_app_marshal_BUFFER__VOID,
+      GST_TYPE_BUFFER_LIST, 0, G_TYPE_NONE);
 
   basesink_class->unlock = gst_app_sink_unlock_start;
   basesink_class->unlock_stop = gst_app_sink_unlock_stop;
@@ -334,61 +443,58 @@ gst_app_sink_class_init (GstAppSinkClass * klass)
   basesink_class->event = gst_app_sink_event;
   basesink_class->preroll = gst_app_sink_preroll;
   basesink_class->render = gst_app_sink_render;
+  basesink_class->render_list = gst_app_sink_render_list;
   basesink_class->get_caps = gst_app_sink_getcaps;
-  basesink_class->set_caps = gst_app_sink_setcaps;
-  basesink_class->query = gst_app_sink_query;
 
   klass->pull_preroll = gst_app_sink_pull_preroll;
-  klass->pull_sample = gst_app_sink_pull_sample;
+  klass->pull_buffer = gst_app_sink_pull_buffer;
+  klass->pull_buffer_list = gst_app_sink_pull_buffer_list;
 
   g_type_class_add_private (klass, sizeof (GstAppSinkPrivate));
 }
 
 static void
-gst_app_sink_init (GstAppSink * appsink)
+gst_app_sink_init (GstAppSink * appsink, GstAppSinkClass * klass)
 {
-  GstAppSinkPrivate *priv;
-
-  priv = appsink->priv =
-      G_TYPE_INSTANCE_GET_PRIVATE (appsink, GST_TYPE_APP_SINK,
+  appsink->priv = G_TYPE_INSTANCE_GET_PRIVATE (appsink, GST_TYPE_APP_SINK,
       GstAppSinkPrivate);
 
-  g_mutex_init (&priv->mutex);
-  g_cond_init (&priv->cond);
-  priv->queue = g_queue_new ();
+  appsink->priv->mutex = g_mutex_new ();
+  appsink->priv->cond = g_cond_new ();
+  appsink->priv->queue = g_queue_new ();
 
-  priv->emit_signals = DEFAULT_PROP_EMIT_SIGNALS;
-  priv->max_buffers = DEFAULT_PROP_MAX_BUFFERS;
-  priv->drop = DEFAULT_PROP_DROP;
+  appsink->priv->emit_signals = DEFAULT_PROP_EMIT_SIGNALS;
+  appsink->priv->max_buffers = DEFAULT_PROP_MAX_BUFFERS;
+  appsink->priv->drop = DEFAULT_PROP_DROP;
 }
 
 static void
 gst_app_sink_dispose (GObject * obj)
 {
-  GstAppSink *appsink = GST_APP_SINK_CAST (obj);
-  GstAppSinkPrivate *priv = appsink->priv;
+  GstAppSink *appsink = GST_APP_SINK (obj);
   GstMiniObject *queue_obj;
 
   GST_OBJECT_LOCK (appsink);
-  if (priv->caps) {
-    gst_caps_unref (priv->caps);
-    priv->caps = NULL;
+  if (appsink->priv->caps) {
+    gst_caps_unref (appsink->priv->caps);
+    appsink->priv->caps = NULL;
   }
-  if (priv->notify) {
-    priv->notify (priv->user_data);
+  if (appsink->priv->notify) {
+    appsink->priv->notify (appsink->priv->user_data);
   }
-  priv->user_data = NULL;
-  priv->notify = NULL;
+  appsink->priv->user_data = NULL;
+  appsink->priv->notify = NULL;
 
   GST_OBJECT_UNLOCK (appsink);
 
-  g_mutex_lock (&priv->mutex);
-  while ((queue_obj = g_queue_pop_head (priv->queue)))
+  g_mutex_lock (appsink->priv->mutex);
+  if (appsink->priv->preroll) {
+    gst_buffer_unref (appsink->priv->preroll);
+    appsink->priv->preroll = NULL;
+  }
+  while ((queue_obj = g_queue_pop_head (appsink->priv->queue)))
     gst_mini_object_unref (queue_obj);
-  gst_buffer_replace (&priv->preroll, NULL);
-  gst_caps_replace (&priv->preroll_caps, NULL);
-  gst_caps_replace (&priv->last_caps, NULL);
-  g_mutex_unlock (&priv->mutex);
+  g_mutex_unlock (appsink->priv->mutex);
 
   G_OBJECT_CLASS (parent_class)->dispose (obj);
 }
@@ -396,12 +502,11 @@ gst_app_sink_dispose (GObject * obj)
 static void
 gst_app_sink_finalize (GObject * obj)
 {
-  GstAppSink *appsink = GST_APP_SINK_CAST (obj);
-  GstAppSinkPrivate *priv = appsink->priv;
+  GstAppSink *appsink = GST_APP_SINK (obj);
 
-  g_mutex_clear (&priv->mutex);
-  g_cond_clear (&priv->cond);
-  g_queue_free (priv->queue);
+  g_mutex_free (appsink->priv->mutex);
+  g_cond_free (appsink->priv->cond);
+  g_queue_free (appsink->priv->queue);
 
   G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
@@ -410,7 +515,7 @@ static void
 gst_app_sink_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec)
 {
-  GstAppSink *appsink = GST_APP_SINK_CAST (object);
+  GstAppSink *appsink = GST_APP_SINK (object);
 
   switch (prop_id) {
     case PROP_CAPS:
@@ -435,7 +540,7 @@ static void
 gst_app_sink_get_property (GObject * object, guint prop_id, GValue * value,
     GParamSpec * pspec)
 {
-  GstAppSink *appsink = GST_APP_SINK_CAST (object);
+  GstAppSink *appsink = GST_APP_SINK (object);
 
   switch (prop_id) {
     case PROP_CAPS:
@@ -469,14 +574,13 @@ gst_app_sink_get_property (GObject * object, guint prop_id, GValue * value,
 static gboolean
 gst_app_sink_unlock_start (GstBaseSink * bsink)
 {
-  GstAppSink *appsink = GST_APP_SINK_CAST (bsink);
-  GstAppSinkPrivate *priv = appsink->priv;
+  GstAppSink *appsink = GST_APP_SINK (bsink);
 
-  g_mutex_lock (&priv->mutex);
+  g_mutex_lock (appsink->priv->mutex);
   GST_DEBUG_OBJECT (appsink, "unlock start");
-  priv->unlock = TRUE;
-  g_cond_signal (&priv->cond);
-  g_mutex_unlock (&priv->mutex);
+  appsink->priv->unlock = TRUE;
+  g_cond_signal (appsink->priv->cond);
+  g_mutex_unlock (appsink->priv->mutex);
 
   return TRUE;
 }
@@ -484,14 +588,13 @@ gst_app_sink_unlock_start (GstBaseSink * bsink)
 static gboolean
 gst_app_sink_unlock_stop (GstBaseSink * bsink)
 {
-  GstAppSink *appsink = GST_APP_SINK_CAST (bsink);
-  GstAppSinkPrivate *priv = appsink->priv;
+  GstAppSink *appsink = GST_APP_SINK (bsink);
 
-  g_mutex_lock (&priv->mutex);
+  g_mutex_lock (appsink->priv->mutex);
   GST_DEBUG_OBJECT (appsink, "unlock stop");
-  priv->unlock = FALSE;
-  g_cond_signal (&priv->cond);
-  g_mutex_unlock (&priv->mutex);
+  appsink->priv->unlock = FALSE;
+  g_cond_signal (appsink->priv->cond);
+  g_mutex_unlock (appsink->priv->mutex);
 
   return TRUE;
 }
@@ -500,29 +603,24 @@ static void
 gst_app_sink_flush_unlocked (GstAppSink * appsink)
 {
   GstMiniObject *obj;
-  GstAppSinkPrivate *priv = appsink->priv;
 
   GST_DEBUG_OBJECT (appsink, "flush stop appsink");
-  priv->is_eos = FALSE;
-  gst_buffer_replace (&priv->preroll, NULL);
-  while ((obj = g_queue_pop_head (priv->queue)))
+  appsink->priv->is_eos = FALSE;
+  gst_buffer_replace (&appsink->priv->preroll, NULL);
+  while ((obj = g_queue_pop_head (appsink->priv->queue)))
     gst_mini_object_unref (obj);
-  priv->num_buffers = 0;
-  g_cond_signal (&priv->cond);
+  g_cond_signal (appsink->priv->cond);
 }
 
 static gboolean
 gst_app_sink_start (GstBaseSink * psink)
 {
-  GstAppSink *appsink = GST_APP_SINK_CAST (psink);
-  GstAppSinkPrivate *priv = appsink->priv;
+  GstAppSink *appsink = GST_APP_SINK (psink);
 
-  g_mutex_lock (&priv->mutex);
+  g_mutex_lock (appsink->priv->mutex);
   GST_DEBUG_OBJECT (appsink, "starting");
-  priv->flushing = FALSE;
-  priv->started = TRUE;
-  gst_segment_init (&priv->last_segment, GST_FORMAT_TIME);
-  g_mutex_unlock (&priv->mutex);
+  appsink->priv->started = TRUE;
+  g_mutex_unlock (appsink->priv->mutex);
 
   return TRUE;
 }
@@ -530,32 +628,14 @@ gst_app_sink_start (GstBaseSink * psink)
 static gboolean
 gst_app_sink_stop (GstBaseSink * psink)
 {
-  GstAppSink *appsink = GST_APP_SINK_CAST (psink);
-  GstAppSinkPrivate *priv = appsink->priv;
+  GstAppSink *appsink = GST_APP_SINK (psink);
 
-  g_mutex_lock (&priv->mutex);
+  g_mutex_lock (appsink->priv->mutex);
   GST_DEBUG_OBJECT (appsink, "stopping");
-  priv->flushing = TRUE;
-  priv->started = FALSE;
+  appsink->priv->flushing = TRUE;
+  appsink->priv->started = FALSE;
   gst_app_sink_flush_unlocked (appsink);
-  gst_caps_replace (&priv->preroll_caps, NULL);
-  gst_caps_replace (&priv->last_caps, NULL);
-  g_mutex_unlock (&priv->mutex);
-
-  return TRUE;
-}
-
-static gboolean
-gst_app_sink_setcaps (GstBaseSink * sink, GstCaps * caps)
-{
-  GstAppSink *appsink = GST_APP_SINK_CAST (sink);
-  GstAppSinkPrivate *priv = appsink->priv;
-
-  g_mutex_lock (&priv->mutex);
-  GST_DEBUG_OBJECT (appsink, "receiving CAPS");
-  g_queue_push_tail (priv->queue, gst_event_new_caps (caps));
-  gst_caps_replace (&priv->preroll_caps, caps);
-  g_mutex_unlock (&priv->mutex);
+  g_mutex_unlock (appsink->priv->mutex);
 
   return TRUE;
 }
@@ -563,26 +643,20 @@ gst_app_sink_setcaps (GstBaseSink * sink, GstCaps * caps)
 static gboolean
 gst_app_sink_event (GstBaseSink * sink, GstEvent * event)
 {
-  GstAppSink *appsink = GST_APP_SINK_CAST (sink);
-  GstAppSinkPrivate *priv = appsink->priv;
+  GstAppSink *appsink = GST_APP_SINK (sink);
 
   switch (event->type) {
-    case GST_EVENT_SEGMENT:
-      g_mutex_lock (&priv->mutex);
-      GST_DEBUG_OBJECT (appsink, "receiving SEGMENT");
-      g_queue_push_tail (priv->queue, gst_event_ref (event));
-      g_mutex_unlock (&priv->mutex);
-      break;
     case GST_EVENT_EOS:
-      g_mutex_lock (&priv->mutex);
+
+      g_mutex_lock (appsink->priv->mutex);
       GST_DEBUG_OBJECT (appsink, "receiving EOS");
-      priv->is_eos = TRUE;
-      g_cond_signal (&priv->cond);
-      g_mutex_unlock (&priv->mutex);
+      appsink->priv->is_eos = TRUE;
+      g_cond_signal (appsink->priv->cond);
+      g_mutex_unlock (appsink->priv->mutex);
 
       /* emit EOS now */
-      if (priv->callbacks.eos)
-        priv->callbacks.eos (appsink, priv->user_data);
+      if (appsink->priv->callbacks.eos)
+        appsink->priv->callbacks.eos (appsink, appsink->priv->user_data);
       else
         g_signal_emit (appsink, gst_app_sink_signals[SIGNAL_EOS], 0);
 
@@ -593,140 +667,84 @@ gst_app_sink_event (GstBaseSink * sink, GstEvent * event)
       GST_DEBUG_OBJECT (appsink, "received FLUSH_START");
       break;
     case GST_EVENT_FLUSH_STOP:
-      g_mutex_lock (&priv->mutex);
+      g_mutex_lock (appsink->priv->mutex);
       GST_DEBUG_OBJECT (appsink, "received FLUSH_STOP");
       gst_app_sink_flush_unlocked (appsink);
-      g_mutex_unlock (&priv->mutex);
+      g_mutex_unlock (appsink->priv->mutex);
       break;
     default:
       break;
   }
-  return GST_BASE_SINK_CLASS (parent_class)->event (sink, event);
+  return TRUE;
 }
 
 static GstFlowReturn
 gst_app_sink_preroll (GstBaseSink * psink, GstBuffer * buffer)
 {
-  GstFlowReturn res;
-  GstAppSink *appsink = GST_APP_SINK_CAST (psink);
-  GstAppSinkPrivate *priv = appsink->priv;
+  GstFlowReturn res = GST_FLOW_OK;
+  GstAppSink *appsink = GST_APP_SINK (psink);
   gboolean emit;
 
-  g_mutex_lock (&priv->mutex);
-  if (priv->flushing)
+  g_mutex_lock (appsink->priv->mutex);
+  if (appsink->priv->flushing)
     goto flushing;
 
   GST_DEBUG_OBJECT (appsink, "setting preroll buffer %p", buffer);
-  gst_buffer_replace (&priv->preroll, buffer);
+  gst_buffer_replace (&appsink->priv->preroll, buffer);
 
-  g_cond_signal (&priv->cond);
-  emit = priv->emit_signals;
-  g_mutex_unlock (&priv->mutex);
+  g_cond_signal (appsink->priv->cond);
+  emit = appsink->priv->emit_signals;
+  g_mutex_unlock (appsink->priv->mutex);
 
-  if (priv->callbacks.new_preroll) {
-    res = priv->callbacks.new_preroll (appsink, priv->user_data);
-  } else {
-    res = GST_FLOW_OK;
-    if (emit)
-      g_signal_emit (appsink, gst_app_sink_signals[SIGNAL_NEW_PREROLL], 0,
-          &res);
-  }
+  if (appsink->priv->callbacks.new_preroll)
+    res =
+        appsink->priv->callbacks.new_preroll (appsink,
+        appsink->priv->user_data);
+  else if (emit)
+    g_signal_emit (appsink, gst_app_sink_signals[SIGNAL_NEW_PREROLL], 0);
 
   return res;
 
 flushing:
   {
     GST_DEBUG_OBJECT (appsink, "we are flushing");
-    g_mutex_unlock (&priv->mutex);
-    return GST_FLOW_FLUSHING;
+    g_mutex_unlock (appsink->priv->mutex);
+    return GST_FLOW_WRONG_STATE;
   }
-}
-
-static GstBuffer *
-dequeue_buffer (GstAppSink * appsink)
-{
-  GstAppSinkPrivate *priv = appsink->priv;
-  GstBuffer *buffer;
-
-  do {
-    GstMiniObject *obj;
-
-    obj = g_queue_pop_head (priv->queue);
-
-    if (GST_IS_BUFFER (obj)) {
-      buffer = GST_BUFFER_CAST (obj);
-      GST_DEBUG_OBJECT (appsink, "dequeued buffer %p", buffer);
-      priv->num_buffers--;
-      break;
-    } else if (GST_IS_EVENT (obj)) {
-      GstEvent *event = GST_EVENT_CAST (obj);
-
-      switch (GST_EVENT_TYPE (obj)) {
-        case GST_EVENT_CAPS:
-        {
-          GstCaps *caps;
-
-          gst_event_parse_caps (event, &caps);
-          GST_DEBUG_OBJECT (appsink, "activating caps %" GST_PTR_FORMAT, caps);
-          gst_caps_replace (&priv->last_caps, caps);
-          break;
-        }
-        case GST_EVENT_SEGMENT:
-          gst_event_copy_segment (event, &priv->last_segment);
-          GST_DEBUG_OBJECT (appsink, "activated segment %" GST_SEGMENT_FORMAT,
-              &priv->last_segment);
-          break;
-        default:
-          break;
-      }
-      gst_mini_object_unref (obj);
-    }
-  } while (TRUE);
-
-  return buffer;
 }
 
 static GstFlowReturn
-gst_app_sink_render (GstBaseSink * psink, GstBuffer * buffer)
+gst_app_sink_render_common (GstBaseSink * psink, GstMiniObject * data,
+    gboolean is_list)
 {
   GstFlowReturn ret;
-  GstAppSink *appsink = GST_APP_SINK_CAST (psink);
-  GstAppSinkPrivate *priv = appsink->priv;
+  GstAppSink *appsink = GST_APP_SINK (psink);
   gboolean emit;
 
 restart:
-  g_mutex_lock (&priv->mutex);
-  if (priv->flushing)
+  g_mutex_lock (appsink->priv->mutex);
+  if (appsink->priv->flushing)
     goto flushing;
 
-  /* queue holding caps event might have been FLUSHed,
-   * but caps state still present in pad caps */
-  if (G_UNLIKELY (!priv->last_caps &&
-          gst_pad_has_current_caps (GST_BASE_SINK_PAD (psink)))) {
-    priv->last_caps = gst_pad_get_current_caps (GST_BASE_SINK_PAD (psink));
-    GST_DEBUG_OBJECT (appsink, "activating pad caps %" GST_PTR_FORMAT,
-        priv->last_caps);
-  }
+  GST_DEBUG_OBJECT (appsink, "pushing render buffer%s %p on queue (%d)",
+      is_list ? " list" : "", data, appsink->priv->queue->length);
 
-  GST_DEBUG_OBJECT (appsink, "pushing render buffer %p on queue (%d)",
-      buffer, priv->num_buffers);
+  while (appsink->priv->max_buffers > 0 &&
+      appsink->priv->queue->length >= appsink->priv->max_buffers) {
+    if (appsink->priv->drop) {
+      GstMiniObject *obj;
 
-  while (priv->max_buffers > 0 && priv->num_buffers >= priv->max_buffers) {
-    if (priv->drop) {
-      GstBuffer *old;
-
-      /* we need to drop the oldest buffer and try again */
-      if ((old = dequeue_buffer (appsink))) {
-        GST_DEBUG_OBJECT (appsink, "dropping old buffer %p", old);
-        gst_buffer_unref (old);
-      }
+      /* we need to drop the oldest buffer/list and try again */
+      obj = g_queue_pop_head (appsink->priv->queue);
+      GST_DEBUG_OBJECT (appsink, "dropping old buffer/list %p", obj);
+      gst_mini_object_unref (obj);
     } else {
       GST_DEBUG_OBJECT (appsink, "waiting for free space, length %d >= %d",
-          priv->num_buffers, priv->max_buffers);
+          appsink->priv->queue->length, appsink->priv->max_buffers);
 
-      if (priv->unlock) {
+      if (appsink->priv->unlock) {
         /* we are asked to unlock, call the wait_preroll method */
-        g_mutex_unlock (&priv->mutex);
+        g_mutex_unlock (appsink->priv->mutex);
         if ((ret = gst_base_sink_wait_preroll (psink)) != GST_FLOW_OK)
           goto stopping;
 
@@ -735,32 +753,34 @@ restart:
       }
 
       /* wait for a buffer to be removed or flush */
-      g_cond_wait (&priv->cond, &priv->mutex);
-      if (priv->flushing)
+      g_cond_wait (appsink->priv->cond, appsink->priv->mutex);
+      if (appsink->priv->flushing)
         goto flushing;
     }
   }
   /* we need to ref the buffer when pushing it in the queue */
-  g_queue_push_tail (priv->queue, gst_buffer_ref (buffer));
-  priv->num_buffers++;
-  g_cond_signal (&priv->cond);
-  emit = priv->emit_signals;
-  g_mutex_unlock (&priv->mutex);
+  g_queue_push_tail (appsink->priv->queue, gst_mini_object_ref (data));
+  g_cond_signal (appsink->priv->cond);
+  emit = appsink->priv->emit_signals;
+  g_mutex_unlock (appsink->priv->mutex);
 
-  if (priv->callbacks.new_sample) {
-    ret = priv->callbacks.new_sample (appsink, priv->user_data);
+  if (is_list) {
+    if (appsink->priv->callbacks.new_buffer_list)
+      appsink->priv->callbacks.new_buffer_list (appsink,
+          appsink->priv->user_data);
   } else {
-    ret = GST_FLOW_OK;
-    if (emit)
-      g_signal_emit (appsink, gst_app_sink_signals[SIGNAL_NEW_SAMPLE], 0, &ret);
+    if (appsink->priv->callbacks.new_buffer)
+      appsink->priv->callbacks.new_buffer (appsink, appsink->priv->user_data);
+    else if (emit)
+      g_signal_emit (appsink, gst_app_sink_signals[SIGNAL_NEW_BUFFER], 0);
   }
-  return ret;
+  return GST_FLOW_OK;
 
 flushing:
   {
     GST_DEBUG_OBJECT (appsink, "we are flushing");
-    g_mutex_unlock (&priv->mutex);
-    return GST_FLOW_FLUSHING;
+    g_mutex_unlock (appsink->priv->mutex);
+    return GST_FLOW_WRONG_STATE;
   }
 stopping:
   {
@@ -769,48 +789,80 @@ stopping:
   }
 }
 
+static GstFlowReturn
+gst_app_sink_render (GstBaseSink * psink, GstBuffer * buffer)
+{
+  return gst_app_sink_render_common (psink, GST_MINI_OBJECT_CAST (buffer),
+      FALSE);
+}
+
+static GstFlowReturn
+gst_app_sink_render_list (GstBaseSink * psink, GstBufferList * list)
+{
+  return gst_app_sink_render_common (psink, GST_MINI_OBJECT_CAST (list), TRUE);
+}
+
 static GstCaps *
-gst_app_sink_getcaps (GstBaseSink * psink, GstCaps * filter)
+gst_app_sink_getcaps (GstBaseSink * psink)
 {
   GstCaps *caps;
-  GstAppSink *appsink = GST_APP_SINK_CAST (psink);
-  GstAppSinkPrivate *priv = appsink->priv;
+
+  GstAppSink *appsink = GST_APP_SINK (psink);
 
   GST_OBJECT_LOCK (appsink);
-  if ((caps = priv->caps)) {
-    if (filter)
-      caps = gst_caps_intersect_full (filter, caps, GST_CAPS_INTERSECT_FIRST);
-    else
-      gst_caps_ref (caps);
-  }
+  if ((caps = appsink->priv->caps))
+    gst_caps_ref (caps);
   GST_DEBUG_OBJECT (appsink, "got caps %" GST_PTR_FORMAT, caps);
   GST_OBJECT_UNLOCK (appsink);
 
   return caps;
 }
 
-static gboolean
-gst_app_sink_query (GstBaseSink * bsink, GstQuery * query)
+static GstMiniObject *
+gst_app_sink_pull_object (GstAppSink * appsink)
 {
-  gboolean ret;
+  GstMiniObject *obj = NULL;
 
-  switch (GST_QUERY_TYPE (query)) {
-    case GST_QUERY_SEEKING:{
-      GstFormat fmt;
+  g_return_val_if_fail (appsink != NULL, NULL);
+  g_return_val_if_fail (GST_IS_APP_SINK (appsink), NULL);
 
-      /* we don't supporting seeking */
-      gst_query_parse_seeking (query, &fmt, NULL, NULL, NULL);
-      gst_query_set_seeking (query, fmt, FALSE, 0, -1);
-      ret = TRUE;
+  g_mutex_lock (appsink->priv->mutex);
+
+  while (TRUE) {
+    GST_DEBUG_OBJECT (appsink, "trying to grab a buffer/list");
+    if (!appsink->priv->started)
+      goto not_started;
+
+    if (!g_queue_is_empty (appsink->priv->queue))
       break;
-    }
 
-    default:
-      ret = GST_BASE_SINK_CLASS (parent_class)->query (bsink, query);
-      break;
+    if (appsink->priv->is_eos)
+      goto eos;
+
+    /* nothing to return, wait */
+    GST_DEBUG_OBJECT (appsink, "waiting for a buffer/list");
+    g_cond_wait (appsink->priv->cond, appsink->priv->mutex);
   }
+  obj = g_queue_pop_head (appsink->priv->queue);
+  GST_DEBUG_OBJECT (appsink, "we have a buffer/list %p", obj);
+  g_cond_signal (appsink->priv->cond);
+  g_mutex_unlock (appsink->priv->mutex);
 
-  return ret;
+  return obj;
+
+  /* special conditions */
+eos:
+  {
+    GST_DEBUG_OBJECT (appsink, "we are EOS, return NULL");
+    g_mutex_unlock (appsink->priv->mutex);
+    return NULL;
+  }
+not_started:
+  {
+    GST_DEBUG_OBJECT (appsink, "we are stopped, return NULL");
+    g_mutex_unlock (appsink->priv->mutex);
+    return NULL;
+  }
 }
 
 /* external API */
@@ -823,25 +875,25 @@ gst_app_sink_query (GstBaseSink * bsink, GstQuery * query)
  * Set the capabilities on the appsink element.  This function takes
  * a copy of the caps structure. After calling this method, the sink will only
  * accept caps that match @caps. If @caps is non-fixed, you must check the caps
- * on the buffers to get the actual used caps.
+ * on the buffers to get the actual used caps. 
+ *
+ * Since: 0.10.22
  */
 void
 gst_app_sink_set_caps (GstAppSink * appsink, const GstCaps * caps)
 {
   GstCaps *old;
-  GstAppSinkPrivate *priv;
 
+  g_return_if_fail (appsink != NULL);
   g_return_if_fail (GST_IS_APP_SINK (appsink));
-
-  priv = appsink->priv;
 
   GST_OBJECT_LOCK (appsink);
   GST_DEBUG_OBJECT (appsink, "setting caps to %" GST_PTR_FORMAT, caps);
-  if ((old = priv->caps) != caps) {
+  if ((old = appsink->priv->caps) != caps) {
     if (caps)
-      priv->caps = gst_caps_copy (caps);
+      appsink->priv->caps = gst_caps_copy (caps);
     else
-      priv->caps = NULL;
+      appsink->priv->caps = NULL;
     if (old)
       gst_caps_unref (old);
   }
@@ -855,19 +907,19 @@ gst_app_sink_set_caps (GstAppSink * appsink, const GstCaps * caps)
  * Get the configured caps on @appsink.
  *
  * Returns: the #GstCaps accepted by the sink. gst_caps_unref() after usage.
+ *
+ * Since: 0.10.22
  */
 GstCaps *
 gst_app_sink_get_caps (GstAppSink * appsink)
 {
   GstCaps *caps;
-  GstAppSinkPrivate *priv;
 
+  g_return_val_if_fail (appsink != NULL, NULL);
   g_return_val_if_fail (GST_IS_APP_SINK (appsink), NULL);
 
-  priv = appsink->priv;
-
   GST_OBJECT_LOCK (appsink);
-  if ((caps = priv->caps))
+  if ((caps = appsink->priv->caps))
     gst_caps_ref (caps);
   GST_DEBUG_OBJECT (appsink, "getting caps of %" GST_PTR_FORMAT, caps);
   GST_OBJECT_UNLOCK (appsink);
@@ -879,43 +931,43 @@ gst_app_sink_get_caps (GstAppSink * appsink)
  * gst_app_sink_is_eos:
  * @appsink: a #GstAppSink
  *
- * Check if @appsink is EOS, which is when no more samples can be pulled because
+ * Check if @appsink is EOS, which is when no more buffers can be pulled because
  * an EOS event was received.
  *
  * This function also returns %TRUE when the appsink is not in the PAUSED or
  * PLAYING state.
  *
- * Returns: %TRUE if no more samples can be pulled and the appsink is EOS.
+ * Returns: %TRUE if no more buffers can be pulled and the appsink is EOS.
+ *
+ * Since: 0.10.22
  */
 gboolean
 gst_app_sink_is_eos (GstAppSink * appsink)
 {
   gboolean ret;
-  GstAppSinkPrivate *priv;
 
+  g_return_val_if_fail (appsink != NULL, FALSE);
   g_return_val_if_fail (GST_IS_APP_SINK (appsink), FALSE);
 
-  priv = appsink->priv;
-
-  g_mutex_lock (&priv->mutex);
-  if (!priv->started)
+  g_mutex_lock (appsink->priv->mutex);
+  if (!appsink->priv->started)
     goto not_started;
 
-  if (priv->is_eos && priv->num_buffers == 0) {
+  if (appsink->priv->is_eos && g_queue_is_empty (appsink->priv->queue)) {
     GST_DEBUG_OBJECT (appsink, "we are EOS and the queue is empty");
     ret = TRUE;
   } else {
     GST_DEBUG_OBJECT (appsink, "we are not yet EOS");
     ret = FALSE;
   }
-  g_mutex_unlock (&priv->mutex);
+  g_mutex_unlock (appsink->priv->mutex);
 
   return ret;
 
 not_started:
   {
     GST_DEBUG_OBJECT (appsink, "we are stopped, return TRUE");
-    g_mutex_unlock (&priv->mutex);
+    g_mutex_unlock (appsink->priv->mutex);
     return TRUE;
   }
 }
@@ -925,46 +977,43 @@ not_started:
  * @appsink: a #GstAppSink
  * @emit: the new state
  *
- * Make appsink emit the "new-preroll" and "new-sample" signals. This option is
+ * Make appsink emit the "new-preroll" and "new-buffer" signals. This option is
  * by default disabled because signal emission is expensive and unneeded when
  * the application prefers to operate in pull mode.
+ *
+ * Since: 0.10.22
  */
 void
 gst_app_sink_set_emit_signals (GstAppSink * appsink, gboolean emit)
 {
-  GstAppSinkPrivate *priv;
-
   g_return_if_fail (GST_IS_APP_SINK (appsink));
 
-  priv = appsink->priv;
-
-  g_mutex_lock (&priv->mutex);
-  priv->emit_signals = emit;
-  g_mutex_unlock (&priv->mutex);
+  g_mutex_lock (appsink->priv->mutex);
+  appsink->priv->emit_signals = emit;
+  g_mutex_unlock (appsink->priv->mutex);
 }
 
 /**
  * gst_app_sink_get_emit_signals:
  * @appsink: a #GstAppSink
  *
- * Check if appsink will emit the "new-preroll" and "new-sample" signals.
+ * Check if appsink will emit the "new-preroll" and "new-buffer" signals.
  *
- * Returns: %TRUE if @appsink is emiting the "new-preroll" and "new-sample"
+ * Returns: %TRUE if @appsink is emiting the "new-preroll" and "new-buffer"
  * signals.
+ *
+ * Since: 0.10.22
  */
 gboolean
 gst_app_sink_get_emit_signals (GstAppSink * appsink)
 {
   gboolean result;
-  GstAppSinkPrivate *priv;
 
   g_return_val_if_fail (GST_IS_APP_SINK (appsink), FALSE);
 
-  priv = appsink->priv;
-
-  g_mutex_lock (&priv->mutex);
-  result = priv->emit_signals;
-  g_mutex_unlock (&priv->mutex);
+  g_mutex_lock (appsink->priv->mutex);
+  result = appsink->priv->emit_signals;
+  g_mutex_unlock (appsink->priv->mutex);
 
   return result;
 }
@@ -976,24 +1025,22 @@ gst_app_sink_get_emit_signals (GstAppSink * appsink)
  *
  * Set the maximum amount of buffers that can be queued in @appsink. After this
  * amount of buffers are queued in appsink, any more buffers will block upstream
- * elements until a sample is pulled from @appsink.
+ * elements until a buffer is pulled from @appsink.
+ *
+ * Since: 0.10.22
  */
 void
 gst_app_sink_set_max_buffers (GstAppSink * appsink, guint max)
 {
-  GstAppSinkPrivate *priv;
-
   g_return_if_fail (GST_IS_APP_SINK (appsink));
 
-  priv = appsink->priv;
-
-  g_mutex_lock (&priv->mutex);
-  if (max != priv->max_buffers) {
-    priv->max_buffers = max;
+  g_mutex_lock (appsink->priv->mutex);
+  if (max != appsink->priv->max_buffers) {
+    appsink->priv->max_buffers = max;
     /* signal the change */
-    g_cond_signal (&priv->cond);
+    g_cond_signal (appsink->priv->cond);
   }
-  g_mutex_unlock (&priv->mutex);
+  g_mutex_unlock (appsink->priv->mutex);
 }
 
 /**
@@ -1003,20 +1050,19 @@ gst_app_sink_set_max_buffers (GstAppSink * appsink, guint max)
  * Get the maximum amount of buffers that can be queued in @appsink.
  *
  * Returns: The maximum amount of buffers that can be queued.
+ *
+ * Since: 0.10.22
  */
 guint
 gst_app_sink_get_max_buffers (GstAppSink * appsink)
 {
   guint result;
-  GstAppSinkPrivate *priv;
 
   g_return_val_if_fail (GST_IS_APP_SINK (appsink), 0);
 
-  priv = appsink->priv;
-
-  g_mutex_lock (&priv->mutex);
-  result = priv->max_buffers;
-  g_mutex_unlock (&priv->mutex);
+  g_mutex_lock (appsink->priv->mutex);
+  result = appsink->priv->max_buffers;
+  g_mutex_unlock (appsink->priv->mutex);
 
   return result;
 }
@@ -1028,23 +1074,21 @@ gst_app_sink_get_max_buffers (GstAppSink * appsink)
  *
  * Instruct @appsink to drop old buffers when the maximum amount of queued
  * buffers is reached.
+ *
+ * Since: 0.10.22
  */
 void
 gst_app_sink_set_drop (GstAppSink * appsink, gboolean drop)
 {
-  GstAppSinkPrivate *priv;
-
   g_return_if_fail (GST_IS_APP_SINK (appsink));
 
-  priv = appsink->priv;
-
-  g_mutex_lock (&priv->mutex);
-  if (priv->drop != drop) {
-    priv->drop = drop;
+  g_mutex_lock (appsink->priv->mutex);
+  if (appsink->priv->drop != drop) {
+    appsink->priv->drop = drop;
     /* signal the change */
-    g_cond_signal (&priv->cond);
+    g_cond_signal (appsink->priv->cond);
   }
-  g_mutex_unlock (&priv->mutex);
+  g_mutex_unlock (appsink->priv->mutex);
 }
 
 /**
@@ -1056,20 +1100,19 @@ gst_app_sink_set_drop (GstAppSink * appsink, gboolean drop)
  *
  * Returns: %TRUE if @appsink is dropping old buffers when the queue is
  * filled.
+ *
+ * Since: 0.10.22
  */
 gboolean
 gst_app_sink_get_drop (GstAppSink * appsink)
 {
   gboolean result;
-  GstAppSinkPrivate *priv;
 
   g_return_val_if_fail (GST_IS_APP_SINK (appsink), FALSE);
 
-  priv = appsink->priv;
-
-  g_mutex_lock (&priv->mutex);
-  result = priv->drop;
-  g_mutex_unlock (&priv->mutex);
+  g_mutex_lock (appsink->priv->mutex);
+  result = appsink->priv->drop;
+  g_mutex_unlock (appsink->priv->mutex);
 
   return result;
 }
@@ -1078,223 +1121,208 @@ gst_app_sink_get_drop (GstAppSink * appsink)
  * gst_app_sink_pull_preroll:
  * @appsink: a #GstAppSink
  *
- * Get the last preroll sample in @appsink. This was the sample that caused the
- * appsink to preroll in the PAUSED state. This sample can be pulled many times
+ * Get the last preroll buffer in @appsink. This was the buffer that caused the
+ * appsink to preroll in the PAUSED state. This buffer can be pulled many times
  * and remains available to the application even after EOS.
  *
  * This function is typically used when dealing with a pipeline in the PAUSED
- * state. Calling this function after doing a seek will give the sample right
+ * state. Calling this function after doing a seek will give the buffer right
  * after the seek position.
  *
- * Note that the preroll sample will also be returned as the first sample
- * when calling gst_app_sink_pull_sample().
+ * Note that the preroll buffer will also be returned as the first buffer
+ * when calling gst_app_sink_pull_buffer().
  *
  * If an EOS event was received before any buffers, this function returns
- * %NULL. Use gst_app_sink_is_eos () to check for the EOS condition.
+ * %NULL. Use gst_app_sink_is_eos () to check for the EOS condition. 
  *
- * This function blocks until a preroll sample or EOS is received or the appsink
- * element is set to the READY/NULL state.
+ * This function blocks until a preroll buffer or EOS is received or the appsink
+ * element is set to the READY/NULL state. 
  *
  * Returns: a #GstBuffer or NULL when the appsink is stopped or EOS.
+ *
+ * Since: 0.10.22
  */
-GstSample *
+GstBuffer *
 gst_app_sink_pull_preroll (GstAppSink * appsink)
 {
-  GstSample *sample = NULL;
-  GstAppSinkPrivate *priv;
+  GstBuffer *buf = NULL;
 
+  g_return_val_if_fail (appsink != NULL, NULL);
   g_return_val_if_fail (GST_IS_APP_SINK (appsink), NULL);
 
-  priv = appsink->priv;
-
-  g_mutex_lock (&priv->mutex);
+  g_mutex_lock (appsink->priv->mutex);
 
   while (TRUE) {
     GST_DEBUG_OBJECT (appsink, "trying to grab a buffer");
-    if (!priv->started)
+    if (!appsink->priv->started)
       goto not_started;
 
-    if (priv->preroll != NULL)
+    if (appsink->priv->preroll != NULL)
       break;
 
-    if (priv->is_eos)
+    if (appsink->priv->is_eos)
       goto eos;
 
     /* nothing to return, wait */
     GST_DEBUG_OBJECT (appsink, "waiting for the preroll buffer");
-    g_cond_wait (&priv->cond, &priv->mutex);
+    g_cond_wait (appsink->priv->cond, appsink->priv->mutex);
   }
-  sample =
-      gst_sample_new (priv->preroll, priv->preroll_caps, &priv->last_segment,
-      NULL);
-  GST_DEBUG_OBJECT (appsink, "we have the preroll sample %p", sample);
-  g_mutex_unlock (&priv->mutex);
+  buf = gst_buffer_ref (appsink->priv->preroll);
+  GST_DEBUG_OBJECT (appsink, "we have the preroll buffer %p", buf);
+  g_mutex_unlock (appsink->priv->mutex);
 
-  return sample;
+  return buf;
 
   /* special conditions */
 eos:
   {
     GST_DEBUG_OBJECT (appsink, "we are EOS, return NULL");
-    g_mutex_unlock (&priv->mutex);
+    g_mutex_unlock (appsink->priv->mutex);
     return NULL;
   }
 not_started:
   {
     GST_DEBUG_OBJECT (appsink, "we are stopped, return NULL");
-    g_mutex_unlock (&priv->mutex);
+    g_mutex_unlock (appsink->priv->mutex);
     return NULL;
   }
 }
 
 /**
- * gst_app_sink_pull_sample:
+ * gst_app_sink_pull_buffer:
  * @appsink: a #GstAppSink
  *
- * This function blocks until a sample or EOS becomes available or the appsink
- * element is set to the READY/NULL state.
+ * This function blocks until a buffer or EOS becomes available or the appsink
+ * element is set to the READY/NULL state. 
  *
- * This function will only return samples when the appsink is in the PLAYING
+ * This function will only return buffers when the appsink is in the PLAYING
  * state. All rendered buffers will be put in a queue so that the application
- * can pull samples at its own rate. Note that when the application does not
- * pull samples fast enough, the queued buffers could consume a lot of memory,
+ * can pull buffers at its own rate. Note that when the application does not
+ * pull buffers fast enough, the queued buffers could consume a lot of memory,
  * especially when dealing with raw video frames.
  *
  * If an EOS event was received before any buffers, this function returns
- * %NULL. Use gst_app_sink_is_eos () to check for the EOS condition.
+ * %NULL. Use gst_app_sink_is_eos () to check for the EOS condition. 
  *
  * Returns: a #GstBuffer or NULL when the appsink is stopped or EOS.
+ *
+ * Since: 0.10.22
  */
 
-GstSample *
-gst_app_sink_pull_sample (GstAppSink * appsink)
+GstBuffer *
+gst_app_sink_pull_buffer (GstAppSink * appsink)
 {
-  GstSample *sample = NULL;
-  GstBuffer *buffer;
-  GstAppSinkPrivate *priv;
-
-  g_return_val_if_fail (GST_IS_APP_SINK (appsink), NULL);
-
-  priv = appsink->priv;
-
-  g_mutex_lock (&priv->mutex);
-
-  while (TRUE) {
-    GST_DEBUG_OBJECT (appsink, "trying to grab a buffer");
-    if (!priv->started)
-      goto not_started;
-
-    if (priv->num_buffers > 0)
-      break;
-
-    if (priv->is_eos)
-      goto eos;
-
-    /* nothing to return, wait */
-    GST_DEBUG_OBJECT (appsink, "waiting for a buffer");
-    g_cond_wait (&priv->cond, &priv->mutex);
-  }
-  buffer = dequeue_buffer (appsink);
-  GST_DEBUG_OBJECT (appsink, "we have a buffer %p", buffer);
-  sample = gst_sample_new (buffer, priv->last_caps, &priv->last_segment, NULL);
-  gst_buffer_unref (buffer);
-
-  g_cond_signal (&priv->cond);
-  g_mutex_unlock (&priv->mutex);
-
-  return sample;
-
-  /* special conditions */
-eos:
-  {
-    GST_DEBUG_OBJECT (appsink, "we are EOS, return NULL");
-    g_mutex_unlock (&priv->mutex);
-    return NULL;
-  }
-not_started:
-  {
-    GST_DEBUG_OBJECT (appsink, "we are stopped, return NULL");
-    g_mutex_unlock (&priv->mutex);
-    return NULL;
-  }
+  GST_DEBUG_OBJECT (appsink, "pull a buffer");
+  return GST_BUFFER_CAST (gst_app_sink_pull_object (appsink));
 }
 
 /**
- * gst_app_sink_set_callbacks: (skip)
+ * gst_app_sink_pull_buffer_list:
+ * @appsink: a #GstAppSink
+ *
+ * This function blocks until a buffer list or EOS becomes available or the
+ * appsink element is set to the READY/NULL state. 
+ *
+ * This function will only return buffer lists when the appsink is in the
+ * PLAYING state. All rendered buffer lists will be put in a queue so that
+ * the application can pull buffer lists at its own rate. Note that when
+ * the application does not pull buffer lists fast enough, the queued buffer
+ * lists could consume a lot of memory, especially when dealing with raw
+ * video frames.
+ *
+ * If an EOS event was received before any buffer lists, this function returns
+ * %NULL. Use gst_app_sink_is_eos () to check for the EOS condition. 
+ *
+ * Returns: a #GstBufferList or NULL when the appsink is stopped or EOS.
+ */
+GstBufferList *
+gst_app_sink_pull_buffer_list (GstAppSink * appsink)
+{
+  GST_DEBUG_OBJECT (appsink, "pull a buffer list");
+  return GST_BUFFER_LIST_CAST (gst_app_sink_pull_object (appsink));
+}
+
+/**
+ * gst_app_sink_set_callbacks:
  * @appsink: a #GstAppSink
  * @callbacks: the callbacks
  * @user_data: a user_data argument for the callbacks
  * @notify: a destroy notify function
  *
- * Set callbacks which will be executed for each new preroll, new sample and eos.
+ * Set callbacks which will be executed for each new preroll, new buffer and eos.
  * This is an alternative to using the signals, it has lower overhead and is thus
  * less expensive, but also less flexible.
  *
- * If callbacks are installed, no signals will be emitted for performance
+ * If callbacks are installed, no signals will be emited for performance
  * reasons.
+ *
+ * Since: 0.10.23
  */
 void
 gst_app_sink_set_callbacks (GstAppSink * appsink,
     GstAppSinkCallbacks * callbacks, gpointer user_data, GDestroyNotify notify)
 {
   GDestroyNotify old_notify;
-  GstAppSinkPrivate *priv;
 
+  g_return_if_fail (appsink != NULL);
   g_return_if_fail (GST_IS_APP_SINK (appsink));
   g_return_if_fail (callbacks != NULL);
 
-  priv = appsink->priv;
-
   GST_OBJECT_LOCK (appsink);
-  old_notify = priv->notify;
+  old_notify = appsink->priv->notify;
 
   if (old_notify) {
     gpointer old_data;
 
-    old_data = priv->user_data;
+    old_data = appsink->priv->user_data;
 
-    priv->user_data = NULL;
-    priv->notify = NULL;
+    appsink->priv->user_data = NULL;
+    appsink->priv->notify = NULL;
     GST_OBJECT_UNLOCK (appsink);
 
     old_notify (old_data);
 
     GST_OBJECT_LOCK (appsink);
   }
-  priv->callbacks = *callbacks;
-  priv->user_data = user_data;
-  priv->notify = notify;
+  appsink->priv->callbacks = *callbacks;
+  appsink->priv->user_data = user_data;
+  appsink->priv->notify = notify;
   GST_OBJECT_UNLOCK (appsink);
 }
 
 /*** GSTURIHANDLER INTERFACE *************************************************/
 
 static GstURIType
-gst_app_sink_uri_get_type (GType type)
+gst_app_sink_uri_get_type (void)
 {
   return GST_URI_SINK;
 }
 
-static const gchar *const *
-gst_app_sink_uri_get_protocols (GType type)
+static gchar **
+gst_app_sink_uri_get_protocols (void)
 {
-  static const gchar *protocols[] = { "appsink", NULL };
+  static gchar *protocols[] = { "appsink", NULL };
 
   return protocols;
 }
 
-static gchar *
+static const gchar *
 gst_app_sink_uri_get_uri (GstURIHandler * handler)
 {
-  return g_strdup ("appsink");
+  return "appsink";
 }
 
 static gboolean
-gst_app_sink_uri_set_uri (GstURIHandler * handler, const gchar * uri,
-    GError ** error)
+gst_app_sink_uri_set_uri (GstURIHandler * handler, const gchar * uri)
 {
-  /* GstURIHandler checks the protocol for us */
-  return TRUE;
+  gchar *protocol;
+  gboolean ret;
+
+  protocol = gst_uri_get_protocol (uri);
+  ret = !strcmp (protocol, "appsink");
+  g_free (protocol);
+
+  return ret;
 }
 
 static void
@@ -1306,5 +1334,4 @@ gst_app_sink_uri_handler_init (gpointer g_iface, gpointer iface_data)
   iface->get_protocols = gst_app_sink_uri_get_protocols;
   iface->get_uri = gst_app_sink_uri_get_uri;
   iface->set_uri = gst_app_sink_uri_set_uri;
-
 }

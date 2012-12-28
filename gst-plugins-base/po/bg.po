@@ -1,22 +1,53 @@
 # Bulgarian translation of gst-plugins-base.
-# Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011 Free Software Foundation, Inc.
+# Copyright (C) 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gst-plugins-base package.
-# Alexander Shopov <ash@kambanaria.org>, 2005, 2006, 2007, 2008, 2009, 2010, 2011.
-#
+# Alexander Shopov <ash@contact.bg>, 2005, 2006, 2007, 2008, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins-base 0.10.32.2\n"
+"Project-Id-Version: gst-plugins-base 0.10.24.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2012-12-18 00:25+0000\n"
-"PO-Revision-Date: 2011-04-26 22:31+0300\n"
-"Last-Translator: Alexander Shopov <ash@kambanaria.org>\n"
+"POT-Creation-Date: 2009-10-05 13:46+0100\n"
+"PO-Revision-Date: 2009-09-19 12:14+0300\n"
+"Last-Translator: Alexander Shopov <ash@contact.bg>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
-"Language: bg\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+msgid "Master"
+msgstr "Главен"
+
+msgid "Bass"
+msgstr "Баси"
+
+msgid "Treble"
+msgstr "Високи"
+
+msgid "PCM"
+msgstr "PCM"
+
+msgid "Synth"
+msgstr "Синтезатор"
+
+msgid "Line-in"
+msgstr "Вход"
+
+msgid "CD"
+msgstr "CD"
+
+msgid "Microphone"
+msgstr "Микрофон"
+
+msgid "PC Speaker"
+msgstr "Високоговорител на PC"
+
+msgid "Playback"
+msgstr "Изпълнение"
+
+msgid "Capture"
+msgstr "Запис"
 
 msgid "Could not open device for playback in mono mode."
 msgstr "Устройството не може да се отвори за изпълнение в моно режим."
@@ -38,9 +69,6 @@ msgstr ""
 msgid "Could not open audio device for playback."
 msgstr "Звуковото устройство не може да се отвори за изпълнение."
 
-msgid "Error outputting to audio device. The device has been disconnected."
-msgstr ""
-
 msgid "Could not open device for recording in mono mode."
 msgstr "Устройството не може да се отвори за запис в моно режим."
 
@@ -61,9 +89,6 @@ msgstr ""
 msgid "Could not open audio device for recording."
 msgstr "Звуковото устройство не може да се отвори за запис."
 
-msgid "Error recording from audio device. The device has been disconnected."
-msgstr ""
-
 msgid "Could not open CD device for reading."
 msgstr "Устройството за CD-та не може да се отвори за четене."
 
@@ -72,6 +97,22 @@ msgstr "По CD-то не може да се търси."
 
 msgid "Could not read CD."
 msgstr "CD-то не може да бъде прочетено."
+
+#, c-format
+msgid "Could not open vfs file \"%s\" for writing: %s."
+msgstr ""
+"Файлът „%s“ от виртуалната файлова система не може да се отвори за запис: %s."
+
+msgid "No filename given"
+msgstr "Не е дадено име на файл"
+
+#, c-format
+msgid "Could not close vfs file \"%s\"."
+msgstr "Файлът „%s“ от виртуалната файлова система не може да се затвори."
+
+#, c-format
+msgid "Error while writing to file \"%s\"."
+msgstr "Грешка при запис във файла „%s“."
 
 msgid "Internal data stream error."
 msgstr "Вътрешна грешка на потока от данни."
@@ -82,33 +123,76 @@ msgstr ""
 "За да пуснете този поток, се нуждаете от приставка за %s. Такава не е "
 "инсталирана."
 
+msgid "This appears to be a text file"
+msgstr "Това изглежда е текстов файл"
+
 msgid "Could not determine type of stream"
 msgstr "Видът на потока не може да бъде определен"
 
-msgid "This appears to be a text file"
-msgstr "Това изглежда е текстов файл"
+#, c-format
+msgid "Invalid subtitle URI \"%s\", subtitles disabled."
+msgstr "Грешен адрес за субтитри „%s“, субтитрите са изключени."
+
+msgid "No URI specified to play from."
+msgstr "Не е указан адрес за пускане."
+
+#, c-format
+msgid "Invalid URI \"%s\"."
+msgstr "Грешен адрес „%s“."
+
+msgid "RTSP streams cannot be played yet."
+msgstr "Потоци с RTSP все още не се поддържат."
+
+msgid "Could not create \"decodebin\" element."
+msgstr "Не може да се създаде елемент „decodebin“."
+
+msgid "Source element is invalid."
+msgstr "Елементът-източник е грешен."
+
+msgid ""
+"Only a subtitle stream was detected. Either you are loading a subtitle file "
+"or some other type of text file, or the media file was not recognized."
+msgstr ""
+"Бе засечен единствено поток със субтитри. Или сте заредили файл със "
+"субтитри, или някакъв друг вид текстов файл, или просто видът на "
+"мултимедийния файл не е разпознат."
+
+msgid ""
+"You do not have a decoder installed to handle this file. You might need to "
+"install the necessary plugins."
+msgstr ""
+"Липсва декодер за обработката на този файл. Ще трябва да инсталирате "
+"необходимите приставки."
+
+msgid "This is not a media file"
+msgstr "Това не е медиен файл"
+
+msgid "A subtitle stream was detected, but no video stream."
+msgstr "Открит е поток със субтитри, липсва видео поток."
+
+msgid "Both autovideosink and xvimagesink elements are missing."
+msgstr "Едновременно липсват елементите „autovideosink“ и „xvimagesink“."
 
 #, c-format
 msgid "Missing element '%s' - check your GStreamer installation."
 msgstr "Елементът „%s“ липсва — проверете инсталацията на GStreamer."
 
+msgid "Both autoaudiosink and alsasink elements are missing."
+msgstr "Едновременно липсват елементите „autoaudiosink“ и „alsasink“."
+
 #, c-format
 msgid "Both autovideosink and %s elements are missing."
-msgstr "Едновременно липсват елементите-приемници „autovideosink“ и „%s“."
+msgstr "Едновременно липсват елементите „autovideosink“ и „%s“."
 
 msgid "The autovideosink element is missing."
-msgstr "Липсва елементът-приемник „autovideosink“."
-
-#, c-format
-msgid "Configured videosink %s is not working."
-msgstr "Настроеният елемент-приемник за видео %s не работи."
+msgstr "Липсва елементът „autovideosink“."
 
 #, c-format
 msgid "Both autovideosink and %s elements are not working."
-msgstr "Едновременно не работят елементите-приемници „autovideosink“ и „%s“."
+msgstr "Едновременно не работят елементите „autovideosink“ и „%s“."
 
 msgid "The autovideosink element is not working."
-msgstr "Елементът-приемник за автоматично видео „autovideosink“ не работи."
+msgstr "Елементът „autovideosink“ не работи."
 
 msgid "Custom text sink element is not usable."
 msgstr "Потребителският елемент-приемник за текст е неизползваем."
@@ -118,35 +202,42 @@ msgstr "Липсва управление на силата на звука"
 
 #, c-format
 msgid "Both autoaudiosink and %s elements are missing."
-msgstr "Едновременно липсват елементите-приемници „autoaudiosink“ и „%s“."
+msgstr "Едновременно липсват елементите „autoaudiosink“ и „%s“."
 
 msgid "The autoaudiosink element is missing."
 msgstr "Липсва елементът „autoaudiosink“."
 
 #, c-format
-msgid "Configured audiosink %s is not working."
-msgstr "Настроеният елемент-приемник за аудио %s не работи."
-
-#, c-format
 msgid "Both autoaudiosink and %s elements are not working."
-msgstr "Едновременно не работят елементите „autoaudiosink“ и „%s“."
+msgstr "Едновремено не работят елементите „autoaudiosink“ и „%s“."
 
 msgid "The autoaudiosink element is not working."
 msgstr "Елементът „autoaudiosink“ не работи."
 
-msgid "Can't play a text file without video or visualizations."
-msgstr "Текстов файл не може да се изпълни без видео или визуализация."
+msgid "Can't play a text file without video."
+msgstr "Не може да се изпълни текстов файл без видео."
+
+msgid "Can't display both text subtitles and subpictures."
+msgstr ""
+"Не може да се показват едновременно текстови субтитри и подизображения."
+
+msgid "No Temp directory specified."
+msgstr "Не е указана временна директория."
+
+#, c-format
+msgid "Could not create temp file \"%s\"."
+msgstr "Временният файл „%s“ не може да бъде създаден."
+
+#, c-format
+msgid "Could not open file \"%s\" for reading."
+msgstr "Файлът „%s“ не може да се отвори за четене."
+
+msgid "Internal data flow error."
+msgstr "Вътрешна грешка на потока от данни."
 
 #, c-format
 msgid "No decoder available for type '%s'."
 msgstr "Липсва декодер за вида „%s“."
-
-msgid "No URI specified to play from."
-msgstr "Не е указан адрес за пускане."
-
-#, c-format
-msgid "Invalid URI \"%s\"."
-msgstr "Грешен адрес „%s“."
 
 msgid "This stream type cannot be played yet."
 msgstr "Потоци от този тип все още не могат да бъдат изпълнявани."
@@ -155,21 +246,36 @@ msgstr "Потоци от този тип все още не могат да б�
 msgid "No URI handler implemented for \"%s\"."
 msgstr "Обработката на адреси „%s“ не е реализирана."
 
-msgid "Source element is invalid."
-msgstr "Елементът-източник е грешен."
+msgid "Could not create \"decodebin2\" element."
+msgstr "Не може да се създаде елемент „decodebin2“."
+
+msgid "Could not create \"queue2\" element."
+msgstr "Не може да се създаде елемент „queue2“."
+
+msgid "Could not create \"typefind\" element."
+msgstr "Не може да се създаде елемент „typefind“."
 
 #, c-format
 msgid "Error while sending data to \"%s:%d\"."
 msgstr "Грешка при запис във файла „%s:%d“."
 
-msgid "This CD has no audio tracks"
-msgstr "В това CD липсва аудио"
+#, c-format
+msgid "Error while sending gdp header data to \"%s:%d\"."
+msgstr "Грешка при запис на заглавните данни gdp във файла „%s:%d“."
+
+#, c-format
+msgid "Error while sending gdp payload data to \"%s:%d\"."
+msgstr "Грешка при изпращането на натоварените по gtp данни към „%s:%d“."
+
+#, c-format
+msgid "Connection to %s:%d refused."
+msgstr "Връзката към %s:%d е отказана."
 
 msgid "Can't record audio fast enough"
 msgstr "Звукът не може да бъде записан достатъчно бързо"
 
 msgid "Failed to read tag: not enough data"
-msgstr "Неуспешно прочитано на етикет: липсват достатъчно данни"
+msgstr "Неуспех при прочитаното на етикет: липсват достатъчно данни"
 
 msgid "track ID"
 msgstr "идентификатор на песен"
@@ -201,132 +307,8 @@ msgstr "индустриален идентификатор на песен (TRM
 msgid "MusicBrainz TRM ID"
 msgstr "индустриален идентификатор на песен според MusicBrainz (TRM)"
 
-msgid "capturing shutter speed"
-msgstr "скорост на затвора"
-
-msgid "Shutter speed used when capturing an image, in seconds"
-msgstr "Скорост на затвора при заснемане в секунди"
-
-msgid "capturing focal ratio"
-msgstr "относителна бленда"
-
-msgid "Focal ratio (f-number) used when capturing the image"
-msgstr "Относителна бленда при заснемане"
-
-msgid "capturing focal length"
-msgstr "фокусно разстояние"
-
-msgid "Focal length of the lens used capturing the image, in mm"
-msgstr "Фокусно разстояние на обектива при заснемане в милиметри"
-
-msgid "capturing digital zoom ratio"
-msgstr "цифрово увеличение"
-
-msgid "Digital zoom ratio used when capturing an image"
-msgstr "Цифрово увеличение при заснемане"
-
-msgid "capturing iso speed"
-msgstr "светлочувствителност по ISO"
-
-msgid "The ISO speed used when capturing an image"
-msgstr "Светлочувствителност по ISO при заснемане"
-
-msgid "capturing exposure program"
-msgstr "програма на експозиция"
-
-msgid "The exposure program used when capturing an image"
-msgstr "Програма на експозиция при заснемане"
-
-msgid "capturing exposure mode"
-msgstr "режим на експозиция"
-
-msgid "The exposure mode used when capturing an image"
-msgstr "Режим на експозиция при заснемане"
-
-msgid "capturing exposure compensation"
-msgstr "компенсация на експозицията"
-
-msgid "The exposure compensation used when capturing an image"
-msgstr "Компенсацията на експозицията при заснемане"
-
-msgid "capturing scene capture type"
-msgstr "вид сцена"
-
-msgid "The scene capture mode used when capturing an image"
-msgstr "Вид сцена при заснемане"
-
-msgid "capturing gain adjustment"
-msgstr "корекция с усилване"
-
-msgid "The overall gain adjustment applied on an image"
-msgstr "Общата корекция с усилване при заснемане "
-
-msgid "capturing white balance"
-msgstr "баланс на бялото"
-
-msgid "The white balance mode set when capturing an image"
-msgstr "Режим на баланс на бялото при заснемане"
-
-msgid "capturing contrast"
-msgstr "контраст"
-
-msgid "The direction of contrast processing applied when capturing an image"
-msgstr "Посоката на обработката за контраст при заснемане"
-
-msgid "capturing saturation"
-msgstr "наситеност"
-
-msgid "The direction of saturation processing applied when capturing an image"
-msgstr "Посоката на обработката за наситеност при заснемане"
-
-msgid "capturing sharpness"
-msgstr "острота"
-
-msgid "The direction of sharpness processing applied when capturing an image"
-msgstr "Посоката на обработката за острота при заснемане"
-
-msgid "capturing flash fired"
-msgstr "светкавица"
-
-msgid "If the flash fired while capturing an image"
-msgstr "Дали е ползвана светкавица при заснемане"
-
-msgid "capturing flash mode"
-msgstr "режим на светкавица"
-
-msgid "The selected flash mode while capturing an image"
-msgstr "Режимът на светкавица при заснемане"
-
-msgid "capturing metering mode"
-msgstr "режим на заснемане"
-
-msgid ""
-"The metering mode used while determining exposure for capturing an image"
-msgstr "Режим на заснемане при определянето на експозиция"
-
-msgid "capturing source"
-msgstr "източник"
-
-msgid "The source or type of device used for the capture"
-msgstr "Видът на устройството-източник при заснемане"
-
-msgid "image horizontal ppi"
-msgstr "точки на инч по хоризонтал"
-
-msgid "Media (image/video) intended horizontal pixel density in ppi"
-msgstr "Целевата разделителна способност на медията по хоризонтал"
-
-msgid "image vertical ppi"
-msgstr "точки на инч по вертикал"
-
-msgid "Media (image/video) intended vertical pixel density in ppi"
-msgstr "Целевата разделителна способност на медията по вертикал"
-
-msgid "ID3v2 frame"
-msgstr ""
-
-msgid "unparsed id3v2 tag frame"
-msgstr ""
+msgid "This CD has no audio tracks"
+msgstr "В това CD липсва аудио"
 
 msgid "ID3 tag"
 msgstr "Етикет ID3"
@@ -358,23 +340,11 @@ msgstr "FFMpeg, версия 1"
 msgid "Lossless MSZH"
 msgstr "MSZH без загуба на качество"
 
+msgid "Uncompressed Gray Image"
+msgstr "Некомпресирано изображение с нива на сивото"
+
 msgid "Run-length encoding"
 msgstr "Последователно кодиране RLE"
-
-msgid "Subtitle"
-msgstr ""
-
-#, fuzzy
-msgid "MPL2 subtitle format"
-msgstr "Субтитри, формат TMPlayer"
-
-#, fuzzy
-msgid "DKS subtitle format"
-msgstr "Субтитри, формат Sami"
-
-#, fuzzy
-msgid "QTtext subtitle format"
-msgstr "Субтитри, формат Kate"
 
 msgid "Sami subtitle format"
 msgstr "Субтитри, формат Sami"
@@ -385,33 +355,60 @@ msgstr "Субтитри, формат TMPlayer"
 msgid "Kate subtitle format"
 msgstr "Субтитри, формат Kate"
 
-#, fuzzy
-msgid "Uncompressed video"
+msgid "Uncompressed planar YUV 4:2:0"
+msgstr "Некомпресирано видео по равнини YUV 4:2:0"
+
+msgid "Uncompressed planar YVU 4:2:0"
+msgstr "Некомпресирано видео по равнини YVU 4:2:0"
+
+msgid "Uncompressed packed YUV 4:2:2"
+msgstr "Некомпресирано, пакетирано видео YUV 4:2:2"
+
+msgid "Uncompressed packed YUV 4:1:0"
+msgstr "Некомпресирано, пакетирано видео YUV 4:1:0"
+
+msgid "Uncompressed packed YVU 4:1:0"
+msgstr "Некомпресирано, пакетирано видео YVU 4:1:0"
+
+msgid "Uncompressed packed YUV 4:1:1"
+msgstr "Некомпресирано, пакетирано видео YUV 4:1:1"
+
+msgid "Uncompressed packed YUV 4:4:4"
+msgstr "Некомпресирано, пакетирано видео YUV 4:4:4"
+
+msgid "Uncompressed planar YUV 4:2:2"
+msgstr "Некомпресирано видео по равнини YUV 4:2:2"
+
+msgid "Uncompressed planar YUV 4:1:1"
+msgstr "Некомпресирано видео по равнини YUV 4:1:1"
+
+msgid "Uncompressed black and white Y-plane"
+msgstr "Некомпресирано видео с черна и бяла равнини за Y"
+
+msgid "Uncompressed YUV"
 msgstr "Некомпресирано видео YUV"
 
-#, fuzzy
-msgid "Uncompressed gray"
-msgstr "Некомпресирано изображение с нива на сивото"
-
-#, fuzzy, c-format
-msgid "Uncompressed %s YUV %s"
-msgstr "Некомпресирано видео YUV"
-
-#, fuzzy, c-format
-msgid "Uncompressed %s%d-bit %s"
+#, c-format
+msgid "Uncompressed palettized %d-bit %s"
 msgstr "Некомпресирано, индексирано, %d-битово %s"
 
 #, c-format
 msgid "DivX MPEG-4 Version %d"
 msgstr "DivX MPEG-4 версия %d"
 
-#, fuzzy
-msgid "Uncompressed audio"
-msgstr "Некомпресирано видео YUV"
-
-#, fuzzy, c-format
-msgid "Raw %d-bit %s audio"
+#, c-format
+msgid "Raw %d-bit PCM audio"
 msgstr "Аудио, формат необработен %d-битов PCM"
+
+msgid "Raw PCM audio"
+msgstr "Аудио, формат необработен PCM"
+
+#, c-format
+msgid "Raw %d-bit floating-point audio"
+msgstr "Аудио, необработено, %d-битово, с плаваща запетая"
+
+msgid "Raw floating-point audio"
+msgstr "Аудио, необработено с плаваща запетая"
 
 msgid "Audio CD source"
 msgstr "Елемент-източник — CD"
@@ -491,148 +488,17 @@ msgstr "Непознат елемент-кодер"
 msgid "Plugin or element of unknown type"
 msgstr "Приставка или елемент от непознат вид"
 
-#~ msgid "Master"
-#~ msgstr "Главен"
+msgid "No device specified."
+msgstr "Не е указано устройство."
 
-#~ msgid "Bass"
-#~ msgstr "Баси"
+#, c-format
+msgid "Device \"%s\" does not exist."
+msgstr "Устройството „%s“ не съществува."
 
-#~ msgid "Treble"
-#~ msgstr "Високи"
+#, c-format
+msgid "Device \"%s\" is already being used."
+msgstr "Устройството „%s“ вече се използва."
 
-#~ msgid "PCM"
-#~ msgstr "PCM"
-
-#~ msgid "Synth"
-#~ msgstr "Синтезатор"
-
-#~ msgid "Line-in"
-#~ msgstr "Вход"
-
-#~ msgid "CD"
-#~ msgstr "CD"
-
-#~ msgid "Microphone"
-#~ msgstr "Микрофон"
-
-#~ msgid "PC Speaker"
-#~ msgstr "Високоговорител на PC"
-
-#~ msgid "Playback"
-#~ msgstr "Изпълнение"
-
-#~ msgid "Capture"
-#~ msgstr "Запис"
-
-#~ msgid "Connection to %s:%d refused."
-#~ msgstr "Връзката към %s:%d е отказана."
-
-#~ msgid "Uncompressed planar YUV 4:2:0"
-#~ msgstr "Некомпресирано видео по равнини YUV 4:2:0"
-
-#~ msgid "Uncompressed planar YVU 4:2:0"
-#~ msgstr "Некомпресирано видео по равнини YVU 4:2:0"
-
-#~ msgid "Uncompressed packed YUV 4:2:2"
-#~ msgstr "Некомпресирано, пакетирано видео YUV 4:2:2"
-
-#~ msgid "Uncompressed packed YUV 4:1:0"
-#~ msgstr "Некомпресирано, пакетирано видео YUV 4:1:0"
-
-#~ msgid "Uncompressed packed YVU 4:1:0"
-#~ msgstr "Некомпресирано, пакетирано видео YVU 4:1:0"
-
-#~ msgid "Uncompressed packed YUV 4:1:1"
-#~ msgstr "Некомпресирано, пакетирано видео YUV 4:1:1"
-
-#~ msgid "Uncompressed packed YUV 4:4:4"
-#~ msgstr "Некомпресирано, пакетирано видео YUV 4:4:4"
-
-#~ msgid "Uncompressed planar YUV 4:2:2"
-#~ msgstr "Некомпресирано видео по равнини YUV 4:2:2"
-
-#~ msgid "Uncompressed planar YUV 4:1:1"
-#~ msgstr "Некомпресирано видео по равнини YUV 4:1:1"
-
-#~ msgid "Uncompressed black and white Y-plane"
-#~ msgstr "Некомпресирано видео с черна и бяла равнини за Y"
-
-#~ msgid "Raw PCM audio"
-#~ msgstr "Аудио, формат необработен PCM"
-
-#~ msgid "Raw %d-bit floating-point audio"
-#~ msgstr "Аудио, необработено, %d-битово, с плаваща запетая"
-
-#~ msgid "Raw floating-point audio"
-#~ msgstr "Аудио, необработено с плаваща запетая"
-
-#~ msgid "Could not open vfs file \"%s\" for writing: %s."
-#~ msgstr ""
-#~ "Файлът „%s“ от виртуалната файлова система не може да се отвори за запис: "
-#~ "%s."
-
-#~ msgid "No filename given"
-#~ msgstr "Не е дадено име на файл"
-
-#~ msgid "Could not close vfs file \"%s\"."
-#~ msgstr "Файлът „%s“ от виртуалната файлова система не може да се затвори."
-
-#~ msgid "Error while writing to file \"%s\"."
-#~ msgstr "Грешка при запис във файла „%s“."
-
-#~ msgid "Invalid subtitle URI \"%s\", subtitles disabled."
-#~ msgstr "Грешен адрес за субтитри „%s“, субтитрите са изключени."
-
-#~ msgid "RTSP streams cannot be played yet."
-#~ msgstr "Потоци с RTSP все още не се поддържат."
-
-#~ msgid "Could not create \"decodebin\" element."
-#~ msgstr "Не може да се създаде елемент „decodebin“."
-
-#~ msgid ""
-#~ "Only a subtitle stream was detected. Either you are loading a subtitle "
-#~ "file or some other type of text file, or the media file was not "
-#~ "recognized."
-#~ msgstr ""
-#~ "Бе засечен единствено поток със субтитри. Или сте заредили файл със "
-#~ "субтитри, или някакъв друг вид текстов файл, или просто видът на "
-#~ "мултимедийния файл не е разпознат."
-
-#~ msgid ""
-#~ "You do not have a decoder installed to handle this file. You might need "
-#~ "to install the necessary plugins."
-#~ msgstr ""
-#~ "Липсва декодер за обработката на този файл. Ще трябва да инсталирате "
-#~ "необходимите приставки."
-
-#~ msgid "This is not a media file"
-#~ msgstr "Това не е медиен файл"
-
-#~ msgid "A subtitle stream was detected, but no video stream."
-#~ msgstr "Открит е поток със субтитри, липсва видео поток."
-
-#~ msgid "Both autovideosink and xvimagesink elements are missing."
-#~ msgstr ""
-#~ "Едновременно липсват елементите-приемници „autovideosink“ и „xvimagesink“."
-
-#~ msgid "Both autoaudiosink and alsasink elements are missing."
-#~ msgstr ""
-#~ "Едновременно липсват елементите-приемници „autoaudiosink“ и „alsasink“."
-
-#~ msgid "No device specified."
-#~ msgstr "Не е указано устройство."
-
-#~ msgid "Device \"%s\" does not exist."
-#~ msgstr "Устройството „%s“ не съществува."
-
-#~ msgid "Device \"%s\" is already being used."
-#~ msgstr "Устройството „%s“ вече се използва."
-
-#~ msgid "Could not open device \"%s\" for reading and writing."
-#~ msgstr "Устройството „%s“ не може да се отвори за четене и запис."
-
-#~ msgid "Error while sending gdp header data to \"%s:%d\"."
-#~ msgstr "Грешка при запис на заглавните данни gdp във файла „%s:%d“."
-
-#~ msgid "Error while sending gdp payload data to \"%s:%d\"."
-#~ msgstr "Грешка при изпращането на натоварените по gtp данни към „%s:%d“."
+#, c-format
+msgid "Could not open device \"%s\" for reading and writing."
+msgstr "Устройството „%s“ не може да се отвори за четене и запис."

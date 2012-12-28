@@ -24,7 +24,7 @@
 #define __GST_AUDIO_SRC_H__
 
 #include <gst/gst.h>
-#include <gst/audio/gstaudiobasesrc.h>
+#include <gst/audio/gstbaseaudiosrc.h>
 
 G_BEGIN_DECLS
 
@@ -40,11 +40,12 @@ typedef struct _GstAudioSrcClass GstAudioSrcClass;
 
 /**
  * GstAudioSrc:
+ * @element: parent class
  *
  * Base class for simple audio sources.
  */
 struct _GstAudioSrc {
-  GstAudioBaseSrc        element;
+  GstBaseAudioSrc        element;
 
   /*< private >*/ /* with LOCK */
   GThread   *thread;
@@ -68,21 +69,20 @@ struct _GstAudioSrc {
  * functionality.
  */
 struct _GstAudioSrcClass {
-  GstAudioBaseSrcClass parent_class;
+  GstBaseAudioSrcClass parent_class;
 
   /* vtable */
 
   /* open the device with given specs */
   gboolean (*open)      (GstAudioSrc *src);
   /* prepare resources and state to operate with the given specs */
-  gboolean (*prepare)   (GstAudioSrc *src, GstAudioRingBufferSpec *spec);
+  gboolean (*prepare)   (GstAudioSrc *src, GstRingBufferSpec *spec);
   /* undo anything that was done in prepare() */
   gboolean (*unprepare) (GstAudioSrc *src);
   /* close the device */
   gboolean (*close)     (GstAudioSrc *src);
   /* read samples from the device */
-  guint    (*read)      (GstAudioSrc *src, gpointer data, guint length,
-      GstClockTime *timestamp);
+  guint    (*read)      (GstAudioSrc *src, gpointer data, guint length);
   /* get number of samples queued in the device */
   guint    (*delay)     (GstAudioSrc *src);
   /* reset the audio device, unblock from a write */

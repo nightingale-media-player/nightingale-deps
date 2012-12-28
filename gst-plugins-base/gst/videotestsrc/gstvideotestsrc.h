@@ -24,9 +24,6 @@
 #include <gst/gst.h>
 #include <gst/base/gstpushsrc.h>
 
-#include <gst/video/gstvideometa.h>
-#include <gst/video/gstvideopool.h>
-
 G_BEGIN_DECLS
 
 #define GST_TYPE_VIDEO_TEST_SRC \
@@ -57,30 +54,8 @@ G_BEGIN_DECLS
  * @GST_VIDEO_TEST_SRC_BLINK: Alternate between black and white
  * @GST_VIDEO_TEST_SRC_SMPTE75: SMPTE test pattern (75% color bars)
  * @GST_VIDEO_TEST_SRC_ZONE_PLATE: Zone plate
- * @GST_VIDEO_TEST_SRC_GAMUT: Gamut checking pattern
- * @GST_VIDEO_TEST_SRC_CHROMA_ZONE_PLATE: Chroma zone plate
- * @GST_VIDEO_TEST_SRC_BALL: Moving ball
- * @GST_VIDEO_TEST_SRC_SMPTE100: SMPTE test pattern (100% color bars)
- * @GST_VIDEO_TEST_SRC_BAR: Bar with foreground color
  *
  * The test pattern to produce.
- *
- * The Gamut pattern creates a checkerboard pattern of colors at the
- * edge of the YCbCr gamut and nearby colors that are out of gamut.
- * The pattern is divided into 4 regions: black, white, red, and blue.
- * After conversion to RGB, the out-of-gamut colors should be converted
- * to the same value as their in-gamut neighbors.  If the checkerboard
- * pattern is still visible after conversion, this indicates a faulty
- * conversion.  Image manipulation, such as adjusting contrast or
- * brightness, can also cause the pattern to be visible.
- *
- * The Zone Plate pattern is based on BBC R&D Report 1978/23, and can
- * be used to test spatial frequency response of a system.  This
- * pattern generator is controlled by the xoffset and yoffset parameters
- * and also by all the parameters starting with 'k'.  The default
- * parameters produce a grey pattern.  Try 'videotestsrc
- * pattern=zone-plate kx2=20 ky2=20 kt=1' to produce something
- * interesting.
  */
 typedef enum {
   GST_VIDEO_TEST_SRC_SMPTE,
@@ -97,14 +72,20 @@ typedef enum {
   GST_VIDEO_TEST_SRC_CIRCULAR,
   GST_VIDEO_TEST_SRC_BLINK,
   GST_VIDEO_TEST_SRC_SMPTE75,
-  GST_VIDEO_TEST_SRC_ZONE_PLATE,
-  GST_VIDEO_TEST_SRC_GAMUT,
-  GST_VIDEO_TEST_SRC_CHROMA_ZONE_PLATE,
-  GST_VIDEO_TEST_SRC_SOLID,
-  GST_VIDEO_TEST_SRC_BALL,
-  GST_VIDEO_TEST_SRC_SMPTE100,
-  GST_VIDEO_TEST_SRC_BAR
+  GST_VIDEO_TEST_SRC_ZONE_PLATE
 } GstVideoTestSrcPattern;
+
+/**
+ * GstVideoTestSrcColorSpec:
+ * @GST_VIDEO_TEST_SRC_BT601: ITU-R Rec. BT.601
+ * @GST_VIDEO_TEST_SRC_BT709: ITU-R Rec. BT.601
+ *
+ * The color specification to use.
+ */
+typedef enum {
+  GST_VIDEO_TEST_SRC_BT601,
+  GST_VIDEO_TEST_SRC_BT709
+} GstVideoTestSrcColorSpec;
 
 typedef struct _GstVideoTestSrc GstVideoTestSrc;
 typedef struct _GstVideoTestSrcClass GstVideoTestSrcClass;
@@ -122,22 +103,23 @@ struct _GstVideoTestSrc {
   /* type of output */
   GstVideoTestSrcPattern pattern_type;
 
+  /* Color spec of output */
+  GstVideoTestSrcColorSpec color_spec;
+
   /* video state */
-  GstVideoInfo info;
-  gboolean bayer;
-  gint x_invert;
-  gint y_invert;
+  char *format_name;
+  gint width;
+  gint height;
+  struct fourcc_list_struct *fourcc;
+  gint bpp;
+  gint rate_numerator;
+  gint rate_denominator;
 
   /* private */
   gint64 timestamp_offset;              /* base offset */
-
-  /* running time and frames for current caps */
   GstClockTime running_time;            /* total running time */
   gint64 n_frames;                      /* total frames sent */
-
-  /* previous caps running time and frames */
-  GstClockTime accum_rtime;              /* accumulated running_time */
-  gint64 accum_frames;                  /* accumulated frames */
+  gboolean peer_alloc;
 
   /* zoneplate */
   gint k0;
@@ -152,23 +134,8 @@ struct _GstVideoTestSrc {
   gint kt2;
   gint xoffset;
   gint yoffset;
-
-  /* solid color */
-  guint foreground_color;
-  guint background_color;
-
-  /* moving color bars */
-  gint horizontal_offset;
-  gint horizontal_speed;
-
-  void (*make_image) (GstVideoTestSrc *v, GstVideoFrame *frame);
-  guint32 *palette;
-
-  /* temporary AYUV/ARGB scanline */
-  guint8 *tmpline_u8;
-  guint8 *tmpline;
-  guint8 *tmpline2;
-  guint16 *tmpline_u16;
+  
+  void (*make_image) (GstVideoTestSrc *v, unsigned char *dest, int w, int h);
 };
 
 struct _GstVideoTestSrcClass {

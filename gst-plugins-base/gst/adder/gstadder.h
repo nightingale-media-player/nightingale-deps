@@ -25,7 +25,6 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstcollectpads.h>
-#include <gst/audio/audio.h>
 
 G_BEGIN_DECLS
 
@@ -39,6 +38,12 @@ G_BEGIN_DECLS
 typedef struct _GstAdder             GstAdder;
 typedef struct _GstAdderClass        GstAdderClass;
 typedef struct _GstAdderInputChannel GstAdderInputChannel;
+
+typedef enum {
+  GST_ADDER_FORMAT_UNSET,
+  GST_ADDER_FORMAT_INT,
+  GST_ADDER_FORMAT_FLOAT
+} GstAdderFormat;
 
 typedef void (*GstAdderFunction) (gpointer out, gpointer in, guint size);
 
@@ -56,34 +61,40 @@ struct _GstAdder {
   gint            padcount;
 
   /* the next are valid for both int and float */
-  GstAudioInfo    info;
+  GstAdderFormat  format;
+  gint            rate;
+  gint            channels;
+  gint            width;
+  gint            endianness;
+
+  /* the next are valid only for format == GST_ADDER_FORMAT_INT */
+  gint            depth;
+  gboolean        is_signed;
+
+  /* number of bytes per sample, actually width/8 * channels */
+  gint            bps;
 
   /* function to add samples */
   GstAdderFunction func;
 
   /* counters to keep track of timestamps */
+  gint64          timestamp;
   gint64          offset;
 
   /* sink event handling */
+  GstPadEventFunction  collect_event;
   GstSegment      segment;
-  volatile gboolean new_segment_pending;
-  volatile gboolean wait_for_new_segment;
+  gboolean        segment_pending;
+  guint64         segment_position;
+  gdouble         segment_rate;
   /* src event handling */
-  volatile gboolean flush_stop_pending;
-
-  /* current caps */
-  GstCaps *current_caps;
-
-  /* target caps (set via property) */
+  gboolean        flush_stop_pending;
+  
+  /* target caps */
   GstCaps *filter_caps;
 
   /* Pending inline events */
   GList *pending_events;
-  
-  gboolean in_setcaps;
-
-  gboolean send_stream_start;
-  gboolean send_caps;
 };
 
 struct _GstAdderClass {

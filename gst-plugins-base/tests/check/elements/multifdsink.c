@@ -41,8 +41,7 @@ setup_multifdsink (void)
 
   GST_DEBUG ("setup_multifdsink");
   multifdsink = gst_check_setup_element ("multifdsink");
-  mysrcpad = gst_check_setup_src_pad (multifdsink, &srctemplate);
-  gst_pad_set_active (mysrcpad, TRUE);
+  mysrcpad = gst_check_setup_src_pad (multifdsink, &srctemplate, NULL);
 
   return multifdsink;
 }
@@ -89,7 +88,7 @@ GST_START_TEST (test_no_clients)
 
   caps = gst_caps_from_string ("application/x-gst-check");
   buffer = gst_buffer_new_and_alloc (4);
-  gst_pad_set_caps (mysrcpad, caps);
+  gst_buffer_set_caps (buffer, caps);
   gst_caps_unref (caps);
   fail_unless (gst_pad_push (mysrcpad, buffer) == GST_FLOW_OK);
 
@@ -118,12 +117,11 @@ GST_START_TEST (test_add_client)
   g_signal_emit_by_name (sink, "add", pfd[1]);
 
   caps = gst_caps_from_string ("application/x-gst-check");
-  ASSERT_CAPS_REFCOUNT (caps, "caps", 1);
   GST_DEBUG ("Created test caps %p %" GST_PTR_FORMAT, caps, caps);
   buffer = gst_buffer_new_and_alloc (4);
-  gst_pad_set_caps (mysrcpad, caps);
-  ASSERT_CAPS_REFCOUNT (caps, "caps", 3);
-  gst_buffer_fill (buffer, 0, "dead", 4);
+  gst_buffer_set_caps (buffer, caps);
+  ASSERT_CAPS_REFCOUNT (caps, "caps", 2);
+  memcpy (GST_BUFFER_DATA (buffer), "dead", 4);
   fail_unless (gst_pad_push (mysrcpad, buffer) == GST_FLOW_OK);
 
   GST_DEBUG ("reading");
@@ -155,14 +153,6 @@ G_STMT_START { \
       "data read '%s' differs from '%s'", data, ref); \
 } G_STMT_END;
 
-#define fail_unless_num_handles(sink,num) \
-G_STMT_START { \
-  gint handles; \
-  g_object_get (sink, "num-handles", &handles, NULL); \
-  fail_unless (handles == num, \
-      "sink has %d handles instead of expected %d", handles, num); \
-} G_STMT_END;
-
 /* from the given two data buffers, create two streamheader buffers and
  * some caps that match it, and store them in the given pointers
  * returns  one ref to each of the buffers and the caps */
@@ -182,14 +172,17 @@ gst_multifdsink_create_streamheader (const gchar * data1,
   fail_if (hbuf2 == NULL);
   fail_if (caps == NULL);
 
-  /* create caps with streamheader, set the caps, and push the HEADER
+  /* create caps with streamheader, set the caps, and push the IN_CAPS
    * buffers */
   *hbuf1 = gst_buffer_new_and_alloc (size1);
-  GST_BUFFER_FLAG_SET (*hbuf1, GST_BUFFER_FLAG_HEADER);
-  gst_buffer_fill (*hbuf1, 0, data1, size1);
+  GST_BUFFER_FLAG_SET (*hbuf1, GST_BUFFER_FLAG_IN_CAPS);
+  memcpy (GST_BUFFER_DATA (*hbuf1), data1, size1);
   *hbuf2 = gst_buffer_new_and_alloc (size2);
-  GST_BUFFER_FLAG_SET (*hbuf2, GST_BUFFER_FLAG_HEADER);
-  gst_buffer_fill (*hbuf2, 0, data2, size2);
+  GST_BUFFER_FLAG_SET (*hbuf2, GST_BUFFER_FLAG_IN_CAPS);
+  memcpy (GST_BUFFER_DATA (*hbuf2), data2, size2);
+  /* we want to keep them around for the tests */
+  gst_buffer_ref (*hbuf1);
+  gst_buffer_ref (*hbuf2);
 
   g_value_init (&array, GST_TYPE_ARRAY);
 
@@ -217,9 +210,10 @@ gst_multifdsink_create_streamheader (const gchar * data1,
   g_value_unset (&array);
   ASSERT_CAPS_REFCOUNT (*caps, "streamheader caps", 1);
 
-  /* we want to keep them around for the tests */
-  gst_buffer_ref (*hbuf1);
-  gst_buffer_ref (*hbuf2);
+  /* set our streamheadery caps on the buffers */
+  gst_buffer_set_caps (*hbuf1, *caps);
+  gst_buffer_set_caps (*hbuf2, *caps);
+  ASSERT_CAPS_REFCOUNT (*caps, "streamheader caps", 3);
 
   GST_DEBUG ("created streamheader caps %p %" GST_PTR_FORMAT, *caps, *caps);
 }
@@ -228,7 +222,7 @@ gst_multifdsink_create_streamheader (const gchar * data1,
 /* this test:
  * - adds a first client
  * - sets streamheader caps on the pad
- * - pushes the HEADER buffers
+ * - pushes the IN_CAPS buffers
  * - pushes a buffer
  * - verifies that the client received all the data correctly, and did not
  *   get multiple copies of the streamheader
@@ -251,18 +245,15 @@ GST_START_TEST (test_streamheader)
   ASSERT_SET_STATE (sink, GST_STATE_PLAYING, GST_STATE_CHANGE_ASYNC);
 
   /* add the first client */
-  fail_unless_num_handles (sink, 0);
   g_signal_emit_by_name (sink, "add", pfd1[1]);
-  fail_unless_num_handles (sink, 1);
 
-  /* create caps with streamheader, set the caps, and push the HEADER
+  /* create caps with streamheader, set the caps, and push the IN_CAPS
    * buffers */
   gst_multifdsink_create_streamheader ("babe", "deadbeef", &hbuf1, &hbuf2,
       &caps);
-  ASSERT_CAPS_REFCOUNT (caps, "caps", 1);
   fail_unless (gst_pad_set_caps (mysrcpad, caps));
-  /* one is ours, two from set_caps */
-  ASSERT_CAPS_REFCOUNT (caps, "caps", 3);
+  /* one is ours, two on the buffers, and one now on the pad */
+  ASSERT_CAPS_REFCOUNT (caps, "caps", 4);
 
   fail_unless (gst_pad_push (mysrcpad, hbuf1) == GST_FLOW_OK);
   fail_unless (gst_pad_push (mysrcpad, hbuf2) == GST_FLOW_OK);
@@ -270,10 +261,10 @@ GST_START_TEST (test_streamheader)
   //FIXME:
   //fail_if_can_read ("first client", pfd1[0]);
 
-  /* push a non-HEADER buffer, this should trigger the client receiving the
+  /* push a non-IN_CAPS buffer, this should trigger the client receiving the
    * first three buffers */
   buf = gst_buffer_new_and_alloc (4);
-  gst_buffer_fill (buf, 0, "f00d", 4);
+  memcpy (GST_BUFFER_DATA (buf), "f00d", 4);
   gst_pad_push (mysrcpad, buf);
 
   fail_unless_read ("first client", pfd1[0], 4, "babe");
@@ -283,14 +274,13 @@ GST_START_TEST (test_streamheader)
 
   /* now add the second client */
   g_signal_emit_by_name (sink, "add", pfd2[1]);
-  fail_unless_num_handles (sink, 2);
   //FIXME:
   //fail_if_can_read ("second client", pfd2[0]);
 
   /* now push another buffer, which will trigger streamheader for second
    * client */
   buf = gst_buffer_new_and_alloc (4);
-  gst_buffer_fill (buf, 0, "deaf", 4);
+  memcpy (GST_BUFFER_DATA (buf), "deaf", 4);
   gst_pad_push (mysrcpad, buf);
 
   fail_unless_read ("first client", pfd1[0], 4, "deaf");
@@ -303,11 +293,8 @@ GST_START_TEST (test_streamheader)
 
   GST_DEBUG ("cleaning up multifdsink");
 
-  fail_unless_num_handles (sink, 2);
   g_signal_emit_by_name (sink, "remove", pfd1[1]);
-  fail_unless_num_handles (sink, 1);
   g_signal_emit_by_name (sink, "remove", pfd2[1]);
-  fail_unless_num_handles (sink, 0);
 
   ASSERT_SET_STATE (sink, GST_STATE_NULL, GST_STATE_CHANGE_SUCCESS);
   cleanup_multifdsink (sink);
@@ -325,7 +312,7 @@ GST_END_TEST;
 
 /* this tests changing of streamheaders
  * - set streamheader caps on the pad
- * - pushes the HEADER buffers
+ * - pushes the IN_CAPS buffers
  * - pushes a buffer
  * - add a first client
  * - verifies that this first client receives the first streamheader caps,
@@ -347,14 +334,13 @@ GST_START_TEST (test_change_streamheader)
 
   ASSERT_SET_STATE (sink, GST_STATE_PLAYING, GST_STATE_CHANGE_ASYNC);
 
-  /* create caps with streamheader, set the caps, and push the HEADER
+  /* create caps with streamheader, set the caps, and push the IN_CAPS
    * buffers */
   gst_multifdsink_create_streamheader ("first", "header", &hbuf1, &hbuf2,
       &caps);
-  ASSERT_CAPS_REFCOUNT (caps, "caps", 1);
   fail_unless (gst_pad_set_caps (mysrcpad, caps));
-  /* one is ours, two from set_caps */
-  ASSERT_CAPS_REFCOUNT (caps, "caps", 3);
+  /* one is ours, two on the buffers, and one now on the pad */
+  ASSERT_CAPS_REFCOUNT (caps, "caps", 4);
 
   /* one to hold for the test and one to give away */
   ASSERT_BUFFER_REFCOUNT (hbuf1, "hbuf1", 2);
@@ -373,7 +359,7 @@ GST_START_TEST (test_change_streamheader)
 
   /* now push a buffer and read */
   buf = gst_buffer_new_and_alloc (4);
-  gst_buffer_fill (buf, 0, "f00d", 4);
+  memcpy (GST_BUFFER_DATA (buf), "f00d", 4);
   gst_pad_push (mysrcpad, buf);
 
   fail_unless_read ("change: first client", pfd1[0], 5, "first");
@@ -413,7 +399,7 @@ GST_START_TEST (test_change_streamheader)
   /* now push another buffer, which will trigger streamheader for second
    * client, but should also send new streamheaders to first client */
   buf = gst_buffer_new_and_alloc (8);
-  gst_buffer_fill (buf, 0, "deadbabe", 8);
+  memcpy (GST_BUFFER_DATA (buf), "deadbabe", 8);
   gst_pad_push (mysrcpad, buf);
 
   fail_unless_read ("first client", pfd1[0], 6, "second");
@@ -445,32 +431,16 @@ GST_START_TEST (test_change_streamheader)
 
 GST_END_TEST;
 
-static GstBuffer *
-gst_new_buffer (int i)
-{
-  GstMapInfo info;
-  gchar *data;
-
-  GstBuffer *buffer = gst_buffer_new_and_alloc (16);
-
-  /* copy some id */
-  g_assert (gst_buffer_map (buffer, &info, GST_MAP_WRITE));
-  data = (gchar *) info.data;
-  g_snprintf (data, 16, "deadbee%08x", i);
-  gst_buffer_unmap (buffer, &info);
-
-  return buffer;
-}
-
-
 /* keep 100 bytes and burst 80 bytes to clients */
 GST_START_TEST (test_burst_client_bytes)
 {
   GstElement *sink;
+  GstBuffer *buffer;
   GstCaps *caps;
   int pfd1[2];
   int pfd2[2];
   int pfd3[2];
+  gchar data[16];
   gint i;
   guint buffers_queued;
 
@@ -478,7 +448,7 @@ GST_START_TEST (test_burst_client_bytes)
   /* make sure we keep at least 100 bytes at all times */
   g_object_set (sink, "bytes-min", 100, NULL);
   g_object_set (sink, "sync-method", 3, NULL);  /* 3 = burst */
-  g_object_set (sink, "burst-format", GST_FORMAT_BYTES, NULL);
+  g_object_set (sink, "burst-unit", 3, NULL);   /* 3 = bytes */
   g_object_set (sink, "burst-value", (guint64) 80, NULL);
 
   fail_if (pipe (pfd1) == -1);
@@ -488,12 +458,18 @@ GST_START_TEST (test_burst_client_bytes)
   ASSERT_SET_STATE (sink, GST_STATE_PLAYING, GST_STATE_CHANGE_ASYNC);
 
   caps = gst_caps_from_string ("application/x-gst-check");
-  gst_pad_set_caps (mysrcpad, caps);
   GST_DEBUG ("Created test caps %p %" GST_PTR_FORMAT, caps, caps);
 
   /* push buffers in, 9 * 16 bytes = 144 bytes */
   for (i = 0; i < 9; i++) {
-    GstBuffer *buffer = gst_new_buffer (i);
+    gchar *data;
+
+    buffer = gst_buffer_new_and_alloc (16);
+    gst_buffer_set_caps (buffer, caps);
+
+    /* copy some id */
+    data = (gchar *) GST_BUFFER_DATA (buffer);
+    g_snprintf (data, 16, "deadbee%08x", i);
 
     fail_unless (gst_pad_push (mysrcpad, buffer) == GST_FLOW_OK);
   }
@@ -503,44 +479,60 @@ GST_START_TEST (test_burst_client_bytes)
   fail_if (buffers_queued != 7);
 
   /* now add the clients */
-  fail_unless_num_handles (sink, 0);
   g_signal_emit_by_name (sink, "add", pfd1[1]);
-  fail_unless_num_handles (sink, 1);
   g_signal_emit_by_name (sink, "add_full", pfd2[1], 3,
-      GST_FORMAT_BYTES, (guint64) 50, GST_FORMAT_BYTES, (guint64) 200);
+      3, (guint64) 50, 3, (guint64) 200);
   g_signal_emit_by_name (sink, "add_full", pfd3[1], 3,
-      GST_FORMAT_BYTES, (guint64) 50, GST_FORMAT_BYTES, (guint64) 50);
-  fail_unless_num_handles (sink, 3);
+      3, (guint64) 50, 3, (guint64) 50);
 
   /* push last buffer to make client fds ready for reading */
   for (i = 9; i < 10; i++) {
-    GstBuffer *buffer = gst_new_buffer (i);
+    gchar *data;
+
+    buffer = gst_buffer_new_and_alloc (16);
+    gst_buffer_set_caps (buffer, caps);
+
+    /* copy some id */
+    data = (gchar *) GST_BUFFER_DATA (buffer);
+    g_snprintf (data, 16, "deadbee%08x", i);
 
     fail_unless (gst_pad_push (mysrcpad, buffer) == GST_FLOW_OK);
   }
 
   /* now we should only read the last 5 buffers (5 * 16 = 80 bytes) */
   GST_DEBUG ("Reading from client 1");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000005");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000006");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000007");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000008");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000009");
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000005", 16) == 0);
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000006", 16) == 0);
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000007", 16) == 0);
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000008", 16) == 0);
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000009", 16) == 0);
 
   /* second client only bursts 50 bytes = 4 buffers (we get 4 buffers since
    * the max alows it) */
   GST_DEBUG ("Reading from client 2");
-  fail_unless_read ("client 2", pfd2[0], 16, "deadbee00000006");
-  fail_unless_read ("client 2", pfd2[0], 16, "deadbee00000007");
-  fail_unless_read ("client 2", pfd2[0], 16, "deadbee00000008");
-  fail_unless_read ("client 2", pfd2[0], 16, "deadbee00000009");
+  fail_if (read (pfd2[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000006", 16) == 0);
+  fail_if (read (pfd2[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000007", 16) == 0);
+  fail_if (read (pfd2[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000008", 16) == 0);
+  fail_if (read (pfd2[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000009", 16) == 0);
 
   /* third client only bursts 50 bytes = 4 buffers, we can't send
    * more than 50 bytes so we only get 3 buffers (48 bytes). */
   GST_DEBUG ("Reading from client 3");
-  fail_unless_read ("client 3", pfd3[0], 16, "deadbee00000007");
-  fail_unless_read ("client 3", pfd3[0], 16, "deadbee00000008");
-  fail_unless_read ("client 3", pfd3[0], 16, "deadbee00000009");
+  fail_if (read (pfd3[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000007", 16) == 0);
+  fail_if (read (pfd3[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000008", 16) == 0);
+  fail_if (read (pfd3[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000009", 16) == 0);
 
   GST_DEBUG ("cleaning up multifdsink");
   ASSERT_SET_STATE (sink, GST_STATE_NULL, GST_STATE_CHANGE_SUCCESS);
@@ -556,18 +548,20 @@ GST_END_TEST;
 GST_START_TEST (test_burst_client_bytes_keyframe)
 {
   GstElement *sink;
+  GstBuffer *buffer;
   GstCaps *caps;
   int pfd1[2];
   int pfd2[2];
   int pfd3[2];
+  gchar data[16];
   gint i;
   guint buffers_queued;
 
   sink = setup_multifdsink ();
   /* make sure we keep at least 100 bytes at all times */
   g_object_set (sink, "bytes-min", 100, NULL);
-  g_object_set (sink, "sync-method", 4, NULL);  /* 4 = burst_keyframe */
-  g_object_set (sink, "burst-format", GST_FORMAT_BYTES, NULL);
+  g_object_set (sink, "sync-method", 4, NULL);  /* 3 = burst_keyframe */
+  g_object_set (sink, "burst-unit", 3, NULL);   /* 3 = bytes */
   g_object_set (sink, "burst-value", (guint64) 80, NULL);
 
   fail_if (pipe (pfd1) == -1);
@@ -577,16 +571,22 @@ GST_START_TEST (test_burst_client_bytes_keyframe)
   ASSERT_SET_STATE (sink, GST_STATE_PLAYING, GST_STATE_CHANGE_ASYNC);
 
   caps = gst_caps_from_string ("application/x-gst-check");
-  gst_pad_set_caps (mysrcpad, caps);
   GST_DEBUG ("Created test caps %p %" GST_PTR_FORMAT, caps, caps);
 
   /* push buffers in, 9 * 16 bytes = 144 bytes */
   for (i = 0; i < 9; i++) {
-    GstBuffer *buffer = gst_new_buffer (i);
+    gchar *data;
+
+    buffer = gst_buffer_new_and_alloc (16);
+    gst_buffer_set_caps (buffer, caps);
 
     /* mark most buffers as delta */
     if (i != 0 && i != 4 && i != 8)
       GST_BUFFER_FLAG_SET (buffer, GST_BUFFER_FLAG_DELTA_UNIT);
+
+    /* copy some id */
+    data = (gchar *) GST_BUFFER_DATA (buffer);
+    g_snprintf (data, 16, "deadbee%08x", i);
 
     fail_unless (gst_pad_push (mysrcpad, buffer) == GST_FLOW_OK);
   }
@@ -597,16 +597,22 @@ GST_START_TEST (test_burst_client_bytes_keyframe)
 
   /* now add the clients */
   g_signal_emit_by_name (sink, "add", pfd1[1]);
-  g_signal_emit_by_name (sink, "add_full", pfd2[1],
-      4, GST_FORMAT_BYTES, (guint64) 50, GST_FORMAT_BYTES, (guint64) 90);
-  g_signal_emit_by_name (sink, "add_full", pfd3[1],
-      4, GST_FORMAT_BYTES, (guint64) 50, GST_FORMAT_BYTES, (guint64) 50);
+  g_signal_emit_by_name (sink, "add_full", pfd2[1], 4,
+      3, (guint64) 50, 3, (guint64) 90);
+  g_signal_emit_by_name (sink, "add_full", pfd3[1], 4,
+      3, (guint64) 50, 3, (guint64) 50);
 
   /* push last buffer to make client fds ready for reading */
   for (i = 9; i < 10; i++) {
-    GstBuffer *buffer = gst_new_buffer (i);
+    gchar *data;
 
+    buffer = gst_buffer_new_and_alloc (16);
+    gst_buffer_set_caps (buffer, caps);
     GST_BUFFER_FLAG_SET (buffer, GST_BUFFER_FLAG_DELTA_UNIT);
+
+    /* copy some id */
+    data = (gchar *) GST_BUFFER_DATA (buffer);
+    g_snprintf (data, 16, "deadbee%08x", i);
 
     fail_unless (gst_pad_push (mysrcpad, buffer) == GST_FLOW_OK);
   }
@@ -614,24 +620,34 @@ GST_START_TEST (test_burst_client_bytes_keyframe)
   /* now we should only read the last 6 buffers (min 5 * 16 = 80 bytes),
    * keyframe at buffer 4 */
   GST_DEBUG ("Reading from client 1");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000004");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000005");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000006");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000007");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000008");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000009");
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000004", 16) == 0);
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000005", 16) == 0);
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000006", 16) == 0);
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000007", 16) == 0);
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000008", 16) == 0);
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000009", 16) == 0);
 
   /* second client only bursts 50 bytes = 4 buffers, there is
    * no keyframe above min and below max, so get one below min */
   GST_DEBUG ("Reading from client 2");
-  fail_unless_read ("client 2", pfd2[0], 16, "deadbee00000008");
-  fail_unless_read ("client 2", pfd2[0], 16, "deadbee00000009");
+  fail_if (read (pfd2[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000008", 16) == 0);
+  fail_if (read (pfd2[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000009", 16) == 0);
 
   /* third client only bursts 50 bytes = 4 buffers, we can't send
    * more than 50 bytes so we only get 2 buffers (32 bytes). */
   GST_DEBUG ("Reading from client 3");
-  fail_unless_read ("client 3", pfd3[0], 16, "deadbee00000008");
-  fail_unless_read ("client 3", pfd3[0], 16, "deadbee00000009");
+  fail_if (read (pfd3[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000008", 16) == 0);
+  fail_if (read (pfd3[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000009", 16) == 0);
 
   GST_DEBUG ("cleaning up multifdsink");
   ASSERT_SET_STATE (sink, GST_STATE_NULL, GST_STATE_CHANGE_SUCCESS);
@@ -647,18 +663,20 @@ GST_END_TEST;
 GST_START_TEST (test_burst_client_bytes_with_keyframe)
 {
   GstElement *sink;
+  GstBuffer *buffer;
   GstCaps *caps;
   int pfd1[2];
   int pfd2[2];
   int pfd3[2];
+  gchar data[16];
   gint i;
   guint buffers_queued;
 
   sink = setup_multifdsink ();
   /* make sure we keep at least 100 bytes at all times */
   g_object_set (sink, "bytes-min", 100, NULL);
-  g_object_set (sink, "sync-method", 5, NULL);  /* 5 = burst_with_keyframe */
-  g_object_set (sink, "burst-format", GST_FORMAT_BYTES, NULL);
+  g_object_set (sink, "sync-method", 5, NULL);  /* 3 = burst_with_keyframe */
+  g_object_set (sink, "burst-unit", 3, NULL);   /* 3 = bytes */
   g_object_set (sink, "burst-value", (guint64) 80, NULL);
 
   fail_if (pipe (pfd1) == -1);
@@ -668,16 +686,22 @@ GST_START_TEST (test_burst_client_bytes_with_keyframe)
   ASSERT_SET_STATE (sink, GST_STATE_PLAYING, GST_STATE_CHANGE_ASYNC);
 
   caps = gst_caps_from_string ("application/x-gst-check");
-  gst_pad_set_caps (mysrcpad, caps);
   GST_DEBUG ("Created test caps %p %" GST_PTR_FORMAT, caps, caps);
 
   /* push buffers in, 9 * 16 bytes = 144 bytes */
   for (i = 0; i < 9; i++) {
-    GstBuffer *buffer = gst_new_buffer (i);
+    gchar *data;
+
+    buffer = gst_buffer_new_and_alloc (16);
+    gst_buffer_set_caps (buffer, caps);
 
     /* mark most buffers as delta */
     if (i != 0 && i != 4 && i != 8)
       GST_BUFFER_FLAG_SET (buffer, GST_BUFFER_FLAG_DELTA_UNIT);
+
+    /* copy some id */
+    data = (gchar *) GST_BUFFER_DATA (buffer);
+    g_snprintf (data, 16, "deadbee%08x", i);
 
     fail_unless (gst_pad_push (mysrcpad, buffer) == GST_FLOW_OK);
   }
@@ -688,16 +712,22 @@ GST_START_TEST (test_burst_client_bytes_with_keyframe)
 
   /* now add the clients */
   g_signal_emit_by_name (sink, "add", pfd1[1]);
-  g_signal_emit_by_name (sink, "add_full", pfd2[1],
-      5, GST_FORMAT_BYTES, (guint64) 50, GST_FORMAT_BYTES, (guint64) 90);
-  g_signal_emit_by_name (sink, "add_full", pfd3[1],
-      5, GST_FORMAT_BYTES, (guint64) 50, GST_FORMAT_BYTES, (guint64) 50);
+  g_signal_emit_by_name (sink, "add_full", pfd2[1], 5,
+      3, (guint64) 50, 3, (guint64) 90);
+  g_signal_emit_by_name (sink, "add_full", pfd3[1], 5,
+      3, (guint64) 50, 3, (guint64) 50);
 
   /* push last buffer to make client fds ready for reading */
   for (i = 9; i < 10; i++) {
-    GstBuffer *buffer = gst_new_buffer (i);
+    gchar *data;
 
+    buffer = gst_buffer_new_and_alloc (16);
+    gst_buffer_set_caps (buffer, caps);
     GST_BUFFER_FLAG_SET (buffer, GST_BUFFER_FLAG_DELTA_UNIT);
+
+    /* copy some id */
+    data = (gchar *) GST_BUFFER_DATA (buffer);
+    g_snprintf (data, 16, "deadbee%08x", i);
 
     fail_unless (gst_pad_push (mysrcpad, buffer) == GST_FLOW_OK);
   }
@@ -705,27 +735,40 @@ GST_START_TEST (test_burst_client_bytes_with_keyframe)
   /* now we should only read the last 6 buffers (min 5 * 16 = 80 bytes),
    * keyframe at buffer 4 */
   GST_DEBUG ("Reading from client 1");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000004");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000005");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000006");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000007");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000008");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000009");
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000004", 16) == 0);
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000005", 16) == 0);
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000006", 16) == 0);
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000007", 16) == 0);
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000008", 16) == 0);
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000009", 16) == 0);
 
   /* second client only bursts 50 bytes = 4 buffers, there is
    * no keyframe above min and below max, so send min */
   GST_DEBUG ("Reading from client 2");
-  fail_unless_read ("client 2", pfd2[0], 16, "deadbee00000006");
-  fail_unless_read ("client 2", pfd2[0], 16, "deadbee00000007");
-  fail_unless_read ("client 2", pfd2[0], 16, "deadbee00000008");
-  fail_unless_read ("client 2", pfd2[0], 16, "deadbee00000009");
+  fail_if (read (pfd2[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000006", 16) == 0);
+  fail_if (read (pfd2[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000007", 16) == 0);
+  fail_if (read (pfd2[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000008", 16) == 0);
+  fail_if (read (pfd2[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000009", 16) == 0);
 
   /* third client only bursts 50 bytes = 4 buffers, we can't send
    * more than 50 bytes so we only get 3 buffers (48 bytes). */
   GST_DEBUG ("Reading from client 3");
-  fail_unless_read ("client 3", pfd3[0], 16, "deadbee00000007");
-  fail_unless_read ("client 3", pfd3[0], 16, "deadbee00000008");
-  fail_unless_read ("client 3", pfd3[0], 16, "deadbee00000009");
+  fail_if (read (pfd3[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000007", 16) == 0);
+  fail_if (read (pfd3[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000008", 16) == 0);
+  fail_if (read (pfd3[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000009", 16) == 0);
 
   GST_DEBUG ("cleaning up multifdsink");
   ASSERT_SET_STATE (sink, GST_STATE_NULL, GST_STATE_CHANGE_SUCCESS);
@@ -742,8 +785,10 @@ GST_END_TEST;
 GST_START_TEST (test_client_next_keyframe)
 {
   GstElement *sink;
+  GstBuffer *buffer;
   GstCaps *caps;
   int pfd1[2];
+  gchar data[16];
   gint i;
 
   sink = setup_multifdsink ();
@@ -754,7 +799,6 @@ GST_START_TEST (test_client_next_keyframe)
   ASSERT_SET_STATE (sink, GST_STATE_PLAYING, GST_STATE_CHANGE_ASYNC);
 
   caps = gst_caps_from_string ("application/x-gst-check");
-  gst_pad_set_caps (mysrcpad, caps);
   GST_DEBUG ("Created test caps %p %" GST_PTR_FORMAT, caps, caps);
 
   /* now add our client */
@@ -762,7 +806,14 @@ GST_START_TEST (test_client_next_keyframe)
 
   /* push buffers in: keyframe, then non-keyframe */
   for (i = 0; i < 2; i++) {
-    GstBuffer *buffer = gst_new_buffer (i);
+    gchar *data;
+
+    buffer = gst_buffer_new_and_alloc (16);
+    gst_buffer_set_caps (buffer, caps);
+
+    /* copy some id */
+    data = (gchar *) GST_BUFFER_DATA (buffer);
+    g_snprintf (data, 16, "deadbee%08x", i);
     if (i > 0)
       GST_BUFFER_FLAG_SET (buffer, GST_BUFFER_FLAG_DELTA_UNIT);
 
@@ -771,8 +822,10 @@ GST_START_TEST (test_client_next_keyframe)
 
   /* now we should be able to read some data */
   GST_DEBUG ("Reading from client 1");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000000");
-  fail_unless_read ("client 1", pfd1[0], 16, "deadbee00000001");
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000000", 16) == 0);
+  fail_if (read (pfd1[0], data, 16) < 16);
+  fail_unless (strncmp (data, "deadbee00000001", 16) == 0);
 
   GST_DEBUG ("cleaning up multifdsink");
   ASSERT_SET_STATE (sink, GST_STATE_NULL, GST_STATE_CHANGE_SUCCESS);
@@ -810,4 +863,19 @@ multifdsink_suite (void)
   return s;
 }
 
-GST_CHECK_MAIN (multifdsink);
+int
+main (int argc, char **argv)
+{
+  int nf;
+
+  Suite *s = multifdsink_suite ();
+  SRunner *sr = srunner_create (s);
+
+  gst_check_init (&argc, &argv);
+
+  srunner_run_all (sr, CK_NORMAL);
+  nf = srunner_ntests_failed (sr);
+  srunner_free (sr);
+
+  return nf;
+}

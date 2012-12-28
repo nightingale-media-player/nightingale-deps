@@ -73,8 +73,8 @@ setup_vorbisdec (void)
 
   GST_DEBUG ("setup_vorbisdec");
   vorbisdec = gst_check_setup_element ("vorbisdec");
-  mysrcpad = gst_check_setup_src_pad (vorbisdec, &srctemplate);
-  mysinkpad = gst_check_setup_sink_pad (vorbisdec, &sinktemplate);
+  mysrcpad = gst_check_setup_src_pad (vorbisdec, &srctemplate, NULL);
+  mysinkpad = gst_check_setup_sink_pad (vorbisdec, &sinktemplate, NULL);
   gst_pad_set_active (mysrcpad, TRUE);
   gst_pad_set_active (mysinkpad, TRUE);
 
@@ -94,8 +94,7 @@ cleanup_vorbisdec (GstElement * vorbisdec)
   gst_check_teardown_element (vorbisdec);
 }
 
-/* FIXME: also tests comment header */
-GST_START_TEST (test_identification_header)
+GST_START_TEST (test_empty_identification_header)
 {
   GstElement *vorbisdec;
   GstBuffer *inbuffer;
@@ -103,14 +102,52 @@ GST_START_TEST (test_identification_header)
   GstMessage *message;
 
   vorbisdec = setup_vorbisdec ();
+  bus = gst_bus_new ();
 
+  fail_unless (gst_element_set_state (vorbisdec,
+          GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
+      "could not set to playing");
+
+  inbuffer = gst_buffer_new_and_alloc (0);
+  ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
+
+  /* set a bus here so we avoid getting state change messages */
+  gst_element_set_bus (vorbisdec, bus);
+
+  fail_unless_equals_int (gst_pad_push (mysrcpad, inbuffer), GST_FLOW_ERROR);
+  /* ... but it ends up being collected on the global buffer list */
+  fail_unless_equals_int (g_list_length (buffers), 0);
+
+  fail_if ((message = gst_bus_pop (bus)) == NULL);
+  fail_unless_message_error (message, STREAM, DECODE);
+  gst_message_unref (message);
+  gst_element_set_bus (vorbisdec, NULL);
+
+  /* cleanup */
+  gst_object_unref (GST_OBJECT (bus));
+  cleanup_vorbisdec (vorbisdec);
+}
+
+GST_END_TEST;
+
+/* FIXME: also tests comment header */
+GST_START_TEST (test_identification_header)
+{
+  GstElement *vorbisdec;
+  GstBuffer *inbuffer;
+  GstBus *bus;
+  GstMessage *message;
+  GstTagList *tag_list;
+  gchar *artist;
+
+  vorbisdec = setup_vorbisdec ();
   fail_unless (gst_element_set_state (vorbisdec,
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
   bus = gst_bus_new ();
 
   inbuffer = gst_buffer_new_and_alloc (30);
-  gst_buffer_fill (inbuffer, 0, identification_header, 30);
+  memcpy (GST_BUFFER_DATA (inbuffer), identification_header, 30);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
   gst_buffer_ref (inbuffer);
 
@@ -124,7 +161,7 @@ GST_START_TEST (test_identification_header)
   fail_if ((message = gst_bus_pop (bus)) != NULL);
 
   inbuffer = gst_buffer_new_and_alloc (sizeof (comment_header));
-  gst_buffer_fill (inbuffer, 0, comment_header, sizeof (comment_header));
+  memcpy (GST_BUFFER_DATA (inbuffer), comment_header, sizeof (comment_header));
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
   gst_buffer_ref (inbuffer);
 
@@ -134,8 +171,6 @@ GST_START_TEST (test_identification_header)
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
   gst_buffer_unref (inbuffer);
   fail_unless (g_list_length (buffers) == 0);
-
-#if 0
   /* there's a tag message waiting */
   fail_if ((message = gst_bus_pop (bus)) == NULL);
   gst_message_parse_tag (message, &tag_list);
@@ -145,13 +180,8 @@ GST_START_TEST (test_identification_header)
   fail_unless_equals_string (artist, "me");
   g_free (artist);
   fail_unless_equals_int (gst_tag_list_get_tag_size (tag_list, "album"), 0);
-  gst_tag_list_unref (tag_list);
+  gst_tag_list_free (tag_list);
   gst_message_unref (message);
-#endif
-
-  /* make sure there's no error on the bus */
-  message = gst_bus_pop_filtered (bus, GST_MESSAGE_ERROR);
-  fail_if (message != NULL);
 
   /* cleanup */
   gst_bus_set_flushing (bus, TRUE);
@@ -184,7 +214,7 @@ _create_codebook_header_buffer (void)
   vorbis_analysis_headerout (&vd, &vc, &header, &header_comm, &header_code);
 
   buffer = gst_buffer_new_and_alloc (header_code.bytes);
-  gst_buffer_fill (buffer, 0, header_code.packet, header_code.bytes);
+  memcpy (GST_BUFFER_DATA (buffer), header_code.packet, header_code.bytes);
 
   return buffer;
 }
@@ -206,7 +236,7 @@ _create_audio_buffer (void)
   vorbis_bitrate_addblock (&vb);
   vorbis_bitrate_flushpacket (&vd, &packet);
   buffer = gst_buffer_new_and_alloc (packet.bytes);
-  gst_buffer_fill (buffer, 0, packet.packet, packet.bytes);
+  memcpy (GST_BUFFER_DATA (buffer), packet.packet, packet.bytes);
 
   vorbis_comment_clear (&vc);
   vorbis_block_clear (&vb);
@@ -230,7 +260,7 @@ GST_START_TEST (test_empty_vorbis_packet)
   bus = gst_bus_new ();
 
   inbuffer = gst_buffer_new_and_alloc (30);
-  gst_buffer_fill (inbuffer, 0, identification_header, 30);
+  memcpy (GST_BUFFER_DATA (inbuffer), identification_header, 30);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
   gst_buffer_ref (inbuffer);
 
@@ -245,7 +275,7 @@ GST_START_TEST (test_empty_vorbis_packet)
   fail_if ((message = gst_bus_pop (bus)) != NULL);
 
   inbuffer = gst_buffer_new_and_alloc (sizeof (comment_header));
-  gst_buffer_fill (inbuffer, 0, comment_header, sizeof (comment_header));
+  memcpy (GST_BUFFER_DATA (inbuffer), comment_header, sizeof (comment_header));
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
   gst_buffer_ref (inbuffer);
 
@@ -299,10 +329,26 @@ vorbisdec_suite (void)
   TCase *tc_chain = tcase_create ("general");
 
   suite_add_tcase (s, tc_chain);
+  tcase_add_test (tc_chain, test_empty_identification_header);
   tcase_add_test (tc_chain, test_identification_header);
   tcase_add_test (tc_chain, test_empty_vorbis_packet);
 
   return s;
 }
 
-GST_CHECK_MAIN (vorbisdec);
+int
+main (int argc, char **argv)
+{
+  int nf;
+
+  Suite *s = vorbisdec_suite ();
+  SRunner *sr = srunner_create (s);
+
+  gst_check_init (&argc, &argv);
+
+  srunner_run_all (sr, CK_NORMAL);
+  nf = srunner_ntests_failed (sr);
+  srunner_free (sr);
+
+  return nf;
+}

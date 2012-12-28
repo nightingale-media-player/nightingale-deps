@@ -4,10 +4,11 @@
 
 #include <gst/app/gstappsrc.h>
 #include <gst/app/gstappsink.h>
+#include <gst/app/gstappbuffer.h>
 
 /* these are the caps we are going to pass through the appsink and appsrc */
 const gchar *audio_caps =
-    "audio/x-raw,format=S16LE,channels=1,rate=8000, layout=interleaved";
+    "audio/x-raw-int,channels=1,rate=8000,signed=(boolean)true,width=16,depth=16,endianness=1234";
 
 typedef struct
 {
@@ -18,26 +19,35 @@ typedef struct
 
 /* called when the appsink notifies us that there is a new buffer ready for
  * processing */
-static GstFlowReturn
-on_new_sample_from_sink (GstElement * elt, ProgramData * data)
+static void
+on_new_buffer_from_source (GstElement * elt, ProgramData * data)
 {
-  GstSample *sample;
+  guint size;
+  gpointer raw_buffer;
   GstBuffer *app_buffer, *buffer;
   GstElement *source;
 
-  /* get the sample from appsink */
-  sample = gst_app_sink_pull_sample (GST_APP_SINK (elt));
-  buffer = gst_sample_get_buffer (sample);
+  /* get the buffer from appsink */
+  buffer = gst_app_sink_pull_buffer (GST_APP_SINK (elt));
 
-  /* make a copy */
-  app_buffer = gst_buffer_copy (buffer);
+  /* turn it into an app buffer, it's not really needed, we could simply push
+   * the retrieved buffer from appsink into appsrc just fine.  */
+  size = GST_BUFFER_SIZE (buffer);
+  g_print ("Pushing a buffer of size %d\n", size);
+  raw_buffer = g_malloc0 (size);
+  memcpy (raw_buffer, GST_BUFFER_DATA (buffer), size);
+  app_buffer = gst_app_buffer_new (raw_buffer, size, g_free, raw_buffer);
 
-  /* we don't need the appsink sample anymore */
-  gst_sample_unref (sample);
+  /* newer basesrc will set caps for use automatically but it does not really
+   * hurt to set it on the buffer again */
+  gst_buffer_set_caps (app_buffer, GST_BUFFER_CAPS (buffer));
+
+  /* we don't need the appsink buffer anymore */
+  gst_buffer_unref (buffer);
 
   /* get source an push new buffer */
   source = gst_bin_get_by_name (GST_BIN (data->sink), "testsource");
-  return gst_app_src_push_buffer (GST_APP_SRC (source), app_buffer);
+  gst_app_src_push_buffer (GST_APP_SRC (source), app_buffer);
 }
 
 /* called when we get a GstMessage from the source pipeline when we get EOS, we
@@ -130,8 +140,8 @@ main (int argc, char *argv[])
    * push as fast as it can, hence the sync=false */
   testsink = gst_bin_get_by_name (GST_BIN (data->source), "testsink");
   g_object_set (G_OBJECT (testsink), "emit-signals", TRUE, "sync", FALSE, NULL);
-  g_signal_connect (testsink, "new-sample",
-      G_CALLBACK (on_new_sample_from_sink), data);
+  g_signal_connect (testsink, "new-buffer",
+      G_CALLBACK (on_new_buffer_from_source), data);
   gst_object_unref (testsink);
 
   /* setting up sink pipeline, we push audio data into this pipeline that will

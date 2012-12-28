@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>alsamixer</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="prev" href="gst-plugins-base-plugins-appsink.html" title="appsink">
+<link rel="next" href="gst-plugins-base-plugins-alsasink.html" title="alsasink">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-base-plugins-appsink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-base-plugins-alsasink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-plugins-alsamixer.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-alsamixer.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-alsamixer.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-alsamixer.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-base-plugins-alsamixer.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-base-plugins-alsamixer"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-alsamixer.top_of_page"></a>alsamixer</span></h2>
+<p>alsamixer — Control sound input and output levels with ALSA</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-base-plugins-alsamixer.synopsis"></a><h2>Synopsis</h2>
+<a name="GstAlsaMixerElement"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-base-plugins-alsamixer.html#GstAlsaMixerElement-struct" title="GstAlsaMixerElement">GstAlsaMixerElement</a>;
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-alsamixer.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----GstAlsaMixerElement
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-alsamixer.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstAlsaMixerElement implements
+ <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstImplementsInterface.html"
+>GstImplementsInterface</a>,  <a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstmixer.html#GstMixer"
+>GstMixer</a> and  <a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"
+>GstPropertyProbe</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-alsamixer.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-base-plugins-alsamixer.html#GstAlsaMixerElement--device" title='The "device" property'>device</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-alsamixer.html#GstAlsaMixerElement--device-name" title='The "device-name" property'>device-name</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-alsamixer.description"></a><h2>Description</h2>
+<p>
+This element controls various aspects such as the volume and balance
+of an audio device using the ALSA api.
+</p>
+<p>
+The application should query and use the interfaces provided by this 
+element to control the device.
+</p>
+<p>
+Last reviewed on 2006-03-01 (0.10.4)</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2579632"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-alsa.html#plugin-alsa">alsa</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Leif Johnson &lt;leif@ambient.2y.net&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Generic/Audio</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2588754"></a><h3>Element Pads</h3>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2588768"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-alsa.html#plugin-alsa">alsa</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Leif Johnson &lt;leif@ambient.2y.net&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Generic/Audio</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2588830"></a><h3>Element Pads</h3>
+</div>
+</div>
+<p>
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-alsamixer.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstAlsaMixerElement-struct"></a><h3>GstAlsaMixerElement</h3>
+<pre class="programlisting">typedef struct _GstAlsaMixerElement GstAlsaMixerElement;</pre>
+<p>
+Opaque datastructure.</p>
+<p>
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-alsamixer.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstAlsaMixerElement--device"></a><h3>The <code class="literal">"device"</code> property</h3>
+<pre class="programlisting">  "device"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>ALSA device, as defined in an asound configuration file.</p>
+<p>Default value: "default"</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstAlsaMixerElement--device-name"></a><h3>The <code class="literal">"device-name"</code> property</h3>
+<pre class="programlisting">  "device-name"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read</pre>
+<p>Human-readable name of the sound device.</p>
+<p>Default value: ""</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-alsamixer.see-also"></a><h2>See Also</h2>
+alsasink, alsasrc
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.11</div>
+</body>
+</html>

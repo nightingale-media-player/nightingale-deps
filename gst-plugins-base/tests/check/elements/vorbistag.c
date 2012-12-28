@@ -96,8 +96,8 @@ setup_vorbistag (void)
 
   GST_DEBUG ("setup_vorbistag");
   vorbistag = gst_check_setup_element ("vorbistag");
-  mysrcpad = gst_check_setup_src_pad (vorbistag, &srctemplate);
-  mysinkpad = gst_check_setup_sink_pad (vorbistag, &sinktemplate);
+  mysrcpad = gst_check_setup_src_pad (vorbistag, &srctemplate, NULL);
+  mysinkpad = gst_check_setup_sink_pad (vorbistag, &sinktemplate, NULL);
   gst_pad_set_active (mysrcpad, TRUE);
   gst_pad_set_active (mysinkpad, TRUE);
 
@@ -118,21 +118,17 @@ cleanup_vorbistag (GstElement * vorbistag)
 }
 
 
-static GstPadProbeReturn
-buffer_probe (GstPad * pad, GstPadProbeInfo * info, gpointer unused)
+static gboolean
+buffer_probe (GstPad * pad, GstBuffer * buffer, gpointer unused)
 {
-  GstBuffer *buffer = GST_PAD_PROBE_INFO_BUFFER (info);
-
   g_async_queue_push (pending_buffers, gst_buffer_ref (buffer));
-
-  return GST_PAD_PROBE_OK;
+  return TRUE;
 }
 
 static void
 start_pipeline (GstElement * element)
 {
-  id = gst_pad_add_probe (mysinkpad, GST_PAD_PROBE_TYPE_BUFFER,
-      (GstPadProbeCallback) buffer_probe, NULL, NULL);
+  id = gst_pad_add_buffer_probe (mysinkpad, G_CALLBACK (buffer_probe), NULL);
 
   pending_buffers = g_async_queue_new ();
   gst_element_set_state (element, GST_STATE_PLAYING);
@@ -152,7 +148,7 @@ stop_pipeline (GstElement * element)
   while ((buf = g_async_queue_try_pop (pending_buffers)))
     gst_buffer_unref (buf);
 
-  gst_pad_remove_probe (mysinkpad, id);
+  gst_pad_remove_buffer_probe (mysinkpad, (guint) id);
   id = 0;
 
   gst_element_set_state (element, GST_STATE_NULL);
@@ -162,17 +158,6 @@ stop_pipeline (GstElement * element)
 
   g_async_queue_unref (pending_buffers);
   pending_buffers = NULL;
-}
-
-static void
-compare_buffer (GstBuffer * buf, const guint8 * data, gsize size)
-{
-  GstMapInfo map;
-
-  gst_buffer_map (buf, &map, GST_MAP_READ);
-  fail_unless_equals_int (map.size, size);
-  fail_unless_equals_int (memcmp (map.data, data, size), 0);
-  gst_buffer_unmap (buf, &map);
 }
 
 static vorbis_comment vc;
@@ -197,7 +182,7 @@ _create_codebook_header_buffer (void)
   vorbis_analysis_headerout (&vd, &vc, &header, &header_comm, &header_code);
 
   buffer = gst_buffer_new_and_alloc (header_code.bytes);
-  gst_buffer_fill (buffer, 0, header_code.packet, header_code.bytes);
+  memcpy (GST_BUFFER_DATA (buffer), header_code.packet, header_code.bytes);
 
   return buffer;
 }
@@ -207,7 +192,7 @@ _create_audio_buffer (void)
 {
   GstBuffer *buffer;
   ogg_packet packet;
-  float **vorbis_buffer G_GNUC_UNUSED;
+  float **vorbis_buffer;
 
   vorbis_buffer = vorbis_analysis_buffer (&vd, 0);
   vorbis_analysis_wrote (&vd, 0);
@@ -216,8 +201,7 @@ _create_audio_buffer (void)
   vorbis_bitrate_addblock (&vb);
   vorbis_bitrate_flushpacket (&vd, &packet);
   buffer = gst_buffer_new_and_alloc (packet.bytes);
-  gst_buffer_fill (buffer, 0, packet.packet, packet.bytes);
-  GST_DEBUG ("%p %d", packet.packet, packet.bytes);
+  memcpy (GST_BUFFER_DATA (buffer), packet.packet, packet.bytes);
 
   vorbis_comment_clear (&vc);
   vorbis_block_clear (&vb);
@@ -236,25 +220,25 @@ GST_START_TEST (test_empty_tags_set)
 
   vorbistag = setup_vorbistag ();
 
-  tags = gst_tag_list_new_empty ();
+  tags = gst_tag_list_new ();
   gst_tag_list_add (tags, GST_TAG_MERGE_REPLACE, GST_TAG_TITLE, "foobar", NULL);
   gst_tag_setter_merge_tags (GST_TAG_SETTER (vorbistag), tags,
       GST_TAG_MERGE_REPLACE);
   gst_tag_setter_set_tag_merge_mode (GST_TAG_SETTER (vorbistag),
       GST_TAG_MERGE_KEEP_ALL);
-  gst_tag_list_unref (tags);
+  gst_tag_list_free (tags);
 
   start_pipeline (vorbistag);
 
   /* send identification header */
   inbuffer = gst_buffer_new_and_alloc (sizeof (identification_header));
-  gst_buffer_fill (inbuffer, 0, identification_header,
+  memcpy (GST_BUFFER_DATA (inbuffer), identification_header,
       sizeof (identification_header));
   fail_unless_equals_int (gst_pad_push (mysrcpad, inbuffer), GST_FLOW_OK);
 
   /* send empty comment buffer */
   inbuffer = gst_buffer_new_and_alloc (sizeof (empty_comment_header));
-  gst_buffer_fill (inbuffer, 0, empty_comment_header,
+  memcpy (GST_BUFFER_DATA (inbuffer), empty_comment_header,
       sizeof (empty_comment_header));
   fail_unless_equals_int (gst_pad_push (mysrcpad, inbuffer), GST_FLOW_OK);
 
@@ -267,14 +251,18 @@ GST_START_TEST (test_empty_tags_set)
 
   /* check identification header is unchanged */
   outbuffer = get_buffer ();
-  compare_buffer (outbuffer, identification_header,
+  fail_unless_equals_int (GST_BUFFER_SIZE (outbuffer),
       sizeof (identification_header));
+  fail_unless_equals_int (memcmp (GST_BUFFER_DATA (outbuffer),
+          identification_header, sizeof (identification_header)), 0);
   gst_buffer_unref (outbuffer);
 
   /* check comment header is correct */
   outbuffer = get_buffer ();
-  compare_buffer (outbuffer, title_comment_header,
+  fail_unless_equals_int (GST_BUFFER_SIZE (outbuffer),
       sizeof (title_comment_header));
+  fail_unless_equals_int (memcmp (GST_BUFFER_DATA (outbuffer),
+          title_comment_header, sizeof (title_comment_header)), 0);
   gst_buffer_unref (outbuffer);
 
   stop_pipeline (vorbistag);
@@ -292,24 +280,24 @@ GST_START_TEST (test_filled_tags_unset)
 
   vorbistag = setup_vorbistag ();
 
-  tags = gst_tag_list_new_empty ();
+  tags = gst_tag_list_new ();
   gst_tag_setter_merge_tags (GST_TAG_SETTER (vorbistag), tags,
       GST_TAG_MERGE_REPLACE);
   gst_tag_setter_set_tag_merge_mode (GST_TAG_SETTER (vorbistag),
       GST_TAG_MERGE_KEEP_ALL);
-  gst_tag_list_unref (tags);
+  gst_tag_list_free (tags);
 
   start_pipeline (vorbistag);
 
   /* send identification header */
   inbuffer = gst_buffer_new_and_alloc (sizeof (identification_header));
-  gst_buffer_fill (inbuffer, 0, identification_header,
+  memcpy (GST_BUFFER_DATA (inbuffer), identification_header,
       sizeof (identification_header));
   fail_unless_equals_int (gst_pad_push (mysrcpad, inbuffer), GST_FLOW_OK);
 
   /* send empty comment buffer */
   inbuffer = gst_buffer_new_and_alloc (sizeof (title_comment_header));
-  gst_buffer_fill (inbuffer, 0, title_comment_header,
+  memcpy (GST_BUFFER_DATA (inbuffer), title_comment_header,
       sizeof (title_comment_header));
   fail_unless_equals_int (gst_pad_push (mysrcpad, inbuffer), GST_FLOW_OK);
 
@@ -322,14 +310,18 @@ GST_START_TEST (test_filled_tags_unset)
 
   /* check identification header is unchanged */
   outbuffer = get_buffer ();
-  compare_buffer (outbuffer, identification_header,
+  fail_unless_equals_int (GST_BUFFER_SIZE (outbuffer),
       sizeof (identification_header));
+  fail_unless_equals_int (memcmp (GST_BUFFER_DATA (outbuffer),
+          identification_header, sizeof (identification_header)), 0);
   gst_buffer_unref (outbuffer);
 
   /* check comment header is correct */
   outbuffer = get_buffer ();
-  compare_buffer (outbuffer, empty_comment_header,
+  fail_unless_equals_int (GST_BUFFER_SIZE (outbuffer),
       sizeof (empty_comment_header));
+  fail_unless_equals_int (memcmp (GST_BUFFER_DATA (outbuffer),
+          empty_comment_header, sizeof (empty_comment_header)), 0);
   gst_buffer_unref (outbuffer);
 
   stop_pipeline (vorbistag);
@@ -347,25 +339,25 @@ GST_START_TEST (test_filled_tags_change)
 
   vorbistag = setup_vorbistag ();
 
-  tags = gst_tag_list_new_empty ();
+  tags = gst_tag_list_new ();
   gst_tag_list_add (tags, GST_TAG_MERGE_REPLACE, GST_TAG_TITLE, "foobar", NULL);
   gst_tag_setter_merge_tags (GST_TAG_SETTER (vorbistag), tags,
       GST_TAG_MERGE_REPLACE);
   gst_tag_setter_set_tag_merge_mode (GST_TAG_SETTER (vorbistag),
       GST_TAG_MERGE_KEEP_ALL);
-  gst_tag_list_unref (tags);
+  gst_tag_list_free (tags);
 
   start_pipeline (vorbistag);
 
   /* send identification header */
   inbuffer = gst_buffer_new_and_alloc (sizeof (identification_header));
-  gst_buffer_fill (inbuffer, 0, identification_header,
+  memcpy (GST_BUFFER_DATA (inbuffer), identification_header,
       sizeof (identification_header));
   fail_unless_equals_int (gst_pad_push (mysrcpad, inbuffer), GST_FLOW_OK);
 
   /* send empty comment buffer */
   inbuffer = gst_buffer_new_and_alloc (sizeof (artist_comment_header));
-  gst_buffer_fill (inbuffer, 0, artist_comment_header,
+  memcpy (GST_BUFFER_DATA (inbuffer), artist_comment_header,
       sizeof (artist_comment_header));
   fail_unless_equals_int (gst_pad_push (mysrcpad, inbuffer), GST_FLOW_OK);
 
@@ -378,14 +370,18 @@ GST_START_TEST (test_filled_tags_change)
 
   /* check identification header is unchanged */
   outbuffer = get_buffer ();
-  compare_buffer (outbuffer, identification_header,
+  fail_unless_equals_int (GST_BUFFER_SIZE (outbuffer),
       sizeof (identification_header));
+  fail_unless_equals_int (memcmp (GST_BUFFER_DATA (outbuffer),
+          identification_header, sizeof (identification_header)), 0);
   gst_buffer_unref (outbuffer);
 
   /* check comment header is correct */
   outbuffer = get_buffer ();
-  compare_buffer (outbuffer, title_comment_header,
+  fail_unless_equals_int (GST_BUFFER_SIZE (outbuffer),
       sizeof (title_comment_header));
+  fail_unless_equals_int (memcmp (GST_BUFFER_DATA (outbuffer),
+          title_comment_header, sizeof (title_comment_header)), 0);
   gst_buffer_unref (outbuffer);
 
   stop_pipeline (vorbistag);

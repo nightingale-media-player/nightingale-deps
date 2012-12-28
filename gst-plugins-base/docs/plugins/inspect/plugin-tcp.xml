@@ -3,7 +3,7 @@
   <description>transfer data over the network via TCP</description>
   <filename>../../gst/tcp/.libs/libgsttcp.so</filename>
   <basename>libgsttcp.so</basename>
-  <version>1.0.4</version>
+  <version>0.10.25</version>
   <license>LGPL</license>
   <source>gst-plugins-base</source>
   <package>GStreamer Base Plug-ins source release</package>
@@ -15,21 +15,6 @@
       <class>Sink/Network</class>
       <description>Send data to multiple filedescriptors</description>
       <author>Thomas Vander Stichele &lt;thomas at apestaart dot org&gt;, Wim Taymans &lt;wim@fluendo.com&gt;</author>
-      <pads>
-        <caps>
-          <name>sink</name>
-          <direction>sink</direction>
-          <presence>always</presence>
-          <details>ANY</details>
-        </caps>
-      </pads>
-    </element>
-    <element>
-      <name>multisocketsink</name>
-      <longname>Multi socket sink</longname>
-      <class>Sink/Network</class>
-      <description>Send data to multiple sockets</description>
-      <author>Thomas Vander Stichele &lt;thomas at apestaart dot org&gt;, Wim Taymans &lt;wim@fluendo.com&gt;, Sebastian Dröge &lt;sebastian.droege@collabora.co.uk&gt;</author>
       <pads>
         <caps>
           <name>sink</name>

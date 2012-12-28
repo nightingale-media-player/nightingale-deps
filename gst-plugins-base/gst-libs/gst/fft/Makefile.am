@@ -1,8 +1,8 @@
-lib_LTLIBRARIES = libgstfft-@GST_API_VERSION@.la
+lib_LTLIBRARIES = libgstfft-@GST_MAJORMINOR@.la
 
-libgstfft_@GST_API_VERSION@_includedir = $(includedir)/gstreamer-@GST_API_VERSION@/gst/fft
+libgstfft_@GST_MAJORMINOR@_includedir = $(includedir)/gstreamer-@GST_MAJORMINOR@/gst/fft
 
-libgstfft_@GST_API_VERSION@_include_HEADERS = \
+libgstfft_@GST_MAJORMINOR@_include_HEADERS = \
 	gstfft.h \
 	gstffts16.h \
 	gstffts32.h \
@@ -23,7 +23,7 @@ noinst_HEADERS = \
 	_kiss_fft_guts_f32.h \
 	_kiss_fft_guts_f64.h
 
-libgstfft_@GST_API_VERSION@_la_SOURCES = \
+libgstfft_@GST_MAJORMINOR@_la_SOURCES = \
 	gstfft.c \
 	gstffts16.c \
 	gstffts32.c \
@@ -38,33 +38,30 @@ libgstfft_@GST_API_VERSION@_la_SOURCES = \
 	kiss_fftr_f32.c \
 	kiss_fftr_f64.c
 
-libgstfft_@GST_API_VERSION@_la_LIBADD = $(GST_LIBS) $(LIBM)
-libgstfft_@GST_API_VERSION@_la_CFLAGS = $(GST_CFLAGS)
-libgstfft_@GST_API_VERSION@_la_LDFLAGS = $(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
+libgstfft_@GST_MAJORMINOR@_la_LIBADD = $(GST_LIBS) $(LIBM)
+libgstfft_@GST_MAJORMINOR@_la_CFLAGS = $(GST_CFLAGS)
+libgstfft_@GST_MAJORMINOR@_la_LDFLAGS = $(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
 
 EXTRA_DIST = kiss_version
 
 if HAVE_INTROSPECTION
-BUILT_GIRSOURCES = GstFft-@GST_API_VERSION@.gir
+BUILT_GIRSOURCES = GstFft-@GST_MAJORMINOR@.gir
 
-gir_headers=$(patsubst %,$(srcdir)/%, $(libgstfft_@GST_API_VERSION@_include_HEADERS))
-gir_sources=$(patsubst %,$(srcdir)/%, $(libgstfft_@GST_API_VERSION@_la_SOURCES))
-gir_cincludes=$(patsubst %,--c-include='gst/fft/%',$(libgstfft_@GST_API_VERSION@_include_HEADERS))
+gir_headers=$(patsubst %,$(srcdir)/%, $(libgstfft_@GST_MAJORMINOR@_include_HEADERS))
+gir_sources=$(patsubst %,$(srcdir)/%, $(libgstfft_@GST_MAJORMINOR@_la_SOURCES))
+gir_cincludes=$(patsubst %,--c-include='gst/fft/%',$(libgstfft_@GST_MAJORMINOR@_include_HEADERS))
 
-GstFft-@GST_API_VERSION@.gir: $(INTROSPECTION_SCANNER) libgstfft-@GST_API_VERSION@.la
-	$(AM_V_GEN)PKG_CONFIG_PATH="$(GST_PKG_CONFIG_PATH)" \
-		GST_PLUGIN_SYSTEM_PATH="" GST_PLUGIN_PATH="" GST_REGISTRY_UPDATE=no \
+GstFft-@GST_MAJORMINOR@.gir: $(INTROSPECTION_SCANNER) libgstfft-@GST_MAJORMINOR@.la
+	PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig" \
 		$(INTROSPECTION_SCANNER) -v --namespace GstFft \
-		--nsversion=@GST_API_VERSION@ \
+		--nsversion=@GST_MAJORMINOR@ \
 		--strip-prefix=Gst \
-		--warn-all \
 		$(gir_cincludes) \
-		--add-include-path=`PKG_CONFIG_PATH="$(GST_PKG_CONFIG_PATH)" $(PKG_CONFIG) --variable=girdir gstreamer-@GST_API_VERSION@` \
-		--library=libgstfft-@GST_API_VERSION@.la \
-		--include=Gst-@GST_API_VERSION@ \
+		--add-include-path=`$(PKG_CONFIG) --variable=libdir gstreamer-0.10`/gst \
+		--library=gstfft-0.10 \
+		--include=Gst-0.10 \
 		--libtool="$(top_builddir)/libtool" \
-		--pkg gstreamer-@GST_API_VERSION@ \
-		--pkg-export gstreamer-fft-@GST_API_VERSION@ \
+		--pkg gstreamer-0.10 \
 		--output $@ \
 		$(gir_headers) \
 		$(gir_sources)
@@ -79,26 +76,7 @@ typelibsdir = $(libdir)/girepository-1.0/
 typelibs_DATA = $(BUILT_GIRSOURCES:.gir=.typelib)
 
 %.typelib: %.gir $(INTROSPECTION_COMPILER)
-	$(AM_V_GEN)PKG_CONFIG_PATH="$(GST_PKG_CONFIG_PATH)" \
-		$(INTROSPECTION_COMPILER) \
-		--includedir=$(srcdir) \
-		--includedir=$(builddir) \
-		--includedir=`PKG_CONFIG_PATH="$(GST_PKG_CONFIG_PATH)" $(PKG_CONFIG) --variable=girdir gstreamer-@GST_API_VERSION@` \
-		$(INTROSPECTION_COMPILER_OPTS) $< -o $(@F)
+	$(INTROSPECTION_COMPILER) --includedir=$(srcdir) --includedir=$(builddir) --includedir=`$(PKG_CONFIG) --variable=libdir gstreamer-0.10`/gst $(INTROSPECTION_COMPILER_OPTS) $< -o $(@F)
 
 CLEANFILES = $(BUILT_GIRSOURCES) $(typelibs_DATA)
 endif
-
-Android.mk: Makefile.am
-	androgenizer -:PROJECT libgstfft -:SHARED libgstfft-@GST_API_VERSION@ \
-	 -:TAGS eng debug \
-         -:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
-	 -:SOURCES $(libgstfft_@GST_API_VERSION@_la_SOURCES) \
-	 -:CFLAGS $(DEFS) $(libgstfft_@GST_API_VERSION@_la_CFLAGS) \
-	 -:LDFLAGS $(libgstfft_@GST_API_VERSION@_la_LDFLAGS) \
-	           $(libgstfft_@GST_API_VERSION@_la_LIBADD) \
-	           -ldl \
-	 -:HEADER_TARGET gstreamer-@GST_API_VERSION@/gst/fft \
-	 -:HEADERS $(libgstfftinclude_HEADERS) \
-	 -:PASSTHROUGH LOCAL_ARM_MODE:=arm \
-	> $@

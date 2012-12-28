@@ -3,13 +3,30 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstriff</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
-<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-riff.html" title="Riff Media Library">
 <link rel="prev" href="gstreamer-riff.html" title="Riff Media Library">
 <link rel="next" href="gstreamer-rtp.html" title="RTP Library">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
+<link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
+<link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
+<link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
+<link rel="chapter" href="gstreamer-floatcast.html" title="FloatCast Library">
+<link rel="chapter" href="gstreamer-interfaces.html" title="Interfaces Library">
+<link rel="chapter" href="gstreamer-netbuffer.html" title="Network Buffer Library">
+<link rel="chapter" href="gstreamer-riff.html" title="Riff Media Library">
+<link rel="chapter" href="gstreamer-rtp.html" title="RTP Library">
+<link rel="chapter" href="gstreamer-rtsp.html" title="RTSP Library">
+<link rel="chapter" href="gstreamer-sdp.html" title="SDP Library">
+<link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
+<link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
+<link rel="chapter" href="gstreamer-video.html" title="Video Library">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
+<link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -17,16 +34,16 @@
 <td><a accesskey="p" href="gstreamer-riff.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="gstreamer-riff.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Base Plugins 1.0 Library Reference Manual</th>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-rtp.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-base-libs-gstriff.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstriff.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstriff.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry">
+<div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstriff"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -38,472 +55,2721 @@
 <div class="refsynopsisdiv">
 <a name="gst-plugins-base-libs-gstriff.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
+
 #include &lt;gst/riff/riff-media.h&gt;
 
-<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a> *           <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-audio-caps" title="gst_riff_create_audio_caps ()">gst_riff_create_audio_caps</a>          (<em class="parameter"><code><span class="type">guint16</span> codec_id</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strh</span> *strh</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strf_auds</span> *strf</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *strf_data</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *strd_data</code></em>,
-                                                         <em class="parameter"><code><span class="type">char</span> **codec_name</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> channel_reorder_map[18]</code></em>);
-<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a> *           <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-audio-template-caps" title="gst_riff_create_audio_template_caps ()">gst_riff_create_audio_template_caps</a> (<em class="parameter"><code><span class="type">void</span></code></em>);
-<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a> *           <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-iavs-caps" title="gst_riff_create_iavs_caps ()">gst_riff_create_iavs_caps</a>           (<em class="parameter"><code><span class="type">guint32</span> codec_fcc</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strh</span> *strh</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strf_iavs</span> *strf</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *strf_data</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *strd_data</code></em>,
-                                                         <em class="parameter"><code><span class="type">char</span> **codec_name</code></em>);
-<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a> *           <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-iavs-template-caps" title="gst_riff_create_iavs_template_caps ()">gst_riff_create_iavs_template_caps</a>  (<em class="parameter"><code><span class="type">void</span></code></em>);
-<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a> *           <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-video-caps" title="gst_riff_create_video_caps ()">gst_riff_create_video_caps</a>          (<em class="parameter"><code><span class="type">guint32</span> codec_fcc</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strh</span> *strh</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strf_vids</span> *strf</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *strf_data</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *strd_data</code></em>,
-                                                         <em class="parameter"><code><span class="type">char</span> **codec_name</code></em>);
-<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a> *           <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-video-template-caps" title="gst_riff_create_video_template_caps ()">gst_riff_create_video_template_caps</a> (<em class="parameter"><code><span class="type">void</span></code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-init" title="gst_riff_init ()">gst_riff_init</a>                       (<em class="parameter"><code><span class="type">void</span></code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-chunk" title="gst_riff_parse_chunk ()">gst_riff_parse_chunk</a>                (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *element</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *buf</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *offset</code></em>,
-                                                         <em class="parameter"><code><span class="type">guint32</span> *fourcc</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> **chunk_data</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-file-header" title="gst_riff_parse_file_header ()">gst_riff_parse_file_header</a>          (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *element</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *buf</code></em>,
-                                                         <em class="parameter"><code><span class="type">guint32</span> *doctype</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-info" title="gst_riff_parse_info ()">gst_riff_parse_info</a>                 (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *element</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *buf</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstTagList.html#GstTagList"><span class="type">GstTagList</span></a> **taglist</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-strf-auds" title="gst_riff_parse_strf_auds ()">gst_riff_parse_strf_auds</a>            (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *element</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *buf</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strf_auds</span> **strf</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> **data</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-strf-iavs" title="gst_riff_parse_strf_iavs ()">gst_riff_parse_strf_iavs</a>            (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *element</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *buf</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strf_iavs</span> **strf</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> **data</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-strf-vids" title="gst_riff_parse_strf_vids ()">gst_riff_parse_strf_vids</a>            (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *element</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *buf</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strf_vids</span> **strf</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> **data</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-strh" title="gst_riff_parse_strh ()">gst_riff_parse_strh</a>                 (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *element</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *buf</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strh</span> **strh</code></em>);
-<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>       <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-read-chunk" title="gst_riff_read_chunk ()">gst_riff_read_chunk</a>                 (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *element</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="type">GstPad</span></a> *pad</code></em>,
-                                                         <em class="parameter"><code><span class="type">guint64</span> *offset</code></em>,
-                                                         <em class="parameter"><code><span class="type">guint32</span> *tag</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> **chunk_data</code></em>);
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-00--CAPS" title="GST_RIFF_00">GST_RIFF_00</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-0021--CAPS" title="GST_RIFF_0021">GST_RIFF_0021</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-0031--CAPS" title="GST_RIFF_0031">GST_RIFF_0031</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-0032--CAPS" title="GST_RIFF_0032">GST_RIFF_0032</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-00AM--CAPS" title="GST_RIFF_00AM">GST_RIFF_00AM</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-00----CAPS" title="GST_RIFF_00__">GST_RIFF_00__</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-00db" title="GST_RIFF_00db">GST_RIFF_00db</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-00dc" title="GST_RIFF_00dc">GST_RIFF_00dc</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-00dx" title="GST_RIFF_00dx">GST_RIFF_00dx</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-00id" title="GST_RIFF_00id">GST_RIFF_00id</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-00iv" title="GST_RIFF_00iv">GST_RIFF_00iv</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-00pc" title="GST_RIFF_00pc">GST_RIFF_00pc</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-00rt" title="GST_RIFF_00rt">GST_RIFF_00rt</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-00vc" title="GST_RIFF_00vc">GST_RIFF_00vc</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-00xm" title="GST_RIFF_00xm">GST_RIFF_00xm</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-00xx" title="GST_RIFF_00xx">GST_RIFF_00xx</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-01--CAPS" title="GST_RIFF_01">GST_RIFF_01</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-01dc" title="GST_RIFF_01dc">GST_RIFF_01dc</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-01pc" title="GST_RIFF_01pc">GST_RIFF_01pc</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-01wb" title="GST_RIFF_01wb">GST_RIFF_01wb</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-02--CAPS" title="GST_RIFF_02">GST_RIFF_02</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-03--CAPS" title="GST_RIFF_03">GST_RIFF_03</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-04--CAPS" title="GST_RIFF_04">GST_RIFF_04</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-05--CAPS" title="GST_RIFF_05">GST_RIFF_05</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-06--CAPS" title="GST_RIFF_06">GST_RIFF_06</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-07--CAPS" title="GST_RIFF_07">GST_RIFF_07</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-AURA--CAPS" title="GST_RIFF_AURA">GST_RIFF_AURA</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-BW10--CAPS" title="GST_RIFF_BW10">GST_RIFF_BW10</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-CCC--CAPS" title="GST_RIFF_CCC">GST_RIFF_CCC</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-CRAM--CAPS" title="GST_RIFF_CRAM">GST_RIFF_CRAM</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-CVID--CAPS" title="GST_RIFF_CVID">GST_RIFF_CVID</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-CYUV--CAPS" title="GST_RIFF_CYUV">GST_RIFF_CYUV</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-DISP--CAPS" title="GST_RIFF_DISP">GST_RIFF_DISP</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-DIV3--CAPS" title="GST_RIFF_DIV3">GST_RIFF_DIV3</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-DMB1--CAPS" title="GST_RIFF_DMB1">GST_RIFF_DMB1</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-FCCH-MSVC--CAPS" title="GST_RIFF_FCCH_MSVC">GST_RIFF_FCCH_MSVC</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-FCCH-RLE--CAPS" title="GST_RIFF_FCCH_RLE">GST_RIFF_FCCH_RLE</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-FCCH-msvc" title="GST_RIFF_FCCH_msvc">GST_RIFF_FCCH_msvc</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-FCC-auds" title="GST_RIFF_FCC_auds">GST_RIFF_FCC_auds</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-FCC-iavs" title="GST_RIFF_FCC_iavs">GST_RIFF_FCC_iavs</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-FCC-pads" title="GST_RIFF_FCC_pads">GST_RIFF_FCC_pads</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-FCC-txts" title="GST_RIFF_FCC_txts">GST_RIFF_FCC_txts</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-FCC-vidc" title="GST_RIFF_FCC_vidc">GST_RIFF_FCC_vidc</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-FCC-vids" title="GST_RIFF_FCC_vids">GST_RIFF_FCC_vids</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-FF00--CAPS" title="GST_RIFF_FF00">GST_RIFF_FF00</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-H263--CAPS" title="GST_RIFF_H263">GST_RIFF_H263</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-I420--CAPS" title="GST_RIFF_I420">GST_RIFF_I420</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-IDIT--CAPS" title="GST_RIFF_IDIT">GST_RIFF_IDIT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-IJPG--CAPS" title="GST_RIFF_IJPG">GST_RIFF_IJPG</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-IARL--CAPS" title="GST_RIFF_INFO_IARL">GST_RIFF_INFO_IARL</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-IART--CAPS" title="GST_RIFF_INFO_IART">GST_RIFF_INFO_IART</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-ICMS--CAPS" title="GST_RIFF_INFO_ICMS">GST_RIFF_INFO_ICMS</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-ICMT--CAPS" title="GST_RIFF_INFO_ICMT">GST_RIFF_INFO_ICMT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-ICOP--CAPS" title="GST_RIFF_INFO_ICOP">GST_RIFF_INFO_ICOP</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-ICRD--CAPS" title="GST_RIFF_INFO_ICRD">GST_RIFF_INFO_ICRD</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-ICRP--CAPS" title="GST_RIFF_INFO_ICRP">GST_RIFF_INFO_ICRP</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-IDIM--CAPS" title="GST_RIFF_INFO_IDIM">GST_RIFF_INFO_IDIM</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-IDPI--CAPS" title="GST_RIFF_INFO_IDPI">GST_RIFF_INFO_IDPI</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-IENG--CAPS" title="GST_RIFF_INFO_IENG">GST_RIFF_INFO_IENG</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-IGNR--CAPS" title="GST_RIFF_INFO_IGNR">GST_RIFF_INFO_IGNR</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-IKEY--CAPS" title="GST_RIFF_INFO_IKEY">GST_RIFF_INFO_IKEY</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-ILGT--CAPS" title="GST_RIFF_INFO_ILGT">GST_RIFF_INFO_ILGT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-IMED--CAPS" title="GST_RIFF_INFO_IMED">GST_RIFF_INFO_IMED</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-INAM--CAPS" title="GST_RIFF_INFO_INAM">GST_RIFF_INFO_INAM</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-IPLT--CAPS" title="GST_RIFF_INFO_IPLT">GST_RIFF_INFO_IPLT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-IPRD--CAPS" title="GST_RIFF_INFO_IPRD">GST_RIFF_INFO_IPRD</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-ISBJ--CAPS" title="GST_RIFF_INFO_ISBJ">GST_RIFF_INFO_ISBJ</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-ISFT--CAPS" title="GST_RIFF_INFO_ISFT">GST_RIFF_INFO_ISFT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-ISHP--CAPS" title="GST_RIFF_INFO_ISHP">GST_RIFF_INFO_ISHP</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-ISRC--CAPS" title="GST_RIFF_INFO_ISRC">GST_RIFF_INFO_ISRC</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-ISRF--CAPS" title="GST_RIFF_INFO_ISRF">GST_RIFF_INFO_ISRF</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-INFO-ITCH--CAPS" title="GST_RIFF_INFO_ITCH">GST_RIFF_INFO_ITCH</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-ISBJ--CAPS" title="GST_RIFF_ISBJ">GST_RIFF_ISBJ</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-ISFT--CAPS" title="GST_RIFF_ISFT">GST_RIFF_ISFT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-IV31--CAPS" title="GST_RIFF_IV31">GST_RIFF_IV31</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-IV32--CAPS" title="GST_RIFF_IV32">GST_RIFF_IV32</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-IV41--CAPS" title="GST_RIFF_IV41">GST_RIFF_IV41</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-IV50--CAPS" title="GST_RIFF_IV50">GST_RIFF_IV50</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-IYUV--CAPS" title="GST_RIFF_IYUV">GST_RIFF_IYUV</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-JPEG--CAPS" title="GST_RIFF_JPEG">GST_RIFF_JPEG</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-L263--CAPS" title="GST_RIFF_L263">GST_RIFF_L263</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-LIST-AVIX--CAPS" title="GST_RIFF_LIST_AVIX">GST_RIFF_LIST_AVIX</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-LIST-INFO--CAPS" title="GST_RIFF_LIST_INFO">GST_RIFF_LIST_INFO</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-LIST-adtl" title="GST_RIFF_LIST_adtl">GST_RIFF_LIST_adtl</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-LIST-hdrl" title="GST_RIFF_LIST_hdrl">GST_RIFF_LIST_hdrl</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-LIST-movi" title="GST_RIFF_LIST_movi">GST_RIFF_LIST_movi</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-LIST-odml" title="GST_RIFF_LIST_odml">GST_RIFF_LIST_odml</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-LIST-strl" title="GST_RIFF_LIST_strl">GST_RIFF_LIST_strl</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-M263--CAPS" title="GST_RIFF_M263">GST_RIFF_M263</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-MJPG--CAPS" title="GST_RIFF_MJPG">GST_RIFF_MJPG</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-MPIX--CAPS" title="GST_RIFF_MPIX">GST_RIFF_MPIX</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-MVI1--CAPS" title="GST_RIFF_MVI1">GST_RIFF_MVI1</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-NONE--CAPS" title="GST_RIFF_NONE">GST_RIFF_NONE</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-PACK--CAPS" title="GST_RIFF_PACK">GST_RIFF_PACK</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-Q1-0--CAPS" title="GST_RIFF_Q1_0">GST_RIFF_Q1_0</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-RGB--CAPS" title="GST_RIFF_RGB">GST_RIFF_RGB</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-RIFF-AVI--CAPS" title="GST_RIFF_RIFF_AVI">GST_RIFF_RIFF_AVI</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-RIFF-CDXA--CAPS" title="GST_RIFF_RIFF_CDXA">GST_RIFF_RIFF_CDXA</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-RIFF-WAVE--CAPS" title="GST_RIFF_RIFF_WAVE">GST_RIFF_RIFF_WAVE</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-RLE4--CAPS" title="GST_RIFF_RLE4">GST_RIFF_RLE4</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-RLE8--CAPS" title="GST_RIFF_RLE8">GST_RIFF_RLE8</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-RT21--CAPS" title="GST_RIFF_RT21">GST_RIFF_RT21</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-SFMC--CAPS" title="GST_RIFF_SFMC">GST_RIFF_SFMC</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-BEXT--CAPS" title="GST_RIFF_TAG_BEXT">GST_RIFF_TAG_BEXT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-JUNK--CAPS" title="GST_RIFF_TAG_JUNK">GST_RIFF_TAG_JUNK</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-LIST--CAPS" title="GST_RIFF_TAG_LIST">GST_RIFF_TAG_LIST</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-RIFF--CAPS" title="GST_RIFF_TAG_RIFF">GST_RIFF_TAG_RIFF</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-RIFX--CAPS" title="GST_RIFF_TAG_RIFX">GST_RIFF_TAG_RIFX</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-avih" title="GST_RIFF_TAG_avih">GST_RIFF_TAG_avih</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-bext" title="GST_RIFF_TAG_bext">GST_RIFF_TAG_bext</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-cue" title="GST_RIFF_TAG_cue">GST_RIFF_TAG_cue</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-data" title="GST_RIFF_TAG_data">GST_RIFF_TAG_data</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-dmlh" title="GST_RIFF_TAG_dmlh">GST_RIFF_TAG_dmlh</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-fact" title="GST_RIFF_TAG_fact">GST_RIFF_TAG_fact</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-fmt" title="GST_RIFF_TAG_fmt">GST_RIFF_TAG_fmt</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-idx1" title="GST_RIFF_TAG_idx1">GST_RIFF_TAG_idx1</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-plst" title="GST_RIFF_TAG_plst">GST_RIFF_TAG_plst</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-strd" title="GST_RIFF_TAG_strd">GST_RIFF_TAG_strd</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-strf" title="GST_RIFF_TAG_strf">GST_RIFF_TAG_strf</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-strh" title="GST_RIFF_TAG_strh">GST_RIFF_TAG_strh</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-strn" title="GST_RIFF_TAG_strn">GST_RIFF_TAG_strn</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TAG-vedt" title="GST_RIFF_TAG_vedt">GST_RIFF_TAG_vedt</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-TRAN--CAPS" title="GST_RIFF_TRAN">GST_RIFF_TRAN</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-ULTI--CAPS" title="GST_RIFF_ULTI">GST_RIFF_ULTI</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-V422--CAPS" title="GST_RIFF_V422">GST_RIFF_V422</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-VDOW--CAPS" title="GST_RIFF_VDOW">GST_RIFF_VDOW</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-VIXL--CAPS" title="GST_RIFF_VIXL">GST_RIFF_VIXL</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-VSSH--CAPS" title="GST_RIFF_VSSH">GST_RIFF_VSSH</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-VYUY--CAPS" title="GST_RIFF_VYUY">GST_RIFF_VYUY</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-WHAM--CAPS" title="GST_RIFF_WHAM">GST_RIFF_WHAM</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-WINX--CAPS" title="GST_RIFF_WINX">GST_RIFF_WINX</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-WPY2--CAPS" title="GST_RIFF_WPY2">GST_RIFF_WPY2</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-XMPG--CAPS" title="GST_RIFF_XMPG">GST_RIFF_XMPG</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-Y41P--CAPS" title="GST_RIFF_Y41P">GST_RIFF_Y41P</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-YUV8--CAPS" title="GST_RIFF_YUV8">GST_RIFF_YUV8</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-YUV9--CAPS" title="GST_RIFF_YUV9">GST_RIFF_YUV9</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-YUY2--CAPS" title="GST_RIFF_YUY2">GST_RIFF_YUY2</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-YV12--CAPS" title="GST_RIFF_YV12">GST_RIFF_YV12</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-YVU9--CAPS" title="GST_RIFF_YVU9">GST_RIFF_YVU9</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-azpr" title="GST_RIFF_azpr">GST_RIFF_azpr</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-bw10" title="GST_RIFF_bw10">GST_RIFF_bw10</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-ccc" title="GST_RIFF_ccc">GST_RIFF_ccc</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-cram" title="GST_RIFF_cram">GST_RIFF_cram</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-cvid" title="GST_RIFF_cvid">GST_RIFF_cvid</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-cyuv" title="GST_RIFF_cyuv">GST_RIFF_cyuv</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-dmb1" title="GST_RIFF_dmb1">GST_RIFF_dmb1</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-h263" title="GST_RIFF_h263">GST_RIFF_h263</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-i263" title="GST_RIFF_i263">GST_RIFF_i263</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-i420" title="GST_RIFF_i420">GST_RIFF_i420</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-iv31" title="GST_RIFF_iv31">GST_RIFF_iv31</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-iv32" title="GST_RIFF_iv32">GST_RIFF_iv32</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-iv41" title="GST_RIFF_iv41">GST_RIFF_iv41</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-iv50" title="GST_RIFF_iv50">GST_RIFF_iv50</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-iyuv" title="GST_RIFF_iyuv">GST_RIFF_iyuv</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-jpeg" title="GST_RIFF_jpeg">GST_RIFF_jpeg</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-m263" title="GST_RIFF_m263">GST_RIFF_m263</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-mJPG" title="GST_RIFF_mJPG">GST_RIFF_mJPG</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-mvi1" title="GST_RIFF_mvi1">GST_RIFF_mvi1</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-none" title="GST_RIFF_none">GST_RIFF_none</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-pack" title="GST_RIFF_pack">GST_RIFF_pack</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-rec" title="GST_RIFF_rec">GST_RIFF_rec</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-rgb" title="GST_RIFF_rgb">GST_RIFF_rgb</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-rle4" title="GST_RIFF_rle4">GST_RIFF_rle4</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-rle8" title="GST_RIFF_rle8">GST_RIFF_rle8</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-rpza" title="GST_RIFF_rpza">GST_RIFF_rpza</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-rt21" title="GST_RIFF_rt21">GST_RIFF_rt21</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-tran" title="GST_RIFF_tran">GST_RIFF_tran</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-ulti" title="GST_RIFF_ulti">GST_RIFF_ulti</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-v422" title="GST_RIFF_v422">GST_RIFF_v422</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-vixl" title="GST_RIFF_vixl">GST_RIFF_vixl</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-vyuy" title="GST_RIFF_vyuy">GST_RIFF_vyuy</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-wham" title="GST_RIFF_wham">GST_RIFF_wham</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-x263" title="GST_RIFF_x263">GST_RIFF_x263</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-xmpg" title="GST_RIFF_xmpg">GST_RIFF_xmpg</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-y41p" title="GST_RIFF_y41p">GST_RIFF_y41p</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-yuy2" title="GST_RIFF_yuy2">GST_RIFF_yuy2</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-yv12" title="GST_RIFF_yv12">GST_RIFF_yv12</a>
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-audio-caps" title="gst_riff_create_audio_caps ()">gst_riff_create_audio_caps</a>          (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> codec_id,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strh" title="gst_riff_strh">gst_riff_strh</a> *strh,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-auds" title="gst_riff_strf_auds">gst_riff_strf_auds</a> *strf,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *strf_data,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *strd_data,
+                                                         char **codec_name);
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-audio-template-caps" title="gst_riff_create_audio_template_caps ()">gst_riff_create_audio_template_caps</a> (void);
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-iavs-caps" title="gst_riff_create_iavs_caps ()">gst_riff_create_iavs_caps</a>           (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> codec_fcc,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strh" title="gst_riff_strh">gst_riff_strh</a> *strh,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-iavs" title="gst_riff_strf_iavs">gst_riff_strf_iavs</a> *strf,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *strf_data,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *strd_data,
+                                                         char **codec_name);
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-iavs-template-caps" title="gst_riff_create_iavs_template_caps ()">gst_riff_create_iavs_template_caps</a>  (void);
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-video-caps" title="gst_riff_create_video_caps ()">gst_riff_create_video_caps</a>          (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> codec_fcc,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strh" title="gst_riff_strh">gst_riff_strh</a> *strh,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-vids" title="gst_riff_strf_vids">gst_riff_strf_vids</a> *strf,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *strf_data,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *strd_data,
+                                                         char **codec_name);
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-video-template-caps" title="gst_riff_create_video_template_caps ()">gst_riff_create_video_template_caps</a> (void);
+                    <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-dmlh" title="gst_riff_dmlh">gst_riff_dmlh</a>;
+                    <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-index-entry" title="gst_riff_index_entry">gst_riff_index_entry</a>;
+void                <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-init" title="gst_riff_init ()">gst_riff_init</a>                       (void);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-chunk" title="gst_riff_parse_chunk ()">gst_riff_parse_chunk</a>                (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buf,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> *offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *fourcc,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> **chunk_data);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-file-header" title="gst_riff_parse_file_header ()">gst_riff_parse_file_header</a>          (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buf,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *doctype);
+void                <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-info" title="gst_riff_parse_info ()">gst_riff_parse_info</a>                 (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buf,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstTagList.html#GstTagList"
+>GstTagList</a> **taglist);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-strf-auds" title="gst_riff_parse_strf_auds ()">gst_riff_parse_strf_auds</a>            (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buf,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-auds" title="gst_riff_strf_auds">gst_riff_strf_auds</a> **strf,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> **data);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-strf-iavs" title="gst_riff_parse_strf_iavs ()">gst_riff_parse_strf_iavs</a>            (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buf,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-iavs" title="gst_riff_strf_iavs">gst_riff_strf_iavs</a> **strf,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> **data);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-strf-vids" title="gst_riff_parse_strf_vids ()">gst_riff_parse_strf_vids</a>            (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buf,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-vids" title="gst_riff_strf_vids">gst_riff_strf_vids</a> **strf,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> **data);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-strh" title="gst_riff_parse_strh ()">gst_riff_parse_strh</a>                 (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buf,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strh" title="gst_riff_strh">gst_riff_strh</a> **strh);
+<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-read-chunk" title="gst_riff_read_chunk ()">gst_riff_read_chunk</a>                 (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html"
+>GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> *offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> **chunk_data);
+                    <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-auds" title="gst_riff_strf_auds">gst_riff_strf_auds</a>;
+                    <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-iavs" title="gst_riff_strf_iavs">gst_riff_strf_iavs</a>;
+                    <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-vids" title="gst_riff_strf_vids">gst_riff_strf_vids</a>;
+                    <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strh" title="gst_riff_strh">gst_riff_strh</a>;
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstriff.description"></a><h2>Description</h2>
 <p>
 A collection of functions to handle riff base files, such as avi, wav and
-asf.
+asf.</p>
+<p>
 </p>
 </div>
-<div class="refsect1">
+<div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstriff.details"></a><h2>Details</h2>
-<div class="refsect2">
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-00--CAPS"></a><h3>GST_RIFF_00</h3>
+<pre class="programlisting">#define GST_RIFF_00   GST_MAKE_FOURCC ('0', '0',0x00,0x00)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-0021--CAPS"></a><h3>GST_RIFF_0021</h3>
+<pre class="programlisting">#define GST_RIFF_0021 GST_MAKE_FOURCC ('0', '0', '2', '1')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-0031--CAPS"></a><h3>GST_RIFF_0031</h3>
+<pre class="programlisting">#define GST_RIFF_0031 GST_MAKE_FOURCC ('0', '0', '3', '1')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-0032--CAPS"></a><h3>GST_RIFF_0032</h3>
+<pre class="programlisting">#define GST_RIFF_0032 GST_MAKE_FOURCC ('0', '0', '3', '2')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-00AM--CAPS"></a><h3>GST_RIFF_00AM</h3>
+<pre class="programlisting">#define GST_RIFF_00AM GST_MAKE_FOURCC ('0', '0', 'A', 'M')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-00----CAPS"></a><h3>GST_RIFF_00__</h3>
+<pre class="programlisting">#define GST_RIFF_00__ GST_MAKE_FOURCC ('0', '0', '_', '_')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-00db"></a><h3>GST_RIFF_00db</h3>
+<pre class="programlisting">#define GST_RIFF_00db GST_MAKE_FOURCC ('0', '0', 'd', 'b')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-00dc"></a><h3>GST_RIFF_00dc</h3>
+<pre class="programlisting">#define GST_RIFF_00dc GST_MAKE_FOURCC ('0', '0', 'd', 'c')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-00dx"></a><h3>GST_RIFF_00dx</h3>
+<pre class="programlisting">#define GST_RIFF_00dx GST_MAKE_FOURCC ('0', '0', 'd', 'x')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-00id"></a><h3>GST_RIFF_00id</h3>
+<pre class="programlisting">#define GST_RIFF_00id GST_MAKE_FOURCC ('0', '0', 'i', 'd')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-00iv"></a><h3>GST_RIFF_00iv</h3>
+<pre class="programlisting">#define GST_RIFF_00iv GST_MAKE_FOURCC ('0', '0', 'i', 'v')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-00pc"></a><h3>GST_RIFF_00pc</h3>
+<pre class="programlisting">#define GST_RIFF_00pc GST_MAKE_FOURCC ('0', '0', 'p', 'c')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-00rt"></a><h3>GST_RIFF_00rt</h3>
+<pre class="programlisting">#define GST_RIFF_00rt GST_MAKE_FOURCC ('0', '0', 'r', 't')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-00vc"></a><h3>GST_RIFF_00vc</h3>
+<pre class="programlisting">#define GST_RIFF_00vc GST_MAKE_FOURCC ('0', '0', 'v', 'c')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-00xm"></a><h3>GST_RIFF_00xm</h3>
+<pre class="programlisting">#define GST_RIFF_00xm GST_MAKE_FOURCC ('0', '0', 'x', 'm')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-00xx"></a><h3>GST_RIFF_00xx</h3>
+<pre class="programlisting">#define GST_RIFF_00xx GST_MAKE_FOURCC ('0', '0', 'x', 'x')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-01--CAPS"></a><h3>GST_RIFF_01</h3>
+<pre class="programlisting">#define GST_RIFF_01   GST_MAKE_FOURCC ('0', '1',0x00,0x00)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-01dc"></a><h3>GST_RIFF_01dc</h3>
+<pre class="programlisting">#define GST_RIFF_01dc GST_MAKE_FOURCC ('0', '1', 'd', 'c')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-01pc"></a><h3>GST_RIFF_01pc</h3>
+<pre class="programlisting">#define GST_RIFF_01pc GST_MAKE_FOURCC ('0', '1', 'p', 'c')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-01wb"></a><h3>GST_RIFF_01wb</h3>
+<pre class="programlisting">#define GST_RIFF_01wb GST_MAKE_FOURCC ('0', '1', 'w', 'b')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-02--CAPS"></a><h3>GST_RIFF_02</h3>
+<pre class="programlisting">#define GST_RIFF_02   GST_MAKE_FOURCC ('0', '2',0x00,0x00)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-03--CAPS"></a><h3>GST_RIFF_03</h3>
+<pre class="programlisting">#define GST_RIFF_03   GST_MAKE_FOURCC ('0', '3',0x00,0x00)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-04--CAPS"></a><h3>GST_RIFF_04</h3>
+<pre class="programlisting">#define GST_RIFF_04   GST_MAKE_FOURCC ('0', '4',0x00,0x00)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-05--CAPS"></a><h3>GST_RIFF_05</h3>
+<pre class="programlisting">#define GST_RIFF_05   GST_MAKE_FOURCC ('0', '5',0x00,0x00)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-06--CAPS"></a><h3>GST_RIFF_06</h3>
+<pre class="programlisting">#define GST_RIFF_06   GST_MAKE_FOURCC ('0', '6',0x00,0x00)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-07--CAPS"></a><h3>GST_RIFF_07</h3>
+<pre class="programlisting">#define GST_RIFF_07   GST_MAKE_FOURCC ('0', '7',0x00,0x00)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-AURA--CAPS"></a><h3>GST_RIFF_AURA</h3>
+<pre class="programlisting">#define GST_RIFF_AURA GST_MAKE_FOURCC ('A', 'U', 'R', 'A')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-BW10--CAPS"></a><h3>GST_RIFF_BW10</h3>
+<pre class="programlisting">#define GST_RIFF_BW10 GST_MAKE_FOURCC ('B', 'W', '1', '0')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-CCC--CAPS"></a><h3>GST_RIFF_CCC</h3>
+<pre class="programlisting">#define GST_RIFF_CCC  GST_MAKE_FOURCC ('C', 'C', 'C', ' ')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-CRAM--CAPS"></a><h3>GST_RIFF_CRAM</h3>
+<pre class="programlisting">#define GST_RIFF_CRAM GST_MAKE_FOURCC ('C', 'R', 'A', 'M')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-CVID--CAPS"></a><h3>GST_RIFF_CVID</h3>
+<pre class="programlisting">#define GST_RIFF_CVID GST_MAKE_FOURCC ('C', 'V', 'I', 'D')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-CYUV--CAPS"></a><h3>GST_RIFF_CYUV</h3>
+<pre class="programlisting">#define GST_RIFF_CYUV GST_MAKE_FOURCC ('C', 'Y', 'U', 'V')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-DISP--CAPS"></a><h3>GST_RIFF_DISP</h3>
+<pre class="programlisting">#define GST_RIFF_DISP GST_MAKE_FOURCC ('D', 'I', 'S', 'P')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-DIV3--CAPS"></a><h3>GST_RIFF_DIV3</h3>
+<pre class="programlisting">#define GST_RIFF_DIV3 GST_MAKE_FOURCC ('D', 'I', 'V', '3')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-DMB1--CAPS"></a><h3>GST_RIFF_DMB1</h3>
+<pre class="programlisting">#define GST_RIFF_DMB1 GST_MAKE_FOURCC ('D', 'M', 'B', '1')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-FCCH-MSVC--CAPS"></a><h3>GST_RIFF_FCCH_MSVC</h3>
+<pre class="programlisting">#define GST_RIFF_FCCH_MSVC GST_MAKE_FOURCC ('M','S','V','C')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-FCCH-RLE--CAPS"></a><h3>GST_RIFF_FCCH_RLE</h3>
+<pre class="programlisting">#define GST_RIFF_FCCH_RLE  GST_MAKE_FOURCC ('R','L','E',' ')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-FCCH-msvc"></a><h3>GST_RIFF_FCCH_msvc</h3>
+<pre class="programlisting">#define GST_RIFF_FCCH_msvc GST_MAKE_FOURCC ('m','s','v','c')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-FCC-auds"></a><h3>GST_RIFF_FCC_auds</h3>
+<pre class="programlisting">#define GST_RIFF_FCC_auds GST_MAKE_FOURCC ('a','u','d','s')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-FCC-iavs"></a><h3>GST_RIFF_FCC_iavs</h3>
+<pre class="programlisting">#define GST_RIFF_FCC_iavs GST_MAKE_FOURCC ('i','a','v','s')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-FCC-pads"></a><h3>GST_RIFF_FCC_pads</h3>
+<pre class="programlisting">#define GST_RIFF_FCC_pads GST_MAKE_FOURCC ('p','a','d','s')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-FCC-txts"></a><h3>GST_RIFF_FCC_txts</h3>
+<pre class="programlisting">#define GST_RIFF_FCC_txts GST_MAKE_FOURCC ('t','x','t','s')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-FCC-vidc"></a><h3>GST_RIFF_FCC_vidc</h3>
+<pre class="programlisting">#define GST_RIFF_FCC_vidc GST_MAKE_FOURCC ('v','i','d','c')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-FCC-vids"></a><h3>GST_RIFF_FCC_vids</h3>
+<pre class="programlisting">#define GST_RIFF_FCC_vids GST_MAKE_FOURCC ('v','i','d','s')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-FF00--CAPS"></a><h3>GST_RIFF_FF00</h3>
+<pre class="programlisting">#define GST_RIFF_FF00 GST_MAKE_FOURCC (0xFF,0xFF,0x00,0x00)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-H263--CAPS"></a><h3>GST_RIFF_H263</h3>
+<pre class="programlisting">#define GST_RIFF_H263 GST_MAKE_FOURCC ('H', '2', '6', '3')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-I420--CAPS"></a><h3>GST_RIFF_I420</h3>
+<pre class="programlisting">#define GST_RIFF_I420 GST_MAKE_FOURCC ('I', '4', '2', '0')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-IDIT--CAPS"></a><h3>GST_RIFF_IDIT</h3>
+<pre class="programlisting">#define GST_RIFF_IDIT GST_MAKE_FOURCC ('I', 'D', 'I', 'T')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-IJPG--CAPS"></a><h3>GST_RIFF_IJPG</h3>
+<pre class="programlisting">#define GST_RIFF_IJPG GST_MAKE_FOURCC ('I', 'J', 'P', 'G')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-IARL--CAPS"></a><h3>GST_RIFF_INFO_IARL</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_IARL GST_MAKE_FOURCC ('I','A','R','L') /* location */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-IART--CAPS"></a><h3>GST_RIFF_INFO_IART</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_IART GST_MAKE_FOURCC ('I','A','R','T') /* artist */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-ICMS--CAPS"></a><h3>GST_RIFF_INFO_ICMS</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_ICMS GST_MAKE_FOURCC ('I','C','M','S') /* commissioned */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-ICMT--CAPS"></a><h3>GST_RIFF_INFO_ICMT</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_ICMT GST_MAKE_FOURCC ('I','C','M','T') /* comment */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-ICOP--CAPS"></a><h3>GST_RIFF_INFO_ICOP</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_ICOP GST_MAKE_FOURCC ('I','C','O','P') /* copyright */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-ICRD--CAPS"></a><h3>GST_RIFF_INFO_ICRD</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_ICRD GST_MAKE_FOURCC ('I','C','R','D') /* creation date */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-ICRP--CAPS"></a><h3>GST_RIFF_INFO_ICRP</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_ICRP GST_MAKE_FOURCC ('I','C','R','P') /* cropped */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-IDIM--CAPS"></a><h3>GST_RIFF_INFO_IDIM</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_IDIM GST_MAKE_FOURCC ('I','D','I','M') /* dimensions */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-IDPI--CAPS"></a><h3>GST_RIFF_INFO_IDPI</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_IDPI GST_MAKE_FOURCC ('I','D','P','I') /* dots-per-inch */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-IENG--CAPS"></a><h3>GST_RIFF_INFO_IENG</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_IENG GST_MAKE_FOURCC ('I','E','N','G') /* engineer(s) */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-IGNR--CAPS"></a><h3>GST_RIFF_INFO_IGNR</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_IGNR GST_MAKE_FOURCC ('I','G','N','R') /* genre */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-IKEY--CAPS"></a><h3>GST_RIFF_INFO_IKEY</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_IKEY GST_MAKE_FOURCC ('I','K','E','Y') /* keywords */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-ILGT--CAPS"></a><h3>GST_RIFF_INFO_ILGT</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_ILGT GST_MAKE_FOURCC ('I','L','G','T') /* lightness */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-IMED--CAPS"></a><h3>GST_RIFF_INFO_IMED</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_IMED GST_MAKE_FOURCC ('I','M','E','D') /* medium */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-INAM--CAPS"></a><h3>GST_RIFF_INFO_INAM</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_INAM GST_MAKE_FOURCC ('I','N','A','M') /* name */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-IPLT--CAPS"></a><h3>GST_RIFF_INFO_IPLT</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_IPLT GST_MAKE_FOURCC ('I','P','L','T') /* palette setting */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-IPRD--CAPS"></a><h3>GST_RIFF_INFO_IPRD</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_IPRD GST_MAKE_FOURCC ('I','P','R','D') /* product */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-ISBJ--CAPS"></a><h3>GST_RIFF_INFO_ISBJ</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_ISBJ GST_MAKE_FOURCC ('I','S','B','J') /* subject */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-ISFT--CAPS"></a><h3>GST_RIFF_INFO_ISFT</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_ISFT GST_MAKE_FOURCC ('I','S','F','T') /* software */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-ISHP--CAPS"></a><h3>GST_RIFF_INFO_ISHP</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_ISHP GST_MAKE_FOURCC ('I','S','H','P') /* sharpness */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-ISRC--CAPS"></a><h3>GST_RIFF_INFO_ISRC</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_ISRC GST_MAKE_FOURCC ('I','S','R','C') /* source */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-ISRF--CAPS"></a><h3>GST_RIFF_INFO_ISRF</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_ISRF GST_MAKE_FOURCC ('I','S','R','F') /* source form */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-INFO-ITCH--CAPS"></a><h3>GST_RIFF_INFO_ITCH</h3>
+<pre class="programlisting">#define GST_RIFF_INFO_ITCH GST_MAKE_FOURCC ('I','T','C','H') /* technician(s) */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-ISBJ--CAPS"></a><h3>GST_RIFF_ISBJ</h3>
+<pre class="programlisting">#define GST_RIFF_ISBJ GST_MAKE_FOURCC ('I', 'S', 'B', 'J')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-ISFT--CAPS"></a><h3>GST_RIFF_ISFT</h3>
+<pre class="programlisting">#define GST_RIFF_ISFT GST_MAKE_FOURCC ('I', 'S', 'F', 'T')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-IV31--CAPS"></a><h3>GST_RIFF_IV31</h3>
+<pre class="programlisting">#define GST_RIFF_IV31 GST_MAKE_FOURCC ('I', 'V', '3', '1')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-IV32--CAPS"></a><h3>GST_RIFF_IV32</h3>
+<pre class="programlisting">#define GST_RIFF_IV32 GST_MAKE_FOURCC ('I', 'V', '3', '2')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-IV41--CAPS"></a><h3>GST_RIFF_IV41</h3>
+<pre class="programlisting">#define GST_RIFF_IV41 GST_MAKE_FOURCC ('I', 'V', '4', '1')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-IV50--CAPS"></a><h3>GST_RIFF_IV50</h3>
+<pre class="programlisting">#define GST_RIFF_IV50 GST_MAKE_FOURCC ('I', 'V', '5', '0')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-IYUV--CAPS"></a><h3>GST_RIFF_IYUV</h3>
+<pre class="programlisting">#define GST_RIFF_IYUV GST_MAKE_FOURCC ('I', 'Y', 'U', 'V')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-JPEG--CAPS"></a><h3>GST_RIFF_JPEG</h3>
+<pre class="programlisting">#define GST_RIFF_JPEG GST_MAKE_FOURCC ('J', 'P', 'E', 'G')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-L263--CAPS"></a><h3>GST_RIFF_L263</h3>
+<pre class="programlisting">#define GST_RIFF_L263 GST_MAKE_FOURCC ('L', '2', '6', '3')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-LIST-AVIX--CAPS"></a><h3>GST_RIFF_LIST_AVIX</h3>
+<pre class="programlisting">#define GST_RIFF_LIST_AVIX GST_MAKE_FOURCC ('A','V','I','X')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-LIST-INFO--CAPS"></a><h3>GST_RIFF_LIST_INFO</h3>
+<pre class="programlisting">#define GST_RIFF_LIST_INFO GST_MAKE_FOURCC ('I','N','F','O')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-LIST-adtl"></a><h3>GST_RIFF_LIST_adtl</h3>
+<pre class="programlisting">#define GST_RIFF_LIST_adtl GST_MAKE_FOURCC ('a','d','t','l')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-LIST-hdrl"></a><h3>GST_RIFF_LIST_hdrl</h3>
+<pre class="programlisting">#define GST_RIFF_LIST_hdrl GST_MAKE_FOURCC ('h','d','r','l')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-LIST-movi"></a><h3>GST_RIFF_LIST_movi</h3>
+<pre class="programlisting">#define GST_RIFF_LIST_movi GST_MAKE_FOURCC ('m','o','v','i')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-LIST-odml"></a><h3>GST_RIFF_LIST_odml</h3>
+<pre class="programlisting">#define GST_RIFF_LIST_odml GST_MAKE_FOURCC ('o','d','m','l')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-LIST-strl"></a><h3>GST_RIFF_LIST_strl</h3>
+<pre class="programlisting">#define GST_RIFF_LIST_strl GST_MAKE_FOURCC ('s','t','r','l')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-M263--CAPS"></a><h3>GST_RIFF_M263</h3>
+<pre class="programlisting">#define GST_RIFF_M263 GST_MAKE_FOURCC ('M', '2', '6', '3')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-MJPG--CAPS"></a><h3>GST_RIFF_MJPG</h3>
+<pre class="programlisting">#define GST_RIFF_MJPG GST_MAKE_FOURCC ('M', 'J', 'P', 'G')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-MPIX--CAPS"></a><h3>GST_RIFF_MPIX</h3>
+<pre class="programlisting">#define GST_RIFF_MPIX GST_MAKE_FOURCC (0x04,0x00, 'i', '1')     /* MotionPixels munged their id */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-MVI1--CAPS"></a><h3>GST_RIFF_MVI1</h3>
+<pre class="programlisting">#define GST_RIFF_MVI1 GST_MAKE_FOURCC ('M', 'V', 'I', '1')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-NONE--CAPS"></a><h3>GST_RIFF_NONE</h3>
+<pre class="programlisting">#define GST_RIFF_NONE GST_MAKE_FOURCC ('N', 'O', 'N', 'E')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-PACK--CAPS"></a><h3>GST_RIFF_PACK</h3>
+<pre class="programlisting">#define GST_RIFF_PACK GST_MAKE_FOURCC ('P', 'A', 'C', 'K')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-Q1-0--CAPS"></a><h3>GST_RIFF_Q1_0</h3>
+<pre class="programlisting">#define GST_RIFF_Q1_0 GST_MAKE_FOURCC ('Q', '1',0x2e, '0')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-RGB--CAPS"></a><h3>GST_RIFF_RGB</h3>
+<pre class="programlisting">#define GST_RIFF_RGB  GST_MAKE_FOURCC ('R', 'G', 'B', ' ')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-RIFF-AVI--CAPS"></a><h3>GST_RIFF_RIFF_AVI</h3>
+<pre class="programlisting">#define GST_RIFF_RIFF_AVI  GST_MAKE_FOURCC ('A','V','I',' ')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-RIFF-CDXA--CAPS"></a><h3>GST_RIFF_RIFF_CDXA</h3>
+<pre class="programlisting">#define GST_RIFF_RIFF_CDXA GST_MAKE_FOURCC ('C','D','X','A')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-RIFF-WAVE--CAPS"></a><h3>GST_RIFF_RIFF_WAVE</h3>
+<pre class="programlisting">#define GST_RIFF_RIFF_WAVE GST_MAKE_FOURCC ('W','A','V','E')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-RLE4--CAPS"></a><h3>GST_RIFF_RLE4</h3>
+<pre class="programlisting">#define GST_RIFF_RLE4 GST_MAKE_FOURCC ('R', 'L', 'E', '4')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-RLE8--CAPS"></a><h3>GST_RIFF_RLE8</h3>
+<pre class="programlisting">#define GST_RIFF_RLE8 GST_MAKE_FOURCC ('R', 'L', 'E', '8')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-RT21--CAPS"></a><h3>GST_RIFF_RT21</h3>
+<pre class="programlisting">#define GST_RIFF_RT21 GST_MAKE_FOURCC ('R', 'T', '2', '1')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-SFMC--CAPS"></a><h3>GST_RIFF_SFMC</h3>
+<pre class="programlisting">#define GST_RIFF_SFMC GST_MAKE_FOURCC ('S', 'F', 'M', 'C')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-BEXT--CAPS"></a><h3>GST_RIFF_TAG_BEXT</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_BEXT GST_MAKE_FOURCC ('B','E','X','T')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-JUNK--CAPS"></a><h3>GST_RIFF_TAG_JUNK</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_JUNK GST_MAKE_FOURCC ('J','U','N','K')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-LIST--CAPS"></a><h3>GST_RIFF_TAG_LIST</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_LIST GST_MAKE_FOURCC ('L','I','S','T')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-RIFF--CAPS"></a><h3>GST_RIFF_TAG_RIFF</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_RIFF GST_MAKE_FOURCC ('R','I','F','F')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-RIFX--CAPS"></a><h3>GST_RIFF_TAG_RIFX</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_RIFX GST_MAKE_FOURCC ('R','I','F','X')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-avih"></a><h3>GST_RIFF_TAG_avih</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_avih GST_MAKE_FOURCC ('a','v','i','h')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-bext"></a><h3>GST_RIFF_TAG_bext</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_bext GST_MAKE_FOURCC ('b','e','x','t')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-cue"></a><h3>GST_RIFF_TAG_cue</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_cue  GST_MAKE_FOURCC ('c','u','e',' ')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-data"></a><h3>GST_RIFF_TAG_data</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_data GST_MAKE_FOURCC ('d','a','t','a')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-dmlh"></a><h3>GST_RIFF_TAG_dmlh</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_dmlh GST_MAKE_FOURCC ('d','m','l','h')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-fact"></a><h3>GST_RIFF_TAG_fact</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_fact GST_MAKE_FOURCC ('f','a','c','t')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-fmt"></a><h3>GST_RIFF_TAG_fmt</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_fmt  GST_MAKE_FOURCC ('f','m','t',' ')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-idx1"></a><h3>GST_RIFF_TAG_idx1</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_idx1 GST_MAKE_FOURCC ('i','d','x','1')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-plst"></a><h3>GST_RIFF_TAG_plst</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_plst GST_MAKE_FOURCC ('p','l','s','t')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-strd"></a><h3>GST_RIFF_TAG_strd</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_strd GST_MAKE_FOURCC ('s','t','r','d')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-strf"></a><h3>GST_RIFF_TAG_strf</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_strf GST_MAKE_FOURCC ('s','t','r','f')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-strh"></a><h3>GST_RIFF_TAG_strh</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_strh GST_MAKE_FOURCC ('s','t','r','h')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-strn"></a><h3>GST_RIFF_TAG_strn</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_strn GST_MAKE_FOURCC ('s','t','r','n')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TAG-vedt"></a><h3>GST_RIFF_TAG_vedt</h3>
+<pre class="programlisting">#define GST_RIFF_TAG_vedt GST_MAKE_FOURCC ('v','e','d','t')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-TRAN--CAPS"></a><h3>GST_RIFF_TRAN</h3>
+<pre class="programlisting">#define GST_RIFF_TRAN GST_MAKE_FOURCC ('T', 'R', 'A', 'N')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-ULTI--CAPS"></a><h3>GST_RIFF_ULTI</h3>
+<pre class="programlisting">#define GST_RIFF_ULTI GST_MAKE_FOURCC ('U', 'L', 'T', 'I')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-V422--CAPS"></a><h3>GST_RIFF_V422</h3>
+<pre class="programlisting">#define GST_RIFF_V422 GST_MAKE_FOURCC ('V', '4', '2', '2')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-VDOW--CAPS"></a><h3>GST_RIFF_VDOW</h3>
+<pre class="programlisting">#define GST_RIFF_VDOW GST_MAKE_FOURCC ('V', 'D', 'O', 'W')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-VIXL--CAPS"></a><h3>GST_RIFF_VIXL</h3>
+<pre class="programlisting">#define GST_RIFF_VIXL GST_MAKE_FOURCC ('V', 'I', 'X', 'L')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-VSSH--CAPS"></a><h3>GST_RIFF_VSSH</h3>
+<pre class="programlisting">#define GST_RIFF_VSSH GST_MAKE_FOURCC ( 'V', 'S', 'S', 'H') /* H2.64 */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-VYUY--CAPS"></a><h3>GST_RIFF_VYUY</h3>
+<pre class="programlisting">#define GST_RIFF_VYUY GST_MAKE_FOURCC ('V', 'Y', 'U', 'Y')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-WHAM--CAPS"></a><h3>GST_RIFF_WHAM</h3>
+<pre class="programlisting">#define GST_RIFF_WHAM GST_MAKE_FOURCC ('W', 'H', 'A', 'M')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-WINX--CAPS"></a><h3>GST_RIFF_WINX</h3>
+<pre class="programlisting">#define GST_RIFF_WINX GST_MAKE_FOURCC ('W', 'I', 'N', 'X')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-WPY2--CAPS"></a><h3>GST_RIFF_WPY2</h3>
+<pre class="programlisting">#define GST_RIFF_WPY2 GST_MAKE_FOURCC ('W', 'P', 'Y', '2')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-XMPG--CAPS"></a><h3>GST_RIFF_XMPG</h3>
+<pre class="programlisting">#define GST_RIFF_XMPG GST_MAKE_FOURCC ('X', 'M', 'P', 'G')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-Y41P--CAPS"></a><h3>GST_RIFF_Y41P</h3>
+<pre class="programlisting">#define GST_RIFF_Y41P GST_MAKE_FOURCC ('Y', '4', '1', 'P')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-YUV8--CAPS"></a><h3>GST_RIFF_YUV8</h3>
+<pre class="programlisting">#define GST_RIFF_YUV8 GST_MAKE_FOURCC ('Y', 'U', 'V', '8')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-YUV9--CAPS"></a><h3>GST_RIFF_YUV9</h3>
+<pre class="programlisting">#define GST_RIFF_YUV9 GST_MAKE_FOURCC ('Y', 'V', 'U', '9')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-YUY2--CAPS"></a><h3>GST_RIFF_YUY2</h3>
+<pre class="programlisting">#define GST_RIFF_YUY2 GST_MAKE_FOURCC ('Y', 'U', 'Y', '2')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-YV12--CAPS"></a><h3>GST_RIFF_YV12</h3>
+<pre class="programlisting">#define GST_RIFF_YV12 GST_MAKE_FOURCC ('Y', 'V', '1', '2')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-YVU9--CAPS"></a><h3>GST_RIFF_YVU9</h3>
+<pre class="programlisting">#define GST_RIFF_YVU9 GST_MAKE_FOURCC ('Y', 'U', 'V', '9')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-azpr"></a><h3>GST_RIFF_azpr</h3>
+<pre class="programlisting">#define GST_RIFF_azpr GST_MAKE_FOURCC ('a', 'z', 'p', 'r')  /* recognize Apple's rpza mangled? */
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-bw10"></a><h3>GST_RIFF_bw10</h3>
+<pre class="programlisting">#define GST_RIFF_bw10 GST_MAKE_FOURCC ('b', 'w', '1', '0')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-ccc"></a><h3>GST_RIFF_ccc</h3>
+<pre class="programlisting">#define GST_RIFF_ccc  GST_MAKE_FOURCC (0x03,0x00,0xFF,0xFF)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-cram"></a><h3>GST_RIFF_cram</h3>
+<pre class="programlisting">#define GST_RIFF_cram GST_MAKE_FOURCC ('c', 'r', 'a', 'm')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-cvid"></a><h3>GST_RIFF_cvid</h3>
+<pre class="programlisting">#define GST_RIFF_cvid GST_MAKE_FOURCC ('c', 'v', 'i', 'd')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-cyuv"></a><h3>GST_RIFF_cyuv</h3>
+<pre class="programlisting">#define GST_RIFF_cyuv GST_MAKE_FOURCC ('c', 'y', 'u', 'v')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-dmb1"></a><h3>GST_RIFF_dmb1</h3>
+<pre class="programlisting">#define GST_RIFF_dmb1 GST_MAKE_FOURCC ('d', 'm', 'b', '1')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-h263"></a><h3>GST_RIFF_h263</h3>
+<pre class="programlisting">#define GST_RIFF_h263 GST_MAKE_FOURCC ('h', '2', '6', '3')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-i263"></a><h3>GST_RIFF_i263</h3>
+<pre class="programlisting">#define GST_RIFF_i263 GST_MAKE_FOURCC ('i', '2', '6', '3')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-i420"></a><h3>GST_RIFF_i420</h3>
+<pre class="programlisting">#define GST_RIFF_i420 GST_MAKE_FOURCC ('i', '4', '2', '0')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-iv31"></a><h3>GST_RIFF_iv31</h3>
+<pre class="programlisting">#define GST_RIFF_iv31 GST_MAKE_FOURCC ('i', 'v', '3', '1')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-iv32"></a><h3>GST_RIFF_iv32</h3>
+<pre class="programlisting">#define GST_RIFF_iv32 GST_MAKE_FOURCC ('i', 'v', '3', '2')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-iv41"></a><h3>GST_RIFF_iv41</h3>
+<pre class="programlisting">#define GST_RIFF_iv41 GST_MAKE_FOURCC ('i', 'v', '4', '1')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-iv50"></a><h3>GST_RIFF_iv50</h3>
+<pre class="programlisting">#define GST_RIFF_iv50 GST_MAKE_FOURCC ('i', 'v', '5', '0')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-iyuv"></a><h3>GST_RIFF_iyuv</h3>
+<pre class="programlisting">#define GST_RIFF_iyuv GST_MAKE_FOURCC ('i', 'y', 'u', 'v')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-jpeg"></a><h3>GST_RIFF_jpeg</h3>
+<pre class="programlisting">#define GST_RIFF_jpeg GST_MAKE_FOURCC (0x04,0x00,0xFF,0xFF)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-m263"></a><h3>GST_RIFF_m263</h3>
+<pre class="programlisting">#define GST_RIFF_m263 GST_MAKE_FOURCC ('m', '2', '6', '3')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-mJPG"></a><h3>GST_RIFF_mJPG</h3>
+<pre class="programlisting">#define GST_RIFF_mJPG GST_MAKE_FOURCC ('m', 'J', 'P', 'G')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-mvi1"></a><h3>GST_RIFF_mvi1</h3>
+<pre class="programlisting">#define GST_RIFF_mvi1 GST_MAKE_FOURCC ('m', 'v', 'i', '1')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-none"></a><h3>GST_RIFF_none</h3>
+<pre class="programlisting">#define GST_RIFF_none GST_MAKE_FOURCC (0x00,0x00,0xFF,0xFF)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-pack"></a><h3>GST_RIFF_pack</h3>
+<pre class="programlisting">#define GST_RIFF_pack GST_MAKE_FOURCC (0x01,0x00,0xFF,0xFF)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-rec"></a><h3>GST_RIFF_rec</h3>
+<pre class="programlisting">#define GST_RIFF_rec  GST_MAKE_FOURCC ('r', 'e', 'c', ' ')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-rgb"></a><h3>GST_RIFF_rgb</h3>
+<pre class="programlisting">#define GST_RIFF_rgb  GST_MAKE_FOURCC (0x00,0x00,0x00,0x00)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-rle4"></a><h3>GST_RIFF_rle4</h3>
+<pre class="programlisting">#define GST_RIFF_rle4 GST_MAKE_FOURCC (0x02,0x00,0x00,0x00)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-rle8"></a><h3>GST_RIFF_rle8</h3>
+<pre class="programlisting">#define GST_RIFF_rle8 GST_MAKE_FOURCC (0x01,0x00,0x00,0x00)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-rpza"></a><h3>GST_RIFF_rpza</h3>
+<pre class="programlisting">#define GST_RIFF_rpza GST_MAKE_FOURCC ('r', 'p', 'z', 'a')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-rt21"></a><h3>GST_RIFF_rt21</h3>
+<pre class="programlisting">#define GST_RIFF_rt21 GST_MAKE_FOURCC ('r', 't', '2', '1')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-tran"></a><h3>GST_RIFF_tran</h3>
+<pre class="programlisting">#define GST_RIFF_tran GST_MAKE_FOURCC (0x02,0x00,0xFF,0xFF)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-ulti"></a><h3>GST_RIFF_ulti</h3>
+<pre class="programlisting">#define GST_RIFF_ulti GST_MAKE_FOURCC ('u', 'l', 't', 'i')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-v422"></a><h3>GST_RIFF_v422</h3>
+<pre class="programlisting">#define GST_RIFF_v422 GST_MAKE_FOURCC ('v', '4', '2', '2')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-vixl"></a><h3>GST_RIFF_vixl</h3>
+<pre class="programlisting">#define GST_RIFF_vixl GST_MAKE_FOURCC ('v', 'i', 'x', 'l')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-vyuy"></a><h3>GST_RIFF_vyuy</h3>
+<pre class="programlisting">#define GST_RIFF_vyuy GST_MAKE_FOURCC ('v', 'y', 'u', 'y')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-wham"></a><h3>GST_RIFF_wham</h3>
+<pre class="programlisting">#define GST_RIFF_wham GST_MAKE_FOURCC ('w', 'h', 'a', 'm')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-x263"></a><h3>GST_RIFF_x263</h3>
+<pre class="programlisting">#define GST_RIFF_x263 GST_MAKE_FOURCC ('x', '2', '6', '3')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-xmpg"></a><h3>GST_RIFF_xmpg</h3>
+<pre class="programlisting">#define GST_RIFF_xmpg GST_MAKE_FOURCC ('x', 'm', 'p', 'g')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-y41p"></a><h3>GST_RIFF_y41p</h3>
+<pre class="programlisting">#define GST_RIFF_y41p GST_MAKE_FOURCC ('y', '4', '1', 'p')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-yuy2"></a><h3>GST_RIFF_yuy2</h3>
+<pre class="programlisting">#define GST_RIFF_yuy2 GST_MAKE_FOURCC ('y', 'u', 'y', '2')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-RIFF-yv12"></a><h3>GST_RIFF_yv12</h3>
+<pre class="programlisting">#define GST_RIFF_yv12 GST_MAKE_FOURCC ('y', 'v', '1', '2')
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
 <a name="gst-riff-create-audio-caps"></a><h3>gst_riff_create_audio_caps ()</h3>
-<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a> *           gst_riff_create_audio_caps          (<em class="parameter"><code><span class="type">guint16</span> codec_id</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strh</span> *strh</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strf_auds</span> *strf</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *strf_data</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *strd_data</code></em>,
-                                                         <em class="parameter"><code><span class="type">char</span> **codec_name</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> channel_reorder_map[18]</code></em>);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           gst_riff_create_audio_caps          (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> codec_id,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strh" title="gst_riff_strh">gst_riff_strh</a> *strh,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-auds" title="gst_riff_strf_auds">gst_riff_strf_auds</a> *strf,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *strf_data,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *strd_data,
+                                                         char **codec_name);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>codec_id</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>strh</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>strf</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>strf_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>strd_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>codec_name</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" lang="en">
 <a name="gst-riff-create-audio-template-caps"></a><h3>gst_riff_create_audio_template_caps ()</h3>
-<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a> *           gst_riff_create_audio_template_caps (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           gst_riff_create_audio_template_caps (void);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" lang="en">
 <a name="gst-riff-create-iavs-caps"></a><h3>gst_riff_create_iavs_caps ()</h3>
-<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a> *           gst_riff_create_iavs_caps           (<em class="parameter"><code><span class="type">guint32</span> codec_fcc</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strh</span> *strh</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strf_iavs</span> *strf</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *strf_data</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *strd_data</code></em>,
-                                                         <em class="parameter"><code><span class="type">char</span> **codec_name</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-riff-create-iavs-template-caps"></a><h3>gst_riff_create_iavs_template_caps ()</h3>
-<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a> *           gst_riff_create_iavs_template_caps  (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-riff-create-video-caps"></a><h3>gst_riff_create_video_caps ()</h3>
-<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a> *           gst_riff_create_video_caps          (<em class="parameter"><code><span class="type">guint32</span> codec_fcc</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strh</span> *strh</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strf_vids</span> *strf</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *strf_data</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *strd_data</code></em>,
-                                                         <em class="parameter"><code><span class="type">char</span> **codec_name</code></em>);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           gst_riff_create_iavs_caps           (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> codec_fcc,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strh" title="gst_riff_strh">gst_riff_strh</a> *strh,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-iavs" title="gst_riff_strf_iavs">gst_riff_strf_iavs</a> *strf,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *strf_data,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *strd_data,
+                                                         char **codec_name);</pre>
+<p>
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>codec_fcc</code></em> :</span></p></td>
-<td>fourCC codec for this codec.</td>
+<td>
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>strh</code></em> :</span></p></td>
-<td>pointer to the strh stream header structure.</td>
+<td>
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>strf</code></em> :</span></p></td>
-<td>pointer to the strf stream header structure, including any
-data that is within the range of strf.size, but excluding any
-additional data withint this chunk but outside strf.size.</td>
+<td>
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>strf_data</code></em> :</span></p></td>
-<td>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> containing the additional data in the strf
-chunk outside reach of strf.size. Ususally a palette.</td>
+<td>
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>strd_data</code></em> :</span></p></td>
-<td>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> containing the data in the strd stream header
-chunk. Usually codec initialization data.</td>
+<td>
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>codec_name</code></em> :</span></p></td>
-<td>if given, will be filled with a human-readable codec name.</td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
-<a name="gst-riff-create-video-template-caps"></a><h3>gst_riff_create_video_template_caps ()</h3>
-<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a> *           gst_riff_create_video_template_caps (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<div class="refsect2" lang="en">
+<a name="gst-riff-create-iavs-template-caps"></a><h3>gst_riff_create_iavs_template_caps ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           gst_riff_create_iavs_template_caps  (void);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
 </div>
 <hr>
-<div class="refsect2">
-<a name="gst-riff-init"></a><h3>gst_riff_init ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_riff_init                       (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<div class="refsect2" lang="en">
+<a name="gst-riff-create-video-caps"></a><h3>gst_riff_create_video_caps ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           gst_riff_create_video_caps          (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> codec_fcc,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strh" title="gst_riff_strh">gst_riff_strh</a> *strh,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-vids" title="gst_riff_strf_vids">gst_riff_strf_vids</a> *strf,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *strf_data,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *strd_data,
+                                                         char **codec_name);</pre>
 <p>
-Initialize riff library.
+</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>codec_fcc</code></em> :</span></p></td>
+<td> fourCC codec for this codec.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>strh</code></em> :</span></p></td>
+<td> pointer to the strh stream header structure.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>strf</code></em> :</span></p></td>
+<td> pointer to the strf stream header structure, including any
+       data that is within the range of strf.size, but excluding any
+       additional data withint this chunk but outside strf.size.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>strf_data</code></em> :</span></p></td>
+<td> a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+><span class="type">GstBuffer</span></a> containing the additional data in the strf
+            chunk outside reach of strf.size. Ususally a palette.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>strd_data</code></em> :</span></p></td>
+<td> a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+><span class="type">GstBuffer</span></a> containing the data in the strd stream header
+            chunk. Usually codec initialization data.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>codec_name</code></em> :</span></p></td>
+<td> if given, will be filled with a human-readable codec name.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-riff-create-video-template-caps"></a><h3>gst_riff_create_video_template_caps ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *           gst_riff_create_video_template_caps (void);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-riff-dmlh"></a><h3>gst_riff_dmlh</h3>
+<pre class="programlisting">typedef struct {
+  guint32 totalframes;
+} gst_riff_dmlh;
+</pre>
+<p>
 </p>
 </div>
 <hr>
-<div class="refsect2">
-<a name="gst-riff-parse-chunk"></a><h3>gst_riff_parse_chunk ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_riff_parse_chunk                (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *element</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *buf</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *offset</code></em>,
-                                                         <em class="parameter"><code><span class="type">guint32</span> *fourcc</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> **chunk_data</code></em>);</pre>
+<div class="refsect2" lang="en">
+<a name="gst-riff-index-entry"></a><h3>gst_riff_index_entry</h3>
+<pre class="programlisting">typedef struct {
+  guint32 id;
+  guint32 flags;
+#define GST_RIFF_IF_LIST                (0x00000001L)
+#define GST_RIFF_IF_KEYFRAME            (0x00000010L)
+#define GST_RIFF_IF_NO_TIME             (0x00000100L)
+#define GST_RIFF_IF_COMPUSE             (0x0FFF0000L)
+  guint32 offset;
+  guint32 size;
+} gst_riff_index_entry;
+</pre>
 <p>
-Reads a single chunk.
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-riff-init"></a><h3>gst_riff_init ()</h3>
+<pre class="programlisting">void                gst_riff_init                       (void);</pre>
+<p>
+Initialize riff library.</p>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-riff-parse-chunk"></a><h3>gst_riff_parse_chunk ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_riff_parse_chunk                (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buf,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> *offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *fourcc,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> **chunk_data);</pre>
+<p>
+Reads a single chunk.</p>
+<p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
-<td>caller element (used for debugging).</td>
+<td> caller element (used for debugging).
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>buf</code></em> :</span></p></td>
-<td>input buffer.</td>
+<td> input buffer.
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>offset</code></em> :</span></p></td>
-<td>offset in the buffer in the caller. Is incremented
-by the read size by this function.</td>
+<td> offset in the buffer in the caller. Is incremented
+         by the read size by this function.
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>fourcc</code></em> :</span></p></td>
-<td>fourcc (returned by this function0 of the chunk.</td>
+<td> fourcc (returned by this function0 of the chunk.
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>chunk_data</code></em> :</span></p></td>
-<td>buffer (returned by the function) containing the
-chunk data, which may be NULL if chunksize == 0</td>
+<td> buffer (returned by the function) containing the
+             chunk data, which may be NULL if chunksize == 0
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>FALSE on error, TRUE otherwise</td>
+<td> FALSE on error, TRUE otherwise
+</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" lang="en">
 <a name="gst-riff-parse-file-header"></a><h3>gst_riff_parse_file_header ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_riff_parse_file_header          (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *element</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *buf</code></em>,
-                                                         <em class="parameter"><code><span class="type">guint32</span> *doctype</code></em>);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_riff_parse_file_header          (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buf,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *doctype);</pre>
 <p>
 Reads the first few bytes from the provided buffer, checks
 if this stream is a RIFF stream, and determines document type.
 This function takes ownership of <em class="parameter"><code>buf</code></em> so it should not be used anymore
-after calling this function.
+after calling this function.</p>
+<p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
-<td>caller element (used for debugging/error).</td>
+<td> caller element (used for debugging/error).
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>buf</code></em> :</span></p></td>
-<td>input buffer from which the file header will be parsed,
-should be at least 12 bytes long.</td>
+<td> input buffer from which the file header will be parsed,
+      should be at least 12 bytes long.
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>doctype</code></em> :</span></p></td>
-<td>a fourcc (returned by this function) to indicate the
-type of document (according to the header).</td>
+<td> a fourcc (returned by this function) to indicate the
+          type of document (according to the header).
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>FALSE if this is not a RIFF stream (in which case the
+<td> FALSE if this is not a RIFF stream (in which case the
 caller should error out; we already throw an error), or TRUE
-if it is.</td>
+if it is.
+</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" lang="en">
 <a name="gst-riff-parse-info"></a><h3>gst_riff_parse_info ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_riff_parse_info                 (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *element</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *buf</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstTagList.html#GstTagList"><span class="type">GstTagList</span></a> **taglist</code></em>);</pre>
+<pre class="programlisting">void                gst_riff_parse_info                 (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buf,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstTagList.html#GstTagList"
+>GstTagList</a> **taglist);</pre>
 <p>
-Parses stream metadata from input data.
+Parses stream metadata from input data.</p>
+<p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
-<td>caller element (used for debugging/error).</td>
+<td> caller element (used for debugging/error).
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>buf</code></em> :</span></p></td>
-<td>input data to be used for parsing, stripped from header.</td>
+<td> input data to be used for parsing, stripped from header.
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>taglist</code></em> :</span></p></td>
-<td>a pointer to a taglist (returned by this function)
-containing information about this stream. May be
-NULL if no supported tags were found.</td>
+<td> a pointer to a taglist (returned by this function)
+          containing information about this stream. May be
+          NULL if no supported tags were found.
+</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" lang="en">
 <a name="gst-riff-parse-strf-auds"></a><h3>gst_riff_parse_strf_auds ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_riff_parse_strf_auds            (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *element</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *buf</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strf_auds</span> **strf</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> **data</code></em>);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_riff_parse_strf_auds            (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buf,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-auds" title="gst_riff_strf_auds">gst_riff_strf_auds</a> **strf,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> **data);</pre>
 <p>
 Parses an audio stream´s strf structure plus optionally some
 extradata from input data. This function takes ownership of <em class="parameter"><code>buf</code></em>.
-use.
+use.</p>
+<p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
-<td>caller element (used for debugging/error).</td>
+<td> caller element (used for debugging/error).
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>buf</code></em> :</span></p></td>
-<td>input data to be used for parsing, stripped from header.</td>
+<td> input data to be used for parsing, stripped from header.
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>strf</code></em> :</span></p></td>
-<td>a pointer (returned by this function) to a filled-in
-strf/auds structure. Caller should free it.</td>
+<td> a pointer (returned by this function) to a filled-in
+       strf/auds structure. Caller should free it.
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
-<td>a pointer (returned by this function) to a buffer
-containing extradata for this particular stream (e.g.
-codec initialization data).</td>
+<td> a pointer (returned by this function) to a buffer
+       containing extradata for this particular stream (e.g.
+       codec initialization data).
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>TRUE if parsing succeeded, otherwise FALSE. The stream
-should be skipped on error, but it is not fatal.</td>
+<td> TRUE if parsing succeeded, otherwise FALSE. The stream
+         should be skipped on error, but it is not fatal.
+</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" lang="en">
 <a name="gst-riff-parse-strf-iavs"></a><h3>gst_riff_parse_strf_iavs ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_riff_parse_strf_iavs            (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *element</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *buf</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strf_iavs</span> **strf</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> **data</code></em>);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_riff_parse_strf_iavs            (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buf,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-iavs" title="gst_riff_strf_iavs">gst_riff_strf_iavs</a> **strf,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> **data);</pre>
 <p>
 Parses a interleaved (also known as "complex")  stream´s strf
-structure plus optionally some extradata from input data. This
-function takes ownership of <em class="parameter"><code>buf</code></em>.
+structure plus optionally some extradata from input data. This 
+function takes ownership of <em class="parameter"><code>buf</code></em>.</p>
+<p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
-<td>caller element (used for debugging/error).</td>
+<td> caller element (used for debugging/error).
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>buf</code></em> :</span></p></td>
-<td>input data to be used for parsing, stripped from header.</td>
+<td> input data to be used for parsing, stripped from header.
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>strf</code></em> :</span></p></td>
-<td>a pointer (returned by this function) to a filled-in
-strf/iavs structure. Caller should free it.</td>
+<td> a pointer (returned by this function) to a filled-in
+       strf/iavs structure. Caller should free it.
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
-<td>a pointer (returned by this function) to a buffer
-containing extradata for this particular stream (e.g.
-codec initialization data).</td>
+<td> a pointer (returned by this function) to a buffer
+       containing extradata for this particular stream (e.g.
+       codec initialization data).
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>TRUE if parsing succeeded, otherwise FALSE.</td>
+<td> TRUE if parsing succeeded, otherwise FALSE.
+</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" lang="en">
 <a name="gst-riff-parse-strf-vids"></a><h3>gst_riff_parse_strf_vids ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_riff_parse_strf_vids            (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *element</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *buf</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strf_vids</span> **strf</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> **data</code></em>);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_riff_parse_strf_vids            (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buf,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-vids" title="gst_riff_strf_vids">gst_riff_strf_vids</a> **strf,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> **data);</pre>
 <p>
 Parses a video stream´s strf structure plus optionally some
-extradata from input data. This function takes ownership of <em class="parameter"><code>buf</code></em>.
+extradata from input data. This function takes ownership of <em class="parameter"><code>buf</code></em>.</p>
+<p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
-<td>caller element (used for debugging/error).</td>
+<td> caller element (used for debugging/error).
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>buf</code></em> :</span></p></td>
-<td>input data to be used for parsing, stripped from header.</td>
+<td> input data to be used for parsing, stripped from header.
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>strf</code></em> :</span></p></td>
-<td>a pointer (returned by this function) to a filled-in
-strf/vids structure. Caller should free it.</td>
+<td> a pointer (returned by this function) to a filled-in
+       strf/vids structure. Caller should free it.
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
-<td>a pointer (returned by this function) to a buffer
-containing extradata for this particular stream (e.g.
-palette, codec initialization data).</td>
+<td> a pointer (returned by this function) to a buffer
+       containing extradata for this particular stream (e.g.
+       palette, codec initialization data).
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>TRUE if parsing succeeded, otherwise FALSE. The stream
-should be skipped on error, but it is not fatal.</td>
+<td> TRUE if parsing succeeded, otherwise FALSE. The stream
+         should be skipped on error, but it is not fatal.
+</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" lang="en">
 <a name="gst-riff-parse-strh"></a><h3>gst_riff_parse_strh ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_riff_parse_strh                 (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *element</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> *buf</code></em>,
-                                                         <em class="parameter"><code><span class="type">gst_riff_strh</span> **strh</code></em>);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_riff_parse_strh                 (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buf,
+                                                         <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strh" title="gst_riff_strh">gst_riff_strh</a> **strh);</pre>
 <p>
-Parses a strh structure from input data. Takes ownership of <em class="parameter"><code>buf</code></em>.
+Parses a strh structure from input data. Takes ownership of <em class="parameter"><code>buf</code></em>.</p>
+<p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
-<td>caller element (used for debugging/error).</td>
+<td> caller element (used for debugging/error).
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>buf</code></em> :</span></p></td>
-<td>input data to be used for parsing, stripped from header.</td>
+<td> input data to be used for parsing, stripped from header.
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>strh</code></em> :</span></p></td>
-<td>a pointer (returned by this function) to a filled-in
-strh structure. Caller should free it.</td>
+<td> a pointer (returned by this function) to a filled-in
+       strh structure. Caller should free it.
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>TRUE if parsing succeeded, otherwise FALSE. The stream
-should be skipped on error, but it is not fatal.</td>
+<td> TRUE if parsing succeeded, otherwise FALSE. The stream
+         should be skipped on error, but it is not fatal.
+</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" lang="en">
 <a name="gst-riff-read-chunk"></a><h3>gst_riff_read_chunk ()</h3>
-<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>       gst_riff_read_chunk                 (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *element</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="type">GstPad</span></a> *pad</code></em>,
-                                                         <em class="parameter"><code><span class="type">guint64</span> *offset</code></em>,
-                                                         <em class="parameter"><code><span class="type">guint32</span> *tag</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> **chunk_data</code></em>);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html#GstFlowReturn"
+>GstFlowReturn</a>       gst_riff_read_chunk                 (<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a> *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPad.html"
+>GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> *offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> **chunk_data);</pre>
 <p>
-Reads a single chunk of data. 'JUNK' chunks are skipped
-automatically.
+Reads a single chunk of data. Since 0.10.8 'JUNK' chunks
+are skipped automatically.</p>
+<p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
-<td>caller element (used for debugging).</td>
+<td> caller element (used for debugging).
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
-<td>pad to pull data from.</td>
+<td> pad to pull data from.
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>offset</code></em> :</span></p></td>
-<td>offset to pull from, incremented by this function.</td>
+<td> offset to pull from, incremented by this function.
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>tag</code></em> :</span></p></td>
-<td>fourcc of the chunk (returned by this function).</td>
+<td> fourcc of the chunk (returned by this function).
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>chunk_data</code></em> :</span></p></td>
-<td>buffer (returned by this function).</td>
+<td> buffer (returned by this function).
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>flow status.</td>
+<td> flow status.
+</td>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-riff-strf-auds"></a><h3>gst_riff_strf_auds</h3>
+<pre class="programlisting">typedef struct {
+       /* == WaveHeader (?) */
+  guint16 format;
+/**** from public Microsoft RIFF docs ******/
+#define GST_RIFF_WAVE_FORMAT_UNKNOWN        (0x0000)
+#define GST_RIFF_WAVE_FORMAT_PCM            (0x0001)
+#define GST_RIFF_WAVE_FORMAT_ADPCM          (0x0002)
+#define GST_RIFF_WAVE_FORMAT_IEEE_FLOAT     (0x0003)
+#define GST_RIFF_WAVE_FORMAT_VSELP          (0x0004)
+#define GST_RIFF_WAVE_FORMAT_IBM_CVSD       (0x0005)
+#define GST_RIFF_WAVE_FORMAT_ALAW           (0x0006)
+#define GST_RIFF_WAVE_FORMAT_MULAW          (0x0007)
+#define GST_RIFF_WAVE_FORMAT_WMS            (0x000a) /* WMS Windows Media Audio Speech */
+#define GST_RIFF_WAVE_FORMAT_OKI_ADPCM      (0x0010)
+#define GST_RIFF_WAVE_FORMAT_DVI_ADPCM      (0x0011)
+#define GST_RIFF_WAVE_FORMAT_MEDIASPACE_ADPCM (0x0012)
+#define GST_RIFF_WAVE_FORMAT_SIERRA_ADPCM   (0x0013)
+#define GST_RIFF_WAVE_FORMAT_G723_ADPCM     (0x0014)
+#define GST_RIFF_WAVE_FORMAT_DIGISTD        (0x0015)
+#define GST_RIFF_WAVE_FORMAT_DIGIFIX        (0x0016)
+#define GST_RIFF_WAVE_FORMAT_DIALOGIC_OKI_ADPCM (0x0017)
+#define GST_RIFF_WAVE_FORMAT_MEDIAVISION_ADPCM  (0x0018)
+#define GST_RIFF_WAVE_FORMAT_CU_CODEC       (0x0019)
+#define GST_RIFF_WAVE_FORMAT_YAMAHA_ADPCM   (0x0020)
+#define GST_RIFF_WAVE_FORMAT_SONARC         (0x0021)
+#define GST_RIFF_WAVE_FORMAT_DSP_TRUESPEECH (0x0022)
+#define GST_RIFF_WAVE_FORMAT_ECHOSC1        (0x0023)
+#define GST_RIFF_WAVE_FORMAT_AUDIOFILE_AF36 (0x0024)
+#define GST_RIFF_WAVE_FORMAT_APTX           (0x0025)
+#define GST_RIFF_WAVE_FORMAT_AUDIOFILE_AF10 (0x0026)
+#define GST_RIFF_WAVE_FORMAT_PROSODY_1612   (0x0027)
+#define GST_RIFF_WAVE_FORMAT_LRC            (0x0028)
+#define GST_RIFF_WAVE_FORMAT_DOLBY_AC2      (0x0030)
+#define GST_RIFF_WAVE_FORMAT_GSM610         (0x0031)
+#define GST_RIFF_WAVE_FORMAT_MSN            (0x0032)
+#define GST_RIFF_WAVE_FORMAT_ANTEX_ADPCME   (0x0033 
+#define GST_RIFF_WAVE_FORMAT_CONTROL_RES_VQLPC (0x0034)
+#define GST_RIFF_WAVE_FORMAT_DIGIREAL       (0x0035)
+#define GST_RIFF_WAVE_FORMAT_DIGIADPCM      (0x0036)
+#define GST_RIFF_WAVE_FORMAT_CONTROL_RES_CR10  (0x0037)
+#define GST_RIFF_WAVE_FORMAT_NMS_VBXADPCM   (0x0038)
+#define GST_RIFF_WAVE_FORMAT_CS_IMAADPCM    (0x0039)
+#define GST_RIFF_WAVE_FORMAT_ECHOSC3        (0x003A)
+#define GST_RIFF_WAVE_FORMAT_ROCKWELL_ADPCM (0x003B)
+#define GST_RIFF_WAVE_FORMAT_ROCKWELL_DIGITALK (0x003C)
+#define GST_RIFF_WAVE_FORMAT_XEBEC          (0x003D)
+#define GST_RIFF_WAVE_FORMAT_ITU_G721_ADPCM (0x0040)
+#define GST_RIFF_WAVE_FORMAT_G728_CELP      (0x0041)
+#define GST_RIFF_WAVE_FORMAT_MSG723         (0x0042)
+#define GST_RIFF_WAVE_FORMAT_MPEGL12        (0x0050)
+#define GST_RIFF_WAVE_FORMAT_RT24           (0x0052)
+#define GST_RIFF_WAVE_FORMAT_PAC            (0x0053)
+#define GST_RIFF_WAVE_FORMAT_MPEGL3         (0x0055)
+#define GST_RIFF_WAVE_FORMAT_AMR_NB         (0x0057)
+#define GST_RIFF_WAVE_FORMAT_AMR_WB         (0x0058)
+#define GST_RIFF_WAVE_FORMAT_LUCENT_G723    (0x0059)
+#define GST_RIFF_WAVE_FORMAT_CIRRUS         (0x0060)
+#define GST_RIFF_WAVE_FORMAT_ADPCM_IMA_DK4  (0x0061)  /* not official */
+#define GST_RIFF_WAVE_FORMAT_ADPCM_IMA_DK3  (0x0062)  /* not official */
+/* FIXME: where are these from? are they used at all? */
+#if 0
+#define GST_RIFF_WAVE_FORMAT_ESPCM          (0x0061)
+#define GST_RIFF_WAVE_FORMAT_VOXWARE        (0x0062)
+#endif
+#define GST_RIFF_WAVE_FORMAT_CANOPUS_ATRAC  (0x0063)
+#define GST_RIFF_WAVE_FORMAT_G726_ADPCM     (0x0064)
+#define GST_RIFF_WAVE_FORMAT_G722_ADPCM     (0x0065)
+#define GST_RIFF_WAVE_FORMAT_DSAT_DISPLAY   (0x0067)
+#define GST_RIFF_WAVE_FORMAT_ADPCM_IMA_WAV (0x0069)
+/* FIXME: where are these from? are they used at all? */
+#if 0
+#define GST_RIFF_WAVE_FORMAT_VOXWARE_BYTE_ALIGNED (0x0069)
+#endif
+#define GST_RIFF_WAVE_FORMAT_VOXWARE_AC8    (0x0070)
+#define GST_RIFF_WAVE_FORMAT_VOXWARE_AC10   (0x0071)
+#define GST_RIFF_WAVE_FORMAT_VOXWARE_AC16   (0x0072)
+#define GST_RIFF_WAVE_FORMAT_VOXWARE_AC20   (0x0073)
+#define GST_RIFF_WAVE_FORMAT_VOXWARE_METAVOICE (0x0074)
+#define GST_RIFF_WAVE_FORMAT_VOXWARE_METASOUND (0x0075)
+#define GST_RIFF_WAVE_FORMAT_VOXWARE_RT29HW (0x0076)
+#define GST_RIFF_WAVE_FORMAT_VOXWARE_VR12   (0x0077)
+#define GST_RIFF_WAVE_FORMAT_VOXWARE_VR18   (0x0078)
+#define GST_RIFF_WAVE_FORMAT_VOXWARE_TQ40   (0x0079)
+#define GST_RIFF_WAVE_FORMAT_SOFTSOUND      (0x0080)
+#define GST_RIFF_WAVE_FORMAT_VOXWARE_TQ60   (0x0081)
+#define GST_RIFF_WAVE_FORMAT_MSRT24         (0x0082)
+#define GST_RIFF_WAVE_FORMAT_G729A          (0x0083)
+#define GST_RIFF_WAVE_FORMAT_MVI_MVI2       (0x0084)
+#define GST_RIFF_WAVE_FORMAT_DF_G726        (0x0085)
+#define GST_RIFF_WAVE_FORMAT_DF_GSM610      (0x0086)
+#define GST_RIFF_WAVE_FORMAT_ISIAUDIO       (0x0088)
+#define GST_RIFF_WAVE_FORMAT_ONLIVE         (0x0089)
+#define GST_RIFF_WAVE_FORMAT_SBC24          (0x0091)
+#define GST_RIFF_WAVE_FORMAT_DOLBY_AC3_SPDIF  (0x0092)
+#define GST_RIFF_WAVE_FORMAT_MEDIASONIC_G723  (0x0093)
+#define GST_RIFF_WAVE_FORMAT_PROSODY_8KBPS  (0x0094)
+#define GST_RIFF_WAVE_FORMAT_ZYXEL_ADPCM    (0x0097)
+#define GST_RIFF_WAVE_FORMAT_PHILIPS_LPCBB  (0x0098)
+#define GST_RIFF_WAVE_FORMAT_PACKED         (0x0099)
+#define GST_RIFF_WAVE_FORMAT_MALDEN_PHONYTALK (0x00A0)
+#define GST_RIFF_WAVE_FORMAT_AAC            (0x00ff)
+#define GST_RIFF_WAVE_FORMAT_RHETOREX_ADPCM (0x0100)
+#define GST_RIFF_IBM_FORMAT_MULAW           (0x0101)
+#define GST_RIFF_IBM_FORMAT_ALAW            (0x0102)
+#define GST_RIFF_IBM_FORMAT_ADPCM           (0x0103)
+#define GST_RIFF_WAVE_FORMAT_VIVO_G723      (0x0111)
+#define GST_RIFF_WAVE_FORMAT_VIVO_SIREN     (0x0112)
+#define GST_RIFF_WAVE_FORMAT_DIGITAL_G723   (0x0123)
+#define GST_RIFF_WAVE_FORMAT_SANYO_LD_ADPCM (0x0125)
+#define GST_RIFF_WAVE_FORMAT_SIPROLAB_ACEPLNET  (0x0130)
+#define GST_RIFF_WAVE_FORMAT_SIPROLAB_ACELP4800 (0x0131)
+#define GST_RIFF_WAVE_FORMAT_SIPROLAB_ACELP8V3  (0x0132)
+#define GST_RIFF_WAVE_FORMAT_SIPROLAB_G729   (0x0133)
+#define GST_RIFF_WAVE_FORMAT_SIPROLAB_G729A  (0x0134)
+#define GST_RIFF_WAVE_FORMAT_SIPROLAB_KELVIN (0x0135)
+#define GST_RIFF_WAVE_FORMAT_G726ADPCM       (0x0140)
+#define GST_RIFF_WAVE_FORMAT_QUALCOMM_PUREVOICE (0x0150)
+#define GST_RIFF_WAVE_FORMAT_QUALCOMM_HALFRATE  (0x0151)
+#define GST_RIFF_WAVE_FORMAT_TUBGSM             (0x0155)
+#define GST_RIFF_WAVE_FORMAT_WMAV1          (0x0160)
+#define GST_RIFF_WAVE_FORMAT_WMAV2          (0x0161)
+#define GST_RIFF_WAVE_FORMAT_WMAV3          (0x0162)
+#define GST_RIFF_WAVE_FORMAT_WMAV3_L        (0x0163)
+#define GST_RIFF_WAVE_FORMAT_CREATIVE_ADPCM (0x0200)
+#define GST_RIFF_WAVE_FORMAT_CREATIVE_FASTSPEECH8  (0x0202)
+#define GST_RIFF_WAVE_FORMAT_CREATIVE_FASTSPEECH10 (0x0203)
+#define GST_RIFF_WAVE_FORMAT_UHER_ADPCM     (0x0210)
+#define GST_RIFF_WAVE_FORMAT_QUARTERDECK    (0x0220)
+#define GST_RIFF_WAVE_FORMAT_ILINK_VC       (0x0230)
+#define GST_RIFF_WAVE_FORMAT_RAW_SPORT      (0x0240)
+#define GST_RIFF_WAVE_FORMAT_IPI_HSX        (0x0250)
+#define GST_RIFF_WAVE_FORMAT_IPI_RPELP      (0x0251)
+#define GST_RIFF_WAVE_FORMAT_CS2            (0x0260)
+#define GST_RIFF_WAVE_FORMAT_SONY_ATRAC3    (0x0270)
+#define GST_RIFF_WAVE_FORMAT_SIREN          (0x028E)
+#define GST_RIFF_WAVE_FORMAT_FM_TOWNS_SND   (0x0300)
+#define GST_RIFF_WAVE_FORMAT_BTV_DIGITAL    (0x0400)
+#define GST_RIFF_WAVE_FORMAT_IMC            (0x0401)
+#define GST_RIFF_WAVE_FORMAT_QDESIGN_MUSIC  (0x0450)
+#define GST_RIFF_WAVE_FORMAT_VME_VMPCM      (0x0680)
+#define GST_RIFF_WAVE_FORMAT_TPC            (0x0681)
+#define GST_RIFF_WAVE_FORMAT_OLIGSM         (0x1000)
+#define GST_RIFF_WAVE_FORMAT_OLIADPCM       (0x1001)
+#define GST_RIFF_WAVE_FORMAT_OLICELP        (0x1002)
+#define GST_RIFF_WAVE_FORMAT_OLISBC         (0x1003)
+#define GST_RIFF_WAVE_FORMAT_OLIOPR         (0x1004)
+#define GST_RIFF_WAVE_FORMAT_LH_CODEC       (0x1100)
+#define GST_RIFF_WAVE_FORMAT_NORRIS         (0x1400)
+#define GST_RIFF_WAVE_FORMAT_SOUNDSPACE_MUSICOMPRESS (0x1500)
+#define GST_RIFF_WAVE_FORMAT_A52            (0x2000)
+#define GST_RIFF_WAVE_FORMAT_DTS            (0x2001)
+#define GST_RIFF_WAVE_FORMAT_SONIC          (0x2048)
+#define GST_RIFF_WAVE_FORMAT_SONIC_LS       (0x2048)
+#define GST_RIFF_WAVE_FORMAT_AAC_AC         (0x4143)
+#define GST_RIFF_WAVE_FORMAT_VORBIS1        (0x674f)
+#define GST_RIFF_WAVE_FORMAT_VORBIS2        (0x6750)
+#define GST_RIFF_WAVE_FORMAT_VORBIS3        (0x6751)
+#define GST_RIFF_WAVE_FORMAT_VORBIS1PLUS    (0x676f)
+#define GST_RIFF_WAVE_FORMAT_VORBIS2PLUS    (0x6770)
+#define GST_RIFF_WAVE_FORMAT_VORBIS3PLUS    (0x6771)
+#define GST_RIFF_WAVE_FORMAT_AAC_pm         (0x706d)
+#define GST_RIFF_WAVE_FORMAT_GSM_AMR_CBR    (0x7A21)
+#define GST_RIFF_WAVE_FORMAT_GSM_AMR_VBR    (0x7A22)
+#define GST_RIFF_WAVE_FORMAT_FLAC           (0xF1AC)
+#define GST_RIFF_WAVE_FORMAT_EXTENSIBLE     (0xFFFE)
+  guint16 channels;
+  guint32 rate;
+  guint32 av_bps;
+  guint16 blockalign;
+  guint16 size;
+} gst_riff_strf_auds;
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-riff-strf-iavs"></a><h3>gst_riff_strf_iavs</h3>
+<pre class="programlisting">typedef struct {
+  guint32 DVAAuxSrc;
+  guint32 DVAAuxCtl;
+  guint32 DVAAuxSrc1;
+  guint32 DVAAuxCtl1;
+  guint32 DVVAuxSrc;
+  guint32 DVVAuxCtl;
+  guint32 DVReserved1;
+  guint32 DVReserved2;
+} gst_riff_strf_iavs;
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-riff-strf-vids"></a><h3>gst_riff_strf_vids</h3>
+<pre class="programlisting">typedef struct {
+       /* == BitMapInfoHeader */
+  guint32 size;
+  guint32 width;
+  guint32 height;
+  guint16 planes;
+  guint16 bit_cnt;
+  guint32 compression;
+  guint32 image_size;
+  guint32 xpels_meter;
+  guint32 ypels_meter;
+  guint32 num_colors;        /* used colors */
+  guint32 imp_colors;        /* important colors */
+  /* may be more for some codecs */
+} gst_riff_strf_vids;
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-riff-strh"></a><h3>gst_riff_strh</h3>
+<pre class="programlisting">typedef struct {
+  guint32 type;             /* stream type */
+  guint32 fcc_handler;       /* fcc_handler */
+  guint32 flags;
+/* flags values */
+#define GST_RIFF_STRH_DISABLED        0x000000001
+#define GST_RIFF_STRH_VIDEOPALCHANGES 0x000010000
+  guint32 priority;
+  guint32 init_frames;       /* initial frames (???) */
+  guint32 scale;
+  guint32 rate;
+  guint32 start;
+  guint32 length;
+  guint32 bufsize;           /* suggested buffer size */
+  guint32 quality;
+  guint32 samplesize;
+  /* rcFrame, RECT structure(struct of 4 shorts)
+  gint32  left;
+  gint32  top;
+  gint32  right;
+  gint32  bottom;
+  */
+} gst_riff_strh;
+</pre>
+<p>
+</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

@@ -25,9 +25,7 @@
 
 G_BEGIN_DECLS
 
-#if 0
 void      gst_alsa_type_add_device_property_probe_interface (GType type);
-#endif
 
 G_END_DECLS
 

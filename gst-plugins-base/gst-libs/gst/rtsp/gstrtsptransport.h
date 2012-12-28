@@ -43,7 +43,6 @@
 #ifndef __GST_RTSP_TRANSPORT_H__
 #define __GST_RTSP_TRANSPORT_H__
 
-#include <gst/gstconfig.h>
 #include <gst/rtsp/gstrtspdefs.h>
 
 G_BEGIN_DECLS
@@ -82,7 +81,7 @@ typedef enum {
  * @GST_RTSP_LOWER_TRANS_UDP: stream data over UDP
  * @GST_RTSP_LOWER_TRANS_UDP_MCAST: stream data over UDP multicast
  * @GST_RTSP_LOWER_TRANS_TCP: stream data over TCP
- * @GST_RTSP_LOWER_TRANS_HTTP: stream data tunneled over HTTP.
+ * @GST_RTSP_LOWER_TRANS_HTTP: stream data tunneled over HTTP. Since: 0.10.23
  *
  * The different transport methods.
  */
@@ -94,24 +93,18 @@ typedef enum {
   GST_RTSP_LOWER_TRANS_HTTP      = (1 << 4)
 } GstRTSPLowerTrans;
 
-#define GST_TYPE_RTSP_LOWER_TRANS (gst_rtsp_lower_trans_get_type())
-GType gst_rtsp_lower_trans_get_type (void);
-
-typedef struct _GstRTSPRange GstRTSPRange;
-typedef struct _GstRTSPTransport GstRTSPTransport;
-
 /**
- * GstRTSPRange:
+ * RTSPRange:
  * @min: minimum value of the range
  * @max: maximum value of the range
  *
  * A type to specify a range.
  */
-
-struct _GstRTSPRange {
+typedef struct
+{
   gint min;
   gint max;
-};
+} GstRTSPRange;
 
 /**
  * GstRTSPTransport:
@@ -133,8 +126,7 @@ struct _GstRTSPRange {
  *
  * A structure holding the RTSP transport values.
  */
-
-struct _GstRTSPTransport {
+typedef struct _GstRTSPTransport {
   GstRTSPTransMode  trans;
   GstRTSPProfile    profile;
   GstRTSPLowerTrans lower_transport;
@@ -157,9 +149,7 @@ struct _GstRTSPTransport {
   /* RTP specific */
   guint          ssrc;
 
-  /*< private >*/
-  gpointer _gst_reserved[GST_PADDING];
-};
+} GstRTSPTransport;
 
 GstRTSPResult      gst_rtsp_transport_new          (GstRTSPTransport **transport);
 GstRTSPResult      gst_rtsp_transport_init         (GstRTSPTransport *transport);

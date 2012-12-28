@@ -1,8 +1,5 @@
 /* GStreamer
  * Copyright (C) 2004 Wim Taymans <wim@fluendo.com>
- * Copyright (c) 2012 Collabora Ltd.
- *	Author : Edward Hervey <edward@collabora.com>
- *      Author : Mark Nauwelaerts <mark.nauwelaerts@collabora.co.uk>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,9 +21,7 @@
 #define __GST_THEORAENC_H__
 
 #include <gst/gst.h>
-#include <gst/base/gstadapter.h>
-#include <gst/video/gstvideoencoder.h>
-#include <theora/theoraenc.h>
+#include <theora/theora.h>
 
 G_BEGIN_DECLS
 
@@ -45,18 +40,20 @@ typedef struct _GstTheoraEnc GstTheoraEnc;
 typedef struct _GstTheoraEncClass GstTheoraEncClass;
 
 /**
- * GstTheoraEncMultipassMode:
- * @MULTIPASS_MODE_SINGLE_PASS: Single pass encoding
- * @MULTIPASS_MODE_FIRST_PASS: First pass of two pass encoding
- * @MULTIPASS_MODE_SECOND_PASS: Second pass of two pass encoding
+ * GstTheoraEncBorderMode:
+ * @BORDER_NONE: no border
+ * @BORDER_BLACK: black border
+ * @BORDER_MIRROR: Mirror image in border
  *
- */
+ * Border color to add when sizes not multiple of 16. 
+ */ 
 typedef enum
 {
-  MULTIPASS_MODE_SINGLE_PASS,
-  MULTIPASS_MODE_FIRST_PASS,
-  MULTIPASS_MODE_SECOND_PASS
-} GstTheoraEncMultipassMode;
+  BORDER_NONE,
+  BORDER_BLACK,
+  BORDER_MIRROR
+}
+GstTheoraEncBorderMode;
 
 /**
  * GstTheoraEnc:
@@ -65,54 +62,58 @@ typedef enum
  */
 struct _GstTheoraEnc
 {
-  GstVideoEncoder element;
+  GstElement element;
+
+  GstPad *sinkpad;
+  GstPad *srcpad;
+
+  GstSegment segment;
 
   ogg_stream_state to;
 
-  th_enc_ctx *encoder;
-  th_info info;
-  th_comment comment;
+  theora_state state;
+  theora_info info;
+  theora_comment comment;
   gboolean initialised;
 
+  gboolean center;
+  GstTheoraEncBorderMode border;
+
   gint video_bitrate;           /* bitrate target for Theora video */
-  gboolean bitrate_changed;
   gint video_quality;           /* Theora quality selector 0 = low, 63 = high */
-  gboolean quality_changed;
+  gboolean quick;
   gboolean keyframe_auto;
   gint keyframe_freq;
   gint keyframe_force;
+  gint keyframe_threshold;
+  gint keyframe_mindistance;
+  gint noise_sensitivity;
+  gint sharpness;
 
-  GstVideoCodecState *input_state;
-
+  gint info_width, info_height;
   gint width, height;
+  gint offset_x, offset_y;
   gint fps_n, fps_d;
+  GstClockTime next_ts;
+
+  GstClockTime expected_ts;
+  gboolean next_discont;
+
+  gboolean force_keyframe;
 
   guint packetno;
   guint64 bytes_out;
   guint64 granulepos_offset;
   guint64 timestamp_offset;
-  guint64 pfn_offset;
+  gint granule_shift;  
 
   gint speed_level;
-  gboolean vp3_compatible;
-  gboolean drop_frames;
-  gboolean cap_overflow;
-  gboolean cap_underflow;
-  int rate_buffer;
-
-  GstTheoraEncMultipassMode multipass_mode;
-  GIOChannel *multipass_cache_fd;
-  GstAdapter *multipass_cache_adapter;
-  gchar *multipass_cache_file;
 };
 
 struct _GstTheoraEncClass
 {
-  GstVideoEncoderClass parent_class;
+  GstElementClass parent_class;
 };
-
-GType gst_theora_enc_get_type (void);
-gboolean gst_theora_enc_register (GstPlugin * plugin);
 
 G_END_DECLS
 

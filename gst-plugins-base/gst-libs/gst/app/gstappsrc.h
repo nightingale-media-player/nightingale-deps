@@ -35,6 +35,7 @@ G_BEGIN_DECLS
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_APP_SRC))
 #define GST_IS_APP_SRC_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_APP_SRC))
+/* Since 0.10.23 */
 #define GST_APP_SRC_CAST(obj) \
   ((GstAppSrc*)(obj))
 
@@ -43,19 +44,21 @@ typedef struct _GstAppSrcClass GstAppSrcClass;
 typedef struct _GstAppSrcPrivate GstAppSrcPrivate;
 
 /**
- * GstAppSrcCallbacks: (skip)
+ * GstAppSrcCallbacks:
  * @need_data: Called when the appsrc needs more data. A buffer or EOS should be
  *    pushed to appsrc from this thread or another thread. @length is just a hint
  *    and when it is set to -1, any number of bytes can be pushed into @appsrc.
  * @enough_data: Called when appsrc has enough data. It is recommended that the
  *    application stops calling push-buffer until the need_data callback is
- *    emitted again to avoid excessive buffer queueing.
+ *    emited again to avoid excessive buffer queueing.
  * @seek_data: Called when a seek should be performed to the offset.
  *    The next push-buffer should produce buffers from the new @offset.
  *    This callback is only called for seekable stream types.
  *
  * A set of callbacks that can be installed on the appsrc with
  * gst_app_src_set_callbacks().
+ *
+ * Since: 0.10.23
  */
 typedef struct {
   void      (*need_data)    (GstAppSrc *src, guint length, gpointer user_data);
@@ -71,7 +74,7 @@ typedef struct {
  * @GST_APP_STREAM_TYPE_STREAM: No seeking is supported in the stream, such as a
  * live stream.
  * @GST_APP_STREAM_TYPE_SEEKABLE: The stream is seekable but seeking might not
- * be very fast, such as data from a webserver.
+ * be very fast, such as data from a webserver. 
  * @GST_APP_STREAM_TYPE_RANDOM_ACCESS: The stream is seekable and seeking is fast,
  * such as in a local file.
  *
@@ -100,23 +103,19 @@ struct _GstAppSrcClass
   GstBaseSrcClass basesrc_class;
 
   /* signals */
-  void          (*need_data)       (GstAppSrc *appsrc, guint length);
-  void          (*enough_data)     (GstAppSrc *appsrc);
-  gboolean      (*seek_data)       (GstAppSrc *appsrc, guint64 offset);
+  void          (*need_data)       (GstAppSrc *src, guint length);
+  void          (*enough_data)     (GstAppSrc *src);
+  gboolean      (*seek_data)       (GstAppSrc *src, guint64 offset);
 
   /* actions */
-  GstFlowReturn (*push_buffer)     (GstAppSrc *appsrc, GstBuffer *buffer);
-  GstFlowReturn (*end_of_stream)   (GstAppSrc *appsrc);
+  GstFlowReturn (*push_buffer)     (GstAppSrc *src, GstBuffer *buffer);
+  GstFlowReturn (*end_of_stream)   (GstAppSrc *src);
 
   /*< private >*/
   gpointer     _gst_reserved[GST_PADDING];
 };
 
 GType gst_app_src_get_type(void);
-
-/* GType getter for GstAppStreamType */
-#define GST_TYPE_APP_STREAM_TYPE (gst_app_stream_type_get_type ())
-GType gst_app_stream_type_get_type (void);
 
 void             gst_app_src_set_caps         (GstAppSrc *appsrc, const GstCaps *caps);
 GstCaps*         gst_app_src_get_caps         (GstAppSrc *appsrc);

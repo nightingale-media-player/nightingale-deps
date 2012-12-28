@@ -1,12 +1,10 @@
-GFile GObject
-GInitable GObject
-GstChildProxy GObject
 GstChildProxy GstObject
-GstColorBalance GstImplementsInterface GstElement
+GstTagSetter GstElement
 GstImplementsInterface GstElement
 GstMixer GstImplementsInterface GstElement
-GstStreamVolume GObject
-GstTagSetter GstElement
 GstTuner GstImplementsInterface GstElement
 GstXOverlay GstImplementsInterface GstElement
+GstColorBalance GstImplementsInterface GstElement
+GstStreamVolume GObject
 PangoCairoFontMap PangoFontMap
+GFile GObject

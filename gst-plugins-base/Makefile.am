@@ -6,12 +6,18 @@ else
 SUBDIRS_EXT =
 endif
 
+if BUILD_TESTS
+TESTS_DIR = tests
+else
+TESTS_DIR =
+endif
+
 SUBDIRS = 			\
 	pkgconfig		\
 	gst-libs 		\
 	gst sys $(SUBDIRS_EXT) 	\
 	tools 			\
-	tests 			\
+	$(TESTS_DIR)    \
 	docs			\
 	po 			\
 	common 			\
@@ -71,25 +77,4 @@ include $(top_srcdir)/common/coverage/lcov.mak
 
 check: check-exports
 
-# cruft: plugins that have been merged or moved or renamed
 
-CRUFT_FILES = \
-	$(top_builddir)/common/shave \
-	$(top_builddir)/common/shave-libtool \
-	$(top_builddir)/gst-libs/gst/audio/testchannels \
-	$(top_builddir)/tests/check/elements/gdppay \
-	$(top_builddir)/tests/check/elements/gdpdepay \
-	$(top_builddir)/tests/check/pipelines/streamheader \
-	$(top_builddir)/tests/examples/audio/testchannels \
-	$(top_builddir)/tests/examples/volume/volume \
-	$(top_builddir)/tools/gst-discoverer
-
-CRUFT_DIRS = \
-	$(top_srcdir)/ext/gio \
-	$(top_srcdir)/gst/gdp \
-	$(top_srcdir)/sys/v4l \
-	$(top_srcdir)/tests/examples/v4l
-
-include $(top_srcdir)/common/cruft.mak
-
-all-local: check-cruft

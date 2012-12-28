@@ -21,7 +21,6 @@
 
 
 #include <gst/check/gstcheck.h>
-#include <gst/audio/audio-format.h>
 
 #ifndef GST_DISABLE_PARSE
 
@@ -107,15 +106,15 @@ done:
 
 GST_START_TEST (test_element_negotiation)
 {
-  const gchar *s;
+  gchar *s;
 
   /* Ensures that filtering buffers with unknown caps down to fixed-caps 
    * will apply those caps to the buffers.
    * see http://bugzilla.gnome.org/show_bug.cgi?id=315126 */
   s = "fakesrc num-buffers=2 ! "
-      "audio/x-raw,format=" GST_AUDIO_NE (S16) ",rate=22050,channels=1 "
-      "! audioconvert "
-      "! audio/x-raw,format=" GST_AUDIO_NE (S16) ",rate=22050,channels=1 "
+      "audio/x-raw-int,width=16,depth=16,rate=22050,channels=1,"
+      "signed=(boolean)true,endianness=1234 ! "
+      "audioconvert ! audio/x-raw-int,width=16,depth=16,rate=22050,channels=1 "
       "! fakesink";
   run_pipeline (setup_pipeline (s), s,
       GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
@@ -123,7 +122,7 @@ GST_START_TEST (test_element_negotiation)
 
 #ifdef HAVE_LIBVISUAL
   s = "audiotestsrc num-buffers=30 ! tee name=t ! alsasink t. ! audioconvert ! "
-      "libvisual_lv_scope ! videoconvert ! xvimagesink";
+      "libvisual_lv_scope ! ffmpegcolorspace ! xvimagesink";
   run_pipeline (setup_pipeline (s), s,
       GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
       GST_MESSAGE_UNKNOWN);
@@ -141,17 +140,17 @@ GST_START_TEST (test_basetransform_based)
 
   /* Check that videoscale can pick a height given only a width */
   s = "videotestsrc num-buffers=2 ! "
-      "video/x-raw,format=(string)I420,width=320,height=240 ! "
-      "videoscale ! video/x-raw,width=640 ! fakesink";
+      "video/x-raw-yuv,format=(fourcc)I420,width=320,height=240 ! "
+      "videoscale ! video/x-raw-yuv,width=640 ! fakesink";
   run_pipeline (setup_pipeline (s), s,
       GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
       GST_MESSAGE_UNKNOWN);
 
-  /* Test that videoconvert can pick an output format that isn't
+  /* Test that ffmpegcolorspace can pick an output format that isn't
    * passthrough without completely specified output caps */
   s = "videotestsrc num-buffers=2 ! "
-      "video/x-raw,format=(string)I420,width=320,height=240 ! "
-      "videoconvert ! video/x-raw,format=(string)RGB ! fakesink";
+      "video/x-raw-yuv,format=(fourcc)I420,width=320,height=240 ! "
+      "ffmpegcolorspace ! video/x-raw-rgb ! fakesink";
   run_pipeline (setup_pipeline (s), s,
       GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
       GST_MESSAGE_UNKNOWN);
@@ -159,43 +158,44 @@ GST_START_TEST (test_basetransform_based)
   /* Check that audioresample can pick a samplerate to use from a
    * range that doesn't include the input */
   s = "audiotestsrc num-buffers=2 ! "
-      "audio/x-raw,format=" GST_AUDIO_NE (S16) ",rate=8000 ! "
-      "audioresample ! audio/x-raw,rate=[16000,48000] ! fakesink";
+      "audio/x-raw-int,width=16,depth=16,rate=8000 ! "
+      "audioresample ! audio/x-raw-int,rate=[16000,48000] ! fakesink";
   run_pipeline (setup_pipeline (s), s,
       GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
       GST_MESSAGE_UNKNOWN);
 
   /* Check that audioconvert can pick a depth to use, given a width */
-  s = "audiotestsrc num-buffers=30 ! audio/x-raw,format=" GST_AUDIO_NE (S16)
-      " ! audioconvert ! " "audio/x-raw,format=" GST_AUDIO_NE (S32)
-      " ! fakesink";
+  s = "audiotestsrc num-buffers=30 ! audio/x-raw-int,width=16,depth=16 ! "
+      "audioconvert ! " "audio/x-raw-int,width=32 ! fakesink";
   run_pipeline (setup_pipeline (s), s,
       GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
       GST_MESSAGE_UNKNOWN);
 
   /* Check that videoscale doesn't claim to be able to transform input in
-   * formats it can't handle for a given scaling method; videoconvert
+   * formats it can't handle for a given scaling method; ffmpegcolorspace
    * should then make sure a format that can be handled is chosen (4-tap
    * scaling is not implemented for RGB and packed yuv currently) */
-  s = "videotestsrc num-buffers=2 ! video/x-raw,format=(string)ARGB64 ! "
-      "videoconvert ! videoscale method=4-tap ! videoconvert ! "
-      "video/x-raw,format=(string)RGB, width=32,height=32,framerate=(fraction)30/1,"
-      "pixel-aspect-ratio=(fraction)1/1 ! fakesink";
+  s = "videotestsrc num-buffers=2 ! video/x-raw-rgb,width=64,height=64 ! "
+      "ffmpegcolorspace ! videoscale method=4-tap ! ffmpegcolorspace ! "
+      "video/x-raw-rgb,width=32,height=32,framerate=(fraction)30/1,"
+      "pixel-aspect-ratio=(fraction)1/1,bpp=(int)24,depth=(int)24,"
+      "red_mask=(int)16711680,green_mask=(int)65280,blue_mask=(int)255,"
+      "endianness=(int)4321 ! fakesink";
   run_pipeline (setup_pipeline (s), s,
       GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
       GST_MESSAGE_UNKNOWN);
-  s = "videotestsrc num-buffers=2 ! video/x-raw,format=(string)AYUV,"
-      "width=64,height=64 ! videoconvert ! videoscale method=4-tap ! "
-      "videoconvert ! video/x-raw,format=(string)AYUV,width=32,"
+  s = "videotestsrc num-buffers=2 ! video/x-raw-yuv,format=(fourcc)AYUV,"
+      "width=64,height=64 ! ffmpegcolorspace ! videoscale method=4-tap ! "
+      "ffmpegcolorspace ! video/x-raw-yuv,format=(fourcc)AYUV,width=32,"
       "height=32 ! fakesink";
   run_pipeline (setup_pipeline (s), s,
       GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
       GST_MESSAGE_UNKNOWN);
   /* make sure nothing funny happens in passthrough mode (we don't check that
    * passthrough mode is chosen though) */
-  s = "videotestsrc num-buffers=2 ! video/x-raw,format=(string)I420,"
-      "width=64,height=64 ! videoconvert ! videoscale method=4-tap ! "
-      "videoconvert ! video/x-raw,format=(string)I420,width=32,"
+  s = "videotestsrc num-buffers=2 ! video/x-raw-yuv,format=(fourcc)I420,"
+      "width=64,height=64 ! ffmpegcolorspace ! videoscale method=4-tap ! "
+      "ffmpegcolorspace ! video/x-raw-yuv,format=(fourcc)I420,width=32,"
       "height=32 ! fakesink";
   run_pipeline (setup_pipeline (s), s,
       GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),

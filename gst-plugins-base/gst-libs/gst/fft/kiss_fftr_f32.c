@@ -40,7 +40,7 @@ kiss_fftr_f32_alloc (int nfft, int inverse_fft, void *mem, size_t * lenmem)
 
   kiss_fft_f32_alloc (nfft, inverse_fft, NULL, &subsize);
   memneeded = ALIGN_STRUCT (sizeof (struct kiss_fftr_f32_state))
-      + ALIGN_STRUCT (subsize) + sizeof (kiss_fft_f32_cpx) * (nfft * 3 / 2);
+      + ALIGN_STRUCT (subsize) + sizeof (kiss_fft_f32_cpx) * (nfft * 2);
 
   if (lenmem == NULL) {
     st = (kiss_fftr_f32_cfg) KISS_FFT_F32_MALLOC (memneeded);
@@ -58,9 +58,8 @@ kiss_fftr_f32_alloc (int nfft, int inverse_fft, void *mem, size_t * lenmem)
   st->super_twiddles = st->tmpbuf + nfft;
   kiss_fft_f32_alloc (nfft, inverse_fft, st->substate, &subsize);
 
-  for (i = 0; i < nfft / 2; ++i) {
-    double phase =
-        -3.14159265358979323846264338327 * ((double) (i + 1) / nfft + .5);
+  for (i = 0; i < nfft; ++i) {
+    double phase = -3.14159265358979323846264338327 * ((double) i / nfft + .5);
 
     if (inverse_fft)
       phase *= -1;
@@ -77,8 +76,10 @@ kiss_fftr_f32 (kiss_fftr_f32_cfg st, const kiss_fft_f32_scalar * timedata,
   int k, ncfft;
   kiss_fft_f32_cpx fpnk, fpk, f1k, f2k, tw, tdc;
 
-  /* kiss fft usage error: improper alloc */
-  g_return_if_fail (st->substate->inverse == 0);
+  if (st->substate->inverse) {
+    fprintf (stderr, "kiss fft usage error: improper alloc\n");
+    exit (1);
+  }
 
   ncfft = st->substate->nfft;
 
@@ -116,7 +117,7 @@ kiss_fftr_f32 (kiss_fftr_f32_cfg st, const kiss_fft_f32_scalar * timedata,
 
     C_ADD (f1k, fpk, fpnk);
     C_SUB (f2k, fpk, fpnk);
-    C_MUL (tw, f2k, st->super_twiddles[k - 1]);
+    C_MUL (tw, f2k, st->super_twiddles[k]);
 
     freqdata[k].r = HALF_OF (f1k.r + tw.r);
     freqdata[k].i = HALF_OF (f1k.i + tw.i);
@@ -132,8 +133,10 @@ kiss_fftri_f32 (kiss_fftr_f32_cfg st, const kiss_fft_f32_cpx * freqdata,
   /* input buffer timedata is stored row-wise */
   int k, ncfft;
 
-  /* kiss fft usage error: improper alloc */
-  g_return_if_fail (st->substate->inverse != 0);
+  if (st->substate->inverse == 0) {
+    fprintf (stderr, "kiss fft usage error: improper alloc\n");
+    exit (1);
+  }
 
   ncfft = st->substate->nfft;
 
@@ -152,7 +155,7 @@ kiss_fftri_f32 (kiss_fftr_f32_cfg st, const kiss_fft_f32_cpx * freqdata,
 
     C_ADD (fek, fk, fnkc);
     C_SUB (tmp, fk, fnkc);
-    C_MUL (fok, tmp, st->super_twiddles[k - 1]);
+    C_MUL (fok, tmp, st->super_twiddles[k]);
     C_ADD (st->tmpbuf[k], fek, fok);
     C_SUB (st->tmpbuf[ncfft - k], fek, fok);
 #ifdef USE_SIMD

@@ -46,10 +46,10 @@ typedef struct
   ChainCodec codec;
 } ChainState;
 
-#if (defined (HAVE_THEORA) || defined (HAVE_VORBIS))
 static ogg_sync_state oggsync;
 static GHashTable *eos_chain_states;
 static gulong probe_id;
+
 
 static ChainCodec
 get_page_codec (ogg_page * page)
@@ -75,6 +75,15 @@ get_page_codec (ogg_page * page)
   ogg_stream_clear (&state);
 
   return codec;
+}
+
+static gboolean
+check_chain_final_state (gpointer key, ChainState * state, gpointer data)
+{
+  fail_unless (state->eos, "missing EOS flag on chain %u", state->serialno);
+
+  /* return TRUE to empty the chain table */
+  return TRUE;
 }
 
 static void
@@ -148,29 +157,22 @@ is_video (gpointer key, ChainState * state, gpointer data)
     *((gboolean *) data) = TRUE;
 }
 
+
 static gboolean
-check_chain_final_state (gpointer key, ChainState * state, gpointer data)
+eos_buffer_probe (GstPad * pad, GstBuffer * buffer, gpointer unused)
 {
-  fail_unless (state->eos, "missing EOS flag on chain %u", state->serialno);
-
-  /* return TRUE to empty the chain table */
-  return TRUE;
-}
-
-static GstPadProbeReturn
-eos_buffer_probe (GstPad * pad, GstPadProbeInfo * info, gpointer unused)
-{
-  GstBuffer *buffer = GST_PAD_PROBE_INFO_BUFFER (info);
   gint ret;
   gint size;
+  guint8 *data;
   gchar *oggbuffer;
   ChainState *state = NULL;
   gboolean has_video = FALSE;
 
-  size = gst_buffer_get_size (buffer);
+  size = GST_BUFFER_SIZE (buffer);
+  data = GST_BUFFER_DATA (buffer);
 
   oggbuffer = ogg_sync_buffer (&oggsync, size);
-  gst_buffer_extract (buffer, 0, oggbuffer, size);
+  memcpy (oggbuffer, data, size);
   ogg_sync_wrote (&oggsync, size);
 
   do {
@@ -185,18 +187,18 @@ eos_buffer_probe (GstPad * pad, GstPadProbeInfo * info, gpointer unused)
   if (state) {
     /* Now, we can do buffer-level checks...
      * If we have video somewhere, then we should have DELTA_UNIT set on all
-     * non-header (not HEADER), non-video buffers
+     * non-header (not IN_CAPS), non-video buffers
      */
     g_hash_table_foreach (eos_chain_states, (GHFunc) is_video, &has_video);
     if (has_video && state->codec != CODEC_THEORA) {
-      if (!GST_BUFFER_FLAG_IS_SET (buffer, GST_BUFFER_FLAG_HEADER))
+      if (!GST_BUFFER_FLAG_IS_SET (buffer, GST_BUFFER_FLAG_IN_CAPS))
         fail_unless (GST_BUFFER_FLAG_IS_SET (buffer,
                 GST_BUFFER_FLAG_DELTA_UNIT),
             "Non-video buffer doesn't have DELTA_UNIT in stream with video");
     }
   }
 
-  return GST_PAD_PROBE_OK;
+  return TRUE;
 }
 
 static void
@@ -209,8 +211,7 @@ start_pipeline (GstElement * bin, GstPad * pad)
   eos_chain_states =
       g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_free);
   probe_id =
-      gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_BUFFER,
-      (GstPadProbeCallback) eos_buffer_probe, NULL, NULL);
+      gst_pad_add_buffer_probe (pad, G_CALLBACK (eos_buffer_probe), NULL);
 
   ret = gst_element_set_state (bin, GST_STATE_PLAYING);
   fail_if (ret == GST_STATE_CHANGE_FAILURE, "Could not start test pipeline");
@@ -232,7 +233,7 @@ stop_pipeline (GstElement * bin, GstPad * pad)
     fail_if (ret != GST_STATE_CHANGE_SUCCESS, "Could not stop test pipeline");
   }
 
-  gst_pad_remove_probe (pad, probe_id);
+  gst_pad_remove_buffer_probe (pad, (guint) probe_id);
   ogg_sync_clear (&oggsync);
 
   /* check end conditions, such as EOS flags */
@@ -258,7 +259,6 @@ test_pipeline (const char *pipeline)
   GError *error = NULL;
   GMainLoop *loop;
   GstPadLinkReturn linkret;
-  guint bus_watch = 0;
 
   bin = gst_parse_launch (pipeline, &error);
   fail_unless (bin != NULL, "Error parsing pipeline: %s",
@@ -281,7 +281,7 @@ test_pipeline (const char *pipeline)
   /* run until we receive EOS */
   loop = g_main_loop_new (NULL, FALSE);
   bus = gst_element_get_bus (bin);
-  bus_watch = gst_bus_add_watch (bus, (GstBusFunc) eos_watch, loop);
+  gst_bus_add_watch (bus, (GstBusFunc) eos_watch, loop);
   gst_object_unref (bus);
 
   start_pipeline (bin, pad);
@@ -292,7 +292,7 @@ test_pipeline (const char *pipeline)
     GstStructure *s;
     GstCaps *muxcaps;
 
-    muxcaps = gst_pad_get_current_caps (sinkpad);
+    muxcaps = gst_pad_get_negotiated_caps (sinkpad);
     fail_unless (muxcaps != NULL);
     s = gst_caps_get_structure (muxcaps, 0);
     fail_unless (gst_structure_has_name (s, "application/ogg"));
@@ -306,17 +306,15 @@ test_pipeline (const char *pipeline)
 
   /* clean up */
   g_main_loop_unref (loop);
-  g_source_remove (bus_watch);
   gst_object_unref (pad);
   gst_object_unref (bin);
 }
-#endif
 
 #ifdef HAVE_VORBIS
 GST_START_TEST (test_vorbis)
 {
   test_pipeline
-      ("audiotestsrc num-buffers=5 ! audioconvert ! vorbisenc ! .audio_%u oggmux");
+      ("audiotestsrc num-buffers=5 ! audioconvert ! vorbisenc ! oggmux");
 }
 
 GST_END_TEST;
@@ -326,7 +324,7 @@ GST_START_TEST (test_vorbis_oggmux_unlinked)
   GstElement *pipe;
   GstMessage *msg;
 
-  pipe = gst_parse_launch ("audiotestsrc ! vorbisenc ! .audio_%u oggmux", NULL);
+  pipe = gst_parse_launch ("audiotestsrc ! vorbisenc ! oggmux", NULL);
   if (pipe == NULL) {
     g_printerr ("Skipping test 'test_vorbis_oggmux_unlinked'");
     return;
@@ -350,7 +348,7 @@ GST_END_TEST;
 GST_START_TEST (test_theora)
 {
   test_pipeline
-      ("videotestsrc num-buffers=5 ! videoconvert ! theoraenc ! .video_%u oggmux");
+      ("videotestsrc num-buffers=5 ! ffmpegcolorspace ! theoraenc ! oggmux");
 }
 
 GST_END_TEST;
@@ -360,8 +358,8 @@ GST_END_TEST;
 GST_START_TEST (test_theora_vorbis)
 {
   test_pipeline
-      ("videotestsrc num-buffers=10 ! videoconvert ! theoraenc ! queue ! .video_%u oggmux name=mux "
-      "audiotestsrc num-buffers=2 ! audioconvert ! vorbisenc ! queue ! mux.audio_%u");
+      ("videotestsrc num-buffers=10 ! ffmpegcolorspace ! theoraenc ! queue ! oggmux name=mux "
+      "audiotestsrc num-buffers=2 ! audioconvert ! vorbisenc ! queue ! mux.");
 }
 
 GST_END_TEST;
@@ -369,8 +367,8 @@ GST_END_TEST;
 GST_START_TEST (test_vorbis_theora)
 {
   test_pipeline
-      ("videotestsrc num-buffers=2 ! videoconvert ! theoraenc ! queue ! .video_%u oggmux name=mux "
-      "audiotestsrc num-buffers=10 ! audioconvert ! vorbisenc ! queue ! mux.audio_%u");
+      ("videotestsrc num-buffers=2 ! ffmpegcolorspace ! theoraenc ! queue ! oggmux name=mux "
+      "audiotestsrc num-buffers=10 ! audioconvert ! vorbisenc ! queue ! mux.");
 }
 
 GST_END_TEST;
@@ -392,10 +390,10 @@ GST_START_TEST (test_request_pad_cleanup)
   GstPad *pad;
 
   oggmux = gst_element_factory_make ("oggmux", NULL);
-  pad = gst_element_get_request_pad (oggmux, "video_%u");
+  pad = gst_element_get_request_pad (oggmux, "sink_%d");
   fail_unless (pad != NULL);
   gst_object_unref (pad);
-  pad = gst_element_get_request_pad (oggmux, "audio_%u");
+  pad = gst_element_get_request_pad (oggmux, "sink_%d");
   fail_unless (pad != NULL);
   gst_object_unref (pad);
   gst_object_unref (oggmux);

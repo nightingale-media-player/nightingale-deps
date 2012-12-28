@@ -24,8 +24,6 @@
 #include <gst/gst.h>
 #include <gst/base/gstbasesrc.h>
 
-#include <gst/audio/audio.h>
-
 G_BEGIN_DECLS
 
 
@@ -52,9 +50,6 @@ G_BEGIN_DECLS
  * @GST_AUDIO_TEST_SRC_WAVE_SINE_TAB: sine wave using a table
  * @GST_AUDIO_TEST_SRC_WAVE_TICKS: periodic ticks
  * @GST_AUDIO_TEST_SRC_WAVE_GAUSSIAN_WHITE_NOISE: white (zero mean) Gaussian noise;  volume sets the standard deviation of the noise in units of the range of values of the sample type, e.g. volume=0.1 produces noise with a standard deviation of 0.1*32767=3277 with 16-bit integer samples, or 0.1*1.0=0.1 with floating-point samples.
- * @GST_AUDIO_TEST_SRC_WAVE_RED_NOISE: red (brownian) noise
- * @GST_AUDIO_TEST_SRC_WAVE_BLUE_NOISE: spectraly inverted pink noise
- * @GST_AUDIO_TEST_SRC_WAVE_VIOLET_NOISE: spectraly inverted red (brownian) noise
  *
  * Different types of supported sound waves.
  */
@@ -68,11 +63,8 @@ typedef enum {
   GST_AUDIO_TEST_SRC_WAVE_PINK_NOISE,
   GST_AUDIO_TEST_SRC_WAVE_SINE_TAB,
   GST_AUDIO_TEST_SRC_WAVE_TICKS,
-  GST_AUDIO_TEST_SRC_WAVE_GAUSSIAN_WHITE_NOISE,
-  GST_AUDIO_TEST_SRC_WAVE_RED_NOISE,
-  GST_AUDIO_TEST_SRC_WAVE_BLUE_NOISE,
-  GST_AUDIO_TEST_SRC_WAVE_VIOLET_NOISE
-} GstAudioTestSrcWave;
+  GST_AUDIO_TEST_SRC_WAVE_GAUSSIAN_WHITE_NOISE
+} GstAudioTestSrcWave; 
 
 #define PINK_MAX_RANDOM_ROWS   (30)
 #define PINK_RANDOM_BITS       (16)
@@ -86,9 +78,13 @@ typedef struct {
   gdouble    scalar;        /* Used to scale within range of -1.0 to +1.0 */
 } GstPinkNoise;
 
-typedef struct {
-  gdouble    state;         /* noise state */
-} GstRedNoise;
+typedef enum {
+  GST_AUDIO_TEST_SRC_FORMAT_NONE = -1,
+  GST_AUDIO_TEST_SRC_FORMAT_S16 = 0,
+  GST_AUDIO_TEST_SRC_FORMAT_S32,
+  GST_AUDIO_TEST_SRC_FORMAT_F32,
+  GST_AUDIO_TEST_SRC_FORMAT_F64
+} GstAudioTestSrcFormat;
 
 typedef struct _GstAudioTestSrc GstAudioTestSrc;
 typedef struct _GstAudioTestSrcClass GstAudioTestSrcClass;
@@ -109,11 +105,14 @@ struct _GstAudioTestSrc {
   GstAudioTestSrcWave wave;
   gdouble volume;
   gdouble freq;
-
+    
   /* audio parameters */
-  GstAudioInfo info;
+  gint channels;
+  gint samplerate;
   gint samples_per_buffer;
-
+  gint sample_size;
+  GstAudioTestSrcFormat format;
+  
   /*< private >*/
   gboolean tags_pushed;			/* send tags just once ? */
   GstClockTimeDiff timestamp_offset;    /* base offset */
@@ -125,13 +124,10 @@ struct _GstAudioTestSrc {
   gboolean eos_reached;
   gint generate_samples_per_buffer;	/* used to generate a partial buffer */
   gboolean can_activate_pull;
-  gboolean reverse;                  /* play backwards */
-
+  
   /* waveform specific context data */
-  GRand *gen;               /* random number generator */
   gdouble accumulator;			/* phase angle */
   GstPinkNoise pink;
-  GstRedNoise red;
   gdouble wave_table[1024];
 };
 

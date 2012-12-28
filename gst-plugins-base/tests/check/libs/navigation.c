@@ -26,7 +26,7 @@
 
 #include <gst/check/gstcheck.h>
 
-#include <gst/video/navigation.h>
+#include <gst/interfaces/navigation.h>
 
 #include <string.h>
 
@@ -51,19 +51,18 @@ struct TestElementClass
   GstElementClass parent_class;
 };
 
-GType test_element_get_type (void);
-
 static void init_interface (GType type);
+static void gst_implements_interface_init (GstImplementsInterfaceClass * klass);
 static void nav_send_event (GstNavigation * navigation,
     GstStructure * structure);
 
-G_DEFINE_TYPE_WITH_CODE (TestElement, test_element, GST_TYPE_ELEMENT,
-    init_interface (g_define_type_id));
+GST_BOILERPLATE_FULL (TestElement, test_element, GstElement, GST_TYPE_ELEMENT,
+    init_interface);
 
 static void
-test_element_navigation_interface_init (GstNavigationInterface * iface)
+test_element_navigation_interface_init (GstNavigationInterface * klass)
 {
-  iface->send_event = nav_send_event;
+  klass->send_event = nav_send_event;
 }
 
 static void
@@ -74,9 +73,21 @@ init_interface (GType type)
     NULL,
     NULL,
   };
+  static const GInterfaceInfo implements_iface_info = {
+    (GInterfaceInitFunc) gst_implements_interface_init,
+    NULL,
+    NULL,
+  };
 
+  g_type_add_interface_static (type, GST_TYPE_IMPLEMENTS_INTERFACE,
+      &implements_iface_info);
   g_type_add_interface_static (type, GST_TYPE_NAVIGATION,
       &navigation_iface_info);
+}
+
+static void
+test_element_base_init (gpointer klass)
+{
 }
 
 static void
@@ -84,8 +95,24 @@ test_element_class_init (TestElementClass * klass)
 {
 }
 
+static gboolean
+test_element_interface_supported (GstImplementsInterface * ifacE,
+    GType interface_type)
+{
+  if (interface_type == GST_TYPE_NAVIGATION)
+    return TRUE;
+
+  return FALSE;
+}
+
 static void
-test_element_init (TestElement * this)
+gst_implements_interface_init (GstImplementsInterfaceClass * klass)
+{
+  klass->supported = test_element_interface_supported;
+}
+
+static void
+test_element_init (TestElement * this, TestElementClass * klass)
 {
 }
 

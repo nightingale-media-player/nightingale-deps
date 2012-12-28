@@ -1,23 +1,54 @@
 # Czech translations of gst-plugins-base.
-# Copyright (C) 2007, 2008, 2009, 2010, 2011 the author(s) of gst-plugins-base.
+# Copyright (C) 2007, 2008, 2009 the author(s) of gst-plugins-base.
 # Copyright (C) 2004 Miloslav Trmac <mitr@volny.cz>.
 # This file is put in the public domain.
 # Miloslav Trmac <mitr@volny.cz>, 2004.
-# Petr Kovar <pknbe@volny.cz>, 2007, 2008, 2009, 2010, 2011.
+# Petr Kovar <pknbe@volny.cz>, 2007, 2008, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins-base-0.10.32.2\n"
+"Project-Id-Version: gst-plugins-base-0.10.24.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2012-12-18 00:25+0000\n"
-"PO-Revision-Date: 2011-05-29 16:49+0200\n"
+"POT-Creation-Date: 2009-10-05 13:46+0100\n"
+"PO-Revision-Date: 2009-09-21 01:21+0200\n"
 "Last-Translator: Petr Kovar <pknbe@volny.cz>\n"
 "Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
-"Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Lokalize 1.2\n"
+
+msgid "Master"
+msgstr "Master"
+
+msgid "Bass"
+msgstr "Basy"
+
+msgid "Treble"
+msgstr "Výšky"
+
+msgid "PCM"
+msgstr "PCM"
+
+msgid "Synth"
+msgstr "Syntezátor"
+
+msgid "Line-in"
+msgstr "Linkový vstup"
+
+msgid "CD"
+msgstr "CD"
+
+msgid "Microphone"
+msgstr "Mikrofon"
+
+msgid "PC Speaker"
+msgstr "PC Speaker"
+
+msgid "Playback"
+msgstr "Přehrávání"
+
+msgid "Capture"
+msgstr "Záznam"
 
 msgid "Could not open device for playback in mono mode."
 msgstr "Nezdařilo se otevření zařízení k přehrávání v režimu mono."
@@ -39,9 +70,6 @@ msgstr ""
 msgid "Could not open audio device for playback."
 msgstr "Nezdařilo se otevření zvukového zařízení k přehrávání."
 
-msgid "Error outputting to audio device. The device has been disconnected."
-msgstr ""
-
 msgid "Could not open device for recording in mono mode."
 msgstr "Nezdařilo se otevření zařízení k záznamu v režimu mono."
 
@@ -62,9 +90,6 @@ msgstr ""
 msgid "Could not open audio device for recording."
 msgstr "Nezdařilo se otevření zvukového zařízení k záznamu."
 
-msgid "Error recording from audio device. The device has been disconnected."
-msgstr ""
-
 msgid "Could not open CD device for reading."
 msgstr "Nezdařilo se otevření zařízení CD ke čtení."
 
@@ -73,6 +98,21 @@ msgstr "Nezdařilo se nalézt CD."
 
 msgid "Could not read CD."
 msgstr "Nezdařilo se přečíst CD."
+
+#, c-format
+msgid "Could not open vfs file \"%s\" for writing: %s."
+msgstr "Nezdařilo se otevření souboru vfs \"%s\" k zápisu: %s."
+
+msgid "No filename given"
+msgstr "Nezadán název souboru"
+
+#, c-format
+msgid "Could not close vfs file \"%s\"."
+msgstr "Nezdařilo se zavření souboru vfs \"%s\"."
+
+#, c-format
+msgid "Error while writing to file \"%s\"."
+msgstr "Chyba při zápisu do souboru \"%s\"."
 
 msgid "Internal data stream error."
 msgstr "Vnitřní chyba datového proudu."
@@ -83,15 +123,62 @@ msgstr ""
 "Zásuvný modul %s je vyžadován k přehrání tohoto proudu, ale není "
 "nainstalován."
 
+msgid "This appears to be a text file"
+msgstr "Zdá se, že se jedná o textový soubor"
+
 msgid "Could not determine type of stream"
 msgstr "Nezdařilo se určit typ proudu"
 
-msgid "This appears to be a text file"
-msgstr "Zdá se, že se jedná o textový soubor"
+#, c-format
+msgid "Invalid subtitle URI \"%s\", subtitles disabled."
+msgstr "Neplatné URI titulků \"%s\", titulky vypnuty."
+
+msgid "No URI specified to play from."
+msgstr "Nezadáno žádné URI, ze kterého se má přehrávat."
+
+#, c-format
+msgid "Invalid URI \"%s\"."
+msgstr "Neplatné URI \"%s\"."
+
+msgid "RTSP streams cannot be played yet."
+msgstr "Proudy RTSP zatím nemohou být přehrávány."
+
+msgid "Could not create \"decodebin\" element."
+msgstr "Nezdařilo se vytvoření prvku \"decodebin\"."
+
+msgid "Source element is invalid."
+msgstr "Zdrojový prvek je neplatný."
+
+msgid ""
+"Only a subtitle stream was detected. Either you are loading a subtitle file "
+"or some other type of text file, or the media file was not recognized."
+msgstr ""
+"Byl rozpoznán pouze proud titulků. Buď je nahráván pouze soubor titulků nebo "
+"nějaký jiný typ textového soubor, popřípadě nebyl rozpoznán multimediální "
+"soubor."
+
+msgid ""
+"You do not have a decoder installed to handle this file. You might need to "
+"install the necessary plugins."
+msgstr ""
+"K obsluze tohoto souboru není nainstalován dekodér. Patrně bude nutné "
+"nainstalovat nezbytné zásuvné moduly."
+
+msgid "This is not a media file"
+msgstr "Toto není multimediální soubor"
+
+msgid "A subtitle stream was detected, but no video stream."
+msgstr "Byl rozpoznán proud titulků, ale nikoliv obrazový proud."
+
+msgid "Both autovideosink and xvimagesink elements are missing."
+msgstr "Schází jak prvek autovideosink, tak xvimagesink."
 
 #, c-format
 msgid "Missing element '%s' - check your GStreamer installation."
 msgstr "Schází prvek \"%s\" - zkontrolujte prosím instalaci systému GStreamer."
+
+msgid "Both autoaudiosink and alsasink elements are missing."
+msgstr "Schází jak prvek autoaudiosink, tak alsasink."
 
 #, c-format
 msgid "Both autovideosink and %s elements are missing."
@@ -99,10 +186,6 @@ msgstr "Schází jak prvek autovideosink, tak %s."
 
 msgid "The autovideosink element is missing."
 msgstr "Schází prvek autovideosink."
-
-#, c-format
-msgid "Configured videosink %s is not working."
-msgstr "Nefunguje prvek videosink %s."
 
 #, c-format
 msgid "Both autovideosink and %s elements are not working."
@@ -125,29 +208,35 @@ msgid "The autoaudiosink element is missing."
 msgstr "Schází prvek autoaudiosink."
 
 #, c-format
-msgid "Configured audiosink %s is not working."
-msgstr "Nefunguje prvek audiosink %s."
-
-#, c-format
 msgid "Both autoaudiosink and %s elements are not working."
 msgstr "Nefunguje ani prvek autoaudiosink, ani %s."
 
 msgid "The autoaudiosink element is not working."
 msgstr "Nefunguje prvek autoaudiosink."
 
-msgid "Can't play a text file without video or visualizations."
-msgstr "Textový soubor nelze přehrát bez videa nebo vizualizací."
+msgid "Can't play a text file without video."
+msgstr "Textový soubor nelze přehrát bez videa."
+
+msgid "Can't display both text subtitles and subpictures."
+msgstr "Textové titulky ani podřazené obrázky nelze zobrazit."
+
+msgid "No Temp directory specified."
+msgstr "Nezadán žádný adresář Temp."
+
+#, c-format
+msgid "Could not create temp file \"%s\"."
+msgstr "Nezdařilo se vytvoření dočasného souboru \"%s\"."
+
+#, c-format
+msgid "Could not open file \"%s\" for reading."
+msgstr "Nezdařilo se otevření souboru \"%s\" ke čtení."
+
+msgid "Internal data flow error."
+msgstr "Vnitřní chyba datového toku."
 
 #, c-format
 msgid "No decoder available for type '%s'."
 msgstr "K typu \"%s\" není dostupný dekodér."
-
-msgid "No URI specified to play from."
-msgstr "Nezadáno žádné URI, ze kterého se má přehrávat."
-
-#, c-format
-msgid "Invalid URI \"%s\"."
-msgstr "Neplatné URI \"%s\"."
 
 msgid "This stream type cannot be played yet."
 msgstr "Tento typ proudu zatím nemůže být přehrán."
@@ -156,15 +245,30 @@ msgstr "Tento typ proudu zatím nemůže být přehrán."
 msgid "No URI handler implemented for \"%s\"."
 msgstr "U \"%s\" není prováděna obsluha URI."
 
-msgid "Source element is invalid."
-msgstr "Zdrojový prvek je neplatný."
+msgid "Could not create \"decodebin2\" element."
+msgstr "Nezdařilo se vytvoření prvku \"decodebin2\"."
+
+msgid "Could not create \"queue2\" element."
+msgstr "Nezdařilo se vytvoření prvku \"queue2\"."
+
+msgid "Could not create \"typefind\" element."
+msgstr "Nezdařilo se vytvoření prvku \"typefind\"."
 
 #, c-format
 msgid "Error while sending data to \"%s:%d\"."
 msgstr "Chyba při odesílání dat na \"%s:%d\"."
 
-msgid "This CD has no audio tracks"
-msgstr "Toto CD nemá žádné zvukové stopy"
+#, c-format
+msgid "Error while sending gdp header data to \"%s:%d\"."
+msgstr "Chyba při odesílání dat záhlaví gdp na \"%s:%d\"."
+
+#, c-format
+msgid "Error while sending gdp payload data to \"%s:%d\"."
+msgstr "Chyba při odesílání zátěžových dat gdp na \"%s:%d\"."
+
+#, c-format
+msgid "Connection to %s:%d refused."
+msgstr "Spojení s %s:%d bylo odmítnuto."
 
 msgid "Can't record audio fast enough"
 msgstr "Zvuk nelze zaznamenat s dostatečnou rychlostí"
@@ -202,135 +306,8 @@ msgstr "ID stopy TRM"
 msgid "MusicBrainz TRM ID"
 msgstr "ID stopy TRM MusicBrainz"
 
-msgid "capturing shutter speed"
-msgstr "rychlost závěrky záznamu"
-
-msgid "Shutter speed used when capturing an image, in seconds"
-msgstr "Rychlost závěrky při záznamu obrazu, v sekundách"
-
-msgid "capturing focal ratio"
-msgstr "ohnisková vzdálenost záznamu"
-
-msgid "Focal ratio (f-number) used when capturing the image"
-msgstr "Clonové číslo při záznamu obrazu"
-
-msgid "capturing focal length"
-msgstr "ohnisková vzdálenost záznamu"
-
-msgid "Focal length of the lens used capturing the image, in mm"
-msgstr "Ohnisková vzdálenost čoček při záznamu obrazu, v mm"
-
-msgid "capturing digital zoom ratio"
-msgstr "stupeň digitálního přiblížení záznamu"
-
-msgid "Digital zoom ratio used when capturing an image"
-msgstr "Stupeň digitálního přiblížení při záznamu obrazu"
-
-msgid "capturing iso speed"
-msgstr "rychlost ISO záznamu"
-
-msgid "The ISO speed used when capturing an image"
-msgstr "Rychlost ISO při záznamu obrazu"
-
-msgid "capturing exposure program"
-msgstr "program expozice záznamu"
-
-msgid "The exposure program used when capturing an image"
-msgstr "Program expozice při záznamu obrazu"
-
-msgid "capturing exposure mode"
-msgstr "režim expozice záznamu"
-
-msgid "The exposure mode used when capturing an image"
-msgstr "Režim expozice při záznamu obrazu"
-
-msgid "capturing exposure compensation"
-msgstr "kompenzace expozice záznamu"
-
-msgid "The exposure compensation used when capturing an image"
-msgstr "Kompenzace expozice při záznamu obrazu"
-
-msgid "capturing scene capture type"
-msgstr "typ zachycení scény záznamu"
-
-msgid "The scene capture mode used when capturing an image"
-msgstr "Typ zachycení scény při záznamu obrazu"
-
-msgid "capturing gain adjustment"
-msgstr "úprava zesílení záznamu"
-
-msgid "The overall gain adjustment applied on an image"
-msgstr "Úprava zesílení při záznamu obrazu"
-
-msgid "capturing white balance"
-msgstr "vyvážení bílé záznamu"
-
-msgid "The white balance mode set when capturing an image"
-msgstr "Režim vyvážení bílé nastavený při záznamu obrazu"
-
-msgid "capturing contrast"
-msgstr "kontrast záznamu"
-
-msgid "The direction of contrast processing applied when capturing an image"
-msgstr "Použité zpracování kontrastu při záznamu obrazu"
-
-msgid "capturing saturation"
-msgstr "sytost záznamu"
-
-msgid "The direction of saturation processing applied when capturing an image"
-msgstr "Použité zpracování sytosti při záznamu obrazu"
-
-msgid "capturing sharpness"
-msgstr "ostrost záznamu"
-
-msgid "The direction of sharpness processing applied when capturing an image"
-msgstr "Použité zpracování ostrosti při záznamu obrazu"
-
-msgid "capturing flash fired"
-msgstr "použití blesku při záznamu"
-
-msgid "If the flash fired while capturing an image"
-msgstr "Zda byl při záznamu obrazu použit blesk"
-
-msgid "capturing flash mode"
-msgstr "režim blesku při záznamu"
-
-msgid "The selected flash mode while capturing an image"
-msgstr "Režim blesku vybraný při záznamu obrazu"
-
-msgid "capturing metering mode"
-msgstr "režim měření při záznamu"
-
-msgid ""
-"The metering mode used while determining exposure for capturing an image"
-msgstr "Režim měření expozice při záznamu obrazu"
-
-msgid "capturing source"
-msgstr "zdroj záznamu"
-
-msgid "The source or type of device used for the capture"
-msgstr "Zdroj nebo typ zařízení použitého při záznamu"
-
-msgid "image horizontal ppi"
-msgstr "pixelů na palec vodorovně v obrazu"
-
-msgid "Media (image/video) intended horizontal pixel density in ppi"
-msgstr ""
-"Zamýšlená hustota pixelů multimédia (image/video) vodorovně v pixelech na "
-"palec"
-
-msgid "image vertical ppi"
-msgstr "pixelů na palec svisle v obrazu"
-
-msgid "Media (image/video) intended vertical pixel density in ppi"
-msgstr ""
-"Zamýšlená hustota pixelů multimédia (image/video) svisle v pixelech na palec"
-
-msgid "ID3v2 frame"
-msgstr ""
-
-msgid "unparsed id3v2 tag frame"
-msgstr ""
+msgid "This CD has no audio tracks"
+msgstr "Toto CD nemá žádné zvukové stopy"
 
 msgid "ID3 tag"
 msgstr "Značka ID3"
@@ -362,23 +339,11 @@ msgstr "FFMpeg v1"
 msgid "Lossless MSZH"
 msgstr "Bezeztrátové MSZH"
 
+msgid "Uncompressed Gray Image"
+msgstr "Uncompressed Gray Image"
+
 msgid "Run-length encoding"
 msgstr "RLE (Run-Length Encoding)"
-
-msgid "Subtitle"
-msgstr ""
-
-#, fuzzy
-msgid "MPL2 subtitle format"
-msgstr "Formát titulků TMPlayer"
-
-#, fuzzy
-msgid "DKS subtitle format"
-msgstr "Formát titulků Sami"
-
-#, fuzzy
-msgid "QTtext subtitle format"
-msgstr "Formát titulků Kate"
 
 msgid "Sami subtitle format"
 msgstr "Formát titulků Sami"
@@ -389,33 +354,60 @@ msgstr "Formát titulků TMPlayer"
 msgid "Kate subtitle format"
 msgstr "Formát titulků Kate"
 
-#, fuzzy
-msgid "Uncompressed video"
+msgid "Uncompressed planar YUV 4:2:0"
+msgstr "Nekomprimovaný planární YUV 4:2:0"
+
+msgid "Uncompressed planar YVU 4:2:0"
+msgstr "Nekomprimovaný planární YVU 4:2:0"
+
+msgid "Uncompressed packed YUV 4:2:2"
+msgstr "Nekomprimovaný zabalený YUV 4:2:2"
+
+msgid "Uncompressed packed YUV 4:1:0"
+msgstr "Nekomprimovaný zabalený YUV 4:1:0"
+
+msgid "Uncompressed packed YVU 4:1:0"
+msgstr "Nekomprimovaný zabalený YVU 4:1:0"
+
+msgid "Uncompressed packed YUV 4:1:1"
+msgstr "Nekomprimovaný zabalený YUV 4:1:1"
+
+msgid "Uncompressed packed YUV 4:4:4"
+msgstr "Nekomprimovaný zabalený YUV 4:4:4"
+
+msgid "Uncompressed planar YUV 4:2:2"
+msgstr "Nekomprimovaný planární YUV 4:2:2"
+
+msgid "Uncompressed planar YUV 4:1:1"
+msgstr "Nekomprimovaný planární YUV 4:1:1"
+
+msgid "Uncompressed black and white Y-plane"
+msgstr "Nekomprimovaná černá a bílá rovina Y"
+
+msgid "Uncompressed YUV"
 msgstr "Nekomprimovaný YUV"
 
-#, fuzzy
-msgid "Uncompressed gray"
-msgstr "Uncompressed Gray Image"
-
-#, fuzzy, c-format
-msgid "Uncompressed %s YUV %s"
-msgstr "Nekomprimovaný YUV"
-
-#, fuzzy, c-format
-msgid "Uncompressed %s%d-bit %s"
+#, c-format
+msgid "Uncompressed palettized %d-bit %s"
 msgstr "Nekomprimovaný paletizovaný %dbitový %s"
 
 #, c-format
 msgid "DivX MPEG-4 Version %d"
 msgstr "DivX MPEG-4, verze %d"
 
-#, fuzzy
-msgid "Uncompressed audio"
-msgstr "Nekomprimovaný YUV"
-
-#, fuzzy, c-format
-msgid "Raw %d-bit %s audio"
+#, c-format
+msgid "Raw %d-bit PCM audio"
 msgstr "Surový %dbitový zvuk PCM"
+
+msgid "Raw PCM audio"
+msgstr "Surový zvuk PCM"
+
+#, c-format
+msgid "Raw %d-bit floating-point audio"
+msgstr "Surový %dbitový zvuk s pohyblivou desetinnou čárkou"
+
+msgid "Raw floating-point audio"
+msgstr "Surový zvuk s pohyblivou desetinnou čárkou"
 
 msgid "Audio CD source"
 msgstr "Zdroj zvukového CD"
@@ -495,144 +487,17 @@ msgstr "Neznámý kodérový prvek"
 msgid "Plugin or element of unknown type"
 msgstr "Zásuvný modul nebo prvek neznámého typu"
 
-#~ msgid "Master"
-#~ msgstr "Master"
+msgid "No device specified."
+msgstr "Nezadáno zařízení."
 
-#~ msgid "Bass"
-#~ msgstr "Basy"
+#, c-format
+msgid "Device \"%s\" does not exist."
+msgstr "Zařízení \"%s\" neexistuje."
 
-#~ msgid "Treble"
-#~ msgstr "Výšky"
+#, c-format
+msgid "Device \"%s\" is already being used."
+msgstr "Zařízení \"%s\" je již používáno."
 
-#~ msgid "PCM"
-#~ msgstr "PCM"
-
-#~ msgid "Synth"
-#~ msgstr "Syntezátor"
-
-#~ msgid "Line-in"
-#~ msgstr "Linkový vstup"
-
-#~ msgid "CD"
-#~ msgstr "CD"
-
-#~ msgid "Microphone"
-#~ msgstr "Mikrofon"
-
-#~ msgid "PC Speaker"
-#~ msgstr "PC Speaker"
-
-#~ msgid "Playback"
-#~ msgstr "Přehrávání"
-
-#~ msgid "Capture"
-#~ msgstr "Záznam"
-
-#~ msgid "Connection to %s:%d refused."
-#~ msgstr "Spojení s %s:%d bylo odmítnuto."
-
-#~ msgid "Could not open vfs file \"%s\" for writing: %s."
-#~ msgstr "Nezdařilo se otevření souboru vfs \"%s\" k zápisu: %s."
-
-#~ msgid "No filename given"
-#~ msgstr "Nezadán název souboru"
-
-#~ msgid "Could not close vfs file \"%s\"."
-#~ msgstr "Nezdařilo se zavření souboru vfs \"%s\"."
-
-#~ msgid "Error while writing to file \"%s\"."
-#~ msgstr "Chyba při zápisu do souboru \"%s\"."
-
-#~ msgid "Invalid subtitle URI \"%s\", subtitles disabled."
-#~ msgstr "Neplatné URI titulků \"%s\", titulky vypnuty."
-
-#~ msgid "RTSP streams cannot be played yet."
-#~ msgstr "Proudy RTSP zatím nemohou být přehrávány."
-
-#~ msgid "Could not create \"decodebin\" element."
-#~ msgstr "Nezdařilo se vytvoření prvku \"decodebin\"."
-
-#~ msgid ""
-#~ "Only a subtitle stream was detected. Either you are loading a subtitle "
-#~ "file or some other type of text file, or the media file was not "
-#~ "recognized."
-#~ msgstr ""
-#~ "Byl rozpoznán pouze proud titulků. Buď je nahráván pouze soubor titulků "
-#~ "nebo nějaký jiný typ textového soubor, popřípadě nebyl rozpoznán "
-#~ "multimediální soubor."
-
-#~ msgid ""
-#~ "You do not have a decoder installed to handle this file. You might need "
-#~ "to install the necessary plugins."
-#~ msgstr ""
-#~ "K obsluze tohoto souboru není nainstalován dekodér. Patrně bude nutné "
-#~ "nainstalovat nezbytné zásuvné moduly."
-
-#~ msgid "This is not a media file"
-#~ msgstr "Toto není multimediální soubor"
-
-#~ msgid "A subtitle stream was detected, but no video stream."
-#~ msgstr "Byl rozpoznán proud titulků, ale nikoliv obrazový proud."
-
-#~ msgid "Both autovideosink and xvimagesink elements are missing."
-#~ msgstr "Schází jak prvek autovideosink, tak xvimagesink."
-
-#~ msgid "Both autoaudiosink and alsasink elements are missing."
-#~ msgstr "Schází jak prvek autoaudiosink, tak alsasink."
-
-#~ msgid "Error while sending gdp header data to \"%s:%d\"."
-#~ msgstr "Chyba při odesílání dat záhlaví gdp na \"%s:%d\"."
-
-#~ msgid "Error while sending gdp payload data to \"%s:%d\"."
-#~ msgstr "Chyba při odesílání zátěžových dat gdp na \"%s:%d\"."
-
-#~ msgid "Uncompressed planar YUV 4:2:0"
-#~ msgstr "Nekomprimovaný planární YUV 4:2:0"
-
-#~ msgid "Uncompressed planar YVU 4:2:0"
-#~ msgstr "Nekomprimovaný planární YVU 4:2:0"
-
-#~ msgid "Uncompressed packed YUV 4:2:2"
-#~ msgstr "Nekomprimovaný zabalený YUV 4:2:2"
-
-#~ msgid "Uncompressed packed YUV 4:1:0"
-#~ msgstr "Nekomprimovaný zabalený YUV 4:1:0"
-
-#~ msgid "Uncompressed packed YVU 4:1:0"
-#~ msgstr "Nekomprimovaný zabalený YVU 4:1:0"
-
-#~ msgid "Uncompressed packed YUV 4:1:1"
-#~ msgstr "Nekomprimovaný zabalený YUV 4:1:1"
-
-#~ msgid "Uncompressed packed YUV 4:4:4"
-#~ msgstr "Nekomprimovaný zabalený YUV 4:4:4"
-
-#~ msgid "Uncompressed planar YUV 4:2:2"
-#~ msgstr "Nekomprimovaný planární YUV 4:2:2"
-
-#~ msgid "Uncompressed planar YUV 4:1:1"
-#~ msgstr "Nekomprimovaný planární YUV 4:1:1"
-
-#~ msgid "Uncompressed black and white Y-plane"
-#~ msgstr "Nekomprimovaná černá a bílá rovina Y"
-
-#~ msgid "Raw PCM audio"
-#~ msgstr "Surový zvuk PCM"
-
-#~ msgid "Raw %d-bit floating-point audio"
-#~ msgstr "Surový %dbitový zvuk s pohyblivou desetinnou čárkou"
-
-#~ msgid "Raw floating-point audio"
-#~ msgstr "Surový zvuk s pohyblivou desetinnou čárkou"
-
-#~ msgid "No device specified."
-#~ msgstr "Nezadáno zařízení."
-
-#~ msgid "Device \"%s\" does not exist."
-#~ msgstr "Zařízení \"%s\" neexistuje."
-
-#~ msgid "Device \"%s\" is already being used."
-#~ msgstr "Zařízení \"%s\" je již používáno."
-
-#~ msgid "Could not open device \"%s\" for reading and writing."
-#~ msgstr "Zařízení \"%s\" se nezdařilo otevřít ke čtení a k zápisu."
+#, c-format
+msgid "Could not open device \"%s\" for reading and writing."
+msgstr "Zařízení \"%s\" se nezdařilo otevřít ke čtení a k zápisu."

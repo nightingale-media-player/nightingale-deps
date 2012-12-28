@@ -21,8 +21,7 @@
 #define __GST_VIDEO_SCALE_H__
 
 #include <gst/gst.h>
-#include <gst/video/video.h>
-#include <gst/video/gstvideofilter.h>
+#include <gst/base/gstbasetransform.h>
 
 #include "vs_image.h"
 
@@ -41,23 +40,19 @@ GST_DEBUG_CATEGORY_EXTERN (video_scale_debug);
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_VIDEO_SCALE))
 #define GST_IS_VIDEO_SCALE_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_VIDEO_SCALE))
-#define GST_VIDEO_SCALE_CAST(obj)       ((GstVideoScale *)(obj))
-
 
 /**
  * GstVideoScaleMethod:
  * @GST_VIDEO_SCALE_NEAREST: use nearest neighbour scaling (fast and ugly)
  * @GST_VIDEO_SCALE_BILINEAR: use bilinear scaling (slower but prettier).
  * @GST_VIDEO_SCALE_4TAP: use a 4-tap filter for scaling (slow).
- * @GST_VIDEO_SCALE_LANCZOS: use a multitap Lanczos filter for scaling (slow).
  *
  * The videoscale method to use.
  */
 typedef enum {
   GST_VIDEO_SCALE_NEAREST,
   GST_VIDEO_SCALE_BILINEAR,
-  GST_VIDEO_SCALE_4TAP,
-  GST_VIDEO_SCALE_LANCZOS
+  GST_VIDEO_SCALE_4TAP
 } GstVideoScaleMethod;
 
 typedef struct _GstVideoScale GstVideoScale;
@@ -69,29 +64,31 @@ typedef struct _GstVideoScaleClass GstVideoScaleClass;
  * Opaque data structure
  */
 struct _GstVideoScale {
-  GstVideoFilter element;
+  GstBaseTransform element;
 
-  /* properties */
   GstVideoScaleMethod method;
-  gboolean add_borders;
-  double sharpness;
-  double sharpen;
-  gboolean dither;
-  int submethod;
-  double envelope;
 
-  gint borders_h;
-  gint borders_w;
-
+  /* negotiated stuff */
+  int format;
+  VSImage src;
+  VSImage dest;
+  guint src_size;
+  guint dest_size;
+  gint to_width;
+  gint to_height;
+  gint from_width;
+  gint from_height;
+  gboolean interlaced;
+  
   /*< private >*/
   guint8 *tmp_buf;
 };
 
 struct _GstVideoScaleClass {
-  GstVideoFilterClass parent_class;
+  GstBaseTransformClass parent_class;
 };
 
-G_GNUC_INTERNAL GType gst_video_scale_get_type (void);
+GType gst_video_scale_get_type(void);
 
 G_END_DECLS
 

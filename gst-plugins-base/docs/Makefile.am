@@ -12,6 +12,7 @@ SUBDIRS = design libs $(PLUGIN_DOCS_DIRS)
 DIST_SUBDIRS = design libs plugins
 
 EXTRA_DIST = \
+	design-audiosinks.txt \
         version.entities.in
 
 upload:

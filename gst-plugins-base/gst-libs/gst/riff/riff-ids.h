@@ -43,11 +43,8 @@ G_BEGIN_DECLS
 #define GST_RIFF_TAG_strf GST_MAKE_FOURCC ('s','t','r','f')
 #define GST_RIFF_TAG_vedt GST_MAKE_FOURCC ('v','e','d','t')
 #define GST_RIFF_TAG_JUNK GST_MAKE_FOURCC ('J','U','N','K')
-#define GST_RIFF_TAG_JUNQ GST_MAKE_FOURCC ('J','U','N','Q')
 #define GST_RIFF_TAG_idx1 GST_MAKE_FOURCC ('i','d','x','1')
 #define GST_RIFF_TAG_dmlh GST_MAKE_FOURCC ('d','m','l','h')
-#define GST_RIFF_TAG_ID32 GST_MAKE_FOURCC ('I','D','3','2')
-#define GST_RIFF_TAG_IDVX GST_MAKE_FOURCC ('I','D','V','X')
 /* WAV stuff */
 #define GST_RIFF_TAG_fmt  GST_MAKE_FOURCC ('f','m','t',' ')
 #define GST_RIFF_TAG_data GST_MAKE_FOURCC ('d','a','t','a')
@@ -57,7 +54,6 @@ G_BEGIN_DECLS
 #define GST_RIFF_TAG_BEXT GST_MAKE_FOURCC ('B','E','X','T')
 #define GST_RIFF_TAG_fact GST_MAKE_FOURCC ('f','a','c','t')
 #define GST_RIFF_TAG_acid GST_MAKE_FOURCC ('a','c','i','d')
-#define GST_RIFF_TAG_labl GST_MAKE_FOURCC ('l','a','b','l')
 
 /* LIST types */
 #define GST_RIFF_LIST_movi GST_MAKE_FOURCC ('m','o','v','i')
@@ -97,16 +93,13 @@ G_BEGIN_DECLS
 #define GST_RIFF_INFO_IMED GST_MAKE_FOURCC ('I','M','E','D') /* medium */
 #define GST_RIFF_INFO_INAM GST_MAKE_FOURCC ('I','N','A','M') /* name */
 #define GST_RIFF_INFO_IPLT GST_MAKE_FOURCC ('I','P','L','T') /* palette setting */
-#define GST_RIFF_INFO_IPRD GST_MAKE_FOURCC ('I','P','R','D') /* product (album) */
+#define GST_RIFF_INFO_IPRD GST_MAKE_FOURCC ('I','P','R','D') /* product */
 #define GST_RIFF_INFO_ISBJ GST_MAKE_FOURCC ('I','S','B','J') /* subject */
 #define GST_RIFF_INFO_ISFT GST_MAKE_FOURCC ('I','S','F','T') /* software */
 #define GST_RIFF_INFO_ISHP GST_MAKE_FOURCC ('I','S','H','P') /* sharpness */
 #define GST_RIFF_INFO_ISRC GST_MAKE_FOURCC ('I','S','R','C') /* source */
 #define GST_RIFF_INFO_ISRF GST_MAKE_FOURCC ('I','S','R','F') /* source form */
 #define GST_RIFF_INFO_ITCH GST_MAKE_FOURCC ('I','T','C','H') /* technician(s) */
-
-#define GST_RIFF_INFO_IAAR GST_MAKE_FOURCC ('I','A','A','R') /* album artist */
-#define GST_RIFF_INFO_ITRK GST_MAKE_FOURCC ('I','T','R','K') /* track number */
 
 /*********Chunk Names***************/
 #define GST_RIFF_FF00 GST_MAKE_FOURCC (0xFF,0xFF,0x00,0x00)
@@ -450,11 +443,7 @@ typedef struct _gst_riff_strf_auds {       /* == WaveHeader (?) */
   guint32 rate;
   guint32 av_bps;
   guint16 blockalign;
-  guint16 bits_per_sample;
-#if 0
-  /* missing field */
-  guint16 extra_size;
-#endif
+  guint16 size;
 } gst_riff_strf_auds;
 
 typedef struct _gst_riff_strf_iavs {    

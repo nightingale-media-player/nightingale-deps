@@ -79,8 +79,8 @@ GST_IS_APP_SINK_CLASS
 
 <SECTION>
 <FILE>element-alsamixer</FILE>
-<TITLE>alsamixer</TITLE>
 GstAlsaMixerElement
+<TITLE>alsamixer</TITLE>
 <SUBSECTION Standard>
 GstAlsaMixerElementClass
 GST_ALSA_MIXER_ELEMENT
@@ -93,8 +93,8 @@ GST_IS_ALSA_MIXER_ELEMENT_CLASS
 
 <SECTION>
 <FILE>element-alsasink</FILE>
-<TITLE>alsasink</TITLE>
 GstAlsaSink
+<TITLE>alsasink</TITLE>
 <SUBSECTION Standard>
 GstAlsaSinkClass
 GST_ALSA_SINK
@@ -111,8 +111,8 @@ gst_alsasink_get_type
 
 <SECTION>
 <FILE>element-alsasrc</FILE>
-<TITLE>alsasrc</TITLE>
 GstAlsaSrc
+<TITLE>alsasrc</TITLE>
 <SUBSECTION Standard>
 GstAlsaSrcClass
 GST_ALSA_SRC
@@ -151,20 +151,6 @@ audio_convert_clean_fmt
 audio_convert_convert
 audio_convert_get_sizes
 audio_convert_prepare_context
-</SECTION>
-
-<SECTION>
-<FILE>element-audiorate</FILE>
-<TITLE>audiorate</TITLE>
-GstAudioRate
-<SUBSECTION Standard>
-GST_AUDIO_RATE
-GST_IS_AUDIO_RATE
-GST_TYPE_AUDIO_RATE
-gst_audio_rate_get_type
-GST_AUDIO_RATE_CLASS
-GST_IS_AUDIO_RATE_CLASS
-GstAudioRateClass
 </SECTION>
 
 <SECTION>
@@ -241,43 +227,58 @@ GstDecodeBin
 </SECTION>
 
 <SECTION>
-<FILE>element-decodebin</FILE>
-<TITLE>decodebin</TITLE>
-GstDecodeBin
+<FILE>element-decodebin2</FILE>
+<TITLE>decodebin2</TITLE>
+GstDecodeBin2
 <SUBSECTION Standard>
 </SECTION>
 
 <SECTION>
-<FILE>element-encodebin</FILE>
-<TITLE>encodebin</TITLE>
-GstEncodeBin
+<FILE>element-ffmpegcolorspace</FILE>
+<TITLE>ffmpegcolorspace</TITLE>
+GstFFMpegCsp
 <SUBSECTION Standard>
-GST_ENCODE_BIN
-GST_ENCODE_BIN_CLASS
-GST_IS_ENCODE_BIN
-GST_IS_ENCODE_BIN_CLASS
-GST_TYPE_ENCODE_BIN
-GstEncodeBinClass
-gst_encode_bin_get_type
+GST_FFMPEGCSP
+GST_FFMPEGCSP_CLASS
+GST_IS_FFMPEGCSP
+GST_IS_FFMPEGCSP_CLASS
+GST_TYPE_FFMPEGCSP
+GstFFMpegCspClass
 </SECTION>
 
-
+<SECTION>
+<FILE>element-gdpdepay</FILE>
+GstGDPDepay
+<TITLE>gdpdepay</TITLE>
+<SUBSECTION Standard>
+GstGDPDepayClass
+GstGDPDepayState
+GST_GDP_DEPAY
+GST_GDP_DEPAY_CLASS
+GST_IS_GDP_DEPAY
+GST_IS_GDP_DEPAY_CLASS
+GST_TYPE_GDP_DEPAY
+gst_gdp_depay_plugin_init
+</SECTION>
 
 <SECTION>
-<FILE>element-videoconvert</FILE>
-<TITLE>videoconvert</TITLE>
-GstVideoConvert
+<FILE>element-gdppay</FILE>
+GstGDPPay
+<TITLE>gdppay</TITLE>
 <SUBSECTION Standard>
-GST_VIDEO_CONVERT
-GST_VIDEO_CONVERT_CLASS
-GST_IS_VIDEO_CONVERT_CLASS
-GstVideoConvertClass
+GstGDPPayClass
+GST_GDP_PAY
+GST_GDP_PAY_CLASS
+GST_IS_GDP_PAY
+GST_IS_GDP_PAY_CLASS
+GST_TYPE_GDP_PAY
+gst_gdp_pay_plugin_init
 </SECTION>
 
 <SECTION>
 <FILE>element-giosink</FILE>
-<TITLE>giosink</TITLE>
 GstGioSink
+<TITLE>giosink</TITLE>
 <SUBSECTION Standard>
 GstGioSinkClass
 GST_GIO_SINK
@@ -290,8 +291,8 @@ gst_gio_sink_get_type
 
 <SECTION>
 <FILE>element-giosrc</FILE>
-<TITLE>giosrc</TITLE>
 GstGioSrc
+<TITLE>giosrc</TITLE>
 <SUBSECTION Standard>
 GstGioSrcClass
 GST_GIO_SRC
@@ -304,8 +305,8 @@ gst_gio_src_get_type
 
 <SECTION>
 <FILE>element-giostreamsink</FILE>
-<TITLE>giostreamsink</TITLE>
 GstGioStreamSink
+<TITLE>giostreamsink</TITLE>
 <SUBSECTION Standard>
 GstGioStreamSinkClass
 GST_GIO_STREAM_SINK
@@ -318,8 +319,8 @@ gst_gio_stream_sink_get_type
 
 <SECTION>
 <FILE>element-giostreamsrc</FILE>
-<TITLE>giostreamsrc</TITLE>
 GstGioStreamSrc
+<TITLE>giostreamsrc</TITLE>
 <SUBSECTION Standard>
 GstGioStreamSrcClass
 GST_GIO_STREAM_SRC
@@ -365,39 +366,32 @@ gst_tcp_protocol_get_type
 </SECTION>
 
 <SECTION>
-<FILE>element-multisocketsink</FILE>
-<TITLE>multisocketsink</TITLE>
-GstMultiSocketSink
-GstRecoverPolicy
-GstSyncMethod
-GstClientStatus
-GstTCPProtocol
-GstTCPUnitType
+<FILE>element-gnomevfssink</FILE>
+<TITLE>gnomevfssink</TITLE>
+GstGnomeVFSSink
 <SUBSECTION Standard>
-CLIENTS_LOCK
-CLIENTS_LOCK_FREE
-CLIENTS_LOCK_INIT
-CLIENTS_UNLOCK
-GST_TYPE_MULTI_SOCKET_SINK
-GST_IS_MULTI_SOCKET_SINK
-GST_IS_MULTI_SOCKET_SINK_CLASS
-GST_MULTI_SOCKET_SINK
-GST_MULTI_SOCKET_SINK_CLASS
-GST_MULTI_SOCKET_SINK_GET_CLASS
-GstTCPClient
-GstMultiSocketSinkFlags
-GstMultiSocketSinkClass
-gst_multi_socket_sink_add
-gst_multi_socket_sink_add_full
-gst_multi_socket_sink_clear
-gst_multi_socket_sink_get_stats
-gst_multi_socket_sink_get_type
-gst_multi_socket_sink_remove
-gst_multi_socket_sink_remove_flush
-GST_TYPE_TCP_PROTOCOL
-gst_tcp_protocol_get_type
+GstGnomeVFSSinkClass
+GST_GNOME_VFS_SINK_CLASS
+GST_TYPE_GNOME_VFS_SINK
+GST_IS_GNOME_VFS_SINK
+gst_gnome_vfs_sink_get_type
+GST_IS_GNOME_VFS_SINK_CLASS
+GST_GNOME_VFS_SINK
 </SECTION>
 
+<SECTION>
+<FILE>element-gnomevfssrc</FILE>
+<TITLE>gnomevfssrc</TITLE>
+GstGnomeVFSSrc
+<SUBSECTION Standard>
+GST_GNOME_VFS_SRC
+GST_GNOME_VFS_SRC_CLASS
+GST_IS_GNOME_VFS_SRC
+GST_IS_GNOME_VFS_SRC_CLASS
+GST_TYPE_GNOME_VFS_SRC
+GstGnomeVFSSrcClass
+gst_gnome_vfs_src_get_type
+</SECTION>
 
 <SECTION>
 <FILE>element-oggdemux</FILE>
@@ -437,9 +431,9 @@ GstOggMuxClass
 </SECTION>
 
 <SECTION>
-<FILE>element-playbin</FILE>
-<TITLE>playbin</TITLE>
-GstPlayBin
+<FILE>gstplaybasebin</FILE>
+<TITLE>GstPlayBaseBin</TITLE>
+GstPlayBaseBin
 <SUBSECTION Standard>
 </SECTION>
 
@@ -447,29 +441,17 @@ GstPlayBin
 <FILE>element-playbin</FILE>
 <TITLE>playbin</TITLE>
 GstPlayBin
+<SUBSECTION Standard>
+</SECTION>
+
+<SECTION>
+<FILE>element-playbin2</FILE>
+<TITLE>playbin2</TITLE>
+GstPlayBin2
 GstPlayFlags
 <SUBSECTION Standard>
 gst_play_flags_get_type
 GST_TYPE_PLAY_FLAGS
-</SECTION>
-
-<SECTION>
-<FILE>element-subtitleoverlay</FILE>
-<TITLE>subtitleoverlay</TITLE>
-GstSubtitleOverlay
-<SUBSECTION Standard>
-GstSubtitleOverlayClass
-
-GST_IS_SUBTITLE_OVERLAY
-GST_IS_SUBTITLE_OVERLAY_CLASS
-GST_SUBTITLE_OVERLAY
-GST_SUBTITLE_OVERLAY_CAST
-GST_SUBTITLE_OVERLAY_CLASS
-GST_SUBTITLE_OVERLAY_LOCK
-GST_SUBTITLE_OVERLAY_UNLOCK
-GST_TYPE_SUBTITLE_OVERLAY
-gst_subtitle_overlay_plugin_init
-gst_subtitle_overlay_get_type
 </SECTION>
 
 <SECTION>
@@ -502,6 +484,7 @@ GST_IS_TCP_CLIENT_SINK_CLASS
 GST_IS_TCP_CLIENT_SINK
 </SECTION>
 
+
 <SECTION>
 <FILE>element-tcpserversrc</FILE>
 <TITLE>tcpserversrc</TITLE>
@@ -533,6 +516,12 @@ GST_IS_TCP_SERVER_SINK
 TCP_DEFAULT_HOST
 TCP_DEFAULT_PORT
 TCP_HIGHEST_PORT
+gst_tcp_gdp_read_buffer
+gst_tcp_gdp_read_caps
+gst_tcp_gdp_read_event
+gst_tcp_gdp_write_buffer
+gst_tcp_gdp_write_caps
+gst_tcp_gdp_write_event
 gst_tcp_host_to_ip
 gst_tcp_read_buffer
 gst_tcp_socket_close
@@ -699,8 +688,8 @@ gst_volume_get_type
 
 <SECTION>
 <FILE>element-vorbisdec</FILE>
-<TITLE>vorbisdec</TITLE>
 GstVorbisDec
+<TITLE>vorbisdec</TITLE>
 <SUBSECTION Standard>
 GstVorbisDecClass
 GST_VORBIS_DEC

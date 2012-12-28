@@ -23,7 +23,6 @@
 
 
 #include <gst/gst.h>
-#include <gst/audio/gstaudioencoder.h>
 
 #include <vorbis/codec.h>
 
@@ -49,11 +48,14 @@ typedef struct _GstVorbisEncClass GstVorbisEncClass;
  * Opaque data structure.
  */
 struct _GstVorbisEnc {
-  GstAudioEncoder element;
+  GstElement       element;
 
+  GstPad          *sinkpad;
+  GstPad          *srcpad;
+
+  GstCaps         *srccaps;
   GstCaps         *sinkcaps;
 
-  /* codec */
   vorbis_info      vi; /* struct that stores all the static vorbis bitstream
                                                             settings */
   vorbis_comment   vc; /* struct that stores all the user comments */
@@ -61,7 +63,6 @@ struct _GstVorbisEnc {
   vorbis_dsp_state vd; /* central working state for the packet->PCM decoder */
   vorbis_block     vb; /* local working space for packet->PCM decode */
 
-  /* properties */
   gboolean         managed;
   gint             bitrate;
   gint             min_bitrate;
@@ -73,8 +74,14 @@ struct _GstVorbisEnc {
   gint             frequency;
 
   guint64          samples_in;
-  guint64          samples_out;
   guint64          bytes_out;
+  GstClockTime     next_ts;
+  GstClockTime     expected_ts;
+  gboolean         next_discont;
+  guint64          granulepos_offset;
+  gint64           subgranule_offset;
+  GstSegment       segment;
+  GstClockTime     initial_ts;
 
   GstTagList *     tags;
 
@@ -84,7 +91,7 @@ struct _GstVorbisEnc {
 };
 
 struct _GstVorbisEncClass {
-  GstAudioEncoderClass parent_class;
+  GstElementClass parent_class;
 };
 
 GType gst_vorbis_enc_get_type(void);

@@ -44,7 +44,11 @@
  * SECTION:gstrtsprange
  * @short_description: dealing with time ranges
  *  
+ * <refsect2>
+ * <para>
  * Provides helper functions to deal with time ranges.
+ * </para>
+ * </refsect2>
  *  
  * Last reviewed on 2007-07-25 (0.10.14)
  */
@@ -54,20 +58,6 @@
 #include <string.h>
 
 #include "gstrtsprange.h"
-
-static gdouble
-gst_strtod (const gchar * dstr)
-{
-  gchar s[G_ASCII_DTOSTR_BUF_SIZE] = { 0, };
-
-  /* canonicalise floating point string so we can handle float strings
-   * in the form "24.930" or "24,930" irrespective of the current locale.
-   * We should always be getting floats in 24.930 format with a floating point,
-   * but let's accept malformed ones as well, easy mistake to make after all */
-  g_strlcpy (s, dstr, sizeof (s));
-  g_strdelimit (s, ",", '.');
-  return g_ascii_strtod (s, NULL);
-}
 
 /* npt-time     =   "now" | npt-sec | npt-hhmmss
  * npt-sec      =   1*DIGIT [ "." *DIGIT ]
@@ -84,16 +74,20 @@ parse_npt_time (const gchar * str, GstRTSPTime * time)
   } else if (str[0] == '\0') {
     time->type = GST_RTSP_TIME_END;
   } else if (strstr (str, ":")) {
+    gfloat seconds;
     gint hours, mins;
 
-    sscanf (str, "%2d:%2d:", &hours, &mins);
-    str = strchr (str, ':') + 1;
-    str = strchr (str, ':') + 1;
+    sscanf (str, "%2d:%2d:%f", &hours, &mins, &seconds);
+
     time->type = GST_RTSP_TIME_SECONDS;
-    time->seconds = ((hours * 60) + mins) * 60 + gst_strtod (str);
+    time->seconds = ((hours * 60) + mins) * 60 + seconds;
   } else {
+    gfloat seconds;
+
+    sscanf (str, "%f", &seconds);
+
     time->type = GST_RTSP_TIME_SECONDS;
-    time->seconds = gst_strtod (str);
+    time->seconds = seconds;
   }
   return GST_RTSP_OK;
 }
@@ -190,14 +184,11 @@ invalid:
 static gboolean
 npt_time_string (const GstRTSPTime * time, GString * string)
 {
-  gchar dstrbuf[G_ASCII_DTOSTR_BUF_SIZE] = { 0, };
   gboolean res = TRUE;;
 
   switch (time->type) {
     case GST_RTSP_TIME_SECONDS:
-      /* need to format floating point value strings as in C locale */
-      g_ascii_dtostr (dstrbuf, G_ASCII_DTOSTR_BUF_SIZE, time->seconds);
-      g_string_append (string, dstrbuf);
+      g_string_append_printf (string, "%f", time->seconds);
       break;
     case GST_RTSP_TIME_NOW:
       g_string_append (string, "now");
@@ -235,6 +226,8 @@ done:
  * Convert @range into a string representation.
  *
  * Returns: The string representation of @range. g_free() after usage.
+ *
+ * Since: 0.10.23
  */
 gchar *
 gst_rtsp_range_to_string (const GstRTSPTimeRange * range)
@@ -274,7 +267,7 @@ gst_rtsp_range_to_string (const GstRTSPTimeRange * range)
  * gst_rtsp_range_free:
  * @range: a #GstRTSPTimeRange
  *
- * Free the memory allocated by @range.
+ * Free the memory alocated by @range.
  */
 void
 gst_rtsp_range_free (GstRTSPTimeRange * range)

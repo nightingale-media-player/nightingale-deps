@@ -3,13 +3,30 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstfft</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
-<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-ffft.html" title="FFT Library">
 <link rel="prev" href="gstreamer-ffft.html" title="FFT Library">
 <link rel="next" href="gst-plugins-base-libs-gstffts16.html" title="gstffts16">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
+<link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
+<link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
+<link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
+<link rel="chapter" href="gstreamer-floatcast.html" title="FloatCast Library">
+<link rel="chapter" href="gstreamer-interfaces.html" title="Interfaces Library">
+<link rel="chapter" href="gstreamer-netbuffer.html" title="Network Buffer Library">
+<link rel="chapter" href="gstreamer-riff.html" title="Riff Media Library">
+<link rel="chapter" href="gstreamer-rtp.html" title="RTP Library">
+<link rel="chapter" href="gstreamer-rtsp.html" title="RTSP Library">
+<link rel="chapter" href="gstreamer-sdp.html" title="SDP Library">
+<link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
+<link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
+<link rel="chapter" href="gstreamer-video.html" title="Video Library">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
+<link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -17,16 +34,16 @@
 <td><a accesskey="p" href="gstreamer-ffft.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="gstreamer-ffft.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Base Plugins 1.0 Library Reference Manual</th>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstffts16.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-base-libs-gstfft.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstfft.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstfft.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry">
+<div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstfft"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -38,24 +55,31 @@
 <div class="refsynopsisdiv">
 <a name="gst-plugins-base-libs-gstfft.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
+
 #include &lt;gst/fft/gstfft.h&gt;
 
 enum                <a class="link" href="gst-plugins-base-libs-gstfft.html#GstFFTWindow" title="enum GstFFTWindow">GstFFTWindow</a>;
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="gst-plugins-base-libs-gstfft.html#gst-fft-next-fast-length" title="gst_fft_next_fast_length ()">gst_fft_next_fast_length</a>            (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> n</code></em>);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                <a class="link" href="gst-plugins-base-libs-gstfft.html#gst-fft-next-fast-length" title="gst_fft_next_fast_length ()">gst_fft_next_fast_length</a>            (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> n);
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstfft.description"></a><h2>Description</h2>
 <p>
 This library includes general definitions and functions, useful for
-all typed FFT classes.
+all typed FFT classes.</p>
+<p>
 </p>
 </div>
-<div class="refsect1">
+<div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstfft.details"></a><h2>Details</h2>
-<div class="refsect2">
+<div class="refsect2" lang="en">
 <a name="GstFFTWindow"></a><h3>enum GstFFTWindow</h3>
-<pre class="programlisting">typedef enum {
+<pre class="programlisting">typedef enum
+{
   GST_FFT_WINDOW_RECTANGULAR,
   GST_FFT_WINDOW_HAMMING,
   GST_FFT_WINDOW_HANN,
@@ -64,58 +88,67 @@ all typed FFT classes.
 } GstFFTWindow;
 </pre>
 <p>
-The various window functions available.
+The various window functions available.</p>
+<p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-FFT-WINDOW-RECTANGULAR:CAPS"></a><span class="term"><code class="literal">GST_FFT_WINDOW_RECTANGULAR</code></span></p></td>
-<td>Rectangular window
+<td><p><a name="GST-FFT-WINDOW-RECTANGULAR--CAPS"></a><span class="term"><code class="literal">GST_FFT_WINDOW_RECTANGULAR</code></span></p></td>
+<td> Rectangular window
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-FFT-WINDOW-HAMMING:CAPS"></a><span class="term"><code class="literal">GST_FFT_WINDOW_HAMMING</code></span></p></td>
-<td>Hamming window
+<td><p><a name="GST-FFT-WINDOW-HAMMING--CAPS"></a><span class="term"><code class="literal">GST_FFT_WINDOW_HAMMING</code></span></p></td>
+<td> Hamming window
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-FFT-WINDOW-HANN:CAPS"></a><span class="term"><code class="literal">GST_FFT_WINDOW_HANN</code></span></p></td>
-<td>Hann (sometimes also called Hanning) window
+<td><p><a name="GST-FFT-WINDOW-HANN--CAPS"></a><span class="term"><code class="literal">GST_FFT_WINDOW_HANN</code></span></p></td>
+<td> Hann (sometimes also called Hanning) window
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-FFT-WINDOW-BARTLETT:CAPS"></a><span class="term"><code class="literal">GST_FFT_WINDOW_BARTLETT</code></span></p></td>
-<td>Bartlett window
+<td><p><a name="GST-FFT-WINDOW-BARTLETT--CAPS"></a><span class="term"><code class="literal">GST_FFT_WINDOW_BARTLETT</code></span></p></td>
+<td> Bartlett window
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-FFT-WINDOW-BLACKMAN:CAPS"></a><span class="term"><code class="literal">GST_FFT_WINDOW_BLACKMAN</code></span></p></td>
-<td>Blackman window
+<td><p><a name="GST-FFT-WINDOW-BLACKMAN--CAPS"></a><span class="term"><code class="literal">GST_FFT_WINDOW_BLACKMAN</code></span></p></td>
+<td> Blackman window
 </td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" lang="en">
 <a name="gst-fft-next-fast-length"></a><h3>gst_fft_next_fast_length ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                gst_fft_next_fast_length            (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> n</code></em>);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                gst_fft_next_fast_length            (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> n);</pre>
 <p>
 Returns the next number to <em class="parameter"><code>n</code></em> that is entirely a product
 of 2, 3 and 5. Using this as the <em class="parameter"><code>len</code></em> parameter for
-the different GstFFT types will provide the best performance.
+the different GstFFT types will provide the best performance.</p>
+<p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>n</code></em> :</span></p></td>
-<td>Number for which the next fast length should be returned</td>
+<td> Number for which the next fast length should be returned
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>the next fast FFT length.</td>
+<td> the next fast FFT length.
+
+</td>
 </tr>
 </tbody>
 </table></div>
@@ -124,6 +157,6 @@ the different GstFFT types will provide the best performance.
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

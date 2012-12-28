@@ -1,14 +1,12 @@
 plugin_LTLIBRARIES = libgstpango.la
 
 noinst_HEADERS = \
-        gstbasetextoverlay.h \
 	gstclockoverlay.h \
 	gsttextoverlay.h \
 	gsttextrender.h \
 	gsttimeoverlay.h
 
 libgstpango_la_SOURCES = \
-	gstbasetextoverlay.c \
 	gstclockoverlay.c \
 	gsttextoverlay.c \
 	gsttextrender.c \
@@ -20,7 +18,8 @@ libgstpango_la_CFLAGS = \
 	$(GST_CFLAGS) \
 	$(PANGO_CFLAGS)
 libgstpango_la_LIBADD = \
-	$(top_builddir)/gst-libs/gst/video/libgstvideo-$(GST_API_VERSION).la \
+	$(GST_PLUGINS_BASE_LIBS) \
+	$(top_builddir)/gst-libs/gst/video/libgstvideo-$(GST_MAJORMINOR).la \
 	$(GST_BASE_LIBS) \
 	$(GST_LIBS) \
 	$(PANGO_LIBS)

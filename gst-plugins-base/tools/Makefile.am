@@ -1,31 +1,26 @@
+bin_SCRIPTS = \
+	gst-visualise-@GST_MAJORMINOR@
+
 man_MANS = \
-        gst-discoverer-@GST_API_VERSION@.1
+        gst-visualise-@GST_MAJORMINOR@.1
 
-bin_PROGRAMS = \
-	gst-discoverer-@GST_API_VERSION@
+CLEANFILES = $(man_MANS) $(bin_SCRIPTS)
 
-gst_discoverer_@GST_API_VERSION@_SOURCES = gst-discoverer.c
+EXTRA_DIST = \
+	gst-visualise-m.m gst-visualise.1.in
 
-CLEANFILES = $(bin_SCRIPTS) $(bin_PROGRAMS)
+# generate versioned scripts from templates
+%-@GST_MAJORMINOR@: %-m.m
+	sed -e s,\@GST_MAJORMINOR\@,@GST_MAJORMINOR@,g $< > $@
+	chmod +x $@
 
-EXTRA_DIST = gst-discoverer-1.0.1
+# generate man pages
+%-@GST_MAJORMINOR@.1: %.1.in
+	sed \
+                -e s,gst-visualise,gst-visualise-@GST_MAJORMINOR@,g \
+                $< >$@
 
+all: all-am chmod
 
-LDADD = $(top_builddir)/gst-libs/gst/pbutils/libgstpbutils-@GST_API_VERSION@.la \
-	$(top_builddir)/gst-libs/gst/tag/libgsttag-@GST_API_VERSION@.la \
-	$(top_builddir)/gst-libs/gst/audio/libgstaudio-@GST_API_VERSION@.la \
-	$(top_builddir)/gst-libs/gst/video/libgstvideo-@GST_API_VERSION@.la \
-	$(GST_BASE_LIBS) $(GST_LIBS)
-
-AM_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS)
-
-Android.mk: Makefile.am
-	androgenizer -:PROJECT gst-discoverer-@GST_API_VERSION@ \
-	 -:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
-	 -:EXECUTABLE gst-discoverer-@GST_API_VERSION@ -:TAGS eng debug \
-	 -:SOURCES $(gst_discoverer_@GST_API_VERSION@_SOURCES) \
-	 -:CFLAGS $(DEFS) $(AM_CFLAGS) \
-	 -:LDFLAGS -lgstpbutils-@GST_API_VERSION@ -lgstvideo-@GST_API_VERSION@ \
-	 	   $(GST_BASE_LIBS) $(GST_LIBS) \
-	 -:PASSTHROUGH LOCAL_ARM_MODE:=arm \
-	> $@
+chmod: $(bin_SCRIPTS)
+	chmod +x $^

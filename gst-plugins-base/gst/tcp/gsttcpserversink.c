@@ -26,9 +26,9 @@
  * <title>Example launch line</title>
  * |[
  * # server:
- * gst-launch fdsrc fd=1 ! tcpserversink port=3000
+ * gst-launch fdsrc fd=1 ! tcpserversink protocol=none port=3000
  * # client:
- * gst-launch tcpclientsrc port=3000 ! fdsink fd=2
+ * gst-launch tcpclientsrc protocol=none port=3000 ! fdsink fd=2
  * ]| 
  * </refsect2>
  */
@@ -39,97 +39,100 @@
 #include <gst/gst-i18n-plugin.h>
 #include <string.h>             /* memset */
 
+#include <sys/ioctl.h>
+
+#ifdef HAVE_FIONREAD_IN_SYS_FILIO
+#include <sys/filio.h>
+#endif
+
 #include "gsttcp.h"
 #include "gsttcpserversink.h"
 #include "gsttcp-marshal.h"
 
 #define TCP_BACKLOG             5
 
+/* elementfactory information */
+static const GstElementDetails gst_tcp_server_sink_details =
+GST_ELEMENT_DETAILS ("TCP server sink",
+    "Sink/Network",
+    "Send data as a server over the network via TCP",
+    "Thomas Vander Stichele <thomas at apestaart dot org>");
+
 GST_DEBUG_CATEGORY_STATIC (tcpserversink_debug);
 #define GST_CAT_DEFAULT (tcpserversink_debug)
 
 enum
 {
-  PROP_0,
-  PROP_HOST,
-  PROP_PORT,
-  PROP_CURRENT_PORT
+  ARG_0,
+  ARG_HOST,
+  ARG_PORT,
 };
 
 static void gst_tcp_server_sink_finalize (GObject * gobject);
 
-static gboolean gst_tcp_server_sink_init_send (GstMultiHandleSink * this);
-static gboolean gst_tcp_server_sink_close (GstMultiHandleSink * this);
-static void gst_tcp_server_sink_removed (GstMultiHandleSink * sink,
-    GstMultiSinkHandle handle);
+static gboolean gst_tcp_server_sink_handle_wait (GstMultiFdSink * sink,
+    GstPoll * set);
+static gboolean gst_tcp_server_sink_init_send (GstMultiFdSink * this);
+static gboolean gst_tcp_server_sink_close (GstMultiFdSink * this);
+static void gst_tcp_server_sink_removed (GstMultiFdSink * sink, int fd);
 
 static void gst_tcp_server_sink_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_tcp_server_sink_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
-#define gst_tcp_server_sink_parent_class parent_class
-G_DEFINE_TYPE (GstTCPServerSink, gst_tcp_server_sink,
-    GST_TYPE_MULTI_SOCKET_SINK);
+
+GST_BOILERPLATE (GstTCPServerSink, gst_tcp_server_sink, GstMultiFdSink,
+    GST_TYPE_MULTI_FD_SINK);
+
+
+static void
+gst_tcp_server_sink_base_init (gpointer g_class)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+
+  gst_element_class_set_details (element_class, &gst_tcp_server_sink_details);
+}
 
 static void
 gst_tcp_server_sink_class_init (GstTCPServerSinkClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
-  GstMultiHandleSinkClass *gstmultihandlesink_class;
+  GstMultiFdSinkClass *gstmultifdsink_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
-  gstmultihandlesink_class = (GstMultiHandleSinkClass *) klass;
+  gstmultifdsink_class = (GstMultiFdSinkClass *) klass;
 
   gobject_class->set_property = gst_tcp_server_sink_set_property;
   gobject_class->get_property = gst_tcp_server_sink_get_property;
   gobject_class->finalize = gst_tcp_server_sink_finalize;
 
-  g_object_class_install_property (gobject_class, PROP_HOST,
-      g_param_spec_string ("host", "host", "The host/IP to listen on",
+  g_object_class_install_property (gobject_class, ARG_HOST,
+      g_param_spec_string ("host", "host", "The host/IP to send the packets to",
           TCP_DEFAULT_HOST, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-  g_object_class_install_property (gobject_class, PROP_PORT,
-      g_param_spec_int ("port", "port",
-          "The port to listen to (0=random available port)",
+  g_object_class_install_property (gobject_class, ARG_PORT,
+      g_param_spec_int ("port", "port", "The port to send the packets to",
           0, TCP_HIGHEST_PORT, TCP_DEFAULT_PORT,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-  /**
-   * GstTCPServerSink:current-port:
-   *
-   * The port number the socket is currently bound to. Applications can use
-   * this property to retrieve the port number actually bound to in case
-   * the port requested was 0 (=allocate a random available port).
-   *
-   * Since: 1.0.2
-   **/
-  g_object_class_install_property (gobject_class, PROP_CURRENT_PORT,
-      g_param_spec_int ("current-port", "current-port",
-          "The port number the socket is currently bound to", 0,
-          TCP_HIGHEST_PORT, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
-  gst_element_class_set_static_metadata (gstelement_class,
-      "TCP server sink", "Sink/Network",
-      "Send data as a server over the network via TCP",
-      "Thomas Vander Stichele <thomas at apestaart dot org>");
-
-  gstmultihandlesink_class->init = gst_tcp_server_sink_init_send;
-  gstmultihandlesink_class->close = gst_tcp_server_sink_close;
-  gstmultihandlesink_class->removed = gst_tcp_server_sink_removed;
+  gstmultifdsink_class->init = gst_tcp_server_sink_init_send;
+  gstmultifdsink_class->wait = gst_tcp_server_sink_handle_wait;
+  gstmultifdsink_class->close = gst_tcp_server_sink_close;
+  gstmultifdsink_class->removed = gst_tcp_server_sink_removed;
 
   GST_DEBUG_CATEGORY_INIT (tcpserversink_debug, "tcpserversink", 0, "TCP sink");
 }
 
 static void
-gst_tcp_server_sink_init (GstTCPServerSink * this)
+gst_tcp_server_sink_init (GstTCPServerSink * this,
+    GstTCPServerSinkClass * klass)
 {
   this->server_port = TCP_DEFAULT_PORT;
   /* should support as minimum 576 for IPV4 and 1500 for IPV6 */
   /* this->mtu = 1500; */
   this->host = g_strdup (TCP_DEFAULT_HOST);
 
-  this->server_socket = NULL;
+  this->server_sock.fd = -1;
 }
 
 static void
@@ -137,11 +140,7 @@ gst_tcp_server_sink_finalize (GObject * gobject)
 {
   GstTCPServerSink *this = GST_TCP_SERVER_SINK (gobject);
 
-  if (this->server_socket)
-    g_object_unref (this->server_socket);
-  this->server_socket = NULL;
   g_free (this->host);
-  this->host = NULL;
 
   G_OBJECT_CLASS (parent_class)->finalize (gobject);
 }
@@ -151,32 +150,26 @@ gst_tcp_server_sink_finalize (GObject * gobject)
 static gboolean
 gst_tcp_server_sink_handle_server_read (GstTCPServerSink * sink)
 {
-  GSocket *client_socket;
-  GError *err = NULL;
+  /* new client */
+  int client_sock_fd;
+  struct sockaddr_in client_address;
+  unsigned int client_address_len;
 
-  /* wait on server socket for connections */
-  client_socket =
-      g_socket_accept (sink->server_socket, sink->element.cancellable, &err);
-  if (!client_socket)
+  /* For some stupid reason, client_address and client_address_len has to be
+   * zeroed */
+  memset (&client_address, 0, sizeof (client_address));
+  client_address_len = 0;
+
+  client_sock_fd =
+      accept (sink->server_sock.fd, (struct sockaddr *) &client_address,
+      &client_address_len);
+  if (client_sock_fd == -1)
     goto accept_failed;
 
-  gst_multi_handle_sink_add (GST_MULTI_HANDLE_SINK (sink),
-      (GstMultiSinkHandle) client_socket);
+  gst_multi_fd_sink_add (GST_MULTI_FD_SINK (sink), client_sock_fd);
 
-#ifndef GST_DISABLE_GST_DEBUG
-  {
-    GInetSocketAddress *addr =
-        G_INET_SOCKET_ADDRESS (g_socket_get_remote_address (client_socket,
-            NULL));
-    gchar *ip =
-        g_inet_address_to_string (g_inet_socket_address_get_address (addr));
-
-    GST_DEBUG_OBJECT (sink, "added new client ip %s:%u with socket %p",
-        ip, g_inet_socket_address_get_port (addr), client_socket);
-
-    g_free (ip);
-  }
-#endif
+  GST_DEBUG_OBJECT (sink, "added new client ip %s with fd %d",
+      inet_ntoa (client_address.sin_addr), client_sock_fd);
 
   return TRUE;
 
@@ -184,45 +177,45 @@ gst_tcp_server_sink_handle_server_read (GstTCPServerSink * sink)
 accept_failed:
   {
     GST_ELEMENT_ERROR (sink, RESOURCE, OPEN_WRITE, (NULL),
-        ("Could not accept client on server socket %p: %s",
-            sink->server_socket, err->message));
-    g_clear_error (&err);
+        ("Could not accept client on server socket %d: %s (%d)",
+            sink->server_sock.fd, g_strerror (errno), errno));
     return FALSE;
   }
 }
 
 static void
-gst_tcp_server_sink_removed (GstMultiHandleSink * sink,
-    GstMultiSinkHandle handle)
+gst_tcp_server_sink_removed (GstMultiFdSink * sink, int fd)
 {
-  GError *err = NULL;
+#ifndef GST_DISABLE_GST_DEBUG
+  GstTCPServerSink *this = GST_TCP_SERVER_SINK (sink);
+#endif
 
-  GST_DEBUG_OBJECT (sink, "closing socket");
-
-  if (!g_socket_close (handle.socket, &err)) {
-    GST_ERROR_OBJECT (sink, "Failed to close socket: %s", err->message);
-    g_clear_error (&err);
+  GST_LOG_OBJECT (this, "closing fd %d", fd);
+  if (close (fd) < 0) {
+    GST_WARNING_OBJECT (this, "error closing fd %d: %s", fd,
+        g_strerror (errno));
   }
 }
 
 static gboolean
-gst_tcp_server_sink_socket_condition (GSocket * socket, GIOCondition condition,
-    GstTCPServerSink * sink)
+gst_tcp_server_sink_handle_wait (GstMultiFdSink * sink, GstPoll * set)
 {
-  if ((condition & G_IO_ERR)) {
-    goto error;
-  } else if ((condition & G_IO_IN) || (condition & G_IO_PRI)) {
-    if (!gst_tcp_server_sink_handle_server_read (sink))
-      return FALSE;
-  }
+  GstTCPServerSink *this = GST_TCP_SERVER_SINK (sink);
 
+  if (gst_poll_fd_can_read (set, &this->server_sock)) {
+    /* handle new client connection on server socket */
+    if (!gst_tcp_server_sink_handle_server_read (this))
+      goto connection_failed;
+  }
   return TRUE;
 
-error:
-  GST_ELEMENT_ERROR (sink, RESOURCE, READ, (NULL),
-      ("client connection failed"));
-
-  return FALSE;
+  /* ERRORS */
+connection_failed:
+  {
+    GST_ELEMENT_ERROR (this, RESOURCE, READ, (NULL),
+        ("client connection failed: %s", g_strerror (errno)));
+    return FALSE;
+  }
 }
 
 static void
@@ -231,10 +224,11 @@ gst_tcp_server_sink_set_property (GObject * object, guint prop_id,
 {
   GstTCPServerSink *sink;
 
+  g_return_if_fail (GST_IS_TCP_SERVER_SINK (object));
   sink = GST_TCP_SERVER_SINK (object);
 
   switch (prop_id) {
-    case PROP_HOST:
+    case ARG_HOST:
       if (!g_value_get_string (value)) {
         g_warning ("host property cannot be NULL");
         break;
@@ -242,9 +236,10 @@ gst_tcp_server_sink_set_property (GObject * object, guint prop_id,
       g_free (sink->host);
       sink->host = g_strdup (g_value_get_string (value));
       break;
-    case PROP_PORT:
+    case ARG_PORT:
       sink->server_port = g_value_get_int (value);
       break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -257,18 +252,17 @@ gst_tcp_server_sink_get_property (GObject * object, guint prop_id,
 {
   GstTCPServerSink *sink;
 
+  g_return_if_fail (GST_IS_TCP_SERVER_SINK (object));
   sink = GST_TCP_SERVER_SINK (object);
 
   switch (prop_id) {
-    case PROP_HOST:
+    case ARG_HOST:
       g_value_set_string (value, sink->host);
       break;
-    case PROP_PORT:
+    case ARG_PORT:
       g_value_set_int (value, sink->server_port);
       break;
-    case PROP_CURRENT_PORT:
-      g_value_set_int (value, g_atomic_int_get (&sink->current_port));
-      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -278,171 +272,111 @@ gst_tcp_server_sink_get_property (GObject * object, guint prop_id,
 
 /* create a socket for sending to remote machine */
 static gboolean
-gst_tcp_server_sink_init_send (GstMultiHandleSink * parent)
+gst_tcp_server_sink_init_send (GstMultiFdSink * parent)
 {
+  int ret;
   GstTCPServerSink *this = GST_TCP_SERVER_SINK (parent);
-  GError *err = NULL;
-  GInetAddress *addr;
-  GSocketAddress *saddr;
-  GResolver *resolver;
-  gint bound_port;
 
-  /* look up name if we need to */
-  addr = g_inet_address_new_from_string (this->host);
-  if (!addr) {
-    GList *results;
-
-    resolver = g_resolver_get_default ();
-
-    results =
-        g_resolver_lookup_by_name (resolver, this->host,
-        this->element.cancellable, &err);
-    if (!results)
-      goto name_resolve;
-    addr = G_INET_ADDRESS (g_object_ref (results->data));
-
-    g_resolver_free_addresses (results);
-    g_object_unref (resolver);
-  }
-#ifndef GST_DISABLE_GST_DEBUG
-  {
-    gchar *ip = g_inet_address_to_string (addr);
-
-    GST_DEBUG_OBJECT (this, "IP address for host %s is %s", this->host, ip);
-    g_free (ip);
-  }
-#endif
-  saddr = g_inet_socket_address_new (addr, this->server_port);
-  g_object_unref (addr);
-
-  /* create the server listener socket */
-  this->server_socket =
-      g_socket_new (g_socket_address_get_family (saddr), G_SOCKET_TYPE_STREAM,
-      G_SOCKET_PROTOCOL_TCP, &err);
-  if (!this->server_socket)
+  /* create sending server socket */
+  if ((this->server_sock.fd = socket (AF_INET, SOCK_STREAM, 0)) == -1)
     goto no_socket;
 
-  GST_DEBUG_OBJECT (this, "opened sending server socket with socket %p",
-      this->server_socket);
+  GST_DEBUG_OBJECT (this, "opened sending server socket with fd %d",
+      this->server_sock.fd);
 
-  g_socket_set_blocking (this->server_socket, FALSE);
+  /* make address reusable */
+  ret = 1;
+  if (setsockopt (this->server_sock.fd, SOL_SOCKET, SO_REUSEADDR,
+          (void *) &ret, sizeof (ret)) < 0)
+    goto reuse_failed;
+
+  /* keep connection alive; avoids SIGPIPE during write */
+  ret = 1;
+  if (setsockopt (this->server_sock.fd, SOL_SOCKET, SO_KEEPALIVE,
+          (void *) &ret, sizeof (ret)) < 0)
+    goto keepalive_failed;
+
+  /* name the socket */
+  memset (&this->server_sin, 0, sizeof (this->server_sin));
+  this->server_sin.sin_family = AF_INET;        /* network socket */
+  this->server_sin.sin_port = htons (this->server_port);        /* on port */
+  this->server_sin.sin_addr.s_addr = htonl (INADDR_ANY);        /* for hosts */
 
   /* bind it */
   GST_DEBUG_OBJECT (this, "binding server socket to address");
-  if (!g_socket_bind (this->server_socket, saddr, TRUE, &err))
+  ret = bind (this->server_sock.fd, (struct sockaddr *) &this->server_sin,
+      sizeof (this->server_sin));
+  if (ret)
     goto bind_failed;
 
-  g_object_unref (saddr);
+  /* set the server socket to nonblocking */
+  fcntl (this->server_sock.fd, F_SETFL, O_NONBLOCK);
 
-  GST_DEBUG_OBJECT (this, "listening on server socket");
-  g_socket_set_listen_backlog (this->server_socket, TCP_BACKLOG);
-
-  if (!g_socket_listen (this->server_socket, &err))
+  GST_DEBUG_OBJECT (this, "listening on server socket %d with queue of %d",
+      this->server_sock.fd, TCP_BACKLOG);
+  if (listen (this->server_sock.fd, TCP_BACKLOG) == -1)
     goto listen_failed;
 
-  GST_DEBUG_OBJECT (this, "listened on server socket %p", this->server_socket);
+  GST_DEBUG_OBJECT (this,
+      "listened on server socket %d, returning from connection setup",
+      this->server_sock.fd);
 
-  if (this->server_port == 0) {
-    saddr = g_socket_get_local_address (this->server_socket, NULL);
-    bound_port = g_inet_socket_address_get_port ((GInetSocketAddress *) saddr);
-    g_object_unref (saddr);
-  } else {
-    bound_port = this->server_port;
-  }
-
-  GST_DEBUG_OBJECT (this, "listening on port %d", bound_port);
-
-  g_atomic_int_set (&this->current_port, bound_port);
-
-  g_object_notify (G_OBJECT (this), "current-port");
-
-  this->server_source =
-      g_socket_create_source (this->server_socket,
-      G_IO_IN | G_IO_OUT | G_IO_PRI | G_IO_ERR | G_IO_HUP,
-      this->element.cancellable);
-  g_source_set_callback (this->server_source,
-      (GSourceFunc) gst_tcp_server_sink_socket_condition, gst_object_ref (this),
-      (GDestroyNotify) gst_object_unref);
-  g_source_attach (this->server_source, this->element.main_context);
+  gst_poll_add_fd (parent->fdset, &this->server_sock);
+  gst_poll_fd_ctl_read (parent->fdset, &this->server_sock, TRUE);
 
   return TRUE;
 
   /* ERRORS */
 no_socket:
   {
-    GST_ELEMENT_ERROR (this, RESOURCE, OPEN_READ, (NULL),
-        ("Failed to create socket: %s", err->message));
-    g_clear_error (&err);
-    g_object_unref (saddr);
+    GST_ELEMENT_ERROR (this, RESOURCE, OPEN_WRITE, (NULL), GST_ERROR_SYSTEM);
     return FALSE;
   }
-name_resolve:
+reuse_failed:
   {
-    if (g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
-      GST_DEBUG_OBJECT (this, "Cancelled name resolval");
-    } else {
-      GST_ELEMENT_ERROR (this, RESOURCE, OPEN_READ, (NULL),
-          ("Failed to resolve host '%s': %s", this->host, err->message));
-    }
-    g_clear_error (&err);
-    g_object_unref (resolver);
+    gst_tcp_socket_close (&this->server_sock);
+    GST_ELEMENT_ERROR (this, RESOURCE, SETTINGS, (NULL),
+        ("Could not setsockopt: %s", g_strerror (errno)));
     return FALSE;
   }
-bind_failed:
+keepalive_failed:
   {
-    if (g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
-      GST_DEBUG_OBJECT (this, "Cancelled binding");
-    } else {
-      GST_ELEMENT_ERROR (this, RESOURCE, OPEN_READ, (NULL),
-          ("Failed to bind on host '%s:%d': %s", this->host, this->server_port,
-              err->message));
-    }
-    g_clear_error (&err);
-    g_object_unref (saddr);
-    gst_tcp_server_sink_close (GST_MULTI_HANDLE_SINK (&this->element));
+    gst_tcp_socket_close (&this->server_sock);
+    GST_ELEMENT_ERROR (this, RESOURCE, SETTINGS, (NULL),
+        ("Could not setsockopt: %s", g_strerror (errno)));
     return FALSE;
   }
 listen_failed:
   {
-    if (g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
-      GST_DEBUG_OBJECT (this, "Cancelled listening");
-    } else {
-      GST_ELEMENT_ERROR (this, RESOURCE, OPEN_READ, (NULL),
-          ("Failed to listen on host '%s:%d': %s", this->host,
-              this->server_port, err->message));
+    gst_tcp_socket_close (&this->server_sock);
+    GST_ELEMENT_ERROR (this, RESOURCE, OPEN_READ, (NULL),
+        ("Could not listen on server socket: %s", g_strerror (errno)));
+    return FALSE;
+  }
+bind_failed:
+  {
+    gst_tcp_socket_close (&this->server_sock);
+    switch (errno) {
+      default:
+        GST_ELEMENT_ERROR (this, RESOURCE, OPEN_READ, (NULL),
+            ("bind on port %d failed: %s", this->server_port,
+                g_strerror (errno)));
+        break;
     }
-    g_clear_error (&err);
-    gst_tcp_server_sink_close (GST_MULTI_HANDLE_SINK (&this->element));
     return FALSE;
   }
 }
 
 static gboolean
-gst_tcp_server_sink_close (GstMultiHandleSink * parent)
+gst_tcp_server_sink_close (GstMultiFdSink * parent)
 {
   GstTCPServerSink *this = GST_TCP_SERVER_SINK (parent);
 
-  if (this->server_source) {
-    g_source_destroy (this->server_source);
-    g_source_unref (this->server_source);
-    this->server_source = NULL;
+  if (this->server_sock.fd != -1) {
+    gst_poll_remove_fd (parent->fdset, &this->server_sock);
+
+    close (this->server_sock.fd);
+    this->server_sock.fd = -1;
   }
-
-  if (this->server_socket) {
-    GError *err = NULL;
-
-    GST_DEBUG_OBJECT (this, "closing socket");
-
-    if (!g_socket_close (this->server_socket, &err)) {
-      GST_ERROR_OBJECT (this, "Failed to close socket: %s", err->message);
-      g_clear_error (&err);
-    }
-    g_object_unref (this->server_socket);
-    this->server_socket = NULL;
-
-    g_atomic_int_set (&this->current_port, 0);
-    g_object_notify (G_OBJECT (this), "current-port");
-  }
-
   return TRUE;
 }

@@ -25,6 +25,7 @@
 
 #include "gstalsasink.h"
 #include "gstalsasrc.h"
+#include "gstalsamixerelement.h"
 
 #include <gst/gst-i18n-plugin.h>
 
@@ -57,6 +58,9 @@ plugin_init (GstPlugin * plugin)
 {
   int err;
 
+  if (!gst_element_register (plugin, "alsamixer", GST_RANK_NONE,
+          GST_TYPE_ALSA_MIXER_ELEMENT))
+    return FALSE;
   if (!gst_element_register (plugin, "alsasrc", GST_RANK_PRIMARY,
           GST_TYPE_ALSA_SRC))
     return FALSE;
@@ -66,7 +70,7 @@ plugin_init (GstPlugin * plugin)
 
   GST_DEBUG_CATEGORY_INIT (alsa_debug, "alsa", 0, "alsa plugins");
 
-#ifdef ENABLE_NLS
+#if ENABLE_NLS
   GST_DEBUG ("binding text domain %s to locale dir %s", GETTEXT_PACKAGE,
       LOCALEDIR);
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
@@ -82,6 +86,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    alsa,
+    "alsa",
     "ALSA plugin library",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

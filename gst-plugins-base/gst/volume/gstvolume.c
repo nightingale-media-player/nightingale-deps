@@ -4,7 +4,6 @@
  * GStreamer
  * Copyright (C) 1999-2001 Erik Walthinsen <omega@cse.ogi.edu>
  * Copyright (C) 2005 Andy Wingo <wingo@pobox.com>
- * Copyright (C) 2010 Sebastian Dröge <sebastian.droege@collabora.co.uk>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -45,27 +44,27 @@
 #include <gst/gst.h>
 #include <gst/base/gstbasetransform.h>
 #include <gst/audio/audio.h>
+#include <gst/interfaces/mixer.h>
+#include <gst/controller/gstcontroller.h>
+#include <gst/audio/audio.h>
 #include <gst/audio/gstaudiofilter.h>
 
-#ifdef HAVE_ORC
-#include <orc/orcfunctions.h>
-#else
-#define orc_memset memset
+#ifdef HAVE_LIBOIL
+#include <liboil/liboil.h>
 #endif
 
-#include "gstvolumeorc.h"
 #include "gstvolume.h"
 
 /* some defines for audio processing */
 /* the volume factor is a range from 0.0 to (arbitrary) VOLUME_MAX_DOUBLE = 10.0
  * we map 1.0 to VOLUME_UNITY_INT*
  */
-#define VOLUME_UNITY_INT8            8  /* internal int for unity 2^(8-5) */
-#define VOLUME_UNITY_INT8_BIT_SHIFT  3  /* number of bits to shift for unity */
-#define VOLUME_UNITY_INT16           2048       /* internal int for unity 2^(16-5) */
-#define VOLUME_UNITY_INT16_BIT_SHIFT 11 /* number of bits to shift for unity */
-#define VOLUME_UNITY_INT24           524288     /* internal int for unity 2^(24-5) */
-#define VOLUME_UNITY_INT24_BIT_SHIFT 19 /* number of bits to shift for unity */
+#define VOLUME_UNITY_INT8            32 /* internal int for unity 2^(8-3) */
+#define VOLUME_UNITY_INT8_BIT_SHIFT  5  /* number of bits to shift for unity */
+#define VOLUME_UNITY_INT16           8192       /* internal int for unity 2^(16-3) */
+#define VOLUME_UNITY_INT16_BIT_SHIFT 13 /* number of bits to shift for unity */
+#define VOLUME_UNITY_INT24           2097152    /* internal int for unity 2^(24-3) */
+#define VOLUME_UNITY_INT24_BIT_SHIFT 21 /* number of bits to shift for unity */
 #define VOLUME_UNITY_INT32           134217728  /* internal int for unity 2^(32-5) */
 #define VOLUME_UNITY_INT32_BIT_SHIFT 27
 #define VOLUME_MAX_DOUBLE            10.0
@@ -77,6 +76,9 @@
 #define VOLUME_MIN_INT24             -8388608
 #define VOLUME_MAX_INT32             G_MAXINT32
 #define VOLUME_MIN_INT32             G_MININT32
+
+/* number of steps we use for the mixer interface to go from 0.0 to 1.0 */
+# define VOLUME_STEPS           100
 
 #define GST_CAT_DEFAULT gst_volume_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
@@ -98,20 +100,70 @@ enum
   PROP_VOLUME
 };
 
-#if G_BYTE_ORDER == G_LITTLE_ENDIAN
 #define ALLOWED_CAPS \
-    GST_AUDIO_CAPS_MAKE ("{ F32LE, F64LE, S8, S16LE, S24LE, S32LE }") \
-    ", layout = (string) interleaved"
-#else
-#define ALLOWED_CAPS \
-    GST_AUDIO_CAPS_MAKE ("{ F32BE, F64BE, S8, S16BE, S24BE, S32BE }") \
-    ", layout = (string) { interleaved, non-interleaved }"
-#endif
+        "audio/x-raw-float, " \
+        "rate = (int) [ 1, MAX ], " \
+        "channels = (int) [ 1, MAX ], " \
+        "endianness = (int) BYTE_ORDER, " \
+        "width = (int) {32, 64}; " \
+        "audio/x-raw-int, " \
+        "channels = (int) [ 1, MAX ], " \
+        "rate = (int) [ 1,  MAX ], " \
+        "endianness = (int) BYTE_ORDER, " \
+        "width = (int) 8, " \
+        "depth = (int) 8, " \
+        "signed = (bool) TRUE; " \
+        "audio/x-raw-int, " \
+        "channels = (int) [ 1, MAX ], " \
+        "rate = (int) [ 1,  MAX ], " \
+        "endianness = (int) BYTE_ORDER, " \
+        "width = (int) 16, " \
+        "depth = (int) 16, " \
+        "signed = (bool) TRUE; " \
+        "audio/x-raw-int, " \
+        "channels = (int) [ 1, MAX ], " \
+        "rate = (int) [ 1,  MAX ], " \
+        "endianness = (int) BYTE_ORDER, " \
+        "width = (int) 24, " \
+        "depth = (int) 24, " \
+        "signed = (bool) TRUE; " \
+        "audio/x-raw-int, " \
+        "channels = (int) [ 1, MAX ], " \
+        "rate = (int) [ 1,  MAX ], " \
+        "endianness = (int) BYTE_ORDER, " \
+        "width = (int) 32, " \
+	"depth = (int) 32, " \
+	"signed = (bool) TRUE"
 
-#define gst_volume_parent_class parent_class
-G_DEFINE_TYPE_WITH_CODE (GstVolume, gst_volume,
-    GST_TYPE_AUDIO_FILTER,
-    G_IMPLEMENT_INTERFACE (GST_TYPE_STREAM_VOLUME, NULL));
+static void gst_volume_interface_init (GstImplementsInterfaceClass * klass);
+static void gst_volume_mixer_init (GstMixerClass * iface);
+
+#define _init_interfaces(type)                                          \
+  {                                                                     \
+    static const GInterfaceInfo voliface_info = {                       \
+      (GInterfaceInitFunc) gst_volume_interface_init,                   \
+      NULL,                                                             \
+      NULL                                                              \
+    };                                                                  \
+    static const GInterfaceInfo volmixer_info = {                       \
+      (GInterfaceInitFunc) gst_volume_mixer_init,                       \
+      NULL,                                                             \
+      NULL                                                              \
+    };                                                                  \
+    static const GInterfaceInfo svol_info = {                           \
+      NULL,                                                             \
+      NULL,                                                             \
+      NULL                                                              \
+    };                                                                  \
+                                                                        \
+    g_type_add_interface_static (type, GST_TYPE_IMPLEMENTS_INTERFACE,   \
+        &voliface_info);                                                \
+    g_type_add_interface_static (type, GST_TYPE_MIXER, &volmixer_info); \
+    g_type_add_interface_static (type, GST_TYPE_STREAM_VOLUME, &svol_info); \
+  }
+
+GST_BOILERPLATE_FULL (GstVolume, gst_volume, GstAudioFilter,
+    GST_TYPE_AUDIO_FILTER, _init_interfaces);
 
 static void volume_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
@@ -122,155 +174,212 @@ static void volume_before_transform (GstBaseTransform * base,
     GstBuffer * buffer);
 static GstFlowReturn volume_transform_ip (GstBaseTransform * base,
     GstBuffer * outbuf);
-static gboolean volume_stop (GstBaseTransform * base);
 static gboolean volume_setup (GstAudioFilter * filter,
-    const GstAudioInfo * info);
+    GstRingBufferSpec * format);
 
-static void volume_process_double (GstVolume * self, gpointer bytes,
+static void volume_process_double (GstVolume * this, gpointer bytes,
     guint n_bytes);
-static void volume_process_controlled_double (GstVolume * self, gpointer bytes,
-    gdouble * volume, guint channels, guint n_bytes);
-static void volume_process_float (GstVolume * self, gpointer bytes,
+static void volume_process_float (GstVolume * this, gpointer bytes,
     guint n_bytes);
-static void volume_process_controlled_float (GstVolume * self, gpointer bytes,
-    gdouble * volume, guint channels, guint n_bytes);
-static void volume_process_int32 (GstVolume * self, gpointer bytes,
+static void volume_process_int32 (GstVolume * this, gpointer bytes,
     guint n_bytes);
-static void volume_process_int32_clamp (GstVolume * self, gpointer bytes,
+static void volume_process_int32_clamp (GstVolume * this, gpointer bytes,
     guint n_bytes);
-static void volume_process_controlled_int32_clamp (GstVolume * self,
-    gpointer bytes, gdouble * volume, guint channels, guint n_bytes);
-static void volume_process_int24 (GstVolume * self, gpointer bytes,
+static void volume_process_int24 (GstVolume * this, gpointer bytes,
     guint n_bytes);
-static void volume_process_int24_clamp (GstVolume * self, gpointer bytes,
+static void volume_process_int24_clamp (GstVolume * this, gpointer bytes,
     guint n_bytes);
-static void volume_process_controlled_int24_clamp (GstVolume * self,
-    gpointer bytes, gdouble * volume, guint channels, guint n_bytes);
-static void volume_process_int16 (GstVolume * self, gpointer bytes,
+static void volume_process_int16 (GstVolume * this, gpointer bytes,
     guint n_bytes);
-static void volume_process_int16_clamp (GstVolume * self, gpointer bytes,
+static void volume_process_int16_clamp (GstVolume * this, gpointer bytes,
     guint n_bytes);
-static void volume_process_controlled_int16_clamp (GstVolume * self,
-    gpointer bytes, gdouble * volume, guint channels, guint n_bytes);
-static void volume_process_int8 (GstVolume * self, gpointer bytes,
+static void volume_process_int8 (GstVolume * this, gpointer bytes,
     guint n_bytes);
-static void volume_process_int8_clamp (GstVolume * self, gpointer bytes,
+static void volume_process_int8_clamp (GstVolume * this, gpointer bytes,
     guint n_bytes);
-static void volume_process_controlled_int8_clamp (GstVolume * self,
-    gpointer bytes, gdouble * volume, guint channels, guint n_bytes);
 
 
 /* helper functions */
 
 static gboolean
-volume_choose_func (GstVolume * self, const GstAudioInfo * info)
+volume_choose_func (GstVolume * this)
 {
-  GstAudioFormat format;
+  this->process = NULL;
 
-  self->process = NULL;
-  self->process_controlled = NULL;
-
-  format = GST_AUDIO_INFO_FORMAT (info);
-
-  if (format == GST_AUDIO_FORMAT_UNKNOWN)
+  if (GST_AUDIO_FILTER (this)->format.caps == NULL)
     return FALSE;
 
-  switch (format) {
-    case GST_AUDIO_FORMAT_S32:
-      /* only clamp if the gain is greater than 1.0 */
-      if (self->current_vol_i32 > VOLUME_UNITY_INT32) {
-        self->process = volume_process_int32_clamp;
-      } else {
-        self->process = volume_process_int32;
+  switch (GST_AUDIO_FILTER (this)->format.type) {
+    case GST_BUFTYPE_LINEAR:
+      switch (GST_AUDIO_FILTER (this)->format.width) {
+        case 32:
+          /* only clamp if the gain is greater than 1.0
+           * FIXME: current_vol_i can change while processing the buffer!
+           */
+          if (this->current_vol_i32 > VOLUME_UNITY_INT32)
+            this->process = volume_process_int32_clamp;
+          else
+            this->process = volume_process_int32;
+          break;
+        case 24:
+          /* only clamp if the gain is greater than 1.0
+           * FIXME: current_vol_i can change while processing the buffer!
+           */
+          if (this->current_vol_i24 > VOLUME_UNITY_INT24)
+            this->process = volume_process_int24_clamp;
+          else
+            this->process = volume_process_int24;
+          break;
+        case 16:
+          /* only clamp if the gain is greater than 1.0
+           * FIXME: current_vol_i can change while processing the buffer!
+           */
+          if (this->current_vol_i16 > VOLUME_UNITY_INT16)
+            this->process = volume_process_int16_clamp;
+          else
+            this->process = volume_process_int16;
+          break;
+        case 8:
+          /* only clamp if the gain is greater than 1.0
+           * FIXME: current_vol_i can change while processing the buffer!
+           */
+          if (this->current_vol_i16 > VOLUME_UNITY_INT8)
+            this->process = volume_process_int8_clamp;
+          else
+            this->process = volume_process_int8;
+          break;
       }
-      self->process_controlled = volume_process_controlled_int32_clamp;
       break;
-    case GST_AUDIO_FORMAT_S24:
-      /* only clamp if the gain is greater than 1.0 */
-      if (self->current_vol_i24 > VOLUME_UNITY_INT24) {
-        self->process = volume_process_int24_clamp;
-      } else {
-        self->process = volume_process_int24;
+    case GST_BUFTYPE_FLOAT:
+      switch (GST_AUDIO_FILTER (this)->format.width) {
+        case 32:
+          this->process = volume_process_float;
+          break;
+        case 64:
+          this->process = volume_process_double;
+          break;
       }
-      self->process_controlled = volume_process_controlled_int24_clamp;
-      break;
-    case GST_AUDIO_FORMAT_S16:
-      /* only clamp if the gain is greater than 1.0 */
-      if (self->current_vol_i16 > VOLUME_UNITY_INT16) {
-        self->process = volume_process_int16_clamp;
-      } else {
-        self->process = volume_process_int16;
-      }
-      self->process_controlled = volume_process_controlled_int16_clamp;
-      break;
-    case GST_AUDIO_FORMAT_S8:
-      /* only clamp if the gain is greater than 1.0 */
-      if (self->current_vol_i8 > VOLUME_UNITY_INT8) {
-        self->process = volume_process_int8_clamp;
-      } else {
-        self->process = volume_process_int8;
-      }
-      self->process_controlled = volume_process_controlled_int8_clamp;
-      break;
-    case GST_AUDIO_FORMAT_F32:
-      self->process = volume_process_float;
-      self->process_controlled = volume_process_controlled_float;
-      break;
-    case GST_AUDIO_FORMAT_F64:
-      self->process = volume_process_double;
-      self->process_controlled = volume_process_controlled_double;
       break;
     default:
       break;
   }
 
-  return (self->process != NULL);
+  return (this->process != NULL);
 }
 
 static gboolean
-volume_update_volume (GstVolume * self, const GstAudioInfo * info,
-    gfloat volume, gboolean mute)
+volume_update_volume (GstVolume * this, gfloat volume, gboolean mute)
 {
   gboolean passthrough;
   gboolean res;
 
-  GST_DEBUG_OBJECT (self, "configure mute %d, volume %f", mute, volume);
+  GST_DEBUG_OBJECT (this, "configure mute %d, volume %f", mute, volume);
 
   if (mute) {
-    self->current_mute = TRUE;
-    self->current_volume = 0.0;
+    this->current_mute = TRUE;
+    this->current_volume = 0.0;
 
-    self->current_vol_i8 = 0;
-    self->current_vol_i16 = 0;
-    self->current_vol_i24 = 0;
-    self->current_vol_i32 = 0;
+    this->current_vol_i8 = 0;
+    this->current_vol_i16 = 0;
+    this->current_vol_i24 = 0;
+    this->current_vol_i32 = 0;
 
     passthrough = FALSE;
   } else {
-    self->current_mute = FALSE;
-    self->current_volume = volume;
+    this->current_mute = FALSE;
+    this->current_volume = volume;
 
-    self->current_vol_i8 = volume * VOLUME_UNITY_INT8;
-    self->current_vol_i16 = volume * VOLUME_UNITY_INT16;
-    self->current_vol_i24 = volume * VOLUME_UNITY_INT24;
-    self->current_vol_i32 = volume * VOLUME_UNITY_INT32;
+    this->current_vol_i8 = volume * VOLUME_UNITY_INT8;
+    this->current_vol_i16 = volume * VOLUME_UNITY_INT16;
+    this->current_vol_i24 = volume * VOLUME_UNITY_INT24;
+    this->current_vol_i32 = volume * VOLUME_UNITY_INT32;
 
-    passthrough = (self->current_vol_i16 == VOLUME_UNITY_INT16);
+    passthrough = (this->current_vol_i16 == VOLUME_UNITY_INT16);
   }
 
-  /* If a controller is used, never use passthrough mode
-   * because the property can change from 1.0 to something
-   * else in the middle of a buffer.
-   */
-  passthrough &= !gst_object_has_active_control_bindings (GST_OBJECT (self));
+  GST_DEBUG_OBJECT (this, "set passthrough %d", passthrough);
 
-  GST_DEBUG_OBJECT (self, "set passthrough %d", passthrough);
+  gst_base_transform_set_passthrough (GST_BASE_TRANSFORM (this), passthrough);
 
-  gst_base_transform_set_passthrough (GST_BASE_TRANSFORM (self), passthrough);
-
-  res = self->negotiated = volume_choose_func (self, info);
+  res = this->negotiated = volume_choose_func (this);
 
   return res;
+}
+
+/* Mixer interface */
+
+static gboolean
+gst_volume_interface_supported (GstImplementsInterface * iface, GType type)
+{
+  return (type == GST_TYPE_MIXER || type == GST_TYPE_STREAM_VOLUME);
+}
+
+static void
+gst_volume_interface_init (GstImplementsInterfaceClass * klass)
+{
+  klass->supported = gst_volume_interface_supported;
+}
+
+static const GList *
+gst_volume_list_tracks (GstMixer * mixer)
+{
+  GstVolume *this = GST_VOLUME (mixer);
+
+  g_return_val_if_fail (this != NULL, NULL);
+  g_return_val_if_fail (GST_IS_VOLUME (this), NULL);
+
+  return this->tracklist;
+}
+
+static void
+gst_volume_set_volume (GstMixer * mixer, GstMixerTrack * track, gint * volumes)
+{
+  GstVolume *this = GST_VOLUME (mixer);
+
+  g_return_if_fail (this != NULL);
+  g_return_if_fail (GST_IS_VOLUME (this));
+
+  GST_OBJECT_LOCK (this);
+  this->volume = (gfloat) volumes[0] / VOLUME_STEPS;
+  GST_OBJECT_UNLOCK (this);
+}
+
+static void
+gst_volume_get_volume (GstMixer * mixer, GstMixerTrack * track, gint * volumes)
+{
+  GstVolume *this = GST_VOLUME (mixer);
+
+  g_return_if_fail (this != NULL);
+  g_return_if_fail (GST_IS_VOLUME (this));
+
+  GST_OBJECT_LOCK (this);
+  volumes[0] = (gint) this->volume * VOLUME_STEPS;
+  GST_OBJECT_UNLOCK (this);
+}
+
+static void
+gst_volume_set_mute (GstMixer * mixer, GstMixerTrack * track, gboolean mute)
+{
+  GstVolume *this = GST_VOLUME (mixer);
+
+  g_return_if_fail (this != NULL);
+  g_return_if_fail (GST_IS_VOLUME (this));
+
+  GST_OBJECT_LOCK (this);
+  this->mute = mute;
+  GST_OBJECT_UNLOCK (this);
+}
+
+static void
+gst_volume_mixer_init (GstMixerClass * klass)
+{
+  GST_MIXER_TYPE (klass) = GST_MIXER_SOFTWARE;
+
+  /* default virtual functions */
+  klass->list_tracks = gst_volume_list_tracks;
+  klass->set_volume = gst_volume_set_volume;
+  klass->get_volume = gst_volume_get_volume;
+  klass->set_mute = gst_volume_set_mute;
 }
 
 /* Element class */
@@ -291,16 +400,29 @@ gst_volume_dispose (GObject * object)
 }
 
 static void
+gst_volume_base_init (gpointer g_class)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+  GstAudioFilterClass *filter_class = GST_AUDIO_FILTER_CLASS (g_class);
+  GstCaps *caps;
+
+  gst_element_class_set_details_simple (element_class, "Volume",
+      "Filter/Effect/Audio",
+      "Set volume on audio/raw streams", "Andy Wingo <wingo@pobox.com>");
+
+  caps = gst_caps_from_string (ALLOWED_CAPS);
+  gst_audio_filter_class_add_pad_templates (filter_class, caps);
+  gst_caps_unref (caps);
+}
+
+static void
 gst_volume_class_init (GstVolumeClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *element_class;
   GstBaseTransformClass *trans_class;
   GstAudioFilterClass *filter_class;
-  GstCaps *caps;
 
   gobject_class = (GObjectClass *) klass;
-  element_class = (GstElementClass *) klass;
   trans_class = (GstBaseTransformClass *) klass;
   filter_class = (GstAudioFilterClass *) (klass);
 
@@ -318,138 +440,109 @@ gst_volume_class_init (GstVolumeClass * klass)
           0.0, VOLUME_MAX_DOUBLE, DEFAULT_PROP_VOLUME,
           G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE | G_PARAM_STATIC_STRINGS));
 
-  gst_element_class_set_static_metadata (element_class, "Volume",
-      "Filter/Effect/Audio",
-      "Set volume on audio/raw streams", "Andy Wingo <wingo@pobox.com>");
-
-  caps = gst_caps_from_string (ALLOWED_CAPS);
-  gst_audio_filter_class_add_pad_templates (filter_class, caps);
-  gst_caps_unref (caps);
-
   trans_class->before_transform = GST_DEBUG_FUNCPTR (volume_before_transform);
   trans_class->transform_ip = GST_DEBUG_FUNCPTR (volume_transform_ip);
-  trans_class->stop = GST_DEBUG_FUNCPTR (volume_stop);
-  trans_class->transform_ip_on_passthrough = FALSE;
-
   filter_class->setup = GST_DEBUG_FUNCPTR (volume_setup);
 }
 
 static void
-gst_volume_init (GstVolume * self)
+gst_volume_init (GstVolume * this, GstVolumeClass * g_class)
 {
-  self->mute = DEFAULT_PROP_MUTE;;
-  self->volume = DEFAULT_PROP_VOLUME;
+  GstMixerTrack *track = NULL;
 
-  self->tracklist = NULL;
-  self->negotiated = FALSE;
+  this->mute = DEFAULT_PROP_MUTE;;
+  this->volume = DEFAULT_PROP_VOLUME;
 
-  gst_base_transform_set_gap_aware (GST_BASE_TRANSFORM (self), TRUE);
+  this->tracklist = NULL;
+  this->negotiated = FALSE;
+
+  track = g_object_new (GST_TYPE_MIXER_TRACK, NULL);
+
+  if (GST_IS_MIXER_TRACK (track)) {
+    track->label = g_strdup ("volume");
+    track->num_channels = 1;
+    track->min_volume = 0;
+    track->max_volume = VOLUME_STEPS;
+    track->flags = GST_MIXER_TRACK_SOFTWARE;
+    this->tracklist = g_list_append (this->tracklist, track);
+  }
+
+  gst_base_transform_set_gap_aware (GST_BASE_TRANSFORM (this), TRUE);
 }
 
 static void
-volume_process_double (GstVolume * self, gpointer bytes, guint n_bytes)
+volume_process_double (GstVolume * this, gpointer bytes, guint n_bytes)
 {
   gdouble *data = (gdouble *) bytes;
   guint num_samples = n_bytes / sizeof (gdouble);
 
-  volume_orc_scalarmultiply_f64_ns (data, self->current_volume, num_samples);
-}
+  gdouble vol = this->current_volume;
 
-static void
-volume_process_controlled_double (GstVolume * self, gpointer bytes,
-    gdouble * volume, guint channels, guint n_bytes)
-{
-  gdouble *data = (gdouble *) bytes;
-  guint num_samples = n_bytes / (sizeof (gdouble) * channels);
-  guint i, j;
-  gdouble vol;
+#ifdef HAVE_LIBOIL
+  oil_scalarmultiply_f64_ns (data, data, &vol, num_samples);
+#else
+  guint i;
 
-  if (channels == 1) {
-    volume_orc_process_controlled_f64_1ch (data, volume, num_samples);
-  } else {
-    for (i = 0; i < num_samples; i++) {
-      vol = *volume++;
-      for (j = 0; j < channels; j++) {
-        *data++ *= vol;
-      }
-    }
+  for (i = 0; i < num_samples; i++) {
+    *data++ *= vol;
   }
+#endif
 }
 
 static void
-volume_process_float (GstVolume * self, gpointer bytes, guint n_bytes)
+volume_process_float (GstVolume * this, gpointer bytes, guint n_bytes)
 {
   gfloat *data = (gfloat *) bytes;
   guint num_samples = n_bytes / sizeof (gfloat);
 
-  volume_orc_scalarmultiply_f32_ns (data, self->current_volume, num_samples);
+#ifdef HAVE_LIBOIL
+  oil_scalarmultiply_f32_ns (data, data, &this->current_volume, num_samples);
+#else
+  guint i;
+
+  for (i = 0; i < num_samples; i++) {
+    *data++ *= this->current_volume;
+  }
+  /* time "gst-launch 2>/dev/null audiotestsrc wave=7 num-buffers=10000 ! audio/x-raw-float !
+   * volume volume=1.5 ! fakesink" goes from 0m0.850s -> 0m0.717s with liboil
+   */
+#endif
 }
 
 static void
-volume_process_controlled_float (GstVolume * self, gpointer bytes,
-    gdouble * volume, guint channels, guint n_bytes)
+volume_process_int32 (GstVolume * this, gpointer bytes, guint n_bytes)
 {
-  gfloat *data = (gfloat *) bytes;
-  guint num_samples = n_bytes / (sizeof (gfloat) * channels);
-  guint i, j;
-  gdouble vol;
+  gint *data = (gint *) bytes;
+  guint i, num_samples;
+  gint64 val;
 
-  if (channels == 1) {
-    volume_orc_process_controlled_f32_1ch (data, volume, num_samples);
-  } else if (channels == 2) {
-    volume_orc_process_controlled_f32_2ch (data, volume, num_samples);
-  } else {
-    for (i = 0; i < num_samples; i++) {
-      vol = *volume++;
-      for (j = 0; j < channels; j++) {
-        *data++ *= vol;
-      }
-    }
+  num_samples = n_bytes / sizeof (gint);
+  for (i = 0; i < num_samples; i++) {
+    /* we use bitshifting instead of dividing by UNITY_INT for speed */
+    val = (gint64) * data;
+    val =
+        (((gint64) this->current_vol_i32 *
+            val) >> VOLUME_UNITY_INT32_BIT_SHIFT);
+    *data++ = (gint32) val;
   }
 }
 
 static void
-volume_process_int32 (GstVolume * self, gpointer bytes, guint n_bytes)
+volume_process_int32_clamp (GstVolume * this, gpointer bytes, guint n_bytes)
 {
-  gint32 *data = (gint32 *) bytes;
-  guint num_samples = n_bytes / sizeof (gint);
+  gint *data = (gint *) bytes;
+  guint i, num_samples;
+  gint64 val;
 
-  /* hard coded in volume.orc */
-  g_assert (VOLUME_UNITY_INT32_BIT_SHIFT == 27);
-  volume_orc_process_int32 (data, self->current_vol_i32, num_samples);
-}
+  num_samples = n_bytes / sizeof (gint);
 
-static void
-volume_process_int32_clamp (GstVolume * self, gpointer bytes, guint n_bytes)
-{
-  gint32 *data = (gint32 *) bytes;
-  guint num_samples = n_bytes / sizeof (gint);
-
-  /* hard coded in volume.orc */
-  g_assert (VOLUME_UNITY_INT32_BIT_SHIFT == 27);
-
-  volume_orc_process_int32_clamp (data, self->current_vol_i32, num_samples);
-}
-
-static void
-volume_process_controlled_int32_clamp (GstVolume * self, gpointer bytes,
-    gdouble * volume, guint channels, guint n_bytes)
-{
-  gint32 *data = (gint32 *) bytes;
-  guint i, j;
-  guint num_samples = n_bytes / (sizeof (gint32) * channels);
-  gdouble vol, val;
-
-  if (channels == 1) {
-    volume_orc_process_controlled_int32_1ch (data, volume, num_samples);
-  } else {
-    for (i = 0; i < num_samples; i++) {
-      vol = *volume++;
-      for (j = 0; j < channels; j++) {
-        val = *data * vol;
-        *data++ = (gint32) CLAMP (val, VOLUME_MIN_INT32, VOLUME_MAX_INT32);
-      }
-    }
+  for (i = 0; i < num_samples; i++) {
+    /* we use bitshifting instead of dividing by UNITY_INT for speed */
+    val = (gint64) * data;
+    val =
+        (((gint64) this->current_vol_i32 *
+            val) >> VOLUME_UNITY_INT32_BIT_SHIFT);
+    *data++ = (gint32) CLAMP (val, VOLUME_MIN_INT32, VOLUME_MAX_INT32);
   }
 }
 
@@ -474,7 +567,7 @@ G_STMT_START { \
 #endif
 
 static void
-volume_process_int24 (GstVolume * self, gpointer bytes, guint n_bytes)
+volume_process_int24 (GstVolume * this, gpointer bytes, guint n_bytes)
 {
   gint8 *data = (gint8 *) bytes;        /* treat the data as a byte stream */
   guint i, num_samples;
@@ -487,7 +580,7 @@ volume_process_int24 (GstVolume * self, gpointer bytes, guint n_bytes)
 
     val = (gint32) samp;
     val =
-        (((gint64) self->current_vol_i24 *
+        (((gint64) this->current_vol_i24 *
             val) >> VOLUME_UNITY_INT24_BIT_SHIFT);
     samp = (guint32) val;
 
@@ -497,7 +590,7 @@ volume_process_int24 (GstVolume * self, gpointer bytes, guint n_bytes)
 }
 
 static void
-volume_process_int24_clamp (GstVolume * self, gpointer bytes, guint n_bytes)
+volume_process_int24_clamp (GstVolume * this, gpointer bytes, guint n_bytes)
 {
   gint8 *data = (gint8 *) bytes;        /* treat the data as a byte stream */
   guint i, num_samples;
@@ -510,7 +603,7 @@ volume_process_int24_clamp (GstVolume * self, gpointer bytes, guint n_bytes)
 
     val = (gint32) samp;
     val =
-        (((gint64) self->current_vol_i24 *
+        (((gint64) this->current_vol_i24 *
             val) >> VOLUME_UNITY_INT24_BIT_SHIFT);
     samp = (guint32) CLAMP (val, VOLUME_MIN_INT24, VOLUME_MAX_INT24);
 
@@ -520,117 +613,89 @@ volume_process_int24_clamp (GstVolume * self, gpointer bytes, guint n_bytes)
 }
 
 static void
-volume_process_controlled_int24_clamp (GstVolume * self, gpointer bytes,
-    gdouble * volume, guint channels, guint n_bytes)
+volume_process_int16 (GstVolume * this, gpointer bytes, guint n_bytes)
 {
-  gint8 *data = (gint8 *) bytes;        /* treat the data as a byte stream */
-  guint i, j;
-  guint num_samples = n_bytes / (sizeof (gint8) * 3 * channels);
-  gdouble vol, val;
+  gint16 *data = (gint16 *) bytes;
+  guint num_samples = n_bytes / sizeof (gint16);
+
+#if 1
+  guint i;
+  gint val;
 
   for (i = 0; i < num_samples; i++) {
-    vol = *volume++;
-    for (j = 0; j < channels; j++) {
-      val = get_unaligned_i24 (data) * vol;
-      val = CLAMP (val, VOLUME_MIN_INT24, VOLUME_MAX_INT24);
-      write_unaligned_u24 (data, (gint32) val);
-    }
+    /* we use bitshifting instead of dividing by UNITY_INT for speed */
+    val = (gint) * data;
+    *data++ =
+        (gint16) ((this->current_vol_i16 *
+            val) >> VOLUME_UNITY_INT16_BIT_SHIFT);
+  }
+#else
+  /* FIXME: need oil_scalarmultiply_s16_ns ?
+   * https://bugs.freedesktop.org/show_bug.cgi?id=7060
+   * code below
+   * - crashes :/
+   * - real_vol_i is scaled by VOLUME_UNITY_INT16 and needs the bitshift
+   * time gst-launch 2>/dev/null audiotestsrc wave=7 num-buffers=100 ! volume volume=1.5 ! fakesink
+   */
+  oil_scalarmult_s16 (data, 0, data, 0,
+      ((gint16 *) (void *) (&this->current_vol_i)), num_samples);
+#endif
+}
+
+static void
+volume_process_int16_clamp (GstVolume * this, gpointer bytes, guint n_bytes)
+{
+  gint16 *data = (gint16 *) bytes;
+  guint i, num_samples;
+  gint val;
+
+  num_samples = n_bytes / sizeof (gint16);
+
+  /* FIXME: oil_scalarmultiply_s16_ns ?
+   * https://bugs.freedesktop.org/show_bug.cgi?id=7060
+   */
+  for (i = 0; i < num_samples; i++) {
+    /* we use bitshifting instead of dividing by UNITY_INT for speed */
+    val = (gint) * data;
+    *data++ =
+        (gint16) CLAMP ((this->current_vol_i16 *
+            val) >> VOLUME_UNITY_INT16_BIT_SHIFT, VOLUME_MIN_INT16,
+        VOLUME_MAX_INT16);
   }
 }
 
 static void
-volume_process_int16 (GstVolume * self, gpointer bytes, guint n_bytes)
+volume_process_int8 (GstVolume * this, gpointer bytes, guint n_bytes)
 {
-  gint16 *data = (gint16 *) bytes;
-  guint num_samples = n_bytes / sizeof (gint16);
+  gint8 *data = (gint8 *) bytes;
+  guint num_samples = n_bytes / sizeof (gint8);
+  guint i;
+  gint val;
 
-  /* hard coded in volume.orc */
-  g_assert (VOLUME_UNITY_INT16_BIT_SHIFT == 11);
-
-  volume_orc_process_int16 (data, self->current_vol_i16, num_samples);
-}
-
-static void
-volume_process_int16_clamp (GstVolume * self, gpointer bytes, guint n_bytes)
-{
-  gint16 *data = (gint16 *) bytes;
-  guint num_samples = n_bytes / sizeof (gint16);
-
-  /* hard coded in volume.orc */
-  g_assert (VOLUME_UNITY_INT16_BIT_SHIFT == 11);
-
-  volume_orc_process_int16_clamp (data, self->current_vol_i16, num_samples);
-}
-
-static void
-volume_process_controlled_int16_clamp (GstVolume * self, gpointer bytes,
-    gdouble * volume, guint channels, guint n_bytes)
-{
-  gint16 *data = (gint16 *) bytes;
-  guint i, j;
-  guint num_samples = n_bytes / (sizeof (gint16) * channels);
-  gdouble vol, val;
-
-  if (channels == 1) {
-    volume_orc_process_controlled_int16_1ch (data, volume, num_samples);
-  } else if (channels == 2) {
-    volume_orc_process_controlled_int16_2ch (data, volume, num_samples);
-  } else {
-    for (i = 0; i < num_samples; i++) {
-      vol = *volume++;
-      for (j = 0; j < channels; j++) {
-        val = *data * vol;
-        *data++ = (gint16) CLAMP (val, VOLUME_MIN_INT16, VOLUME_MAX_INT16);
-      }
-    }
+  for (i = 0; i < num_samples; i++) {
+    /* we use bitshifting instead of dividing by UNITY_INT for speed */
+    val = (gint) * data;
+    *data++ =
+        (gint8) ((this->current_vol_i8 * val) >> VOLUME_UNITY_INT8_BIT_SHIFT);
   }
 }
 
 static void
-volume_process_int8 (GstVolume * self, gpointer bytes, guint n_bytes)
+volume_process_int8_clamp (GstVolume * this, gpointer bytes, guint n_bytes)
 {
   gint8 *data = (gint8 *) bytes;
-  guint num_samples = n_bytes / sizeof (gint8);
+  guint i, num_samples;
+  gint val;
 
-  /* hard coded in volume.orc */
-  g_assert (VOLUME_UNITY_INT8_BIT_SHIFT == 3);
+  num_samples = n_bytes / sizeof (gint8);
 
-  volume_orc_process_int8 (data, self->current_vol_i8, num_samples);
-}
-
-static void
-volume_process_int8_clamp (GstVolume * self, gpointer bytes, guint n_bytes)
-{
-  gint8 *data = (gint8 *) bytes;
-  guint num_samples = n_bytes / sizeof (gint8);
-
-  /* hard coded in volume.orc */
-  g_assert (VOLUME_UNITY_INT8_BIT_SHIFT == 3);
-
-  volume_orc_process_int8_clamp (data, self->current_vol_i8, num_samples);
-}
-
-static void
-volume_process_controlled_int8_clamp (GstVolume * self, gpointer bytes,
-    gdouble * volume, guint channels, guint n_bytes)
-{
-  gint8 *data = (gint8 *) bytes;
-  guint i, j;
-  guint num_samples = n_bytes / (sizeof (gint8) * channels);
-  gdouble val, vol;
-
-  if (channels == 1) {
-    volume_orc_process_controlled_int8_1ch (data, volume, num_samples);
-  } else if (channels == 2) {
-    volume_orc_process_controlled_int8_2ch (data, volume, num_samples);
-  } else {
-    for (i = 0; i < num_samples; i++) {
-      vol = *volume++;
-      for (j = 0; j < channels; j++) {
-        val = *data * vol;
-        *data++ = (gint8) CLAMP (val, VOLUME_MIN_INT8, VOLUME_MAX_INT8);
-      }
-    }
+  for (i = 0; i < num_samples; i++) {
+    /* we use bitshifting instead of dividing by UNITY_INT for speed */
+    val = (gint) * data;
+    *data++ =
+        (gint8) CLAMP ((this->current_vol_i8 *
+            val) >> VOLUME_UNITY_INT8_BIT_SHIFT, VOLUME_MIN_INT8,
+        VOLUME_MAX_INT8);
   }
 }
 
@@ -638,53 +703,39 @@ volume_process_controlled_int8_clamp (GstVolume * self, gpointer bytes,
 
 /* get notified of caps and plug in the correct process function */
 static gboolean
-volume_setup (GstAudioFilter * filter, const GstAudioInfo * info)
+volume_setup (GstAudioFilter * filter, GstRingBufferSpec * format)
 {
   gboolean res;
-  GstVolume *self = GST_VOLUME (filter);
+  GstVolume *this = GST_VOLUME (filter);
   gfloat volume;
   gboolean mute;
 
-  GST_OBJECT_LOCK (self);
-  volume = self->volume;
-  mute = self->mute;
-  GST_OBJECT_UNLOCK (self);
+  GST_OBJECT_LOCK (this);
+  volume = this->volume;
+  mute = this->mute;
+  GST_OBJECT_UNLOCK (this);
 
-  res = volume_update_volume (self, info, volume, mute);
+  res = volume_update_volume (this, volume, mute);
   if (!res) {
-    GST_ELEMENT_ERROR (self, CORE, NEGOTIATION,
+    GST_ELEMENT_ERROR (this, CORE, NEGOTIATION,
         ("Invalid incoming format"), (NULL));
   }
-  self->negotiated = res;
+  this->negotiated = res;
 
   return res;
-}
-
-static gboolean
-volume_stop (GstBaseTransform * base)
-{
-  GstVolume *self = GST_VOLUME (base);
-
-  g_free (self->volumes);
-  self->volumes = NULL;
-  self->volumes_count = 0;
-
-  g_free (self->mutes);
-  self->mutes = NULL;
-  self->mutes_count = 0;
-
-  return GST_CALL_PARENT_WITH_DEFAULT (GST_BASE_TRANSFORM_CLASS, stop, (base),
-      TRUE);
 }
 
 static void
 volume_before_transform (GstBaseTransform * base, GstBuffer * buffer)
 {
   GstClockTime timestamp;
-  GstVolume *self = GST_VOLUME (base);
+  GstVolume *this = GST_VOLUME (base);
   gfloat volume;
   gboolean mute;
 
+  /* FIXME: if controllers are bound, subdivide GST_BUFFER_SIZE into small
+   * chunks for smooth fades, what is small? 1/10th sec.
+   */
   timestamp = GST_BUFFER_TIMESTAMP (buffer);
   timestamp =
       gst_segment_to_stream_time (&base->segment, GST_FORMAT_TIME, timestamp);
@@ -693,18 +744,18 @@ volume_before_transform (GstBaseTransform * base, GstBuffer * buffer)
       GST_TIME_ARGS (timestamp));
 
   if (GST_CLOCK_TIME_IS_VALID (timestamp))
-    gst_object_sync_values (GST_OBJECT (self), timestamp);
+    gst_object_sync_values (G_OBJECT (this), timestamp);
 
   /* get latest values */
-  GST_OBJECT_LOCK (self);
-  volume = self->volume;
-  mute = self->mute;
-  GST_OBJECT_UNLOCK (self);
+  GST_OBJECT_LOCK (this);
+  volume = this->volume;
+  mute = this->mute;
+  GST_OBJECT_UNLOCK (this);
 
-  if ((volume != self->current_volume) || (mute != self->current_mute)) {
+  if ((volume != this->current_volume) || (mute != this->current_mute)) {
     /* the volume or mute was updated, update our internal state before
      * we continue processing. */
-    volume_update_volume (self, GST_AUDIO_FILTER_INFO (self), volume, mute);
+    volume_update_volume (this, volume, mute);
   }
 }
 
@@ -715,109 +766,36 @@ volume_before_transform (GstBaseTransform * base, GstBuffer * buffer)
 static GstFlowReturn
 volume_transform_ip (GstBaseTransform * base, GstBuffer * outbuf)
 {
-  GstAudioFilter *filter = GST_AUDIO_FILTER_CAST (base);
-  GstVolume *self = GST_VOLUME (base);
-  GstMapInfo map;
-  GstControlBinding *mute_cb, *volume_cb;
+  GstVolume *this = GST_VOLUME (base);
+  guint8 *data;
+  guint size;
 
-  if (G_UNLIKELY (!self->negotiated))
+  if (G_UNLIKELY (!this->negotiated))
     goto not_negotiated;
 
-  /* don't process data with GAP */
-  if (GST_BUFFER_FLAG_IS_SET (outbuf, GST_BUFFER_FLAG_GAP))
+  /* don't process data in passthrough-mode */
+  if (gst_base_transform_is_passthrough (base) ||
+      GST_BUFFER_FLAG_IS_SET (outbuf, GST_BUFFER_FLAG_GAP))
     return GST_FLOW_OK;
 
-  gst_buffer_map (outbuf, &map, GST_MAP_READWRITE);
+  data = GST_BUFFER_DATA (outbuf);
+  size = GST_BUFFER_SIZE (outbuf);
 
-  mute_cb = gst_object_get_control_binding (GST_OBJECT (self), "mute");
-  volume_cb = gst_object_get_control_binding (GST_OBJECT (self), "volume");
-
-  if (mute_cb || (volume_cb && !self->current_mute)) {
-    gint rate = GST_AUDIO_INFO_RATE (&filter->info);
-    gint width = GST_AUDIO_FORMAT_INFO_WIDTH (filter->info.finfo) / 8;
-    gint channels = GST_AUDIO_INFO_CHANNELS (&filter->info);
-    guint nsamples = map.size / (width * channels);
-    GstClockTime interval = gst_util_uint64_scale_int (1, GST_SECOND, rate);
-    GstClockTime ts = GST_BUFFER_TIMESTAMP (outbuf);
-    gboolean use_mutes = FALSE;
-
-    ts = gst_segment_to_stream_time (&base->segment, GST_FORMAT_TIME, ts);
-
-    if (self->mutes_count < nsamples && mute_cb) {
-      self->mutes = g_realloc (self->mutes, sizeof (gboolean) * nsamples);
-      self->mutes_count = nsamples;
-    }
-
-    if (self->volumes_count < nsamples) {
-      self->volumes = g_realloc (self->volumes, sizeof (gdouble) * nsamples);
-      self->volumes_count = nsamples;
-    }
-
-    if (mute_cb) {
-      if (!gst_control_binding_get_value_array (mute_cb, ts, interval,
-              nsamples, (gpointer) self->mutes))
-        goto controller_failure;
-
-      gst_object_replace ((GstObject **) & mute_cb, NULL);
-      use_mutes = TRUE;
-    } else {
-      g_free (self->mutes);
-      self->mutes = NULL;
-      self->mutes_count = 0;
-    }
-
-    if (volume_cb) {
-      if (!gst_control_binding_get_value_array (volume_cb, ts, interval,
-              nsamples, (gpointer) self->volumes))
-        goto controller_failure;
-
-      gst_object_replace ((GstObject **) & volume_cb, NULL);
-    } else {
-      volume_orc_memset_f64 (self->volumes, self->current_volume, nsamples);
-    }
-
-    if (use_mutes) {
-      volume_orc_prepare_volumes (self->volumes, self->mutes, nsamples);
-    }
-
-    self->process_controlled (self, map.data, self->volumes, channels,
-        map.size);
-
-    goto done;
-  } else if (volume_cb) {
-    gst_object_unref (volume_cb);
-  }
-
-  if (self->current_volume == 0.0 || self->current_mute) {
-    orc_memset (map.data, 0, map.size);
+  if (this->current_volume == 0.0) {
+    memset (data, 0, size);
     GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_GAP);
-  } else if (self->current_volume != 1.0) {
-    self->process (self, map.data, map.size);
+  } else if (this->current_volume != 1.0) {
+    this->process (this, data, size);
   }
-
-done:
-  gst_buffer_unmap (outbuf, &map);
 
   return GST_FLOW_OK;
 
   /* ERRORS */
 not_negotiated:
   {
-    GST_ELEMENT_ERROR (self, CORE, NEGOTIATION,
+    GST_ELEMENT_ERROR (this, CORE, NEGOTIATION,
         ("No format was negotiated"), (NULL));
     return GST_FLOW_NOT_NEGOTIATED;
-  }
-controller_failure:
-  {
-    if (mute_cb)
-      gst_object_unref (mute_cb);
-    if (volume_cb)
-      gst_object_unref (volume_cb);
-
-    GST_ELEMENT_ERROR (self, CORE, FAILED,
-        ("Failed to get values from controller"), (NULL));
-    gst_buffer_unmap (outbuf, &map);
-    return GST_FLOW_ERROR;
   }
 }
 
@@ -825,18 +803,18 @@ static void
 volume_set_property (GObject * object, guint prop_id, const GValue * value,
     GParamSpec * pspec)
 {
-  GstVolume *self = GST_VOLUME (object);
+  GstVolume *this = GST_VOLUME (object);
 
   switch (prop_id) {
     case PROP_MUTE:
-      GST_OBJECT_LOCK (self);
-      self->mute = g_value_get_boolean (value);
-      GST_OBJECT_UNLOCK (self);
+      GST_OBJECT_LOCK (this);
+      this->mute = g_value_get_boolean (value);
+      GST_OBJECT_UNLOCK (this);
       break;
     case PROP_VOLUME:
-      GST_OBJECT_LOCK (self);
-      self->volume = g_value_get_double (value);
-      GST_OBJECT_UNLOCK (self);
+      GST_OBJECT_LOCK (this);
+      this->volume = g_value_get_double (value);
+      GST_OBJECT_UNLOCK (this);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -848,18 +826,18 @@ static void
 volume_get_property (GObject * object, guint prop_id, GValue * value,
     GParamSpec * pspec)
 {
-  GstVolume *self = GST_VOLUME (object);
+  GstVolume *this = GST_VOLUME (object);
 
   switch (prop_id) {
     case PROP_MUTE:
-      GST_OBJECT_LOCK (self);
-      g_value_set_boolean (value, self->mute);
-      GST_OBJECT_UNLOCK (self);
+      GST_OBJECT_LOCK (this);
+      g_value_set_boolean (value, this->mute);
+      GST_OBJECT_UNLOCK (this);
       break;
     case PROP_VOLUME:
-      GST_OBJECT_LOCK (self);
-      g_value_set_double (value, self->volume);
-      GST_OBJECT_UNLOCK (self);
+      GST_OBJECT_LOCK (this);
+      g_value_set_double (value, this->volume);
+      GST_OBJECT_UNLOCK (this);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -870,7 +848,18 @@ volume_get_property (GObject * object, guint prop_id, GValue * value,
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
+#ifdef HAVE_LIBOIL
+  oil_init ();
+#endif
+
+  /* initialize gst controller library */
+  gst_controller_init (NULL, NULL);
+
   GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "volume", 0, "Volume gain");
+
+  /* ref class from a thread-safe context to work around missing bit of
+   * thread-safety in GObject */
+  g_type_class_ref (GST_TYPE_MIXER_TRACK);
 
   return gst_element_register (plugin, "volume", GST_RANK_NONE,
       GST_TYPE_VOLUME);
@@ -878,6 +867,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    volume,
+    "volume",
     "plugin for controlling audio volume",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

@@ -53,9 +53,7 @@ typedef enum
   GST_SUB_PARSE_FORMAT_SAMI = 4,
   GST_SUB_PARSE_FORMAT_TMPLAYER = 5,
   GST_SUB_PARSE_FORMAT_MPL2 = 6,
-  GST_SUB_PARSE_FORMAT_SUBVIEWER = 7,
-  GST_SUB_PARSE_FORMAT_DKS = 8,
-  GST_SUB_PARSE_FORMAT_QTTEXT = 9
+  GST_SUB_PARSE_FORMAT_SUBVIEWER = 7
 } GstSubParseFormat;
 
 typedef struct {
@@ -66,8 +64,7 @@ typedef struct {
   guint64  max_duration; /* to clamp duration, 0 = no limit (used by tmplayer parser) */
   GstSegment *segment;
   gpointer user_data;
-  gboolean have_internal_fps; /* If TRUE don't overwrite fps by property */
-  gint fps_n, fps_d;     /* used by frame based parsers */
+  gdouble  fps;          /* used by microdvd parser */
 } ParserState;
 
 typedef gchar* (*Parser) (ParserState *state, const gchar *line);
@@ -95,6 +92,7 @@ struct _GstSubParse {
   
   /* Segment */
   GstSegment    segment;
+  GstSeekFlags  segment_flags;
   gboolean      need_segment;
   
   gboolean flushing;
@@ -103,9 +101,6 @@ struct _GstSubParse {
   gchar   *encoding;
 
   gboolean first_buffer;
-
-  /* used by frame based parsers */
-  gint fps_n, fps_d;          
 };
 
 struct _GstSubParseClass {

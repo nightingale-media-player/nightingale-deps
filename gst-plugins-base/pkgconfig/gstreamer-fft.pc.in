@@ -1,16 +1,12 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
-includedir=@includedir@/gstreamer-@GST_API_VERSION@
-datarootdir=${prefix}/share
-datadir=${datarootdir}
-girdir=${datadir}/gir-1.0
-typelibdir=${libdir}/girepository-1.0
+includedir=@includedir@/gstreamer-@GST_MAJORMINOR@
 
 Name: GStreamer FFT Library
 Description: FFT implementation
-Requires: gstreamer-@GST_API_VERSION@
+Requires: gstreamer-@GST_MAJORMINOR@
 Version: @VERSION@
-Libs: -L${libdir} -lgstfft-@GST_API_VERSION@ @LIBM@
+Libs: -L${libdir} -lgstfft-@GST_MAJORMINOR@ -lm
 Cflags: -I${includedir}
 

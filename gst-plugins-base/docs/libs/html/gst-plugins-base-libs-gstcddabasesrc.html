@@ -1,0 +1,355 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>gstcddabasesrc</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
+<link rel="up" href="gstreamer-cdda.html" title="CDDA Library">
+<link rel="prev" href="gstreamer-cdda.html" title="CDDA Library">
+<link rel="next" href="gstreamer-ffft.html" title="FFT Library">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
+<link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
+<link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
+<link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
+<link rel="chapter" href="gstreamer-floatcast.html" title="FloatCast Library">
+<link rel="chapter" href="gstreamer-interfaces.html" title="Interfaces Library">
+<link rel="chapter" href="gstreamer-netbuffer.html" title="Network Buffer Library">
+<link rel="chapter" href="gstreamer-riff.html" title="Riff Media Library">
+<link rel="chapter" href="gstreamer-rtp.html" title="RTP Library">
+<link rel="chapter" href="gstreamer-rtsp.html" title="RTSP Library">
+<link rel="chapter" href="gstreamer-sdp.html" title="SDP Library">
+<link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
+<link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
+<link rel="chapter" href="gstreamer-video.html" title="Video Library">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
+<link rel="index" href="api-index.html" title="Index">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gstreamer-cdda.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="gstreamer-cdda.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
+<td><a accesskey="n" href="gstreamer-ffft.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-base-libs-gstcddabasesrc.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstcddabasesrc.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstcddabasesrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstcddabasesrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-base-libs-gstcddabasesrc.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-base-libs-gstcddabasesrc"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstcddabasesrc.top_of_page"></a>gstcddabasesrc</span></h2>
+<p>gstcddabasesrc — Base class for CD digital audio (CDDA) sources</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-base-libs-gstcddabasesrc.synopsis"></a><h2>Synopsis</h2>
+<a name="GstCddaBaseSrc"></a><pre class="synopsis">
+
+#include &lt;gst/cdda/gstcddabasesrc.h&gt;
+
+                    <a class="link" href="gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrc-struct" title="GstCddaBaseSrc">GstCddaBaseSrc</a>;
+                    <a class="link" href="gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrcClass" title="GstCddaBaseSrcClass">GstCddaBaseSrcClass</a>;
+                    <a class="link" href="gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrcTrack" title="GstCddaBaseSrcTrack">GstCddaBaseSrcTrack</a>;
+enum                <a class="link" href="gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrcMode" title="enum GstCddaBaseSrcMode">GstCddaBaseSrcMode</a>;
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstcddabasesrc.html#gst-cdda-base-src-add-track" title="gst_cdda_base_src_add_track ()">gst_cdda_base_src_add_track</a>         (<a class="link" href="gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrc">GstCddaBaseSrc</a> *src,
+                                                         <a class="link" href="gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrcTrack" title="GstCddaBaseSrcTrack">GstCddaBaseSrcTrack</a> *track);
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-libs-gstcddabasesrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="/usr/share/gtk-doc/html/gstreamer-libs-0.10/GstBaseSrc.html"
+>GstBaseSrc</a>
+                     +----<a
+href="/usr/share/gtk-doc/html/gstreamer-libs-0.10/GstPushSrc.html"
+>GstPushSrc</a>
+                           +----GstCddaBaseSrc
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-libs-gstcddabasesrc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstCddaBaseSrc implements
+ <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstUriHandler.html#GstURIHandler"
+>GstURIHandler</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-libs-gstcddabasesrc.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrc--device" title='The "device" property'>device</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrc--mode" title='The "mode" property'>mode</a>"                     <a class="link" href="gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrcMode" title="enum GstCddaBaseSrcMode">GstCddaBaseSrcMode</a>    : Read / Write
+  "<a class="link" href="gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrc--track" title='The "track" property'>track</a>"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-libs-gstcddabasesrc.description"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2727925"></a><h3>Using GstCddaBaseSrc-based elements in applications</h3>
+<p>
+Provides a base class for CDDA sources, which handles things like seeking,
+querying, discid calculation, tags, and buffer timestamping.
+</p>
+<p>
+GstCddaBaseSrc registers two <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstFormat.html#GstFormat"
+><span class="type">GstFormat</span></a>s of its own, namely
+the "track" format and the "sector" format. Applications will usually
+only find the "track" format interesting. You can retrieve that <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstFormat.html#GstFormat"
+><span class="type">GstFormat</span></a>
+for use in seek events or queries with gst_format_get_by_nick("track").
+</p>
+<p>
+In order to query the number of tracks, for example, an application would
+set the CDDA source element to READY or PAUSED state and then query the
+the number of tracks via <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html#gst-element-query-duration"
+><code class="function">gst_element_query_duration()</code></a> using the track
+format acquired above. Applications can query the currently playing track
+in the same way.
+</p>
+<p>
+Alternatively, applications may retrieve the currently playing track and
+the total number of tracks from the taglist that will posted on the bus
+whenever the CD is opened or the currently playing track changes. The
+taglist will contain GST_TAG_TRACK_NUMBER and GST_TAG_TRACK_COUNT tags.
+</p>
+<p>
+Applications playing back CD audio using playbin and cdda://n URIs should
+issue a seek command in track format to change between tracks, rather than
+setting a new cdda://n+1 URI on playbin (as setting a new URI on playbin
+involves closing and re-opening the CD device, which is much much slower).
+</p>
+<p>
+CDDA sources will automatically emit a number of tags, details about which
+can be found in the libgsttag documentation. Those tags are:
+<a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-CDDB-DISCID--CAPS" title="GST_TAG_CDDA_CDDB_DISCID"><span class="type">GST_TAG_CDDA_CDDB_DISCID</span></a>, <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-CDDB-DISCID-FULL--CAPS" title="GST_TAG_CDDA_CDDB_DISCID_FULL"><span class="type">GST_TAG_CDDA_CDDB_DISCID_FULL</span></a>,
+<a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-MUSICBRAINZ-DISCID--CAPS" title="GST_TAG_CDDA_MUSICBRAINZ_DISCID"><span class="type">GST_TAG_CDDA_MUSICBRAINZ_DISCID</span></a>, <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-MUSICBRAINZ-DISCID-FULL--CAPS" title="GST_TAG_CDDA_MUSICBRAINZ_DISCID_FULL"><span class="type">GST_TAG_CDDA_MUSICBRAINZ_DISCID_FULL</span></a>,
+among others.
+</p>
+</div>
+<p>
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-libs-gstcddabasesrc.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstCddaBaseSrc-struct"></a><h3>GstCddaBaseSrc</h3>
+<pre class="programlisting">typedef struct _GstCddaBaseSrc GstCddaBaseSrc;</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstCddaBaseSrcClass"></a><h3>GstCddaBaseSrcClass</h3>
+<pre class="programlisting">typedef struct {
+  GstPushSrcClass pushsrc_class;
+
+  /* open/close the CD device */
+  gboolean    (*open)               (GstCddaBaseSrc *src, const gchar *device);
+  void        (*close)              (GstCddaBaseSrc *src);
+
+  /* read one sector (LBA) */
+  GstBuffer * (*read_sector)        (GstCddaBaseSrc *src, gint sector);
+
+  /* return default device or NULL (optional) */
+  gchar *     (*get_default_device) (GstCddaBaseSrc *src);
+
+  /* return NULL-terminated string array of CD devices, or NULL (optional) */
+  gchar **    (*probe_devices)      (GstCddaBaseSrc *src);
+} GstCddaBaseSrcClass;
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstCddaBaseSrcTrack"></a><h3>GstCddaBaseSrcTrack</h3>
+<pre class="programlisting">typedef struct {
+  gboolean     is_audio;      /* TRUE if this is an audio track             */
+  guint        num;           /* real track number (usually starts from 1)  */
+  guint        start;         /* first sector of track (LBA, not LSN!)      */
+  guint        end;           /* last sector of track  (LBA, not LSN!)      */
+  GstTagList  *tags;          /* NULL or tags for track (e.g. from cd-text) */
+} GstCddaBaseSrcTrack;
+</pre>
+<p>
+CD track abstraction to communicate TOC entries to the base class.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> <em class="structfield"><code>is_audio</code></em>;</span></p></td>
+<td> Whether this is an audio track
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> <em class="structfield"><code>num</code></em>;</span></p></td>
+<td> Track number in TOC (usually starts from 1, but not always)
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> <em class="structfield"><code>start</code></em>;</span></p></td>
+<td> The first sector of this track (LBA)
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> <em class="structfield"><code>end</code></em>;</span></p></td>
+<td> The last sector of this track (LBA)
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstTagList.html#GstTagList"
+>GstTagList</a> *<em class="structfield"><code>tags</code></em>;</span></p></td>
+<td> Track-specific tags (e.g. from cd-text information), or NULL
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstCddaBaseSrcMode"></a><h3>enum GstCddaBaseSrcMode</h3>
+<pre class="programlisting">typedef enum {
+  GST_CDDA_BASE_SRC_MODE_NORMAL,          /* stream = one track  */
+  GST_CDDA_BASE_SRC_MODE_CONTINUOUS       /* stream = whole disc */
+} GstCddaBaseSrcMode;
+</pre>
+<p>
+Mode in which the CD audio source operates. Influences timestamping,
+EOS handling and seeking.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><a name="GST-CDDA-BASE-SRC-MODE-NORMAL--CAPS"></a><span class="term"><code class="literal">GST_CDDA_BASE_SRC_MODE_NORMAL</code></span></p></td>
+<td> each single track is a stream
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-CDDA-BASE-SRC-MODE-CONTINUOUS--CAPS"></a><span class="term"><code class="literal">GST_CDDA_BASE_SRC_MODE_CONTINUOUS</code></span></p></td>
+<td> the entire disc is a single stream
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-cdda-base-src-add-track"></a><h3>gst_cdda_base_src_add_track ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_cdda_base_src_add_track         (<a class="link" href="gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrc">GstCddaBaseSrc</a> *src,
+                                                         <a class="link" href="gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrcTrack" title="GstCddaBaseSrcTrack">GstCddaBaseSrcTrack</a> *track);</pre>
+<p>
+CDDA sources use this function from their start vfunc to announce the
+available data and audio tracks to the base source class. The caller
+should allocate <em class="parameter"><code>track</code></em> on the stack, the base source will do a shallow
+copy of the structure (and take ownership of the taglist if there is one).</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>src</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrc"><span class="type">GstCddaBaseSrc</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>track</code></em> :</span></p></td>
+<td> address of <a class="link" href="gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrcTrack" title="GstCddaBaseSrcTrack"><span class="type">GstCddaBaseSrcTrack</span></a> to add
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> FALSE on error, otherwise TRUE.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-libs-gstcddabasesrc.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstCddaBaseSrc--device"></a><h3>The <code class="literal">"device"</code> property</h3>
+<pre class="programlisting">  "device"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>CD device location.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstCddaBaseSrc--mode"></a><h3>The <code class="literal">"mode"</code> property</h3>
+<pre class="programlisting">  "mode"                     <a class="link" href="gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrcMode" title="enum GstCddaBaseSrcMode">GstCddaBaseSrcMode</a>    : Read / Write</pre>
+<p>Mode.</p>
+<p>Default value: Stream consists of a single track</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstCddaBaseSrc--track"></a><h3>The <code class="literal">"track"</code> property</h3>
+<pre class="programlisting">  "track"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>Track.</p>
+<p>Allowed values: [1,99]</p>
+<p>Default value: 1</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.11</div>
+</body>
+</html>

@@ -25,10 +25,25 @@
 
 #include "gstfft.h"
 
-G_BEGIN_DECLS
-
 typedef struct _GstFFTF32 GstFFTF32;
 typedef struct _GstFFTF32Complex GstFFTF32Complex;
+
+/* FIXME 0.11: Move the struct definition to the sources,
+ *             there's no reason to have it public.
+ */
+/**
+ * GstFFTF32:
+ *
+ * Instance structure for #GstFFTF32.
+ *
+ */
+struct _GstFFTF32 {
+  /* <private> */
+  void * cfg;
+  gboolean inverse;
+  gint len;
+  gpointer _padding[GST_PADDING];
+};
 
 /* Copy of kiss_fft_f32_cpx for documentation reasons,
  * do NOT change! */
@@ -40,6 +55,7 @@ typedef struct _GstFFTF32Complex GstFFTF32Complex;
  *
  * Data type for complex numbers composed of
  * 32 bit float.
+ *
  */
 struct _GstFFTF32Complex
 {
@@ -48,16 +64,12 @@ struct _GstFFTF32Complex
 };
 
 /* Functions */
-GstFFTF32 *   gst_fft_f32_new           (gint len, gboolean inverse);
-void          gst_fft_f32_free          (GstFFTF32 *self);
 
-void          gst_fft_f32_fft           (GstFFTF32 *self, const gfloat *timedata,
-                                         GstFFTF32Complex *freqdata);
-void          gst_fft_f32_inverse_fft   (GstFFTF32 *self, const GstFFTF32Complex *freqdata,
-                                         gfloat *timedata);
+GstFFTF32 * gst_fft_f32_new (gint len, gboolean inverse);
+void gst_fft_f32_fft (GstFFTF32 *self, const gfloat *timedata, GstFFTF32Complex *freqdata);
+void gst_fft_f32_inverse_fft (GstFFTF32 *self, const GstFFTF32Complex *freqdata, gfloat *timedata);
+void gst_fft_f32_free (GstFFTF32 *self);
 
-void          gst_fft_f32_window        (GstFFTF32 *self, gfloat *timedata, GstFFTWindow window);
-
-G_END_DECLS
+void gst_fft_f32_window (GstFFTF32 *self, gfloat *timedata, GstFFTWindow window);
 
 #endif /* __GST_FFT_F32_H__ */

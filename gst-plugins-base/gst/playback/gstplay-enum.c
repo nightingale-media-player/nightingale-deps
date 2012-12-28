@@ -22,8 +22,8 @@
 #define C_ENUM(v) ((gint) v)
 #define C_FLAGS(v) ((guint) v)
 
-GType
-gst_autoplug_select_result_get_type (void)
+static void
+register_gst_autoplug_select_result (GType * id)
 {
   static const GEnumValue values[] = {
     {C_ENUM (GST_AUTOPLUG_SELECT_TRY), "GST_AUTOPLUG_SELECT_TRY", "try"},
@@ -32,21 +32,21 @@ gst_autoplug_select_result_get_type (void)
     {C_ENUM (GST_AUTOPLUG_SELECT_SKIP), "GST_AUTOPLUG_SELECT_SKIP", "skip"},
     {0, NULL, NULL}
   };
-  static volatile GType id = 0;
-
-  if (g_once_init_enter ((gsize *) & id)) {
-    GType _id;
-
-    _id = g_enum_register_static ("GstAutoplugSelectResult", values);
-
-    g_once_init_leave ((gsize *) & id, _id);
-  }
-
-  return id;
+  *id = g_enum_register_static ("GstAutoplugSelectResult", values);
 }
 
 GType
-gst_play_flags_get_type (void)
+gst_autoplug_select_result_get_type (void)
+{
+  static GType id;
+  static GOnce once = G_ONCE_INIT;
+
+  g_once (&once, (GThreadFunc) register_gst_autoplug_select_result, &id);
+  return id;
+}
+
+static void
+register_gst_play_flags (GType * id)
 {
   static const GFlagsValue values[] = {
     {C_FLAGS (GST_PLAY_FLAG_VIDEO), "Render the video stream", "video"},
@@ -61,23 +61,17 @@ gst_play_flags_get_type (void)
         "native-video"},
     {C_FLAGS (GST_PLAY_FLAG_DOWNLOAD), "Attempt progressive download buffering",
         "download"},
-    {C_FLAGS (GST_PLAY_FLAG_BUFFERING), "Buffer demuxed/parsed data",
-        "buffering"},
-    {C_FLAGS (GST_PLAY_FLAG_DEINTERLACE), "Deinterlace video if necessary",
-        "deinterlace"},
-    {C_FLAGS (GST_PLAY_FLAG_SOFT_COLORBALANCE), "Use software color balance",
-        "soft-colorbalance"},
     {0, NULL, NULL}
   };
-  static volatile GType id = 0;
+  *id = g_flags_register_static ("GstPlayFlags", values);
+}
 
-  if (g_once_init_enter ((gsize *) & id)) {
-    GType _id;
+GType
+gst_play_flags_get_type (void)
+{
+  static GType id;
+  static GOnce once = G_ONCE_INIT;
 
-    _id = g_flags_register_static ("GstPlayFlags", values);
-
-    g_once_init_leave ((gsize *) & id, _id);
-  }
-
+  g_once (&once, (GThreadFunc) register_gst_play_flags, &id);
   return id;
 }

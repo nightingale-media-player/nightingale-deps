@@ -1,9 +1,3 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-/* FIXME 0.11: suppress warnings for deprecated API such as GStaticRecMutex
- * with newer GTK versions (>= 3.3.0) */
-#define GDK_DISABLE_DEPRECATION_WARNINGS
 #include <stdlib.h>
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -27,7 +21,8 @@ static guint update_id = 0;
 static guint changed_id = 0;
 static guint schanged_id = 0;
 
-#define SOURCE "filesrc"
+//#define SOURCE "filesrc"
+#define SOURCE "gnomevfssrc"
 #define ASINK "alsasink"
 //#define ASINK "osssink"
 #define VSINK "xvimagesink"
@@ -55,7 +50,7 @@ typedef struct
 dyn_link;
 
 static GstElement *
-gst_element_factory_make_or_warn (const gchar * type, const gchar * name)
+gst_element_factory_make_or_warn (gchar * type, gchar * name)
 {
   GstElement *element = gst_element_factory_make (type, name);
 
@@ -151,11 +146,15 @@ format_value (GtkScale * scale, gdouble value)
 static gboolean
 update_scale (gpointer data)
 {
+  GstFormat format;
+
   position = 0;
   duration = 0;
 
-  gst_element_query_position (pipeline, GST_FORMAT_TIME, &position);
-  gst_element_query_duration (pipeline, GST_FORMAT_TIME, &duration);
+  format = GST_FORMAT_TIME;
+
+  gst_element_query_position (pipeline, &format, &position);
+  gst_element_query_duration (pipeline, &format, &duration);
 
   if (position >= duration)
     duration = position;
@@ -301,9 +300,8 @@ start_seek (GtkWidget * widget, GdkEventButton * event, gpointer user_data)
   }
 
   if (changed_id == 0) {
-    changed_id =
-        g_signal_connect (hscale, "value_changed", G_CALLBACK (seek_cb),
-        pipeline);
+    changed_id = g_signal_connect (GTK_OBJECT (hscale),
+        "value_changed", G_CALLBACK (seek_cb), pipeline);
   }
 
   GST_DEBUG ("start seek");
@@ -315,7 +313,7 @@ static gboolean
 stop_seek (GtkWidget * widget, gpointer user_data)
 {
   update_id =
-      g_timeout_add (UPDATE_INTERVAL, (GSourceFunc) update_scale, pipeline);
+      g_timeout_add (UPDATE_INTERVAL, (GtkFunction) update_scale, pipeline);
 
   GST_DEBUG ("stop seek");
 
@@ -341,7 +339,7 @@ play_cb (GtkButton * button, gpointer data)
     gst_element_get_state (pipeline, NULL, NULL, GST_CLOCK_TIME_NONE);
     gst_element_set_state (pipeline, GST_STATE_PLAYING);
     update_id =
-        g_timeout_add (UPDATE_INTERVAL, (GSourceFunc) update_scale, pipeline);
+        g_timeout_add (UPDATE_INTERVAL, (GtkFunction) update_scale, pipeline);
   }
 }
 
@@ -409,9 +407,8 @@ bus_message (GstBus * bus, GstMessage * message, gpointer data)
       GST_DEBUG ("segment_done, doing next seek");
       if (!do_seek (hscale, FALSE, update_id == 0)) {
         if (changed_id == 0) {
-          changed_id =
-              g_signal_connect (hscale, "value_changed", G_CALLBACK (seek_cb),
-              pipeline);
+          changed_id = g_signal_connect (GTK_OBJECT (hscale),
+              "value_changed", G_CALLBACK (seek_cb), pipeline);
         }
       }
       break;
@@ -424,7 +421,7 @@ bus_message (GstBus * bus, GstMessage * message, gpointer data)
 
 typedef struct
 {
-  const gchar *name;
+  gchar *name;
   GstElement *(*func) (const gchar * location);
 }
 Pipeline;
@@ -463,6 +460,9 @@ main (int argc, char **argv)
   gint type;
   GOptionContext *ctx;
   GError *err = NULL;
+
+  if (!g_thread_supported ())
+    g_thread_init (NULL);
 
   ctx = g_option_context_new ("seek");
   g_option_context_add_main_entries (ctx, options, NULL);
@@ -505,22 +505,23 @@ main (int argc, char **argv)
           1.0, 1.0));
   hscale = gtk_hscale_new (adjustment);
   gtk_scale_set_digits (GTK_SCALE (hscale), 2);
+  gtk_range_set_update_policy (GTK_RANGE (hscale), GTK_UPDATE_CONTINUOUS);
 
   sadjustment =
       GTK_ADJUSTMENT (gtk_adjustment_new (1.0, 0.0, 5.0, 0.1, 1.0, 0.0));
   shscale = gtk_hscale_new (sadjustment);
   gtk_scale_set_digits (GTK_SCALE (shscale), 2);
+  gtk_range_set_update_policy (GTK_RANGE (shscale), GTK_UPDATE_CONTINUOUS);
 
-  schanged_id =
-      g_signal_connect (shscale, "value_changed", G_CALLBACK (speed_cb),
-      pipeline);
+  schanged_id = g_signal_connect (GTK_OBJECT (shscale),
+      "value_changed", G_CALLBACK (speed_cb), pipeline);
 
-  g_signal_connect (hscale, "button_press_event", G_CALLBACK (start_seek),
-      pipeline);
-  g_signal_connect (hscale, "button_release_event", G_CALLBACK (stop_seek),
-      pipeline);
-  g_signal_connect (hscale, "format_value", G_CALLBACK (format_value),
-      pipeline);
+  g_signal_connect (GTK_OBJECT (hscale),
+      "button_press_event", G_CALLBACK (start_seek), pipeline);
+  g_signal_connect (GTK_OBJECT (hscale),
+      "button_release_event", G_CALLBACK (stop_seek), pipeline);
+  g_signal_connect (GTK_OBJECT (hscale),
+      "format_value", G_CALLBACK (format_value), pipeline);
 
   /* do the packing stuff ... */
   gtk_window_set_default_size (GTK_WINDOW (window), 96, 96);

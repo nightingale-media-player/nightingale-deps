@@ -23,7 +23,6 @@
 #endif
 
 #include <gst/check/gstcheck.h>
-#include <gst/audio/audio.h>
 
 /* helper element to insert additional buffers overlapping with previous ones */
 static gdouble injector_inject_probability = 0.0;
@@ -31,17 +30,21 @@ static gdouble injector_inject_probability = 0.0;
 typedef GstElement TestInjector;
 typedef GstElementClass TestInjectorClass;
 
-GType test_injector_get_type (void);
-G_DEFINE_TYPE (TestInjector, test_injector, GST_TYPE_ELEMENT);
-
-#define FORMATS "{ "GST_AUDIO_NE(F32)", S8, S16LE, S16BE, " \
-                   "U16LE, U16NE, S32LE, S32BE, U32LE, U32BE }"
+GST_BOILERPLATE (TestInjector, test_injector, GstElement, GST_TYPE_ELEMENT);
 
 #define INJECTOR_CAPS \
-  "audio/x-raw, "                                        \
-    "format = (string) "FORMATS", "                      \
+  "audio/x-raw-float, "                                  \
     "rate = (int) [ 1, MAX ], "                          \
-    "channels = (int) [ 1, 8 ]"
+    "channels = (int) [ 1, 8 ], "                        \
+    "endianness = (int) BYTE_ORDER, "                    \
+    "width = (int) 32;"                                  \
+  "audio/x-raw-int, "                                    \
+    "rate = (int) [ 1, MAX ], "                          \
+    "channels = (int) [ 1, 8 ], "                        \
+    "endianness = (int) { LITTLE_ENDIAN, BIG_ENDIAN }, " \
+    "width = (int) { 8, 16, 32 }, "                      \
+    "depth = (int) [ 1, 32 ], "                          \
+    "signed = (boolean) { true, false }"
 
 static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -54,9 +57,9 @@ static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_STATIC_CAPS (INJECTOR_CAPS));
 
 static void
-test_injector_class_init (TestInjectorClass * klass)
+test_injector_base_init (gpointer g_class)
 {
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_template));
@@ -64,13 +67,20 @@ test_injector_class_init (TestInjectorClass * klass)
       gst_static_pad_template_get (&sink_template));
 }
 
+static void
+test_injector_class_init (TestInjectorClass * klass)
+{
+  /* nothing to do here */
+}
+
 static GstFlowReturn
-test_injector_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
+test_injector_chain (GstPad * pad, GstBuffer * buf)
 {
   GstFlowReturn ret;
   GstPad *srcpad;
 
-  srcpad = gst_element_get_static_pad (GST_ELEMENT (parent), "src");
+  srcpad =
+      gst_element_get_static_pad (GST_ELEMENT (GST_PAD_PARENT (pad)), "src");
 
   /* since we're increasing timestamp/offsets, push this one first */
   GST_LOG (" passing buffer   [t=%" GST_TIME_FORMAT "-%" GST_TIME_FORMAT
@@ -130,42 +140,40 @@ test_injector_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
   }
 
   gst_buffer_unref (buf);
-  gst_object_unref (srcpad);
 
   return ret;
 }
 
 static void
-test_injector_init (TestInjector * injector)
+test_injector_init (TestInjector * injector, TestInjectorClass * klass)
 {
   GstPad *pad;
 
   pad = gst_pad_new_from_static_template (&sink_template, "sink");
   gst_pad_set_chain_function (pad, test_injector_chain);
-  GST_PAD_SET_PROXY_CAPS (pad);
+  gst_pad_set_getcaps_function (pad, gst_pad_proxy_getcaps);
+  gst_pad_set_setcaps_function (pad, gst_pad_proxy_setcaps);
   gst_element_add_pad (GST_ELEMENT (injector), pad);
 
   pad = gst_pad_new_from_static_template (&src_template, "src");
-  GST_PAD_SET_PROXY_CAPS (pad);
+  gst_pad_set_getcaps_function (pad, gst_pad_proxy_getcaps);
+  gst_pad_set_setcaps_function (pad, gst_pad_proxy_setcaps);
   gst_element_add_pad (GST_ELEMENT (injector), pad);
 }
 
-static GstPadProbeReturn
-probe_cb (GstPad * pad, GstPadProbeInfo * info, gpointer user_data)
+static gboolean
+probe_cb (GstPad * pad, GstBuffer * buf, gdouble * drop_probability)
 {
-  GstBuffer *buf = GST_PAD_PROBE_INFO_BUFFER (info);
-  gdouble *drop_probability = user_data;
-
   if (g_random_double () < *drop_probability) {
     GST_LOG ("dropping buffer [t=%" GST_TIME_FORMAT "-%" GST_TIME_FORMAT "], "
         "offset=%" G_GINT64_FORMAT ", offset_end=%" G_GINT64_FORMAT,
         GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)),
         GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf) + GST_BUFFER_DURATION (buf)),
         GST_BUFFER_OFFSET (buf), GST_BUFFER_OFFSET_END (buf));
-    return GST_PAD_PROBE_DROP;  /* drop buffer */
+    return FALSE;               /* drop buffer */
   }
 
-  return GST_PAD_PROBE_OK;      /* don't drop buffer */
+  return TRUE;                  /* don't drop buffer */
 }
 
 static void
@@ -175,8 +183,8 @@ got_buf (GstElement * fakesink, GstBuffer * buf, GstPad * pad, GList ** p_bufs)
 }
 
 static void
-do_perfect_stream_test (guint rate, const gchar * format,
-    gdouble drop_probability, gdouble inject_probability)
+do_perfect_stream_test (guint rate, guint width, gdouble drop_probability,
+    gdouble inject_probability)
 {
   GstElement *pipe, *src, *conv, *filter, *injector, *audiorate, *sink;
   GstMessage *msg;
@@ -185,24 +193,16 @@ do_perfect_stream_test (guint rate, const gchar * format,
   GList *l, *bufs = NULL;
   GstClockTime next_time = GST_CLOCK_TIME_NONE;
   guint64 next_offset = GST_BUFFER_OFFSET_NONE;
-  GstAudioFormat fmt;
-  const GstAudioFormatInfo *finfo;
-  gint width;
 
-  fmt = gst_audio_format_from_string (format);
-  g_assert (format != GST_AUDIO_FORMAT_UNKNOWN);
-
-  finfo = gst_audio_format_get_info (fmt);
-  width = GST_AUDIO_FORMAT_INFO_WIDTH (finfo);
-
-  caps = gst_caps_new_simple ("audio/x-raw", "rate", G_TYPE_INT,
-      rate, "format", G_TYPE_STRING, format, NULL);
+  caps = gst_caps_new_simple ("audio/x-raw-int", "rate", G_TYPE_INT,
+      rate, "width", G_TYPE_INT, width, NULL);
 
   GST_INFO ("-------- drop=%.0f%% caps = %" GST_PTR_FORMAT " ---------- ",
       drop_probability * 100.0, caps);
 
   g_assert (drop_probability >= 0.0 && drop_probability <= 1.0);
   g_assert (inject_probability >= 0.0 && inject_probability <= 1.0);
+  g_assert (width > 0 && (width % 8) == 0);
 
   pipe = gst_pipeline_new ("pipeline");
   fail_unless (pipe != NULL);
@@ -210,7 +210,7 @@ do_perfect_stream_test (guint rate, const gchar * format,
   src = gst_element_factory_make ("audiotestsrc", "audiotestsrc");
   fail_unless (src != NULL);
 
-  g_object_set (src, "num-buffers", 10, NULL);
+  g_object_set (src, "num-buffers", 100, NULL);
 
   conv = gst_element_factory_make ("audioconvert", "audioconvert");
   fail_unless (conv != NULL);
@@ -226,8 +226,7 @@ do_perfect_stream_test (guint rate, const gchar * format,
 
   srcpad = gst_element_get_static_pad (injector, "src");
   fail_unless (srcpad != NULL);
-  gst_pad_add_probe (srcpad, GST_PAD_PROBE_TYPE_BUFFER, probe_cb,
-      &drop_probability, NULL);
+  gst_pad_add_buffer_probe (srcpad, G_CALLBACK (probe_cb), &drop_probability);
   gst_object_unref (srcpad);
 
   audiorate = gst_element_factory_make ("audiorate", "audiorate");
@@ -277,12 +276,11 @@ do_perfect_stream_test (guint rate, const gchar * format,
     }
 
     /* check buffer size for sanity */
-    fail_unless_equals_int (gst_buffer_get_size (buf) % (width / 8), 0);
+    fail_unless_equals_int (GST_BUFFER_SIZE (buf) % (width / 8), 0);
 
     /* check there is actually as much data as there should be */
     num_samples = GST_BUFFER_OFFSET_END (buf) - GST_BUFFER_OFFSET (buf);
-    fail_unless_equals_int (gst_buffer_get_size (buf),
-        num_samples * (width / 8));
+    fail_unless_equals_int (GST_BUFFER_SIZE (buf), num_samples * (width / 8));
 
     next_time = GST_BUFFER_TIMESTAMP (buf) + GST_BUFFER_DURATION (buf);
     next_offset = GST_BUFFER_OFFSET_END (buf);
@@ -307,8 +305,8 @@ GST_START_TEST (test_perfect_stream_drop0)
   guint i;
 
   for (i = 0; i < G_N_ELEMENTS (rates); ++i) {
-    do_perfect_stream_test (rates[i], "S8", 0.0, 0.0);
-    do_perfect_stream_test (rates[i], GST_AUDIO_NE (S16), 0.0, 0.0);
+    do_perfect_stream_test (rates[i], 8, 0.0, 0.0);
+    do_perfect_stream_test (rates[i], 16, 0.0, 0.0);
   }
 }
 
@@ -319,8 +317,8 @@ GST_START_TEST (test_perfect_stream_drop10)
   guint i;
 
   for (i = 0; i < G_N_ELEMENTS (rates); ++i) {
-    do_perfect_stream_test (rates[i], "S8", 0.10, 0.0);
-    do_perfect_stream_test (rates[i], GST_AUDIO_NE (S16), 0.10, 0.0);
+    do_perfect_stream_test (rates[i], 8, 0.10, 0.0);
+    do_perfect_stream_test (rates[i], 16, 0.10, 0.0);
   }
 }
 
@@ -331,8 +329,8 @@ GST_START_TEST (test_perfect_stream_drop50)
   guint i;
 
   for (i = 0; i < G_N_ELEMENTS (rates); ++i) {
-    do_perfect_stream_test (rates[i], "S8", 0.50, 0.0);
-    do_perfect_stream_test (rates[i], GST_AUDIO_NE (S16), 0.50, 0.0);
+    do_perfect_stream_test (rates[i], 8, 0.50, 0.0);
+    do_perfect_stream_test (rates[i], 16, 0.50, 0.0);
   }
 }
 
@@ -343,8 +341,8 @@ GST_START_TEST (test_perfect_stream_drop90)
   guint i;
 
   for (i = 0; i < G_N_ELEMENTS (rates); ++i) {
-    do_perfect_stream_test (rates[i], "S8", 0.90, 0.0);
-    do_perfect_stream_test (rates[i], GST_AUDIO_NE (S16), 0.90, 0.0);
+    do_perfect_stream_test (rates[i], 8, 0.90, 0.0);
+    do_perfect_stream_test (rates[i], 16, 0.90, 0.0);
   }
 }
 
@@ -355,8 +353,8 @@ GST_START_TEST (test_perfect_stream_inject10)
   guint i;
 
   for (i = 0; i < G_N_ELEMENTS (rates); ++i) {
-    do_perfect_stream_test (rates[i], "S8", 0.0, 0.10);
-    do_perfect_stream_test (rates[i], GST_AUDIO_NE (S16), 0.0, 0.10);
+    do_perfect_stream_test (rates[i], 8, 0.0, 0.10);
+    do_perfect_stream_test (rates[i], 16, 0.0, 0.10);
   }
 }
 
@@ -367,8 +365,8 @@ GST_START_TEST (test_perfect_stream_inject90)
   guint i;
 
   for (i = 0; i < G_N_ELEMENTS (rates); ++i) {
-    do_perfect_stream_test (rates[i], "S8", 0.0, 0.90);
-    do_perfect_stream_test (rates[i], GST_AUDIO_NE (S16), 0.0, 0.90);
+    do_perfect_stream_test (rates[i], 8, 0.0, 0.90);
+    do_perfect_stream_test (rates[i], 16, 0.0, 0.90);
   }
 }
 
@@ -379,8 +377,8 @@ GST_START_TEST (test_perfect_stream_drop45_inject25)
   guint i;
 
   for (i = 0; i < G_N_ELEMENTS (rates); ++i) {
-    do_perfect_stream_test (rates[i], "S8", 0.45, 0.25);
-    do_perfect_stream_test (rates[i], GST_AUDIO_NE (S16), 0.45, 0.25);
+    do_perfect_stream_test (rates[i], 8, 0.45, 0.25);
+    do_perfect_stream_test (rates[i], 16, 0.45, 0.25);
   }
 }
 
@@ -391,15 +389,13 @@ GST_END_TEST;
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw,format=" GST_AUDIO_NE (F32)
-        ",channels=1,rate=44100")
+    GST_STATIC_CAPS ("audio/x-raw-float,channels=1,rate=44100,width=32")
     );
 
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw,format=" GST_AUDIO_NE (F32)
-        ",channels=1,rate=44100")
+    GST_STATIC_CAPS ("audio/x-raw-float,channels=1,rate=44100,width=32")
     );
 
 GST_START_TEST (test_large_discont)
@@ -410,13 +406,12 @@ GST_START_TEST (test_large_discont)
   GstBuffer *buf;
 
   audiorate = gst_check_setup_element ("audiorate");
-  caps = gst_caps_new_simple ("audio/x-raw",
-      "format", G_TYPE_STRING, GST_AUDIO_NE (F32),
-      "layout", G_TYPE_STRING, "interleaved",
-      "channels", G_TYPE_INT, 1, "rate", G_TYPE_INT, 44100, NULL);
+  caps = gst_caps_new_simple ("audio/x-raw-float",
+      "channels", G_TYPE_INT, 1,
+      "rate", G_TYPE_INT, 44100, "width", G_TYPE_INT, 32, NULL);
 
-  srcpad = gst_check_setup_src_pad (audiorate, &srctemplate);
-  sinkpad = gst_check_setup_sink_pad (audiorate, &sinktemplate);
+  srcpad = gst_check_setup_src_pad (audiorate, &srctemplate, caps);
+  sinkpad = gst_check_setup_sink_pad (audiorate, &sinktemplate, caps);
 
   gst_pad_set_active (srcpad, TRUE);
   gst_pad_set_active (sinkpad, TRUE);
@@ -426,13 +421,14 @@ GST_START_TEST (test_large_discont)
       "failed to set audiorate playing");
 
   buf = gst_buffer_new_and_alloc (4);
-  gst_pad_set_caps (srcpad, caps);
+  gst_buffer_set_caps (buf, caps);
   GST_BUFFER_TIMESTAMP (buf) = 0;
   gst_pad_push (srcpad, buf);
 
   fail_unless_equals_int (g_list_length (buffers), 1);
 
   buf = gst_buffer_new_and_alloc (4);
+  gst_buffer_set_caps (buf, caps);
   GST_BUFFER_TIMESTAMP (buf) = 2 * GST_SECOND;
   gst_pad_push (srcpad, buf);
   /* Now we should have 3 more buffers: the one we injected, plus _two_ filler

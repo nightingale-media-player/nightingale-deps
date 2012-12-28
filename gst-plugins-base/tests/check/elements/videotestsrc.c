@@ -40,8 +40,8 @@ static GstPad *mysinkpad;
 
 
 #define CAPS_TEMPLATE_STRING            \
-    "video/x-raw, "                 \
-    "format = (string) UYVY, "          \
+    "video/x-raw-yuv, "                 \
+    "format = (fourcc) Y422, "          \
     "width = (int) [ 1,  MAX ], "       \
     "height = (int) [ 1,  MAX ], "      \
     "framerate = (fraction) [ 0/1, MAX ]"
@@ -59,7 +59,7 @@ setup_videotestsrc (void)
 
   GST_DEBUG ("setup_videotestsrc");
   videotestsrc = gst_check_setup_element ("videotestsrc");
-  mysinkpad = gst_check_setup_sink_pad (videotestsrc, &sinktemplate);
+  mysinkpad = gst_check_setup_sink_pad (videotestsrc, &sinktemplate, NULL);
   gst_pad_set_active (mysinkpad, TRUE);
 
   return videotestsrc;
@@ -70,7 +70,9 @@ cleanup_videotestsrc (GstElement * videotestsrc)
 {
   GST_DEBUG ("cleanup_videotestsrc");
 
-  gst_check_drop_buffers ();
+  g_list_foreach (buffers, (GFunc) gst_mini_object_unref, NULL);
+  g_list_free (buffers);
+  buffers = NULL;
 
   gst_pad_set_active (mysinkpad, FALSE);
   gst_check_teardown_sink_pad (videotestsrc);
@@ -91,25 +93,27 @@ GST_START_TEST (test_all_patterns)
   fail_unless (G_IS_PARAM_SPEC_ENUM (property));
   values = G_ENUM_CLASS (g_type_class_ref (property->value_type))->values;
 
+
   while (values[j].value_name) {
     GST_DEBUG_OBJECT (videotestsrc, "testing pattern %s", values[j].value_name);
-
-    g_object_set (videotestsrc, "pattern", j, NULL);
 
     fail_unless (gst_element_set_state (videotestsrc,
             GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
         "could not set to playing");
 
-    g_mutex_lock (&check_mutex);
+    g_mutex_lock (check_mutex);
     while (g_list_length (buffers) < 10) {
       GST_DEBUG_OBJECT (videotestsrc, "Waiting for more buffers");
-      g_cond_wait (&check_cond, &check_mutex);
+      g_cond_wait (check_cond, check_mutex);
     }
-    g_mutex_unlock (&check_mutex);
+    g_mutex_unlock (check_mutex);
+
 
     gst_element_set_state (videotestsrc, GST_STATE_READY);
 
-    gst_check_drop_buffers ();
+    g_list_foreach (buffers, (GFunc) gst_mini_object_unref, NULL);
+    g_list_free (buffers);
+    buffers = NULL;
     ++j;
   }
 
@@ -153,25 +157,37 @@ fix_expected_colour (guint32 col_mask, guint8 col_expected)
 static void
 check_rgb_buf (const guint8 * pixels, guint32 r_mask, guint32 g_mask,
     guint32 b_mask, guint32 a_mask, guint8 r_expected, guint8 g_expected,
-    guint8 b_expected, guint bpp, guint depth)
+    guint8 b_expected, guint endianness, guint bpp, guint depth)
 {
   guint32 pixel, red, green, blue, alpha;
 
   switch (bpp) {
-    case 32:
-      pixel = GST_READ_UINT32_BE (pixels);
+    case 32:{
+      if (endianness == G_LITTLE_ENDIAN)
+        pixel = GST_READ_UINT32_LE (pixels);
+      else
+        pixel = GST_READ_UINT32_BE (pixels);
       break;
-    case 24:
-      pixel = (GST_READ_UINT8 (pixels) << 16) |
-          (GST_READ_UINT8 (pixels + 1) << 8) |
-          (GST_READ_UINT8 (pixels + 2) << 0);
+    }
+    case 24:{
+      if (endianness == G_BIG_ENDIAN) {
+        pixel = (GST_READ_UINT8 (pixels) << 16) |
+            (GST_READ_UINT8 (pixels + 1) << 8) |
+            (GST_READ_UINT8 (pixels + 2) << 0);
+      } else {
+        pixel = (GST_READ_UINT8 (pixels + 2) << 16) |
+            (GST_READ_UINT8 (pixels + 1) << 8) |
+            (GST_READ_UINT8 (pixels + 0) << 0);
+      }
       break;
-    case 16:
-      if (G_BYTE_ORDER == G_LITTLE_ENDIAN)
+    }
+    case 16:{
+      if (endianness == G_LITTLE_ENDIAN)
         pixel = GST_READ_UINT16_LE (pixels);
       else
         pixel = GST_READ_UINT16_BE (pixels);
       break;
+    }
     default:
       g_return_if_reached ();
   }
@@ -205,17 +221,9 @@ check_rgb_buf (const guint8 * pixels, guint32 r_mask, guint32 g_mask,
 
 static void
 got_buf_cb (GstElement * sink, GstBuffer * new_buf, GstPad * pad,
-    GstSample ** p_old_sample)
+    GstBuffer ** p_old_buf)
 {
-  GstCaps *caps;
-
-  caps = gst_pad_get_current_caps (pad);
-
-  if (*p_old_sample)
-    gst_sample_unref (*p_old_sample);
-  *p_old_sample = gst_sample_new (new_buf, caps, NULL, NULL);
-
-  gst_caps_unref (caps);
+  gst_buffer_replace (p_old_buf, new_buf);
 }
 
 /* tests the positioning of pixels within the various RGB pixel layouts */
@@ -251,14 +259,14 @@ GST_START_TEST (test_rgb_formats)
     "xRGB", 32, 24, 0x00ff0000, 0x0000ff00, 0x000000ff, 0x00000000}, {
     "BGRx", 32, 24, 0x0000ff00, 0x00ff0000, 0xff000000, 0x00000000}, {
     "xBGR", 32, 24, 0x000000ff, 0x0000ff00, 0x00ff0000, 0x00000000}, {
-    "RGB", 24, 24, 0x00ff0000, 0x0000ff00, 0x000000ff, 0x00000000}, {
-    "BGR", 24, 24, 0x000000ff, 0x0000ff00, 0x00ff0000, 0x00000000}, {
-    "RGB16", 16, 16, 0x0000f800, 0x000007e0, 0x0000001f, 0x00000000}, {
-    "RGB15", 16, 15, 0x00007c00, 0x000003e0, 0x0000001f, 0x0000000}
+    "RGB ", 24, 24, 0x00ff0000, 0x0000ff00, 0x000000ff, 0x00000000}, {
+    "BGR ", 24, 24, 0x000000ff, 0x0000ff00, 0x00ff0000, 0x00000000}, {
+    "RGB565", 16, 16, 0x0000f800, 0x000007e0, 0x0000001f, 0x00000000}, {
+    "xRGB1555", 16, 15, 0x00007c00, 0x000003e0, 0x0000001f, 0x0000000}
   };
   GstElement *pipeline, *src, *filter, *sink;
-  GstCaps *template_caps;
-  GstSample *sample = NULL;
+  const GstCaps *template_caps;
+  GstBuffer *buf = NULL;
   GstPad *srcpad;
   gint p, i, e;
 
@@ -277,33 +285,54 @@ GST_START_TEST (test_rgb_formats)
 
   srcpad = gst_element_get_static_pad (src, "src");
   template_caps = gst_pad_get_pad_template_caps (srcpad);
+  gst_object_unref (srcpad);
 
   g_object_set (sink, "signal-handoffs", TRUE, NULL);
-  g_signal_connect (sink, "preroll-handoff", G_CALLBACK (got_buf_cb), &sample);
+  g_signal_connect (sink, "preroll-handoff", G_CALLBACK (got_buf_cb), &buf);
 
   GST_LOG ("videotestsrc src template caps: %" GST_PTR_FORMAT, template_caps);
 
   for (i = 0; i < G_N_ELEMENTS (rgb_formats); ++i) {
     for (e = 0; e < 2; ++e) {
+      guint endianness;
       GstCaps *caps;
 
-      caps = gst_caps_new_simple ("video/x-raw",
-          "format", G_TYPE_STRING, rgb_formats[i].nick,
+      if (e == 0) {
+        endianness = G_BYTE_ORDER;
+      } else {
+        endianness =
+            (G_BYTE_ORDER == G_BIG_ENDIAN) ? G_LITTLE_ENDIAN : G_BIG_ENDIAN;
+      }
+
+      caps = gst_caps_new_simple ("video/x-raw-rgb",
+          "bpp", G_TYPE_INT, rgb_formats[i].bpp,
+          "depth", G_TYPE_INT, rgb_formats[i].depth,
+          "red_mask", G_TYPE_INT, rgb_formats[i].red_mask,
+          "green_mask", G_TYPE_INT, rgb_formats[i].green_mask,
+          "blue_mask", G_TYPE_INT, rgb_formats[i].blue_mask,
           "width", G_TYPE_INT, 16, "height", G_TYPE_INT, 16,
+          "endianness", G_TYPE_INT, endianness,
           "framerate", GST_TYPE_FRACTION, 1, 1, NULL);
 
+      fail_unless (rgb_formats[i].alpha_mask == 0 || rgb_formats[i].bpp == 32);
+
+      if (rgb_formats[i].alpha_mask != 0) {
+        gst_structure_set (gst_caps_get_structure (caps, 0),
+            "alpha_mask", G_TYPE_INT, rgb_formats[i].alpha_mask, NULL);
+      }
+
       if (gst_caps_is_subset (caps, template_caps)) {
+
         /* caps are supported, let's run some tests then ... */
         for (p = 0; p < G_N_ELEMENTS (test_patterns); ++p) {
           GstStateChangeReturn state_ret;
-          GstMapInfo map;
 
           g_object_set (src, "pattern", test_patterns[p].pattern_enum, NULL);
 
-          GST_INFO ("%5s %u/%u %08x %08x %08x %08x, pattern=%s",
+          GST_INFO ("%5s %u/%u %08x %08x %08x %08x %u, pattern=%s",
               rgb_formats[i].nick, rgb_formats[i].bpp, rgb_formats[i].depth,
               rgb_formats[i].red_mask, rgb_formats[i].green_mask,
-              rgb_formats[i].blue_mask, rgb_formats[i].alpha_mask,
+              rgb_formats[i].blue_mask, rgb_formats[i].alpha_mask, endianness,
               test_patterns[p].pattern_name);
 
           /* now get videotestsrc to produce a buffer with the given caps */
@@ -319,36 +348,45 @@ GST_START_TEST (test_rgb_formats)
           state_ret = gst_element_set_state (pipeline, GST_STATE_NULL);
           fail_unless (state_ret == GST_STATE_CHANGE_SUCCESS);
 
-          fail_unless (sample != NULL);
+          fail_unless (buf != NULL);
 
           /* check buffer caps */
           {
-            GstBuffer *buf;
             GstStructure *s;
-            GstCaps *caps;
-            const gchar *format;
+            gint v;
 
-            buf = gst_sample_get_buffer (sample);
-            fail_unless (buf != NULL);
-            caps = gst_sample_get_caps (sample);
-            fail_unless (caps != NULL);
+            fail_unless (GST_BUFFER_CAPS (buf) != NULL);
 
-            s = gst_caps_get_structure (caps, 0);
-            format = gst_structure_get_string (s, "format");
-            fail_unless (g_str_equal (format, rgb_formats[i].nick));
-
-            /* now check the first pixel */
-            gst_buffer_map (buf, &map, GST_MAP_READ);
-            check_rgb_buf (map.data, rgb_formats[i].red_mask,
-                rgb_formats[i].green_mask, rgb_formats[i].blue_mask,
-                rgb_formats[i].alpha_mask, test_patterns[p].r_expected,
-                test_patterns[p].g_expected, test_patterns[p].b_expected,
-                rgb_formats[i].bpp, rgb_formats[i].depth);
-            gst_buffer_unmap (buf, &map);
-
-            gst_sample_unref (sample);
-            sample = NULL;
+            s = gst_caps_get_structure (GST_BUFFER_CAPS (buf), 0);
+            fail_unless (gst_structure_get_int (s, "bpp", &v));
+            fail_unless_equals_int (v, rgb_formats[i].bpp);
+            fail_unless (gst_structure_get_int (s, "depth", &v));
+            fail_unless_equals_int (v, rgb_formats[i].depth);
+            fail_unless (gst_structure_get_int (s, "red_mask", &v));
+            fail_unless_equals_int (v, rgb_formats[i].red_mask);
+            fail_unless (gst_structure_get_int (s, "green_mask", &v));
+            fail_unless_equals_int (v, rgb_formats[i].green_mask);
+            fail_unless (gst_structure_get_int (s, "blue_mask", &v));
+            fail_unless_equals_int (v, rgb_formats[i].blue_mask);
+            /* there mustn't be an alpha_mask if there's no alpha component */
+            if (rgb_formats[i].depth == 32) {
+              fail_unless (gst_structure_get_int (s, "alpha_mask", &v));
+              fail_unless_equals_int (v, rgb_formats[i].alpha_mask);
+            } else {
+              fail_unless (gst_structure_get_value (s, "alpha_mask") == NULL);
+            }
           }
+
+
+          /* now check the first pixel */
+          check_rgb_buf (GST_BUFFER_DATA (buf), rgb_formats[i].red_mask,
+              rgb_formats[i].green_mask, rgb_formats[i].blue_mask,
+              rgb_formats[i].alpha_mask, test_patterns[p].r_expected,
+              test_patterns[p].g_expected, test_patterns[p].b_expected,
+              endianness, rgb_formats[i].bpp, rgb_formats[i].depth);
+
+          gst_buffer_unref (buf);
+          buf = NULL;
         }
 
       } else {
@@ -358,8 +396,6 @@ GST_START_TEST (test_rgb_formats)
       gst_caps_unref (caps);
     }
   }
-  gst_caps_unref (template_caps);
-  gst_object_unref (srcpad);
 
   gst_object_unref (pipeline);
 }
@@ -379,6 +415,9 @@ videotestsrc_suite (void)
 
 #ifdef HAVE_VALGRIND
   if (RUNNING_ON_VALGRIND) {
+    /* otherwise valgrind errors out when liboil probes CPU extensions
+     * during which it causes SIGILLs etc. to be fired */
+    g_setenv ("OIL_CPU_FLAGS", "0", 0);
     /* test_rgb_formats takes a bit longer, so increase timeout */
     tcase_set_timeout (tc_chain, 5 * 60);
   }
@@ -390,4 +429,19 @@ videotestsrc_suite (void)
   return s;
 }
 
-GST_CHECK_MAIN (videotestsrc);
+int
+main (int argc, char **argv)
+{
+  int nf;
+
+  Suite *s = videotestsrc_suite ();
+  SRunner *sr = srunner_create (s);
+
+  gst_check_init (&argc, &argv);
+
+  srunner_run_all (sr, CK_NORMAL);
+  nf = srunner_ntests_failed (sr);
+  srunner_free (sr);
+
+  return nf;
+}

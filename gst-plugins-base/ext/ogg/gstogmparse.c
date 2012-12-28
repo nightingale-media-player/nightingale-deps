@@ -22,15 +22,12 @@
 #include "config.h"
 #endif
 
-#include <stdio.h>
 #include <string.h>
 
 #include <gst/gst.h>
 #include <gst/tag/tag.h>
 #include <gst/riff/riff-media.h>
 #include <gst/riff/riff-read.h>
-
-#include "gstogg.h"
 
 GST_DEBUG_CATEGORY_STATIC (gst_ogm_parse_debug);
 #define GST_CAT_DEFAULT gst_ogm_parse_debug
@@ -58,6 +55,24 @@ GST_DEBUG_CATEGORY_STATIC (gst_ogm_parse_debug);
   (G_TYPE_CHECK_CLASS_TYPE((klass), GST_TYPE_OGM_PARSE))
 #define GST_OGM_PARSE_GET_CLASS(obj) \
   (G_TYPE_INSTANCE_GET_CLASS ((obj), GST_TYPE_OGM_PARSE, GstOgmParseClass))
+
+static const GstElementDetails gst_ogm_audio_parse_details =
+GST_ELEMENT_DETAILS ("OGM audio stream parser",
+    "Codec/Decoder/Audio",
+    "parse an OGM audio header and stream",
+    "GStreamer maintainers <gstreamer-devel@lists.sourceforge.net>");
+
+static const GstElementDetails gst_ogm_video_parse_details =
+GST_ELEMENT_DETAILS ("OGM video stream parser",
+    "Codec/Decoder/Video",
+    "parse an OGM video header and stream",
+    "GStreamer maintainers <gstreamer-devel@lists.sourceforge.net>");
+
+static const GstElementDetails gst_ogm_text_parse_details =
+GST_ELEMENT_DETAILS ("OGM text stream parser",
+    "Codec/Decoder/Subtitle",
+    "parse an OGM text header and stream",
+    "GStreamer maintainers <gstreamer-devel@lists.sourceforge.net>");
 
 typedef struct _stream_header_video
 {
@@ -151,15 +166,13 @@ static void gst_ogm_video_parse_init (GstOgmParse * ogm);
 static void gst_ogm_audio_parse_init (GstOgmParse * ogm);
 static void gst_ogm_text_parse_init (GstOgmParse * ogm);
 
-static gboolean gst_ogm_parse_sink_event (GstPad * pad, GstObject * parent,
-    GstEvent * event);
-static gboolean gst_ogm_parse_sink_query (GstPad * pad, GstObject * parent,
-    GstQuery * query);
+static const GstQueryType *gst_ogm_parse_get_sink_querytypes (GstPad * pad);
+static gboolean gst_ogm_parse_sink_event (GstPad * pad, GstEvent * event);
+static gboolean gst_ogm_parse_sink_query (GstPad * pad, GstQuery * query);
 static gboolean gst_ogm_parse_sink_convert (GstPad * pad, GstFormat src_format,
     gint64 src_value, GstFormat * dest_format, gint64 * dest_value);
 
-static GstFlowReturn gst_ogm_parse_chain (GstPad * pad, GstObject * parent,
-    GstBuffer * buffer);
+static GstFlowReturn gst_ogm_parse_chain (GstPad * pad, GstBuffer * buffer);
 
 static GstStateChangeReturn gst_ogm_parse_change_state (GstElement * element,
     GstStateChange transition);
@@ -276,17 +289,13 @@ gst_ogm_audio_parse_base_init (GstOgmParseClass * klass)
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
   GstCaps *caps = gst_riff_create_audio_template_caps ();
 
-  gst_element_class_set_static_metadata (element_class,
-      "OGM audio stream parser", "Codec/Decoder/Audio",
-      "parse an OGM audio header and stream",
-      "GStreamer maintainers <gstreamer-devel@lists.sourceforge.net>");
+  gst_element_class_set_details (element_class, &gst_ogm_audio_parse_details);
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sink_factory_audio));
   audio_src_templ = gst_pad_template_new ("src",
       GST_PAD_SRC, GST_PAD_SOMETIMES, caps);
   gst_element_class_add_pad_template (element_class, audio_src_templ);
-  gst_caps_unref (caps);
 }
 
 static void
@@ -295,37 +304,28 @@ gst_ogm_video_parse_base_init (GstOgmParseClass * klass)
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
   GstCaps *caps = gst_riff_create_video_template_caps ();
 
-  gst_element_class_set_static_metadata (element_class,
-      "OGM video stream parser", "Codec/Decoder/Video",
-      "parse an OGM video header and stream",
-      "GStreamer maintainers <gstreamer-devel@lists.sourceforge.net>");
+  gst_element_class_set_details (element_class, &gst_ogm_video_parse_details);
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sink_factory_video));
   video_src_templ = gst_pad_template_new ("src",
       GST_PAD_SRC, GST_PAD_SOMETIMES, caps);
   gst_element_class_add_pad_template (element_class, video_src_templ);
-  gst_caps_unref (caps);
 }
 
 static void
 gst_ogm_text_parse_base_init (GstOgmParseClass * klass)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-  GstCaps *caps = gst_caps_new_simple ("text/x-raw", "format", G_TYPE_STRING,
-      "utf8", NULL);
+  GstCaps *caps = gst_caps_new_simple ("text/plain", NULL, NULL);
 
-  gst_element_class_set_static_metadata (element_class,
-      "OGM text stream parser", "Codec/Decoder/Subtitle",
-      "parse an OGM text header and stream",
-      "GStreamer maintainers <gstreamer-devel@lists.sourceforge.net>");
+  gst_element_class_set_details (element_class, &gst_ogm_text_parse_details);
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sink_factory_text));
   text_src_templ = gst_pad_template_new ("src",
       GST_PAD_SRC, GST_PAD_SOMETIMES, caps);
   gst_element_class_add_pad_template (element_class, text_src_templ);
-  gst_caps_unref (caps);
 }
 
 static void
@@ -384,6 +384,8 @@ static void
 gst_ogm_text_parse_init (GstOgmParse * ogm)
 {
   ogm->sinkpad = gst_pad_new_from_static_template (&sink_factory_text, "sink");
+  gst_pad_set_query_type_function (ogm->sinkpad,
+      gst_ogm_parse_get_sink_querytypes);
   gst_pad_set_query_function (ogm->sinkpad,
       GST_DEBUG_FUNCPTR (gst_ogm_parse_sink_query));
   gst_pad_set_chain_function (ogm->sinkpad,
@@ -394,6 +396,17 @@ gst_ogm_text_parse_init (GstOgmParse * ogm)
 
   ogm->srcpad = NULL;
   ogm->srcpadtempl = text_src_templ;
+}
+
+static const GstQueryType *
+gst_ogm_parse_get_sink_querytypes (GstPad * pad)
+{
+  static const GstQueryType types[] = {
+    GST_QUERY_POSITION,
+    0
+  };
+
+  return types;
 }
 
 static gboolean
@@ -458,9 +471,9 @@ gst_ogm_parse_sink_convert (GstPad * pad,
 }
 
 static gboolean
-gst_ogm_parse_sink_query (GstPad * pad, GstObject * parent, GstQuery * query)
+gst_ogm_parse_sink_query (GstPad * pad, GstQuery * query)
 {
-  GstOgmParse *ogm = GST_OGM_PARSE (parent);
+  GstOgmParse *ogm = GST_OGM_PARSE (gst_pad_get_parent (pad));
   GstFormat format;
   gboolean res = FALSE;
 
@@ -495,10 +508,11 @@ gst_ogm_parse_sink_query (GstPad * pad, GstObject * parent, GstQuery * query)
       break;
     }
     default:
-      res = gst_pad_query_default (pad, parent, query);
+      res = gst_pad_query_default (pad, query);
       break;
   }
 
+  gst_object_unref (ogm);
   return res;
 }
 
@@ -541,10 +555,8 @@ gst_ogm_parse_stream_header (GstOgmParse * ogm, const guint8 * data, guint size)
         GST_WARNING_OBJECT (ogm, "cannot parse subtype %s", ogm->hdr.subtype);
       }
 
-      /* FIXME: Need to do something with the reorder map */
       caps =
-          gst_riff_create_audio_caps (codec_id, NULL, NULL, NULL, NULL, NULL,
-          NULL);
+          gst_riff_create_audio_caps (codec_id, NULL, NULL, NULL, NULL, NULL);
 
       if (caps == NULL) {
         GST_WARNING_OBJECT (ogm, "no audio caps for codec %u found", codec_id);
@@ -576,7 +588,7 @@ gst_ogm_parse_stream_header (GstOgmParse * ogm, const guint8 * data, guint size)
         GST_WARNING_OBJECT (ogm, "could not find video caps for fourcc %"
             GST_FOURCC_FORMAT, GST_FOURCC_ARGS (fourcc));
         caps = gst_caps_new_simple ("video/x-ogm-unknown", "fourcc",
-            G_TYPE_STRING, ogm->hdr.subtype, NULL);
+            GST_TYPE_FOURCC, fourcc, NULL);
         break;
       }
 
@@ -605,8 +617,7 @@ gst_ogm_parse_stream_header (GstOgmParse * ogm, const guint8 * data, guint size)
       GST_LOG_OBJECT (ogm, "Type: %s, s/u: %" G_GINT64_FORMAT
           ", timeunit=%" G_GINT64_FORMAT,
           ogm->hdr.streamtype, ogm->hdr.samples_per_unit, ogm->hdr.time_unit);
-      caps = gst_caps_new_simple ("text/x-raw", "format", G_TYPE_STRING,
-          "utf8", NULL);
+      caps = gst_caps_new_simple ("text/plain", NULL);
       break;
     }
     default:
@@ -617,19 +628,16 @@ gst_ogm_parse_stream_header (GstOgmParse * ogm, const guint8 * data, guint size)
     goto cannot_decode;
 
   if (ogm->srcpad) {
-    GstCaps *current_caps = gst_pad_get_current_caps (ogm->srcpad);
+    GstCaps *current_caps = GST_PAD_CAPS (ogm->srcpad);
 
-    if (current_caps) {
-      if (caps && !gst_caps_is_equal (current_caps, caps)) {
-        GST_WARNING_OBJECT (ogm, "Already an existing pad %s:%s",
-            GST_DEBUG_PAD_NAME (ogm->srcpad));
-        gst_pad_set_active (ogm->srcpad, FALSE);
-        gst_element_remove_pad (GST_ELEMENT (ogm), ogm->srcpad);
-        ogm->srcpad = NULL;
-      } else {
-        GST_DEBUG_OBJECT (ogm, "Existing pad has the same caps, do nothing");
-      }
-      gst_caps_unref (current_caps);
+    if (current_caps && caps && !gst_caps_is_equal (current_caps, caps)) {
+      GST_WARNING_OBJECT (ogm, "Already an existing pad %s:%s",
+          GST_DEBUG_PAD_NAME (ogm->srcpad));
+      gst_pad_set_active (ogm->srcpad, FALSE);
+      gst_element_remove_pad (GST_ELEMENT (ogm), ogm->srcpad);
+      ogm->srcpad = NULL;
+    } else {
+      GST_DEBUG_OBJECT (ogm, "Existing pad has the same caps, do nothing");
     }
   }
 
@@ -638,8 +646,8 @@ gst_ogm_parse_stream_header (GstOgmParse * ogm, const guint8 * data, guint size)
 
     ogm->srcpad = gst_pad_new_from_template (ogm->srcpadtempl, "src");
     gst_pad_use_fixed_caps (ogm->srcpad);
-    gst_pad_set_active (ogm->srcpad, TRUE);
     gst_pad_set_caps (ogm->srcpad, caps);
+    gst_pad_set_active (ogm->srcpad, TRUE);
     gst_element_add_pad (GST_ELEMENT (ogm), ogm->srcpad);
     GST_INFO_OBJECT (ogm, "Added pad %s:%s with caps %" GST_PTR_FORMAT,
         GST_DEBUG_PAD_NAME (ogm->srcpad), caps);
@@ -660,8 +668,10 @@ gst_ogm_parse_stream_header (GstOgmParse * ogm, const guint8 * data, guint size)
     {
       GstTagList *tags;
 
-      tags = gst_tag_list_new (GST_TAG_SUBTITLE_CODEC, "Ogm", NULL);
-      gst_pad_push_event (ogm->srcpad, gst_event_new_tag (tags));
+      tags = gst_tag_list_new ();
+      gst_tag_list_add (tags, GST_TAG_MERGE_APPEND, GST_TAG_SUBTITLE_CODEC,
+          "Ogm", NULL);
+      gst_element_found_tags_for_pad (GST_ELEMENT (ogm), ogm->srcpad, tags);
     }
   }
 
@@ -689,7 +699,7 @@ gst_ogm_parse_comment_packet (GstOgmParse * ogm, GstBuffer * buf)
 
   if (ogm->srcpad == NULL) {
     GST_DEBUG ("no source pad");
-    return GST_FLOW_FLUSHING;
+    return GST_FLOW_WRONG_STATE;
   }
 
   /* if this is not a subtitle stream, push the vorbiscomment packet
@@ -703,13 +713,15 @@ gst_ogm_parse_comment_packet (GstOgmParse * ogm, GstBuffer * buf)
 
     if (tags) {
       GST_DEBUG_OBJECT (ogm, "tags = %" GST_PTR_FORMAT, tags);
-      gst_pad_push_event (ogm->srcpad, gst_event_new_tag (tags));
+      gst_element_found_tags_for_pad (GST_ELEMENT (ogm), ogm->srcpad, tags);
     } else {
       GST_DEBUG_OBJECT (ogm, "failed to extract tags from vorbis comment");
     }
     /* do not push packet downstream, just let parent unref it */
     ret = GST_FLOW_OK;
   } else {
+    buf = gst_buffer_copy (buf);
+    gst_buffer_set_caps (buf, GST_PAD_CAPS (ogm->srcpad));
     ret = gst_pad_push (ogm->srcpad, buf);
   }
 
@@ -719,28 +731,32 @@ gst_ogm_parse_comment_packet (GstOgmParse * ogm, GstBuffer * buf)
 static void
 gst_ogm_text_parse_strip_trailing_zeroes (GstOgmParse * ogm, GstBuffer * buf)
 {
-  GstMapInfo map;
-  gsize size;
+  const guint8 *data;
+  guint size;
 
-  g_assert (gst_buffer_is_writable (buf));
+  g_assert (gst_buffer_is_metadata_writable (buf));
 
   /* zeroes are not valid UTF-8 characters, so strip them from output */
-  gst_buffer_map (buf, &map, GST_MAP_WRITE);
-  size = map.size;
-  while (size > 0 && map.data[size - 1] == '\0') {
+  data = GST_BUFFER_DATA (buf);
+  size = GST_BUFFER_SIZE (buf);
+  while (size > 0 && data[size - 1] == '\0') {
     --size;
   }
-  gst_buffer_unmap (buf, &map);
+
+  GST_BUFFER_SIZE (buf) = size;
 }
 
 static GstFlowReturn
-gst_ogm_parse_data_packet (GstOgmParse * ogm, GstBuffer * buf,
-    const guint8 * data, gsize size)
+gst_ogm_parse_data_packet (GstOgmParse * ogm, GstBuffer * buf)
 {
   GstFlowReturn ret;
+  const guint8 *data;
   GstBuffer *sbuf;
   gboolean keyframe;
-  guint len, n, xsize = 0;
+  guint size, len, n, xsize = 0;
+
+  data = GST_BUFFER_DATA (buf);
+  size = GST_BUFFER_SIZE (buf);
 
   if ((data[0] & 0x01) != 0)
     goto invalid_startcode;
@@ -756,12 +772,10 @@ gst_ogm_parse_data_packet (GstOgmParse * ogm, GstBuffer * buf,
     xsize = (xsize << 8) | data[n];
   }
 
-  GST_LOG_OBJECT (ogm, "[0x%02x] samples: %d, hdrbytes: %d, datasize: %"
-      G_GSIZE_FORMAT, data[0], xsize, len, size - len - 1);
+  GST_LOG_OBJECT (ogm, "[0x%02x] samples: %d, hdrbytes: %d, datasize: %d",
+      data[0], xsize, len, size - len - 1);
 
-  sbuf =
-      gst_buffer_copy_region (buf, GST_BUFFER_COPY_ALL, len + 1,
-      size - len - 1);
+  sbuf = gst_buffer_create_sub (buf, len + 1, size - len - 1);
 
   if (GST_BUFFER_OFFSET_END_IS_VALID (buf))
     ogm->next_granulepos = GST_BUFFER_OFFSET_END (buf);
@@ -815,6 +829,7 @@ gst_ogm_parse_data_packet (GstOgmParse * ogm, GstBuffer * buf,
   }
 
   if (ogm->srcpad) {
+    gst_buffer_set_caps (sbuf, GST_PAD_CAPS (ogm->srcpad));
     GST_LOG_OBJECT (ogm, "Pushing buffer with ts=%" GST_TIME_FORMAT,
         GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (sbuf)));
     ret = gst_pad_push (ogm->srcpad, sbuf);
@@ -823,7 +838,7 @@ gst_ogm_parse_data_packet (GstOgmParse * ogm, GstBuffer * buf,
           GST_DEBUG_PAD_NAME (ogm->srcpad), gst_flow_get_name (ret));
     }
   } else {
-    ret = GST_FLOW_FLUSHING;
+    ret = GST_FLOW_WRONG_STATE;
   }
 
   return ret;
@@ -838,27 +853,27 @@ invalid_startcode:
 buffer_too_small:
   {
     GST_ELEMENT_ERROR (ogm, STREAM, DECODE, (NULL),
-        ("buffer too small, len+1=%u, size=%" G_GSIZE_FORMAT, len + 1, size));
+        ("buffer too small, len+1=%u, size=%u", len + 1, size));
     return GST_FLOW_ERROR;
   }
 }
 
 static GstFlowReturn
-gst_ogm_parse_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
+gst_ogm_parse_chain (GstPad * pad, GstBuffer * buf)
 {
   GstFlowReturn ret = GST_FLOW_OK;
-  GstOgmParse *ogm = GST_OGM_PARSE (parent);
-  GstMapInfo map;
+  GstOgmParse *ogm = GST_OGM_PARSE (GST_PAD_PARENT (pad));
+  guint8 *data = GST_BUFFER_DATA (buf);
+  guint size = GST_BUFFER_SIZE (buf);
 
-  gst_buffer_map (buf, &map, GST_MAP_READ);
-  if (map.size < 1)
+  if (size < 1)
     goto buffer_too_small;
 
-  GST_LOG_OBJECT (ogm, "Packet with start code 0x%02x", map.data[0]);
+  GST_LOG_OBJECT (ogm, "Packet with start code 0x%02x", data[0]);
 
-  switch (map.data[0]) {
+  switch (data[0]) {
     case 0x01:{
-      ret = gst_ogm_parse_stream_header (ogm, map.data + 1, map.size - 1);
+      ret = gst_ogm_parse_stream_header (ogm, data + 1, size - 1);
       break;
     }
     case 0x03:{
@@ -866,12 +881,11 @@ gst_ogm_parse_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
       break;
     }
     default:{
-      ret = gst_ogm_parse_data_packet (ogm, buf, map.data, map.size);
+      ret = gst_ogm_parse_data_packet (ogm, buf);
       break;
     }
   }
 
-  gst_buffer_unmap (buf, &map);
   gst_buffer_unref (buf);
 
   if (ret != GST_FLOW_OK) {
@@ -884,16 +898,15 @@ gst_ogm_parse_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
 buffer_too_small:
   {
     GST_ELEMENT_ERROR (ogm, STREAM, DECODE, (NULL), ("buffer too small"));
-    gst_buffer_unmap (buf, &map);
     gst_buffer_unref (buf);
     return GST_FLOW_ERROR;
   }
 }
 
 static gboolean
-gst_ogm_parse_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
+gst_ogm_parse_sink_event (GstPad * pad, GstEvent * event)
 {
-  GstOgmParse *ogm = GST_OGM_PARSE (parent);
+  GstOgmParse *ogm = GST_OGM_PARSE (gst_pad_get_parent (pad));
   gboolean res;
 
   GST_LOG_OBJECT (ogm, "processing %s event", GST_EVENT_TYPE_NAME (event));
@@ -905,9 +918,10 @@ gst_ogm_parse_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
     res = TRUE;
   } else {
     GST_OBJECT_UNLOCK (ogm);
-    res = gst_pad_event_default (pad, parent, event);
+    res = gst_pad_event_default (pad, event);
   }
 
+  gst_object_unref (ogm);
   return res;
 }
 

@@ -25,6 +25,7 @@
 
 #include <gst/audio/gstaudiosrc.h>
 #include "gstalsa.h"
+#include "gstalsamixer.h"
 
 G_BEGIN_DECLS
 
@@ -35,7 +36,7 @@ G_BEGIN_DECLS
 #define GST_IS_ALSA_SRC_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_ALSA_SRC))
 #define GST_ALSA_SRC_CAST(obj)       ((GstAlsaSrc *)(obj))
 
-#define GST_ALSA_SRC_GET_LOCK(obj)  (&GST_ALSA_SRC_CAST (obj)->alsa_lock)
+#define GST_ALSA_SRC_GET_LOCK(obj)  (GST_ALSA_SRC_CAST (obj)->alsa_lock)
 #define GST_ALSA_SRC_LOCK(obj)      (g_mutex_lock (GST_ALSA_SRC_GET_LOCK (obj)))
 #define GST_ALSA_SRC_UNLOCK(obj)    (g_mutex_unlock (GST_ALSA_SRC_GET_LOCK (obj)))
 
@@ -62,15 +63,16 @@ struct _GstAlsaSrc {
   snd_pcm_format_t      format;
   guint                 rate;
   guint                 channels;
-  gint                  bpf;
-  gboolean              driver_timestamps;
+  gint                  bytes_per_sample;
 
   guint                 buffer_time;
   guint                 period_time;
   snd_pcm_uframes_t     buffer_size;
   snd_pcm_uframes_t     period_size;
 
-  GMutex                alsa_lock;
+  GstAlsaMixer          *mixer;
+
+  GMutex                *alsa_lock;
 };
 
 struct _GstAlsaSrcClass {

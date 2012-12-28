@@ -31,7 +31,6 @@
 #include <alsa/control.h>
 #include <alsa/error.h>
 #include <gst/gst.h>
-#include <gst/audio/audio.h>
 
 #define GST_CHECK_ALSA_VERSION(major,minor,micro) \
     (SND_LIB_MAJOR > (major) || \
@@ -39,22 +38,12 @@
      (SND_LIB_MAJOR == (major) && SND_LIB_MINOR == (minor) && \
       SND_LIB_SUBMINOR >= (micro)))
 
-#define PASSTHROUGH_CAPS \
-    "audio/x-ac3, framed = (boolean) true;" \
-    "audio/x-eac3, framed = (boolean) true; " \
-    "audio/x-dts, framed = (boolean) true, " \
-      "block-size = (int) { 512, 1024, 2048 }; " \
-    "audio/mpeg, mpegversion = (int) 1, " \
-      "mpegaudioversion = (int) [ 1, 2 ], parsed = (boolean) true;"
-
-
 GST_DEBUG_CATEGORY_EXTERN (alsa_debug);
 #define GST_CAT_DEFAULT alsa_debug
 
-snd_pcm_t * gst_alsa_open_iec958_pcm (GstObject * obj, gchar *device);
+snd_pcm_t * gst_alsa_open_iec958_pcm (GstObject * obj);
 
 GstCaps * gst_alsa_probe_supported_formats (GstObject      * obj,
-                                            gchar          * device,
                                             snd_pcm_t      * handle,
                                             const GstCaps  * template_caps);
 
@@ -62,14 +51,5 @@ gchar   * gst_alsa_find_device_name (GstObject        * obj,
                                      const gchar      * device,
                                      snd_pcm_t        * handle,
                                      snd_pcm_stream_t   stream);
-
-gchar *   gst_alsa_find_card_name   (GstObject        * obj,
-                                     const gchar      * devcard,
-                                     snd_pcm_stream_t   stream);
-
-void      gst_alsa_add_channel_reorder_map (GstObject * obj,
-                                            GstCaps   * caps);
-
-extern const GstAudioChannelPosition alsa_position[][8];
 
 #endif /* __GST_ALSA_H__ */

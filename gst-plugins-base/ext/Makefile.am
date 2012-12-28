@@ -10,6 +10,18 @@ else
 CDPARANOIA_DIR=
 endif
 
+if USE_GIO
+GIO_DIR=gio
+else
+GIO_DIR=
+endif
+
+if USE_GNOME_VFS
+GNOMEVFS_DIR=gnomevfs
+else
+GNOMEVFS_DIR=
+endif
+
 if USE_LIBVISUAL
 LIBVISUAL_DIR=libvisual
 else
@@ -30,16 +42,8 @@ endif
 
 if USE_VORBIS
 VORBIS_DIR=vorbis
-endif
-
-if USE_IVORBIS
-VORBIS_DIR=vorbis
-endif
-
-if !USE_VORBIS
-if !USE_IVORBIS
+else
 VORBIS_DIR=
-endif
 endif
 
 if USE_THEORA
@@ -51,6 +55,8 @@ endif
 SUBDIRS = \
   $(ALSA_DIR) \
   $(CDPARANOIA_DIR) \
+  $(GIO_DIR) \
+  $(GNOMEVFS_DIR) \
   $(LIBVISUAL_DIR) \
   $(OGG_DIR) \
   $(PANGO_DIR) \
@@ -60,10 +66,10 @@ SUBDIRS = \
 DIST_SUBDIRS = \
   alsa \
   cdparanoia \
+  gio \
+  gnomevfs \
   libvisual \
   ogg \
   pango \
   theora \
   vorbis
-
-include $(top_srcdir)/common/parallel-subdirs.mak

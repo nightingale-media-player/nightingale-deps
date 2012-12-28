@@ -25,11 +25,24 @@
 #include <gst/gst.h>
 #include <gst/base/gstbasesink.h>
 
-#include <gio/gio.h>
-
 #include "gsttcp.h"
 
 G_BEGIN_DECLS
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
+#include <string.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <sys/wait.h>
+#include <fcntl.h>
+#include <arpa/inet.h>
+#include "gsttcp.h"
 
 #define GST_TYPE_TCP_CLIENT_SINK \
   (gst_tcp_client_sink_get_type())
@@ -57,12 +70,14 @@ struct _GstTCPClientSink {
   /* server information */
   int port;
   gchar *host;
+  struct sockaddr_in server_sin;
 
   /* socket */
-  GSocket *socket;
-  GCancellable *cancellable;
+  GstPollFD sock_fd;
 
   size_t data_written; /* how much bytes have we written ? */
+  GstTCPProtocol protocol; /* used with the protocol enum */
+  gboolean caps_sent; /* whether or not we sent caps already */
 };
 
 struct _GstTCPClientSinkClass {

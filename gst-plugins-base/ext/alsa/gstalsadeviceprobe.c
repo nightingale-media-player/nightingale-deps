@@ -19,18 +19,12 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* FIXME 0.11: suppress warnings for deprecated API such as GValueArray
- * with newer GLib versions (>= 2.31.0) */
-#define GLIB_DISABLE_DEPRECATION_WARNINGS
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
 #include "gstalsadeviceprobe.h"
-
-#if 0
-G_LOCK_DEFINE_STATIC (probe_lock);
+#include "gst/interfaces/propertyprobe.h"
 
 static const GList *
 gst_alsa_device_property_probe_get_properties (GstPropertyProbe * probe)
@@ -38,7 +32,9 @@ gst_alsa_device_property_probe_get_properties (GstPropertyProbe * probe)
   GObjectClass *klass = G_OBJECT_GET_CLASS (probe);
   static GList *list = NULL;
 
-  G_LOCK (probe_lock);
+  /* well, not perfect, but better than no locking at all.
+   * In the worst case we leak a list node, so who cares? */
+  GST_CLASS_LOCK (GST_OBJECT_CLASS (klass));
 
   if (!list) {
     GParamSpec *pspec;
@@ -47,7 +43,7 @@ gst_alsa_device_property_probe_get_properties (GstPropertyProbe * probe)
     list = g_list_append (NULL, pspec);
   }
 
-  G_UNLOCK (probe_lock);
+  GST_CLASS_UNLOCK (GST_OBJECT_CLASS (klass));
 
   return list;
 }
@@ -212,4 +208,3 @@ gst_alsa_type_add_device_property_probe_interface (GType type)
   g_type_add_interface_static (type, GST_TYPE_PROPERTY_PROBE,
       &probe_iface_info);
 }
-#endif

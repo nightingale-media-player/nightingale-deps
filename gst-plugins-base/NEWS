@@ -1,93 +1,1291 @@
-This is GStreamer Base Plugins 1.0.4
+This is GStreamer Base Plug-ins 0.10.25, "Standard disclaimers apply"
 
-Changes since 1.0.3:
-
-      * playbin: fix occasional not-negotiated errors when switching visualisations
-      * ssaparse: ignore invalid UTF-8 in SSA/ASS subtitles init sections in matroska files
-      * streamsynchronizer: better timestamp and gap handling at EOS, fixing potential OOM in baseaudiosink
-      * bindings: fix annotation for gst_app_src_push_buffer(), fixing crash
-      * bindings: add several missing annotations for GstRtspMessage API
-
-Bugs fixed since 1.0.3:
-
-      * 679976 : playbin: switching visualisations results in not-negotiated flow erros
-      * 689814 : Memory allocated by GstVideoDecoder base class is not freed
-      * 689873 : gstrtspmessage: Several functions are missing introspection annotations...
-
-Changes since 1.0.2:
-
-      * typefind: detect isml ftyp as iso-fragmented video/quicktime
-      * typefinding improvements fixing playback of some wavpack files
-      * textoverlay rendering fixes
-      * gobject-introspection annotation fixes
-
-Bugs fixed since 1.0.2:
-
-      * 686276 : rtsp: http tunneling does not work
-      * 687030 : ogg: crash checking header of empty ogg packet
-      * 687055 : exiftag: fix use after free and memory leak
-      * 687057 : vorbistag: fix memory leak
-      * 687421 : GstRTSPConnection: a number of methods not annotated correctly
-      * 687459 : textoverlay:forward allocation queries instead of discarding
-      * 687473 : rtspconnection: remove extra 'return'
-      * 687620 : GstRTSPMessage: fix GI annotations
-      * 687666 : textoverlay: aborts when shading is enabled but not supported for the current video format
-      * 687674 : typefinding: some WavPack files are mis-detected as AAC and fail to play
-      * 687991 : videodecoder: add getter for QoS proportion
-      * 687994 : rtsp: missing g-i annotation for gst_rtsp_message_set_body
-      * 688151 : pbutils missing description for Opus codec
-      * 686841 : pango: fix shadow text color
-
-API additions since 1.0.2:
-
-      * gst_video_decoder_get_qos_proportion()
-
-Changes since 1.0.1:
-
-      * Parallel installability with 0.10.x series
-      * alsa: fix probing of supported formats, and advertise non-native-endianness formats as fallback
-      * audiobasesink: properly handle GAP events (fixing some isses with e.g. certain DVD menus)
-      * audioconvert: try harder to not convert or to preserve input format precision
-      * audiodecoder: leak fixes and refcounting fixes
-      * audioresample: re-enable the SSE/SSE2 code paths for better performance
-      * riff: fix paletted RGB formats and msvideo mapping
-      * rtsp: make formatting and parsing of range floating-point values locale-independent
-      * playbin: streamsynchronizer fixes, esp. for handling corner-cases near EOS
-      * tcpserver{sink,src}: add 'current-port' property and signal actually used port
-      * videoconvert: fix handling of paletted RGB formats
-      * videodecoder: don't leak message strings when error is not fatal
-      * videodecoder: finetune missing timestamp estimating
-      * videotestsrc: add palette for paletted RGB formats
-      * vorbistag: fix writing of image tags into vorbis comments
-
-Bugs fixed since 1.0.1:
-
-      * 580093 : tcpserversink,src: add 'current-port' property and signal actually used port when port=0 was set
-      * 680904 : alsasink: no supported formats detected with using USB sound card on big-endian system
-      * 683098 : videodecoder: log failure message if acquire_buffer failed
-      * 684411 : rtsp: range in SDP formatted according to locale
-      * 685273 : Pre-rolling on GAP events doesn't work properly for audio sinks
-      * 685711 : audio, video: update docs for virtual functions that require chaining up
-      * 685938 : [decodebin] Issues with group switching algorithm
-      * 686081 : adder: all unit tests crash now after collectpads changes
-      * 686298 : Cannot decode some AVI files with Microsoft Video 1
-
-Changes since 1.0.0:
+Changes since 0.10.24:
     
-      * videodecoder and -encoder timestamp handling improvements
-      * thread-safey fixes for GstMeta registrations and GstVideoDecoder
-      * bug fixes
+      * Add per-stream volume controls
+      * Theora 1.0 and Y444 and Y42B format support
+      * Improve audio capture timing
+      * GObject introspection support
+      * Improve audio output startup
+      * RTSP improvements
+      * Use pango-cairo instead of pangoft2
+      * Allow cdda://(device#)?track URI scheme in cddabasesrc
+      * Support interlaced content in videoscale and ffmpegcolorspacee
+      * Many other bug fixes and improvements
 
-Bugs fixed since 1.0.0:
+Bugs fixed since 0.10.24:
      
-      * 684424 : playbin: external subtitles break playback
-      * 684832 : videodecoder: Takes stream lock in query function
-      * 685110 : encodebin fails to release mux request sink pad for GstId3Mux as it is a static one for this mux
-      * 685242 : rtsp: mark url argument of gst_rtsp_url_parse as out
-      * 685332 : GstMeta registry race
-      * 685490 : audioencoder: don't require base class to implement to start vfunc
+      * 595401 : gobject assertion and null access to volume instance in playbin
+      * 563828 : [decodebin2] Complains about loops in the graph when demuxer output requires another demuxer
+      * 591677 : Easy codec installation is not working
+      * 588523 : smarter sink selection in playbin2
+      * 590146 : adder regressions
+      * 321532 : [cddabasesrc] Support device setting in cdda:// URI
+      * 340887 : add pangocairo textoverlay plugin.
+      * 397419 : [oggdemux] ogm video with subtitles stuck on first frame
+      * 556537 : [PATCH] typefind: more flexible MPEG4 start code recognition
+      * 559049 : gstcheck.c:76:F:general:test_state_changes_* failure: GST_IS_CLOCK(clock) assertion fails
+      * 567660 : [API] need a stream volume interface for sinks that do volume control
+      * 567928 : Make videorate work with a live source
+      * 571610 : [playbin] Scale of volume property is not documented
+      * 583255 : [playbin2] deadlock when disabling visualisations
+      * 586180 : RTSP improvements
+      * 588717 : [oggmux] gst_caps_unref() warning if not linked downstream
+      * 588761 : [videoscale] Needs special support for interlaced content
+      * 588915 : audioresample's output offset counter's initialization could maybe be improved
+      * 589095 : [appsrc] clarify documentation on caps and linkage
+      * 589574 : [typefind] incorrect sdp file detection
+      * 590243 : [videoscale] Claims to support MAX width/height
+      * 590425 : Slaved alsasrc clock with slave-method=re-timestamp not usable for RTP audio
+      * 590856 : [decodebin2] triggers assertion failure on NULL caps
+      * 591207 : totem does display the following subtitle srt file.
+      * 591357 : gst-plugins-base git won't build due to warning in gstrtspconnection.c
+      * 591577 : [playbin2] Incorrect error message string
+      * 591664 : [playbin2] after seeking, srt subtitles don't resync correctly
+      * 591934 : timestamp drift in audioresample
+      * 592544 : Remove regex.h check
+      * 592657 : [appsink] Blocks after entering on pause state
+      * 592864 : deadlocks from recent inputselector/streamselector change
+      * 592884 : [playbin2] g_object_get increases refcount by 2 and therefore leaves memleak
+      * 593035 : gdp doesn't preserve fields of the buffers put into the caps' streamheader
+      * 593284 : basertppayloader takes time in instance init
+      * 594020 : Totem don't play videos from ssh remote host
+      * 594094 : Playback Error playing Midi file
+      * 594136 : [alsasink] Regression from 0.10.23 -- element reuse doesn't work
+      * 594165 : [theoraenc] Implement support for new formats
+      * 594256 : improved slave-skew resynch mechanism
+      * 594258 : missing break in rtcpbuffer
+      * 594275 : Add cast to navigation to fix compiler warning
+      * 594623 : Expose playsink as a fully-fledged element
+      * 594732 : parse error
+      * 594757 : build fails due to warning in gstbasertppayload.c
+      * 594993 : [introspection] pkg-config file madness
+      * 594994 : [streamvolume] Add get_type function to the documentation
+      * 595454 : [cddabasesrc] uri format change breaks rhythmbox
+      * 545807 : [baseaudiosink] audible crack when starting the pipeline
 
-New features in 1.0.0:
+API added since 0.10.24:
+    
+      * gst_rtsp_connection_create_from_fd()
+      * gst_rtsp_connection_set_http_mode()
+      * gst_rtsp_watch_write_data()
+      * gst_rtsp_watch_send_message()
+      * GstBaseRTPPayload::perfect-rtptime
+      * GstBaseRTPAudioPayload::gst_base_rtp_audio_payload_flush()
+      * GstVideoSinkClass::show_frame()
+      * GstVideoSink:show-preroll-frame
+      * GST_MIXER_TRACK_READONLY
+      * GST_MIXER_TRACK_WRITEONLY
+      * GstStreamVolume interface
 
-      * Parallel installability with 0.10.x series
-      * See release notes for more details
+Changes since 0.10.23:
+
+      * Recognise Kate subpicture subtitles
+      * Support progressive download in playbin2
+      * GIO improvements
+      * Add buffer-list support in appsink
+      * Add gaussian-noise mode to audiotestsrc
+      * bump cdparanoia req to 0.10.2 and improve caching
+      * Improve audio source base class
+      * Add frame-by-frame stepping and examples
+      * Extend stream-probing in decodebin2
+      * Many RTSP improvements
+      * support for PGS subpictures
+      * adder improvements
+      * Add Y444, v210, v216 formats
+      * implement preset interface in vorbisenc, theoraenc, oggmux
+      * Improve libvisual visualisation timestamp tracking
+      * playbin2 enhancements: custom audiosink, subpictures, cdda
+      * Improvements in textrender
+      * Support raw YUV 4:2:2 and SIREN in RIFF
+      * Add 4:2:2 and 4:4:4 support to theoradec
+      * Many other bug-fixes and improvements
+
+Bugs fixed since 0.10.23:
+     
+      * 510417 : [gio] make non-experimental
+      * 513373 : [PATCH] [gstvorbistag] Preserve cover art in Ogg/Vorbis tags
+      * 529300 : [giosink] [PATCH] Allow overwrite
+      * 531035 : [cdparanoia] Should depend on LGPL'd version of the libra...
+      * 567997 : [patch] add allow-pull-scheduling property to audio sinks
+      * 576552 : [subparse] post GST_TAG_SUBTITLE_CODEC tags
+      * 577637 : [playbin2] expose temp-location property
+      * 579692 : mp3_type_find is over-optimistic
+      * 580318 : [tagdemux] drops tag events from upstream
+      * 581460 : [baseaudiosrc] Reusing audio source leads to null timesta...
+      * 581571 : ARGB and alignment added to textrender
+      * 582021 : autogen: libtoolize must be called before aclocal
+      * 582749 : uridecodebin caps property not implemented yet
+      * 582819 : multifdsink: add num-fds property
+      * 583867 : gdpdepay + identity cause failed assertions
+      * 584020 : [playbin2] inadvertently resets configured audio/video sinks
+      * 584686 : [playbin2] Need {audio,video,text}-tags-changed signals
+      * 585197 : [subparse] fails to detect subrip subtitles with fewer th...
+      * 585758 : Remove deprecated GTK+ symbols
+      * 585970 : gst_audioringbuffer_get_type is not thread safe
+      * 585994 : gst-rtsp-message doesn't support " Timestamp " filed
+      * 586331 : [cdparanoia] expose cd cache size parameter
+      * 586356 : [playbin2] use private copy of input-selector as long as ...
+      * 586519 : white Gaussian noise would be useful in audiotestsrc
+      * 587080 : rtsp fails to compile - doesn't see some ws2tcpip functions
+      * 587278 : Support for GstBufferList in appsink
+      * 587676 : Call tzset() before localtime_r(), in e.g. gst-plugins-ba...
+      * 587695 : Patches to add stream-status messages audio elements
+      * 587896 :  " No stream given yet " error from giostreamsrc
+      * 587980 : gstchannelmix.c: protect debug code with GST_DISABLE_GST_...
+      * 588078 : [playbin2] Fails to go to READY again after an error
+      * 588205 : Pipeline with giostreamsrc will not enter playing state
+      * 588550 : build failure in git, missing gstinterfaces-0.10
+      * 588551 : queue2: download buffering fixes
+      * 588724 : [vorbisdec] empty encoder string causes GStreamer
+      * 588746 : [audiotestsrc] Make sure tags are properly serialized in ...
+      * 588747 : [adder] Serialize incoming in-band events (tags) in the d...
+      * 588748 : [adder] Check dataflow consistency in unit tests
+      * 589075 : [playbin2] changing volume doesn't work after stream rest...
+      * 589581 : typefinder: recognise more Kate subtitle categories
+      * 589622 : Cannot use both playbin and input-selector
+      * 589663 : gstreamer asserts in gstaudiofilter
+      * 589797 : alsasrc does not set GstAlsaSrc- > handle to NULL after snd...
+      * 590470 : [typefinding] certain flac-in-ogg files not detected any ...
+      * 536313 : [cdda] Remove sha1 copy once we depend on glib-2.16
+      * 579642 : [oggdemux] handle broken ogg/vorbis files better
+      * 582528 : playbin2 Audio CD playback broken since
+      * 583318 : Assertion from within playbin2
+      * 585079 : undefined references to gst_adapter_* functions in schro
+      * 585708 : [adder] Wrong handling of flushing seeks
+      * 588218 : Siren in .wav support
+      * 586920 : rtsp: needs < netinet/in.h > on FreeBSD
+
+API added since 0.10.23:
+     
+      * GstNetAddress::gst_netaddress_to_string()
+      * Add gst_rtsp_watch_queue_data()
+      * playbin2: Add {audio,video,text}-tags-changed signals
+      * Add gst_color_balance_get_balance_type()
+      * Add gst_mixer_get_mixer_type()
+
+Changes since 0.10.22:
+    
+      * New navigation API to support DVD playback
+      * playbin2 improvements
+      * RTSP extensions to allow extra headers and options
+      * Replace audioresampler with speexresample based code
+      * Support interlacing flags in the gstvideo library
+      * Support new RIFF formats
+      * Improve typefinding
+      * Support more frame formats in videoscale
+      * Many other bug-fixes and improvements
+
+Bugs fixed since 0.10.22:
+     
+      * 577637 : [playbin2] expose temp-location property
+      * 580120 : [playbin2] unit test fails
+      * 478512 : [alsamixer] volume control slider not working
+      * 574962 : rhythmbox crash in flac_type_find
+      * 564139 : Documentation of TCP plugins
+      * 577436 : xvimagesink should use xcontext- > depth and not count bits...
+      * 350311 : [playbin2] support for subpicture subtitles
+      * 378094 : Enable pango elements to handle UYVY
+      * 543591 : Gnonlin can not play theora streams
+      * 553295 : [riff] fuzzed AVI file causes segfault
+      * 565105 : Gstreamer does not change from READY back to PAUSED in sa...
+      * 565777 : [riff] unrecognised video fourcc 0x10000002 for mpeg2 in avi
+      * 566661 : [typefind] Fall back to file extension using uri query
+      * 567255 : [riff] doesn't detect codec_id 0x706d as AAC (amongst other)
+      * 567636 : [pbutils] Missing plugins code shouldn't ask for the same...
+      * 567740 : bogus warning in decodebin2?
+      * 568482 : linking problems in gst-plugins-base
+      * 569655 : [ffmpegcolorspace] Add UYVY422 to GRAY8 conversion function
+      * 570142 : Documentation is broken for uridecodebin
+      * 570356 : aac typefinder failure
+      * 570768 : [ximagesink] wrong mouse pointer position if output windo...
+      * 570832 : Add flags to enhance mixer interfaces
+      * 571009 : [tagdemux] WMA file with id3v2 tag causes assertion to fail
+      * 571147 : [ffmpegcolorspace/videotestsrc] Add support for packed/pl...
+      * 572577 : [playbin2] deadlock on shutdown
+      * 572872 : [ffmpegcolorspace] Add YVYU colorspace
+      * 572993 : [subparse] broken libregex dependency on Windows
+      * 573165 : Generate additional export files for gstreamer app plugin
+      * 573528 : Wrong format modifier in gstgiobasesink.c
+      * 573529 : In gstrtspconnection.c some functions are called with wro...
+      * 574293 : [decodebin2] deadlock on shutdown
+      * 574319 : Missing HAVE_PROCESS_H in win32/common/config.h
+      * 574447 : gstadder.c: line 904: error C2036: 'gpointer' : unknown size
+      * 574939 : [typefinding] flac typefinder mis-typefinds PDFs as flac ...
+      * 575550 : srt subtitle file keeps playbin2 from playing
+      * 575638 : kissfft copyright
+      * 575649 : [oggdemux] duration query in time format returns true wit...
+      * 576019 : On Windows queue2 can't write files longer than 2-4 GiB, ...
+      * 576142 : [vorbisenc] Non-header output buffers have NULL caps
+      * 576180 : [playbin2] Uses unref'd audiosink volume if using gconfau...
+      * 576586 : [alsamixer] gnome-sound-properties freeze
+      * 577054 : [videoscale] Not valgrind clean
+      * 577709 : Review new navigation API
+      * 577827 : [appsink] Have appsink new_buffer-callback return GstFlow...
+      * 578583 : [PATCH] multifdsink doesn't handle sync-method=latest-key...
+      * 578656 : Implement upstream GstForceKeyUnit events in theoraenc
+      * 579129 : pkgconfig: appsrc/appsink can not be linked to uninstalled
+      * 579130 : app: expose trivial type macros
+      * 579192 : gst_rtcp_packet_get_type should not assert on packet content
+      * 579203 : baseaudiosink: unparenting the ringbuffer in NULL causes ...
+      * 579267 : [rtspconnection] g_async_queue_new_full() is GLib-2.16 AP...
+      * 579463 : [cddabasesrc] [cdparanoiasrc] no longer emits discid
+      * 579668 : audioresample fails to build with --disable-gst-debug
+      * 579734 : [playbin] raw_decoding_mode seems to be set unconditionally
+      * 579912 : [decodebin2] multiqueue is too small in time (interleave ...
+      * 580470 : [audioresample] causes pipelines to go out of sync and be...
+      * 580952 : [audioresample] bad quality/pops compared to plughw
+      * 581727 : [playbin2] make playsink go to PAUSED async
+      * 569682 : playbin2 leaks request pad from input selector
+      * 580020 : [vorbisenc] causes buffers to be out of segment if new se...
+      * 562794 : rtspsrc fails to create a socket on Win32 sometimes.
+      * 567396 : playbin2: DECODE_BIN_LOCK occasionally called twice withi...
+      * 567982 :  " queued_bytes " field isn't updated while flushing the que...
+      * 571299 : [appsink] Handoff callback API
+      * 574443 : rtsp win32 - forgotten variable
+      * 574516 : [typefind] add typefinder for photoshop .psd files
+      * 574964 : gst_app_src_end_of_stream(), mutex on error return
+      * 575256 : rtspsrc fails to resolve hostnames
+      * 575588 : decodebin2 deadlock
+      * 576187 : [playbin2] Stalls video sink when disabling subtitles in ...
+      * 576188 : [playbin2] Reusing a playbin2 instance with visualization...
+      * 576190 : [playbin2] Deadlock when reusing playbin2 after an error
+      * 577288 :  " Internal playbin error " when seeking to the end of files
+      * 577610 : RTCP feedback messages support in GstRTCPPacket
+      * 577794 : [playbin2] leaks elements set through properties
+      * 578118 : [multifdsink] add option to not resend the streamheader w...
+      * 578506 : Pipeline with alsasrc and alsasink cannot change state ba...
+      * 578942 : Missing RTSP headers related to Windows Media extension.
+      * 580271 : videorate: fails to clear discont flag on duplicated buffers
+      * 580649 : uridecodebin: bug on documentation published in website
+
+API added since 0.10.22:
+    
+      * GstRTSP::gst_rtsp_options_as_text()
+      * GstRTSPMessage::gst_rtsp_message_take_header()
+      * GstRTSPRange::gst_rtsp_range_to_string()
+      * New Navigation interface commands, queries and messages
+      * gst_rtsp_channel_new()
+      * gst_rtsp_channel_unref()
+      * gst_rtsp_channel_attach()
+      * gst_rtsp_channel_queue_message()
+      * gst_rtsp_connection_accept()
+      * GstAppSink::gst_app_sink_set_callbacks()
+      * GST_VIDEO_FORMAT_YVYU,GST_VIDEO_BUFFER_TFF,GST_VIDEO_BUFFER_RFF,GST_VIDEO_BUFFER_ONEFIELD
+      * GST_MIXER_FLAG_HAS_WHITELIST,GST_MIXER_FLAG_GROUPING,GST_MIXER_TRACK_NO_RECORD,GST_MIXER_TRACK_NO_MUTE,GST_MIXER_TRACK_WHITELIST
+      * GstAppSrc::emit-signals
+      * GstAppSrc::gst_app_src_set_emit_signals()
+      * GstAppSrc::gst_app_src_get_emit_signals()
+      * GstAppSrc::gst_app_src_set_callbacks()
+      * RTSP::gst_rtsp_connection_get_url()
+      * GstRTSPLowerTrans::GST_RTSP_LOWER_TRANS_HTTP
+      * RTSP:gst_rtsp_connection_set_tunneled()
+      * RTSP:gst_rtsp_connection_is_tunneled()
+      * RTSP::gst_rtsp_connection_set_ip()
+      * RTSP::gst_rtsp_connection_get_tunnelid()
+      * RTSP::gst_rtsp_connection_do_tunnel()
+      * RTSP::gst_rtsp_watch_reset()
+
+IMPORTANT NOTES
+
+1) Please note that decodebin2 and playbin2 API included in this release is
+still considered unstable and WILL change in future releases. At this stage,
+only developers or early adopters should consider using decodebin2 or playbin2
+API embodied in their signals and properties.
+
+Changes since 0.10.21:
+
+      * Require gettext 0.17
+      * Replace audioresample with speexresample from -bad
+      * Support new formats in RIFF: uncompressed RGB, WMA lossless, VP6
+      * Move libgstapp and elements from -bad
+      * Support color-key setting and probing for Xv properties
+      * Improve typefinding for various formats
+      * Extend audio sinks for pull-mode operation
+      * Support for more subtitle formats
+      * More development on decode2bin and playbin2
+      * RTP and SDP fixes
+      * Many bug fixes and improvements
+
+Bugs fixed since 0.10.21:
+
+      * 562163 : theoraenc likely ignoring segments
+      * 562258 : rtspsrc element takes long time to error out if the addre...
+      * 561789 : [volume] deadlocks with a controller attached
+      * 554533 : [xvimagesink] allow setting colorkey if possible
+      * 567511 : colorkey in xvimagesink gets reset when element is reused
+      * 116051 : libresample doesn't handle > factor of 2 rate conversion
+      * 346218 : [audioresample] doesn't do anti aliasing
+      * 385061 : [audioresample?] investigate high CPU usage
+      * 456788 : [subparse] can't handle UTF-16 charset encoded subtitle.
+      * 525807 : [vorbisenc] vorbisenc has problems with a gnlsource that ...
+      * 546955 : gstoggmux EOS handling issue
+      * 549417 : [audioresample] unit test fails on 64bit linux
+      * 549510 : audioresample doesn't negotiate ideal caps
+      * 552237 : UTF-16 srt confuses gstreamer, misdetected as mp3
+      * 552559 : Implementation of SLAVE_SKEW in baseaudiosrc
+      * 552569 : audioresample producing strange sized buffers
+      * 552801 : audioconvert can overflow with big audio buffers
+      * 554879 : Add ability to specify format for date/time display in Gs...
+      * 555257 : Doesn't display srt subtitles saved with BOM
+      * 555319 : add FFV1 fourcc to riff-media
+      * 555607 : subrip subtitles typefind too strict
+      * 555699 : [PATCH] theoradec: prefer container's pixel aspect ratio ...
+      * 556025 : build failure in tests/icles
+      * 556066 : Last byte of FLAC image buffer chopped off
+      * 557365 : subparse check fails
+      * 558124 : [PLUGIN-MOVE] Move speexresample as audioresample2 to -base
+      * 559111 : ALSA sink hangs on USB audio device unplug while playing
+      * 559478 : does not play windows media streams correctly
+      * 559567 : `gst_base_audio_sink_sync_latency' should call `gst_base_...
+      * 561436 : videorate element add image/jpeg to caps template
+      * 561734 : playbin2 additions
+      * 561780 : Playbin2 should work without volume too
+      * 561924 : oggdemux hangs when given corrupt input via non-seekable ...
+      * 562270 : build without gdk fails
+      * 563143 : ximagesink/xvimagesink : _alloc_buffer returns non-clean ...
+      * 563174 : Implement gst_rtcp_packet_remove
+      * 563508 : [rgvolume] Unit test fails with passthrough assertions
+      * 563718 : Theora check out of date
+      * 563904 : GNOME Goal: Clean up GLib and GTK+ includes
+
+API added since 0.10.21:
+
+      * clockoverlay::time-format
+      * GstRingBuffer:gst_ring_buffer_activate()
+      * GstRingBuffer:gst_ring_buffer_is_active()
+      * GstRingBuffer:gst_ring_buffer_convert()
+      * Add GST_TYPE_BASE_AUDIO_(SRC|SINK)_SLAVE_METHOD to the public API
+      * gst_netaddress_get_address_bytes()
+      * gst_netaddress_set_address_bytes()
+
+Changes since 0.10.20:
+
+      * Continue playbin2 development
+      * Ogg improvements - CELT support, skeleton fixes
+      * DVD subpicture support
+      * Improved audio dithering random number generator
+      * xvimagesink/ximagesink fixes
+      * Vorbis encoding and decoding fixes
+      * Recognise Kate subtitle streams
+      * Many bug-fixes and enhancements
+
+Bugs fixed since 0.10.20:
+
+      * 537380 : [gnomevfssrc] Doesn't handle short reads properly
+      * 538656 : xvimagesink support for autofill/colorkey property
+      * 540334 : Build fails without X in tests/examples/seek
+      * 528299 : Multiple GstMixerTracks with the same label cause problem...
+      * 530068 : Ogg Streams with Skeleton and Granulepos > 0 do not work(...
+      * 537009 : playbin2 silly typo breaks signals
+      * 537045 : decodebin2 sometimes emits 'drained' multiple times
+      * 537599 : [oggdemux] skeleton streams not skipped in ogg
+      * 537889 : [xvimagesink] colorbalance is bad
+      * 538232 : vorbisenc/vorbisdec don't work with a live source
+      * 538663 : gdppay memleak in gst_gdp_pay_reset
+      * 540215 : decodebin does not insert a queue for raw data type
+      * 540351 : [avidemux] Doesn't know about Duck DK4 ADPCM
+      * 540497 : ffmpegcolorspace is returning wrong size
+      * 541358 : cross mingw32 gcc: getaddrinfo is not in ws2_32.dll befor...
+      * 544306 : rtspsrc debug=1 segfaults with some libc
+      * 548898 : GStreamer-CRITICAL errors on seeking beyond stream borders
+      * 548913 : vorbisenc being picky about rounding errors in timestamps
+      * 549062 : Video devices aren't updated on subsequent probing.
+      * 549814 : [typefind] add application/pdf typefinder
+      * 550582 : [oggdemux] KATE streams not recognised
+      * 550638 : [typefind] Recognize some jpeg2k file types
+      * 550656 : recognize TrueSpeech in wavparse
+      * 550729 : gst-plugins-base won't compile with " -pedantic " option
+      * 552960 : tagdemux asserts and aborts on truncated files
+      * 553244 : theoraparse doesn't work at all (throws criticals and ass...
+
+API added since 0.10.20:
+
+      * Add "index" property to GstMixerTrack to differantiate between
+        multiple mixer tracks with the same label.
+
+Changes since 0.10.19:
+
+      * RTP improvements
+      * Support digest auth for RTSP
+      * Additional documentation
+      * Support DSCP QoS in multifdsink
+      * Add NV12/NV21 video buffer layouts
+      * Video scaling now bilinear by default
+      * Support more than 8 channels in audio conversions
+      * Channel mapping fixes for audioconvert
+      * Improve tmplayer and sami subtitle support
+      * Support 1x1 pixel buffers for videoscale
+      * Typefinding improvements for MPEG2, musepack
+      * Ogg/Dirac mapping updated in oggmux
+      * Fixes in ogg demuxing
+      * audiosink synchronisation and slaving fixes
+      * Support muting of the audio in playbin by selecting -1 as the audio stream
+      * Work done on playbin2 and uridecodebin
+      * Improvements in the experimental GIO plugin
+      * decodebin fixes
+      * Handle GAP buffers in some places
+      * Various other leak and bug-fixes
+
+Bugs fixed since 0.10.20:
+
+      * 526794 : [giosrc] totem doesn't work with some gvfs backends
+      * 510417 : [PLUGIN-MOVE] Move gio to gst-plugins-base
+      * 509125 : crash in CD Player: - playing CD - lowering/...
+      * 517813 : [audioconvert] make gap aware
+      * 302798 : [playbin] add mute property
+      * 342294 : Setting playbin property current-audio=-1 also stops the ...
+      * 398033 : [audioconvert] support more than 8 channels
+      * 419351 : [avi/a52dec] AV synchronization problems
+      * 467911 : [subparse] sami parser update
+      * 469933 : multifdsink IPv6 and diffserv TOS/TC markup
+      * 506659 : [textoverlay] rendering error when using non-standard widths
+      * 512333 : [gstvorbistag] Retrieve Ogg/Vorbis cover art as image met...
+      * 512382 : [playbin] race condition when pausing/playing multiple in...
+      * 518037 : pbutils-enumtypes.c is not included in win32/vs6/libgstpb...
+      * 521761 : gstaudioclock frozen the clock value until reaches latest...
+      * 522401 : gdpdepay doesn't validate payload CRCs
+      * 523993 : playbin2 blocks after a while when listening to a radio s...
+      * 524724 : [PATCH] [baseaudiosrc] buffer-time and latency-time do no...
+      * 525665 : Crash on Ogg/Vorbis with chain=NULL
+      * 525915 : [streamheader] Unit test fails with " gst_adapter_peek: as...
+      * 526173 : [typefinding] fails to detect mpeg video stream whereas m...
+      * 529018 : gst_ogm_parse_stream_header creates fraction value with w...
+      * 529500 : [videotestsrc] support for NV12 and NV21
+      * 529546 : [Playbin] Memory leak in streaminfo handling
+      * 530068 : Ogg Streams with Skeleton and Granulepos > 0 do not work(...
+      * 530531 : [typefinding] bad read in mpeg_video_stream_type_find
+      * 530719 : gst_video_calculate_display_ratio fails when playing Ogg ...
+      * 530962 : [subparse] parses only every second line of TMPlayer subt...
+      * 532454 : [NV12/NV21] videotestsrc and ffmpegcolorspace don't play ...
+      * 533087 : GstRTSPTransport kept opaque in docs
+      * 533817 : [audioconvert] Can't use default 7 channel layout / only ...
+      * 534071 : Gdppay memleak
+      * 534331 : race in decodebin when changing states while the internal...
+      * 535356 : vorbisdec doesn't support 8 channels
+      * 536475 : gdppay memleak and possible crash
+      * 536521 : Refcounting errors in playbin
+      * 536874 : Build failure on windows
+      * 532166 : [ffmpegcolorspace] support NV12 format
+      * 533617 : [audioconvert] Produces silence when converting 1/2 chann...
+      * 536848 : [giosrc] Doesn't handle short reads properly
+      * 536849 : [giosrc] Very slow doing any playback
+      * 518082 : [alsamixer] playback volumes overwritten by capture volum...
+      * 435633 : [PATCH] videorate not (fully) segment aware; causes frame...
+      * 532364 : tcpclientsrc broken in 0.10.19
+      * 533075 : gst_rtp_buffer_compare_seqnum doesn't do what it says
+      * 533265 : [cddabasesrc] Sound Juicer cut a sector when ripping a track
+
+API additions since 0.10.20:
+
+      * decodebin2::sink-caps property
+      * giosrc::file property
+      * giosink::file property
+      * gst_base_audio_src_set_slave_method()
+      * gst_base_audio_src_get_slave_method()
+      * GstAudioClock::gst_audio_clock_reset()
+      * GstBaseAudioSrc:actual-buffer-time property
+      * GstBaseAudioSrc:actual-latency-time property
+      * gst_audio_check_channel_positions()
+      * add gst_tag_image_data_to_image_buffer()
+      * add gst_tag_list_add_id3_image()
+      * add GST_TAG_IMAGE_TYPE_NONE enum value
+
+Changes since 0.10.18:
+
+      * Handle EAGAIN when polling sockets in rtspconnection
+
+Changes since 0.10.17:
+
+      * Experimental GIO plugin
+      * Continued playbin2 development
+      * RTP fixes
+      * Better network element support on Windows
+      * Various other bug-fixes and improvements
+
+Bugs fixed since 0.10.17:
+
+      * 509637 : [API] [basertpaudiopayload] add _set_samplebits_options()
+      * 510229 : [gnomevfssrc] HTTPS support
+      * 511478 : [rtpbuffer] add gst_rtp_buffer_set_extension_data function
+      * 511810 : [RTSP] Uses MT-unsafe gmtime() function
+      * 512899 : [alsa] gstalsasink.c:527: warning: 'snd_pcm_sw_params_set...
+      * 513167 : Fix compiler warning due to disabled signals in mixertrac...
+      * 514307 : [playbin] warning in nautilus, volume element can't be cr...
+      * 514623 : Ogg Theora video slow
+      * 514937 : Correct initialization of hints in is_multicast_address()
+      * 515654 : xvimagesink doesn't build with --disable-xshm
+      * 516246 : [alsasink] handle negative delay from snd_pcm_delay
+      * 517420 : typefind: add h264 elementary stream discovery
+      * 517991 : problems with configure file depending on GCC compiler
+      * 518039 : libgstrtsp MSVC 6.0 compile error
+      * 518162 : [subparse] handle italic text starting with " / " with Micr...
+      * 518940 : [playbin2] make _get_*_tags() match vfuncs prototype in c...
+      * 519906 : [API] add GstMixerOptions::get_values vfunc
+      * 519916 : [API] add mixer-changed and options-list-changed messages
+      * 520523 : [API] Unreviewed changes to ringbuffer API
+      * 521743 : libgstnetbuffer.def exports not up to date
+      * 522625 : [video] gst_video_format_parse_caps() broken for RGBA for...
+      * 523054 : gstbasesrc crashes when called from typefind helpers
+      * 511825 : [RTSP] compiler warning on FreeBSD
+      * 520300 : [alsasrc] provide-clock=false messes up buffer durations
+
+API added since 0.10.17:
+
+      * GstRTPBuffer:gst_rtp_buffer_set_extension_data()
+      * add GST_VIDEO_FORMAT_Y41B and GST_VIDEO_FORMAT_Y42B.
+      * add GstMixerOptions::get_values vfunc (#519906)
+      * add gst_mixer_options_list_changed(), gst_mixer_mixer_changed() and
+        gst_mixer_message_parse_options_list_changed(). Fixes #519916.
+      * gst_base_rtp_audio_payload_set_samplebits_options()
+      * GstNetBuffer::gst_netaddress_equal
+
+Changes since 0.10.16:
+        
+      * Work-around ABI breakage due to unfortunate use of the
+        GST_DISABLE_DEPRECATED macro
+      * Export 2 missing functions needed for bindings in the win32 build
+      * Initialise the GstRingBuffer GType from a thread-safe context
+
+Bugs fixed since 0.10.16:
+        
+      * 511825 : [RTSP] compiler warning on FreeBSD
+      * 513018 : crash in Volume Control: I typed my password at t...
+      * 512334 : g_critical() when using GstAudioFilter & GST_DEBUG
+
+Changes since 0.10.15:
+    
+      * Handle newer Theora granule-pos semantics
+      * Introducing first alpha version playbin2 - the upcoming successor to
+	playbin
+      * Fixes in playbin handling of stream-switching
+      * New API for uniform handling of raw-video format buffers.
+      * Improvements for RTSP/RTP handling
+      * RIFF lib additions for VC-1 and AVC1 fourccs
+      * Many other bug-fixes and improvements
+
+Bugs fixed since 0.10.15:
+     
+      * 506132 : Review of changes in video/video.h
+      * 320984 : [oggdemux] cannot handle multiple chains
+      * 373011 : [playbin] throws error when switching off subtitles
+      * 436756 : Intermittent crashes in Pidgin in audioclock g_type_class...
+      * 462740 : [streamselector] patch to improve default stream selection
+      * 486840 : [alsamixer] use _all variants when setting the mixer
+      * 497964 : theoraenc test fails
+      * 498228 : gst-plugins-base-0.10.15 does not compile on FreeBSD (Gen...
+      * 499697 : Provide better pkg-config files 
+      * 502497 : [subparse] SubRip subtitles starting from 0 not recognised
+      * 503440 : The control sockets used by gstrtspconnection.c are never...
+      * 503930 : [cdda] warning: 'eos' may be used uninitialized in this f...
+      * 506928 : [alsamixer] add " PCM " as master fall back for cards that ...
+      * 508138 : [decodebin] does not error out if pad activation fails
+      * 509762 : missing file in win32/MANIFEST
+      * 511274 : gst_rtp_buffer_get_extension_data is returning FALSE when...
+      * 496731 : [PATCH] xvimagesink leaks memory if initialization fails
+      * 496761 : [PATCH] RTSP message leaks memory when uninitialized
+      * 500763 : SIGSEGV while playing ogg audio file
+      
+API additions since 0.10.15:
+      
+      * New GstVideoFormat API and helper functions in libgstvideo
+      * gst_base_audio_sink_set_provide_clock()
+      * gst_base_audio_sink_get_provide_clock()
+      * gst_base_audio_sink_set_slave_method()
+      * gst_base_audio_sink_get_slave_method()
+      * gst_base_audio_src_set_provide_clock()
+      * gst_base_audio_src_get_provide_clock()
+
+Changes since 0.10.14:
+
+      * RTP/RTSP/RTCP/SDP support improved
+      * New FFT support library libgstfft, based on Kiss FFT
+      * New formats supported in volume and audiotestsrc
+      * Fixes in audiorate and videorate
+      * Audio capture fixes
+      * Playbin and decodebin fixes
+      * New tagdemux base class for ID3/APE style tag readers
+      * Fix a nasty crash in the X sinks on shutdown
+      * New tags supported
+      * Add support for multichannel WAV files.
+      * Preserve channel layout information when up/down-mixing.
+      * Many bug-fixes and improvements
+
+Bugs fixed since 0.10.14:
+
+      * 475395 : decodebin2 leaks request-pads
+      * 475451 : [decodebin2] leaks ghostpad
+      * 378770 : [xvimagesink] race condition in event thread?
+      * 407282 : [decodebin2] autoplug-sort signal has GList ** parameter
+      * 430677 : [audioconvert] does not preserve channel positions when f...
+      * 442654 : [volume] controller bypassed by default
+      * 445529 : [volume] support for 24/32-bit audio/x-raw-int
+      * 446766 : return code for gst_base_rtp_payload_audio_handle_event()
+      * 451970 : Subparse requires HTML parser
+      * 453650 : [audiobasesrc] two alsasrcs do not work in one pipeline
+      * 459334 : [textoverlay] expose pango line alignment property
+      * 459585 : [basertpdepayload] api without namespace
+      * 460422 : [audiotestsrc] Add support for float and double output
+      * 462805 : [alsa] compilation fails with gcc 4.2
+      * 462979 : Add 'silent' property to GstTimeOverlay
+      * 463215 : [audioconvert] compile errors
+      * 464320 : [PATCH] gst-plugins-base-0.14 does not build for win32
+      * 464666 : [playbin] QT trailer hangs in preroll with decodebin2
+      * 464690 : Add connection-speed property to uridecodebin element
+      * 465015 : [playbin] Not removed probes causes deadlocks in streamin...
+      * 465028 : some warnings with mingw
+      * 467667 : GST_FRAMES_TO_CLOCK_TIME() and GST_CLOCK_TIME_TO_FRAMES()...
+      * 468129 : [basertpaudiopayload] event handler returns the wrong value
+      * 468619 : New library gstfft: FFT library for integer and float typ...
+      * 470456 : [API] add gst_missing_*_installer_detail_new()
+      * 470766 : [ssaparse] line breaks in SSA subtitle parser
+      * 471067 : Make the SDP code useable for generating SDP descriptions
+      * 471194 : [rtpbuffer] RTP headers are wrong for win32
+      * 473097 : [baseaudiosink] gstreamer-properties hangs when testing s...
+      * 474384 : gstrtsp-enumtypes.c and .h needed for win32
+      * 474880 : [xvimagesink] [ximagesink] leaking buffer caps reference
+      * 475731 : rtspconnection is able to read incomplete messages
+      * 483620 : All Rtp buffers are discarded --  gst_rtp_buffer_get_payl...
+      * 484989 : memleak, not unrefed caps for gstbasertppayload.c
+      * 489010 : Please change default channel order for WAVE_EXT-less .wa...
+      * 491722 : [playbin] regression: crash with external subtitles
+      * 492098 : [GstFFT] Broken scaling
+      * 492114 : Build issues on Windows/MSVC
+      * 492306 : compilation errors with MinGW
+      * 492813 : Missing symbols in libgstrtp.def
+      * 493986 : Build issues on Windows (missing symbols)
+      * 494346 : pre-release vs6 patch
+      * 496548 : Including malloc.h breaks macos build
+      * 496724 : DSW file references non-existent DSP files
+      * 464079 : audiotestsrc doesn't respond to conversion queries properly
+      * 442065 : floatcast.h includes config.h and might break other apps
+      * 466717 : gst_event_new_new_segment_full:assertion `start < = stop' ...
+      * 485753 : Decodebin2 deadlocks when nulling pipeline during typefind
+      * 464028 : Move connection-speed from playbin to playbasebin
+
+API added since 0.10.14:
+
+      * GstTagDemux base class for simple tag demuxers
+      * GstBaseAudioSrc::provide-clock property
+      * gst_rtcp_ntp_to_unix()
+      * gst_rtcp_unix_to_ntp()
+      * gst_rtp_buffer_get_header_len()
+      * gst_rtp_buffer_get_extension_data()
+      * gst_rtp_buffer_compare_seqnum()
+      * gst_rtp_buffer_ext_timestamp()
+      * gst_rtcp_packet_sdes_copy_entry()
+      * gst_install_plugins_supported()
+      * gst_missing_*_installer_detail_new() convenience API
+      * gst_rtsp_connection_poll()
+      * GstTextOverlay::line-alignment property
+
+Changes since 0.10.13:
+
+      * Audio dither and noise-shaping when reducing bit-depth
+      * RTSP and SDP helper libraries added
+      * Experimental buffering element "queue2" now supports pull-mode
+        and file-based buffering.
+      * Support for more 32-bit video pixel layouts
+      * Various fixes and improvements
+
+Bugs fixed since 0.10.13:
+
+      * 380625 : [x*imagesink] add 'handle-expose' property
+      * 385527 : oggmux sometimes gets DELTA flag on output wrong near start
+      * 402076 : videoscale 4-tap method broken for downscaling
+      * 437169 : [xvimagesink] add property to disable Xv double-buffering
+      * 441264 : queue2 support to do buffering on a file
+      * 442553 : [v4lsrc] doesn't output segments in GST_FORMAT_TIME
+      * 442557 : [videorate] doesn't handle latency queries
+      * 442944 : Audiotestsrc can overflow on seeks
+      * 444523 : [queue2] Pull mode support
+      * 444630 : Compilation error with fsseko (from gstqueue2.c) -- unabl...
+      * 445505 : [queue2] It does not work in pull mode with oggdemux
+      * 446551 : [queue2] Buffering is not working properly if it is set t...
+      * 446572 : [queue2] Division by zero
+      * 446972 : warning when compiling  gstoggdemux.c
+      * 449156 : Regression in CVS for decodebin2
+      * 450875 : Missing files in po/POTFILES.in
+      * 451707 : [tag] UTF-8 in ID3v1 tag not correctly decoded
+      * 451908 : [ffmpegcolorspace] regression: doesn't accept GST_VIDEO_C...
+      * 454264 : Playbin fails to " play " image url after a movie url
+      * 456656 : [API] Addition of audio buffer clipping function to gstaudio
+      * 460978 : gst_audio_buffer_clip outputs warnings
+      * 152864 : [PATCH] GstAlsaMixer doesn't support signals
+      * 360246 : [audioconvert] Optionally apply dithering
+      * 394061 : Add support for Subviewer subtitles
+      * 420326 : Base payloader class has wrong property types and ranges
+      * 451145 : [vorbisdec] errors out on 0-sized packets
+      * 459204 : [PATCH] [playbin] gst_play_base_bin_get_streaminfo_value_...
+
+API added since 0.10.13:
+
+      * RTSP and SDP libraries added
+      * gst_rtsp_base64_decode_ip
+      * Add buffer clipping function gst_audio_buffer_clip for raw audio 
+        buffers. Fixes #456656.
+      * gst_mixer_get_mixer_flags
+      * gst_mixer_message_parse_mute_toggled
+      * gst_mixer_message_parse_record_toggled
+      * gst_mixer_message_parse_volume_changed
+      * gst_mixer_message_parse_option_changed
+      * GstMixerMessageType
+      * GstMixerFlags
+
+Changes since 0.10.12:
+      * Many fixes and improvements
+      * RTP and RTCP support improved
+
+Bugs fixed since 0.10.12:
+
+      * 339838 : [audioconvert] support floats with non-native endianness
+      * 393975 : closing x/xvimagesink window crashes gst-launch
+      * 405072 : [API] add gst_tag_freeform_string_to_utf8()
+      * 413799 : [subparse] add support for MPL2 format
+      * 414645 : GstMixerTrack should make untranslated label available
+      * 420079 : [audioconvert] Uses biased rounding which results in dist...
+      * 420578 : [subparse] add more colour map in sami parser
+      * 421834 : videorate breaks on dimension changes
+      * 423051 : Vorbis tags of type double use locale-dependent formatting
+      * 423055 : Verify ReplayGain vorbistag processing in libs/tag testsuite
+      * 425455 : Decodebin2 leaks pads
+      * 426250 : GstPlayBaseBin leaks streaminfo objects
+      * 428187 : Rtp base depayloader class doesn't send new_segment after...
+      * 431672 : gst_base_rtp_audio_payload_push() should take object of i...
+      * 432362 : [ximagesink] doesn't build if XShm is not available
+      * 432755 : [videorate] leaks buffer if flow != OK
+      * 432984 : [baseaudiosrc] misleading warning message when dropping s...
+      * 433888 : [theoradec] does not generate a perfect stream
+      * 436562 : Theoradec doesn't work well with gnonlin
+      * 438840 : [theoradec] does not compile with old version of libtheora
+      * 440997 : [gstriff] Doesn't handle width!=depth files with audio/x-...
+      * 441295 : audioconvert doesn't build on VS6
+      * 442024 : regression in playbin buffering
+      * 350299 : [playbin] " Internal data flow error " opening movie with s...
+      * 410039 : totem crashed with SIGSEGV in new_decoded_pad_full()
+      * 340842 : do latency calculation for live sources
+      * 341078 : RB does not play beyond initially downloaded podcast file
+      * 414496 : [id3demux, id3v2mux] Add support for GST_TAG_MUSICBRAINZ_...
+
+API additions since 0.10.12:
+
+      * add gst_tag_freeform_string_to_utf8()
+      * GstRTPBuffer::gst_rtp_buffer_default_clock_rate()
+      * GstBaseAudioSink::slave-method property
+      * add "min-ptime" property to RTP base audio payloader
+      * gst_base_rtp_audio_payload_push()
+      * gst_base_rtp_audio_payload_get_adapter()
+      * GstMixerTrack::untranslated-label property
+
+Changes since 0.10.11:
+
+      * New API for on-demand plugin installation
+      * Xv thread-safety and configuration enhancements
+      * decodebin2 improvements
+      * Support more raw audio format conversions
+      * Improvements in Ogg support
+      * AudioFilter base class ported to 0.10
+      * Fixes for subtitles
+      * Latency/live-playback support for Alsa
+      * Lots of bug fixes and improvements
+
+Bugs fixed since 0.10.11:
+
+      * 398721 : No video in .ogm files with decodebin2
+      * 339837 : [audioconvert] support for 64-bit float audio 
+      * 341524 : [decodebin] can't handle decoders with always src pads wi...
+      * 352069 : Add de.po German translation
+      * 363379 : [oggmux] doesn't detect EOS on all sinkpads 
+      * 378436 : [oggdemux] rhythmbox crash on fast clicking on rating in ...
+      * 380342 : Totem does not play mp3 files when lyrics are present 
+      * 383195 : [cddabasesrc,basertpaudiopayload] compile errors with gcc...
+      * 383198 : totem crashed to gst_xvimagesink_update_colorbalance
+      * 384008 : [xvimagesink] accesses - > xwindow outside locks
+      * 384060 : gst_xoverlay_set_xwindow_id() causing lockups with x(v)im...
+      * 387138 : x input events processing in sinks with xoverlay interfac...
+      * 390063 : Documentation typo 
+      * 390076 : add xv adaptor and port properties in xvimagesink element.
+      * 391365 : [oggdemux] internal stream error on OggFlac
+      * 392070 : [vorbis] GST_TAG_LOCATION not mapped
+      * 392393 : [API] add libgstbaseutils library for missing plugins mes...
+      * 396042 : mpeg4 video typefinder loops endlessly on quicktime redirect
+      * 396835 : audioconvert/audioresample combination causing buffer of ...
+      * 397673 : [patch] XIOError caught in x[v]imagesink.c
+      * 397810 : [typefinding] .vob file: could not determine type of stream
+      * 398110 : [theoraenc] GLib failed to allocate 3080991032 bytes on g...
+      * 399340 : Crash in the oggdemux plugin when trying to play a specia...
+      * 401029 : [playbin] rapidly changing visualisation freezes
+      * 401072 : Move libgimme-codec helper functions to GStreamer
+      * 402505 : visualisations don't work for some samplerates
+      * 407811 : decodebin2 hang on HD clip
+      * 409683 : Crash with Decodebin2
+      * 410396 : not reading " DATE " tags from Flac files
+      * 410963 : Fails to build with -z defs 
+      * 357503 : [suparse] wrong timing with microdvd subtitles
+      * 393310 : [pango] localtime_r does not exist in MinGW
+      * 397207 : Test failure w/ HP-UX 11.11 & native compiler
+      * 399948 : [textoverlay] leaks upstream events if textpad unlinked
+      * 403963 : GstAudioFilter base class broken
+      * 404512 : [videoscale] floating point exception on 1x1 video
+      * 405020 : [alsa] probing the device-name doesn't seem to work corre...
+      * 408278 : [videorate] memory leak
+      * 410772 : Crash copying a GstNetBuffer
+      * 401118 : [visual] error if width not a multiple of 4 
+      * 405451 : [alsasink] deadlocks when disconnecting USB Sounddevice
+
+API additions since 0.10.11:
+
+      * GstAudioFilter
+      * GST_VIDEO_SINK_CAST()
+      * gst_pb_utils_add_codec_description_to_tag_list()
+      * gst_pb_utils_get_codec_description()
+      * gst_pb_utils_get_source_description()
+      * gst_pb_utils_get_sink_description()
+      * gst_pb_utils_get_decoder_description()
+      * gst_pb_utils_get_encoder_description()
+      * gst_pb_utils_get_element_description()
+      * gst_pb_utils_init()
+      * gst_install_plugins_context_new()
+      * gst_install_plugins_context_set_xid()
+      * gst_install_plugins_context_free()
+      * gst_install_plugins_async()
+      * gst_install_plugins_sync()
+      * gst_install_plugins_return_get_name()
+      * gst_install_plugins_installation_in_progress()
+      * gst_missing_uri_source_message_new()
+      * gst_missing_uri_sink_message_new
+      * gst_missing_element_message_new
+      * gst_missing_decoder_message_new
+      * gst_missing_encoder_message_new
+      * gst_missing_plugin_message_get_installer_detail
+      * gst_missing_plugin_message_get_description
+      * gst_is_missing_plugin_message
+
+Bugs fixed since 0.10.10:
+     
+      * 360552 : [riff] [avi] extracts non-UTF8 metadata
+      * 365501 : [x/xvimagesink] race condition when creating first image ...
+      * 339366 : [playbin] hangs if suburi file type cannot be determined
+      * 355914 : libvisual causes xvimagesink:  assertion `GST_CAPS_REFCOU...
+      * 363118 : gst_riff_create_video_caps() should also store variant in...
+      * 363607 : xvimagesink xwindow_draw_border() slowness
+      * 336301 : [playbin] can't handle RTSP source
+      * 337026 : oggmux doesn't set EOS properly
+      * 337031 : vorbisdec outputs too much data 
+      * 340049 : New BaseRTPAudioPayloader class to -base 
+      * 348264 : Theora encoding, Ogg muxing don't handle discontinuities
+      * 354773 : xvimage assumes that XV_COLORKEY can be set in RGB888 format
+      * 355917 : libvisual plugin is broken
+      * 355935 : multifdsink doesn't allow setting maximums (soft, hard) i...
+      * 357038 : [ffmpegcolorspace] RGBA handling broken
+      * 357215 : [playbin] buffering notification not quite right yet
+      * 357289 : [riff] riff parser can't detect aac audio stream
+      * 357404 : [playbin] Linking can fail silently 
+      * 357531 : [subparse] problem if markup is not closed
+      * 357577 : [playbin] regression: buffering still images broken
+      * 357591 : Avoid compiler warning with uclibc and -Werror
+      * 357613 : XvStopVideo in xvimagesink
+      * 357800 : [libvisual] doesn't pass audio data to libvisual 0.4.0 co...
+      * 359580 : tcpserversink and dataprotocol assert for multipart streams
+      * 361095 : Fixes compiling with forte: warning clean up (part 3)
+      * 361456 : [basertppayload] Memory leak
+      * 361634 : sink- > ringbuffer NULL in BaseAudioSink's setcaps()
+      * 361984 : [subparse] doesn't accept .srt file that doesn't start wi...
+      * 366334 : [PATCH] Windows vs8 fixes
+      * 368273 : Using the remove signal on multifdsink is not threadsafe
+      * 368310 : include file  gstbasertpaudiopayload.h not included for r...
+      * 369482 : [typefind] MPEG system streams get recognized as mp3 files
+      * 370092 : [PATCH] Decodebin v2 : Implementation
+      * 377183 : regression: no eos when playing ogg vorbis files
+      * 381219 : bad debugging code left in audiorate
+      * 382223 : [decodebin] more delayed linking
+      * 382269 : Typefind detects mpeg video clip as audio/mpeg
+      * 335635 : Add an Ogg/Vorbis retagging element
+      * 341681 : [textoverlay] flickering with continuously timestamped text
+      * 342228 : [alsa] Recognize " Front " as a Master channel 
+      * 357330 : [subparse] some sami parser minor but enhanced patch 
+      * 357532 : [gsttag] vorbistag doesn't handle dates that include time...
+      * 359237 : [typefinding] doesn't recognize XML files shorter than 25...
+      * 362845 : [subparse] add support for tmplayer format
+      * 357977 : [videorate] new segment start is not respected
+      * 364812 : [PATCH] oggmux release pad does not remove pad
+      * 364856 : pngenc stride problems
+      * 372507 : Mac build fixes
+
+API added since 0.10.10:
+
+      * playbin::queue-min-threshold property.
+      * GstVideoOrientation interface
+      * gst_base_rtp_depayload_push_ts
+      * gst_base_rtp_depayload_push
+      * Add dropped_buffers to multifdsink's get-stats GValueArray
+      * gst_ring_buffer_commit_full
+
+Changes since 0.10.9:
+
+      * New elements: gdppay, gdpdepay
+
+Bugs fixed since 0.10.9:
+     
+      * 343787 : The adder cannot handle when multiple elements tries to l...
+      * 336075 : ALSA emu10k1 mixer tracks are wrongly classified as playb...
+      * 349105 : crash with playbin and resizing screen
+      * 342494 : [v4l] Query " device-name " even if device is not open
+      * 342680 : [adder] seeking with multiple ogg files fails to work
+      * 345188 : [alsa] can't handle more than 8 channels
+      * 347091 : converting vorbis comments to GstTagLists is lossy
+      * 348157 : Changed " Change Device " menu behaviour in gnome-volume-co...
+      * 348916 : [typefind] add multipart/x-mixed-replace typefinder
+      * 350157 : [riff] riff parser can't detect dts audio stream
+      * 350655 : [oggdemux] should process seeking queries
+      * 350900 : [adder] should not clamp floating point values
+      * 351426 : API: add gst_tag_parse_extended_comment
+      * 351502 : g_value_set_string leaks
+      * 351742 : [vorbisenc] discontinuity detection too sensitive, might ...
+      * 353658 : [videotestsrc] doesn't round strides correctly for YVYU
+      * 354594 : multifdsink doesn't work reliably with sync-method = 'nex...
+      * 351790 : [ogmparse] crash parsing video stream on x86-64
+      * 140139 : [avidemux] can't play broken avi with ogg (not vorbis) au...
+      * 347783 : [PLUGIN-MOVE] GDP elements should be moved
+      * 347918 : Internal data flow error in udpsrc
+      * 349656 : jitterbuffer in GstBaseRtp fails to handle rtp seqnum rol...
+      * 350784 : element alsamixer doesn't respect asoundrc
+      * 351308 : [netbuffer] build fails with gkt-doc critical warnings
+      * 353234 : audiorate preserves DISCONT on buffers
+      * 353912 : Add cmml caps to oggmux
+
+API added since 0.10.9:
+     
+      * gst_rtp_buffer_get_payload_subbuffer()
+      * gst_tag_parse_extended_comment()
+      * GstPlayBin::connection-speed
+      * GstTheoraParse::synchronization-points
+      * GST_AUDIO_CHANNEL_POSITION_NONE
+
+Changes since 0.10.8:
+
+      * Parallel installability with 0.8.x series
+      * Threadsafe design and API
+      * Subtitle fixes
+      * Support for images in tags
+      * Playback improvements
+      * Gnomevfssrc now supports burn:// uris
+      * Videoscale now supports more RGBA formats
+      * Multifdsink improvements
+      * Testsuite can now generate coverage information
+
+Bugs fixed since 0.10.8:
+
+      * 347296 : Problems with clocks on alsasrc hangs the application
+      * 347295 : [vorbisdec] Pushes before being initialized
+      * 329798 : [playbin] doesn't always give correct error message for m...
+      * 342085 : [alsasink] doesn't set buffer-time correctly
+      * 342789 : [audioresample] doesn't clear state when stopped, causing...
+      * 343303 : [subparse] workaround for bad entities in sami parser
+      * 343385 : [gnomevfs] add support for burn:// URIs
+      * 343500 : [riff] gst_riff_parse_strf_vids() can't parse extra data.
+      * 343699 : oggmux leaks
+      * 344503 : [subparse] parse font face property in sami parser.
+      * 345131 : [PATCH] videoscale support for 32-bit RGB-formats
+      * 345206 : [textoverlay] crash with non-UTF8 input
+      * 345225 : [theoradec] Clipping for exact seeking
+      * 345641 : [API] [libgsttag] add enums for image tag type
+      * 345879 : [riff] won't play a .wmv file with WMVA video stream
+      * 346581 : [typefinding] recognise text/html
+      * 347221 : [audioconvert] channel remapping does not work right
+      * 347304 : Massive leaks with xvimagesink
+      * 346527 : alsasrc get_range does not respect requested size
+
+Changes since 0.10.7:
+    
+      * alsasink probing fixes
+      * xvimagesink error reporting fixes
+      * subtitle fixes
+      * adder fixes
+      * vorbis multichannel fixes
+      * multifdsink streamheader fixes
+
+Bugs fixed since 0.10.7:
+    
+      * 169936 : [subparse] support for SAMI subtitles
+      * 315312 : Gstreamer Xv uses RGB instead of YUV.
+      * 334002 : video4linux shouldn't depend on X in configure script
+      * 336881 : [libvisual] additional support for libvisual-0.4
+      * 337544 : [xvimagesink] Internal Error when image is too large
+      * 339520 : [subparse] add " encoding " property
+      * 340909 : [alsasink] can't enable spdif output
+      * 341542 : some users have an assertion failed: (GST_VIDEO_SINK_WIDT...
+      * 341562 : audioconvert doesn't list formats in order of preference
+      * 341696 : audioconvert crashes if converting from a format with no ...
+      * 341719 : bisection algorithm in ogg doesn't bisect in some cases
+      * 341732 : [alsasink] doesn't query supported sample rates
+      * 341873 : [alsasink] minor memory leak, uses unprotected static var...
+      * 342143 : [subparse] sami parser needs to escape characters
+      * 342181 : [alsa] add property probe interface to alsasink and alsasrc
+      * 342268 : [playbin] add 'subtitle-encoding' property
+      * 342345 : [riff] Elephant's Dream AVI does not play, JUNK chunk bef...
+      * 342566 : Building without GTK+ fails
+      * 343397 : H.264/AAC movie deadlocks with totem in gstreamer code, p...
+      * 339935 : [adder] dead-locks when adding sink pads in PAUSED state
+
+Changes since 0.10.6:
+
+      * typefind improvements
+      * bug-fixes in textoverlay, audioconvert, videotestsrc, 
+        multifdsink and audio source/sink base classes
+      * Ice-cast metadata support has moved from gnomevfssrc to the 
+        icydemux element in gst-plugins-good
+      * audioresample now supports floating point samples
+      * Adder element fixes.
+      * Fixes for network playback and audio resampling in playbin
+
+Bugs fixed since 0.10.6:
+    
+      * 340060 : [adder] handle newsegment events properly
+      * 340375 : [API 0.11] [patch] typefind to differentiate between mp4 ...
+      * 339405 : [textoverlay] can't display '\n' character
+      * 338657 : [patch] adder should send events from src-pad to all sink...
+      * 338919 : [patch] alsasink should also query witdh capabilities fro...
+      * 301759 : [audioresample] float audio support (for OSX audio sinks)
+      * 331901 : [videotestsrc] framerate=0/1 gives assertion error
+      * 333657 : Replacing icy demuxing in gnomevfssrc
+      * 336339 : [audioresample] should support width != 16
+      * 338718 : [patch] [audioconvert] correctly clip float samples > 1.0
+      * 338778 : [patch] Bad audio with ASX files
+      * 338991 : [patch] Videoscale doesn't pass on pixel-aspect ratio
+      * 339574 : [patch] Race condition in multifdsink can lead to spuriou...
+      * 339786 : [typefinding] wavpack typefinding doesn't always work
+      * 340369 : [volume element] " volume " property range insufficient
+      * 340379 : [playbin] doesn't insert audioresample, causes problems w...
+      * 340392 : Problem with internal-decodebin
+      * 341160 : [multifdsink] client_status enum has an uninitialized nick
+      * 341182 : Accessing playbin's streaminfo property from high languag...
+      * 341432 : [playbin] automatically get icecast metadata requiring ic...
+      * 341542 : some users have an assertion failed: (GST_VIDEO_SINK_WIDT...
+      * 341557 : Map GST_TAG_IMAGE < = > ID3v2 APIC tag
+
+API added since 0.10.6:
+    
+      * client-fd-removed signal added to multifdsink
+      * stream-info-value-array property added to playbin
+      * gst_video_calculate_display_ratio() in libgstvideo
+
+Changes since 0.10.5:
+
+      * QoS in sinks and transform elements
+      * Needs GStreamer 0.10.5 for new GstBaseSink::async_playback() vmethod
+      * added theoraparse element
+
+Bugs fixed since 0.10.5:
+    
+      * 313136 : [playbin] hang while playing truncated ogg file
+      * 172848 : [subparse] subtitles with special chars are displayed as ...
+      * 305279 : [riff] uncompressed AVIs with 24bpp don't work
+      * 320765 : [ffmpegcolorspace] make win32+msvc compliant, don't use _...
+      * 323852 : Disable tests/icles on platforms that do not have X
+      * 325653 : build errors compiling audioresample on win32(vs7)
+      * 327357 : gst-plugins-base fails to compile with GCC 4.1
+      * 334620 : [gnomevfssrc] fails to connect to icecast streaming servers
+      * 334822 : [ffmpegcolorspace] YVU9 support
+      * 335028 : [typefinding] ID3 v1 tag is not recognized with mp3-in-wa...
+      * 335365 : inefficient use of GList in gst-plugins-base
+      * 336190 : [gnomevfssink] should accept non-URI filenames as " location " 
+      * 336194 : [gnomevfssrc] some minor memory leaks
+      * 336477 : plugins need better/univied descriptions
+      * 336617 : Unable to recognise MPEG TS stream
+      * 337548 : Memory leaks in basertpdepayload
+      * 337945 : [oggdemux] segment stop position ignored
+      * 338419 : Regression in the handling of files with multiple audio/s...
+      * 338897 : Videoscale crashes as part of DVD to Ogg transcoding
+      * 339013 : [videorate] Goes into an infinite loop
+      * 339047 : [riff] handle H264 fourcc in addition to h264
+      * 339212 : ISO file typefinding regression
+      * 330748 : deadlock in base audio sink on playing- > paused state change
+
+Bugs fixed since 0.10.4:
+    
+      * 334216 : [gnomevfssrc] won't open some media on NFS mounts any longer
+      * 334226 : typefindfunctions plugin crashes on PPC on registration
+
+Changes since 0.10.3:
+    
+      * (Experimental) QoS support
+      * oggmuxer now creates 100% valid streams for Theora, Vorbis and Speex
+      * documentation updates
+      * better support for subtitles (seeking)
+
+Bugs fixed since 0.10.3:
+    
+      * 310202 : [subtitles] < i >  < /i > tags and others should be supported i...
+      * 312439 : XVideo output doesn't work on remote displays (probably r...
+      * 321271 : audio output is truncated at EOS
+      * 321650 : Can't decode this ogm file
+      * 325732 : [oggdemux] problem when seeking to time less than 4s with...
+      * 325972 : [typefinding] doesn't recognise this mp3
+      * 326720 : [alsasink] doesn't support more than 2 channels anymore
+      * 330711 : [ffmpegcolorspace] problems with palettized RGB (fencount...
+      * 330789 : gstbaseaudiosink causes noise on seeking
+      * 330888 : Fix build with gcc 2.95 (again)
+      * 331295 : gnomevfssink doesn't respect umask when creating files
+      * 331526 : 3GP type detection is too simple
+      * 331678 : Decodebin is not reusable within a single pipeline (as in...
+      * 331690 : playbin won't play my last.fm stream
+      * 331763 : [alsamixer] unmute sets the volume to 100%
+      * 331765 : [alsamixer] mixer applet slider doesn't want to move from...
+      * 331903 : [videorate] doesnt handle input caps of framerate=0/1 sanely
+      * 332778 : [ogmparse] " Already an existing pad " WARNING
+      * 332964 : random crashes in mp3_type_find
+      * 333254 : theora encoder does not set IN_CAPS flag properly
+      * 333352 : [gnomevfssink] reports disk full as generic error
+      * 333488 : Allow for palette < 256 colours in AVI files
+      * 333510 : [PATCH] Fix gst_pad_new_from_template (gst_static_pad_tem...
+      * 333545 : [riff] set depth on wma caps to make asfdemux and pitfdll...
+      * 333663 : [patch] unref the result of gst_pad_get_parent
+      * 333900 : [typefind] cannot play a particular mp3 file
+      * 334112 : variable not initialized
+      * 334129 : Disable frame dropping for now
+      * 317038 : use default channel layout if none is specified in multic...
+      * 319340 : [cdparanoia] uncorrected-error signal never fired
+
+API added since 0.10.3:
+    
+      * GstTextOverlay::halignment
+      * GstTextOverlay::valignment
+
+Changes since 0.10.2:
+
+      * typefind improvements
+      * Ogg decoding and encoding fixes
+      * Improved audio and video sink classes
+      * Bug and leak fixes
+      * Improved video scaling
+      * On-the-fly visualisation switching
+      * Subtitle support
+
+Bugs fixed since 0.10.2:
+
+      * 330244 : gsttextoverlay.c:895: 'struct _GstCollectData' has no mem...
+      * 324000 : [playbin] post error or message on unknown input
+      * 153004 : [typefind] can't identify mp3 file with one single mpeg f...
+      * 323874 : [playbin] leaks sinks and threads when using gconfaudiosink
+      * 324626 : ffmpegcolorspace support for fourcc " UYVY "
+      * 326447 : check that all elements in -base pass queries they can't ...
+      * 328263 : Fix build with gcc 2.95
+      * 328279 : [decodebin] timeout issue when pre-rolling
+      * 329326 : Fix oggmux removing pads from collect pads
+
+Changes since 0.10.1:
+    
+      * ported gnomevfssink, cdparanoia
+      * New library and base class: GstCddaBaseSrc
+      * ported mixerutils.h
+      * added 'sine-tab' waveform to audiotestsrc
+      * added float audio to audiorate
+
+Bugs fixed since 0.10.1:
+    
+      * 324216 : [cdparanoia] missing patches from 0.8
+      * 324696 : [videotestsrc] does not start counting the time from zero...
+      * 324900 : Problem compiling gst-plugins-base with Forte
+      * 325984 : [playbin] cannot handle sources that produce raw audio/video
+      * 325990 : patch videotestsrc for using glib types
+      * 326601 : GstRingBuffer crashes with alaw/mulaw caps
+      * 327114 : [theoradec] should post tags on the bus
+      * 327216 : vorbisdec segfaults on certain queries
+
+API added since 0.10.1:
+     
+      * added libgstcddabase
+      * added mixerutils.h
+        
+Changes since 0.10.0:
+    
+      * Parallel installability with 0.8.x series
+      * Threadsafe design and API
+      * removed gst-launch-ext
+      * Ported: ogmparse
+      * Fixes for: subparse, xvimagesink, audioresample, videorate, decodebin
+
+Bugs fixed since 0.10.0:
+    
+      * 322347 : GstBaseRtpDepayload timestamps are wring
+      * 323900 : Basertpdepayloader lets NEWSEGMENT events through unfiltered
+      * 323878 : missing < string.h > inclusion (for memset & FD_ZERO)
+
+API added since 0.10.0:
+    
+      * GstAlsaMixer::device
+      * GstAlsaMixer::device-name
+
+Bugs fixed since 0.9.7:
+    
+      * 319172 : gstreamer-plugins-base-0.9.pc doesn't export linking flags
+      * 323017 : While(1) loop with sleep(0) in basertpdepayload.c
+  
+Changes since 0.9.6:
+    
+      * Parallel installability with 0.8.x series
+      * Threadsafe design and API
+      * ximagesink and xvimagesink updates and interactive test
+      * added pango
+      * rename net to netbuffer library
+      * rtp element renaming
+      * stream selector fixes
+
+Bugs fixed since 0.9.6:
+    
+      * 319618 : [decodebin] some ogg videos don't play
+      * 320644 : RTP packetizer does't set the packet timestamps correctly
+      * 322388 : xvimagesink force-aspect-ratio=True always displays squar...
+      * 322704 : oggdemux typefind list leak
+
+Changes since 0.9.5:
+    
+      * Parallel installability with 0.8.x series
+      * Threadsafe design and API
+      * lots of leak fixes
+      * flicker-free and rewritten X sinks
+      * fractional framerates
+      * removed sinesrc, replaced by audiotestsrc
+
+Bugs fixed since 0.9.5:
+    
+      * 316442 : playbin should use autoaudiosink/autovideosink by default
+      * 318353 : [ffmpegcolorspace] forward-port fixes from 0.8 branch
+      * 320200 : vorbisenc: min-bitrate and max-bitrate are 1/1000 bps rat...
+      * 321164 : gstringbuffer stops working under load
+      * 321426 : ximage plugin should be renamed to ximagesink
+      * 321446 : sinesrc should be dropped in favour of audiotestsrc
+      * 321451 : GstRtpBuffer: no way to create a sub buffer with only the...
+      * 321816 : [API] xoverlay API to post prepare-xwindow-id message
+      * 321894 : vorbisenc doesn't compile
+      * 322117 : Rename libgsttagedit to libgsttag
+
+Changes since 0.9.4:
+    
+      * video caps now use a good range for framerate and w/h
+      * oggdemux/oggmux improvements
+      * playbin improvements
+
+Bugs fixed since 0.9.4:
+    
+      * 319110 : [PATCH] oggdemux chain finding is slow
+      * 320058 : playbin of a jpeg over http does not work
+      * 320923 : [volume] doesn't build on Solaris
+      * 321011 : gstbasertpdepayload doesn't send the " new segment " event ...
+
+Changes since 0.9.3:
+
+      * New element: audiotestsrc
+      * typefind improvements
+      * buffer-frames removed
+
+Changes since 0.9.2:
+
+      * RTP base classes
+
+Bugs fixed since 0.9.2:
+
+      * 313251 : ximagesink unused functions
+      * 315159 : audioconvert lost 24 bit conversions in the rewrite
+

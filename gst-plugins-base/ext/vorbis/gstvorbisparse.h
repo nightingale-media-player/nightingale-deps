@@ -66,7 +66,6 @@ struct _GstVorbisParse {
   gint64		prev_granulepos;
   gint32		prev_blocksize;
   guint32		sample_rate;
-  guint32               channels;
 };
 
 struct _GstVorbisParseClass {

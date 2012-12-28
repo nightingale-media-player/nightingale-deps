@@ -45,19 +45,54 @@
  * @short_description: common RTSP defines
  * @see_also: gstrtspurl, gstrtspconnection
  *  
+ * <refsect2>
+ * <para>
  * Provides common defines for the RTSP library. 
+ * </para>
+ * </refsect2>
  *  
  * Last reviewed on 2007-07-24 (0.10.14)
  */
 
 #include <errno.h>
 
+extern int h_errno;
+
 #include "gstrtspdefs.h"
+
+#ifdef G_OS_WIN32
+#include <winsock2.h>
+#else
+#include <netdb.h>
+#endif
 
 struct rtsp_header
 {
   const gchar *name;
   gboolean multiple;
+};
+
+static const gchar *rtsp_results[] = {
+  "OK",
+  /* errors */
+  "Generic error",
+  "Invalid parameter specified",
+  "Operation interrupted",
+  "Out of memory",
+  "Cannot resolve host",
+  "Function not implemented",
+  "System error: %s",
+  "Parse error",
+  "Error on WSAStartup",
+  "Windows sockets are not version 0x202",
+  "Received end-of-file",
+  "Network error: %s",
+  "Host is not a valid IP address",
+  "Timeout while waiting for server response",
+  "Tunnel GET request received",
+  "Tunnel POST request received",
+  "Unknown error (%d)",
+  NULL
 };
 
 static const gchar *rtsp_methods[] = {
@@ -171,14 +206,11 @@ static struct rtsp_header rtsp_headers[] = {
   {"X-Server-IP-Address", FALSE},
   {"X-Sessioncookie", FALSE},
 
-  /* Since 0.10.36 */
-  {"RTCP-Interval", FALSE},
-
   {NULL, FALSE}
 };
 
 #define DEF_STATUS(c, t) \
-  g_hash_table_insert (statuses, GUINT_TO_POINTER(c), (gpointer) t)
+  g_hash_table_insert (statuses, GUINT_TO_POINTER(c), t)
 
 static GHashTable *
 rtsp_init_status (void)
@@ -252,45 +284,38 @@ rtsp_init_status (void)
 gchar *
 gst_rtsp_strresult (GstRTSPResult result)
 {
-  switch (result) {
-    case GST_RTSP_OK:
-      return g_strdup ("OK");
-    case GST_RTSP_ESYS:
-      return g_strdup ("System error");
-    case GST_RTSP_ENET:
-      return g_strdup ("Network error");
-    case GST_RTSP_ERROR:
-      return g_strdup ("Generic error");
-    case GST_RTSP_EINVAL:
-      return g_strdup ("Invalid parameter specified");
-    case GST_RTSP_EINTR:
-      return g_strdup ("Operation interrupted");
-    case GST_RTSP_ENOMEM:
-      return g_strdup ("Out of memory");
-    case GST_RTSP_ERESOLV:
-      return g_strdup ("Cannot resolve host");
-    case GST_RTSP_ENOTIMPL:
-      return g_strdup ("Function not implemented");
-    case GST_RTSP_EPARSE:
-      return g_strdup ("Parse error");
-    case GST_RTSP_EWSASTART:
-      return g_strdup ("Error on WSAStartup");
-    case GST_RTSP_EWSAVERSION:
-      return g_strdup ("Windows sockets are not version 0x202");
-    case GST_RTSP_EEOF:
-      return g_strdup ("Received end-of-file");
-    case GST_RTSP_ENOTIP:
-      return g_strdup ("Host is not a valid IP address");
-    case GST_RTSP_ETIMEOUT:
-      return g_strdup ("Timeout while waiting for server response");
-    case GST_RTSP_ETGET:
-      return g_strdup ("Tunnel GET request received");
-    case GST_RTSP_ETPOST:
-      return g_strdup ("Tunnel POST request received");
-    case GST_RTSP_ELAST:
+  gint idx;
+  gchar *res;
+
+  idx = ABS (result);
+  idx = CLAMP (idx, 0, -GST_RTSP_ELAST);
+
+  switch (idx) {
+#ifdef G_OS_WIN32
+    case -GST_RTSP_ESYS:
+    case -GST_RTSP_ENET:
+    {
+      gchar *msg = g_win32_error_message (WSAGetLastError ());
+      res = g_strdup_printf (rtsp_results[idx], msg);
+      g_free (msg);
+      break;
+    }
+#else
+    case -GST_RTSP_ESYS:
+      res = g_strdup_printf (rtsp_results[idx], g_strerror (errno));
+      break;
+    case -GST_RTSP_ENET:
+      res = g_strdup_printf (rtsp_results[idx], hstrerror (h_errno));
+#endif
+      break;
+    case -GST_RTSP_ELAST:
+      res = g_strdup_printf (rtsp_results[idx], result);
+      break;
     default:
-      return g_strdup_printf ("Unknown error (%d)", result);
+      res = g_strdup (rtsp_results[idx]);
+      break;
   }
+  return res;
 }
 
 /**
@@ -427,6 +452,8 @@ gst_rtsp_find_method (const gchar * method)
  * Convert @options to a string.
  *
  * Returns: a new string of @options. g_free() after usage.
+ *
+ * Since: 0.10.23
  */
 gchar *
 gst_rtsp_options_as_text (GstRTSPMethod options)
@@ -472,6 +499,8 @@ gst_rtsp_options_as_text (GstRTSPMethod options)
  * Check whether @field may appear multiple times in a message.
  *
  * Returns: %TRUE if multiple headers are allowed.
+ *
+ * Since: 0.10.25
  */
 gboolean
 gst_rtsp_header_allow_multiple (GstRTSPHeaderField field)

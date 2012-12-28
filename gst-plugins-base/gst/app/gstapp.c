@@ -16,32 +16,6 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-/**
- * SECTION:element-appsrc
- *
- * The appsrc element can be used by applications to insert data into a
- * GStreamer pipeline. Unlike most GStreamer elements, Appsrc provides
- * external API functions.
- *
- * For the documentation of the API, please see the
- * <link linkend="gst-plugins-base-libs-appsrc">libgstapp</link> section in the
- * GStreamer Plugins Base Libraries documentation.
- *
- * Since: 0.10.22
- */
-/**
- * SECTION:element-appsink
- *
- * Appsink is a sink plugin that supports many different methods for making
- * the application get a handle on the GStreamer data in a pipeline. Unlike
- * most GStreamer elements, Appsink provides external API functions.
- *
- * For the documentation of the API, please see the
- * <link linkend="gst-plugins-base-libs-appsink">libgstapp</link> section in
- * the GStreamer Plugins Base Libraries documentation.
- *
- * Since: 0.10.22
- */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -63,6 +37,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    app,
+    "app",
     "Elements used to communicate with applications",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)
