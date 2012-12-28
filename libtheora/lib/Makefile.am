@@ -20,12 +20,6 @@ EXTRA_DIST = \
 
 lib_LTLIBRARIES = libtheoradec.la libtheoraenc.la libtheora.la
 
-if COMPILER_visualstudio
-arch_dir = x86_vc
-else
-arch_dir = x86
-endif
-
 if THEORA_DISABLE_ENCODE
 encoder_uniq_sources = \
 	encoder_disabled.c
@@ -34,18 +28,18 @@ encoder_sources = \
 	$(encoder_uniq_sources)
 else
 encoder_uniq_x86_sources = \
-	$(arch_dir)/mmxencfrag.c \
-	$(arch_dir)/mmxfdct.c \
-	$(arch_dir)/x86enc.c
+	x86/mmxencfrag.c \
+	x86/mmxfdct.c \
+	x86/x86enc.c
 
 encoder_uniq_x86_64_sources = \
-	$(arch_dir)/sse2fdct.c
+	x86/sse2fdct.c
 
 encoder_shared_x86_sources = \
-	$(arch_dir)/mmxfrag.c \
-	$(arch_dir)/mmxidct.c \
-	$(arch_dir)/mmxstate.c \
-	$(arch_dir)/x86state.c
+	x86/mmxfrag.c \
+	x86/mmxidct.c \
+	x86/mmxstate.c \
+	x86/x86state.c
 
 encoder_shared_x86_64_sources =
 
@@ -94,10 +88,10 @@ encoder_sources = \
 endif
 
 decoder_x86_sources = \
-	$(arch_dir)/mmxidct.c \
-	$(arch_dir)/mmxfrag.c \
-	$(arch_dir)/mmxstate.c \
-	$(arch_dir)/x86state.c
+	x86/mmxidct.c \
+	x86/mmxfrag.c \
+	x86/mmxstate.c \
+	x86/x86state.c
 if CPU_x86_64
 decoder_arch_sources = $(decoder_x86_sources)
 else
@@ -151,17 +145,14 @@ libtheoradec_la_SOURCES = \
 	Version_script-dec theoradec.exp
 libtheoradec_la_LDFLAGS = \
   -version-info @THDEC_LIB_CURRENT@:@THDEC_LIB_REVISION@:@THDEC_LIB_AGE@ \
-  @THEORADEC_LDFLAGS@ @CAIRO_LIBS@ \
-  -no-undefined
+  @THEORADEC_LDFLAGS@ @CAIRO_LIBS@
 
 libtheoraenc_la_SOURCES = \
 	$(encoder_sources) \
 	Version_script-enc theoraenc.exp
 libtheoraenc_la_LDFLAGS = \
   -version-info @THENC_LIB_CURRENT@:@THENC_LIB_REVISION@:@THENC_LIB_AGE@ \
-  @THEORAENC_LDFLAGS@ $(OGG_LIBS) \
-  -no-undefined
-libtheoraenc_la_LIBADD = libtheoradec.la
+  @THEORAENC_LDFLAGS@ $(OGG_LIBS)
 
 libtheora_la_SOURCES = \
 	$(decoder_sources) \
@@ -169,8 +160,7 @@ libtheora_la_SOURCES = \
 	Version_script theora.exp
 libtheora_la_LDFLAGS = \
   -version-info @TH_LIB_CURRENT@:@TH_LIB_REVISION@:@TH_LIB_AGE@ \
-  @THEORA_LDFLAGS@ @CAIRO_LIBS@ $(OGG_LIBS) \
-  -no-undefined
+  @THEORA_LDFLAGS@ @CAIRO_LIBS@ $(OGG_LIBS)
 
 debug:
 	$(MAKE) all CFLAGS="@DEBUG@" 
