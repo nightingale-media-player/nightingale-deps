@@ -8,20 +8,24 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+#ifndef G_OS_WIN32
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#else
+#include <winsock2.h>
+#endif
 #include <errno.h>
 
 #include "vncauth.h"
 
-#define RFB_GET_UINT32(ptr) GUINT32_FROM_BE (*(guint32 *)(ptr))
-#define RFB_GET_UINT16(ptr) GUINT16_FROM_BE (*(guint16 *)(ptr))
-#define RFB_GET_UINT8(ptr) (*(guint8 *)(ptr))
+#define RFB_GET_UINT32(ptr) GST_READ_UINT32_BE(ptr)
+#define RFB_GET_UINT16(ptr) GST_READ_UINT16_BE(ptr)
+#define RFB_GET_UINT8(ptr) GST_READ_UINT8(ptr)
 
-#define RFB_SET_UINT32(ptr, val) (*(guint32 *)(ptr) = GUINT32_TO_BE (val))
-#define RFB_SET_UINT16(ptr, val) (*(guint16 *)(ptr) = GUINT16_TO_BE (val))
-#define RFB_SET_UINT8(ptr, val) (*(guint8 *)(ptr) = val)
+#define RFB_SET_UINT32(ptr, val) GST_WRITE_UINT32_BE((ptr),(val))
+#define RFB_SET_UINT16(ptr, val) GST_WRITE_UINT16_BE((ptr),(val))
+#define RFB_SET_UINT8(ptr, val) GST_WRITE_UINT8((ptr),(val))
 
 GST_DEBUG_CATEGORY_EXTERN (rfbdecoder_debug);
 #define GST_CAT_DEFAULT rfbdecoder_debug
@@ -75,6 +79,7 @@ rfb_decoder_new (void)
   decoder->rect_width = 0;
   decoder->rect_height = 0;
   decoder->shared_flag = TRUE;
+  decoder->disconnected = FALSE;
   decoder->data = NULL;
   decoder->data_len = 0;
 
@@ -112,7 +117,11 @@ rfb_decoder_connect_tcp (RfbDecoder * decoder, gchar * addr, guint port)
 
   sa.sin_family = AF_INET;
   sa.sin_port = htons (port);
+#ifndef G_OS_WIN32
   inet_pton (AF_INET, addr, &sa.sin_addr);
+#else
+  sa.sin_addr.s_addr = inet_addr (addr);
+#endif
   if (connect (decoder->fd, (struct sockaddr *) &sa,
           sizeof (struct sockaddr)) == -1) {
     close (decoder->fd);
@@ -121,6 +130,9 @@ rfb_decoder_connect_tcp (RfbDecoder * decoder, gchar * addr, guint port)
     return FALSE;
   }
   //rfb_decoder_use_file_descriptor (decoder, fd);
+
+  decoder->disconnected = FALSE;
+
   return TRUE;
 }
 
@@ -147,7 +159,7 @@ rfb_decoder_iterate (RfbDecoder * decoder)
   return decoder->state (decoder);
 }
 
-guint8 *
+static guint8 *
 rfb_decoder_read (RfbDecoder * decoder, guint32 len)
 {
   guint32 total = 0;
@@ -164,8 +176,13 @@ rfb_decoder_read (RfbDecoder * decoder, guint32 len)
   }
 
   while (total < len) {
+#ifndef G_OS_WIN32
     now = recv (decoder->fd, decoder->data + total, len - total, 0);
+#else
+    now = recv (decoder->fd, (char *) decoder->data + total, len - total, 0);
+#endif
     if (now <= 0) {
+      decoder->disconnected = TRUE;
       GST_WARNING ("rfb read error on socket");
       return NULL;
     }
@@ -608,6 +625,13 @@ rfb_decoder_state_framebuffer_update_rectangle (RfbDecoder * decoder)
   GST_DEBUG ("w:%d h:%d", w, h);
   GST_DEBUG ("encoding: %d", encoding);
 
+  if (((w * h) + (x * y)) > (decoder->width * decoder->height)) {
+    GST_ERROR ("Desktop resize is unsupported.");
+    decoder->state = NULL;
+    decoder->disconnected = TRUE;
+    return TRUE;
+  }
+
   switch (encoding) {
     case ENCODING_TYPE_RAW:
       rfb_decoder_raw_encoding (decoder, x, y, w, h);
@@ -629,7 +653,7 @@ rfb_decoder_state_framebuffer_update_rectangle (RfbDecoder * decoder)
       break;
   }
   decoder->n_rects--;
-  if (decoder->n_rects == 0) {
+  if (decoder->n_rects == 0 || decoder->disconnected == TRUE) {
     decoder->state = NULL;
   } else {
     decoder->state = rfb_decoder_state_framebuffer_update_rectangle;
@@ -779,8 +803,8 @@ static void
 rfb_decoder_hextile_encoding (RfbDecoder * decoder, gint start_x, gint start_y,
     gint rect_w, gint rect_h)
 {
-  gint32 x, x_count, x_end, x_max, x_max_16;
-  gint32 y, y_count, y_end, y_max, y_max_16;
+  gint32 x, x_count G_GNUC_UNUSED, x_end, x_max, x_max_16;
+  gint32 y, y_count G_GNUC_UNUSED, y_end, y_max, y_max_16;
   guint8 subencoding, nr_subrect, xy, wh;
   guint32 background, foreground;
 

@@ -107,7 +107,7 @@ gst_mxf_mux_base_init (gpointer g_class)
     p++;
   }
 
-  gst_element_class_set_details_simple (element_class, "MXF muxer",
+  gst_element_class_set_static_metadata (element_class, "MXF muxer",
       "Codec/Muxer",
       "Muxes video/audio streams into a MXF stream",
       "Sebastian Dröge <sebastian.droege@collabora.co.uk>");
@@ -376,6 +376,18 @@ gst_mxf_mux_setcaps (GstPad * pad, GstCaps * caps)
   return ret;
 }
 
+static char *
+gst_mxf_mux_create_pad_name (GstPadTemplate * templ, guint id)
+{
+  GString *string;
+
+  string = g_string_new (GST_PAD_TEMPLATE_NAME_TEMPLATE (templ));
+  g_string_truncate (string, string->len - 2);
+  g_string_append_printf (string, "%u", id);
+
+  return g_string_free (string, FALSE);
+}
+
 static GstPad *
 gst_mxf_mux_request_new_pad (GstElement * element,
     GstPadTemplate * templ, const gchar * pad_name)
@@ -397,15 +409,19 @@ gst_mxf_mux_request_new_pad (GstElement * element,
     GST_ERROR_OBJECT (mux, "Not our template");
     return NULL;
   }
-
+#if GLIB_CHECK_VERSION(2,29,5)
+  pad_number = g_atomic_int_add ((gint *) & mux->n_pads, 1);
+#else
   pad_number = g_atomic_int_exchange_and_add ((gint *) & mux->n_pads, 1);
-  name = g_strdup_printf (GST_PAD_TEMPLATE_NAME_TEMPLATE (templ), pad_number);
+#endif
+  name = gst_mxf_mux_create_pad_name (templ, pad_number);
 
   GST_DEBUG_OBJECT (mux, "Creating pad '%s'", name);
   pad = gst_pad_new_from_template (templ, name);
   g_free (name);
   cpad = (GstMXFMuxPad *)
-      gst_collect_pads_add_pad (mux->collect, pad, sizeof (GstMXFMuxPad));
+      gst_collect_pads_add_pad (mux->collect, pad, sizeof (GstMXFMuxPad), NULL,
+      TRUE);
   cpad->last_timestamp = 0;
   cpad->adapter = gst_adapter_new ();
   cpad->writer = writer;
@@ -462,7 +478,7 @@ gst_mxf_mux_create_metadata (GstMXFMux * mux)
 
   /* Preface */
   mux->preface =
-      (MXFMetadataPreface *) gst_mini_object_new (MXF_TYPE_METADATA_PREFACE);
+      (MXFMetadataPreface *) g_object_new (MXF_TYPE_METADATA_PREFACE, NULL);
   mxf_uuid_init (&MXF_METADATA_BASE (mux->preface)->instance_uid,
       mux->metadata);
   g_hash_table_insert (mux->metadata,
@@ -518,7 +534,7 @@ gst_mxf_mux_create_metadata (GstMXFMux * mux)
     mux->preface->identifications = g_new0 (MXFMetadataIdentification *, 1);
     identification = mux->preface->identifications[0] =
         (MXFMetadataIdentification *)
-        gst_mini_object_new (MXF_TYPE_METADATA_IDENTIFICATION);
+        g_object_new (MXF_TYPE_METADATA_IDENTIFICATION, NULL);
 
     mxf_uuid_init (&MXF_METADATA_BASE (identification)->instance_uid,
         mux->metadata);
@@ -577,7 +593,7 @@ gst_mxf_mux_create_metadata (GstMXFMux * mux)
     guint i;
 
     cstorage = mux->preface->content_storage = (MXFMetadataContentStorage *)
-        gst_mini_object_new (MXF_TYPE_METADATA_CONTENT_STORAGE);
+        g_object_new (MXF_TYPE_METADATA_CONTENT_STORAGE, NULL);
     mxf_uuid_init (&MXF_METADATA_BASE (cstorage)->instance_uid, mux->metadata);
     g_hash_table_insert (mux->metadata,
         &MXF_METADATA_BASE (cstorage)->instance_uid, cstorage);
@@ -591,7 +607,7 @@ gst_mxf_mux_create_metadata (GstMXFMux * mux)
       MXFMetadataSourcePackage *p;
 
       cstorage->packages[1] = (MXFMetadataGenericPackage *)
-          gst_mini_object_new (MXF_TYPE_METADATA_SOURCE_PACKAGE);
+          g_object_new (MXF_TYPE_METADATA_SOURCE_PACKAGE, NULL);
       mxf_uuid_init (&MXF_METADATA_BASE (cstorage->packages[1])->instance_uid,
           mux->metadata);
       g_hash_table_insert (mux->metadata,
@@ -615,7 +631,7 @@ gst_mxf_mux_create_metadata (GstMXFMux * mux)
         MXFMetadataMultipleDescriptor *d;
 
         p->descriptor = (MXFMetadataGenericDescriptor *)
-            gst_mini_object_new (MXF_TYPE_METADATA_MULTIPLE_DESCRIPTOR);
+            g_object_new (MXF_TYPE_METADATA_MULTIPLE_DESCRIPTOR, NULL);
         d = (MXFMetadataMultipleDescriptor *) p->descriptor;
         d->n_sub_descriptors = p->parent.n_tracks;
         d->sub_descriptors =
@@ -639,7 +655,7 @@ gst_mxf_mux_create_metadata (GstMXFMux * mux)
           MXFMetadataSourceClip *clip;
 
           p->parent.tracks[n] = (MXFMetadataTrack *)
-              gst_mini_object_new (MXF_TYPE_METADATA_TIMELINE_TRACK);
+              g_object_new (MXF_TYPE_METADATA_TIMELINE_TRACK, NULL);
           track = (MXFMetadataTimelineTrack *) p->parent.tracks[n];
           mxf_uuid_init (&MXF_METADATA_BASE (track)->instance_uid,
               mux->metadata);
@@ -657,7 +673,7 @@ gst_mxf_mux_create_metadata (GstMXFMux * mux)
               cpad->collect.buffer, p, track, &track->edit_rate);
 
           sequence = track->parent.sequence = (MXFMetadataSequence *)
-              gst_mini_object_new (MXF_TYPE_METADATA_SEQUENCE);
+              g_object_new (MXF_TYPE_METADATA_SEQUENCE, NULL);
           mxf_uuid_init (&MXF_METADATA_BASE (sequence)->instance_uid,
               mux->metadata);
           g_hash_table_insert (mux->metadata,
@@ -672,7 +688,7 @@ gst_mxf_mux_create_metadata (GstMXFMux * mux)
               g_new0 (MXFMetadataStructuralComponent *, 1);
 
           clip = (MXFMetadataSourceClip *)
-              gst_mini_object_new (MXF_TYPE_METADATA_SOURCE_CLIP);
+              g_object_new (MXF_TYPE_METADATA_SOURCE_CLIP, NULL);
           sequence->structural_components[0] =
               (MXFMetadataStructuralComponent *) clip;
           mxf_uuid_init (&MXF_METADATA_BASE (clip)->instance_uid,
@@ -708,7 +724,7 @@ gst_mxf_mux_create_metadata (GstMXFMux * mux)
       gdouble min_edit_rate_d = G_MAXDOUBLE;
 
       cstorage->packages[0] = (MXFMetadataGenericPackage *)
-          gst_mini_object_new (MXF_TYPE_METADATA_MATERIAL_PACKAGE);
+          g_object_new (MXF_TYPE_METADATA_MATERIAL_PACKAGE, NULL);
       memcpy (&MXF_METADATA_BASE (cstorage->packages[0])->instance_uid,
           &mux->preface->primary_package_uid, 16);
       g_hash_table_insert (mux->metadata,
@@ -747,7 +763,7 @@ gst_mxf_mux_create_metadata (GstMXFMux * mux)
                   1]);
 
           p->tracks[n] = (MXFMetadataTrack *)
-              gst_mini_object_new (MXF_TYPE_METADATA_TIMELINE_TRACK);
+              g_object_new (MXF_TYPE_METADATA_TIMELINE_TRACK, NULL);
           track = (MXFMetadataTimelineTrack *) p->tracks[n];
           mxf_uuid_init (&MXF_METADATA_BASE (track)->instance_uid,
               mux->metadata);
@@ -782,7 +798,7 @@ gst_mxf_mux_create_metadata (GstMXFMux * mux)
           }
 
           sequence = track->parent.sequence = (MXFMetadataSequence *)
-              gst_mini_object_new (MXF_TYPE_METADATA_SEQUENCE);
+              g_object_new (MXF_TYPE_METADATA_SEQUENCE, NULL);
           mxf_uuid_init (&MXF_METADATA_BASE (sequence)->instance_uid,
               mux->metadata);
           g_hash_table_insert (mux->metadata,
@@ -796,7 +812,7 @@ gst_mxf_mux_create_metadata (GstMXFMux * mux)
               g_new0 (MXFMetadataStructuralComponent *, 1);
 
           clip = (MXFMetadataSourceClip *)
-              gst_mini_object_new (MXF_TYPE_METADATA_SOURCE_CLIP);
+              g_object_new (MXF_TYPE_METADATA_SOURCE_CLIP, NULL);
           sequence->structural_components[0] =
               (MXFMetadataStructuralComponent *) clip;
           mxf_uuid_init (&MXF_METADATA_BASE (clip)->instance_uid,
@@ -824,7 +840,7 @@ gst_mxf_mux_create_metadata (GstMXFMux * mux)
           MXFMetadataTimecodeComponent *component;
 
           p->tracks[n] = (MXFMetadataTrack *)
-              gst_mini_object_new (MXF_TYPE_METADATA_TIMELINE_TRACK);
+              g_object_new (MXF_TYPE_METADATA_TIMELINE_TRACK, NULL);
           track = (MXFMetadataTimelineTrack *) p->tracks[n];
           mxf_uuid_init (&MXF_METADATA_BASE (track)->instance_uid,
               mux->metadata);
@@ -839,7 +855,7 @@ gst_mxf_mux_create_metadata (GstMXFMux * mux)
           memcpy (&track->edit_rate, &min_edit_rate, sizeof (MXFFraction));
 
           sequence = track->parent.sequence = (MXFMetadataSequence *)
-              gst_mini_object_new (MXF_TYPE_METADATA_SEQUENCE);
+              g_object_new (MXF_TYPE_METADATA_SEQUENCE, NULL);
           mxf_uuid_init (&MXF_METADATA_BASE (sequence)->instance_uid,
               mux->metadata);
           g_hash_table_insert (mux->metadata,
@@ -855,7 +871,7 @@ gst_mxf_mux_create_metadata (GstMXFMux * mux)
               g_new0 (MXFMetadataStructuralComponent *, 1);
 
           component = (MXFMetadataTimecodeComponent *)
-              gst_mini_object_new (MXF_TYPE_METADATA_TIMECODE_COMPONENT);
+              g_object_new (MXF_TYPE_METADATA_TIMECODE_COMPONENT, NULL);
           sequence->structural_components[0] =
               (MXFMetadataStructuralComponent *) component;
           mxf_uuid_init (&MXF_METADATA_BASE (component)->instance_uid,
@@ -913,9 +929,9 @@ gst_mxf_mux_create_metadata (GstMXFMux * mux)
     cstorage->essence_container_data =
         g_new0 (MXFMetadataEssenceContainerData *, 1);
     cstorage->essence_container_data[0] = (MXFMetadataEssenceContainerData *)
-        gst_mini_object_new (MXF_TYPE_METADATA_ESSENCE_CONTAINER_DATA);
-    mxf_uuid_init (&MXF_METADATA_BASE (cstorage->essence_container_data[0])->
-        instance_uid, mux->metadata);
+        g_object_new (MXF_TYPE_METADATA_ESSENCE_CONTAINER_DATA, NULL);
+    mxf_uuid_init (&MXF_METADATA_BASE (cstorage->
+            essence_container_data[0])->instance_uid, mux->metadata);
     g_hash_table_insert (mux->metadata,
         &MXF_METADATA_BASE (cstorage->essence_container_data[0])->instance_uid,
         cstorage->essence_container_data[0]);
@@ -1084,9 +1100,8 @@ gst_mxf_mux_handle_buffer (GstMXFMux * mux, GstMXFMuxPad * cpad)
   GstBuffer *packet;
   GstFlowReturn ret = GST_FLOW_OK;
   guint8 slen, ber[9];
-  gboolean flush =
-      (cpad->collect.abidata.ABI.eos && !cpad->have_complete_edit_unit
-      && cpad->collect.buffer == NULL);
+  gboolean flush = ((cpad->collect.state & GST_COLLECT_PADS_STATE_EOS)
+      && !cpad->have_complete_edit_unit && cpad->collect.buffer == NULL);
 
   if (cpad->have_complete_edit_unit) {
     GST_DEBUG_OBJECT (cpad->collect.pad,
@@ -1409,14 +1424,17 @@ gst_mxf_mux_collected (GstCollectPads * pads, gpointer user_data)
 
   do {
     for (sl = mux->collect->data; sl; sl = sl->next) {
+      gboolean pad_eos;
       GstMXFMuxPad *cpad = sl->data;
       GstClockTime next_gc_timestamp =
           gst_util_uint64_scale ((mux->last_gc_position + 1) * GST_SECOND,
           mux->min_edit_rate.d, mux->min_edit_rate.n);
 
-      eos &= cpad->collect.abidata.ABI.eos;
+      pad_eos = cpad->collect.state & GST_COLLECT_PADS_STATE_EOS;
+      if (!pad_eos)
+        eos = FALSE;
 
-      if ((!cpad->collect.abidata.ABI.eos || cpad->have_complete_edit_unit ||
+      if ((!pad_eos || cpad->have_complete_edit_unit ||
               gst_adapter_available (cpad->adapter) > 0 || cpad->collect.buffer)
           && cpad->last_timestamp < next_gc_timestamp) {
         best = cpad;

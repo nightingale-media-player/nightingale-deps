@@ -37,14 +37,6 @@ GST_DEBUG_CATEGORY_STATIC (neonhttpsrc_debug);
 /* max number of HTTP redirects, when iterating over a sequence of HTTP 3xx status code */
 #define MAX_HTTP_REDIRECTS_NUMBER 5
 
-static const GstElementDetails gst_neonhttp_src_details =
-GST_ELEMENT_DETAILS ("HTTP client source",
-    "Source/Network",
-    "Receive data as a client over the network via HTTP using NEON",
-    "Edgard Lima <edgard.lima@indt.org.br>, "
-    "Rosfran Borges <rosfran.borges@indt.org.br>, "
-    "Andre Moreira Magalhaes <andre.magalhaes@indt.org.br>");
-
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
@@ -60,13 +52,11 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
 #define DEFAULT_LOCATION             "http://"HTTP_DEFAULT_HOST":"G_STRINGIFY(HTTP_DEFAULT_PORT)
 #define DEFAULT_PROXY                ""
 #define DEFAULT_USER_AGENT           "GStreamer neonhttpsrc"
-#define DEFAULT_IRADIO_MODE          FALSE
-#define DEFAULT_IRADIO_NAME          NULL
-#define DEFAULT_IRADIO_GENRE         NULL
-#define DEFAULT_IRADIO_URL           NULL
 #define DEFAULT_AUTOMATIC_REDIRECT   TRUE
 #define DEFAULT_ACCEPT_SELF_SIGNED   FALSE
 #define DEFAULT_NEON_HTTP_DEBUG      FALSE
+#define DEFAULT_CONNECT_TIMEOUT      0
+#define DEFAULT_READ_TIMEOUT         0
 
 enum
 {
@@ -74,12 +64,11 @@ enum
   PROP_LOCATION,
   PROP_PROXY,
   PROP_USER_AGENT,
-  PROP_IRADIO_MODE,
-  PROP_IRADIO_NAME,
-  PROP_IRADIO_GENRE,
-  PROP_IRADIO_URL,
+  PROP_COOKIES,
   PROP_AUTOMATIC_REDIRECT,
   PROP_ACCEPT_SELF_SIGNED,
+  PROP_CONNECT_TIMEOUT,
+  PROP_READ_TIMEOUT,
 #ifndef GST_DISABLE_GST_DEBUG
   PROP_NEON_HTTP_DEBUG
 #endif
@@ -101,6 +90,7 @@ static gboolean gst_neonhttp_src_get_size (GstBaseSrc * bsrc, guint64 * size);
 static gboolean gst_neonhttp_src_is_seekable (GstBaseSrc * bsrc);
 static gboolean gst_neonhttp_src_do_seek (GstBaseSrc * bsrc,
     GstSegment * segment);
+static gboolean gst_neonhttp_src_query (GstBaseSrc * bsrc, GstQuery * query);
 
 static gboolean gst_neonhttp_src_set_proxy (GstNeonhttpSrc * src,
     const gchar * uri);
@@ -140,7 +130,12 @@ gst_neonhttp_src_base_init (gpointer g_class)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&srctemplate));
 
-  gst_element_class_set_details (element_class, &gst_neonhttp_src_details);
+  gst_element_class_set_static_metadata (element_class, "HTTP client source",
+      "Source/Network",
+      "Receive data as a client over the network via HTTP using NEON",
+      "Edgard Lima <edgard.lima@indt.org.br>, "
+      "Rosfran Borges <rosfran.borges@indt.org.br>, "
+      "Andre Moreira Magalhaes <andre.magalhaes@indt.org.br>");
 }
 
 static void
@@ -161,61 +156,78 @@ gst_neonhttp_src_class_init (GstNeonhttpSrcClass * klass)
   g_object_class_install_property
       (gobject_class, PROP_LOCATION,
       g_param_spec_string ("location", "Location",
-          "Location to read from", "", G_PARAM_READWRITE));
+          "Location to read from", "",
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property
       (gobject_class, PROP_PROXY,
       g_param_spec_string ("proxy", "Proxy",
           "Proxy server to use, in the form HOSTNAME:PORT. "
           "Defaults to the http_proxy environment variable",
-          "", G_PARAM_READWRITE));
+          "", G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property
       (gobject_class, PROP_USER_AGENT,
       g_param_spec_string ("user-agent", "User-Agent",
           "Value of the User-Agent HTTP request header field",
-          "GStreamer neonhttpsrc", G_PARAM_READWRITE));
+          "GStreamer neonhttpsrc", G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-  g_object_class_install_property
-      (gobject_class, PROP_IRADIO_MODE,
-      g_param_spec_boolean ("iradio-mode", "iradio-mode",
-          "Enable internet radio mode (extraction of shoutcast/icecast metadata)",
-          FALSE, G_PARAM_READWRITE));
-
-  g_object_class_install_property (gobject_class,
-      PROP_IRADIO_NAME,
-      g_param_spec_string ("iradio-name",
-          "iradio-name", "Name of the stream", NULL, G_PARAM_READABLE));
-
-  g_object_class_install_property (gobject_class,
-      PROP_IRADIO_GENRE,
-      g_param_spec_string ("iradio-genre",
-          "iradio-genre", "Genre of the stream", NULL, G_PARAM_READABLE));
-
-  g_object_class_install_property (gobject_class,
-      PROP_IRADIO_URL,
-      g_param_spec_string ("iradio-url",
-          "iradio-url",
-          "Homepage URL for radio stream", NULL, G_PARAM_READABLE));
+  /**
+   * GstNeonhttpSrc:cookies
+   *
+   * HTTP request cookies
+   *
+   * Since: 0.10.20
+   */
+  g_object_class_install_property (gobject_class, PROP_COOKIES,
+      g_param_spec_boxed ("cookies", "Cookies", "HTTP request cookies",
+          G_TYPE_STRV, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property
       (gobject_class, PROP_AUTOMATIC_REDIRECT,
       g_param_spec_boolean ("automatic-redirect", "automatic-redirect",
           "Automatically follow HTTP redirects (HTTP Status Code 3xx)",
-          TRUE, G_PARAM_READWRITE));
+          TRUE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property
       (gobject_class, PROP_ACCEPT_SELF_SIGNED,
       g_param_spec_boolean ("accept-self-signed", "accept-self-signed",
           "Accept self-signed SSL/TLS certificates",
-          DEFAULT_ACCEPT_SELF_SIGNED, G_PARAM_READWRITE));
+          DEFAULT_ACCEPT_SELF_SIGNED,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  /**
+   * GstNeonhttpSrc:connect-timeout
+   *
+   * After how many seconds to timeout a connect attempt (0 = default)
+   *
+   * Since: 0.10.20
+   */
+  g_object_class_install_property (gobject_class, PROP_CONNECT_TIMEOUT,
+      g_param_spec_uint ("connect-timeout", "connect-timeout",
+          "Value in seconds to timeout a blocking connection (0 = default).", 0,
+          3600, DEFAULT_CONNECT_TIMEOUT,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  /**
+   * GstNeonhttpSrc:read-timeout
+   *
+   * After how many seconds to timeout a blocking read (0 = default)
+   *
+   * Since: 0.10.20
+   */
+  g_object_class_install_property (gobject_class, PROP_READ_TIMEOUT,
+      g_param_spec_uint ("read-timeout", "read-timeout",
+          "Value in seconds to timeout a blocking read (0 = default).", 0,
+          3600, DEFAULT_READ_TIMEOUT,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 #ifndef GST_DISABLE_GST_DEBUG
   g_object_class_install_property
       (gobject_class, PROP_NEON_HTTP_DEBUG,
       g_param_spec_boolean ("neon-http-debug", "neon-http-debug",
           "Enable Neon HTTP debug messages",
-          DEFAULT_NEON_HTTP_DEBUG, G_PARAM_READWRITE));
+          DEFAULT_NEON_HTTP_DEBUG, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 #endif
 
   gstbasesrc_class->start = GST_DEBUG_FUNCPTR (gst_neonhttp_src_start);
@@ -224,6 +236,7 @@ gst_neonhttp_src_class_init (GstNeonhttpSrcClass * klass)
   gstbasesrc_class->is_seekable =
       GST_DEBUG_FUNCPTR (gst_neonhttp_src_is_seekable);
   gstbasesrc_class->do_seek = GST_DEBUG_FUNCPTR (gst_neonhttp_src_do_seek);
+  gstbasesrc_class->query = GST_DEBUG_FUNCPTR (gst_neonhttp_src_query);
 
   gstpushsrc_class->create = GST_DEBUG_FUNCPTR (gst_neonhttp_src_create);
 
@@ -237,14 +250,16 @@ gst_neonhttp_src_init (GstNeonhttpSrc * src, GstNeonhttpSrcClass * g_class)
   const gchar *str;
 
   src->neon_http_debug = DEFAULT_NEON_HTTP_DEBUG;
-  src->iradio_mode = DEFAULT_IRADIO_MODE;
-  src->iradio_name = DEFAULT_IRADIO_NAME;
-  src->iradio_genre = DEFAULT_IRADIO_GENRE;
-  src->iradio_url = DEFAULT_IRADIO_URL;
+  src->iradio_name = NULL;
+  src->iradio_genre = NULL;
+  src->iradio_url = NULL;
   src->user_agent = g_strdup (DEFAULT_USER_AGENT);
   src->automatic_redirect = DEFAULT_AUTOMATIC_REDIRECT;
   src->accept_self_signed = DEFAULT_ACCEPT_SELF_SIGNED;
+  src->connect_timeout = DEFAULT_CONNECT_TIMEOUT;
+  src->read_timeout = DEFAULT_READ_TIMEOUT;
 
+  src->cookies = NULL;
   src->session = NULL;
   src->request = NULL;
   memset (&src->uri, 0, sizeof (src->uri));
@@ -276,6 +291,11 @@ gst_neonhttp_src_dispose (GObject * gobject)
   g_free (src->iradio_name);
   g_free (src->iradio_genre);
   g_free (src->iradio_url);
+
+  if (src->cookies) {
+    g_strfreev (src->cookies);
+    src->cookies = NULL;
+  }
 
   if (src->icy_caps) {
     gst_caps_unref (src->icy_caps);
@@ -347,14 +367,22 @@ gst_neonhttp_src_set_property (GObject * object, guint prop_id,
         g_free (src->user_agent);
       src->user_agent = g_strdup (g_value_get_string (value));
       break;
-    case PROP_IRADIO_MODE:
-      src->iradio_mode = g_value_get_boolean (value);
+    case PROP_COOKIES:
+      if (src->cookies)
+        g_strfreev (src->cookies);
+      src->cookies = (gchar **) g_value_dup_boxed (value);
       break;
     case PROP_AUTOMATIC_REDIRECT:
       src->automatic_redirect = g_value_get_boolean (value);
       break;
     case PROP_ACCEPT_SELF_SIGNED:
       src->accept_self_signed = g_value_get_boolean (value);
+      break;
+    case PROP_CONNECT_TIMEOUT:
+      src->connect_timeout = g_value_get_uint (value);
+      break;
+    case PROP_READ_TIMEOUT:
+      src->read_timeout = g_value_get_uint (value);
       break;
 #ifndef GST_DISABLE_GST_DEBUG
     case PROP_NEON_HTTP_DEBUG:
@@ -387,7 +415,7 @@ gst_neonhttp_src_get_property (GObject * object, guint prop_id,
         g_value_set_string (value, str);
         ne_free (str);
       } else {
-        g_value_set_string (value, "");
+        g_value_set_static_string (value, "");
       }
       break;
     }
@@ -402,30 +430,27 @@ gst_neonhttp_src_get_property (GObject * object, guint prop_id,
         g_value_set_string (value, str);
         ne_free (str);
       } else {
-        g_value_set_string (value, "");
+        g_value_set_static_string (value, "");
       }
       break;
     }
     case PROP_USER_AGENT:
       g_value_set_string (value, neonhttpsrc->user_agent);
       break;
-    case PROP_IRADIO_MODE:
-      g_value_set_boolean (value, neonhttpsrc->iradio_mode);
-      break;
-    case PROP_IRADIO_NAME:
-      g_value_set_string (value, neonhttpsrc->iradio_name);
-      break;
-    case PROP_IRADIO_GENRE:
-      g_value_set_string (value, neonhttpsrc->iradio_genre);
-      break;
-    case PROP_IRADIO_URL:
-      g_value_set_string (value, neonhttpsrc->iradio_url);
+    case PROP_COOKIES:
+      g_value_set_boxed (value, neonhttpsrc->cookies);
       break;
     case PROP_AUTOMATIC_REDIRECT:
       g_value_set_boolean (value, neonhttpsrc->automatic_redirect);
       break;
     case PROP_ACCEPT_SELF_SIGNED:
       g_value_set_boolean (value, neonhttpsrc->accept_self_signed);
+      break;
+    case PROP_CONNECT_TIMEOUT:
+      g_value_set_uint (value, neonhttpsrc->connect_timeout);
+      break;
+    case PROP_READ_TIMEOUT:
+      g_value_set_uint (value, neonhttpsrc->read_timeout);
       break;
 #ifndef GST_DISABLE_GST_DEBUG
     case PROP_NEON_HTTP_DEBUG:
@@ -440,7 +465,7 @@ gst_neonhttp_src_get_property (GObject * object, guint prop_id,
 
 /* NEON CALLBACK */
 static void
-oom_callback ()
+oom_callback (void)
 {
   GST_ERROR ("memory exeception in neon");
 }
@@ -534,7 +559,7 @@ gst_neonhttp_src_start (GstBaseSrc * bsrc)
   else
     src->content_size = -1;
 
-  if (src->iradio_mode) {
+  if (TRUE) {
     /* Icecast stuff */
     const gchar *str_value;
     gint gint_value;
@@ -552,6 +577,7 @@ gst_neonhttp_src_start (GstBaseSrc * bsrc)
       }
     }
 
+    /* FIXME: send tags with name, genre, url */
     str_value = ne_get_response_header (src->request, "icy-name");
     if (str_value) {
       if (src->iradio_name) {
@@ -706,6 +732,28 @@ gst_neonhttp_src_do_seek (GstBaseSrc * bsrc, GstSegment * segment)
 }
 
 static gboolean
+gst_neonhttp_src_query (GstBaseSrc * bsrc, GstQuery * query)
+{
+  GstNeonhttpSrc *src = GST_NEONHTTP_SRC (bsrc);
+  gboolean ret;
+
+  switch (GST_QUERY_TYPE (query)) {
+    case GST_QUERY_URI:
+      gst_query_set_uri (query, src->location);
+      ret = TRUE;
+      break;
+    default:
+      ret = FALSE;
+      break;
+  }
+
+  if (!ret)
+    ret = GST_BASE_SRC_CLASS (parent_class)->query (bsrc, query);
+
+  return ret;
+}
+
+static gboolean
 gst_neonhttp_src_set_location (GstNeonhttpSrc * src, const gchar * uri)
 {
   ne_uri_free (&src->uri);
@@ -826,6 +874,7 @@ gst_neonhttp_src_send_request_and_redirect (GstNeonhttpSrc * src,
 {
   ne_session *session = NULL;
   ne_request *request = NULL;
+  gchar **c;
   gint res;
   gint http_status = 0;
   guint request_count = 0;
@@ -843,6 +892,14 @@ gst_neonhttp_src_send_request_and_redirect (GstNeonhttpSrc * src,
           ne_session_create (src->uri.scheme, src->uri.host, src->uri.port);
     }
 
+    if (src->connect_timeout > 0) {
+      ne_set_connect_timeout (session, src->connect_timeout);
+    }
+
+    if (src->read_timeout > 0) {
+      ne_set_read_timeout (session, src->read_timeout);
+    }
+
     ne_set_session_flag (session, NE_SESSFLAG_ICYPROTO, 1);
     ne_ssl_set_verify (session, ssl_verify_callback, src);
 
@@ -852,9 +909,12 @@ gst_neonhttp_src_send_request_and_redirect (GstNeonhttpSrc * src,
       ne_add_request_header (request, "User-Agent", src->user_agent);
     }
 
-    if (src->iradio_mode) {
-      ne_add_request_header (request, "icy-metadata", "1");
+    for (c = src->cookies; c != NULL && *c != NULL; ++c) {
+      GST_INFO ("Adding header Cookie : %s", *c);
+      ne_add_request_header (request, "Cookies", *c);
     }
+
+    ne_add_request_header (request, "icy-metadata", "1");
 
     if (offset > 0) {
       ne_print_request_header (request, "Range",
@@ -1026,10 +1086,11 @@ gst_neonhttp_src_uri_get_type (void)
   return GST_URI_SRC;
 }
 
-static gchar **
+static const gchar *const *
 gst_neonhttp_src_uri_get_protocols (void)
 {
-  static gchar *protocols[] = { "http", "https", NULL };
+  static const gchar *protocols[] = { "http", "https", NULL };
+
   return protocols;
 }
 
@@ -1076,6 +1137,6 @@ plugin_init (GstPlugin * plugin)
  * so keep the name plugin_desc, or you cannot get your plug-in registered */
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "neon",
+    neon,
     "lib neon http client src",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

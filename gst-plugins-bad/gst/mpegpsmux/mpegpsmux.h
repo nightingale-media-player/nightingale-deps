@@ -68,7 +68,9 @@ struct MpegPsMux {
 
   GstPad *srcpad;
 
-  GstCollectPads *collect; // pads collector
+  guint video_stream_id;   /* stream id of primary video stream */
+
+  GstCollectPads *collect; /* pads collector */
 
   PsMux *psmux;
 
@@ -76,6 +78,9 @@ struct MpegPsMux {
   GstFlowReturn last_flow_ret;
   
   GstClockTime last_ts;
+
+  GstBufferList *gop_list;
+  gboolean       aggregate_gops;
 };
 
 struct MpegPsMuxClass  {

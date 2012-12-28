@@ -65,6 +65,7 @@ struct _GstAsfPad
   guint32 bitrate;
 
   GstClockTime play_duration;
+  GstClockTime first_ts;
 
   GstBuffer *codec_data;
 
@@ -119,6 +120,7 @@ struct _GstAsfMux
 
   /* payloads still to be sent in a packet */
   guint32 payload_data_size;
+  guint32 payload_parsing_info_size;
   GSList *payloads;
 
   Guid file_id;
@@ -128,7 +130,7 @@ struct _GstAsfMux
   guint64 prop_preroll;
   gboolean prop_merge_stream_tags;
   guint64 prop_padding;
-  gboolean prop_is_live;
+  gboolean prop_streamable;
 
   /* same as properties, but those are stored here to be
    * used without modification while muxing a single file */
@@ -136,11 +138,12 @@ struct _GstAsfMux
   guint64 preroll;              /* milisecs */
   gboolean merge_stream_tags;
 
+  GstClockTime first_ts;
+
   /* pads */
   GstPad *srcpad;
 
   GstCollectPads *collect;
-  GstPadEventFunction collect_event;
 };
 
 struct _GstAsfMuxClass

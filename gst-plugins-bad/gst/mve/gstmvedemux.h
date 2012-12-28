@@ -78,6 +78,8 @@ struct _GstMveDemuxStream {
   GstClockTime last_ts;
   gint64 offset;
 
+  GstFlowReturn last_flow;
+
   /* video properties */
   guint16 width;
   guint16 height;
@@ -98,6 +100,14 @@ struct _GstMveDemuxStream {
 };
 
 GType gst_mve_demux_get_type (void);
+
+int ipvideo_decode_frame8 (const GstMveDemuxStream * s,
+    const unsigned char *data, unsigned short len);
+int ipvideo_decode_frame16 (const GstMveDemuxStream * s,
+    const unsigned char *data, unsigned short len);
+
+void ipaudio_uncompress (short *buffer,
+    unsigned short buf_len, const unsigned char *data, unsigned char channels);
 
 G_END_DECLS
 

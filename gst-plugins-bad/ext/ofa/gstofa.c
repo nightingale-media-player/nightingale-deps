@@ -65,7 +65,7 @@ gst_ofa_base_init (gpointer g_class)
   GstAudioFilterClass *audio_filter_class = (GstAudioFilterClass *) g_class;
   GstCaps *caps;
 
-  gst_element_class_set_details_simple (gstelement_class, "OFA",
+  gst_element_class_set_static_metadata (gstelement_class, "OFA",
       "MusicIP Fingerprinting element",
       "Find a music fingerprint using MusicIP's libofa",
       "Milosz Derezynski <internalerror@gmail.com>, Eric Buehl <eric.buehl@gmail.com>");
@@ -101,7 +101,8 @@ gst_ofa_class_init (GstOFAClass * klass)
 
   g_object_class_install_property (gobject_class, PROP_FINGERPRINT,
       g_param_spec_string ("fingerprint", "Resulting fingerprint",
-          "Resulting fingerprint", NULL, G_PARAM_READABLE));
+          "Resulting fingerprint", NULL,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_ofa_finalize);
 
@@ -114,31 +115,53 @@ static void
 create_fingerprint (GstOFA * ofa)
 {
   GstBuffer *buf;
-  gint rate = GST_AUDIO_FILTER (ofa)->format.rate;
-  gint channels = GST_AUDIO_FILTER (ofa)->format.channels;
+  GstAudioFilter *ofa_filter = GST_AUDIO_FILTER (ofa);
+  gint rate = ofa_filter->format.rate;
+  gint channels = ofa_filter->format.channels;
   gint endianness =
-      (GST_AUDIO_FILTER (ofa)->format.
-      bigend) ? OFA_BIG_ENDIAN : OFA_LITTLE_ENDIAN;
+      ofa_filter->format.bigend ? OFA_BIG_ENDIAN : OFA_LITTLE_ENDIAN;
   GstTagList *tags;
+  guint available;
 
-  GST_DEBUG ("Generating fingerprint");
+  available = gst_adapter_available (ofa->adapter);
 
-  buf =
-      gst_adapter_take_buffer (ofa->adapter,
-      gst_adapter_available (ofa->adapter));
+  if (available == 0) {
+    GST_WARNING_OBJECT (ofa, "No data to take fingerprint from");
+    ofa->record = FALSE;
+    return;
+  }
+
+  if (GST_AUDIO_FILTER (ofa)->format.bigend)
+    endianness = OFA_BIG_ENDIAN;
+  else
+    endianness = OFA_LITTLE_ENDIAN;
+
+
+  GST_DEBUG_OBJECT (ofa, "Generating fingerprint for %u samples",
+      available / 2);
+
+  buf = gst_adapter_take_buffer (ofa->adapter, available);
 
   ofa->fingerprint = g_strdup (ofa_create_print (GST_BUFFER_DATA (buf),
           endianness, GST_BUFFER_SIZE (buf) / 2, rate,
           (channels == 2) ? 1 : 0));
 
-  GST_DEBUG ("Generated fingerprint");
+  if (ofa->fingerprint) {
+    GST_INFO_OBJECT (ofa, "Generated fingerprint: %s", ofa->fingerprint);
+  } else {
+    GST_WARNING_OBJECT (ofa, "Failed to generate fingerprint");
+  }
 
   gst_buffer_unref (buf);
 
-  tags = gst_tag_list_new ();
-  gst_tag_list_add (tags, GST_TAG_MERGE_REPLACE,
-      GST_TAG_OFA_FINGERPRINT, ofa->fingerprint, NULL);
-  gst_element_found_tags (GST_ELEMENT (ofa), tags);
+  if (ofa->fingerprint) {
+    tags = gst_tag_list_new ();
+    gst_tag_list_add (tags, GST_TAG_MERGE_REPLACE,
+        GST_TAG_OFA_FINGERPRINT, ofa->fingerprint, NULL);
+    gst_element_found_tags (GST_ELEMENT (ofa), tags);
+
+    g_object_notify (G_OBJECT (ofa), "fingerprint");
+  }
 
   ofa->record = FALSE;
 }
@@ -151,7 +174,8 @@ gst_ofa_event (GstBaseTransform * trans, GstEvent * event)
   switch (GST_EVENT_TYPE (event)) {
     case GST_EVENT_FLUSH_STOP:
     case GST_EVENT_NEWSEGMENT:
-      GST_DEBUG ("Got %s event, clearing buffer", GST_EVENT_TYPE_NAME (event));
+      GST_DEBUG_OBJECT (ofa, "Got %s event, clearing buffer",
+          GST_EVENT_TYPE_NAME (event));
       gst_adapter_clear (ofa->adapter);
       ofa->record = TRUE;
       g_free (ofa->fingerprint);
@@ -161,7 +185,7 @@ gst_ofa_event (GstBaseTransform * trans, GstEvent * event)
       /* we got to the end of the stream but never generated a fingerprint
        * (probably under 135 seconds)
        */
-      if (!ofa->fingerprint)
+      if (!ofa->fingerprint && ofa->record)
         create_fingerprint (ofa);
       break;
     default:
@@ -186,10 +210,11 @@ static GstFlowReturn
 gst_ofa_transform_ip (GstBaseTransform * trans, GstBuffer * buf)
 {
   GstOFA *ofa = GST_OFA (trans);
+  GstAudioFilter *ofa_filter = GST_AUDIO_FILTER (ofa);
   guint64 nframes;
   GstClockTime duration;
-  gint rate = GST_AUDIO_FILTER (ofa)->format.rate;
-  gint channels = GST_AUDIO_FILTER (ofa)->format.channels;
+  gint rate = ofa_filter->format.rate;
+  gint channels = ofa_filter->format.channels;
 
   g_return_val_if_fail (rate > 0 && channels > 0, GST_FLOW_NOT_NEGOTIATED);
 
@@ -250,6 +275,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "ofa",
+    ofa,
     "Calculate MusicIP fingerprint from audio files",
     plugin_init, VERSION, "GPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

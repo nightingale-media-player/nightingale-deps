@@ -62,10 +62,10 @@ gst_kate_spu_decode_alpha (GstKateEnc * ke, const guint8 * ptr)
 static void
 gst_kate_spu_decode_area (GstKateEnc * ke, const guint8 * ptr)
 {
-  ke->spu_left = ((((guint16) ptr[0]) & 0x3f) << 4) | (ptr[1] >> 4);
-  ke->spu_top = ((((guint16) ptr[3]) & 0x3f) << 4) | (ptr[4] >> 4);
-  ke->spu_right = ((((guint16) ptr[1]) & 0x03) << 8) | ptr[2];
-  ke->spu_bottom = ((((guint16) ptr[4]) & 0x03) << 8) | ptr[5];
+  ke->spu_left = ((((guint16) ptr[0]) & 0xff) << 4) | (ptr[1] >> 4);
+  ke->spu_top = ((((guint16) ptr[3]) & 0xff) << 4) | (ptr[4] >> 4);
+  ke->spu_right = ((((guint16) ptr[1]) & 0x0f) << 8) | ptr[2];
+  ke->spu_bottom = ((((guint16) ptr[4]) & 0x0f) << 8) | ptr[5];
   GST_DEBUG_OBJECT (ke, "SPU area %u %u -> %u %d", ke->spu_left, ke->spu_top,
       ke->spu_right, ke->spu_bottom);
 }
@@ -240,8 +240,8 @@ gst_kate_spu_crop_bitmap (GstKateEnc * ke, kate_bitmap * kb, guint16 * dx,
 
   w = right - left + 1;
   h = bottom - top + 1;
-  GST_LOG_OBJECT (ke, "cropped from %zu %zu to %zu %zu", kb->width, kb->height,
-      w, h);
+  GST_LOG_OBJECT (ke, "cropped from %" G_GSIZE_FORMAT " %" G_GSIZE_FORMAT
+      " to %" G_GSIZE_FORMAT " %" G_GSIZE_FORMAT, kb->width, kb->height, w, h);
   *dx += left;
   *dy += top;
   n = 0;
@@ -276,17 +276,17 @@ gst_kate_spu_decode_command_sequence (GstKateEnc * ke, GstBuffer * buf,
   guint16 date;
   guint16 next_command_sequence;
   const guint8 *ptr;
+  guint8 *data;
   guint16 sz;
+  gsize size;
 
-  if (command_sequence_offset >= GST_BUFFER_SIZE (buf)) {
-    GST_ELEMENT_ERROR (ke, STREAM, DECODE, (NULL),
-        ("Command sequence offset %u is out of range %u",
-            command_sequence_offset, GST_BUFFER_SIZE (buf)));
-    return GST_FLOW_ERROR;
-  }
+  data = gst_buffer_map (buf, &size, NULL, GST_MAP_READ);
 
-  ptr = GST_BUFFER_DATA (buf) + command_sequence_offset;
-  sz = GST_BUFFER_SIZE (buf) - command_sequence_offset;
+  if (command_sequence_offset >= size)
+    goto out_of_range;
+
+  ptr = data + command_sequence_offset;
+  sz = size - command_sequence_offset;
 
   GST_DEBUG_OBJECT (ke, "Decoding command sequence at %u (%u bytes)",
       command_sequence_offset, sz);
@@ -353,21 +353,35 @@ gst_kate_spu_decode_command_sequence (GstKateEnc * ke, GstBuffer * buf,
         if (next_command_sequence != command_sequence_offset) {
           GST_DEBUG_OBJECT (ke, "Jumping to next sequence at offset %u",
               next_command_sequence);
+          gst_buffer_unmap (buf, data, size);
           return gst_kate_spu_decode_command_sequence (ke, buf,
               next_command_sequence);
         } else {
+          gst_buffer_unmap (buf, data, size);
           GST_DEBUG_OBJECT (ke, "No more sequences to decode");
           return GST_FLOW_OK;
         }
         break;
       default:
+        gst_buffer_unmap (buf, data, size);
         GST_ELEMENT_ERROR (ke, STREAM, ENCODE, (NULL),
             ("Invalid SPU command: %u", cmd));
         return GST_FLOW_ERROR;
     }
   }
+  gst_buffer_unmap (buf, data, size);
   GST_ELEMENT_ERROR (ke, STREAM, ENCODE, (NULL), ("Error parsing SPU"));
   return GST_FLOW_ERROR;
+
+  /* ERRORS */
+out_of_range:
+  {
+    gst_buffer_unmap (buf, data, size);
+    GST_ELEMENT_ERROR (ke, STREAM, DECODE, (NULL),
+        ("Command sequence offset %u is out of range %u",
+            command_sequence_offset, size));
+    return GST_FLOW_ERROR;
+  }
 }
 
 static inline int
@@ -451,8 +465,10 @@ GstFlowReturn
 gst_kate_spu_decode_spu (GstKateEnc * ke, GstBuffer * buf, kate_region * kr,
     kate_bitmap * kb, kate_palette * kp)
 {
-  const guint8 *ptr = GST_BUFFER_DATA (buf);
-  size_t sz = GST_BUFFER_SIZE (buf);
+  guint8 *data;
+  gsize size;
+  const guint8 *ptr;
+  size_t sz;
   guint16 packet_size;
   guint16 x, y;
   size_t n;
@@ -462,6 +478,11 @@ gst_kate_spu_decode_spu (GstKateEnc * ke, GstBuffer * buf, kate_region * kr,
   GstFlowReturn rflow;
   guint16 next_command_sequence;
   guint16 code;
+
+  data = gst_buffer_map (buf, &size, NULL, GST_MAP_READ);
+
+  ptr = data;
+  sz = size;
 
   /* before decoding anything, initialize to sensible defaults */
   memset (ke->spu_colormap, 0, sizeof (ke->spu_colormap));
@@ -476,33 +497,43 @@ gst_kate_spu_decode_spu (GstKateEnc * ke, GstBuffer * buf, kate_region * kr,
   packet_size = GST_KATE_UINT16_BE (ptr);
   ADVANCE (2);
   GST_DEBUG_OBJECT (ke, "packet size %u (GstBuffer size %u)", packet_size,
-      GST_BUFFER_SIZE (buf));
+      size);
 
   CHECK (2);
   next_command_sequence = GST_KATE_UINT16_BE (ptr);
   ADVANCE (2);
-  ptr = GST_BUFFER_DATA (buf) + next_command_sequence;
-  sz = GST_BUFFER_SIZE (buf) - next_command_sequence;
+  ptr = data + next_command_sequence;
+  sz = size - next_command_sequence;
   GST_DEBUG_OBJECT (ke, "next command sequence at %u for %u",
-      next_command_sequence, sz);
+      next_command_sequence, (guint) sz);
 
   rflow = gst_kate_spu_decode_command_sequence (ke, buf, next_command_sequence);
-  if (G_UNLIKELY (rflow != GST_FLOW_OK))
+  if (G_UNLIKELY (rflow != GST_FLOW_OK)) {
+    gst_buffer_unmap (buf, data, size);
     return rflow;
+  }
 
   /* if no addresses or sizes were given, or if they define an empty SPU, nothing more to do */
   if (G_UNLIKELY (ke->spu_right - ke->spu_left < 0
           || ke->spu_bottom - ke->spu_top < 0 || ke->spu_pix_data[0] == 0
           || ke->spu_pix_data[1] == 0)) {
-    GST_ELEMENT_ERROR (ke, STREAM, ENCODE, (NULL),
-        ("SPU area is empty, nothing to encode"));
-    return GST_FLOW_ERROR;
+    GST_DEBUG_OBJECT (ke,
+        "left %d, right %d, top %d, bottom %d, pix data %d %d", ke->spu_left,
+        ke->spu_right, ke->spu_top, ke->spu_bottom, ke->spu_pix_data[0],
+        ke->spu_pix_data[1]);
+    GST_WARNING_OBJECT (ke, "SPU area is empty, nothing to encode");
+    kate_bitmap_init (kb);
+    kb->width = kb->height = 0;
+    gst_buffer_unmap (buf, data, size);
+    return GST_FLOW_OK;
   }
 
   /* create the palette */
   rflow = gst_kate_spu_create_spu_palette (ke, kp);
-  if (G_UNLIKELY (rflow != GST_FLOW_OK))
+  if (G_UNLIKELY (rflow != GST_FLOW_OK)) {
+    gst_buffer_unmap (buf, data, size);
     return rflow;
+  }
 
   /* create the bitmap */
   kate_bitmap_init (kb);
@@ -512,14 +543,15 @@ gst_kate_spu_decode_spu (GstKateEnc * ke, GstBuffer * buf, kate_region * kr,
   kb->type = kate_bitmap_type_paletted;
   kb->pixels = (unsigned char *) g_malloc (kb->width * kb->height);
   if (G_UNLIKELY (!kb->pixels)) {
+    gst_buffer_unmap (buf, data, size);
     GST_ELEMENT_ERROR (ke, STREAM, ENCODE, (NULL),
         ("Failed to allocate memory for pixel data"));
     return GST_FLOW_ERROR;
   }
 
   n = 0;
-  pixptr[0] = GST_BUFFER_DATA (buf) + ke->spu_pix_data[0];
-  pixptr[1] = GST_BUFFER_DATA (buf) + ke->spu_pix_data[1];
+  pixptr[0] = data + ke->spu_pix_data[0];
+  pixptr[1] = data + ke->spu_pix_data[1];
   nybble_offset[0] = 0;
   nybble_offset[1] = 0;
   max_nybbles[0] = 2 * (packet_size - ke->spu_pix_data[0]);
@@ -552,7 +584,8 @@ gst_kate_spu_decode_spu (GstKateEnc * ke, GstBuffer * buf, kate_region * kr,
   }
 
   GST_LOG_OBJECT (ke, "%u/%u bytes left in the data packet",
-      max_nybbles[0] - nybble_offset[0], max_nybbles[1] - nybble_offset[1]);
+      (guint) (max_nybbles[0] - nybble_offset[0]),
+      (guint) (max_nybbles[1] - nybble_offset[1]));
 
   /* some streams seem to have huge uncropped SPUs, fix those up */
   x = ke->spu_left;
@@ -585,6 +618,7 @@ gst_kate_spu_decode_spu (GstKateEnc * ke, GstBuffer * buf, kate_region * kr,
        probably going to end before the next one while being readable */
     //ke->hide_time = ke->show_time + (1000 * 90 / 1024);
   }
+  gst_buffer_unmap (buf, data, size);
 
   return GST_FLOW_OK;
 }
@@ -714,7 +748,8 @@ gst_kate_spu_encode_spu (GstKateDec * kd, const kate_event * ev)
   /* Allocate space to build the SPU */
   bytes = g_malloc (MAX_SPU_SIZE);
   if (G_UNLIKELY (!bytes)) {
-    GST_WARNING_OBJECT (kd, "Failed to allocate %zu byte buffer", nbytes);
+    GST_WARNING_OBJECT (kd,
+        "Failed to allocate %" G_GSIZE_FORMAT " byte buffer", nbytes);
     goto error;
   }
   nbytes = 4;
@@ -802,14 +837,6 @@ gst_kate_spu_encode_spu (GstKateDec * kd, const kate_event * ev)
   bytes[nbytes++] =
       ((kp->colors[palette[1]].a / 17) << 4) | (kp->colors[palette[0]].a / 17);
 
-#if 0
-  // move to top left - avoids a crash in dvdspu when overlaying on a small video :/
-  right -= left;
-  bottom -= top;
-  left = 0;
-  top = 0;
-#endif
-
   CHKBUFSPC (7 * 2);
   bytes[nbytes++] = SPU_CMD_SET_DAREA;
   bytes[nbytes++] = left >> 4;
@@ -857,20 +884,18 @@ gst_kate_spu_encode_spu (GstKateDec * kd, const kate_event * ev)
   bytes[3] = first_commands_offset & 0xff;
 
   /* Create a buffer with those values */
-  buffer = gst_buffer_new ();
+  buffer = gst_buffer_new_wrapped (bytes, nbytes);
   if (G_UNLIKELY (!buffer)) {
-    GST_WARNING_OBJECT (kd, "Failed to allocate %zu byte buffer", nbytes);
+    GST_WARNING_OBJECT (kd,
+        "Failed to allocate %" G_GSIZE_FORMAT " byte buffer", nbytes);
     goto error;
   }
-  GST_BUFFER_DATA (buffer) = bytes;
-  GST_BUFFER_MALLOCDATA (buffer) = bytes;
-  GST_BUFFER_SIZE (buffer) = nbytes;
   GST_BUFFER_OFFSET_END (buffer) = GST_SECOND * (ev->end_time);
   GST_BUFFER_OFFSET (buffer) = GST_SECOND * (ev->start_time);
   GST_BUFFER_TIMESTAMP (buffer) = GST_SECOND * (ev->start_time);
   GST_BUFFER_DURATION (buffer) = GST_SECOND * (ev->end_time - ev->start_time);
 
-  GST_DEBUG_OBJECT (kd, "SPU uses %zu bytes", nbytes);
+  GST_DEBUG_OBJECT (kd, "SPU uses %" G_GSIZE_FORMAT " bytes", nbytes);
 
   kate_tracker_clear (&kin);
   return buffer;

@@ -25,9 +25,9 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstadapter.h>
-#include <gst/rtp/gstbasertpdepayload.h>
+#include <gst/rtp/gstrtpbasedepayload.h>
 
-#include "gstrtpdtmfcommon.h"
+#include "gstdtmfcommon.h"
 
 G_BEGIN_DECLS
 #define GST_TYPE_RTP_DTMF_DEPAY \
@@ -46,7 +46,7 @@ typedef struct _GstRtpDTMFDepayClass GstRtpDTMFDepayClass;
 struct _GstRtpDTMFDepay
 {
   /*< private >*/
-  GstBaseRTPDepayload depayload;
+  GstRTPBaseDepayload depayload;
   double sample;
   guint32 previous_ts;
   guint16 previous_duration;
@@ -57,8 +57,10 @@ struct _GstRtpDTMFDepay
 
 struct _GstRtpDTMFDepayClass
 {
-  GstBaseRTPDepayloadClass parent_class;
+  GstRTPBaseDepayloadClass parent_class;
 };
+
+GType gst_rtp_dtmf_depay_get_type (void);
 
 gboolean gst_rtp_dtmf_depay_plugin_init (GstPlugin * plugin);
 

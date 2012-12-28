@@ -81,19 +81,16 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include "config.h"
+#include "config.h"
 #endif
+
+#include "gstrtpdtmfdepay.h"
 
 #include <string.h>
 #include <math.h>
 
+#include <gst/audio/audio.h>
 #include <gst/rtp/gstrtpbuffer.h>
-#include "gstrtpdtmfdepay.h"
-
-#ifndef M_PI
-# define M_PI           3.14159265358979323846  /* pi */
-#endif
-
 
 #define DEFAULT_PACKET_INTERVAL  50     /* ms */
 #define MIN_PACKET_INTERVAL      10     /* ms */
@@ -101,12 +98,6 @@
 #define SAMPLE_RATE              8000
 #define SAMPLE_SIZE              16
 #define CHANNELS                 1
-#define MIN_EVENT                0
-#define MAX_EVENT                16
-#define MIN_VOLUME               0
-#define MAX_VOLUME               36
-#define MIN_INTER_DIGIT_INTERVAL 100
-#define MIN_PULSE_DURATION       250
 #define MIN_DUTY_CYCLE           (MIN_INTER_DIGIT_INTERVAL + MIN_PULSE_DURATION)
 
 #define MIN_UNIT_TIME            0
@@ -117,7 +108,7 @@
 
 typedef struct st_dtmf_key
 {
-  char *event_name;
+  const char *event_name;
   int event_encoding;
   float low_frequency;
   float high_frequency;
@@ -164,13 +155,6 @@ enum
   DTMF_KEY_EVENT_D = 15,
 };
 
-/* elementfactory information */
-static const GstElementDetails gst_rtp_dtmfdepay_details =
-GST_ELEMENT_DETAILS ("RTP DTMF packet depayloader",
-    "Codec/Depayloader/Network",
-    "Generates DTMF Sound from telephone-event RTP packets",
-    "Youness Alaoui <youness.alaoui@collabora.co.uk>");
-
 GST_DEBUG_CATEGORY_STATIC (gst_rtp_dtmf_depay_debug);
 #define GST_CAT_DEFAULT gst_rtp_dtmf_depay_debug
 
@@ -198,12 +182,9 @@ static GstStaticPadTemplate gst_rtp_dtmf_depay_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw-int, "
-        "width = (int) 16, "
-        "depth = (int) 16, "
-        "endianness = (int) " G_STRINGIFY (G_BYTE_ORDER) ", "
-        "signed = (boolean) true, "
-        "rate = (int) [0, MAX], " "channels = (int) 1")
+    GST_STATIC_CAPS ("audio/x-raw, "
+        "format = (string) \"" GST_AUDIO_NE (S16) "\", "
+        "rate = " GST_AUDIO_RATE_RANGE ", " "channels = (int) 1")
     );
 
 static GstStaticPadTemplate gst_rtp_dtmf_depay_sink_template =
@@ -217,46 +198,40 @@ GST_STATIC_PAD_TEMPLATE ("sink",
         "encoding-name = (string) \"TELEPHONE-EVENT\"")
     );
 
-GST_BOILERPLATE (GstRtpDTMFDepay, gst_rtp_dtmf_depay, GstBaseRTPDepayload,
-    GST_TYPE_BASE_RTP_DEPAYLOAD);
+G_DEFINE_TYPE (GstRtpDTMFDepay, gst_rtp_dtmf_depay,
+    GST_TYPE_RTP_BASE_DEPAYLOAD);
 
 static void gst_rtp_dtmf_depay_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_rtp_dtmf_depay_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
-static GstBuffer *gst_rtp_dtmf_depay_process (GstBaseRTPDepayload * depayload,
+static GstBuffer *gst_rtp_dtmf_depay_process (GstRTPBaseDepayload * depayload,
     GstBuffer * buf);
-gboolean gst_rtp_dtmf_depay_setcaps (GstBaseRTPDepayload * filter,
+gboolean gst_rtp_dtmf_depay_setcaps (GstRTPBaseDepayload * filter,
     GstCaps * caps);
-
-static void
-gst_rtp_dtmf_depay_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_dtmf_depay_src_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_dtmf_depay_sink_template));
-
-
-  GST_DEBUG_CATEGORY_INIT (gst_rtp_dtmf_depay_debug,
-      "rtpdtmfdepay", 0, "rtpdtmfdepay element");
-  gst_element_class_set_details (element_class, &gst_rtp_dtmfdepay_details);
-}
 
 static void
 gst_rtp_dtmf_depay_class_init (GstRtpDTMFDepayClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
-  GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
+  GstRTPBaseDepayloadClass *gstrtpbasedepayload_class;
 
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
-  gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
+  gobject_class = G_OBJECT_CLASS (klass);
+  gstelement_class = GST_ELEMENT_CLASS (klass);
+  gstrtpbasedepayload_class = GST_RTP_BASE_DEPAYLOAD_CLASS (klass);
 
-  parent_class = g_type_class_peek_parent (klass);
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_dtmf_depay_src_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_dtmf_depay_sink_template));
+
+  GST_DEBUG_CATEGORY_INIT (gst_rtp_dtmf_depay_debug,
+      "rtpdtmfdepay", 0, "rtpdtmfdepay element");
+  gst_element_class_set_static_metadata (gstelement_class,
+      "RTP DTMF packet depayloader", "Codec/Depayloader/Network",
+      "Generates DTMF Sound from telephone-event RTP packets",
+      "Youness Alaoui <youness.alaoui@collabora.co.uk>");
 
   gobject_class->set_property =
       GST_DEBUG_FUNCPTR (gst_rtp_dtmf_depay_set_property);
@@ -266,24 +241,24 @@ gst_rtp_dtmf_depay_class_init (GstRtpDTMFDepayClass * klass)
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_UNIT_TIME,
       g_param_spec_uint ("unit-time", "Duration unittime",
           "The smallest unit (ms) the duration must be a multiple of (0 disables it)",
-          MIN_UNIT_TIME, MAX_UNIT_TIME, DEFAULT_UNIT_TIME, G_PARAM_READWRITE));
+          MIN_UNIT_TIME, MAX_UNIT_TIME, DEFAULT_UNIT_TIME,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_MAX_DURATION,
       g_param_spec_uint ("max-duration", "Maximum duration",
           "The maxumimum duration (ms) of the outgoing soundpacket. "
           "(0 = no limit)", 0, G_MAXUINT, DEFAULT_MAX_DURATION,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-  gstbasertpdepayload_class->process =
+  gstrtpbasedepayload_class->process =
       GST_DEBUG_FUNCPTR (gst_rtp_dtmf_depay_process);
-  gstbasertpdepayload_class->set_caps =
+  gstrtpbasedepayload_class->set_caps =
       GST_DEBUG_FUNCPTR (gst_rtp_dtmf_depay_setcaps);
 
 }
 
 static void
-gst_rtp_dtmf_depay_init (GstRtpDTMFDepay * rtpdtmfdepay,
-    GstRtpDTMFDepayClass * klass)
+gst_rtp_dtmf_depay_init (GstRtpDTMFDepay * rtpdtmfdepay)
 {
   rtpdtmfdepay->unit_time = DEFAULT_UNIT_TIME;
 }
@@ -331,31 +306,37 @@ gst_rtp_dtmf_depay_get_property (GObject * object, guint prop_id,
 }
 
 gboolean
-gst_rtp_dtmf_depay_setcaps (GstBaseRTPDepayload * filter, GstCaps * caps)
+gst_rtp_dtmf_depay_setcaps (GstRTPBaseDepayload * filter, GstCaps * caps)
 {
-  GstCaps *srccaps;
+  GstCaps *filtercaps, *srccaps;
   GstStructure *structure = gst_caps_get_structure (caps, 0);
   gint clock_rate = 8000;       /* default */
 
   gst_structure_get_int (structure, "clock-rate", &clock_rate);
   filter->clock_rate = clock_rate;
 
-  srccaps = gst_caps_new_simple ("audio/x-raw-int",
-      "width", G_TYPE_INT, 16,
-      "depth", G_TYPE_INT, 16,
-      "endianness", G_TYPE_INT, G_BYTE_ORDER,
-      "signed", G_TYPE_BOOLEAN, TRUE,
-      "channels", G_TYPE_INT, 1, "rate", G_TYPE_INT, clock_rate, NULL);
-  gst_pad_set_caps (GST_BASE_RTP_DEPAYLOAD_SRCPAD (filter), srccaps);
+  filtercaps =
+      gst_pad_get_pad_template_caps (GST_RTP_BASE_DEPAYLOAD_SRCPAD (filter));
+
+  filtercaps = gst_caps_make_writable (filtercaps);
+  gst_caps_set_simple (filtercaps, "rate", G_TYPE_INT, clock_rate, NULL);
+
+  srccaps = gst_pad_peer_query_caps (GST_RTP_BASE_DEPAYLOAD_SRCPAD (filter),
+      filtercaps);
+  gst_caps_unref (filtercaps);
+
+  gst_pad_set_caps (GST_RTP_BASE_DEPAYLOAD_SRCPAD (filter), srccaps);
   gst_caps_unref (srccaps);
 
   return TRUE;
 }
 
-static void
+static GstBuffer *
 gst_dtmf_src_generate_tone (GstRtpDTMFDepay * rtpdtmfdepay,
-    GstRTPDTMFPayload payload, GstBuffer * buffer)
+    GstRTPDTMFPayload payload)
 {
+  GstBuffer *buf;
+  GstMapInfo map;
   gint16 *p;
   gint tone_size;
   double i = 0;
@@ -363,20 +344,20 @@ gst_dtmf_src_generate_tone (GstRtpDTMFDepay * rtpdtmfdepay,
   double volume_factor;
   DTMF_KEY key = DTMF_KEYS[payload.event];
   guint32 clock_rate = 8000 /* default */ ;
-  GstBaseRTPDepayload *depayload = GST_BASE_RTP_DEPAYLOAD (rtpdtmfdepay);
+  GstRTPBaseDepayload *depayload = GST_RTP_BASE_DEPAYLOAD (rtpdtmfdepay);
   gint volume;
+  static GstAllocationParams params = { 0, 1, 0, 0, };
 
   clock_rate = depayload->clock_rate;
 
   /* Create a buffer for the tone */
   tone_size = (payload.duration * SAMPLE_SIZE * CHANNELS) / 8;
-  GST_BUFFER_SIZE (buffer) = tone_size;
-  GST_BUFFER_MALLOCDATA (buffer) = g_malloc (tone_size);
-  GST_BUFFER_DATA (buffer) = GST_BUFFER_MALLOCDATA (buffer);
-  GST_BUFFER_DURATION (buffer) = payload.duration * GST_SECOND / clock_rate;
+  buf = gst_buffer_new_allocate (NULL, tone_size, &params);
+  GST_BUFFER_DURATION (buf) = payload.duration * GST_SECOND / clock_rate;
   volume = payload.volume;
 
-  p = (gint16 *) GST_BUFFER_MALLOCDATA (buffer);
+  gst_buffer_map (buf, &map, GST_MAP_WRITE);
+  p = (gint16 *) map.data;
 
   volume_factor = pow (10, (-volume) / 20);
 
@@ -406,11 +387,15 @@ gst_dtmf_src_generate_tone (GstRtpDTMFDepay * rtpdtmfdepay,
 
     (rtpdtmfdepay->sample)++;
   }
+
+  gst_buffer_unmap (buf, &map);
+
+  return buf;
 }
 
 
 static GstBuffer *
-gst_rtp_dtmf_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
+gst_rtp_dtmf_depay_process (GstRTPBaseDepayload * depayload, GstBuffer * buf)
 {
 
   GstRtpDTMFDepay *rtpdtmfdepay = NULL;
@@ -422,14 +407,14 @@ gst_rtp_dtmf_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   gboolean marker;
   GstStructure *structure = NULL;
   GstMessage *dtmf_message = NULL;
+  GstRTPBuffer rtpbuffer = GST_RTP_BUFFER_INIT;
 
   rtpdtmfdepay = GST_RTP_DTMF_DEPAY (depayload);
 
-  if (!gst_rtp_buffer_validate (buf))
-    goto bad_packet;
+  gst_rtp_buffer_map (buf, GST_MAP_READ, &rtpbuffer);
 
-  payload_len = gst_rtp_buffer_get_payload_len (buf);
-  payload = gst_rtp_buffer_get_payload (buf);
+  payload_len = gst_rtp_buffer_get_payload_len (&rtpbuffer);
+  payload = gst_rtp_buffer_get_payload (&rtpbuffer);
 
   if (payload_len != sizeof (GstRTPDTMFPayload))
     goto bad_packet;
@@ -439,10 +424,9 @@ gst_rtp_dtmf_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   if (dtmf_payload.event > MAX_EVENT)
     goto bad_packet;
 
+  marker = gst_rtp_buffer_get_marker (&rtpbuffer);
 
-  marker = gst_rtp_buffer_get_marker (buf);
-
-  timestamp = gst_rtp_buffer_get_timestamp (buf);
+  timestamp = gst_rtp_buffer_get_timestamp (&rtpbuffer);
 
   dtmf_payload.duration = g_ntohs (dtmf_payload.duration);
 
@@ -483,7 +467,7 @@ gst_rtp_dtmf_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
     rtpdtmfdepay->sample = 0;
     rtpdtmfdepay->previous_ts = timestamp;
     rtpdtmfdepay->previous_duration = dtmf_payload.duration;
-    rtpdtmfdepay->first_gst_ts = GST_BUFFER_TIMESTAMP (buf);
+    rtpdtmfdepay->first_gst_ts = GST_BUFFER_PTS (buf);
 
     structure = gst_structure_new ("dtmf-event",
         "number", G_TYPE_INT, dtmf_payload.event,
@@ -519,11 +503,10 @@ gst_rtp_dtmf_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 
   /* If late or duplicate packet (like the redundant end packet). Ignore */
   if (dtmf_payload.duration > 0) {
-    outbuf = gst_buffer_new ();
-    gst_dtmf_src_generate_tone (rtpdtmfdepay, dtmf_payload, outbuf);
+    outbuf = gst_dtmf_src_generate_tone (rtpdtmfdepay, dtmf_payload);
 
 
-    GST_BUFFER_TIMESTAMP (outbuf) = rtpdtmfdepay->first_gst_ts +
+    GST_BUFFER_PTS (outbuf) = rtpdtmfdepay->first_gst_ts +
         (rtpdtmfdepay->previous_duration - dtmf_payload.duration) *
         GST_SECOND / depayload->clock_rate;
     GST_BUFFER_OFFSET (outbuf) =
@@ -538,12 +521,17 @@ gst_rtp_dtmf_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 
   }
 
-  return outbuf;
+  gst_rtp_buffer_unmap (&rtpbuffer);
 
+  return outbuf;
 
 bad_packet:
   GST_ELEMENT_WARNING (rtpdtmfdepay, STREAM, DECODE,
       ("Packet did not validate"), (NULL));
+
+  if (rtpbuffer.buffer != NULL)
+    gst_rtp_buffer_unmap (&rtpbuffer);
+
   return NULL;
 }
 

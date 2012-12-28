@@ -20,24 +20,24 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef __GST_MIMDEC_H__
-#define __GST_MIMDEC_H__
+#ifndef __GST_MIM_DEC_H__
+#define __GST_MIM_DEC_H__
 
 #include <gst/gst.h>
 #include <gst/base/gstadapter.h>
 #include <mimic.h>
 
 G_BEGIN_DECLS
-#define GST_TYPE_MIMDEC \
-  (gst_mimdec_get_type())
-#define GST_MIMDEC(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_MIMDEC,GstMimDec))
-#define GST_MIMDEC_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_MIMDEC,GstMimDec))
-#define GST_IS_MIMDEC(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_MIMDEC))
-#define GST_IS_MIMDEC_CLASS(obj) \
-  (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_MIMDEC))
+#define GST_TYPE_MIM_DEC \
+  (gst_mim_dec_get_type())
+#define GST_MIM_DEC(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_MIM_DEC,GstMimDec))
+#define GST_MIM_DEC_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_MIM_DEC,GstMimDecClass))
+#define GST_IS_MIM_DEC(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_MIM_DEC))
+#define GST_IS_MIM_DEC_CLASS(obj) \
+  (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_MIM_DEC))
 typedef struct _GstMimDec GstMimDec;
 typedef struct _GstMimDecClass GstMimDecClass;
 
@@ -49,16 +49,9 @@ struct _GstMimDec
 
   /* Protected by stream lock */
   GstAdapter *adapter;
-
-  /* Protected by object lock */
   MimCtx *dec;
-
   gint buffer_size;
-  gboolean have_header;
-  guint32 payload_size;
-  guint32 current_ts;
-
-  gboolean need_newsegment;
+  gboolean need_segment;
 };
 
 struct _GstMimDecClass
@@ -66,7 +59,7 @@ struct _GstMimDecClass
   GstElementClass parent_class;
 };
 
-GType gst_mimdec_get_type (void);
+GType gst_mim_dec_get_type (void);
 
 G_END_DECLS
-#endif /* __GST_MIMDEC_H__ */
+#endif /* __GST_MIM_DEC_H__ */

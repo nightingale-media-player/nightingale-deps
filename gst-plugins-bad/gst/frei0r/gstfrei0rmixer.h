@@ -47,10 +47,9 @@ struct _GstFrei0rMixer {
   GstPad *sink0, *sink1, *sink2;
 
   GstCaps *caps;
-  GstVideoFormat fmt;
-  gint width, height;
+  GstVideoInfo info;
 
-  GstEvent *newseg_event;
+  GstEvent *segment_event;
 
   GstPadEventFunction collect_event;
 
@@ -68,7 +67,7 @@ struct _GstFrei0rMixerClass {
   gint n_properties;
 };
 
-gboolean gst_frei0r_mixer_register (GstPlugin *plugin, const f0r_plugin_info_t *info, const GstFrei0rFuncTable *ftable);
+GstFrei0rPluginRegisterReturn gst_frei0r_mixer_register (GstPlugin *plugin, const gchar * vendor, const f0r_plugin_info_t *info, const GstFrei0rFuncTable *ftable);
 
 G_END_DECLS
 

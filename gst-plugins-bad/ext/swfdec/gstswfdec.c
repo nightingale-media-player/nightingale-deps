@@ -30,13 +30,6 @@
 GST_DEBUG_CATEGORY_STATIC (swfdec_debug);
 #define GST_CAT_DEFAULT swfdec_debug
 
-/* elementfactory information */
-static const GstElementDetails gst_swfdec_details =
-GST_ELEMENT_DETAILS ("SWF video decoder",
-    "Codec/Decoder/Video",
-    "Uses libswfdec to decode Flash video streams",
-    "David Schleef <ds@schleef.org>");
-
 /* Swfdec signals and args */
 enum
 {
@@ -178,8 +171,8 @@ gst_swfdecbuffer_finalize (GstSwfdecBuffer * swfdecbuffer)
 
   swfdec_buffer_unref (swfdecbuffer->swfdec_buffer);
 
-  ((GstMiniObjectClass *) buffer_parent_class)->
-      finalize ((GstMiniObject *) swfdecbuffer);
+  ((GstMiniObjectClass *) buffer_parent_class)->finalize ((GstMiniObject *)
+      swfdecbuffer);
 }
 
 
@@ -215,7 +208,10 @@ gst_swfdec_base_init (gpointer g_class)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
-  gst_element_class_set_details (element_class, &gst_swfdec_details);
+  gst_element_class_set_static_metadata (element_class, "SWF video decoder",
+      "Codec/Decoder/Video",
+      "Uses libswfdec to decode Flash video streams",
+      "David Schleef <ds@schleef.org>");
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&video_template_factory));
@@ -907,6 +903,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "swfdec",
+    swfdec,
     "Uses libswfdec to decode Flash video streams",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

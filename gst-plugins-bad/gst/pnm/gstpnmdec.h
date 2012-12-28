@@ -1,4 +1,5 @@
-/* GStreamer
+/* GStreamer PNM decoder
+ * Copyright (C) 2009 Lutz Mueller <lutz@users.sourceforge.net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -19,7 +20,7 @@
 #ifndef __GST_PNMDEC_H__
 #define __GST_PNMDEC_H__
 
-#include <gst/gstelement.h>
+#include <gst/gst.h>
 
 #include "gstpnmutils.h"
 

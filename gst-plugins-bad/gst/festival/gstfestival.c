@@ -110,11 +110,8 @@ GST_DEBUG_CATEGORY_STATIC (festival_debug);
 
 static void gst_festival_finalize (GObject * object);
 
-static void gst_festival_base_init (gpointer g_class);
-static void gst_festival_class_init (GstFestivalClass * klass);
-static void gst_festival_init (GstFestival * festival);
-
-static GstFlowReturn gst_festival_chain (GstPad * pad, GstBuffer * buf);
+static GstFlowReturn gst_festival_chain (GstPad * pad, GstObject * parent,
+    GstBuffer * buf);
 static GstStateChangeReturn gst_festival_change_state (GstElement * element,
     GstStateChange transition);
 
@@ -122,18 +119,11 @@ static FT_Info *festival_default_info (void);
 static char *socket_receive_file_to_buff (int fd, int *size);
 static char *client_accept_s_expr (int fd);
 
-/* elementfactory information */
-static const GstElementDetails gst_festival_details =
-GST_ELEMENT_DETAILS ("Festival Text-to-Speech synthesizer",
-    "Filter/Effect/Audio",
-    "Synthesizes plain text into audio",
-    "Wim Taymans <wim.taymans@chello.be>");
-
 static GstStaticPadTemplate sink_template_factory =
 GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("text/plain")
+    GST_STATIC_CAPS ("text/x-raw, format=(string)utf8")
     );
 
 static GstStaticPadTemplate src_template_factory =
@@ -156,51 +146,11 @@ enum
       /* FILL ME */
 };
 
-static GstElementClass *parent_class = NULL;
-
 /*static guint gst_festival_signals[LAST_SIGNAL] = { 0 }; */
 
-GType
-gst_festival_get_type (void)
-{
-  static GType festival_type = 0;
+G_DEFINE_TYPE (GstFestival, gst_festival, GST_TYPE_ELEMENT)
 
-  if (!festival_type) {
-    static const GTypeInfo festival_info = {
-      sizeof (GstFestivalClass),
-      gst_festival_base_init,
-      NULL,
-      (GClassInitFunc) gst_festival_class_init,
-      NULL,
-      NULL,
-      sizeof (GstFestival),
-      0,
-      (GInstanceInitFunc) gst_festival_init,
-    };
-
-    festival_type =
-        g_type_register_static (GST_TYPE_ELEMENT, "GstFestival", &festival_info,
-        0);
-  }
-  return festival_type;
-}
-
-static void
-gst_festival_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  /* register pads */
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_template_factory));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_template_factory));
-
-  gst_element_class_set_details (element_class, &gst_festival_details);
-}
-
-static void
-gst_festival_class_init (GstFestivalClass * klass)
+     static void gst_festival_class_init (GstFestivalClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
@@ -208,11 +158,20 @@ gst_festival_class_init (GstFestivalClass * klass)
   gobject_class = G_OBJECT_CLASS (klass);
   gstelement_class = GST_ELEMENT_CLASS (klass);
 
-  parent_class = g_type_class_peek_parent (klass);
-
   gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_festival_finalize);
   gstelement_class->change_state =
       GST_DEBUG_FUNCPTR (gst_festival_change_state);
+
+  /* register pads */
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sink_template_factory));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&src_template_factory));
+
+  gst_element_class_set_static_metadata (gstelement_class,
+      "Festival Text-to-Speech synthesizer", "Filter/Effect/Audio",
+      "Synthesizes plain text into audio",
+      "Wim Taymans <wim.taymans@gmail.com>");
 }
 
 static void
@@ -237,7 +196,7 @@ gst_festival_finalize (GObject * object)
 
   g_free (festival->info);
 
-  G_OBJECT_CLASS (parent_class)->finalize (object);
+  G_OBJECT_CLASS (gst_festival_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -256,7 +215,6 @@ read_response (GstFestival * festival)
       n += read (fd, ack + n, 3 - n);
     ack[3] = '\0';
     GST_DEBUG_OBJECT (festival, "got response %s", ack);
-
     if (strcmp (ack, "WV\n") == 0) {
       GstBuffer *buffer;
 
@@ -266,12 +224,8 @@ read_response (GstFestival * festival)
           filesize);
 
       /* push contents as a buffer */
-      buffer = gst_buffer_new ();
-      GST_BUFFER_SIZE (buffer) = (filesize);
-      GST_BUFFER_DATA (buffer) = (guint8 *) data;
-      GST_BUFFER_MALLOCDATA (buffer) = (guint8 *) data;
+      buffer = gst_buffer_new_wrapped (data, filesize);
       GST_BUFFER_TIMESTAMP (buffer) = GST_CLOCK_TIME_NONE;
-
       gst_pad_push (festival->srcpad, buffer);
 
     } else if (strcmp (ack, "LP\n") == 0) {
@@ -296,31 +250,42 @@ read_response (GstFestival * festival)
 }
 
 static GstFlowReturn
-gst_festival_chain (GstPad * pad, GstBuffer * buf)
+gst_festival_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
 {
   GstFlowReturn ret = GST_FLOW_OK;
   GstFestival *festival;
+  GstMapInfo info;
   guint8 *p, *ep;
+  gint f;
   FILE *fd;
 
-  festival = GST_FESTIVAL (GST_PAD_PARENT (pad));
+  festival = GST_FESTIVAL (parent);
 
-  GST_LOG_OBJECT (festival, "Got text buffer, %u bytes", GST_BUFFER_SIZE (buf));
+  GST_LOG_OBJECT (festival, "Got text buffer, %" G_GSIZE_FORMAT " bytes",
+      gst_buffer_get_size (buf));
 
-  fd = fdopen (dup (festival->info->server_fd), "wb");
+  f = dup (festival->info->server_fd);
+  if (f < 0)
+    goto fail_open;
+  fd = fdopen (f, "wb");
+  if (fd == NULL) {
+    close (f);
+    goto fail_open;
+  }
 
   /* Copy text over to server, escaping any quotes */
   fprintf (fd, "(Parameter.set 'Audio_Required_Rate 16000)\n");
   fflush (fd);
   GST_DEBUG_OBJECT (festival, "issued Parameter.set command");
   if (read_response (festival) == FALSE) {
-    ret = GST_FLOW_ERROR;
-    goto out;
+    fclose (fd);
+    goto fail_read;
   }
 
   fprintf (fd, "(tts_textall \"");
-  p = GST_BUFFER_DATA (buf);
-  ep = p + GST_BUFFER_SIZE (buf);
+  gst_buffer_map (buf, &info, GST_MAP_READ);
+  p = info.data;
+  ep = p + info.size;
   for (; p < ep && (*p != '\0'); p++) {
     if ((*p == '"') || (*p == '\\')) {
       putc ('\\', fd);
@@ -330,16 +295,31 @@ gst_festival_chain (GstPad * pad, GstBuffer * buf)
   }
   fprintf (fd, "\" \"%s\")\n", festival->info->text_mode);
   fclose (fd);
+  gst_buffer_unmap (buf, &info);
 
   GST_DEBUG_OBJECT (festival, "issued tts_textall command");
 
   /* Read back info from server */
   if (read_response (festival) == FALSE)
-    ret = GST_FLOW_ERROR;
+    goto fail_read;
 
 out:
   gst_buffer_unref (buf);
   return ret;
+
+  /* ERRORS */
+fail_open:
+  {
+    GST_ELEMENT_ERROR (festival, RESOURCE, OPEN_WRITE, (NULL), (NULL));
+    ret = GST_FLOW_ERROR;
+    goto out;
+  }
+fail_read:
+  {
+    GST_ELEMENT_ERROR (festival, RESOURCE, READ, (NULL), (NULL));
+    ret = GST_FLOW_ERROR;
+    goto out;
+  }
 }
 
 static FT_Info *
@@ -472,7 +452,7 @@ gst_festival_open (GstFestival * festival)
         ("Could not talk to festival server (no server running or wrong host/port?)");
     return FALSE;
   }
-
+  GST_OBJECT_FLAG_SET (festival, GST_FESTIVAL_OPEN);
   return TRUE;
 }
 
@@ -484,7 +464,7 @@ gst_festival_close (GstFestival * festival)
 
   if (festival->info->server_fd != -1)
     close (festival->info->server_fd);
-
+  GST_OBJECT_FLAG_UNSET (festival, GST_FESTIVAL_OPEN);
   return;
 }
 
@@ -494,17 +474,21 @@ gst_festival_change_state (GstElement * element, GstStateChange transition)
   g_return_val_if_fail (GST_IS_FESTIVAL (element), GST_STATE_CHANGE_FAILURE);
 
   if (GST_STATE_PENDING (element) == GST_STATE_NULL) {
-    if (GST_OBJECT_FLAG_IS_SET (element, GST_FESTIVAL_OPEN))
+    if (GST_OBJECT_FLAG_IS_SET (element, GST_FESTIVAL_OPEN)) {
+      GST_DEBUG ("Closing connection ");
       gst_festival_close (GST_FESTIVAL (element));
+    }
   } else {
     if (!GST_OBJECT_FLAG_IS_SET (element, GST_FESTIVAL_OPEN)) {
+      GST_DEBUG ("Opening connection ");
       if (!gst_festival_open (GST_FESTIVAL (element)))
         return GST_STATE_CHANGE_FAILURE;
     }
   }
 
-  if (GST_ELEMENT_CLASS (parent_class)->change_state)
-    return GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
+  if (GST_ELEMENT_CLASS (gst_festival_parent_class)->change_state)
+    return GST_ELEMENT_CLASS (gst_festival_parent_class)->change_state (element,
+        transition);
 
   return GST_STATE_CHANGE_SUCCESS;
 }
@@ -524,6 +508,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "festival",
+    festival,
     "Synthesizes plain text into audio",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

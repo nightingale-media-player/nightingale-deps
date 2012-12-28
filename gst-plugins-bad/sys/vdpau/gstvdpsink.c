@@ -18,6 +18,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
+/* FIXME 0.11: suppress warnings for deprecated API such as GStaticRecMutex
+ * with newer GLib versions (>= 2.31.0) */
+#define GLIB_DISABLE_DEPRECATION_WARNINGS
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -26,10 +30,13 @@
 #include <gst/interfaces/navigation.h>
 #include <gst/interfaces/xoverlay.h>
 
+#include <X11/XKBlib.h>
+
 /* Debugging category */
 #include <gst/gstinfo.h>
 
-#include "gstvdpoutputbuffer.h"
+#include "gstvdp/gstvdpoutputbuffer.h"
+#include "gstvdp/gstvdpoutputbufferpool.h"
 
 /* Object header */
 #include "gstvdpsink.h"
@@ -157,19 +164,53 @@ gst_vdp_sink_window_set_title (VdpSink * vdp_sink,
   }
 }
 
+static void
+gst_vdp_sink_window_setup_vdpau (VdpSink * vdp_sink, GstVdpWindow * window)
+{
+  GstVdpDevice *device = vdp_sink->device;
+  VdpStatus status;
+  VdpColor color = { 0, };
+
+  status = device->vdp_presentation_queue_target_create_x11 (device->device,
+      window->win, &window->target);
+  if (status != VDP_STATUS_OK) {
+    GST_ELEMENT_ERROR (vdp_sink, RESOURCE, READ,
+        ("Could not create presentation target"),
+        ("Error returned from vdpau was: %s",
+            device->vdp_get_error_string (status)));
+  }
+
+  status =
+      device->vdp_presentation_queue_create (device->device, window->target,
+      &window->queue);
+  if (status != VDP_STATUS_OK) {
+    GST_ELEMENT_ERROR (vdp_sink, RESOURCE, READ,
+        ("Could not create presentation queue"),
+        ("Error returned from vdpau was: %s",
+            device->vdp_get_error_string (status)));
+  }
+
+  status =
+      device->vdp_presentation_queue_set_background_color (window->queue,
+      &color);
+  if (status != VDP_STATUS_OK) {
+    GST_ELEMENT_ERROR (vdp_sink, RESOURCE, READ,
+        ("Could not set background color"),
+        ("Error returned from vdpau was: %s",
+            device->vdp_get_error_string (status)));
+  }
+}
+
 /* This function handles a GstVdpWindow creation */
 static GstVdpWindow *
 gst_vdp_sink_window_new (VdpSink * vdp_sink, gint width, gint height)
 {
-  GstVdpWindow *window = NULL;
   GstVdpDevice *device = vdp_sink->device;
+  GstVdpWindow *window = NULL;
 
   Window root;
   gint screen_num;
   gulong black;
-
-  VdpStatus status;
-  VdpColor color = { 0, };
 
   g_return_val_if_fail (GST_IS_VDP_SINK (vdp_sink), NULL);
 
@@ -217,37 +258,10 @@ gst_vdp_sink_window_new (VdpSink * vdp_sink, gint width, gint height)
   g_mutex_unlock (vdp_sink->x_lock);
 
   gst_vdp_sink_window_decorate (vdp_sink, window);
+  gst_vdp_sink_window_setup_vdpau (vdp_sink, window);
 
-  status = device->vdp_presentation_queue_target_create_x11 (device->device,
-      window->win, &window->target);
-  if (status != VDP_STATUS_OK) {
-    GST_ELEMENT_ERROR (vdp_sink, RESOURCE, READ,
-        ("Could not create presentation target"),
-        ("Error returned from vdpau was: %s",
-            device->vdp_get_error_string (status)));
-  }
-
-  status =
-      device->vdp_presentation_queue_create (device->device, window->target,
-      &window->queue);
-  if (status != VDP_STATUS_OK) {
-    GST_ELEMENT_ERROR (vdp_sink, RESOURCE, READ,
-        ("Could not create presentation queue"),
-        ("Error returned from vdpau was: %s",
-            device->vdp_get_error_string (status)));
-  }
-
-  status =
-      device->vdp_presentation_queue_set_background_color (window->queue,
-      &color);
-  if (status != VDP_STATUS_OK) {
-    GST_ELEMENT_ERROR (vdp_sink, RESOURCE, READ,
-        ("Could not set background color"),
-        ("Error returned from vdpau was: %s",
-            device->vdp_get_error_string (status)));
-  }
-
-  gst_x_overlay_got_xwindow_id (GST_X_OVERLAY (vdp_sink), window->win);
+  gst_x_overlay_got_window_handle (GST_X_OVERLAY (vdp_sink),
+      (guintptr) window->win);
 
   return window;
 }
@@ -375,7 +389,8 @@ gst_vdp_sink_handle_xevents (VdpSink * vdp_sink)
             e.xkey.keycode, e.xkey.x, e.xkey.x);
         g_mutex_lock (vdp_sink->x_lock);
         keysym =
-            XKeycodeToKeysym (vdp_sink->device->display, e.xkey.keycode, 0);
+            XkbKeycodeToKeysym (vdp_sink->device->display, e.xkey.keycode, 0,
+            0);
         g_mutex_unlock (vdp_sink->x_lock);
         if (keysym != NoSymbol) {
           char *key_str = NULL;
@@ -545,10 +560,15 @@ gst_vdp_sink_calculate_par (Display * display)
 static GstCaps *
 gst_vdp_sink_get_allowed_caps (GstVdpDevice * device, GValue * par)
 {
-  GstCaps *caps;
+  GstCaps *templ_caps, *allowed_caps, *caps;
   gint i;
 
-  caps = gst_vdp_output_buffer_get_allowed_caps (device);
+  allowed_caps = gst_vdp_output_buffer_get_allowed_caps (device);
+  templ_caps = gst_static_pad_template_get_caps (&sink_template);
+  caps = gst_caps_intersect (allowed_caps, templ_caps);
+
+  gst_caps_unref (allowed_caps);
+  gst_caps_unref (templ_caps);
 
   if (!par)
     par = gst_vdp_sink_calculate_par (device->display);
@@ -563,16 +583,38 @@ gst_vdp_sink_get_allowed_caps (GstVdpDevice * device, GValue * par)
   return caps;
 }
 
-static GstVdpDevice *
-gst_vdp_sink_setup_device (VdpSink * vdp_sink)
+static void
+gst_vdp_sink_post_error (VdpSink * vdp_sink, GError * error)
 {
-  GstVdpDevice *device;
+  GstMessage *message;
 
-  device = gst_vdp_get_device (vdp_sink->display_name);
+  message = gst_message_new_error (GST_OBJECT (vdp_sink), error, NULL);
+  gst_element_post_message (GST_ELEMENT (vdp_sink), message);
+  g_error_free (error);
+}
+
+static gboolean
+gst_vdp_sink_open_device (VdpSink * vdp_sink)
+{
+  gboolean res;
+  GstVdpDevice *device;
+  GError *err;
+
+  g_mutex_lock (vdp_sink->device_lock);
+  if (vdp_sink->device) {
+    res = TRUE;
+    goto done;
+  }
+
+  err = NULL;
+  vdp_sink->device = device = gst_vdp_get_device (vdp_sink->display_name, &err);
   if (!device)
-    return NULL;
+    goto device_error;
+
+  vdp_sink->bpool = gst_vdp_output_buffer_pool_new (device);
 
   vdp_sink->caps = gst_vdp_sink_get_allowed_caps (device, vdp_sink->par);
+  GST_DEBUG ("runtime calculated caps: %" GST_PTR_FORMAT, vdp_sink->caps);
 
   /* call XSynchronize with the current value of synchronous */
   GST_DEBUG_OBJECT (vdp_sink, "XSynchronize called with %s",
@@ -584,7 +626,16 @@ gst_vdp_sink_setup_device (VdpSink * vdp_sink)
   vdp_sink->event_thread = g_thread_create (
       (GThreadFunc) gst_vdp_sink_event_thread, vdp_sink, TRUE, NULL);
 
-  return device;
+  res = TRUE;
+
+done:
+  g_mutex_unlock (vdp_sink->device_lock);
+  return res;
+
+device_error:
+  gst_vdp_sink_post_error (vdp_sink, err);
+  res = FALSE;
+  goto done;
 }
 
 static gboolean
@@ -601,12 +652,7 @@ gst_vdp_sink_start (GstBaseSink * bsink)
   vdp_sink->fps_n = 0;
   vdp_sink->fps_d = 1;
 
-  GST_OBJECT_LOCK (vdp_sink);
-  if (!vdp_sink->device) {
-    if (!(vdp_sink->device = gst_vdp_sink_setup_device (vdp_sink)))
-      res = FALSE;
-  }
-  GST_OBJECT_UNLOCK (vdp_sink);
+  res = gst_vdp_sink_open_device (vdp_sink);
 
   return res;
 }
@@ -625,6 +671,7 @@ gst_vdp_device_clear (VdpSink * vdp_sink)
 
   g_mutex_lock (vdp_sink->x_lock);
 
+  g_object_unref (vdp_sink->bpool);
   g_object_unref (vdp_sink->device);
   vdp_sink->device = NULL;
 
@@ -726,6 +773,8 @@ gst_vdp_sink_setcaps (GstBaseSink * bsink, GstCaps * caps)
   vdp_sink->fps_n = gst_value_get_fraction_numerator (fps);
   vdp_sink->fps_d = gst_value_get_fraction_denominator (fps);
 
+  gst_vdp_buffer_pool_set_caps (vdp_sink->bpool, caps);
+
   /* Notify application to set xwindow id now */
   g_mutex_lock (vdp_sink->flow_lock);
   if (!vdp_sink->window) {
@@ -779,7 +828,6 @@ static GstFlowReturn
 gst_vdp_sink_show_frame (GstBaseSink * bsink, GstBuffer * outbuf)
 {
   VdpSink *vdp_sink = GST_VDP_SINK (bsink);
-  GstVdpOutputBuffer *prev_image = NULL;
   VdpStatus status;
   GstVdpDevice *device;
 
@@ -794,13 +842,24 @@ gst_vdp_sink_show_frame (GstBaseSink * bsink, GstBuffer * outbuf)
     return GST_FLOW_ERROR;
   }
 
-  /* Store a reference to the last image we put, lose the previous one */
-  if (outbuf && vdp_sink->cur_image != outbuf) {
-    if (vdp_sink->cur_image) {
-      prev_image = GST_VDP_OUTPUT_BUFFER (vdp_sink->cur_image);
+  device = vdp_sink->device;
+
+  if (vdp_sink->cur_image) {
+    VdpOutputSurface surface =
+        GST_VDP_OUTPUT_BUFFER (vdp_sink->cur_image)->surface;
+    VdpPresentationQueueStatus queue_status;
+    VdpTime pres_time;
+
+    g_mutex_lock (vdp_sink->x_lock);
+    status =
+        device->vdp_presentation_queue_query_surface_status (vdp_sink->window->
+        queue, surface, &queue_status, &pres_time);
+    g_mutex_unlock (vdp_sink->x_lock);
+
+    if (queue_status == VDP_PRESENTATION_QUEUE_STATUS_QUEUED) {
+      g_mutex_unlock (vdp_sink->flow_lock);
+      return GST_FLOW_OK;
     }
-    GST_LOG_OBJECT (vdp_sink, "reffing %p as our current image", outbuf);
-    vdp_sink->cur_image = gst_buffer_ref (outbuf);
   }
 
   /* Expose sends a NULL image, we take the latest frame */
@@ -817,7 +876,6 @@ gst_vdp_sink_show_frame (GstBaseSink * bsink, GstBuffer * outbuf)
 
   g_mutex_lock (vdp_sink->x_lock);
 
-  device = vdp_sink->device;
   status = device->vdp_presentation_queue_display (vdp_sink->window->queue,
       GST_VDP_OUTPUT_BUFFER (outbuf)->surface, 0, 0, 0);
   if (status != VDP_STATUS_OK) {
@@ -831,24 +889,13 @@ gst_vdp_sink_show_frame (GstBaseSink * bsink, GstBuffer * outbuf)
     return GST_FLOW_ERROR;
   }
 
-  if (prev_image) {
-    VdpTime time;
 
-    /* block till the previous surface has been displayed */
-    status =
-        device->vdp_presentation_queue_block_until_surface_idle (vdp_sink->
-        window->queue, prev_image->surface, &time);
-    if (status != VDP_STATUS_OK) {
-      GST_ELEMENT_ERROR (vdp_sink, RESOURCE, READ,
-          ("Could not display frame"),
-          ("Error returned from vdpau was: %s",
-              device->vdp_get_error_string (status)));
+  if (!vdp_sink->cur_image)
+    vdp_sink->cur_image = gst_buffer_ref (outbuf);
 
-      g_mutex_unlock (vdp_sink->x_lock);
-      g_mutex_unlock (vdp_sink->flow_lock);
-      return GST_FLOW_ERROR;
-    }
-    gst_buffer_unref (GST_BUFFER (prev_image));
+  else if (vdp_sink->cur_image != outbuf) {
+    gst_buffer_unref (vdp_sink->cur_image);
+    vdp_sink->cur_image = gst_buffer_ref (outbuf);
   }
 
   XSync (vdp_sink->device->display, FALSE);
@@ -890,34 +937,6 @@ gst_vdp_sink_event (GstBaseSink * sink, GstEvent * event)
     return TRUE;
 }
 
-static GstFlowReturn
-gst_vdp_sink_get_output_buffer (VdpSink * vdp_sink, GstCaps * caps,
-    GstBuffer ** buf)
-{
-  GstStructure *structure;
-  gint width, height;
-  gint rgba_format;
-
-  structure = gst_caps_get_structure (caps, 0);
-  if (!gst_structure_get_int (structure, "width", &width) ||
-      !gst_structure_get_int (structure, "height", &height) ||
-      !gst_structure_get_int (structure, "rgba-format", &rgba_format)) {
-    GST_WARNING_OBJECT (vdp_sink, "invalid caps for buffer allocation %"
-        GST_PTR_FORMAT, caps);
-    return GST_FLOW_ERROR;
-  }
-
-  *buf = GST_BUFFER (gst_vdp_output_buffer_new (vdp_sink->device,
-          rgba_format, width, height));
-  if (*buf == NULL) {
-    return GST_FLOW_ERROR;
-  }
-
-  gst_buffer_set_caps (*buf, caps);
-
-  return GST_FLOW_OK;
-}
-
 /* Buffer management
  *
  * The buffer_alloc function must either return a buffer with given size and
@@ -935,22 +954,16 @@ gst_vdp_sink_buffer_alloc (GstBaseSink * bsink, guint64 offset, guint size,
   VdpSink *vdp_sink;
   GstStructure *structure = NULL;
   GstFlowReturn ret = GST_FLOW_OK;
-  GstCaps *alloc_caps;
-  gboolean alloc_unref = FALSE;
   gint width, height;
+  GstCaps *alloc_caps;
   gint w_width, w_height;
+  GError *err;
 
   vdp_sink = GST_VDP_SINK (bsink);
 
   GST_LOG_OBJECT (vdp_sink,
       "a buffer of %d bytes was requested with caps %" GST_PTR_FORMAT
       " and offset %" G_GUINT64_FORMAT, size, caps, offset);
-
-  /* assume we're going to alloc what was requested, keep track of
-   * wheter we need to unref or not. When we suggest a new format 
-   * upstream we will create a new caps that we need to unref. */
-  alloc_caps = caps;
-  alloc_unref = FALSE;
 
   /* get struct to see what is requested */
   structure = gst_caps_get_structure (caps, 0);
@@ -961,6 +974,8 @@ gst_vdp_sink_buffer_alloc (GstBaseSink * bsink, guint64 offset, guint size,
     ret = GST_FLOW_NOT_NEGOTIATED;
     goto beach;
   }
+
+  alloc_caps = gst_caps_ref (caps);
 
   /* We take the flow_lock because the window might go away */
   g_mutex_lock (vdp_sink->flow_lock);
@@ -1003,26 +1018,30 @@ gst_vdp_sink_buffer_alloc (GstBaseSink * bsink, guint64 offset, guint size,
     if (gst_pad_peer_accept_caps (GST_VIDEO_SINK_PAD (vdp_sink), desired_caps)) {
       /* we will not alloc a buffer of the new suggested caps. Make sure
        * we also unref this new caps after we set it on the buffer. */
-      alloc_caps = desired_caps;
-      alloc_unref = TRUE;
-      width = w_width;
-      height = w_height;
       GST_DEBUG ("peer pad accepts our desired caps %" GST_PTR_FORMAT,
           desired_caps);
+      gst_caps_unref (alloc_caps);
+      alloc_caps = desired_caps;
     } else {
       GST_DEBUG ("peer pad does not accept our desired caps %" GST_PTR_FORMAT,
           desired_caps);
       /* we alloc a buffer with the original incomming caps already in the
        * width and height variables */
+      gst_caps_unref (desired_caps);
     }
   }
 
 alloc:
-  ret = gst_vdp_sink_get_output_buffer (vdp_sink, alloc_caps, buf);
+  gst_vdp_buffer_pool_set_caps (vdp_sink->bpool, alloc_caps);
+  gst_caps_unref (alloc_caps);
 
-  /* could be our new reffed suggestion or the original unreffed caps */
-  if (alloc_unref)
-    gst_caps_unref (alloc_caps);
+  err = NULL;
+  *buf =
+      GST_BUFFER_CAST (gst_vdp_buffer_pool_get_buffer (vdp_sink->bpool, &err));
+  if (!*buf) {
+    gst_vdp_sink_post_error (vdp_sink, err);
+    return GST_FLOW_ERROR;
+  }
 
 beach:
   return ret;
@@ -1099,11 +1118,12 @@ gst_vdp_sink_navigation_init (GstNavigationInterface * iface)
 }
 
 static void
-gst_vdp_sink_set_xwindow_id (GstXOverlay * overlay, XID xwindow_id)
+gst_vdp_sink_set_window_handle (GstXOverlay * overlay, guintptr window_handle)
 {
   VdpSink *vdp_sink = GST_VDP_SINK (overlay);
   GstVdpWindow *window = NULL;
   XWindowAttributes attr;
+  Window xwindow_id = (XID) window_handle;
 
   /* We acquire the stream lock while setting this window in the element.
      We are basically cleaning tons of stuff replacing the old window, putting
@@ -1117,8 +1137,7 @@ gst_vdp_sink_set_xwindow_id (GstXOverlay * overlay, XID xwindow_id)
   }
 
   /* If the element has not initialized the X11 context try to do so */
-  if (!vdp_sink->device
-      && !(vdp_sink->device = gst_vdp_sink_setup_device (vdp_sink))) {
+  if (!gst_vdp_sink_open_device (vdp_sink)) {
     g_mutex_unlock (vdp_sink->flow_lock);
     /* we have thrown a GST_ELEMENT_ERROR now */
     return;
@@ -1155,8 +1174,9 @@ gst_vdp_sink_set_xwindow_id (GstXOverlay * overlay, XID xwindow_id)
           StructureNotifyMask | PointerMotionMask | KeyPressMask |
           KeyReleaseMask);
     }
-
     g_mutex_unlock (vdp_sink->x_lock);
+
+    gst_vdp_sink_window_setup_vdpau (vdp_sink, window);
   }
 
   if (window)
@@ -1209,7 +1229,7 @@ gst_vdp_sink_set_event_handling (GstXOverlay * overlay, gboolean handle_events)
 static void
 gst_vdp_sink_xoverlay_init (GstXOverlayClass * iface)
 {
-  iface->set_xwindow_id = gst_vdp_sink_set_xwindow_id;
+  iface->set_window_handle = gst_vdp_sink_set_window_handle;
   iface->expose = gst_vdp_sink_expose;
   iface->handle_events = gst_vdp_sink_set_event_handling;
 }
@@ -1325,6 +1345,10 @@ gst_vdp_sink_finalize (GObject * object)
     g_free (vdp_sink->par);
     vdp_sink->par = NULL;
   }
+  if (vdp_sink->device_lock) {
+    g_mutex_free (vdp_sink->device_lock);
+    vdp_sink->device_lock = NULL;
+  }
   if (vdp_sink->x_lock) {
     g_mutex_free (vdp_sink->x_lock);
     vdp_sink->x_lock = NULL;
@@ -1347,6 +1371,7 @@ gst_vdp_sink_init (VdpSink * vdp_sink)
   vdp_sink->display_name = NULL;
   vdp_sink->par = NULL;
 
+  vdp_sink->device_lock = g_mutex_new ();
   vdp_sink->x_lock = g_mutex_new ();
   vdp_sink->flow_lock = g_mutex_new ();
 
@@ -1360,7 +1385,7 @@ gst_vdp_sink_base_init (gpointer g_class)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
-  gst_element_class_set_details_simple (element_class,
+  gst_element_class_set_static_metadata (element_class,
       "VDPAU Sink",
       "Sink/Video",
       "VDPAU Sink", "Carl-Anton Ingmarsson <ca.ingmarsson@gmail.com>");
@@ -1373,11 +1398,9 @@ static void
 gst_vdp_sink_class_init (VdpSinkClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseSinkClass *gstbasesink_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
   gstbasesink_class = (GstBaseSinkClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);

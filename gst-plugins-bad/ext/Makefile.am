@@ -1,19 +1,13 @@
-if USE_ALSA
-ALSASPDIF_DIR = alsaspdif
-else
-ALSASPDIF_DIR =
-endif
-
 if USE_ASSRENDER
 ASSRENDER_DIR = assrender
 else
 ASSRENDER_DIR =
 endif
 
-if USE_AMRWB
-AMRWB_DIR = amrwbenc
+if USE_VOAMRWBENC
+VOAMRWBENC_DIR = voamrwbenc
 else
-AMRWB_DIR =
+VOAMRWBENC_DIR =
 endif
 
 if USE_APEXSINK
@@ -22,28 +16,10 @@ else
 APEXSINK_DIR =
 endif
 
-# if USE_ARTS
-# ARTS_DIR=arts
-# else
-ARTS_DIR=
-# endif
-
-# if USE_ARTSC
-# ARTSC_DIR=artsd
-# else
-ARTSC_DIR=
-# endif
-
 # if USE_AUDIOFILE
 # AUDIOFILE_DIR=audiofile
 # else
 AUDIOFILE_DIR=
-# endif
-
-# if USE_AUDIORESAMPLE
-# AUDIORESAMPLE_DIR=audioresample
-# else
-AUDIORESAMPLE_DIR=
 # endif
 
 if USE_BZ2
@@ -64,10 +40,22 @@ else
 CELT_DIR=
 endif
 
+if USE_CHROMAPRINT
+CHROMAPRINT_DIR=chromaprint
+else
+CHROMAPRINT_DIR=
+endif
+
 if USE_COG
 COG_DIR=cog
 else
 COG_DIR=
+endif
+
+if USE_CURL
+CURL_DIR=curl
+else
+CURL_DIR=
 endif
 
 if USE_DC1394
@@ -88,10 +76,10 @@ else
 DIRECTFB_DIR=
 endif
 
-if USE_DIVX
-DIVX_DIR=divx
+if USE_WAYLAND
+WAYLAND_DIR=wayland
 else
-DIVX_DIR=
+WAYLAND_DIR=
 endif
 
 if USE_DTS
@@ -100,10 +88,16 @@ else
 DTS_DIR=
 endif
 
-if USE_DVDNAV
- DVDNAV_DIR = resindvd
+if USE_EGLGLES
+EGLGLES_DIR=eglgles
 else
- DVDNAV_DIR =
+EGLGLES_DIR=
+endif
+
+if USE_RESINDVD
+ RESINDVD_DIR = resindvd
+else
+ RESINDVD_DIR =
 endif
 
 if USE_FAAC
@@ -118,6 +112,18 @@ else
  FAAD_DIR=
 endif
 
+if USE_VOAACENC
+ VOAACENC_DIR=voaacenc
+else
+ VOAACENC_DIR=
+endif
+
+if USE_FLITE
+FLITE_DIR=flite
+else
+FLITE_DIR=
+endif
+
 #if USE_G729
 #G729_DIR=g729
 #else
@@ -130,28 +136,10 @@ else
 GSM_DIR=
 endif
 
-# if USE_HERMES
-# HERMES_DIR=hermes
-# else
-HERMES_DIR=
-# endif
-
-if USE_IVORBIS
- IVORBIS_DIR=ivorbis
+if USE_JASPER
+JASPER_DIR = jasper
 else
- IVORBIS_DIR=
-endif
-
-if USE_JACK
-JACK_DIR=jack
-else
-JACK_DIR=
-endif
-
-if USE_JP2K
-JP2K_DIR = jp2k
-else
-JP2K_DIR =
+JASPER_DIR =
 endif
 
 if USE_KATE
@@ -171,12 +159,6 @@ LV2_DIR = lv2
 else
 LV2_DIR =
 endif
-
-# if USE_LCS
-# LCS_DIR=lcs
-# else
-LCS_DIR=
-# endif
 
 # if USE_LIBFAME
 # LIBFAME_DIR=libfame
@@ -202,22 +184,16 @@ else
 MPEG2ENC_DIR=
 endif
 
-if USE_METADATA
-METADATA_DIR=metadata
+if USE_MPG123
+MPG123_DIR=mpg123
 else
-METADATA_DIR=
+MPG123_DIR=
 endif
 
 if USE_MIMIC
 MIMIC_DIR=mimic
 else
 MIMIC_DIR=
-endif
-
-if USE_MOZILLA
-MOZILLA_DIR=mozilla
-else
-MOZILLA_DIR=
 endif
 
 if USE_MPLEX
@@ -262,6 +238,24 @@ else
 OFA_DIR=
 endif
 
+if USE_OPENAL
+OPENAL_DIR=openal
+else
+OPENAL_DIR=
+endif
+
+if USE_OPENCV
+OPENCV_DIR=opencv
+else
+OPENCV_DIR=
+endif
+
+if USE_OPUS
+OPUS_DIR=opus
+else
+OPUS_DIR=
+endif
+
 if USE_RSVG
 RSVG_DIR=rsvg
 else
@@ -282,12 +276,6 @@ TIMIDITY_DIR=
 endif
 endif
 
-# if USE_POLYP
-# POLYP_DIR=polyp
-# else
-POLYP_DIR=
-# endif
-
 if USE_SCHRO
 SCHRO_DIR=schroedinger
 else
@@ -299,12 +287,6 @@ SDL_DIR=sdl
 else
 SDL_DIR=
 endif
-
-# if USE_SHOUT
-# SHOUT_DIR=shout
-# else
-SHOUT_DIR=
-# endif
 
 # if USE_SMOOTHWAVE
 # SMOOTHWAVE_DIR=smoothwave
@@ -318,10 +300,22 @@ else
 SNDFILE_DIR=
 endif
 
+if USE_SNDIO
+SNDIO_DIR = sndio
+else
+SNDIO_DIR =
+endif
+
 if USE_SOUNDTOUCH
 SOUNDTOUCH_DIR=soundtouch
 else
 SOUNDTOUCH_DIR=
+endif
+
+if USE_SPANDSP
+SPANDSP_DIR = spandsp
+else
+SPANDSP_DIR =
 endif
 
 if USE_SPC
@@ -342,34 +336,22 @@ else
 SWFDEC_DIR=
 endif
 
-if USE_THEORADEC
-#THEORA_DIR = theora
+if USE_TELETEXTDEC
+TELETEXTDEC_DIR=teletextdec
 else
-THEORA_DIR =
+TELETEXTDEC_DIR=
 endif
 
-# if USE_TARKIN
-# TARKIN_DIR=tarkin
-# else
-TARKIN_DIR=
-# endif
-
-# if USE_XINE
-# XINE_DIR=xine
-# else
-XINE_DIR=
-# endif
+if USE_GSETTINGS
+GSETTINGS_DIR=gsettings
+else
+GSETTINGS_DIR=
+endif
 
 if USE_XVID
 XVID_DIR=xvid
 else
 XVID_DIR=
-endif
-
-if USE_ASFMUX
-ASF_DIR=asfmux
-else
-ASF_DIR=
 endif
 
 if USE_ZBAR
@@ -378,45 +360,48 @@ else
 ZBAR_DIR=
 endif
 
+if USE_RTMP
+RTMP_DIR = rtmp
+else
+RTMP_DIR =
+endif
+
+
 SUBDIRS=\
-	$(ALSASPDIF_DIR) \
+	$(VOAACENC_DIR) \
 	$(ASSRENDER_DIR) \
-	$(AMRWB_DIR) \
+	$(VOAMRWBENC_DIR) \
 	$(APEXSINK_DIR) \
-	$(ARTS_DIR) \
-	$(ARTSC_DIR) \
-	$(ASF_DIR) \
 	$(AUDIOFILE_DIR) \
-	$(AUDIORESAMPLE_DIR) \
 	$(BZ2_DIR) \
 	$(CDAUDIO_DIR) \
 	$(CELT_DIR) \
+	$(CHROMAPRINT_DIR) \
 	$(COG_DIR) \
+	$(CURL_DIR) \
 	$(DC1394_DIR) \
 	$(DIRAC_DIR) \
 	$(DIRECTFB_DIR) \
-	$(DIVX_DIR) \
+	$(WAYLAND_DIR) \
 	$(DTS_DIR) \
-	$(DVDNAV_DIR) \
+	$(RESINDVD_DIR) \
+	$(EGLGLES_DIR) \
 	$(FAAC_DIR) \
 	$(FAAD_DIR) \
+	$(FLITE_DIR) \
+	$(GSETTINGS_DIR) \
 	$(GSM_DIR) \
 	$(G729_DIR) \
-	$(HERMES_DIR) \
-	$(IVORBIS_DIR) \
-	$(JACK_DIR) \
-	$(JP2K_DIR) \
+	$(JASPER_DIR) \
 	$(KATE_DIR) \
 	$(LADSPA_DIR) \
 	$(LV2_DIR) \
-	$(LCS_DIR) \
 	$(LIBFAME_DIR) \
 	$(LIBMMS_DIR) \
-	$(METADATA_DIR) \
-	$(MIMIC_DIR) \
 	$(MODPLUG_DIR) \
-	$(MOZILLA_DIR) \
 	$(MPEG2ENC_DIR) \
+	$(MPG123_DIR) \
+	$(MIMIC_DIR) \
 	$(MPLEX_DIR) \
 	$(MUSEPACK_DIR) \
 	$(MUSICBRAINZ_DIR) \
@@ -424,54 +409,55 @@ SUBDIRS=\
 	$(NAS_DIR) \
 	$(NEON_DIR) \
 	$(OFA_DIR) \
+	$(OPENAL_DIR) \
+	$(OPENCV_DIR) \
+	$(OPUS_DIR) \
 	$(RSVG_DIR) \
-	$(POLYP_DIR) \
 	$(SCHRO_DIR) \
 	$(SDL_DIR) \
-	$(SHOUT_DIR) \
 	$(SMOOTHWAVE_DIR) \
 	$(SNDFILE_DIR) \
+	$(SNDIO_DIR) \
 	$(SOUNDTOUCH_DIR) \
+	$(SPANDSP_DIR) \
 	$(GME_DIR) \
 	$(SPC_DIR) \
 	$(SWFDEC_DIR) \
-	$(TARKIN_DIR) \
-	$(THEORA_DIR) \
+	$(TELETEXTDEC_DIR) \
 	$(TIMIDITY_DIR) \
-	$(XINE_DIR) \
 	$(XVID_DIR) \
-	$(ZBAR_DIR)
+	$(ZBAR_DIR) \
+	$(RTMP_DIR)
 
 DIST_SUBDIRS = \
-	alsaspdif \
-	amrwbenc \
 	assrender \
 	apexsink \
-	asfmux \
 	bz2 \
 	cdaudio \
 	celt \
+	chromaprint \
 	cog \
+	curl \
 	dc1394 \
 	dirac \
 	directfb \
+	wayland \
 	faac \
 	faad \
+	flite \
+	gsettings \
 	gsm \
-	ivorbis \
 	ladspa \
-	jack \
-	jp2k \
+	jasper \
 	kate \
 	libmms \
 	lv2 \
 	dts \
-	divx \
-	metadata \
-	mimic \
+	eglgles \
 	modplug \
-    mozilla \
+	mimic \
 	mpeg2enc \
+	mpg123 \
 	mplex \
 	musepack \
 	musicbrainz \
@@ -479,16 +465,26 @@ DIST_SUBDIRS = \
 	nas \
 	neon \
 	ofa \
+	openal \
+	opencv \
+	opus \
 	rsvg \
 	resindvd \
 	schroedinger \
 	sdl \
 	sndfile \
+	sndio \
 	soundtouch \
+	spandsp \
 	spc \
 	gme \
 	swfdec \
-	theora \
+	teletextdec \
 	timidity \
+	voaacenc \
+	voamrwbenc \
 	xvid \
-        	zbar
+	zbar \
+	rtmp
+
+include $(top_srcdir)/common/parallel-subdirs.mak

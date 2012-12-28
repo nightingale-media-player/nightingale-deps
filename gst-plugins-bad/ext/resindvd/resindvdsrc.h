@@ -21,7 +21,7 @@
 
 #include <gst/gst.h>
 
-#include "rsnpushsrc.h"
+#include <gst/base/gstbasesrc.h>
 
 #include "_stdint.h"
 
@@ -46,7 +46,7 @@ typedef struct _resinDvdSrcClass resinDvdSrcClass;
 
 struct _resinDvdSrc
 {
-  RsnPushSrc parent;
+  GstBaseSrc parent;
 
   gboolean	faststart;
 
@@ -84,6 +84,7 @@ struct _resinDvdSrc
   gboolean	first_seek;
   gboolean	flushing_seek;
   gboolean	need_segment;
+  gboolean	need_tag_update;
   gboolean	active_highlight;
   gboolean      in_still_state;
   gboolean      in_playing;
@@ -147,7 +148,7 @@ struct _resinDvdSrc
 
 struct _resinDvdSrcClass 
 {
-  RsnPushSrcClass parent_class;
+  GstBaseSrcClass parent_class;
 };
 
 GType rsn_dvdsrc_get_type (void);

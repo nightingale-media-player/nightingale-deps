@@ -1,8 +1,10 @@
 /*
  * GStreamer
  * Copyright (c) 2005 INdT.
+ * Copyright (c) 2009 Collabora Ltd.
  * @author Andre Moreira Magalhaes <andre.magalhaes@indt.org.br>
  * @author Philippe Khalaf <burger@speedy.org>
+ * @author Olivier Crête <olivier.crete@collabora.co.uk>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -26,6 +28,13 @@
  * The MIMIC codec is used by MSN Messenger's webcam support. It creates the
  * TCP header for the MIMIC codec.
  *
+ * When using it to communicate directly with MSN Messenger, if the sender
+ * wants to stop sending, he has to send a special buffer every 4 seconds.
+ * When the "paused-mode" property is set to TRUE, if the element receives no
+ * buffer on its sink pad for 4 seconds, it will produced a special paused
+ * frame and will continue doing so every 4 seconds until a new buffer is
+ *u received on its sink pad.
+ *
  * Its fourcc is ML20.
  */
 
@@ -42,6 +51,10 @@ GST_DEBUG_CATEGORY (mimenc_debug);
 
 #define MAX_INTERFRAMES 15
 
+#define TCP_HEADER_SIZE 24
+
+#define PAUSED_MODE_INTERVAL (4 * GST_SECOND)
+
 
 enum
 {
@@ -54,24 +67,13 @@ enum
 static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("video/x-raw-rgb, "
-        "bpp = (int) 24, "
-        "depth = (int) 24, "
-        "endianness = (int) 4321, "
+    GST_STATIC_CAPS ("video/x-raw, format = (string) \"RGB\", "
         "framerate = (fraction) [1/1, 30/1], "
-        "red_mask = (int) 16711680, "
-        "green_mask = (int) 65280, "
-        "blue_mask = (int) 255, "
         "width = (int) 320, "
-        "height = (int) 240"
-        ";video/x-raw-rgb, "
-        "bpp = (int) 24, "
-        "depth = (int) 24, "
-        "endianness = (int) 4321, "
+        "height = (int) 240;"
+        "video/x-raw, format = (string) \"RGB\", "
         "framerate = (fraction) [1/1, 30/1], "
-        "red_mask = (int) 16711680, "
-        "green_mask = (int) 65280, "
-        "blue_mask = (int) 255, " "width = (int) 160, " "height = (int) 120")
+        "width = (int) 160, " "height = (int) 120")
     );
 
 static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src",
@@ -81,37 +83,38 @@ static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src",
     );
 
 
-static gboolean gst_mimenc_setcaps (GstPad * pad, GstCaps * caps);
-static GstFlowReturn gst_mimenc_chain (GstPad * pad, GstBuffer * in);
-static GstBuffer *gst_mimenc_create_tcp_header (GstMimEnc * mimenc,
-    guint32 payload_size, GstClockTime timestamp, gboolean keyframe,
-    gboolean paused);
-static gboolean gst_mimenc_event (GstPad * pad, GstEvent * event);
+static gboolean gst_mim_enc_setcaps (GstMimEnc * mimenc, GstCaps * caps);
+static GstFlowReturn gst_mim_enc_chain (GstPad * pad, GstObject * parent,
+    GstBuffer * in);
+static void gst_mim_enc_create_tcp_header (GstMimEnc * mimenc, guint8 * p,
+    guint32 payload_size, GstClockTime ts, gboolean keyframe, gboolean paused);
+static gboolean gst_mim_enc_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
 
 static GstStateChangeReturn
-gst_mimenc_change_state (GstElement * element, GstStateChange transition);
+gst_mim_enc_change_state (GstElement * element, GstStateChange transition);
 
-static void gst_mimenc_set_property (GObject * object, guint prop_id,
+static void gst_mim_enc_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
-static void gst_mimenc_get_property (GObject * object, guint prop_id,
+static void gst_mim_enc_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
-GST_BOILERPLATE (GstMimEnc, gst_mimenc, GstElement, GST_TYPE_ELEMENT);
+G_DEFINE_TYPE (GstMimEnc, gst_mim_enc, GST_TYPE_ELEMENT);
+
 
 static void
-gst_mimenc_base_init (gpointer klass)
+gst_mim_enc_class_init (GstMimEncClass * klass)
 {
-  static GstElementDetails plugin_details = {
-    "MimEnc",
-    "Codec/Encoder/Video",
-    "Mimic encoder",
-    "Andre Moreira Magalhaes <andre.magalhaes@indt.org.br>"
-  };
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+  GstElementClass *gstelement_class = GST_ELEMENT_CLASS (klass);
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-  gobject_class->set_property = gst_mimenc_set_property;
-  gobject_class->get_property = gst_mimenc_get_property;
+  gobject_class->set_property = gst_mim_enc_set_property;
+  gobject_class->get_property = gst_mim_enc_get_property;
+
+  gstelement_class->change_state = GST_DEBUG_FUNCPTR (gst_mim_enc_change_state);
+
+  GST_DEBUG_CATEGORY_INIT (mimenc_debug, "mimenc", 0, "Mimic encoder plugin");
+
 
   g_object_class_install_property (gobject_class, PROP_PAUSED_MODE,
       g_param_spec_boolean ("paused-mode", "Paused mode",
@@ -119,41 +122,35 @@ gst_mimenc_base_init (gpointer klass)
           " when no data is received",
           FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-  gst_element_class_add_pad_template (element_class,
+  gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&src_factory));
-  gst_element_class_add_pad_template (element_class,
+  gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&sink_factory));
-  gst_element_class_set_details (element_class, &plugin_details);
+  gst_element_class_set_static_metadata (gstelement_class,
+      "Mimic Encoder",
+      "Codec/Encoder/Video",
+      "MSN Messenger compatible Mimic video encoder element",
+      "Andre Moreira Magalhaes <andre.magalhaes@indt.org.br>,"
+      "Olivier Crête <olivier.crete@collabora.co.uk");
 }
 
 static void
-gst_mimenc_class_init (GstMimEncClass * klass)
-{
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
-
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
-  gstelement_class->change_state = gst_mimenc_change_state;
-
-  GST_DEBUG_CATEGORY_INIT (mimenc_debug, "mimenc", 0, "Mimic encoder plugin");
-}
-
-static void
-gst_mimenc_init (GstMimEnc * mimenc, GstMimEncClass * klass)
+gst_mim_enc_init (GstMimEnc * mimenc)
 {
   mimenc->sinkpad = gst_pad_new_from_static_template (&sink_factory, "sink");
+  gst_pad_set_chain_function (mimenc->sinkpad,
+      GST_DEBUG_FUNCPTR (gst_mim_enc_chain));
+  gst_pad_set_event_function (mimenc->sinkpad,
+      GST_DEBUG_FUNCPTR (gst_mim_enc_event));
   gst_element_add_pad (GST_ELEMENT (mimenc), mimenc->sinkpad);
-  gst_pad_set_setcaps_function (mimenc->sinkpad, gst_mimenc_setcaps);
-  gst_pad_set_chain_function (mimenc->sinkpad, gst_mimenc_chain);
-  gst_pad_set_event_function (mimenc->sinkpad, gst_mimenc_event);
 
   mimenc->srcpad = gst_pad_new_from_static_template (&src_factory, "src");
+  gst_pad_use_fixed_caps (mimenc->srcpad);
   gst_element_add_pad (GST_ELEMENT (mimenc), mimenc->srcpad);
 
   mimenc->enc = NULL;
 
-  gst_segment_init (&mimenc->segment, GST_FORMAT_UNDEFINED);
+  gst_segment_init (&mimenc->segment, GST_FORMAT_TIME);
 
   mimenc->res = MIMIC_RES_HIGH;
   mimenc->buffer_size = -1;
@@ -163,15 +160,18 @@ gst_mimenc_init (GstMimEnc * mimenc, GstMimEncClass * klass)
 }
 
 static void
-gst_mimenc_set_property (GObject * object, guint prop_id,
+gst_mim_enc_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec)
 {
-  GstMimEnc *mimenc = GST_MIMENC (object);
+  GstMimEnc *mimenc = GST_MIM_ENC (object);
 
   switch (prop_id) {
     case PROP_PAUSED_MODE:
       GST_OBJECT_LOCK (mimenc);
       mimenc->paused_mode = g_value_get_boolean (value);
+      if (GST_STATE (object) == GST_STATE_PLAYING)
+        GST_WARNING_OBJECT (object, "Tried to disable paused-mode in a playing"
+            " encoder, it will not be stopped until it is paused");
       GST_OBJECT_UNLOCK (mimenc);
       break;
     default:
@@ -181,10 +181,10 @@ gst_mimenc_set_property (GObject * object, guint prop_id,
 }
 
 static void
-gst_mimenc_get_property (GObject * object, guint prop_id,
+gst_mim_enc_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec)
 {
-  GstMimEnc *mimenc = GST_MIMENC (object);
+  GstMimEnc *mimenc = GST_MIM_ENC (object);
 
   switch (prop_id) {
     case PROP_PAUSED_MODE:
@@ -198,184 +198,160 @@ gst_mimenc_get_property (GObject * object, guint prop_id,
   }
 }
 
-static gboolean
-gst_mimenc_setcaps (GstPad * pad, GstCaps * caps)
+static void
+gst_mim_enc_reset_locked (GstMimEnc * mimenc)
 {
-  GstMimEnc *filter;
-  GstStructure *structure;
-  int ret = TRUE, height, width;
+  if (mimenc->enc != NULL) {
+    mimic_close (mimenc->enc);
+    mimenc->enc = NULL;
+    mimenc->buffer_size = -1;
+    mimenc->frames = 0;
+    mimenc->width = 0;
+    mimenc->height = 0;
+  }
+}
 
-  filter = GST_MIMENC (gst_pad_get_parent (pad));
-  g_return_val_if_fail (filter != NULL, FALSE);
-  g_return_val_if_fail (GST_IS_MIMENC (filter), FALSE);
+static void
+gst_mim_enc_reset (GstMimEnc * mimenc)
+{
+  GST_OBJECT_LOCK (mimenc);
+  gst_mim_enc_reset_locked (mimenc);
+  GST_OBJECT_UNLOCK (mimenc);
+}
+
+static gboolean
+gst_mim_enc_setcaps (GstMimEnc * mimenc, GstCaps * caps)
+{
+  GstStructure *structure;
+  int height, width;
+  gboolean ret = FALSE;
 
   structure = gst_caps_get_structure (caps, 0);
-  ret = gst_structure_get_int (structure, "width", &width);
-  if (!ret) {
-    GST_DEBUG_OBJECT (filter, "No width set");
-    goto out;
+  if (!gst_structure_get_int (structure, "width", &width)) {
+    GST_DEBUG_OBJECT (mimenc, "No width set");
+    return FALSE;
   }
-  ret = gst_structure_get_int (structure, "height", &height);
-  if (!ret) {
-    GST_DEBUG_OBJECT (filter, "No height set");
+  if (!gst_structure_get_int (structure, "height", &height)) {
+    GST_DEBUG_OBJECT (mimenc, "No height set");
+    return FALSE;
+  }
+
+  GST_OBJECT_LOCK (mimenc);
+
+  if (mimenc->width == width && mimenc->height == height) {
+    ret = TRUE;
     goto out;
   }
 
-  GST_OBJECT_LOCK (filter);
 
   if (width == 320 && height == 240)
-    filter->res = MIMIC_RES_HIGH;
+    mimenc->res = MIMIC_RES_HIGH;
   else if (width == 160 && height == 120)
-    filter->res = MIMIC_RES_LOW;
+    mimenc->res = MIMIC_RES_LOW;
   else {
-    GST_WARNING_OBJECT (filter, "Invalid resolution %dx%d", width, height);
-    ret = FALSE;
-    GST_OBJECT_UNLOCK (filter);
+    GST_WARNING_OBJECT (mimenc, "Invalid resolution %dx%d", width, height);
     goto out;
   }
 
-  filter->width = (guint16) width;
-  filter->height = (guint16) height;
+  gst_mim_enc_reset_locked (mimenc);
 
-  GST_DEBUG_OBJECT (filter, "Got info from caps w : %d, h : %d",
-      filter->width, filter->height);
+  mimenc->width = (guint16) width;
+  mimenc->height = (guint16) height;
 
-  GST_OBJECT_UNLOCK (filter);
+  GST_DEBUG_OBJECT (mimenc, "Got info from caps w : %d, h : %d",
+      mimenc->width, mimenc->height);
+
+  mimenc->enc = mimic_open ();
+  if (!mimenc->enc) {
+    GST_ERROR_OBJECT (mimenc, "mimic_open failed");
+    goto out;
+  }
+
+  if (!mimic_encoder_init (mimenc->enc, mimenc->res)) {
+    GST_ERROR_OBJECT (mimenc, "mimic_encoder_init error");
+    goto out;
+  }
+
+  if (!mimic_get_property (mimenc->enc, "buffer_size", &mimenc->buffer_size)) {
+    GST_ERROR_OBJECT (mimenc, "mimic_get_property(buffer_size) error");
+  }
+
+  ret = TRUE;
+
 out:
-  gst_object_unref (filter);
+  GST_OBJECT_UNLOCK (mimenc);
   return ret;
 }
 
 static GstFlowReturn
-gst_mimenc_chain (GstPad * pad, GstBuffer * in)
+gst_mim_enc_chain (GstPad * pad, GstObject * parent, GstBuffer * in)
 {
-  GstMimEnc *mimenc;
-  GstBuffer *out_buf = NULL, *buf = NULL;
-  guchar *data;
-  gint buffer_size;
-  GstBuffer *header = NULL;
+  GstMimEnc *mimenc = GST_MIM_ENC (parent);
+  GstBuffer *out = NULL;
+  GstMapInfo in_map;
+  GstMapInfo out_map;
   GstFlowReturn res = GST_FLOW_OK;
-  GstEvent *event = NULL;
   gboolean keyframe;
-
-  g_return_val_if_fail (GST_IS_PAD (pad), GST_FLOW_ERROR);
-  mimenc = GST_MIMENC (gst_pad_get_parent (pad));
-
-  g_return_val_if_fail (GST_IS_MIMENC (mimenc), GST_FLOW_ERROR);
+  gint buffer_size;
 
   GST_OBJECT_LOCK (mimenc);
 
-  if (mimenc->segment.format == GST_FORMAT_UNDEFINED) {
-    GST_WARNING_OBJECT (mimenc, "No new-segment received,"
-        " initializing segment with time 0..-1");
-    gst_segment_init (&mimenc->segment, GST_FORMAT_TIME);
-    gst_segment_set_newsegment (&mimenc->segment,
-        FALSE, 1.0, GST_FORMAT_TIME, 0, -1, 0);
-  }
 
-  if (mimenc->enc == NULL) {
-    mimenc->enc = mimic_open ();
-    if (mimenc->enc == NULL) {
-      GST_WARNING_OBJECT (mimenc, "mimic_open error\n");
-      res = GST_FLOW_ERROR;
-      goto out_unlock;
-    }
+  gst_buffer_map (in, &in_map, GST_MAP_READ);
 
-    if (!mimic_encoder_init (mimenc->enc, mimenc->res)) {
-      GST_WARNING_OBJECT (mimenc, "mimic_encoder_init error\n");
-      mimic_close (mimenc->enc);
-      mimenc->enc = NULL;
-      res = GST_FLOW_ERROR;
-      goto out_unlock;
-    }
-
-    if (!mimic_get_property (mimenc->enc, "buffer_size", &mimenc->buffer_size)) {
-      GST_WARNING_OBJECT (mimenc, "mimic_get_property('buffer_size') error\n");
-      mimic_close (mimenc->enc);
-      mimenc->enc = NULL;
-      res = GST_FLOW_ERROR;
-      goto out_unlock;
-    }
-  }
-
-  buf = in;
-  data = GST_BUFFER_DATA (buf);
-
-  out_buf = gst_buffer_new_and_alloc (mimenc->buffer_size);
-  GST_BUFFER_TIMESTAMP (out_buf) =
+  out = gst_buffer_new_and_alloc (mimenc->buffer_size + TCP_HEADER_SIZE);
+  gst_buffer_map (out, &out_map, GST_MAP_READWRITE);
+  GST_BUFFER_TIMESTAMP (out) =
       gst_segment_to_running_time (&mimenc->segment, GST_FORMAT_TIME,
-      GST_BUFFER_TIMESTAMP (buf));
-  mimenc->last_buffer = GST_BUFFER_TIMESTAMP (out_buf);
+      GST_BUFFER_TIMESTAMP (in));
+  mimenc->last_buffer = GST_BUFFER_TIMESTAMP (out);
   buffer_size = mimenc->buffer_size;
   keyframe = (mimenc->frames % MAX_INTERFRAMES) == 0 ? TRUE : FALSE;
-  if (!mimic_encode_frame (mimenc->enc, data, GST_BUFFER_DATA (out_buf),
-          &buffer_size, keyframe)) {
-    GST_WARNING_OBJECT (mimenc, "mimic_encode_frame error\n");
-    gst_buffer_unref (out_buf);
-    gst_buffer_unref (buf);
+  if (!mimic_encode_frame (mimenc->enc, in_map.data,
+          out_map.data + TCP_HEADER_SIZE, &buffer_size, keyframe)) {
+    gst_buffer_unmap (in, &in_map);
+    gst_buffer_unmap (out, &out_map);
+    gst_buffer_unref (out);
+    GST_ELEMENT_ERROR (mimenc, STREAM, ENCODE, (NULL),
+        ("mimic_encode_frame error"));
     res = GST_FLOW_ERROR;
     goto out_unlock;
   }
-  GST_BUFFER_SIZE (out_buf) = buffer_size;
+  gst_buffer_unmap (in, &in_map);
 
-  GST_DEBUG_OBJECT (mimenc, "incoming buf size %d, encoded size %d",
-      GST_BUFFER_SIZE (buf), GST_BUFFER_SIZE (out_buf));
+  if (!keyframe)
+    GST_BUFFER_FLAG_SET (out, GST_BUFFER_FLAG_DELTA_UNIT);
+
+
+  GST_LOG_OBJECT (mimenc, "incoming buf size %d, encoded size %d",
+      gst_buffer_get_size (in), gst_buffer_get_size (out));
   ++mimenc->frames;
 
-  // now let's create that tcp header
-  header = gst_mimenc_create_tcp_header (mimenc, buffer_size,
-      GST_BUFFER_TIMESTAMP (out_buf), keyframe, FALSE);
+  /* now let's create that tcp header */
+  gst_mim_enc_create_tcp_header (mimenc, out_map.data, buffer_size,
+      GST_BUFFER_TIMESTAMP (out), keyframe, FALSE);
 
-  if (!header) {
-    gst_buffer_unref (out_buf);
-    GST_DEBUG_OBJECT (mimenc, "header not created succesfully");
-    res = GST_FLOW_ERROR;
-    goto out_unlock;
-  }
-
-  if (mimenc->need_newsegment) {
-    event = gst_event_new_new_segment (FALSE, 1.0, GST_FORMAT_TIME, 0, -1, 0);
-    mimenc->need_newsegment = FALSE;
-  }
+  gst_buffer_unmap (out, &out_map);
+  gst_buffer_resize (out, 0, buffer_size + TCP_HEADER_SIZE);
 
   GST_OBJECT_UNLOCK (mimenc);
 
-  if (event) {
-    if (!gst_pad_push_event (mimenc->srcpad, event))
-      GST_WARNING_OBJECT (mimenc, "Failed to push NEWSEGMENT event");
-  }
-
-  res = gst_pad_push (mimenc->srcpad, header);
-  if (res != GST_FLOW_OK) {
-    gst_buffer_unref (out_buf);
-    goto out;
-  }
-
-  res = gst_pad_push (mimenc->srcpad, out_buf);
+  res = gst_pad_push (mimenc->srcpad, out);
 
 out:
-  if (buf)
-    gst_buffer_unref (buf);
-  gst_object_unref (mimenc);
+  gst_buffer_unref (in);
 
   return res;
 
 out_unlock:
   GST_OBJECT_UNLOCK (mimenc);
   goto out;
-
 }
 
-static GstBuffer *
-gst_mimenc_create_tcp_header (GstMimEnc * mimenc, guint32 payload_size,
-    GstClockTime timestamp, gboolean keyframe, gboolean paused)
+static void
+gst_mim_enc_create_tcp_header (GstMimEnc * mimenc, guint8 * p,
+    guint32 payload_size, GstClockTime ts, gboolean keyframe, gboolean paused)
 {
-  // 24 bytes
-  GstBuffer *buf_header = gst_buffer_new_and_alloc (24);
-  guchar *p = (guchar *) GST_BUFFER_DATA (buf_header);
-
-  GST_BUFFER_TIMESTAMP (buf_header) = timestamp;
-
   p[0] = 24;
   p[1] = paused ? 1 : 0;
   GST_WRITE_UINT16_LE (p + 2, mimenc->width);
@@ -385,68 +361,55 @@ gst_mimenc_create_tcp_header (GstMimEnc * mimenc, guint32 payload_size,
   GST_WRITE_UINT32_LE (p + 12, paused ? 0 :
       GST_MAKE_FOURCC ('M', 'L', '2', '0'));
   GST_WRITE_UINT32_LE (p + 16, 0);
-  GST_WRITE_UINT32_LE (p + 20, timestamp / GST_MSECOND);
-
-  return buf_header;
+  GST_WRITE_UINT32_LE (p + 20, ts / GST_MSECOND);
 }
 
+
 static gboolean
-gst_mimenc_event (GstPad * pad, GstEvent * event)
+gst_mim_enc_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
-  GstMimEnc *mimenc = GST_MIMENC (gst_pad_get_parent (pad));
+  GstMimEnc *mimenc = GST_MIM_ENC (parent);
   gboolean ret = TRUE;
   gboolean forward = TRUE;
 
 
   switch (GST_EVENT_TYPE (event)) {
-    case GST_EVENT_NEWSEGMENT:
+    case GST_EVENT_EOS:
+      gst_mim_enc_reset (mimenc);
+      break;
+    case GST_EVENT_CAPS:
     {
-      GstFormat format;
-      gdouble rate, arate;
-      gint64 start, stop, time;
-      gboolean update;
+      GstCaps *caps;
+      gst_event_parse_caps (event, &caps);
 
-      gst_event_parse_new_segment_full (event, &update, &rate, &arate,
-          &format, &start, &stop, &time);
+      ret = gst_mim_enc_setcaps (mimenc, caps);
+
+      forward = FALSE;
+      break;
+    }
+    case GST_EVENT_SEGMENT:
+    {
+      gst_event_copy_segment (event, &mimenc->segment);
 
       /* we need time for now */
-      if (format != GST_FORMAT_TIME)
+      if (mimenc->segment.format != GST_FORMAT_TIME)
         goto newseg_wrong_format;
 
-      GST_DEBUG_OBJECT (mimenc,
-          "newsegment: update %d, rate %g, arate %g, start %" GST_TIME_FORMAT
-          ", stop %" GST_TIME_FORMAT ", time %" GST_TIME_FORMAT,
-          update, rate, arate, GST_TIME_ARGS (start), GST_TIME_ARGS (stop),
-          GST_TIME_ARGS (time));
-
-      /* now configure the values, we need these to time the release of the
-       * buffers on the srcpad. */
-      GST_OBJECT_LOCK (mimenc);
-      gst_segment_set_newsegment_full (&mimenc->segment, update,
-          rate, arate, format, start, stop, time);
-      GST_OBJECT_UNLOCK (mimenc);
       forward = FALSE;
       break;
 
     }
-      break;
-    case GST_EVENT_FLUSH_STOP:
-      GST_OBJECT_LOCK (mimenc);
-      gst_segment_init (&mimenc->segment, GST_FORMAT_UNDEFINED);
-      mimenc->need_newsegment = TRUE;
-      GST_OBJECT_UNLOCK (mimenc);
       break;
     default:
       break;
   }
 
   if (forward)
-    ret = gst_pad_push_event (mimenc->srcpad, event);
+    ret = gst_pad_event_default (pad, parent, event);
   else
     gst_event_unref (event);
 
 done:
-  gst_object_unref (mimenc);
 
   return ret;
 
@@ -462,18 +425,19 @@ newseg_wrong_format:
 static void
 paused_mode_task (gpointer data)
 {
-  GstMimEnc *mimenc = GST_MIMENC (data);
+  GstMimEnc *mimenc = GST_MIM_ENC (data);
   GstClockTime now;
   GstClockTimeDiff diff;
   GstFlowReturn ret;
 
+  GST_OBJECT_LOCK (mimenc);
+
   if (!GST_ELEMENT_CLOCK (mimenc)) {
+    GST_OBJECT_UNLOCK (mimenc);
     GST_ERROR_OBJECT (mimenc, "Element has no clock");
     gst_pad_pause_task (mimenc->srcpad);
     return;
   }
-
-  GST_OBJECT_LOCK (mimenc);
 
   if (mimenc->stop_paused_mode) {
     GST_OBJECT_UNLOCK (mimenc);
@@ -487,25 +451,22 @@ paused_mode_task (gpointer data)
     diff = 0;
 
   if (diff > 3.95 * GST_SECOND) {
-    GstBuffer *buffer = gst_mimenc_create_tcp_header (mimenc, 0,
-        mimenc->last_buffer + 4 * GST_SECOND, FALSE, TRUE);
-    GstEvent *event = NULL;
+    GstBuffer *buffer;
+    GstMapInfo out_map;
 
-    mimenc->last_buffer += 4 * GST_SECOND;
+    buffer = gst_buffer_new_and_alloc (TCP_HEADER_SIZE);
+    gst_buffer_map (buffer, &out_map, GST_MAP_WRITE);
+    GST_BUFFER_TIMESTAMP (buffer) = mimenc->last_buffer + PAUSED_MODE_INTERVAL;
+    gst_mim_enc_create_tcp_header (mimenc, out_map.data, 0,
+        GST_BUFFER_TIMESTAMP (buffer), FALSE, TRUE);
+    gst_buffer_unmap (buffer, &out_map);
 
-    if (mimenc->need_newsegment) {
-      event = gst_event_new_new_segment (FALSE, 1.0, GST_FORMAT_TIME, 0, -1, 0);
-      mimenc->need_newsegment = FALSE;
-    }
+    mimenc->last_buffer += PAUSED_MODE_INTERVAL;
 
     GST_OBJECT_UNLOCK (mimenc);
     GST_LOG_OBJECT (mimenc, "Haven't had an incoming buffer in 4 seconds,"
         " sending out a pause frame");
 
-    if (event) {
-      if (!gst_pad_push_event (mimenc->srcpad, event))
-        GST_WARNING_OBJECT (mimenc, "Failed to push NEWSEGMENT event");
-    }
     ret = gst_pad_push (mimenc->srcpad, buffer);
     if (ret < 0) {
       GST_WARNING_OBJECT (mimenc, "Error pushing paused header: %s",
@@ -516,7 +477,7 @@ paused_mode_task (gpointer data)
     GstClockTime next_stop;
     GstClockID id;
 
-    next_stop = now + (4 * GST_SECOND - MIN (diff, 4 * GST_SECOND));
+    next_stop = now + (PAUSED_MODE_INTERVAL - MIN (diff, PAUSED_MODE_INTERVAL));
 
     id = gst_clock_new_single_shot_id (GST_ELEMENT_CLOCK (mimenc), next_stop);
 
@@ -544,29 +505,20 @@ stop_task:
 }
 
 static GstStateChangeReturn
-gst_mimenc_change_state (GstElement * element, GstStateChange transition)
+gst_mim_enc_change_state (GstElement * element, GstStateChange transition)
 {
-  GstMimEnc *mimenc = GST_MIMENC (element);
+  GstMimEnc *mimenc = GST_MIM_ENC (element);
   GstStateChangeReturn ret;
   gboolean paused_mode;
 
   switch (transition) {
-    case GST_STATE_CHANGE_READY_TO_NULL:
-      GST_OBJECT_LOCK (element);
-      if (mimenc->enc != NULL) {
-        mimic_close (mimenc->enc);
-        mimenc->enc = NULL;
-        mimenc->buffer_size = -1;
-        mimenc->frames = 0;
-      }
-      GST_OBJECT_UNLOCK (element);
-      break;
+    case GST_STATE_CHANGE_NULL_TO_READY:
+
 
     case GST_STATE_CHANGE_READY_TO_PAUSED:
       GST_OBJECT_LOCK (mimenc);
       gst_segment_init (&mimenc->segment, GST_FORMAT_UNDEFINED);
       mimenc->last_buffer = GST_CLOCK_TIME_NONE;
-      mimenc->need_newsegment = TRUE;
       GST_OBJECT_UNLOCK (mimenc);
       break;
     case GST_STATE_CHANGE_PLAYING_TO_PAUSED:
@@ -583,7 +535,8 @@ gst_mimenc_change_state (GstElement * element, GstStateChange transition)
       break;
   }
 
-  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
+  ret = GST_ELEMENT_CLASS (gst_mim_enc_parent_class)->change_state (element,
+      transition);
 
   if (ret == GST_STATE_CHANGE_FAILURE)
     return ret;
@@ -607,12 +560,17 @@ gst_mimenc_change_state (GstElement * element, GstStateChange transition)
       }
       GST_OBJECT_UNLOCK (mimenc);
       if (paused_mode) {
-        if (!gst_pad_start_task (mimenc->srcpad, paused_mode_task, mimenc)) {
+        if (!gst_pad_start_task (mimenc->srcpad, paused_mode_task, mimenc,
+                NULL)) {
           ret = GST_STATE_CHANGE_FAILURE;
           GST_ERROR_OBJECT (mimenc, "Can not start task");
         }
       }
       break;
+    case GST_STATE_CHANGE_READY_TO_NULL:
+      gst_mim_enc_reset (mimenc);
+      break;
+
     default:
       break;
   }

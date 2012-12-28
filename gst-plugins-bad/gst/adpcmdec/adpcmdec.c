@@ -28,7 +28,7 @@
 #endif
 
 #include <gst/gst.h>
-#include <gst/base/gstadapter.h>
+#include <gst/audio/gstaudiodecoder.h>
 
 #define GST_TYPE_ADPCM_DEC \
     (adpcmdec_get_type ())
@@ -38,12 +38,6 @@
 
 #define GST_CAT_DEFAULT adpcmdec_debug
 GST_DEBUG_CATEGORY_STATIC (adpcmdec_debug);
-
-static const GstElementDetails adpcmdec_details =
-GST_ELEMENT_DETAILS ("ADPCM decoder",
-    "Codec/Decoder/Audio",
-    "Decode MS and IMA ADPCM audio",
-    "Pioneers of the Inevitable <songbird@songbirdnest.com");
 
 static GstStaticPadTemplate adpcmdec_sink_template =
     GST_STATIC_PAD_TEMPLATE ("sink",
@@ -59,12 +53,10 @@ static GstStaticPadTemplate adpcmdec_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw-int, "
-        "depth = (int)16, "
-        "width = (int)16, "
-        "endianness = (int)" G_STRINGIFY (G_BYTE_ORDER) ", "
-        "signed = (boolean)TRUE, "
-        "channels = (int) [1,2], " "rate = (int)[1, MAX]")
+    GST_STATIC_CAPS ("audio/x-raw, "
+        "format = (string) " GST_AUDIO_NE (S16) ", "
+        "layout = (string) interleaved, "
+        "rate = (int) [1, MAX], channels = (int) [1,2]")
     );
 
 enum adpcm_layout
@@ -75,79 +67,29 @@ enum adpcm_layout
 
 typedef struct _ADPCMDecClass
 {
-  GstElementClass parent_class;
+  GstAudioDecoderClass parent_class;
 } ADPCMDecClass;
 
 typedef struct _ADPCMDec
 {
-  GstElement parent;
-
-  GstPad *sinkpad;
-  GstPad *srcpad;
-
-  GstCaps *output_caps;
+  GstAudioDecoder parent;
 
   enum adpcm_layout layout;
   int rate;
   int channels;
   int blocksize;
-
-  gboolean is_setup;
-
-  GstClockTime timestamp;
-  GstClockTime base_timestamp;
-
-  guint64 out_samples;
-
-  GstAdapter *adapter;
-
 } ADPCMDec;
 
-GST_BOILERPLATE (ADPCMDec, adpcmdec, GstElement, GST_TYPE_ELEMENT);
-static gboolean
-adpcmdec_setup (ADPCMDec * dec)
-{
-  dec->output_caps = gst_caps_new_simple ("audio/x-raw-int",
-      "rate", G_TYPE_INT, dec->rate,
-      "channels", G_TYPE_INT, dec->channels,
-      "width", G_TYPE_INT, 16,
-      "depth", G_TYPE_INT, 16,
-      "endianness", G_TYPE_INT, G_BYTE_ORDER,
-      "signed", G_TYPE_BOOLEAN, TRUE, NULL);
-
-  if (dec->output_caps) {
-    gst_pad_set_caps (dec->srcpad, dec->output_caps);
-  }
-
-  dec->is_setup = TRUE;
-  dec->timestamp = GST_CLOCK_TIME_NONE;
-  dec->base_timestamp = GST_CLOCK_TIME_NONE;
-  dec->adapter = gst_adapter_new ();
-  dec->out_samples = 0;
-
-  return TRUE;
-}
-
-static void
-adpcmdec_teardown (ADPCMDec * dec)
-{
-  if (dec->output_caps) {
-    gst_caps_unref (dec->output_caps);
-    dec->output_caps = NULL;
-  }
-  if (dec->adapter) {
-    g_object_unref (dec->adapter);
-    dec->adapter = NULL;
-  }
-  dec->is_setup = FALSE;
-}
+GType adpcmdec_get_type (void);
+G_DEFINE_TYPE (ADPCMDec, adpcmdec, GST_TYPE_AUDIO_DECODER);
 
 static gboolean
-adpcmdec_sink_setcaps (GstPad * pad, GstCaps * caps)
+adpcmdec_set_format (GstAudioDecoder * bdec, GstCaps * in_caps)
 {
-  ADPCMDec *dec = (ADPCMDec *) gst_pad_get_parent (pad);
-  GstStructure *structure = gst_caps_get_structure (caps, 0);
+  ADPCMDec *dec = (ADPCMDec *) (bdec);
+  GstStructure *structure = gst_caps_get_structure (in_caps, 0);
   const gchar *layout;
+  GstAudioInfo info;
 
   layout = gst_structure_get_string (structure, "layout");
   if (!layout)
@@ -161,17 +103,18 @@ adpcmdec_sink_setcaps (GstPad * pad, GstCaps * caps)
     return FALSE;
 
   if (!gst_structure_get_int (structure, "block_align", &dec->blocksize))
-    dec->blocksize = -1; /* Not provided */
+    dec->blocksize = -1;        /* Not provided */
 
   if (!gst_structure_get_int (structure, "rate", &dec->rate))
     return FALSE;
   if (!gst_structure_get_int (structure, "channels", &dec->channels))
     return FALSE;
 
-  if (dec->is_setup)
-    adpcmdec_teardown (dec);
-  gst_object_unref (dec);
+  gst_audio_info_init (&info);
+  gst_audio_info_set_format (&info, GST_AUDIO_FORMAT_S16, dec->rate,
+      dec->channels, NULL);
 
+  gst_audio_decoder_set_output_format (bdec, &info);
   return TRUE;
 }
 
@@ -204,21 +147,21 @@ adpcmdec_sink_setcaps (GstPad * pad, GstCaps * caps)
  *
  *=====================================================================
 */
-static int AdaptationTable[] = {
+static const int AdaptationTable[] = {
   230, 230, 230, 230, 307, 409, 512, 614,
   768, 614, 512, 409, 307, 230, 230, 230
 };
 
-static int AdaptCoeff1[] = {
+static const int AdaptCoeff1[] = {
   256, 512, 0, 192, 240, 460, 392
 };
 
-static int AdaptCoeff2[] = {
+static const int AdaptCoeff2[] = {
   0, -256, 0, 64, 0, -208, -232
 };
 
 static gint16
-read_sample (guint8 * data)
+read_sample (const guint8 * data)
 {
   guint16 val = data[0] | (data[1] << 8);
   return *((gint16 *) & val);
@@ -230,7 +173,7 @@ read_sample (guint8 * data)
    All buffer lengths have been verified by the caller 
  */
 static gboolean
-adpcmdec_decode_ms_block (ADPCMDec * dec, int n_samples, guint8 * data,
+adpcmdec_decode_ms_block (ADPCMDec * dec, int n_samples, const guint8 * data,
     gint16 * samples)
 {
   gint16 pred[2];
@@ -303,11 +246,11 @@ adpcmdec_decode_ms_block (ADPCMDec * dec, int n_samples, guint8 * data,
   return TRUE;
 }
 
-static int ima_indx_adjust[16] = {
+static const int ima_indx_adjust[16] = {
   -1, -1, -1, -1, 2, 4, 6, 8, -1, -1, -1, -1, 2, 4, 6, 8,
 };
 
-static int ima_step_size[89] = {
+static const int ima_step_size[89] = {
   7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 21, 23, 25, 28, 31, 34, 37, 41, 45,
   50, 55, 60, 66, 73, 80, 88, 97, 107, 118, 130, 143, 157, 173, 190, 209, 230,
   253, 279, 307, 337, 371, 408, 449, 494, 544, 598, 658, 724, 796, 876, 963,
@@ -323,7 +266,7 @@ static int ima_step_size[89] = {
    All buffer lengths have been verified by the caller 
  */
 static gboolean
-adpcmdec_decode_ima_block (ADPCMDec * dec, int n_samples, guint8 * data,
+adpcmdec_decode_ima_block (ADPCMDec * dec, int n_samples, const guint8 * data,
     gint16 * samples)
 {
   gint16 stepindex[2];
@@ -382,200 +325,158 @@ adpcmdec_decode_ima_block (ADPCMDec * dec, int n_samples, guint8 * data,
   return TRUE;
 }
 
-static GstFlowReturn
-adpcmdec_decode_block (ADPCMDec *dec, guint8 *data, int blocksize)
+static GstBuffer *
+adpcmdec_decode_block (ADPCMDec * dec, const guint8 * data, int blocksize)
 {
-  gboolean res;
+  gboolean res = FALSE;
   GstBuffer *outbuf = NULL;
   int outsize;
   int samples;
+  GstMapInfo omap;
 
   if (dec->layout == LAYOUT_ADPCM_MICROSOFT) {
     /* Each block has a 3 byte header per channel, plus 4 bytes per channel to
        give two initial sample values per channel. Then the remainder gives
        two samples per byte */
     if (blocksize < 7 * dec->channels)
-      return GST_FLOW_ERROR;
+      goto exit;
     samples = (blocksize - 7 * dec->channels) * 2 + 2 * dec->channels;
     outsize = 2 * samples;
     outbuf = gst_buffer_new_and_alloc (outsize);
 
-    res = adpcmdec_decode_ms_block (dec, samples, data,
-        (gint16 *) (GST_BUFFER_DATA (outbuf)));
+    gst_buffer_map (outbuf, &omap, GST_MAP_WRITE);
+    res = adpcmdec_decode_ms_block (dec, samples, data, (gint16 *) omap.data);
+    gst_buffer_unmap (outbuf, &omap);
   } else if (dec->layout == LAYOUT_ADPCM_DVI) {
     /* Each block has a 4 byte header per channel, include an initial sample.
        Then the remainder gives two samples per byte */
     if (blocksize < 4 * dec->channels)
-      return GST_FLOW_ERROR;
+      goto exit;
     samples = (blocksize - 4 * dec->channels) * 2 + dec->channels;
     outsize = 2 * samples;
     outbuf = gst_buffer_new_and_alloc (outsize);
 
-    res = adpcmdec_decode_ima_block (dec, samples, data,
-        (gint16 *) (GST_BUFFER_DATA (outbuf)));
+    gst_buffer_map (outbuf, &omap, GST_MAP_WRITE);
+    res = adpcmdec_decode_ima_block (dec, samples, data, (gint16 *) omap.data);
+    gst_buffer_unmap (outbuf, &omap);
   } else {
     GST_WARNING_OBJECT (dec, "Unknown layout");
-    return GST_FLOW_ERROR;
   }
 
   if (!res) {
-    gst_buffer_unref (outbuf);
+    if (outbuf)
+      gst_buffer_unref (outbuf);
+    outbuf = NULL;
     GST_WARNING_OBJECT (dec, "Decode of block failed");
-    return GST_FLOW_ERROR;
   }
 
-  gst_buffer_set_caps (outbuf, dec->output_caps);
-  GST_BUFFER_TIMESTAMP (outbuf) = dec->timestamp;
-  dec->out_samples += samples / dec->channels;
-  dec->timestamp = dec->base_timestamp +
-      gst_util_uint64_scale_int (dec->out_samples, GST_SECOND, dec->rate);
-  GST_BUFFER_DURATION (outbuf) =
-      dec->timestamp - GST_BUFFER_TIMESTAMP (outbuf);
-
-  return gst_pad_push (dec->srcpad, outbuf);
+exit:
+  return outbuf;
 }
 
 static GstFlowReturn
-adpcmdec_chain (GstPad * pad, GstBuffer * buf)
+adpcmdec_parse (GstAudioDecoder * bdec, GstAdapter * adapter,
+    gint * offset, gint * length)
 {
-  ADPCMDec *dec = (ADPCMDec *) gst_pad_get_parent (pad);
-  GstFlowReturn ret = GST_FLOW_OK;
-  guint8 *data;
-  GstBuffer *databuf = NULL;
+  ADPCMDec *dec = (ADPCMDec *) (bdec);
+  guint size;
 
-  if (!dec->is_setup)
-    adpcmdec_setup (dec);
+  size = gst_adapter_available (adapter);
+  g_return_val_if_fail (size > 0, GST_FLOW_ERROR);
 
-  if (dec->base_timestamp == GST_CLOCK_TIME_NONE) {
-    dec->base_timestamp = GST_BUFFER_TIMESTAMP (buf);
-    if (dec->base_timestamp == GST_CLOCK_TIME_NONE)
-      dec->base_timestamp = 0;
-    dec->timestamp = dec->base_timestamp;
-  }
-
-  if (dec->blocksize > 0) { 
-    gst_adapter_push (dec->adapter, buf);
-
-    while (gst_adapter_available (dec->adapter) >= dec->blocksize) {
-      databuf = gst_adapter_take_buffer (dec->adapter, dec->blocksize);
-      data = GST_BUFFER_DATA (databuf);
-
-      ret = adpcmdec_decode_block (dec, data, dec->blocksize);
-
-      /* Done with input data, free it */
-      gst_buffer_unref (databuf);
-
-      if (ret != GST_FLOW_OK)
-        goto done;
+  if (dec->blocksize < 0) {
+    /* No explicit blocksize; we just process one input buffer at a time */
+    *offset = 0;
+    *length = size;
+  } else {
+    if (size >= dec->blocksize) {
+      *offset = 0;
+      *length = dec->blocksize;
+    } else {
+      return GST_FLOW_EOS;
     }
   }
-  else {
-    /* No explicit blocksize; we just process one input buffer at a time */
-    ret = adpcmdec_decode_block (dec, GST_BUFFER_DATA (buf),
-        GST_BUFFER_SIZE (buf));
-    gst_buffer_unref (buf);
+
+  return GST_FLOW_OK;
+}
+
+static GstFlowReturn
+adpcmdec_handle_frame (GstAudioDecoder * bdec, GstBuffer * buffer)
+{
+  ADPCMDec *dec = (ADPCMDec *) (bdec);
+  GstFlowReturn ret = GST_FLOW_OK;
+  GstMapInfo map;
+  GstBuffer *outbuf = NULL;
+
+  /* no fancy draining */
+  if (G_UNLIKELY (!buffer))
+    return GST_FLOW_OK;
+
+  if (!dec->blocksize)
+    return GST_FLOW_NOT_NEGOTIATED;
+
+  gst_buffer_map (buffer, &map, GST_MAP_READ);
+  outbuf = adpcmdec_decode_block (dec, map.data, dec->blocksize);
+  gst_buffer_unmap (buffer, &map);
+
+  if (outbuf == NULL) {
+    GST_AUDIO_DECODER_ERROR (bdec, 1, STREAM, DECODE, (NULL),
+        ("frame decode failed"), ret);
   }
 
-done:
-  gst_object_unref (dec);
+  if (ret == GST_FLOW_OK)
+    ret = gst_audio_decoder_finish_frame (bdec, outbuf, 1);
 
   return ret;
 }
 
 static gboolean
-adpcmdec_sink_event (GstPad * pad, GstEvent * event)
+adpcmdec_start (GstAudioDecoder * bdec)
 {
-  ADPCMDec *dec = (ADPCMDec *) gst_pad_get_parent (pad);
-  gboolean res;
-  switch (GST_EVENT_TYPE (event)) {
-    case GST_EVENT_FLUSH_STOP:
-      dec->out_samples = 0;
-      dec->timestamp = GST_CLOCK_TIME_NONE;
-      dec->base_timestamp = GST_CLOCK_TIME_NONE;
-      gst_adapter_clear (dec->adapter);
-      /* Fall through */
-    default:
-      res = gst_pad_push_event (dec->srcpad, event);
-      break;
-  }
-  gst_object_unref (dec);
-  return res;
+  ADPCMDec *dec = (ADPCMDec *) bdec;
+
+  GST_DEBUG_OBJECT (dec, "start");
+
+  dec->blocksize = 0;
+  dec->rate = 0;
+  dec->channels = 0;
+
+  return TRUE;
 }
 
-static GstStateChangeReturn
-adpcmdec_change_state (GstElement * element, GstStateChange transition)
+static gboolean
+adpcmdec_stop (GstAudioDecoder * dec)
 {
-  GstStateChangeReturn ret;
-  ADPCMDec *dec = (ADPCMDec *) element;
+  GST_DEBUG_OBJECT (dec, "stop");
 
-  switch (transition) {
-    case GST_STATE_CHANGE_NULL_TO_READY:
-      break;
-    case GST_STATE_CHANGE_READY_TO_PAUSED:
-      break;
-    case GST_STATE_CHANGE_PAUSED_TO_PLAYING:
-      break;
-    default:
-      break;
-  }
-
-  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
-
-  switch (transition) {
-    case GST_STATE_CHANGE_PLAYING_TO_PAUSED:
-      break;
-    case GST_STATE_CHANGE_PAUSED_TO_READY:
-      adpcmdec_teardown (dec);
-      break;
-    case GST_STATE_CHANGE_READY_TO_NULL:
-      break;
-    default:
-      break;
-  }
-  return ret;
+  return TRUE;
 }
 
 static void
-adpcmdec_dispose (GObject * obj)
+adpcmdec_init (ADPCMDec * dec)
 {
-  G_OBJECT_CLASS (parent_class)->dispose (obj);
-}
-
-static void
-adpcmdec_init (ADPCMDec * dec, ADPCMDecClass * klass)
-{
-  dec->sinkpad =
-      gst_pad_new_from_static_template (&adpcmdec_sink_template, "sink");
-  gst_pad_set_setcaps_function (dec->sinkpad,
-      GST_DEBUG_FUNCPTR (adpcmdec_sink_setcaps));
-  gst_pad_set_chain_function (dec->sinkpad, GST_DEBUG_FUNCPTR (adpcmdec_chain));
-  gst_pad_set_event_function (dec->sinkpad,
-      GST_DEBUG_FUNCPTR (adpcmdec_sink_event));
-  gst_element_add_pad (GST_ELEMENT (dec), dec->sinkpad);
-
-  dec->srcpad =
-      gst_pad_new_from_static_template (&adpcmdec_src_template, "src");
-  gst_pad_use_fixed_caps (dec->srcpad);
-  gst_element_add_pad (GST_ELEMENT (dec), dec->srcpad);
 }
 
 static void
 adpcmdec_class_init (ADPCMDecClass * klass)
 {
-  GObjectClass *gobjectclass = (GObjectClass *) klass;
-  GstElementClass *gstelement_class = (GstElementClass *) klass;
-  gobjectclass->dispose = adpcmdec_dispose;
-  gstelement_class->change_state = adpcmdec_change_state;
-} static void
+  GstElementClass *element_class = (GstElementClass *) klass;
+  GstAudioDecoderClass *base_class = (GstAudioDecoderClass *) klass;
 
-adpcmdec_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&adpcmdec_sink_template));
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&adpcmdec_src_template));
-  gst_element_class_set_details (element_class, &adpcmdec_details);
+  gst_element_class_set_static_metadata (element_class, "ADPCM decoder",
+      "Codec/Decoder/Audio",
+      "Decode MS and IMA ADPCM audio",
+      "Pioneers of the Inevitable <songbird@songbirdnest.com>");
+
+  base_class->start = GST_DEBUG_FUNCPTR (adpcmdec_start);
+  base_class->stop = GST_DEBUG_FUNCPTR (adpcmdec_stop);
+  base_class->set_format = GST_DEBUG_FUNCPTR (adpcmdec_set_format);
+  base_class->parse = GST_DEBUG_FUNCPTR (adpcmdec_parse);
+  base_class->handle_frame = GST_DEBUG_FUNCPTR (adpcmdec_handle_frame);
 }
 
 static gboolean
@@ -589,6 +490,6 @@ plugin_init (GstPlugin * plugin)
   return TRUE;
 }
 
-GST_PLUGIN_DEFINE (GST_VERSION_MAJOR, GST_VERSION_MINOR, "adpcmdec",
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR, GST_VERSION_MINOR, adpcmdec,
     "ADPCM decoder", plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME,
     GST_PACKAGE_ORIGIN);

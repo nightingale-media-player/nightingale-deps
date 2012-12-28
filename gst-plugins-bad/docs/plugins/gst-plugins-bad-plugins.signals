@@ -1,39 +1,4 @@
 <SIGNAL>
-<NAME>GstAppSink::eos</NAME>
-<RETURNS>void</RETURNS>
-<FLAGS>l</FLAGS>
-GstAppSink *gstappsink
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstAppSink::new-buffer</NAME>
-<RETURNS>void</RETURNS>
-<FLAGS>l</FLAGS>
-GstAppSink *gstappsink
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstAppSink::new-preroll</NAME>
-<RETURNS>void</RETURNS>
-<FLAGS>l</FLAGS>
-GstAppSink *gstappsink
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstAppSink::pull-buffer</NAME>
-<RETURNS>GstBuffer*</RETURNS>
-<FLAGS>la</FLAGS>
-GstAppSink *gstappsink
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstAppSink::pull-preroll</NAME>
-<RETURNS>GstBuffer*</RETURNS>
-<FLAGS>la</FLAGS>
-GstAppSink *gstappsink
-</SIGNAL>
-
-<SIGNAL>
 <NAME>GstSwitch::block</NAME>
 <RETURNS>gint64</RETURNS>
 <FLAGS>l</FLAGS>
@@ -73,51 +38,6 @@ GstInputSelector *gstinputselector
 GstPad *arg1
 gint64  arg2
 gint64  arg3
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstAppSrc::end-of-stream</NAME>
-<RETURNS>GstFlowReturn</RETURNS>
-<FLAGS>la</FLAGS>
-GstAppSrc *gstappsrc
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstAppSrc::enough-data</NAME>
-<RETURNS>void</RETURNS>
-<FLAGS>l</FLAGS>
-GstAppSrc *gstappsrc
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstAppSrc::need-data</NAME>
-<RETURNS>void</RETURNS>
-<FLAGS>l</FLAGS>
-GstAppSrc *gstappsrc
-guint  arg1
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstAppSrc::push-buffer</NAME>
-<RETURNS>GstFlowReturn</RETURNS>
-<FLAGS>la</FLAGS>
-GstAppSrc *gstappsrc
-GstBuffer *arg1
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstAppSrc::seek-data</NAME>
-<RETURNS>gboolean</RETURNS>
-<FLAGS>l</FLAGS>
-GstAppSrc *gstappsrc
-guint64  arg1
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstDivxEnc::frame-encoded</NAME>
-<RETURNS>void</RETURNS>
-<FLAGS>l</FLAGS>
-GstDivxEnc *gstdivxenc
 </SIGNAL>
 
 <SIGNAL>
@@ -196,6 +116,69 @@ GstCameraBin *gstcamerabin
 
 <SIGNAL>
 <NAME>GstCameraBin::user-stop</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>la</FLAGS>
+GstCameraBin *gstcamerabin
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstCameraBin::capture-pause</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>la</FLAGS>
+GstCameraBin *gstcamerabin
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstCameraBin::capture-start</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>la</FLAGS>
+GstCameraBin *gstcamerabin
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstCameraBin::capture-stop</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>la</FLAGS>
+GstCameraBin *gstcamerabin
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstCameraBin::image-done</NAME>
+<RETURNS>gboolean</RETURNS>
+<FLAGS>l</FLAGS>
+GstCameraBin *gstcamerabin
+gchar *arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstCameraBin::set-image-resolution</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>la</FLAGS>
+GstCameraBin *gstcamerabin
+gint  arg1
+gint  arg2
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstCameraBin::set-video-resolution-fps</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>la</FLAGS>
+GstCameraBin *gstcamerabin
+gint  arg1
+gint  arg2
+gint  arg3
+gint  arg4
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstCameraBin::start-capture</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>la</FLAGS>
+GstCameraBin *gstcamerabin
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstCameraBin::stop-capture</NAME>
 <RETURNS>void</RETURNS>
 <FLAGS>la</FLAGS>
 GstCameraBin *gstcamerabin
@@ -511,5 +494,45 @@ GstPad *arg2
 GstRtpSsrcDemux *gstrtpssrcdemux
 guint  arg1
 GstPad *arg2
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstFPSDisplaySink::fps-measurements</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+GstFPSDisplaySink *gstfpsdisplaysink
+gdouble  arg1
+gdouble  arg2
+gdouble  arg3
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstShmSink::client-connected</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+GstShmSink *gstshmsink
+gint  arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstShmSink::client-disconnected</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+GstShmSink *gstshmsink
+gint  arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstCameraBin2::start-capture</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>la</FLAGS>
+GstCameraBin2 *gstcamerabin2
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstCameraBin2::stop-capture</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>la</FLAGS>
+GstCameraBin2 *gstcamerabin2
 </SIGNAL>
 

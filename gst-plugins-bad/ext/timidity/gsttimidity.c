@@ -51,12 +51,6 @@
 GST_DEBUG_CATEGORY_STATIC (gst_timidity_debug);
 #define GST_CAT_DEFAULT gst_timidity_debug
 
-static const GstElementDetails gst_timidity_details =
-GST_ELEMENT_DETAILS ("Timidity",
-    "Codec/Decoder/Audio",
-    "Midi Synthesizer Element",
-    "Wouter Paesen <wouter@blue-gate.be>");
-
 enum
 {
   /* FILL ME */
@@ -68,9 +62,6 @@ enum
   ARG_0,
   /* FILL ME */
 };
-
-static void gst_timidity_base_init (gpointer g_class);
-static void gst_timidity_class_init (GstTimidityClass * klass);
 
 static gboolean gst_timidity_src_event (GstPad * pad, GstEvent * event);
 static GstStateChangeReturn gst_timidity_change_state (GstElement * element,
@@ -108,19 +99,18 @@ gst_timidity_base_init (gpointer gclass)
       gst_static_pad_template_get (&src_factory));
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sink_factory));
-  gst_element_class_set_details (element_class, &gst_timidity_details);
+  gst_element_class_set_static_metadata (element_class, "Timidity",
+      "Codec/Decoder/Audio",
+      "Midi Synthesizer Element", "Wouter Paesen <wouter@blue-gate.be>");
 }
 
 /* initialize the plugin's class */
 static void
 gst_timidity_class_init (GstTimidityClass * klass)
 {
-  GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
 
-  gobject_class = (GObjectClass *) klass;
   gstelement_class = (GstElementClass *) klass;
-
   gstelement_class->change_state = gst_timidity_change_state;
 }
 
@@ -135,7 +125,7 @@ gst_timidity_init (GstTimidity * filter, GstTimidityClass * g_class)
   GstElementClass *klass = GST_ELEMENT_GET_CLASS (filter);
 
   /* initialise timidity library */
-  if (mid_init (TIMIDITY_CFG) == 0) {
+  if (mid_init ((char *) TIMIDITY_CFG) == 0) {
     filter->initialized = TRUE;
   } else {
     GST_WARNING ("can't initialize timidity with config: " TIMIDITY_CFG);
@@ -325,7 +315,7 @@ static GstSegment *
 gst_timidity_get_segment (GstTimidity * timidity, GstFormat format,
     gboolean update)
 {
-  gint64 start, stop, time;
+  gint64 start = 0, stop = 0, time = 0;
 
   GstSegment *segment = gst_segment_new ();
 
@@ -384,7 +374,7 @@ gst_timidity_src_event (GstPad * pad, GstEvent * event)
       GstFormat src_format, dst_format;
       GstSeekFlags flags;
       GstSeekType start_type, stop_type;
-      gint64 orig_start, start, stop;
+      gint64 orig_start, start = 0, stop = 0;
       gboolean flush, update;
 
       if (!timidity->song)
@@ -417,7 +407,7 @@ gst_timidity_src_event (GstPad * pad, GstEvent * event)
       gst_segment_set_seek (timidity->o_segment, rate, dst_format, flags,
           start_type, start, stop_type, stop, &update);
 
-      if ((flags && GST_SEEK_FLAG_SEGMENT) == GST_SEEK_FLAG_SEGMENT) {
+      if (flags & GST_SEEK_FLAG_SEGMENT) {
         GST_DEBUG_OBJECT (timidity, "received segment seek %d, %d",
             (gint) start_type, (gint) stop_type);
       } else {
@@ -433,7 +423,7 @@ gst_timidity_src_event (GstPad * pad, GstEvent * event)
       timidity->o_seek = TRUE;
 
       gst_pad_start_task (timidity->sinkpad,
-          (GstTaskFunction) gst_timidity_loop, timidity->sinkpad);
+          (GstTaskFunction) gst_timidity_loop, timidity->sinkpad, NULL);
 
       GST_PAD_STREAM_UNLOCK (timidity->sinkpad);
       GST_DEBUG ("seek done");
@@ -461,7 +451,8 @@ static gboolean
 gst_timidity_activatepull (GstPad * pad, gboolean active)
 {
   if (active) {
-    return gst_pad_start_task (pad, (GstTaskFunction) gst_timidity_loop, pad);
+    return gst_pad_start_task (pad, (GstTaskFunction) gst_timidity_loop, pad,
+        NULL);
   } else {
     return gst_pad_stop_task (pad);
   }
@@ -546,7 +537,7 @@ gst_timidity_fill_buffer (GstTimidity * timidity, GstBuffer * buffer)
 
   GST_DEBUG_OBJECT (timidity,
       "generated buffer %" GST_TIME_FORMAT "-%" GST_TIME_FORMAT
-      " (%d samples)",
+      " (%" G_GINT64_FORMAT " samples)",
       GST_TIME_ARGS ((guint64) GST_BUFFER_TIMESTAMP (buffer)),
       GST_TIME_ARGS (((guint64) (GST_BUFFER_TIMESTAMP (buffer) +
                   GST_BUFFER_DURATION (buffer)))), samples);
@@ -592,7 +583,7 @@ gst_timidity_loop (GstPad * sinkpad)
   }
 
   if (timidity->mididata_offset < timidity->mididata_size) {
-    GstBuffer *buffer;
+    GstBuffer *buffer = NULL;
     gint64 size;
 
     GST_DEBUG_OBJECT (timidity, "loading song");
@@ -721,7 +712,9 @@ gst_timidity_loop (GstPad * sinkpad)
   gst_buffer_set_caps (out, timidity->out_caps);
   ret = gst_pad_push (timidity->srcpad, out);
 
-  if (GST_FLOW_IS_FATAL (ret) || ret == GST_FLOW_NOT_LINKED)
+  if (ret == GST_FLOW_UNEXPECTED)
+    goto eos;
+  else if (ret < GST_FLOW_UNEXPECTED || ret == GST_FLOW_NOT_LINKED)
     goto error;
 
   return;
@@ -731,6 +724,11 @@ paused:
     GST_DEBUG_OBJECT (timidity, "pausing task");
     gst_pad_pause_task (timidity->sinkpad);
     return;
+  }
+eos:
+  {
+    gst_pad_push_event (timidity->srcpad, gst_event_new_eos ());
+    goto paused;
   }
 error:
   {
@@ -805,6 +803,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "timidity",
+    timidity,
     "Timidity Plugin",
     plugin_init, VERSION, "GPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

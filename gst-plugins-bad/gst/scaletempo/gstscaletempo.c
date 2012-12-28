@@ -21,41 +21,39 @@
 /**
  * SECTION:element-scaletempo
  *
- * <refsect2>
- * <para>
  * Scale tempo while maintaining pitch
  * (WSOLA-like technique with cross correlation)
  * Inspired by SoundTouch library by Olli Parviainen
- * </para>
- * <para>
+ *
  * Use Sceletempo to apply playback rates without the chipmunk effect.
- * </para>
+ *
+ * <refsect2>
  * <title>Example pipelines</title>
  * <para>
- * <programlisting>
+ * |[
  * filesrc location=media.ext ! decodebin name=d \
  *     d. ! queue ! audioconvert ! audioresample ! scaletempo ! audioconvert ! audioresample ! autoaudiosink \
- *     d. ! queue ! ffmpegcolorspace ! autovideosink
- * </programlisting>
+ *     d. ! queue ! videoconvert ! autovideosink
+ * ]|
  * OR
- * <programlisting>
+ * |[
  * playbin uri=... audio_sink="scaletempo ! audioconvert ! audioresample ! autoaudiosink"
- * </programlisting>
+ * ]|
  * When an application sends a seek event with rate != 1.0, Scaletempo applies
  * the rate change by scaling the tempo without scaling the pitch.
- * </para>
- * <para>
- * Scaletempo works by producing audio in constant sized chunks (a "stride") but
- * consuming chunks proportional to the playback rate.
- * </para>
- * <para>
+ *
+ * Scaletempo works by producing audio in constant sized chunks
+ * (#GstScaletempo:stride) but consuming chunks proportional to the playback
+ * rate.
+ *
  * Scaletempo then smooths the output by blending the end of one stride with
- * the next ("overlap").
- * </para>
- * <para>
+ * the next (#GstScaletempo:overlap).
+ *
  * Scaletempo smooths the overlap further by searching within the input buffer
- * for the best overlap position.  Scaletempo uses a statistical cross correlation
- * (roughly a dot-product).  Scaletempo consumes most of its CPU cycles here.
+ * for the best overlap position.  Scaletempo uses a statistical cross
+ * correlation (roughly a dot-product).  Scaletempo consumes most of its CPU
+ * cycles here. One can use the #GstScaletempo:search propery to tune how far
+ * the algoritm looks.
  * </para>
  * </refsect2>
  */
@@ -70,6 +68,7 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstbasetransform.h>
+#include <gst/audio/audio.h>
 #include <string.h>             /* for memset */
 
 #include "gstscaletempo.h"
@@ -94,18 +93,8 @@ enum
 
 #define SUPPORTED_CAPS \
 GST_STATIC_CAPS ( \
-    "audio/x-raw-float, " \
-      "rate = (int) [ 1, MAX ], "       \
-      "channels = (int) [ 1, MAX ], " \
-      "endianness = (int) BYTE_ORDER, " \
-      "width = (int) 32;" \
-    "audio/x-raw-int, " \
-      "rate = (int) [ 1, MAX ], " \
-      "channels = (int) [ 1, MAX ], " \
-      "endianness = (int) BYTE_ORDER, " \
-      "width = (int) 16, " \
-      "depth = (int) 16, " \
-      "signed = (boolean) true;" \
+    GST_AUDIO_CAPS_MAKE (GST_AUDIO_NE (F32)) "; " \
+    GST_AUDIO_CAPS_MAKE (GST_AUDIO_NE (S16)) \
 )
 
 static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
@@ -120,10 +109,11 @@ static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
 
 #define DEBUG_INIT(bla) GST_DEBUG_CATEGORY_INIT (gst_scaletempo_debug, "scaletempo", 0, "scaletempo element");
 
-GST_BOILERPLATE_FULL (GstScaletempo, gst_scaletempo, GstBaseTransform,
-    GST_TYPE_BASE_TRANSFORM, DEBUG_INIT);
+#define gst_scaletempo_parent_class parent_class
+G_DEFINE_TYPE_WITH_CODE (GstScaletempo, gst_scaletempo,
+    GST_TYPE_BASE_TRANSFORM, DEBUG_INIT (0));
 
-typedef struct _GstScaletempoPrivate
+struct _GstScaletempoPrivate
 {
   gdouble scale;
   /* parameters */
@@ -161,16 +151,17 @@ typedef struct _GstScaletempoPrivate
     guint (*best_overlap_offset) (GstScaletempo * scaletempo);
   /* gstreamer */
   gint64 segment_start;
+  GstClockTime latency;
   /* threads */
   gboolean reinit_buffers;
-} GstScaletempoPrivate;
+};
 #define GST_SCALETEMPO_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GST_TYPE_SCALETEMPO, GstScaletempoPrivate))
 
 
 static guint
 best_overlap_offset_float (GstScaletempo * scaletempo)
 {
-  GstScaletempoPrivate *p = GST_SCALETEMPO_GET_PRIVATE (scaletempo);
+  GstScaletempoPrivate *p = scaletempo->priv;
   gfloat *pw, *po, *ppc, *search_start;
   gfloat best_corr = G_MININT;
   guint best_off = 0;
@@ -207,7 +198,7 @@ best_overlap_offset_float (GstScaletempo * scaletempo)
 static guint
 best_overlap_offset_s16 (GstScaletempo * scaletempo)
 {
-  GstScaletempoPrivate *p = GST_SCALETEMPO_GET_PRIVATE (scaletempo);
+  GstScaletempoPrivate *p = scaletempo->priv;
   gint32 *pw, *ppc;
   gint16 *po, *search_start;
   gint64 best_corr = G_MININT64;
@@ -252,7 +243,7 @@ static void
 output_overlap_float (GstScaletempo * scaletempo,
     gpointer buf_out, guint bytes_off)
 {
-  GstScaletempoPrivate *p = GST_SCALETEMPO_GET_PRIVATE (scaletempo);
+  GstScaletempoPrivate *p = scaletempo->priv;
   gfloat *pout = buf_out;
   gfloat *pb = p->table_blend;
   gfloat *po = p->buf_overlap;
@@ -268,7 +259,7 @@ static void
 output_overlap_s16 (GstScaletempo * scaletempo,
     gpointer buf_out, guint bytes_off)
 {
-  GstScaletempoPrivate *p = GST_SCALETEMPO_GET_PRIVATE (scaletempo);
+  GstScaletempoPrivate *p = scaletempo->priv;
   gint16 *pout = buf_out;
   gint32 *pb = p->table_blend;
   gint16 *po = p->buf_overlap;
@@ -283,10 +274,12 @@ output_overlap_s16 (GstScaletempo * scaletempo,
 static guint
 fill_queue (GstScaletempo * scaletempo, GstBuffer * buf_in, guint offset)
 {
-  GstScaletempoPrivate *p = GST_SCALETEMPO_GET_PRIVATE (scaletempo);
-  guint bytes_in = GST_BUFFER_SIZE (buf_in) - offset;
+  GstScaletempoPrivate *p = scaletempo->priv;
+  guint bytes_in = gst_buffer_get_size (buf_in) - offset;
   guint offset_unchanged = offset;
+  GstMapInfo map;
 
+  gst_buffer_map (buf_in, &map, GST_MAP_READ);
   if (p->bytes_to_slide > 0) {
     if (p->bytes_to_slide < p->bytes_queued) {
       guint bytes_in_move = p->bytes_queued - p->bytes_to_slide;
@@ -306,11 +299,11 @@ fill_queue (GstScaletempo * scaletempo, GstBuffer * buf_in, guint offset)
 
   if (bytes_in > 0) {
     guint bytes_in_copy = MIN (p->bytes_queue_max - p->bytes_queued, bytes_in);
-    memcpy (p->buf_queue + p->bytes_queued,
-        GST_BUFFER_DATA (buf_in) + offset, bytes_in_copy);
+    memcpy (p->buf_queue + p->bytes_queued, map.data + offset, bytes_in_copy);
     p->bytes_queued += bytes_in_copy;
     offset += bytes_in_copy;
   }
+  gst_buffer_unmap (buf_in, &map);
 
   return offset - offset_unchanged;
 }
@@ -318,10 +311,11 @@ fill_queue (GstScaletempo * scaletempo, GstBuffer * buf_in, guint offset)
 static void
 reinit_buffers (GstScaletempo * scaletempo)
 {
-  GstScaletempoPrivate *p = GST_SCALETEMPO_GET_PRIVATE (scaletempo);
+  GstScaletempoPrivate *p = scaletempo->priv;
   gint i, j;
   guint frames_overlap;
   guint new_size;
+  GstClockTime latency;
 
   guint frames_stride = p->ms_stride * p->sample_rate / 1000.0;
   p->bytes_stride = frames_stride * p->bytes_per_frame;
@@ -419,8 +413,18 @@ reinit_buffers (GstScaletempo * scaletempo)
       p->bytes_queued = new_queued;
     }
   }
+
   p->bytes_queue_max = new_size;
   p->buf_queue = g_realloc (p->buf_queue, p->bytes_queue_max);
+
+  latency =
+      gst_util_uint64_scale (p->bytes_queue_max, GST_SECOND,
+      p->bytes_per_frame * p->sample_rate);
+  if (p->latency != latency) {
+    p->latency = latency;
+    gst_element_post_message (GST_ELEMENT (scaletempo),
+        gst_message_new_latency (GST_OBJECT (scaletempo)));
+  }
 
   p->bytes_stride_scaled = p->bytes_stride * p->scale;
   p->frames_stride_scaled = p->bytes_stride_scaled / p->bytes_per_frame;
@@ -444,17 +448,22 @@ gst_scaletempo_transform (GstBaseTransform * trans,
     GstBuffer * inbuf, GstBuffer * outbuf)
 {
   GstScaletempo *scaletempo = GST_SCALETEMPO (trans);
-  GstScaletempoPrivate *p = GST_SCALETEMPO_GET_PRIVATE (scaletempo);
+  GstScaletempoPrivate *p = scaletempo->priv;
+  gint8 *pout;
+  guint offset_in, bytes_out;
+  GstMapInfo omap;
+  GstClockTime timestamp;
 
-  gint8 *pout = (gint8 *) GST_BUFFER_DATA (outbuf);
-  guint offset_in = fill_queue (scaletempo, inbuf, 0);
-  guint bytes_out = 0;
+  gst_buffer_map (outbuf, &omap, GST_MAP_WRITE);
+  pout = (gint8 *) omap.data;
+  offset_in = fill_queue (scaletempo, inbuf, 0);
+  bytes_out = 0;
   while (p->bytes_queued >= p->bytes_queue_max) {
     guint bytes_off = 0;
     gdouble frames_to_slide;
     guint frames_to_stride_whole;
 
-    // output stride
+    /* output stride */
     if (p->output_overlap) {
       if (p->best_overlap_offset) {
         bytes_off = p->best_overlap_offset (scaletempo);
@@ -466,7 +475,7 @@ gst_scaletempo_transform (GstBaseTransform * trans,
     pout += p->bytes_stride;
     bytes_out += p->bytes_stride;
 
-    // input stride
+    /* input stride */
     memcpy (p->buf_overlap,
         p->buf_queue + bytes_off + p->bytes_stride, p->bytes_overlap);
     frames_to_slide = p->frames_stride_scaled + p->frames_stride_error;
@@ -477,22 +486,30 @@ gst_scaletempo_transform (GstBaseTransform * trans,
     offset_in += fill_queue (scaletempo, inbuf, offset_in);
   }
 
-  GST_BUFFER_SIZE (outbuf) = bytes_out;
-  GST_BUFFER_TIMESTAMP (outbuf) =
-      (GST_BUFFER_TIMESTAMP (outbuf) - p->segment_start) / p->scale +
-      p->segment_start;
-  //GST_BUFFER_DURATION (outbuf)  = bytes_out * GST_SECOND / (p->bytes_per_frame * p->sample_rate);
+  gst_buffer_unmap (outbuf, &omap);
+
+  timestamp = GST_BUFFER_TIMESTAMP (inbuf) - p->segment_start;
+  if (timestamp < p->latency)
+    timestamp = 0;
+  else
+    timestamp -= p->latency;
+  GST_BUFFER_TIMESTAMP (outbuf) = timestamp / p->scale + p->segment_start;
+  GST_BUFFER_DURATION (outbuf) =
+      gst_util_uint64_scale (bytes_out, GST_SECOND,
+      p->bytes_per_frame * p->sample_rate);
+  gst_buffer_set_size (outbuf, bytes_out);
+
   return GST_FLOW_OK;
 }
 
 static gboolean
 gst_scaletempo_transform_size (GstBaseTransform * trans,
     GstPadDirection direction,
-    GstCaps * caps, guint size, GstCaps * othercaps, guint * othersize)
+    GstCaps * caps, gsize size, GstCaps * othercaps, gsize * othersize)
 {
   if (direction == GST_PAD_SINK) {
     GstScaletempo *scaletempo = GST_SCALETEMPO (trans);
-    GstScaletempoPrivate *priv = GST_SCALETEMPO_GET_PRIVATE (scaletempo);
+    GstScaletempoPrivate *priv = scaletempo->priv;
     gint bytes_to_out;
 
     if (priv->reinit_buffers)
@@ -517,27 +534,22 @@ gst_scaletempo_transform_size (GstBaseTransform * trans,
 static gboolean
 gst_scaletempo_sink_event (GstBaseTransform * trans, GstEvent * event)
 {
-  if (GST_EVENT_TYPE (event) == GST_EVENT_NEWSEGMENT) {
+  if (GST_EVENT_TYPE (event) == GST_EVENT_SEGMENT) {
     GstScaletempo *scaletempo = GST_SCALETEMPO (trans);
-    GstScaletempoPrivate *priv = GST_SCALETEMPO_GET_PRIVATE (scaletempo);
+    GstScaletempoPrivate *priv = scaletempo->priv;
+    GstSegment segment;
 
-    gboolean update;
-    gdouble rate, applied_rate;
-    GstFormat format;
-    gint64 start, stop, position;
+    gst_event_copy_segment (event, &segment);
 
-    gst_event_parse_new_segment_full (event, &update, &rate, &applied_rate,
-        &format, &start, &stop, &position);
-
-    if (priv->scale != rate) {
-      if (ABS (rate - 1.0) < 1e-10) {
+    if (priv->scale != segment.rate) {
+      if (ABS (segment.rate - 1.0) < 1e-10) {
         priv->scale = 1.0;
         gst_base_transform_set_passthrough (GST_BASE_TRANSFORM (scaletempo),
             TRUE);
       } else {
         gst_base_transform_set_passthrough (GST_BASE_TRANSFORM (scaletempo),
             FALSE);
-        priv->scale = rate;
+        priv->scale = segment.rate;
         priv->bytes_stride_scaled = priv->bytes_stride * priv->scale;
         priv->frames_stride_scaled =
             priv->bytes_stride_scaled / priv->bytes_per_frame;
@@ -550,17 +562,22 @@ gst_scaletempo_sink_event (GstBaseTransform * trans, GstEvent * event)
     }
 
     if (priv->scale != 1.0) {
-      priv->segment_start = start;
-      applied_rate = priv->scale;
-      rate = 1.0;
-      //gst_event_unref (event);
-      event = gst_event_new_new_segment_full (update, rate, applied_rate,
-          format, start, stop, position);
+      priv->segment_start = segment.start;
+      segment.applied_rate = priv->scale;
+      segment.rate = 1.0;
+      gst_event_unref (event);
+
+      if (segment.stop != -1) {
+        segment.stop = (segment.stop - segment.start) / segment.applied_rate +
+            segment.start;
+      }
+
+      event = gst_event_new_segment (&segment);
       gst_pad_push_event (GST_BASE_TRANSFORM_SRC_PAD (trans), event);
-      return FALSE;
+      return TRUE;
     }
   }
-  return parent_class->event (trans, event);
+  return GST_BASE_TRANSFORM_CLASS (parent_class)->sink_event (trans, event);
 }
 
 static gboolean
@@ -568,30 +585,23 @@ gst_scaletempo_set_caps (GstBaseTransform * trans,
     GstCaps * incaps, GstCaps * outcaps)
 {
   GstScaletempo *scaletempo = GST_SCALETEMPO (trans);
-  GstScaletempoPrivate *priv = GST_SCALETEMPO_GET_PRIVATE (scaletempo);
-  GstStructure *s = gst_caps_get_structure (incaps, 0);
+  GstScaletempoPrivate *priv = scaletempo->priv;
 
   gint width, bps, nch, rate;
   gboolean use_int;
-  const gchar *type = gst_structure_get_name (s);
-  if (g_str_equal (type, "audio/x-raw-int")) {
-    use_int = TRUE;
-    gst_structure_get_int (s, "depth", &width);
-  } else if (g_str_equal (type, "audio/x-raw-float")) {
-    use_int = FALSE;
-    gst_structure_get_int (s, "width", &width);
-  } else {
+  GstAudioInfo info;
+
+  if (!gst_audio_info_from_caps (&info, incaps))
     return FALSE;
-  }
+
+  nch = GST_AUDIO_INFO_CHANNELS (&info);
+  rate = GST_AUDIO_INFO_RATE (&info);
+  width = GST_AUDIO_INFO_WIDTH (&info);
+  use_int = GST_AUDIO_INFO_IS_INTEGER (&info);
+
   bps = width / 8;
 
-  gst_structure_get_int (s, "channels", &nch);
-  gst_structure_get_int (s, "rate", &rate);
-
-  GST_DEBUG ("caps: %s seek, "
-      "%5" G_GUINT32_FORMAT " rate, "
-      "%2" G_GUINT32_FORMAT " nch, "
-      "%2" G_GUINT32_FORMAT " bps", type, rate, nch, bps);
+  GST_DEBUG ("caps: %" GST_PTR_FORMAT ", %d bps", incaps, bps);
 
   if (rate != priv->sample_rate
       || nch != priv->samples_per_frame
@@ -607,6 +617,59 @@ gst_scaletempo_set_caps (GstBaseTransform * trans,
   return TRUE;
 }
 
+static gboolean
+gst_scaletempo_query (GstBaseTransform * trans, GstPadDirection direction,
+    GstQuery * query)
+{
+  GstScaletempo *scaletempo = GST_SCALETEMPO (trans);
+  GstScaletempoPrivate *p = scaletempo->priv;
+
+  if (direction == GST_PAD_SRC) {
+    switch (GST_QUERY_TYPE (query)) {
+      case GST_QUERY_LATENCY:{
+        GstPad *peer;
+        gboolean res;
+
+        if ((peer = gst_pad_get_peer (GST_BASE_TRANSFORM_SINK_PAD (trans)))) {
+          if ((res = gst_pad_query (peer, query))) {
+            GstClockTime min, max;
+            gboolean live;
+
+            gst_query_parse_latency (query, &live, &min, &max);
+
+            GST_DEBUG_OBJECT (scaletempo, "Peer latency: min %"
+                GST_TIME_FORMAT " max %" GST_TIME_FORMAT,
+                GST_TIME_ARGS (min), GST_TIME_ARGS (max));
+
+            /* add our own latency */
+            GST_DEBUG_OBJECT (scaletempo, "Our latency: %" GST_TIME_FORMAT,
+                GST_TIME_ARGS (p->latency));
+            min += p->latency;
+            if (max != GST_CLOCK_TIME_NONE)
+              max += p->latency;
+
+            GST_DEBUG_OBJECT (scaletempo, "Calculated total latency : min %"
+                GST_TIME_FORMAT " max %" GST_TIME_FORMAT,
+                GST_TIME_ARGS (min), GST_TIME_ARGS (max));
+            gst_query_set_latency (query, live, min, max);
+          }
+          gst_object_unref (peer);
+        }
+
+        return TRUE;
+        break;
+      }
+      default:{
+        return GST_BASE_TRANSFORM_CLASS (parent_class)->query (trans, direction,
+            query);
+        break;
+      }
+    }
+  } else {
+    return GST_BASE_TRANSFORM_CLASS (parent_class)->query (trans, direction,
+        query);
+  }
+}
 
 /* GObject vmethod implementations */
 static void
@@ -614,7 +677,7 @@ gst_scaletempo_get_property (GObject * object,
     guint prop_id, GValue * value, GParamSpec * pspec)
 {
   GstScaletempo *scaletempo = GST_SCALETEMPO (object);
-  GstScaletempoPrivate *priv = GST_SCALETEMPO_GET_PRIVATE (scaletempo);
+  GstScaletempoPrivate *priv = scaletempo->priv;
 
   switch (prop_id) {
     case PROP_RATE:
@@ -640,7 +703,7 @@ gst_scaletempo_set_property (GObject * object,
     guint prop_id, const GValue * value, GParamSpec * pspec)
 {
   GstScaletempo *scaletempo = GST_SCALETEMPO (object);
-  GstScaletempoPrivate *priv = GST_SCALETEMPO_GET_PRIVATE (scaletempo);
+  GstScaletempoPrivate *priv = scaletempo->priv;
 
   switch (prop_id) {
     case PROP_STRIDE:{
@@ -674,27 +737,10 @@ gst_scaletempo_set_property (GObject * object,
 }
 
 static void
-gst_scaletempo_base_init (gpointer klass)
-{
-  static GstElementDetails element_details = {
-    "Scaletempo",
-    "Filter/Effect/Rate",
-    "Sync audio tempo with playback rate",
-    "Rov Juvano <rovjuvano@users.sourceforge.net>"
-  };
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_template));
-  gst_element_class_set_details (element_class, &element_details);
-}
-
-static void
 gst_scaletempo_class_init (GstScaletempoClass * klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+  GstElementClass *gstelement_class = GST_ELEMENT_CLASS (klass);
   GstBaseTransformClass *basetransform_class = GST_BASE_TRANSFORM_CLASS (klass);
 
   g_type_class_add_private (klass, sizeof (GstScaletempoPrivate));
@@ -704,33 +750,48 @@ gst_scaletempo_class_init (GstScaletempoClass * klass)
 
   g_object_class_install_property (gobject_class, PROP_RATE,
       g_param_spec_double ("rate", "Playback Rate", "Current playback rate",
-          G_MININT, G_MAXINT, 1.0, G_PARAM_READABLE));
+          G_MININT, G_MAXINT, 1.0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_STRIDE,
       g_param_spec_uint ("stride", "Stride Length",
           "Length in milliseconds to output each stride", 1, 5000, 30,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_OVERLAP,
       g_param_spec_double ("overlap", "Overlap Length",
-          "Percentage of stride to overlap", 0, 1, .2, G_PARAM_READWRITE));
+          "Percentage of stride to overlap", 0, 1, .2,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_SEARCH,
       g_param_spec_uint ("search", "Search Length",
           "Length in milliseconds to search for best overlap position", 0, 500,
-          14, G_PARAM_READWRITE));
+          14, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-  basetransform_class->event = GST_DEBUG_FUNCPTR (gst_scaletempo_sink_event);
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&src_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sink_template));
+  gst_element_class_set_static_metadata (gstelement_class, "Scaletempo",
+      "Filter/Effect/Rate",
+      "Sync audio tempo with playback rate",
+      "Rov Juvano <rovjuvano@users.sourceforge.net>");
+
+  basetransform_class->sink_event =
+      GST_DEBUG_FUNCPTR (gst_scaletempo_sink_event);
   basetransform_class->set_caps = GST_DEBUG_FUNCPTR (gst_scaletempo_set_caps);
   basetransform_class->transform_size =
       GST_DEBUG_FUNCPTR (gst_scaletempo_transform_size);
   basetransform_class->transform = GST_DEBUG_FUNCPTR (gst_scaletempo_transform);
+  basetransform_class->query = GST_DEBUG_FUNCPTR (gst_scaletempo_query);
 }
 
 static void
-gst_scaletempo_init (GstScaletempo * scaletempo, GstScaletempoClass * klass)
+gst_scaletempo_init (GstScaletempo * scaletempo)
 {
-  GstScaletempoPrivate *priv = GST_SCALETEMPO_GET_PRIVATE (scaletempo);
+  GstScaletempoPrivate *priv;
+
+  scaletempo->priv = priv = GST_SCALETEMPO_GET_PRIVATE (scaletempo);
+
   /* defaults */
   priv->ms_stride = 30;
   priv->percent_overlap = .2;

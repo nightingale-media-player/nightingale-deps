@@ -52,14 +52,14 @@ struct _GstAutoConvert
   GstElement *current_subelement;
   GstPad *current_internal_srcpad;
   GstPad *current_internal_sinkpad;
-
-  GList *cached_events;
 };
 
 struct _GstAutoConvertClass
 {
   GstBinClass parent_class;
 };
+
+GType gst_auto_convert_get_type (void);
 
 G_END_DECLS
 #endif /* __GST_AUTO_CONVERT_H__ */

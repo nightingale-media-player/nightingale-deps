@@ -6,16 +6,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gst-plugins-bad-0.10.6.3\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-10-23 23:15+0100\n"
+"POT-Creation-Date: 2012-12-18 01:24+0000\n"
 "PO-Revision-Date: 2008-05-14 02:13+0300\n"
 "Last-Translator: Gintautas Miliauskas <gintas@akl.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
+"Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
-"100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
+"%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #, fuzzy
 msgid "Could not read title information for DVD."
@@ -28,13 +29,14 @@ msgstr "Nepavyko atverti išorinės pusės įrenginio „%s“."
 msgid "Failed to set PGC based seeking."
 msgstr ""
 
-#, fuzzy
-msgid "Internal clock error."
-msgstr "Vidinė duomenų srauto klaida."
+msgid ""
+"Could not read DVD. This may be because the DVD is encrypted and a DVD "
+"decryption library is not installed."
+msgstr ""
 
 #, fuzzy
-msgid "Internal data flow error."
-msgstr "Vidinė duomenų srauto klaida."
+msgid "Could not read DVD."
+msgstr "Nepavyko rašyti į failą „%s“."
 
 msgid "No file name specified for writing."
 msgstr "Nenurodytas failo rašymui pavadinimas."
@@ -49,6 +51,10 @@ msgstr "Vidinė duomenų srauto klaida."
 #, c-format
 msgid "Could not write to file \"%s\"."
 msgstr "Nepavyko rašyti į failą „%s“."
+
+#, fuzzy
+msgid "Internal data flow error."
+msgstr "Vidinė duomenų srauto klaida."
 
 #, c-format
 msgid "Device \"%s\" does not exist."
@@ -67,346 +73,5 @@ msgid "Could not open file \"%s\" for reading."
 msgstr "Nepavyko atverti failo „%s“ skaitymui."
 
 #, fuzzy
-msgid "Could not open audio device for mixer control handling."
-msgstr "Nepavyko atverti failo „%s“ skaitymui."
-
-msgid ""
-"Could not open audio device for mixer control handling. This version of the "
-"Open Sound System is not supported by this element."
-msgstr ""
-
-msgid "Volume"
-msgstr ""
-
-msgid "Master"
-msgstr ""
-
-msgid "Front"
-msgstr ""
-
-msgid "Rear"
-msgstr ""
-
-msgid "Headphones"
-msgstr ""
-
-msgid "Center"
-msgstr ""
-
-msgid "LFE"
-msgstr ""
-
-msgid "Surround"
-msgstr ""
-
-msgid "Side"
-msgstr ""
-
-msgid "Built-in Speaker"
-msgstr ""
-
-msgid "AUX 1 Out"
-msgstr ""
-
-msgid "AUX 2 Out"
-msgstr ""
-
-msgid "AUX Out"
-msgstr ""
-
-msgid "Bass"
-msgstr ""
-
-msgid "Treble"
-msgstr ""
-
-msgid "3D Depth"
-msgstr ""
-
-msgid "3D Center"
-msgstr ""
-
-msgid "3D Enhance"
-msgstr ""
-
-msgid "Telephone"
-msgstr ""
-
-msgid "Microphone"
-msgstr ""
-
-msgid "Line Out"
-msgstr ""
-
-msgid "Line In"
-msgstr ""
-
-msgid "Internal CD"
-msgstr ""
-
-msgid "Video In"
-msgstr ""
-
-msgid "AUX 1 In"
-msgstr ""
-
-msgid "AUX 2 In"
-msgstr ""
-
-msgid "AUX In"
-msgstr ""
-
-msgid "PCM"
-msgstr ""
-
-msgid "Record Gain"
-msgstr ""
-
-msgid "Output Gain"
-msgstr ""
-
-msgid "Microphone Boost"
-msgstr ""
-
-msgid "Loopback"
-msgstr ""
-
-msgid "Diagnostic"
-msgstr ""
-
-msgid "Bass Boost"
-msgstr ""
-
-msgid "Playback Ports"
-msgstr ""
-
-msgid "Input"
-msgstr ""
-
-msgid "Record Source"
-msgstr ""
-
-msgid "Monitor Source"
-msgstr ""
-
-msgid "Keyboard Beep"
-msgstr ""
-
-msgid "Monitor"
-msgstr ""
-
-msgid "Simulate Stereo"
-msgstr ""
-
-msgid "Stereo"
-msgstr ""
-
-msgid "Surround Sound"
-msgstr ""
-
-msgid "Microphone Gain"
-msgstr ""
-
-msgid "Speaker Source"
-msgstr ""
-
-msgid "Microphone Source"
-msgstr ""
-
-msgid "Jack"
-msgstr ""
-
-msgid "Center / LFE"
-msgstr ""
-
-msgid "Stereo Mix"
-msgstr ""
-
-msgid "Mono Mix"
-msgstr ""
-
-msgid "Input Mix"
-msgstr ""
-
-msgid "SPDIF In"
-msgstr ""
-
-msgid "SPDIF Out"
-msgstr ""
-
-msgid "Microphone 1"
-msgstr ""
-
-msgid "Microphone 2"
-msgstr ""
-
-msgid "Digital Out"
-msgstr ""
-
-msgid "Digital In"
-msgstr ""
-
-msgid "HDMI"
-msgstr ""
-
-msgid "Modem"
-msgstr ""
-
-msgid "Handset"
-msgstr ""
-
-msgid "Other"
-msgstr ""
-
-msgid "None"
-msgstr ""
-
-msgid "On"
-msgstr ""
-
-msgid "Off"
-msgstr ""
-
-msgid "Mute"
-msgstr ""
-
-msgid "Fast"
-msgstr ""
-
-msgid "Very Low"
-msgstr ""
-
-msgid "Low"
-msgstr ""
-
-msgid "Medium"
-msgstr ""
-
-msgid "High"
-msgstr ""
-
-msgid "Very High"
-msgstr ""
-
-msgid "Production"
-msgstr ""
-
-msgid "Front Panel Microphone"
-msgstr ""
-
-msgid "Front Panel Line In"
-msgstr ""
-
-msgid "Front Panel Headphones"
-msgstr ""
-
-msgid "Front Panel Line Out"
-msgstr ""
-
-msgid "Green Connector"
-msgstr ""
-
-msgid "Pink Connector"
-msgstr ""
-
-msgid "Blue Connector"
-msgstr ""
-
-msgid "White Connector"
-msgstr ""
-
-msgid "Black Connector"
-msgstr ""
-
-msgid "Gray Connector"
-msgstr ""
-
-msgid "Orange Connector"
-msgstr ""
-
-msgid "Red Connector"
-msgstr ""
-
-msgid "Yellow Connector"
-msgstr ""
-
-msgid "Green Front Panel Connector"
-msgstr ""
-
-msgid "Pink Front Panel Connector"
-msgstr ""
-
-msgid "Blue Front Panel Connector"
-msgstr ""
-
-msgid "White Front Panel Connector"
-msgstr ""
-
-msgid "Black Front Panel Connector"
-msgstr ""
-
-msgid "Gray Front Panel Connector"
-msgstr ""
-
-msgid "Orange Front Panel Connector"
-msgstr ""
-
-msgid "Red Front Panel Connector"
-msgstr ""
-
-msgid "Yellow Front Panel Connector"
-msgstr ""
-
-msgid "Spread Output"
-msgstr ""
-
-msgid "Downmix"
-msgstr ""
-
-msgid "Virtual Mixer Input"
-msgstr ""
-
-msgid "Virtual Mixer Output"
-msgstr ""
-
-msgid "Virtual Mixer Channels"
-msgstr ""
-
-#, c-format
-msgid "%s Function"
-msgstr ""
-
-#, c-format
-msgid "%s %d"
-msgstr ""
-
-msgid ""
-"Could not open audio device for playback. Device is being used by another "
-"application."
-msgstr ""
-
-msgid ""
-"Could not open audio device for playback. You don't have permission to open "
-"the device."
-msgstr ""
-
-#, fuzzy
-msgid "Could not open audio device for playback."
-msgstr "Nepavyko atverti išorinės pusės įrenginio „%s“."
-
-msgid ""
-"Could not open audio device for playback. This version of the Open Sound "
-"System is not supported by this element."
-msgstr ""
-
-msgid "Playback is not supported by this audio device."
-msgstr ""
-
-msgid "Audio playback error."
-msgstr ""
-
-msgid "Recording is not supported by this audio device."
-msgstr ""
-
-msgid "Error recording from audio device."
-msgstr ""
+#~ msgid "Internal clock error."
+#~ msgstr "Vidinė duomenų srauto klaida."

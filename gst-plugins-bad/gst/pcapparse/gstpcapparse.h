@@ -45,6 +45,12 @@ typedef enum
   PCAP_PARSE_STATE_PARSING,
 } GstPcapParseState;
 
+typedef enum
+{
+  DLT_ETHER  = 1,
+  DLT_SLL = 113
+} GstPcapParseLinktype;
+
 /**
  * GstPcapParse:
  *
@@ -64,6 +70,8 @@ struct _GstPcapParse
   gint64 dst_ip;
   gint32 src_port;
   gint32 dst_port;
+  GstCaps *caps;
+  gint64 offset;
 
   /* state */
   GstAdapter * adapter;
@@ -71,6 +79,8 @@ struct _GstPcapParse
   gboolean swap_endian;
   gint64 cur_packet_size;
   GstClockTime cur_ts;
+  GstClockTime base_ts;
+  GstPcapParseLinktype linktype;
 
   gboolean newsegment_sent;
 

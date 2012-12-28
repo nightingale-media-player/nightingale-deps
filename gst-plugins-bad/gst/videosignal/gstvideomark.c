@@ -83,12 +83,6 @@ enum
 GST_DEBUG_CATEGORY_STATIC (video_mark_debug);
 #define GST_CAT_DEFAULT video_mark_debug
 
-static const GstElementDetails video_mark_details =
-GST_ELEMENT_DETAILS ("Video marker",
-    "Filter/Effect/Video",
-    "Marks a video signal with a pattern",
-    "Wim Taymans <wim@fluendo.com>");
-
 static GstStaticPadTemplate gst_video_mark_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -327,7 +321,9 @@ gst_video_mark_base_init (gpointer g_class)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
-  gst_element_class_set_details (element_class, &video_mark_details);
+  gst_element_class_set_static_metadata (element_class, "Video marker",
+      "Filter/Effect/Video",
+      "Marks a video signal with a pattern", "Wim Taymans <wim@fluendo.com>");
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&gst_video_mark_sink_template));
@@ -352,41 +348,47 @@ gst_video_mark_class_init (gpointer klass, gpointer class_data)
   g_object_class_install_property (gobject_class, PROP_PATTERN_WIDTH,
       g_param_spec_int ("pattern-width", "Pattern width",
           "The width of the pattern markers", 1, G_MAXINT,
-          DEFAULT_PATTERN_WIDTH, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          DEFAULT_PATTERN_WIDTH,
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_PATTERN_HEIGHT,
       g_param_spec_int ("pattern-height", "Pattern height",
           "The height of the pattern markers", 1, G_MAXINT,
-          DEFAULT_PATTERN_HEIGHT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          DEFAULT_PATTERN_HEIGHT,
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_PATTERN_COUNT,
       g_param_spec_int ("pattern-count", "Pattern count",
           "The number of pattern markers", 0, G_MAXINT,
-          DEFAULT_PATTERN_COUNT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          DEFAULT_PATTERN_COUNT,
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_PATTERN_DATA_COUNT,
       g_param_spec_int ("pattern-data-count", "Pattern data count",
           "The number of extra data pattern markers", 0, 64,
-          DEFAULT_PATTERN_DATA_COUNT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          DEFAULT_PATTERN_DATA_COUNT,
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_PATTERN_DATA_64,
       g_param_spec_uint64 ("pattern-data-uint64", "Pattern data",
           "The extra data pattern markers", 0, G_MAXUINT64,
-          DEFAULT_PATTERN_DATA, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          DEFAULT_PATTERN_DATA,
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_PATTERN_DATA,
       g_param_spec_int ("pattern-data", "Pattern data",
           "The extra data pattern markers", 0, G_MAXINT,
-          DEFAULT_PATTERN_DATA, G_PARAM_READWRITE));
+          DEFAULT_PATTERN_DATA, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_ENABLED,
       g_param_spec_boolean ("enabled", "Enabled",
           "Enable or disable the filter",
-          DEFAULT_ENABLED, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          DEFAULT_ENABLED,
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_LEFT_OFFSET,
       g_param_spec_int ("left-offset", "Left Offset",
           "The offset from the left border where the pattern starts", 0,
           G_MAXINT, DEFAULT_LEFT_OFFSET,
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_BOTTOM_OFFSET,
       g_param_spec_int ("bottom-offset", "Bottom Offset",
           "The offset from the bottom border where the pattern starts", 0,
           G_MAXINT, DEFAULT_BOTTOM_OFFSET,
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   trans_class->set_caps = GST_DEBUG_FUNCPTR (gst_video_mark_set_caps);
   trans_class->transform_ip = GST_DEBUG_FUNCPTR (gst_video_mark_transform_ip);

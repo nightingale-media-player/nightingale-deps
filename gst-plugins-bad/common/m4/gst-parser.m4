@@ -34,7 +34,7 @@ AC_DEFUN([AG_GST_FLEX_CHECK],
   dnl we need version >= 2.5.31 for the reentrancy support
   dnl in the parser.
   flex_min_version=2.5.31
-  flex_version=`$FLEX_PATH --version | head -n 1 | sed 's/^.* //' | sed 's/[[a-zA-Z]]*$//' | cut -d' ' -f1`
+  flex_version=`$FLEX_PATH --version | head -n 1 | awk '{print $2}'`
   AC_MSG_CHECKING([flex version $flex_version >= $flex_min_version])
   if perl -w <<EOF
     (\$min_version_major, \$min_version_minor, \$min_version_micro ) = "$flex_min_version" =~ /(\d+)\.(\d+)\.(\d+)/;

@@ -30,12 +30,13 @@ static gchar *
 g_value_to_string (const GValue * val)
 {
   if (G_VALUE_TYPE (val) == GST_TYPE_BUFFER) {
-#if GLIB_CHECK_VERSION (2,16,0)
-    const GstBuffer *buf = gst_value_get_buffer (val);
-    gchar *ret = g_base64_encode (GST_BUFFER_DATA (buf), GST_BUFFER_SIZE (buf));
-#else
-    gchar *ret = gst_value_serialize (val);
-#endif
+    GstBuffer *buf = gst_value_get_buffer (val);
+    GstMapInfo map;
+    gchar *ret;
+
+    gst_buffer_map (buf, &map, GST_MAP_READ);
+    ret = g_base64_encode (map.data, map.size);
+    gst_buffer_unmap (buf, &map);
 
     return ret;
   } else {
@@ -153,11 +154,11 @@ on_message (GstBus * bus, GstMessage * message, gpointer data)
         g_value_unset (&v);
       }
 
-      gst_tag_list_free (tags);
-      break;
-    default:
+      gst_tag_list_unref (tags);
       break;
     }
+    default:
+      break;
   }
 }
 
@@ -187,9 +188,6 @@ main (gint argc, gchar ** argv)
     g_print ("usage: %s MXF-FILE\n", argv[0]);
     return -1;
   }
-
-  if (!g_thread_supported ())
-    g_thread_init (NULL);
 
   gst_init (NULL, NULL);
   gtk_init (NULL, NULL);

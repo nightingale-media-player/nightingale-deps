@@ -43,7 +43,7 @@
 #include <stdlib.h>
 
 #include <gst/gst.h>
-#include <gst/audio/multichannel.h>
+#include <gst/audio/audio.h>
 
 #ifndef DTS_OLD
 #include <dca.h>
@@ -81,25 +81,22 @@ typedef struct dts_state_s dca_state_t;
 
 #include "gstdtsdec.h"
 
-#ifdef HAVE_LIBOIL
-#include <liboil/liboil.h>
-#include <liboil/liboilcpu.h>
-#include <liboil/liboilfunction.h>
+#if HAVE_ORC
+#include <orc/orc.h>
 #endif
-
-static const GstElementDetails gst_dtsdec_details =
-GST_ELEMENT_DETAILS ("DTS audio decoder",
-    "Codec/Decoder/Audio",
-    "Decodes DTS audio streams",
-    "Jan Schmidt <thaytan@noraisin.net>\n"
-    "Ronald Bultje <rbultje@ronald.bitfreak.net>");
 
 #if defined(LIBDTS_FIXED) || defined(LIBDCA_FIXED)
 #define SAMPLE_WIDTH 16
+#define SAMPLE_FORMAT GST_AUDIO_NE(S16)
+#define SAMPLE_TYPE GST_AUDIO_FORMAT_S16
 #elif defined (LIBDTS_DOUBLE) || defined(LIBDCA_DOUBLE)
 #define SAMPLE_WIDTH 64
+#define SAMPLE_FORMAT GST_AUDIO_NE(F64)
+#define SAMPLE_TYPE GST_AUDIO_FORMAT_F64
 #else
 #define SAMPLE_WIDTH 32
+#define SAMPLE_FORMAT GST_AUDIO_NE(F32)
+#define SAMPLE_TYPE GST_AUDIO_FORMAT_F32
 #endif
 
 GST_DEBUG_CATEGORY_STATIC (dtsdec_debug);
@@ -107,8 +104,8 @@ GST_DEBUG_CATEGORY_STATIC (dtsdec_debug);
 
 enum
 {
-  ARG_0,
-  ARG_DRC
+  PROP_0,
+  PROP_DRC
 };
 
 static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE ("sink",
@@ -117,68 +114,63 @@ static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_STATIC_CAPS ("audio/x-dts; audio/x-private1-dts")
     );
 
-#if defined(LIBDTS_FIXED) || defined(LIBDCA_FIXED)
-#define DTS_CAPS "audio/x-raw-int, " \
-    "endianness = (int) " G_STRINGIFY (G_BYTE_ORDER) ", " \
-    "signed = (boolean) true, " \
-    "width = (int) " G_STRINGIFY (SAMPLE_WIDTH) ", " \
-    "depth = (int) 16"
-#else
-#define DTS_CAPS "audio/x-raw-float, " \
-    "endianness = (int) " G_STRINGIFY (G_BYTE_ORDER) ", " \
-    "width = (int) " G_STRINGIFY (SAMPLE_WIDTH)
-#endif
-
 static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (DTS_CAPS ", "
+    GST_STATIC_CAPS ("audio/x-raw, "
+        "format = (string) " SAMPLE_FORMAT ", "
+        "layout = (string) interleaved, "
         "rate = (int) [ 4000, 96000 ], " "channels = (int) [ 1, 6 ]")
     );
 
-GST_BOILERPLATE (GstDtsDec, gst_dtsdec, GstElement, GST_TYPE_ELEMENT);
+G_DEFINE_TYPE (GstDtsDec, gst_dtsdec, GST_TYPE_AUDIO_DECODER);
 
-static gboolean gst_dtsdec_sink_setcaps (GstPad * pad, GstCaps * caps);
-static gboolean gst_dtsdec_sink_event (GstPad * pad, GstEvent * event);
-static GstFlowReturn gst_dtsdec_chain (GstPad * pad, GstBuffer * buf);
-static GstFlowReturn gst_dtsdec_chain_raw (GstPad * pad, GstBuffer * buf);
-static GstStateChangeReturn gst_dtsdec_change_state (GstElement * element,
-    GstStateChange transition);
+static gboolean gst_dtsdec_start (GstAudioDecoder * dec);
+static gboolean gst_dtsdec_stop (GstAudioDecoder * dec);
+static gboolean gst_dtsdec_set_format (GstAudioDecoder * bdec, GstCaps * caps);
+static gboolean gst_dtsdec_parse (GstAudioDecoder * dec, GstAdapter * adapter,
+    gint * offset, gint * length);
+static GstFlowReturn gst_dtsdec_handle_frame (GstAudioDecoder * dec,
+    GstBuffer * buffer);
+
+static GstFlowReturn gst_dtsdec_chain (GstPad * pad, GstObject * parent,
+    GstBuffer * buf);
 
 static void gst_dtsdec_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_dtsdec_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
-
-static void
-gst_dtsdec_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_factory));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_factory));
-  gst_element_class_set_details (element_class, &gst_dtsdec_details);
-
-  GST_DEBUG_CATEGORY_INIT (dtsdec_debug, "dtsdec", 0, "DTS/DCA audio decoder");
-}
-
 static void
 gst_dtsdec_class_init (GstDtsDecClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
-  guint cpuflags = 0;
+  GstAudioDecoderClass *gstbase_class;
+  guint cpuflags;
 
   gobject_class = (GObjectClass *) klass;
   gstelement_class = (GstElementClass *) klass;
+  gstbase_class = (GstAudioDecoderClass *) klass;
 
   gobject_class->set_property = gst_dtsdec_set_property;
   gobject_class->get_property = gst_dtsdec_get_property;
 
-  gstelement_class->change_state = gst_dtsdec_change_state;
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sink_factory));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&src_factory));
+  gst_element_class_set_static_metadata (gstelement_class, "DTS audio decoder",
+      "Codec/Decoder/Audio",
+      "Decodes DTS audio streams",
+      "Jan Schmidt <thaytan@noraisin.net>, "
+      "Ronald Bultje <rbultje@ronald.bitfreak.net>");
+
+  gstbase_class->start = GST_DEBUG_FUNCPTR (gst_dtsdec_start);
+  gstbase_class->stop = GST_DEBUG_FUNCPTR (gst_dtsdec_stop);
+  gstbase_class->set_format = GST_DEBUG_FUNCPTR (gst_dtsdec_set_format);
+  gstbase_class->parse = GST_DEBUG_FUNCPTR (gst_dtsdec_parse);
+  gstbase_class->handle_frame = GST_DEBUG_FUNCPTR (gst_dtsdec_handle_frame);
 
   /**
    * GstDtsDec::drc
@@ -188,67 +180,140 @@ gst_dtsdec_class_init (GstDtsDecClass * klass)
    * softer and soft sounds louder, so you can more easily listen
    * to the stream without disturbing other people.
    */
-  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_DRC,
+  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_DRC,
       g_param_spec_boolean ("drc", "Dynamic Range Compression",
-          "Use Dynamic Range Compression", FALSE, G_PARAM_READWRITE));
+          "Use Dynamic Range Compression", FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   klass->dts_cpuflags = 0;
 
-#ifdef HAVE_LIBOIL
-  oil_init ();
-
-  cpuflags = oil_cpu_get_flags ();
-  if (cpuflags & OIL_IMPL_FLAG_MMX)
+#if HAVE_ORC
+  cpuflags = orc_target_get_default_flags (orc_target_get_by_name ("mmx"));
+  if (cpuflags & ORC_TARGET_MMX_MMX)
     klass->dts_cpuflags |= MM_ACCEL_X86_MMX;
-  if (cpuflags & OIL_IMPL_FLAG_3DNOW)
+  if (cpuflags & ORC_TARGET_MMX_3DNOW)
     klass->dts_cpuflags |= MM_ACCEL_X86_3DNOW;
-  if (cpuflags & OIL_IMPL_FLAG_MMXEXT)
+  if (cpuflags & ORC_TARGET_MMX_MMXEXT)
     klass->dts_cpuflags |= MM_ACCEL_X86_MMXEXT;
+#else
+  cpuflags = 0;
+  klass->dts_cpuflags = 0;
 #endif
 
-  GST_LOG ("CPU flags: dts=%08x, liboil=%08x", klass->dts_cpuflags, cpuflags);
+  GST_LOG ("CPU flags: dts=%08x, orc=%08x", klass->dts_cpuflags, cpuflags);
 }
 
 static void
-gst_dtsdec_init (GstDtsDec * dtsdec, GstDtsDecClass * g_class)
+gst_dtsdec_init (GstDtsDec * dtsdec)
 {
-  /* create the sink and src pads */
-  dtsdec->sinkpad = gst_pad_new_from_static_template (&sink_factory, "sink");
-  gst_pad_set_setcaps_function (dtsdec->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_dtsdec_sink_setcaps));
-  gst_pad_set_chain_function (dtsdec->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_dtsdec_chain));
-  gst_pad_set_event_function (dtsdec->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_dtsdec_sink_event));
-  gst_element_add_pad (GST_ELEMENT (dtsdec), dtsdec->sinkpad);
-
-  dtsdec->srcpad = gst_pad_new_from_static_template (&src_factory, "src");
-  gst_element_add_pad (GST_ELEMENT (dtsdec), dtsdec->srcpad);
-
   dtsdec->request_channels = DCA_CHANNEL;
   dtsdec->dynamic_range_compression = FALSE;
 
-  gst_segment_init (&dtsdec->segment, GST_FORMAT_UNDEFINED);
+  /* retrieve and intercept base class chain.
+   * Quite HACKish, but that's dvd specs for you,
+   * since one buffer needs to be split into 2 frames */
+  dtsdec->base_chain = GST_PAD_CHAINFUNC (GST_AUDIO_DECODER_SINK_PAD (dtsdec));
+  gst_pad_set_chain_function (GST_AUDIO_DECODER_SINK_PAD (dtsdec),
+      GST_DEBUG_FUNCPTR (gst_dtsdec_chain));
+}
+
+static gboolean
+gst_dtsdec_start (GstAudioDecoder * dec)
+{
+  GstDtsDec *dts = GST_DTSDEC (dec);
+  GstDtsDecClass *klass;
+
+  GST_DEBUG_OBJECT (dec, "start");
+
+  klass = GST_DTSDEC_CLASS (G_OBJECT_GET_CLASS (dts));
+  dts->state = dca_init (klass->dts_cpuflags);
+  dts->samples = dca_samples (dts->state);
+  dts->bit_rate = -1;
+  dts->sample_rate = -1;
+  dts->stream_channels = DCA_CHANNEL;
+  dts->using_channels = DCA_CHANNEL;
+  dts->level = 1;
+  dts->bias = 0;
+  dts->flag_update = TRUE;
+
+  /* call upon legacy upstream byte support (e.g. seeking) */
+  gst_audio_decoder_set_estimate_rate (dec, TRUE);
+
+  return TRUE;
+}
+
+static gboolean
+gst_dtsdec_stop (GstAudioDecoder * dec)
+{
+  GstDtsDec *dts = GST_DTSDEC (dec);
+
+  GST_DEBUG_OBJECT (dec, "stop");
+
+  dts->samples = NULL;
+  if (dts->state) {
+    dca_free (dts->state);
+    dts->state = NULL;
+  }
+
+  return TRUE;
+}
+
+static GstFlowReturn
+gst_dtsdec_parse (GstAudioDecoder * bdec, GstAdapter * adapter,
+    gint * _offset, gint * len)
+{
+  GstDtsDec *dts;
+  guint8 *data;
+  gint av, size;
+  gint length = 0, flags, sample_rate, bit_rate, frame_length;
+  GstFlowReturn result = GST_FLOW_EOS;
+
+  dts = GST_DTSDEC (bdec);
+
+  size = av = gst_adapter_available (adapter);
+  data = (guint8 *) gst_adapter_map (adapter, av);
+
+  /* find and read header */
+  bit_rate = dts->bit_rate;
+  sample_rate = dts->sample_rate;
+  flags = 0;
+  while (size >= 7) {
+    length = dca_syncinfo (dts->state, data, &flags,
+        &sample_rate, &bit_rate, &frame_length);
+
+    if (length == 0) {
+      /* shift window to re-find sync */
+      data++;
+      size--;
+    } else if (length <= size) {
+      GST_LOG_OBJECT (dts, "Sync: frame size %d", length);
+      result = GST_FLOW_OK;
+      break;
+    } else {
+      GST_LOG_OBJECT (dts, "Not enough data available (needed %d had %d)",
+          length, size);
+      break;
+    }
+  }
+  gst_adapter_unmap (adapter);
+
+  *_offset = av - size;
+  *len = length;
+
+  return result;
 }
 
 static gint
-gst_dtsdec_channels (uint32_t flags, GstAudioChannelPosition ** pos)
+gst_dtsdec_channels (uint32_t flags, GstAudioChannelPosition * pos)
 {
   gint chans = 0;
-  GstAudioChannelPosition *tpos = NULL;
-
-  if (pos) {
-    /* Allocate the maximum, for ease */
-    tpos = *pos = g_new (GstAudioChannelPosition, 7);
-    if (!tpos)
-      return 0;
-  }
 
   switch (flags & DCA_CHANNEL_MASK) {
     case DCA_MONO:
       chans = 1;
-      if (tpos)
-        tpos[0] = GST_AUDIO_CHANNEL_POSITION_FRONT_MONO;
+      if (pos) {
+        pos[0] = GST_AUDIO_CHANNEL_POSITION_MONO;
+      }
       break;
       /* case DCA_CHANNEL: */
     case DCA_STEREO:
@@ -256,64 +321,64 @@ gst_dtsdec_channels (uint32_t flags, GstAudioChannelPosition ** pos)
     case DCA_STEREO_TOTAL:
     case DCA_DOLBY:
       chans = 2;
-      if (tpos) {
-        tpos[0] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
-        tpos[1] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
+      if (pos) {
+        pos[0] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
+        pos[1] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
       }
       break;
     case DCA_3F:
       chans = 3;
-      if (tpos) {
-        tpos[0] = GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER;
-        tpos[1] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
-        tpos[2] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
+      if (pos) {
+        pos[0] = GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER;
+        pos[1] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
+        pos[2] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
       }
       break;
     case DCA_2F1R:
       chans = 3;
-      if (tpos) {
-        tpos[0] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
-        tpos[1] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
-        tpos[2] = GST_AUDIO_CHANNEL_POSITION_REAR_CENTER;
+      if (pos) {
+        pos[0] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
+        pos[1] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
+        pos[2] = GST_AUDIO_CHANNEL_POSITION_REAR_CENTER;
       }
       break;
     case DCA_3F1R:
       chans = 4;
-      if (tpos) {
-        tpos[0] = GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER;
-        tpos[1] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
-        tpos[2] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
-        tpos[3] = GST_AUDIO_CHANNEL_POSITION_REAR_CENTER;
+      if (pos) {
+        pos[0] = GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER;
+        pos[1] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
+        pos[2] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
+        pos[3] = GST_AUDIO_CHANNEL_POSITION_REAR_CENTER;
       }
       break;
     case DCA_2F2R:
       chans = 4;
-      if (tpos) {
-        tpos[0] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
-        tpos[1] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
-        tpos[2] = GST_AUDIO_CHANNEL_POSITION_REAR_LEFT;
-        tpos[3] = GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT;
+      if (pos) {
+        pos[0] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
+        pos[1] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
+        pos[2] = GST_AUDIO_CHANNEL_POSITION_REAR_LEFT;
+        pos[3] = GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT;
       }
       break;
     case DCA_3F2R:
       chans = 5;
-      if (tpos) {
-        tpos[0] = GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER;
-        tpos[1] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
-        tpos[2] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
-        tpos[3] = GST_AUDIO_CHANNEL_POSITION_REAR_LEFT;
-        tpos[4] = GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT;
+      if (pos) {
+        pos[0] = GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER;
+        pos[1] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
+        pos[2] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
+        pos[3] = GST_AUDIO_CHANNEL_POSITION_REAR_LEFT;
+        pos[4] = GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT;
       }
       break;
     case DCA_4F2R:
       chans = 6;
-      if (tpos) {
-        tpos[0] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT_OF_CENTER;
-        tpos[1] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT_OF_CENTER;
-        tpos[2] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
-        tpos[3] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
-        tpos[4] = GST_AUDIO_CHANNEL_POSITION_REAR_LEFT;
-        tpos[5] = GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT;
+      if (pos) {
+        pos[0] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT_OF_CENTER;
+        pos[1] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT_OF_CENTER;
+        pos[2] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
+        pos[3] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
+        pos[4] = GST_AUDIO_CHANNEL_POSITION_REAR_LEFT;
+        pos[5] = GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT;
       }
       break;
     default:
@@ -321,8 +386,8 @@ gst_dtsdec_channels (uint32_t flags, GstAudioChannelPosition ** pos)
       return 0;
   }
   if (flags & DCA_LFE) {
-    if (tpos) {
-      tpos[chans] = GST_AUDIO_CHANNEL_POSITION_LFE;
+    if (pos) {
+      pos[chans] = GST_AUDIO_CHANNEL_POSITION_LFE1;
     }
     chans += 1;
   }
@@ -330,204 +395,39 @@ gst_dtsdec_channels (uint32_t flags, GstAudioChannelPosition ** pos)
   return chans;
 }
 
-static void
-clear_queued (GstDtsDec * dec)
-{
-  g_list_foreach (dec->queued, (GFunc) gst_mini_object_unref, NULL);
-  g_list_free (dec->queued);
-  dec->queued = NULL;
-}
-
-static GstFlowReturn
-flush_queued (GstDtsDec * dec)
-{
-  GstFlowReturn ret = GST_FLOW_OK;
-
-  while (dec->queued) {
-    GstBuffer *buf = GST_BUFFER_CAST (dec->queued->data);
-
-    GST_LOG_OBJECT (dec, "pushing buffer %p, timestamp %"
-        GST_TIME_FORMAT ", duration %" GST_TIME_FORMAT, buf,
-        GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)),
-        GST_TIME_ARGS (GST_BUFFER_DURATION (buf)));
-
-    /* iterate ouput queue an push downstream */
-    ret = gst_pad_push (dec->srcpad, buf);
-
-    dec->queued = g_list_delete_link (dec->queued, dec->queued);
-  }
-  return ret;
-}
-
-static GstFlowReturn
-gst_dtsdec_drain (GstDtsDec * dec)
-{
-  GstFlowReturn ret = GST_FLOW_OK;
-
-  if (dec->segment.rate < 0.0) {
-    /* if we have some queued frames for reverse playback, flush
-     * them now */
-    ret = flush_queued (dec);
-  }
-  return ret;
-}
-
-static GstFlowReturn
-gst_dtsdec_push (GstDtsDec * dtsdec,
-    GstPad * srcpad, int flags, sample_t * samples, GstClockTime timestamp)
-{
-  GstBuffer *buf;
-  int chans, n, c;
-  GstFlowReturn result;
-
-  flags &= (DCA_CHANNEL_MASK | DCA_LFE);
-  chans = gst_dtsdec_channels (flags, NULL);
-  if (!chans) {
-    GST_ELEMENT_ERROR (GST_ELEMENT (dtsdec), STREAM, DECODE, (NULL),
-        ("Invalid channel flags: %d", flags));
-    return GST_FLOW_ERROR;
-  }
-
-  result =
-      gst_pad_alloc_buffer_and_set_caps (srcpad, 0,
-      256 * chans * (SAMPLE_WIDTH / 8), GST_PAD_CAPS (srcpad), &buf);
-  if (result != GST_FLOW_OK)
-    return result;
-
-  for (n = 0; n < 256; n++) {
-    for (c = 0; c < chans; c++) {
-      ((sample_t *) GST_BUFFER_DATA (buf))[n * chans + c] =
-          samples[c * 256 + n];
-    }
-  }
-  GST_BUFFER_TIMESTAMP (buf) = timestamp;
-  GST_BUFFER_DURATION (buf) = 256 * GST_SECOND / dtsdec->sample_rate;
-
-  result = GST_FLOW_OK;
-  if ((buf = gst_audio_buffer_clip (buf, &dtsdec->segment,
-              dtsdec->sample_rate, (SAMPLE_WIDTH / 8) * chans))) {
-    /* set discont when needed */
-    if (dtsdec->discont) {
-      GST_LOG_OBJECT (dtsdec, "marking DISCONT");
-      GST_BUFFER_FLAG_SET (buf, GST_BUFFER_FLAG_DISCONT);
-      dtsdec->discont = FALSE;
-    }
-
-    if (dtsdec->segment.rate > 0.0) {
-      GST_DEBUG_OBJECT (dtsdec,
-          "Pushing buffer with ts %" GST_TIME_FORMAT " duration %"
-          GST_TIME_FORMAT, GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)),
-          GST_TIME_ARGS (GST_BUFFER_DURATION (buf)));
-
-      result = gst_pad_push (srcpad, buf);
-    } else {
-      /* reverse playback, queue frame till later when we get a discont. */
-      GST_DEBUG_OBJECT (dtsdec, "queued frame");
-      dtsdec->queued = g_list_prepend (dtsdec->queued, buf);
-    }
-  }
-  return result;
-}
-
 static gboolean
 gst_dtsdec_renegotiate (GstDtsDec * dts)
 {
-  GstAudioChannelPosition *pos;
-  GstCaps *caps = gst_caps_from_string (DTS_CAPS);
-  gint channels = gst_dtsdec_channels (dts->using_channels, &pos);
+  gint channels;
   gboolean result = FALSE;
+  GstAudioChannelPosition from[6], to[6];
+  GstAudioInfo info;
+
+  channels = gst_dtsdec_channels (dts->using_channels, from);
 
   if (!channels)
     goto done;
 
-  GST_INFO ("dtsdec renegotiate, channels=%d, rate=%d",
+  GST_INFO_OBJECT (dts, "dtsdec renegotiate, channels=%d, rate=%d",
       channels, dts->sample_rate);
 
-  gst_caps_set_simple (caps,
-      "channels", G_TYPE_INT, channels,
-      "rate", G_TYPE_INT, (gint) dts->sample_rate, NULL);
-  gst_audio_set_channel_positions (gst_caps_get_structure (caps, 0), pos);
-  g_free (pos);
+  memcpy (to, from, sizeof (GstAudioChannelPosition) * channels);
+  gst_audio_channel_positions_to_valid_order (to, channels);
+  gst_audio_get_channel_reorder_map (channels, from, to,
+      dts->channel_reorder_map);
 
-  if (!gst_pad_set_caps (dts->srcpad, caps))
+
+  gst_audio_info_init (&info);
+  gst_audio_info_set_format (&info,
+      SAMPLE_TYPE, dts->sample_rate, channels, (channels > 1 ? to : NULL));
+
+  if (!gst_audio_decoder_set_output_format (GST_AUDIO_DECODER (dts), &info))
     goto done;
 
   result = TRUE;
 
 done:
-  if (caps) {
-    gst_caps_unref (caps);
-  }
   return result;
-}
-
-static gboolean
-gst_dtsdec_sink_event (GstPad * pad, GstEvent * event)
-{
-  GstDtsDec *dtsdec = GST_DTSDEC (gst_pad_get_parent (pad));
-  gboolean ret = FALSE;
-
-  GST_LOG_OBJECT (dtsdec, "%s event", GST_EVENT_TYPE_NAME (event));
-
-  switch (GST_EVENT_TYPE (event)) {
-    case GST_EVENT_NEWSEGMENT:{
-      GstFormat format;
-      gboolean update;
-      gint64 start, end, pos;
-      gdouble rate;
-
-      gst_event_parse_new_segment (event, &update, &rate, &format, &start, &end,
-          &pos);
-
-      /* drain queued buffers before activating the segment so that we can clip
-       * against the old segment first */
-      gst_dtsdec_drain (dtsdec);
-
-      if (format != GST_FORMAT_TIME || !GST_CLOCK_TIME_IS_VALID (start)) {
-        GST_WARNING ("No time in newsegment event %p (format is %s)",
-            event, gst_format_get_name (format));
-        gst_event_unref (event);
-        dtsdec->sent_segment = FALSE;
-        /* set some dummy values, FIXME: do proper conversion */
-        dtsdec->time = start = pos = 0;
-        format = GST_FORMAT_TIME;
-        end = -1;
-      } else {
-        dtsdec->time = start;
-        dtsdec->sent_segment = TRUE;
-        ret = gst_pad_push_event (dtsdec->srcpad, event);
-      }
-
-      gst_segment_set_newsegment (&dtsdec->segment, update, rate, format, start,
-          end, pos);
-      break;
-    }
-    case GST_EVENT_TAG:
-      ret = gst_pad_push_event (dtsdec->srcpad, event);
-      break;
-    case GST_EVENT_EOS:
-      gst_dtsdec_drain (dtsdec);
-      ret = gst_pad_push_event (dtsdec->srcpad, event);
-      break;
-    case GST_EVENT_FLUSH_START:
-      ret = gst_pad_push_event (dtsdec->srcpad, event);
-      break;
-    case GST_EVENT_FLUSH_STOP:
-      if (dtsdec->cache) {
-        gst_buffer_unref (dtsdec->cache);
-        dtsdec->cache = NULL;
-      }
-      clear_queued (dtsdec);
-      gst_segment_init (&dtsdec->segment, GST_FORMAT_UNDEFINED);
-      ret = gst_pad_push_event (dtsdec->srcpad, event);
-      break;
-    default:
-      ret = gst_pad_push_event (dtsdec->srcpad, event);
-      break;
-  }
-
-  gst_object_unref (dtsdec);
-  return ret;
 }
 
 static void
@@ -535,21 +435,53 @@ gst_dtsdec_update_streaminfo (GstDtsDec * dts)
 {
   GstTagList *taglist;
 
-  taglist = gst_tag_list_new ();
-
-  gst_tag_list_add (taglist, GST_TAG_MERGE_APPEND,
-      GST_TAG_AUDIO_CODEC, "DTS DCA",
-      GST_TAG_BITRATE, (guint) dts->bit_rate, NULL);
-
-  gst_element_found_tags_for_pad (GST_ELEMENT (dts), dts->srcpad, taglist);
+  if (dts->bit_rate > 3) {
+    taglist = gst_tag_list_new_empty ();
+    /* 1 => open bitrate, 2 => variable bitrate, 3 => lossless */
+    gst_tag_list_add (taglist, GST_TAG_MERGE_APPEND, GST_TAG_BITRATE,
+        (guint) dts->bit_rate, NULL);
+    gst_audio_decoder_merge_tags (GST_AUDIO_DECODER (dts), taglist,
+        GST_TAG_MERGE_REPLACE);
+  }
 }
 
 static GstFlowReturn
-gst_dtsdec_handle_frame (GstDtsDec * dts, guint8 * data,
-    guint length, gint flags, gint sample_rate, gint bit_rate)
+gst_dtsdec_handle_frame (GstAudioDecoder * bdec, GstBuffer * buffer)
 {
+  GstDtsDec *dts;
   gint channels, i, num_blocks;
   gboolean need_renegotiation = FALSE;
+  guint8 *data;
+  gsize size;
+  GstMapInfo map;
+  gint chans;
+  gint length = 0, flags, sample_rate, bit_rate, frame_length;
+  GstFlowReturn result = GST_FLOW_OK;
+  GstBuffer *outbuf;
+
+  dts = GST_DTSDEC (bdec);
+
+  /* no fancy draining */
+  if (G_UNLIKELY (!buffer))
+    return GST_FLOW_OK;
+
+  /* parsed stuff already, so this should work out fine */
+  gst_buffer_map (buffer, &map, GST_MAP_READ);
+  data = map.data;
+  size = map.size;
+  g_assert (size >= 7);
+
+  bit_rate = dts->bit_rate;
+  sample_rate = dts->sample_rate;
+  flags = 0;
+  length = dca_syncinfo (dts->state, data, &flags, &sample_rate, &bit_rate,
+      &frame_length);
+  g_assert (length == size);
+
+  if (flags != dts->prev_flags) {
+    dts->prev_flags = flags;
+    dts->flag_update = TRUE;
+  }
 
   /* go over stream properties, renegotiate or update streaminfo if needed */
   if (dts->sample_rate != sample_rate) {
@@ -579,7 +511,7 @@ gst_dtsdec_handle_frame (GstDtsDec * dts, guint8 * data,
 
     dts->flag_update = FALSE;
 
-    caps = gst_pad_get_allowed_caps (dts->srcpad);
+    caps = gst_pad_get_allowed_caps (GST_AUDIO_DECODER_SRC_PAD (dts));
     if (caps && gst_caps_get_size (caps) > 0) {
       GstCaps *copy = gst_caps_copy_nth (caps, 0);
       GstStructure *structure = gst_caps_get_structure (copy, 0);
@@ -616,14 +548,18 @@ gst_dtsdec_handle_frame (GstDtsDec * dts, guint8 * data,
   } else {
     flags = dts->using_channels;
   }
+
   /* process */
   flags |= DCA_ADJUST_LEVEL;
   dts->level = 1;
   if (dca_frame (dts->state, data, &flags, &dts->level, dts->bias)) {
-    GST_WARNING_OBJECT (dts, "dts_frame error");
-    dts->discont = TRUE;
-    return GST_FLOW_OK;
+    gst_buffer_unmap (buffer, &map);
+    GST_AUDIO_DECODER_ERROR (dts, 1, STREAM, DECODE, (NULL),
+        ("dts_frame error"), result);
+    goto exit;
   }
+  gst_buffer_unmap (buffer, &map);
+
   channels = flags & (DCA_CHANNEL_MASK | DCA_LFE);
   if (dts->using_channels != channels) {
     need_renegotiation = TRUE;
@@ -632,44 +568,78 @@ gst_dtsdec_handle_frame (GstDtsDec * dts, guint8 * data,
 
   /* negotiate if required */
   if (need_renegotiation) {
-    GST_DEBUG ("dtsdec: sample_rate:%d stream_chans:0x%x using_chans:0x%x",
+    GST_DEBUG_OBJECT (dts,
+        "dtsdec: sample_rate:%d stream_chans:0x%x using_chans:0x%x",
         dts->sample_rate, dts->stream_channels, dts->using_channels);
-    if (!gst_dtsdec_renegotiate (dts)) {
-      GST_ELEMENT_ERROR (dts, CORE, NEGOTIATION, (NULL), (NULL));
-      return GST_FLOW_ERROR;
-    }
+    if (!gst_dtsdec_renegotiate (dts))
+      goto failed_negotiation;
   }
 
   if (dts->dynamic_range_compression == FALSE) {
     dca_dynrng (dts->state, NULL, NULL);
   }
 
+  flags &= (DCA_CHANNEL_MASK | DCA_LFE);
+  chans = gst_dtsdec_channels (flags, NULL);
+  if (!chans)
+    goto invalid_flags;
+
   /* handle decoded data, one block is 256 samples */
   num_blocks = dca_blocks_num (dts->state);
-  for (i = 0; i < num_blocks; i++) {
-    if (dca_block (dts->state)) {
-      /* Ignore errors, but mark a discont */
-      GST_WARNING_OBJECT (dts, "dts_block error %d", i);
-      dts->discont = TRUE;
-    } else {
-      GstFlowReturn ret;
+  outbuf =
+      gst_buffer_new_and_alloc (256 * chans * (SAMPLE_WIDTH / 8) * num_blocks);
 
-      /* push on */
-      ret = gst_dtsdec_push (dts, dts->srcpad, dts->using_channels,
-          dts->samples, dts->time);
-      if (ret != GST_FLOW_OK)
-        return ret;
+  gst_buffer_map (outbuf, &map, GST_MAP_WRITE);
+  data = map.data;
+  size = map.size;
+  {
+    guint8 *ptr = data;
+    for (i = 0; i < num_blocks; i++) {
+      if (dca_block (dts->state)) {
+        /* also marks discont */
+        GST_AUDIO_DECODER_ERROR (dts, 1, STREAM, DECODE, (NULL),
+            ("error decoding block %d", i), result);
+        if (result != GST_FLOW_OK)
+          goto exit;
+      } else {
+        gint n, c;
+        gint *reorder_map = dts->channel_reorder_map;
+
+        for (n = 0; n < 256; n++) {
+          for (c = 0; c < chans; c++) {
+            ((sample_t *) ptr)[n * chans + reorder_map[c]] =
+                dts->samples[c * 256 + n];
+          }
+        }
+      }
+      ptr += 256 * chans * (SAMPLE_WIDTH / 8);
     }
-    dts->time += GST_SECOND * 256 / dts->sample_rate;
   }
+  gst_buffer_unmap (outbuf, &map);
 
-  return GST_FLOW_OK;
+  result = gst_audio_decoder_finish_frame (bdec, outbuf, 1);
+
+exit:
+  return result;
+
+  /* ERRORS */
+failed_negotiation:
+  {
+    GST_ELEMENT_ERROR (dts, CORE, NEGOTIATION, (NULL), (NULL));
+    return GST_FLOW_ERROR;
+  }
+invalid_flags:
+  {
+    GST_ELEMENT_ERROR (GST_ELEMENT (dts), STREAM, DECODE, (NULL),
+        ("Invalid channel flags: %d", flags));
+    return GST_FLOW_ERROR;
+  }
 }
 
 static gboolean
-gst_dtsdec_sink_setcaps (GstPad * pad, GstCaps * caps)
+gst_dtsdec_set_format (GstAudioDecoder * bdec, GstCaps * caps)
 {
-  GstDtsDec *dts = GST_DTSDEC (gst_pad_get_parent (pad));
+  GstDtsDec *dts = GST_DTSDEC (bdec);
   GstStructure *structure;
 
   structure = gst_caps_get_structure (caps, 0);
@@ -679,38 +649,27 @@ gst_dtsdec_sink_setcaps (GstPad * pad, GstCaps * caps)
   else
     dts->dvdmode = FALSE;
 
-  gst_object_unref (dts);
-
   return TRUE;
 }
 
 static GstFlowReturn
-gst_dtsdec_chain (GstPad * pad, GstBuffer * buf)
+gst_dtsdec_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
 {
   GstFlowReturn ret = GST_FLOW_OK;
-  GstDtsDec *dts = GST_DTSDEC (GST_PAD_PARENT (pad));
+  GstDtsDec *dts = GST_DTSDEC (parent);
   gint first_access;
 
-  if (GST_BUFFER_IS_DISCONT (buf)) {
-    GST_LOG_OBJECT (dts, "received DISCONT");
-    gst_dtsdec_drain (dts);
-    /* clear cache on discont and mark a discont in the element */
-    if (dts->cache) {
-      gst_buffer_unref (dts->cache);
-      dts->cache = NULL;
-    }
-    dts->discont = TRUE;
-  }
-
   if (dts->dvdmode) {
-    gint size = GST_BUFFER_SIZE (buf);
-    guint8 *data = GST_BUFFER_DATA (buf);
+    guint8 data[2];
+    gsize size;
     gint offset, len;
     GstBuffer *subbuf;
 
+    size = gst_buffer_get_size (buf);
     if (size < 2)
       goto not_enough_data;
 
+    gst_buffer_extract (buf, 0, data, 2);
     first_access = (data[0] << 8) | data[1];
 
     /* Skip the first_access header */
@@ -723,34 +682,38 @@ gst_dtsdec_chain (GstPad * pad, GstBuffer * buf)
       if (len <= 0 || offset + len > size)
         goto bad_first_access_parameter;
 
-      subbuf = gst_buffer_create_sub (buf, offset, len);
+      subbuf = gst_buffer_copy_region (buf, GST_BUFFER_COPY_ALL, offset, len);
       GST_BUFFER_TIMESTAMP (subbuf) = GST_CLOCK_TIME_NONE;
-      ret = gst_dtsdec_chain_raw (pad, subbuf);
-      if (ret != GST_FLOW_OK)
+      ret = dts->base_chain (pad, parent, subbuf);
+      if (ret != GST_FLOW_OK) {
+        gst_buffer_unref (buf);
         goto done;
+      }
 
       offset += len;
       len = size - offset;
 
       if (len > 0) {
-        subbuf = gst_buffer_create_sub (buf, offset, len);
+        subbuf = gst_buffer_copy_region (buf, GST_BUFFER_COPY_ALL, offset, len);
         GST_BUFFER_TIMESTAMP (subbuf) = GST_BUFFER_TIMESTAMP (buf);
 
-        ret = gst_dtsdec_chain_raw (pad, subbuf);
+        ret = dts->base_chain (pad, parent, subbuf);
       }
+      gst_buffer_unref (buf);
     } else {
       /* first_access = 0 or 1, so if there's a timestamp it applies to the first byte */
-      subbuf = gst_buffer_create_sub (buf, offset, size - offset);
+      subbuf =
+          gst_buffer_copy_region (buf, GST_BUFFER_COPY_ALL, offset,
+          size - offset);
       GST_BUFFER_TIMESTAMP (subbuf) = GST_BUFFER_TIMESTAMP (buf);
-      ret = gst_dtsdec_chain_raw (pad, subbuf);
+      ret = dts->base_chain (pad, parent, subbuf);
+      gst_buffer_unref (buf);
     }
   } else {
-    gst_buffer_ref (buf);
-    ret = gst_dtsdec_chain_raw (pad, buf);
+    ret = dts->base_chain (pad, parent, buf);
   }
 
 done:
-  gst_buffer_unref (buf);
   return ret;
 
 /* ERRORS */
@@ -770,154 +733,6 @@ bad_first_access_parameter:
   }
 }
 
-static GstFlowReturn
-gst_dtsdec_chain_raw (GstPad * pad, GstBuffer * buf)
-{
-  GstDtsDec *dts;
-  guint8 *data;
-  gint size;
-  gint length = 0, flags, sample_rate, bit_rate, frame_length;
-  GstFlowReturn result = GST_FLOW_OK;
-
-  dts = GST_DTSDEC (GST_PAD_PARENT (pad));
-
-  if (!dts->sent_segment) {
-    GstSegment segment;
-
-    /* Create a basic segment. Usually, we'll get a new-segment sent by 
-     * another element that will know more information (a demuxer). If we're
-     * just looking at a raw AC3 stream, we won't - so we need to send one
-     * here, but we don't know much info, so just send a minimal TIME 
-     * new-segment event
-     */
-    gst_segment_init (&segment, GST_FORMAT_TIME);
-    gst_pad_push_event (dts->srcpad, gst_event_new_new_segment (FALSE,
-            segment.rate, segment.format, segment.start,
-            segment.duration, segment.start));
-    dts->sent_segment = TRUE;
-  }
-
-  /* merge with cache, if any. Also make sure timestamps match */
-  if (GST_BUFFER_TIMESTAMP_IS_VALID (buf)) {
-    dts->time = GST_BUFFER_TIMESTAMP (buf);
-    GST_DEBUG_OBJECT (dts,
-        "Received buffer with ts %" GST_TIME_FORMAT " duration %"
-        GST_TIME_FORMAT, GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)),
-        GST_TIME_ARGS (GST_BUFFER_DURATION (buf)));
-  }
-
-  if (dts->cache) {
-    buf = gst_buffer_join (dts->cache, buf);
-    dts->cache = NULL;
-  }
-  data = GST_BUFFER_DATA (buf);
-  size = GST_BUFFER_SIZE (buf);
-
-  /* find and read header */
-  bit_rate = dts->bit_rate;
-  sample_rate = dts->sample_rate;
-  flags = 0;
-  while (size >= 7) {
-    length = dca_syncinfo (dts->state, data, &flags,
-        &sample_rate, &bit_rate, &frame_length);
-
-    if (length == 0) {
-      /* shift window to re-find sync */
-      data++;
-      size--;
-    } else if (length <= size) {
-      GST_DEBUG ("Sync: frame size %d", length);
-
-      if (flags != dts->prev_flags)
-        dts->flag_update = TRUE;
-      dts->prev_flags = flags;
-
-      result = gst_dtsdec_handle_frame (dts, data, length,
-          flags, sample_rate, bit_rate);
-      if (result != GST_FLOW_OK) {
-        size = 0;
-        break;
-      }
-      size -= length;
-      data += length;
-    } else {
-      GST_LOG ("Not enough data available (needed %d had %d)", length, size);
-      break;
-    }
-  }
-
-  /* keep cache */
-  if (length == 0) {
-    GST_LOG ("No sync found");
-  }
-
-  if (size > 0) {
-    dts->cache = gst_buffer_create_sub (buf,
-        GST_BUFFER_SIZE (buf) - size, size);
-  }
-
-  gst_buffer_unref (buf);
-
-  return result;
-}
-
-static GstStateChangeReturn
-gst_dtsdec_change_state (GstElement * element, GstStateChange transition)
-{
-  GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;
-  GstDtsDec *dts = GST_DTSDEC (element);
-
-  switch (transition) {
-    case GST_STATE_CHANGE_NULL_TO_READY:{
-      GstDtsDecClass *klass;
-
-      klass = GST_DTSDEC_CLASS (G_OBJECT_GET_CLASS (dts));
-      dts->state = dca_init (klass->dts_cpuflags);
-      break;
-    }
-    case GST_STATE_CHANGE_READY_TO_PAUSED:
-      dts->samples = dca_samples (dts->state);
-      dts->bit_rate = -1;
-      dts->sample_rate = -1;
-      dts->stream_channels = DCA_CHANNEL;
-      dts->using_channels = DCA_CHANNEL;
-      dts->level = 1;
-      dts->bias = 0;
-      dts->time = 0;
-      dts->sent_segment = FALSE;
-      dts->flag_update = TRUE;
-      gst_segment_init (&dts->segment, GST_FORMAT_UNDEFINED);
-      break;
-    case GST_STATE_CHANGE_PAUSED_TO_PLAYING:
-      break;
-    default:
-      break;
-  }
-
-  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
-
-  switch (transition) {
-    case GST_STATE_CHANGE_PLAYING_TO_PAUSED:
-      break;
-    case GST_STATE_CHANGE_PAUSED_TO_READY:
-      dts->samples = NULL;
-      if (dts->cache) {
-        gst_buffer_unref (dts->cache);
-        dts->cache = NULL;
-      }
-      clear_queued (dts);
-      break;
-    case GST_STATE_CHANGE_READY_TO_NULL:
-      dca_free (dts->state);
-      dts->state = NULL;
-      break;
-    default:
-      break;
-  }
-
-  return ret;
-}
-
 static void
 gst_dtsdec_set_property (GObject * object, guint prop_id, const GValue * value,
     GParamSpec * pspec)
@@ -925,7 +740,7 @@ gst_dtsdec_set_property (GObject * object, guint prop_id, const GValue * value,
   GstDtsDec *dts = GST_DTSDEC (object);
 
   switch (prop_id) {
-    case ARG_DRC:
+    case PROP_DRC:
       dts->dynamic_range_compression = g_value_get_boolean (value);
       break;
     default:
@@ -941,7 +756,7 @@ gst_dtsdec_get_property (GObject * object, guint prop_id, GValue * value,
   GstDtsDec *dts = GST_DTSDEC (object);
 
   switch (prop_id) {
-    case ARG_DRC:
+    case PROP_DRC:
       g_value_set_boolean (value, dts->dynamic_range_compression);
       break;
     default:
@@ -953,6 +768,12 @@ gst_dtsdec_get_property (GObject * object, guint prop_id, GValue * value,
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
+  GST_DEBUG_CATEGORY_INIT (dtsdec_debug, "dtsdec", 0, "DTS/DCA audio decoder");
+
+#if HAVE_ORC
+  orc_init ();
+#endif
+
   if (!gst_element_register (plugin, "dtsdec", GST_RANK_PRIMARY,
           GST_TYPE_DTSDEC))
     return FALSE;
@@ -962,6 +783,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "dtsdec",
+    dtsdec,
     "Decodes DTS audio streams",
     plugin_init, VERSION, "GPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

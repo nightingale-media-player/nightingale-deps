@@ -23,6 +23,8 @@
 #endif
 
 #include <string.h>
+#include <gst/video/video.h>
+#include <gst/audio/audio.h>
 
 #include "rsndec.h"
 
@@ -53,9 +55,9 @@ rsn_dec_class_init (RsnDecClass * klass)
 }
 
 static gboolean
-rsn_dec_sink_event (GstPad * pad, GstEvent * event)
+rsn_dec_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
-  RsnDec *self = RSN_DEC (gst_pad_get_parent (pad));
+  RsnDec *self = RSN_DEC (parent);
   gboolean ret = TRUE;
   const GstStructure *s = gst_event_get_structure (event);
   const gchar *name = (s ? gst_structure_get_name (s) : NULL);
@@ -63,9 +65,7 @@ rsn_dec_sink_event (GstPad * pad, GstEvent * event)
   if (name && g_str_equal (name, "application/x-gst-dvd"))
     ret = gst_pad_push_event (GST_PAD_CAST (self->srcpad), event);
   else
-    ret = self->sink_event_func (pad, event);
-
-  gst_object_unref (self);
+    ret = self->sink_event_func (pad, parent, event);
 
   return ret;
 }
@@ -171,7 +171,8 @@ rsndec_factory_filter (GstPluginFeature * feature, RsnDecFactoryFilterCtx * ctx)
 
   factory = GST_ELEMENT_FACTORY (feature);
 
-  klass = gst_element_factory_get_klass (factory);
+  klass =
+      gst_element_factory_get_metadata (factory, GST_ELEMENT_METADATA_KLASS);
   /* only decoders can play */
   if (strstr (klass, "Decoder") == NULL)
     return FALSE;
@@ -201,20 +202,18 @@ rsndec_factory_filter (GstPluginFeature * feature, RsnDecFactoryFilterCtx * ctx)
 
       /* check if the intersection is empty */
       if (!gst_caps_is_empty (intersect)) {
-        GstCaps *new_dec_caps;
         /* non empty intersection, we can use this element */
         can_sink = TRUE;
-        new_dec_caps = gst_caps_union (ctx->decoder_caps, intersect);
-        gst_caps_unref (ctx->decoder_caps);
-        ctx->decoder_caps = new_dec_caps;
-      }
-      gst_caps_unref (intersect);
+        ctx->decoder_caps = gst_caps_merge (ctx->decoder_caps, intersect);
+      } else
+        gst_caps_unref (intersect);
     }
   }
 
   if (can_sink) {
     GST_DEBUG ("Found decoder element %s (%s)",
-        gst_element_factory_get_longname (factory),
+        gst_element_factory_get_metadata (factory,
+            GST_ELEMENT_METADATA_LONGNAME),
         gst_plugin_feature_get_name (feature));
   }
 
@@ -247,18 +246,53 @@ _get_decoder_factories (gpointer arg)
   GstPadTemplate *templ = gst_element_class_get_pad_template (klass,
       "sink");
   RsnDecFactoryFilterCtx ctx = { NULL, };
+  GstCaps *raw;
+  gboolean raw_audio;
+  GstRegistry *registry = gst_registry_get ();
 
   ctx.desired_caps = gst_pad_template_get_caps (templ);
+
+  raw =
+      gst_caps_from_string
+      ("audio/x-raw,format=(string){ F32LE, F32BE, F64LE, F64BE }");
+  raw_audio = gst_caps_can_intersect (raw, ctx.desired_caps);
+  if (raw_audio) {
+    GstCaps *sub = gst_caps_subtract (ctx.desired_caps, raw);
+    ctx.desired_caps = sub;
+  } else {
+    gst_caps_ref (ctx.desired_caps);
+  }
+  gst_caps_unref (raw);
+
   /* Set decoder caps to empty. Will be filled by the factory_filter */
   ctx.decoder_caps = gst_caps_new_empty ();
+  GST_DEBUG ("Finding factories for caps: %" GST_PTR_FORMAT, ctx.desired_caps);
 
-  factories = gst_default_registry_feature_filter (
+  factories = gst_registry_feature_filter (registry,
       (GstPluginFeatureFilter) rsndec_factory_filter, FALSE, &ctx);
+
+  /* If these are audio caps, we add audioconvert, which is not a decoder,
+     but allows raw audio to go through relatively unmolested - this will
+     come handy when we have to send placeholder silence to allow preroll
+     for those DVDs which have titles with no audio track. */
+  if (raw_audio) {
+    GstPluginFeature *feature;
+    GST_DEBUG ("These are audio caps, adding audioconvert");
+    feature =
+        gst_registry_find_feature (registry, "audioconvert",
+        GST_TYPE_ELEMENT_FACTORY);
+    if (feature) {
+      factories = g_list_append (factories, feature);
+    } else {
+      GST_WARNING ("Could not find feature audioconvert");
+    }
+  }
 
   factories = g_list_sort (factories, (GCompareFunc) sort_by_ranks);
 
   GST_DEBUG ("Available decoder caps %" GST_PTR_FORMAT, ctx.decoder_caps);
   gst_caps_unref (ctx.decoder_caps);
+  gst_caps_unref (ctx.desired_caps);
 
   return factories;
 }
@@ -343,23 +377,14 @@ static GstStaticPadTemplate audio_sink_template =
     GST_STATIC_CAPS ("audio/mpeg,mpegversion=(int)1;"
         "audio/x-private1-lpcm;"
         "audio/x-private1-ac3;" "audio/ac3;" "audio/x-ac3;"
-        "audio/x-private1-dts;")
+        "audio/x-private1-dts; audio/x-raw,format=(string)"
+        GST_AUDIO_FORMATS_ALL)
     );
 
 static GstStaticPadTemplate audio_src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw-float, "
-        "rate = (int) [ 1, MAX ], "
-        "channels = (int) [ 1, MAX ], "
-        "endianness = (int) BYTE_ORDER, "
-        "width = (int) { 32, 64 }; "
-        "audio/x-raw-int, "
-        "rate = (int) [ 1, MAX ], "
-        "channels = (int) [ 1, MAX ], "
-        "endianness = (int) { 1234, 4321 },"
-        "width = (int) [ 1, 32 ], "
-        "depth = (int) [ 1, 32 ], " "signed = (boolean) { false, true }")
+    GST_STATIC_CAPS (GST_AUDIO_CAPS_MAKE (GST_AUDIO_FORMATS_ALL))
     );
 
 G_DEFINE_TYPE (RsnAudioDec, rsn_audiodec, RSN_TYPE_DEC);
@@ -385,7 +410,7 @@ rsn_audiodec_class_init (RsnAudioDecClass * klass)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&audio_sink_template));
 
-  gst_element_class_set_details_simple (element_class, "RsnAudioDec",
+  gst_element_class_set_static_metadata (element_class, "RsnAudioDec",
       "Audio/Decoder",
       "Resin DVD audio stream decoder", "Jan Schmidt <thaytan@noraisin.net>");
 
@@ -409,7 +434,7 @@ GST_STATIC_PAD_TEMPLATE ("sink",
 static GstStaticPadTemplate video_src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("video/x-raw-yuv")
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE (GST_VIDEO_FORMATS_ALL))
     );
 
 G_DEFINE_TYPE (RsnVideoDec, rsn_videodec, RSN_TYPE_DEC);
@@ -435,7 +460,7 @@ rsn_videodec_class_init (RsnAudioDecClass * klass)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&video_sink_template));
 
-  gst_element_class_set_details_simple (element_class, "RsnVideoDec",
+  gst_element_class_set_static_metadata (element_class, "RsnVideoDec",
       "Video/Decoder",
       "Resin DVD video stream decoder", "Jan Schmidt <thaytan@noraisin.net>");
 

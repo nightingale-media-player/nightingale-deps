@@ -1,4 +1,5 @@
-/* GStreamer
+/* GStreamer PNM utility functions
+ * Copyright (C) 2009 Lutz Mueller <lutz@users.sourceforge.net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -22,10 +23,10 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#define MIME_BM "image/x-image-bitmap"
-#define MIME_GM "image/x-image-graymap"
-#define MIME_PM "image/x-image-pixmap"
-#define MIME_AM "image/x-image-anymap"
+#define MIME_BM "image/x-portable-bitmap"
+#define MIME_GM "image/x-portable-graymap"
+#define MIME_PM "image/x-portable-pixmap"
+#define MIME_AM "image/x-portable-anymap"
 #define MIME_ALL MIME_BM "; " MIME_GM "; " MIME_PM "; " MIME_AM
 
 typedef enum

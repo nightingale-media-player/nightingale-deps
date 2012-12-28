@@ -38,6 +38,10 @@
  * </refsect2>
  */
 
+/* FIXME 0.11: suppress warnings for deprecated API such as GStaticRecMutex
+ * with newer GLib versions (>= 2.31.0) */
+#define GLIB_DISABLE_DEPRECATION_WARNINGS
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -61,12 +65,6 @@
 GST_DEBUG_CATEGORY_STATIC (gst_wildmidi_debug);
 #define GST_CAT_DEFAULT gst_wildmidi_debug
 
-static const GstElementDetails gst_wildmidi_details =
-GST_ELEMENT_DETAILS ("WildMidi",
-    "Codec/Decoder/Audio",
-    "Midi Synthesizer Element",
-    "Wouter Paesen <wouter@blue-gate.be>");
-
 enum
 {
   /* FILL ME */
@@ -75,14 +73,15 @@ enum
 
 enum
 {
-  ARG_0,
-  ARG_LINEAR_VOLUME,
-  ARG_HIGH_QUALITY,
+  PROP_0,
+  PROP_LINEAR_VOLUME,
+  PROP_HIGH_QUALITY,
   /* FILL ME */
 };
 
-static void gst_wildmidi_base_init (gpointer g_class);
-static void gst_wildmidi_class_init (GstWildmidiClass * klass);
+#define DEFAULT_LINEAR_VOLUME    TRUE
+#define DEFAULT_HIGH_QUALITY     TRUE
+
 static void gst_wildmidi_finalize (GObject * object);
 
 static gboolean gst_wildmidi_sink_event (GstPad * pad, GstEvent * event);
@@ -129,11 +128,13 @@ gst_wildmidi_base_init (gpointer gclass)
       gst_static_pad_template_get (&src_factory));
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sink_factory));
-  gst_element_class_set_details (element_class, &gst_wildmidi_details);
+  gst_element_class_set_static_metadata (element_class, "WildMidi",
+      "Codec/Decoder/Audio",
+      "Midi Synthesizer Element", "Wouter Paesen <wouter@blue-gate.be>");
 }
 
 static gboolean
-wildmidi_open_config ()
+wildmidi_open_config (void)
 {
   gchar *path = g_strdup (g_getenv ("WILDMIDI_CFG"));
   gint ret;
@@ -156,7 +157,9 @@ wildmidi_open_config ()
   }
 
   if (path == NULL) {
-    path = g_build_path (G_DIR_SEPARATOR_S, "/etc", "wildmidi.cfg", NULL);
+    path =
+        g_build_path (G_DIR_SEPARATOR_S, G_DIR_SEPARATOR_S "etc",
+        "wildmidi.cfg", NULL);
     GST_DEBUG ("trying %s", path);
     if (path && (g_access (path, R_OK) == -1)) {
       g_free (path);
@@ -166,8 +169,8 @@ wildmidi_open_config ()
 
   if (path == NULL) {
     path =
-        g_build_path (G_DIR_SEPARATOR_S, "/etc", "wildmidi", "wildmidi.cfg",
-        NULL);
+        g_build_path (G_DIR_SEPARATOR_S, G_DIR_SEPARATOR_S "etc", "wildmidi",
+        "wildmidi.cfg", NULL);
     GST_DEBUG ("trying %s", path);
     if (path && (g_access (path, R_OK) == -1)) {
       g_free (path);
@@ -185,7 +188,9 @@ wildmidi_open_config ()
   }
 
   if (path == NULL) {
-    path = g_build_path (G_DIR_SEPARATOR_S, "/etc", "timidity.cfg", NULL);
+    path =
+        g_build_path (G_DIR_SEPARATOR_S, G_DIR_SEPARATOR_S "etc",
+        "timidity.cfg", NULL);
     GST_DEBUG ("trying %s", path);
     if (path && (g_access (path, R_OK) == -1)) {
       g_free (path);
@@ -195,8 +200,8 @@ wildmidi_open_config ()
 
   if (path == NULL) {
     path =
-        g_build_path (G_DIR_SEPARATOR_S, "/etc", "timidity", "timidity.cfg",
-        NULL);
+        g_build_path (G_DIR_SEPARATOR_S, G_DIR_SEPARATOR_S "etc", "timidity",
+        "timidity.cfg", NULL);
     GST_DEBUG ("trying %s", path);
     if (path && (g_access (path, R_OK) == -1)) {
       g_free (path);
@@ -237,13 +242,15 @@ gst_wildmidi_class_init (GstWildmidiClass * klass)
   gobject_class->set_property = gst_wildmidi_set_property;
   gobject_class->get_property = gst_wildmidi_get_property;
 
-  g_object_class_install_property (gobject_class, ARG_LINEAR_VOLUME,
+  g_object_class_install_property (gobject_class, PROP_LINEAR_VOLUME,
       g_param_spec_boolean ("linear-volume", "Linear volume",
-          "Linear volume", TRUE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          "Linear volume", DEFAULT_LINEAR_VOLUME,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-  g_object_class_install_property (gobject_class, ARG_HIGH_QUALITY,
+  g_object_class_install_property (gobject_class, PROP_HIGH_QUALITY,
       g_param_spec_boolean ("high-quality", "High Quality",
-          "High Quality", TRUE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          "High Quality", DEFAULT_HIGH_QUALITY,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gstelement_class->change_state = gst_wildmidi_change_state;
 }
@@ -284,6 +291,9 @@ gst_wildmidi_init (GstWildmidi * filter, GstWildmidiClass * g_class)
   filter->adapter = gst_adapter_new ();
 
   filter->bytes_per_frame = WILDMIDI_BPS;
+
+  filter->high_quality = DEFAULT_HIGH_QUALITY;
+  filter->linear_volume = DEFAULT_LINEAR_VOLUME;
 }
 
 static void
@@ -437,7 +447,10 @@ gst_wildmidi_do_seek (GstWildmidi * wildmidi, GstEvent * event)
   GstSeekFlags flags;
   GstSeekType start_type, stop_type;
   gint64 start, stop;
-  gboolean flush, update, accurate;
+  gboolean flush, update;
+#ifdef HAVE_WILDMIDI_0_2_2
+  gboolean accurate;
+#endif
   gboolean res;
   unsigned long int sample;
   GstSegment *segment;
@@ -466,7 +479,9 @@ gst_wildmidi_do_seek (GstWildmidi * wildmidi, GstEvent * event)
     return res;
 
   flush = ((flags & GST_SEEK_FLAG_FLUSH) == GST_SEEK_FLAG_FLUSH);
+#ifdef HAVE_WILDMIDI_0_2_2
   accurate = ((flags & GST_SEEK_FLAG_ACCURATE) == GST_SEEK_FLAG_ACCURATE);
+#endif
 
   if (flush) {
     GST_DEBUG ("performing flush");
@@ -491,11 +506,16 @@ gst_wildmidi_do_seek (GstWildmidi * wildmidi, GstEvent * event)
   sample = segment->last_stop;
 
   GST_OBJECT_LOCK (wildmidi);
+#ifdef HAVE_WILDMIDI_0_2_2
   if (accurate) {
     WildMidi_SampledSeek (wildmidi->song, &sample);
   } else {
     WildMidi_FastSeek (wildmidi->song, &sample);
   }
+#else
+  WildMidi_FastSeek (wildmidi->song, &sample);
+#endif
+
   GST_OBJECT_UNLOCK (wildmidi);
 
   segment->start = segment->time = segment->last_stop = sample;
@@ -504,7 +524,7 @@ gst_wildmidi_do_seek (GstWildmidi * wildmidi, GstEvent * event)
       gst_wildmidi_get_new_segment_event (wildmidi, GST_FORMAT_TIME));
 
   gst_pad_start_task (wildmidi->sinkpad,
-      (GstTaskFunction) gst_wildmidi_loop, wildmidi->sinkpad);
+      (GstTaskFunction) gst_wildmidi_loop, wildmidi->sinkpad, NULL);
 
   wildmidi->discont = TRUE;
   GST_PAD_STREAM_UNLOCK (wildmidi->sinkpad);
@@ -547,7 +567,8 @@ static gboolean
 gst_wildmidi_activatepull (GstPad * pad, gboolean active)
 {
   if (active) {
-    return gst_pad_start_task (pad, (GstTaskFunction) gst_wildmidi_loop, pad);
+    return gst_pad_start_task (pad, (GstTaskFunction) gst_wildmidi_loop, pad,
+        NULL);
   } else {
     return gst_pad_stop_task (pad);
   }
@@ -643,9 +664,8 @@ gst_wildmidi_get_buffer (GstWildmidi * wildmidi)
       gst_util_uint64_scale_int (segment->last_stop, GST_SECOND,
       WILDMIDI_RATE) - GST_BUFFER_TIMESTAMP (buffer);
 
-  GST_DEBUG_OBJECT (wildmidi,
-      "buffer ts: %" GST_TIME_FORMAT ", dur: %" GST_TIME_FORMAT
-      " (%d samples)",
+  GST_DEBUG_OBJECT (wildmidi, "buffer ts: %" GST_TIME_FORMAT ", "
+      "duration: %" GST_TIME_FORMAT " (%" G_GINT64_FORMAT " samples)",
       GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buffer)),
       GST_TIME_ARGS (GST_BUFFER_DURATION (buffer)), samples);
 
@@ -672,12 +692,21 @@ gst_wildmidi_parse_song (GstWildmidi * wildmidi)
   if (!wildmidi->song)
     goto open_failed;
 
+#ifdef HAVE_WILDMIDI_0_2_2
   WildMidi_LoadSamples (wildmidi->song);
+#endif
 
+#ifdef HAVE_WILDMIDI_0_2_2
   WildMidi_SetOption (wildmidi->song, WM_MO_LINEAR_VOLUME,
       wildmidi->linear_volume);
   WildMidi_SetOption (wildmidi->song, WM_MO_EXPENSIVE_INTERPOLATION,
       wildmidi->high_quality);
+#else
+  WildMidi_SetOption (wildmidi->song, WM_MO_LOG_VOLUME,
+      !wildmidi->linear_volume);
+  WildMidi_SetOption (wildmidi->song, WM_MO_ENHANCED_RESAMPLING,
+      wildmidi->high_quality);
+#endif
 
   info = WildMidi_GetInfo (wildmidi->song);
   GST_OBJECT_UNLOCK (wildmidi);
@@ -749,7 +778,7 @@ gst_wildmidi_sink_event (GstPad * pad, GstEvent * event)
       wildmidi->state = GST_WILDMIDI_STATE_PARSE;
       /* now start the parsing task */
       gst_pad_start_task (wildmidi->sinkpad,
-          (GstTaskFunction) gst_wildmidi_loop, wildmidi->sinkpad);
+          (GstTaskFunction) gst_wildmidi_loop, wildmidi->sinkpad, NULL);
       /* don't forward the event */
       gst_event_unref (event);
       break;
@@ -757,6 +786,8 @@ gst_wildmidi_sink_event (GstPad * pad, GstEvent * event)
       res = gst_pad_push_event (wildmidi->srcpad, event);
       break;
   }
+
+  gst_object_unref (wildmidi);
   return res;
 }
 
@@ -783,7 +814,7 @@ gst_wildmidi_loop (GstPad * sinkpad)
   switch (wildmidi->state) {
     case GST_WILDMIDI_STATE_LOAD:
     {
-      GstBuffer *buffer;
+      GstBuffer *buffer = NULL;
 
       GST_DEBUG_OBJECT (wildmidi, "loading song");
 
@@ -827,20 +858,18 @@ pause:
 
     GST_DEBUG_OBJECT (wildmidi, "pausing task, reason %s", reason);
     gst_pad_pause_task (sinkpad);
-    if (GST_FLOW_IS_FATAL (ret) || ret == GST_FLOW_NOT_LINKED) {
-      if (ret == GST_FLOW_UNEXPECTED) {
-        /* perform EOS logic */
-        event = gst_event_new_eos ();
-        gst_pad_push_event (wildmidi->srcpad, event);
-      } else {
-        event = gst_event_new_eos ();
-        /* for fatal errors we post an error message, post the error
-         * first so the app knows about the error first. */
-        GST_ELEMENT_ERROR (wildmidi, STREAM, FAILED,
-            ("Internal data flow error."),
-            ("streaming task paused, reason %s (%d)", reason, ret));
-        gst_pad_push_event (wildmidi->srcpad, event);
-      }
+    if (ret == GST_FLOW_UNEXPECTED) {
+      /* perform EOS logic */
+      event = gst_event_new_eos ();
+      gst_pad_push_event (wildmidi->srcpad, event);
+    } else if (ret == GST_FLOW_NOT_LINKED || ret < GST_FLOW_UNEXPECTED) {
+      event = gst_event_new_eos ();
+      /* for fatal errors we post an error message, post the error
+       * first so the app knows about the error first. */
+      GST_ELEMENT_ERROR (wildmidi, STREAM, FAILED,
+          ("Internal data flow error."),
+          ("streaming task paused, reason %s (%d)", reason, ret));
+      gst_pad_push_event (wildmidi->srcpad, event);
     }
   }
 }
@@ -898,20 +927,30 @@ gst_wildmidi_set_property (GObject * object, guint prop_id,
   wildmidi = GST_WILDMIDI (object);
 
   switch (prop_id) {
-    case ARG_LINEAR_VOLUME:
+    case PROP_LINEAR_VOLUME:
       GST_OBJECT_LOCK (object);
       wildmidi->linear_volume = g_value_get_boolean (value);
       if (wildmidi->song)
+#ifdef HAVE_WILDMIDI_0_2_2
         WildMidi_SetOption (wildmidi->song, WM_MO_LINEAR_VOLUME,
             wildmidi->linear_volume);
+#else
+        WildMidi_SetOption (wildmidi->song, WM_MO_LOG_VOLUME,
+            !wildmidi->linear_volume);
+#endif
       GST_OBJECT_UNLOCK (object);
       break;
-    case ARG_HIGH_QUALITY:
+    case PROP_HIGH_QUALITY:
       GST_OBJECT_LOCK (object);
       wildmidi->high_quality = g_value_get_boolean (value);
       if (wildmidi->song)
+#ifdef HAVE_WILDMIDI_0_2_2
         WildMidi_SetOption (wildmidi->song, WM_MO_EXPENSIVE_INTERPOLATION,
             wildmidi->high_quality);
+#else
+        WildMidi_SetOption (wildmidi->song, WM_MO_ENHANCED_RESAMPLING,
+            wildmidi->high_quality);
+#endif
       GST_OBJECT_UNLOCK (object);
       break;
     default:
@@ -931,12 +970,12 @@ gst_wildmidi_get_property (GObject * object, guint prop_id,
   wildmidi = GST_WILDMIDI (object);
 
   switch (prop_id) {
-    case ARG_LINEAR_VOLUME:
+    case PROP_LINEAR_VOLUME:
       GST_OBJECT_LOCK (object);
       g_value_set_boolean (value, wildmidi->linear_volume);
       GST_OBJECT_UNLOCK (object);
       break;
-    case ARG_HIGH_QUALITY:
+    case PROP_HIGH_QUALITY:
       GST_OBJECT_LOCK (object);
       g_value_set_boolean (value, wildmidi->high_quality);
       GST_OBJECT_UNLOCK (object);
@@ -964,6 +1003,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "wildmidi",
+    wildmidi,
     "Wildmidi Plugin",
     plugin_init, VERSION, "GPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

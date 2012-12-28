@@ -20,7 +20,7 @@
  * SECTION:element-sdpdemux
  *
  * sdpdemux currently understands SDP as the input format of the session description.
- * For each stream listed in the SDP a new rtp_stream%d pad will be created
+ * For each stream listed in the SDP a new stream_%u pad will be created
  * with caps derived from the SDP media description. This is a caps of mime type
  * "application/x-rtp" that can be connected to any available RTP depayloader
  * element. 
@@ -47,56 +47,28 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
+/* FIXME 0.11: suppress warnings for deprecated API such as GStaticRecMutex
+ * with newer GLib versions (>= 2.31.0) */
+#define GLIB_DISABLE_DEPRECATION_WARNINGS
 
-/* include GLIB for G_OS_WIN32 */
-#include <glib.h>
-
-#ifdef G_OS_WIN32
-#ifdef _MSC_VER
-#include <Winsock2.h>
-#endif
-/* ws2_32.dll has getaddrinfo and freeaddrinfo on Windows XP and later.
- *  * minwg32 headers check WINVER before allowing the use of these */
-#ifndef WINVER
-#define WINVER 0x0501
-#endif
-#include <ws2tcpip.h>
-#else
-#include <sys/socket.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#endif
-
-#include <stdlib.h>
-#include <string.h>
-#include <locale.h>
-#include <stdio.h>
-#include <stdarg.h>
+#include "gstsdpdemux.h"
 
 #include <gst/rtp/gstrtppayloads.h>
 #include <gst/sdp/gstsdpmessage.h>
 
-#include "gstsdpdemux.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 GST_DEBUG_CATEGORY_STATIC (sdpdemux_debug);
 #define GST_CAT_DEFAULT (sdpdemux_debug)
-
-/* elementfactory information */
-static const GstElementDetails gst_sdp_demux_details =
-GST_ELEMENT_DETAILS ("SDP session setup",
-    "Codec/Demuxer/Network/RTP",
-    "Receive data over the network via SDP",
-    "Wim Taymans <wim.taymans@gmail.com>");
 
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("application/sdp"));
 
-static GstStaticPadTemplate rtptemplate = GST_STATIC_PAD_TEMPLATE ("stream%d",
+static GstStaticPadTemplate rtptemplate = GST_STATIC_PAD_TEMPLATE ("stream_%u",
     GST_PAD_SRC,
     GST_PAD_SOMETIMES,
     GST_STATIC_CAPS ("application/x-rtp"));
@@ -110,16 +82,18 @@ enum
 #define DEFAULT_DEBUG            FALSE
 #define DEFAULT_TIMEOUT          10000000
 #define DEFAULT_LATENCY_MS       200
+#define DEFAULT_REDIRECT         TRUE
 
 enum
 {
   PROP_0,
   PROP_DEBUG,
   PROP_TIMEOUT,
-  PROP_LATENCY
+  PROP_LATENCY,
+  PROP_REDIRECT,
+  PROP_LAST
 };
 
-static void gst_sdp_demux_base_init (gpointer g_class);
 static void gst_sdp_demux_finalize (GObject * object);
 
 static void gst_sdp_demux_set_property (GObject * object, guint prop_id,
@@ -137,33 +111,15 @@ static void gst_sdp_demux_handle_message (GstBin * bin, GstMessage * message);
 static void gst_sdp_demux_stream_push_event (GstSDPDemux * demux,
     GstSDPStream * stream, GstEvent * event);
 
-static gboolean gst_sdp_demux_sink_event (GstPad * pad, GstEvent * event);
-static GstFlowReturn gst_sdp_demux_sink_chain (GstPad * pad,
+static gboolean gst_sdp_demux_sink_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
+static GstFlowReturn gst_sdp_demux_sink_chain (GstPad * pad, GstObject * parent,
     GstBuffer * buffer);
 
 /*static guint gst_sdp_demux_signals[LAST_SIGNAL] = { 0 }; */
 
-static void
-_do_init (GType sdp_demux_type)
-{
-  GST_DEBUG_CATEGORY_INIT (sdpdemux_debug, "sdpdemux", 0, "SDP demux");
-}
-
-GST_BOILERPLATE_FULL (GstSDPDemux, gst_sdp_demux, GstBin, GST_TYPE_BIN,
-    _do_init);
-
-static void
-gst_sdp_demux_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sinktemplate));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&rtptemplate));
-
-  gst_element_class_set_details (element_class, &gst_sdp_demux_details);
-}
+#define gst_sdp_demux_parent_class parent_class
+G_DEFINE_TYPE (GstSDPDemux, gst_sdp_demux, GST_TYPE_BIN);
 
 static void
 gst_sdp_demux_class_init (GstSDPDemuxClass * klass)
@@ -184,26 +140,45 @@ gst_sdp_demux_class_init (GstSDPDemuxClass * klass)
   g_object_class_install_property (gobject_class, PROP_DEBUG,
       g_param_spec_boolean ("debug", "Debug",
           "Dump request and response messages to stdout",
-          DEFAULT_DEBUG, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          DEFAULT_DEBUG,
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_TIMEOUT,
       g_param_spec_uint64 ("timeout", "Timeout",
           "Fail transport after UDP timeout microseconds (0 = disabled)",
           0, G_MAXUINT64, DEFAULT_TIMEOUT,
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_LATENCY,
       g_param_spec_uint ("latency", "Buffer latency in ms",
           "Amount of ms to buffer", 0, G_MAXUINT, DEFAULT_LATENCY_MS,
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (gobject_class, PROP_REDIRECT,
+      g_param_spec_boolean ("redirect", "Redirect",
+          "Sends a redirection message instead of using a custom session element",
+          DEFAULT_REDIRECT,
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sinktemplate));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&rtptemplate));
+
+  gst_element_class_set_static_metadata (gstelement_class, "SDP session setup",
+      "Codec/Demuxer/Network/RTP",
+      "Receive data over the network via SDP",
+      "Wim Taymans <wim.taymans@gmail.com>");
 
   gstelement_class->change_state = gst_sdp_demux_change_state;
 
   gstbin_class->handle_message = gst_sdp_demux_handle_message;
+
+  GST_DEBUG_CATEGORY_INIT (sdpdemux_debug, "sdpdemux", 0, "SDP demux");
 }
 
 static void
-gst_sdp_demux_init (GstSDPDemux * demux, GstSDPDemuxClass * g_class)
+gst_sdp_demux_init (GstSDPDemux * demux)
 {
   demux->sinkpad = gst_pad_new_from_static_template (&sinktemplate, "sink");
   gst_pad_set_event_function (demux->sinkpad,
@@ -214,8 +189,7 @@ gst_sdp_demux_init (GstSDPDemux * demux, GstSDPDemuxClass * g_class)
 
   /* protects the streaming thread in interleaved mode or the polling
    * thread in UDP mode. */
-  demux->stream_rec_lock = g_new (GStaticRecMutex, 1);
-  g_static_rec_mutex_init (demux->stream_rec_lock);
+  g_rec_mutex_init (&demux->stream_rec_lock);
 
   demux->adapter = gst_adapter_new ();
 }
@@ -228,8 +202,7 @@ gst_sdp_demux_finalize (GObject * object)
   demux = GST_SDP_DEMUX (object);
 
   /* free locks */
-  g_static_rec_mutex_free (demux->stream_rec_lock);
-  g_free (demux->stream_rec_lock);
+  g_rec_mutex_clear (&demux->stream_rec_lock);
 
   g_object_unref (demux->adapter);
 
@@ -254,6 +227,9 @@ gst_sdp_demux_set_property (GObject * object, guint prop_id,
     case PROP_LATENCY:
       demux->latency = g_value_get_uint (value);
       break;
+    case PROP_REDIRECT:
+      demux->redirect = g_value_get_boolean (value);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -277,6 +253,9 @@ gst_sdp_demux_get_property (GObject * object, guint prop_id, GValue * value,
       break;
     case PROP_LATENCY:
       g_value_set_uint (value, demux->latency);
+      break;
+    case PROP_REDIRECT:
+      g_value_set_boolean (value, demux->redirect);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -319,7 +298,7 @@ find_stream_by_udpsrc (GstSDPStream * stream, gconstpointer a)
   return -1;
 }
 
-GstSDPStream *
+static GstSDPStream *
 find_stream (GstSDPDemux * demux, gconstpointer data, gconstpointer func)
 {
   GList *lstream;
@@ -370,33 +349,31 @@ gst_sdp_demux_stream_free (GstSDPDemux * demux, GstSDPStream * stream)
 static gboolean
 is_multicast_address (const gchar * host_name)
 {
-  struct addrinfo hints;
-  struct addrinfo *ai;
-  struct addrinfo *res;
+  GInetAddress *addr;
+  GResolver *resolver = NULL;
   gboolean ret = FALSE;
-  int err;
 
-  memset (&hints, 0, sizeof (hints));
-  hints.ai_socktype = SOCK_DGRAM;
+  addr = g_inet_address_new_from_string (host_name);
+  if (!addr) {
+    GList *results;
 
-  g_return_val_if_fail (host_name, FALSE);
+    resolver = g_resolver_get_default ();
+    results = g_resolver_lookup_by_name (resolver, host_name, NULL, NULL);
+    if (!results)
+      goto out;
+    addr = G_INET_ADDRESS (g_object_ref (results->data));
 
-  if ((err = getaddrinfo (host_name, NULL, &hints, &res)) < 0)
-    return FALSE;
-
-  for (ai = res; !ret && ai; ai = ai->ai_next) {
-    if (ai->ai_family == AF_INET)
-      ret =
-          IN_MULTICAST (ntohl (((struct sockaddr_in *) ai->ai_addr)->
-              sin_addr.s_addr));
-    else
-      ret =
-          IN6_IS_ADDR_MULTICAST (&((struct sockaddr_in6 *) ai->
-              ai_addr)->sin6_addr);
+    g_resolver_free_addresses (results);
   }
+  g_assert (addr != NULL);
 
-  freeaddrinfo (res);
+  ret = g_inet_address_get_is_multicast (addr);
 
+out:
+  if (resolver)
+    g_object_unref (resolver);
+  if (addr)
+    g_object_unref (addr);
   return ret;
 }
 
@@ -404,7 +381,7 @@ static GstSDPStream *
 gst_sdp_demux_create_stream (GstSDPDemux * demux, GstSDPMessage * sdp, gint idx)
 {
   GstSDPStream *stream;
-  const gchar *payload, *rtcp;
+  const gchar *payload;
   const GstSDPMedia *media;
   const GstSDPConnection *conn;
 
@@ -445,12 +422,15 @@ gst_sdp_demux_create_stream (GstSDPDemux * demux, GstSDPMessage * sdp, gint idx)
       goto no_connection;
   }
 
+  if (!conn->address)
+    goto no_connection;
+
   stream->destination = conn->address;
   stream->ttl = conn->ttl;
   stream->multicast = is_multicast_address (stream->destination);
 
   stream->rtp_port = gst_sdp_media_get_port (media);
-  if ((rtcp = gst_sdp_media_get_attribute_val (media, "rtcp"))) {
+  if (gst_sdp_media_get_attribute_val (media, "rtcp")) {
     /* FIXME, RFC 3605 */
     stream->rtcp_port = stream->rtp_port + 1;
   } else {
@@ -493,6 +473,14 @@ gst_sdp_demux_cleanup (GstSDPDemux * demux)
     if (demux->session_sig_id) {
       g_signal_handler_disconnect (demux->session, demux->session_sig_id);
       demux->session_sig_id = 0;
+    }
+    if (demux->session_nmp_id) {
+      g_signal_handler_disconnect (demux->session, demux->session_nmp_id);
+      demux->session_nmp_id = 0;
+    }
+    if (demux->session_ptmap_id) {
+      g_signal_handler_disconnect (demux->session, demux->session_ptmap_id);
+      demux->session_ptmap_id = 0;
     }
     gst_element_set_state (demux->session, GST_STATE_NULL);
     gst_bin_remove (GST_BIN_CAST (demux), demux->session);
@@ -687,8 +675,8 @@ gst_sdp_demux_media_to_caps (gint pt, const GstSDPMedia * media)
       /* <param>[=<value>] are separated with ';' */
       pairs = g_strsplit (p, ";", 0);
       for (i = 0; pairs[i]; i++) {
-        gchar *valpos;
-        gchar *val, *key;
+        gchar *valpos, *key;
+        const gchar *val;
 
         /* the key may not have a '=', the value can have other '='s */
         valpos = strstr (pairs[i], "=");
@@ -744,7 +732,7 @@ new_session_pad (GstElement * session, GstPad * pad, GstSDPDemux * demux)
   GST_SDP_STREAM_LOCK (demux);
   /* find stream */
   name = gst_object_get_name (GST_OBJECT_CAST (pad));
-  if (sscanf (name, "recv_rtp_src_%d_%d_%d", &id, &ssrc, &pt) != 3)
+  if (sscanf (name, "recv_rtp_src_%u_%u_%u", &id, &ssrc, &pt) != 3)
     goto unknown_stream;
 
   GST_DEBUG_OBJECT (demux, "stream: %u, SSRC %d, PT %d", id, ssrc, pt);
@@ -797,6 +785,29 @@ unknown_stream:
     g_free (name);
     return;
   }
+}
+
+static void
+rtsp_session_pad_added (GstElement * session, GstPad * pad, GstSDPDemux * demux)
+{
+  GstPad *srcpad = NULL;
+  gchar *name;
+
+  GST_DEBUG_OBJECT (demux, "got new session pad %" GST_PTR_FORMAT, pad);
+
+  name = gst_pad_get_name (pad);
+  srcpad = gst_ghost_pad_new (name, pad);
+  g_free (name);
+
+  gst_pad_set_active (srcpad, TRUE);
+  gst_element_add_pad (GST_ELEMENT_CAST (demux), srcpad);
+}
+
+static void
+rtsp_session_no_more_pads (GstElement * session, GstSDPDemux * demux)
+{
+  GST_DEBUG_OBJECT (demux, "got no-more-pads");
+  gst_element_no_more_pads (GST_ELEMENT_CAST (demux));
 }
 
 static GstCaps *
@@ -885,37 +896,46 @@ on_timeout (GstElement * manager, guint session, guint32 ssrc,
 
 /* try to get and configure a manager */
 static gboolean
-gst_sdp_demux_configure_manager (GstSDPDemux * demux)
+gst_sdp_demux_configure_manager (GstSDPDemux * demux, char *rtsp_sdp)
 {
-  GstStateChangeReturn ret;
-
   /* configure the session manager */
-  if (!(demux->session = gst_element_factory_make ("gstrtpbin", NULL)))
-    goto manager_failed;
+  if (rtsp_sdp != NULL) {
+    if (!(demux->session = gst_element_factory_make ("rtspsrc", NULL)))
+      goto rtspsrc_failed;
 
-  /* we manage this element */
-  gst_bin_add (GST_BIN_CAST (demux), demux->session);
+    g_object_set (demux->session, "location", rtsp_sdp, NULL);
 
-  ret = gst_element_set_state (demux->session, GST_STATE_PAUSED);
-  if (ret == GST_STATE_CHANGE_FAILURE)
-    goto start_session_failure;
+    GST_DEBUG_OBJECT (demux, "connect to signals on rtspsrc");
+    demux->session_sig_id =
+        g_signal_connect (demux->session, "pad-added",
+        (GCallback) rtsp_session_pad_added, demux);
+    demux->session_nmp_id =
+        g_signal_connect (demux->session, "no-more-pads",
+        (GCallback) rtsp_session_no_more_pads, demux);
+  } else {
+    if (!(demux->session = gst_element_factory_make ("rtpbin", NULL)))
+      goto manager_failed;
+
+    /* connect to signals if we did not already do so */
+    GST_DEBUG_OBJECT (demux, "connect to signals on session manager");
+    demux->session_sig_id =
+        g_signal_connect (demux->session, "pad-added",
+        (GCallback) new_session_pad, demux);
+    demux->session_ptmap_id =
+        g_signal_connect (demux->session, "request-pt-map",
+        (GCallback) request_pt_map, demux);
+    g_signal_connect (demux->session, "on-bye-ssrc", (GCallback) on_bye_ssrc,
+        demux);
+    g_signal_connect (demux->session, "on-bye-timeout", (GCallback) on_timeout,
+        demux);
+    g_signal_connect (demux->session, "on-timeout", (GCallback) on_timeout,
+        demux);
+  }
 
   g_object_set (demux->session, "latency", demux->latency, NULL);
 
-  /* connect to signals if we did not already do so */
-  GST_DEBUG_OBJECT (demux, "connect to signals on session manager");
-  demux->session_sig_id =
-      g_signal_connect (demux->session, "pad-added",
-      (GCallback) new_session_pad, demux);
-  demux->session_ptmap_id =
-      g_signal_connect (demux->session, "request-pt-map",
-      (GCallback) request_pt_map, demux);
-  g_signal_connect (demux->session, "on-bye-ssrc", (GCallback) on_bye_ssrc,
-      demux);
-  g_signal_connect (demux->session, "on-bye-timeout", (GCallback) on_timeout,
-      demux);
-  g_signal_connect (demux->session, "on-timeout", (GCallback) on_timeout,
-      demux);
+  /* we manage this element */
+  gst_bin_add (GST_BIN_CAST (demux), demux->session);
 
   return TRUE;
 
@@ -925,12 +945,9 @@ manager_failed:
     GST_DEBUG_OBJECT (demux, "no session manager element gstrtpbin found");
     return FALSE;
   }
-start_session_failure:
+rtspsrc_failed:
   {
-    GST_DEBUG_OBJECT (demux, "could not start session");
-    gst_element_set_state (demux->session, GST_STATE_NULL);
-    gst_bin_remove (GST_BIN_CAST (demux), demux->session);
-    demux->session = NULL;
+    GST_DEBUG_OBJECT (demux, "no manager element rtspsrc found");
     return FALSE;
   }
 }
@@ -938,7 +955,8 @@ start_session_failure:
 static gboolean
 gst_sdp_demux_stream_configure_udp (GstSDPDemux * demux, GstSDPStream * stream)
 {
-  gchar *uri, *name, *destination;
+  gchar *uri, *name;
+  const gchar *destination;
   GstPad *pad;
 
   GST_DEBUG_OBJECT (demux, "creating UDP sources for multicast");
@@ -956,7 +974,8 @@ gst_sdp_demux_stream_configure_udp (GstSDPDemux * demux, GstSDPStream * stream)
         stream->rtp_port);
 
     uri = g_strdup_printf ("udp://%s:%d", destination, stream->rtp_port);
-    stream->udpsrc[0] = gst_element_make_from_uri (GST_URI_SRC, uri, NULL);
+    stream->udpsrc[0] =
+        gst_element_make_from_uri (GST_URI_SRC, uri, NULL, NULL);
     g_free (uri);
     if (stream->udpsrc[0] == NULL)
       goto no_element;
@@ -976,7 +995,7 @@ gst_sdp_demux_stream_configure_udp (GstSDPDemux * demux, GstSDPStream * stream)
     /* get output pad of the UDP source. */
     pad = gst_element_get_static_pad (stream->udpsrc[0], "src");
 
-    name = g_strdup_printf ("recv_rtp_sink_%d", stream->id);
+    name = g_strdup_printf ("recv_rtp_sink_%u", stream->id);
     stream->channelpad[0] = gst_element_get_request_pad (demux->session, name);
     g_free (name);
 
@@ -995,7 +1014,8 @@ gst_sdp_demux_stream_configure_udp (GstSDPDemux * demux, GstSDPStream * stream)
     GST_DEBUG_OBJECT (demux, "receiving RTCP from %s:%d", destination,
         stream->rtcp_port);
     uri = g_strdup_printf ("udp://%s:%d", destination, stream->rtcp_port);
-    stream->udpsrc[1] = gst_element_make_from_uri (GST_URI_SRC, uri, NULL);
+    stream->udpsrc[1] =
+        gst_element_make_from_uri (GST_URI_SRC, uri, NULL, NULL);
     g_free (uri);
     if (stream->udpsrc[1] == NULL)
       goto no_element;
@@ -1005,7 +1025,7 @@ gst_sdp_demux_stream_configure_udp (GstSDPDemux * demux, GstSDPStream * stream)
 
     GST_DEBUG_OBJECT (demux, "connecting RTCP source to manager");
 
-    name = g_strdup_printf ("recv_rtcp_sink_%d", stream->id);
+    name = g_strdup_printf ("recv_rtcp_sink_%u", stream->id);
     stream->channelpad[1] = gst_element_get_request_pad (demux->session, name);
     g_free (name);
 
@@ -1031,7 +1051,8 @@ gst_sdp_demux_stream_configure_udp_sink (GstSDPDemux * demux,
     GstSDPStream * stream)
 {
   GstPad *pad, *sinkpad;
-  gint port, sockfd = -1;
+  gint port;
+  GSocket *socket;
   gchar *destination, *uri, *name;
 
   /* get destination and port */
@@ -1041,7 +1062,7 @@ gst_sdp_demux_stream_configure_udp_sink (GstSDPDemux * demux,
   GST_DEBUG_OBJECT (demux, "configure UDP sink for %s:%d", destination, port);
 
   uri = g_strdup_printf ("udp://%s:%d", destination, port);
-  stream->udpsink = gst_element_make_from_uri (GST_URI_SINK, uri, NULL);
+  stream->udpsink = gst_element_make_from_uri (GST_URI_SINK, uri, NULL, NULL);
   g_free (uri);
   if (stream->udpsink == NULL)
     goto no_sink_element;
@@ -1053,6 +1074,8 @@ gst_sdp_demux_stream_configure_udp_sink (GstSDPDemux * demux,
   if (!stream->multicast)
     g_signal_emit_by_name (stream->udpsink, "clear");
 
+  g_object_set (G_OBJECT (stream->udpsink), "auto-multicast", FALSE, NULL);
+  g_object_set (G_OBJECT (stream->udpsink), "loop", FALSE, NULL);
   /* no sync needed */
   g_object_set (G_OBJECT (stream->udpsink), "sync", FALSE, NULL);
   /* no async state changes needed */
@@ -1062,12 +1085,13 @@ gst_sdp_demux_stream_configure_udp_sink (GstSDPDemux * demux,
     /* configure socket, we give it the same UDP socket as the udpsrc for RTCP
      * because some servers check the port number of where it sends RTCP to identify
      * the RTCP packets it receives */
-    g_object_get (G_OBJECT (stream->udpsrc[1]), "sock", &sockfd, NULL);
-    GST_DEBUG_OBJECT (demux, "UDP src has sock %d", sockfd);
+    g_object_get (G_OBJECT (stream->udpsrc[1]), "used_socket", &socket, NULL);
+    GST_DEBUG_OBJECT (demux, "UDP src has socket %p", socket);
     /* configure socket and make sure udpsink does not close it when shutting
      * down, it belongs to udpsrc after all. */
-    g_object_set (G_OBJECT (stream->udpsink), "sockfd", sockfd, NULL);
-    g_object_set (G_OBJECT (stream->udpsink), "closefd", FALSE, NULL);
+    g_object_set (G_OBJECT (stream->udpsink), "socket", socket, NULL);
+    g_object_set (G_OBJECT (stream->udpsink), "close-socket", FALSE, NULL);
+    g_object_unref (socket);
   }
 
   /* we keep this playing always */
@@ -1077,7 +1101,7 @@ gst_sdp_demux_stream_configure_udp_sink (GstSDPDemux * demux,
   gst_bin_add (GST_BIN_CAST (demux), stream->udpsink);
 
   /* get session RTCP pad */
-  name = g_strdup_printf ("send_rtcp_src_%d", stream->id);
+  name = g_strdup_printf ("send_rtcp_src_%u", stream->id);
   pad = gst_element_get_request_pad (demux->session, name);
   g_free (name);
 
@@ -1112,7 +1136,7 @@ gst_sdp_demux_combine_flows (GstSDPDemux * demux, GstSDPStream * stream,
   stream->last_ret = ret;
 
   /* if it's success we can return the value right away */
-  if (GST_FLOW_IS_SUCCESS (ret))
+  if (ret == GST_FLOW_OK)
     goto done;
 
   /* any other error that is not-linked can be returned right
@@ -1247,6 +1271,8 @@ gst_sdp_demux_start (GstSDPDemux * demux)
   GstSDPMessage sdp = { 0 };
   GstSDPStream *stream = NULL;
   GList *walk;
+  gchar *uri = NULL;
+  GstStateChangeReturn ret;
 
   /* grab the lock so that no state change can interfere */
   GST_SDP_STREAM_LOCK (demux);
@@ -1263,70 +1289,175 @@ gst_sdp_demux_start (GstSDPDemux * demux)
   if (demux->debug)
     gst_sdp_message_dump (&sdp);
 
+  /* maybe this is plain RTSP DESCRIBE rtsp and we should redirect */
+  /* look for rtsp control url */
+  {
+    const gchar *control;
+
+    for (i = 0;; i++) {
+      control = gst_sdp_message_get_attribute_val_n (&sdp, "control", i);
+      if (control == NULL)
+        break;
+
+      /* only take fully qualified urls */
+      if (g_str_has_prefix (control, "rtsp://"))
+        break;
+    }
+    if (!control) {
+      gint idx;
+
+      /* try to find non-aggragate control */
+      n_streams = gst_sdp_message_medias_len (&sdp);
+
+      for (idx = 0; idx < n_streams; idx++) {
+        const GstSDPMedia *media;
+
+        /* get media, should not return NULL */
+        media = gst_sdp_message_get_media (&sdp, idx);
+        if (media == NULL)
+          break;
+
+        for (i = 0;; i++) {
+          control = gst_sdp_media_get_attribute_val_n (media, "control", i);
+          if (control == NULL)
+            break;
+
+          /* only take fully qualified urls */
+          if (g_str_has_prefix (control, "rtsp://"))
+            break;
+        }
+        /* this media has no control, exit */
+        if (!control)
+          break;
+      }
+    }
+
+    if (control) {
+      /* we have RTSP now */
+      uri = gst_sdp_message_as_uri ("rtsp-sdp", &sdp);
+
+      if (demux->redirect) {
+        GST_INFO_OBJECT (demux, "redirect to %s", uri);
+
+        gst_element_post_message (GST_ELEMENT_CAST (demux),
+            gst_message_new_element (GST_OBJECT_CAST (demux),
+                gst_structure_new ("redirect",
+                    "new-location", G_TYPE_STRING, uri, NULL)));
+        goto sent_redirect;
+      }
+    }
+  }
+
+  /* we get here when we didn't do a redirect */
+
   /* try to get and configure a manager */
-  if (!gst_sdp_demux_configure_manager (demux))
+  if (!gst_sdp_demux_configure_manager (demux, uri))
     goto no_manager;
+  if (!uri) {
+    /* create streams with UDP sources and sinks */
+    n_streams = gst_sdp_message_medias_len (&sdp);
+    for (i = 0; i < n_streams; i++) {
+      stream = gst_sdp_demux_create_stream (demux, &sdp, i);
 
-  /* create streams with UDP sources and sinks */
-  n_streams = gst_sdp_message_medias_len (&sdp);
-  for (i = 0; i < n_streams; i++) {
-    stream = gst_sdp_demux_create_stream (demux, &sdp, i);
+      if (!stream)
+        continue;
 
-    GST_DEBUG_OBJECT (demux, "configuring transport for stream %p", stream);
+      GST_DEBUG_OBJECT (demux, "configuring transport for stream %p", stream);
 
-    if (!gst_sdp_demux_stream_configure_udp (demux, stream))
-      goto transport_failed;
-    if (!gst_sdp_demux_stream_configure_udp_sink (demux, stream))
-      goto transport_failed;
+      if (!gst_sdp_demux_stream_configure_udp (demux, stream))
+        goto transport_failed;
+      if (!gst_sdp_demux_stream_configure_udp_sink (demux, stream))
+        goto transport_failed;
+    }
+
+    if (!demux->streams)
+      goto no_streams;
   }
 
   /* set target state on session manager */
-  gst_element_set_state (demux->session, demux->target);
+  /* setting rtspsrc to PLAYING may cause it to loose it that target state
+   * along the way due to no-preroll udpsrc elements, so ...
+   * do it in two stages here (similar to other elements) */
+  if (demux->target > GST_STATE_PAUSED) {
+    ret = gst_element_set_state (demux->session, GST_STATE_PAUSED);
+    if (ret == GST_STATE_CHANGE_FAILURE)
+      goto start_session_failure;
+  }
+  ret = gst_element_set_state (demux->session, demux->target);
+  if (ret == GST_STATE_CHANGE_FAILURE)
+    goto start_session_failure;
 
-  /* activate all streams */
-  for (walk = demux->streams; walk; walk = g_list_next (walk)) {
-    stream = (GstSDPStream *) walk->data;
+  if (!uri) {
+    /* activate all streams */
+    for (walk = demux->streams; walk; walk = g_list_next (walk)) {
+      stream = (GstSDPStream *) walk->data;
 
-    /* configure target state on udp sources */
-    gst_element_set_state (stream->udpsrc[0], demux->target);
-    gst_element_set_state (stream->udpsrc[1], demux->target);
+      /* configure target state on udp sources */
+      gst_element_set_state (stream->udpsrc[0], demux->target);
+      gst_element_set_state (stream->udpsrc[1], demux->target);
+    }
   }
   GST_SDP_STREAM_UNLOCK (demux);
+  gst_sdp_message_uninit (&sdp);
 
   return TRUE;
 
   /* ERRORS */
+done:
+  {
+    GST_SDP_STREAM_UNLOCK (demux);
+    gst_sdp_message_uninit (&sdp);
+    return FALSE;
+  }
 transport_failed:
   {
     GST_ELEMENT_ERROR (demux, STREAM, TYPE_NOT_FOUND, (NULL),
         ("Could not create RTP stream transport."));
-    GST_SDP_STREAM_UNLOCK (demux);
-    return FALSE;
+    goto done;
   }
 no_manager:
   {
     GST_ELEMENT_ERROR (demux, STREAM, TYPE_NOT_FOUND, (NULL),
         ("Could not create RTP session manager."));
-    GST_SDP_STREAM_UNLOCK (demux);
-    return FALSE;
+    goto done;
   }
 could_not_parse:
   {
-    gst_sdp_message_uninit (&sdp);
     GST_ELEMENT_ERROR (demux, STREAM, TYPE_NOT_FOUND, (NULL),
         ("Could not parse SDP message."));
-    GST_SDP_STREAM_UNLOCK (demux);
-    return FALSE;
+    goto done;
+  }
+no_streams:
+  {
+    GST_ELEMENT_ERROR (demux, STREAM, TYPE_NOT_FOUND, (NULL),
+        ("No streams in SDP message."));
+    goto done;
+  }
+sent_redirect:
+  {
+    /* avoid hanging if redirect not handled */
+    GST_ELEMENT_ERROR (demux, STREAM, TYPE_NOT_FOUND, (NULL),
+        ("Sent RTSP redirect."));
+    goto done;
+  }
+start_session_failure:
+  {
+    GST_ELEMENT_ERROR (demux, STREAM, TYPE_NOT_FOUND, (NULL),
+        ("Could not start RTP session manager."));
+    gst_element_set_state (demux->session, GST_STATE_NULL);
+    gst_bin_remove (GST_BIN_CAST (demux), demux->session);
+    demux->session = NULL;
+    goto done;
   }
 }
 
 static gboolean
-gst_sdp_demux_sink_event (GstPad * pad, GstEvent * event)
+gst_sdp_demux_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
   GstSDPDemux *demux;
   gboolean res = TRUE;
 
-  demux = GST_SDP_DEMUX (gst_pad_get_parent (pad));
+  demux = GST_SDP_DEMUX (parent);
 
   switch (GST_EVENT_TYPE (event)) {
     case GST_EVENT_EOS:
@@ -1338,23 +1469,20 @@ gst_sdp_demux_sink_event (GstPad * pad, GstEvent * event)
       gst_event_unref (event);
       break;
   }
-  gst_object_unref (demux);
 
   return res;
 }
 
 static GstFlowReturn
-gst_sdp_demux_sink_chain (GstPad * pad, GstBuffer * buffer)
+gst_sdp_demux_sink_chain (GstPad * pad, GstObject * parent, GstBuffer * buffer)
 {
   GstSDPDemux *demux;
 
-  demux = GST_SDP_DEMUX (gst_pad_get_parent (pad));
+  demux = GST_SDP_DEMUX (parent);
 
   /* push the SDP message in an adapter, we start doing something with it when
    * we receive EOS */
   gst_adapter_push (demux->adapter, buffer);
-
-  gst_object_unref (demux);
 
   return GST_FLOW_OK;
 }

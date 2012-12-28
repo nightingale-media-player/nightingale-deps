@@ -1,5 +1,6 @@
 /* GStreamer
  * Copyright (C) <2009> Sebastian Dröge <sebastian.droege@collabora.co.uk>
+ *           (C) 2010 Olivier Aubert <olivier.aubert@liris.cnrs.fr>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,21 +24,24 @@
 #include <gst/gst.h>
 
 #include "gstrsvgdec.h"
+#include "gstrsvgoverlay.h"
 
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
+#ifndef HAVE_RSVG_2_35_0
   rsvg_init ();
+#endif
 
-  if (!gst_element_register (plugin, "rsvgdec", GST_RANK_PRIMARY,
-          GST_TYPE_RSVG_DEC))
-    return FALSE;
-
-  return TRUE;
+  return (gst_element_register (plugin, "rsvgoverlay",
+          GST_RANK_NONE, GST_TYPE_RSVG_OVERLAY)
+      &&
+      gst_element_register (plugin, "rsvgdec", GST_RANK_PRIMARY,
+          GST_TYPE_RSVG_DEC));
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "rsvg",
+    rsvg,
     "RSVG plugin library",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

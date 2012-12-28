@@ -29,11 +29,17 @@
 #else
 /* ws2_32.dll has getaddrinfo and freeaddrinfo on Windows XP and later.
  * minwg32 headers check WINVER before allowing the use of these */
+#ifndef WINVER
 #  define WINVER 0x0501
+#endif
 #  include <winsock2.h>
 #  include <ws2tcpip.h>
+#ifndef socklen_t
+#define socklen_t int
+#endif
 #endif
 #include <sys/types.h>
+#include <_stdint.h>
 #include <unistd.h>
 #include <string.h>
 

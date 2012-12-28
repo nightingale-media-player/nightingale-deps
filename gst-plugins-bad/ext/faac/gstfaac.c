@@ -20,27 +20,15 @@
 
 /**
  * SECTION:element-faac
- * @seealso: faad
+ * @see_also: faad
  *
- * faac encodes raw audio to AAC (MPEG-4 part 10) streams.
- *
- * The #GstFaac:outputformat property determines whether or not the
- * AAC data needs additional framing provided by a container
- * (such as Matroska or Quicktime).
- * This is required for raw data, whereas ADTS formatted AAC already provides
- * framing and needs no container.
- *
- * The #GstFaac:profile property determines the AAC profile, where the default
- * Main profile is fine for most players and settings,
- * but in some cases (e.g. hardware platforms)
- * a more restricted profile/level may be necessary.
- * In particular, typical (iTunes) m4a expects LC profile AAC data.
+ * faac encodes raw audio to AAC (MPEG-4 part 3) streams.
  *
  * <refsect2>
  * <title>Example launch line</title>
- * <programlisting>
+ * |[
  * gst-launch audiotestsrc wave=sine num-buffers=100 ! audioconvert ! faac ! matroskamux ! filesink location=sine.mkv
- * </programlisting>
+ * ]| Encode a sine beep as aac and write to matroska container.
  * </refsect2>
  */
 
@@ -50,15 +38,28 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <gst/audio/audio.h>
+#include <gst/pbutils/codec-utils.h>
+
 #include "gstfaac.h"
 
+#define SAMPLE_RATES " 8000, " \
+                    "11025, " \
+                    "12000, " \
+                    "16000, " \
+                    "22050, " \
+                    "24000, " \
+                    "32000, " \
+                    "44100, " \
+                    "48000, " \
+                    "64000, " \
+                    "88200, " \
+                    "96000"
 #define SINK_CAPS \
-    "audio/x-raw-int, "                \
-    "endianness = (int) BYTE_ORDER, "  \
-    "signed = (boolean) true, "        \
-    "width = (int) 16, "               \
-    "depth = (int) 16, "               \
-    "rate = (int) [ 8000, 96000 ], "   \
+    "audio/x-raw, "                \
+    "format = (string) "GST_AUDIO_NE (S16) ", "  \
+    "layout = (string) interleaved, " \
+    "rate = (int) {" SAMPLE_RATES "}, "   \
     "channels = (int) [ 1, 6 ] "
 
 /* these don't seem to work? */
@@ -77,9 +78,17 @@
 #endif
 #define SRC_CAPS \
     "audio/mpeg, "                     \
-    "mpegversion = (int) { 4, 2 }, "   \
+    "mpegversion = (int) 4, "   \
     "channels = (int) [ 1, 6 ], "      \
-    "rate = (int) [ 8000, 96000 ]"
+    "rate = (int) {" SAMPLE_RATES "}, "   \
+    "stream-format = (string) { adts, raw }, " \
+    "base-profile = (string) { main, lc, ssr, ltp }; " \
+    "audio/mpeg, "                     \
+    "mpegversion = (int) 2, "   \
+    "channels = (int) [ 1, 6 ], "      \
+    "rate = (int) {" SAMPLE_RATES "}, "   \
+    "stream-format = (string) { adts, raw }, " \
+    "profile = (string) { main, lc }"
 static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
@@ -90,117 +99,71 @@ static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS (SINK_CAPS));
 
-static const GstElementDetails gst_faac_details =
-GST_ELEMENT_DETAILS ("AAC audio encoder",
-    "Codec/Encoder/Audio",
-    "Free MPEG-2/4 AAC encoder",
-    "Ronald Bultje <rbultje@ronald.bitfreak.net>");
+enum
+{
+  PROP_0,
+  PROP_QUALITY,
+  PROP_BITRATE,
+  PROP_RATE_CONTROL,
+  PROP_PROFILE,
+  PROP_TNS,
+  PROP_MIDSIDE,
+  PROP_SHORTCTL
+};
 
 enum
 {
-  ARG_0,
-  ARG_OUTPUTFORMAT,
-  ARG_BITRATE,
-  ARG_PROFILE,
-  ARG_TNS,
-  ARG_MIDSIDE,
-  ARG_SHORTCTL
+  VBR = 1,
+  ABR
 };
-
-static void gst_faac_base_init (GstFaacClass * klass);
-static void gst_faac_class_init (GstFaacClass * klass);
-static void gst_faac_init (GstFaac * faac);
-static void gst_faac_finalize (GObject * object);
-static void gst_faac_reset (GstFaac * faac);
 
 static void gst_faac_set_property (GObject * object,
     guint prop_id, const GValue * value, GParamSpec * pspec);
 static void gst_faac_get_property (GObject * object,
     guint prop_id, GValue * value, GParamSpec * pspec);
 
-static gboolean gst_faac_sink_event (GstPad * pad, GstEvent * event);
-static gboolean gst_faac_configure_source_pad (GstFaac * faac);
-static gboolean gst_faac_sink_setcaps (GstPad * pad, GstCaps * caps);
-static GstFlowReturn gst_faac_push_buffers (GstFaac * faac, gboolean force);
-static GstFlowReturn gst_faac_chain (GstPad * pad, GstBuffer * data);
-static GstStateChangeReturn gst_faac_change_state (GstElement * element,
-    GstStateChange transition);
+static gboolean gst_faac_configure_source_pad (GstFaac * faac,
+    GstAudioInfo * info);
+static GstCaps *gst_faac_getcaps (GstAudioEncoder * enc, GstCaps * filter);
 
-static GstElementClass *parent_class = NULL;
+static gboolean gst_faac_start (GstAudioEncoder * enc);
+static gboolean gst_faac_stop (GstAudioEncoder * enc);
+static gboolean gst_faac_set_format (GstAudioEncoder * enc,
+    GstAudioInfo * info);
+static GstFlowReturn gst_faac_handle_frame (GstAudioEncoder * enc,
+    GstBuffer * in_buf);
 
 GST_DEBUG_CATEGORY_STATIC (faac_debug);
 #define GST_CAT_DEFAULT faac_debug
 
-#define FAAC_DEFAULT_MPEGVERSION 4
+#define FAAC_DEFAULT_QUALITY      100
+#define FAAC_DEFAULT_BITRATE      128 * 1000
+#define FAAC_DEFAULT_RATE_CONTROL VBR
+#define FAAC_DEFAULT_TNS          FALSE
+#define FAAC_DEFAULT_MIDSIDE      TRUE
+#define FAAC_DEFAULT_SHORTCTL     SHORTCTL_NORMAL
 
-GType
-gst_faac_get_type (void)
-{
-  static GType gst_faac_type = 0;
+#define gst_faac_parent_class parent_class
+G_DEFINE_TYPE (GstFaac, gst_faac, GST_TYPE_AUDIO_ENCODER);
 
-  if (!gst_faac_type) {
-    static const GTypeInfo gst_faac_info = {
-      sizeof (GstFaacClass),
-      (GBaseInitFunc) gst_faac_base_init,
-      NULL,
-      (GClassInitFunc) gst_faac_class_init,
-      NULL,
-      NULL,
-      sizeof (GstFaac),
-      0,
-      (GInstanceInitFunc) gst_faac_init,
-    };
-    const GInterfaceInfo preset_interface_info = {
-      NULL,                     /* interface_init */
-      NULL,                     /* interface_finalize */
-      NULL                      /* interface_data */
-    };
-
-    gst_faac_type = g_type_register_static (GST_TYPE_ELEMENT,
-        "GstFaac", &gst_faac_info, 0);
-
-    g_type_add_interface_static (gst_faac_type, GST_TYPE_PRESET,
-        &preset_interface_info);
-  }
-
-  return gst_faac_type;
-}
-
-static void
-gst_faac_base_init (GstFaacClass * klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_template));
-
-  gst_element_class_set_details (element_class, &gst_faac_details);
-
-  GST_DEBUG_CATEGORY_INIT (faac_debug, "faac", 0, "AAC encoding");
-}
-
-#define GST_TYPE_FAAC_PROFILE (gst_faac_profile_get_type ())
+#define GST_TYPE_FAAC_RATE_CONTROL (gst_faac_brtype_get_type ())
 static GType
-gst_faac_profile_get_type (void)
+gst_faac_brtype_get_type (void)
 {
-  static GType gst_faac_profile_type = 0;
+  static GType gst_faac_brtype_type = 0;
 
-  if (!gst_faac_profile_type) {
-    static GEnumValue gst_faac_profile[] = {
-      {MAIN, "MAIN", "Main profile"},
-      {LOW, "LC", "Low complexity profile"},
-      {SSR, "SSR", "Scalable sampling rate profile"},
-      {LTP, "LTP", "Long term prediction profile"},
+  if (!gst_faac_brtype_type) {
+    static GEnumValue gst_faac_brtype[] = {
+      {VBR, "VBR", "VBR encoding"},
+      {ABR, "ABR", "ABR encoding"},
       {0, NULL, NULL},
     };
 
-    gst_faac_profile_type = g_enum_register_static ("GstFaacProfile",
-        gst_faac_profile);
+    gst_faac_brtype_type = g_enum_register_static ("GstFaacBrtype",
+        gst_faac_brtype);
   }
 
-  return gst_faac_profile_type;
+  return gst_faac_brtype_type;
 }
 
 #define GST_TYPE_FAAC_SHORTCTL (gst_faac_shortctl_get_type ())
@@ -224,111 +187,68 @@ gst_faac_shortctl_get_type (void)
   return gst_faac_shortctl_type;
 }
 
-#define GST_TYPE_FAAC_OUTPUTFORMAT (gst_faac_outputformat_get_type ())
-static GType
-gst_faac_outputformat_get_type (void)
-{
-  static GType gst_faac_outputformat_type = 0;
-
-  if (!gst_faac_outputformat_type) {
-    static GEnumValue gst_faac_outputformat[] = {
-      {0, "OUTPUTFORMAT_RAW", "Raw AAC"},
-      {1, "OUTPUTFORMAT_ADTS", "ADTS headers"},
-      {0, NULL, NULL},
-    };
-
-    gst_faac_outputformat_type = g_enum_register_static ("GstFaacOutputFormat",
-        gst_faac_outputformat);
-  }
-
-  return gst_faac_outputformat_type;
-}
-
 static void
 gst_faac_class_init (GstFaacClass * klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   GstElementClass *gstelement_class = GST_ELEMENT_CLASS (klass);
-
-  parent_class = g_type_class_peek_parent (klass);
+  GstAudioEncoderClass *base_class = GST_AUDIO_ENCODER_CLASS (klass);
 
   gobject_class->set_property = gst_faac_set_property;
   gobject_class->get_property = gst_faac_get_property;
-  gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_faac_finalize);
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&src_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sink_template));
+
+  gst_element_class_set_static_metadata (gstelement_class, "AAC audio encoder",
+      "Codec/Encoder/Audio",
+      "Free MPEG-2/4 AAC encoder",
+      "Ronald Bultje <rbultje@ronald.bitfreak.net>");
+
+  base_class->start = GST_DEBUG_FUNCPTR (gst_faac_start);
+  base_class->stop = GST_DEBUG_FUNCPTR (gst_faac_stop);
+  base_class->set_format = GST_DEBUG_FUNCPTR (gst_faac_set_format);
+  base_class->handle_frame = GST_DEBUG_FUNCPTR (gst_faac_handle_frame);
+  base_class->getcaps = GST_DEBUG_FUNCPTR (gst_faac_getcaps);
 
   /* properties */
-  g_object_class_install_property (gobject_class, ARG_BITRATE,
-      g_param_spec_int ("bitrate", "Bitrate (bps)", "Bitrate in bits/sec",
-          8 * 1000, 320 * 1000, 128 * 1000, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, ARG_PROFILE,
-      g_param_spec_enum ("profile", "Profile", "MPEG/AAC encoding profile",
-          GST_TYPE_FAAC_PROFILE, MAIN, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, ARG_TNS,
+  g_object_class_install_property (gobject_class, PROP_QUALITY,
+      g_param_spec_int ("quality", "Quality (%)",
+          "Variable bitrate (VBR) quantizer quality in %", 1, 1000,
+          FAAC_DEFAULT_QUALITY,
+          G_PARAM_CONSTRUCT | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_BITRATE,
+      g_param_spec_int ("bitrate", "Bitrate (bps)",
+          "Average Bitrate (ABR) in bits/sec", 8 * 1000, 320 * 1000,
+          FAAC_DEFAULT_BITRATE,
+          G_PARAM_CONSTRUCT | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_RATE_CONTROL,
+      g_param_spec_enum ("rate-control", "Rate Control (ABR/VBR)",
+          "Encoding bitrate type (VBR/ABR)", GST_TYPE_FAAC_RATE_CONTROL,
+          FAAC_DEFAULT_RATE_CONTROL,
+          G_PARAM_CONSTRUCT | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_TNS,
       g_param_spec_boolean ("tns", "TNS", "Use temporal noise shaping",
-          FALSE, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, ARG_MIDSIDE,
+          FAAC_DEFAULT_TNS,
+          G_PARAM_CONSTRUCT | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_MIDSIDE,
       g_param_spec_boolean ("midside", "Midside", "Allow mid/side encoding",
-          TRUE, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, ARG_SHORTCTL,
+          FAAC_DEFAULT_MIDSIDE,
+          G_PARAM_CONSTRUCT | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_SHORTCTL,
       g_param_spec_enum ("shortctl", "Block type",
           "Block type encorcing",
-          GST_TYPE_FAAC_SHORTCTL, MAIN, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, ARG_OUTPUTFORMAT,
-      g_param_spec_enum ("outputformat", "Output format",
-          "Format of output frames",
-          GST_TYPE_FAAC_OUTPUTFORMAT, 0 /* RAW */ , G_PARAM_READWRITE));
+          GST_TYPE_FAAC_SHORTCTL, FAAC_DEFAULT_SHORTCTL,
+          G_PARAM_CONSTRUCT | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-  /* virtual functions */
-  gstelement_class->change_state = GST_DEBUG_FUNCPTR (gst_faac_change_state);
+  GST_DEBUG_CATEGORY_INIT (faac_debug, "faac", 0, "AAC encoding");
 }
 
 static void
 gst_faac_init (GstFaac * faac)
 {
-  faac->sinkpad = gst_pad_new_from_static_template (&sink_template, "sink");
-  gst_pad_set_chain_function (faac->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_faac_chain));
-  gst_pad_set_setcaps_function (faac->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_faac_sink_setcaps));
-  gst_pad_set_event_function (faac->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_faac_sink_event));
-  gst_element_add_pad (GST_ELEMENT (faac), faac->sinkpad);
-
-  faac->srcpad = gst_pad_new_from_static_template (&src_template, "src");
-  gst_pad_use_fixed_caps (faac->srcpad);
-  gst_element_add_pad (GST_ELEMENT (faac), faac->srcpad);
-
-  faac->adapter = gst_adapter_new ();
-
-  /* default properties */
-  faac->bitrate = 1000 * 128;
-  faac->profile = MAIN;
-  faac->shortctl = SHORTCTL_NORMAL;
-  faac->outputformat = 0;       /* RAW */
-  faac->tns = FALSE;
-  faac->midside = TRUE;
-
-  gst_faac_reset (faac);
-}
-
-static void
-gst_faac_reset (GstFaac * faac)
-{
-  faac->handle = NULL;
-  faac->samplerate = -1;
-  faac->channels = -1;
-  faac->offset = 0;
-  gst_adapter_clear (faac->adapter);
-}
-
-static void
-gst_faac_finalize (GObject * object)
-{
-  GstFaac *faac = (GstFaac *) object;
-
-  g_object_unref (faac->adapter);
-
-  G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
@@ -337,137 +257,253 @@ gst_faac_close_encoder (GstFaac * faac)
   if (faac->handle)
     faacEncClose (faac->handle);
   faac->handle = NULL;
-  gst_adapter_clear (faac->adapter);
-  faac->offset = 0;
 }
 
 static gboolean
-gst_faac_sink_setcaps (GstPad * pad, GstCaps * caps)
+gst_faac_start (GstAudioEncoder * enc)
 {
-  GstFaac *faac = GST_FAAC (gst_pad_get_parent (pad));
-  GstStructure *structure = gst_caps_get_structure (caps, 0);
-  faacEncHandle *handle;
-  gint channels, samplerate, width;
-  gulong samples, bytes, fmt = 0, bps = 0;
-  gboolean result = FALSE;
+  GstFaac *faac = GST_FAAC (enc);
 
-  if (!gst_caps_is_fixed (caps))
-    goto refuse_caps;
+  GST_DEBUG_OBJECT (faac, "start");
+  return TRUE;
+}
 
-  if (!gst_structure_get_int (structure, "channels", &channels) ||
-      !gst_structure_get_int (structure, "rate", &samplerate)) {
-    goto refuse_caps;
+static gboolean
+gst_faac_stop (GstAudioEncoder * enc)
+{
+  GstFaac *faac = GST_FAAC (enc);
+
+  GST_DEBUG_OBJECT (faac, "stop");
+  gst_faac_close_encoder (faac);
+  return TRUE;
+}
+
+static const GstAudioChannelPosition aac_channel_positions[][8] = {
+  {GST_AUDIO_CHANNEL_POSITION_MONO},
+  {GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+      GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT},
+  {
+        GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
+      },
+  {
+        GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
+      GST_AUDIO_CHANNEL_POSITION_REAR_CENTER},
+  {
+        GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
+        GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
+      GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT},
+  {
+        GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
+        GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
+        GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT,
+      GST_AUDIO_CHANNEL_POSITION_LFE1}
+};
+
+static GstCaps *
+gst_faac_getcaps (GstAudioEncoder * enc, GstCaps * filter)
+{
+  static volatile gsize sinkcaps = 0;
+
+  if (g_once_init_enter (&sinkcaps)) {
+    GstCaps *tmp = gst_caps_new_empty ();
+    GstStructure *s, *t;
+    gint i, c;
+    static const int rates[] = {
+      8000, 11025, 12000, 16000, 22050, 24000,
+      32000, 44100, 48000, 64000, 88200, 96000
+    };
+    GValue rates_arr = { 0, };
+    GValue tmp_v = { 0, };
+
+    g_value_init (&rates_arr, GST_TYPE_LIST);
+    g_value_init (&tmp_v, G_TYPE_INT);
+    for (i = 0; i < G_N_ELEMENTS (rates); i++) {
+      g_value_set_int (&tmp_v, rates[i]);
+      gst_value_list_append_value (&rates_arr, &tmp_v);
+    }
+    g_value_unset (&tmp_v);
+
+    s = gst_structure_new ("audio/x-raw",
+        "format", G_TYPE_STRING, GST_AUDIO_NE (S16),
+        "layout", G_TYPE_STRING, "interleaved", NULL);
+    gst_structure_set_value (s, "rate", &rates_arr);
+
+    for (i = 1; i <= 6; i++) {
+      guint64 channel_mask = 0;
+      t = gst_structure_copy (s);
+
+      gst_structure_set (t, "channels", G_TYPE_INT, i, NULL);
+      if (i > 1) {
+        for (c = 0; c < i; c++)
+          channel_mask |=
+              G_GUINT64_CONSTANT (1) << aac_channel_positions[i - 1][c];
+
+        gst_structure_set (t, "channel-mask", GST_TYPE_BITMASK, channel_mask,
+            NULL);
+      }
+      gst_caps_append_structure (tmp, t);
+    }
+    gst_structure_free (s);
+    g_value_unset (&rates_arr);
+
+    GST_DEBUG_OBJECT (enc, "Generated sinkcaps: %" GST_PTR_FORMAT, tmp);
+
+    g_once_init_leave (&sinkcaps, (gsize) tmp);
   }
 
-  if (gst_structure_has_name (structure, "audio/x-raw-int")) {
-    gst_structure_get_int (structure, "width", &width);
+  return gst_audio_encoder_proxy_getcaps (enc, (GstCaps *) sinkcaps, filter);
+}
+
+static gboolean
+gst_faac_set_format (GstAudioEncoder * enc, GstAudioInfo * info)
+{
+  GstFaac *faac = GST_FAAC (enc);
+  gint width;
+  gulong fmt = 0;
+  gboolean result = FALSE;
+
+  /* base class takes care */
+  width = GST_AUDIO_INFO_WIDTH (info);
+
+  if (GST_AUDIO_INFO_IS_INTEGER (info)) {
     switch (width) {
       case 16:
         fmt = FAAC_INPUT_16BIT;
-        bps = 2;
         break;
       case 24:
       case 32:
         fmt = FAAC_INPUT_32BIT;
-        bps = 4;
         break;
       default:
         g_return_val_if_reached (FALSE);
     }
-  } else if (gst_structure_has_name (structure, "audio/x-raw-float")) {
+  } else {
     fmt = FAAC_INPUT_FLOAT;
-    bps = 4;
   }
 
-  if (!fmt)
-    goto refuse_caps;
-
-  /* If the encoder is initialized, do not
-     reinitialize it again if not necessary */
-  if (faac->handle) {
-    if (samplerate == faac->samplerate && channels == faac->channels &&
-        fmt == faac->format)
-      return TRUE;
-
-    /* clear out pending frames */
-    gst_faac_push_buffers (faac, TRUE);
-
-    gst_faac_close_encoder (faac);
-  }
-
-  if (!(handle = faacEncOpen (samplerate, channels, &samples, &bytes)))
-    goto setup_failed;
-
-  /* ok, record and set up */
   faac->format = fmt;
-  faac->bps = bps;
-  faac->handle = handle;
-  faac->bytes = bytes;
-  faac->samples = samples;
-  faac->channels = channels;
-  faac->samplerate = samplerate;
 
   /* finish up */
-  result = gst_faac_configure_source_pad (faac);
+  result = gst_faac_configure_source_pad (faac, info);
+  if (!result)
+    goto done;
+
+  /* report needs to base class */
+  gst_audio_encoder_set_frame_samples_min (enc, faac->samples);
+  gst_audio_encoder_set_frame_samples_max (enc, faac->samples);
+  gst_audio_encoder_set_frame_max (enc, 1);
 
 done:
-  gst_object_unref (faac);
   return result;
+}
 
-  /* ERRORS */
-setup_failed:
-  {
-    GST_ELEMENT_ERROR (faac, LIBRARY, SETTINGS, (NULL), (NULL));
-    goto done;
+/* check downstream caps to configure format */
+static void
+gst_faac_negotiate (GstFaac * faac)
+{
+  GstCaps *caps;
+
+  /* default setup */
+  faac->profile = LOW;
+  faac->mpegversion = 4;
+  faac->outputformat = 0;
+
+  caps = gst_pad_get_allowed_caps (GST_AUDIO_ENCODER_SRC_PAD (faac));
+
+  GST_DEBUG_OBJECT (faac, "allowed caps: %" GST_PTR_FORMAT, caps);
+
+  if (caps && gst_caps_get_size (caps) > 0) {
+    GstStructure *s = gst_caps_get_structure (caps, 0);
+    const gchar *str = NULL;
+    gint i = 4;
+
+    if ((str = gst_structure_get_string (s, "stream-format"))) {
+      if (strcmp (str, "adts") == 0) {
+        GST_DEBUG_OBJECT (faac, "use ADTS format for output");
+        faac->outputformat = 1;
+      } else if (strcmp (str, "raw") == 0) {
+        GST_DEBUG_OBJECT (faac, "use RAW format for output");
+        faac->outputformat = 0;
+      } else {
+        GST_DEBUG_OBJECT (faac, "unknown stream-format: %s", str);
+        faac->outputformat = 0;
+      }
+    }
+
+    if ((str = gst_structure_get_string (s, "profile"))) {
+      if (strcmp (str, "main") == 0) {
+        faac->profile = MAIN;
+      } else if (strcmp (str, "lc") == 0) {
+        faac->profile = LOW;
+      } else if (strcmp (str, "ssr") == 0) {
+        faac->profile = SSR;
+      } else if (strcmp (str, "ltp") == 0) {
+        faac->profile = LTP;
+      } else {
+        faac->profile = LOW;
+      }
+    }
+
+    if (!gst_structure_get_int (s, "mpegversion", &i) || i == 4) {
+      faac->mpegversion = 4;
+    } else {
+      faac->mpegversion = 2;
+    }
   }
-refuse_caps:
-  {
-    GST_WARNING_OBJECT (faac, "refused caps %" GST_PTR_FORMAT, caps);
-    goto done;
-  }
+
+  if (caps)
+    gst_caps_unref (caps);
 }
 
 static gboolean
-gst_faac_configure_source_pad (GstFaac * faac)
+gst_faac_open_encoder (GstFaac * faac, GstAudioInfo * info)
 {
-  GstCaps *allowed_caps;
-  GstCaps *srccaps;
-  gboolean ret = FALSE;
-  gint n, ver, mpegversion = 2;
+  faacEncHandle *handle;
   faacEncConfiguration *conf;
   guint maxbitrate;
+  gulong samples, bytes;
 
-  mpegversion = FAAC_DEFAULT_MPEGVERSION;
+  g_return_val_if_fail (info->rate != 0 && info->channels != 0, FALSE);
 
-  allowed_caps = gst_pad_get_allowed_caps (faac->srcpad);
-  GST_DEBUG_OBJECT (faac, "allowed caps: %" GST_PTR_FORMAT, allowed_caps);
+  /* clean up in case of re-configure */
+  gst_faac_close_encoder (faac);
 
-  if (allowed_caps) {
-    if (gst_caps_is_empty (allowed_caps))
-      goto empty_caps;
+  if (!(handle = faacEncOpen (info->rate, info->channels, &samples, &bytes)))
+    goto setup_failed;
 
-    if (!gst_caps_is_any (allowed_caps)) {
-      for (n = 0; n < gst_caps_get_size (allowed_caps); n++) {
-        GstStructure *s = gst_caps_get_structure (allowed_caps, n);
+  /* mind channel count */
+  samples /= info->channels;
 
-        if (gst_structure_get_int (s, "mpegversion", &ver) &&
-            (ver == 4 || ver == 2)) {
-          mpegversion = ver;
-          break;
-        }
-      }
-    }
-    gst_caps_unref (allowed_caps);
-  }
+  /* record */
+  faac->handle = handle;
+  faac->samples = samples;
+  faac->bytes = bytes;
+
+  GST_DEBUG_OBJECT (faac, "faac needs samples %d, output size %d",
+      faac->samples, faac->bytes);
 
   /* we negotiated caps update current configuration */
   conf = faacEncGetCurrentConfiguration (faac->handle);
-  conf->mpegVersion = (mpegversion == 4) ? MPEG4 : MPEG2;
+  conf->mpegVersion = (faac->mpegversion == 4) ? MPEG4 : MPEG2;
   conf->aacObjectType = faac->profile;
   conf->allowMidside = faac->midside;
   conf->useLfe = 0;
   conf->useTns = faac->tns;
-  conf->bitRate = faac->bitrate / faac->channels;
+
+  if (faac->brtype == VBR) {
+    conf->quantqual = faac->quality;
+  } else if (faac->brtype == ABR) {
+    conf->bitRate = faac->bitrate / info->channels;
+  }
+
   conf->inputFormat = faac->format;
   conf->outputFormat = faac->outputformat;
   conf->shortctl = faac->shortctl;
@@ -475,27 +511,60 @@ gst_faac_configure_source_pad (GstFaac * faac)
   /* check, warn and correct if the max bitrate for the given samplerate is
    * exceeded. Maximum of 6144 bit for a channel */
   maxbitrate =
-      (unsigned int) (6144.0 * (double) faac->samplerate / (double) 1024.0 +
-      .5);
+      (unsigned int) (6144.0 * (double) info->rate / (double) 1024.0 + .5);
   if (conf->bitRate > maxbitrate) {
     GST_ELEMENT_WARNING (faac, RESOURCE, SETTINGS, (NULL),
         ("bitrate %lu exceeds maximum allowed bitrate of %u for samplerate %d. "
             "Setting bitrate to %u", conf->bitRate, maxbitrate,
-            faac->samplerate, maxbitrate));
+            info->rate, maxbitrate));
     conf->bitRate = maxbitrate;
   }
 
+  /* default 0 to start with, libfaac chooses based on bitrate */
+  conf->bandWidth = 0;
+
   if (!faacEncSetConfiguration (faac->handle, conf))
+    goto setup_failed;
+
+  /* let's see what really happened,
+   * note that this may not really match desired rate */
+  GST_DEBUG_OBJECT (faac, "average bitrate: %lu kbps",
+      (conf->bitRate + 500) / 1000 * info->channels);
+  GST_DEBUG_OBJECT (faac, "quantization quality: %ld", conf->quantqual);
+  GST_DEBUG_OBJECT (faac, "bandwidth: %d Hz", conf->bandWidth);
+
+  return TRUE;
+
+  /* ERRORS */
+setup_failed:
+  {
+    GST_ELEMENT_ERROR (faac, LIBRARY, SETTINGS, (NULL), (NULL));
+    return FALSE;
+  }
+}
+
+static gboolean
+gst_faac_configure_source_pad (GstFaac * faac, GstAudioInfo * info)
+{
+  GstCaps *srccaps;
+  gboolean ret;
+
+  /* negotiate stream format */
+  gst_faac_negotiate (faac);
+
+  if (!gst_faac_open_encoder (faac, info))
     goto set_failed;
 
   /* now create a caps for it all */
   srccaps = gst_caps_new_simple ("audio/mpeg",
-      "mpegversion", G_TYPE_INT, mpegversion,
-      "channels", G_TYPE_INT, faac->channels,
-      "rate", G_TYPE_INT, faac->samplerate, NULL);
+      "mpegversion", G_TYPE_INT, faac->mpegversion,
+      "channels", G_TYPE_INT, info->channels,
+      "rate", G_TYPE_INT, info->rate,
+      "stream-format", G_TYPE_STRING, (faac->outputformat ? "adts" : "raw"),
+      NULL);
 
-  if (mpegversion == 4) {
-    GstBuffer *codec_data;
+  /* DecoderSpecificInfo is only available for mpegversion=4 */
+  if (faac->mpegversion == 4) {
     guint8 *config = NULL;
     gulong config_len = 0;
 
@@ -503,157 +572,125 @@ gst_faac_configure_source_pad (GstFaac * faac)
     GST_DEBUG_OBJECT (faac, "retrieving decoder info");
     faacEncGetDecoderSpecificInfo (faac->handle, &config, &config_len);
 
-    /* copy it into a buffer */
-    codec_data = gst_buffer_new_and_alloc (config_len);
-    memcpy (GST_BUFFER_DATA (codec_data), config, config_len);
+    if (!gst_codec_utils_aac_caps_set_level_and_profile (srccaps, config,
+            config_len)) {
+      free (config);
+      gst_caps_unref (srccaps);
+      goto invalid_codec_data;
+    }
+
+    if (!faac->outputformat) {
+      GstBuffer *codec_data;
+
+      /* copy it into a buffer */
+      codec_data = gst_buffer_new_and_alloc (config_len);
+      gst_buffer_fill (codec_data, 0, config, config_len);
+
+      /* add to caps */
+      gst_caps_set_simple (srccaps,
+          "codec_data", GST_TYPE_BUFFER, codec_data, NULL);
+
+      gst_buffer_unref (codec_data);
+    }
+
     free (config);
+  } else {
+    const gchar *profile;
 
-    /* add to caps */
-    gst_caps_set_simple (srccaps,
-        "codec_data", GST_TYPE_BUFFER, codec_data, NULL);
-
-    gst_buffer_unref (codec_data);
+    /* Add least add the profile to the caps */
+    switch (faac->profile) {
+      case MAIN:
+        profile = "main";
+        break;
+      case LTP:
+        profile = "ltp";
+        break;
+      case SSR:
+        profile = "ssr";
+        break;
+      case LOW:
+      default:
+        profile = "lc";
+        break;
+    }
+    gst_caps_set_simple (srccaps, "profile", G_TYPE_STRING, profile, NULL);
+    /* FIXME: How to get the profile for mpegversion==2? */
   }
 
   GST_DEBUG_OBJECT (faac, "src pad caps: %" GST_PTR_FORMAT, srccaps);
 
-  ret = gst_pad_set_caps (faac->srcpad, srccaps);
+  ret = gst_audio_encoder_set_output_format (GST_AUDIO_ENCODER (faac), srccaps);
   gst_caps_unref (srccaps);
 
   return ret;
 
   /* ERROR */
-empty_caps:
-  {
-    gst_caps_unref (allowed_caps);
-    return FALSE;
-  }
 set_failed:
   {
     GST_WARNING_OBJECT (faac, "Faac doesn't support the current configuration");
     return FALSE;
   }
+invalid_codec_data:
+  {
+    GST_ERROR_OBJECT (faac, "Invalid codec data");
+    return FALSE;
+  }
 }
 
 static GstFlowReturn
-gst_faac_push_buffers (GstFaac * faac, gboolean force)
+gst_faac_handle_frame (GstAudioEncoder * enc, GstBuffer * in_buf)
 {
+  GstFaac *faac = GST_FAAC (enc);
   GstFlowReturn ret = GST_FLOW_OK;
-  gint av, frame_size, size, ret_size;
-  GstBuffer *outbuf;
-  guint64 timestamp, distance;
-  const guint8 *data;
+  GstBuffer *out_buf;
+  gsize size, ret_size;
+  GstMapInfo map, omap;
+  guint8 *data;
+  GstAudioInfo *info =
+      gst_audio_encoder_get_audio_info (GST_AUDIO_ENCODER (faac));
 
-  /* samples already considers channel count */
-  frame_size = faac->samples * faac->bps;
+  out_buf = gst_buffer_new_and_alloc (faac->bytes);
+  gst_buffer_map (out_buf, &omap, GST_MAP_WRITE);
 
-  while (G_LIKELY (ret == GST_FLOW_OK)) {
-
-    av = gst_adapter_available (faac->adapter);
-
-    GST_LOG_OBJECT (faac, "pushing: force: %d, frame_size: %d, av: %d, "
-        "offset: %d", force, frame_size, av, faac->offset);
-
-    /* idea:
-     * - start of adapter corresponds with what has already been encoded
-     * (i.e. really returned by faac)
-     * - start + offset is what needs to be fed to faac next
-     * That way we can timestamp the output based
-     * on adapter provided timestamp (and duration is a fixed frame duration) */
-
-    /* not enough data for one frame and no flush forcing */
-    if (!force && (av < frame_size + faac->offset))
-      break;
-
-    if (G_LIKELY (av - faac->offset >= frame_size)) {
-      GST_LOG_OBJECT (faac, "encoding a frame");
-      data = gst_adapter_peek (faac->adapter, faac->offset + frame_size);
-      data += faac->offset;
-      size = frame_size;
-    } else if (av - faac->offset > 0) {
-      GST_LOG_OBJECT (faac, "encoding leftover");
-      data = gst_adapter_peek (faac->adapter, av);
-      data += faac->offset;
-      size = av - faac->offset;
-    } else {
-      GST_LOG_OBJECT (faac, "emptying encoder");
-      data = NULL;
-      size = 0;
+  if (G_LIKELY (in_buf)) {
+    if (memcmp (info->position, aac_channel_positions[info->channels - 1],
+            sizeof (GstAudioChannelPosition) * info->channels) != 0) {
+      in_buf = gst_buffer_make_writable (in_buf);
+      gst_audio_buffer_reorder_channels (in_buf, info->finfo->format,
+          info->channels, info->position,
+          aac_channel_positions[info->channels - 1]);
     }
-
-    outbuf = gst_buffer_new_and_alloc (faac->bytes);
-
-    if (G_UNLIKELY ((ret_size = faacEncEncode (faac->handle, (gint32 *) data,
-                    size / faac->bps, GST_BUFFER_DATA (outbuf),
-                    faac->bytes)) < 0)) {
-      gst_buffer_unref (outbuf);
-      goto encode_failed;
-    }
-
-    GST_LOG_OBJECT (faac, "encoder return: %d", ret_size);
-
-    /* consumed, advanced view */
-    faac->offset += size;
-    g_assert (faac->offset <= av);
-
-    if (G_UNLIKELY (!ret_size)) {
-      gst_buffer_unref (outbuf);
-      if (size)
-        continue;
-      else
-        break;
-    }
-
-    /* in case encoder returns more data than is expected (which seems possible)
-     * ignore the extra part */
-    if (G_UNLIKELY (av == 0 && faac->offset == 0)) {
-      GST_DEBUG_OBJECT (faac, "encoder returned unexpected data; discarding");
-      gst_buffer_unref (outbuf);
-      continue;
-    }
-
-    /* after some caching, finally some data */
-    /* adapter gives time */
-    timestamp = gst_adapter_prev_timestamp (faac->adapter, &distance);
-    if (G_LIKELY ((av = gst_adapter_available (faac->adapter)) >= frame_size)) {
-      /* must have then come from a complete frame */
-      gst_adapter_flush (faac->adapter, frame_size);
-      faac->offset -= frame_size;
-      size = frame_size;
-    } else {
-      /* otherwise leftover */
-      gst_adapter_clear (faac->adapter);
-      faac->offset = 0;
-      size = av;
-    }
-
-    GST_BUFFER_SIZE (outbuf) = ret_size;
-    if (G_LIKELY (GST_CLOCK_TIME_IS_VALID (timestamp)))
-      GST_BUFFER_TIMESTAMP (outbuf) = timestamp +
-          GST_FRAMES_TO_CLOCK_TIME (distance / faac->channels / faac->bps,
-          faac->samplerate);
-    GST_BUFFER_DURATION (outbuf) =
-        GST_FRAMES_TO_CLOCK_TIME (size / faac->channels / faac->bps,
-        faac->samplerate);
-    /* perhaps check/set DISCONT based on timestamps ? */
-
-    GST_LOG_OBJECT (faac, "Pushing out buffer time: %" GST_TIME_FORMAT
-        " duration: %" GST_TIME_FORMAT,
-        GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (outbuf)),
-        GST_TIME_ARGS (GST_BUFFER_DURATION (outbuf)));
-
-    gst_buffer_set_caps (outbuf, GST_PAD_CAPS (faac->srcpad));
-    ret = gst_pad_push (faac->srcpad, outbuf);
+    gst_buffer_map (in_buf, &map, GST_MAP_READ);
+    data = map.data;
+    size = map.size;
+  } else {
+    data = NULL;
+    size = 0;
   }
 
-  /* in case encoder returns less than expected, clear our view as well */
-  if (G_UNLIKELY (force)) {
-#ifndef GST_DISABLE_GST_DEBUG
-    if ((av = gst_adapter_available (faac->adapter)))
-      GST_WARNING_OBJECT (faac, "encoder left %d bytes; discarding", av);
-#endif
-    gst_adapter_clear (faac->adapter);
-    faac->offset = 0;
+  if (G_UNLIKELY ((ret_size = faacEncEncode (faac->handle, (gint32 *) data,
+                  size / (info->finfo->width / 8), omap.data, omap.size)) < 0))
+    goto encode_failed;
+
+  if (in_buf)
+    gst_buffer_unmap (in_buf, &map);
+
+  GST_LOG_OBJECT (faac, "encoder return: %" G_GSIZE_FORMAT, ret_size);
+
+  if (ret_size > 0) {
+    gst_buffer_unmap (out_buf, &omap);
+    gst_buffer_resize (out_buf, 0, ret_size);
+    ret = gst_audio_encoder_finish_frame (enc, out_buf, faac->samples);
+  } else {
+    gst_buffer_unmap (out_buf, &omap);
+    gst_buffer_unref (out_buf);
+    /* re-create encoder after final flush */
+    if (!in_buf) {
+      GST_DEBUG_OBJECT (faac, "flushed; recreating encoder");
+      gst_faac_close_encoder (faac);
+      if (!gst_faac_open_encoder (faac, gst_audio_encoder_get_audio_info (enc)))
+        ret = GST_FLOW_ERROR;
+    }
   }
 
   return ret;
@@ -662,74 +699,11 @@ gst_faac_push_buffers (GstFaac * faac, gboolean force)
 encode_failed:
   {
     GST_ELEMENT_ERROR (faac, LIBRARY, ENCODE, (NULL), (NULL));
-    gst_buffer_unref (outbuf);
+    if (in_buf)
+      gst_buffer_unmap (in_buf, &map);
+    gst_buffer_unmap (out_buf, &omap);
+    gst_buffer_unref (out_buf);
     return GST_FLOW_ERROR;
-  }
-}
-
-static gboolean
-gst_faac_sink_event (GstPad * pad, GstEvent * event)
-{
-  GstFaac *faac;
-  gboolean ret;
-
-  faac = GST_FAAC (gst_pad_get_parent (pad));
-
-  GST_LOG_OBJECT (faac, "received %s", GST_EVENT_TYPE_NAME (event));
-
-  switch (GST_EVENT_TYPE (event)) {
-    case GST_EVENT_EOS:
-    {
-      if (faac->handle) {
-        /* flush first */
-        GST_DEBUG_OBJECT (faac, "Pushing out remaining buffers because of EOS");
-        gst_faac_push_buffers (faac, TRUE);
-      }
-
-      ret = gst_pad_event_default (pad, event);
-      break;
-    }
-    default:
-      ret = gst_pad_event_default (pad, event);
-      break;
-
-  }
-  gst_object_unref (faac);
-  return ret;
-}
-
-static GstFlowReturn
-gst_faac_chain (GstPad * pad, GstBuffer * inbuf)
-{
-  GstFlowReturn result = GST_FLOW_OK;
-  GstFaac *faac;
-
-  faac = GST_FAAC (gst_pad_get_parent (pad));
-
-  if (!faac->handle)
-    goto no_handle;
-
-  GST_LOG_OBJECT (faac, "Got buffer time: %" GST_TIME_FORMAT " duration: %"
-      GST_TIME_FORMAT, GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (inbuf)),
-      GST_TIME_ARGS (GST_BUFFER_DURATION (inbuf)));
-
-  gst_adapter_push (faac->adapter, inbuf);
-
-  result = gst_faac_push_buffers (faac, FALSE);
-
-done:
-  gst_object_unref (faac);
-
-  return result;
-
-  /* ERRORS */
-no_handle:
-  {
-    GST_ELEMENT_ERROR (faac, CORE, NEGOTIATION, (NULL),
-        ("format wasn't negotiated before chain function"));
-    gst_buffer_unref (inbuf);
-    result = GST_FLOW_ERROR;
-    goto done;
   }
 }
 
@@ -742,23 +716,23 @@ gst_faac_set_property (GObject * object,
   GST_OBJECT_LOCK (faac);
 
   switch (prop_id) {
-    case ARG_BITRATE:
+    case PROP_QUALITY:
+      faac->quality = g_value_get_int (value);
+      break;
+    case PROP_BITRATE:
       faac->bitrate = g_value_get_int (value);
       break;
-    case ARG_PROFILE:
-      faac->profile = g_value_get_enum (value);
+    case PROP_RATE_CONTROL:
+      faac->brtype = g_value_get_enum (value);
       break;
-    case ARG_TNS:
+    case PROP_TNS:
       faac->tns = g_value_get_boolean (value);
       break;
-    case ARG_MIDSIDE:
+    case PROP_MIDSIDE:
       faac->midside = g_value_get_boolean (value);
       break;
-    case ARG_SHORTCTL:
+    case PROP_SHORTCTL:
       faac->shortctl = g_value_get_enum (value);
-      break;
-    case ARG_OUTPUTFORMAT:
-      faac->outputformat = g_value_get_enum (value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -777,23 +751,23 @@ gst_faac_get_property (GObject * object,
   GST_OBJECT_LOCK (faac);
 
   switch (prop_id) {
-    case ARG_BITRATE:
+    case PROP_QUALITY:
+      g_value_set_int (value, faac->quality);
+      break;
+    case PROP_BITRATE:
       g_value_set_int (value, faac->bitrate);
       break;
-    case ARG_PROFILE:
-      g_value_set_enum (value, faac->profile);
+    case PROP_RATE_CONTROL:
+      g_value_set_enum (value, faac->brtype);
       break;
-    case ARG_TNS:
+    case PROP_TNS:
       g_value_set_boolean (value, faac->tns);
       break;
-    case ARG_MIDSIDE:
+    case PROP_MIDSIDE:
       g_value_set_boolean (value, faac->midside);
       break;
-    case ARG_SHORTCTL:
+    case PROP_SHORTCTL:
       g_value_set_enum (value, faac->shortctl);
-      break;
-    case ARG_OUTPUTFORMAT:
-      g_value_set_enum (value, faac->outputformat);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -801,35 +775,6 @@ gst_faac_get_property (GObject * object,
   }
 
   GST_OBJECT_UNLOCK (faac);
-}
-
-static GstStateChangeReturn
-gst_faac_change_state (GstElement * element, GstStateChange transition)
-{
-  GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;
-  GstFaac *faac = GST_FAAC (element);
-
-  /* upwards state changes */
-  switch (transition) {
-    default:
-      break;
-  }
-
-  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
-
-  /* downwards state changes */
-  switch (transition) {
-    case GST_STATE_CHANGE_PAUSED_TO_READY:
-    {
-      gst_faac_close_encoder (faac);
-      gst_faac_reset (faac);
-      break;
-    }
-    default:
-      break;
-  }
-
-  return ret;
 }
 
 static gboolean
@@ -841,6 +786,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "faac",
+    faac,
     "Free AAC Encoder (FAAC)",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

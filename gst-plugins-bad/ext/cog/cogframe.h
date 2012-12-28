@@ -13,6 +13,18 @@ typedef struct _CogUpsampledFrame CogUpsampledFrame;
 typedef void (*CogFrameFreeFunc)(CogFrame *frame, void *priv);
 typedef void (*CogFrameRenderFunc)(CogFrame *frame, void *dest, int component, int i);
 
+typedef enum _CogColorMatrix {
+  COG_COLOR_MATRIX_UNKNOWN = 0,
+  COG_COLOR_MATRIX_HDTV,
+  COG_COLOR_MATRIX_SDTV
+} CogColorMatrix;
+
+typedef enum _CogChromaSite {
+  COG_CHROMA_SITE_UNKNOWN = 0,
+  COG_CHROMA_SITE_MPEG2 = 1,
+  COG_CHROMA_SITE_JPEG
+} CogChromaSite;
+
 /* bit pattern:
  *  0x100 - 0: normal, 1: indirect (packed)
  *  0x001 - horizontal chroma subsampling: 0: 1, 1: 2

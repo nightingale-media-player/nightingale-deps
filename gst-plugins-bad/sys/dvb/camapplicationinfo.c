@@ -40,7 +40,7 @@ static CamReturn data_impl (CamALApplication * application,
     CamSLSession * session, guint tag, guint8 * buffer, guint length);
 
 CamApplicationInfo *
-cam_application_info_new ()
+cam_application_info_new (void)
 {
   CamApplicationInfo *info;
   CamALApplication *application;
@@ -121,7 +121,7 @@ handle_application_info_reply (CamApplicationInfo * info,
 {
   guint8 type;
   guint8 menu_length;
-  gchar menu[255];
+  gchar menu[256];
 
   type = buffer[0];
   menu_length = buffer[5];

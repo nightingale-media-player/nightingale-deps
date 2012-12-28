@@ -48,13 +48,6 @@
 
 GST_DEBUG_CATEGORY_STATIC (dx9screencapsrc_debug);
 
-static const GstElementDetails gst_dx9screencapsrc_details = {
-  "DirectX 9 screen capture source",
-  "Source/Video",
-  "Captures screen",
-  "Haakon Sporsheim <hakon.sporsheim@tandberg.com>"
-};
-
 #define GST_VIDEO_ALPHA_MASK_15_INT  0x8000
 
 static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
@@ -111,7 +104,9 @@ gst_dx9screencapsrc_base_init (gpointer klass)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_template));
 
-  gst_element_class_set_details (element_class, &gst_dx9screencapsrc_details);
+  gst_element_class_set_static_metadata (element_class,
+      "DirectX 9 screen capture source", "Source/Video", "Captures screen",
+      "Haakon Sporsheim <hakon.sporsheim@tandberg.com>");
 }
 
 static void
@@ -302,14 +297,15 @@ gst_dx9screencapsrc_set_caps (GstBaseSrc * bsrc, GstCaps * caps)
     src->src_rect.bottom = src->src_rect.top + src->capture_h;
   }
 
-  if (framerate = gst_structure_get_value (structure, "framerate")) {
+  framerate = gst_structure_get_value (structure, "framerate");
+  if (framerate) {
     src->rate_numerator = gst_value_get_fraction_numerator (framerate);
     src->rate_denominator = gst_value_get_fraction_denominator (framerate);
   }
 
   GST_DEBUG_OBJECT (src, "size %dx%d, %d/%d fps",
-      src->src_rect.right - src->src_rect.left,
-      src->src_rect.bottom - src->src_rect.top,
+      (gint) (src->src_rect.right - src->src_rect.left),
+      (gint) (src->src_rect.bottom - src->src_rect.top),
       src->rate_numerator, src->rate_denominator);
 
   return TRUE;
@@ -396,26 +392,26 @@ gst_dx9screencapsrc_create_caps_from_format (D3DFORMAT fmt,
       depth = 15;
       endianness = G_BYTE_ORDER;
       alpha = GST_VIDEO_ALPHA_MASK_15_INT;
-      red = GST_VIDEO_RED_MASK_15_INT;
-      green = GST_VIDEO_GREEN_MASK_15_INT;
-      blue = GST_VIDEO_BLUE_MASK_15_INT;
+      red = GST_VIDEO_COMP1_MASK_15_INT;
+      green = GST_VIDEO_COMP2_MASK_15_INT;
+      blue = GST_VIDEO_COMP3_MASK_15_INT;
       break;
     case D3DFMT_X1R5G5B5:
       bpp = 16;
       depth = 15;
       endianness = G_BYTE_ORDER;
       alpha = 0;
-      red = GST_VIDEO_RED_MASK_15_INT;
-      green = GST_VIDEO_GREEN_MASK_15_INT;
-      blue = GST_VIDEO_BLUE_MASK_15_INT;
+      red = GST_VIDEO_COMP1_MASK_15_INT;
+      green = GST_VIDEO_COMP2_MASK_15_INT;
+      blue = GST_VIDEO_COMP3_MASK_15_INT;
       break;
     case D3DFMT_R5G6B5:
       bpp = depth = 16;
       endianness = G_BYTE_ORDER;
       alpha = 0;
-      red = GST_VIDEO_RED_MASK_16_INT;
-      green = GST_VIDEO_GREEN_MASK_16_INT;
-      blue = GST_VIDEO_BLUE_MASK_16_INT;
+      red = GST_VIDEO_COMP1_MASK_15_INT;
+      green = GST_VIDEO_COMP2_MASK_15_INT;
+      blue = GST_VIDEO_COMP3_MASK_15_INT;
       break;
     default:
       return NULL;
@@ -461,9 +457,10 @@ gst_dx9screencapsrc_start (GstBaseSrc * bsrc)
   if (FAILED (res))
     return FALSE;
 
-  return SUCCEEDED (IDirect3DDevice9_CreateOffscreenPlainSurface (src->
-          d3d9_device, src->disp_mode.Width, src->disp_mode.Height,
-          D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &src->surface, NULL));
+  return
+      SUCCEEDED (IDirect3DDevice9_CreateOffscreenPlainSurface (src->d3d9_device,
+          src->disp_mode.Width, src->disp_mode.Height, D3DFMT_A8R8G8B8,
+          D3DPOOL_SYSTEMMEM, &src->surface, NULL));
 }
 
 static gboolean
@@ -483,7 +480,6 @@ static void
 gst_dx9screencapsrc_get_times (GstBaseSrc * basesrc,
     GstBuffer * buffer, GstClockTime * start, GstClockTime * end)
 {
-  GstDX9ScreenCapSrc *src = GST_DX9SCREENCAPSRC (basesrc);
   GstClockTime timestamp;
 
   timestamp = GST_BUFFER_TIMESTAMP (buffer);
@@ -506,7 +502,8 @@ gst_dx9screencapsrc_create (GstPushSrc * push_src, GstBuffer ** buf)
   gint new_buf_size, i;
   gint width, height, stride;
   GstClock *clock;
-  GstClockTime time, buf_time;
+  GstClockTime time = GST_CLOCK_TIME_NONE;
+  GstClockTime buf_time;
   D3DLOCKED_RECT locked_rect;
   LPBYTE p_dst, p_src;
   HRESULT hres;
@@ -541,7 +538,7 @@ gst_dx9screencapsrc_create (GstPushSrc * push_src, GstBuffer ** buf)
   }
 
   GST_LOG_OBJECT (src,
-      "creating buffer of %lu bytes with %dx%d image for frame %d",
+      "creating buffer of %d bytes with %dx%d image for frame %d",
       new_buf_size, width, height, (gint) src->frames);
 
   res = gst_pad_alloc_buffer_and_set_caps (GST_BASE_SRC_PAD (src),

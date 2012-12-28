@@ -45,9 +45,10 @@
 #ifdef G_OS_WIN32
 #include <ImageCodec.h>
 #else
-#include <Quicktime/ImageCodec.h>
+#include <QuickTime/ImageCodec.h>
 #endif
 #include <gst/gst.h>
+#include "qtwrapper.h"
 
 #ifndef __QTUTILS_H__
 #define __QTUTILS_H__
@@ -99,8 +100,6 @@
 #define QT_READ_UINT32(data)		GST_READ_UINT32_BE(data)
 #endif
 
-/* Do any OS-specific initialization for QuickTime */
-gboolean quicktime_os_specific_init ();
 
 /*
  * get_name_info_from_component:
@@ -127,6 +126,8 @@ addSInt32ToDictionary (CFMutableDictionaryRef dictionary, CFStringRef key,
     SInt32 numberSInt32);
 
 void dump_cvpixel_buffer (CVPixelBufferRef pixbuf);
+
+void dump_avcc_atom (guint8 * atom);
 
 AudioBufferList *AllocateAudioBufferList(UInt32 numChannels, UInt32 size);
 

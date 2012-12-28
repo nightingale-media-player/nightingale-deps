@@ -39,13 +39,6 @@
 
 #include "gstfbdevsink.h"
 
-/* elementfactory information */
-static const GstElementDetails gst_fbdevsink_details =
-GST_ELEMENT_DETAILS ("fbdev video sink",
-    "Sink/Video",
-    "A linux framebuffer videosink",
-    "Sean D'Epagnier <sean@depagnier.com>");
-
 enum
 {
   ARG_0,
@@ -97,7 +90,9 @@ gst_fbdevsink_base_init (gpointer g_class)
       GST_STATIC_CAPS (GST_FBDEV_TEMPLATE_CAPS)
       );
 
-  gst_element_class_set_details (element_class, &gst_fbdevsink_details);
+  gst_element_class_set_static_metadata (element_class, "fbdev video sink",
+      "Sink/Video",
+      "A linux framebuffer videosink", "Sean D'Epagnier <sean@depagnier.com>");
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sink_template));
 }
@@ -356,11 +351,9 @@ gst_fbdevsink_get_property (GObject * object, guint prop_id, GValue * value,
 static GstStateChangeReturn
 gst_fbdevsink_change_state (GstElement * element, GstStateChange transition)
 {
-  GstFBDEVSink *fbdevsink;
   GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;
 
   g_return_val_if_fail (GST_IS_FBDEVSINK (element), GST_STATE_CHANGE_FAILURE);
-  fbdevsink = GST_FBDEVSINK (element);
 
   ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
 
@@ -452,6 +445,6 @@ gst_fbdevsink_get_type (void)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "fbdevsink",
+    fbdevsink,
     "linux framebuffer video sink",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

@@ -25,12 +25,6 @@
 
 #include "gstdshowaudiosrc.h"
 
-static const GstElementDetails gst_dshowaudiosrc_details =
-GST_ELEMENT_DETAILS ("Directshow audio capture source",
-    "Source/Audio",
-    "Receive data from a directshow audio capture graph",
-    "Sebastien Moutte <sebastien@moutte.net>");
-
 GST_DEBUG_CATEGORY_STATIC (dshowaudiosrc_debug);
 #define GST_CAT_DEFAULT dshowaudiosrc_debug
 
@@ -94,8 +88,8 @@ static void gst_dshowaudiosrc_reset (GstAudioSrc * asrc);
 /* utils */
 static GstCaps *gst_dshowaudiosrc_getcaps_from_streamcaps (GstDshowAudioSrc *
     src, IPin * pin, IAMStreamConfig * streamcaps);
-static gboolean gst_dshowaudiosrc_push_buffer (byte * buffer, long size,
-    gpointer src_object, UINT64 start, UINT64 stop);
+static gboolean gst_dshowaudiosrc_push_buffer (guint8 * buffer, guint size,
+    gpointer src_object, GstClockTime duration);
 
 static void
 gst_dshowaudiosrc_init_interfaces (GType type)
@@ -127,7 +121,10 @@ gst_dshowaudiosrc_base_init (gpointer klass)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_template));
 
-  gst_element_class_set_details (element_class, &gst_dshowaudiosrc_details);
+  gst_element_class_set_static_metadata (element_class,
+      "Directshow audio capture source", "Source/Audio",
+      "Receive data from a directshow audio capture graph",
+      "Sebastien Moutte <sebastien@moutte.net>");
 }
 
 static void
@@ -830,8 +827,8 @@ gst_dshowaudiosrc_getcaps_from_streamcaps (GstDshowAudioSrc * src, IPin * pin,
 }
 
 static gboolean
-gst_dshowaudiosrc_push_buffer (byte * buffer, long size, gpointer src_object,
-    UINT64 start, UINT64 stop)
+gst_dshowaudiosrc_push_buffer (guint8 * buffer, guint size, gpointer src_object,
+    GstClockTime duration)
 {
   GstDshowAudioSrc *src = GST_DSHOWAUDIOSRC (src_object);
 
@@ -840,7 +837,7 @@ gst_dshowaudiosrc_push_buffer (byte * buffer, long size, gpointer src_object,
   }
 
   g_mutex_lock (src->gbarray_lock);
-  g_byte_array_prepend (src->gbarray, (guint8 *) buffer, size);
+  g_byte_array_prepend (src->gbarray, buffer, size);
   g_mutex_unlock (src->gbarray_lock);
 
   return TRUE;

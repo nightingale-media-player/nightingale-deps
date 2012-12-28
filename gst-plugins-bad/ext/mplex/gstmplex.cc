@@ -53,6 +53,9 @@
 
 #include <string.h>
 
+#include <gst/glib-compat-private.h>
+#include <gst/audio/audio.h>
+
 #include "gstmplex.hh"
 #include "gstmplexoutputstream.hh"
 #include "gstmplexibitstream.hh"
@@ -67,7 +70,7 @@ static GstStaticPadTemplate src_templ = GST_STATIC_PAD_TEMPLATE ("src",
     );
 
 static GstStaticPadTemplate video_sink_templ =
-GST_STATIC_PAD_TEMPLATE ("video_%d",
+GST_STATIC_PAD_TEMPLATE ("video_%u",
     GST_PAD_SINK,
     GST_PAD_REQUEST,
     GST_STATIC_CAPS ("video/mpeg, "
@@ -82,7 +85,7 @@ GST_STATIC_PAD_TEMPLATE ("video_%d",
   "rate = (int) [ 8000, 96000 ]"
 
 static GstStaticPadTemplate audio_sink_templ =
-    GST_STATIC_PAD_TEMPLATE ("audio_%d",
+    GST_STATIC_PAD_TEMPLATE ("audio_%u",
     GST_PAD_SINK,
     GST_PAD_REQUEST,
     GST_STATIC_CAPS ("audio/mpeg, "
@@ -92,11 +95,8 @@ static GstStaticPadTemplate audio_sink_templ =
         "audio/x-ac3, "
         COMMON_AUDIO_CAPS "; "
         "audio/x-dts; "
-        "audio/x-raw-int, "
-        "endianness = (int) BIG_ENDIAN, "
-        "signed = (boolean) TRUE, "
-        "width = (int) { 16, 20, 24 }, "
-        "depth = (int) { 16, 20, 24 }, "
+        "audio/x-raw, "
+        "format = (string) { S16BE, S20BE, S24BE }, "
         "rate = (int) { 48000, 96000 }, " "channels = (int) [ 1, 6 ]")
     );
 
@@ -106,9 +106,10 @@ static void gst_mplex_finalize (GObject * object);
 static void gst_mplex_reset (GstMplex * mplex);
 static void gst_mplex_loop (GstMplex * mplex);
 static GstPad *gst_mplex_request_new_pad (GstElement * element,
-    GstPadTemplate * templ, const gchar * name);
+    GstPadTemplate * templ, const gchar * name, const GstCaps * caps);
 static void gst_mplex_release_pad (GstElement * element, GstPad * pad);
-static gboolean gst_mplex_src_activate_push (GstPad * pad, gboolean active);
+static gboolean gst_mplex_src_activate_mode (GstPad * pad, GstObject * parent,
+    GstPadMode mode, gboolean active);
 static GstStateChangeReturn gst_mplex_change_state (GstElement * element,
     GstStateChange transition);
 
@@ -117,27 +118,8 @@ static void gst_mplex_get_property (GObject * object,
 static void gst_mplex_set_property (GObject * object,
     guint prop_id, const GValue * value, GParamSpec * pspec);
 
-GST_BOILERPLATE (GstMplex, gst_mplex, GstElement, GST_TYPE_ELEMENT);
-
-static void
-gst_mplex_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_set_details_simple (element_class,
-      "mplex video multiplexer", "Codec/Muxer",
-      "High-quality MPEG/DVD/SVCD/VCD video/audio multiplexer",
-      "Andrew Stevens <andrew.stevens@nexgo.de>\n"
-      "Ronald Bultje <rbultje@ronald.bitfreak.net>\n"
-      "Mark Nauwelaerts <mnauw@users.sourceforge.net");
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_templ));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&video_sink_templ));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&audio_sink_templ));
-}
+#define parent_class gst_mplex_parent_class
+G_DEFINE_TYPE (GstMplex, gst_mplex, GST_TYPE_ELEMENT);
 
 static void
 gst_mplex_class_init (GstMplexClass * klass)
@@ -159,6 +141,20 @@ gst_mplex_class_init (GstMplexClass * klass)
   element_class->request_new_pad =
       GST_DEBUG_FUNCPTR (gst_mplex_request_new_pad);
   element_class->release_pad = GST_DEBUG_FUNCPTR (gst_mplex_release_pad);
+
+  gst_element_class_set_static_metadata (element_class,
+      "mplex video multiplexer", "Codec/Muxer",
+      "High-quality MPEG/DVD/SVCD/VCD video/audio multiplexer",
+      "Andrew Stevens <andrew.stevens@nexgo.de>\n"
+      "Ronald Bultje <rbultje@ronald.bitfreak.net>\n"
+      "Mark Nauwelaerts <mnauw@users.sourceforge.net>");
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&src_templ));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&video_sink_templ));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&audio_sink_templ));
 }
 
 static void
@@ -172,7 +168,8 @@ gst_mplex_finalize (GObject * object)
   while (walk) {
     GstMplexPad *mpad = (GstMplexPad *) walk->data;
 
-    gst_object_unref (mpad->pad);
+    if (mpad->pad)
+      gst_object_unref (mpad->pad);
     mpad->pad = NULL;
     walk = walk->next;
   }
@@ -183,30 +180,28 @@ gst_mplex_finalize (GObject * object)
   /* ... and of the rest */
   delete mplex->job;
 
-  g_mutex_free (mplex->tlock);
+  g_mutex_clear (&mplex->tlock);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
-gst_mplex_init (GstMplex * mplex, GstMplexClass * g_class)
+gst_mplex_init (GstMplex * mplex)
 {
   GstElement *element = GST_ELEMENT (mplex);
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
   mplex->srcpad =
-      gst_pad_new_from_template (gst_element_class_get_pad_template
-      (element_class, "src"), "src");
+      gst_pad_new_from_static_template (&src_templ, "src");
   gst_element_add_pad (element, mplex->srcpad);
   gst_pad_use_fixed_caps (mplex->srcpad);
-  gst_pad_set_activatepush_function (mplex->srcpad,
-      GST_DEBUG_FUNCPTR (gst_mplex_src_activate_push));
+  gst_pad_set_activatemode_function (mplex->srcpad,
+      GST_DEBUG_FUNCPTR (gst_mplex_src_activate_mode));
 
   mplex->job = new GstMplexJob ();
   mplex->num_apads = 0;
   mplex->num_vpads = 0;
 
-  mplex->tlock = g_mutex_new ();
+  g_mutex_init (&mplex->tlock);
 
   gst_mplex_reset (mplex);
 }
@@ -237,7 +232,7 @@ gst_mplex_reset (GstMplex * mplex)
     }
 
     if (!mpad->pad) {
-      g_cond_free (mpad->cond);
+      g_cond_clear (&mpad->cond);
       g_object_unref (mpad->adapter);
       g_free (mpad);
     } else
@@ -281,7 +276,7 @@ gst_mplex_setcaps (GstPad * pad, GstCaps * caps)
   JobStream *jobstream;
   GstMplexIBitStream *inputstream;
   GstMplexPad *mpad;
-  GstCaps *othercaps;
+  GstCaps *othercaps, *templ;
   gboolean ret = TRUE;
 
   mplex = GST_MPLEX (GST_PAD_PARENT (pad));
@@ -291,14 +286,16 @@ gst_mplex_setcaps (GstPad * pad, GstCaps * caps)
     goto refuse_renegotiation;
 
   /* since muxer does not really check much ... */
-  othercaps = gst_caps_intersect (caps, gst_pad_get_pad_template_caps (pad));
+  templ = gst_pad_get_pad_template_caps (pad);
+  othercaps = gst_caps_intersect (caps, templ);
+  gst_caps_unref (templ);
   if (othercaps)
     gst_caps_unref (othercaps);
   else
     goto refuse_caps;
 
   /* set the fixed template caps on the srcpad, should accept without objection */
-  othercaps = gst_caps_copy (gst_pad_get_pad_template_caps (mplex->srcpad));
+  othercaps = gst_pad_get_pad_template_caps (mplex->srcpad);
   ret = gst_pad_set_caps (mplex->srcpad, othercaps);
   gst_caps_unref (othercaps);
   if (!ret)
@@ -329,20 +326,22 @@ gst_mplex_setcaps (GstPad * pad, GstCaps * caps)
       type = AC3_AUDIO;
     } else if (!strcmp (mime, "audio/x-dts")) {
       type = DTS_AUDIO;
-    } else if (!strcmp (mime, "audio/x-raw-int")) {
+    } else if (!strcmp (mime, "audio/x-raw")) {
       LpcmParams *params;
       gint bits, chans, rate;
-      gboolean result = TRUE;
+      GstAudioInfo info;
 
       type = LPCM_AUDIO;
 
-      /* set LPCM params */
-      result &= gst_structure_get_int (structure, "depth", &bits);
-      result &= gst_structure_get_int (structure, "rate", &rate);
-      result &= gst_structure_get_int (structure, "channels", &chans);
-      if (!result)
+      gst_audio_info_init (&info);
+      if (!gst_audio_info_from_caps (&info, caps))
         goto refuse_caps;
 
+      rate = GST_AUDIO_INFO_RATE (&info);
+      chans = GST_AUDIO_INFO_CHANNELS (&info);
+      bits = GST_AUDIO_INFO_DEPTH (&info);
+
+      /* set LPCM params */
       params = LpcmParams::Checked (rate, chans, bits);
 
       mplex->job->lpcm_param.push_back (params);
@@ -367,7 +366,7 @@ refuse_caps:
     GST_WARNING_OBJECT (mplex, "refused caps %" GST_PTR_FORMAT, caps);
 
     /* undo if we were a bit too fast/confident */
-    if (GST_PAD_CAPS (mplex->srcpad))
+    if (gst_pad_has_current_caps (mplex->srcpad))
       gst_pad_set_caps (mplex->srcpad, NULL);
 
     return FALSE;
@@ -387,6 +386,7 @@ gst_mplex_loop (GstMplex * mplex)
   GstMplexOutputStream *out = NULL;
   Multiplexor *mux = NULL;
   GSList *walk;
+  GstSegment segment;
 
   /* do not try to resume muxing after it finished
    * this can be relevant mainly/only in case of forced state change */
@@ -394,8 +394,8 @@ gst_mplex_loop (GstMplex * mplex)
     goto eos;
 
   /* inform downstream about what's coming */
-  gst_pad_push_event (mplex->srcpad, gst_event_new_new_segment (FALSE, 1.0,
-          GST_FORMAT_BYTES, 0, -1, 0));
+  gst_segment_init (&segment, GST_FORMAT_BYTES);
+  gst_pad_push_event (mplex->srcpad, gst_event_new_segment (&segment));
 
   /* hm (!) each inputstream really needs an initial read
    * so that all is internally in the proper state */
@@ -453,31 +453,31 @@ eos:
 }
 
 static gboolean
-gst_mplex_sink_event (GstPad * sinkpad, GstEvent * event)
+gst_mplex_sink_event (GstPad * sinkpad, GstObject * parent, GstEvent * event)
 {
   GstMplex *mplex;
   GstMplexPad *mpad;
   gboolean result = TRUE;
 
-  mplex = (GstMplex *) (GST_PAD_PARENT (sinkpad));
+  mplex = (GstMplex *) parent;
   mpad = (GstMplexPad *) gst_pad_get_element_private (sinkpad);
   g_return_val_if_fail (mpad, FALSE);
 
   switch (GST_EVENT_TYPE (event)) {
     case GST_EVENT_FLUSH_START:
       /* forward event */
-      gst_pad_event_default (sinkpad, event);
+      gst_pad_event_default (sinkpad, parent, event);
 
       /* now unblock the chain function */
       GST_MPLEX_MUTEX_LOCK (mplex);
-      mplex->srcresult = GST_FLOW_WRONG_STATE;
+      mplex->srcresult = GST_FLOW_FLUSHING;
       GST_MPLEX_SIGNAL (mplex, mpad);
       GST_MPLEX_MUTEX_UNLOCK (mplex);
       /* no way to pause/restart loop task */
       goto done;
     case GST_EVENT_FLUSH_STOP:
       /* forward event */
-      gst_pad_event_default (sinkpad, event);
+      gst_pad_event_default (sinkpad, parent, event);
 
       /* clear state and resume */
       GST_MPLEX_MUTEX_LOCK (mplex);
@@ -485,7 +485,7 @@ gst_mplex_sink_event (GstPad * sinkpad, GstEvent * event)
       mplex->srcresult = GST_FLOW_OK;
       GST_MPLEX_MUTEX_UNLOCK (mplex);
       goto done;
-    case GST_EVENT_NEWSEGMENT:
+    case GST_EVENT_SEGMENT:
       /* eat segments; we make our own (byte)stream */
       gst_event_unref (event);
       goto done;
@@ -499,6 +499,16 @@ gst_mplex_sink_event (GstPad * sinkpad, GstEvent * event)
       /* eat this event for now, task will send eos when finished */
       gst_event_unref (event);
       goto done;
+    case GST_EVENT_CAPS:
+    {
+      GstCaps *caps;
+
+      gst_event_parse_caps (event, &caps);
+      result = gst_mplex_setcaps (sinkpad, caps);
+      gst_event_unref (event);
+      goto done;
+      break;
+    }
     default:
       /* for a serialized event, wait until earlier data is gone,
        * though this is no guarantee as to when task is done with it.
@@ -512,7 +522,7 @@ gst_mplex_sink_event (GstPad * sinkpad, GstEvent * event)
       break;
   }
 
-  result = gst_pad_event_default (sinkpad, event);
+  result = gst_pad_event_default (sinkpad, parent, event);
 
 done:
   return result;
@@ -527,18 +537,18 @@ gst_mplex_start_task (GstMplex * mplex)
   if (G_UNLIKELY (mplex->srcresult == GST_FLOW_CUSTOM_SUCCESS)
       && mplex->job->video_tracks == mplex->num_vpads
       && mplex->job->audio_tracks == mplex->num_apads) {
-    gst_pad_start_task (mplex->srcpad, (GstTaskFunction) gst_mplex_loop, mplex);
+    gst_pad_start_task (mplex->srcpad, (GstTaskFunction) gst_mplex_loop, mplex, NULL);
     mplex->srcresult = GST_FLOW_OK;
   }
 }
 
 static GstFlowReturn
-gst_mplex_chain (GstPad * sinkpad, GstBuffer * buffer)
+gst_mplex_chain (GstPad * sinkpad, GstObject * parent, GstBuffer * buffer)
 {
   GstMplex *mplex;
   GstMplexPad *mpad;
 
-  mplex = (GstMplex *) (GST_PAD_PARENT (sinkpad));
+  mplex = (GstMplex *) parent;
   mpad = (GstMplexPad *) gst_pad_get_element_private (sinkpad);
   g_return_val_if_fail (mpad, GST_FLOW_ERROR);
 
@@ -556,7 +566,7 @@ gst_mplex_chain (GstPad * sinkpad, GstBuffer * buffer)
   if (G_UNLIKELY (mpad->eos))
     goto eos;
 
-  if (G_UNLIKELY (!GST_FLOW_IS_SUCCESS (mplex->srcresult)))
+  if (G_UNLIKELY (mplex->srcresult != GST_FLOW_OK))
     goto ignore;
 
   gst_adapter_push (mpad->adapter, buffer);
@@ -583,7 +593,7 @@ eos:
     GST_MPLEX_MUTEX_UNLOCK (mplex);
 
     gst_buffer_unref (buffer);
-    return GST_FLOW_UNEXPECTED;
+    return GST_FLOW_EOS;
   }
 ignore:
   {
@@ -601,7 +611,7 @@ ignore:
 
 static GstPad *
 gst_mplex_request_new_pad (GstElement * element,
-    GstPadTemplate * templ, const gchar * name)
+    GstPadTemplate * templ, const gchar * name, const GstCaps * caps)
 {
   GstElementClass *klass = GST_ELEMENT_GET_CLASS (element);
   GstMplex *mplex = GST_MPLEX (element);
@@ -609,12 +619,12 @@ gst_mplex_request_new_pad (GstElement * element,
   GstPad *newpad;
   GstMplexPad *mpad;
 
-  if (templ == gst_element_class_get_pad_template (klass, "audio_%d")) {
+  if (templ == gst_element_class_get_pad_template (klass, "audio_%u")) {
     GST_DEBUG_OBJECT (mplex, "request pad audio %d", mplex->num_apads);
-    padname = g_strdup_printf ("audio_%d", mplex->num_apads++);
-  } else if (templ == gst_element_class_get_pad_template (klass, "video_%d")) {
+    padname = g_strdup_printf ("audio_%u", mplex->num_apads++);
+  } else if (templ == gst_element_class_get_pad_template (klass, "video_%u")) {
     GST_DEBUG_OBJECT (mplex, "request pad video %d", mplex->num_vpads);
-    padname = g_strdup_printf ("video_%d", mplex->num_vpads++);
+    padname = g_strdup_printf ("video_%u", mplex->num_vpads++);
   } else {
     GST_WARNING_OBJECT (mplex, "This is not our template!");
     return NULL;
@@ -625,11 +635,10 @@ gst_mplex_request_new_pad (GstElement * element,
 
   mpad = g_new0 (GstMplexPad, 1);
   mpad->adapter = gst_adapter_new ();
-  mpad->cond = g_cond_new ();
+  g_cond_init (&mpad->cond);
   gst_object_ref (newpad);
   mpad->pad = newpad;
 
-  gst_pad_set_setcaps_function (newpad, GST_DEBUG_FUNCPTR (gst_mplex_setcaps));
   gst_pad_set_chain_function (newpad, GST_DEBUG_FUNCPTR (gst_mplex_chain));
   gst_pad_set_event_function (newpad, GST_DEBUG_FUNCPTR (gst_mplex_sink_event));
   gst_pad_set_element_private (newpad, mpad);
@@ -654,12 +663,14 @@ gst_mplex_release_pad (GstElement * element, GstPad * pad)
 
     GST_MPLEX_MUTEX_LOCK (mplex);
     mpad->eos = TRUE;
-    gst_object_unref (mpad->pad);
+    g_assert (mpad->pad == pad);
     mpad->pad = NULL;
     /* wake up if waiting on this pad */
     GST_MPLEX_SIGNAL (mplex, mpad);
 
     padname = gst_object_get_name (GST_OBJECT (pad));
+    /* now only drop what might be last ref */
+    gst_object_unref (pad);
     if (strstr (padname, "audio")) {
       mplex->num_apads--;
     } else {
@@ -688,12 +699,16 @@ gst_mplex_set_property (GObject * object,
 }
 
 static gboolean
-gst_mplex_src_activate_push (GstPad * pad, gboolean active)
+gst_mplex_src_activate_mode (GstPad * pad, GstObject * parent,
+    GstPadMode mode, gboolean active)
 {
   gboolean result = TRUE;
   GstMplex *mplex;
 
-  mplex = GST_MPLEX (GST_PAD_PARENT (pad));
+  mplex = GST_MPLEX (parent);
+
+  if (mode != GST_PAD_MODE_PUSH)
+    return FALSE;
 
   if (active) {
     /* chain will start task once all streams have been setup */
@@ -701,7 +716,7 @@ gst_mplex_src_activate_push (GstPad * pad, gboolean active)
     /* end the muxing loop by forcing eos and unblock chains */
     GST_MPLEX_MUTEX_LOCK (mplex);
     mplex->eos = TRUE;
-    mplex->srcresult = GST_FLOW_WRONG_STATE;
+    mplex->srcresult = GST_FLOW_FLUSHING;
     GST_MPLEX_SIGNAL_ALL (mplex);
     GST_MPLEX_MUTEX_UNLOCK (mplex);
 
@@ -805,6 +820,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "mplex",
+    mplex,
     "High-quality MPEG/DVD/SVCD/VCD video/audio multiplexer",
     plugin_init, VERSION, "GPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

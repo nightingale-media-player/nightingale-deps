@@ -28,13 +28,6 @@
 
 #include "gstsfsink.h"
 
-
-static const GstElementDetails sfsink_details =
-GST_ELEMENT_DETAILS ("Sndfile sink",
-    "Sink/Audio",
-    "Write audio streams to disk using libsndfile",
-    "Andy Wingo <wingo at pobox dot com>");
-
 enum
 {
   PROP_0,
@@ -93,7 +86,10 @@ gst_sf_sink_base_init (gpointer g_class)
   GST_DEBUG_CATEGORY_INIT (gst_sf_debug, "sfsink", 0, "sfsink element");
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sf_sink_factory));
-  gst_element_class_set_details (element_class, &sfsink_details);
+  gst_element_class_set_static_metadata (element_class, "Sndfile sink",
+      "Sink/Audio",
+      "Write audio streams to disk using libsndfile",
+      "Andy Wingo <wingo at pobox dot com>");
 }
 
 static void
@@ -111,19 +107,23 @@ gst_sf_sink_class_init (GstSFSinkClass * klass)
 
   g_object_class_install_property (gobject_class, PROP_LOCATION,
       g_param_spec_string ("location", "File Location",
-          "Location of the file to write", NULL, G_PARAM_READWRITE));
+          "Location of the file to write", NULL,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   pspec = g_param_spec_enum
       ("major-type", "Major type", "Major output type", GST_TYPE_SF_MAJOR_TYPES,
-      SF_FORMAT_WAV, G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+      SF_FORMAT_WAV,
+      G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (gobject_class, PROP_MAJOR_TYPE, pspec);
   pspec = g_param_spec_enum
       ("minor-type", "Minor type", "Minor output type", GST_TYPE_SF_MINOR_TYPES,
-      SF_FORMAT_FLOAT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+      SF_FORMAT_FLOAT,
+      G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (gobject_class, PROP_MINOR_TYPE, pspec);
   pspec = g_param_spec_int
       ("buffer-frames", "Buffer frames",
       "Number of frames per buffer, in pull mode", 1, G_MAXINT,
-      DEFAULT_BUFFER_FRAMES, G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+      DEFAULT_BUFFER_FRAMES,
+      G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (gobject_class, PROP_BUFFER_FRAMES, pspec);
 
   basesink_class->get_times = NULL;
@@ -415,9 +415,9 @@ gst_sf_sink_loop (GstPad * pad)
 
   basesink->offset += GST_BUFFER_SIZE (buf);
 
-  GST_PAD_PREROLL_LOCK (pad);
+  GST_BASE_SINK_PREROLL_LOCK (basesink);
   result = gst_sf_sink_render (basesink, buf);
-  GST_PAD_PREROLL_UNLOCK (pad);
+  GST_BASE_SINK_PREROLL_UNLOCK (basesink);
   if (G_UNLIKELY (result != GST_FLOW_OK))
     goto paused;
 
@@ -432,14 +432,13 @@ paused:
         gst_flow_get_name (result));
     gst_pad_pause_task (pad);
     /* fatal errors and NOT_LINKED cause EOS */
-    if (GST_FLOW_IS_FATAL (result) || result == GST_FLOW_NOT_LINKED) {
+    if (result == GST_FLOW_UNEXPECTED) {
       gst_pad_send_event (pad, gst_event_new_eos ());
-      /* EOS does not cause an ERROR message */
-      if (result != GST_FLOW_UNEXPECTED) {
-        GST_ELEMENT_ERROR (basesink, STREAM, FAILED,
-            (_("Internal data stream error.")),
-            ("stream stopped, reason %s", gst_flow_get_name (result)));
-      }
+    } else if (result < GST_FLOW_UNEXPECTED || result == GST_FLOW_NOT_LINKED) {
+      GST_ELEMENT_ERROR (basesink, STREAM, FAILED,
+          (_("Internal data stream error.")),
+          ("stream stopped, reason %s", gst_flow_get_name (result)));
+      gst_pad_send_event (pad, gst_event_new_eos ());
     }
     gst_object_unref (this);
     return;
@@ -460,7 +459,7 @@ gst_sf_sink_activate_pull (GstBaseSink * basesink, gboolean active)
   if (active) {
     /* start task */
     result = gst_pad_start_task (basesink->sinkpad,
-        (GstTaskFunction) gst_sf_sink_loop, basesink->sinkpad);
+        (GstTaskFunction) gst_sf_sink_loop, basesink->sinkpad, NULL);
   } else {
     /* step 2, make sure streaming finishes */
     result = gst_pad_stop_task (basesink->sinkpad);

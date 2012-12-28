@@ -66,15 +66,22 @@ struct _GstCDAudioClass
   void (*track_change) (GstElement * element, guint track);
 };
 
+#define DEFAULT_DEVICE     "/dev/cdrom"
+#define DEFAULT_VOLUME_FR  255
+#define DEFAULT_VOLUME_FL  255
+#define DEFAULT_VOLUME_BR  255
+#define DEFAULT_VOLUME_BL  255
+
 /* props */
 enum
 {
-  ARG_0,
-  ARG_DEVICE,
-  ARG_VOLUME_FR,
-  ARG_VOLUME_FL,
-  ARG_VOLUME_BR,
-  ARG_VOLUME_BL
+  PROP_0,
+  PROP_DEVICE,
+  PROP_VOLUME_FR,
+  PROP_VOLUME_FL,
+  PROP_VOLUME_BR,
+  PROP_VOLUME_BL,
+  PROP_LAST
 };
 
 /* signals */
@@ -84,8 +91,6 @@ enum
   LAST_SIGNAL
 };
 
-static void gst_cdaudio_class_init (GstCDAudioClass * klass);
-static void gst_cdaudio_init (GstCDAudio * cdaudio, GstCDAudioClass * g_class);
 static void gst_cdaudio_finalize (GObject * object);
 
 static void gst_cdaudio_set_property (GObject * object, guint prop_id,
@@ -108,13 +113,6 @@ static GstFormat sector_format;
 static GstElementClass *parent_class;
 static guint gst_cdaudio_signals[LAST_SIGNAL] = { 0 };
 
-static const GstElementDetails gst_cdaudio_details =
-GST_ELEMENT_DETAILS ("CD player",
-    "Generic/Bin",
-    "Play CD audio through the CD Drive",
-    "Wim Taymans <wim@fluendo.com>");
-
-
 static void
 _do_init (GType cdaudio_type)
 {
@@ -128,6 +126,7 @@ _do_init (GType cdaudio_type)
       &urihandler_info);
 }
 
+GType gst_cdaudio_get_type (void);
 GST_BOILERPLATE_FULL (GstCDAudio, gst_cdaudio, GstElement, GST_TYPE_ELEMENT,
     _do_init);
 
@@ -136,7 +135,9 @@ gst_cdaudio_base_init (gpointer g_class)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
-  gst_element_class_set_details (element_class, &gst_cdaudio_details);
+  gst_element_class_set_static_metadata (element_class, "CD player",
+      "Generic/Bin",
+      "Play CD audio through the CD Drive", "Wim Taymans <wim@fluendo.com>");
 
   /* Register the track and sector format */
   track_format = gst_format_register ("track", "CD track");
@@ -157,21 +158,21 @@ gst_cdaudio_class_init (GstCDAudioClass * klass)
   gobject_klass->set_property = gst_cdaudio_set_property;
   gobject_klass->get_property = gst_cdaudio_get_property;
 
-  g_object_class_install_property (gobject_klass, ARG_DEVICE,
+  g_object_class_install_property (gobject_klass, PROP_DEVICE,
       g_param_spec_string ("device", "Device", "CDROM device",
-          NULL, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_klass, ARG_VOLUME_FL,
-      g_param_spec_int ("volume_fl", "Volume fl", "Front left volume",
-          0, 255, 255, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_klass, ARG_VOLUME_FR,
-      g_param_spec_int ("volume_fr", "Volume fr", "Front right volume",
-          0, 255, 255, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_klass, ARG_VOLUME_BL,
-      g_param_spec_int ("volume_bl", "Volume bl", "Back left volume",
-          0, 255, 255, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_klass, ARG_VOLUME_BR,
-      g_param_spec_int ("volume_br", "Volume br", "Back right volume",
-          0, 255, 255, G_PARAM_READWRITE));
+          NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_klass, PROP_VOLUME_FL,
+      g_param_spec_int ("volume-fl", "Volume fl", "Front left volume",
+          0, 255, 255, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_klass, PROP_VOLUME_FR,
+      g_param_spec_int ("volume-fr", "Volume fr", "Front right volume",
+          0, 255, 255, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_klass, PROP_VOLUME_BL,
+      g_param_spec_int ("volume-bl", "Volume bl", "Back left volume",
+          0, 255, 255, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_klass, PROP_VOLUME_BR,
+      g_param_spec_int ("volume-br", "Volume br", "Back right volume",
+          0, 255, 255, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gst_cdaudio_signals[TRACK_CHANGE] =
       g_signal_new ("track-change", G_TYPE_FROM_CLASS (klass),
@@ -192,7 +193,12 @@ gst_cdaudio_class_init (GstCDAudioClass * klass)
 static void
 gst_cdaudio_init (GstCDAudio * cdaudio, GstCDAudioClass * g_class)
 {
-  cdaudio->device = g_strdup ("/dev/cdrom");
+  cdaudio->device = g_strdup (DEFAULT_DEVICE);
+  cdaudio->volume.vol_front.right = DEFAULT_VOLUME_FR;
+  cdaudio->volume.vol_front.left = DEFAULT_VOLUME_FL;
+  cdaudio->volume.vol_back.right = DEFAULT_VOLUME_BR;
+  cdaudio->volume.vol_back.left = DEFAULT_VOLUME_BL;
+
   cdaudio->was_playing = FALSE;
   cdaudio->timer = g_timer_new ();
 
@@ -219,15 +225,21 @@ gst_cdaudio_set_property (GObject * object, guint prop_id, const GValue * value,
   cdaudio = GST_CDAUDIO (object);
 
   switch (prop_id) {
-    case ARG_DEVICE:
+    case PROP_DEVICE:
+      g_free (cdaudio->device);
+      cdaudio->device = g_value_dup_string (value);
       break;
-    case ARG_VOLUME_FR:
+    case PROP_VOLUME_FR:
+      cdaudio->volume.vol_front.right = g_value_get_int (value);
       break;
-    case ARG_VOLUME_FL:
+    case PROP_VOLUME_FL:
+      cdaudio->volume.vol_front.left = g_value_get_int (value);
       break;
-    case ARG_VOLUME_BR:
+    case PROP_VOLUME_BR:
+      cdaudio->volume.vol_back.right = g_value_get_int (value);
       break;
-    case ARG_VOLUME_BL:
+    case PROP_VOLUME_BL:
+      cdaudio->volume.vol_back.left = g_value_get_int (value);
       break;
     default:
       break;
@@ -243,19 +255,19 @@ gst_cdaudio_get_property (GObject * object, guint prop_id, GValue * value,
   cdaudio = GST_CDAUDIO (object);
 
   switch (prop_id) {
-    case ARG_DEVICE:
+    case PROP_DEVICE:
       g_value_set_string (value, cdaudio->device);
       break;
-    case ARG_VOLUME_FR:
+    case PROP_VOLUME_FR:
       g_value_set_int (value, cdaudio->volume.vol_front.right);
       break;
-    case ARG_VOLUME_FL:
+    case PROP_VOLUME_FL:
       g_value_set_int (value, cdaudio->volume.vol_front.left);
       break;
-    case ARG_VOLUME_BR:
+    case PROP_VOLUME_BR:
       g_value_set_int (value, cdaudio->volume.vol_back.right);
       break;
-    case ARG_VOLUME_BL:
+    case PROP_VOLUME_BL:
       g_value_set_int (value, cdaudio->volume.vol_back.left);
       break;
     default:
@@ -573,13 +585,15 @@ cdaudio_uri_get_type (void)
 {
   return GST_URI_SRC;
 }
+
 static gchar **
 cdaudio_uri_get_protocols (void)
 {
-  static gchar *protocols[] = { "cd", NULL };
+  static gchar *protocols[] = { (char *) "cd", NULL };
 
   return protocols;
 }
+
 static const gchar *
 cdaudio_uri_get_uri (GstURIHandler * handler)
 {
@@ -636,6 +650,6 @@ cdaudio_uri_handler_init (gpointer g_iface, gpointer iface_data)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "cdaudio",
+    cdaudio,
     "Play CD audio through the CD Drive",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

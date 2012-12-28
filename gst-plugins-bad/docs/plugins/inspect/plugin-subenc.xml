@@ -3,10 +3,10 @@
   <description>subtitle encoders</description>
   <filename>../../gst/subenc/.libs/libgstsubenc.so</filename>
   <basename>libgstsubenc.so</basename>
-  <version>0.10.16</version>
+  <version>1.0.4</version>
   <license>LGPL</license>
   <source>gst-plugins-bad</source>
-  <package>GStreamer Bad Plug-ins prerelease</package>
+  <package>GStreamer Bad Plug-ins source release</package>
   <origin>Unknown package origin</origin>
   <elements>
     <element>
@@ -17,16 +17,37 @@
       <author>Thijs Vermeir &lt;thijsvermeir@gmail.com&gt;</author>
       <pads>
         <caps>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>text/x-raw, format=(string){ pango-markup, utf8 }</details>
+        </caps>
+        <caps>
           <name>src</name>
           <direction>source</direction>
           <presence>always</presence>
           <details>application/x-subtitle</details>
         </caps>
+      </pads>
+    </element>
+    <element>
+      <name>webvttenc</name>
+      <longname>WebVTT encoder</longname>
+      <class>Codec/Encoder/Subtitle</class>
+      <description>WebVTT subtitle encoder</description>
+      <author>David Schleef &lt;ds@schleef.org&gt;</author>
+      <pads>
         <caps>
           <name>sink</name>
           <direction>sink</direction>
           <presence>always</presence>
-          <details>text/plain; text/x-pango-markup</details>
+          <details>text/x-raw, format=(string){ pango-markup, utf8 }</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>text/vtt</details>
         </caps>
       </pads>
     </element>

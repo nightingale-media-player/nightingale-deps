@@ -38,7 +38,7 @@
 static CamReturn connection_data_cb (CamTL * tl, CamTLConnection * connection,
     guint8 * spdu, guint spdu_length);
 
-CamSLSession *
+static CamSLSession *
 cam_sl_session_new (CamSL * sl, CamTLConnection * connection,
     guint16 session_nb, guint resource_id)
 {
@@ -53,7 +53,7 @@ cam_sl_session_new (CamSL * sl, CamTLConnection * connection,
   return session;
 }
 
-void
+static void
 cam_sl_session_destroy (CamSLSession * session)
 {
   g_free (session);
@@ -379,8 +379,6 @@ static CamReturn
 handle_create_session_response (CamSL * sl, CamTLConnection * connection,
     guint8 * spdu, guint spdu_length)
 {
-  guint8 status;
-  guint resource_id;
   guint16 session_nb;
   CamSLSession *session;
 
@@ -398,8 +396,8 @@ handle_create_session_response (CamSL * sl, CamTLConnection * connection,
   }
 
   /* skip tag and length */
-  status = spdu[2];
-  resource_id = GST_READ_UINT32_BE (&spdu[3]);
+  /* status = spdu[2]; */
+  /* resource_id = GST_READ_UINT32_BE (&spdu[3]); */
   session_nb = GST_READ_UINT16_BE (&spdu[7]);
 
   session = g_hash_table_lookup (sl->sessions,

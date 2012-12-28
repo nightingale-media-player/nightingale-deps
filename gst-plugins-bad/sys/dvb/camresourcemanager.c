@@ -38,7 +38,7 @@ static CamReturn data_impl (CamALApplication * application,
     CamSLSession * session, guint tag, guint8 * buffer, guint length);
 
 CamResourceManager *
-cam_resource_manager_new ()
+cam_resource_manager_new (void)
 {
   CamALApplication *application;
   CamResourceManager *mgr;
@@ -171,22 +171,22 @@ static CamReturn
 data_impl (CamALApplication * application, CamSLSession * session,
     guint tag, guint8 * buffer, guint length)
 {
-  CamReturn ret;
   CamResourceManager *mgr = CAM_RESOURCE_MANAGER (application);
 
   switch (tag) {
     case TAG_PROFILE_ENQUIRY:
-      ret = send_profile_reply (mgr, session);
+      send_profile_reply (mgr, session);
       break;
     case TAG_PROFILE_REPLY:
-      ret = handle_profile_reply (mgr, session, buffer, length);
+      handle_profile_reply (mgr, session, buffer, length);
       break;
     case TAG_PROFILE_CHANGE:
-      ret = send_profile_enquiry (mgr, session);
+      send_profile_enquiry (mgr, session);
       break;
     default:
       g_return_val_if_reached (CAM_RETURN_APPLICATION_ERROR);
   }
 
+  /* FIXME: Shouldn't this return the retval from the functions above ? */
   return CAM_RETURN_OK;
 }

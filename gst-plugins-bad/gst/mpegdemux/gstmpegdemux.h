@@ -39,6 +39,7 @@
  * Fluendo, S.L. All Rights Reserved.
  *
  * Contributor(s): Wim Taymans <wim@fluendo.com>
+ *                 Jan Schmidt <thaytan@noraisin.net>
  */
 
 #ifndef __GST_FLUPS_DEMUX_H__
@@ -50,12 +51,14 @@
 #include "gstpesfilter.h"
 
 G_BEGIN_DECLS
+
 #define GST_TYPE_FLUPS_DEMUX		(gst_flups_demux_get_type())
 #define GST_FLUPS_DEMUX(obj)		(G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_FLUPS_DEMUX,GstFluPSDemux))
 #define GST_FLUPS_DEMUX_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_FLUPS_DEMUX,GstFluPSDemuxClass))
 #define GST_FLUPS_DEMUX_GET_CLASS(klass) (G_TYPE_INSTANCE_GET_CLASS((klass),GST_TYPE_FLUPS_DEMUX,GstFluPSDemuxClass))
 #define GST_IS_FLUPS_DEMUX(obj)		(G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_FLUPS_DEMUX))
 #define GST_IS_FLUPS_DEMUX_CLASS(obj)	(G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_FLUPS_DEMUX))
+
 typedef struct _GstFluPSStream GstFluPSStream;
 typedef struct _GstFluPSDemux GstFluPSDemux;
 typedef struct _GstFluPSDemuxClass GstFluPSDemuxClass;
@@ -84,15 +87,16 @@ struct _GstFluPSStream
 
   gint id;
   gint type;
-  gint size_bound;
 
   GstClockTime segment_thresh;
-  GstClockTime last_seg_start;
   GstClockTime last_ts;
+  GstFlowReturn last_flow;
 
   gboolean discont;
   gboolean notlinked;
   gboolean need_segment;
+
+  GstTagList *pending_tags;
 };
 
 struct _GstFluPSDemux
@@ -131,6 +135,7 @@ struct _GstFluPSDemux
 
   GstSegment sink_segment;
   GstSegment src_segment;
+  gboolean adjust_segment;
 
   /* stream output */
   GstFluPSStream *current_stream;
@@ -143,10 +148,6 @@ struct _GstFluPSDemux
 
   /* Indicates an MPEG-2 stream */
   gboolean is_mpeg2_pack;
-
-  /* Language codes event is stored when a dvd-lang-codes
-   * custom event arrives from upstream */
-  GstEvent *lang_codes;
 };
 
 struct _GstFluPSDemuxClass
@@ -161,8 +162,6 @@ struct _GstFluPSDemuxClass
 };
 
 GType gst_flups_demux_get_type (void);
-
-gboolean gst_flups_demux_plugin_init (GstPlugin * plugin);
 
 G_END_DECLS
 #endif /* __GST_FLUPS_DEMUX_H__ */

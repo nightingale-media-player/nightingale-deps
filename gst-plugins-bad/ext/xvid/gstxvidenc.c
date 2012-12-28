@@ -36,13 +36,6 @@
 #include <gst/video/video.h>
 #include "gstxvidenc.h"
 
-/* elementfactory information */
-static const GstElementDetails gst_xvidenc_details =
-GST_ELEMENT_DETAILS ("XviD video encoder",
-    "Codec/Encoder/Video",
-    "XviD encoder based on xvidcore",
-    "Ronald Bultje <rbultje@ronald.bitfreak.net>");
-
 static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
@@ -58,14 +51,37 @@ static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
 static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("video/x-xvid, "
+    GST_STATIC_CAPS ("video/mpeg, "
+        "mpegversion = (int) 4, "
+        "systemstream = (boolean) FALSE, "
         "width = (int) [ 0, MAX ], "
-        "height = (int) [ 0, MAX ], " "framerate = (fraction) [ 0/1, MAX ]; "
+        "height = (int) [ 0, MAX ], "
+        "framerate = (fraction) [ 0/1, MAX ], "
+        "profile = (string) simple, "
+        "level = (string) { 0, 1, 2, 3, 4a, 5, 6 };"
         "video/mpeg, "
         "mpegversion = (int) 4, "
         "systemstream = (boolean) FALSE, "
         "width = (int) [ 0, MAX ], "
-        "height = (int) [ 0, MAX ], " "framerate = (fraction) [ 0/1, MAX ]")
+        "height = (int) [ 0, MAX ], "
+        "framerate = (fraction) [ 0/1, MAX ], "
+        "profile = (string) advanced-real-time-simple, "
+        "level = (string) { 1, 2, 3, 4 };"
+        "video/mpeg, "
+        "mpegversion = (int) 4, "
+        "systemstream = (boolean) FALSE, "
+        "width = (int) [ 0, MAX ], "
+        "height = (int) [ 0, MAX ], "
+        "framerate = (fraction) [ 0/1, MAX ], "
+        "profile = (string) advanced-simple, "
+        "level = (string) { 0, 1, 2, 3, 4 };"
+        "video/mpeg, "
+        "mpegversion = (int) 4, "
+        "systemstream = (boolean) FALSE, "
+        "width = (int) [ 0, MAX ], " "height = (int) [ 0, MAX ]; "
+        "video/x-xvid, "
+        "width = (int) [ 0, MAX ], "
+        "height = (int) [ 0, MAX ], " "framerate = (fraction) [ 0/1, MAX ];")
     );
 
 
@@ -86,6 +102,7 @@ static void gst_xvidenc_init (GstXvidEnc * xvidenc);
 static void gst_xvidenc_finalize (GObject * object);
 static GstFlowReturn gst_xvidenc_chain (GstPad * pad, GstBuffer * data);
 static gboolean gst_xvidenc_setcaps (GstPad * pad, GstCaps * vscapslist);
+static GstCaps *gst_xvidenc_getcaps (GstPad * pad);
 static void gst_xvidenc_flush_buffers (GstXvidEnc * xvidenc, gboolean send);
 static gboolean gst_xvidenc_handle_sink_event (GstPad * pad, GstEvent * event);
 
@@ -112,6 +129,9 @@ gst_xvidenc_profile_get_type (void)
       {XVID_PROFILE_S_L1, "S_L1", "Simple profile, L1"},
       {XVID_PROFILE_S_L2, "S_L2", "Simple profile, L2"},
       {XVID_PROFILE_S_L3, "S_L3", "Simple profile, L3"},
+      {XVID_PROFILE_S_L4a, "S_L4a", "Simple profile, L4a"},
+      {XVID_PROFILE_S_L5, "S_L5", "Simple profile, L5"},
+      {XVID_PROFILE_S_L6, "S_L6", "Simple profile, L6"},
       {XVID_PROFILE_ARTS_L1, "ARTS_L1",
           "Advanced real-time simple profile, L1"},
       {XVID_PROFILE_ARTS_L2, "ARTS_L2",
@@ -228,7 +248,10 @@ gst_xvidenc_base_init (GstXvidEncClass * klass)
       gst_static_pad_template_get (&sink_template));
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_template));
-  gst_element_class_set_details (element_class, &gst_xvidenc_details);
+  gst_element_class_set_static_metadata (element_class, "XviD video encoder",
+      "Codec/Encoder/Video",
+      "XviD encoder based on xvidcore",
+      "Ronald Bultje <rbultje@ronald.bitfreak.net>");
 }
 
 /* add property pspec to klass using the counter count,
@@ -277,191 +300,210 @@ gst_xvidenc_class_init (GstXvidEncClass * klass)
 
   pspec = g_param_spec_enum ("profile", "Profile",
       "XviD/MPEG-4 encoding profile",
-      GST_TYPE_XVIDENC_PROFILE, 0, G_PARAM_READWRITE);
+      GST_TYPE_XVIDENC_PROFILE, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, profile);
 
   pspec = g_param_spec_enum ("quant-type", "Quantizer Type",
-      "Quantizer type", GST_TYPE_XVIDENC_QUANT_TYPE, 0, G_PARAM_READWRITE);
+      "Quantizer type", GST_TYPE_XVIDENC_QUANT_TYPE, 0,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, quant_type);
 
   pspec = g_param_spec_enum ("pass", "Encoding pass/type",
       "Encoding pass/type",
-      GST_TYPE_XVIDENC_PASS, XVIDENC_CBR, G_PARAM_READWRITE);
+      GST_TYPE_XVIDENC_PASS, XVIDENC_CBR,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, pass);
 
   pspec = g_param_spec_int ("bitrate", "Bitrate",
       "[CBR|PASS2] Target video bitrate (bps)",
-      0, G_MAXINT, 1800000, G_PARAM_READWRITE);
+      0, G_MAXINT, 1800000, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, bitrate);
 
   pspec = g_param_spec_int ("quantizer", "Quantizer",
       "[QUANT] Quantizer to apply for constant quantizer mode",
-      2, 31, 2, G_PARAM_READWRITE);
+      2, 31, 2, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, quant);
 
   pspec = g_param_spec_string ("statsfile", "Statistics Filename",
       "[PASS1|PASS2] Filename to store data for 2-pass encoding",
-      "xvid-stats.log", G_PARAM_READWRITE);
+      "xvid-stats.log", G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, filename);
 
   pspec = g_param_spec_int ("max-key-interval", "Max. Key Interval",
       "Maximum number of frames between two keyframes (< 0 is in sec)",
-      -100, G_MAXINT, -10, G_PARAM_READWRITE);
+      -100, G_MAXINT, -10, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, max_key_interval);
 
   pspec = g_param_spec_boolean ("closed-gop", "Closed GOP",
-      "Closed GOP", FALSE, G_PARAM_READWRITE);
+      "Closed GOP", FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, closed_gop);
 
   pspec = g_param_spec_int ("motion", "ME Quality",
-      "Quality of Motion Estimation", 0, 6, 6, G_PARAM_READWRITE);
+      "Quality of Motion Estimation", 0, 6, 6,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, motion);
 
   pspec = g_param_spec_boolean ("me-chroma", "ME Chroma",
       "Enable use of Chroma planes for Motion Estimation",
-      TRUE, G_PARAM_READWRITE);
+      TRUE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, me_chroma);
 
   pspec = g_param_spec_int ("me-vhq", "ME DCT/Frequency",
       "Extent in which to use DCT to minimize encoding length",
-      0, 4, 1, G_PARAM_READWRITE);
+      0, 4, 1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, me_vhq);
 
   pspec = g_param_spec_boolean ("me-quarterpel", "ME Quarterpel",
       "Use quarter pixel precision for motion vector search",
-      FALSE, G_PARAM_READWRITE);
+      FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, me_quarterpel);
 
   pspec = g_param_spec_boolean ("lumimasking", "Lumimasking",
       "Enable lumimasking - apply more compression to dark or bright areas",
-      FALSE, G_PARAM_READWRITE);
+      FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, lumimasking);
 
   pspec = g_param_spec_int ("max-bframes", "Max B-Frames",
-      "Maximum B-frames in a row", 0, G_MAXINT, 1, G_PARAM_READWRITE);
+      "Maximum B-frames in a row", 0, G_MAXINT, 1,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, max_bframes);
 
   pspec = g_param_spec_int ("bquant-ratio", "B-quantizer ratio",
-      "Ratio in B-frame quantizer computation", 0, 200, 150, G_PARAM_READWRITE);
+      "Ratio in B-frame quantizer computation", 0, 200, 150,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, bquant_ratio);
 
   pspec = g_param_spec_int ("bquant-offset", "B-quantizer offset",
       "Offset in B-frame quantizer computation",
-      0, 200, 100, G_PARAM_READWRITE);
+      0, 200, 100, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, bquant_offset);
 
   pspec = g_param_spec_int ("bframe-threshold", "B-Frame Threshold",
       "Higher threshold yields more chance that B-frame is used",
-      -255, 255, 0, G_PARAM_READWRITE);
+      -255, 255, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, bframe_threshold);
 
   pspec = g_param_spec_boolean ("gmc", "Global Motion Compensation",
       "Allow generation of Sprite Frames for Pan/Zoom/Rotating images",
-      FALSE, G_PARAM_READWRITE);
+      FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, gmc);
 
   pspec = g_param_spec_boolean ("trellis", "Trellis Quantization",
-      "Enable Trellis Quantization", FALSE, G_PARAM_READWRITE);
+      "Enable Trellis Quantization", FALSE,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, trellis);
 
   pspec = g_param_spec_boolean ("interlaced", "Interlaced Material",
-      "Enable for interlaced video material", FALSE, G_PARAM_READWRITE);
+      "Enable for interlaced video material", FALSE,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, interlaced);
 
   pspec = g_param_spec_boolean ("cartoon", "Cartoon Material",
-      "Adjust thresholds for flat looking cartoons", FALSE, G_PARAM_READWRITE);
+      "Adjust thresholds for flat looking cartoons", FALSE,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, cartoon);
 
   pspec = g_param_spec_boolean ("greyscale", "Disable Chroma",
-      "Do not write chroma data in encoded video", FALSE, G_PARAM_READWRITE);
+      "Do not write chroma data in encoded video", FALSE,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, greyscale);
 
   pspec = g_param_spec_boolean ("hqacpred", "High quality AC prediction",
-      "Enable high quality AC prediction", TRUE, G_PARAM_READWRITE);
+      "Enable high quality AC prediction", TRUE,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, hqacpred);
 
   pspec = g_param_spec_int ("max-iquant", "Max Quant I-Frames",
-      "Upper bound for I-frame quantization", 0, 31, 31, G_PARAM_READWRITE);
+      "Upper bound for I-frame quantization", 0, 31, 31,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, max_iquant);
 
   pspec = g_param_spec_int ("min-iquant", "Min Quant I-Frames",
-      "Lower bound for I-frame quantization", 0, 31, 2, G_PARAM_READWRITE);
+      "Lower bound for I-frame quantization", 0, 31, 2,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, min_iquant);
 
   pspec = g_param_spec_int ("max-pquant", "Max Quant P-Frames",
-      "Upper bound for P-frame quantization", 0, 31, 31, G_PARAM_READWRITE);
+      "Upper bound for P-frame quantization", 0, 31, 31,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, max_pquant);
 
   pspec = g_param_spec_int ("min-pquant", "Min Quant P-Frames",
-      "Lower bound for P-frame quantization", 0, 31, 2, G_PARAM_READWRITE);
+      "Lower bound for P-frame quantization", 0, 31, 2,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, min_pquant);
 
   pspec = g_param_spec_int ("max-bquant", "Max Quant B-Frames",
-      "Upper bound for B-frame quantization", 0, 31, 31, G_PARAM_READWRITE);
+      "Upper bound for B-frame quantization", 0, 31, 31,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, max_bquant);
 
   pspec = g_param_spec_int ("min-bquant", "Min Quant B-Frames",
-      "Lower bound for B-frame quantization", 0, 31, 2, G_PARAM_READWRITE);
+      "Lower bound for B-frame quantization", 0, 31, 2,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, min_bquant);
 
   pspec = g_param_spec_int ("reaction-delay-factor", "Reaction Delay Factor",
-      "[CBR] Reaction delay factor", -1, 100, -1, G_PARAM_READWRITE);
+      "[CBR] Reaction delay factor", -1, 100, -1,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, reaction_delay_factor);
 
   pspec = g_param_spec_int ("averaging-period", "Averaging Period",
       "[CBR] Number of frames for which XviD averages bitrate",
-      -1, 100, -1, G_PARAM_READWRITE);
+      -1, 100, -1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, averaging_period);
 
   pspec = g_param_spec_int ("buffer", "Buffer Size",
-      "[CBR] Size of the video buffers", -1, G_MAXINT, -1, G_PARAM_READWRITE);
+      "[CBR] Size of the video buffers", -1, G_MAXINT, -1,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, buffer);
 
   pspec = g_param_spec_int ("keyframe-boost", "Keyframe boost",
-      "[PASS2] Bitrate boost for keyframes", 0, 100, 0, G_PARAM_READWRITE);
+      "[PASS2] Bitrate boost for keyframes", 0, 100, 0,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, keyframe_boost);
 
   pspec = g_param_spec_int ("curve-compression-high", "Curve Compression High",
       "[PASS2] Shrink factor for upper part of bitrate curve",
-      0, 100, 0, G_PARAM_READWRITE);
+      0, 100, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, curve_compression_high);
 
   pspec = g_param_spec_int ("curve-compression-low", "Curve Compression Low",
       "[PASS2] Growing factor for lower part of bitrate curve",
-      0, 100, 0, G_PARAM_READWRITE);
+      0, 100, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, curve_compression_low);
 
   pspec = g_param_spec_int ("flow-control-strength", "Flow Control Strength",
       "[PASS2] Overflow control strength per frame",
-      -1, 100, 5, G_PARAM_READWRITE);
+      -1, 100, 5, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, overflow_control_strength);
 
   pspec =
       g_param_spec_int ("max-overflow-improvement", "Max Overflow Improvement",
       "[PASS2] Amount in % that flow control can increase frame size compared to ideal curve",
-      -1, 100, 5, G_PARAM_READWRITE);
+      -1, 100, 5, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, max_overflow_improvement);
 
   pspec =
       g_param_spec_int ("max-overflow-degradation", "Max Overflow Degradation",
       "[PASS2] Amount in % that flow control can decrease frame size compared to ideal curve",
-      -1, 100, 5, G_PARAM_READWRITE);
+      -1, 100, 5, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, max_overflow_degradation);
 
   pspec = g_param_spec_int ("keyframe-reduction", "Keyframe Reduction",
       "[PASS2] Keyframe size reduction in % of those within threshold",
-      -1, 100, 20, G_PARAM_READWRITE);
+      -1, 100, 20, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, kfreduction);
 
   pspec = g_param_spec_int ("keyframe-threshold", "Keyframe Threshold",
       "[PASS2] Distance between keyframes not to be subject to reduction",
-      -1, 100, 1, G_PARAM_READWRITE);
+      -1, 100, 1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, kfthreshold);
 
   pspec =
       g_param_spec_int ("container-frame-overhead", "Container Frame Overhead",
       "[PASS2] Average container overhead per frame", -1, 100, -1,
-      G_PARAM_READWRITE);
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   gst_xvidenc_add_pspec (gobject_class, pspec, container_frame_overhead);
 
   gstelement_class->change_state = GST_DEBUG_FUNCPTR (gst_xvidenc_change_state);
@@ -482,6 +524,8 @@ gst_xvidenc_init (GstXvidEnc * xvidenc)
       GST_DEBUG_FUNCPTR (gst_xvidenc_chain));
   gst_pad_set_setcaps_function (xvidenc->sinkpad,
       GST_DEBUG_FUNCPTR (gst_xvidenc_setcaps));
+  gst_pad_set_getcaps_function (xvidenc->sinkpad,
+      GST_DEBUG_FUNCPTR (gst_xvidenc_getcaps));
   gst_pad_set_event_function (xvidenc->sinkpad,
       GST_DEBUG_FUNCPTR (gst_xvidenc_handle_sink_event));
 
@@ -560,11 +604,97 @@ gst_xvidenc_setup (GstXvidEnc * xvidenc)
   xvid_enc_create_t xenc;
   xvid_enc_plugin_t xplugin[2];
   gint ret;
+  GstCaps *allowed_caps;
+  gint profile = -1;
+
+  /* Negotiate profile/level with downstream */
+  allowed_caps = gst_pad_get_allowed_caps (xvidenc->srcpad);
+  if (allowed_caps && !gst_caps_is_empty (allowed_caps)) {
+    const gchar *profile_str, *level_str;
+
+    allowed_caps = gst_caps_make_writable (allowed_caps);
+    gst_caps_truncate (allowed_caps);
+
+    profile_str =
+        gst_structure_get_string (gst_caps_get_structure (allowed_caps, 0),
+        "profile");
+    level_str =
+        gst_structure_get_string (gst_caps_get_structure (allowed_caps, 0),
+        "level");
+    if (profile_str) {
+      if (g_str_equal (profile_str, "simple")) {
+        if (!level_str) {
+          profile = XVID_PROFILE_S_L0;
+        } else if (g_str_equal (level_str, "0")) {
+          profile = XVID_PROFILE_S_L0;
+        } else if (g_str_equal (level_str, "1")) {
+          profile = XVID_PROFILE_S_L1;
+        } else if (g_str_equal (level_str, "2")) {
+          profile = XVID_PROFILE_S_L2;
+        } else if (g_str_equal (level_str, "3")) {
+          profile = XVID_PROFILE_S_L3;
+        } else if (g_str_equal (level_str, "4a")) {
+          profile = XVID_PROFILE_S_L4a;
+        } else if (g_str_equal (level_str, "5")) {
+          profile = XVID_PROFILE_S_L5;
+        } else if (g_str_equal (level_str, "6")) {
+          profile = XVID_PROFILE_S_L6;
+        } else {
+          GST_ERROR_OBJECT (xvidenc,
+              "Invalid profile/level combination (%s %s)", profile_str,
+              level_str);
+        }
+      } else if (g_str_equal (profile_str, "advanced-real-time-simple")) {
+        if (!level_str) {
+          profile = XVID_PROFILE_ARTS_L1;
+        } else if (g_str_equal (level_str, "1")) {
+          profile = XVID_PROFILE_ARTS_L1;
+        } else if (g_str_equal (level_str, "2")) {
+          profile = XVID_PROFILE_ARTS_L2;
+        } else if (g_str_equal (level_str, "3")) {
+          profile = XVID_PROFILE_ARTS_L3;
+        } else if (g_str_equal (level_str, "4")) {
+          profile = XVID_PROFILE_ARTS_L4;
+        } else {
+          GST_ERROR_OBJECT (xvidenc,
+              "Invalid profile/level combination (%s %s)", profile_str,
+              level_str);
+        }
+      } else if (g_str_equal (profile_str, "advanced-simple")) {
+        if (!level_str) {
+          profile = XVID_PROFILE_AS_L0;
+        } else if (g_str_equal (level_str, "0")) {
+          profile = XVID_PROFILE_AS_L0;
+        } else if (g_str_equal (level_str, "1")) {
+          profile = XVID_PROFILE_AS_L1;
+        } else if (g_str_equal (level_str, "2")) {
+          profile = XVID_PROFILE_AS_L2;
+        } else if (g_str_equal (level_str, "3")) {
+          profile = XVID_PROFILE_AS_L3;
+        } else if (g_str_equal (level_str, "4")) {
+          profile = XVID_PROFILE_AS_L4;
+        } else {
+          GST_ERROR_OBJECT (xvidenc,
+              "Invalid profile/level combination (%s %s)", profile_str,
+              level_str);
+        }
+      } else {
+        GST_ERROR_OBJECT (xvidenc, "Invalid profile (%s)", profile_str);
+      }
+    }
+  }
+  if (allowed_caps)
+    gst_caps_unref (allowed_caps);
+
+  if (profile != -1) {
+    xvidenc->profile = profile;
+    g_object_notify (G_OBJECT (xvidenc), "profile");
+  }
 
   /* see xvid.h for the meaning of all this. */
   gst_xvid_init_struct (xenc);
 
-  xenc.profile = xvidenc->profile;
+  xenc.profile = xvidenc->used_profile = xvidenc->profile;
   xenc.width = xvidenc->width;
   xenc.height = xvidenc->height;
   xenc.max_bframes = xvidenc->max_bframes;
@@ -699,11 +829,17 @@ gst_xvidenc_setcaps (GstPad * pad, GstCaps * vscaps)
 
   structure = gst_caps_get_structure (vscaps, 0);
 
-  g_return_val_if_fail (gst_structure_get_int (structure, "width", &w), FALSE);
-  g_return_val_if_fail (gst_structure_get_int (structure, "height", &h), FALSE);
+  if (!gst_structure_get_int (structure, "width", &w) ||
+      !gst_structure_get_int (structure, "height", &h)) {
+    return FALSE;
+  }
+
   fps = gst_structure_get_value (structure, "framerate");
-  g_return_val_if_fail (w > 0 && h > 0
-      && fps != NULL && GST_VALUE_HOLDS_FRACTION (fps), FALSE);
+  if (fps == NULL || !GST_VALUE_HOLDS_FRACTION (fps)) {
+    GST_WARNING_OBJECT (pad, "no framerate specified, or not a GstFraction");
+    return FALSE;
+  }
+
   /* optional par info */
   par = gst_structure_get_value (structure, "pixel-aspect-ratio");
 
@@ -759,6 +895,78 @@ gst_xvidenc_setcaps (GstPad * pad, GstCaps * vscaps)
     /* just to be sure */
     gst_pad_fixate_caps (xvidenc->srcpad, new_caps);
 
+    if (xvidenc->used_profile != 0) {
+      switch (xvidenc->used_profile) {
+        case XVID_PROFILE_S_L0:
+          gst_caps_set_simple (new_caps, "profile", G_TYPE_STRING, "simple",
+              "level", G_TYPE_STRING, "0", NULL);
+          break;
+        case XVID_PROFILE_S_L1:
+          gst_caps_set_simple (new_caps, "profile", G_TYPE_STRING, "simple",
+              "level", G_TYPE_STRING, "1", NULL);
+          break;
+        case XVID_PROFILE_S_L2:
+          gst_caps_set_simple (new_caps, "profile", G_TYPE_STRING, "simple",
+              "level", G_TYPE_STRING, "2", NULL);
+          break;
+        case XVID_PROFILE_S_L3:
+          gst_caps_set_simple (new_caps, "profile", G_TYPE_STRING, "simple",
+              "level", G_TYPE_STRING, "3", NULL);
+          break;
+        case XVID_PROFILE_S_L4a:
+          gst_caps_set_simple (new_caps, "profile", G_TYPE_STRING, "simple",
+              "level", G_TYPE_STRING, "4a", NULL);
+          break;
+        case XVID_PROFILE_S_L5:
+          gst_caps_set_simple (new_caps, "profile", G_TYPE_STRING, "simple",
+              "level", G_TYPE_STRING, "5", NULL);
+          break;
+        case XVID_PROFILE_S_L6:
+          gst_caps_set_simple (new_caps, "profile", G_TYPE_STRING, "simple",
+              "level", G_TYPE_STRING, "6", NULL);
+          break;
+        case XVID_PROFILE_ARTS_L1:
+          gst_caps_set_simple (new_caps, "profile", G_TYPE_STRING,
+              "advanced-real-time-simple", "level", G_TYPE_STRING, "1", NULL);
+          break;
+        case XVID_PROFILE_ARTS_L2:
+          gst_caps_set_simple (new_caps, "profile", G_TYPE_STRING,
+              "advanced-real-time-simple", "level", G_TYPE_STRING, "2", NULL);
+          break;
+        case XVID_PROFILE_ARTS_L3:
+          gst_caps_set_simple (new_caps, "profile", G_TYPE_STRING,
+              "advanced-real-time-simple", "level", G_TYPE_STRING, "3", NULL);
+          break;
+        case XVID_PROFILE_ARTS_L4:
+          gst_caps_set_simple (new_caps, "profile", G_TYPE_STRING,
+              "advanced-real-time-simple", "level", G_TYPE_STRING, "4", NULL);
+          break;
+        case XVID_PROFILE_AS_L0:
+          gst_caps_set_simple (new_caps, "profile", G_TYPE_STRING,
+              "advanced-simple", "level", G_TYPE_STRING, "0", NULL);
+          break;
+        case XVID_PROFILE_AS_L1:
+          gst_caps_set_simple (new_caps, "profile", G_TYPE_STRING,
+              "advanced-simple", "level", G_TYPE_STRING, "1", NULL);
+          break;
+        case XVID_PROFILE_AS_L2:
+          gst_caps_set_simple (new_caps, "profile", G_TYPE_STRING,
+              "advanced-simple", "level", G_TYPE_STRING, "2", NULL);
+          break;
+        case XVID_PROFILE_AS_L3:
+          gst_caps_set_simple (new_caps, "profile", G_TYPE_STRING,
+              "advanced-simple", "level", G_TYPE_STRING, "3", NULL);
+          break;
+        case XVID_PROFILE_AS_L4:
+          gst_caps_set_simple (new_caps, "profile", G_TYPE_STRING,
+              "advanced-simple", "level", G_TYPE_STRING, "4", NULL);
+          break;
+        default:
+          g_assert_not_reached ();
+          break;
+      }
+    }
+
     /* src pad should accept anyway */
     ret = gst_pad_set_caps (xvidenc->srcpad, new_caps);
     gst_caps_unref (new_caps);
@@ -771,6 +979,55 @@ gst_xvidenc_setcaps (GstPad * pad, GstCaps * vscaps)
 
   } else                        /* setup did not work out */
     return FALSE;
+}
+
+static GstCaps *
+gst_xvidenc_getcaps (GstPad * pad)
+{
+  GstXvidEnc *xvidenc;
+  GstPad *peer;
+  GstCaps *caps;
+
+  /* If we already have caps return them */
+  if (GST_PAD_CAPS (pad))
+    return gst_caps_ref (GST_PAD_CAPS (pad));
+
+  xvidenc = GST_XVIDENC (gst_pad_get_parent (pad));
+  if (!xvidenc)
+    return gst_caps_new_empty ();
+
+  peer = gst_pad_get_peer (xvidenc->srcpad);
+  if (peer) {
+    const GstCaps *templcaps;
+    GstCaps *peercaps;
+    guint i, n;
+
+    peercaps = gst_pad_get_caps (peer);
+
+    /* Translate peercaps to YUV */
+    peercaps = gst_caps_make_writable (peercaps);
+    n = gst_caps_get_size (peercaps);
+    for (i = 0; i < n; i++) {
+      GstStructure *s = gst_caps_get_structure (peercaps, i);
+
+      gst_structure_set_name (s, "video/x-raw-yuv");
+      gst_structure_remove_field (s, "mpegversion");
+      gst_structure_remove_field (s, "systemstream");
+    }
+
+    templcaps = gst_pad_get_pad_template_caps (pad);
+
+    caps = gst_caps_intersect (peercaps, templcaps);
+    gst_caps_unref (peercaps);
+    gst_object_unref (peer);
+    peer = NULL;
+  } else {
+    caps = gst_caps_copy (gst_pad_get_pad_template_caps (pad));
+  }
+
+  gst_object_unref (xvidenc);
+
+  return caps;
 }
 
 /* encodes frame according to info in xframe;
@@ -1024,7 +1281,6 @@ gst_xvidenc_set_property (GObject * object,
   GstXvidEnc *xvidenc;
   guint offset;
 
-  g_return_if_fail (GST_IS_XVIDENC (object));
   xvidenc = GST_XVIDENC (object);
 
   if (prop_id > xvidenc_prop_count) {
@@ -1035,7 +1291,9 @@ gst_xvidenc_set_property (GObject * object,
   /* our param specs should have such qdata */
   offset =
       GPOINTER_TO_UINT (g_param_spec_get_qdata (pspec, xvidenc_pspec_quark));
-  g_return_if_fail (offset != 0);
+
+  if (offset == 0)
+    return;
 
   switch (G_PARAM_SPEC_VALUE_TYPE (pspec)) {
     case G_TYPE_BOOLEAN:
@@ -1065,7 +1323,6 @@ gst_xvidenc_get_property (GObject * object,
   GstXvidEnc *xvidenc;
   guint offset;
 
-  g_return_if_fail (GST_IS_XVIDENC (object));
   xvidenc = GST_XVIDENC (object);
 
   if (prop_id > xvidenc_prop_count) {
@@ -1076,7 +1333,9 @@ gst_xvidenc_get_property (GObject * object,
   /* our param specs should have such qdata */
   offset =
       GPOINTER_TO_UINT (g_param_spec_get_qdata (pspec, xvidenc_pspec_quark));
-  g_return_if_fail (offset != 0);
+
+  if (offset == 0)
+    return;
 
   switch (G_PARAM_SPEC_VALUE_TYPE (pspec)) {
     case G_TYPE_BOOLEAN:

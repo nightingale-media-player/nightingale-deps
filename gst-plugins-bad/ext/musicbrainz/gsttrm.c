@@ -65,12 +65,6 @@ enum
 GST_DEBUG_CATEGORY_STATIC (trm_debug);
 #define GST_CAT_DEFAULT trm_debug
 
-static const GstElementDetails gst_trm_details =
-GST_ELEMENT_DETAILS ("MusicBrainz TRM generator",
-    "Filter/Analyzer/Audio",
-    "Compute MusicBrainz TRM Id using libmusicbrainz",
-    "Jeremy Simon <jsimon13@yahoo.fr>");
-
 GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
@@ -123,7 +117,10 @@ gst_trm_base_init (gpointer klass)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sink_template));
 
-  gst_element_class_set_details (element_class, &gst_trm_details);
+  gst_element_class_set_static_metadata (element_class,
+      "MusicBrainz TRM generator", "Filter/Analyzer/Audio",
+      "Compute MusicBrainz TRM Id using libmusicbrainz",
+      "Jeremy Simon <jsimon13@yahoo.fr>");
 }
 
 static void
@@ -140,10 +137,11 @@ gst_trm_class_init (GstTRMClass * klass)
 
   g_object_class_install_property (gobject_class, ARG_PROXY_ADDRESS,
       g_param_spec_string ("proxy-address", "proxy address", "proxy address",
-          DEFAULT_PROXY_ADDRESS, G_PARAM_READWRITE));
+          DEFAULT_PROXY_ADDRESS, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_PROXY_PORT,
       g_param_spec_uint ("proxy-port", "proxy port", "proxy port",
-          1, 65535, DEFAULT_PROXY_PORT, G_PARAM_READWRITE));
+          1, 65535, DEFAULT_PROXY_PORT,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gstelement_class->change_state = GST_DEBUG_FUNCPTR (gst_trm_change_state);
 }
@@ -173,7 +171,6 @@ gst_trm_setcaps (GstPad * pad, GstCaps * caps)
 {
   GstTRM *trm;
   GstStructure *structure;
-  const gchar *mimetype;
   gint width;
 
   trm = GST_TRM (gst_pad_get_parent (pad));
@@ -182,7 +179,6 @@ gst_trm_setcaps (GstPad * pad, GstCaps * caps)
     return FALSE;
 
   structure = gst_caps_get_structure (caps, 0);
-  mimetype = gst_structure_get_name (structure);
 
   if (!gst_structure_get_int (structure, "depth", &trm->depth) ||
       !gst_structure_get_int (structure, "width", &width) ||
@@ -392,6 +388,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "musicbrainz",
+    musicbrainz,
     "A TRM signature producer based on libmusicbrainz",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

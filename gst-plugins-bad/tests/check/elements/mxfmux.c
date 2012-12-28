@@ -90,8 +90,6 @@ run_test (const gchar * pipeline_string)
 
   g_signal_connect (bus, "message", (GCallback) on_message_cb, &omud);
 
-  gst_object_unref (bus);
-
   ret = gst_element_set_state (pipeline, GST_STATE_PLAYING);
   fail_unless (ret == GST_STATE_CHANGE_SUCCESS
       || ret == GST_STATE_CHANGE_ASYNC);
@@ -105,6 +103,8 @@ run_test (const gchar * pipeline_string)
 
   gst_object_unref (pipeline);
   g_main_loop_unref (loop);
+  gst_bus_remove_signal_watch (bus);
+  gst_object_unref (bus);
 }
 
 GST_START_TEST (test_mpeg2)
@@ -116,7 +116,7 @@ GST_START_TEST (test_mpeg2)
     return;
 
   pipeline = g_strdup_printf ("videotestsrc num-buffers=250 ! "
-      "video/x-raw-yuv,framerate=25/1 ! "
+      "video/x-raw,framerate=25/1 ! "
       "%s ! " "mxfmux name=mux ! " "fakesink", mpeg2enc_name);
 
   run_test (pipeline);
@@ -130,11 +130,11 @@ GST_START_TEST (test_raw_video_raw_audio)
   gchar *pipeline;
 
   pipeline = g_strdup_printf ("videotestsrc num-buffers=250 ! "
-      "video/x-raw-yuv,format=(GstFourcc)v308,width=1920,height=1080,framerate=25/1 ! "
+      "video/x-raw,format=(string)v308,width=1920,height=1080,framerate=25/1 ! "
       "mxfmux name=mux ! "
       "fakesink  "
       "audiotestsrc num-buffers=250 ! "
-      "audioconvert ! " "audio/x-raw-int,rate=48000,channels=2 ! " "mux. ");
+      "audioconvert ! " "audio/x-raw,rate=48000,channels=2 ! " "mux. ");
 
   run_test (pipeline);
   g_free (pipeline);
@@ -147,7 +147,7 @@ GST_START_TEST (test_raw_video_stride_transform)
   gchar *pipeline;
 
   pipeline = g_strdup_printf ("videotestsrc num-buffers=250 ! "
-      "video/x-raw-yuv,format=(GstFourcc)v308,width=1001,height=501,framerate=25/1 ! "
+      "video/x-raw,format=(string)v308,width=1001,height=501,framerate=25/1 ! "
       "mxfmux name=mux ! " "fakesink");
 
   run_test (pipeline);
@@ -169,7 +169,7 @@ GST_START_TEST (test_jpeg2000_alaw)
   gst_object_unref (factory);
 
   pipeline = g_strdup_printf ("videotestsrc num-buffers=250 ! "
-      "video/x-raw-yuv,framerate=25/1 ! "
+      "video/x-raw,framerate=25/1 ! "
       "jp2kenc ! "
       "mxfmux name=mux ! "
       "fakesink  "
@@ -197,13 +197,13 @@ GST_START_TEST (test_dnxhd_mp3)
   gst_object_unref (factory);
 
   pipeline = g_strdup_printf ("videotestsrc num-buffers=250 ! "
-      "video/x-raw-yuv,format=(GstFourcc)Y42B,width=1920,height=1080,framerate=25/1 ! "
+      "video/x-raw,format=(string)Y42B,width=1920,height=1080,framerate=25/1 ! "
       "ffenc_dnxhd bitrate=36000000 ! "
       "mxfmux name=mux ! "
       "fakesink  "
       "audiotestsrc num-buffers=250 ! "
       "audioconvert ! "
-      "audio/x-raw-int,channels=2 ! " "lame ! " "mp3parse ! " "mux. ");
+      "audio/x-raw,channels=2 ! " "lame ! " "mp3parse ! " "mux. ");
 
   run_test (pipeline);
   g_free (pipeline);
@@ -216,22 +216,22 @@ GST_START_TEST (test_multiple_av_streams)
   gchar *pipeline;
 
   pipeline = g_strdup_printf ("videotestsrc num-buffers=250 ! "
-      "video/x-raw-yuv,format=(GstFourcc)v308,width=1920,height=1080,framerate=25/1 ! "
+      "video/x-raw,format=(string)v308,width=1920,height=1080,framerate=25/1 ! "
       "mxfmux name=mux ! "
       "fakesink  "
       "audiotestsrc num-buffers=250 ! "
       "audioconvert ! "
-      "audio/x-raw-int,rate=48000,channels=2 ! "
+      "audio/x-raw,rate=48000,channels=2 ! "
       "mux. "
       "videotestsrc num-buffers=100 ! "
-      "video/x-raw-yuv,format=(GstFourcc)v308,width=1920,height=1080,framerate=25/1 ! "
+      "video/x-raw,format=(string)v308,width=1920,height=1080,framerate=25/1 ! "
       "mux. "
       "audiotestsrc num-buffers=100 ! "
       "audioconvert ! "
-      "audio/x-raw-int,rate=48000,channels=2 ! "
+      "audio/x-raw,rate=48000,channels=2 ! "
       "mux. "
       "audiotestsrc num-buffers=250 ! "
-      "audioconvert ! " "audio/x-raw-int,rate=48000,channels=2 ! " "mux. ");
+      "audioconvert ! " "audio/x-raw,rate=48000,channels=2 ! " "mux. ");
 
   run_test (pipeline);
   g_free (pipeline);
@@ -247,6 +247,11 @@ mxfmux_suite (void)
 
   suite_add_tcase (s, tc_chain);
   tcase_set_timeout (tc_chain, 180);
+
+  /* FIXME: remove again once ported */
+  if (!gst_registry_check_feature_version (gst_registry_get (), "mxfmux", 1, 0,
+          0))
+    return s;
 
   tcase_add_test (tc_chain, test_mpeg2);
   tcase_add_test (tc_chain, test_raw_video_raw_audio);

@@ -7,7 +7,7 @@
 #include <cog/cog.h>
 #include <cog/cogframe.h>
 #include <cog/cogvirtframe.h>
-#include "cogorc.h"
+#include "gstcogorc.h"
 #include <gst/gst.h>
 
 #include <stdlib.h>
@@ -56,8 +56,6 @@ cog_frame_new_and_alloc_extended (CogMemoryDomain * domain,
   int h_shift, v_shift;
   int chroma_width;
   int chroma_height;
-  int ext_width;
-  int ext_height;
 
   g_return_val_if_fail (width > 0, NULL);
   g_return_val_if_fail (height > 0, NULL);
@@ -67,9 +65,6 @@ cog_frame_new_and_alloc_extended (CogMemoryDomain * domain,
   frame->height = height;
   frame->domain = domain;
   frame->extension = extension;
-
-  ext_width = width + extension * 2;
-  ext_height = height + extension * 2;
 
   if (COG_FRAME_IS_PACKED (format)) {
     g_return_val_if_fail (extension == 0, NULL);
@@ -146,7 +141,7 @@ cog_frame_new_and_alloc_extended (CogMemoryDomain * domain,
   frame->components[2].v_shift = v_shift;
   frame->components[2].h_shift = h_shift;
 
-  frame->regions[0] = malloc (frame->components[0].length +
+  frame->regions[0] = g_malloc (frame->components[0].length +
       frame->components[1].length + frame->components[2].length);
 
   frame->components[0].data = COG_OFFSET (frame->regions[0],
@@ -864,7 +859,8 @@ cog_frame_convert (CogFrame * dest, CogFrame * src)
   }
 
   if ((dest_format & 3) != (frame->format & 3)) {
-    frame = cog_virt_frame_new_subsample (frame, dest_format);
+    frame = cog_virt_frame_new_subsample (frame, dest_format,
+        COG_CHROMA_SITE_MPEG2, 2);
     GST_DEBUG ("subsample %p", frame);
   }
 

@@ -32,14 +32,6 @@
 GST_DEBUG_CATEGORY_STATIC (mvedemux_debug);
 #define GST_CAT_DEFAULT mvedemux_debug
 
-extern int ipvideo_decode_frame8 (const GstMveDemuxStream * s,
-    const unsigned char *data, unsigned short len);
-extern int ipvideo_decode_frame16 (const GstMveDemuxStream * s,
-    const unsigned char *data, unsigned short len);
-
-extern void ipaudio_uncompress (short *buffer,
-    unsigned short buf_len, const unsigned char *data, unsigned char channels);
-
 enum MveDemuxState
 {
   MVEDEMUX_STATE_INITIAL,       /* initial state, header not read */
@@ -296,14 +288,11 @@ static GstFlowReturn
 gst_mve_buffer_alloc_for_pad (GstMveDemuxStream * stream,
     guint32 size, GstBuffer ** buffer)
 {
-  GstFlowReturn ret =
-      gst_pad_alloc_buffer_and_set_caps (stream->pad, stream->offset,
-      size, stream->caps, buffer);
-
-  if (ret == GST_FLOW_OK)
-    GST_BUFFER_TIMESTAMP (*buffer) = stream->last_ts;
-
-  return ret;
+  *buffer = gst_buffer_new_and_alloc (size);
+  gst_buffer_set_caps (*buffer, stream->caps);
+  GST_BUFFER_TIMESTAMP (*buffer) = stream->last_ts;
+  GST_BUFFER_OFFSET (*buffer) = stream->offset;
+  return GST_FLOW_OK;
 }
 
 static GstFlowReturn
@@ -325,6 +314,7 @@ gst_mve_video_init (GstMveDemux * mve, const guint8 * data)
     stream->palette = NULL;
     stream->caps = NULL;
     stream->last_ts = GST_CLOCK_TIME_NONE;
+    stream->last_flow = GST_FLOW_OK;
     mve->video_stream = stream;
   }
 
@@ -669,6 +659,7 @@ gst_mve_audio_init (GstMveDemux * mve, guint8 version, const guint8 * data,
     stream = g_new0 (GstMveDemuxStream, 1);
     stream->offset = 0;
     stream->last_ts = 0;
+    stream->last_flow = GST_FLOW_OK;
     mve->audio_stream = stream;
   } else {
     stream = mve->audio_stream;
@@ -722,7 +713,7 @@ gst_mve_audio_init (GstMveDemux * mve, guint8 version, const guint8 * data,
   if (gst_mve_add_stream (mve, stream, list))
     return gst_pad_push_event (mve->audio_stream->pad,
         gst_event_new_new_segment (FALSE, 1.0, GST_FORMAT_TIME,
-            0, GST_CLOCK_TIME_NONE, 0));
+            0, GST_CLOCK_TIME_NONE, 0)) ? GST_FLOW_OK : GST_FLOW_ERROR;
   else
     return GST_FLOW_OK;
 }
@@ -875,7 +866,7 @@ gst_mve_timer_create (GstMveDemux * mve, const guint8 * data, guint16 len,
   if (gst_mve_add_stream (mve, s, list))
     return gst_pad_push_event (s->pad,
         gst_event_new_new_segment (FALSE, 1.0, GST_FORMAT_TIME,
-            0, GST_CLOCK_TIME_NONE, 0));
+            0, GST_CLOCK_TIME_NONE, 0)) ? GST_FLOW_OK : GST_FLOW_ERROR;
   else
     return GST_FLOW_OK;
 }
@@ -1045,10 +1036,17 @@ gst_mve_demux_chain (GstPad * sinkpad, GstBuffer * inbuf)
               GST_BUFFER_SIZE (outbuf), GST_PAD_NAME (stream->pad));
 
           ret = gst_pad_push (stream->pad, outbuf);
+          stream->last_flow = ret;
         }
 
-        if (!GST_FLOW_IS_FATAL (ret))
-          ret = GST_FLOW_OK;
+        if (ret == GST_FLOW_NOT_LINKED) {
+          if (mve->audio_stream
+              && mve->audio_stream->last_flow != GST_FLOW_NOT_LINKED)
+            ret = GST_FLOW_OK;
+          if (mve->video_stream
+              && mve->video_stream->last_flow != GST_FLOW_NOT_LINKED)
+            ret = GST_FLOW_OK;
+        }
 
         /* update current offset */
         mve->chunk_offset += mve->needed_bytes;
@@ -1089,21 +1087,17 @@ gst_mve_demux_dispose (GObject * obj)
 static void
 gst_mve_demux_base_init (GstMveDemuxClass * klass)
 {
-  static const GstElementDetails mve_demux_details = {
-    "MVE Demuxer",
-    "Codec/Demuxer",
-    "Demultiplex an Interplay movie (MVE) stream into audio and video",
-    "Jens Granseuer <jensgr@gmx.net>"
-  };
+
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
 
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&vidsrc_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&audsrc_template));
-  gst_element_class_set_details (element_class, &mve_demux_details);
+  gst_element_class_add_static_pad_template (element_class, &sink_template);
+  gst_element_class_add_static_pad_template (element_class, &vidsrc_template);
+  gst_element_class_add_static_pad_template (element_class, &audsrc_template);
+
+  gst_element_class_set_static_metadata (element_class, "MVE Demuxer",
+      "Codec/Demuxer",
+      "Demultiplex an Interplay movie (MVE) stream into audio and video",
+      "Jens Granseuer <jensgr@gmx.net>");
 }
 
 static void

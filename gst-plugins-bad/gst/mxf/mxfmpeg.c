@@ -441,7 +441,7 @@ mxf_mpeg_is_mpeg2_keyframe (GstBuffer * buffer)
       guint8 type = 0;
 
       /* Found sync code */
-      gst_byte_reader_skip (&reader, 3);
+      gst_byte_reader_skip_unchecked (&reader, 3);
 
       if (!gst_byte_reader_get_uint8 (&reader, &type))
         break;
@@ -465,9 +465,8 @@ mxf_mpeg_is_mpeg2_keyframe (GstBuffer * buffer)
           return FALSE;
         }
       }
-    } else {
-      gst_byte_reader_skip (&reader, 1);
-    }
+    } else if (gst_byte_reader_skip (&reader, 1) == FALSE)
+      break;
   }
 
   return FALSE;
@@ -484,7 +483,7 @@ mxf_mpeg_is_mpeg4_keyframe (GstBuffer * buffer)
       guint8 type = 0;
 
       /* Found sync code */
-      gst_byte_reader_skip (&reader, 3);
+      gst_byte_reader_skip_unchecked (&reader, 3);
 
       if (!gst_byte_reader_get_uint8 (&reader, &type))
         break;
@@ -502,9 +501,8 @@ mxf_mpeg_is_mpeg4_keyframe (GstBuffer * buffer)
           return FALSE;
         }
       }
-    } else {
-      gst_byte_reader_skip (&reader, 1);
-    }
+    } else if (gst_byte_reader_skip (&reader, 1) == FALSE)
+      break;
   }
 
   return FALSE;
@@ -894,7 +892,7 @@ mxf_mpeg_audio_get_descriptor (GstPadTemplate * tmpl, GstCaps * caps,
   *mapping_data = md;
 
   ret = (MXFMetadataGenericSoundEssenceDescriptor *)
-      gst_mini_object_new (MXF_TYPE_METADATA_GENERIC_SOUND_ESSENCE_DESCRIPTOR);
+      g_object_new (MXF_TYPE_METADATA_GENERIC_SOUND_ESSENCE_DESCRIPTOR, NULL);
 
   s = gst_caps_get_structure (caps, 0);
   if (strcmp (gst_structure_get_name (s), "audio/mpeg") == 0) {
@@ -902,7 +900,7 @@ mxf_mpeg_audio_get_descriptor (GstPadTemplate * tmpl, GstCaps * caps,
 
     if (!gst_structure_get_int (s, "mpegversion", &mpegversion)) {
       GST_ERROR ("Invalid caps %" GST_PTR_FORMAT, caps);
-      gst_mini_object_unref (GST_MINI_OBJECT_CAST (ret));
+      g_object_unref (ret);
       return NULL;
     }
 
@@ -946,7 +944,7 @@ mxf_mpeg_audio_get_descriptor (GstPadTemplate * tmpl, GstCaps * caps,
 
   if (!gst_structure_get_int (s, "rate", &rate)) {
     GST_ERROR ("Invalid rate");
-    gst_mini_object_unref (GST_MINI_OBJECT_CAST (ret));
+    g_object_unref (ret);
     return NULL;
   }
   md->rate = rate;
@@ -954,7 +952,7 @@ mxf_mpeg_audio_get_descriptor (GstPadTemplate * tmpl, GstCaps * caps,
   memcpy (&ret->parent.essence_container, &mpeg_essence_container_ul, 16);
 
   if (!mxf_metadata_generic_sound_essence_descriptor_from_caps (ret, caps)) {
-    gst_mini_object_unref (GST_MINI_OBJECT_CAST (ret));
+    g_object_unref (ret);
     return NULL;
   }
 
@@ -1013,7 +1011,7 @@ static MXFEssenceElementWriter mxf_mpeg_audio_essence_element_writer = {
       "channels = (int) [ 1, 8 ]"
 
 /* See ISO/IEC 13818-2 for MPEG ES format */
-gboolean
+static gboolean
 mxf_mpeg_is_mpeg2_frame (GstBuffer * buffer)
 {
   GstByteReader reader = GST_BYTE_READER_INIT_FROM_BUFFER (buffer);
@@ -1024,7 +1022,7 @@ mxf_mpeg_is_mpeg2_frame (GstBuffer * buffer)
       guint8 type = 0;
 
       /* Found sync code */
-      gst_byte_reader_skip (&reader, 3);
+      gst_byte_reader_skip_unchecked (&reader, 3);
 
       if (!gst_byte_reader_get_uint8 (&reader, &type))
         break;
@@ -1034,7 +1032,8 @@ mxf_mpeg_is_mpeg2_frame (GstBuffer * buffer)
         return TRUE;
       }
     } else {
-      gst_byte_reader_skip (&reader, 1);
+      if (gst_byte_reader_skip (&reader, 1) == FALSE)
+        break;
     }
   }
 
@@ -1052,7 +1051,7 @@ mxf_mpeg_is_mpeg4_frame (GstBuffer * buffer)
       guint8 type = 0;
 
       /* Found sync code */
-      gst_byte_reader_skip (&reader, 3);
+      gst_byte_reader_skip_unchecked (&reader, 3);
 
       if (!gst_byte_reader_get_uint8 (&reader, &type))
         break;
@@ -1062,7 +1061,8 @@ mxf_mpeg_is_mpeg4_frame (GstBuffer * buffer)
         return TRUE;
       }
     } else {
-      gst_byte_reader_skip (&reader, 1);
+      if (gst_byte_reader_skip (&reader, 1) == FALSE)
+        break;
     }
   }
 
@@ -1154,7 +1154,7 @@ mxf_mpeg_video_get_descriptor (GstPadTemplate * tmpl, GstCaps * caps,
   GstStructure *s;
 
   ret = (MXFMetadataMPEGVideoDescriptor *)
-      gst_mini_object_new (MXF_TYPE_METADATA_MPEG_VIDEO_DESCRIPTOR);
+      g_object_new (MXF_TYPE_METADATA_MPEG_VIDEO_DESCRIPTOR, NULL);
 
   s = gst_caps_get_structure (caps, 0);
 
@@ -1167,7 +1167,7 @@ mxf_mpeg_video_get_descriptor (GstPadTemplate * tmpl, GstCaps * caps,
 
     if (!gst_structure_get_int (s, "mpegversion", &mpegversion)) {
       GST_ERROR ("Invalid caps %" GST_PTR_FORMAT, caps);
-      gst_mini_object_unref (GST_MINI_OBJECT_CAST (ret));
+      g_object_unref (ret);
       return NULL;
     }
 
@@ -1214,7 +1214,7 @@ mxf_mpeg_video_get_descriptor (GstPadTemplate * tmpl, GstCaps * caps,
 
   if (!mxf_metadata_generic_picture_essence_descriptor_from_caps (&ret->
           parent.parent, caps)) {
-    gst_mini_object_unref (GST_MINI_OBJECT_CAST (ret));
+    g_object_unref (ret);
     return NULL;
   }
 

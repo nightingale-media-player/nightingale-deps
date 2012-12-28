@@ -46,7 +46,7 @@
 #include "config.h"
 #endif
 
-#include "qtvideowrapper.h"
+#include "qtwrapper.h"
 #include "qtutils.h"
 
 ImageDescription *image_description_from_codec_data (GstBuffer * buf,

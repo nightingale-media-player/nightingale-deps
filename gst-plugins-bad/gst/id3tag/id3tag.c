@@ -156,7 +156,9 @@ static void id3v2_frame_finish (GstId3v2Tag * tag, GstId3v2Frame * frame);
 static guint id3v2_frame_get_size (GstId3v2Tag * tag, GstId3v2Frame * frame);
 
 static void id3v2_tag_add_text_frame (GstId3v2Tag * tag,
-    const gchar * frame_id, gchar ** strings, int num_strings);
+    const gchar * frame_id, const gchar ** strings, int num_strings);
+static void id3v2_tag_add_simple_text_frame (GstId3v2Tag * tag,
+    const gchar * frame_id, const gchar * string);
 
 static gboolean
 id3v2_tag_init (GstId3v2Tag * tag, guint major_version)
@@ -190,6 +192,7 @@ static GstBuffer *
 id3v2_tag_to_buffer (GstId3v2Tag * tag)
 {
   GstByteWriter *w;
+  GstMapInfo info;
   GstBuffer *buf;
   guint8 *dest;
   guint i, size, offset, size_frames = 0;
@@ -215,8 +218,9 @@ id3v2_tag_to_buffer (GstId3v2Tag * tag)
   gst_byte_writer_write_uint8 (w, 0);   /* flags */
   gst_byte_writer_write_uint32_syncsafe (w, size - 10);
 
-  buf = gst_buffer_new_and_alloc (size);
-  dest = GST_BUFFER_DATA (buf);
+  buf = gst_buffer_new_allocate (NULL, size, NULL);
+  gst_buffer_map (buf, &info, GST_MAP_WRITE);
+  dest = info.data;
   gst_byte_writer_copy_bytes (w, dest, 0, 10);
   offset = 10;
 
@@ -231,6 +235,7 @@ id3v2_tag_to_buffer (GstId3v2Tag * tag)
   memset (dest + offset, 0, size - offset);
 
   gst_byte_writer_free (w);
+  gst_buffer_unmap (buf, &info);
 
   return buf;
 }
@@ -374,10 +379,11 @@ id3v2_frame_write_string (GstId3v2Frame * frame, int encoding,
 
     /* Write the BOM */
     id3v2_frame_write_bytes (frame, (const guint8 *) bom, 2);
-    /* NUL terminator is 2 bytes, if present */
-    terminator_length = null_terminate ? 2 : 0;
-    id3v2_frame_write_bytes (frame, (const guint8 *) utf16,
-        utf16len + terminator_length);
+    id3v2_frame_write_bytes (frame, (const guint8 *) utf16, utf16len);
+    if (null_terminate) {
+      /* NUL terminator is 2 bytes, if present. */
+      id3v2_frame_write_uint16 (frame, 0);
+    }
 
     g_free (utf16);
   } else {
@@ -390,7 +396,7 @@ id3v2_frame_write_string (GstId3v2Frame * frame, int encoding,
 
 static void
 id3v2_tag_add_text_frame (GstId3v2Tag * tag, const gchar * frame_id,
-    gchar ** strings_utf8, int num_strings)
+    const gchar ** strings_utf8, int num_strings)
 {
   GstId3v2Frame frame;
   guint len, i;
@@ -433,20 +439,27 @@ id3v2_tag_add_text_frame (GstId3v2Tag * tag, const gchar * frame_id,
   g_array_append_val (tag->frames, frame);
 }
 
+static void
+id3v2_tag_add_simple_text_frame (GstId3v2Tag * tag, const gchar * frame_id,
+    const gchar * string)
+{
+  id3v2_tag_add_text_frame (tag, frame_id, (const gchar **) &string, 1);
+}
+
 /* ====================================================================== */
 
 static void
 add_text_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
     const gchar * tag, guint num_tags, const gchar * frame_id)
 {
-  gchar **strings;
+  const gchar **strings;
   guint n, i;
 
   GST_LOG ("Adding '%s' frame", frame_id);
 
-  strings = g_new0 (gchar *, num_tags + 1);
+  strings = g_new0 (const gchar *, num_tags + 1);
   for (n = 0, i = 0; n < num_tags; ++n) {
-    if (gst_tag_list_get_string_index (list, tag, n, &strings[i]) &&
+    if (gst_tag_list_peek_string_index (list, tag, n, &strings[i]) &&
         strings[i] != NULL) {
       GST_LOG ("%s: %s[%u] = '%s'", frame_id, tag, i, strings[i]);
       ++i;
@@ -459,9 +472,10 @@ add_text_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
     GST_WARNING ("Empty list for tag %s, skipping", tag);
   }
 
-  g_strfreev (strings);
+  g_free (strings);
 }
 
+/* FIXME: id3v2-private frames need to be extracted as samples */
 static void
 add_id3v2frame_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
     const gchar * tag, guint num_tags, const gchar * unused)
@@ -469,42 +483,57 @@ add_id3v2frame_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
   guint i;
 
   for (i = 0; i < num_tags; ++i) {
-    const GValue *val;
+    GstSample *sample;
     GstBuffer *buf;
+    GstCaps *caps;
 
-    val = gst_tag_list_get_value_index (list, tag, i);
-    buf = (GstBuffer *) gst_value_get_mini_object (val);
+    if (!gst_tag_list_get_sample_index (list, tag, i, &sample))
+      continue;
 
-    if (buf && GST_BUFFER_CAPS (buf)) {
+    buf = gst_sample_get_buffer (sample);
+
+    /* FIXME: should use auxiliary sample struct instead of caps for this */
+    caps = gst_sample_get_caps (sample);
+
+    if (buf && caps) {
       GstStructure *s;
       gint version = 0;
 
-      s = gst_caps_get_structure (GST_BUFFER_CAPS (buf), 0);
+      s = gst_caps_get_structure (caps, 0);
       /* We can only add it if this private buffer is for the same ID3 version,
          because we don't understand the contents at all. */
       if (s && gst_structure_get_int (s, "version", &version) &&
           version == id3v2tag->major_version) {
         GstId3v2Frame frame;
+        GstMapInfo mapinfo;
         gchar frame_id[5];
         guint16 flags;
-        guint8 *data = GST_BUFFER_DATA (buf);
-        gint size = GST_BUFFER_SIZE (buf);
+        guint8 *data;
+        gint size;
 
-        if (size < 10)          /* header size */
-          return;
+        if (!gst_buffer_map (buf, &mapinfo, GST_MAP_READ))
+          continue;
 
-        /* We only reach here if the frame version matches the muxer. Since the
-           muxer only does v2.3 or v2.4, the frame must be one of those - and
-           so the frame header is the same format */
-        memcpy (frame_id, data, 4);
-        frame_id[4] = 0;
-        flags = GST_READ_UINT16_BE (data + 8);
+        size = mapinfo.size;
+        data = mapinfo.data;
 
-        id3v2_frame_init (&frame, frame_id, flags);
-        id3v2_frame_write_bytes (&frame, data + 10, size - 10);
+        if (size >= 10) {       /* header size */
+          /* We only get here if the frame version matches the muxer. Since the
+           * muxer only does v2.3 or v2.4, the frame must be one of those - and
+           * so the frame header is the same format */
+          memcpy (frame_id, data, 4);
+          frame_id[4] = 0;
+          flags = GST_READ_UINT16_BE (data + 8);
 
-        g_array_append_val (id3v2tag->frames, frame);
-        GST_DEBUG ("Added unparsed tag with %d bytes", size);
+          id3v2_frame_init (&frame, frame_id, flags);
+          id3v2_frame_write_bytes (&frame, data + 10, size - 10);
+
+          g_array_append_val (id3v2tag->frames, frame);
+          GST_DEBUG ("Added unparsed tag with %d bytes", size);
+          gst_buffer_unmap (buf, &mapinfo);
+        } else {
+          GST_WARNING ("Short ID3v2 frame");
+        }
       } else {
         GST_WARNING ("Discarding unrecognised ID3 tag for different ID3 "
             "version");
@@ -566,7 +595,7 @@ add_count_or_num_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
 
       GST_DEBUG ("Setting %s to %s (frame_id = %s)", tag, tag_str, frame_id);
 
-      id3v2_tag_add_text_frame (id3v2tag, frame_id, &tag_str, 1);
+      id3v2_tag_add_simple_text_frame (id3v2tag, frame_id, tag_str);
       g_free (tag_str);
     }
   } else if (corr[idx].corr_count == NULL) {
@@ -579,9 +608,34 @@ add_count_or_num_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
       gchar *tag_str = g_strdup_printf ("0/%u", count);
       GST_DEBUG ("Setting %s to %s (frame_id = %s)", tag, tag_str, frame_id);
 
-      id3v2_tag_add_text_frame (id3v2tag, frame_id, &tag_str, 1);
+      id3v2_tag_add_simple_text_frame (id3v2tag, frame_id, tag_str);
       g_free (tag_str);
     }
+  }
+
+  if (num_tags > 1) {
+    GST_WARNING ("more than one %s, can only handle one", tag);
+  }
+}
+
+static void
+add_bpm_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
+    const gchar * tag, guint num_tags, const gchar * unused)
+{
+  gdouble bpm;
+
+  GST_LOG ("Adding BPM frame");
+
+  if (gst_tag_list_get_double (list, tag, &bpm)) {
+    gchar *tag_str;
+
+    /* bpm is stored as an integer in id3 tags, but is a double in
+     * tag lists.
+     */
+    tag_str = g_strdup_printf ("%u", (guint) bpm);
+    GST_DEBUG ("Setting %s to %s", tag, tag_str);
+    id3v2_tag_add_simple_text_frame (id3v2tag, "TBPM", tag_str);
+    g_free (tag_str);
   }
 
   if (num_tags > 1) {
@@ -597,9 +651,9 @@ add_comment_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
 
   GST_LOG ("Adding comment frames");
   for (n = 0; n < num_tags; ++n) {
-    gchar *s = NULL;
+    const gchar *s = NULL;
 
-    if (gst_tag_list_get_string_index (list, tag, n, &s) && s != NULL) {
+    if (gst_tag_list_peek_string_index (list, tag, n, &s) && s != NULL) {
       gchar *desc = NULL, *val = NULL, *lang = NULL;
       int desclen, vallen, encoding1, encoding2, encoding;
       GstId3v2Frame frame;
@@ -642,7 +696,6 @@ add_comment_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
 
       g_array_append_val (id3v2tag->frames, frame);
     }
-    g_free (s);
   }
 }
 
@@ -653,25 +706,29 @@ add_image_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
   guint n;
 
   for (n = 0; n < num_tags; ++n) {
-    const GValue *val;
+    GstSample *sample;
     GstBuffer *image;
+    GstCaps *caps;
 
     GST_DEBUG ("image %u/%u", n + 1, num_tags);
 
-    val = gst_tag_list_get_value_index (list, tag, n);
-    image = (GstBuffer *) gst_value_get_mini_object (val);
+    if (!gst_tag_list_get_sample_index (list, tag, n, &sample))
+      continue;
 
-    if (GST_IS_BUFFER (image) && GST_BUFFER_SIZE (image) > 0 &&
-        GST_BUFFER_CAPS (image) != NULL &&
-        !gst_caps_is_empty (GST_BUFFER_CAPS (image))) {
+    image = gst_sample_get_buffer (sample);
+    caps = gst_sample_get_caps (sample);
+
+    if (image != NULL && gst_buffer_get_size (image) > 0 &&
+        caps != NULL && !gst_caps_is_empty (caps)) {
       const gchar *mime_type;
       GstStructure *s;
 
-      s = gst_caps_get_structure (GST_BUFFER_CAPS (image), 0);
+      s = gst_caps_get_structure (caps, 0);
       mime_type = gst_structure_get_name (s);
       if (mime_type != NULL) {
         const gchar *desc;
         GstId3v2Frame frame;
+        GstMapInfo mapinfo;
         int encoding;
 
         /* APIC frame specifies "-->" if we're providing a URL to the image
@@ -679,8 +736,8 @@ add_image_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
         if (strcmp (mime_type, "text/uri-list") == 0)
           mime_type = "-->";
 
-        GST_DEBUG ("Attaching picture of %u bytes and mime type %s",
-            GST_BUFFER_SIZE (image), mime_type);
+        GST_DEBUG ("Attaching picture of %" G_GSIZE_FORMAT " bytes and "
+            "mime type %s", gst_buffer_get_size (image), mime_type);
 
         id3v2_frame_init (&frame, "APIC", 0);
 
@@ -700,14 +757,17 @@ add_image_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
 
         id3v2_frame_write_string (&frame, encoding, desc, TRUE);
 
-        id3v2_frame_write_bytes (&frame, GST_BUFFER_DATA (image),
-            GST_BUFFER_SIZE (image));
-
-        g_array_append_val (id3v2tag->frames, frame);
+        if (gst_buffer_map (image, &mapinfo, GST_MAP_READ)) {
+          id3v2_frame_write_bytes (&frame, mapinfo.data, mapinfo.size);
+          g_array_append_val (id3v2tag->frames, frame);
+          gst_buffer_unmap (image, &mapinfo);
+        } else {
+          GST_WARNING ("Couldn't map image tag buffer");
+          id3v2_frame_unset (&frame);
+        }
       }
     } else {
-      GST_WARNING ("NULL image or no caps on image buffer (%p, caps=%"
-          GST_PTR_FORMAT ")", image, (image) ? GST_BUFFER_CAPS (image) : NULL);
+      GST_WARNING ("no image or caps: %p, caps=%" GST_PTR_FORMAT, image, caps);
     }
   }
 }
@@ -743,9 +803,9 @@ add_musicbrainz_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
   g_assert (idx < G_N_ELEMENTS (mb_ids));
 
   for (i = 0; i < num_tags; ++i) {
-    gchar *id_str;
+    const gchar *id_str;
 
-    if (gst_tag_list_get_string_index (list, tag, 0, &id_str) && id_str) {
+    if (gst_tag_list_peek_string_index (list, tag, 0, &id_str) && id_str) {
       /* add two frames, one with the ID the musicbrainz.org spec mentions
        * and one with the ID that applications use in the real world */
       GstId3v2Frame frame1, frame2;
@@ -766,19 +826,18 @@ add_musicbrainz_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
           mb_ids[idx].realworld_id, TRUE);
       id3v2_frame_write_string (&frame2, encoding, id_str, FALSE);
       g_array_append_val (id3v2tag->frames, frame2);
-
-      g_free (id_str);
     }
   }
 }
 
 static void
 add_unique_file_id_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
-    const gchar * tag, guint num_tags, const gchar * origin)
+    const gchar * tag, guint num_tags, const gchar * unused)
 {
-  gchar *id_str = NULL;
+  const gchar *origin = "http://musicbrainz.org";
+  const gchar *id_str = NULL;
 
-  if (gst_tag_list_get_string_index (list, tag, 0, &id_str) && id_str) {
+  if (gst_tag_list_peek_string_index (list, tag, 0, &id_str) && id_str) {
     GstId3v2Frame frame;
 
     GST_LOG ("Adding %s (%s): %s", tag, origin, id_str);
@@ -789,34 +848,6 @@ add_unique_file_id_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
     id3v2_frame_write_bytes (&frame, (const guint8 *) id_str,
         strlen (id_str) + 1);
     g_array_append_val (id3v2tag->frames, frame);
-
-    g_free (id_str);
-  }
-}
-
-static void
-add_txxx_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
-    const gchar * tag, guint num_tags, const gchar * description)
-{
-  gchar *value = NULL;
-  int encoding1, encoding2, encoding;
-
-  if (gst_tag_list_get_string_index (list, tag, 0, &value) && value) {
-    GstId3v2Frame frame;
-
-    GST_LOG ("Adding %s (%s): %s", tag, description, value);
-
-    encoding1 = id3v2_tag_string_encoding (id3v2tag, description);
-    encoding2 = id3v2_tag_string_encoding (id3v2tag, value);
-    encoding = MAX (encoding1, encoding2);
-
-    id3v2_frame_init (&frame, "TXXX", 0);
-    id3v2_frame_write_uint8 (&frame, encoding);
-    id3v2_frame_write_string (&frame, encoding, description, TRUE);
-    id3v2_frame_write_string (&frame, encoding, value, FALSE);
-    g_array_append_val (id3v2tag->frames, frame);
-
-    g_free (value);
   }
 }
 
@@ -834,32 +865,36 @@ add_date_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
   else
     frame_id = "TDRC";
 
-  GST_LOG ("Adding date frame");
+  GST_LOG ("Adding date time frame");
 
   strings = g_new0 (gchar *, num_tags + 1);
   for (n = 0; n < num_tags; ++n) {
-    GDate *date = NULL;
+    GstDateTime *dt = NULL;
+    guint year;
+    gchar *s;
 
-    if (gst_tag_list_get_date_index (list, tag, n, &date) && date != NULL) {
-      GDateYear year;
-      gchar *s;
+    if (!gst_tag_list_get_date_time_index (list, tag, n, &dt) || dt == NULL)
+      continue;
 
-      year = g_date_get_year (date);
-      if (year > 500 && year < 2100) {
-        s = g_strdup_printf ("%u", year);
-        GST_LOG ("%s[%u] = '%s'", tag, n, s);
-        strings[i] = s;
-        i++;
-      } else {
-        GST_WARNING ("invalid year %u, skipping", year);
-      }
-
-      g_date_free (date);
+    year = gst_date_time_get_year (dt);
+    if (year > 500 && year < 2100) {
+      s = g_strdup_printf ("%u", year);
+      GST_LOG ("%s[%u] = '%s'", tag, n, s);
+      strings[i] = s;
+      i++;
+    } else {
+      GST_WARNING ("invalid year %u, skipping", year);
     }
+
+    if (gst_date_time_has_month (dt)) {
+      if (id3v2tag->major_version == 3)
+        GST_FIXME ("write TDAT and possibly also TIME frame");
+    }
+    gst_date_time_unref (dt);
   }
 
   if (strings[0] != NULL) {
-    id3v2_tag_add_text_frame (id3v2tag, frame_id, strings, i);
+    id3v2_tag_add_text_frame (id3v2tag, frame_id, (const gchar **) strings, i);
   } else {
     GST_WARNING ("Empty list for tag %s, skipping", tag);
   }
@@ -881,9 +916,9 @@ add_encoder_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
 
   strings = g_new0 (gchar *, num_tags + 1);
   for (n = 0; n < num_tags; ++n) {
-    gchar *encoder = NULL;
+    const gchar *encoder = NULL;
 
-    if (gst_tag_list_get_string_index (list, tag, n, &encoder) && encoder) {
+    if (gst_tag_list_peek_string_index (list, tag, n, &encoder) && encoder) {
       guint encoder_version;
       gchar *s;
 
@@ -897,12 +932,11 @@ add_encoder_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
       GST_LOG ("encoder[%u] = '%s'", n, s);
       strings[i] = s;
       i++;
-      g_free (encoder);
     }
   }
 
   if (strings[0] != NULL) {
-    id3v2_tag_add_text_frame (id3v2tag, "TSSE", strings, i);
+    id3v2_tag_add_text_frame (id3v2tag, "TSSE", (const gchar **) strings, i);
   } else {
     GST_WARNING ("Empty list for tag %s, skipping", tag);
   }
@@ -914,12 +948,12 @@ static void
 add_uri_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
     const gchar * tag, guint num_tags, const gchar * frame_id)
 {
-  gchar *url = NULL;
+  const gchar *url = NULL;
 
   g_assert (frame_id != NULL);
 
   /* URI tags are limited to one of each per taglist */
-  if (gst_tag_list_get_string_index (list, tag, 0, &url) && url != NULL) {
+  if (gst_tag_list_peek_string_index (list, tag, 0, &url) && url != NULL) {
     guint url_len;
 
     url_len = strlen (url);
@@ -932,8 +966,6 @@ add_uri_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
     } else {
       GST_WARNING ("Tag %s does not contain a valid URI (%s)", tag, url);
     }
-
-    g_free (url);
   }
 }
 
@@ -950,7 +982,7 @@ add_relative_volume_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
   gint16 gain_int;
   guint8 peak_bits;
   GstId3v2Frame frame;
-  gchar *frame_id;
+  const gchar *frame_id;
 
   /* figure out tag names and the identification string to use */
   if (strcmp (tag, GST_TAG_TRACK_PEAK) == 0 ||
@@ -1039,11 +1071,13 @@ static const struct
   {
     /* Simple text tags */
   GST_TAG_ARTIST, add_text_tag, "TPE1"}, {
+  GST_TAG_ALBUM_ARTIST, add_text_tag, "TPE2"}, {
   GST_TAG_TITLE, add_text_tag, "TIT2"}, {
   GST_TAG_ALBUM, add_text_tag, "TALB"}, {
   GST_TAG_COPYRIGHT, add_text_tag, "TCOP"}, {
   GST_TAG_COMPOSER, add_text_tag, "TCOM"}, {
   GST_TAG_GENRE, add_text_tag, "TCON"}, {
+  GST_TAG_ENCODED_BY, add_text_tag, "TENC"}, {
 
     /* Private frames */
   GST_ID3_DEMUX_TAG_ID3V2_FRAME, add_id3v2frame_tag, NULL}, {
@@ -1058,6 +1092,9 @@ static const struct
   GST_TAG_COMMENT, add_comment_tag, NULL}, {
   GST_TAG_EXTENDED_COMMENT, add_comment_tag, NULL}, {
 
+    /* BPM tag */
+  GST_TAG_BEATS_PER_MINUTE, add_bpm_tag, NULL}, {
+
     /* Images */
   GST_TAG_IMAGE, add_image_tag, NULL}, {
   GST_TAG_PREVIEW_IMAGE, add_image_tag, NULL}, {
@@ -1069,8 +1106,7 @@ static const struct
   GST_TAG_MUSICBRAINZ_TRMID, add_musicbrainz_tag, "\003"}, {
   GST_TAG_CDDA_MUSICBRAINZ_DISCID, add_musicbrainz_tag, "\004"}, {
   GST_TAG_CDDA_CDDB_DISCID, add_musicbrainz_tag, "\005"}, {
-  GST_TAG_MUSICBRAINZ_TRACKID, add_unique_file_id_tag,
-      "http://musicbrainz.org"}, {
+  GST_TAG_MUSICBRAINZ_TRACKID, add_unique_file_id_tag, NULL}, {
 
     /* Info about encoder */
   GST_TAG_ENCODER, add_encoder_tag, NULL}, {
@@ -1083,7 +1119,7 @@ static const struct
     /* Up to here, all the frame ids and contents have been the same between
        versions 2.3 and 2.4. The rest of them differ... */
     /* Date (in ID3v2.3, this is a TYER tag. In v2.4, it's a TDRC tag */
-  GST_TAG_DATE, add_date_tag, NULL}, {
+  GST_TAG_DATE_TIME, add_date_tag, NULL}, {
 
     /* Replaygain data (not really supported in 2.3, we use an experimental
        tag there) */
@@ -1095,12 +1131,7 @@ static const struct
     /* Sortable version of various tags. These are all v2.4 ONLY */
   GST_TAG_ARTIST_SORTNAME, add_text_tag_v4, "TSOP"}, {
   GST_TAG_ALBUM_SORTNAME, add_text_tag_v4, "TSOA"}, {
-  GST_TAG_TITLE_SORTNAME, add_text_tag_v4, "TSOT"}, {
-
-    /* Misc custom tags (not to be upstreamed) */
-  "gracenote-tagid", add_unique_file_id_tag,
-      "http://www.cddb.com/id3/taginfo1.html"}, {
-  "gracenote-extdata", add_txxx_tag, "GN_Ext_Data"}
+  GST_TAG_TITLE_SORTNAME, add_text_tag_v4, "TSOT"}
 };
 
 static void
@@ -1131,7 +1162,7 @@ foreach_add_tag (const GstTagList * list, const gchar * tag, gpointer userdata)
 }
 
 GstBuffer *
-id3_mux_render_v2_tag (GstTagMux * mux, GstTagList * taglist, int version)
+id3_mux_render_v2_tag (GstTagMux * mux, const GstTagList * taglist, int version)
 {
   GstId3v2Tag tag;
   GstBuffer *buf;
@@ -1158,8 +1189,7 @@ id3_mux_render_v2_tag (GstTagMux * mux, GstTagList * taglist, int version)
 
   /* Create buffer with tag */
   buf = id3v2_tag_to_buffer (&tag);
-  gst_buffer_set_caps (buf, GST_PAD_CAPS (mux->srcpad));
-  GST_LOG_OBJECT (mux, "tag size = %d bytes", GST_BUFFER_SIZE (buf));
+  GST_LOG_OBJECT (mux, "tag size = %d bytes", (int) gst_buffer_get_size (buf));
 
   id3v2_tag_unset (&tag);
 
@@ -1184,7 +1214,8 @@ latin1_convert (const GstTagList * list, const gchar * tag,
 
   /* Convert to Latin-1 (ISO-8859-1), replacing unrepresentable characters
      with '?' */
-  latin1 = g_convert_with_fallback (str, -1, "ISO-8859-1", "UTF-8", "?",
+  latin1 =
+      g_convert_with_fallback (str, -1, "ISO-8859-1", "UTF-8", (char *) "?",
       NULL, &len, NULL);
 
   if (latin1 != NULL && *latin1 != '\0') {
@@ -1201,11 +1232,11 @@ static void
 date_v1_convert (const GstTagList * list, const gchar * tag,
     guint8 * dst, int maxlen, gboolean * wrote_tag)
 {
-  GDate *date;
+  GstDateTime *dt;
 
   /* Only one date supported */
-  if (gst_tag_list_get_date_index (list, tag, 0, &date) && date != NULL) {
-    GDateYear year = g_date_get_year (date);
+  if (gst_tag_list_get_date_time_index (list, tag, 0, &dt)) {
+    guint year = gst_date_time_get_year (dt);
     /* Check for plausible year */
     if (year > 500 && year < 2100) {
       gchar str[5];
@@ -1216,7 +1247,7 @@ date_v1_convert (const GstTagList * list, const gchar * tag,
       GST_WARNING ("invalid year %u, skipping", year);
     }
 
-    g_date_free (date);
+    gst_date_time_unref (dt);
   }
 }
 
@@ -1224,12 +1255,12 @@ static void
 genre_v1_convert (const GstTagList * list, const gchar * tag,
     guint8 * dst, int maxlen, gboolean * wrote_tag)
 {
-  gchar *str;
+  const gchar *str;
   int genreidx = -1;
   guint i, max;
 
   /* We only support one genre */
-  if (!gst_tag_list_get_string_index (list, tag, 0, &str) || str == NULL)
+  if (!gst_tag_list_peek_string_index (list, tag, 0, &str) || str == NULL)
     return;
 
   max = gst_tag_id3_genre_count ();
@@ -1246,8 +1277,6 @@ genre_v1_convert (const GstTagList * list, const gchar * tag,
     *dst = (guint8) genreidx;
     *wrote_tag = TRUE;
   }
-
-  g_free (str);
 }
 
 static void
@@ -1266,6 +1295,7 @@ track_number_convert (const GstTagList * list, const gchar * tag,
   }
 }
 
+/* FIXME: get rid of silly table */
 static const struct
 {
   const gchar *gst_tag;
@@ -1277,7 +1307,7 @@ static const struct
   GST_TAG_TITLE, 3, 30, latin1_convert}, {
   GST_TAG_ARTIST, 33, 30, latin1_convert}, {
   GST_TAG_ALBUM, 63, 30, latin1_convert}, {
-  GST_TAG_DATE, 93, 4, date_v1_convert}, {
+  GST_TAG_DATE_TIME, 93, 4, date_v1_convert}, {
   GST_TAG_COMMENT, 97, 28, latin1_convert}, {
     /* Note: one-byte gap here */
   GST_TAG_TRACK_NUMBER, 126, 1, track_number_convert}, {
@@ -1285,13 +1315,17 @@ static const struct
 };
 
 GstBuffer *
-id3_mux_render_v1_tag (GstTagMux * mux, GstTagList * taglist)
+id3_mux_render_v1_tag (GstTagMux * mux, const GstTagList * taglist)
 {
-  GstBuffer *buf = gst_buffer_new_and_alloc (ID3_V1_TAG_SIZE);
-  guint8 *data = GST_BUFFER_DATA (buf);
+  GstMapInfo info;
+  GstBuffer *buf;
+  guint8 *data;
   gboolean wrote_tag = FALSE;
   int i;
 
+  buf = gst_buffer_new_allocate (NULL, ID3_V1_TAG_SIZE, NULL);
+  gst_buffer_map (buf, &info, GST_MAP_WRITE);
+  data = info.data;
   memset (data, 0, ID3_V1_TAG_SIZE);
 
   data[0] = 'T';
@@ -1306,12 +1340,13 @@ id3_mux_render_v1_tag (GstTagMux * mux, GstTagList * taglist)
         v1_funcs[i].length, &wrote_tag);
   }
 
+  gst_buffer_unmap (buf, &info);
+
   if (!wrote_tag) {
     GST_WARNING_OBJECT (mux, "no ID3v1 tag written (no suitable tags found)");
     gst_buffer_unref (buf);
     return NULL;
   }
 
-  gst_buffer_set_caps (buf, GST_PAD_CAPS (mux->srcpad));
   return buf;
 }

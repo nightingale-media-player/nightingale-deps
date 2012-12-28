@@ -33,7 +33,7 @@
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  if (!gst_element_register (plugin, "directdrawsink", GST_RANK_PRIMARY,
+  if (!gst_element_register (plugin, "directdrawsink", GST_RANK_SECONDARY,
           GST_TYPE_DIRECTDRAW_SINK))
     return FALSE;
 
@@ -42,6 +42,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "directdraw",
+    directdraw,
     "Direct Draw plugin library",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

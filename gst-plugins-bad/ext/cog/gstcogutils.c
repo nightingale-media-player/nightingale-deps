@@ -21,6 +21,8 @@
 #include "config.h"
 #endif
 
+#include "gstcogutils.h"
+
 #include <gst/gst.h>
 #include <gst/video/video.h>
 #include <cog/cog.h>
@@ -124,6 +126,7 @@ gst_cog_buffer_wrap (GstBuffer * buf, GstVideoFormat format, int width,
       break;
     default:
       g_assert_not_reached ();
+      return NULL;
   }
   cog_frame_set_free_callback (frame, gst_cog_frame_free, buf);
 

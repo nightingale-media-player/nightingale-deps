@@ -42,14 +42,6 @@ GST_DEBUG_CATEGORY (sirenenc_debug);
 
 #define FRAME_DURATION  (20 * GST_MSECOND)
 
-/* elementfactory information */
-static const GstElementDetails gst_siren_enc_details =
-GST_ELEMENT_DETAILS ("Siren Encoder element",
-    "Codec/Encoder/Audio ",
-    "Encode 16bit PCM streams into the Siren7 codec",
-    "Youness Alaoui <kakaroto@kakaroto.homelinux.net>");
-
-
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
@@ -58,193 +50,120 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw-int, "
-        "width = (int) 16, "
-        "depth = (int) 16, "
-        "endianness = (int) 1234, "
-        "signed = (boolean) true, "
+    GST_STATIC_CAPS ("audio/x-raw, format = (string) \"S16LE\", "
         "rate = (int) 16000, " "channels = (int) 1"));
 
-/* signals and args */
-enum
-{
-  /* FILL ME */
-  LAST_SIGNAL
-};
+static gboolean gst_siren_enc_start (GstAudioEncoder * enc);
+static gboolean gst_siren_enc_stop (GstAudioEncoder * enc);
+static gboolean gst_siren_enc_set_format (GstAudioEncoder * enc,
+    GstAudioInfo * info);
+static GstFlowReturn gst_siren_enc_handle_frame (GstAudioEncoder * enc,
+    GstBuffer * in_buf);
 
-enum
-{
-  ARG_0,
-};
-
-
-
-static void gst_siren_enc_finalize (GObject * object);
-
-static gboolean gst_siren_enc_sink_setcaps (GstPad * pad, GstCaps * caps);
-static gboolean gst_siren_enc_sink_event (GstPad * pad, GstEvent * event);
-
-static GstFlowReturn gst_siren_enc_chain (GstPad * pad, GstBuffer * buf);
-static GstStateChangeReturn
-gst_siren_change_state (GstElement * element, GstStateChange transition);
+G_DEFINE_TYPE (GstSirenEnc, gst_siren_enc, GST_TYPE_AUDIO_ENCODER);
 
 
 static void
-_do_init (GType type)
-{
-  GST_DEBUG_CATEGORY_INIT (sirenenc_debug, "sirenenc", 0, "sirenenc");
-}
-
-GST_BOILERPLATE_FULL (GstSirenEnc, gst_siren_enc, GstElement,
-    GST_TYPE_ELEMENT, _do_init);
-
-static void
-gst_siren_enc_base_init (gpointer klass)
+gst_siren_enc_class_init (GstSirenEncClass * klass)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+  GstAudioEncoderClass *base_class = GST_AUDIO_ENCODER_CLASS (klass);
+
+  GST_DEBUG_CATEGORY_INIT (sirenenc_debug, "sirenenc", 0, "sirenenc");
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&srctemplate));
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sinktemplate));
 
-  gst_element_class_set_details (element_class, &gst_siren_enc_details);
-}
+  gst_element_class_set_static_metadata (element_class, "Siren Encoder element",
+      "Codec/Encoder/Audio ",
+      "Encode 16bit PCM streams into the Siren7 codec",
+      "Youness Alaoui <kakaroto@kakaroto.homelinux.net>");
 
-static void
-gst_siren_enc_class_init (GstSirenEncClass * klass)
-{
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
-
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
-
-  GST_DEBUG ("Initializing Class");
-
-  gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_siren_enc_finalize);
-
-  gstelement_class->change_state = GST_DEBUG_FUNCPTR (gst_siren_change_state);
+  base_class->start = GST_DEBUG_FUNCPTR (gst_siren_enc_start);
+  base_class->stop = GST_DEBUG_FUNCPTR (gst_siren_enc_stop);
+  base_class->set_format = GST_DEBUG_FUNCPTR (gst_siren_enc_set_format);
+  base_class->handle_frame = GST_DEBUG_FUNCPTR (gst_siren_enc_handle_frame);
 
   GST_DEBUG ("Class Init done");
 }
 
 static void
-gst_siren_enc_init (GstSirenEnc * enc, GstSirenEncClass * klass)
+gst_siren_enc_init (GstSirenEnc * enc)
 {
-
-  GST_DEBUG_OBJECT (enc, "Initializing");
-  enc->encoder = Siren7_NewEncoder (16000);
-  enc->adapter = gst_adapter_new ();
-
-  enc->sinkpad = gst_pad_new_from_static_template (&sinktemplate, "sink");
-  enc->srcpad = gst_pad_new_from_static_template (&srctemplate, "src");
-
-  gst_pad_set_setcaps_function (enc->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_siren_enc_sink_setcaps));
-  gst_pad_set_event_function (enc->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_siren_enc_sink_event));
-  gst_pad_set_chain_function (enc->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_siren_enc_chain));
-
-  gst_element_add_pad (GST_ELEMENT (enc), enc->sinkpad);
-  gst_element_add_pad (GST_ELEMENT (enc), enc->srcpad);
-
-  GST_DEBUG_OBJECT (enc, "Init done");
-}
-
-static void
-gst_siren_enc_finalize (GObject * object)
-{
-  GstSirenEnc *enc = GST_SIREN_ENC (object);
-
-  GST_DEBUG_OBJECT (object, "Disposing");
-
-  Siren7_CloseEncoder (enc->encoder);
-  g_object_unref (enc->adapter);
-
-  G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static gboolean
-gst_siren_enc_sink_setcaps (GstPad * pad, GstCaps * caps)
+gst_siren_enc_start (GstAudioEncoder * enc)
 {
-  GstSirenEnc *enc;
+  GstSirenEnc *senc = GST_SIREN_ENC (enc);
+
+  GST_DEBUG_OBJECT (enc, "start");
+
+  senc->encoder = Siren7_NewEncoder (16000);
+
+  return TRUE;
+}
+
+static gboolean
+gst_siren_enc_stop (GstAudioEncoder * enc)
+{
+  GstSirenEnc *senc = GST_SIREN_ENC (enc);
+
+  GST_DEBUG_OBJECT (senc, "stop");
+
+  Siren7_CloseEncoder (senc->encoder);
+
+  return TRUE;
+}
+
+static gboolean
+gst_siren_enc_set_format (GstAudioEncoder * benc, GstAudioInfo * info)
+{
   gboolean res;
   GstCaps *outcaps;
 
-  enc = GST_SIREN_ENC (GST_PAD_PARENT (pad));
-
   outcaps = gst_static_pad_template_get_caps (&srctemplate);
-  res = gst_pad_set_caps (enc->srcpad, outcaps);
+  res = gst_audio_encoder_set_output_format (benc, outcaps);
   gst_caps_unref (outcaps);
 
-  return res;
-}
+  /* report needs to base class */
+  gst_audio_encoder_set_frame_samples_min (benc, 320);
+  gst_audio_encoder_set_frame_samples_max (benc, 320);
+  /* no remainder or flushing please */
+  gst_audio_encoder_set_hard_min (benc, TRUE);
+  gst_audio_encoder_set_drainable (benc, FALSE);
 
-static gboolean
-gst_siren_enc_sink_event (GstPad * pad, GstEvent * event)
-{
-  GstSirenEnc *enc;
-  gboolean res;
-
-  enc = GST_SIREN_ENC (GST_PAD_PARENT (pad));
-
-  switch (GST_EVENT_TYPE (event)) {
-    case GST_EVENT_EOS:
-      gst_adapter_clear (enc->adapter);
-      res = gst_pad_push_event (enc->srcpad, event);
-      break;
-    case GST_EVENT_FLUSH_STOP:
-      gst_adapter_clear (enc->adapter);
-      res = gst_pad_push_event (enc->srcpad, event);
-      break;
-    default:
-      res = gst_pad_push_event (enc->srcpad, event);
-      break;
-  }
   return res;
 }
 
 static GstFlowReturn
-gst_siren_enc_chain (GstPad * pad, GstBuffer * buf)
+gst_siren_enc_handle_frame (GstAudioEncoder * benc, GstBuffer * buf)
 {
   GstSirenEnc *enc;
   GstFlowReturn ret = GST_FLOW_OK;
   GstBuffer *out_buf;
   guint8 *in_data, *out_data;
-  guint8 *to_free = NULL;
   guint i, size, num_frames;
   gint out_size, in_size;
   gint encode_ret;
-  gboolean discont;
-  GstClockTime timestamp;
-  guint64 distance;
-  GstCaps *outcaps;
+  GstMapInfo inmap, outmap;
 
-  enc = GST_SIREN_ENC (GST_PAD_PARENT (pad));
+  g_return_val_if_fail (buf != NULL, GST_FLOW_ERROR);
 
-  discont = GST_BUFFER_IS_DISCONT (buf);
-  if (discont) {
-    GST_DEBUG_OBJECT (enc, "received DISCONT, flush adapter");
-    gst_adapter_clear (enc->adapter);
-    enc->discont = TRUE;
-  }
+  enc = GST_SIREN_ENC (benc);
 
-  gst_adapter_push (enc->adapter, buf);
+  size = gst_buffer_get_size (buf);
 
-  size = gst_adapter_available (enc->adapter);
+  GST_LOG_OBJECT (enc, "Received buffer of size %d", size);
 
-  GST_LOG_OBJECT (enc, "Received buffer of size %d with adapter of size : %d",
-      GST_BUFFER_SIZE (buf), size);
+  g_return_val_if_fail (size > 0, GST_FLOW_ERROR);
+  g_return_val_if_fail (size % 640 == 0, GST_FLOW_ERROR);
 
   /* we need to process 640 input bytes to produce 40 output bytes */
   /* calculate the amount of frames we will handle */
   num_frames = size / 640;
-
-  /* no frames, wait some more */
-  if (num_frames == 0)
-    goto done;
 
   /* this is the input/output size */
   in_size = num_frames * 640;
@@ -253,33 +172,16 @@ gst_siren_enc_chain (GstPad * pad, GstBuffer * buf)
   GST_LOG_OBJECT (enc, "we have %u frames, %u in, %u out", num_frames, in_size,
       out_size);
 
-  /* set output caps when needed */
-  if ((outcaps = GST_PAD_CAPS (enc->srcpad)) == NULL) {
-    outcaps = gst_static_pad_template_get_caps (&srctemplate);
-    gst_pad_set_caps (enc->srcpad, outcaps);
-    gst_caps_unref (outcaps);
-  }
-
   /* get a buffer */
-  ret = gst_pad_alloc_buffer_and_set_caps (enc->srcpad, -1,
-      out_size, outcaps, &out_buf);
-  if (ret != GST_FLOW_OK)
+  out_buf = gst_audio_encoder_allocate_output_buffer (benc, out_size);
+  if (out_buf == NULL)
     goto alloc_failed;
 
-  /* get the timestamp for the output buffer */
-  timestamp = gst_adapter_prev_timestamp (enc->adapter, &distance);
-
-  /* add the amount of time taken by the distance */
-  if (timestamp != -1)
-    timestamp += gst_util_uint64_scale_int (distance / 2, GST_SECOND, 16000);
-
-  GST_LOG_OBJECT (enc,
-      "timestamp %" GST_TIME_FORMAT ", distance %" G_GUINT64_FORMAT,
-      GST_TIME_ARGS (timestamp), distance);
-
   /* get the input data for all the frames */
-  to_free = in_data = gst_adapter_take (enc->adapter, in_size);
-  out_data = GST_BUFFER_DATA (out_buf);
+  gst_buffer_map (buf, &inmap, GST_MAP_READ);
+  gst_buffer_map (out_buf, &outmap, GST_MAP_READ);
+  in_data = inmap.data;
+  out_data = outmap.data;
 
   for (i = 0; i < num_frames; i++) {
     GST_LOG_OBJECT (enc, "Encoding frame %u/%u", i, num_frames);
@@ -294,22 +196,15 @@ gst_siren_enc_chain (GstPad * pad, GstBuffer * buf)
     in_data += 640;
   }
 
+  gst_buffer_unmap (buf, &inmap);
+  gst_buffer_unmap (out_buf, &outmap);
+
   GST_LOG_OBJECT (enc, "Finished encoding");
 
-  /* mark discont */
-  if (enc->discont) {
-    GST_BUFFER_FLAG_SET (out_buf, GST_BUFFER_FLAG_DISCONT);
-    enc->discont = FALSE;
-  }
-  GST_BUFFER_TIMESTAMP (out_buf) = timestamp;
-  GST_BUFFER_DURATION (out_buf) = num_frames * FRAME_DURATION;
-
-  ret = gst_pad_push (enc->srcpad, out_buf);
+  /* we encode all we get, pass it along */
+  ret = gst_audio_encoder_finish_frame (benc, out_buf, -1);
 
 done:
-  if (to_free)
-    g_free (to_free);
-
   return ret;
 
   /* ERRORS */
@@ -327,33 +222,6 @@ encode_error:
     gst_buffer_unref (out_buf);
     goto done;
   }
-}
-
-static GstStateChangeReturn
-gst_siren_change_state (GstElement * element, GstStateChange transition)
-{
-  GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;
-  GstSirenEnc *enc = GST_SIREN_ENC (element);
-
-  switch (transition) {
-    case GST_STATE_CHANGE_READY_TO_PAUSED:
-      enc->discont = FALSE;
-      break;
-    default:
-      break;
-  }
-
-  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
-
-  switch (transition) {
-    case GST_STATE_CHANGE_PAUSED_TO_READY:
-      gst_adapter_clear (enc->adapter);
-      break;
-    default:
-      break;
-  }
-
-  return ret;
 }
 
 gboolean

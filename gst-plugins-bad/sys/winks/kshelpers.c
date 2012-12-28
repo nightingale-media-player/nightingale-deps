@@ -25,6 +25,12 @@
 GST_DEBUG_CATEGORY_EXTERN (gst_ks_debug);
 #define GST_CAT_DEFAULT gst_ks_debug
 
+#ifndef STATIC_KSPROPSETID_Wave_Queued
+#define STATIC_KSPROPSETID_Wave_Queued \
+    0x16a15b10L,0x16f0,0x11d0,0xa1,0x95,0x00,0x20,0xaf,0xd1,0x56,0xe4
+DEFINE_GUIDSTRUCT("16a15b10-16f0-11d0-a195-0020afd156e4", KSPROPSETID_Wave_Queued);
+#endif
+
 gboolean
 ks_is_valid_handle (HANDLE h)
 {
@@ -127,7 +133,7 @@ ks_device_list_free (GList * devices)
 static gboolean
 ks_sync_device_io_control (HANDLE device, gulong io_control_code,
     gpointer in_buffer, gulong in_buffer_size, gpointer out_buffer,
-    gulong out_buffer_size, gulong * bytes_returned)
+    gulong out_buffer_size, gulong * bytes_returned, gulong * error)
 {
   OVERLAPPED overlapped = { 0, };
   BOOL success;
@@ -136,8 +142,18 @@ ks_sync_device_io_control (HANDLE device, gulong io_control_code,
 
   success = DeviceIoControl (device, io_control_code, in_buffer,
       in_buffer_size, out_buffer, out_buffer_size, bytes_returned, &overlapped);
-  if (!success && GetLastError () == ERROR_IO_PENDING)
-    success = GetOverlappedResult (device, &overlapped, bytes_returned, TRUE);
+  if (!success) {
+    DWORD err;
+
+    if ((err = GetLastError ()) == ERROR_IO_PENDING) {
+      success = GetOverlappedResult (device, &overlapped, bytes_returned, TRUE);
+      if (!success)
+        err = GetLastError ();
+    }
+
+    if (error != NULL)
+      *error = err;
+  }
 
   CloseHandle (overlapped.hEvent);
 
@@ -146,7 +162,8 @@ ks_sync_device_io_control (HANDLE device, gulong io_control_code,
 
 gboolean
 ks_filter_get_pin_property (HANDLE filter_handle, gulong pin_id,
-    GUID prop_set, gulong prop_id, gpointer value, gulong value_size)
+    GUID prop_set, gulong prop_id, gpointer value, gulong value_size,
+    gulong * error)
 {
   KSP_PIN prop = { 0, };
   DWORD bytes_returned = 0;
@@ -157,15 +174,16 @@ ks_filter_get_pin_property (HANDLE filter_handle, gulong pin_id,
   prop.Property.Flags = KSPROPERTY_TYPE_GET;
 
   return ks_sync_device_io_control (filter_handle, IOCTL_KS_PROPERTY, &prop,
-      sizeof (prop), value, value_size, &bytes_returned);
+      sizeof (prop), value, value_size, &bytes_returned, error);
 }
 
 gboolean
 ks_filter_get_pin_property_multi (HANDLE filter_handle, gulong pin_id,
-    GUID prop_set, gulong prop_id, KSMULTIPLE_ITEM ** items)
+    GUID prop_set, gulong prop_id, KSMULTIPLE_ITEM ** items, gulong * error)
 {
   KSP_PIN prop = { 0, };
   DWORD items_size = 0, bytes_written = 0;
+  gulong err;
   gboolean ret;
 
   *items = NULL;
@@ -176,23 +194,23 @@ ks_filter_get_pin_property_multi (HANDLE filter_handle, gulong pin_id,
   prop.Property.Flags = KSPROPERTY_TYPE_GET;
 
   ret = ks_sync_device_io_control (filter_handle, IOCTL_KS_PROPERTY,
-      &prop.Property, sizeof (prop), NULL, 0, &items_size);
-  if (!ret) {
-    DWORD err = GetLastError ();
-    if (err != ERROR_INSUFFICIENT_BUFFER && err != ERROR_MORE_DATA)
-      goto error;
-  }
+      &prop.Property, sizeof (prop), NULL, 0, &items_size, &err);
+  if (!ret && err != ERROR_INSUFFICIENT_BUFFER && err != ERROR_MORE_DATA)
+    goto ioctl_failed;
 
   *items = g_malloc0 (items_size);
 
   ret = ks_sync_device_io_control (filter_handle, IOCTL_KS_PROPERTY, &prop,
-      sizeof (prop), *items, items_size, &bytes_written);
+      sizeof (prop), *items, items_size, &bytes_written, &err);
   if (!ret)
-    goto error;
+    goto ioctl_failed;
 
   return ret;
 
-error:
+ioctl_failed:
+  if (error != NULL)
+    *error = err;
+
   g_free (*items);
   *items = NULL;
 
@@ -201,10 +219,11 @@ error:
 
 gboolean
 ks_object_query_property (HANDLE handle, GUID prop_set, gulong prop_id,
-    gulong prop_flags, gpointer * value, gulong * value_size)
+    gulong prop_flags, gpointer * value, gulong * value_size, gulong * error)
 {
   KSPROPERTY prop = { 0, };
   DWORD req_value_size = 0, bytes_written = 0;
+  gulong err;
   gboolean ret;
 
   *value = NULL;
@@ -215,12 +234,9 @@ ks_object_query_property (HANDLE handle, GUID prop_set, gulong prop_id,
 
   if (value_size == NULL || *value_size == 0) {
     ret = ks_sync_device_io_control (handle, IOCTL_KS_PROPERTY,
-        &prop, sizeof (prop), NULL, 0, &req_value_size);
-    if (!ret) {
-      DWORD err = GetLastError ();
-      if (err != ERROR_INSUFFICIENT_BUFFER && err != ERROR_MORE_DATA)
-        goto error;
-    }
+        &prop, sizeof (prop), NULL, 0, &req_value_size, &err);
+    if (!ret && err != ERROR_INSUFFICIENT_BUFFER && err != ERROR_MORE_DATA)
+      goto ioctl_failed;
   } else {
     req_value_size = *value_size;
   }
@@ -228,16 +244,19 @@ ks_object_query_property (HANDLE handle, GUID prop_set, gulong prop_id,
   *value = g_malloc0 (req_value_size);
 
   ret = ks_sync_device_io_control (handle, IOCTL_KS_PROPERTY, &prop,
-      sizeof (prop), *value, req_value_size, &bytes_written);
+      sizeof (prop), *value, req_value_size, &bytes_written, &err);
   if (!ret)
-    goto error;
+    goto ioctl_failed;
 
   if (value_size != NULL)
     *value_size = bytes_written;
 
   return ret;
 
-error:
+ioctl_failed:
+  if (error != NULL)
+    *error = err;
+
   g_free (*value);
   *value = NULL;
 
@@ -249,15 +268,15 @@ error:
 
 gboolean
 ks_object_get_property (HANDLE handle, GUID prop_set, gulong prop_id,
-    gpointer * value, gulong * value_size)
+    gpointer * value, gulong * value_size, gulong * error)
 {
   return ks_object_query_property (handle, prop_set, prop_id,
-      KSPROPERTY_TYPE_GET, value, value_size);
+      KSPROPERTY_TYPE_GET, value, value_size, error);
 }
 
 gboolean
 ks_object_set_property (HANDLE handle, GUID prop_set, gulong prop_id,
-    gpointer value, gulong value_size)
+    gpointer value, gulong value_size, gulong * error)
 {
   KSPROPERTY prop = { 0, };
   DWORD bytes_returned;
@@ -267,7 +286,7 @@ ks_object_set_property (HANDLE handle, GUID prop_set, gulong prop_id,
   prop.Flags = KSPROPERTY_TYPE_SET;
 
   return ks_sync_device_io_control (handle, IOCTL_KS_PROPERTY, &prop,
-      sizeof (prop), value, value_size, &bytes_returned);
+      sizeof (prop), value, value_size, &bytes_returned, error);
 }
 
 gboolean
@@ -275,12 +294,13 @@ ks_object_get_supported_property_sets (HANDLE handle, GUID ** propsets,
     gulong * len)
 {
   gulong size = 0;
+  gulong error;
 
   *propsets = NULL;
   *len = 0;
 
   if (ks_object_query_property (handle, GUID_NULL, 0,
-          KSPROPERTY_TYPE_SETSUPPORT, propsets, &size)) {
+          KSPROPERTY_TYPE_SETSUPPORT, propsets, &size, &error)) {
     if (size % sizeof (GUID) == 0) {
       *len = size / sizeof (GUID);
       return TRUE;
@@ -294,10 +314,19 @@ ks_object_get_supported_property_sets (HANDLE handle, GUID ** propsets,
 }
 
 gboolean
-ks_object_set_connection_state (HANDLE handle, KSSTATE state)
+ks_object_set_connection_state (HANDLE handle, KSSTATE state, gulong * error)
 {
   return ks_object_set_property (handle, KSPROPSETID_Connection,
-      KSPROPERTY_CONNECTION_STATE, &state, sizeof (state));
+      KSPROPERTY_CONNECTION_STATE, &state, sizeof (state), error);
+}
+
+gchar *
+ks_guid_to_string (const GUID * guid)
+{
+  return g_strdup_printf ("{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}",
+      guid->Data1, guid->Data, guid->Data3, guid->Data4[0], guid->Data4[1],
+      guid->Data4[2], guid->Data4[3], guid->Data4[4], guid->Data4[5],
+      guid->Data4[6], guid->Data4[7]);
 }
 
 const gchar *
@@ -464,8 +493,5 @@ ks_property_set_to_string (const GUID * guid)
       return g_strdup_printf ("KSPROPSETID_%s", known_property_sets[i].name);
   }
 
-  return g_strdup_printf ("{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}",
-      guid->Data1, guid->Data2, guid->Data3, guid->Data4[0], guid->Data4[1],
-      guid->Data4[2], guid->Data4[3], guid->Data4[4], guid->Data4[5],
-      guid->Data4[6], guid->Data4[7]);
+  return ks_guid_to_string (guid);
 }

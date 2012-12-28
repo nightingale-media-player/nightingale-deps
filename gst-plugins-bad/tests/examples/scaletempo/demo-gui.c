@@ -19,6 +19,11 @@
 #include "config.h"
 #endif
 
+/* FIXME 0.11: suppress warnings for deprecated API such as GStaticRecMutex
+ * with newer GLib versions (>= 2.31.0) */
+#define GLIB_DISABLE_DEPRECATION_WARNINGS
+
+#include <gst/glib-compat-private.h>
 #include <gtk/gtk.h>
 #include <glib/gprintf.h>
 #include <math.h>
@@ -26,10 +31,6 @@
 
 #undef G_LOG_DOMAIN
 #define G_LOG_DOMAIN "demo-gui"
-
-#if !GTK_CHECK_VERSION(2,12,0)
-#define gtk_widget_error_bell(w)        /* nop */
-#endif
 
 enum
 {
@@ -111,7 +112,7 @@ demo_gui_seek_bar_format (GtkScale * scale, gdouble value, gpointer data)
       PRINTF_TIME_ARGS ((gint64) value));
 }
 
-gboolean
+static gboolean
 update_position (gpointer data)
 {
   DemoGui *gui = DEMO_GUI (data);
@@ -144,7 +145,7 @@ update_position (gpointer data)
 }
 
 
-gboolean
+static gboolean
 demo_gui_seek_bar_change (GtkRange * range,
     GtkScrollType scroll, gdouble value, gpointer data)
 {
@@ -411,7 +412,7 @@ demo_gui_do_playlist_next (GtkAction * action, gpointer data)
 static void
 demo_gui_do_about_dialog (GtkAction * action, gpointer data)
 {
-  static gchar *authors[] =
+  static const gchar *authors[] =
       { "Rov Juvano <rovjuvano@users.sourceforge.net>", NULL };
 
   gtk_show_about_dialog (NULL,
@@ -725,7 +726,11 @@ create_action (ActionEntry * p)
   gtk_action_connect_accelerator (p->action);
 
   p->button = gtk_button_new ();
+#if GTK_CHECK_VERSION (2, 16, 0)
+  gtk_activatable_set_related_action (GTK_ACTIVATABLE (p->button), p->action);
+#else
   gtk_action_connect_proxy (p->action, p->button);
+#endif
   gtk_button_set_image (GTK_BUTTON (p->button),
       gtk_action_create_icon (p->action, GTK_ICON_SIZE_BUTTON));
   g_signal_connect (G_OBJECT (p->action), "activate", p->callback, p->data);
@@ -981,7 +986,12 @@ demo_gui_show_func (DemoGui * gui)
   gtk_action_set_accel_group (toggle_advanced, accel_group);
   gtk_action_connect_accelerator (toggle_advanced);
   gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (toggle_advanced), FALSE);
+#if GTK_CHECK_VERSION (2, 16, 0)
+  gtk_activatable_set_related_action (GTK_ACTIVATABLE (adv_check),
+      toggle_advanced);
+#else
   gtk_action_connect_proxy (toggle_advanced, adv_check);
+#endif
   g_signal_connect (G_OBJECT (toggle_advanced), "activate",
       G_CALLBACK (demo_gui_do_toggle_advanced), build_gvalue_array (4,
           G_TYPE_OBJECT, gui, G_TYPE_OBJECT, stride_ui, G_TYPE_OBJECT,
@@ -996,7 +1006,12 @@ demo_gui_show_func (DemoGui * gui)
   gtk_action_connect_accelerator (toggle_disabled);
   gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (toggle_disabled), FALSE);
   disabled_check = gtk_check_button_new ();
+#if GTK_CHECK_VERSION (2, 16, 0)
+  gtk_activatable_set_related_action (GTK_ACTIVATABLE (disabled_check),
+      toggle_disabled);
+#else
   gtk_action_connect_proxy (toggle_disabled, disabled_check);
+#endif
   g_signal_connect (G_OBJECT (toggle_disabled), "activate",
       G_CALLBACK (demo_gui_do_toggle_disabled), build_gvalue_array (3,
           G_TYPE_OBJECT, gui, G_TYPE_OBJECT, toggle_advanced, G_TYPE_OBJECT,
@@ -1025,8 +1040,10 @@ demo_gui_show_func (DemoGui * gui)
   seek_range =
       gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0.0, 0.0, 0.0, 5.0,
               30.0, 0.00)));
+#if !GTK_CHECK_VERSION (3, 0, 0)
   gtk_range_set_update_policy (GTK_RANGE (seek_range),
       GTK_UPDATE_DISCONTINUOUS);
+#endif
   seek_bar = gtk_hbox_new (FALSE, 0);
   gtk_box_pack_start (GTK_BOX (seek_bar), amount_played, FALSE, FALSE, 2);
   gtk_box_pack_start (GTK_BOX (seek_bar), seek_range, TRUE, TRUE, 2);
@@ -1129,7 +1146,7 @@ demo_gui_show_func (DemoGui * gui)
   status_bar_printf (GTK_STATUSBAR (status_bar), 5,
       "Welcome to the Scaletempo demo.");
 
-  if (!g_thread_create ((GThreadFunc) gtk_main, NULL, FALSE, &error)) {
+  if (!g_thread_try_new ("name", (GThreadFunc) gtk_main, NULL, &error)) {
     g_signal_emit (gui, demo_gui_signals[SIGNAL_ERROR], 0, error->message);
   }
 }

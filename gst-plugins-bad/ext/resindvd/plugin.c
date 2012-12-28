@@ -35,7 +35,7 @@ plugin_init (GstPlugin * plugin)
 {
   gboolean result = TRUE;
 
-  GST_DEBUG_CATEGORY_INIT (resindvd_debug, "resindvd elements",
+  GST_DEBUG_CATEGORY_INIT (resindvd_debug, "resindvd",
       0, "DVD playback elements from resindvd");
 
 #ifdef ENABLE_NLS
@@ -55,6 +55,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "resindvd",
+    resindvd,
     "Resin DVD playback elements",
     plugin_init, VERSION, "GPL", "GStreamer", "http://gstreamer.net/")

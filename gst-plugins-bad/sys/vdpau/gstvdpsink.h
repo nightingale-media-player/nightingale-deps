@@ -29,7 +29,7 @@
 #include <string.h>
 #include <math.h>
 
-#include "gstvdpdevice.h"
+#include "gstvdp/gstvdpdevice.h"
 
 G_BEGIN_DECLS
 
@@ -99,6 +99,7 @@ struct _VdpSink {
   char *display_name;
 
   GstVdpDevice *device;
+  GstVdpBufferPool *bpool;
   GstCaps *caps;
   
   GstVdpWindow *window;
@@ -111,6 +112,7 @@ struct _VdpSink {
   gint fps_n;
   gint fps_d;
 
+  GMutex *device_lock;
   GMutex *x_lock;
   GMutex *flow_lock;
   

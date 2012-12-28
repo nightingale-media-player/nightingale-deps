@@ -10,9 +10,12 @@ else
 GTK_DOC_DIRS =
 endif
 
-SUBDIRS = $(GTK_DOC_DIRS)
-DIST_SUBDIRS = plugins
+SUBDIRS = libs $(GTK_DOC_DIRS)
+DIST_SUBDIRS = libs plugins
 
 EXTRA_DIST = \
         random/ChangeLog-0.8 \
         version.entities.in
+
+upload:
+	@if test "x$(SUBDIRS)" != x; then for a in $(SUBDIRS); do cd $$a; make upload; cd ..; done; fi

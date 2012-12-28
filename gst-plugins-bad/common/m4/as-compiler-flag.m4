@@ -62,3 +62,35 @@ AC_DEFUN([AS_CXX_COMPILER_FLAG],
   AC_MSG_RESULT([$flag_ok])
 ])
 
+dnl AS_OBJC_COMPILER_FLAG(CPPFLAGS, ACTION-IF-ACCEPTED, [ACTION-IF-NOT-ACCEPTED])
+dnl Tries to compile with the given CPPFLAGS.
+dnl Runs ACTION-IF-ACCEPTED if the compiler can compile with the flags,
+dnl and ACTION-IF-NOT-ACCEPTED otherwise.
+
+AC_DEFUN([AS_OBJC_COMPILER_FLAG],
+[
+  AC_REQUIRE([AC_PROG_OBJC])
+
+  AC_MSG_CHECKING([to see if Objective C compiler understands $1])
+
+  save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS $1"
+
+  AC_LANG_PUSH([Objective C])
+
+  AC_TRY_COMPILE([ ], [], [flag_ok=yes], [flag_ok=no])
+  CPPFLAGS="$save_CPPFLAGS"
+
+  if test "X$flag_ok" = Xyes ; then
+    $2
+    true
+  else
+    $3
+    true
+  fi
+
+  AC_LANG_POP([Objective C])
+
+  AC_MSG_RESULT([$flag_ok])
+])
+
