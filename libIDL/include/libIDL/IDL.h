@@ -45,8 +45,8 @@ extern "C" {
 #define LIBIDL_GEN_VERSION(a,b,c)	(((a) << 16) + ((b) << 8) + (c))
 #define LIBIDL_MAJOR_VERSION		0
 #define LIBIDL_MINOR_VERSION		8
-#define LIBIDL_MICRO_VERSION		11
-#define LIBIDL_VERSION_CODE		LIBIDL_GEN_VERSION(0,8,11)
+#define LIBIDL_MICRO_VERSION		14
+#define LIBIDL_VERSION_CODE		LIBIDL_GEN_VERSION(0,8,14)
 
 /* miscellaneous constants */
 #define IDL_SUCCESS			0

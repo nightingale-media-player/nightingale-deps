@@ -37,14 +37,3 @@ AC_DEFUN([AC_UPDATE_IF_CHANGED],
 			cp "$2" "$1"
 		fi
 	fi])
-
-AC_DEFUN([AC_CPP_NOSTDINC],
-       [AC_CACHE_CHECK([how to ignore standard include path],
-               ac_cv_cpp_nostdinc,
-               [saved_CPPFLAGS="$CPPFLAGS"
-               CPPFLAGS="$CPPFLAGS -I-"
-               AC_TRY_CPP(,ac_cv_cpp_nostdinc=-I-,
-                       [CPPFLAGS="$saved_CPPFLAGS -I"
-                       AC_TRY_CPP(,ac_cv_cpp_nostdinc=-I,)])
-               CPPFLAGS="$saved_CPPFLAGS"])
-       AC_DEFINE_UNQUOTED(CPP_NOSTDINC, "$ac_cv_cpp_nostdinc")])

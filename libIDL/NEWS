@@ -1,3 +1,18 @@
+libIDL 0.8.14:
+
+	* Fix build error in configure.in.
+	* Remove CPP_STDINC cruft from configure.in.
+	* Enable silent build rules.
+
+libIDL 0.8.13:
+
+        * Clean up some warnings from sparse/gcc.
+	* Makefile.am: Put local includes first.
+
+libIDL 0.8.12:
+
+        * Fix the build with bison 2.4
+
 libIDL 0.8.10:
 
         * Fix the build with glib 2.15

@@ -607,7 +607,7 @@ struct_type:		z_props TOK_STRUCT
 			{ $<str>$ = "struct"; }
 			z_new_scope_catch '{'		{
 	g_hash_table_insert (__IDL_structunion_ht, $4, $4);
-	$$ = IDL_type_struct_new ($4, NULL);
+	$<tree>$ = IDL_type_struct_new ($4, NULL);
 }				member_list
 			'}' pop_scope			{
 	g_hash_table_remove (__IDL_structunion_ht, $4);
@@ -624,7 +624,7 @@ union_type:		z_props TOK_UNION
 				switch_type_spec
 			')' '{'				{
 	g_hash_table_insert (__IDL_structunion_ht, $4, $4);
-	$$ = IDL_type_union_new ($4, $7, NULL);
+	$<tree>$ = IDL_type_union_new ($4, $7, NULL);
 }				switch_body
 			'}' pop_scope			{
 	g_hash_table_remove (__IDL_structunion_ht, $4);

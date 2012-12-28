@@ -18,7 +18,7 @@
     License along with this library; if not, write to the Free
     Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-    $Id: util.c 590 2008-05-20 07:53:53Z tml $
+    $Id$
 
 ***************************************************************************/
 #include <assert.h>
@@ -227,10 +227,10 @@ int IDL_parse_filename (const char *filename, const char *cpp_args,
 	FILE *input;
 	char *cmd;
 #ifdef HAVE_CPP_PIPE_STDIN
-	char *fmt = CPP_PROGRAM " " CPP_NOSTDINC " - %s%s %s < \"%s\" %s";
+	char *fmt = CPP_PROGRAM " - %s%s %s < \"%s\" %s";
 	char *wd;
 #else
-	char *fmt = CPP_PROGRAM " " CPP_NOSTDINC " -I- -I%s %s \"%s\" %s";
+	char *fmt = CPP_PROGRAM " -I%s %s \"%s\" %s";
 	char cwd[2048];
 #ifdef HAVE_SYMLINK
 	char *s, *tmpfilename;
@@ -2604,7 +2604,7 @@ static gboolean IDL_output_delim_pre (IDL_tree_func_data *tfd, IDL_output_delim_
 {
 	if (IDL_output_delim_match (tfd, delim)) {
 		if (delim->hit)
-			dataf (delim->data, delim->delim);
+			dataf (delim->data, "%s", delim->delim);
 		else
 			delim->hit = TRUE;
 		return delim->pre_func
@@ -2770,7 +2770,7 @@ static gboolean IDL_emit_IDL_ident_real (IDL_tree_func_data *tfd, IDL_output_dat
 		   prepending an underscore. */
 		dataf (data, "%s", IDL_IDENT (tfd->tree).str);
 	} else {
-		if ( up_path == 0 ) {
+		if (up_path == NULL) {
 		    levels = 0;
 		} else {
 		    /* Determine minimal required levels of scoping */
@@ -3528,7 +3528,7 @@ static gboolean
 contains_node_walker (IDL_tree_func_data *tfd, gpointer data) {
 	ContainsNodeWalkerInfo	*info = data;
 	/* skip root! */
-	if ( tfd->up!=0 && tfd->tree == info->searchNode ) {
+	if (tfd->up != NULL && tfd->tree == info->searchNode) {
 		info->found = TRUE;
 		return FALSE;
 	}

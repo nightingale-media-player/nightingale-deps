@@ -37,7 +37,7 @@ CFLAGS = -Iinclude -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_WARNINGS @__glib_
 # All .c files go into the DLL except tstidl.c, so we can use _DLIBIDL_COMPILATION
 # in general, correspondingly then build tstidl.exe directly from tstidl.c
 DEFS = -DLIBIDL_VERSION=\"@LIBIDL_VERSION@\" \
-       -DCPP_PROGRAM="\"cl.exe /E /nologo\"" -DCPP_NOSTDINC=\"\" \
+       -DCPP_PROGRAM="\"cl.exe /E /nologo\"" \
        -DSTDC_HEADERS -DHAVE_POPEN -DHAVE_STDDEF_H -DHAVE_WCHAR_H \
        -DYYTEXT_POINTER -DYYDEBUG \
        -DG_LOG_DOMAIN=\"libIDL\" \

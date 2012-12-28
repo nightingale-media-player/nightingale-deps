@@ -18,7 +18,7 @@
     License along with this library; if not, write to the Free
     Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-    $Id: util.h 590 2008-05-20 07:53:53Z tml $
+    $Id$
 
 ***************************************************************************/
 #ifndef __UTIL_H
