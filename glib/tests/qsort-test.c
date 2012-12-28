@@ -14,7 +14,7 @@ sort (gconstpointer a, gconstpointer b, gpointer user_data)
 }
 
 int
-main (int argc, char **argv)
+main ()
 {
   int i;
 
@@ -26,7 +26,7 @@ main (int argc, char **argv)
   for (i = 0; i < SIZE - 1; i++)
     g_assert (array[i] <= array[i+1]);
 
-  /* 0 elements is a valid case */
+  /* 0 elemenents is a valid case */
   g_qsort_with_data (array, 0, sizeof (guint32), sort, NULL);
 
   return 0;

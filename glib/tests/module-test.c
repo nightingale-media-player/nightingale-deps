@@ -32,8 +32,6 @@
 
 gchar* global_state;
 
-G_MODULE_EXPORT void g_clash_func (void);
-
 G_MODULE_EXPORT void
 g_clash_func (void)
 {

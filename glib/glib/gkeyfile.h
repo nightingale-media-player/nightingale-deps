@@ -20,10 +20,6 @@
  *   Boston, MA 02111-1307, USA.
  */
 
-#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
-#error "Only <glib.h> can be included directly."
-#endif
-
 #ifndef __G_KEY_FILE_H__
 #define __G_KEY_FILE_H__
 
@@ -55,8 +51,6 @@ typedef enum
 } GKeyFileFlags;
 
 GKeyFile *g_key_file_new                    (void);
-GKeyFile *g_key_file_ref                    (GKeyFile             *key_file);
-void      g_key_file_unref                  (GKeyFile             *key_file);
 void      g_key_file_free                   (GKeyFile             *key_file);
 void      g_key_file_set_list_separator     (GKeyFile             *key_file,
 					     gchar                 separator);
@@ -138,22 +132,6 @@ void      g_key_file_set_integer            (GKeyFile             *key_file,
 					     const gchar          *group_name,
 					     const gchar          *key,
 					     gint                  value);
-gint64    g_key_file_get_int64              (GKeyFile             *key_file,
-					     const gchar          *group_name,
-					     const gchar          *key,
-					     GError              **error);
-void      g_key_file_set_int64              (GKeyFile             *key_file,
-					     const gchar          *group_name,
-					     const gchar          *key,
-					     gint64                value);
-guint64   g_key_file_get_uint64             (GKeyFile             *key_file,
-					     const gchar          *group_name,
-					     const gchar          *key,
-					     GError              **error);
-void      g_key_file_set_uint64             (GKeyFile             *key_file,
-					     const gchar          *group_name,
-					     const gchar          *key,
-					     guint64               value);
 gdouble   g_key_file_get_double             (GKeyFile             *key_file,
                                              const gchar          *group_name,
                                              const gchar          *key,

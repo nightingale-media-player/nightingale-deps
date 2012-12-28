@@ -51,7 +51,7 @@ my_test_get_type (void)
   static GType test_type = 0;
 
   if (!test_type) {
-    const GTypeInfo test_info = {
+    static const GTypeInfo test_info = {
       sizeof (GTestClass),
       NULL,
       NULL,
@@ -105,7 +105,7 @@ my_test_dispose (GObject * object)
 
   test = MY_TEST (object);
 
-  g_print ("dispose %p!\n", test);
+  g_print ("dispose %p!\n", object);
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
 }
@@ -178,9 +178,11 @@ main (int argc, char **argv)
   gint i;
   GTest *test;
 
+  g_thread_init (NULL);
   g_print ("START: %s\n", argv[0]);
   g_log_set_always_fatal (G_LOG_LEVEL_WARNING | G_LOG_LEVEL_CRITICAL | g_log_set_always_fatal (G_LOG_FATAL_MASK));
-
+  g_type_init ();
+  
   test = g_object_new (G_TYPE_TEST, NULL);
 
   g_signal_connect (test, "notify::dummy", G_CALLBACK (dummy_notify), NULL);

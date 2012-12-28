@@ -20,15 +20,11 @@
  * if advised of the possibility of such damage.
  */
 
+#include <glib/gtestutils.h>
 #include <glib/glib.h>
 #include <gio/gio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
 #include <string.h>
-#include <sys/stat.h>
-
-#define DEFAULT_TEST_DIR		"testdir_live-g-file"
 
 #define PATTERN_FILE_SIZE	0x10000
 #define TEST_HANDLE_SPECIAL	TRUE
@@ -88,9 +84,9 @@ static const struct StructureItem sample_struct[] = {
     {"private_file",		NULL,	G_FILE_TYPE_REGULAR,	G_FILE_CREATE_PRIVATE, 0, 0, TEST_COPY | TEST_OPEN | TEST_OVERWRITE | TEST_APPEND},
     {"normal_file2",		NULL,	G_FILE_TYPE_REGULAR,	G_FILE_CREATE_NONE, 0, 0, TEST_COPY | TEST_OVERWRITE | TEST_REPLACE},
     {"readonly_file",		NULL,	G_FILE_TYPE_REGULAR,	G_FILE_CREATE_NONE, S_IRUSR + S_IRGRP + S_IROTH, 0, TEST_DELETE_NORMAL | TEST_OPEN},
-    {"UTF_pr\xcc\x8ci\xcc\x81lis\xcc\x8c z",
+    {"UTF_p\xc5\x99\xc3\xadli\xc5\xa1 \xc5\xbelu\xc5\xa5ou\xc4\x8dk\xc3\xbd k\xc5\xaf\xc5\x88",
     						NULL,	G_FILE_TYPE_REGULAR,	G_FILE_CREATE_NONE, 0, 0, TEST_COPY | TEST_CREATE | TEST_OPEN | TEST_OVERWRITE},
-    {"dir_pr\xcc\x8ci\xcc\x81lis\xcc\x8c z",
+    {"dir_p\xc5\x99\xc3\xadli\xc5\xa1 \xc5\xbelu\xc5\xa5ou\xc4\x8dk\xc3\xbd k\xc5\xaf\xc5\x88",
     						NULL,	G_FILE_TYPE_DIRECTORY,	G_FILE_CREATE_NONE, 0, 0, TEST_DELETE_NORMAL | TEST_CREATE},
     {"pattern_file",		NULL,	G_FILE_TYPE_REGULAR,	G_FILE_CREATE_NONE, 0, TEST_HANDLE_SPECIAL, TEST_COPY | TEST_OPEN | TEST_APPEND},
     {TEST_NAME_NOT_EXISTS,	NULL,	G_FILE_TYPE_REGULAR,	G_FILE_CREATE_NONE, 0, TEST_HANDLE_SPECIAL, TEST_DELETE_NORMAL | TEST_NOT_EXISTS | TEST_COPY | TEST_OPEN},
@@ -102,30 +98,18 @@ static const struct StructureItem sample_struct[] = {
 	{"lost_symlink",		"nowhere",	G_FILE_TYPE_SYMBOLIC_LINK, G_FILE_CREATE_NONE, 0, 0, TEST_COPY | TEST_DELETE_NORMAL | TEST_OPEN | TEST_INVALID_SYMLINK},
   };
 
-static gboolean test_suite;
 static gboolean write_test;
 static gboolean verbose;
 static gboolean posix_compat;
 
-#ifdef G_HAVE_ISO_VARARGS
-#define log(...) if (verbose)  g_print (__VA_ARGS__)
-#elif defined(G_HAVE_GNUC_VARARGS)
 #define log(msg...) if (verbose)  g_print (msg)
-#else  /* no varargs macros */
-static void log (const g_char *format, ...)
-{
-  va_list args;
-  va_start (args, format);
-  if (verbose) g_print (format, args);
-  va_end (args);
-}
-#endif
 
 static GFile *
 create_empty_file (GFile * parent, const char *filename,
 		   GFileCreateFlags create_flags)
 {
   GFile *child;
+  gboolean res;
   GError *error;
   GFileOutputStream *outs;
 
@@ -134,10 +118,10 @@ create_empty_file (GFile * parent, const char *filename,
 
   error = NULL;
   outs = g_file_replace (child, NULL, FALSE, create_flags, NULL, &error);
-  g_assert_no_error (error);
+  g_assert (error == NULL);
   g_assert (outs != NULL);
   error = NULL;
-  g_output_stream_close (G_OUTPUT_STREAM (outs), NULL, &error);
+  res = g_output_stream_close (G_OUTPUT_STREAM (outs), NULL, &error);
   g_object_unref (outs);
   return child;
 }
@@ -154,7 +138,7 @@ create_empty_dir (GFile * parent, const char *filename)
   error = NULL;
   res = g_file_make_directory (child, NULL, &error);
   g_assert_cmpint (res, ==, TRUE);
-  g_assert_no_error (error);
+  g_assert (error == NULL);
   return child;
 }
 
@@ -170,7 +154,7 @@ create_symlink (GFile * parent, const char *filename, const char *points_to)
   error = NULL;
   res = g_file_make_symbolic_link (child, points_to, NULL, &error);
   g_assert_cmpint (res, ==, TRUE);
-  g_assert_no_error (error);
+  g_assert (error == NULL);
   return child;
 }
 
@@ -183,7 +167,7 @@ test_create_structure (gconstpointer test_data)
   GError *error;
   GFileOutputStream *outs;
   GDataOutputStream *outds;
-  guint i;
+  int i;
   struct StructureItem item;
 
   g_assert (test_data != NULL);
@@ -222,10 +206,6 @@ test_create_structure (gconstpointer test_data)
 	       item.link_to);
 	  child = create_symlink (root, item.filename, item.link_to);
 	  break;
-        case G_FILE_TYPE_UNKNOWN:
-        case G_FILE_TYPE_SPECIAL:
-        case G_FILE_TYPE_SHORTCUT:
-        case G_FILE_TYPE_MOUNTABLE:
 	default:
 	  break;
 	}
@@ -240,7 +220,7 @@ test_create_structure (gconstpointer test_data)
 					 G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
 					 NULL, &error);
 	  g_assert_cmpint (res, ==, TRUE);
-	  g_assert_no_error (error);
+	  g_assert (error == NULL);
 	}
 
       g_object_unref (child);
@@ -254,7 +234,7 @@ test_create_structure (gconstpointer test_data)
   error = NULL;
   outs =
     g_file_replace (child, NULL, FALSE, G_FILE_CREATE_NONE, NULL, &error);
-  g_assert_no_error (error);
+  g_assert (error == NULL);
 
   g_assert (outs != NULL);
   outds = g_data_output_stream_new (G_OUTPUT_STREAM (outs));
@@ -263,11 +243,11 @@ test_create_structure (gconstpointer test_data)
     {
       error = NULL;
       res = g_data_output_stream_put_byte (outds, i % 256, NULL, &error);
-      g_assert_no_error (error);
+      g_assert (error == NULL);
     }
   error = NULL;
   res = g_output_stream_close (G_OUTPUT_STREAM (outs), NULL, &error);
-  g_assert_no_error (error);
+  g_assert (error == NULL);
   g_object_unref (outds);
   g_object_unref (outs);
   g_object_unref (child);
@@ -391,7 +371,7 @@ test_initial_structure (gconstpointer test_data)
   gboolean res;
   GError *error;
   GFileInputStream *ins;
-  guint i;
+  int i;
   GFileInfo *info;
   guint32 size;
   guchar *buffer;
@@ -425,13 +405,12 @@ test_initial_structure (gconstpointer test_data)
       info =
 	g_file_query_info (child, "*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
 			   NULL, &error);
-      g_assert_no_error (error);
+      g_assert (error == NULL);
       g_assert (info != NULL);
 
       test_attributes (item, info);
 
       g_object_unref (child);
-      g_object_unref (info);
     }
 
   /*  read and test the pattern file  */
@@ -444,16 +423,15 @@ test_initial_structure (gconstpointer test_data)
   info =
     g_file_query_info (child, "*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL,
 		       &error);
-  g_assert_no_error (error);
+  g_assert (error == NULL);
   g_assert (info != NULL);
   size = g_file_info_get_size (info);
   g_assert_cmpint (size, ==, PATTERN_FILE_SIZE);
-  g_object_unref (info);
 
   error = NULL;
   ins = g_file_read (child, NULL, &error);
   g_assert (ins != NULL);
-  g_assert_no_error (error);
+  g_assert (error == NULL);
 
   buffer = g_malloc (PATTERN_FILE_SIZE);
   total_read = 0;
@@ -464,16 +442,16 @@ test_initial_structure (gconstpointer test_data)
       read =
 	g_input_stream_read (G_INPUT_STREAM (ins), buffer + total_read,
 			     PATTERN_FILE_SIZE, NULL, &error);
-      g_assert_no_error (error);
+      g_assert (error == NULL);
       total_read += read;
-      log ("      read %"G_GSSIZE_FORMAT" bytes, total = %"G_GSSIZE_FORMAT" of %d.\n",
-	   read, total_read, PATTERN_FILE_SIZE);
+      log ("      read %d bytes, total = %d of %d.\n", read, total_read,
+	   PATTERN_FILE_SIZE);
     }
   g_assert_cmpint (total_read, ==, PATTERN_FILE_SIZE);
 
   error = NULL;
   res = g_input_stream_close (G_INPUT_STREAM (ins), NULL, &error);
-  g_assert_no_error (error);
+  g_assert (error == NULL);
   g_assert_cmpint (res, ==, TRUE);
 
   for (i = 0; i < PATTERN_FILE_SIZE; i++)
@@ -494,7 +472,7 @@ traverse_recurse_dirs (GFile * parent, GFile * root)
   GFileInfo *info;
   GFile *descend;
   char *relative_path;
-  guint i;
+  int i;
   gboolean found;
 
   g_assert (root != NULL);
@@ -505,15 +483,13 @@ traverse_recurse_dirs (GFile * parent, GFile * root)
 			       G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL,
 			       &error);
   g_assert (enumerator != NULL);
-  g_assert_no_error (error);
-
-  g_assert (g_file_enumerator_get_container (enumerator) == parent);
+  g_assert (error == NULL);
 
   error = NULL;
   info = g_file_enumerator_next_file (enumerator, NULL, &error);
   while ((info) && (!error))
     {
-      descend = g_file_enumerator_get_child (enumerator, info);
+      descend = g_file_get_child (parent, g_file_info_get_name (info));
       g_assert (descend != NULL);
       relative_path = g_file_get_relative_path (root, descend);
       g_assert (relative_path != NULL);
@@ -540,20 +516,14 @@ traverse_recurse_dirs (GFile * parent, GFile * root)
 
       g_object_unref (descend);
       error = NULL;
-      g_object_unref (info);
-      g_free (relative_path);
-
       info = g_file_enumerator_next_file (enumerator, NULL, &error);
     }
-  g_assert_no_error (error);
+  g_assert (error == NULL);
 
   error = NULL;
   res = g_file_enumerator_close (enumerator, NULL, &error);
   g_assert_cmpint (res, ==, TRUE);
-  g_assert_no_error (error);
-  g_assert (g_file_enumerator_is_closed (enumerator));
-
-  g_object_unref (enumerator);
+  g_assert (error == NULL);
 }
 
 static void
@@ -587,7 +557,7 @@ test_enumerate (gconstpointer test_data)
   GError *error;
   GFileEnumerator *enumerator;
   GFileInfo *info;
-  guint i;
+  int i;
   struct StructureItem item;
 
 
@@ -624,12 +594,12 @@ test_enumerate (gconstpointer test_data)
 	  if ((item.extra_flags & TEST_NOT_EXISTS) == TEST_NOT_EXISTS)
 	    {
 	      g_assert (enumerator == NULL);
-	      g_assert_error (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND);
+	      g_assert_cmpint (error->code, ==, G_IO_ERROR_NOT_FOUND);
 	    }
 	  if ((item.extra_flags & TEST_ENUMERATE_FILE) == TEST_ENUMERATE_FILE)
 	    {
 	      g_assert (enumerator == NULL);
-	      g_assert_error (error, G_IO_ERROR, G_IO_ERROR_NOT_DIRECTORY);
+	      g_assert_cmpint (error->code, ==, G_IO_ERROR_NOT_DIRECTORY);
 	    }
 	  if ((item.extra_flags & TEST_NO_ACCESS) == TEST_NO_ACCESS)
 	    {
@@ -638,7 +608,7 @@ test_enumerate (gconstpointer test_data)
 	      error = NULL;
 	      info = g_file_enumerator_next_file (enumerator, NULL, &error);
 	      g_assert (info == NULL);
-	      g_assert_no_error (error);
+	      g_assert (error == NULL);
 	      /*  no items should be found, no error should be logged  */
 	    }
 
@@ -650,9 +620,7 @@ test_enumerate (gconstpointer test_data)
 	      error = NULL;
 	      res = g_file_enumerator_close (enumerator, NULL, &error);
 	      g_assert_cmpint (res, ==, TRUE);
-	      g_assert_no_error (error);
-
-              g_object_unref (enumerator);
+	      g_assert (error == NULL);
 	    }
 	  g_object_unref (child);
 	}
@@ -699,50 +667,44 @@ do_copy_move (GFile * root, struct StructureItem item, const char *target_dir,
       (extra_flags == TEST_ALREADY_EXISTS))
     {
       g_assert_cmpint (res, ==, FALSE);
-      g_assert_error (error, G_IO_ERROR, G_IO_ERROR_EXISTS);
+      g_assert_cmpint (error->code, ==, G_IO_ERROR_EXISTS);
     }
   /*  target file is a file, overwrite is not set  */
   else if (((item.extra_flags & TEST_NOT_EXISTS) != TEST_NOT_EXISTS) &&
 	   (extra_flags == TEST_TARGET_IS_FILE))
     {
       g_assert_cmpint (res, ==, FALSE);
-      g_assert_error (error, G_IO_ERROR, G_IO_ERROR_NOT_DIRECTORY);
+      if (item.file_type == G_FILE_TYPE_DIRECTORY)
+	g_assert_cmpint (error->code, ==, G_IO_ERROR_WOULD_RECURSE);
+      else
+	g_assert_cmpint (error->code, ==, G_IO_ERROR_NOT_DIRECTORY);
     }
   /*  source file is directory  */
   else if ((item.extra_flags & TEST_COPY_ERROR_RECURSE) ==
 	   TEST_COPY_ERROR_RECURSE)
     {
       g_assert_cmpint (res, ==, FALSE);
-      g_assert_error (error, G_IO_ERROR, G_IO_ERROR_WOULD_RECURSE);
+      g_assert_cmpint (error->code, ==, G_IO_ERROR_WOULD_RECURSE);
     }
   /*  source or target path doesn't exist  */
   else if (((item.extra_flags & TEST_NOT_EXISTS) == TEST_NOT_EXISTS) ||
 	   (extra_flags == TEST_NOT_EXISTS))
     {
       g_assert_cmpint (res, ==, FALSE);
-      g_assert_error (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND);
+      g_assert_cmpint (error->code, ==, G_IO_ERROR_NOT_FOUND);
     }
   /*  source or target path permission denied  */
   else if (((item.extra_flags & TEST_NO_ACCESS) == TEST_NO_ACCESS) ||
 	   (extra_flags == TEST_NO_ACCESS))
     {
-      /* This works for root, see bug #552912 */
-      if (test_suite && getuid () == 0)
-	{
-	  g_assert_cmpint (res, ==, TRUE);
-	  g_assert_no_error (error);
-	}
-      else
-	{
-	  g_assert_cmpint (res, ==, FALSE);
-	  g_assert_error (error, G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED);
-	}
+      g_assert_cmpint (res, ==, FALSE);
+      g_assert_cmpint (error->code, ==, G_IO_ERROR_PERMISSION_DENIED);
     }
   /*  no error should be found, all exceptions defined above  */
   else
     {
       g_assert_cmpint (res, ==, TRUE);
-      g_assert_no_error (error);
+      g_assert (error == NULL);
     }
 
   if (error)
@@ -759,7 +721,7 @@ test_copy_move (gconstpointer test_data)
 {
   GFile *root;
   gboolean res;
-  guint i;
+  int i;
   struct StructureItem item;
 
   log ("\n");
@@ -823,7 +785,7 @@ test_create (gconstpointer test_data)
   GFile *root, *child;
   gboolean res;
   GError *error;
-  guint i;
+  int i;
   struct StructureItem item;
   GFileOutputStream *os;
 
@@ -867,20 +829,22 @@ test_create (gconstpointer test_data)
 	      ((item.extra_flags & TEST_CREATE) == TEST_CREATE))
 	    {
 	      g_assert (os == NULL);
-	      g_assert_error (error, G_IO_ERROR, G_IO_ERROR_EXISTS);
+	      g_assert (error != NULL);
+	      g_assert_cmpint (error->code, ==, G_IO_ERROR_EXISTS);
 	    }
 	  else if (item.file_type == G_FILE_TYPE_DIRECTORY)
 	    {
 	      g_assert (os == NULL);
+	      g_assert (error != NULL);
 	      if ((item.extra_flags & TEST_CREATE) == TEST_CREATE)
-		g_assert_error (error, G_IO_ERROR, G_IO_ERROR_EXISTS);
+		g_assert_cmpint (error->code, ==, G_IO_ERROR_EXISTS);
 	      else
-		g_assert_error (error, G_IO_ERROR, G_IO_ERROR_IS_DIRECTORY);
+		g_assert_cmpint (error->code, ==, G_IO_ERROR_IS_DIRECTORY);
 	    }
 	  else
 	    {
 	      g_assert (os != NULL);
-	      g_assert_no_error (error);
+	      g_assert (error == NULL);
 	    }
 
 	  if (error)
@@ -895,8 +859,7 @@ test_create (gconstpointer test_data)
 		log ("         g_output_stream_close: error %d = %s\n",
 		     error->code, error->message);
 	      g_assert_cmpint (res, ==, TRUE);
-	      g_assert_no_error (error);
-              g_object_unref (os);
+	      g_assert (error == NULL);
 	    }
 	  g_object_unref (child);
 	}
@@ -910,7 +873,7 @@ test_open (gconstpointer test_data)
   GFile *root, *child;
   gboolean res;
   GError *error;
-  guint i;
+  int i;
   struct StructureItem item;
   GFileInputStream *input_stream;
 
@@ -943,17 +906,17 @@ test_open (gconstpointer test_data)
 	       TEST_INVALID_SYMLINK))
 	    {
 	      g_assert (input_stream == NULL);
-	      g_assert_error (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND);
+	      g_assert_cmpint (error->code, ==, G_IO_ERROR_NOT_FOUND);
 	    }
 	  else if (item.file_type == G_FILE_TYPE_DIRECTORY)
 	    {
 	      g_assert (input_stream == NULL);
-	      g_assert_error (error, G_IO_ERROR, G_IO_ERROR_IS_DIRECTORY);
+	      g_assert_cmpint (error->code, ==, G_IO_ERROR_IS_DIRECTORY);
 	    }
 	  else
 	    {
 	      g_assert (input_stream != NULL);
-	      g_assert_no_error (error);
+	      g_assert (error == NULL);
 	    }
 
 	  if (error)
@@ -966,8 +929,7 @@ test_open (gconstpointer test_data)
 		g_input_stream_close (G_INPUT_STREAM (input_stream), NULL,
 				      &error);
 	      g_assert_cmpint (res, ==, TRUE);
-	      g_assert_no_error (error);
-              g_object_unref (input_stream);
+	      g_assert (error == NULL);
 	    }
 	  g_object_unref (child);
 	}
@@ -982,9 +944,8 @@ test_delete (gconstpointer test_data)
   GFile *child;
   gboolean res;
   GError *error;
-  guint i;
+  int i;
   struct StructureItem item;
-  gchar *path;
 
   g_assert (test_data != NULL);
   log ("\n");
@@ -1008,10 +969,8 @@ test_delete (gconstpointer test_data)
 	  g_assert (child != NULL);
 	  /*  we don't care about result here  */
 
-          path = g_file_get_path (child);
-	  log ("  Deleting %s, path = %s\n", item.filename, path);
-          g_free (path);
-
+	  log ("  Deleting %s, path = %s\n", item.filename,
+	       g_file_get_path (child));
 	  error = NULL;
 	  if ((item.extra_flags & TEST_DELETE_NORMAL) == TEST_DELETE_NORMAL)
 	    res = g_file_delete (child, NULL, &error);
@@ -1022,17 +981,20 @@ test_delete (gconstpointer test_data)
 	      TEST_DELETE_NON_EMPTY)
 	    {
 	      g_assert_cmpint (res, ==, FALSE);
-	      g_assert_error (error, G_IO_ERROR, G_IO_ERROR_NOT_EMPTY);
+	      g_assert (error != NULL);
+	      g_assert_cmpint (error->code, ==, G_IO_ERROR_NOT_EMPTY);
 	    }
 	  if ((item.extra_flags & TEST_DELETE_FAILURE) == TEST_DELETE_FAILURE)
 	    {
 	      g_assert_cmpint (res, ==, FALSE);
-	      g_assert_error (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND);
+	      g_assert (error != NULL);
+	      g_assert_cmpint (error->code, !=, 0);
 	    }
 	  if ((item.extra_flags & TEST_NOT_EXISTS) == TEST_NOT_EXISTS)
 	    {
 	      g_assert_cmpint (res, ==, FALSE);
-	      g_assert_error (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND);
+	      g_assert (error != NULL);
+	      g_assert_cmpint (error->code, ==, G_IO_ERROR_NOT_FOUND);
 	    }
 
 	  if (error)
@@ -1047,180 +1009,18 @@ test_delete (gconstpointer test_data)
   g_object_unref (root);
 }
 
-static void
-test_make_directory_with_parents (gconstpointer test_data)
-{
-  GFile *root, *child, *grandchild, *greatgrandchild;
-  gboolean res;
-  GError *error = NULL;
-
-  g_assert (test_data != NULL);
-
-  root = g_file_new_for_commandline_arg ((char *) test_data);
-  g_assert (root != NULL);
-  res = g_file_query_exists (root, NULL);
-  g_assert_cmpint (res, ==, TRUE);
-
-  child = g_file_get_child (root, "a");
-  grandchild = g_file_get_child (child, "b");
-  greatgrandchild = g_file_get_child (grandchild, "c");
-
-  /* Check that we can successfully make directory hierarchies of
-   * depth 1, 2, or 3
-   */
-  res = g_file_make_directory_with_parents (child, NULL, &error);
-  g_assert_cmpint (res, ==, TRUE);
-  g_assert_no_error (error);
-  res = g_file_query_exists (child, NULL);
-  g_assert_cmpint (res, ==, TRUE);
-
-  g_file_delete (child, NULL, NULL);
-
-  res = g_file_make_directory_with_parents (grandchild, NULL, &error);
-  g_assert_cmpint (res, ==, TRUE);
-  g_assert_no_error (error);
-  res = g_file_query_exists (grandchild, NULL);
-  g_assert_cmpint (res, ==, TRUE);
-
-  g_file_delete (grandchild, NULL, NULL);
-  g_file_delete (child, NULL, NULL);
-
-  res = g_file_make_directory_with_parents (greatgrandchild, NULL, &error);
-  g_assert_cmpint (res, ==, TRUE);
-  g_assert_no_error (error);
-  res = g_file_query_exists (greatgrandchild, NULL);
-  g_assert_cmpint (res, ==, TRUE);
-
-  g_file_delete (greatgrandchild, NULL, NULL);
-  g_file_delete (grandchild, NULL, NULL);
-  g_file_delete (child, NULL, NULL);
-
-  /* Now test failure by trying to create a directory hierarchy
-   * where a ancestor exists but is read-only
-   */
-
-  /* No obvious way to do this on Windows */
-  if (!posix_compat)
-    goto out;
-
-#ifndef G_PLATFORM_WIN32
-  if (getuid() == 0) /* permissions are ignored for root */
-    goto out;
-#endif
-
-  g_file_make_directory (child, NULL, NULL);
-  g_assert_cmpint (res, ==, TRUE);
-
-  res = g_file_set_attribute_uint32 (child,
-                                     G_FILE_ATTRIBUTE_UNIX_MODE,
-                                     S_IRUSR + S_IXUSR, /* -r-x------ */
-                                     G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                     NULL, NULL);
-  g_assert_cmpint (res, ==, TRUE);
-
-  res = g_file_make_directory_with_parents (grandchild, NULL, &error);
-  g_assert_cmpint (res, ==, FALSE);
-  g_assert_error (error, G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED);
-  g_clear_error (&error);
-
-  res = g_file_make_directory_with_parents (greatgrandchild, NULL, &error);
-  g_assert_cmpint (res, ==, FALSE);
-  g_assert_error (error, G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED);
-  g_clear_error (&error);
-
-out:
-  g_object_unref (greatgrandchild);
-  g_object_unref (grandchild);
-  g_object_unref (child);
-  g_object_unref (root);
-}
-
-
-static void
-cleanup_dir_recurse (GFile *parent, GFile *root)
-{
-  gboolean res;
-  GError *error;
-  GFileEnumerator *enumerator;
-  GFileInfo *info;
-  GFile *descend;
-  char *relative_path;
-
-  g_assert (root != NULL);
-
-  enumerator =
-    g_file_enumerate_children (parent, "*",
-			       G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL,
-			       NULL);
-  if (! enumerator)
-	  return;
-
-  error = NULL;
-  info = g_file_enumerator_next_file (enumerator, NULL, &error);
-  while ((info) && (!error))
-    {
-      descend = g_file_enumerator_get_child (enumerator, info);
-      g_assert (descend != NULL);
-      relative_path = g_file_get_relative_path (root, descend);
-      g_assert (relative_path != NULL);
-      g_free (relative_path);
-
-      log ("    deleting '%s'\n", g_file_info_get_display_name (info));
-
-      if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
-    	  cleanup_dir_recurse (descend, root);
-      
-      error = NULL;
-      res = g_file_delete (descend, NULL, &error);
-      g_assert_cmpint (res, ==, TRUE);
-
-      g_object_unref (descend);
-      error = NULL;
-      g_object_unref (info);
-
-      info = g_file_enumerator_next_file (enumerator, NULL, &error);
-    }
-  g_assert_no_error (error);
-
-  error = NULL;
-  res = g_file_enumerator_close (enumerator, NULL, &error);
-  g_assert_cmpint (res, ==, TRUE);
-  g_assert_no_error (error);
-
-  g_object_unref (enumerator);
-}
-
-static void
-prep_clean_structure (gconstpointer test_data)
-{
-  GFile *root;
-  
-  g_assert (test_data != NULL);
-  log ("\n  Cleaning target testing structure in '%s'...\n",
-       (char *) test_data);
-
-  root = g_file_new_for_commandline_arg ((char *) test_data);
-  g_assert (root != NULL);
-  
-  cleanup_dir_recurse (root, root);
-
-  g_file_delete (root, NULL, NULL);
-  
-  g_object_unref (root);
-}
-
 int
 main (int argc, char *argv[])
 {
-  static gboolean only_create_struct;
-  const char *target_path;
+  static gboolean create_struct;
+  static char *target_path;
   GError *error;
   GOptionContext *context;
 
   static GOptionEntry cmd_entries[] = {
     {"read-write", 'w', 0, G_OPTION_ARG_NONE, &write_test,
      "Perform write tests (incl. structure creation)", NULL},
-    {"create-struct", 'c', 0, G_OPTION_ARG_NONE, &only_create_struct,
+    {"create-struct", 'c', 0, G_OPTION_ARG_NONE, &create_struct,
      "Only create testing structure (no tests)", NULL},
     {"verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose, "Be verbose", NULL},
     {"posix", 'x', 0, G_OPTION_ARG_NONE, &posix_compat,
@@ -1228,31 +1028,16 @@ main (int argc, char *argv[])
     {NULL}
   };
 
-  test_suite = FALSE;
   verbose = FALSE;
   write_test = FALSE;
-  only_create_struct = FALSE;
+  create_struct = FALSE;
   target_path = NULL;
   posix_compat = FALSE;
 
   /*  strip all gtester-specific args  */
+  g_type_init ();
   g_test_init (&argc, &argv, NULL);
 
-  /*  no extra parameters specified, assume we're executed from glib test suite  */ 
-  if (argc < 2)
-    {
-	  test_suite = TRUE;
-	  verbose = TRUE;
-	  write_test = TRUE;
-	  only_create_struct = FALSE;
-	  target_path = DEFAULT_TEST_DIR;
-#ifdef G_PLATFORM_WIN32
-	  posix_compat = FALSE;
-#else
-	  posix_compat = TRUE;
-#endif
-    }
-  
   /*  add trailing args  */
   error = NULL;
   context = g_option_context_new ("target_path");
@@ -1263,73 +1048,52 @@ main (int argc, char *argv[])
       return g_test_run ();
     }
 
-  /*  remaining arg should is the target path; we don't care of the extra args here  */ 
-  if (argc >= 2)
-    target_path = strdup (argv[1]);
-  
-  if (! target_path) 
+  /*  missing mandatory arg for target dir  */
+  if (argc < 2)
     {
-      g_print ("error: target path was not specified\n");
-      g_print ("%s", g_option_context_get_help (context, TRUE, NULL));
+      g_print (g_option_context_get_help (context, TRUE, NULL));
       return g_test_run ();
     }
+  target_path = strdup (argv[1]);
 
-  g_option_context_free (context);
-  
-  /*  Write test - clean target directory first  */
-  /*    this can be also considered as a test - enumerate + delete  */ 
-  if (write_test || only_create_struct)
-    g_test_add_data_func ("/live-g-file/prep_clean_structure", target_path,
-    	  	  prep_clean_structure);
-  
   /*  Write test - create new testing structure  */
-  if (write_test || only_create_struct)
+  if (write_test || create_struct)
     g_test_add_data_func ("/live-g-file/create_structure", target_path,
 			  test_create_structure);
 
   /*  Read test - test the sample structure - expect defined attributes to be there  */
-  if (!only_create_struct)
+  if (!create_struct)
     g_test_add_data_func ("/live-g-file/test_initial_structure", target_path,
 			  test_initial_structure);
 
   /*  Read test - test traverse the structure - no special file should appear  */
-  if (!only_create_struct)
+  if (!create_struct)
     g_test_add_data_func ("/live-g-file/test_traverse_structure", target_path,
 			  test_traverse_structure);
 
   /*  Read test - enumerate  */
-  if (!only_create_struct)
+  if (!create_struct)
     g_test_add_data_func ("/live-g-file/test_enumerate", target_path,
 			  test_enumerate);
 
   /*  Read test - open (g_file_read())  */
-  if (!only_create_struct)
+  if (!create_struct)
     g_test_add_data_func ("/live-g-file/test_open", target_path, test_open);
 
   /*  Write test - create  */
-  if (write_test && (!only_create_struct))
+  if (write_test && (!create_struct))
     g_test_add_data_func ("/live-g-file/test_create", target_path,
 			  test_create);
 
   /*  Write test - copy, move  */
-  if (write_test && (!only_create_struct))
+  if (write_test && (!create_struct))
     g_test_add_data_func ("/live-g-file/test_copy_move", target_path,
 			  test_copy_move);
 
   /*  Write test - delete, trash  */
-  if (write_test && (!only_create_struct))
+  if (write_test && (!create_struct))
     g_test_add_data_func ("/live-g-file/test_delete", target_path,
 			  test_delete);
 
-  /*  Write test - make_directory_with_parents */
-  if (write_test && (!only_create_struct))
-    g_test_add_data_func ("/live-g-file/test_make_directory_with_parents", target_path,
-			  test_make_directory_with_parents);
-
-  if (write_test || only_create_struct)
-    g_test_add_data_func ("/live-g-file/final_clean", target_path,
-    	  	  prep_clean_structure);
-
   return g_test_run ();
-
 }

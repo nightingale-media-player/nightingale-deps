@@ -21,7 +21,7 @@
 /* see http://bugzilla.gnome.org/show_bug.cgi?id=337128 for the purpose of this test */
 
 #define MY_G_IMPLEMENT_INTERFACE(TYPE_IFACE, iface_init)       { \
-  const GInterfaceInfo g_implement_interface_info = { \
+  static const GInterfaceInfo g_implement_interface_info = { \
       (GInterfaceInitFunc) iface_init, \
       NULL, \
       NULL \
@@ -41,8 +41,6 @@ typedef struct _TypeName {
 typedef struct _TypeNameClass {
   GObjectClass parent_parent;
 } TypeNameClass;
-
-GType           type_name_get_type          (void);
 
 MY_DEFINE_TYPE (TypeName, type_name, G_TYPE_OBJECT)
 

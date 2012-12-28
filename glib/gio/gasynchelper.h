@@ -1,5 +1,5 @@
 /* GIO - GLib Input, Output and Streaming Library
- *
+ * 
  * Copyright (C) 2006-2007 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -23,28 +23,30 @@
 #ifndef __G_ASYNC_HELPER_H__
 #define __G_ASYNC_HELPER_H__
 
-#include <gio/gio.h>
-
-#ifdef G_OS_WIN32
-#include <windows.h>
-#endif
+#include <glib-object.h>
+#include "gcancellable.h"
 
 G_BEGIN_DECLS
 
-typedef gboolean (*GFDSourceFunc) (int          fd,
+typedef struct {
+  gpointer       async_object;
+  GError *       error;
+  gpointer       user_data;
+} GAsyncResultData;
+
+typedef gboolean (*GFDSourceFunc) (gpointer user_data,
 				   GIOCondition condition,
-				   gpointer     user_data);
+				   int fd);
+
+void     _g_queue_async_result (GAsyncResultData *result,
+				gpointer         async_object,
+				GError          *error,
+				gpointer         user_data,
+				GSourceFunc      source_func);
 
 GSource *_g_fd_source_new      (int              fd,
 				gushort          events,
 				GCancellable    *cancellable);
-
-#ifdef G_OS_WIN32
-gboolean _g_win32_overlap_wait_result (HANDLE           hfile,
-                                       OVERLAPPED      *overlap,
-                                       DWORD           *transferred,
-                                       GCancellable    *cancellable);
-#endif
 
 G_END_DECLS
 

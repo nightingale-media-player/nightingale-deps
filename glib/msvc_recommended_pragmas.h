@@ -28,5 +28,4 @@
 #pragma warning(disable:4305)   /* No truncation from int to char warnings */
 
 /* work around Microsoft's premature attempt to deprecate the C-Library */
-#define _CRT_SECURE_NO_WARNINGS
-#define _CRT_NONSTDC_NO_WARNINGS
+#pragma warning(disable:4996)   /* This function or variable may be unsafe. */

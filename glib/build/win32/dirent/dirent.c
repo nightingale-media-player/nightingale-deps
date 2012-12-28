@@ -19,8 +19,7 @@
 #include <string.h>
 #include <io.h>
 #include <direct.h>
-
-#include "dirent.h"
+#include <dirent.h>
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h> /* for GetFileAttributes */

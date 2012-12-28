@@ -20,14 +20,13 @@
  * Author: Alexander Larsson <alexl@redhat.com>
  */
 
-#include "config.h"
+#include <config.h>
 #include <string.h>
 
 #include "gpollfilemonitor.h"
-#include "gfile.h"
 #include "gfilemonitor.h"
-#include "gfileinfo.h"
 
+#include "gioalias.h"
 
 static gboolean g_poll_file_monitor_cancel (GFileMonitor* monitor);
 static void schedule_poll_timeout (GPollFileMonitor* poll_monitor);
@@ -54,7 +53,8 @@ g_poll_file_monitor_finalize (GObject* object)
 
   g_object_unref (poll_monitor->file);
 
-  G_OBJECT_CLASS (g_poll_file_monitor_parent_class)->finalize (object);
+  if (G_OBJECT_CLASS (g_poll_file_monitor_parent_class)->finalize)
+    (*G_OBJECT_CLASS (g_poll_file_monitor_parent_class)->finalize) (object);
 }
 
 
@@ -167,7 +167,7 @@ poll_file_timeout (gpointer data)
   g_file_query_info_async (poll_monitor->file, G_FILE_ATTRIBUTE_ETAG_VALUE "," G_FILE_ATTRIBUTE_STANDARD_SIZE,
 			 0, 0, NULL, got_new_info, g_object_ref (poll_monitor));
   
-  return G_SOURCE_REMOVE;
+  return FALSE;
 }
 
 static void

@@ -6,7 +6,7 @@
 and semantics are as close as possible to those of the Perl 5 language.
 
                        Written by Philip Hazel
-           Copyright (c) 1997-2012 University of Cambridge
+           Copyright (c) 1997-2008 University of Cambridge
 
 -----------------------------------------------------------------------------
 Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 
 /* This module contains an internal function that is used to match an extended
-class. It is used by both pcre_exec() and pcre_def_exec(). */
+class (one that contains characters whose values are > 255). It is used by both
+pcre_exec() and pcre_def_exec(). */
 
 
 #ifdef HAVE_CONFIG_H
@@ -54,7 +55,7 @@ class. It is used by both pcre_exec() and pcre_def_exec(). */
 *************************************************/
 
 /* This function is called to match a character against an extended class that
-might contain values > 255 and/or Unicode properties.
+might contain values > 255.
 
 Arguments:
   c           the character
@@ -64,16 +65,10 @@ Returns:      TRUE if character matches, else FALSE
 */
 
 BOOL
-PRIV(xclass)(int c, const pcre_uchar *data, BOOL utf)
+_pcre_xclass(int c, const uschar *data)
 {
 int t;
 BOOL negated = (*data & XCL_NOT) != 0;
-
-(void)utf;
-#ifdef COMPILE_PCRE8
-/* In 8 bit mode, this must always be TRUE. Help the compiler to know that. */
-utf = TRUE;
-#endif
 
 /* Character values < 256 are matched against a bitmap, if one is present. If
 not, we still carry on, because there may be ranges that start below 256 in the
@@ -81,53 +76,36 @@ additional data. */
 
 if (c < 256)
   {
-  if ((*data & XCL_MAP) != 0 &&
-    (((pcre_uint8 *)(data + 1))[c/8] & (1 << (c&7))) != 0)
-    return !negated; /* char found */
+  if ((*data & XCL_MAP) != 0 && (data[1 + c/8] & (1 << (c&7))) != 0)
+    return !negated;   /* char found */
   }
 
 /* First skip the bit map if present. Then match against the list of Unicode
 properties or large chars or ranges that end with a large char. We won't ever
 encounter XCL_PROP or XCL_NOTPROP when UCP support is not compiled. */
 
-if ((*data++ & XCL_MAP) != 0) data += 32 / sizeof(pcre_uchar);
+if ((*data++ & XCL_MAP) != 0) data += 32;
 
 while ((t = *data++) != XCL_END)
   {
   int x, y;
   if (t == XCL_SINGLE)
     {
-#ifdef SUPPORT_UTF
-    if (utf)
-      {
-      GETCHARINC(x, data); /* macro generates multiple statements */
-      }
-    else
-#endif
-      x = *data++;
+    GETCHARINC(x, data);
     if (c == x) return !negated;
     }
   else if (t == XCL_RANGE)
     {
-#ifdef SUPPORT_UTF
-    if (utf)
-      {
-      GETCHARINC(x, data); /* macro generates multiple statements */
-      GETCHARINC(y, data); /* macro generates multiple statements */
-      }
-    else
-#endif
-      {
-      x = *data++;
-      y = *data++;
-      }
+    GETCHARINC(x, data);
+    GETCHARINC(y, data);
     if (c >= x && c <= y) return !negated;
     }
 
 #ifdef SUPPORT_UCP
   else  /* XCL_PROP & XCL_NOTPROP */
     {
-    const pcre_uint8 chartype = UCD_CHARTYPE(c);
+    int chartype, script;
+    int category = _pcre_ucp_findprop(c, &chartype, &script);
 
     switch(*data)
       {
@@ -136,13 +114,12 @@ while ((t = *data++) != XCL_END)
       break;
 
       case PT_LAMP:
-      if ((chartype == ucp_Lu || chartype == ucp_Ll ||
-           chartype == ucp_Lt) == (t == XCL_PROP)) return !negated;
+      if ((chartype == ucp_Lu || chartype == ucp_Ll || chartype == ucp_Lt) ==
+          (t == XCL_PROP)) return !negated;
       break;
 
       case PT_GC:
-      if ((data[1] == PRIV(ucp_gentype)[chartype]) == (t == XCL_PROP))
-        return !negated;
+      if ((data[1] == category) == (t == XCL_PROP)) return !negated;
       break;
 
       case PT_PC:
@@ -150,34 +127,7 @@ while ((t = *data++) != XCL_END)
       break;
 
       case PT_SC:
-      if ((data[1] == UCD_SCRIPT(c)) == (t == XCL_PROP)) return !negated;
-      break;
-
-      case PT_ALNUM:
-      if ((PRIV(ucp_gentype)[chartype] == ucp_L ||
-           PRIV(ucp_gentype)[chartype] == ucp_N) == (t == XCL_PROP))
-        return !negated;
-      break;
-
-      case PT_SPACE:    /* Perl space */
-      if ((PRIV(ucp_gentype)[chartype] == ucp_Z ||
-           c == CHAR_HT || c == CHAR_NL || c == CHAR_FF || c == CHAR_CR)
-             == (t == XCL_PROP))
-        return !negated;
-      break;
-
-      case PT_PXSPACE:  /* POSIX space */
-      if ((PRIV(ucp_gentype)[chartype] == ucp_Z ||
-           c == CHAR_HT || c == CHAR_NL || c == CHAR_VT ||
-           c == CHAR_FF || c == CHAR_CR) == (t == XCL_PROP))
-        return !negated;
-      break;
-
-      case PT_WORD:
-      if ((PRIV(ucp_gentype)[chartype] == ucp_L ||
-           PRIV(ucp_gentype)[chartype] == ucp_N || c == CHAR_UNDERSCORE)
-             == (t == XCL_PROP))
-        return !negated;
+      if ((data[1] == script) == (t == XCL_PROP)) return !negated;
       break;
 
       /* This should never occur, but compilers may mutter if there is no

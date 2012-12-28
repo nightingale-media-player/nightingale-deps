@@ -25,12 +25,6 @@ struct dirent
 	char		d_name[FILENAME_MAX]; /* File name. */
 };
 
-#ifdef _WIN64
-#define INTPTR __int64
-#else
-#define INTPTR long
-#endif
-
 /*
  * This is an internal data structure. Good programmers will not use it
  * except as an argument to one of the functions below.
@@ -47,7 +41,7 @@ typedef struct
 	struct dirent		dd_dir;
 
 	/* _findnext handle */
-	INTPTR			dd_handle;
+	long			dd_handle;
 
 	/*
          * Status of search:
@@ -94,7 +88,7 @@ typedef struct
 	struct _wdirent		dd_dir;
 
 	/* _findnext handle */
-	INTPTR			dd_handle;
+	long			dd_handle;
 
 	/*
          * Status of search:

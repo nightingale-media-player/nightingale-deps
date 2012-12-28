@@ -37,8 +37,8 @@ static void
 test_enum_transformation (void)
 { 
   GType type; 
-  GValue orig = G_VALUE_INIT;
-  GValue xform = G_VALUE_INIT;
+  GValue orig = { 0, };
+  GValue xform = { 0, }; 
   GEnumValue values[] = { {0,"0","0"}, {1,"1","1"}}; 
   
  type = g_enum_register_static ("TestEnum", values); 
@@ -50,7 +50,6 @@ test_enum_transformation (void)
  g_value_init (&xform, G_TYPE_CHAR); 
  g_value_transform (&orig, &xform); 
  g_assert (g_value_get_char (&xform) == 1);
- g_assert (g_value_get_schar (&xform) == 1);
 
  memset (&xform, 0, sizeof (GValue));
  g_value_init (&xform, G_TYPE_UCHAR); 
@@ -93,8 +92,8 @@ static void
 test_gtype_value (void)
 {
   GType type;
-  GValue value = G_VALUE_INIT;
-  GValue copy = G_VALUE_INIT;
+  GValue value = { 0, };
+  GValue copy = { 0, };
 
   g_value_init (&value, G_TYPE_GTYPE);
 
@@ -141,7 +140,7 @@ lcopy (GValue *value, ...)
 static void
 test_collection (void)
 {
-  GValue value = G_VALUE_INIT;
+  GValue value = { 0, };
   gchar *error;
   
   g_value_init (&value, G_TYPE_CHAR);
@@ -220,21 +219,12 @@ test_collection (void)
   error = collect (&value, G_TYPE_BOXED);
   g_assert (error == NULL);
   g_assert (g_value_get_gtype (&value) == G_TYPE_BOXED);
-
-  g_value_unset (&value);
-  g_value_init (&value, G_TYPE_VARIANT);
-  error = collect (&value, g_variant_new_uint32 (42));
-  g_assert (error == NULL);
-  g_assert (g_variant_is_of_type (g_value_get_variant (&value), G_VARIANT_TYPE ("u")));
-  g_assert_cmpuint (g_variant_get_uint32 (g_value_get_variant (&value)), ==, 42);
-
-  g_value_unset (&value);
 }
 
 static void
 test_copying (void)
 {
-  GValue value = G_VALUE_INIT;
+  GValue value = { 0, };
   gchar *error;
 
   {
@@ -367,32 +357,18 @@ test_copying (void)
     g_assert (error == NULL);
     g_assert (c == G_TYPE_BOXED);
   }  
-
-  {
-    GVariant *c = NULL;
-
-    g_value_unset (&value);
-    g_value_init (&value, G_TYPE_VARIANT);
-    g_value_set_variant (&value, g_variant_new_uint32 (42));
-    error = lcopy (&value, &c);
-    g_assert (error == NULL);
-    g_assert (c != NULL);
-    g_assert (g_variant_is_of_type (c, G_VARIANT_TYPE ("u")));
-    g_assert_cmpuint (g_variant_get_uint32 (c), ==, 42);
-    g_variant_unref (c);
-  }
 }
 
 
 int
 main (int argc, char *argv[])
 {
-  g_test_init (&argc, &argv, NULL);
+  g_type_init (); 
+  
+  test_enum_transformation ();
+  test_gtype_value ();
+  test_collection ();
+  test_copying ();
 
-  g_test_add_func ("/gvalue/enum-transformation", test_enum_transformation);
-  g_test_add_func ("/gvalue/gtype", test_gtype_value);
-  g_test_add_func ("/gvalue/collection", test_collection);
-  g_test_add_func ("/gvalue/copying", test_copying);
-
-  return g_test_run ();
+  return 0;
 }

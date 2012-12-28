@@ -30,13 +30,13 @@
 
 
 static void
-write_err_and_exit (gint    fd,
-		    gintptr msg)
+write_err_and_exit (gint fd,
+		    gint msg)
 {
-  gintptr en = errno;
+  gint en = errno;
   
-  write (fd, &msg, sizeof(gintptr));
-  write (fd, &en, sizeof(gintptr));
+  write (fd, &msg, sizeof(msg));
+  write (fd, &en, sizeof(en));
   
   _exit (1);
 }
@@ -147,25 +147,20 @@ protect_wargv (wchar_t  **wargv,
   return argc;
 }
 
-#ifndef HELPER_CONSOLE
 int _stdcall
 WinMain (struct HINSTANCE__ *hInstance,
 	 struct HINSTANCE__ *hPrevInstance,
 	 char               *lpszCmdLine,
 	 int                 nCmdShow)
-#else
-int
-main (int ignored_argc, char **ignored_argv)
-#endif
 {
   int child_err_report_fd = -1;
   int helper_sync_fd = -1;
   int i;
   int fd;
   int mode;
-  gintptr handle;
+  int handle;
   int saved_errno;
-  gintptr no_error = CHILD_NO_ERROR;
+  int no_error = CHILD_NO_ERROR;
   gint argv_zero_offset = ARG_PROGRAM;
   wchar_t **new_wargv;
   int argc;

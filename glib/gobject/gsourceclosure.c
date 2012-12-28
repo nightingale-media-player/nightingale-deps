@@ -17,16 +17,26 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "config.h"
-
 #include "gsourceclosure.h"
 #include "gboxed.h"
 #include "genums.h"
 #include "gmarshal.h"
 #include "gvalue.h"
 #include "gvaluetypes.h"
+#include "gobjectalias.h"
 
-G_DEFINE_BOXED_TYPE (GIOChannel, g_io_channel, g_io_channel_ref, g_io_channel_unref)
+GType
+g_io_channel_get_type (void)
+{
+  static GType our_type = 0;
+  
+  if (our_type == 0)
+    our_type = g_boxed_type_register_static ("GIOChannel",
+					     (GBoxedCopyFunc) g_io_channel_ref,
+					     (GBoxedFreeFunc) g_io_channel_unref);
+
+  return our_type;
+}
 
 GType
 g_io_condition_get_type (void)
@@ -80,8 +90,8 @@ io_watch_closure_callback (GIOChannel   *channel,
 {
   GClosure *closure = data;
 
-  GValue params[2] = { G_VALUE_INIT, G_VALUE_INIT };
-  GValue result_value = G_VALUE_INIT;
+  GValue params[2] = { { 0, }, { 0, } };
+  GValue result_value = { 0, };
   gboolean result;
 
   g_value_init (&result_value, G_TYPE_BOOLEAN);
@@ -105,7 +115,7 @@ static gboolean
 source_closure_callback (gpointer data)
 {
   GClosure *closure = data;
-  GValue result_value = G_VALUE_INIT;
+  GValue result_value = { 0, };
   gboolean result;
 
   g_value_init (&result_value, G_TYPE_BOOLEAN);
@@ -145,17 +155,6 @@ static GSourceCallbackFuncs closure_callback_funcs = {
   closure_callback_get
 };
 
-/**
- * g_source_set_closure:
- * @source: the source
- * @closure: a #GClosure
- *
- * Set the callback for a source as a #GClosure.
- *
- * If the source is not one of the standard GLib types, the @closure_callback
- * and @closure_marshal fields of the #GSourceFuncs structure must have been
- * filled in with pointers to appropriate functions.
- */
 void
 g_source_set_closure (GSource  *source,
 		      GClosure *closure)
@@ -168,7 +167,7 @@ g_source_set_closure (GSource  *source,
       source->source_funcs != &g_timeout_funcs &&
       source->source_funcs != &g_idle_funcs)
     {
-      g_critical (G_STRLOC ": closure can not be set on closure without GSourceFuncs::closure_callback\n");
+      g_critical (G_STRLOC "closure can not be set on closure without GSourceFuncs::closure_callback\n");
       return;
     }
 
@@ -192,39 +191,5 @@ g_source_set_closure (GSource  *source,
     }
 }
 
-static void
-dummy_closure_marshal (GClosure     *closure,
-		       GValue       *return_value,
-		       guint         n_param_values,
-		       const GValue *param_values,
-		       gpointer      invocation_hint,
-		       gpointer      marshal_data)
-{
-  if (G_VALUE_HOLDS_BOOLEAN (return_value))
-    g_value_set_boolean (return_value, TRUE);
-}
-
-/**
- * g_source_set_dummy_callback:
- * @source: the source
- *
- * Sets a dummy callback for @source. The callback will do nothing, and
- * if the source expects a #gboolean return value, it will return %TRUE.
- * (If the source expects any other type of return value, it will return
- * a 0/%NULL value; whatever g_value_init() initializes a #GValue to for
- * that type.)
- *
- * If the source is not one of the standard GLib types, the
- * @closure_callback and @closure_marshal fields of the #GSourceFuncs
- * structure must have been filled in with pointers to appropriate
- * functions.
- */
-void
-g_source_set_dummy_callback (GSource *source)
-{
-  GClosure *closure;
-
-  closure = g_closure_new_simple (sizeof (GClosure), NULL);
-  g_closure_set_meta_marshal (closure, NULL, dummy_closure_marshal);
-  g_source_set_closure (source, closure);
-}
+#define __G_SOURCECLOSURE_C__
+#include "gobjectaliasdef.c"

@@ -1,5 +1,5 @@
 /* GIO - GLib Input, Output and Streaming Library
- *
+ * 
  * Copyright (C) 2006-2007 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,14 +20,10 @@
  * Author: Alexander Larsson <alexl@redhat.com>
  */
 
-#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
-#error "Only <glib.h> can be included directly."
-#endif
-
 #ifndef __G_URI_FUNCS_H__
 #define __G_URI_FUNCS_H__
 
-#include <glib/gtypes.h>
+#include <glib.h>
 
 G_BEGIN_DECLS
 
@@ -39,7 +35,7 @@ G_BEGIN_DECLS
 #define G_URI_RESERVED_CHARS_GENERIC_DELIMITERS ":/?#[]@"
 
 /**
- * G_URI_RESERVED_CHARS_SUBCOMPONENT_DELIMITERS:
+ * G_URI_RESERVED_CHARS_SUBCOMPONENT_DELIMITERS
  * 
  * Subcomponent delimiter characters as defined in RFC 3986. Includes "!$&'()*+,;=".
  **/

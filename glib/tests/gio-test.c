@@ -82,7 +82,10 @@ read_all (int         fd,
       
       if (error != G_IO_ERROR_NONE)
 	{
-	  g_print ("gio-test: ...from %d: %d\n", fd, error);
+	  g_print ("gio-test: ...from %d: G_IO_ERROR_%s\n", fd,
+		   (error == G_IO_ERROR_AGAIN ? "AGAIN" :
+		    (error == G_IO_ERROR_INVAL ? "INVAL" :
+		     (error == G_IO_ERROR_UNKNOWN ? "UNKNOWN" : "???"))));
 	  if (error == G_IO_ERROR_AGAIN)
 	    continue;
 	  break;
@@ -154,7 +157,12 @@ recv_message (GIOChannel  *channel,
 	  for (i = 0; i < nkiddies; i++)
 	    if (seqtab[i].fd == fd)
 	      {
-                g_assert_cmpint (seq, ==, seqtab[i].seq);
+		if (seq != seqtab[i].seq)
+		  {
+		    g_print ("gio-test: ...from %d: invalid sequence number %d, expected %d\n",
+			     fd, seq, seqtab[i].seq);
+		    g_assert_not_reached ();
+		  }
 		seqtab[i].seq++;
 		break;
 	      }
@@ -176,7 +184,11 @@ recv_message (GIOChannel  *channel,
       
       g_assert (nb == sizeof (nbytes));
 
-      g_assert_cmpint (nbytes, <, BUFSIZE);
+      if (nbytes >= BUFSIZE)
+	{
+	  g_print ("gio-test: ...from %d: nbytes = %d (%#x)!\n", fd, nbytes, nbytes);
+	  g_assert_not_reached ();
+	}
       g_assert (nbytes >= 0 && nbytes < BUFSIZE);
 #ifdef VERBOSE      
       g_print ("gio-test: ...from %d: %d bytes\n", fd, nbytes);
@@ -198,7 +210,12 @@ recv_message (GIOChannel  *channel,
 	    }
       
 	  for (j = 0; j < nbytes; j++)
-            g_assert (buf[j] == ' ' + ((nbytes + j) % 95));
+	    if (buf[j] != ' ' + ((nbytes + j) % 95))
+	      {
+		g_print ("gio-test: ...from %d: buf[%d] == '%c', should be '%c'\n",
+			 fd, j, buf[j], 'a' + ((nbytes + j) % 32));
+		g_assert_not_reached ();
+	      }
 #ifdef VERBOSE
 	  g_print ("gio-test: ...from %d: OK\n", fd);
 #endif

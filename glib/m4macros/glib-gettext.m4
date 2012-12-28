@@ -239,10 +239,6 @@ msgstr ""
 	      [CATOBJEXT=.mo
                DATADIRNAME=lib])
 	    ;;
-	    *-*-openbsd*)
-	    CATOBJEXT=.mo
-            DATADIRNAME=share
-	    ;;
 	    *)
 	    CATOBJEXT=.mo
             DATADIRNAME=lib
@@ -284,7 +280,7 @@ msgstr ""
 
     dnl These rules are solely for the distribution goal.  While doing this
     dnl we only have to keep exactly one list of the available catalogs
-    dnl in configure.ac.
+    dnl in configure.in.
     for lang in $ALL_LINGUAS; do
       GMOFILES="$GMOFILES $lang.gmo"
       POFILES="$POFILES $lang.po"
@@ -413,7 +409,7 @@ AC_DEFINE_UNQUOTED($1, "$localedir",
 dnl
 dnl Now the definitions that aclocal will find
 dnl
-ifdef(glib_configure_ac,[],[
+ifdef(glib_configure_in,[],[
 AC_DEFUN([AM_GLIB_GNU_GETTEXT],[GLIB_GNU_GETTEXT($@)])
 AC_DEFUN([AM_GLIB_DEFINE_LOCALEDIR],[GLIB_DEFINE_LOCALEDIR($@)])
 ])dnl

@@ -41,12 +41,13 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../..,../../../glib"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;GOBJECT_COMPILATION;HAVE_CONFIG_H;G_LOG_DOMAIN=\&quot;Glib-GObject\&quot;;G_DISABLE_DEPRECATED"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;GOBJECT_EXPORTS;GOBJECT_COMPILATION;HAVE_CONFIG_H"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 				ForcedIncludeFiles="msvc_recommended_pragmas.h"
 			/>
@@ -121,10 +122,11 @@
 				Name="VCCLCompilerTool"
 				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="../../..,../../../glib"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GOBJECT_COMPILATION;HAVE_CONFIG_H;G_LOG_DOMAIN=\&quot;Glib-GObject\&quot;;G_DISABLE_DEPRECATED"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GOBJECT_EXPORTS;GOBJECT_COMPILATION;HAVE_CONFIG_H"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				ForcedIncludeFiles="msvc_recommended_pragmas.h"
 			/>
@@ -273,17 +275,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generating gobject.def"
-						CommandLine="echo EXPORTS &gt; &quot;$(InputDir)/gobject.def&quot; &amp;&amp; cl /EP -DINCLUDE_VARIABLES -DG_OS_WIN32 -DALL_FILES -DG_GNUC_MALLOC= -DG_GNUC_CONST= -DG_GNUC_NULL_TERMINATED= -DG_GNUC_NORETURN= -DG_GNUC_PRINTF=;G_GNUC_PRINTF &quot;$(InputPath)&quot; &gt;&gt; &quot;$(InputDir)/gobject.def&quot;"
-						Outputs="$(InputDir)/gobject.def"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Generating gobject.def"
-						CommandLine="echo EXPORTS &gt; &quot;$(InputDir)/gobject.def&quot; &amp;&amp; cl /EP -DINCLUDE_VARIABLES -DG_OS_WIN32 -DALL_FILES -DG_GNUC_MALLOC= -DG_GNUC_CONST= -DG_GNUC_NULL_TERMINATED= -DG_GNUC_NORETURN= -DG_GNUC_PRINTF=;G_GNUC_PRINTF &quot;$(InputPath)&quot; &gt;&gt; &quot;$(InputDir)/gobject.def&quot;"
+						CommandLine="echo EXPORTS &gt; $(InputDir)/gobject.def &amp;&amp; cl /EP -DINCLUDE_VARIABLES -DG_OS_WIN32 -DALL_FILES -DG_GNUC_MALLOC= -DG_GNUC_CONST= -DG_GNUC_NULL_TERMINATED= -DG_GNUC_NORETURN= -DG_GNUC_PRINTF=;G_GNUC_PRINTF $(InputPath) &gt;&gt; $(InputDir)/gobject.def"
 						Outputs="$(InputDir)/gobject.def"
 					/>
 				</FileConfiguration>

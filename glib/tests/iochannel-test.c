@@ -15,7 +15,7 @@ static void
 test_small_writes (void)
 {
   GIOChannel *io;
-  GIOStatus status = G_IO_STATUS_ERROR;
+  GIOStatus status;
   guint cnt; 
   gchar tmp;
   GError *error = NULL;
@@ -26,7 +26,7 @@ test_small_writes (void)
       g_warning ("Unable to open file %s: %s", 
 		 "iochannel-test-outfile", 
 		 error->message);
-      g_clear_error (&error);
+      g_error_free (error);
       
       exit (1);
     }
@@ -64,6 +64,7 @@ gint main (gint argc, gchar * argv[])
     gsize length_out;
     const gchar encoding[] = "EUC-JP";
     GIOStatus status;
+    GIOFlags flags;
 
     if (!srcdir)
       srcdir = ".";
@@ -75,25 +76,23 @@ gint main (gint argc, gchar * argv[])
     if (gerr)
       {
         g_warning ("Unable to open file %s: %s", filename, gerr->message);
-        g_clear_error (&gerr);
+        g_error_free (gerr);
         return 1;
       }
     gio_w = g_io_channel_new_file ("iochannel-test-outfile", "w", &gerr);
     if (gerr)
       {
         g_warning ("Unable to open file %s: %s", "iochannel-test-outfile", gerr->message);
-        g_clear_error (&gerr);
+        g_error_free (gerr);
         return 1;
       }
 
     g_io_channel_set_encoding (gio_r, encoding, &gerr);
     if (gerr)
       {
-        g_warning ("%s", gerr->message);
-        /* Keep going if this is just a case of iconv not supporting EUC-JP, see bug 428048 */
-        if (gerr->code != G_CONVERT_ERROR_NO_CONVERSION)
-          return 1;
-        g_clear_error (&gerr);
+        g_warning (gerr->message);
+        g_error_free (gerr);
+        return 1;
       }
     
     g_io_channel_set_buffer_size (gio_r, BUFFER_SIZE);
@@ -101,9 +100,11 @@ gint main (gint argc, gchar * argv[])
     status = g_io_channel_set_flags (gio_r, G_IO_FLAG_NONBLOCK, &gerr);
     if (status == G_IO_STATUS_ERROR)
       {
-        g_warning ("%s", gerr->message);
-        g_clear_error (&gerr);
+        g_warning (gerr->message);
+        g_error_free (gerr);
+        gerr = NULL;
       }
+    flags = g_io_channel_get_flags (gio_r);
     buffer = g_string_sized_new (BUFFER_SIZE);
 
     while (TRUE)
@@ -139,8 +140,9 @@ gint main (gint argc, gchar * argv[])
         case G_IO_STATUS_EOF:
           break;
         case G_IO_STATUS_ERROR:
-          g_warning ("%s", gerr->message);
-          g_clear_error (&gerr);
+          g_warning (gerr->message);
+          g_error_free (gerr);
+          gerr = NULL;
           break;
         default:
           g_warning ("Abnormal exit from write loop.");
@@ -153,8 +155,9 @@ gint main (gint argc, gchar * argv[])
 
     if (status == G_IO_STATUS_ERROR)
       {
-        g_warning ("%s", gerr->message);
-        g_clear_error (&gerr);
+        g_warning (gerr->message);
+        g_error_free (gerr);
+        gerr = NULL;
       }
 
 #ifdef VERBOSE

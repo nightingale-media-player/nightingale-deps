@@ -1,5 +1,5 @@
 /* GIO - GLib Input, Output and Streaming Library
- *
+ * 
  * Copyright (C) 2006-2007 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -27,7 +27,8 @@
 #ifndef __G_SIMPLE_ASYNC_RESULT_H__
 #define __G_SIMPLE_ASYNC_RESULT_H__
 
-#include <gio/giotypes.h>
+#include <gio/gasyncresult.h>
+#include <gio/gcancellable.h>
 
 G_BEGIN_DECLS
 
@@ -40,14 +41,28 @@ G_BEGIN_DECLS
 
 /**
  * GSimpleAsyncResult:
- *
+ * 
  * A simple implementation of #GAsyncResult.
  **/
+typedef struct _GSimpleAsyncResult        GSimpleAsyncResult;
 typedef struct _GSimpleAsyncResultClass   GSimpleAsyncResultClass;
 
+/**
+ * GSimpleAsyncThreadFunc:
+ * @res: a #GSimpleAsyncResult. 
+ * @object: a #GObject.
+ * @cancellable: optional #GCancellable object, %NULL to ignore.
+ * 
+ * Simple thread function that runs an asynchronous operation and 
+ * checks for cancellation.
+ **/
+typedef void (*GSimpleAsyncThreadFunc) (GSimpleAsyncResult *res,
+					GObject *object,
+					GCancellable *cancellable);
 
-GType               g_simple_async_result_get_type         (void) G_GNUC_CONST;
 
+GType g_simple_async_result_get_type (void) G_GNUC_CONST;
+  
 GSimpleAsyncResult *g_simple_async_result_new              (GObject                 *source_object,
 							    GAsyncReadyCallback      callback,
 							    gpointer                 user_data,
@@ -60,10 +75,6 @@ GSimpleAsyncResult *g_simple_async_result_new_error        (GObject             
 							    const char              *format,
 							    ...) G_GNUC_PRINTF (6, 7);
 GSimpleAsyncResult *g_simple_async_result_new_from_error   (GObject                 *source_object,
-							    GAsyncReadyCallback      callback,
-							    gpointer                 user_data,
-							    const GError            *error);
-GSimpleAsyncResult *g_simple_async_result_new_take_error   (GObject                 *source_object,
 							    GAsyncReadyCallback      callback,
 							    gpointer                 user_data,
 							    GError                  *error);
@@ -83,9 +94,6 @@ gboolean            g_simple_async_result_get_op_res_gboolean (GSimpleAsyncResul
 
 
 
-GLIB_AVAILABLE_IN_2_32
-void                g_simple_async_result_set_check_cancellable (GSimpleAsyncResult *simple,
-                                                                 GCancellable       *check_cancellable);
 gpointer            g_simple_async_result_get_source_tag   (GSimpleAsyncResult      *simple);
 void                g_simple_async_result_set_handle_cancellation (GSimpleAsyncResult      *simple,
 								   gboolean          handle_cancellation);
@@ -96,9 +104,7 @@ void                g_simple_async_result_run_in_thread    (GSimpleAsyncResult  
 							    int                      io_priority,
 							    GCancellable            *cancellable);
 void                g_simple_async_result_set_from_error   (GSimpleAsyncResult      *simple,
-							    const GError            *error);
-void                g_simple_async_result_take_error       (GSimpleAsyncResult      *simple,
-							    GError            *error);
+							    GError                  *error);
 gboolean            g_simple_async_result_propagate_error  (GSimpleAsyncResult      *simple,
 							    GError                 **dest);
 void                g_simple_async_result_set_error        (GSimpleAsyncResult      *simple,
@@ -111,28 +117,21 @@ void                g_simple_async_result_set_error_va     (GSimpleAsyncResult  
 							    gint                     code,
 							    const char              *format,
 							    va_list                  args);
-gboolean            g_simple_async_result_is_valid         (GAsyncResult            *result,
-                                                            GObject                 *source,
-                                                            gpointer                 source_tag);
 
-void g_simple_async_report_error_in_idle  (GObject            *object,
+void g_simple_async_report_error_in_idle  (GObject *object,
 					   GAsyncReadyCallback callback,
-					   gpointer            user_data,
-					   GQuark              domain,
-					   gint                code,
-					   const char         *format,
+					   gpointer user_data,
+					   GQuark         domain,
+					   gint           code,
+					   const char    *format,
 					   ...);
-void g_simple_async_report_gerror_in_idle (GObject            *object,
+void g_simple_async_report_gerror_in_idle (GObject *object,
 					   GAsyncReadyCallback callback,
-					   gpointer            user_data,
-					   const GError       *error);
-void g_simple_async_report_take_gerror_in_idle (GObject            *object,
-                                                GAsyncReadyCallback callback,
-                                                gpointer            user_data,
-                                                GError             *error);
+					   gpointer user_data,
+					   GError *error);
 
 G_END_DECLS
 
 
-
+  
 #endif /* __G_SIMPLE_ASYNC_RESULT_H__ */

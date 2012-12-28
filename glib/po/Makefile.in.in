@@ -16,7 +16,7 @@ GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 PACKAGE = @PACKAGE@
 VERSION = @VERSION@
 
-SHELL = @SHELL@
+SHELL = /bin/sh
 @SET_MAKE@
 
 srcdir = @srcdir@
@@ -35,7 +35,7 @@ subdir = po
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
-MKINSTALLDIRS = mkdir -p
+MKINSTALLDIRS = $(top_srcdir)/@MKINSTALLDIRS@
 
 CC = @CC@
 GENCAT = @GENCAT@
@@ -56,7 +56,7 @@ COMPILE = $(CC) -c $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS)
 SOURCES = 
 POFILES = @POFILES@
 GMOFILES = @GMOFILES@
-DISTFILES = LINGUAS ChangeLog Makefile.in.in POTFILES.in $(GETTEXT_PACKAGE).pot \
+DISTFILES = ChangeLog Makefile.in.in POTFILES.in $(GETTEXT_PACKAGE).pot \
 $(POFILES) $(GMOFILES) $(SOURCES)
 
 POTFILES = \
@@ -79,7 +79,7 @@ INSTOBJEXT = @INSTOBJEXT@
 	$(MSGFMT) -o $@ $<
 
 .po.gmo:
-	$(AM_V_GEN) file=$(srcdir)/`echo $* | sed 's,.*/,,'`.gmo \
+	file=$(srcdir)/`echo $* | sed 's,.*/,,'`.gmo \
 	  && rm -f $$file && $(GMSGFMT) $(MSGFMT_OPTS) -o $$file $<
 
 .po.cat:
@@ -93,18 +93,8 @@ all-yes: $(CATALOGS)
 all-no:
 
 $(srcdir)/$(GETTEXT_PACKAGE).pot: $(POTFILES)
-	$(XGETTEXT) --default-domain=$(GETTEXT_PACKAGE) \
-	  --msgid-bugs-address='http://bugzilla.gnome.org/enter_bug.cgi?product=glib&keywords=I18N+L10N&component=general' \
+	$(XGETTEXT) --default-domain=$(GETTEXT_PACKAGE) --directory=$(top_srcdir) \
 	  --add-comments --keyword=_ --keyword=N_ \
-	  --keyword=C_:1c,2 \
-	  --keyword=NC_:1c,2 \
-	  --keyword=g_dcgettext:2 \
-	  --keyword=g_dngettext:2,3 \
-	  --keyword=g_dpgettext2:2c,3 \
-	  --flag=N_:1:pass-c-format \
-	  --flag=C_:2:pass-c-format \
-	  --flag=NC_:2:pass-c-format \
-	  --flag=g_dngettext:2:pass-c-format \
           --flag=g_strdup_printf:1:c-format \
           --flag=g_string_printf:2:c-format \
           --flag=g_string_append_printf:2:c-format \
@@ -120,7 +110,7 @@ $(srcdir)/$(GETTEXT_PACKAGE).pot: $(POTFILES)
           --flag=g_snprintf:3:c-format \
           --flag=g_scanner_error:2:c-format \
           --flag=g_scanner_warn:2:c-format \
-	  $(POTFILES) \
+	  --files-from=$(srcdir)/POTFILES.in \
 	&& test ! -f $(GETTEXT_PACKAGE).po \
 	   || ( rm -f $(srcdir)/$(GETTEXT_PACKAGE).pot \
 		&& mv $(GETTEXT_PACKAGE).po $(srcdir)/$(GETTEXT_PACKAGE).pot )
@@ -130,8 +120,12 @@ install-exec:
 install-data: install-data-@USE_NLS@
 install-data-no: all
 install-data-yes: all
-	$(MKINSTALLDIRS) $(DESTDIR)$(datadir); \
-	catalogs='$(CATALOGS)'; \
+	if test -r "$(MKINSTALLDIRS)"; then \
+	  $(MKINSTALLDIRS) $(DESTDIR)$(datadir); \
+	else \
+	  $(SHELL) $(top_srcdir)/mkinstalldirs $(DESTDIR)$(datadir); \
+	fi
+	@catalogs='$(CATALOGS)'; \
 	for cat in $$catalogs; do \
 	  cat=`basename $$cat`; \
 	  case "$$cat" in \
@@ -140,7 +134,11 @@ install-data-yes: all
 	  esac; \
 	  lang=`echo $$cat | sed 's/\$(CATOBJEXT)$$//'`; \
 	  dir=$(DESTDIR)$$destdir/$$lang/LC_MESSAGES; \
-	  $(MKINSTALLDIRS) $$dir; \
+	  if test -r "$(MKINSTALLDIRS)"; then \
+	    $(MKINSTALLDIRS) $$dir; \
+	  else \
+	    $(SHELL) $(top_srcdir)/mkinstalldirs $$dir; \
+	  fi; \
 	  if test -r $$cat; then \
 	    $(INSTALL_DATA) $$cat $$dir/$(GETTEXT_PACKAGE)$(INSTOBJEXT); \
 	    echo "installing $$cat as $$dir/$(GETTEXT_PACKAGE)$(INSTOBJEXT)"; \
@@ -164,7 +162,11 @@ install-data-yes: all
 	  fi; \
 	done
 	if test "$(PACKAGE)" = "glib"; then \
-	  $(MKINSTALLDIRS) $(DESTDIR)$(gettextsrcdir); \
+	  if test -r "$(MKINSTALLDIRS)"; then \
+	    $(MKINSTALLDIRS) $(DESTDIR)$(gettextsrcdir); \
+	  else \
+	    $(SHELL) $(top_srcdir)/mkinstalldirs $(DESTDIR)$(gettextsrcdir); \
+	  fi; \
 	  $(INSTALL_DATA) $(srcdir)/Makefile.in.in \
 			  $(DESTDIR)$(gettextsrcdir)/Makefile.in.in; \
 	else \
@@ -207,7 +209,7 @@ maintainer-clean: distclean
 	rm -f $(GMOFILES)
 
 distdir = ../$(GETTEXT_PACKAGE)-$(VERSION)/$(subdir)
-dist distdir: $(DISTFILES)
+dist distdir: update-po $(DISTFILES)
 	dists="$(DISTFILES)"; \
 	for file in $$dists; do \
 	  ln $(srcdir)/$$file $(distdir) 2> /dev/null \
@@ -261,7 +263,8 @@ POTFILES: POTFILES.in
 
 Makefile: Makefile.in.in ../config.status POTFILES
 	cd .. \
-	  && $(SHELL) ./config.status $(subdir)/$@.in
+	  && CONFIG_FILES=$(subdir)/$@.in CONFIG_HEADERS= \
+	       $(SHELL) ./config.status
 
 # Tell versions [3.59,3.63) of GNU make not to export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

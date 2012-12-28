@@ -1,63 +1,54 @@
 ## Process this file with automake to produce Makefile.in
 include $(top_srcdir)/Makefile.decl
 
-BUILT_SOURCES =
-DISTCLEANFILES =
-CLEANFILES =
-
-#
-# Generate glibconfig.h
-#
-# The timestamp of the stamp file is used to indicate if glibconfig.h is
-# up to date with respect to config.status.  In the usual case, changes
-# to config.status will not result in changes to glibconfig.h so we
-# avoid touching its timestamp (in order not to rebuild the whole tree).
-#
-DISTCLEANFILES += glibconfig-stamp glibconfig.h
-BUILT_SOURCES += glibconfig-stamp
-configexecincludedir = $(libdir)/glib-2.0/include
-nodist_configexecinclude_HEADERS = glibconfig.h
-glibconfig-stamp: ../config.status
-	$(AM_V_GEN) cd $(top_builddir) && \
-	  $(SHELL) ./config.status glib/glibconfig.h
-	@touch glibconfig-stamp
-
-
-
 if HAVE_GOOD_PRINTF
 else
 PRINTF_SUBDIR = gnulib
 printf_la = gnulib/libgnulib.la
 endif 
 
+if ENABLE_REGEX
 if USE_SYSTEM_PCRE
 else
 MAYBE_PCRE = pcre 
 endif
-
-SUBDIRS = libcharset $(PRINTF_SUBDIR) $(MAYBE_PCRE) update-pcre .
-DIST_SUBDIRS = libcharset gnulib pcre update-pcre tests
-if BUILD_MODULAR_TESTS
-SUBDIRS += tests 
+gregex_c = gregex.c
+gregex_h = gregex.h
+else
+gregex_c =
+gregex_h =
 endif
 
+SUBDIRS = libcharset $(PRINTF_SUBDIR) $(MAYBE_PCRE) update-pcre . tests
+
+DIST_SUBDIRS = libcharset gnulib pcre update-pcre tests
+
 AM_CPPFLAGS = 				\
-	$(glib_INCLUDES) 		\
+	-I$(top_srcdir) 		\
 	$(pcre_inc) 			\
 	-DG_LOG_DOMAIN=\"GLib\" 	\
 	$(GLIB_DEBUG_FLAGS) 		\
+	-DG_DISABLE_DEPRECATED 		\
 	-DGLIB_COMPILATION 		\
 	-DPCRE_STATIC
 
 glib.def: glib.symbols
-	$(AM_V_GEN) (echo EXPORTS; $(CPP) -P -DG_OS_WIN32 - <$(srcdir)/glib.symbols | sed -e '/^$$/d' -e 's/^/	/') > $(builddir)/glib.def
+	(echo -e EXPORTS; $(CPP) -P -DINCLUDE_VARIABLES -DINCLUDE_INTERNAL_SYMBOLS -DG_OS_WIN32 -DALL_FILES - <$(srcdir)/glib.symbols | sed -e '/^$$/d' -e 's/^/	/' -e 's/G_GNUC_[^ ]*//g') > glib.def
+
+galias.h: glib.symbols
+	  $(PERL) $(srcdir)/makegalias.pl < $(srcdir)/glib.symbols > galias.h
+
+galiasdef.c: glib.symbols
+	  $(PERL) $(srcdir)/makegalias.pl -def < $(srcdir)/glib.symbols > galiasdef.c
 
 if OS_LINUX
 if HAVE_GNUC_VISIBILITY
 TESTS_ENVIRONMENT = GLIB_DEBUG_FLAGS="$(GLIB_DEBUG_FLAGS)"
-TESTS = abicheck.sh
+TESTS = abicheck.sh pltcheck.sh
 endif
 endif
+
+BUILT_SOURCES = galias.h galiasdef.c
 
 MIRRORING_TAB_SOURCE = 				\
 	glib-mirroring-tab/Makefile 		\
@@ -70,94 +61,64 @@ MIRRORING_TAB_SOURCE = 				\
 EXTRA_DIST += 			\
 	makefile.msc.in		\
 	glib.rc.in		\
-	gen-iswide-table.py	\
 	gen-unicode-tables.pl	\
 	gen-script-table.pl	\
-	glibconfig.h.win32.in	\
+	makegalias.pl		\
 	abicheck.sh		\
+	pltcheck.sh		\
 	glib.symbols		\
 	gregex.c		\
 	gregex.h		\
 	win_iconv.c		\
-	libglib-gdb.py.in	\
-	docs.c			\
-	gconstructor.h		\
 	$(MIRRORING_TAB_SOURCE)
-
-CLEANFILES += libglib-gdb.py
 
 # These may be in the builddir too
 BUILT_EXTRA_DIST = 		\
 	makefile.msc		\
-	glibconfig.h.win32	\
-	glib.rc
+	glib.rc			\
+	galias.h		\
+	galiasdef.c
 
 lib_LTLIBRARIES = libglib-2.0.la
 
-if OS_WIN32_AND_DLL_COMPILATION
 if MS_LIB_AVAILABLE
 noinst_DATA = glib-2.0.lib
 
-install_ms_lib_cmd = $(INSTALL) glib-2.0.lib $(DESTDIR)$(libdir)
-uninstall_ms_lib_cmd = -rm $(DESTDIR)$(libdir)/glib-2.0.lib
-endif
-endif
-
 install-ms-lib:
-	$(install_ms_lib_cmd)
+	$(INSTALL) glib-2.0.lib $(DESTDIR)$(libdir)
 
 uninstall-ms-lib:
-	$(uninstall_ms_lib_cmd)
-
-deprecated_sources = \
-	deprecated/gallocator.c		\
-	deprecated/gcache.c		\
-	deprecated/gcompletion.c	\
-	deprecated/grel.c		\
-	deprecated/gthread-deprecated.c
+	-rm $(DESTDIR)$(libdir)/glib-2.0.lib
+else
+install-ms-lib:
+uninstall-ms-lib:
+endif
 
 libglib_2_0_la_SOURCES = 	\
-	$(deprecated_sources)	\
-	glib_probes.d		\
 	garray.c		\
 	gasyncqueue.c		\
-	gasyncqueueprivate.h	\
 	gatomic.c		\
 	gbacktrace.c		\
 	gbase64.c		\
-	gbitlock.c		\
 	gbookmarkfile.c 	\
 	gbsearcharray.h		\
-	gbytes.c		\
-	gbytes.h		\
-	gcharset.c		\
-	gcharsetprivate.h	\
+	gcache.c		\
 	gchecksum.c		\
+	gcompletion.c		\
 	gconvert.c		\
 	gdataset.c		\
 	gdatasetprivate.h	\
-	gdate.c	 		\
-	gdatetime.c	 	\
+	gdate.c         	\
 	gdir.c			\
-	genviron.c		\
 	gerror.c		\
 	gfileutils.c		\
-	ggettext.c		\
 	ghash.c			\
-	ghmac.c			\
 	ghook.c			\
-	ghostutils.c		\
 	giochannel.c    	\
-	gkeyfile.c		\
+	gkeyfile.c        	\
 	glibintl.h		\
-	glib_trace.h		\
-	glib-init.h		\
-	glib-init.c		\
-	glib-private.h		\
-	glib-private.c		\
 	glist.c			\
-	gmain-internal.h	\
-	gmain.c	 		\
+	gmain.c         	\
 	gmappedfile.c		\
 	gmarkup.c		\
 	gmem.c			\
@@ -166,13 +127,12 @@ libglib_2_0_la_SOURCES = 	\
 	gnode.c			\
 	goption.c		\
 	gpattern.c		\
-	gpoll.c			\
 	gprimes.c		\
 	gqsort.c		\
-	gquark.c		\
 	gqueue.c		\
+	grel.c			\
 	grand.c			\
-	gregex.c		\
+	$(gregex_c)		\
 	gscanner.c		\
 	gscripttable.h		\
 	gsequence.c		\
@@ -182,14 +142,11 @@ libglib_2_0_la_SOURCES = 	\
 	gstdio.c		\
 	gstrfuncs.c		\
 	gstring.c		\
-	gstringchunk.c		\
 	gtestutils.c		\
-	gthread.c		\
+	gthread.c       	\
 	gthreadprivate.h	\
-	gthreadpool.c		\
+	gthreadpool.c   	\
 	gtimer.c		\
-	gtimezone.c	 	\
-	gtrashstack.c		\
 	gtree.c			\
 	guniprop.c		\
 	gutf8.c			\
@@ -203,32 +160,9 @@ libglib_2_0_la_SOURCES = 	\
 	gunicodeprivate.h	\
 	gurifuncs.c 		\
 	gutils.c		\
-	gvariant.h		\
-	gvariant.c		\
-	gvariant-core.h		\
-	gvariant-core.c		\
-	gvariant-internal.h	\
-	gvariant-parser.c	\
-	gvariant-serialiser.h	\
-	gvariant-serialiser.c	\
-	gvarianttypeinfo.h	\
-	gvarianttypeinfo.c	\
-	gvarianttype.c		\
-	gversion.c		\
-	gwakeup.h		\
-	gwakeup.c		\
+	gdebug.h		\
 	gprintf.c		\
 	gprintfint.h
-
-if OS_UNIX
-libglib_2_0_la_SOURCES += glib-unix.c
-endif
-
-if OS_WIN32
-libglib_2_0_la_SOURCES += gthread-win32.c
-else
-libglib_2_0_la_SOURCES += gthread-posix.c
-endif
 
 EXTRA_libglib_2_0_la_SOURCES = \
 	giounix.c	\
@@ -239,45 +173,29 @@ EXTRA_libglib_2_0_la_SOURCES = \
 
 glibincludedir=$(includedir)/glib-2.0
 glibinclude_HEADERS =   \
-	glib-unix.h     \
 	glib-object.h	\
 	glib.h
 
-deprecatedincludedir=$(includedir)/glib-2.0/glib/deprecated
-deprecatedinclude_HEADERS = \
-	deprecated/gallocator.h		\
-	deprecated/gcache.h		\
-	deprecated/gcompletion.h	\
-	deprecated/gmain.h		\
-	deprecated/grel.h		\
-	deprecated/gthread.h
-
 glibsubincludedir=$(includedir)/glib-2.0/glib
-glibsubinclude_HEADERS = \
+glibsubinclude_HEADERS =   \
 	galloca.h	\
 	garray.h	\
 	gasyncqueue.h	\
 	gatomic.h	\
 	gbacktrace.h	\
 	gbase64.h	\
-	gbitlock.h	\
-	gbookmarkfile.h	\
-	gbytes.h	\
-	gcharset.h	\
+	gbookmarkfile.h \
+	gcache.h	\
 	gchecksum.h	\
+	gcompletion.h	\
 	gconvert.h	\
 	gdataset.h	\
 	gdate.h		\
-	gdatetime.h	\
 	gdir.h		\
-	genviron.h	\
 	gerror.h	\
 	gfileutils.h	\
-	ggettext.h	\
 	ghash.h		\
-	ghmac.h		\
 	ghook.h		\
-	ghostutils.h	\
 	gi18n.h		\
 	gi18n-lib.h	\
 	giochannel.h	\
@@ -292,13 +210,13 @@ glibsubinclude_HEADERS = \
 	gnode.h		\
 	goption.h	\
 	gpattern.h	\
-	gpoll.h		\
 	gprimes.h	\
 	gqsort.h	\
 	gquark.h	\
 	gqueue.h	\
 	grand.h		\
-	gregex.h	\
+	$(gregex_h)	\
+	grel.h		\
 	gscanner.h	\
 	gsequence.h	\
 	gshell.h	\
@@ -309,55 +227,36 @@ glibsubinclude_HEADERS = \
 	gstrfuncs.h	\
 	gtestutils.h	\
 	gstring.h	\
-	gstringchunk.h	\
 	gthread.h	\
 	gthreadpool.h	\
 	gtimer.h	\
-	gtimezone.h	\
-	gtrashstack.h	\
 	gtree.h		\
 	gtypes.h	\
 	gunicode.h	\
-	gurifuncs.h 	\
+	gurifuncs.h 		\
 	gutils.h	\
-	gvarianttype.h	\
-	gvariant.h	\
-	gversion.h	\
-	gversionmacros.h \
 	gwin32.h	\
 	gprintf.h
-
-# This is read by gobject-introspection/misc/ and gtk-doc
-glib-public-headers.txt: Makefile
-	echo $(glibinclude_HEADERS) $(glibsubinclude_HEADERS) > $@.tmp && mv $@.tmp $@
-
-CLEANFILES += glib-public-headers.txt
-
-all-local: glib-public-headers.txt
 
 install-data-local: install-ms-lib install-def-file
 	@if test -f $(glibincludedir)/glist.h ; then					\
 	  echo "*** Old headers found in $(glibincludedir). You should remove the" ;	\
 	  echo "*** contents of this directory and type 'make install' again." ;	\
 	  false ;									\
-	fi
+        fi
 
-uninstall-local: uninstall-ms-lib uninstall-def-file uninstall-gdb
+uninstall-local: uninstall-ms-lib uninstall-def-file
 
 if PLATFORM_WIN32
 no_undefined = -no-undefined
 endif
 
-if OS_WIN32_AND_DLL_COMPILATION
-export_symbols = -export-symbols $(builddir)/glib.def
-
-glib_win32_res = glib-win32-res.o
-glib_win32_res_ldflag = -Wl,$(glib_win32_res)
-
-glib_def = glib.def
+if OS_WIN32
+# This requires a very new libtool
+export_symbols = -export-symbols glib.def
 
 install-def-file:
-	$(INSTALL) $(builddir)/glib.def $(DESTDIR)$(libdir)/glib-2.0.def
+	$(INSTALL) glib.def $(DESTDIR)$(libdir)/glib-2.0.def
 
 uninstall-def-file:
 	-rm $(DESTDIR)$(libdir)/glib-2.0.def
@@ -368,6 +267,12 @@ uninstall-def-file:
 export_symbols = $(LIBTOOL_EXPORT_OPTIONS)
 endif
 
+if OS_WIN32
+glib_win32_res = glib-win32-res.o
+glib_win32_res_ldflag = -Wl,$(glib_win32_res)
+endif
+
+if ENABLE_REGEX
 if USE_SYSTEM_PCRE
 pcre_lib = $(PCRE_LIBS)
 pcre_inc = $(PCRE_CFLAGS)
@@ -375,63 +280,33 @@ else
 pcre_lib = pcre/libpcre.la
 pcre_inc =
 endif
+else
+pcre_lib =
+pcre_inc =
+endif
 
-libglib_2_0_la_LIBADD = libcharset/libcharset.la $(printf_la) @GIO@ @GSPAWN@ @PLATFORMDEP@ @ICONV_LIBS@ @G_LIBS_EXTRA@ $(pcre_lib) $(G_THREAD_LIBS_EXTRA) $(G_THREAD_LIBS_FOR_GTHREAD)
-libglib_2_0_la_DEPENDENCIES = libcharset/libcharset.la $(printf_la) @GIO@ @GSPAWN@ @PLATFORMDEP@ $(glib_win32_res) $(glib_def)
+libglib_2_0_la_LIBADD = libcharset/libcharset.la $(printf_la) @GIO@ @GSPAWN@ @PLATFORMDEP@ @ICONV_LIBS@ @G_LIBS_EXTRA@ $(pcre_lib)
+libglib_2_0_la_DEPENDENCIES = libcharset/libcharset.la $(printf_la) @GIO@ @GSPAWN@ @PLATFORMDEP@ $(glib_win32_res) @GLIB_DEF@
 
-libglib_2_0_la_LDFLAGS = $(GLIB_LINK_FLAGS) \
+libglib_2_0_la_LDFLAGS = \
 	 $(glib_win32_res_ldflag) \
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
 	-export-dynamic $(no_undefined) $(export_symbols)
 
 INSTALL_PROGS=
 
-if ENABLE_DTRACE
-glib_probes.h: glib_probes.d Makefile
-	$(AM_V_GEN) $(DTRACE) -C -h -s $< -o $@.tmp
-	@$(SED) -e "s,define STAP_HAS_SEMAPHORES 1,undef STAP_HAS_SEMAPHORES," < $@.tmp > $@ && rm -f $@.tmp
-glib_probes.o: glib_probes.d Makefile
-	$(AM_V_GEN) $(DTRACE) -G -s $< -o $@
-BUILT_SOURCES += glib_probes.h glib_probes.o
-CLEANFILES += glib_probes.h glib_probes.h.tmp
-libglib_2_0_la_LIBADD += glib_probes.o
-endif
-
-if ENABLE_SYSTEMTAP
-tapset_in_files = glib.stp.in
-tapsetdir   = @ABS_TAPSET_DIR@
-tapset_DATA = $(tapset_in_files:.stp.in=.stp)
-EXTRA_DIST += $(tapset_in_files)
-endif
-
 gspawn-win32-helper-console.c:
-	echo '#define HELPER_CONSOLE' >$@
-	echo '#include "gspawn-win32-helper.c"' >>$@
-
-gspawn-win64-helper.c:
 	echo '#include "gspawn-win32-helper.c"' >$@
 
-gspawn-win64-helper-console.c:
-	echo '#define HELPER_CONSOLE' >$@
-	echo '#include "gspawn-win32-helper.c"' >>$@
-
-
 if OS_WIN32
-if OS_WIN32_X64
-INSTALL_PROGS += gspawn-win64-helper gspawn-win64-helper-console
-gspawn_win64_helper_LDADD = libglib-2.0.la
-gspawn_win64_helper_LDFLAGS = -mwindows
-gspawn_win64_helper_console_LDADD = libglib-2.0.la
-else
 INSTALL_PROGS += gspawn-win32-helper gspawn-win32-helper-console
 gspawn_win32_helper_LDADD = libglib-2.0.la
 gspawn_win32_helper_LDFLAGS = -mwindows
 gspawn_win32_helper_console_LDADD = libglib-2.0.la
-endif
-endif
 
 glib-win32-res.o: glib.rc
 	$(WINDRES) glib.rc $@
+endif
 
 bin_PROGRAMS	 = ${INSTALL_PROGS}
 
@@ -439,92 +314,33 @@ if OS_UNIX
 
 INSTALL_PROGS	+= gtester
 gtester_SOURCES	 = gtester.c
-gtester_LDADD	 = libglib-2.0.la 
+gtester_LDADD	 = libglib-2.0.la
 
 auto_config_binscripts = gtester-report
 bin_SCRIPTS = ${auto_config_binscripts}
 EXTRA_DIST += ${auto_config_binscripts}
 
 CONFIGVARS = \
-	"bindir"    	: "${bindir}",		\
-	"glib-version"  : "${GLIB_VERSION}"
+        "bindir"    	: "${bindir}",		\
+        "glib-version"  : "${GLIB_VERSION}"
 
 install-exec-hook:
 	for sf in ${auto_config_binscripts} ; do \
 	  mv -f "$(DESTDIR)$(bindir)/$$sf" "$(DESTDIR)$(bindir)/$$sf".tmp \
 	  && sed < "$(DESTDIR)$(bindir)/$$sf".tmp > "$(DESTDIR)$(bindir)/$$sf" \
 	    -e '1,24s|^ *#@PKGINSTALL_CONFIGVARS_IN24LINES@|  ${CONFIGVARS}|' \
-	    -e '1,1s|#! /usr/bin/env python\([0-9]\+\(\.[0-9]\+\)\?\)\?|#!${PYTHON}|' \
+	    -e '1,1s|#!/usr/bin/env python\([0-9]\+\(\.[0-9]\+\)\?\)\?|#!${PYTHON}|' \
 	  || exit $$? ; \
-	  chmod a+x $(DESTDIR)$(bindir)/$$sf ; \
 	  rm -f "$(DESTDIR)$(bindir)/$$sf".tmp ; \
 	done
 
 endif
 
 glib-2.0.lib: libglib-2.0.la glib.def
-	lib -machine:@LIB_EXE_MACHINE_FLAG@ -name:libglib-2.0-$(LT_CURRENT_MINUS_AGE).dll -def:$(builddir)/glib.def -out:$@
+	lib -name:libglib-2.0-$(LT_CURRENT_MINUS_AGE).dll -def:glib.def -out:$@
 
-dist-hook: $(BUILT_EXTRA_DIST) ../build/win32/vs9/glib.vcproj ../build/win32/vs10/glib.vcxproj ../build/win32/vs10/glib.vcxproj.filters
+dist-hook: $(BUILT_EXTRA_DIST)
 	files='$(BUILT_EXTRA_DIST)'; \
 	for f in $$files; do \
 	  if test -f $$f; then d=.; else d=$(srcdir); fi; \
 	  cp $$d/$$f $(distdir) || exit 1; done
-
-../build/win32/vs9/glib.vcproj: $(top_srcdir)/build/win32/vs9/glib.vcprojin
-	for F in `echo $(libglib_2_0_la_SOURCES) | tr '/' '\\'`; do \
-		case $$F in \
-		*-unix.c|gthread-*.c) \
-			;; \
-		*.c)	echo '   <File RelativePath="..\..\..\glib\'$$F'" />' \
-			;; \
-		esac; \
-	done >libglib.sourcefiles
-	$(CPP) -P - <$(top_srcdir)/build/win32/vs9/glib.vcprojin >$@
-	rm libglib.sourcefiles
-
-../build/win32/vs10/glib.vcxproj: $(top_srcdir)/build/win32/vs10/glib.vcxprojin
-	for F in `echo $(libglib_2_0_la_SOURCES) | tr '/' '\\'`; do \
-		case $$F in \
-		*-unix.c|gthread-*.c) \
-			;; \
-		*.c) echo '    <ClCompile Include="..\..\..\glib\'$$F'" />' \
-		     ;; \
-		esac; \
-	done >libglib.vs10.sourcefiles
-	$(CPP) -P - <$(top_srcdir)/build/win32/vs10/glib.vcxprojin >$@
-	rm libglib.vs10.sourcefiles
-
-../build/win32/vs10/glib.vcxproj.filters: $(top_srcdir)/build/win32/vs10/glib.vcxproj.filtersin
-	for F in `echo $(libglib_2_0_la_SOURCES) | tr '/' '\\'`; do \
-		case $$F in \
-		*-unix.c|gthread-*.c) \
-			;; \
-		*.c) echo '    <ClCompile Include="..\..\..\glib\'$$F'"><Filter>Source Files</Filter></ClCompile>' \
-		     ;; \
-		esac; \
-	done >libglib.vs10.sourcefiles.filters
-	$(CPP) -P - <$(top_srcdir)/build/win32/vs10/glib.vcxproj.filtersin >$@	
-	rm libglib.vs10.sourcefiles.filters
-
-# install gdb scripts
-gdbdir = $(datadir)/glib-2.0/gdb
-dist_gdb_SCRIPTS = glib.py
-
-libglib-gdb.py: libglib-gdb.py.in
-	$(AM_V_GEN) $(SED) -e "s|\@datadir\@|$(datadir)|" $(srcdir)/libglib-gdb.py.in > $(builddir)/libglib-gdb.py
-
-
-install-data-hook: libglib-gdb.py
-	mkdir -p $(DESTDIR)$(datadir)/gdb/auto-load$(ABS_GLIB_RUNTIME_LIBDIR)
-	$(INSTALL) $(builddir)/libglib-gdb.py $(DESTDIR)$(datadir)/gdb/auto-load$(ABS_GLIB_RUNTIME_LIBDIR)/libglib-2.0.so.0.$(LT_CURRENT).$(LT_REVISION)-gdb.py
-if HAVE_GLIB_RUNTIME_LIBDIR
-	mkdir -p $(DESTDIR)$(libdir)/$(GLIB_RUNTIME_LIBDIR)
-	mv $(DESTDIR)$(libdir)/libglib-2.0.so.0 $(DESTDIR)$(libdir)/$(GLIB_RUNTIME_LIBDIR)
-	mv $(DESTDIR)$(libdir)/libglib-2.0.so.0.$(LT_CURRENT).$(LT_REVISION) $(DESTDIR)$(libdir)/$(GLIB_RUNTIME_LIBDIR)
-	rm -f $(DESTDIR)$(libdir)/libglib-2.0.so
-	ln -s $(GLIB_RUNTIME_LIBDIR)/libglib-2.0.so.0.$(LT_CURRENT).$(LT_REVISION) $(DESTDIR)$(libdir)/libglib-2.0.so
-endif
-
-uninstall-gdb:
-	-rm -r $(DESTDIR)$(datadir)/gdb

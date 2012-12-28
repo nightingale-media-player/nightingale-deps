@@ -1,5 +1,5 @@
 /* GIO - GLib Input, Output and Streaming Library
- *
+ * 
  * Copyright (C) 2006-2007 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -27,7 +27,7 @@
 #ifndef __G_ICON_H__
 #define __G_ICON_H__
 
-#include <gio/giotypes.h>
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
@@ -41,19 +41,14 @@ G_BEGIN_DECLS
  *
  * An abstract type that specifies an icon.
  **/
-typedef struct _GIconIface GIconIface;
+typedef struct _GIcon         		GIcon; /* Dummy typedef */
+typedef struct _GIconIface    		GIconIface;
 
 /**
  * GIconIface:
  * @g_iface: The parent interface.
  * @hash: A hash for a given #GIcon.
  * @equal: Checks if two #GIcon<!-- -->s are equal.
- * @to_tokens: Serializes a #GIcon into tokens. The tokens must not
- * contain any whitespace. Don't implement if the #GIcon can't be
- * serialized (Since 2.20).
- * @from_tokens: Constructs a #GIcon from tokens. Set the #GError if
- * the tokens are malformed. Don't implement if the #GIcon can't be
- * serialized (Since 2.20).
  *
  * GIconIface is used to implement GIcon types for various
  * different systems. See #GThemedIcon and #GLoadableIcon for
@@ -65,26 +60,16 @@ struct _GIconIface
 
   /* Virtual Table */
 
-  guint       (* hash)        (GIcon   *icon);
-  gboolean    (* equal)       (GIcon   *icon1,
-                               GIcon   *icon2);
-  gboolean    (* to_tokens)   (GIcon   *icon,
-			       GPtrArray *tokens,
-                               gint    *out_version);
-  GIcon *     (* from_tokens) (gchar  **tokens,
-                               gint     num_tokens,
-                               gint     version,
-                               GError **error);
+  guint               (*hash)               (GIcon                *icon);
+  gboolean            (*equal)              (GIcon                *icon1,
+					     GIcon                *icon2);
 };
 
-GType    g_icon_get_type  (void) G_GNUC_CONST;
+GType g_icon_get_type (void) G_GNUC_CONST;
 
-guint    g_icon_hash            (gconstpointer  icon);
-gboolean g_icon_equal           (GIcon         *icon1,
-                                 GIcon         *icon2);
-gchar   *g_icon_to_string       (GIcon         *icon);
-GIcon   *g_icon_new_for_string  (const gchar   *str,
-                                 GError       **error);
+guint    g_icon_hash  (gconstpointer  icon);
+gboolean g_icon_equal (GIcon         *icon1,
+		       GIcon         *icon2);
 
 G_END_DECLS
 

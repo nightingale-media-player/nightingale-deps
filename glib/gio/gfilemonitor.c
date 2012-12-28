@@ -20,19 +20,16 @@
  * Author: Alexander Larsson <alexl@redhat.com>
  */
 
-#include "config.h"
+#include <config.h>
 #include <string.h>
 
 #include "gfilemonitor.h"
+#include "gio-marshal.h"
 #include "gioenumtypes.h"
-#include "gfile.h"
 #include "gvfs.h"
 #include "glibintl.h"
 
-
-struct _FileChange;
-typedef struct _FileChange FileChange;
-static void file_change_free (FileChange *change);
+#include "gioalias.h"
 
 /**
  * SECTION:gfilemonitor
@@ -42,17 +39,10 @@ static void file_change_free (FileChange *change);
  * Monitors a file or directory for changes.
  *
  * To obtain a #GFileMonitor for a file or directory, use
- * g_file_monitor(), g_file_monitor_file(), or
- * g_file_monitor_directory().
+ * g_file_monitor_file() or g_file_monitor_directory().
  *
- * To get informed about changes to the file or directory you are
- * monitoring, connect to the #GFileMonitor::changed signal. The
- * signal will be emitted in the <link
- * linkend="g-main-context-push-thread-default">thread-default main
- * context</link> of the thread that the monitor was created in
- * (though if the global default main context is blocked, this may
- * cause notifications to be blocked even if the thread-default
- * context is still running).
+ * To get informed about changes to the file or directory you
+ * are monitoring, connect to the #GFileMonitor::changed signal.
  **/
 
 G_LOCK_DEFINE_STATIC(cancelled);
@@ -61,9 +51,6 @@ enum {
   CHANGED,
   LAST_SIGNAL
 };
-
-/* work around a limitation of the aliasing foo */
-#undef g_file_monitor
 
 G_DEFINE_ABSTRACT_TYPE (GFileMonitor, g_file_monitor, G_TYPE_OBJECT);
 
@@ -81,14 +68,8 @@ struct _GFileMonitorPrivate {
   /* Rate limiting change events */
   GHashTable *rate_limiter;
 
-  GMutex mutex;
-  GSource *pending_file_change_source;
-  GSList *pending_file_changes; /* FileChange */
-
   GSource *timeout;
   guint32 timeout_fires_at;
-
-  GMainContext *context;
 };
 
 enum {
@@ -175,35 +156,23 @@ g_file_monitor_finalize (GObject *object)
     }
 
   g_hash_table_destroy (monitor->priv->rate_limiter);
-
-  g_main_context_unref (monitor->priv->context);
-  g_mutex_clear (&monitor->priv->mutex);
-
-  G_OBJECT_CLASS (g_file_monitor_parent_class)->finalize (object);
+  
+  if (G_OBJECT_CLASS (g_file_monitor_parent_class)->finalize)
+    (*G_OBJECT_CLASS (g_file_monitor_parent_class)->finalize) (object);
 }
 
 static void
 g_file_monitor_dispose (GObject *object)
 {
   GFileMonitor *monitor;
-  GFileMonitorPrivate *priv;
   
   monitor = G_FILE_MONITOR (object);
-  priv = monitor->priv;
-
-  if (priv->pending_file_change_source)
-    {
-      g_source_destroy (priv->pending_file_change_source);
-      g_source_unref (priv->pending_file_change_source);
-      priv->pending_file_change_source = NULL;
-    }
-  g_slist_free_full (priv->pending_file_changes, (GDestroyNotify) file_change_free);
-  priv->pending_file_changes = NULL;
 
   /* Make sure we cancel on last unref */
   g_file_monitor_cancel (monitor);
-
-  G_OBJECT_CLASS (g_file_monitor_parent_class)->dispose (object);
+  
+  if (G_OBJECT_CLASS (g_file_monitor_parent_class)->dispose)
+    (*G_OBJECT_CLASS (g_file_monitor_parent_class)->dispose) (object);
 }
 
 static void
@@ -223,16 +192,10 @@ g_file_monitor_class_init (GFileMonitorClass *klass)
    * GFileMonitor::changed:
    * @monitor: a #GFileMonitor.
    * @file: a #GFile.
-   * @other_file: (allow-none): a #GFile or #NULL.
+   * @other_file: a #GFile.
    * @event_type: a #GFileMonitorEvent.
-   *
-   * Emitted when @file has been changed.
-   *
-   * If using #G_FILE_MONITOR_SEND_MOVED flag and @event_type is
-   * #G_FILE_MONITOR_EVENT_MOVED, @file will be set to a #GFile containing the
-   * old path, and @other_file will be set to a #GFile containing the new path.
-   *
-   * In all the other cases, @other_file will be set to #NULL.
+   * 
+   * Emitted when a file has been changed. 
    **/
   signals[CHANGED] =
     g_signal_new (I_("changed"),
@@ -240,7 +203,7 @@ g_file_monitor_class_init (GFileMonitorClass *klass)
 		  G_SIGNAL_RUN_LAST,
 		  G_STRUCT_OFFSET (GFileMonitorClass, changed),
 		  NULL, NULL,
-		  NULL,
+		  _gio_marshal_VOID__OBJECT_OBJECT_ENUM,
 		  G_TYPE_NONE, 3,
 		  G_TYPE_FILE, G_TYPE_FILE, G_TYPE_FILE_MONITOR_EVENT);
 
@@ -273,8 +236,6 @@ g_file_monitor_init (GFileMonitor *monitor)
   monitor->priv->rate_limit_msec = DEFAULT_RATE_LIMIT_MSECS;
   monitor->priv->rate_limiter = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal,
 						       NULL, (GDestroyNotify) rate_limiter_free);
-  monitor->priv->context = g_main_context_ref_thread_default ();
-  g_mutex_init (&monitor->priv->mutex);
 }
 
 /**
@@ -333,21 +294,21 @@ g_file_monitor_cancel (GFileMonitor* monitor)
 /**
  * g_file_monitor_set_rate_limit:
  * @monitor: a #GFileMonitor.
- * @limit_msecs: a non-negative integer with the limit in milliseconds
- *     to poll for changes
+ * @limit_msecs: a integer with the limit in milliseconds to 
+ * poll for changes.
  *
  * Sets the rate limit to which the @monitor will report
- * consecutive change events to the same file.
- */
+ * consecutive change events to the same file. 
+ * 
+ **/
 void
 g_file_monitor_set_rate_limit (GFileMonitor *monitor,
-                               gint          limit_msecs)
+			       int           limit_msecs)
 {
   GFileMonitorPrivate *priv;
-
+  
   g_return_if_fail (G_IS_FILE_MONITOR (monitor));
-  g_return_if_fail (limit_msecs >= 0);
-
+  
   priv = monitor->priv;
   if (priv->rate_limit_msec != limit_msecs)
     {
@@ -356,51 +317,31 @@ g_file_monitor_set_rate_limit (GFileMonitor *monitor,
     }
 }
 
-struct _FileChange {
+typedef struct {
+  GFileMonitor      *monitor;
   GFile             *child;
   GFile             *other_file;
   GFileMonitorEvent  event_type;
-};
+} FileChange;
+
+static gboolean
+emit_cb (gpointer data)
+{
+  FileChange *change = data;
+  g_signal_emit (change->monitor, signals[CHANGED], 0,
+		 change->child, change->other_file, change->event_type);
+  return FALSE;
+}
 
 static void
 file_change_free (FileChange *change)
 {
+  g_object_unref (change->monitor);
   g_object_unref (change->child);
   if (change->other_file)
     g_object_unref (change->other_file);
   
   g_slice_free (FileChange, change);
-}
-
-static gboolean
-emit_cb (gpointer data)
-{
-  GFileMonitor *monitor = G_FILE_MONITOR (data);
-  GSList *pending, *iter;
-
-  g_mutex_lock (&monitor->priv->mutex);
-  pending = g_slist_reverse (monitor->priv->pending_file_changes);
-  monitor->priv->pending_file_changes = NULL;
-  if (monitor->priv->pending_file_change_source)
-    {
-      g_source_unref (monitor->priv->pending_file_change_source);
-      monitor->priv->pending_file_change_source = NULL;
-    }
-  g_mutex_unlock (&monitor->priv->mutex);
-
-  g_object_ref (monitor);
-  for (iter = pending; iter; iter = iter->next)
-    {
-       FileChange *change = iter->data;
-
-       g_signal_emit (monitor, signals[CHANGED], 0,
-	  	      change->child, change->other_file, change->event_type);
-       file_change_free (change);
-    }
-  g_slist_free (pending);
-  g_object_unref (monitor);
-
-  return FALSE;
 }
 
 static void
@@ -411,12 +352,10 @@ emit_in_idle (GFileMonitor      *monitor,
 {
   GSource *source;
   FileChange *change;
-  GFileMonitorPrivate *priv;
-
-  priv = monitor->priv;
 
   change = g_slice_new (FileChange);
 
+  change->monitor = g_object_ref (monitor);
   change->child = g_object_ref (child);
   if (other_file)
     change->other_file = g_object_ref (other_file);
@@ -424,28 +363,18 @@ emit_in_idle (GFileMonitor      *monitor,
     change->other_file = NULL;
   change->event_type = event_type;
 
-  g_mutex_lock (&monitor->priv->mutex);
-  if (!priv->pending_file_change_source)
-    {
-      source = g_idle_source_new ();
-      priv->pending_file_change_source = source;
-      g_source_set_priority (source, 0);
+  source = g_idle_source_new ();
+  g_source_set_priority (source, 0);
 
-      /* We don't ref monitor here - instead dispose will free any
-       * pending idles.
-       */
-      g_source_set_callback (source, emit_cb, monitor, NULL);
-      g_source_attach (source, monitor->priv->context);
-    }
-  /* We reverse this in the processor */
-  priv->pending_file_changes = g_slist_prepend (priv->pending_file_changes, change);
-  g_mutex_unlock (&monitor->priv->mutex);
+  g_source_set_callback (source, emit_cb, change, (GDestroyNotify)file_change_free);
+  g_source_attach (source, NULL);
+  g_source_unref (source);
 }
 
 static guint32
 get_time_msecs (void)
 {
-  return g_get_monotonic_time () / G_TIME_SPAN_MILLISECOND;
+  return g_thread_gettime() / (1000 * 1000);
 }
 
 static guint32
@@ -517,7 +446,7 @@ calc_min_time (GFileMonitor *monitor,
 
   if (limiter->last_sent_change_time != 0)
     {
-      /* Set a timeout at 2*rate limit so that we can clear out the change from the hash eventually */
+      /* Set a timeout at 2*rate limit so that we can clear out the change from the hash eventualy */
       expire_at = limiter->last_sent_change_time + 2 * monitor->priv->rate_limit_msec;
 
       if (time_difference (time_now, expire_at) > 0)
@@ -592,7 +521,7 @@ rate_limiter_timeout (gpointer timeout_data)
     {
       source = g_timeout_source_new (data.min_time + 1); /* + 1 to make sure we've really passed the time */
       g_source_set_callback (source, rate_limiter_timeout, monitor, NULL);
-      g_source_attach (source, monitor->priv->context);
+      g_source_attach (source, NULL);
       
       monitor->priv->timeout = source;
       monitor->priv->timeout_fires_at = data.time_now + data.min_time; 
@@ -644,7 +573,7 @@ update_rate_limiter_timeout (GFileMonitor *monitor,
     {
       source = g_timeout_source_new (data.min_time + 1);  /* + 1 to make sure we've really passed the time */
       g_source_set_callback (source, rate_limiter_timeout, monitor, NULL);
-      g_source_attach (source, monitor->priv->context);
+      g_source_attach (source, NULL);
       
       monitor->priv->timeout = source;
       monitor->priv->timeout_fires_at = data.time_now + data.min_time; 
@@ -662,9 +591,7 @@ update_rate_limiter_timeout (GFileMonitor *monitor,
  * has taken place. Should be called from file monitor 
  * implementations only.
  *
- * The signal will be emitted from an idle handler (in the <link
- * linkend="g-main-context-push-thread-default">thread-default main
- * context</link>).
+ * The signal will be emitted from an idle handler.
  **/
 void
 g_file_monitor_emit_event (GFileMonitor      *monitor,
@@ -725,7 +652,7 @@ g_file_monitor_emit_event (GFileMonitor      *monitor,
 	  
 	  limiter->last_sent_change_time = time_now;
 	  limiter->send_delayed_change_at = 0;
-	  /* Set a timeout of 2*rate limit so that we can clear out the change from the hash eventually */
+	  /* Set a timeout of 2*rate limit so that we can clear out the change from the hash eventualy */
 	  update_rate_limiter_timeout (monitor, time_now + 2 * monitor->priv->rate_limit_msec);
 	}
       
@@ -736,3 +663,6 @@ g_file_monitor_emit_event (GFileMonitor      *monitor,
       update_rate_limiter_timeout (monitor, limiter->send_virtual_changes_done_at);
     }
 }
+
+#define __G_FILE_MONITOR_C__
+#include "gioaliasdef.c"

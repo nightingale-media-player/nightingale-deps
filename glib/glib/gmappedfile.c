@@ -37,16 +37,6 @@
 #ifdef G_OS_WIN32
 #include <windows.h>
 #include <io.h>
-
-#undef fstat
-#define fstat(a,b) _fstati64(a,b)
-#undef stat
-#define stat _stati64
-
-#ifndef S_ISREG
-#define S_ISREG(m) (((m) & _S_IFMT) == _S_IFREG)
-#endif
-
 #endif
 
 #include "gconvert.h"
@@ -57,10 +47,10 @@
 #include "gmessages.h"
 #include "gstdio.h"
 #include "gstrfuncs.h"
-#include "gatomic.h"
 
 #include "glibintl.h"
 
+#include "galias.h"
 
 #ifndef _O_BINARY
 #define _O_BINARY 0
@@ -70,81 +60,88 @@
 #define MAP_FAILED ((void *) -1)
 #endif
 
-/**
- * GMappedFile:
- *
- * The #GMappedFile represents a file mapping created with
- * g_mapped_file_new(). It has only private members and should
- * not be accessed directly.
- */
-
-struct _GMappedFile
+struct _GMappedFile 
 {
-  gchar *contents;
   gsize  length;
-  gpointer free_func;
-  int    ref_count;
+  gchar *contents;
 #ifdef G_OS_WIN32
   HANDLE mapping;
 #endif
 };
 
-static void
-g_mapped_file_destroy (GMappedFile *file)
-{
-  if (file->length)
-    {
-#ifdef HAVE_MMAP
-      munmap (file->contents, file->length);
-#endif
-#ifdef G_OS_WIN32
-      UnmapViewOfFile (file->contents);
-      CloseHandle (file->mapping);
-#endif
-    }
-
-  g_slice_free (GMappedFile, file);
-}
-
-static GMappedFile*
-mapped_file_new_from_fd (int           fd,
-			 gboolean      writable,
-                         const gchar  *filename,
-                         GError      **error)
+/**
+ * g_mapped_file_new:
+ * @filename: The path of the file to load, in the GLib filename encoding
+ * @writable: whether the mapping should be writable
+ * @error: return location for a #GError, or %NULL
+ *
+ * Maps a file into memory. On UNIX, this is using the mmap() function.
+ *
+ * If @writable is %TRUE, the mapped buffer may be modified, otherwise
+ * it is an error to modify the mapped buffer. Modifications to the buffer 
+ * are not visible to other processes mapping the same file, and are not 
+ * written back to the file.
+ *
+ * Note that modifications of the underlying file might affect the contents
+ * of the #GMappedFile. Therefore, mapping should only be used if the file 
+ * will not be modified, or if all modifications of the file are done
+ * atomically (e.g. using g_file_set_contents()). 
+ *
+ * Return value: a newly allocated #GMappedFile which must be freed
+ *    with g_mapped_file_free(), or %NULL if the mapping failed. 
+ *
+ * Since: 2.8
+ */
+GMappedFile *
+g_mapped_file_new (const gchar  *filename,
+		   gboolean      writable,
+		   GError      **error)
 {
   GMappedFile *file;
+  int fd;
   struct stat st;
 
-  file = g_slice_new0 (GMappedFile);
-  file->ref_count = 1;
-  file->free_func = g_mapped_file_destroy;
+  g_return_val_if_fail (filename != NULL, NULL);
+  g_return_val_if_fail (!error || *error == NULL, NULL);
+
+  fd = g_open (filename, (writable ? O_RDWR : O_RDONLY) | _O_BINARY, 0);
+  if (fd == -1)
+    {
+      int save_errno = errno;
+      gchar *display_filename = g_filename_display_name (filename);
+      
+      g_set_error (error,
+                   G_FILE_ERROR,
+                   g_file_error_from_errno (save_errno),
+                   _("Failed to open file '%s': open() failed: %s"),
+                   display_filename, 
+		   g_strerror (save_errno));
+      g_free (display_filename);
+      return NULL;
+    }
+
+  file = g_new0 (GMappedFile, 1);
 
   if (fstat (fd, &st) == -1)
     {
       int save_errno = errno;
-      gchar *display_filename = filename ? g_filename_display_name (filename) : NULL;
+      gchar *display_filename = g_filename_display_name (filename);
 
       g_set_error (error,
                    G_FILE_ERROR,
                    g_file_error_from_errno (save_errno),
-                   _("Failed to get attributes of file '%s%s%s%s': fstat() failed: %s"),
-		   display_filename ? display_filename : "fd",
-		   display_filename ? "' " : "",
-		   display_filename ? display_filename : "",
-		   display_filename ? "'" : "",
+                   _("Failed to get attributes of file '%s': fstat() failed: %s"),
+                   display_filename, 
 		   g_strerror (save_errno));
       g_free (display_filename);
       goto out;
     }
 
-  /* mmap() on size 0 will fail with EINVAL, so we avoid calling mmap()
-   * in that case -- but only if we have a regular file; we still want
-   * attempts to mmap a character device to fail, for example.
-   */
-  if (st.st_size == 0 && S_ISREG (st.st_mode))
+  if (st.st_size == 0)
     {
       file->length = 0;
-      file->contents = NULL;
+      file->contents = "";
+      close (fd);
       return file;
     }
 
@@ -188,121 +185,26 @@ mapped_file_new_from_fd (int           fd,
   if (file->contents == MAP_FAILED)
     {
       int save_errno = errno;
-      gchar *display_filename = filename ? g_filename_display_name (filename) : NULL;
-
+      gchar *display_filename = g_filename_display_name (filename);
+      
       g_set_error (error,
 		   G_FILE_ERROR,
 		   g_file_error_from_errno (save_errno),
-		   _("Failed to map %s%s%s%s: mmap() failed: %s"),
-		   display_filename ? display_filename : "fd",
-		   display_filename ? "' " : "",
-		   display_filename ? display_filename : "",
-		   display_filename ? "'" : "",
+		   _("Failed to map file '%s': mmap() failed: %s"),
+		   display_filename,
 		   g_strerror (save_errno));
       g_free (display_filename);
       goto out;
     }
 
+  close (fd);
   return file;
 
  out:
-  g_slice_free (GMappedFile, file);
+  close (fd);
+  g_free (file);
 
   return NULL;
-}
-
-/**
- * g_mapped_file_new:
- * @filename: The path of the file to load, in the GLib filename encoding
- * @writable: whether the mapping should be writable
- * @error: return location for a #GError, or %NULL
- *
- * Maps a file into memory. On UNIX, this is using the mmap() function.
- *
- * If @writable is %TRUE, the mapped buffer may be modified, otherwise
- * it is an error to modify the mapped buffer. Modifications to the buffer
- * are not visible to other processes mapping the same file, and are not
- * written back to the file.
- *
- * Note that modifications of the underlying file might affect the contents
- * of the #GMappedFile. Therefore, mapping should only be used if the file
- * will not be modified, or if all modifications of the file are done
- * atomically (e.g. using g_file_set_contents()).
- *
- * If @filename is the name of an empty, regular file, the function
- * will successfully return an empty #GMappedFile. In other cases of
- * size 0 (e.g. device files such as /dev/null), @error will be set
- * to the #GFileError value #G_FILE_ERROR_INVAL.
- *
- * Return value: a newly allocated #GMappedFile which must be unref'd
- *    with g_mapped_file_unref(), or %NULL if the mapping failed.
- *
- * Since: 2.8
- */
-GMappedFile *
-g_mapped_file_new (const gchar  *filename,
-		   gboolean      writable,
-		   GError      **error)
-{
-  GMappedFile *file;
-  int fd;
-
-  g_return_val_if_fail (filename != NULL, NULL);
-  g_return_val_if_fail (!error || *error == NULL, NULL);
-
-  fd = g_open (filename, (writable ? O_RDWR : O_RDONLY) | _O_BINARY, 0);
-  if (fd == -1)
-    {
-      int save_errno = errno;
-      gchar *display_filename = g_filename_display_name (filename);
-
-      g_set_error (error,
-                   G_FILE_ERROR,
-                   g_file_error_from_errno (save_errno),
-                   _("Failed to open file '%s': open() failed: %s"),
-                   display_filename,
-		   g_strerror (save_errno));
-      g_free (display_filename);
-      return NULL;
-    }
-
-  file = mapped_file_new_from_fd (fd, writable, filename, error);
-
-  close (fd);
-
-  return file;
-}
-
-
-/**
- * g_mapped_file_new_from_fd:
- * @fd: The file descriptor of the file to load
- * @writable: whether the mapping should be writable
- * @error: return location for a #GError, or %NULL
- *
- * Maps a file into memory. On UNIX, this is using the mmap() function.
- *
- * If @writable is %TRUE, the mapped buffer may be modified, otherwise
- * it is an error to modify the mapped buffer. Modifications to the buffer
- * are not visible to other processes mapping the same file, and are not
- * written back to the file.
- *
- * Note that modifications of the underlying file might affect the contents
- * of the #GMappedFile. Therefore, mapping should only be used if the file
- * will not be modified, or if all modifications of the file are done
- * atomically (e.g. using g_file_set_contents()).
- *
- * Return value: a newly allocated #GMappedFile which must be unref'd
- *    with g_mapped_file_unref(), or %NULL if the mapping failed.
- *
- * Since: 2.32
- */
-GMappedFile *
-g_mapped_file_new_from_fd (gint          fd,
-			   gboolean      writable,
-			   GError      **error)
-{
-  return mapped_file_new_from_fd (fd, writable, NULL, error);
 }
 
 /**
@@ -332,9 +234,7 @@ g_mapped_file_get_length (GMappedFile *file)
  * Note that the contents may not be zero-terminated,
  * even if the #GMappedFile is backed by a text file.
  *
- * If the file is empty then %NULL is returned.
- *
- * Returns: the contents of @file, or %NULL.
+ * Returns: the contents of @file.
  *
  * Since: 2.8
  */
@@ -350,79 +250,29 @@ g_mapped_file_get_contents (GMappedFile *file)
  * g_mapped_file_free:
  * @file: a #GMappedFile
  *
- * This call existed before #GMappedFile had refcounting and is currently
- * exactly the same as g_mapped_file_unref().
+ * Unmaps the buffer of @file and frees it. 
  *
  * Since: 2.8
- * Deprecated:2.22: Use g_mapped_file_unref() instead.
  */
 void
 g_mapped_file_free (GMappedFile *file)
 {
-  g_mapped_file_unref (file);
-}
-
-/**
- * g_mapped_file_ref:
- * @file: a #GMappedFile
- *
- * Increments the reference count of @file by one.  It is safe to call
- * this function from any thread.
- *
- * Return value: the passed in #GMappedFile.
- *
- * Since: 2.22
- **/
-GMappedFile *
-g_mapped_file_ref (GMappedFile *file)
-{
-  g_return_val_if_fail (file != NULL, NULL);
-
-  g_atomic_int_inc (&file->ref_count);
-
-  return file;
-}
-
-/**
- * g_mapped_file_unref:
- * @file: a #GMappedFile
- *
- * Decrements the reference count of @file by one.  If the reference count
- * drops to 0, unmaps the buffer of @file and frees it.
- *
- * It is safe to call this function from any thread.
- *
- * Since 2.22
- **/
-void
-g_mapped_file_unref (GMappedFile *file)
-{
   g_return_if_fail (file != NULL);
 
-  if (g_atomic_int_dec_and_test (&file->ref_count))
-    g_mapped_file_destroy (file);
+  if (file->length)
+  {
+#ifdef HAVE_MMAP
+    munmap (file->contents, file->length);
+#endif
+#ifdef G_OS_WIN32
+    UnmapViewOfFile (file->contents);
+    CloseHandle (file->mapping);
+#endif
+  }
+
+  g_free (file);
 }
 
-/**
- * g_mapped_file_get_bytes:
- * @file: a #GMappedFile
- *
- * Creates a new #GBytes which references the data mapped from @file.
- * The mapped contents of the file must not be modified after creating this
- * bytes object, because a #GBytes should be immutable.
- *
- * Returns: (transfer full): A newly allocated #GBytes referencing data
- *     from @file
- *
- * Since: 2.34
- **/
-GBytes *
-g_mapped_file_get_bytes (GMappedFile *file)
-{
-  g_return_val_if_fail (file != NULL, NULL);
 
-  return g_bytes_new_with_free_func (file->contents,
-				     file->length,
-				     (GDestroyNotify) g_mapped_file_unref,
-				     g_mapped_file_ref (file));
-}
+#define __G_MAPPED_FILE_C__
+#include "galiasdef.c"

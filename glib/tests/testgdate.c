@@ -29,8 +29,7 @@ else \
   if ((passed+notpassed) % 10000 == 0) g_print ("."); fflush (stdout); \
 } G_STMT_END
 
-static void
-g_date_debug_print (GDate* d)
+void g_date_debug_print(GDate* d)
 {
   if (!d) g_print("NULL!\n");
   else 

@@ -1,7 +1,5 @@
 include $(top_srcdir)/Makefile.decl
-NULL =
-
-SUBDIRS = gdbus-object-manager-example
+NULL = 
 
 # The name of the module.
 DOC_MODULE=gio
@@ -10,82 +8,73 @@ DOC_MODULE=gio
 DOC_MAIN_SGML_FILE=gio-docs.xml
 
 # Extra options to supply to gtkdoc-scan
-SCAN_OPTIONS=--deprecated-guards="G_DISABLE_DEPRECATED" \
-             --ignore-decorators="G_GNUC_WARN_UNUSED_RESULT"
+SCAN_OPTIONS=--deprecated-guards="G_DISABLE_DEPRECATED"
 
 # The directory containing the source code. Relative to $(srcdir)
 DOC_SOURCE_DIR=$(top_srcdir)/gio
 
-BUILT_HFILES=gioenumtypes.h
 HFILE_GLOB=$(top_srcdir)/gio/*.h
 CFILE_GLOB=$(top_srcdir)/gio/*.c
 
-IGNORE_HFILES = \
-	fam				\
-	fen				\
-	gdbus-2.0			\
-	gvdb				\
-	inotify				\
-	libasyncns			\
-	tests				\
-	win32				\
-	xdgmime				\
-	gapplicationimpl.h		\
+# Headers to ignore
+IGNORE_HFILES=				\
+	fam-helper.h			\
 	gasynchelper.h			\
 	gcontenttypeprivate.h		\
-	gdbusauth.h			\
-	gdbusauthmechanismanon.h	\
-	gdbusauthmechanismexternal.h	\
-	gdbusauthmechanism.h		\
-	gdbusauthmechanismsha1.h	\
-	gdbusprivate.h			\
-	gdelayedsettingsbackend.h	\
 	gdummyfile.h			\
-	gdummyproxyresolver.h		\
-	gdummytlsbackend.h		\
+	gfamdirectorymonitor.h		\
+	gfamfilemonitor.h		\
 	gfileattribute-priv.h		\
-	gfileinfo-priv.h		\
+	ginotifydirectorymonitor.h	\
+	ginotifyfilemonitor.h		\
+	gio-marshal.h			\
+	gio.h				\
+	gioalias.h			\
+	gioalias.h			\
+	gioenumtypes.h			\
 	giomodule-priv.h		\
 	glocaldirectorymonitor.h	\
-	glocalfileenumerator.h		\
 	glocalfile.h			\
+	glocalfileenumerator.h		\
 	glocalfileinfo.h		\
 	glocalfileinputstream.h		\
-	glocalfileiostream.h		\
 	glocalfilemonitor.h		\
 	glocalfileoutputstream.h	\
 	glocalvfs.h			\
-	gmountprivate.h			\
 	gnativevolumemonitor.h		\
-	gnetworkingprivate.h		\
-	gnetworkmonitorbase.h		\
-	gnetworkmonitornetlink.h	\
 	gpollfilemonitor.h		\
-	gregistrysettingsbackend.h	\
-	gsettingsbackendinternal.h	\
-	gsettings-mapping.h		\
-	gsettingsschema-internal.h	\
-	gsocketinputstream.h		\
-	gsocketoutputstream.h		\
-	gsocks4aproxy.h			\
-	gsocks4proxy.h			\
-	gsocks5proxy.h			\
-	gthreadedresolver.h		\
 	gunionvolumemonitor.h		\
-	gunixmount.h			\
-	gunixresolver.h			\
+	gunixdrive.h			\
 	gunixvolume.h			\
-	gunixvolumemonitor.h		\
+	gvolumeprivate.h		\
 	gwin32appinfo.h			\
-	gwin32mount.h			\
-	gwin32resolver.h		\
-	gwin32volumemonitor.h
-
+	inotify-diag.h			\
+	inotify-helper.h		\
+	inotify-kernel.h		\
+	inotify-missing.h		\
+	inotify-path.h			\
+	inotify-sub.h			\
+	local_inotify.h			\
+	local_inotify_syscalls.h	\
+	xdgmime.h			\
+	xdgmimealias.h		   	\
+	xdgmimecache.h		   	\
+	xdgmimeglob.h		   	\
+	xdgmimeint.h		   	\
+	xdgmimemagic.h		   	\
+	xdgmimeparent.h		   	\
+	$(NULL)
 
 # CFLAGS and LDFLAGS for compiling scan program. Only needed
 # if $(DOC_MODULE).types is non-empty.
 INCLUDES = \
-	$(gio_INCLUDES)			\
+	-I$(srcdir) 			\
+	-I$(top_srcdir) 		\
+	-I$(top_srcdir)/glib 		\
+	-I$(top_srcdir)/gobject		\
+	-I$(top_builddir) 		\
+	-I$(top_builddir)/glib 		\
+	-I$(top_builddir)/gobject	\
 	$(GLIB_DEBUG_FLAGS)
 
 GTKDOC_LIBS = \
@@ -96,84 +85,26 @@ GTKDOC_LIBS = \
 	$(NULL)
 
 # Extra options to supply to gtkdoc-mkdb
-MKDB_OPTIONS = --output-format=xml --sgml-mode --name-space=g \
-	--ignore-files='libasyncns tests'
+MKDB_OPTIONS = --output-format=xml --sgml-mode
 
 # Images to copy into HTML directory
 HTML_IMAGES =			\
-	gvfs-overview.png	\
-	menu-example.png	\
-	menu-model.png
+	gvfs-overview.png
 
-content_files =			\
+content_files = 		\
 	version.xml		\
 	overview.xml		\
-	migrating-posix.xml	\
-	migrating-gnome-vfs.xml	\
-	migrating-gconf.xml	\
-	migrating-gdbus.xml	\
-	gio-querymodules.xml	\
-	glib-compile-schemas.xml\
-	glib-compile-resources.xml	\
-	gsettings.xml		\
-	gresource.xml		\
-	gdbus.xml		\
-	gdbus-codegen.xml	\
-	$(NULL)
+	migrating.xml
 
 expand_content_files =		\
 	overview.xml		\
-	migrating-posix.xml	\
-	migrating-gnome-vfs.xml	\
-	migrating-gconf.xml	\
-	migrating-gdbus.xml	\
-	gdbus-codegen.xml	\
-	$(NULL)
+	migrating.xml
 
-extra_files =			\
+extra_files = 			\
 	version.xml.in		\
 	gvfs-overview.odg
 
-# Extra options to supply to gtkdoc-fixref
-FIXXREF_OPTIONS=--extra-dir=$(srcdir)/../glib/html --extra-dir=$(srcdir)/../gobject/html
-
 include $(top_srcdir)/gtk-doc.make
 
-EXTRA_DIST +=			\
+EXTRA_DIST +=				\
 	version.xml.in
-
-man_MANS =
-
-if ENABLE_MAN
-
-man_MANS +=			\
-	gio-querymodules.1	\
-	glib-compile-schemas.1	\
-	glib-compile-resources.1	\
-	gsettings.1		\
-	gresource.1		\
-	gdbus.1			\
-	gdbus-codegen.1
-
-XSLTPROC_FLAGS = \
-        --nonet \
-        --stringparam man.output.quietly 1 \
-        --stringparam funcsynopsis.style ansi \
-        --stringparam man.th.extra1.suppress 1 \
-        --stringparam man.authors.section.enabled 0 \
-        --stringparam man.copyright.section.enabled 0
-
-.xml.1:
-	$(AM_V_GEN) $(XSLTPROC) $(XSLTPROC_FLAGS) http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl $<
-
-endif
-
-CLEANFILES ?=
-CLEANFILES += $(man_MANS)
-
-EXTRA_DIST += $(man_MANS)
-
-dist-hook-local: all-local
-
-gio-docs-clean: clean
-	cd $(srcdir) && rm -rf xml html

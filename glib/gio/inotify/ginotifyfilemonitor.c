@@ -23,7 +23,7 @@
  *          Sebastian Dröge <slomo@circular-chaos.org>
  */
 
-#include "config.h"
+#include <config.h>
 
 #include "ginotifyfilemonitor.h"
 #include <gio/giomodule.h>
@@ -31,13 +31,14 @@
 #define USE_INOTIFY 1
 #include "inotify-helper.h"
 
+#include "gioalias.h"
+
 struct _GInotifyFileMonitor
 {
   GLocalFileMonitor parent_instance;
   gchar *filename;
   gchar *dirname;
   inotify_sub *sub;
-  gboolean pair_moves;
 };
 
 static gboolean g_inotify_file_monitor_cancel (GFileMonitor* monitor);
@@ -89,8 +90,6 @@ g_inotify_file_monitor_constructor (GType                  type,
   GInotifyFileMonitor *inotify_monitor;
   const gchar *filename = NULL;
   inotify_sub *sub = NULL;
-  gboolean pair_moves;
-  gboolean ret_ih_startup; /* return value of _ih_startup, for asserting */    
   
   klass = G_INOTIFY_FILE_MONITOR_CLASS (g_type_class_peek (G_TYPE_INOTIFY_FILE_MONITOR));
   parent_class = G_OBJECT_CLASS (g_type_class_peek_parent (klass));
@@ -109,24 +108,14 @@ g_inotify_file_monitor_constructor (GType                  type,
 
   /* Will never fail as is_supported() should be called before instanciating
    * anyway */
-  /* assert on return value */
-  ret_ih_startup = _ih_startup();
-  g_assert (ret_ih_startup);
+  g_assert (_ih_startup ());
 
-  pair_moves = G_LOCAL_FILE_MONITOR (obj)->flags & G_FILE_MONITOR_SEND_MOVED;
-
-  sub = _ih_sub_new (inotify_monitor->dirname,
-		     inotify_monitor->filename,
-		     pair_moves,
-		     inotify_monitor);
+  sub = _ih_sub_new (inotify_monitor->dirname, inotify_monitor->filename, inotify_monitor);
  
   /* FIXME: what to do about errors here? we can't return NULL or another
    * kind of error and an assertion is probably too hard */
   g_assert (sub != NULL);
-
-  /* _ih_sub_add allways returns TRUE, see gio/inotify/inotify-helper.c line 109
-   * g_assert (_ih_sub_add (sub)); */
-  _ih_sub_add (sub);
+  g_assert (_ih_sub_add (sub));
 
   inotify_monitor->sub = sub;
 
@@ -176,3 +165,4 @@ g_inotify_file_monitor_cancel (GFileMonitor* monitor)
 
   return TRUE;
 }
+

@@ -17,10 +17,6 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  */
 
-#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
-#error "Only <glib.h> can be included directly."
-#endif
-
 #ifndef __G_BOOKMARK_FILE_H__
 #define __G_BOOKMARK_FILE_H__
 
@@ -29,31 +25,10 @@
 
 G_BEGIN_DECLS
 
-/**
- * G_BOOKMARK_FILE_ERROR:
- *
- * Error domain for bookmark file parsing.
- * Errors in this domain will be from the #GBookmarkFileError
- * enumeration. See #GError for information on error domains.
+/* GError enumeration
  */
 #define G_BOOKMARK_FILE_ERROR	(g_bookmark_file_error_quark ())
 
-
-/**
- * GBookmarkFileError:
- * @G_BOOKMARK_FILE_ERROR_INVALID_URI: URI was ill-formed
- * @G_BOOKMARK_FILE_ERROR_INVALID_VALUE: a requested field was not found
- * @G_BOOKMARK_FILE_ERROR_APP_NOT_REGISTERED: a requested application did
- *     not register a bookmark
- * @G_BOOKMARK_FILE_ERROR_URI_NOT_FOUND: a requested URI was not found
- * @G_BOOKMARK_FILE_ERROR_READ: document was ill formed
- * @G_BOOKMARK_FILE_ERROR_UNKNOWN_ENCODING: the text being parsed was
- *     in an unknown encoding
- * @G_BOOKMARK_FILE_ERROR_WRITE: an error occurred while writing
- * @G_BOOKMARK_FILE_ERROR_FILE_NOT_FOUND: requested file was not found
- *
- * Error codes returned by bookmark file parsing.
- */
 typedef enum
 {
   G_BOOKMARK_FILE_ERROR_INVALID_URI,
@@ -68,11 +43,8 @@ typedef enum
 
 GQuark g_bookmark_file_error_quark (void);
 
-/**
- * GBookmarkFile:
- *
- * The <structname>GBookmarkFile</structname> struct contains only
- * private data and should not be directly accessed.
+/*
+ * GBookmarkFile
  */
 typedef struct _GBookmarkFile GBookmarkFile;
 

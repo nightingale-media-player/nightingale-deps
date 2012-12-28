@@ -21,12 +21,8 @@
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/.
+ * GLib at ftp://ftp.gtk.org/pub/gtk/. 
  */
-
-#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
-#error "Only <glib.h> can be included directly."
-#endif
 
 #ifndef __G_ARRAY_H__
 #define __G_ARRAY_H__
@@ -35,7 +31,6 @@
 
 G_BEGIN_DECLS
 
-typedef struct _GBytes          GBytes;
 typedef struct _GArray		GArray;
 typedef struct _GByteArray	GByteArray;
 typedef struct _GPtrArray	GPtrArray;
@@ -77,9 +72,6 @@ GArray* g_array_sized_new         (gboolean          zero_terminated,
 				   guint             reserved_size);
 gchar*  g_array_free              (GArray           *array,
 				   gboolean          free_segment);
-GArray *g_array_ref               (GArray           *array);
-void    g_array_unref             (GArray           *array);
-guint   g_array_get_element_size  (GArray           *array);
 GArray* g_array_append_vals       (GArray           *array,
 				   gconstpointer     data,
 				   guint             len);
@@ -104,8 +96,6 @@ void    g_array_sort              (GArray           *array,
 void    g_array_sort_with_data    (GArray           *array,
 				   GCompareDataFunc  compare_func,
 				   gpointer          user_data);
-void    g_array_set_clear_func    (GArray           *array,
-                                   GDestroyNotify    clear_func);
 
 /* Resizable pointer array.  This interface is much less complicated
  * than the above.  Add appends a pointer.  Remove fills any cleared 
@@ -113,16 +103,9 @@ void    g_array_set_clear_func    (GArray           *array,
  */
 #define    g_ptr_array_index(array,index_) ((array)->pdata)[index_]
 GPtrArray* g_ptr_array_new                (void);
-GPtrArray* g_ptr_array_new_with_free_func (GDestroyNotify    element_free_func);
 GPtrArray* g_ptr_array_sized_new          (guint             reserved_size);
-GPtrArray* g_ptr_array_new_full           (guint             reserved_size,
-					   GDestroyNotify    element_free_func);
 gpointer*  g_ptr_array_free               (GPtrArray        *array,
 					   gboolean          free_seg);
-GPtrArray* g_ptr_array_ref                (GPtrArray        *array);
-void       g_ptr_array_unref              (GPtrArray        *array);
-void       g_ptr_array_set_free_func      (GPtrArray        *array,
-                                           GDestroyNotify    element_free_func);
 void       g_ptr_array_set_size           (GPtrArray        *array,
 					   gint              length);
 gpointer   g_ptr_array_remove_index       (GPtrArray        *array,
@@ -153,14 +136,9 @@ void       g_ptr_array_foreach            (GPtrArray        *array,
  */
 
 GByteArray* g_byte_array_new               (void);
-GByteArray* g_byte_array_new_take          (guint8           *data,
-                                            gsize             len);
 GByteArray* g_byte_array_sized_new         (guint             reserved_size);
 guint8*     g_byte_array_free              (GByteArray       *array,
 					    gboolean          free_segment);
-GBytes*     g_byte_array_free_to_bytes     (GByteArray       *array);
-GByteArray *g_byte_array_ref               (GByteArray       *array);
-void        g_byte_array_unref             (GByteArray       *array);
 GByteArray* g_byte_array_append            (GByteArray       *array,
 					    const guint8     *data,
 					    guint             len);
@@ -182,6 +160,8 @@ void        g_byte_array_sort_with_data    (GByteArray       *array,
 					    GCompareDataFunc  compare_func,
 					    gpointer          user_data);
 
+
 G_END_DECLS
 
 #endif /* __G_ARRAY_H__ */
+

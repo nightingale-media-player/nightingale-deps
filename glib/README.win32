@@ -1,13 +1,8 @@
 Tor Lillqvist <tml@iki.fi>
 Hans Breuer <hans@breuer.org>
 
-Note that this document is not really maintained in a serious
-fashion. Lots of information here might be misleading or outdated. You
-have been warned.
-
-The general parts, and the section about gcc and autoconfiscated
-build, and about a Visual Studio build are by Tor Lillqvist. The
-sections about MSVC build with NMAKE is by Hans Breuer. 
+The general parts, and the section about gcc and autoconfiscated build
+are by Tor Lillqvist. The sections about MSVC build is by Hans Breuer.
 
 General
 =======
@@ -20,11 +15,11 @@ only. No POSIX (Unix) emulation layer like Cygwin in involved.
 
 To build GLib on Win32, you can use either gcc ("mingw") or the
 Microsoft compiler and tools. For the latter, MSVC6 and later have
-been used successfully. Also the Digital Mars C/C++ compiler has
-reportedly been used.
+been used successfully. Also the Digital Mars C/C++ compiler have been
+used. 
 
-You can also cross-compile GLib for Windows from Linux using the
-cross-compiling mingw packages for your distro.
+People have also successfully cross-compiled GLib for Win32 from Linux
+using the cross-mingw packages.
 
 Note that to just *use* GLib on Windows, there is no need to build it
 yourself.
@@ -146,58 +141,34 @@ For MSVC7 and later (Visual C++ .NET 2003, Visual C++ 2005, Visual C++
 the same C runtime as the code that uses GLib. Such DLLs should be
 named differently than the ones that use msvcrt.dll.
 
-For GLib, the DLL that uses msvcrt.dll is called libglib-2.0-0.dll,
-and the import libraries libglib-2.0.dll.a and glib-2.0.lib. Note that
-the "2.0" is part of the "basename" of the library, it is not
-something that libtool has added. The -0 suffix is added by libtool
-and is the value of "LT_CURRENT - LT_AGE". The 0 should *not* be
-thought to be part of the version number of GLib. The LT_CURRENT -
-LT_AGE value will on purpose be kept as zero as long as binary
-compatibility is maintained. For the gory details, see configure.ac
-and libtool documentation.
+For GLib, the DLL is called libglib-2.0-0.dll, and the import
+libraries libglib-2.0.dll.a and glib-2.0.lib. Note that the "2.0" is
+part of the "basename" of the library, it is not something that
+libtool has added. The -0 suffix is added by libtool and is the value
+of "LT_CURRENT - LT_AGE". The 0 is *not* part of the version number of
+GLib, although, for GLib 2.x.0, it happens to be the same. The
+LT_CURRENT - LT_AGE value will on purpose be kept as zero as long as
+binary compatibility is maintained. For the gory details, see
+configure.in and libtool documentation.
 
-Building with Visual Studio
-===========================
+Cross-compiling
+===============
 
-A more detailed outline of building GLib with its dependencies can
-now be found in GNOME Live!:
+It is possible to build GLib using a cross compiler. See
+docs/reference/glib/html/glib-cross-compiling.html (part of the GLib
+reference manual) for more information.
 
-https://live.gnome.org/GTK%2B/Win32/MSVCCompilationOfGTKStack
+Building with MSVC
+==================
 
-Please do not build GLib in paths that contain spaces in them, as
-this may cause problems during compilation and during usage of the
-library.
-
-In an unpacked tarball, you will find in build\win32\vs9 (VS 2008) and
-build\win32\vs10 (VS 2010) a solution file that can be used to build
-the GLib DLLs and some auxiliary programs under VS 2008 and VS 2010
-(Express Edition will suffice with the needed dependencies) respectively.
-Read the README.txt file in those folders for more
-information. Note that you will need a libintl implementation, zlib, and 
-libFFI.
-
-If you are building from a GIT checkout, you will first need to use some
-Unix-like environment or run build/win32/setup.py, 
-which will expand the VS 2008/2010 project files, the DLL resouce files and
-other miscellanious files required for the build.  Run build/win32/setup.py
-as follows:
-
-$python build/win32/setup.py --perl path_to_your_perl.exe
-
-for more usage on this script, run
-$python build/win32/setup.py -h/--help
-
-Building with MSVC and NMAKE
-============================
-
-If you are building from a GIT snapshot, you will not have all
+If you are building from a SVN snapshot, you will not have any
 makefile.msc files. You should copy the corresponding makefile.msc.in
 file to that name, and replace any @...@ strings with the correct
-value (or use the python script de-in.py from http://hans.breuer.org/gtk/de-in.py).
+value.
 
 This is done automatically when an official GLib source distribution
 package is built, so if you get GLib from a source distribution
-package, there should be makefile.msc files ready to use (possibly after some
+package, there should be makefile.msc files ready to use (after some
 editing).
 
 The hand-written makefile.msc files, and the stuff in the "build"
@@ -209,12 +180,7 @@ you want to use the VC-UI you can simply create wrapper .dsp makefiles
 (read the VC docs how to do so).
 
 Some modules may require Perl to auto-generate files. The goal (at
-least Hans's) is to not require any more tools. Of course you need
-the Microsoft Platform SDK in a recent enough - but not too recent - version.
-The last PSDK for Visual Studio 6 is:
-  http://www.microsoft.com/msdownload/platformsdk/sdkupdate/psdk-full.htm
-At least install the Core SDK, maybe also the "Tablet PC SDK".
-
+least Hans's) is to not require any more tools.
 
 Build with:
 

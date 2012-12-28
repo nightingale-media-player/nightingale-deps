@@ -29,7 +29,6 @@ typedef struct {
   GObjectClass parent_class;
 } MySingletonClass;
 
-static GType my_singleton_get_type (void);
 #define MY_TYPE_SINGLETON         (my_singleton_get_type ())
 #define MY_SINGLETON(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), MY_TYPE_SINGLETON, MySingleton))
 #define MY_IS_SINGLETON(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), MY_TYPE_SINGLETON))
@@ -72,7 +71,7 @@ main (int   argc,
       char *argv[])
 {
   MySingleton *singleton, *obj;
-
+  g_type_init_with_debug_flags (G_TYPE_DEBUG_OBJECTS | G_TYPE_DEBUG_SIGNALS);
   /* create the singleton */
   singleton = g_object_new (MY_TYPE_SINGLETON, NULL);
   g_assert (singleton != NULL);

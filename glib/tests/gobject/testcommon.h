@@ -32,7 +32,7 @@ prefix ## _get_type (void)					\
 								\
   if (!object_type)						\
     {								\
-      const GTypeInfo object_info =			\
+      static const GTypeInfo object_info =			\
 	{							\
 	  sizeof (name ## Class),				\
 	  (GBaseInitFunc) base_init,				\
@@ -68,7 +68,7 @@ prefix ## _get_type (void)					\
 								\
   if (!iface_type)						\
     {								\
-      const GTypeInfo iface_info =			\
+      static const GTypeInfo iface_info =			\
       {								\
 	sizeof (name ## Class),					\
 	(GBaseInitFunc)	base_init,				\
@@ -85,7 +85,7 @@ prefix ## _get_type (void)					\
 
 #define INTERFACE_FULL(type, init_func, iface_type)		\
 {								\
-  GInterfaceInfo const iface =				\
+  static GInterfaceInfo const iface =				\
     {								\
       (GInterfaceInitFunc) init_func, NULL, NULL		\
     };								\

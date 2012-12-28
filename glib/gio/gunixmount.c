@@ -23,7 +23,7 @@
  *         David Zeuthen <davidz@redhat.com>
  */
 
-#include "config.h"
+#include <config.h>
 
 #include <string.h>
 #include <sys/wait.h>
@@ -32,19 +32,16 @@
 #include <glib.h>
 #include "gunixvolumemonitor.h"
 #include "gunixmount.h"
-#include "gunixmounts.h"
 #include "gunixvolume.h"
 #include "gmountprivate.h"
-#include "gmount.h"
-#include "gfile.h"
 #include "gvolumemonitor.h"
 #include "gthemedicon.h"
 #include "gsimpleasyncresult.h"
-#include "gioerror.h"
 #include "glibintl.h"
 /* for BUFSIZ */
 #include <stdio.h>
 
+#include "gioalias.h"
 
 struct _GUnixMount {
   GObject parent;
@@ -55,7 +52,6 @@ struct _GUnixMount {
 
   char *name;
   GIcon *icon;
-  GIcon *symbolic_icon;
   char *device_path;
   char *mount_path;
 
@@ -85,12 +81,12 @@ g_unix_mount_finalize (GObject *object)
     
   /* TODO: g_warn_if_fail (volume->volume == NULL); */
   g_object_unref (mount->icon);
-  g_object_unref (mount->symbolic_icon);
   g_free (mount->name);
   g_free (mount->device_path);
   g_free (mount->mount_path);
-
-  G_OBJECT_CLASS (g_unix_mount_parent_class)->finalize (object);
+  
+  if (G_OBJECT_CLASS (g_unix_mount_parent_class)->finalize)
+    (*G_OBJECT_CLASS (g_unix_mount_parent_class)->finalize) (object);
 }
 
 static void
@@ -125,7 +121,6 @@ _g_unix_mount_new (GVolumeMonitor  *volume_monitor,
 
   mount->name = g_unix_mount_guess_name (mount_entry);
   mount->icon = g_unix_mount_guess_icon (mount_entry);
-  mount->symbolic_icon = g_unix_mount_guess_symbolic_icon (mount_entry);
 
   /* need to do this last */
   mount->volume = volume;
@@ -158,7 +153,7 @@ _g_unix_mount_unset_volume (GUnixMount *mount,
       /* TODO: Emit changed in idle to avoid locking issues */
       g_signal_emit_by_name (mount, "changed");
       if (mount->volume_monitor != NULL)
-        g_signal_emit_by_name (mount->volume_monitor, "mount-changed", mount);
+        g_signal_emit_by_name (mount->volume_monitor, "mount_changed", mount);
     }
 }
 
@@ -176,14 +171,6 @@ g_unix_mount_get_icon (GMount *mount)
   GUnixMount *unix_mount = G_UNIX_MOUNT (mount);
 
   return g_object_ref (unix_mount->icon);
-}
-
-static GIcon *
-g_unix_mount_get_symbolic_icon (GMount *mount)
-{
-  GUnixMount *unix_mount = G_UNIX_MOUNT (mount);
-
-  return g_object_ref (unix_mount->symbolic_icon);
 }
 
 static char *
@@ -250,9 +237,8 @@ typedef struct {
   GCancellable *cancellable;
   int error_fd;
   GIOChannel *error_channel;
-  GSource *error_channel_source;
+  guint error_channel_source_id;
   GString *error_string;
-  gchar **argv;
 } UnmountEjectOp;
 
 static void 
@@ -284,14 +270,9 @@ eject_unmount_cb (GPid pid, gint status, gpointer user_data)
   g_simple_async_result_complete (simple);
   g_object_unref (simple);
 
-  if (data->error_channel_source)
-    {
-      g_source_destroy (data->error_channel_source);
-      g_source_unref (data->error_channel_source);
-    }
+  g_source_remove (data->error_channel_source_id);
   g_io_channel_unref (data->error_channel);
   g_string_free (data->error_string, TRUE);
-  g_strfreev (data->argv);
   close (data->error_fd);
   g_spawn_close_pid (pid);
   g_free (data);
@@ -326,28 +307,33 @@ read:
 
       g_string_append (data->error_string, error->message);
       g_error_free (error);
-
-      if (data->error_channel_source)
-        {
-          g_source_unref (data->error_channel_source);
-          data->error_channel_source = NULL;
-        }
       return FALSE;
     }
 
   return TRUE;
 }
 
-static gboolean
-eject_unmount_do_cb (gpointer user_data)
+static void
+eject_unmount_do (GMount              *mount,
+                  GCancellable        *cancellable,
+                  GAsyncReadyCallback  callback,
+                  gpointer             user_data,
+                  char               **argv)
 {
-  UnmountEjectOp *data = (UnmountEjectOp *) user_data;
+  GUnixMount *unix_mount = G_UNIX_MOUNT (mount);
+  UnmountEjectOp *data;
   GPid child_pid;
-  GSource *child_watch;
-  GError *error = NULL;
-
+  GError *error;
+  
+  data = g_new0 (UnmountEjectOp, 1);
+  data->unix_mount = unix_mount;
+  data->callback = callback;
+  data->user_data = user_data;
+  data->cancellable = cancellable;
+  
+  error = NULL;
   if (!g_spawn_async_with_pipes (NULL,         /* working dir */
-                                 data->argv,
+                                 argv,
                                  NULL,         /* envp */
                                  G_SPAWN_DO_NOT_REAP_CHILD|G_SPAWN_SEARCH_PATH,
                                  NULL,         /* child_setup */
@@ -368,20 +354,13 @@ eject_unmount_do_cb (gpointer user_data)
   if (error != NULL)
     goto handle_error;
 
-  data->error_channel_source = g_io_create_watch (data->error_channel, G_IO_IN);
-  g_source_set_callback (data->error_channel_source,
-                         (GSourceFunc) eject_unmount_read_error, data, NULL);
-  g_source_attach (data->error_channel_source, g_main_context_get_thread_default ());
-
-  child_watch = g_child_watch_source_new (child_pid);
-  g_source_set_callback (child_watch, (GSourceFunc) eject_unmount_cb, data, NULL);
-  g_source_attach (child_watch, g_main_context_get_thread_default ());
-  g_source_unref (child_watch);
+  data->error_channel_source_id = g_io_add_watch (data->error_channel, G_IO_IN, eject_unmount_read_error, data);
+  g_child_watch_add (child_pid, eject_unmount_cb, data);
 
 handle_error:
   if (error != NULL) {
     GSimpleAsyncResult *simple;
-    simple = g_simple_async_result_new_take_error (G_OBJECT (data->unix_mount),
+    simple = g_simple_async_result_new_from_error (G_OBJECT (data->unix_mount),
                                                    data->callback,
                                                    data->user_data,
                                                    error);
@@ -394,36 +373,9 @@ handle_error:
     if (data->error_channel != NULL)
       g_io_channel_unref (data->error_channel);
 
-    g_strfreev (data->argv);
+    g_error_free (error);
     g_free (data);
   }
-
-  return G_SOURCE_REMOVE;
-}
-
-static void
-eject_unmount_do (GMount              *mount,
-                  GCancellable        *cancellable,
-                  GAsyncReadyCallback  callback,
-                  gpointer             user_data,
-                  char               **argv)
-{
-  GUnixMount *unix_mount = G_UNIX_MOUNT (mount);
-  UnmountEjectOp *data;
-
-  data = g_new0 (UnmountEjectOp, 1);
-  data->unix_mount = unix_mount;
-  data->callback = callback;
-  data->user_data = user_data;
-  data->cancellable = cancellable;
-  data->argv = g_strdupv (argv);
-
-  if (unix_mount->volume_monitor != NULL)
-    g_signal_emit_by_name (unix_mount->volume_monitor, "mount-pre-unmount", mount);
-
-  g_signal_emit_by_name (mount, "pre-unmount", 0);
-
-  g_timeout_add (500, (GSourceFunc) eject_unmount_do_cb, data);
 }
 
 static void
@@ -484,7 +436,6 @@ g_unix_mount_mount_iface_init (GMountIface *iface)
   iface->get_root = g_unix_mount_get_root;
   iface->get_name = g_unix_mount_get_name;
   iface->get_icon = g_unix_mount_get_icon;
-  iface->get_symbolic_icon = g_unix_mount_get_symbolic_icon;
   iface->get_uuid = g_unix_mount_get_uuid;
   iface->get_drive = g_unix_mount_get_drive;
   iface->get_volume = g_unix_mount_get_volume;

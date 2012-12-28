@@ -55,50 +55,7 @@
 #include "gtimer.h"
 #include "gutils.h"
 
-
-/**
- * SECTION:bookmarkfile
- * @title: Bookmark file parser
- * @short_description: parses files containing bookmarks
- *
- * GBookmarkFile lets you parse, edit or create files containing bookmarks
- * to URI, along with some meta-data about the resource pointed by the URI
- * like its MIME type, the application that is registering the bookmark and
- * the icon that should be used to represent the bookmark. The data is stored
- * using the
- * <ulink url="http://www.gnome.org/~ebassi/bookmark-spec">Desktop Bookmark
- * Specification</ulink>.
- *
- * The syntax of the bookmark files is described in detail inside the Desktop
- * Bookmark Specification, here is a quick summary: bookmark files use a
- * sub-class of the <ulink url="">XML Bookmark Exchange Language</ulink>
- * specification, consisting of valid UTF-8 encoded XML, under the
- * <literal>xbel</literal> root element; each bookmark is stored inside a
- * <literal>bookmark</literal> element, using its URI: no relative paths can
- * be used inside a bookmark file. The bookmark may have a user defined title
- * and description, to be used instead of the URI. Under the
- * <literal>metadata</literal> element, with its <literal>owner</literal>
- * attribute set to <literal>http://freedesktop.org</literal>, is stored the
- * meta-data about a resource pointed by its URI. The meta-data consists of
- * the resource's MIME type; the applications that have registered a bookmark;
- * the groups to which a bookmark belongs to; a visibility flag, used to set
- * the bookmark as "private" to the applications and groups that has it
- * registered; the URI and MIME type of an icon, to be used when displaying
- * the bookmark inside a GUI.
- * |[<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" parse="text" href="../../../../glib/tests/bookmarks.xbel"><xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback></xi:include>]|
- *
- * A bookmark file might contain more than one bookmark; each bookmark
- * is accessed through its URI.
- *
- * The important caveat of bookmark files is that when you add a new
- * bookmark you must also add the application that is registering it, using
- * g_bookmark_file_add_application() or g_bookmark_file_set_app_info().
- * If a bookmark has no applications then it won't be dumped when creating
- * the on disk representation, using g_bookmark_file_to_data() or
- * g_bookmark_file_to_file().
- *
- * The #GBookmarkFile parser was added in GLib 2.12.
- */
+#include "galias.h"
 
 /* XBEL 1.0 standard entities */
 #define XBEL_VERSION		"1.0"
@@ -147,8 +104,7 @@
 #define BOOKMARK_NAME_ATTRIBUTE		"name"
 #define BOOKMARK_EXEC_ATTRIBUTE		"exec"
 #define BOOKMARK_COUNT_ATTRIBUTE 	"count"
-#define BOOKMARK_TIMESTAMP_ATTRIBUTE	"timestamp"     /* deprecated by "modified" */
-#define BOOKMARK_MODIFIED_ATTRIBUTE     "modified"
+#define BOOKMARK_TIMESTAMP_ATTRIBUTE	"timestamp"
 #define BOOKMARK_HREF_ATTRIBUTE 	"href"
 #define BOOKMARK_TYPE_ATTRIBUTE 	"type"
 
@@ -271,7 +227,7 @@ bookmark_app_info_new (const gchar *name)
   retval->name = g_strdup (name);
   retval->exec = NULL;
   retval->count = 0;
-  retval->stamp = 0;
+  retval->stamp = time (NULL);
   
   return retval;
 }
@@ -292,7 +248,7 @@ static gchar *
 bookmark_app_info_dump (BookmarkAppInfo *app_info)
 {
   gchar *retval;
-  gchar *name, *exec, *modified, *count;
+  gchar *name, *exec;
 
   g_warn_if_fail (app_info != NULL);
 
@@ -301,21 +257,17 @@ bookmark_app_info_dump (BookmarkAppInfo *app_info)
 
   name = g_markup_escape_text (app_info->name, -1);
   exec = g_markup_escape_text (app_info->exec, -1);
-  modified = timestamp_to_iso8601 (app_info->stamp);
-  count = g_strdup_printf ("%u", app_info->count);
-
-  retval = g_strconcat ("          "
-                        "<" BOOKMARK_NAMESPACE_NAME ":" BOOKMARK_APPLICATION_ELEMENT
-                        " " BOOKMARK_NAME_ATTRIBUTE "=\"", name, "\""
-                        " " BOOKMARK_EXEC_ATTRIBUTE "=\"", exec, "\""
-                        " " BOOKMARK_MODIFIED_ATTRIBUTE "=\"", modified, "\""
-                        " " BOOKMARK_COUNT_ATTRIBUTE "=\"", count, "\"/>\n",
-                        NULL);
+ 
+  retval = g_strdup_printf ("          <%s:%s %s=\"%s\" %s=\"%s\" %s=\"%ld\" %s=\"%u\"/>\n",
+                            BOOKMARK_NAMESPACE_NAME,
+                            BOOKMARK_APPLICATION_ELEMENT,
+                            BOOKMARK_NAME_ATTRIBUTE, name,
+                            BOOKMARK_EXEC_ATTRIBUTE, exec,
+                            BOOKMARK_TIMESTAMP_ATTRIBUTE, (time_t) app_info->stamp,
+                            BOOKMARK_COUNT_ATTRIBUTE, app_info->count);
 
   g_free (name);
   g_free (exec);
-  g_free (modified);
-  g_free (count);
 
   return retval;
 }
@@ -359,8 +311,21 @@ bookmark_metadata_free (BookmarkMetadata *metadata)
   
   g_free (metadata->mime_type);
     
-  g_list_free_full (metadata->groups, g_free);
-  g_list_free_full (metadata->applications, (GDestroyNotify) bookmark_app_info_free);
+  if (metadata->groups)
+    {
+      g_list_foreach (metadata->groups,
+		      (GFunc) g_free,
+		      NULL);
+      g_list_free (metadata->groups);
+    }
+  
+  if (metadata->applications)
+    {
+      g_list_foreach (metadata->applications,
+		      (GFunc) bookmark_app_info_free,
+		      NULL);
+      g_list_free (metadata->applications);
+    }
 
   g_hash_table_destroy (metadata->apps_by_name);
 
@@ -374,62 +339,56 @@ static gchar *
 bookmark_metadata_dump (BookmarkMetadata *metadata)
 {
   GString *retval;
-  gchar *buffer;
  
   if (!metadata->applications)
     return NULL;
   
-  retval = g_string_sized_new (1024);
+  retval = g_string_new (NULL);
   
   /* metadata container */
-  g_string_append (retval,
-		   "      "
-		   "<" XBEL_METADATA_ELEMENT
-		   " " XBEL_OWNER_ATTRIBUTE "=\"" BOOKMARK_METADATA_OWNER
-		   "\">\n");
-
+  g_string_append_printf (retval,
+  			  "      <%s %s=\"%s\">\n",
+  			  XBEL_METADATA_ELEMENT,
+  			  XBEL_OWNER_ATTRIBUTE, BOOKMARK_METADATA_OWNER);
+  
   /* mime type */
-  if (metadata->mime_type) {
-    buffer = g_strconcat ("        "
-			  "<" MIME_NAMESPACE_NAME ":" MIME_TYPE_ELEMENT " "
-			  MIME_TYPE_ATTRIBUTE "=\"", metadata->mime_type, "\"/>\n",
-			  NULL);    
-    g_string_append (retval, buffer);
-    g_free (buffer);
-  }
-
+  if (metadata->mime_type)
+    g_string_append_printf (retval,
+  			    "        <%s:%s %s=\"%s\"/>\n",
+  			    MIME_NAMESPACE_NAME,
+  			    MIME_TYPE_ELEMENT,
+  			    MIME_TYPE_ATTRIBUTE, metadata->mime_type);
+  
   if (metadata->groups)
     {
       GList *l;
       
       /* open groups container */
-      g_string_append (retval,
-		       "        "
-		       "<" BOOKMARK_NAMESPACE_NAME
-		       ":" BOOKMARK_GROUPS_ELEMENT ">\n");
+      g_string_append_printf (retval,
+      			      "        <%s:%s>\n",
+      			      BOOKMARK_NAMESPACE_NAME,
+      			      BOOKMARK_GROUPS_ELEMENT);
       
       for (l = g_list_last (metadata->groups); l != NULL; l = l->prev)
         {
           gchar *group_name;
 
 	  group_name = g_markup_escape_text ((gchar *) l->data, -1);
-	  buffer = g_strconcat ("          "
-				"<" BOOKMARK_NAMESPACE_NAME
-				":" BOOKMARK_GROUP_ELEMENT ">",
-				group_name,
-				"</" BOOKMARK_NAMESPACE_NAME
-				":"  BOOKMARK_GROUP_ELEMENT ">\n", NULL);
-	  g_string_append (retval, buffer);
-
-	  g_free (buffer);
+          g_string_append_printf (retval,
+          			  "          <%s:%s>%s</%s:%s>\n",
+          			  BOOKMARK_NAMESPACE_NAME,
+          			  BOOKMARK_GROUP_ELEMENT,
+          			  group_name,
+          			  BOOKMARK_NAMESPACE_NAME,
+          			  BOOKMARK_GROUP_ELEMENT);
 	  g_free (group_name);
         }
       
       /* close groups container */
-      g_string_append (retval,
-		       "        "
-		       "</" BOOKMARK_NAMESPACE_NAME
-		       ":" BOOKMARK_GROUPS_ELEMENT ">\n");
+      g_string_append_printf (retval,
+      			      "        </%s:%s>\n",
+      			      BOOKMARK_NAMESPACE_NAME,
+      			      BOOKMARK_GROUPS_ELEMENT);
     }
   
   if (metadata->applications)
@@ -437,10 +396,10 @@ bookmark_metadata_dump (BookmarkMetadata *metadata)
       GList *l;
       
       /* open applications container */
-      g_string_append (retval,
-		       "        "
-		       "<" BOOKMARK_NAMESPACE_NAME
-		       ":" BOOKMARK_APPLICATIONS_ELEMENT ">\n");
+      g_string_append_printf (retval,
+      			      "        <%s:%s>\n",
+      			      BOOKMARK_NAMESPACE_NAME,
+      			      BOOKMARK_APPLICATIONS_ELEMENT);
       
       for (l = g_list_last (metadata->applications); l != NULL; l = l->prev)
         {
@@ -460,10 +419,10 @@ bookmark_metadata_dump (BookmarkMetadata *metadata)
         }
       
       /* close applications container */
-      g_string_append (retval,
-		       "        "
-		       "</" BOOKMARK_NAMESPACE_NAME
-		       ":" BOOKMARK_APPLICATIONS_ELEMENT ">\n");
+      g_string_append_printf (retval,
+      			      "        </%s:%s>\n",
+      			      BOOKMARK_NAMESPACE_NAME,
+      			      BOOKMARK_APPLICATIONS_ELEMENT);
     }
   
   /* icon */
@@ -471,28 +430,24 @@ bookmark_metadata_dump (BookmarkMetadata *metadata)
     {
       if (!metadata->icon_mime)
         metadata->icon_mime = g_strdup ("application/octet-stream");
-
-      buffer = g_strconcat ("       "
-			    "<" BOOKMARK_NAMESPACE_NAME
-			    ":" BOOKMARK_ICON_ELEMENT
-			    " " BOOKMARK_HREF_ATTRIBUTE "=\"", metadata->icon_href,
-			    "\" " BOOKMARK_TYPE_ATTRIBUTE "=\"", metadata->icon_mime, "\"/>\n", NULL);
-      g_string_append (retval, buffer);
-
-      g_free (buffer);
+      
+      g_string_append_printf (retval,
+      			      "       <%s:%s %s=\"%s\" %s=\"%s\"/>\n",
+      			      BOOKMARK_NAMESPACE_NAME,
+      			      BOOKMARK_ICON_ELEMENT,
+      			      BOOKMARK_HREF_ATTRIBUTE, metadata->icon_href,
+      			      BOOKMARK_TYPE_ATTRIBUTE, metadata->icon_mime);
     }
   
   /* private hint */
   if (metadata->is_private)
-    g_string_append (retval,
-		     "        "
-		     "<" BOOKMARK_NAMESPACE_NAME
-		     ":" BOOKMARK_PRIVATE_ELEMENT "/>\n");
+    g_string_append_printf (retval,
+    			    "        <%s:%s/>\n",
+    			    BOOKMARK_NAMESPACE_NAME,
+    			    BOOKMARK_PRIVATE_ELEMENT);
   
   /* close metadata container */
-  g_string_append (retval,
-		   "      "
-		   "</" XBEL_METADATA_ELEMENT ">\n");
+  g_string_append_printf (retval, "      </%s>\n", XBEL_METADATA_ELEMENT);
   			   
   return g_string_free (retval, FALSE);
 }
@@ -546,7 +501,6 @@ bookmark_item_dump (BookmarkItem *item)
   GString *retval;
   gchar *added, *visited, *modified;
   gchar *escaped_uri;
-  gchar *buffer;
  
   /* at this point, we must have at least a registered application; if we don't
    * we don't screw up the bookmark file, and just skip this item
@@ -557,45 +511,37 @@ bookmark_item_dump (BookmarkItem *item)
       return NULL;
     }
   
-  retval = g_string_sized_new (4096);
+  retval = g_string_new (NULL);
   
   added = timestamp_to_iso8601 (item->added);
   modified = timestamp_to_iso8601 (item->modified);
   visited = timestamp_to_iso8601 (item->visited);
 
   escaped_uri = g_markup_escape_text (item->uri, -1);
-
-  buffer = g_strconcat ("  <"
-                        XBEL_BOOKMARK_ELEMENT
-                        " "
-                        XBEL_HREF_ATTRIBUTE "=\"", escaped_uri, "\" "
-                        XBEL_ADDED_ATTRIBUTE "=\"", added, "\" "
-                        XBEL_MODIFIED_ATTRIBUTE "=\"", modified, "\" "
-                        XBEL_VISITED_ATTRIBUTE "=\"", visited, "\">\n",
-                        NULL);
-
-  g_string_append (retval, buffer);
-
+  
+  g_string_append_printf (retval,
+                          "  <%s %s=\"%s\" %s=\"%s\" %s=\"%s\" %s=\"%s\">\n",
+                          XBEL_BOOKMARK_ELEMENT,
+                          XBEL_HREF_ATTRIBUTE, escaped_uri,
+                          XBEL_ADDED_ATTRIBUTE, added,
+                          XBEL_MODIFIED_ATTRIBUTE, modified,
+                          XBEL_VISITED_ATTRIBUTE, visited);
   g_free (escaped_uri);
   g_free (visited);
   g_free (modified);
   g_free (added);
-  g_free (buffer);
   
   if (item->title)
     {
       gchar *escaped_title;
       
       escaped_title = g_markup_escape_text (item->title, -1);
-      buffer = g_strconcat ("    "
-                            "<" XBEL_TITLE_ELEMENT ">",
-                            escaped_title,
-                            "</" XBEL_TITLE_ELEMENT ">\n",
-                            NULL);
-      g_string_append (retval, buffer);
-
+      g_string_append_printf (retval,
+    			      "    <%s>%s</%s>\n",
+    			      XBEL_TITLE_ELEMENT,
+    			      escaped_title,
+    			      XBEL_TITLE_ELEMENT);
       g_free (escaped_title);
-      g_free (buffer);
     }
   
   if (item->description)
@@ -603,38 +549,34 @@ bookmark_item_dump (BookmarkItem *item)
       gchar *escaped_desc;
       
       escaped_desc = g_markup_escape_text (item->description, -1);
-      buffer = g_strconcat ("    "
-                            "<" XBEL_DESC_ELEMENT ">",
-                            escaped_desc,
-                            "</" XBEL_DESC_ELEMENT ">\n",
-                            NULL);
-      g_string_append (retval, buffer);
-
+      g_string_append_printf (retval,
+    			      "    <%s>%s</%s>\n",
+    			      XBEL_DESC_ELEMENT,
+    			      escaped_desc,
+    			      XBEL_DESC_ELEMENT);
       g_free (escaped_desc);
-      g_free (buffer);
     }
   
   if (item->metadata)
     {
       gchar *metadata;
       
+      /* open info container */
+      g_string_append_printf (retval, "    <%s>\n", XBEL_INFO_ELEMENT);
+      
       metadata = bookmark_metadata_dump (item->metadata);
       if (metadata)
         {
-          buffer = g_strconcat ("    "
-                                "<" XBEL_INFO_ELEMENT ">\n",
-                                metadata,
-                                "    "
-				"</" XBEL_INFO_ELEMENT ">\n",
-                                NULL);
-          retval = g_string_append (retval, buffer);
+          retval = g_string_append (retval, metadata);
 
-          g_free (buffer);
 	  g_free (metadata);
 	}
+      
+      /* close info container */
+      g_string_append_printf (retval, "    </%s>\n", XBEL_INFO_ELEMENT);
     }
-
-  g_string_append (retval, "  </" XBEL_BOOKMARK_ELEMENT ">\n");
+  
+  g_string_append_printf (retval, "  </%s>\n", XBEL_BOOKMARK_ELEMENT);
   
   return g_string_free (retval, FALSE);
 }
@@ -674,8 +616,15 @@ g_bookmark_file_clear (GBookmarkFile *bookmark)
   g_free (bookmark->title);
   g_free (bookmark->description);
 
-  g_list_free_full (bookmark->items, (GDestroyNotify) bookmark_item_free);
-  bookmark->items = NULL;
+  if (bookmark->items)
+    {
+      g_list_foreach (bookmark->items,
+		      (GFunc) bookmark_item_free,
+		      NULL);
+      g_list_free (bookmark->items);
+      
+      bookmark->items = NULL;
+    }
   
   if (bookmark->items_by_uri)
     {
@@ -789,8 +738,8 @@ parse_bookmark_element (GMarkupParseContext  *context,
 
   add_error = NULL;
   g_bookmark_file_add_item (parse_data->bookmark_file,
-  			    item,
-  			    &add_error);
+  			      item,
+  			      &add_error);
   if (add_error)
     {
       bookmark_item_free (item);
@@ -810,7 +759,7 @@ parse_application_element (GMarkupParseContext  *context,
 			   const gchar         **attribute_values,
 			   GError              **error)
 {
-  const gchar *name, *exec, *count, *stamp, *modified;
+  const gchar *name, *exec, *count, *stamp;
   const gchar *attr;
   gint i;
   BookmarkItem *item;
@@ -819,7 +768,7 @@ parse_application_element (GMarkupParseContext  *context,
   g_warn_if_fail ((parse_data != NULL) && (parse_data->state == STATE_APPLICATION));
 
   i = 0;
-  name = exec = count = stamp = modified = NULL;
+  name = exec = count = stamp = NULL;
   for (attr = attribute_names[i]; attr != NULL; attr = attribute_names[++i])
     {
       if (IS_ATTRIBUTE (attr, BOOKMARK_NAME_ATTRIBUTE))
@@ -830,8 +779,6 @@ parse_application_element (GMarkupParseContext  *context,
         count = attribute_values[i];
       else if (IS_ATTRIBUTE (attr, BOOKMARK_TIMESTAMP_ATTRIBUTE))
         stamp = attribute_values[i];
-      else if (IS_ATTRIBUTE (attr, BOOKMARK_MODIFIED_ATTRIBUTE))
-        modified = attribute_values[i];
     }
 
   /* the "name" and "exec" attributes are mandatory */
@@ -876,19 +823,11 @@ parse_application_element (GMarkupParseContext  *context,
     ai->count = atoi (count);
   else
     ai->count = 1;
-
-  if (modified)
-    ai->stamp = timestamp_from_iso8601 (modified);
+  
+  if (stamp)
+    ai->stamp = (time_t) atol (stamp);
   else
-    {
-      /* the timestamp attribute has been deprecated but we still parse
-       * it for backward compatibility
-       */
-      if (stamp)
-        ai->stamp = (time_t) atol (stamp);
-      else
-        ai->stamp = time (NULL);
-    }
+    ai->stamp = time (NULL);
 }
 
 static void
@@ -951,7 +890,7 @@ parse_icon_element (GMarkupParseContext  *context,
         type = attribute_values[i];
     }
 
-  /* the "href" attribute is mandatory */       
+  /* the "href" attribute is mandatory */
   if (!href)
     {
       g_set_error (error, G_MARKUP_ERROR,
@@ -1038,7 +977,7 @@ is_element_full (ParseData   *parse_data,
                  const gchar *element,
                  const gchar  sep)
 {
-  gchar *ns_uri, *ns_name;
+  gchar *ns_uri, *ns_name, *s, *resolved;
   const gchar *p, *element_name;
   gboolean retval;
  
@@ -1057,7 +996,7 @@ is_element_full (ParseData   *parse_data,
    * namespace has been set, just do a plain comparison between @full_element
    * and @element.
    */
-  p = g_utf8_strchr (element_full, -1, ':');
+  p = strchr (element_full, ':');
   if (p)
     {
       ns_name = g_strndup (element_full, p - element_full);
@@ -1077,11 +1016,14 @@ is_element_full (ParseData   *parse_data,
       
       return (0 == strcmp (element_full, element));
     }
-
-  retval = (0 == strcmp (ns_uri, namespace) &&
-            0 == strcmp (element_name, element));
+  
+  resolved = g_strdup_printf ("%s%c%s", ns_uri, sep, element_name);
+  s = g_strdup_printf ("%s%c%s", namespace, sep, element);
+  retval = (0 == strcmp (resolved, s));
   
   g_free (ns_name);
+  g_free (resolved);
+  g_free (s);
   
   return retval;
 }
@@ -1418,9 +1360,9 @@ static const GMarkupParser markup_parser =
 
 static gboolean
 g_bookmark_file_parse (GBookmarkFile  *bookmark,
-			 const gchar  *buffer,
-			 gsize         length,
-			 GError       **error)
+			 const gchar      *buffer,
+			 gsize             length,
+			 GError          **error)
 {
   GMarkupParseContext *context;
   ParseData *parse_data;
@@ -1431,11 +1373,8 @@ g_bookmark_file_parse (GBookmarkFile  *bookmark,
 
   if (!buffer)
     return FALSE;
-
-  parse_error = NULL;
-  end_error = NULL;
   
-  if (length == (gsize) -1)
+  if (length == -1)
     length = strlen (buffer);
 
   parse_data = parse_data_new ();
@@ -1446,22 +1385,30 @@ g_bookmark_file_parse (GBookmarkFile  *bookmark,
   					parse_data,
   					(GDestroyNotify) parse_data_free);
   
+  parse_error = NULL;
   retval = g_markup_parse_context_parse (context,
   					 buffer,
   					 length,
   					 &parse_error);
   if (!retval)
-    g_propagate_error (error, parse_error);
-  else
-   {
-     retval = g_markup_parse_context_end_parse (context, &end_error);
-      if (!retval)
-        g_propagate_error (error, end_error);
-   }
- 
+    {
+      g_propagate_error (error, parse_error);
+      
+      return FALSE;
+    }
+  
+  end_error = NULL;
+  retval = g_markup_parse_context_end_parse (context, &end_error);
+  if (!retval)
+    {
+      g_propagate_error (error, end_error);
+      
+      return FALSE;
+    }
+  
   g_markup_parse_context_free (context);
-
-  return retval;
+  
+  return TRUE;
 }
 
 static gchar *
@@ -1470,53 +1417,56 @@ g_bookmark_file_dump (GBookmarkFile  *bookmark,
 		      GError        **error)
 {
   GString *retval;
-  gchar *buffer;
   GList *l;
   
-  retval = g_string_sized_new (4096);
-
-  g_string_append (retval,
-		   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+  retval = g_string_new (NULL);
+  
+  g_string_append_printf (retval,
+  			  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 #if 0
-		   /* XXX - do we really need the doctype? */
-		   "<!DOCTYPE " XBEL_DTD_NICK "\n"
-		   "  PUBLIC \"" XBEL_DTD_SYSTEM "\"\n"
-		   "         \"" XBEL_DTD_URI "\">\n"
+			  /* XXX - do we really need the doctype? */
+  			  "<!DOCTYPE %s\n"
+  			  "  PUBLIC \"%s\"\n"
+  			  "         \"%s\">\n"
 #endif
-		   "<" XBEL_ROOT_ELEMENT " " XBEL_VERSION_ATTRIBUTE "=\"" XBEL_VERSION "\"\n"
-		   "      xmlns:" BOOKMARK_NAMESPACE_NAME "=\"" BOOKMARK_NAMESPACE_URI "\"\n"
-		   "      xmlns:" MIME_NAMESPACE_NAME     "=\"" MIME_NAMESPACE_URI "\"\n>");
+  			  "<%s %s=\"%s\"\n"
+  			  "      xmlns:%s=\"%s\"\n"
+  			  "      xmlns:%s=\"%s\"\n>",
+#if 0
+			  /* XXX - do we really need the doctype? */
+  			  XBEL_DTD_NICK,
+  			  XBEL_DTD_SYSTEM, XBEL_DTD_URI,
+#endif
+  			  XBEL_ROOT_ELEMENT,
+  			  XBEL_VERSION_ATTRIBUTE, XBEL_VERSION,
+  			  BOOKMARK_NAMESPACE_NAME, BOOKMARK_NAMESPACE_URI,
+  			  MIME_NAMESPACE_NAME, MIME_NAMESPACE_URI);
   
   if (bookmark->title)
     {
       gchar *escaped_title;
- 
-      escaped_title = g_markup_escape_text (bookmark->title, -1);
-
-      buffer = g_strconcat ("  "
-			    "<" XBEL_TITLE_ELEMENT ">",
-			    escaped_title,
-			    "</" XBEL_TITLE_ELEMENT ">\n", NULL);
       
-      g_string_append (retval, buffer);
-
-      g_free (buffer);
+      escaped_title = g_markup_escape_text (bookmark->title, -1);
+      
+      g_string_append_printf (retval, "  <%s>%s</%s>\n",
+                              XBEL_TITLE_ELEMENT,
+                              escaped_title,
+                              XBEL_TITLE_ELEMENT);
+      
       g_free (escaped_title);
     }
   
   if (bookmark->description)
     {
       gchar *escaped_desc;
- 
+      
       escaped_desc = g_markup_escape_text (bookmark->description, -1);
-
-      buffer = g_strconcat ("  "
-			    "<" XBEL_DESC_ELEMENT ">",
-			    escaped_desc,
-			    "</" XBEL_DESC_ELEMENT ">\n", NULL);
-      g_string_append (retval, buffer);
-
-      g_free (buffer);
+      
+      g_string_append_printf (retval, "  <%s>%s</%s>\n",
+                              XBEL_DESC_ELEMENT,
+                              escaped_desc,
+                              XBEL_DESC_ELEMENT);
+      
       g_free (escaped_desc);
     }
   
@@ -1524,8 +1474,7 @@ g_bookmark_file_dump (GBookmarkFile  *bookmark,
     goto out;
   else
     retval = g_string_append (retval, "\n");
-
-  /* the items are stored in reverse order */
+  
   for (l = g_list_last (bookmark->items);
        l != NULL;
        l = l->prev)
@@ -1539,11 +1488,11 @@ g_bookmark_file_dump (GBookmarkFile  *bookmark,
       
       retval = g_string_append (retval, item_dump);
       
-      g_free (item_dump);
+      g_free (item_dump);      
     }
 
 out:
-  g_string_append (retval, "</" XBEL_ROOT_ELEMENT ">");
+  g_string_append_printf (retval, "</%s>", XBEL_ROOT_ELEMENT);
   
   if (length)
     *length = retval->len;
@@ -1585,7 +1534,15 @@ timestamp_from_iso8601 (const gchar *iso_date)
   return (time_t) stamp.tv_sec;
 }
 
-G_DEFINE_QUARK (g-bookmark-file-error-quark, g_bookmark_file_error)
+
+
+GQuark
+g_bookmark_file_error_quark (void)
+{
+  return g_quark_from_static_string ("egg-bookmark-file-error-quark");
+}
+
+
 
 /********************
  *    Public API    *
@@ -1660,7 +1617,9 @@ g_bookmark_file_load_from_data (GBookmarkFile  *bookmark,
   gboolean retval;
   
   g_return_val_if_fail (bookmark != NULL, FALSE);
-
+  g_return_val_if_fail (data != NULL, FALSE);
+  g_return_val_if_fail (length != 0, FALSE);
+  
   if (length == (gsize) -1)
     length = strlen (data);
 
@@ -1669,14 +1628,17 @@ g_bookmark_file_load_from_data (GBookmarkFile  *bookmark,
       g_bookmark_file_clear (bookmark);
       g_bookmark_file_init (bookmark);
     }
-
+  
   parse_error = NULL;
   retval = g_bookmark_file_parse (bookmark, data, length, &parse_error);
-
   if (!retval)
-    g_propagate_error (error, parse_error);
-
-  return retval;
+    {
+      g_propagate_error (error, parse_error);
+      
+      return FALSE;
+    }
+  
+  return TRUE;
 }
 
 /**
@@ -1793,9 +1755,9 @@ find_file_in_data_dirs (const gchar   *file,
 
   if (!path)
     {
-      g_set_error_literal (error, G_BOOKMARK_FILE_ERROR,
-                           G_BOOKMARK_FILE_ERROR_FILE_NOT_FOUND,
-                           _("No valid bookmark file found in data dirs"));
+      g_set_error (error, G_BOOKMARK_FILE_ERROR,
+                   G_BOOKMARK_FILE_ERROR_FILE_NOT_FOUND,
+                   _("No valid bookmark file found in data dirs"));
       
       return NULL;
     }
@@ -1808,7 +1770,7 @@ find_file_in_data_dirs (const gchar   *file,
  * g_bookmark_file_load_from_data_dirs:
  * @bookmark: a #GBookmarkFile
  * @file: a relative path to a filename to open and parse
- * @full_path: (allow-none): return location for a string containing the full path
+ * @full_path: return location for a string containing the full path
  *   of the file, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -1818,7 +1780,7 @@ find_file_in_data_dirs (const gchar   *file,
  * @full_path.  If the file could not be loaded then an %error is
  * set to either a #GFileError or #GBookmarkFileError.
  *
- * Return value: %TRUE if a key file could be loaded, %FALSE otherwise
+ * Return value: %TRUE if a key file could be loaded, %FALSE othewise
  *
  * Since: 2.12
  */
@@ -1889,7 +1851,7 @@ g_bookmark_file_load_from_data_dirs (GBookmarkFile  *bookmark,
 /**
  * g_bookmark_file_to_data:
  * @bookmark: a #GBookmarkFile
- * @length: (allow-none): return location for the length of the returned string, or %NULL
+ * @length: return location for the length of the returned string, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * This function outputs @bookmark as a string.
@@ -2079,7 +2041,7 @@ g_bookmark_file_has_item (GBookmarkFile *bookmark,
 /**
  * g_bookmark_file_get_uris:
  * @bookmark: a #GBookmarkFile
- * @length: (allow-none): return location for the number of returned URIs, or %NULL
+ * @length: return location for the number of returned URIs, or %NULL
  *
  * Returns all URIs of the bookmarks in the bookmark file @bookmark.
  * The array of returned URIs will be %NULL-terminated, so @length may
@@ -2102,8 +2064,7 @@ g_bookmark_file_get_uris (GBookmarkFile *bookmark,
   
   n_items = g_list_length (bookmark->items); 
   uris = g_new0 (gchar *, n_items + 1);
-
-  /* the items are stored in reverse order, so we walk the list backward */
+  
   for (l = g_list_last (bookmark->items), i = 0; l != NULL; l = l->prev)
     {
       BookmarkItem *item = (BookmarkItem *) l->data;
@@ -2123,7 +2084,7 @@ g_bookmark_file_get_uris (GBookmarkFile *bookmark,
 /**
  * g_bookmark_file_set_title:
  * @bookmark: a #GBookmarkFile
- * @uri: (allow-none): a valid URI or %NULL
+ * @uri: a valid URI or %NULL
  * @title: a UTF-8 encoded string
  *
  * Sets @title as the title of the bookmark for @uri inside the
@@ -2168,7 +2129,7 @@ g_bookmark_file_set_title (GBookmarkFile *bookmark,
 /**
  * g_bookmark_file_get_title:
  * @bookmark: a #GBookmarkFile
- * @uri: (allow-none): a valid URI or %NULL
+ * @uri: a valid URI or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Returns the title of the bookmark for @uri.
@@ -2211,7 +2172,7 @@ g_bookmark_file_get_title (GBookmarkFile  *bookmark,
 /**
  * g_bookmark_file_set_description:
  * @bookmark: a #GBookmarkFile
- * @uri: (allow-none): a valid URI or %NULL
+ * @uri: a valid URI or %NULL
  * @description: a string
  *
  * Sets @description as the description of the bookmark for @uri.
@@ -2864,7 +2825,7 @@ g_bookmark_file_remove_group (GBookmarkFile  *bookmark,
  * g_bookmark_file_set_groups:
  * @bookmark: a #GBookmarkFile
  * @uri: an item's URI
- * @groups: (allow-none): an array of group names, or %NULL to remove all groups
+ * @groups: an array of group names, or %NULL to remove all groups
  * @length: number of group name values in @groups
  *
  * Sets a list of group names for the item with URI @uri.  Each previously
@@ -2897,8 +2858,14 @@ g_bookmark_file_set_groups (GBookmarkFile  *bookmark,
   if (!item->metadata)
     item->metadata = bookmark_metadata_new ();
 
-  g_list_free_full (item->metadata->groups, g_free);
-  item->metadata->groups = NULL;
+  if (item->metadata->groups != NULL)
+    {
+      g_list_foreach (item->metadata->groups,
+		      (GFunc) g_free,
+		      NULL);
+      g_list_free (item->metadata->groups);
+      item->metadata->groups = NULL;
+    }
   
   if (groups)
     {
@@ -2914,7 +2881,7 @@ g_bookmark_file_set_groups (GBookmarkFile  *bookmark,
  * g_bookmark_file_get_groups:
  * @bookmark: a #GBookmarkFile
  * @uri: a valid URI
- * @length: (allow-none): return location for the length of the returned string, or %NULL
+ * @length: return location for the length of the returned string, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Retrieves the list of group names of the bookmark for @uri.
@@ -2986,9 +2953,9 @@ g_bookmark_file_get_groups (GBookmarkFile  *bookmark,
  * g_bookmark_file_add_application:
  * @bookmark: a #GBookmarkFile
  * @uri: a valid URI
- * @name: (allow-none): the name of the application registering the bookmark
+ * @name: the name of the application registering the bookmark
  *   or %NULL
- * @exec: (allow-none): command line to be used to launch the bookmark or %NULL
+ * @exec: command line to be used to launch the bookmark or %NULL
  *
  * Adds the application with @name and @exec to the list of
  * applications that have registered a bookmark for @uri into
@@ -3001,9 +2968,9 @@ g_bookmark_file_get_groups (GBookmarkFile  *bookmark,
  * time the application registered this bookmark.
  *
  * If @name is %NULL, the name of the application will be the
- * same returned by g_get_application_name(); if @exec is %NULL, the
+ * same returned by g_get_application(); if @exec is %NULL, the
  * command line will be a composition of the program name as
- * returned by g_get_prgname() and the "\%u" modifier, which will be
+ * returned by g_get_prgname() and the "%u" modifier, which will be
  * expanded to the bookmark's URI.
  *
  * This function will automatically take care of updating the
@@ -3166,9 +3133,9 @@ g_bookmark_file_has_application (GBookmarkFile  *bookmark,
  *
  * @name can be any UTF-8 encoded string used to identify an
  * application.
- * @exec can have one of these two modifiers: "\%f", which will
+ * @exec can have one of these two modifiers: "%f", which will
  * be expanded as the local file name retrieved from the bookmark's
- * URI; "\%u", which will be expanded as the bookmark's URI.
+ * URI; "%u", which will be expanded as the bookmark's URI.
  * The expansion is done automatically when retrieving the stored
  * command line using the g_bookmark_file_get_app_info() function.
  * @count is the number of times the application has registered the
@@ -3226,9 +3193,6 @@ g_bookmark_file_set_app_info (GBookmarkFile  *bookmark,
 	}
     }
   
-  if (!item->metadata)
-    item->metadata = bookmark_metadata_new ();
-
   ai = bookmark_item_lookup_app_info (item, name);
   if (!ai)
     {
@@ -3289,7 +3253,7 @@ expand_exec_line (const gchar *exec_fmt,
   GString *exec;
   gchar ch;
   
-  exec = g_string_sized_new (512);
+  exec = g_string_new (NULL);
   while ((ch = *exec_fmt++) != '\0')
    {
      if (ch != '%')
@@ -3339,9 +3303,9 @@ expand_exec_line (const gchar *exec_fmt,
  * @bookmark: a #GBookmarkFile
  * @uri: a valid URI
  * @name: an application's name
- * @exec: (allow-none): location for the command line of the application, or %NULL
- * @count: (allow-none): return location for the registration count, or %NULL
- * @stamp: (allow-none): return location for the last registration time, or %NULL
+ * @exec: location for the command line of the application, or %NULL
+ * @count: return location for the registration count, or %NULL
+ * @stamp: return location for the last registration time, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Gets the registration informations of @app_name for the bookmark for
@@ -3439,7 +3403,7 @@ g_bookmark_file_get_app_info (GBookmarkFile  *bookmark,
  * g_bookmark_file_get_applications:
  * @bookmark: a #GBookmarkFile
  * @uri: a valid URI
- * @length: (allow-none): return location of the length of the returned list, or %NULL
+ * @length: return location of the length of the returned list, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Retrieves the names of the applications that have registered the
@@ -3531,7 +3495,7 @@ g_bookmark_file_get_size (GBookmarkFile *bookmark)
  * g_bookmark_file_move_item:
  * @bookmark: a #GBookmarkFile
  * @old_uri: a valid URI
- * @new_uri: (allow-none): a valid URI, or %NULL
+ * @new_uri: a valid URI, or %NULL
  * @error: return location for a #GError or %NULL
  *
  * Changes the URI of a bookmark item from @old_uri to @new_uri.  Any
@@ -3610,14 +3574,13 @@ g_bookmark_file_move_item (GBookmarkFile  *bookmark,
  * g_bookmark_file_set_icon:
  * @bookmark: a #GBookmarkFile
  * @uri: a valid URI
- * @href: (allow-none): the URI of the icon for the bookmark, or %NULL
+ * @href: the URI of the icon for the bookmark, or %NULL
  * @mime_type: the MIME type of the icon for the bookmark
  *
- * Sets the icon for the bookmark for @uri. If @href is %NULL, unsets
- * the currently set icon. @href can either be a full URL for the icon
- * file or the icon name following the Icon Naming specification.
+ * Sets the icon for the bookmark for @uri.  If @href is %NULL, unsets
+ * the currently set icon.
  *
- * If no bookmark for @uri is found one is created.
+ * If no bookmark for @uri is found it is created.
  *
  * Since: 2.12
  */
@@ -3659,8 +3622,8 @@ g_bookmark_file_set_icon (GBookmarkFile *bookmark,
  * g_bookmark_file_get_icon:
  * @bookmark: a #GBookmarkFile
  * @uri: a valid URI
- * @href: (allow-none): return location for the icon's location or %NULL
- * @mime_type: (allow-none): return location for the icon's MIME type or %NULL
+ * @href: return location for the icon's location or %NULL
+ * @mime_type: return location for the icon's MIME type or %NULL
  * @error: return location for a #GError or %NULL
  *
  * Gets the icon of the bookmark for @uri.
@@ -3706,3 +3669,6 @@ g_bookmark_file_get_icon (GBookmarkFile  *bookmark,
   
   return TRUE;
 }
+
+#define __G_BOOKMARK_FILE_C__
+#include "galiasdef.c"

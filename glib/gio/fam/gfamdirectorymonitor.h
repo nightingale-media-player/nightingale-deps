@@ -28,8 +28,8 @@
 
 #include <glib-object.h>
 #include <string.h>
-#include <gio/glocaldirectorymonitor.h>
-#include <gio/giomodule.h>
+#include "glocaldirectorymonitor.h"
+#include "giomodule.h"
 
 G_BEGIN_DECLS
 

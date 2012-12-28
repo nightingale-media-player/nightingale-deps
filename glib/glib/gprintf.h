@@ -16,18 +16,17 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-
 #ifndef __G_PRINTF_H__
 #define __G_PRINTF_H__
 
-#include <glib.h>
+#include <glib/gtypes.h>
 #include <stdio.h>
 #include <stdarg.h>
 
 G_BEGIN_DECLS
 
 gint                  g_printf    (gchar const *format,
-                                   ...) G_GNUC_PRINTF (1, 2);
+                                   ...) G_GNUC_PRINTF (1, 2);            
 gint                  g_fprintf   (FILE        *file,
 				   gchar const *format,
 				   ...) G_GNUC_PRINTF (2, 3);
@@ -36,7 +35,7 @@ gint                  g_sprintf   (gchar       *string,
 				   ...) G_GNUC_PRINTF (2, 3);
 
 gint                  g_vprintf   (gchar const *format,
-                                   va_list      args);
+                                   va_list      args);            
 gint                  g_vfprintf  (FILE        *file,
 				   gchar const *format,
 				   va_list      args);
@@ -50,3 +49,6 @@ gint                  g_vasprintf (gchar      **string,
 G_END_DECLS
 
 #endif /* __G_PRINTF_H__ */
+
+
+

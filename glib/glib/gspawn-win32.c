@@ -45,10 +45,9 @@
 #include "config.h"
 
 #include "glib.h"
-#include "glib-private.h"
 #include "gprintfint.h"
 #include "glibintl.h"
-#include "gthread.h"
+#include "galias.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -62,7 +61,6 @@
 #include <direct.h>
 #include <wchar.h>
 
-#ifndef GSPAWN_HELPER
 #ifdef G_SPAWN_WIN32_DEBUG
   static int debug = 1;
   #define SETUP_DEBUG() /* empty */
@@ -80,7 +78,6 @@
 	  }						\
       }							\
     G_STMT_END
-#endif
 #endif
 
 enum
@@ -114,16 +111,12 @@ dup_noninherited (int fd,
 		   GetCurrentProcess (), &filehandle,
 		   0, FALSE, DUPLICATE_SAME_ACCESS);
   close (fd);
-  return _open_osfhandle ((gintptr) filehandle, mode | _O_NOINHERIT);
+  return _open_osfhandle ((long) filehandle, mode | _O_NOINHERIT);
 }
 
 #ifndef GSPAWN_HELPER
 
-#ifdef _WIN64
-#define HELPER_PROCESS "gspawn-win64-helper"
-#else
 #define HELPER_PROCESS "gspawn-win32-helper"
-#endif
 
 static gchar *
 protect_argv_string (const gchar *string)
@@ -209,8 +202,11 @@ protect_argv (gchar  **argv,
   return argc;
 }
 
-G_DEFINE_QUARK (g-exec-error-quark, g_spawn_error)
-G_DEFINE_QUARK (g-spawn-exit-error-quark, g_spawn_exit_error)
+GQuark
+g_spawn_error_quark (void)
+{
+  return g_quark_from_static_string ("g-exec-error-quark");
+}
 
 gboolean
 g_spawn_async_utf8 (const gchar          *working_directory,
@@ -261,7 +257,7 @@ read_data (GString     *str,
            GError     **error)
 {
   GIOStatus giostatus;
-  gsize bytes;
+  gssize bytes;
   gchar buf[4096];
 
  again:
@@ -279,8 +275,8 @@ read_data (GString     *str,
     goto again;
   else if (giostatus == G_IO_STATUS_ERROR)
     {
-      g_set_error_literal (error, G_SPAWN_ERROR, G_SPAWN_ERROR_READ,
-                           _("Failed to read data from child process"));
+      g_set_error (error, G_SPAWN_ERROR, G_SPAWN_ERROR_READ,
+                   _("Failed to read data from child process"));
       
       return READ_FAILED;
     }
@@ -294,11 +290,9 @@ make_pipe (gint     p[2],
 {
   if (_pipe (p, 4096, _O_BINARY) < 0)
     {
-      int errsv = errno;
-
       g_set_error (error, G_SPAWN_ERROR, G_SPAWN_ERROR_FAILED,
                    _("Failed to create pipe for communicating with child process (%s)"),
-                   g_strerror (errsv));
+                   g_strerror (errno));
       return FALSE;
     }
   else
@@ -310,34 +304,33 @@ make_pipe (gint     p[2],
  */
 static gboolean
 read_helper_report (int      fd,
-		    gintptr  report[2],
+		    gint     report[2],
 		    GError **error)
 {
   gint bytes = 0;
   
-  while (bytes < sizeof(gintptr)*2)
+  while (bytes < sizeof(gint)*2)
     {
       gint chunk;
 
       if (debug)
-	g_print ("%s:read_helper_report: read %" G_GSIZE_FORMAT "...\n",
+	g_print ("%s:read_helper_report: read %d...\n",
 		 __FILE__,
-		 sizeof(gintptr)*2 - bytes);
+		 sizeof(gint)*2 - bytes);
 
       chunk = read (fd, ((gchar*)report) + bytes,
-		    sizeof(gintptr)*2 - bytes);
+		    sizeof(gint)*2 - bytes);
 
       if (debug)
 	g_print ("...got %d bytes\n", chunk);
           
       if (chunk < 0)
         {
-          int errsv = errno;
-
           /* Some weird shit happened, bail out */
+              
           g_set_error (error, G_SPAWN_ERROR, G_SPAWN_ERROR_FAILED,
                        _("Failed to read from child pipe (%s)"),
-                       g_strerror (errsv));
+                       g_strerror (errno));
 
           return FALSE;
         }
@@ -352,14 +345,14 @@ read_helper_report (int      fd,
 	bytes += chunk;
     }
 
-  if (bytes < sizeof(gintptr)*2)
+  if (bytes < sizeof(gint)*2)
     return FALSE;
 
   return TRUE;
 }
 
 static void
-set_child_error (gintptr      report[2],
+set_child_error (gint         report[2],
 		 const gchar *working_directory,
 		 GError     **error)
 {
@@ -425,12 +418,14 @@ do_spawn_directly (gint                 *exit_status,
 		   gchar               **argv,
 		   char                **envp,
 		   char                **protected_argv,
+		   GSpawnChildSetupFunc  child_setup,
+		   gpointer              user_data,
 		   GPid                 *child_handle,
 		   GError              **error)     
 {
   const int mode = (exit_status == NULL) ? P_NOWAIT : P_WAIT;
   char **new_argv;
-  gintptr rc = -1;
+  int rc = -1;
   int saved_errno;
   GError *conv_error = NULL;
   gint conv_error_index;
@@ -471,6 +466,9 @@ do_spawn_directly (gint                 *exit_status,
 
       return FALSE;
     }
+
+  if (child_setup)
+    (* child_setup) (user_data);
 
   if (flags & G_SPAWN_SEARCH_PATH)
     if (wenvp != NULL)
@@ -522,6 +520,7 @@ do_spawn_with_pipes (gint                 *exit_status,
 		     char                **envp,
 		     GSpawnFlags           flags,
 		     GSpawnChildSetupFunc  child_setup,
+		     gpointer              user_data,
 		     GPid                 *child_handle,
 		     gint                 *standard_input,
 		     gint                 *standard_output,
@@ -533,7 +532,7 @@ do_spawn_with_pipes (gint                 *exit_status,
   char args[ARG_COUNT][10];
   char **new_argv;
   int i;
-  gintptr rc = -1;
+  int rc = -1;
   int saved_errno;
   int argc;
   int stdin_pipe[2] = { -1, -1 };
@@ -541,19 +540,20 @@ do_spawn_with_pipes (gint                 *exit_status,
   int stderr_pipe[2] = { -1, -1 };
   int child_err_report_pipe[2] = { -1, -1 };
   int helper_sync_pipe[2] = { -1, -1 };
-  gintptr helper_report[2];
+  int helper_report[2];
   static gboolean warned_about_child_setup = FALSE;
   GError *conv_error = NULL;
   gint conv_error_index;
   gchar *helper_process;
   CONSOLE_CURSOR_INFO cursor_info;
   wchar_t *whelper, **wargv, **wenvp;
-  gchar *glib_dll_directory;
+  extern gchar *_glib_get_installation_directory (void);
+  gchar *glib_top;
 
   if (child_setup && !warned_about_child_setup)
     {
       warned_about_child_setup = TRUE;
-      g_warning ("passing a child setup function to the g_spawn functions is pointless on Windows and it is ignored");
+      g_warning ("passing a child setup function to the g_spawn functions is pointless and dangerous on Win32");
     }
 
   argc = protect_argv (argv, &protected_argv);
@@ -569,7 +569,8 @@ do_spawn_with_pipes (gint                 *exit_status,
       gboolean retval =
 	do_spawn_directly (exit_status, do_return_handle, flags,
 			   argv, envp, protected_argv,
-			   child_handle, error);
+			   child_setup, user_data, child_handle,
+			   error);
       g_strfreev (protected_argv);
       return retval;
     }
@@ -595,11 +596,11 @@ do_spawn_with_pipes (gint                 *exit_status,
   else
     helper_process = HELPER_PROCESS ".exe";
   
-  glib_dll_directory = _glib_get_dll_directory ();
-  if (glib_dll_directory != NULL)
+  glib_top = _glib_get_installation_directory ();
+  if (glib_top != NULL)
     {
-      helper_process = g_build_filename (glib_dll_directory, helper_process, NULL);
-      g_free (glib_dll_directory);
+      helper_process = g_build_filename (glib_top, "bin", helper_process, NULL);
+      g_free (glib_top);
     }
   else
     helper_process = g_strdup (helper_process);
@@ -746,6 +747,9 @@ do_spawn_with_pipes (gint                 *exit_status,
  
       goto cleanup_and_fail;
     }
+
+  if (child_setup)
+    (* child_setup) (user_data);
 
   whelper = g_utf8_to_utf16 (helper_process, -1, NULL, NULL, NULL);
   g_free (helper_process);
@@ -928,6 +932,7 @@ g_spawn_sync_utf8 (const gchar          *working_directory,
 			    envp,
 			    flags,
 			    child_setup,
+			    user_data,
 			    NULL,
 			    NULL,
 			    standard_output ? &outpipe : NULL,
@@ -950,7 +955,7 @@ g_spawn_sync_utf8 (const gchar          *working_directory,
 				      G_IO_IN | G_IO_ERR | G_IO_HUP,
 				      &outfd);
       if (debug)
-	g_print ("outfd=%p\n", (HANDLE) outfd.fd);
+	g_print ("outfd=%x\n", outfd.fd);
     }
       
   if (errpipe >= 0)
@@ -963,7 +968,7 @@ g_spawn_sync_utf8 (const gchar          *working_directory,
 				      G_IO_IN | G_IO_ERR | G_IO_HUP,
 				      &errfd);
       if (debug)
-	g_print ("errfd=%p\n", (HANDLE) errfd.fd);
+	g_print ("errfd=%x\n", errfd.fd);
     }
 
   /* Read data until we get EOF on all pipes. */
@@ -993,8 +998,8 @@ g_spawn_sync_utf8 (const gchar          *working_directory,
         {
           failed = TRUE;
 
-          g_set_error_literal (error, G_SPAWN_ERROR, G_SPAWN_ERROR_READ,
-                               _("Unexpected error in g_io_channel_win32_poll() reading data from a child process"));
+          g_set_error (error, G_SPAWN_ERROR, G_SPAWN_ERROR_READ,
+                       _("Unexpected error in g_io_channel_win32_poll() reading data from a child process"));
 	  
           break;
         }
@@ -1065,7 +1070,7 @@ g_spawn_sync_utf8 (const gchar          *working_directory,
       /* Helper process was involved. Read its report now after the
        * grandchild has finished.
        */
-      gintptr helper_report[2];
+      gint helper_report[2];
 
       if (!read_helper_report (reportpipe, helper_report, error))
 	failed = TRUE;
@@ -1148,6 +1153,7 @@ g_spawn_async_with_pipes_utf8 (const gchar          *working_directory,
 			      envp,
 			      flags,
 			      child_setup,
+			      user_data,
 			      child_handle,
 			      standard_input,
 			      standard_output,
@@ -1220,27 +1226,6 @@ g_spawn_close_pid (GPid pid)
 {
     CloseHandle (pid);
 }
-
-gboolean
-g_spawn_check_exit_status (gint      exit_status,
-			   GError  **error)
-{
-  gboolean ret = FALSE;
-
-  if (exit_status != 0)
-    {
-      g_set_error (error, G_SPAWN_EXIT_ERROR, exit_status,
-		   _("Child process exited with code %ld"),
-		   (long) exit_status);
-      goto out;
-    }
-
-  ret = TRUE;
- out:
-  return ret;
-}
-
-#if !defined (_WIN64)
 
 /* Binary compatibility versions that take system codepage pathnames,
  * argument vectors and environments. These get used only by code
@@ -1507,6 +1492,7 @@ g_spawn_command_line_async (const gchar *command_line,
   return retval;
 }
 
-#endif	/* !_WIN64 */
-
 #endif /* !GSPAWN_HELPER */
+
+#define __G_SPAWN_C__
+#include "galiasdef.c"

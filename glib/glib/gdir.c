@@ -26,7 +26,6 @@
 
 #include <errno.h>
 #include <string.h>
-#include <stdio.h>
 #include <sys/stat.h>
 
 #ifdef HAVE_DIRENT_H
@@ -34,24 +33,12 @@
 #include <dirent.h>
 #endif
 
+#include "glib.h"
 #include "gdir.h"
 
-#include "gconvert.h"
-#include "gfileutils.h"
-#include "gstrfuncs.h"
-#include "gtestutils.h"
 #include "glibintl.h"
 
-#if defined (_MSC_VER) && !defined (HAVE_DIRENT_H)
-#include "../build/win32/dirent/dirent.h"
-#include "../build/win32/dirent/wdirent.c"
-#endif
-
-/**
- * GDir:
- *
- * An opaque structure representing an opened directory.
- */
+#include "galias.h"
 
 struct _GDir
 {
@@ -75,8 +62,7 @@ struct _GDir
  *         g_dir_open() fails.
  *
  * Opens a directory for reading. The names of the files in the
- * directory can then be retrieved using g_dir_read_name().  Note
- * that the ordering is not defined.
+ * directory can then be retrieved using g_dir_read_name().
  *
  * Return value: a newly allocated #GDir on success, %NULL on failure.
  *   If non-%NULL, you must free the result with g_dir_close()
@@ -88,7 +74,6 @@ g_dir_open (const gchar  *path,
             GError      **error)
 {
   GDir *dir;
-  int errsv;
 #ifdef G_OS_WIN32
   wchar_t *wpath;
 #else
@@ -112,13 +97,12 @@ g_dir_open (const gchar  *path,
     return dir;
 
   /* error case */
-  errsv = errno;
 
   g_set_error (error,
 	       G_FILE_ERROR,
-	       g_file_error_from_errno (errsv),
+	       g_file_error_from_errno (errno),
 	       _("Error opening directory '%s': %s"),
-	       path, g_strerror (errsv));
+	       path, g_strerror (errno));
   
   g_free (dir);
       
@@ -132,16 +116,13 @@ g_dir_open (const gchar  *path,
     return dir;
 
   /* error case */
-  errsv = errno;
-
   utf8_path = g_filename_to_utf8 (path, -1,
 				  NULL, NULL, NULL);
-
   g_set_error (error,
                G_FILE_ERROR,
-               g_file_error_from_errno (errsv),
+               g_file_error_from_errno (errno),
                _("Error opening directory '%s': %s"),
-	       utf8_path, g_strerror (errsv));
+	       utf8_path, g_strerror (errno));
 
   g_free (utf8_path);
   g_free (dir);
@@ -150,7 +131,7 @@ g_dir_open (const gchar  *path,
 #endif
 }
 
-#if defined (G_OS_WIN32) && !defined (_WIN64)
+#ifdef G_OS_WIN32
 
 /* The above function actually is called g_dir_open_utf8, and it's
  * that what applications compiled with this GLib version will
@@ -184,26 +165,15 @@ g_dir_open (const gchar  *path,
  * g_dir_read_name:
  * @dir: a #GDir* created by g_dir_open()
  *
- * Retrieves the name of another entry in the directory, or %NULL.
- * The order of entries returned from this function is not defined,
- * and may vary by file system or other operating-system dependent
- * factors.
+ * Retrieves the name of the next entry in the directory.  The '.' and
+ * '..' entries are omitted. On Windows, the returned name is in
+ * UTF-8. On Unix, it is in the on-disk encoding.
  *
- * %NULL may also be returned in case of errors. On Unix, you can
- * check <literal>errno</literal> to find out if %NULL was returned
- * because of an error.
- *
- * On Unix, the '.' and '..' entries are omitted, and the returned
- * name is in the on-disk encoding.
- *
- * On Windows, as is true of all GLib functions which operate on
- * filenames, the returned name is in UTF-8.
- *
- * Return value: The entry's name or %NULL if there are no
+ * Return value: The entry's name or %NULL if there are no 
  *   more entries. The return value is owned by GLib and
  *   must not be modified or freed.
  **/
-const gchar *
+G_CONST_RETURN gchar*
 g_dir_read_name (GDir *dir)
 {
 #ifdef G_OS_WIN32
@@ -251,7 +221,7 @@ g_dir_read_name (GDir *dir)
 #endif
 }
 
-#if defined (G_OS_WIN32) && !defined (_WIN64)
+#ifdef G_OS_WIN32
 
 /* Ditto for g_dir_read_name */
 
@@ -259,7 +229,7 @@ g_dir_read_name (GDir *dir)
 
 /* Binary compatibility version. Not for newly compiled code. */
 
-const gchar *
+G_CONST_RETURN gchar*
 g_dir_read_name (GDir *dir)
 {
   while (1)
@@ -321,3 +291,6 @@ g_dir_close (GDir *dir)
 #endif
   g_free (dir);
 }
+
+#define __G_DIR_C__
+#include "galiasdef.c"
