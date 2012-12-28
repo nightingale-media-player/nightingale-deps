@@ -105,7 +105,7 @@ done:
 
 GST_START_TEST (test_rtp_payloaders)
 {
-  gchar *s;
+  const gchar *s;
 
   /* FIXME: going to playing would be nice, but thet leads to lot of failure */
   GstState target_state = GST_STATE_PAUSED;
@@ -220,10 +220,11 @@ GST_START_TEST (test_rtp_payloaders)
   /*s = FAKESRC " ! ! rtpsv3vdepay ! " FAKESINK; */
 }
 
-GST_END_TEST
+GST_END_TEST;
+
 GST_START_TEST (test_video_encoders_decoders)
 {
-  gchar *s;
+  const gchar *s;
   GstState target_state = GST_STATE_PLAYING;
 
   /* no is-live on the source because we actually want to preroll since
@@ -241,15 +242,41 @@ GST_START_TEST (test_video_encoders_decoders)
       GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
       GST_MESSAGE_UNKNOWN, target_state);
 
-  s = ENC_DEC_PIPELINE_STRING (DEFAULT_BUFCOUNT, "smokeenc", "smokedec");
-  run_pipeline (setup_pipeline (s), s,
-      GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
-      GST_MESSAGE_UNKNOWN, target_state);
+
+  if (gst_registry_check_feature_version (gst_registry_get (), "smokeenc",
+          GST_VERSION_MAJOR, GST_VERSION_MINOR, 0) &&
+      gst_registry_check_feature_version (gst_registry_get (), "smokedec",
+          GST_VERSION_MAJOR, GST_VERSION_MINOR, 0)) {
+    s = ENC_DEC_PIPELINE_STRING (DEFAULT_BUFCOUNT, "smokeenc", "smokedec");
+    run_pipeline (setup_pipeline (s), s,
+        GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
+        GST_MESSAGE_UNKNOWN, target_state);
+  }
 }
 
-GST_END_TEST
+GST_END_TEST;
+
+#define VIDEOMIXER_PIPELINE \
+    "videomixer name=mix  background=transparent ! fakesink " \
+    "videotestsrc num-buffers=50 ! " \
+    "  video/x-raw,format=RGBA, width=200,height=200,framerate=10/1  ! " \
+    "  videoconvert ! mix.sink_1 " \
+    "videotestsrc num-buffers=50 pattern=smpte ! " \
+    "  video/x-raw,format=RGBA, width=720,height=480,framerate=10/1  ! " \
+    "  videoconvert ! mix.sink_0 "
+
+GST_START_TEST (test_videomixer)
+{
+  run_pipeline (setup_pipeline (VIDEOMIXER_PIPELINE), VIDEOMIXER_PIPELINE,
+      GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
+      GST_MESSAGE_UNKNOWN, GST_STATE_PLAYING);
+}
+
+GST_END_TEST;
+
 #endif /* #ifndef GST_DISABLE_PARSE */
-    Suite * simple_launch_lines_suite (void)
+static Suite *
+simple_launch_lines_suite (void)
 {
   Suite *s = suite_create ("Pipelines");
   TCase *tc_chain = tcase_create ("linear");
@@ -261,6 +288,8 @@ GST_END_TEST
 #ifndef GST_DISABLE_PARSE
   tcase_add_test (tc_chain, test_rtp_payloaders);
   tcase_add_test (tc_chain, test_video_encoders_decoders);
+  /* FIXME: very rarely fails, maybe because of negotiation issues? */
+  tcase_skip_broken_test (tc_chain, test_videomixer);
 #endif
   return s;
 }

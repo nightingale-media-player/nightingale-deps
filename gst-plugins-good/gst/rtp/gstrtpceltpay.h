@@ -17,7 +17,7 @@
 #define __GST_RTP_CELT_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertppayload.h>
+#include <gst/rtp/gstrtpbasepayload.h>
 
 G_BEGIN_DECLS
 
@@ -37,7 +37,7 @@ typedef struct _GstRtpCELTPayClass GstRtpCELTPayClass;
 
 struct _GstRtpCELTPay
 {
-  GstBaseRTPPayload payload;
+  GstRTPBasePayload payload;
 
   guint64 packet;
 
@@ -50,8 +50,10 @@ struct _GstRtpCELTPay
 
 struct _GstRtpCELTPayClass
 {
-  GstBaseRTPPayloadClass parent_class;
+  GstRTPBasePayloadClass parent_class;
 };
+
+GType gst_rtp_celt_pay_get_type (void);
 
 gboolean gst_rtp_celt_pay_plugin_init (GstPlugin * plugin);
 

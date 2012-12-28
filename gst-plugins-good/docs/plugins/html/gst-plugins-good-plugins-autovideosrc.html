@@ -3,16 +3,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>autovideosrc</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-autovideosink.html" title="autovideosink">
 <link rel="next" href="gst-plugins-good-plugins-avidemux.html" title="avidemux">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -20,22 +17,22 @@
 <td><a accesskey="p" href="gst-plugins-good-plugins-autovideosink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-avidemux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-autovideosrc.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-autovideosrc.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-autovideosrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-autovideosrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-autovideosrc.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-autovideosrc.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-autovideosrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-autovideosrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-autovideosrc.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
-<div class="refentry" title="autovideosrc">
+<div class="refentry">
 <a name="gst-plugins-good-plugins-autovideosrc"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -44,47 +41,35 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="gst-plugins-good-plugins-autovideosrc.synopsis"></a><h2>Synopsis</h2>
-<a name="GstAutoVideoSrc"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-good-plugins-autovideosrc.html#GstAutoVideoSrc-struct" title="GstAutoVideoSrc">GstAutoVideoSrc</a>;
+<a name="GstAutoVideoSrc"></a><pre class="synopsis">                    <a class="link" href="gst-plugins-good-plugins-autovideosrc.html#GstAutoVideoSrc-struct" title="GstAutoVideoSrc">GstAutoVideoSrc</a>;
 </pre>
 </div>
-<div class="refsect1" title="Object Hierarchy">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-autovideosrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----<a
-href="../gstreamer-0.10/GstBin.html"
->GstBin</a>
-                     +----GstAutoVideoSrc
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBin.html">GstBin</a>
+                           +----GstAutoVideoSrc
 </pre>
 </div>
-<div class="refsect1" title="Implemented Interfaces">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-autovideosrc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstAutoVideoSrc implements
- <a
-href="../gstreamer-0.10/GstChildProxy.html"
->GstChildProxy</a>.</p>
+ <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstChildProxy.html">GstChildProxy</a>.</p>
 </div>
-<div class="refsect1" title="Properties">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-autovideosrc.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-autovideosrc.html#GstAutoVideoSrc--filter-caps" title='The "filter-caps" property'>filter-caps</a>"              <a
-href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
->GstCaps</a>*              : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-autovideosrc.html#GstAutoVideoSrc--filter-caps" title='The "filter-caps" property'>filter-caps</a>"              <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a>*              : Read / Write
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-autovideosrc.description"></a><h2>Description</h2>
 <p>
 autovideosrc is a video src that automatically detects an appropriate
@@ -94,16 +79,26 @@ of their element information, and also have a non-zero autoplugging rank.
 </p>
 <p>
 </p>
-<div class="refsect2" title="Example launch line">
-<a name="id497132"></a><h3>Example launch line</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch -v -m autovideosrc ! xvimagesink
-</pre></div>
+<div class="refsect2">
+<a name="idp2839024"></a><h3>Example launch line</h3>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> <span class="gtkdoc opt">-</span>v <span class="gtkdoc opt">-</span>m autovideosrc <span class="gtkdoc opt">!</span> xvimagesink</pre></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-<div class="refsynopsisdiv" title="Synopsis">
+
+</div>
+<p>
+</p>
+<div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" title="Element Information">
-<a name="id481047"></a><h3>Element Information</h3>
+<div class="refsect2">
+<a name="idp8914464"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -115,9 +110,7 @@ gst-launch -v -m autovideosrc ! xvimagesink
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
-<td>Ronald Bultje &lt;rbultje@ronald.bitfreak.net&gt;
-    Jan Schmidt &lt;thaytan@noraisin.net&gt;
-    Stefan Kost &lt;ensonic@users.sf.net&gt;</td>
+<td>Jan Schmidt &lt;thaytan@noraisin.net&gt;, Stefan Kost &lt;ensonic@users.sf.net&gt;</td>
 </tr>
 <tr>
 <td><p><span class="term">class</span></p></td>
@@ -127,8 +120,8 @@ gst-launch -v -m autovideosrc ! xvimagesink
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="Element Pads">
-<a name="id508253"></a><h3>Element Pads</h3>
+<div class="refsect2">
+<a name="idp10698080"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -155,41 +148,38 @@ gst-launch -v -m autovideosrc ! xvimagesink
 <p>
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-autovideosrc.details"></a><h2>Details</h2>
-<div class="refsect2" title="GstAutoVideoSrc">
+<div class="refsect2">
 <a name="GstAutoVideoSrc-struct"></a><h3>GstAutoVideoSrc</h3>
 <pre class="programlisting">typedef struct _GstAutoVideoSrc GstAutoVideoSrc;</pre>
 <p>
 </p>
 </div>
 </div>
-<div class="refsect1" title="Property Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-autovideosrc.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" title='The "filter-caps" property'>
+<div class="refsect2">
 <a name="GstAutoVideoSrc--filter-caps"></a><h3>The <code class="literal">"filter-caps"</code> property</h3>
-<pre class="programlisting">  "filter-caps"              <a
-href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
->GstCaps</a>*              : Read / Write</pre>
+<pre class="programlisting">  "filter-caps"              <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a>*              : Read / Write</pre>
 <p>
 This property will filter out candidate sources that can handle the specified
 caps. By default only video sources that support raw rgb and yuv video
 are selected.
 </p>
 <p>
-This property can only be set before the element goes to the READY state.</p>
-<p>
+This property can only be set before the element goes to the READY state.
 </p>
-<p>Since 0.10.14</p>
+<p class="since">Since 0.10.14</p>
 </div>
 </div>
-<div class="refsect1" title="See Also">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-autovideosrc.see-also"></a><h2>See Also</h2>
 autoaudiosrc, v4l2src, v4lsrc
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

@@ -129,7 +129,7 @@ gst_v4l2_fill_lists (GstV4l2Object * v4l2object)
 
     input.index = n;
     if (v4l2_ioctl (v4l2object->video_fd, VIDIOC_ENUMINPUT, &input) < 0) {
-      if (errno == EINVAL)
+      if (errno == EINVAL || errno == ENOTTY)
         break;                  /* end of enumeration */
       else {
         GST_ELEMENT_ERROR (e, RESOURCE, SETTINGS,
@@ -145,7 +145,7 @@ gst_v4l2_fill_lists (GstV4l2Object * v4l2object)
     GST_LOG_OBJECT (e, "   name:      '%s'", input.name);
     GST_LOG_OBJECT (e, "   type:      %08x", input.type);
     GST_LOG_OBJECT (e, "   audioset:  %08x", input.audioset);
-    GST_LOG_OBJECT (e, "   std:       %016x", (guint) input.std);
+    GST_LOG_OBJECT (e, "   std:       %016" G_GINT64_MODIFIER "x", input.std);
     GST_LOG_OBJECT (e, "   status:    %08x", input.status);
 
     v4l2channel = g_object_new (GST_TYPE_V4L2_TUNER_CHANNEL, NULL);
@@ -226,46 +226,49 @@ gst_v4l2_fill_lists (GstV4l2Object * v4l2object)
         standard.frameperiod.denominator, standard.frameperiod.numerator);
     v4l2norm->index = standard.id;
 
+    GST_DEBUG_OBJECT (v4l2object->element, "index=%08x, label=%s",
+        (unsigned int) v4l2norm->index, norm->label);
+
     v4l2object->norms = g_list_prepend (v4l2object->norms, (gpointer) norm);
   }
   v4l2object->norms = g_list_reverse (v4l2object->norms);
 
   GST_DEBUG_OBJECT (e, "  controls+menus");
+
   /* and lastly, controls+menus (if appropriate) */
   for (n = V4L2_CID_BASE;; n++) {
     struct v4l2_queryctrl control = { 0, };
     GstV4l2ColorBalanceChannel *v4l2channel;
-
     GstColorBalanceChannel *channel;
 
     /* when we reached the last official CID, continue with private CIDs */
     if (n == V4L2_CID_LASTP1) {
       GST_DEBUG_OBJECT (e, "checking private CIDs");
       n = V4L2_CID_PRIVATE_BASE;
-      /* FIXME: We are still not handling private controls. We need a new GstInterface
-         to export those controls */
-      break;
     }
+    GST_DEBUG_OBJECT (e, "checking control %08x", n);
 
     control.id = n;
     if (v4l2_ioctl (v4l2object->video_fd, VIDIOC_QUERYCTRL, &control) < 0) {
-      if (errno == EINVAL) {
-        if (n < V4L2_CID_PRIVATE_BASE)
+      if (errno == EINVAL || errno == ENOTTY || errno == EIO) {
+        if (n < V4L2_CID_PRIVATE_BASE) {
+          GST_DEBUG_OBJECT (e, "skipping control %08x", n);
           /* continue so that we also check private controls */
           continue;
-        else
+        } else {
+          GST_DEBUG_OBJECT (e, "controls finished");
           break;
+        }
       } else {
-        GST_ELEMENT_ERROR (e, RESOURCE, SETTINGS,
-            (_("Failed getting controls attributes on device '%s'."),
-                v4l2object->videodev),
-            ("Failed querying control %d on device '%s'. (%d - %s)",
-                n, v4l2object->videodev, errno, strerror (errno)));
-        return FALSE;
+        GST_WARNING_OBJECT (e, "Failed querying control %d on device '%s'. "
+            "(%d - %s)", n, v4l2object->videodev, errno, strerror (errno));
+        continue;
       }
     }
-    if (control.flags & V4L2_CTRL_FLAG_DISABLED)
+    if (control.flags & V4L2_CTRL_FLAG_DISABLED) {
+      GST_DEBUG_OBJECT (e, "skipping disabled control");
       continue;
+    }
 
     switch (n) {
       case V4L2_CID_BRIGHTNESS:
@@ -281,6 +284,9 @@ gst_v4l2_fill_lists (GstV4l2Object * v4l2object)
       case V4L2_CID_EXPOSURE:
       case V4L2_CID_AUTOGAIN:
       case V4L2_CID_GAIN:
+#ifdef V4L2_CID_SHARPNESS
+      case V4L2_CID_SHARPNESS:
+#endif
         /* we only handle these for now (why?) */
         break;
       case V4L2_CID_HFLIP:
@@ -591,7 +597,8 @@ std_failed:
 gboolean
 gst_v4l2_set_norm (GstV4l2Object * v4l2object, v4l2_std_id norm)
 {
-  GST_DEBUG_OBJECT (v4l2object->element, "trying to set norm to %llx", norm);
+  GST_DEBUG_OBJECT (v4l2object->element, "trying to set norm to "
+      "%" G_GINT64_MODIFIER "x", (guint64) norm);
 
   if (!GST_V4L2_IS_OPEN (v4l2object))
     return FALSE;
@@ -817,11 +824,14 @@ gst_v4l2_get_input (GstV4l2Object * v4l2object, gint * input)
 
   /* ERRORS */
 input_failed:
-  {
+  if (v4l2object->vcap.capabilities & V4L2_CAP_TUNER) {
+    /* only give a warning message if driver actually claims to have tuner
+     * support
+     */
     GST_ELEMENT_WARNING (v4l2object->element, RESOURCE, SETTINGS,
         (_("Failed to get current input on device '%s'. May be it is a radio device"), v4l2object->videodev), GST_ERROR_SYSTEM);
-    return FALSE;
   }
+  return FALSE;
 }
 
 gboolean
@@ -839,10 +849,70 @@ gst_v4l2_set_input (GstV4l2Object * v4l2object, gint input)
 
   /* ERRORS */
 input_failed:
-  {
+  if (v4l2object->vcap.capabilities & V4L2_CAP_TUNER) {
+    /* only give a warning message if driver actually claims to have tuner
+     * support
+     */
     GST_ELEMENT_WARNING (v4l2object->element, RESOURCE, SETTINGS,
         (_("Failed to set input %d on device %s."),
             input, v4l2object->videodev), GST_ERROR_SYSTEM);
-    return FALSE;
   }
+  return FALSE;
+}
+
+gboolean
+gst_v4l2_get_output (GstV4l2Object * v4l2object, gint * output)
+{
+  gint n;
+
+  GST_DEBUG_OBJECT (v4l2object->element, "trying to get output");
+
+  if (!GST_V4L2_IS_OPEN (v4l2object))
+    return FALSE;
+
+  if (v4l2_ioctl (v4l2object->video_fd, VIDIOC_G_OUTPUT, &n) < 0)
+    goto output_failed;
+
+  *output = n;
+
+  GST_DEBUG_OBJECT (v4l2object->element, "output: %d", n);
+
+  return TRUE;
+
+  /* ERRORS */
+output_failed:
+  if (v4l2object->vcap.capabilities & V4L2_CAP_TUNER) {
+    /* only give a warning message if driver actually claims to have tuner
+     * support
+     */
+    GST_ELEMENT_WARNING (v4l2object->element, RESOURCE, SETTINGS,
+        (_("Failed to get current output on device '%s'. May be it is a radio device"), v4l2object->videodev), GST_ERROR_SYSTEM);
+  }
+  return FALSE;
+}
+
+gboolean
+gst_v4l2_set_output (GstV4l2Object * v4l2object, gint output)
+{
+  GST_DEBUG_OBJECT (v4l2object->element, "trying to set output to %d", output);
+
+  if (!GST_V4L2_IS_OPEN (v4l2object))
+    return FALSE;
+
+  if (v4l2_ioctl (v4l2object->video_fd, VIDIOC_S_OUTPUT, &output) < 0)
+    goto output_failed;
+
+  return TRUE;
+
+  /* ERRORS */
+output_failed:
+  if (v4l2object->vcap.capabilities & V4L2_CAP_TUNER) {
+    /* only give a warning message if driver actually claims to have tuner
+     * support
+     */
+    GST_ELEMENT_WARNING (v4l2object->element, RESOURCE, SETTINGS,
+        (_("Failed to set output %d on device %s."),
+            output, v4l2object->videodev), GST_ERROR_SYSTEM);
+  }
+  return FALSE;
 }

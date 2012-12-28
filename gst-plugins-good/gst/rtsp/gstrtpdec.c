@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2005,2006> Wim Taymans <wim@fluendo.com>
+ * Copyright (C) <2005,2006> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -58,16 +58,10 @@
 #endif
 
 #include "gstrtpdec.h"
+#include <stdio.h>
 
 GST_DEBUG_CATEGORY_STATIC (rtpdec_debug);
 #define GST_CAT_DEFAULT (rtpdec_debug)
-
-/* elementfactory information */
-static const GstElementDetails rtpdec_details =
-GST_ELEMENT_DETAILS ("RTP Decoder",
-    "Codec/Parser/Network",
-    "Accepts raw RTP and RTCP packets and sends them forward",
-    "Wim Taymans <wim@fluendo.com>");
 
 /* GstRTPDec signals and args */
 enum
@@ -93,28 +87,28 @@ enum
 };
 
 static GstStaticPadTemplate gst_rtp_dec_recv_rtp_sink_template =
-GST_STATIC_PAD_TEMPLATE ("recv_rtp_sink_%d",
+GST_STATIC_PAD_TEMPLATE ("recv_rtp_sink_%u",
     GST_PAD_SINK,
     GST_PAD_REQUEST,
     GST_STATIC_CAPS ("application/x-rtp")
     );
 
 static GstStaticPadTemplate gst_rtp_dec_recv_rtcp_sink_template =
-GST_STATIC_PAD_TEMPLATE ("recv_rtcp_sink_%d",
+GST_STATIC_PAD_TEMPLATE ("recv_rtcp_sink_%u",
     GST_PAD_SINK,
     GST_PAD_REQUEST,
     GST_STATIC_CAPS ("application/x-rtcp")
     );
 
 static GstStaticPadTemplate gst_rtp_dec_recv_rtp_src_template =
-GST_STATIC_PAD_TEMPLATE ("recv_rtp_src_%d_%d_%d",
+GST_STATIC_PAD_TEMPLATE ("recv_rtp_src_%u_%u_%u",
     GST_PAD_SRC,
     GST_PAD_SOMETIMES,
     GST_STATIC_CAPS ("application/x-rtp")
     );
 
 static GstStaticPadTemplate gst_rtp_dec_rtcp_src_template =
-GST_STATIC_PAD_TEMPLATE ("rtcp_src_%d",
+GST_STATIC_PAD_TEMPLATE ("rtcp_src_%u",
     GST_PAD_SRC,
     GST_PAD_REQUEST,
     GST_STATIC_CAPS ("application/x-rtcp")
@@ -130,11 +124,13 @@ static GstClock *gst_rtp_dec_provide_clock (GstElement * element);
 static GstStateChangeReturn gst_rtp_dec_change_state (GstElement * element,
     GstStateChange transition);
 static GstPad *gst_rtp_dec_request_new_pad (GstElement * element,
-    GstPadTemplate * templ, const gchar * name);
+    GstPadTemplate * templ, const gchar * name, const GstCaps * caps);
 static void gst_rtp_dec_release_pad (GstElement * element, GstPad * pad);
 
-static GstFlowReturn gst_rtp_dec_chain_rtp (GstPad * pad, GstBuffer * buffer);
-static GstFlowReturn gst_rtp_dec_chain_rtcp (GstPad * pad, GstBuffer * buffer);
+static GstFlowReturn gst_rtp_dec_chain_rtp (GstPad * pad, GstObject * parent,
+    GstBuffer * buffer);
+static GstFlowReturn gst_rtp_dec_chain_rtcp (GstPad * pad, GstObject * parent,
+    GstBuffer * buffer);
 
 
 /* Manages the receiving end of the packets.
@@ -199,31 +195,14 @@ free_session (GstRTPDecSession * session)
 
 static guint gst_rtp_dec_signals[LAST_SIGNAL] = { 0 };
 
-GST_BOILERPLATE (GstRTPDec, gst_rtp_dec, GstElement, GST_TYPE_ELEMENT);
+#define gst_rtp_dec_parent_class parent_class
+G_DEFINE_TYPE (GstRTPDec, gst_rtp_dec, GST_TYPE_ELEMENT);
 
-static void
-gst_rtp_dec_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  /* sink pads */
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_dec_recv_rtp_sink_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_dec_recv_rtcp_sink_template));
-  /* src pads */
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_dec_recv_rtp_src_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_dec_rtcp_src_template));
-
-  gst_element_class_set_details (element_class, &rtpdec_details);
-}
 
 /* BOXED:UINT,UINT */
 #define g_marshal_value_peek_uint(v)     g_value_get_uint (v)
 
-void
+static void
 gst_rtp_dec_marshal_BOXED__UINT_UINT (GClosure * closure,
     GValue * return_value,
     guint n_param_values,
@@ -258,7 +237,7 @@ gst_rtp_dec_marshal_BOXED__UINT_UINT (GClosure * closure,
   g_value_take_boxed (return_value, v_return);
 }
 
-void
+static void
 gst_rtp_dec_marshal_VOID__UINT_UINT (GClosure * closure,
     GValue * return_value,
     guint n_param_values,
@@ -300,6 +279,8 @@ gst_rtp_dec_class_init (GstRTPDecClass * g_class)
   gobject_class = (GObjectClass *) klass;
   gstelement_class = (GstElementClass *) klass;
 
+  GST_DEBUG_CATEGORY_INIT (rtpdec_debug, "rtpdec", 0, "RTP decoder");
+
   gobject_class->finalize = gst_rtp_dec_finalize;
   gobject_class->set_property = gst_rtp_dec_set_property;
   gobject_class->get_property = gst_rtp_dec_get_property;
@@ -307,7 +288,7 @@ gst_rtp_dec_class_init (GstRTPDecClass * g_class)
   g_object_class_install_property (gobject_class, PROP_LATENCY,
       g_param_spec_uint ("latency", "Buffer latency in ms",
           "Amount of ms to buffer", 0, G_MAXUINT, DEFAULT_LATENCY_MS,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
    * GstRTPDec::request-pt-map:
@@ -408,7 +389,6 @@ gst_rtp_dec_class_init (GstRTPDecClass * g_class)
       NULL, NULL, gst_rtp_dec_marshal_VOID__UINT_UINT, G_TYPE_NONE, 2,
       G_TYPE_UINT, G_TYPE_UINT);
 
-
   gstelement_class->provide_clock =
       GST_DEBUG_FUNCPTR (gst_rtp_dec_provide_clock);
   gstelement_class->change_state = GST_DEBUG_FUNCPTR (gst_rtp_dec_change_state);
@@ -416,14 +396,30 @@ gst_rtp_dec_class_init (GstRTPDecClass * g_class)
       GST_DEBUG_FUNCPTR (gst_rtp_dec_request_new_pad);
   gstelement_class->release_pad = GST_DEBUG_FUNCPTR (gst_rtp_dec_release_pad);
 
-  GST_DEBUG_CATEGORY_INIT (rtpdec_debug, "rtpdec", 0, "RTP decoder");
+  /* sink pads */
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_dec_recv_rtp_sink_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_dec_recv_rtcp_sink_template));
+  /* src pads */
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_dec_recv_rtp_src_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_dec_rtcp_src_template));
+
+  gst_element_class_set_static_metadata (gstelement_class, "RTP Decoder",
+      "Codec/Parser/Network",
+      "Accepts raw RTP and RTCP packets and sends them forward",
+      "Wim Taymans <wim.taymans@gmail.com>");
 }
 
 static void
-gst_rtp_dec_init (GstRTPDec * rtpdec, GstRTPDecClass * klass)
+gst_rtp_dec_init (GstRTPDec * rtpdec)
 {
   rtpdec->provided_clock = gst_system_clock_obtain ();
   rtpdec->latency = DEFAULT_LATENCY_MS;
+
+  GST_OBJECT_FLAG_SET (rtpdec, GST_ELEMENT_FLAG_PROVIDE_CLOCK);
 }
 
 static void
@@ -440,7 +436,7 @@ gst_rtp_dec_finalize (GObject * object)
 }
 
 static gboolean
-gst_rtp_dec_query_src (GstPad * pad, GstQuery * query)
+gst_rtp_dec_query_src (GstPad * pad, GstObject * parent, GstQuery * query)
 {
   gboolean res;
 
@@ -453,30 +449,32 @@ gst_rtp_dec_query_src (GstPad * pad, GstQuery * query)
       break;
     }
     default:
-      res = gst_pad_query_default (pad, query);
+      res = gst_pad_query_default (pad, parent, query);
       break;
   }
   return res;
 }
 
 static GstFlowReturn
-gst_rtp_dec_chain_rtp (GstPad * pad, GstBuffer * buffer)
+gst_rtp_dec_chain_rtp (GstPad * pad, GstObject * parent, GstBuffer * buffer)
 {
   GstFlowReturn res;
   GstRTPDec *rtpdec;
   GstRTPDecSession *session;
   guint32 ssrc;
   guint8 pt;
+  GstRTPBuffer rtp = { NULL, };
 
-  rtpdec = GST_RTP_DEC (GST_PAD_PARENT (pad));
+  rtpdec = GST_RTP_DEC (parent);
 
   GST_DEBUG_OBJECT (rtpdec, "got rtp packet");
 
-  if (!gst_rtp_buffer_validate (buffer))
+  if (!gst_rtp_buffer_map (buffer, GST_MAP_READ, &rtp))
     goto bad_packet;
 
-  ssrc = gst_rtp_buffer_get_ssrc (buffer);
-  pt = gst_rtp_buffer_get_payload_type (buffer);
+  ssrc = gst_rtp_buffer_get_ssrc (&rtp);
+  pt = gst_rtp_buffer_get_payload_type (&rtp);
+  gst_rtp_buffer_unmap (&rtp);
 
   GST_DEBUG_OBJECT (rtpdec, "SSRC %08x, PT %d", ssrc, pt);
 
@@ -515,9 +513,9 @@ gst_rtp_dec_chain_rtp (GstPad * pad, GstBuffer * buffer)
 
     caps = (GstCaps *) g_value_get_boxed (&ret);
 
-    name = g_strdup_printf ("recv_rtp_src_%d_%u_%d", session->id, ssrc, pt);
+    name = g_strdup_printf ("recv_rtp_src_%u_%u_%u", session->id, ssrc, pt);
     klass = GST_ELEMENT_GET_CLASS (rtpdec);
-    templ = gst_element_class_get_pad_template (klass, "recv_rtp_src_%d_%d_%d");
+    templ = gst_element_class_get_pad_template (klass, "recv_rtp_src_%u_%u_%u");
     session->recv_rtp_src = gst_pad_new_from_template (templ, name);
     g_free (name);
 
@@ -530,8 +528,6 @@ gst_rtp_dec_chain_rtp (GstPad * pad, GstBuffer * buffer)
 
     session->active = TRUE;
   }
-
-  gst_buffer_set_caps (buffer, GST_PAD_CAPS (session->recv_rtp_src));
 
   res = gst_pad_push (session->recv_rtp_src, buffer);
 
@@ -547,7 +543,7 @@ bad_packet:
 }
 
 static GstFlowReturn
-gst_rtp_dec_chain_rtcp (GstPad * pad, GstBuffer * buffer)
+gst_rtp_dec_chain_rtcp (GstPad * pad, GstObject * parent, GstBuffer * buffer)
 {
   GstRTPDec *src;
 
@@ -557,7 +553,7 @@ gst_rtp_dec_chain_rtcp (GstPad * pad, GstBuffer * buffer)
   gboolean more;
 #endif
 
-  src = GST_RTP_DEC (GST_PAD_PARENT (pad));
+  src = GST_RTP_DEC (parent);
 
   GST_DEBUG_OBJECT (src, "got rtcp packet");
 
@@ -785,7 +781,7 @@ create_recv_rtp (GstRTPDec * rtpdec, GstPadTemplate * templ, const gchar * name)
   GstRTPDecSession *session;
 
   /* first get the session number */
-  if (name == NULL || sscanf (name, "recv_rtp_sink_%d", &sessid) != 1)
+  if (name == NULL || sscanf (name, "recv_rtp_sink_%u", &sessid) != 1)
     goto no_name;
 
   GST_DEBUG_OBJECT (rtpdec, "finding session %d", sessid);
@@ -841,7 +837,7 @@ create_recv_rtcp (GstRTPDec * rtpdec, GstPadTemplate * templ,
   GstRTPDecSession *session;
 
   /* first get the session number */
-  if (name == NULL || sscanf (name, "recv_rtcp_sink_%d", &sessid) != 1)
+  if (name == NULL || sscanf (name, "recv_rtcp_sink_%u", &sessid) != 1)
     goto no_name;
 
   GST_DEBUG_OBJECT (rtpdec, "finding session %d", sessid);
@@ -893,7 +889,7 @@ create_rtcp (GstRTPDec * rtpdec, GstPadTemplate * templ, const gchar * name)
   GstRTPDecSession *session;
 
   /* first get the session number */
-  if (name == NULL || sscanf (name, "rtcp_src_%d", &sessid) != 1)
+  if (name == NULL || sscanf (name, "rtcp_src_%u", &sessid) != 1)
     goto no_name;
 
   /* get or create session */
@@ -933,7 +929,7 @@ existed:
  */
 static GstPad *
 gst_rtp_dec_request_new_pad (GstElement * element,
-    GstPadTemplate * templ, const gchar * name)
+    GstPadTemplate * templ, const gchar * name, const GstCaps * caps)
 {
   GstRTPDec *rtpdec;
   GstElementClass *klass;
@@ -946,12 +942,12 @@ gst_rtp_dec_request_new_pad (GstElement * element,
   klass = GST_ELEMENT_GET_CLASS (element);
 
   /* figure out the template */
-  if (templ == gst_element_class_get_pad_template (klass, "recv_rtp_sink_%d")) {
+  if (templ == gst_element_class_get_pad_template (klass, "recv_rtp_sink_%u")) {
     result = create_recv_rtp (rtpdec, templ, name);
   } else if (templ == gst_element_class_get_pad_template (klass,
-          "recv_rtcp_sink_%d")) {
+          "recv_rtcp_sink_%u")) {
     result = create_recv_rtcp (rtpdec, templ, name);
-  } else if (templ == gst_element_class_get_pad_template (klass, "rtcp_src_%d")) {
+  } else if (templ == gst_element_class_get_pad_template (klass, "rtcp_src_%u")) {
     result = create_rtcp (rtpdec, templ, name);
   } else
     goto wrong_template;

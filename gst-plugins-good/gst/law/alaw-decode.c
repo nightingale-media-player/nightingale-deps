@@ -36,9 +36,14 @@ GST_DEBUG_CATEGORY_STATIC (alaw_dec_debug);
 
 static GstStateChangeReturn
 gst_alaw_dec_change_state (GstElement * element, GstStateChange transition);
-static GstFlowReturn gst_alaw_dec_chain (GstPad * pad, GstBuffer * buffer);
 
-GST_BOILERPLATE (GstALawDec, gst_alaw_dec, GstElement, GST_TYPE_ELEMENT);
+static gboolean gst_alaw_dec_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
+static GstFlowReturn gst_alaw_dec_chain (GstPad * pad, GstObject * parent,
+    GstBuffer * buffer);
+
+#define gst_alaw_dec_parent_class parent_class
+G_DEFINE_TYPE (GstALawDec, gst_alaw_dec, GST_TYPE_ELEMENT);
 
 /* some day we might have defines in gstconfig.h that tell us about the
  * desired cpu/memory/binary size trade-offs */
@@ -110,15 +115,13 @@ alaw_to_s16 (guint8 a_val)
 #endif /* GST_ALAW_DEC_USE_TABLE */
 
 static gboolean
-gst_alaw_dec_sink_setcaps (GstPad * pad, GstCaps * caps)
+gst_alaw_dec_setcaps (GstALawDec * alawdec, GstCaps * caps)
 {
-  GstALawDec *alawdec;
   GstStructure *structure;
   int rate, channels;
   gboolean ret;
   GstCaps *outcaps;
-
-  alawdec = GST_ALAW_DEC (GST_PAD_PARENT (pad));
+  GstAudioInfo info;
 
   structure = gst_caps_get_structure (caps, 0);
 
@@ -127,46 +130,42 @@ gst_alaw_dec_sink_setcaps (GstPad * pad, GstCaps * caps)
   if (!ret)
     return FALSE;
 
-  outcaps = gst_caps_new_simple ("audio/x-raw-int",
-      "width", G_TYPE_INT, 16,
-      "depth", G_TYPE_INT, 16,
-      "endianness", G_TYPE_INT, G_BYTE_ORDER,
-      "signed", G_TYPE_BOOLEAN, TRUE,
-      "rate", G_TYPE_INT, rate, "channels", G_TYPE_INT, channels, NULL);
+  gst_audio_info_init (&info);
+  gst_audio_info_set_format (&info, GST_AUDIO_FORMAT_S16, rate, channels, NULL);
 
+  outcaps = gst_audio_info_to_caps (&info);
   ret = gst_pad_set_caps (alawdec->srcpad, outcaps);
   gst_caps_unref (outcaps);
 
   if (ret) {
     GST_DEBUG_OBJECT (alawdec, "rate=%d, channels=%d", rate, channels);
-    alawdec->rate = rate;
-    alawdec->channels = channels;
+    alawdec->info = info;
   }
   return ret;
 }
 
 static GstCaps *
-gst_alaw_dec_getcaps (GstPad * pad)
+gst_alaw_dec_getcaps (GstPad * pad, GstCaps * filter)
 {
   GstALawDec *alawdec;
   GstPad *otherpad;
   GstCaps *othercaps, *result;
-  const GstCaps *templ;
-  gchar *name;
+  GstCaps *templ;
+  const gchar *name;
   gint i;
 
   alawdec = GST_ALAW_DEC (GST_PAD_PARENT (pad));
 
   /* figure out the name of the caps we are going to return */
   if (pad == alawdec->srcpad) {
-    name = "audio/x-raw-int";
+    name = "audio/x-raw";
     otherpad = alawdec->sinkpad;
   } else {
     name = "audio/x-alaw";
     otherpad = alawdec->srcpad;
   }
   /* get caps from the peer, this can return NULL when there is no peer */
-  othercaps = gst_pad_peer_get_caps (otherpad);
+  othercaps = gst_pad_peer_query_caps (otherpad, NULL);
 
   /* get the template caps to make sure we return something acceptable */
   templ = gst_pad_get_pad_template_caps (pad);
@@ -186,29 +185,58 @@ gst_alaw_dec_getcaps (GstPad * pad)
 
       if (pad == alawdec->sinkpad) {
         /* remove the fields we don't want */
-        gst_structure_remove_fields (structure, "width", "depth", "endianness",
-            "signed", NULL);
+        gst_structure_remove_fields (structure, "format", "layout", NULL);
       } else {
         /* add fixed fields */
-        gst_structure_set (structure, "width", G_TYPE_INT, 16,
-            "depth", G_TYPE_INT, 16,
-            "endianness", G_TYPE_INT, G_BYTE_ORDER,
-            "signed", G_TYPE_BOOLEAN, TRUE, NULL);
+        gst_structure_set (structure, "format", G_TYPE_STRING,
+            GST_AUDIO_NE (S16), "layout", G_TYPE_STRING, "interleaved", NULL);
       }
     }
     /* filter against the allowed caps of the pad to return our result */
     result = gst_caps_intersect (othercaps, templ);
     gst_caps_unref (othercaps);
+    gst_caps_unref (templ);
   } else {
     /* there was no peer, return the template caps */
-    result = gst_caps_copy (templ);
+    result = templ;
   }
+  if (filter && result) {
+    GstCaps *temp;
 
+    temp = gst_caps_intersect (result, filter);
+    gst_caps_unref (result);
+    result = temp;
+  }
   return result;
 }
 
+static gboolean
+gst_alaw_dec_query (GstPad * pad, GstObject * parent, GstQuery * query)
+{
+  gboolean res;
+
+  switch (GST_QUERY_TYPE (query)) {
+    case GST_QUERY_CAPS:
+    {
+      GstCaps *filter, *caps;
+
+      gst_query_parse_caps (query, &filter);
+      caps = gst_alaw_dec_getcaps (pad, filter);
+      gst_query_set_caps_result (query, caps);
+      gst_caps_unref (caps);
+
+      res = TRUE;
+      break;
+    }
+    default:
+      res = gst_pad_query_default (pad, parent, query);
+      break;
+  }
+  return res;
+}
+
 static void
-gst_alaw_dec_base_init (gpointer klass)
+gst_alaw_dec_class_init (GstALawDecClass * klass)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
 
@@ -217,30 +245,24 @@ gst_alaw_dec_base_init (gpointer klass)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&alaw_dec_sink_factory));
 
-  gst_element_class_set_details_simple (element_class, "A Law audio decoder",
+  gst_element_class_set_static_metadata (element_class, "A Law audio decoder",
       "Codec/Decoder/Audio", "Convert 8bit A law to 16bit PCM",
       "Zaheer Abbas Merali <zaheerabbas at merali dot org>");
+
+  element_class->change_state = GST_DEBUG_FUNCPTR (gst_alaw_dec_change_state);
 
   GST_DEBUG_CATEGORY_INIT (alaw_dec_debug, "alawdec", 0, "A Law audio decoder");
 }
 
 static void
-gst_alaw_dec_class_init (GstALawDecClass * klass)
-{
-  GstElementClass *element_class = (GstElementClass *) klass;
-
-  element_class->change_state = GST_DEBUG_FUNCPTR (gst_alaw_dec_change_state);
-}
-
-static void
-gst_alaw_dec_init (GstALawDec * alawdec, GstALawDecClass * klass)
+gst_alaw_dec_init (GstALawDec * alawdec)
 {
   alawdec->sinkpad =
       gst_pad_new_from_static_template (&alaw_dec_sink_factory, "sink");
-  gst_pad_set_setcaps_function (alawdec->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_alaw_dec_sink_setcaps));
-  gst_pad_set_getcaps_function (alawdec->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_alaw_dec_getcaps));
+  gst_pad_set_query_function (alawdec->sinkpad,
+      GST_DEBUG_FUNCPTR (gst_alaw_dec_query));
+  gst_pad_set_event_function (alawdec->sinkpad,
+      GST_DEBUG_FUNCPTR (gst_alaw_dec_event));
   gst_pad_set_chain_function (alawdec->sinkpad,
       GST_DEBUG_FUNCPTR (gst_alaw_dec_chain));
   gst_element_add_pad (GST_ELEMENT (alawdec), alawdec->sinkpad);
@@ -248,53 +270,88 @@ gst_alaw_dec_init (GstALawDec * alawdec, GstALawDecClass * klass)
   alawdec->srcpad =
       gst_pad_new_from_static_template (&alaw_dec_src_factory, "src");
   gst_pad_use_fixed_caps (alawdec->srcpad);
-  gst_pad_set_getcaps_function (alawdec->srcpad,
-      GST_DEBUG_FUNCPTR (gst_alaw_dec_getcaps));
+  gst_pad_set_query_function (alawdec->srcpad,
+      GST_DEBUG_FUNCPTR (gst_alaw_dec_query));
   gst_element_add_pad (GST_ELEMENT (alawdec), alawdec->srcpad);
 }
 
-static GstFlowReturn
-gst_alaw_dec_chain (GstPad * pad, GstBuffer * buffer)
+static gboolean
+gst_alaw_dec_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
   GstALawDec *alawdec;
+  gboolean res;
+
+  alawdec = GST_ALAW_DEC (parent);
+
+  switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_CAPS:
+    {
+      GstCaps *caps;
+
+      gst_event_parse_caps (event, &caps);
+      gst_alaw_dec_setcaps (alawdec, caps);
+      gst_event_unref (event);
+
+      res = TRUE;
+      break;
+    }
+    default:
+      res = gst_pad_event_default (pad, parent, event);
+      break;
+  }
+  return res;
+}
+
+static GstFlowReturn
+gst_alaw_dec_chain (GstPad * pad, GstObject * parent, GstBuffer * buffer)
+{
+  GstALawDec *alawdec;
+  GstMapInfo inmap, outmap;
   gint16 *linear_data;
   guint8 *alaw_data;
-  guint alaw_size;
+  gsize alaw_size, linear_size;
   GstBuffer *outbuf;
   gint i;
   GstFlowReturn ret;
 
-  alawdec = GST_ALAW_DEC (GST_PAD_PARENT (pad));
+  alawdec = GST_ALAW_DEC (parent);
 
-  if (G_UNLIKELY (alawdec->rate == 0))
+  if (G_UNLIKELY (!GST_AUDIO_INFO_IS_VALID (&alawdec->info)))
     goto not_negotiated;
 
   GST_LOG_OBJECT (alawdec, "buffer with ts=%" GST_TIME_FORMAT,
       GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buffer)));
 
-  alaw_data = GST_BUFFER_DATA (buffer);
-  alaw_size = GST_BUFFER_SIZE (buffer);
+  gst_buffer_map (buffer, &inmap, GST_MAP_READ);
+  alaw_data = inmap.data;
+  alaw_size = inmap.size;
 
-  ret =
-      gst_pad_alloc_buffer_and_set_caps (alawdec->srcpad,
-      GST_BUFFER_OFFSET_NONE, alaw_size * 2, GST_PAD_CAPS (alawdec->srcpad),
-      &outbuf);
-  if (ret != GST_FLOW_OK)
-    goto alloc_failed;
+  linear_size = alaw_size * 2;
 
-  linear_data = (gint16 *) GST_BUFFER_DATA (outbuf);
+  outbuf = gst_buffer_new_allocate (NULL, linear_size, NULL);
+
+  gst_buffer_map (outbuf, &outmap, GST_MAP_WRITE);
+  linear_data = (gint16 *) outmap.data;
 
   /* copy discont flag */
   if (GST_BUFFER_FLAG_IS_SET (buffer, GST_BUFFER_FLAG_DISCONT))
     GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_DISCONT);
 
   GST_BUFFER_TIMESTAMP (outbuf) = GST_BUFFER_TIMESTAMP (buffer);
-  GST_BUFFER_DURATION (outbuf) = GST_BUFFER_DURATION (buffer);
-  gst_buffer_set_caps (outbuf, GST_PAD_CAPS (alawdec->srcpad));
+  if (GST_BUFFER_DURATION_IS_VALID (buffer)) {
+    GST_BUFFER_DURATION (outbuf) = GST_BUFFER_DURATION (buffer);
+  } else {
+    GST_BUFFER_DURATION (outbuf) = gst_util_uint64_scale_int (GST_SECOND,
+        linear_size, GST_AUDIO_INFO_RATE (&alawdec->info) *
+        GST_AUDIO_INFO_BPF (&alawdec->info));
+  }
 
   for (i = 0; i < alaw_size; i++) {
     linear_data[i] = alaw_to_s16 (alaw_data[i]);
   }
+
+  gst_buffer_unmap (outbuf, &outmap);
+  gst_buffer_unmap (buffer, &inmap);
   gst_buffer_unref (buffer);
 
   ret = gst_pad_push (alawdec->srcpad, outbuf);
@@ -306,13 +363,6 @@ not_negotiated:
     gst_buffer_unref (buffer);
     GST_WARNING_OBJECT (alawdec, "no input format set: not-negotiated");
     return GST_FLOW_NOT_NEGOTIATED;
-  }
-alloc_failed:
-  {
-    gst_buffer_unref (buffer);
-    GST_DEBUG_OBJECT (alawdec, "pad alloc failed, flow: %s",
-        gst_flow_get_name (ret));
-    return ret;
   }
 }
 
@@ -333,8 +383,7 @@ gst_alaw_dec_change_state (GstElement * element, GstStateChange transition)
 
   switch (transition) {
     case GST_STATE_CHANGE_PAUSED_TO_READY:
-      dec->rate = 0;
-      dec->channels = 0;
+      gst_audio_info_init (&dec->info);
       break;
     default:
       break;

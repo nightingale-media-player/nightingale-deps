@@ -21,7 +21,8 @@
 #define __RTP_STATS_H__
 
 #include <gst/gst.h>
-#include <gst/netbuffer/gstnetbuffer.h>
+#include <gst/net/gstnetaddressmeta.h>
+#include <gio/gio.h>
 
 /**
  * RTPSenderReport:
@@ -56,22 +57,20 @@ typedef struct {
 
 /**
  * RTPArrivalStats:
- * @time: arrival time of a packet according to the system clock
- * @running_time: arrival time of a packet as buffer running_time
- * @ntpnstime: arrival time of a packet as NTP time in nanoseconds
- * @have_address: if the @address field contains a valid address
  * @address: address of the sender of the packet
+ * @current_time: current time according to the system clock
+ * @running_time: arrival time of a packet as buffer running_time
+ * @ntpnstime: arrival time of a packet NTP time in nanoseconds
  * @bytes: bytes of the packet including lowlevel overhead
  * @payload_len: bytes of the RTP payload
  *
  * Structure holding information about the arrival stats of a packet.
  */
 typedef struct {
-  GstClockTime  time;
+  GSocketAddress *address;
+  GstClockTime  current_time;
   GstClockTime  running_time;
   guint64       ntpnstime;
-  gboolean      have_address;
-  GstNetAddress address;
   guint         bytes;
   guint         payload_len;
 } RTPArrivalStats;
@@ -129,8 +128,8 @@ typedef struct {
   RTPSenderReport   sr[2];
 } RTPSourceStats;
 
-#define RTP_STATS_BANDWIDTH           64000.0
-#define RTP_STATS_RTCP_BANDWIDTH      3000.0
+#define RTP_STATS_BANDWIDTH           64000
+#define RTP_STATS_RTCP_FRACTION       0.05
 /*
  * Minimum average time between RTCP packets from this site (in
  * seconds).  This time prevents the reports from `clumping' when
@@ -174,10 +173,10 @@ typedef struct {
  * Stats kept for a session and used to produce RTCP packet timeouts.
  */
 typedef struct {
-  gdouble       bandwidth;
+  guint         bandwidth;
+  guint         rtcp_bandwidth;
   gdouble       sender_fraction;
   gdouble       receiver_fraction;
-  gdouble       rtcp_bandwidth;
   gdouble       min_interval;
   GstClockTime  bye_timeout;
   guint         sender_sources;
@@ -186,10 +185,23 @@ typedef struct {
   guint         bye_members;
 } RTPSessionStats;
 
-void           rtp_stats_init_defaults               (RTPSessionStats *stats);
+void           rtp_stats_init_defaults              (RTPSessionStats *stats);
+
+void           rtp_stats_set_bandwidths             (RTPSessionStats *stats,
+                                                     guint rtp_bw,
+                                                     gdouble rtcp_bw,
+                                                     guint rs, guint rr);
 
 GstClockTime   rtp_stats_calculate_rtcp_interval    (RTPSessionStats *stats, gboolean sender, gboolean first);
 GstClockTime   rtp_stats_add_rtcp_jitter            (RTPSessionStats *stats, GstClockTime interval);
 GstClockTime   rtp_stats_calculate_bye_interval     (RTPSessionStats *stats);
+gint64         rtp_stats_get_packets_lost           (const RTPSourceStats *stats);
+
+void           rtp_stats_set_min_interval           (RTPSessionStats *stats,
+                                                     gdouble min_interval);
+
+
+gboolean __g_socket_address_equal (GSocketAddress *a, GSocketAddress *b);
+gchar * __g_socket_address_to_string (GSocketAddress * addr);
 
 #endif /* __RTP_STATS_H__ */

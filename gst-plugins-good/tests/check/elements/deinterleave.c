@@ -21,8 +21,10 @@
 # include "config.h"
 #endif
 
+#include <stdio.h>
+#include <gst/audio/audio.h>
 #include <gst/check/gstcheck.h>
-#include <gst/audio/multichannel.h>
+#include <gst/audio/audio.h>
 
 GST_START_TEST (test_create_and_unref)
 {
@@ -45,51 +47,47 @@ static GstElement *deinterleave;
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw-float, "
-        "width = (int) 32, "
-        "channels = (int) 1, "
-        "rate = (int) {32000, 48000}, " "endianness = (int) BYTE_ORDER"));
+    GST_STATIC_CAPS ("audio/x-raw, "
+        "format = (string) " GST_AUDIO_NE (F32) ", "
+        "channels = (int) 1, layout = (string) {interleaved, non-interleaved}, rate = (int) {32000, 48000}"));
 
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw-float, "
-        "width = (int) 32, "
-        "channels = (int) { 2, 3 }, "
-        "rate = (int) {32000, 48000}, " "endianness = (int) BYTE_ORDER"));
+    GST_STATIC_CAPS ("audio/x-raw, "
+        "format = (string) " GST_AUDIO_NE (F32) ", "
+        "channels = (int) { 2, 3 }, layout = (string) interleaved, rate = (int) {32000, 48000}"));
 
 #define CAPS_32khz \
-         "audio/x-raw-float, " \
-        "width = (int) 32, " \
-        "channels = (int) 2, " \
-        "rate = (int) 32000, " \
-	"endianness = (int) BYTE_ORDER"
+        "audio/x-raw, " \
+        "format = (string) "GST_AUDIO_NE (F32) ", " \
+        "channels = (int) 2, layout = (string) interleaved, " \
+        "rate = (int) 32000"
 
 #define CAPS_48khz \
-         "audio/x-raw-float, " \
-        "width = (int) 32, " \
-        "channels = (int) 2, " \
-        "rate = (int) 48000, " \
-	"endianness = (int) BYTE_ORDER"
+        "audio/x-raw, " \
+        "format = (string) "GST_AUDIO_NE (F32) ", " \
+        "channels = (int) 2, layout = (string) interleaved, " \
+        "rate = (int) 48000"
 
 #define CAPS_48khz_3CH \
-         "audio/x-raw-float, " \
-        "width = (int) 32, " \
-        "channels = (int) 3, " \
-        "rate = (int) 48000, " \
-	"endianness = (int) BYTE_ORDER"
+        "audio/x-raw, " \
+        "format = (string) "GST_AUDIO_NE (F32) ", " \
+        "channels = (int) 3, layout = (string) interleaved, " \
+        "rate = (int) 48000"
 
 static GstFlowReturn
-deinterleave_chain_func (GstPad * pad, GstBuffer * buffer)
+deinterleave_chain_func (GstPad * pad, GstObject * parent, GstBuffer * buffer)
 {
   gint i;
+  GstMapInfo map;
   gfloat *indata;
 
   fail_unless (GST_IS_BUFFER (buffer));
-  fail_unless_equals_int (GST_BUFFER_SIZE (buffer), 48000 * sizeof (gfloat));
-  fail_unless (GST_BUFFER_DATA (buffer) != NULL);
-
-  indata = (gfloat *) GST_BUFFER_DATA (buffer);
+  gst_buffer_map (buffer, &map, GST_MAP_READ);
+  indata = (gfloat *) map.data;
+  fail_unless_equals_int (map.size, 48000 * sizeof (gfloat));
+  fail_unless (indata != NULL);
 
   if (strcmp (GST_PAD_NAME (pad), "sink0") == 0) {
     for (i = 0; i < 48000; i++)
@@ -100,7 +98,7 @@ deinterleave_chain_func (GstPad * pad, GstBuffer * buffer)
   } else {
     g_assert_not_reached ();
   }
-
+  gst_buffer_unmap (buffer, &map);
   gst_buffer_unref (buffer);
 
   return GST_FLOW_OK;
@@ -135,6 +133,8 @@ GST_START_TEST (test_2_channels)
   GstBuffer *inbuf;
   GstCaps *caps;
   gfloat *indata;
+  GstMapInfo map;
+  guint64 channel_mask = 0;
 
   mysinkpads = g_new0 (GstPad *, 2);
   nsinkpads = 0;
@@ -144,8 +144,16 @@ GST_START_TEST (test_2_channels)
 
   mysrcpad = gst_pad_new_from_static_template (&srctemplate, "src");
   fail_unless (mysrcpad != NULL);
+  gst_pad_set_active (mysrcpad, TRUE);
 
   caps = gst_caps_from_string (CAPS_48khz);
+  channel_mask |=
+      G_GUINT64_CONSTANT (1) << GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
+  channel_mask |=
+      G_GUINT64_CONSTANT (1) << GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
+  gst_caps_set_simple (caps, "channel-mask", GST_TYPE_BITMASK, channel_mask,
+      NULL);
+
   fail_unless (gst_pad_set_caps (mysrcpad, caps));
   gst_pad_use_fixed_caps (mysrcpad);
 
@@ -164,12 +172,15 @@ GST_START_TEST (test_2_channels)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS);
 
   inbuf = gst_buffer_new_and_alloc (2 * 48000 * sizeof (gfloat));
-  indata = (gfloat *) GST_BUFFER_DATA (inbuf);
+  inbuf = gst_buffer_make_writable (inbuf);
+  gst_buffer_map (inbuf, &map, GST_MAP_WRITE);
+  indata = (gfloat *) map.data;
   for (i = 0; i < 2 * 48000; i += 2) {
     indata[i] = -1.0;
     indata[i + 1] = 1.0;
   }
-  gst_buffer_set_caps (inbuf, caps);
+  gst_buffer_unmap (inbuf, &map);
+  gst_pad_set_caps (mysrcpad, caps);
 
   fail_unless (gst_pad_push (mysrcpad, inbuf) == GST_FLOW_OK);
 
@@ -195,6 +206,8 @@ GST_START_TEST (test_2_channels_1_linked)
   GstBuffer *inbuf;
   GstCaps *caps;
   gfloat *indata;
+  GstMapInfo map;
+  guint64 channel_mask = 0;
 
   nsinkpads = 0;
   mysinkpads = g_new0 (GstPad *, 2);
@@ -204,8 +217,16 @@ GST_START_TEST (test_2_channels_1_linked)
 
   mysrcpad = gst_pad_new_from_static_template (&srctemplate, "src");
   fail_unless (mysrcpad != NULL);
+  gst_pad_set_active (mysrcpad, TRUE);
 
   caps = gst_caps_from_string (CAPS_48khz);
+  channel_mask |=
+      G_GUINT64_CONSTANT (1) << GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
+  channel_mask |=
+      G_GUINT64_CONSTANT (1) << GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
+  gst_caps_set_simple (caps, "channel-mask", GST_TYPE_BITMASK, channel_mask,
+      NULL);
+
   fail_unless (gst_pad_set_caps (mysrcpad, caps));
   gst_pad_use_fixed_caps (mysrcpad);
 
@@ -224,12 +245,15 @@ GST_START_TEST (test_2_channels_1_linked)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS);
 
   inbuf = gst_buffer_new_and_alloc (2 * 48000 * sizeof (gfloat));
-  indata = (gfloat *) GST_BUFFER_DATA (inbuf);
+  inbuf = gst_buffer_make_writable (inbuf);
+  gst_buffer_map (inbuf, &map, GST_MAP_WRITE);
+  indata = (gfloat *) map.data;
   for (i = 0; i < 2 * 48000; i += 2) {
     indata[i] = -1.0;
     indata[i + 1] = 1.0;
   }
-  gst_buffer_set_caps (inbuf, caps);
+  gst_buffer_unmap (inbuf, &map);
+  gst_pad_set_caps (mysrcpad, caps);
 
   fail_unless (gst_pad_push (mysrcpad, inbuf) == GST_FLOW_OK);
 
@@ -255,6 +279,8 @@ GST_START_TEST (test_2_channels_caps_change)
   gint i;
   GstBuffer *inbuf;
   gfloat *indata;
+  GstMapInfo map;
+  guint64 channel_mask;
 
   nsinkpads = 0;
   mysinkpads = g_new0 (GstPad *, 2);
@@ -265,7 +291,16 @@ GST_START_TEST (test_2_channels_caps_change)
   mysrcpad = gst_pad_new_from_static_template (&srctemplate, "src");
   fail_unless (mysrcpad != NULL);
 
+  gst_pad_set_active (mysrcpad, TRUE);
+
   caps = gst_caps_from_string (CAPS_48khz);
+  channel_mask = 0;
+  channel_mask |=
+      G_GUINT64_CONSTANT (1) << GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
+  channel_mask |=
+      G_GUINT64_CONSTANT (1) << GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
+  gst_caps_set_simple (caps, "channel-mask", GST_TYPE_BITMASK, channel_mask,
+      NULL);
   fail_unless (gst_pad_set_caps (mysrcpad, caps));
   gst_pad_use_fixed_caps (mysrcpad);
 
@@ -284,25 +319,38 @@ GST_START_TEST (test_2_channels_caps_change)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS);
 
   inbuf = gst_buffer_new_and_alloc (2 * 48000 * sizeof (gfloat));
-  indata = (gfloat *) GST_BUFFER_DATA (inbuf);
+  inbuf = gst_buffer_make_writable (inbuf);
+  gst_buffer_map (inbuf, &map, GST_MAP_WRITE);
+  indata = (gfloat *) map.data;
   for (i = 0; i < 2 * 48000; i += 2) {
     indata[i] = -1.0;
     indata[i + 1] = 1.0;
   }
-  gst_buffer_set_caps (inbuf, caps);
+  gst_buffer_unmap (inbuf, &map);
+  gst_pad_set_caps (mysrcpad, caps);
 
   fail_unless (gst_pad_push (mysrcpad, inbuf) == GST_FLOW_OK);
 
   caps2 = gst_caps_from_string (CAPS_32khz);
+  channel_mask = 0;
+  channel_mask |=
+      G_GUINT64_CONSTANT (1) << GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
+  channel_mask |=
+      G_GUINT64_CONSTANT (1) << GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
+  gst_caps_set_simple (caps2, "channel-mask", GST_TYPE_BITMASK, channel_mask,
+      NULL);
   gst_pad_set_caps (mysrcpad, caps2);
 
   inbuf = gst_buffer_new_and_alloc (2 * 48000 * sizeof (gfloat));
-  indata = (gfloat *) GST_BUFFER_DATA (inbuf);
+  inbuf = gst_buffer_make_writable (inbuf);
+  gst_buffer_map (inbuf, &map, GST_MAP_WRITE);
+  indata = (gfloat *) map.data;
   for (i = 0; i < 2 * 48000; i += 2) {
     indata[i] = -1.0;
     indata[i + 1] = 1.0;
   }
-  gst_buffer_set_caps (inbuf, caps2);
+  gst_buffer_unmap (inbuf, &map);
+  gst_pad_set_caps (mysrcpad, caps2);
 
   /* Should work fine because the caps changed in a compatible way */
   fail_unless (gst_pad_push (mysrcpad, inbuf) == GST_FLOW_OK);
@@ -310,16 +358,28 @@ GST_START_TEST (test_2_channels_caps_change)
   gst_caps_unref (caps2);
 
   caps2 = gst_caps_from_string (CAPS_48khz_3CH);
+  channel_mask = 0;
+  channel_mask |=
+      G_GUINT64_CONSTANT (1) << GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
+  channel_mask |=
+      G_GUINT64_CONSTANT (1) << GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
+  channel_mask |=
+      G_GUINT64_CONSTANT (1) << GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER;
+  gst_caps_set_simple (caps2, "channel-mask", GST_TYPE_BITMASK, channel_mask,
+      NULL);
   gst_pad_set_caps (mysrcpad, caps2);
 
   inbuf = gst_buffer_new_and_alloc (3 * 48000 * sizeof (gfloat));
-  indata = (gfloat *) GST_BUFFER_DATA (inbuf);
+  inbuf = gst_buffer_make_writable (inbuf);
+  gst_buffer_map (inbuf, &map, GST_MAP_WRITE);
+  indata = (gfloat *) map.data;
   for (i = 0; i < 3 * 48000; i += 3) {
     indata[i] = -1.0;
     indata[i + 1] = 1.0;
     indata[i + 2] = 0.0;
   }
-  gst_buffer_set_caps (inbuf, caps2);
+  gst_buffer_unmap (inbuf, &map);
+  gst_pad_set_caps (mysrcpad, caps2);
 
   /* Should break because the caps changed in an incompatible way */
   fail_if (gst_pad_push (mysrcpad, inbuf) == GST_FLOW_OK);
@@ -351,69 +411,64 @@ static void
 set_channel_positions (GstCaps * caps, int channels,
     GstAudioChannelPosition * channelpositions)
 {
-  GValue chanpos = { 0 };
-  GValue pos = { 0 };
-  GstStructure *structure = gst_caps_get_structure (caps, 0);
   int c;
+  guint64 channel_mask = 0;
 
-  g_value_init (&chanpos, GST_TYPE_ARRAY);
-  g_value_init (&pos, GST_TYPE_AUDIO_CHANNEL_POSITION);
+  for (c = 0; c < channels; c++)
+    channel_mask |= G_GUINT64_CONSTANT (1) << channelpositions[c];
 
-  for (c = 0; c < channels; c++) {
-    g_value_set_enum (&pos, channelpositions[c]);
-    gst_value_array_append_value (&chanpos, &pos);
-  }
-  g_value_unset (&pos);
-
-  gst_structure_set_value (structure, "channel-positions", &chanpos);
-  g_value_unset (&chanpos);
+  gst_caps_set_simple (caps, "channel-mask", GST_TYPE_BITMASK, channel_mask,
+      NULL);
 }
 
 static void
 src_handoff_float32_8ch (GstElement * src, GstBuffer * buf, GstPad * pad,
     gpointer user_data)
 {
+  gfloat *data, *p;
+  guint size, i, c;
   GstAudioChannelPosition layout[NUM_CHANNELS];
   GstCaps *caps;
-  gfloat *data;
-  guint size, i, c;
 
-  caps = gst_caps_new_simple ("audio/x-raw-float",
-      "width", G_TYPE_INT, 32,
-      "depth", G_TYPE_INT, 32,
+  caps = gst_caps_new_simple ("audio/x-raw",
+      "format", G_TYPE_STRING, GST_AUDIO_NE (F32),
       "channels", G_TYPE_INT, NUM_CHANNELS,
-      "rate", G_TYPE_INT, SAMPLE_RATE,
-      "endianness", G_TYPE_INT, G_BYTE_ORDER, NULL);
+      "layout", G_TYPE_STRING, "interleaved",
+      "rate", G_TYPE_INT, SAMPLE_RATE, NULL);
 
   for (i = 0; i < NUM_CHANNELS; ++i)
-    layout[i] = GST_AUDIO_CHANNEL_POSITION_NONE;
+    layout[i] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT + i;
 
   set_channel_positions (caps, NUM_CHANNELS, layout);
+  gst_pad_set_caps (pad, caps);
+  gst_caps_unref (caps);
 
   size = sizeof (gfloat) * SAMPLES_PER_BUFFER * NUM_CHANNELS;
-  data = (gfloat *) g_malloc (size);
-
-  GST_BUFFER_MALLOCDATA (buf) = (guint8 *) data;
-  GST_BUFFER_DATA (buf) = (guint8 *) data;
-  GST_BUFFER_SIZE (buf) = size;
-
-  GST_BUFFER_OFFSET (buf) = 0;
-  GST_BUFFER_TIMESTAMP (buf) = 0;
+  data = p = (gfloat *) g_malloc (size);
 
   for (i = 0; i < SAMPLES_PER_BUFFER; ++i) {
     for (c = 0; c < NUM_CHANNELS; ++c) {
-      *data = (gfloat) ((i * NUM_CHANNELS) + c);
-      ++data;
+      *p = (gfloat) ((i * NUM_CHANNELS) + c);
+      ++p;
     }
   }
 
-  gst_buffer_set_caps (buf, caps);
-  gst_caps_unref (caps);
+  if (gst_buffer_n_memory (buf)) {
+    gst_buffer_replace_memory_range (buf, 0, -1,
+        gst_memory_new_wrapped (0, data, size, 0, size, data, g_free));
+  } else {
+    gst_buffer_insert_memory (buf, 0,
+        gst_memory_new_wrapped (0, data, size, 0, size, data, g_free));
+  }
+  GST_BUFFER_OFFSET (buf) = 0;
+  GST_BUFFER_TIMESTAMP (buf) = 0;
 }
 
-static gboolean
-float_buffer_check_probe (GstPad * pad, GstBuffer * buf, gpointer userdata)
+static GstPadProbeReturn
+float_buffer_check_probe (GstPad * pad, GstPadProbeInfo * info,
+    gpointer userdata)
 {
+  GstMapInfo map;
   gfloat *data;
   guint padnum, numpads;
   guint num, i;
@@ -421,24 +476,32 @@ float_buffer_check_probe (GstPad * pad, GstBuffer * buf, gpointer userdata)
   GstStructure *s;
   GstAudioChannelPosition *pos;
   gint channels;
+  GstBuffer *buffer = GST_PAD_PROBE_INFO_BUFFER (info);
+  GstAudioInfo audio_info;
+  guint pad_id = GPOINTER_TO_UINT (userdata);
 
-  fail_unless_equals_int (sscanf (GST_PAD_NAME (pad), "src%u", &padnum), 1);
+  fail_unless_equals_int (sscanf (GST_PAD_NAME (pad), "src_%u", &padnum), 1);
 
   numpads = pads_created;
 
   /* Check caps */
-  caps = GST_BUFFER_CAPS (buf);
+  caps = gst_pad_get_current_caps (pad);
   fail_unless (caps != NULL);
   s = gst_caps_get_structure (caps, 0);
   fail_unless (gst_structure_get_int (s, "channels", &channels));
   fail_unless_equals_int (channels, 1);
-  fail_unless (gst_structure_has_field (s, "channel-positions"));
-  pos = gst_audio_get_channel_positions (s);
-  fail_unless (pos != NULL && pos[0] == GST_AUDIO_CHANNEL_POSITION_NONE);
-  g_free (pos);
 
-  data = (gfloat *) GST_BUFFER_DATA (buf);
-  num = GST_BUFFER_SIZE (buf) / sizeof (gfloat);
+  gst_audio_info_init (&audio_info);
+  fail_unless (gst_audio_info_from_caps (&audio_info, caps));
+
+  pos = audio_info.position;
+  fail_unless (pos != NULL
+      && pos[0] == GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT + pad_id);
+  gst_caps_unref (caps);
+
+  gst_buffer_map (buffer, &map, GST_MAP_READ);
+  data = (gfloat *) map.data;
+  num = map.size / sizeof (gfloat);
 
   /* Check buffer content */
   for (i = 0; i < num; ++i) {
@@ -453,8 +516,9 @@ float_buffer_check_probe (GstPad * pad, GstBuffer * buf, gpointer userdata)
     /* check that the first channel is on pad src0, the second on src1 etc. */
     fail_unless_equals_int (rest, padnum);
   }
+  gst_buffer_unmap (buffer, &map);
 
-  return TRUE;                  /* don't drop data */
+  return GST_PAD_PROBE_OK;      /* don't drop data */
 }
 
 static void
@@ -471,13 +535,17 @@ pad_added_setup_data_check_float32_8ch_cb (GstElement * deinterleave,
   fail_unless (sink != NULL);
 
   gst_bin_add_many (GST_BIN (pipeline), queue, sink, NULL);
-  fail_unless (gst_element_link_many (queue, sink, NULL));
+  gst_element_link_pads_full (queue, "src", sink, "sink",
+      GST_PAD_LINK_CHECK_NOTHING);
 
   sinkpad = gst_element_get_static_pad (queue, "sink");
+
   fail_unless_equals_int (gst_pad_link (pad, sinkpad), GST_PAD_LINK_OK);
   gst_object_unref (sinkpad);
 
-  gst_pad_add_buffer_probe (pad, G_CALLBACK (float_buffer_check_probe), NULL);
+
+  gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_BUFFER, float_buffer_check_probe,
+      GUINT_TO_POINTER (pads_created), NULL);
 
   gst_element_set_state (sink, GST_STATE_PLAYING);
   gst_element_set_state (queue, GST_STATE_PLAYING);

@@ -45,9 +45,10 @@ struct _GstCairoTextOverlay {
     GstPad               *text_sinkpad;
     GstPad               *srcpad;
 
-    GstCollectPads       *collect;
-    GstCollectData       *video_collect_data;
-    GstCollectData       *text_collect_data;
+    GstCollectPads      *collect;
+    GstCollectData      *video_collect_data;
+    GstCollectData      *text_collect_data;
+    GstPadEventFunction   collect_event;
 
     gint                  width;
     gint                  height;
@@ -75,6 +76,7 @@ struct _GstCairoTextOverlay {
     gint                  slant;
     gint                  weight;
     gdouble               scale;
+    gboolean              silent;
 };
 
 struct _GstCairoTextOverlayClass {

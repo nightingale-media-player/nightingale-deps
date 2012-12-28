@@ -29,12 +29,12 @@ GstPad *mysrcpad, *mysinkpad;
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV ("AYUV"))
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE ("AYUV"))
     );
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_RGBA ";" GST_VIDEO_CAPS_RGB)
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE ("{ RGBA, RGB }"))
     );
 
 static GstElement *
@@ -43,8 +43,8 @@ setup_alphacolor (void)
   GstElement *alphacolor;
 
   alphacolor = gst_check_setup_element ("alphacolor");
-  mysrcpad = gst_check_setup_src_pad (alphacolor, &srctemplate, NULL);
-  mysinkpad = gst_check_setup_sink_pad (alphacolor, &sinktemplate, NULL);
+  mysrcpad = gst_check_setup_src_pad (alphacolor, &srctemplate);
+  mysinkpad = gst_check_setup_sink_pad (alphacolor, &sinktemplate);
 
   gst_pad_set_active (mysrcpad, TRUE);
   gst_pad_set_active (mysinkpad, TRUE);
@@ -72,16 +72,11 @@ create_caps_rgb24 (void)
 {
   GstCaps *caps;
 
-  caps = gst_caps_new_simple ("video/x-raw-rgb",
+  caps = gst_caps_new_simple ("video/x-raw",
       "width", G_TYPE_INT, 3,
       "height", G_TYPE_INT, 4,
-      "bpp", G_TYPE_INT, 24,
-      "depth", G_TYPE_INT, 24,
       "framerate", GST_TYPE_FRACTION, 0, 1,
-      "endianness", G_TYPE_INT, G_BIG_ENDIAN,
-      "red_mask", G_TYPE_INT, 0x00ff0000,
-      "green_mask", G_TYPE_INT, 0x0000ff00,
-      "blue_mask", G_TYPE_INT, 0x000000ff, NULL);
+      "format", G_TYPE_STRING, "RGB", NULL);
 
   return caps;
 }
@@ -91,19 +86,20 @@ create_caps_rgba32 (void)
 {
   GstCaps *caps;
 
-  caps = gst_caps_new_simple ("video/x-raw-rgb",
+  caps = gst_caps_new_simple ("video/x-raw",
       "width", G_TYPE_INT, 3,
       "height", G_TYPE_INT, 4,
-      "bpp", G_TYPE_INT, 32,
-      "depth", G_TYPE_INT, 32,
       "framerate", GST_TYPE_FRACTION, 0, 1,
-      "endianness", G_TYPE_INT, G_BIG_ENDIAN,
-      "red_mask", G_TYPE_INT, 0xff000000,
-      "green_mask", G_TYPE_INT, 0x00ff0000,
-      "blue_mask", G_TYPE_INT, 0x0000ff00,
-      "alpha_mask", G_TYPE_INT, 0x000000ff, NULL);
+      "format", G_TYPE_STRING, "RGBA", NULL);
 
   return caps;
+}
+
+static void
+push_caps (GstCaps * caps)
+{
+  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_caps_unref (caps);
 }
 
 static GstBuffer *
@@ -118,15 +114,14 @@ create_buffer_rgb24_3x4 (void)
   };
   guint rowstride = GST_ROUND_UP_4 (WIDTH * 3);
   GstBuffer *buf;
-  GstCaps *caps;
+  GstMapInfo info;
 
   buf = gst_buffer_new_and_alloc (HEIGHT * rowstride);
-  fail_unless_equals_int (GST_BUFFER_SIZE (buf), sizeof (rgb24_3x4_img));
-  memcpy (GST_BUFFER_DATA (buf), rgb24_3x4_img, sizeof (rgb24_3x4_img));
+  gst_buffer_map (buf, &info, GST_MAP_READWRITE);
+  fail_unless_equals_int (info.size, sizeof (rgb24_3x4_img));
+  memcpy (info.data, rgb24_3x4_img, sizeof (rgb24_3x4_img));
 
-  caps = create_caps_rgb24 ();
-  gst_buffer_set_caps (buf, caps);
-  gst_caps_unref (caps);
+  gst_buffer_unmap (buf, &info);
 
   return buf;
 }
@@ -148,15 +143,14 @@ create_buffer_rgba32_3x4 (void)
   };
   guint rowstride = WIDTH * 4;
   GstBuffer *buf;
-  GstCaps *caps;
+  GstMapInfo map;
 
   buf = gst_buffer_new_and_alloc (HEIGHT * rowstride);
-  fail_unless_equals_int (GST_BUFFER_SIZE (buf), sizeof (rgba32_3x4_img));
-  memcpy (GST_BUFFER_DATA (buf), rgba32_3x4_img, sizeof (rgba32_3x4_img));
+  gst_buffer_map (buf, &map, GST_MAP_READWRITE);
+  fail_unless_equals_int (map.size, sizeof (rgba32_3x4_img));
+  memcpy (map.data, rgba32_3x4_img, sizeof (rgba32_3x4_img));
 
-  caps = create_caps_rgba32 ();
-  gst_buffer_set_caps (buf, caps);
-  gst_caps_unref (caps);
+  gst_buffer_unmap (buf, &map);
 
   return buf;
 }
@@ -172,6 +166,8 @@ GST_START_TEST (test_rgb24)
 
   fail_unless_equals_int (gst_element_set_state (alphacolor, GST_STATE_PLAYING),
       GST_STATE_CHANGE_SUCCESS);
+
+  push_caps (create_caps_rgb24 ());
 
   inbuffer = create_buffer_rgb24_3x4 ();
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
@@ -214,6 +210,7 @@ GST_START_TEST (test_rgba32)
   GstCaps *incaps;
   guint8 *ayuv;
   guint outlength;
+  GstMapInfo map;
 
   incaps = create_caps_rgba32 ();
   alphacolor = setup_alphacolor ();
@@ -221,8 +218,10 @@ GST_START_TEST (test_rgba32)
   fail_unless_equals_int (gst_element_set_state (alphacolor, GST_STATE_PLAYING),
       GST_STATE_CHANGE_SUCCESS);
 
+  push_caps (create_caps_rgba32 ());
+
   inbuffer = create_buffer_rgba32_3x4 ();
-  GST_DEBUG ("Created buffer of %d bytes", GST_BUFFER_SIZE (inbuffer));
+  GST_DEBUG ("Created buffer of %d bytes", gst_buffer_get_size (inbuffer));
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
   /* pushing gives away reference */
@@ -238,9 +237,10 @@ GST_START_TEST (test_rgba32)
 
   ASSERT_BUFFER_REFCOUNT (outbuffer, "outbuffer", 1);
   outlength = WIDTH * HEIGHT * 4;       /* output is AYUV */
-  fail_unless_equals_int (GST_BUFFER_SIZE (outbuffer), outlength);
+  gst_buffer_map (outbuffer, &map, GST_MAP_READ);
+  fail_unless_equals_int (map.size, outlength);
 
-  ayuv = GST_BUFFER_DATA (outbuffer);
+  ayuv = map.data;
 
   /* check alpha values (0x00 = totally transparent, 0xff = totally opaque) */
   fail_unless_ayuv_pixel_has_alpha (ayuv, 0, 0, 0xff);
@@ -258,6 +258,8 @@ GST_START_TEST (test_rgba32)
 
   /* we don't check the YUV data, because apparently results differ slightly
    * depending on whether we run in valgrind or not */
+
+  gst_buffer_unmap (outbuffer, &map);
 
   buffers = g_list_remove (buffers, outbuffer);
   gst_buffer_unref (outbuffer);

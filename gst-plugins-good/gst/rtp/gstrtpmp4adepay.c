@@ -21,6 +21,7 @@
 #  include "config.h"
 #endif
 
+#include <gst/base/gstbitreader.h>
 #include <gst/rtp/gstrtpbuffer.h>
 
 #include <string.h>
@@ -29,20 +30,13 @@
 GST_DEBUG_CATEGORY_STATIC (rtpmp4adepay_debug);
 #define GST_CAT_DEFAULT (rtpmp4adepay_debug)
 
-/* elementfactory information */
-static const GstElementDetails gst_rtp_mp4adepay_details =
-GST_ELEMENT_DETAILS ("RTP MPEG4 audio depayloader",
-    "Codec/Depayloader/Network",
-    "Extracts MPEG4 audio from RTP packets (RFC 3016)",
-    "Nokia Corporation (contact <stefan.kost@nokia.com>), "
-    "Wim Taymans <wim.taymans@gmail.com>");
-
 static GstStaticPadTemplate gst_rtp_mp4a_depay_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("audio/mpeg,"
-        "mpegversion = (int) 4," "framed = (boolean) true")
+        "mpegversion = (int) 4," "framed = (boolean) true, "
+        "stream-format = (string) raw")
     );
 
 static GstStaticPadTemplate gst_rtp_mp4a_depay_sink_template =
@@ -57,19 +51,20 @@ GST_STATIC_PAD_TEMPLATE ("sink",
         /* All optional parameters
          *
          * "profile-level-id=[1,MAX]"
-         * "config=" 
+         * "config="
          */
     )
     );
 
-GST_BOILERPLATE (GstRtpMP4ADepay, gst_rtp_mp4a_depay, GstBaseRTPDepayload,
-    GST_TYPE_BASE_RTP_DEPAYLOAD);
+#define gst_rtp_mp4a_depay_parent_class parent_class
+G_DEFINE_TYPE (GstRtpMP4ADepay, gst_rtp_mp4a_depay,
+    GST_TYPE_RTP_BASE_DEPAYLOAD);
 
 static void gst_rtp_mp4a_depay_finalize (GObject * object);
 
-static gboolean gst_rtp_mp4a_depay_setcaps (GstBaseRTPDepayload * depayload,
+static gboolean gst_rtp_mp4a_depay_setcaps (GstRTPBaseDepayload * depayload,
     GstCaps * caps);
-static GstBuffer *gst_rtp_mp4a_depay_process (GstBaseRTPDepayload * depayload,
+static GstBuffer *gst_rtp_mp4a_depay_process (GstRTPBaseDepayload * depayload,
     GstBuffer * buf);
 
 static GstStateChangeReturn gst_rtp_mp4a_depay_change_state (GstElement *
@@ -77,43 +72,40 @@ static GstStateChangeReturn gst_rtp_mp4a_depay_change_state (GstElement *
 
 
 static void
-gst_rtp_mp4a_depay_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_mp4a_depay_src_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_mp4a_depay_sink_template));
-
-  gst_element_class_set_details (element_class, &gst_rtp_mp4adepay_details);
-}
-
-static void
 gst_rtp_mp4a_depay_class_init (GstRtpMP4ADepayClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
-  GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
+  GstRTPBaseDepayloadClass *gstrtpbasedepayload_class;
 
   gobject_class = (GObjectClass *) klass;
   gstelement_class = (GstElementClass *) klass;
-  gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
+  gstrtpbasedepayload_class = (GstRTPBaseDepayloadClass *) klass;
 
   gobject_class->finalize = gst_rtp_mp4a_depay_finalize;
 
   gstelement_class->change_state = gst_rtp_mp4a_depay_change_state;
 
-  gstbasertpdepayload_class->process = gst_rtp_mp4a_depay_process;
-  gstbasertpdepayload_class->set_caps = gst_rtp_mp4a_depay_setcaps;
+  gstrtpbasedepayload_class->process = gst_rtp_mp4a_depay_process;
+  gstrtpbasedepayload_class->set_caps = gst_rtp_mp4a_depay_setcaps;
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_mp4a_depay_src_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_mp4a_depay_sink_template));
+
+  gst_element_class_set_static_metadata (gstelement_class,
+      "RTP MPEG4 audio depayloader", "Codec/Depayloader/Network/RTP",
+      "Extracts MPEG4 audio from RTP packets (RFC 3016)",
+      "Nokia Corporation (contact <stefan.kost@nokia.com>), "
+      "Wim Taymans <wim.taymans@gmail.com>");
 
   GST_DEBUG_CATEGORY_INIT (rtpmp4adepay_debug, "rtpmp4adepay", 0,
       "MPEG4 audio RTP Depayloader");
 }
 
 static void
-gst_rtp_mp4a_depay_init (GstRtpMP4ADepay * rtpmp4adepay,
-    GstRtpMP4ADepayClass * klass)
+gst_rtp_mp4a_depay_init (GstRtpMP4ADepay * rtpmp4adepay)
 {
   rtpmp4adepay->adapter = gst_adapter_new ();
 }
@@ -131,8 +123,12 @@ gst_rtp_mp4a_depay_finalize (GObject * object)
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
+static const guint aac_sample_rates[] = { 96000, 88200, 64000, 48000,
+  44100, 32000, 24000, 22050, 16000, 12000, 11025, 8000, 7350
+};
+
 static gboolean
-gst_rtp_mp4a_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
+gst_rtp_mp4a_depay_setcaps (GstRTPBaseDepayload * depayload, GstCaps * caps)
 {
   GstStructure *structure;
   GstRtpMP4ADepay *rtpmp4adepay;
@@ -156,7 +152,8 @@ gst_rtp_mp4a_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
 
   srccaps = gst_caps_new_simple ("audio/mpeg",
       "mpegversion", G_TYPE_INT, 4,
-      "framed", G_TYPE_BOOLEAN, TRUE, "channels", G_TYPE_INT, channels, NULL);
+      "framed", G_TYPE_BOOLEAN, TRUE, "channels", G_TYPE_INT, channels,
+      "stream-format", G_TYPE_STRING, "raw", NULL);
 
   if ((str = gst_structure_get_string (structure, "config"))) {
     GValue v = { 0 };
@@ -164,19 +161,25 @@ gst_rtp_mp4a_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
     g_value_init (&v, GST_TYPE_BUFFER);
     if (gst_value_deserialize (&v, str)) {
       GstBuffer *buffer;
+      GstMapInfo map;
       guint8 *data;
-      guint size;
+      gsize size;
       gint i;
+      guint32 rate = 0;
+      guint8 obj_type = 0, sr_idx = 0, channels = 0;
+      GstBitReader br;
 
       buffer = gst_value_get_buffer (&v);
       gst_buffer_ref (buffer);
       g_value_unset (&v);
 
-      data = GST_BUFFER_DATA (buffer);
-      size = GST_BUFFER_SIZE (buffer);
+      gst_buffer_map (buffer, &map, GST_MAP_READ);
+      data = map.data;
+      size = map.size;
 
       if (size < 2) {
-        GST_WARNING_OBJECT (depayload, "config too short (%d < 2)", size);
+        GST_WARNING_OBJECT (depayload, "config too short (%d < 2)",
+            (gint) size);
         goto bad_config;
       }
 
@@ -209,17 +212,81 @@ gst_rtp_mp4a_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
         data[i] = ((data[i + 1] & 1) << 7) | ((data[i + 2] & 0xfe) >> 1);
       }
 
+      gst_bit_reader_init (&br, data, size);
+
+      /* any object type is fine, we need to copy it to the profile-level-id field. */
+      if (!gst_bit_reader_get_bits_uint8 (&br, &obj_type, 5))
+        goto bad_config;
+      if (obj_type == 0) {
+        GST_WARNING_OBJECT (depayload, "invalid object type 0");
+        goto bad_config;
+      }
+
+      if (!gst_bit_reader_get_bits_uint8 (&br, &sr_idx, 4))
+        goto bad_config;
+      if (sr_idx >= G_N_ELEMENTS (aac_sample_rates) && sr_idx != 15) {
+        GST_WARNING_OBJECT (depayload, "invalid sample rate index %d", sr_idx);
+        goto bad_config;
+      }
+      GST_LOG_OBJECT (rtpmp4adepay, "sample rate index %u", sr_idx);
+
+      if (!gst_bit_reader_get_bits_uint8 (&br, &channels, 4))
+        goto bad_config;
+      if (channels > 7) {
+        GST_WARNING_OBJECT (depayload, "invalid channels %u", (guint) channels);
+        goto bad_config;
+      }
+
+      /* rtp rate depends on sampling rate of the audio */
+      if (sr_idx == 15) {
+        /* index of 15 means we get the rate in the next 24 bits */
+        if (!gst_bit_reader_get_bits_uint32 (&br, &rate, 24))
+          goto bad_config;
+      } else if (sr_idx >= G_N_ELEMENTS (aac_sample_rates)) {
+        goto bad_config;
+      } else {
+        /* else use the rate from the table */
+        rate = aac_sample_rates[sr_idx];
+      }
+
+      rtpmp4adepay->frame_len = 1024;
+
+      switch (obj_type) {
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 6:
+        case 7:
+        {
+          guint8 frameLenFlag = 0;
+
+          if (gst_bit_reader_get_bits_uint8 (&br, &frameLenFlag, 1))
+            if (frameLenFlag)
+              rtpmp4adepay->frame_len = 960;
+          break;
+        }
+        default:
+          break;
+      }
+
       /* ignore remaining bit, we're only interested in full bytes */
-      GST_BUFFER_SIZE (buffer) = size;
+      gst_buffer_resize (buffer, 0, size);
+      gst_buffer_unmap (buffer, &map);
+      data = NULL;
 
       gst_caps_set_simple (srccaps,
+          "channels", G_TYPE_INT, (gint) channels,
+          "rate", G_TYPE_INT, (gint) rate,
           "codec_data", GST_TYPE_BUFFER, buffer, NULL);
+    bad_config:
+      if (data)
+        gst_buffer_unmap (buffer, &map);
       gst_buffer_unref (buffer);
     } else {
       g_warning ("cannot convert config to buffer");
     }
   }
-bad_config:
   res = gst_pad_set_caps (depayload->srcpad, srccaps);
   gst_caps_unref (srccaps);
 
@@ -227,10 +294,12 @@ bad_config:
 }
 
 static GstBuffer *
-gst_rtp_mp4a_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
+gst_rtp_mp4a_depay_process (GstRTPBaseDepayload * depayload, GstBuffer * buf)
 {
   GstRtpMP4ADepay *rtpmp4adepay;
   GstBuffer *outbuf;
+  GstRTPBuffer rtp = { NULL };
+  GstMapInfo map;
 
   rtpmp4adepay = GST_RTP_MP4A_DEPAY (depayload);
 
@@ -239,24 +308,30 @@ gst_rtp_mp4a_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
     gst_adapter_clear (rtpmp4adepay->adapter);
   }
 
-  outbuf = gst_rtp_buffer_get_payload_buffer (buf);
+  gst_rtp_buffer_map (buf, GST_MAP_READ, &rtp);
+  outbuf = gst_rtp_buffer_get_payload_buffer (&rtp);
 
+  outbuf = gst_buffer_make_writable (outbuf);
+  GST_BUFFER_TIMESTAMP (outbuf) = GST_BUFFER_TIMESTAMP (buf);
   gst_adapter_push (rtpmp4adepay->adapter, outbuf);
 
   /* RTP marker bit indicates the last packet of the AudioMuxElement => create
    * and push a buffer */
-  if (gst_rtp_buffer_get_marker (buf)) {
+  if (gst_rtp_buffer_get_marker (&rtp)) {
     guint avail;
     guint i;
     guint8 *data;
     guint pos;
+    GstClockTime timestamp;
 
     avail = gst_adapter_available (rtpmp4adepay->adapter);
+    timestamp = gst_adapter_prev_timestamp (rtpmp4adepay->adapter, NULL);
 
     GST_LOG_OBJECT (rtpmp4adepay, "have marker and %u available", avail);
 
     outbuf = gst_adapter_take_buffer (rtpmp4adepay->adapter, avail);
-    data = GST_BUFFER_DATA (outbuf);
+    gst_buffer_map (outbuf, &map, GST_MAP_READ);
+    data = map.data;
     /* position in data we are at */
     pos = 0;
 
@@ -265,11 +340,7 @@ gst_rtp_mp4a_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
       /* determine payload length and set buffer data pointer accordingly */
       guint skip;
       guint data_len;
-      guint32 timestamp;
-
       GstBuffer *tmp = NULL;
-
-      timestamp = gst_rtp_buffer_get_timestamp (buf);
 
       /* each subframe starts with a variable length encoding */
       data_len = 0;
@@ -291,7 +362,8 @@ gst_rtp_mp4a_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 
       /* take data out, skip the header */
       pos += skip;
-      tmp = gst_buffer_create_sub (outbuf, pos, data_len);
+      tmp = gst_buffer_copy_region (outbuf, GST_BUFFER_COPY_MEMORY, pos,
+          data_len);
 
       /* skip data too */
       skip += data_len;
@@ -301,13 +373,16 @@ gst_rtp_mp4a_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
       data += skip;
       avail -= skip;
 
-      gst_buffer_set_caps (tmp, GST_PAD_CAPS (depayload->srcpad));
+      GST_BUFFER_TIMESTAMP (tmp) = timestamp;
+      gst_rtp_base_depayload_push (depayload, tmp);
 
-      /* only apply the timestamp for the first buffer. Based on gstrtpmp4gdepay.c */
-      if (i == 0)
-        gst_base_rtp_depayload_push_ts (depayload, timestamp, tmp);
-      else
-        gst_base_rtp_depayload_push (depayload, tmp);
+      /* shift ts for next buffers */
+      if (rtpmp4adepay->frame_len && timestamp != -1
+          && depayload->clock_rate != 0) {
+        timestamp +=
+            gst_util_uint64_scale_int (rtpmp4adepay->frame_len, GST_SECOND,
+            depayload->clock_rate);
+      }
     }
 
     /* just a check that lengths match */
@@ -317,8 +392,10 @@ gst_rtp_mp4a_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
               "possible wrongly encoded packet."));
     }
 
+    gst_buffer_unmap (outbuf, &map);
     gst_buffer_unref (outbuf);
   }
+  gst_rtp_buffer_unmap (&rtp);
   return NULL;
 
   /* ERRORS */
@@ -326,7 +403,9 @@ wrong_size:
   {
     GST_ELEMENT_WARNING (rtpmp4adepay, STREAM, DECODE,
         ("Packet did not validate"), ("wrong packet size"));
+    gst_buffer_unmap (outbuf, &map);
     gst_buffer_unref (outbuf);
+    gst_rtp_buffer_unmap (&rtp);
     return NULL;
   }
 }
@@ -343,6 +422,8 @@ gst_rtp_mp4a_depay_change_state (GstElement * element,
   switch (transition) {
     case GST_STATE_CHANGE_READY_TO_PAUSED:
       gst_adapter_clear (rtpmp4adepay->adapter);
+      rtpmp4adepay->frame_len = 0;
+      rtpmp4adepay->numSubFrames = 0;
       break;
     default:
       break;
@@ -361,5 +442,5 @@ gboolean
 gst_rtp_mp4a_depay_plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "rtpmp4adepay",
-      GST_RANK_MARGINAL, GST_TYPE_RTP_MP4A_DEPAY);
+      GST_RANK_SECONDARY, GST_TYPE_RTP_MP4A_DEPAY);
 }

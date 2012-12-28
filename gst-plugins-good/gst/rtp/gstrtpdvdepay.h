@@ -21,7 +21,7 @@
 #define __GSTRTPDVDEPAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertpdepayload.h>
+#include <gst/rtp/gstrtpbasedepayload.h>
 
 G_BEGIN_DECLS
 
@@ -41,13 +41,12 @@ typedef struct _GstRTPDVDepayClass GstRTPDVDepayClass;
 
 struct _GstRTPDVDepay
 {
-  GstBaseRTPDepayload parent;
+  GstRTPBaseDepayload parent;
 
   GstBuffer *acc;
   guint frame_size;
-  guint frame_nr;
   guint32 prev_ts;
-  gboolean have_header;
+  guint8 header_mask;
 
   gint width, height;
   gint rate_num, rate_denom;
@@ -55,10 +54,11 @@ struct _GstRTPDVDepay
 
 struct _GstRTPDVDepayClass
 {
-  GstBaseRTPDepayloadClass parent_class;
+  GstRTPBaseDepayloadClass parent_class;
 };
 
 GType gst_rtp_dv_depay_get_type (void);
+
 gboolean gst_rtp_dv_depay_plugin_init (GstPlugin * plugin);
 
 G_END_DECLS

@@ -31,14 +31,6 @@
 GST_DEBUG_CATEGORY (rtpdvpay_debug);
 #define GST_CAT_DEFAULT (rtpdvpay_debug)
 
-/* Elementfactory information */
-static GstElementDetails gst_rtp_dv_pay_details = {
-  "RTP DV Payloader",
-  "Codec/Payloader/Network",
-  "Payloads DV into RTP packets (RFC 3189)",
-  "Marcel Moreaux <marcelm@spacelabs.nl>, Wim Taymans <wim.taymans@gmail.com>"
-};
-
 #define DEFAULT_MODE GST_DV_PAY_MODE_VIDEO
 enum
 {
@@ -73,9 +65,9 @@ GST_STATIC_PAD_TEMPLATE ("src",
     )
     );
 
-static gboolean gst_rtp_dv_pay_setcaps (GstBaseRTPPayload * payload,
+static gboolean gst_rtp_dv_pay_setcaps (GstRTPBasePayload * payload,
     GstCaps * caps);
-static GstFlowReturn gst_rtp_dv_pay_handle_buffer (GstBaseRTPPayload * payload,
+static GstFlowReturn gst_rtp_dv_pay_handle_buffer (GstRTPBasePayload * payload,
     GstBuffer * buffer);
 
 #define GST_TYPE_DV_PAY_MODE (gst_dv_pay_mode_get_type())
@@ -102,34 +94,24 @@ static void gst_dv_pay_set_property (GObject * object,
 static void gst_dv_pay_get_property (GObject * object,
     guint prop_id, GValue * value, GParamSpec * pspec);
 
-GST_BOILERPLATE (GstRTPDVPay, gst_rtp_dv_pay, GstBaseRTPPayload,
-    GST_TYPE_BASE_RTP_PAYLOAD)
-
-     static void gst_rtp_dv_pay_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_dv_pay_sink_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_dv_pay_src_template));
-  gst_element_class_set_details (element_class, &gst_rtp_dv_pay_details);
-}
+#define gst_rtp_dv_pay_parent_class parent_class
+G_DEFINE_TYPE (GstRTPDVPay, gst_rtp_dv_pay, GST_TYPE_RTP_BASE_PAYLOAD);
 
 static void
 gst_rtp_dv_pay_class_init (GstRTPDVPayClass * klass)
 {
   GObjectClass *gobject_class;
-  GstBaseRTPPayloadClass *gstbasertppayload_class;
+  GstElementClass *gstelement_class;
+  GstRTPBasePayloadClass *gstrtpbasepayload_class;
+
+  GST_DEBUG_CATEGORY_INIT (rtpdvpay_debug, "rtpdvpay", 0, "DV RTP Payloader");
 
   gobject_class = (GObjectClass *) klass;
-  gstbasertppayload_class = (GstBaseRTPPayloadClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
+  gstrtpbasepayload_class = (GstRTPBasePayloadClass *) klass;
 
   gobject_class->set_property = gst_dv_pay_set_property;
   gobject_class->get_property = gst_dv_pay_get_property;
-
-  gstbasertppayload_class->set_caps = gst_rtp_dv_pay_setcaps;
-  gstbasertppayload_class->handle_buffer = gst_rtp_dv_pay_handle_buffer;
 
   g_object_class_install_property (gobject_class, PROP_MODE,
       g_param_spec_enum ("mode", "Mode",
@@ -137,11 +119,22 @@ gst_rtp_dv_pay_class_init (GstRTPDVPayClass * klass)
           GST_TYPE_DV_PAY_MODE, DEFAULT_MODE,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-  GST_DEBUG_CATEGORY_INIT (rtpdvpay_debug, "rtpdvpay", 0, "DV RTP Payloader");
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_dv_pay_sink_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_dv_pay_src_template));
+
+  gst_element_class_set_static_metadata (gstelement_class, "RTP DV Payloader",
+      "Codec/Payloader/Network/RTP",
+      "Payloads DV into RTP packets (RFC 3189)",
+      "Marcel Moreaux <marcelm@spacelabs.nl>, Wim Taymans <wim.taymans@gmail.com>");
+
+  gstrtpbasepayload_class->set_caps = gst_rtp_dv_pay_setcaps;
+  gstrtpbasepayload_class->handle_buffer = gst_rtp_dv_pay_handle_buffer;
 }
 
 static void
-gst_rtp_dv_pay_init (GstRTPDVPay * rtpdvpay, GstRTPDVPayClass * klass)
+gst_rtp_dv_pay_init (GstRTPDVPay * rtpdvpay)
 {
 }
 
@@ -178,7 +171,7 @@ gst_dv_pay_get_property (GObject * object,
 }
 
 static gboolean
-gst_rtp_dv_pay_setcaps (GstBaseRTPPayload * payload, GstCaps * caps)
+gst_rtp_dv_pay_setcaps (GstRTPBasePayload * payload, GstCaps * caps)
 {
   /* We don't do anything here, but we could check if it's a system stream and if
    * it's not, default to sending the video only. We will negotiate downstream
@@ -188,10 +181,10 @@ gst_rtp_dv_pay_setcaps (GstBaseRTPPayload * payload, GstCaps * caps)
 }
 
 static gboolean
-gst_dv_pay_negotiate (GstRTPDVPay * rtpdvpay, guint8 * data, guint size)
+gst_dv_pay_negotiate (GstRTPDVPay * rtpdvpay, guint8 * data, gsize size)
 {
-  gchar *encode, *media;
-  gboolean audio_bundled;
+  const gchar *encode, *media;
+  gboolean audio_bundled, res;
 
   if ((data[3] & 0x80) == 0) {  /* DSF flag */
     /* it's an NTSC format */
@@ -228,18 +221,18 @@ gst_dv_pay_negotiate (GstRTPDVPay * rtpdvpay, guint8 * data, guint size)
     default:
       break;
   }
-  gst_basertppayload_set_options (GST_BASE_RTP_PAYLOAD (rtpdvpay), media, TRUE,
-      "DV", 90000);
+  gst_rtp_base_payload_set_options (GST_RTP_BASE_PAYLOAD (rtpdvpay), media,
+      TRUE, "DV", 90000);
 
   if (audio_bundled) {
-    gst_basertppayload_set_outcaps (GST_BASE_RTP_PAYLOAD (rtpdvpay),
+    res = gst_rtp_base_payload_set_outcaps (GST_RTP_BASE_PAYLOAD (rtpdvpay),
         "encode", G_TYPE_STRING, encode,
         "audio", G_TYPE_STRING, "bundled", NULL);
   } else {
-    gst_basertppayload_set_outcaps (GST_BASE_RTP_PAYLOAD (rtpdvpay),
+    res = gst_rtp_base_payload_set_outcaps (GST_RTP_BASE_PAYLOAD (rtpdvpay),
         "encode", G_TYPE_STRING, encode, NULL);
   }
-  return TRUE;
+  return res;
 }
 
 static gboolean
@@ -281,7 +274,7 @@ include_dif (GstRTPDVPay * rtpdvpay, guint8 * data)
 /* Get a DV frame, chop it up in pieces, and push the pieces to the RTP layer.
  */
 static GstFlowReturn
-gst_rtp_dv_pay_handle_buffer (GstBaseRTPPayload * basepayload,
+gst_rtp_dv_pay_handle_buffer (GstRTPBasePayload * basepayload,
     GstBuffer * buffer)
 {
   GstRTPDVPay *rtpdvpay;
@@ -289,10 +282,12 @@ gst_rtp_dv_pay_handle_buffer (GstBaseRTPPayload * basepayload,
   GstBuffer *outbuf;
   GstFlowReturn ret = GST_FLOW_OK;
   gint hdrlen;
-  guint size;
+  gsize size;
+  GstMapInfo map;
   guint8 *data;
   guint8 *dest;
   guint filled;
+  GstRTPBuffer rtp = { NULL, };
 
   rtpdvpay = GST_RTP_DV_PAY (basepayload);
 
@@ -302,15 +297,17 @@ gst_rtp_dv_pay_handle_buffer (GstBaseRTPPayload * basepayload,
    * Therefore, we round the available room down to the nearest multiple of 80.
    *
    * The available room is just the packet MTU, minus the RTP header length. */
-  max_payload_size = ((GST_BASE_RTP_PAYLOAD_MTU (rtpdvpay) - hdrlen) / 80) * 80;
+  max_payload_size = ((GST_RTP_BASE_PAYLOAD_MTU (rtpdvpay) - hdrlen) / 80) * 80;
 
   /* The length of the buffer to transmit. */
-  size = GST_BUFFER_SIZE (buffer);
-  data = GST_BUFFER_DATA (buffer);
+  gst_buffer_map (buffer, &map, GST_MAP_READ);
+  data = map.data;
+  size = map.size;
 
   GST_DEBUG_OBJECT (rtpdvpay,
-      "DV RTP payloader got buffer of %u bytes, splitting in %u byte "
-      "payload fragments, at time %" GST_TIME_FORMAT, size, max_payload_size,
+      "DV RTP payloader got buffer of %" G_GSIZE_FORMAT
+      " bytes, splitting in %u byte " "payload fragments, at time %"
+      GST_TIME_FORMAT, size, max_payload_size,
       GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buffer)));
 
   if (!rtpdvpay->negotiated) {
@@ -329,7 +326,9 @@ gst_rtp_dv_pay_handle_buffer (GstBaseRTPPayload * basepayload,
     if (outbuf == NULL) {
       outbuf = gst_rtp_buffer_new_allocate (max_payload_size, 0, 0);
       GST_BUFFER_TIMESTAMP (outbuf) = GST_BUFFER_TIMESTAMP (buffer);
-      dest = gst_rtp_buffer_get_payload (outbuf);
+
+      gst_rtp_buffer_map (outbuf, GST_MAP_WRITE, &rtp);
+      dest = gst_rtp_buffer_get_payload (&rtp);
       filled = 0;
     }
 
@@ -353,20 +352,23 @@ gst_rtp_dv_pay_handle_buffer (GstBaseRTPPayload * basepayload,
         guint hlen;
 
         /* set marker */
-        gst_rtp_buffer_set_marker (outbuf, TRUE);
+        gst_rtp_buffer_set_marker (&rtp, TRUE);
 
         /* shrink buffer to last packet */
-        hlen = gst_rtp_buffer_get_header_len (outbuf);
-        gst_rtp_buffer_set_packet_len (outbuf, hlen + filled);
+        hlen = gst_rtp_buffer_get_header_len (&rtp);
+        gst_rtp_buffer_set_packet_len (&rtp, hlen + filled);
       }
+
       /* Push out the created piece, and check for errors. */
-      ret = gst_basertppayload_push (basepayload, outbuf);
+      gst_rtp_buffer_unmap (&rtp);
+      ret = gst_rtp_base_payload_push (basepayload, outbuf);
       if (ret != GST_FLOW_OK)
         break;
 
       outbuf = NULL;
     }
   }
+  gst_buffer_unmap (buffer, &map);
   gst_buffer_unref (buffer);
 
   return ret;
@@ -376,5 +378,5 @@ gboolean
 gst_rtp_dv_pay_plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "rtpdvpay",
-      GST_RANK_NONE, GST_TYPE_RTP_DV_PAY);
+      GST_RANK_SECONDARY, GST_TYPE_RTP_DV_PAY);
 }

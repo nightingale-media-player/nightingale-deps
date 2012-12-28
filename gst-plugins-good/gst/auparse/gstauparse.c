@@ -37,17 +37,28 @@
 GST_DEBUG_CATEGORY_STATIC (auparse_debug);
 #define GST_CAT_DEFAULT (auparse_debug)
 
-static const GstElementDetails gst_au_parse_details =
-GST_ELEMENT_DETAILS ("AU audio demuxer",
-    "Codec/Demuxer/Audio",
-    "Parse an .au file into raw audio",
-    "Erik Walthinsen <omega@cse.ogi.edu>");
-
 static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("audio/x-au")
     );
+
+#define GST_AU_PARSE_RAW_PAD_TEMPLATE_CAPS \
+    "audio/x-raw, "                         \
+    "format= (string) { S8, S16LE, S16BE, S24LE, S24BE, "  \
+                       "S32LE, S32BE, F32LE, F32BE, "        \
+                       "F64LE, F64BE }, " \
+    "rate = (int) [ 8000, 192000 ], "       \
+    "channels = (int) 1, "                  \
+    "layout = (string) interleaved;"        \
+    "audio/x-raw, "                         \
+    "format= (string) { S8, S16LE, S16BE, S24LE, S24BE, "  \
+                       "S32LE, S32BE, F32LE, F32BE, "        \
+                       "F64LE, F64BE }, " \
+    "rate = (int) [ 8000, 192000 ], "       \
+    "channels = (int) 2, "                  \
+    "channel-mask = (bitmask) 0x3,"         \
+    "layout = (string) interleaved"
 
 #define GST_AU_PARSE_ALAW_PAD_TEMPLATE_CAPS \
     "audio/x-alaw, "                        \
@@ -66,46 +77,39 @@ static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
 
 static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
-    GST_PAD_SOMETIMES,
-    GST_STATIC_CAPS (GST_AUDIO_INT_PAD_TEMPLATE_CAPS "; "
-        GST_AUDIO_FLOAT_PAD_TEMPLATE_CAPS ";"
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS (GST_AU_PARSE_RAW_PAD_TEMPLATE_CAPS "; "
         GST_AU_PARSE_ALAW_PAD_TEMPLATE_CAPS ";"
         GST_AU_PARSE_MULAW_PAD_TEMPLATE_CAPS ";"
         GST_AU_PARSE_ADPCM_PAD_TEMPLATE_CAPS));
 
 
 static void gst_au_parse_dispose (GObject * object);
-static GstFlowReturn gst_au_parse_chain (GstPad * pad, GstBuffer * buf);
+static GstFlowReturn gst_au_parse_chain (GstPad * pad, GstObject * parent,
+    GstBuffer * buf);
 static GstStateChangeReturn gst_au_parse_change_state (GstElement * element,
     GstStateChange transition);
 static void gst_au_parse_reset (GstAuParse * auparse);
-static gboolean gst_au_parse_remove_srcpad (GstAuParse * auparse);
-static gboolean gst_au_parse_add_srcpad (GstAuParse * auparse, GstCaps * caps);
-static gboolean gst_au_parse_src_query (GstPad * pad, GstQuery * query);
-static gboolean gst_au_parse_src_event (GstPad * pad, GstEvent * event);
-static gboolean gst_au_parse_sink_event (GstPad * pad, GstEvent * event);
+static gboolean gst_au_parse_src_query (GstPad * pad, GstObject * parent,
+    GstQuery * query);
+static gboolean gst_au_parse_src_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
+static gboolean gst_au_parse_sink_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
+static gboolean gst_au_parse_src_convert (GstAuParse * auparse,
+    GstFormat src_format, gint64 srcval, GstFormat dest_format,
+    gint64 * destval);
 
-GST_BOILERPLATE (GstAuParse, gst_au_parse, GstElement, GST_TYPE_ELEMENT);
-
-static void
-gst_au_parse_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_template));
-  gst_element_class_set_details (element_class, &gst_au_parse_details);
-
-  GST_DEBUG_CATEGORY_INIT (auparse_debug, "auparse", 0, ".au parser");
-}
+#define gst_au_parse_parent_class parent_class
+G_DEFINE_TYPE (GstAuParse, gst_au_parse, GST_TYPE_ELEMENT);
 
 static void
 gst_au_parse_class_init (GstAuParseClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
+
+  GST_DEBUG_CATEGORY_INIT (auparse_debug, "auparse", 0, ".au parser");
 
   gobject_class = (GObjectClass *) klass;
   gstelement_class = (GstElementClass *) klass;
@@ -114,10 +118,19 @@ gst_au_parse_class_init (GstAuParseClass * klass)
 
   gstelement_class->change_state =
       GST_DEBUG_FUNCPTR (gst_au_parse_change_state);
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sink_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&src_template));
+  gst_element_class_set_static_metadata (gstelement_class,
+      "AU audio demuxer",
+      "Codec/Demuxer/Audio",
+      "Parse an .au file into raw audio",
+      "Erik Walthinsen <omega@cse.ogi.edu>");
 }
 
 static void
-gst_au_parse_init (GstAuParse * auparse, GstAuParseClass * klass)
+gst_au_parse_init (GstAuParse * auparse)
 {
   auparse->sinkpad = gst_pad_new_from_static_template (&sink_template, "sink");
   gst_pad_set_chain_function (auparse->sinkpad,
@@ -126,7 +139,14 @@ gst_au_parse_init (GstAuParse * auparse, GstAuParseClass * klass)
       GST_DEBUG_FUNCPTR (gst_au_parse_sink_event));
   gst_element_add_pad (GST_ELEMENT (auparse), auparse->sinkpad);
 
-  auparse->srcpad = NULL;
+  auparse->srcpad = gst_pad_new_from_static_template (&src_template, "src");
+  gst_pad_set_query_function (auparse->srcpad,
+      GST_DEBUG_FUNCPTR (gst_au_parse_src_query));
+  gst_pad_set_event_function (auparse->srcpad,
+      GST_DEBUG_FUNCPTR (gst_au_parse_src_event));
+  gst_pad_use_fixed_caps (auparse->srcpad);
+  gst_element_add_pad (GST_ELEMENT (auparse), auparse->srcpad);
+
   auparse->adapter = gst_adapter_new ();
   gst_au_parse_reset (auparse);
 }
@@ -146,8 +166,6 @@ gst_au_parse_dispose (GObject * object)
 static void
 gst_au_parse_reset (GstAuParse * auparse)
 {
-  gst_au_parse_remove_srcpad (auparse);
-
   auparse->offset = 0;
   auparse->buffer_offset = 0;
   auparse->encoding = 0;
@@ -159,66 +177,20 @@ gst_au_parse_reset (GstAuParse * auparse)
   /* gst_segment_init (&auparse->segment, GST_FORMAT_TIME); */
 }
 
-static gboolean
-gst_au_parse_add_srcpad (GstAuParse * auparse, GstCaps * new_caps)
+static void
+gst_au_parse_negotiate_srcpad (GstAuParse * auparse, GstCaps * new_caps)
 {
   if (auparse->src_caps && gst_caps_is_equal (new_caps, auparse->src_caps)) {
     GST_LOG_OBJECT (auparse, "same caps, nothing to do");
-    return TRUE;
+    return;
   }
 
   gst_caps_replace (&auparse->src_caps, new_caps);
-  if (auparse->srcpad != NULL) {
-    GST_DEBUG_OBJECT (auparse, "Changing src pad caps to %" GST_PTR_FORMAT,
-        auparse->src_caps);
-    gst_pad_set_caps (auparse->srcpad, auparse->src_caps);
-  }
+  GST_DEBUG_OBJECT (auparse, "Changing src pad caps to %" GST_PTR_FORMAT,
+      auparse->src_caps);
+  gst_pad_set_caps (auparse->srcpad, auparse->src_caps);
 
-  if (auparse->srcpad == NULL) {
-    auparse->srcpad = gst_pad_new_from_static_template (&src_template, "src");
-    g_return_val_if_fail (auparse->srcpad != NULL, FALSE);
-
-#if 0
-    gst_pad_set_query_type_function (auparse->srcpad,
-        GST_DEBUG_FUNCPTR (gst_au_parse_src_get_query_types));
-#endif
-    gst_pad_set_query_function (auparse->srcpad,
-        GST_DEBUG_FUNCPTR (gst_au_parse_src_query));
-    gst_pad_set_event_function (auparse->srcpad,
-        GST_DEBUG_FUNCPTR (gst_au_parse_src_event));
-
-    gst_pad_use_fixed_caps (auparse->srcpad);
-    gst_pad_set_active (auparse->srcpad, TRUE);
-
-    if (auparse->src_caps)
-      gst_pad_set_caps (auparse->srcpad, auparse->src_caps);
-
-    GST_DEBUG_OBJECT (auparse, "Adding src pad with caps %" GST_PTR_FORMAT,
-        auparse->src_caps);
-
-    gst_object_ref (auparse->srcpad);
-    if (!gst_element_add_pad (GST_ELEMENT (auparse), auparse->srcpad))
-      return FALSE;
-    gst_element_no_more_pads (GST_ELEMENT (auparse));
-  }
-
-  return TRUE;
-}
-
-static gboolean
-gst_au_parse_remove_srcpad (GstAuParse * auparse)
-{
-  gboolean res = TRUE;
-
-  if (auparse->srcpad != NULL) {
-    GST_DEBUG_OBJECT (auparse, "Removing src pad");
-    res = gst_element_remove_pad (GST_ELEMENT (auparse), auparse->srcpad);
-    g_return_val_if_fail (res != FALSE, FALSE);
-    gst_object_unref (auparse->srcpad);
-    auparse->srcpad = NULL;
-  }
-
-  return res;
+  return;
 }
 
 static GstFlowReturn
@@ -228,9 +200,11 @@ gst_au_parse_parse_header (GstAuParse * auparse)
   guint32 size;
   guint8 *head;
   gchar layout[7] = { 0, };
-  gint law = 0, depth = 0, ieee = 0;
+  GstAudioFormat format = GST_AUDIO_FORMAT_UNKNOWN;
+  gint law = 0;
+  guint endianness;
 
-  head = (guint8 *) gst_adapter_peek (auparse->adapter, 24);
+  head = (guint8 *) gst_adapter_map (auparse->adapter, 24);
   g_assert (head != NULL);
 
   GST_DEBUG_OBJECT (auparse, "[%c%c%c%c]", head[0], head[1], head[2], head[3]);
@@ -238,14 +212,14 @@ gst_au_parse_parse_header (GstAuParse * auparse)
   switch (GST_READ_UINT32_BE (head)) {
       /* normal format is big endian (au is a Sparc format) */
     case 0x2e736e64:{          /* ".snd" */
-      auparse->endianness = G_BIG_ENDIAN;
+      endianness = G_BIG_ENDIAN;
       break;
     }
       /* and of course, someone had to invent a little endian
        * version.  Used by DEC systems. */
     case 0x646e732e:           /* dns.                          */
     case 0x0064732e:{          /* other source say it is "dns." */
-      auparse->endianness = G_LITTLE_ENDIAN;
+      endianness = G_LITTLE_ENDIAN;
       break;
     }
     default:{
@@ -254,7 +228,9 @@ gst_au_parse_parse_header (GstAuParse * auparse)
   }
 
   auparse->offset = GST_READ_UINT32_BE (head + 4);
-  /* Do not trust size, could be set to -1 : unknown */
+  /* Do not trust size, could be set to -1 : unknown
+   * otherwise: filesize = size + auparse->offset
+   */
   size = GST_READ_UINT32_BE (head + 8);
   auparse->encoding = GST_READ_UINT32_BE (head + 12);
   auparse->samplerate = GST_READ_UINT32_BE (head + 16);
@@ -283,33 +259,50 @@ gst_au_parse_parse_header (GstAuParse * auparse)
   switch (auparse->encoding) {
     case 1:                    /* 8-bit ISDN mu-law G.711 */
       law = 1;
-      depth = 8;
       break;
     case 27:                   /* 8-bit ISDN  A-law G.711 */
       law = 2;
-      depth = 8;
       break;
 
-    case 2:                    /*  8-bit linear PCM */
-      depth = 8;
+    case 2:                    /*  8-bit linear PCM, FIXME signed? */
+      format = GST_AUDIO_FORMAT_S8;
+      auparse->sample_size = auparse->channels;
       break;
     case 3:                    /* 16-bit linear PCM */
-      depth = 16;
+      if (endianness == G_LITTLE_ENDIAN)
+        format = GST_AUDIO_FORMAT_S16LE;
+      else
+        format = GST_AUDIO_FORMAT_S16BE;
+      auparse->sample_size = auparse->channels * 2;
       break;
     case 4:                    /* 24-bit linear PCM */
-      depth = 24;
+      if (endianness == G_LITTLE_ENDIAN)
+        format = GST_AUDIO_FORMAT_S24LE;
+      else
+        format = GST_AUDIO_FORMAT_S24BE;
+      auparse->sample_size = auparse->channels * 3;
       break;
     case 5:                    /* 32-bit linear PCM */
-      depth = 32;
+      if (endianness == G_LITTLE_ENDIAN)
+        format = GST_AUDIO_FORMAT_S32LE;
+      else
+        format = GST_AUDIO_FORMAT_S32BE;
+      auparse->sample_size = auparse->channels * 4;
       break;
 
     case 6:                    /* 32-bit IEEE floating point */
-      ieee = 1;
-      depth = 32;
+      if (endianness == G_LITTLE_ENDIAN)
+        format = GST_AUDIO_FORMAT_F32LE;
+      else
+        format = GST_AUDIO_FORMAT_F32BE;
+      auparse->sample_size = auparse->channels * 4;
       break;
     case 7:                    /* 64-bit IEEE floating point */
-      ieee = 1;
-      depth = 64;
+      if (endianness == G_LITTLE_ENDIAN)
+        format = GST_AUDIO_FORMAT_F64LE;
+      else
+        format = GST_AUDIO_FORMAT_F64BE;
+      auparse->sample_size = auparse->channels * 8;
       break;
 
     case 23:                   /* 4-bit CCITT G.721   ADPCM 32kbps -> modplug/libsndfile (compressed 8-bit mu-law) */
@@ -354,34 +347,32 @@ gst_au_parse_parse_header (GstAuParse * auparse)
         "rate", G_TYPE_INT, auparse->samplerate,
         "channels", G_TYPE_INT, auparse->channels, NULL);
     auparse->sample_size = auparse->channels;
-  } else if (ieee) {
-    tempcaps = gst_caps_new_simple ("audio/x-raw-float",
+  } else if (format != GST_AUDIO_FORMAT_UNKNOWN) {
+    GstCaps *templ_caps = gst_pad_get_pad_template_caps (auparse->srcpad);
+    GstCaps *intersection;
+
+    tempcaps = gst_caps_new_simple ("audio/x-raw",
+        "format", G_TYPE_STRING, gst_audio_format_to_string (format),
         "rate", G_TYPE_INT, auparse->samplerate,
-        "channels", G_TYPE_INT, auparse->channels,
-        "endianness", G_TYPE_INT, auparse->endianness,
-        "width", G_TYPE_INT, depth, NULL);
-    auparse->sample_size = auparse->channels * depth / 8;
+        "channels", G_TYPE_INT, auparse->channels, NULL);
+
+    intersection = gst_caps_intersect (tempcaps, templ_caps);
+    gst_caps_unref (tempcaps);
+    gst_caps_unref (templ_caps);
+    tempcaps = intersection;
   } else if (layout[0]) {
     tempcaps = gst_caps_new_simple ("audio/x-adpcm",
         "layout", G_TYPE_STRING, layout, NULL);
     auparse->sample_size = 0;
-  } else {
-    tempcaps = gst_caps_new_simple ("audio/x-raw-int",
-        "rate", G_TYPE_INT, auparse->samplerate,
-        "channels", G_TYPE_INT, auparse->channels,
-        "endianness", G_TYPE_INT, auparse->endianness,
-        "depth", G_TYPE_INT, depth, "width", G_TYPE_INT, depth,
-        /* FIXME: signed TRUE even for 8-bit PCM? */
-        "signed", G_TYPE_BOOLEAN, TRUE, NULL);
-    auparse->sample_size = auparse->channels * depth / 8;
-  }
+  } else
+    goto unknown_format;
 
   GST_DEBUG_OBJECT (auparse, "sample_size=%d", auparse->sample_size);
 
-  if (!gst_au_parse_add_srcpad (auparse, tempcaps))
-    goto add_pad_failed;
+  gst_au_parse_negotiate_srcpad (auparse, tempcaps);
 
   GST_DEBUG_OBJECT (auparse, "offset=%" G_GINT64_FORMAT, auparse->offset);
+  gst_adapter_unmap (auparse->adapter);
   gst_adapter_flush (auparse->adapter, auparse->offset);
 
   gst_caps_unref (tempcaps);
@@ -390,32 +381,29 @@ gst_au_parse_parse_header (GstAuParse * auparse)
   /* ERRORS */
 unknown_header:
   {
+    gst_adapter_unmap (auparse->adapter);
     GST_ELEMENT_ERROR (auparse, STREAM, WRONG_TYPE, (NULL), (NULL));
     return GST_FLOW_ERROR;
   }
 unsupported_sample_rate:
   {
+    gst_adapter_unmap (auparse->adapter);
     GST_ELEMENT_ERROR (auparse, STREAM, FORMAT, (NULL),
         ("Unsupported samplerate: %u", auparse->samplerate));
     return GST_FLOW_ERROR;
   }
 unsupported_number_of_channels:
   {
+    gst_adapter_unmap (auparse->adapter);
     GST_ELEMENT_ERROR (auparse, STREAM, FORMAT, (NULL),
         ("Unsupported number of channels: %u", auparse->channels));
     return GST_FLOW_ERROR;
   }
 unknown_format:
   {
+    gst_adapter_unmap (auparse->adapter);
     GST_ELEMENT_ERROR (auparse, STREAM, FORMAT, (NULL),
         ("Unsupported encoding: %u", auparse->encoding));
-    return GST_FLOW_ERROR;
-  }
-add_pad_failed:
-  {
-    GST_ELEMENT_ERROR (auparse, STREAM, FAILED, (NULL),
-        ("Failed to add srcpad"));
-    gst_caps_unref (tempcaps);
     return GST_FLOW_ERROR;
   }
 }
@@ -423,21 +411,26 @@ add_pad_failed:
 #define AU_HEADER_SIZE 24
 
 static GstFlowReturn
-gst_au_parse_chain (GstPad * pad, GstBuffer * buf)
+gst_au_parse_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
 {
   GstFlowReturn ret = GST_FLOW_OK;
   GstAuParse *auparse;
   gint avail, sendnow = 0;
+  gint64 timestamp;
+  gint64 duration;
+  gint64 offset;
+  GstSegment segment;
 
-  auparse = GST_AU_PARSE (gst_pad_get_parent (pad));
+  auparse = GST_AU_PARSE (parent);
 
-  GST_LOG_OBJECT (auparse, "got buffer of size %u", GST_BUFFER_SIZE (buf));
+  GST_LOG_OBJECT (auparse, "got buffer of size %" G_GSIZE_FORMAT,
+      gst_buffer_get_size (buf));
 
   gst_adapter_push (auparse->adapter, buf);
   buf = NULL;
 
   /* if we haven't seen any data yet... */
-  if (auparse->srcpad == NULL) {
+  if (!gst_pad_has_current_caps (auparse->srcpad)) {
     if (gst_adapter_available (auparse->adapter) < AU_HEADER_SIZE) {
       GST_DEBUG_OBJECT (auparse, "need more data to parse header");
       ret = GST_FLOW_OK;
@@ -448,9 +441,8 @@ gst_au_parse_chain (GstPad * pad, GstBuffer * buf)
     if (ret != GST_FLOW_OK)
       goto out;
 
-    gst_pad_push_event (auparse->srcpad,
-        gst_event_new_new_segment (FALSE, 1.0, GST_FORMAT_DEFAULT,
-            0, GST_CLOCK_TIME_NONE, 0));
+    gst_segment_init (&segment, GST_FORMAT_TIME);
+    gst_pad_push_event (auparse->srcpad, gst_event_new_segment (&segment));
   }
 
   avail = gst_adapter_available (auparse->adapter);
@@ -466,20 +458,26 @@ gst_au_parse_chain (GstPad * pad, GstBuffer * buf)
 
   if (sendnow > 0) {
     GstBuffer *outbuf;
-    const guint8 *data;
+    gint64 pos;
 
-    ret = gst_pad_alloc_buffer_and_set_caps (auparse->srcpad,
-        auparse->buffer_offset, sendnow, GST_PAD_CAPS (auparse->srcpad),
-        &outbuf);
+    outbuf = gst_adapter_take_buffer (auparse->adapter, sendnow);
+    outbuf = gst_buffer_make_writable (outbuf);
 
-    if (ret != GST_FLOW_OK) {
-      GST_DEBUG_OBJECT (auparse, "pad alloc flow: %s", gst_flow_get_name (ret));
-      goto out;
+    pos = auparse->buffer_offset - auparse->offset;
+    pos = MAX (pos, 0);
+
+    if (auparse->sample_size > 0 && auparse->samplerate > 0) {
+      gst_au_parse_src_convert (auparse, GST_FORMAT_BYTES, pos,
+          GST_FORMAT_DEFAULT, &offset);
+      gst_au_parse_src_convert (auparse, GST_FORMAT_BYTES, pos,
+          GST_FORMAT_TIME, &timestamp);
+      gst_au_parse_src_convert (auparse, GST_FORMAT_BYTES,
+          sendnow, GST_FORMAT_TIME, &duration);
+
+      GST_BUFFER_OFFSET (outbuf) = offset;
+      GST_BUFFER_TIMESTAMP (outbuf) = timestamp;
+      GST_BUFFER_DURATION (outbuf) = duration;
     }
-
-    data = gst_adapter_peek (auparse->adapter, sendnow);
-    memcpy (GST_BUFFER_DATA (outbuf), data, sendnow);
-    gst_adapter_flush (auparse->adapter, sendnow);
 
     auparse->buffer_offset += sendnow;
 
@@ -488,7 +486,6 @@ gst_au_parse_chain (GstPad * pad, GstBuffer * buf)
 
 out:
 
-  gst_object_unref (auparse);
   return ret;
 }
 
@@ -520,6 +517,9 @@ gst_au_parse_src_convert (GstAuParse * auparse, GstFormat src_format,
       /* fallthrough */
     case GST_FORMAT_DEFAULT:{
       switch (dest_format) {
+        case GST_FORMAT_DEFAULT:
+          *destval = srcval;
+          break;
         case GST_FORMAT_BYTES:
           *destval = srcval * samplesize;
           break;
@@ -535,8 +535,8 @@ gst_au_parse_src_convert (GstAuParse * auparse, GstFormat src_format,
     case GST_FORMAT_TIME:{
       switch (dest_format) {
         case GST_FORMAT_BYTES:
-          *destval =
-              gst_util_uint64_scale_int (srcval, rate * samplesize, GST_SECOND);
+          *destval = samplesize *
+              gst_util_uint64_scale_int (srcval, rate, GST_SECOND);
           break;
         case GST_FORMAT_DEFAULT:
           *destval = gst_util_uint64_scale_int (srcval, rate, GST_SECOND);
@@ -562,21 +562,21 @@ gst_au_parse_src_convert (GstAuParse * auparse, GstFormat src_format,
 }
 
 static gboolean
-gst_au_parse_src_query (GstPad * pad, GstQuery * query)
+gst_au_parse_src_query (GstPad * pad, GstObject * parent, GstQuery * query)
 {
   GstAuParse *auparse;
   gboolean ret = FALSE;
 
-  auparse = GST_AU_PARSE (gst_pad_get_parent (pad));
+  auparse = GST_AU_PARSE (parent);
 
   switch (GST_QUERY_TYPE (query)) {
     case GST_QUERY_DURATION:{
-      GstFormat bformat = GST_FORMAT_BYTES;
       GstFormat format;
       gint64 len, val;
 
       gst_query_parse_duration (query, &format, NULL);
-      if (!gst_pad_query_peer_duration (auparse->sinkpad, &bformat, &len)) {
+      if (!gst_pad_peer_query_duration (auparse->sinkpad, GST_FORMAT_BYTES,
+              &len)) {
         GST_DEBUG_OBJECT (auparse, "failed to query upstream length");
         break;
       }
@@ -584,8 +584,9 @@ gst_au_parse_src_query (GstPad * pad, GstQuery * query)
       len -= auparse->offset;
       GST_OBJECT_UNLOCK (auparse);
 
-      ret = gst_au_parse_src_convert (auparse, GST_FORMAT_BYTES, len,
-          format, &val);
+      ret =
+          gst_au_parse_src_convert (auparse, GST_FORMAT_BYTES, len, format,
+          &val);
 
       if (ret) {
         gst_query_set_duration (query, format, val);
@@ -593,12 +594,12 @@ gst_au_parse_src_query (GstPad * pad, GstQuery * query)
       break;
     }
     case GST_QUERY_POSITION:{
-      GstFormat bformat = GST_FORMAT_BYTES;
       GstFormat format;
       gint64 pos, val;
 
       gst_query_parse_position (query, &format, NULL);
-      if (!gst_pad_query_peer_position (auparse->sinkpad, &bformat, &pos)) {
+      if (!gst_pad_peer_query_position (auparse->sinkpad, GST_FORMAT_BYTES,
+              &pos)) {
         GST_DEBUG_OBJECT (auparse, "failed to query upstream position");
         break;
       }
@@ -614,12 +615,22 @@ gst_au_parse_src_query (GstPad * pad, GstQuery * query)
       }
       break;
     }
+    case GST_QUERY_SEEKING:{
+      GstFormat format;
+
+      gst_query_parse_seeking (query, &format, NULL, NULL, NULL);
+      /* FIXME: query duration in 'format'
+         gst_query_set_seeking (query, format, TRUE, 0, duration);
+       */
+      gst_query_set_seeking (query, format, TRUE, 0, GST_CLOCK_TIME_NONE);
+      ret = TRUE;
+      break;
+    }
     default:
-      ret = gst_pad_query_default (pad, query);
+      ret = gst_pad_query_default (pad, parent, query);
       break;
   }
 
-  gst_object_unref (auparse);
   return ret;
 }
 
@@ -631,6 +642,7 @@ gst_au_parse_handle_seek (GstAuParse * auparse, GstEvent * event)
   GstFormat format;
   gdouble rate;
   gint64 start, stop;
+  gboolean res;
 
   gst_event_parse_seek (event, &rate, &format, &flags, &start_type, &start,
       &stop_type, &stop);
@@ -640,46 +652,114 @@ gst_au_parse_handle_seek (GstAuParse * auparse, GstEvent * event)
     return FALSE;
   }
 
-  /* FIXME: implement seeking */
-  return FALSE;
+  res = gst_au_parse_src_convert (auparse, GST_FORMAT_TIME, start,
+      GST_FORMAT_BYTES, &start);
+
+  if (stop > 0) {
+    res = gst_au_parse_src_convert (auparse, GST_FORMAT_TIME, stop,
+        GST_FORMAT_BYTES, &stop);
+  }
+
+  GST_INFO_OBJECT (auparse,
+      "seeking: %" G_GINT64_FORMAT " ... %" G_GINT64_FORMAT, start, stop);
+
+  event = gst_event_new_seek (rate, GST_FORMAT_BYTES, flags, start_type, start,
+      stop_type, stop);
+  res = gst_pad_push_event (auparse->sinkpad, event);
+  return res;
 }
 
 static gboolean
-gst_au_parse_sink_event (GstPad * pad, GstEvent * event)
+gst_au_parse_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
   GstAuParse *auparse;
-  gboolean ret;
+  gboolean ret = TRUE;
 
-  auparse = GST_AU_PARSE (gst_pad_get_parent (pad));
+  auparse = GST_AU_PARSE (parent);
 
   switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_CAPS:
+    {
+      /* discard, we'll come up with proper src caps */
+      gst_event_unref (event);
+      break;
+    }
+    case GST_EVENT_SEGMENT:
+    {
+      gint64 start, stop, offset = 0;
+      GstSegment segment;
+      GstEvent *new_event = NULL;
+
+      /* some debug output */
+      gst_event_copy_segment (event, &segment);
+      GST_DEBUG_OBJECT (auparse, "received newsegment %" GST_SEGMENT_FORMAT,
+          &segment);
+
+      start = segment.start;
+      stop = segment.stop;
+      if (auparse->sample_size > 0) {
+        if (start > 0) {
+          offset = start;
+          start -= auparse->offset;
+          start = MAX (start, 0);
+        }
+        if (stop > 0) {
+          stop -= auparse->offset;
+          stop = MAX (stop, 0);
+        }
+        gst_au_parse_src_convert (auparse, GST_FORMAT_BYTES, start,
+            GST_FORMAT_TIME, &start);
+        gst_au_parse_src_convert (auparse, GST_FORMAT_BYTES, stop,
+            GST_FORMAT_TIME, &stop);
+      }
+
+      GST_INFO_OBJECT (auparse,
+          "new segment: %" GST_TIME_FORMAT " ... %" GST_TIME_FORMAT,
+          GST_TIME_ARGS (start), GST_TIME_ARGS (stop));
+
+      gst_segment_init (&segment, GST_FORMAT_TIME);
+      segment.start = segment.time = start;
+      segment.stop = stop;
+      new_event = gst_event_new_segment (&segment);
+
+      ret = gst_pad_push_event (auparse->srcpad, new_event);
+
+      auparse->buffer_offset = offset;
+
+      gst_event_unref (event);
+      break;
+    }
+    case GST_EVENT_EOS:
+      if (!auparse->srcpad) {
+        GST_ELEMENT_ERROR (auparse, STREAM, WRONG_TYPE,
+            ("No valid input found before end of stream"), (NULL));
+      }
+      /* fall-through */
     default:
-      ret = gst_pad_event_default (pad, event);
+      ret = gst_pad_event_default (pad, parent, event);
       break;
   }
 
-  gst_object_unref (auparse);
   return ret;
 }
 
 static gboolean
-gst_au_parse_src_event (GstPad * pad, GstEvent * event)
+gst_au_parse_src_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
   GstAuParse *auparse;
   gboolean ret;
 
-  auparse = GST_AU_PARSE (gst_pad_get_parent (pad));
+  auparse = GST_AU_PARSE (parent);
 
   switch (GST_EVENT_TYPE (event)) {
     case GST_EVENT_SEEK:
       ret = gst_au_parse_handle_seek (auparse, event);
       break;
     default:
-      ret = gst_pad_event_default (pad, event);
+      ret = gst_pad_event_default (pad, parent, event);
       break;
   }
 
-  gst_object_unref (auparse);
   return ret;
 }
 
@@ -689,7 +769,7 @@ gst_au_parse_change_state (GstElement * element, GstStateChange transition)
   GstAuParse *auparse = GST_AU_PARSE (element);
   GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;
 
-  ret = parent_class->change_state (element, transition);
+  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
   if (ret == GST_STATE_CHANGE_FAILURE)
     return ret;
 
@@ -716,6 +796,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "auparse",
+    auparse,
     "parses au streams", plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME,
     GST_PACKAGE_ORIGIN)

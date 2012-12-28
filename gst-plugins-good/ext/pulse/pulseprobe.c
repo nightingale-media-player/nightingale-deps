@@ -1,3 +1,5 @@
+/*-*- Mode: C; c-basic-offset: 2 -*-*/
+
 /*
  *  GStreamer pulseaudio plugin
  *
@@ -18,6 +20,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  *  USA.
  */
+
+/* FIXME 0.11: suppress warnings for deprecated API such as GValueArray
+ * with newer GLib versions (>= 2.31.0) */
+#define GLIB_DISABLE_DEPRECATION_WARNINGS
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -99,15 +105,21 @@ static gboolean
 gst_pulseprobe_open (GstPulseProbe * c)
 {
   int e;
-  gchar *name = gst_pulse_client_name ();
+  gchar *name;
 
   g_assert (c);
 
+  GST_DEBUG_OBJECT (c->object, "probe open");
+
   c->mainloop = pa_threaded_mainloop_new ();
-  g_assert (c->mainloop);
+  if (!c->mainloop)
+    return FALSE;
 
   e = pa_threaded_mainloop_start (c->mainloop);
-  g_assert (e == 0);
+  if (e < 0)
+    return FALSE;
+
+  name = gst_pulse_client_name ();
 
   pa_threaded_mainloop_lock (c->mainloop);
 
@@ -184,6 +196,8 @@ gst_pulseprobe_enumerate (GstPulseProbe * c)
 {
   pa_operation *o = NULL;
 
+  GST_DEBUG_OBJECT (c->object, "probe enumerate");
+
   pa_threaded_mainloop_lock (c->mainloop);
 
   if (c->enumerate_sinks) {
@@ -197,7 +211,7 @@ gst_pulseprobe_enumerate (GstPulseProbe * c)
       goto unlock_and_fail;
     }
 
-    c->operation_success = 0;
+    c->operation_success = FALSE;
 
     while (pa_operation_get_state (o) == PA_OPERATION_RUNNING) {
 
@@ -228,7 +242,7 @@ gst_pulseprobe_enumerate (GstPulseProbe * c)
       goto unlock_and_fail;
     }
 
-    c->operation_success = 0;
+    c->operation_success = FALSE;
     while (pa_operation_get_state (o) == PA_OPERATION_RUNNING) {
 
       if (gst_pulseprobe_is_dead (c))
@@ -268,6 +282,8 @@ gst_pulseprobe_close (GstPulseProbe * c)
 {
   g_assert (c);
 
+  GST_DEBUG_OBJECT (c->object, "probe close");
+
   if (c->mainloop)
     pa_threaded_mainloop_stop (c->mainloop);
 
@@ -302,8 +318,11 @@ gst_pulseprobe_new (GObject * object, GObjectClass * klass,
   c->prop_id = prop_id;
   c->properties =
       g_list_append (NULL, g_object_class_find_property (klass, "device"));
+
   c->devices = NULL;
-  c->devices_valid = 0;
+  c->devices_valid = FALSE;
+
+  c->operation_success = FALSE;
 
   return c;
 }
@@ -358,6 +377,7 @@ gst_pulseprobe_probe_property (GstPulseProbe * c, guint prop_id,
   }
 }
 
+#if 0
 GValueArray *
 gst_pulseprobe_get_values (GstPulseProbe * c, guint prop_id,
     const GParamSpec * pspec)
@@ -388,6 +408,7 @@ gst_pulseprobe_get_values (GstPulseProbe * c, guint prop_id,
 
   return array;
 }
+#endif
 
 void
 gst_pulseprobe_set_server (GstPulseProbe * c, const gchar * server)

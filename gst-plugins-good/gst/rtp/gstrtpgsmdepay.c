@@ -29,14 +29,6 @@
 GST_DEBUG_CATEGORY_STATIC (rtpgsmdepay_debug);
 #define GST_CAT_DEFAULT (rtpgsmdepay_debug)
 
-/* elementfactory information */
-static GstElementDetails gst_rtp_gsmdepay_details = {
-  "RTP GSM depayloader",
-  "Codec/Depayloader/Network",
-  "Extracts GSM audio from RTP packets",
-  "Zeeshan Ali <zeenix@gmail.com>"
-};
-
 /* RTPGSMDepay signals and args */
 enum
 {
@@ -65,51 +57,46 @@ static GstStaticPadTemplate gst_rtp_gsm_depay_sink_template =
         "clock-rate = (int) 8000")
     );
 
-static GstBuffer *gst_rtp_gsm_depay_process (GstBaseRTPDepayload * _depayload,
+static GstBuffer *gst_rtp_gsm_depay_process (GstRTPBaseDepayload * _depayload,
     GstBuffer * buf);
-static gboolean gst_rtp_gsm_depay_setcaps (GstBaseRTPDepayload * _depayload,
+static gboolean gst_rtp_gsm_depay_setcaps (GstRTPBaseDepayload * _depayload,
     GstCaps * caps);
 
-GST_BOILERPLATE (GstRTPGSMDepay, gst_rtp_gsm_depay, GstBaseRTPDepayload,
-    GST_TYPE_BASE_RTP_DEPAYLOAD);
-
-static void
-gst_rtp_gsm_depay_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_gsm_depay_src_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_gsm_depay_sink_template));
-  gst_element_class_set_details (element_class, &gst_rtp_gsmdepay_details);
-}
+#define gst_rtp_gsm_depay_parent_class parent_class
+G_DEFINE_TYPE (GstRTPGSMDepay, gst_rtp_gsm_depay, GST_TYPE_RTP_BASE_DEPAYLOAD);
 
 static void
 gst_rtp_gsm_depay_class_init (GstRTPGSMDepayClass * klass)
 {
-  GstBaseRTPDepayloadClass *gstbasertp_depayload_class;
+  GstElementClass *gstelement_class;
+  GstRTPBaseDepayloadClass *gstrtpbase_depayload_class;
 
-  gstbasertp_depayload_class = (GstBaseRTPDepayloadClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
+  gstrtpbase_depayload_class = (GstRTPBaseDepayloadClass *) klass;
 
-  parent_class = g_type_class_peek_parent (klass);
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_gsm_depay_src_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_gsm_depay_sink_template));
 
-  gstbasertp_depayload_class->process = gst_rtp_gsm_depay_process;
-  gstbasertp_depayload_class->set_caps = gst_rtp_gsm_depay_setcaps;
+  gst_element_class_set_static_metadata (gstelement_class,
+      "RTP GSM depayloader", "Codec/Depayloader/Network/RTP",
+      "Extracts GSM audio from RTP packets", "Zeeshan Ali <zeenix@gmail.com>");
+
+  gstrtpbase_depayload_class->process = gst_rtp_gsm_depay_process;
+  gstrtpbase_depayload_class->set_caps = gst_rtp_gsm_depay_setcaps;
 
   GST_DEBUG_CATEGORY_INIT (rtpgsmdepay_debug, "rtpgsmdepay", 0,
       "GSM Audio RTP Depayloader");
 }
 
 static void
-gst_rtp_gsm_depay_init (GstRTPGSMDepay * rtpgsmdepay,
-    GstRTPGSMDepayClass * klass)
+gst_rtp_gsm_depay_init (GstRTPGSMDepay * rtpgsmdepay)
 {
-  /* needed because of GST_BOILERPLATE */
 }
 
 static gboolean
-gst_rtp_gsm_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
+gst_rtp_gsm_depay_setcaps (GstRTPBaseDepayload * depayload, GstCaps * caps)
 {
   GstCaps *srccaps;
   gboolean ret;
@@ -124,27 +111,32 @@ gst_rtp_gsm_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
 
   srccaps = gst_caps_new_simple ("audio/x-gsm",
       "channels", G_TYPE_INT, 1, "rate", G_TYPE_INT, clock_rate, NULL);
-  ret = gst_pad_set_caps (GST_BASE_RTP_DEPAYLOAD_SRCPAD (depayload), srccaps);
+  ret = gst_pad_set_caps (GST_RTP_BASE_DEPAYLOAD_SRCPAD (depayload), srccaps);
   gst_caps_unref (srccaps);
 
   return ret;
 }
 
 static GstBuffer *
-gst_rtp_gsm_depay_process (GstBaseRTPDepayload * _depayload, GstBuffer * buf)
+gst_rtp_gsm_depay_process (GstRTPBaseDepayload * _depayload, GstBuffer * buf)
 {
   GstBuffer *outbuf = NULL;
   gboolean marker;
+  GstRTPBuffer rtp = { NULL };
 
-  marker = gst_rtp_buffer_get_marker (buf);
+  gst_rtp_buffer_map (buf, GST_MAP_READ, &rtp);
 
-  GST_DEBUG ("process : got %d bytes, mark %d ts %u seqn %d",
-      GST_BUFFER_SIZE (buf), marker,
-      gst_rtp_buffer_get_timestamp (buf), gst_rtp_buffer_get_seq (buf));
+  marker = gst_rtp_buffer_get_marker (&rtp);
 
-  outbuf = gst_rtp_buffer_get_payload_buffer (buf);
+  GST_DEBUG ("process : got %" G_GSIZE_FORMAT " bytes, mark %d ts %u seqn %d",
+      gst_buffer_get_size (buf), marker,
+      gst_rtp_buffer_get_timestamp (&rtp), gst_rtp_buffer_get_seq (&rtp));
 
-  if (marker) {
+  outbuf = gst_rtp_buffer_get_payload_buffer (&rtp);
+
+  gst_rtp_buffer_unmap (&rtp);
+
+  if (marker && outbuf) {
     /* mark start of talkspurt with DISCONT */
     GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_DISCONT);
   }
@@ -156,5 +148,5 @@ gboolean
 gst_rtp_gsm_depay_plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "rtpgsmdepay",
-      GST_RANK_MARGINAL, GST_TYPE_RTP_GSM_DEPAY);
+      GST_RANK_SECONDARY, GST_TYPE_RTP_GSM_DEPAY);
 }

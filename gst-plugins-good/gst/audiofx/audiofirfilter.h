@@ -55,8 +55,7 @@ struct _GstAudioFIRFilter {
   guint64 latency;
 
   /* < private > */
-  GMutex *lock;
-  gint rate;
+  GMutex lock;
 };
 
 struct _GstAudioFIRFilterClass {

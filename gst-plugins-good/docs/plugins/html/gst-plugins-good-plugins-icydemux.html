@@ -3,16 +3,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>icydemux</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-hdv1394src.html" title="hdv1394src">
 <link rel="next" href="gst-plugins-good-plugins-id3demux.html" title="id3demux">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -20,18 +17,18 @@
 <td><a accesskey="p" href="gst-plugins-good-plugins-hdv1394src.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-id3demux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-icydemux.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-icydemux.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-icydemux.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-icydemux.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-icydemux.object-hierarchy" class="shortcut">Object Hierarchy</a>
 </td></tr>
 </table>
-<div class="refentry" title="icydemux">
+<div class="refentry">
 <a name="gst-plugins-good-plugins-icydemux"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -40,28 +37,22 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="gst-plugins-good-plugins-icydemux.synopsis"></a><h2>Synopsis</h2>
-<a name="GstICYDemux"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-good-plugins-icydemux.html#GstICYDemux-struct" title="GstICYDemux">GstICYDemux</a>;
+<a name="GstICYDemux"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-icydemux.html#GstICYDemux-struct" title="struct GstICYDemux">GstICYDemux</a>;
 </pre>
 </div>
-<div class="refsect1" title="Object Hierarchy">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-icydemux.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----GstICYDemux
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                     +----GstICYDemux
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-icydemux.description"></a><h2>Description</h2>
 <p>
 icydemux accepts data streams with ICY metadata at known intervals, as
@@ -72,19 +63,29 @@ on outgoing buffers.
 </p>
 <p>
 </p>
-<div class="refsect2" title="Example launch line">
-<a name="id493978"></a><h3>Example launch line</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch souphttpsrc location=http://some.server/ iradio-mode=true ! icydemux ! fakesink -t
-</pre></div> This pipeline should read any available ICY tag information and output it.
+<div class="refsect2">
+<a name="idp13048752"></a><h3>Example launch line</h3>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> souphttpsrc location<span class="gtkdoc opt">=</span>http<span class="gtkdoc opt">:</span><span class="gtkdoc slc">//some.server/ iradio-mode=true ! icydemux ! fakesink -t</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ This pipeline should read any available ICY tag information and output it.
 The contents of the stream should be detected, and the appropriate mime
 type set on buffers produced from icydemux. (Using gnomevfssrc, neonhttpsrc
 or giosrc instead of souphttpsrc should also work.)
 </div>
-<div class="refsynopsisdiv" title="Synopsis">
+<p>
+</p>
+<div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" title="Element Information">
-<a name="id522648"></a><h3>Element Information</h3>
+<div class="refsect2">
+<a name="idp13202688"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -96,8 +97,7 @@ or giosrc instead of souphttpsrc should also work.)
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
-<td>Jan Schmidt &lt;thaytan@mad.scientist.com&gt;
-    Michael Smith &lt;msmith@fluendo.com&gt;</td>
+<td>Jan Schmidt &lt;thaytan@mad.scientist.com&gt;, Michael Smith &lt;msmith@fluendo.com&gt;</td>
 </tr>
 <tr>
 <td><p><span class="term">class</span></p></td>
@@ -107,8 +107,8 @@ or giosrc instead of souphttpsrc should also work.)
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="Element Pads">
-<a name="id531843"></a><h3>Element Pads</h3>
+<div class="refsect2">
+<a name="idp11124976"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -156,11 +156,11 @@ or giosrc instead of souphttpsrc should also work.)
 <p>
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-icydemux.details"></a><h2>Details</h2>
-<div class="refsect2" title="GstICYDemux">
-<a name="GstICYDemux-struct"></a><h3>GstICYDemux</h3>
-<pre class="programlisting">typedef struct _GstICYDemux GstICYDemux;</pre>
+<div class="refsect2">
+<a name="GstICYDemux-struct"></a><h3>struct GstICYDemux</h3>
+<pre class="programlisting">struct GstICYDemux;</pre>
 <p>
 </p>
 </div>
@@ -168,6 +168,6 @@ or giosrc instead of souphttpsrc should also work.)
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

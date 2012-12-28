@@ -52,7 +52,6 @@ typedef struct
   guint video_codec;
   GstBuffer *video_codec_data;
 
-  gboolean sent_codec_data;
   GstClockTime last_timestamp;
 } GstFlvPad;
 
@@ -69,15 +68,16 @@ typedef struct _GstFlvMux {
   GstCollectPads *collect;
 
   /* <private> */
-  GstPadEventFunction collect_event;
-
   GstFlvMuxState state;
   gboolean have_audio;
   gboolean have_video;
+  gboolean streamable;
 
   GstTagList *tags;
+  gboolean new_tags;
   GList *index;
   guint64 byte_count;
+  guint64 duration;
 } GstFlvMux;
 
 typedef struct _GstFlvMuxClass {

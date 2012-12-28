@@ -54,11 +54,14 @@ struct _GstWavEnc {
   guint32    length;
 
   gboolean   sent_header;
+  gboolean   finished_properly;
 };
 
 struct _GstWavEncClass {
   GstElementClass parent_class;
 };
+
+GType gst_wavenc_get_type (void);
 
 G_END_DECLS
 

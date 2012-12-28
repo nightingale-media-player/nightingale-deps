@@ -22,7 +22,7 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstadapter.h>
-#include <gst/rtp/gstbasertpdepayload.h>
+#include <gst/rtp/gstrtpbasedepayload.h>
 
 G_BEGIN_DECLS
 
@@ -42,13 +42,14 @@ typedef struct _GstRtpMP4GDepayClass GstRtpMP4GDepayClass;
 
 struct _GstRtpMP4GDepay
 {
-  GstBaseRTPDepayload depayload;
+  GstRTPBaseDepayload depayload;
 
   gint profile_level_id;
   gint streamtype;
 
   gint constantSize;
   gint constantDuration;
+  gint maxDisplacement;
 
   gint sizelength;
   gint indexlength;
@@ -64,6 +65,7 @@ struct _GstRtpMP4GDepay
   guint last_AU_index;
   guint next_AU_index;
   guint32 prev_rtptime;
+  guint prev_AU_num;
 
   GQueue *packets;
   
@@ -72,8 +74,10 @@ struct _GstRtpMP4GDepay
 
 struct _GstRtpMP4GDepayClass
 {
-  GstBaseRTPDepayloadClass parent_class;
+  GstRTPBaseDepayloadClass parent_class;
 };
+
+GType gst_rtp_mp4g_depay_get_type (void);
 
 gboolean gst_rtp_mp4g_depay_plugin_init (GstPlugin * plugin);
 

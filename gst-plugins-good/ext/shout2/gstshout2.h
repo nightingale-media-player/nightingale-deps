@@ -42,6 +42,8 @@ struct _GstShout2send {
 
   GstShout2SendProtocol protocol;
 
+  GstPoll *timer;
+
   shout_t *conn;
 
   gchar *ip;
@@ -54,6 +56,7 @@ struct _GstShout2send {
   gchar *mount;
   gchar *url;
   gboolean connected;
+  gboolean ispublic;
   gchar *songmetadata;
   gchar *songartist;
   gchar *songtitle;

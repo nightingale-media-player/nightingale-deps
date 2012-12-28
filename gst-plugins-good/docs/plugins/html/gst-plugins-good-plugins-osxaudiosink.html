@@ -3,16 +3,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>osxaudiosink</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-osssrc.html" title="osssrc">
 <link rel="next" href="gst-plugins-good-plugins-osxaudiosrc.html" title="osxaudiosrc">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -20,18 +17,18 @@
 <td><a accesskey="p" href="gst-plugins-good-plugins-osssrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-osxaudiosrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-osxaudiosink.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-osxaudiosink.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-osxaudiosink.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-osxaudiosink.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-osxaudiosink.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
-<div class="refentry" title="osxaudiosink">
+<div class="refentry">
 <a name="gst-plugins-good-plugins-osxaudiosink"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -40,41 +37,23 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="gst-plugins-good-plugins-osxaudiosink.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">
-                    <a class="link" href="gst-plugins-good-plugins-osxaudiosink.html#GstOsxAudioSink" title="GstOsxAudioSink">GstOsxAudioSink</a>;
+<pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-osxaudiosink.html#GstOsxAudioSink" title="struct GstOsxAudioSink">GstOsxAudioSink</a>;
 </pre>
 </div>
-<div class="refsect1" title="Properties">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-osxaudiosink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-osxaudiosink.html#GstOsxAudioSink--device" title='The "device" property'>device</a>"                   <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-osxaudiosink.html#GstOsxAudioSink--device" title='The "device" property'>device</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-osxaudiosink.description"></a><h2>Description</h2>
-<p>
-This element renders raw audio samples using the CoreAudio api.
-</p>
-<p>
-</p>
-<div class="refsect2" title="Example pipelines">
-<a name="id516323"></a><h3>Example pipelines</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch filesrc location=sine.ogg ! oggdemux ! vorbisdec ! audioconvert ! audioresample ! osxaudiosink
-</pre></div> Play an Ogg/Vorbis file.
-</div>
-<p>
-</p>
-<p>
-Last reviewed on 2006-03-01 (0.10.4)</p>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" title="Element Information">
-<a name="id570424"></a><h3>Element Information</h3>
+<div class="refsect2">
+<a name="idp13271568"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -96,36 +75,36 @@ Last reviewed on 2006-03-01 (0.10.4)</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="Element Pads">
-<a name="id543738"></a><h3>Element Pads</h3>
+<div class="refsect2">
+<a name="idp17193424"></a><h3>Element Pads</h3>
 </div>
 </div>
 <p>
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-osxaudiosink.details"></a><h2>Details</h2>
-<div class="refsect2" title="GstOsxAudioSink">
-<a name="GstOsxAudioSink"></a><h3>GstOsxAudioSink</h3>
-<pre class="programlisting">typedef struct {
+<div class="refsect2">
+<a name="GstOsxAudioSink"></a><h3>struct GstOsxAudioSink</h3>
+<pre class="programlisting">struct GstOsxAudioSink {
   GstBaseAudioSink sink;
 
   AudioDeviceID device_id;
+
   AudioUnit audiounit;
   double volume;
-} GstOsxAudioSink;
+  GstCaps *cached_caps;
+};
 </pre>
 <p>
 </p>
 </div>
 </div>
-<div class="refsect1" title="Property Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-osxaudiosink.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" title='The "device" property'>
+<div class="refsect2">
 <a name="GstOsxAudioSink--device"></a><h3>The <code class="literal">"device"</code> property</h3>
-<pre class="programlisting">  "device"                   <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
+<pre class="programlisting">  "device"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
 <p>Device ID of output device.</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 0</p>
@@ -134,6 +113,6 @@ href="../glib/glib-Basic-Types.html#gint"
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

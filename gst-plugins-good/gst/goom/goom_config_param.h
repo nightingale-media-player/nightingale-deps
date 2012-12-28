@@ -62,8 +62,8 @@ struct BoolVal {
 
 
 typedef struct _PARAM {
-  char *name;
-  char *desc;
+  const char *name;
+  const char *desc;
   char rw;
   ParamType type;
   union {
@@ -97,27 +97,27 @@ typedef struct _PARAM {
 #define IMAX(p) ((p).param.ival.max)
 #define ISTEP(p) ((p).param.ival.step)
 
-PluginParam goom_secure_param(void);
+void goom_secure_param(PluginParam *p);
 
-PluginParam goom_secure_f_param(char *name);
-PluginParam goom_secure_i_param(char *name);
-PluginParam goom_secure_b_param(char *name, int value);
-PluginParam goom_secure_s_param(char *name);
+void goom_secure_f_param(PluginParam *p, const char *name);
+void goom_secure_i_param(PluginParam *p, const char *name);
+void goom_secure_b_param(PluginParam *p, const char *name, int value);
+void goom_secure_s_param(PluginParam *p, const char *name);
 
-PluginParam goom_secure_f_feedback(char *name);
-PluginParam goom_secure_i_feedback(char *name);
+void goom_secure_f_feedback(PluginParam *p, const char *name);
+void goom_secure_i_feedback(PluginParam *p, const char *name);
 
 void goom_set_str_param_value(PluginParam *p, const char *str);
 void goom_set_list_param_value(PluginParam *p, const char *str);
     
 typedef struct _PARAMETERS {
-  char *name;
-  char *desc;
+  const char *name;
+  const char *desc;
   int nbParams;
   PluginParam **params;
 } PluginParameters;
 
-PluginParameters goom_plugin_parameters(const char *name, int nb);
+void goom_plugin_parameters(PluginParameters *p, const char *name, int nb);
 void goom_plugin_parameters_free(PluginParameters *p);
 
 #define secure_param goom_secure_param

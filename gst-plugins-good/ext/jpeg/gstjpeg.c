@@ -24,10 +24,13 @@
 
 #include <gst/gst.h>
 
+#include "gstjpeg.h"
 #include "gstjpegdec.h"
 #include "gstjpegenc.h"
+#if 0
 #include "gstsmokeenc.h"
 #include "gstsmokedec.h"
+#endif
 
 GType
 gst_idct_method_get_type (void)
@@ -58,6 +61,7 @@ plugin_init (GstPlugin * plugin)
           GST_TYPE_JPEG_DEC))
     return FALSE;
 
+#if 0
   if (!gst_element_register (plugin, "smokeenc", GST_RANK_PRIMARY,
           GST_TYPE_SMOKEENC))
     return FALSE;
@@ -65,12 +69,13 @@ plugin_init (GstPlugin * plugin)
   if (!gst_element_register (plugin, "smokedec", GST_RANK_PRIMARY,
           GST_TYPE_SMOKEDEC))
     return FALSE;
+#endif
 
   return TRUE;
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "jpeg",
+    jpeg,
     "JPeg plugin library",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

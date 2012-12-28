@@ -18,7 +18,13 @@ AC_DEFUN([AG_GST_LIBXML2_CHECK],
   if test "x$HAVE_LIBXML2" = "xyes"; then
     AC_DEFINE(HAVE_LIBXML2, 1, [Define if libxml2 is available])
   else
-    AC_MSG_ERROR([Need libxml2 for glib2 builds -- you should be able to do without it -- this needs fixing])
+    AC_MSG_ERROR([
+        Need libxml2 and development headers/files to build GStreamer.
+
+        You can do without libxml2 if you pass --disable-loadsave to
+        configure, but that breaks ABI, so don't do that unless you
+        are building for an embedded setup and know what you are doing.
+    ])
   fi
   dnl this is for the .pc file
   LIBXML_PKG=', libxml-2.0'

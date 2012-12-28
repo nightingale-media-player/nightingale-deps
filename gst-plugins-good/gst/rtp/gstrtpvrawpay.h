@@ -22,7 +22,7 @@
 
 #include <gst/gst.h>
 #include <gst/video/video.h>
-#include <gst/rtp/gstbasertppayload.h>
+#include <gst/rtp/gstrtpbasepayload.h>
 
 G_BEGIN_DECLS
 
@@ -42,22 +42,25 @@ typedef struct _GstRtpVRawPayClass GstRtpVRawPayClass;
 
 struct _GstRtpVRawPay
 {
-  GstBaseRTPPayload payload;
+  GstRTPBasePayload payload;
 
-  gint width, height;
-  GstVideoFormat sampling;
+  GstVideoInfo vinfo;
 
   gint pgroup;
   gint xinc, yinc;
-  guint yp, up, vp;
-  gint ystride;
-  gint uvstride;
+//   guint yp, up, vp;
+//   gint ystride;
+//   gint uvstride;
+//   gboolean interlaced;
+  gint depth;
 };
 
 struct _GstRtpVRawPayClass
 {
-  GstBaseRTPPayloadClass parent_class;
+  GstRTPBasePayloadClass parent_class;
 };
+
+GType gst_rtp_vraw_pay_get_type (void);
 
 gboolean gst_rtp_vraw_pay_plugin_init (GstPlugin * plugin);
 

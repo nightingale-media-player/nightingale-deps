@@ -3,16 +3,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>cairotextoverlay</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-cacasink.html" title="cacasink">
 <link rel="next" href="gst-plugins-good-plugins-cairotimeoverlay.html" title="cairotimeoverlay">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -20,20 +17,18 @@
 <td><a accesskey="p" href="gst-plugins-good-plugins-cacasink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-cairotimeoverlay.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-cairotextoverlay.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-cairotextoverlay.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-cairotextoverlay.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-cairotextoverlay.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-cairotextoverlay.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-cairotextoverlay.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
-<div class="refentry" title="cairotextoverlay">
+<div class="refentry">
 <a name="gst-plugins-good-plugins-cairotextoverlay"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -42,76 +37,32 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="gst-plugins-good-plugins-cairotextoverlay.synopsis"></a><h2>Synopsis</h2>
-<a name="GstCairoTextOverlay"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay-struct" title="GstCairoTextOverlay">GstCairoTextOverlay</a>;
+<pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay" title="struct GstCairoTextOverlay">GstCairoTextOverlay</a>;
 </pre>
 </div>
-<div class="refsect1" title="Object Hierarchy">
-<a name="gst-plugins-good-plugins-cairotextoverlay.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----GstCairoTextOverlay
-</pre>
-</div>
-<div class="refsect1" title="Properties">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-cairotextoverlay.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--deltax" title='The "deltax" property'>deltax</a>"                   <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Write
-  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--deltay" title='The "deltay" property'>deltay</a>"                   <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Write
-  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--font-desc" title='The "font-desc" property'>font-desc</a>"                <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write
-  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--halign" title='The "halign" property'>halign</a>"                   <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write
-  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--shaded-background" title='The "shaded-background" property'>shaded-background</a>"        <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Write
-  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--text" title='The "text" property'>text</a>"                     <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write
-  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--valign" title='The "valign" property'>valign</a>"                   <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write
-  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--xpad" title='The "xpad" property'>xpad</a>"                     <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Write
-  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--ypad" title='The "ypad" property'>ypad</a>"                     <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Write
+  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--deltax" title='The "deltax" property'>deltax</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Write
+  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--deltay" title='The "deltay" property'>deltay</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Write
+  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--font-desc" title='The "font-desc" property'>font-desc</a>"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write
+  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--halign" title='The "halign" property'>halign</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write
+  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--shaded-background" title='The "shaded-background" property'>shaded-background</a>"        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Write
+  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--text" title='The "text" property'>text</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write
+  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--valign" title='The "valign" property'>valign</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write
+  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--xpad" title='The "xpad" property'>xpad</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Write
+  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--ypad" title='The "ypad" property'>ypad</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Write
+  "<a class="link" href="gst-plugins-good-plugins-cairotextoverlay.html#GstCairoTextOverlay--silent" title='The "silent" property'>silent</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Write
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-cairotextoverlay.description"></a><h2>Description</h2>
-<p>
-cairotextoverlay renders the text on top of the video frames.
-</p>
-<p>
-</p>
-<div class="refsect2" title="Example launch line">
-<a name="id514983"></a><h3>Example launch line</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch videotestsrc ! cairotextoverlay text="hello" ! autovideosink
-</pre></div>
-</div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" title="Element Information">
-<a name="id533371"></a><h3>Element Information</h3>
+<div class="refsect2">
+<a name="idp10708208"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -133,8 +84,8 @@ gst-launch videotestsrc ! cairotextoverlay text="hello" ! autovideosink
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="Element Pads">
-<a name="id532274"></a><h3>Element Pads</h3>
+<div class="refsect2">
+<a name="idp9197216"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -203,101 +154,130 @@ gst-launch videotestsrc ! cairotextoverlay text="hello" ! autovideosink
 <p>
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-cairotextoverlay.details"></a><h2>Details</h2>
-<div class="refsect2" title="GstCairoTextOverlay">
-<a name="GstCairoTextOverlay-struct"></a><h3>GstCairoTextOverlay</h3>
-<pre class="programlisting">typedef struct _GstCairoTextOverlay GstCairoTextOverlay;</pre>
+<div class="refsect2">
+<a name="GstCairoTextOverlay"></a><h3>struct GstCairoTextOverlay</h3>
+<pre class="programlisting">struct GstCairoTextOverlay {
+    GstElement            element;
+
+    GstPad               *video_sinkpad;
+    GstPad               *text_sinkpad;
+    GstPad               *srcpad;
+
+    GstCollectPads      *collect;
+    GstCollectData      *video_collect_data;
+    GstCollectData      *text_collect_data;
+    GstPadEventFunction   collect_event;
+
+    gint                  width;
+    gint                  height;
+    gint                  fps_n;
+    gint                  fps_d;
+
+    GstCairoTextOverlayVAlign  valign;
+    GstCairoTextOverlayHAlign  halign;
+    gint                  xpad;
+    gint                  ypad;
+    gint                  deltax;
+    gint                  deltay;
+    gchar                *default_text;
+    gboolean              want_shading;
+
+    guchar               *text_fill_image;
+    guchar               *text_outline_image;
+    gint                  font_height;
+    gint                  text_x0, text_x1; /* start/end x position of text */
+    gint                  text_dy;
+
+    gboolean              need_render;
+
+    gchar                *font;
+    gint                  slant;
+    gint                  weight;
+    gdouble               scale;
+    gboolean              silent;
+};
+</pre>
 <p>
 </p>
 </div>
 </div>
-<div class="refsect1" title="Property Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-cairotextoverlay.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" title='The "deltax" property'>
+<div class="refsect2">
 <a name="GstCairoTextOverlay--deltax"></a><h3>The <code class="literal">"deltax"</code> property</h3>
-<pre class="programlisting">  "deltax"                   <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Write</pre>
+<pre class="programlisting">  "deltax"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Write</pre>
 <p>Shift X position to the left or to the right. Unit is pixels.</p>
 <p>Default value: 0</p>
 </div>
 <hr>
-<div class="refsect2" title='The "deltay" property'>
+<div class="refsect2">
 <a name="GstCairoTextOverlay--deltay"></a><h3>The <code class="literal">"deltay"</code> property</h3>
-<pre class="programlisting">  "deltay"                   <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Write</pre>
+<pre class="programlisting">  "deltay"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Write</pre>
 <p>Shift Y position up or down. Unit is pixels.</p>
 <p>Default value: 0</p>
 </div>
 <hr>
-<div class="refsect2" title='The "font-desc" property'>
+<div class="refsect2">
 <a name="GstCairoTextOverlay--font-desc"></a><h3>The <code class="literal">"font-desc"</code> property</h3>
-<pre class="programlisting">  "font-desc"                <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write</pre>
+<pre class="programlisting">  "font-desc"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write</pre>
 <p>Pango font description of font to be used for rendering. See documentation of pango_font_description_from_string for syntax.</p>
 <p>Default value: ""</p>
 </div>
 <hr>
-<div class="refsect2" title='The "halign" property'>
+<div class="refsect2">
 <a name="GstCairoTextOverlay--halign"></a><h3>The <code class="literal">"halign"</code> property</h3>
-<pre class="programlisting">  "halign"                   <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write</pre>
+<pre class="programlisting">  "halign"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write</pre>
 <p>Horizontal alignment of the text. Can be either 'left', 'right', or 'center'.</p>
 <p>Default value: "center"</p>
 </div>
 <hr>
-<div class="refsect2" title='The "shaded-background" property'>
+<div class="refsect2">
 <a name="GstCairoTextOverlay--shaded-background"></a><h3>The <code class="literal">"shaded-background"</code> property</h3>
-<pre class="programlisting">  "shaded-background"        <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Write</pre>
+<pre class="programlisting">  "shaded-background"        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Write</pre>
 <p>Whether to shade the background under the text area.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
-<div class="refsect2" title='The "text" property'>
+<div class="refsect2">
 <a name="GstCairoTextOverlay--text"></a><h3>The <code class="literal">"text"</code> property</h3>
-<pre class="programlisting">  "text"                     <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write</pre>
+<pre class="programlisting">  "text"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write</pre>
 <p>Text to be display.</p>
 <p>Default value: ""</p>
 </div>
 <hr>
-<div class="refsect2" title='The "valign" property'>
+<div class="refsect2">
 <a name="GstCairoTextOverlay--valign"></a><h3>The <code class="literal">"valign"</code> property</h3>
-<pre class="programlisting">  "valign"                   <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write</pre>
+<pre class="programlisting">  "valign"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write</pre>
 <p>Vertical alignment of the text. Can be either 'baseline', 'bottom', or 'top'.</p>
 <p>Default value: "baseline"</p>
 </div>
 <hr>
-<div class="refsect2" title='The "xpad" property'>
+<div class="refsect2">
 <a name="GstCairoTextOverlay--xpad"></a><h3>The <code class="literal">"xpad"</code> property</h3>
-<pre class="programlisting">  "xpad"                     <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Write</pre>
+<pre class="programlisting">  "xpad"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Write</pre>
 <p>Horizontal paddding when using left/right alignment.</p>
 <p>Default value: 25</p>
 </div>
 <hr>
-<div class="refsect2" title='The "ypad" property'>
+<div class="refsect2">
 <a name="GstCairoTextOverlay--ypad"></a><h3>The <code class="literal">"ypad"</code> property</h3>
-<pre class="programlisting">  "ypad"                     <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Write</pre>
+<pre class="programlisting">  "ypad"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Write</pre>
 <p>Vertical padding when using top/bottom alignment.</p>
 <p>Default value: 25</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstCairoTextOverlay--silent"></a><h3>The <code class="literal">"silent"</code> property</h3>
+<pre class="programlisting">  "silent"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Write</pre>
+<p>Whether to render the text string.</p>
+<p>Default value: FALSE</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

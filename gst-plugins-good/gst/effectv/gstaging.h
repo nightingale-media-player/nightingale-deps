@@ -29,6 +29,7 @@
 
 #include <gst/gst.h>
 
+#include <gst/video/video.h>
 #include <gst/video/gstvideofilter.h>
 
 G_BEGIN_DECLS
@@ -61,9 +62,6 @@ struct _GstAgingTV
   GstVideoFilter videofilter;
 
   /* < private > */
-
-  gint width, height;
-
   gboolean color_aging;
   gboolean pits;
   gboolean dusts;

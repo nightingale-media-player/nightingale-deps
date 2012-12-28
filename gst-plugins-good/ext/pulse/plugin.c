@@ -23,26 +23,29 @@
 #include "config.h"
 #endif
 
+#include <gst/gst-i18n-plugin.h>
+
 #include "pulsesink.h"
 #include "pulsesrc.h"
-#include "pulsemixer.h"
 
 GST_DEBUG_CATEGORY (pulse_debug);
 
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
+#ifdef ENABLE_NLS
+  GST_DEBUG ("binding text domain %s to locale dir %s", GETTEXT_PACKAGE,
+      LOCALEDIR);
+  bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+#endif
 
-  if (!gst_element_register (plugin, "pulsesink", GST_RANK_PRIMARY,
+  if (!gst_element_register (plugin, "pulsesink", GST_RANK_PRIMARY + 10,
           GST_TYPE_PULSESINK))
     return FALSE;
 
-  if (!gst_element_register (plugin, "pulsesrc", GST_RANK_PRIMARY,
+  if (!gst_element_register (plugin, "pulsesrc", GST_RANK_PRIMARY + 10,
           GST_TYPE_PULSESRC))
-    return FALSE;
-
-  if (!gst_element_register (plugin, "pulsemixer", GST_RANK_NONE,
-          GST_TYPE_PULSEMIXER))
     return FALSE;
 
   GST_DEBUG_CATEGORY_INIT (pulse_debug, "pulse", 0, "PulseAudio elements");
@@ -51,6 +54,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "pulseaudio",
+    pulseaudio,
     "PulseAudio plugin library",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

@@ -21,7 +21,7 @@
 #define __GST_RTP_VORBIS_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertppayload.h>
+#include <gst/rtp/gstrtpbasepayload.h>
 #include <gst/base/gstadapter.h>
 
 G_BEGIN_DECLS
@@ -42,7 +42,7 @@ typedef struct _GstRtpVorbisPayClass GstRtpVorbisPayClass;
 
 struct _GstRtpVorbisPay
 {
-  GstBaseRTPPayload payload;
+  GstRTPBasePayload payload;
 
   /* the headers */
   gboolean      need_headers;
@@ -65,8 +65,10 @@ struct _GstRtpVorbisPay
 
 struct _GstRtpVorbisPayClass
 {
-  GstBaseRTPPayloadClass parent_class;
+  GstRTPBasePayloadClass parent_class;
 };
+
+GType gst_rtp_vorbis_pay_get_type (void);
 
 gboolean gst_rtp_vorbis_pay_plugin_init (GstPlugin * plugin);
 

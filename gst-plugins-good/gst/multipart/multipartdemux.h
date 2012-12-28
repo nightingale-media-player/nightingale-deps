@@ -68,7 +68,7 @@ struct _GstMultipartDemux
   GstPad *sinkpad;
 
   GSList *srcpads;
-  gint numpads;
+  guint numpads;
 
   GstAdapter *adapter;
 
@@ -79,11 +79,10 @@ struct _GstMultipartDemux
   gchar *mime_type;
   gint content_length;
 
-  /* deprecated, unused */
-  gboolean autoscan;
-
   /* Index inside the current data when manually looking for the boundary */
   gint scanpos;
+
+  gboolean singleStream;
 };
 
 struct _GstMultipartDemuxClass
@@ -92,6 +91,10 @@ struct _GstMultipartDemuxClass
 
   GHashTable *gstnames;
 };
+
+GType gst_multipart_demux_get_type (void);
+
+gboolean gst_multipart_demux_plugin_init (GstPlugin * plugin);
 
 G_END_DECLS
 

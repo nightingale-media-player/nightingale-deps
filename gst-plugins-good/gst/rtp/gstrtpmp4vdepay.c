@@ -29,13 +29,6 @@
 GST_DEBUG_CATEGORY_STATIC (rtpmp4vdepay_debug);
 #define GST_CAT_DEFAULT (rtpmp4vdepay_debug)
 
-/* elementfactory information */
-static const GstElementDetails gst_rtp_mp4vdepay_details =
-GST_ELEMENT_DETAILS ("RTP MPEG4 video depayloader",
-    "Codec/Depayloader/Network",
-    "Extracts MPEG4 video from RTP packets (RFC 3016)",
-    "Wim Taymans <wim.taymans@gmail.com>");
-
 static GstStaticPadTemplate gst_rtp_mp4v_depay_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -60,58 +53,54 @@ GST_STATIC_PAD_TEMPLATE ("sink",
     )
     );
 
-GST_BOILERPLATE (GstRtpMP4VDepay, gst_rtp_mp4v_depay, GstBaseRTPDepayload,
-    GST_TYPE_BASE_RTP_DEPAYLOAD);
+#define gst_rtp_mp4v_depay_parent_class parent_class
+G_DEFINE_TYPE (GstRtpMP4VDepay, gst_rtp_mp4v_depay,
+    GST_TYPE_RTP_BASE_DEPAYLOAD);
 
 static void gst_rtp_mp4v_depay_finalize (GObject * object);
 
-static gboolean gst_rtp_mp4v_depay_setcaps (GstBaseRTPDepayload * depayload,
+static gboolean gst_rtp_mp4v_depay_setcaps (GstRTPBaseDepayload * depayload,
     GstCaps * caps);
-static GstBuffer *gst_rtp_mp4v_depay_process (GstBaseRTPDepayload * depayload,
+static GstBuffer *gst_rtp_mp4v_depay_process (GstRTPBaseDepayload * depayload,
     GstBuffer * buf);
 
 static GstStateChangeReturn gst_rtp_mp4v_depay_change_state (GstElement *
     element, GstStateChange transition);
-
-
-static void
-gst_rtp_mp4v_depay_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_mp4v_depay_src_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_mp4v_depay_sink_template));
-
-  gst_element_class_set_details (element_class, &gst_rtp_mp4vdepay_details);
-}
 
 static void
 gst_rtp_mp4v_depay_class_init (GstRtpMP4VDepayClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
-  GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
+  GstRTPBaseDepayloadClass *gstrtpbasedepayload_class;
 
   gobject_class = (GObjectClass *) klass;
   gstelement_class = (GstElementClass *) klass;
-  gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
+  gstrtpbasedepayload_class = (GstRTPBaseDepayloadClass *) klass;
 
   gobject_class->finalize = gst_rtp_mp4v_depay_finalize;
 
   gstelement_class->change_state = gst_rtp_mp4v_depay_change_state;
 
-  gstbasertpdepayload_class->process = gst_rtp_mp4v_depay_process;
-  gstbasertpdepayload_class->set_caps = gst_rtp_mp4v_depay_setcaps;
+  gstrtpbasedepayload_class->process = gst_rtp_mp4v_depay_process;
+  gstrtpbasedepayload_class->set_caps = gst_rtp_mp4v_depay_setcaps;
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_mp4v_depay_src_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_mp4v_depay_sink_template));
+
+  gst_element_class_set_static_metadata (gstelement_class,
+      "RTP MPEG4 video depayloader", "Codec/Depayloader/Network/RTP",
+      "Extracts MPEG4 video from RTP packets (RFC 3016)",
+      "Wim Taymans <wim.taymans@gmail.com>");
 
   GST_DEBUG_CATEGORY_INIT (rtpmp4vdepay_debug, "rtpmp4vdepay", 0,
       "MPEG4 video RTP Depayloader");
 }
 
 static void
-gst_rtp_mp4v_depay_init (GstRtpMP4VDepay * rtpmp4vdepay,
-    GstRtpMP4VDepayClass * klass)
+gst_rtp_mp4v_depay_init (GstRtpMP4VDepay * rtpmp4vdepay)
 {
   rtpmp4vdepay->adapter = gst_adapter_new ();
 }
@@ -130,7 +119,7 @@ gst_rtp_mp4v_depay_finalize (GObject * object)
 }
 
 static gboolean
-gst_rtp_mp4v_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
+gst_rtp_mp4v_depay_setcaps (GstRTPBaseDepayload * depayload, GstCaps * caps)
 {
   GstStructure *structure;
   GstCaps *srccaps;
@@ -156,11 +145,10 @@ gst_rtp_mp4v_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
       GstBuffer *buffer;
 
       buffer = gst_value_get_buffer (&v);
-      gst_buffer_ref (buffer);
-      g_value_unset (&v);
-
       gst_caps_set_simple (srccaps,
           "codec_data", GST_TYPE_BUFFER, buffer, NULL);
+      /* caps takes ref */
+      g_value_unset (&v);
     } else {
       g_warning ("cannot convert config to buffer");
     }
@@ -172,10 +160,12 @@ gst_rtp_mp4v_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
 }
 
 static GstBuffer *
-gst_rtp_mp4v_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
+gst_rtp_mp4v_depay_process (GstRTPBaseDepayload * depayload, GstBuffer * buf)
 {
   GstRtpMP4VDepay *rtpmp4vdepay;
-  GstBuffer *outbuf;
+  GstBuffer *pbuf, *outbuf = NULL;
+  GstRTPBuffer rtp = { NULL };
+  gboolean marker;
 
   rtpmp4vdepay = GST_RTP_MP4V_DEPAY (depayload);
 
@@ -183,23 +173,24 @@ gst_rtp_mp4v_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   if (GST_BUFFER_IS_DISCONT (buf))
     gst_adapter_clear (rtpmp4vdepay->adapter);
 
-  outbuf = gst_rtp_buffer_get_payload_buffer (buf);
-  gst_adapter_push (rtpmp4vdepay->adapter, outbuf);
+  gst_rtp_buffer_map (buf, GST_MAP_READ, &rtp);
+  pbuf = gst_rtp_buffer_get_payload_buffer (&rtp);
+  marker = gst_rtp_buffer_get_marker (&rtp);
+  gst_rtp_buffer_unmap (&rtp);
+
+  gst_adapter_push (rtpmp4vdepay->adapter, pbuf);
 
   /* if this was the last packet of the VOP, create and push a buffer */
-  if (gst_rtp_buffer_get_marker (buf)) {
+  if (marker) {
     guint avail;
 
     avail = gst_adapter_available (rtpmp4vdepay->adapter);
-
     outbuf = gst_adapter_take_buffer (rtpmp4vdepay->adapter, avail);
 
-    GST_DEBUG ("gst_rtp_mp4v_depay_chain: pushing buffer of size %d",
-        GST_BUFFER_SIZE (outbuf));
-
-    return outbuf;
+    GST_DEBUG ("gst_rtp_mp4v_depay_chain: pushing buffer of size %"
+        G_GSIZE_FORMAT, gst_buffer_get_size (outbuf));
   }
-  return NULL;
+  return outbuf;
 }
 
 static GstStateChangeReturn
@@ -232,5 +223,5 @@ gboolean
 gst_rtp_mp4v_depay_plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "rtpmp4vdepay",
-      GST_RANK_MARGINAL, GST_TYPE_RTP_MP4V_DEPAY);
+      GST_RANK_SECONDARY, GST_TYPE_RTP_MP4V_DEPAY);
 }

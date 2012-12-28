@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2005> Wim Taymand <wim@fluendo.com>
+ * Copyright (C) <2005> Wim Taymans <wim@fluendo.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -22,6 +22,7 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstbasesink.h>
+#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
@@ -38,10 +39,9 @@ typedef struct _GstMultiUDPSink GstMultiUDPSink;
 typedef struct _GstMultiUDPSinkClass GstMultiUDPSinkClass;
 
 typedef struct {
-  int *sock;
+  gint refcount;
 
-  struct sockaddr_storage theiraddr;
-
+  GSocketAddress *addr;
   gchar *host;
   gint port;
 
@@ -57,23 +57,30 @@ typedef struct {
 struct _GstMultiUDPSink {
   GstBaseSink parent;
 
-  int sock;
+  GSocket       *used_socket;
+  GCancellable  *cancellable;
 
-  GMutex        *client_lock;
+  GMutex         client_lock;
   GList         *clients;
 
   /* properties */
   guint64        bytes_to_serve;
   guint64        bytes_served;
-  int            sockfd;
-  gboolean       closefd;
+  GSocket       *socket;
+  gboolean       close_socket;
 
-  gboolean       externalfd;
+  gboolean       external_socket;
 
   gboolean       auto_multicast;
+  gchar         *multi_iface;
   gint           ttl;
+  gint           ttl_mc;
   gboolean       loop;
+  gboolean       force_ipv4;
   gint           qos_dscp;
+
+  gboolean       send_duplicates;
+  gint           buffer_size;
 };
 
 struct _GstMultiUDPSinkClass {
@@ -83,7 +90,7 @@ struct _GstMultiUDPSinkClass {
   void          (*add)          (GstMultiUDPSink *sink, const gchar *host, gint port);
   void          (*remove)       (GstMultiUDPSink *sink, const gchar *host, gint port);
   void          (*clear)        (GstMultiUDPSink *sink);
-  GValueArray*  (*get_stats)    (GstMultiUDPSink *sink, const gchar *host, gint port);
+  GstStructure* (*get_stats)    (GstMultiUDPSink *sink, const gchar *host, gint port);
 
   /* signals */
   void          (*client_added) (GstElement *element, const gchar *host, gint port);
@@ -95,7 +102,7 @@ GType gst_multiudpsink_get_type(void);
 void            gst_multiudpsink_add            (GstMultiUDPSink *sink, const gchar *host, gint port);
 void            gst_multiudpsink_remove         (GstMultiUDPSink *sink, const gchar *host, gint port);
 void            gst_multiudpsink_clear          (GstMultiUDPSink *sink);
-GValueArray*    gst_multiudpsink_get_stats      (GstMultiUDPSink *sink, const gchar *host, gint port);
+GstStructure*   gst_multiudpsink_get_stats      (GstMultiUDPSink *sink, const gchar *host, gint port);
 
 G_END_DECLS
 

@@ -9,7 +9,7 @@
 #undef AC_APPLE_UNIVERSAL_BUILD
 
 /* Default audio sink */
-#define DEFAULT_AUDIOSINK "directaudiosink"
+#define DEFAULT_AUDIOSINK "directsoundsink"
 
 /* Default audio source */
 #define DEFAULT_AUDIOSRC "audiotestsrc"
@@ -23,12 +23,24 @@
 /* Default visualizer */
 #define DEFAULT_VISUALIZER "goom"
 
+/* Disable Orc */
+#undef DISABLE_ORC
+
 /* Define to 1 if translation of program messages to the user's native
    language is requested. */
 #undef ENABLE_NLS
 
 /* gettext package name */
-#define GETTEXT_PACKAGE "gst-plugins-good-0.10"
+#define GETTEXT_PACKAGE "gst-plugins-good-1.0"
+
+/* The GIO library directory. */
+#undef GIO_LIBDIR
+
+/* The GIO modules directory. */
+#undef GIO_MODULE_DIR
+
+/* GStreamer API Version */
+#define GST_API_VERSION "1.0"
 
 /* Defined if gcov is enabled to force a rebuild due to config.h changing */
 #undef GST_GCOV_ENABLED
@@ -40,19 +52,22 @@
 #define GST_LICENSE "LGPL"
 
 /* package name in plugins */
-#define GST_PACKAGE_NAME "GStreamer Good Plug-ins CVS/prerelease"
+#define GST_PACKAGE_NAME "GStreamer Good Plug-ins source release"
 
 /* package origin */
 #define GST_PACKAGE_ORIGIN "Unknown package origin"
 
+/* GStreamer package release date/time for plugins as YYYY-MM-DD */
+#define GST_PACKAGE_RELEASE_DATETIME "2012-12-18"
+
 /* struct v4l2_buffer missing */
 #undef GST_V4L2_MISSING_BUFDECL
 
+/* I know the API is subject to change. */
+#undef G_UDEV_API_IS_SUBJECT_TO_CHANGE
+
 /* Define to enable aalib ASCII Art library (used by aasink). */
 #undef HAVE_AALIB
-
-/* Define to enable XML library (used by annodex). */
-#undef HAVE_ANNODEX
 
 /* Define to 1 if you have the `asinh' function. */
 #undef HAVE_ASINH
@@ -62,6 +77,10 @@
 
 /* Define to enable Cairo graphics rendering (used by cairo). */
 #undef HAVE_CAIRO
+
+/* Define to enable Cairo graphics rendering gobject bindings (used by
+   cairooverlay). */
+#undef HAVE_CAIRO_GOBJECT
 
 /* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
    CoreFoundation framework. */
@@ -74,46 +93,46 @@
 /* Define to 1 if you have the `cosh' function. */
 #undef HAVE_COSH
 
-/* Define if the host CPU is an Alpha */
+/* Define if the target CPU is an Alpha */
 #undef HAVE_CPU_ALPHA
 
-/* Define if the host CPU is an ARM */
+/* Define if the target CPU is an ARM */
 #undef HAVE_CPU_ARM
 
-/* Define if the host CPU is a CRIS */
+/* Define if the target CPU is a CRIS */
 #undef HAVE_CPU_CRIS
 
-/* Define if the host CPU is a CRISv32 */
+/* Define if the target CPU is a CRISv32 */
 #undef HAVE_CPU_CRISV32
 
-/* Define if the host CPU is a HPPA */
+/* Define if the target CPU is a HPPA */
 #undef HAVE_CPU_HPPA
 
-/* Define if the host CPU is an x86 */
+/* Define if the target CPU is an x86 */
 #define HAVE_CPU_I386 1
 
-/* Define if the host CPU is a IA64 */
+/* Define if the target CPU is a IA64 */
 #undef HAVE_CPU_IA64
 
-/* Define if the host CPU is a M68K */
+/* Define if the target CPU is a M68K */
 #undef HAVE_CPU_M68K
 
-/* Define if the host CPU is a MIPS */
+/* Define if the target CPU is a MIPS */
 #undef HAVE_CPU_MIPS
 
-/* Define if the host CPU is a PowerPC */
+/* Define if the target CPU is a PowerPC */
 #undef HAVE_CPU_PPC
 
-/* Define if the host CPU is a 64 bit PowerPC */
+/* Define if the target CPU is a 64 bit PowerPC */
 #undef HAVE_CPU_PPC64
 
-/* Define if the host CPU is a S390 */
+/* Define if the target CPU is a S390 */
 #undef HAVE_CPU_S390
 
-/* Define if the host CPU is a SPARC */
+/* Define if the target CPU is a SPARC */
 #undef HAVE_CPU_SPARC
 
-/* Define if the host CPU is a x86_64 */
+/* Define if the target CPU is a x86_64 */
 #undef HAVE_CPU_X86_64
 
 /* Define if the GNU dcgettext() function is already present or preinstalled.
@@ -126,17 +145,20 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
+/* define for working do while(0) macros */
+#undef HAVE_DOWHILE_MACROS
+
 /* Define to enable raw1394 and avc1394 library (used by 1394). */
 #undef HAVE_DV1394
-
-/* Define to enable ESounD sound daemon (used by esdsink). */
-#undef HAVE_ESD
 
 /* Define to enable building of experimental plug-ins. */
 #undef HAVE_EXPERIMENTAL
 
 /* Define to enable building of plug-ins with external deps. */
 #undef HAVE_EXTERNAL
+
+/* Define to 1 if you have the <fcntl.h> header file. */
+#undef HAVE_FCNTL_H
 
 /* FIONREAD ioctl found in sys/filio.h */
 #undef HAVE_FIONREAD_IN_SYS_FILIO
@@ -147,14 +169,11 @@
 /* Define to enable FLAC lossless audio (used by flac). */
 #undef HAVE_FLAC
 
+/* Define to 1 if you have the `fpclass' function. */
+#undef HAVE_FPCLASS
+
 /* Define if compiler supports gcc inline assembly */
 #undef HAVE_GCC_ASM
-
-/* Define to enable GConf libraries (used by gconfelements). */
-#undef HAVE_GCONF
-
-/* Define to enable GConf schemas. */
-#undef HAVE_GCONFTOOL
 
 /* Define to enable GDK pixbuf (used by gdkpixbuf). */
 #undef HAVE_GDK_PIXBUF
@@ -168,8 +187,8 @@
 /* Define to enable Video 4 Linux 2 (used by v4l2src). */
 #undef HAVE_GST_V4L2
 
-/* Define to enable HAL libraries (used by halelements). */
-#undef HAVE_HAL
+/* Whether gudev is available for device detection */
+#undef HAVE_GUDEV
 
 /* Define if you have the iconv() function and it works. */
 #undef HAVE_ICONV
@@ -179,6 +198,18 @@
 
 /* Define if we have struct ip_mreqn */
 #undef HAVE_IP_MREQN
+
+/* Define to 1 if you have the `isinf' function. */
+#undef HAVE_ISINF
+
+/* Define to enable Jack (used by jack). */
+#undef HAVE_JACK
+
+/* defined if jack >= 0.120.1 is available */
+#undef HAVE_JACK_0_120_1
+
+/* defined if jack >= 1.9.7 is available */
+#undef HAVE_JACK_1_9_7
 
 /* Define to enable jpeg library (used by jpeg). */
 #undef HAVE_JPEG
@@ -192,9 +223,6 @@
 /* Define to enable Portable Network Graphics library (used by png). */
 #undef HAVE_LIBPNG
 
-/* Define to 1 if you have the `socket' library (-lsocket). */
-#undef HAVE_LIBSOCKET
-
 /* soup gnome integration */
 #undef HAVE_LIBSOUP_GNOME
 
@@ -207,11 +235,14 @@
 /* Define to 1 if you have a working `mmap' system call. */
 #undef HAVE_MMAP
 
-/* Define to 1 if you have the <netinet/in.h> header file. */
-#undef HAVE_NETINET_IN_H
+/* Use Orc */
+#undef HAVE_ORC
 
 /* Define to enable OSS audio (used by ossaudio). */
 #undef HAVE_OSS
+
+/* Define to enable Open Sound System 4 (used by oss4). */
+#undef HAVE_OSS4
 
 /* Define if OSS includes are in /machine/ */
 #undef HAVE_OSS_INCLUDE_IN_MACHINE
@@ -228,17 +259,11 @@
 /* Define to enable OSX video (used by osxvideosink). */
 #undef HAVE_OSX_VIDEO
 
+/* Define to 1 if you have the <process.h> header file. */
+#define HAVE_PROCESS_H 1
+
 /* Define to enable pulseaudio plug-in (used by pulseaudio). */
 #undef HAVE_PULSE
-
-/* defined if pulseaudio >= 0.9.11 is available */
-#undef HAVE_PULSE_0_9_11
-
-/* defined if pulseaudio >= 0.9.12 is available */
-#undef HAVE_PULSE_0_9_12
-
-/* defined if pulseaudio >= 0.9.13 is available */
-#undef HAVE_PULSE_0_9_13
 
 /* Define if RDTSC is available */
 #undef HAVE_RDTSC
@@ -273,6 +298,12 @@
 /* Define to enable Sun Audio (used by sunaudio). */
 #undef HAVE_SUNAUDIO
 
+/* Define to 1 if you have the <sys/ioctl.h> header file. */
+#undef HAVE_SYS_IOCTL_H
+
+/* Define to 1 if you have the <sys/param.h> header file. */
+#undef HAVE_SYS_PARAM_H
+
 /* Define to 1 if you have the <sys/socket.h> header file. */
 #undef HAVE_SYS_SOCKET_H
 
@@ -294,11 +325,20 @@
 /* Define if valgrind should be used */
 #undef HAVE_VALGRIND
 
+/* Defined if the VP8 decoder is available */
+#undef HAVE_VP8_DECODER
+
+/* Defined if the VP8 encoder is available */
+#undef HAVE_VP8_ENCODER
+
+/* Define to enable VPX decoder (used by vpx). */
+#undef HAVE_VPX
+
+/* Define to enable Win32 WaveForm (used by waveformsink). */
+#undef HAVE_WAVEFORM
+
 /* Define to enable wavpack plug-in (used by wavpack). */
 #undef HAVE_WAVPACK
-
-/* Define to 1 if you have the <winsock2.h> header file. */
-#define HAVE_WINSOCK2_H 1
 
 /* Define to enable X libraries and plugins (used by ximagesrc). */
 #undef HAVE_X
@@ -309,7 +349,7 @@
 /* Define to enable X11 XVideo extensions. */
 #undef HAVE_XVIDEO
 
-/* Define to enable zlib support for id3demux/qtdemux/matroska. */
+/* Define to enable zlib support for qtdemux/matroska. */
 #undef HAVE_ZLIB
 
 /* the host CPU */
@@ -335,19 +375,22 @@
 #define PACKAGE_NAME "GStreamer Good Plug-ins"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "GStreamer Good Plug-ins 0.10.15.1"
+#define PACKAGE_STRING "GStreamer Good Plug-ins 1.0.4"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "gst-plugins-good"
 
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.10.15.1"
+#define PACKAGE_VERSION "1.0.4"
 
 /* directory where plugins are located */
 #ifdef _DEBUG
-#  define PLUGINDIR PREFIX "\\debug\\lib\\gstreamer-0.10"
+#  define PLUGINDIR PREFIX "\\debug\\lib\\gstreamer-0.11"
 #else
-#  define PLUGINDIR PREFIX "\\lib\\gstreamer-0.10"
+#  define PLUGINDIR PREFIX "\\lib\\gstreamer-0.11"
 #endif
 
 /* The size of `char', as computed by sizeof. */
@@ -371,8 +414,11 @@
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
+/* the target CPU */
+#undef TARGET_CPU
+
 /* Version number of package */
-#define VERSION "0.10.15.1"
+#define VERSION "1.0.4"
 
 /* old wavpack API */
 #undef WAVPACK_OLD_API

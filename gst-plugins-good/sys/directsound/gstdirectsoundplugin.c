@@ -31,7 +31,6 @@
 
 #include "gstdirectsoundsink.h"
 
-GST_DEBUG_CATEGORY (directsound_debug);
 
 static gboolean
 plugin_init (GstPlugin * plugin)
@@ -40,14 +39,11 @@ plugin_init (GstPlugin * plugin)
           GST_TYPE_DIRECTSOUND_SINK))
     return FALSE;
 
-  GST_DEBUG_CATEGORY_INIT (directsound_debug, "directsound", 0,
-        "DirectSound Elements");
-
   return TRUE;
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "directsound",
+    directsound,
     "Direct Sound plugin library",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

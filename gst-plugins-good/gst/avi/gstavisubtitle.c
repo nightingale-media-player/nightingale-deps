@@ -28,7 +28,7 @@
  * <title>Example launch line</title>
  * <para>
  * <programlisting>
- * gst-launch filesrc location=subtitle.avi ! avidemux name=demux ! queue ! avisubtitle ! subparse ! textoverlay name=overlay ! ffmpegcolorspace ! autovideosink demux. ! queue ! decodebin ! overlay.
+ * gst-launch-1.0 filesrc location=subtitle.avi ! avidemux name=demux ! queue ! avisubtitle ! subparse ! textoverlay name=overlay ! videoconvert ! autovideosink demux. ! queue ! decodebin ! overlay.
  * </programlisting>
  * This plays an avi file with a video and subtitle stream.
  * </para>
@@ -75,14 +75,15 @@ static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
     );
 
 static void gst_avi_subtitle_title_tag (GstAviSubtitle * sub, gchar * title);
-static GstFlowReturn gst_avi_subtitle_chain (GstPad * pad, GstBuffer * buffer);
+static GstFlowReturn gst_avi_subtitle_chain (GstPad * pad, GstObject * parent,
+    GstBuffer * buffer);
 static GstStateChangeReturn gst_avi_subtitle_change_state (GstElement * element,
     GstStateChange transition);
 static gboolean gst_avi_subtitle_send_event (GstElement * element,
     GstEvent * event);
 
-GST_BOILERPLATE (GstAviSubtitle, gst_avi_subtitle, GstElement,
-    GST_TYPE_ELEMENT);
+#define gst_avi_subtitle_parent_class parent_class
+G_DEFINE_TYPE (GstAviSubtitle, gst_avi_subtitle, GST_TYPE_ELEMENT);
 
 #define IS_BOM_UTF8(data)     ((GST_READ_UINT32_BE(data) >> 8) == 0xEFBBBF)
 #define IS_BOM_UTF16_BE(data) (GST_READ_UINT16_BE(data) == 0xFEFF)
@@ -97,12 +98,16 @@ gst_avi_subtitle_extract_file (GstAviSubtitle * sub, GstBuffer * buffer,
   const gchar *input_enc = NULL;
   GstBuffer *ret = NULL;
   gchar *data;
+  GstMapInfo map;
 
-  data = (gchar *) GST_BUFFER_DATA (buffer) + offset;
+  gst_buffer_map (buffer, &map, GST_MAP_READ);
+  data = (gchar *) (map.data + offset);
 
   if (len >= (3 + 1) && IS_BOM_UTF8 (data) &&
       g_utf8_validate (data + 3, len - 3, NULL)) {
-    ret = gst_buffer_create_sub (buffer, offset + 3, len - 3);
+    ret =
+        gst_buffer_copy_region (buffer, GST_BUFFER_COPY_ALL, offset + 3,
+        len - 3);
   } else if (len >= 2 && IS_BOM_UTF16_BE (data)) {
     input_enc = "UTF-16BE";
     data += 2;
@@ -121,11 +126,12 @@ gst_avi_subtitle_extract_file (GstAviSubtitle * sub, GstBuffer * buffer,
     len -= 4;
   } else if (g_utf8_validate (data, len, NULL)) {
     /* not specified, check if it's UTF-8 */
-    ret = gst_buffer_create_sub (buffer, offset, len);
+    ret = gst_buffer_copy_region (buffer, GST_BUFFER_COPY_ALL, offset, len);
   } else {
     /* we could fall back to gst_tag_freeform_to_utf8() here */
     GST_WARNING_OBJECT (sub, "unspecified encoding, and not UTF-8");
-    return NULL;
+    ret = NULL;
+    goto done;
   }
 
   g_return_val_if_fail (ret != NULL || input_enc != NULL, NULL);
@@ -133,6 +139,7 @@ gst_avi_subtitle_extract_file (GstAviSubtitle * sub, GstBuffer * buffer,
   if (input_enc) {
     GError *err = NULL;
     gchar *utf8;
+    gsize slen;
 
     GST_DEBUG_OBJECT (sub, "converting subtitles from %s to UTF-8", input_enc);
     utf8 = g_convert (data, len, "UTF-8", input_enc, NULL, NULL, &err);
@@ -140,17 +147,21 @@ gst_avi_subtitle_extract_file (GstAviSubtitle * sub, GstBuffer * buffer,
     if (err != NULL) {
       GST_WARNING_OBJECT (sub, "conversion to UTF-8 failed : %s", err->message);
       g_error_free (err);
-      return NULL;
+      ret = NULL;
+      goto done;
     }
 
     ret = gst_buffer_new ();
-    GST_BUFFER_DATA (ret) = (guint8 *) utf8;
-    GST_BUFFER_MALLOCDATA (ret) = (guint8 *) utf8;
-    GST_BUFFER_SIZE (ret) = strlen (utf8);
+    slen = strlen (utf8);
+    gst_buffer_append_memory (ret,
+        gst_memory_new_wrapped (0, utf8, slen, 0, slen, utf8, g_free));
+
     GST_BUFFER_OFFSET (ret) = 0;
   }
 
-  GST_BUFFER_CAPS (ret) = gst_caps_new_simple ("application/x-subtitle", NULL);
+done:
+  gst_buffer_unmap (buffer, &map);
+
   return ret;
 }
 
@@ -165,36 +176,32 @@ gst_avi_subtitle_extract_file (GstAviSubtitle * sub, GstBuffer * buffer,
 static void
 gst_avi_subtitle_title_tag (GstAviSubtitle * sub, gchar * title)
 {
-  GstTagList *temp_list = gst_tag_list_new ();
-
-  gst_tag_list_add (temp_list, GST_TAG_MERGE_APPEND, GST_TAG_TITLE, title,
-      NULL);
-  gst_pad_push_event (sub->src, gst_event_new_tag (temp_list));
+  gst_pad_push_event (sub->src,
+      gst_event_new_tag (gst_tag_list_new (GST_TAG_TITLE, title, NULL)));
 }
 
 static GstFlowReturn
 gst_avi_subtitle_parse_gab2_chunk (GstAviSubtitle * sub, GstBuffer * buf)
 {
-  const guint8 *data;
   gchar *name_utf8;
   guint name_length;
   guint file_length;
-  guint size;
+  GstMapInfo map;
 
-  data = GST_BUFFER_DATA (buf);
-  size = GST_BUFFER_SIZE (buf);
+  gst_buffer_map (buf, &map, GST_MAP_READ);
 
   /* check the magic word "GAB2\0", and the next word must be 2 */
-  if (size < 12 || memcmp (data, "GAB2\0\2\0", 5 + 2) != 0)
+  if (map.size < 12 || memcmp (map.data, "GAB2\0\2\0", 5 + 2) != 0)
     goto wrong_magic_word;
 
   /* read 'name' of subtitle */
-  name_length = GST_READ_UINT32_LE (data + 5 + 2);
+  name_length = GST_READ_UINT32_LE (map.data + 5 + 2);
   GST_LOG_OBJECT (sub, "length of name: %u", name_length);
-  if (size <= 17 + name_length)
+  if (map.size <= 17 + name_length)
     goto wrong_name_length;
 
-  name_utf8 = g_convert ((gchar *) data + 11, name_length, "UTF-8", "UTF-16LE",
+  name_utf8 =
+      g_convert ((gchar *) map.data + 11, name_length, "UTF-8", "UTF-16LE",
       NULL, NULL, NULL);
 
   if (name_utf8) {
@@ -204,13 +211,13 @@ gst_avi_subtitle_parse_gab2_chunk (GstAviSubtitle * sub, GstBuffer * buf)
   }
 
   /* next word must be 4 */
-  if (GST_READ_UINT16_LE (data + 11 + name_length) != 0x4)
+  if (GST_READ_UINT16_LE (map.data + 11 + name_length) != 0x4)
     goto wrong_fixed_word_2;
 
-  file_length = GST_READ_UINT32_LE (data + 13 + name_length);
+  file_length = GST_READ_UINT32_LE (map.data + 13 + name_length);
   GST_LOG_OBJECT (sub, "length srt/ssa file: %u", file_length);
 
-  if (size < (17 + name_length + file_length))
+  if (map.size < (17 + name_length + file_length))
     goto wrong_total_length;
 
   /* store this, so we can send it again after a seek; note that we shouldn't
@@ -222,51 +229,59 @@ gst_avi_subtitle_parse_gab2_chunk (GstAviSubtitle * sub, GstBuffer * buf)
   if (sub->subfile == NULL)
     goto extract_failed;
 
+  gst_buffer_unmap (buf, &map);
+
   return GST_FLOW_OK;
 
   /* ERRORS */
 wrong_magic_word:
   {
     GST_ELEMENT_ERROR (sub, STREAM, DECODE, (NULL), ("Wrong magic word"));
+    gst_buffer_unmap (buf, &map);
     return GST_FLOW_ERROR;
   }
 wrong_name_length:
   {
     GST_ELEMENT_ERROR (sub, STREAM, DECODE, (NULL),
-        ("name doesn't fit in buffer (%d < %d)", size, 17 + name_length));
+        ("name doesn't fit in buffer (%" G_GSIZE_FORMAT " < %d)", map.size,
+            17 + name_length));
+    gst_buffer_unmap (buf, &map);
     return GST_FLOW_ERROR;
   }
 wrong_fixed_word_2:
   {
     GST_ELEMENT_ERROR (sub, STREAM, DECODE, (NULL),
         ("wrong fixed word: expected %u, got %u", 4,
-            GST_READ_UINT16_LE (data + 11 + name_length)));
+            GST_READ_UINT16_LE (map.data + 11 + name_length)));
+    gst_buffer_unmap (buf, &map);
     return GST_FLOW_ERROR;
   }
 wrong_total_length:
   {
     GST_ELEMENT_ERROR (sub, STREAM, DECODE, (NULL),
-        ("buffer size is wrong: need %d bytes, have %d bytes",
-            17 + name_length + file_length, size));
+        ("buffer size is wrong: need %d bytes, have %" G_GSIZE_FORMAT " bytes",
+            17 + name_length + file_length, map.size));
+    gst_buffer_unmap (buf, &map);
     return GST_FLOW_ERROR;
   }
 extract_failed:
   {
     GST_ELEMENT_ERROR (sub, STREAM, DECODE, (NULL),
         ("could not extract subtitles"));
+    gst_buffer_unmap (buf, &map);
     return GST_FLOW_ERROR;
   }
 }
 
 static GstFlowReturn
-gst_avi_subtitle_chain (GstPad * pad, GstBuffer * buffer)
+gst_avi_subtitle_chain (GstPad * pad, GstObject * parent, GstBuffer * buffer)
 {
-  GstAviSubtitle *sub = GST_AVI_SUBTITLE (GST_PAD_PARENT (pad));
+  GstAviSubtitle *sub = GST_AVI_SUBTITLE (parent);
   GstFlowReturn ret;
 
   if (sub->subfile != NULL) {
     GST_WARNING_OBJECT (sub, "Got more buffers than expected, dropping");
-    ret = GST_FLOW_UNEXPECTED;
+    ret = GST_FLOW_EOS;
     goto done;
   }
 
@@ -302,43 +317,45 @@ gst_avi_subtitle_send_event (GstElement * element, GstEvent * event)
 }
 
 static void
-gst_avi_subtitle_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  GST_DEBUG_CATEGORY_INIT (avisubtitle_debug, "avisubtitle", 0,
-      "parse avi subtitle stream");
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_template));
-
-  gst_element_class_set_details_simple (element_class,
-      "Avi subtitle parser", "Codec/Parser/Subtitle",
-      "Parse avi subtitle stream", "Thijs Vermeir <thijsvermeir@gmail.com>");
-}
-
-static void
 gst_avi_subtitle_class_init (GstAviSubtitleClass * klass)
 {
   GstElementClass *gstelement_class = (GstElementClass *) klass;
+
+  GST_DEBUG_CATEGORY_INIT (avisubtitle_debug, "avisubtitle", 0,
+      "parse avi subtitle stream");
 
   gstelement_class->change_state =
       GST_DEBUG_FUNCPTR (gst_avi_subtitle_change_state);
   gstelement_class->send_event =
       GST_DEBUG_FUNCPTR (gst_avi_subtitle_send_event);
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sink_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&src_template));
+
+  gst_element_class_set_static_metadata (gstelement_class,
+      "Avi subtitle parser", "Codec/Parser/Subtitle",
+      "Parse avi subtitle stream", "Thijs Vermeir <thijsvermeir@gmail.com>");
 }
 
 static void
-gst_avi_subtitle_init (GstAviSubtitle * self, GstAviSubtitleClass * klass)
+gst_avi_subtitle_init (GstAviSubtitle * self)
 {
+  GstCaps *caps;
+
   self->src = gst_pad_new_from_static_template (&src_template, "src");
   gst_element_add_pad (GST_ELEMENT (self), self->src);
 
   self->sink = gst_pad_new_from_static_template (&sink_template, "sink");
   gst_pad_set_chain_function (self->sink,
       GST_DEBUG_FUNCPTR (gst_avi_subtitle_chain));
+
+  caps = gst_static_pad_template_get_caps (&src_template);
+  gst_pad_set_caps (self->src, caps);
+  gst_caps_unref (caps);
+
+  gst_pad_use_fixed_caps (self->src);
   gst_element_add_pad (GST_ELEMENT (self), self->sink);
 
   self->subfile = NULL;

@@ -1,3 +1,5 @@
+/*-*- Mode: C; c-basic-offset: 2 -*-*/
+
 /*
  *  GStreamer pulseaudio plugin
  *
@@ -21,6 +23,10 @@
 
 #ifndef __GST_PULSESINK_H__
 #define __GST_PULSESINK_H__
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include <gst/gst.h>
 #include <gst/audio/gstaudiosink.h>
@@ -50,30 +56,74 @@ typedef struct _GstPulseSinkClass GstPulseSinkClass;
 
 struct _GstPulseSink
 {
-  GstBaseAudioSink sink;
+  GstAudioBaseSink sink;
 
-  gchar *server, *device, *stream_name;
+  gchar *server, *device, *stream_name, *client_name;
   gchar *device_description;
-
-  pa_threaded_mainloop *mainloop;
 
   GstPulseProbe *probe;
 
   gdouble volume;
-  gboolean volume_set;
-  gint notify;
-  
+  gboolean volume_set:1;
+  gboolean mute:1;
+  gboolean mute_set:1;
+
+  guint defer_pending;
+
+  gint notify; /* atomic */
+
   const gchar *pa_version;
 
-  gboolean pa_defer_ran;
+  GstStructure *properties;
+  pa_proplist *proplist;
+
+  GMutex sink_formats_lock;
+  GList *sink_formats;
+  volatile gint format_lost;
+  GstClockTime format_lost_time;
 };
 
 struct _GstPulseSinkClass
 {
-  GstBaseAudioSinkClass parent_class;
+  GstAudioBaseSinkClass parent_class;
 };
 
 GType gst_pulsesink_get_type (void);
+
+#if (G_BYTE_ORDER == G_LITTLE_ENDIAN)
+# define FORMATS   "{ S16LE, S16BE, F32LE, F32BE, S32LE, S32BE, " \
+                     "S24LE, S24BE, S24_32LE, S24_32BE, U8 }"
+#else
+# define FORMATS   "{ S16BE, S16LE, F32BE, F32LE, S32BE, S32LE, " \
+                     "S24BE, S24LE, S24_32BE, S24_32LE, U8 }"
+#endif
+
+#define _PULSE_SINK_CAPS_COMMON \
+    "audio/x-raw, " \
+      "format = (string) " FORMATS ", " \
+      "layout = (string) interleaved, " \
+      "rate = (int) [ 1, MAX ], " \
+      "channels = (int) [ 1, 32 ];" \
+    "audio/x-alaw, " \
+      "layout = (string) interleaved, " \
+      "rate = (int) [ 1, MAX], " \
+      "channels = (int) [ 1, 32 ];" \
+    "audio/x-mulaw, " \
+      "layout = (string) interleaved, " \
+      "rate = (int) [ 1, MAX], " \
+      "channels = (int) [ 1, 32 ];"
+
+#define _PULSE_SINK_CAPS_1_0 \
+    "audio/x-ac3, framed = (boolean) true;" \
+    "audio/x-eac3, framed = (boolean) true; " \
+    "audio/x-dts, framed = (boolean) true, " \
+      "block-size = (int) { 512, 1024, 2048 }; " \
+    "audio/mpeg, mpegversion = (int) 1, " \
+      "mpegaudioversion = (int) [ 1, 2 ], parsed = (boolean) true;"
+
+#define PULSE_SINK_TEMPLATE_CAPS \
+  _PULSE_SINK_CAPS_COMMON \
+  _PULSE_SINK_CAPS_1_0
 
 G_END_DECLS
 

@@ -35,14 +35,6 @@
 GST_DEBUG_CATEGORY_STATIC (rtph263depay_debug);
 #define GST_CAT_DEFAULT (rtph263depay_debug)
 
-/* elementfactory information */
-static const GstElementDetails gst_rtp_h263depay_details =
-GST_ELEMENT_DETAILS ("RTP H263 depayloader",
-    "Codec/Depayloader/Network",
-    "Extracts H263 video from RTP packets (RFC 2190)",
-    "Philippe Kalaf <philippe.kalaf@collabora.co.uk>, "
-    "Edward Hervey <bilboed@bilboed.com>");
-
 #define GST_RFC2190A_HEADER_LEN 4
 #define GST_RFC2190B_HEADER_LEN 8
 #define GST_RFC2190C_HEADER_LEN 12
@@ -69,59 +61,55 @@ static GstStaticPadTemplate gst_rtp_h263_depay_sink_template =
         "clock-rate = (int) 90000, " "encoding-name = (string) \"H263\"")
     );
 
-GST_BOILERPLATE (GstRtpH263Depay, gst_rtp_h263_depay, GstBaseRTPDepayload,
-    GST_TYPE_BASE_RTP_DEPAYLOAD);
+#define gst_rtp_h263_depay_parent_class parent_class
+G_DEFINE_TYPE (GstRtpH263Depay, gst_rtp_h263_depay,
+    GST_TYPE_RTP_BASE_DEPAYLOAD);
 
 static void gst_rtp_h263_depay_finalize (GObject * object);
 
 static GstStateChangeReturn gst_rtp_h263_depay_change_state (GstElement *
     element, GstStateChange transition);
 
-static GstBuffer *gst_rtp_h263_depay_process (GstBaseRTPDepayload * depayload,
+static GstBuffer *gst_rtp_h263_depay_process (GstRTPBaseDepayload * depayload,
     GstBuffer * buf);
-gboolean gst_rtp_h263_depay_setcaps (GstBaseRTPDepayload * filter,
+gboolean gst_rtp_h263_depay_setcaps (GstRTPBaseDepayload * filter,
     GstCaps * caps);
-
-static void
-gst_rtp_h263_depay_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_h263_depay_src_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_h263_depay_sink_template));
-
-  gst_element_class_set_details (element_class, &gst_rtp_h263depay_details);
-}
 
 static void
 gst_rtp_h263_depay_class_init (GstRtpH263DepayClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
-  GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
+  GstRTPBaseDepayloadClass *gstrtpbasedepayload_class;
+
+  GST_DEBUG_CATEGORY_INIT (rtph263depay_debug, "rtph263depay", 0,
+      "H263 Video RTP Depayloader");
 
   gobject_class = (GObjectClass *) klass;
   gstelement_class = (GstElementClass *) klass;
-  gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
-
-  parent_class = g_type_class_peek_parent (klass);
-
-  gstbasertpdepayload_class->process = gst_rtp_h263_depay_process;
-  gstbasertpdepayload_class->set_caps = gst_rtp_h263_depay_setcaps;
+  gstrtpbasedepayload_class = (GstRTPBaseDepayloadClass *) klass;
 
   gobject_class->finalize = gst_rtp_h263_depay_finalize;
 
   gstelement_class->change_state = gst_rtp_h263_depay_change_state;
 
-  GST_DEBUG_CATEGORY_INIT (rtph263depay_debug, "rtph263depay", 0,
-      "H263 Video RTP Depayloader");
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_h263_depay_src_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_h263_depay_sink_template));
+
+  gst_element_class_set_static_metadata (gstelement_class,
+      "RTP H263 depayloader", "Codec/Depayloader/Network/RTP",
+      "Extracts H263 video from RTP packets (RFC 2190)",
+      "Philippe Kalaf <philippe.kalaf@collabora.co.uk>, "
+      "Edward Hervey <bilboed@bilboed.com>");
+
+  gstrtpbasedepayload_class->process = gst_rtp_h263_depay_process;
+  gstrtpbasedepayload_class->set_caps = gst_rtp_h263_depay_setcaps;
 }
 
 static void
-gst_rtp_h263_depay_init (GstRtpH263Depay * rtph263depay,
-    GstRtpH263DepayClass * klass)
+gst_rtp_h263_depay_init (GstRtpH263Depay * rtph263depay)
 {
   rtph263depay->adapter = gst_adapter_new ();
 
@@ -143,7 +131,7 @@ gst_rtp_h263_depay_finalize (GObject * object)
 }
 
 gboolean
-gst_rtp_h263_depay_setcaps (GstBaseRTPDepayload * filter, GstCaps * caps)
+gst_rtp_h263_depay_setcaps (GstRTPBaseDepayload * filter, GstCaps * caps)
 {
   GstCaps *srccaps;
   GstStructure *structure = gst_caps_get_structure (caps, 0);
@@ -156,14 +144,14 @@ gst_rtp_h263_depay_setcaps (GstBaseRTPDepayload * filter, GstCaps * caps)
   srccaps = gst_caps_new_simple ("video/x-h263",
       "variant", G_TYPE_STRING, "itu",
       "h263version", G_TYPE_STRING, "h263", NULL);
-  gst_pad_set_caps (GST_BASE_RTP_DEPAYLOAD_SRCPAD (filter), srccaps);
+  gst_pad_set_caps (GST_RTP_BASE_DEPAYLOAD_SRCPAD (filter), srccaps);
   gst_caps_unref (srccaps);
 
   return TRUE;
 }
 
 static GstBuffer *
-gst_rtp_h263_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
+gst_rtp_h263_depay_process (GstRTPBaseDepayload * depayload, GstBuffer * buf)
 {
   GstRtpH263Depay *rtph263depay;
   GstBuffer *outbuf;
@@ -173,6 +161,7 @@ gst_rtp_h263_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   guint SBIT, EBIT;
   gboolean F, P, M;
   gboolean I;
+  GstRTPBuffer rtp = { NULL };
 
   rtph263depay = GST_RTP_H263_DEPAY (depayload);
 
@@ -182,12 +171,15 @@ gst_rtp_h263_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
     gst_adapter_clear (rtph263depay->adapter);
     rtph263depay->offset = 0;
     rtph263depay->leftover = 0;
+    rtph263depay->start = FALSE;
   }
 
-  payload_len = gst_rtp_buffer_get_payload_len (buf);
-  payload = gst_rtp_buffer_get_payload (buf);
+  gst_rtp_buffer_map (buf, GST_MAP_READ, &rtp);
 
-  M = gst_rtp_buffer_get_marker (buf);
+  payload_len = gst_rtp_buffer_get_payload_len (&rtp);
+  payload = gst_rtp_buffer_get_payload (&rtp);
+
+  M = gst_rtp_buffer_get_marker (&rtp);
 
   /* Let's see what mode we are using */
   F = (payload[0] & 0x80) == 0x80;
@@ -211,7 +203,6 @@ gst_rtp_h263_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      */
     I = (payload[1] & 0x10) == 0x10;
-
   } else {
     if (P == 0) {
       /* F == 1 and P == 0
@@ -252,16 +243,34 @@ gst_rtp_h263_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   GST_LOG ("SBIT : %d , EBIT : %d", SBIT, EBIT);
   GST_LOG ("payload_len : %d, header_len : %d , leftover : 0x%x",
       payload_len, header_len, rtph263depay->leftover);
-#if 0
-  gst_util_dump_mem (payload, header_len);
-#endif
 
   /* skip header */
   payload += header_len;
   payload_len -= header_len;
 
+  if (!rtph263depay->start) {
+    /* do not skip this fragment if it is a Mode A with picture start code */
+    if (!F && payload_len > 4 && (GST_READ_UINT32_BE (payload) >> 10 == 0x20)) {
+      GST_DEBUG ("Mode A with PSC => frame start");
+      rtph263depay->start = TRUE;
+      if (! !(payload[4] & 0x02) != I) {
+        GST_DEBUG ("Wrong Picture Coding Type Flag in rtp header");
+        I = !I;
+      }
+      rtph263depay->psc_I = I;
+    } else {
+      GST_DEBUG ("no frame start yet, skipping payload");
+      goto skip;
+    }
+  }
+
+  /* only trust I info from Mode A starting packet
+   * from buggy payloaders or hw */
+  I = rtph263depay->psc_I;
+
   if (SBIT) {
-    /* take the leftover and merge it at the beginning */
+    /* take the leftover and merge it at the beginning, FIXME make the buffer
+     * data writable. */
     GST_LOG ("payload[0] : 0x%x", payload[0]);
     payload[0] &= 0xFF >> SBIT;
     GST_LOG ("payload[0] : 0x%x", payload[0]);
@@ -272,16 +281,17 @@ gst_rtp_h263_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   }
 
   if (!EBIT) {
-    GstBuffer *tmp = gst_buffer_new_and_alloc (payload_len);
+    GstBuffer *tmp;
 
-    /* Copy the entire buffer */
-    memcpy (GST_BUFFER_DATA (tmp), payload, payload_len);
+    /* Take the entire buffer */
+    tmp = gst_rtp_buffer_get_payload_subbuffer (&rtp, header_len, payload_len);
     gst_adapter_push (rtph263depay->adapter, tmp);
   } else {
-    GstBuffer *tmp = gst_buffer_new_and_alloc (payload_len - 1);
+    GstBuffer *tmp;
 
-    /* Copy the entire buffer except for the last byte */
-    memcpy (GST_BUFFER_DATA (tmp), payload, payload_len - 1);
+    /* Take the entire buffer except for the last byte */
+    tmp = gst_rtp_buffer_get_payload_subbuffer (&rtp, header_len,
+        payload_len - 1);
     gst_adapter_push (rtph263depay->adapter, tmp);
 
     /* Put the last byte into the leftover */
@@ -292,34 +302,38 @@ gst_rtp_h263_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
     GST_DEBUG ("leftover : 0x%x", rtph263depay->leftover);
   }
 
+skip:
   if (M) {
-    /* frame is completed */
-    guint avail;
-    guint32 timestamp;
+    if (rtph263depay->start) {
+      /* frame is completed */
+      guint avail;
 
-    if (rtph263depay->offset) {
-      /* push in the leftover */
-      GstBuffer *buf = gst_buffer_new_and_alloc (1);
+      if (rtph263depay->offset) {
+        /* push in the leftover */
+        GstBuffer *buf = gst_buffer_new_and_alloc (1);
 
-      GST_DEBUG ("Pushing leftover in adapter");
-      GST_BUFFER_DATA (buf)[0] = rtph263depay->leftover;
-      gst_adapter_push (rtph263depay->adapter, buf);
+        GST_DEBUG ("Pushing leftover in adapter");
+        gst_buffer_fill (buf, 0, &rtph263depay->leftover, 1);
+        gst_adapter_push (rtph263depay->adapter, buf);
+      }
+
+      avail = gst_adapter_available (rtph263depay->adapter);
+      outbuf = gst_adapter_take_buffer (rtph263depay->adapter, avail);
+
+      if (I)
+        GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_DELTA_UNIT);
+
+      GST_DEBUG ("Pushing out a buffer of %d bytes", avail);
+
+      gst_rtp_base_depayload_push (depayload, outbuf);
+      rtph263depay->offset = 0;
+      rtph263depay->leftover = 0;
+      rtph263depay->start = FALSE;
+    } else {
+      rtph263depay->start = TRUE;
     }
-
-    avail = gst_adapter_available (rtph263depay->adapter);
-    outbuf = gst_adapter_take_buffer (rtph263depay->adapter, avail);
-
-    if (I)
-      GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_DELTA_UNIT);
-
-    GST_DEBUG ("Pushing out a buffer of %d bytes", avail);
-
-    timestamp = gst_rtp_buffer_get_timestamp (buf);
-    gst_base_rtp_depayload_push_ts (depayload, timestamp, outbuf);
-    rtph263depay->offset = 0;
-    rtph263depay->leftover = 0;
-
   }
+  gst_rtp_buffer_unmap (&rtp);
 
   return NULL;
 }
@@ -338,6 +352,7 @@ gst_rtp_h263_depay_change_state (GstElement * element,
       break;
     case GST_STATE_CHANGE_READY_TO_PAUSED:
       gst_adapter_clear (rtph263depay->adapter);
+      rtph263depay->start = TRUE;
       break;
     default:
       break;
@@ -358,5 +373,5 @@ gboolean
 gst_rtp_h263_depay_plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "rtph263depay",
-      GST_RANK_MARGINAL, GST_TYPE_RTP_H263_DEPAY);
+      GST_RANK_SECONDARY, GST_TYPE_RTP_H263_DEPAY);
 }

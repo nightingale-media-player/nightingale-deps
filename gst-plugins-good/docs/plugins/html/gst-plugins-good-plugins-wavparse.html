@@ -3,16 +3,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>wavparse</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-wavpackparse.html" title="wavpackparse">
-<link rel="next" href="gst-plugins-good-plugins-ximagesrc.html" title="ximagesrc">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="next" href="gst-plugins-good-plugins-webmmux.html" title="webmmux">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -20,18 +17,20 @@
 <td><a accesskey="p" href="gst-plugins-good-plugins-wavpackparse.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-ximagesrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-good-plugins-webmmux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-wavparse.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-wavparse.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-wavparse.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-wavparse.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-wavparse.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-wavparse.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
-<div class="refentry" title="wavparse">
+<div class="refentry">
 <a name="gst-plugins-good-plugins-wavparse"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -40,28 +39,28 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="gst-plugins-good-plugins-wavparse.synopsis"></a><h2>Synopsis</h2>
-<a name="GstWavParse"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-good-plugins-wavparse.html#GstWavParse-struct" title="GstWavParse">GstWavParse</a>;
+<a name="GstWavParse"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-wavparse.html#GstWavParse-struct" title="struct GstWavParse">GstWavParse</a>;
 </pre>
 </div>
-<div class="refsect1" title="Object Hierarchy">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-wavparse.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----GstWavParse
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                     +----GstWavParse
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-wavparse.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-good-plugins-wavparse.html#GstWavParse--ignore-length" title='The "ignore-length" property'>ignore-length</a>"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
+</pre>
+</div>
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-wavparse.description"></a><h2>Description</h2>
 <p>
 Parse a .wav file into raw or compressed audio.
@@ -72,24 +71,41 @@ stream from a network source.
 </p>
 <p>
 </p>
-<div class="refsect2" title="Example launch line">
-<a name="id589883"></a><h3>Example launch line</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch filesrc location=sine.wav ! wavparse ! audioconvert ! alsasink
-</pre></div> Read a wav file and output to the soundcard using the ALSA element. The
+<div class="refsect2">
+<a name="idp23386608"></a><h3>Example launch line</h3>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> filesrc location<span class="gtkdoc opt">=</span>sine<span class="gtkdoc opt">.</span>wav <span class="gtkdoc opt">!</span> wavparse <span class="gtkdoc opt">!</span> audioconvert <span class="gtkdoc opt">!</span> alsasink</pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ Read a wav file and output to the soundcard using the ALSA element. The
 wav file is assumed to contain raw uncompressed samples.
-<div class="informalexample"><pre class="programlisting">
-gst-launch gnomevfssrc location=http://www.example.org/sine.wav ! queue ! wavparse ! audioconvert ! alsasink
-</pre></div> Stream data from a network url.
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> gnomevfssrc location<span class="gtkdoc opt">=</span>http<span class="gtkdoc opt">:</span><span class="gtkdoc slc">//www.example.org/sine.wav ! queue ! wavparse ! audioconvert ! alsasink</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ Stream data from a network url.
 </div>
 <p>
 </p>
 <p>
-Last reviewed on 2007-02-14 (0.10.6)</p>
-<div class="refsynopsisdiv" title="Synopsis">
+Last reviewed on 2007-02-14 (0.10.6)
+</p>
+<div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" title="Element Information">
-<a name="id580013"></a><h3>Element Information</h3>
+<div class="refsect2">
+<a name="idp22776032"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -111,14 +127,35 @@ Last reviewed on 2007-02-14 (0.10.6)</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="Element Pads">
-<a name="id602721"></a><h3>Element Pads</h3>
+<div class="refsect2">
+<a name="idp24579440"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
-<td>wavparse_src</td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-wav</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
 </tr>
 <tr>
 <td><p><span class="term">direction</span></p></td>
@@ -126,7 +163,7 @@ Last reviewed on 2007-02-14 (0.10.6)</p>
 </tr>
 <tr>
 <td><p><span class="term">presence</span></p></td>
-<td>sometimes</td>
+<td>always</td>
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
@@ -142,7 +179,7 @@ Last reviewed on 2007-02-14 (0.10.6)</p>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
-<td> audio/x-raw-int, endianness=(int)1234, signed=(boolean){ true, false }, width=(int){ 8, 16, 24, 32 }, depth=(int)[ 1, 32 ], rate=(int)[ 1000, 192000 ], channels=(int)[ 1, 8 ]</td>
+<td> audio/x-raw, format=(string){ S8, U8, S16LE, U16LE, S24LE, U24LE, S32LE, U32LE }, layout=(string)interleaved, rate=(int)[ 1000, 192000 ], channels=(int)[ 1, 8 ]</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
@@ -202,7 +239,7 @@ Last reviewed on 2007-02-14 (0.10.6)</p>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
-<td> audio/x-raw-float, endianness=(int)1234, width=(int){ 32, 64 }, rate=(int)[ 1000, 192000 ], channels=(int)[ 1, 8 ]</td>
+<td> audio/x-raw, format=(string){ F32LE, F64LE }, layout=(string)interleaved, rate=(int)[ 1000, 192000 ], channels=(int)[ 1, 8 ]</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
@@ -238,46 +275,40 @@ Last reviewed on 2007-02-14 (0.10.6)</p>
 </tr>
 </tbody>
 </table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>wavparse_sink</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>audio/x-wav</td>
-</tr>
-</tbody>
-</table></div>
 </div>
 </div>
 <p>
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-wavparse.details"></a><h2>Details</h2>
-<div class="refsect2" title="GstWavParse">
-<a name="GstWavParse-struct"></a><h3>GstWavParse</h3>
-<pre class="programlisting">typedef struct _GstWavParse GstWavParse;</pre>
+<div class="refsect2">
+<a name="GstWavParse-struct"></a><h3>struct GstWavParse</h3>
+<pre class="programlisting">struct GstWavParse;</pre>
 <p>
-Opaque data structure.</p>
-<p>
+Opaque data structure.
 </p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-wavparse.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstWavParse--ignore-length"></a><h3>The <code class="literal">"ignore-length"</code> property</h3>
+<pre class="programlisting">  "ignore-length"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<p>
+This selects whether the length found in a data chunk
+should be ignored. This may be useful for streamed audio
+where the length is unknown until the end of streaming,
+and various software/hardware just puts some random value
+in there and hopes it doesn't break too much.
+</p>
+<p>Default value: FALSE</p>
+<p class="since">Since 0.10.36</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

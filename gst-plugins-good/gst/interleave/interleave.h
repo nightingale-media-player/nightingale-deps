@@ -61,20 +61,20 @@ struct _GstInterleave
   gboolean channel_positions_from_input;
 
   GstCaps *sinkcaps;
+  gint configured_sinkpads_counter;
 
   GstClockTime timestamp;
   guint64 offset;
 
-  gboolean segment_pending;
-  guint64 segment_position;
-  gdouble segment_rate;
-  GstSegment segment;
+  GstEvent *pending_segment;
 
   GstPadEventFunction collect_event;
 
   GstInterleaveFunc func;
 
   GstPad *src;
+
+  gboolean send_stream_start;
 };
 
 struct _GstInterleaveClass

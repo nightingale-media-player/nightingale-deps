@@ -56,6 +56,10 @@ struct _GstXImageSrc
   gchar *display_name;
   guint screen_num;
 
+  /* Window selection */
+  guint64 xid;
+  gchar *xname;
+
   /* Desired output framerate */
   gint fps_n;
   gint fps_d;
@@ -65,10 +69,10 @@ struct _GstXImageSrc
   gint64 last_frame_no;
 
   /* Protect X Windows calls */
-  GMutex *x_lock;
+  GMutex  x_lock;
 
   /* Gathered pool of emitted buffers */
-  GMutex *pool_lock;
+  GMutex  pool_lock;
   GSList *buffer_pool;
 
   /* XFixes and XDamage support */
@@ -83,6 +87,9 @@ struct _GstXImageSrc
   guint endx;
   guint endy;
 
+  /* whether to use remote friendly calls */
+  gboolean remote;
+
 #ifdef HAVE_XFIXES
   int fixes_event_base;
   XFixesCursorImage *cursor_image;
@@ -92,7 +99,7 @@ struct _GstXImageSrc
   int damage_event_base;
   XserverRegion damage_region;
   GC damage_copy_gc;
-  GstXImageSrcBuffer *last_ximage;
+  GstBuffer *last_ximage;
 #endif
 };
 

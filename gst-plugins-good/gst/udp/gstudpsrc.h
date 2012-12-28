@@ -23,15 +23,11 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstpushsrc.h>
+#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
-#include <errno.h>
-#include <string.h>
-#include <sys/types.h>
-
 #include "gstudpnetutils.h"
-
 #include "gstudp.h"
 
 #define GST_TYPE_UDPSRC \
@@ -53,25 +49,26 @@ struct _GstUDPSrc {
   GstPushSrc parent;
 
   /* properties */
-  gchar     *uri;
-  int        port;
-  gchar     *multi_group;
+  gchar     *host;
+  gint       port;
   gchar     *multi_iface;
   gint       ttl;
   GstCaps   *caps;
   gint       buffer_size;
   guint64    timeout;
   gint       skip_first_bytes;
-  int        sockfd;
-  gboolean   closefd;
+  GSocket   *socket;
+  gboolean   close_socket;
   gboolean   auto_multicast;
+  gboolean   reuse;
 
   /* our sockets */
-  GstPollFD  sock;
-  GstPoll   *fdset;
-  gboolean   externalfd;
+  GSocket   *used_socket;
+  GCancellable *cancellable;
+  GInetSocketAddress *addr;
+  gboolean   external_socket;
 
-  struct   sockaddr_storage myaddr;
+  gchar     *uri;
 };
 
 struct _GstUDPSrcClass {

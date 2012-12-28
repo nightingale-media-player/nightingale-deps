@@ -21,7 +21,7 @@
 #define __GST_RTP_H263P_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertppayload.h>
+#include <gst/rtp/gstrtpbasepayload.h>
 #include <gst/base/gstadapter.h>
 
 G_BEGIN_DECLS
@@ -48,7 +48,7 @@ typedef enum
 
 struct _GstRtpH263PPay
 {
-  GstBaseRTPPayload    payload;
+  GstRTPBasePayload    payload;
 
   GstAdapter          *adapter;
   GstClockTime         first_timestamp;
@@ -58,8 +58,10 @@ struct _GstRtpH263PPay
 
 struct _GstRtpH263PPayClass
 {
-  GstBaseRTPPayloadClass parent_class;
+  GstRTPBasePayloadClass parent_class;
 };
+
+GType gst_rtp_h263p_pay_get_type (void);
 
 gboolean gst_rtp_h263p_pay_plugin_init (GstPlugin * plugin);
 

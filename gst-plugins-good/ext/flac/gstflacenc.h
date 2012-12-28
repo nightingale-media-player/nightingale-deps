@@ -22,6 +22,7 @@
 #define __GST_FLAC_ENC_H__
 
 #include <gst/gst.h>
+#include <gst/audio/gstaudioencoder.h>
 
 #include <FLAC/all.h>
 
@@ -37,48 +38,37 @@ typedef struct _GstFlacEnc GstFlacEnc;
 typedef struct _GstFlacEncClass GstFlacEncClass;
 
 struct _GstFlacEnc {
-  GstElement     element;
+  GstAudioEncoder  element;
 
   /* < private > */
-
-  GstPad        *sinkpad;
-  GstPad        *srcpad;
 
   GstFlowReturn  last_flow; /* save flow from last push so we can pass the
                              * correct flow return upstream in case the push
                              * fails for some reason */
 
   guint64        offset;
-  guint64        samples_written;
-  gint           channels;
-  gint           width;
-  gint           depth;
-  gint           sample_rate;
   gint           quality;
   gboolean       stopped;
   guint           padding;
+  gint            seekpoints;
 
-#if !defined(FLAC_API_VERSION_CURRENT) || FLAC_API_VERSION_CURRENT < 8
-  FLAC__SeekableStreamEncoder *encoder;
-#else
   FLAC__StreamEncoder *encoder;
-#endif
+
   FLAC__StreamMetadata **meta;
 
   GstTagList *     tags;
+  GstToc *         toc;
 
+  gboolean         eos;
   /* queue headers until we have them all so we can add streamheaders to caps */
   gboolean         got_headers;
   GList           *headers;
 
-  /* Timestamp and granulepos tracking */
-  GstClockTime     start_ts;
-  GstClockTime     next_ts;
-  guint64          granulepos_offset;
+  gint             channel_reorder_map[8];
 };
 
 struct _GstFlacEncClass {
-  GstElementClass parent_class;
+  GstAudioEncoderClass parent_class;
 };
 
 GType gst_flac_enc_get_type(void);

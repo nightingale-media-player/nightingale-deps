@@ -50,7 +50,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch osxaudiosrc ! wavenc ! filesink location=audio.wav
+ * gst-launch-1.0 osxaudiosrc ! wavenc ! filesink location=audio.wav
  * ]|
  * </refsect2>
  */
@@ -67,12 +67,6 @@
 
 GST_DEBUG_CATEGORY_STATIC (osx_audiosrc_debug);
 #define GST_CAT_DEFAULT osx_audiosrc_debug
-
-static GstElementDetails gst_osx_audio_src_details =
-GST_ELEMENT_DETAILS ("Audio Source (OSX)",
-    "Source/Audio",
-    "Input from a sound card in OS X",
-    "Zaheer Abbas Merali <zaheerabbas at merali dot org>");
 
 /* Filter signals and args */
 enum
@@ -142,7 +136,10 @@ gst_osx_audio_src_base_init (gpointer g_class)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_factory));
 
-  gst_element_class_set_details (element_class, &gst_osx_audio_src_details);
+  gst_element_class_set_static_metadata (element_class, "Audio Source (OSX)",
+      "Source/Audio",
+      "Input from a sound card in OS X",
+      "Zaheer Abbas Merali <zaheerabbas at merali dot org>");
 }
 
 static void
@@ -160,16 +157,14 @@ gst_osx_audio_src_class_init (GstOsxAudioSrcClass * klass)
 
   parent_class = g_type_class_peek_parent (klass);
 
-  gobject_class->set_property =
-      GST_DEBUG_FUNCPTR (gst_osx_audio_src_set_property);
-  gobject_class->get_property =
-      GST_DEBUG_FUNCPTR (gst_osx_audio_src_get_property);
+  gobject_class->set_property = gst_osx_audio_src_set_property;
+  gobject_class->get_property = gst_osx_audio_src_get_property;
 
   gstbasesrc_class->get_caps = GST_DEBUG_FUNCPTR (gst_osx_audio_src_get_caps);
 
   g_object_class_install_property (gobject_class, ARG_DEVICE,
       g_param_spec_int ("device", "Device ID", "Device ID of input device",
-          0, G_MAXINT, 0, G_PARAM_READWRITE));
+          0, G_MAXINT, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gstbaseaudiosrc_class->create_ringbuffer =
       GST_DEBUG_FUNCPTR (gst_osx_audio_src_create_ringbuffer);
@@ -249,8 +244,7 @@ gst_osx_audio_src_get_caps (GstBaseSrc * src)
   if (min == max) {
     gst_caps_set_simple (caps, "channels", G_TYPE_INT, max, NULL);
   } else {
-    gst_caps_set_simple (caps, "channels", GST_TYPE_INT_RANGE, min, max,
-        NULL);
+    gst_caps_set_simple (caps, "channels", GST_TYPE_INT_RANGE, min, max, NULL);
   }
 
   return caps;

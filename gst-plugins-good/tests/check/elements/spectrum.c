@@ -22,9 +22,9 @@
 
 #include <unistd.h>
 
+#include <gst/audio/audio.h>
 #include <gst/check/gstcheck.h>
 
-GList *buffers = NULL;
 gboolean have_eos = FALSE;
 
 /* For ease of programming we use globals to keep refs for our floating
@@ -33,57 +33,43 @@ gboolean have_eos = FALSE;
 GstPad *mysrcpad, *mysinkpad;
 
 #define SPECT_CAPS_TEMPLATE_STRING \
-    "audio/x-raw-int, "                                               \
-    " width = (int) 16, "                                             \
-    " depth = (int) 16, "                                             \
-    " signed = (boolean) true, "                                      \
-    " endianness = (int) BYTE_ORDER, "                                \
+    "audio/x-raw, "                                                   \
     " rate = (int) [ 1, MAX ], "                                      \
-    " channels = (int) [ 1, MAX ]; "                                  \
-    "audio/x-raw-int, "                                               \
-    " width = (int) 32, "                                             \
-    " depth = (int) 32, "                                             \
-    " signed = (boolean) true, "                                      \
-    " endianness = (int) BYTE_ORDER, "                                \
-    " rate = (int) [ 1, MAX ], "                                      \
-    " channels = (int) [ 1, MAX ]; "                                  \
-    "audio/x-raw-float, "                                             \
-    " width = (int) { 32, 64 }, "                                     \
-    " endianness = (int) BYTE_ORDER, "                                \
-    " rate = (int) [ 1, MAX ], "                                      \
-    " channels = (int) [ 1, MAX ]"
+    " channels = (int) [ 1, MAX ], "                                  \
+    " layout = (string) interleaved, "                                \
+    " format = (string) { "                                           \
+    GST_AUDIO_NE(S16) ", "                                            \
+    GST_AUDIO_NE(S32) ", "                                            \
+    GST_AUDIO_NE(F32) ", "                                            \
+    GST_AUDIO_NE(F64) " }"
 
 #define SPECT_CAPS_STRING_S16 \
-  "audio/x-raw-int, " \
+  "audio/x-raw, " \
     "rate = (int) 44100, " \
     "channels = (int) 1, " \
-    "endianness = (int) BYTE_ORDER, " \
-    "width = (int) 16, " \
-    "depth = (int) 16, " \
-    "signed = (boolean) true"
+    "layout = (string) interleaved, " \
+    "format = (string) " GST_AUDIO_NE(S16)
 
 #define SPECT_CAPS_STRING_S32 \
-  "audio/x-raw-int, " \
+  "audio/x-raw, " \
     "rate = (int) 44100, " \
     "channels = (int) 1, " \
-    "endianness = (int) BYTE_ORDER, " \
-    "width = (int) 32, " \
-    "depth = (int) 32, " \
-    "signed = (boolean) true"
+    "layout = (string) interleaved, " \
+    "format = (string) " GST_AUDIO_NE(S32)
 
 #define SPECT_CAPS_STRING_F32 \
-    "audio/x-raw-float, "                                             \
-    " width = (int) 32, "                                             \
-    " endianness = (int) BYTE_ORDER, "                                \
+    "audio/x-raw, "                                                   \
     " rate = (int) 44100, "                                           \
-    " channels = (int) 1"
+    " channels = (int) 1, "                                           \
+    " layout = (string) interleaved, " \
+    " format = (string) " GST_AUDIO_NE(F32)
 
 #define SPECT_CAPS_STRING_F64 \
-    "audio/x-raw-float, "                                             \
-    " width = (int) 64, "                                             \
-    " endianness = (int) BYTE_ORDER, "                                \
+    "audio/x-raw, "                                                   \
     " rate = (int) 44100, "                                           \
-    " channels = (int) 1"
+    " channels = (int) 1, "                                           \
+    " layout = (string) interleaved, " \
+    " format = (string) " GST_AUDIO_NE(F64)
 
 #define SPECT_BANDS 256
 
@@ -99,22 +85,22 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     );
 
 /* takes over reference for outcaps */
-GstElement *
-setup_spectrum ()
+static GstElement *
+setup_spectrum (void)
 {
   GstElement *spectrum;
 
   GST_DEBUG ("setup_spectrum");
   spectrum = gst_check_setup_element ("spectrum");
-  mysrcpad = gst_check_setup_src_pad (spectrum, &srctemplate, NULL);
-  mysinkpad = gst_check_setup_sink_pad (spectrum, &sinktemplate, NULL);
+  mysrcpad = gst_check_setup_src_pad (spectrum, &srctemplate);
+  mysinkpad = gst_check_setup_sink_pad (spectrum, &sinktemplate);
   gst_pad_set_active (mysrcpad, TRUE);
   gst_pad_set_active (mysinkpad, TRUE);
 
   return spectrum;
 }
 
-void
+static void
 cleanup_spectrum (GstElement * spectrum)
 {
   GST_DEBUG ("cleanup_spectrum");
@@ -141,12 +127,13 @@ GST_START_TEST (test_int16)
   const GstStructure *structure;
   int i, j;
   gint16 *data;
+  GstMapInfo map;
   const GValue *list, *value;
   GstClockTime endtime;
   gfloat level;
 
   spectrum = setup_spectrum ();
-  g_object_set (spectrum, "message", TRUE, "interval", GST_SECOND / 100,
+  g_object_set (spectrum, "post-messages", TRUE, "interval", GST_SECOND / 100,
       "bands", SPECT_BANDS, "threshold", -80, NULL);
 
   fail_unless (gst_element_set_state (spectrum,
@@ -154,9 +141,9 @@ GST_START_TEST (test_int16)
       "could not set to playing");
 
   /* create a 1 sec buffer with an 11025 Hz sine wave */
-  inbuffer = gst_buffer_new_and_alloc (44100 * sizeof (gint16));
-  data = (gint16 *) GST_BUFFER_DATA (inbuffer);
-
+  inbuffer = gst_buffer_new_allocate (NULL, 44100 * sizeof (gint16), 0);
+  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
+  data = (gint16 *) map.data;
   for (j = 0; j < 44100; j += 4) {
     *data = 0;
     ++data;
@@ -167,9 +154,10 @@ GST_START_TEST (test_int16)
     *data = -32767;
     ++data;
   }
+  gst_buffer_unmap (inbuffer, &map);
 
   caps = gst_caps_from_string (SPECT_CAPS_STRING_S16);
-  gst_buffer_set_caps (inbuffer, caps);
+  fail_unless (gst_pad_set_caps (mysrcpad, caps));
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -244,12 +232,13 @@ GST_START_TEST (test_int32)
   const GstStructure *structure;
   int i, j;
   gint32 *data;
+  GstMapInfo map;
   const GValue *list, *value;
   GstClockTime endtime;
   gfloat level;
 
   spectrum = setup_spectrum ();
-  g_object_set (spectrum, "message", TRUE, "interval", GST_SECOND / 100,
+  g_object_set (spectrum, "post-messages", TRUE, "interval", GST_SECOND / 100,
       "bands", SPECT_BANDS, "threshold", -80, NULL);
 
   fail_unless (gst_element_set_state (spectrum,
@@ -257,8 +246,9 @@ GST_START_TEST (test_int32)
       "could not set to playing");
 
   /* create a 1 sec buffer with an 11025 Hz sine wave */
-  inbuffer = gst_buffer_new_and_alloc (44100 * sizeof (gint32));
-  data = (gint32 *) GST_BUFFER_DATA (inbuffer);
+  inbuffer = gst_buffer_new_allocate (NULL, 44100 * sizeof (gint32), 0);
+  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
+  data = (gint32 *) map.data;
   for (j = 0; j < 44100; j += 4) {
     *data = 0;
     ++data;
@@ -269,8 +259,10 @@ GST_START_TEST (test_int32)
     *data = -2147483647;
     ++data;
   }
+  gst_buffer_unmap (inbuffer, &map);
+
   caps = gst_caps_from_string (SPECT_CAPS_STRING_S32);
-  gst_buffer_set_caps (inbuffer, caps);
+  fail_unless (gst_pad_set_caps (mysrcpad, caps));
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -345,12 +337,13 @@ GST_START_TEST (test_float32)
   const GstStructure *structure;
   int i, j;
   gfloat *data;
+  GstMapInfo map;
   const GValue *list, *value;
   GstClockTime endtime;
   gfloat level;
 
   spectrum = setup_spectrum ();
-  g_object_set (spectrum, "message", TRUE, "interval", GST_SECOND / 100,
+  g_object_set (spectrum, "post-messages", TRUE, "interval", GST_SECOND / 100,
       "bands", SPECT_BANDS, "threshold", -80, NULL);
 
   fail_unless (gst_element_set_state (spectrum,
@@ -358,8 +351,9 @@ GST_START_TEST (test_float32)
       "could not set to playing");
 
   /* create a 1 sec buffer with an 11025 Hz sine wave */
-  inbuffer = gst_buffer_new_and_alloc (44100 * sizeof (gfloat));
-  data = (gfloat *) GST_BUFFER_DATA (inbuffer);
+  inbuffer = gst_buffer_new_allocate (NULL, 44100 * sizeof (gfloat), 0);
+  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
+  data = (gfloat *) map.data;
   for (j = 0; j < 44100; j += 4) {
     *data = 0.0;
     ++data;
@@ -370,8 +364,10 @@ GST_START_TEST (test_float32)
     *data = -1.0;
     ++data;
   }
+  gst_buffer_unmap (inbuffer, &map);
+
   caps = gst_caps_from_string (SPECT_CAPS_STRING_F32);
-  gst_buffer_set_caps (inbuffer, caps);
+  fail_unless (gst_pad_set_caps (mysrcpad, caps));
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -446,12 +442,13 @@ GST_START_TEST (test_float64)
   const GstStructure *structure;
   int i, j;
   gdouble *data;
+  GstMapInfo map;
   const GValue *list, *value;
   GstClockTime endtime;
   gfloat level;
 
   spectrum = setup_spectrum ();
-  g_object_set (spectrum, "message", TRUE, "interval", GST_SECOND / 100,
+  g_object_set (spectrum, "post-messages", TRUE, "interval", GST_SECOND / 100,
       "bands", SPECT_BANDS, "threshold", -80, NULL);
 
   fail_unless (gst_element_set_state (spectrum,
@@ -459,8 +456,9 @@ GST_START_TEST (test_float64)
       "could not set to playing");
 
   /* create a 1 sec buffer with an 11025 Hz sine wave */
-  inbuffer = gst_buffer_new_and_alloc (44100 * sizeof (gdouble));
-  data = (gdouble *) GST_BUFFER_DATA (inbuffer);
+  inbuffer = gst_buffer_new_allocate (NULL, 44100 * sizeof (gdouble), 0);
+  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
+  data = (gdouble *) map.data;
   for (j = 0; j < 44100; j += 4) {
     *data = 0.0;
     ++data;
@@ -471,8 +469,10 @@ GST_START_TEST (test_float64)
     *data = -1.0;
     ++data;
   }
+  gst_buffer_unmap (inbuffer, &map);
+
   caps = gst_caps_from_string (SPECT_CAPS_STRING_F64);
-  gst_buffer_set_caps (inbuffer, caps);
+  fail_unless (gst_pad_set_caps (mysrcpad, caps));
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -538,7 +538,7 @@ GST_START_TEST (test_float64)
 GST_END_TEST;
 
 
-Suite *
+static Suite *
 spectrum_suite (void)
 {
   Suite *s = suite_create ("spectrum");

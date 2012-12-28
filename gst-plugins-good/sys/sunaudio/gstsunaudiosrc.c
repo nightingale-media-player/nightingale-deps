@@ -30,7 +30,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch sunaudiosrc ! wavenc ! filesink location=audio.wav
+ * gst-launch-1.0 sunaudiosrc ! wavenc ! filesink location=audio.wav
  * ]|
  * </refsect2>
  */
@@ -49,12 +49,6 @@
 
 GST_DEBUG_CATEGORY_EXTERN (sunaudio_debug);
 #define GST_CAT_DEFAULT sunaudio_debug
-
-static GstElementDetails plugin_details =
-GST_ELEMENT_DETAILS ("Sun Audio Source",
-    "Source/Audio",
-    "Audio source for Sun Audio devices",
-    "Brian Cameron <brian.cameron@sun.com>");
 
 static void gst_sunaudiosrc_base_init (gpointer g_class);
 static void gst_sunaudiosrc_class_init (GstSunAudioSrcClass * klass);
@@ -116,7 +110,10 @@ gst_sunaudiosrc_base_init (gpointer g_class)
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&gst_sunaudiosrc_factory));
-  gst_element_class_set_details (element_class, &plugin_details);
+  gst_element_class_set_static_metadata (element_class, "Sun Audio Source",
+      "Source/Audio",
+      "Audio source for Sun Audio devices",
+      "Brian Cameron <brian.cameron@sun.com>");
 }
 
 static void
@@ -134,11 +131,9 @@ gst_sunaudiosrc_class_init (GstSunAudioSrcClass * klass)
   gstbaseaudiosrc_class = (GstBaseAudioSrcClass *) klass;
   gstaudiosrc_class = (GstAudioSrcClass *) klass;
 
-  gobject_class->dispose = GST_DEBUG_FUNCPTR (gst_sunaudiosrc_dispose);
-  gobject_class->get_property =
-      GST_DEBUG_FUNCPTR (gst_sunaudiosrc_get_property);
-  gobject_class->set_property =
-      GST_DEBUG_FUNCPTR (gst_sunaudiosrc_set_property);
+  gobject_class->dispose = gst_sunaudiosrc_dispose;
+  gobject_class->get_property = gst_sunaudiosrc_get_property;
+  gobject_class->set_property = gst_sunaudiosrc_set_property;
 
   gstbasesrc_class->get_caps = GST_DEBUG_FUNCPTR (gst_sunaudiosrc_getcaps);
 
@@ -153,7 +148,7 @@ gst_sunaudiosrc_class_init (GstSunAudioSrcClass * klass)
   g_object_class_install_property (gobject_class, PROP_DEVICE,
       g_param_spec_string ("device", "Device",
           "SunAudio device (usually /dev/audio)", DEFAULT_DEVICE,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

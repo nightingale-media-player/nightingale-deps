@@ -37,8 +37,8 @@ libgstgoom_la_SOURCES =						\
 	goom_tools.h goom_tools.h goom_config.h			\
 	$(ARCH_FILES)
 
-libgstgoom_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS) $(GOOM_FILTER_CFLAGS) $(LIBOIL_CFLAGS) $(ARCH_CFLAGS)
-libgstgoom_la_LIBADD = $(GST_BASE_LIBS) $(GST_LIBS) $(LIBM) $(LIBOIL_LIBS)
+libgstgoom_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS) $(GOOM_FILTER_CFLAGS) $(ARCH_CFLAGS) $(ORC_CFLAGS)
+libgstgoom_la_LIBADD = $(GST_BASE_LIBS) $(GST_LIBS) $(LIBM) $(ORC_LIBS)
 libgstgoom_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstgoom_la_LIBTOOLFLAGS = --tag=disable-static
 
@@ -46,3 +46,16 @@ EXTRA_DIST = $(PPC_FILES) $(MMX_FILES)
 
 .NOTPARALLEL:
 
+Android.mk: Makefile.am $(BUILT_SOURCES)
+	androgenizer \
+	-:PROJECT libgstgoom -:SHARED libgstgoom \
+	 -:TAGS eng debug \
+         -:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
+	 -:SOURCES $(libgstgoom_la_SOURCES) \
+	 -:CFLAGS $(DEFS) $(DEFAULT_INCLUDES) $(libgstgoom_la_CFLAGS) \
+	 -:LDFLAGS $(libgstgoom_la_LDFLAGS) \
+	           $(libgstgoom_la_LIBADD) \
+	           -ldl \
+	 -:PASSTHROUGH LOCAL_ARM_MODE:=arm \
+		       LOCAL_MODULE_PATH:='$$(TARGET_OUT)/lib/gstreamer-0.10' \
+	> $@

@@ -3,16 +3,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>y4menc</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-ximagesrc.html" title="ximagesrc">
 <link rel="next" href="ch02.html" title="gst-plugins-good Plugins">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -20,18 +17,18 @@
 <td><a accesskey="p" href="gst-plugins-good-plugins-ximagesrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
 <td><a accesskey="n" href="ch02.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-y4menc.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-y4menc.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-y4menc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-y4menc.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-y4menc.object-hierarchy" class="shortcut">Object Hierarchy</a>
 </td></tr>
 </table>
-<div class="refentry" title="y4menc">
+<div class="refentry">
 <a name="gst-plugins-good-plugins-y4menc"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -40,33 +37,27 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="gst-plugins-good-plugins-y4menc.synopsis"></a><h2>Synopsis</h2>
-<a name="GstY4mEncode"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-good-plugins-y4menc.html#GstY4mEncode-struct" title="GstY4mEncode">GstY4mEncode</a>;
+<a name="GstY4mEncode"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-y4menc.html#GstY4mEncode-struct" title="struct GstY4mEncode">GstY4mEncode</a>;
 </pre>
 </div>
-<div class="refsect1" title="Object Hierarchy">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-y4menc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----GstY4mEncode
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                     +----GstY4mEncode
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-y4menc.description"></a><h2>Description</h2>
 <p>
 </p>
-<div class="refsect2" title="Example launch line">
-<a name="id571168"></a><h3>Example launch line</h3>
+<div class="refsect2">
+<a name="idp11401808"></a><h3>Example launch line</h3>
 <p>
 Creates a YU4MPEG2 raw video stream as defined by the mjpegtools project.
 </p>
@@ -75,16 +66,18 @@ Creates a YU4MPEG2 raw video stream as defined by the mjpegtools project.
 </p>
 <pre class="programlisting">
 gst-launch-0.10 videotestsrc num-buffers=250 \
-! 'video/x-raw-yuv,format=(fourcc)I420,width=320,height=240,framerate=(fraction)25/1' \
+! 'video/x-raw,format=(string)I420,width=320,height=240,framerate=(fraction)25/1' \
 ! y4menc ! filesink location=test.yuv
 </pre>
 <p>
 </p>
 </div>
-<div class="refsynopsisdiv" title="Synopsis">
+<p>
+</p>
+<div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" title="Element Information">
-<a name="id604666"></a><h3>Element Information</h3>
+<div class="refsect2">
+<a name="idp5534816"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -106,8 +99,8 @@ gst-launch-0.10 videotestsrc num-buffers=250 \
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="Element Pads">
-<a name="id607663"></a><h3>Element Pads</h3>
+<div class="refsect2">
+<a name="idp9481392"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -125,7 +118,7 @@ gst-launch-0.10 videotestsrc num-buffers=250 \
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw-yuv, format=(fourcc){ IYUV, I420 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td>video/x-raw, format=(string){ IYUV, I420, Y42B, Y41B, Y444 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
@@ -155,11 +148,11 @@ gst-launch-0.10 videotestsrc num-buffers=250 \
 <p>
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-y4menc.details"></a><h2>Details</h2>
-<div class="refsect2" title="GstY4mEncode">
-<a name="GstY4mEncode-struct"></a><h3>GstY4mEncode</h3>
-<pre class="programlisting">typedef struct _GstY4mEncode GstY4mEncode;</pre>
+<div class="refsect2">
+<a name="GstY4mEncode-struct"></a><h3>struct GstY4mEncode</h3>
+<pre class="programlisting">struct GstY4mEncode;</pre>
 <p>
 </p>
 </div>
@@ -167,6 +160,6 @@ gst-launch-0.10 videotestsrc num-buffers=250 \
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

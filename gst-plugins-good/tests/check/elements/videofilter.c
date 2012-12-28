@@ -23,9 +23,9 @@
 #include <unistd.h>
 #include <stdarg.h>
 
+#include <gst/video/video.h>
 #include <gst/check/gstcheck.h>
 
-GList *buffers = NULL;
 gboolean have_eos = FALSE;
 
 /* For ease of programming we use globals to keep refs for our floating
@@ -33,27 +33,22 @@ gboolean have_eos = FALSE;
  * get_peer, and then remove references in every test function */
 GstPad *mysrcpad, *mysinkpad;
 
-#define VIDEO_CAPS_STRING "video/x-raw-yuv, " \
-  "format = (fourcc) I420, " \
-  "width = (int) 384, " \
-  "height = (int) 288, " \
-  "framerate = (fraction) 25/1, " \
-  "pixel-aspect-ratio = (fraction) 1/1"
-
+#define VIDEO_CAPS_TEMPLATE_STRING \
+  GST_VIDEO_CAPS_MAKE ("{ I420, AYUV, YUY2, UYVY, YVYU, xRGB }")
 
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (VIDEO_CAPS_STRING)
+    GST_STATIC_CAPS (VIDEO_CAPS_TEMPLATE_STRING)
     );
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (VIDEO_CAPS_STRING)
+    GST_STATIC_CAPS (VIDEO_CAPS_TEMPLATE_STRING)
     );
 
 /* takes over reference for outcaps */
-GstElement *
+static GstElement *
 setup_filter (const gchar * name, const gchar * prop, va_list var_args)
 {
   GstElement *element;
@@ -61,15 +56,15 @@ setup_filter (const gchar * name, const gchar * prop, va_list var_args)
   GST_DEBUG ("setup_element");
   element = gst_check_setup_element (name);
   g_object_set_valist (G_OBJECT (element), prop, var_args);
-  mysrcpad = gst_check_setup_src_pad (element, &srctemplate, NULL);
+  mysrcpad = gst_check_setup_src_pad (element, &srctemplate);
   gst_pad_set_active (mysrcpad, TRUE);
-  mysinkpad = gst_check_setup_sink_pad (element, &sinktemplate, NULL);
+  mysinkpad = gst_check_setup_sink_pad (element, &sinktemplate);
   gst_pad_set_active (mysinkpad, TRUE);
 
   return element;
 }
 
-void
+static void
 cleanup_filter (GstElement * filter)
 {
   GST_DEBUG ("cleanup_element");
@@ -80,30 +75,29 @@ cleanup_filter (GstElement * filter)
 }
 
 static void
-check_filter (const gchar * name, gint num_buffers, const gchar * prop, ...)
+check_filter_caps (const gchar * name, GstCaps * caps, gint size,
+    gint num_buffers, const gchar * prop, va_list varargs)
 {
   GstElement *filter;
   GstBuffer *inbuffer, *outbuffer;
-  GstCaps *caps;
-  int i, size;
-  va_list varargs;
+  gint i;
+  GstSegment segment;
 
-  va_start (varargs, prop);
   filter = setup_filter (name, prop, varargs);
-  va_end (varargs);
   fail_unless (gst_element_set_state (filter,
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
-  /* corresponds to I420 buffer for the size mentioned in the caps */
-  size = 384 * 288 * 3 / 2;
+  /* ensure segment (format) properly setup */
+  gst_segment_init (&segment, GST_FORMAT_TIME);
+  fail_unless (gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment)));
+
+  gst_pad_set_caps (mysrcpad, caps);
+
   for (i = 0; i < num_buffers; ++i) {
     inbuffer = gst_buffer_new_and_alloc (size);
     /* makes valgrind's memcheck happier */
-    memset (GST_BUFFER_DATA (inbuffer), 0, GST_BUFFER_SIZE (inbuffer));
-    caps = gst_caps_from_string (VIDEO_CAPS_STRING);
-    gst_buffer_set_caps (inbuffer, caps);
-    gst_caps_unref (caps);
+    gst_buffer_memset (inbuffer, 0, 0, size);
     GST_BUFFER_TIMESTAMP (inbuffer) = 0;
     ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
     fail_unless (gst_pad_push (mysrcpad, inbuffer) == GST_FLOW_OK);
@@ -118,7 +112,7 @@ check_filter (const gchar * name, gint num_buffers, const gchar * prop, ...)
 
     switch (i) {
       case 0:
-        fail_unless (GST_BUFFER_SIZE (outbuffer) == size);
+        fail_unless (gst_buffer_get_size (outbuffer) == size);
         /* no check on filter operation itself */
         break;
       default:
@@ -136,10 +130,59 @@ check_filter (const gchar * name, gint num_buffers, const gchar * prop, ...)
   buffers = NULL;
 }
 
+static void
+check_filter (const gchar * name, gint num_buffers, const gchar * prop, ...)
+{
+  static const struct
+  {
+    const int width, height;
+  } resolutions[] = { {
+  384, 288}, {
+  385, 289}, {
+  385, 385}};
+  gint i, n, r;
+  gint size;
+  GstCaps *allcaps, *templ = gst_caps_from_string (VIDEO_CAPS_TEMPLATE_STRING);
+  va_list varargs;
+
+  allcaps = gst_caps_normalize (templ);
+
+  n = gst_caps_get_size (allcaps);
+
+  for (i = 0; i < n; i++) {
+    GstStructure *s = gst_caps_get_structure (allcaps, i);
+    GstCaps *caps = gst_caps_new_empty ();
+
+    gst_caps_append_structure (caps, gst_structure_copy (s));
+
+    /* try various resolutions */
+    for (r = 0; r < G_N_ELEMENTS (resolutions); ++r) {
+      GstVideoInfo info;
+
+      caps = gst_caps_make_writable (caps);
+      gst_caps_set_simple (caps, "width", G_TYPE_INT, resolutions[r].width,
+          "height", G_TYPE_INT, resolutions[r].height,
+          "framerate", GST_TYPE_FRACTION, 25, 1, NULL);
+
+      GST_DEBUG ("Testing with caps: %" GST_PTR_FORMAT, caps);
+      gst_video_info_from_caps (&info, caps);
+      size = GST_VIDEO_INFO_SIZE (&info);
+
+      va_start (varargs, prop);
+      check_filter_caps (name, caps, size, num_buffers, prop, varargs);
+      va_end (varargs);
+    }
+
+    gst_caps_unref (caps);
+  }
+
+  gst_caps_unref (allcaps);
+}
 
 GST_START_TEST (test_videobalance)
 {
   check_filter ("videobalance", 2, NULL);
+  check_filter ("videobalance", 2, "saturation", 0.5, "hue", 0.8, NULL);
 }
 
 GST_END_TEST;
@@ -148,6 +191,7 @@ GST_END_TEST;
 GST_START_TEST (test_videoflip)
 {
   /* these we can handle with the caps */
+  check_filter ("videoflip", 2, "method", 0, NULL);
   check_filter ("videoflip", 2, "method", 2, NULL);
   check_filter ("videoflip", 2, "method", 4, NULL);
   check_filter ("videoflip", 2, "method", 5, NULL);
@@ -158,42 +202,21 @@ GST_END_TEST;
 GST_START_TEST (test_gamma)
 {
   check_filter ("gamma", 2, NULL);
+  check_filter ("gamma", 2, "gamma", 2.0, NULL);
 }
 
 GST_END_TEST;
 
 
-Suite *
-videobalance_suite ()
+static Suite *
+videofilter_suite (void)
 {
-  Suite *s = suite_create ("videobalance");
+  Suite *s = suite_create ("videofilter");
   TCase *tc_chain = tcase_create ("general");
 
   suite_add_tcase (s, tc_chain);
   tcase_add_test (tc_chain, test_videobalance);
-
-  return s;
-}
-
-Suite *
-videoflip_suite ()
-{
-  Suite *s = suite_create ("videoflip");
-  TCase *tc_chain = tcase_create ("general");
-
-  suite_add_tcase (s, tc_chain);
   tcase_add_test (tc_chain, test_videoflip);
-
-  return s;
-}
-
-Suite *
-gamma_suite ()
-{
-  Suite *s = suite_create ("gamma");
-  TCase *tc_chain = tcase_create ("general");
-
-  suite_add_tcase (s, tc_chain);
   tcase_add_test (tc_chain, test_gamma);
 
   return s;
@@ -204,11 +227,8 @@ main (int argc, char **argv)
 {
   int nf;
 
-  Suite *s = videobalance_suite ();
+  Suite *s = videofilter_suite ();
   SRunner *sr = srunner_create (s);
-
-  srunner_add_suite (sr, videoflip_suite ());
-  srunner_add_suite (sr, gamma_suite ());
 
   gst_check_init (&argc, &argv);
 

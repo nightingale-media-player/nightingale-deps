@@ -22,8 +22,6 @@
 #define __GST_IIR_EQUALIZER__
 
 #include <gst/audio/gstaudiofilter.h>
-#include <gst/audio/gstringbuffer.h>
-#include <gst/controller/gstcontroller.h>
 
 typedef struct _GstIirEqualizer GstIirEqualizer;
 typedef struct _GstIirEqualizerClass GstIirEqualizerClass;
@@ -52,6 +50,7 @@ struct _GstIirEqualizer
 
   /*< private >*/
 
+  GMutex bands_lock;
   GstIirEqualizerBand **bands;
 
   /* properties */

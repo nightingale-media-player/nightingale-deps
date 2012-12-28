@@ -3,7 +3,7 @@
   <description>Audio level plugin</description>
   <filename>../../gst/level/.libs/libgstlevel.so</filename>
   <basename>libgstlevel.so</basename>
-  <version>0.10.16</version>
+  <version>1.0.4</version>
   <license>LGPL</license>
   <source>gst-plugins-good</source>
   <package>GStreamer Good Plug-ins source release</package>
@@ -17,16 +17,16 @@
       <author>Thomas Vander Stichele &lt;thomas at apestaart dot org&gt;</author>
       <pads>
         <caps>
-          <name>src</name>
-          <direction>source</direction>
-          <presence>always</presence>
-          <details>audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int){ 8, 16, 32 }, depth=(int){ 8, 16, 32 }, signed=(boolean)true; audio/x-raw-float, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int){ 32, 64 }</details>
-        </caps>
-        <caps>
           <name>sink</name>
           <direction>sink</direction>
           <presence>always</presence>
-          <details>audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int){ 8, 16, 32 }, depth=(int){ 8, 16, 32 }, signed=(boolean)true; audio/x-raw-float, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int){ 32, 64 }</details>
+          <details>audio/x-raw, format=(string){ S8, S16LE, S32LEF32LE, F64LE }, layout=(string)interleaved, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>audio/x-raw, format=(string){ S8, S16LE, S32LEF32LE, F64LE }, layout=(string)interleaved, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</details>
         </caps>
       </pads>
     </element>

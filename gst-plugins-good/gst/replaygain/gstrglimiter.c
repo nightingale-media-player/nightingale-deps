@@ -32,7 +32,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch filesrc location=filename.ext ! decodebin ! audioconvert \
+ * gst-launch-1.0 filesrc location=filename.ext ! decodebin ! audioconvert \
  *            ! rgvolume pre-amp=6.0 headroom=10.0 ! rglimiter \
  *            ! audioconvert ! audioresample ! alsasink
  * ]|Playback of a file
@@ -45,6 +45,7 @@
 
 #include <gst/gst.h>
 #include <math.h>
+#include <gst/audio/audio.h>
 
 #include "gstrglimiter.h"
 
@@ -58,21 +59,23 @@ enum
 };
 
 static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE ("sink",
-    GST_PAD_SINK, GST_PAD_ALWAYS, GST_STATIC_CAPS ("audio/x-raw-float, "
-        "width = (int) 32, channels = (int) [1, MAX], "
-        "rate = (int) [1, MAX], endianness = (int) BYTE_ORDER"));
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("audio/x-raw, "
+        "format = (string) " GST_AUDIO_NE (F32) ", "
+        "layout = (string) { interleaved, non-interleaved }, "
+        "channels = (int) [1, MAX], " "rate = (int) [1, MAX]"));
 
 static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src",
-    GST_PAD_SRC, GST_PAD_ALWAYS, GST_STATIC_CAPS ("audio/x-raw-float, "
-        "width = (int) 32, channels = (int) [1, MAX], "
-        "rate = (int) [1, MAX], endianness = (int) BYTE_ORDER"));
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("audio/x-raw, "
+        "format = (string) " GST_AUDIO_NE (F32) ", "
+        "layout = (string) { interleaved, non-interleaved}, "
+        "channels = (int) [1, MAX], " "rate = (int) [1, MAX]"));
 
-GST_BOILERPLATE (GstRgLimiter, gst_rg_limiter, GstBaseTransform,
-    GST_TYPE_BASE_TRANSFORM);
-
-static void gst_rg_limiter_class_init (GstRgLimiterClass * klass);
-static void gst_rg_limiter_init (GstRgLimiter * filter,
-    GstRgLimiterClass * gclass);
+#define gst_rg_limiter_parent_class parent_class
+G_DEFINE_TYPE (GstRgLimiter, gst_rg_limiter, GST_TYPE_BASE_TRANSFORM);
 
 static void gst_rg_limiter_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
@@ -82,50 +85,42 @@ static void gst_rg_limiter_get_property (GObject * object, guint prop_id,
 static GstFlowReturn gst_rg_limiter_transform_ip (GstBaseTransform * base,
     GstBuffer * buf);
 
-static const GstElementDetails element_details = {
-  "ReplayGain limiter",
-  "Filter/Effect/Audio",
-  "Apply signal compression to raw audio data",
-  "Ren\xc3\xa9 Stadler <mail@renestadler.de>"
-};
-
-static void
-gst_rg_limiter_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = g_class;
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_factory));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_factory));
-  gst_element_class_set_details (element_class, &element_details);
-
-  GST_DEBUG_CATEGORY_INIT (gst_rg_limiter_debug, "rglimiter", 0,
-      "ReplayGain limiter element");
-}
-
 static void
 gst_rg_limiter_class_init (GstRgLimiterClass * klass)
 {
   GObjectClass *gobject_class;
+  GstElementClass *element_class;
   GstBaseTransformClass *trans_class;
 
   gobject_class = (GObjectClass *) klass;
+  element_class = (GstElementClass *) klass;
 
   gobject_class->set_property = gst_rg_limiter_set_property;
   gobject_class->get_property = gst_rg_limiter_get_property;
 
   g_object_class_install_property (gobject_class, PROP_ENABLED,
       g_param_spec_boolean ("enabled", "Enabled", "Enable processing", TRUE,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   trans_class = GST_BASE_TRANSFORM_CLASS (klass);
   trans_class->transform_ip = GST_DEBUG_FUNCPTR (gst_rg_limiter_transform_ip);
   trans_class->passthrough_on_same_caps = FALSE;
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&src_factory));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&sink_factory));
+  gst_element_class_set_static_metadata (element_class, "ReplayGain limiter",
+      "Filter/Effect/Audio",
+      "Apply signal compression to raw audio data",
+      "Ren\xc3\xa9 Stadler <mail@renestadler.de>");
+
+  GST_DEBUG_CATEGORY_INIT (gst_rg_limiter_debug, "rglimiter", 0,
+      "ReplayGain limiter element");
 }
 
 static void
-gst_rg_limiter_init (GstRgLimiter * filter, GstRgLimiterClass * gclass)
+gst_rg_limiter_init (GstRgLimiter * filter)
 {
   GstBaseTransform *base = GST_BASE_TRANSFORM (filter);
 
@@ -178,6 +173,7 @@ gst_rg_limiter_transform_ip (GstBaseTransform * base, GstBuffer * buf)
 {
   GstRgLimiter *filter = GST_RG_LIMITER (base);
   gfloat *input;
+  GstMapInfo map;
   guint count;
   guint i;
 
@@ -187,8 +183,9 @@ gst_rg_limiter_transform_ip (GstBaseTransform * base, GstBuffer * buf)
   if (GST_BUFFER_FLAG_IS_SET (buf, GST_BUFFER_FLAG_GAP))
     return GST_FLOW_OK;
 
-  input = (gfloat *) GST_BUFFER_DATA (buf);
-  count = GST_BUFFER_SIZE (buf) / sizeof (gfloat);
+  gst_buffer_map (buf, &map, GST_MAP_READ);
+  input = (gfloat *) map.data;
+  count = gst_buffer_get_size (buf) / sizeof (gfloat);
 
   for (i = count; i--;) {
     if (*input > THRES)
@@ -197,6 +194,8 @@ gst_rg_limiter_transform_ip (GstBaseTransform * base, GstBuffer * buf)
       *input = tanhf ((*input + THRES) / COMPL) * COMPL - THRES;
     input++;
   }
+
+  gst_buffer_unmap (buf, &map);
 
   return GST_FLOW_OK;
 }

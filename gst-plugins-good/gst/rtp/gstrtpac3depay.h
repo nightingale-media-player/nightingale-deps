@@ -21,7 +21,7 @@
 #define __GST_RTP_AC3_DEPAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertpdepayload.h>
+#include <gst/rtp/gstrtpbasedepayload.h>
 
 G_BEGIN_DECLS
 
@@ -41,13 +41,15 @@ typedef struct _GstRtpAC3DepayClass GstRtpAC3DepayClass;
 
 struct _GstRtpAC3Depay
 {
-  GstBaseRTPDepayload depayload;
+  GstRTPBaseDepayload depayload;
 };
 
 struct _GstRtpAC3DepayClass
 {
-  GstBaseRTPDepayloadClass parent_class;
+  GstRTPBaseDepayloadClass parent_class;
 };
+
+GType gst_rtp_ac3_depay_get_type (void);
 
 gboolean gst_rtp_ac3_depay_plugin_init (GstPlugin * plugin);
 

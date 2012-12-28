@@ -3,37 +3,34 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>smpte</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="prev" href="gst-plugins-good-plugins-smokeenc.html" title="smokeenc">
+<link rel="prev" href="gst-plugins-good-plugins-shapewipe.html" title="shapewipe">
 <link rel="next" href="gst-plugins-good-plugins-smptealpha.html" title="smptealpha">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-smokeenc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-shapewipe.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-smptealpha.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-smpte.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-smpte.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-smpte.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-smpte.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-smpte.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-smpte.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-smpte.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
-<div class="refentry" title="smpte">
+<div class="refentry">
 <a name="gst-plugins-good-plugins-smpte"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -42,46 +39,33 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="gst-plugins-good-plugins-smpte.synopsis"></a><h2>Synopsis</h2>
-<a name="GstSMPTE"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-good-plugins-smpte.html#GstSMPTE-struct" title="GstSMPTE">GstSMPTE</a>;
+<a name="GstSMPTE"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-smpte.html#GstSMPTE-struct" title="struct GstSMPTE">GstSMPTE</a>;
 </pre>
 </div>
-<div class="refsect1" title="Object Hierarchy">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-smpte.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----GstSMPTE
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                     +----GstSMPTE
 </pre>
 </div>
-<div class="refsect1" title="Properties">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-smpte.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-smpte.html#GstSMPTE--border" title='The "border" property'>border</a>"                   <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-smpte.html#GstSMPTE--depth" title='The "depth" property'>depth</a>"                    <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-smpte.html#GstSMPTE--fps" title='The "fps" property'>fps</a>"                      <a
-href="../glib/glib-Basic-Types.html#gfloat"
->gfloat</a>                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-smpte.html#GstSMPTE--type" title='The "type" property'>type</a>"                     GstSMPTETransitionType  : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-smpte.html#GstSMPTE--duration" title='The "duration" property'>duration</a>"                 <a
-href="../glib/glib-Basic-Types.html#guint64"
->guint64</a>               : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-smpte.html#GstSMPTE--border" title='The "border" property'>border</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-smpte.html#GstSMPTE--depth" title='The "depth" property'>depth</a>"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-smpte.html#GstSMPTE--fps" title='The "fps" property'>fps</a>"                      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>                : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-smpte.html#GstSMPTE--type" title='The "type" property'>type</a>"                     <span class="type">GstSMPTETransitionType</span>  : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-smpte.html#GstSMPTE--duration" title='The "duration" property'>duration</a>"                 <span class="type">guint64</span>               : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-smpte.html#GstSMPTE--invert" title='The "invert" property'>invert</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-smpte.description"></a><h2>Description</h2>
 <p>
 smpte can accept I420 video streams with the same width, height and
@@ -95,19 +79,29 @@ banding.
 </p>
 <p>
 </p>
-<div class="refsect2" title="Sample pipelines">
-<a name="id597015"></a><h3>Sample pipelines</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch -v videotestsrc pattern=1 ! smpte name=s border=20000 type=234 duration=2000000000 ! ffmpegcolorspace ! ximagesink videotestsrc ! s.
-</pre></div> A pipeline to demonstrate the smpte transition.
+<div class="refsect2">
+<a name="idp12740112"></a><h3>Sample pipelines</h3>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> <span class="gtkdoc opt">-</span>v videotestsrc pattern<span class="gtkdoc opt">=</span><span class="number">1</span> <span class="gtkdoc opt">!</span> smpte name<span class="gtkdoc opt">=</span>s border<span class="gtkdoc opt">=</span><span class="number">20000</span> type<span class="gtkdoc opt">=</span><span class="number">234</span> duration<span class="gtkdoc opt">=</span><span class="number">2000000000</span> <span class="gtkdoc opt">!</span> videoconvert <span class="gtkdoc opt">!</span> ximagesink videotestsrc <span class="gtkdoc opt">!</span> s<span class="gtkdoc opt">.</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ A pipeline to demonstrate the smpte transition.
 It shows a pinwheel transition a from a snow videotestsrc to an smpte
 pattern videotestsrc. The transition will take 2 seconds to complete. The
 edges of the transition are smoothed with a 20000 big border.
 </div>
-<div class="refsynopsisdiv" title="Synopsis">
+<p>
+</p>
+<div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" title="Element Information">
-<a name="id571782"></a><h3>Element Information</h3>
+<div class="refsect2">
+<a name="idp19003680"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -129,18 +123,18 @@ edges of the transition are smoothed with a 20000 big border.
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="Element Pads">
-<a name="id550316"></a><h3>Element Pads</h3>
+<div class="refsect2">
+<a name="idp19517840"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
-<td>src</td>
+<td>sink1</td>
 </tr>
 <tr>
 <td><p><span class="term">direction</span></p></td>
-<td>source</td>
+<td>sink</td>
 </tr>
 <tr>
 <td><p><span class="term">presence</span></p></td>
@@ -148,7 +142,7 @@ edges of the transition are smoothed with a 20000 big border.
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td>video/x-raw, format=(string)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
@@ -169,7 +163,7 @@ edges of the transition are smoothed with a 20000 big border.
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td>video/x-raw, format=(string)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
@@ -178,11 +172,11 @@ edges of the transition are smoothed with a 20000 big border.
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
-<td>sink1</td>
+<td>src</td>
 </tr>
 <tr>
 <td><p><span class="term">direction</span></p></td>
-<td>sink</td>
+<td>source</td>
 </tr>
 <tr>
 <td><p><span class="term">presence</span></p></td>
@@ -190,7 +184,7 @@ edges of the transition are smoothed with a 20000 big border.
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td>video/x-raw, format=(string)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
@@ -199,66 +193,65 @@ edges of the transition are smoothed with a 20000 big border.
 <p>
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-smpte.details"></a><h2>Details</h2>
-<div class="refsect2" title="GstSMPTE">
-<a name="GstSMPTE-struct"></a><h3>GstSMPTE</h3>
-<pre class="programlisting">typedef struct _GstSMPTE GstSMPTE;</pre>
+<div class="refsect2">
+<a name="GstSMPTE-struct"></a><h3>struct GstSMPTE</h3>
+<pre class="programlisting">struct GstSMPTE;</pre>
 <p>
 </p>
 </div>
 </div>
-<div class="refsect1" title="Property Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-smpte.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" title='The "border" property'>
+<div class="refsect2">
 <a name="GstSMPTE--border"></a><h3>The <code class="literal">"border"</code> property</h3>
-<pre class="programlisting">  "border"                   <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
+<pre class="programlisting">  "border"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
 <p>The border width of the transition.</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 0</p>
 </div>
 <hr>
-<div class="refsect2" title='The "depth" property'>
+<div class="refsect2">
 <a name="GstSMPTE--depth"></a><h3>The <code class="literal">"depth"</code> property</h3>
-<pre class="programlisting">  "depth"                    <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
+<pre class="programlisting">  "depth"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
 <p>Depth of the mask in bits.</p>
 <p>Allowed values: [1,24]</p>
 <p>Default value: 16</p>
 </div>
 <hr>
-<div class="refsect2" title='The "fps" property'>
+<div class="refsect2">
 <a name="GstSMPTE--fps"></a><h3>The <code class="literal">"fps"</code> property</h3>
-<pre class="programlisting">  "fps"                      <a
-href="../glib/glib-Basic-Types.html#gfloat"
->gfloat</a>                : Read / Write</pre>
+<pre class="programlisting">  "fps"                      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>                : Read / Write</pre>
 <p>Frames per second if no input files are given (deprecated).</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 0</p>
 </div>
 <hr>
-<div class="refsect2" title='The "type" property'>
+<div class="refsect2">
 <a name="GstSMPTE--type"></a><h3>The <code class="literal">"type"</code> property</h3>
-<pre class="programlisting">  "type"                     GstSMPTETransitionType  : Read / Write</pre>
+<pre class="programlisting">  "type"                     <span class="type">GstSMPTETransitionType</span>  : Read / Write</pre>
 <p>The type of transition to use.</p>
 <p>Default value: A bar moves from left to right</p>
 </div>
 <hr>
-<div class="refsect2" title='The "duration" property'>
+<div class="refsect2">
 <a name="GstSMPTE--duration"></a><h3>The <code class="literal">"duration"</code> property</h3>
-<pre class="programlisting">  "duration"                 <a
-href="../glib/glib-Basic-Types.html#guint64"
->guint64</a>               : Read / Write</pre>
+<pre class="programlisting">  "duration"                 <span class="type">guint64</span>               : Read / Write</pre>
 <p>Duration of the transition effect in nanoseconds.</p>
 <p>Default value: 1000000000</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstSMPTE--invert"></a><h3>The <code class="literal">"invert"</code> property</h3>
+<pre class="programlisting">  "invert"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<p>Invert transition mask.</p>
+<p>Default value: FALSE</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

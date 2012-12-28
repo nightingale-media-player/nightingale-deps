@@ -3,16 +3,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>rtpdec</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-rippletv.html" title="rippletv">
-<link rel="next" href="gst-plugins-good-plugins-rtpjpegpay.html" title="rtpjpegpay">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="next" href="gst-plugins-good-plugins-rtpj2kpay.html" title="rtpj2kpay">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -20,22 +17,22 @@
 <td><a accesskey="p" href="gst-plugins-good-plugins-rippletv.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-rtpjpegpay.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-good-plugins-rtpj2kpay.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-rtpdec.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-rtpdec.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-rtpdec.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-rtpdec.properties" class="shortcut">Properties</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-rtpdec.signals" class="shortcut">Signals</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-rtpdec.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-rtpdec.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-rtpdec.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-rtpdec.signals" class="shortcut">Signals</a>
 </td></tr>
 </table>
-<div class="refentry" title="rtpdec">
+<div class="refentry">
 <a name="gst-plugins-good-plugins-rtpdec"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -44,62 +41,53 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="gst-plugins-good-plugins-rtpdec.synopsis"></a><h2>Synopsis</h2>
-<a name="GstRTPDec"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec-struct" title="GstRTPDec">GstRTPDec</a>;
+<a name="GstRTPDec"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec-struct" title="struct GstRTPDec">GstRTPDec</a>;
 </pre>
 </div>
-<div class="refsect1" title="Object Hierarchy">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-rtpdec.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----GstRTPDec
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                     +----GstRTPDec
 </pre>
 </div>
-<div class="refsect1" title="Properties">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-rtpdec.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec--skip" title='The "skip" property'>skip</a>"                     <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec--latency" title='The "latency" property'>latency</a>"                  <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec--skip" title='The "skip" property'>skip</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec--latency" title='The "latency" property'>latency</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
 </pre>
 </div>
-<div class="refsect1" title="Signals">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-rtpdec.signals"></a><h2>Signals</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec-clear-pt-map" title='The "clear-pt-map" signal'>clear-pt-map</a>"                                   : Run Last
-  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec-request-pt-map" title='The "request-pt-map" signal'>request-pt-map</a>"                                 : Run Last
-  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec-on-bye-ssrc" title='The "on-bye-ssrc" signal'>on-bye-ssrc</a>"                                    : Run Last
-  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec-on-bye-timeout" title='The "on-bye-timeout" signal'>on-bye-timeout</a>"                                 : Run Last
-  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec-on-new-ssrc" title='The "on-new-ssrc" signal'>on-new-ssrc</a>"                                    : Run Last
-  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec-on-ssrc-collision" title='The "on-ssrc-collision" signal'>on-ssrc-collision</a>"                              : Run Last
-  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec-on-ssrc-validated" title='The "on-ssrc-validated" signal'>on-ssrc-validated</a>"                              : Run Last
-  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec-on-timeout" title='The "on-timeout" signal'>on-timeout</a>"                                     : Run Last
+  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec-clear-pt-map" title='The "clear-pt-map" signal'>clear-pt-map</a>"                                   : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a>
+  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec-request-pt-map" title='The "request-pt-map" signal'>request-pt-map</a>"                                 : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a>
+  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec-on-bye-ssrc" title='The "on-bye-ssrc" signal'>on-bye-ssrc</a>"                                    : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a>
+  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec-on-bye-timeout" title='The "on-bye-timeout" signal'>on-bye-timeout</a>"                                 : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a>
+  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec-on-new-ssrc" title='The "on-new-ssrc" signal'>on-new-ssrc</a>"                                    : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a>
+  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec-on-ssrc-collision" title='The "on-ssrc-collision" signal'>on-ssrc-collision</a>"                              : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a>
+  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec-on-ssrc-validated" title='The "on-ssrc-validated" signal'>on-ssrc-validated</a>"                              : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a>
+  "<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec-on-timeout" title='The "on-timeout" signal'>on-timeout</a>"                                     : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a>
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-rtpdec.description"></a><h2>Description</h2>
 <p>
 A simple RTP session manager used internally by rtspsrc.
 </p>
 <p>
-Last reviewed on 2006-06-20 (0.10.4)</p>
-<div class="refsynopsisdiv" title="Synopsis">
+Last reviewed on 2006-06-20 (0.10.4)
+</p>
+<div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" title="Element Information">
-<a name="id581433"></a><h3>Element Information</h3>
+<div class="refsect2">
+<a name="idp10167440"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -111,7 +99,7 @@ Last reviewed on 2006-06-20 (0.10.4)</p>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
-<td>Wim Taymans &lt;wim@fluendo.com&gt;</td>
+<td>Wim Taymans &lt;wim.taymans@gmail.com&gt;</td>
 </tr>
 <tr>
 <td><p><span class="term">class</span></p></td>
@@ -121,18 +109,18 @@ Last reviewed on 2006-06-20 (0.10.4)</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="Element Pads">
-<a name="id583876"></a><h3>Element Pads</h3>
+<div class="refsect2">
+<a name="idp18082960"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
-<td>rtcp_src_%d</td>
+<td>recv_rtcp_sink_%u</td>
 </tr>
 <tr>
 <td><p><span class="term">direction</span></p></td>
-<td>source</td>
+<td>sink</td>
 </tr>
 <tr>
 <td><p><span class="term">presence</span></p></td>
@@ -149,7 +137,28 @@ Last reviewed on 2006-06-20 (0.10.4)</p>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
-<td>recv_rtp_src_%d_%d_%d</td>
+<td>recv_rtp_sink_%u</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>application/x-rtp</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>recv_rtp_src_%u_%u_%u</td>
 </tr>
 <tr>
 <td><p><span class="term">direction</span></p></td>
@@ -170,11 +179,11 @@ Last reviewed on 2006-06-20 (0.10.4)</p>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
-<td>recv_rtcp_sink_%d</td>
+<td>rtcp_src_%u</td>
 </tr>
 <tr>
 <td><p><span class="term">direction</span></p></td>
-<td>sink</td>
+<td>source</td>
 </tr>
 <tr>
 <td><p><span class="term">presence</span></p></td>
@@ -186,69 +195,42 @@ Last reviewed on 2006-06-20 (0.10.4)</p>
 </tr>
 </tbody>
 </table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>recv_rtp_sink_%d</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>request</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>application/x-rtp</td>
-</tr>
-</tbody>
-</table></div>
 </div>
 </div>
 <p>
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-rtpdec.details"></a><h2>Details</h2>
-<div class="refsect2" title="GstRTPDec">
-<a name="GstRTPDec-struct"></a><h3>GstRTPDec</h3>
-<pre class="programlisting">typedef struct _GstRTPDec GstRTPDec;</pre>
+<div class="refsect2">
+<a name="GstRTPDec-struct"></a><h3>struct GstRTPDec</h3>
+<pre class="programlisting">struct GstRTPDec;</pre>
 <p>
 </p>
 </div>
 </div>
-<div class="refsect1" title="Property Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-rtpdec.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" title='The "skip" property'>
+<div class="refsect2">
 <a name="GstRTPDec--skip"></a><h3>The <code class="literal">"skip"</code> property</h3>
-<pre class="programlisting">  "skip"                     <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
+<pre class="programlisting">  "skip"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
 <p>skip (unused).</p>
 <p>Default value: 0</p>
 </div>
 <hr>
-<div class="refsect2" title='The "latency" property'>
+<div class="refsect2">
 <a name="GstRTPDec--latency"></a><h3>The <code class="literal">"latency"</code> property</h3>
-<pre class="programlisting">  "latency"                  <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>                 : Read / Write</pre>
+<pre class="programlisting">  "latency"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
 <p>Amount of ms to buffer.</p>
 <p>Default value: 200</p>
 </div>
 </div>
-<div class="refsect1" title="Signal Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-rtpdec.signal-details"></a><h2>Signal Details</h2>
-<div class="refsect2" title='The "clear-pt-map" signal'>
+<div class="refsect2">
 <a name="GstRTPDec-clear-pt-map"></a><h3>The <code class="literal">"clear-pt-map"</code> signal</h3>
-<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec">GstRTPDec</a> *gstrtpdec,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a>   user_data)      : Run Last</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec"><span class="type">GstRTPDec</span></a> *gstrtpdec,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>   user_data)      : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a></pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -256,8 +238,7 @@ href="../glib/glib-Basic-Types.html#gpointer"
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>gstrtpdec</code></em> :</span></p></td>
-<td>the object which received the signal.
-</td>
+<td>the object which received the signal.</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
@@ -267,43 +248,29 @@ href="../glib/glib-Basic-Types.html#gpointer"
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title='The "request-pt-map" signal'>
+<div class="refsect2">
 <a name="GstRTPDec-request-pt-map"></a><h3>The <code class="literal">"request-pt-map"</code> signal</h3>
-<pre class="programlisting"><a
-href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
->GstCaps</a>*            user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec">GstRTPDec</a> *rtpdec,
-                                                        <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>      session,
-                                                        <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>      pt,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a>   user_data)      : Run Last</pre>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a>*            user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec"><span class="type">GstRTPDec</span></a> *rtpdec,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>      session,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>      pt,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>   user_data)      : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a></pre>
 <p>
-Request the payload type as <a
-href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
-><span class="type">GstCaps</span></a> for <em class="parameter"><code>pt</code></em> in <em class="parameter"><code>session</code></em>.</p>
-<p>
+Request the payload type as <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a> for <em class="parameter"><code>pt</code></em> in <em class="parameter"><code>session</code></em>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>rtpdec</code></em> :</span></p></td>
-<td> the object which received the signal
-</td>
+<td>the object which received the signal</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
-<td> the session
-</td>
+<td>the session</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>pt</code></em> :</span></p></td>
-<td> the pt
-</td>
+<td>the pt</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
@@ -313,39 +280,29 @@ href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title='The "on-bye-ssrc" signal'>
+<div class="refsect2">
 <a name="GstRTPDec-on-bye-ssrc"></a><h3>The <code class="literal">"on-bye-ssrc"</code> signal</h3>
-<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec">GstRTPDec</a> *rtpbin,
-                                                        <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>      session,
-                                                        <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>      ssrc,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a>   user_data)      : Run Last</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec"><span class="type">GstRTPDec</span></a> *rtpbin,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>      session,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>      ssrc,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>   user_data)      : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a></pre>
 <p>
-Notify of an SSRC that became inactive because of a BYE packet.</p>
-<p>
+Notify of an SSRC that became inactive because of a BYE packet.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>rtpbin</code></em> :</span></p></td>
-<td> the object which received the signal
-</td>
+<td>the object which received the signal</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
-<td> the session
-</td>
+<td>the session</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
-<td> the SSRC
-</td>
+<td>the SSRC</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
@@ -355,39 +312,29 @@ Notify of an SSRC that became inactive because of a BYE packet.</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title='The "on-bye-timeout" signal'>
+<div class="refsect2">
 <a name="GstRTPDec-on-bye-timeout"></a><h3>The <code class="literal">"on-bye-timeout"</code> signal</h3>
-<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec">GstRTPDec</a> *rtpbin,
-                                                        <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>      session,
-                                                        <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>      ssrc,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a>   user_data)      : Run Last</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec"><span class="type">GstRTPDec</span></a> *rtpbin,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>      session,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>      ssrc,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>   user_data)      : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a></pre>
 <p>
-Notify of an SSRC that has timed out because of BYE</p>
-<p>
+Notify of an SSRC that has timed out because of BYE
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>rtpbin</code></em> :</span></p></td>
-<td> the object which received the signal
-</td>
+<td>the object which received the signal</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
-<td> the session
-</td>
+<td>the session</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
-<td> the SSRC 
-</td>
+<td>the SSRC</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
@@ -397,39 +344,29 @@ Notify of an SSRC that has timed out because of BYE</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title='The "on-new-ssrc" signal'>
+<div class="refsect2">
 <a name="GstRTPDec-on-new-ssrc"></a><h3>The <code class="literal">"on-new-ssrc"</code> signal</h3>
-<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec">GstRTPDec</a> *rtpbin,
-                                                        <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>      session,
-                                                        <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>      ssrc,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a>   user_data)      : Run Last</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec"><span class="type">GstRTPDec</span></a> *rtpbin,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>      session,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>      ssrc,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>   user_data)      : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a></pre>
 <p>
-Notify of a new SSRC that entered <em class="parameter"><code>session</code></em>.</p>
-<p>
+Notify of a new SSRC that entered <em class="parameter"><code>session</code></em>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>rtpbin</code></em> :</span></p></td>
-<td> the object which received the signal
-</td>
+<td>the object which received the signal</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
-<td> the session
-</td>
+<td>the session</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
-<td> the SSRC 
-</td>
+<td>the SSRC</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
@@ -439,18 +376,12 @@ Notify of a new SSRC that entered <em class="parameter"><code>session</code></em
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title='The "on-ssrc-collision" signal'>
+<div class="refsect2">
 <a name="GstRTPDec-on-ssrc-collision"></a><h3>The <code class="literal">"on-ssrc-collision"</code> signal</h3>
-<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec">GstRTPDec</a> *gstrtpdec,
-                                                        <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>      arg1,
-                                                        <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>      arg2,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a>   user_data)      : Run Last</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec"><span class="type">GstRTPDec</span></a> *gstrtpdec,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>      arg1,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>      arg2,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>   user_data)      : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a></pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -458,18 +389,7 @@ href="../glib/glib-Basic-Types.html#gpointer"
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>gstrtpdec</code></em> :</span></p></td>
-<td>the object which received the signal.
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
-<td>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>arg2</code></em> :</span></p></td>
-<td>
-</td>
+<td>the object which received the signal.</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
@@ -479,18 +399,12 @@ href="../glib/glib-Basic-Types.html#gpointer"
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title='The "on-ssrc-validated" signal'>
+<div class="refsect2">
 <a name="GstRTPDec-on-ssrc-validated"></a><h3>The <code class="literal">"on-ssrc-validated"</code> signal</h3>
-<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec">GstRTPDec</a> *gstrtpdec,
-                                                        <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>      arg1,
-                                                        <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>      arg2,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a>   user_data)      : Run Last</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec"><span class="type">GstRTPDec</span></a> *gstrtpdec,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>      arg1,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>      arg2,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>   user_data)      : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a></pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -498,18 +412,7 @@ href="../glib/glib-Basic-Types.html#gpointer"
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>gstrtpdec</code></em> :</span></p></td>
-<td>the object which received the signal.
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
-<td>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>arg2</code></em> :</span></p></td>
-<td>
-</td>
+<td>the object which received the signal.</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
@@ -519,39 +422,29 @@ href="../glib/glib-Basic-Types.html#gpointer"
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title='The "on-timeout" signal'>
+<div class="refsect2">
 <a name="GstRTPDec-on-timeout"></a><h3>The <code class="literal">"on-timeout"</code> signal</h3>
-<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec">GstRTPDec</a> *rtpbin,
-                                                        <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>      session,
-                                                        <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>      ssrc,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a>   user_data)      : Run Last</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpdec.html#GstRTPDec"><span class="type">GstRTPDec</span></a> *rtpbin,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>      session,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>      ssrc,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>   user_data)      : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a></pre>
 <p>
-Notify of an SSRC that has timed out</p>
-<p>
+Notify of an SSRC that has timed out
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>rtpbin</code></em> :</span></p></td>
-<td> the object which received the signal
-</td>
+<td>the object which received the signal</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
-<td> the session
-</td>
+<td>the session</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
-<td> the SSRC 
-</td>
+<td>the SSRC</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
@@ -564,6 +457,6 @@ Notify of an SSRC that has timed out</p>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

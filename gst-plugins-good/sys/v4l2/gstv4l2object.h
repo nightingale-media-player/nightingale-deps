@@ -36,21 +36,29 @@
  * upstream, which I'll consider doing later on. If you get compiler
  * errors here, check your linux/time.h && sys/time.h header setup.
  */
+#include <sys/ioctl.h>
 #include <sys/types.h>
-#ifndef __sun
+#ifdef __sun
+#include <sys/videodev2.h>
+#elif defined(__FreeBSD__)
+#include <linux/videodev2.h>
+#else /* linux */
 #include <linux/types.h>
 #define _LINUX_TIME_H
 #define __user
 #include <linux/videodev2.h>
-#else
-#include <sys/videodev2.h>
 #endif
 
 #include <gst/gst.h>
 #include <gst/base/gstpushsrc.h>
 
-#include <gst/interfaces/propertyprobe.h>
+#include <gst/video/video.h>
 
+typedef struct _GstV4l2Object GstV4l2Object;
+typedef struct _GstV4l2ObjectClassHelper GstV4l2ObjectClassHelper;
+typedef struct _GstV4l2Xv GstV4l2Xv;
+
+#include <gstv4l2bufferpool.h>
 
 /* size of v4l2 buffer pool in streaming case */
 #define GST_V4L2_MAX_BUFFERS 16
@@ -59,35 +67,65 @@
 /* max frame width/height */
 #define GST_V4L2_MAX_SIZE (1<<15) /* 2^15 == 32768 */
 
-
-
 G_BEGIN_DECLS
 
 #define GST_V4L2_OBJECT(obj) (GstV4l2Object *)(obj)
 
-typedef struct _GstV4l2Object GstV4l2Object;
-typedef struct _GstV4l2ObjectClassHelper GstV4l2ObjectClassHelper;
-typedef struct _GstV4l2Xv GstV4l2Xv;
+typedef enum {
+  GST_V4L2_IO_AUTO    = 0,
+  GST_V4L2_IO_RW      = 1,
+  GST_V4L2_IO_MMAP    = 2,
+  GST_V4L2_IO_USERPTR = 3
+} GstV4l2IOMode;
 
 typedef gboolean  (*GstV4l2GetInOutFunction)  (GstV4l2Object * v4l2object, gint * input);
 typedef gboolean  (*GstV4l2SetInOutFunction)  (GstV4l2Object * v4l2object, gint input);
 typedef gboolean  (*GstV4l2UpdateFpsFunction) (GstV4l2Object * v4l2object);
 
+#define GST_V4L2_WIDTH(o)        (GST_VIDEO_INFO_WIDTH (&(o)->info))
+#define GST_V4L2_HEIGHT(o)       (GST_VIDEO_INFO_HEIGHT (&(o)->info))
+#define GST_V4L2_PIXELFORMAT(o)  ((o)->fmtdesc->pixelformat)
+#define GST_V4L2_FPS_N(o)        (GST_VIDEO_INFO_FPS_N (&(o)->info))
+#define GST_V4L2_FPS_D(o)        (GST_VIDEO_INFO_FPS_D (&(o)->info))
+
+/* simple check whether the device is open */
+#define GST_V4L2_IS_OPEN(o)      ((o)->video_fd > 0)
+
+/* check whether the device is 'active' */
+#define GST_V4L2_IS_ACTIVE(o)    ((o)->active)
+#define GST_V4L2_SET_ACTIVE(o)   ((o)->active = TRUE)
+#define GST_V4L2_SET_INACTIVE(o) ((o)->active = FALSE)
+
 struct _GstV4l2Object {
   GstElement * element;
+
+  enum v4l2_buf_type type;   /* V4L2_BUF_TYPE_VIDEO_CAPTURE, V4L2_BUF_TYPE_VIDEO_OUTPUT */
 
   /* the video device */
   char *videodev;
 
   /* the video-device's file descriptor */
   gint video_fd;
+  GstV4l2IOMode mode;
   GstPoll * poll;
   gboolean can_poll_device;
 
-  /* the video buffer (mmap()'ed) */
-  guint8 **buffer;
+  gboolean active;
+  gboolean streaming;
 
-  enum v4l2_buf_type type;   /* V4L2_BUF_TYPE_VIDEO_CAPTURE, V4L2_BUF_TYPE_VIDEO_OUTPUT */
+  /* the current format */
+  struct v4l2_fmtdesc *fmtdesc;
+  GstVideoInfo info;
+
+  guint32 bytesperline;
+  guint32 sizeimage;
+  GstClockTime duration;
+
+  /* wanted mode */
+  GstV4l2IOMode req_mode;
+
+  /* optional pool */
+  GstBufferPool *pool;
 
   /* the video device's capabilities */
   struct v4l2_capability vcap;
@@ -106,7 +144,7 @@ struct _GstV4l2Object {
   GList *channels;
 
   /* properties */
-  gchar *norm;
+  v4l2_std_id tv_norm;
   gchar *channel;
   gulong frequency;
 
@@ -131,12 +169,18 @@ GType gst_v4l2_object_get_type (void);
     PROP_DEVICE,			\
     PROP_DEVICE_NAME,			\
     PROP_DEVICE_FD,			\
-    PROP_FLAGS
+    PROP_FLAGS,                         \
+    PROP_BRIGHTNESS,			\
+    PROP_CONTRAST,			\
+    PROP_SATURATION,			\
+    PROP_HUE,                           \
+    PROP_TV_NORM,                       \
+    PROP_IO_MODE
 
 /* create/destroy */
 GstV4l2Object *	gst_v4l2_object_new 		 (GstElement * element,
-                            enum v4l2_buf_type  type,
-                            char *default_device,
+                                                  enum v4l2_buf_type  type,
+                                                  const char *default_device,
                    				  GstV4l2GetInOutFunction get_in_out_func,
                    				  GstV4l2SetInOutFunction set_in_out_func,
 		   				  GstV4l2UpdateFpsFunction   update_fps_func);
@@ -152,11 +196,12 @@ gboolean  gst_v4l2_object_set_property_helper       (GstV4l2Object *v4l2object,
 gboolean  gst_v4l2_object_get_property_helper       (GstV4l2Object *v4l2object,
 				                     guint prop_id, GValue * value,
 						     GParamSpec * pspec);
-/* starting/stopping */
-gboolean  gst_v4l2_object_start             (GstV4l2Object *v4l2object);
-gboolean  gst_v4l2_object_stop              (GstV4l2Object *v4l2object);
+/* open/close */
+gboolean  gst_v4l2_object_open               (GstV4l2Object *v4l2object);
+gboolean  gst_v4l2_object_close              (GstV4l2Object *v4l2object);
 
 /* probing */
+#if 0
 const GList* gst_v4l2_probe_get_properties  (GstPropertyProbe * probe);
 
 void         gst_v4l2_probe_probe_property  (GstPropertyProbe * probe, guint prop_id,
@@ -168,14 +213,10 @@ gboolean     gst_v4l2_probe_needs_probe     (GstPropertyProbe * probe, guint pro
 GValueArray* gst_v4l2_probe_get_values      (GstPropertyProbe * probe, guint prop_id,
                                              const GParamSpec * pspec,
                                              GList ** klass_devices);
+#endif
 
 GstCaps*      gst_v4l2_object_probe_caps_for_format (GstV4l2Object *v4l2object, guint32 pixelformat,
                                              const GstStructure * template);
-
-gboolean      gst_v4l2_object_get_caps_info (GstV4l2Object *v4l2object, GstCaps *caps,
-                                             struct v4l2_fmtdesc **format, gint *w, gint *h,
-                                             guint *fps_n, guint *fps_d, guint *size);
-
 
 GSList*       gst_v4l2_object_get_format_list  (GstV4l2Object *v4l2object);
 
@@ -183,10 +224,16 @@ GstCaps*      gst_v4l2_object_get_all_caps (void);
 
 GstStructure* gst_v4l2_object_v4l2fourcc_to_structure (guint32 fourcc);
 
-gboolean      gst_v4l2_object_set_format (GstV4l2Object *v4l2object, guint32 pixelformat, guint32 width, guint32 height);
+gboolean      gst_v4l2_object_set_format (GstV4l2Object *v4l2object, GstCaps * caps);
 
-gboolean      gst_v4l2_object_start_streaming (GstV4l2Object *v4l2object);
-gboolean      gst_v4l2_object_stop_streaming (GstV4l2Object *v4l2object);
+gboolean      gst_v4l2_object_unlock      (GstV4l2Object *v4l2object);
+gboolean      gst_v4l2_object_unlock_stop (GstV4l2Object *v4l2object);
+
+gboolean      gst_v4l2_object_stop        (GstV4l2Object *v4l2object);
+
+
+gboolean      gst_v4l2_object_copy        (GstV4l2Object * v4l2object,
+                                           GstBuffer * dest, GstBuffer *src);
 
 
 #define GST_IMPLEMENT_V4L2_PROBE_METHODS(Type_Class, interface_as_function)                 \

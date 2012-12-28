@@ -21,9 +21,11 @@
 #include <string.h>
 #include <math.h>
 
+#define GLIB_DISABLE_DEPRECATION_WARNINGS
+
 #include <gst/gst.h>
 
-gboolean
+static gboolean
 message_handler (GstBus * bus, GstMessage * message, gpointer data)
 {
 
@@ -36,8 +38,9 @@ message_handler (GstBus * bus, GstMessage * message, gpointer data)
       GstClockTime endtime;
       gdouble rms_dB, peak_dB, decay_dB;
       gdouble rms;
-      const GValue *list;
+      const GValue *array_val;
       const GValue *value;
+      GValueArray *arr;
 
       gint i;
 
@@ -45,21 +48,26 @@ message_handler (GstBus * bus, GstMessage * message, gpointer data)
         g_warning ("Could not parse endtime");
       /* we can get the number of channels as the length of any of the value
        * lists */
-      list = gst_structure_get_value (s, "rms");
-      channels = gst_value_list_get_size (list);
+      array_val = gst_structure_get_value (s, "rms");
+      arr = (GValueArray *) g_value_get_boxed (array_val);
+      channels = arr->n_values;
 
       g_print ("endtime: %" GST_TIME_FORMAT ", channels: %d\n",
           GST_TIME_ARGS (endtime), channels);
       for (i = 0; i < channels; ++i) {
+
         g_print ("channel %d\n", i);
-        list = gst_structure_get_value (s, "rms");
-        value = gst_value_list_get_value (list, i);
+        array_val = gst_structure_get_value (s, "rms");
+        arr = (GValueArray *) g_value_get_boxed (array_val);
+        value = g_value_array_get_nth (arr, i);
         rms_dB = g_value_get_double (value);
-        list = gst_structure_get_value (s, "peak");
-        value = gst_value_list_get_value (list, i);
+        array_val = gst_structure_get_value (s, "peak");
+        arr = (GValueArray *) g_value_get_boxed (array_val);
+        value = g_value_array_get_nth (arr, i);
         peak_dB = g_value_get_double (value);
-        list = gst_structure_get_value (s, "decay");
-        value = gst_value_list_get_value (list, i);
+        array_val = gst_structure_get_value (s, "decay");
+        arr = (GValueArray *) g_value_get_boxed (array_val);
+        value = g_value_array_get_nth (arr, i);
         decay_dB = g_value_get_double (value);
         g_print ("    RMS: %f dB, peak: %f dB, decay: %f dB\n",
             rms_dB, peak_dB, decay_dB);
@@ -82,12 +90,12 @@ main (int argc, char *argv[])
   GstElement *pipeline;
   GstCaps *caps;
   GstBus *bus;
-  gint watch_id;
+  guint watch_id;
   GMainLoop *loop;
 
   gst_init (&argc, &argv);
 
-  caps = gst_caps_from_string ("audio/x-raw-int,channels=2");
+  caps = gst_caps_from_string ("audio/x-raw,channels=2");
 
   pipeline = gst_pipeline_new (NULL);
   g_assert (pipeline);
@@ -102,9 +110,12 @@ main (int argc, char *argv[])
 
   gst_bin_add_many (GST_BIN (pipeline), audiotestsrc, audioconvert, level,
       fakesink, NULL);
-  g_assert (gst_element_link (audiotestsrc, audioconvert));
-  g_assert (gst_element_link_filtered (audioconvert, level, caps));
-  g_assert (gst_element_link (level, fakesink));
+  if (!gst_element_link (audiotestsrc, audioconvert))
+    g_error ("Failed to link audiotestsrc and audioconvert");
+  if (!gst_element_link_filtered (audioconvert, level, caps))
+    g_error ("Failed to link audioconvert and level");
+  if (!gst_element_link (level, fakesink))
+    g_error ("Failed to link level and fakesink");
 
   /* make sure we'll get messages */
   g_object_set (G_OBJECT (level), "message", TRUE, NULL);
@@ -120,5 +131,7 @@ main (int argc, char *argv[])
   loop = g_main_loop_new (NULL, FALSE);
   g_main_loop_run (loop);
 
+  g_source_remove (watch_id);
+  g_main_loop_unref (loop);
   return 0;
 }

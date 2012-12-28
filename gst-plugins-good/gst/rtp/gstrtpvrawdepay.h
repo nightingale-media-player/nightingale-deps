@@ -22,7 +22,9 @@
 
 #include <gst/gst.h>
 #include <gst/video/video.h>
-#include <gst/rtp/gstbasertpdepayload.h>
+#include <gst/video/gstvideometa.h>
+#include <gst/video/gstvideopool.h>
+#include <gst/rtp/gstrtpbasedepayload.h>
 
 G_BEGIN_DECLS
 
@@ -42,10 +44,10 @@ typedef struct _GstRtpVRawDepayClass GstRtpVRawDepayClass;
 
 struct _GstRtpVRawDepay
 {
-  GstBaseRTPDepayload payload;
+  GstRTPBaseDepayload payload;
 
-  gint width, height;
-  GstVideoFormat format;
+  GstBufferPool *pool;
+  GstVideoInfo vinfo;
 
   GstBuffer *outbuf;
   guint32 timestamp;
@@ -53,15 +55,14 @@ struct _GstRtpVRawDepay
 
   gint pgroup;
   gint xinc, yinc;
-  guint yp, up, vp;
-  gint ystride;
-  gint uvstride;
 };
 
 struct _GstRtpVRawDepayClass
 {
-  GstBaseRTPDepayloadClass parent_class;
+  GstRTPBaseDepayloadClass parent_class;
 };
+
+GType gst_rtp_vraw_depay_get_type (void);
 
 gboolean gst_rtp_vraw_depay_plugin_init (GstPlugin * plugin);
 

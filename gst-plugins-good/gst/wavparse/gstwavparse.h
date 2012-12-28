@@ -66,11 +66,14 @@ struct _GstWavParse {
    * the format for sure */
   GstCaps     *caps;
   GstTagList  *tags;
-  GstEvent    *close_segment;
+  GstToc      *toc;
+  GList       *cues;
+  GList       *labls;
   GstEvent    *start_segment;
 
   /* WAVE decoding state */
   GstWavParseState state;
+  gboolean abort_buffering;
 
   /* format of audio, see defines below */
   gint format;
@@ -89,6 +92,7 @@ struct _GstWavParse {
   gboolean vbr;
 
   guint bytes_per_sample;
+  guint max_buf_size;
 
   /* position in data part */
   guint64	offset;
@@ -108,14 +112,15 @@ struct _GstWavParse {
   gboolean got_fmt;
   gboolean streaming;
 
-  /* configured segment, start/stop expressed in time */
+  /* configured segment, start/stop expressed in time or bytes */
   GstSegment segment;
-  gboolean segment_running;
 
   /* for late pad configuration */
   gboolean first;
   /* discont after seek */
   gboolean discont;
+
+  gboolean ignore_length;
 };
 
 struct _GstWavParseClass {

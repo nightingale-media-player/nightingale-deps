@@ -23,6 +23,10 @@
  * of the IIR filter that is used.
  */
 
+/* FIXME 0.11: suppress warnings for deprecated API such as GValueArray
+ * with newer GLib versions (>= 2.31.0) */
+#define GLIB_DISABLE_DEPRECATION_WARNINGS
+
 #include <string.h>
 #include <math.h>
 
@@ -63,7 +67,7 @@ on_rate_changed (GstElement * element, gint rate, gpointer user_data)
   gdouble x;
 
   if (rate / 2.0 > CUTOFF)
-    x = exp (-2.0 * M_PI * (CUTOFF / rate));
+    x = exp (-2.0 * G_PI * (CUTOFF / rate));
   else
     x = 0.0;
 

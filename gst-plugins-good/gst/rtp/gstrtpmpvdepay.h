@@ -21,7 +21,7 @@
 #define __GST_RTP_MPV_DEPAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertpdepayload.h>
+#include <gst/rtp/gstrtpbasedepayload.h>
 
 G_BEGIN_DECLS
 
@@ -41,13 +41,15 @@ typedef struct _GstRtpMPVDepayClass GstRtpMPVDepayClass;
 
 struct _GstRtpMPVDepay
 {
-  GstBaseRTPDepayload depayload;
+  GstRTPBaseDepayload depayload;
 };
 
 struct _GstRtpMPVDepayClass
 {
-  GstBaseRTPDepayloadClass parent_class;
+  GstRTPBaseDepayloadClass parent_class;
 };
+
+GType gst_rtp_mpv_depay_get_type (void);
 
 gboolean gst_rtp_mpv_depay_plugin_init (GstPlugin * plugin);
 

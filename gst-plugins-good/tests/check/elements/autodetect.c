@@ -30,26 +30,13 @@ GST_START_TEST (test_autovideosink_ghostpad_error_case)
   GstElement *pipeline, *src, *filter, *sink;
   GstCaps *caps;
 
-  /* check that there's a usable video sink (think of build bot case) */
-  sink = gst_element_factory_make ("autovideosink", NULL);
-  state_ret = gst_element_set_state (sink, GST_STATE_READY);
-
-  /* need to set state back to NULL, or our test won't work since we
-   * already have detected the real caps in ready and then linking fails */
-  gst_element_set_state (sink, GST_STATE_NULL);
-
-  if (state_ret != GST_STATE_CHANGE_SUCCESS) {
-    GST_WARNING ("No usable video sink, skipping test");
-    gst_object_unref (sink);
-    return;
-  }
-
   pipeline = gst_pipeline_new ("pipeline");
   src = gst_element_factory_make ("fakesrc", NULL);
   filter = gst_element_factory_make ("capsfilter", NULL);
+  sink = gst_element_factory_make ("autovideosink", NULL);
 
-  caps = gst_caps_new_simple ("video/x-raw-yuv", "format", GST_TYPE_FOURCC,
-      GST_MAKE_FOURCC ('A', 'C', 'D', 'C'), NULL);
+  caps = gst_caps_new_simple ("video/x-raw", "format", G_TYPE_STRING,
+      "ABCD", NULL);
 
   g_object_set (filter, "caps", caps, NULL);
   gst_caps_unref (caps);
@@ -62,6 +49,12 @@ GST_START_TEST (test_autovideosink_ghostpad_error_case)
 
   /* this should fail, there's no such format */
   state_ret = gst_element_set_state (pipeline, GST_STATE_PAUSED);
+  if (state_ret == GST_STATE_CHANGE_ASYNC) {
+    /* make sure we wait for the actual success/failure to happen */
+    GstState state;
+    state_ret =
+        gst_element_get_state (pipeline, &state, &state, GST_CLOCK_TIME_NONE);
+  }
   fail_unless (state_ret == GST_STATE_CHANGE_FAILURE,
       "pipeline _set_state() to PAUSED succeeded but should have failed");
 
@@ -86,25 +79,12 @@ GST_START_TEST (test_autoaudiosink_ghostpad_error_case)
   GstElement *pipeline, *src, *filter, *sink;
   GstCaps *caps;
 
-  /* check that there's a usable audio sink (think of build bot case) */
-  sink = gst_element_factory_make ("autoaudiosink", NULL);
-  state_ret = gst_element_set_state (sink, GST_STATE_READY);
-
-  /* need to set state back to NULL, or our test won't work since we
-   * already have detected the real caps in ready and then linking fails */
-  gst_element_set_state (sink, GST_STATE_NULL);
-
-  if (state_ret != GST_STATE_CHANGE_SUCCESS) {
-    GST_WARNING ("No usable audio sink, skipping test");
-    gst_object_unref (sink);
-    return;
-  }
-
   pipeline = gst_pipeline_new ("pipeline");
   src = gst_element_factory_make ("fakesrc", NULL);
   filter = gst_element_factory_make ("capsfilter", NULL);
+  sink = gst_element_factory_make ("autoaudiosink", NULL);
 
-  caps = gst_caps_new_simple ("audio/x-raw-int", "width", G_TYPE_INT, 42, NULL);
+  caps = gst_caps_new_simple ("audio/x-raw", "width", G_TYPE_INT, 42, NULL);
 
   g_object_set (filter, "caps", caps, NULL);
   gst_caps_unref (caps);

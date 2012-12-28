@@ -31,13 +31,6 @@
 GST_DEBUG_CATEGORY_STATIC (rtpgsmpay_debug);
 #define GST_CAT_DEFAULT (rtpgsmpay_debug)
 
-/* elementfactory information */
-static const GstElementDetails gst_rtp_gsm_pay_details =
-GST_ELEMENT_DETAILS ("RTP GSM payloader",
-    "Codec/Payloader/Network",
-    "Payload-encodes GSM audio into a RTP packet",
-    "Zeeshan Ali <zeenix@gmail.com>");
-
 static GstStaticPadTemplate gst_rtp_gsm_pay_sink_template =
 GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
@@ -59,51 +52,49 @@ static GstStaticPadTemplate gst_rtp_gsm_pay_src_template =
         "clock-rate = (int) 8000, " "encoding-name = (string) \"GSM\"")
     );
 
-static gboolean gst_rtp_gsm_pay_setcaps (GstBaseRTPPayload * payload,
+static gboolean gst_rtp_gsm_pay_setcaps (GstRTPBasePayload * payload,
     GstCaps * caps);
-static GstFlowReturn gst_rtp_gsm_pay_handle_buffer (GstBaseRTPPayload * payload,
+static GstFlowReturn gst_rtp_gsm_pay_handle_buffer (GstRTPBasePayload * payload,
     GstBuffer * buffer);
 
-GST_BOILERPLATE (GstRTPGSMPay, gst_rtp_gsm_pay, GstBaseRTPPayload,
-    GST_TYPE_BASE_RTP_PAYLOAD);
-
-static void
-gst_rtp_gsm_pay_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_gsm_pay_sink_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_gsm_pay_src_template));
-  gst_element_class_set_details (element_class, &gst_rtp_gsm_pay_details);
-}
+#define gst_rtp_gsm_pay_parent_class parent_class
+G_DEFINE_TYPE (GstRTPGSMPay, gst_rtp_gsm_pay, GST_TYPE_RTP_BASE_PAYLOAD);
 
 static void
 gst_rtp_gsm_pay_class_init (GstRTPGSMPayClass * klass)
 {
-  GstBaseRTPPayloadClass *gstbasertppayload_class;
-
-  gstbasertppayload_class = (GstBaseRTPPayloadClass *) klass;
-
-  parent_class = g_type_class_peek_parent (klass);
-
-  gstbasertppayload_class->set_caps = gst_rtp_gsm_pay_setcaps;
-  gstbasertppayload_class->handle_buffer = gst_rtp_gsm_pay_handle_buffer;
+  GstElementClass *gstelement_class;
+  GstRTPBasePayloadClass *gstrtpbasepayload_class;
 
   GST_DEBUG_CATEGORY_INIT (rtpgsmpay_debug, "rtpgsmpay", 0,
       "GSM Audio RTP Payloader");
+
+  gstelement_class = (GstElementClass *) klass;
+  gstrtpbasepayload_class = (GstRTPBasePayloadClass *) klass;
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_gsm_pay_sink_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_gsm_pay_src_template));
+
+  gst_element_class_set_static_metadata (gstelement_class, "RTP GSM payloader",
+      "Codec/Payloader/Network/RTP",
+      "Payload-encodes GSM audio into a RTP packet",
+      "Zeeshan Ali <zeenix@gmail.com>");
+
+  gstrtpbasepayload_class->set_caps = gst_rtp_gsm_pay_setcaps;
+  gstrtpbasepayload_class->handle_buffer = gst_rtp_gsm_pay_handle_buffer;
 }
 
 static void
-gst_rtp_gsm_pay_init (GstRTPGSMPay * rtpgsmpay, GstRTPGSMPayClass * klass)
+gst_rtp_gsm_pay_init (GstRTPGSMPay * rtpgsmpay)
 {
-  GST_BASE_RTP_PAYLOAD (rtpgsmpay)->clock_rate = 8000;
-  GST_BASE_RTP_PAYLOAD_PT (rtpgsmpay) = GST_RTP_PAYLOAD_GSM;
+  GST_RTP_BASE_PAYLOAD (rtpgsmpay)->clock_rate = 8000;
+  GST_RTP_BASE_PAYLOAD_PT (rtpgsmpay) = GST_RTP_PAYLOAD_GSM;
 }
 
 static gboolean
-gst_rtp_gsm_pay_setcaps (GstBaseRTPPayload * payload, GstCaps * caps)
+gst_rtp_gsm_pay_setcaps (GstRTPBasePayload * payload, GstCaps * caps)
 {
   const char *stname;
   GstStructure *structure;
@@ -116,8 +107,8 @@ gst_rtp_gsm_pay_setcaps (GstBaseRTPPayload * payload, GstCaps * caps)
   if (strcmp ("audio/x-gsm", stname))
     goto invalid_type;
 
-  gst_basertppayload_set_options (payload, "audio", FALSE, "GSM", 8000);
-  res = gst_basertppayload_set_outcaps (payload, NULL);
+  gst_rtp_base_payload_set_options (payload, "audio", FALSE, "GSM", 8000);
+  res = gst_rtp_base_payload_set_outcaps (payload, NULL);
 
   return res;
 
@@ -130,54 +121,71 @@ invalid_type:
 }
 
 static GstFlowReturn
-gst_rtp_gsm_pay_handle_buffer (GstBaseRTPPayload * basepayload,
+gst_rtp_gsm_pay_handle_buffer (GstRTPBasePayload * basepayload,
     GstBuffer * buffer)
 {
   GstRTPGSMPay *rtpgsmpay;
-  guint size, payload_len;
+  guint payload_len;
   GstBuffer *outbuf;
-  guint8 *payload, *data;
+  GstMapInfo map;
+  guint8 *payload;
   GstClockTime timestamp, duration;
   GstFlowReturn ret;
+  GstRTPBuffer rtp = { NULL };
 
   rtpgsmpay = GST_RTP_GSM_PAY (basepayload);
 
-  size = GST_BUFFER_SIZE (buffer);
+  gst_buffer_map (buffer, &map, GST_MAP_READ);
+
   timestamp = GST_BUFFER_TIMESTAMP (buffer);
   duration = GST_BUFFER_DURATION (buffer);
 
   /* FIXME, only one GSM frame per RTP packet for now */
-  payload_len = size;
+  payload_len = map.size;
+
+  /* FIXME, just error out for now */
+  if (payload_len > GST_RTP_BASE_PAYLOAD_MTU (rtpgsmpay))
+    goto too_big;
 
   outbuf = gst_rtp_buffer_new_allocate (payload_len, 0, 0);
-  /* FIXME, assert for now */
-  g_assert (payload_len <= GST_BASE_RTP_PAYLOAD_MTU (rtpgsmpay));
 
   /* copy timestamp and duration */
   GST_BUFFER_TIMESTAMP (outbuf) = timestamp;
   GST_BUFFER_DURATION (outbuf) = duration;
 
   /* get payload */
-  payload = gst_rtp_buffer_get_payload (outbuf);
-
-  data = GST_BUFFER_DATA (buffer);
+  gst_rtp_buffer_map (outbuf, GST_MAP_WRITE, &rtp);
 
   /* copy data in payload */
-  memcpy (&payload[0], data, size);
+  payload = gst_rtp_buffer_get_payload (&rtp);
+  memcpy (payload, map.data, map.size);
 
+  gst_rtp_buffer_unmap (&rtp);
+
+  gst_buffer_unmap (buffer, &map);
   gst_buffer_unref (buffer);
 
-  GST_DEBUG ("gst_rtp_gsm_pay_chain: pushing buffer of size %d",
-      GST_BUFFER_SIZE (outbuf));
+  GST_DEBUG ("gst_rtp_gsm_pay_chain: pushing buffer of size %" G_GSIZE_FORMAT,
+      gst_buffer_get_size (outbuf));
 
-  ret = gst_basertppayload_push (basepayload, outbuf);
+  ret = gst_rtp_base_payload_push (basepayload, outbuf);
 
   return ret;
+
+  /* ERRORS */
+too_big:
+  {
+    GST_ELEMENT_ERROR (rtpgsmpay, STREAM, ENCODE, (NULL),
+        ("payload_len %u > mtu %u", payload_len,
+            GST_RTP_BASE_PAYLOAD_MTU (rtpgsmpay)));
+    gst_buffer_unmap (buffer, &map);
+    return GST_FLOW_ERROR;
+  }
 }
 
 gboolean
 gst_rtp_gsm_pay_plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "rtpgsmpay",
-      GST_RANK_NONE, GST_TYPE_RTP_GSM_PAY);
+      GST_RANK_SECONDARY, GST_TYPE_RTP_GSM_PAY);
 }

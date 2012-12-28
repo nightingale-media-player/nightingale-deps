@@ -24,16 +24,15 @@
 #include <getopt.h>
 
 #include <gst/gst.h>
-#include <gst/interfaces/tuner.h>
-#include <gst/interfaces/colorbalance.h>
-#include <gst/interfaces/videoorientation.h>
+#include <gst/video/colorbalance.h>
+#include <gst/video/videoorientation.h>
 
 GstElement *pipeline, *source, *sink;
 GMainLoop *loop;
 volatile int exit_read = 0;
 
-void
-print_options ()
+static void
+print_options (void)
 {
   printf ("\nf - to change the fequency\n");
   printf ("i - to change the input\n");
@@ -43,12 +42,13 @@ print_options ()
   printf ("e - to exit\n");
 }
 
-void
+static void
 run_options (char opt)
 {
   int res;
 
   switch (opt) {
+#if 0
     case 'f':
     {
       GstTuner *tuner = GST_TUNER (source);
@@ -143,6 +143,7 @@ run_options (char opt)
         gst_tuner_set_channel (tuner, channel);
     }
       break;
+#endif
     case 'e':
       gst_element_set_state (pipeline, GST_STATE_NULL);
       g_main_loop_quit (loop);
@@ -289,7 +290,7 @@ done:
 
 }
 
-gpointer
+static gpointer
 read_user (gpointer data)
 {
 
@@ -491,8 +492,10 @@ main (int argc, char *argv[])
   gst_element_set_state (GST_ELEMENT (pipeline), GST_STATE_PLAYING);
   loop = g_main_loop_new (NULL, FALSE);
 
-  if (!(input_thread = g_thread_create (read_user, source, TRUE, NULL))) {
-    fprintf (stderr, "error: g_thread_create return NULL");
+  input_thread = g_thread_try_new ("v4l2src-test", read_user, source, NULL);
+
+  if (input_thread == NULL) {
+    fprintf (stderr, "error: g_thread_try_new() failed");
     return -1;
   }
 

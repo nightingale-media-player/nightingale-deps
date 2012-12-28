@@ -27,7 +27,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch audiotestsrc num-buffers=100 ! flacenc ! filesink location=beep.flac
+ * gst-launch-1.0 audiotestsrc num-buffers=100 ! flacenc ! filesink location=beep.flac
  * ]|
  * </refsect2>
  */
@@ -45,13 +45,12 @@
 
 #include <gstflacenc.h>
 #include <gst/audio/audio.h>
-#include <gst/audio/multichannel.h>
 #include <gst/tag/tag.h>
 #include <gst/gsttagsetter.h>
 
 /* Taken from http://flac.sourceforge.net/format.html#frame_header */
 static const GstAudioChannelPosition channel_positions[8][8] = {
-  {GST_AUDIO_CHANNEL_POSITION_FRONT_MONO},
+  {GST_AUDIO_CHANNEL_POSITION_MONO},
   {GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
       GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT}, {
         GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
@@ -69,7 +68,7 @@ static const GstAudioChannelPosition channel_positions[8][8] = {
         GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
         GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
         GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
-        GST_AUDIO_CHANNEL_POSITION_LFE,
+        GST_AUDIO_CHANNEL_POSITION_LFE1,
         GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
       GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT},
   /* FIXME: 7/8 channel layouts are not defined in the FLAC specs */
@@ -79,40 +78,30 @@ static const GstAudioChannelPosition channel_positions[8][8] = {
         GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
         GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT,
         GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
-        GST_AUDIO_CHANNEL_POSITION_LFE,
+        GST_AUDIO_CHANNEL_POSITION_LFE1,
       GST_AUDIO_CHANNEL_POSITION_REAR_CENTER}, {
         GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
         GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
         GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
         GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT,
         GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
-        GST_AUDIO_CHANNEL_POSITION_LFE,
+        GST_AUDIO_CHANNEL_POSITION_LFE1,
         GST_AUDIO_CHANNEL_POSITION_SIDE_LEFT,
       GST_AUDIO_CHANNEL_POSITION_SIDE_RIGHT}
 };
 
-#define FLAC_SINK_CAPS \
-  "audio/x-raw-int, "               \
-  "endianness = (int) BYTE_ORDER, " \
-  "signed = (boolean) TRUE, "       \
-  "width = (int) 8, "               \
-  "depth = (int) 8, "               \
-  "rate = (int) [ 1, 655350 ], "    \
-  "channels = (int) [ 1, 8 ]; "     \
-  "audio/x-raw-int, "               \
-  "endianness = (int) BYTE_ORDER, " \
-  "signed = (boolean) TRUE, "       \
-  "width = (int) 16, "              \
-  "depth = (int) { 12, 16 }, "      \
-  "rate = (int) [ 1, 655350 ], "    \
-  "channels = (int) [ 1, 8 ]; "     \
-  "audio/x-raw-int, "               \
-  "endianness = (int) BYTE_ORDER, " \
-  "signed = (boolean) TRUE, "       \
-  "width = (int) 32, "              \
-  "depth = (int) { 20, 24 }, "      \
-  "rate = (int) [ 1, 655350 ], "    \
-  "channels = (int) [ 1, 8 ]"
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
+#define FORMATS "{ S8LE, S16LE, S24LE, S24_32LE } "
+#else
+#define FORMATS "{ S8BE, S16BE, S24BE, S24_32BE } "
+#endif
+
+#define FLAC_SINK_CAPS                                    \
+    "audio/x-raw, "                                       \
+    "format = (string) " FORMATS ", "                     \
+    "layout = (string) interleaved, "                     \
+    "rate = (int) [ 1, 655350 ], "                        \
+    "channels = (int) [ 1, 8 ]"
 
 static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -142,40 +131,30 @@ enum
   PROP_MIN_RESIDUAL_PARTITION_ORDER,
   PROP_MAX_RESIDUAL_PARTITION_ORDER,
   PROP_RICE_PARAMETER_SEARCH_DIST,
-  PROP_PADDING
+  PROP_PADDING,
+  PROP_SEEKPOINTS
 };
 
 GST_DEBUG_CATEGORY_STATIC (flacenc_debug);
 #define GST_CAT_DEFAULT flacenc_debug
 
+#define gst_flac_enc_parent_class parent_class
+G_DEFINE_TYPE_WITH_CODE (GstFlacEnc, gst_flac_enc, GST_TYPE_AUDIO_ENCODER,
+    G_IMPLEMENT_INTERFACE (GST_TYPE_TAG_SETTER, NULL)
+    G_IMPLEMENT_INTERFACE (GST_TYPE_TOC_SETTER, NULL)
+    );
 
-#define _do_init(type)                                                          \
-  G_STMT_START{                                                                 \
-    static const GInterfaceInfo tag_setter_info = {                             \
-      NULL,                                                                     \
-      NULL,                                                                     \
-      NULL                                                                      \
-    };                                                                          \
-    static const GInterfaceInfo preset_info = {                                 \
-      NULL,                                                                     \
-      NULL,                                                                     \
-      NULL                                                                      \
-    };                                                                          \
-    g_type_add_interface_static (type, GST_TYPE_TAG_SETTER,                     \
-                                 &tag_setter_info);                             \
-    g_type_add_interface_static (type, GST_TYPE_PRESET,                         \
-                                 &preset_info);                                 \
-  }G_STMT_END
-
-GST_BOILERPLATE_FULL (GstFlacEnc, gst_flac_enc, GstElement, GST_TYPE_ELEMENT,
-    _do_init);
+static gboolean gst_flac_enc_start (GstAudioEncoder * enc);
+static gboolean gst_flac_enc_stop (GstAudioEncoder * enc);
+static gboolean gst_flac_enc_set_format (GstAudioEncoder * enc,
+    GstAudioInfo * info);
+static GstFlowReturn gst_flac_enc_handle_frame (GstAudioEncoder * enc,
+    GstBuffer * in_buf);
+static GstCaps *gst_flac_enc_getcaps (GstAudioEncoder * enc, GstCaps * filter);
+static gboolean gst_flac_enc_sink_event (GstAudioEncoder * enc,
+    GstEvent * event);
 
 static void gst_flac_enc_finalize (GObject * object);
-
-static gboolean gst_flac_enc_sink_setcaps (GstPad * pad, GstCaps * caps);
-static GstCaps *gst_flac_enc_sink_getcaps (GstPad * pad);
-static gboolean gst_flac_enc_sink_event (GstPad * pad, GstEvent * event);
-static GstFlowReturn gst_flac_enc_chain (GstPad * pad, GstBuffer * buffer);
 
 static gboolean gst_flac_enc_update_quality (GstFlacEnc * flacenc,
     gint quality);
@@ -183,8 +162,6 @@ static void gst_flac_enc_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_flac_enc_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
-static GstStateChangeReturn gst_flac_enc_change_state (GstElement * element,
-    GstStateChange transition);
 
 static FLAC__StreamEncoderWriteStatus
 gst_flac_enc_write_callback (const FLAC__StreamEncoder * encoder,
@@ -228,9 +205,10 @@ static const GstFlacEncParams flacenc_params[] = {
 
 #define DEFAULT_QUALITY 5
 #define DEFAULT_PADDING 0
+#define DEFAULT_SEEKPOINTS -10
 
 #define GST_TYPE_FLAC_ENC_QUALITY (gst_flac_enc_quality_get_type ())
-GType
+static GType
 gst_flac_enc_quality_get_type (void)
 {
   static GType qtype = 0;
@@ -256,32 +234,18 @@ gst_flac_enc_quality_get_type (void)
 }
 
 static void
-gst_flac_enc_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_factory));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_factory));
-
-  gst_element_class_set_details_simple (element_class, "FLAC audio encoder",
-      "Codec/Encoder/Audio",
-      "Encodes audio with the FLAC lossless audio encoder",
-      "Wim Taymans <wim.taymans@chello.be>");
-
-  GST_DEBUG_CATEGORY_INIT (flacenc_debug, "flacenc", 0,
-      "Flac encoding element");
-}
-
-static void
 gst_flac_enc_class_init (GstFlacEncClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
+  GstAudioEncoderClass *base_class;
 
   gobject_class = (GObjectClass *) klass;
   gstelement_class = (GstElementClass *) klass;
+  base_class = (GstAudioEncoderClass *) (klass);
+
+  GST_DEBUG_CATEGORY_INIT (flacenc_debug, "flacenc", 0,
+      "Flac encoding element");
 
   gobject_class->set_property = gst_flac_enc_set_property;
   gobject_class->get_property = gst_flac_enc_get_property;
@@ -292,80 +256,81 @@ gst_flac_enc_class_init (GstFlacEncClass * klass)
           "Quality",
           "Speed versus compression tradeoff",
           GST_TYPE_FLAC_ENC_QUALITY, DEFAULT_QUALITY,
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass),
-      PROP_STREAMABLE_SUBSET, g_param_spec_boolean ("streamable_subset",
+      PROP_STREAMABLE_SUBSET, g_param_spec_boolean ("streamable-subset",
           "Streamable subset",
           "true to limit encoder to generating a Subset stream, else false",
-          TRUE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          TRUE,
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_MID_SIDE_STEREO,
-      g_param_spec_boolean ("mid_side_stereo", "Do mid side stereo",
+      g_param_spec_boolean ("mid-side-stereo", "Do mid side stereo",
           "Do mid side stereo (only for stereo input)",
           flacenc_params[DEFAULT_QUALITY].mid_side,
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass),
-      PROP_LOOSE_MID_SIDE_STEREO, g_param_spec_boolean ("loose_mid_side_stereo",
+      PROP_LOOSE_MID_SIDE_STEREO, g_param_spec_boolean ("loose-mid-side-stereo",
           "Loose mid side stereo", "Loose mid side stereo",
           flacenc_params[DEFAULT_QUALITY].loose_mid_side,
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_BLOCKSIZE,
       g_param_spec_uint ("blocksize", "Blocksize", "Blocksize in samples",
           FLAC__MIN_BLOCK_SIZE, FLAC__MAX_BLOCK_SIZE,
           flacenc_params[DEFAULT_QUALITY].blocksize,
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_MAX_LPC_ORDER,
-      g_param_spec_uint ("max_lpc_order", "Max LPC order",
+      g_param_spec_uint ("max-lpc-order", "Max LPC order",
           "Max LPC order; 0 => use only fixed predictors", 0,
           FLAC__MAX_LPC_ORDER, flacenc_params[DEFAULT_QUALITY].max_lpc_order,
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass),
-      PROP_QLP_COEFF_PRECISION, g_param_spec_uint ("qlp_coeff_precision",
+      PROP_QLP_COEFF_PRECISION, g_param_spec_uint ("qlp-coeff-precision",
           "QLP coefficients precision",
           "Precision in bits of quantized linear-predictor coefficients; 0 = automatic",
           0, 32, flacenc_params[DEFAULT_QUALITY].qlp_coeff_precision,
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass),
-      PROP_QLP_COEFF_PREC_SEARCH, g_param_spec_boolean ("qlp_coeff_prec_search",
+      PROP_QLP_COEFF_PREC_SEARCH, g_param_spec_boolean ("qlp-coeff-prec-search",
           "Do QLP coefficients precision search",
           "false = use qlp_coeff_precision, "
           "true = search around qlp_coeff_precision, take best",
           flacenc_params[DEFAULT_QUALITY].qlp_coeff_prec_search,
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_ESCAPE_CODING,
-      g_param_spec_boolean ("escape_coding", "Do Escape coding",
+      g_param_spec_boolean ("escape-coding", "Do Escape coding",
           "search for escape codes in the entropy coding stage "
           "for slightly better compression",
           flacenc_params[DEFAULT_QUALITY].escape_coding,
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass),
       PROP_EXHAUSTIVE_MODEL_SEARCH,
-      g_param_spec_boolean ("exhaustive_model_search",
+      g_param_spec_boolean ("exhaustive-model-search",
           "Do exhaustive model search",
           "do exhaustive search of LP coefficient quantization (expensive!)",
           flacenc_params[DEFAULT_QUALITY].exhaustive_model_search,
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass),
       PROP_MIN_RESIDUAL_PARTITION_ORDER,
-      g_param_spec_uint ("min_residual_partition_order",
+      g_param_spec_uint ("min-residual-partition-order",
           "Min residual partition order",
           "Min residual partition order (above 4 doesn't usually help much)", 0,
           16, flacenc_params[DEFAULT_QUALITY].min_residual_partition_order,
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass),
       PROP_MAX_RESIDUAL_PARTITION_ORDER,
-      g_param_spec_uint ("max_residual_partition_order",
+      g_param_spec_uint ("max-residual-partition-order",
           "Max residual partition order",
           "Max residual partition order (above 4 doesn't usually help much)", 0,
           16, flacenc_params[DEFAULT_QUALITY].max_residual_partition_order,
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass),
       PROP_RICE_PARAMETER_SEARCH_DIST,
-      g_param_spec_uint ("rice_parameter_search_dist",
+      g_param_spec_uint ("rice-parameter-search-dist",
           "rice_parameter_search_dist",
           "0 = try only calc'd parameter k; else try all [k-dist..k+dist] "
           "parameters, use best", 0, FLAC__MAX_RICE_PARTITION_ORDER,
           flacenc_params[DEFAULT_QUALITY].rice_parameter_search_dist,
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   /**
    * GstFlacEnc:padding
@@ -379,39 +344,55 @@ gst_flac_enc_class_init (GstFlacEncClass * klass)
       g_param_spec_uint ("padding",
           "Padding",
           "Write a PADDING block with this length in bytes", 0, G_MAXUINT,
-          DEFAULT_PADDING, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          DEFAULT_PADDING,
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
-  gstelement_class->change_state = gst_flac_enc_change_state;
+  /**
+   * GstFlacEnc:seekpoints
+   *
+   * Write a SEEKTABLE block with a specific number of seekpoints
+   * or with a specific interval spacing.
+   *
+   * Since: 0.10.18
+   **/
+  g_object_class_install_property (G_OBJECT_CLASS (klass),
+      PROP_SEEKPOINTS,
+      g_param_spec_int ("seekpoints",
+          "Seekpoints",
+          "Add SEEKTABLE metadata (if > 0, number of entries, if < 0, interval in sec)",
+          -G_MAXINT, G_MAXINT,
+          DEFAULT_SEEKPOINTS,
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&src_factory));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sink_factory));
+
+  gst_element_class_set_static_metadata (gstelement_class, "FLAC audio encoder",
+      "Codec/Encoder/Audio",
+      "Encodes audio with the FLAC lossless audio encoder",
+      "Wim Taymans <wim.taymans@chello.be>");
+
+  base_class->start = GST_DEBUG_FUNCPTR (gst_flac_enc_start);
+  base_class->stop = GST_DEBUG_FUNCPTR (gst_flac_enc_stop);
+  base_class->set_format = GST_DEBUG_FUNCPTR (gst_flac_enc_set_format);
+  base_class->handle_frame = GST_DEBUG_FUNCPTR (gst_flac_enc_handle_frame);
+  base_class->getcaps = GST_DEBUG_FUNCPTR (gst_flac_enc_getcaps);
+  base_class->sink_event = GST_DEBUG_FUNCPTR (gst_flac_enc_sink_event);
 }
 
 static void
-gst_flac_enc_init (GstFlacEnc * flacenc, GstFlacEncClass * klass)
+gst_flac_enc_init (GstFlacEnc * flacenc)
 {
-  flacenc->sinkpad = gst_pad_new_from_static_template (&sink_factory, "sink");
-  gst_pad_set_chain_function (flacenc->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_flac_enc_chain));
-  gst_pad_set_event_function (flacenc->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_flac_enc_sink_event));
-  gst_pad_set_getcaps_function (flacenc->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_flac_enc_sink_getcaps));
-  gst_pad_set_setcaps_function (flacenc->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_flac_enc_sink_setcaps));
-  gst_element_add_pad (GST_ELEMENT (flacenc), flacenc->sinkpad);
-
-  flacenc->srcpad = gst_pad_new_from_static_template (&src_factory, "src");
-  gst_pad_use_fixed_caps (flacenc->srcpad);
-  gst_element_add_pad (GST_ELEMENT (flacenc), flacenc->srcpad);
+  GstAudioEncoder *enc = GST_AUDIO_ENCODER (flacenc);
 
   flacenc->encoder = FLAC__stream_encoder_new ();
-
-  flacenc->offset = 0;
-  flacenc->samples_written = 0;
-  flacenc->channels = 0;
   gst_flac_enc_update_quality (flacenc, DEFAULT_QUALITY);
-  flacenc->tags = gst_tag_list_new ();
-  flacenc->got_headers = FALSE;
-  flacenc->headers = NULL;
-  flacenc->last_flow = GST_FLOW_OK;
+
+  /* arrange granulepos marking (and required perfect ts) */
+  gst_audio_encoder_set_mark_granule (enc, TRUE);
+  gst_audio_encoder_set_perfect_timestamp (enc, TRUE);
 }
 
 static void
@@ -419,10 +400,67 @@ gst_flac_enc_finalize (GObject * object)
 {
   GstFlacEnc *flacenc = GST_FLAC_ENC (object);
 
-  gst_tag_list_free (flacenc->tags);
   FLAC__stream_encoder_delete (flacenc->encoder);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static gboolean
+gst_flac_enc_start (GstAudioEncoder * enc)
+{
+  GstFlacEnc *flacenc = GST_FLAC_ENC (enc);
+
+  GST_DEBUG_OBJECT (enc, "start");
+  flacenc->stopped = TRUE;
+  flacenc->got_headers = FALSE;
+  flacenc->last_flow = GST_FLOW_OK;
+  flacenc->offset = 0;
+  flacenc->eos = FALSE;
+  flacenc->tags = gst_tag_list_new_empty ();
+  flacenc->toc = NULL;
+
+  return TRUE;
+}
+
+static gboolean
+gst_flac_enc_stop (GstAudioEncoder * enc)
+{
+  GstFlacEnc *flacenc = GST_FLAC_ENC (enc);
+
+  GST_DEBUG_OBJECT (enc, "stop");
+  gst_tag_list_unref (flacenc->tags);
+  flacenc->tags = NULL;
+  if (flacenc->toc)
+    gst_toc_unref (flacenc->toc);
+  flacenc->toc = NULL;
+  if (FLAC__stream_encoder_get_state (flacenc->encoder) !=
+      FLAC__STREAM_ENCODER_UNINITIALIZED) {
+    flacenc->stopped = TRUE;
+    FLAC__stream_encoder_finish (flacenc->encoder);
+  }
+  if (flacenc->meta) {
+    FLAC__metadata_object_delete (flacenc->meta[0]);
+
+    if (flacenc->meta[1])
+      FLAC__metadata_object_delete (flacenc->meta[1]);
+
+    if (flacenc->meta[2])
+      FLAC__metadata_object_delete (flacenc->meta[2]);
+
+    if (flacenc->meta[3])
+      FLAC__metadata_object_delete (flacenc->meta[3]);
+
+    g_free (flacenc->meta);
+    flacenc->meta = NULL;
+  }
+  g_list_foreach (flacenc->headers, (GFunc) gst_mini_object_unref, NULL);
+  g_list_free (flacenc->headers);
+  flacenc->headers = NULL;
+
+  gst_tag_setter_reset_tags (GST_TAG_SETTER (enc));
+  gst_toc_setter_reset (GST_TOC_SETTER (enc));
+
+  return TRUE;
 }
 
 static void
@@ -431,6 +469,13 @@ add_one_tag (const GstTagList * list, const gchar * tag, gpointer user_data)
   GList *comments;
   GList *it;
   GstFlacEnc *flacenc = GST_FLAC_ENC (user_data);
+
+  /* IMAGE and PREVIEW_IMAGE tags are already written
+   * differently, no need to store them inside the
+   * vorbiscomments too */
+  if (strcmp (tag, GST_TAG_IMAGE) == 0
+      || strcmp (tag, GST_TAG_PREVIEW_IMAGE) == 0)
+    return;
 
   comments = gst_tag_to_vorbis_comments (list, tag);
   for (it = comments; it != NULL; it = it->next) {
@@ -446,153 +491,308 @@ add_one_tag (const GstTagList * list, const gchar * tag, gpointer user_data)
   g_list_free (comments);
 }
 
+static gboolean
+add_cuesheet (const GstToc * toc, guint sample_rate,
+    FLAC__StreamMetadata * cuesheet)
+{
+  gint8 track_num = 0;
+  gint64 start, stop;
+  gchar *isrc = NULL;
+  const gchar *is_legal;
+  GList *list;
+  GstTagList *tags;
+  GstTocEntry *entry, *subentry = NULL;
+  FLAC__StreamMetadata_CueSheet *cs;
+  FLAC__StreamMetadata_CueSheet_Track *track;
+
+  cs = &cuesheet->data.cue_sheet;
+  if (!cs)
+    return FALSE;
+
+  /* check if the TOC entries is valid */
+  list = gst_toc_get_entries (toc);
+  entry = list->data;
+  if (gst_toc_entry_is_alternative (entry)) {
+    list = gst_toc_entry_get_sub_entries (entry);
+    while (list) {
+      subentry = list->data;
+      if (!gst_toc_entry_is_sequence (subentry))
+        return FALSE;
+      list = g_list_next (list);
+    }
+    list = gst_toc_entry_get_sub_entries (entry);
+  }
+  if (gst_toc_entry_is_sequence (entry)) {
+    while (list) {
+      entry = list->data;
+      if (!gst_toc_entry_is_sequence (entry))
+        return FALSE;
+      list = g_list_next (list);
+    }
+    list = gst_toc_get_entries (toc);
+  }
+
+  /* add tracks in cuesheet */
+  while (list) {
+    entry = list->data;
+    gst_toc_entry_get_start_stop_times (entry, &start, &stop);
+    tags = gst_toc_entry_get_tags (entry);
+    if (tags)
+      gst_tag_list_get_string (tags, GST_TAG_ISRC, &isrc);
+    track = FLAC__metadata_object_cuesheet_track_new ();
+    track->offset =
+        (FLAC__uint64) gst_util_uint64_scale_round (start, sample_rate,
+        GST_SECOND);
+    track->number = (FLAC__byte) track_num + 1;
+    if (isrc)
+      strcpy (track->isrc, isrc);
+    if (track->number <= 0)
+      return FALSE;
+    if (!FLAC__metadata_object_cuesheet_insert_track (cuesheet, track_num,
+            track, FALSE))
+      return FALSE;
+    if (!FLAC__metadata_object_cuesheet_track_insert_blank_index (cuesheet,
+            track_num, 0))
+      return FALSE;
+    track_num++;
+    list = g_list_next (list);
+  }
+
+  if (cs->num_tracks <= 0)
+    return FALSE;
+
+  /* add lead-out track in cuesheet */
+  track = FLAC__metadata_object_cuesheet_track_new ();
+  track->offset =
+      (FLAC__uint64) gst_util_uint64_scale_round (stop, sample_rate,
+      GST_SECOND);
+  track->number = 255;
+  if (!FLAC__metadata_object_cuesheet_insert_track (cuesheet, cs->num_tracks,
+          track, FALSE))
+    return FALSE;
+
+  /* check if the cuesheet is valid */
+  if (!FLAC__metadata_object_cuesheet_is_legal (cuesheet, FALSE, &is_legal)) {
+    g_warning ("%s\n", is_legal);
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
 static void
-gst_flac_enc_set_metadata (GstFlacEnc * flacenc)
+gst_flac_enc_set_metadata (GstFlacEnc * flacenc, GstAudioInfo * info,
+    guint64 total_samples)
 {
   const GstTagList *user_tags;
   GstTagList *copy;
+  gint entries = 1;
+  gint n_images, n_preview_images;
+  FLAC__StreamMetadata *cuesheet;
 
   g_return_if_fail (flacenc != NULL);
+
   user_tags = gst_tag_setter_get_tag_list (GST_TAG_SETTER (flacenc));
   if ((flacenc->tags == NULL) && (user_tags == NULL)) {
     return;
   }
   copy = gst_tag_list_merge (user_tags, flacenc->tags,
       gst_tag_setter_get_tag_merge_mode (GST_TAG_SETTER (flacenc)));
-  flacenc->meta = g_new0 (FLAC__StreamMetadata *, 2);
+  n_images = gst_tag_list_get_tag_size (copy, GST_TAG_IMAGE);
+  n_preview_images = gst_tag_list_get_tag_size (copy, GST_TAG_PREVIEW_IMAGE);
+
+  flacenc->meta =
+      g_new0 (FLAC__StreamMetadata *, 4 + n_images + n_preview_images);
 
   flacenc->meta[0] =
       FLAC__metadata_object_new (FLAC__METADATA_TYPE_VORBIS_COMMENT);
   gst_tag_list_foreach (copy, add_one_tag, flacenc);
 
-  if (flacenc->padding > 0) {
-    flacenc->meta[1] = FLAC__metadata_object_new (FLAC__METADATA_TYPE_PADDING);
-    flacenc->meta[1]->length = flacenc->padding;
-  }
+  if (!flacenc->toc)
+    flacenc->toc = gst_toc_setter_get_toc (GST_TOC_SETTER (flacenc));
 
-  if (FLAC__stream_encoder_set_metadata (flacenc->encoder,
-          flacenc->meta, (flacenc->padding > 0) ? 2 : 1) != true)
-
-    g_warning ("Dude, i'm already initialized!");
-  gst_tag_list_free (copy);
-}
-
-static void
-gst_flac_enc_caps_append_structure_with_widths (GstCaps * caps,
-    GstStructure * s)
-{
-  GstStructure *tmp;
-  GValue list = { 0, };
-  GValue depth = { 0, };
-
-
-  tmp = gst_structure_copy (s);
-  gst_structure_set (tmp, "width", G_TYPE_INT, 8, "depth", G_TYPE_INT, 8, NULL);
-  gst_caps_append_structure (caps, tmp);
-
-  tmp = gst_structure_copy (s);
-
-  g_value_init (&depth, G_TYPE_INT);
-  g_value_init (&list, GST_TYPE_LIST);
-  g_value_set_int (&depth, 12);
-  gst_value_list_append_value (&list, &depth);
-  g_value_set_int (&depth, 16);
-  gst_value_list_append_value (&list, &depth);
-
-  gst_structure_set (tmp, "width", G_TYPE_INT, 16, NULL);
-  gst_structure_set_value (tmp, "depth", &list);
-  gst_caps_append_structure (caps, tmp);
-
-  g_value_reset (&list);
-
-  tmp = s;
-
-  g_value_set_int (&depth, 20);
-  gst_value_list_append_value (&list, &depth);
-  g_value_set_int (&depth, 24);
-  gst_value_list_append_value (&list, &depth);
-
-  gst_structure_set (tmp, "width", G_TYPE_INT, 32, NULL);
-  gst_structure_set_value (tmp, "depth", &list);
-  gst_caps_append_structure (caps, tmp);
-
-  g_value_unset (&list);
-  g_value_unset (&depth);
-}
-
-static GstCaps *
-gst_flac_enc_sink_getcaps (GstPad * pad)
-{
-  GstCaps *ret = NULL;
-
-  GST_OBJECT_LOCK (pad);
-
-  if (GST_PAD_CAPS (pad)) {
-    ret = gst_caps_ref (GST_PAD_CAPS (pad));
-  } else {
-    gint i, c;
-
-    ret = gst_caps_new_empty ();
-
-    gst_flac_enc_caps_append_structure_with_widths (ret,
-        gst_structure_new ("audio/x-raw-int",
-            "endianness", G_TYPE_INT, G_BYTE_ORDER,
-            "signed", G_TYPE_BOOLEAN, TRUE,
-            "rate", GST_TYPE_INT_RANGE, 1, 655350,
-            "channels", GST_TYPE_INT_RANGE, 1, 2, NULL));
-
-    for (i = 3; i <= 8; i++) {
-      GValue positions = { 0, };
-      GValue pos = { 0, };
-      GstStructure *s;
-
-      g_value_init (&positions, GST_TYPE_ARRAY);
-      g_value_init (&pos, GST_TYPE_AUDIO_CHANNEL_POSITION);
-
-      for (c = 0; c < i; c++) {
-        g_value_set_enum (&pos, channel_positions[i - 1][c]);
-        gst_value_array_append_value (&positions, &pos);
-      }
-      g_value_unset (&pos);
-
-      s = gst_structure_new ("audio/x-raw-int",
-          "endianness", G_TYPE_INT, G_BYTE_ORDER,
-          "signed", G_TYPE_BOOLEAN, TRUE,
-          "rate", GST_TYPE_INT_RANGE, 1, 655350,
-          "channels", G_TYPE_INT, i, NULL);
-      gst_structure_set_value (s, "channel-positions", &positions);
-      g_value_unset (&positions);
-
-      gst_flac_enc_caps_append_structure_with_widths (ret, s);
+  if (flacenc->toc) {
+    cuesheet = FLAC__metadata_object_new (FLAC__METADATA_TYPE_CUESHEET);
+    if (add_cuesheet (flacenc->toc, GST_AUDIO_INFO_RATE (info), cuesheet)) {
+      flacenc->meta[entries] = cuesheet;
+      entries++;
+    } else {
+      FLAC__metadata_object_delete (cuesheet);
+      flacenc->meta[entries] = NULL;
     }
   }
 
-  GST_OBJECT_UNLOCK (pad);
+  if (n_images + n_preview_images > 0) {
+    GstSample *sample;
+    GstBuffer *buffer;
+    const GstStructure *structure;
+    GstTagImageType image_type = GST_TAG_IMAGE_TYPE_NONE;
+    gint i;
+    GstMapInfo map;
+
+    for (i = 0; i < n_images + n_preview_images; i++) {
+      if (i < n_images) {
+        if (!gst_tag_list_get_sample_index (copy, GST_TAG_IMAGE, i, &sample))
+          continue;
+      } else {
+        if (!gst_tag_list_get_sample_index (copy, GST_TAG_PREVIEW_IMAGE,
+                i - n_images, &sample))
+          continue;
+      }
+
+      flacenc->meta[entries] =
+          FLAC__metadata_object_new (FLAC__METADATA_TYPE_PICTURE);
+
+      structure = gst_sample_get_info (sample);
+
+      gst_structure_get (structure, "image-type", GST_TYPE_TAG_IMAGE_TYPE,
+          &image_type, NULL);
+      /* Convert to ID3v2 APIC image type */
+      if (image_type == GST_TAG_IMAGE_TYPE_NONE)
+        image_type = (i < n_images) ? 0x00 : 0x01;
+      else
+        image_type = image_type + 2;
+
+      buffer = gst_sample_get_buffer (sample);
+      gst_buffer_map (buffer, &map, GST_MAP_READ);
+      FLAC__metadata_object_picture_set_data (flacenc->meta[entries],
+          map.data, map.size, TRUE);
+      gst_buffer_unmap (buffer, &map);
+
+      /* FIXME: There's no way to set the picture type in libFLAC */
+      flacenc->meta[entries]->data.picture.type = image_type;
+      FLAC__metadata_object_picture_set_mime_type (flacenc->meta[entries],
+          (char *) gst_structure_get_name (structure), TRUE);
+
+      gst_sample_unref (sample);
+      entries++;
+    }
+  }
+
+  if (flacenc->seekpoints && total_samples != GST_CLOCK_TIME_NONE) {
+    gboolean res;
+    guint samples;
+
+    flacenc->meta[entries] =
+        FLAC__metadata_object_new (FLAC__METADATA_TYPE_SEEKTABLE);
+    if (flacenc->seekpoints > 0) {
+      res =
+          FLAC__metadata_object_seektable_template_append_spaced_points
+          (flacenc->meta[entries], flacenc->seekpoints, total_samples);
+    } else {
+      samples = -flacenc->seekpoints * GST_AUDIO_INFO_RATE (info);
+      res =
+          FLAC__metadata_object_seektable_template_append_spaced_points_by_samples
+          (flacenc->meta[entries], samples, total_samples);
+    }
+    if (!res) {
+      GST_DEBUG_OBJECT (flacenc, "adding seekpoint template %d failed",
+          flacenc->seekpoints);
+      FLAC__metadata_object_delete (flacenc->meta[1]);
+      flacenc->meta[entries] = NULL;
+    } else {
+      entries++;
+    }
+  } else if (flacenc->seekpoints && total_samples == GST_CLOCK_TIME_NONE) {
+    GST_WARNING_OBJECT (flacenc, "total time unknown; can not add seekpoints");
+  }
+
+  if (flacenc->padding > 0) {
+    flacenc->meta[entries] =
+        FLAC__metadata_object_new (FLAC__METADATA_TYPE_PADDING);
+    flacenc->meta[entries]->length = flacenc->padding;
+    entries++;
+  }
+
+  if (FLAC__stream_encoder_set_metadata (flacenc->encoder,
+          flacenc->meta, entries) != true)
+    g_warning ("Dude, i'm already initialized!");
+
+  gst_tag_list_unref (copy);
+}
+
+static GstCaps *
+gst_flac_enc_getcaps (GstAudioEncoder * enc, GstCaps * filter)
+{
+  GstCaps *ret = NULL, *caps = NULL;
+  GstPad *pad;
+
+  pad = GST_AUDIO_ENCODER_SINK_PAD (enc);
+
+  if (gst_pad_has_current_caps (pad)) {
+    ret = gst_pad_get_current_caps (pad);
+  } else {
+    gint i;
+    GValue v_list = { 0, };
+    GValue v = { 0, };
+    GstStructure *s, *s2;
+
+    g_value_init (&v_list, GST_TYPE_LIST);
+    g_value_init (&v, G_TYPE_STRING);
+
+    g_value_set_static_string (&v, GST_AUDIO_NE (S8));
+    gst_value_list_append_value (&v_list, &v);
+    g_value_set_static_string (&v, GST_AUDIO_NE (S16));
+    gst_value_list_append_value (&v_list, &v);
+    g_value_set_static_string (&v, GST_AUDIO_NE (S24));
+    gst_value_list_append_value (&v_list, &v);
+    g_value_set_static_string (&v, GST_AUDIO_NE (S24_32));
+    gst_value_list_append_value (&v_list, &v);
+    g_value_unset (&v);
+
+    s = gst_structure_new_empty ("audio/x-raw");
+    gst_structure_take_value (s, "format", &v_list);
+
+    gst_structure_set (s, "layout", G_TYPE_STRING, "interleaved",
+        "rate", GST_TYPE_INT_RANGE, 1, 655350, NULL);
+
+    ret = gst_caps_new_empty ();
+    for (i = 1; i <= 8; i++) {
+      s2 = gst_structure_copy (s);
+
+      if (i == 1) {
+        gst_structure_set (s2, "channels", G_TYPE_INT, 1, NULL);
+      } else {
+        guint64 channel_mask;
+
+        gst_audio_channel_positions_to_mask (channel_positions[i - 1], i,
+            FALSE, &channel_mask);
+        gst_structure_set (s2, "channels", G_TYPE_INT, i, "channel-mask",
+            GST_TYPE_BITMASK, channel_mask, NULL);
+      }
+
+      gst_caps_append_structure (ret, s2);
+    }
+    gst_structure_free (s);
+  }
 
   GST_DEBUG_OBJECT (pad, "Return caps %" GST_PTR_FORMAT, ret);
 
-  return ret;
+  caps = gst_audio_encoder_proxy_getcaps (enc, ret, filter);
+  gst_caps_unref (ret);
+
+  return caps;
 }
 
 static guint64
-gst_flac_enc_query_peer_total_samples (GstFlacEnc * flacenc, GstPad * pad)
+gst_flac_enc_peer_query_total_samples (GstFlacEnc * flacenc, GstPad * pad)
 {
-  GstFormat fmt = GST_FORMAT_DEFAULT;
   gint64 duration;
+  GstAudioInfo *info =
+      gst_audio_encoder_get_audio_info (GST_AUDIO_ENCODER (flacenc));
 
   GST_DEBUG_OBJECT (flacenc, "querying peer for DEFAULT format duration");
-  if (gst_pad_query_peer_duration (pad, &fmt, &duration)
-      && fmt == GST_FORMAT_DEFAULT && duration != GST_CLOCK_TIME_NONE)
+  if (gst_pad_peer_query_duration (pad, GST_FORMAT_DEFAULT, &duration)
+      && duration != GST_CLOCK_TIME_NONE)
     goto done;
 
-  fmt = GST_FORMAT_TIME;
   GST_DEBUG_OBJECT (flacenc, "querying peer for TIME format duration");
 
-  if (gst_pad_query_peer_duration (pad, &fmt, &duration) &&
-      fmt == GST_FORMAT_TIME && duration != GST_CLOCK_TIME_NONE) {
+  if (gst_pad_peer_query_duration (pad, GST_FORMAT_TIME, &duration)
+      && duration != GST_CLOCK_TIME_NONE) {
     GST_DEBUG_OBJECT (flacenc, "peer reported duration %" GST_TIME_FORMAT,
         GST_TIME_ARGS (duration));
-    duration = GST_CLOCK_TIME_TO_FRAMES (duration, flacenc->sample_rate);
+    duration = GST_CLOCK_TIME_TO_FRAMES (duration, GST_AUDIO_INFO_RATE (info));
 
     goto done;
   }
@@ -608,55 +808,44 @@ done:
 }
 
 static gboolean
-gst_flac_enc_sink_setcaps (GstPad * pad, GstCaps * caps)
+gst_flac_enc_set_format (GstAudioEncoder * enc, GstAudioInfo * info)
 {
   GstFlacEnc *flacenc;
-  GstStructure *structure;
   guint64 total_samples = GST_CLOCK_TIME_NONE;
   FLAC__StreamEncoderInitStatus init_status;
-  gint depth, chans, rate, width;
 
-  flacenc = GST_FLAC_ENC (gst_pad_get_parent (pad));
+  flacenc = GST_FLAC_ENC (enc);
 
+  /* if configured again, means something changed, can't handle that */
   if (FLAC__stream_encoder_get_state (flacenc->encoder) !=
       FLAC__STREAM_ENCODER_UNINITIALIZED)
     goto encoder_already_initialized;
 
-  structure = gst_caps_get_structure (caps, 0);
+  /* delay setting output caps/format until we have all headers */
 
-  if (!gst_structure_get_int (structure, "channels", &chans) ||
-      !gst_structure_get_int (structure, "width", &width) ||
-      !gst_structure_get_int (structure, "depth", &depth) ||
-      !gst_structure_get_int (structure, "rate", &rate)) {
-    GST_DEBUG_OBJECT (flacenc, "incomplete caps: %" GST_PTR_FORMAT, caps);
-    return FALSE;
-  }
+  gst_audio_get_channel_reorder_map (GST_AUDIO_INFO_CHANNELS (info),
+      channel_positions[GST_AUDIO_INFO_CHANNELS (info) - 1], info->position,
+      flacenc->channel_reorder_map);
 
-  flacenc->channels = chans;
-  flacenc->width = width;
-  flacenc->depth = depth;
-  flacenc->sample_rate = rate;
+  total_samples = gst_flac_enc_peer_query_total_samples (flacenc,
+      GST_AUDIO_ENCODER_SINK_PAD (enc));
 
-  caps = gst_caps_new_simple ("audio/x-flac",
-      "channels", G_TYPE_INT, flacenc->channels,
-      "rate", G_TYPE_INT, flacenc->sample_rate, NULL);
-
-  if (!gst_pad_set_caps (flacenc->srcpad, caps))
-    goto setting_src_caps_failed;
-
-  gst_caps_unref (caps);
-
-  total_samples = gst_flac_enc_query_peer_total_samples (flacenc, pad);
-
-  FLAC__stream_encoder_set_bits_per_sample (flacenc->encoder, flacenc->depth);
-  FLAC__stream_encoder_set_sample_rate (flacenc->encoder, flacenc->sample_rate);
-  FLAC__stream_encoder_set_channels (flacenc->encoder, flacenc->channels);
+  FLAC__stream_encoder_set_bits_per_sample (flacenc->encoder,
+      GST_AUDIO_INFO_DEPTH (info));
+  FLAC__stream_encoder_set_sample_rate (flacenc->encoder,
+      GST_AUDIO_INFO_RATE (info));
+  FLAC__stream_encoder_set_channels (flacenc->encoder,
+      GST_AUDIO_INFO_CHANNELS (info));
 
   if (total_samples != GST_CLOCK_TIME_NONE)
     FLAC__stream_encoder_set_total_samples_estimate (flacenc->encoder,
         MIN (total_samples, G_GUINT64_CONSTANT (0x0FFFFFFFFF)));
 
-  gst_flac_enc_set_metadata (flacenc);
+  gst_flac_enc_set_metadata (flacenc, info, total_samples);
+
+  /* callbacks clear to go now;
+   * write callbacks receives headers during init */
+  flacenc->stopped = FALSE;
 
   init_status = FLAC__stream_encoder_init_stream (flacenc->encoder,
       gst_flac_enc_write_callback, gst_flac_enc_seek_callback,
@@ -664,29 +853,19 @@ gst_flac_enc_sink_setcaps (GstPad * pad, GstCaps * caps)
   if (init_status != FLAC__STREAM_ENCODER_INIT_STATUS_OK)
     goto failed_to_initialize;
 
-  gst_object_unref (flacenc);
+  /* no special feedback to base class; should provide all available samples */
 
   return TRUE;
 
 encoder_already_initialized:
   {
     g_warning ("flac already initialized -- fixme allow this");
-    gst_object_unref (flacenc);
-    return FALSE;
-  }
-setting_src_caps_failed:
-  {
-    GST_DEBUG_OBJECT (flacenc,
-        "Couldn't set caps on source pad: %" GST_PTR_FORMAT, caps);
-    gst_caps_unref (caps);
-    gst_object_unref (flacenc);
     return FALSE;
   }
 failed_to_initialize:
   {
     GST_ELEMENT_ERROR (flacenc, LIBRARY, INIT, (NULL),
-        ("could not initialize encoder (wrong parameters?)"));
-    gst_object_unref (flacenc);
+        ("could not initialize encoder (wrong parameters?) %d", init_status));
     return FALSE;
   }
 }
@@ -694,6 +873,9 @@ failed_to_initialize:
 static gboolean
 gst_flac_enc_update_quality (GstFlacEnc * flacenc, gint quality)
 {
+  GstAudioInfo *info =
+      gst_audio_encoder_get_audio_info (GST_AUDIO_ENCODER (flacenc));
+
   flacenc->quality = quality;
 
 #define DO_UPDATE(name, val, str)                                               \
@@ -708,7 +890,8 @@ gst_flac_enc_update_quality (GstFlacEnc * flacenc, gint quality)
 
   g_object_freeze_notify (G_OBJECT (flacenc));
 
-  if (flacenc->channels == 2 || flacenc->channels == 0) {
+  if (GST_AUDIO_INFO_CHANNELS (info) == 2
+      || GST_AUDIO_INFO_CHANNELS (info) == 0) {
     DO_UPDATE (do_mid_side_stereo, mid_side, "mid_side_stereo");
     DO_UPDATE (loose_mid_side_stereo, loose_mid_side, "loose_mid_side");
   }
@@ -740,33 +923,59 @@ gst_flac_enc_seek_callback (const FLAC__StreamEncoder * encoder,
     FLAC__uint64 absolute_byte_offset, void *client_data)
 {
   GstFlacEnc *flacenc;
-  GstEvent *event;
   GstPad *peerpad;
+  GstSegment seg;
 
   flacenc = GST_FLAC_ENC (client_data);
 
   if (flacenc->stopped)
     return FLAC__STREAM_ENCODER_SEEK_STATUS_OK;
 
-  event = gst_event_new_new_segment (TRUE, 1.0, GST_FORMAT_BYTES,
-      absolute_byte_offset, GST_BUFFER_OFFSET_NONE, 0);
+  if ((peerpad = gst_pad_get_peer (GST_AUDIO_ENCODER_SRC_PAD (flacenc)))) {
+    GstEvent *event;
+    gboolean ret;
+    GstQuery *query;
+    gboolean seekable = FALSE;
 
-  if ((peerpad = gst_pad_get_peer (flacenc->srcpad))) {
-    gboolean ret = gst_pad_send_event (peerpad, event);
+    /* try to seek to the beginning of the output */
+    query = gst_query_new_seeking (GST_FORMAT_BYTES);
+    if (gst_pad_query (peerpad, query)) {
+      GstFormat format;
 
+      gst_query_parse_seeking (query, &format, &seekable, NULL, NULL);
+      if (format != GST_FORMAT_BYTES)
+        seekable = FALSE;
+    } else {
+      GST_LOG_OBJECT (flacenc, "SEEKING query not handled");
+    }
+    gst_query_unref (query);
+
+    if (!seekable) {
+      GST_DEBUG_OBJECT (flacenc, "downstream not seekable; not rewriting");
+      gst_object_unref (peerpad);
+      return FLAC__STREAM_ENCODER_SEEK_STATUS_UNSUPPORTED;
+    }
+
+    gst_segment_init (&seg, GST_FORMAT_BYTES);
+    seg.start = absolute_byte_offset;
+    seg.stop = GST_BUFFER_OFFSET_NONE;
+    seg.time = 0;
+    event = gst_event_new_segment (&seg);
+
+    ret = gst_pad_send_event (peerpad, event);
     gst_object_unref (peerpad);
 
     if (ret) {
-      GST_DEBUG ("Seek to %" G_GUINT64_FORMAT " %s", absolute_byte_offset,
-          "succeeded");
+      GST_DEBUG ("Seek to %" G_GUINT64_FORMAT " %s",
+          (guint64) absolute_byte_offset, "succeeded");
     } else {
-      GST_DEBUG ("Seek to %" G_GUINT64_FORMAT " %s", absolute_byte_offset,
-          "failed");
+      GST_DEBUG ("Seek to %" G_GUINT64_FORMAT " %s",
+          (guint64) absolute_byte_offset, "failed");
       return FLAC__STREAM_ENCODER_SEEK_STATUS_UNSUPPORTED;
     }
   } else {
     GST_DEBUG ("Seek to %" G_GUINT64_FORMAT " failed (no peer pad)",
-        absolute_byte_offset);
+        (guint64) absolute_byte_offset);
   }
 
   flacenc->offset = absolute_byte_offset;
@@ -782,7 +991,7 @@ notgst_value_array_append_buffer (GValue * array_val, GstBuffer * buf)
   /* copy buffer to avoid problems with circular refcounts */
   buf = gst_buffer_copy (buf);
   /* again, for good measure */
-  GST_BUFFER_FLAG_SET (buf, GST_BUFFER_FLAG_IN_CAPS);
+  GST_BUFFER_FLAG_SET (buf, GST_BUFFER_FLAG_HEADER);
   gst_value_set_buffer (&value, buf);
   gst_buffer_unref (buf);
   gst_value_array_append_value (array_val, &value);
@@ -792,7 +1001,7 @@ notgst_value_array_append_buffer (GValue * array_val, GstBuffer * buf)
 #define HDR_TYPE_STREAMINFO     0
 #define HDR_TYPE_VORBISCOMMENT  4
 
-static void
+static GstFlowReturn
 gst_flac_enc_process_stream_headers (GstFlacEnc * enc)
 {
   GstBuffer *vorbiscomment = NULL;
@@ -801,31 +1010,41 @@ gst_flac_enc_process_stream_headers (GstFlacEnc * enc)
   GValue array = { 0, };
   GstCaps *caps;
   GList *l;
+  GstFlowReturn ret = GST_FLOW_OK;
+  GstAudioInfo *info =
+      gst_audio_encoder_get_audio_info (GST_AUDIO_ENCODER (enc));
 
   caps = gst_caps_new_simple ("audio/x-flac",
-      "channels", G_TYPE_INT, enc->channels,
-      "rate", G_TYPE_INT, enc->sample_rate, NULL);
+      "channels", G_TYPE_INT, GST_AUDIO_INFO_CHANNELS (info),
+      "rate", G_TYPE_INT, GST_AUDIO_INFO_RATE (info), NULL);
 
   for (l = enc->headers; l != NULL; l = l->next) {
-    const guint8 *data;
-    guint size;
+    GstBuffer *buf;
+    GstMapInfo map;
+    guint8 *data;
+    gsize size;
 
     /* mark buffers so oggmux will ignore them if it already muxed the
      * header buffers from the streamheaders field in the caps */
-    l->data = gst_buffer_make_metadata_writable (GST_BUFFER (l->data));
-    GST_BUFFER_FLAG_SET (GST_BUFFER (l->data), GST_BUFFER_FLAG_IN_CAPS);
+    l->data = gst_buffer_make_writable (GST_BUFFER_CAST (l->data));
 
-    data = GST_BUFFER_DATA (GST_BUFFER_CAST (l->data));
-    size = GST_BUFFER_SIZE (GST_BUFFER_CAST (l->data));
+    buf = GST_BUFFER_CAST (l->data);
+    GST_BUFFER_FLAG_SET (buf, GST_BUFFER_FLAG_HEADER);
+
+    gst_buffer_map (buf, &map, GST_MAP_READ);
+    data = map.data;
+    size = map.size;
 
     /* find initial 4-byte marker which we need to skip later on */
     if (size == 4 && memcmp (data, "fLaC", 4) == 0) {
-      marker = GST_BUFFER_CAST (l->data);
+      marker = buf;
     } else if (size > 1 && (data[0] & 0x7f) == HDR_TYPE_STREAMINFO) {
-      streaminfo = GST_BUFFER_CAST (l->data);
+      streaminfo = buf;
     } else if (size > 1 && (data[0] & 0x7f) == HDR_TYPE_VORBISCOMMENT) {
-      vorbiscomment = GST_BUFFER_CAST (l->data);
+      vorbiscomment = buf;
     }
+
+    gst_buffer_unmap (buf, &map);
   }
 
   if (marker == NULL || streaminfo == NULL || vorbiscomment == NULL) {
@@ -840,20 +1059,28 @@ gst_flac_enc_process_stream_headers (GstFlacEnc * enc)
   {
     GstBuffer *buf;
     guint16 num;
+    GstMapInfo map;
+    guint8 *bdata;
+    gsize slen;
 
     /* minus one for the marker that is merged with streaminfo here */
     num = g_list_length (enc->headers) - 1;
 
-    buf = gst_buffer_new_and_alloc (13 + GST_BUFFER_SIZE (streaminfo));
-    GST_BUFFER_DATA (buf)[0] = 0x7f;
-    memcpy (GST_BUFFER_DATA (buf) + 1, "FLAC", 4);
-    GST_BUFFER_DATA (buf)[5] = 0x01;    /* mapping version major */
-    GST_BUFFER_DATA (buf)[6] = 0x00;    /* mapping version minor */
-    GST_BUFFER_DATA (buf)[7] = (num & 0xFF00) >> 8;
-    GST_BUFFER_DATA (buf)[8] = (num & 0x00FF) >> 0;
-    memcpy (GST_BUFFER_DATA (buf) + 9, "fLaC", 4);
-    memcpy (GST_BUFFER_DATA (buf) + 13, GST_BUFFER_DATA (streaminfo),
-        GST_BUFFER_SIZE (streaminfo));
+    slen = gst_buffer_get_size (streaminfo);
+    buf = gst_buffer_new_and_alloc (13 + slen);
+
+    gst_buffer_map (buf, &map, GST_MAP_WRITE);
+    bdata = map.data;
+    bdata[0] = 0x7f;
+    memcpy (bdata + 1, "FLAC", 4);
+    bdata[5] = 0x01;            /* mapping version major */
+    bdata[6] = 0x00;            /* mapping version minor */
+    bdata[7] = (num & 0xFF00) >> 8;
+    bdata[8] = (num & 0x00FF) >> 0;
+    memcpy (bdata + 9, "fLaC", 4);
+    gst_buffer_extract (streaminfo, 0, bdata + 13, slen);
+    gst_buffer_unmap (buf, &map);
+
     notgst_value_array_append_buffer (&array, buf);
     gst_buffer_unref (buf);
   }
@@ -863,10 +1090,10 @@ gst_flac_enc_process_stream_headers (GstFlacEnc * enc)
 
   /* add other headers, if there are any */
   for (l = enc->headers; l != NULL; l = l->next) {
-    if (GST_BUFFER_CAST (l->data) != marker &&
-        GST_BUFFER_CAST (l->data) != streaminfo &&
-        GST_BUFFER_CAST (l->data) != vorbiscomment) {
-      notgst_value_array_append_buffer (&array, GST_BUFFER_CAST (l->data));
+    GstBuffer *buf = GST_BUFFER_CAST (l->data);
+
+    if (buf != marker && buf != streaminfo && buf != vorbiscomment) {
+      notgst_value_array_append_buffer (&array, buf);
     }
   }
 
@@ -875,8 +1102,7 @@ gst_flac_enc_process_stream_headers (GstFlacEnc * enc)
   g_value_unset (&array);
 
 push_headers:
-
-  gst_pad_set_caps (enc->srcpad, caps);
+  gst_audio_encoder_set_output_format (GST_AUDIO_ENCODER (enc), caps);
 
   /* push header buffers; update caps, so when we push the first buffer the
    * negotiated caps will change to caps that include the streamheader field */
@@ -884,18 +1110,22 @@ push_headers:
     GstBuffer *buf;
 
     buf = GST_BUFFER (l->data);
-    gst_buffer_set_caps (buf, caps);
-    GST_LOG_OBJECT (enc, "Pushing header buffer, size %u bytes",
-        GST_BUFFER_SIZE (buf));
+    GST_LOG_OBJECT (enc,
+        "Pushing header buffer, size %" G_GSIZE_FORMAT " bytes",
+        gst_buffer_get_size (buf));
+#if 0
     GST_MEMDUMP_OBJECT (enc, "header buffer", GST_BUFFER_DATA (buf),
         GST_BUFFER_SIZE (buf));
-    (void) gst_pad_push (enc->srcpad, buf);
+#endif
+    ret = gst_pad_push (GST_AUDIO_ENCODER_SRC_PAD (enc), buf);
     l->data = NULL;
   }
   g_list_free (enc->headers);
   enc->headers = NULL;
 
   gst_caps_unref (caps);
+
+  return ret;
 }
 
 static FLAC__StreamEncoderWriteStatus
@@ -913,32 +1143,7 @@ gst_flac_enc_write_callback (const FLAC__StreamEncoder * encoder,
     return FLAC__STREAM_ENCODER_WRITE_STATUS_OK;
 
   outbuf = gst_buffer_new_and_alloc (bytes);
-  memcpy (GST_BUFFER_DATA (outbuf), buffer, bytes);
-
-  if (samples > 0 && flacenc->samples_written != (guint64) - 1) {
-    guint64 granulepos;
-
-    GST_BUFFER_TIMESTAMP (outbuf) = flacenc->start_ts +
-        GST_FRAMES_TO_CLOCK_TIME (flacenc->samples_written,
-        flacenc->sample_rate);
-    GST_BUFFER_DURATION (outbuf) =
-        GST_FRAMES_TO_CLOCK_TIME (samples, flacenc->sample_rate);
-    /* offset_end = granulepos for ogg muxer */
-    granulepos =
-        flacenc->granulepos_offset + flacenc->samples_written + samples;
-    GST_BUFFER_OFFSET_END (outbuf) = granulepos;
-    /* offset = timestamp corresponding to granulepos for ogg muxer
-     * (see vorbisenc for a much more elaborate version of this) */
-    GST_BUFFER_OFFSET (outbuf) =
-        GST_FRAMES_TO_CLOCK_TIME (granulepos, flacenc->sample_rate);
-  } else {
-    GST_BUFFER_TIMESTAMP (outbuf) = GST_CLOCK_TIME_NONE;
-    GST_BUFFER_DURATION (outbuf) = GST_CLOCK_TIME_NONE;
-    GST_BUFFER_OFFSET (outbuf) =
-        flacenc->samples_written * flacenc->width * flacenc->channels;
-    GST_BUFFER_OFFSET_END (outbuf) = 0;
-    GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_IN_CAPS);
-  }
+  gst_buffer_fill (outbuf, 0, buffer, bytes);
 
   /* we assume libflac passes us stuff neatly framed */
   if (!flacenc->got_headers) {
@@ -950,22 +1155,28 @@ gst_flac_enc_write_callback (const FLAC__StreamEncoder * encoder,
       goto out;
     } else {
       GST_INFO_OBJECT (flacenc, "Non-header packet, we have all headers now");
-      gst_flac_enc_process_stream_headers (flacenc);
+      ret = gst_flac_enc_process_stream_headers (flacenc);
       flacenc->got_headers = TRUE;
     }
-  } else if (flacenc->got_headers && samples == 0) {
+  }
+
+  if (flacenc->got_headers && samples == 0) {
+    /* header fixup, push downstream directly */
     GST_DEBUG_OBJECT (flacenc, "Fixing up headers at pos=%" G_GUINT64_FORMAT
         ", size=%u", flacenc->offset, (guint) bytes);
+#if 0
     GST_MEMDUMP_OBJECT (flacenc, "Presumed header fragment",
         GST_BUFFER_DATA (outbuf), GST_BUFFER_SIZE (outbuf));
+#endif
+    ret = gst_pad_push (GST_AUDIO_ENCODER_SRC_PAD (flacenc), outbuf);
   } else {
+    /* regular frame data, pass to base class */
     GST_LOG ("Pushing buffer: ts=%" GST_TIME_FORMAT ", samples=%u, size=%u, "
         "pos=%" G_GUINT64_FORMAT, GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (outbuf)),
         samples, (guint) bytes, flacenc->offset);
+    ret = gst_audio_encoder_finish_frame (GST_AUDIO_ENCODER (flacenc),
+        outbuf, samples);
   }
-
-  gst_buffer_set_caps (outbuf, GST_PAD_CAPS (flacenc->srcpad));
-  ret = gst_pad_push (flacenc->srcpad, outbuf);
 
   if (ret != GST_FLOW_OK)
     GST_DEBUG_OBJECT (flacenc, "flow: %s", gst_flow_get_name (ret));
@@ -973,11 +1184,9 @@ gst_flac_enc_write_callback (const FLAC__StreamEncoder * encoder,
   flacenc->last_flow = ret;
 
 out:
-
   flacenc->offset += bytes;
-  flacenc->samples_written += samples;
 
-  if (GST_FLOW_IS_FATAL (ret) || ret == GST_FLOW_NOT_LINKED)
+  if (ret != GST_FLOW_OK)
     return FLAC__STREAM_ENCODER_WRITE_STATUS_FATAL_ERROR;
 
   return FLAC__STREAM_ENCODER_WRITE_STATUS_OK;
@@ -995,48 +1204,21 @@ gst_flac_enc_tell_callback (const FLAC__StreamEncoder * encoder,
 }
 
 static gboolean
-gst_flac_enc_sink_event (GstPad * pad, GstEvent * event)
+gst_flac_enc_sink_event (GstAudioEncoder * enc, GstEvent * event)
 {
   GstFlacEnc *flacenc;
   GstTagList *taglist;
-  gboolean ret = TRUE;
+  GstToc *toc;
+  gboolean ret = FALSE;
 
-  flacenc = GST_FLAC_ENC (gst_pad_get_parent (pad));
+  flacenc = GST_FLAC_ENC (enc);
 
   GST_DEBUG ("Received %s event on sinkpad", GST_EVENT_TYPE_NAME (event));
 
   switch (GST_EVENT_TYPE (event)) {
-    case GST_EVENT_NEWSEGMENT:{
-      GstFormat format;
-      gint64 start, stream_time;
-
-      if (flacenc->offset == 0) {
-        gst_event_parse_new_segment (event, NULL, NULL, &format, &start, NULL,
-            &stream_time);
-      } else {
-        start = -1;
-      }
-      if (start != 0) {
-        if (flacenc->offset > 0)
-          GST_DEBUG ("Not handling mid-stream newsegment event");
-        else
-          GST_DEBUG ("Not handling newsegment event with non-zero start");
-      } else {
-        GstEvent *e = gst_event_new_new_segment (FALSE, 1.0, GST_FORMAT_BYTES,
-            0, -1, 0);
-
-        ret = gst_pad_push_event (flacenc->srcpad, e);
-      }
-      if (stream_time != 0) {
-        GST_DEBUG ("Not handling non-zero stream time");
-      }
-      gst_event_unref (event);
-      /* don't push it downstream, we'll generate our own via seek to 0 */
-      break;
-    }
     case GST_EVENT_EOS:
-      FLAC__stream_encoder_finish (flacenc->encoder);
-      ret = gst_pad_event_default (pad, event);
+      flacenc->eos = TRUE;
+      ret = GST_AUDIO_ENCODER_CLASS (parent_class)->sink_event (enc, event);
       break;
     case GST_EVENT_TAG:
       if (flacenc->tags) {
@@ -1046,114 +1228,115 @@ gst_flac_enc_sink_event (GstPad * pad, GstEvent * event)
       } else {
         g_assert_not_reached ();
       }
-      ret = gst_pad_event_default (pad, event);
+      ret = GST_AUDIO_ENCODER_CLASS (parent_class)->sink_event (enc, event);
+      break;
+    case GST_EVENT_TOC:
+      gst_event_parse_toc (event, &toc, NULL);
+      if (toc) {
+        if (flacenc->toc != toc) {
+          if (flacenc->toc)
+            gst_toc_unref (flacenc->toc);
+          flacenc->toc = toc;
+        }
+      }
+      ret = GST_AUDIO_ENCODER_CLASS (parent_class)->sink_event (enc, event);
       break;
     default:
-      ret = gst_pad_event_default (pad, event);
+      ret = GST_AUDIO_ENCODER_CLASS (parent_class)->sink_event (enc, event);
       break;
   }
-
-  gst_object_unref (flacenc);
 
   return ret;
 }
 
-static gboolean
-gst_flac_enc_check_discont (GstFlacEnc * flacenc, GstClockTime expected,
-    GstClockTime timestamp)
-{
-  guint allowed_diff = GST_SECOND / flacenc->sample_rate / 2;
-
-  if ((timestamp + allowed_diff < expected)
-      || (timestamp > expected + allowed_diff)) {
-    GST_ELEMENT_WARNING (flacenc, STREAM, FORMAT, (NULL),
-        ("Stream discontinuity detected (wanted %" GST_TIME_FORMAT " got %"
-            GST_TIME_FORMAT "). The output will have wrong timestamps,"
-            " consider using audiorate to handle discontinuities",
-            GST_TIME_ARGS (expected), GST_TIME_ARGS (timestamp)));
-    return TRUE;
-  }
-
-  /* TODO: Do something to handle discontinuities in the stream. The FLAC encoder
-   * unfortunately doesn't have any way to flush it's internal buffers */
-
-  return FALSE;
-}
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
+#define READ_INT24 GST_READ_UINT24_LE
+#else
+#define READ_INT24 GST_READ_UINT24_BE
+#endif
 
 static GstFlowReturn
-gst_flac_enc_chain (GstPad * pad, GstBuffer * buffer)
+gst_flac_enc_handle_frame (GstAudioEncoder * enc, GstBuffer * buffer)
 {
   GstFlacEnc *flacenc;
   FLAC__int32 *data;
-  gulong insize;
-  gint samples, width;
+  gint samples, width, channels;
   gulong i;
+  gint j;
   FLAC__bool res;
+  GstMapInfo map;
+  GstAudioInfo *info =
+      gst_audio_encoder_get_audio_info (GST_AUDIO_ENCODER (enc));
+  gint *reorder_map;
 
-  flacenc = GST_FLAC_ENC (GST_PAD_PARENT (pad));
+  flacenc = GST_FLAC_ENC (enc);
 
-  /* make sure setcaps has been called and the encoder is set up */
-  if (G_UNLIKELY (flacenc->depth == 0))
-    return GST_FLOW_NOT_NEGOTIATED;
+  /* base class ensures configuration */
+  g_return_val_if_fail (GST_AUDIO_INFO_WIDTH (info) != 0,
+      GST_FLOW_NOT_NEGOTIATED);
 
-  width = flacenc->width;
+  width = GST_AUDIO_INFO_WIDTH (info);
+  channels = GST_AUDIO_INFO_CHANNELS (info);
+  reorder_map = flacenc->channel_reorder_map;
 
-  /* Save the timestamp of the first buffer. This will be later
-   * used as offset for all following buffers */
-  if (flacenc->start_ts == GST_CLOCK_TIME_NONE) {
-    if (GST_BUFFER_TIMESTAMP_IS_VALID (buffer)) {
-      flacenc->start_ts = GST_BUFFER_TIMESTAMP (buffer);
-      flacenc->granulepos_offset = gst_util_uint64_scale
-          (GST_BUFFER_TIMESTAMP (buffer), flacenc->sample_rate, GST_SECOND);
+  if (G_UNLIKELY (!buffer)) {
+    if (flacenc->eos) {
+      FLAC__stream_encoder_finish (flacenc->encoder);
     } else {
-      flacenc->start_ts = 0;
-      flacenc->granulepos_offset = 0;
+      /* can't handle intermittent draining/resyncing */
+      GST_ELEMENT_WARNING (flacenc, STREAM, FORMAT, (NULL),
+          ("Stream discontinuity detected. "
+              "The output may have wrong timestamps, "
+              "consider using audiorate to handle discontinuities"));
     }
+    return flacenc->last_flow;
   }
 
-  /* Check if we have a continous stream, if not drop some samples or the buffer or
-   * insert some silence samples */
-  if (flacenc->next_ts != GST_CLOCK_TIME_NONE
-      && GST_BUFFER_TIMESTAMP_IS_VALID (buffer)) {
-    gst_flac_enc_check_discont (flacenc, flacenc->next_ts,
-        GST_BUFFER_TIMESTAMP (buffer));
-  }
-
-  if (GST_BUFFER_TIMESTAMP_IS_VALID (buffer)
-      && GST_BUFFER_DURATION_IS_VALID (buffer))
-    flacenc->next_ts =
-        GST_BUFFER_TIMESTAMP (buffer) + GST_BUFFER_DURATION (buffer);
-  else
-    flacenc->next_ts = GST_CLOCK_TIME_NONE;
-
-  insize = GST_BUFFER_SIZE (buffer);
-  samples = insize / (width >> 3);
+  gst_buffer_map (buffer, &map, GST_MAP_READ);
+  samples = map.size / (width >> 3);
 
   data = g_malloc (samples * sizeof (FLAC__int32));
 
+  samples /= channels;
   if (width == 8) {
-    gint8 *indata = (gint8 *) GST_BUFFER_DATA (buffer);
+    gint8 *indata = (gint8 *) map.data;
 
     for (i = 0; i < samples; i++)
-      data[i] = (FLAC__int32) indata[i];
+      for (j = 0; j < channels; j++)
+        data[i * channels + reorder_map[j]] =
+            (FLAC__int32) indata[i * channels + j];
   } else if (width == 16) {
-    gint16 *indata = (gint16 *) GST_BUFFER_DATA (buffer);
+    gint16 *indata = (gint16 *) map.data;
 
     for (i = 0; i < samples; i++)
-      data[i] = (FLAC__int32) indata[i];
+      for (j = 0; j < channels; j++)
+        data[i * channels + reorder_map[j]] =
+            (FLAC__int32) indata[i * channels + j];
+  } else if (width == 24) {
+    guint8 *indata = (guint8 *) map.data;
+    guint32 val;
+
+    for (i = 0; i < samples; i++)
+      for (j = 0; j < channels; j++) {
+        val = READ_INT24 (&indata[3 * (i * channels + j)]);
+        if (val & 0x00800000)
+          val |= 0xff000000;
+        data[i * channels + reorder_map[j]] = (FLAC__int32) val;
+      }
   } else if (width == 32) {
-    gint32 *indata = (gint32 *) GST_BUFFER_DATA (buffer);
+    gint32 *indata = (gint32 *) map.data;
 
     for (i = 0; i < samples; i++)
-      data[i] = (FLAC__int32) indata[i];
+      for (j = 0; j < channels; j++)
+        data[i * channels + reorder_map[j]] =
+            (FLAC__int32) indata[i * channels + j];
   } else {
     g_assert_not_reached ();
   }
-
-  gst_buffer_unref (buffer);
+  gst_buffer_unmap (buffer, &map);
 
   res = FLAC__stream_encoder_process_interleaved (flacenc->encoder,
-      (const FLAC__int32 *) data, samples / flacenc->channels);
+      (const FLAC__int32 *) data, samples);
 
   g_free (data);
 
@@ -1230,6 +1413,9 @@ gst_flac_enc_set_property (GObject * object, guint prop_id,
     case PROP_PADDING:
       this->padding = g_value_get_uint (value);
       break;
+    case PROP_SEEKPOINTS:
+      this->seekpoints = g_value_get_int (value);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -1303,68 +1489,13 @@ gst_flac_enc_get_property (GObject * object, guint prop_id,
     case PROP_PADDING:
       g_value_set_uint (value, this->padding);
       break;
+    case PROP_SEEKPOINTS:
+      g_value_set_int (value, this->seekpoints);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
 
   GST_OBJECT_UNLOCK (this);
-}
-
-static GstStateChangeReturn
-gst_flac_enc_change_state (GstElement * element, GstStateChange transition)
-{
-  GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;
-  GstFlacEnc *flacenc = GST_FLAC_ENC (element);
-
-  switch (transition) {
-    case GST_STATE_CHANGE_NULL_TO_READY:
-    case GST_STATE_CHANGE_READY_TO_PAUSED:
-      flacenc->stopped = FALSE;
-      flacenc->start_ts = GST_CLOCK_TIME_NONE;
-      flacenc->next_ts = GST_CLOCK_TIME_NONE;
-      flacenc->granulepos_offset = 0;
-      break;
-    case GST_STATE_CHANGE_PAUSED_TO_PLAYING:
-    default:
-      break;
-  }
-
-  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
-
-  switch (transition) {
-    case GST_STATE_CHANGE_PLAYING_TO_PAUSED:
-      break;
-    case GST_STATE_CHANGE_PAUSED_TO_READY:
-      if (FLAC__stream_encoder_get_state (flacenc->encoder) !=
-          FLAC__STREAM_ENCODER_UNINITIALIZED) {
-        flacenc->stopped = TRUE;
-        FLAC__stream_encoder_finish (flacenc->encoder);
-      }
-      flacenc->offset = 0;
-      flacenc->samples_written = 0;
-      flacenc->channels = 0;
-      flacenc->depth = 0;
-      flacenc->sample_rate = 0;
-      if (flacenc->meta) {
-        FLAC__metadata_object_delete (flacenc->meta[0]);
-
-        if (flacenc->meta[1])
-          FLAC__metadata_object_delete (flacenc->meta[1]);
-
-        g_free (flacenc->meta);
-        flacenc->meta = NULL;
-      }
-      g_list_foreach (flacenc->headers, (GFunc) gst_mini_object_unref, NULL);
-      g_list_free (flacenc->headers);
-      flacenc->headers = NULL;
-      flacenc->got_headers = FALSE;
-      flacenc->last_flow = GST_FLOW_OK;
-      break;
-    case GST_STATE_CHANGE_READY_TO_NULL:
-    default:
-      break;
-  }
-
-  return ret;
 }

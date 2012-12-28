@@ -16,7 +16,7 @@
 #define __GST_RTP_CELT_DEPAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertpdepayload.h>
+#include <gst/rtp/gstrtpbasedepayload.h>
 
 G_BEGIN_DECLS
 
@@ -36,13 +36,16 @@ typedef struct _GstRtpCELTDepayClass GstRtpCELTDepayClass;
 
 struct _GstRtpCELTDepay
 {
-  GstBaseRTPDepayload depayload;
+  GstRTPBaseDepayload depayload;
+  gint frame_size;
 };
 
 struct _GstRtpCELTDepayClass
 {
-  GstBaseRTPDepayloadClass parent_class;
+  GstRTPBaseDepayloadClass parent_class;
 };
+
+GType gst_rtp_celt_depay_get_type (void);
 
 gboolean gst_rtp_celt_depay_plugin_init (GstPlugin * plugin);
 

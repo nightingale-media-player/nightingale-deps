@@ -1,45 +1,38 @@
-# noinst_LTLIBRARIES = libgstvideoexample.la
-plugin_LTLIBRARIES = libgstvideoflip.la libgstvideobalance.la libgstgamma.la
+plugin_LTLIBRARIES = libgstvideofilter.la
 
-noinst_HEADERS = gstvideoflip.h gstvideobalance.h gstgamma.h
+noinst_HEADERS = gstvideoflip.h gstvideobalance.h gstgamma.h gstvideomedian.h
 
 EXTRA_DIST = gstvideotemplate.c make_filter
 CLEANFILES = gstvideoexample.c
 
-# libgstvideoexample_la_SOURCES = gstvideoexample.c
-# libgstvideoexample_la_CFLAGS = $(GST_CFLAGS)
-# libgstvideoexample_la_LIBADD = libgstvideofilter-@GST_MAJORMINOR@.la $(GST_LIBS)
-# libgstvideoexample_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-# libgstvideoexample_la_LIBTOOLFLAGS = --tag=disable-static
-
-libgstvideoflip_la_SOURCES = gstvideoflip.c
-libgstvideoflip_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
-			    $(GST_PLUGINS_BASE_CFLAGS)
-libgstvideoflip_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) -lgstvideo-@GST_MAJORMINOR@ $(GST_BASE_LIBS) $(GST_LIBS)
-libgstvideoflip_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-libgstvideoflip_la_LIBTOOLFLAGS = --tag=disable-static
-
-libgstvideobalance_la_SOURCES = gstvideobalance.c
-libgstvideobalance_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
-			    $(GST_PLUGINS_BASE_CFLAGS) $(LIBOIL_CFLAGS)
-libgstvideobalance_la_LIBADD = \
-	$(GST_PLUGINS_BASE_LIBS) \
-	-lgstvideo-@GST_MAJORMINOR@ \
-	-lgstinterfaces-@GST_MAJORMINOR@ \
-	$(GST_BASE_LIBS) \
-	$(GST_LIBS) \
-    $(LIBOIL_LIBS)
-	$(LIBM)
-libgstvideobalance_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-libgstvideobalance_la_LIBTOOLFLAGS = --tag=disable-static
-
-libgstgamma_la_SOURCES = gstgamma.c
-libgstgamma_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
-			$(GST_PLUGINS_BASE_CFLAGS) $(LIBOIL_CFLAGS)
-libgstgamma_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) -lgstvideo-@GST_MAJORMINOR@ \
-			$(GST_BASE_LIBS) $(GST_LIBS) $(LIBOIL_LIBS)
-libgstgamma_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) $(LIBM)
-libgstgamma_la_LIBTOOLFLAGS = --tag=disable-static
+libgstvideofilter_la_SOURCES = plugin.c \
+			gstvideoflip.c \
+			gstvideobalance.c \
+			gstgamma.c \
+			gstvideomedian.c
+libgstvideofilter_la_CFLAGS = $(GST_CFLAGS) \
+			$(GST_BASE_CFLAGS) \
+			$(GST_PLUGINS_BASE_CFLAGS)
+libgstvideofilter_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) \
+			-lgstvideo-@GST_API_VERSION@ \
+			$(GST_BASE_LIBS) $(GST_LIBS)
+libgstvideofilter_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) $(LIBM)
+libgstvideofilter_la_LIBTOOLFLAGS = --tag=disable-static
 
 gstvideoexample.c: $(srcdir)/make_filter $(srcdir)/gstvideotemplate.c
 	$(srcdir)/make_filter Videoexample $(srcdir)/gstvideotemplate.c
+
+Android.mk: Makefile.am $(BUILT_SOURCES)
+	androgenizer \
+	-:PROJECT libgstvideofilter -:SHARED libgstvideofilter \
+	 -:TAGS eng debug \
+         -:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
+	 -:SOURCES $(libgstvideofilter_la_SOURCES) \
+	 	   $(nodist_libgstvideofilter_la_SOURCES) \
+	 -:CFLAGS $(DEFS) $(DEFAULT_INCLUDES) $(libgstvideofilter_la_CFLAGS) \
+	 -:LDFLAGS $(libgstvideofilter_la_LDFLAGS) \
+	           $(libgstvideofilter_la_LIBADD) \
+	           -ldl \
+	 -:PASSTHROUGH LOCAL_ARM_MODE:=arm \
+		       LOCAL_MODULE_PATH:='$$(TARGET_OUT)/lib/gstreamer-0.10' \
+	> $@

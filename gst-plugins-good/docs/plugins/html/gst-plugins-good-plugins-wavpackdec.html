@@ -3,16 +3,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>wavpackdec</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-waveformsink.html" title="waveformsink">
 <link rel="next" href="gst-plugins-good-plugins-wavpackenc.html" title="wavpackenc">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -20,18 +17,18 @@
 <td><a accesskey="p" href="gst-plugins-good-plugins-waveformsink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-wavpackenc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-wavpackdec.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-wavpackdec.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-wavpackdec.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-wavpackdec.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-wavpackdec.object-hierarchy" class="shortcut">Object Hierarchy</a>
 </td></tr>
 </table>
-<div class="refentry" title="wavpackdec">
+<div class="refentry">
 <a name="gst-plugins-good-plugins-wavpackdec"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -40,48 +37,28 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="gst-plugins-good-plugins-wavpackdec.synopsis"></a><h2>Synopsis</h2>
-<a name="GstWavpackDec"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-good-plugins-wavpackdec.html#GstWavpackDec-struct" title="GstWavpackDec">GstWavpackDec</a>;
+<a name="GstWavpackDec"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-wavpackdec.html#GstWavpackDec-struct" title="struct GstWavpackDec">GstWavpackDec</a>;
 </pre>
 </div>
-<div class="refsect1" title="Object Hierarchy">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-wavpackdec.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----GstWavpackDec
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstaudiodecoder.html#GstAudioDecoder">GstAudioDecoder</a>
+                           +----GstWavpackDec
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-wavpackdec.description"></a><h2>Description</h2>
-<p>
-WavpackDec decodes framed (for example by the WavpackParse element)
-Wavpack streams and decodes them to raw audio.
-<a class="ulink" href="http://www.wavpack.com/" target="_top">Wavpack</a> is an open-source
-audio codec that features both lossless and lossy encoding.
-</p>
-<p>
-</p>
-<div class="refsect2" title="Example launch line">
-<a name="id599194"></a><h3>Example launch line</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch filesrc location=test.wv ! wavpackparse ! wavpackdec ! audioconvert ! audioresample ! autoaudiosink
-</pre></div> This pipeline decodes the Wavpack file test.wv into raw audio buffers and
-tries to play it back using an automatically found audio sink.
-</div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" title="Element Information">
-<a name="id585491"></a><h3>Element Information</h3>
+<div class="refsect2">
+<a name="idp23290400"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -103,8 +80,8 @@ tries to play it back using an automatically found audio sink.
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="Element Pads">
-<a name="id603655"></a><h3>Element Pads</h3>
+<div class="refsect2">
+<a name="idp22801472"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -122,7 +99,7 @@ tries to play it back using an automatically found audio sink.
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>audio/x-wavpack, width=(int)[ 1, 32 ], channels=(int)[ 1, 8 ], rate=(int)[ 6000, 192000 ], framed=(boolean)true</td>
+<td>audio/x-wavpack, depth=(int)[ 1, 32 ], channels=(int)[ 1, 8 ], rate=(int)[ 6000, 192000 ], framed=(boolean)true</td>
 </tr>
 </tbody>
 </table></div>
@@ -143,7 +120,15 @@ tries to play it back using an automatically found audio sink.
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>audio/x-raw-int, width=(int)32, depth=(int)[ 1, 32 ], channels=(int)[ 1, 8 ], rate=(int)[ 6000, 192000 ], endianness=(int)1234, signed=(boolean)true</td>
+<td>audio/x-raw, format=(string)S8, layout=(string)interleaved, channels=(int)[ 1, 8 ], rate=(int)[ 6000, 192000 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw, format=(string)S16LE, layout=(string)interleaved, channels=(int)[ 1, 8 ], rate=(int)[ 6000, 192000 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw, format=(string)S32LE, layout=(string)interleaved, channels=(int)[ 1, 8 ], rate=(int)[ 6000, 192000 ]</td>
 </tr>
 </tbody>
 </table></div>
@@ -152,11 +137,11 @@ tries to play it back using an automatically found audio sink.
 <p>
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-wavpackdec.details"></a><h2>Details</h2>
-<div class="refsect2" title="GstWavpackDec">
-<a name="GstWavpackDec-struct"></a><h3>GstWavpackDec</h3>
-<pre class="programlisting">typedef struct _GstWavpackDec GstWavpackDec;</pre>
+<div class="refsect2">
+<a name="GstWavpackDec-struct"></a><h3>struct GstWavpackDec</h3>
+<pre class="programlisting">struct GstWavpackDec;</pre>
 <p>
 </p>
 </div>
@@ -164,6 +149,6 @@ tries to play it back using an automatically found audio sink.
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

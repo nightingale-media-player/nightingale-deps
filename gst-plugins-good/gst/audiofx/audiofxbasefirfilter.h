@@ -27,6 +27,7 @@
 
 #include <gst/gst.h>
 #include <gst/audio/gstaudiofilter.h>
+#include <gst/fft/gstfftf64.h>
 
 G_BEGIN_DECLS
 
@@ -44,7 +45,7 @@ G_BEGIN_DECLS
 typedef struct _GstAudioFXBaseFIRFilter GstAudioFXBaseFIRFilter;
 typedef struct _GstAudioFXBaseFIRFilterClass GstAudioFXBaseFIRFilterClass;
 
-typedef void (*GstAudioFXBaseFIRFilterProcessFunc) (GstAudioFXBaseFIRFilter *, guint8 *, guint8 *, guint);
+typedef guint (*GstAudioFXBaseFIRFilterProcessFunc) (GstAudioFXBaseFIRFilter *, const guint8 *, guint8 *, guint);
 
 /**
  * GstAudioFXBaseFIRFilter:
@@ -54,18 +55,37 @@ typedef void (*GstAudioFXBaseFIRFilterProcessFunc) (GstAudioFXBaseFIRFilter *, g
 struct _GstAudioFXBaseFIRFilter {
   GstAudioFilter element;
 
+  /* properties */
+  gdouble *kernel;              /* filter kernel -- time domain */
+  guint kernel_length;          /* length of the filter kernel -- time domain */
+
+  guint64 latency;              /* pre-latency of the filter kernel */
+  gboolean low_latency;         /* work in slower low latency mode */
+
+  gboolean drain_on_changes;    /* If the filter should be drained when
+                                 * coeficients change */
+
   /* < private > */
   GstAudioFXBaseFIRFilterProcessFunc process;
 
-  gdouble *kernel;              /* filter kernel */
-  guint kernel_length;           /* length of the filter kernel */
-  gdouble *residue;             /* buffer for left-over samples from previous buffer */
-  guint residue_length;
+  gdouble *buffer;              /* buffer for storing samples of previous buffers */
+  guint buffer_fill;            /* fill level of buffer */
+  guint buffer_length;          /* length of the buffer -- meaning depends on processing mode */
 
-  guint64 latency;
+  /* FFT convolution specific data */
+  GstFFTF64 *fft;
+  GstFFTF64 *ifft;
+  GstFFTF64Complex *frequency_response;  /* filter kernel -- frequency domain */
+  guint frequency_response_length;       /* length of filter kernel -- frequency domain */
+  GstFFTF64Complex *fft_buffer;          /* FFT buffer, has the length of the frequency response */
+  guint block_length;                    /* Length of the processing blocks -- time domain */
 
-  GstClockTime next_ts;
-  guint64 next_off;
+  GstClockTime start_ts;        /* start timestamp after a discont */
+  guint64 start_off;            /* start offset after a discont */
+  guint64 nsamples_out;         /* number of output samples since last discont */
+  guint64 nsamples_in;          /* number of input samples since last discont */
+
+  GMutex lock;
 };
 
 struct _GstAudioFXBaseFIRFilterClass {
@@ -73,7 +93,8 @@ struct _GstAudioFXBaseFIRFilterClass {
 };
 
 GType gst_audio_fx_base_fir_filter_get_type (void);
-void gst_audio_fx_base_fir_filter_set_kernel (GstAudioFXBaseFIRFilter *filter, gdouble *kernel, guint kernel_length, guint64 latency);
+void gst_audio_fx_base_fir_filter_set_kernel (GstAudioFXBaseFIRFilter *filter, gdouble *kernel,
+                                              guint kernel_length, guint64 latency, const GstAudioInfo * info);
 void gst_audio_fx_base_fir_filter_push_residue (GstAudioFXBaseFIRFilter *filter);
 
 G_END_DECLS

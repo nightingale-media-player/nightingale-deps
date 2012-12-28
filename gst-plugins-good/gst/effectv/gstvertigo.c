@@ -29,7 +29,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch -v videotestsrc ! vertigotv ! ffmpegcolorspace ! autovideosink
+ * gst-launch-1.0 -v videotestsrc ! vertigotv ! videoconvert ! autovideosink
  * ]| This pipeline shows the effect of vertigotv on a test stream.
  * </refsect2>
  */
@@ -43,10 +43,8 @@
 
 #include "gstvertigo.h"
 
-#include <gst/video/video.h>
-
-GST_BOILERPLATE (GstVertigoTV, gst_vertigotv, GstVideoFilter,
-    GST_TYPE_VIDEO_FILTER);
+#define gst_vertigotv_parent_class parent_class
+G_DEFINE_TYPE (GstVertigoTV, gst_vertigotv, GST_TYPE_VIDEO_FILTER);
 
 /* Filter signals and args */
 enum
@@ -57,9 +55,9 @@ enum
 };
 
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
-#define CAPS_STR GST_VIDEO_CAPS_RGBx ";" GST_VIDEO_CAPS_BGRx
+#define CAPS_STR GST_VIDEO_CAPS_MAKE ("{ RGBx, BGRx }")
 #else
-#define CAPS_STR GST_VIDEO_CAPS_xRGB ";" GST_VIDEO_CAPS_xBGR
+#define CAPS_STR GST_VIDEO_CAPS_MAKE ("{ xRGB, xBGR }")
 #endif
 
 static GstStaticPadTemplate gst_vertigotv_src_template =
@@ -77,30 +75,25 @@ GST_STATIC_PAD_TEMPLATE ("sink",
     );
 
 static gboolean
-gst_vertigotv_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
-    GstCaps * outcaps)
+gst_vertigotv_set_info (GstVideoFilter * vfilter, GstCaps * incaps,
+    GstVideoInfo * in_info, GstCaps * outcaps, GstVideoInfo * out_info)
 {
-  GstVertigoTV *filter = GST_VERTIGOTV (btrans);
-  GstStructure *structure;
-  gboolean ret = FALSE;
+  GstVertigoTV *filter = GST_VERTIGOTV (vfilter);
+  gint area, width, height;
 
-  structure = gst_caps_get_structure (incaps, 0);
+  width = GST_VIDEO_INFO_WIDTH (in_info);
+  height = GST_VIDEO_INFO_HEIGHT (in_info);
 
-  if (gst_structure_get_int (structure, "width", &filter->width) &&
-      gst_structure_get_int (structure, "height", &filter->height)) {
-    gint area = filter->width * filter->height;
+  area = width * height;
 
-    g_free (filter->buffer);
-    filter->buffer = (guint32 *) g_malloc0 (area * 2 * sizeof (guint32));
+  g_free (filter->buffer);
+  filter->buffer = (guint32 *) g_malloc0 (area * 2 * sizeof (guint32));
 
-    filter->current_buffer = filter->buffer;
-    filter->alt_buffer = filter->buffer + area;
-    filter->phase = 0;
+  filter->current_buffer = filter->buffer;
+  filter->alt_buffer = filter->buffer + area;
+  filter->phase = 0;
 
-    ret = TRUE;
-  }
-
-  return ret;
+  return TRUE;
 }
 
 static void
@@ -110,15 +103,22 @@ gst_vertigotv_set_parms (GstVertigoTV * filter)
   double t;
   double x, y;
   double dizz;
+  gint width, height;
+  GstVideoInfo *info;
 
   dizz = sin (filter->phase) * 10 + sin (filter->phase * 1.9 + 5) * 5;
 
-  x = filter->width / 2;
-  y = filter->height / 2;
+  info = &GST_VIDEO_FILTER (filter)->in_info;
+
+  width = GST_VIDEO_INFO_WIDTH (info);
+  height = GST_VIDEO_INFO_HEIGHT (info);
+
+  x = width / 2;
+  y = height / 2;
 
   t = (x * x + y * y) * filter->zoomrate;
 
-  if (filter->width > filter->height) {
+  if (width > height) {
     if (dizz >= 0) {
       if (dizz > x)
         dizz = x;
@@ -152,30 +152,47 @@ gst_vertigotv_set_parms (GstVertigoTV * filter)
 }
 
 static GstFlowReturn
-gst_vertigotv_transform (GstBaseTransform * trans, GstBuffer * in,
-    GstBuffer * out)
+gst_vertigotv_transform_frame (GstVideoFilter * vfilter,
+    GstVideoFrame * in_frame, GstVideoFrame * out_frame)
 {
-  GstVertigoTV *filter = GST_VERTIGOTV (trans);
+  GstVertigoTV *filter = GST_VERTIGOTV (vfilter);
   guint32 *src, *dest, *p;
   guint32 v;
-  gint x, y, ox, oy, i, width, height, area;
-  GstFlowReturn ret = GST_FLOW_OK;
+  gint x, y, ox, oy, i, width, height, area, sstride, dstride;
+  GstClockTime timestamp, stream_time;
 
-  src = (guint32 *) GST_BUFFER_DATA (in);
-  dest = (guint32 *) GST_BUFFER_DATA (out);
+  timestamp = GST_BUFFER_TIMESTAMP (in_frame->buffer);
+  stream_time =
+      gst_segment_to_stream_time (&GST_BASE_TRANSFORM (filter)->segment,
+      GST_FORMAT_TIME, timestamp);
 
-  width = filter->width;
-  height = filter->height;
+  GST_DEBUG_OBJECT (filter, "sync to %" GST_TIME_FORMAT,
+      GST_TIME_ARGS (timestamp));
+
+  if (GST_CLOCK_TIME_IS_VALID (stream_time))
+    gst_object_sync_values (GST_OBJECT (filter), stream_time);
+
+  src = GST_VIDEO_FRAME_PLANE_DATA (in_frame, 0);
+  sstride = GST_VIDEO_FRAME_PLANE_STRIDE (in_frame, 0);
+  dest = GST_VIDEO_FRAME_PLANE_DATA (out_frame, 0);
+  dstride = GST_VIDEO_FRAME_PLANE_STRIDE (out_frame, 0);
+
+  width = GST_VIDEO_FRAME_WIDTH (in_frame);
+  height = GST_VIDEO_FRAME_HEIGHT (in_frame);
+
   area = width * height;
+
+  sstride /= 4;
+  dstride /= 4;
 
   gst_vertigotv_set_parms (filter);
   p = filter->alt_buffer;
 
-  for (y = height; y > 0; y--) {
+  for (y = 0; y < height; y++) {
     ox = filter->sx;
     oy = filter->sy;
 
-    for (x = width; x > 0; x--) {
+    for (x = 0; x < width; x++) {
       i = (oy >> 16) * width + (ox >> 16);
       if (i < 0)
         i = 0;
@@ -183,23 +200,24 @@ gst_vertigotv_transform (GstBaseTransform * trans, GstBuffer * in,
         i = area;
 
       v = filter->current_buffer[i] & 0xfcfcff;
-      v = (v * 3) + ((*src++) & 0xfcfcff);
+      v = (v * 3) + (src[x] & 0xfcfcff);
 
-      *p++ = (v >> 2);
+      *p++ = dest[x] = (v >> 2);
       ox += filter->dx;
       oy += filter->dy;
     }
     filter->sx -= filter->dy;
     filter->sy += filter->dx;
-  }
 
-  memcpy (dest, filter->alt_buffer, area * sizeof (guint32));
+    src += sstride;
+    dest += dstride;
+  }
 
   p = filter->current_buffer;
   filter->current_buffer = filter->alt_buffer;
   filter->alt_buffer = p;
 
-  return ret;
+  return GST_FLOW_OK;
 }
 
 static gboolean
@@ -218,6 +236,7 @@ gst_vertigotv_set_property (GObject * object, guint prop_id,
 {
   GstVertigoTV *filter = GST_VERTIGOTV (object);
 
+  GST_OBJECT_LOCK (filter);
   switch (prop_id) {
     case PROP_SPEED:
       filter->phase_increment = g_value_get_float (value);
@@ -228,6 +247,7 @@ gst_vertigotv_set_property (GObject * object, guint prop_id,
     default:
       break;
   }
+  GST_OBJECT_UNLOCK (filter);
 }
 
 static void
@@ -261,26 +281,12 @@ gst_vertigotv_finalize (GObject * object)
 }
 
 static void
-gst_vertigotv_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_set_details_simple (element_class, "VertigoTV effect",
-      "Filter/Effect/Video",
-      "A loopback alpha blending effector with rotating and scaling",
-      "Wim Taymans <wim.taymans@chello.be>");
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_vertigotv_sink_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_vertigotv_src_template));
-}
-
-static void
 gst_vertigotv_class_init (GstVertigoTVClass * klass)
 {
   GObjectClass *gobject_class = (GObjectClass *) klass;
+  GstElementClass *gstelement_class = (GstElementClass *) klass;
   GstBaseTransformClass *trans_class = (GstBaseTransformClass *) klass;
+  GstVideoFilterClass *vfilter_class = (GstVideoFilterClass *) klass;
 
   gobject_class->set_property = gst_vertigotv_set_property;
   gobject_class->get_property = gst_vertigotv_get_property;
@@ -294,19 +300,28 @@ gst_vertigotv_class_init (GstVertigoTVClass * klass)
           "Control the rate of zooming", 1.01, 1.1, 1.01,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+  gst_element_class_set_static_metadata (gstelement_class, "VertigoTV effect",
+      "Filter/Effect/Video",
+      "A loopback alpha blending effector with rotating and scaling",
+      "Wim Taymans <wim.taymans@gmail.be>");
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_vertigotv_sink_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_vertigotv_src_template));
+
   trans_class->start = GST_DEBUG_FUNCPTR (gst_vertigotv_start);
-  trans_class->set_caps = GST_DEBUG_FUNCPTR (gst_vertigotv_set_caps);
-  trans_class->transform = GST_DEBUG_FUNCPTR (gst_vertigotv_transform);
+
+  vfilter_class->set_info = GST_DEBUG_FUNCPTR (gst_vertigotv_set_info);
+  vfilter_class->transform_frame =
+      GST_DEBUG_FUNCPTR (gst_vertigotv_transform_frame);
 }
 
 static void
-gst_vertigotv_init (GstVertigoTV * filter, GstVertigoTVClass * klass)
+gst_vertigotv_init (GstVertigoTV * filter)
 {
   filter->buffer = NULL;
   filter->phase = 0.0;
   filter->phase_increment = 0.02;
   filter->zoomrate = 1.01;
-
-  gst_pad_use_fixed_caps (GST_BASE_TRANSFORM_SRC_PAD (filter));
-  gst_pad_use_fixed_caps (GST_BASE_TRANSFORM_SINK_PAD (filter));
 }

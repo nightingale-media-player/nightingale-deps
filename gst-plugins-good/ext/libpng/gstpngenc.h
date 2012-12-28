@@ -1,5 +1,7 @@
 /* GStreamer
  * Copyright (C) <1999> Erik Walthinsen <omega@cse.ogi.edu>
+ * Copyright (C) 2012 Collabora Ltd.
+ *	Author : Edward Hervey <edward@collabora.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -22,6 +24,7 @@
 #define __GST_PNGENC_H__
 
 #include <gst/gst.h>
+#include <gst/video/gstvideoencoder.h>
 #include <png.h>
 
 #ifdef __cplusplus
@@ -40,19 +43,16 @@ typedef struct _GstPngEncClass GstPngEncClass;
 
 struct _GstPngEnc
 {
-  GstElement element;
+  GstVideoEncoder parent;
 
-  GstPad *sinkpad, *srcpad;
+  GstVideoCodecState *input_state;
   GstBuffer *buffer_out;
-  guint written;
 
   png_structp png_struct_ptr;
   png_infop png_info_ptr;
 
-  gint width;
-  gint height;
-  gint bpp;
-  gint stride;
+  gint png_color_type;
+  gint depth;
   guint compression_level;
 
   gboolean snapshot;
@@ -61,7 +61,7 @@ struct _GstPngEnc
 
 struct _GstPngEncClass
 {
-  GstElementClass parent_class;
+  GstVideoEncoderClass parent_class;
 };
 
 GType gst_pngenc_get_type(void);

@@ -29,13 +29,6 @@
 GST_DEBUG_CATEGORY (rtpsv3vdepay_debug);
 #define GST_CAT_DEFAULT rtpsv3vdepay_debug
 
-/* elementfactory information */
-static const GstElementDetails gst_rtp_sv3vdepay_details =
-GST_ELEMENT_DETAILS ("RTP SVQ3 depayloader",
-    "Codec/Depayloader/Network",
-    "Extracts SVQ3 video from RTP packets (no RFC)",
-    "Wim Taymans <wim.taymans@gmail.com>");
-
 static GstStaticPadTemplate gst_rtp_sv3v_depay_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -54,57 +47,51 @@ GST_STATIC_PAD_TEMPLATE ("sink",
         "encoding-name = (string) { \"X-SV3V-ES\", \"X-SORENSON-VIDEO\" , \"X-SORENSONVIDEO\" , \"X-SorensonVideo\" }")
     );
 
-GST_BOILERPLATE (GstRtpSV3VDepay, gst_rtp_sv3v_depay, GstBaseRTPDepayload,
-    GST_TYPE_BASE_RTP_DEPAYLOAD);
+#define gst_rtp_sv3v_depay_parent_class parent_class
+G_DEFINE_TYPE (GstRtpSV3VDepay, gst_rtp_sv3v_depay,
+    GST_TYPE_RTP_BASE_DEPAYLOAD);
 
 static void gst_rtp_sv3v_depay_finalize (GObject * object);
 
 static GstStateChangeReturn gst_rtp_sv3v_depay_change_state (GstElement *
     element, GstStateChange transition);
 
-static GstBuffer *gst_rtp_sv3v_depay_process (GstBaseRTPDepayload * depayload,
+static GstBuffer *gst_rtp_sv3v_depay_process (GstRTPBaseDepayload * depayload,
     GstBuffer * buf);
-gboolean gst_rtp_sv3v_depay_setcaps (GstBaseRTPDepayload * filter,
+gboolean gst_rtp_sv3v_depay_setcaps (GstRTPBaseDepayload * filter,
     GstCaps * caps);
-
-static void
-gst_rtp_sv3v_depay_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_sv3v_depay_src_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_sv3v_depay_sink_template));
-
-
-  gst_element_class_set_details (element_class, &gst_rtp_sv3vdepay_details);
-}
 
 static void
 gst_rtp_sv3v_depay_class_init (GstRtpSV3VDepayClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
-  GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
+  GstRTPBaseDepayloadClass *gstrtpbasedepayload_class;
 
   gobject_class = (GObjectClass *) klass;
   gstelement_class = (GstElementClass *) klass;
-  gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
+  gstrtpbasedepayload_class = (GstRTPBaseDepayloadClass *) klass;
 
-  parent_class = g_type_class_peek_parent (klass);
-
-  gstbasertpdepayload_class->process = gst_rtp_sv3v_depay_process;
-  gstbasertpdepayload_class->set_caps = gst_rtp_sv3v_depay_setcaps;
+  gstrtpbasedepayload_class->process = gst_rtp_sv3v_depay_process;
+  gstrtpbasedepayload_class->set_caps = gst_rtp_sv3v_depay_setcaps;
 
   gobject_class->finalize = gst_rtp_sv3v_depay_finalize;
 
   gstelement_class->change_state = gst_rtp_sv3v_depay_change_state;
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_sv3v_depay_src_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_sv3v_depay_sink_template));
+
+  gst_element_class_set_static_metadata (gstelement_class,
+      "RTP SVQ3 depayloader", "Codec/Depayloader/Network/RTP",
+      "Extracts SVQ3 video from RTP packets (no RFC)",
+      "Wim Taymans <wim.taymans@gmail.com>");
 }
 
 static void
-gst_rtp_sv3v_depay_init (GstRtpSV3VDepay * rtpsv3vdepay,
-    GstRtpSV3VDepayClass * klass)
+gst_rtp_sv3v_depay_init (GstRtpSV3VDepay * rtpsv3vdepay)
 {
   rtpsv3vdepay->adapter = gst_adapter_new ();
 }
@@ -122,15 +109,15 @@ gst_rtp_sv3v_depay_finalize (GObject * object)
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-// only on the sink
+/* only on the sink */
 gboolean
-gst_rtp_sv3v_depay_setcaps (GstBaseRTPDepayload * filter, GstCaps * caps)
+gst_rtp_sv3v_depay_setcaps (GstRTPBaseDepayload * filter, GstCaps * caps)
 {
   GstStructure *structure = gst_caps_get_structure (caps, 0);
   gint clock_rate;
 
   if (!gst_structure_get_int (structure, "clock-rate", &clock_rate))
-    clock_rate = 90000;         // default
+    clock_rate = 90000;         /* default */
   filter->clock_rate = clock_rate;
 
   /* will set caps later */
@@ -139,7 +126,7 @@ gst_rtp_sv3v_depay_setcaps (GstBaseRTPDepayload * filter, GstCaps * caps)
 }
 
 static GstBuffer *
-gst_rtp_sv3v_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
+gst_rtp_sv3v_depay_process (GstRTPBaseDepayload * depayload, GstBuffer * buf)
 {
   GstRtpSV3VDepay *rtpsv3vdepay;
   static struct
@@ -161,11 +148,14 @@ gst_rtp_sv3v_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   gboolean C, S, E;
   GstBuffer *outbuf = NULL;
   guint16 seq;
+  GstRTPBuffer rtp = { NULL };
 
   rtpsv3vdepay = GST_RTP_SV3V_DEPAY (depayload);
 
+  gst_rtp_buffer_map (buf, GST_MAP_READ, &rtp);
+
   /* flush on sequence number gaps */
-  seq = gst_rtp_buffer_get_seq (buf);
+  seq = gst_rtp_buffer_get_seq (&rtp);
 
   GST_DEBUG ("timestamp %" GST_TIME_FORMAT ", sequence number:%d",
       GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)), seq);
@@ -176,13 +166,13 @@ gst_rtp_sv3v_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   }
   rtpsv3vdepay->nextseq = seq + 1;
 
-  payload_len = gst_rtp_buffer_get_payload_len (buf);
+  payload_len = gst_rtp_buffer_get_payload_len (&rtp);
   if (payload_len < 3)
     goto bad_packet;
 
-  payload = gst_rtp_buffer_get_payload (buf);
+  payload = gst_rtp_buffer_get_payload (&rtp);
 
-  M = gst_rtp_buffer_get_marker (buf);
+  M = gst_rtp_buffer_get_marker (&rtp);
 
   /* This is all a guess:
    *                      1 1 1 1 1 1
@@ -210,13 +200,15 @@ gst_rtp_sv3v_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   if (G_UNLIKELY (C)) {
     GstCaps *caps;
     GstBuffer *codec_data;
+    GstMapInfo cmap;
     guint8 res;
 
     GST_DEBUG ("Configuration packet");
 
     /* if we already have caps, we don't need to do anything. FIXME, check if
      * something changed. */
-    if (G_UNLIKELY (GST_PAD_CAPS (GST_BASE_RTP_DEPAYLOAD_SRCPAD (depayload)))) {
+    if (G_UNLIKELY (gst_pad_has_current_caps (GST_RTP_BASE_DEPAYLOAD_SRCPAD
+                (depayload)))) {
       GST_DEBUG ("Already configured, skipping config parsing");
       goto beach;
     }
@@ -237,19 +229,19 @@ gst_rtp_sv3v_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
     /* CodecData needs to be 'SEQH' + len (32bit) + data according to
      * ffmpeg's libavcodec/svq3.c:svq3_decode_init */
     codec_data = gst_buffer_new_and_alloc (payload_len + 6);
-    memcpy (GST_BUFFER_DATA (codec_data), "SEQH", 4);
-    GST_WRITE_UINT32_LE (GST_BUFFER_DATA (codec_data) + 4, payload_len - 2);
-    memcpy (GST_BUFFER_DATA (codec_data) + 8, payload + 2, payload_len - 2);
-
-    GST_MEMDUMP ("codec_data", GST_BUFFER_DATA (codec_data),
-        GST_BUFFER_SIZE (codec_data));
+    gst_buffer_map (codec_data, &cmap, GST_MAP_WRITE);
+    memcpy (cmap.data, "SEQH", 4);
+    GST_WRITE_UINT32_LE (cmap.data + 4, payload_len - 2);
+    memcpy (cmap.data + 8, payload + 2, payload_len - 2);
+    GST_MEMDUMP ("codec_data", cmap.data, gst_buffer_get_size (codec_data));
+    gst_buffer_unmap (codec_data, &cmap);
 
     caps = gst_caps_new_simple ("video/x-svq",
         "svqversion", G_TYPE_INT, 3,
         "width", G_TYPE_INT, rtpsv3vdepay->width,
         "height", G_TYPE_INT, rtpsv3vdepay->height,
         "codec_data", GST_TYPE_BUFFER, codec_data, NULL);
-    gst_pad_set_caps (GST_BASE_RTP_DEPAYLOAD_SRCPAD (depayload), caps);
+    gst_pad_set_caps (GST_RTP_BASE_DEPAYLOAD_SRCPAD (depayload), caps);
     gst_caps_unref (caps);
 
     GST_DEBUG ("Depayloader now configured");
@@ -264,7 +256,7 @@ gst_rtp_sv3v_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 
     GST_DEBUG ("Storing incoming payload");
     /* store data in adapter, stip off 2 bytes header */
-    tmpbuf = gst_rtp_buffer_get_payload_subbuffer (buf, 2, -1);
+    tmpbuf = gst_rtp_buffer_get_payload_subbuffer (&rtp, 2, -1);
     gst_adapter_push (rtpsv3vdepay->adapter, tmpbuf);
 
     if (G_UNLIKELY (M)) {
@@ -278,6 +270,7 @@ gst_rtp_sv3v_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   }
 
 beach:
+  gst_rtp_buffer_unmap (&rtp);
   return outbuf;
 
   /* ERRORS */
@@ -285,6 +278,7 @@ bad_packet:
   {
     GST_ELEMENT_WARNING (rtpsv3vdepay, STREAM, DECODE,
         (NULL), ("Packet was too short"));
+    gst_rtp_buffer_unmap (&rtp);
     return NULL;
   }
 }
@@ -326,5 +320,5 @@ gst_rtp_sv3v_depay_plugin_init (GstPlugin * plugin)
       "RTP SV3V depayloader");
 
   return gst_element_register (plugin, "rtpsv3vdepay",
-      GST_RANK_MARGINAL, GST_TYPE_RTP_SV3V_DEPAY);
+      GST_RANK_SECONDARY, GST_TYPE_RTP_SV3V_DEPAY);
 }

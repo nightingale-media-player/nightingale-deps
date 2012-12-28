@@ -36,10 +36,10 @@ win32-check-crlf:
 # (don't care about other unixes for now, it's enough if it works on one of
 # the linux build bots; we assume .so )
 check-exports:
-	fail=0 ; \
+	@fail=0 ; \
 	for l in $(win32defs); do \
 	  libbase=`basename "$$l" ".def"`; \
-	  libso=`find "$(top_builddir)" -name "$$libbase-@GST_MAJORMINOR@.so" | grep -v /_build/ | head -n1`; \
+	  libso=`find "$(top_builddir)" -name "$$libbase-@GST_API_VERSION@.so" | grep -v /_build/ | head -n1`; \
 	  libdef="$(top_srcdir)/win32/common/$$libbase.def"; \
 	  if test "x$$libso" != "x"; then \
 	    echo Checking symbols in $$libso; \
@@ -56,6 +56,16 @@ check-exports:
 	fi; \
 	exit $$fail
 
+# complain about nonportable printf format strings (%lld, %llu, %zu etc.)
+check-nonportable-print-format:
+	@fail=0 ; \
+	loc=`find "$(top_srcdir)" -name '*.c' | xargs grep -n -e '%[0-9]*ll[udx]' -e '%[0-9]*z[udx]'`; \
+	if test "x$$loc" != "x"; then \
+	  echo "Please fix the following print format strings:" ; \
+	  find "$(top_srcdir)" -name '*.c' | xargs grep -n -e '%[0-9]*ll[udx]' -e '%[0-9]*z[udx]'; \
+	  fail=1; \
+	fi; \
+	exit $$fail
 
 dist-hook: check-exports win32-check-crlf
 

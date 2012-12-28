@@ -23,6 +23,7 @@
 #include <gst/gst.h>
 
 #include "rtpsession.h"
+#include "rtpjitterbuffer.h"
 
 #define GST_TYPE_RTP_BIN \
   (gst_rtp_bin_get_type())
@@ -44,8 +45,18 @@ struct _GstRtpBin {
 
   /*< private >*/
   /* default latency for sessions */
-  guint           latency;
+  guint           latency_ms;
+  guint64         latency_ns;
+  gboolean        drop_on_latency;
   gboolean        do_lost;
+  gboolean        ignore_pt;
+  gboolean        ntp_sync;
+  gint            rtcp_sync;
+  guint           rtcp_sync_interval;
+  RTPJitterBufferMode buffer_mode;
+  gboolean        buffering;
+  gboolean        use_pipeline_clock;
+  GstClockTime    buffer_start;
   /* a list of session */
   GSList         *sessions;
 
@@ -64,6 +75,8 @@ struct _GstRtpBinClass {
 
   /* get the caps for pt */
   GstCaps*    (*request_pt_map)       (GstRtpBin *rtpbin, guint session, guint pt);
+
+  void        (*payload_type_change)  (GstRtpBin *rtpbin, guint session, guint pt);
 
   /* action signals */
   void        (*clear_pt_map)         (GstRtpBin *rtpbin);

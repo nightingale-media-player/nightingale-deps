@@ -3,16 +3,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>videomixer</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-videoflip.html" title="videoflip">
-<link rel="next" href="gst-plugins-good-plugins-warptv.html" title="warptv">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="next" href="gst-plugins-good-plugins-vp8dec.html" title="vp8dec">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -20,22 +17,16 @@
 <td><a accesskey="p" href="gst-plugins-good-plugins-videoflip.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-warptv.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-good-plugins-vp8dec.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-videomixer.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-videomixer.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-videomixer.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-videomixer.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-videomixer.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-videomixer.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry" title="videomixer">
+<div class="refentry">
 <a name="gst-plugins-good-plugins-videomixer"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -44,46 +35,14 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="gst-plugins-good-plugins-videomixer.synopsis"></a><h2>Synopsis</h2>
-<a name="GstVideoMixer"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-good-plugins-videomixer.html#GstVideoMixer-struct" title="GstVideoMixer">GstVideoMixer</a>;
-enum                <a class="link" href="gst-plugins-good-plugins-videomixer.html#GstVideoMixerBackground" title="enum GstVideoMixerBackground">GstVideoMixerBackground</a>;
-</pre>
+<pre class="synopsis"></pre>
 </div>
-<div class="refsect1" title="Object Hierarchy">
-<a name="gst-plugins-good-plugins-videomixer.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----GstVideoMixer
-</pre>
-</div>
-<div class="refsect1" title="Implemented Interfaces">
-<a name="gst-plugins-good-plugins-videomixer.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
-<p>
-GstVideoMixer implements
- <a
-href="../gstreamer-0.10/GstChildProxy.html"
->GstChildProxy</a>.</p>
-</div>
-<div class="refsect1" title="Properties">
-<a name="gst-plugins-good-plugins-videomixer.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-videomixer.html#GstVideoMixer--background" title='The "background" property'>background</a>"               <a class="link" href="gst-plugins-good-plugins-videomixer.html#GstVideoMixerBackground" title="enum GstVideoMixerBackground">GstVideoMixerBackground</a>  : Read / Write
-</pre>
-</div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-videomixer.description"></a><h2>Description</h2>
 <p>
-Videomixer can accept AYUV, ARGB and BGRA video streams. For each of the requested
+Videomixer2 can accept AYUV, ARGB and BGRA video streams. For each of the requested
 sink pads it will compare the incoming geometry and framerate to define the
 output parameters. Indeed output video frames will have the geometry of the
 biggest incoming video stream and the framerate of the fastest incoming one.
@@ -95,32 +54,113 @@ No colorspace conversion is done.
 </p>
 <p>
 Individual parameters for each input stream can be configured on the
-<a class="link" href="GstVideoMixerPad.html" title="GstVideoMixerPad"><span class="type">GstVideoMixerPad</span></a>.
+<span class="type">GstVideoMixer2Pad</span>.
 </p>
 <p>
 </p>
-<div class="refsect2" title="Sample pipelines">
-<a name="id589075"></a><h3>Sample pipelines</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch videotestsrc pattern=1 ! video/x-raw-yuv, framerate=\(fraction\)10/1, width=100, height=100 ! videobox border-alpha=0 alpha=0.5 top=-70 bottom=-70 right=-220 ! videomixer name=mix ! ffmpegcolorspace ! xvimagesink videotestsrc ! video/x-raw-yuv, framerate=\(fraction\)5/1, width=320, height=240 ! alpha alpha=0.7 ! mix.
-</pre></div> A pipeline to demonstrate videomixer used together with videobox.
+<div class="refsect2">
+<a name="idp22497648"></a><h3>Sample pipelines</h3>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> \
+  videotestsrc pattern<span class="gtkdoc opt">=</span><span class="number">1</span> <span class="gtkdoc opt">!</span> \
+  video<span class="gtkdoc opt">/</span>x<span class="gtkdoc opt">-</span>raw<span class="gtkdoc opt">,</span>format<span class="gtkdoc opt">=</span>AYUV<span class="gtkdoc opt">,</span>framerate<span class="gtkdoc opt">=</span>\<span class="gtkdoc opt">(</span>fraction\<span class="gtkdoc opt">)</span><span class="number">10</span><span class="gtkdoc opt">/</span><span class="number">1</span><span class="gtkdoc opt">,</span>width<span class="gtkdoc opt">=</span><span class="number">100</span><span class="gtkdoc opt">,</span>height<span class="gtkdoc opt">=</span><span class="number">100</span> <span class="gtkdoc opt">!</span> \
+  videobox border<span class="gtkdoc opt">-</span>alpha<span class="gtkdoc opt">=</span><span class="number">0</span> top<span class="gtkdoc opt">=-</span><span class="number">70</span> bottom<span class="gtkdoc opt">=-</span><span class="number">70</span> right<span class="gtkdoc opt">=-</span><span class="number">220</span> <span class="gtkdoc opt">!</span> \
+  videomixer name<span class="gtkdoc opt">=</span>mix sink_0<span class="gtkdoc opt">::</span>alpha<span class="gtkdoc opt">=</span><span class="number">0.7</span> sink_1<span class="gtkdoc opt">::</span>alpha<span class="gtkdoc opt">=</span><span class="number">0.5</span> <span class="gtkdoc opt">!</span> \
+  videoconvert <span class="gtkdoc opt">!</span> xvimagesink \
+  videotestsrc <span class="gtkdoc opt">!</span> \
+  video<span class="gtkdoc opt">/</span>x<span class="gtkdoc opt">-</span>raw<span class="gtkdoc opt">,</span>format<span class="gtkdoc opt">=</span>AYUV<span class="gtkdoc opt">,</span>framerate<span class="gtkdoc opt">=</span>\<span class="gtkdoc opt">(</span>fraction\<span class="gtkdoc opt">)</span><span class="number">5</span><span class="gtkdoc opt">/</span><span class="number">1</span><span class="gtkdoc opt">,</span>width<span class="gtkdoc opt">=</span><span class="number">320</span><span class="gtkdoc opt">,</span>height<span class="gtkdoc opt">=</span><span class="number">240</span> <span class="gtkdoc opt">!</span> mix<span class="gtkdoc opt">.</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ A pipeline to demonstrate videomixer used together with videobox.
 This should show a 320x240 pixels video test source with some transparency
 showing the background checker pattern. Another video test source with just
 the snow pattern of 100x100 pixels is overlayed on top of the first one on
 the left vertically centered with a small transparency showing the first
 video test source behind and the checker pattern under it. Note that the
 framerate of the output video is 10 frames per second.
-<div class="informalexample"><pre class="programlisting">
-gst-launch videotestsrc pattern=1 ! video/x-raw-rgb, framerate=\(fraction\)10/1, width=100, height=100 ! videomixer name=mix ! ffmpegcolorspace ! ximagesink videotestsrc ! video/x-raw-rgb, framerate=\(fraction\)5/1, width=320, height=240 ! mix.
-</pre></div> A pipeline to demostrate bgra mixing. (This does not demonstrate alpha blending). 
-<div class="informalexample"><pre class="programlisting">
-gst-launch   videotestsrc pattern=1 ! video/x-raw-yuv,format =\(fourcc\)I420, framerate=\(fraction\)10/1, width=100, height=100 ! videomixer name=mix ! ffmpegcolorspace ! ximagesink videotestsrc ! video/x-raw-yuv,format=\(fourcc\)I420, framerate=\(fraction\)5/1, width=320, height=240 ! mix.
-</pre></div> A pipeline to test I420
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> videotestsrc pattern<span class="gtkdoc opt">=</span><span class="number">1</span> <span class="gtkdoc opt">!</span> \
+  video<span class="gtkdoc opt">/</span>x<span class="gtkdoc opt">-</span>raw<span class="gtkdoc opt">,</span> framerate<span class="gtkdoc opt">=</span>\<span class="gtkdoc opt">(</span>fraction\<span class="gtkdoc opt">)</span><span class="number">10</span><span class="gtkdoc opt">/</span><span class="number">1</span><span class="gtkdoc opt">,</span> width<span class="gtkdoc opt">=</span><span class="number">100</span><span class="gtkdoc opt">,</span> height<span class="gtkdoc opt">=</span><span class="number">100</span> <span class="gtkdoc opt">!</span> \
+  videomixer name<span class="gtkdoc opt">=</span>mix <span class="gtkdoc opt">!</span> videoconvert <span class="gtkdoc opt">!</span> ximagesink \
+  videotestsrc <span class="gtkdoc opt">!</span>  \
+  video<span class="gtkdoc opt">/</span>x<span class="gtkdoc opt">-</span>raw<span class="gtkdoc opt">,</span> framerate<span class="gtkdoc opt">=</span>\<span class="gtkdoc opt">(</span>fraction\<span class="gtkdoc opt">)</span><span class="number">5</span><span class="gtkdoc opt">/</span><span class="number">1</span><span class="gtkdoc opt">,</span> width<span class="gtkdoc opt">=</span><span class="number">320</span><span class="gtkdoc opt">,</span> height<span class="gtkdoc opt">=</span><span class="number">240</span> <span class="gtkdoc opt">!</span> mix<span class="gtkdoc opt">.</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-<div class="refsynopsisdiv" title="Synopsis">
+ A pipeline to demostrate bgra mixing. (This does not demonstrate alpha blending). 
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> videotestsrc pattern<span class="gtkdoc opt">=</span><span class="number">1</span> <span class="gtkdoc opt">!</span> \
+  video<span class="gtkdoc opt">/</span>x<span class="gtkdoc opt">-</span>raw<span class="gtkdoc opt">,</span>format <span class="gtkdoc opt">=</span>I420<span class="gtkdoc opt">,</span> framerate<span class="gtkdoc opt">=</span>\<span class="gtkdoc opt">(</span>fraction\<span class="gtkdoc opt">)</span><span class="number">10</span><span class="gtkdoc opt">/</span><span class="number">1</span><span class="gtkdoc opt">,</span> width<span class="gtkdoc opt">=</span><span class="number">100</span><span class="gtkdoc opt">,</span> height<span class="gtkdoc opt">=</span><span class="number">100</span> <span class="gtkdoc opt">!</span> \
+  videomixer name<span class="gtkdoc opt">=</span>mix <span class="gtkdoc opt">!</span> videoconvert <span class="gtkdoc opt">!</span> ximagesink \
+  videotestsrc <span class="gtkdoc opt">!</span> \
+  video<span class="gtkdoc opt">/</span>x<span class="gtkdoc opt">-</span>raw<span class="gtkdoc opt">,</span>format<span class="gtkdoc opt">=</span>I420<span class="gtkdoc opt">,</span> framerate<span class="gtkdoc opt">=</span>\<span class="gtkdoc opt">(</span>fraction\<span class="gtkdoc opt">)</span><span class="number">5</span><span class="gtkdoc opt">/</span><span class="number">1</span><span class="gtkdoc opt">,</span> width<span class="gtkdoc opt">=</span><span class="number">320</span><span class="gtkdoc opt">,</span> height<span class="gtkdoc opt">=</span><span class="number">240</span> <span class="gtkdoc opt">!</span> mix<span class="gtkdoc opt">.</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ A pipeline to test I420
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> videomixer name<span class="gtkdoc opt">=</span>mixer sink_1<span class="gtkdoc opt">::</span>alpha<span class="gtkdoc opt">=</span><span class="number">0.5</span> sink_1<span class="gtkdoc opt">::</span>xpos<span class="gtkdoc opt">=</span><span class="number">50</span> sink_1<span class="gtkdoc opt">::</span>ypos<span class="gtkdoc opt">=</span><span class="number">50</span> <span class="gtkdoc opt">!</span> \
+  videoconvert <span class="gtkdoc opt">!</span> ximagesink \
+  videotestsrc pattern<span class="gtkdoc opt">=</span>snow timestamp<span class="gtkdoc opt">-</span>offset<span class="gtkdoc opt">=</span><span class="number">3000000000</span> <span class="gtkdoc opt">!</span> \
+  <span class="string">&quot;video/x-raw,format=AYUV,width=640,height=480,framerate=(fraction)30/1&quot;</span> <span class="gtkdoc opt">!</span> \
+  timeoverlay <span class="gtkdoc opt">!</span> queue2 <span class="gtkdoc opt">!</span> mixer<span class="gtkdoc opt">.</span> \
+  videotestsrc pattern<span class="gtkdoc opt">=</span>smpte <span class="gtkdoc opt">!</span> \
+  <span class="string">&quot;video/x-raw,format=AYUV,width=800,height=600,framerate=(fraction)10/1&quot;</span> <span class="gtkdoc opt">!</span> \
+  timeoverlay <span class="gtkdoc opt">!</span> queue2 <span class="gtkdoc opt">!</span> mixer<span class="gtkdoc opt">.</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ A pipeline to demonstrate synchronized mixing (the second stream starts after 3 seconds)
+</div>
+<p>
+</p>
+<div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" title="Element Information">
-<a name="id604488"></a><h3>Element Information</h3>
+<div class="refsect2">
+<a name="idp23858704"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -132,7 +172,7 @@ gst-launch   videotestsrc pattern=1 ! video/x-raw-yuv,format =\(fourcc\)I420, fr
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
-<td>Wim Taymans &lt;wim@fluendo.com&gt;</td>
+<td>Wim Taymans &lt;wim@fluendo.com&gt;, Sebastian Dröge &lt;sebastian.droege@collabora.co.uk&gt;</td>
 </tr>
 <tr>
 <td><p><span class="term">class</span></p></td>
@@ -142,14 +182,14 @@ gst-launch   videotestsrc pattern=1 ! video/x-raw-yuv,format =\(fourcc\)I420, fr
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="Element Pads">
-<a name="id604550"></a><h3>Element Pads</h3>
+<div class="refsect2">
+<a name="idp10431600"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
-<td>sink_%d</td>
+<td>sink_%u</td>
 </tr>
 <tr>
 <td><p><span class="term">direction</span></p></td>
@@ -161,43 +201,7 @@ gst-launch   videotestsrc pattern=1 ! video/x-raw-yuv,format =\(fourcc\)I420, fr
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw-yuv, format=(fourcc)AYUV, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)32, depth=(int)32, endianness=(int)4321, red_mask=(int)65280, green_mask=(int)16711680, blue_mask=(int)-16777216, alpha_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)32, depth=(int)32, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255, alpha_mask=(int)-16777216, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)24, depth=(int)24, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)24, depth=(int)24, endianness=(int)4321, red_mask=(int)255, green_mask=(int)65280, blue_mask=(int)16711680, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)32, depth=(int)24, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)32, depth=(int)24, endianness=(int)4321, red_mask=(int)255, green_mask=(int)65280, blue_mask=(int)16711680, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)32, depth=(int)24, endianness=(int)4321, red_mask=(int)-16777216, green_mask=(int)16711680, blue_mask=(int)65280, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)32, depth=(int)24, endianness=(int)4321, red_mask=(int)65280, green_mask=(int)16711680, blue_mask=(int)-16777216, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td>video/x-raw, format=(string){ AYUV, BGRA, ARGB, RGBA, ABGR, Y444, Y42B, YUY2, UYVY, YVYU, I420, YV12, NV12, NV21, Y41B, RGB, BGR, xRGB, xBGR, RGBx, BGRx }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
@@ -218,43 +222,7 @@ gst-launch   videotestsrc pattern=1 ! video/x-raw-yuv,format =\(fourcc\)I420, fr
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw-yuv, format=(fourcc)AYUV, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)32, depth=(int)32, endianness=(int)4321, red_mask=(int)65280, green_mask=(int)16711680, blue_mask=(int)-16777216, alpha_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)32, depth=(int)32, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255, alpha_mask=(int)-16777216, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)24, depth=(int)24, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)24, depth=(int)24, endianness=(int)4321, red_mask=(int)255, green_mask=(int)65280, blue_mask=(int)16711680, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)32, depth=(int)24, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)32, depth=(int)24, endianness=(int)4321, red_mask=(int)255, green_mask=(int)65280, blue_mask=(int)16711680, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)32, depth=(int)24, endianness=(int)4321, red_mask=(int)-16777216, green_mask=(int)16711680, blue_mask=(int)65280, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)32, depth=(int)24, endianness=(int)4321, red_mask=(int)65280, green_mask=(int)16711680, blue_mask=(int)-16777216, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td>video/x-raw, format=(string){ AYUV, BGRA, ARGB, RGBA, ABGR, Y444, Y42B, YUY2, UYVY, YVYU, I420, YV12, NV12, NV21, Y41B, RGB, BGR, xRGB, xBGR, RGBx, BGRx }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
@@ -263,65 +231,12 @@ gst-launch   videotestsrc pattern=1 ! video/x-raw-yuv,format =\(fourcc\)I420, fr
 <p>
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-videomixer.details"></a><h2>Details</h2>
-<div class="refsect2" title="GstVideoMixer">
-<a name="GstVideoMixer-struct"></a><h3>GstVideoMixer</h3>
-<pre class="programlisting">typedef struct _GstVideoMixer GstVideoMixer;</pre>
-<p>
-The opaque <a class="link" href="gst-plugins-good-plugins-videomixer.html#GstVideoMixer"><span class="type">GstVideoMixer</span></a> structure.</p>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" title="enum GstVideoMixerBackground">
-<a name="GstVideoMixerBackground"></a><h3>enum GstVideoMixerBackground</h3>
-<pre class="programlisting">typedef enum
-{
-  VIDEO_MIXER_BACKGROUND_CHECKER,
-  VIDEO_MIXER_BACKGROUND_BLACK,
-  VIDEO_MIXER_BACKGROUND_WHITE
-}
-GstVideoMixerBackground;
-</pre>
-<p>
-The different backgrounds videomixer can blend over.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><a name="VIDEO-MIXER-BACKGROUND-CHECKER--CAPS"></a><span class="term"><code class="literal">VIDEO_MIXER_BACKGROUND_CHECKER</code></span></p></td>
-<td> checker pattern background
-</td>
-</tr>
-<tr>
-<td><p><a name="VIDEO-MIXER-BACKGROUND-BLACK--CAPS"></a><span class="term"><code class="literal">VIDEO_MIXER_BACKGROUND_BLACK</code></span></p></td>
-<td> solid color black background
-</td>
-</tr>
-<tr>
-<td><p><a name="VIDEO-MIXER-BACKGROUND-WHITE--CAPS"></a><span class="term"><code class="literal">VIDEO_MIXER_BACKGROUND_WHITE</code></span></p></td>
-<td> solid color white background
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-</div>
-<div class="refsect1" title="Property Details">
-<a name="gst-plugins-good-plugins-videomixer.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" title='The "background" property'>
-<a name="GstVideoMixer--background"></a><h3>The <code class="literal">"background"</code> property</h3>
-<pre class="programlisting">  "background"               <a class="link" href="gst-plugins-good-plugins-videomixer.html#GstVideoMixerBackground" title="enum GstVideoMixerBackground">GstVideoMixerBackground</a>  : Read / Write</pre>
-<p>Background type.</p>
-<p>Default value: Checker pattern</p>
-</div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

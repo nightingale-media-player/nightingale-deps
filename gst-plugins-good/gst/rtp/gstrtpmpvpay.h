@@ -22,7 +22,7 @@
 #define __GST_RTP_MPV_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertppayload.h>
+#include <gst/rtp/gstrtpbasepayload.h>
 #include <gst/base/gstadapter.h>
 
 G_BEGIN_DECLS
@@ -43,7 +43,7 @@ typedef struct _GstRTPMPVPayClass GstRTPMPVPayClass;
 
 struct _GstRTPMPVPay
 {
-  GstBaseRTPPayload payload;
+  GstRTPBasePayload payload;
 
   GstAdapter  *adapter;
   GstClockTime first_ts;
@@ -52,8 +52,10 @@ struct _GstRTPMPVPay
 
 struct _GstRTPMPVPayClass
 {
-  GstBaseRTPPayloadClass parent_class;
+  GstRTPBasePayloadClass parent_class;
 };
+
+GType gst_rtp_mpv_pay_get_type (void);
 
 gboolean gst_rtp_mpv_pay_plugin_init (GstPlugin * plugin);
 

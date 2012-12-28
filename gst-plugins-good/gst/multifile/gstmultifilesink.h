@@ -28,6 +28,7 @@
 #include <gst/gst.h>
 #include <gst/base/gstbasesink.h>
 #include <errno.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -51,13 +52,48 @@ G_BEGIN_DECLS
 typedef struct _GstMultiFileSink GstMultiFileSink;
 typedef struct _GstMultiFileSinkClass GstMultiFileSinkClass;
 
+/**
+ * GstMultiFileSinkNext:
+ * @GST_MULTI_FILE_SINK_NEXT_BUFFER: New file for each buffer
+ * @GST_MULTI_FILE_SINK_NEXT_DISCONT: New file after each discontinuity
+ * @GST_MULTI_FILE_SINK_NEXT_KEY_FRAME: New file at each key frame
+ *  (Useful for MPEG-TS segmenting)
+ * @GST_MULTI_FILE_SINK_NEXT_KEY_UNIT_EVENT: New file after a force key unit
+ *  event (Since: 0.10.31)
+ * @GST_MULTI_FILE_SINK_NEXT_MAX_SIZE: New file when the configured maximum file
+ *  size would be exceeded with the next buffer or buffer list (Since: 0.10.31)
+ *
+ * File splitting modes.
+ */
+typedef enum {
+  GST_MULTI_FILE_SINK_NEXT_BUFFER,
+  GST_MULTI_FILE_SINK_NEXT_DISCONT,
+  GST_MULTI_FILE_SINK_NEXT_KEY_FRAME,
+  GST_MULTI_FILE_SINK_NEXT_KEY_UNIT_EVENT,
+  GST_MULTI_FILE_SINK_NEXT_MAX_SIZE
+} GstMultiFileSinkNext;
+
 struct _GstMultiFileSink
 {
   GstBaseSink parent;
 
   gchar *filename;
-  gchar *uri;
-  int index;
+  gint index;
+  gboolean post_messages;
+  GstMultiFileSinkNext next_file;
+  FILE *file;
+  guint max_files;
+  GSList *files;
+  guint n_files;
+
+  gint64 next_segment;
+
+  int n_streamheaders;
+  GstBuffer **streamheaders;
+  guint force_key_unit_count;
+
+  guint64 cur_file_size;
+  guint64 max_file_size;
 };
 
 struct _GstMultiFileSinkClass

@@ -37,6 +37,7 @@
 #define TEST_ALBUM_GAIN      0.78
 #define TEST_TRACK_PEAK      0.83
 #define TEST_ALBUM_PEAK      0.18
+#define TEST_BPM             113.0
 
 /* for dummy mp3 frame sized MP3_FRAME_SIZE bytes,
  * start: ff fb b0 44 00 00 08 00  00 4b 00 00 00 00 00 00 */
@@ -63,7 +64,7 @@ test_taglib_id3mux_create_tags (guint32 mask)
 {
   GstTagList *tags;
 
-  tags = gst_tag_list_new ();
+  tags = gst_tag_list_new_empty ();
 
   if (mask & (1 << 0)) {
     gst_tag_list_add (tags, GST_TAG_MERGE_KEEP,
@@ -117,6 +118,8 @@ test_taglib_id3mux_create_tags (guint32 mask)
         GST_TAG_ALBUM_PEAK, TEST_ALBUM_PEAK, NULL);
   }
   if (mask & (1 << 12)) {
+    gst_tag_list_add (tags, GST_TAG_MERGE_KEEP,
+        GST_TAG_BEATS_PER_MINUTE, TEST_BPM, NULL);
   }
   if (mask & (1 << 13)) {
   }
@@ -127,13 +130,17 @@ static gboolean
 utf8_string_in_buf (GstBuffer * buf, const gchar * s)
 {
   gint i, len;
+  GstMapInfo map;
 
   len = strlen (s);
-  for (i = 0; i < (GST_BUFFER_SIZE (buf) - len); ++i) {
-    if (memcmp (GST_BUFFER_DATA (buf) + i, s, len) == 0) {
+  gst_buffer_map (buf, &map, GST_MAP_READ);
+  for (i = 0; i < (map.size - len); ++i) {
+    if (memcmp (map.data + i, s, len) == 0) {
+      gst_buffer_unmap (buf, &map);
       return TRUE;
     }
   }
+  gst_buffer_unmap (buf, &map);
 
   return FALSE;
 }
@@ -239,6 +246,11 @@ test_taglib_id3mux_check_tags (GstTagList * tags, guint32 mask)
     fail_unless_sorta_equals_float (peak, TEST_ALBUM_PEAK);
   }
   if (mask & (1 << 12)) {
+    gdouble bpm;
+
+    fail_unless (gst_tag_list_get_double (tags, GST_TAG_BEATS_PER_MINUTE,
+            &bpm));
+    fail_unless_sorta_equals_float (bpm, TEST_BPM);
   }
   if (mask & (1 << 13)) {
   }
@@ -248,21 +260,27 @@ static void
 fill_mp3_buffer (GstElement * fakesrc, GstBuffer * buf, GstPad * pad,
     guint64 * p_offset)
 {
-  GstCaps *caps;
+  gsize size;
 
-  fail_unless (GST_BUFFER_SIZE (buf) == MP3_FRAME_SIZE);
+  size = gst_buffer_get_size (buf);
+
+  fail_unless (size == MP3_FRAME_SIZE);
 
   GST_LOG ("filling buffer with fake mp3 data, offset = %" G_GUINT64_FORMAT,
       *p_offset);
 
-  memcpy (GST_BUFFER_DATA (buf), mp3_dummyhdr, sizeof (mp3_dummyhdr));
-  caps = gst_caps_new_simple ("audio/mpeg", "mpegversion", G_TYPE_INT, 1,
-      "layer", G_TYPE_INT, 3, NULL);
-  gst_buffer_set_caps (buf, caps);
-  gst_caps_unref (caps);
+  gst_buffer_fill (buf, 0, mp3_dummyhdr, sizeof (mp3_dummyhdr));
+
+#if 0
+  /* can't use gst_buffer_set_caps() here because the metadata isn't writable
+   * because of the extra refcounts taken by the signal emission mechanism;
+   * we know it's fine to use GST_BUFFER_CAPS() here though */
+  GST_BUFFER_CAPS (buf) = gst_caps_new_simple ("audio/mpeg", "mpegversion",
+      G_TYPE_INT, 1, "layer", G_TYPE_INT, 3, NULL);
+#endif
 
   GST_BUFFER_OFFSET (buf) = *p_offset;
-  *p_offset += GST_BUFFER_SIZE (buf);
+  *p_offset += size;
 }
 
 static void
@@ -270,70 +288,53 @@ got_buffer (GstElement * fakesink, GstBuffer * buf, GstPad * pad,
     GstBuffer ** p_buf)
 {
   gint64 off;
-  guint size;
+  GstMapInfo map;
 
   off = GST_BUFFER_OFFSET (buf);
-  size = GST_BUFFER_SIZE (buf);
 
-  GST_LOG ("got buffer, size=%u, offset=%" G_GINT64_FORMAT, size, off);
+  gst_buffer_map (buf, &map, GST_MAP_READ);
+
+  GST_LOG ("got buffer, size=%u, offset=%" G_GINT64_FORMAT, map.size, off);
 
   fail_unless (GST_BUFFER_OFFSET_IS_VALID (buf));
 
-  if (*p_buf == NULL || (off + size) > GST_BUFFER_SIZE (*p_buf)) {
+  if (*p_buf == NULL || (off + map.size) > gst_buffer_get_size (*p_buf)) {
     GstBuffer *newbuf;
 
     /* not very elegant, but who cares */
-    newbuf = gst_buffer_new_and_alloc (off + size);
+    newbuf = gst_buffer_new_and_alloc (off + map.size);
     if (*p_buf) {
-      memcpy (GST_BUFFER_DATA (newbuf), GST_BUFFER_DATA (*p_buf),
-          GST_BUFFER_SIZE (*p_buf));
+      GstMapInfo pmap;
+
+      gst_buffer_map (*p_buf, &pmap, GST_MAP_READ);
+      gst_buffer_fill (newbuf, 0, pmap.data, pmap.size);
+      gst_buffer_unmap (*p_buf, &pmap);
     }
-    memcpy (GST_BUFFER_DATA (newbuf) + off, GST_BUFFER_DATA (buf), size);
+    gst_buffer_fill (newbuf, off, map.data, map.size);
+
     if (*p_buf)
       gst_buffer_unref (*p_buf);
     *p_buf = newbuf;
   } else {
-    memcpy (GST_BUFFER_DATA (*p_buf) + off, GST_BUFFER_DATA (buf), size);
+    gst_buffer_fill (*p_buf, off, map.data, map.size);
   }
-}
-
-static void
-demux_pad_added (GstElement * id3demux, GstPad * srcpad, GstBuffer ** p_outbuf)
-{
-  GstElement *fakesink, *pipeline;
-
-  GST_LOG ("id3demux added source pad with caps %" GST_PTR_FORMAT,
-      GST_PAD_CAPS (srcpad));
-
-  pipeline = id3demux;
-  while (GST_OBJECT_PARENT (pipeline) != NULL)
-    pipeline = (GstElement *) GST_OBJECT_PARENT (pipeline);
-
-  fakesink = gst_element_factory_make ("fakesink", "fakesink");
-  g_assert (fakesink != NULL);
-
-  /* set up sink */
-  g_object_set (fakesink, "signal-handoffs", TRUE, NULL);
-  g_signal_connect (fakesink, "handoff", G_CALLBACK (got_buffer), p_outbuf);
-
-  gst_bin_add (GST_BIN (pipeline), fakesink);
-  gst_element_set_state (fakesink, GST_STATE_PLAYING);
-
-  fail_unless (gst_element_link (id3demux, fakesink));
+  gst_buffer_unmap (buf, &map);
 }
 
 static void
 test_taglib_id3mux_check_output_buffer (GstBuffer * buf)
 {
-  guint8 *data = GST_BUFFER_DATA (buf);
-  guint size = GST_BUFFER_SIZE (buf);
+  GstMapInfo map;
   guint off;
 
-  g_assert (size % MP3_FRAME_SIZE == 0);
+  gst_buffer_map (buf, &map, GST_MAP_READ);
+  g_assert (map.size % MP3_FRAME_SIZE == 0);
 
-  for (off = 0; off < size; off += MP3_FRAME_SIZE) {
-    fail_unless (memcmp (data + off, mp3_dummyhdr, sizeof (mp3_dummyhdr)) == 0);
+  for (off = 0; off < map.size; off += MP3_FRAME_SIZE) {
+    fail_unless (memcmp (map.data + off, mp3_dummyhdr,
+            sizeof (mp3_dummyhdr)) == 0);
   }
+  gst_buffer_unmap (buf, &map);
 }
 
 static void
@@ -349,7 +350,7 @@ test_taglib_id3mux_with_tags (GstTagList * tags, guint32 mask)
 {
   GstMessage *msg;
   GstTagList *tags_read = NULL;
-  GstElement *pipeline, *id3mux, *id3demux, *fakesrc, *identity;
+  GstElement *pipeline, *id3mux, *id3demux, *fakesrc, *identity, *fakesink;
   GstBus *bus;
   guint64 offset;
   GstBuffer *outbuf = NULL;
@@ -371,19 +372,24 @@ test_taglib_id3mux_with_tags (GstTagList * tags, guint32 mask)
   id3demux = gst_element_factory_make ("id3demux", "id3demux");
   g_assert (id3demux != NULL);
 
+  fakesink = gst_element_factory_make ("fakesink", "fakesink");
+  g_assert (fakesink != NULL);
+
+  /* set up sink */
   outbuf = NULL;
-  g_signal_connect (id3demux, "pad-added",
-      G_CALLBACK (demux_pad_added), &outbuf);
+  g_object_set (fakesink, "signal-handoffs", TRUE, NULL);
+  g_signal_connect (fakesink, "handoff", G_CALLBACK (got_buffer), &outbuf);
 
   gst_bin_add (GST_BIN (pipeline), fakesrc);
   gst_bin_add (GST_BIN (pipeline), id3mux);
   gst_bin_add (GST_BIN (pipeline), identity);
   gst_bin_add (GST_BIN (pipeline), id3demux);
+  gst_bin_add (GST_BIN (pipeline), fakesink);
 
   gst_tag_setter_merge_tags (GST_TAG_SETTER (id3mux), tags,
       GST_TAG_MERGE_APPEND);
 
-  gst_element_link_many (fakesrc, id3mux, identity, id3demux, NULL);
+  gst_element_link_many (fakesrc, id3mux, identity, id3demux, fakesink, NULL);
 
   /* set up source */
   g_object_set (fakesrc, "signal-handoffs", TRUE, "can-activate-pull", FALSE,
@@ -428,7 +434,7 @@ test_taglib_id3mux_with_tags (GstTagList * tags, guint32 mask)
 
   GST_LOG ("Got tags: %" GST_PTR_FORMAT, tags_read);
   test_taglib_id3mux_check_tags (tags_read, mask);
-  gst_tag_list_free (tags_read);
+  gst_tag_list_unref (tags_read);
 
   fail_unless (tagbuf != NULL);
   test_taglib_id3mux_check_tag_buffer (tagbuf, mask);
@@ -471,7 +477,7 @@ GST_START_TEST (test_id3v2mux)
   /* internal consistency check */
   tags = test_taglib_id3mux_create_tags (0xFFFFFFFF);
   test_taglib_id3mux_check_tags (tags, 0xFFFFFFFF);
-  gst_tag_list_free (tags);
+  gst_tag_list_unref (tags);
 
   /* now the real tests */
   for (i = 0; i < 50; ++i) {
@@ -494,7 +500,7 @@ GST_START_TEST (test_id3v2mux)
     test_taglib_id3mux_with_tags (tags, mask);
 
     /* free tags */
-    gst_tag_list_free (tags);
+    gst_tag_list_unref (tags);
   }
 }
 

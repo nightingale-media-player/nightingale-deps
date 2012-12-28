@@ -37,11 +37,11 @@ The following fields can or must (*) be specified in the structure:
     The ssrc value currently in use. (default = the SSRC of the first RTP
     packet)
 
-   clock-base: (uint) [0 - MAXINT]
+   timestamp-offset: (uint) [0 - MAXINT]
     The RTP time representing time npt-start. (default = rtptime of first RTP
     packet).
 
-   seqnum-base: (uint) [0 - MAXINT]
+   seqnum-offset: (uint) [0 - MAXINT]
     The RTP sequence number representing the first rtp packet. When this
     parameter is given, all sequence numbers below this seqnum should be
     ignored. (default = seqnum of first RTP packet).
@@ -66,6 +66,10 @@ The following fields can or must (*) be specified in the structure:
     that is scaled by this amount. This value is used to adjust position
     reporting and corresponds to the GStream applied-rate field in the
     NEWSEGMENT event. (default = 1.0)
+
+   maxptime: (uint) [0, MAX]
+    The maxptime as defined in RFC 4566, this defines the maximum size of a
+    packet. It overrides the max-ptime property of payloaders.
 
    Optional parameters as key/value pairs, media type specific. The value type
    should be of type G_TYPE_STRING. The key is converted to lower-case. The
@@ -177,7 +181,7 @@ of the sender.
 
 Some pipelines to illustrate the process:
 
-    gst-launch v4l2src ! ffenc_h263p ! rtph263ppay ! udpsink
+    gst-launch-1.0 v4l2src ! ffenc_h263p ! rtph263ppay ! udpsink
 
   v4l2src puts a GStreamer timestamp on the video frames base on the current
   running_time. The encoder encodes and passed the timestamp on. The payloader
@@ -200,7 +204,7 @@ it back as soon as possible, this is with the timestamp when it was received
 from the network. For the above sender pipeline this would be done with the
 following pipeline:
 
-    gst-launch udpsrc caps="application/x-rtp, media=(string)video,
+    gst-launch-1.0 udpsrc caps="application/x-rtp, media=(string)video,
       clock-rate=(int)90000, encoding-name=(string)H263-1998" ! rtph263pdepay !
       ffdec_h263 ! xvimagesink
 
@@ -233,7 +237,7 @@ GStreamer timestamp on the RTP packet, which is copied to the depayloaded data.
 
 The following pipeline illustrates a receiver with a jitterbuffer.
 
-    gst-launch udpsrc caps="application/x-rtp, media=(string)video,
+    gst-launch-1.0 udpsrc caps="application/x-rtp, media=(string)video,
       clock-rate=(int)90000, encoding-name=(string)H263-1998" !
       gstrtpjitterbuffer latency=100 ! rtph263pdepay !  ffdec_h263 ! xvimagesink
 
@@ -249,10 +253,10 @@ usage with UDP
 
 To correctly and completely use the RTP payloaders on the sender and the
 receiver you need to write an application. It is not possible to write a full
-blown RTP server with a single gst-launch line.
+blown RTP server with a single gst-launch-1.0 line.
 
 That said, it is possible to do something functional with a few gst-launch
-lines. The biggest problem when constructing a correct gst-launch line lies on
+lines. The biggest problem when constructing a correct gst-launch-1.0 line lies on
 the receiver end. 
 
 The receiver needs to know about the type of the RTP data along with a set of
@@ -265,12 +269,12 @@ server can be found in the caps on the server end. The client receives this
 information in some way (caps are converted to and from SDP, as explained above,
 for example).
 
-Some gst-launch lines:
+Some gst-launch-1.0 lines:
 
   gst-launch-0.10 -v videotestsrc ! ffenc_h263p ! rtph263ppay ! udpsink
 
    Setting pipeline to PAUSED ...
-   /pipeline0/videotestsrc0.src: caps = video/x-raw-yuv, format=(fourcc)I420,
+   /pipeline0/videotestsrc0.src: caps = video/x-raw, format=(string)I420,
    width=(int)320, height=(int)240, framerate=(fraction)30/1
    Pipeline is PREROLLING ...
    ....
@@ -315,7 +319,7 @@ Some gst-launch lines:
 
  Again copy the caps on both sinks to the receiver launch line
 
-    gst-launch 
+    gst-launch-1.0
      udpsrc port=5000 caps="application/x-rtp, media=(string)video, payload=(int)96,
       clock-rate=(int)90000, encoding-name=(string)MP4V-ES, ssrc=(guint)1162703703,
       clock-base=(guint)816135835, seqnum-base=(guint)9294, profile-level-id=(string)3,

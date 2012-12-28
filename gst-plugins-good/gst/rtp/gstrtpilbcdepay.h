@@ -21,7 +21,7 @@
 #define __GST_RTP_ILBC_DEPAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertpdepayload.h>
+#include <gst/rtp/gstrtpbasedepayload.h>
 
 G_BEGIN_DECLS
 
@@ -46,15 +46,17 @@ typedef enum {
 
 struct _GstRTPiLBCDepay
 {
-  GstBaseRTPDepayload depayload;
+  GstRTPBaseDepayload depayload;
 
   GstiLBCMode mode;
 };
 
 struct _GstRTPiLBCDepayClass
 {
-  GstBaseRTPDepayloadClass parent_class;
+  GstRTPBaseDepayloadClass parent_class;
 };
+
+GType gst_rtp_ilbc_depay_get_type (void);
 
 gboolean gst_rtp_ilbc_depay_plugin_init (GstPlugin * plugin);
 

@@ -25,6 +25,7 @@
 
 #include <unistd.h>
 
+#include <gst/audio/audio.h>
 #include <gst/base/gstbasetransform.h>
 #include <gst/check/gstcheck.h>
 
@@ -37,49 +38,45 @@ GstPad *mysrcpad, *mysinkpad;
 
 
 #define INVERT_CAPS_STRING    \
-    "audio/x-raw-int, "                 \
-    "channels = (int) 1, "              \
-    "rate = (int) 44100, "              \
-    "endianness = (int) BYTE_ORDER, "   \
-    "width = (int) 16, "                \
-    "depth = (int) 16, "                \
-    "signed = (bool) TRUE"
+    "audio/x-raw, "                             \
+    "format = (string) "GST_AUDIO_NE(S16)", "   \
+    "layout = (string) interleaved, "           \
+    "channels = (int) 1, "                      \
+    "rate = (int) 44100"
 
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw-int, "
-        "channels = (int) 1, "
-        "rate = (int) [ 1,  MAX ], "
-        "endianness = (int) BYTE_ORDER, "
-        "width = (int) 16, " "depth = (int) 16, " "signed = (bool) TRUE")
+    GST_STATIC_CAPS ("audio/x-raw, "
+        "format = (string) " GST_AUDIO_NE (S16) ", "
+        "layout = (string) interleaved, "
+        "channels = (int) 1, " "rate = (int) [ 1,  MAX ]")
     );
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw-int, "
-        "channels = (int) 1, "
-        "rate = (int) [ 1,  MAX ], "
-        "endianness = (int) BYTE_ORDER, "
-        "width = (int) 16, " "depth = (int) 16, " "signed = (bool) TRUE")
+    GST_STATIC_CAPS ("audio/x-raw, "
+        "format = (string) " GST_AUDIO_NE (S16) ", "
+        "layout = (string) interleaved, "
+        "channels = (int) 1, " "rate = (int) [ 1,  MAX ]")
     );
 
-GstElement *
-setup_invert ()
+static GstElement *
+setup_invert (void)
 {
   GstElement *invert;
 
   GST_DEBUG ("setup_invert");
   invert = gst_check_setup_element ("audioinvert");
-  mysrcpad = gst_check_setup_src_pad (invert, &srctemplate, NULL);
-  mysinkpad = gst_check_setup_sink_pad (invert, &sinktemplate, NULL);
+  mysrcpad = gst_check_setup_src_pad (invert, &srctemplate);
+  mysinkpad = gst_check_setup_sink_pad (invert, &sinktemplate);
   gst_pad_set_active (mysrcpad, TRUE);
   gst_pad_set_active (mysinkpad, TRUE);
 
   return invert;
 }
 
-void
+static void
 cleanup_invert (GstElement * invert)
 {
   GST_DEBUG ("cleanup_invert");
@@ -102,6 +99,7 @@ GST_START_TEST (test_passthrough)
   GstCaps *caps;
   gint16 in[4] = { 16384, -256, 128, -512 };
   gint16 *res;
+  GstMapInfo map;
 
   invert = setup_invert ();
   fail_unless (gst_element_set_state (invert,
@@ -109,10 +107,10 @@ GST_START_TEST (test_passthrough)
       "could not set to playing");
 
   inbuffer = gst_buffer_new_and_alloc (8);
-  memcpy (GST_BUFFER_DATA (inbuffer), in, 8);
-  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 8) == 0);
+  gst_buffer_fill (inbuffer, 0, in, 8);
+  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 8) == 0);
   caps = gst_caps_from_string (INVERT_CAPS_STRING);
-  gst_buffer_set_caps (inbuffer, caps);
+  gst_pad_set_caps (mysrcpad, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -122,10 +120,13 @@ GST_START_TEST (test_passthrough)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
+  gst_buffer_map (outbuffer, &map, GST_MAP_READ);
+  res = (gint16 *) map.data;
   GST_INFO ("expected %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d",
       in[0], in[1], in[2], in[3], res[0], res[1], res[2], res[3]);
-  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), in, 8) == 0);
+  gst_buffer_unmap (outbuffer, &map);
+
+  fail_unless (gst_buffer_memcmp (outbuffer, 0, in, 8) == 0);
 
   /* cleanup */
   cleanup_invert (invert);
@@ -141,6 +142,7 @@ GST_START_TEST (test_zero)
   gint16 in[4] = { 16384, -256, 128, -512 };
   gint16 out[4] = { 0, 0, 0, 0 };
   gint16 *res;
+  GstMapInfo map;
 
   invert = setup_invert ();
   g_object_set (G_OBJECT (invert), "degree", 0.5, NULL);
@@ -149,10 +151,10 @@ GST_START_TEST (test_zero)
       "could not set to playing");
 
   inbuffer = gst_buffer_new_and_alloc (8);
-  memcpy (GST_BUFFER_DATA (inbuffer), in, 8);
-  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 8) == 0);
+  gst_buffer_fill (inbuffer, 0, in, 8);
+  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 8) == 0);
   caps = gst_caps_from_string (INVERT_CAPS_STRING);
-  gst_buffer_set_caps (inbuffer, caps);
+  gst_pad_set_caps (mysrcpad, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -162,10 +164,13 @@ GST_START_TEST (test_zero)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
+  gst_buffer_map (outbuffer, &map, GST_MAP_READ);
+  res = (gint16 *) map.data;
   GST_INFO ("expected %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], res[0], res[1], res[2], res[3]);
-  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 8) == 0);
+  gst_buffer_unmap (outbuffer, &map);
+
+  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 8) == 0);
 
   /* cleanup */
   cleanup_invert (invert);
@@ -181,6 +186,7 @@ GST_START_TEST (test_full_inverse)
   gint16 in[4] = { 16384, -256, 128, -512 };
   gint16 out[4] = { -16385, 255, -129, 511 };
   gint16 *res;
+  GstMapInfo map;
 
   invert = setup_invert ();
   g_object_set (G_OBJECT (invert), "degree", 1.0, NULL);
@@ -189,10 +195,10 @@ GST_START_TEST (test_full_inverse)
       "could not set to playing");
 
   inbuffer = gst_buffer_new_and_alloc (8);
-  memcpy (GST_BUFFER_DATA (inbuffer), in, 8);
-  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 8) == 0);
+  gst_buffer_fill (inbuffer, 0, in, 8);
+  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 8) == 0);
   caps = gst_caps_from_string (INVERT_CAPS_STRING);
-  gst_buffer_set_caps (inbuffer, caps);
+  gst_pad_set_caps (mysrcpad, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -202,10 +208,13 @@ GST_START_TEST (test_full_inverse)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
+  gst_buffer_map (outbuffer, &map, GST_MAP_READ);
+  res = (gint16 *) map.data;
   GST_INFO ("expected %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], res[0], res[1], res[2], res[3]);
-  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 8) == 0);
+  gst_buffer_unmap (outbuffer, &map);
+
+  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 8) == 0);
 
   /* cleanup */
   cleanup_invert (invert);
@@ -221,6 +230,7 @@ GST_START_TEST (test_25_inverse)
   gint16 in[4] = { 16384, -256, 128, -512 };
   gint16 out[4] = { 8191, -128, 63, -256 };
   gint16 *res;
+  GstMapInfo map;
 
   invert = setup_invert ();
   g_object_set (G_OBJECT (invert), "degree", 0.25, NULL);
@@ -229,10 +239,10 @@ GST_START_TEST (test_25_inverse)
       "could not set to playing");
 
   inbuffer = gst_buffer_new_and_alloc (8);
-  memcpy (GST_BUFFER_DATA (inbuffer), in, 8);
-  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 8) == 0);
+  gst_buffer_fill (inbuffer, 0, in, 8);
+  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 8) == 0);
   caps = gst_caps_from_string (INVERT_CAPS_STRING);
-  gst_buffer_set_caps (inbuffer, caps);
+  gst_pad_set_caps (mysrcpad, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -242,10 +252,13 @@ GST_START_TEST (test_25_inverse)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
+  gst_buffer_map (outbuffer, &map, GST_MAP_READ);
+  res = (gint16 *) map.data;
   GST_INFO ("expected %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], res[0], res[1], res[2], res[3]);
-  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 8) == 0);
+  gst_buffer_unmap (outbuffer, &map);
+
+  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 8) == 0);
 
   /* cleanup */
   cleanup_invert (invert);
@@ -253,7 +266,7 @@ GST_START_TEST (test_25_inverse)
 
 GST_END_TEST;
 
-Suite *
+static Suite *
 invert_suite (void)
 {
   Suite *s = suite_create ("invert");

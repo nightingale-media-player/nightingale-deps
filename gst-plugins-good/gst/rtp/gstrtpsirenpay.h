@@ -23,11 +23,11 @@
 #define __GST_RTP_SIREN_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertpaudiopayload.h>
+#include <gst/rtp/gstrtpbaseaudiopayload.h>
 
 G_BEGIN_DECLS
 #define GST_TYPE_RTP_SIREN_PAY \
-  (gst_rtpsirenpay_get_type())
+  (gst_rtp_siren_pay_get_type())
 #define GST_RTP_SIREN_PAY(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_RTP_SIREN_PAY,GstRTPSirenPay))
 #define GST_RTP_SIREN_PAY_CLASS(klass) \
@@ -41,13 +41,15 @@ typedef struct _GstRTPSirenPayClass GstRTPSirenPayClass;
 
 struct _GstRTPSirenPay
 {
-  GstBaseRTPAudioPayload audiopayload;
+  GstRTPBaseAudioPayload audiopayload;
 };
 
 struct _GstRTPSirenPayClass
 {
-  GstBaseRTPAudioPayloadClass parent_class;
+  GstRTPBaseAudioPayloadClass parent_class;
 };
+
+GType gst_rtp_siren_pay_get_type (void);
 
 gboolean gst_rtp_siren_pay_plugin_init (GstPlugin * plugin);
 

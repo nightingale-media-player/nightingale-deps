@@ -22,39 +22,30 @@
 #ifndef __GST_PULSEUTIL_H__
 #define __GST_PULSEUTIL_H__
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <gst/gst.h>
 #include <pulse/pulseaudio.h>
+#include <gst/audio/gstaudioringbuffer.h>
 #include <gst/audio/gstaudiosink.h>
 
-gboolean gst_pulse_fill_sample_spec (GstRingBufferSpec * spec,
+gboolean gst_pulse_fill_sample_spec (GstAudioRingBufferSpec * spec,
     pa_sample_spec * ss);
+gboolean gst_pulse_fill_format_info (GstAudioRingBufferSpec * spec,
+    pa_format_info ** f, guint * channels);
 
 gchar *gst_pulse_client_name (void);
 
 pa_channel_map *gst_pulse_gst_to_channel_map (pa_channel_map * map,
-    const GstRingBufferSpec * spec);
+    const GstAudioRingBufferSpec * spec);
 
-GstRingBufferSpec *gst_pulse_channel_map_to_gst (const pa_channel_map * map,
-    GstRingBufferSpec * spec);
+GstAudioRingBufferSpec *gst_pulse_channel_map_to_gst (const pa_channel_map * map,
+    GstAudioRingBufferSpec * spec);
 
-void gst_pulse_cvolume_from_linear(pa_cvolume *v, unsigned channels, gdouble volume);
+void gst_pulse_cvolume_from_linear (pa_cvolume *v, unsigned channels, gdouble volume);
 
-#if !HAVE_PULSE_0_9_11
-static inline int PA_CONTEXT_IS_GOOD(pa_context_state_t x) {
-    return
-        x == PA_CONTEXT_CONNECTING ||
-        x == PA_CONTEXT_AUTHORIZING ||
-        x == PA_CONTEXT_SETTING_NAME ||
-        x == PA_CONTEXT_READY;
-}
-
-/** Return non-zero if the passed state is one of the connected states */
-static inline int PA_STREAM_IS_GOOD(pa_stream_state_t x) {
-    return
-        x == PA_STREAM_CREATING ||
-        x == PA_STREAM_READY;
-}
-
-#endif
+pa_proplist *gst_pulse_make_proplist (const GstStructure *properties);
 
 #endif

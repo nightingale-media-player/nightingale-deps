@@ -3,16 +3,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>mulawenc</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-mulawdec.html" title="mulawdec">
 <link rel="next" href="gst-plugins-good-plugins-multifilesink.html" title="multifilesink">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -20,16 +17,16 @@
 <td><a accesskey="p" href="gst-plugins-good-plugins-mulawdec.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-multifilesink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-mulawenc.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-mulawenc.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-mulawenc.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry" title="mulawenc">
+<div class="refentry">
 <a name="gst-plugins-good-plugins-mulawenc"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -38,21 +35,21 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="gst-plugins-good-plugins-mulawenc.synopsis"></a><h2>Synopsis</h2>
-<a name="GstMuLawDec"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-good-plugins-mulawdec.html#GstMuLawDec-struct" title="GstMuLawDec">GstMuLawDec</a>;
-                    <a class="link" href="gst-plugins-good-plugins-mulawenc.html#GstMuLawEnc" title="GstMuLawEnc">GstMuLawEnc</a>;
+<a name="GstMuLawDec"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-mulawdec.html#GstMuLawDec-struct" title="struct GstMuLawDec">GstMuLawDec</a>;
+struct              <a class="link" href="gst-plugins-good-plugins-mulawenc.html#GstMuLawEnc" title="struct GstMuLawEnc">GstMuLawEnc</a>;
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-mulawenc.description"></a><h2>Description</h2>
 <p>
-This element encode mulaw audio. Mulaw coding is also known as G.711.</p>
-<div class="refsynopsisdiv" title="Synopsis">
+This element encode mulaw audio. Mulaw coding is also known as G.711.
+</p>
+<div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" title="Element Information">
-<a name="id480353"></a><h3>Element Information</h3>
+<div class="refsect2">
+<a name="idp10124640"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -74,8 +71,8 @@ This element encode mulaw audio. Mulaw coding is also known as G.711.</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="Element Pads">
-<a name="id547123"></a><h3>Element Pads</h3>
+<div class="refsect2">
+<a name="idp12146528"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -93,7 +90,7 @@ This element encode mulaw audio. Mulaw coding is also known as G.711.</p>
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>audio/x-raw-int, rate=(int)[ 8000, 192000 ], channels=(int)[ 1, 2 ], endianness=(int)1234, width=(int)16, depth=(int)16, signed=(boolean)true</td>
+<td>audio/x-raw, format=(string)S16LE, layout=(string)interleaved, rate=(int)[ 8000, 192000 ], channels=(int)[ 1, 2 ]</td>
 </tr>
 </tbody>
 </table></div>
@@ -123,25 +120,25 @@ This element encode mulaw audio. Mulaw coding is also known as G.711.</p>
 <p>
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-mulawenc.details"></a><h2>Details</h2>
-<div class="refsect2" title="GstMuLawDec">
-<a name="GstMuLawDec-struct"></a><h3>GstMuLawDec</h3>
-<pre class="programlisting">typedef struct _GstMuLawDec GstMuLawDec;</pre>
+<div class="refsect2">
+<a name="GstMuLawDec-struct"></a><h3>struct GstMuLawDec</h3>
+<pre class="programlisting">struct GstMuLawDec;</pre>
 <p>
 </p>
 </div>
 <hr>
-<div class="refsect2" title="GstMuLawEnc">
-<a name="GstMuLawEnc"></a><h3>GstMuLawEnc</h3>
-<pre class="programlisting">typedef struct {
+<div class="refsect2">
+<a name="GstMuLawEnc"></a><h3>struct GstMuLawEnc</h3>
+<pre class="programlisting">struct GstMuLawEnc {
   GstElement element;
 
   GstPad *sinkpad,*srcpad;
 
   gint channels;
   gint rate;
-} GstMuLawEnc;
+};
 </pre>
 <p>
 </p>
@@ -150,6 +147,6 @@ This element encode mulaw audio. Mulaw coding is also known as G.711.</p>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

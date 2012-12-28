@@ -47,8 +47,9 @@ typedef struct
   GstBuffer *buffer;            /* the queued buffer for this pad */
   GstClockTime timestamp;       /* its timestamp, converted to running_time so that we can
                                    correctly sort over multiple segments. */
+  GstPad *pad;
 }
-GstMultipartPad;
+GstMultipartPadData;
 
 /**
  * GstMultipartMux:
@@ -75,6 +76,7 @@ struct _GstMultipartMux
 
   gboolean negotiated;
   gboolean need_segment;
+  gboolean need_stream_start;
 };
 
 struct _GstMultipartMuxClass
@@ -83,6 +85,10 @@ struct _GstMultipartMuxClass
 
   GHashTable *mimetypes;
 };
+
+GType gst_multipart_mux_get_type (void);
+
+gboolean gst_multipart_mux_plugin_init (GstPlugin * plugin);
 
 G_END_DECLS
 

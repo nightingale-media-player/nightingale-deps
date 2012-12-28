@@ -22,7 +22,6 @@
 #define __GST_ID3DEMUX_H__
 
 #include <gst/tag/gsttagdemux.h>
-#include <gst/tag/gstid3v2tag.h>
 
 G_BEGIN_DECLS
 

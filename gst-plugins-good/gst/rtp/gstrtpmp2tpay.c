@@ -27,13 +27,6 @@
 
 #include "gstrtpmp2tpay.h"
 
-/* elementfactory information */
-static const GstElementDetails gst_rtp_mp2t_pay_details =
-GST_ELEMENT_DETAILS ("RTP MPEG2 Transport Stream payloader",
-    "Codec/Payloader/Network",
-    "Payload-encodes MPEG2 TS into RTP packets (RFC 2250)",
-    "Wim Taymans <wim.taymans@gmail.com>");
-
 static GstStaticPadTemplate gst_rtp_mp2t_pay_sink_template =
 GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
@@ -49,51 +42,50 @@ GST_STATIC_PAD_TEMPLATE ("src",
     GST_STATIC_CAPS ("application/x-rtp, "
         "media = (string) \"video\", "
         "payload = (int) " GST_RTP_PAYLOAD_DYNAMIC_STRING ", "
-        "clock-rate = (int) 90000, " "encoding-name = (string) \"MP2T-ES\"")
+        "clock-rate = (int) 90000, " "encoding-name = (string) \"MP2T\"")
     );
 
-static gboolean gst_rtp_mp2t_pay_setcaps (GstBaseRTPPayload * payload,
+static gboolean gst_rtp_mp2t_pay_setcaps (GstRTPBasePayload * payload,
     GstCaps * caps);
-static GstFlowReturn gst_rtp_mp2t_pay_handle_buffer (GstBaseRTPPayload *
+static GstFlowReturn gst_rtp_mp2t_pay_handle_buffer (GstRTPBasePayload *
     payload, GstBuffer * buffer);
 static GstFlowReturn gst_rtp_mp2t_pay_flush (GstRTPMP2TPay * rtpmp2tpay);
 static void gst_rtp_mp2t_pay_finalize (GObject * object);
 
-GST_BOILERPLATE (GstRTPMP2TPay, gst_rtp_mp2t_pay, GstBaseRTPPayload,
-    GST_TYPE_BASE_RTP_PAYLOAD);
-
-static void
-gst_rtp_mp2t_pay_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_mp2t_pay_sink_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_mp2t_pay_src_template));
-  gst_element_class_set_details (element_class, &gst_rtp_mp2t_pay_details);
-}
+#define gst_rtp_mp2t_pay_parent_class parent_class
+G_DEFINE_TYPE (GstRTPMP2TPay, gst_rtp_mp2t_pay, GST_TYPE_RTP_BASE_PAYLOAD);
 
 static void
 gst_rtp_mp2t_pay_class_init (GstRTPMP2TPayClass * klass)
 {
   GObjectClass *gobject_class;
-  GstBaseRTPPayloadClass *gstbasertppayload_class;
+  GstElementClass *gstelement_class;
+  GstRTPBasePayloadClass *gstrtpbasepayload_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstbasertppayload_class = (GstBaseRTPPayloadClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
+  gstrtpbasepayload_class = (GstRTPBasePayloadClass *) klass;
 
   gobject_class->finalize = gst_rtp_mp2t_pay_finalize;
 
-  gstbasertppayload_class->set_caps = gst_rtp_mp2t_pay_setcaps;
-  gstbasertppayload_class->handle_buffer = gst_rtp_mp2t_pay_handle_buffer;
+  gstrtpbasepayload_class->set_caps = gst_rtp_mp2t_pay_setcaps;
+  gstrtpbasepayload_class->handle_buffer = gst_rtp_mp2t_pay_handle_buffer;
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_mp2t_pay_sink_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_mp2t_pay_src_template));
+  gst_element_class_set_static_metadata (gstelement_class,
+      "RTP MPEG2 Transport Stream payloader", "Codec/Payloader/Network/RTP",
+      "Payload-encodes MPEG2 TS into RTP packets (RFC 2250)",
+      "Wim Taymans <wim.taymans@gmail.com>");
 }
 
 static void
-gst_rtp_mp2t_pay_init (GstRTPMP2TPay * rtpmp2tpay, GstRTPMP2TPayClass * klass)
+gst_rtp_mp2t_pay_init (GstRTPMP2TPay * rtpmp2tpay)
 {
-  GST_BASE_RTP_PAYLOAD (rtpmp2tpay)->clock_rate = 90000;
-  GST_BASE_RTP_PAYLOAD_PT (rtpmp2tpay) = GST_RTP_PAYLOAD_MP2T;
+  GST_RTP_BASE_PAYLOAD (rtpmp2tpay)->clock_rate = 90000;
+  GST_RTP_BASE_PAYLOAD_PT (rtpmp2tpay) = GST_RTP_PAYLOAD_MP2T;
 
   rtpmp2tpay->adapter = gst_adapter_new ();
 }
@@ -112,47 +104,75 @@ gst_rtp_mp2t_pay_finalize (GObject * object)
 }
 
 static gboolean
-gst_rtp_mp2t_pay_setcaps (GstBaseRTPPayload * payload, GstCaps * caps)
+gst_rtp_mp2t_pay_setcaps (GstRTPBasePayload * payload, GstCaps * caps)
 {
-  gst_basertppayload_set_options (payload, "video", TRUE, "MP2T-ES", 90000);
-  gst_basertppayload_set_outcaps (payload, NULL);
+  gboolean res;
 
-  return TRUE;
+  gst_rtp_base_payload_set_options (payload, "video", TRUE, "MP2T", 90000);
+  res = gst_rtp_base_payload_set_outcaps (payload, NULL);
+
+  return res;
 }
 
 static GstFlowReturn
 gst_rtp_mp2t_pay_flush (GstRTPMP2TPay * rtpmp2tpay)
 {
-  guint avail;
-  guint8 *payload;
-  GstFlowReturn ret;
+  guint avail, mtu;
+  GstFlowReturn ret = GST_FLOW_OK;
   GstBuffer *outbuf;
 
   avail = gst_adapter_available (rtpmp2tpay->adapter);
-  outbuf = gst_rtp_buffer_new_allocate (avail, 0, 0);
 
-  /* get payload */
-  payload = gst_rtp_buffer_get_payload (outbuf);
+  mtu = GST_RTP_BASE_PAYLOAD_MTU (rtpmp2tpay);
 
-  /* copy stuff from adapter to payload */
-  gst_adapter_copy (rtpmp2tpay->adapter, payload, 0, avail);
+  while (avail > 0 && (ret == GST_FLOW_OK)) {
+    guint towrite;
+    guint8 *payload;
+    guint payload_len;
+    guint packet_len;
+    GstRTPBuffer rtp = { NULL };
 
-  GST_BUFFER_TIMESTAMP (outbuf) = rtpmp2tpay->first_ts;
-  GST_BUFFER_DURATION (outbuf) = rtpmp2tpay->duration;
+    /* this will be the total length of the packet */
+    packet_len = gst_rtp_buffer_calc_packet_len (avail, 0, 0);
 
-  GST_DEBUG_OBJECT (rtpmp2tpay, "pushing buffer of size %d",
-      GST_BUFFER_SIZE (outbuf));
+    /* fill one MTU or all available bytes */
+    towrite = MIN (packet_len, mtu);
 
-  ret = gst_basertppayload_push (GST_BASE_RTP_PAYLOAD (rtpmp2tpay), outbuf);
+    /* this is the payload length */
+    payload_len = gst_rtp_buffer_calc_payload_len (towrite, 0, 0);
+    payload_len -= payload_len % 188;
 
-  /* flush the adapter content */
-  gst_adapter_flush (rtpmp2tpay->adapter, avail);
+    /* need whole packets */
+    if (!payload_len)
+      break;
+
+    /* create buffer to hold the payload */
+    outbuf = gst_rtp_buffer_new_allocate (payload_len, 0, 0);
+
+    /* get payload */
+    gst_rtp_buffer_map (outbuf, GST_MAP_WRITE, &rtp);
+    payload = gst_rtp_buffer_get_payload (&rtp);
+
+    /* copy stuff from adapter to payload */
+    gst_adapter_copy (rtpmp2tpay->adapter, payload, 0, payload_len);
+    gst_rtp_buffer_unmap (&rtp);
+    gst_adapter_flush (rtpmp2tpay->adapter, payload_len);
+    avail -= payload_len;
+
+    GST_BUFFER_TIMESTAMP (outbuf) = rtpmp2tpay->first_ts;
+    GST_BUFFER_DURATION (outbuf) = rtpmp2tpay->duration;
+
+    GST_DEBUG_OBJECT (rtpmp2tpay, "pushing buffer of size %u",
+        (guint) gst_buffer_get_size (outbuf));
+
+    ret = gst_rtp_base_payload_push (GST_RTP_BASE_PAYLOAD (rtpmp2tpay), outbuf);
+  }
 
   return ret;
 }
 
 static GstFlowReturn
-gst_rtp_mp2t_pay_handle_buffer (GstBaseRTPPayload * basepayload,
+gst_rtp_mp2t_pay_handle_buffer (GstRTPBasePayload * basepayload,
     GstBuffer * buffer)
 {
   GstRTPMP2TPay *rtpmp2tpay;
@@ -162,10 +182,11 @@ gst_rtp_mp2t_pay_handle_buffer (GstBaseRTPPayload * basepayload,
 
   rtpmp2tpay = GST_RTP_MP2T_PAY (basepayload);
 
-  size = GST_BUFFER_SIZE (buffer);
+  size = gst_buffer_get_size (buffer);
   timestamp = GST_BUFFER_TIMESTAMP (buffer);
   duration = GST_BUFFER_DURATION (buffer);
 
+again:
   ret = GST_FLOW_OK;
   avail = gst_adapter_available (rtpmp2tpay->adapter);
 
@@ -175,13 +196,12 @@ gst_rtp_mp2t_pay_handle_buffer (GstBaseRTPPayload * basepayload,
     rtpmp2tpay->duration = duration;
   }
 
-  /* get packet length of previous data and this new data, 
-   * payload length includes a 4 byte header */
-  packet_len = gst_rtp_buffer_calc_packet_len (4 + avail + size, 0, 0);
+  /* get packet length of previous data and this new data */
+  packet_len = gst_rtp_buffer_calc_packet_len (avail + size, 0, 0);
 
-  /* if this buffer is going to overflow the packet, flush what we
-   * have. */
-  if (gst_basertppayload_is_filled (basepayload,
+  /* if this buffer is going to overflow the packet, flush what we have,
+   * or if upstream is handing us several packets, to keep latency low */
+  if (!size || gst_rtp_base_payload_is_filled (basepayload,
           packet_len, rtpmp2tpay->duration + duration)) {
     ret = gst_rtp_mp2t_pay_flush (rtpmp2tpay);
     rtpmp2tpay->first_ts = timestamp;
@@ -194,7 +214,15 @@ gst_rtp_mp2t_pay_handle_buffer (GstBaseRTPPayload * basepayload,
   }
 
   /* copy buffer to adapter */
-  gst_adapter_push (rtpmp2tpay->adapter, buffer);
+  if (buffer) {
+    gst_adapter_push (rtpmp2tpay->adapter, buffer);
+    buffer = NULL;
+  }
+
+  if (size >= (188 * 2)) {
+    size = 0;
+    goto again;
+  }
 
   return ret;
 
@@ -204,5 +232,5 @@ gboolean
 gst_rtp_mp2t_pay_plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "rtpmp2tpay",
-      GST_RANK_NONE, GST_TYPE_RTP_MP2T_PAY);
+      GST_RANK_SECONDARY, GST_TYPE_RTP_MP2T_PAY);
 }

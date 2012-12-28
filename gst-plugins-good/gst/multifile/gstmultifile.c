@@ -28,8 +28,9 @@
 
 #include <gst/gst.h>
 
-GType gst_multi_file_src_get_type (void);
-GType gst_multi_file_sink_get_type (void);
+#include "gstmultifilesink.h"
+#include "gstmultifilesrc.h"
+#include "gstsplitfilesrc.h"
 
 static gboolean
 plugin_init (GstPlugin * plugin)
@@ -38,12 +39,14 @@ plugin_init (GstPlugin * plugin)
       gst_multi_file_src_get_type ());
   gst_element_register (plugin, "multifilesink", GST_RANK_NONE,
       gst_multi_file_sink_get_type ());
+  gst_element_register (plugin, "splitfilesrc", GST_RANK_NONE,
+      gst_split_file_src_get_type ());
 
   return TRUE;
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "multifile",
-    "Writes buffers to sequentially named files",
+    multifile,
+    "Reads/Writes buffers from/to sequentially named files",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

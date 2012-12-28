@@ -20,7 +20,7 @@
 #define __GST_RTP_G729_DEPAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertpdepayload.h>
+#include <gst/rtp/gstrtpbasedepayload.h>
 
 G_BEGIN_DECLS
 
@@ -44,15 +44,15 @@ typedef struct _GstRtpG729DepayClass GstRtpG729DepayClass;
 
 struct _GstRtpG729Depay
 {
-  GstBaseRTPDepayload depayload;
-
-  gint     channels;
+  GstRTPBaseDepayload depayload;
 };
 
 struct _GstRtpG729DepayClass
 {
-  GstBaseRTPDepayloadClass parent_class;
+  GstRTPBaseDepayloadClass parent_class;
 };
+
+GType gst_rtp_g729_depay_get_type (void);
 
 gboolean gst_rtp_g729_depay_plugin_init (GstPlugin * plugin);
 

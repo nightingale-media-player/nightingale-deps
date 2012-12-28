@@ -57,8 +57,6 @@ struct _GstDVDemux {
   GstAdapter    *adapter;
   gint           frame_len;
 
-  /* PAL or NTSC flag */
-  gboolean       PAL;
   /* video params */
   gint           framerate_numerator;
   gint           framerate_denominator;
@@ -77,9 +75,9 @@ struct _GstDVDemux {
   GstDVDemuxSeekHandler seek_handler;
   GstSegment     byte_segment;
   GstSegment     time_segment;
-  gboolean       running;
   gboolean       need_segment;
   gboolean       new_media;
+  int            frames_since_new_media;
   
   gint           found_header; /* ATOMIC */
   GstEvent      *seek_event;

@@ -26,6 +26,7 @@
 #include "config.h"
 #endif
 
+#include <gst/audio/audio.h>
 #include "alaw-encode.h"
 
 GST_DEBUG_CATEGORY_STATIC (alaw_enc_debug);
@@ -34,9 +35,12 @@ GST_DEBUG_CATEGORY_STATIC (alaw_enc_debug);
 extern GstStaticPadTemplate alaw_enc_src_factory;
 extern GstStaticPadTemplate alaw_enc_sink_factory;
 
-static GstFlowReturn gst_alaw_enc_chain (GstPad * pad, GstBuffer * buffer);
+static gboolean gst_alaw_enc_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
+static GstFlowReturn gst_alaw_enc_chain (GstPad * pad, GstObject * parent,
+    GstBuffer * buffer);
 
-GST_BOILERPLATE (GstALawEnc, gst_alaw_enc, GstElement, GST_TYPE_ELEMENT);
+G_DEFINE_TYPE (GstALawEnc, gst_alaw_enc, GST_TYPE_ELEMENT);
 
 /* some day we might have defines in gstconfig.h that tell us about the
  * desired cpu/memory/binary size trade-offs */
@@ -297,13 +301,13 @@ s16_to_alaw (gint pcm_val)
 #endif /* GST_ALAW_ENC_USE_TABLE */
 
 static GstCaps *
-gst_alaw_enc_getcaps (GstPad * pad)
+gst_alaw_enc_getcaps (GstPad * pad, GstCaps * filter)
 {
   GstALawEnc *alawenc;
   GstPad *otherpad;
   GstCaps *othercaps, *result;
-  const GstCaps *templ;
-  gchar *name;
+  GstCaps *templ;
+  const gchar *name;
   gint i;
 
   alawenc = GST_ALAW_ENC (GST_PAD_PARENT (pad));
@@ -313,11 +317,11 @@ gst_alaw_enc_getcaps (GstPad * pad)
     name = "audio/x-alaw";
     otherpad = alawenc->sinkpad;
   } else {
-    name = "audio/x-raw-int";
+    name = "audio/x-raw";
     otherpad = alawenc->srcpad;
   }
   /* get caps from the peer, this can return NULL when there is no peer */
-  othercaps = gst_pad_peer_get_caps (otherpad);
+  othercaps = gst_pad_peer_query_caps (otherpad, NULL);
 
   /* get the template caps to make sure we return something acceptable */
   templ = gst_pad_get_pad_template_caps (pad);
@@ -337,49 +341,70 @@ gst_alaw_enc_getcaps (GstPad * pad)
 
       if (pad == alawenc->srcpad) {
         /* remove the fields we don't want */
-        gst_structure_remove_fields (structure, "width", "depth", "endianness",
-            "signed", NULL);
+        gst_structure_remove_fields (structure, "format", NULL);
       } else {
         /* add fixed fields */
-        gst_structure_set (structure, "width", G_TYPE_INT, 16,
-            "depth", G_TYPE_INT, 16,
-            "endianness", G_TYPE_INT, G_BYTE_ORDER,
-            "signed", G_TYPE_BOOLEAN, TRUE, NULL);
+        gst_structure_set (structure, "format", G_TYPE_STRING,
+            GST_AUDIO_NE (S16), NULL);
       }
     }
     /* filter against the allowed caps of the pad to return our result */
     result = gst_caps_intersect (othercaps, templ);
+    gst_caps_unref (templ);
     gst_caps_unref (othercaps);
   } else {
     /* there was no peer, return the template caps */
-    result = gst_caps_copy (templ);
+    result = templ;
+  }
+  if (filter && result) {
+    GstCaps *temp;
+
+    temp = gst_caps_intersect (result, filter);
+    gst_caps_unref (result);
+    result = temp;
   }
 
   return result;
 }
 
 static gboolean
-gst_alaw_enc_setcaps (GstPad * pad, GstCaps * caps)
+gst_alaw_enc_query (GstPad * pad, GstObject * parent, GstQuery * query)
 {
-  GstALawEnc *alawenc;
-  GstPad *otherpad;
+  gboolean res;
+
+  switch (GST_QUERY_TYPE (query)) {
+    case GST_QUERY_CAPS:
+    {
+      GstCaps *filter, *caps;
+
+      gst_query_parse_caps (query, &filter);
+      caps = gst_alaw_enc_getcaps (pad, filter);
+      gst_query_set_caps_result (query, caps);
+      gst_caps_unref (caps);
+
+      res = TRUE;
+      break;
+    }
+    default:
+      res = gst_pad_query_default (pad, parent, query);
+      break;
+  }
+  return res;
+}
+
+static gboolean
+gst_alaw_enc_setcaps (GstALawEnc * alawenc, GstCaps * caps)
+{
   GstStructure *structure;
   gboolean ret;
   GstCaps *base_caps;
-
-  alawenc = GST_ALAW_ENC (GST_PAD_PARENT (pad));
 
   structure = gst_caps_get_structure (caps, 0);
   gst_structure_get_int (structure, "channels", &alawenc->channels);
   gst_structure_get_int (structure, "rate", &alawenc->rate);
 
-  if (pad == alawenc->sinkpad) {
-    otherpad = alawenc->srcpad;
-  } else {
-    otherpad = alawenc->sinkpad;
-  }
-
-  base_caps = gst_caps_copy (gst_pad_get_pad_template_caps (otherpad));
+  base_caps = gst_pad_get_pad_template_caps (alawenc->srcpad);
+  base_caps = gst_caps_make_writable (base_caps);
   structure = gst_caps_get_structure (base_caps, 0);
   gst_structure_set (structure, "rate", G_TYPE_INT, alawenc->rate, NULL);
   gst_structure_set (structure, "channels", G_TYPE_INT, alawenc->channels,
@@ -388,7 +413,7 @@ gst_alaw_enc_setcaps (GstPad * pad, GstCaps * caps)
   GST_DEBUG_OBJECT (alawenc, "rate=%d, channels=%d", alawenc->rate,
       alawenc->channels);
 
-  ret = gst_pad_set_caps (otherpad, base_caps);
+  ret = gst_pad_set_caps (alawenc->srcpad, base_caps);
 
   gst_caps_unref (base_caps);
 
@@ -396,7 +421,7 @@ gst_alaw_enc_setcaps (GstPad * pad, GstCaps * caps)
 }
 
 static void
-gst_alaw_enc_base_init (gpointer klass)
+gst_alaw_enc_class_init (GstALawEncClass * klass)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
 
@@ -405,7 +430,7 @@ gst_alaw_enc_base_init (gpointer klass)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&alaw_enc_sink_factory));
 
-  gst_element_class_set_details_simple (element_class,
+  gst_element_class_set_static_metadata (element_class,
       "A Law audio encoder", "Codec/Encoder/Audio",
       "Convert 16bit PCM to 8bit A law",
       "Zaheer Abbas Merali <zaheerabbas at merali dot org>");
@@ -414,30 +439,22 @@ gst_alaw_enc_base_init (gpointer klass)
 }
 
 static void
-gst_alaw_enc_class_init (GstALawEncClass * klass)
-{
-  /* nothing to do here for now */
-}
-
-static void
-gst_alaw_enc_init (GstALawEnc * alawenc, GstALawEncClass * klass)
+gst_alaw_enc_init (GstALawEnc * alawenc)
 {
   alawenc->sinkpad =
       gst_pad_new_from_static_template (&alaw_enc_sink_factory, "sink");
-  gst_pad_set_setcaps_function (alawenc->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_alaw_enc_setcaps));
-  gst_pad_set_getcaps_function (alawenc->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_alaw_enc_getcaps));
+  gst_pad_set_query_function (alawenc->sinkpad,
+      GST_DEBUG_FUNCPTR (gst_alaw_enc_query));
+  gst_pad_set_event_function (alawenc->sinkpad,
+      GST_DEBUG_FUNCPTR (gst_alaw_enc_event));
   gst_pad_set_chain_function (alawenc->sinkpad,
       GST_DEBUG_FUNCPTR (gst_alaw_enc_chain));
   gst_element_add_pad (GST_ELEMENT (alawenc), alawenc->sinkpad);
 
   alawenc->srcpad =
       gst_pad_new_from_static_template (&alaw_enc_src_factory, "src");
-  gst_pad_set_setcaps_function (alawenc->srcpad,
-      GST_DEBUG_FUNCPTR (gst_alaw_enc_setcaps));
-  gst_pad_set_getcaps_function (alawenc->srcpad,
-      GST_DEBUG_FUNCPTR (gst_alaw_enc_getcaps));
+  gst_pad_set_query_function (alawenc->srcpad,
+      GST_DEBUG_FUNCPTR (gst_alaw_enc_query));
   gst_pad_use_fixed_caps (alawenc->srcpad);
   gst_element_add_pad (GST_ELEMENT (alawenc), alawenc->srcpad);
 
@@ -446,12 +463,40 @@ gst_alaw_enc_init (GstALawEnc * alawenc, GstALawEncClass * klass)
   alawenc->rate = 0;
 }
 
-static GstFlowReturn
-gst_alaw_enc_chain (GstPad * pad, GstBuffer * buffer)
+static gboolean
+gst_alaw_enc_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
   GstALawEnc *alawenc;
+  gboolean res;
+
+  alawenc = GST_ALAW_ENC (parent);
+
+  switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_CAPS:
+    {
+      GstCaps *caps;
+
+      gst_event_parse_caps (event, &caps);
+      gst_alaw_enc_setcaps (alawenc, caps);
+      gst_event_unref (event);
+
+      res = TRUE;
+      break;
+    }
+    default:
+      res = gst_pad_event_default (pad, parent, event);
+      break;
+  }
+  return res;
+}
+
+static GstFlowReturn
+gst_alaw_enc_chain (GstPad * pad, GstObject * parent, GstBuffer * buffer)
+{
+  GstALawEnc *alawenc;
+  GstMapInfo inmap, outmap;
   gint16 *linear_data;
-  guint linear_size;
+  gsize linear_size;
   guint8 *alaw_data;
   guint alaw_size;
   GstBuffer *outbuf;
@@ -459,13 +504,14 @@ gst_alaw_enc_chain (GstPad * pad, GstBuffer * buffer)
   GstFlowReturn ret;
   GstClockTime timestamp, duration;
 
-  alawenc = GST_ALAW_ENC (GST_PAD_PARENT (pad));
+  alawenc = GST_ALAW_ENC (parent);
 
   if (G_UNLIKELY (alawenc->rate == 0 || alawenc->channels == 0))
     goto not_negotiated;
 
-  linear_data = (gint16 *) GST_BUFFER_DATA (buffer);
-  linear_size = GST_BUFFER_SIZE (buffer);
+  gst_buffer_map (buffer, &inmap, GST_MAP_READ);
+  linear_data = (gint16 *) inmap.data;
+  linear_size = inmap.size;
 
   alaw_size = linear_size / 2;
 
@@ -475,25 +521,16 @@ gst_alaw_enc_chain (GstPad * pad, GstBuffer * buffer)
   GST_LOG_OBJECT (alawenc, "buffer with ts=%" GST_TIME_FORMAT,
       GST_TIME_ARGS (timestamp));
 
-  ret =
-      gst_pad_alloc_buffer_and_set_caps (alawenc->srcpad,
-      GST_BUFFER_OFFSET_NONE, alaw_size, GST_PAD_CAPS (alawenc->srcpad),
-      &outbuf);
-  if (ret != GST_FLOW_OK)
-    goto done;
+  outbuf = gst_buffer_new_allocate (NULL, alaw_size, NULL);
 
   if (duration == GST_CLOCK_TIME_NONE) {
     duration = gst_util_uint64_scale_int (alaw_size,
         GST_SECOND, alawenc->rate * alawenc->channels);
   }
 
-  if (GST_BUFFER_SIZE (outbuf) < alaw_size) {
-    /* pad-alloc can return a smaller buffer */
-    gst_buffer_unref (outbuf);
-    outbuf = gst_buffer_new_and_alloc (alaw_size);
-  }
-
-  alaw_data = (guint8 *) GST_BUFFER_DATA (outbuf);
+  gst_buffer_map (outbuf, &outmap, GST_MAP_WRITE);
+  alaw_data = outmap.data;
+  alaw_size = outmap.size;
 
   /* copy discont flag */
   if (GST_BUFFER_FLAG_IS_SET (buffer, GST_BUFFER_FLAG_DISCONT))
@@ -502,23 +539,21 @@ gst_alaw_enc_chain (GstPad * pad, GstBuffer * buffer)
   GST_BUFFER_TIMESTAMP (outbuf) = timestamp;
   GST_BUFFER_DURATION (outbuf) = duration;
 
-  gst_buffer_set_caps (outbuf, GST_PAD_CAPS (alawenc->srcpad));
-
   for (i = 0; i < alaw_size; i++) {
     alaw_data[i] = s16_to_alaw (linear_data[i]);
   }
 
-  ret = gst_pad_push (alawenc->srcpad, outbuf);
-
-done:
-
+  gst_buffer_unmap (outbuf, &outmap);
+  gst_buffer_unmap (buffer, &inmap);
   gst_buffer_unref (buffer);
+
+  ret = gst_pad_push (alawenc->srcpad, outbuf);
 
   return ret;
 
 not_negotiated:
   {
-    ret = GST_FLOW_NOT_NEGOTIATED;
-    goto done;
+    gst_buffer_unref (buffer);
+    return GST_FLOW_NOT_NEGOTIATED;
   }
 }

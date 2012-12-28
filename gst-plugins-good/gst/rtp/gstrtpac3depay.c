@@ -29,13 +29,6 @@
 GST_DEBUG_CATEGORY_STATIC (rtpac3depay_debug);
 #define GST_CAT_DEFAULT (rtpac3depay_debug)
 
-/* elementfactory information */
-static const GstElementDetails gst_rtp_ac3depay_details =
-GST_ELEMENT_DETAILS ("RTP AC3 depayloader",
-    "Codec/Depayloader/Network",
-    "Extracts AC3 audio from RTP packets (RFC 4184)",
-    "Wim Taymans <wim.taymans@gmail.com>");
-
 static GstStaticPadTemplate gst_rtp_ac3_depay_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -54,52 +47,47 @@ GST_STATIC_PAD_TEMPLATE ("sink",
         "encoding-name = (string) \"AC3\"")
     );
 
-GST_BOILERPLATE (GstRtpAC3Depay, gst_rtp_ac3_depay, GstBaseRTPDepayload,
-    GST_TYPE_BASE_RTP_DEPAYLOAD);
+G_DEFINE_TYPE (GstRtpAC3Depay, gst_rtp_ac3_depay, GST_TYPE_RTP_BASE_DEPAYLOAD);
 
-static gboolean gst_rtp_ac3_depay_setcaps (GstBaseRTPDepayload * depayload,
+static gboolean gst_rtp_ac3_depay_setcaps (GstRTPBaseDepayload * depayload,
     GstCaps * caps);
-static GstBuffer *gst_rtp_ac3_depay_process (GstBaseRTPDepayload * depayload,
+static GstBuffer *gst_rtp_ac3_depay_process (GstRTPBaseDepayload * depayload,
     GstBuffer * buf);
-
-static void
-gst_rtp_ac3_depay_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_ac3_depay_src_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_ac3_depay_sink_template));
-
-  gst_element_class_set_details (element_class, &gst_rtp_ac3depay_details);
-}
 
 static void
 gst_rtp_ac3_depay_class_init (GstRtpAC3DepayClass * klass)
 {
-  GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
+  GstElementClass *gstelement_class;
+  GstRTPBaseDepayloadClass *gstrtpbasedepayload_class;
 
-  gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
+  gstrtpbasedepayload_class = (GstRTPBaseDepayloadClass *) klass;
 
-  parent_class = g_type_class_peek_parent (klass);
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_ac3_depay_src_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_ac3_depay_sink_template));
 
-  gstbasertpdepayload_class->set_caps = gst_rtp_ac3_depay_setcaps;
-  gstbasertpdepayload_class->process = gst_rtp_ac3_depay_process;
+  gst_element_class_set_static_metadata (gstelement_class,
+      "RTP AC3 depayloader", "Codec/Depayloader/Network/RTP",
+      "Extracts AC3 audio from RTP packets (RFC 4184)",
+      "Wim Taymans <wim.taymans@gmail.com>");
+
+  gstrtpbasedepayload_class->set_caps = gst_rtp_ac3_depay_setcaps;
+  gstrtpbasedepayload_class->process = gst_rtp_ac3_depay_process;
 
   GST_DEBUG_CATEGORY_INIT (rtpac3depay_debug, "rtpac3depay", 0,
-      "MPEG Audio RTP Depayloader");
+      "AC3 Audio RTP Depayloader");
 }
 
 static void
-gst_rtp_ac3_depay_init (GstRtpAC3Depay * rtpac3depay,
-    GstRtpAC3DepayClass * klass)
+gst_rtp_ac3_depay_init (GstRtpAC3Depay * rtpac3depay)
 {
-  /* needed because of GST_BOILERPLATE */
+  /* needed because of G_DEFINE_TYPE */
 }
 
 static gboolean
-gst_rtp_ac3_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
+gst_rtp_ac3_depay_setcaps (GstRTPBaseDepayload * depayload, GstCaps * caps)
 {
   GstStructure *structure;
   gint clock_rate;
@@ -112,7 +100,7 @@ gst_rtp_ac3_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
     clock_rate = 90000;         /* default */
   depayload->clock_rate = clock_rate;
 
-  srccaps = gst_caps_new_simple ("audio/ac3", NULL);
+  srccaps = gst_caps_new_empty_simple ("audio/ac3");
   res = gst_pad_set_caps (depayload->srcpad, srccaps);
   gst_caps_unref (srccaps);
 
@@ -167,51 +155,53 @@ static const struct frmsize_s frmsizecod_tbl[] = {
 };
 
 static GstBuffer *
-gst_rtp_ac3_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
+gst_rtp_ac3_depay_process (GstRTPBaseDepayload * depayload, GstBuffer * buf)
 {
   GstRtpAC3Depay *rtpac3depay;
   GstBuffer *outbuf;
+  GstRTPBuffer rtp = { NULL, };
+  guint8 *payload;
+  guint16 FT, NF;
 
   rtpac3depay = GST_RTP_AC3_DEPAY (depayload);
 
-  {
-    guint8 *payload;
-    guint16 FT, NF;
+  gst_rtp_buffer_map (buf, GST_MAP_READ, &rtp);
 
-    if (gst_rtp_buffer_get_payload_len (buf) < 2)
-      goto empty_packet;
+  if (gst_rtp_buffer_get_payload_len (&rtp) < 2)
+    goto empty_packet;
 
-    payload = gst_rtp_buffer_get_payload (buf);
+  payload = gst_rtp_buffer_get_payload (&rtp);
 
-    /* strip off header
-     *
-     *  0                   1
-     *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
-     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-     * |    MBZ    | FT|       NF      |
-     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-     */
-    FT = payload[0] & 0x3;
-    NF = payload[1];
+  /* strip off header
+   *
+   *  0                   1
+   *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
+   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   * |    MBZ    | FT|       NF      |
+   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   */
+  FT = payload[0] & 0x3;
+  NF = payload[1];
 
-    GST_DEBUG_OBJECT (rtpac3depay, "FT: %d, NF: %d", FT, NF);
+  GST_DEBUG_OBJECT (rtpac3depay, "FT: %d, NF: %d", FT, NF);
 
-    /* We don't bother with fragmented packets yet */
-    outbuf = gst_rtp_buffer_get_payload_subbuffer (buf, 2, -1);
+  /* We don't bother with fragmented packets yet */
+  outbuf = gst_rtp_buffer_get_payload_subbuffer (&rtp, 2, -1);
 
-    GST_DEBUG_OBJECT (rtpac3depay, "pushing buffer of size %d",
-        GST_BUFFER_SIZE (outbuf));
+  gst_rtp_buffer_unmap (&rtp);
 
-    return outbuf;
-  }
+  if (outbuf)
+    GST_DEBUG_OBJECT (rtpac3depay, "pushing buffer of size %" G_GSIZE_FORMAT,
+        gst_buffer_get_size (outbuf));
 
-  return NULL;
+  return outbuf;
 
   /* ERRORS */
 empty_packet:
   {
     GST_ELEMENT_WARNING (rtpac3depay, STREAM, DECODE,
         ("Empty Payload."), (NULL));
+    gst_rtp_buffer_unmap (&rtp);
     return NULL;
   }
 }
@@ -220,5 +210,5 @@ gboolean
 gst_rtp_ac3_depay_plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "rtpac3depay",
-      GST_RANK_MARGINAL, GST_TYPE_RTP_AC3_DEPAY);
+      GST_RANK_SECONDARY, GST_TYPE_RTP_AC3_DEPAY);
 }

@@ -57,6 +57,7 @@ struct _GstGoom
   gint height;
   GstClockTime duration;
   guint outsize;
+  GstBufferPool *pool;
 
   /* samples per frame */
   guint spf;
@@ -69,9 +70,6 @@ struct _GstGoom
 
   /* segment state */
   GstSegment segment;
-
-  /* the timestamp of the next frame */
-  GstClockTime next_ts;
 
   /* QoS stuff *//* with LOCK */
   gdouble proportion;

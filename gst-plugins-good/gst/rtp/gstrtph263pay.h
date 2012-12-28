@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2005> Wim Taymans <wim@fluendo.com>
+ * Copyright (C) <2005> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,7 +23,7 @@
 #define __GST_RTP_H263_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertppayload.h>
+#include <gst/rtp/gstrtpbasepayload.h>
 #include <gst/base/gstadapter.h>
 
 G_BEGIN_DECLS
@@ -61,7 +61,7 @@ typedef struct _GstRtpH263PayPackage GstRtpH263PayPackage;
 
 struct _GstRtpH263Pay
 {
-  GstBaseRTPPayload payload;
+  GstRTPBasePayload payload;
 
   GstAdapter *adapter;
   GstClockTime first_ts;
@@ -80,13 +80,14 @@ struct _GstRtpH263PayContext
   guint8 *win_end;
   guint8 cpm;
 
+  guint no_gobs;
   GstRtpH263PayGob **gobs;
 
 };
 
 struct _GstRtpH263PayClass
 {
-  GstBaseRTPPayloadClass parent_class;
+  GstRTPBasePayloadClass parent_class;
 };
 
 typedef struct _GstRtpH263PayAHeader
@@ -404,6 +405,8 @@ struct _GstRtpH263PayPackage
 
 #define GST_RTP_H263_PAY_END(start, len) (((guint8 *)start) + ((guint)len))
 #define GST_RTP_H263_PAY_GOBN(gob) (((((guint8 *) gob)[2] >> 2) & 0x1f)
+
+GType gst_rtp_h263_pay_get_type (void);
 
 gboolean gst_rtp_h263_pay_plugin_init (GstPlugin * plugin);
 
