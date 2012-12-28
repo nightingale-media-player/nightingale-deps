@@ -33,7 +33,7 @@
 SB_VENDOR_TARGET_DEP_MODULES := ogg
 
 SB_VENDOR_TARGET = libvorbis
-SB_VENDOR_TARGET_VERSION = 1.2.3
+SB_VENDOR_TARGET_VERSION = 1.3.3
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 

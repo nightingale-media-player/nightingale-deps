@@ -4,7 +4,7 @@
 
 package="vorbis"
 
-ACLOCAL_FLAGS="-I m4 $ACLOCAL_FLAGS"
+ACLOCAL_FLAGS="-I m4"
 
 olddir=`pwd`
 srcdir=`dirname $0`
@@ -125,7 +125,5 @@ $AUTOMAKE --add-missing $AUTOMAKE_FLAGS || exit 1
 echo "  autoconf"
 autoconf || exit 1
 
-if test -z $NOCONFIGURE; then
-   cd $olddir
-   $srcdir/configure --enable-maintainer-mode "$@" && echo
-fi
+cd $olddir
+$srcdir/configure --enable-maintainer-mode "$@" && echo

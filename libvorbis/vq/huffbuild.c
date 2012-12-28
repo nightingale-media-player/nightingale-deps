@@ -11,7 +11,7 @@
  ********************************************************************
 
  function: hufftree builder
- last mod: $Id: huffbuild.c 16037 2009-05-26 21:10:58Z xiphmont $
+ last mod: $Id: huffbuild.c 16959 2010-03-10 16:03:11Z xiphmont $
 
  ********************************************************************/
 
@@ -178,9 +178,6 @@ int main(int argc, char *argv[]){
     fprintf(file,"\t0, 0, 0, 0, 0,\n");
     fprintf(file,"\tNULL,\n");
 
-    fprintf(file,"\tNULL,\n");
-    fprintf(file,"\tNULL,\n");
-    fprintf(file,"\tNULL,\n");
     fprintf(file,"\t0\n};\n\n");
     
     fclose(file);

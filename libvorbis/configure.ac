@@ -5,7 +5,7 @@ dnl Initialization and Versioning
 dnl ------------------------------------------------
 
 
-AC_INIT([libvorbis],[1.2.3],[vorbis-dev@xiph.org])
+AC_INIT([libvorbis],[1.3.3],[vorbis-dev@xiph.org])
 
 AC_CONFIG_SRCDIR([lib/mdct.c])
 
@@ -25,15 +25,15 @@ dnl - interfaces added -> increment AGE
 dnl - interfaces removed -> AGE = 0
 
 V_LIB_CURRENT=4
-V_LIB_REVISION=3
+V_LIB_REVISION=6
 V_LIB_AGE=4
 
 VF_LIB_CURRENT=6
-VF_LIB_REVISION=2
+VF_LIB_REVISION=5
 VF_LIB_AGE=3
 
 VE_LIB_CURRENT=2
-VE_LIB_REVISION=6
+VE_LIB_REVISION=9
 VE_LIB_AGE=0
 
 AC_SUBST(V_LIB_CURRENT)
@@ -63,6 +63,17 @@ AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
 AM_PROG_CC_C_O
 
+dnl Check for doxygen
+if test "x$enable_docs" = xyes; then
+  AC_CHECK_PROG(HAVE_DOXYGEN, doxygen, true, false)
+  if test $HAVE_DOXYGEN = "false"; then
+    AC_MSG_WARN([*** doxygen not found, API documentation will not be built])
+  fi
+else
+  HAVE_DOXYGEN=false
+fi
+AM_CONDITIONAL(HAVE_DOXYGEN,$HAVE_DOXYGEN)
+
 dnl latex tools for the specification document
 AC_ARG_ENABLE(docs,
 	AC_HELP_STRING([--enable-docs], [build the documentation]))
@@ -78,11 +89,10 @@ fi
 
 AM_CONDITIONAL(BUILD_DOCS, [test "x$enable_docs" = xyes])
 
-ac_enable_tests=yes
-AC_ARG_ENABLE(tests,
-     [  --disable-tests      disable tests ],
-     [ ac_enable_tests=$enableval ], [ ac_enable_tests=yes] )
-AM_CONDITIONAL(VORBIS_ENABLE_TESTS, [test "x${ac_enable_tests}" != xno])
+AC_ARG_ENABLE(examples, 
+  AS_HELP_STRING([--enable-examples], [build the examples])) 
+ 	
+AM_CONDITIONAL(BUILD_EXAMPLES, [test "x$enable_examples" = xyes]) 
 
 dnl --------------------------------------------------
 dnl Set build flags based on environment
@@ -162,6 +172,10 @@ else
   		CFLAGS=${OPT}" -D__NO_MATH_INLINES"
   		PROFILE=${PROFILE}" -D__NO_MATH_INLINES"
   		fi;;
+        powerpc-*-linux*spe) 
+ 	        DEBUG="-g -Wall -Wextra -D_REENTRANT -D__NO_MATH_INLINES" 
+ 	        CFLAGS="-O3 -Wall -Wextra -ffast-math -mfused-madd -D_REENTRANT" 
+ 	        PROFILE="-pg -g -O3 -ffast-math -mfused-madd -D_REENTRANT";; 
 	powerpc-*-linux*)
 		DEBUG="-g -Wall -Wextra -D_REENTRANT -D__NO_MATH_INLINES"
 		CFLAGS="-O3 -Wall -Wextra -ffast-math -mfused-madd -mcpu=750 -D_REENTRANT"
@@ -267,7 +281,8 @@ lib/books/Makefile
 lib/books/coupled/Makefile
 lib/books/uncoupled/Makefile
 lib/books/floor/Makefile
-doc/Makefile doc/vorbisfile/Makefile doc/vorbisenc/Makefile
+doc/Makefile doc/vorbisfile/Makefile doc/vorbisenc/Makefile doc/libvorbis/Makefile
+doc/Doxyfile
 include/Makefile include/vorbis/Makefile
 examples/Makefile
 test/Makefile
