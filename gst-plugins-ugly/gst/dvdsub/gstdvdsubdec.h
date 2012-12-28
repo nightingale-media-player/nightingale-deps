@@ -19,7 +19,6 @@
  */
 
 #include <gst/gst.h>
-#include <gst/video/video.h>
 
 #define GST_TYPE_DVD_SUB_DEC             (gst_dvd_sub_dec_get_type())
 #define GST_DVD_SUB_DEC(obj)             (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_DVD_SUB_DEC,GstDvdSubDec))
@@ -51,7 +50,6 @@ struct _GstDvdSubDec
 
   /* Collect together subtitle buffers until we have a full control sequence */
   GstBuffer *partialbuf;
-  GstMapInfo partialmap;
   gboolean have_title;
 
   guchar subtitle_index[4];
@@ -66,8 +64,8 @@ struct _GstDvdSubDec
   Color_val palette_cache_rgb[4];
   Color_val hl_palette_cache_rgb[4];
 
-  GstVideoInfo info;
   gboolean use_ARGB;
+  guint32 out_fourcc;
   GstClockTime next_ts;
 
   /*
@@ -91,6 +89,7 @@ struct _GstDvdSubDec
 
   GstClockTime next_event_ts;
 
+  GstBuffer *out_buffer;
   gboolean buf_dirty;
 };
 

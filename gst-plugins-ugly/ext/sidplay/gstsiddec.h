@@ -58,7 +58,7 @@ struct _GstSidDec {
   sidTune       *tune;
   emuConfig     *config;
 
-  guint         blocksize;
+  gulong         blocksize;
 };
 
 struct _GstSidDecClass {

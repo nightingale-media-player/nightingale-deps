@@ -1,3 +1,2 @@
-GstChildProxy GObject
 GstChildProxy GstObject
 GstTagSetter GstElement

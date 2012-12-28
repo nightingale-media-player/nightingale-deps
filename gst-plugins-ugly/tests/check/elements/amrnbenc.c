@@ -22,10 +22,8 @@
  */
 
 #include <gst/check/gstcheck.h>
-#include <gst/audio/audio.h>
 
-#define SRC_CAPS "audio/x-raw, format = (string)" GST_AUDIO_NE (S16) ", " \
-    "layout = (string) interleaved, channels = (int) 1, rate = (int) 8000"
+#define SRC_CAPS "audio/x-raw-int,width=16,depth=16,channels=1,rate=8000"
 #define SINK_CAPS "audio/AMR"
 
 GList *buffers;
@@ -45,25 +43,40 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_STATIC_CAPS (SRC_CAPS)
     );
 
+/* takes a copy of the passed buffer data */
+GstBuffer *
+buffer_new (const gchar * buffer_data, guint size)
+{
+  GstBuffer *buffer;
+  GstCaps *caps;
+
+  buffer = gst_buffer_new_and_alloc (size);
+  memcpy (GST_BUFFER_DATA (buffer), buffer_data, size);
+  caps = gst_caps_from_string (SRC_CAPS);
+  gst_buffer_set_caps (buffer, caps);
+  gst_caps_unref (caps);
+
+  return buffer;
+}
+
 static void
 buffer_unref (void *buffer, void *user_data)
 {
   gst_buffer_unref (GST_BUFFER (buffer));
 }
 
-static GstElement *
-setup_amrnbenc (void)
+GstElement *
+setup_amrnbenc ()
 {
   GstElement *amrnbenc;
-  GstCaps *caps;
   GstBus *bus;
   guint64 granulerate_n, granulerate_d;
 
   GST_DEBUG ("setup_amrnbenc");
 
   amrnbenc = gst_check_setup_element ("amrnbenc");
-  srcpad = gst_check_setup_src_pad (amrnbenc, &srctemplate);
-  sinkpad = gst_check_setup_sink_pad (amrnbenc, &sinktemplate);
+  srcpad = gst_check_setup_src_pad (amrnbenc, &srctemplate, NULL);
+  sinkpad = gst_check_setup_sink_pad (amrnbenc, &sinktemplate, NULL);
   gst_pad_set_active (srcpad, TRUE);
   gst_pad_set_active (sinkpad, TRUE);
 
@@ -73,10 +86,6 @@ setup_amrnbenc (void)
   fail_unless (gst_element_set_state (amrnbenc,
           GST_STATE_PLAYING) != GST_STATE_CHANGE_FAILURE,
       "could not set to playing");
-
-  caps = gst_caps_from_string (SRC_CAPS);
-  fail_unless (gst_pad_set_caps (srcpad, caps));
-  gst_caps_unref (caps);
 
   buffers = NULL;
   return amrnbenc;
@@ -110,16 +119,13 @@ push_data (gint size, GstFlowReturn expected_return)
 {
   GstBuffer *buffer;
   GstFlowReturn res;
+  gchar *data = g_malloc0 (size);
 
-  buffer = gst_buffer_new_and_alloc (size);
-  /* make valgrind happier */
-  gst_buffer_memset (buffer, 0, 0, size);
-
+  buffer = buffer_new (data, size);
+  g_free (data);
   res = gst_pad_push (srcpad, buffer);
   fail_unless (res == expected_return,
-      "pushing audio returned %d (%s) not %d (%s)", res,
-      gst_flow_get_name (res), expected_return,
-      gst_flow_get_name (expected_return));
+      "pushing audio returned %d not %d", res, expected_return);
 }
 
 GST_START_TEST (test_enc)

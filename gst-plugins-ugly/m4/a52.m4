@@ -79,18 +79,14 @@ int
 main ()
 {
   a52_state_t *state;
-#if defined(A52_ACCEL_DETECT)
-  state = a52_init ();
-#else
   state = a52_init (0);
-#endif
   a52_free (state);
   return 0;
 }
         ],, HAVE_A52DEC=no, [echo $ac_n "cross compiling; assumed OK... $ac_c"])
 
     if test HAVE_A52DEC = "no"; then
-        echo "*** Your a52dec is borked somehow. Please update to 0.7.4 or newer."
+        echo "*** Your a52dec is borked somehow. Please update to 0.7.4."
     else
         AC_TRY_RUN([
 #include <inttypes.h>
@@ -106,7 +102,7 @@ main ()
             ], HAVE_A52DEC=no,, [echo $ac_n "cross compiling; assumed OK... $ac_c"])
 
         if test HAVE_A52DEC = "no"; then
-            echo "*** Your a52dec is too old. Please update to 0.7.4 or newer."
+            echo "*** Your a52dec is too old. Please update to 0.7.4."
         fi
     fi
     CFLAGS="$ac_save_CFLAGS"

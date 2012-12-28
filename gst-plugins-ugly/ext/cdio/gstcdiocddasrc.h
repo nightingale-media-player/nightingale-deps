@@ -20,7 +20,7 @@
 #ifndef __GST_CDIO_CDDA_SRC_H__
 #define __GST_CDIO_CDDA_SRC_H__
 
-#include <gst/audio/gstaudiocdsrc.h>
+#include <gst/cdda/gstcddabasesrc.h>
 #include <cdio/cdio.h>
 
 #define GST_TYPE_CDIO_CDDA_SRC            (gst_cdio_cdda_src_get_type ())
@@ -34,7 +34,7 @@ typedef struct _GstCdioCddaSrcClass GstCdioCddaSrcClass;
 
 struct _GstCdioCddaSrc
 {
-  GstAudioCdSrc  audiocdsrc;
+  GstCddaBaseSrc cddabasesrc;
 
   gint           read_speed;    /* ATOMIC */
 
@@ -43,10 +43,10 @@ struct _GstCdioCddaSrc
 
 struct _GstCdioCddaSrcClass
 {
-  GstAudioCdSrcClass  audiocdsrc_class;
+  GstCddaBaseSrcClass  cddabasesrc_class;
 };
 
-GType   gst_cdio_cdda_src_get_type (void);
+GType   gst_cdio_cdda_src_get_type ();
 
 #endif /* __GST_CDIO_CDDA_SRC_H__ */
 

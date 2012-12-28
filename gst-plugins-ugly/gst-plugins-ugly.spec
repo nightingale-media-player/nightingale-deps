@@ -1,10 +1,10 @@
-%define majorminor  1.0
-%define gstreamer   gstreamer1
+%define majorminor  0.10
+%define gstreamer   gstreamer
 
-%define gst_minver  0.11.0
+%define gst_minver  0.10.0
 
 Name: 		%{gstreamer}-plugins-ugly
-Version: 	1.0.4
+Version: 	0.10.13
 Release: 	1.gst
 Summary: 	GStreamer streaming media framework "ugly" plug-ins
 
@@ -12,7 +12,7 @@ Group: 		Applications/Multimedia
 License: 	LGPL
 URL:		http://gstreamer.freedesktop.org/
 Vendor:         GStreamer Backpackers Team <package@gstreamer.freedesktop.org>
-Source:         http://gstreamer.freedesktop.org/src/gst-plugins-ugly/gst-plugins-ugly-%{version}.tar.xz
+Source:         http://gstreamer.freedesktop.org/src/gst-plugins-ugly/gst-plugins-ugly-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires: 	%{gstreamer} >= %{gst_minver}
@@ -23,6 +23,7 @@ BuildRequires:  libsidplay-devel >= 1.36.0
 BuildRequires:  a52dec-devel >= 0.7.3
 BuildRequires:  libdvdread-devel >= 0.9.0
 BuildRequires:  lame-devel >= 3.89
+BuildRequires:  libid3tag-devel >= 0.15.0
 BuildRequires:  libmad-devel >= 0.15.0
 BuildRequires:  mpeg2dec-devel >= 0.4.0
 
@@ -94,7 +95,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING README REQUIREMENTS gst-plugins-ugly.doap
 %{_libdir}/gstreamer-%{majorminor}/libgstasf.so
 %{_libdir}/gstreamer-%{majorminor}/libgstdvdlpcmdec.so
-%{_libdir}/gstreamer-%{majorminor}/libgstxingmux.so
+%{_libdir}/gstreamer-%{majorminor}/libgstiec958.so
+%{_libdir}/gstreamer-%{majorminor}/libgstmpegaudioparse.so
+%{_libdir}/gstreamer-%{majorminor}/libgstmpegstream.so
 %{_libdir}/gstreamer-%{majorminor}/libgstrmdemux.so
 %{_libdir}/gstreamer-%{majorminor}/libgstdvdsub.so
 
@@ -109,9 +112,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_datadir}/gtk-doc/html/gst-plugins-ugly-plugins-%{majorminor}/*
 %{_datadir}/gstreamer-%{majorminor}/presets/GstX264Enc.prs
 %{_libdir}/gstreamer-%{majorminor}/libgstx264.so
-%{_libdir}/gstreamer-%{majorminor}/libgstamrnb.so
-%{_libdir}/gstreamer-%{majorminor}/libgstamrwbdec.so
-%{_datadir}/gstreamer-%{majorminor}/presets/GstAmrnbEnc.prs
+#%{_libdir}/gstreamer-%{majorminor}/libgstamrnb.so
+#%{_libdir}/gstreamer-%{majorminor}/libgstamrwbdec.so
+#%{_datadir}/gstreamer-%{majorminor}/presets/GstAmrnbEnc.prs
 %{_libdir}/gstreamer-%{majorminor}/libgstcdio.so
 
 

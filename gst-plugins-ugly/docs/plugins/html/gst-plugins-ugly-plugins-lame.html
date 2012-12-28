@@ -1,0 +1,625 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>lame</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Ugly Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-ugly Elements">
+<link rel="prev" href="gst-plugins-ugly-plugins-cdiocddasrc.html" title="cdiocddasrc">
+<link rel="next" href="gst-plugins-ugly-plugins-lamemp3enc.html" title="lamemp3enc">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-ugly Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-ugly Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-ugly-plugins-cdiocddasrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Ugly Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-ugly-plugins-lamemp3enc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-ugly-plugins-lame.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-lame.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-lame.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-lame.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-lame.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-ugly-plugins-lame"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-ugly-plugins-lame.top_of_page"></a>lame</span></h2>
+<p>lame — High-quality free MP3 encoder (deprecated)</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-ugly-plugins-lame.synopsis"></a><h2>Synopsis</h2>
+<a name="GstLame"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame-struct" title="GstLame">GstLame</a>;
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-ugly-plugins-lame.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----GstLame
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-ugly-plugins-lame.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstLame implements
+ <a
+href="../gstreamer-0.10/GstPreset.html"
+>GstPreset</a> and  <a
+href="../gstreamer-0.10/GstTagSetter.html"
+>GstTagSetter</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-ugly-plugins-lame.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--allow-diff-short" title='The "allow-diff-short" property'>allow-diff-short</a>"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--ath-lower" title='The "ath-lower" property'>ath-lower</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--ath-only" title='The "ath-only" property'>ath-only</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--ath-short" title='The "ath-short" property'>ath-short</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--bitrate" title='The "bitrate" property'>bitrate</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--compression-ratio" title='The "compression-ratio" property'>compression-ratio</a>"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a>                : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--copyright" title='The "copyright" property'>copyright</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--cwlimit" title='The "cwlimit" property'>cwlimit</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--disable-reservoir" title='The "disable-reservoir" property'>disable-reservoir</a>"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--emphasis" title='The "emphasis" property'>emphasis</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--error-protection" title='The "error-protection" property'>error-protection</a>"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--extension" title='The "extension" property'>extension</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--force-ms" title='The "force-ms" property'>force-ms</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--free-format" title='The "free-format" property'>free-format</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--highpass-freq" title='The "highpass-freq" property'>highpass-freq</a>"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--highpass-width" title='The "highpass-width" property'>highpass-width</a>"           <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--lowpass-freq" title='The "lowpass-freq" property'>lowpass-freq</a>"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--lowpass-width" title='The "lowpass-width" property'>lowpass-width</a>"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--mode" title='The "mode" property'>mode</a>"                     GstLameMode           : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--no-ath" title='The "no-ath" property'>no-ath</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--no-short-blocks" title='The "no-short-blocks" property'>no-short-blocks</a>"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--original" title='The "original" property'>original</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--padding-type" title='The "padding-type" property'>padding-type</a>"             GstLamePadding        : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--preset" title='The "preset" property'>preset</a>"                   GstLamePreset         : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--quality" title='The "quality" property'>quality</a>"                  GstLameQuality        : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--strict-iso" title='The "strict-iso" property'>strict-iso</a>"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--vbr" title='The "vbr" property'>vbr</a>"                      GstLameVbrmode        : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--vbr-hard-min" title='The "vbr-hard-min" property'>vbr-hard-min</a>"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--vbr-max-bitrate" title='The "vbr-max-bitrate" property'>vbr-max-bitrate</a>"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--vbr-mean-bitrate" title='The "vbr-mean-bitrate" property'>vbr-mean-bitrate</a>"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--vbr-min-bitrate" title='The "vbr-min-bitrate" property'>vbr-min-bitrate</a>"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--vbr-quality" title='The "vbr-quality" property'>vbr-quality</a>"              GstLameQuality        : Read / Write
+  "<a class="link" href="gst-plugins-ugly-plugins-lame.html#GstLame--xingheader" title='The "xingheader" property'>xingheader</a>"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-ugly-plugins-lame.description"></a><h2>Description</h2>
+<p>
+This element encodes raw integer audio into an MPEG-1 layer 3 (MP3) stream.
+Note that <a class="ulink" href="http://en.wikipedia.org/wiki/MP3" target="_top">MP3</a> is not
+a free format, there are licensing and patent issues to take into
+consideration. See <a class="ulink" href="http://www.vorbis.com/" target="_top">Ogg/Vorbis</a>
+for a royalty free (and often higher quality) alternative.
+</p>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2985146"></a><h3>Note</h3>
+This element is deprecated, use the lamemp3enc element instead
+which provides a much simpler interface and results in better MP3 files.
+</div>
+<p>
+</p>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2985159"></a><h3>Output sample rate</h3>
+If no fixed output sample rate is negotiated on the element's src pad,
+the element will choose an optimal sample rate to resample to internally.
+For example, a 16-bit 44.1 KHz mono audio stream encoded at 48 kbit will
+get resampled to 32 KHz.  Use filter caps on the src pad to force a
+particular sample rate.
+</div>
+<p>
+</p>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2985172"></a><h3>Writing metadata (tags)</h3>
+Whilst the lame encoder element does claim to implement the GstTagSetter
+interface, it does so only for backwards compatibility reasons. Tag writing
+has been removed from lame. Use external elements like id3v2mux or apev2mux
+to add tags to your MP3 streams. The same goes for XING headers: use the
+xingmux element to add XING headers to your VBR mp3 file.
+</div>
+<p>
+</p>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2985185"></a><h3>Example pipelines</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v audiotestsrc wave=sine num-buffers=100 ! audioconvert ! lame ! filesink location=sine.mp3
+</pre></div> Encode a test sine signal to MP3.
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v alsasrc ! audioconvert ! lame bitrate=192 ! filesink location=alsasrc.mp3
+</pre></div> Record from a sound card using ALSA and encode to MP3
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v filesrc location=music.wav ! decodebin ! audioconvert ! audioresample ! lame bitrate=192 ! id3v2mux ! filesink location=music.mp3
+</pre></div> Transcode from a .wav file to MP3 (the id3v2mux element is optional)
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v cdda://5 ! audioconvert ! lame bitrate=192 ! filesink location=track5.mp3
+</pre></div> Encode Audio CD track 5 to MP3
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v audiotestsrc num-buffers=10 ! audio/x-raw-int,rate=44100,channels=1 ! lame bitrate=48 mode=3 ! filesink location=test.mp3
+</pre></div> Encode to a fixed sample rate
+</div>
+<p>
+</p>
+<p>
+Last reviewed on 2007-07-24 (0.10.7)</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2985248"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-ugly-plugins-plugin-lame.html#plugin-lame">lame</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Wim Taymans &lt;wim@fluendo.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Encoder/Audio</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2985312"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)16, depth=(int)16, rate=(int){ 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000 }, channels=(int)[ 1, 2 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/mpeg, mpegversion=(int)1, layer=(int)3, rate=(int){ 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000 }, channels=(int)[ 1, 2 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-ugly-plugins-lame.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstLame-struct"></a><h3>GstLame</h3>
+<pre class="programlisting">typedef struct _GstLame GstLame;</pre>
+<p>
+Opaque data structure.</p>
+<p>
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-ugly-plugins-lame.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstLame--allow-diff-short"></a><h3>The <code class="literal">"allow-diff-short"</code> property</h3>
+<pre class="programlisting">  "allow-diff-short"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Allow diff short.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--ath-lower"></a><h3>The <code class="literal">"ath-lower"</code> property</h3>
+<pre class="programlisting">  "ath-lower"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>lowers ATH by x dB.</p>
+<p>Default value: 3</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--ath-only"></a><h3>The <code class="literal">"ath-only"</code> property</h3>
+<pre class="programlisting">  "ath-only"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Ignore GPSYCHO completely, use ATH only.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--ath-short"></a><h3>The <code class="literal">"ath-short"</code> property</h3>
+<pre class="programlisting">  "ath-short"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Ignore GPSYCHO for short blocks, use ATH only.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--bitrate"></a><h3>The <code class="literal">"bitrate"</code> property</h3>
+<pre class="programlisting">  "bitrate"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Bitrate in kbit/sec (8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256 or 320).</p>
+<p>Allowed values: [0,320]</p>
+<p>Default value: 128</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--compression-ratio"></a><h3>The <code class="literal">"compression-ratio"</code> property</h3>
+<pre class="programlisting">  "compression-ratio"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a>                : Read / Write</pre>
+<p>let lame choose bitrate to achieve selected compression ratio.</p>
+<p>Allowed values: [0,200]</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--copyright"></a><h3>The <code class="literal">"copyright"</code> property</h3>
+<pre class="programlisting">  "copyright"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Mark as copyright.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--cwlimit"></a><h3>The <code class="literal">"cwlimit"</code> property</h3>
+<pre class="programlisting">  "cwlimit"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Compute tonality up to freq (in kHz) default 8.8717 (DEPRECATED: this setting has no effect).</p>
+<p>Allowed values: [0,50000]</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--disable-reservoir"></a><h3>The <code class="literal">"disable-reservoir"</code> property</h3>
+<pre class="programlisting">  "disable-reservoir"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Disable the bit reservoir.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--emphasis"></a><h3>The <code class="literal">"emphasis"</code> property</h3>
+<pre class="programlisting">  "emphasis"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Emphasis.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--error-protection"></a><h3>The <code class="literal">"error-protection"</code> property</h3>
+<pre class="programlisting">  "error-protection"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Adds 16 bit checksum to every frame.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--extension"></a><h3>The <code class="literal">"extension"</code> property</h3>
+<pre class="programlisting">  "extension"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Extension.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--force-ms"></a><h3>The <code class="literal">"force-ms"</code> property</h3>
+<pre class="programlisting">  "force-ms"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Force ms_stereo on all frames.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--free-format"></a><h3>The <code class="literal">"free-format"</code> property</h3>
+<pre class="programlisting">  "free-format"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Produce a free format bitstream.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--highpass-freq"></a><h3>The <code class="literal">"highpass-freq"</code> property</h3>
+<pre class="programlisting">  "highpass-freq"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>frequency(kHz), highpass filter cutoff below freq.</p>
+<p>Allowed values: [0,50000]</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--highpass-width"></a><h3>The <code class="literal">"highpass-width"</code> property</h3>
+<pre class="programlisting">  "highpass-width"           <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>frequency(kHz) - default 15% of highpass freq.</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--lowpass-freq"></a><h3>The <code class="literal">"lowpass-freq"</code> property</h3>
+<pre class="programlisting">  "lowpass-freq"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>frequency(kHz), lowpass filter cutoff above freq.</p>
+<p>Allowed values: [0,50000]</p>
+<p>Default value: 17000</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--lowpass-width"></a><h3>The <code class="literal">"lowpass-width"</code> property</h3>
+<pre class="programlisting">  "lowpass-width"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>frequency(kHz) - default 15% of lowpass freq.</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--mode"></a><h3>The <code class="literal">"mode"</code> property</h3>
+<pre class="programlisting">  "mode"                     GstLameMode           : Read / Write</pre>
+<p>Encoding mode.</p>
+<p>Default value: Joint Stereo</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--no-ath"></a><h3>The <code class="literal">"no-ath"</code> property</h3>
+<pre class="programlisting">  "no-ath"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>turns ATH down to a flat noise floor.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--no-short-blocks"></a><h3>The <code class="literal">"no-short-blocks"</code> property</h3>
+<pre class="programlisting">  "no-short-blocks"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Do not use short blocks.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--original"></a><h3>The <code class="literal">"original"</code> property</h3>
+<pre class="programlisting">  "original"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Mark as original.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--padding-type"></a><h3>The <code class="literal">"padding-type"</code> property</h3>
+<pre class="programlisting">  "padding-type"             GstLamePadding        : Read / Write</pre>
+<p>Padding type (DEPRECATED: this setting has no effect).</p>
+<p>Default value: No Padding</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--preset"></a><h3>The <code class="literal">"preset"</code> property</h3>
+<pre class="programlisting">  "preset"                   GstLamePreset         : Read / Write</pre>
+<p>Lame Preset.</p>
+<p>Default value: None</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--quality"></a><h3>The <code class="literal">"quality"</code> property</h3>
+<pre class="programlisting">  "quality"                  GstLameQuality        : Read / Write</pre>
+<p>Quality of algorithm used for encoding.</p>
+<p>Default value: 3</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--strict-iso"></a><h3>The <code class="literal">"strict-iso"</code> property</h3>
+<pre class="programlisting">  "strict-iso"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Comply as much as possible to ISO MPEG spec.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--vbr"></a><h3>The <code class="literal">"vbr"</code> property</h3>
+<pre class="programlisting">  "vbr"                      GstLameVbrmode        : Read / Write</pre>
+<p>Specify bitrate mode.</p>
+<p>Default value: No VBR (Constant Bitrate)</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--vbr-hard-min"></a><h3>The <code class="literal">"vbr-hard-min"</code> property</h3>
+<pre class="programlisting">  "vbr-hard-min"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Specify whether min VBR bitrate is a hard limit. Normally, it can be violated for silence.</p>
+<p>Allowed values: [0,1]</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--vbr-max-bitrate"></a><h3>The <code class="literal">"vbr-max-bitrate"</code> property</h3>
+<pre class="programlisting">  "vbr-max-bitrate"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Specify maximum VBR bitrate (8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256 or 320).</p>
+<p>Allowed values: [0,320]</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--vbr-mean-bitrate"></a><h3>The <code class="literal">"vbr-mean-bitrate"</code> property</h3>
+<pre class="programlisting">  "vbr-mean-bitrate"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Specify mean VBR bitrate.</p>
+<p>Allowed values: [0,320]</p>
+<p>Default value: 128</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--vbr-min-bitrate"></a><h3>The <code class="literal">"vbr-min-bitrate"</code> property</h3>
+<pre class="programlisting">  "vbr-min-bitrate"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Specify minimum VBR bitrate (8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256 or 320).</p>
+<p>Allowed values: [0,320]</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--vbr-quality"></a><h3>The <code class="literal">"vbr-quality"</code> property</h3>
+<pre class="programlisting">  "vbr-quality"              GstLameQuality        : Read / Write</pre>
+<p>VBR Quality.</p>
+<p>Default value: 4</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstLame--xingheader"></a><h3>The <code class="literal">"xingheader"</code> property</h3>
+<pre class="programlisting">  "xingheader"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Output Xing Header (BROKEN, use xingmux instead).</p>
+<p>Default value: FALSE</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-ugly-plugins-lame.see-also"></a><h2>See Also</h2>
+lamemp3enc, mad, vorbisenc
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.11</div>
+</body>
+</html>

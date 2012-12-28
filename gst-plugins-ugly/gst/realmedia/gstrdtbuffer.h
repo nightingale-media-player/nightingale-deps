@@ -86,7 +86,6 @@ struct _GstRDTPacket
   /*< private >*/
   GstRDTType   type;         /* type of current packet */
   guint16      length;       /* length of current packet in bytes */
-  GstMapInfo   map;          /* last mapped data */
 };
 
 /* validate buffers */
@@ -106,8 +105,7 @@ GstBuffer*      gst_rdt_packet_to_buffer          (GstRDTPacket *packet);
 
 /* data packets */
 guint16         gst_rdt_packet_data_get_seq       (GstRDTPacket *packet);
-guint8 *        gst_rdt_packet_data_map           (GstRDTPacket *packet, guint *size);
-gboolean        gst_rdt_packet_data_unmap         (GstRDTPacket *packet);
+gboolean        gst_rdt_packet_data_peek_data     (GstRDTPacket *packet, guint8 **data, guint *size);
 guint16         gst_rdt_packet_data_get_stream_id (GstRDTPacket *packet);
 guint32         gst_rdt_packet_data_get_timestamp (GstRDTPacket *packet);
 

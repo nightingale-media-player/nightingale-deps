@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>synaesthesia</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Ugly Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-ugly Elements">
+<link rel="prev" href="gst-plugins-ugly-plugins-twolame.html" title="twolame">
+<link rel="next" href="gst-plugins-ugly-plugins-x264enc.html" title="x264enc">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-ugly Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-ugly Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-ugly-plugins-twolame.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Ugly Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-ugly-plugins-x264enc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-ugly-plugins-synaesthesia.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-synaesthesia.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-synaesthesia.object-hierarchy" class="shortcut">Object Hierarchy</a>
+</td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-ugly-plugins-synaesthesia"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-ugly-plugins-synaesthesia.top_of_page"></a>synaesthesia</span></h2>
+<p>synaesthesia — Creates video visualizations of audio input, using stereo and pitch information</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-ugly-plugins-synaesthesia.synopsis"></a><h2>Synopsis</h2>
+<a name="GstSynaesthesia"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-ugly-plugins-synaesthesia.html#GstSynaesthesia-struct" title="GstSynaesthesia">GstSynaesthesia</a>;
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-ugly-plugins-synaesthesia.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----GstSynaesthesia
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-ugly-plugins-synaesthesia.description"></a><h2>Description</h2>
+<p>
+Synaesthesia is an audio visualisation element. It creates glitter and
+pulsating fog based on the incomming audio signal.
+</p>
+<div class="refsect2" lang="en">
+<a name="id2988824"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v audiotestsrc ! audioconvert ! synaesthesia ! ximagesink
+gst-launch -v audiotestsrc ! audioconvert ! synaesthesia ! ffmpegcolorspace ! xvimagesink
+</pre></div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2977046"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-ugly-plugins-plugin-synaesthesia.html#plugin-synaesthesia">synaesthesia</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Richard Boulton &lt;richard@tartarus.org&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Visualization</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2981461"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)2, endianness=(int)1234, width=(int)16, depth=(int)16, signed=(boolean)true</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw-rgb, bpp=(int)32, depth=(int)24, endianness=(int)4321, red_mask=(int)65280, green_mask=(int)16711680, blue_mask=(int)-16777216, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-ugly-plugins-synaesthesia.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstSynaesthesia-struct"></a><h3>GstSynaesthesia</h3>
+<pre class="programlisting">typedef struct _GstSynaesthesia GstSynaesthesia;</pre>
+<p>
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-ugly-plugins-synaesthesia.see-also"></a><h2>See Also</h2>
+goom
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.11</div>
+</body>
+</html>

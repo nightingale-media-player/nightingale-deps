@@ -35,6 +35,7 @@
 #include <string.h>
 
 #include <gst/rtsp/gstrtspextension.h>
+#include <gst/rtsp/gstrtspbase64.h>
 
 #include "realhash.h"
 #include "rtspreal.h"
@@ -42,6 +43,13 @@
 
 GST_DEBUG_CATEGORY_STATIC (rtspreal_debug);
 #define GST_CAT_DEFAULT (rtspreal_debug)
+
+/* elementfactory information */
+static const GstElementDetails rtspreal_details =
+GST_ELEMENT_DETAILS ("RealMedia RTSP Extension",
+    "Network/Extension/Protocol",
+    "Extends RTSP so that it can handle RealMedia setup",
+    "Wim Taymans <wim.taymans@gmail.com>");
 
 #define SERVER_PREFIX "RealServer"
 #define DEFAULT_BANDWIDTH	"10485800"
@@ -206,16 +214,16 @@ G_STMT_START {			       \
 
 #define READ_BUFFER_GEN(src, func, name, dest, dest_len)    \
 G_STMT_START {			                            \
-  dest = (gchar *)func (src, name);                         \
+  dest = (gchar *)func (src, name);                                  \
   if (!dest) {                                              \
-    dest = (char *) "";                                     \
+    dest = "";                                              \
     dest_len = 0;                                           \
   }                                                         \
   else if (!strncmp (dest, "buffer;\"", 8)) {               \
     dest += 8;                                              \
     dest_len = strlen (dest) - 1;                           \
     dest[dest_len] = '\0';                                  \
-    g_base64_decode_inplace (dest, &dest_len);            \
+    gst_rtsp_base64_decode_ip (dest, &dest_len);            \
   }                                                         \
 } G_STMT_END
 
@@ -242,11 +250,11 @@ G_STMT_START {			                          \
 G_STMT_START {			                              \
   const gchar *val = gst_sdp_media_get_attribute_val (media, name); \
   if (val && !strncmp (val, "string;\"", 8)) {                \
-    dest = (gchar *) val + 8;                                 \
+    dest = (gchar *) val + 8;                                           \
     dest_len = strlen (dest) - 1;                             \
     dest[dest_len] = '\0';                                    \
   } else {                                                    \
-    dest = (char *) "";                                       \
+    dest = "";                                                \
     dest_len = 0;                                             \
   }                                                           \
 } G_STMT_END
@@ -316,7 +324,6 @@ rtsp_ext_real_parse_sdp (GstRTSPExtension * ext, GstSDPMessage * sdp,
     ctx->duration = MAX (ctx->duration, intval);
   }
 
-  /* FIXME: use GstByteWriter to write the header */
   /* PROP */
   offset = 0;
   size = 50;
@@ -345,7 +352,7 @@ rtsp_ext_real_parse_sdp (GstRTSPExtension * ext, GstSDPMessage * sdp,
   READ_BUFFER (sdp, "Comment", comment, comment_len);
   READ_BUFFER (sdp, "Copyright", copyright, copyright_len);
 
-  size = 18 + title_len + author_len + comment_len + copyright_len;
+  size = 22 + title_len + author_len + comment_len + copyright_len;
   ENSURE_SIZE (offset + size);
   datap = data + offset;
 
@@ -362,8 +369,7 @@ rtsp_ext_real_parse_sdp (GstRTSPExtension * ext, GstSDPMessage * sdp,
   /* fix the hashtale for the rule parser */
   rules = g_string_new ("");
   vars = g_hash_table_new (g_str_hash, g_str_equal);
-  g_hash_table_insert (vars, (gchar *) "Bandwidth",
-      (gchar *) DEFAULT_BANDWIDTH);
+  g_hash_table_insert (vars, "Bandwidth", DEFAULT_BANDWIDTH);
 
   /* MDPR */
   for (i = 0; i < ctx->n_streams; i++) {
@@ -581,12 +587,13 @@ rtsp_ext_real_parse_sdp (GstRTSPExtension * ext, GstSDPMessage * sdp,
   GST_WRITE_UINT32_BE (datap + 14, 0);  /* next data header */
   offset += size;
 
-  buf = gst_buffer_new_wrapped (data, offset);
+  buf = gst_buffer_new ();
+  GST_BUFFER_DATA (buf) = data;
+  GST_BUFFER_MALLOCDATA (buf) = data;
+  GST_BUFFER_SIZE (buf) = offset;
 
   /* Set on caps */
-  GST_BUFFER_FLAG_SET (buf, GST_BUFFER_FLAG_HEADER);
   gst_structure_set (props, "config", GST_TYPE_BUFFER, buf, NULL);
-  gst_buffer_unref (buf);
 
   /* Overwrite encoding and media fields */
   gst_structure_set (props, "encoding-name", G_TYPE_STRING, "X-REAL-RDT", NULL);
@@ -660,57 +667,42 @@ reset:
 
 static void gst_rtsp_real_extension_init (gpointer g_iface,
     gpointer iface_data);
-static void gst_rtsp_real_finalize (GObject * obj);
 
-#define gst_rtsp_real_parent_class parent_class
-G_DEFINE_TYPE_WITH_CODE (GstRTSPReal, gst_rtsp_real, GST_TYPE_ELEMENT,
-    G_IMPLEMENT_INTERFACE (GST_TYPE_RTSP_EXTENSION,
-        gst_rtsp_real_extension_init));
+static void
+_do_init (GType rtspreal_type)
+{
+  static const GInterfaceInfo rtspextension_info = {
+    gst_rtsp_real_extension_init,
+    NULL,
+    NULL
+  };
+
+  g_type_add_interface_static (rtspreal_type, GST_TYPE_RTSP_EXTENSION,
+      &rtspextension_info);
+}
+
+GST_BOILERPLATE_FULL (GstRTSPReal, gst_rtsp_real, GstElement, GST_TYPE_ELEMENT,
+    _do_init);
+
+static void
+gst_rtsp_real_base_init (gpointer klass)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_set_details (element_class, &rtspreal_details);
+}
 
 static void
 gst_rtsp_real_class_init (GstRTSPRealClass * g_class)
 {
-  GObjectClass *gobject_class = (GObjectClass *) g_class;
-  GstElementClass *gstelement_class = (GstElementClass *) g_class;
-
-  gobject_class->finalize = gst_rtsp_real_finalize;
-
-  gst_element_class_set_static_metadata (gstelement_class,
-      "RealMedia RTSP Extension", "Network/Extension/Protocol",
-      "Extends RTSP so that it can handle RealMedia setup",
-      "Wim Taymans <wim.taymans@gmail.com>");
-
   GST_DEBUG_CATEGORY_INIT (rtspreal_debug, "rtspreal", 0,
       "RealMedia RTSP extension");
 }
 
 static void
-gst_rtsp_real_init (GstRTSPReal * rtspreal)
+gst_rtsp_real_init (GstRTSPReal * rtspreal, GstRTSPRealClass * klass)
 {
   rtspreal->isreal = FALSE;
-}
-
-static void
-gst_rtsp_stream_free (GstRTSPRealStream * stream)
-{
-  g_free (stream->stream_name);
-  g_free (stream->mime_type);
-  gst_asm_rule_book_free (stream->rulebook);
-  g_free (stream->type_specific_data);
-
-  g_free (stream);
-}
-
-static void
-gst_rtsp_real_finalize (GObject * obj)
-{
-  GstRTSPReal *r = (GstRTSPReal *) obj;
-
-  g_list_foreach (r->streams, (GFunc) gst_rtsp_stream_free, NULL);
-  g_list_free (r->streams);
-  g_free (r->rules);
-
-  G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
 static void

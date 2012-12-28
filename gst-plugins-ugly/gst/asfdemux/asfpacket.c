@@ -31,11 +31,11 @@
 
 /* we are unlikely to deal with lengths > 2GB here any time soon, so just
  * return a signed int and use that for error reporting */
-static inline gint
+static gint
 asf_packet_read_varlen_int (guint lentype_flags, guint lentype_bit_offset,
     const guint8 ** p_data, guint * p_size)
 {
-  static const guint lens[4] = { 0, 1, 2, 4 };
+  const guint lens[4] = { 0, 1, 2, 4 };
   guint len, val;
 
   len = lens[(lentype_flags >> lentype_bit_offset) & 0x03];
@@ -60,7 +60,6 @@ asf_packet_read_varlen_int (guint lentype_flags, guint lentype_bit_offset,
       val = GST_READ_UINT32_LE (*p_data);
       break;
     default:
-      val = 0;
       g_assert_not_reached ();
   }
 
@@ -78,14 +77,13 @@ asf_packet_create_payload_buffer (AsfPacket * packet, const guint8 ** p_data,
 
   g_assert (payload_len <= *p_size);
 
-  off = (guint) (*p_data - packet->bdata);
-  g_assert (off < gst_buffer_get_size (packet->buf));
+  off = (guint) (*p_data - GST_BUFFER_DATA (packet->buf));
+  g_assert (off < GST_BUFFER_SIZE (packet->buf));
 
   *p_data += payload_len;
   *p_size -= payload_len;
 
-  return gst_buffer_copy_region (packet->buf, GST_BUFFER_COPY_ALL, off,
-      payload_len);
+  return gst_buffer_create_sub (packet->buf, off, payload_len);
 }
 
 static AsfPayload *
@@ -133,12 +131,6 @@ gst_asf_payload_queue_for_stream (GstASFDemux * demux, AsfPayload * payload,
 {
   GST_DEBUG_OBJECT (demux, "Got payload for stream %d ts:%" GST_TIME_FORMAT,
       stream->id, GST_TIME_ARGS (payload->ts));
-
-  /* Before preroll ts might be invalid and set to 0 */
-  if (G_UNLIKELY (payload->ts == 0 && demux->preroll)) {
-    payload->ts = GST_CLOCK_TIME_NONE;
-  }
-
   /* remember the first timestamp in the stream */
   if (G_UNLIKELY (!GST_CLOCK_TIME_IS_VALID (demux->first_ts) &&
           GST_CLOCK_TIME_IS_VALID (payload->ts))) {
@@ -148,9 +140,7 @@ gst_asf_payload_queue_for_stream (GstASFDemux * demux, AsfPayload * payload,
   }
 
   /* make timestamps start from 0 */
-  if (G_LIKELY (GST_CLOCK_TIME_IS_VALID (demux->first_ts) &&
-          GST_CLOCK_TIME_IS_VALID (payload->ts) &&
-          demux->first_ts < payload->ts))
+  if (G_LIKELY (demux->first_ts < payload->ts))
     payload->ts -= demux->first_ts;
   else
     payload->ts = 0;
@@ -209,9 +199,9 @@ gst_asf_payload_queue_for_stream (GstASFDemux * demux, AsfPayload * payload,
     demux->segment_ts = payload->ts;
     /* always note, but only determines segment when streaming */
     if (demux->streaming)
-      gst_segment_do_seek (&demux->segment, demux->in_segment.rate,
-          GST_FORMAT_TIME, (GstSeekFlags) demux->segment.flags,
-          GST_SEEK_TYPE_SET, demux->segment_ts, GST_SEEK_TYPE_NONE, 0, NULL);
+      gst_segment_set_seek (&demux->segment, demux->in_segment.rate,
+          GST_FORMAT_TIME, demux->segment.flags, GST_SEEK_TYPE_SET,
+          demux->segment_ts, GST_SEEK_TYPE_NONE, 0, NULL);
   }
 
   g_array_append_vals (stream->payloads, payload, 1);
@@ -236,10 +226,8 @@ asf_payload_parse_replicated_data_extensions (AsfStream * stream,
     switch (ext->id) {
       case ASF_PAYLOAD_EXTENSION_DURATION:
         if (G_LIKELY (ext->len == 2)) {
-          guint16 tdur = GST_READ_UINT16_LE (payload->rep_data + off);
-          /* packet durations of 1ms are mostly invalid */
-          if (tdur != 1)
-            payload->duration = tdur * GST_MSECOND;
+          payload->duration =
+              GST_READ_UINT16_LE (payload->rep_data + off) * GST_MSECOND;
         } else {
           GST_WARNING ("unexpected DURATION extensions len %u", ext->len);
         }
@@ -353,13 +341,8 @@ gst_asf_demux_parse_payload (GstASFDemux * demux, AsfPacket * packet,
   if (G_UNLIKELY (stream == NULL)) {
     GST_WARNING_OBJECT (demux, "Payload for unknown stream %u, skipping",
         stream_num);
-    if (*p_size < payload_len) {
-      *p_data += *p_size;
-      *p_size = 0;
-    } else {
-      *p_data += payload_len;
-      *p_size -= payload_len;
-    }
+    *p_data += payload_len;
+    *p_size -= payload_len;
     return TRUE;
   }
 
@@ -369,10 +352,7 @@ gst_asf_demux_parse_payload (GstASFDemux * demux, AsfPacket * packet,
     if (payload.rep_data_len >= 8) {
       payload.mo_size = GST_READ_UINT32_LE (payload.rep_data);
       payload.ts = GST_READ_UINT32_LE (payload.rep_data + 4) * GST_MSECOND;
-      if (G_UNLIKELY (payload.ts < demux->preroll))
-        payload.ts = 0;
-      else
-        payload.ts -= demux->preroll;
+      payload.ts -= demux->preroll;
       asf_payload_parse_replicated_data_extensions (stream, &payload);
 
       GST_LOG_OBJECT (demux, "media object size   : %u", payload.mo_size);
@@ -391,58 +371,27 @@ gst_asf_demux_parse_payload (GstASFDemux * demux, AsfPacket * packet,
 
     GST_LOG_OBJECT (demux, "payload length: %u", payload_len);
 
-    if (payload_len == 0) {
-      GST_DEBUG_OBJECT (demux, "skipping empty payload");
-    } else if (payload.mo_offset == 0 && payload.mo_size == payload_len) {
-      /* if the media object is not fragmented, just create a sub-buffer */
-      GST_LOG_OBJECT (demux, "unfragmented media object size %u", payload_len);
+    if ((stream = gst_asf_demux_get_stream (demux, stream_num))) {
       payload.buf = asf_packet_create_payload_buffer (packet, p_data, p_size,
           payload_len);
-      payload.buf_filled = payload_len;
-      gst_asf_payload_queue_for_stream (demux, &payload, stream);
-    } else {
-      const guint8 *payload_data = *p_data;
-
-      g_assert (payload_len <= *p_size);
-
-      *p_data += payload_len;
-      *p_size -= payload_len;
 
       /* n-th fragment of a fragmented media object? */
       if (payload.mo_offset != 0) {
         AsfPayload *prev;
 
         if ((prev = asf_payload_find_previous_fragment (&payload, stream))) {
-          if (prev->buf == NULL || payload.mo_size != prev->mo_size ||
-              payload.mo_offset >= gst_buffer_get_size (prev->buf) ||
-              payload.mo_offset + payload_len >
-              gst_buffer_get_size (prev->buf)) {
+          if (payload.mo_offset != GST_BUFFER_SIZE (prev->buf)) {
             GST_WARNING_OBJECT (demux, "Offset doesn't match previous data?!");
-          } else {
-            /* we assume fragments are payloaded with increasing mo_offset */
-            if (payload.mo_offset != prev->buf_filled) {
-              GST_WARNING_OBJECT (demux, "media object payload discontinuity: "
-                  "offset=%u vs buf_filled=%u", payload.mo_offset,
-                  prev->buf_filled);
-            }
-            gst_buffer_fill (prev->buf, payload.mo_offset,
-                payload_data, payload_len);
-            prev->buf_filled =
-                MAX (prev->buf_filled, payload.mo_offset + payload_len);
-            GST_LOG_OBJECT (demux, "Merged media object fragments, size now %u",
-                prev->buf_filled);
           }
+          /* note: buffer join/merge might not preserve buffer flags */
+          prev->buf = gst_buffer_join (prev->buf, payload.buf);
+          GST_LOG_OBJECT (demux, "Merged fragments, merged size: %u",
+              GST_BUFFER_SIZE (prev->buf));
         } else {
-          GST_DEBUG_OBJECT (demux, "n-th payload fragment, but don't have "
-              "any previous fragment, ignoring payload");
+          gst_buffer_unref (payload.buf);
         }
+        payload.buf = NULL;
       } else {
-        GST_LOG_OBJECT (demux, "allocating buffer of size %u for fragmented "
-            "media object", payload.mo_size);
-        payload.buf = gst_buffer_new_allocate (NULL, payload.mo_size, NULL);
-        gst_buffer_fill (payload.buf, 0, payload_data, payload_len);
-        payload.buf_filled = payload_len;
-
         gst_asf_payload_queue_for_stream (demux, &payload, stream);
       }
     }
@@ -458,11 +407,7 @@ gst_asf_demux_parse_payload (GstASFDemux * demux, AsfPacket * packet,
     *p_data += payload_len;
     *p_size -= payload_len;
 
-    ts = payload.mo_offset * GST_MSECOND;
-    if (G_UNLIKELY (ts < demux->preroll))
-      ts = 0;
-    else
-      ts -= demux->preroll;
+    ts = payload.mo_offset * GST_MSECOND - demux->preroll;
     ts_delta = payload.rep_data[0] * GST_MSECOND;
 
     for (num = 0; payload_len > 0; ++num) {
@@ -484,13 +429,9 @@ gst_asf_demux_parse_payload (GstASFDemux * demux, AsfPacket * packet,
       if (G_LIKELY (sub_payload_len > 0)) {
         payload.buf = asf_packet_create_payload_buffer (packet,
             &payload_data, &payload_len, sub_payload_len);
-        payload.buf_filled = sub_payload_len;
 
         payload.ts = ts;
-        if (G_LIKELY (ts_delta))
-          payload.duration = ts_delta;
-        else
-          payload.duration = GST_CLOCK_TIME_NONE;
+        payload.duration = ts_delta;
 
         gst_asf_payload_queue_for_stream (demux, &payload, stream);
       }
@@ -502,32 +443,24 @@ gst_asf_demux_parse_payload (GstASFDemux * demux, AsfPacket * packet,
   return TRUE;
 }
 
-GstAsfDemuxParsePacketError
+gboolean
 gst_asf_demux_parse_packet (GstASFDemux * demux, GstBuffer * buf)
 {
   AsfPacket packet = { 0, };
-  GstMapInfo map;
   const guint8 *data;
   gboolean has_multiple_payloads;
-  GstAsfDemuxParsePacketError ret = GST_ASF_DEMUX_PARSE_PACKET_ERROR_NONE;
+  gboolean ret = TRUE;
   guint8 ec_flags, flags1;
   guint size;
 
-  gst_buffer_map (buf, &map, GST_MAP_READ);
-  data = map.data;
-  size = map.size;
-  GST_LOG_OBJECT (demux, "Buffer size: %u", size);
+  data = GST_BUFFER_DATA (buf);
+  size = GST_BUFFER_SIZE (buf);
 
   /* need at least two payload flag bytes, send time, and duration */
-  if (G_UNLIKELY (size < 2 + 4 + 2)) {
-    GST_WARNING_OBJECT (demux, "Packet size is < 8");
-    ret = GST_ASF_DEMUX_PARSE_PACKET_ERROR_RECOVERABLE;
-    goto done;
-  }
+  if (G_UNLIKELY (size < 2 + 4 + 2))
+    goto short_packet;
 
   packet.buf = buf;
-  /* evidently transient */
-  packet.bdata = data;
 
   ec_flags = GST_READ_UINT8 (data);
 
@@ -543,14 +476,11 @@ gst_asf_demux_parse_packet (GstASFDemux * demux, GstBuffer * buf)
           ec_len_type);
       ec_len = 2;
     }
-    GST_LOG_OBJECT (demux, "packet has error correction (%u bytes)", ec_len);
+    GST_LOG ("packet has error correction (%u bytes)", ec_len);
 
     /* still need at least two payload flag bytes, send time, and duration */
-    if (size <= (1 + ec_len) + 2 + 4 + 2) {
-      GST_WARNING_OBJECT (demux, "Packet size is < 8 with Error Correction");
-      ret = GST_ASF_DEMUX_PARSE_PACKET_ERROR_FATAL;
-      goto done;
-    }
+    if (size <= (1 + ec_len) + 2 + 4 + 2)
+      goto short_packet;
 
     data += 1 + ec_len;
     size -= 1 + ec_len;
@@ -571,11 +501,8 @@ gst_asf_demux_parse_packet (GstASFDemux * demux, GstBuffer * buf)
 
   packet.padding = asf_packet_read_varlen_int (flags1, 3, &data, &size);
 
-  if (G_UNLIKELY (size < 6)) {
-    GST_WARNING_OBJECT (demux, "Packet size is < 6");
-    ret = GST_ASF_DEMUX_PARSE_PACKET_ERROR_FATAL;
-    goto done;
-  }
+  if (G_UNLIKELY (size < 6))
+    goto short_packet;
 
   packet.send_time = GST_READ_UINT32_LE (data) * GST_MSECOND;
   packet.duration = GST_READ_UINT16_LE (data + 4) * GST_MSECOND;
@@ -583,7 +510,6 @@ gst_asf_demux_parse_packet (GstASFDemux * demux, GstBuffer * buf)
   data += 4 + 2;
   size -= 4 + 2;
 
-  GST_LOG_OBJECT (demux, "flags            : 0x%x", flags1);
   GST_LOG_OBJECT (demux, "multiple payloads: %u", has_multiple_payloads);
   GST_LOG_OBJECT (demux, "packet length    : %u", packet.length);
   GST_LOG_OBJECT (demux, "sequence         : %u", packet.sequence);
@@ -593,39 +519,23 @@ gst_asf_demux_parse_packet (GstASFDemux * demux, GstBuffer * buf)
   GST_LOG_OBJECT (demux, "duration         : %" GST_TIME_FORMAT,
       GST_TIME_ARGS (packet.duration));
 
-  if (G_UNLIKELY (packet.padding == (guint) - 1 || size < packet.padding)) {
-    GST_WARNING_OBJECT (demux, "No padding, or padding bigger than buffer");
-    ret = GST_ASF_DEMUX_PARSE_PACKET_ERROR_RECOVERABLE;
-    goto done;
-  }
+  if (G_UNLIKELY (packet.padding == (guint) - 1 || size < packet.padding))
+    goto short_packet;
 
   size -= packet.padding;
 
   /* adjust available size for parsing if there's less actual packet data for
    * parsing than there is data in bytes (for sample see bug 431318) */
-  if (G_UNLIKELY (packet.length != 0 && packet.padding == 0
-          && packet.length < demux->packet_size)) {
-    GST_LOG_OBJECT (demux, "shortened packet with implicit padding, "
-        "adjusting available data size");
-    if (size < demux->packet_size - packet.length) {
-      /* the buffer is smaller than the implicit padding */
-      GST_WARNING_OBJECT (demux, "Buffer is smaller than the implicit padding");
-      ret = GST_ASF_DEMUX_PARSE_PACKET_ERROR_RECOVERABLE;
-      goto done;
-    } else {
-      /* subtract the implicit padding */
-      size -= (demux->packet_size - packet.length);
-    }
+  if (G_UNLIKELY (packet.length != 0 && packet.length < demux->packet_size)) {
+    GST_LOG_OBJECT (demux, "shortened packet, adjusting available data size");
+    size -= (demux->packet_size - packet.length);
   }
 
   if (has_multiple_payloads) {
     guint i, num, lentype;
 
-    if (G_UNLIKELY (size < 1)) {
-      GST_WARNING_OBJECT (demux, "No room more in buffer");
-      ret = GST_ASF_DEMUX_PARSE_PACKET_ERROR_RECOVERABLE;
-      goto done;
-    }
+    if (G_UNLIKELY (size < 1))
+      goto short_packet;
 
     num = (GST_READ_UINT8 (data) & 0x3F) >> 0;
     lentype = (GST_READ_UINT8 (data) & 0xC0) >> 6;
@@ -636,26 +546,26 @@ gst_asf_demux_parse_packet (GstASFDemux * demux, GstBuffer * buf)
     GST_LOG_OBJECT (demux, "num payloads     : %u", num);
 
     for (i = 0; i < num; ++i) {
-      GST_LOG_OBJECT (demux, "Parsing payload %u/%u, size left: %u", i + 1, num,
-          size);
+      GST_LOG_OBJECT (demux, "Parsing payload %u/%u", i + 1, num);
 
-      if (G_UNLIKELY (!gst_asf_demux_parse_payload (demux, &packet, lentype,
-                  &data, &size))) {
+      ret = gst_asf_demux_parse_payload (demux, &packet, lentype, &data, &size);
+
+      if (G_UNLIKELY (!ret)) {
         GST_WARNING_OBJECT (demux, "Failed to parse payload %u/%u", i + 1, num);
-        ret = GST_ASF_DEMUX_PARSE_PACKET_ERROR_FATAL;
         break;
       }
     }
   } else {
     GST_LOG_OBJECT (demux, "Parsing single payload");
-    if (G_UNLIKELY (!gst_asf_demux_parse_payload (demux, &packet, -1, &data,
-                &size))) {
-      GST_WARNING_OBJECT (demux, "Failed to parse payload");
-      ret = GST_ASF_DEMUX_PARSE_PACKET_ERROR_RECOVERABLE;
-    }
+    ret = gst_asf_demux_parse_payload (demux, &packet, -1, &data, &size);
   }
 
-done:
-  gst_buffer_unmap (buf, &map);
   return ret;
+
+/* ERRORS */
+short_packet:
+  {
+    GST_WARNING_OBJECT (demux, "Short packet!");
+    return FALSE;
+  }
 }

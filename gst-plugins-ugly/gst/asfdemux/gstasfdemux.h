@@ -115,9 +115,8 @@ typedef struct
 
 typedef enum {
   GST_ASF_DEMUX_STATE_HEADER,
-  GST_ASF_DEMUX_STATE_DATA,
-  GST_ASF_DEMUX_STATE_INDEX
-} GstASFDemuxState;
+  GST_ASF_DEMUX_STATE_DATA
+} GstAsfDemuxState;
 
 #define GST_ASF_DEMUX_NUM_VIDEO_PADS   16
 #define GST_ASF_DEMUX_NUM_AUDIO_PADS   32
@@ -131,18 +130,17 @@ struct _GstASFDemux {
 
   GstAdapter        *adapter;
   GstTagList        *taglist;
-  GstASFDemuxState   state;
-
-  /* byte offset where the asf starts, which might not be zero on chained
-   * asfs, index_offset and data_offset already are 'offseted' by base_offset */
-  guint64            base_offset;
-
+  GstAsfDemuxState   state;
+  
   guint64            index_offset; /* byte offset where index might be, or 0   */
   guint64            data_offset;  /* byte offset where packets start          */
   guint64            data_size;    /* total size of packet data in bytes, or 0 */
   guint64            num_packets;  /* total number of data packets, or 0       */
   gint64             packet;       /* current packet                           */
   guint              speed_packets; /* Known number of packets to get in one go*/
+
+  /* bitrates are unused at the moment */
+  guint32              bitrate[GST_ASF_DEMUX_NUM_STREAM_IDS];
 
   gchar              **languages;
   guint                num_languages;
@@ -158,11 +156,6 @@ struct _GstASFDemux {
   guint32              num_streams;
   AsfStream            stream[GST_ASF_DEMUX_NUM_STREAMS];
   gboolean             activated_streams;
-
-  /* for chained asf handling, we need to hold the old asf streams until
-   * we detect the new ones */
-  AsfStream            old_stream[GST_ASF_DEMUX_NUM_STREAMS];
-  gboolean             old_num_streams;
 
   GstClockTime         first_ts;        /* first timestamp found        */
 

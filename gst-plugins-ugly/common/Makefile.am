@@ -1,14 +1,15 @@
 SUBDIRS = m4
 
+CONFIG_CLEAN_FILES = shave shave-libtool
+
 EXTRA_DIST = \
 	ChangeLog \
 	gettext.patch \
 	glib-gen.mak gtk-doc.mak upload-doc.mak \
-	cruft.mak release.mak win32.mak po.mak \
-	parallel-subdirs.mak \
+	release.mak win32.mak po.mak \
 	gst-autogen.sh \
 	check-exports \
-	c-to-xml.py mangle-tmpl.py scangobj-merge.py \
+	c-to-xml.py gst-xmlinspect.py mangle-tmpl.py scangobj-merge.py \
 	gtk-doc-plugins.mak \
 	plugins.xsl gstdoc-scangobj \
 	gst.supp check.mak \
@@ -17,6 +18,4 @@ EXTRA_DIST = \
 	coverage/coverage-report.xsl \
 	coverage/coverage-report-entry.pl \
 	download-translations \
-	extract-release-date-from-doap-file \
-	gst-indent \
-	orc.mak
+        shave.in shave-libtool.in

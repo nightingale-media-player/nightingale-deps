@@ -29,9 +29,6 @@ then
     ln -s ../../common/hooks/pre-commit.hook .git/hooks/pre-commit
 fi
 
-# GNU gettext automake support doesn't get along with git.
-# https://bugzilla.gnome.org/show_bug.cgi?id=661128
-touch -t 200001010000 po/$package-0.10.pot
 
 CONFIGURE_DEF_OPT='--enable-maintainer-mode --enable-gtk-doc'
 
@@ -39,19 +36,20 @@ autogen_options $@
 
 printf "+ check for build tools"
 if test ! -z "$NOCHECK"; then echo " skipped"; else  echo; fi
-version_check "autoconf" "$AUTOCONF autoconf autoconf270 autoconf269 autoconf268 autoconf267 autoconf266 autoconf265 autoconf264 autoconf263 autoconf262" \
-              "ftp://ftp.gnu.org/pub/gnu/autoconf/" 2 62 || DIE=1
-version_check "automake" "$AUTOMAKE automake automake-1.11" \
-              "ftp://ftp.gnu.org/pub/gnu/automake/" 1 11 || DIE=1
+version_check "autoconf" "$AUTOCONF autoconf autoconf-2.54 autoconf-2.53 autoconf-2.52" \
+              "ftp://ftp.gnu.org/pub/gnu/autoconf/" 2 52 || DIE=1
+version_check "automake" "$AUTOMAKE automake automake-1.11 automake-1.10 automake-1.9 automake-1.7 automake-1.6 automake-1.5" \
+              "ftp://ftp.gnu.org/pub/gnu/automake/" 1 7 || DIE=1
 version_check "autopoint" "autopoint" \
-              "ftp://ftp.gnu.org/pub/gnu/gettext/" 0 17 || DIE=1
+              "ftp://ftp.gnu.org/pub/gnu/gettext/" 0 14 || DIE=1
 version_check "libtoolize" "$LIBTOOLIZE libtoolize glibtoolize" \
-              "ftp://ftp.gnu.org/pub/gnu/libtool/" 2 2 6 || DIE=1
+              "ftp://ftp.gnu.org/pub/gnu/libtool/" 1 5 0 || DIE=1
 version_check "pkg-config" "" \
               "http://www.freedesktop.org/software/pkgconfig" 0 8 0 || DIE=1
 
 die_check $DIE
 
+autoconf_2_52d_check || DIE=1
 aclocal_check || DIE=1
 autoheader_check || DIE=1
 
@@ -83,7 +81,7 @@ tool_run "$libtoolize" "--copy --force"
 tool_run "$aclocal" "-I m4 -I common/m4 $ACLOCAL_FLAGS"
 tool_run "$autoheader"
 
-# touch the stamp-h.in build stamp so we don't re-run autoheader in maintainer mode
+# touch the stamp-h.in build stamp so we don't re-run autoheader in maintainer mode -- wingo
 echo timestamp > stamp-h.in 2> /dev/null
 
 tool_run "$autoconf"

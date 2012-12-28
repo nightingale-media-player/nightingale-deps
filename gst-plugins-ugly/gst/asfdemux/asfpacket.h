@@ -32,8 +32,6 @@ typedef struct {
   guint         mo_number;         /* media object number (unused)           */
   guint         mo_offset;         /* offset (timestamp for compressed data) */
   guint         mo_size;           /* size of media-object-to-be, or 0       */
-  guint         buf_filled;        /* how much of the mo data we got so far  */
-  GstBuffer    *buf;               /* buffer to assemble media-object or NULL*/
   guint         rep_data_len;      /* should never be more than 256, since   */
   guint8        rep_data[256];     /* the length should be stored in a byte  */
   GstClockTime  ts;
@@ -43,11 +41,11 @@ typedef struct {
   gboolean      interlaced;        /* default: FALSE */
   gboolean      tff;
   gboolean      rff;
+  GstBuffer    *buf;
 } AsfPayload;
 
 typedef struct {
   GstBuffer    *buf;
-  const guint8 *bdata;
   guint         length;            /* packet length (unused)               */
   guint         padding;           /* length of padding at end of packet   */
   guint         sequence;          /* sequence (unused)                    */
@@ -57,16 +55,10 @@ typedef struct {
   guint8        prop_flags;        /* payload length types                 */
 } AsfPacket;
 
-typedef enum {
-  GST_ASF_DEMUX_PARSE_PACKET_ERROR_NONE,
-  GST_ASF_DEMUX_PARSE_PACKET_ERROR_RECOVERABLE,
-  GST_ASF_DEMUX_PARSE_PACKET_ERROR_FATAL
-} GstAsfDemuxParsePacketError;
-
-GstAsfDemuxParsePacketError gst_asf_demux_parse_packet (GstASFDemux * demux, GstBuffer * buf);
+gboolean   gst_asf_demux_parse_packet (GstASFDemux * demux, GstBuffer * buf);
 
 #define gst_asf_payload_is_complete(payload) \
-    ((payload)->buf_filled >= (payload)->mo_size)
+    (GST_BUFFER_SIZE ((payload)->buf) >= (payload)->mo_size)
 
 G_END_DECLS
 

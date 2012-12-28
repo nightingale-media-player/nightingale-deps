@@ -18,7 +18,13 @@ DOC_BASE = /srv/gstreamer.freedesktop.org/www/data/doc
 DOC_URL = $(DOC_SERVER):$(DOC_BASE)
 
 upload: $(FORMATS)
-	@if echo $(FORMATS) | grep html > /dev/null; then \
+	@if test "x$(PACKAGE_VERSION_NANO)" = x0; then \
+            export DOCVERSION=$(VERSION); \
+        else export DOCVERSION=head; \
+        fi; \
+        export DIR=$(DOC_BASE)/gstreamer/$$DOCVERSION/$(DOC); \
+	ssh $(DOC_SERVER) mkdir -p $$DIR; \
+	if echo $(FORMATS) | grep html > /dev/null; then \
 	  echo "Preparing docs for upload (rebasing cross-references) ..." ; \
 	  if test x$(builddir) != x$(srcdir); then \
 	    echo "make upload can only be used if srcdir == builddir"; \
@@ -43,20 +49,9 @@ upload: $(FORMATS)
 	fi; \
 	if echo $(FORMATS) | grep ps > /dev/null; then export SRC="$$SRC $(DOC).ps"; fi; \
 	if echo $(FORMATS) | grep pdf > /dev/null; then export SRC="$$SRC $(DOC).pdf"; fi; \
-	\
-	# upload releases to both X.Y/ and head/ subdirectories \
-	export DIR=$(DOC_BASE)/gstreamer/$(PACKAGE_VERSION_MAJOR).$(PACKAGE_VERSION_MINOR)/$(DOC); \
 	echo Uploading $$SRC to $(DOC_SERVER):$$DIR; \
-	ssh $(DOC_SERVER) mkdir -p $$DIR; \
 	rsync -rv -e ssh --delete $$SRC $(DOC_SERVER):$$DIR; \
 	ssh $(DOC_SERVER) chmod -R g+w $$DIR; \
-	\
-	export DIR=$(DOC_BASE)/gstreamer/head/$(DOC); \
-	echo Uploading $$SRC to $(DOC_SERVER):$$DIR; \
-	ssh $(DOC_SERVER) mkdir -p $$DIR; \
-	rsync -rv -e ssh --delete $$SRC $(DOC_SERVER):$$DIR; \
-	ssh $(DOC_SERVER) chmod -R g+w $$DIR; \
-	\
 	if echo $(FORMATS) | grep html > /dev/null; then \
 	  echo "Un-preparing docs for upload (rebasing cross-references) ..." ; \
 	  gtkdoc-rebase --html-dir=$(builddir)/html ; \

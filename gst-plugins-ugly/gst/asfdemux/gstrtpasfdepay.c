@@ -31,6 +31,13 @@
 GST_DEBUG_CATEGORY_STATIC (rtpasfdepayload_debug);
 #define GST_CAT_DEFAULT rtpasfdepayload_debug
 
+static const GstElementDetails rtp_asf_depay_details =
+GST_ELEMENT_DETAILS ("RTP ASF packet depayloader",
+    "Codec/Depayloader/Network",
+    "Extracts ASF streams from RTP",
+    "Tim-Philipp Müller <tim centricular net>, "
+    "Wim Taymans <wim.taymans@gmail.com>");
+
 static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
@@ -41,7 +48,6 @@ static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src",
 #define SINK_CAPS \
   "application/x-rtp, "                                          \
   "media = (string) { \"application\", \"video\", \"audio\" }, " \
-  "payload = (int) " GST_RTP_PAYLOAD_DYNAMIC_STRING ", "         \
   "clock-rate = (int) [1, MAX ], "                               \
   "encoding-name = (string) \"X-ASF-PF\""
 
@@ -51,49 +57,51 @@ static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_STATIC_CAPS (SINK_CAPS)
     );
 
-#define gst_rtp_asf_depay_parent_class parent_class
-G_DEFINE_TYPE (GstRtpAsfDepay, gst_rtp_asf_depay, GST_TYPE_RTP_BASE_DEPAYLOAD);
+GST_BOILERPLATE (GstRtpAsfDepay, gst_rtp_asf_depay, GstBaseRTPDepayload,
+    GST_TYPE_BASE_RTP_DEPAYLOAD);
 
 static void gst_rtp_asf_depay_finalize (GObject * object);
 
 static GstStateChangeReturn gst_rtp_asf_depay_change_state (GstElement *
     element, GstStateChange transition);
 
-static gboolean gst_rtp_asf_depay_setcaps (GstRTPBaseDepayload * depay,
+static gboolean gst_rtp_asf_depay_setcaps (GstBaseRTPDepayload * depay,
     GstCaps * caps);
-static GstBuffer *gst_rtp_asf_depay_process (GstRTPBaseDepayload * basedepay,
+static GstBuffer *gst_rtp_asf_depay_process (GstBaseRTPDepayload * basedepay,
     GstBuffer * buf);
+
+static void
+gst_rtp_asf_depay_base_init (gpointer klass)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&src_factory));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&sink_factory));
+
+  gst_element_class_set_details (element_class, &rtp_asf_depay_details);
+}
 
 static void
 gst_rtp_asf_depay_class_init (GstRtpAsfDepayClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
-  GstRTPBaseDepayloadClass *gstrtpbasedepayload_class;
+  GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
 
   gobject_class = (GObjectClass *) klass;
   gstelement_class = (GstElementClass *) klass;
-  gstrtpbasedepayload_class = (GstRTPBaseDepayloadClass *) klass;
-
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&src_factory));
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&sink_factory));
-
-  gst_element_class_set_static_metadata (gstelement_class,
-      "RTP ASF packet depayloader", "Codec/Depayloader/Network",
-      "Extracts ASF streams from RTP",
-      "Tim-Philipp Müller <tim centricular net>, "
-      "Wim Taymans <wim.taymans@gmail.com>");
+  gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
 
   gobject_class->finalize = gst_rtp_asf_depay_finalize;
 
   gstelement_class->change_state =
       GST_DEBUG_FUNCPTR (gst_rtp_asf_depay_change_state);
 
-  gstrtpbasedepayload_class->set_caps =
+  gstbasertpdepayload_class->set_caps =
       GST_DEBUG_FUNCPTR (gst_rtp_asf_depay_setcaps);
-  gstrtpbasedepayload_class->process =
+  gstbasertpdepayload_class->process =
       GST_DEBUG_FUNCPTR (gst_rtp_asf_depay_process);
 
   GST_DEBUG_CATEGORY_INIT (rtpasfdepayload_debug, "rtpasfdepayload", 0,
@@ -101,7 +109,7 @@ gst_rtp_asf_depay_class_init (GstRtpAsfDepayClass * klass)
 }
 
 static void
-gst_rtp_asf_depay_init (GstRtpAsfDepay * depay)
+gst_rtp_asf_depay_init (GstRtpAsfDepay * depay, GstRtpAsfDepayClass * klass)
 {
   depay->adapter = gst_adapter_new ();
 }
@@ -123,7 +131,7 @@ static const guint8 asf_marker[16] = { 0x30, 0x26, 0xb2, 0x75, 0x8e, 0x66,
 };
 
 static gboolean
-gst_rtp_asf_depay_setcaps (GstRTPBaseDepayload * depayload, GstCaps * caps)
+gst_rtp_asf_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
 {
   GstRtpAsfDepay *depay;
   GstStructure *s;
@@ -151,17 +159,7 @@ gst_rtp_asf_depay_setcaps (GstRTPBaseDepayload * depayload, GstCaps * caps)
   if (ps_string == NULL || *ps_string == '\0')
     goto no_packetsize;
 
-  if (depay->packet_size) {
-    /* header sent again following seek;
-     * discard to avoid confusing upstream */
-    if (depay->packet_size == atoi (ps_string)) {
-      goto duplicate_header;
-    } else {
-      /* since we should fiddle with downstream state to handle this */
-      goto refuse_renegotiation;
-    }
-  } else
-    depay->packet_size = atoi (ps_string);
+  depay->packet_size = atoi (ps_string);
   if (depay->packet_size <= 16)
     goto invalid_packetsize;
 
@@ -171,16 +169,17 @@ gst_rtp_asf_depay_setcaps (GstRTPBaseDepayload * depayload, GstCaps * caps)
       || memcmp (headers, asf_marker, 16) != 0)
     goto invalid_headers;
 
-  src_caps = gst_caps_new_empty_simple ("video/x-ms-asf");
+  src_caps = gst_caps_new_simple ("video/x-ms-asf", NULL);
   gst_pad_set_caps (depayload->srcpad, src_caps);
-  gst_caps_unref (src_caps);
 
   buf = gst_buffer_new ();
-  gst_buffer_append_memory (buf,
-      gst_memory_new_wrapped (0, headers, headers_len, 0, headers_len, headers,
-          g_free));
+  GST_BUFFER_DATA (buf) = headers;
+  GST_BUFFER_MALLOCDATA (buf) = headers;
+  GST_BUFFER_SIZE (buf) = headers_len;
+  gst_buffer_set_caps (buf, src_caps);
+  gst_caps_unref (src_caps);
 
-  gst_rtp_base_depayload_push (depayload, buf);
+  gst_base_rtp_depayload_push (depayload, buf);
 
   return TRUE;
 
@@ -204,16 +203,6 @@ invalid_headers:
   {
     GST_WARNING_OBJECT (depay, "headers don't look like valid ASF headers");
     g_free (headers);
-    return FALSE;
-  }
-duplicate_header:
-  {
-    GST_DEBUG_OBJECT (depayload, "discarding duplicate header");
-    return TRUE;
-  }
-refuse_renegotiation:
-  {
-    GST_WARNING_OBJECT (depayload, "cannot renegotiate to different header");
     return FALSE;
   }
 }
@@ -241,40 +230,20 @@ field_size (guint8 field)
   }
 }
 
-/* Set the padding field to te correct value as the spec
+/* 
+ * Set the padding field to te correct value as the spec
  * says it should be se to 0 in the rtp packets
  */
-static GstBuffer *
-gst_rtp_asf_depay_update_padding (GstRtpAsfDepay * depayload, GstBuffer * buf)
+static void
+gst_rtp_asf_depay_set_padding (GstRtpAsfDepay * depayload,
+    GstBuffer * buf, guint32 padding)
 {
-  GstBuffer *result;
-  GstMapInfo map;
-  guint8 *data;
+  guint8 *data = GST_BUFFER_DATA (buf);
   gint offset = 0;
   guint8 aux;
   guint8 seq_type;
   guint8 pad_type;
   guint8 pkt_type;
-  gsize plen, padding;
-
-  plen = gst_buffer_get_size (buf);
-  if (plen == depayload->packet_size)
-    return buf;
-
-  padding = depayload->packet_size - plen;
-
-  GST_LOG_OBJECT (depayload,
-      "padding buffer size %" G_GSIZE_FORMAT " to packet size %d", plen,
-      depayload->packet_size);
-
-  result = gst_buffer_new_and_alloc (depayload->packet_size);
-
-  gst_buffer_map (result, &map, GST_MAP_READ);
-  data = map.data;
-  memset (data + plen, 0, padding);
-
-  gst_buffer_extract (buf, 0, data, plen);
-  gst_buffer_unref (buf);
 
   aux = data[offset++];
   if (aux & 0x80) {
@@ -283,8 +252,7 @@ gst_rtp_asf_depay_update_padding (GstRtpAsfDepay * depayload, GstBuffer * buf)
       GST_WARNING_OBJECT (depayload, "Error correction length type should be "
           "set to 0");
       /* this packet doesn't follow the spec */
-      gst_buffer_unmap (result, &map);
-      return result;
+      return;
     }
     err_len = aux & 0x0F;
     offset += err_len;
@@ -321,15 +289,12 @@ gst_rtp_asf_depay_update_padding (GstRtpAsfDepay * depayload, GstBuffer * buf)
     default:
       break;
   }
-  gst_buffer_unmap (result, &map);
-
-  return result;
 }
 
 /* Docs: 'RTSP Protocol PDF' document from http://sdp.ppona.com/ (page 8) */
 
 static GstBuffer *
-gst_rtp_asf_depay_process (GstRTPBaseDepayload * depayload, GstBuffer * buf)
+gst_rtp_asf_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 {
   GstRtpAsfDepay *depay;
   const guint8 *payload;
@@ -338,7 +303,6 @@ gst_rtp_asf_depay_process (GstRTPBaseDepayload * depayload, GstBuffer * buf)
   guint payload_len, hdr_len, offset;
   guint len_offs;
   GstClockTime timestamp;
-  GstRTPBuffer rtpbuf = { NULL };
 
   depay = GST_RTP_ASF_DEPAY (depayload);
 
@@ -346,14 +310,14 @@ gst_rtp_asf_depay_process (GstRTPBaseDepayload * depayload, GstBuffer * buf)
   if (GST_BUFFER_IS_DISCONT (buf)) {
     GST_LOG_OBJECT (depay, "got DISCONT");
     gst_adapter_clear (depay->adapter);
+    depay->wait_start = TRUE;
     depay->discont = TRUE;
   }
 
-  gst_rtp_buffer_map (buf, GST_MAP_READ, &rtpbuf);
   timestamp = GST_BUFFER_TIMESTAMP (buf);
 
-  payload_len = gst_rtp_buffer_get_payload_len (&rtpbuf);
-  payload = gst_rtp_buffer_get_payload (&rtpbuf);
+  payload_len = gst_rtp_buffer_get_payload_len (buf);
+  payload = gst_rtp_buffer_get_payload (buf);
   offset = 0;
 
   GST_LOG_OBJECT (depay, "got payload len of %u", payload_len);
@@ -446,37 +410,57 @@ gst_rtp_asf_depay_process (GstRTPBaseDepayload * depayload, GstBuffer * buf)
       /* Fragmented packet handling */
       outbuf = NULL;
 
-      if (len_offs == (available = gst_adapter_available (depay->adapter))) {
-        /* fragment aligns with what we have, add it */
-        GST_LOG_OBJECT (depay, "collecting fragment");
-        sub =
-            gst_rtp_buffer_get_payload_subbuffer (&rtpbuf, offset, packet_len);
-        gst_adapter_push (depay->adapter, sub);
-        /* RTP marker bit M is set if this is last fragment */
-        if (gst_rtp_buffer_get_marker (&rtpbuf)) {
-          GST_LOG_OBJECT (depay, "last fragment, assembling packet");
-          outbuf =
-              gst_adapter_take_buffer (depay->adapter, available + packet_len);
-        }
-      } else {
-        if (available) {
-          GST_WARNING_OBJECT (depay, "Offset doesn't match previous data?!");
-          GST_DEBUG_OBJECT (depay, "clearing for re-sync");
-          gst_adapter_clear (depay->adapter);
+      if (len_offs == 0 && (available = gst_adapter_available (depay->adapter))) {
+        /* Beginning of a new fragmented packet, Extract the previous buffer if any */
+        GST_DEBUG ("Extracting previous fragmented buffer from adapter");
+        sub = gst_adapter_take_buffer (depay->adapter, available);
+        if (available < depay->packet_size) {
+          /* Add padding if needed */
+          GST_DEBUG ("Padding outgoing buffer to packet_size (%d, was %d",
+              depay->packet_size, available);
+          outbuf = gst_buffer_new_and_alloc (depay->packet_size);
+          memcpy (GST_BUFFER_DATA (outbuf), GST_BUFFER_DATA (sub), available);
+          memset (GST_BUFFER_DATA (outbuf) + available, 0,
+              depay->packet_size - available);
+          gst_buffer_unref (sub);
+          gst_rtp_asf_depay_set_padding (depay, outbuf,
+              depay->packet_size - available);
         } else
-          GST_DEBUG_OBJECT (depay, "waiting for start of packet");
+          outbuf = sub;
       }
+      GST_DEBUG ("storing fragmented buffer continuation and returning");
+      available = gst_adapter_available (depay->adapter);
+      GST_DEBUG ("Available bytes (%d), len_offs (%d)", available, len_offs);
+      if ((available = gst_adapter_available (depay->adapter))) {
+        if (available != len_offs) {
+          GST_WARNING ("Available bytes (%d) != len_offs (%d), trimming buffer",
+              available, len_offs);
+          sub = gst_adapter_take_buffer (depay->adapter, len_offs);
+          gst_adapter_clear (depay->adapter);
+          if (sub)
+            gst_adapter_push (depay->adapter, sub);
+        }
+      }
+      sub = gst_rtp_buffer_get_payload_subbuffer (buf, offset, packet_len);
+      gst_adapter_push (depay->adapter, sub);
+      /* If we haven't completed a full ASF packet, return */
+      if (!outbuf)
+        return NULL;
+    } else if (packet_len >= depay->packet_size) {
+      GST_LOG_OBJECT (depay, "creating subbuffer");
+      outbuf = gst_rtp_buffer_get_payload_subbuffer (buf, offset, packet_len);
     } else {
-      GST_LOG_OBJECT (depay, "collecting packet");
-      outbuf =
-          gst_rtp_buffer_get_payload_subbuffer (&rtpbuf, offset, packet_len);
+      GST_LOG_OBJECT (depay, "padding buffer");
+      /* we need to pad with zeroes to packet_size if it's smaller */
+      outbuf = gst_buffer_new_and_alloc (depay->packet_size);
+      memcpy (GST_BUFFER_DATA (outbuf), payload, packet_len);
+      memset (GST_BUFFER_DATA (outbuf) + packet_len, 0,
+          depay->packet_size - packet_len);
+      gst_rtp_asf_depay_set_padding (depay, outbuf,
+          depay->packet_size - packet_len);
     }
 
-    /* If we haven't completed a full ASF packet, return */
-    if (!outbuf)
-      return NULL;
-
-    outbuf = gst_rtp_asf_depay_update_padding (depay, outbuf);
+    gst_buffer_set_caps (outbuf, GST_PAD_CAPS (depayload->srcpad));
 
     if (!S)
       GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_DELTA_UNIT);
@@ -489,7 +473,7 @@ gst_rtp_asf_depay_process (GstRTPBaseDepayload * depayload, GstBuffer * buf)
 
     GST_BUFFER_TIMESTAMP (outbuf) = timestamp;
 
-    gst_rtp_base_depayload_push (depayload, outbuf);
+    gst_base_rtp_depayload_push (depayload, outbuf);
 
     /* only apply the timestamp to the first buffer of this packet */
     timestamp = -1;
@@ -500,14 +484,11 @@ gst_rtp_asf_depay_process (GstRTPBaseDepayload * depayload, GstBuffer * buf)
     payload_len -= packet_len;
   } while (payload_len > 0);
 
-  gst_rtp_buffer_unmap (&rtpbuf);
-
   return NULL;
 
 /* ERRORS */
 too_small:
   {
-    gst_rtp_buffer_unmap (&rtpbuf);
     GST_WARNING_OBJECT (depayload, "Payload too small, expected at least 4 "
         "bytes for header, but got only %d bytes", payload_len);
     return NULL;
@@ -525,6 +506,7 @@ gst_rtp_asf_depay_change_state (GstElement * element, GstStateChange trans)
   switch (trans) {
     case GST_STATE_CHANGE_READY_TO_PAUSED:
       gst_adapter_clear (depay->adapter);
+      depay->wait_start = TRUE;
       depay->discont = TRUE;
       break;
     default:

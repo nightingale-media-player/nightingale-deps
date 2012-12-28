@@ -19,7 +19,8 @@
 
 /**
  * SECTION:element-cdiocddasrc
- * @see_also: GstCdParanoiaSrc, GstAudioCdSrc
+ * @short_description: Reads raw audio from an Audio CD
+ * @see_also: GstCdParanoiaSrc, GstCddaBaseSrc
  *
  * <refsect2>
  * <para>
@@ -93,27 +94,43 @@ enum
   PROP_READ_SPEED
 };
 
-G_DEFINE_TYPE (GstCdioCddaSrc, gst_cdio_cdda_src, GST_TYPE_AUDIO_CD_SRC);
+static const GstElementDetails gst_cdio_cdda_src_details =
+GST_ELEMENT_DETAILS ("CD audio source (CDDA)",
+    "Source/File",
+    "Read audio from CD using libcdio",
+    "Tim-Philipp Müller <tim centricular net>");
+
+GST_BOILERPLATE (GstCdioCddaSrc, gst_cdio_cdda_src, GstCddaBaseSrc,
+    GST_TYPE_CDDA_BASE_SRC);
 
 static void gst_cdio_cdda_src_finalize (GObject * obj);
 static void gst_cdio_cdda_src_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_cdio_cdda_src_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
-static GstBuffer *gst_cdio_cdda_src_read_sector (GstAudioCdSrc * src,
-    gint sector);
-static gboolean gst_cdio_cdda_src_open (GstAudioCdSrc * src,
-    const gchar * device);
-static void gst_cdio_cdda_src_close (GstAudioCdSrc * src);
 
-#if 0
+static gchar *gst_cdio_cdda_src_get_default_device (GstCddaBaseSrc * src);
+static GstBuffer *gst_cdio_cdda_src_read_sector (GstCddaBaseSrc * src,
+    gint sector);
+static gboolean gst_cdio_cdda_src_open (GstCddaBaseSrc * src,
+    const gchar * device);
+static void gst_cdio_cdda_src_close (GstCddaBaseSrc * src);
+
+static void
+gst_cdio_cdda_src_base_init (gpointer g_class)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+
+  gst_element_class_set_details (element_class, &gst_cdio_cdda_src_details);
+}
+
 static gchar *
-gst_cdio_cdda_src_get_default_device (GstAudioCdSrc * audiocdsrc)
+gst_cdio_cdda_src_get_default_device (GstCddaBaseSrc * cddabasesrc)
 {
   GstCdioCddaSrc *src;
   gchar *default_device, *ret;
 
-  src = GST_CDIO_CDDA_SRC (audiocdsrc);
+  src = GST_CDIO_CDDA_SRC (cddabasesrc);
 
   /* src->cdio may be NULL here */
   default_device = cdio_get_default_device (src->cdio);
@@ -127,7 +144,7 @@ gst_cdio_cdda_src_get_default_device (GstAudioCdSrc * audiocdsrc)
 }
 
 static gchar **
-gst_cdio_cdda_src_probe_devices (GstAudioCdSrc * audiocdsrc)
+gst_cdio_cdda_src_probe_devices (GstCddaBaseSrc * cddabasesrc)
 {
   char **devices, **ret, **d;
 
@@ -143,7 +160,7 @@ gst_cdio_cdda_src_probe_devices (GstAudioCdSrc * audiocdsrc)
 
   ret = g_strdupv (devices);
   for (d = devices; *d != NULL; ++d) {
-    GST_DEBUG_OBJECT (audiocdsrc, "device: %s", GST_STR_NULL (*d));
+    GST_DEBUG_OBJECT (cddabasesrc, "device: %s", GST_STR_NULL (*d));
     free (*d);
   }
   free (devices);
@@ -153,33 +170,32 @@ gst_cdio_cdda_src_probe_devices (GstAudioCdSrc * audiocdsrc)
   /* ERRORS */
 no_devices:
   {
-    GST_DEBUG_OBJECT (audiocdsrc, "no devices found");
+    GST_DEBUG_OBJECT (cddabasesrc, "no devices found");
     return NULL;
   }
 empty_devices:
   {
-    GST_DEBUG_OBJECT (audiocdsrc, "empty device list found");
+    GST_DEBUG_OBJECT (cddabasesrc, "empty device list found");
     free (devices);
     return NULL;
   }
 }
-#endif
 
 static GstBuffer *
-gst_cdio_cdda_src_read_sector (GstAudioCdSrc * audiocdsrc, gint sector)
+gst_cdio_cdda_src_read_sector (GstCddaBaseSrc * cddabasesrc, gint sector)
 {
   GstCdioCddaSrc *src;
-  guint8 *data;
+  GstBuffer *buf;
 
-  src = GST_CDIO_CDDA_SRC (audiocdsrc);
+  src = GST_CDIO_CDDA_SRC (cddabasesrc);
 
-  data = g_malloc (CDIO_CD_FRAMESIZE_RAW);
+  /* can't use pad_alloc because we can't return the GstFlowReturn */
+  buf = gst_buffer_new_and_alloc (CDIO_CD_FRAMESIZE_RAW);
 
-  /* can't use pad_alloc because we can't return the GstFlowReturn (FIXME 0.11) */
-  if (cdio_read_audio_sector (src->cdio, data, sector) != 0)
+  if (cdio_read_audio_sector (src->cdio, GST_BUFFER_DATA (buf), sector) != 0)
     goto read_failed;
 
-  return gst_buffer_new_wrapped (data, CDIO_CD_FRAMESIZE_RAW);
+  return buf;
 
   /* ERRORS */
 read_failed:
@@ -189,7 +205,7 @@ read_failed:
         (_("Could not read from CD.")),
         ("cdio_read_audio_sector at %d failed: %s", sector,
             g_strerror (errno)));
-    g_free (data);
+    gst_buffer_unref (buf);
     return NULL;
   }
 }
@@ -201,16 +217,13 @@ notcdio_track_is_audio_track (const CdIo * p_cdio, track_t i_track)
 }
 
 static gboolean
-gst_cdio_cdda_src_open (GstAudioCdSrc * audiocdsrc, const gchar * device)
+gst_cdio_cdda_src_open (GstCddaBaseSrc * cddabasesrc, const gchar * device)
 {
   GstCdioCddaSrc *src;
   discmode_t discmode;
   gint first_track, num_tracks, i;
-#if LIBCDIO_VERSION_NUM > 83
-  cdtext_t *cdtext;
-#endif
 
-  src = GST_CDIO_CDDA_SRC (audiocdsrc);
+  src = GST_CDIO_CDDA_SRC (cddabasesrc);
 
   g_assert (device != NULL);
   g_assert (src->cdio == NULL);
@@ -235,23 +248,13 @@ gst_cdio_cdda_src_open (GstAudioCdSrc * audiocdsrc, const gchar * device)
   if (src->read_speed != -1)
     cdio_set_speed (src->cdio, src->read_speed);
 
-#if LIBCDIO_VERSION_NUM > 83
-  cdtext = cdio_get_cdtext (src->cdio);
-
-  if (NULL == cdtext)
-    GST_DEBUG_OBJECT (src, "no CD-TEXT on disc");
-  else
-    gst_cdio_add_cdtext_album_tags (GST_OBJECT_CAST (src), cdtext,
-        audiocdsrc->tags);
-#else
   gst_cdio_add_cdtext_album_tags (GST_OBJECT_CAST (src), src->cdio,
-      audiocdsrc->tags);
-#endif
+      cddabasesrc->tags);
 
   GST_LOG_OBJECT (src, "%u tracks, first track: %d", num_tracks, first_track);
 
   for (i = 0; i < num_tracks; ++i) {
-    GstAudioCdSrcTrack track = { 0, };
+    GstCddaBaseSrcTrack track = { 0, };
     gint len_sectors;
 
     len_sectors = cdio_get_track_sec_count (src->cdio, i + first_track);
@@ -263,16 +266,10 @@ gst_cdio_cdda_src_open (GstAudioCdSrc * audiocdsrc, const gchar * device)
      * the right thing here (for cddb id calculations etc. as well) */
     track.start = cdio_get_track_lsn (src->cdio, i + first_track);
     track.end = track.start + len_sectors - 1;  /* -1? */
-#if LIBCDIO_VERSION_NUM > 83
-    if (NULL != cdtext)
-      track.tags = gst_cdio_get_cdtext (GST_OBJECT (src), cdtext,
-          i + first_track);
-#else
     track.tags = gst_cdio_get_cdtext (GST_OBJECT (src), src->cdio,
         i + first_track);
-#endif
 
-    gst_audio_cd_src_add_track (GST_AUDIO_CD_SRC (src), &track);
+    gst_cdda_base_src_add_track (GST_CDDA_BASE_SRC (src), &track);
   }
   return TRUE;
 
@@ -296,9 +293,9 @@ not_audio:
 }
 
 static void
-gst_cdio_cdda_src_close (GstAudioCdSrc * audiocdsrc)
+gst_cdio_cdda_src_close (GstCddaBaseSrc * cddabasesrc)
 {
-  GstCdioCddaSrc *src = GST_CDIO_CDDA_SRC (audiocdsrc);
+  GstCdioCddaSrc *src = GST_CDIO_CDDA_SRC (cddabasesrc);
 
   if (src->cdio) {
     cdio_destroy (src->cdio);
@@ -307,7 +304,7 @@ gst_cdio_cdda_src_close (GstAudioCdSrc * audiocdsrc)
 }
 
 static void
-gst_cdio_cdda_src_init (GstCdioCddaSrc * src)
+gst_cdio_cdda_src_init (GstCdioCddaSrc * src, GstCdioCddaSrcClass * klass)
 {
   src->read_speed = DEFAULT_READ_SPEED; /* don't need atomic access here */
   src->cdio = NULL;
@@ -323,37 +320,29 @@ gst_cdio_cdda_src_finalize (GObject * obj)
     src->cdio = NULL;
   }
 
-  G_OBJECT_CLASS (gst_cdio_cdda_src_parent_class)->finalize (obj);
+  G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
 static void
 gst_cdio_cdda_src_class_init (GstCdioCddaSrcClass * klass)
 {
-  GstAudioCdSrcClass *audiocdsrc_class = GST_AUDIO_CD_SRC_CLASS (klass);
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+  GstCddaBaseSrcClass *cddabasesrc_class = GST_CDDA_BASE_SRC_CLASS (klass);
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
   gobject_class->set_property = gst_cdio_cdda_src_set_property;
   gobject_class->get_property = gst_cdio_cdda_src_get_property;
   gobject_class->finalize = gst_cdio_cdda_src_finalize;
 
-  audiocdsrc_class->open = gst_cdio_cdda_src_open;
-  audiocdsrc_class->close = gst_cdio_cdda_src_close;
-  audiocdsrc_class->read_sector = gst_cdio_cdda_src_read_sector;
-#if 0
-  audiocdsrc_class->probe_devices = gst_cdio_cdda_src_probe_devices;
-  audiocdsrc_class->get_default_device = gst_cdio_cdda_src_get_default_device;
-#endif
+  cddabasesrc_class->open = gst_cdio_cdda_src_open;
+  cddabasesrc_class->close = gst_cdio_cdda_src_close;
+  cddabasesrc_class->read_sector = gst_cdio_cdda_src_read_sector;
+  cddabasesrc_class->probe_devices = gst_cdio_cdda_src_probe_devices;
+  cddabasesrc_class->get_default_device = gst_cdio_cdda_src_get_default_device;
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_READ_SPEED,
       g_param_spec_int ("read-speed", "Read speed",
           "Read from device at the specified speed (-1 = default)", -1, 100,
-          DEFAULT_READ_SPEED, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-  gst_element_class_set_static_metadata (element_class,
-      "CD audio source (CDDA)", "Source/File",
-      "Read audio from CD using libcdio",
-      "Tim-Philipp Müller <tim centricular net>");
+          DEFAULT_READ_SPEED, G_PARAM_READWRITE));
 }
 
 static void

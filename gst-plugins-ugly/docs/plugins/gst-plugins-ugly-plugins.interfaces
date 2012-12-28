@@ -1,16 +1,12 @@
-GstAmrnbEnc GstPreset
-GstAudioCdSrc GstURIHandler
-GstAudioEncoder GstPreset
 GstBin GstChildProxy
+GstPipeline GstChildProxy
 GstCddaBaseSrc GstURIHandler
 GstCdioCddaSrc GstURIHandler
 GstDvdReadSrc GstURIHandler
-GstLame GstTagSetter GstPreset
-GstLameMP3Enc GstPreset
 GstPNMSrc GstURIHandler
-GstPipeline GstChildProxy
+GstTwoLame GstPreset
+GstX264Enc GstPreset
+GstLameMP3Enc GstPreset
+GstLame GstPreset GstTagSetter
 GstRTSPReal GstRTSPExtension
 GstRTSPWMS GstRTSPExtension
-GstTwoLame GstPreset
-GstVideoEncoder GstPreset
-GstX264Enc GstPreset

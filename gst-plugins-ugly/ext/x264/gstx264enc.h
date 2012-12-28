@@ -23,7 +23,6 @@
 
 #include <gst/gst.h>
 #include <gst/video/video.h>
-#include <gst/video/gstvideoencoder.h>
 #include "_stdint.h"
 #include <x264.h>
 
@@ -45,28 +44,22 @@ typedef struct _GstX264EncClass GstX264EncClass;
 
 struct _GstX264Enc
 {
-  GstVideoEncoder element;
+  GstElement element;
 
   /*< private >*/
+  GstPad *sinkpad;
+  GstPad *srcpad;
+
   x264_t *x264enc;
   x264_param_t x264param;
-  gint current_byte_stream;
-  GstClockTime dts_offset;
-
-  /* List of frame/buffer mapping structs for
-   * pending frames */
-  GList *pending_frames;
 
   /* properties */
   guint threads;
-  gboolean sliced_threads;
-  gint sync_lookahead;
   gint pass;
   guint quantizer;
   gchar *mp_cache_file;
   gboolean byte_stream;
   guint bitrate;
-  gboolean intra_refresh;
   gint me;
   guint subme;
   guint analyse;
@@ -77,7 +70,6 @@ struct _GstX264Enc
   gboolean b_pyramid;
   gboolean weightb;
   guint sps_id;
-  gboolean au_nalu;
   gboolean trellis;
   guint vbv_buf_capacity;
   guint keyint_max;
@@ -87,35 +79,31 @@ struct _GstX264Enc
   guint qp_min;
   guint qp_max;
   guint qp_step;
-  gboolean mb_tree;
-  gint rc_lookahead;
   guint noise_reduction;
   gboolean interlaced;
-  gint speed_preset;
-  gint psy_tune;
-  guint tune;
-  GString *tunings;
-  GString *option_string_prop; /* option-string property */
-  GString *option_string; /* used by set prop */
 
   /* input description */
-  GstVideoCodecState *input_state;
+  GstVideoFormat format;
+  gint width, height;
+  gint fps_num, fps_den;
+  gint par_num, par_den;
+  /* cache some format properties */
+  gint stride[4], offset[4];
+  gint image_size;
 
-  /* configuration changed  while playing */
-  gboolean reconfig;
+  /* for b-frame delay handling */
+  GQueue *delay;
 
-  /* from the downstream caps */
-  const gchar *peer_profile;
-  gboolean peer_intra_profile;
-  const x264_level_t *peer_level;
+  guint8 *buffer;
+  gulong buffer_size;
+
+  gint i_type;
 };
 
 struct _GstX264EncClass
 {
-  GstVideoEncoderClass parent_class;
+  GstElementClass parent_class;
 };
-
-GType gst_x264_enc_get_type (void);
 
 G_END_DECLS
 

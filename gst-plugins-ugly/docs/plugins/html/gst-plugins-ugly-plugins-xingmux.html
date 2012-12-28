@@ -3,13 +3,15 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>xingmux</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
-<link rel="home" href="index.html" title="GStreamer Ugly Plugins 1.0 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Ugly Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-ugly Elements">
 <link rel="prev" href="gst-plugins-ugly-plugins-x264enc.html" title="x264enc">
 <link rel="next" href="ch02.html" title="gst-plugins-ugly Plugins">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-ugly Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-ugly Plugins">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -17,18 +19,18 @@
 <td><a accesskey="p" href="gst-plugins-ugly-plugins-x264enc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Ugly Plugins 1.0 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Ugly Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="ch02.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-ugly-plugins-xingmux.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-ugly-plugins-xingmux.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-ugly-plugins-xingmux.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-xingmux.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-ugly-plugins-xingmux.object-hierarchy" class="shortcut">Object Hierarchy</a>
 </td></tr>
 </table>
-<div class="refentry">
+<div class="refentry" lang="en">
 <a name="gst-plugins-ugly-plugins-xingmux"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -39,20 +41,26 @@
 </tr></table></div>
 <div class="refsynopsisdiv">
 <a name="gst-plugins-ugly-plugins-xingmux.synopsis"></a><h2>Synopsis</h2>
-<a name="GstXingMux"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-ugly-plugins-xingmux.html#GstXingMux-struct" title="struct GstXingMux">GstXingMux</a>;
+<a name="GstXingMux"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-ugly-plugins-xingmux.html#GstXingMux-struct" title="GstXingMux">GstXingMux</a>;
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" lang="en">
 <a name="gst-plugins-ugly-plugins-xingmux.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----GstXingMux
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----GstXingMux
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" lang="en">
 <a name="gst-plugins-ugly-plugins-xingmux.description"></a><h2>Description</h2>
 <p>
 xingmux adds a Xing header to MP3 files. This contains information about the duration and size
@@ -64,37 +72,25 @@ This element will remove any existing Xing, LAME or VBRI headers from the beginn
 </p>
 <p>
 </p>
-<div class="refsect2">
-<a name="idp5507872"></a><h3>Example launch line</h3>
-<div class="informalexample">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1
-2
-3</pre></td>
-        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch audiotestsrc num<span class="gtkdoc opt">-</span>buffers<span class="gtkdoc opt">=</span><span class="number">1000</span> <span class="gtkdoc opt">!</span> audioconvert <span class="gtkdoc opt">!</span> lamemp3enc <span class="gtkdoc opt">!</span> xingmux <span class="gtkdoc opt">!</span> filesink location<span class="gtkdoc opt">=</span>test<span class="gtkdoc opt">.</span>mp3
-gst<span class="gtkdoc opt">-</span>launch filesrc location<span class="gtkdoc opt">=</span>test<span class="gtkdoc opt">.</span>mp3 <span class="gtkdoc opt">!</span> xingmux <span class="gtkdoc opt">!</span> filesink location<span class="gtkdoc opt">=</span>test2<span class="gtkdoc opt">.</span>mp3
-gst<span class="gtkdoc opt">-</span>launch filesrc location<span class="gtkdoc opt">=</span>test<span class="gtkdoc opt">.</span>mp3 <span class="gtkdoc opt">!</span> mp3parse <span class="gtkdoc opt">!</span> xingmux <span class="gtkdoc opt">!</span> filesink location<span class="gtkdoc opt">=</span>test2<span class="gtkdoc opt">.</span>mp3</pre></td>
-      </tr>
-    </tbody>
-  </table>
+<div class="refsect2" lang="en">
+<a name="id2974954"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch audiotestsrc num-buffers=1000 ! audioconvert ! lame ! xingmux ! filesink location=test.mp3
+gst-launch filesrc location=test.mp3 ! xingmux ! filesink location=test2.mp3
+gst-launch filesrc location=test.mp3 ! mp3parse ! xingmux ! filesink location=test2.mp3
+</pre></div>
 </div>
-
-</div>
-<p>
-</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2">
-<a name="idp7028368"></a><h3>Element Information</h3>
+<div class="refsect2" lang="en">
+<a name="id2959718"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-            xingmux
+            <a class="link" href="gst-plugins-ugly-plugins-plugin-mpegaudioparse.html#plugin-mpegaudioparse">mpegaudioparse</a>
           </td>
 </tr>
 <tr>
@@ -109,8 +105,8 @@ gst<span class="gtkdoc opt">-</span>launch filesrc location<span class="gtkdoc o
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
-<a name="idp6226480"></a><h3>Element Pads</h3>
+<div class="refsect2" lang="en">
+<a name="id2988211"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -158,19 +154,20 @@ gst<span class="gtkdoc opt">-</span>launch filesrc location<span class="gtkdoc o
 <p>
 </p>
 </div>
-<div class="refsect1">
+<div class="refsect1" lang="en">
 <a name="gst-plugins-ugly-plugins-xingmux.details"></a><h2>Details</h2>
-<div class="refsect2">
-<a name="GstXingMux-struct"></a><h3>struct GstXingMux</h3>
-<pre class="programlisting">struct GstXingMux;</pre>
+<div class="refsect2" lang="en">
+<a name="GstXingMux-struct"></a><h3>GstXingMux</h3>
+<pre class="programlisting">typedef struct _GstXingMux GstXingMux;</pre>
 <p>
-Opaque data structure.
+Opaque data structure.</p>
+<p>
 </p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

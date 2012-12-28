@@ -24,8 +24,6 @@
 
 
 #include <gst/gst.h>
-#include <gst/audio/gstaudioencoder.h>
-#include <gst/base/gstadapter.h>
 
 G_BEGIN_DECLS
 
@@ -51,33 +49,42 @@ typedef struct _GstLameMP3EncClass GstLameMP3EncClass;
  * Opaque data structure.
  */
 struct _GstLameMP3Enc {
-  GstAudioEncoder element;
+  GstElement element;
 
   /*< private >*/
-  gint samplerate;
-  gint out_samplerate;
-  gint num_channels;
+  GstPad *srcpad, *sinkpad;
 
-  /* properties */
+  gint samplerate;
+  gint num_channels;
+  gboolean setup;
+
   gint target;
+
   gint bitrate;
   gboolean cbr;
+
   gfloat quality;
+
   gint encoding_engine_quality;
+
   gboolean mono;
+
+  /* track this so we don't send a last buffer in eos handler after error */
+  GstFlowReturn  last_flow;
 
   lame_global_flags *lgf;
 
-  GstAdapter *adapter;
+  /* time tracker */
+  guint64 last_ts, last_offs, last_duration, eos_ts;
 };
 
 struct _GstLameMP3EncClass {
-  GstAudioEncoderClass parent_class;
+  GstElementClass parent_class;
 };
 
 GType gst_lamemp3enc_get_type(void);
-gboolean gst_lamemp3enc_register (GstPlugin * plugin);
 
 G_END_DECLS
+
 
 #endif /* __GST_LAMEMP3ENC_H__ */

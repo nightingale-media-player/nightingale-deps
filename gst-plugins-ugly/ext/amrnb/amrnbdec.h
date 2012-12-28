@@ -21,13 +21,8 @@
 #define __GST_AMRNBDEC_H__
 
 #include <gst/gst.h>
-#include <gst/audio/gstaudiodecoder.h>
-
-#ifdef HAVE_OPENCORE_AMRNB_0_1_3_OR_LATER
+#include <gst/base/gstadapter.h>
 #include <opencore-amrnb/interf_dec.h>
-#else
-#include <interf_dec.h>
-#endif
 
 G_BEGIN_DECLS
 
@@ -52,19 +47,29 @@ typedef enum
 } GstAmrnbVariant;
 
 struct _GstAmrnbDec {
-  GstAudioDecoder element;
+  GstElement element;
+
+  /* pads */
+  GstPad *sinkpad, *srcpad;
+  guint64 ts;
 
   GstAmrnbVariant variant;
+
+  GstAdapter *adapter;
 
   /* library handle */
   void *handle;
 
   /* output settings */
   gint channels, rate;
+  gint duration;
+
+  GstSegment        segment;
+  gboolean          discont;
 };
 
 struct _GstAmrnbDecClass {
-  GstAudioDecoderClass parent_class;
+  GstElementClass parent_class;
 };
 
 GType gst_amrnbdec_get_type (void);

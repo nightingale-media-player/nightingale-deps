@@ -3,14 +3,6 @@
 <TITLE>a52dec</TITLE>
 GstA52Dec
 <SUBSECTION Standard>
-A52_2F1R
-A52_2F2R
-A52_3F
-A52_3F1R
-A52_3F2R
-A52_DOLBY
-A52_MONO
-A52_STEREO
 GstA52DecClass
 GST_A52DEC
 GST_A52DEC_CLASS
@@ -26,7 +18,6 @@ gst_a52dec_get_type
 GstAmrnbDec
 <SUBSECTION Standard>
 GstAmrnbDecClass
-GstAmrnbVariant
 GST_AMRNBDEC
 GST_AMRNBDEC_CLASS
 GST_IS_AMRNBDEC
@@ -78,6 +69,20 @@ gst_cdio_cdda_src_get_type
 </SECTION>
 
 <SECTION>
+<FILE>element-lame</FILE>
+<TITLE>lame</TITLE>
+GstLame
+<SUBSECTION Standard>
+GstLameClass
+GST_LAME
+GST_LAME_CLASS
+GST_IS_LAME
+GST_IS_LAME_CLASS
+GST_TYPE_LAME
+gst_lame_get_type
+</SECTION>
+
+<SECTION>
 <FILE>element-lamemp3enc</FILE>
 <TITLE>lamemp3enc</TITLE>
 GstLameMP3Enc
@@ -89,7 +94,6 @@ GST_IS_LAMEMP3ENC
 GST_IS_LAMEMP3ENC_CLASS
 GST_TYPE_LAMEMP3ENC
 gst_lamemp3enc_get_type
-gst_lamemp3enc_register
 </SECTION>
 
 <SECTION>
@@ -119,7 +123,6 @@ GST_IS_REAL_AUDIO_DEMUX
 GST_IS_REAL_AUDIO_DEMUX_CLASS
 GST_TYPE_REAL_AUDIO_DEMUX
 gst_real_audio_demux_get_type
-gst_rademux_plugin_init
 </SECTION>
 
 <SECTION>
@@ -136,40 +139,6 @@ GST_IS_RDT_MANAGER_CLASS
 GST_TYPE_RDT_MANAGER
 gst_rdt_manager_get_type
 gst_rdt_manager_plugin_init
-</SECTION>
-
-<SECTION>
-<FILE>element-rmdemux</FILE>
-<TITLE>rmdemux</TITLE>
-GstRMDemux
-<SUBSECTION Standard>
-GstRMDemuxClass
-GstRMDemuxState
-GST_RMDEMUX
-GST_RMDEMUX_CLASS
-GST_IS_RMDEMUX
-GST_IS_RMDEMUX_CLASS
-GST_TYPE_RMDEMUX
-gst_rmdemux_plugin_init
-GST_CAT_DEFAULT
-GST_RM_AUD_14_4
-GST_RM_AUD_28_8
-GST_RM_AUD_ATRC
-GST_RM_AUD_COOK
-GST_RM_AUD_DNET
-GST_RM_AUD_RAAC
-GST_RM_AUD_RACP
-GST_RM_AUD_RALF
-GST_RM_AUD_SIPR
-GST_RM_AUD_xRA4
-GST_RM_AUD_xRA5
-GST_RM_VDO_RV10
-GST_RM_VDO_RV20
-GST_RM_VDO_RV30
-GST_RM_VDO_RV40
-GstRMDemuxLoopState
-GstRMDemuxStream
-GstRMDemuxStreamType
 </SECTION>
 
 <SECTION>
@@ -217,7 +186,24 @@ gst_siddec_get_type
 </SECTION>
 
 <SECTION>
-<FILE>element-twolamemp2enc</FILE>
+<FILE>element-synaesthesia</FILE>
+<TITLE>synaesthesia</TITLE>
+GstSynaesthesia
+<SUBSECTION Standard>
+GstSynaesthesiaClass
+GST_SYNAESTHESIA
+GST_SYNAESTHESIA_CLASS
+GST_IS_SYNAESTHESIA
+GST_IS_SYNAESTHESIA_CLASS
+GST_TYPE_SYNAESTHESIA
+gst_synaesthesia_get_type
+SYNAES_HEIGHT
+SYNAES_SAMPLES
+SYNAES_WIDTH
+</SECTION>
+
+<SECTION>
+<FILE>element-twolame</FILE>
 <TITLE>twolame</TITLE>
 GstTwoLame
 <SUBSECTION Standard>
@@ -242,7 +228,6 @@ GST_X264_ENC_CLASS
 GST_IS_X264_ENC
 GST_IS_X264_ENC_CLASS
 GST_TYPE_X264_ENC
-gst_x264_enc_get_type
 </SECTION>
 
 <SECTION>
