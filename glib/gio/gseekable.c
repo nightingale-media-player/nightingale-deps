@@ -20,11 +20,10 @@
  * Author: Alexander Larsson <alexl@redhat.com>
  */
 
-#include <config.h>
+#include "config.h"
 #include "gseekable.h"
 #include "glibintl.h"
 
-#include "gioalias.h"
 
 /**
  * SECTION:gseekable
@@ -37,43 +36,11 @@
  * 
  **/
 
-
-static void g_seekable_base_init (gpointer g_class);
-
-
-GType
-g_seekable_get_type (void)
-{
-  static volatile gsize g_define_type_id__volatile = 0;
-
-  if (g_once_init_enter (&g_define_type_id__volatile))
-    {
-      const GTypeInfo seekable_info =
-      {
-        sizeof (GSeekableIface), /* class_size */
-	g_seekable_base_init,   /* base_init */
-	NULL,		/* base_finalize */
-	NULL,
-	NULL,		/* class_finalize */
-	NULL,		/* class_data */
-	0,
-	0,              /* n_preallocs */
-	NULL
-      };
-      GType g_define_type_id =
-	g_type_register_static (G_TYPE_INTERFACE, I_("GSeekable"),
-				&seekable_info, 0);
-
-      g_type_interface_add_prerequisite (g_define_type_id, G_TYPE_OBJECT);
-
-      g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
-    }
-
-  return g_define_type_id__volatile;
-}
+typedef GSeekableIface GSeekableInterface;
+G_DEFINE_INTERFACE (GSeekable, g_seekable, G_TYPE_OBJECT)
 
 static void
-g_seekable_base_init (gpointer g_class)
+g_seekable_default_init (GSeekableInterface *iface)
 {
 }
 
@@ -122,8 +89,8 @@ g_seekable_can_seek (GSeekable *seekable)
  * @seekable: a #GSeekable.
  * @offset: a #goffset.
  * @type: a #GSeekType.
- * @cancellable: optional #GCancellable object, %NULL to ignore. 
- * @error: a #GError location to store the error occuring, or %NULL to 
+ * @cancellable: (allow-none): optional #GCancellable object, %NULL to ignore. 
+ * @error: a #GError location to store the error occurring, or %NULL to 
  * ignore.
  * 
  * Seeks in the stream by the given @offset, modified by @type.
@@ -176,8 +143,8 @@ g_seekable_can_truncate (GSeekable *seekable)
  * g_seekable_truncate:
  * @seekable: a #GSeekable.
  * @offset: a #goffset.
- * @cancellable: optional #GCancellable object, %NULL to ignore. 
- * @error: a #GError location to store the error occuring, or %NULL to 
+ * @cancellable: (allow-none): optional #GCancellable object, %NULL to ignore. 
+ * @error: a #GError location to store the error occurring, or %NULL to 
  * ignore.
  * 
  * Truncates a stream with a given #offset. 
@@ -187,7 +154,8 @@ g_seekable_can_truncate (GSeekable *seekable)
  * was cancelled, the error %G_IO_ERROR_CANCELLED will be returned. If an
  * operation was partially finished when the operation was cancelled the
  * partial result will be returned, without an error.
- * 
+ *
+ * Virtual: truncate_fn
  * Returns: %TRUE if successful. If an error
  *     has occurred, this function will return %FALSE and set @error
  *     appropriately if present. 
@@ -206,6 +174,3 @@ g_seekable_truncate (GSeekable     *seekable,
 
   return (* iface->truncate_fn) (seekable, offset, cancellable, error);
 }
-
-#define __G_SEEKABLE_C__
-#include "gioaliasdef.c"

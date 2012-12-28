@@ -21,12 +21,16 @@
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
 
 /* This file must not include any other glib header file and must thus
- * not refer to variables from glibconfig.h 
+ * not refer to variables from glibconfig.h
  */
+
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
 
 #ifndef __G_MACROS_H__
 #define __G_MACROS_H__
@@ -63,6 +67,14 @@
 #define G_GNUC_NULL_TERMINATED
 #endif
 
+#if     (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)
+#define G_GNUC_ALLOC_SIZE(x) __attribute__((__alloc_size__(x)))
+#define G_GNUC_ALLOC_SIZE2(x,y) __attribute__((__alloc_size__(x,y)))
+#else
+#define G_GNUC_ALLOC_SIZE(x)
+#define G_GNUC_ALLOC_SIZE2(x,y)
+#endif
+
 #if     __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ > 4)
 #define G_GNUC_PRINTF( format_idx, arg_idx )    \
   __attribute__((__format__ (__printf__, format_idx, arg_idx)))
@@ -95,6 +107,24 @@
 #define G_GNUC_DEPRECATED
 #endif /* __GNUC__ */
 
+#if    __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
+#define G_GNUC_DEPRECATED_FOR(f)                        \
+  __attribute__((deprecated("Use " #f " instead")))
+#else
+#define G_GNUC_DEPRECATED_FOR(f)        G_GNUC_DEPRECATED
+#endif /* __GNUC__ */
+
+#if    __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#define G_GNUC_BEGIN_IGNORE_DEPRECATIONS		\
+  _Pragma ("GCC diagnostic push")			\
+  _Pragma ("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+#define G_GNUC_END_IGNORE_DEPRECATIONS			\
+  _Pragma ("GCC diagnostic pop")
+#else
+#define G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+#define G_GNUC_END_IGNORE_DEPRECATIONS
+#endif
+
 #if     __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3)
 #  define G_GNUC_MAY_ALIAS __attribute__((may_alias))
 #else
@@ -125,6 +155,17 @@
 #define G_STRINGIFY(macro_or_string)	G_STRINGIFY_ARG (macro_or_string)
 #define	G_STRINGIFY_ARG(contents)	#contents
 
+#ifndef __GI_SCANNER__ /* The static assert macro really confuses the introspection parser */
+#define G_PASTE_ARGS(identifier1,identifier2) identifier1 ## identifier2
+#define G_PASTE(identifier1,identifier2)      G_PASTE_ARGS (identifier1, identifier2)
+#ifdef __COUNTER__
+#define G_STATIC_ASSERT(expr) typedef char G_PASTE (_GStaticAssertCompileTimeAssertion_, __COUNTER__)[(expr) ? 1 : -1]
+#else
+#define G_STATIC_ASSERT(expr) typedef char G_PASTE (_GStaticAssertCompileTimeAssertion_, __LINE__)[(expr) ? 1 : -1]
+#endif
+#define G_STATIC_ASSERT_EXPR(expr) ((void) sizeof (char[(expr) ? 1 : -1]))
+#endif
+
 /* Provide a string identifying the current code position */
 #if defined(__GNUC__) && (__GNUC__ < 3) && !defined(__cplusplus)
 #  define G_STRLOC	__FILE__ ":" G_STRINGIFY (__LINE__) ":" __PRETTY_FUNCTION__ "()"
@@ -135,8 +176,10 @@
 /* Provide a string identifying the current function, non-concatenatable */
 #if defined (__GNUC__)
 #  define G_STRFUNC     ((const char*) (__PRETTY_FUNCTION__))
-#elif defined (G_HAVE_ISO_VARARGS)
+#elif defined (__STDC_VERSION__) && __STDC_VERSION__ >= 19901L
 #  define G_STRFUNC     ((const char*) (__func__))
+#elif defined(_MSC_VER) && (_MSC_VER > 1300)
+#  define G_STRFUNC     ((const char*) (__FUNCTION__))
 #else
 #  define G_STRFUNC     ((const char*) ("???"))
 #endif
@@ -197,48 +240,39 @@
 /* Provide convenience macros for handling structure
  * fields through their offsets.
  */
-#define G_STRUCT_OFFSET(struct_type, member)	\
-    ((glong) ((guint8*) &((struct_type*) 0)->member))
+
+#if defined(__GNUC__)  && __GNUC__ >= 4
+#  define G_STRUCT_OFFSET(struct_type, member) \
+      ((glong) offsetof (struct_type, member))
+#else
+#  define G_STRUCT_OFFSET(struct_type, member)	\
+      ((glong) ((guint8*) &((struct_type*) 0)->member))
+#endif
+
 #define G_STRUCT_MEMBER_P(struct_p, struct_offset)   \
     ((gpointer) ((guint8*) (struct_p) + (glong) (struct_offset)))
 #define G_STRUCT_MEMBER(member_type, struct_p, struct_offset)   \
     (*(member_type*) G_STRUCT_MEMBER_P ((struct_p), (struct_offset)))
 
-/* Provide simple macro statement wrappers (adapted from Perl):
- *  G_STMT_START { statements; } G_STMT_END;
- *  can be used as a single statement, as in
- *  if (x) G_STMT_START { ... } G_STMT_END; else ...
- *
- *  When GCC is compiling C code in non-ANSI mode, it will use the
- *  compiler __extension__ to wrap the statements wihin `({' and '})' braces.
- *  When compiling on platforms where configure has defined
- *  HAVE_DOWHILE_MACROS, statements will be wrapped with `do' and `while (0)'.
- *  For any other platforms (SunOS4 is known to have this issue), wrap the
- *  statements with `if (1)' and `else (void) 0'.
+/* Provide simple macro statement wrappers:
+ *   G_STMT_START { statements; } G_STMT_END;
+ * This can be used as a single statement, like:
+ *   if (x) G_STMT_START { ... } G_STMT_END; else ...
+ * This intentionally does not use compiler extensions like GCC's '({...})' to
+ * avoid portability issue or side effects when compiled with different compilers.
  */
 #if !(defined (G_STMT_START) && defined (G_STMT_END))
-# if defined (__GNUC__) && !defined (__STRICT_ANSI__) && !defined (__cplusplus)
-#  define G_STMT_START (void) __extension__ (
-#  define G_STMT_END )
-# else /* !(__GNUC__ && !__STRICT_ANSI__ && !__cplusplus) */
-#  if defined (HAVE_DOWHILE_MACROS)
-#   define G_STMT_START do
-#   define G_STMT_END while (0)
-#  else /* !HAVE_DOWHILE_MACROS */
-#   define G_STMT_START if (1)
-#   define G_STMT_END else (void) 0
-#  endif /* !HAVE_DOWHILE_MACROS */
-# endif /* !(__GNUC__ && !__STRICT_ANSI__ && !__cplusplus) */
+#  define G_STMT_START  do
+#  define G_STMT_END    while (0)
 #endif
 
-/* Allow the app programmer to select whether or not return values
- * (usually char*) are const or not.  Don't try using this feature for
- * functions with C++ linkage.
- */
+/* Deprecated -- do not use. */
+#ifndef G_DISABLE_DEPRECATED
 #ifdef G_DISABLE_CONST_RETURNS
 #define G_CONST_RETURN
 #else
 #define G_CONST_RETURN const
+#endif
 #endif
 
 /*
@@ -251,7 +285,7 @@
  */
 #if defined(__GNUC__) && (__GNUC__ > 2) && defined(__OPTIMIZE__)
 #define _G_BOOLEAN_EXPR(expr)                   \
- __extension__ ({                               \
+ G_GNUC_EXTENSION ({                            \
    int _g_boolean_var_;                         \
    if (expr)                                    \
       _g_boolean_var_ = 1;                      \
@@ -264,6 +298,46 @@
 #else
 #define G_LIKELY(expr) (expr)
 #define G_UNLIKELY(expr) (expr)
+#endif
+
+#if    __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1)
+#define G_DEPRECATED __attribute__((__deprecated__))
+#elif defined(_MSC_VER) && (_MSC_VER >= 1300)
+#define G_DEPRECATED __declspec(deprecated)
+#else
+#define G_DEPRECATED
+#endif
+
+#if    __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
+#define G_DEPRECATED_FOR(f) __attribute__((__deprecated__("Use '" #f "' instead")))
+#elif defined(_MSC_FULL_VER) && (_MSC_FULL_VER > 140050320)
+#define G_DEPRECATED_FOR(f) __declspec(deprecated("is deprecated. Use '" #f "' instead"))
+#else
+#define G_DEPRECATED_FOR(f) G_DEPRECATED
+#endif
+
+#if    __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
+#define G_UNAVAILABLE(maj,min) __attribute__((deprecated("Not available before " #maj "." #min)))
+#elif defined(_MSC_FULL_VER) && (_MSC_FULL_VER > 140050320)
+#define G_UNAVAILABLE(maj,min) __declspec(deprecated("is not available before " #maj "." #min))
+#else
+#define G_UNAVAILABLE(maj,min)
+#endif
+
+/* These macros are used to mark deprecated functions in GLib headers,
+ * and thus have to be exposed in installed headers. But please
+ * do *not* use them in other projects. Instead, use G_DEPRECATED
+ * or define your own wrappers around it.
+ */
+
+#ifdef GLIB_DISABLE_DEPRECATION_WARNINGS
+#define GLIB_DEPRECATED
+#define GLIB_DEPRECATED_FOR(f)
+#define GLIB_UNAVAILABLE(maj,min)
+#else
+#define GLIB_DEPRECATED G_DEPRECATED
+#define GLIB_DEPRECATED_FOR(f) G_DEPRECATED_FOR(f)
+#define GLIB_UNAVAILABLE(maj,min) G_UNAVAILABLE(maj,min)
 #endif
 
 #endif /* __G_MACROS_H__ */

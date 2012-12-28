@@ -19,7 +19,7 @@
  * otherwise) arising in any way out of the use of this software, even
  * if advised of the possibility of such damage.
  */
-#include <glib/gtestutils.h>
+
 #include <glib/glib.h>
 #include <gio/gio.h>
 #include <stdlib.h>
@@ -69,7 +69,7 @@ test_g_file_new_null (void)
   i = 0;
   while (uris[i])
     {
-      file = g_file_new_for_uri (paths[i++]);
+      file = g_file_new_for_uri (uris[i++]);
       g_assert (file != NULL);
       g_object_unref(file);
     }
@@ -128,7 +128,7 @@ test_g_file_new_for_path (void)
       {"/UTF-8 p\xc5\x99\xc3\xadli\xc5\xa1 \xc5\xbelu\xc5\xa5ou\xc4\x8dk\xc3\xbd k\xc5\xaf\xc5\x88", TRUE, 0, "/UTF-8 p\xc5\x99\xc3\xadli\xc5\xa1 \xc5\xbelu\xc5\xa5ou\xc4\x8dk\xc3\xbd k\xc5\xaf\xc5\x88/"}
     };
 
-  int i;
+  guint i;
   for (i = 0; i < G_N_ELEMENTS (cmp_paths); i++)
     {
       gboolean equal = compare_two_files (FALSE, cmp_paths[i].path1, cmp_paths[i].path2);
@@ -157,7 +157,7 @@ test_g_file_new_for_uri (void)
     {"file:///UTF-8%20p%C5%99%C3%ADli%C5%A1%20%C5%BElu%C5%A5ou%C4%8Dk%C3%BD%20k%C5%AF%C5%88", TRUE, 0, "file:///UTF-8%20p%C5%99%C3%ADli%C5%A1%20%C5%BElu%C5%A5ou%C4%8Dk%C3%BD%20k%C5%AF%C5%88/"}
   };
   
-  int i;
+  guint i;
   for (i = 0; i < G_N_ELEMENTS (cmp_uris); i++)
     {
       gboolean equal = compare_two_files (TRUE, cmp_uris[i].path1, cmp_uris[i].path2);
@@ -205,7 +205,7 @@ test_g_file_dup (void)
       {"file:///UTF-8%20p%C5%99%C3%ADli%C5%A1%20%C5%BElu%C5%A5ou%C4%8Dk%C3%BD%20k%C5%AF%C5%88", 0, TRUE, ""},
     };
   
-  int i;
+  guint i;
   for (i = 0; i < G_N_ELEMENTS (dup_paths); i++)
     {
       gboolean equal = dup_equals (dup_paths[i].use_uri, dup_paths[i].path1);
@@ -261,14 +261,14 @@ test_g_file_get_parse_name_utf8 (void)
 {
   const struct TestPathsWithOper strings[] =
     {
-      {"/", 0, FALSE, "/"},
-      {"file:///", 0, TRUE, "/"},
+      {G_DIR_SEPARATOR_S, 0, FALSE, G_DIR_SEPARATOR_S},
+      {"file:///", 0, TRUE, G_DIR_SEPARATOR_S},
       {"totalnonsense", 0, FALSE, NULL},
       {"/UTF-8 p\xc5\x99\xc3\xadli\xc5\xa1 \xc5\xbelu\xc5\xa5ou\xc4\x8dk\xc3\xbd k\xc5\xaf\xc5\x88", 0, FALSE, NULL /* Depends on local file encoding */},
       {"file:///invalid%08/UTF-8%20p%C5%99%C3%ADli%C5%A1%20%C5%BElu%C5%A5ou%C4%8Dk%C3%BD%20k%C5%AF%C5%88/", 0, TRUE, "file:///invalid%08/UTF-8%20p\xc5\x99\xc3\xadli\xc5\xa1%20\xc5\xbelu\xc5\xa5ou\xc4\x8dk\xc3\xbd%20k\xc5\xaf\xc5\x88"},
     };
 
-  int i;
+  guint i;
   for (i = 0; i < G_N_ELEMENTS (strings); i++)
     {
       gboolean equal = parse_check_utf8 (strings[i].use_uri, strings[i].path1, strings[i].path2);
@@ -328,7 +328,7 @@ test_g_file_new_for_commandline_arg (void)
   GFile *file;
   char *resolved;
   char *cwd;
-  int i;
+  guint i;
   
   for (i = 0; i < G_N_ELEMENTS (arg_data); i++)
     {
@@ -400,21 +400,21 @@ test_g_file_has_prefix (void)
   const struct TestPathsWithOper dirs[] =
     {
       /* path1            equal  uri     path2    path3  */
-      {"/dir1", TRUE, FALSE, "/dir1/dir2/dir3/", "dir2/dir3"},
-      {"/dir1/", TRUE, FALSE, "/dir1/dir2/dir3/", "dir2/dir3"},
-      {"/dir1", TRUE, FALSE, "/dir1/dir2/dir3", "dir2/dir3"},
-      {"/dir1/", TRUE, FALSE, "/dir1/dir2/dir3", "dir2/dir3"},
+      {"/dir1", TRUE, FALSE, "/dir1/dir2/dir3/", "dir2" G_DIR_SEPARATOR_S "dir3"},
+      {"/dir1/", TRUE, FALSE, "/dir1/dir2/dir3/", "dir2" G_DIR_SEPARATOR_S "dir3"},
+      {"/dir1", TRUE, FALSE, "/dir1/dir2/dir3", "dir2" G_DIR_SEPARATOR_S "dir3"},
+      {"/dir1/", TRUE, FALSE, "/dir1/dir2/dir3", "dir2" G_DIR_SEPARATOR_S "dir3"},
       {"/tmp/", FALSE, FALSE, "/something/", NULL},
       {"/dir1/dir2", FALSE, FALSE, "/dir1/", NULL},
-      {"//dir1/new", TRUE, FALSE, "//dir1/new/dir2/dir3", "dir2/dir3"},
+      {"//dir1/new", TRUE, FALSE, "//dir1/new/dir2/dir3", "dir2" G_DIR_SEPARATOR_S "dir3"},
       {"/dir/UTF-8 p\xc5\x99\xc3\xadli\xc5\xa1 \xc5\xbelu\xc5\xa5ou\xc4\x8dk\xc3\xbd k\xc5\xaf\xc5\x88", TRUE, FALSE, "/dir/UTF-8 p\xc5\x99\xc3\xadli\xc5\xa1 \xc5\xbelu\xc5\xa5ou\xc4\x8dk\xc3\xbd k\xc5\xaf\xc5\x88/dir2", "dir2"},
-      {"file:///dir1", TRUE, TRUE, "file:///dir1/dir2/dir3/", "dir2/dir3"},
-      {"file:///dir1/", TRUE, TRUE, "file:///dir1/dir2/dir3/", "dir2/dir3"},
-      {"file:///dir1", TRUE, TRUE, "file:///dir1/dir2/dir3", "dir2/dir3"},
-      {"file:///dir1/", TRUE, TRUE, "file:///dir1/dir2/dir3", "dir2/dir3"},
+      {"file:///dir1", TRUE, TRUE, "file:///dir1/dir2/dir3/", "dir2" G_DIR_SEPARATOR_S "dir3"},
+      {"file:///dir1/", TRUE, TRUE, "file:///dir1/dir2/dir3/", "dir2" G_DIR_SEPARATOR_S "dir3"},
+      {"file:///dir1", TRUE, TRUE, "file:///dir1/dir2/dir3", "dir2" G_DIR_SEPARATOR_S "dir3"},
+      {"file:///dir1/", TRUE, TRUE, "file:///dir1/dir2/dir3", "dir2" G_DIR_SEPARATOR_S "dir3"},
       {"file:///tmp/", FALSE, TRUE, "file:///something/", NULL},
       {"file:///dir1/dir2", FALSE, TRUE, "file:///dir1/", NULL},
-      {"file:////dir1/new", TRUE, TRUE, "file:////dir1/new/dir2/dir3", "dir2/dir3"},
+      {"file:////dir1/new", TRUE, TRUE, "file:////dir1/new/dir2/dir3", "dir2" G_DIR_SEPARATOR_S "dir3"},
       {"file:///dir/UTF-8%20p%C5%99%C3%ADli%C5%A1%20%C5%BElu%C5%A5ou%C4%8Dk%C3%BD%20k%C5%AF%C5%88", TRUE, TRUE, "file:///dir/UTF-8%20p%C5%99%C3%ADli%C5%A1%20%C5%BElu%C5%A5ou%C4%8Dk%C3%BD%20k%C5%AF%C5%88/dir2", "dir2"},
 #if 0
       {"dav://www.gtk.org/plan/", TRUE, TRUE, "dav://www.gtk.org/plan/meetings/20071218.txt", "meetings/20071218.txt"},
@@ -422,7 +422,7 @@ test_g_file_has_prefix (void)
 #endif
     };
   
-  int i;
+  guint i;
   for (i = 0; i < G_N_ELEMENTS (dirs); i++)
     {
       char *s = get_relative_path (dirs[i].use_uri, dirs[i].equal, dirs[i].path1, dirs[i].path2);
@@ -437,7 +437,7 @@ roundtrip_parent_child (const gboolean use_uri, const gboolean under_root_descen
 			const char *path, const char *dir_holder)
 {
   GFile *files[6] = {NULL};
-  int i;
+  guint i;
   
   if (use_uri)
     {
@@ -497,7 +497,7 @@ test_g_file_get_parent_child (void)
       {"dav://www.gtk.org/plan/meetings", FALSE, TRUE, "meetings"},
     };
 
-  int i;
+  guint i;
   for (i = 0; i < G_N_ELEMENTS (paths); i++)
     roundtrip_parent_child (paths[i].use_uri, paths[i].equal, paths[i].path1, paths[i].path2);
 }
@@ -506,7 +506,6 @@ int
 main (int   argc,
       char *argv[])
 {
-  g_type_init ();
   g_test_init (&argc, &argv, NULL);
   
   

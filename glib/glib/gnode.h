@@ -21,8 +21,12 @@
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
+
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
 
 #ifndef __G_NODE_H__
 #define __G_NODE_H__
@@ -165,6 +169,19 @@ GNode*	 g_node_find		(GNode		  *root,
      g_node_insert ((parent), (position), g_node_new (data))
 
 /**
+ * g_node_insert_data_after:
+ * @parent: the #GNode to place the new #GNode under
+ * @sibling: the sibling #GNode to place the new #GNode after
+ * @data: the data for the new #GNode
+ *
+ * Inserts a new #GNode after the given sibling.
+ *
+ * Returns: the new #GNode
+ */
+
+#define	g_node_insert_data_after(parent, sibling, data)	\
+     g_node_insert_after ((parent), (sibling), g_node_new (data))
+/**
  * g_node_insert_data_before:
  * @parent: the #GNode to place the new #GNode under
  * @sibling: the sibling #GNode to place the new #GNode before
@@ -246,7 +263,8 @@ GNode*	 g_node_last_sibling	 (GNode		  *node);
  *
  * Gets the previous sibling of a #GNode.
  *
- * Returns: the previous sibling of @node, or %NULL if @node is %NULL
+ * Returns: the previous sibling of @node, or %NULL if @node is the first
+ *     node or %NULL
  */
 #define	 g_node_prev_sibling(node)	((node) ? \
 					 ((GNode*) (node))->prev : NULL)
@@ -257,7 +275,8 @@ GNode*	 g_node_last_sibling	 (GNode		  *node);
  *
  * Gets the next sibling of a #GNode.
  *
- * Returns: the next sibling of @node, or %NULL if @node is %NULL
+ * Returns: the next sibling of @node, or %NULL if @node is the last node
+ *     or %NULL
  */
 #define	 g_node_next_sibling(node)	((node) ? \
 					 ((GNode*) (node))->next : NULL)
@@ -274,10 +293,6 @@ GNode*	 g_node_last_sibling	 (GNode		  *node);
 #define	 g_node_first_child(node)	((node) ? \
 					 ((GNode*) (node))->children : NULL)
 
-#ifndef G_DISABLE_DEPRECATED
-void     g_node_push_allocator  (gpointer          dummy);
-void     g_node_pop_allocator   (void);
-#endif
 G_END_DECLS
 
 #endif /* __G_NODE_H__ */

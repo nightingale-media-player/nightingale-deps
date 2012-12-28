@@ -64,8 +64,8 @@ struct _BaseObjectClass
   GObjectClass parent_class;
 };
 
-static GType base_object_get_type ();
-static GType derived_object_get_type ();
+static GType base_object_get_type (void);
+static GType derived_object_get_type (void);
 
 /*
  * DerivedObject, the child class of DerivedObject
@@ -98,6 +98,12 @@ struct _TestIfaceClass
   GTypeInterface base_iface;
   guint val;
 };
+
+static GType test_iface1_get_type (void);
+static GType test_iface2_get_type (void);
+static GType test_iface3_get_type (void);
+static GType test_iface4_get_type (void);
+static GType test_iface5_get_type (void);
 
 #define TEST_TYPE_IFACE1 (test_iface1_get_type ())
 #define TEST_TYPE_IFACE2 (test_iface2_get_type ())
@@ -189,7 +195,6 @@ main (int   argc,
   g_log_set_always_fatal (g_log_set_always_fatal (G_LOG_FATAL_MASK) |
 			  G_LOG_LEVEL_WARNING |
 			  G_LOG_LEVEL_CRITICAL);
-  g_type_init ();
 
   /* Register BaseObject */
   BASE_TYPE_OBJECT;

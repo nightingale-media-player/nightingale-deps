@@ -2,12 +2,13 @@
 include $(top_srcdir)/Makefile.decl
 
 INCLUDES = 			\
-	-DLIBDIR=\"$(libdir)\" -I$(top_srcdir)
+	-DLIBDIR=\"$(libdir)\" $(config_h_INCLUDES)
 
 noinst_LTLIBRARIES = libcharset.la
 
 libcharset_la_SOURCES =    	\
 	libcharset.h		\
+	localcharset.h		\
 	localcharset.c
 
 EXTRA_DIST += 			\
@@ -50,14 +51,14 @@ uninstall-local: all-local
 	fi
 
 charset.alias: config.charset
-	$(SHELL) $(srcdir)/config.charset '@host@' > t-$@
-	mv t-$@ $@
+	$(AM_V_GEN) $(SHELL) $(srcdir)/config.charset '@host@' > t-$@
+	@mv t-$@ $@
 
 all-local: ref-add.sed ref-del.sed charset.alias
 
 SUFFIXES = .sed .sin
 .sin.sed:
-	sed -e '/^#/d' -e 's/@''PACKAGE''@/@PACKAGE@/g' $< > t-$@
-	mv t-$@ $@
+	$(AM_V_GEN) $(SED) -e '/^#/d' -e 's/@''PACKAGE''@/@PACKAGE@/g' $< > t-$@
+	@mv t-$@ $@
 
 CLEANFILES = charset.alias ref-add.sed ref-del.sed

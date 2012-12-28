@@ -52,7 +52,7 @@
 #endif /* _MSC_VER || __DMC__ */
 
 #include "glib.h"
-#include "galias.h"
+#include "gthreadprivate.h"
 
 #ifdef G_WITH_CYGWIN
 #include <sys/cygwin.h>
@@ -203,7 +203,7 @@ g_win32_error_message (gint error)
 
 /**
  * g_win32_get_package_installation_directory_of_module:
- * @hmodule: The Win32 handle for a DLL loaded into the current process, or %NULL
+ * @hmodule: (allow-none): The Win32 handle for a DLL loaded into the current process, or %NULL
  *
  * This function tries to determine the installation directory of a
  * software package based on the location of a DLL of the software
@@ -299,13 +299,19 @@ get_package_directory_from_module (const gchar *module_name)
       g_free (wc_module_name);
 
       if (!hmodule)
-	return NULL;
+	{
+	  G_UNLOCK (module_dirs);
+	  return NULL;
+	}
     }
 
   fn = g_win32_get_package_installation_directory_of_module (hmodule);
 
   if (fn == NULL)
-    return NULL;
+    {
+      G_UNLOCK (module_dirs);
+      return NULL;
+    }
   
   g_hash_table_insert (module_dirs, module_name ? g_strdup (module_name) : "", fn);
 
@@ -316,15 +322,16 @@ get_package_directory_from_module (const gchar *module_name)
 
 /**
  * g_win32_get_package_installation_directory:
- * @package: You should pass %NULL for this.
- * @dll_name: The name of a DLL that a package provides in UTF-8, or %NULL.
+ * @package: (allow-none): You should pass %NULL for this.
+ * @dll_name: (allow-none): The name of a DLL that a package provides in UTF-8, or %NULL.
  *
  * Try to determine the installation directory for a software package.
  *
- * This function will be deprecated in the future. Use
+ * This function is deprecated. Use
  * g_win32_get_package_installation_directory_of_module() instead.
  *
- * The use of @package is deprecated. You should always pass %NULL.
+ * The use of @package is deprecated. You should always pass %NULL. A
+ * warning is printed if non-NULL is passed as @package.
  *
  * The original intended use of @package was for a short identifier of
  * the package, typically the same identifier as used for
@@ -343,7 +350,7 @@ get_package_directory_from_module (const gchar *module_name)
  *
  * For this reason it is recommeded to always pass %NULL as
  * @package to this function, to avoid the temptation to use the
- * Registry. In version 2.18 of GLib the @package parameter
+ * Registry. In version 2.20 of GLib the @package parameter
  * will be ignored and this function won't look in the Registry at all.
  *
  * If @package is %NULL, or the above value isn't found in the
@@ -364,74 +371,19 @@ get_package_directory_from_module (const gchar *module_name)
  * @package. The string is in the GLib file name encoding,
  * i.e. UTF-8. The return value should be freed with g_free() when not
  * needed any longer. If the function fails %NULL is returned.
+ *
+ * Deprecated: 2.18: Pass the HMODULE of a DLL or EXE to
+ * g_win32_get_package_installation_directory_of_module() instead.
  **/
 
-gchar *
-g_win32_get_package_installation_directory (const gchar *package,
-					    const gchar *dll_name)
+ gchar *
+g_win32_get_package_installation_directory_utf8 (const gchar *package,
+						 const gchar *dll_name)
 {
-  static GHashTable *package_dirs = NULL;
-  G_LOCK_DEFINE_STATIC (package_dirs);
   gchar *result = NULL;
-  gchar *key;
-  wchar_t *wc_key;
-  HKEY reg_key = NULL;
-  DWORD type;
-  DWORD nbytes;
 
   if (package != NULL)
-    {
-      G_LOCK (package_dirs);
-      
-      if (package_dirs == NULL)
-	package_dirs = g_hash_table_new (g_str_hash, g_str_equal);
-      
-      result = g_hash_table_lookup (package_dirs, package);
-      
-      if (result && result[0])
-	{
-	  G_UNLOCK (package_dirs);
-	  return g_strdup (result);
-	}
-      
-      key = g_strconcat ("Software\\", package, NULL);
-      
-      nbytes = 0;
-
-      wc_key = g_utf8_to_utf16 (key, -1, NULL, NULL, NULL);
-      if (((RegOpenKeyExW (HKEY_CURRENT_USER, wc_key, 0,
-			   KEY_QUERY_VALUE, &reg_key) == ERROR_SUCCESS
-	    && RegQueryValueExW (reg_key, L"InstallationDirectory", 0,
-				 &type, NULL, &nbytes) == ERROR_SUCCESS)
-	   ||
-	   (RegOpenKeyExW (HKEY_LOCAL_MACHINE, wc_key, 0,
-			   KEY_QUERY_VALUE, &reg_key) == ERROR_SUCCESS
-	    && RegQueryValueExW (reg_key, L"InstallationDirectory", 0,
-				 &type, NULL, &nbytes) == ERROR_SUCCESS))
-	  && type == REG_SZ)
-	{
-	  wchar_t *wc_temp = g_new (wchar_t, (nbytes+1)/2 + 1);
-	  RegQueryValueExW (reg_key, L"InstallationDirectory", 0,
-			    &type, (LPBYTE) wc_temp, &nbytes);
-	  wc_temp[nbytes/2] = '\0';
-	  result = g_utf16_to_utf8 (wc_temp, -1, NULL, NULL, NULL);
-	  g_free (wc_temp);
-	}
-      g_free (wc_key);
-
-      if (reg_key != NULL)
-	RegCloseKey (reg_key);
-      
-      g_free (key);
-
-      if (result)
-	{
-	  g_hash_table_insert (package_dirs, g_strdup (package), result);
-	  G_UNLOCK (package_dirs);
-	  return g_strdup (result);
-	}
-      G_UNLOCK (package_dirs);
-    }
+      g_warning ("Passing a non-NULL package to g_win32_get_package_installation_directory() is deprecated and it is ignored.");
 
   if (dll_name != NULL)
     result = get_package_directory_from_module (dll_name);
@@ -442,7 +394,7 @@ g_win32_get_package_installation_directory (const gchar *package,
   return result;
 }
 
-#undef g_win32_get_package_installation_directory
+#if !defined (_WIN64)
 
 /* DLL ABI binary compatibility version that uses system codepage file names */
 
@@ -472,14 +424,17 @@ g_win32_get_package_installation_directory (const gchar *package,
   return retval;
 }
 
+#endif
+
 /**
  * g_win32_get_package_installation_subdirectory:
- * @package: You should pass %NULL for this.
- * @dll_name: The name of a DLL that a package provides, in UTF-8, or %NULL.
+ * @package: (allow-none): You should pass %NULL for this.
+ * @dll_name: (allow-none): The name of a DLL that a package provides, in UTF-8, or %NULL.
  * @subdir: A subdirectory of the package installation directory, also in UTF-8
  *
- * This function will be deprecated in the future. Use
- * g_win32_get_package_installation_directory_of_module() instead.
+ * This function is deprecated. Use
+ * g_win32_get_package_installation_directory_of_module() and
+ * g_build_filename() instead.
  *
  * Returns a newly-allocated string containing the path of the
  * subdirectory @subdir in the return value from calling
@@ -494,12 +449,16 @@ g_win32_get_package_installation_directory (const gchar *package,
  * the GLib file name encoding, i.e. UTF-8. The return value should be
  * freed with g_free() when no longer needed. If something goes wrong,
  * %NULL is returned.
+ *
+ * Deprecated: 2.18: Pass the HMODULE of a DLL or EXE to
+ * g_win32_get_package_installation_directory_of_module() instead, and
+ * then construct a subdirectory pathname with g_build_filename().
  **/
 
 gchar *
-g_win32_get_package_installation_subdirectory (const gchar *package,
-					       const gchar *dll_name,
-					       const gchar *subdir)
+g_win32_get_package_installation_subdirectory_utf8 (const gchar *package,
+						    const gchar *dll_name,
+						    const gchar *subdir)
 {
   gchar *prefix;
   gchar *dirname;
@@ -512,7 +471,7 @@ g_win32_get_package_installation_subdirectory (const gchar *package,
   return dirname;
 }
 
-#undef g_win32_get_package_installation_subdirectory
+#if !defined (_WIN64)
 
 /* DLL ABI binary compatibility version that uses system codepage file names */
 
@@ -532,28 +491,7 @@ g_win32_get_package_installation_subdirectory (const gchar *package,
   return dirname;
 }
 
-static guint windows_version;
-
-static void 
-g_win32_windows_version_init (void)
-{
-  static gboolean beenhere = FALSE;
-
-  if (!beenhere)
-    {
-      beenhere = TRUE;
-      windows_version = GetVersion ();
-
-      if (windows_version & 0x80000000)
-	g_error ("This version of GLib requires NT-based Windows.");
-    }
-}
-
-void 
-_g_win32_thread_init (void)
-{
-  g_win32_windows_version_init ();
-}
+#endif
 
 /**
  * g_win32_get_windows_version:
@@ -565,7 +503,7 @@ _g_win32_thread_init (void)
  * on NT-based systems, so checking whether your are running on Win9x
  * in your own software is moot. The least significant byte is 4 on
  * Windows NT 4, and 5 on Windows XP. Software that needs really
- * detailled version and feature information should use Win32 API like
+ * detailed version and feature information should use Win32 API like
  * GetVersionEx() and VerifyVersionInfo().
  *
  * Returns: The version information.
@@ -575,8 +513,11 @@ _g_win32_thread_init (void)
 guint
 g_win32_get_windows_version (void)
 {
-  g_win32_windows_version_init ();
-  
+  static gsize windows_version;
+
+  if (g_once_init_enter (&windows_version))
+    g_once_init_leave (&windows_version, GetVersion ());
+
   return windows_version;
 }
 
@@ -634,6 +575,3 @@ g_win32_locale_filename_from_utf8 (const gchar *utf8filename)
     }
   return retval;
 }
-
-#define __G_WIN32_C__
-#include "galiasdef.c"

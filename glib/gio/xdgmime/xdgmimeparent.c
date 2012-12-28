@@ -26,7 +26,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "config.h"
 #endif
 
 #include "xdgmimeparent.h"
@@ -111,6 +111,7 @@ _xdg_mime_parent_list_lookup (XdgParentList *list,
     {
       key.mime = (char *)mime;
       key.parents = NULL;
+      key.n_parents = 0;
 
       entry = bsearch (&key, list->parents, list->n_mimes,
 		       sizeof (XdgMimeParents), &parent_entry_cmp);
@@ -199,6 +200,7 @@ _xdg_mime_parent_read_from_file (XdgParentList *list,
            sizeof (XdgMimeParents), &parent_entry_cmp);
 }
 
+#ifdef NOT_USED_IN_GIO
 
 void         
 _xdg_mime_parent_list_dump (XdgParentList *list)
@@ -216,4 +218,5 @@ _xdg_mime_parent_list_dump (XdgParentList *list)
     }
 }
 
+#endif
 

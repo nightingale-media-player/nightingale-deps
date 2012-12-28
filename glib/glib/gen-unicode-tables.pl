@@ -33,6 +33,8 @@
 # we use some perl unicode features
 require 5.006;
 
+use bytes;
+
 use vars qw($CODE $NAME $CATEGORY $COMBINING_CLASSES $BIDI_CATEGORY $DECOMPOSITION $DECIMAL_VALUE $DIGIT_VALUE $NUMERIC_VALUE $MIRRORED $OLD_NAME $COMMENT $UPPER $LOWER $TITLE $BREAK_CODE $BREAK_CATEGORY $BREAK_NAME $CASE_CODE $CASE_LOWER $CASE_TITLE $CASE_UPPER $CASE_CONDITION);
 
 
@@ -77,7 +79,7 @@ $FOLDING_MAPPING = 2;
      'Ll' => "G_UNICODE_LOWERCASE_LETTER",
      'Lt' => "G_UNICODE_TITLECASE_LETTER",
      'Mn' => "G_UNICODE_NON_SPACING_MARK",
-     'Mc' => "G_UNICODE_COMBINING_MARK",
+     'Mc' => "G_UNICODE_SPACING_MARK",
      'Me' => "G_UNICODE_ENCLOSING_MARK",
      'Nd' => "G_UNICODE_DECIMAL_NUMBER",
      'Nl' => "G_UNICODE_LETTER_NUMBER",
@@ -109,42 +111,46 @@ $FOLDING_MAPPING = 2;
 
 %break_mappings =
     (
-     'BK' => "G_UNICODE_BREAK_MANDATORY",
-     'CR' => "G_UNICODE_BREAK_CARRIAGE_RETURN",
-     'LF' => "G_UNICODE_BREAK_LINE_FEED",
-     'CM' => "G_UNICODE_BREAK_COMBINING_MARK",
-     'SG' => "G_UNICODE_BREAK_SURROGATE",
-     'ZW' => "G_UNICODE_BREAK_ZERO_WIDTH_SPACE",
-     'IN' => "G_UNICODE_BREAK_INSEPARABLE",
-     'GL' => "G_UNICODE_BREAK_NON_BREAKING_GLUE",
-     'CB' => "G_UNICODE_BREAK_CONTINGENT",
-     'SP' => "G_UNICODE_BREAK_SPACE",
+     'AI' => "G_UNICODE_BREAK_AMBIGUOUS",
+     'AL' => "G_UNICODE_BREAK_ALPHABETIC",
+     'B2' => "G_UNICODE_BREAK_BEFORE_AND_AFTER",
      'BA' => "G_UNICODE_BREAK_AFTER",
      'BB' => "G_UNICODE_BREAK_BEFORE",
-     'B2' => "G_UNICODE_BREAK_BEFORE_AND_AFTER",
-     'HY' => "G_UNICODE_BREAK_HYPHEN",
-     'NS' => "G_UNICODE_BREAK_NON_STARTER",
-     'OP' => "G_UNICODE_BREAK_OPEN_PUNCTUATION",
+     'BK' => "G_UNICODE_BREAK_MANDATORY",
+     'CB' => "G_UNICODE_BREAK_CONTINGENT",
+     'CJ' => "G_UNICODE_BREAK_CONDITIONAL_JAPANESE_STARTER",
      'CL' => "G_UNICODE_BREAK_CLOSE_PUNCTUATION",
-     'QU' => "G_UNICODE_BREAK_QUOTATION",
+     'CM' => "G_UNICODE_BREAK_COMBINING_MARK",
+     'CP' => "G_UNICODE_BREAK_CLOSE_PARANTHESIS",
+     'CR' => "G_UNICODE_BREAK_CARRIAGE_RETURN",
      'EX' => "G_UNICODE_BREAK_EXCLAMATION",
+     'GL' => "G_UNICODE_BREAK_NON_BREAKING_GLUE",
+     'H2' => "G_UNICODE_BREAK_HANGUL_LV_SYLLABLE",
+     'H3' => "G_UNICODE_BREAK_HANGUL_LVT_SYLLABLE",
+     'HL' => "G_UNICODE_BREAK_HEBREW_LETTER",
+     'HY' => "G_UNICODE_BREAK_HYPHEN",
      'ID' => "G_UNICODE_BREAK_IDEOGRAPHIC",
-     'NU' => "G_UNICODE_BREAK_NUMERIC",
+     'IN' => "G_UNICODE_BREAK_INSEPARABLE",
      'IS' => "G_UNICODE_BREAK_INFIX_SEPARATOR",
-     'SY' => "G_UNICODE_BREAK_SYMBOL",
-     'AL' => "G_UNICODE_BREAK_ALPHABETIC",
-     'PR' => "G_UNICODE_BREAK_PREFIX",
-     'PO' => "G_UNICODE_BREAK_POSTFIX",
-     'SA' => "G_UNICODE_BREAK_COMPLEX_CONTEXT",
-     'AI' => "G_UNICODE_BREAK_AMBIGUOUS",
+     'JL' => "G_UNICODE_BREAK_HANGUL_L_JAMO",
+     'JT' => "G_UNICODE_BREAK_HANGUL_T_JAMO",
+     'JV' => "G_UNICODE_BREAK_HANGUL_V_JAMO",
+     'LF' => "G_UNICODE_BREAK_LINE_FEED",
      'NL' => "G_UNICODE_BREAK_NEXT_LINE",
+     'NS' => "G_UNICODE_BREAK_NON_STARTER",
+     'NU' => "G_UNICODE_BREAK_NUMERIC",
+     'OP' => "G_UNICODE_BREAK_OPEN_PUNCTUATION",
+     'PO' => "G_UNICODE_BREAK_POSTFIX",
+     'PR' => "G_UNICODE_BREAK_PREFIX",
+     'QU' => "G_UNICODE_BREAK_QUOTATION",
+     'RI' => "G_UNICODE_BREAK_REGIONAL_INDICATOR",
+     'SA' => "G_UNICODE_BREAK_COMPLEX_CONTEXT",
+     'SG' => "G_UNICODE_BREAK_SURROGATE",
+     'SP' => "G_UNICODE_BREAK_SPACE",
+     'SY' => "G_UNICODE_BREAK_SYMBOL",
      'WJ' => "G_UNICODE_BREAK_WORD_JOINER",
      'XX' => "G_UNICODE_BREAK_UNKNOWN",
-     'JL' => "G_UNICODE_BREAK_HANGUL_L_JAMO",
-     'JV' => "G_UNICODE_BREAK_HANGUL_V_JAMO",
-     'JT' => "G_UNICODE_BREAK_HANGUL_T_JAMO",
-     'H2' => "G_UNICODE_BREAK_HANGUL_LV_SYLLABLE",
-     'H3' => "G_UNICODE_BREAK_HANGUL_LVT_SYLLABLE"
+     'ZW' => "G_UNICODE_BREAK_ZERO_WIDTH_SPACE"
      );
 
 # Title case mappings.
@@ -173,7 +179,7 @@ elsif (@ARGV && $ARGV[0] eq '-both')
 
 if (@ARGV != 2) {
     $0 =~ s@.*/@@;
-    die "\nUsage: $0 [-decomp | -both] UNICODE-VERSION DIRECTORY\n\n       DIRECTORY should contain the following Unicode data files:\n       UnicodeData.txt, LineBreak.txt, SpecialCasing.txt, CaseFolding.txt,\n       CompositionExclusions.txt, BidiMirroring.txt\n\n";
+    die "\nUsage: $0 [-decomp | -both] UNICODE-VERSION DIRECTORY\n\n       DIRECTORY should contain the following Unicode data files:\n       UnicodeData.txt, LineBreak.txt, SpecialCasing.txt, CaseFolding.txt,\n       CompositionExclusions.txt\n\n";
 }
 
 my ($unicodedatatxt, $linebreaktxt, $specialcasingtxt, $casefoldingtxt, $compositionexclusionstxt);
@@ -182,11 +188,11 @@ my $d = $ARGV[1];
 opendir (my $dir, $d) or die "Cannot open Unicode data dir $d: $!\n";
 for my $f (readdir ($dir))
 {
-    $unicodedatatxt = "$d/$f" if ($f =~ /UnicodeData.*\.txt/);
-    $linebreaktxt = "$d/$f" if ($f =~ /LineBreak.*\.txt/);
-    $specialcasingtxt = "$d/$f" if ($f =~ /SpecialCasing.*\.txt/);
-    $casefoldingtxt = "$d/$f" if ($f =~ /CaseFolding.*\.txt/);
-    $compositionexclusionstxt = "$d/$f" if ($f =~ /CompositionExclusions.*\.txt/);
+    $unicodedatatxt = "$d/$f" if ($f =~ /^UnicodeData.*\.txt/);
+    $linebreaktxt = "$d/$f" if ($f =~ /^LineBreak.*\.txt/);
+    $specialcasingtxt = "$d/$f" if ($f =~ /^SpecialCasing.*\.txt/);
+    $casefoldingtxt = "$d/$f" if ($f =~ /^CaseFolding.*\.txt/);
+    $compositionexclusionstxt = "$d/$f" if ($f =~ /^CompositionExclusions.*\.txt/);
 }
 
 defined $unicodedatatxt or die "Did not find UnicodeData file";
@@ -294,6 +300,7 @@ while (<INPUT>)
     chop;
 
     next if /^#/;
+    next if /^$/;
 
     s/\s*#.*//;
     
@@ -502,7 +509,6 @@ sub length_in_bytes
 {
     my ($string) = @_;
 
-    use bytes;
     return length $string;
 }
 
@@ -867,6 +873,33 @@ sub print_decomp
 
     printf OUT "static const gchar decomp_expansion_string[] = %s;\n\n", $decomp_string;
 
+    print OUT "typedef struct\n{\n";
+    print OUT "  gunichar ch;\n";
+    print OUT "  gunichar a;\n";
+    print OUT "  gunichar b;\n";
+    print OUT "} decomposition_step;\n\n";
+
+    # There's lots of room to optimize the following table...
+    print OUT "static const decomposition_step decomp_step_table[] =\n{\n";
+    $first = 1;
+    my @steps = ();
+    for ($count = 0; $count <= $last; ++$count)
+    {
+        if ((defined $decompositions[$count]) && (!$decompose_compat[$count]))
+        {
+            print OUT ",\n"
+                if ! $first;
+            $first = 0;
+            my @list;
+            @list = (split(' ', $decompositions[$count]), "0");
+            printf OUT qq(  { 0x%05x, 0x%05x, 0x%05x }), $count, hex($list[0]), hex($list[1]);
+            # don't include 1:1 in the compose table
+            push @steps, [ ($count, hex($list[0]), hex($list[1])) ]
+                if hex($list[1])
+        }
+    }
+    print OUT "\n};\n\n";
+
     print OUT "#endif /* DECOMP_H */\n";
 
     printf STDERR "Generated %d bytes in decomp tables\n", $bytes_out;
@@ -888,6 +921,9 @@ sub print_line_break
 
     print OUT "#ifndef BREAKTABLES_H\n";
     print OUT "#define BREAKTABLES_H\n\n";
+
+    print OUT "#include <glib/gtypes.h>\n";
+    print OUT "#include <glib/gunicode.h>\n\n";
 
     print OUT "#define G_UNICODE_DATA_VERSION \"$ARGV[0]\"\n\n";
 
@@ -995,8 +1031,8 @@ sub add_special_case
 	       (map { hex ($_) } split /\s+/, $field1),
                0,
                (map { hex ($_) } split /\s+/, $field2));
-    $result = "";
 
+    $result = "";
 
     for $value (@values) {
 	$result .= pack ("U", $value);  # to utf-8
@@ -1076,6 +1112,10 @@ sub output_composition_table
 	@values = map { hex ($_) } split /\s+/, $compositions{$code};
 
         # non-starters
+	if ($cclass[$code]) {
+	    delete $compositions{$code};
+	    next;
+	}
 	if ($cclass[$values[0]]) {
 	    delete $compositions{$code};
 	    next;
@@ -1200,12 +1240,9 @@ sub output_composition_table
 
     # Output first singletons
 
-    print OUT "static const guint16 compose_first_single[][2] = {\n";
+    print OUT "static const gunichar compose_first_single[][2] = {\n";
     $i = 0;				     
     for $record (@first_singletons) {
-        if ($record->[1] > 0xFFFF or $record->[2] > 0xFFFF) {
-            die "time to switch compose_first_single to gunichar" ;
-        }
 	print OUT ",\n" if $i++ > 0;
 	printf OUT " { %#06x, %#06x }", $record->[1], $record->[2];
     }

@@ -77,7 +77,7 @@ typedef void* iconv_t;
 
 iconv_t iconv_open(const char *tocode, const char *fromcode);
 int iconv_close(iconv_t cd);
-size_t iconv(iconv_t cd, const char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft);
+size_t iconv(iconv_t cd, /* const */ char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft);
 
 /* libiconv interface for vim */
 #if defined(MAKE_DLL)
@@ -95,7 +95,7 @@ typedef struct rec_iconv_t rec_iconv_t;
 
 typedef iconv_t (*f_iconv_open)(const char *tocode, const char *fromcode);
 typedef int (*f_iconv_close)(iconv_t cd);
-typedef size_t (*f_iconv)(iconv_t cd, const char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft);
+typedef size_t (*f_iconv)(iconv_t cd, /* const */ char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft);
 typedef int* (*f_errno)(void);
 typedef int (*f_mbtowc)(csconv_t *cv, const uchar *buf, int bufsize, ushort *wbuf, int *wbufsize);
 typedef int (*f_wctomb)(csconv_t *cv, ushort *wbuf, int wbufsize, uchar *buf, int bufsize);
@@ -137,9 +137,9 @@ struct rec_iconv_t {
 
 static int win_iconv_open(rec_iconv_t *cd, const char *tocode, const char *fromcode);
 static int win_iconv_close(iconv_t cd);
-static size_t win_iconv(iconv_t cd, const char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft);
+static size_t win_iconv(iconv_t cd, /* const */ char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft);
 
-static int load_mlang();
+static int load_mlang(void);
 static csconv_t make_csconv(const char *name);
 static int name_to_codepage(const char *name);
 static uint utf16_to_ucs4(const ushort *wbuf);
@@ -704,12 +704,22 @@ static LCIDTORFC1766A LcidToRfc1766A;
 static RFC1766TOLCIDA Rfc1766ToLcidA;
 
 static int
-load_mlang()
+load_mlang(void)
 {
-    HMODULE h;
+    HMODULE h = NULL;
+    char mlang_dll[MAX_PATH + 100];
+    int n;
     if (ConvertINetString != NULL)
         return TRUE;
-    h = LoadLibrary("mlang.dll");
+    n = GetSystemDirectory(mlang_dll, MAX_PATH);
+    if (n > 0 && n < MAX_PATH)
+    {
+        if (mlang_dll[n-1] != '\\' &&
+            mlang_dll[n-1] != '/')
+            strcat(mlang_dll, "\\");
+        strcat(mlang_dll, "mlang.dll");
+        h = LoadLibrary(mlang_dll);
+    }
     if (!h)
         return FALSE;
     ConvertINetString = (CONVERTINETSTRING)GetProcAddress(h, "ConvertINetString");
@@ -762,7 +772,7 @@ iconv_close(iconv_t _cd)
 }
 
 size_t
-iconv(iconv_t _cd, const char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft)
+iconv(iconv_t _cd, /* const */ char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft)
 {
     rec_iconv_t *cd = (rec_iconv_t *)_cd;
     size_t r = cd->iconv(cd->cd, inbuf, inbytesleft, outbuf, outbytesleft);
@@ -791,7 +801,7 @@ win_iconv_close(iconv_t cd)
 }
 
 static size_t
-win_iconv(iconv_t _cd, const char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft)
+win_iconv(iconv_t _cd, /* const */ char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft)
 {
     rec_iconv_t *cd = (rec_iconv_t *)_cd;
     ushort wbuf[MB_CHAR_MAX]; /* enough room for one character */
@@ -1362,6 +1372,12 @@ kernel_mbtowc(csconv_t *cv, const uchar *buf, int bufsize, ushort *wbuf, int *wb
     len = cv->mblen(cv, buf, bufsize);
     if (len == -1)
         return -1;
+    /* If converting from ASCII, reject 8bit
+     * chars. MultiByteToWideChar() doesn't. Note that for ASCII we
+     * know that the mblen function is sbcs_mblen() so len is 1.
+     */
+    if (cv->codepage == 20127 && buf[0] >= 0x80)
+        return_error(EILSEQ);
     *wbufsize = MultiByteToWideChar(cv->codepage, mbtowc_flags (cv->codepage),
             (const char *)buf, len, (wchar_t *)wbuf, *wbufsize);
     if (*wbufsize == 0)
@@ -1947,4 +1963,3 @@ main(int argc, char **argv)
     return 0;
 }
 #endif
-

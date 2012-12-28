@@ -21,13 +21,18 @@
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
+
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
 
 #ifndef __G_STRFUNCS_H__
 #define __G_STRFUNCS_H__
 
 #include <stdarg.h>
+#include <glib/gmacros.h>
 #include <glib/gtypes.h>
 
 G_BEGIN_DECLS
@@ -98,9 +103,9 @@ gchar*	              g_strdelimit     (gchar	     *string,
 gchar*	              g_strcanon       (gchar        *string,
 					const gchar  *valid_chars,
 					gchar         substitutor);
-G_CONST_RETURN gchar* g_strerror       (gint	      errnum) G_GNUC_CONST;
-G_CONST_RETURN gchar* g_strsignal      (gint	      signum) G_GNUC_CONST;
-gchar*	              g_strreverse     (gchar	     *string);
+const gchar *         g_strerror       (gint	      errnum) G_GNUC_CONST;
+const gchar *         g_strsignal      (gint	      signum) G_GNUC_CONST;
+gchar *	              g_strreverse     (gchar	     *string);
 gsize	              g_strlcpy	       (gchar	     *dest,
 					const gchar  *src,
 					gsize         dest_size);
@@ -162,22 +167,19 @@ gchar*                g_ascii_strdown     (const gchar *str,
 gchar*                g_ascii_strup       (const gchar *str,
 					   gssize       len) G_GNUC_MALLOC;
 
-#ifndef G_DISABLE_DEPRECATED
 
-/* The following four functions are deprecated and will be removed in
- * the next major release. They use the locale-specific tolower and
- * toupper, which is almost never the right thing.
- */
+GLIB_DEPRECATED
+gint                  g_strcasecmp     (const gchar *s1,
+                                        const gchar *s2);
+GLIB_DEPRECATED
+gint                  g_strncasecmp    (const gchar *s1,
+                                        const gchar *s2,
+                                        guint        n);
+GLIB_DEPRECATED
+gchar*                g_strdown        (gchar       *string);
+GLIB_DEPRECATED
+gchar*                g_strup          (gchar       *string);
 
-gint	              g_strcasecmp     (const gchar *s1,
-					const gchar *s2);
-gint	              g_strncasecmp    (const gchar *s1,
-					const gchar *s2,
-					guint        n);
-gchar*	              g_strdown	       (gchar	     *string);
-gchar*	              g_strup	       (gchar	     *string);
-
-#endif /* G_DISABLE_DEPRECATED */
 
 /* String utility functions that return a newly allocated string which
  * ought to be freed with g_free from the caller at some point.
@@ -214,7 +216,7 @@ gchar*                g_strescape      (const gchar *source,
 					const gchar *exceptions) G_GNUC_MALLOC;
 
 gpointer              g_memdup	       (gconstpointer mem,
-					guint	       byte_size) G_GNUC_MALLOC;
+					guint	       byte_size) G_GNUC_MALLOC G_GNUC_ALLOC_SIZE(2);
 
 /* NULL terminated string arrays.
  * g_strsplit(), g_strsplit_set() split up string into max_tokens tokens
@@ -239,13 +241,6 @@ guint                 g_strv_length    (gchar       **str_array);
 
 gchar*                g_stpcpy         (gchar        *dest,
                                         const char   *src);
-
-G_CONST_RETURN gchar *g_strip_context  (const gchar *msgid, 
-					const gchar *msgval);
-
-G_CONST_RETURN gchar *g_dpgettext      (const gchar *domain,
-                                        const gchar *msgctxtid,
-                                        gsize        msgidoffset);
 
 G_END_DECLS
 

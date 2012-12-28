@@ -21,8 +21,12 @@
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
+
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
 
 #ifndef __G_IOCHANNEL_H__
 #define __G_IOCHANNEL_H__
@@ -79,7 +83,7 @@ typedef enum
   G_SEEK_END
 } GSeekType;
 
-typedef enum
+typedef enum /*< flags >*/
 {
   G_IO_IN	GLIB_SYSDEF_POLLIN,
   G_IO_OUT	GLIB_SYSDEF_POLLOUT,
@@ -94,12 +98,15 @@ typedef enum
   G_IO_FLAG_APPEND = 1 << 0,
   G_IO_FLAG_NONBLOCK = 1 << 1,
   G_IO_FLAG_IS_READABLE = 1 << 2,	/* Read only flag */
-  G_IO_FLAG_IS_WRITEABLE = 1 << 3,	/* Read only flag */
+  G_IO_FLAG_IS_WRITABLE = 1 << 3,	/* Read only flag */
   G_IO_FLAG_IS_SEEKABLE = 1 << 4,	/* Read only flag */
   G_IO_FLAG_MASK = (1 << 5) - 1,
   G_IO_FLAG_GET_MASK = G_IO_FLAG_MASK,
   G_IO_FLAG_SET_MASK = G_IO_FLAG_APPEND | G_IO_FLAG_NONBLOCK
 } GIOFlags;
+
+/* Misspelling in enum in 2.29.10 and earlier */
+#define G_IO_FLAG_IS_WRITEABLE (G_IO_FLAG_IS_WRITABLE)
 
 struct _GIOChannel
 {
@@ -166,20 +173,25 @@ void        g_io_channel_init   (GIOChannel    *channel);
 GIOChannel *g_io_channel_ref    (GIOChannel    *channel);
 void        g_io_channel_unref  (GIOChannel    *channel);
 
-#ifndef G_DISABLE_DEPRECATED
-GIOError    g_io_channel_read   (GIOChannel    *channel, 
-			         gchar         *buf, 
-			         gsize          count,
-			         gsize         *bytes_read);
-GIOError  g_io_channel_write    (GIOChannel    *channel, 
-			         const gchar   *buf, 
-			         gsize          count,
-			         gsize         *bytes_written);
+GLIB_DEPRECATED_FOR(g_io_channel_read_for)
+GIOError    g_io_channel_read   (GIOChannel    *channel,
+                                 gchar         *buf,
+                                 gsize          count,
+                                 gsize         *bytes_read);
+
+GLIB_DEPRECATED_FOR(g_io_channel_write_chars)
+GIOError  g_io_channel_write    (GIOChannel    *channel,
+                                 const gchar   *buf,
+                                 gsize          count,
+                                 gsize         *bytes_written);
+
+GLIB_DEPRECATED_FOR(g_io_channel_seek_position)
 GIOError  g_io_channel_seek     (GIOChannel    *channel,
-			         gint64         offset, 
-			         GSeekType      type);
+                                 gint64         offset,
+                                 GSeekType      type);
+
+GLIB_DEPRECATED_FOR(g_io_channel_shutdown)
 void      g_io_channel_close    (GIOChannel    *channel);
-#endif /* G_DISABLE_DEPRECATED */
 
 GIOStatus g_io_channel_shutdown (GIOChannel      *channel,
 				 gboolean         flush,
@@ -211,7 +223,7 @@ GIOFlags              g_io_channel_get_flags            (GIOChannel   *channel);
 void                  g_io_channel_set_line_term        (GIOChannel   *channel,
 							 const gchar  *line_term,
 							 gint          length);
-G_CONST_RETURN gchar* g_io_channel_get_line_term        (GIOChannel   *channel,
+const gchar *         g_io_channel_get_line_term        (GIOChannel   *channel,
 							 gint         *length);
 void		      g_io_channel_set_buffered		(GIOChannel   *channel,
 							 gboolean      buffered);
@@ -219,7 +231,7 @@ gboolean	      g_io_channel_get_buffered		(GIOChannel   *channel);
 GIOStatus             g_io_channel_set_encoding         (GIOChannel   *channel,
 							 const gchar  *encoding,
 							 GError      **error);
-G_CONST_RETURN gchar* g_io_channel_get_encoding         (GIOChannel   *channel);
+const gchar *         g_io_channel_get_encoding         (GIOChannel   *channel);
 void                  g_io_channel_set_close_on_unref	(GIOChannel   *channel,
 							 gboolean      do_close);
 gboolean              g_io_channel_get_close_on_unref	(GIOChannel   *channel);
@@ -260,10 +272,6 @@ GIOStatus   g_io_channel_seek_position    (GIOChannel   *channel,
 					   gint64        offset,
 					   GSeekType     type,
 					   GError      **error);
-#ifdef G_OS_WIN32
-#define g_io_channel_new_file g_io_channel_new_file_utf8
-#endif
-
 GIOChannel* g_io_channel_new_file         (const gchar  *filename,
 					   const gchar  *mode,
 					   GError      **error);
@@ -324,7 +332,15 @@ gint        g_io_channel_win32_poll   (GPollFD    *fds,
 				       gint        timeout_);
 
 /* Create an IO channel for Windows messages for window handle hwnd. */
+#if GLIB_SIZEOF_VOID_P == 8
+/* We use gsize here so that it is still an integer type and not a
+ * pointer, like the guint in the traditional prototype. We can't use
+ * intptr_t as that is not portable enough.
+ */
+GIOChannel *g_io_channel_win32_new_messages (gsize hwnd);
+#else
 GIOChannel *g_io_channel_win32_new_messages (guint hwnd);
+#endif
 
 /* Create an IO channel for C runtime (emulated Unix-like) file
  * descriptors. After calling g_io_add_watch() on a IO channel
@@ -333,7 +349,7 @@ GIOChannel *g_io_channel_win32_new_messages (guint hwnd);
  * implemented on Win32 by starting a thread that sits blocked in a
  * read() from the file descriptor most of the time. All reads from
  * the file descriptor should be done by this internal GLib
- * thread. Your code should call only g_io_channel_read().
+ * thread. Your code should call only g_io_channel_read_chars().
  */
 GIOChannel* g_io_channel_win32_new_fd (gint         fd);
 
@@ -347,6 +363,20 @@ gint        g_io_channel_win32_get_fd (GIOChannel *channel);
  */
 GIOChannel *g_io_channel_win32_new_socket (gint socket);
 
+GLIB_DEPRECATED_FOR(g_io_channel_win32_new_socket)
+GIOChannel *g_io_channel_win32_new_stream_socket (gint socket);
+
+void        g_io_channel_win32_set_debug (GIOChannel *channel,
+                                          gboolean    flag);
+
+#endif
+
+#ifdef G_OS_WIN32
+#define g_io_channel_new_file g_io_channel_new_file_utf8
+
+GIOChannel *g_io_channel_new_file_utf8 (const gchar  *filename,
+                                        const gchar  *mode,
+                                        GError      **error);
 #endif
 
 G_END_DECLS

@@ -20,15 +20,17 @@
  * Author: Alexander Larsson <alexl@redhat.com>
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <glib.h>
 #include <gfileoutputstream.h>
 #include <gseekable.h>
 #include "gsimpleasyncresult.h"
+#include "gasyncresult.h"
+#include "gcancellable.h"
+#include "gioerror.h"
 #include "glibintl.h"
 
-#include "gioalias.h"
 
 /**
  * SECTION:gfileoutputstream
@@ -42,15 +44,14 @@
  * GFileOutputStream implements #GSeekable, which allows the output 
  * stream to jump to arbitrary positions in the file and to truncate
  * the file, provided the filesystem of the file supports these 
- * operations. In addition to the generic g_seekable_ API, 
- * GFileOutputStream has its own API for seeking and positioning. 
- * To find the position of a file output stream, use 
- * g_file_output_stream_tell(). To find out if a file output 
- * stream supports seeking, use g_file_output_stream_can_seek().
- * To position a file output stream, use g_file_output_stream_seek().
- * To find out if a file output stream supports truncating, use
- * g_file_output_stream_can_truncate(). To truncate a file output
- * stream, use g_file_output_stream_truncate().
+ * operations.
+ *
+ * To find the position of a file output stream, use g_seekable_tell().
+ * To find out if a file output stream supports seeking, use
+ * g_seekable_can_seek().To position a file output stream, use
+ * g_seekable_seek(). To find out if a file output stream supports
+ * truncating, use g_seekable_can_truncate(). To truncate a file output
+ * stream, use g_seekable_truncate().
  **/
 
 static void       g_file_output_stream_seekable_iface_init    (GSeekableIface       *iface);
@@ -67,7 +68,7 @@ static gboolean   g_file_output_stream_seekable_truncate      (GSeekable        
 							       GCancellable         *cancellable,
 							       GError              **error);
 static void       g_file_output_stream_real_query_info_async  (GFileOutputStream    *stream,
-							       char                 *attributes,
+							       const char           *attributes,
 							       int                   io_priority,
 							       GCancellable         *cancellable,
 							       GAsyncReadyCallback   callback,
@@ -136,11 +137,11 @@ g_file_output_stream_init (GFileOutputStream *stream)
  * was cancelled, the error %G_IO_ERROR_CANCELLED will be set, and %NULL will 
  * be returned. 
  * 
- * Returns: a #GFileInfo for the @stream, or %NULL on error.
+ * Returns: (transfer full): a #GFileInfo for the @stream, or %NULL on error.
  **/
 GFileInfo *
 g_file_output_stream_query_info (GFileOutputStream      *stream,
-				    char                   *attributes,
+				    const char             *attributes,
 				    GCancellable           *cancellable,
 				    GError                **error)
 {
@@ -164,8 +165,8 @@ g_file_output_stream_query_info (GFileOutputStream      *stream,
   if (class->query_info)
     info = class->query_info (stream, attributes, cancellable, error);
   else
-    g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-		 _("Stream doesn't support query_info"));
+    g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+                         _("Stream doesn't support query_info"));
   
   if (cancellable)
     g_cancellable_pop_current (cancellable);
@@ -208,7 +209,7 @@ async_ready_callback_wrapper (GObject *source_object,
  **/
 void
 g_file_output_stream_query_info_async (GFileOutputStream     *stream,
-					  char                 *attributes,
+					  const char           *attributes,
 					  int                   io_priority,
 					  GCancellable         *cancellable,
 					  GAsyncReadyCallback   callback,
@@ -224,11 +225,10 @@ g_file_output_stream_query_info_async (GFileOutputStream     *stream,
  
   if (!g_output_stream_set_pending (output_stream, &error))
     {
-      g_simple_async_report_gerror_in_idle (G_OBJECT (stream),
+      g_simple_async_report_take_gerror_in_idle (G_OBJECT (stream),
 					    callback,
 					    user_data,
 					    error);
-      g_error_free (error);
       return;
     }
 
@@ -249,25 +249,20 @@ g_file_output_stream_query_info_async (GFileOutputStream     *stream,
  * Finalizes the asynchronous query started 
  * by g_file_output_stream_query_info_async().
  * 
- * Returns: A #GFileInfo for the finished query.
+ * Returns: (transfer full): A #GFileInfo for the finished query.
  **/
 GFileInfo *
 g_file_output_stream_query_info_finish (GFileOutputStream     *stream,
 					   GAsyncResult         *result,
 					   GError              **error)
 {
-  GSimpleAsyncResult *simple;
   GFileOutputStreamClass *class;
 
   g_return_val_if_fail (G_IS_FILE_OUTPUT_STREAM (stream), NULL);
   g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
   
-  if (G_IS_SIMPLE_ASYNC_RESULT (result))
-    {
-      simple = G_SIMPLE_ASYNC_RESULT (result);
-      if (g_simple_async_result_propagate_error (simple, error))
-	return NULL;
-    }
+  if (g_async_result_legacy_propagate_error (result, error))
+    return NULL;
 
   class = G_FILE_OUTPUT_STREAM_GET_CLASS (stream);
   return class->query_info_finish (stream, result, error);
@@ -377,8 +372,8 @@ g_file_output_stream_seek (GFileOutputStream  *stream,
 
   if (!class->seek)
     {
-      g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-		   _("Seek not supported on stream"));
+      g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+                           _("Seek not supported on stream"));
       return FALSE;
     }
 
@@ -453,8 +448,8 @@ g_file_output_stream_truncate (GFileOutputStream  *stream,
 
   if (!class->truncate_fn)
     {
-      g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-		   _("Truncate not supported on stream"));
+      g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+                           _("Truncate not supported on stream"));
       return FALSE;
     }
 
@@ -519,21 +514,18 @@ query_info_async_thread (GSimpleAsyncResult *res,
   if (class->query_info)
     info = class->query_info (G_FILE_OUTPUT_STREAM (object), data->attributes, cancellable, &error);
   else
-    g_set_error (&error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-		 _("Stream doesn't support query_info"));
+    g_set_error_literal (&error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+                         _("Stream doesn't support query_info"));
 
   if (info == NULL)
-    {
-      g_simple_async_result_set_from_error (res, error);
-      g_error_free (error);
-    }
+    g_simple_async_result_take_error (res, error);
   else
     data->info = info;
 }
 
 static void
 g_file_output_stream_real_query_info_async (GFileOutputStream     *stream,
-					       char                 *attributes,
+					       const char           *attributes,
 					       int                   io_priority,
 					       GCancellable         *cancellable,
 					       GAsyncReadyCallback   callback,
@@ -554,13 +546,16 @@ g_file_output_stream_real_query_info_async (GFileOutputStream     *stream,
 
 static GFileInfo *
 g_file_output_stream_real_query_info_finish (GFileOutputStream     *stream,
-						GAsyncResult         *res,
-						GError              **error)
+					     GAsyncResult         *res,
+					     GError              **error)
 {
   GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (res);
   QueryInfoAsyncData *data;
 
   g_warn_if_fail (g_simple_async_result_get_source_tag (simple) == g_file_output_stream_real_query_info_async);
+
+  if (g_simple_async_result_propagate_error (simple, error))
+    return NULL;
 
   data = g_simple_async_result_get_op_res_gpointer (simple);
   if (data->info)
@@ -568,6 +563,3 @@ g_file_output_stream_real_query_info_finish (GFileOutputStream     *stream,
   
   return NULL;
 }
-
-#define __G_FILE_OUTPUT_STREAM_C__
-#include "gioaliasdef.c"

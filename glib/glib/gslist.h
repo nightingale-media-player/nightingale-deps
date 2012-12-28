@@ -21,13 +21,18 @@
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
+
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
 
 #ifndef __G_SLIST_H__
 #define __G_SLIST_H__
 
 #include <glib/gmem.h>
+#include <glib/gnode.h>
 
 G_BEGIN_DECLS
 
@@ -45,6 +50,8 @@ GSList*  g_slist_alloc                   (void) G_GNUC_WARN_UNUSED_RESULT;
 void     g_slist_free                    (GSList           *list);
 void     g_slist_free_1                  (GSList           *list);
 #define	 g_slist_free1		         g_slist_free_1
+void     g_slist_free_full               (GSList           *list,
+					  GDestroyNotify    free_func);
 GSList*  g_slist_append                  (GSList           *list,
 					  gpointer          data) G_GNUC_WARN_UNUSED_RESULT;
 GSList*  g_slist_prepend                 (GSList           *list,
@@ -74,6 +81,11 @@ GSList*  g_slist_delete_link             (GSList           *list,
 					  GSList           *link_) G_GNUC_WARN_UNUSED_RESULT;
 GSList*  g_slist_reverse                 (GSList           *list) G_GNUC_WARN_UNUSED_RESULT;
 GSList*  g_slist_copy                    (GSList           *list) G_GNUC_WARN_UNUSED_RESULT;
+
+GLIB_AVAILABLE_IN_2_34
+GSList*  g_slist_copy_deep               (GSList            *list,
+					  GCopyFunc         func,
+					  gpointer          user_data) G_GNUC_WARN_UNUSED_RESULT;
 GSList*  g_slist_nth                     (GSList           *list,
 					  guint             n);
 GSList*  g_slist_find                    (GSList           *list,
@@ -100,11 +112,6 @@ gpointer g_slist_nth_data                (GSList           *list,
 
 #define  g_slist_next(slist)	         ((slist) ? (((GSList *)(slist))->next) : NULL)
 
-#ifndef G_DISABLE_DEPRECATED
-void     g_slist_push_allocator          (gpointer	   dummy);
-void     g_slist_pop_allocator           (void);
-#endif
 G_END_DECLS
 
 #endif /* __G_SLIST_H__ */
-

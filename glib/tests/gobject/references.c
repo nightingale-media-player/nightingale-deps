@@ -44,6 +44,7 @@ static gboolean toggle_ref3_strengthened;
 /*
  * TestObject, a parent class for TestObject
  */
+static GType test_object_get_type (void);
 #define TEST_TYPE_OBJECT          (test_object_get_type ())
 typedef struct _TestObject        TestObject;
 typedef struct _TestObjectClass   TestObjectClass;
@@ -168,7 +169,6 @@ main (int   argc,
   g_log_set_always_fatal (g_log_set_always_fatal (G_LOG_FATAL_MASK) |
 			  G_LOG_LEVEL_WARNING |
 			  G_LOG_LEVEL_CRITICAL);
-  g_type_init ();
 
   /* Test basic weak reference operation
    */

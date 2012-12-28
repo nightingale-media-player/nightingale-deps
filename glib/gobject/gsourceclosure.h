@@ -24,17 +24,14 @@
 #define __G_SOURCECLOSURE_H__
 
 #include <gobject/gclosure.h>
+#include <gobject/glib-types.h>
 
 G_BEGIN_DECLS
 
-void g_source_set_closure (GSource  *source,
-			   GClosure *closure);
+void g_source_set_closure        (GSource  *source,
+				  GClosure *closure);
 
-GType g_io_channel_get_type   (void);
-GType g_io_condition_get_type (void);
-
-#define G_TYPE_IO_CHANNEL (g_io_channel_get_type ())
-#define G_TYPE_IO_CONDITION (g_io_condition_get_type ())
+void g_source_set_dummy_callback (GSource  *source);
 
 G_END_DECLS
 

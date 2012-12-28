@@ -21,8 +21,12 @@
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
+
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
 
 #ifndef __G_WIN32_H__
 #define __G_WIN32_H__
@@ -79,8 +83,7 @@ gchar* 		g_win32_getlocale  (void);
  */
 gchar*          g_win32_error_message (gint error);
 
-#define g_win32_get_package_installation_directory g_win32_get_package_installation_directory_utf8
-#define g_win32_get_package_installation_subdirectory g_win32_get_package_installation_subdirectory_utf8
+#ifndef G_DISABLE_DEPRECATED
 
 gchar*          g_win32_get_package_installation_directory (const gchar *package,
 							    const gchar *dll_name);
@@ -88,6 +91,8 @@ gchar*          g_win32_get_package_installation_directory (const gchar *package
 gchar*          g_win32_get_package_installation_subdirectory (const gchar *package,
 							       const gchar *dll_name,
 							       const gchar *subdir);
+
+#endif
 
 gchar*          g_win32_get_package_installation_directory_of_module (gpointer hmodule);
 
@@ -102,5 +107,19 @@ gchar*          g_win32_locale_filename_from_utf8 (const gchar *utf8filename);
 G_END_DECLS
 
 #endif	 /* G_PLATFORM_WIN32 */
+
+#ifdef G_OS_WIN32
+#ifdef _WIN64
+#define g_win32_get_package_installation_directory g_win32_get_package_installation_directory_utf8
+#define g_win32_get_package_installation_subdirectory g_win32_get_package_installation_subdirectory_utf8
+#endif
+
+gchar *g_win32_get_package_installation_directory_utf8    (const gchar *package,
+                                                           const gchar *dll_name);
+gchar *g_win32_get_package_installation_subdirectory_utf8 (const gchar *package,
+                                                           const gchar *dll_name,
+                                                           const gchar *subdir);
+
+#endif /* G_OS_WIN32 */
 
 #endif /* __G_WIN32_H__ */

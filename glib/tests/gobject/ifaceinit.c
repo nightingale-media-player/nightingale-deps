@@ -160,7 +160,7 @@ struct _TestObjectClass
 } G_STMT_END
 
 #define ADD_IFACE(n)  G_STMT_START {				\
-  static GInterfaceInfo iface_info = {				\
+  GInterfaceInfo iface_info = {				\
     (GInterfaceInitFunc)test_object_test_iface##n##_init,	\
     NULL, NULL };						\
 								\
@@ -381,7 +381,6 @@ main (int   argc,
   g_log_set_always_fatal (g_log_set_always_fatal (G_LOG_FATAL_MASK) |
 			  G_LOG_LEVEL_WARNING |
 			  G_LOG_LEVEL_CRITICAL);
-  g_type_init ();
 
   /* We force the interfaces to be registered in a different order
    * than we add them, so our logic doesn't always deal with interfaces
@@ -417,6 +416,8 @@ main (int   argc,
   g_assert (iface && iface->val == 0x50005 && iface->base_val == 0x550055);
   iface = TEST_IFACE6_GET_CLASS (object);
   g_assert (iface && iface->val == 0x60006 && iface->base_val == 0x660066);
+
+  g_type_class_unref (object_class);
 
   return 0;
 }

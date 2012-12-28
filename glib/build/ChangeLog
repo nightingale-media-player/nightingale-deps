@@ -1,8 +1,121 @@
+2009-01-13  Tor Lillqvist  <tml@novell.com>
+
+	* win32/vs8/README
+	* win32/vs9/README: New files. Mention this VS solution and
+	projects are experimental and that https://code.launchpad.net/oah
+	might be a better choice.
+
+	* win32/vs8/Makefile.am
+	* win32/vs9/Makefile.am (EXTRA_DIST): Add the READMEs and two
+	missing vcproj files.
+
+2008-11-02  Tor Lillqvist  <tml@novell.com>
+
+	* win32/Makefile.am (SUBDIRS): Add vs9.
+
+2008-11-02  Tor Lillqvist  <tml@novell.com>
+
+	Bug 558153 - Patch for .def files generation
+
+	* win32/{vs8,vs9}/*.vcproj: Add &quot; around paths, making it
+	possible to compile in a directory containing spaces. .def files
+	generation is done for every configuration not only the "Debug"
+	ones.
+
+	Patch by Guillaume Duhamel.
+
+2008-09-16  Tor Lillqvist  <tml@novell.com>
+
+	* win32/vs9: New folder. Project files for use with MSVS9. Based
+	on the MSVS8 project files is win32/vs8. Four configurations:
+	Debug|Win32, Release|Win32, Debug|x64 and Release|x64. DLL names
+	simplified to of the style glib-2-vs9.dll.
+
+2008-09-15  Tor Lillqvist  <tml@novell.com>
+
+	* win32/vs8/*.vcproj: Update to match the Makefile.am files. Drop
+	G*_EXPORTS from PreprocessorDefinitions, nothing looks for such
+	macros. Add G_DISABLE_DEPRECATED.
+
+	Don't use Detect64BitPortabilityProblems as those warnings are
+	misleading. They don't take into consideration ifdefs in
+	glibconfig.h and elsewhere for _WIN64.
+
+	Add PCRE_STATIC for glib to avoid exporting the pcre
+	functions. Add DLL_EXPORT to glib to export also the GLIB_VAR
+	variables that aren't mentioned in glib.symbols. Add G_LOG_DOMAIN
+	for gobject.
+
+	Drop the "win32" part from under "dependencies" so that the same
+	project files can be used also for 64-bit compilation by just
+	having a different "dependencies" folder containing 64-bit
+	packages instead. At least, I hope it will work out some way like
+	that. MSVS project files really are a pain to maintain.  Much
+	information is typically copied for four different configurations
+	"Debug|Win32", "Release|Win32", "Debug|x64" and "Release|x64"
+	instead of having common stuff listed just once and only different
+	parametrisations. Or am I missing something?
+	
+	Make the "Release" configuration work, too. Use correct character
+	set for the gspawn-win32-helper programs. Use correct subsystem
+	for the non-console one.
+
+2008-08-27  Tor Lillqvist  <tml@novell.com>
+
+	* win32/vs8/*.vcproj: Add "win32" directory level to the
+	references to the dependencies folder (which each actual user of
+	the project file probably needs to edit anyway depending on their
+	directory structure). Add missing files, remove nonexistent files.
+
+	* win32/vs8/glib.vcproj: Don't needlessly copy localcharset.c, but
+	compile it where it is in libcharset. Drop dirent as gdir.c
+	includes dirent.h and wdirent.c directly. Handle also
+	G_GNUC_FORMAT in the custom build step for glib.symbols.
+
+2008-08-02  Tor Lillqvist  <tml@novell.com>
+
+	Bug 545954 - 64-bit issue in dirent
+
+	* win32/dirent/dirent.h: Use __int64 for the dd_handle on 64-bit
+	Windows. (Would use intptr_t, but that is not available before
+	MSVS8, and we want to keep this compilable also with MSVS6 and 7,
+	I think.) Thanks to Richard Hult.
+
+2008-05-19  Tor Lillqvist  <tml@novell.com>
+
+	* win32/dirent/dirent.c: Include dirent.h with doublequotes so
+	that it is searched from this same folder first.
+
+2008-05-19  Tor Lillqvist  <tml@novell.com>
+
+	* win32/vs8/gspawn-win32-helper.vcproj
+	* win32/vs8/gspawn-win32-helper-console.vcproj: New files. Build
+	these two executables.
+
+	* win32/vs8/*.vcproj: Compile as C and not C++.
+
+	* win32/vs8/glib-genmarshal.vcproj: Use MBS and not Unicode. (What
+	this setting really means is just that we don't define the UNICODE
+	and _UNICODE macros when compiling; it has no effect on what APIs
+	the code might use.) Use the same IntermediateDirectory as the
+	other projects.
+
+	* win32/vs8/glib.sln: Add the gspawn-win32-helper and gspawn-win32-helper projects.
+
 2008-05-17  Tor Lillqvist  <tml@novell.com>
 
 	* "build" is no longer include into GLib through
 	svn:externals. The relevant directories and files have been svn
-	add'ed to GLib (the glib-2-16 branch here) instead.
+	add'ed to GLib (trunk) instead.
+
+2008-05-16  Tor Lillqvist  <tml@novell.com>
+
+	* win32/vs8/glib.vcproj: Add gi18n.c.
+
+	* win32/vs8/gio.vcproj: Add gwin32directorymonitor.c.
+
+	* win32/vs8/glib-genmarshal.vcproj: Put also glib-genmarshal.exe
+	in the "bin" folder.
 
 2008-04-23  Tor Lillqvist  <tml@novell.com>
 

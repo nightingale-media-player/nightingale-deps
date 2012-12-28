@@ -18,10 +18,16 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <glib/gtypes.h>
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
 
 #ifndef __G_SEQUENCE_H__
 #define __G_SEQUENCE_H__
+
+#include <glib/gtypes.h>
+
+G_BEGIN_DECLS
 
 typedef struct _GSequence      GSequence;
 typedef struct _GSequenceNode  GSequenceIter;
@@ -93,6 +99,14 @@ GSequenceIter *g_sequence_search_iter        (GSequence                *seq,
                                               gpointer                  data,
                                               GSequenceIterCompareFunc  iter_cmp,
                                               gpointer                  cmp_data);
+GSequenceIter *g_sequence_lookup             (GSequence                *seq,
+                                              gpointer                  data,
+                                              GCompareDataFunc          cmp_func,
+                                              gpointer                  cmp_data);
+GSequenceIter *g_sequence_lookup_iter        (GSequence                *seq,
+                                              gpointer                  data,
+                                              GSequenceIterCompareFunc  iter_cmp,
+                                              gpointer                  cmp_data);
 
 
 /* Dereferencing */
@@ -117,5 +131,6 @@ gint           g_sequence_iter_compare       (GSequenceIter            *a,
 GSequenceIter *g_sequence_range_get_midpoint (GSequenceIter            *begin,
                                               GSequenceIter            *end);
 
+G_END_DECLS
 
 #endif /* __G_SEQUENCE_H__ */

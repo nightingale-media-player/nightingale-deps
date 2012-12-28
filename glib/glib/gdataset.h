@@ -21,8 +21,12 @@
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
+
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
 
 #ifndef __G_DATASET_H__
 #define __G_DATASET_H__
@@ -47,6 +51,22 @@ void     g_datalist_id_set_data_full    (GData            **datalist,
 					 GQuark             key_id,
 					 gpointer           data,
 					 GDestroyNotify     destroy_func);
+
+typedef gpointer (*GDuplicateFunc) (gpointer data, gpointer user_data);
+
+GLIB_AVAILABLE_IN_2_34
+gpointer g_datalist_id_dup_data         (GData            **datalist,
+                                         GQuark             key_id,
+                                         GDuplicateFunc     dup_func,
+					 gpointer           user_data);
+GLIB_AVAILABLE_IN_2_34
+gboolean g_datalist_id_replace_data     (GData            **datalist,
+                                         GQuark             key_id,
+                                         gpointer           oldval,
+                                         gpointer           newval,
+                                         GDestroyNotify     destroy,
+					 GDestroyNotify    *old_destroy);
+
 gpointer g_datalist_id_remove_no_notify (GData            **datalist,
 					 GQuark             key_id);
 void     g_datalist_foreach             (GData            **datalist,
@@ -72,8 +92,6 @@ guint    g_datalist_get_flags           (GData            **datalist);
      g_datalist_id_set_data_full ((dl), (q), (d), NULL)
 #define   g_datalist_id_remove_data(dl, q)      \
      g_datalist_id_set_data ((dl), (q), NULL)
-#define   g_datalist_get_data(dl, k)            \
-     (g_datalist_id_get_data ((dl), g_quark_try_string (k)))
 #define   g_datalist_set_data_full(dl, k, d, f) \
      g_datalist_id_set_data_full ((dl), g_quark_from_string (k), (d), (f))
 #define   g_datalist_remove_no_notify(dl, k)    \
@@ -83,12 +101,13 @@ guint    g_datalist_get_flags           (GData            **datalist);
 #define   g_datalist_remove_data(dl, k)         \
      g_datalist_id_set_data ((dl), g_quark_try_string (k), NULL)
 
-
 /* Location Associated Keyed Data
  */
 void      g_dataset_destroy             (gconstpointer    dataset_location);
 gpointer  g_dataset_id_get_data         (gconstpointer    dataset_location,
                                          GQuark           key_id);
+gpointer  g_datalist_get_data            (GData	 **datalist,
+					  const gchar *key);
 void      g_dataset_id_set_data_full    (gconstpointer    dataset_location,
                                          GQuark           key_id,
                                          gpointer         data,
@@ -116,7 +135,3 @@ void      g_dataset_foreach             (gconstpointer    dataset_location,
 G_END_DECLS
 
 #endif /* __G_DATASET_H__ */
-
-
-
-

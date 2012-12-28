@@ -21,8 +21,12 @@
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
+
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
 
 #ifndef __G_QUARK_H__
 #define __G_QUARK_H__
@@ -38,13 +42,23 @@ typedef guint32 GQuark;
 GQuark                g_quark_try_string         (const gchar *string);
 GQuark                g_quark_from_static_string (const gchar *string);
 GQuark                g_quark_from_string        (const gchar *string);
-G_CONST_RETURN gchar* g_quark_to_string          (GQuark       quark) G_GNUC_CONST;
+const gchar *         g_quark_to_string          (GQuark       quark) G_GNUC_CONST;
 
-G_CONST_RETURN gchar* g_intern_string            (const gchar *string);
-G_CONST_RETURN gchar* g_intern_static_string     (const gchar *string);
+#define G_DEFINE_QUARK(QN, q_n)                                         \
+GQuark                                                                  \
+q_n##_quark (void)                                                      \
+{                                                                       \
+  static GQuark q;                                                      \
+                                                                        \
+  if G_UNLIKELY (q == 0)                                                \
+    q = g_quark_from_static_string (#QN);                               \
+                                                                        \
+  return q;                                                             \
+}
 
+const gchar *         g_intern_string            (const gchar *string);
+const gchar *         g_intern_static_string     (const gchar *string);
 
 G_END_DECLS
 
 #endif /* __G_QUARK_H__ */
-

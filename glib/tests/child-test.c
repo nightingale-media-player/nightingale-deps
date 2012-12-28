@@ -51,7 +51,7 @@ gint alive;
 char *argv0;
 #endif
 
-GPid
+static GPid
 get_a_child (gint ttl)
 {
   GPid pid;
@@ -89,7 +89,7 @@ get_a_child (gint ttl)
 #endif /* G_OS_WIN32 */
 }
 
-gboolean
+static gboolean
 child_watch_callback (GPid pid, gint status, gpointer data)
 {
 #ifdef VERBOSE
@@ -163,10 +163,7 @@ main (int argc, char *argv[])
       exit (STILL_ACTIVE);
     }
 #endif
-  /* Only run the test, if threads are enabled and a default thread
-   * implementation is available.
-   */
-#if defined(G_THREADS_ENABLED) && ! defined(G_THREADS_IMPL_NONE)
+
 #ifdef TEST_THREAD
   g_thread_init (NULL);
 #endif
@@ -175,7 +172,7 @@ main (int argc, char *argv[])
 #ifdef G_OS_WIN32
   system ("ipconfig /all");
 #else
-  system ("/bin/true");
+  system ("true");
 #endif
 
   alive = 2;
@@ -201,6 +198,5 @@ main (int argc, char *argv[])
       return 1;
     }
     
-#endif
    return 0;
 }

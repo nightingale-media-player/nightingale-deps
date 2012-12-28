@@ -21,13 +21,18 @@
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
+
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
 
 #ifndef __G_LIST_H__
 #define __G_LIST_H__
 
 #include <glib/gmem.h>
+#include <glib/gnode.h>
 
 G_BEGIN_DECLS
 
@@ -46,6 +51,8 @@ GList*   g_list_alloc                   (void) G_GNUC_WARN_UNUSED_RESULT;
 void     g_list_free                    (GList            *list);
 void     g_list_free_1                  (GList            *list);
 #define  g_list_free1                   g_list_free_1
+void     g_list_free_full               (GList            *list,
+					 GDestroyNotify    free_func);
 GList*   g_list_append                  (GList            *list,
 					 gpointer          data) G_GNUC_WARN_UNUSED_RESULT;
 GList*   g_list_prepend                 (GList            *list,
@@ -75,6 +82,12 @@ GList*   g_list_delete_link             (GList            *list,
 					 GList            *link_) G_GNUC_WARN_UNUSED_RESULT;
 GList*   g_list_reverse                 (GList            *list) G_GNUC_WARN_UNUSED_RESULT;
 GList*   g_list_copy                    (GList            *list) G_GNUC_WARN_UNUSED_RESULT;
+
+GLIB_AVAILABLE_IN_2_34
+GList*   g_list_copy_deep               (GList            *list,
+					 GCopyFunc         func,
+					 gpointer          user_data) G_GNUC_WARN_UNUSED_RESULT;
+
 GList*   g_list_nth                     (GList            *list,
 					 guint             n);
 GList*   g_list_nth_prev                (GList            *list,
@@ -106,11 +119,6 @@ gpointer g_list_nth_data                (GList            *list,
 #define g_list_previous(list)	        ((list) ? (((GList *)(list))->prev) : NULL)
 #define g_list_next(list)	        ((list) ? (((GList *)(list))->next) : NULL)
 
-#ifndef G_DISABLE_DEPRECATED
-void     g_list_push_allocator          (gpointer          allocator);
-void     g_list_pop_allocator           (void);
-#endif
 G_END_DECLS
 
 #endif /* __G_LIST_H__ */
-

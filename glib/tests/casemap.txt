@@ -1,4 +1,4 @@
-# Test cases generated from Unicode 5.1 data
+# Test cases generated from Unicode 6.1 data
 # by gen-case-tests.pl. Do not edit.
 #
 # Some special hand crafted tests
@@ -97,9 +97,7 @@ lt_LT.UTF-8	Į́	į̇́	Į́	Į́	 # LATIN CAPITAL LETTER I WITH OGONEK (with ac
 	x	x	X	X	#   78
 	y	y	Y	Y	#   79
 	z	z	Z	Z	#   7A
-	ª	ª			#   AA
 	µ	µ	Μ	Μ	#   B5
-	º	º			#   BA
 	À	à		À	#   C0
 	Á	á		Á	#   C1
 	Â	â		Â	#   C2
@@ -476,8 +474,8 @@ lt_LT.UTF-8	Į́	į̇́	Į́	Į́	 # LATIN CAPITAL LETTER I WITH OGONEK (with ac
 	ȼ	ȼ	Ȼ	Ȼ	#  23C
 	Ƚ	ƚ		Ƚ	#  23D
 	Ⱦ	ⱦ		Ⱦ	#  23E
-	ȿ	ȿ			#  23F
-	ɀ	ɀ			#  240
+	ȿ	ȿ	Ȿ	Ȿ	#  23F
+	ɀ	ɀ	Ɀ	Ɀ	#  240
 	Ɂ	ɂ		Ɂ	#  241
 	ɂ	ɂ	Ɂ	Ɂ	#  242
 	Ƀ	ƀ		Ƀ	#  243
@@ -495,7 +493,7 @@ lt_LT.UTF-8	Į́	į̇́	Į́	Į́	 # LATIN CAPITAL LETTER I WITH OGONEK (with ac
 	ɏ	ɏ	Ɏ	Ɏ	#  24F
 	ɐ	ɐ	Ɐ	Ɐ	#  250
 	ɑ	ɑ	Ɑ	Ɑ	#  251
-	ɒ	ɒ			#  252
+	ɒ	ɒ	Ɒ	Ɒ	#  252
 	ɓ	ɓ	Ɓ	Ɓ	#  253
 	ɔ	ɔ	Ɔ	Ɔ	#  254
 	ɕ	ɕ			#  255
@@ -514,8 +512,8 @@ lt_LT.UTF-8	Į́	į̇́	Į́	Į́	 # LATIN CAPITAL LETTER I WITH OGONEK (with ac
 	ɢ	ɢ			#  262
 	ɣ	ɣ	Ɣ	Ɣ	#  263
 	ɤ	ɤ			#  264
-	ɥ	ɥ			#  265
-	ɦ	ɦ			#  266
+	ɥ	ɥ	Ɥ	Ɥ	#  265
+	ɦ	ɦ	Ɦ	Ɦ	#  266
 	ɧ	ɧ			#  267
 	ɨ	ɨ	Ɨ	Ɨ	#  268
 	ɩ	ɩ	Ɩ	Ɩ	#  269
@@ -997,6 +995,10 @@ lt_LT.UTF-8	Į́	į̇́	Į́	Į́	 # LATIN CAPITAL LETTER I WITH OGONEK (with ac
 	ԡ	ԡ	Ԡ	Ԡ	#  521
 	Ԣ	ԣ		Ԣ	#  522
 	ԣ	ԣ	Ԣ	Ԣ	#  523
+	Ԥ	ԥ		Ԥ	#  524
+	ԥ	ԥ	Ԥ	Ԥ	#  525
+	Ԧ	ԧ		Ԧ	#  526
+	ԧ	ԧ	Ԧ	Ԧ	#  527
 	Ա	ա		Ա	#  531
 	Բ	բ		Բ	#  532
 	Գ	գ		Գ	#  533
@@ -1112,6 +1114,8 @@ lt_LT.UTF-8	Į́	į̇́	Į́	Į́	 # LATIN CAPITAL LETTER I WITH OGONEK (with ac
 	Ⴣ	ⴣ		Ⴣ	# 10C3
 	Ⴤ	ⴤ		Ⴤ	# 10C4
 	Ⴥ	ⴥ		Ⴥ	# 10C5
+	Ⴧ	ⴧ		Ⴧ	# 10C7
+	Ⴭ	ⴭ		Ⴭ	# 10CD
 	ᴀ	ᴀ			# 1D00
 	ᴁ	ᴁ			# 1D01
 	ᴂ	ᴂ			# 1D02
@@ -1156,15 +1160,6 @@ lt_LT.UTF-8	Į́	į̇́	Į́	Į́	 # LATIN CAPITAL LETTER I WITH OGONEK (with ac
 	ᴩ	ᴩ			# 1D29
 	ᴪ	ᴪ			# 1D2A
 	ᴫ	ᴫ			# 1D2B
-	ᵢ	ᵢ			# 1D62
-	ᵣ	ᵣ			# 1D63
-	ᵤ	ᵤ			# 1D64
-	ᵥ	ᵥ			# 1D65
-	ᵦ	ᵦ			# 1D66
-	ᵧ	ᵧ			# 1D67
-	ᵨ	ᵨ			# 1D68
-	ᵩ	ᵩ			# 1D69
-	ᵪ	ᵪ			# 1D6A
 	ᵫ	ᵫ			# 1D6B
 	ᵬ	ᵬ			# 1D6C
 	ᵭ	ᵭ			# 1D6D
@@ -1686,8 +1681,6 @@ lt_LT.UTF-8	Į́	į̇́	Į́	Į́	 # LATIN CAPITAL LETTER I WITH OGONEK (with ac
 	Ὼ	ὼ		Ὼ	# 1FFA
 	Ώ	ώ		Ώ	# 1FFB
 	ῼ	ῳ	ῼ	ΩΙ	# 1FFC
-	ⁱ	ⁱ			# 2071
-	ⁿ	ⁿ			# 207F
 	ℂ			ℂ	# 2102
 	ℇ			ℇ	# 2107
 	ℊ	ℊ			# 210A
@@ -1842,6 +1835,7 @@ lt_LT.UTF-8	Į́	į̇́	Į́	Į́	 # LATIN CAPITAL LETTER I WITH OGONEK (with ac
 	Ɑ	ɑ		Ɑ	# 2C6D
 	Ɱ	ɱ		Ɱ	# 2C6E
 	Ɐ	ɐ		Ɐ	# 2C6F
+	Ɒ	ɒ		Ɒ	# 2C70
 	ⱱ	ⱱ			# 2C71
 	Ⱳ	ⱳ		Ⱳ	# 2C72
 	ⱳ	ⱳ	Ⱳ	Ⱳ	# 2C73
@@ -1853,7 +1847,8 @@ lt_LT.UTF-8	Į́	į̇́	Į́	Į́	 # LATIN CAPITAL LETTER I WITH OGONEK (with ac
 	ⱹ	ⱹ			# 2C79
 	ⱺ	ⱺ			# 2C7A
 	ⱻ	ⱻ			# 2C7B
-	ⱼ	ⱼ			# 2C7C
+	Ȿ	ȿ		Ȿ	# 2C7E
+	Ɀ	ɀ		Ɀ	# 2C7F
 	Ⲁ	ⲁ		Ⲁ	# 2C80
 	ⲁ	ⲁ	Ⲁ	Ⲁ	# 2C81
 	Ⲃ	ⲃ		Ⲃ	# 2C82
@@ -1955,6 +1950,12 @@ lt_LT.UTF-8	Į́	į̇́	Į́	Į́	 # LATIN CAPITAL LETTER I WITH OGONEK (with ac
 	Ⳣ	ⳣ		Ⳣ	# 2CE2
 	ⳣ	ⳣ	Ⳣ	Ⳣ	# 2CE3
 	ⳤ	ⳤ			# 2CE4
+	Ⳬ	ⳬ		Ⳬ	# 2CEB
+	ⳬ	ⳬ	Ⳬ	Ⳬ	# 2CEC
+	Ⳮ	ⳮ		Ⳮ	# 2CED
+	ⳮ	ⳮ	Ⳮ	Ⳮ	# 2CEE
+	Ⳳ	ⳳ		Ⳳ	# 2CF2
+	ⳳ	ⳳ	Ⳳ	Ⳳ	# 2CF3
 	ⴀ	ⴀ	Ⴀ	Ⴀ	# 2D00
 	ⴁ	ⴁ	Ⴁ	Ⴁ	# 2D01
 	ⴂ	ⴂ	Ⴂ	Ⴂ	# 2D02
@@ -1993,6 +1994,8 @@ lt_LT.UTF-8	Į́	į̇́	Į́	Į́	 # LATIN CAPITAL LETTER I WITH OGONEK (with ac
 	ⴣ	ⴣ	Ⴣ	Ⴣ	# 2D23
 	ⴤ	ⴤ	Ⴤ	Ⴤ	# 2D24
 	ⴥ	ⴥ	Ⴥ	Ⴥ	# 2D25
+	ⴧ	ⴧ	Ⴧ	Ⴧ	# 2D27
+	ⴭ	ⴭ	Ⴭ	Ⴭ	# 2D2D
 	Ꙁ	ꙁ		Ꙁ	# A640
 	ꙁ	ꙁ	Ꙁ	Ꙁ	# A641
 	Ꙃ	ꙃ		Ꙃ	# A642
@@ -2025,6 +2028,8 @@ lt_LT.UTF-8	Į́	į̇́	Į́	Į́	 # LATIN CAPITAL LETTER I WITH OGONEK (with ac
 	ꙝ	ꙝ	Ꙝ	Ꙝ	# A65D
 	Ꙟ	ꙟ		Ꙟ	# A65E
 	ꙟ	ꙟ	Ꙟ	Ꙟ	# A65F
+	Ꙡ	ꙡ		Ꙡ	# A660
+	ꙡ	ꙡ	Ꙡ	Ꙡ	# A661
 	Ꙣ	ꙣ		Ꙣ	# A662
 	ꙣ	ꙣ	Ꙣ	Ꙣ	# A663
 	Ꙥ	ꙥ		Ꙥ	# A664
@@ -2164,6 +2169,24 @@ lt_LT.UTF-8	Į́	į̇́	Į́	Į́	 # LATIN CAPITAL LETTER I WITH OGONEK (with ac
 	ꞇ	ꞇ	Ꞇ	Ꞇ	# A787
 	Ꞌ	ꞌ		Ꞌ	# A78B
 	ꞌ	ꞌ	Ꞌ	Ꞌ	# A78C
+	Ɥ	ɥ		Ɥ	# A78D
+	ꞎ	ꞎ			# A78E
+	Ꞑ	ꞑ		Ꞑ	# A790
+	ꞑ	ꞑ	Ꞑ	Ꞑ	# A791
+	Ꞓ	ꞓ		Ꞓ	# A792
+	ꞓ	ꞓ	Ꞓ	Ꞓ	# A793
+	Ꞡ	ꞡ		Ꞡ	# A7A0
+	ꞡ	ꞡ	Ꞡ	Ꞡ	# A7A1
+	Ꞣ	ꞣ		Ꞣ	# A7A2
+	ꞣ	ꞣ	Ꞣ	Ꞣ	# A7A3
+	Ꞥ	ꞥ		Ꞥ	# A7A4
+	ꞥ	ꞥ	Ꞥ	Ꞥ	# A7A5
+	Ꞧ	ꞧ		Ꞧ	# A7A6
+	ꞧ	ꞧ	Ꞧ	Ꞧ	# A7A7
+	Ꞩ	ꞩ		Ꞩ	# A7A8
+	ꞩ	ꞩ	Ꞩ	Ꞩ	# A7A9
+	Ɦ	ɦ		Ɦ	# A7AA
+	ꟺ	ꟺ			# A7FA
 	ﬀ	ﬀ	Ff	FF	# FB00
 	ﬁ	ﬁ	Fi	FI	# FB01
 	ﬂ	ﬂ	Fl	FL	# FB02

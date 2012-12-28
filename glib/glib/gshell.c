@@ -24,20 +24,38 @@
 
 #include <string.h>
 
-#include "glib.h"
+#include "gshell.h"
 
-#ifdef _
-#warning "FIXME remove gettext hack"
-#endif
-
+#include "gslist.h"
+#include "gstrfuncs.h"
+#include "gstring.h"
+#include "gtestutils.h"
 #include "glibintl.h"
-#include "galias.h"
+#include "gthread.h"
 
-GQuark
-g_shell_error_quark (void)
-{
-  return g_quark_from_static_string ("g-shell-error-quark");
-}
+/**
+ * SECTION:shell
+ * @title: Shell-related Utilities
+ * @short_description: shell-like commandline handling
+ **/
+
+/**
+ * G_SHELL_ERROR:
+ *
+ * Error domain for shell functions. Errors in this domain will be from
+ * the #GShellError enumeration. See #GError for information on error
+ * domains.
+ **/
+
+/**
+ * GShellError:
+ * @G_SHELL_ERROR_BAD_QUOTING: Mismatched or otherwise mangled quoting.
+ * @G_SHELL_ERROR_EMPTY_STRING: String to be parsed was empty.
+ * @G_SHELL_ERROR_FAILED: Some other error.
+ *
+ * Error codes returned by shell functions.
+ **/
+G_DEFINE_QUARK (g-shell-error-quark, g_shell_error)
 
 /* Single quotes preserve the literal string exactly. escape
  * sequences are not allowed; not even \' - if you want a '
@@ -64,8 +82,8 @@ unquote_string_inplace (gchar* str, gchar** end, GError** err)
   
   if (!(*s == '"' || *s == '\''))
     {
-      if (err)
-        *err = g_error_new(G_SHELL_ERROR,
+      g_set_error_literal (err,
+                           G_SHELL_ERROR,
                            G_SHELL_ERROR_BAD_QUOTING,
                            _("Quoted text doesn't begin with a quotation mark"));
       *end = str;
@@ -154,8 +172,8 @@ unquote_string_inplace (gchar* str, gchar** end, GError** err)
 
   *dest = '\0';
   
-  if (err)
-    *err = g_error_new(G_SHELL_ERROR,
+  g_set_error_literal (err,
+                       G_SHELL_ERROR,
                        G_SHELL_ERROR_BAD_QUOTING,
                        _("Unmatched quotation mark in command line or other shell-quoted text"));
   *end = s;
@@ -411,7 +429,7 @@ tokenize_command_line (const gchar *command_line,
   const gchar *p;
   GString *current_token = NULL;
   GSList *retval = NULL;
-  gboolean quoted;;
+  gboolean quoted;
 
   current_quote = '\0';
   quoted = FALSE;
@@ -500,10 +518,28 @@ tokenize_command_line (const gchar *command_line,
               g_string_append_c (current_token, *p);
 
               /* FALL THRU */
-              
-            case '#':
             case '\\':
               current_quote = *p;
+              break;
+
+            case '#':
+              if (p == command_line)
+	        { /* '#' was the first char */
+                  current_quote = *p;
+                  break;
+                }
+              switch(*(p-1))
+                {
+                  case ' ':
+                  case '\n':
+                  case '\0':
+                    current_quote = *p;
+                    break;
+                  default:
+                    ensure_token (&current_token);
+                    g_string_append_c (current_token, *p);
+		    break;
+                }
               break;
 
             default:
@@ -551,10 +587,10 @@ tokenize_command_line (const gchar *command_line,
 
   if (retval == NULL)
     {
-      g_set_error (error,
-                   G_SHELL_ERROR,
-                   G_SHELL_ERROR_EMPTY_STRING,
-                   _("Text was empty (or contained only whitespace)"));
+      g_set_error_literal (error,
+                           G_SHELL_ERROR,
+                           G_SHELL_ERROR_EMPTY_STRING,
+                           _("Text was empty (or contained only whitespace)"));
 
       goto error;
     }
@@ -566,12 +602,8 @@ tokenize_command_line (const gchar *command_line,
 
  error:
   g_assert (error == NULL || *error != NULL);
-  
-  if (retval)
-    {
-      g_slist_foreach (retval, (GFunc)g_free, NULL);
-      g_slist_free (retval);
-    }
+
+  g_slist_free_full (retval, g_free);
 
   return NULL;
 }
@@ -579,8 +611,8 @@ tokenize_command_line (const gchar *command_line,
 /**
  * g_shell_parse_argv:
  * @command_line: command line to parse
- * @argcp: return location for number of args
- * @argvp: return location for array of args
+ * @argcp: (out): return location for number of args
+ * @argvp: (out) (array length=argcp zero-terminated=1): return location for array of args
  * @error: return location for error
  * 
  * Parses a command line into an argument vector, in much the same way
@@ -646,8 +678,7 @@ g_shell_parse_argv (const gchar *command_line,
       ++i;
     }
   
-  g_slist_foreach (tokens, (GFunc)g_free, NULL);
-  g_slist_free (tokens);
+  g_slist_free_full (tokens, g_free);
   
   if (argcp)
     *argcp = argc;
@@ -663,11 +694,7 @@ g_shell_parse_argv (const gchar *command_line,
 
   g_assert (error == NULL || *error != NULL);
   g_strfreev (argv);
-  g_slist_foreach (tokens, (GFunc) g_free, NULL);
-  g_slist_free (tokens);
+  g_slist_free_full (tokens, g_free);
   
   return FALSE;
 }
-
-#define __G_SHELL_C__
-#include "galiasdef.c"

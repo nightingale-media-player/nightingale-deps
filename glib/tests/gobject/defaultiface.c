@@ -48,6 +48,7 @@ struct _TestStaticIfaceClass
   guint val;
 };
 
+GType test_static_iface_get_type (void);
 #define TEST_TYPE_STATIC_IFACE (test_static_iface_get_type ())
 
 static void
@@ -117,7 +118,7 @@ test_dynamic_iface_default_finalize (TestStaticIfaceClass *iface)
 static void
 test_dynamic_iface_register (GTypeModule *module)
 {
-  static const GTypeInfo iface_info =			
+  const GTypeInfo iface_info =			
     {								
       sizeof (TestDynamicIfaceClass),
       (GBaseInitFunc)	   NULL,
@@ -139,10 +140,9 @@ module_register (GTypeModule *module)
 static void
 test_dynamic_iface (void)
 {
-  GTypeModule *module;
   TestDynamicIfaceClass *dynamic_iface;
 
-  module = test_module_new (module_register);
+  test_module_new (module_register);
 
   /* Not loaded until we call ref for the first time */
   dynamic_iface = g_type_default_interface_peek (TEST_TYPE_DYNAMIC_IFACE);
@@ -182,7 +182,6 @@ main (int   argc,
   g_log_set_always_fatal (g_log_set_always_fatal (G_LOG_FATAL_MASK) |
 			  G_LOG_LEVEL_WARNING |
 			  G_LOG_LEVEL_CRITICAL);
-  g_type_init ();
 
   test_static_iface ();
   test_dynamic_iface ();

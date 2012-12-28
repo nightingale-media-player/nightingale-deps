@@ -29,25 +29,113 @@
 G_BEGIN_DECLS
 
 /* --- defines --- */
+/**
+ * G_CLOSURE_NEEDS_MARSHAL:
+ * @closure: a #GClosure
+ * 
+ * Check if the closure still needs a marshaller. See g_closure_set_marshal().
+ *
+ * Returns: %TRUE if a #GClosureMarshal marshaller has not yet been set on 
+ * @closure.
+ */
 #define	G_CLOSURE_NEEDS_MARSHAL(closure) (((GClosure*) (closure))->marshal == NULL)
-#define	G_CLOSURE_N_NOTIFIERS(cl)	 ((cl)->meta_marshal + ((cl)->n_guards << 1L) + \
+/**
+ * G_CLOSURE_N_NOTIFIERS:
+ * @cl: a #GClosure
+ * 
+ * Get the total number of notifiers connected with the closure @cl. 
+ * The count includes the meta marshaller, the finalize and invalidate notifiers 
+ * and the marshal guards. Note that each guard counts as two notifiers. 
+ * See g_closure_set_meta_marshal(), g_closure_add_finalize_notifier(),
+ * g_closure_add_invalidate_notifier() and g_closure_add_marshal_guards().
+ *
+ * Returns: number of notifiers
+ */
+#define	G_CLOSURE_N_NOTIFIERS(cl)	 (((cl)->n_guards << 1L) + \
                                           (cl)->n_fnotifiers + (cl)->n_inotifiers)
+/**
+ * G_CCLOSURE_SWAP_DATA:
+ * @cclosure: a #GCClosure
+ * 
+ * Checks whether the user data of the #GCClosure should be passed as the
+ * first parameter to the callback. See g_cclosure_new_swap().
+ *
+ * Returns: %TRUE if data has to be swapped.
+ */
 #define	G_CCLOSURE_SWAP_DATA(cclosure)	 (((GClosure*) (cclosure))->derivative_flag)
+/**
+ * G_CALLBACK:
+ * @f: a function pointer.
+ * 
+ * Cast a function pointer to a #GCallback.
+ */
 #define	G_CALLBACK(f)			 ((GCallback) (f))
 
 
 /* -- typedefs --- */
 typedef struct _GClosure		 GClosure;
 typedef struct _GClosureNotifyData	 GClosureNotifyData;
+
+/**
+ * GCallback:
+ * 
+ * The type used for callback functions in structure definitions and function 
+ * signatures. This doesn't mean that all callback functions must take no 
+ * parameters and return void. The required signature of a callback function 
+ * is determined by the context in which is used (e.g. the signal to which it 
+ * is connected). Use G_CALLBACK() to cast the callback function to a #GCallback. 
+ */
 typedef void  (*GCallback)              (void);
+/**
+ * GClosureNotify:
+ * @data: data specified when registering the notification callback
+ * @closure: the #GClosure on which the notification is emitted
+ * 
+ * The type used for the various notification callbacks which can be registered
+ * on closures.
+ */
 typedef void  (*GClosureNotify)		(gpointer	 data,
 					 GClosure	*closure);
+/**
+ * GClosureMarshal:
+ * @closure: the #GClosure to which the marshaller belongs
+ * @return_value: (allow-none): a #GValue to store the return
+ *  value. May be %NULL if the callback of @closure doesn't return a
+ *  value.
+ * @n_param_values: the length of the @param_values array
+ * @param_values: (array length=n_param_values): an array of
+ *  #GValue<!-- -->s holding the arguments on which to invoke the
+ *  callback of @closure
+ * @invocation_hint: (allow-none): the invocation hint given as the
+ *  last argument to g_closure_invoke()
+ * @marshal_data: (allow-none): additional data specified when
+ *  registering the marshaller, see g_closure_set_marshal() and
+ *  g_closure_set_meta_marshal()
+ * 
+ * The type used for marshaller functions.
+ */
 typedef void  (*GClosureMarshal)	(GClosure	*closure,
 					 GValue         *return_value,
 					 guint           n_param_values,
 					 const GValue   *param_values,
 					 gpointer        invocation_hint,
 					 gpointer	 marshal_data);
+
+typedef void (* GVaClosureMarshal) (GClosure *closure,
+				    GValue   *return_value,
+				    gpointer  instance,
+				    va_list   args,
+				    gpointer  marshal_data,
+				    int       n_params,
+				    GType    *param_types);
+
+/**
+ * GCClosure:
+ * @closure: the #GClosure
+ * @callback: the callback function
+ * 
+ * A #GCClosure is a specialization of #GClosure for C function callbacks.
+ */
 typedef struct _GCClosure		 GCClosure;
 
 
@@ -57,11 +145,22 @@ struct _GClosureNotifyData
   gpointer       data;
   GClosureNotify notify;
 };
+/**
+ * GClosure:
+ * @in_marshal: Indicates whether the closure is currently being invoked with 
+ *  g_closure_invoke()
+ * @is_invalid: Indicates whether the closure has been invalidated by 
+ *  g_closure_invalidate()
+ * 
+ * A #GClosure represents a callback supplied by the programmer.
+ */
 struct _GClosure
 {
   /*< private >*/
   volatile      	guint	 ref_count : 15;
-  volatile       	guint	 meta_marshal : 1;
+  /* meta_marshal is not used anymore but must be zero for historical reasons
+     as it was exposed in the G_CLOSURE_N_NOTIFIERS macro */
+  volatile       	guint	 meta_marshal_nouse : 1;
   volatile       	guint	 n_guards : 1;
   volatile       	guint	 n_fnotifiers : 2;	/* finalization notifiers */
   volatile       	guint	 n_inotifiers : 8;	/* invalidation notifiers */
@@ -160,6 +259,22 @@ void	  g_closure_invoke			(GClosure 	*closure,
    - need marshaller repo with decent aliasing to base types
    - provide marshaller collection, virtually covering anything out there
 */
+
+void g_cclosure_marshal_generic (GClosure     *closure,
+                                 GValue       *return_gvalue,
+                                 guint         n_param_values,
+                                 const GValue *param_values,
+                                 gpointer      invocation_hint,
+                                 gpointer      marshal_data);
+
+void g_cclosure_marshal_generic_va (GClosure *closure,
+				    GValue   *return_value,
+				    gpointer  instance,
+				    va_list   args_list,
+				    gpointer  marshal_data,
+				    int       n_params,
+				    GType    *param_types);
+
 
 G_END_DECLS
 
