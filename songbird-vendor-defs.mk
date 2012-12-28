@@ -225,6 +225,7 @@ endif
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
   SB_CFLAGS += -gstabs+ \
+			   -I/opt/local/include \
                -isysroot $(MACOSX_SDK) \
                -D__MACOSX__ \
                -D__APPLE__
