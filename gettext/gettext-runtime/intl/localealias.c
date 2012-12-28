@@ -1,20 +1,18 @@
 /* Handle aliases for locale names.
-   Copyright (C) 1995-1999, 2000-2001, 2003 Free Software Foundation, Inc.
+   Copyright (C) 1995-1999, 2000-2001, 2003, 2005-2006 Free Software Foundation, Inc.
 
-   This program is free software; you can redistribute it and/or modify it
-   under the terms of the GNU Library General Public License as published
-   by the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published by
+   the Free Software Foundation; either version 2.1 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-   USA.  */
+   You should have received a copy of the GNU Lesser General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 /* Tell glibc's <string.h> to provide a prototype for mempcpy().
    This must come before <config.h> because <config.h> may include
@@ -81,11 +79,13 @@ char *alloca ();
 # endif
 # define HAVE_MEMPCPY	1
 # define HAVE___FSETLOCKING	1
+#endif
 
-/* We need locking here since we can be called from different places.  */
+/* Handle multi-threaded applications.  */
+#ifdef _LIBC
 # include <bits/libc-lock.h>
-
-__libc_lock_define_initialized (static, lock);
+#else
+# include "lock.h"
 #endif
 
 #ifndef internal_function
@@ -118,6 +118,9 @@ __libc_lock_define_initialized (static, lock);
 # undef feof
 # define feof(s) feof_unlocked (s)
 #endif
+
+
+__libc_lock_define_initialized (static, lock)
 
 
 struct alias_map
@@ -155,9 +158,7 @@ _nl_expand_alias (const char *name)
   const char *result = NULL;
   size_t added;
 
-#ifdef _LIBC
   __libc_lock_lock (lock);
-#endif
 
   if (locale_alias_path == NULL)
     locale_alias_path = LOCALE_ALIAS_PATH;
@@ -204,9 +205,7 @@ _nl_expand_alias (const char *name)
     }
   while (added != 0);
 
-#ifdef _LIBC
   __libc_lock_unlock (lock);
-#endif
 
   return result;
 }
@@ -230,7 +229,13 @@ read_alias_file (const char *fname, int fname_len)
   memcpy (&full_fname[fname_len], aliasfile, sizeof aliasfile);
 #endif
 
+#ifdef _LIBC
+  /* Note the file is opened with cancellation in the I/O functions
+     disabled.  */
+  fp = fopen (relocate (full_fname), "rc");
+#else
   fp = fopen (relocate (full_fname), "r");
+#endif
   freea (full_fname);
   if (fp == NULL)
     return 0;
@@ -254,10 +259,14 @@ read_alias_file (const char *fname, int fname_len)
       char *alias;
       char *value;
       char *cp;
+      int complete_line;
 
       if (FGETS (buf, sizeof buf, fp) == NULL)
 	/* EOF reached.  */
 	break;
+
+      /* Determine whether the line is complete.  */
+      complete_line = strchr (buf, '\n') != NULL;
 
       cp = buf;
       /* Ignore leading white space.  */
@@ -280,9 +289,6 @@ read_alias_file (const char *fname, int fname_len)
 
 	  if (cp[0] != '\0')
 	    {
-	      size_t alias_len;
-	      size_t value_len;
-
 	      value = cp++;
 	      while (cp[0] != '\0' && !isspace ((unsigned char) cp[0]))
 		++cp;
@@ -298,60 +304,77 @@ read_alias_file (const char *fname, int fname_len)
 	      else if (cp[0] != '\0')
 		*cp++ = '\0';
 
-	      if (nmap >= maxmap)
-		if (__builtin_expect (extend_alias_table (), 0))
-		  return added;
-
-	      alias_len = strlen (alias) + 1;
-	      value_len = strlen (value) + 1;
-
-	      if (string_space_act + alias_len + value_len > string_space_max)
+#ifdef IN_LIBGLOCALE
+	      /* glibc's locale.alias contains entries for ja_JP and ko_KR
+		 that make it impossible to use a Japanese or Korean UTF-8
+		 locale under the name "ja_JP" or "ko_KR".  Ignore these
+		 entries.  */
+	      if (strchr (alias, '_') == NULL)
+#endif
 		{
-		  /* Increase size of memory pool.  */
-		  size_t new_size = (string_space_max
-				     + (alias_len + value_len > 1024
-					? alias_len + value_len : 1024));
-		  char *new_pool = (char *) realloc (string_space, new_size);
-		  if (new_pool == NULL)
-		    return added;
+		  size_t alias_len;
+		  size_t value_len;
 
-		  if (__builtin_expect (string_space != new_pool, 0))
+		  if (nmap >= maxmap)
+		    if (__builtin_expect (extend_alias_table (), 0))
+		      goto out;
+
+		  alias_len = strlen (alias) + 1;
+		  value_len = strlen (value) + 1;
+
+		  if (string_space_act + alias_len + value_len > string_space_max)
 		    {
-		      size_t i;
+		      /* Increase size of memory pool.  */
+		      size_t new_size = (string_space_max
+					 + (alias_len + value_len > 1024
+					    ? alias_len + value_len : 1024));
+		      char *new_pool = (char *) realloc (string_space, new_size);
+		      if (new_pool == NULL)
+			goto out;
 
-		      for (i = 0; i < nmap; i++)
+		      if (__builtin_expect (string_space != new_pool, 0))
 			{
-			  map[i].alias += new_pool - string_space;
-			  map[i].value += new_pool - string_space;
+			  size_t i;
+
+			  for (i = 0; i < nmap; i++)
+			    {
+			      map[i].alias += new_pool - string_space;
+			      map[i].value += new_pool - string_space;
+			    }
 			}
+
+		      string_space = new_pool;
+		      string_space_max = new_size;
 		    }
 
-		  string_space = new_pool;
-		  string_space_max = new_size;
+		  map[nmap].alias =
+		    (const char *) memcpy (&string_space[string_space_act],
+					   alias, alias_len);
+		  string_space_act += alias_len;
+
+		  map[nmap].value =
+		    (const char *) memcpy (&string_space[string_space_act],
+					   value, value_len);
+		  string_space_act += value_len;
+
+		  ++nmap;
+		  ++added;
 		}
-
-	      map[nmap].alias = memcpy (&string_space[string_space_act],
-					alias, alias_len);
-	      string_space_act += alias_len;
-
-	      map[nmap].value = memcpy (&string_space[string_space_act],
-					value, value_len);
-	      string_space_act += value_len;
-
-	      ++nmap;
-	      ++added;
 	    }
 	}
 
       /* Possibly not the whole line fits into the buffer.  Ignore
 	 the rest of the line.  */
-      while (strchr (buf, '\n') == NULL)
-	if (FGETS (buf, sizeof buf, fp) == NULL)
-	  /* Make sure the inner loop will be left.  The outer loop
-	     will exit at the `feof' test.  */
-	  break;
+      if (! complete_line)
+	do
+	  if (FGETS (buf, sizeof buf, fp) == NULL)
+	    /* Make sure the inner loop will be left.  The outer loop
+	       will exit at the `feof' test.  */
+	    break;
+	while (strchr (buf, '\n') == NULL);
     }
 
+ out:
   /* Should we test for ferror()?  I think we have to silently ignore
      errors.  --drepper  */
   fclose (fp);

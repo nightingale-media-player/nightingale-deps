@@ -47,7 +47,7 @@ INST = emx/
 # Tools
 CC = gcc -c
 CFLAGS = -Wall -Zmt $(INCLUDE) $(DEFS)
-INCLUDE = -I. -I$(ROOT) -I$(ROOT)intl -I$(ROOT)src -I$(ROOT)lib -I$(ROOT)libuniname
+INCLUDE = -I. -I$(ROOT) -I$(ROOT)intl -I$(ROOT)src -I$(ROOT)lib
 DEFS = -DHAVE_CONFIG_H -DLIBDIR=\"/usr/lib\" \
   -DLOCALEDIR=\"/usr/share/locale\" -DLOCALE_ALIAS_PATH=\"/usr/share/locale\" \
   -DGETTEXTDATADIR=\"/usr/share/gettext\" \
@@ -114,13 +114,6 @@ LIB.SOURCES = $(addprefix $(ROOT)lib/, error.c stpcpy.c stpncpy.c mkdtemp.c getl
   $(patsubst getopt%.c,,\
   $(shell sed $(ROOT)lib/Makefile.am -ne "/^libgettextlib_la_SOURCES =/,/[^\]$$/p"))))))
 LIB.OBJECTS = $(addprefix $(OUT),$(subst $(ROOT),,$(LIB.SOURCES:.c=.o)))
-
-LIBUNINAME.SOURCES = $(addprefix $(ROOT)libuniname/, \
-  $(subst libuniname_a_SOURCES = ,,\
-  $(subst \,,\
-  $(patsubst %.h,,\
-  $(shell sed $(ROOT)libuniname/Makefile.am -ne "/^libuniname_a_SOURCES =/,/^$$/p")))))
-LIBUNINAME.OBJECTS = $(addprefix $(OUT),$(subst $(ROOT),,$(LIBUNINAME.SOURCES:.c=.o)))
 
 OUTDIRS = $(OUT) $(sort $(dir $(INTL.OBJECTS) $(SRC.OBJECTS) $(LIB.OBJECTS) \
   $(LIBUNINAME.OBJECTS) $(INSTALL.FILES)))

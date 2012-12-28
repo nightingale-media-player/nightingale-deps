@@ -1,11 +1,11 @@
 /* Converts Uniforum style .po files to binary .mo files
-   Copyright (C) 1995-1998, 2000-2005 Free Software Foundation, Inc.
+   Copyright (C) 1995-1998, 2000-2007, 2009-2010, 2012 Free Software Foundation, Inc.
    Written by Ulrich Drepper <drepper@gnu.ai.mit.edu>, April 1995.
 
-   This program is free software; you can redistribute it and/or modify
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   the Free Software Foundation; either version 3 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,8 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -23,15 +22,13 @@
 #include <ctype.h>
 #include <getopt.h>
 #include <limits.h>
-#include <setjmp.h>
-#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdarg.h>
 #include <locale.h>
 
 #include "closeout.h"
+#include "str-list.h"
 #include "dir-list.h"
 #include "error.h"
 #include "error-progname.h"
@@ -39,13 +36,8 @@
 #include "relocatable.h"
 #include "basename.h"
 #include "xerror.h"
-#include "format.h"
+#include "xvasprintf.h"
 #include "xalloc.h"
-#include "plural-exp.h"
-#include "plural-table.h"
-#include "strstr.h"
-#include "stpcpy.h"
-#include "exit.h"
 #include "msgfmt.h"
 #include "write-mo.h"
 #include "write-java.h"
@@ -53,36 +45,27 @@
 #include "write-resources.h"
 #include "write-tcl.h"
 #include "write-qt.h"
-
-#include "gettext.h"
+#include "propername.h"
 #include "message.h"
-#include "open-po.h"
+#include "open-catalog.h"
+#include "read-catalog.h"
 #include "read-po.h"
+#include "read-properties.h"
+#include "read-stringtable.h"
 #include "po-charset.h"
+#include "msgl-check.h"
+#include "gettext.h"
 
 #define _(str) gettext (str)
-
-#define SIZEOF(a) (sizeof(a) / sizeof(a[0]))
-
-/* Some platforms don't have the sigjmp_buf type in <setjmp.h>.  */
-#if defined _MSC_VER || defined __MINGW32__
-/* Native Woe32 API.  */
-# define sigjmp_buf jmp_buf
-# define sigsetjmp(env,savesigs) setjmp (env)
-# define siglongjmp longjmp
-#endif
-
-/* We use siginfo to get precise information about the signal.
-   But siginfo doesn't work on Irix 6.5.  */
-#if HAVE_SIGINFO && !defined (__sgi)
-# define USE_SIGINFO 1
-#endif
 
 /* Contains exit status for case in which no premature exit occurs.  */
 static int exit_status;
 
 /* If true include even fuzzy translations in output file.  */
-static bool include_all = false;
+static bool include_fuzzies = false;
+
+/* If true include even untranslated messages in output file.  */
+static bool include_untranslated = false;
 
 /* Specifies name of the output file.  */
 static const char *output_file_name;
@@ -132,7 +115,7 @@ static struct msg_domain *current_domain;
    'error' or 'multiline_error' to emit verbosity messages, because 'error'
    and 'multiline_error' during PO file parsing cause the program to exit
    with EXIT_FAILURE.  See function lex_end().  */
-bool verbose = false;
+int verbose = 0;
 
 /* If true check strings according to format string rules for the
    language.  */
@@ -175,6 +158,7 @@ static const struct option long_options[] =
   { "csharp", no_argument, NULL, CHAR_MAX + 10 },
   { "csharp-resources", no_argument, NULL, CHAR_MAX + 11 },
   { "directory", required_argument, NULL, 'D' },
+  { "endianness", required_argument, NULL, CHAR_MAX + 13 },
   { "help", no_argument, NULL, 'h' },
   { "java", no_argument, NULL, 'j' },
   { "java2", no_argument, NULL, CHAR_MAX + 5 },
@@ -189,6 +173,7 @@ static const struct option long_options[] =
   { "stringtable-input", no_argument, NULL, CHAR_MAX + 8 },
   { "tcl", no_argument, NULL, CHAR_MAX + 7 },
   { "use-fuzzy", no_argument, NULL, 'f' },
+  { "use-untranslated", no_argument, NULL, CHAR_MAX + 12 },
   { "verbose", no_argument, NULL, 'v' },
   { "version", no_argument, NULL, 'V' },
   { NULL, 0, NULL, 0 }
@@ -198,14 +183,14 @@ static const struct option long_options[] =
 /* Forward declaration of local functions.  */
 static void usage (int status)
 #if defined __GNUC__ && ((__GNUC__ == 2 && __GNUC_MINOR__ >= 5) || __GNUC__ > 2)
-	__attribute__ ((noreturn))
+        __attribute__ ((noreturn))
 #endif
 ;
 static const char *add_mo_suffix (const char *);
 static struct msg_domain *new_domain (const char *name, const char *file_name);
 static bool is_nonobsolete (const message_ty *mp);
-static void check_plural (message_list_ty *mlp);
-static void read_po_file_msgfmt (char *filename);
+static void read_catalog_file_msgfmt (char *filename,
+                                      catalog_input_format_ty input_syntax);
 
 
 int
@@ -215,6 +200,8 @@ main (int argc, char *argv[])
   bool do_help = false;
   bool do_version = false;
   bool strict_uniforum = false;
+  catalog_input_format_ty input_syntax = &input_format_po;
+  int arg_i;
   const char *canon_encoding;
   struct msg_domain *domain;
 
@@ -234,123 +221,141 @@ main (int argc, char *argv[])
 
   /* Set the text message domain.  */
   bindtextdomain (PACKAGE, relocate (LOCALEDIR));
+  bindtextdomain ("bison-runtime", relocate (BISON_LOCALEDIR));
   textdomain (PACKAGE);
 
   /* Ensure that write errors on stdout are detected.  */
   atexit (close_stdout);
 
   while ((opt = getopt_long (argc, argv, "a:cCd:D:fhjl:o:Pr:vV", long_options,
-			     NULL))
-	 != EOF)
+                             NULL))
+         != EOF)
     switch (opt)
       {
-      case '\0':		/* Long option.  */
-	break;
+      case '\0':                /* Long option.  */
+        break;
       case 'a':
-	{
-	  char *endp;
-	  size_t new_align = strtoul (optarg, &endp, 0);
+        {
+          char *endp;
+          size_t new_align = strtoul (optarg, &endp, 0);
 
-	  if (endp != optarg)
-	    alignment = new_align;
-	}
-	break;
+          if (endp != optarg)
+            alignment = new_align;
+        }
+        break;
       case 'c':
-	check_domain = true;
-	check_format_strings = true;
-	check_header = true;
-	break;
+        check_domain = true;
+        check_format_strings = true;
+        check_header = true;
+        break;
       case 'C':
-	check_compatibility = true;
-	break;
+        check_compatibility = true;
+        break;
       case 'd':
-	java_class_directory = optarg;
-	csharp_base_directory = optarg;
-	tcl_base_directory = optarg;
-	break;
+        java_class_directory = optarg;
+        csharp_base_directory = optarg;
+        tcl_base_directory = optarg;
+        break;
       case 'D':
-	dir_list_append (optarg);
-	break;
+        dir_list_append (optarg);
+        break;
       case 'f':
-	include_all = true;
-	break;
+        include_fuzzies = true;
+        break;
       case 'h':
-	do_help = true;
-	break;
+        do_help = true;
+        break;
       case 'j':
-	java_mode = true;
-	break;
+        java_mode = true;
+        break;
       case 'l':
-	java_locale_name = optarg;
-	csharp_locale_name = optarg;
-	tcl_locale_name = optarg;
-	break;
+        java_locale_name = optarg;
+        csharp_locale_name = optarg;
+        tcl_locale_name = optarg;
+        break;
       case 'o':
-	output_file_name = optarg;
-	break;
+        output_file_name = optarg;
+        break;
       case 'P':
-	input_syntax = syntax_properties;
-	break;
+        input_syntax = &input_format_properties;
+        break;
       case 'r':
-	java_resource_name = optarg;
-	csharp_resource_name = optarg;
-	break;
+        java_resource_name = optarg;
+        csharp_resource_name = optarg;
+        break;
       case 'S':
-	strict_uniforum = true;
-	break;
+        strict_uniforum = true;
+        break;
       case 'v':
-	verbose = true;
-	break;
+        verbose++;
+        break;
       case 'V':
-	do_version = true;
-	break;
+        do_version = true;
+        break;
       case CHAR_MAX + 1: /* --check-accelerators */
-	check_accelerators = true;
-	if (optarg != NULL)
-	  {
-	    if (optarg[0] != '\0' && ispunct ((unsigned char) optarg[0])
-		&& optarg[1] == '\0')
-	      accelerator_char = optarg[0];
-	    else
-	      error (EXIT_FAILURE, 0,
-		     _("the argument to %s should be a single punctuation character"),
-		     "--check-accelerators");
-	  }
-	break;
+        check_accelerators = true;
+        if (optarg != NULL)
+          {
+            if (optarg[0] != '\0' && ispunct ((unsigned char) optarg[0])
+                && optarg[1] == '\0')
+              accelerator_char = optarg[0];
+            else
+              error (EXIT_FAILURE, 0,
+                     _("the argument to %s should be a single punctuation character"),
+                     "--check-accelerators");
+          }
+        break;
       case CHAR_MAX + 2: /* --check-domain */
-	check_domain = true;
-	break;
+        check_domain = true;
+        break;
       case CHAR_MAX + 3: /* --check-format */
-	check_format_strings = true;
-	break;
+        check_format_strings = true;
+        break;
       case CHAR_MAX + 4: /* --check-header */
-	check_header = true;
-	break;
+        check_header = true;
+        break;
       case CHAR_MAX + 5: /* --java2 */
-	java_mode = true;
-	assume_java2 = true;
-	break;
+        java_mode = true;
+        assume_java2 = true;
+        break;
       case CHAR_MAX + 6: /* --no-hash */
-	no_hash_table = true;
-	break;
+        no_hash_table = true;
+        break;
       case CHAR_MAX + 7: /* --tcl */
-	tcl_mode = true;
-	break;
+        tcl_mode = true;
+        break;
       case CHAR_MAX + 8: /* --stringtable-input */
-	input_syntax = syntax_stringtable;
-	break;
+        input_syntax = &input_format_stringtable;
+        break;
       case CHAR_MAX + 9: /* --qt */
-	qt_mode = true;
-	break;
+        qt_mode = true;
+        break;
       case CHAR_MAX + 10: /* --csharp */
-	csharp_mode = true;
-	break;
+        csharp_mode = true;
+        break;
       case CHAR_MAX + 11: /* --csharp-resources */
-	csharp_resources_mode = true;
-	break;
+        csharp_resources_mode = true;
+        break;
+      case CHAR_MAX + 12: /* --use-untranslated (undocumented) */
+        include_untranslated = true;
+        break;
+      case CHAR_MAX + 13: /* --endianness={big|little} */
+        {
+          int endianness;
+
+          if (strcmp (optarg, "big") == 0)
+            endianness = 1;
+          else if (strcmp (optarg, "little") == 0)
+            endianness = 0;
+          else
+            error (EXIT_FAILURE, 0, _("invalid endianness: %s"), optarg);
+
+          byteswap = endianness ^ ENDIANNESS;
+        }
+        break;
       default:
-	usage (EXIT_FAILURE);
-	break;
+        usage (EXIT_FAILURE);
+        break;
       }
 
   /* Version information is requested.  */
@@ -359,11 +364,12 @@ main (int argc, char *argv[])
       printf ("%s (GNU %s) %s\n", basename (program_name), PACKAGE, VERSION);
       /* xgettext: no-wrap */
       printf (_("Copyright (C) %s Free Software Foundation, Inc.\n\
-This is free software; see the source for copying conditions.  There is NO\n\
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\
+This is free software: you are free to change and redistribute it.\n\
+There is NO WARRANTY, to the extent permitted by law.\n\
 "),
-	      "1995-1998, 2000-2005");
-      printf (_("Written by %s.\n"), "Ulrich Drepper");
+              "1995-1998, 2000-2010");
+      printf (_("Written by %s.\n"), proper_name ("Ulrich Drepper"));
       exit (EXIT_SUCCESS);
     }
 
@@ -391,100 +397,100 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
     /* More than one bit set?  */
     if (modes & (modes - 1))
       {
-	const char *first_option;
-	const char *second_option;
-	unsigned int i;
-	for (i = 0; ; i++)
-	  if (modes & (1 << i))
-	    break;
-	first_option = mode_options[i];
-	for (i = i + 1; ; i++)
-	  if (modes & (1 << i))
-	    break;
-	second_option = mode_options[i];
-	error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
-	       first_option, second_option);
+        const char *first_option;
+        const char *second_option;
+        unsigned int i;
+        for (i = 0; ; i++)
+          if (modes & (1 << i))
+            break;
+        first_option = mode_options[i];
+        for (i = i + 1; ; i++)
+          if (modes & (1 << i))
+            break;
+        second_option = mode_options[i];
+        error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
+               first_option, second_option);
       }
   }
   if (java_mode)
     {
       if (output_file_name != NULL)
-	{
-	  error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
-		 "--java", "--output-file");
-	}
+        {
+          error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
+                 "--java", "--output-file");
+        }
       if (java_class_directory == NULL)
-	{
-	  error (EXIT_SUCCESS, 0,
-		 _("%s requires a \"-d directory\" specification"),
-		 "--java");
-	  usage (EXIT_FAILURE);
-	}
+        {
+          error (EXIT_SUCCESS, 0,
+                 _("%s requires a \"-d directory\" specification"),
+                 "--java");
+          usage (EXIT_FAILURE);
+        }
     }
   else if (csharp_mode)
     {
       if (output_file_name != NULL)
-	{
-	  error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
-		 "--csharp", "--output-file");
-	}
+        {
+          error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
+                 "--csharp", "--output-file");
+        }
       if (csharp_locale_name == NULL)
-	{
-	  error (EXIT_SUCCESS, 0,
-		 _("%s requires a \"-l locale\" specification"),
-		 "--csharp");
-	  usage (EXIT_FAILURE);
-	}
+        {
+          error (EXIT_SUCCESS, 0,
+                 _("%s requires a \"-l locale\" specification"),
+                 "--csharp");
+          usage (EXIT_FAILURE);
+        }
       if (csharp_base_directory == NULL)
-	{
-	  error (EXIT_SUCCESS, 0,
-		 _("%s requires a \"-d directory\" specification"),
-		 "--csharp");
-	  usage (EXIT_FAILURE);
-	}
+        {
+          error (EXIT_SUCCESS, 0,
+                 _("%s requires a \"-d directory\" specification"),
+                 "--csharp");
+          usage (EXIT_FAILURE);
+        }
     }
   else if (tcl_mode)
     {
       if (output_file_name != NULL)
-	{
-	  error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
-		 "--tcl", "--output-file");
-	}
+        {
+          error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
+                 "--tcl", "--output-file");
+        }
       if (tcl_locale_name == NULL)
-	{
-	  error (EXIT_SUCCESS, 0,
-		 _("%s requires a \"-l locale\" specification"),
-		 "--tcl");
-	  usage (EXIT_FAILURE);
-	}
+        {
+          error (EXIT_SUCCESS, 0,
+                 _("%s requires a \"-l locale\" specification"),
+                 "--tcl");
+          usage (EXIT_FAILURE);
+        }
       if (tcl_base_directory == NULL)
-	{
-	  error (EXIT_SUCCESS, 0,
-		 _("%s requires a \"-d directory\" specification"),
-		 "--tcl");
-	  usage (EXIT_FAILURE);
-	}
+        {
+          error (EXIT_SUCCESS, 0,
+                 _("%s requires a \"-d directory\" specification"),
+                 "--tcl");
+          usage (EXIT_FAILURE);
+        }
     }
   else
     {
       if (java_resource_name != NULL)
-	{
-	  error (EXIT_SUCCESS, 0, _("%s is only valid with %s or %s"),
-		 "--resource", "--java", "--csharp");
-	  usage (EXIT_FAILURE);
-	}
+        {
+          error (EXIT_SUCCESS, 0, _("%s is only valid with %s or %s"),
+                 "--resource", "--java", "--csharp");
+          usage (EXIT_FAILURE);
+        }
       if (java_locale_name != NULL)
-	{
-	  error (EXIT_SUCCESS, 0, _("%s is only valid with %s, %s or %s"),
-		 "--locale", "--java", "--csharp", "--tcl");
-	  usage (EXIT_FAILURE);
-	}
+        {
+          error (EXIT_SUCCESS, 0, _("%s is only valid with %s, %s or %s"),
+                 "--locale", "--java", "--csharp", "--tcl");
+          usage (EXIT_FAILURE);
+        }
       if (java_class_directory != NULL)
-	{
-	  error (EXIT_SUCCESS, 0, _("%s is only valid with %s, %s or %s"),
-		 "-d", "--java", "--csharp", "--tcl");
-	  usage (EXIT_FAILURE);
-	}
+        {
+          error (EXIT_SUCCESS, 0, _("%s is only valid with %s, %s or %s"),
+                 "-d", "--java", "--csharp", "--tcl");
+          usage (EXIT_FAILURE);
+        }
     }
 
   /* The -o option determines the name of the domain and therefore
@@ -492,106 +498,143 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
   if (output_file_name != NULL)
     current_domain =
       new_domain (output_file_name,
-		  strict_uniforum && !csharp_resources_mode && !qt_mode
-		  ? add_mo_suffix (output_file_name)
-		  : output_file_name);
+                  strict_uniforum && !csharp_resources_mode && !qt_mode
+                  ? add_mo_suffix (output_file_name)
+                  : output_file_name);
 
   /* Process all given .po files.  */
-  while (argc > optind)
+  for (arg_i = optind; arg_i < argc; arg_i++)
     {
       /* Remember that we currently have not specified any domain.  This
-	 is of course not true when we saw the -o option.  */
+         is of course not true when we saw the -o option.  */
       if (output_file_name == NULL)
-	current_domain = NULL;
+        current_domain = NULL;
 
       /* And process the input file.  */
-      read_po_file_msgfmt (argv[optind]);
-
-      ++optind;
+      read_catalog_file_msgfmt (argv[arg_i], input_syntax);
     }
 
-  /* We know a priori that properties_parse() and stringtable_parse() convert
+  /* We know a priori that some input_syntax->parse() functions convert
      strings to UTF-8.  */
-  canon_encoding =
-    (input_syntax == syntax_properties || input_syntax == syntax_stringtable
-     ? po_charset_utf8
-     : NULL);
+  canon_encoding = (input_syntax->produces_utf8 ? po_charset_utf8 : NULL);
 
   /* Remove obsolete messages.  They were only needed for duplicate
      checking.  */
   for (domain = domain_list; domain != NULL; domain = domain->next)
     message_list_remove_if_not (domain->mlp, is_nonobsolete);
 
-  /* Check the plural expression is present if needed and has valid syntax.  */
-  if (check_header)
+  /* Perform all kinds of checks: plural expressions, format strings, ...  */
+  {
+    int nerrors = 0;
+
     for (domain = domain_list; domain != NULL; domain = domain->next)
-      check_plural (domain->mlp);
+      nerrors +=
+        check_message_list (domain->mlp,
+                            /* Untranslated and fuzzy messages have already
+                               been dealt with during parsing, see below in
+                               msgfmt_frob_new_message.  */
+                            0, 0,
+                            1, check_format_strings, check_header,
+                            check_compatibility,
+                            check_accelerators, accelerator_char);
+
+    /* Exit with status 1 on any error.  */
+    if (nerrors > 0)
+      {
+        error (0, 0,
+               ngettext ("found %d fatal error", "found %d fatal errors",
+                         nerrors),
+               nerrors);
+        exit_status = EXIT_FAILURE;
+      }
+  }
 
   /* Now write out all domains.  */
   for (domain = domain_list; domain != NULL; domain = domain->next)
     {
       if (java_mode)
-	{
-	  if (msgdomain_write_java (domain->mlp, canon_encoding,
-				    java_resource_name, java_locale_name,
-				    java_class_directory, assume_java2))
-	    exit_status = EXIT_FAILURE;
-	}
+        {
+          if (msgdomain_write_java (domain->mlp, canon_encoding,
+                                    java_resource_name, java_locale_name,
+                                    java_class_directory, assume_java2))
+            exit_status = EXIT_FAILURE;
+        }
       else if (csharp_mode)
-	{
-	  if (msgdomain_write_csharp (domain->mlp, canon_encoding,
-				      csharp_resource_name, csharp_locale_name,
-				      csharp_base_directory))
-	    exit_status = EXIT_FAILURE;
-	}
+        {
+          if (msgdomain_write_csharp (domain->mlp, canon_encoding,
+                                      csharp_resource_name, csharp_locale_name,
+                                      csharp_base_directory))
+            exit_status = EXIT_FAILURE;
+        }
       else if (csharp_resources_mode)
-	{
-	  if (msgdomain_write_csharp_resources (domain->mlp, canon_encoding,
-						domain->domain_name,
-						domain->file_name))
-	    exit_status = EXIT_FAILURE;
-	}
+        {
+          if (msgdomain_write_csharp_resources (domain->mlp, canon_encoding,
+                                                domain->domain_name,
+                                                domain->file_name))
+            exit_status = EXIT_FAILURE;
+        }
       else if (tcl_mode)
-	{
-	  if (msgdomain_write_tcl (domain->mlp, canon_encoding,
-				   tcl_locale_name, tcl_base_directory))
-	    exit_status = EXIT_FAILURE;
-	}
+        {
+          if (msgdomain_write_tcl (domain->mlp, canon_encoding,
+                                   tcl_locale_name, tcl_base_directory))
+            exit_status = EXIT_FAILURE;
+        }
       else if (qt_mode)
-	{
-	  if (msgdomain_write_qt (domain->mlp, canon_encoding,
-				  domain->domain_name, domain->file_name))
-	    exit_status = EXIT_FAILURE;
-	}
+        {
+          if (msgdomain_write_qt (domain->mlp, canon_encoding,
+                                  domain->domain_name, domain->file_name))
+            exit_status = EXIT_FAILURE;
+        }
       else
-	{
-	  if (msgdomain_write_mo (domain->mlp, domain->domain_name,
-				  domain->file_name))
-	    exit_status = EXIT_FAILURE;
-	}
+        {
+          if (msgdomain_write_mo (domain->mlp, domain->domain_name,
+                                  domain->file_name))
+            exit_status = EXIT_FAILURE;
+        }
 
       /* List is not used anymore.  */
-      message_list_free (domain->mlp);
+      message_list_free (domain->mlp, 0);
     }
 
   /* Print statistics if requested.  */
   if (verbose || do_statistics)
     {
+      if (do_statistics + verbose >= 2 && optind < argc)
+        {
+          /* Print the input file name(s) in front of the statistics line.  */
+          char *all_input_file_names;
+
+          {
+            string_list_ty input_file_names;
+
+            string_list_init (&input_file_names);;
+            for (arg_i = optind; arg_i < argc; arg_i++)
+              string_list_append (&input_file_names, argv[arg_i]);
+            all_input_file_names =
+              string_list_join (&input_file_names, ", ", '\0', false);
+            string_list_destroy (&input_file_names);
+          }
+
+          /* TRANSLATORS: The prefix before a statistics message.  The argument
+             is a file name or a comma separated list of file names.  */
+          fprintf (stderr, _("%s: "), all_input_file_names);
+          free (all_input_file_names);
+        }
       fprintf (stderr,
-	       ngettext ("%d translated message", "%d translated messages",
-			 msgs_translated),
-	       msgs_translated);
+               ngettext ("%d translated message", "%d translated messages",
+                         msgs_translated),
+               msgs_translated);
       if (msgs_fuzzy > 0)
-	fprintf (stderr,
-		 ngettext (", %d fuzzy translation", ", %d fuzzy translations",
-			   msgs_fuzzy),
-		 msgs_fuzzy);
+        fprintf (stderr,
+                 ngettext (", %d fuzzy translation", ", %d fuzzy translations",
+                           msgs_fuzzy),
+                 msgs_fuzzy);
       if (msgs_untranslated > 0)
-	fprintf (stderr,
-		 ngettext (", %d untranslated message",
-			   ", %d untranslated messages",
-			   msgs_untranslated),
-		 msgs_untranslated);
+        fprintf (stderr,
+                 ngettext (", %d untranslated message",
+                           ", %d untranslated messages",
+                           msgs_untranslated),
+                 msgs_untranslated);
       fputs (".\n", stderr);
     }
 
@@ -604,8 +647,8 @@ static void
 usage (int status)
 {
   if (status != EXIT_SUCCESS)
-    fprintf (stderr, _("Try `%s --help' for more information.\n"),
-	     program_name);
+    fprintf (stderr, _("Try '%s --help' for more information.\n"),
+             program_name);
   else
     {
       printf (_("\
@@ -724,6 +767,9 @@ Output details:\n"));
       printf (_("\
   -a, --alignment=NUMBER      align strings to NUMBER bytes (default: %d)\n"), DEFAULT_OUTPUT_ALIGNMENT);
       printf (_("\
+      --endianness=BYTEORDER  write out 32-bit numbers in the given byte order\n\
+                                (big or little, default depends on platform)\n"));
+      printf (_("\
       --no-hash               binary file will not include the hash table\n"));
       printf ("\n");
       printf (_("\
@@ -737,6 +783,10 @@ Informative output:\n"));
       printf (_("\
   -v, --verbose               increase verbosity level\n"));
       printf ("\n");
+      /* TRANSLATORS: The placeholder indicates the bug-reporting address
+         for this package.  Please add _another line_ saying
+         "Report translation bugs to <...>\n" with the address for translation
+         bugs (typically your translation team's web or email address).  */
       fputs (_("Report bugs to <bug-gnu-gettext@gnu.org>.\n"), stdout);
     }
 
@@ -755,7 +805,7 @@ add_mo_suffix (const char *fname)
     return fname;
   if (len > 4 && memcmp (fname + len - 4, ".gmo", 4) == 0)
     return fname;
-  result = (char *) xmalloc (len + 4);
+  result = XNMALLOC (len + 4, char);
   stpcpy (stpcpy (result, fname), ".mo");
   return result;
 }
@@ -773,7 +823,7 @@ new_domain (const char *name, const char *file_name)
     {
       struct msg_domain *domain;
 
-      domain = (struct msg_domain *) xmalloc (sizeof (struct msg_domain));
+      domain = XMALLOC (struct msg_domain);
       domain->mlp = message_list_alloc (true);
       domain->domain_name = name;
       domain->file_name = file_name;
@@ -792,593 +842,8 @@ is_nonobsolete (const message_ty *mp)
 }
 
 
-static sigjmp_buf sigfpe_exit;
-
-#if USE_SIGINFO
-
-static int sigfpe_code;
-
-/* Signal handler called in case of arithmetic exception (e.g. division
-   by zero) during plural_eval.  */
-static void
-sigfpe_handler (int sig, siginfo_t *sip, void *scp)
-{
-  sigfpe_code = sip->si_code;
-  siglongjmp (sigfpe_exit, 1);
-}
-
-#else
-
-/* Signal handler called in case of arithmetic exception (e.g. division
-   by zero) during plural_eval.  */
-static void
-sigfpe_handler (int sig)
-{
-  siglongjmp (sigfpe_exit, 1);
-}
-
-#endif
-
-static void
-install_sigfpe_handler ()
-{
-#if USE_SIGINFO
-  struct sigaction action;
-  action.sa_sigaction = sigfpe_handler;
-  action.sa_flags = SA_SIGINFO;
-  sigemptyset (&action.sa_mask);
-  sigaction (SIGFPE, &action, (struct sigaction *) NULL);
-#else
-  signal (SIGFPE, sigfpe_handler);
-#endif
-}
-
-static void
-uninstall_sigfpe_handler ()
-{
-#if USE_SIGINFO
-  struct sigaction action;
-  action.sa_handler = SIG_DFL;
-  action.sa_flags = 0;
-  sigemptyset (&action.sa_mask);
-  sigaction (SIGFPE, &action, (struct sigaction *) NULL);
-#else
-  signal (SIGFPE, SIG_DFL);
-#endif
-}
-
-/* Check the values returned by plural_eval.  */
-static void
-check_plural_eval (struct expression *plural_expr,
-		   unsigned long nplurals_value,
-		   const lex_pos_ty *header_pos)
-{
-  if (sigsetjmp (sigfpe_exit, 1) == 0)
-    {
-      unsigned long n;
-
-      /* Protect against arithmetic exceptions.  */
-      install_sigfpe_handler ();
-
-      for (n = 0; n <= 1000; n++)
-	{
-	  unsigned long val = plural_eval (plural_expr, n);
-
-	  if ((long) val < 0)
-	    {
-	      /* End of protection against arithmetic exceptions.  */
-	      uninstall_sigfpe_handler ();
-
-	      error_with_progname = false;
-	      error_at_line (0, 0,
-			     header_pos->file_name, header_pos->line_number,
-			     _("plural expression can produce negative values"));
-	      error_with_progname = true;
-	      exit_status = EXIT_FAILURE;
-	      return;
-	    }
-	  else if (val >= nplurals_value)
-	    {
-	      /* End of protection against arithmetic exceptions.  */
-	      uninstall_sigfpe_handler ();
-
-	      error_with_progname = false;
-	      error_at_line (0, 0,
-			     header_pos->file_name, header_pos->line_number,
-			     _("nplurals = %lu but plural expression can produce values as large as %lu"),
-			     nplurals_value, val);
-	      error_with_progname = true;
-	      exit_status = EXIT_FAILURE;
-	      return;
-	    }
-	}
-
-      /* End of protection against arithmetic exceptions.  */
-      uninstall_sigfpe_handler ();
-    }
-  else
-    {
-      /* Caught an arithmetic exception.  */
-      const char *msg;
-
-      /* End of protection against arithmetic exceptions.  */
-      uninstall_sigfpe_handler ();
-
-#if USE_SIGINFO
-      switch (sigfpe_code)
-#endif
-	{
-#if USE_SIGINFO
-# ifdef FPE_INTDIV
-	case FPE_INTDIV:
-	  /* xgettext: c-format */
-	  msg = _("plural expression can produce division by zero");
-	  break;
-# endif
-# ifdef FPE_INTOVF
-	case FPE_INTOVF:
-	  /* xgettext: c-format */
-	  msg = _("plural expression can produce integer overflow");
-	  break;
-# endif
-	default:
-#endif
-	  /* xgettext: c-format */
-	  msg = _("plural expression can produce arithmetic exceptions, possibly division by zero");
-	}
-
-      error_with_progname = false;
-      error_at_line (0, 0, header_pos->file_name, header_pos->line_number, msg);
-      error_with_progname = true;
-      exit_status = EXIT_FAILURE;
-    }
-}
-
-
-/* Perform plural expression checking.  */
-static void
-check_plural (message_list_ty *mlp)
-{
-  const lex_pos_ty *has_plural;
-  unsigned long min_nplurals;
-  const lex_pos_ty *min_pos;
-  unsigned long max_nplurals;
-  const lex_pos_ty *max_pos;
-  size_t j;
-  message_ty *header;
-
-  /* Determine whether mlp has plural entries.  */
-  has_plural = NULL;
-  min_nplurals = ULONG_MAX;
-  min_pos = NULL;
-  max_nplurals = 0;
-  max_pos = NULL;
-  for (j = 0; j < mlp->nitems; j++)
-    {
-      message_ty *mp = mlp->item[j];
-
-      if (mp->msgid_plural != NULL)
-	{
-	  const char *p;
-	  const char *p_end;
-	  unsigned long n;
-
-	  if (has_plural == NULL)
-	    has_plural = &mp->pos;
-
-	  n = 0;
-	  for (p = mp->msgstr, p_end = p + mp->msgstr_len;
-	       p < p_end;
-	       p += strlen (p) + 1)
-	    n++;
-	  if (min_nplurals > n)
-	    {
-	      min_nplurals = n;
-	      min_pos = &mp->pos;
-	    }
-	  if (max_nplurals > n)
-	    {
-	      max_nplurals = n;
-	      min_pos = &mp->pos;
-	    }
-	}
-    }
-
-  /* Look at the plural entry for this domain.
-     Cf, function extract_plural_expression.  */
-  header = message_list_search (mlp, "");
-  if (header != NULL)
-    {
-      const char *nullentry;
-      const char *plural;
-      const char *nplurals;
-      bool try_to_help = false;
-
-      nullentry = header->msgstr;
-
-      plural = strstr (nullentry, "plural=");
-      nplurals = strstr (nullentry, "nplurals=");
-      if (plural == NULL && has_plural != NULL)
-	{
-	  error_with_progname = false;
-	  error_at_line (0, 0, has_plural->file_name, has_plural->line_number,
-			 _("message catalog has plural form translations..."));
-	  --error_message_count;
-	  error_at_line (0, 0, header->pos.file_name, header->pos.line_number,
-			 _("...but header entry lacks a \"plural=EXPRESSION\" attribute"));
-	  error_with_progname = true;
-	  try_to_help = true;
-	  exit_status = EXIT_FAILURE;
-	}
-      if (nplurals == NULL && has_plural != NULL)
-	{
-	  error_with_progname = false;
-	  error_at_line (0, 0, has_plural->file_name, has_plural->line_number,
-			 _("message catalog has plural form translations..."));
-	  --error_message_count;
-	  error_at_line (0, 0, header->pos.file_name, header->pos.line_number,
-			 _("...but header entry lacks a \"nplurals=INTEGER\" attribute"));
-	  error_with_progname = true;
-	  try_to_help = true;
-	  exit_status = EXIT_FAILURE;
-	}
-      if (plural != NULL && nplurals != NULL)
-	{
-	  const char *endp;
-	  unsigned long int nplurals_value;
-	  struct parse_args args;
-	  struct expression *plural_expr;
-
-	  /* First check the number.  */
-	  nplurals += 9;
-	  while (*nplurals != '\0' && isspace ((unsigned char) *nplurals))
-	    ++nplurals;
-	  endp = nplurals;
-	  nplurals_value = 0;
-	  if (*nplurals >= '0' && *nplurals <= '9')
-	    nplurals_value = strtoul (nplurals, (char **) &endp, 10);
-	  if (nplurals == endp)
-	    {
-	      error_with_progname = false;
-	      error_at_line (0, 0,
-			     header->pos.file_name, header->pos.line_number,
-			     _("invalid nplurals value"));
-	      error_with_progname = true;
-	      try_to_help = true;
-	      exit_status = EXIT_FAILURE;
-	    }
-
-	  /* Then check the expression.  */
-	  plural += 7;
-	  args.cp = plural;
-	  if (parse_plural_expression (&args) != 0)
-	    {
-	      error_with_progname = false;
-	      error_at_line (0, 0,
-			     header->pos.file_name, header->pos.line_number,
-			     _("invalid plural expression"));
-	      error_with_progname = true;
-	      try_to_help = true;
-	      exit_status = EXIT_FAILURE;
-	    }
-	  plural_expr = args.res;
-
-	  /* See whether nplurals and plural fit together.  */
-	  if (exit_status != EXIT_FAILURE)
-	    check_plural_eval (plural_expr, nplurals_value, &header->pos);
-
-	  /* Check the number of plurals of the translations.  */
-	  if (exit_status != EXIT_FAILURE)
-	    {
-	      if (min_nplurals < nplurals_value)
-		{
-		  error_with_progname = false;
-		  error_at_line (0, 0,
-				 header->pos.file_name, header->pos.line_number,
-				 _("nplurals = %lu..."), nplurals_value);
-		  --error_message_count;
-		  error_at_line (0, 0, min_pos->file_name, min_pos->line_number,
-				 ngettext ("...but some messages have only one plural form",
-					   "...but some messages have only %lu plural forms",
-					   min_nplurals),
-				 min_nplurals);
-		  error_with_progname = true;
-		  exit_status = EXIT_FAILURE;
-		}
-	      else if (max_nplurals > nplurals_value)
-		{
-		  error_with_progname = false;
-		  error_at_line (0, 0,
-				 header->pos.file_name, header->pos.line_number,
-				 _("nplurals = %lu..."), nplurals_value);
-		  --error_message_count;
-		  error_at_line (0, 0, max_pos->file_name, max_pos->line_number,
-				 ngettext ("...but some messages have one plural form",
-					   "...but some messages have %lu plural forms",
-					   max_nplurals),
-				 max_nplurals);
-		  error_with_progname = true;
-		  exit_status = EXIT_FAILURE;
-		}
-	      /* The only valid case is max_nplurals <= n <= min_nplurals,
-		 which means either has_plural == NULL or
-		 max_nplurals = n = min_nplurals.  */
-	    }
-	}
-      /* Try to help the translator by looking up the right plural formula
-	 for her.  */
-      if (try_to_help)
-	{
-	  const char *language;
-
-	  language = strstr (nullentry, "Language-Team: ");
-	  if (language != NULL)
-	    {
-	      language += 15;
-	      for (j = 0; j < plural_table_size; j++)
-		if (strncmp (language,
-			     plural_table[j].language,
-			     strlen (plural_table[j].language)) == 0)
-		  {
-		    char *recommended =
-		      xasprintf ("Plural-Forms: %s\\n", plural_table[j].value);
-		    fprintf (stderr,
-			     _("Try using the following, valid for %s:\n"),
-			     plural_table[j].language);
-		    fprintf (stderr, "\"%s\"\n", recommended);
-		    free (recommended);
-		    break;
-		  }
-	    }
-	}
-    }
-  else if (has_plural != NULL)
-    {
-      error_with_progname = false;
-      error_at_line (0, 0, has_plural->file_name, has_plural->line_number,
-		     _("message catalog has plural form translations, but lacks a header entry with \"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\""));
-      error_with_progname = true;
-      exit_status = EXIT_FAILURE;
-    }
-}
-
-
-/* Signal an error when checking format strings.  */
-static lex_pos_ty curr_msgid_pos;
-static void
-formatstring_error_logger (const char *format, ...)
-{
-  va_list args;
-
-  va_start (args, format);
-  fprintf (stderr, "%s:%lu: ",
-	   curr_msgid_pos.file_name,
-	   (unsigned long) curr_msgid_pos.line_number);
-  vfprintf (stderr, format, args);
-  putc ('\n', stderr);
-  fflush (stderr);
-  va_end (args);
-  ++error_message_count;
-}
-
-
-/* Perform miscellaneous checks on a message.  */
-static void
-check_pair (const char *msgid,
-	    const lex_pos_ty *msgid_pos,
-	    const char *msgid_plural,
-	    const char *msgstr, size_t msgstr_len,
-	    const lex_pos_ty *msgstr_pos, enum is_format is_format[NFORMATS])
-{
-  int has_newline;
-  unsigned int j;
-  const char *p;
-
-  /* If the msgid string is empty we have the special entry reserved for
-     information about the translation.  */
-  if (msgid[0] == '\0')
-    return;
-
-  /* Test 1: check whether all or none of the strings begin with a '\n'.  */
-  has_newline = (msgid[0] == '\n');
-#define TEST_NEWLINE(p) (p[0] == '\n')
-  if (msgid_plural != NULL)
-    {
-      if (TEST_NEWLINE(msgid_plural) != has_newline)
-	{
-	  error_with_progname = false;
-	  error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
-			 _("\
-`msgid' and `msgid_plural' entries do not both begin with '\\n'"));
-	  error_with_progname = true;
-	  exit_status = EXIT_FAILURE;
-	}
-      for (p = msgstr, j = 0; p < msgstr + msgstr_len; p += strlen (p) + 1, j++)
-	if (TEST_NEWLINE(p) != has_newline)
-	  {
-	    error_with_progname = false;
-	    error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
-			   _("\
-`msgid' and `msgstr[%u]' entries do not both begin with '\\n'"), j);
-	    error_with_progname = true;
-	    exit_status = EXIT_FAILURE;
-	  }
-    }
-  else
-    {
-      if (TEST_NEWLINE(msgstr) != has_newline)
-	{
-	  error_with_progname = false;
-	  error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
-			 _("\
-`msgid' and `msgstr' entries do not both begin with '\\n'"));
-	  error_with_progname = true;
-	  exit_status = EXIT_FAILURE;
-	}
-    }
-#undef TEST_NEWLINE
-
-  /* Test 2: check whether all or none of the strings end with a '\n'.  */
-  has_newline = (msgid[strlen (msgid) - 1] == '\n');
-#define TEST_NEWLINE(p) (p[0] != '\0' && p[strlen (p) - 1] == '\n')
-  if (msgid_plural != NULL)
-    {
-      if (TEST_NEWLINE(msgid_plural) != has_newline)
-	{
-	  error_with_progname = false;
-	  error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
-			 _("\
-`msgid' and `msgid_plural' entries do not both end with '\\n'"));
-	  error_with_progname = true;
-	  exit_status = EXIT_FAILURE;
-	}
-      for (p = msgstr, j = 0; p < msgstr + msgstr_len; p += strlen (p) + 1, j++)
-	if (TEST_NEWLINE(p) != has_newline)
-	  {
-	    error_with_progname = false;
-	    error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
-			   _("\
-`msgid' and `msgstr[%u]' entries do not both end with '\\n'"), j);
-	    error_with_progname = true;
-	    exit_status = EXIT_FAILURE;
-	  }
-    }
-  else
-    {
-      if (TEST_NEWLINE(msgstr) != has_newline)
-	{
-	  error_with_progname = false;
-	  error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
-			 _("\
-`msgid' and `msgstr' entries do not both end with '\\n'"));
-	  error_with_progname = true;
-	  exit_status = EXIT_FAILURE;
-	}
-    }
-#undef TEST_NEWLINE
-
-  if (check_compatibility && msgid_plural != NULL)
-    {
-      error_with_progname = false;
-      error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
-		     _("plural handling is a GNU gettext extension"));
-      error_with_progname = true;
-      exit_status = EXIT_FAILURE;
-    }
-
-  if (check_format_strings)
-    /* Test 3: Check whether both formats strings contain the same number
-       of format specifications.  */
-    {
-      curr_msgid_pos = *msgid_pos;
-      if (check_msgid_msgstr_format (msgid, msgid_plural, msgstr, msgstr_len,
-				     is_format, formatstring_error_logger))
-	exit_status = EXIT_FAILURE;
-    }
-
-  if (check_accelerators && msgid_plural == NULL)
-    /* Test 4: Check that if msgid is a menu item with a keyboard accelerator,
-       the msgstr has an accelerator as well.  A keyboard accelerator is
-       designated by an immediately preceding '&'.  We cannot check whether
-       two accelerators collide, only whether the translator has bothered
-       thinking about them.  */
-    {
-      const char *p;
-
-      /* We are only interested in msgids that contain exactly one '&'.  */
-      p = strchr (msgid, accelerator_char);
-      if (p != NULL && strchr (p + 1, accelerator_char) == NULL)
-	{
-	  /* Count the number of '&' in msgstr, but ignore '&&'.  */
-	  unsigned int count = 0;
-
-	  for (p = msgstr; (p = strchr (p, accelerator_char)) != NULL; p++)
-	    if (p[1] == accelerator_char)
-	      p++;
-	    else
-	      count++;
-
-	  if (count == 0)
-	    {
-	      error_with_progname = false;
-	      error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
-			     _("msgstr lacks the keyboard accelerator mark '%c'"),
-			     accelerator_char);
-	      error_with_progname = true;
-	    }
-	  else if (count > 1)
-	    {
-	      error_with_progname = false;
-	      error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
-			     _("msgstr has too many keyboard accelerator marks '%c'"),
-			     accelerator_char);
-	      error_with_progname = true;
-	    }
-	}
-    }
-}
-
-
-/* Perform miscellaneous checks on a header entry.  */
-static void
-check_header_entry (const char *msgstr_string)
-{
-  static const char *required_fields[] =
-  {
-    "Project-Id-Version", "PO-Revision-Date", "Last-Translator",
-    "Language-Team", "MIME-Version", "Content-Type",
-    "Content-Transfer-Encoding"
-  };
-  static const char *default_values[] =
-  {
-    "PACKAGE VERSION", "YEAR-MO-DA", "FULL NAME", "LANGUAGE", NULL,
-    "text/plain; charset=CHARSET", "ENCODING"
-  };
-  const size_t nfields = SIZEOF (required_fields);
-  int initial = -1;
-  int cnt;
-
-  for (cnt = 0; cnt < nfields; ++cnt)
-    {
-      char *endp = strstr (msgstr_string, required_fields[cnt]);
-
-      if (endp == NULL)
-	multiline_error (xasprintf ("%s: ", gram_pos.file_name),
-			 xasprintf (_("headerfield `%s' missing in header\n"),
-				    required_fields[cnt]));
-      else if (endp != msgstr_string && endp[-1] != '\n')
-	multiline_error (xasprintf ("%s: ", gram_pos.file_name),
-			 xasprintf (_("\
-header field `%s' should start at beginning of line\n"),
-				    required_fields[cnt]));
-      else if (default_values[cnt] != NULL
-	       && strncmp (default_values[cnt],
-			   endp + strlen (required_fields[cnt]) + 2,
-			   strlen (default_values[cnt])) == 0)
-	{
-	  if (initial != -1)
-	    {
-	      multiline_error (xasprintf ("%s: ", gram_pos.file_name),
-			       xstrdup (_("\
-some header fields still have the initial default value\n")));
-	      initial = -1;
-	      break;
-	    }
-	  else
-	    initial = cnt;
-	}
-    }
-
-  if (initial != -1)
-    multiline_error (xasprintf ("%s: ", gram_pos.file_name),
-		     xasprintf (_("\
-field `%s' still has initial default value\n"),
-				required_fields[initial]));
-}
-
-
-/* The rest of the file defines a subclass msgfmt_po_reader_ty of
-   default_po_reader_ty.  Its particularities are:
+/* The rest of the file defines a subclass msgfmt_catalog_reader_ty of
+   default_catalog_reader_ty.  Its particularities are:
    - The header entry check is performed on-the-fly.
    - Comments are not stored, they are discarded right away.
      (This is achieved by setting handle_comments = false and
@@ -1387,13 +852,13 @@ field `%s' still has initial default value\n"),
  */
 
 
-/* This structure defines a derived class of the default_po_reader_ty class.
-   (See read-po-abstract.h for an explanation.)  */
-typedef struct msgfmt_po_reader_ty msgfmt_po_reader_ty;
-struct msgfmt_po_reader_ty
+/* This structure defines a derived class of the default_catalog_reader_ty
+   class.  (See read-catalog-abstract.h for an explanation.)  */
+typedef struct msgfmt_catalog_reader_ty msgfmt_catalog_reader_ty;
+struct msgfmt_catalog_reader_ty
 {
   /* inherited instance variables, etc */
-  DEFAULT_PO_READER_TY
+  DEFAULT_CATALOG_READER_TY
 
   bool has_header_entry;
   bool has_nonfuzzy_header_entry;
@@ -1402,9 +867,9 @@ struct msgfmt_po_reader_ty
 
 /* Prepare for first message.  */
 static void
-msgfmt_constructor (abstract_po_reader_ty *that)
+msgfmt_constructor (abstract_catalog_reader_ty *that)
 {
-  msgfmt_po_reader_ty *this = (msgfmt_po_reader_ty *) that;
+  msgfmt_catalog_reader_ty *this = (msgfmt_catalog_reader_ty *) that;
 
   /* Invoke superclass constructor.  */
   default_constructor (that);
@@ -1416,9 +881,9 @@ msgfmt_constructor (abstract_po_reader_ty *that)
 
 /* Some checks after whole file is read.  */
 static void
-msgfmt_parse_debrief (abstract_po_reader_ty *that)
+msgfmt_parse_debrief (abstract_catalog_reader_ty *that)
 {
-  msgfmt_po_reader_ty *this = (msgfmt_po_reader_ty *) that;
+  msgfmt_catalog_reader_ty *this = (msgfmt_catalog_reader_ty *) that;
 
   /* Invoke superclass method.  */
   default_parse_debrief (that);
@@ -1427,35 +892,35 @@ msgfmt_parse_debrief (abstract_po_reader_ty *that)
   if (check_header)
     {
       if (!this->has_header_entry)
-	{
-	  multiline_error (xasprintf ("%s: ", gram_pos.file_name),
-			   xasprintf (_("\
+        {
+          multiline_error (xasprintf ("%s: ", this->file_name),
+                           xasprintf (_("\
 warning: PO file header missing or invalid\n")));
-	  multiline_error (NULL,
-			   xasprintf (_("\
+          multiline_error (NULL,
+                           xasprintf (_("\
 warning: charset conversion will not work\n")));
-	}
+        }
       else if (!this->has_nonfuzzy_header_entry)
-	{
-	  /* Has only a fuzzy header entry.  Since the versions 0.10.xx
-	     ignore a fuzzy header entry and even give an error on it, we
-	     give a warning, to increase operability with these older
-	     msgfmt versions.  This warning can go away in January 2003.  */
-	  multiline_warning (xasprintf ("%s: ", gram_pos.file_name),
-			     xasprintf (_("warning: PO file header fuzzy\n")));
-	  multiline_warning (NULL,
-			     xasprintf (_("\
+        {
+          /* Has only a fuzzy header entry.  Since the versions 0.10.xx
+             ignore a fuzzy header entry and even give an error on it, we
+             give a warning, to increase operability with these older
+             msgfmt versions.  This warning can go away in January 2003.  */
+          multiline_warning (xasprintf ("%s: ", this->file_name),
+                             xasprintf (_("warning: PO file header fuzzy\n")));
+          multiline_warning (NULL,
+                             xasprintf (_("\
 warning: older versions of msgfmt will give an error on this\n")));
-	}
+        }
     }
 }
 
 
 /* Set 'domain' directive when seen in .po file.  */
 static void
-msgfmt_set_domain (default_po_reader_ty *this, char *name)
+msgfmt_set_domain (default_catalog_reader_ty *this, char *name)
 {
-  /* If no output file was given, we change it with each `domain'
+  /* If no output file was given, we change it with each 'domain'
      directive.  */
   if (!java_mode && !csharp_mode && !csharp_resources_mode && !tcl_mode
       && !qt_mode && output_file_name == NULL)
@@ -1464,19 +929,19 @@ msgfmt_set_domain (default_po_reader_ty *this, char *name)
 
       correct = strcspn (name, INVALID_PATH_CHAR);
       if (name[correct] != '\0')
-	{
-	  exit_status = EXIT_FAILURE;
-	  if (correct == 0)
-	    {
-	      error (0, 0, _("\
+        {
+          exit_status = EXIT_FAILURE;
+          if (correct == 0)
+            {
+              error (0, 0, _("\
 domain name \"%s\" not suitable as file name"), name);
-	      return;
-	    }
-	  else
-	    error (0, 0, _("\
+              return;
+            }
+          else
+            error (0, 0, _("\
 domain name \"%s\" not suitable as file name: will use prefix"), name);
-	  name[correct] = '\0';
-	}
+          name[correct] = '\0';
+        }
 
       /* Set new domain.  */
       current_domain = new_domain (name, add_mo_suffix (name));
@@ -1486,8 +951,8 @@ domain name \"%s\" not suitable as file name: will use prefix"), name);
   else
     {
       if (check_domain)
-	po_gram_error_at_line (&gram_pos,
-			       _("`domain %s' directive ignored"), name);
+        po_gram_error_at_line (&gram_pos,
+                               _("'domain %s' directive ignored"), name);
 
       /* NAME was allocated in po-gram-gen.y but is not used anywhere.  */
       free (name);
@@ -1496,99 +961,96 @@ domain name \"%s\" not suitable as file name: will use prefix"), name);
 
 
 static void
-msgfmt_add_message (default_po_reader_ty *this,
-		    char *msgid,
-		    lex_pos_ty *msgid_pos,
-		    char *msgid_plural,
-		    char *msgstr, size_t msgstr_len,
-		    lex_pos_ty *msgstr_pos,
-		    bool force_fuzzy, bool obsolete)
+msgfmt_add_message (default_catalog_reader_ty *this,
+                    char *msgctxt,
+                    char *msgid,
+                    lex_pos_ty *msgid_pos,
+                    char *msgid_plural,
+                    char *msgstr, size_t msgstr_len,
+                    lex_pos_ty *msgstr_pos,
+                    char *prev_msgctxt,
+                    char *prev_msgid,
+                    char *prev_msgid_plural,
+                    bool force_fuzzy, bool obsolete)
 {
   /* Check whether already a domain is specified.  If not, use default
      domain.  */
   if (current_domain == NULL)
     {
       current_domain = new_domain (MESSAGE_DOMAIN_DEFAULT,
-				   add_mo_suffix (MESSAGE_DOMAIN_DEFAULT));
+                                   add_mo_suffix (MESSAGE_DOMAIN_DEFAULT));
       /* Keep current_domain and this->domain synchronized.  */
       this->domain = current_domain->domain_name;
       this->mlp = current_domain->mlp;
     }
 
   /* Invoke superclass method.  */
-  default_add_message (this, msgid, msgid_pos, msgid_plural,
-		       msgstr, msgstr_len, msgstr_pos, force_fuzzy, obsolete);
+  default_add_message (this, msgctxt, msgid, msgid_pos, msgid_plural,
+                       msgstr, msgstr_len, msgstr_pos,
+                       prev_msgctxt, prev_msgid, prev_msgid_plural,
+                       force_fuzzy, obsolete);
 }
 
 
 static void
-msgfmt_frob_new_message (default_po_reader_ty *that, message_ty *mp,
-			 const lex_pos_ty *msgid_pos,
-			 const lex_pos_ty *msgstr_pos)
+msgfmt_frob_new_message (default_catalog_reader_ty *that, message_ty *mp,
+                         const lex_pos_ty *msgid_pos,
+                         const lex_pos_ty *msgstr_pos)
 {
-  msgfmt_po_reader_ty *this = (msgfmt_po_reader_ty *) that;
+  msgfmt_catalog_reader_ty *this = (msgfmt_catalog_reader_ty *) that;
 
   if (!mp->obsolete)
     {
       /* Don't emit untranslated entries.
-	 Also don't emit fuzzy entries, unless --use-fuzzy was specified.
-	 But ignore fuzziness of the header entry.  */
-      if (mp->msgstr[0] == '\0'
-	  || (!include_all && mp->is_fuzzy && mp->msgid[0] != '\0'))
-	{
-	  if (check_compatibility)
-	    {
-	      error_with_progname = false;
-	      error_at_line (0, 0, mp->pos.file_name, mp->pos.line_number,
-			     (mp->msgstr[0] == '\0'
-			      ? _("empty `msgstr' entry ignored")
-			      : _("fuzzy `msgstr' entry ignored")));
-	      error_with_progname = true;
-	    }
+         Also don't emit fuzzy entries, unless --use-fuzzy was specified.
+         But ignore fuzziness of the header entry.  */
+      if ((!include_untranslated && mp->msgstr[0] == '\0')
+          || (!include_fuzzies && mp->is_fuzzy && !is_header (mp)))
+        {
+          if (check_compatibility)
+            {
+              error_with_progname = false;
+              error_at_line (0, 0, mp->pos.file_name, mp->pos.line_number,
+                             (mp->msgstr[0] == '\0'
+                              ? _("empty 'msgstr' entry ignored")
+                              : _("fuzzy 'msgstr' entry ignored")));
+              error_with_progname = true;
+            }
 
-	  /* Increment counter for fuzzy/untranslated messages.  */
-	  if (mp->msgstr[0] == '\0')
-	    ++msgs_untranslated;
-	  else
-	    ++msgs_fuzzy;
+          /* Increment counter for fuzzy/untranslated messages.  */
+          if (mp->msgstr[0] == '\0')
+            ++msgs_untranslated;
+          else
+            ++msgs_fuzzy;
 
-	  mp->obsolete = true;
-	}
+          mp->obsolete = true;
+        }
       else
-	{
-	  /* Test for header entry.  */
-	  if (mp->msgid[0] == '\0')
-	    {
-	      this->has_header_entry = true;
-	      if (!mp->is_fuzzy)
-		this->has_nonfuzzy_header_entry = true;
-
-	      /* Do some more tests on the contents of the header entry.  */
-	      if (check_header)
-		check_header_entry (mp->msgstr);
-	    }
-	  else
-	    /* We don't count the header entry in the statistic so place
-	       the counter incrementation here.  */
-	    if (mp->is_fuzzy)
-	      ++msgs_fuzzy;
-	    else
-	      ++msgs_translated;
-
-	  /* Do some more checks on both strings.  */
-	  check_pair (mp->msgid, msgid_pos, mp->msgid_plural,
-		      mp->msgstr, mp->msgstr_len, msgstr_pos,
-		      mp->is_format);
-	}
+        {
+          /* Test for header entry.  */
+          if (is_header (mp))
+            {
+              this->has_header_entry = true;
+              if (!mp->is_fuzzy)
+                this->has_nonfuzzy_header_entry = true;
+            }
+          else
+            /* We don't count the header entry in the statistic so place
+               the counter incrementation here.  */
+            if (mp->is_fuzzy)
+              ++msgs_fuzzy;
+            else
+              ++msgs_translated;
+        }
     }
 }
 
 
-/* Test for `#, fuzzy' comments and warn.  */
+/* Test for '#, fuzzy' comments and warn.  */
 static void
-msgfmt_comment_special (abstract_po_reader_ty *that, const char *s)
+msgfmt_comment_special (abstract_catalog_reader_ty *that, const char *s)
 {
-  msgfmt_po_reader_ty *this = (msgfmt_po_reader_ty *) that;
+  msgfmt_catalog_reader_ty *this = (msgfmt_catalog_reader_ty *) that;
 
   /* Invoke superclass method.  */
   default_comment_special (that, s);
@@ -1597,13 +1059,13 @@ msgfmt_comment_special (abstract_po_reader_ty *that, const char *s)
     {
       static bool warned = false;
 
-      if (!include_all && check_compatibility && !warned)
-	{
-	  warned = true;
-	  error (0, 0, _("\
+      if (!include_fuzzies && check_compatibility && !warned)
+        {
+          warned = true;
+          error (0, 0, _("\
 %s: warning: source file contains fuzzy translation"),
-		 gram_pos.file_name);
-	}
+                 gram_pos.file_name);
+        }
     }
 }
 
@@ -1614,10 +1076,10 @@ msgfmt_comment_special (abstract_po_reader_ty *that, const char *s)
    and all actions resulting from the parse will be through
    invocations of method functions of that object.  */
 
-static default_po_reader_class_ty msgfmt_methods =
+static default_catalog_reader_class_ty msgfmt_methods =
 {
   {
-    sizeof (msgfmt_po_reader_ty),
+    sizeof (msgfmt_catalog_reader_ty),
     msgfmt_constructor,
     default_destructor,
     default_parse_brief,
@@ -1637,18 +1099,19 @@ static default_po_reader_class_ty msgfmt_methods =
 
 /* Read .po file FILENAME and store translation pairs.  */
 static void
-read_po_file_msgfmt (char *filename)
+read_catalog_file_msgfmt (char *filename, catalog_input_format_ty input_syntax)
 {
   char *real_filename;
-  FILE *fp = open_po_file (filename, &real_filename, true);
-  default_po_reader_ty *pop;
+  FILE *fp = open_catalog_file (filename, &real_filename, true);
+  default_catalog_reader_ty *pop;
 
-  pop = default_po_reader_alloc (&msgfmt_methods);
+  pop = default_catalog_reader_alloc (&msgfmt_methods);
   pop->handle_comments = false;
   pop->handle_filepos_comments = false;
   pop->allow_domain_directives = true;
   pop->allow_duplicates = false;
   pop->allow_duplicates_if_same_msgstr = false;
+  pop->file_name = real_filename;
   pop->mdlp = NULL;
   pop->mlp = NULL;
   if (current_domain != NULL)
@@ -1658,9 +1121,9 @@ read_po_file_msgfmt (char *filename)
       pop->mlp = current_domain->mlp;
     }
   po_lex_pass_obsolete_entries (true);
-  po_scan ((abstract_po_reader_ty *) pop, fp, real_filename, filename,
-	   input_syntax);
-  po_reader_free ((abstract_po_reader_ty *) pop);
+  catalog_reader_parse ((abstract_catalog_reader_ty *) pop, fp, real_filename,
+                        filename, input_syntax);
+  catalog_reader_free ((abstract_catalog_reader_ty *) pop);
 
   if (fp != stdin)
     fclose (fp);

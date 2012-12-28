@@ -1,3 +1,652 @@
+2012-12-25  Daiki Ueno  <ueno@gnu.org>
+
+	* gettext-0.18.2 released.
+
+2010-08-30  Bruno Haible  <bruno@clisp.org>
+
+	Improve interopability with Emacs 23.
+	* po-compat.el (po-find-file-coding-system-guts): Don't use codepages
+	API in Emacs >= 23.
+	* po-mode.el (po-mode-version-string): Bump to 2.21.
+	(po-ediff-buffers-exit-recursive, po-send-mail): Use
+	insert-buffer-substring instead of insert-buffer.
+
+2010-06-06  Bruno Haible  <bruno@clisp.org>
+
+	New options --with-xz and --with-bzip2 for compressing the archive.
+	* autopoint.in: Handle the archive formats dirgz, dirbz2, dirxz instead
+	of dir.
+	* convert-archive.in: Handle the archive formats dirgz, dirbz2, dirxz
+	like dir. Format 'dir' is now without compression.
+	* Makefile.am (MOSTLYCLEANFILES): New variable.
+	(CLEANFILES): Add archive.dir.tar.gz, archive.dir.tar.bz2,
+	archive.dir.tar.xz.
+	(EXTRA_DIST): Add archive.dir.tar. Remove archive.dir.tar.gz.
+	(ARCHIVE_dirgz, ARCHIVE_dirbz2, ARCHIVE_dirxz, ARCHIVE_git,
+	ARCHIVE_cvs): New variables.
+	(gettextsrc_DATA): Use them.
+	(archive.dir.tar): Renamed from archive.dir.tar.gz. Look for an
+	installed .tar.bzip2 or .tar.xz as well.
+	(archive.dir.tar.gz, archive.dir.tar.bz2, archive.dir.tar.xz): New
+	rules.
+	(archive.git.tar.gz, archive.cvs.tar.gz): Update.
+	* add-to-archive: Read and write an uncompressed archive.dir.tar.
+
+2010-06-06  Bruno Haible  <bruno@clisp.org>
+
+	Make 'convert-archive' less verbose.
+	* convert-archive.in: Avoid all output from "git commit".
+
+2010-06-04  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.18.1 released.
+
+2010-06-04  Bruno Haible  <bruno@clisp.org>
+
+	Don't assume GNU tar.
+	* convert-archive.in (TAR, TAR_OPTIONS): New variables.
+	Reported by Ryan Schmidt <ryandesign@macports.org>.
+
+2010-06-04  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in: Update for 0.18.1.
+
+2010-06-03  Bruno Haible  <bruno@clisp.org>
+
+	Deprecate the --with-cvs option.
+	* autopoint.in: Update comments.
+	* add-to-archive: Update archive.dir.tar.gz, not archive.cvs.tar.gz.
+	* Makefile.am (CLEANFILES): Add archive.cvs.tar.gz instead of
+	archive.dir.tar.gz.
+	(EXTRA_DIST): Add archive.dir.tar.gz instead of archive.cvs.tar.gz.
+	(archive.dir.tar.gz): Adapted from archive.cvs.tar.gz rule.
+	(archive.git.tar.gz, archive.cvs.tar.gz): Generate from
+	archive.dir.tar.gz.
+
+2010-05-26  Bruno Haible  <bruno@clisp.org>
+
+	Interoperability with newer versions of 'cvs'.
+	* autopoint.in: Unset some more environment variables. Set
+	CVS_SIGN_COMMITS to empty.
+	* convert-archive.in: Likewise.
+
+2010-05-16  Bruno Haible  <bruno@clisp.org>
+
+	convert-archive: Don't publicize the builder's name and email.
+	* convert-archive.in: Unset GIT_CONFIG and set dummy user.name and
+	user.email parameters.
+	Reported by Santiago Vila <sanvila@unex.es>.
+
+2010-05-16  Bruno Haible  <bruno@clisp.org>
+
+	Avoid keyword substitution in cvs archives created by convert-archive.
+	* convert-archive.in: When creating a cvs archive, use "cvs admin -ko"
+	on all files.
+
+2010-05-16  Bruno Haible  <bruno@clisp.org>
+
+	Make convert-archive more robust.
+	* convert-archive.in: Report a fatal error in many error conditions.
+	Reported by Santiago Vila <sanvila@unex.es>.
+
+2010-05-16  Bruno Haible  <bruno@clisp.org>
+
+	* convert-archive.in: Remove known 'rlog' warning from error output.
+	(func_version): Update copyright years.
+
+2010-05-09  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.18 released.
+
+2010-05-09  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in: Update for 0.18.
+
+2010-05-09  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in (func_version): Bump copyright year.
+
+2010-05-08  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-mode-version-string): Bump to 2.2.
+
+2010-05-08  Noritada Kobayashi  <nori1@dolphin.c.u-tokyo.ac.jp>
+
+	po-mode: Fix bug in po-previous-translated-entry function.
+	* po-mode.el (po-previous-translated-entry): Use correct regular
+	expression.
+	Reported via Santiago Vila in
+	<http://lists.gnu.org/archive/html/bug-gnu-utils/2008-08/msg00039.html>.
+
+2010-05-08  Noritada Kobayashi  <nori1@dolphin.c.u-tokyo.ac.jp>
+            Bruno Haible  <bruno@clisp.org>
+
+	po-mode: Optionally delete previous untranslated comment when editing.
+	* po-mode.el (po-auto-delete-previous-msgid): New customizable
+	variable.
+	(po-any-previous-msgctxt-regexp, po-any-previous-msgid-regexp,
+	po-any-previous-msgid_plural-regexp): New variables.
+	(po-msgid-to-msgstr, po-kill-msgstr, po-yank-msgstr, po-subedit-exit):
+	Invoke po-maybe-delete-previous-untranslated after po-set-msgstr-form.
+	(po-unfuzzy): Invoke po-maybe-delete-previous-untranslated.
+	(po-previous-untranslated-region-for, po-previous-untranslated-regions,
+	po-delete-previous-untranslated, po-maybe-delete-previous-untranslated):
+	New functions.
+	Reported in
+	<http://lists.gnu.org/archive/html/bug-gnu-utils/2008-05/msg00032.html>.
+
+2010-05-08  Bruno Haible  <bruno@clisp.org>
+
+	po-mode: Fix po-msgid-to-msgstr on plural entries.
+	* po-mode.el (po-get-msgid_plural): New function.
+	(po-msgid-to-msgstr): Use it.
+
+2010-05-08  Noritada Kobayashi  <nori1@dolphin.c.u-tokyo.ac.jp>
+            Bruno Haible  <bruno@clisp.org>
+
+	po-mode: Fix po-get-msgid function in plural entries.
+	* po-mode.el (po-get-msgid): Use po-start-of-msgid_plural as end
+	pointer, if it is set.
+	Reported in
+	<http://lists.gnu.org/archive/html/bug-gnu-utils/2008-05/msg00031.html>.
+
+2010-05-08  Noritada Kobayashi  <nori1@dolphin.c.u-tokyo.ac.jp>
+            Bruno Haible  <bruno@clisp.org>
+
+	po-mode: Determine position of "msgid_plural" line in current entry.
+	* po-mode.el (po-start-of-msgid_plural): New variable.
+	(po-any-msgid_plural-regexp): New variable.
+	(po-mode): Make po-start-of-msgid_plural buffer-local.
+	(po-find-span-of-entry): Set also po-start-of-msgid_plural.
+	Based on patch in
+	<http://lists.gnu.org/archive/html/bug-gnu-utils/2008-05/msg00031.html>.
+
+2010-05-08  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-get-msgstr-flavor): Preserve the point's position.
+
+2010-05-08  Noritada Kobayashi  <nori1@dolphin.c.u-tokyo.ac.jp>
+
+	Fix failure of po-msgid-to-msgstr just after opening a buffer.
+	* po-mode.el (po-msgstr-form-flavor): Remove variable.
+	(po-get-msgstr-form): Do not call po-get-msgstr-flavor.
+	(po-set-msgstr-form): Call po-get-msgstr-flavor function here.
+	Reported in
+	<http://lists.gnu.org/archive/html/bug-gnu-utils/2008-05/msg00028.html>.
+
+2010-05-08  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-edit-string): Assign major mode text-mode to the
+	subedit buffer.
+	Reported by Kenichi Handa <handa@m17n.org>.
+
+2010-03-28  Bruno Haible  <bruno@clisp.org>
+
+	* gettexize.in: Warn about use of --intl option.
+	(func_usage): Mark it as deprecated.
+	(func_version): Bump copyright year.
+
+2009-12-25  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in (m4filelist): Add fcntl-o.m4 instead of fcntl_h.m4 to
+	the list.
+
+2009-12-12  Bruno Haible  <bruno@clisp.org>
+
+	* po-compat.el: Untabify.
+	* gettextize.in: Partially untabify.
+
+2009-10-18  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in (m4filelist): Add fcntl_h.m4 to the list.
+	(func_version): Bump copyright year.
+
+2009-09-27  Bruno Haible  <bruno@clisp.org>
+
+	* add-to-archive: Pass option -fPIC to gcc. Clean up cvsuser.so.
+
+2009-09-27  Bruno Haible  <bruno@clisp.org>
+
+	Support alternative to the cvs-compression of the archive.
+	* convert-archive.in: New file.
+	* autopoint.in (func_version): Show the archive format.
+	Support archive formats dir, cvs, git, instead of only cvs.
+	* Makefile.am (DISTCLEANFILES): Add convert-archive.
+	(CLEANFILES): Add archive.dir.tar.gz, archive.git.tar.gz.
+	(gettextsrc_DATA): Depend on @ARCHIVE_FORMAT@.
+	(archive.dir.tar.gz, archive.git.tar.gz): New rules.
+	Reported by Arkadiusz Miskiewicz in
+	<https://savannah.gnu.org/bugs/?27281>.
+
+2009-09-27  Bruno Haible  <bruno@clisp.org>
+
+	* add-to-archive: Use archive.cvs.tar.gz instead of archive.tar.gz.
+	* autopoint.in: Likewise.
+	* Makefile.am (archive.cvs.tar.gz): Renamed from archive.tar.gz.
+	(EXTRA_DIST, gettextsrc_DATA): Update.
+
+2009-08-14  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.am (archive.tar.gz): Update error message.
+
+2009-08-09  Bruno Haible  <bruno@clisp.org>
+
+	Add support for multiple PO directories to autopoint.
+	* autopoint.in (sed_extract_config_files, configfiles,
+	sed_remove_Makefile_in, podirs): New variables.
+	(func_destfile): Set allpodirs.
+	When allpodirs is set, loop over $podirs.
+	Reported by Guillem Jover <guillem@debian.org>
+	via Santiago Vila <sanvila@unex.es>.
+
+2008-12-07  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in (func_version): Bump copyright year.
+
+2008-12-07  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in (func_compare): New function.
+	Don't overwrite *.m4 files when the existing file has a version number
+	at least as large as the one from the gettext release.
+	Reported by Colin Watson <cjwatson@debian.org>
+	and Sylvain Beucler <beuc@beuc.net>.
+
+2008-08-17  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in (m4filelist): Add threadlib.m4 to the list.
+	(func_version): Bump copyright year.
+
+2008-08-13  Sven Joachim  <svenjoac@gmx.de>
+
+	* po-mode.el (po-check-file-header): Use forward-line with
+	negative argument instead of previous-line.
+	(po-add-attribute): Use forward-line instead of next-line.
+
+2008-05-25  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-replace-revision-date): Return nil.
+	Patch by Kobayashi Noritada <nori1@dolphin.c.u-tokyo.ac.jp>.
+
+2008-05-07  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-team-name-to-code): Add Beja. Remove Adangme, Banda,
+	Batak. Update Scottish Gaelic, Central Khmer, Romansh.
+
+2008-05-07  Bruno Haible  <bruno@clisp.org>
+
+	Fix editing of plural forms.
+	* po-mode.el (po-mode-version-string): Bump to 2.11.
+	(po-any-msgstr-block-regexp): Must start with msgstr or msgstr[0];
+	needed for re-search-backward.
+	(po-get-msgstr-flavor): Set the point to po-start-of-msgstr-form, not
+	to the beginning of the line.
+	Reported by Stéphane Raimbault <stephane.raimbault@gmail.com>.
+
+2008-04-20  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in: Check that really all CVS directories are removed.
+	Reported by Jim Meyering <jim@meyering.net>.
+
+2008-01-18  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in (xver): Make its computation more robust.
+	Reported by Michael Bauschert <Michael.Bauschert@de.ibm.com>.
+
+2008-01-18  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in: Fix line breaking in an error message.
+
+2007-12-02  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el: Use modern backquote syntax.
+	Report and patch by Agustin Martin <agmartin@debian.org> via
+	Santiago Vila <sanvila@unex.es>.
+
+2007-11-07  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.17 released.
+
+2007-11-07  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in: Update for 0.17.
+
+2007-10-31  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in (m4filelist): Remove ulonglong.m4 from the list.
+
+2007-10-17  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-msgstr-form-flavor): Renamed from
+	po-this-msgstr-flavor. New defvar.
+
+2007-10-15  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-get-msgstr-form): Remove 'kill' argument.
+	(po-kill-ring-save-msgstr, po-fade-out-entry): Update.
+
+	* po-mode.el (po-get-msgid): Remove 'kill' argument.
+
+	* po-mode.el (po-get-msgstr-form): Renamed from po-get-msgstr-new.
+	(po-get-msgstr): Remove function.
+
+	* po-mode.el (po-subedit-exit-old): Remove function.
+
+	* po-mode.el (po-set-msgstr-form): Renamed from po-set-msgstr-new.
+	(po-set-msgstr): Remove function.
+
+	* po-mode.el (po-edit-msgstr-old): Remove function.
+
+	* po-mode.el (po-edit-string): Renamed from po-edit-string-new. Remove
+	old po-edit-string function.
+
+2007-10-14  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-find-span-of-entry): Inline po-find-this-msgstr.
+	(po-find-this-msgstr): Remove function.
+
+	* po-mode.el (po-start-of-msgstr-form, po-end-of-msgstr-form): New
+	defvars.
+
+	* po-mode.el (po-start-of-msgstr-form): Renamed from
+	po-start-of-this-msgstr.
+	(po-end-of-msgstr-form): Renamed from po-end-of-this-msgstr.
+
+	* po-mode.el (po-start-of-msgstr-block): Renamed from
+	po-start-of-msgstr.
+
+	* po-mode.el (po-any-msgstr-block-regexp): Renamed from
+	po-any-msgstr-regexp.
+
+	* po-mode.el (po-any-msgstr-form-regexp): Renamed from
+	po-any-msgstr-regexp-old.
+
+2007-10-07  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in (func_version): In the --version output, say GPLv3+.
+	* gettexize.in (func_version): Likewise.
+
+2007-09-01  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.am (archive.tar.gz): Provide an explicit error message if
+	archive.tar.gz cannot be found.
+	Reported by Spiros at <https://savannah.gnu.org/bugs/?16657>.
+
+2007-06-30  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in (func_version): Use the standard --version output, see
+	<http://lists.gnu.org/archive/html/bug-gnulib/2007-03/msg00302.html>.
+	* gettexize.in (func_version): Likewise.
+
+2007-06-30  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-check-file-header): Use save-restriction.
+	Report and patch by Sven Joachim <sven_joachim@web.de> in
+	<http://lists.gnu.org/archive/html/bug-gnu-utils/2006-08/msg00110.html>.
+
+2007-06-30  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-team-name-to-code): Add a few more entries.
+
+2007-06-29  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-find-this-msgstr): New function.
+	(po-find-span-of-entry): Use it.
+
+	* po-mode.el (po-get-msgstr-flavor): New function.
+	(po-any-msgstr-regexp-old): New variable.
+	(po-subedit-exit-old): New function, renamed from po-subedit-exit.
+	(po-edit-msgstr-old): New function, renamed from po-edit-msgstr.
+	(po-get-msgstr-new): New function, based on po-get-msgstr.
+	(po-set-msgstr-new): New function, based on po-set-msgstr.
+	(po-edit-string-new): New function, based on po-edit-string.
+	(po-edit-msgstr): Use po-get-msgstr-new.
+	(po-subedit-exit): Use po-set-msgstr-new.
+
+2007-06-30  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-translation-project-address): Update email address
+	after the Translation Project moved.
+	(po-translation-project-mail-label): Update comment.
+
+2007-06-29  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-subedit-mode-menu-layout, po-mode-menu-layout):
+	Remove trailing string.
+	* po-mode.el (po-mode-menu-layout): Make "Source marking" a submenu.
+	Remove subtitles from menus.
+	Comment unimplemented features.  Reorganize entry hierarchy.
+
+2007-06-17  Bruno Haible  <bruno@clisp.org>
+
+	Support for the msgctxt syntax.
+	* po-mode.el (po-mode-version-string): Bump version number to 2.1.
+	(po-start-of-msgctxt): New variable.
+	(po-any-msgctxt-msgid-regexp): New variable.
+	(po-font-lock-keywords): Add msgctxt.
+	(po-mode): Make variable po-start-of-msgctxt local.
+	(po-find-span-of-entry): Set also po-start-of-msgctxt.
+	(po-add-attribute, po-delete-attribute): Use po-start-of-msgctxt.
+
+2007-06-17  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-mode-map): Bind po-undo also to Ctrl-x u.
+
+2007-06-17  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-any-msgstr-regexp): Add support for plural forms.
+	The patch from 2001-03-10 did not work.
+	(po-untranslated-regexp): Recognize also empty msgstr[i] values.
+
+2007-06-17  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-edit-out-full): Don't ask the user for confirmation.
+
+2007-06-17  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el: Untabify.
+
+2007-06-17  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-font-lock-keywords): Stop recognizing "msg" as a
+	keyword.
+
+2007-06-17  Bruno Haible  <bruno@clisp.org>
+
+	Fix '#' command on obsolete entries.
+	* po-mode.el (po-comment-regexp): Renamed from po-active-comment-regexp.
+	(po-obsolete-comment-regexp): Remove variable.
+	(po-get-comment, po-set-comment): Fix syntax assumptions about comments
+	for obsolete entries.
+
+2007-06-17  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-msgid-to-msgstr): Fix English message.
+
+2007-06-17  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-add-attribute, po-delete-attribute, po-fuzzy-regexp):
+	Don't recognize the syntax "#! fuzzy" any more.
+
+2007-06-17  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-validate): Protect the buffer-file-name against
+	shell interpretation.
+	Reported by Laurynas Biveinis <laurynas.biveinis@gmail.com>.
+
+2007-06-17  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-msgfmt-version-check): Recognize also 0.16.2-pre1.
+
+2007-06-08  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in: Update year in --version output.
+
+2007-06-07  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in (m4filelist): Add intlmacosx.m4 to the list.
+	(func_version): Update copyright year.
+
+2007-05-24  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-mode-map): Bind po-undo also to Ctrl-_.
+	Suggested by Kevin Ryde <user42@zip.com.au>.
+
+2007-04-06  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in (m4filelist): Remove longdouble.m4 from the list.
+
+2006-12-19  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in: Protect against spaces in the value of $gettext_dir.
+
+2006-12-19  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in (func_usage): Document --po-dir.
+	Handle the --po-dir option. Loop over each specified --po-dir value
+	instead of hardcoding po/.
+	Reported by Daniel Leidert <daniel.leidert.spam@gmx.net>.
+
+2006-11-27  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.16.1 released.
+
+2006-11-27  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in: Update for 0.16.1.
+
+2006-10-26  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.16 released.
+
+2006-10-26  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in: Update for 0.16.
+
+2006-10-15  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in (m4dir_is_next): Reset it to empty when the m4dir was
+	seen.
+	(m4dir_defaulted): New variable.
+	In the recommendations how to run aclocal, show all the needed -I
+	options, not just one.
+	Reported by Ralf Wildenhues.
+
+2006-10-08  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in (usage): Document the --symlink option instead of the
+	--copy option.
+	Accept a --symlink option.
+	(try_ln_s): Change default value to false.
+
+2006-10-01  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in (m4filelist): Add intldir.m4.
+
+2006-09-18  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in (m4filelist): Remove inttypes-h.m4.
+
+2006-09-11  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in (have_automake19, min_automake_version): New variables.
+	(m4filelist): Use the minimum needed file list if --intl was not
+	specified and automake version is >= 1.9.
+
+2006-09-11  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in (m4filelist): Add intl.m4.
+
+2006-08-28  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in (m4filelist): Remove signed.m4.
+
+2006-07-25  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.msvc: Remove file.
+	* Makefile.am (EXTRA_DIST): Remove Makefile.msvc.
+
+2006-07-25  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.vms: Remove file.
+	* Makefile.am (EXTRA_DIST): Remove Makefile.vms.
+
+2006-07-21  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.15 released.
+
+2006-07-20  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in: Update for 0.15.
+
+2006-07-20  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-mode-version-string): Bump to 2.02.
+
+2006-06-27  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in (m4filelist): Remove isc-posix.m4.
+
+2006-06-04  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in (m4filelist): Replace inttypes.m4 with inttypes-h.m4.
+
+2006-04-17  Bruno Haible  <bruno@clisp.org>
+
+	* add-to-archive: Remove special handling of mkinstalldirs file.
+	* gettextize.in: Likewise.
+
+2006-04-20  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in: Update for 0.15.
+
+2006-04-12  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in (func_find_curr_installdir): Handle the case of a
+	symbolic link pointing to an absolute pathname correctly.
+	* gettextize.in (func_find_curr_installdir): Likewise.
+
+2006-01-23  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in (func_tmpdir): Invoke mktemp without option -q, because
+	in some versions of mktemp this option has the effect that mktemp
+	outputs nothing at all.
+	(func_version): Bump copyright year.
+	* autopoint.in (func_tmpdir): Invoke mktemp without option -q.
+	(func_version): Bump copyright year.
+	Patch by Ralf Wildenhues <Ralf.Wildenhues@gmx.de>.
+
+2005-09-18  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in (func_find_curr_installdir): Really remove the temporary
+	directory after use.
+	* gettextize.in (func_find_curr_installdir): Likewise.
+
+2005-08-26  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-team-name-to-code): Add support for Old English,
+	Hyam, Jju, Tyap, Kagoma, Maithili, Mayan, Nahuatl, Low Saxon,
+	Northern Sotho, Páez, Tetum, Zapotec.
+
+2005-07-24  Bruno Haible  <bruno@clisp.org>
+
+	Tidy up exported symbols.
+	* gettextize.in (m4filelist): Add visibility.m4.
+
+2005-07-26  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in (datarootdir): New variable.
+	* gettextize.in (datarootdir): New variable.
+
+2005-07-16  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in (m4filelist): Add lock.m4.
+
+2005-07-09  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-validate): Require the 'compile' module before
+	accessing it.
+	Report and patch by Sven Joachim <sven_joachim@web.de>.
+
 2006-06-21  Bruno Haible  <bruno@clisp.org>
 
 	* gettext-0.14.6 released.

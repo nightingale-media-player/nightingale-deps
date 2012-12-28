@@ -1,3 +1,29 @@
+Version 0.18 - May 2010
+
+* On MacOS X and Windows systems, <libintl.h> now extends setlocale() and
+  newlocale() so that their determination of the default locale considers
+  the choice the user has made in the system control panels.
+
+* On MacOS X systems, the gettext()/dgettext()/... functions now respect the
+  locale of the current thread, if a thread-specific locale has been set.
+
+Version 0.16.1 - November 2006
+
+* Bug fix in the gettext.m4 autoconf macros.
+
+Version 0.16 - October 2006
+
+* Interoperability with automake-1.10.
+
+* Autoconf macros:
+  - The gettext autoconf macros now require autoconf 2.52 or newer.
+  - A new autoconf macro AM_GNU_GETTEXT_INTL_SUBDIR is added. It allows to
+    specify the presence of an intl/ subdirectory outside the AM_GNU_GETTEXT
+    invocation.
+  - A new autoconf macro AM_GNU_GETTEXT_NEED is added. It allows to specify
+    the requirements relating to the GNU gettext implementation outside the
+    AM_GNU_GETTEXT invocation.
+
 Version 0.14.4 - April 2005
 
 * The gettext autoconf macros will now work with the forthcoming g++ 4.0.

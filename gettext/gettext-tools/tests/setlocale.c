@@ -1,10 +1,10 @@
 /* Fake setlocale - platform independent, for testing purposes.
    Copyright (C) 2001-2002 Free Software Foundation, Inc.
 
-   This program is free software; you can redistribute it and/or modify
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   the Free Software Foundation; either version 3 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,8 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -107,58 +106,58 @@ setlocale (int category, SETLOCALE_CONST char *locale)
       strcpy (copy, locale);
 
       if (category == LC_ALL)
-	{
-	  while ((facetp = facets) != NULL)
-	    {
-	      facets = facetp->next;
-	      free (facetp->current_locale);
-	      free (facetp);
-	    }
-	  if (current_locale != C_string)
-	    free (current_locale);
-	  current_locale = copy;
-	}
+        {
+          while ((facetp = facets) != NULL)
+            {
+              facets = facetp->next;
+              free (facetp->current_locale);
+              free (facetp);
+            }
+          if (current_locale != C_string)
+            free (current_locale);
+          current_locale = copy;
+        }
       else
-	{
-	  for (facetp = facets; facetp != NULL; facetp = facetp->next)
-	    if (category == facetp->category)
-	      {
-		free (facetp->current_locale);
-		facetp->current_locale = copy;
-		break;
-	      }
-	  if (facetp == NULL)
-	    {
-	      facetp = (struct list *) malloc (sizeof (struct list));
-	      facetp->category = category;
-	      facetp->current_locale = copy;
-	      facetp->next = facets;
-	      facets = facetp;
-	    }
-	}
+        {
+          for (facetp = facets; facetp != NULL; facetp = facetp->next)
+            if (category == facetp->category)
+              {
+                free (facetp->current_locale);
+                facetp->current_locale = copy;
+                break;
+              }
+          if (facetp == NULL)
+            {
+              facetp = (struct list *) malloc (sizeof (struct list));
+              facetp->category = category;
+              facetp->current_locale = copy;
+              facetp->next = facets;
+              facets = facetp;
+            }
+        }
     }
 
   retval = current_locale;
   for (facetp = facets; facetp != NULL; facetp = facetp->next)
     if (category == facetp->category)
       {
-	retval = facetp->current_locale;
-	break;
+        retval = facetp->current_locale;
+        break;
       }
 
   if (retval[0] == '\0')
     {
       retval = getenv ("LC_ALL");
       if (retval == NULL || retval[0] == '\0')
-	{
-	  retval = getenv (category_to_name (category));
-	  if (retval == NULL || retval[0] == '\0')
-	    {
-	      retval = getenv ("LANG");
-	      if (retval == NULL || retval[0] == '\0')
-		retval = "C";
-	    }
-	}
+        {
+          retval = getenv (category_to_name (category));
+          if (retval == NULL || retval[0] == '\0')
+            {
+              retval = getenv ("LANG");
+              if (retval == NULL || retval[0] == '\0')
+                retval = "C";
+            }
+        }
     }
   return retval;
 }

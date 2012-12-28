@@ -1,5 +1,4 @@
 # Example for use of GNU gettext.
-# Copyright (C) 2003 Free Software Foundation, Inc.
 # This file is in the public domain.
 #
 # Makefile configuration - processed by automake.
@@ -19,7 +18,6 @@ hello_SOURCES = hello.cc
 
 # Define C macros LOCALEDIR and PKGLOCALEDIR indicating where catalogs will be
 # installed.
-localedir = $(datadir)/locale
 pkglocaledir = $(pkgdatadir)/locale
 DEFS = -DLOCALEDIR=\"$(localedir)\" -DPKGLOCALEDIR=\"$(pkglocaledir)\" @DEFS@
 

@@ -155,9 +155,11 @@ msgid "%s subprocess got fatal signal"
 msgstr "Subprozess %s hat ein fatales Signal erhalten"
 EOF
 
-tmpfiles="$tmpfiles mg-test1.out"
+tmpfiles="$tmpfiles mg-test1.tmp mg-test1.out"
 : ${MSGGREP=msggrep}
-${MSGGREP} -N pipe-bidi.c mg-test1.po -o mg-test1.out
+${MSGGREP} -N pipe-bidi.c -o mg-test1.tmp mg-test1.po
+test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+LC_ALL=C tr -d '\r' < mg-test1.tmp > mg-test1.out
 test $? = 0 || { rm -fr $tmpfiles; exit 1; }
 
 tmpfiles="$tmpfiles mg-test1.ok"

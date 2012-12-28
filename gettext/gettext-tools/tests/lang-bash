@@ -4,6 +4,11 @@
 # Assumes an fr_FR locale is installed.
 # Assumes the following packages are installed: bash 2.0 or newer.
 
+# This test fails on MacOS X 10.5 because its 'bash' command is built with
+# an included intl directory without iconv support; hence it produces wrong
+# output when accessing any .mo file not generated from a .po file in UTF-8
+# encoding.
+
 tmpfiles=""
 trap 'rm -fr $tmpfiles' 1 2 3 15
 
@@ -25,14 +30,16 @@ $echo $"'Your command, please?', asked the waiter."
 $echo "`eval_ngettext "a piece of cake" "\\$n pieces of cake" $n`"
 EOF
 
-tmpfiles="$tmpfiles prog.pot prog.err"
+tmpfiles="$tmpfiles prog.tmp prog.pot prog.err"
 : ${XGETTEXT=xgettext}
 LC_MESSAGES=C LC_ALL= \
-${XGETTEXT} -o prog.pot --omit-header --no-location prog.sh \
+${XGETTEXT} -o prog.tmp --omit-header --no-location prog.sh \
   >prog.err 2>&1
 result=$?
 cat prog.err | grep -v 'warning: the syntax \$"\.\.\." is deprecated due to security reasons'
 test $result = 0 || { rm -fr $tmpfiles; exit 1; }
+LC_ALL=C tr -d '\r' < prog.tmp > prog.pot
+test $? = 0 || { rm -fr $tmpfiles; exit 1; }
 
 tmpfiles="$tmpfiles prog.ok"
 cat <<\EOF > prog.ok
@@ -67,9 +74,12 @@ msgstr[0] "un morceau de gateau"
 msgstr[1] "$n morceaux de gateau"
 EOF
 
-tmpfiles="$tmpfiles fr.po.new"
+tmpfiles="$tmpfiles fr.po.tmp fr.po.new"
 : ${MSGMERGE=msgmerge}
-${MSGMERGE} -q -o fr.po.new fr.po prog.pot
+${MSGMERGE} -q -o fr.po.tmp fr.po prog.pot
+test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+LC_ALL=C tr -d '\r' < fr.po.tmp > fr.po.new
+test $? = 0 || { rm -fr $tmpfiles; exit 1; }
 
 : ${DIFF=diff}
 ${DIFF} fr.po fr.po.new || exit 1
@@ -83,10 +93,10 @@ ${MSGFMT} -o fr/LC_MESSAGES/prog.mo fr.po
 
 # Test for presence of bash version 2.0 or newer.
 (bash -c :) >/dev/null 2>/dev/null \
-  || { rm -fr $tmpfiles; exit 77; }
+  || { echo "Skipping test: bash not found"; rm -fr $tmpfiles; exit 77; }
 case `bash -c 'echo $BASH_VERSION'` in
   [2-9].*) ;;
-  *) rm -fr $tmpfiles; exit 77;;
+  *) echo "Skipping test: bash version too old"; rm -fr $tmpfiles; exit 77;;
 esac
 
 # Test which of the fr_FR locales are installed.
@@ -109,6 +119,11 @@ if test $LOCALE_FR_UTF8 != none; then
   esac
 fi
 if test $LOCALE_FR = none && test $LOCALE_FR_UTF8 = none; then
+  if test -f /usr/bin/localedef; then
+    echo "Skipping test: no french locale is installed"
+  else
+    echo "Skipping test: no french locale is supported"
+  fi
   rm -fr $tmpfiles; exit 77
 fi
 
@@ -133,13 +148,19 @@ EOF
 if test $LOCALE_FR != none; then
   LANGUAGE= LC_ALL=$LOCALE_FR bash ./prog.sh 2 > prog.out || exit 1
   : ${DIFF=diff}
-  ${DIFF} prog.nok prog.out > /dev/null && { rm -fr $tmpfiles; exit 77; }
+  ${DIFF} prog.nok prog.out > /dev/null && {
+    echo "Skipping test: bash is built without i18n support"
+    rm -fr $tmpfiles; exit 77
+  }
   ${DIFF} prog.ok prog.out || exit 1
 fi
 if test $LOCALE_FR_UTF8 != none; then
   LANGUAGE= LC_ALL=$LOCALE_FR_UTF8 bash ./prog.sh 2 > prog.out || exit 1
   : ${DIFF=diff}
-  ${DIFF} prog.nok prog.out > /dev/null && { rm -fr $tmpfiles; exit 77; }
+  ${DIFF} prog.nok prog.out > /dev/null && {
+    echo "Skipping test: bash is built without i18n support"
+    rm -fr $tmpfiles; exit 77
+  }
   ${DIFF} prog.oku prog.out || exit 1
 fi
 

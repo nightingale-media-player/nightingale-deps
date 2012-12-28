@@ -11,16 +11,17 @@ msgstr ""
 "PO-Revision-Date: 2004-11-17 10:08+0200\n"
 "Last-Translator: Pavel Maryanov <acid_jack@ukr.net>\n"
 "Language-Team: Russian <ru@li.org>\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=KOI8-R\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3\n"
 
-#: hello.cc:51
+#: hello.cc:50
 msgid "Hello, world!"
 msgstr "Здравствуй, мир!"
 
-#: hello.cc:56
+#: hello.cc:55
 #, c-format
 msgid "This program is running as process number %d."
 msgstr "Эта программа выполняется как процесс под номером %d."

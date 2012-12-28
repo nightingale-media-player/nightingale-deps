@@ -1,10 +1,10 @@
 ## Makefile for libgrep directory in GNU gettext package.
-## Copyright (C) 2005 Free Software Foundation, Inc.
+## Copyright (C) 2005-2007, 2009-2010 Free Software Foundation, Inc.
 ##
-## This program is free software; you can redistribute it and/or modify
+## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2, or (at your option)
-## any later version.
+## the Free Software Foundation; either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,49 +12,32 @@
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software Foundation,
-## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Process this file with automake to produce Makefile.in.
 
 AUTOMAKE_OPTIONS = 1.5 gnits no-dependencies
 EXTRA_DIST =
+BUILT_SOURCES =
+MOSTLYCLEANFILES = core *.stackdump
+MOSTLYCLEANDIRS =
+CLEANFILES =
+DISTCLEANFILES =
+MAINTAINERCLEANFILES =
 
+noinst_LIBRARIES =
 
-noinst_LIBRARIES = libgrep.a
+AM_CPPFLAGS = -I.. -I../gnulib-lib -I$(top_srcdir)/gnulib-lib -I../intl
+
+# Rules generated and collected by gnulib-tool, for building libgrep.a.
+include Makefile.gnulib
 
 # Sources that are compiled on all platforms.
 
-libgrep_a_SOURCES = \
+libgrep_a_SOURCES += \
   libgrep.h \
   kwset.h kwset.c \
-  dfa.h dfa.c \
-  m-common.h m-common.c m-fgrep.c m-regex.c \
-  hard-locale.h hard-locale.c
+  m-fgrep.c m-regex.c
 
-# Sources that are compiled only on platforms that lack the functions.
-
-LIBADD_SOURCE = \
-  memchr.c \
-  regex.h regex.c \
-  strdup.h strdup.c
-
-# How to build libgrep.a.
-libgrep_a_LIBADD = @LIBGREPOBJS@
-libgrep_a_DEPENDENCIES = @LIBGREPOBJS@
-
-# List of files to be distributed.
-
-EXTRA_DIST += $(LIBADD_SOURCE)
-
-AM_CPPFLAGS = -I.. -I../lib -I$(top_srcdir)/lib -I../intl
-
-
-# VMS support.
-
-EXTRA_DIST += Makefile.vms
-
-
-# Woe32 support.
-
-EXTRA_DIST += Makefile.msvc
+# Allow users to use "gnulib-tool --update".
+EXTRA_DIST += gnulib-m4/gnulib-cache.m4

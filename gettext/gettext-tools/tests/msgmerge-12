@@ -54,9 +54,11 @@ msgid "%d error"
 msgstr ""
 EOF
 
-tmpfiles="$tmpfiles mm-test12.out"
+tmpfiles="$tmpfiles mm-test12.tmp mm-test12.out"
 : ${MSGMERGE=msgmerge}
-${MSGMERGE} -q mm-test12.po mm-test12.pot -o mm-test12.out
+${MSGMERGE} -q -o mm-test12.tmp mm-test12.po mm-test12.pot
+test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+LC_ALL=C tr -d '\r' < mm-test12.tmp > mm-test12.out
 test $? = 0 || { rm -fr $tmpfiles; exit 1; }
 
 tmpfiles="$tmpfiles mm-test12.ok"
@@ -72,6 +74,7 @@ msgstr ""
 "PO-Revision-Date: 2001-04-29 21:19+02:00\n"
 "Last-Translator: Felix N. <xyz@zyx.uucp>\n"
 "Language-Team: German <de@li.org>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
