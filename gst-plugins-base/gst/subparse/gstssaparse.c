@@ -41,38 +41,21 @@ static GstStaticPadTemplate sink_templ = GST_STATIC_PAD_TEMPLATE ("sink",
 static GstStaticPadTemplate src_templ = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("text/x-pango-markup")
+    GST_STATIC_CAPS ("text/x-raw, format=pango-markup")
     );
 
-GST_BOILERPLATE (GstSsaParse, gst_ssa_parse, GstElement, GST_TYPE_ELEMENT);
+#define gst_ssa_parse_parent_class parent_class
+G_DEFINE_TYPE (GstSsaParse, gst_ssa_parse, GST_TYPE_ELEMENT);
 
 static GstStateChangeReturn gst_ssa_parse_change_state (GstElement *
     element, GstStateChange transition);
 static gboolean gst_ssa_parse_setcaps (GstPad * sinkpad, GstCaps * caps);
-static gboolean gst_ssa_parse_src_event (GstPad * pad, GstEvent * event);
-static gboolean gst_ssa_parse_sink_event (GstPad * pad, GstEvent * event);
-static GstFlowReturn gst_ssa_parse_chain (GstPad * sinkpad, GstBuffer * buf);
-
-static void
-gst_ssa_parse_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-  static GstElementDetails ssa_parse_details = {
-    "SSA Subtitle Parser",
-    "Codec/Parser/Subtitle",
-    "Parses SSA subtitle streams",
-    "Tim-Philipp Müller <tim centricular net>"
-  };
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_templ));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_templ));
-  gst_element_class_set_details (element_class, &ssa_parse_details);
-
-  GST_DEBUG_CATEGORY_INIT (ssa_parse_debug, "ssaparse", 0,
-      "SSA subtitle parser");
-}
+static gboolean gst_ssa_parse_src_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
+static gboolean gst_ssa_parse_sink_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
+static GstFlowReturn gst_ssa_parse_chain (GstPad * sinkpad, GstObject * parent,
+    GstBuffer * buf);
 
 static void
 gst_ssa_parse_dispose (GObject * object)
@@ -86,11 +69,9 @@ gst_ssa_parse_dispose (GObject * object)
 }
 
 static void
-gst_ssa_parse_init (GstSsaParse * parse, GstSsaParseClass * klass)
+gst_ssa_parse_init (GstSsaParse * parse)
 {
   parse->sinkpad = gst_pad_new_from_static_template (&sink_templ, "sink");
-  gst_pad_set_setcaps_function (parse->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_ssa_parse_setcaps));
   gst_pad_set_chain_function (parse->sinkpad,
       GST_DEBUG_FUNCPTR (gst_ssa_parse_chain));
   gst_pad_set_event_function (parse->sinkpad,
@@ -116,33 +97,65 @@ gst_ssa_parse_class_init (GstSsaParseClass * klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
 
-  object_class->dispose = GST_DEBUG_FUNCPTR (gst_ssa_parse_dispose);
+  object_class->dispose = gst_ssa_parse_dispose;
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&sink_templ));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&src_templ));
+  gst_element_class_set_static_metadata (element_class,
+      "SSA Subtitle Parser", "Codec/Parser/Subtitle",
+      "Parses SSA subtitle streams",
+      "Tim-Philipp Müller <tim centricular net>");
+
+  GST_DEBUG_CATEGORY_INIT (ssa_parse_debug, "ssaparse", 0,
+      "SSA subtitle parser");
 
   element_class->change_state = GST_DEBUG_FUNCPTR (gst_ssa_parse_change_state);
 }
 
 static gboolean
-gst_ssa_parse_src_event (GstPad * pad, GstEvent * event)
+gst_ssa_parse_src_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
-  return gst_pad_event_default (pad, event);
+  return gst_pad_event_default (pad, parent, event);
 }
 
 static gboolean
-gst_ssa_parse_sink_event (GstPad * pad, GstEvent * event)
+gst_ssa_parse_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
-  return gst_pad_event_default (pad, event);
+  gboolean res;
+
+  switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_CAPS:
+    {
+      GstCaps *caps;
+
+      gst_event_parse_caps (event, &caps);
+      res = gst_ssa_parse_setcaps (pad, caps);
+      gst_event_unref (event);
+      break;
+    }
+    default:
+      res = gst_pad_event_default (pad, parent, event);
+      break;
+  }
+  return res;
 }
 
 static gboolean
 gst_ssa_parse_setcaps (GstPad * sinkpad, GstCaps * caps)
 {
   GstSsaParse *parse = GST_SSA_PARSE (GST_PAD_PARENT (sinkpad));
+  GstCaps *outcaps;
   const GValue *val;
   GstStructure *s;
   const guchar bom_utf8[] = { 0xEF, 0xBB, 0xBF };
+  const gchar *end;
   GstBuffer *priv;
-  gchar *data;
-  guint size;
+  GstMapInfo map;
+  gchar *ptr;
+  gsize left, bad_offset;
+  gboolean ret;
 
   s = gst_caps_get_structure (caps, 0);
   val = gst_structure_get_value (s, "codec_data");
@@ -155,38 +168,59 @@ gst_ssa_parse_setcaps (GstPad * sinkpad, GstCaps * caps)
   parse->framed = TRUE;
   parse->send_tags = TRUE;
 
-  priv = (GstBuffer *) gst_value_get_mini_object (val);
+  priv = (GstBuffer *) g_value_get_boxed (val);
   g_return_val_if_fail (priv != NULL, FALSE);
 
   gst_buffer_ref (priv);
 
-  data = (gchar *) GST_BUFFER_DATA (priv);
-  size = GST_BUFFER_SIZE (priv);
+  if (!gst_buffer_map (priv, &map, GST_MAP_READ))
+    return FALSE;
+
+  GST_MEMDUMP_OBJECT (parse, "init section", map.data, map.size);
+
+  ptr = (gchar *) map.data;
+  left = map.size;
+
   /* skip UTF-8 BOM */
-  if (size >= 3 && memcmp (data, bom_utf8, 3) == 0) {
-    data += 3;
-    size -= 3;
+  if (left >= 3 && memcmp (ptr, bom_utf8, 3) == 0) {
+    ptr += 3;
+    left -= 3;
   }
 
-  if (!strstr (data, "[Script Info]")) {
-    GST_WARNING_OBJECT (parse, "Invalid Init section - no Script Info header");
-    gst_buffer_unref (priv);
-    return FALSE;
-  }
+  if (!strstr (ptr, "[Script Info]"))
+    goto invalid_init;
 
-  if (!g_utf8_validate (data, size, NULL)) {
-    GST_WARNING_OBJECT (parse, "Init section is not valid UTF-8");
-    gst_buffer_unref (priv);
-    return FALSE;
+  if (!g_utf8_validate (ptr, left, &end)) {
+    bad_offset = (gsize) (end - ptr);
+    GST_WARNING_OBJECT (parse, "Init section is not valid UTF-8. Problem at "
+        "byte offset %" G_GSIZE_FORMAT, bad_offset);
+    /* continue with valid UTF-8 data */
+    left = bad_offset;
   }
 
   /* FIXME: parse initial section */
-  parse->ini = g_strndup (data, size);
+  parse->ini = g_strndup (ptr, left);
   GST_LOG_OBJECT (parse, "Init section:\n%s", parse->ini);
 
+  gst_buffer_unmap (priv, &map);
   gst_buffer_unref (priv);
 
-  return TRUE;
+  outcaps = gst_caps_new_simple ("text/x-raw",
+      "format", G_TYPE_STRING, "pango-markup", NULL);
+
+  ret = gst_pad_set_caps (parse->srcpad, outcaps);
+  gst_caps_unref (outcaps);
+
+  return ret;
+
+  /* ERRORS */
+invalid_init:
+  {
+    GST_WARNING_OBJECT (parse, "Invalid Init section - no Script Info header");
+    gst_buffer_unmap (priv, &map);
+    gst_buffer_unref (priv);
+    return FALSE;
+  }
 }
 
 static gboolean
@@ -272,14 +306,12 @@ gst_ssa_parse_push_line (GstSsaParse * parse, gchar * txt,
 
   /* allocate enough for a terminating NUL, but don't include it in buf size */
   buf = gst_buffer_new_and_alloc (len + 1);
-  memcpy (GST_BUFFER_DATA (buf), escaped, len + 1);
-  GST_BUFFER_SIZE (buf) = len;
+  gst_buffer_fill (buf, 0, escaped, len + 1);
+  gst_buffer_set_size (buf, len);
   g_free (escaped);
 
   GST_BUFFER_TIMESTAMP (buf) = start;
   GST_BUFFER_DURATION (buf) = duration;
-
-  gst_buffer_set_caps (buf, GST_PAD_CAPS (parse->srcpad));
 
   GST_LOG_OBJECT (parse, "Pushing buffer with timestamp %" GST_TIME_FORMAT
       " and duration %" GST_TIME_FORMAT, GST_TIME_ARGS (start),
@@ -296,12 +328,13 @@ gst_ssa_parse_push_line (GstSsaParse * parse, gchar * txt,
 }
 
 static GstFlowReturn
-gst_ssa_parse_chain (GstPad * sinkpad, GstBuffer * buf)
+gst_ssa_parse_chain (GstPad * sinkpad, GstObject * parent, GstBuffer * buf)
 {
   GstFlowReturn ret;
-  GstSsaParse *parse = GST_SSA_PARSE (GST_PAD_PARENT (sinkpad));
+  GstSsaParse *parse = GST_SSA_PARSE (parent);
   GstClockTime ts;
   gchar *txt;
+  GstMapInfo map;
 
   if (G_UNLIKELY (!parse->framed))
     goto not_framed;
@@ -309,15 +342,18 @@ gst_ssa_parse_chain (GstPad * sinkpad, GstBuffer * buf)
   if (G_UNLIKELY (parse->send_tags)) {
     GstTagList *tags;
 
-    tags = gst_tag_list_new ();
+    tags = gst_tag_list_new_empty ();
     gst_tag_list_add (tags, GST_TAG_MERGE_APPEND, GST_TAG_SUBTITLE_CODEC,
         "SubStation Alpha", NULL);
-    gst_element_found_tags_for_pad (GST_ELEMENT (parse), parse->srcpad, tags);
+    gst_pad_push_event (parse->srcpad, gst_event_new_tag (tags));
     parse->send_tags = FALSE;
   }
 
   /* make double-sure it's 0-terminated and all */
-  txt = g_strndup ((gchar *) GST_BUFFER_DATA (buf), GST_BUFFER_SIZE (buf));
+  gst_buffer_map (buf, &map, GST_MAP_READ);
+  txt = g_strndup ((gchar *) map.data, map.size);
+  gst_buffer_unmap (buf, &map);
+
   if (txt == NULL)
     goto empty_text;
 
@@ -325,9 +361,13 @@ gst_ssa_parse_chain (GstPad * sinkpad, GstBuffer * buf)
   ret = gst_ssa_parse_push_line (parse, txt, ts, GST_BUFFER_DURATION (buf));
 
   if (ret != GST_FLOW_OK && GST_CLOCK_TIME_IS_VALID (ts)) {
+    GstSegment segment;
+
     /* just advance time without sending anything */
-    gst_pad_push_event (parse->srcpad,
-        gst_event_new_new_segment (TRUE, 1.0, GST_FORMAT_TIME, ts, -1, ts));
+    gst_segment_init (&segment, GST_FORMAT_TIME);
+    segment.start = ts;
+    segment.time = ts;
+    gst_pad_push_event (parse->srcpad, gst_event_new_segment (&segment));
     ret = GST_FLOW_OK;
   }
 
@@ -366,7 +406,7 @@ gst_ssa_parse_change_state (GstElement * element, GstStateChange transition)
       break;
   }
 
-  ret = parent_class->change_state (element, transition);
+  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
   if (ret == GST_STATE_CHANGE_FAILURE)
     return ret;
 

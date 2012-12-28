@@ -1,5 +1,8 @@
 /* GStreamer
  * Copyright (C) 2004 Benjamin Otte <in7y118@public.uni-hamburg.de>
+ * Copyright (c) 2012 Collabora Ltd.
+ *	Author : Edward Hervey <edward@collabora.com>
+ *      Author : Mark Nauwelaerts <mark.nauwelaerts@collabora.co.uk>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -25,7 +28,8 @@
 #endif
 
 #include <gst/gst.h>
-#include <theora/theora.h>
+#include <gst/video/gstvideodecoder.h>
+#include <theora/theoradec.h>
 #include <string.h>
 
 G_BEGIN_DECLS
@@ -51,60 +55,37 @@ typedef struct _GstTheoraDecClass GstTheoraDecClass;
  */
 struct _GstTheoraDec
 {
-  GstElement element;
-
-  /* Pads */
-  GstPad *sinkpad;
-  GstPad *srcpad;
+  GstVideoDecoder element;
 
   /* theora decoder state */
-  theora_state state;
-  theora_info info;
-  theora_comment comment;
+  th_dec_ctx *decoder;
+  //theora_state state;
+  th_setup_info *setup;
+  th_info info;
+  th_comment comment;
 
   gboolean have_header;
-  gboolean is_old_bitstream;
-  guint64 granulepos;
-  guint64 granule_shift;
 
-  GstClockTime last_timestamp;
-  guint64 frame_nr; /* unused */
   gboolean need_keyframe;
-  gint width, height;
-  gint offset_x, offset_y;
-  gint output_bpp;
+  GstVideoCodecState *input_state;
+  GstVideoCodecState *output_state;
 
-  gboolean crop;
+  /* telemetry debuging options */
+  gint telemetry_mv;
+  gint telemetry_mbmode;
+  gint telemetry_qi;
+  gint telemetry_bits;
 
-  /* list of buffers that need timestamps */
-  GList *queued;
-  /* list of raw output buffers */
-  GList *output;
-  /* gather/decode queues for reverse playback */
-  GList *gather;
-  GList *decode;
-  GList *pendingevents;
-
-  GstTagList *tags;
-
-  /* segment info */ /* with STREAM_LOCK */
-  GstSegment segment;
-  gboolean discont;
-  guint32 seqnum;
-
-  /* QoS stuff */ /* with LOCK*/
-  gdouble proportion;
-  GstClockTime earliest_time;
-
-  gboolean have_par;
-  gint par_num;
-  gint par_den;
+  gboolean can_crop;
 };
 
 struct _GstTheoraDecClass
 {
-  GstElementClass parent_class;
+  GstVideoDecoderClass parent_class;
 };
+
+GType gst_theora_dec_get_type (void);
+gboolean gst_theora_dec_register (GstPlugin * plugin);
 
 G_END_DECLS
 

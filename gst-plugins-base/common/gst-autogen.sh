@@ -216,38 +216,6 @@ autoheader_check ()
 
 }
 
-autoconf_2_52d_check ()
-{
-  # autoconf 2.52d has a weird issue involving a yes:no error
-  # so don't allow it's use
-  test -z "$NOCHECK" && {
-    ac_version=`$autoconf --version|head -n 1|sed 's/^[a-zA-Z\.\ ()]*//;s/ .*$//'`
-    if test "$ac_version" = "2.52d"; then
-      echo "autoconf 2.52d has an issue with our current build."
-      echo "We don't know who's to blame however.  So until we do, get a"
-      echo "regular version.  RPM's of a working version are on the gstreamer site."
-      exit 1
-    fi
-  }
-  return 0
-}
-libtool_2_2_gettext_check ()
-{
-  # libtool 2.2 needs autopoint 0.17 or higher
-  version_compare LIBTOOLIZE 2 2 0
-  if test $? -eq 0
-  then
-    version_compare AUTOPOINT 0 17 0
-    if test $? -ne 0
-    then
-      echo "libtool 2.2 requires autopoint 0.17 or higher"
-      return 1
-    fi
-  fi
-  return 0
-}
-
-
 die_check ()
 {
   # call with $DIE

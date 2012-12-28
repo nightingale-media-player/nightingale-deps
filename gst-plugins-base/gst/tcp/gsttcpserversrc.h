@@ -24,19 +24,11 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstpushsrc.h>
+#include <gio/gio.h>
 
 G_END_DECLS
 
-#include <errno.h>
-#include <string.h>
-#include <sys/types.h>
-#include <netdb.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include "gsttcp.h"
-
-#include <fcntl.h>
 
 #define GST_TYPE_TCP_SERVER_SRC \
   (gst_tcp_server_src_get_type())
@@ -53,29 +45,22 @@ typedef struct _GstTCPServerSrc GstTCPServerSrc;
 typedef struct _GstTCPServerSrcClass GstTCPServerSrcClass;
 
 typedef enum {
-  GST_TCP_SERVER_SRC_OPEN       = (GST_ELEMENT_FLAG_LAST << 0),
+  GST_TCP_SERVER_SRC_OPEN       = (GST_BASE_SRC_FLAG_LAST << 0),
 
-  GST_TCP_SERVER_SRC_FLAG_LAST  = (GST_ELEMENT_FLAG_LAST << 2)
+  GST_TCP_SERVER_SRC_FLAG_LAST  = (GST_BASE_SRC_FLAG_LAST << 2)
 } GstTCPServerSrcFlags;
 
 struct _GstTCPServerSrc {
   GstPushSrc element;
 
   /* server information */
-  int server_port;
-  gchar *host;
-  struct sockaddr_in server_sin;
-  GstPollFD server_sock_fd;
+  int current_port;        /* currently bound-to port, or 0 */ /* ATOMIC */
+  int server_port;         /* port property */
+  gchar *host;             /* host property */
 
-  /* client information */
-  struct sockaddr_in client_sin;
-  socklen_t client_sin_len;
-  GstPollFD client_sock_fd;
-
-  GstPoll *fdset;
-
-  GstTCPProtocol protocol; /* protocol used for reading data */
-  gboolean caps_received;      /* if we have received caps yet */
+  GCancellable *cancellable;
+  GSocket *server_socket;
+  GSocket *client_socket;
 };
 
 struct _GstTCPServerSrcClass {

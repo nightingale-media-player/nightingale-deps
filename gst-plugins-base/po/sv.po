@@ -6,48 +6,16 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins-base 0.10.24.2\n"
+"Project-Id-Version: gst-plugins-base 0.10.28.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-10-05 13:46+0100\n"
-"PO-Revision-Date: 2009-09-18 17:37+0100\n"
+"POT-Creation-Date: 2012-12-18 00:25+0000\n"
+"PO-Revision-Date: 2010-06-07 18:17+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
+"Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-msgid "Master"
-msgstr "Övergripande"
-
-msgid "Bass"
-msgstr "Bas"
-
-msgid "Treble"
-msgstr "Diskant"
-
-msgid "PCM"
-msgstr "PCM"
-
-msgid "Synth"
-msgstr "Synt"
-
-msgid "Line-in"
-msgstr "Linje-in"
-
-msgid "CD"
-msgstr "Cd"
-
-msgid "Microphone"
-msgstr "Mikrofon"
-
-msgid "PC Speaker"
-msgstr "PC-högtalare"
-
-msgid "Playback"
-msgstr "Uppspelning"
-
-msgid "Capture"
-msgstr "Fångst"
 
 msgid "Could not open device for playback in mono mode."
 msgstr "Kunde inte öppna enheten för uppspelning i monoläge."
@@ -69,6 +37,9 @@ msgstr ""
 msgid "Could not open audio device for playback."
 msgstr "Kunde inte öppna ljudenheten för uppspelning."
 
+msgid "Error outputting to audio device. The device has been disconnected."
+msgstr ""
+
 msgid "Could not open device for recording in mono mode."
 msgstr "Kunde inte öppna enheten för inspelning i monoläge."
 
@@ -89,6 +60,9 @@ msgstr ""
 msgid "Could not open audio device for recording."
 msgstr "Kunde inte öppna ljudenheten för inspelning."
 
+msgid "Error recording from audio device. The device has been disconnected."
+msgstr ""
+
 msgid "Could not open CD device for reading."
 msgstr "Kunde inte öppna cd-enheten för läsning."
 
@@ -97,21 +71,6 @@ msgstr "Kunde inte söka på cd-skivan."
 
 msgid "Could not read CD."
 msgstr "Kunde inte läsa cd-skivan."
-
-#, c-format
-msgid "Could not open vfs file \"%s\" for writing: %s."
-msgstr "Kunde inte öppna vfs-filen \"%s\" för skrivning: %s."
-
-msgid "No filename given"
-msgstr "Inget filnamn angivet"
-
-#, c-format
-msgid "Could not close vfs file \"%s\"."
-msgstr "Kunde inte stänga vfs-filen \"%s\"."
-
-#, c-format
-msgid "Error while writing to file \"%s\"."
-msgstr "Fel vid skrivning till filen \"%s\"."
 
 msgid "Internal data stream error."
 msgstr "Internt dataströmfel."
@@ -122,62 +81,15 @@ msgstr ""
 "En %s-insticksmodul krävs för att spela upp den här strömmen men är inte "
 "installerad."
 
-msgid "This appears to be a text file"
-msgstr "Den här ser ut att vara en textfil"
-
 msgid "Could not determine type of stream"
 msgstr "Kunde inte fastställa typ av ström"
 
-#, c-format
-msgid "Invalid subtitle URI \"%s\", subtitles disabled."
-msgstr "Ogiltig uri för undertext \"%s\", undertexter inaktiverade."
-
-msgid "No URI specified to play from."
-msgstr "Ingen uri angiven att spela upp från."
-
-#, c-format
-msgid "Invalid URI \"%s\"."
-msgstr "Ogiltig uri \"%s\"."
-
-msgid "RTSP streams cannot be played yet."
-msgstr "RTSP-strömmar kan inte spelas upp än."
-
-msgid "Could not create \"decodebin\" element."
-msgstr "Kunde inte skapa \"decodebin\"-element."
-
-msgid "Source element is invalid."
-msgstr "Källelementet är ogiltigt."
-
-msgid ""
-"Only a subtitle stream was detected. Either you are loading a subtitle file "
-"or some other type of text file, or the media file was not recognized."
-msgstr ""
-"Endast en undertextström identifierades. Antingen läser du in en "
-"undertextfil eller någon annan typ av textfil, eller så kändes inte "
-"mediafilen igen."
-
-msgid ""
-"You do not have a decoder installed to handle this file. You might need to "
-"install the necessary plugins."
-msgstr ""
-"Du har inte en installerad avkodare som kan hantera den här filen. Du kanske "
-"behöver installera de nödvändiga insticksmodulerna."
-
-msgid "This is not a media file"
-msgstr "Det här är inte en mediafil"
-
-msgid "A subtitle stream was detected, but no video stream."
-msgstr "En undertextström identifierades men ingen videoström."
-
-msgid "Both autovideosink and xvimagesink elements are missing."
-msgstr "Både autovideosink- och xvimagesink-elementet saknas."
+msgid "This appears to be a text file"
+msgstr "Den här ser ut att vara en textfil"
 
 #, c-format
 msgid "Missing element '%s' - check your GStreamer installation."
 msgstr "Saknar elementet \"%s\" - kontrollera din GStreamer-installation."
-
-msgid "Both autoaudiosink and alsasink elements are missing."
-msgstr "Både autoaudiosink- och alsasink-elementet saknas."
 
 #, c-format
 msgid "Both autovideosink and %s elements are missing."
@@ -185,6 +97,10 @@ msgstr "Både autovideosink- och %s-elementet saknas."
 
 msgid "The autovideosink element is missing."
 msgstr "Elementet autovideosink saknas."
+
+#, c-format
+msgid "Configured videosink %s is not working."
+msgstr "Konfigurerat videosink %s fungerar inte."
 
 #, c-format
 msgid "Both autovideosink and %s elements are not working."
@@ -207,35 +123,29 @@ msgid "The autoaudiosink element is missing."
 msgstr "Elementet autoaudiosink saknas."
 
 #, c-format
+msgid "Configured audiosink %s is not working."
+msgstr "Konfigurerat audiosink %s fungerar inte."
+
+#, c-format
 msgid "Both autoaudiosink and %s elements are not working."
 msgstr "Det finns både autoaudiosink- och %s-element som inte fungerar.."
 
 msgid "The autoaudiosink element is not working."
 msgstr "Elementet autoaudiosink fungerar inte."
 
-msgid "Can't play a text file without video."
-msgstr "Kan inte spela upp en textfil utan video."
-
-msgid "Can't display both text subtitles and subpictures."
-msgstr "Kan inte visa både undertexter och underbilder."
-
-msgid "No Temp directory specified."
-msgstr "Ingen temporärkatalog har angivits."
-
-#, c-format
-msgid "Could not create temp file \"%s\"."
-msgstr "Kunde inte skapa temporärfilen \"%s\"."
-
-#, c-format
-msgid "Could not open file \"%s\" for reading."
-msgstr "Kunde inte öppna filen \"%s\" för läsning."
-
-msgid "Internal data flow error."
-msgstr "Internt dataflödesfel."
+msgid "Can't play a text file without video or visualizations."
+msgstr "Kan inte spela upp en textfil utan video eller visualiseringar."
 
 #, c-format
 msgid "No decoder available for type '%s'."
 msgstr "Ingen avkodare finns tillgänglig för typen \"%s\"."
+
+msgid "No URI specified to play from."
+msgstr "Ingen uri angiven att spela upp från."
+
+#, c-format
+msgid "Invalid URI \"%s\"."
+msgstr "Ogiltig uri \"%s\"."
 
 msgid "This stream type cannot be played yet."
 msgstr "Den här strömtypen kan inte spelas upp än."
@@ -244,30 +154,15 @@ msgstr "Den här strömtypen kan inte spelas upp än."
 msgid "No URI handler implemented for \"%s\"."
 msgstr "Ingen URI-hanterare implementerad för \"%s\"."
 
-msgid "Could not create \"decodebin2\" element."
-msgstr "Kunde inte skapa \"decodebin2\"-element."
-
-msgid "Could not create \"queue2\" element."
-msgstr "Kunde inte skapa \"queue2\"-element."
-
-msgid "Could not create \"typefind\" element."
-msgstr "Kunde inte skapa \"typefind\"-element."
+msgid "Source element is invalid."
+msgstr "Källelementet är ogiltigt."
 
 #, c-format
 msgid "Error while sending data to \"%s:%d\"."
 msgstr "Fel vid sändning av data till \"%s:%d\"."
 
-#, c-format
-msgid "Error while sending gdp header data to \"%s:%d\"."
-msgstr "Fel vid sändning av gdp-huvuddata till \"%s:%d\"."
-
-#, c-format
-msgid "Error while sending gdp payload data to \"%s:%d\"."
-msgstr "Fel vid sändning av gdp-paketdata till \"%s:%d\"."
-
-#, c-format
-msgid "Connection to %s:%d refused."
-msgstr "Anslutningen till %s:%d nekades."
+msgid "This CD has no audio tracks"
+msgstr "Den här cd-skivan saknar ljudspår"
 
 msgid "Can't record audio fast enough"
 msgstr "Kan inte spela in ljud tillräckligt snabbt"
@@ -305,8 +200,132 @@ msgstr "spår TRM-ID"
 msgid "MusicBrainz TRM ID"
 msgstr "MusicBrainz TRM-ID"
 
-msgid "This CD has no audio tracks"
-msgstr "Den här cd-skivan saknar ljudspår"
+msgid "capturing shutter speed"
+msgstr ""
+
+msgid "Shutter speed used when capturing an image, in seconds"
+msgstr ""
+
+msgid "capturing focal ratio"
+msgstr ""
+
+msgid "Focal ratio (f-number) used when capturing the image"
+msgstr ""
+
+msgid "capturing focal length"
+msgstr ""
+
+msgid "Focal length of the lens used capturing the image, in mm"
+msgstr ""
+
+msgid "capturing digital zoom ratio"
+msgstr ""
+
+msgid "Digital zoom ratio used when capturing an image"
+msgstr ""
+
+msgid "capturing iso speed"
+msgstr ""
+
+msgid "The ISO speed used when capturing an image"
+msgstr ""
+
+msgid "capturing exposure program"
+msgstr ""
+
+msgid "The exposure program used when capturing an image"
+msgstr ""
+
+msgid "capturing exposure mode"
+msgstr ""
+
+msgid "The exposure mode used when capturing an image"
+msgstr ""
+
+msgid "capturing exposure compensation"
+msgstr ""
+
+msgid "The exposure compensation used when capturing an image"
+msgstr ""
+
+msgid "capturing scene capture type"
+msgstr ""
+
+msgid "The scene capture mode used when capturing an image"
+msgstr ""
+
+msgid "capturing gain adjustment"
+msgstr ""
+
+msgid "The overall gain adjustment applied on an image"
+msgstr ""
+
+msgid "capturing white balance"
+msgstr ""
+
+msgid "The white balance mode set when capturing an image"
+msgstr ""
+
+msgid "capturing contrast"
+msgstr ""
+
+msgid "The direction of contrast processing applied when capturing an image"
+msgstr ""
+
+msgid "capturing saturation"
+msgstr ""
+
+msgid "The direction of saturation processing applied when capturing an image"
+msgstr ""
+
+msgid "capturing sharpness"
+msgstr ""
+
+msgid "The direction of sharpness processing applied when capturing an image"
+msgstr ""
+
+msgid "capturing flash fired"
+msgstr ""
+
+msgid "If the flash fired while capturing an image"
+msgstr ""
+
+msgid "capturing flash mode"
+msgstr ""
+
+msgid "The selected flash mode while capturing an image"
+msgstr ""
+
+msgid "capturing metering mode"
+msgstr ""
+
+msgid ""
+"The metering mode used while determining exposure for capturing an image"
+msgstr ""
+
+msgid "capturing source"
+msgstr ""
+
+msgid "The source or type of device used for the capture"
+msgstr ""
+
+msgid "image horizontal ppi"
+msgstr ""
+
+msgid "Media (image/video) intended horizontal pixel density in ppi"
+msgstr ""
+
+msgid "image vertical ppi"
+msgstr ""
+
+msgid "Media (image/video) intended vertical pixel density in ppi"
+msgstr ""
+
+msgid "ID3v2 frame"
+msgstr ""
+
+msgid "unparsed id3v2 tag frame"
+msgstr ""
 
 msgid "ID3 tag"
 msgstr "ID3-tagg"
@@ -338,11 +357,24 @@ msgstr "FFMpeg v1"
 msgid "Lossless MSZH"
 msgstr "Förlustfri MSZH"
 
-msgid "Uncompressed Gray Image"
-msgstr "Okomprimerad gråskalebild"
-
 msgid "Run-length encoding"
 msgstr "Körlängdskodning"
+
+#, fuzzy
+msgid "Subtitle"
+msgstr "Titel"
+
+#, fuzzy
+msgid "MPL2 subtitle format"
+msgstr "Undertextformatet TMPlayer"
+
+#, fuzzy
+msgid "DKS subtitle format"
+msgstr "Undertextformatet Sami"
+
+#, fuzzy
+msgid "QTtext subtitle format"
+msgstr "Undertextformatet Kate"
 
 msgid "Sami subtitle format"
 msgstr "Undertextformatet Sami"
@@ -353,60 +385,33 @@ msgstr "Undertextformatet TMPlayer"
 msgid "Kate subtitle format"
 msgstr "Undertextformatet Kate"
 
-msgid "Uncompressed planar YUV 4:2:0"
-msgstr "Okomprimerad plan YUV 4:2:0"
-
-msgid "Uncompressed planar YVU 4:2:0"
-msgstr "Okomprimerad plan YVU 4:2:0"
-
-msgid "Uncompressed packed YUV 4:2:2"
-msgstr "Okomprimerad paketerad YUV 4:2:2"
-
-msgid "Uncompressed packed YUV 4:1:0"
-msgstr "Okomprimerad paketerad YUV 4:1:0"
-
-msgid "Uncompressed packed YVU 4:1:0"
-msgstr "Okomprimerad paketerad YVU 4:1:0"
-
-msgid "Uncompressed packed YUV 4:1:1"
-msgstr "Okomprimerad paketerad YUV 4:1:1"
-
-msgid "Uncompressed packed YUV 4:4:4"
-msgstr "Okomprimerad paketerad YUV 4:4:4"
-
-msgid "Uncompressed planar YUV 4:2:2"
-msgstr "Okomprimerad plan YUV 4:2:2"
-
-msgid "Uncompressed planar YUV 4:1:1"
-msgstr "Okomprimerad plan YUV 4:1:1"
-
-msgid "Uncompressed black and white Y-plane"
-msgstr "Okomprimerad svartvitt y-plan"
-
-msgid "Uncompressed YUV"
+#, fuzzy
+msgid "Uncompressed video"
 msgstr "Okomprimerad YUV"
 
-#, c-format
-msgid "Uncompressed palettized %d-bit %s"
+#, fuzzy
+msgid "Uncompressed gray"
+msgstr "Okomprimerad gråskalebild"
+
+#, fuzzy, c-format
+msgid "Uncompressed %s YUV %s"
+msgstr "Okomprimerad YUV"
+
+#, fuzzy, c-format
+msgid "Uncompressed %s%d-bit %s"
 msgstr "Okomprimerad palettiserad %d-bitars %s"
 
 #, c-format
 msgid "DivX MPEG-4 Version %d"
 msgstr "DivX MPEG-4 version %d"
 
-#, c-format
-msgid "Raw %d-bit PCM audio"
+#, fuzzy
+msgid "Uncompressed audio"
+msgstr "Okomprimerad YUV"
+
+#, fuzzy, c-format
+msgid "Raw %d-bit %s audio"
 msgstr "Rått %d-bitars PCM-ljud"
-
-msgid "Raw PCM audio"
-msgstr "Rått PCM-ljud"
-
-#, c-format
-msgid "Raw %d-bit floating-point audio"
-msgstr "Rått %d-bitars flyttalsljud"
-
-msgid "Raw floating-point audio"
-msgstr "Rått flyttalsljud"
 
 msgid "Audio CD source"
 msgstr "Ljud-cd-källa"
@@ -486,20 +491,171 @@ msgstr "Okänt kodarelement"
 msgid "Plugin or element of unknown type"
 msgstr "Insticksmodul eller element av okänd typ"
 
-msgid "No device specified."
-msgstr "Ingen enheten angiven."
+#~ msgid "Master"
+#~ msgstr "Övergripande"
 
-#, c-format
-msgid "Device \"%s\" does not exist."
-msgstr "Enheten \"%s\" finns inte."
+#~ msgid "Bass"
+#~ msgstr "Bas"
 
-#, c-format
-msgid "Device \"%s\" is already being used."
-msgstr "Enheten \"%s\" används redan."
+#~ msgid "Treble"
+#~ msgstr "Diskant"
 
-#, c-format
-msgid "Could not open device \"%s\" for reading and writing."
-msgstr "Kunde inte öppna enheten \"%s\" för läsning och skrivning."
+#~ msgid "PCM"
+#~ msgstr "PCM"
+
+#~ msgid "Synth"
+#~ msgstr "Synt"
+
+#~ msgid "Line-in"
+#~ msgstr "Linje-in"
+
+#~ msgid "CD"
+#~ msgstr "Cd"
+
+#~ msgid "Microphone"
+#~ msgstr "Mikrofon"
+
+#~ msgid "PC Speaker"
+#~ msgstr "PC-högtalare"
+
+#~ msgid "Playback"
+#~ msgstr "Uppspelning"
+
+#~ msgid "Capture"
+#~ msgstr "Fångst"
+
+#~ msgid "Connection to %s:%d refused."
+#~ msgstr "Anslutningen till %s:%d nekades."
+
+#~ msgid "Uncompressed planar YUV 4:2:0"
+#~ msgstr "Okomprimerad plan YUV 4:2:0"
+
+#~ msgid "Uncompressed planar YVU 4:2:0"
+#~ msgstr "Okomprimerad plan YVU 4:2:0"
+
+#~ msgid "Uncompressed packed YUV 4:2:2"
+#~ msgstr "Okomprimerad paketerad YUV 4:2:2"
+
+#~ msgid "Uncompressed packed YUV 4:1:0"
+#~ msgstr "Okomprimerad paketerad YUV 4:1:0"
+
+#~ msgid "Uncompressed packed YVU 4:1:0"
+#~ msgstr "Okomprimerad paketerad YVU 4:1:0"
+
+#~ msgid "Uncompressed packed YUV 4:1:1"
+#~ msgstr "Okomprimerad paketerad YUV 4:1:1"
+
+#~ msgid "Uncompressed packed YUV 4:4:4"
+#~ msgstr "Okomprimerad paketerad YUV 4:4:4"
+
+#~ msgid "Uncompressed planar YUV 4:2:2"
+#~ msgstr "Okomprimerad plan YUV 4:2:2"
+
+#~ msgid "Uncompressed planar YUV 4:1:1"
+#~ msgstr "Okomprimerad plan YUV 4:1:1"
+
+#~ msgid "Uncompressed black and white Y-plane"
+#~ msgstr "Okomprimerad svartvitt y-plan"
+
+#~ msgid "Raw PCM audio"
+#~ msgstr "Rått PCM-ljud"
+
+#~ msgid "Raw %d-bit floating-point audio"
+#~ msgstr "Rått %d-bitars flyttalsljud"
+
+#~ msgid "Raw floating-point audio"
+#~ msgstr "Rått flyttalsljud"
+
+#~ msgid "Could not open vfs file \"%s\" for writing: %s."
+#~ msgstr "Kunde inte öppna vfs-filen \"%s\" för skrivning: %s."
+
+#~ msgid "No filename given"
+#~ msgstr "Inget filnamn angivet"
+
+#~ msgid "Could not close vfs file \"%s\"."
+#~ msgstr "Kunde inte stänga vfs-filen \"%s\"."
+
+#~ msgid "Error while writing to file \"%s\"."
+#~ msgstr "Fel vid skrivning till filen \"%s\"."
+
+#~ msgid "Invalid subtitle URI \"%s\", subtitles disabled."
+#~ msgstr "Ogiltig uri för undertext \"%s\", undertexter inaktiverade."
+
+#~ msgid "RTSP streams cannot be played yet."
+#~ msgstr "RTSP-strömmar kan inte spelas upp än."
+
+#~ msgid "Could not create \"decodebin\" element."
+#~ msgstr "Kunde inte skapa \"decodebin\"-element."
+
+#~ msgid ""
+#~ "Only a subtitle stream was detected. Either you are loading a subtitle "
+#~ "file or some other type of text file, or the media file was not "
+#~ "recognized."
+#~ msgstr ""
+#~ "Endast en undertextström identifierades. Antingen läser du in en "
+#~ "undertextfil eller någon annan typ av textfil, eller så kändes inte "
+#~ "mediafilen igen."
+
+#~ msgid ""
+#~ "You do not have a decoder installed to handle this file. You might need "
+#~ "to install the necessary plugins."
+#~ msgstr ""
+#~ "Du har inte en installerad avkodare som kan hantera den här filen. Du "
+#~ "kanske behöver installera de nödvändiga insticksmodulerna."
+
+#~ msgid "This is not a media file"
+#~ msgstr "Det här är inte en mediafil"
+
+#~ msgid "A subtitle stream was detected, but no video stream."
+#~ msgstr "En undertextström identifierades men ingen videoström."
+
+#~ msgid "Both autovideosink and xvimagesink elements are missing."
+#~ msgstr "Både autovideosink- och xvimagesink-elementet saknas."
+
+#~ msgid "Both autoaudiosink and alsasink elements are missing."
+#~ msgstr "Både autoaudiosink- och alsasink-elementet saknas."
+
+#~ msgid "No device specified."
+#~ msgstr "Ingen enheten angiven."
+
+#~ msgid "Device \"%s\" does not exist."
+#~ msgstr "Enheten \"%s\" finns inte."
+
+#~ msgid "Device \"%s\" is already being used."
+#~ msgstr "Enheten \"%s\" används redan."
+
+#~ msgid "Could not open device \"%s\" for reading and writing."
+#~ msgstr "Kunde inte öppna enheten \"%s\" för läsning och skrivning."
+
+#~ msgid "Error while sending gdp header data to \"%s:%d\"."
+#~ msgstr "Fel vid sändning av gdp-huvuddata till \"%s:%d\"."
+
+#~ msgid "Error while sending gdp payload data to \"%s:%d\"."
+#~ msgstr "Fel vid sändning av gdp-paketdata till \"%s:%d\"."
+
+#~ msgid "Can't display both text subtitles and subpictures."
+#~ msgstr "Kan inte visa både undertexter och underbilder."
+
+#~ msgid "No Temp directory specified."
+#~ msgstr "Ingen temporärkatalog har angivits."
+
+#~ msgid "Could not create temp file \"%s\"."
+#~ msgstr "Kunde inte skapa temporärfilen \"%s\"."
+
+#~ msgid "Could not open file \"%s\" for reading."
+#~ msgstr "Kunde inte öppna filen \"%s\" för läsning."
+
+#~ msgid "Internal data flow error."
+#~ msgstr "Internt dataflödesfel."
+
+#~ msgid "Could not create \"decodebin2\" element."
+#~ msgstr "Kunde inte skapa \"decodebin2\"-element."
+
+#~ msgid "Could not create \"queue2\" element."
+#~ msgstr "Kunde inte skapa \"queue2\"-element."
+
+#~ msgid "Could not create \"typefind\" element."
+#~ msgstr "Kunde inte skapa \"typefind\"-element."
 
 #~ msgid "No file name specified."
 #~ msgstr "Inget filnamn angivet."
@@ -1226,9 +1382,6 @@ msgstr "Kunde inte öppna enheten \"%s\" för läsning och skrivning."
 
 #~ msgid "_Year:"
 #~ msgstr "_År:"
-
-#~ msgid "Title"
-#~ msgstr "Titel"
 
 #~ msgid "Length"
 #~ msgstr "Speltid"

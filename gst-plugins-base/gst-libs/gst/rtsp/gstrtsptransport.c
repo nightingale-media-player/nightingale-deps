@@ -45,11 +45,7 @@
  * SECTION:gstrtsptransport
  * @short_description: dealing with RTSP transports
  *  
- * <refsect2>
- * <para>
  * Provides helper functions to deal with RTSP transport strings.
- * </para>
- * </refsect2>
  *  
  * Last reviewed on 2007-07-25 (0.10.14)
  */
@@ -86,7 +82,7 @@ typedef struct
 } GstRTSPTransMap;
 
 static const GstRTSPTransMap transports[] = {
-  {"rtp", GST_RTSP_TRANS_RTP, "application/x-rtp", {"gstrtpbin", "rtpdec"}},
+  {"rtp", GST_RTSP_TRANS_RTP, "application/x-rtp", {"rtpbin", "rtpdec"}},
   {"x-real-rdt", GST_RTSP_TRANS_RDT, "application/x-rdt", {"rdtmanager", NULL}},
   {"x-pn-tng", GST_RTSP_TRANS_RDT, "application/x-rdt", {"rdtmanager", NULL}},
   {NULL, GST_RTSP_TRANS_UNKNOWN, NULL, {NULL, NULL}}
@@ -116,6 +112,28 @@ static const RTSPLTransMap ltrans[] = {
   {"tcp", GST_RTSP_LOWER_TRANS_TCP},
   {NULL, GST_RTSP_LOWER_TRANS_UNKNOWN}
 };
+
+
+GType
+gst_rtsp_lower_trans_get_type (void)
+{
+  static volatile gsize rtsp_lower_trans_type = 0;
+  static const GFlagsValue rtsp_lower_trans[] = {
+    {GST_RTSP_LOWER_TRANS_UDP, "GST_RTSP_LOWER_TRANS_UDP", "udp-unicast"},
+    {GST_RTSP_LOWER_TRANS_UDP_MCAST, "GST_RTSP_LOWER_TRANS_UDP_MCAST",
+        "udp-multicast"},
+    {GST_RTSP_LOWER_TRANS_TCP, "GST_RTSP_LOWER_TRANS_TCP", "tcp"},
+    {GST_RTSP_LOWER_TRANS_HTTP, "GST_RTSP_LOWER_TRANS_HTTP", "http"},
+    {0, NULL, NULL},
+  };
+
+  if (g_once_init_enter (&rtsp_lower_trans_type)) {
+    GType tmp = g_flags_register_static ("GstRTSPLowerTrans", rtsp_lower_trans);
+    g_once_init_leave (&rtsp_lower_trans_type, tmp);
+  }
+
+  return (GType) rtsp_lower_trans_type;
+}
 
 #define RTSP_TRANSPORT_PARAMETER_IS_UNIQUE(param) \
 G_STMT_START {                                    \
@@ -213,8 +231,7 @@ gst_rtsp_transport_get_mime (GstRTSPTransMode trans, const gchar ** mime)
  * @manager: location to hold the result
  * @option: option index.
  *
- * Get the #GStreamer element that can handle the buffers transported over
- * @trans.
+ * Get the #GstElement that can handle the buffers transported over @trans.
  *
  * It is possible that there are several managers available, use @option to
  * selected one.
@@ -251,7 +268,21 @@ parse_mode (GstRTSPTransport * transport, const gchar * str)
   transport->mode_record = (strstr (str, "record") != NULL);
 }
 
-static void
+static gboolean
+check_range (const gchar * str, gchar ** tmp, gint * range)
+{
+  glong range_val;
+
+  range_val = strtol (str, tmp, 10);
+  if (range_val >= G_MININT && range_val <= G_MAXINT) {
+    *range = range_val;
+    return TRUE;
+  } else {
+    return FALSE;
+  }
+}
+
+static gboolean
 parse_range (const gchar * str, GstRTSPRange * range)
 {
   gchar *minus;
@@ -268,28 +299,26 @@ parse_range (const gchar * str, GstRTSPRange * range)
     if (g_ascii_isspace (minus[1]) || minus[1] == '+' || minus[1] == '-')
       goto invalid_range;
 
-    range->min = strtol (str, &tmp, 10);
-    if (str == tmp || tmp != minus)
+    if (!check_range (str, &tmp, &range->min) || str == tmp || tmp != minus)
       goto invalid_range;
 
-    range->max = strtol (minus + 1, &tmp, 10);
-    if (*tmp && *tmp != ';')
+    if (!check_range (minus + 1, &tmp, &range->max) || (*tmp && *tmp != ';'))
       goto invalid_range;
   } else {
-    range->min = strtol (str, &tmp, 10);
-    if (str == tmp || (*tmp && *tmp != ';'))
+    if (!check_range (str, &tmp, &range->min) || str == tmp ||
+        (*tmp && *tmp != ';'))
       goto invalid_range;
 
     range->max = -1;
   }
 
-  return;
+  return TRUE;
 
 invalid_range:
   {
     range->min = -1;
     range->max = -1;
-    return;
+    return FALSE;
   }
 }
 
@@ -343,6 +372,12 @@ rtsp_transport_ltrans_as_text (const GstRTSPTransport * transport)
 
   return NULL;
 }
+
+#define IS_VALID_PORT_RANGE(range) \
+    (range.min >= 0 && range.min < 65536 && range.max < 65536)
+
+#define IS_VALID_INTERLEAVE_RANGE(range) \
+    (range.min >= 0 && range.min < 256 && range.max < 256)
 
 /**
  * gst_rtsp_transport_parse:
@@ -450,9 +485,7 @@ gst_rtsp_transport_parse (const gchar * str, GstRTSPTransport * transport)
     } else if (g_str_has_prefix (split[i], "interleaved=")) {
       RTSP_TRANSPORT_PARAMETER_IS_UNIQUE (RTSP_TRANSPORT_INTERLEAVED);
       parse_range (split[i] + 12, &transport->interleaved);
-      if (transport->interleaved.min < 0 ||
-          transport->interleaved.min >= 256 ||
-          transport->interleaved.max >= 256)
+      if (!IS_VALID_INTERLEAVE_RANGE (transport->interleaved))
         goto invalid_transport;
     } else if (g_str_has_prefix (split[i], "ttl=")) {
       RTSP_TRANSPORT_PARAMETER_IS_UNIQUE (RTSP_TRANSPORT_TTL);
@@ -461,30 +494,30 @@ gst_rtsp_transport_parse (const gchar * str, GstRTSPTransport * transport)
         goto invalid_transport;
     } else if (g_str_has_prefix (split[i], "port=")) {
       RTSP_TRANSPORT_PARAMETER_IS_UNIQUE (RTSP_TRANSPORT_PORT);
-      parse_range (split[i] + 5, &transport->port);
-      if (transport->port.min < 0 ||
-          transport->port.min >= 65536 || transport->port.max >= 65536)
-        goto invalid_transport;
+      if (parse_range (split[i] + 5, &transport->port)) {
+        if (!IS_VALID_PORT_RANGE (transport->port))
+          goto invalid_transport;
+      }
     } else if (g_str_has_prefix (split[i], "client_port=")) {
       RTSP_TRANSPORT_PARAMETER_IS_UNIQUE (RTSP_TRANSPORT_CLIENT_PORT);
-      parse_range (split[i] + 12, &transport->client_port);
-      if (transport->client_port.min < 0 ||
-          transport->client_port.min >= 65536 ||
-          transport->client_port.max >= 65536)
-        goto invalid_transport;
+      if (parse_range (split[i] + 12, &transport->client_port)) {
+        if (!IS_VALID_PORT_RANGE (transport->client_port))
+          goto invalid_transport;
+      }
     } else if (g_str_has_prefix (split[i], "server_port=")) {
       RTSP_TRANSPORT_PARAMETER_IS_UNIQUE (RTSP_TRANSPORT_SERVER_PORT);
-      parse_range (split[i] + 12, &transport->server_port);
-      if (transport->server_port.min < 0 ||
-          transport->server_port.min >= 65536 ||
-          transport->server_port.max >= 65536)
-        goto invalid_transport;
+      if (parse_range (split[i] + 12, &transport->server_port)) {
+        if (!IS_VALID_PORT_RANGE (transport->server_port))
+          goto invalid_transport;
+      }
     } else if (g_str_has_prefix (split[i], "ssrc=")) {
       RTSP_TRANSPORT_PARAMETER_IS_UNIQUE (RTSP_TRANSPORT_SSRC);
       transport->ssrc = strtoul (split[i] + 5, NULL, 16);
     } else {
       /* unknown field... */
-      g_warning ("unknown transport field \"%s\"", split[i]);
+      if (strlen (split[i]) > 0) {
+        g_warning ("unknown transport field \"%s\"", split[i]);
+      }
     }
     i++;
   }

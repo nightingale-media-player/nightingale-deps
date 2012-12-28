@@ -23,7 +23,7 @@
 static gboolean
 filter_func (GstPluginFeature * feature, gpointer user_data)
 {
-  return (g_str_has_prefix (GST_PLUGIN_FEATURE_NAME (feature), "libvisual_"));
+  return (g_str_has_prefix (GST_OBJECT_NAME (feature), "libvisual_"));
 }
 
 static void
@@ -43,7 +43,7 @@ test_shutdown_for_factory (const gchar * factory_name)
   vis = gst_check_setup_element (factory_name);
 
   cf = gst_check_setup_element ("capsfilter");
-  caps = gst_caps_new_simple ("video/x-raw-rgb", "width", G_TYPE_INT, 320,
+  caps = gst_caps_new_simple ("video/x-raw", "width", G_TYPE_INT, 320,
       "height", G_TYPE_INT, 240, "framerate", GST_TYPE_FRACTION, 15, 1, NULL);
   g_object_set (cf, "caps", caps, NULL);
   gst_caps_unref (caps);
@@ -82,13 +82,15 @@ GST_START_TEST (test_shutdown)
   if (factory_to_test == NULL) {
     GList *list, *l;
 
-    list = gst_default_registry_feature_filter (filter_func, FALSE, NULL);
+    list = gst_registry_feature_filter (gst_registry_get (), filter_func,
+        FALSE, NULL);
+
     if (list == NULL) {
       g_print ("No libvisual plugins installed.\n");
       return;
     }
     for (l = list; l != NULL; l = l->next) {
-      test_shutdown_for_factory (GST_PLUGIN_FEATURE_NAME (l->data));
+      test_shutdown_for_factory (GST_OBJECT_NAME (l->data));
     }
     gst_plugin_feature_list_free (list);
   } else {

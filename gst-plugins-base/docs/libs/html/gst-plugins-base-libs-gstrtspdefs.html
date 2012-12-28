@@ -3,30 +3,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstrtspdefs</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
 <link rel="up" href="gstreamer-rtsp.html" title="RTSP Library">
 <link rel="prev" href="gst-plugins-base-libs-gstrtspconnection.html" title="gstrtspconnection">
-<link rel="next" href="gst-plugins-base-libs-gstrtspmessage.html" title="gstrtspmessage">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="next" href="gst-plugins-base-libs-gstrtspextension.html" title="gstrtspextension">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
-<link rel="chapter" href="gstreamer-app.html" title="App Library">
-<link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
-<link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
-<link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
-<link rel="chapter" href="gstreamer-floatcast.html" title="FloatCast Library">
-<link rel="chapter" href="gstreamer-interfaces.html" title="Interfaces Library">
-<link rel="chapter" href="gstreamer-netbuffer.html" title="Network Buffer Library">
-<link rel="chapter" href="gstreamer-riff.html" title="Riff Media Library">
-<link rel="chapter" href="gstreamer-rtp.html" title="RTP Library">
-<link rel="chapter" href="gstreamer-rtsp.html" title="RTSP Library">
-<link rel="chapter" href="gstreamer-sdp.html" title="SDP Library">
-<link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
-<link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
-<link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -34,16 +17,16 @@
 <td><a accesskey="p" href="gst-plugins-base-libs-gstrtspconnection.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="gstreamer-rtsp.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-base-libs-gstrtspmessage.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 1.0 Library Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-base-libs-gstrtspextension.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-base-libs-gstrtspdefs.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-base-libs-gstrtspdefs.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstrtspdefs.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry">
 <a name="gst-plugins-base-libs-gstrtspdefs"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -55,88 +38,100 @@
 <div class="refsynopsisdiv">
 <a name="gst-plugins-base-libs-gstrtspdefs.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
-
 #include &lt;gst/rtsp/gstrtspdefs.h&gt;
 
-#define             <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-CHECK--CAPS" title="GST_RTSP_CHECK()">GST_RTSP_CHECK</a>                      (stmt, label)
+#define             <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-CHECK:CAPS" title="GST_RTSP_CHECK()">GST_RTSP_CHECK</a>                      (stmt,
+                                                         label)
+#define             <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-AUTH-MAX:CAPS" title="GST_RTSP_AUTH_MAX">GST_RTSP_AUTH_MAX</a>
+enum                <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPEvent" title="enum GstRTSPEvent">GstRTSPEvent</a>;
 enum                <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>;
 enum                <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPFamily" title="enum GstRTSPFamily">GstRTSPFamily</a>;
 enum                <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPState" title="enum GstRTSPState">GstRTSPState</a>;
 enum                <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPVersion" title="enum GstRTSPVersion">GstRTSPVersion</a>;
 enum                <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod">GstRTSPMethod</a>;
 enum                <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPAuthMethod" title="enum GstRTSPAuthMethod">GstRTSPAuthMethod</a>;
-#define             <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-AUTH-MAX--CAPS" title="GST_RTSP_AUTH_MAX">GST_RTSP_AUTH_MAX</a>
 enum                <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField">GstRTSPHeaderField</a>;
 enum                <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode" title="enum GstRTSPStatusCode">GstRTSPStatusCode</a>;
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-strresult" title="gst_rtsp_strresult ()">gst_rtsp_strresult</a>                  (<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a> result);
-const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*        <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-method-as-text" title="gst_rtsp_method_as_text ()">gst_rtsp_method_as_text</a>             (<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod">GstRTSPMethod</a> method);
-const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*        <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-version-as-text" title="gst_rtsp_version_as_text ()">gst_rtsp_version_as_text</a>            (<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPVersion" title="enum GstRTSPVersion">GstRTSPVersion</a> version);
-const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*        <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-header-as-text" title="gst_rtsp_header_as_text ()">gst_rtsp_header_as_text</a>             (<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField">GstRTSPHeaderField</a> field);
-const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*        <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-status-as-text" title="gst_rtsp_status_as_text ()">gst_rtsp_status_as_text</a>             (<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode" title="enum GstRTSPStatusCode">GstRTSPStatusCode</a> code);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-options-as-text" title="gst_rtsp_options_as_text ()">gst_rtsp_options_as_text</a>            (<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod">GstRTSPMethod</a> options);
-<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField">GstRTSPHeaderField</a>  <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-find-header-field" title="gst_rtsp_find_header_field ()">gst_rtsp_find_header_field</a>          (const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a> *header);
-<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod">GstRTSPMethod</a>       <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-find-method" title="gst_rtsp_find_method ()">gst_rtsp_find_method</a>                (const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a> *method);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-strresult" title="gst_rtsp_strresult ()">gst_rtsp_strresult</a>                  (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a> result</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-method-as-text" title="gst_rtsp_method_as_text ()">gst_rtsp_method_as_text</a>             (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod"><span class="type">GstRTSPMethod</span></a> method</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-version-as-text" title="gst_rtsp_version_as_text ()">gst_rtsp_version_as_text</a>            (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPVersion" title="enum GstRTSPVersion"><span class="type">GstRTSPVersion</span></a> version</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-header-as-text" title="gst_rtsp_header_as_text ()">gst_rtsp_header_as_text</a>             (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField"><span class="type">GstRTSPHeaderField</span></a> field</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-header-allow-multiple" title="gst_rtsp_header_allow_multiple ()">gst_rtsp_header_allow_multiple</a>      (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField"><span class="type">GstRTSPHeaderField</span></a> field</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-status-as-text" title="gst_rtsp_status_as_text ()">gst_rtsp_status_as_text</a>             (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode" title="enum GstRTSPStatusCode"><span class="type">GstRTSPStatusCode</span></a> code</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-options-as-text" title="gst_rtsp_options_as_text ()">gst_rtsp_options_as_text</a>            (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod"><span class="type">GstRTSPMethod</span></a> options</code></em>);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField"><span class="returnvalue">GstRTSPHeaderField</span></a>  <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-find-header-field" title="gst_rtsp_find_header_field ()">gst_rtsp_find_header_field</a>          (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *header</code></em>);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod"><span class="returnvalue">GstRTSPMethod</span></a>       <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#gst-rtsp-find-method" title="gst_rtsp_find_method ()">gst_rtsp_find_method</a>                (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *method</code></em>);
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-base-libs-gstrtspdefs.description"></a><h2>Description</h2>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2870650"></a><p>
 Provides common defines for the RTSP library. 
-</p>
-</div>
-<p>
  
-Last reviewed on 2007-07-24 (0.10.14)</p>
-<p>
+Last reviewed on 2007-07-24 (0.10.14)
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-base-libs-gstrtspdefs.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
-<a name="GST-RTSP-CHECK--CAPS"></a><h3>GST_RTSP_CHECK()</h3>
+<div class="refsect2">
+<a name="GST-RTSP-CHECK:CAPS"></a><h3>GST_RTSP_CHECK()</h3>
 <pre class="programlisting">#define             GST_RTSP_CHECK(stmt, label)</pre>
 <p>
 Macro that checks the return value of <em class="parameter"><code>stmt</code></em> and jumps to <em class="parameter"><code>label</code></em> when it does
-not equal <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK--CAPS"><span class="type">GST_RTSP_OK</span></a>.</p>
-<p>
+not equal <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>stmt</code></em> :</span></p></td>
-<td> a statement
-</td>
+<td>a statement</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>label</code></em> :</span></p></td>
-<td> a label
+<td>a label</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-RTSP-AUTH-MAX:CAPS"></a><h3>GST_RTSP_AUTH_MAX</h3>
+<pre class="programlisting">#define GST_RTSP_AUTH_MAX GST_RTSP_AUTH_DIGEST
+</pre>
+<p>
+Strongest available authentication method
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRTSPEvent"></a><h3>enum GstRTSPEvent</h3>
+<pre class="programlisting">typedef enum {
+  GST_RTSP_EV_READ  = (1 &lt;&lt; 0),
+  GST_RTSP_EV_WRITE = (1 &lt;&lt; 1)
+} GstRTSPEvent;
+</pre>
+<p>
+The possible events for the connection.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><a name="GST-RTSP-EV-READ:CAPS"></a><span class="term"><code class="literal">GST_RTSP_EV_READ</code></span></p></td>
+<td>connection is readable
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-RTSP-EV-WRITE:CAPS"></a><span class="term"><code class="literal">GST_RTSP_EV_WRITE</code></span></p></td>
+<td>connection is writable
 </td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="GstRTSPResult"></a><h3>enum GstRTSPResult</h3>
 <pre class="programlisting">typedef enum {
   GST_RTSP_OK          =  0,
@@ -162,107 +157,106 @@ not equal <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-
 } GstRTSPResult;
 </pre>
 <p>
-Result codes from the RTSP functions.</p>
-<p>
+Result codes from the RTSP functions.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RTSP-OK--CAPS"></a><span class="term"><code class="literal">GST_RTSP_OK</code></span></p></td>
-<td> no error
+<td><p><a name="GST-RTSP-OK:CAPS"></a><span class="term"><code class="literal">GST_RTSP_OK</code></span></p></td>
+<td>no error
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ERROR--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ERROR</code></span></p></td>
-<td> some unspecified error occured
+<td><p><a name="GST-RTSP-ERROR:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ERROR</code></span></p></td>
+<td>some unspecified error occured
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-EINVAL--CAPS"></a><span class="term"><code class="literal">GST_RTSP_EINVAL</code></span></p></td>
-<td> invalid arguments were provided to a function
+<td><p><a name="GST-RTSP-EINVAL:CAPS"></a><span class="term"><code class="literal">GST_RTSP_EINVAL</code></span></p></td>
+<td>invalid arguments were provided to a function
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-EINTR--CAPS"></a><span class="term"><code class="literal">GST_RTSP_EINTR</code></span></p></td>
-<td> an operation was canceled
+<td><p><a name="GST-RTSP-EINTR:CAPS"></a><span class="term"><code class="literal">GST_RTSP_EINTR</code></span></p></td>
+<td>an operation was canceled
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ENOMEM--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ENOMEM</code></span></p></td>
-<td> no memory was available for the operation
+<td><p><a name="GST-RTSP-ENOMEM:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ENOMEM</code></span></p></td>
+<td>no memory was available for the operation
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ERESOLV--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ERESOLV</code></span></p></td>
-<td> a host resolve error occured
+<td><p><a name="GST-RTSP-ERESOLV:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ERESOLV</code></span></p></td>
+<td>a host resolve error occured
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ENOTIMPL--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ENOTIMPL</code></span></p></td>
-<td> function not implemented
+<td><p><a name="GST-RTSP-ENOTIMPL:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ENOTIMPL</code></span></p></td>
+<td>function not implemented
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ESYS--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ESYS</code></span></p></td>
-<td> a system error occured, errno contains more details
+<td><p><a name="GST-RTSP-ESYS:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ESYS</code></span></p></td>
+<td>a system error occured, errno contains more details
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-EPARSE--CAPS"></a><span class="term"><code class="literal">GST_RTSP_EPARSE</code></span></p></td>
-<td> a persing error occured
+<td><p><a name="GST-RTSP-EPARSE:CAPS"></a><span class="term"><code class="literal">GST_RTSP_EPARSE</code></span></p></td>
+<td>a persing error occured
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-EWSASTART--CAPS"></a><span class="term"><code class="literal">GST_RTSP_EWSASTART</code></span></p></td>
-<td> windows networking could not start
+<td><p><a name="GST-RTSP-EWSASTART:CAPS"></a><span class="term"><code class="literal">GST_RTSP_EWSASTART</code></span></p></td>
+<td>windows networking could not start
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-EWSAVERSION--CAPS"></a><span class="term"><code class="literal">GST_RTSP_EWSAVERSION</code></span></p></td>
-<td> windows networking stack has wrong version
+<td><p><a name="GST-RTSP-EWSAVERSION:CAPS"></a><span class="term"><code class="literal">GST_RTSP_EWSAVERSION</code></span></p></td>
+<td>windows networking stack has wrong version
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-EEOF--CAPS"></a><span class="term"><code class="literal">GST_RTSP_EEOF</code></span></p></td>
-<td> end-of-file was reached
+<td><p><a name="GST-RTSP-EEOF:CAPS"></a><span class="term"><code class="literal">GST_RTSP_EEOF</code></span></p></td>
+<td>end-of-file was reached
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ENET--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ENET</code></span></p></td>
-<td> a network problem occured, h_errno contains more details
+<td><p><a name="GST-RTSP-ENET:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ENET</code></span></p></td>
+<td>a network problem occured, h_errno contains more details
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ENOTIP--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ENOTIP</code></span></p></td>
-<td> the host is not an IP host
+<td><p><a name="GST-RTSP-ENOTIP:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ENOTIP</code></span></p></td>
+<td>the host is not an IP host
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ETIMEOUT--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ETIMEOUT</code></span></p></td>
-<td> a timeout occured
+<td><p><a name="GST-RTSP-ETIMEOUT:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ETIMEOUT</code></span></p></td>
+<td>a timeout occured
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ETGET--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ETGET</code></span></p></td>
-<td> the tunnel GET request has been performed
+<td><p><a name="GST-RTSP-ETGET:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ETGET</code></span></p></td>
+<td>the tunnel GET request has been performed
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ETPOST--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ETPOST</code></span></p></td>
-<td> the tunnel POST request has been performed
+<td><p><a name="GST-RTSP-ETPOST:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ETPOST</code></span></p></td>
+<td>the tunnel POST request has been performed
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ELAST--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ELAST</code></span></p></td>
-<td> last error
+<td><p><a name="GST-RTSP-ELAST:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ELAST</code></span></p></td>
+<td>last error
 </td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="GstRTSPFamily"></a><h3>enum GstRTSPFamily</h3>
 <pre class="programlisting">typedef enum {
   GST_RTSP_FAM_NONE,
@@ -271,32 +265,31 @@ Result codes from the RTSP functions.</p>
 } GstRTSPFamily;
 </pre>
 <p>
-The possible network families.</p>
-<p>
+The possible network families.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RTSP-FAM-NONE--CAPS"></a><span class="term"><code class="literal">GST_RTSP_FAM_NONE</code></span></p></td>
-<td> unknown network family
+<td><p><a name="GST-RTSP-FAM-NONE:CAPS"></a><span class="term"><code class="literal">GST_RTSP_FAM_NONE</code></span></p></td>
+<td>unknown network family
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-FAM-INET--CAPS"></a><span class="term"><code class="literal">GST_RTSP_FAM_INET</code></span></p></td>
-<td> internet
+<td><p><a name="GST-RTSP-FAM-INET:CAPS"></a><span class="term"><code class="literal">GST_RTSP_FAM_INET</code></span></p></td>
+<td>internet
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-FAM-INET6--CAPS"></a><span class="term"><code class="literal">GST_RTSP_FAM_INET6</code></span></p></td>
-<td> internet V6
+<td><p><a name="GST-RTSP-FAM-INET6:CAPS"></a><span class="term"><code class="literal">GST_RTSP_FAM_INET6</code></span></p></td>
+<td>internet V6
 </td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="GstRTSPState"></a><h3>enum GstRTSPState</h3>
 <pre class="programlisting">typedef enum {
   GST_RTSP_STATE_INVALID,
@@ -308,47 +301,46 @@ The possible network families.</p>
 } GstRTSPState;
 </pre>
 <p>
-The different RTSP states.</p>
-<p>
+The different RTSP states.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RTSP-STATE-INVALID--CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_INVALID</code></span></p></td>
-<td> invalid state
+<td><p><a name="GST-RTSP-STATE-INVALID:CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_INVALID</code></span></p></td>
+<td>invalid state
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-STATE-INIT--CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_INIT</code></span></p></td>
-<td> initializing
+<td><p><a name="GST-RTSP-STATE-INIT:CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_INIT</code></span></p></td>
+<td>initializing
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-STATE-READY--CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_READY</code></span></p></td>
-<td> ready for operation
+<td><p><a name="GST-RTSP-STATE-READY:CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_READY</code></span></p></td>
+<td>ready for operation
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-STATE-SEEKING--CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_SEEKING</code></span></p></td>
-<td> seeking in progress
+<td><p><a name="GST-RTSP-STATE-SEEKING:CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_SEEKING</code></span></p></td>
+<td>seeking in progress
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-STATE-PLAYING--CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_PLAYING</code></span></p></td>
-<td> playing
+<td><p><a name="GST-RTSP-STATE-PLAYING:CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_PLAYING</code></span></p></td>
+<td>playing
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-STATE-RECORDING--CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_RECORDING</code></span></p></td>
-<td> recording
+<td><p><a name="GST-RTSP-STATE-RECORDING:CAPS"></a><span class="term"><code class="literal">GST_RTSP_STATE_RECORDING</code></span></p></td>
+<td>recording
 </td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="GstRTSPVersion"></a><h3>enum GstRTSPVersion</h3>
 <pre class="programlisting">typedef enum {
   GST_RTSP_VERSION_INVALID = 0x00,
@@ -357,32 +349,31 @@ The different RTSP states.</p>
 } GstRTSPVersion;
 </pre>
 <p>
-The supported RTSP versions.</p>
-<p>
+The supported RTSP versions.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RTSP-VERSION-INVALID--CAPS"></a><span class="term"><code class="literal">GST_RTSP_VERSION_INVALID</code></span></p></td>
-<td> unknown/invalid version
+<td><p><a name="GST-RTSP-VERSION-INVALID:CAPS"></a><span class="term"><code class="literal">GST_RTSP_VERSION_INVALID</code></span></p></td>
+<td>unknown/invalid version
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-VERSION-1-0--CAPS"></a><span class="term"><code class="literal">GST_RTSP_VERSION_1_0</code></span></p></td>
-<td> version 1.0
+<td><p><a name="GST-RTSP-VERSION-1-0:CAPS"></a><span class="term"><code class="literal">GST_RTSP_VERSION_1_0</code></span></p></td>
+<td>version 1.0
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-VERSION-1-1--CAPS"></a><span class="term"><code class="literal">GST_RTSP_VERSION_1_1</code></span></p></td>
-<td> version 1.1. Since 0.10.25
+<td><p><a name="GST-RTSP-VERSION-1-1:CAPS"></a><span class="term"><code class="literal">GST_RTSP_VERSION_1_1</code></span></p></td>
+<td>version 1.1.
 </td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="GstRTSPMethod"></a><h3>enum GstRTSPMethod</h3>
 <pre class="programlisting">typedef enum {
   GST_RTSP_INVALID          = 0,
@@ -402,87 +393,86 @@ The supported RTSP versions.</p>
 } GstRTSPMethod;
 </pre>
 <p>
-The different supported RTSP methods.</p>
-<p>
+The different supported RTSP methods.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RTSP-INVALID--CAPS"></a><span class="term"><code class="literal">GST_RTSP_INVALID</code></span></p></td>
-<td> invalid method
+<td><p><a name="GST-RTSP-INVALID:CAPS"></a><span class="term"><code class="literal">GST_RTSP_INVALID</code></span></p></td>
+<td>invalid method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-DESCRIBE--CAPS"></a><span class="term"><code class="literal">GST_RTSP_DESCRIBE</code></span></p></td>
-<td> the DESCRIBE method
+<td><p><a name="GST-RTSP-DESCRIBE:CAPS"></a><span class="term"><code class="literal">GST_RTSP_DESCRIBE</code></span></p></td>
+<td>the DESCRIBE method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-ANNOUNCE--CAPS"></a><span class="term"><code class="literal">GST_RTSP_ANNOUNCE</code></span></p></td>
-<td> the ANNOUNCE method
+<td><p><a name="GST-RTSP-ANNOUNCE:CAPS"></a><span class="term"><code class="literal">GST_RTSP_ANNOUNCE</code></span></p></td>
+<td>the ANNOUNCE method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-GET-PARAMETER--CAPS"></a><span class="term"><code class="literal">GST_RTSP_GET_PARAMETER</code></span></p></td>
-<td> the GET_PARAMETER method
+<td><p><a name="GST-RTSP-GET-PARAMETER:CAPS"></a><span class="term"><code class="literal">GST_RTSP_GET_PARAMETER</code></span></p></td>
+<td>the GET_PARAMETER method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-OPTIONS--CAPS"></a><span class="term"><code class="literal">GST_RTSP_OPTIONS</code></span></p></td>
-<td> the OPTIONS method
+<td><p><a name="GST-RTSP-OPTIONS:CAPS"></a><span class="term"><code class="literal">GST_RTSP_OPTIONS</code></span></p></td>
+<td>the OPTIONS method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-PAUSE--CAPS"></a><span class="term"><code class="literal">GST_RTSP_PAUSE</code></span></p></td>
-<td> the PAUSE method
+<td><p><a name="GST-RTSP-PAUSE:CAPS"></a><span class="term"><code class="literal">GST_RTSP_PAUSE</code></span></p></td>
+<td>the PAUSE method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-PLAY--CAPS"></a><span class="term"><code class="literal">GST_RTSP_PLAY</code></span></p></td>
-<td> the PLAY method
+<td><p><a name="GST-RTSP-PLAY:CAPS"></a><span class="term"><code class="literal">GST_RTSP_PLAY</code></span></p></td>
+<td>the PLAY method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-RECORD--CAPS"></a><span class="term"><code class="literal">GST_RTSP_RECORD</code></span></p></td>
-<td> the RECORD method
+<td><p><a name="GST-RTSP-RECORD:CAPS"></a><span class="term"><code class="literal">GST_RTSP_RECORD</code></span></p></td>
+<td>the RECORD method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-REDIRECT--CAPS"></a><span class="term"><code class="literal">GST_RTSP_REDIRECT</code></span></p></td>
-<td> the REDIRECT method
+<td><p><a name="GST-RTSP-REDIRECT:CAPS"></a><span class="term"><code class="literal">GST_RTSP_REDIRECT</code></span></p></td>
+<td>the REDIRECT method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-SETUP--CAPS"></a><span class="term"><code class="literal">GST_RTSP_SETUP</code></span></p></td>
-<td> the SETUP method
+<td><p><a name="GST-RTSP-SETUP:CAPS"></a><span class="term"><code class="literal">GST_RTSP_SETUP</code></span></p></td>
+<td>the SETUP method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-SET-PARAMETER--CAPS"></a><span class="term"><code class="literal">GST_RTSP_SET_PARAMETER</code></span></p></td>
-<td> the SET_PARAMETER method
+<td><p><a name="GST-RTSP-SET-PARAMETER:CAPS"></a><span class="term"><code class="literal">GST_RTSP_SET_PARAMETER</code></span></p></td>
+<td>the SET_PARAMETER method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-TEARDOWN--CAPS"></a><span class="term"><code class="literal">GST_RTSP_TEARDOWN</code></span></p></td>
-<td> the TEARDOWN method
+<td><p><a name="GST-RTSP-TEARDOWN:CAPS"></a><span class="term"><code class="literal">GST_RTSP_TEARDOWN</code></span></p></td>
+<td>the TEARDOWN method
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-GET--CAPS"></a><span class="term"><code class="literal">GST_RTSP_GET</code></span></p></td>
-<td> the GET method (HTTP). Since 0.10.25
+<td><p><a name="GST-RTSP-GET:CAPS"></a><span class="term"><code class="literal">GST_RTSP_GET</code></span></p></td>
+<td>the GET method (HTTP).
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-POST--CAPS"></a><span class="term"><code class="literal">GST_RTSP_POST</code></span></p></td>
-<td> the POST method (HTTP). Since 0.10.25
+<td><p><a name="GST-RTSP-POST:CAPS"></a><span class="term"><code class="literal">GST_RTSP_POST</code></span></p></td>
+<td>the POST method (HTTP).
 </td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="GstRTSPAuthMethod"></a><h3>enum GstRTSPAuthMethod</h3>
 <pre class="programlisting">typedef enum {
   GST_RTSP_AUTH_NONE    = 0x00,
@@ -491,42 +481,31 @@ The different supported RTSP methods.</p>
 } GstRTSPAuthMethod;
 </pre>
 <p>
-Authentication methods, ordered by strength</p>
-<p>
+Authentication methods, ordered by strength
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><a name="GST-RTSP-AUTH-NONE--CAPS"></a><span class="term"><code class="literal">GST_RTSP_AUTH_NONE</code></span></p></td>
-<td> no authentication
+<td><p><a name="GST-RTSP-AUTH-NONE:CAPS"></a><span class="term"><code class="literal">GST_RTSP_AUTH_NONE</code></span></p></td>
+<td>no authentication
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-AUTH-BASIC--CAPS"></a><span class="term"><code class="literal">GST_RTSP_AUTH_BASIC</code></span></p></td>
-<td> basic authentication
+<td><p><a name="GST-RTSP-AUTH-BASIC:CAPS"></a><span class="term"><code class="literal">GST_RTSP_AUTH_BASIC</code></span></p></td>
+<td>basic authentication
 </td>
 </tr>
 <tr>
-<td><p><a name="GST-RTSP-AUTH-DIGEST--CAPS"></a><span class="term"><code class="literal">GST_RTSP_AUTH_DIGEST</code></span></p></td>
-<td> digest authentication
+<td><p><a name="GST-RTSP-AUTH-DIGEST:CAPS"></a><span class="term"><code class="literal">GST_RTSP_AUTH_DIGEST</code></span></p></td>
+<td>digest authentication
 </td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GST-RTSP-AUTH-MAX--CAPS"></a><h3>GST_RTSP_AUTH_MAX</h3>
-<pre class="programlisting">#define GST_RTSP_AUTH_MAX GST_RTSP_AUTH_DIGEST
-</pre>
-<p>
-Strongest available authentication method</p>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="GstRTSPHeaderField"></a><h3>enum GstRTSPHeaderField</h3>
 <pre class="programlisting">typedef enum {
   GST_RTSP_HDR_INVALID,
@@ -630,290 +609,278 @@ Strongest available authentication method</p>
   GST_RTSP_HDR_X_SERVER_IP_ADDRESS, /* X-Server-IP-Address */
   GST_RTSP_HDR_X_SESSIONCOOKIE,     /* X-Sessioncookie */
 
+  /* Since 0.10.36 */
+  GST_RTSP_HDR_RTCP_INTERVAL,       /* RTCP-Interval */
+
   GST_RTSP_HDR_LAST
 } GstRTSPHeaderField;
 </pre>
 <p>
+Enumeration of rtsp header fields
 </p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="GstRTSPStatusCode"></a><h3>enum GstRTSPStatusCode</h3>
 <pre class="programlisting">typedef enum {
-  GST_RTSP_STS_INVALID                              = 0, 
-  GST_RTSP_STS_CONTINUE                             = 100, 
-  GST_RTSP_STS_OK                                   = 200, 
-  GST_RTSP_STS_CREATED                              = 201, 
-  GST_RTSP_STS_LOW_ON_STORAGE                       = 250, 
-  GST_RTSP_STS_MULTIPLE_CHOICES                     = 300, 
-  GST_RTSP_STS_MOVED_PERMANENTLY                    = 301, 
-  GST_RTSP_STS_MOVE_TEMPORARILY                     = 302, 
-  GST_RTSP_STS_SEE_OTHER                            = 303, 
-  GST_RTSP_STS_NOT_MODIFIED                         = 304, 
-  GST_RTSP_STS_USE_PROXY                            = 305, 
-  GST_RTSP_STS_BAD_REQUEST                          = 400, 
-  GST_RTSP_STS_UNAUTHORIZED                         = 401, 
-  GST_RTSP_STS_PAYMENT_REQUIRED                     = 402, 
-  GST_RTSP_STS_FORBIDDEN                            = 403, 
-  GST_RTSP_STS_NOT_FOUND                            = 404, 
-  GST_RTSP_STS_METHOD_NOT_ALLOWED                   = 405, 
-  GST_RTSP_STS_NOT_ACCEPTABLE                       = 406, 
-  GST_RTSP_STS_PROXY_AUTH_REQUIRED                  = 407, 
-  GST_RTSP_STS_REQUEST_TIMEOUT                      = 408, 
-  GST_RTSP_STS_GONE                                 = 410, 
-  GST_RTSP_STS_LENGTH_REQUIRED                      = 411, 
-  GST_RTSP_STS_PRECONDITION_FAILED                  = 412, 
-  GST_RTSP_STS_REQUEST_ENTITY_TOO_LARGE             = 413, 
-  GST_RTSP_STS_REQUEST_URI_TOO_LARGE                = 414, 
-  GST_RTSP_STS_UNSUPPORTED_MEDIA_TYPE               = 415, 
-  GST_RTSP_STS_PARAMETER_NOT_UNDERSTOOD             = 451, 
-  GST_RTSP_STS_CONFERENCE_NOT_FOUND                 = 452, 
-  GST_RTSP_STS_NOT_ENOUGH_BANDWIDTH                 = 453, 
-  GST_RTSP_STS_SESSION_NOT_FOUND                    = 454, 
-  GST_RTSP_STS_METHOD_NOT_VALID_IN_THIS_STATE       = 455, 
-  GST_RTSP_STS_HEADER_FIELD_NOT_VALID_FOR_RESOURCE  = 456, 
-  GST_RTSP_STS_INVALID_RANGE                        = 457, 
-  GST_RTSP_STS_PARAMETER_IS_READONLY                = 458, 
-  GST_RTSP_STS_AGGREGATE_OPERATION_NOT_ALLOWED      = 459, 
-  GST_RTSP_STS_ONLY_AGGREGATE_OPERATION_ALLOWED     = 460, 
-  GST_RTSP_STS_UNSUPPORTED_TRANSPORT                = 461, 
-  GST_RTSP_STS_DESTINATION_UNREACHABLE              = 462, 
-  GST_RTSP_STS_INTERNAL_SERVER_ERROR                = 500, 
-  GST_RTSP_STS_NOT_IMPLEMENTED                      = 501, 
-  GST_RTSP_STS_BAD_GATEWAY                          = 502, 
-  GST_RTSP_STS_SERVICE_UNAVAILABLE                  = 503, 
-  GST_RTSP_STS_GATEWAY_TIMEOUT                      = 504, 
-  GST_RTSP_STS_RTSP_VERSION_NOT_SUPPORTED           = 505, 
+  GST_RTSP_STS_INVALID                              = 0,
+  GST_RTSP_STS_CONTINUE                             = 100,
+  GST_RTSP_STS_OK                                   = 200,
+  GST_RTSP_STS_CREATED                              = 201,
+  GST_RTSP_STS_LOW_ON_STORAGE                       = 250,
+  GST_RTSP_STS_MULTIPLE_CHOICES                     = 300,
+  GST_RTSP_STS_MOVED_PERMANENTLY                    = 301,
+  GST_RTSP_STS_MOVE_TEMPORARILY                     = 302,
+  GST_RTSP_STS_SEE_OTHER                            = 303,
+  GST_RTSP_STS_NOT_MODIFIED                         = 304,
+  GST_RTSP_STS_USE_PROXY                            = 305,
+  GST_RTSP_STS_BAD_REQUEST                          = 400,
+  GST_RTSP_STS_UNAUTHORIZED                         = 401,
+  GST_RTSP_STS_PAYMENT_REQUIRED                     = 402,
+  GST_RTSP_STS_FORBIDDEN                            = 403,
+  GST_RTSP_STS_NOT_FOUND                            = 404,
+  GST_RTSP_STS_METHOD_NOT_ALLOWED                   = 405,
+  GST_RTSP_STS_NOT_ACCEPTABLE                       = 406,
+  GST_RTSP_STS_PROXY_AUTH_REQUIRED                  = 407,
+  GST_RTSP_STS_REQUEST_TIMEOUT                      = 408,
+  GST_RTSP_STS_GONE                                 = 410,
+  GST_RTSP_STS_LENGTH_REQUIRED                      = 411,
+  GST_RTSP_STS_PRECONDITION_FAILED                  = 412,
+  GST_RTSP_STS_REQUEST_ENTITY_TOO_LARGE             = 413,
+  GST_RTSP_STS_REQUEST_URI_TOO_LARGE                = 414,
+  GST_RTSP_STS_UNSUPPORTED_MEDIA_TYPE               = 415,
+  GST_RTSP_STS_PARAMETER_NOT_UNDERSTOOD             = 451,
+  GST_RTSP_STS_CONFERENCE_NOT_FOUND                 = 452,
+  GST_RTSP_STS_NOT_ENOUGH_BANDWIDTH                 = 453,
+  GST_RTSP_STS_SESSION_NOT_FOUND                    = 454,
+  GST_RTSP_STS_METHOD_NOT_VALID_IN_THIS_STATE       = 455,
+  GST_RTSP_STS_HEADER_FIELD_NOT_VALID_FOR_RESOURCE  = 456,
+  GST_RTSP_STS_INVALID_RANGE                        = 457,
+  GST_RTSP_STS_PARAMETER_IS_READONLY                = 458,
+  GST_RTSP_STS_AGGREGATE_OPERATION_NOT_ALLOWED      = 459,
+  GST_RTSP_STS_ONLY_AGGREGATE_OPERATION_ALLOWED     = 460,
+  GST_RTSP_STS_UNSUPPORTED_TRANSPORT                = 461,
+  GST_RTSP_STS_DESTINATION_UNREACHABLE              = 462,
+  GST_RTSP_STS_INTERNAL_SERVER_ERROR                = 500,
+  GST_RTSP_STS_NOT_IMPLEMENTED                      = 501,
+  GST_RTSP_STS_BAD_GATEWAY                          = 502,
+  GST_RTSP_STS_SERVICE_UNAVAILABLE                  = 503,
+  GST_RTSP_STS_GATEWAY_TIMEOUT                      = 504,
+  GST_RTSP_STS_RTSP_VERSION_NOT_SUPPORTED           = 505,
   GST_RTSP_STS_OPTION_NOT_SUPPORTED                 = 551
 } GstRTSPStatusCode;
 </pre>
 <p>
+Enumeration of rtsp status codes
 </p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="gst-rtsp-strresult"></a><h3>gst_rtsp_strresult ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              gst_rtsp_strresult                  (<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a> result);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             gst_rtsp_strresult                  (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a> result</code></em>);</pre>
 <p>
-Convert <em class="parameter"><code>result</code></em> in a human readable string.</p>
-<p>
+Convert <em class="parameter"><code>result</code></em> in a human readable string.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
-<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a>
+<td>a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a newly allocated string. <a
-href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
-><code class="function">g_free()</code></a> after usage.
-</td>
+<td>a newly allocated string. <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a> after usage.</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="gst-rtsp-method-as-text"></a><h3>gst_rtsp_method_as_text ()</h3>
-<pre class="programlisting">const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*        gst_rtsp_method_as_text             (<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod">GstRTSPMethod</a> method);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       gst_rtsp_method_as_text             (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod"><span class="type">GstRTSPMethod</span></a> method</code></em>);</pre>
 <p>
-Convert <em class="parameter"><code>method</code></em> to a string.</p>
-<p>
+Convert <em class="parameter"><code>method</code></em> to a string.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>method</code></em> :</span></p></td>
-<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod"><span class="type">GstRTSPMethod</span></a>
+<td>a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod"><span class="type">GstRTSPMethod</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a string representation of <em class="parameter"><code>method</code></em>.
-</td>
+<td>a string representation of <em class="parameter"><code>method</code></em>.</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="gst-rtsp-version-as-text"></a><h3>gst_rtsp_version_as_text ()</h3>
-<pre class="programlisting">const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*        gst_rtsp_version_as_text            (<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPVersion" title="enum GstRTSPVersion">GstRTSPVersion</a> version);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       gst_rtsp_version_as_text            (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPVersion" title="enum GstRTSPVersion"><span class="type">GstRTSPVersion</span></a> version</code></em>);</pre>
 <p>
-Convert <em class="parameter"><code>version</code></em> to a string.</p>
-<p>
+Convert <em class="parameter"><code>version</code></em> to a string.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>version</code></em> :</span></p></td>
-<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPVersion" title="enum GstRTSPVersion"><span class="type">GstRTSPVersion</span></a>
+<td>a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPVersion" title="enum GstRTSPVersion"><span class="type">GstRTSPVersion</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a string representation of <em class="parameter"><code>version</code></em>.
-</td>
+<td>a string representation of <em class="parameter"><code>version</code></em>.</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="gst-rtsp-header-as-text"></a><h3>gst_rtsp_header_as_text ()</h3>
-<pre class="programlisting">const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*        gst_rtsp_header_as_text             (<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField">GstRTSPHeaderField</a> field);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       gst_rtsp_header_as_text             (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField"><span class="type">GstRTSPHeaderField</span></a> field</code></em>);</pre>
 <p>
-Convert <em class="parameter"><code>field</code></em> to a string.</p>
-<p>
+Convert <em class="parameter"><code>field</code></em> to a string.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>field</code></em> :</span></p></td>
-<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField"><span class="type">GstRTSPHeaderField</span></a>
+<td>a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField"><span class="type">GstRTSPHeaderField</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a string representation of <em class="parameter"><code>field</code></em>.
-</td>
+<td>a string representation of <em class="parameter"><code>field</code></em>.</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2">
+<a name="gst-rtsp-header-allow-multiple"></a><h3>gst_rtsp_header_allow_multiple ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_rtsp_header_allow_multiple      (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField"><span class="type">GstRTSPHeaderField</span></a> field</code></em>);</pre>
+<p>
+Check whether <em class="parameter"><code>field</code></em> may appear multiple times in a message.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>field</code></em> :</span></p></td>
+<td>a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField"><span class="type">GstRTSPHeaderField</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if multiple headers are allowed.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
 <a name="gst-rtsp-status-as-text"></a><h3>gst_rtsp_status_as_text ()</h3>
-<pre class="programlisting">const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*        gst_rtsp_status_as_text             (<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode" title="enum GstRTSPStatusCode">GstRTSPStatusCode</a> code);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       gst_rtsp_status_as_text             (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode" title="enum GstRTSPStatusCode"><span class="type">GstRTSPStatusCode</span></a> code</code></em>);</pre>
 <p>
-Convert <em class="parameter"><code>code</code></em> to a string.</p>
-<p>
+Convert <em class="parameter"><code>code</code></em> to a string.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>code</code></em> :</span></p></td>
-<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode" title="enum GstRTSPStatusCode"><span class="type">GstRTSPStatusCode</span></a>
+<td>a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode" title="enum GstRTSPStatusCode"><span class="type">GstRTSPStatusCode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a string representation of <em class="parameter"><code>code</code></em>.
-</td>
+<td>a string representation of <em class="parameter"><code>code</code></em>.</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="gst-rtsp-options-as-text"></a><h3>gst_rtsp_options_as_text ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*              gst_rtsp_options_as_text            (<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod">GstRTSPMethod</a> options);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             gst_rtsp_options_as_text            (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod"><span class="type">GstRTSPMethod</span></a> options</code></em>);</pre>
 <p>
-Convert <em class="parameter"><code>options</code></em> to a string.</p>
-<p>
+Convert <em class="parameter"><code>options</code></em> to a string.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>options</code></em> :</span></p></td>
-<td> one or more <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod"><span class="type">GstRTSPMethod</span></a>
+<td>one or more <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod"><span class="type">GstRTSPMethod</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a new string of <em class="parameter"><code>options</code></em>. <a
-href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
-><code class="function">g_free()</code></a> after usage.
-
-</td>
+<td>a new string of <em class="parameter"><code>options</code></em>. <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a> after usage.</td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since 0.10.23</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="gst-rtsp-find-header-field"></a><h3>gst_rtsp_find_header_field ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField">GstRTSPHeaderField</a>  gst_rtsp_find_header_field          (const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a> *header);</pre>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField"><span class="returnvalue">GstRTSPHeaderField</span></a>  gst_rtsp_find_header_field          (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *header</code></em>);</pre>
 <p>
-Convert <em class="parameter"><code>header</code></em> to a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField"><span class="type">GstRTSPHeaderField</span></a>.</p>
-<p>
+Convert <em class="parameter"><code>header</code></em> to a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField"><span class="type">GstRTSPHeaderField</span></a>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>header</code></em> :</span></p></td>
-<td> a header string
-</td>
+<td>a header string</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField"><span class="type">GstRTSPHeaderField</span></a> for <em class="parameter"><code>header</code></em> or <span class="type">GST_RTSP_HDR_INVALID</span> if the
-header field is unknown.
-</td>
+<td>a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField"><span class="type">GstRTSPHeaderField</span></a> for <em class="parameter"><code>header</code></em> or <span class="type">GST_RTSP_HDR_INVALID</span> if the
+header field is unknown.</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="gst-rtsp-find-method"></a><h3>gst_rtsp_find_method ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod">GstRTSPMethod</a>       gst_rtsp_find_method                (const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a> *method);</pre>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod"><span class="returnvalue">GstRTSPMethod</span></a>       gst_rtsp_find_method                (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *method</code></em>);</pre>
 <p>
-Convert <em class="parameter"><code>method</code></em> to a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod"><span class="type">GstRTSPMethod</span></a>.</p>
-<p>
+Convert <em class="parameter"><code>method</code></em> to a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod"><span class="type">GstRTSPMethod</span></a>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>method</code></em> :</span></p></td>
-<td> a method
-</td>
+<td>a method</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod"><span class="type">GstRTSPMethod</span></a> for <em class="parameter"><code>method</code></em> or <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-INVALID--CAPS"><span class="type">GST_RTSP_INVALID</span></a> if the
-method is unknown.
-</td>
+<td>a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod"><span class="type">GstRTSPMethod</span></a> for <em class="parameter"><code>method</code></em> or <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-INVALID:CAPS"><span class="type">GST_RTSP_INVALID</span></a> if the
+method is unknown.</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-base-libs-gstrtspdefs.see-also"></a><h2>See Also</h2>
 gstrtspurl, gstrtspconnection
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

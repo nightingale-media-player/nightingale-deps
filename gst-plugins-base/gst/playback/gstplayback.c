@@ -27,12 +27,9 @@
 #include <gst/gst-i18n-plugin.h>
 #include <gst/pbutils/pbutils.h>
 
-#include "gststreamselector.h"
-#include "gststreaminfo.h"
+#include "gstplayback.h"
 #include "gstplaysink.h"
-
-gboolean gst_play_bin_plugin_init (GstPlugin * plugin);
-gboolean gst_play_bin2_plugin_init (GstPlugin * plugin);
+#include "gstsubtitleoverlay.h"
 
 static gboolean
 plugin_init (GstPlugin * plugin)
@@ -48,20 +45,18 @@ plugin_init (GstPlugin * plugin)
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif /* ENABLE_NLS */
 
-  /* ref class from a thread-safe context to work around missing bit of
-   * thread-safety in GObject */
-  g_type_class_ref (GST_TYPE_STREAM_INFO);
-  g_type_class_ref (GST_TYPE_STREAM_SELECTOR);
-
-  res = gst_play_bin_plugin_init (plugin);
-  res &= gst_play_bin2_plugin_init (plugin);
+  res = gst_play_bin2_plugin_init (plugin);
   res &= gst_play_sink_plugin_init (plugin);
+  res &= gst_subtitle_overlay_plugin_init (plugin);
+
+  res &= gst_decode_bin_plugin_init (plugin);
+  res &= gst_uri_decode_bin_plugin_init (plugin);
 
   return res;
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "playback",
+    playback,
     "various playback elements", plugin_init, VERSION, GST_LICENSE,
     GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

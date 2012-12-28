@@ -45,7 +45,7 @@ mount_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
   }
 }
 
-gboolean
+static gboolean
 message_handler (GstBus * bus, GstMessage * message, gpointer user_data)
 {
 
@@ -57,8 +57,7 @@ message_handler (GstBus * bus, GstMessage * message, gpointer user_data)
       if (strcmp (name, "not-mounted") == 0) {
         GMountOperation *mop = gtk_mount_operation_new (NULL);
         GFile *file =
-            G_FILE (g_value_get_object (gst_structure_get_value
-                (message->structure, "file")));
+            G_FILE (g_value_get_object (gst_structure_get_value (s, "file")));
 
         g_print ("not-mounted\n");
         gst_element_set_state (pipeline, GST_STATE_NULL);
@@ -107,7 +106,7 @@ main (int argc, char *argv[])
   gst_init (NULL, NULL);
   gtk_init (NULL, NULL);
 
-  pipeline = gst_element_factory_make ("playbin2", NULL);
+  pipeline = gst_element_factory_make ("playbin", NULL);
   g_assert (pipeline);
   g_object_set (G_OBJECT (pipeline), "uri", argv[1], NULL);
 
@@ -119,6 +118,7 @@ main (int argc, char *argv[])
 
   gtk_main ();
 
+  g_source_remove (watch_id);
   gst_element_set_state (pipeline, GST_STATE_NULL);
   gst_object_unref (pipeline);
 

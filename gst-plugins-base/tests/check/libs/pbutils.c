@@ -60,8 +60,8 @@ missing_msg_check_getters (GstMessage * msg)
 
 GST_START_TEST (test_pb_utils_post_missing_messages)
 {
+  const GstStructure *s;
   GstElement *pipeline;
-  GstStructure *s;
   GstMessage *msg;
   GstCaps *caps;
   GstBus *bus;
@@ -72,7 +72,7 @@ GST_START_TEST (test_pb_utils_post_missing_messages)
   bus = gst_element_get_bus (pipeline);
 
   /* first, test common assertion failure cases */
-  ASSERT_CRITICAL (msg = gst_missing_uri_source_message_new (NULL, "http"););
+  ASSERT_CRITICAL (msg = gst_missing_uri_source_message_new (NULL, "http"));
   ASSERT_CRITICAL (gst_missing_uri_source_message_new (pipeline, NULL));
 
   ASSERT_CRITICAL (gst_missing_uri_sink_message_new (NULL, "http"));
@@ -81,7 +81,7 @@ GST_START_TEST (test_pb_utils_post_missing_messages)
   ASSERT_CRITICAL (gst_missing_element_message_new (NULL, "rgbfyltr"));
   ASSERT_CRITICAL (gst_missing_element_message_new (pipeline, NULL));
 
-  caps = gst_caps_new_simple ("audio/x-dontexist", NULL);
+  caps = gst_caps_new_empty_simple ("audio/x-dontexist");
 
   ASSERT_CRITICAL (gst_missing_decoder_message_new (NULL, caps));
   ASSERT_CRITICAL (gst_missing_decoder_message_new (pipeline, NULL));
@@ -95,8 +95,8 @@ GST_START_TEST (test_pb_utils_post_missing_messages)
   msg = gst_missing_uri_source_message_new (pipeline, "http");
   fail_unless (msg != NULL);
   fail_unless_equals_int (GST_MESSAGE_TYPE (msg), GST_MESSAGE_ELEMENT);
-  fail_unless (msg->structure != NULL);
-  s = msg->structure;
+  fail_unless (gst_message_get_structure (msg) != NULL);
+  s = gst_message_get_structure (msg);
   fail_unless (gst_structure_has_name (s, "missing-plugin"));
   fail_unless (gst_structure_has_field_typed (s, "type", G_TYPE_STRING));
   fail_unless_equals_string (gst_structure_get_string (s, "type"), "urisource");
@@ -109,8 +109,8 @@ GST_START_TEST (test_pb_utils_post_missing_messages)
   msg = gst_missing_uri_sink_message_new (pipeline, "smb");
   fail_unless (msg != NULL);
   fail_unless_equals_int (GST_MESSAGE_TYPE (msg), GST_MESSAGE_ELEMENT);
-  fail_unless (msg->structure != NULL);
-  s = msg->structure;
+  fail_unless (gst_message_get_structure (msg) != NULL);
+  s = gst_message_get_structure (msg);
   fail_unless (gst_structure_has_name (s, "missing-plugin"));
   fail_unless (gst_structure_has_field_typed (s, "type", G_TYPE_STRING));
   fail_unless_equals_string (gst_structure_get_string (s, "type"), "urisink");
@@ -123,8 +123,8 @@ GST_START_TEST (test_pb_utils_post_missing_messages)
   msg = gst_missing_uri_source_message_new (pipeline, "chchck");
   fail_unless (msg != NULL);
   fail_unless_equals_int (GST_MESSAGE_TYPE (msg), GST_MESSAGE_ELEMENT);
-  fail_unless (msg->structure != NULL);
-  s = msg->structure;
+  fail_unless (gst_message_get_structure (msg) != NULL);
+  s = gst_message_get_structure (msg);
   fail_unless (gst_structure_has_name (s, "missing-plugin"));
   fail_unless (gst_structure_has_field_typed (s, "type", G_TYPE_STRING));
   fail_unless_equals_string (gst_structure_get_string (s, "type"), "urisource");
@@ -137,8 +137,8 @@ GST_START_TEST (test_pb_utils_post_missing_messages)
   msg = gst_missing_uri_sink_message_new (pipeline, "chchck");
   fail_unless (msg != NULL);
   fail_unless_equals_int (GST_MESSAGE_TYPE (msg), GST_MESSAGE_ELEMENT);
-  fail_unless (msg->structure != NULL);
-  s = msg->structure;
+  fail_unless (gst_message_get_structure (msg) != NULL);
+  s = gst_message_get_structure (msg);
   fail_unless (gst_structure_has_name (s, "missing-plugin"));
   fail_unless (gst_structure_has_field_typed (s, "type", G_TYPE_STRING));
   fail_unless_equals_string (gst_structure_get_string (s, "type"), "urisink");
@@ -151,8 +151,8 @@ GST_START_TEST (test_pb_utils_post_missing_messages)
   msg = gst_missing_element_message_new (pipeline, "foobar");
   fail_unless (msg != NULL);
   fail_unless_equals_int (GST_MESSAGE_TYPE (msg), GST_MESSAGE_ELEMENT);
-  fail_unless (msg->structure != NULL);
-  s = msg->structure;
+  fail_unless (gst_message_get_structure (msg) != NULL);
+  s = gst_message_get_structure (msg);
   fail_unless (gst_structure_has_name (s, "missing-plugin"));
   fail_unless (gst_structure_has_field_typed (s, "type", G_TYPE_STRING));
   fail_unless_equals_string (gst_structure_get_string (s, "type"), "element");
@@ -168,8 +168,8 @@ GST_START_TEST (test_pb_utils_post_missing_messages)
   msg = gst_missing_decoder_message_new (pipeline, caps);
   fail_unless (msg != NULL);
   fail_unless_equals_int (GST_MESSAGE_TYPE (msg), GST_MESSAGE_ELEMENT);
-  fail_unless (msg->structure != NULL);
-  s = msg->structure;
+  fail_unless (gst_message_get_structure (msg) != NULL);
+  s = gst_message_get_structure (msg);
   fail_unless (gst_structure_has_name (s, "missing-plugin"));
   fail_unless (gst_structure_has_field_typed (s, "type", G_TYPE_STRING));
   fail_unless_equals_string (gst_structure_get_string (s, "type"), "decoder");
@@ -181,8 +181,8 @@ GST_START_TEST (test_pb_utils_post_missing_messages)
   msg = gst_missing_encoder_message_new (pipeline, caps);
   fail_unless (msg != NULL);
   fail_unless_equals_int (GST_MESSAGE_TYPE (msg), GST_MESSAGE_ELEMENT);
-  fail_unless (msg->structure != NULL);
-  s = msg->structure;
+  fail_unless (gst_message_get_structure (msg) != NULL);
+  s = gst_message_get_structure (msg);
   fail_unless (gst_structure_has_name (s, "missing-plugin"));
   fail_unless (gst_structure_has_field_typed (s, "type", G_TYPE_STRING));
   fail_unless_equals_string (gst_structure_get_string (s, "type"), "encoder");
@@ -193,13 +193,13 @@ GST_START_TEST (test_pb_utils_post_missing_messages)
   gst_caps_unref (caps);
 
   /* create caps that exist */
-  caps = gst_caps_new_simple ("video/x-matroska", NULL);
+  caps = gst_caps_new_empty_simple ("video/x-matroska");
   /* decoder (with known caps) */
   msg = gst_missing_decoder_message_new (pipeline, caps);
   fail_unless (msg != NULL);
   fail_unless_equals_int (GST_MESSAGE_TYPE (msg), GST_MESSAGE_ELEMENT);
-  fail_unless (msg->structure != NULL);
-  s = msg->structure;
+  fail_unless (gst_message_get_structure (msg) != NULL);
+  s = gst_message_get_structure (msg);
   fail_unless (gst_structure_has_name (s, "missing-plugin"));
   fail_unless (gst_structure_has_field_typed (s, "type", G_TYPE_STRING));
   fail_unless_equals_string (gst_structure_get_string (s, "type"), "decoder");
@@ -213,8 +213,8 @@ GST_START_TEST (test_pb_utils_post_missing_messages)
   msg = gst_missing_encoder_message_new (pipeline, caps);
   fail_unless (msg != NULL);
   fail_unless_equals_int (GST_MESSAGE_TYPE (msg), GST_MESSAGE_ELEMENT);
-  fail_unless (msg->structure != NULL);
-  s = msg->structure;
+  fail_unless (gst_message_get_structure (msg) != NULL);
+  s = gst_message_get_structure (msg);
   fail_unless (gst_structure_has_name (s, "missing-plugin"));
   fail_unless (gst_structure_has_field_typed (s, "type", G_TYPE_STRING));
   fail_unless_equals_string (gst_structure_get_string (s, "type"), "encoder");
@@ -264,18 +264,18 @@ static const gchar *caps_strings[] = {
   "audio/x-vnd.sony.atrac3", "audio/x-vorbis", "audio/x-voc", "audio/x-w64",
   "audio/x-wav", "audio/x-wavpack", "audio/x-wavpack-correction",
   "audio/x-wms", "audio/x-voxware", "video/sp5x", "video/vivo",
-  "video/x-3ivx", "video/x-4xm", "video/x-apple-video", "video/x-camtasia",
+  "video/x-4xm", "video/x-apple-video", "video/x-camtasia",
   "video/x-cdxa", "video/x-cinepak", "video/x-cirrus-logic-accupak",
-  "video/x-compressed-yuv", "video/x-dirac", "video/x-dvd-subpicture",
+  "video/x-compressed-yuv", "video/x-dirac", "subpicture/x-dvd",
   "video/x-ffv", "video/x-flash-screen", "video/x-flash-video",
   "video/x-h261", "video/x-huffyuv", "video/x-intel-h263", "video/x-jpeg",
   "video/x-mjpeg", "video/x-mjpeg-b", "video/mpegts", "video/x-mng",
   "video/x-mszh", "video/x-msvideocodec", "video/x-mve", "video/x-nut",
-  "video/x-nuv", "video/x-qdrw", "video/x-raw-gray", "video/x-smc",
+  "video/x-nuv", "video/x-qdrw", "video/x-raw", "video/x-smc",
   "video/x-smoke", "video/x-tarkin", "video/x-theora", "video/x-rle",
   "video/x-ultimotion", "video/x-vcd", "video/x-vmnc", "video/x-vp3",
   "video/x-vp5", "video/x-vp6", "video/x-vp6-flash", "video/x-vp7",
-  "video/x-xvid", "video/x-zlib", "image/bmp", "image/x-bmp",
+  "video/x-zlib", "image/bmp", "image/x-bmp",
   "image/x-MS-bmp", "image/gif", "image/jpeg", "image/jng", "image/png",
   "image/pbm", "image/ppm", "image/svg+xml", "image/tiff",
   "image/x-cmu-raster", "image/x-icon", "image/x-xcf", "image/x-pixmap",
@@ -380,11 +380,11 @@ static const gchar *caps_strings[] = {
   "video/x-ati-vcr, vcrversion=(int)99",
   "video/x-ati-vcr",
   /* raw audio */
-  "audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)16, depth=(int)16, rate=(int)44100, channels=(int)2",
-  "audio/x-raw-float, rate=(int)22050, channels=(int)2, endianness=(int)1234, width=(int)32",
+  "audio/x-raw, format=(string)S16LE, rate=(int)44100, channels=(int)2",
+  "audio/x-raw, format=(string)F32,rate=(int)22050, channels=(int)2",
   /* raw video */
-  "video/x-raw-rgb, bpp=(int)16, endianness=(int)1234, depth=(int)16, red_mask=(int)63488, green_mask=(int)2016, blue_mask=(int)31, width=(int)320, height=(int)240, framerate=(fraction)30/1, pixel-aspect-ratio=(fraction)1/1",
-  "video/x-raw-yuv, format=(fourcc)YUY2, width=(int)320, height=(int)240, framerate=(fraction)30/1",
+  "video/x-raw, format=(string)RGB16, width=(int)320, height=(int)240, framerate=(fraction)30/1, pixel-aspect-ratio=(fraction)1/1",
+  "video/x-raw, format=(string)YUY2, width=(int)320, height=(int)240, framerate=(fraction)30/1",
   /* and a made-up format */
   "video/x-tpm"
 };
@@ -428,8 +428,8 @@ GST_START_TEST (test_pb_utils_taglist_add_codec_info)
   GstCaps *caps;
 
   gst_pb_utils_init ();
-  list = gst_tag_list_new ();
-  caps = gst_caps_new_simple ("video/x-theora", NULL);
+  list = gst_tag_list_new_empty ();
+  caps = gst_caps_new_empty_simple ("video/x-theora");
   ASSERT_CRITICAL (fail_if
       (gst_pb_utils_add_codec_description_to_tag_list (NULL,
               GST_TAG_VIDEO_CODEC, caps)));
@@ -447,7 +447,7 @@ GST_START_TEST (test_pb_utils_taglist_add_codec_info)
   fail_unless (gst_pb_utils_add_codec_description_to_tag_list (list,
           GST_TAG_VIDEO_CODEC, caps));
   fail_if (gst_tag_list_is_empty (list));
-  gst_tag_list_free (list);
+  gst_tag_list_unref (list);
   gst_caps_unref (caps);
 }
 
@@ -480,7 +480,7 @@ result_cb (GstInstallPluginsReturn result, gpointer user_data)
 
 /* make sure our script gets called with the right parameters */
 static void
-test_pb_utils_install_plugins_do_callout (gchar ** details,
+test_pb_utils_install_plugins_do_callout (const gchar * const *details,
     GstInstallPluginsContext * ctx, const gchar * script,
     GstInstallPluginsReturn expected_result)
 {
@@ -548,19 +548,16 @@ GST_START_TEST (test_pb_utils_install_plugins)
 {
   GstInstallPluginsContext *ctx;
   GstInstallPluginsReturn ret;
-  gchar *details[] = { "detail1", "detail2", NULL };
-  gchar *details_multi[] = { "detail1", "detail1", "detail2", NULL };
+  const gchar *details[] = { "detail1", "detail2", NULL };
+  const gchar *details_multi[] = { "detail1", "detail1", "detail2", NULL };
 
   ctx = gst_install_plugins_context_new ();
 
-  ASSERT_CRITICAL (ret = gst_install_plugins_sync (NULL, ctx);
-      );
+  ASSERT_CRITICAL (ret = gst_install_plugins_sync (NULL, ctx));
   ASSERT_CRITICAL (ret =
-      gst_install_plugins_async (NULL, ctx, result_cb, (gpointer) & marker);
-      );
+      gst_install_plugins_async (NULL, ctx, result_cb, (gpointer) & marker));
   ASSERT_CRITICAL (ret =
-      gst_install_plugins_async (details, ctx, NULL, (gpointer) & marker);
-      );
+      gst_install_plugins_async (details, ctx, NULL, (gpointer) & marker));
 
   /* make sure the functions return the right error code if the helper does
    * not exist */
@@ -625,7 +622,7 @@ GST_START_TEST (test_pb_utils_installer_details)
   /* uri source */
   detail1 = gst_missing_uri_source_installer_detail_new ("http");
   fail_unless (detail1 != NULL);
-  fail_unless (g_str_has_prefix (detail1, "gstreamer|0.10|"));
+  fail_unless (g_str_has_prefix (detail1, "gstreamer|1.0|"));
   fail_unless (g_str_has_suffix (detail1, "|urisource-http"));
   msg = gst_missing_uri_source_message_new (el, "http");
   fail_unless (msg != NULL);
@@ -639,7 +636,7 @@ GST_START_TEST (test_pb_utils_installer_details)
   /* uri sink */
   detail1 = gst_missing_uri_sink_installer_detail_new ("http");
   fail_unless (detail1 != NULL);
-  fail_unless (g_str_has_prefix (detail1, "gstreamer|0.10|"));
+  fail_unless (g_str_has_prefix (detail1, "gstreamer|1.0|"));
   fail_unless (g_str_has_suffix (detail1, "|urisink-http"));
   msg = gst_missing_uri_sink_message_new (el, "http");
   fail_unless (msg != NULL);
@@ -653,7 +650,7 @@ GST_START_TEST (test_pb_utils_installer_details)
   /* element */
   detail1 = gst_missing_element_installer_detail_new ("deinterlace");
   fail_unless (detail1 != NULL);
-  fail_unless (g_str_has_prefix (detail1, "gstreamer|0.10|"));
+  fail_unless (g_str_has_prefix (detail1, "gstreamer|1.0|"));
   fail_unless (g_str_has_suffix (detail1, "|element-deinterlace"));
   msg = gst_missing_element_message_new (el, "deinterlace");
   fail_unless (msg != NULL);
@@ -669,7 +666,7 @@ GST_START_TEST (test_pb_utils_installer_details)
       2, "channels", G_TYPE_INT, 6, NULL);
   detail1 = gst_missing_decoder_installer_detail_new (caps);
   fail_unless (detail1 != NULL);
-  fail_unless (g_str_has_prefix (detail1, "gstreamer|0.10|"));
+  fail_unless (g_str_has_prefix (detail1, "gstreamer|1.0|"));
   fail_unless (g_str_has_suffix (detail1,
           "|decoder-audio/x-spiffy, spiffyversion=(int)2"));
   msg = gst_missing_decoder_message_new (el, caps);
@@ -686,7 +683,7 @@ GST_START_TEST (test_pb_utils_installer_details)
   caps = gst_caps_new_simple ("audio/x-spiffy", "spiffyversion", G_TYPE_INT,
       2, "channels", G_TYPE_INT, 6, NULL);
   detail1 = gst_missing_encoder_installer_detail_new (caps);
-  fail_unless (g_str_has_prefix (detail1, "gstreamer|0.10|"));
+  fail_unless (g_str_has_prefix (detail1, "gstreamer|1.0|"));
   fail_unless (g_str_has_suffix (detail1,
           "|encoder-audio/x-spiffy, spiffyversion=(int)2"));
   fail_unless (detail1 != NULL);
@@ -705,6 +702,33 @@ GST_START_TEST (test_pb_utils_installer_details)
 
 GST_END_TEST;
 
+GST_START_TEST (test_pb_utils_versions)
+{
+  gchar *s;
+  guint maj, min, mic, nano;
+
+  gst_plugins_base_version (NULL, NULL, NULL, NULL);
+  gst_plugins_base_version (&maj, &min, &mic, &nano);
+  fail_unless_equals_int (maj, GST_PLUGINS_BASE_VERSION_MAJOR);
+  fail_unless_equals_int (min, GST_PLUGINS_BASE_VERSION_MINOR);
+  fail_unless_equals_int (mic, GST_PLUGINS_BASE_VERSION_MICRO);
+  fail_unless_equals_int (nano, GST_PLUGINS_BASE_VERSION_NANO);
+
+  s = gst_plugins_base_version_string ();
+  if (GST_PLUGINS_BASE_VERSION_NANO == 0) {
+    fail_if (strstr (s, "GIT") || strstr (s, "git") || strstr (s, "prerel"));
+  }
+  if (GST_PLUGINS_BASE_VERSION_NANO == 1) {
+    fail_unless (strstr (s, "GIT") || strstr (s, "git"));
+  }
+  if (GST_PLUGINS_BASE_VERSION_NANO >= 2) {
+    fail_unless (strstr (s, "Prerelease") || strstr (s, "prerelease"));
+  }
+  g_free (s);
+}
+
+GST_END_TEST;
+
 static Suite *
 libgstpbutils_suite (void)
 {
@@ -718,6 +742,7 @@ libgstpbutils_suite (void)
   tcase_add_test (tc_chain, test_pb_utils_get_codec_description);
   tcase_add_test (tc_chain, test_pb_utils_install_plugins);
   tcase_add_test (tc_chain, test_pb_utils_installer_details);
+  tcase_add_test (tc_chain, test_pb_utils_versions);
   return s;
 }
 

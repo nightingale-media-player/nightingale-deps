@@ -20,12 +20,18 @@
 #ifndef __GST_CD_PARANOIA_SRC_H__
 #define __GST_CD_PARANOIA_SRC_H__
 
-#include "gst/cdda/gstcddabasesrc.h"
+#include <gst/audio/gstaudiocdsrc.h>
 
 G_BEGIN_DECLS
 
 #define size16 gint16
 #define size32 gint32
+
+/* on OSX the cdparanoia headers include IOKit framework headers (in particular
+ * SCSICmds_INQUIRY_Definitions.h) which define a structure that has a member
+ * named VERSION, so we must #undef VERSION here for things to compile on OSX */
+static char GST_PLUGINS_BASE_VERSION[] = VERSION;
+#undef VERSION
 
 #ifdef CDPARANOIA_HEADERS_IN_DIR
   #include <cdda/cdda_interface.h>
@@ -51,7 +57,7 @@ typedef struct _GstCdParanoiaSrcClass GstCdParanoiaSrcClass;
  * The cdparanoia object structure.
  */
 struct _GstCdParanoiaSrc {
-  GstCddaBaseSrc   cddabasesrc;
+  GstAudioCdSrc   audiocdsrc;
 
   /*< private >*/
   cdrom_drive     *d;
@@ -69,12 +75,12 @@ struct _GstCdParanoiaSrc {
 };
 
 struct _GstCdParanoiaSrcClass {
-  GstCddaBaseSrcClass parent_class;
+  GstAudioCdSrcClass parent_class;
 
   /* signal callbacks */
   /**
    * GstCdParanoiaSrcClass::transport-error:
-   * @src: the GstCddaBaseSrc source element object
+   * @src: the GstAudioCdSrc source element object
    * @sector: the sector at which the error happened
    *
    * This signal is emitted when a sector could not be read
@@ -83,7 +89,7 @@ struct _GstCdParanoiaSrcClass {
   void (*transport_error)	(GstCdParanoiaSrc * src, gint sector);
   /**
    * GstCdParanoiaSrcClass::uncorrected-error:
-   * @src: the GstCddaBaseSrc source element object
+   * @src: the GstAudioCdSrc source element object
    * @sector: the sector at which the error happened
    *
    * This signal is emitted when a sector could not be read

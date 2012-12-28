@@ -125,13 +125,13 @@
 
       <xsl:element name="refnamediv">
         <xsl:element name="refname">
-          <xsl:element name="anchor">
-            <xsl:attribute name="id">plugin-<xsl:value-of select="name"/></xsl:attribute>
-            <xsl:value-of select="name"/>
-          </xsl:element>
+          <xsl:value-of select="name"/>
         </xsl:element>
 
         <xsl:element name="refpurpose">
+          <xsl:element name="anchor">
+            <xsl:attribute name="id">plugin-<xsl:value-of select="name"/></xsl:attribute>
+          </xsl:element>
           <xsl:value-of select="description"/>
         </xsl:element>
       </xsl:element>

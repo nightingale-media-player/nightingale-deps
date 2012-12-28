@@ -38,7 +38,7 @@ struct _App
   GMainLoop *loop;
 };
 
-App s_app;
+static App s_app;
 
 static gboolean
 bus_message (GstBus * bus, GstMessage * message, App * app)
@@ -69,8 +69,6 @@ bus_message (GstBus * bus, GstMessage * message, App * app)
       gst_object_default_error (GST_MESSAGE_SRC (message), gerror, debug);
       g_error_free (gerror);
       g_free (debug);
-
-      g_main_loop_quit (app->loop);
       break;
     }
     case GST_MESSAGE_EOS:
@@ -83,25 +81,23 @@ bus_message (GstBus * bus, GstMessage * message, App * app)
   return TRUE;
 }
 
-static void
+static GstFlowReturn
 have_subtitle (GstElement * appsink, App * app)
 {
   GstBuffer *buffer;
+  GstSample *sample;
 
   /* get the buffer, we can also wakeup the mainloop to get the subtitle from
    * appsink in the mainloop */
-  g_signal_emit_by_name (appsink, "pull-buffer", &buffer);
-
-  if (buffer) {
-    guint8 *data;
-    guint size;
-    GstFormat format;
+  g_signal_emit_by_name (appsink, "pull-sample", &sample);
+  if (sample) {
+    GstMapInfo map;
     gint64 position;
     GstClock *clock;
     GstClockTime base_time, running_time;
 
-    format = GST_FORMAT_TIME;
-    gst_element_query_position (appsink, &format, &position);
+    buffer = gst_sample_get_buffer (sample);
+    gst_element_query_position (appsink, GST_FORMAT_TIME, &position);
 
     clock = gst_element_get_clock (appsink);
     base_time = gst_element_get_base_time (appsink);
@@ -114,11 +110,12 @@ have_subtitle (GstElement * appsink, App * app)
         ", running_time %" GST_TIME_FORMAT, GST_TIME_ARGS (position),
         GST_TIME_ARGS (running_time));
 
-    data = GST_BUFFER_DATA (buffer);
-    size = GST_BUFFER_SIZE (buffer);
-
-    gst_util_dump_mem (data, size);
+    gst_buffer_map (buffer, &map, GST_MAP_READ);
+    gst_util_dump_mem (map.data, map.size);
+    gst_buffer_unmap (buffer, &map);
+    gst_sample_unref (sample);
   }
+  return GST_FLOW_OK;
 }
 
 int
@@ -126,26 +123,30 @@ main (int argc, char *argv[])
 {
   App *app = &s_app;
   GstBus *bus;
+  GstCaps *subcaps;
 
   gst_init (&argc, &argv);
 
   if (argc < 2) {
-    g_print ("usage: %s <filename>\n", argv[0]);
+    g_print ("usage: %s <uri> [<suburi>]\n", argv[0]);
     return -1;
   }
 
   /* create a mainloop to get messages */
   app->loop = g_main_loop_new (NULL, TRUE);
 
-  app->playbin = gst_element_factory_make ("playbin2", NULL);
+  app->playbin = gst_element_factory_make ("playbin", NULL);
   g_assert (app->playbin);
 
   /* set appsink to get the subtitles */
   app->textsink = gst_element_factory_make ("appsink", "subtitle_sink");
   g_object_set (G_OBJECT (app->textsink), "emit-signals", TRUE, NULL);
   g_object_set (G_OBJECT (app->textsink), "ts-offset", 0 * GST_SECOND, NULL);
-  g_signal_connect (app->textsink, "new-buffer", G_CALLBACK (have_subtitle),
+  g_signal_connect (app->textsink, "new-sample", G_CALLBACK (have_subtitle),
       app);
+  subcaps = gst_caps_from_string ("text/x-raw, format={ utf8, pango-markup }");
+  g_object_set (G_OBJECT (app->textsink), "caps", subcaps, NULL);
+  gst_caps_unref (subcaps);
 
   g_object_set (G_OBJECT (app->playbin), "text-sink", app->textsink, NULL);
 
@@ -156,6 +157,9 @@ main (int argc, char *argv[])
 
   /* set to read from appsrc */
   g_object_set (app->playbin, "uri", argv[1], NULL);
+
+  if (argc > 2)
+    g_object_set (app->playbin, "suburi", argv[2], NULL);
 
   /* go to playing and wait in a mainloop. */
   gst_element_set_state (app->playbin, GST_STATE_PLAYING);

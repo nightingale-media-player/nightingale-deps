@@ -3,28 +3,25 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gst-plugins-base Elements</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
-<link rel="up" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
-<link rel="prev" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Plugins Reference Manual">
+<link rel="up" href="index.html" title="GStreamer Base Plugins 1.0 Plugins Reference Manual">
+<link rel="prev" href="index.html" title="GStreamer Base Plugins 1.0 Plugins Reference Manual">
 <link rel="next" href="gst-plugins-base-plugins-adder.html" title="adder">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle">
 <td><a accesskey="p" href="index.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td> </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Base Plugins 1.0 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-plugins-adder.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr></table>
-<div class="chapter" lang="en">
+<div class="chapter">
 <div class="titlepage"><div><div><h2 class="title">
-<a name="id2545989"></a>gst-plugins-base Elements</h2></div></div></div>
+<a name="idp590864"></a>gst-plugins-base Elements</h2></div></div></div>
 <div class="toc"><dl>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-base-plugins-adder.html">adder</a></span><span class="refpurpose"> — Add N audio channels together</span>
@@ -36,9 +33,6 @@
 <span class="refentrytitle"><a href="gst-plugins-base-plugins-appsink.html">appsink</a></span><span class="refpurpose"> — Allow the application to get access to raw buffer</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-base-plugins-alsamixer.html">alsamixer</a></span><span class="refpurpose"> — Control sound input and output levels with ALSA</span>
-</dt>
-<dt>
 <span class="refentrytitle"><a href="gst-plugins-base-plugins-alsasink.html">alsasink</a></span><span class="refpurpose"> — Output to a sound card via ALSA</span>
 </dt>
 <dt>
@@ -46,6 +40,9 @@
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-base-plugins-audioconvert.html">audioconvert</a></span><span class="refpurpose"> — Convert audio to different formats</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-plugins-audiorate.html">audiorate</a></span><span class="refpurpose"> — Drops/duplicates/adjusts timestamps on audio samples to make a perfect stream</span>
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-base-plugins-audioresample.html">audioresample</a></span><span class="refpurpose"> — Resamples audio</span>
@@ -63,16 +60,10 @@
 <span class="refentrytitle"><a href="gst-plugins-base-plugins-decodebin.html">decodebin</a></span><span class="refpurpose"> — Autoplug and decode to raw media</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-base-plugins-decodebin2.html">decodebin2</a></span><span class="refpurpose"> — Autoplug and decode to raw media</span>
+<span class="refentrytitle"><a href="gst-plugins-base-plugins-encodebin.html">encodebin</a></span><span class="refpurpose"> — Convenience encoding/muxing element</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-base-plugins-ffmpegcolorspace.html">ffmpegcolorspace</a></span><span class="refpurpose"> — Converts video from one colorspace to another</span>
-</dt>
-<dt>
-<span class="refentrytitle"><a href="gst-plugins-base-plugins-gdpdepay.html">gdpdepay</a></span><span class="refpurpose"> — Depayloads GStreamer Data Protocol buffers</span>
-</dt>
-<dt>
-<span class="refentrytitle"><a href="gst-plugins-base-plugins-gdppay.html">gdppay</a></span><span class="refpurpose"> — Payloads GStreamer Data Protocol buffers</span>
+<span class="refentrytitle"><a href="gst-plugins-base-plugins-videoconvert.html">videoconvert</a></span><span class="refpurpose"> — Converts video from one colorspace to another</span>
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-base-plugins-giosink.html">giosink</a></span><span class="refpurpose"> — Write to any GIO-supported location</span>
@@ -87,13 +78,10 @@
 <span class="refentrytitle"><a href="gst-plugins-base-plugins-giostreamsrc.html">giostreamsrc</a></span><span class="refpurpose"> — Read from any GIO stream</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-base-plugins-gnomevfssink.html">gnomevfssink</a></span><span class="refpurpose"> — Write a stream to a GnomeVFS URI</span>
-</dt>
-<dt>
-<span class="refentrytitle"><a href="gst-plugins-base-plugins-gnomevfssrc.html">gnomevfssrc</a></span><span class="refpurpose"> — Read from any GnomeVFS-supported file</span>
-</dt>
-<dt>
 <span class="refentrytitle"><a href="gst-plugins-base-plugins-multifdsink.html">multifdsink</a></span><span class="refpurpose"> — Send data to multiple filedescriptors</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-plugins-multisocketsink.html">multisocketsink</a></span><span class="refpurpose"> — Send data to multiple sockets</span>
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-base-plugins-oggdemux.html">oggdemux</a></span><span class="refpurpose"> — demux ogg streams (info about ogg: http://xiph.org)</span>
@@ -105,7 +93,7 @@
 <span class="refentrytitle"><a href="gst-plugins-base-plugins-playbin.html">playbin</a></span><span class="refpurpose"> — Autoplug and play media from an uri</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-base-plugins-playbin2.html">playbin2</a></span><span class="refpurpose"> — Autoplug and play media from an uri</span>
+<span class="refentrytitle"><a href="gst-plugins-base-plugins-subtitleoverlay.html">subtitleoverlay</a></span><span class="refpurpose"> — Overlays a video stream with subtitles</span>
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-base-plugins-tcpclientsrc.html">tcpclientsrc</a></span><span class="refpurpose"> — Receive data as a client over the network via TCP</span>
@@ -174,6 +162,6 @@
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

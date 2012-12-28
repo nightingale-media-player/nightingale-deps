@@ -86,19 +86,20 @@ enum
   PROP_FONT_DESC
 };
 
+#define VIDEO_FORMATS "{ AYUV, ARGB } "
 
 static GstStaticPadTemplate src_template_factory =
-    GST_STATIC_PAD_TEMPLATE ("src",
+GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV ("AYUV") ";" GST_VIDEO_CAPS_ARGB)
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE (VIDEO_FORMATS))
     );
 
 static GstStaticPadTemplate sink_template_factory =
-    GST_STATIC_PAD_TEMPLATE ("sink",
+GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("text/x-pango-markup; text/plain")
+    GST_STATIC_CAPS ("text/x-raw, format = { pango-markup, utf8 }")
     );
 
 #define GST_TYPE_TEXT_RENDER_VALIGN (gst_text_render_valign_get_type())
@@ -162,7 +163,8 @@ gst_text_render_line_align_get_type (void)
 static void gst_text_render_adjust_values_with_fontdesc (GstTextRender *
     render, PangoFontDescription * desc);
 
-GST_BOILERPLATE (GstTextRender, gst_text_render, GstElement, GST_TYPE_ELEMENT);
+#define gst_text_render_parent_class parent_class
+G_DEFINE_TYPE (GstTextRender, gst_text_render, GST_TYPE_ELEMENT);
 
 static void gst_text_render_finalize (GObject * object);
 static void gst_text_render_set_property (GObject * object,
@@ -171,29 +173,14 @@ static void gst_text_render_get_property (GObject * object,
     guint prop_id, GValue * value, GParamSpec * pspec);
 
 static void
-gst_text_render_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_template_factory));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_template_factory));
-
-  gst_element_class_set_details_simple (element_class, "Text renderer",
-      "Filter/Editor/Video",
-      "Renders a text string to an image bitmap",
-      "David Schleef <ds@schleef.org>, "
-      "GStreamer maintainers <gstreamer-devel@lists.sourceforge.net>");
-}
-
-static void
 gst_text_render_class_init (GstTextRenderClass * klass)
 {
   GObjectClass *gobject_class;
+  GstElementClass *gstelement_class;
   PangoFontMap *fontmap;
 
   gobject_class = (GObjectClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
 
@@ -201,9 +188,20 @@ gst_text_render_class_init (GstTextRenderClass * klass)
   gobject_class->set_property = gst_text_render_set_property;
   gobject_class->get_property = gst_text_render_get_property;
 
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&src_template_factory));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sink_template_factory));
+
+  gst_element_class_set_static_metadata (gstelement_class, "Text renderer",
+      "Filter/Editor/Video",
+      "Renders a text string to an image bitmap",
+      "David Schleef <ds@schleef.org>, "
+      "GStreamer maintainers <gstreamer-devel@lists.sourceforge.net>");
+
   fontmap = pango_cairo_font_map_get_default ();
   klass->pango_context =
-      pango_cairo_font_map_create_context (PANGO_CAIRO_FONT_MAP (fontmap));
+      pango_font_map_create_context (PANGO_FONT_MAP (fontmap));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_FONT_DESC,
       g_param_spec_string ("font-desc", "font description",
           "Pango font description of font "
@@ -329,62 +327,73 @@ gst_text_render_check_argb (GstTextRender * render)
 
     /* Check if AYUV or ARGB is first */
     for (i = 0; i < n; i++) {
-      GstStructure *s = gst_caps_get_structure (peer_caps, i);
-      if (gst_structure_has_name (s, "video/x-raw-rgb") &&
-          gst_structure_has_field (s, "alpha_mask")) {
-        render->use_ARGB = TRUE;
-        break;
-      } else if (gst_structure_has_name (s, "video/x-raw-yuv")) {
-        guint fourcc;
-        if (gst_structure_get_fourcc (s, "format", &fourcc) &&
-            fourcc == GST_MAKE_FOURCC ('A', 'Y', 'U', 'V')) {
-          render->use_ARGB = FALSE;
-          break;
-        }
-      }
+      GstStructure *s;
+      GstVideoFormat vformat;
+      const GstVideoFormatInfo *info;
+      const gchar *fmt;
+
+      s = gst_caps_get_structure (peer_caps, i);
+      if (!gst_structure_has_name (s, "video/x-raw"))
+        continue;
+
+      fmt = gst_structure_get_string (s, "format");
+      if (fmt == NULL)
+        continue;
+
+      vformat = gst_video_format_from_string (fmt);
+      info = gst_video_format_get_info (vformat);
+      if (info == NULL)
+        continue;
+
+      render->use_ARGB = GST_VIDEO_FORMAT_INFO_HAS_ALPHA (info);
     }
     gst_caps_unref (peer_caps);
   }
 }
 
 static gboolean
-gst_text_render_setcaps (GstPad * pad, GstCaps * caps)
+gst_text_render_src_setcaps (GstTextRender * render, GstCaps * caps)
 {
-  GstTextRender *render = GST_TEXT_RENDER (gst_pad_get_parent (pad));
   GstStructure *structure;
-  gboolean ret = FALSE;
+  gboolean ret;
   gint width = 0, height = 0;
 
   structure = gst_caps_get_structure (caps, 0);
   gst_structure_get_int (structure, "width", &width);
   gst_structure_get_int (structure, "height", &height);
 
-  GST_DEBUG ("Got caps %" GST_PTR_FORMAT, caps);
+  GST_DEBUG_OBJECT (render, "Got caps %" GST_PTR_FORMAT, caps);
 
   if (width >= render->image_width && height >= render->image_height) {
     render->width = width;
     render->height = height;
-    ret = TRUE;
   }
 
   gst_text_render_check_argb (render);
 
-  gst_object_unref (render);
+  ret = gst_pad_set_caps (render->srcpad, caps);
+
   return ret;
 }
 
-static void
-gst_text_render_fixate_caps (GstPad * pad, GstCaps * caps)
+static GstCaps *
+gst_text_render_fixate_caps (GstTextRender * render, GstCaps * caps)
 {
-  GstTextRender *render = GST_TEXT_RENDER (gst_pad_get_parent (pad));
-  GstStructure *s = gst_caps_get_structure (caps, 0);
+  GstStructure *s;
+
+  caps = gst_caps_truncate (caps);
+
+  caps = gst_caps_make_writable (caps);
+  s = gst_caps_get_structure (caps, 0);
 
   GST_DEBUG ("Fixating caps %" GST_PTR_FORMAT, caps);
-  gst_structure_fixate_field_nearest_int (s, "width", render->image_width);
-  gst_structure_fixate_field_nearest_int (s, "height", render->image_height);
+  gst_structure_fixate_field_nearest_int (s, "width", MAX (render->image_width,
+          DEFAULT_RENDER_WIDTH));
+  gst_structure_fixate_field_nearest_int (s, "height",
+      MAX (render->image_height + render->ypad, DEFAULT_RENDER_HEIGHT));
   GST_DEBUG ("Fixated to    %" GST_PTR_FORMAT, caps);
 
-  gst_object_unref (render);
+  return caps;
 }
 
 #define CAIRO_UNPREMULTIPLY(a,r,g,b) G_STMT_START { \
@@ -404,12 +413,12 @@ gst_text_renderer_image_to_ayuv (GstTextRender * render, guchar * pixbuf,
 
   width = render->image_width;
   height = render->image_height;
-  bitp = render->text_image;
 
-  for (y = 0; y < height; y++) {
+  for (y = 0; y < height && ypos + y < render->height; y++) {
     int n;
     p = pixbuf + (ypos + y) * stride + xpos * 4;
-    for (n = 0; n < width; n++) {
+    bitp = render->text_image + y * width * 4;
+    for (n = 0; n < width && n < render->width; n++) {
       b = bitp[CAIRO_ARGB_B];
       g = bitp[CAIRO_ARGB_G];
       r = bitp[CAIRO_ARGB_R];
@@ -440,11 +449,11 @@ gst_text_renderer_image_to_argb (GstTextRender * render, guchar * pixbuf,
 
   width = render->image_width;
   height = render->image_height;
-  bitp = render->text_image;
 
-  for (i = 0; i < height; i++) {
+  for (i = 0; i < height && ypos + i < render->height; i++) {
     p = pixbuf + (ypos + i) * stride + xpos * 4;
-    for (j = 0; j < width; j++) {
+    bitp = render->text_image + i * width * 4;
+    for (j = 0; j < width && j < render->width; j++) {
       p[0] = bitp[CAIRO_ARGB_A];
       p[1] = bitp[CAIRO_ARGB_R];
       p[2] = bitp[CAIRO_ARGB_G];
@@ -460,18 +469,23 @@ gst_text_renderer_image_to_argb (GstTextRender * render, guchar * pixbuf,
 }
 
 static GstFlowReturn
-gst_text_render_chain (GstPad * pad, GstBuffer * inbuf)
+gst_text_render_chain (GstPad * pad, GstObject * parent, GstBuffer * inbuf)
 {
   GstTextRender *render;
   GstFlowReturn ret;
   GstBuffer *outbuf;
-  GstCaps *caps = NULL;
-  guint8 *data = GST_BUFFER_DATA (inbuf);
-  guint size = GST_BUFFER_SIZE (inbuf);
+  GstCaps *caps = NULL, *padcaps;
+  GstMapInfo map;
+  guint8 *data;
+  gsize size;
   gint n;
   gint xpos, ypos;
 
-  render = GST_TEXT_RENDER (gst_pad_get_parent (pad));
+  render = GST_TEXT_RENDER (parent);
+
+  gst_buffer_map (inbuf, &map, GST_MAP_READ);
+  data = map.data;
+  size = map.size;
 
   /* somehow pango barfs over "\0" buffers... */
   while (size > 0 &&
@@ -481,39 +495,39 @@ gst_text_render_chain (GstPad * pad, GstBuffer * inbuf)
   }
 
   /* render text */
-  GST_DEBUG ("rendering '%*s'", size, data);
+  GST_DEBUG ("rendering '%*s'", (gint) size, data);
   pango_layout_set_markup (render->layout, (gchar *) data, size);
   gst_text_render_render_pangocairo (render);
+  gst_buffer_unmap (inbuf, &map);
 
   gst_text_render_check_argb (render);
 
-  if (!render->use_ARGB) {
-    caps =
-        gst_video_format_new_caps (GST_VIDEO_FORMAT_AYUV, render->width,
-        render->height, 1, 1, 1, 1);
-  } else {
-    caps =
-        gst_video_format_new_caps (GST_VIDEO_FORMAT_ARGB, render->width,
-        render->height, 1, 1, 1, 1);
+  padcaps = gst_pad_query_caps (render->srcpad, NULL);
+  caps = gst_pad_peer_query_caps (render->srcpad, padcaps);
+  gst_caps_unref (padcaps);
+
+  if (!caps || gst_caps_is_empty (caps)) {
+    GST_ELEMENT_ERROR (render, CORE, NEGOTIATION, (NULL), (NULL));
+    ret = GST_FLOW_ERROR;
+    goto done;
   }
 
-  if (!gst_pad_set_caps (render->srcpad, caps)) {
-    gst_caps_unref (caps);
+  caps = gst_text_render_fixate_caps (render, caps);
+
+  if (!gst_text_render_src_setcaps (render, caps)) {
     GST_ELEMENT_ERROR (render, CORE, NEGOTIATION, (NULL), (NULL));
     ret = GST_FLOW_ERROR;
     goto done;
   }
 
   GST_DEBUG ("Allocating buffer WxH = %dx%d", render->width, render->height);
-  ret =
-      gst_pad_alloc_buffer_and_set_caps (render->srcpad, GST_BUFFER_OFFSET_NONE,
-      render->width * render->height * 4, caps, &outbuf);
+  outbuf = gst_buffer_new_and_alloc (render->width * render->height * 4);
 
-  if (ret != GST_FLOW_OK)
-    goto done;
+  gst_buffer_copy_into (outbuf, inbuf, GST_BUFFER_COPY_TIMESTAMPS, 0, -1);
 
-  gst_buffer_copy_metadata (outbuf, inbuf, GST_BUFFER_COPY_TIMESTAMPS);
-  data = GST_BUFFER_DATA (outbuf);
+  gst_buffer_map (outbuf, &map, GST_MAP_WRITE);
+  data = map.data;
+  size = map.size;
 
   if (render->use_ARGB) {
     memset (data, 0, render->width * render->height * 4);
@@ -562,6 +576,7 @@ gst_text_render_chain (GstPad * pad, GstBuffer * inbuf)
           render->width * 4);
     }
   }
+  gst_buffer_unmap (outbuf, &map);
 
   ret = gst_pad_push (render->srcpad, outbuf);
 
@@ -569,7 +584,7 @@ done:
   if (caps)
     gst_caps_unref (caps);
   gst_buffer_unref (inbuf);
-  gst_object_unref (render);
+
   return ret;
 }
 
@@ -587,7 +602,7 @@ gst_text_render_finalize (GObject * object)
 }
 
 static void
-gst_text_render_init (GstTextRender * render, GstTextRenderClass * klass)
+gst_text_render_init (GstTextRender * render)
 {
   GstPadTemplate *template;
 
@@ -603,10 +618,6 @@ gst_text_render_init (GstTextRender * render, GstTextRenderClass * klass)
   template = gst_static_pad_template_get (&src_template_factory);
   render->srcpad = gst_pad_new_from_template (template, "src");
   gst_object_unref (template);
-  gst_pad_set_fixatecaps_function (render->srcpad,
-      GST_DEBUG_FUNCPTR (gst_text_render_fixate_caps));
-  gst_pad_set_setcaps_function (render->srcpad,
-      GST_DEBUG_FUNCPTR (gst_text_render_setcaps));
 
   gst_element_add_pad (GST_ELEMENT (render), render->srcpad);
 

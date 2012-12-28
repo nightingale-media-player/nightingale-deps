@@ -34,10 +34,10 @@ G_BEGIN_DECLS
 #define GST_TYPE_RTSP_EXTENSION \
   (gst_rtsp_extension_get_type ())
 #define GST_RTSP_EXTENSION(obj) \
-  (GST_IMPLEMENTS_INTERFACE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_RTSP_EXTENSION, GstRTSPExtension))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_RTSP_EXTENSION, GstRTSPExtension))
 #define GST_IS_RTSP_EXTENSION(obj) \
-  (GST_IMPLEMENTS_INTERFACE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_RTSP_EXTENSION))
-#define GST_RTSP_EXTENSION_GET_IFACE(inst) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_RTSP_EXTENSION))
+#define GST_RTSP_EXTENSION_GET_INTERFACE(inst) \
   (G_TYPE_INSTANCE_GET_INTERFACE ((inst), GST_TYPE_RTSP_EXTENSION, GstRTSPExtensionInterface))
 
 typedef struct _GstRTSPExtension GstRTSPExtension;
@@ -68,14 +68,14 @@ struct _GstRTSPExtensionInterface {
   GstRTSPResult (*receive_request)  (GstRTSPExtension *ext, GstRTSPMessage *req);
 
   /*< private >*/
-  gpointer                 _gst_reserved[GST_PADDING - 1];
+  gpointer                 _gst_reserved[GST_PADDING];
 };
 
 GType           gst_rtsp_extension_get_type          (void);
 
 /* invoke vfunction on interface */
 gboolean        gst_rtsp_extension_detect_server     (GstRTSPExtension *ext, GstRTSPMessage *resp);
-  
+
 GstRTSPResult   gst_rtsp_extension_before_send       (GstRTSPExtension *ext, GstRTSPMessage *req);
 GstRTSPResult   gst_rtsp_extension_after_send        (GstRTSPExtension *ext, GstRTSPMessage *req,
                                                       GstRTSPMessage *resp);

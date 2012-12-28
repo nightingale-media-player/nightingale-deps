@@ -76,8 +76,6 @@ feed_data (GstElement * appsrc, guint size, App * app)
   guint len;
   GstFlowReturn ret;
 
-  buffer = gst_buffer_new ();
-
   if (app->offset >= app->length) {
     /* we are EOS, send end-of-stream */
     g_signal_emit_by_name (app->appsrc, "end-of-stream", &ret);
@@ -85,12 +83,15 @@ feed_data (GstElement * appsrc, guint size, App * app)
   }
 
   /* read any amount of data, we are allowed to return less if we are EOS */
+  buffer = gst_buffer_new ();
+
   len = CHUNK_SIZE;
   if (app->offset + len > app->length)
     len = app->length - app->offset;
 
-  GST_BUFFER_DATA (buffer) = app->data + app->offset;
-  GST_BUFFER_SIZE (buffer) = len;
+  gst_buffer_append_memory (buffer,
+      gst_memory_new_wrapped (GST_MEMORY_FLAG_READONLY,
+          app->data, app->length, app->offset, len, NULL, NULL));
 
   GST_DEBUG ("feed buffer %p, offset %" G_GUINT64_FORMAT "-%u", buffer,
       app->offset, len);
@@ -113,8 +114,8 @@ seek_data (GstElement * appsrc, guint64 position, App * app)
   return TRUE;
 }
 
-/* this callback is called when playbin2 has constructed a source object to read
- * from. Since we provided the appsrc:// uri to playbin2, this will be the
+/* this callback is called when playbin has constructed a source object to read
+ * from. Since we provided the appsrc:// uri to playbin, this will be the
  * appsrc that we must handle. We set up some signals to push data into appsrc
  * and one to perform a seek. */
 static void
@@ -193,7 +194,7 @@ main (int argc, char *argv[])
   /* create a mainloop to get messages */
   app->loop = g_main_loop_new (NULL, TRUE);
 
-  app->playbin = gst_element_factory_make ("playbin2", NULL);
+  app->playbin = gst_element_factory_make ("playbin", NULL);
   g_assert (app->playbin);
 
   bus = gst_pipeline_get_bus (GST_PIPELINE (app->playbin));
@@ -220,7 +221,7 @@ main (int argc, char *argv[])
   gst_element_set_state (app->playbin, GST_STATE_NULL);
 
   /* free the file */
-  g_mapped_file_free (app->file);
+  g_mapped_file_unref (app->file);
 
   gst_object_unref (bus);
   g_main_loop_unref (app->loop);

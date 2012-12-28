@@ -41,29 +41,21 @@ make_pipeline (gint type)
           "ximagesink");
       break;
     case 2:
-      pstr = g_strdup_printf ("videotestsrc peer-alloc=0 ! videoscale ! "
+      pstr = g_strdup_printf ("videotestsrc ! videoscale ! "
           "capsfilter name=filter ! " "ximagesink");
       break;
     case 3:
       pstr =
-          g_strdup_printf ("videotestsrc peer-alloc=0 ! queue ! videoscale ! "
+          g_strdup_printf ("videotestsrc ! queue ! videoscale ! "
           "capsfilter name=filter ! " "ximagesink");
       break;
     case 4:
       pstr =
-          g_strdup_printf ("videotestsrc peer-alloc=0 ! videoscale ! queue ! "
+          g_strdup_printf ("videotestsrc ! videoscale ! queue ! "
           "capsfilter name=filter ! " "ximagesink");
       break;
     case 5:
-      pstr = g_strdup_printf ("videotestsrc peer-alloc=0 ! "
-          "capsfilter name=filter ! " "ximagesink");
-      break;
-    case 6:
-      pstr = g_strdup_printf ("videotestsrc ! videoscale ! "
-          "capsfilter name=filter ! " "ximagesink");
-      break;
-    case 7:
-      pstr = g_strdup_printf ("v4l2src ! ffmpegcolorspace ! videoscale ! "
+      pstr = g_strdup_printf ("v4l2src ! videoconvert ! videoscale ! "
           "capsfilter name=filter ! " "ximagesink");
       break;
     default:
@@ -119,8 +111,9 @@ main (int argc, char **argv)
       /* we prefer our fixed width and height but allow other dimensions to pass
        * as well */
       capsstr =
-          g_strdup_printf ("video/x-raw-rgb, width=(int)%d, height=(int)%d;"
-          "video/x-raw-rgb", width, height);
+          g_strdup_printf ("video/x-raw, width=(int)%d, height=(int)%d;"
+          "video/x-raw", width, height);
+
       caps = gst_caps_from_string (capsstr);
       g_free (capsstr);
       g_object_set (filter, "caps", caps, NULL);

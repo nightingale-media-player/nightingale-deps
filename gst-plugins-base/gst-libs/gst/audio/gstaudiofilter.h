@@ -23,7 +23,7 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstbasetransform.h>
-#include <gst/audio/gstringbuffer.h>
+#include <gst/audio/audio.h>
 
 G_BEGIN_DECLS
 
@@ -34,8 +34,14 @@ typedef struct _GstAudioFilterClass GstAudioFilterClass;
   (gst_audio_filter_get_type())
 #define GST_AUDIO_FILTER(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_AUDIO_FILTER,GstAudioFilter))
+#define GST_AUDIO_FILTER_CAST(obj) \
+  ((GstAudioFilter *) (obj))
 #define GST_AUDIO_FILTER_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_AUDIO_FILTER,GstAudioFilterClass))
+#define GST_AUDIO_FILTER_CLASS_CAST(klass) \
+  ((GstAudioFilterClass *) (klass))
+#define GST_AUDIO_FILTER_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS((obj),GST_TYPE_AUDIO_FILTER,GstAudioFilterClass))
 #define GST_IS_AUDIO_FILTER(obj) \
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_AUDIO_FILTER))
 #define GST_IS_AUDIO_FILTER_CLASS(klass) \
@@ -43,21 +49,26 @@ typedef struct _GstAudioFilterClass GstAudioFilterClass;
 
 /**
  * GstAudioFilter:
- * @basetransform: Element parent class
  *
  * Base class for audio filters with the same format for input and output.
- *
- * Since: 0.10.12
  */
 struct _GstAudioFilter {
   GstBaseTransform basetransform;
 
   /*< protected >*/
-  GstRingBufferSpec format;   /* currently configured format */
+  GstAudioInfo info;   /* currently configured format */
 
   /*< private >*/
   gpointer _gst_reserved[GST_PADDING];
 };
+
+#define GST_AUDIO_FILTER_INFO(filter)     (&GST_AUDIO_FILTER_CAST(filter)->info)
+
+#define GST_AUDIO_FILTER_FORMAT(filter)   (GST_AUDIO_INFO_FORMAT(GST_AUDIO_FILTER_INFO(filter)))
+#define GST_AUDIO_FILTER_RATE(filter)     (GST_AUDIO_INFO_RATE(GST_AUDIO_FILTER_INFO(filter)))
+#define GST_AUDIO_FILTER_CHANNELS(filter) (GST_AUDIO_INFO_CHANNELS(GST_AUDIO_FILTER_INFO(filter)))
+#define GST_AUDIO_FILTER_BPF(filter)      (GST_AUDIO_INFO_BPF(GST_AUDIO_FILTER_INFO(filter)))
+#define GST_AUDIO_FILTER_BPS(filter)      (GST_AUDIO_INFO_BPS(GST_AUDIO_FILTER_INFO(filter)))
 
 /**
  * GstAudioFilterClass:
@@ -67,15 +78,13 @@ struct _GstAudioFilter {
  * In addition to the @setup virtual function, you should also override the
  * GstBaseTransform::transform and/or GstBaseTransform::transform_ip virtual
  * function.
- *
- * Since: 0.10.12
  */
 
 struct _GstAudioFilterClass {
   GstBaseTransformClass basetransformclass;
 
   /* virtual function, called whenever the format changes */
-  gboolean  (*setup) (GstAudioFilter * filter, GstRingBufferSpec * format);
+  gboolean  (*setup) (GstAudioFilter * filter, const GstAudioInfo * info);
 
   /*< private >*/
   gpointer _gst_reserved[GST_PADDING];
@@ -84,7 +93,7 @@ struct _GstAudioFilterClass {
 GType   gst_audio_filter_get_type (void);
 
 void    gst_audio_filter_class_add_pad_templates (GstAudioFilterClass * klass,
-                                                  const GstCaps       * allowed_caps);
+                                                  GstCaps             * allowed_caps);
 
 G_END_DECLS
 

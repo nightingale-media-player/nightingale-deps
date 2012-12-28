@@ -31,7 +31,7 @@
  *
  * #GstFFTF32 provides a FFT implementation and related functions for
  * 32 bit float samples. To use this call gst_fft_f32_new() for
- * allocating a #GstFFTF32 instance with the appropiate parameters and
+ * allocating a #GstFFTF32 instance with the appropriate parameters and
  * then call gst_fft_f32_fft() or gst_fft_f32_inverse_fft() to perform the
  * FFT or inverse FFT on a buffer of samples.
  *
@@ -56,6 +56,13 @@
  * the magnitude of the frequency data.
  *
  */
+
+struct _GstFFTF32
+{
+  void *cfg;
+  gboolean inverse;
+  gint len;
+};
 
 /**
  * gst_fft_f32_new:
@@ -186,11 +193,11 @@ gst_fft_f32_window (GstFFTF32 * self, gfloat * timedata, GstFFTWindow window)
       break;
     case GST_FFT_WINDOW_HAMMING:
       for (i = 0; i < len; i++)
-        timedata[i] *= (0.53836 - 0.46164 * cos (2.0 * M_PI * i / len));
+        timedata[i] *= (0.53836 - 0.46164 * cos (2.0 * G_PI * i / len));
       break;
     case GST_FFT_WINDOW_HANN:
       for (i = 0; i < len; i++)
-        timedata[i] *= (0.5 - 0.5 * cos (2.0 * M_PI * i / len));
+        timedata[i] *= (0.5 - 0.5 * cos (2.0 * G_PI * i / len));
       break;
     case GST_FFT_WINDOW_BARTLETT:
       for (i = 0; i < len; i++)

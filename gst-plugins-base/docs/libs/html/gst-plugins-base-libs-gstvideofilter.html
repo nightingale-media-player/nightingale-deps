@@ -3,49 +3,32 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstvideofilter</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
 <link rel="up" href="gstreamer-video.html" title="Video Library">
-<link rel="prev" href="gst-plugins-base-libs-gstvideosink.html" title="gstvideosink">
-<link rel="next" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="prev" href="gst-plugins-base-libs-gstvideooverlaycomposition.html" title="gstvideooverlaycomposition">
+<link rel="next" href="gst-plugins-base-libs-gstvideosink.html" title="gstvideosink">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
-<link rel="chapter" href="gstreamer-app.html" title="App Library">
-<link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
-<link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
-<link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
-<link rel="chapter" href="gstreamer-floatcast.html" title="FloatCast Library">
-<link rel="chapter" href="gstreamer-interfaces.html" title="Interfaces Library">
-<link rel="chapter" href="gstreamer-netbuffer.html" title="Network Buffer Library">
-<link rel="chapter" href="gstreamer-riff.html" title="Riff Media Library">
-<link rel="chapter" href="gstreamer-rtp.html" title="RTP Library">
-<link rel="chapter" href="gstreamer-rtsp.html" title="RTSP Library">
-<link rel="chapter" href="gstreamer-sdp.html" title="SDP Library">
-<link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
-<link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
-<link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-base-libs-gstvideosink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-libs-gstvideooverlaycomposition.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="gstreamer-video.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
-<td><a accesskey="n" href="gstreamer-libs-hierarchy.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 1.0 Library Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-base-libs-gstvideosink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-base-libs-gstvideofilter.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-base-libs-gstvideofilter.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-base-libs-gstvideofilter.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstvideofilter.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstvideofilter.object-hierarchy" class="shortcut">Object Hierarchy</a>
 </td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry">
 <a name="gst-plugins-base-libs-gstvideofilter"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -57,37 +40,29 @@
 <div class="refsynopsisdiv">
 <a name="gst-plugins-base-libs-gstvideofilter.synopsis"></a><h2>Synopsis</h2>
 <a name="GstVideoFilter"></a><pre class="synopsis">
-
 #include &lt;gst/video/gstvideofilter.h&gt;
 
-                    <a class="link" href="gst-plugins-base-libs-gstvideofilter.html#GstVideoFilter-struct" title="GstVideoFilter">GstVideoFilter</a>;
-                    <a class="link" href="gst-plugins-base-libs-gstvideofilter.html#GstVideoFilterClass" title="GstVideoFilterClass">GstVideoFilterClass</a>;
+struct              <a class="link" href="gst-plugins-base-libs-gstvideofilter.html#GstVideoFilter-struct" title="struct GstVideoFilter">GstVideoFilter</a>;
+struct              <a class="link" href="gst-plugins-base-libs-gstvideofilter.html#GstVideoFilterClass" title="struct GstVideoFilterClass">GstVideoFilterClass</a>;
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-base-libs-gstvideofilter.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----<a
-href="/usr/share/gtk-doc/html/gstreamer-libs-0.10/GstBaseTransform.html"
->GstBaseTransform</a>
-                     +----GstVideoFilter
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html">GstBaseTransform</a>
+                           +----GstVideoFilter
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-base-libs-gstvideofilter.description"></a><h2>Description</h2>
 <p>
 </p>
-<div class="refsect2" lang="en">
-<a name="id2957589"></a><p>
+<div class="refsect2">
+<a name="idp9341792"></a><p>
 Provides useful functions and a base class for video filters.
 </p>
 <p>
@@ -98,28 +73,57 @@ to implement frame dropping.
 <p>
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-base-libs-gstvideofilter.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
-<a name="GstVideoFilter-struct"></a><h3>GstVideoFilter</h3>
-<pre class="programlisting">typedef struct _GstVideoFilter GstVideoFilter;</pre>
-<p>
-</p>
+<div class="refsect2">
+<a name="GstVideoFilter-struct"></a><h3>struct GstVideoFilter</h3>
+<pre class="programlisting">struct GstVideoFilter;</pre>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstVideoFilterClass"></a><h3>GstVideoFilterClass</h3>
-<pre class="programlisting">typedef struct {
+<div class="refsect2">
+<a name="GstVideoFilterClass"></a><h3>struct GstVideoFilterClass</h3>
+<pre class="programlisting">struct GstVideoFilterClass {
   GstBaseTransformClass parent_class;
-} GstVideoFilterClass;
+
+  gboolean      (*set_info)           (GstVideoFilter *filter,
+                                       GstCaps *incaps, GstVideoInfo *in_info,
+                                       GstCaps *outcaps, GstVideoInfo *out_info);
+
+  /* transform */
+  GstFlowReturn (*transform_frame)    (GstVideoFilter *filter,
+                                       GstVideoFrame *inframe, GstVideoFrame *outframe);
+  GstFlowReturn (*transform_frame_ip) (GstVideoFilter *trans, GstVideoFrame *frame);
+};
 </pre>
 <p>
+The video filter class structure.
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html#GstBaseTransformClass"><span class="type">GstBaseTransformClass</span></a> <em class="structfield"><code><a name="GstVideoFilterClass.parent-class"></a>parent_class</code></em>;</span></p></td>
+<td>the parent class structure</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="GstVideoFilterClass.set-info"></a>set_info</code></em> ()</span></p></td>
+<td>function to be called with the negotiated caps and video infos</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="GstVideoFilterClass.transform-frame"></a>transform_frame</code></em> ()</span></p></td>
+<td>transform a video frame</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="GstVideoFilterClass.transform-frame-ip"></a>transform_frame_ip</code></em> ()</span></p></td>
+<td>transform a video frame in place</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

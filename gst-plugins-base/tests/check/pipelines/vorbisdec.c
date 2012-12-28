@@ -54,8 +54,11 @@ GST_START_TEST (test_timestamps)
   GstBus *bus;
   GError *error = NULL;
 
+  /* allowing some tolerance permits audiodecoder to come up with
+   * perfect timestamps rather than sticking to upstream ts */
   pipe_str = g_strdup_printf ("audiotestsrc num-buffers=100"
-      " ! audio/x-raw-int,rate=44100 ! audioconvert ! vorbisenc ! vorbisdec"
+      " ! audio/x-raw,rate=44100 ! audioconvert ! vorbisenc "
+      " ! vorbisdec tolerance=10000000 "
       " ! identity check-imperfect-timestamp=TRUE ! fakesink");
 
   pipeline = gst_parse_launch (pipe_str, &error);
@@ -79,14 +82,7 @@ GST_START_TEST (test_timestamps)
 
   gst_element_set_state (pipeline, GST_STATE_NULL);
 
-  /* FIXME: there seems to be a bug in vorbisdec on decoding the last packet
-   * where it calculates the timestamp based on the granulepos of the incoming
-   * packet and subtracting the number of samples it can decode, which can
-   * result in a discontinuity in timestamps.
-   * See http://bugzilla.gnome.org/show_bug.cgi?id=423086 
-   * Fix that bug and drop this number to 0.
-   */
-  fail_if (messages > 1, "Received imperfect timestamp messages");
+  fail_if (messages > 0, "Received imperfect timestamp messages");
   gst_object_unref (pipeline);
 }
 

@@ -8,47 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gst-plugins-0.8.3\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-10-05 13:46+0100\n"
+"POT-Creation-Date: 2012-12-18 00:25+0000\n"
 "PO-Revision-Date: 2004-09-27 13:32+0530\n"
 "Last-Translator: Gora Mohanty <gora_mohanty@yahoo.co.in>\n"
 "Language-Team: Oriya <gora_mohanty@yahoo.co.in>\n"
+"Language: or\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-msgid "Master"
-msgstr ""
-
-msgid "Bass"
-msgstr "ଅନୁଚ୍ଚ ସ୍ବର"
-
-msgid "Treble"
-msgstr "ଉଚ୍ଚ ସ୍ବର"
-
-msgid "PCM"
-msgstr "ପି.ସି.ଏମ."
-
-msgid "Synth"
-msgstr "ସିନ୍ଥେସାଇଜର"
-
-msgid "Line-in"
-msgstr "ଲାଇନ-ଇନ"
-
-msgid "CD"
-msgstr "ସି.ଡି."
-
-msgid "Microphone"
-msgstr "ମାଇକ୍ରୋଫୋନ୍"
-
-#, fuzzy
-msgid "PC Speaker"
-msgstr "ସ୍ବରବର୍ଦ୍ଧକ ୟନ୍ତ୍ର"
-
-msgid "Playback"
-msgstr ""
-
-msgid "Capture"
-msgstr ""
 
 #, fuzzy
 msgid "Could not open device for playback in mono mode."
@@ -70,6 +37,9 @@ msgstr ""
 #, fuzzy
 msgid "Could not open audio device for playback."
 msgstr "\"%s\" ଧ୍ବନି ଯନ୍ତ୍ର ଲେଖିବା ପାଇଁ ଖୋଲିହେଲା ନାହିଁ."
+
+msgid "Error outputting to audio device. The device has been disconnected."
+msgstr ""
 
 #, fuzzy
 msgid "Could not open device for recording in mono mode."
@@ -93,6 +63,9 @@ msgstr "\"%s\" ଯନ୍ତ୍ର ପଢ଼ିବା ଓ ଲେଖିବା ପ�
 msgid "Could not open audio device for recording."
 msgstr "ସି.ଡି. ଯନ୍ତ୍ର ପଢ଼ିବା ପାଇଁ ଖୋଲିହେଲା ନାହିଁ."
 
+msgid "Error recording from audio device. The device has been disconnected."
+msgstr ""
+
 msgid "Could not open CD device for reading."
 msgstr "ସି.ଡି. ଯନ୍ତ୍ର ପଢ଼ିବା ପାଇଁ ଖୋଲିହେଲା ନାହିଁ."
 
@@ -104,21 +77,6 @@ msgstr "ଭି.ଏଫ.ଏସ. ଫାଇଲ \"%s\" ବନ୍ଦ କରିହେ�
 msgid "Could not read CD."
 msgstr "\"%s\" ଯନ୍ତ୍ରରେ ଲେଖିହେଲା ନାହିଁ."
 
-#, c-format
-msgid "Could not open vfs file \"%s\" for writing: %s."
-msgstr "ଭି.ଏଫ.ଏସ. ଫାଇଲ \"%s\" ଲେଖିବା ପାଇଁ ଖୋଲିହେଲା ନାହିଁ: %s."
-
-msgid "No filename given"
-msgstr "କୌଣସି ଫାଇଲନାମ ଦିଆଯାଇ ନାହିଁ"
-
-#, c-format
-msgid "Could not close vfs file \"%s\"."
-msgstr "ଭି.ଏଫ.ଏସ. ଫାଇଲ \"%s\" ବନ୍ଦ କରିହେଲା ନାହିଁ."
-
-#, fuzzy, c-format
-msgid "Error while writing to file \"%s\"."
-msgstr "\"%s\" ଫାଇଲ ବନ୍ଦ କରିବାରେ ତ୍ରୁଟି."
-
 msgid "Internal data stream error."
 msgstr ""
 
@@ -126,58 +84,15 @@ msgstr ""
 msgid "A %s plugin is required to play this stream, but not installed."
 msgstr ""
 
-msgid "This appears to be a text file"
-msgstr ""
-
 #, fuzzy
 msgid "Could not determine type of stream"
 msgstr "\"%s\" ଫାଇଲ ଲେଖିହେଲା ନାହିଁ."
 
-#, c-format
-msgid "Invalid subtitle URI \"%s\", subtitles disabled."
-msgstr ""
-
-msgid "No URI specified to play from."
-msgstr ""
-
-#, c-format
-msgid "Invalid URI \"%s\"."
-msgstr ""
-
-msgid "RTSP streams cannot be played yet."
-msgstr ""
-
-msgid "Could not create \"decodebin\" element."
-msgstr ""
-
-msgid "Source element is invalid."
-msgstr ""
-
-msgid ""
-"Only a subtitle stream was detected. Either you are loading a subtitle file "
-"or some other type of text file, or the media file was not recognized."
-msgstr ""
-
-msgid ""
-"You do not have a decoder installed to handle this file. You might need to "
-"install the necessary plugins."
-msgstr ""
-
-#, fuzzy
-msgid "This is not a media file"
-msgstr "\"%s\" ଯନ୍ତ୍ର ଗୋଟିଏ ଅନୁଲିପିକାର ନୁହେଁ."
-
-msgid "A subtitle stream was detected, but no video stream."
-msgstr ""
-
-msgid "Both autovideosink and xvimagesink elements are missing."
+msgid "This appears to be a text file"
 msgstr ""
 
 #, c-format
 msgid "Missing element '%s' - check your GStreamer installation."
-msgstr ""
-
-msgid "Both autoaudiosink and alsasink elements are missing."
 msgstr ""
 
 #, c-format
@@ -185,6 +100,10 @@ msgid "Both autovideosink and %s elements are missing."
 msgstr ""
 
 msgid "The autovideosink element is missing."
+msgstr ""
+
+#, c-format
+msgid "Configured videosink %s is not working."
 msgstr ""
 
 #, c-format
@@ -208,35 +127,28 @@ msgid "The autoaudiosink element is missing."
 msgstr ""
 
 #, c-format
+msgid "Configured audiosink %s is not working."
+msgstr ""
+
+#, c-format
 msgid "Both autoaudiosink and %s elements are not working."
 msgstr ""
 
 msgid "The autoaudiosink element is not working."
 msgstr ""
 
-msgid "Can't play a text file without video."
-msgstr ""
-
-msgid "Can't display both text subtitles and subpictures."
-msgstr ""
-
-#, fuzzy
-msgid "No Temp directory specified."
-msgstr "କୌଣସି ଯନ୍ତ୍ର ଉଲ୍ଲେଖିତ କରାଯାଇ ନାହିଁ."
-
-#, fuzzy, c-format
-msgid "Could not create temp file \"%s\"."
-msgstr "ଭି.ଏଫ.ଏସ. ଫାଇଲ \"%s\" ବନ୍ଦ କରିହେଲା ନାହିଁ."
-
-#, c-format
-msgid "Could not open file \"%s\" for reading."
-msgstr "\"%s\" ଫାଇଲ ପଢ଼ିବା ପାଇଁ ଖୋଲିହେଲା ନାହିଁ."
-
-msgid "Internal data flow error."
+msgid "Can't play a text file without video or visualizations."
 msgstr ""
 
 #, c-format
 msgid "No decoder available for type '%s'."
+msgstr ""
+
+msgid "No URI specified to play from."
+msgstr ""
+
+#, c-format
+msgid "Invalid URI \"%s\"."
 msgstr ""
 
 msgid "This stream type cannot be played yet."
@@ -246,30 +158,14 @@ msgstr ""
 msgid "No URI handler implemented for \"%s\"."
 msgstr ""
 
-msgid "Could not create \"decodebin2\" element."
+msgid "Source element is invalid."
 msgstr ""
-
-msgid "Could not create \"queue2\" element."
-msgstr ""
-
-#, fuzzy
-msgid "Could not create \"typefind\" element."
-msgstr "\"%s\" ଫାଇଲ ଲେଖିହେଲା ନାହିଁ."
 
 #, fuzzy, c-format
 msgid "Error while sending data to \"%s:%d\"."
 msgstr "\"%s\" ଫାଇଲ ବନ୍ଦ କରିବାରେ ତ୍ରୁଟି."
 
-#, c-format
-msgid "Error while sending gdp header data to \"%s:%d\"."
-msgstr ""
-
-#, c-format
-msgid "Error while sending gdp payload data to \"%s:%d\"."
-msgstr ""
-
-#, c-format
-msgid "Connection to %s:%d refused."
+msgid "This CD has no audio tracks"
 msgstr ""
 
 msgid "Can't record audio fast enough"
@@ -308,7 +204,131 @@ msgstr ""
 msgid "MusicBrainz TRM ID"
 msgstr ""
 
-msgid "This CD has no audio tracks"
+msgid "capturing shutter speed"
+msgstr ""
+
+msgid "Shutter speed used when capturing an image, in seconds"
+msgstr ""
+
+msgid "capturing focal ratio"
+msgstr ""
+
+msgid "Focal ratio (f-number) used when capturing the image"
+msgstr ""
+
+msgid "capturing focal length"
+msgstr ""
+
+msgid "Focal length of the lens used capturing the image, in mm"
+msgstr ""
+
+msgid "capturing digital zoom ratio"
+msgstr ""
+
+msgid "Digital zoom ratio used when capturing an image"
+msgstr ""
+
+msgid "capturing iso speed"
+msgstr ""
+
+msgid "The ISO speed used when capturing an image"
+msgstr ""
+
+msgid "capturing exposure program"
+msgstr ""
+
+msgid "The exposure program used when capturing an image"
+msgstr ""
+
+msgid "capturing exposure mode"
+msgstr ""
+
+msgid "The exposure mode used when capturing an image"
+msgstr ""
+
+msgid "capturing exposure compensation"
+msgstr ""
+
+msgid "The exposure compensation used when capturing an image"
+msgstr ""
+
+msgid "capturing scene capture type"
+msgstr ""
+
+msgid "The scene capture mode used when capturing an image"
+msgstr ""
+
+msgid "capturing gain adjustment"
+msgstr ""
+
+msgid "The overall gain adjustment applied on an image"
+msgstr ""
+
+msgid "capturing white balance"
+msgstr ""
+
+msgid "The white balance mode set when capturing an image"
+msgstr ""
+
+msgid "capturing contrast"
+msgstr ""
+
+msgid "The direction of contrast processing applied when capturing an image"
+msgstr ""
+
+msgid "capturing saturation"
+msgstr ""
+
+msgid "The direction of saturation processing applied when capturing an image"
+msgstr ""
+
+msgid "capturing sharpness"
+msgstr ""
+
+msgid "The direction of sharpness processing applied when capturing an image"
+msgstr ""
+
+msgid "capturing flash fired"
+msgstr ""
+
+msgid "If the flash fired while capturing an image"
+msgstr ""
+
+msgid "capturing flash mode"
+msgstr ""
+
+msgid "The selected flash mode while capturing an image"
+msgstr ""
+
+msgid "capturing metering mode"
+msgstr ""
+
+msgid ""
+"The metering mode used while determining exposure for capturing an image"
+msgstr ""
+
+msgid "capturing source"
+msgstr ""
+
+msgid "The source or type of device used for the capture"
+msgstr ""
+
+msgid "image horizontal ppi"
+msgstr ""
+
+msgid "Media (image/video) intended horizontal pixel density in ppi"
+msgstr ""
+
+msgid "image vertical ppi"
+msgstr ""
+
+msgid "Media (image/video) intended vertical pixel density in ppi"
+msgstr ""
+
+msgid "ID3v2 frame"
+msgstr ""
+
+msgid "unparsed id3v2 tag frame"
 msgstr ""
 
 msgid "ID3 tag"
@@ -341,10 +361,19 @@ msgstr ""
 msgid "Lossless MSZH"
 msgstr ""
 
-msgid "Uncompressed Gray Image"
+msgid "Run-length encoding"
 msgstr ""
 
-msgid "Run-length encoding"
+msgid "Subtitle"
+msgstr ""
+
+msgid "MPL2 subtitle format"
+msgstr ""
+
+msgid "DKS subtitle format"
+msgstr ""
+
+msgid "QTtext subtitle format"
 msgstr ""
 
 msgid "Sami subtitle format"
@@ -356,59 +385,29 @@ msgstr ""
 msgid "Kate subtitle format"
 msgstr ""
 
-msgid "Uncompressed planar YUV 4:2:0"
+msgid "Uncompressed video"
 msgstr ""
 
-msgid "Uncompressed planar YVU 4:2:0"
-msgstr ""
-
-msgid "Uncompressed packed YUV 4:2:2"
-msgstr ""
-
-msgid "Uncompressed packed YUV 4:1:0"
-msgstr ""
-
-msgid "Uncompressed packed YVU 4:1:0"
-msgstr ""
-
-msgid "Uncompressed packed YUV 4:1:1"
-msgstr ""
-
-msgid "Uncompressed packed YUV 4:4:4"
-msgstr ""
-
-msgid "Uncompressed planar YUV 4:2:2"
-msgstr ""
-
-msgid "Uncompressed planar YUV 4:1:1"
-msgstr ""
-
-msgid "Uncompressed black and white Y-plane"
-msgstr ""
-
-msgid "Uncompressed YUV"
+msgid "Uncompressed gray"
 msgstr ""
 
 #, c-format
-msgid "Uncompressed palettized %d-bit %s"
+msgid "Uncompressed %s YUV %s"
+msgstr ""
+
+#, c-format
+msgid "Uncompressed %s%d-bit %s"
 msgstr ""
 
 #, c-format
 msgid "DivX MPEG-4 Version %d"
 msgstr ""
 
-#, c-format
-msgid "Raw %d-bit PCM audio"
-msgstr ""
-
-msgid "Raw PCM audio"
+msgid "Uncompressed audio"
 msgstr ""
 
 #, c-format
-msgid "Raw %d-bit floating-point audio"
-msgstr ""
-
-msgid "Raw floating-point audio"
+msgid "Raw %d-bit %s audio"
 msgstr ""
 
 msgid "Audio CD source"
@@ -489,20 +488,75 @@ msgstr ""
 msgid "Plugin or element of unknown type"
 msgstr ""
 
-msgid "No device specified."
-msgstr "କୌଣସି ଯନ୍ତ୍ର ଉଲ୍ଲେଖିତ କରାଯାଇ ନାହିଁ."
+#~ msgid "Bass"
+#~ msgstr "ଅନୁଚ୍ଚ ସ୍ବର"
 
-#, c-format
-msgid "Device \"%s\" does not exist."
-msgstr "\"%s\" ଯନ୍ତ୍ର ଅବସ୍ଥିତ ନାହିଁ."
+#~ msgid "Treble"
+#~ msgstr "ଉଚ୍ଚ ସ୍ବର"
 
-#, fuzzy, c-format
-msgid "Device \"%s\" is already being used."
-msgstr "\"%s\" ଓ.ଏସ.ଏସ. ଯନ୍ତ୍ର ପୂର୍ବରୁ ଅନ୍ଯ କାରିକା ଦ୍ବାରା ବ୍ଯବହାର କରାଯାଉଛି."
+#~ msgid "PCM"
+#~ msgstr "ପି.ସି.ଏମ."
 
-#, c-format
-msgid "Could not open device \"%s\" for reading and writing."
-msgstr "\"%s\" ଯନ୍ତ୍ର ପଢ଼ିବା ଓ ଲେଖିବା ପାଇଁ ଖୋଲିହେଲା ନାହିଁ."
+#~ msgid "Synth"
+#~ msgstr "ସିନ୍ଥେସାଇଜର"
+
+#~ msgid "Line-in"
+#~ msgstr "ଲାଇନ-ଇନ"
+
+#~ msgid "CD"
+#~ msgstr "ସି.ଡି."
+
+#~ msgid "Microphone"
+#~ msgstr "ମାଇକ୍ରୋଫୋନ୍"
+
+#, fuzzy
+#~ msgid "PC Speaker"
+#~ msgstr "ସ୍ବରବର୍ଦ୍ଧକ ୟନ୍ତ୍ର"
+
+#~ msgid "Could not open vfs file \"%s\" for writing: %s."
+#~ msgstr "ଭି.ଏଫ.ଏସ. ଫାଇଲ \"%s\" ଲେଖିବା ପାଇଁ ଖୋଲିହେଲା ନାହିଁ: %s."
+
+#~ msgid "No filename given"
+#~ msgstr "କୌଣସି ଫାଇଲନାମ ଦିଆଯାଇ ନାହିଁ"
+
+#~ msgid "Could not close vfs file \"%s\"."
+#~ msgstr "ଭି.ଏଫ.ଏସ. ଫାଇଲ \"%s\" ବନ୍ଦ କରିହେଲା ନାହିଁ."
+
+#, fuzzy
+#~ msgid "Error while writing to file \"%s\"."
+#~ msgstr "\"%s\" ଫାଇଲ ବନ୍ଦ କରିବାରେ ତ୍ରୁଟି."
+
+#, fuzzy
+#~ msgid "This is not a media file"
+#~ msgstr "\"%s\" ଯନ୍ତ୍ର ଗୋଟିଏ ଅନୁଲିପିକାର ନୁହେଁ."
+
+#~ msgid "No device specified."
+#~ msgstr "କୌଣସି ଯନ୍ତ୍ର ଉଲ୍ଲେଖିତ କରାଯାଇ ନାହିଁ."
+
+#~ msgid "Device \"%s\" does not exist."
+#~ msgstr "\"%s\" ଯନ୍ତ୍ର ଅବସ୍ଥିତ ନାହିଁ."
+
+#, fuzzy
+#~ msgid "Device \"%s\" is already being used."
+#~ msgstr "\"%s\" ଓ.ଏସ.ଏସ. ଯନ୍ତ୍ର ପୂର୍ବରୁ ଅନ୍ଯ କାରିକା ଦ୍ବାରା ବ୍ଯବହାର କରାଯାଉଛି."
+
+#~ msgid "Could not open device \"%s\" for reading and writing."
+#~ msgstr "\"%s\" ଯନ୍ତ୍ର ପଢ଼ିବା ଓ ଲେଖିବା ପାଇଁ ଖୋଲିହେଲା ନାହିଁ."
+
+#, fuzzy
+#~ msgid "Could not create \"typefind\" element."
+#~ msgstr "\"%s\" ଫାଇଲ ଲେଖିହେଲା ନାହିଁ."
+
+#, fuzzy
+#~ msgid "No Temp directory specified."
+#~ msgstr "କୌଣସି ଯନ୍ତ୍ର ଉଲ୍ଲେଖିତ କରାଯାଇ ନାହିଁ."
+
+#, fuzzy
+#~ msgid "Could not create temp file \"%s\"."
+#~ msgstr "ଭି.ଏଫ.ଏସ. ଫାଇଲ \"%s\" ବନ୍ଦ କରିହେଲା ନାହିଁ."
+
+#~ msgid "Could not open file \"%s\" for reading."
+#~ msgstr "\"%s\" ଫାଇଲ ପଢ଼ିବା ପାଇଁ ଖୋଲିହେଲା ନାହିଁ."
 
 #, fuzzy
 #~ msgid "No file name specified."

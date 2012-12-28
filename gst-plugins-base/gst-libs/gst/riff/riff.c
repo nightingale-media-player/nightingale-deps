@@ -32,6 +32,8 @@
 
 #include <gst/gst.h>
 
+#include "riff-read.h"
+
 GST_DEBUG_CATEGORY (riff_debug);
 
 /**

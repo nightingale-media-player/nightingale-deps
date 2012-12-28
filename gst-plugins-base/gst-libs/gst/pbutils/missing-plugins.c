@@ -67,6 +67,7 @@
 #include "gst/gst-i18n-plugin.h"
 
 #include "pbutils.h"
+#include "pbutils-private.h"
 
 #include <string.h>
 
@@ -112,7 +113,7 @@ missing_structure_get_type (const GstStructure * s)
   return GST_MISSING_TYPE_UNKNOWN;
 }
 
-static GstCaps *
+GstCaps *
 copy_and_clean_caps (const GstCaps * caps)
 {
   GstStructure *s;
@@ -165,7 +166,7 @@ copy_and_clean_caps (const GstCaps * caps)
  * that a source element for a particular URI protocol is missing. This
  * function is mainly for use in plugins.
  *
- * Returns: a new #GstMessage, or NULL on error
+ * Returns: (transfer full): a new #GstMessage, or NULL on error
  */
 GstMessage *
 gst_missing_uri_source_message_new (GstElement * element,
@@ -198,7 +199,7 @@ gst_missing_uri_source_message_new (GstElement * element,
  * that a sink element for a particular URI protocol is missing. This
  * function is mainly for use in plugins.
  *
- * Returns: a new #GstMessage, or NULL on error
+ * Returns: (transfer full): a new #GstMessage, or NULL on error
  */
 GstMessage *
 gst_missing_uri_sink_message_new (GstElement * element, const gchar * protocol)
@@ -230,7 +231,7 @@ gst_missing_uri_sink_message_new (GstElement * element, const gchar * protocol)
  * that a certain required element is missing. This function is mainly for
  * use in plugins.
  *
- * Returns: a new #GstMessage, or NULL on error
+ * Returns: (transfer full): a new #GstMessage, or NULL on error
  */
 GstMessage *
 gst_missing_element_message_new (GstElement * element,
@@ -262,7 +263,7 @@ gst_missing_element_message_new (GstElement * element,
  * that a decoder element for a particular set of (fixed) caps is missing.
  * This function is mainly for use in plugins.
  *
- * Returns: a new #GstMessage, or NULL on error
+ * Returns: (transfer full): a new #GstMessage, or NULL on error
  */
 GstMessage *
 gst_missing_decoder_message_new (GstElement * element,
@@ -302,7 +303,7 @@ gst_missing_decoder_message_new (GstElement * element,
  * that an encoder element for a particular set of (fixed) caps is missing.
  * This function is mainly for use in plugins.
  *
- * Returns: a new #GstMessage, or NULL on error
+ * Returns: (transfer full): a new #GstMessage, or NULL on error
  */
 GstMessage *
 gst_missing_encoder_message_new (GstElement * element,
@@ -405,18 +406,20 @@ gst_missing_plugin_message_get_installer_detail (GstMessage * msg)
   GString *str = NULL;
   gchar *detail = NULL;
   gchar *desc;
+  const GstStructure *structure;
 
   g_return_val_if_fail (gst_is_missing_plugin_message (msg), NULL);
 
-  GST_LOG ("Parsing missing-plugin message: %" GST_PTR_FORMAT, msg->structure);
+  structure = gst_message_get_structure (msg);
+  GST_LOG ("Parsing missing-plugin message: %" GST_PTR_FORMAT, structure);
 
-  missing_type = missing_structure_get_type (msg->structure);
+  missing_type = missing_structure_get_type (structure);
   if (missing_type == GST_MISSING_TYPE_UNKNOWN) {
     GST_WARNING ("couldn't parse 'type' field");
     goto error;
   }
 
-  type = gst_structure_get_string (msg->structure, "type");
+  type = gst_structure_get_string (structure, "type");
   g_assert (type != NULL);      /* validity already checked above */
 
   /* FIXME: use gst_installer_detail_new() here too */
@@ -443,14 +446,14 @@ gst_missing_plugin_message_get_installer_detail (GstMessage * msg)
     case GST_MISSING_TYPE_URISOURCE:
     case GST_MISSING_TYPE_URISINK:
     case GST_MISSING_TYPE_ELEMENT:
-      if (!missing_structure_get_string_detail (msg->structure, &detail))
+      if (!missing_structure_get_string_detail (structure, &detail))
         goto error;
       break;
     case GST_MISSING_TYPE_DECODER:
     case GST_MISSING_TYPE_ENCODER:{
       GstCaps *caps = NULL;
 
-      if (!missing_structure_get_caps_detail (msg->structure, &caps))
+      if (!missing_structure_get_caps_detail (structure, &caps))
         goto error;
 
       detail = gst_caps_to_string (caps);
@@ -497,19 +500,21 @@ gst_missing_plugin_message_get_description (GstMessage * msg)
   GstMissingType missing_type;
   const gchar *desc;
   gchar *ret = NULL;
+  const GstStructure *structure;
 
   g_return_val_if_fail (gst_is_missing_plugin_message (msg), NULL);
 
-  GST_LOG ("Parsing missing-plugin message: %" GST_PTR_FORMAT, msg->structure);
+  structure = gst_message_get_structure (msg);
+  GST_LOG ("Parsing missing-plugin message: %" GST_PTR_FORMAT, structure);
 
-  desc = gst_structure_get_string (msg->structure, "name");
+  desc = gst_structure_get_string (structure, "name");
   if (desc != NULL && *desc != '\0') {
     ret = g_strdup (desc);
     goto done;
   }
 
   /* fallback #1 */
-  missing_type = missing_structure_get_type (msg->structure);
+  missing_type = missing_structure_get_type (structure);
 
   switch (missing_type) {
     case GST_MISSING_TYPE_URISOURCE:
@@ -517,7 +522,7 @@ gst_missing_plugin_message_get_description (GstMessage * msg)
     case GST_MISSING_TYPE_ELEMENT:{
       gchar *detail = NULL;
 
-      if (missing_structure_get_string_detail (msg->structure, &detail)) {
+      if (missing_structure_get_string_detail (structure, &detail)) {
         if (missing_type == GST_MISSING_TYPE_URISOURCE)
           ret = gst_pb_utils_get_source_description (detail);
         else if (missing_type == GST_MISSING_TYPE_URISINK)
@@ -532,7 +537,7 @@ gst_missing_plugin_message_get_description (GstMessage * msg)
     case GST_MISSING_TYPE_ENCODER:{
       GstCaps *caps = NULL;
 
-      if (missing_structure_get_caps_detail (msg->structure, &caps)) {
+      if (missing_structure_get_caps_detail (structure, &caps)) {
         if (missing_type == GST_MISSING_TYPE_DECODER)
           ret = gst_pb_utils_get_decoder_description (caps);
         else
@@ -590,13 +595,16 @@ done:
 gboolean
 gst_is_missing_plugin_message (GstMessage * msg)
 {
+  const GstStructure *structure;
+
   g_return_val_if_fail (msg != NULL, FALSE);
   g_return_val_if_fail (GST_IS_MESSAGE (msg), FALSE);
 
-  if (GST_MESSAGE_TYPE (msg) != GST_MESSAGE_ELEMENT || msg->structure == NULL)
+  structure = gst_message_get_structure (msg);
+  if (GST_MESSAGE_TYPE (msg) != GST_MESSAGE_ELEMENT || structure == NULL)
     return FALSE;
 
-  return gst_structure_has_name (msg->structure, "missing-plugin");
+  return gst_structure_has_name (structure, "missing-plugin");
 }
 
 /* takes ownership of the description */
@@ -646,8 +654,6 @@ gst_installer_detail_new (gchar * description, const gchar * type,
  *
  * Returns: a newly-allocated detail string, or NULL on error. Free string
  *          with g_free() when not needed any longer.
- *
- * Since: 0.10.15
  */
 gchar *
 gst_missing_uri_source_installer_detail_new (const gchar * protocol)
@@ -676,8 +682,6 @@ gst_missing_uri_source_installer_detail_new (const gchar * protocol)
  *
  * Returns: a newly-allocated detail string, or NULL on error. Free string
  *          with g_free() when not needed any longer.
- *
- * Since: 0.10.15
  */
 gchar *
 gst_missing_uri_sink_installer_detail_new (const gchar * protocol)
@@ -706,8 +710,6 @@ gst_missing_uri_sink_installer_detail_new (const gchar * protocol)
  *
  * Returns: a newly-allocated detail string, or NULL on error. Free string
  *          with g_free() when not needed any longer.
- *
- * Since: 0.10.15
  */
 gchar *
 gst_missing_element_installer_detail_new (const gchar * factory_name)
@@ -735,8 +737,6 @@ gst_missing_element_installer_detail_new (const gchar * factory_name)
  *
  * Returns: a newly-allocated detail string, or NULL on error. Free string
  *          with g_free() when not needed any longer.
- *
- * Since: 0.10.15
  */
 gchar *
 gst_missing_decoder_installer_detail_new (const GstCaps * decode_caps)
@@ -775,8 +775,6 @@ gst_missing_decoder_installer_detail_new (const GstCaps * decode_caps)
  *
  * Returns: a newly-allocated detail string, or NULL on error. Free string
  *          with g_free() when not needed any longer.
- *
- * Since: 0.10.15
  */
 gchar *
 gst_missing_encoder_installer_detail_new (const GstCaps * encode_caps)

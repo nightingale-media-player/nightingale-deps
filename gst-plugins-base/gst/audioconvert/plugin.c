@@ -25,15 +25,11 @@
 
 #include "plugin.h"
 
-#include <gst/audio/multichannel.h>
+#include "gstaudioconvertorc.h"
 
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  /* ensure GstAudioChannelPosition type is registered */
-  if (!gst_audio_channel_position_get_type ())
-    return FALSE;
-
   if (!gst_element_register (plugin, "audioconvert",
           GST_RANK_PRIMARY, gst_audio_convert_get_type ()))
     return FALSE;
@@ -43,6 +39,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "audioconvert",
+    audioconvert,
     "Convert audio to different formats",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

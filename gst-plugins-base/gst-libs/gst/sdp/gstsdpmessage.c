@@ -61,28 +61,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-
-#include <glib.h>               /* for G_OS_WIN32 */
-#include <gst/gstinfo.h>        /* For GST_STR_NULL */
-
-#ifdef G_OS_WIN32
-/* ws2_32.dll has getaddrinfo and freeaddrinfo on Windows XP and later.
- * minwg32 headers check WINVER before allowing the use of these */
-#ifndef WINVER
-#define WINVER 0x0501
-#endif
-#ifdef _MSC_VER
-#include <Winsock2.h>
-#endif
-#include <ws2tcpip.h>
-#else
-#include <sys/socket.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#endif
+#include <gio/gio.h>
 
 #include "gstsdpmessage.h"
 
@@ -217,7 +196,7 @@ gst_sdp_attribute_init (GstSDPAttribute * attr)
 
 /**
  * gst_sdp_message_new:
- * @msg: pointer to new #GstSDPMessage
+ * @msg: (out) (transfer full): pointer to new #GstSDPMessage
  *
  * Allocate a new GstSDPMessage and store the result in @msg.
  *
@@ -322,36 +301,32 @@ gst_sdp_message_free (GstSDPMessage * msg)
   return GST_SDP_OK;
 }
 
-static gboolean
-is_multicast_address (const gchar * host_name, guint * family)
+/**
+ * gst_sdp_address_is_multicast:
+ * @nettype: a network type
+ * @addrtype: an address type
+ * @addr: an address
+ *
+ * Check if the given @addr is a multicast address.
+ *
+ * Returns: TRUE when @addr is multicast.
+ */
+gboolean
+gst_sdp_address_is_multicast (const gchar * nettype, const gchar * addrtype,
+    const gchar * addr)
 {
-  struct addrinfo hints;
-  struct addrinfo *ai;
-  struct addrinfo *res;
   gboolean ret = FALSE;
+  GInetAddress *iaddr;
 
-  memset (&hints, 0, sizeof (hints));
-  hints.ai_socktype = SOCK_DGRAM;
+  g_return_val_if_fail (addr, FALSE);
 
-  g_return_val_if_fail (host_name, FALSE);
-
-  if (getaddrinfo (host_name, NULL, &hints, &res) < 0)
+  /* we only support IN */
+  if (nettype && strcmp (nettype, "IN") != 0)
     return FALSE;
 
-  for (ai = res; !ret && ai; ai = ai->ai_next) {
-    if (ai->ai_family == AF_INET)
-      ret =
-          IN_MULTICAST (ntohl (((struct sockaddr_in *) ai->ai_addr)->sin_addr.
-              s_addr));
-    else
-      ret =
-          IN6_IS_ADDR_MULTICAST (&((struct sockaddr_in6 *) ai->ai_addr)->
-          sin6_addr);
-    if (ret && family)
-      *family = ai->ai_family;
-  }
-
-  freeaddrinfo (res);
+  iaddr = g_inet_address_new_from_string (addr);
+  ret = g_inet_address_get_is_multicast (iaddr);
+  g_object_unref (iaddr);
 
   return ret;
 }
@@ -408,12 +383,12 @@ gst_sdp_message_as_text (const GstSDPMessage * msg)
 
   if (msg->connection.nettype && msg->connection.addrtype &&
       msg->connection.address) {
-    guint family;
-
     g_string_append_printf (lines, "c=%s %s %s", msg->connection.nettype,
         msg->connection.addrtype, msg->connection.address);
-    if (is_multicast_address (msg->connection.address, &family)) {
-      if (family == AF_INET)
+    if (gst_sdp_address_is_multicast (msg->connection.nettype,
+            msg->connection.addrtype, msg->connection.address)) {
+      /* only add ttl for IP4 */
+      if (strcmp (msg->connection.addrtype, "IP4") == 0)
         g_string_append_printf (lines, "/%u", msg->connection.ttl);
       if (msg->connection.addr_number > 1)
         g_string_append_printf (lines, "/%u", msg->connection.addr_number);
@@ -484,6 +459,179 @@ gst_sdp_message_as_text (const GstSDPMessage * msg)
   }
 
   return g_string_free (lines, FALSE);
+}
+
+static int
+hex_to_int (gchar c)
+{
+  return c >= '0' && c <= '9' ? c - '0'
+      : c >= 'A' && c <= 'F' ? c - 'A' + 10
+      : c >= 'a' && c <= 'f' ? c - 'a' + 10 : 0;
+}
+
+/**
+ * gst_sdp_message_parse_uri:
+ * @uri: the start of the uri
+ * @msg: the result #GstSDPMessage
+ *
+ * Parse the null-terminated @uri and store the result in @msg.
+ *
+ * The uri should be of the form:
+ *
+ *  scheme://[address[:ttl=ttl][:noa=noa]]/[sessionname]
+ *               [#type=value *[&type=value]]
+ *
+ *  where value is url encoded. This looslely resembles
+ *  http://tools.ietf.org/html/draft-fujikawa-sdp-url-01
+ *
+ * Returns: #GST_SDP_OK on success.
+ */
+GstSDPResult
+gst_sdp_message_parse_uri (const gchar * uri, GstSDPMessage * msg)
+{
+  GstSDPResult res;
+  gchar *message;
+  const gchar *colon, *slash, *hash, *p;
+  GString *lines;
+
+  g_return_val_if_fail (uri != NULL, GST_SDP_EINVAL);
+  g_return_val_if_fail (msg != NULL, GST_SDP_EINVAL);
+
+  colon = strstr (uri, "://");
+  if (!colon)
+    goto no_colon;
+
+  /* FIXME connection info goes here */
+
+  slash = strstr (colon + 3, "/");
+  if (!slash)
+    goto no_slash;
+
+  /* FIXME session name goes here */
+
+  hash = strstr (slash + 1, "#");
+  if (!hash)
+    goto no_hash;
+
+  lines = g_string_new ("");
+
+  /* unescape */
+  for (p = hash + 1; *p; p++) {
+    if (*p == '&')
+      g_string_append_printf (lines, "\r\n");
+    else if (*p == '+')
+      g_string_append_c (lines, ' ');
+    else if (*p == '%') {
+      gchar a, b;
+
+      if ((a = p[1])) {
+        if ((b = p[2])) {
+          g_string_append_c (lines, (hex_to_int (a) << 4) | hex_to_int (b));
+          p += 2;
+        }
+      } else {
+        p++;
+      }
+    } else
+      g_string_append_c (lines, *p);
+  }
+
+  message = g_string_free (lines, FALSE);
+  res =
+      gst_sdp_message_parse_buffer ((const guint8 *) message, strlen (message),
+      msg);
+  g_free (message);
+
+  return res;
+
+  /* ERRORS */
+no_colon:
+  {
+    return GST_SDP_EINVAL;
+  }
+no_slash:
+  {
+    return GST_SDP_EINVAL;
+  }
+no_hash:
+  {
+    return GST_SDP_EINVAL;
+  }
+}
+
+static const guchar acceptable[96] = {
+  /* X0   X1    X2    X3    X4    X5    X6    X7    X8    X9    XA    XB    XC    XD    XE    XF */
+  0x00, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x00, 0x01, 0x01, 0x01, 0x00,       /* 2X  !"#$%&'()*+,-./   */
+  0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,       /* 3X 0123456789:;<=>?   */
+  0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,       /* 4X @ABCDEFGHIJKLMNO   */
+  0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x01,       /* 5X PQRSTUVWXYZ[\]^_   */
+  0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,       /* 6X `abcdefghijklmno   */
+  0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00        /* 7X pqrstuvwxyz{|}~DEL */
+};
+
+static const gchar hex[16] = "0123456789ABCDEF";
+
+#define ACCEPTABLE_CHAR(a) (((guchar)(a))>=32 && ((guchar)(a))<128 && acceptable[(((guchar)a))-32])
+
+/**
+ * gst_sdp_message_as_uri:
+ * @scheme: the uri scheme
+ * @msg: the #GstSDPMessage
+ *
+ * Creates a uri from @msg with the given @scheme. The uri has the format:
+ *
+ *  @scheme:///[#type=value *[&type=value]]
+ *
+ *  Where each value is url encoded.
+ *
+ * Returns: a uri for @msg.
+ */
+gchar *
+gst_sdp_message_as_uri (const gchar * scheme, const GstSDPMessage * msg)
+{
+  gchar *serialized, *p;
+  gchar *res;
+  GString *lines;
+  gboolean first;
+
+  g_return_val_if_fail (scheme != NULL, NULL);
+  g_return_val_if_fail (msg != NULL, NULL);
+
+  p = serialized = gst_sdp_message_as_text (msg);
+
+  lines = g_string_new ("");
+  g_string_append_printf (lines, "%s:///#", scheme);
+
+  /* now escape */
+  first = TRUE;
+  for (p = serialized; *p; p++) {
+    if (first) {
+      g_string_append_printf (lines, "%c=", *p);
+      if (*(p + 1))
+        p++;
+      first = FALSE;
+      continue;
+    }
+    if (*p == '\r')
+      continue;
+    else if (*p == '\n') {
+      if (*(p + 1))
+        g_string_append_c (lines, '&');
+      first = TRUE;
+    } else if (*p == ' ')
+      g_string_append_c (lines, '+');
+    else if (ACCEPTABLE_CHAR (*p))
+      g_string_append_c (lines, *p);
+    else {
+      /* escape */
+      g_string_append_printf (lines, "%%%c%c", hex[*p >> 4], hex[*p & 0xf]);
+    }
+  }
+
+  res = g_string_free (lines, FALSE);
+  g_free (serialized);
+
+  return res;
 }
 
 /**
@@ -781,7 +929,7 @@ DEFINE_ARRAY_GETTER (time, times, const GstSDPTime);
  * @msg: a #GstSDPMessage
  * @start: the start time
  * @stop: the stop time
- * @repeat: the repeat times
+ * @repeat: (array): the repeat times
  *
  * Add time information @start and @stop to @msg.
  *
@@ -1004,7 +1152,7 @@ DEFINE_ARRAY_GETTER (media, medias, const GstSDPMedia);
  *
  * Adds @media to the array of medias in @msg. This function takes ownership of
  * the contents of @media so that @media will have to be reinitialized with
- * gst_media_init() before it can be used again.
+ * gst_sdp_media_init() before it can be used again.
  *
  * Returns: a #GstSDPResult.
  */
@@ -1028,7 +1176,7 @@ gst_sdp_message_add_media (GstSDPMessage * msg, GstSDPMedia * media)
 
 /**
  * gst_sdp_media_new:
- * @media: pointer to new #GstSDPMedia
+ * @media: (out): pointer to new #GstSDPMedia
  *
  * Allocate a new GstSDPMedia and store the result in @media.
  *
@@ -1164,12 +1312,12 @@ gst_sdp_media_as_text (const GstSDPMedia * media)
     const GstSDPConnection *conn = gst_sdp_media_get_connection (media, i);
 
     if (conn->nettype && conn->addrtype && conn->address) {
-      guint family;
-
       g_string_append_printf (lines, "c=%s %s %s", conn->nettype,
           conn->addrtype, conn->address);
-      if (is_multicast_address (conn->address, &family)) {
-        if (family == AF_INET)
+      if (gst_sdp_address_is_multicast (conn->nettype, conn->addrtype,
+              conn->address)) {
+        /* only add TTL for IP4 multicast */
+        if (strcmp (conn->addrtype, "IP4") == 0)
           g_string_append_printf (lines, "/%u", conn->ttl);
         if (conn->addr_number > 1)
           g_string_append_printf (lines, "/%u", conn->addr_number);
@@ -1754,7 +1902,9 @@ gst_sdp_parse_line (SDPContext * c, gchar type, gchar * buffer)
       READ_STRING (conn.nettype);
       READ_STRING (conn.addrtype);
       READ_STRING (conn.address);
-      READ_UINT (conn.ttl);
+      /* only read TTL for IP4 */
+      if (strcmp (conn.addrtype, "IP4") == 0)
+        READ_UINT (conn.ttl);
       READ_UINT (conn.addr_number);
 
       if (c->state == SDP_SESSION) {
