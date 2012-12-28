@@ -42,6 +42,7 @@
   Christian Cornelssen		ccorn@cs.tu-berlin.de		  2002-11-05
   Jan Kratochvil		project-libtool@jankratochvil.net 2003-01-28
   Raja R. Harinath		harinath@acm.org		  2003-02-25
+  Paolo Bonzini			bonzini@gnu.org			  2003-03-01
   Richard Nicholas Somer Dawe	rich@phekda.freeserve.co.uk	  2003-03-12
   Peter O'Gorman		peter@pogma.com			  2003-03-14
   Ralph Schleicher		rs@nunatak.allgaeu.org		  2003-03-13
@@ -55,7 +56,6 @@
   Benjamin Reed			ranger@befunk.com		  2004-02-08
   Ralf Wildenhues		Ralf.Wildenhues@gmx.de		  2004-02-12
   Nick Hudson			skrll@netbsd.org		  2004-03-29
-  Paolo Bonzini			bonzini@gnu.org			  2003-03-01
   Noah Jeffrey Misch		noah@cs.caltech.edu		  2004-07-05
   Thorsten Glaser		tg@66h.42h.de			  2004-10-11
   Peter Rosin			peda@lysator.liu.se		  2005-04-12
@@ -67,70 +67,120 @@
   their time and energy in helping to track down bugs, port to new systems,
   and generally assist in the libtool maintainership process:
 
+  Alan Hourihane		alanh@fairlite.co.uk
+  Alexei Sheplyakov		varg@theor.jinr.ru
+  Alon Bar-Lev			alon.barlev@gmail.com
   Andreas Schwab		schwab@suse.de
   Andrey Slepuhin		pooh@msu.ru
   Aneesh Kumar K.V		kvaneesh@hotmail.com
   Brad Smith			brad@comstyle.com
+  Brent Leback			brent.leback@st.com
   Brian Barrett			brbarret@osl.iu.edu
   Bruno Haible			haible@ilog.fr
+  Brice De Bruyne		bricedb@gmail.com
+  Camilo La Rota		camilo.larota@ens-lyon.fr
   Carl D. Roth			roth@cse.ucsc.edu
+  Chris Demetriou		cgd@google.com
   Chris P. Ross			cross@eng.us.uu.net
   Christian Biesinger		cbiesinger@web.de
+  Christian Rössel		christian.roessel@gmx.de
   Christoph Egger		Christoph_Egger@gmx.de
   Christopher Hulbert		cchgroupmail@gmail.com
   Craig Tierney			Craig.Tierney@noaa.gov
   Dalibor Topic			robilad@kaffe.org
+  Dan McMahill			mcmahill@mtl.mit.edu
   Daniel Reed			n@ml.org
+  Daniel Richard G.		skunk@iSKUNK.ORG
+  Dave Korn			dave.korn.cygwin@googlemail.com
   DJ Delorie			dj@delorie.com
+  Donn Washburn			n5xwb@comcast.net
   Edouard G. Parmelan		Edouard.Parmelan@France.NCR.COM
   Erez Zadok			ezk@shekel.mcl.cs.columbia.edu
   Eric Estievenart		eric@via.ecp.fr
+  Ethan Mallove			ethan.mallove@sun.com
   Frank Ch. Eigler		fche@cygnus.com
   Fred Cox			sailorfred@yahoo.com
+  Gerald Pfeifer		gerald@pfeifer.com
   H.J. Lu			hjl@gnu.org
   Henning Nielsen Lund		hnl_dk@amigaos.dk
   Howard Chu			hyc@highlandsun.com
   Ian Lance Taylor		ian@cygnus.com
+  Ingo Weinhold			ingo_weinhold@gmx.de
   Jakub Bogusz			qboosh@pld-linux.org
   Jacob Meuser			jakemsr@jakemsr.com
   James Su			james.su@gmail.com
+  Jan Engelhardt		jengelh@medozas.de
+  Jay Krell			jay.krell@cornell.edu
   Jeff Squyres			jsquyres@lam-mpi.org
   Jeremy C. Reed		reed@reedmedia.net
   Jim Meyering			jim@meyering.net
+  Joakim Tjernlund		joakim.tjernlund@transmode.se
   Joel N. Weber II		devnull@gnu.org
   Joerg Sonnenberger		joerg@netbsd.org
   John Bowler			jbowler@acm.org
+  John R. Cary			cary@txcorp.com
+  John Wolfe			jlw@sco.com
+  Josh Hursey			jjhursey@open-mpi.org
   Joseph Beckenbach III		jrb3@best.com
+  Karl Berry			karl@freefriends.org
   Kenneth Albanowski		kjahds@kjahds.com
   Kevin Ryde			user42@zip.com.au
+  Khem Raj                      raj.khem@gmail.com
+  KO Myung-Hun			komh@chollian.net
   Kurt D. Zeilenga		Kurt@OpenLDAP.Org
+  Lennart Poettering		lennart@poettering.net
+  Lionel Landwerlin             llandwerlin@gmail.com
+  Maciej Helminiak		dion2@wp.pl
   Maciej W. Rozycki		macro@linux-mips.org
+  Mahesh Narayanamurthi		mahesh.mach@gmail.com
   Manfred Weichel		Manfred.Weichel@pdb.siemens.de
   Marc Espie			espie@nerim.net
   Marc J. Fraioli		fraioli@dg-rtp.dg.com
+  Marcel Loose			loose@astron.nl
   Mark Kettenis			kettenis@phys.uva.nl
+  Markus Duft			markus.duft@salomon.at
+  Matthijs Kooijman		matthijs@stdin.nl
+  Micheal E. Faenza		mfaenza@mitre.org
   Michael Haubenwallner		michael.haubenwallner@salomon.at
+  Mike Gorchak			mike@malva.ua
   Mike Frysinger		vapier@gentoo.org
   Nix				nix@esperi.org.uk
   Olaf Lenz			olenz@fias.uni-frankfurt.de
   Olly Betts			olly@muscat.co.uk
+  Patrice Fromy			patrice.fromy@u-psud.fr
   Patrick Welche		prlw1@newn.cam.ac.uk
+  Paul Biggar			paul.biggar@gmail.com
   Paul Eggert			eggert@twinsun.com
+  Paul Laight			plaight@quantxautomation.co.uk
+  Paweł Daniluk			pawel@bioexploratorium.pl
   Peter Eisentraut		peter_e@gmx.net
+  Peter Fritzsche		peter.fritzsche@gmx.de
   Peter Jeremy			peterjeremy@optushome.com.au
+  Peter Kjellerstedt		peter.kjellerstedt@axis.com
+  Philip Allison		philip.allison@smoothwall.net
+  Rainer Emrich			r.emrich@de.tecosim.com
   Rainer Orth			ro@TechFak.Uni-Bielefeld.DE
   Rainer Tammer			tammer@tammer.net
   Ralf Menzel			menzel@ls6.cs.uni-dortmund.de
+  Richard B. Kreckel		kreckel@ginac.de
   Richard Purdie		rpurdie@rpsys.net
+  Richard Sandiford		richards@transitive.com
+  Robert Garron			Robert.Garron@Access3000.net
+  Robert Millan			rmh@aybabtu.com
   Robert Ögren			lists@roboros.com
   Roberto Bagnara		bagnara@cs.unipr.it
   Roland Mainz			roland.mainz@nrubsig.org
+  Roumen Petrov			bugtrack@roumenpetrov.info
+  Rudolf Leitgeb		r.leitgeb@x-pin.com
+  Ryan Hill			dirtyepic@gentoo.org
   Sam Thursfield		ssssam@gmail.com
+  Scott McCreary		scottmc2@gmail.com
   Sebastian Wilhelmi		wilhelmi@ira.uka.de
   Simon Josefsson		jas@extundo.com
   Stephan Kulow			coolo@kde.org
   Steve Ellcey			sje@cup.hp.com
   Steven M. Schultz		sms@wlv.iipo.gtegsc.com
+  Svante Signell		srs@kth.se
   Sven Verdoolaege		skimo@liacs.nl
   Terry D. Dontje		Terry.Dontje@Sun.COM
   Tim Mooney			mooney@dogbert.cc.ndsu.NoDak.edu
@@ -138,6 +188,8 @@
   Tom Tromey			tromey@cygnus.com
   Tor Lillqvist			tml@iki.fi
   Ulrich Drepper		drepper@ipd.info.uni-karlsruhe.de
+  Warren Dodge			warren.l.dodge@Tektronix.com
+  Vadim Zeitlin			vz-libtool@zeitlins.org
   Vincent Lefevre		vincent@vinc17.org
   Vincent Torri			vtorri@univ-evry.fr
   Xavier Pianet			xavier@xingo.com
@@ -151,7 +203,8 @@
 
 -- 
   Copyright (C) 1996, 1998, 1999, 2001, 2002, 2003, 2004, 2005, 2006,
-                2007, 2008 Free Software Foundation, Inc.
+                2007, 2008, 2009, 2010, 2011 Free Software Foundation,
+                Inc.
   Written by Gord Matzigkeit, 1996
 
   This file is part of GNU Libtool.

@@ -1,5 +1,174 @@
 NEWS - list of user-visible changes between releases of GNU Libtool
 
+New in 2.4.2 2011-10-17: git version 2.4.1a, Libtool team:
+
+* New features:
+
+  - The --with-pic configure option now supports a list of comma-separated
+    package names.  This can be used to build some static libraries with PIC
+    objects while building others with non-PIC objects.
+
+  - Initial support for Go, using the gccgo compiler.
+
+  - On Mac OS X .dylib is now tried as well as .so with
+    lt_dlopenext().
+
+* Bug fixes:
+
+  - The generic approximation of the command line length limit (when getconf is
+    not available) works again.  Regression introduced in v2.2.6-39-g9c3d4d8.
+  - The bug that leaked developer tool paths into the release tarballs
+    from ./bootstrap is fixed.
+  - Improved support for the Cuda Compiler Driver (nvcc) on Darwin.
+  - For GCC LTO support, the -fuse-linker-plugin switch is now also removed
+    when computing compiler postdeps.
+
+* Important incompatible changes:
+
+  - The undocumented hardcode_libdir_flag_spec_ld tag variable has been
+    removed in favor of using hardcode_libdir_flag_spec with $wl set to empty.
+
+* Changes in supported systems or compilers:
+
+  - Fixes for gfortran on Darwin, XL Fortran on GNU/Linux.
+  - Support for FreeBSD 1.x (outdated since 1994) has been removed.
+
+New in 2.4 2010-09-22: git version 2.2.11a, Libtool team:
+
+* New features:
+
+  - Sysroot support.  This allows you to build cross-compiled packages
+    with the same prefix that will be used on the destination machine,
+    and still find dependent libraries under the compiler's "sysroot".
+    Without sysroot support, paths internal to the build system may leak
+    into the product of the build.
+
+    Sysroot support is disabled unless the --with-sysroot configure
+    option is passed to configure, because .la files generated with
+    sysroot support will _not_ be usable in general with older Libtools.
+
+  - On non-cygwin Windows systems, we now lookup potential library
+    file names without regard to file name case.
+  - The old testsuite now uses the `parallel-tests' Automake test driver
+    now for more concurrency and better test logging.  For this, tests are
+    run in verbose mode by default now.
+
+* Important incompatible changes:
+
+  - Autoconf 2.62 and Automake 1.11.1 or newer are now required for
+    bootstrapping Libtool.  For using Libtool in your own projects,
+    Autoconf 2.59 and Automake 1.9.6 should still work.
+  - The fix_srcfile_path variable has been replaced by a more thorough
+    mechanism triggered by the to_tool_file_cmd variable.
+
+* Changes in supported systems or compilers:
+
+  - Initial support for the Microsoft C/C++ Compiler, with help from
+    the compile script in unreleased Automake 1.12. Override the manifest
+    tool used to embed the manifest resource through the environment
+    variable MANIFEST_TOOL. Please note that the import library naming
+    has changed (from foo-2.lib to foo.dll.lib) from when the code lived
+    in its own git branch.
+  - Initial support for the NAG Fortran compiler on GNU/Linux.
+
+* Bug fixes:
+
+  - The `check-interactive' and `check-noninteractive' convenience make
+    targets now also work for the old testsuite.
+  - Warnings from Autoconf v2.67-36-g1e604ec about incomplete programs
+    passed to AC_*_IFELSE tests have been fixed.
+  - On IRIX, the test for -Wl,-exported_symbol now also works with gfortran.
+
+New in 2.2.10 2010-06-10: git version 2.2.9a, Libtool team:
+
+* New features:
+
+  - On non-cygwin Windows systems, we no longer try to lookup the POSIX
+    format path recorded in $libdir of a pseudo-library when looking up
+    the location of the library with the native tools.
+
+New in 2.2.8 2010-06-05: git version 2.2.7c, Libtool team:
+
+* No new features:
+
+  - Bumped version number and promoted 2.2.7b release candidate to a full
+    stable release.
+
+New in 2.2.7b 2010-05-20: git version 2.2.7a, Libtool team:
+
+* New features:
+
+  - Libtool ships and installs man pages for libtool and libtoolize now.
+  - New libtool command line flag --help-all.
+  - New libtool command line flag --no-silent (with alternate spelling
+    --no-quiet). This flag (re)enables the default informational messages,
+    but has no effect on so-called "verbose" output messages.
+  - New libtool command line flag --no-verbose, which disables only
+    the extra "verbose" output messages and has no effect on the
+    default informational messages.
+  - New convenience make targets `check-noninteractive' to avoid long testsuite
+    runs on Windows with popup windows in the middle, and `check-interactive'
+    for the complement set of tests.
+  - New link mode flag -bindir to specify the location for installed PE DLLs.
+  - Wrapper scripts and wrapper executables for programs linked against
+    uninstalled shared libraries now support command-line options --lt-debug
+    and --lt-dump-script.
+
+* Important incompatible changes:
+
+  - The wrapper command line option support described above introduces the
+    following incompatibility: the wrapper will remove any command line
+    options that begin with '--lt-*' from the argument list before launching
+    (uninstalled) programs. Any '--lt-*' option on the command line not
+    recognized by the wrapper will result in an error.
+  - The type of the symbol lists variables (lt_*_LTX_preloaded_symbols) has
+    been fixed in the manual and in a couple of tests to match the actual
+    implementation.
+
+* Changes in supported systems or compilers:
+
+  - Improved support for 64bit Windows (mingw64).
+  - Improved support for cegcc (Windows CE/PocketPC).
+  - Support for GNU/kOpenSolaris (kopensolaris*-gnu).
+  - Initial support for compilers on BlueGene BG/P.
+  - Improved support for Atari FreeMiNT.
+  - With binutils 2.19.50+, shared libraries can be built on AIX.
+  - Initial support for the Cuda Compiler Driver on GNU/Linux.
+  - Support for Haiku (i586-pc-haiku).
+  - Initial support for GCC link-time optimization (LTO) flags.
+
+* Bug fixes:
+
+  - Fix 2.2.6 regression that prevented using the libltdl macros together
+    with Autoconf 2.59 (`possibly undefined macro: LT_LIBEXT').
+  - Fix 2.2.4 regression that caused arguments with special characters
+    to be mangled by the compile wrapper for uninstalled programs on MinGW.
+  - libtool command line flag --verbose now also enables explicit
+    verbose output, in addition to its previous behavior of (re)enabling
+    only the default informational output. See New Features, --no-silent.
+  - Link tests are guarded by cache variables so they can be avoided for
+    bootstrapping purposes (e.g., when link tests are not possible).
+  - Argument mangling of execute mode has been improved (i.e., lessened).
+  - Fix 2.1b regression that caused nm to not be the default name lister.
+    The regression affected mainly (arguably broken) cross compiles.
+  - Fix long standing bug that caused compiler checks for Fortran and
+    C++ compilers to run twice.
+  - Link mode works around a parallel build failure on Darwin 9.6.0 due
+    to the `ar' `flock'ing an archive upon extraction, by protecting the
+    extraction of convenience archives with a lock.
+  - The Libtool macro files do not contain instances of __oline__ any more,
+    easing merges for configure scripts that are added to version control.
+  - Fix ancient bug where "-Wc," was turned into "$wl" (typically "-Wl,")
+    when using the compiler driver to link programs. Now "-Wc," is stripped
+    just as it is when linking libraries through the compiler driver.
+  - Symbol versioning works with the GNU gold linker now.
+  - Fixes for detection of shared library dependencies on MinGW systems.
+  - Fixed Sun compiler detection on Solaris with sunCC, sunf77 etc. names.
+
+* Miscellaneous changes:
+
+  - The manual is distributed under the terms of the GNU FDL 1.3 now.
+
 New in 2.2.6 2008-09-05: git version 2.2.5a, Libtool team:
 
 * New features:
@@ -89,10 +258,6 @@ New in 2.2.2: 2008-04-01: CVS version 2.2.1a, Libtool team:
     programs.
   - Fix 2.2 regression that kept cross-compiling to w32 from working.
   - Several testsuite issues have been fixed, thanks to user feedback.
-
-* Changes in supported systems or compilers:
-
-  - Initial support for Microsoft Visual C w/o wrapper scripts.
 
 New in 2.2: 2008-03-01; CVS version 2.1c, Libtool team:
 
@@ -803,3 +968,13 @@ New in 0.2:
 New in 0.1:
 * First release of libtool
 * Support for: *-*-freebsd*, *-*-netbsd*, *-*-sunos4*, *-*-ultrix4*
+-- 
+  Copyright (C) 1996, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005,
+  2006, 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
+
+  This file is part of GNU Libtool.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.  This file is offered as-is,
+without warranty of any kind.

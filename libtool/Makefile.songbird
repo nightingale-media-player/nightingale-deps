@@ -31,7 +31,7 @@
 ################################################################################
 
 SB_VENDOR_TARGET = libtool
-SB_VENDOR_TARGET_VERSION = 2.2.6a
+SB_VENDOR_TARGET_VERSION = 2.4.2
 
 SB_VENDOR_SKIP_DEBUG_BUILD = 1
 SB_VENDOR_GENERATE_SYMBOLS = 0

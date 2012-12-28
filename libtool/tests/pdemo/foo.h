@@ -1,6 +1,6 @@
 /* foo.h -- interface to the libfoo library
 
-   Copyright (C) 1996-1999 Free Software Foundation, Inc.
+   Copyright (C) 1996-1999, 2010 Free Software Foundation, Inc.
    Written by Gord Matzigkeit, 1996
 
    This file is part of GNU Libtool.
@@ -61,22 +61,29 @@ or obtained by writing to the Free Software Foundation, Inc.,
 # define lt_ptr_t     char*
 #endif
 
-#ifdef __CYGWIN32__
-#  ifdef LIBFOO_DLL
-     /* need some (as yet non-existant) automake magic to tell
-      * the object whether the libfoo it will be linked with is
-      * a dll or not, ie whether LIBFOO_DLL is defined or not.
-      */
-#    ifdef _LIBFOO_COMPILATION_
-#      define EXTERN __declspec(dllexport)
-#    else
-#      define EXTERN extern __declspec(dllimport)
-#    endif
-#  else
-#    define EXTERN extern
-#  endif
+/* Keep this code in sync between libtool.m4, ltmain, lt_system.h, and tests.  */
+#if defined(_WIN32) || defined(__CYGWIN__) || defined(_WIN32_WCE)
+/* DATA imports from DLLs on WIN32 con't be const, because runtime
+   relocations are performed -- see ld's documentation on pseudo-relocs.  */
+# define LT_DLSYM_CONST
+#elif defined(__osf__)
+/* This system does not cope well with relocations in const data.  */
+# define LT_DLSYM_CONST
 #else
-#  define EXTERN extern
+# define LT_DLSYM_CONST const
+#endif
+
+#if (defined _WIN32 || defined _WIN32_WCE) && !defined __GNUC__
+# ifdef BUILDING_LIBHELLO
+#  ifdef DLL_EXPORT
+#   define LIBHELLO_SCOPE extern __declspec (dllexport)
+#  endif
+# else
+#  define LIBHELLO_SCOPE extern __declspec (dllimport)
+# endif
+#endif
+#ifndef LIBHELLO_SCOPE
+# define LIBHELLO_SCOPE extern
 #endif
 
 /* Silly constants that the functions return. */
@@ -89,7 +96,7 @@ __BEGIN_DECLS
 int foo LT_PARAMS((void));
 int foo2 LT_PARAMS((void));
 int hello LT_PARAMS((void));
-EXTERN int nothing;
+LIBHELLO_SCOPE int nothing;
 __END_DECLS
 
 #endif /* !_FOO_H_ */

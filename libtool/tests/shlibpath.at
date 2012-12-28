@@ -1,6 +1,6 @@
 # shlibpath.at -- Test shlibpath settings                     -*- Autotest -*-
 #
-#   Copyright (C) 2006 Free Software Foundation, Inc.
+#   Copyright (C) 2006, 2008 Free Software Foundation, Inc.
 #   Written by Ralf Wildenhues, 2006
 #
 #   This file is part of GNU Libtool.
@@ -35,9 +35,9 @@ $LIBTOOL --mode=clean rm -f liba.la
 rm -f sub/lib/liba.la
 
 $CC $CPPFLAGS $CFLAGS -c m.c
-AT_CHECK([$LIBTOOL --mode=link $CC $CFLAGS $LDFLAGS -o m m.$OBJEXT -Lsub/lib -la -R`pwd`/sub/lib],
+AT_CHECK([$LIBTOOL --mode=link $CC $CFLAGS $LDFLAGS -o m$EXEEXT m.$OBJEXT -Lsub/lib -la -R`pwd`/sub/lib],
          [], [ignore], [ignore])
-AT_CHECK([$LIBTOOL --mode=link $CC $CFLAGS $LDFLAGS -o m2 m.$OBJEXT -Lsub/lib -la],
+AT_CHECK([$LIBTOOL --mode=link $CC $CFLAGS $LDFLAGS -o m2$EXEEXT m.$OBJEXT -Lsub/lib -la],
          [], [ignore], [ignore])
 
 LT_AT_MVDIR([sub], [moved])
@@ -51,7 +51,7 @@ $LIBTOOL --mode=clean rm -f liba.la
 eval `$LIBTOOL --config | $EGREP '^(shlibpath_var|shlibpath_overrides_runpath)='`
 
 # No point checking a system with static libraries:
-AT_CHECK([{ ./m || exit 1; } && exit 77], [1], [ignore], [ignore])
+LT_AT_EXEC_CHECK([./m], [1], [ignore], [ignore], [|| exit 1 && exit 77])
 
 if test "$shlibpath_var" = PATH; then
   addpath=`pwd`/moved/bin
@@ -65,7 +65,7 @@ export $shlibpath_var
 if test "$shlibpath_overrides_runpath" != no; then
   LT_AT_EXEC_CHECK([./m], [0], [ignore], [ignore])
 else
-  AT_CHECK([./m || exit 1], [1], [ignore], [ignore])
+  LT_AT_EXEC_CHECK([./m], [1], [ignore], [ignore], [|| exit 1])
 fi
 # Test that shlibpath_var is effective in adding paths at all:
 LT_AT_EXEC_CHECK([./m2], [0], [ignore], [ignore])

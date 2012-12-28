@@ -1,6 +1,6 @@
 /* foo.h -- interface to the libfoo library
 
-   Copyright (C) 1996-1999 Free Software Foundation, Inc.
+   Copyright (C) 1996-1999, 2010 Free Software Foundation, Inc.
    Written by Gord Matzigkeit, 1996
 
    This file is part of GNU Libtool.
@@ -37,6 +37,19 @@ or obtained by writing to the Free Software Foundation, Inc.,
 #  endif
 #endif
 
+#if (defined _WIN32 || defined _WIN32_WCE) && !defined __GNUC__
+# ifdef BUILDING_LIBHELLO
+#  ifdef DLL_EXPORT
+#   define LIBHELLO_SCOPE extern __declspec (dllexport)
+#  endif
+# else
+#  define LIBHELLO_SCOPE extern __declspec (dllimport)
+# endif
+#endif
+#ifndef LIBHELLO_SCOPE
+# define LIBHELLO_SCOPE extern
+#endif
+
 /* __BEGIN_DECLS should be used at the beginning of your declarations,
    so that C++ compilers don't mangle their names.  Use __END_DECLS at
    the end of C declarations. */
@@ -62,6 +75,18 @@ or obtained by writing to the Free Software Foundation, Inc.,
 # define lt_ptr_t     char*
 #endif
 
+/* Keep this code in sync between libtool.m4, ltmain, lt_system.h, and tests.  */
+#if defined(_WIN32) || defined(__CYGWIN__) || defined(_WIN32_WCE)
+/* DATA imports from DLLs on WIN32 con't be const, because runtime
+   relocations are performed -- see ld's documentation on pseudo-relocs.  */
+# define LT_DLSYM_CONST
+#elif defined(__osf__)
+/* This system does not cope well with relocations in const data.  */
+# define LT_DLSYM_CONST
+#else
+# define LT_DLSYM_CONST const
+#endif
+
 /* Silly constants that the functions return. */
 #define HELLO_RET 0xe110
 #define FOO_RET 0xf00
@@ -71,7 +96,7 @@ or obtained by writing to the Free Software Foundation, Inc.,
 __BEGIN_DECLS
 int foo LT_PARAMS((void));
 int hello LT_PARAMS((void));
-extern int nothing;
+LIBHELLO_SCOPE int nothing;
 __END_DECLS
 
 #endif /* !_FOO_H_ */

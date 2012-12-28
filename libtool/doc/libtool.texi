@@ -18,16 +18,18 @@
 
 @dircategory Individual utilities
 @direntry
+* libtool-invocation: (libtool)Invoking libtool.
+                                                Running the @code{libtool} script.
 * libtoolize: (libtool)Invoking libtoolize.     Adding libtool support.
 @end direntry
 
 @ifnottex
 This file documents GNU Libtool @value{VERSION}
 
-Copyright (C) 1996-2008 Free Software Foundation, Inc.
+Copyright (C) 1996-2011 Free Software Foundation, Inc.
 
 Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License, Version 1.2
+under the terms of the GNU Free Documentation License, Version 1.3
 or any later version published by the Free Software Foundation;
 with no Invariant Sections, with no Front-Cover Texts,
 and with no Back-Cover Texts.  A copy of the license is included in
@@ -51,14 +53,14 @@ identical to this one except for the removal of this paragraph
 
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2008 Free Software Foundation, Inc.
+Copyright @copyright{} 1996-2011 Free Software Foundation, Inc.
 
 Permission is granted to copy, distribute and/or modify this document
-under the terms of the @sc{gnu} Free Documentation License, Version 1.2
+under the terms of the GNU Free Documentation License, Version 1.3
 or any later version published by the Free Software Foundation;
 with no Invariant Sections, with no Front-Cover Texts,
 and with no Back-Cover Texts.  A copy of the license is included in
-the section entitled "@sc{gnu} Free Documentation License".
+the section entitled "GNU Free Documentation License".
 
 @end titlepage
 
@@ -68,17 +70,19 @@ the section entitled "@sc{gnu} Free Documentation License".
 @syncodeindex tp cp
 @synindex pg cp
 
+@contents
+
 @ifnottex
 @node Top, Introduction, (dir), (dir)
 @comment  node-name,  next,  previous,  up
 @top Shared library support for GNU
 
-This file documents @sc{gnu} Libtool, a script that allows package developers
+This file documents GNU Libtool, a script that allows package developers
 to provide generic shared library support.  This edition documents
 version @value{VERSION}.
 
 @xref{Reporting bugs}, for information on how to report problems with
-@sc{gnu} Libtool.
+GNU Libtool.
 
 @menu
 * Introduction::                What the heck is libtool?
@@ -93,10 +97,11 @@ version @value{VERSION}.
 * Dlopened modules::            @code{dlopen}ing libtool-created libraries.
 * Using libltdl::               Libtool's portable @code{dlopen} wrapper library.
 * Trace interface::             Libtool's trace interface.
+* FAQ::                         Frequently Asked Questions
 * Troubleshooting::             When libtool doesn't work as advertised.
 * Maintaining::                 Information used by the libtool maintainer.
-* GNU Free Documentation License:: License for this manual.
-* Index::                       Full index.
+* GNU Free Documentation License::  License for this manual.
+* Combined Index::              Full index.
 
 @detailmenu
  --- The Detailed Node Listing ---
@@ -118,7 +123,11 @@ Using libtool
 * Installing executables::      Making programs available to users.
 * Static libraries::            When shared libraries are not wanted.
 
-Invoking @code{libtool}
+Linking executables
+
+* Wrapper executables::         Wrapper executables for some platforms.
+
+Invoking @command{libtool}
 
 * Compile mode::                Creating library object files.
 * Link mode::                   Generating executables and libraries.
@@ -167,7 +176,7 @@ Dlopened modules
 
 * Building modules::            Creating dlopenable objects and libraries.
 * Dlpreopening::                Dlopening that works on static platforms.
-* Linking with dlopened modules:: Using dlopenable modules in libraries.
+* Linking with dlopened modules::  Using dlopenable modules in libraries.
 * Finding the dlname::          Choosing the right file to @code{dlopen}.
 * Dlopen issues::               Unresolved problems that need your attention.
 
@@ -180,6 +189,10 @@ Using libltdl
 * Module loaders for libltdl::  Creating user defined module loaders.
 * Distributing libltdl::        How to distribute libltdl with your package.
 
+Frequently Asked Questions about libtool
+
+* Stripped link flags::         Dropped flags when creating a library
+
 Troubleshooting
 
 * Libtool test suite::          Libtool's self-tests.
@@ -187,7 +200,7 @@ Troubleshooting
 
 The libtool test suite
 
-* Test descriptions::           The contents of the test suite.
+* Test descriptions::           The contents of the old test suite.
 * When tests fail::             What to do when a test fails.
 
 Maintenance notes for libtool
@@ -210,6 +223,18 @@ Platform quirks
 * Reloadable objects::          Binding object files together.
 * Multiple dependencies::       Removing duplicate dependent libraries.
 * Archivers::                   Programs that create static archives.
+* Cross compiling::             Issues that arise when cross compiling.
+* File name conversion::        Converting file names between platforms.
+* Windows DLLs::                Windows header defines.
+
+File name conversion
+
+* File Name Conversion Failure::  What happens when file name conversion fails
+* Native MinGW File Name Conversion::  MSYS file name conversion idiosyncrasies
+* Cygwin/Windows File Name Conversion::  Using @command{cygpath} to convert Cygwin file names
+* Unix/Windows File Name Conversion::  Using Wine to convert Unix paths
+* LT_CYGPATH::                  Invoking @command{cygpath} from other environments
+* Cygwin to MinGW Cross::       Other notes concerning MinGW cross
 
 @end detailmenu
 @end menu
@@ -219,19 +244,19 @@ Platform quirks
 @node Introduction
 @chapter Introduction
 
-In the past, if a source code package developer wanted to take advantage
-of the power of shared libraries, he needed to write custom support code
-for each platform on which his package ran.  He also had to design a
-configuration interface so that the package installer could choose what
-sort of libraries were built.
+In the past, if you were a source code package developer and wanted to
+take advantage of the power of shared libraries, you needed to write
+custom support code for each platform on which your package ran.  You
+also had to design a configuration interface so that the package
+installer could choose what sort of libraries were built.
 
-@sc{gnu} Libtool simplifies the developer's job by encapsulating both the
+GNU Libtool simplifies your job by encapsulating both the
 platform-specific dependencies, and the user interface, in a single
-script.  @sc{gnu} Libtool is designed so that the complete functionality of
+script.  GNU Libtool is designed so that the complete functionality of
 each host type is available via a generic interface, but nasty quirks
 are hidden from the programmer.
 
-@sc{gnu} Libtool's consistent interface is reassuring@dots{} users don't need
+GNU Libtool's consistent interface is reassuring@dots{} users don't need
 to read obscure documentation in order to have their favorite source
 package build shared libraries.  They just run your package
 @code{configure} script (or equivalent), and libtool does all the dirty
@@ -261,18 +286,18 @@ or want to write code to extend libtool in a consistent way.
 
 @cindex motivation for writing libtool
 @cindex design philosophy
-Since early 1995, several different @sc{gnu} developers have recognized the
+Since early 1995, several different GNU developers have recognized the
 importance of having shared library support for their packages.  The
 primary motivation for such a change is to encourage modularity and
-reuse of code (both conceptually and physically) in @sc{gnu} programs.
+reuse of code (both conceptually and physically) in GNU programs.
 
-Such a demand means that the way libraries are built in @sc{gnu} packages
+Such a demand means that the way libraries are built in GNU packages
 needs to be general, to allow for any library type the package installer
 might want.  The problem is compounded by the absence of a standard
 procedure for creating shared libraries on different platforms.
 
 The following sections outline the major issues facing shared library
-support in @sc{gnu}, and how shared library support could be standardized
+support in GNU, and how shared library support could be standardized
 with libtool.
 
 @cindex specifications for libtool
@@ -285,13 +310,13 @@ system:
 The system must be as elegant as possible.
 
 @item
-The system must be fully integrated with the @sc{gnu} Autoconf and Automake
-utilities, so that it will be easy for @sc{gnu} maintainers to use.  However,
+The system must be fully integrated with the GNU Autoconf and Automake
+utilities, so that it will be easy for GNU maintainers to use.  However,
 the system must not require these tools, so that it can be used by
-non-@sc{gnu} packages.
+non-GNU packages.
 
 @item
-Portability to other (non-@sc{gnu}) architectures and tools is desirable.
+Portability to other (non-GNU) architectures and tools is desirable.
 @end enumerate
 
 @node Issues
@@ -382,7 +407,7 @@ It isolates the problems and inconsistencies in library building that
 plague @file{Makefile} writers by wrapping the compiler suite on
 different platforms with a consistent, powerful interface.
 
-With luck, libtool will be useful to and used by the @sc{gnu} community, and
+With luck, libtool will be useful to and used by the GNU community, and
 that the lessons that were learned in writing it will be taken up by
 designers of future library systems.
 
@@ -495,11 +520,11 @@ to the compiler to tell it to generate PIC rather than the standard
 position-dependent code.
 
 @cindex library object file
-@cindex @samp{.lo} files
+@cindex @file{.lo} files
 @cindex object files, library
 Since this is a library implementation detail, libtool hides the
 complexity of PIC compiler flags and uses separate library object files
-(the PIC one lives in the @samp{@value{objdir}} subdirectory and the
+(the PIC one lives in the @file{@value{objdir}} subdirectory and the
 static one lives in the current directory).  On systems without shared
 libraries, the PIC library object files are not created, whereas on
 systems where all code is PIC, such as AIX, the static ones are not
@@ -518,7 +543,7 @@ a23$
 @end example
 
 Note that libtool silently creates an additional control file on each
-@samp{compile} invocation.  The @samp{.lo} file is the libtool object,
+@samp{compile} invocation.  The @file{.lo} file is the libtool object,
 which Libtool uses to determine what object file may be built into a
 shared library.  On @samp{a23}, only static libraries are supported so
 the library objects look like this:
@@ -549,7 +574,7 @@ gcc -g -O -c foo.c -o foo.o >/dev/null 2>&1
 burger$
 @end example
 
-Note that Libtool automatically created @samp{@value{objdir}} directory
+Note that Libtool automatically created @file{@value{objdir}} directory
 upon its first execution, where PIC library object files will be stored.
 
 Since @samp{burger} supports shared libraries, and requires PIC
@@ -570,7 +595,7 @@ pic_object='@value{objdir}/foo.o'
 non_pic_object='foo.o'
 @end example
 
-@cindex -no-suppress, libtool compile mode option
+@cindex @option{-no-suppress}, libtool compile mode option
 Notice that the second run of GCC has its output discarded.  This is
 done so that compiler warnings aren't annoyingly duplicated.  If you
 need to see both sets of warnings (you might have conditional code
@@ -613,16 +638,16 @@ shared libraries, libtool simply acts as a wrapper for the system
 @command{ar} (and possibly @code{ranlib}) commands.
 
 @cindex libtool libraries
-@cindex @samp{.la} files
-Again, the libtool control file name (@samp{.la} suffix) differs from
-the standard library name (@samp{.a} suffix).  The arguments to
+@cindex @file{.la} files
+Again, the libtool control file name (@file{.la} suffix) differs from
+the standard library name (@file{.a} suffix).  The arguments to
 libtool are the same ones you would use to produce an executable named
 @file{libhello.la} with your compiler (@pxref{Link mode}):
 
 @example
 a23$ @kbd{libtool --mode=link gcc -g -O -o libhello.la foo.o hello.o}
-*** Warning: Linking the shared library libhello.la against the non-libtool
-*** objects  foo.o hello.o is not portable!
+*** Warning: Linking the shared library libhello.la against the
+*** non-libtool objects foo.o hello.o is not portable!
 ar cru .libs/libhello.a
 ranlib .libs/libhello.a
 creating libhello.la
@@ -631,7 +656,7 @@ a23$
 @end example
 
 Aha!  Libtool caught a common error@dots{} trying to build a library
-from standard objects instead of special @samp{.lo} object files.  This
+from standard objects instead of special @file{.lo} object files.  This
 doesn't matter so much for static libraries, but on shared library
 systems, it is of great importance.  (Note that you may replace
 @file{libhello.la} with @file{libhello.a} in which case libtool won't
@@ -685,7 +710,7 @@ make it easier to clean up the build directory, and to help ensure that
 other programs fail horribly if you accidentally forget to use libtool
 when you should.
 
-Again, you may want to have a look at the @samp{.la} file in order
+Again, you may want to have a look at the @file{.la} file in order
 to see what Libtool stores in it.  In particular, you will see that
 Libtool uses this file to remember the destination directory for the
 library (the argument to @option{-rpath}) as well as the dependency
@@ -727,7 +752,7 @@ burger$
 
 Libtool's way is almost the same@footnote{However, you should avoid using
 @option{-L} or @option{-l} flags to link against an uninstalled libtool
-library.  Just specify the relative path to the @samp{.la} file, such as
+library.  Just specify the relative path to the @file{.la} file, such as
 @file{../intl/libintl.la}.  This is a design decision to eliminate any
 ambiguity when linking against uninstalled shared libraries.}
 (@pxref{Link mode}):
@@ -788,8 +813,9 @@ Note that libtool added the necessary run-time path flag, as well as
 @cindex wrapper scripts for programs
 @cindex program wrapper scripts
 Notice that the executable, @code{hell}, was actually created in the
-@file{@value{objdir}} subdirectory.  Then, a wrapper script was created
-in the current directory.
+@file{@value{objdir}} subdirectory.  Then, a wrapper script (or, on
+certain platforms, a wrapper executable @pxref{Wrapper executables}) was
+created in the current directory.
 
 Since libtool created a wrapper script, you should use libtool to
 install it and debug it too.  However, since the program does not depend
@@ -842,6 +868,60 @@ overhead because of their (relative) complexity.  In this situation, the
 price of being dynamic is eight kilobytes, and the payoff is about four
 kilobytes.  So, having a shared @file{libhello} won't be an advantage
 until we link it against at least a few more programs.
+
+@menu
+* Wrapper executables::         Wrapper executables for some platforms.
+@end menu
+
+@node Wrapper executables
+@subsection Wrapper executables for uninstalled programs
+@cindex wrapper executables for uninstalled programs
+@cindex program wrapper executables
+
+Some platforms, notably those hosted on Windows such as Cygwin
+and MinGW, use a wrapper executable rather than a wrapper script
+to ensure proper operation of uninstalled programs linked by libtool
+against uninstalled shared libraries. The wrapper executable thus
+performs the same function as the wrapper script used on other
+platforms, but allows to satisfy the @command{make} rules for the
+program, whose name ends in @code{$(EXEEXT)}. The actual program
+executable is created below @value{objdir}, and its name will end
+in @code{$(EXEEXT)} and may or may not contain an @code{lt-} prefix.
+This wrapper executable sets various environment values so that the
+program executable may locate its (uninstalled) shared libraries,
+and then launches the program executable.
+
+The wrapper executable provides a debug mode, enabled by passing the
+command-line option @code{--lt-debug} (see below). When executing in
+debug mode, diagnostic information will be printed to @code{stderr}
+before the program executable is launched.
+
+Finally, the wrapper executable supports a number of command line
+options that may be useful when debugging the operation of the wrapper
+system. All of these options begin with @code{--lt-}, and if present
+they and their arguments will be removed from the argument list passed
+on to the program executable.  Therefore, the program executable may not
+employ command line options that begin with @code{--lt-}. (In fact, the
+wrapper executable will detect any command line options that begin with
+@code{--lt-} and abort with an error message if the option is not
+recognized). If this presents a problem, please contact the Libtool
+team at @value{BUGADDR}.
+
+These command line options include:
+
+@table @option
+@item --lt-dump-script
+Causes the wrapper to print a copy of the wrapper @emph{script}
+to @code{stdout}, and exit.
+
+@item --lt-debug
+Causes the wrapper to print diagnostic information to @code{stdout},
+before launching the program executable.
+
+@end table
+
+For consistency, both the wrapper @emph{script} and the wrapper
+@emph{executable} support these options.
 
 @node Debugging executables
 @section Debugging executables
@@ -1052,9 +1132,9 @@ listing all the object files every time.
 
 If you just want to link this convenience library into programs, then
 you could just ignore libtool entirely, and use the old @command{ar} and
-@command{ranlib} commands (or the corresponding @sc{gnu} Automake
+@command{ranlib} commands (or the corresponding GNU Automake
 @samp{_LIBRARIES} rules).  You can even install a convenience library
-using @sc{gnu} Libtool, though you probably don't want to and hence @sc{gnu}
+using GNU Libtool, though you probably don't want to and hence GNU
 Automake doesn't allow you to do so.
 
 @example
@@ -1086,13 +1166,13 @@ libraries.  But be careful not to link a single convenience library,
 directly or indirectly, into a single program or library, otherwise you
 may get errors about symbol redefinitions.
 
-The key is remembering that a convenience library contains @sc{pic}
-objects, and can be linked where a list of @sc{pic} objects makes sense;
+The key is remembering that a convenience library contains PIC
+objects, and can be linked where a list of PIC objects makes sense;
 i.e.@: into a shared library.  A static convenience library contains
-non-@sc{pic} objects, so can be linked into an old static library, or
+non-PIC objects, so can be linked into an old static library, or
 a program.
 
-When @sc{gnu} Automake is used, you should use @code{noinst_LTLIBRARIES}
+When GNU Automake is used, you should use @code{noinst_LTLIBRARIES}
 instead of @code{lib_LTLIBRARIES} for convenience libraries, so that
 the @option{-rpath} option is not passed when they are linked.
 
@@ -1144,17 +1224,31 @@ to determine whether shared or static libraries will be built.
 @item --finish
 Same as @option{--mode=finish}.
 
+@item -h
+Display short help message.
+
 @item --help
 Display a help message and exit.  If @option{--mode=@var{mode}} is
-specified, then detailed help for @var{mode} is
-displayed.
+specified, then detailed help for @var{mode} is displayed.
+
+@item --help-all
+Display help for the general options as well as detailed help for each
+operation mode, and exit.
 
 @item --mode=@var{mode}
 Use @var{mode} as the operation mode.  When using libtool from the
 command line, you can give just @var{mode} (or a unique abbreviation
 of it) as the first argument as a shorthand for the full
-@option{--mode=@var{mode}}.
+@option{--mode=@var{mode}}.  For example, the following are equivalent:
 
+@example
+$ @kbd{libtool --mode=execute --dry-run gdb prog.exe}
+$ @kbd{libtool        execute --dry-run gdb prog.exe}
+$ @kbd{libtool        exe     --dry-run gdb prog.exe}
+$ @kbd{libtool        e       --dry-run gdb prog.exe}
+@end example
+
+@noindent
 @var{mode} must be set to one of the following:
 
 @table @option
@@ -1165,14 +1259,14 @@ Compile a source file into a libtool object.
 Automatically set the library path so that another program can use
 uninstalled libtool-generated programs or libraries.
 
-@item finish
-Complete the installation of libtool libraries on the system.
+@item link
+Create a library or an executable.
 
 @item install
 Install libraries or executables.
 
-@item link
-Create a library or an executable.
+@item finish
+Complete the installation of libtool libraries on the system.
 
 @item uninstall
 Delete installed libraries or executables.
@@ -1199,11 +1293,55 @@ Do not print out any progress or informational messages.
 
 @item -v
 @itemx --verbose
-Print out progress and informational messages (enabled by default).
+Print out progress and informational messages (enabled by default),
+as well as additional messages not ordinary seen by default.
+
+@item --no-quiet
+@itemx --no-silent
+Print out the progress and informational messages that are seen
+by default. This option has no effect on whether the additional
+messages seen in @option{--verbose} mode are shown.
+
+@item --no-verbose
+Do not print out any additional informational messages beyond
+those ordinarily seen by default. This option has no effect
+on whether the ordinary progress and informational messages
+enabled by @option{--no-quiet} are shown.
+
+Thus, there are now three different message levels (not counting
+@option{--debug}), depending on whether the normal messages and/or
+the additional verbose messages are displayed.  Note that there is
+no mechanism to diplay verbose messages, without also displaying
+normal messages.
+
+@table @strong
+@item default
+Normal messages are displayed, verbose messages are not displayed.
+In addition to being the default mode, it can be forcibly achieved
+by using both option @option{--no-verbose} and either option
+@option{--no-silent} or option @option{--no-quiet}.
+
+@item silent
+Neither normal messages nor verbose messages are displayed. This
+mode can be achieved using either option @option{--silent} or
+option @option{--quiet}.
+
+@item verbose
+Both normal messages and verbose messages are displayed. This mode
+can be achieved using either option @option{-v} or option
+@option{--verbose}.
+@end table
 
 @item --version
 Print libtool version information and exit.
 @end table
+
+The current @command{libtool} implementation is done with a shell script
+that needs to be invoked by the shell which @command{configure} chose for
+configuring @command{libtool} (@pxref{config.status Invocation, , The
+Autoconf Manual, autoconf, The Autoconf Manual}).  This shell is set in
+the she-bang (@samp{#!}) line of the @command{libtool} script.  Using a
+different shell may cause undefined behavior.
 
 The @var{mode-args} are a variable number of arguments, depending on the
 selected operation mode.  In general, each @var{mode-arg} is interpreted
@@ -1293,14 +1431,9 @@ linking.
 
 @item -Wc,@var{flag}
 @itemx -Xcompiler @var{flag}
-Pass a linker specific flag directly to the compiler.
-
-@item -Wl,@var{flag}
-@itemx -Xlinker @var{flag}
-Pass a linker specific flag directly to the linker.
-
-@item -XCClinker @var{flag}
-Pass a link specific flag to the compiler driver (@var{CC}) during linking.
+Pass a flag directly to the compiler.  With @code{-Wc,}, multiple flags
+may be separated by commas, whereas @code{-Xcompiler } passes through
+commas unchanged.
 @end table
 
 @node Link mode
@@ -1330,6 +1463,18 @@ Tries to avoid versioning (@pxref{Versioning}) for libraries and modules,
 i.e.@: no version information is stored and no symbolic links are created.
 If the platform requires versioning, this option has no effect.
 
+@item -bindir
+Pass the absolute name of the directory for installing executable
+programs (@pxref{Directory Variables, , Directory Variables, standards,
+The GNU Coding Standards}).  @command{libtool} may use this value to
+install shared libraries there on systems that do not provide for any
+library hardcoding and use the directory of a program and the @env{PATH}
+variable as library search path.  This is typically used for DLLs on
+Windows or other systems using the PE (Portable Executable) format.
+On other systems, @option{-bindir} is ignored.  The default value used
+is @file{@var{libdir}/../bin} for libraries installed to
+@file{@var{libdir}}.  You should not use @option{-bindir} for modules.
+
 @item -dlopen @var{file}
 Same as @option{-dlpreopen @var{file}}, if native dlopening is not
 supported on the host platform (@pxref{Dlopened modules}) or if
@@ -1353,7 +1498,7 @@ Allow symbols from @var{output-file} to be resolved with @code{dlsym}
 
 @item -export-symbols @var{symfile}
 Tells the linker to export only the symbols listed in @var{symfile}.
-The symbol file should end in @samp{.sym} and must contain the name of one
+The symbol file should end in @file{.sym} and must contain the name of one
 symbol per line.  This option has no effect on some platforms.
 By default all symbols are exported.
 
@@ -1389,9 +1534,12 @@ of library paths.  Useful if the program is only used in the build tree,
 e.g., for testing or generating other files.
 
 @item -no-undefined
-Declare that @var{output-file} does not depend on any other libraries.
-Some platforms cannot create shared libraries that depend on other
-libraries (@pxref{Inter-library dependencies}).
+Declare that @var{output-file} does not depend on any libraries other
+than the ones listed on the command line, i.e., after linking, it will
+not have unresolved symbols.  Some platforms require all symbols in
+shared libraries to be resolved at library creation (@pxref{Inter-library
+dependencies}), and using this parameter allows @command{libtool} to
+assume that this will not happen.
 
 @item -o @var{output-file}
 Create @var{output-file} from the specified objects and libraries.
@@ -1414,7 +1562,12 @@ the @option{-version-info} flag instead (@pxref{Versioning}).
 @item -rpath @var{libdir}
 If @var{output-file} is a library, it will eventually be installed in
 @var{libdir}.  If @var{output-file} is a program, add @var{libdir} to
-the run-time path of the program.
+the run-time path of the program.  On platforms that don't support
+hardcoding library paths into executables and only search PATH for
+shared libraries, such as when @var{output-file} is a Windows (or
+other PE platform) DLL, the @file{.la} control file will be installed in
+@var{libdir}, but see @option{-bindir} above for the eventual destination
+of the @file{.dll} or other library file itself.
 
 @item -R @var{libdir}
 If @var{output-file} is a program, add @var{libdir} to its run-time
@@ -1469,26 +1622,32 @@ no need to append @var{libname} to the list of dependency libraries of
 @var{output-file}, because linking against @var{output-file} already
 supplies the same interface (@pxref{Linking with dlopened modules}).
 
+@item -Wc,@var{flag}
+@itemx -Xcompiler @var{flag}
+Pass a linker-specific flag directly to the compiler.  With @code{-Wc,},
+multiple flags may be separated by commas, whereas @code{-Xcompiler }
+passes through commas unchanged.
+
 @item -Wl,@var{flag}
 @itemx -Xlinker @var{flag}
-Pass a linker specific flag directly to the linker.
+Pass a linker-specific flag directly to the linker.
 
 @item -XCClinker @var{flag}
-Pass a link specific flag to the compiler driver (@var{CC}) during linking.
+Pass a link-specific flag to the compiler driver (@code{CC}) during linking.
 @end table
 
-If the @var{output-file} ends in @samp{.la}, then a libtool library is
-created, which must be built only from library objects (@samp{.lo} files).
+If the @var{output-file} ends in @file{.la}, then a libtool library is
+created, which must be built only from library objects (@file{.lo} files).
 The @option{-rpath} option is required.  In the current implementation,
 libtool libraries may not depend on other uninstalled libtool libraries
 (@pxref{Inter-library dependencies}).
 
-If the @var{output-file} ends in @samp{.a}, then a standard library is
+If the @var{output-file} ends in @file{.a}, then a standard library is
 created using @code{ar} and possibly @code{ranlib}.
 
 @cindex partial linking
 @cindex linking, partial
-If @var{output-file} ends in @samp{.o} or @samp{.lo}, then a reloadable object
+If @var{output-file} ends in @file{.o} or @file{.lo}, then a reloadable object
 file is created from the input files (generally using @samp{ld -r}).
 This method is often called @dfn{partial linking}.
 
@@ -1531,15 +1690,15 @@ In @dfn{install} mode, libtool interprets most of the elements of
 The following components of @var{mode-args} are treated specially:
 
 @table @option
-@item -inst-prefix @var{inst-prefix-dir}
+@item -inst-prefix-dir @var{inst-prefix-dir}
 When installing into a temporary staging area, rather than the
-final @var{prefix}, this argument is used to reflect the
+final @code{prefix}, this argument is used to reflect the
 temporary path, in much the same way @command{automake} uses
-@var{DESTDIR}.  For instance, if @var{prefix} is @file{/usr/local},
+@env{DESTDIR}.  For instance, if @code{prefix} is @file{/usr/local},
 but @var{inst-prefix-dir} is @file{/tmp}, then the object will be
 installed under @file{/tmp/usr/local/}.  If the installed object
 is a libtool library, then the internal fields of that library
-will reflect only @var{prefix}, not @var{inst-prefix-dir}:
+will reflect only @code{prefix}, not @var{inst-prefix-dir}:
 
 @example
 # Directory that this library needs to be installed in:
@@ -1555,8 +1714,8 @@ libdir='/tmp/usr/local/lib'
 
 @code{inst-prefix} is also used to insure that if the installed
 object must be relinked upon installation, that it is relinked
-against the libraries in @var{inst-prefix-dir}/@var{prefix},
-not @var{prefix}.
+against the libraries in @var{inst-prefix-dir}/@code{prefix},
+not @code{prefix}.
 
 In truth, this option is not really intended for use when calling
 libtool directly; it is automatically used when @code{libtool --mode=install}
@@ -1586,12 +1745,18 @@ commands are also completed.
 @cindex finish mode
 @cindex mode, finish
 
-@dfn{Finish} mode helps system administrators install libtool libraries
-so that they can be located and linked into user programs.
+@dfn{Finish} mode has two functions.  One is to help system administrators
+install libtool libraries so that they can be located and linked into
+user programs.  To invoke this functionality, pass the name of a library
+directory as @var{mode-arg}.  Running this command may require superuser
+privileges, and the @option{--dry-run} option may be useful.
 
-Each @var{mode-arg} is interpreted as the name of a library directory.
-Running this command may require superuser privileges, so the
-@option{--dry-run} option may be useful.
+The second is to facilitate transferring libtool libraries to a native
+compilation environment after they were built in a cross-compilation
+environment.  Cross-compilation environments may rely on recent libtool
+features, and running libtool in finish mode will make it easier to
+work with older versions of libtool.  This task is performed whenever
+the @var{mode-arg} is a @file{.la} file.
 
 @node Uninstall mode
 @section Uninstall mode
@@ -1625,6 +1790,56 @@ The remaining @var{mode-args} are either flags for the deletion program
 
 This chapter describes how to integrate libtool with your packages so
 that your users can install hassle-free shared libraries.
+
+There are several ways in which Libtool may be integrated in your
+package, described in the following sections.  Typically, the Libtool
+macro files as well as @file{ltmain.sh} are copied into your package
+using @command{libtoolize} and @command{aclocal} after setting up the
+@file{configure.ac} and toplevel @file{Makefile.am}, then
+@command{autoconf} adds the needed tests to the @file{configure} script.
+These individual steps are often automated with @command{autoreconf}.
+
+Here is a diagram showing how such a typical Libtool configuration works
+when preparing a package for distribution, assuming that @file{m4} has
+been chosen as location for additional Autoconf macros, and
+@file{build-aux} as location for auxiliary build tools (@pxref{Input,,
+The Autoconf Manual, autoconf, The Autoconf Manual}):
+
+@example
+@group
+libtool.m4 -----.                .--> aclocal.m4 -----.
+ltoptions.m4 ---+  .-> aclocal* -+                    +--> autoconf*
+ltversion.m4 ---+--+             `--> [copy in m4/] --+       |
+ltsugar.m4 -----+  |                    ^             |       \/
+lt~obsolete.m4 -+  +-> libtoolize* -----'             |    configure
+[ltdl.m4] ------+  |                                  |
+                   `----------------------------------'
+
+ltmain.sh -----------> libtoolize* -> [copy in build-aux/]
+@end group
+@end example
+
+During configuration, the @file{libtool} script is generated either
+through @command{config.status} or @command{config.lt}:
+
+@example
+@group
+             .--> config.status* --.
+configure* --+                     +--> libtool
+             `--> [config.lt*] ----'      ^
+                                          |
+ltmain.sh --------------------------------'
+@end group
+@end example
+
+At @command{make} run time, @command{libtool} is then invoked as needed
+as a wrapper around compilers, linkers, install and cleanup programs.
+
+There are alternatives choices to several parts of the setup; for
+example, the Libtool macro files can either be copied or symlinked into
+the package, or copied into @file{aclocal.m4}.  As another example, an
+external, pre-configured @command{libtool} script may be used,
+by-passing most of the tests and package-specific setup for Libtool.
 
 @menu
 * Autoconf macros::             Autoconf macros exported by libtool.
@@ -1694,12 +1909,12 @@ path to particular system commands:
 @defmac LT_PATH_LD
 Add a @option{--with-gnu-ld} option to @file{configure}.  Try to find
 the path to the linker used by @samp{$CC}, and whether it is the
-@sc{gnu} linker.  The result is stored in the shell variable
+GNU linker.  The result is stored in the shell variable
 @samp{$LD}, which is @code{AC_SUBST}ed.
 @end defmac
 
 @defmac LT_PATH_NM
-Try to find a @sc{bsd} compatible @command{nm} or a @sc{ms} compatible
+Try to find a BSD-compatible @command{nm} or a MS-compatible
 @command{dumpbin} command on this machine.  The result is stored in the
 shell variable @samp{$NM}, which is @code{AC_SUBST}ed.
 @end defmac
@@ -1717,7 +1932,7 @@ are stored in the shell variables @samp{$enable_dlopen_self} and
 
 @defmac LT_SYS_DLOPEN_DEPLIBS
 Define the preprocessor symbol @samp{LTDL_DLOPEN_DEPLIBS} if the
-@sc{os} needs help to load dependent libraries for @samp{dlopen} (or
+OS needs help to load dependent libraries for @samp{dlopen} (or
 equivalent).
 @end defmac
 
@@ -1730,7 +1945,7 @@ default library search path.
 Define the preprocessor symbol @samp{LT_MODULE_EXT} to the extension
 used for runtime loadable modules.  If you use libltdl to open
 modules, then you can simply use the libtool library extension,
-@samp{.la}.
+@file{.la}.
 @end defmac
 
 @defmac LT_SYS_MODULE_PATH
@@ -1761,7 +1976,7 @@ package you need to do one of the following:
 
 @enumerate 1
 @item
-Download the latest Automake distribution from your nearest @sc{gnu}
+Download the latest Automake distribution from your nearest GNU
 mirror, install it, and start using it.
 
 @item
@@ -1786,12 +2001,12 @@ libtool distribution's @file{demo} subdirectory.
 First, to link a program against a libtool library, just use the
 @samp{program_LDADD}@footnote{@c
 @c
-Since @sc{gnu} Automake 1.5, the flags @option{-dlopen}
+Since GNU Automake 1.5, the flags @option{-dlopen}
 or @option{-dlpreopen} (@pxref{Link mode}) can be employed with the
-@var{program_LDADD} variable.  Unfortunately, older releases didn't
+@samp{program_LDADD} variable.  Unfortunately, older releases didn't
 accept these flags, so if you are stuck with an ancient Automake, we
 recommend quoting the flag itself, and setting
-@var{program_DEPENDENCIES} too:
+@samp{program_DEPENDENCIES} too:
 
 @example
 program_LDADD = "-dlopen" libfoo.la
@@ -1814,7 +2029,7 @@ hell_static_LDFLAGS = -static
 @end example
 
 You may use the @samp{program_LDFLAGS} variable to stuff in any flags
-you want to pass to libtool while linking @samp{program} (such as
+you want to pass to libtool while linking @file{program} (such as
 @option{-static} to avoid linking uninstalled shared libtool libraries).
 
 Building a libtool library is almost as trivial@dots{} note the use of
@@ -1849,7 +2064,7 @@ However, when you distribute libtool with your own packages
 operating system that are used to compile your package.
 
 For this reason, libtool must be @dfn{configured} before it can be
-used.  This idea should be familiar to anybody who has used a @sc{gnu}
+used.  This idea should be familiar to anybody who has used a GNU
 @code{configure} script.  @code{configure} runs a number of tests for
 system features, then generates the @file{Makefile}s (and possibly a
 @file{config.h} header file), after which you can run @code{make} and
@@ -1866,13 +2081,13 @@ generate a libtool script for the installer's host machine.
 @node LT_INIT
 @subsection The @code{LT_INIT} macro
 
-If you are using @sc{gnu} Autoconf (or Automake), you should add a call to
+If you are using GNU Autoconf (or Automake), you should add a call to
 @code{LT_INIT} to your @file{configure.ac} file.  This macro
 adds many new tests to the @code{configure} script so that the generated
 libtool script will understand the characteristics of the host.  It's the
 most important of a number of macros defined by Libtool:
 
-@defmac LT_PREREQ (@var{VERSION})
+@defmac LT_PREREQ (@var{version})
 Ensure that a recent enough version of Libtool is being used.  If the
 version of Libtool used for @code{LT_INIT} is earlier than
 @var{version}, print an error message to the standard
@@ -1883,12 +2098,13 @@ LT_PREREQ([@value{VERSION}])
 @end example
 @end defmac
 
-@defmac LT_INIT (@var{OPTIONS})
+@defmac LT_INIT (@var{options})
 @defmacx AC_PROG_LIBTOOL
 @defmacx AM_PROG_LIBTOOL
-Add support for the @option{--enable-shared} and @option{--disable-shared}
-@code{configure} flags.@footnote{@code{LT_INIT} requires that
-you define the @file{Makefile} variable @code{top_builddir} in your
+Add support for the @option{--enable-shared}, @option{--disable-shared},
+@option{--enable-static}, @option{--disable-static}, @option{--with-pic}, and
+@option{--without-pic} @code{configure} flags.@footnote{@code{LT_INIT} requires
+that you define the @file{Makefile} variable @code{top_builddir} in your
 @file{Makefile.in}.  Automake does this automatically, but Autoconf
 users should set it to the relative path to the top of your build
 directory (@file{../..}, for example).}  @code{AC_PROG_LIBTOOL} and
@@ -1930,8 +2146,18 @@ behaves similarly, but it uses @option{--enable-static} and
 The package name @samp{default} matches any packages that have not set
 their name in the @code{PACKAGE} environment variable.
 
-This macro also sets the shell variable @var{LIBTOOL_DEPS}, that you can
-use to automatically update the libtool script if it becomes
+The @option{--with-pic} and @option{--without-pic} configure flags can be used
+to specify whether or not @command{libtool} uses PIC objects.  By default,
+@command{libtool} uses PIC objects for shared libraries and non-PIC objects for
+static libraries.  The @option{--with-pic} option also accepts a comma-separated
+list of package names.  Specifying @option{--with-pic=@var{pkgs}} is the same
+as configuring every package in @var{pkgs} with @option{--with-pic} and every
+other package with the default configuration.  The package name @samp{default}
+is treated the same as for @option{--enable-shared} and
+@option{--enable-static}.
+
+This macro also sets the shell variable @code{LIBTOOL_DEPS}, that you
+can use to automatically update the libtool script if it becomes
 out-of-date.  In order to do that, add to your @file{configure.ac}:
 
 @example
@@ -1944,10 +2170,10 @@ and, to @file{Makefile.in} or @file{Makefile.am}:
 @example
 LIBTOOL_DEPS = @@LIBTOOL_DEPS@@
 libtool: $(LIBTOOL_DEPS)
-        $(SHELL) ./config.status --recheck
+        $(SHELL) ./config.status libtool
 @end example
 
-If you are using @sc{gnu} Automake, you can omit the assignment, as Automake
+If you are using GNU Automake, you can omit the assignment, as Automake
 will take care of it.  You'll obviously have to create some dependency
 on @file{libtool}.
 
@@ -2009,22 +2235,22 @@ specifying @option{--enable-static} to @command{configure}.
 
 @item pic-only
 Change the default behaviour for @command{libtool} to try to use only
-@sc{pic} objects.  The user may still override this default by specifying
+PIC objects.  The user may still override this default by specifying
 @option{--without-pic} to @command{configure}.
 
 @item no-pic
 Change the default behaviour of @command{libtool} to try to use only
-non-@sc{pic} objects.  The user may still override this default by
+non-PIC objects.  The user may still override this default by
 specifying @option{--with-pic} to @command{configure}.
 
 @end table
 
 @end defmac
 
-@defmac LT_LANG (@var{LANGUAGE})
+@defmac LT_LANG (@var{language})
 Enable @command{libtool} support for the language given if it
 has not yet already been enabled.  Languages accepted are ``C++'',
-``Fortran 77'', ``Java'' and ``Windows Resource''.
+``Fortran 77'', ``Java'', ``Go'', and ``Windows Resource''.
 
 If Autoconf language support macros such as @code{AC_PROG_CXX} are
 used in your @file{configure.ac}, Libtool language support will automatically
@@ -2125,7 +2351,7 @@ runs tests, not the produced @code{libtool}.
 @defvar LD
 The system linker to use (if the generated @code{libtool} requires one).
 If this is not set, @code{LT_INIT} will try to find out what is
-the linker used by @var{CC}.
+the linker used by @code{CC}.
 @end defvar
 
 @defvar LDFLAGS
@@ -2169,6 +2395,11 @@ for Cygwin/MS-Windows.
 @defvar AS
 Program to use rather than checking for @command{as}.  Only used on
 Cygwin/MS-Windows at the moment.
+@end defvar
+
+@defvar MANIFEST_TOOL
+Program to use rather than checking for @command{mt}, the Manifest Tool.
+Only used on Cygwin/MS-Windows at the moment.
 @end defvar
 
 With 1.3 era libtool, if you wanted to know any details of what
@@ -2321,8 +2552,8 @@ overwrite existing files.
 @item --help
 Display a help message and exit.
 
-@item --ltdl [@var{TARGET-DIRECTORY-NAME}]
-Install libltdl in the @var{TARGET-DIRECTORY-NAME} subdirectory of
+@item --ltdl [@var{target-directory-name}]
+Install libltdl in the @var{target-directory-name} subdirectory of
 your package.  Normally, the directory is extracted from the argument
 to @code{LT_CONFIG_LTDL_DIR} in @file{configure.ac}, though you can
 also specify a subdirectory name here if you are not using Autoconf
@@ -2367,7 +2598,7 @@ include libltdl/Makefile.inc
 
 @item --quiet
 @itemx -q
-Work silently.  @samp{libtoolize --quiet} is used by @sc{gnu} Automake
+Work silently.  @samp{libtoolize --quiet} is used by GNU Automake
 to add libtool files to your package if necessary.
 
 @item --recursive
@@ -2527,12 +2758,12 @@ you can see how libtool behaves on static-only platforms.
 
 You may want to put a small note in your package @file{README} to let
 other developers know that @option{--disable-shared} can save them time.
-The following example note is taken from the GIMP@footnote{@sc{gnu} Image
+The following example note is taken from the GIMP@footnote{GNU Image
 Manipulation Program, for those who haven't taken the plunge.  See
 @url{http://www.gimp.org/}.} distribution @file{README}:
 
 @example
-The GIMP uses @sc{gnu} Libtool in order to build shared libraries on a
+The GIMP uses GNU Libtool in order to build shared libraries on a
 variety of systems.  While this is very nice for making usable
 binaries, it can be a pain when trying to debug a program.  For that
 reason, compilation of shared libraries can be turned off by
@@ -2618,6 +2849,7 @@ correspondence between language names and tags names.
 @item Java             @tab GCJ
 @item Fortran 77       @tab F77
 @item Fortran          @tab FC
+@item Go               @tab GO
 @item Windows Resource @tab RC
 @end multitable
 
@@ -2792,8 +3024,8 @@ If any interfaces have been added since the last public release, then
 increment @var{age}.
 
 @item
-If any interfaces have been removed since the last public release, then
-set @var{age} to 0.
+If any interfaces have been removed or changed since the last public
+release, then set @var{age} to 0.
 @end enumerate
 
 @strong{@emph{Never}} try to set the interface numbers so that they
@@ -2803,13 +3035,44 @@ Instead, use the @option{-release} flag (@pxref{Release numbers}), but be
 warned that every release of your package will not be binary compatible
 with any other release.
 
+The following explanation may help to understand the above rules a bit
+better: consider that there are three possible kinds of reactions from
+users of your library to changes in a shared library:
+
+@enumerate 1
+@item
+Programs using the previous version may use the new version as
+drop-in replacement, and programs using the new version can also work
+with the previous one.  In other words, no recompiling nor relinking
+is needed.  In this case, bump @var{revision} only, don't touch
+@var{current} nor @var{age}.
+
+@item
+Programs using the previous version may use the new version as
+drop-in replacement, but programs using the new version may use APIs not
+present in the previous one.  In other words, a program linking against
+the new version may fail with ``unresolved symbols'' if linking against
+the old version at runtime: set @var{revision} to 0, bump @var{current}
+and @var{age}.
+
+@item
+Programs may need to be changed, recompiled, relinked in order to use
+the new version.  Bump @var{current}, set @var{revision} and @var{age}
+to 0.
+@end enumerate
+
+@noindent
+In the above description, @emph{programs} using the library in question
+may also be replaced by other libraries using it.
+
+
 @node Release numbers
 @section Managing release information
 
 Often, people want to encode the name of the package release into the
 shared library so that it is obvious to the user which package their
 programs are linked against.  This convention is used especially on
-@sc{gnu}/Linux:
+GNU/Linux:
 
 @example
 trick$ @kbd{ls /usr/lib/libbfd*}
@@ -2831,7 +3094,7 @@ So, in order to accommodate both views, you can use the @option{-release}
 flag in order to set release information for libraries for which you do not
 want to use @option{-version-info}.  For the @file{libbfd} example, the
 next release that uses libtool should be built with @samp{-release
-2.9.0}, which will produce the following files on @sc{gnu}/Linux:
+2.9.0}, which will produce the following files on GNU/Linux:
 
 @example
 trick$ @kbd{ls /usr/lib/libbfd*}
@@ -3009,7 +3272,7 @@ Also the only thing that must go outside the
 @code{BEGIN_C_DECLS}/@code{END_C_DECLS} pair are @code{#include} lines.
 Strictly speaking it is only C symbol names that need to be protected,
 but your header files will be more maintainable if you have a single
-pair of of these macros around the majority of the header contents.
+pair of these macros around the majority of the header contents.
 
 You should use these definitions of @code{PARAMS}, @code{BEGIN_C_DECLS},
 and @code{END_C_DECLS} into your own headers.  Then, you may use them to
@@ -3080,12 +3343,13 @@ in order to guarantee that all the required libraries are found.  This
 restriction is only necessary to preserve compatibility with static
 library systems and simple dynamic library systems.
 
-Some platforms, such as AIX, do not even allow you this
+Some platforms, such as Windows, do not even allow you this
 flexibility.  In order to build a shared library, it must be entirely
-self-contained (that is, have references only to symbols that are found
-in the @samp{.lo} files or the specified @samp{-l} libraries), and you
-need to specify the @option{-no-undefined} flag.  By default, libtool
-builds only static libraries on these kinds of platforms.
+self-contained or it must have dependencies known at link time (that is,
+have references only to symbols that are found in the @file{.lo} files
+or the specified @samp{-l} libraries), and you need to specify the
+@option{-no-undefined} flag.  By default, libtool builds only static
+libraries on these kinds of platforms.
 
 The simple-minded inter-library dependency tracking code of libtool
 releases prior to 1.2 was disabled because it was not clear when it was
@@ -3131,11 +3395,11 @@ interpreted language.  In fact, dlopen calls are frequently used in
 language interpreters to provide an efficient way to extend the
 language.
 
-As of version @value{VERSION}, libtool provides support for dlopened
-modules.  However, you should indicate that your package is willing to
-use such support, by using the @code{LT_INIT} option @samp{dlopen} in
-@file{configure.ac}.  If this option is not given, libtool will assume
-no dlopening mechanism is available, and will try to simulate it.
+Libtool provides support for dlopened modules.  However, you should
+indicate that your package is willing to use such support, by using the
+@code{LT_INIT} option @samp{dlopen} in @file{configure.ac}.  If this
+option is not given, libtool will assume no dlopening mechanism is
+available, and will try to simulate it.
 
 This chapter discusses how you as a dlopen application developer might
 use libtool to generate dlopen-accessible modules.
@@ -3143,7 +3407,7 @@ use libtool to generate dlopen-accessible modules.
 @menu
 * Building modules::            Creating dlopenable objects and libraries.
 * Dlpreopening::                Dlopening that works on static platforms.
-* Linking with dlopened modules:: Using dlopenable modules in libraries.
+* Linking with dlopened modules::  Using dlopenable modules in libraries.
 * Finding the dlname::          Choosing the right file to @code{dlopen}.
 * Dlopen issues::               Unresolved problems that need your attention.
 @end menu
@@ -3222,39 +3486,36 @@ you must declare the objects you want your application to dlopen by
 using the @option{-dlopen} or @option{-dlpreopen} flags when you link your
 program (@pxref{Link mode}).
 
-@deftypefn {Structure} {struct} lt_dlsymbol @{ @w{const char *@var{name};} @w{void *@var{address};} @}
+@deftp {Data Type} {lt_dlsymlist} typedef struct @
+  @{ @w{const char *@var{name};} @w{void *@var{address};} @} lt_dlsymlist
 The @var{name} attribute is a null-terminated character string of the
 symbol name, such as @code{"fprintf"}.  The @var{address} attribute is a
 generic pointer to the appropriate object, such as @code{&fprintf}.
-@end deftypefn
+@end deftp
 
-@deftypefn {Structure} {struct} lt_dlsymlist @{ @w{const char *@var{originator};} @w{const lt_dlsymbol @var{symbols}[];} @}
-The @var{originator} attribute is a null-terminated character string,
-naming the compilation unit that @var{symbols} were preloaded on
-behalf of.  This is usually the basename of a library,
-@file{libltdl.la} has a corresponding @var{originator} value of
-@samp{libltdl}; if the @var{symbols} are for the benefit of the
-application proper, then @var{originator} is @samp{@@PROGRAM@@},
-though Libtool takes care of that detail if you use
-@samp{LTDL_SET_PRELOADED_SYMBOLS}.
-@end deftypefn
-
-@deftypevar {const lt_dlsymlist *} lt_preloaded_symbols
-An array of @var{lt_symbol} structures, representing all the preloaded
+@deftypevar {const lt_dlsymlist } lt_preloaded_symbols[]
+An array of @code{lt_dlsymlist} structures, representing all the preloaded
 symbols linked into the program proper.  For each module
 @option{-dlpreopen}ed by the Libtool linked program
-there is an element with the @var{name} of the module and a @var{address}
+there is an element with the @var{name} of the module and an @var{address}
 of @code{0}, followed by all symbols exported from this file.
 For the executable itself the special name @samp{@@PROGRAM@@} is used.
 The last element of all has a @var{name} and @var{address} of
 @code{0}.
+
+To facilitate inclusion of symbol lists into libraries,
+@code{lt_preloaded_symbols} is @samp{#define}d to a suitably unique name
+in @file{ltdl.h}.
+
+This variable may not be declared @code{const} on some systems due to
+relocation issues.
 @end deftypevar
 
 Some compilers may allow identifiers that are not valid in ANSI C, such
 as dollar signs.  Libtool only recognizes valid ANSI C symbols (an
 initial ASCII letter or underscore, followed by zero or more ASCII
 letters, digits, and underscores), so non-ANSI symbols will not appear
-in @var{lt_preloaded_symbols}.
+in @code{lt_preloaded_symbols}.
 
 @deftypefun int lt_dlpreload (const lt_dlsymlist *@var{preloaded})
 Register the list of preloaded modules @var{preloaded}.
@@ -3302,7 +3563,7 @@ module opened in this way, call @var{func}.
 
 @noindent
 To open all of the modules preloaded into @file{libhell.la}
-(presumably from within the @samp{libhell.a} initialisation code):
+(presumably from within the @file{libhell.a} initialisation code):
 
 @example
 #define preloaded_symbols lt_libhell_LTX_preloaded_symbols
@@ -3349,7 +3610,7 @@ provide only static linkage can't even load the intrinsic interpreter
 methods.  Not so!  We can statically link those methods by
 @strong{dlpreopening} them.
 
-Unfortunately, since platforms such as @sc{aix} and cygwin require
+Unfortunately, since platforms such as AIX and cygwin require
 that all library symbols must be resolved at compile time, the
 interpreter maintainers will need to provide a library to both its own
 dlpreopened modules, and third-party modules loaded by dlopen.  In
@@ -3431,7 +3692,7 @@ intrinsics_la_LIBADD    = ../libloader/libinterface.la
         cd ../libloader && $(MAKE) $(AM_MAKEFLAGS) libinterface.la
 @end example
 
-@cindex -weak option
+@cindex @option{-weak} option
 For a more complex example, see the sources of @file{libltdl} in the
 Libtool distribution, which is built with the help of the @option{-weak}
 option.
@@ -3447,7 +3708,7 @@ Unfortunately, because of the variation in library names,
 your package needs to determine the correct file to dlopen.
 
 The most straightforward and flexible implementation is to determine the
-name at runtime, by finding the installed @samp{.la} file, and searching
+name at runtime, by finding the installed @file{.la} file, and searching
 it for the following lines:
 
 @example
@@ -3515,7 +3776,7 @@ hiding the various difficulties of dlopening libraries from programmers.
 It consists of a few headers and small C source files that can be
 distributed with applications that need dlopening functionality.  On
 some platforms, whose dynamic linkers are too limited for a simple
-implementation of @file{libltdl} services, it requires @sc{gnu} DLD, or it
+implementation of @file{libltdl} services, it requires GNU DLD, or it
 will only emulate dynamic linking with libtool's dlpreopening mechanism.
 
 @noindent
@@ -3523,7 +3784,7 @@ libltdl supports currently the following dynamic linking mechanisms:
 
 @itemize @bullet
 @item
-@code{dlopen} (Solaris, Linux and various BSD flavors)
+@code{dlopen} (POSIX compliant systems, GNU/Linux, etc.)
 @item
 @code{shl_load} (HP-UX)
 @item
@@ -3533,19 +3794,19 @@ libltdl supports currently the following dynamic linking mechanisms:
 @item
 @code{NSAddImage} or @code{NSLinkModule} (Darwin and Mac OS X)
 @item
-@sc{gnu} DLD (emulates dynamic linking for static libraries)
+GNU DLD (emulates dynamic linking for static libraries)
 @item
 libtool's dlpreopen (see @pxref{Dlpreopening})
 @end itemize
 
 @noindent
-libltdl is licensed under the terms of the @sc{gnu} Library General
+libltdl is licensed under the terms of the GNU Lesser General
 Public License, with the following exception:
 
 @quotation
-As a special exception to the @sc{gnu} Lesser General Public License,
+As a special exception to the GNU Lesser General Public License,
 if you distribute this file as part of a program or library that
-is built using @sc{gnu} Libtool, you may include it under the same
+is built using GNU Libtool, you may include it under the same
 distribution terms that you use for the rest of that program.
 @end quotation
 
@@ -3562,7 +3823,7 @@ distribution terms that you use for the rest of that program.
 @section How to use libltdl in your programs
 
 @noindent
-The libltdl API is similar to the dlopen interface of Solaris and Linux,
+The libltdl API is similar to the POSIX dlopen interface,
 which is very simple but powerful.
 
 @noindent
@@ -3574,7 +3835,7 @@ To use libltdl in your program you have to include the header file @file{ltdl.h}
 
 @noindent
 The early releases of libltdl used some symbols that violated the
-@sc{posix} namespace conventions.  These symbols are now deprecated,
+POSIX namespace conventions.  These symbols are now deprecated,
 and have been replaced by those described here.  If you have code that
 relies on the old deprecated symbol names, defining
 @samp{LT_NON_POSIX_NAMESPACE} before you include @file{ltdl.h} provides
@@ -3586,7 +3847,7 @@ your application in order to use this version of libltdl.
 Note that libltdl is not well tested in a multithreaded environment,
 though the intention is that it should work (@pxref{Thread Safety
 in libltdl, , Using libltdl in a multi threaded environment}).  It was
-reported that @sc{gnu}/Linux's glibc 2.0's @code{dlopen} with
+reported that GNU/Linux's glibc 2.0's @code{dlopen} with
 @samp{RTLD_LAZY} (which libltdl uses by default) is not thread-safe,
 but this problem is supposed to be fixed in glibc 2.1.  On the other
 hand, @samp{RTLD_NOW} was reported to introduce problems in
@@ -3680,11 +3941,11 @@ functions @code{lt_dlsetsearchpath}, @code{lt_dladdsearchdir} and
 
 @item libltdl's search path:
 This search path is the value of the environment variable
-@var{LTDL_LIBRARY_PATH}.
+@env{LTDL_LIBRARY_PATH}.
 
 @item system library search path:
 The system dependent library search path
-(e.g.@: on Linux it is @var{LD_LIBRARY_PATH}).
+(e.g.@: on GNU/Linux it is @env{LD_LIBRARY_PATH}).
 @end enumerate
 
 Each search path must be a list of absolute directories separated by
@@ -3702,8 +3963,8 @@ If the file with the file name @var{filename} cannot be found
 libltdl tries to append the following extensions:
 
 @enumerate 1
-@item the libtool archive extension @samp{.la}
-@item the extension used for native dynamically loadable modules on the host platform, e.g., @samp{.so}, @samp{.sl}, etc.
+@item the libtool archive extension @file{.la}
+@item the extension used for native dynamically loadable modules on the host platform, e.g., @file{.so}, @file{.sl}, etc.
 @end enumerate
 
 This lookup strategy was designed to allow programs that don't
@@ -3719,7 +3980,7 @@ module loader.  The @var{advise} parameter is opaque and can only be
 accessed with the functions documented below.
 
 Note that this function does not change the content of @var{advise}, so
-unlike the other calls in this @sc{api} takes a direct @code{lt_dladvise}
+unlike the other calls in this API takes a direct @code{lt_dladvise}
 type, and not a pointer to the same.
 @end deftypefun
 
@@ -3779,7 +4040,7 @@ unresolved symbols in subsequently loaded modules.
 If neither the @code{symglobal} nor the @code{symlocal} hints are set,
 or if a module is loaded without using the @code{lt_dlopenadvise} call
 in any case, then the visibility of the module's symbols will be as per
-the default for the underlying module loader and @sc{os}.  Even if a
+the default for the underlying module loader and OS.  Even if a
 suitable hint is passed, not all loaders are able to act upon it in
 which case @code{lt_dlgetinfo} will reveal whether the hint was actually
 followed.
@@ -3797,7 +4058,7 @@ visible to subsequently loaded modules.
 If neither the @code{symglobal} nor the @code{symlocal} hints are set,
 or if a module is loaded without using the @code{lt_dlopenadvise} call
 in any case, then the visibility of the module's symbols will be as per
-the default for the underlying module loader and @sc{os}.  Even if a
+the default for the underlying module loader and OS.  Even if a
 suitable hint is passed, not all loaders are able to act upon it in
 which case @code{lt_dlgetinfo} will reveal whether the hint was actually
 followed.
@@ -3861,7 +4122,7 @@ Replace the current user-defined library search path with
 by @code{LT_PATHSEP_CHAR}.  Return 0 on success.
 @end deftypefun
 
-@deftypefun {const char *}lt_dlgetsearchpath (void)
+@deftypefun {const char *} lt_dlgetsearchpath (void)
 Return the current user-defined library search path.
 @end deftypefun
 
@@ -3982,13 +4243,13 @@ If you wish to use libltdl in a multithreaded environment, then you
 must mutex lock around libltdl calls, since they may in turn be calling
 non-thread-safe system calls on some target hosts.
 
-Some old releases of libtool provided a mutex locking @sc{api} that
+Some old releases of libtool provided a mutex locking API that
 was unusable with POSIX threads, so callers were forced to lock around
-all libltdl @sc{api} calls anyway.  That mutex locking @sc{api} was
+all libltdl API calls anyway.  That mutex locking API was
 next to useless, and is not present in current releases.
 
 Some future release of libtool may provide a new POSIX thread
-compliant mutex locking @sc{api}.
+compliant mutex locking API.
 
 @node User defined module data
 @section Data associated with loaded modules
@@ -3997,7 +4258,10 @@ Some of the internal information about each loaded module that is
 maintained by libltdl is available to the user, in the form of this
 structure:
 
-@deftypefn {Type} {struct} lt_dlinfo @{ @w{char *@var{filename};} @w{char *@var{name};} @w{int @var{ref_count};} @w{int @var{is_resident};} @w{int @var{is_symglobal};} @w{int @var{is_symlocal};}@}
+@deftypefn {Type} {struct} lt_dlinfo @{ @w{char *@var{filename};} @
+  @w{char *@var{name};} @w{int @var{ref_count};} @
+  @w{int @var{is_resident};} @w{int @var{is_symglobal};} @
+  @w{int @var{is_symlocal};}@}
 @code{lt_dlinfo} is used to store information about a module.
 The @var{filename} attribute is a null-terminated character string of
 the real module file name.  If the module is a libtool module then
@@ -4027,7 +4291,8 @@ The opaque type used to hold the module interface details for each
 registered libltdl client.
 @end deftp
 
-@deftp {Type} int lt_dlhandle_interface (@w{lt_dlhandle @var{handle},} @w{const char *@var{id_string}})
+@deftypefn {Type} int lt_dlhandle_interface (@w{lt_dlhandle @var{handle},} @
+  @w{const char *@var{id_string}})
 Functions of this type are called to check that a handle conforms to a
 library's expected module interface when iterating over the global
 handle list.  You should be careful to write a callback function of
@@ -4060,9 +4325,10 @@ my_interface_cb (lt_dlhandle handle, const char *id_string)
   return 0;
 @}
 @end example
-@end deftp
+@end deftypefn
 
-@deftypefun lt_dlinterface_id lt_dlinterface_register (@w{const char *@var{id_string}}, @w{lt_dlhandle_interface *@var{iface}})
+@deftypefun lt_dlinterface_id lt_dlinterface_register @
+  (@w{const char *@var{id_string}}, @w{lt_dlhandle_interface *@var{iface}})
 Use this function to register your interface validator with libltdl,
 and in return obtain a unique key to store and retrieve per-module data.
 You supply an @var{id_string} and @var{iface} so that the resulting
@@ -4075,7 +4341,9 @@ all modules will be matched.
 Release the data associated with @var{iface}.
 @end deftypefun
 
-@deftypefun int lt_dlhandle_map (@w{lt_dlinterface_id @var{iface}}, @w{int (*@var{func}) (lt_dlhandle @var{handle}, void * @var{data})}, @w{void * @var{data}})
+@deftypefun int lt_dlhandle_map (@w{lt_dlinterface_id @var{iface}}, @
+  @w{int (*@var{func}) (lt_dlhandle @var{handle}, void * @var{data})}, @
+  @w{void * @var{data}})
 For each module that matches @var{iface}, call the function
 @var{func}.  When writing the @var{func} callback function, the
 argument @var{handle} is the handle of a loaded module, and
@@ -4086,7 +4354,8 @@ return that non-zero value.  Otherwise 0 is eventually returned when
 @var{func} has been successfully called for all matching modules.
 @end deftypefun
 
-@deftypefun lt_dlhandle lt_dlhandle_iterate (@w{lt_dlinterface_id @var{iface}}, @w{lt_dlhandle @var{place}})
+@deftypefun lt_dlhandle lt_dlhandle_iterate (@w{lt_dlinterface_id @
+  @var{iface}}, @w{lt_dlhandle @var{place}})
 Iterate over the module handles loaded by @var{iface}, returning the
 first matching handle in the list if @var{place} is @code{NULL}, and
 the next one on subsequent calls.  If @var{place} is the last element
@@ -4112,7 +4381,7 @@ if no such named module has been loaded by @var{iface}.
 However, you might still need to maintain your own list of loaded
 module handles (in parallel with the list maintained inside libltdl)
 if there were any other data that your application wanted to associate
-with each open module.  Instead, you can use the following @sc{api}
+with each open module.  Instead, you can use the following API
 calls to do that for you.  You must first obtain a unique interface id
 from libltdl as described above, and subsequently always use it to
 retrieve the data you stored earlier.  This allows different libraries
@@ -4152,12 +4421,12 @@ Return the address of the data associated with @var{key} and
 @var{handle}, or else @code{NULL} if there is none.
 @end deftypefun
 
-Old versions of libltdl also provided a simpler, but similar, @sc{api}
+Old versions of libltdl also provided a simpler, but similar, API
 based around @code{lt_dlcaller_id}.  Unfortunately, it had no
 provision for detecting whether a module belonged to a particular
 interface as libltdl didn't support multiple loaders in the same
-address space at that time.  Those @sc{api}s are no longer supported
-as there would be no way to stop clients of the old @sc{api}s from
+address space at that time.  Those APIs are no longer supported
+as there would be no way to stop clients of the old APIs from
 seeing (and accidentally altering) modules loaded by other libraries.
 
 
@@ -4187,7 +4456,7 @@ already in use by libltdl's builtin loaders:
 @item "dlopen"
 The system dynamic library loader, if one exists.
 @item "dld"
-The @sc{gnu} dld loader, if @file{libdld} was installed when libltdl was
+The GNU dld loader, if @file{libdld} was installed when libltdl was
 built.
 @item "dlpreload"
 The loader for @code{lt_dlopen}ing of preloaded static modules.
@@ -4215,7 +4484,7 @@ level types.
 
 @deftypefn {Type} {struct} lt_user_dlloader @{@w{const char *@var{sym_prefix};} @w{lt_module_open *@var{module_open};} @w{lt_module_close *@var{module_close};} @w{lt_find_sym *@var{find_sym};} @w{lt_dlloader_exit *@var{dlloader_exit};} @}
 If you want to define a new way to open dynamic modules, and have the
-@code{lt_dlopen} @sc{api} use it, you need to instantiate one of these
+@code{lt_dlopen} API use it, you need to instantiate one of these
 structures and pass it to @code{lt_dlloader_add}.  You can pass whatever
 you like in the @var{dlloader_data} field, and it will be passed back as
 the value of the first parameter to each of the functions specified in
@@ -4277,7 +4546,8 @@ register_myloader (void)
   dlloader.dlloader_data = (lt_user_data)myloader_function;
 
   /* Add my loader as the default module loader. */
-  if (lt_dlloader_add (lt_dlloader_next (NULL), &dlloader, "myloader") != 0)
+  if (lt_dlloader_add (lt_dlloader_next (NULL), &dlloader,
+                       "myloader") != 0)
     return ERROR;
 
   return OK;
@@ -4297,7 +4567,8 @@ during the initialisation phase.
 libltdl provides the following functions for writing your own module
 loaders:
 
-@deftypefun int lt_dlloader_add (@w{lt_dlloader *@var{place},} @w{lt_user_dlloader *@var{dlloader},} @w{const char *@var{loader_name}})
+@deftypefun int lt_dlloader_add (@w{lt_dlloader *@var{place},} @
+  @w{lt_user_dlloader *@var{dlloader},} @w{const char *@var{loader_name}})
 Add a new module loader to the list of all loaders, either as the
 last loader (if @var{place} is @code{NULL}), else immediately before the
 loader passed as @var{place}.  @var{loader_name} will be returned by
@@ -4326,7 +4597,7 @@ if (lt_dlloader_remove ("myloader") != 0)
 @end example
 @end deftypefun
 
-@deftypefun {lt_dlloader *}lt_dlloader_next (@w{lt_dlloader *@var{place}})
+@deftypefun {lt_dlloader *} lt_dlloader_next (@w{lt_dlloader *@var{place}})
 Iterate over the module loaders, returning the first loader if @var{place} is
 @code{NULL}, and the next one on subsequent calls.  The handle is for use with
 @code{lt_dlloader_add}.
@@ -4338,13 +4609,13 @@ if (lt_dlloader_add (lt_dlloader_next (NULL), myloader) != 0)
 @end example
 @end deftypefun
 
-@deftypefun {lt_dlloader *}lt_dlloader_find (@w{const char *@var{loader_name}})
+@deftypefun {lt_dlloader *} lt_dlloader_find (@w{const char *@var{loader_name}})
 Return the first loader with a matching @var{loader_name} identifier, or else
 @code{NULL}, if the identifier is not found.
 
 The identifiers that may be used by libltdl itself, if the host
 architecture supports them are @dfn{dlopen}@footnote{This is used for
-the host dependent module loading @sc{api} -- @code{shl_load} and
+the host dependent module loading API -- @code{shl_load} and
 @code{LoadLibrary} for example}, @dfn{dld} and @dfn{dlpreload}.
 
 @example
@@ -4355,15 +4626,15 @@ if (lt_dlloader_add (lt_dlloader_find ("dlopen"), myloader) != 0)
 @end example
 @end deftypefun
 
-@deftypefun {const char *}lt_dlloader_name (@w{lt_dlloader *@var{place}})
-Return the identifying name of @var{PLACE}, as obtained from
+@deftypefun {const char *} lt_dlloader_name (@w{lt_dlloader *@var{place}})
+Return the identifying name of @var{place}, as obtained from
 @code{lt_dlloader_next} or @code{lt_dlloader_find}.  If this function fails,
 it will return @code{NULL} and set an error for retrieval with
 @code{lt_dlerror}.
 @end deftypefun
 
-@deftypefun {lt_user_data *}lt_dlloader_data (@w{lt_dlloader *@var{place}})
-Return the address of the @code{dlloader_data} of @var{PLACE}, as
+@deftypefun {lt_user_data *} lt_dlloader_data (@w{lt_dlloader *@var{place}})
+Return the address of the @code{dlloader_data} of @var{place}, as
 obtained from @code{lt_dlloader_next} or @code{lt_dlloader_find}.  If
 this function fails, it will return @code{NULL} and set an error for
 retrieval with @code{lt_dlerror}.
@@ -4424,7 +4695,7 @@ unnecessary but makes it easy to forget to upgrade @file{acinclude.m4}
 if you move to a different release of libltdl.
 @c
 }.  Having made the macros available, you must add a call to the
-@samp{LTDL_INIT} macro (after the call to @samp{LT_INIT}
+@samp{LTDL_INIT} macro (after the call to @samp{LT_INIT})
 to your package's @file{configure.ac} to
 perform the configure time checks required to build the library
 correctly.  Unfortunately, this method has problems if you then try to
@@ -4435,8 +4706,8 @@ or against both a local convenience library and an installed libltdl
 is bad.  Ensuring that only one copy of the libltdl sources are linked
 into any program is left as an exercise for the reader.
 
-@defmac LT_CONFIG_LTDL_DIR (@var{DIRECTORY})
-Declare @var{DIRECTORY} to be the location of the @code{libltdl}
+@defmac LT_CONFIG_LTDL_DIR (@var{directory})
+Declare @var{directory} to be the location of the @code{libltdl}
 source files, for @command{libtoolize --ltdl} to place
 them. @xref{Invoking libtoolize}, for more details.  Provided that you
 add an appropriate @code{LT_CONFIG_LTDL_DIR} call in your
@@ -4444,7 +4715,7 @@ add an appropriate @code{LT_CONFIG_LTDL_DIR} call in your
 appropriate @code{libltdl} files will be installed automatically.
 @end defmac
 
-@defmac LTDL_INIT (@var{OPTIONS})
+@defmac LTDL_INIT (@var{options})
 @defmacx LT_WITH_LTDL
 @defmacx AC_WITH_LTDL
 @code{AC_WITH_LTDL} and @code{LT_WITH_LTDL} are deprecated names for
@@ -4455,14 +4726,14 @@ This macro adds the following options to the @command{configure}
 script:
 
 @table @option
-@item --with-ltdl-include @var{INSTALLED-LTDL-HEADER-DIR}
+@item --with-ltdl-include @var{installed-ltdl-header-dir}
 The @code{LTDL_INIT} macro will look in the standard header file
 locations to find the installed @code{libltdl} headers.  If
 @code{LTDL_INIT} can't find them by itself, the person who builds
 your package can use this option to tell @command{configure} where
 the installed @code{libltdl} headers are.
 
-@item --with-ltdl-lib @var{INSTALLED-LTDL-LIBRARY-DIR}
+@item --with-ltdl-lib @var{installed-ltdl-library-dir}
 Similarly, the person building your package can use this option to
 help @command{configure} find the installed @file{libltdl.la}.
 
@@ -4514,7 +4785,7 @@ if test "x$with_included_ltdl" != "xyes"; then
 fi
 @end example
 
-@var{OPTIONS} may include no more than one of the following build
+@var{options} may include no more than one of the following build
 modes depending on how you want your project to build @code{libltdl}:
 @samp{nonrecursive}, @samp{recursive}, or @samp{subproject}.  In order
 for @command{libtoolize} to detect this option correctly, if you
@@ -4668,10 +4939,10 @@ installed to the same directory if you use this option.
 @end defmac
 
 Whatever method you use, @samp{LTDL_INIT} will define the shell variable
-@var{LIBLTDL} to the link flag that you should use to link with
-@code{libltdl}, the shell variable @var{LTDLDEPS} to the files that
+@code{LIBLTDL} to the link flag that you should use to link with
+@code{libltdl}, the shell variable @code{LTDLDEPS} to the files that
 can be used as a dependency in @file{Makefile} rules, and the shell
-variable @var{LTDLINCL} to the preprocessor flag that you should use to
+variable @code{LTDLINCL} to the preprocessor flag that you should use to
 compile programs that include @file{ltdl.h}. So, when you want to link a
 program with libltdl, be it a convenience, installed or installable
 library, just use @samp{$(LTDLINCL)} for preprocessing and compilation,
@@ -4680,24 +4951,24 @@ and @samp{$(LIBLTDL)} for linking.
 @itemize @bullet
 @item
 If your package is built using an installed version of @code{libltdl},
-@var{LIBLTDL} will be set to the compiler flags needed to link against
-the installed library, @var{LTDLDEPS} will be empty, and @var{LTDLINCL}
+@code{LIBLTDL} will be set to the compiler flags needed to link against
+the installed library, @code{LTDLDEPS} will be empty, and @code{LTDLINCL}
 will be set to the compiler flags needed to find the @code{libltdl}
 header files.
 
 @item
-If your package is built using the convenience libltdl, @var{LIBLTDL}
-and @var{LTDLDEPS} will be the pathname for the convenience version of
+If your package is built using the convenience libltdl, @code{LIBLTDL}
+and @code{LTDLDEPS} will be the pathname for the convenience version of
 libltdl (starting with @samp{$@{top_builddir@}/} or
-@samp{$@{top_build_prefix@}}) and @var{LTDLINCL} will be @option{-I}
+@samp{$@{top_build_prefix@}}) and @code{LTDLINCL} will be @option{-I}
 followed by the directory that contains @file{ltdl.h} (starting with
 @samp{$@{top_srcdir@}/}).
 
 @item
 If an installable version of the included @code{libltdl} is being
 built, its pathname starting with @samp{$@{top_builddir@}/} or
-@samp{$@{top_build_prefix@}}, will be stored in @var{LIBLTDL} and
-@var{LTDLDEPS}, and @var{LTDLINCL} will be set just like in the case of
+@samp{$@{top_build_prefix@}}, will be stored in @code{LIBLTDL} and
+@code{LTDLDEPS}, and @code{LTDLINCL} will be set just like in the case of
 convenience library.
 @end itemize
 
@@ -4780,6 +5051,46 @@ autoconf --trace 'LT_SUPPORTED_TAG:$1'
 @end defmac
 
 
+@node FAQ
+@chapter Frequently Asked Questions about libtool
+
+This chapter covers some questions that often come up on the mailing
+lists.
+
+@menu
+* Stripped link flags::         Dropped flags when creating a library
+@end menu
+
+@node Stripped link flags
+@section Why does libtool strip link flags when creating a library?
+
+When creating a shared library, but not when compiling or creating
+a program, @command{libtool} drops some flags from the command line
+provided by the user.  This is done because flags unknown to
+@command{libtool} may interfere with library creation or require
+additional support from @command{libtool}, and because omitting
+flags is usually the conservative choice for a successful build.
+
+If you encounter flags that you think are useful to pass, as a
+work-around you can prepend flags with @code{-Wc,} or @code{-Xcompiler }
+to allow them to be passed through to the compiler driver
+(@pxref{Link mode}).  Another possibility is to add flags already
+to the compiler command at @command{configure} run time:
+
+@example
+./configure CC='gcc -m64'
+@end example
+
+If you think @command{libtool} should let some flag through by default,
+here's how you can test such an inclusion: grab the Libtool development
+tree, edit the @file{ltmain.m4sh} file in the @file{libltdl/config}
+subdirectory to pass through the flag (search for @samp{Flags to be
+passed through}), re-bootstrap and build with the flags in question
+added to @code{LDFLAGS}, @code{CFLAGS}, @code{CXXFLAGS}, etc. on the
+@command{configure} command line as appropriate.  Run the testsuite
+as described in the @file{README} file and report results to
+@value{BUGADDR}.
+
 @node Troubleshooting
 @chapter Troubleshooting
 @cindex troubleshooting
@@ -4825,17 +5136,29 @@ they test for:
 @table @file
 
 @item cdemo-conf.test
-@itemx cdemo-exec.test
 @itemx cdemo-make.test
+@itemx cdemo-exec.test
 @itemx cdemo-static.test
+@itemx cdemo-static-make.test
+@itemx cdemo-static-exec.test
 @itemx cdemo-shared.test
+@itemx cdemo-shared-make.test
+@itemx cdemo-shared-exec.test
 @itemx cdemo-undef.test
+@itemx cdemo-undef-make.test
+@itemx cdemo-undef-exec.test
 @pindex cdemo-conf.test
-@pindex cdemo-exec.test
 @pindex cdemo-make.test
+@pindex cdemo-exec.test
 @pindex cdemo-static.test
+@pindex cdemo-static-make.test
+@pindex cdemo-static-exec.test
 @pindex cdemo-shared.test
+@pindex cdemo-shared-make.test
+@pindex cdemo-shared-exec.test
 @pindex cdemo-undef.test
+@pindex cdemo-undef-make.test
+@pindex cdemo-undef-exec.test
 These programs check to see that the @file{tests/cdemo} subdirectory of
 the libtool distribution can be configured and built correctly.
 
@@ -4844,8 +5167,8 @@ convenience libraries, a mechanism that allows build-time static
 libraries to be created, in a way that their components can be later
 linked into programs or other libraries, even shared ones.
 
-The tests @file{cdemo-make.test} and @file{cdemo-exec.test} are executed
-three times, under three different libtool configurations:
+The tests matching @file{cdemo-*make.test} and @file{cdemo-*exec.test}
+are executed three times, under three different libtool configurations:
 @file{cdemo-conf.test} configures @file{cdemo/libtool} to build both
 static and shared libraries (the default for platforms that support
 both), @file{cdemo-static.test} builds only static libraries
@@ -4856,33 +5179,65 @@ The test @file{cdemo-undef.test} tests the generation of shared
 libraries with undefined symbols on systems that allow this.
 
 @item demo-conf.test
+@itemx demo-make.test
 @itemx demo-exec.test
 @itemx demo-inst.test
-@itemx demo-make.test
 @itemx demo-unst.test
 @itemx demo-static.test
+@itemx demo-static-make.test
+@itemx demo-static-exec.test
+@itemx demo-static-inst.test
+@itemx demo-static-unst.test
 @itemx demo-shared.test
+@itemx demo-shared-make.test
+@itemx demo-shared-exec.test
+@itemx demo-shared-inst.test
+@itemx demo-shared-unst.test
 @itemx demo-nofast.test
+@itemx demo-nofast-make.test
+@itemx demo-nofast-exec.test
+@itemx demo-nofast-inst.test
+@itemx demo-nofast-unst.test
 @itemx demo-pic.test
+@itemx demo-pic-make.test
+@itemx demo-pic-exec.test
 @itemx demo-nopic.test
+@itemx demo-nopic-make.test
+@itemx demo-nopic-exec.test
 @pindex demo-conf.test
+@pindex demo-make.test
 @pindex demo-exec.test
 @pindex demo-inst.test
-@pindex demo-make.test
 @pindex demo-unst.test
 @pindex demo-static.test
+@pindex demo-static-make.test
+@pindex demo-static-exec.test
+@pindex demo-static-inst.test
+@pindex demo-static-unst.test
 @pindex demo-shared.test
+@pindex demo-shared-make.test
+@pindex demo-shared-exec.test
+@pindex demo-shared-inst.test
+@pindex demo-shared-unst.test
 @pindex demo-nofast.test
+@pindex demo-nofast-make.test
+@pindex demo-nofast-exec.test
+@pindex demo-nofast-inst.test
+@pindex demo-nofast-unst.test
 @pindex demo-pic.test
+@pindex demo-pic-make.test
+@pindex demo-pic-exec.test
 @pindex demo-nopic.test
+@pindex demo-nopic-make.test
+@pindex demo-nopic-exec.test
 These programs check to see that the @file{tests/demo} subdirectory of
 the libtool distribution can be configured, built, installed, and
 uninstalled correctly.
 
 The @file{tests/demo} subdirectory contains a demonstration of a trivial
-package that uses libtool.  The tests @file{demo-make.test},
-@file{demo-exec.test}, @file{demo-inst.test} and
-@file{demo-unst.test} are executed four times, under four different
+package that uses libtool.  The tests matching @file{demo-*make.test},
+@file{demo-*exec.test}, @file{demo-*inst.test} and
+@file{demo-*unst.test} are executed four times, under four different
 libtool configurations: @file{demo-conf.test} configures
 @file{demo/libtool} to build both static and shared libraries,
 @file{demo-static.test} builds only static libraries
@@ -4891,8 +5246,8 @@ shared libraries (@option{--disable-static}).
 @file{demo-nofast.test} configures @file{demo/libtool} to
 disable the fast-install mode (@option{--enable-fast-install=no}).
 @file{demo-pic.test} configures @file{demo/libtool} to
-prefer building @sc{pic} code (@option{--with-pic}), @file{demo-nopic.test}
-to prefer non-@sc{pic} code (@option{--without-pic}).
+prefer building PIC code (@option{--with-pic}), @file{demo-nopic.test}
+to prefer non-PIC code (@option{--without-pic}).
 
 @item demo-deplibs.test
 @pindex demo-deplibs.test
@@ -4913,9 +5268,9 @@ correspond to libtool's own notion of how your linker behaves.
 @itemx depdemo-relink.test
 @pindex demo-relink.test
 @pindex depdemo-relink.test
-These tests check whether variable @var{shlibpath_overrides_runpath} is
-properly set.  If the test fails and @var{VERBOSE} is set, it will
-indicate what the variable should have been set to.
+These tests check whether variable @code{shlibpath_overrides_runpath} is
+properly set.  If the test fails, it will indicate what the variable should
+have been set to.
 
 @item demo-noinst-link.test
 @pindex demo-noinst-link.test
@@ -4923,21 +5278,45 @@ Checks whether libtool will not try to link with a previously installed
 version of a library when it should be linking with a just-built one.
 
 @item depdemo-conf.test
+@itemx depdemo-make.test
 @itemx depdemo-exec.test
 @itemx depdemo-inst.test
-@itemx depdemo-make.test
 @itemx depdemo-unst.test
 @itemx depdemo-static.test
+@itemx depdemo-static-make.test
+@itemx depdemo-static-exec.test
+@itemx depdemo-static-inst.test
+@itemx depdemo-static-unst.test
 @itemx depdemo-shared.test
+@itemx depdemo-shared-make.test
+@itemx depdemo-shared-exec.test
+@itemx depdemo-shared-inst.test
+@itemx depdemo-shared-unst.test
 @itemx depdemo-nofast.test
+@itemx depdemo-nofast-make.test
+@itemx depdemo-nofast-exec.test
+@itemx depdemo-nofast-inst.test
+@itemx depdemo-nofast-unst.test
 @pindex depdemo-conf.test
+@pindex depdemo-make.test
 @pindex depdemo-exec.test
 @pindex depdemo-inst.test
-@pindex depdemo-make.test
 @pindex depdemo-unst.test
 @pindex depdemo-static.test
+@pindex depdemo-static-make.test
+@pindex depdemo-static-exec.test
+@pindex depdemo-static-inst.test
+@pindex depdemo-static-unst.test
 @pindex depdemo-shared.test
+@pindex depdemo-shared-make.test
+@pindex depdemo-shared-exec.test
+@pindex depdemo-shared-inst.test
+@pindex depdemo-shared-unst.test
 @pindex depdemo-nofast.test
+@pindex depdemo-nofast-make.test
+@pindex depdemo-nofast-exec.test
+@pindex depdemo-nofast-inst.test
+@pindex depdemo-nofast-unst.test
 These programs check to see that the @file{tests/depdemo} subdirectory
 of the libtool distribution can be configured, built, installed, and
 uninstalled correctly.
@@ -4946,30 +5325,46 @@ The @file{tests/depdemo} subdirectory contains a demonstration of
 inter-library dependencies with libtool.  The test programs link some
 interdependent libraries.
 
-The tests @file{depdemo-make.test}, @file{depdemo-exec.test},
-@file{depdemo-inst.test} and @file{depdemo-unst.test} are executed
+The tests matching @file{depdemo-*make.test}, @file{depdemo-*exec.test},
+@file{depdemo-*inst.test} and @file{depdemo-*unst.test} are executed
 four times, under four different libtool configurations:
 @file{depdemo-conf.test} configures @file{depdemo/libtool} to build both
 static and shared libraries, @file{depdemo-static.test} builds only static
 libraries (@option{--disable-shared}), and @file{depdemo-shared.test} builds
 only shared libraries (@option{--disable-static}).
 @file{depdemo-nofast.test} configures @file{depdemo/libtool} to
-disable the fast-install mode (@option{--enable-fast-install=no}.
+disable the fast-install mode (@option{--enable-fast-install=no}).
 
 @item mdemo-conf.test
+@itemx mdemo-make.test
 @itemx mdemo-exec.test
 @itemx mdemo-inst.test
-@itemx mdemo-make.test
 @itemx mdemo-unst.test
 @itemx mdemo-static.test
+@itemx mdemo-static-make.test
+@itemx mdemo-static-exec.test
+@itemx mdemo-static-inst.test
+@itemx mdemo-static-unst.test
 @itemx mdemo-shared.test
+@itemx mdemo-shared-make.test
+@itemx mdemo-shared-exec.test
+@itemx mdemo-shared-inst.test
+@itemx mdemo-shared-unst.test
 @pindex mdemo-conf.test
+@pindex mdemo-make.test
 @pindex mdemo-exec.test
 @pindex mdemo-inst.test
-@pindex mdemo-make.test
 @pindex mdemo-unst.test
 @pindex mdemo-static.test
+@pindex mdemo-static-make.test
+@pindex mdemo-static-exec.test
+@pindex mdemo-static-inst.test
+@pindex mdemo-static-unst.test
 @pindex mdemo-shared.test
+@pindex mdemo-shared-make.test
+@pindex mdemo-shared-exec.test
+@pindex mdemo-shared-inst.test
+@pindex mdemo-shared-unst.test
 These programs check to see that the @file{tests/mdemo} subdirectory of
 the libtool distribution can be configured, built, installed, and
 uninstalled correctly.
@@ -4977,11 +5372,11 @@ uninstalled correctly.
 The @file{tests/mdemo} subdirectory contains a demonstration of a
 package that uses libtool and the system independent dlopen wrapper
 @file{libltdl} to load modules.  The library @file{libltdl} provides a
-dlopen wrapper for various platforms (Linux, Solaris, HP/UX etc.)
+dlopen wrapper for various platforms (POSIX)
 including support for dlpreopened modules (@pxref{Dlpreopening}).
 
-The tests @file{mdemo-make.test}, @file{mdemo-exec.test},
-@file{mdemo-inst.test} and @file{mdemo-unst.test} are executed
+The tests matching @file{mdemo-*make.test}, @file{mdemo-*exec.test},
+@file{mdemo-*inst.test} and @file{mdemo-*unst.test} are executed
 three times, under three different libtool configurations:
 @file{mdemo-conf.test} configures @file{mdemo/libtool} to build both
 static and shared libraries, @file{mdemo-static.test} builds only static
@@ -5013,7 +5408,7 @@ library works properly.
 
 @item link-2.test
 @pindex link-2.test
-This test makes sure that files ending in @samp{.lo} are never linked
+This test makes sure that files ending in @file{.lo} are never linked
 directly into a program file.
 
 @item nomode.test
@@ -5025,18 +5420,18 @@ Check whether we can actually get help for libtool.
 Check that a nonexistent objectlist file is properly detected.
 
 @item pdemo-conf.test
+@itemx pdemo-make.test
 @itemx pdemo-exec.test
 @itemx pdemo-inst.test
-@itemx pdemo-make.test
 @pindex pdemo-conf.test
+@pindex pdemo-make.test
 @pindex pdemo-exec.test
 @pindex pdemo-inst.test
-@pindex pdemo-make.test
 These programs check to see that the @file{tests/pdemo} subdirectory of
 the libtool distribution can be configured, built, and executed
 correctly.
 
-The @file{pdemo-conf.test} lowers the @var{max_cmd_len} variable in the
+The @file{pdemo-conf.test} lowers the @code{max_cmd_len} variable in the
 generated libtool script to test the measures to evade command line
 length limitations.
 
@@ -5052,22 +5447,34 @@ shell scripts.
 @item suffix.test
 @pindex suffix.test
 When other programming languages are used with libtool (@pxref{Other
-languages}), the source files may end in suffixes other than @samp{.c}.
+languages}), the source files may end in suffixes other than @file{.c}.
 This test validates that libtool can handle suffixes for all the file
 types that it supports, and that it fails when the suffix is invalid.
 
 @item tagdemo-conf.test
-@itemx tagdemo-exec.test
 @itemx tagdemo-make.test
+@itemx tagdemo-exec.test
 @itemx tagdemo-static.test
+@itemx tagdemo-static-make.test
+@itemx tagdemo-static-exec.test
 @itemx tagdemo-shared.test
+@itemx tagdemo-shared-make.test
+@itemx tagdemo-shared-exec.test
 @itemx tagdemo-undef.test
+@itemx tagdemo-undef-make.test
+@itemx tagdemo-undef-exec.test
 @pindex tagdemo-conf.test
-@pindex tagdemo-exec.test
 @pindex tagdemo-make.test
+@pindex tagdemo-exec.test
 @pindex tagdemo-static.test
+@pindex tagdemo-static-make.test
+@pindex tagdemo-static-exec.test
 @pindex tagdemo-shared.test
+@pindex tagdemo-shared-make.test
+@pindex tagdemo-shared-exec.test
 @pindex tagdemo-undef.test
+@pindex tagdemo-undef-make.test
+@pindex tagdemo-undef-exec.test
 These programs check to see that the @file{tests/tagdemo} subdirectory
 of the libtool distribution can be configured, built, and executed
 correctly.
@@ -5078,15 +5485,23 @@ It generates a library from C++ sources, which is then linked to a C++
 program.
 
 @item f77demo-conf.test
-@itemx f77demo-exec.test
 @itemx f77demo-make.test
+@itemx f77demo-exec.test
 @itemx f77demo-static.test
+@itemx f77demo-static-make.test
+@itemx f77demo-static-exec.test
 @itemx f77demo-shared.test
+@itemx f77demo-shared-make.test
+@itemx f77demo-shared-exec.test
 @pindex f77demo-conf.test
-@pindex f77demo-exec.test
 @pindex f77demo-make.test
+@pindex f77demo-exec.test
 @pindex f77demo-static.test
+@pindex f77demo-static-make.test
+@pindex f77demo-static-exec.test
 @pindex f77demo-shared.test
+@pindex f77demo-shared-make.test
+@pindex f77demo-shared-exec.test
 These programs check to see that the @file{tests/f77demo} subdirectory
 of the libtool distribution can be configured, built, and executed
 correctly.
@@ -5097,15 +5512,23 @@ sources, and a Fortran 77 program to use the former library, and a C
 program to use the latter library.
 
 @item fcdemo-conf.test
-@itemx fcdemo-exec.test
 @itemx fcdemo-make.test
+@itemx fcdemo-exec.test
 @itemx fcdemo-static.test
+@itemx fcdemo-static-make.test
+@itemx fcdemo-static-exec.test
 @itemx fcdemo-shared.test
+@itemx fcdemo-shared-make.test
+@itemx fcdemo-shared-exec.test
 @pindex fcdemo-conf.test
-@pindex fcdemo-exec.test
 @pindex fcdemo-make.test
+@pindex fcdemo-exec.test
 @pindex fcdemo-static.test
+@pindex fcdemo-static-make.test
+@pindex fcdemo-static-exec.test
 @pindex fcdemo-shared.test
+@pindex fcdemo-shared-make.test
+@pindex fcdemo-shared-exec.test
 These programs check to see that the @file{tests/fcdemo} subdirectory
 of the libtool distribution can be configured, built, and executed
 correctly.
@@ -5116,13 +5539,68 @@ directory, except that Fortran 90 is used in combination with the
 
 @end table
 
+The new, Autotest-based test suite uses keywords to classify certain
+test groups:
+
+@table @samp
+@item CXX
+@itemx F77
+@itemx FC
+@itemx GCJ
+The test group exercises one of these @command{libtool} language tags.
+
+@item autoconf
+@itemx automake
+These keywords denote that the respective external program is needed
+by the test group.  The tests are typically skipped if the program is
+not installed.  The @samp{automake} keyword may also denote use of the
+@command{aclocal} program.
+
+@item interactive
+This test group may require user interaction on some systems.  Typically,
+this means closing a popup window about a DLL load error on Windows.
+
+@item libltdl
+Denote that the @file{libltdl} library is exercised by the test group.
+
+@item libtool
+@itemx libtoolize
+Denote that the @command{libtool} or @command{libtoolize} scripts are
+exercised by the test group, respectively.
+
+@item recursive
+Denote that this test group may recursively re-invoke the test suite
+itself, with changed settings and maybe a changed @command{libtool}
+script.  You may use the @env{INNER_TESTSUITEFLAGS} variable to pass
+additional settings to this recursive invocation.  Typically, recursive
+invocations delimit the set of tests with another keyword, for example
+by passing @code{-k libtool} right before the expansion of the
+@env{INNER_TESTSUITEFLAGS} variable (without an intervening space, so
+you get the chance for further delimitation).
+
+Test groups with the keyword @samp{recursive} should not be denoted with
+keywords, in order to avoid infinite recursion.  As a consequence,
+recursive test groups themselves should never require user interaction,
+while the test groups they invoke may do so.
+@end table
+
+@cindex @samp{check-interactive}
+@cindex @samp{check-noninteractive}
+There is a convenience target @samp{check-noninteractive} that runs
+all tests from both test suites that do not cause user interaction on
+Windows.  Conversely, the target @samp{check-interactive} runs the
+complement of tests and might require closing popup windows about DLL
+load errors on Windows.
+
+
 @node When tests fail
 @subsection When tests fail
 @cindex failed tests
 @cindex tests, failed
 
-Each of the tests in the old test suite are designed to produce no
-output when they are run via @kbd{make check}.  The exit status of each
+When the tests in the old test suite are run via @command{make check},
+output is caught in per-test @file{tests/@var{test-name}.log} files
+and summarized in the @file{test-suite.log} file.  The exit status of each
 program tells the @file{Makefile} whether or not the test succeeded.
 
 If a test fails, it means that there is either a programming error in
@@ -5132,17 +5610,12 @@ To investigate a particular test, you may run it directly, as you would
 a normal program.  When the test is invoked in this way, it produces
 output that may be useful in determining what the problem is.
 
-Another way to have the test programs produce output is to set the
-@var{VERBOSE} environment variable to @samp{yes} before running them.
-For example, @kbd{env VERBOSE=yes make check} runs all the tests, and
-has each of them display debugging information.
-
 The new, Autotest-based test suite produces as output a file
 @file{tests/testsuite.log} which contains information about failed
 tests.
 
 You can pass options to the test suite through the @command{make}
-variable @var{TESTSUITEFLAGS} (@pxref{testsuite Invocation, ,
+variable @env{TESTSUITEFLAGS} (@pxref{testsuite Invocation, ,
 The Autoconf Manual, autoconf, The Autoconf Manual}).
 
 
@@ -5224,7 +5697,7 @@ can make changes to the libtool configuration process without affecting
 other systems.
 
 @item man pages for @command{ld} and @command{cc}
-These generally describe what flags are used to generate @sc{pic}, to create
+These generally describe what flags are used to generate PIC, to create
 shared libraries, and to link against only static libraries.  You may
 need to follow some cross references to find the information that is
 required.
@@ -5291,7 +5764,7 @@ writes libtool makes sure @samp{$deplibs} is included in
 looks in the library link path for libraries that have the right
 libname.  Then it runs @samp{$file_magic_cmd} on the library and checks
 for a match against the extended regular expression @var{regex}.  When
-@var{file_magic_test_file} is set by @file{libtool.m4}, it is used as an
+@code{file_magic_test_file} is set by @file{libtool.m4}, it is used as an
 argument to @samp{$file_magic_cmd} in order to verify whether the
 regular expression matches its output, and warn the user otherwise.
 
@@ -5346,7 +5819,7 @@ platforms where it claims to support shared libraries:
 Note: The vendor-distributed HP-UX @command{sed}(1) programs are horribly
 broken, and cannot handle libtool's requirements, so users may report
 unusual problems.  There is no workaround except to install a working
-@command{sed} (such as @sc{gnu} @command{sed}) on these systems.
+@command{sed} (such as GNU @command{sed}) on these systems.
 
 Note: The vendor-distributed NCR MP-RAS @command{cc} programs emits
 copyright on standard error that confuse tests on size of
@@ -5372,6 +5845,9 @@ write your own.
 * Reloadable objects::          Binding object files together.
 * Multiple dependencies::       Removing duplicate dependent libraries.
 * Archivers::                   Programs that create static archives.
+* Cross compiling::             Issues that arise when cross compiling.
+* File name conversion::        Converting file names between platforms.
+* Windows DLLs::                Windows header defines.
 @end menu
 
 @node References
@@ -5408,8 +5884,8 @@ IBM has online documentation at
 @subsection Compilers
 
 The only compiler characteristics that affect libtool are the flags
-needed (if any) to generate @sc{pic} objects.  In general, if a C compiler
-supports certain @sc{pic} flags, then any derivative compilers support the
+needed (if any) to generate PIC objects.  In general, if a C compiler
+supports certain PIC flags, then any derivative compilers support the
 same flags.  Until there are some noteworthy exceptions to this rule,
 this section will document only C compilers.
 
@@ -5419,8 +5895,8 @@ of the platform:
 @table @code
 @item gcc
 
-This is the @sc{gnu} C compiler, which is also the system compiler for many
-free operating systems (FreeBSD, @sc{gnu}/Hurd, @sc{gnu}/Linux, Lites, NetBSD, and
+This is the GNU C compiler, which is also the system compiler for many
+free operating systems (FreeBSD, GNU/Hurd, GNU/Linux, Lites, NetBSD, and
 OpenBSD, to name a few).
 
 The @option{-fpic} or @option{-fPIC} flags can be used to generate
@@ -5438,26 +5914,26 @@ they are bundled with:
 @table @code
 @item aix3*
 @itemx aix4*
-Most AIX compilers have no @sc{pic} flags, since AIX (with the exception of
+Most AIX compilers have no PIC flags, since AIX (with the exception of
 AIX for IA-64) runs on PowerPC and RS/6000 chips. @footnote{All code compiled
 for the PowerPC and RS/6000 chips (@code{powerpc-*-*}, @code{powerpcle-*-*},
 and @code{rs6000-*-*}) is position-independent, regardless of the operating
 system or compiler suite.  So, ``regular objects'' can be used to build
-shared libraries on these systems and no special @sc{pic} compiler flags are
+shared libraries on these systems and no special PIC compiler flags are
 required.}
 
 @item hpux10*
-Use @samp{+Z} to generate @sc{pic}.
+Use @samp{+Z} to generate PIC.
 
 @item osf3*
-Digital/UNIX 3.x does not have @sc{pic} flags, at least not on the PowerPC
+Digital/UNIX 3.x does not have PIC flags, at least not on the PowerPC
 platform.
 
 @item solaris2*
-Use @option{-KPIC} to generate @sc{pic}.
+Use @option{-KPIC} to generate PIC.
 
 @item sunos4*
-Use @option{-PIC} to generate @sc{pic}.
+Use @option{-PIC} to generate PIC.
 @end table
 
 @node Reloadable objects
@@ -5489,13 +5965,634 @@ in cases where it is necessary.
 
 On all known systems, building a static library can be accomplished by
 running @kbd{ar cru lib@var{name}.a @var{obj1}.o @var{obj2}.o @dots{}},
-where the @samp{.a} file is the output library, and each @samp{.o} file is an
+where the @file{.a} file is the output library, and each @file{.o} file is an
 object file.
 
 On all known systems, if there is a program named @command{ranlib}, then it
 must be used to ``bless'' the created library before linking against it,
 with the @kbd{ranlib lib@var{name}.a} command.  Some systems, like Irix,
 use the @code{ar ts} command, instead.
+
+@node Cross compiling
+@subsection Cross compiling
+@cindex cross compile
+
+Most build systems support the ability to compile libraries and applications
+on one platform for use on a different platform, provided a compiler capable
+of generating the appropriate output is available.  In such cross compiling
+scenarios, the platform on which the libraries or applications are compiled
+is called the @dfn{build platform}, while the platform on which the libraries
+or applications are intended to be used or executed is called the
+@dfn{host platform}.
+@ref{GNU Build System,, The GNU Build System, automake, The Automake Manual},
+of which libtool is a part, supports cross compiling via arguments passed to
+the configure script: @option{--build=...} and @option{--host=...}. However,
+when the build platform and host platform are very different, libtool is
+required to make certain accommodations to support these scenarios.
+
+In most cases, because the build platform and host platform differ, the
+cross-compiled libraries and executables can't be executed or tested on the
+build platform where they were compiled.  The testsuites of most build systems
+will often skip any tests that involve executing such foreign executables when
+cross-compiling.  However, if the build platform and host platform are
+sufficiently similar, it is often possible to run cross-compiled applications.
+Libtool's own testsuite often attempts to execute cross-compiled tests, but
+will mark any failures as @emph{skipped} since the failure might simply be due
+to the differences between the two platforms.
+
+In addition to cases where the host platform and build platform are extremely
+similar (e.g. @samp{i586-pc-linux-gnu} and @samp{i686-pc-linux-gnu}), there is
+another case in which cross-compiled host applications may be executed on the
+build platform.  This is possible when the build platform supports an emulation
+or API-enhanced environment for the host platform.  One example of this
+situation would be if the build platform were MinGW, and the host platform were
+Cygwin (or vice versa).  Both of these platforms can actually operate within a
+single Windows instance, so Cygwin applications can be launched from a MinGW
+context, and vice versa---provided certain care is taken.  Another example
+would be if the build platform were GNU/Linux on an x86 32bit processor, and
+the host platform were MinGW.  In this situation, the
+@uref{http://www.winehq.org/, Wine} environment can be used to launch Windows
+applications from the GNU/Linux operating system; again, provided certain care
+is taken.
+
+One particular issue occurs when a Windows platform such as MinGW, Cygwin, or
+MSYS is the host or build platform, while the other platform is a Unix-style
+system.  In these cases, there are often conflicts between the format of the
+file names and paths expected within host platform libraries and executables,
+and those employed on the build platform.
+
+This situation is best described using a concrete example: suppose the build
+platform is GNU/Linux with canonical triplet @samp{i686-pc-linux-gnu}.  Suppose
+further that the host platform is MinGW with canonical triplet
+@samp{i586-pc-mingw32}.  On the GNU/Linux platform there is a cross compiler
+following the usual naming conventions of such compilers, where the compiler
+name is prefixed by the host canonical triplet (or suitable alias).  (For more
+information concerning canonical triplets and platform aliases, see
+@ref{Specifying Target Triplets,, Specifying Target Triplets, autoconf,
+The Autoconf Manual} and @ref{Canonicalizing,, Canonicalizing, autoconf,
+The Autoconf Manual})  In this case, the C compiler is named
+@samp{i586-pc-mingw32-gcc}.
+
+As described in @ref{Wrapper executables}, for the MinGW host platform libtool
+uses a wrapper executable to set various environment variables before launching
+the actual program executable.  Like the program executable, the wrapper
+executable is cross-compiled for the host platform (that is, for MinGW).  As
+described above, ordinarily a host platform executable cannot be executed on
+the build platform, but in this case the Wine environment could be used to
+launch the MinGW application from GNU/Linux.  However, the wrapper executable,
+as a host platform (MinGW) application, must set the @env{PATH} variable so
+that the true application's dependent libraries can be located---but the
+contents of the @env{PATH} variable must be structured for MinGW.  Libtool
+must use the Wine file name mapping facilities to determine the correct value
+so that the wrapper executable can set the @env{PATH} variable to point to the
+correct location.
+
+For example, suppose we are compiling an application in @file{/var/tmp} on
+GNU/Linux, using separate source code and build directories:
+
+@example
+@multitable @columnfractions 0.5 0.5
+@item @file{/var/tmp/foo-1.2.3/app/} @tab (application source code)
+@item @file{/var/tmp/foo-1.2.3/lib/} @tab (library source code)
+@item @file{/var/tmp/BUILD/app/} @tab (application build objects here)
+@item @file{/var/tmp/BUILD/lib/} @tab (library build objects here)
+@end multitable
+@end example
+
+Since the library will be built in @file{/var/tmp/BUILD/lib}, the wrapper
+executable (which will be in @file{/var/tmp/BUILD/app}) must add that
+directory to @env{PATH} (actually, it must add the directory named
+@var{objdir} under @file{/var/tmp/BUILD/lib}, but we'll ignore that detail
+for now).  However, Windows does not have a concept of Unix-style file or
+directory names such as @file{/var/tmp/BUILD/lib}.  Therefore, Wine provides
+a mapping from Windows file names such as @file{C:\Program Files} to specific
+Unix-style file names.  Wine also provides a utility that can be used to map
+Unix-style file names to Windows file names.
+
+In this case, the wrapper executable should actually add the value
+
+@example
+Z:\var\tmp\BUILD\lib
+@end example
+
+@noindent
+to the @env{PATH}.  libtool contains support for path conversions of this
+type, for a certain limited set of build and host platform combinations. In
+this case, libtool will invoke Wine's @command{winepath} utility to ensure that
+the correct @env{PATH} value is used.  For more information, see
+@pxref{File name conversion}.
+
+@node File name conversion
+@subsection File name conversion
+@cindex file name conversion
+@cindex path conversion
+
+In certain situations, libtool must convert file names and paths between
+formats appropriate to different platforms.  Usually this occurs when
+cross-compiling, and affects only the ability to launch host platform
+executables on the build platform using an emulation or API-enhancement
+environment such as Wine.  Failure to convert paths
+(@pxref{File Name Conversion Failure}) will cause a warning to be issued, but
+rarely causes the build to fail---and should have no affect on the compiled
+products, once installed properly on the host platform.  For more information,
+@pxref{Cross compiling}.
+
+However, file name conversion may also occur in another scenario: when using a
+Unix emulation system on Windows (such as Cygwin or MSYS), combined with a
+native Windows compiler such as MinGW or MSVC.  Only a limited set of such
+scenarios are currently supported; in other cases file name conversion is
+skipped.  The lack of file name conversion usually means that uninstalled
+executables can't be launched, but only rarely causes the build to fail
+(@pxref{File Name Conversion Failure}).
+
+libtool supports file name conversion in the following scenarios:
+
+@multitable @columnfractions .25 .25 .5
+@headitem build platform @tab host platform @tab Notes
+@item MinGW (MSYS) @tab MinGW (Windows)
+@tab @pxref{Native MinGW File Name Conversion}
+
+@item Cygwin @tab MinGW (Windows)
+@tab @pxref{Cygwin/Windows File Name Conversion}
+
+@item Unix + Wine @tab MinGW (Windows)
+@tab Requires Wine. @pxref{Unix/Windows File Name Conversion}
+
+@item MinGW (MSYS) @tab Cygwin
+@tab Requires @env{LT_CYGPATH}. @pxref{LT_CYGPATH}. Provided for testing
+purposes only.
+
+@item Unix + Wine @tab Cygwin
+@tab Requires both Wine and @env{LT_CYGPATH}, but does not yet work with
+Cygwin 1.7.7 and Wine-1.2.
+See @pxref{Unix/Windows File Name Conversion} and @pxref{LT_CYGPATH}.
+@end multitable
+
+@menu
+* File Name Conversion Failure::  What happens when file name conversion fails
+* Native MinGW File Name Conversion::  MSYS file name conversion idiosyncrasies
+* Cygwin/Windows File Name Conversion::  Using @command{cygpath} to convert Cygwin file names
+* Unix/Windows File Name Conversion::  Using Wine to convert Unix paths
+* LT_CYGPATH::                  Invoking @command{cygpath} from other environments
+* Cygwin to MinGW Cross::       Other notes concerning MinGW cross
+@end menu
+
+@node File Name Conversion Failure
+@subsubsection File Name Conversion Failure
+@cindex File Name Conversion - Failure
+@cindex Path Conversion - Failure
+
+In most cases, file name conversion is not needed or attempted.  However, when
+libtool detects that a specific combination of build and host platform does
+require file name conversion, it is possible that the conversion may fail.
+In these cases, you may see a warning such as the following:
+
+@example
+Could not determine the host file name corresponding to
+  `... a file name ...'
+Continuing, but uninstalled executables may not work.
+@end example
+
+@noindent
+or
+
+@example
+Could not determine the host path corresponding to
+  `... a path ...'
+Continuing, but uninstalled executables may not work.
+@end example
+
+@noindent
+This should not cause the build to fail.  At worst, it means that the wrapper
+executable will specify file names or paths appropriate for the build platform.
+Since those are not appropriate for the host platform, the uninstalled
+executables would not operate correctly, even when the wrapper executable is
+launched via the appropriate emulation or API-enhancement (e.g. Wine).  Simply
+install the executables on the host platform, and execute them there.
+
+@node Native MinGW File Name Conversion
+@subsubsection Native MinGW File Name Conversion
+@cindex File Name Conversion - MinGW
+@cindex Path Conversion - MinGW
+@cindex MSYS
+
+MSYS is a Unix emulation environment for Windows, and is specifically designed
+such that in normal usage it @emph{pretends} to be MinGW or native Windows,
+but understands Unix-style file names and paths, and supports standard Unix
+tools and shells.  Thus, ``native'' MinGW builds are actually an odd sort of
+cross-compile, from an MSYS Unix emulation environment ``pretending'' to be
+MinGW, to actual native Windows.
+
+When an MSYS shell launches a native Windows executable (as opposed to other
+@emph{MSYS} executables), it uses a system of heuristics to detect any
+command-line arguments that contain file names or paths.  It automatically
+converts these file names from the MSYS (Unix-like) format, to the
+corresponding Windows file name, before launching the executable.  However,
+this auto-conversion facility is only available when using the MSYS runtime
+library.  The wrapper executable itself is a MinGW application (that is, it
+does not use the MSYS runtime library).  The wrapper executable must set
+@env{PATH} to, and call @code{_spawnv} with, values that have already been
+converted from MSYS format to Windows.  Thus, when libtool writes the source
+code for the wrapper executable, it must manually convert MSYS paths to
+Windows format, so that the Windows values can be hard-coded into the wrapper
+executable.
+
+@node Cygwin/Windows File Name Conversion
+@subsubsection Cygwin/Windows File Name Conversion
+@cindex File Name Conversion - Cygwin to Windows
+@cindex Path Conversion - Cygwin to Windows
+
+Cygwin provides a Unix emulation environment for Windows.  As part of that
+emulation, it provides a file system mapping that presents the Windows file
+system in a Unix-compatible manner.  Cygwin also provides a utility
+@command{cygpath} that can be used to convert file names and paths between
+the two representations.  In a correctly configured Cygwin installation,
+@command{cygpath} is always present, and is in the @env{PATH}.
+
+Libtool uses @command{cygpath} to convert from Cygwin (Unix-style) file names
+and paths to Windows format when the build platform is Cygwin and the host
+platform is MinGW.
+
+When the host platform is Cygwin, but the build platform is MSYS or some Unix
+system, libtool also uses @command{cygpath} to convert from Windows to Cygwin
+format (after first converting from the build platform format to Windows format;
+see @pxref{Native MinGW File Name Conversion} and
+@pxref{Unix/Windows File Name Conversion}).  Because the build platform is not
+Cygwin, @command{cygpath} is not (and should not be) in the @env{PATH}.
+Therefore, in this configuration the environment variable @env{LT_CYGPATH} is
+required. @xref{LT_CYGPATH}.
+
+@node Unix/Windows File Name Conversion
+@subsubsection Unix/Windows File Name Conversion
+@cindex File Name Conversion - Unix to Windows
+@cindex Path Conversion - Unix to Windows
+
+
+@uref{http://www.winehq.org/, Wine} provides an interpretation environment for
+some Unix platforms in which Windows applications can be executed.  It provides
+a mapping between the Unix file system and a virtual Windows file system used
+by the Windows programs.  For the file name conversion to work, Wine must be
+installed and properly configured on the build platform, and the
+@command{winepath} application must be in the build platform's @env{PATH}.  In
+addition, on 32bit GNU/Linux it is usually helpful if the binfmt extension is
+enabled.
+
+@node LT_CYGPATH
+@subsubsection LT_CYGPATH
+@cindex LT_CYGPATH
+
+For some cross-compile configurations (where the host platform is Cygwin), the
+@command{cygpath} program is used to convert file names from the build platform
+notation to the Cygwin form (technically, this conversion is from Windows
+notation to Cygwin notation; the conversion from the build platform format
+to Windows notation is performed via other means).  However, because the
+@command{cygpath} program is not (and should not be) in the @env{PATH} on
+the build platform, @env{LT_CYGPATH} must specify the full build platform
+file name (that is, the full Unix or MSYS file name) of the @command{cygpath}
+program.
+
+The reason @command{cygpath} should not be in the build platform @env{PATH} is
+twofold: first, @command{cygpath} is usually installed in the same directory as
+many other Cygwin executables, such as @command{sed}, @command{cp}, etc.  If
+the build platform environment had this directory in its @env{PATH}, then these
+Cygwin versions of common Unix utilities might be used in preference to the
+ones provided by the build platform itself, with deleterious effects.  Second,
+especially when Cygwin-1.7 or later is used, multiple Cygwin installations can
+coexist within the same Windows instance.  Each installation will have separate
+``mount tables'' specified in @file{@var{CYGROOT-N}/etc/fstab}.  These
+@dfn{mount tables} control how that instance of Cygwin will map Windows file
+names and paths to Cygwin form.  Each installation's @command{cygpath} utility
+automatically deduces the appropriate @file{/etc/fstab} file.  Since each
+@file{@var{CYGROOT-N}/etc/fstab} mount table may specify different mappings, it
+matters which @command{cygpath} is used.
+
+Note that @command{cygpath} is a Cygwin application; to execute this tool from
+Unix requires a working and properly configured Wine installation, as well
+as enabling the GNU/Linux @code{binfmt} extension.  Furthermore, the Cygwin
+@command{setup.exe} tool should have been used, via Wine, to properly install
+Cygwin into the Wine file system (and registry).
+
+Unfortunately, Wine support for Cygwin is intermittent.  Recent releases of
+Cygwin (1.7 and above) appear to require more Windows API support than Wine
+provides (as of Wine version 1.2); most Cygwin applications fail to execute.
+This includes @command{cygpath} itself.  Hence, it is best @emph{not} to use
+the LT_CYGPATH machinery in libtool when performing Unix to Cygwin
+cross-compiles.  Similarly, it is best @emph{not} to enable the GNU/Linux binfmt
+support in this configuration, because while Wine will fail to execute the
+compiled Cygwin applications, it will still exit with status zero.  This tends
+to confuse build systems and test suites (including libtool's own testsuite,
+resulting in spurious reported failures).  Wine support for the older
+Cygwin-1.5 series appears satisfactory, but the Cygwin team no longer supports
+Cygwin-1.5.  It is hoped that Wine will eventually be improved such that
+Cygwin-1.7 will again operate correctly under Wine.  Until then, libtool will
+report warnings as described in @pxref{File Name Conversion Failure} in these
+scenarios.
+
+However, @env{LT_CYGPATH} is also used for the MSYS to Cygwin cross compile
+scenario, and operates as expected.
+
+@node Cygwin to MinGW Cross
+@subsubsection Cygwin to MinGW Cross
+@cindex Cygwin to MinGW Cross
+
+There are actually three different scenarios that could all legitimately be
+called a ``Cygwin to MinGW'' cross compile.  The current (and standard)
+definition is when there is a compiler that produces native Windows libraries
+and applications, but which itself is a Cygwin application, just as would be
+expected in any other cross compile setup.
+
+However, historically there were two other definitions, which we will refer
+to as the @emph{fake} one, and the @emph{lying} one.
+
+In the @emph{fake} Cygwin to MinGW cross compile case, you actually use a
+native MinGW compiler, but you do so from within a Cygwin environment:
+
+@example
+@kbd{export PATH="/c/MinGW/bin:$@{PATH@}"}
+@kbd{configure --build=i686-pc-cygwin \
+	--host=mingw32 \
+	NM=/c/MinGW/bin/nm.exe}
+@end example
+
+In this way, the build system ``knows'' that you are cross compiling, and the
+file name conversion logic will be used.  However, because the tools
+(@command{mingw32-gcc}, @command{nm}, @command{ar}) used are actually native
+Windows applications, they will not understand any Cygwin (that is, Unix-like)
+absolute file names passed as command line arguments (and, unlike MSYS, Cygwin
+does not automatically convert such arguments).  However, so long as only
+relative file names are used in the build system, and non-Windows-supported
+Unix idioms such as symlinks and mount points are avoided, this scenario should
+work.
+
+If you must use absolute file names, you will have to force Libtool to convert
+file names for the toolchain in this case, by doing the following before you
+run configure:
+
+@example
+@kbd{export lt_cv_to_tool_file_cmd=func_convert_file_cygwin_to_w32}
+@end example
+@cindex lt_cv_to_tool_file_cmd
+@cindex func_convert_file_cygwin_to_w32
+
+In the @emph{lying} Cygwin to MinGW cross compile case, you lie to the
+build system:
+
+@example
+@kbd{export PATH="/c/MinGW/bin:$@{PATH@}"}
+@kbd{configure --build=i686-pc-mingw32 \
+	--host=i686-pc-mingw32 \
+	--disable-dependency-tracking}
+@end example
+
+@noindent
+and claim that the build platform is MinGW, even though you are actually
+running under @emph{Cygwin} and not MinGW.  In this case, libtool does
+@emph{not} know that you are performing a cross compile, and thinks instead
+that you are performing a native MinGW build.  However, as described in
+(@pxref{Native MinGW File Name Conversion}), that scenario triggers an ``MSYS
+to Windows'' file name conversion.  This, of course, is the wrong conversion
+since we are actually running under Cygwin.  Also, the toolchain is expecting
+Windows file names (not Cygwin) but unless told so Libtool will feed Cygwin
+file names to the toolchain in this case.  To force the correct file name
+conversions in this situation, you should do the following @emph{before}
+running configure:
+
+@example
+@kbd{export lt_cv_to_host_file_cmd=func_convert_file_cygwin_to_w32}
+@kbd{export lt_cv_to_tool_file_cmd=func_convert_file_cygwin_to_w32}
+@end example
+@cindex lt_cv_to_host_file_cmd
+@cindex lt_cv_to_tool_file_cmd
+@cindex func_convert_file_cygwin_to_w32
+
+Note that this relies on internal implementation details of libtool, and
+is subject to change.  Also, @code{--disable-dependency-tracking} is required,
+because otherwise the MinGW GCC will generate dependency files that contain
+Windows file names.  This, in turn, will confuse the Cygwin @command{make}
+program, which does not accept Windows file names:
+
+@example
+Makefile:1: *** target pattern contains no `%'.  Stop.
+@end example
+
+There have also always been a number of other details required for the
+@emph{lying} case to operate correctly, such as the use of so-called
+@dfn{identity mounts}:
+
+@example
+# @var{cygwin-root}/etc/fstab
+D:/foo    /foo     some_fs binary 0 0
+D:/bar    /bar     some_fs binary 0 0
+E:/grill  /grill   some_fs binary 0 0
+@end example
+
+In this way, top-level directories of each drive are available using
+identical names within Cygwin.
+
+Note that you also need to ensure that the standard Unix directories
+(like @file{/bin}, @file{/lib}, @file{/usr}, @file{/etc}) appear in the root
+of a drive.  This means that you must install Cygwin itself into the @file{C:/}
+root directory (or @file{D:/}, or @file{E:/}, etc)---instead of the
+recommended installation into @file{C:/cygwin/}.  In addition, all file names
+used in the build system must be relative, symlinks should not be used within
+the source or build directory trees, and all @option{-M*} options to
+@command{gcc} except @option{-MMD} must be avoided.
+
+This is quite a fragile setup, but it has been in historical use, and so is
+documented here.
+
+@node Windows DLLs
+@subsection Windows DLLs
+@cindex Windows DLLs
+
+This topic describes a couple of ways to portably create Windows Dynamic
+Link Libraries (DLLs).  Libtool knows how to create DLLs using GNU tools
+and using Microsoft tools.
+
+A typical library has a ``hidden'' implementation with an interface
+described in a header file.  On just about every system, the interface
+could be something like this:
+
+Example @file{foo.h}:
+
+@example
+#ifndef FOO_H
+#define FOO_H
+
+int one (void);
+int two (void);
+extern int three;
+
+#endif /* FOO_H */
+@end example
+
+@noindent
+And the implementation could be something like this:
+
+Example @file{foo.c}:
+
+@example
+#include "foo.h"
+
+int one (void)
+@{
+  return 1;
+@}
+
+int two (void)
+@{
+  return three - one ();
+@}
+
+int three = 3;
+@end example
+
+When using contemporary GNU tools to create the Windows DLL, the above
+code will work there too, thanks to its auto-import/auto-export
+features.  But that is not the case when using older GNU tools or perhaps
+more interestingly when using proprietary tools.  In those cases the code
+will need additional decorations on the interface symbols with
+@code{__declspec(dllimport)} and @code{__declspec(dllexport)} depending
+on whether the library is built or it's consumed and how it's built and
+consumed.  However, it should be noted that it would have worked also
+with Microsoft tools, if only the variable @code{three} hadn't been
+there, due to the fact the Microsoft tools will automatically import
+functions (but sadly not variables) and Libtool will automatically export
+non-static symbols as described next.
+
+With Microsoft tools, Libtool digs through the object files that make up
+the library, looking for non-static symbols to automatically export.
+I.e., Libtool with Microsoft tools tries to mimic the auto-export feature
+of contemporary GNU tools.  It should be noted that the GNU auto-export
+feature is turned off when an explicit @code{__declspec(dllexport)} is
+seen.  The GNU tools do this to not make more symbols visible for projects
+that have already taken the trouble to decorate symbols.  There is no
+similar way to limit which symbols are visible in the code when Libtool
+is using Microsoft tools.  In order to limit symbol visibility in that
+case you need to use one of the options @option{-export-symbols} or
+@option{-export-symbols-regex}.
+
+No matching help with auto-import is provided by Libtool, which is why
+variables must be decorated to import them from a DLL for everything but
+contemporary GNU tools.  As stated above, functions are automatically
+imported by both contemporary GNU tools and Microsoft tools, but for
+other proprietary tools the auto-import status of functions is unknown.
+
+When the objects that form the library are built, there are generally
+two copies built for each object.  One copy is used when linking the DLL
+and one copy is used for the static library.  On Windows systems, a pair
+of defines are commonly used to discriminate how the interface symbols
+should be decorated.  The first define is @samp{-DDLL_EXPORT} which is
+automatically provided by Libtool when @command{libtool} builds the copy
+of the object that is destined for the DLL.  The second define is
+@samp{-DLIBFOO_BUILD} (or similar) which is often added by the package
+providing the library and is used when building the library, but not
+when consuming the library.
+
+However, the matching double compile is not performed when consuming
+libraries.  It is therefore not possible to reliably distinguish if the
+consumer is importing from a DLL or if it is going to use a static
+library.
+
+With contemporary GNU tools, auto-import often saves the day, but see
+the GNU ld documentation and its @option{--enable-auto-import} option
+for some corner cases when it does not
+(@pxref{Options, @option{--enable-auto-import}, Options specific to
+i386 PE targets, ld, Using ld@comma{} the GNU linker}).
+
+With Microsoft tools you typically get away with always compiling the
+code such that variables are expected to be imported from a DLL and
+functions are expected to be found in a static library.  The tools will
+then automatically import the function from a DLL if that is where they
+are found.  If the variables are not imported from a DLL as expected, but
+are found in a static library that is otherwise pulled in by some
+function, the linker will issue a warning (LNK4217) that a locally
+defined symbol is imported, but it still works.  In other words, this
+scheme will not work to only consume variables from a library.  There is
+also a price connected to this liberal use of imports in that an extra
+indirection is introduced when you are consuming the static version of
+the library.  That extra indirection is unavoidable when the DLL is
+consumed, but it is not needed when consuming the static library.
+
+For older GNU tools and other proprietary tools there is no generic way
+to make it possible to consume either of the DLL or the static library
+without user intervention, the tools need to be told what is intended.
+One common assumption is that if a DLL is being built (@samp{DLL_EXPORT}
+is defined) then that DLL is going to consume any dependent libraries as
+DLLs.  If that assumption is made everywhere, it is possible to select
+how an end-user application is consuming libraries by adding a single
+flag @samp{-DDLL_EXPORT} when a DLL build is required.  This is of course
+an all or nothing deal, either everything as DLLs or everything as static
+libraries.
+
+To sum up the above, the header file of the foo library needs to be
+changed into something like this:
+
+Modified @file{foo.h}:
+
+@example
+#ifndef FOO_H
+#define FOO_H
+
+#if defined _WIN32 && !defined __GNUC__
+# ifdef LIBFOO_BUILD
+#  ifdef DLL_EXPORT
+#   define LIBFOO_SCOPE            __declspec (dllexport)
+#   define LIBFOO_SCOPE_VAR extern __declspec (dllexport)
+#  endif
+# elif defined _MSC_VER
+#  define LIBFOO_SCOPE
+#  define LIBFOO_SCOPE_VAR  extern __declspec (dllimport)
+# elif defined DLL_EXPORT
+#  define LIBFOO_SCOPE             __declspec (dllimport)
+#  define LIBFOO_SCOPE_VAR  extern __declspec (dllimport)
+# endif
+#endif
+#ifndef LIBFOO_SCOPE
+# define LIBFOO_SCOPE
+# define LIBFOO_SCOPE_VAR extern
+#endif
+
+LIBFOO_SCOPE     int one (void);
+LIBFOO_SCOPE     int two (void);
+LIBFOO_SCOPE_VAR int three;
+
+#endif /* FOO_H */
+@end example
+
+When the targets are limited to contemporary GNU tools and Microsoft
+tools, the above can be simplified to the following:
+
+Simplified @file{foo.h}:
+
+@example
+#ifndef FOO_H
+#define FOO_H
+
+#if defined _WIN32 && !defined __GNUC__ && !defined LIBFOO_BUILD
+# define LIBFOO_SCOPE_VAR extern __declspec (dllimport)
+#else
+# define LIBFOO_SCOPE_VAR extern
+#endif
+
+int one (void);
+int two (void);
+LIBFOO_SCOPE_VAR int three;
+
+#endif /* FOO_H */
+@end example
+
+This last simplified version can of course only work when Libtool is
+used to build the DLL, as no symbols would be exported otherwise (i.e.,
+when using Microsoft tools).
+
+It should be noted that there are various projects that attempt to relax
+these requirements by various low level tricks, but they are not
+discussed here.
+Examples are
+@uref{http://alain.frisch.fr/@/flexdll.html, FlexDLL} and
+@uref{http://edll.sourceforge.net/, edll}.
+
 
 @node libtool script contents
 @section @code{libtool} script contents
@@ -5591,7 +6688,7 @@ aren't defined in that library.
 
 @defvar always_export_symbols
 Whether libtool should automatically generate a list of exported symbols
-using @var{export_symbols_cmds} before linking an archive.
+using @code{export_symbols_cmds} before linking an archive.
 Set to @samp{yes} or @samp{no}.  Default is @samp{no}.
 @end defvar
 
@@ -5600,6 +6697,10 @@ Set to @samp{yes} or @samp{no}.  Default is @samp{no}.
 @defvarx old_archive_cmds
 Commands used to create shared libraries, shared libraries with
 @option{-export-symbols} and static libraries, respectively.
+@end defvar
+
+@defvar archiver_list_spec
+Specify filename containing input files for @code{AR}.
 @end defvar
 
 @defvar old_archive_from_new_cmds
@@ -5613,11 +6714,16 @@ not used.
 If a static library must be created from the export symbol list in order to
 correctly link with a shared library, @samp{old_archive_from_expsyms_cmds}
 contains the commands needed to create that static library.  When these
-commands are executed, the variable @var{soname} contains the name of the
-shared library in question, and the @var{$objdir/$newlib} contains the
+commands are executed, the variable @code{soname} contains the name of the
+shared library in question, and the @samp{$objdir/$newlib} contains the
 path of the static library these commands should build.  After executing
-these commands, libtool will proceed to link against @var{$objdir/$newlib}
-instead of @var{soname}.
+these commands, libtool will proceed to link against @samp{$objdir/$newlib}
+instead of @code{soname}.
+@end defvar
+
+@defvar lock_old_archive_extraction
+Set to @samp{yes} if the extraction of a static library requires locking
+the library file.  This is required on Darwin.
 @end defvar
 
 @defvar build
@@ -5675,13 +6781,13 @@ symbols that are defined in the program.
 @end defvar
 
 @defvar export_symbols_cmds
-Commands to extract exported symbols from @var{libobjs} to the
-file @var{export_symbols}.
+Commands to extract exported symbols from @code{libobjs} to the
+file @code{export_symbols}.
 @end defvar
 
 @defvar extract_expsyms_cmds
 Commands to extract the exported symbols list from a shared library.
-These commands are executed if there is no file @var{$objdir/$soname-def},
+These commands are executed if there is no file @samp{$objdir/$soname-def},
 and should write the names of the exported symbols to that file, for
 the use of @samp{old_archive_from_expsyms_cmds}.
 @end defvar
@@ -5690,9 +6796,9 @@ the use of @samp{old_archive_from_expsyms_cmds}.
 Determines whether libtool will privilege the installer or the
 developer.  The assumption is that installers will seldom run programs
 in the build tree, and the developer will seldom install.  This is only
-meaningful on platforms where @var{shlibpath_overrides_runpath} is
-not @samp{yes}, so @var{fast_install} will be set to @samp{needless} in
-this case.  If @var{fast_install} set to @samp{yes}, libtool will create
+meaningful on platforms where @code{shlibpath_overrides_runpath} is
+not @samp{yes}, so @code{fast_install} will be set to @samp{needless} in
+this case.  If @code{fast_install} set to @samp{yes}, libtool will create
 programs that search for installed libraries, and, if a program is run
 in the build tree, a new copy will be linked on-demand to use the
 yet-to-be-installed libraries.  If set to @samp{no}, libtool will create
@@ -5703,9 +6809,19 @@ flags, and it can be turned from @samp{yes} to @samp{no} with the
 configure flag @option{--disable-fast-install}.
 
 On some systems, the linker always hardcodes paths to dependent libraries
-into the output.  In this case, @var{fast_install} is never set to @samp{yes},
-and relinking at install time is triggered.  This also means that @var{DESTDIR}
+into the output.  In this case, @code{fast_install} is never set to @samp{yes},
+and relinking at install time is triggered.  This also means that @env{DESTDIR}
 installation does not work as expected.
+@end defvar
+
+@defvar file_magic_glob
+How to find potential files when @code{deplibs_check_method} is
+@samp{file_magic}. @code{file_magic_glob} is a @code{sed} expression,
+and the @code{sed} instance is fed potential file names that are
+transformed by the @code{file_magic_glob} expression. Useful when the
+shell does not support the shell option @code{nocaseglob}, making
+@code{want_nocaseglob} inappropriate. Normally disabled (i.e.
+@code{file_magic_glob} is empty).
 @end defvar
 
 @defvar finish_cmds
@@ -5714,15 +6830,11 @@ specific directory.
 @end defvar
 
 @defvar finish_eval
-Same as @var{finish_cmds}, except the commands are not displayed.
-@end defvar
-
-@defvar fix_srcfile_path
-Expression to fix the shell variable @samp{$srcfile} for the compiler.
+Same as @code{finish_cmds}, except the commands are not displayed.
 @end defvar
 
 @defvar global_symbol_pipe
-A pipeline that takes the output of @var{NM}, and produces a listing of
+A pipeline that takes the output of @code{NM}, and produces a listing of
 raw symbols followed by their C names.  For example:
 
 @example
@@ -5739,7 +6851,7 @@ but its meaning is system dependent.
 @end defvar
 
 @defvar global_symbol_to_cdecl
-A pipeline that translates the output of @var{global_symbol_pipe} into
+A pipeline that translates the output of @code{global_symbol_pipe} into
 proper C declarations.  Since some platforms, such as HP/UX, have
 linkers that differentiate code from data, data symbols are declared
 as data, and code symbols are declared as functions.
@@ -5755,13 +6867,13 @@ or if they need to be relinked.
 Set to @samp{yes} or @samp{no}, depending on whether the linker
 hardcodes directories if a library is directly specified on the command
 line (such as @samp{@var{dir}/lib@var{name}.a}) when
-@var{hardcode_libdir_flag_spec} is specified.
+@code{hardcode_libdir_flag_spec} is specified.
 @end defvar
 
 @defvar hardcode_direct_absolute
 Some architectures hardcode "absolute" library directories that can not
-be overridden by @var{shlibpath_var} when @var{hardcode_direct} is
-@samp{yes}.  In that case set @var{hardcode_direct_absolute} to
+be overridden by @code{shlibpath_var} when @code{hardcode_direct} is
+@samp{yes}.  In that case set @code{hardcode_direct_absolute} to
 @samp{yes}, or otherwise @samp{no}.
 @end defvar
 
@@ -5772,13 +6884,13 @@ need to be relinked during installation.  Set to @samp{yes} or @samp{no}.
 @end defvar
 
 @defvar hardcode_libdir_flag_spec
-Flag to hardcode a @var{libdir} variable into a binary, so that the
-dynamic linker searches @var{libdir} for shared libraries at runtime.
+Flag to hardcode a @code{libdir} variable into a binary, so that the
+dynamic linker searches @code{libdir} for shared libraries at runtime.
 If it is empty, libtool will try to use some other hardcoding mechanism.
 @end defvar
 
 @defvar hardcode_libdir_separator
-If the compiler only accepts a single @var{hardcode_libdir_flag}, then
+If the compiler only accepts a single @code{hardcode_libdir_flag}, then
 this variable contains the string that should separate multiple
 arguments to that flag.
 @end defvar
@@ -5786,13 +6898,13 @@ arguments to that flag.
 @defvar hardcode_minus_L
 Set to @samp{yes} or @samp{no}, depending on whether the linker
 hardcodes directories specified by @option{-L} flags into the resulting
-executable when @var{hardcode_libdir_flag_spec} is specified.
+executable when @code{hardcode_libdir_flag_spec} is specified.
 @end defvar
 
 @defvar hardcode_shlibpath_var
 Set to @samp{yes} or @samp{no}, depending on whether the linker
 hardcodes directories by writing the contents of @samp{$shlibpath_var}
-into the resulting executable when @var{hardcode_libdir_flag_spec} is
+into the resulting executable when @code{hardcode_libdir_flag_spec} is
 specified.  Set to @samp{unsupported} if directories specified by
 @samp{$shlibpath_var} are searched at run time, but not at link time.
 @end defvar
@@ -5805,13 +6917,22 @@ configured for.
 @end defvar
 
 @defvar include_expsyms
-List of symbols that must always be exported when using @var{export_symbols}.
+List of symbols that must always be exported when using @code{export_symbols}.
 @end defvar
 
 @defvar inherit_rpath
 Whether the linker adds runtime paths of dependency libraries to the
 runtime path list, requiring libtool to relink the output when installing.
 Set to @samp{yes} or @samp{no}.  Default is @samp{no}.
+@end defvar
+
+@defvar install_override_mode
+Permission mode override for installation of shared libraries.  If the
+runtime linker fails to load libraries with wrong permissions, then it
+may fail to execute programs that are needed during installation,
+because these need the library that has just been installed.  In this
+case, it is necessary to pass the mode to @command{install} with
+@option{-m @var{install_override_mode}}.
 @end defvar
 
 @defvar libext
@@ -5843,7 +6964,7 @@ linking.
 
 @defvar macro_version
 @defvarx macro_revision
-The release and CVS revision from which the libtool.m4 macros were
+The release and revision from which the libtool.m4 macros were
 taken.  This is used to ensure that macros and @code{ltmain.sh}
 correspond to the same Libtool version.
 @end defvar
@@ -5872,6 +6993,10 @@ about it.
 @defvar need_locks
 Whether files must be locked to prevent conflicts when compiling
 simultaneously.  Set to @samp{yes} or @samp{no}.
+@end defvar
+
+@defvar nm_file_list_spec
+Specify filename containing input files for @code{NM}.
 @end defvar
 
 @defvar no_builtin_flag
@@ -5907,9 +7032,20 @@ Commands run after installing a shared or static library, respectively.
 Commands run after uninstalling a shared or static library, respectively.
 @end defvar
 
+@defvar postlink_cmds
+Commands necessary for finishing linking programs. @code{postlink_cmds}
+are executed immediately after the program is linked.  Any occurrence of
+the string @code{@@OUTPUT@@} in @code{postlink_cmds} is replaced by the
+name of the created executable (i.e.@: not the wrapper, if a wrapper is
+generated) prior to execution.  Similarly, @code{@@TOOL_OUTPUT@@} is
+replaced by the toolchain format of @code{@@OUTPUT@@}.  Normally disabled
+(i.e.@: @code{postlink_cmds} empty).
+@end defvar
+
 @defvar reload_cmds
 @defvarx reload_flag
-Commands to create a reloadable object.
+Commands to create a reloadable object.  Set @code{reload_cmds} to
+@samp{false} on systems that cannot create reloadable objects.
 @end defvar
 
 @defvar runpath_var
@@ -5953,7 +7089,7 @@ that appear in this list are never hard-coded into executables.
 Expression to get the compile-time system library search path.  This
 variable is used by libtool when it has to test whether a certain
 library is shared or static.  The directories listed in
-@var{shlibpath_var} are automatically appended to this list, every time
+@code{shlibpath_var} are automatically appended to this list, every time
 libtool runs (i.e., not at configuration time), because some linkers use
 this variable to extend the library search path.  Linker switches such
 as @option{-L} also augment the search path.
@@ -5964,10 +7100,36 @@ Linker flag (passed through the C compiler) used to generate thread-safe
 libraries.
 @end defvar
 
+@defvar to_host_file_cmd
+If the toolchain is not native to the build platform (e.g.@: if you are using
+MSYS to drive the scripting, but are using the MinGW native Windows compiler)
+this variable describes how to convert file names from the format used by the
+build platform to the format used by host platform.  Normally set to
+@samp{func_convert_file_noop}, libtool will autodetect most cases in which
+other values should be used.  On rare occasions, it may be necessary to override
+the autodetected value (@pxref{Cygwin to MinGW Cross}).
+@end defvar
+
+@defvar to_tool_file_cmd
+If the toolchain is not native to the build platform (e.g.@: if you are using
+some Unix to drive the scripting together with a Windows toolchain running
+in Wine) this variable describes how to convert file names from the format
+used by the build platform to the format used by the toolchain.  Normally set
+to @samp{func_convert_file_noop}.
+@end defvar
+
 @defvar version_type
 The library version numbering type.  One of @samp{libtool},
 @samp{freebsd-aout}, @samp{freebsd-elf}, @samp{irix}, @samp{linux},
 @samp{osf}, @samp{sunos}, @samp{windows}, or @samp{none}.
+@end defvar
+
+@defvar want_nocaseglob
+Find potential files using the shell option @code{nocaseglob}, when
+@code{deplibs_check_method} is @samp{file_magic}. Normally set to
+@samp{no}. Set to @samp{yes} to enable the @code{nocaseglob} shell
+option when looking for potential file names in a case-insensitive
+manner.
 @end defvar
 
 @defvar whole_archive_flag_spec
@@ -6003,15 +7165,15 @@ than having to trust second-hand observation.
 @item
 Rather than reconfiguring libtool every time I make a change to
 @code{ltmain.in}, I keep a permanent @code{libtool} script in my
-@var{PATH}, which sources @code{ltmain.in} directly.
+@env{PATH}, which sources @code{ltmain.in} directly.
 
 The following steps describe how to create such a script, where
 @code{/home/src/libtool} is the directory containing the libtool source
 tree, @code{/home/src/libtool/libtool} is a libtool script that has been
 configured for your platform, and @code{~/bin} is a directory in your
-@var{PATH}:
+@env{PATH}:
 
-@example
+@smallexample
 trick$ cd ~/bin
 trick$ sed 's%^\(macro_version=\).*$%\1@@VERSION@@%;
             s%^\(macro_revision=\).*$%\1@@package_revision@@%;
@@ -6021,11 +7183,11 @@ trick$ chmod +x libtool
 trick$ libtool --version
 ltmain.sh (GNU @@PACKAGE@@@@TIMESTAMP@@) @@VERSION@@
 
-Copyright (C) 2008 Free Software Foundation, Inc.
+Copyright (C) 2011 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 trick$
-@end example
+@end smallexample
 @end itemize
 
 The output of the final @samp{libtool --version} command shows that the
@@ -6041,11 +7203,9 @@ order to test new changes without having to rerun @code{configure}.
 @include fdl.texi
 
 @page
-@node Index
-@unnumbered Index
+@node Combined Index
+@unnumbered Combined Index
 
 @printindex cp
 
-@c summarycontents
-@contents
 @bye

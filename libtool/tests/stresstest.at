@@ -1,6 +1,6 @@
 # stresstest.at -- Libtool stress test                       -*- Autotest -*-
 #
-#   Copyright (C) 2005, 2006, 2007 Free Software Foundation, Inc.
+#   Copyright (C) 2005, 2006, 2007, 2008 Free Software Foundation, Inc.
 #   Written by Ralf Wildenhues, 2005
 #
 #   This file is part of GNU Libtool.
@@ -93,29 +93,35 @@ AT_DATA(main.c,
 #if defined(LIBA_DLL_IMPORT)
 #  if defined(_WIN32) || defined(WIN32) || defined(__CYGWIN__)
 #    define LIBA_SCOPE extern __declspec(dllimport)
+#    if defined(_MSC_VER)
+#      define LIBA_SCOPE_VAR LIBA_SCOPE
+#    endif
 #  endif
 #endif
 #if !defined(LIBA_SCOPE)
 #  define LIBA_SCOPE extern
 #endif
+#if !defined(LIBA_SCOPE_VAR)
+#  define LIBA_SCOPE_VAR extern
+#endif
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern int v1;
-extern int v3, v4;
+LIBA_SCOPE_VAR int v1;
+LIBA_SCOPE_VAR int v3, v4;
 LIBA_SCOPE const int v5, v6;
-extern const char* v7;
-extern const char v8[];
+LIBA_SCOPE_VAR const char* v7;
+LIBA_SCOPE_VAR const char v8[];
 extern int v9(void);
-extern int (*v10) (void);
-extern int (*v11) (void);
+LIBA_SCOPE_VAR int (*v10) (void);
+LIBA_SCOPE_VAR int (*v11) (void);
 LIBA_SCOPE int (*const v12) (void);
 #ifdef __cplusplus
 }
 #endif
 
 typedef struct { int arr[1000]; } large;
-extern large v13, v14, v15;
+LIBA_SCOPE_VAR large v13, v14, v15;
 
 int main(void)
 {
@@ -131,26 +137,32 @@ AT_DATA(dlself.c,
 #if defined(LIBA_DLL_IMPORT)
 #  if defined(_WIN32) || defined(WIN32) || defined(__CYGWIN__)
 #    define LIBA_SCOPE extern __declspec(dllimport)
+#    if defined(_MSC_VER)
+#      define LIBA_SCOPE_VAR LIBA_SCOPE
+#    endif
 #  endif
 #endif
 #if !defined(LIBA_SCOPE)
 #  define LIBA_SCOPE extern
 #endif
+#if !defined(LIBA_SCOPE_VAR)
+#  define LIBA_SCOPE_VAR extern
+#endif
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern int v1;
-extern int v3, v4;
+LIBA_SCOPE_VAR int v1;
+LIBA_SCOPE_VAR int v3, v4;
 LIBA_SCOPE const int v5, v6;
-extern const char* v7;
-extern const char v8[];
+LIBA_SCOPE_VAR const char* v7;
+LIBA_SCOPE_VAR const char v8[];
 extern int v9(void);
-extern int (*v10) (void);
-extern int (*v11) (void);
+LIBA_SCOPE_VAR int (*v10) (void);
+LIBA_SCOPE_VAR int (*v11) (void);
 LIBA_SCOPE int (*const v12) (void);
 
 typedef struct { int arr[1000]; } large;
-extern large v13, v14, v15;
+LIBA_SCOPE_VAR large v13, v14, v15;
 
 extern int w1;
 extern int w3, w4;
@@ -252,17 +264,20 @@ do
 	         [0],[ignore],[ignore])
 	for st in '' '-static' '-no-install'
 	do
-          case $st,$l3 in
-          ,-rpath*) mst= ;;
-          *) mst=-static ;;
+	  # if -static is not passed, and the library is shared, then we have
+	  # to use -DLIBA_DLL_IMPORT, thus main.lo (and not main-static.lo).
+	  case $st,$l3 in
+	  -static,*) mst=-static ;;
+	  *,-rpath*) mst= ;;
+	  *) mst=-static ;;
 	  esac
 
-	  LT_AT_CHECK([$LIBTOOL --mode=link $CC $CFLAGS $LDFLAGS $st -o "$rel"main "$rel"main$mst.lo "$rel"sub2/liba.la],
+	  LT_AT_CHECK([$LIBTOOL --mode=link $CC $CFLAGS $LDFLAGS $st -o "$rel"main$EXEEXT "$rel"main$mst.lo "$rel"sub2/liba.la],
 	  	   [0],[ignore],[ignore])
 	  LT_AT_EXEC_CHECK([./main],[0])
 	  for l10 in '' '-export-symbols dlselfsyms'
 	  do
-	    LT_AT_CHECK([$LIBTOOL --mode=link $CC $CFLAGS $LDFLAGS $st -o "$rel"sub3/dlself "$rel"sub3/dlself$mst.lo "$rel"sub2/liba.la sub/b.lo -dlopen self $l10],
+	    LT_AT_CHECK([$LIBTOOL --mode=link $CC $CFLAGS $LDFLAGS $st -o "$rel"sub3/dlself$EXEEXT "$rel"sub3/dlself$mst.lo "$rel"sub2/liba.la sub/b.lo -dlopen self $l10],
 	    	     [0],[ignore],[ignore])
 	    LT_AT_EXEC_CHECK([./sub3/dlself],[0])
 	  done

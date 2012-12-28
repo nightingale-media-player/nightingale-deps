@@ -1,6 +1,6 @@
 # link-order.at -- ensure that library linking order matches  -*- Autotest -*-
 #
-#   Copyright (C) 2005, 2007 Free Software Foundation, Inc.
+#   Copyright (C) 2005, 2007, 2008 Free Software Foundation, Inc.
 #   Written by Alexandre Oliva & Ralf Wildenhues, 2005
 #
 #   This file is part of GNU Libtool.
@@ -23,7 +23,7 @@
 ####
 
 
-AT_SETUP([Link order test.])
+AT_SETUP([Link order test])
 AT_KEYWORDS([libtool])
 eval `$LIBTOOL --config | $EGREP '^(hardcode_direct|hardcode_direct_absolute|shrext_cmds)='`
 LDFLAGS="$LDFLAGS -no-undefined"
@@ -48,13 +48,31 @@ for i in old new; do
   mkdir src
 
   cat >src/a_$i.c <<EOF
-extern int c;
+/* w32 fun, MSVC needs to dllimport when using a shared library, so use
+ * DLL_EXPORT to discriminate as that happens to coinside in this case.
+ * gnu has auto import.
+ */
+#if defined _MSC_VER && defined DLL_EXPORT
+#  define LIBCEE_SCOPE __declspec(dllimport)
+#else
+#  define LIBCEE_SCOPE extern
+#endif
+LIBCEE_SCOPE int c;
 extern int b_$i();
 int a_$i() { return c + b_$i(); }
 EOF
 
   cat >src/b_$i.c <<EOF
-extern int c;
+/* w32 fun, MSVC needs to dllimport when using a shared library, so use
+ * DLL_EXPORT to discriminate as that happens to coinside in this case.
+ * gnu has auto import.
+ */
+#if defined _MSC_VER && defined DLL_EXPORT
+#  define LIBCEE_SCOPE __declspec(dllimport)
+#else
+#  define LIBCEE_SCOPE extern
+#endif
+LIBCEE_SCOPE int c;
 int b_$i() { return 1 + c; }
 EOF
 
@@ -100,7 +118,7 @@ EOF
 
   prefix=`eval echo \\$prefix_$i`
   $LIBTOOL --mode=compile $CC $CPPFLAGS $CFLAGS -c src/main_$i.c -o src/main_$i.lo
-  AT_CHECK($LIBTOOL --mode=link $CC $CFLAGS $LDFLAGS -o src/main_$i src/main_$i.lo -L$prefix/lib -la,
+  AT_CHECK($LIBTOOL --mode=link $CC $CFLAGS $LDFLAGS -o src/main_$i$EXEEXT src/main_$i.lo -L$prefix/lib -la,
 	   [0], [ignore], [ignore])
   LT_AT_EXEC_CHECK([src/main_$i])
 done

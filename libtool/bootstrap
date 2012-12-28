@@ -1,7 +1,8 @@
 #! /bin/sh
-# bootstrap -- Helps bootstrapping libtool, when checked out from CVS.
+# bootstrap -- Helps bootstrapping libtool, when checked out from repository.
 #
-#   Copyright (C) 2003, 2004, 2005, 2006 Free Software Foundation, Inc,
+#   Copyright (C) 2003, 2004, 2005, 2006, 2009, 2010 Free Software
+#   Foundation, Inc,
 #   Mritten by Gary V. Vaughan, 2003
 #
 #   This file is part of GNU Libtool.
@@ -23,6 +24,9 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 ####
 
+# Exit upon failure.
+set -e
+
 # It is okay for the bootstrap process to require unreleased autoconf
 # or automake, as long as any released libtool will work with at least
 # the newest stable versions of each.  Generally, newer versions offer
@@ -42,16 +46,13 @@ export SHELL
 : ${SED=sed}
 : ${LN_S='ln -s'}
 : ${MAKEINFO=makeinfo}
-: ${WORKING_LIBOBJ_SUPPORT=false}
 
 case $1 in
 --help|-h*)
   cat <<EOF
-`echo $0 | sed 's,^.*/,,g'`: This script is designed to bootstrap a fresh CVS checkout
+`echo $0 | sed 's,^.*/,,g'`: This script is designed to bootstrap a fresh repository checkout
 of Libtool.  Useful environment variable settings:
   reconfdirs='. libltdl'     Do not bootstrap the old test suite.
-  WORKING_LIBOBJ_SUPPORT=:   Declare that you have fixed LIBOBJDIR support
-                             in autoconf (> 2.59) and automake (> 1.9.6).
 EOF
   exit
   ;;
@@ -93,19 +94,8 @@ find . -depth \( -name autom4te.cache -o -name libtool \) -print \
 # Delete stale files from previous libtool versions.
 rm -f acinclude.m4 libltdl/config.h
 
-# Workaround for missing LIBOBJDIR support in Autoconf 2.59, Automake 1.9.6:
-# Have symlinks of the libobj files in top source dir.
-# Set WORKING_LIBOBJ_SUPPORT=: when calling bootstrap if you have fixed tools.
-case `($AUTOCONF --version) 2>/dev/null` in
-  *\ 2.59[c-z]* | *\ 2.[6-9][0-9]* | *\ [3-9].[0-9]*)
-  case `($AUTOMAKE --version) 2>/dev/null` in
-    *\ 1.9[a-z]* | *\ 1.1[0-9]* | *\ 1.[2-9][0-9]* | *\ [2-9].[0-9]*)
-      WORKING_LIBOBJ_SUPPORT=: ;;
-  esac ;;
-esac
 for file in argz.c lt__dirent.c lt__strl.c; do
   rm -f $file
-  $WORKING_LIBOBJ_SUPPORT || $LN_S libltdl/$file $file
 done
 
 if test -z "$reconfdirs"; then
@@ -116,9 +106,18 @@ fi
 set dummy `$SED -n '
     /AC_INIT/{
 	s/[][,()]/ /g
+	s/ GNU / /
 	p
     }' configure.ac`
 shift
+PACKAGE=`echo "$2" | tr ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz`
+PACKAGE_NAME=$2
+PACKAGE_URL=
+if grep 'AC_INIT.*GNU' configure.ac >/dev/null; then
+  PACKAGE_NAME="GNU $PACKAGE_NAME"
+  PACKAGE_URL="http://www.gnu.org/software/$PACKAGE/"
+fi
+VERSION=$3
 
 # Whip up a dirty Makefile:
 makes='Makefile.am libltdl/Makefile.inc'
@@ -132,24 +131,21 @@ $SED '/^if /,/^endif$/d;/^else$/,/^endif$/d;/^include /d' $makes > Makefile
 # configure, and ltversion.m4 to generate configure in the first place:
 rm -f $auxdir/ltmain.sh $m4dir/ltversion.m4
 
-$MAKE ./$auxdir/ltmain.sh ./$m4dir/ltversion.m4 ./doc/notes.txt \
+$MAKE ./$auxdir/ltmain.sh ./$m4dir/ltversion.m4 \
     ./libtoolize.in ./tests/defs.in ./tests/package.m4 \
-    ./tests/testsuite ./libltdl/Makefile.am \
-    srcdir=. top_srcdir=. PACKAGE="$2" VERSION="$3" \
-    PACKAGE_BUGREPORT="bug-$2@gnu.org" M4SH="$AUTOM4TE --language=m4sh" \
+    ./tests/testsuite ./libltdl/Makefile.am ./doc/notes.txt \
+    srcdir=. top_srcdir=. PACKAGE="$PACKAGE" VERSION="$VERSION" \
+    PACKAGE_NAME="$PACKAGE_NAME" PACKAGE_URL="$PACKAGE_URL" \
+    PACKAGE_BUGREPORT="bug-$PACKAGE@gnu.org" M4SH="$AUTOM4TE --language=m4sh" \
     AUTOTEST="$AUTOM4TE --language=autotest" SED="$SED" MAKEINFO="$MAKEINFO" \
     GREP="$GREP" FGREP="$FGREP" EGREP="$EGREP" LN_S="$LN_S"
-
-test -f clcommit.m4sh && $MAKE -f Makefile.maint ./commit \
-    srcdir=. top_srcdir=. PACKAGE="$2" VERSION="$3" M4SH="$AUTOM4TE -l m4sh" \
-    SED="$SED" GREP="$GREP" FGREP="$FGREP" EGREP="$EGREP" LN_S="$LN_S"
 
 rm -f Makefile
 
 # Make a dummy libtoolize script for autoreconf:
 cat > $auxdir/libtoolize <<'EOF'
 #! /bin/sh
-# This is a dummy file for bootstrapping CVS libtool.
+# This is a dummy file for bootstrapping libtool.
 echo "$0: Bootstrap detected, no files installed." | sed 's,^.*/,,g'
 exit 0
 EOF
@@ -183,14 +179,11 @@ rm -f Makefile libltdl/Makefile libtool vcl.tmp
 # to be regenerated at make-time with proper substitutions in place:
 touch $auxdir/ltmain.m4sh
 
-# Commit script caveat:
-cat <<EOF
-WARNING: You might want to regenerate \`commit' and \`$auxdir/mailnotify'
-WARNING: after you have run \`configure' to discover the real whereabouts
-WARNING: of \`sed', \`grep' etc. like this:
-WARNING:
-WARNING:      rm -f commit $auxdir/mailnotify
-WARNING:      make -f Makefile.maint ./commit ./$auxdir/mailnotify
-EOF
+for macro in LT_INIT AC_PROG_LIBTOOL AM_PROG_LIBTOOL; do
+  if grep $macro aclocal.m4 libltdl/aclocal.m4; then
+    echo "Bogus $macro macro contents in an aclocal.m4 file." >&2
+    exit 1
+  else :; fi
+done
 
 exit 0

@@ -1,6 +1,6 @@
 # dmacks.at --  test for dmacks bug  -*- Autotest -*-
 #
-#   Copyright (C) 2007, 2008 Free Software Foundation, Inc.
+#   Copyright (C) 2007, 2008, 2010 Free Software Foundation, Inc.
 #   Written by Peter O'Gorman, 2007
 #
 #   This file is part of GNU Libtool.
@@ -26,6 +26,9 @@
 AT_SETUP([static library contains static library])
 AT_KEYWORDS([libtool])
 
+# This test passes with MS lib.
+AT_XFAIL_IF([case $AR in ar-lib\ * | *[[/\\]]ar-lib\ *) false;; *) :;; esac])
+
 AT_DATA([foo.c],
 [
 int foo() { return 1;}
@@ -50,8 +53,7 @@ AT_CHECK([$LIBTOOL --mode=link --tag=CC --tag=disable-shared $CC $CFLAGS $LDFLAG
 AT_CHECK([$LIBTOOL --mode=install cp libbar.la $thisdir], [], [ignore], [ignore])
 eval `$EGREP '^(old_library)=' < libbar.la`
 libbar=$old_library
-eval `$LIBTOOL --config | $EGREP '^(AR_TFLAGS|AR_SEP)='`
-AT_CHECK([$AR $AR_TFLAGS$AR_SEP$libbar | grep $libfoo],[1],[ignore],[ignore])
-archive_contents=`$AR $AR_TFLAGS$AR_SEP$libbar`
-AT_XFAIL_IF([case "$archive_contents" in *"$libfoo"*) : ;; esac])
+AT_CHECK([$AR -t $libbar | grep $libfoo],[1],[ignore],[ignore])
+AT_CHECK([$AR -t $libbar | grep foo.$OBJEXT],[],[ignore],[ignore])
+AT_CHECK([$AR -t $libbar | grep bar.$OBJEXT],[],[ignore],[ignore])
 AT_CLEANUP

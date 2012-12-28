@@ -1,6 +1,6 @@
 # link-order2.at -- test link order of deplibs                -*- Autotest -*-
 #
-#   Copyright (C) 2006, 2007 Free Software Foundation, Inc.
+#   Copyright (C) 2006, 2007, 2008 Free Software Foundation, Inc.
 #   Written by Ralf Wildenhues, 2006
 #
 #   This file is part of GNU Libtool.
@@ -33,7 +33,7 @@
 # actually loaded in each case, we also use an unrelated symbol
 # from it directly in the main program.  We test for failure by
 # reversing the link order.
-# We test both static and shared: it should work in both cases.  
+# We test both static and shared: it should work in both cases.
 # But for the static case to work, the two symbols in the depdepl
 # need to be in separate object files, otherwise duplicate symbol
 # definitions can happen.
@@ -43,8 +43,9 @@
 # and only with MACOS_DEPLOYMENT_TARGET 10.2 and earlier
 # (in that case $allow_undefined_flag contains -flat_namespace).
 
-AT_SETUP([Link order of deplibs.])
+AT_SETUP([Link order of deplibs])
 AT_KEYWORDS([libtool])
+AT_KEYWORDS([interactive])dnl running 'wrong' may cause a popup window.
 
 eval `$LIBTOOL --config | $EGREP '^(shlibpath_var|allow_undefined_flag)='`
 
@@ -83,7 +84,7 @@ extern int a (void);
 extern int b (void);
 int main (void)
 {
-  return a () + b ();
+  return !(a () + b () == 0);
 }
 EOF
 
@@ -119,24 +120,24 @@ for type_of_depdepl in libtool non-libtool; do
        static=-all-static
     $LIBTOOL --mode=link $CC $CFLAGS $LDFLAGS $static -o liba1.la a1.lo -rpath $libdir
     $LIBTOOL --mode=link $CC $CFLAGS $LDFLAGS $static -o libb.la b.lo liba1.la -rpath $libdir
-    AT_CHECK([$LIBTOOL --mode=link $CC $CFLAGS $LDFLAGS $static -o main main.$OBJEXT libb.la -la0],
+    AT_CHECK([$LIBTOOL --mode=link $CC $CFLAGS $LDFLAGS $static -o main$EXEEXT main.$OBJEXT libb.la -la0],
 	     [], [ignore], [ignore])
     LT_AT_EXEC_CHECK([./main])
     # Now test that if we reverse the link order, the program fails.
-    AT_CHECK([$LIBTOOL --mode=link $CC $CFLAGS $LDFLAGS $static -o wrong main.$OBJEXT -la0 libb.la],
+    AT_CHECK([$LIBTOOL --mode=link $CC $CFLAGS $LDFLAGS $static -o wrong$EXEEXT main.$OBJEXT -la0 libb.la],
 	     [], [ignore], [ignore])
     if test $shared_fails,$static != yes,; then
-      LT_AT_EXEC_CHECK([./wrong], [2])
+      LT_AT_EXEC_CHECK([./wrong], [1], [], [ignore], [|| (exit 1)])
     fi
 
     $LIBTOOL --mode=install cp liba1.la $libdir/liba1.la
     $LIBTOOL --mode=install cp libb.la $libdir/libb.la
-    $LIBTOOL --mode=install cp main $bindir/main
-    $LIBTOOL --mode=install cp wrong $bindir/wrong
+    $LIBTOOL --mode=install cp main$EXEEXT $bindir/main$EXEEXT
+    $LIBTOOL --mode=install cp wrong$EXEEXT $bindir/wrong$EXEEXT
     $LIBTOOL --mode=clean rm -f liba1.la libb.la
     LT_AT_EXEC_CHECK([$bindir/main])
     if test $shared_fails,$static != yes,; then
-      LT_AT_EXEC_CHECK([$bindir/wrong], [2])
+      LT_AT_EXEC_CHECK([$bindir/wrong], [1], [], [ignore], [|| (exit 1)])
     fi
   done
 done

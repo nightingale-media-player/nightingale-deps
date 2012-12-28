@@ -1,6 +1,6 @@
 # Process with autom4te to create an -*- Autotest -*- test suite.
 #
-#   Copyright (C) 2004, 2005, 2006, 2007, 2008 Free Software
+#   Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free Software
 #   Foundation, Inc.
 #   Written by Gary V. Vaughan, 2004
 #
@@ -30,12 +30,14 @@ m4_divert_push([PREPARE_TESTS])dnl
 : ${AUTOCONF=autoconf}
 : ${AUTOMAKE=automake}
 : ${AUTORECONF=autoreconf}
+test "${ECHO+set}" = set || ECHO=${as_echo-'printf %s\n'}
+: ${ECHO=$as_echo}
 for tool in ACLOCAL AUTOHEADER AUTOCONF AUTOMAKE AUTORECONF; do
   if eval \$$tool --version >/dev/null 2>&1; then :; else eval $tool=no; fi
 done
 export ACLOCAL AUTOHEADER AUTOCONF AUTOMAKE AUTORECONF
 eval `$LIBTOOL --config | grep '^EGREP='`
-eval `$LIBTOOL --config | $EGREP '^(host|host_os|host_alias|build|build_alias|ECHO)='`
+eval `$LIBTOOL --config | $EGREP '^(host|host_os|host_alias|build|build_alias|to_host_file_cmd|to_tool_file_cmd)='`
 configure_options=--prefix=/nonexistent
 if test -n "$host_alias"; then
   configure_options="$configure_options --host $host_alias"
@@ -43,12 +45,29 @@ fi
 if test -n "$build_alias"; then
   configure_options="$configure_options --build $build_alias"
 fi
+if test -n "$to_host_file_cmd"; then
+  configure_options="$configure_options lt_cv_to_host_file_cmd=$to_host_file_cmd"
+fi
+if test -n "$to_tool_file_cmd"; then
+  configure_options="$configure_options lt_cv_to_tool_file_cmd=$to_tool_file_cmd"
+fi
 if (FOO=bar; unset FOO) >/dev/null 2>&1; then
   unset=unset
 else
   unset=false
 fi
 : ${mkdir_p="$abs_top_srcdir/libltdl/config/install-sh -d"}
+# Fix relative paths in $lt_INSTALL
+case $lt_INSTALL in
+  *libltdl/config/install-sh*)
+    lt_INSTALL=$abs_top_srcdir/libltdl/config/install-sh
+    ;;
+esac
+
+# Unset some MAKE... variables that may cause $MAKE to act like a
+# recursively invoked sub-make.  Any $MAKE invocation in a test is
+# conceptually an independent invocation.
+unset MFLAGS MAKEFLAGS MAKELEVEL __MKLVL__ MAKE_JOBS_FIFO
 
 # On AIX, shared libraries remain loaded in memory after use if they
 # are world-readable, until root issues slibclean.  On NFS, this causes
@@ -138,24 +157,24 @@ AT_KEYWORDS([autoconf automake])
 ])
 
 
-# LT_AT_CONFIGURE([OPTIONS])
-# --------------------------
+# LT_AT_CONFIGURE([OPTIONS], [CONFIGURE-SCRIPT])
+# ----------------------------------------------
+# Configure CONFIGURE-SCRIPT, defaulting to ./configure, with
+# additional OPTIONS.
 m4_define([LT_AT_CONFIGURE],
-[( SHELL=${CONFIG_SHELL-/bin/sh}
-   AT_CHECK([CONFIG_SHELL=$SHELL $SHELL ./configure $configure_options $1],
-	 [0], [ignore], [ignore])
- )
+[AT_CHECK([: ${CONFIG_SHELL=/bin/sh}; export CONFIG_SHELL; ]dnl
+	  [$CONFIG_SHELL m4_default([$2], [./configure]) $configure_options $1],
+	  [0], [ignore], [ignore])
 ])
 
 
 # LT_AT_MAKE([TGTS], [VARS])
 # --------------------------
 m4_define([LT_AT_MAKE],
-[( $unset LIBTOOL LIBTOOLIZE
-  for target in m4_default([$1], [all])
-  do
-    AT_CHECK([$MAKE $target $2], [0], [ignore], [ignore])
-  done )
+[for target in m4_default([$1], [all])
+do
+  AT_CHECK([$unset LIBTOOL LIBTOOLIZE; $MAKE $target $2], [0], [ignore], [ignore])
+done
 ])
 
 
@@ -190,49 +209,118 @@ m4_define([LT_AT_CHECK],
 [echo "LT_ESCAPE([$1])"; AT_CHECK($@)])
 
 
-# _LT_AT_TRANSLATE_TEXT_OUTPUT(FILE)
-# ----------------------------------
+# LT_AT_HOST_DATA(FILE, CONTENTS)
+# -------------------------------
 # Ensure correct line ending for expected output of host executables.
-m4_define([_LT_AT_TRANSLATE_TEXT_OUTPUT],
-[case $host_os in mingw*)
+m4_define([LT_AT_HOST_DATA],
+[AT_DATA([$1], [$2])
+case $host_os in mingw*)
   while read -r l; do printf "%s\r\n" "$l"; done < $1 > $1.t
   mv -f $1.t $1 ;;
 esac])
 
 
-# LT_AT_EXEC_CHECK(EXECUTABLE, [STATUS = 0], [STDOUT], [STDERR])
+# LT_AT_UNIFY_NL(FILE, [RESULT-FILE])
+# -----------------------------------
+# Ensure (text) FILE has predictable line endings.
+# If RESULT-FILE is given, FILE is left untouched. If not, convert in-place.
+m4_define([LT_AT_UNIFY_NL],
+[case $host_os in
+  mingw*)
+    tr -d '\015' < $1 > m4_ifval([$2], [$2], [$1.t
+    mv -f $1.t $1]) ;; m4_ifval([$2], [
+  *)
+    cp $1 $2 ;;])
+esac])
+
+
+# LT_AT_NORMALIZE_COMPILER_OUTPUT(FILE, [RESULT-FILE])
+# ----------------------------------------------------
+# Normalize differences in compiler output stemming from, e.g.,
+# - distcc process numbers,
+# - ccache file location,
+# - newline encoding,
+# - location of the libtool script,
+# - error messages involving unstable temporary file names.
+m4_define([LT_AT_NORMALIZE_COMPILER_OUTPUT],
+[_ltbase=`$ECHO "$LIBTOOL" | sed 's,^.*/,,'`
+[sed "/^distcc\[[0-9]*\]/d
+      /^$_ltbase: compile/d
+      s/\(tmp\/\{1,\}cc\)\([a-zA-Z0-9_]\{1,\}\)/\1-normalized-tmpname/g" < $1 > $1.t]
+LT_AT_UNIFY_NL([$1.t], [m4_default([$2], [$1])])[]dnl
+])
+
+
+# LT_AT_EXEC_CHECK(EXECUTABLE, [STATUS = 0], [STDOUT], [STDERR],
+#		   [ARGS-OR-STATUS-ADJUST])
 # --------------------------------------------------------------
+# Run EXECUTABLE ARGS-OR-STATUS-ADJUST.  STATUS, STDOUT, and STDERR are
+# handled as in AT_CHECK.
+# However, if we are cross-compiling, then SKIP instead of FAIL.
+# ARGS-OR-STATUS-ADJUST can also contain code like `|| (exit 1)'
+# to unify different possible exit status values.
 m4_define([LT_AT_EXEC_CHECK],
-[m4_if([$3], [expout], [_LT_AT_TRANSLATE_TEXT_OUTPUT([$3])])
-m4_if([$4], [experr], [_LT_AT_TRANSLATE_TEXT_OUTPUT([$4])])
-AT_CHECK([$1; lt_status=$?; if test $lt_status -eq 0; then :;
-	   elif test "X$host" != "X$build" && \
-	        { test -x "$1" || test -x "$1"$EXEEXT; }
-	   then (exit 77); else (exit $lt_status); fi],[$2],[$3],[$4])
+[lt_exe=$1; if test -f "$1$EXEEXT"; then lt_exe=$lt_exe$EXEEXT; fi
+AT_CHECK([if "$lt_exe" $5; then :; else lt_status=$?; ]dnl
+	 [  m4_ifval([$2], [test $lt_status != $2 && ])]dnl
+	 [  test "X$host" != "X$build" && test -x "$lt_exe" && exit 77; ]dnl
+	 [  exit $lt_status; fi],[$2],[$3],[$4])
 ])
 
 
 # LT_AT_NOINST_EXEC_CHECK(EXECUTABLE, [NOINST-MODULES],
-# 			  [STATUS = 0], [STDOUT], [STDERR])
+#			  [STATUS = 0], [STDOUT], [STDERR],
+#			  [ARGS-OR-STATUS-ADJUST])
 # ---------------------------------------------------------
+# Run EXECUTABLE ARGS-OR-STATUS-ADJUST using `libtool --mode=execute'
+# with `-dlopen' arguments in NOINST_MODULES.  STATUS, STDOUT, and
+# STDERR are handled as in AT_CHECK.
+# However, if we are cross-compiling, then SKIP instead of FAIL.
+# ARGS-OR-STATUS-ADJUST can also contain code like `|| (exit 1)'
+# to unify different possible exit status values.
 m4_define([LT_AT_NOINST_EXEC_CHECK],
-[m4_if([$4], [expout], [_LT_AT_TRANSLATE_TEXT_OUTPUT([$4])])
-m4_if([$5], [experr], [_LT_AT_TRANSLATE_TEXT_OUTPUT([$5])])
-AT_CHECK([$LIBTOOL --mode=execute $2 $1; lt_status=$?;
-	   if test $lt_status -eq 0; then :;
-	   elif test "X$host" != "X$build" && \
-	        { test -x "$1" || test -x "$1"$EXEEXT; }
-	   then (exit 77); else (exit $lt_status); fi],[$3],[$4],[$5])
+[lt_exe=$1; if test -f "$1$EXEEXT"; then lt_exe=$lt_exe$EXEEXT; fi
+AT_CHECK([if $LIBTOOL --mode=execute $2 "$lt_exe" $6; then :; else lt_status=$?; ]dnl
+	 [  m4_ifval([$3], [test $lt_status != $3 && ])]dnl
+	 [  test "X$host" != "X$build" && test -x "$lt_exe" && exit 77; ]dnl
+	 [  exit $lt_status; fi],[$3],[$4],[$5])
 ])
 
 
 # LT_AT_TAG(TAG)
 # --------------
+# Declare that the language TAG will be used in this test.
+# Skips the test if the compiler is apparently not functional.
 m4_define([LT_AT_TAG],
 [AT_KEYWORDS([$1])
 AT_CHECK([{ test -n "[$]$1" && test "X[$]$1" != Xno; } || (exit 77)])
-m4_if([$1], [CXX],
-  [AT_CHECK([test "X$CXX" != Xg++ || (g++ -v >/dev/null 2>&1) || (exit 77)])])
+m4_case([$1],
+  [CXX],
+  [AT_CHECK([test "X$CXX" != Xg++ || (g++ -v >/dev/null 2>&1) || (exit 77)])],
+  [GCJ],
+  [# There are just too many broken gcj installations out there, either missing
+   # libgcj.spec or unable to find it.  Skip the test for them.
+   AT_DATA([gcj_test.java],
+[[public class gcj_test {
+    public static void main(String[] argv) { }
+  }
+]])
+   AT_CHECK([$GCJ $GCJFLAGS -c gcj_test.java || exit 77],
+	    [], [ignore], [ignore])])
+])
+
+
+# LT_AT_EXEC_TAG([TAG])
+# ---------------------
+# Declare that the language TAG will be used and compiled programs may be run.
+# Skips the test if the compiler is apparently not functional.
+m4_define([LT_AT_EXEC_TAG],
+[LT_AT_TAG([$1])
+m4_case([$1],
+  [GCJ],
+  [AT_CHECK([$GCJ $GCJFLAGS --main=gcj_test -o gcj_test$EXEEXT gcj_test.java ]dnl
+	    [|| exit 77], [], [ignore], [ignore])
+   AT_CHECK([./gcj_test$EXEEXT || exit 77], [], [ignore], [ignore])])
 ])
 
 
@@ -288,9 +376,9 @@ main ()
     return 1;
   }
 
-  module = lt_dlopen("module.la");
+  module = lt_dlopen("./module.la");
   if (!module) {
-    fprintf (stderr, "error dlopening module.la: %s\n", lt_dlerror());
+    fprintf (stderr, "error dlopening ./module.la: %s\n", lt_dlerror());
     goto finish;
   }
 
@@ -330,17 +418,19 @@ TARGETS		= ]_ARG_DIR[/libltdlc.la module.la ltdldemo$(EXEEXT)
 
 all: $(TARGETS)
 
-$(LIBTOOL) ]_ARG_DIR[/libltdlc.la: ]_ARG_DIR[/Makefile
+]_ARG_DIR[/libltdlc.la: $(LIBTOOL) ]_ARG_DIR[/Makefile
 	MAKE='$(MAKE)'; test -n "$$MAKE" || MAKE=make; \
 	cd ]_ARG_DIR[ && $$MAKE CC="$(CC)" LIBTOOLFLAGS="$(LIBTOOLFLAGS)" \
 	  CPPFLAGS="$(CPPFLAGS)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
           CONFIGURE_OPTIONS="$(CONFIGURE_OPTIONS)"
 
+$(LIBTOOL): ]_ARG_DIR[/Makefile
+
 ]_ARG_DIR[/Makefile:
 	cd ]_ARG_DIR[ && CONFIG_SHELL="$(SHELL)" $(SHELL) ./configure $(CONFIGURE_OPTIONS)
 
 ltdldemo$(EXEEXT): $(LIBTOOL) module.la ]_ARG_DIR[/libltdlc.la main.lo
-	$(LTLINK) -o ltdldemo main.lo -dlopen module.la ./]_ARG_DIR[/libltdlc.la
+	$(LTLINK) -o ltdldemo$(EXEEXT) main.lo -dlopen module.la ./]_ARG_DIR[/libltdlc.la
 
 main.lo: $(LIBTOOL) main.c
 	$(LTCOMPILE) -c main.c
@@ -365,9 +455,13 @@ m4_pattern_allow([^dnl$])
 # We exercise these tools.
 dnl AT_TESTED([grep autoreconf autom4te automake])
 
+# Enable colored output if available.
+m4_ifdef([AT_COLOR_TESTS], [AT_COLOR_TESTS])
+
+AT_INIT
+
 ## ----------- ##
 ## The suite.  ##
 ## ----------- ##
 
-AT_INIT
-# The other tests will be appended here by the Makefile rule.
+# Tests will be appended here by the Makefile rule.

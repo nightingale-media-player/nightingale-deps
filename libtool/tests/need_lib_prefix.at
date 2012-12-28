@@ -1,6 +1,6 @@
 # need-lib-prefix.at -- test libltdl functionality            -*- Autotest -*-
 #
-#   Copyright (C) 2007, 2008 Free Software Foundation, Inc.
+#   Copyright (C) 2007, 2008, 2010 Free Software Foundation, Inc.
 #   Written by Gary V. Vaughan, 2007
 #
 #   This file is part of GNU Libtool.
@@ -24,6 +24,11 @@
 
 AT_SETUP([enforced lib prefix])
 AT_KEYWORDS([libltdl libtool])
+
+# Originally written to simulate a failure visible on systems
+# which need a library prefix like 'lib', such as BeOS.  Currently
+# the prefix is hardcoded as 'lib', so systems that require a
+# different prefix skips the test.
 
 AT_DATA([main.c],
 [[#include <ltdl.h>
@@ -131,7 +136,7 @@ int i = 6;
 #endif
 ]])
 
-AT_DATA([expout],
+LT_AT_HOST_DATA([expout],
 [[libfoo1: 2
 libfoo2: 3
 ]])
@@ -147,6 +152,13 @@ esac], [], [ignore])
 
 CPPFLAGS="$LTDLINCL $CPPFLAGS"
 LDFLAGS="$LDFLAGS"
+
+# Skip this test when libraries are not normally prefixed with lib.
+# E.g., for MSVC and OS/2.
+eval "`$LIBTOOL --config | $EGREP '^(libname_spec)='`"
+name=
+eval libname=\"$libname_spec\"
+AT_CHECK([test "$libname" = lib || exit 77])
 
 # Create our own libtool, forcing need_lib_prefix setting
 sed 's,^\(need_lib_prefix\)=.*$,\1=unknown,' $LIBTOOL > ./libtool
@@ -164,7 +176,7 @@ AT_CHECK([$LIBTOOL --mode=link $CC -module -avoid-version $CFLAGS $LDFLAGS -o fo
 	 [], [ignore], [ignore])
 AT_CHECK([$LIBTOOL --mode=link $CC -module -avoid-version $CFLAGS $LDFLAGS -o libfoo2.la foo2.lo -rpath $instdir/lib],
 	 [], [ignore], [ignore])
-AT_CHECK([$LIBTOOL --mode=link $CC $CFLAGS $LDFLAGS -o main main.$OBJEXT -dlpreopen foo1.la -dlpreopen libfoo2.la $LIBLTDL],
+AT_CHECK([$LIBTOOL --mode=link $CC $CFLAGS $LDFLAGS -o main$EXEEXT main.$OBJEXT -dlpreopen foo1.la -dlpreopen libfoo2.la $LIBLTDL],
           [], [ignore], [ignore])
 
 LT_AT_NOINST_EXEC_CHECK([./main], [-dlopen foo1.la -dlopen libfoo2.la],
@@ -178,7 +190,7 @@ $LIBTOOL --mode=install cp libfoo2.la $instdir/lib/libfoo2.la
 
 # Install the binary
 mkdir $instdir/bin
-$LIBTOOL --mode=install cp main $instdir/bin/main
+$LIBTOOL --mode=install cp main$EXEEXT $instdir/bin/main$EXEEXT
 
 LT_AT_EXEC_CHECK([$instdir/bin/main], [], [expout], [])
 
