@@ -25,7 +25,6 @@
 
 #include <glib.h>
 #include <gst/gst.h>
-#include <gst/base/gstbytewriter.h>
 
 G_BEGIN_DECLS
 
@@ -47,23 +46,25 @@ typedef struct _GstEbmlWrite {
 
   GstPad *srcpad;
   guint64 pos;
-  guint64 last_pos;
   GstClockTime timestamp;
 
-  GstByteWriter *cache;
-  guint64 cache_pos;
+  GstBuffer *cache;
+  guint cache_size;
+  guint handled;
 
   GstFlowReturn last_write_result;
 
-  gboolean writing_streamheader;
-  GstByteWriter *streamheader;
-  guint64 streamheader_pos;
+  gboolean need_newsegment;
 
-  GstCaps *caps;
+  /*< private >*/
+  gpointer _gst_reserved[GST_PADDING];
 } GstEbmlWrite;
 
 typedef struct _GstEbmlWriteClass {
   GstObjectClass parent;
+
+  /*< private >*/
+  gpointer _gst_reserved[GST_PADDING];
 } GstEbmlWriteClass;
 
 GType   gst_ebml_write_get_type      (void);
@@ -73,19 +74,13 @@ void    gst_ebml_write_reset         (GstEbmlWrite *ebml);
 
 GstFlowReturn gst_ebml_last_write_result (GstEbmlWrite *ebml);
 
-/* Used to create streamheaders */
-void    gst_ebml_start_streamheader  (GstEbmlWrite *ebml);
-GstBuffer*    gst_ebml_stop_streamheader   (GstEbmlWrite *ebml);
-
 /*
  * Caching means that we do not push one buffer for
  * each element, but fill this one until a flush.
  */
 void    gst_ebml_write_set_cache     (GstEbmlWrite *ebml,
                                       guint         size);
-void    gst_ebml_write_flush_cache   (GstEbmlWrite *ebml,
-                                      gboolean is_keyframe,
-                                      GstClockTime timestamp);
+void    gst_ebml_write_flush_cache   (GstEbmlWrite *ebml);
 
 /*
  * Seeking.
@@ -118,15 +113,12 @@ guint64 gst_ebml_write_master_start  (GstEbmlWrite *ebml,
                                       guint32       id);
 void    gst_ebml_write_master_finish (GstEbmlWrite *ebml,
                                       guint64       startpos);
-void    gst_ebml_write_master_finish_full (GstEbmlWrite * ebml,
-                                      guint64 startpos,
-                                      guint64 extra_size);
 void    gst_ebml_write_binary        (GstEbmlWrite *ebml,
                                       guint32       id,
                                       guchar       *binary,
                                       guint64       length);
 void    gst_ebml_write_header        (GstEbmlWrite *ebml,
-                                      const gchar  *doctype,
+                                      gchar        *doctype,
                                       guint         version);
 
 /*

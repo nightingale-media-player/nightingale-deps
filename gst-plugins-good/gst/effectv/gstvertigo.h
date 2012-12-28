@@ -26,7 +26,6 @@
 
 #include <gst/gst.h>
 
-#include <gst/video/video.h>
 #include <gst/video/gstvideofilter.h>
 
 G_BEGIN_DECLS
@@ -50,6 +49,8 @@ struct _GstVertigoTV
   GstVideoFilter videofilter;
 
   /* < private > */
+
+  gint width, height;
   guint32 *buffer;
   guint32 *current_buffer, *alt_buffer;
   gint dx, dy;

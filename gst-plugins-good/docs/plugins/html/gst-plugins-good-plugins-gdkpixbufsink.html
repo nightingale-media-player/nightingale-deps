@@ -3,34 +3,37 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gdkpixbufsink</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="prev" href="gst-plugins-good-plugins-gamma.html" title="gamma">
+<link rel="prev" href="gst-plugins-good-plugins-gconfvideosink.html" title="gconfvideosink">
 <link rel="next" href="gst-plugins-good-plugins-goom.html" title="goom">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-gamma.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-gconfvideosink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-goom.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-gdkpixbufsink.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-gdkpixbufsink.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-gdkpixbufsink.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-gdkpixbufsink.properties" class="shortcut">Properties</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-gdkpixbufsink.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-gdkpixbufsink.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-gdkpixbufsink.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
-<div class="refentry">
+<div class="refentry" title="gdkpixbufsink">
 <a name="gst-plugins-good-plugins-gdkpixbufsink"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -39,37 +42,131 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="gst-plugins-good-plugins-gdkpixbufsink.synopsis"></a><h2>Synopsis</h2>
-<a name="GstGdkPixbufSink"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-gdkpixbufsink.html#GstGdkPixbufSink-struct" title="struct GstGdkPixbufSink">GstGdkPixbufSink</a>;
+<a name="GstGdkPixbufSink"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-good-plugins-gdkpixbufsink.html#GstGdkPixbufSink-struct" title="GstGdkPixbufSink">GstGdkPixbufSink</a>;
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Object Hierarchy">
 <a name="gst-plugins-good-plugins-gdkpixbufsink.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseSink.html">GstBaseSink</a>
-                           +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstvideosink.html#GstVideoSink">GstVideoSink</a>
-                                 +----GstGdkPixbufSink
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="../gstreamer-libs-0.10/GstBaseSink.html"
+>GstBaseSink</a>
+                     +----<a
+href="../gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstvideosink.html#GstVideoSink"
+>GstVideoSink</a>
+                           +----GstGdkPixbufSink
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Properties">
 <a name="gst-plugins-good-plugins-gdkpixbufsink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-gdkpixbufsink.html#GstGdkPixbufSink--last-pixbuf" title='The "last-pixbuf" property'>last-pixbuf</a>"              <span class="type">GdkPixbuf</span>*            : Read
-  "<a class="link" href="gst-plugins-good-plugins-gdkpixbufsink.html#GstGdkPixbufSink--send-messages" title='The "send-messages" property'>send-messages</a>"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-gdkpixbufsink.html#GstGdkPixbufSink--post-messages" title='The "post-messages" property'>post-messages</a>"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-gdkpixbufsink.html#GstGdkPixbufSink--last-pixbuf" title='The "last-pixbuf" property'>last-pixbuf</a>"              GdkPixbuf*            : Read
+  "<a class="link" href="gst-plugins-good-plugins-gdkpixbufsink.html#GstGdkPixbufSink--send-messages" title='The "send-messages" property'>send-messages</a>"            <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Description">
 <a name="gst-plugins-good-plugins-gdkpixbufsink.description"></a><h2>Description</h2>
-<div class="refsynopsisdiv">
+<p>
+This sink element takes RGB or RGBA images as input and wraps them into
+<span class="type">GdkPixbuf</span> objects, for easy saving to file via the
+GdkPixbuf library API or displaying in Gtk+ applications (e.g. using
+the <span class="type">GtkImage</span> widget).
+</p>
+<p>
+There are two ways to use this element and obtain the <span class="type">GdkPixbuf</span> objects
+created:
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+Watching for element messages named <code class="classname">"preroll-pixbuf"
+</code> or <code class="classname">"pixbuf"</code> on the bus, which
+will be posted whenever an image would usually be rendered. See below for
+more details on these messages and how to extract the pixbuf object
+contained in them.
+</li>
+<li class="listitem">
+Retrieving the current pixbuf via the <a class="link" href="gst-plugins-good-plugins-gdkpixbufsink.html#GstGdkPixbufSink--last-pixbuf" title='The "last-pixbuf" property'><span class="type">"last-pixbuf"</span></a> property
+when needed.
+</li>
+</ul></div>
+<p>
+</p>
+<p>
+The primary purpose of this element is to abstract away the <a
+href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
+><span class="type">GstBuffer</span></a> to
+<span class="type">GdkPixbuf</span> conversion. Other than that it's very similar to the fakesink
+element.
+</p>
+<p>
+This element is meant for easy no-hassle video snapshotting. It is not
+suitable for video playback or video display at high framerates. Use
+ximagesink, xvimagesink or some other suitable video sink in connection
+with the <a
+href="../gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"
+><span class="type">GstXOverlay</span></a> interface instead if you want to do video playback.
+</p>
+<p>
+</p>
+<div class="refsect2" title="Message details">
+<a name="id542530"></a><h3>Message details</h3>
+As mentioned above, this element will by default post element messages
+containing structures named <code class="classname">"preroll-pixbuf"
+</code> or <code class="classname">"pixbuf"</code> on the bus (this
+can be disabled by setting the <a class="link" href="gst-plugins-good-plugins-gdkpixbufsink.html#GstGdkPixbufSink--send-messages" title='The "send-messages" property'><span class="type">"send-messages"</span></a> property
+to <a
+href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
+><span class="type">FALSE</span></a> though). The element message structure has the following fields:
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<code class="classname">"pixbuf"</code>: the <span class="type">GdkPixbuf</span> object
+</li>
+<li class="listitem">
+<code class="classname">"pixel-aspect-ratio"</code>: the pixel aspect
+  ratio (PAR) of the input image (this field contains a <span class="type">GstFraction</span>); the
+  PAR is usually 1:1 for images, but is often something non-1:1 in the case
+  of video input. In this case the image may be distorted and you may need
+  to rescale it accordingly before saving it to file or displaying it. This
+  can easily be done using <code class="function">gdk_pixbuf_scale()</code> (the reason this is not done
+  automatically is that the application will often scale the image anyway
+  according to the size of the output window, in which case it is much more
+  efficient to only scale once rather than twice). You can put a videoscale
+  element and a capsfilter element with
+  <code class="literal">video/x-raw-rgb,pixel-aspect-ratio=(fraction)1/1</code> caps
+  in front of this element to make sure the pixbufs always have a 1:1 PAR.
+</li>
+</ul></div>
+</div>
+<p>
+</p>
+<p>
+</p>
+<div class="refsect2" title="Example pipeline">
+<a name="id519553"></a><h3>Example pipeline</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch -m -v videotestsrc num-buffers=1 ! gdkpixbufsink
+</pre></div> Process one single test image as pixbuf (note that the output you see will
+be slightly misleading. The message structure does contain a valid pixbuf
+object even if the structure string says '(NULL)').
+</div>
+<div class="refsynopsisdiv" title="Synopsis">
 <h2>Synopsis</h2>
-<div class="refsect2">
-<a name="idp10343200"></a><h3>Element Information</h3>
+<div class="refsect2" title="Element Information">
+<a name="id519224"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -91,8 +188,8 @@
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
-<a name="idp12010944"></a><h3>Element Pads</h3>
+<div class="refsect2" title="Element Pads">
+<a name="id505596"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -110,11 +207,11 @@
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw, format=(string)RGB, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td>video/x-raw-rgb, bpp=(int)24, depth=(int)24, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255, width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
-<td> video/x-raw, format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td> video/x-raw-rgb, bpp=(int)32, depth=(int)32, endianness=(int)4321, red_mask=(int)-16777216, green_mask=(int)16711680, blue_mask=(int)65280, alpha_mask=(int)255, width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
@@ -123,33 +220,30 @@
 <p>
 </p>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Details">
 <a name="gst-plugins-good-plugins-gdkpixbufsink.details"></a><h2>Details</h2>
-<div class="refsect2">
-<a name="GstGdkPixbufSink-struct"></a><h3>struct GstGdkPixbufSink</h3>
-<pre class="programlisting">struct GstGdkPixbufSink;</pre>
+<div class="refsect2" title="GstGdkPixbufSink">
+<a name="GstGdkPixbufSink-struct"></a><h3>GstGdkPixbufSink</h3>
+<pre class="programlisting">typedef struct _GstGdkPixbufSink GstGdkPixbufSink;</pre>
+<p>
+Opaque element structure.</p>
 <p>
 </p>
 </div>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Property Details">
 <a name="gst-plugins-good-plugins-gdkpixbufsink.property-details"></a><h2>Property Details</h2>
-<div class="refsect2">
+<div class="refsect2" title='The "last-pixbuf" property'>
 <a name="GstGdkPixbufSink--last-pixbuf"></a><h3>The <code class="literal">"last-pixbuf"</code> property</h3>
-<pre class="programlisting">  "last-pixbuf"              <span class="type">GdkPixbuf</span>*            : Read</pre>
+<pre class="programlisting">  "last-pixbuf"              GdkPixbuf*            : Read</pre>
 <p>Last GdkPixbuf object rendered.</p>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" title='The "send-messages" property'>
 <a name="GstGdkPixbufSink--send-messages"></a><h3>The <code class="literal">"send-messages"</code> property</h3>
-<pre class="programlisting">  "send-messages"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
-<p>Whether to post messages containing pixbufs on the bus  (deprecated, use post-messages).</p>
-<p>Default value: TRUE</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstGdkPixbufSink--post-messages"></a><h3>The <code class="literal">"post-messages"</code> property</h3>
-<pre class="programlisting">  "post-messages"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<pre class="programlisting">  "send-messages"            <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Whether to post messages containing pixbufs on the bus.</p>
 <p>Default value: TRUE</p>
 </div>
@@ -157,6 +251,6 @@
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

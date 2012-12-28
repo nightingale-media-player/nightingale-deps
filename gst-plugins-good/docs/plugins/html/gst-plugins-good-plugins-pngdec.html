@@ -3,13 +3,16 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>pngdec</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-osxvideosink.html" title="osxvideosink">
 <link rel="next" href="gst-plugins-good-plugins-pngenc.html" title="pngenc">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -17,18 +20,18 @@
 <td><a accesskey="p" href="gst-plugins-good-plugins-osxvideosink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-pngenc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-pngdec.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-pngdec.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-pngdec.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-pngdec.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-pngdec.object-hierarchy" class="shortcut">Object Hierarchy</a>
 </td></tr>
 </table>
-<div class="refentry">
+<div class="refentry" title="pngdec">
 <a name="gst-plugins-good-plugins-pngdec"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -37,28 +40,36 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="gst-plugins-good-plugins-pngdec.synopsis"></a><h2>Synopsis</h2>
-<a name="GstPngDec"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-pngdec.html#GstPngDec-struct" title="struct GstPngDec">GstPngDec</a>;
+<a name="GstPngDec"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-good-plugins-pngdec.html#GstPngDec-struct" title="GstPngDec">GstPngDec</a>;
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Object Hierarchy">
 <a name="gst-plugins-good-plugins-pngdec.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder">GstVideoDecoder</a>
-                           +----GstPngDec
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----GstPngDec
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Description">
 <a name="gst-plugins-good-plugins-pngdec.description"></a><h2>Description</h2>
-<div class="refsynopsisdiv">
+<p>
+Decodes png images. If there is no framerate set on sink caps, it sends EOS
+after the first picture.</p>
+<div class="refsynopsisdiv" title="Synopsis">
 <h2>Synopsis</h2>
-<div class="refsect2">
-<a name="idp16426736"></a><h3>Element Information</h3>
+<div class="refsect2" title="Element Information">
+<a name="id575619"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -80,8 +91,8 @@
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
-<a name="idp14509664"></a><h3>Element Pads</h3>
+<div class="refsect2" title="Element Pads">
+<a name="id576752"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -120,7 +131,11 @@
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw, format=(string){ RGBA, RGB, ARGB64, GRAY8, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td>video/x-raw-rgb, bpp=(int)32, depth=(int)32, endianness=(int)4321, red_mask=(int)-16777216, green_mask=(int)16711680, blue_mask=(int)65280, alpha_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-rgb, bpp=(int)24, depth=(int)24, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
@@ -129,11 +144,11 @@
 <p>
 </p>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Details">
 <a name="gst-plugins-good-plugins-pngdec.details"></a><h2>Details</h2>
-<div class="refsect2">
-<a name="GstPngDec-struct"></a><h3>struct GstPngDec</h3>
-<pre class="programlisting">struct GstPngDec;</pre>
+<div class="refsect2" title="GstPngDec">
+<a name="GstPngDec-struct"></a><h3>GstPngDec</h3>
+<pre class="programlisting">typedef struct _GstPngDec GstPngDec;</pre>
 <p>
 </p>
 </div>
@@ -141,6 +156,6 @@
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

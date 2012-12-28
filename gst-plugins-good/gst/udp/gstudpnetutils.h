@@ -18,12 +18,73 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <gst/gst.h>
-
 #ifndef __GST_UDP_NET_UTILS_H__
 #define __GST_UDP_NET_UTILS_H__
 
-gboolean     gst_udp_parse_uri            (const gchar *uristr, gchar **host, guint16 *port);
+#include <sys/types.h>
+
+/* Needed for G_OS_XXXX */
+#include <glib.h>
+
+#ifdef G_OS_WIN32
+/* ws2_32.dll has getaddrinfo and freeaddrinfo on Windows XP and later.
+ * minwg32 headers check WINVER before allowing the use of these */
+#define WINVER 0x0501
+#include <winsock2.h>
+#include <ws2tcpip.h>
+
+/* Needed for GstObject and GST_WARNING_OBJECT */
+#include <gst/gstobject.h>
+#include <gst/gstinfo.h>
+
+#else
+#include <sys/time.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <net/if.h>
+#include <netdb.h>
+#include <sys/wait.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#endif
+
+#include <fcntl.h>
+
+#ifdef G_OS_WIN32
+
+#define IOCTL_SOCKET ioctlsocket
+#define CLOSE_SOCKET(sock) closesocket(sock)
+#define setsockopt(sock,l,opt,val,len) setsockopt(sock,l,opt,(char *)(val),len)
+#define WSA_STARTUP(obj) gst_udp_net_utils_win32_wsa_startup(GST_OBJECT(obj))
+#define WSA_CLEANUP(obj) WSACleanup ()
+
+#else
+
+#define IOCTL_SOCKET ioctl
+#define CLOSE_SOCKET(sock) close(sock)
+#define setsockopt(sock,l,opt,val,len) setsockopt(sock,l,opt,(void *)(val),len)
+#define WSA_STARTUP(obj)
+#define WSA_CLEANUP(obj)
+
+#endif
+
+#ifdef G_OS_WIN32
+
+gboolean gst_udp_net_utils_win32_wsa_startup (GstObject * obj);
+
+#endif
+
+int gst_udp_get_sockaddr_length(struct sockaddr_storage *addr);
+
+int gst_udp_get_addr      (const char *hostname, int port, struct sockaddr_storage *addr);
+int gst_udp_is_multicast  (struct sockaddr_storage *addr);
+
+int gst_udp_set_loop_ttl  (int sockfd, gboolean loop, int ttl);
+
+int gst_udp_join_group    (int sockfd, struct sockaddr_storage *addr,
+                           gchar *iface);
+int gst_udp_leave_group   (int sockfd, struct sockaddr_storage *addr);
 
 #endif /* __GST_UDP_NET_UTILS_H__*/
 

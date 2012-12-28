@@ -21,7 +21,7 @@
 #define __GST_RTP_AMR_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstrtpbasepayload.h>
+#include <gst/rtp/gstbasertppayload.h>
 #include <gst/base/gstadapter.h>
 
 G_BEGIN_DECLS
@@ -48,20 +48,15 @@ typedef enum {
 
 struct _GstRtpAMRPay
 {
-  GstRTPBasePayload payload;
+  GstBaseRTPPayload payload;
 
   GstRtpAMRPayMode mode;
-  GstClockTime first_ts;
-  guint32 first_rtp_time;
-  guint32 next_rtp_time;
 };
 
 struct _GstRtpAMRPayClass
 {
-  GstRTPBasePayloadClass parent_class;
+  GstBaseRTPPayloadClass parent_class;
 };
-
-GType gst_rtp_amr_pay_get_type (void);
 
 gboolean gst_rtp_amr_pay_plugin_init (GstPlugin * plugin);
 

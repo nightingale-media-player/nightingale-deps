@@ -47,7 +47,6 @@ struct _GstProgressReport
 
   gint update_freq;
   gboolean silent;
-  gboolean do_query;
   GTimeVal start_time;
   GTimeVal last_report;
 

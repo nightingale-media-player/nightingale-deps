@@ -1,6 +1,6 @@
-/*
+/**
  * Double lines
- * Copyright (C) 2008,2010 Sebastian Dröge <sebastian.droege@collabora.co.uk>
+ * Copyright (C) 2008 Sebastian Dröge <sebastian.droege@collabora.co.uk>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,7 +22,8 @@
 # include "config.h"
 #endif
 
-#include "gstdeinterlacemethod.h"
+#include "_stdint.h"
+#include "gstdeinterlace.h"
 #include <string.h>
 
 #define GST_TYPE_DEINTERLACE_METHOD_SCALER_BOB	(gst_deinterlace_method_scaler_bob_get_type ())
@@ -36,34 +37,16 @@
 GType gst_deinterlace_method_scaler_bob_get_type (void);
 
 typedef GstDeinterlaceSimpleMethod GstDeinterlaceMethodScalerBob;
+
 typedef GstDeinterlaceSimpleMethodClass GstDeinterlaceMethodScalerBobClass;
 
-static void
-deinterlace_scanline_scaler_bob_packed (GstDeinterlaceSimpleMethod * self,
-    guint8 * out, const GstDeinterlaceScanlineData * scanlines)
-{
-  memcpy (out, scanlines->t0, self->parent.row_stride[0]);
-}
 
 static void
-deinterlace_scanline_scaler_bob_planar_y (GstDeinterlaceSimpleMethod * self,
-    guint8 * out, const GstDeinterlaceScanlineData * scanlines)
+deinterlace_scanline_scaler_bob (GstDeinterlaceMethod * self,
+    GstDeinterlace * parent, guint8 * out,
+    GstDeinterlaceScanlineData * scanlines, gint width)
 {
-  memcpy (out, scanlines->t0, self->parent.row_stride[0]);
-}
-
-static void
-deinterlace_scanline_scaler_bob_planar_u (GstDeinterlaceSimpleMethod * self,
-    guint8 * out, const GstDeinterlaceScanlineData * scanlines)
-{
-  memcpy (out, scanlines->t0, self->parent.row_stride[1]);
-}
-
-static void
-deinterlace_scanline_scaler_bob_planar_v (GstDeinterlaceSimpleMethod * self,
-    guint8 * out, const GstDeinterlaceScanlineData * scanlines)
-{
-  memcpy (out, scanlines->t0, self->parent.row_stride[2]);
+  oil_memcpy (out, scanlines->t0, parent->row_stride);
 }
 
 G_DEFINE_TYPE (GstDeinterlaceMethodScalerBob, gst_deinterlace_method_scaler_bob,
@@ -77,39 +60,12 @@ gst_deinterlace_method_scaler_bob_class_init (GstDeinterlaceMethodScalerBobClass
   GstDeinterlaceSimpleMethodClass *dism_class =
       (GstDeinterlaceSimpleMethodClass *) klass;
 
-  dim_class->fields_required = 2;
+  dim_class->fields_required = 1;
   dim_class->name = "Double lines";
   dim_class->nick = "scalerbob";
-  dim_class->latency = 1;
+  dim_class->latency = 0;
 
-  dism_class->interpolate_scanline_ayuv =
-      deinterlace_scanline_scaler_bob_packed;
-  dism_class->interpolate_scanline_yuy2 =
-      deinterlace_scanline_scaler_bob_packed;
-  dism_class->interpolate_scanline_yvyu =
-      deinterlace_scanline_scaler_bob_packed;
-  dism_class->interpolate_scanline_uyvy =
-      deinterlace_scanline_scaler_bob_packed;
-  dism_class->interpolate_scanline_nv12 =
-      deinterlace_scanline_scaler_bob_packed;
-  dism_class->interpolate_scanline_nv21 =
-      deinterlace_scanline_scaler_bob_packed;
-  dism_class->interpolate_scanline_argb =
-      deinterlace_scanline_scaler_bob_packed;
-  dism_class->interpolate_scanline_abgr =
-      deinterlace_scanline_scaler_bob_packed;
-  dism_class->interpolate_scanline_rgba =
-      deinterlace_scanline_scaler_bob_packed;
-  dism_class->interpolate_scanline_bgra =
-      deinterlace_scanline_scaler_bob_packed;
-  dism_class->interpolate_scanline_rgb = deinterlace_scanline_scaler_bob_packed;
-  dism_class->interpolate_scanline_bgr = deinterlace_scanline_scaler_bob_packed;
-  dism_class->interpolate_scanline_planar_y =
-      deinterlace_scanline_scaler_bob_planar_y;
-  dism_class->interpolate_scanline_planar_u =
-      deinterlace_scanline_scaler_bob_planar_u;
-  dism_class->interpolate_scanline_planar_v =
-      deinterlace_scanline_scaler_bob_planar_v;
+  dism_class->interpolate_scanline = deinterlace_scanline_scaler_bob;
 }
 
 static void

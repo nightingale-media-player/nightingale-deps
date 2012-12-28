@@ -21,7 +21,7 @@
 #define __GST_RTP_MP4V_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstrtpbasepayload.h>
+#include <gst/rtp/gstbasertppayload.h>
 #include <gst/base/gstadapter.h>
 
 G_BEGIN_DECLS
@@ -42,7 +42,7 @@ typedef struct _GstRtpMP4VPayClass GstRtpMP4VPayClass;
 
 struct _GstRtpMP4VPay
 {
-  GstRTPBasePayload    payload;
+  GstBaseRTPPayload    payload;
 
   GstAdapter   *adapter;
   GstClockTime  first_timestamp;
@@ -54,18 +54,15 @@ struct _GstRtpMP4VPay
   gboolean      send_config;
   gboolean      need_config;
 
-  /* naming might be confusing with send_config; but naming matches h264
-   * payloader */
-  guint         config_interval;
-  GstClockTime  last_config;
+  gboolean      buffer_list;
+
+  GstPadEventFunction old_event_func;
 };
 
 struct _GstRtpMP4VPayClass
 {
-  GstRTPBasePayloadClass parent_class;
+  GstBaseRTPPayloadClass parent_class;
 };
-
-GType gst_rtp_mp4v_pay_get_type (void);
 
 gboolean gst_rtp_mp4v_pay_plugin_init (GstPlugin * plugin);
 

@@ -18,21 +18,12 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/* FIXME 0.11: suppress warnings for deprecated API such as GValueArray
- * with newer GLib versions (>= 2.31.0) */
-#define GLIB_DISABLE_DEPRECATION_WARNINGS
-
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
-#ifdef HAVE_VALGRIND
-# include <valgrind/valgrind.h>
-#endif
-
 #include <gst/check/gstcheck.h>
-#include <gst/audio/audio.h>
-#include <gst/audio/audio-enumtypes.h>
+#include <gst/audio/multichannel.h>
 
 GST_START_TEST (test_create_and_unref)
 {
@@ -50,18 +41,19 @@ GST_END_TEST;
 GST_START_TEST (test_request_pads)
 {
   GstElement *interleave;
+
   GstPad *pad1, *pad2;
 
   interleave = gst_element_factory_make ("interleave", NULL);
   fail_unless (interleave != NULL);
 
-  pad1 = gst_element_get_request_pad (interleave, "sink_%u");
+  pad1 = gst_element_get_request_pad (interleave, "sink%d");
   fail_unless (pad1 != NULL);
-  fail_unless_equals_string (GST_OBJECT_NAME (pad1), "sink_0");
+  fail_unless_equals_string (GST_OBJECT_NAME (pad1), "sink0");
 
-  pad2 = gst_element_get_request_pad (interleave, "sink_%u");
+  pad2 = gst_element_get_request_pad (interleave, "sink%d");
   fail_unless (pad2 != NULL);
-  fail_unless_equals_string (GST_OBJECT_NAME (pad2), "sink_1");
+  fail_unless_equals_string (GST_OBJECT_NAME (pad2), "sink1");
 
   gst_element_release_request_pad (interleave, pad2);
   gst_object_unref (pad2);
@@ -75,55 +67,60 @@ GST_START_TEST (test_request_pads)
 GST_END_TEST;
 
 static GstPad **mysrcpads, *mysinkpad;
+
 static GstBus *bus;
+
 static GstElement *interleave;
+
 static gint have_data;
+
 static gfloat input[2];
 
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw, "
-        "format = (string) " GST_AUDIO_NE (F32) ", "
-        "channels = (int) 2, layout = (string) {interleaved, non-interleaved}, rate = (int) 48000"));
+    GST_STATIC_CAPS ("audio/x-raw-float, "
+        "width = (int) 32, "
+        "channels = (int) 2, "
+        "rate = (int) 48000, " "endianness = (int) BYTE_ORDER"));
 
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw, "
-        "format = (string) " GST_AUDIO_NE (F32) ", "
-        "channels = (int) 1, layout = (string) interleaved, rate = (int) 48000"));
+    GST_STATIC_CAPS ("audio/x-raw-float, "
+        "width = (int) 32, "
+        "channels = (int) 1, "
+        "rate = (int) 48000, " "endianness = (int) BYTE_ORDER"));
 
 #define CAPS_48khz \
-        "audio/x-raw, " \
-        "format = (string) " GST_AUDIO_NE (F32) ", " \
-        "channels = (int) 1, layout = (string) non-interleaved," \
-        "rate = (int) 48000"
+         "audio/x-raw-float, " \
+        "width = (int) 32, " \
+        "channels = (int) 1, " \
+        "rate = (int) 48000, " \
+	"endianness = (int) BYTE_ORDER"
 
 static GstFlowReturn
-interleave_chain_func (GstPad * pad, GstObject * parent, GstBuffer * buffer)
+interleave_chain_func (GstPad * pad, GstBuffer * buffer)
 {
-  GstMapInfo map;
   gfloat *outdata;
+
   gint i;
 
   fail_unless (GST_IS_BUFFER (buffer));
-  gst_buffer_map (buffer, &map, GST_MAP_READ);
-  outdata = (gfloat *) map.data;
-  fail_unless_equals_int (map.size, 48000 * 2 * sizeof (gfloat));
-  fail_unless (outdata != NULL);
+  fail_unless_equals_int (GST_BUFFER_SIZE (buffer),
+      48000 * 2 * sizeof (gfloat));
+  fail_unless (GST_BUFFER_DATA (buffer) != NULL);
 
-#ifdef HAVE_VALGRIND
-  if (!(RUNNING_ON_VALGRIND))
-#endif
-    for (i = 0; i < 48000 * 2; i += 2) {
-      fail_unless_equals_float (outdata[i], input[0]);
-      fail_unless_equals_float (outdata[i + 1], input[1]);
-    }
-  gst_buffer_unmap (buffer, &map);
-  gst_buffer_unref (buffer);
+  outdata = (gfloat *) GST_BUFFER_DATA (buffer);
+
+  for (i = 0; i < 48000 * 2; i += 2) {
+    fail_unless_equals_float (outdata[i], input[0]);
+    fail_unless_equals_float (outdata[i + 1], input[1]);
+  }
 
   have_data++;
+
+  gst_buffer_unref (buffer);
 
   return GST_FLOW_OK;
 }
@@ -131,12 +128,16 @@ interleave_chain_func (GstPad * pad, GstObject * parent, GstBuffer * buffer)
 GST_START_TEST (test_interleave_2ch)
 {
   GstElement *queue;
+
   GstPad *sink0, *sink1, *src, *tmp;
+
   GstCaps *caps;
+
   gint i;
+
   GstBuffer *inbuf;
+
   gfloat *indata;
-  GstMapInfo map;
 
   mysrcpads = g_new0 (GstPad *, 2);
 
@@ -148,26 +149,24 @@ GST_START_TEST (test_interleave_2ch)
   queue = gst_element_factory_make ("queue", "queue");
   fail_unless (queue != NULL);
 
-  sink0 = gst_element_get_request_pad (interleave, "sink_%u");
+  sink0 = gst_element_get_request_pad (interleave, "sink%d");
   fail_unless (sink0 != NULL);
-  fail_unless_equals_string (GST_OBJECT_NAME (sink0), "sink_0");
+  fail_unless_equals_string (GST_OBJECT_NAME (sink0), "sink0");
 
-  sink1 = gst_element_get_request_pad (interleave, "sink_%u");
+  sink1 = gst_element_get_request_pad (interleave, "sink%d");
   fail_unless (sink1 != NULL);
-  fail_unless_equals_string (GST_OBJECT_NAME (sink1), "sink_1");
+  fail_unless_equals_string (GST_OBJECT_NAME (sink1), "sink1");
 
   mysrcpads[0] = gst_pad_new_from_static_template (&srctemplate, "src0");
   fail_unless (mysrcpads[0] != NULL);
 
   caps = gst_caps_from_string (CAPS_48khz);
-  gst_pad_set_active (mysrcpads[0], TRUE);
   fail_unless (gst_pad_set_caps (mysrcpads[0], caps));
   gst_pad_use_fixed_caps (mysrcpads[0]);
 
   mysrcpads[1] = gst_pad_new_from_static_template (&srctemplate, "src1");
   fail_unless (mysrcpads[1] != NULL);
 
-  gst_pad_set_active (mysrcpads[1], TRUE);
   fail_unless (gst_pad_set_caps (mysrcpads[1], caps));
   gst_pad_use_fixed_caps (mysrcpads[1]);
 
@@ -200,44 +199,35 @@ GST_START_TEST (test_interleave_2ch)
 
   input[0] = -1.0;
   inbuf = gst_buffer_new_and_alloc (48000 * sizeof (gfloat));
-  gst_buffer_map (inbuf, &map, GST_MAP_WRITE);
-  indata = (gfloat *) map.data;
+  indata = (gfloat *) GST_BUFFER_DATA (inbuf);
   for (i = 0; i < 48000; i++)
     indata[i] = -1.0;
-  gst_buffer_unmap (inbuf, &map);
-  gst_pad_set_caps (mysrcpads[0], caps);
+  gst_buffer_set_caps (inbuf, caps);
   fail_unless (gst_pad_push (mysrcpads[0], inbuf) == GST_FLOW_OK);
 
   input[1] = 1.0;
   inbuf = gst_buffer_new_and_alloc (48000 * sizeof (gfloat));
-  gst_buffer_map (inbuf, &map, GST_MAP_WRITE);
-  indata = (gfloat *) map.data;
+  indata = (gfloat *) GST_BUFFER_DATA (inbuf);
   for (i = 0; i < 48000; i++)
     indata[i] = 1.0;
-  gst_buffer_unmap (inbuf, &map);
-  gst_pad_set_caps (mysrcpads[1], caps);
+  gst_buffer_set_caps (inbuf, caps);
   fail_unless (gst_pad_push (mysrcpads[1], inbuf) == GST_FLOW_OK);
 
   inbuf = gst_buffer_new_and_alloc (48000 * sizeof (gfloat));
-  gst_buffer_map (inbuf, &map, GST_MAP_WRITE);
-  indata = (gfloat *) map.data;
+  indata = (gfloat *) GST_BUFFER_DATA (inbuf);
   for (i = 0; i < 48000; i++)
     indata[i] = -1.0;
-  gst_buffer_unmap (inbuf, &map);
+  gst_buffer_set_caps (inbuf, caps);
   fail_unless (gst_pad_push (mysrcpads[0], inbuf) == GST_FLOW_OK);
 
   inbuf = gst_buffer_new_and_alloc (48000 * sizeof (gfloat));
-  gst_buffer_map (inbuf, &map, GST_MAP_WRITE);
-  indata = (gfloat *) map.data;
+  indata = (gfloat *) GST_BUFFER_DATA (inbuf);
   for (i = 0; i < 48000; i++)
     indata[i] = 1.0;
-  gst_buffer_unmap (inbuf, &map);
+  gst_buffer_set_caps (inbuf, caps);
   fail_unless (gst_pad_push (mysrcpads[1], inbuf) == GST_FLOW_OK);
 
   fail_unless (have_data == 2);
-
-  gst_element_set_state (interleave, GST_STATE_NULL);
-  gst_element_set_state (queue, GST_STATE_NULL);
 
   gst_object_unref (mysrcpads[0]);
   gst_object_unref (mysrcpads[1]);
@@ -248,6 +238,8 @@ GST_START_TEST (test_interleave_2ch)
   gst_element_release_request_pad (interleave, sink1);
   gst_object_unref (sink1);
 
+  gst_element_set_state (interleave, GST_STATE_NULL);
+  gst_element_set_state (queue, GST_STATE_NULL);
   gst_object_unref (interleave);
   gst_object_unref (queue);
   gst_object_unref (bus);
@@ -261,12 +253,16 @@ GST_END_TEST;
 GST_START_TEST (test_interleave_2ch_1eos)
 {
   GstElement *queue;
+
   GstPad *sink0, *sink1, *src, *tmp;
+
   GstCaps *caps;
+
   gint i;
+
   GstBuffer *inbuf;
+
   gfloat *indata;
-  GstMapInfo map;
 
   mysrcpads = g_new0 (GstPad *, 2);
 
@@ -278,26 +274,24 @@ GST_START_TEST (test_interleave_2ch_1eos)
   queue = gst_element_factory_make ("queue", "queue");
   fail_unless (queue != NULL);
 
-  sink0 = gst_element_get_request_pad (interleave, "sink_%u");
+  sink0 = gst_element_get_request_pad (interleave, "sink%d");
   fail_unless (sink0 != NULL);
-  fail_unless_equals_string (GST_OBJECT_NAME (sink0), "sink_0");
+  fail_unless_equals_string (GST_OBJECT_NAME (sink0), "sink0");
 
-  sink1 = gst_element_get_request_pad (interleave, "sink_%u");
+  sink1 = gst_element_get_request_pad (interleave, "sink%d");
   fail_unless (sink1 != NULL);
-  fail_unless_equals_string (GST_OBJECT_NAME (sink1), "sink_1");
+  fail_unless_equals_string (GST_OBJECT_NAME (sink1), "sink1");
 
   mysrcpads[0] = gst_pad_new_from_static_template (&srctemplate, "src0");
   fail_unless (mysrcpads[0] != NULL);
 
   caps = gst_caps_from_string (CAPS_48khz);
-  gst_pad_set_active (mysrcpads[0], TRUE);
   fail_unless (gst_pad_set_caps (mysrcpads[0], caps));
   gst_pad_use_fixed_caps (mysrcpads[0]);
 
   mysrcpads[1] = gst_pad_new_from_static_template (&srctemplate, "src1");
   fail_unless (mysrcpads[1] != NULL);
 
-  gst_pad_set_active (mysrcpads[1], TRUE);
   fail_unless (gst_pad_set_caps (mysrcpads[1], caps));
   gst_pad_use_fixed_caps (mysrcpads[1]);
 
@@ -330,22 +324,18 @@ GST_START_TEST (test_interleave_2ch_1eos)
 
   input[0] = -1.0;
   inbuf = gst_buffer_new_and_alloc (48000 * sizeof (gfloat));
-  gst_buffer_map (inbuf, &map, GST_MAP_WRITE);
-  indata = (gfloat *) map.data;
+  indata = (gfloat *) GST_BUFFER_DATA (inbuf);
   for (i = 0; i < 48000; i++)
     indata[i] = -1.0;
-  gst_buffer_unmap (inbuf, &map);
-  gst_pad_set_caps (mysrcpads[0], caps);
+  gst_buffer_set_caps (inbuf, caps);
   fail_unless (gst_pad_push (mysrcpads[0], inbuf) == GST_FLOW_OK);
 
   input[1] = 1.0;
   inbuf = gst_buffer_new_and_alloc (48000 * sizeof (gfloat));
-  gst_buffer_map (inbuf, &map, GST_MAP_WRITE);
-  indata = (gfloat *) map.data;
+  indata = (gfloat *) GST_BUFFER_DATA (inbuf);
   for (i = 0; i < 48000; i++)
     indata[i] = 1.0;
-  gst_buffer_unmap (inbuf, &map);
-  gst_pad_set_caps (mysrcpads[1], caps);
+  gst_buffer_set_caps (inbuf, caps);
   fail_unless (gst_pad_push (mysrcpads[1], inbuf) == GST_FLOW_OK);
 
   input[0] = 0.0;
@@ -353,17 +343,13 @@ GST_START_TEST (test_interleave_2ch_1eos)
 
   input[1] = 1.0;
   inbuf = gst_buffer_new_and_alloc (48000 * sizeof (gfloat));
-  gst_buffer_map (inbuf, &map, GST_MAP_WRITE);
-  indata = (gfloat *) map.data;
+  indata = (gfloat *) GST_BUFFER_DATA (inbuf);
   for (i = 0; i < 48000; i++)
     indata[i] = 1.0;
-  gst_buffer_unmap (inbuf, &map);
+  gst_buffer_set_caps (inbuf, caps);
   fail_unless (gst_pad_push (mysrcpads[1], inbuf) == GST_FLOW_OK);
 
   fail_unless (have_data == 2);
-
-  gst_element_set_state (interleave, GST_STATE_NULL);
-  gst_element_set_state (queue, GST_STATE_NULL);
 
   gst_object_unref (mysrcpads[0]);
   gst_object_unref (mysrcpads[1]);
@@ -374,6 +360,8 @@ GST_START_TEST (test_interleave_2ch_1eos)
   gst_element_release_request_pad (interleave, sink1);
   gst_object_unref (sink1);
 
+  gst_element_set_state (interleave, GST_STATE_NULL);
+  gst_element_set_state (queue, GST_STATE_NULL);
   gst_object_unref (interleave);
   gst_object_unref (queue);
   gst_object_unref (bus);
@@ -389,50 +377,48 @@ src_handoff_float32 (GstElement * element, GstBuffer * buffer, GstPad * pad,
     gpointer user_data)
 {
   gint n = GPOINTER_TO_INT (user_data);
-  gfloat *data;
-  gint i;
-  gsize size;
-  GstCaps *caps;
-  guint64 mask;
-  GstAudioChannelPosition pos;
 
-  switch (n) {
-    case 0:
-    case 1:
-    case 2:
-      pos = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
-      break;
-    case 3:
-      pos = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
-      break;
-    default:
-      pos = GST_AUDIO_CHANNEL_POSITION_INVALID;
-      break;
+  GstCaps *caps;
+
+  gfloat *data;
+
+  gint i;
+
+  if (GST_PAD_CAPS (pad))
+    caps = gst_caps_ref (GST_PAD_CAPS (pad));
+  else {
+    caps = gst_caps_new_simple ("audio/x-raw-float",
+        "width", G_TYPE_INT, 32,
+        "channels", G_TYPE_INT, 1,
+        "rate", G_TYPE_INT, 48000, "endianness", G_TYPE_INT, G_BYTE_ORDER,
+        NULL);
+
+    if (n == 2) {
+      GstAudioChannelPosition pos[1] =
+          { GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT };
+      gst_audio_set_channel_positions (gst_caps_get_structure (caps, 0), pos);
+    } else if (n == 3) {
+      GstAudioChannelPosition pos[1] =
+          { GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT };
+      gst_audio_set_channel_positions (gst_caps_get_structure (caps, 0), pos);
+    }
   }
 
-  mask = G_GUINT64_CONSTANT (1) << pos;
-
-  caps = gst_caps_new_simple ("audio/x-raw",
-      "format", G_TYPE_STRING, GST_AUDIO_NE (F32),
-      "channels", G_TYPE_INT, 1,
-      "layout", G_TYPE_STRING, "interleaved",
-      "channel-mask", GST_TYPE_BITMASK, mask, "rate", G_TYPE_INT, 48000, NULL);
-
-  gst_pad_set_caps (pad, caps);
-  gst_caps_unref (caps);
-
-  size = 48000 * sizeof (gfloat);
-  data = g_malloc (size);
-  for (i = 0; i < 48000; i++)
-    data[i] = (n % 2 == 0) ? -1.0 : 1.0;
-
-  gst_buffer_append_memory (buffer, gst_memory_new_wrapped (0, data,
-          size, 0, size, data, g_free));
+  data = g_new (gfloat, 48000);
+  GST_BUFFER_MALLOCDATA (buffer) = (guint8 *) data;
+  GST_BUFFER_DATA (buffer) = (guint8 *) data;
+  GST_BUFFER_SIZE (buffer) = 48000 * sizeof (gfloat);
 
   GST_BUFFER_OFFSET (buffer) = GST_BUFFER_OFFSET_NONE;
   GST_BUFFER_TIMESTAMP (buffer) = GST_CLOCK_TIME_NONE;
   GST_BUFFER_OFFSET_END (buffer) = GST_BUFFER_OFFSET_NONE;
   GST_BUFFER_DURATION (buffer) = GST_SECOND;
+
+  gst_buffer_set_caps (buffer, caps);
+  gst_caps_unref (caps);
+
+  for (i = 0; i < 48000; i++)
+    data[i] = (n % 2 == 0) ? -1.0 : 1.0;
 }
 
 static void
@@ -440,54 +426,48 @@ sink_handoff_float32 (GstElement * element, GstBuffer * buffer, GstPad * pad,
     gpointer user_data)
 {
   gint i;
-  GstMapInfo map;
+
   gfloat *data;
-  GstCaps *caps, *ccaps;
+
+  GstCaps *caps;
+
   gint n = GPOINTER_TO_INT (user_data);
-  guint64 mask;
 
   fail_unless (GST_IS_BUFFER (buffer));
-  gst_buffer_map (buffer, &map, GST_MAP_READ);
-  data = (gfloat *) map.data;
-
-  fail_unless_equals_int (map.size, 48000 * 2 * sizeof (gfloat));
+  fail_unless_equals_int (GST_BUFFER_SIZE (buffer),
+      48000 * 2 * sizeof (gfloat));
   fail_unless_equals_int (GST_BUFFER_DURATION (buffer), GST_SECOND);
+
+  caps = gst_caps_new_simple ("audio/x-raw-float",
+      "width", G_TYPE_INT, 32,
+      "channels", G_TYPE_INT, 2,
+      "rate", G_TYPE_INT, 48000, "endianness", G_TYPE_INT, G_BYTE_ORDER, NULL);
 
   if (n == 0) {
     GstAudioChannelPosition pos[2] =
         { GST_AUDIO_CHANNEL_POSITION_NONE, GST_AUDIO_CHANNEL_POSITION_NONE };
-    gst_audio_channel_positions_to_mask (pos, 2, FALSE, &mask);
+    gst_audio_set_channel_positions (gst_caps_get_structure (caps, 0), pos);
   } else if (n == 1) {
     GstAudioChannelPosition pos[2] = { GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
       GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT
     };
-    gst_audio_channel_positions_to_mask (pos, 2, FALSE, &mask);
+    gst_audio_set_channel_positions (gst_caps_get_structure (caps, 0), pos);
   } else if (n == 2) {
     GstAudioChannelPosition pos[2] = { GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
       GST_AUDIO_CHANNEL_POSITION_REAR_CENTER
     };
-    gst_audio_channel_positions_to_mask (pos, 2, FALSE, &mask);
+    gst_audio_set_channel_positions (gst_caps_get_structure (caps, 0), pos);
   }
 
-  caps = gst_caps_new_simple ("audio/x-raw",
-      "format", G_TYPE_STRING, GST_AUDIO_NE (F32),
-      "channels", G_TYPE_INT, 2, "rate", G_TYPE_INT, 48000,
-      "layout", G_TYPE_STRING, "interleaved",
-      "channel-mask", GST_TYPE_BITMASK, mask, NULL);
-
-  ccaps = gst_pad_get_current_caps (pad);
-  fail_unless (gst_caps_is_equal (caps, ccaps));
-  gst_caps_unref (ccaps);
+  fail_unless (gst_caps_is_equal (caps, GST_BUFFER_CAPS (buffer)));
   gst_caps_unref (caps);
 
-#ifdef HAVE_VALGRIND
-  if (!(RUNNING_ON_VALGRIND))
-#endif
-    for (i = 0; i < 48000 * 2; i += 2) {
-      fail_unless_equals_float (data[i], -1.0);
-      fail_unless_equals_float (data[i + 1], 1.0);
-    }
-  gst_buffer_unmap (buffer, &map);
+  data = (gfloat *) GST_BUFFER_DATA (buffer);
+
+  for (i = 0; i < 48000 * 2; i += 2) {
+    fail_unless_equals_float (data[i], -1.0);
+    fail_unless_equals_float (data[i + 1], 1.0);
+  }
 
   have_data++;
 }
@@ -495,7 +475,9 @@ sink_handoff_float32 (GstElement * element, GstBuffer * buffer, GstPad * pad,
 GST_START_TEST (test_interleave_2ch_pipeline)
 {
   GstElement *pipeline, *queue, *src1, *src2, *interleave, *sink;
+
   GstPad *sinkpad0, *sinkpad1, *tmp, *tmp2;
+
   GstMessage *msg;
 
   have_data = 0;
@@ -527,13 +509,13 @@ GST_START_TEST (test_interleave_2ch_pipeline)
   fail_unless (interleave != NULL);
   gst_bin_add (GST_BIN (pipeline), gst_object_ref (interleave));
 
-  sinkpad0 = gst_element_get_request_pad (interleave, "sink_%u");
+  sinkpad0 = gst_element_get_request_pad (interleave, "sink%d");
   fail_unless (sinkpad0 != NULL);
   tmp = gst_element_get_static_pad (src1, "src");
   fail_unless (gst_pad_link (tmp, sinkpad0) == GST_PAD_LINK_OK);
   gst_object_unref (tmp);
 
-  sinkpad1 = gst_element_get_request_pad (interleave, "sink_%u");
+  sinkpad1 = gst_element_get_request_pad (interleave, "sink%d");
   fail_unless (sinkpad1 != NULL);
   tmp = gst_element_get_static_pad (src2, "src");
   tmp2 = gst_element_get_static_pad (queue, "sink");
@@ -577,7 +559,9 @@ GST_END_TEST;
 GST_START_TEST (test_interleave_2ch_pipeline_input_chanpos)
 {
   GstElement *pipeline, *queue, *src1, *src2, *interleave, *sink;
+
   GstPad *sinkpad0, *sinkpad1, *tmp, *tmp2;
+
   GstMessage *msg;
 
   have_data = 0;
@@ -610,13 +594,13 @@ GST_START_TEST (test_interleave_2ch_pipeline_input_chanpos)
   g_object_set (interleave, "channel-positions-from-input", TRUE, NULL);
   gst_bin_add (GST_BIN (pipeline), gst_object_ref (interleave));
 
-  sinkpad0 = gst_element_get_request_pad (interleave, "sink_%u");
+  sinkpad0 = gst_element_get_request_pad (interleave, "sink%d");
   fail_unless (sinkpad0 != NULL);
   tmp = gst_element_get_static_pad (src1, "src");
   fail_unless (gst_pad_link (tmp, sinkpad0) == GST_PAD_LINK_OK);
   gst_object_unref (tmp);
 
-  sinkpad1 = gst_element_get_request_pad (interleave, "sink_%u");
+  sinkpad1 = gst_element_get_request_pad (interleave, "sink%d");
   fail_unless (sinkpad1 != NULL);
   tmp = gst_element_get_static_pad (src2, "src");
   tmp2 = gst_element_get_static_pad (queue, "sink");
@@ -660,8 +644,11 @@ GST_END_TEST;
 GST_START_TEST (test_interleave_2ch_pipeline_custom_chanpos)
 {
   GstElement *pipeline, *queue, *src1, *src2, *interleave, *sink;
+
   GstPad *sinkpad0, *sinkpad1, *tmp, *tmp2;
+
   GstMessage *msg;
+
   GValueArray *arr;
   GValue val = { 0, };
 
@@ -694,7 +681,6 @@ GST_START_TEST (test_interleave_2ch_pipeline_custom_chanpos)
   fail_unless (interleave != NULL);
   g_object_set (interleave, "channel-positions-from-input", FALSE, NULL);
   arr = g_value_array_new (2);
-
   g_value_init (&val, GST_TYPE_AUDIO_CHANNEL_POSITION);
   g_value_set_enum (&val, GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER);
   g_value_array_append (arr, &val);
@@ -702,18 +688,17 @@ GST_START_TEST (test_interleave_2ch_pipeline_custom_chanpos)
   g_value_set_enum (&val, GST_AUDIO_CHANNEL_POSITION_REAR_CENTER);
   g_value_array_append (arr, &val);
   g_value_unset (&val);
-
   g_object_set (interleave, "channel-positions", arr, NULL);
   g_value_array_free (arr);
   gst_bin_add (GST_BIN (pipeline), gst_object_ref (interleave));
 
-  sinkpad0 = gst_element_get_request_pad (interleave, "sink_%u");
+  sinkpad0 = gst_element_get_request_pad (interleave, "sink%d");
   fail_unless (sinkpad0 != NULL);
   tmp = gst_element_get_static_pad (src1, "src");
   fail_unless (gst_pad_link (tmp, sinkpad0) == GST_PAD_LINK_OK);
   gst_object_unref (tmp);
 
-  sinkpad1 = gst_element_get_request_pad (interleave, "sink_%u");
+  sinkpad1 = gst_element_get_request_pad (interleave, "sink%d");
   fail_unless (sinkpad1 != NULL);
   tmp = gst_element_get_static_pad (src2, "src");
   tmp2 = gst_element_get_static_pad (queue, "sink");
@@ -758,6 +743,7 @@ static Suite *
 interleave_suite (void)
 {
   Suite *s = suite_create ("interleave");
+
   TCase *tc_chain = tcase_create ("general");
 
   suite_add_tcase (s, tc_chain);

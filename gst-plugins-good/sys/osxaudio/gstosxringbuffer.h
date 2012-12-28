@@ -1,7 +1,6 @@
 /*
  * GStreamer
  * Copyright (C) 2006 Zaheer Abbas Merali <zaheerabbas at merali dot org>
- * Copyright (C) 2012 Fluendo S.A. <support@fluendo.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -48,8 +47,6 @@
 #include <gst/gst.h>
 #include <gst/audio/gstringbuffer.h>
 #include <CoreAudio/CoreAudio.h>
-#include <AudioToolbox/AudioToolbox.h>
-
 #include "gstosxaudioelement.h"
 
 G_BEGIN_DECLS
@@ -67,8 +64,6 @@ G_BEGIN_DECLS
 #define GST_IS_OSX_RING_BUFFER_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_OSX_RING_BUFFER))
 
-#define RINGBUFFER_IS_SPDIF(t) ((t) == GST_BUFTYPE_AC3 || (t) == GST_BUFTYPE_DTS)
-
 typedef struct _GstOsxRingBuffer GstOsxRingBuffer;
 typedef struct _GstOsxRingBufferClass GstOsxRingBufferClass;
 
@@ -77,29 +72,14 @@ struct _GstOsxRingBuffer
   GstRingBuffer object;
 
   gboolean is_src;
-  gboolean is_passthrough;
-  gint stream_idx;
-
+  AudioUnit audiounit;
   AudioDeviceID device_id;
   gboolean io_proc_active;
   gboolean io_proc_needs_deactivation;
   guint buffer_len;
   guint segoffset;
-
-  GstOsxAudioElementInterface *element;
-
-  /* For LPCM in/out */
-  AudioUnit audiounit;
-  AudioBufferList *recBufferList;
-
-  /* For SPDIF out */
-  pid_t hog_pid;
-  gboolean disabled_mixing;
-  AudioStreamID stream_id;
-  gboolean revert_format;
-  AudioStreamBasicDescription stream_format;
-  AudioStreamBasicDescription original_format;
-  AudioDeviceIOProcID procID;
+  AudioBufferList * recBufferList;
+  GstOsxAudioElementInterface * element;
 };
 
 struct _GstOsxRingBufferClass
@@ -112,4 +92,3 @@ GType gst_osx_ring_buffer_get_type (void);
 G_END_DECLS
 
 #endif /* __GST_OSX_RING_BUFFER_H__ */
-

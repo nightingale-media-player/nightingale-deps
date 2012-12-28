@@ -17,35 +17,33 @@
 #define __GST_RTP_PCMA_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstrtpbaseaudiopayload.h>
+#include <gst/rtp/gstbasertpaudiopayload.h>
 
 G_BEGIN_DECLS
 
-typedef struct _GstRtpPcmaPay GstRtpPcmaPay;
-typedef struct _GstRtpPcmaPayClass GstRtpPcmaPayClass;
+typedef struct _GstRtpPmcaPay GstRtpPmcaPay;
+typedef struct _GstRtpPmcaPayClass GstRtpPmcaPayClass;
 
 #define GST_TYPE_RTP_PCMA_PAY \
   (gst_rtp_pcma_pay_get_type())
 #define GST_RTP_PCMA_PAY(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_RTP_PCMA_PAY,GstRtpPcmaPay))
+  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_RTP_PCMA_PAY,GstRtpPmcaPay))
 #define GST_RTP_PCMA_PAY_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_RTP_PCMA_PAY,GstRtpPcmaPayClass))
+  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_RTP_PCMA_PAY,GstRtpPmcaPayClass))
 #define GST_IS_RTP_PCMA_PAY(obj) \
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_RTP_PCMA_PAY))
 #define GST_IS_RTP_PCMA_PAY_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_RTP_PCMA_PAY))
 
-struct _GstRtpPcmaPay
+struct _GstRtpPmcaPay
 {
-  GstRTPBaseAudioPayload audiopayload;
+  GstBaseRTPAudioPayload audiopayload;
 };
 
-struct _GstRtpPcmaPayClass
+struct _GstRtpPmcaPayClass
 {
-  GstRTPBaseAudioPayloadClass parent_class;
+  GstBaseRTPAudioPayloadClass parent_class;
 };
-
-GType gst_rtp_pcma_pay_get_type (void);
 
 gboolean gst_rtp_pcma_pay_plugin_init (GstPlugin * plugin);
 

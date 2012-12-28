@@ -42,7 +42,7 @@
  * <refsect2>
  * <title>Example pipelines</title>
  * |[
- * gst-launch-1.0 udpsrc caps="application/x-rtp" ! gstrtpptdemux ! fakesink
+ * gst-launch udpsrc caps="application/x-rtp" ! gstrtpptdemux ! fakesink
  * ]| Takes an RTP stream and send the RTP packets with the first detected
  * payload type to fakesink, discarding the other payload types.
  * </refsect2>
@@ -88,7 +88,7 @@ GST_STATIC_PAD_TEMPLATE ("sink",
     );
 
 static GstStaticPadTemplate rtp_pt_demux_src_template =
-GST_STATIC_PAD_TEMPLATE ("src_%u",
+GST_STATIC_PAD_TEMPLATE ("src_%d",
     GST_PAD_SRC,
     GST_PAD_SOMETIMES,
     GST_STATIC_CAPS ("application/x-rtp, " "payload = (int) [ 0, 255 ]")
@@ -97,7 +97,7 @@ GST_STATIC_PAD_TEMPLATE ("src_%u",
 GST_DEBUG_CATEGORY_STATIC (gst_rtp_pt_demux_debug);
 #define GST_CAT_DEFAULT gst_rtp_pt_demux_debug
 
-/*
+/**
  * Item for storing GstPad<->pt pairs.
  */
 struct _GstRtpPtDemuxPad
@@ -117,29 +117,41 @@ enum
   LAST_SIGNAL
 };
 
-#define gst_rtp_pt_demux_parent_class parent_class
-G_DEFINE_TYPE (GstRtpPtDemux, gst_rtp_pt_demux, GST_TYPE_ELEMENT);
+GST_BOILERPLATE (GstRtpPtDemux, gst_rtp_pt_demux, GstElement, GST_TYPE_ELEMENT);
 
 static void gst_rtp_pt_demux_finalize (GObject * object);
 
 static void gst_rtp_pt_demux_release (GstRtpPtDemux * ptdemux);
 static gboolean gst_rtp_pt_demux_setup (GstRtpPtDemux * ptdemux);
 
-static gboolean gst_rtp_pt_demux_sink_event (GstPad * pad, GstObject * parent,
-    GstEvent * event);
-static GstFlowReturn gst_rtp_pt_demux_chain (GstPad * pad, GstObject * parent,
-    GstBuffer * buf);
+static GstFlowReturn gst_rtp_pt_demux_chain (GstPad * pad, GstBuffer * buf);
 static GstStateChangeReturn gst_rtp_pt_demux_change_state (GstElement * element,
     GstStateChange transition);
 static void gst_rtp_pt_demux_clear_pt_map (GstRtpPtDemux * rtpdemux);
 
-static GstPad *find_pad_for_pt (GstRtpPtDemux * rtpdemux, guint8 pt);
-
-static gboolean gst_rtp_pt_demux_src_event (GstPad * pad, GstObject * parent,
-    GstEvent * event);
-
+static GstRtpPtDemuxPad *find_pad_for_pt (GstRtpPtDemux * rtpdemux, guint8 pt);
 
 static guint gst_rtp_pt_demux_signals[LAST_SIGNAL] = { 0 };
+
+static GstElementDetails gst_rtp_pt_demux_details = {
+  "RTP Demux",
+  "Demux/Network/RTP",
+  "Parses codec streams transmitted in the same RTP session",
+  "Kai Vehmanen <kai.vehmanen@nokia.com>"
+};
+
+static void
+gst_rtp_pt_demux_base_init (gpointer g_class)
+{
+  GstElementClass *gstelement_klass = GST_ELEMENT_CLASS (g_class);
+
+  gst_element_class_add_pad_template (gstelement_klass,
+      gst_static_pad_template_get (&rtp_pt_demux_sink_template));
+  gst_element_class_add_pad_template (gstelement_klass,
+      gst_static_pad_template_get (&rtp_pt_demux_src_template));
+
+  gst_element_class_set_details (gstelement_klass, &gst_rtp_pt_demux_details);
+}
 
 static void
 gst_rtp_pt_demux_class_init (GstRtpPtDemuxClass * klass)
@@ -203,29 +215,19 @@ gst_rtp_pt_demux_class_init (GstRtpPtDemuxClass * klass)
           clear_pt_map), NULL, NULL, g_cclosure_marshal_VOID__VOID,
       G_TYPE_NONE, 0, G_TYPE_NONE);
 
-  gobject_klass->finalize = gst_rtp_pt_demux_finalize;
+  gobject_klass->finalize = GST_DEBUG_FUNCPTR (gst_rtp_pt_demux_finalize);
 
   gstelement_klass->change_state =
       GST_DEBUG_FUNCPTR (gst_rtp_pt_demux_change_state);
 
   klass->clear_pt_map = GST_DEBUG_FUNCPTR (gst_rtp_pt_demux_clear_pt_map);
 
-  gst_element_class_add_pad_template (gstelement_klass,
-      gst_static_pad_template_get (&rtp_pt_demux_sink_template));
-  gst_element_class_add_pad_template (gstelement_klass,
-      gst_static_pad_template_get (&rtp_pt_demux_src_template));
-
-  gst_element_class_set_static_metadata (gstelement_klass, "RTP Demux",
-      "Demux/Network/RTP",
-      "Parses codec streams transmitted in the same RTP session",
-      "Kai Vehmanen <kai.vehmanen@nokia.com>");
-
   GST_DEBUG_CATEGORY_INIT (gst_rtp_pt_demux_debug,
       "rtpptdemux", 0, "RTP codec demuxer");
 }
 
 static void
-gst_rtp_pt_demux_init (GstRtpPtDemux * ptdemux)
+gst_rtp_pt_demux_init (GstRtpPtDemux * ptdemux, GstRtpPtDemuxClass * g_class)
 {
   GstElementClass *klass = GST_ELEMENT_GET_CLASS (ptdemux);
 
@@ -235,7 +237,6 @@ gst_rtp_pt_demux_init (GstRtpPtDemux * ptdemux)
   g_assert (ptdemux->sink != NULL);
 
   gst_pad_set_chain_function (ptdemux->sink, gst_rtp_pt_demux_chain);
-  gst_pad_set_event_function (ptdemux->sink, gst_rtp_pt_demux_sink_event);
 
   gst_element_add_pad (GST_ELEMENT (ptdemux), ptdemux->sink);
 }
@@ -272,7 +273,9 @@ gst_rtp_pt_demux_get_caps (GstRtpPtDemux * rtpdemux, guint pt)
   caps = g_value_dup_boxed (&ret);
   g_value_unset (&ret);
   if (caps == NULL) {
-    caps = gst_pad_get_current_caps (rtpdemux->sink);
+    caps = GST_PAD_CAPS (rtpdemux->sink);
+    if (caps)
+      gst_caps_ref (caps);
   }
 
   GST_DEBUG ("pt %d, got caps %" GST_PTR_FORMAT, pt, caps);
@@ -295,118 +298,67 @@ gst_rtp_pt_demux_clear_pt_map (GstRtpPtDemux * rtpdemux)
   GST_OBJECT_UNLOCK (rtpdemux);
 }
 
-static gboolean
-need_caps_for_pt (GstRtpPtDemux * rtpdemux, guint8 pt)
-{
-  GSList *walk;
-  gboolean ret = FALSE;
-
-  GST_OBJECT_LOCK (rtpdemux);
-  for (walk = rtpdemux->srcpads; walk; walk = g_slist_next (walk)) {
-    GstRtpPtDemuxPad *pad = walk->data;
-
-    if (pad->pt == pt) {
-      ret = pad->newcaps;
-    }
-  }
-  GST_OBJECT_UNLOCK (rtpdemux);
-
-  return ret;
-}
-
-
-static void
-clear_newcaps_for_pt (GstRtpPtDemux * rtpdemux, guint8 pt)
-{
-  GSList *walk;
-
-  GST_OBJECT_LOCK (rtpdemux);
-  for (walk = rtpdemux->srcpads; walk; walk = g_slist_next (walk)) {
-    GstRtpPtDemuxPad *pad = walk->data;
-
-    if (pad->pt == pt) {
-      pad->newcaps = FALSE;
-      break;
-    }
-  }
-  GST_OBJECT_UNLOCK (rtpdemux);
-}
-
-static gboolean
-forward_sticky_events (GstPad * pad, GstEvent ** event, gpointer user_data)
-{
-  GstPad *srcpad = GST_PAD_CAST (user_data);
-
-  gst_pad_push_event (srcpad, gst_event_ref (*event));
-
-  return TRUE;
-}
-
 static GstFlowReturn
-gst_rtp_pt_demux_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
+gst_rtp_pt_demux_chain (GstPad * pad, GstBuffer * buf)
 {
   GstFlowReturn ret = GST_FLOW_OK;
   GstRtpPtDemux *rtpdemux;
+  GstElement *element = GST_ELEMENT (GST_OBJECT_PARENT (pad));
   guint8 pt;
   GstPad *srcpad;
+  GstRtpPtDemuxPad *rtpdemuxpad;
   GstCaps *caps;
-  GstRTPBuffer rtp = { NULL };
 
-  rtpdemux = GST_RTP_PT_DEMUX (parent);
+  rtpdemux = GST_RTP_PT_DEMUX (GST_OBJECT_PARENT (pad));
 
-  if (!gst_rtp_buffer_map (buf, GST_MAP_READ, &rtp))
+  if (!gst_rtp_buffer_validate (buf))
     goto invalid_buffer;
 
-  pt = gst_rtp_buffer_get_payload_type (&rtp);
-  gst_rtp_buffer_unmap (&rtp);
+  pt = gst_rtp_buffer_get_payload_type (buf);
 
   GST_DEBUG_OBJECT (rtpdemux, "received buffer for pt %d", pt);
 
-  srcpad = find_pad_for_pt (rtpdemux, pt);
-  if (srcpad == NULL) {
+  rtpdemuxpad = find_pad_for_pt (rtpdemux, pt);
+  if (rtpdemuxpad == NULL) {
     /* new PT, create a src pad */
-    GstRtpPtDemuxPad *rtpdemuxpad;
     GstElementClass *klass;
     GstPadTemplate *templ;
     gchar *padname;
 
-    caps = gst_rtp_pt_demux_get_caps (rtpdemux, pt);
-    if (!caps)
-      goto no_caps;
-
     klass = GST_ELEMENT_GET_CLASS (rtpdemux);
-    templ = gst_element_class_get_pad_template (klass, "src_%u");
-    padname = g_strdup_printf ("src_%u", pt);
+    templ = gst_element_class_get_pad_template (klass, "src_%d");
+    padname = g_strdup_printf ("src_%d", pt);
     srcpad = gst_pad_new_from_template (templ, padname);
     gst_pad_use_fixed_caps (srcpad);
     g_free (padname);
-    gst_pad_set_event_function (srcpad, gst_rtp_pt_demux_src_event);
 
-    GST_DEBUG ("Adding pt=%d to the list.", pt);
-    rtpdemuxpad = g_slice_new0 (GstRtpPtDemuxPad);
-    rtpdemuxpad->pt = pt;
-    rtpdemuxpad->newcaps = FALSE;
-    rtpdemuxpad->pad = srcpad;
-    gst_object_ref (srcpad);
-    GST_OBJECT_LOCK (rtpdemux);
-    rtpdemux->srcpads = g_slist_append (rtpdemux->srcpads, rtpdemuxpad);
-    GST_OBJECT_UNLOCK (rtpdemux);
-
-    gst_pad_set_active (srcpad, TRUE);
+    caps = gst_rtp_pt_demux_get_caps (rtpdemux, pt);
+    if (!caps)
+      goto no_caps;
 
     caps = gst_caps_make_writable (caps);
     gst_caps_set_simple (caps, "payload", G_TYPE_INT, pt, NULL);
     gst_pad_set_caps (srcpad, caps);
     gst_caps_unref (caps);
 
-    gst_pad_sticky_events_foreach (rtpdemux->sink, forward_sticky_events,
-        srcpad);
-    gst_element_add_pad (GST_ELEMENT_CAST (rtpdemux), srcpad);
+    GST_DEBUG ("Adding pt=%d to the list.", pt);
+    rtpdemuxpad = g_new0 (GstRtpPtDemuxPad, 1);
+    rtpdemuxpad->pt = pt;
+    rtpdemuxpad->newcaps = FALSE;
+    rtpdemuxpad->pad = srcpad;
+    GST_OBJECT_LOCK (rtpdemux);
+    rtpdemux->srcpads = g_slist_append (rtpdemux->srcpads, rtpdemuxpad);
+    GST_OBJECT_UNLOCK (rtpdemux);
+
+    gst_pad_set_active (srcpad, TRUE);
+    gst_element_add_pad (element, srcpad);
 
     GST_DEBUG ("emitting new-payload-type for pt %d", pt);
     g_signal_emit (G_OBJECT (rtpdemux),
         gst_rtp_pt_demux_signals[SIGNAL_NEW_PAYLOAD_TYPE], 0, pt, srcpad);
   }
+
+  srcpad = rtpdemuxpad->pad;
 
   if (pt != rtpdemux->last_pt) {
     gint emit_pt = pt;
@@ -418,24 +370,23 @@ gst_rtp_pt_demux_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
         gst_rtp_pt_demux_signals[SIGNAL_PAYLOAD_TYPE_CHANGE], 0, emit_pt);
   }
 
-  while (need_caps_for_pt (rtpdemux, pt)) {
-    GST_DEBUG ("need new caps for %d", pt);
+  if (rtpdemuxpad->newcaps) {
+    GST_DEBUG ("need new caps");
     caps = gst_rtp_pt_demux_get_caps (rtpdemux, pt);
     if (!caps)
       goto no_caps;
-
-    clear_newcaps_for_pt (rtpdemux, pt);
 
     caps = gst_caps_make_writable (caps);
     gst_caps_set_simple (caps, "payload", G_TYPE_INT, pt, NULL);
     gst_pad_set_caps (srcpad, caps);
     gst_caps_unref (caps);
+    rtpdemuxpad->newcaps = FALSE;
   }
+
+  gst_buffer_set_caps (buf, GST_PAD_CAPS (srcpad));
 
   /* push to srcpad */
   ret = gst_pad_push (srcpad, buf);
-
-  gst_object_unref (srcpad);
 
   return ret;
 
@@ -453,122 +404,28 @@ no_caps:
     GST_ELEMENT_ERROR (rtpdemux, STREAM, DECODE, (NULL),
         ("Could not get caps for payload"));
     gst_buffer_unref (buf);
-    if (srcpad)
-      gst_object_unref (srcpad);
     return GST_FLOW_ERROR;
   }
 }
 
-static GstPad *
+static GstRtpPtDemuxPad *
 find_pad_for_pt (GstRtpPtDemux * rtpdemux, guint8 pt)
 {
-  GstPad *respad = NULL;
+  GstRtpPtDemuxPad *respad = NULL;
   GSList *walk;
 
-  GST_OBJECT_LOCK (rtpdemux);
   for (walk = rtpdemux->srcpads; walk; walk = g_slist_next (walk)) {
     GstRtpPtDemuxPad *pad = walk->data;
 
     if (pad->pt == pt) {
-      respad = gst_object_ref (pad->pad);
+      respad = pad;
       break;
     }
   }
-  GST_OBJECT_UNLOCK (rtpdemux);
-
   return respad;
 }
 
-static gboolean
-gst_rtp_pt_demux_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
-{
-  GstRtpPtDemux *rtpdemux;
-  gboolean res = FALSE;
-
-  rtpdemux = GST_RTP_PT_DEMUX (parent);
-
-  switch (GST_EVENT_TYPE (event)) {
-    case GST_EVENT_CAPS:
-    {
-      gst_rtp_pt_demux_clear_pt_map (rtpdemux);
-      /* don't forward the event, we cleared the ptmap and on the next buffer we
-       * will add the pt to the caps and push a new caps event */
-      gst_event_unref (event);
-      res = TRUE;
-      break;
-    }
-    case GST_EVENT_CUSTOM_DOWNSTREAM:
-    {
-      const GstStructure *s;
-
-      s = gst_event_get_structure (event);
-
-      if (gst_structure_has_name (s, "GstRTPPacketLost")) {
-        GstPad *srcpad = find_pad_for_pt (rtpdemux, rtpdemux->last_pt);
-
-        if (srcpad) {
-          res = gst_pad_push_event (srcpad, event);
-          gst_object_unref (srcpad);
-        } else {
-          gst_event_unref (event);
-        }
-
-      } else {
-        res = gst_pad_event_default (pad, parent, event);
-      }
-      break;
-    }
-    default:
-      res = gst_pad_event_default (pad, parent, event);
-      break;
-  }
-
-  return res;
-}
-
-
-static gboolean
-gst_rtp_pt_demux_src_event (GstPad * pad, GstObject * parent, GstEvent * event)
-{
-  GstRtpPtDemux *demux;
-  const GstStructure *s;
-
-  demux = GST_RTP_PT_DEMUX (parent);
-
-  switch (GST_EVENT_TYPE (event)) {
-    case GST_EVENT_CUSTOM_UPSTREAM:
-    case GST_EVENT_CUSTOM_BOTH:
-    case GST_EVENT_CUSTOM_BOTH_OOB:
-      s = gst_event_get_structure (event);
-      if (s && !gst_structure_has_field (s, "payload")) {
-        GSList *walk;
-
-        GST_OBJECT_LOCK (demux);
-        for (walk = demux->srcpads; walk; walk = g_slist_next (walk)) {
-          GstRtpPtDemuxPad *dpad = (GstRtpPtDemuxPad *) walk->data;
-
-          if (dpad->pad == pad) {
-            GstStructure *ws;
-
-            event =
-                GST_EVENT_CAST (gst_mini_object_make_writable
-                (GST_MINI_OBJECT_CAST (event)));
-            ws = gst_event_writable_structure (event);
-            gst_structure_set (ws, "payload", G_TYPE_UINT, dpad->pt, NULL);
-            break;
-          }
-        }
-        GST_OBJECT_UNLOCK (demux);
-      }
-      break;
-    default:
-      break;
-  }
-
-  return gst_pad_event_default (pad, parent, event);
-}
-
-/*
+/**
  * Reserves resources for the object.
  */
 static gboolean
@@ -580,28 +437,23 @@ gst_rtp_pt_demux_setup (GstRtpPtDemux * ptdemux)
   return TRUE;
 }
 
-/*
+/**
  * Free resources for the object.
  */
 static void
 gst_rtp_pt_demux_release (GstRtpPtDemux * ptdemux)
 {
-  GSList *tmppads;
   GSList *walk;
 
-  GST_OBJECT_LOCK (ptdemux);
-  tmppads = ptdemux->srcpads;
-  ptdemux->srcpads = NULL;
-  GST_OBJECT_UNLOCK (ptdemux);
-
-  for (walk = tmppads; walk; walk = g_slist_next (walk)) {
+  for (walk = ptdemux->srcpads; walk; walk = g_slist_next (walk)) {
     GstRtpPtDemuxPad *pad = walk->data;
 
     gst_pad_set_active (pad->pad, FALSE);
     gst_element_remove_pad (GST_ELEMENT_CAST (ptdemux), pad->pad);
-    g_slice_free (GstRtpPtDemuxPad, pad);
+    g_free (pad);
   }
-  g_slist_free (tmppads);
+  g_slist_free (ptdemux->srcpads);
+  ptdemux->srcpads = NULL;
 }
 
 static GstStateChangeReturn

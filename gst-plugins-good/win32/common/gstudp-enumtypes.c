@@ -1,16 +1,15 @@
 
+/* Generated data (by glib-mkenums) */
 
-
-#include "gstudp-enumtypes.h"
-
-#include "gstudp.h"
+#include <gstudp.h>
 
 /* enumerations from "gstudp.h" */
 GType
 gst_udp_control_get_type (void)
 {
-  static volatile gsize g_define_type_id__volatile = 0;
-  if (g_once_init_enter (&g_define_type_id__volatile)) {
+  static GType etype = 0;
+
+  if (etype == 0) {
     static const GEnumValue values[] = {
       {CONTROL_ZERO, "CONTROL_ZERO", "zero"},
       {CONTROL_NONE, "CONTROL_NONE", "none"},
@@ -18,8 +17,9 @@ gst_udp_control_get_type (void)
       {CONTROL_TCP, "CONTROL_TCP", "tcp"},
       {0, NULL, NULL}
     };
-    GType g_define_type_id = g_enum_register_static ("GstUDPControl", values);
-    g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
+    etype = g_enum_register_static ("GstUDPControl", values);
   }
-  return g_define_type_id__volatile;
+  return etype;
 }
+
+/* Generated data ends here */

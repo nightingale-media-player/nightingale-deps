@@ -24,38 +24,19 @@
 #endif
 
 #include "matroska-demux.h"
-#include "matroska-parse.h"
-#include "matroska-read-common.h"
 #include "matroska-mux.h"
 #include "matroska-ids.h"
-#include "webm-mux.h"
-
-#include <gst/pbutils/pbutils.h>
 
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  gboolean ret;
-
-  gst_pb_utils_init ();
-
   gst_matroska_register_tags ();
-
-  GST_DEBUG_CATEGORY_INIT (matroskareadcommon_debug, "matroskareadcommon", 0,
-      "Matroska demuxer/parser shared debug");
-
-  ret = gst_matroska_demux_plugin_init (plugin);
-  ret &= gst_matroska_parse_plugin_init (plugin);
-  ret &= gst_element_register (plugin, "matroskamux", GST_RANK_PRIMARY,
-      GST_TYPE_MATROSKA_MUX);
-  ret &= gst_element_register (plugin, "webmmux", GST_RANK_PRIMARY,
-      GST_TYPE_WEBM_MUX);
-
-  return ret;
+  return gst_matroska_demux_plugin_init (plugin) &&
+      gst_matroska_mux_plugin_init (plugin);
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    matroska,
-    "Matroska and WebM stream handling",
+    "matroska",
+    "Matroska stream handling",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

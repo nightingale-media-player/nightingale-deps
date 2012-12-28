@@ -3,13 +3,16 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>osssrc</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-osssink.html" title="osssink">
 <link rel="next" href="gst-plugins-good-plugins-osxaudiosink.html" title="osxaudiosink">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -17,22 +20,22 @@
 <td><a accesskey="p" href="gst-plugins-good-plugins-osssink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-osxaudiosink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-osssrc.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-osssrc.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-osssrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-osssrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-osssrc.properties" class="shortcut">Properties</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-osssrc.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-osssrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-osssrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-osssrc.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
-<div class="refentry">
+<div class="refentry" title="osssrc">
 <a name="gst-plugins-good-plugins-osssrc"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -41,44 +44,79 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="gst-plugins-good-plugins-osssrc.synopsis"></a><h2>Synopsis</h2>
-<a name="GstOssSrc"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-osssrc.html#GstOssSrc-struct" title="struct GstOssSrc">GstOssSrc</a>;
+<a name="GstOssSrc"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-good-plugins-osssrc.html#GstOssSrc-struct" title="GstOssSrc">GstOssSrc</a>;
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Object Hierarchy">
 <a name="gst-plugins-good-plugins-osssrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseSrc.html">GstBaseSrc</a>
-                           +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstPushSrc.html">GstPushSrc</a>
-                                 +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstaudiobasesrc.html#GstAudioBaseSrc">GstAudioBaseSrc</a>
-                                       +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstaudiosrc.html#GstAudioSrc">GstAudioSrc</a>
-                                             +----GstOssSrc
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="../gstreamer-libs-0.10/GstBaseSrc.html"
+>GstBaseSrc</a>
+                     +----<a
+href="../gstreamer-libs-0.10/GstPushSrc.html"
+>GstPushSrc</a>
+                           +----<a
+href="../gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc"
+>GstBaseAudioSrc</a>
+                                 +----<a
+href="../gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstaudiosrc.html#GstAudioSrc"
+>GstAudioSrc</a>
+                                       +----GstOssSrc
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Implemented Interfaces">
 <a name="gst-plugins-good-plugins-osssrc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstOssSrc implements
- GstImplementsInterface and  GstMixer.</p>
+ <a
+href="../gstreamer-0.10/GstImplementsInterface.html"
+>GstImplementsInterface</a> and  <a
+href="../gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstmixer.html#GstMixer"
+>GstMixer</a>.</p>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Properties">
 <a name="gst-plugins-good-plugins-osssrc.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-osssrc.html#GstOssSrc--device" title='The "device" property'>device</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-osssrc.html#GstOssSrc--device-name" title='The "device-name" property'>device-name</a>"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read
+  "<a class="link" href="gst-plugins-good-plugins-osssrc.html#GstOssSrc--device" title='The "device" property'>device</a>"                   <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-osssrc.html#GstOssSrc--device-name" title='The "device-name" property'>device-name</a>"              <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Description">
 <a name="gst-plugins-good-plugins-osssrc.description"></a><h2>Description</h2>
-<div class="refsynopsisdiv">
+<p>
+This element lets you record sound using the Open Sound System (OSS).
+</p>
+<p>
+</p>
+<div class="refsect2" title="Example pipelines">
+<a name="id560973"></a><h3>Example pipelines</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v osssrc ! audioconvert ! vorbisenc ! oggmux ! filesink location=mymusic.ogg
+</pre></div> will record sound from your sound card using OSS and encode it to an
+Ogg/Vorbis file (this will only work if your mixer settings are right
+and the right inputs enabled etc.)
+</div>
+<div class="refsynopsisdiv" title="Synopsis">
 <h2>Synopsis</h2>
-<div class="refsect2">
-<a name="idp14697056"></a><h3>Element Information</h3>
+<div class="refsect2" title="Element Information">
+<a name="id551391"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -100,8 +138,8 @@ GstOssSrc implements
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
-<a name="idp17796448"></a><h3>Element Pads</h3>
+<div class="refsect2" title="Element Pads">
+<a name="id581972"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -119,11 +157,11 @@ GstOssSrc implements
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>audio/x-raw, format=(string){ S16LE, U16LE, S8, U8 }, layout=(string)interleaved, rate=(int)[ 1, 2147483647 ], channels=(int)1</td>
+<td>audio/x-raw-int, endianness=(int){ 1234 }, signed=(boolean){ true, false }, width=(int)16, depth=(int)16, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2 ]</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
-<td> audio/x-raw, format=(string){ S16LE, U16LE, S8, U8 }, layout=(string)interleaved, rate=(int)[ 1, 2147483647 ], channels=(int)2, channel-mask=(bitmask)0x0000000000000003</td>
+<td> audio/x-raw-int, signed=(boolean){ true, false }, width=(int)8, depth=(int)8, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2 ]</td>
 </tr>
 </tbody>
 </table></div>
@@ -132,27 +170,31 @@ GstOssSrc implements
 <p>
 </p>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Details">
 <a name="gst-plugins-good-plugins-osssrc.details"></a><h2>Details</h2>
-<div class="refsect2">
-<a name="GstOssSrc-struct"></a><h3>struct GstOssSrc</h3>
-<pre class="programlisting">struct GstOssSrc;</pre>
+<div class="refsect2" title="GstOssSrc">
+<a name="GstOssSrc-struct"></a><h3>GstOssSrc</h3>
+<pre class="programlisting">typedef struct _GstOssSrc GstOssSrc;</pre>
 <p>
 </p>
 </div>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Property Details">
 <a name="gst-plugins-good-plugins-osssrc.property-details"></a><h2>Property Details</h2>
-<div class="refsect2">
+<div class="refsect2" title='The "device" property'>
 <a name="GstOssSrc--device"></a><h3>The <code class="literal">"device"</code> property</h3>
-<pre class="programlisting">  "device"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<pre class="programlisting">  "device"                   <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
 <p>OSS device (usually /dev/dspN).</p>
 <p>Default value: "/dev/dsp"</p>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" title='The "device-name" property'>
 <a name="GstOssSrc--device-name"></a><h3>The <code class="literal">"device-name"</code> property</h3>
-<pre class="programlisting">  "device-name"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read</pre>
+<pre class="programlisting">  "device-name"              <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read</pre>
 <p>Human-readable name of the sound device.</p>
 <p>Default value: ""</p>
 </div>
@@ -160,6 +202,6 @@ GstOssSrc implements
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

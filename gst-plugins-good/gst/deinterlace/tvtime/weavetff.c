@@ -1,7 +1,7 @@
-/*
+/**
  * Weave frames, top-field-first.
  * Copyright (C) 2003 Billy Biggs <vektor@dumbterm.net>.
- * Copyright (C) 2008,2010 Sebastian Dröge <sebastian.droege@collabora.co.uk>
+ * Copyright (C) 2008 Sebastian Dröge <sebastian.droege@collabora.co.uk>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,17 +19,12 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Relicensed for GStreamer from GPL to LGPL with permit from Billy Biggs.
- * See: http://bugzilla.gnome.org/show_bug.cgi?id=163578
- */
-
-
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
-#include "gstdeinterlacemethod.h"
+#include "_stdint.h"
+#include "gstdeinterlace.h"
 #include <string.h>
 
 #define GST_TYPE_DEINTERLACE_METHOD_WEAVE_TFF	(gst_deinterlace_method_weave_tff_get_type ())
@@ -43,78 +38,28 @@
 GType gst_deinterlace_method_weave_tff_get_type (void);
 
 typedef GstDeinterlaceSimpleMethod GstDeinterlaceMethodWeaveTFF;
+
 typedef GstDeinterlaceSimpleMethodClass GstDeinterlaceMethodWeaveTFFClass;
 
+
 static void
-deinterlace_scanline_weave_packed (GstDeinterlaceSimpleMethod * self,
-    guint8 * out, const GstDeinterlaceScanlineData * scanlines)
+deinterlace_scanline_weave (GstDeinterlaceMethod * self,
+    GstDeinterlace * parent, guint8 * out,
+    GstDeinterlaceScanlineData * scanlines, gint width)
 {
-  if (scanlines->m1 == NULL) {
-    memcpy (out, scanlines->t0, self->parent.row_stride[0]);
+  oil_memcpy (out, scanlines->m1, parent->row_stride);
+}
+
+static void
+copy_scanline (GstDeinterlaceMethod * self, GstDeinterlace * parent,
+    guint8 * out, GstDeinterlaceScanlineData * scanlines, gint width)
+{
+  /* FIXME: original code used m2 and m0 but this looks really bad */
+  if (scanlines->bottom_field) {
+    oil_memcpy (out, scanlines->bb0, parent->row_stride);
   } else {
-    memcpy (out, scanlines->m1, self->parent.row_stride[0]);
+    oil_memcpy (out, scanlines->bb2, parent->row_stride);
   }
-}
-
-static void
-deinterlace_scanline_weave_planar_y (GstDeinterlaceSimpleMethod * self,
-    guint8 * out, const GstDeinterlaceScanlineData * scanlines)
-{
-  if (scanlines->m1 == NULL) {
-    memcpy (out, scanlines->t0, self->parent.row_stride[0]);
-  } else {
-    memcpy (out, scanlines->m1, self->parent.row_stride[0]);
-  }
-}
-
-static void
-deinterlace_scanline_weave_planar_u (GstDeinterlaceSimpleMethod * self,
-    guint8 * out, const GstDeinterlaceScanlineData * scanlines)
-{
-  if (scanlines->m1 == NULL) {
-    memcpy (out, scanlines->t0, self->parent.row_stride[1]);
-  } else {
-    memcpy (out, scanlines->m1, self->parent.row_stride[1]);
-  }
-}
-
-static void
-deinterlace_scanline_weave_planar_v (GstDeinterlaceSimpleMethod * self,
-    guint8 * out, const GstDeinterlaceScanlineData * scanlines)
-{
-  if (scanlines->m1 == NULL) {
-    memcpy (out, scanlines->t0, self->parent.row_stride[2]);
-  } else {
-    memcpy (out, scanlines->m1, self->parent.row_stride[2]);
-  }
-}
-
-static void
-copy_scanline_packed (GstDeinterlaceSimpleMethod * self,
-    guint8 * out, const GstDeinterlaceScanlineData * scanlines)
-{
-  memcpy (out, scanlines->m0, self->parent.row_stride[0]);
-}
-
-static void
-copy_scanline_planar_y (GstDeinterlaceSimpleMethod * self,
-    guint8 * out, const GstDeinterlaceScanlineData * scanlines)
-{
-  memcpy (out, scanlines->m0, self->parent.row_stride[0]);
-}
-
-static void
-copy_scanline_planar_u (GstDeinterlaceSimpleMethod * self,
-    guint8 * out, const GstDeinterlaceScanlineData * scanlines)
-{
-  memcpy (out, scanlines->m0, self->parent.row_stride[1]);
-}
-
-static void
-copy_scanline_planar_v (GstDeinterlaceSimpleMethod * self,
-    guint8 * out, const GstDeinterlaceScanlineData * scanlines)
-{
-  memcpy (out, scanlines->m0, self->parent.row_stride[2]);
 }
 
 G_DEFINE_TYPE (GstDeinterlaceMethodWeaveTFF, gst_deinterlace_method_weave_tff,
@@ -128,45 +73,13 @@ gst_deinterlace_method_weave_tff_class_init (GstDeinterlaceMethodWeaveTFFClass *
   GstDeinterlaceSimpleMethodClass *dism_class =
       (GstDeinterlaceSimpleMethodClass *) klass;
 
-  dim_class->fields_required = 2;
+  dim_class->fields_required = 3;
   dim_class->name = "Progressive: Top Field First";
   dim_class->nick = "weavetff";
-  dim_class->latency = 1;
+  dim_class->latency = 0;
 
-  dism_class->interpolate_scanline_ayuv = deinterlace_scanline_weave_packed;
-  dism_class->interpolate_scanline_yuy2 = deinterlace_scanline_weave_packed;
-  dism_class->interpolate_scanline_yvyu = deinterlace_scanline_weave_packed;
-  dism_class->interpolate_scanline_uyvy = deinterlace_scanline_weave_packed;
-  dism_class->interpolate_scanline_nv12 = deinterlace_scanline_weave_packed;
-  dism_class->interpolate_scanline_nv21 = deinterlace_scanline_weave_packed;
-  dism_class->interpolate_scanline_argb = deinterlace_scanline_weave_packed;
-  dism_class->interpolate_scanline_abgr = deinterlace_scanline_weave_packed;
-  dism_class->interpolate_scanline_rgba = deinterlace_scanline_weave_packed;
-  dism_class->interpolate_scanline_bgra = deinterlace_scanline_weave_packed;
-  dism_class->interpolate_scanline_rgb = deinterlace_scanline_weave_packed;
-  dism_class->interpolate_scanline_bgr = deinterlace_scanline_weave_packed;
-  dism_class->interpolate_scanline_planar_y =
-      deinterlace_scanline_weave_planar_y;
-  dism_class->interpolate_scanline_planar_u =
-      deinterlace_scanline_weave_planar_u;
-  dism_class->interpolate_scanline_planar_v =
-      deinterlace_scanline_weave_planar_v;
-
-  dism_class->copy_scanline_ayuv = copy_scanline_packed;
-  dism_class->copy_scanline_yuy2 = copy_scanline_packed;
-  dism_class->copy_scanline_yvyu = copy_scanline_packed;
-  dism_class->copy_scanline_uyvy = copy_scanline_packed;
-  dism_class->copy_scanline_nv12 = copy_scanline_packed;
-  dism_class->copy_scanline_nv21 = copy_scanline_packed;
-  dism_class->copy_scanline_argb = copy_scanline_packed;
-  dism_class->copy_scanline_abgr = copy_scanline_packed;
-  dism_class->copy_scanline_rgba = copy_scanline_packed;
-  dism_class->copy_scanline_bgra = copy_scanline_packed;
-  dism_class->copy_scanline_rgb = copy_scanline_packed;
-  dism_class->copy_scanline_bgr = copy_scanline_packed;
-  dism_class->copy_scanline_planar_y = copy_scanline_planar_y;
-  dism_class->copy_scanline_planar_u = copy_scanline_planar_u;
-  dism_class->copy_scanline_planar_v = copy_scanline_planar_v;
+  dism_class->interpolate_scanline = deinterlace_scanline_weave;
+  dism_class->copy_scanline = copy_scanline;
 }
 
 static void

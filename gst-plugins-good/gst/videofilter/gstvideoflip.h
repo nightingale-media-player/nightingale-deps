@@ -20,8 +20,6 @@
 #ifndef __GST_VIDEO_FLIP_H__
 #define __GST_VIDEO_FLIP_H__
 
-#include <gst/gst.h>
-#include <gst/video/video.h>
 #include <gst/video/gstvideofilter.h>
 
 G_BEGIN_DECLS
@@ -71,10 +69,11 @@ typedef struct _GstVideoFlipClass GstVideoFlipClass;
  */
 struct _GstVideoFlip {
   GstVideoFilter videofilter;
-
-  /* < private > */
+  
+  gint from_width, from_height;
+  gint to_width, to_height;
+  
   GstVideoFlipMethod method;
-  void (*process) (GstVideoFlip *videoflip, GstVideoFrame *dest, const GstVideoFrame *src);
 };
 
 struct _GstVideoFlipClass {

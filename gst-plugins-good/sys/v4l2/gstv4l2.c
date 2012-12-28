@@ -32,27 +32,22 @@
 #include "gstv4l2object.h"
 #include "gstv4l2src.h"
 #include "gstv4l2sink.h"
-#include "gstv4l2radio.h"
 /* #include "gstv4l2jpegsrc.h" */
 /* #include "gstv4l2mjpegsrc.h" */
 /* #include "gstv4l2mjpegsink.h" */
 
 /* used in v4l2_calls.c and v4l2src_calls.c */
 GST_DEBUG_CATEGORY (v4l2_debug);
-GST_DEBUG_CATEGORY (GST_CAT_PERFORMANCE);
 
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
   GST_DEBUG_CATEGORY_INIT (v4l2_debug, "v4l2", 0, "V4L2 API calls");
-  GST_DEBUG_CATEGORY_GET (GST_CAT_PERFORMANCE, "GST_PERFORMANCE");
 
   if (!gst_element_register (plugin, "v4l2src", GST_RANK_PRIMARY,
           GST_TYPE_V4L2SRC) ||
-      !gst_element_register (plugin, "v4l2sink", GST_RANK_NONE,
+      !gst_element_register (plugin, "v4l2sink", GST_RANK_PRIMARY,
           GST_TYPE_V4L2SINK) ||
-      !gst_element_register (plugin, "v4l2radio", GST_RANK_NONE,
-          GST_TYPE_V4L2RADIO) ||
       /*       !gst_element_register (plugin, "v4l2jpegsrc", */
       /*           GST_RANK_NONE, GST_TYPE_V4L2JPEGSRC) || */
       /*       !gst_element_register (plugin, "v4l2mjpegsrc", */
@@ -73,6 +68,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    video4linux2,
+    "video4linux2",
     "elements for Video 4 Linux",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

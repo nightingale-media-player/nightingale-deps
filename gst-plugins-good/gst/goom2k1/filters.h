@@ -55,7 +55,7 @@ Uint middleX,
 Uint middleY);
 */
 
-ZoomFilterData *zoomFilterNew (void);
+ZoomFilterData *zoomFilterNew ();
 void zoomFilterDestroy (ZoomFilterData *zf);
 void zoomFilterFastRGB (GoomData *goomdata, ZoomFilterData *zf,
                            int zfd_update);

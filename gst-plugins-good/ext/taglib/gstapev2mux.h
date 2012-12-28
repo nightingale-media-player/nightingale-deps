@@ -22,7 +22,7 @@
 #ifndef GST_APEV2_MUX_H
 #define GST_APEV2_MUX_H
 
-#include <gst/tag/gsttagmux.h>
+#include "gsttaglibmux.h"
 
 G_BEGIN_DECLS
 
@@ -30,11 +30,11 @@ typedef struct _GstApev2Mux GstApev2Mux;
 typedef struct _GstApev2MuxClass GstApev2MuxClass;
 
 struct _GstApev2Mux {
-  GstTagMux  tagmux;
+  GstTagLibMux  taglibmux;
 };
 
 struct _GstApev2MuxClass {
-  GstTagMuxClass  tagmux_class;
+  GstTagLibMuxClass  taglibmux_class;
 };
 
 #define GST_TYPE_APEV2_MUX \

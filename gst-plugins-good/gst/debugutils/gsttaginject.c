@@ -27,11 +27,11 @@
  * <refsect2>
  * <title>Example launch lines</title>
  * |[
- * gst-launch-1.0 audiotestsrc num-buffers=100 ! taginject tags="title=testsrc,artist=gstreamer" ! vorbisenc ! oggmux ! filesink location=test.ogg
+ * gst-launch audiotestsrc num-buffers=100 ! taginject tags="title=testsrc,artist=gstreamer" ! vorbisenc ! oggmux ! filesink location=test.ogg
  * ]| set title and artist
  * |[
- * gst-launch-1.0 audiotestsrc num-buffers=100 ! taginject tags="keywords=\{\"testone\",\"audio\"\},title=\"audio testtone\"" ! vorbisenc ! oggmux ! filesink location=test.ogg
- * ]| set keywords and title demonstrating quoting of special chars and handling lists
+ * gst-launch audiotestsrc num-buffers=100 ! taginject tags="keywords=\"testone,audio\",title=\"audio testtone\"" ! vorbisenc ! oggmux ! filesink location=test.ogg
+ * ]| set keywords and title demonstrating quoting of special chars
  * </refsect2>
  */
 
@@ -62,8 +62,11 @@ enum
 };
 
 
-#define gst_tag_inject_parent_class parent_class
-G_DEFINE_TYPE (GstTagInject, gst_tag_inject, GST_TYPE_BASE_TRANSFORM);
+#define DEBUG_INIT(bla) \
+    GST_DEBUG_CATEGORY_INIT (gst_tag_inject_debug, "taginject", 0, "tag inject element");
+
+GST_BOILERPLATE_FULL (GstTagInject, gst_tag_inject, GstBaseTransform,
+    GST_TYPE_BASE_TRANSFORM, DEBUG_INIT);
 
 static void gst_tag_inject_finalize (GObject * object);
 static void gst_tag_inject_set_property (GObject * object, guint prop_id,
@@ -77,12 +80,26 @@ static gboolean gst_tag_inject_start (GstBaseTransform * trans);
 
 
 static void
+gst_tag_inject_base_init (gpointer g_class)
+{
+  GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
+
+  gst_element_class_set_details_simple (gstelement_class,
+      "TagInject",
+      "Generic", "inject metadata tags", "Stefan Kost <ensonic@users.sf.net>");
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&srctemplate));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sinktemplate));
+}
+
+static void
 gst_tag_inject_finalize (GObject * object)
 {
   GstTagInject *self = GST_TAG_INJECT (object);
 
   if (self->tags) {
-    gst_tag_list_unref (self->tags);
+    gst_tag_list_free (self->tags);
     self->tags = NULL;
   }
 
@@ -93,33 +110,20 @@ static void
 gst_tag_inject_class_init (GstTagInjectClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseTransformClass *gstbasetrans_class;
 
   gobject_class = G_OBJECT_CLASS (klass);
-  gstelement_class = GST_ELEMENT_CLASS (klass);
   gstbasetrans_class = GST_BASE_TRANSFORM_CLASS (klass);
 
-  GST_DEBUG_CATEGORY_INIT (gst_tag_inject_debug, "taginject", 0,
-      "tag inject element");
-
-  gobject_class->set_property = gst_tag_inject_set_property;
-  gobject_class->get_property = gst_tag_inject_get_property;
+  gobject_class->set_property = GST_DEBUG_FUNCPTR (gst_tag_inject_set_property);
+  gobject_class->get_property = GST_DEBUG_FUNCPTR (gst_tag_inject_get_property);
 
   g_object_class_install_property (gobject_class, PROP_TAGS,
       g_param_spec_string ("tags", "taglist",
           "List of tags to inject into the target file",
           NULL, G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
 
-  gobject_class->finalize = gst_tag_inject_finalize;
-
-  gst_element_class_set_static_metadata (gstelement_class,
-      "TagInject",
-      "Generic", "inject metadata tags", "Stefan Kost <ensonic@users.sf.net>");
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&srctemplate));
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&sinktemplate));
+  gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_tag_inject_finalize);
 
   gstbasetrans_class->transform_ip =
       GST_DEBUG_FUNCPTR (gst_tag_inject_transform_ip);
@@ -128,12 +132,8 @@ gst_tag_inject_class_init (GstTagInjectClass * klass)
 }
 
 static void
-gst_tag_inject_init (GstTagInject * self)
+gst_tag_inject_init (GstTagInject * self, GstTagInjectClass * g_class)
 {
-  GstBaseTransform *trans = GST_BASE_TRANSFORM (self);
-
-  gst_base_transform_set_gap_aware (trans, TRUE);
-
   self->tags = NULL;
 }
 
@@ -147,8 +147,8 @@ gst_tag_inject_transform_ip (GstBaseTransform * trans, GstBuffer * buf)
     /* send tags */
     if (self->tags && !gst_tag_list_is_empty (self->tags)) {
       GST_DEBUG ("tag event :%" GST_PTR_FORMAT, self->tags);
-      gst_pad_push_event (GST_BASE_TRANSFORM_SRC_PAD (trans),
-          gst_event_new_tag (gst_tag_list_ref (self->tags)));
+      gst_element_found_tags (GST_ELEMENT (trans),
+          gst_tag_list_copy (self->tags));
     }
   }
 
@@ -165,12 +165,9 @@ gst_tag_inject_set_property (GObject * object, guint prop_id,
     case PROP_TAGS:{
       gchar *structure =
           g_strdup_printf ("taglist,%s", g_value_get_string (value));
-      if (!(self->tags = gst_tag_list_new_from_string (structure))) {
+      if (!(self->tags = gst_structure_from_string (structure, NULL))) {
         GST_WARNING ("unparsable taglist = '%s'", structure);
       }
-
-      /* make sure that tags will be send */
-      self->tags_sent = FALSE;
       g_free (structure);
       break;
     }

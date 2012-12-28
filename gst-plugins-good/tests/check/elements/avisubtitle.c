@@ -66,28 +66,26 @@ static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_STATIC_CAPS ("application/x-subtitle-avi")
     );
 
-static GstElement *
-setup_avisubtitle (void)
+GstElement *
+setup_avisubtitle ()
 {
   GstElement *avisubtitle;
-  GstCaps *sinkcaps, *srccaps;
+  GstCaps *caps;
 
   GST_DEBUG ("setup_avisubtitle");
   avisubtitle = gst_check_setup_element ("avisubtitle");
-  sinkcaps = gst_caps_new_empty_simple ("application/x-subtitle");
-  mysinkpad = gst_check_setup_sink_pad (avisubtitle, &sink_template);
-  srccaps = gst_caps_new_empty_simple ("application/x-subtitle-avi");
-  mysrcpad = gst_check_setup_src_pad (avisubtitle, &src_template);
+  caps = gst_caps_new_simple ("application/x-subtitle", NULL);
+  mysinkpad = gst_check_setup_sink_pad (avisubtitle, &sink_template, caps);
+  gst_caps_unref (caps);
+  caps = gst_caps_new_simple ("application/x-subtitle-avi", NULL);
+  mysrcpad = gst_check_setup_src_pad (avisubtitle, &src_template, caps);
+  gst_caps_unref (caps);
   gst_pad_set_active (mysinkpad, TRUE);
   gst_pad_set_active (mysrcpad, TRUE);
-  fail_unless (gst_pad_set_caps (mysinkpad, sinkcaps));
-  fail_unless (gst_pad_set_caps (mysrcpad, srccaps));
-  gst_caps_unref (sinkcaps);
-  gst_caps_unref (srccaps);
   return avisubtitle;
 }
 
-static void
+void
 cleanup_avisubtitle (GstElement * avisubtitle)
 {
   gst_pad_set_active (mysinkpad, FALSE);
@@ -97,13 +95,13 @@ cleanup_avisubtitle (GstElement * avisubtitle)
   gst_check_teardown_element (avisubtitle);
 }
 
-static void
+void
 check_wrong_buffer (guint8 * data, guint length)
 {
-  GstBuffer *buffer = gst_buffer_new_allocate (NULL, length, 0);
+  GstBuffer *buffer = gst_buffer_new ();
   GstElement *avisubtitle = setup_avisubtitle ();
 
-  gst_buffer_fill (buffer, 0, data, length);
+  gst_buffer_set_data (buffer, data, length);
   fail_unless (gst_element_set_state (avisubtitle,
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
@@ -120,17 +118,17 @@ check_wrong_buffer (guint8 * data, guint length)
   cleanup_avisubtitle (avisubtitle);
 }
 
-static void
+void
 check_correct_buffer (guint8 * src_data, guint src_size, guint8 * dst_data,
     guint dst_size)
 {
-  GstBuffer *buffer = gst_buffer_new_allocate (NULL, src_size, 0);
+  GstBuffer *buffer = gst_buffer_new ();
   GstBuffer *newBuffer;
   GstElement *avisubtitle = setup_avisubtitle ();
   GstEvent *event;
 
   fail_unless (g_list_length (buffers) == 0, "Buffers list needs to be empty");
-  gst_buffer_fill (buffer, 0, src_data, src_size);
+  gst_buffer_set_data (buffer, src_data, src_size);
   fail_unless (gst_element_set_state (avisubtitle,
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
@@ -155,10 +153,10 @@ check_correct_buffer (guint8 * src_data, guint src_size, guint8 * dst_data,
   newBuffer = GST_BUFFER (buffers->data);
   buffers = g_list_remove (buffers, newBuffer);
   fail_unless (g_list_length (buffers) == 1, "Buffers list needs to be empty");
-  fail_unless (gst_buffer_get_size (newBuffer) == dst_size,
+  fail_unless (GST_BUFFER_SIZE (newBuffer) == dst_size,
       "size of the new buffer is wrong ( %d != %d)",
-      gst_buffer_get_size (newBuffer), dst_size);
-  fail_unless (gst_buffer_memcmp (newBuffer, 0, dst_data, dst_size) == 0,
+      GST_BUFFER_SIZE (newBuffer), dst_size);
+  fail_unless (memcmp (GST_BUFFER_DATA (newBuffer), dst_data, dst_size) == 0,
       "data of the buffer is not correct");
   gst_buffer_unref (newBuffer);
   /* free the buffer from seeking */
@@ -250,7 +248,7 @@ GST_START_TEST (test_avisubtitle_positive)
 
 GST_END_TEST;
 
-static Suite *
+Suite *
 avisubtitle_suite (void)
 {
   Suite *s = suite_create ("avisubtitle");

@@ -24,7 +24,6 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstpushsrc.h>
-#include "gst1394clock.h"
 
 #include <libraw1394/raw1394.h>
 #ifdef HAVE_LIBIEC61883
@@ -83,8 +82,6 @@ struct _GstDV1394Src {
   #ifdef HAVE_LIBIEC61883
   iec61883_dv_fb_t iec61883dv;
   #endif
-
-  Gst1394Clock *provided_clock;
 };
 
 struct _GstDV1394SrcClass {

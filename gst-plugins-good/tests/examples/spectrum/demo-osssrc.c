@@ -21,7 +21,6 @@
 #include "config.h"
 #endif
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -40,7 +39,7 @@ static GtkWidget *drawingarea = NULL;
 static GstClock *sync_clock = NULL;
 
 static void
-on_window_destroy (GObject * object, gpointer user_data)
+on_window_destroy (GtkObject * object, gpointer user_data)
 {
   drawingarea = NULL;
   gtk_main_quit ();
@@ -67,25 +66,18 @@ draw_spectrum (gfloat * data)
 {
   gint i;
   GdkRectangle rect = { 0, 0, spect_bands, spect_height };
-  cairo_t *cr;
 
   if (!drawingarea)
     return;
 
-  gdk_window_begin_paint_rect (gtk_widget_get_window (drawingarea), &rect);
-  cr = gdk_cairo_create (gtk_widget_get_window (drawingarea));
-
-  cairo_set_source_rgb (cr, 0, 0, 0);
-  cairo_rectangle (cr, 0, 0, spect_bands, spect_height);
-  cairo_fill (cr);
-  cairo_set_source_rgb (cr, 1, 1, 1);
+  gdk_window_begin_paint_rect (drawingarea->window, &rect);
+  gdk_draw_rectangle (drawingarea->window, drawingarea->style->black_gc,
+      TRUE, 0, 0, spect_bands, spect_height);
   for (i = 0; i < spect_bands; i++) {
-    cairo_rectangle (cr, i, -data[i], 1, spect_height + data[i]);
-    cairo_fill (cr);
+    gdk_draw_rectangle (drawingarea->window, drawingarea->style->white_gc,
+        TRUE, i, -data[i], 1, spect_height + data[i]);
   }
-  cairo_destroy (cr);
-
-  gdk_window_end_paint (gtk_widget_get_window (drawingarea));
+  gdk_window_end_paint (drawingarea->window);
 }
 
 /* process delayed message */
@@ -145,7 +137,7 @@ message_handler (GstBus * bus, GstMessage * message, gpointer data)
         clock_id =
             gst_clock_new_single_shot_id (sync_clock, waittime + basetime);
         gst_clock_id_wait_async (clock_id, delayed_spectrum_update,
-            (gpointer) spect, NULL);
+            (gpointer) spect);
         gst_clock_id_unref (clock_id);
       }
     }

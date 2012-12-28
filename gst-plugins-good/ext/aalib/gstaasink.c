@@ -25,10 +25,10 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch-1.0 filesrc location=test.avi ! decodebin ! videoconvert ! aasink
+ * gst-launch filesrc location=test.avi ! decodebin ! ffmpegcolorspace ! aasink
  * ]| This pipeline renders a video to ascii art into a separate window.
  * |[
- * gst-launch-1.0 filesrc location=test.avi ! decodebin ! videoconvert ! aasink driver=curses
+ * gst-launch filesrc location=test.avi ! decodebin ! ffmpegcolorspace ! aasink driver=curses
  * ]| This pipeline renders a video to ascii art into the current terminal.
  * </refsect2>
  */
@@ -40,45 +40,55 @@
 #include <string.h>
 #include <sys/time.h>
 
-#include <gst/video/gstvideometa.h>
 #include "gstaasink.h"
+#include <gst/video/video.h>
+
+/* elementfactory information */
+static const GstElementDetails gst_aasink_details =
+GST_ELEMENT_DETAILS ("ASCII art video sink",
+    "Sink/Video",
+    "An ASCII art videosink",
+    "Wim Taymans <wim.taymans@chello.be>");
 
 /* aasink signals and args */
 enum
 {
+  SIGNAL_FRAME_DISPLAYED,
+  SIGNAL_HAVE_SIZE,
   LAST_SIGNAL
 };
 
 
 enum
 {
-  PROP_0,
-  PROP_WIDTH,
-  PROP_HEIGHT,
-  PROP_DRIVER,
-  PROP_DITHER,
-  PROP_BRIGHTNESS,
-  PROP_CONTRAST,
-  PROP_GAMMA,
-  PROP_INVERSION,
-  PROP_RANDOMVAL,
-  PROP_FRAMES_DISPLAYED,
-  PROP_FRAME_TIME
+  ARG_0,
+  ARG_WIDTH,
+  ARG_HEIGHT,
+  ARG_DRIVER,
+  ARG_DITHER,
+  ARG_BRIGHTNESS,
+  ARG_CONTRAST,
+  ARG_GAMMA,
+  ARG_INVERSION,
+  ARG_RANDOMVAL,
+  ARG_FRAMES_DISPLAYED,
+  ARG_FRAME_TIME
 };
 
 static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE ("I420"))
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV ("I420"))
     );
 
-static GstCaps *gst_aasink_fixate (GstBaseSink * bsink, GstCaps * caps);
-static gboolean gst_aasink_setcaps (GstBaseSink * bsink, GstCaps * caps);
-static void gst_aasink_get_times (GstBaseSink * bsink, GstBuffer * buffer,
+static void gst_aasink_base_init (gpointer g_class);
+static void gst_aasink_class_init (GstAASinkClass * klass);
+static void gst_aasink_init (GstAASink * aasink);
+
+static gboolean gst_aasink_setcaps (GstBaseSink * pad, GstCaps * caps);
+static void gst_aasink_get_times (GstBaseSink * sink, GstBuffer * buffer,
     GstClockTime * start, GstClockTime * end);
-static gboolean gst_aasink_propose_allocation (GstBaseSink * bsink,
-    GstQuery * query);
-static GstFlowReturn gst_aasink_show_frame (GstVideoSink * videosink,
+static GstFlowReturn gst_aasink_render (GstBaseSink * basesink,
     GstBuffer * buffer);
 
 static void gst_aasink_set_property (GObject * object, guint prop_id,
@@ -89,8 +99,33 @@ static void gst_aasink_get_property (GObject * object, guint prop_id,
 static GstStateChangeReturn gst_aasink_change_state (GstElement * element,
     GstStateChange transition);
 
-#define gst_aasink_parent_class parent_class
-G_DEFINE_TYPE (GstAASink, gst_aasink, GST_TYPE_VIDEO_SINK);
+static GstElementClass *parent_class = NULL;
+static guint gst_aasink_signals[LAST_SIGNAL] = { 0 };
+
+GType
+gst_aasink_get_type (void)
+{
+  static GType aasink_type = 0;
+
+  if (!aasink_type) {
+    static const GTypeInfo aasink_info = {
+      sizeof (GstAASinkClass),
+      gst_aasink_base_init,
+      NULL,
+      (GClassInitFunc) gst_aasink_class_init,
+      NULL,
+      NULL,
+      sizeof (GstAASink),
+      0,
+      (GInstanceInitFunc) gst_aasink_init,
+    };
+
+    aasink_type =
+        g_type_register_static (GST_TYPE_BASE_SINK, "GstAASink", &aasink_info,
+        0);
+  }
+  return aasink_type;
+}
 
 #define GST_TYPE_AADRIVERS (gst_aasink_drivers_get_type())
 static GType
@@ -158,119 +193,104 @@ gst_aasink_dither_get_type (void)
 }
 
 static void
+gst_aasink_base_init (gpointer g_class)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&sink_template));
+  gst_element_class_set_details (element_class, &gst_aasink_details);
+}
+
+static void
 gst_aasink_class_init (GstAASinkClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
   GstBaseSinkClass *gstbasesink_class;
-  GstVideoSinkClass *gstvideosink_class;
 
   gobject_class = (GObjectClass *) klass;
   gstelement_class = (GstElementClass *) klass;
   gstbasesink_class = (GstBaseSinkClass *) klass;
-  gstvideosink_class = (GstVideoSinkClass *) klass;
+
+  parent_class = g_type_class_peek_parent (klass);
 
   gobject_class->set_property = gst_aasink_set_property;
   gobject_class->get_property = gst_aasink_get_property;
 
-  /* FIXME: add long property descriptions */
-  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_WIDTH,
-      g_param_spec_int ("width", "width", "width", G_MININT, G_MAXINT, 0,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_HEIGHT,
-      g_param_spec_int ("height", "height", "height", G_MININT, G_MAXINT, 0,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_DRIVER,
-      g_param_spec_enum ("driver", "driver", "driver", GST_TYPE_AADRIVERS, 0,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_DITHER,
-      g_param_spec_enum ("dither", "dither", "dither", GST_TYPE_AADITHER, 0,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_BRIGHTNESS,
-      g_param_spec_int ("brightness", "brightness", "brightness", G_MININT,
-          G_MAXINT, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_CONTRAST,
-      g_param_spec_int ("contrast", "contrast", "contrast", G_MININT, G_MAXINT,
-          0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_GAMMA,
-      g_param_spec_float ("gamma", "gamma", "gamma", 0.0, 5.0, 1.0,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_INVERSION,
-      g_param_spec_boolean ("inversion", "inversion", "inversion", TRUE,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_RANDOMVAL,
-      g_param_spec_int ("randomval", "randomval", "randomval", G_MININT,
-          G_MAXINT, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-  g_object_class_install_property (G_OBJECT_CLASS (klass),
-      PROP_FRAMES_DISPLAYED, g_param_spec_int ("frames-displayed",
-          "frames displayed", "frames displayed", G_MININT, G_MAXINT, 0,
-          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_FRAME_TIME,
-      g_param_spec_int ("frame-time", "frame time", "frame time", G_MININT,
-          G_MAXINT, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_WIDTH, g_param_spec_int ("width", "width", "width", G_MININT, G_MAXINT, 0, G_PARAM_READWRITE));  /* CHECKME */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_HEIGHT, g_param_spec_int ("height", "height", "height", G_MININT, G_MAXINT, 0, G_PARAM_READWRITE));      /* CHECKME */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_DRIVER, g_param_spec_enum ("driver", "driver", "driver", GST_TYPE_AADRIVERS, 0, G_PARAM_READWRITE));     /* CHECKME! */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_DITHER, g_param_spec_enum ("dither", "dither", "dither", GST_TYPE_AADITHER, 0, G_PARAM_READWRITE));      /* CHECKME! */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_BRIGHTNESS, g_param_spec_int ("brightness", "brightness", "brightness", G_MININT, G_MAXINT, 0, G_PARAM_READWRITE));      /* CHECKME */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_CONTRAST, g_param_spec_int ("contrast", "contrast", "contrast", G_MININT, G_MAXINT, 0, G_PARAM_READWRITE));      /* CHECKME */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_GAMMA, g_param_spec_float ("gamma", "gamma", "gamma", 0.0, 5.0, 1.0, G_PARAM_READWRITE));        /* CHECKME */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_INVERSION, g_param_spec_boolean ("inversion", "inversion", "inversion", TRUE, G_PARAM_READWRITE));       /* CHECKME */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_RANDOMVAL, g_param_spec_int ("randomval", "randomval", "randomval", G_MININT, G_MAXINT, 0, G_PARAM_READWRITE));  /* CHECKME */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_FRAMES_DISPLAYED, g_param_spec_int ("frames_displayed", "frames_displayed", "frames_displayed", G_MININT, G_MAXINT, 0, G_PARAM_READABLE));       /* CHECKME */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_FRAME_TIME, g_param_spec_int ("frame_time", "frame_time", "frame_time", G_MININT, G_MAXINT, 0, G_PARAM_READABLE));       /* CHECKME */
 
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&sink_template));
-
-  gst_element_class_set_static_metadata (gstelement_class,
-      "ASCII art video sink", "Sink/Video", "An ASCII art videosink",
-      "Wim Taymans <wim.taymans@chello.be>");
+  gst_aasink_signals[SIGNAL_FRAME_DISPLAYED] =
+      g_signal_new ("frame-displayed", G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GstAASinkClass, frame_displayed),
+      NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
+  gst_aasink_signals[SIGNAL_HAVE_SIZE] =
+      g_signal_new ("have-size", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
+      G_STRUCT_OFFSET (GstAASinkClass, have_size), NULL, NULL,
+      gst_marshal_VOID__INT_INT, G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_UINT);
 
   gstelement_class->change_state = GST_DEBUG_FUNCPTR (gst_aasink_change_state);
 
-  gstbasesink_class->fixate = GST_DEBUG_FUNCPTR (gst_aasink_fixate);
   gstbasesink_class->set_caps = GST_DEBUG_FUNCPTR (gst_aasink_setcaps);
   gstbasesink_class->get_times = GST_DEBUG_FUNCPTR (gst_aasink_get_times);
-  gstbasesink_class->propose_allocation =
-      GST_DEBUG_FUNCPTR (gst_aasink_propose_allocation);
-
-  gstvideosink_class->show_frame = GST_DEBUG_FUNCPTR (gst_aasink_show_frame);
+  gstbasesink_class->preroll = GST_DEBUG_FUNCPTR (gst_aasink_render);
+  gstbasesink_class->render = GST_DEBUG_FUNCPTR (gst_aasink_render);
 }
 
-static GstCaps *
-gst_aasink_fixate (GstBaseSink * bsink, GstCaps * caps)
+static void
+gst_aasink_fixate (GstPad * pad, GstCaps * caps)
 {
   GstStructure *structure;
-
-  caps = gst_caps_make_writable (caps);
 
   structure = gst_caps_get_structure (caps, 0);
 
   gst_structure_fixate_field_nearest_int (structure, "width", 320);
   gst_structure_fixate_field_nearest_int (structure, "height", 240);
   gst_structure_fixate_field_nearest_fraction (structure, "framerate", 30, 1);
-
-  caps = GST_BASE_SINK_CLASS (parent_class)->fixate (bsink, caps);
-
-  return caps;
 }
 
 static gboolean
 gst_aasink_setcaps (GstBaseSink * basesink, GstCaps * caps)
 {
   GstAASink *aasink;
-  GstVideoInfo info;
+  GstStructure *structure;
 
   aasink = GST_AASINK (basesink);
 
-  if (!gst_video_info_from_caps (&info, caps))
-    goto invalid_caps;
+  structure = gst_caps_get_structure (caps, 0);
+  gst_structure_get_int (structure, "width", &aasink->width);
+  gst_structure_get_int (structure, "height", &aasink->height);
 
-  aasink->info = info;
+  /* FIXME aasink->format is never set */
+  g_print ("%d %d\n", aasink->width, aasink->height);
+
+  GST_DEBUG ("aasink: setting %08lx (%" GST_FOURCC_FORMAT ")",
+      aasink->format, GST_FOURCC_ARGS (aasink->format));
+
+  g_signal_emit (G_OBJECT (aasink), gst_aasink_signals[SIGNAL_HAVE_SIZE], 0,
+      aasink->width, aasink->height);
 
   return TRUE;
-
-  /* ERRORS */
-invalid_caps:
-  {
-    GST_DEBUG_OBJECT (aasink, "invalid caps");
-    return FALSE;
-  }
 }
 
 static void
 gst_aasink_init (GstAASink * aasink)
 {
+  GstPad *pad;
+
+  pad = GST_BASE_SINK_PAD (aasink);
+  gst_pad_set_fixatecaps_function (pad, gst_aasink_fixate);
+
   memcpy (&aasink->ascii_surf, &aa_defparams,
       sizeof (struct aa_hardware_params));
   aasink->ascii_parms.bright = 0;
@@ -280,11 +300,15 @@ gst_aasink_init (GstAASink * aasink)
   aasink->ascii_parms.inversion = 0;
   aasink->ascii_parms.randomval = 0;
   aasink->aa_driver = 0;
+
+  aasink->width = -1;
+  aasink->height = -1;
+
 }
 
 static void
 gst_aasink_scale (GstAASink * aasink, guchar * src, guchar * dest,
-    gint sw, gint sh, gint ss, gint dw, gint dh)
+    gint sw, gint sh, gint dw, gint dh)
 {
   gint ypos, yinc, y;
   gint xpos, xinc, x;
@@ -298,7 +322,7 @@ gst_aasink_scale (GstAASink * aasink, guchar * src, guchar * dest,
   for (y = dh; y; y--) {
     while (ypos > 0x10000) {
       ypos -= 0x10000;
-      src += ss;
+      src += sw;
     }
     xpos = 0x10000;
     {
@@ -324,66 +348,22 @@ gst_aasink_get_times (GstBaseSink * sink, GstBuffer * buffer,
     GstClockTime * start, GstClockTime * end)
 {
   *start = GST_BUFFER_TIMESTAMP (buffer);
-  if (GST_BUFFER_DURATION_IS_VALID (buffer))
-    *end = *start + GST_BUFFER_DURATION (buffer);
-}
-
-static gboolean
-gst_aasink_propose_allocation (GstBaseSink * bsink, GstQuery * query)
-{
-  GstCaps *caps;
-  GstVideoInfo info;
-  guint size;
-
-  gst_query_parse_allocation (query, &caps, NULL);
-
-  if (caps == NULL)
-    goto no_caps;
-
-  if (!gst_video_info_from_caps (&info, caps))
-    goto invalid_caps;
-
-  size = GST_VIDEO_INFO_SIZE (&info);
-
-  /* we need at least 2 buffer because we hold on to the last one */
-  gst_query_add_allocation_pool (query, NULL, size, 2, 0);
-
-  /* we support various metadata */
-  gst_query_add_allocation_meta (query, GST_VIDEO_META_API_TYPE, NULL);
-
-  return TRUE;
-
-  /* ERRORS */
-no_caps:
-  {
-    GST_DEBUG_OBJECT (bsink, "no caps specified");
-    return FALSE;
-  }
-invalid_caps:
-  {
-    GST_DEBUG_OBJECT (bsink, "invalid caps specified");
-    return FALSE;
-  }
+  *end = *start + GST_BUFFER_DURATION (buffer);
 }
 
 static GstFlowReturn
-gst_aasink_show_frame (GstVideoSink * videosink, GstBuffer * buffer)
+gst_aasink_render (GstBaseSink * basesink, GstBuffer * buffer)
 {
   GstAASink *aasink;
-  GstVideoFrame frame;
 
-  aasink = GST_AASINK (videosink);
+  aasink = GST_AASINK (basesink);
 
-  GST_DEBUG ("show frame");
+  GST_DEBUG ("render");
 
-  if (!gst_video_frame_map (&frame, &aasink->info, buffer, GST_MAP_READ))
-    goto invalid_frame;
-
-  gst_aasink_scale (aasink, GST_VIDEO_FRAME_PLANE_DATA (&frame, 0),     /* src */
+  gst_aasink_scale (aasink, GST_BUFFER_DATA (buffer),   /* src */
       aa_image (aasink->context),       /* dest */
-      GST_VIDEO_INFO_WIDTH (&aasink->info),     /* sw */
-      GST_VIDEO_INFO_HEIGHT (&aasink->info),    /* sh */
-      GST_VIDEO_FRAME_PLANE_STRIDE (&frame, 0), /* ss */
+      aasink->width,            /* sw */
+      aasink->height,           /* sh */
       aa_imgwidth (aasink->context),    /* dw */
       aa_imgheight (aasink->context));  /* dh */
 
@@ -391,16 +371,8 @@ gst_aasink_show_frame (GstVideoSink * videosink, GstBuffer * buffer)
       0, 0, aa_imgwidth (aasink->context), aa_imgheight (aasink->context));
   aa_flush (aasink->context);
   aa_getevent (aasink->context, FALSE);
-  gst_video_frame_unmap (&frame);
 
   return GST_FLOW_OK;
-
-  /* ERRORS */
-invalid_frame:
-  {
-    GST_DEBUG_OBJECT (aasink, "invalid frame");
-    return GST_FLOW_ERROR;
-  }
 }
 
 
@@ -413,37 +385,37 @@ gst_aasink_set_property (GObject * object, guint prop_id, const GValue * value,
   aasink = GST_AASINK (object);
 
   switch (prop_id) {
-    case PROP_WIDTH:
+    case ARG_WIDTH:
       aasink->ascii_surf.width = g_value_get_int (value);
       break;
-    case PROP_HEIGHT:
+    case ARG_HEIGHT:
       aasink->ascii_surf.height = g_value_get_int (value);
       break;
-    case PROP_DRIVER:{
+    case ARG_DRIVER:{
       aasink->aa_driver = g_value_get_enum (value);
       break;
     }
-    case PROP_DITHER:{
+    case ARG_DITHER:{
       aasink->ascii_parms.dither = g_value_get_enum (value);
       break;
     }
-    case PROP_BRIGHTNESS:{
+    case ARG_BRIGHTNESS:{
       aasink->ascii_parms.bright = g_value_get_int (value);
       break;
     }
-    case PROP_CONTRAST:{
+    case ARG_CONTRAST:{
       aasink->ascii_parms.contrast = g_value_get_int (value);
       break;
     }
-    case PROP_GAMMA:{
+    case ARG_GAMMA:{
       aasink->ascii_parms.gamma = g_value_get_float (value);
       break;
     }
-    case PROP_INVERSION:{
+    case ARG_INVERSION:{
       aasink->ascii_parms.inversion = g_value_get_boolean (value);
       break;
     }
-    case PROP_RANDOMVAL:{
+    case ARG_RANDOMVAL:{
       aasink->ascii_parms.randomval = g_value_get_int (value);
       break;
     }
@@ -461,47 +433,47 @@ gst_aasink_get_property (GObject * object, guint prop_id, GValue * value,
   aasink = GST_AASINK (object);
 
   switch (prop_id) {
-    case PROP_WIDTH:{
+    case ARG_WIDTH:{
       g_value_set_int (value, aasink->ascii_surf.width);
       break;
     }
-    case PROP_HEIGHT:{
+    case ARG_HEIGHT:{
       g_value_set_int (value, aasink->ascii_surf.height);
       break;
     }
-    case PROP_DRIVER:{
+    case ARG_DRIVER:{
       g_value_set_enum (value, aasink->aa_driver);
       break;
     }
-    case PROP_DITHER:{
+    case ARG_DITHER:{
       g_value_set_enum (value, aasink->ascii_parms.dither);
       break;
     }
-    case PROP_BRIGHTNESS:{
+    case ARG_BRIGHTNESS:{
       g_value_set_int (value, aasink->ascii_parms.bright);
       break;
     }
-    case PROP_CONTRAST:{
+    case ARG_CONTRAST:{
       g_value_set_int (value, aasink->ascii_parms.contrast);
       break;
     }
-    case PROP_GAMMA:{
+    case ARG_GAMMA:{
       g_value_set_float (value, aasink->ascii_parms.gamma);
       break;
     }
-    case PROP_INVERSION:{
+    case ARG_INVERSION:{
       g_value_set_boolean (value, aasink->ascii_parms.inversion);
       break;
     }
-    case PROP_RANDOMVAL:{
+    case ARG_RANDOMVAL:{
       g_value_set_int (value, aasink->ascii_parms.randomval);
       break;
     }
-    case PROP_FRAMES_DISPLAYED:{
+    case ARG_FRAMES_DISPLAYED:{
       g_value_set_int (value, aasink->frames_displayed);
       break;
     }
-    case PROP_FRAME_TIME:{
+    case ARG_FRAME_TIME:{
       g_value_set_int (value, aasink->frame_time / 1000000);
       break;
     }
@@ -515,18 +487,17 @@ gst_aasink_get_property (GObject * object, guint prop_id, GValue * value,
 static gboolean
 gst_aasink_open (GstAASink * aasink)
 {
-  if (!aasink->context) {
-    aa_recommendhidisplay (aa_drivers[aasink->aa_driver]->shortname);
+  aa_recommendhidisplay (aa_drivers[aasink->aa_driver]->shortname);
 
-    aasink->context = aa_autoinit (&aasink->ascii_surf);
-    if (aasink->context == NULL) {
-      GST_ELEMENT_ERROR (GST_ELEMENT (aasink), LIBRARY, TOO_LAZY, (NULL),
-          ("error opening aalib context"));
-      return FALSE;
-    }
-    aa_autoinitkbd (aasink->context, 0);
-    aa_resizehandler (aasink->context, (void *) aa_resize);
+  aasink->context = aa_autoinit (&aasink->ascii_surf);
+  if (aasink->context == NULL) {
+    GST_ELEMENT_ERROR (GST_ELEMENT (aasink), LIBRARY, TOO_LAZY, (NULL),
+        ("error opening aalib context"));
+    return FALSE;
   }
+  aa_autoinitkbd (aasink->context, 0);
+  aa_resizehandler (aasink->context, (void *) aa_resize);
+
   return TRUE;
 }
 
@@ -534,7 +505,6 @@ static gboolean
 gst_aasink_close (GstAASink * aasink)
 {
   aa_close (aasink->context);
-  aasink->context = NULL;
 
   return TRUE;
 }
@@ -591,6 +561,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    aasink,
+    "aasink",
     "ASCII Art video sink",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

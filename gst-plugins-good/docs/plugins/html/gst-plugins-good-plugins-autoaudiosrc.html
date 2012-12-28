@@ -3,13 +3,16 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>autoaudiosrc</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-autoaudiosink.html" title="autoaudiosink">
 <link rel="next" href="gst-plugins-good-plugins-autovideosink.html" title="autovideosink">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -17,22 +20,22 @@
 <td><a accesskey="p" href="gst-plugins-good-plugins-autoaudiosink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-autovideosink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-autoaudiosrc.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-autoaudiosrc.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-autoaudiosrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-autoaudiosrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-autoaudiosrc.properties" class="shortcut">Properties</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-autoaudiosrc.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-autoaudiosrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-autoaudiosrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-autoaudiosrc.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
-<div class="refentry">
+<div class="refentry" title="autoaudiosrc">
 <a name="gst-plugins-good-plugins-autoaudiosrc"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -41,35 +44,47 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="gst-plugins-good-plugins-autoaudiosrc.synopsis"></a><h2>Synopsis</h2>
-<a name="GstAutoAudioSrc"></a><pre class="synopsis">                    <a class="link" href="gst-plugins-good-plugins-autoaudiosrc.html#GstAutoAudioSrc-struct" title="GstAutoAudioSrc">GstAutoAudioSrc</a>;
+<a name="GstAutoAudioSrc"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-good-plugins-autoaudiosrc.html#GstAutoAudioSrc-struct" title="GstAutoAudioSrc">GstAutoAudioSrc</a>;
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Object Hierarchy">
 <a name="gst-plugins-good-plugins-autoaudiosrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBin.html">GstBin</a>
-                           +----GstAutoAudioSrc
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="../gstreamer-0.10/GstBin.html"
+>GstBin</a>
+                     +----GstAutoAudioSrc
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Implemented Interfaces">
 <a name="gst-plugins-good-plugins-autoaudiosrc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstAutoAudioSrc implements
- <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstChildProxy.html">GstChildProxy</a>.</p>
+ <a
+href="../gstreamer-0.10/GstChildProxy.html"
+>GstChildProxy</a>.</p>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Properties">
 <a name="gst-plugins-good-plugins-autoaudiosrc.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-autoaudiosrc.html#GstAutoAudioSrc--filter-caps" title='The "filter-caps" property'>filter-caps</a>"              <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a>*              : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-autoaudiosrc.html#GstAutoAudioSrc--filter-caps" title='The "filter-caps" property'>filter-caps</a>"              <a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a>*              : Read / Write
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Description">
 <a name="gst-plugins-good-plugins-autoaudiosrc.description"></a><h2>Description</h2>
 <p>
 autoaudiosrc is an audio source that automatically detects an appropriate
@@ -79,26 +94,16 @@ of their element information, and also have a non-zero autoplugging rank.
 </p>
 <p>
 </p>
-<div class="refsect2">
-<a name="idp9409968"></a><h3>Example launch line</h3>
-<div class="informalexample">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> <span class="gtkdoc opt">-</span>v <span class="gtkdoc opt">-</span>m autoaudiosrc <span class="gtkdoc opt">!</span> audioconvert <span class="gtkdoc opt">!</span> audioresample <span class="gtkdoc opt">!</span> autoaudiosink</pre></td>
-      </tr>
-    </tbody>
-  </table>
+<div class="refsect2" title="Example launch line">
+<a name="id484929"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v -m autoaudiosrc ! audioconvert ! audioresample ! autoaudiosink
+</pre></div>
 </div>
-
-</div>
-<p>
-</p>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <h2>Synopsis</h2>
-<div class="refsect2">
-<a name="idp8198224"></a><h3>Element Information</h3>
+<div class="refsect2" title="Element Information">
+<a name="id494515"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -110,7 +115,9 @@ of their element information, and also have a non-zero autoplugging rank.
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
-<td>Jan Schmidt &lt;thaytan@noraisin.net&gt;, Stefan Kost &lt;ensonic@users.sf.net&gt;</td>
+<td>Ronald Bultje &lt;rbultje@ronald.bitfreak.net&gt;
+    Jan Schmidt &lt;thaytan@noraisin.net&gt;
+    Stefan Kost &lt;ensonic@users.sf.net&gt;</td>
 </tr>
 <tr>
 <td><p><span class="term">class</span></p></td>
@@ -120,8 +127,8 @@ of their element information, and also have a non-zero autoplugging rank.
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
-<a name="idp9083072"></a><h3>Element Pads</h3>
+<div class="refsect2" title="Element Pads">
+<a name="id502224"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -148,38 +155,41 @@ of their element information, and also have a non-zero autoplugging rank.
 <p>
 </p>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Details">
 <a name="gst-plugins-good-plugins-autoaudiosrc.details"></a><h2>Details</h2>
-<div class="refsect2">
+<div class="refsect2" title="GstAutoAudioSrc">
 <a name="GstAutoAudioSrc-struct"></a><h3>GstAutoAudioSrc</h3>
 <pre class="programlisting">typedef struct _GstAutoAudioSrc GstAutoAudioSrc;</pre>
 <p>
 </p>
 </div>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Property Details">
 <a name="gst-plugins-good-plugins-autoaudiosrc.property-details"></a><h2>Property Details</h2>
-<div class="refsect2">
+<div class="refsect2" title='The "filter-caps" property'>
 <a name="GstAutoAudioSrc--filter-caps"></a><h3>The <code class="literal">"filter-caps"</code> property</h3>
-<pre class="programlisting">  "filter-caps"              <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a>*              : Read / Write</pre>
+<pre class="programlisting">  "filter-caps"              <a
+href="../gstreamer-0.10/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a>*              : Read / Write</pre>
 <p>
 This property will filter out candidate sinks that can handle the specified
 caps. By default only audio sinks that support raw floating point and
 integer audio are selected.
 </p>
 <p>
-This property can only be set before the element goes to the READY state.
+This property can only be set before the element goes to the READY state.</p>
+<p>
 </p>
-<p class="since">Since 0.10.14</p>
+<p>Since 0.10.14</p>
 </div>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="See Also">
 <a name="gst-plugins-good-plugins-autoaudiosrc.see-also"></a><h2>See Also</h2>
 autovideosrc, alsasrc, osssrc
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

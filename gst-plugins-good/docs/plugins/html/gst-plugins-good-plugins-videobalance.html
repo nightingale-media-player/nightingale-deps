@@ -3,13 +3,16 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>videobalance</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-vertigotv.html" title="vertigotv">
 <link rel="next" href="gst-plugins-good-plugins-videobox.html" title="videobox">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -17,22 +20,22 @@
 <td><a accesskey="p" href="gst-plugins-good-plugins-vertigotv.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-videobox.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-videobalance.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-videobalance.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-videobalance.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-videobalance.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-videobalance.properties" class="shortcut">Properties</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-videobalance.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-videobalance.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-videobalance.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-videobalance.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
-<div class="refentry">
+<div class="refentry" title="videobalance">
 <a name="gst-plugins-good-plugins-videobalance"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -41,76 +44,89 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="gst-plugins-good-plugins-videobalance.synopsis"></a><h2>Synopsis</h2>
-<a name="GstVideoBalance"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-videobalance.html#GstVideoBalance-struct" title="struct GstVideoBalance">GstVideoBalance</a>;
+<a name="GstVideoBalance"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-good-plugins-videobalance.html#GstVideoBalance-struct" title="GstVideoBalance">GstVideoBalance</a>;
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Object Hierarchy">
 <a name="gst-plugins-good-plugins-videobalance.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html">GstBaseTransform</a>
-                           +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstvideofilter.html#GstVideoFilter">GstVideoFilter</a>
-                                 +----GstVideoBalance
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="../gstreamer-libs-0.10/GstBaseTransform.html"
+>GstBaseTransform</a>
+                     +----<a
+href="../gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstvideofilter.html#GstVideoFilter"
+>GstVideoFilter</a>
+                           +----GstVideoBalance
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Implemented Interfaces">
 <a name="gst-plugins-good-plugins-videobalance.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstVideoBalance implements
- GstImplementsInterface and  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstcolorbalance.html#GstColorBalance">GstColorBalance</a>.</p>
+ <a
+href="../gstreamer-0.10/GstImplementsInterface.html"
+>GstImplementsInterface</a> and  <a
+href="../gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstcolorbalance.html#GstColorBalance"
+>GstColorBalance</a>.</p>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Properties">
 <a name="gst-plugins-good-plugins-videobalance.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-videobalance.html#GstVideoBalance--brightness" title='The "brightness" property'>brightness</a>"               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>               : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-videobalance.html#GstVideoBalance--contrast" title='The "contrast" property'>contrast</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>               : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-videobalance.html#GstVideoBalance--hue" title='The "hue" property'>hue</a>"                      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>               : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-videobalance.html#GstVideoBalance--saturation" title='The "saturation" property'>saturation</a>"               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>               : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-videobalance.html#GstVideoBalance--brightness" title='The "brightness" property'>brightness</a>"               <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-videobalance.html#GstVideoBalance--contrast" title='The "contrast" property'>contrast</a>"                 <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-videobalance.html#GstVideoBalance--hue" title='The "hue" property'>hue</a>"                      <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-videobalance.html#GstVideoBalance--saturation" title='The "saturation" property'>saturation</a>"               <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Description">
 <a name="gst-plugins-good-plugins-videobalance.description"></a><h2>Description</h2>
 <p>
 Adjusts brightness, contrast, hue, saturation on a video stream.
 </p>
 <p>
 </p>
-<div class="refsect2">
-<a name="idp14502752"></a><h3>Example launch line</h3>
-<div class="informalexample">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> videotestsrc <span class="gtkdoc opt">!</span> videobalance saturation<span class="gtkdoc opt">=</span><span class="number">0.0</span> <span class="gtkdoc opt">!</span> videoconvert <span class="gtkdoc opt">!</span> ximagesink</pre></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
- This pipeline converts the image to black and white by setting the
+<div class="refsect2" title="Example launch line">
+<a name="id600705"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch videotestsrc ! videobalance saturation=0.0 ! ffmpegcolorspace ! ximagesink
+</pre></div> This pipeline converts the image to black and white by setting the
 saturation to 0.0.
 </div>
 <p>
 </p>
 <p>
-Last reviewed on 2010-04-18 (0.10.22)
-</p>
-<div class="refsynopsisdiv">
+Last reviewed on 2006-03-03 (0.10.3)</p>
+<div class="refsynopsisdiv" title="Synopsis">
 <h2>Synopsis</h2>
-<div class="refsect2">
-<a name="idp22341200"></a><h3>Element Information</h3>
+<div class="refsect2" title="Element Information">
+<a name="id561063"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-            <a class="link" href="gst-plugins-good-plugins-plugin-videofilter.html#plugin-videofilter">videofilter</a>
+            <a class="link" href="gst-plugins-good-plugins-plugin-videobalance.html#plugin-videobalance">videobalance</a>
           </td>
 </tr>
 <tr>
@@ -125,29 +141,8 @@ Last reviewed on 2010-04-18 (0.10.22)
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
-<a name="idp22621664"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>video/x-raw, format=(string){ AYUV, ARGB, BGRA, ABGR, RGBA, Y444, xRGB, RGBx, xBGR, BGRx, RGB, BGR, Y42B, YUY2, UYVY, YVYU, I420, YV12, IYUV, Y41B, NV12, NV21 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-</tbody>
-</table></div>
+<div class="refsect2" title="Element Pads">
+<a name="id611605"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -165,7 +160,28 @@ Last reviewed on 2010-04-18 (0.10.22)
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw, format=(string){ AYUV, ARGB, BGRA, ABGR, RGBA, Y444, xRGB, RGBx, xBGR, BGRx, RGB, BGR, Y42B, YUY2, UYVY, YVYU, I420, YV12, IYUV, Y41B, NV12, NV21 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td>video/x-raw-yuv, format=(fourcc){ IYUV, I420, YV12 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw-yuv, format=(fourcc){ IYUV, I420, YV12 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
@@ -174,45 +190,54 @@ Last reviewed on 2010-04-18 (0.10.22)
 <p>
 </p>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Details">
 <a name="gst-plugins-good-plugins-videobalance.details"></a><h2>Details</h2>
-<div class="refsect2">
-<a name="GstVideoBalance-struct"></a><h3>struct GstVideoBalance</h3>
-<pre class="programlisting">struct GstVideoBalance;</pre>
+<div class="refsect2" title="GstVideoBalance">
+<a name="GstVideoBalance-struct"></a><h3>GstVideoBalance</h3>
+<pre class="programlisting">typedef struct _GstVideoBalance GstVideoBalance;</pre>
 <p>
-Opaque data structure.
+Opaque data structure.</p>
+<p>
 </p>
 </div>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Property Details">
 <a name="gst-plugins-good-plugins-videobalance.property-details"></a><h2>Property Details</h2>
-<div class="refsect2">
+<div class="refsect2" title='The "brightness" property'>
 <a name="GstVideoBalance--brightness"></a><h3>The <code class="literal">"brightness"</code> property</h3>
-<pre class="programlisting">  "brightness"               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>               : Read / Write</pre>
+<pre class="programlisting">  "brightness"               <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write</pre>
 <p>brightness.</p>
 <p>Allowed values: [-1,1]</p>
 <p>Default value: 0</p>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" title='The "contrast" property'>
 <a name="GstVideoBalance--contrast"></a><h3>The <code class="literal">"contrast"</code> property</h3>
-<pre class="programlisting">  "contrast"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>               : Read / Write</pre>
+<pre class="programlisting">  "contrast"                 <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write</pre>
 <p>contrast.</p>
 <p>Allowed values: [0,2]</p>
 <p>Default value: 1</p>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" title='The "hue" property'>
 <a name="GstVideoBalance--hue"></a><h3>The <code class="literal">"hue"</code> property</h3>
-<pre class="programlisting">  "hue"                      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>               : Read / Write</pre>
+<pre class="programlisting">  "hue"                      <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write</pre>
 <p>hue.</p>
 <p>Allowed values: [-1,1]</p>
 <p>Default value: 0</p>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" title='The "saturation" property'>
 <a name="GstVideoBalance--saturation"></a><h3>The <code class="literal">"saturation"</code> property</h3>
-<pre class="programlisting">  "saturation"               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>               : Read / Write</pre>
+<pre class="programlisting">  "saturation"               <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write</pre>
 <p>saturation.</p>
 <p>Allowed values: [0,2]</p>
 <p>Default value: 1</p>
@@ -221,6 +246,6 @@ Opaque data structure.
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

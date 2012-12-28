@@ -55,6 +55,8 @@ handoff_cb (GstElement * element, GstBuffer * buf, GstPad * pad,
 {
   *p_counter += 1;
   GST_LOG ("counter = %d", *p_counter);
+
+  fail_unless (GST_BUFFER_CAPS (buf) != NULL);
 }
 
 static void
@@ -73,7 +75,7 @@ process_file (const gchar * file, gboolean push_mode, gint repeat,
 
   /* kids, don't use a sync handler for this at home, really; we do because
    * we just want to abort and nothing else */
-  gst_bus_set_sync_handler (bus, error_cb, (gpointer) file, NULL);
+  gst_bus_set_sync_handler (bus, error_cb, (gpointer) file);
 
   src = gst_element_factory_make ("filesrc", "filesrc");
   fail_unless (src != NULL, "Failed to create 'filesrc' element!");

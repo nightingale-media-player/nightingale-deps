@@ -18,10 +18,6 @@
  * 02110-1301 USA
  */
 
-/* FIXME 0.11: suppress warnings for deprecated API such as GValueArray
- * with newer GLib versions (>= 2.31.0) */
-#define GLIB_DISABLE_DEPRECATION_WARNINGS
-
 #include <gst/gst.h>
 #include <gst/check/gstcheck.h>
 
@@ -92,29 +88,22 @@ on_handoff (GstElement * object, GstBuffer * buffer, GstPad * pad,
     gpointer user_data)
 {
   if (!have_data) {
-    GstMapInfo map;
-    gdouble *data;
+    gdouble *data = (gdouble *) GST_BUFFER_DATA (buffer);
 
-    gst_buffer_map (buffer, &map, GST_MAP_READ);
-    data = (gdouble *) map.data;
-
-    fail_unless (map.size > 5 * sizeof (gdouble));
+    fail_unless (GST_BUFFER_SIZE (buffer) > 5 * sizeof (gdouble));
     fail_unless (data[0] == 0.0);
     fail_unless (data[1] == 0.0);
     fail_unless (data[2] == 0.0);
     fail_unless (data[3] == 0.0);
     fail_unless (data[4] == 0.0);
     fail_unless (data[5] != 0.0);
-
-    gst_buffer_unmap (buffer, &map);
     have_data = TRUE;
   }
 }
 
 GST_START_TEST (test_pipeline)
 {
-  GstElement *pipeline, *src, *cfilter, *filter, *sink;
-  GstCaps *caps;
+  GstElement *pipeline, *src, *filter, *sink;
   GstBus *bus;
   GMainLoop *loop;
 
@@ -128,18 +117,6 @@ GST_START_TEST (test_pipeline)
   fail_unless (src != NULL);
   g_object_set (G_OBJECT (src), "num-buffers", 1000, NULL);
 
-  cfilter = gst_element_factory_make ("capsfilter", NULL);
-  fail_unless (cfilter != NULL);
-#if G_BYTE_ORDER == G_BIG_ENDIAN
-  caps = gst_caps_new_simple ("audio/x-raw",
-      "format", G_TYPE_STRING, "F64BE", NULL);
-#else
-  caps = gst_caps_new_simple ("audio/x-raw",
-      "format", G_TYPE_STRING, "F64LE", NULL);
-#endif
-  g_object_set (G_OBJECT (cfilter), "caps", caps, NULL);
-  gst_caps_unref (caps);
-
   filter = gst_element_factory_make ("audiofirfilter", NULL);
   fail_unless (filter != NULL);
   g_signal_connect (G_OBJECT (filter), "rate-changed",
@@ -150,8 +127,8 @@ GST_START_TEST (test_pipeline)
   g_object_set (G_OBJECT (sink), "signal-handoffs", TRUE, NULL);
   g_signal_connect (G_OBJECT (sink), "handoff", G_CALLBACK (on_handoff), NULL);
 
-  gst_bin_add_many (GST_BIN (pipeline), src, cfilter, filter, sink, NULL);
-  fail_unless (gst_element_link_many (src, cfilter, filter, sink, NULL));
+  gst_bin_add_many (GST_BIN (pipeline), src, filter, sink, NULL);
+  fail_unless (gst_element_link_many (src, filter, sink, NULL));
 
   loop = g_main_loop_new (NULL, FALSE);
 

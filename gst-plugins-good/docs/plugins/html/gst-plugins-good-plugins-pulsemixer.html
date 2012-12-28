@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>pulsemixer</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="prev" href="gst-plugins-good-plugins-pulsesrc.html" title="pulsesrc">
+<link rel="next" href="gst-plugins-good-plugins-quarktv.html" title="quarktv">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-good-plugins-pulsesrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-good-plugins-quarktv.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-good-plugins-pulsemixer.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-pulsemixer.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-pulsemixer.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-pulsemixer.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-pulsemixer.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry" title="pulsemixer">
+<a name="gst-plugins-good-plugins-pulsemixer"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-pulsemixer.top_of_page"></a>pulsemixer</span></h2>
+<p>pulsemixer — Control sound input and output levels for PulseAudio</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv" title="Synopsis">
+<a name="gst-plugins-good-plugins-pulsemixer.synopsis"></a><h2>Synopsis</h2>
+<a name="GstPulseMixer"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-good-plugins-pulsemixer.html#GstPulseMixer-struct" title="GstPulseMixer">GstPulseMixer</a>;
+</pre>
+</div>
+<div class="refsect1" title="Object Hierarchy">
+<a name="gst-plugins-good-plugins-pulsemixer.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----GstPulseMixer
+</pre>
+</div>
+<div class="refsect1" title="Implemented Interfaces">
+<a name="gst-plugins-good-plugins-pulsemixer.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstPulseMixer implements
+ <a
+href="../gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"
+>GstPropertyProbe</a>,  <a
+href="../gstreamer-0.10/GstImplementsInterface.html"
+>GstImplementsInterface</a> and  <a
+href="../gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstmixer.html#GstMixer"
+>GstMixer</a>.</p>
+</div>
+<div class="refsect1" title="Properties">
+<a name="gst-plugins-good-plugins-pulsemixer.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-good-plugins-pulsemixer.html#GstPulseMixer--device" title='The "device" property'>device</a>"                   <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-pulsemixer.html#GstPulseMixer--device-name" title='The "device-name" property'>device-name</a>"              <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read
+  "<a class="link" href="gst-plugins-good-plugins-pulsemixer.html#GstPulseMixer--server" title='The "server" property'>server</a>"                   <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+</pre>
+</div>
+<div class="refsect1" title="Description">
+<a name="gst-plugins-good-plugins-pulsemixer.description"></a><h2>Description</h2>
+<p>
+This element lets you adjust sound input and output levels for the
+PulseAudio sound server. It supports the GstMixer interface, which can be
+used to obtain a list of available mixer tracks. Set the mixer element to
+READY state before using the GstMixer interface on it.
+</p>
+<p>
+</p>
+<div class="refsect2" title="Example pipelines">
+<a name="id574988"></a><h3>Example pipelines</h3>
+<p>
+pulsemixer can't be used in a sensible way in gst-launch.
+</p>
+</div>
+<div class="refsynopsisdiv" title="Synopsis">
+<h2>Synopsis</h2>
+<div class="refsect2" title="Element Information">
+<a name="id570952"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-good-plugins-plugin-pulseaudio.html#plugin-pulseaudio">pulseaudio</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Lennart Poettering</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Generic/Audio</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="Element Pads">
+<a name="id585800"></a><h3>Element Pads</h3>
+</div>
+</div>
+<p>
+</p>
+</div>
+<div class="refsect1" title="Details">
+<a name="gst-plugins-good-plugins-pulsemixer.details"></a><h2>Details</h2>
+<div class="refsect2" title="GstPulseMixer">
+<a name="GstPulseMixer-struct"></a><h3>GstPulseMixer</h3>
+<pre class="programlisting">typedef struct _GstPulseMixer GstPulseMixer;</pre>
+<p>
+</p>
+</div>
+</div>
+<div class="refsect1" title="Property Details">
+<a name="gst-plugins-good-plugins-pulsemixer.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" title='The "device" property'>
+<a name="GstPulseMixer--device"></a><h3>The <code class="literal">"device"</code> property</h3>
+<pre class="programlisting">  "device"                   <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>The PulseAudio sink or source to control.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" title='The "device-name" property'>
+<a name="GstPulseMixer--device-name"></a><h3>The <code class="literal">"device-name"</code> property</h3>
+<pre class="programlisting">  "device-name"              <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read</pre>
+<p>Human-readable name of the sound device.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" title='The "server" property'>
+<a name="GstPulseMixer--server"></a><h3>The <code class="literal">"server"</code> property</h3>
+<pre class="programlisting">  "server"                   <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>The PulseAudio server to connect to.</p>
+<p>Default value: NULL</p>
+</div>
+</div>
+<div class="refsect1" title="See Also">
+<a name="gst-plugins-good-plugins-pulsemixer.see-also"></a><h2>See Also</h2>
+pulsesrc, pulsesink
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.11</div>
+</body>
+</html>

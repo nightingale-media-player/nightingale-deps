@@ -14,7 +14,7 @@ GstGSMEnc *gstgsmenc
 <SIGNAL>
 <NAME>GstMultiUDPSink::add</NAME>
 <RETURNS>void</RETURNS>
-<FLAGS>la</FLAGS>
+<FLAGS>l</FLAGS>
 GstMultiUDPSink *gstmultiudpsink
 gchar *arg1
 gint  arg2
@@ -23,7 +23,7 @@ gint  arg2
 <SIGNAL>
 <NAME>GstMultiUDPSink::clear</NAME>
 <RETURNS>void</RETURNS>
-<FLAGS>la</FLAGS>
+<FLAGS>l</FLAGS>
 GstMultiUDPSink *gstmultiudpsink
 </SIGNAL>
 
@@ -47,8 +47,8 @@ gint  arg2
 
 <SIGNAL>
 <NAME>GstMultiUDPSink::get-stats</NAME>
-<RETURNS>GstStructure*</RETURNS>
-<FLAGS>la</FLAGS>
+<RETURNS>GValueArray*</RETURNS>
+<FLAGS>l</FLAGS>
 GstMultiUDPSink *gstmultiudpsink
 gchar *arg1
 gint  arg2
@@ -57,7 +57,7 @@ gint  arg2
 <SIGNAL>
 <NAME>GstMultiUDPSink::remove</NAME>
 <RETURNS>void</RETURNS>
-<FLAGS>la</FLAGS>
+<FLAGS>l</FLAGS>
 GstMultiUDPSink *gstmultiudpsink
 gchar *arg1
 gint  arg2
@@ -65,8 +65,8 @@ gint  arg2
 
 <SIGNAL>
 <NAME>GstDynUDPSink::get-stats</NAME>
-<RETURNS>GstStructure*</RETURNS>
-<FLAGS>la</FLAGS>
+<RETURNS>GValueArray*</RETURNS>
+<FLAGS>l</FLAGS>
 GstDynUDPSink *gstdynudpsink
 gchar *arg1
 gint  arg2
@@ -470,15 +470,6 @@ GstRtpBin *gstrtpbin
 </SIGNAL>
 
 <SIGNAL>
-<NAME>GstRtpBin::payload-type-change</NAME>
-<RETURNS>void</RETURNS>
-<FLAGS>l</FLAGS>
-GstRtpBin *gstrtpbin
-guint  arg1
-guint  arg2
-</SIGNAL>
-
-<SIGNAL>
 <NAME>GstRtpJitterBuffer::clear-pt-map</NAME>
 <RETURNS>void</RETURNS>
 <FLAGS>la</FLAGS>
@@ -506,15 +497,6 @@ GstRtpJitterBuffer *gstrtpjitterbuffer
 <FLAGS>l</FLAGS>
 GstRtpJitterBuffer *gstrtpjitterbuffer
 guint  arg1
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstRtpJitterBuffer::set-active</NAME>
-<RETURNS>guint64</RETURNS>
-<FLAGS>la</FLAGS>
-GstRtpJitterBuffer *gstrtpjitterbuffer
-gboolean  arg1
-guint64  arg2
 </SIGNAL>
 
 <SIGNAL>
@@ -660,34 +642,5 @@ GstPad *arg2
 GstRtpSsrcDemux *gstrtpssrcdemux
 guint  arg1
 GstPad *arg2
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstCairoOverlay::caps-changed</NAME>
-<RETURNS>void</RETURNS>
-<FLAGS></FLAGS>
-GstCairoOverlay *gstcairooverlay
-GstCaps *arg1
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstCairoOverlay::draw</NAME>
-<RETURNS>void</RETURNS>
-<FLAGS></FLAGS>
-GstCairoOverlay *gstcairooverlay
-CairoContext *arg1
-guint64  arg2
-guint64  arg3
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstV4l2Src::prepare-format</NAME>
-<RETURNS>void</RETURNS>
-<FLAGS>l</FLAGS>
-GstV4l2Src *gstv4l2src
-gint  arg1
-guint  arg2
-guint  arg3
-guint  arg4
 </SIGNAL>
 

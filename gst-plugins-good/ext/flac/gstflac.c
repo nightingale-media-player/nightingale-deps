@@ -31,7 +31,7 @@
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-#ifdef ENABLE_NLS
+#if ENABLE_NLS
   GST_DEBUG ("binding text domain %s to locale dir %s", GETTEXT_PACKAGE,
       LOCALEDIR);
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
@@ -55,6 +55,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    flac,
+    "flac",
     "The FLAC Lossless compressor Codec",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

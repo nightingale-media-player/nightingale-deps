@@ -26,7 +26,6 @@
 #include <unistd.h>
 
 #include <gst/check/gstcheck.h>
-#include <gst/video/video.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -41,7 +40,21 @@ run_pipeline (GstElement * pipeline)
   gst_element_set_state (pipeline, GST_STATE_NULL);
 }
 
-GST_START_TEST (test_multifilesink_key_frame)
+gchar *
+g_mkdtemp (const gchar * template)
+{
+  gchar *s;
+  gchar *tmpdir;
+
+  s = g_strdup (template);
+  tmpdir = mkdtemp (s);
+  if (tmpdir == NULL) {
+    g_free (s);
+  }
+  return tmpdir;
+}
+
+GST_START_TEST (test_multifilesink)
 {
   GstElement *pipeline;
   GstElement *mfs;
@@ -58,10 +71,10 @@ GST_START_TEST (test_multifilesink_key_frame)
 
   pipeline =
       gst_parse_launch
-      ("videotestsrc num-buffers=10 ! video/x-raw,format=(string)I420,width=320,height=240 ! multifilesink name=mfs",
+      ("videotestsrc num-buffers=10 ! video/x-raw-yuv,format=(fourcc)I420,width=320,height=240 ! multifilesink",
       NULL);
   fail_if (pipeline == NULL);
-  mfs = gst_bin_get_by_name (GST_BIN (pipeline), "mfs");
+  mfs = gst_bin_get_by_name (GST_BIN (pipeline), "multifilesink0");
   fail_if (mfs == NULL);
   mfs_pattern = g_build_filename (my_tmpdir, "%05d", NULL);
   g_object_set (G_OBJECT (mfs), "location", mfs_pattern, NULL);
@@ -80,115 +93,7 @@ GST_START_TEST (test_multifilesink_key_frame)
 
   g_free (mfs_pattern);
   g_free (my_tmpdir);
-}
-
-GST_END_TEST;
-
-GST_START_TEST (test_multifilesink_max_files)
-{
-  GstElement *pipeline;
-  GstElement *mfs;
-  int i;
-  const gchar *tmpdir;
-  gchar *my_tmpdir;
-  gchar *template;
-  gchar *mfs_pattern;
-
-  tmpdir = g_get_tmp_dir ();
-  template = g_build_filename (tmpdir, "multifile-test-XXXXXX", NULL);
-  my_tmpdir = g_mkdtemp (template);
-  fail_if (my_tmpdir == NULL);
-
-  pipeline =
-      gst_parse_launch
-      ("videotestsrc num-buffers=10 ! video/x-raw,format=(string)I420,width=320,height=240 ! multifilesink name=mfs",
-      NULL);
-  fail_if (pipeline == NULL);
-  mfs = gst_bin_get_by_name (GST_BIN (pipeline), "mfs");
-  fail_if (mfs == NULL);
-  mfs_pattern = g_build_filename (my_tmpdir, "%05d", NULL);
-  g_object_set (G_OBJECT (mfs), "location", mfs_pattern, "max-files", 3, NULL);
-  g_object_unref (mfs);
-  run_pipeline (pipeline);
-  gst_object_unref (pipeline);
-
-  for (i = 0; i < 7; i++) {
-    char *s;
-
-    s = g_strdup_printf (mfs_pattern, i);
-    fail_unless (g_remove (s) != 0);
-    g_free (s);
-  }
-  for (i = 7; i < 10; i++) {
-    char *s;
-
-    s = g_strdup_printf (mfs_pattern, i);
-    fail_if (g_remove (s) != 0);
-    g_free (s);
-  }
-  fail_if (g_remove (my_tmpdir) != 0);
-
-  g_free (mfs_pattern);
-  g_free (my_tmpdir);
-}
-
-GST_END_TEST;
-
-GST_START_TEST (test_multifilesink_key_unit)
-{
-  GstElement *mfs;
-  int i;
-  const gchar *tmpdir;
-  gchar *my_tmpdir;
-  gchar *template;
-  gchar *mfs_pattern;
-  GstBuffer *buf;
-  GstPad *sink;
-
-  tmpdir = g_get_tmp_dir ();
-  template = g_build_filename (tmpdir, "multifile-test-XXXXXX", NULL);
-  my_tmpdir = g_mkdtemp (template);
-  fail_if (my_tmpdir == NULL);
-
-  mfs = gst_element_factory_make ("multifilesink", NULL);
-  fail_if (mfs == NULL);
-  mfs_pattern = g_build_filename (my_tmpdir, "%05d", NULL);
-  g_object_set (G_OBJECT (mfs), "location", mfs_pattern, "next-file", 3, NULL);
-  fail_if (gst_element_set_state (mfs,
-          GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE);
-
-  sink = gst_element_get_static_pad (mfs, "sink");
-  buf = gst_buffer_new_and_alloc (4);
-
-  gst_buffer_fill (buf, 0, "foo", 4);
-  fail_if (gst_pad_chain (sink, gst_buffer_copy (buf)) != GST_FLOW_OK);
-
-  gst_buffer_fill (buf, 0, "bar", 4);
-  fail_if (gst_pad_chain (sink, gst_buffer_copy (buf)) != GST_FLOW_OK);
-
-  fail_unless (gst_pad_send_event (sink,
-          gst_video_event_new_downstream_force_key_unit (GST_CLOCK_TIME_NONE,
-              GST_CLOCK_TIME_NONE, GST_CLOCK_TIME_NONE, TRUE, 1)));
-
-  gst_buffer_fill (buf, 0, "baz", 4);
-  fail_if (gst_pad_chain (sink, buf) != GST_FLOW_OK);
-
-  fail_if (gst_element_set_state (mfs,
-          GST_STATE_NULL) == GST_STATE_CHANGE_FAILURE);
-
-  for (i = 0; i < 2; i++) {
-    char *s;
-
-    s = g_strdup_printf (mfs_pattern, i);
-    fail_if (g_remove (s) != 0);
-    g_free (s);
-  }
-  fail_if (g_remove (my_tmpdir) != 0);
-
-  g_free (mfs_pattern);
-  g_free (my_tmpdir);
-  gst_object_unref (sink);
-  gst_object_unref (mfs);
+  g_free (template);
 }
 
 GST_END_TEST;
@@ -210,10 +115,10 @@ GST_START_TEST (test_multifilesrc)
 
   pipeline =
       gst_parse_launch
-      ("videotestsrc num-buffers=10 ! video/x-raw,format=(string)I420,width=320,height=240 ! multifilesink name=mfs",
+      ("videotestsrc num-buffers=10 ! video/x-raw-yuv,format=(fourcc)I420,width=320,height=240 ! multifilesink",
       NULL);
   fail_if (pipeline == NULL);
-  mfs = gst_bin_get_by_name (GST_BIN (pipeline), "mfs");
+  mfs = gst_bin_get_by_name (GST_BIN (pipeline), "multifilesink0");
   fail_if (mfs == NULL);
   mfs_pattern = g_build_filename (my_tmpdir, "%05d", NULL);
   g_object_set (G_OBJECT (mfs), "location", mfs_pattern, NULL);
@@ -224,7 +129,7 @@ GST_START_TEST (test_multifilesrc)
 
   pipeline =
       gst_parse_launch
-      ("multifilesrc ! video/x-raw,format=(string)I420,width=320,height=240,framerate=10/1 ! fakesink",
+      ("multifilesrc ! video/x-raw-yuv,format=(fourcc)I420,width=320,height=240,framerate=10/1 ! fakesink",
       NULL);
   fail_if (pipeline == NULL);
   mfs = gst_bin_get_by_name (GST_BIN (pipeline), "multifilesrc0");
@@ -246,6 +151,7 @@ GST_START_TEST (test_multifilesrc)
 
   g_free (mfs_pattern);
   g_free (my_tmpdir);
+  g_free (template);
 }
 
 GST_END_TEST;
@@ -258,9 +164,7 @@ libvisual_suite (void)
 
   suite_add_tcase (s, tc_chain);
 
-  tcase_add_test (tc_chain, test_multifilesink_key_frame);
-  tcase_add_test (tc_chain, test_multifilesink_max_files);
-  tcase_add_test (tc_chain, test_multifilesink_key_unit);
+  tcase_add_test (tc_chain, test_multifilesink);
   tcase_add_test (tc_chain, test_multifilesrc);
 
   return s;

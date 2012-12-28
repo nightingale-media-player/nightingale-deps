@@ -1,5 +1,11 @@
 DISTCHECK_CONFIGURE_FLAGS=--enable-gtk-doc
 
+if USE_GCONFTOOL
+GCONF_DIR = gconf
+else
+GCONF_DIR =
+endif
+
 ALWAYS_SUBDIRS =		\
 	gst sys ext 		\
 	tests			\
@@ -9,9 +15,14 @@ ALWAYS_SUBDIRS =		\
 	m4			\
 	pkgconfig
 
-SUBDIRS = $(ALWAYS_SUBDIRS)
+SUBDIRS = 			\
+	$(ALWAYS_SUBDIRS)	\
+	$(GCONF_DIR)
 
-DIST_SUBDIRS = $(ALWAYS_SUBDIRS)
+DIST_SUBDIRS = 			\
+	$(ALWAYS_SUBDIRS)	\
+	gconf
+
 
 # include before EXTRA_DIST for win32 assignment
 include $(top_srcdir)/common/win32.mak
@@ -26,8 +37,7 @@ DISTCLEANFILES = _stdint.h
 
 noinst_HEADERS = \
 	gst-libs/gst/gettext.h \
-	gst-libs/gst/gst-i18n-plugin.h \
-	gst-libs/gst/glib-compat-private.h
+	gst-libs/gst/gst-i18n-plugin.h
 
 ACLOCAL_AMFLAGS = -I m4 -I common/m4
 
@@ -46,50 +56,8 @@ check-torture:
 endif
 
 win32-update:
-	for f in gst/udp/gstudp-marshal.c \
-		 gst/udp/gstudp-marshal.h \
-		 gst/udp/gstudp-enumtypes.c \
-		 gst/udp/gstudp-enumtypes.h \
-		 gst/rtpmanager/gstrtpbin-marshal.c \
-		 gst/rtpmanager/gstrtpbin-marshal.h \
-		 sys/v4l2/tuner-enumtypes.c \
-		 sys/v4l2/tuner-enumtypes.h \
-		 sys/v4l2/tuner-marshal.c \
-		 sys/v4l2/tuner-marshal.h; do \
-		cp $(top_builddir)/$$f win32/common; done
-	$(top_srcdir)/common/gst-indent win32/common/gstudp-marshal.c
-	$(top_srcdir)/common/gst-indent win32/common/gstudp-marshal.c
-	$(top_srcdir)/common/gst-indent win32/common/gstudp-enumtypes.c
-	$(top_srcdir)/common/gst-indent win32/common/gstudp-enumtypes.c
-	$(top_srcdir)/common/gst-indent win32/common/gstrtpbin-marshal.c
-	$(top_srcdir)/common/gst-indent win32/common/gstrtpbin-marshal.c
-	$(top_srcdir)/common/gst-indent win32/common/tuner-enumtypes.c
-	$(top_srcdir)/common/gst-indent win32/common/tuner-enumtypes.c
-	$(top_srcdir)/common/gst-indent win32/common/tuner-marshal.c
-	$(top_srcdir)/common/gst-indent win32/common/tuner-marshal.c
 	cp $(top_builddir)/win32/common/config.h-new \
 	    $(top_srcdir)/win32/common/config.h
 
 include $(top_srcdir)/common/coverage/lcov.mak
 
-# cruft: plugins that have been merged or moved or renamed
-
-CRUFT_FILES = \
-	$(top_builddir)/common/shave \
-	$(top_builddir)/common/shave-libtool \
-	$(top_builddir)/gst/median/.libs/*.{so,dll,DLL,dylib} \
-	$(top_builddir)/gst/qtdemux/.libs/*.{so,dll,DLL,dylib} \
-	$(top_builddir)/gst/quicktime/.libs/*.{so,dll,DLL,dylib} \
-	$(top_builddir)/gst/videofilter/.libs/*videoflip.{so,dll,DLL,dylib} \
-	$(top_builddir)/gst/videofilter/.libs/*videobalance.{so,dll,DLL,dylib} \
-	$(top_builddir)/gst/videofilter/.libs/*gamma.{so,dll,DLL,dylib}
-
-CRUFT_DIRS = \
-	$(top_srcdir)/gst/median \
-	$(top_srcdir)/gst/qtdemux \
-	$(top_srcdir)/gst/quicktime \
-	$(top_srcdir)/ext/annodex
-
-include $(top_srcdir)/common/cruft.mak
-
-all-local: check-cruft

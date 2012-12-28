@@ -21,10 +21,7 @@
 #define __GST_RTP_L16_DEPAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstrtpbasedepayload.h>
-#include <gst/audio/audio.h>
-
-#include "gstrtpchannels.h"
+#include <gst/rtp/gstbasertpdepayload.h>
 
 G_BEGIN_DECLS
 
@@ -46,19 +43,17 @@ typedef struct _GstRtpL16DepayClass GstRtpL16DepayClass;
 /* Definition of structure storing data for this element. */
 struct _GstRtpL16Depay
 {
-  GstRTPBaseDepayload depayload;
+  GstBaseRTPDepayload depayload;
 
-  GstAudioInfo info;
-  const GstRTPChannelOrder *order;
+  guint rate;
+  guint channels;
 };
 
 /* Standard definition defining a class for this element. */
 struct _GstRtpL16DepayClass
 {
-  GstRTPBaseDepayloadClass parent_class;
+  GstBaseRTPDepayloadClass parent_class;
 };
-
-GType gst_rtp_L16_depay_get_type (void);
 
 gboolean gst_rtp_L16_depay_plugin_init (GstPlugin * plugin);
 

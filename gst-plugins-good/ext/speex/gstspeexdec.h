@@ -22,8 +22,6 @@
 #define __GST_SPEEX_DEC_H__
 
 #include <gst/gst.h>
-#include <gst/audio/gstaudiodecoder.h>
-
 #include <speex/speex.h>
 #include <speex/speex_callbacks.h>
 #include <speex/speex_header.h>
@@ -45,11 +43,17 @@ G_BEGIN_DECLS
 typedef struct _GstSpeexDec GstSpeexDec;
 typedef struct _GstSpeexDecClass GstSpeexDecClass;
 
+#define DEC_MAX_FRAME_SIZE 2000
+
 struct _GstSpeexDec {
-  GstAudioDecoder   element;
+  GstElement            element;
+
+  /* pads */
+  GstPad                *sinkpad;
+  GstPad                *srcpad;
 
   void                  *state;
-  SpeexStereoState      *stereo;
+  SpeexStereoState      stereo;
 #ifdef SPEEX_1_0
   SpeexMode             *mode;
 #else
@@ -65,12 +69,12 @@ struct _GstSpeexDec {
   GstClockTime          frame_duration;
   guint64               packetno;
 
-  GstBuffer             *streamheader;
-  GstBuffer             *vorbiscomment;
+  GstSegment            segment;    /* STREAM LOCK */
+  gint64                granulepos; /* -1 = needs to be set from current time */
 };
 
 struct _GstSpeexDecClass {
-  GstAudioDecoderClass parent_class;
+  GstElementClass parent_class;
 };
 
 GType gst_speex_dec_get_type (void);

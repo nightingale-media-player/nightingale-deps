@@ -29,6 +29,13 @@
 GST_DEBUG_CATEGORY_STATIC (rtpmpvdepay_debug);
 #define GST_CAT_DEFAULT (rtpmpvdepay_debug)
 
+/* elementfactory information */
+static const GstElementDetails gst_rtp_mpvdepay_details =
+GST_ELEMENT_DETAILS ("RTP MPEG video depayloader",
+    "Codec/Depayloader/Network",
+    "Extracts MPEG video from RTP packets (RFC 2250)",
+    "Wim Taymans <wim.taymans@gmail.com>");
+
 /* FIXME, we set the mpeg version to 2, we should ideally be looking at contents
  * of the stream to figure out the version */
 static GstStaticPadTemplate gst_rtp_mpv_depay_src_template =
@@ -53,46 +60,52 @@ static GstStaticPadTemplate gst_rtp_mpv_depay_sink_template =
         "clock-rate = (int) 90000")
     );
 
-G_DEFINE_TYPE (GstRtpMPVDepay, gst_rtp_mpv_depay, GST_TYPE_RTP_BASE_DEPAYLOAD);
+GST_BOILERPLATE (GstRtpMPVDepay, gst_rtp_mpv_depay, GstBaseRTPDepayload,
+    GST_TYPE_BASE_RTP_DEPAYLOAD);
 
-static gboolean gst_rtp_mpv_depay_setcaps (GstRTPBaseDepayload * depayload,
+static gboolean gst_rtp_mpv_depay_setcaps (GstBaseRTPDepayload * depayload,
     GstCaps * caps);
-static GstBuffer *gst_rtp_mpv_depay_process (GstRTPBaseDepayload * depayload,
+static GstBuffer *gst_rtp_mpv_depay_process (GstBaseRTPDepayload * depayload,
     GstBuffer * buf);
+
+static void
+gst_rtp_mpv_depay_base_init (gpointer klass)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&gst_rtp_mpv_depay_src_template));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&gst_rtp_mpv_depay_sink_template));
+
+  gst_element_class_set_details (element_class, &gst_rtp_mpvdepay_details);
+}
 
 static void
 gst_rtp_mpv_depay_class_init (GstRtpMPVDepayClass * klass)
 {
-  GstElementClass *gstelement_class;
-  GstRTPBaseDepayloadClass *gstrtpbasedepayload_class;
+  GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
 
-  gstelement_class = (GstElementClass *) klass;
-  gstrtpbasedepayload_class = (GstRTPBaseDepayloadClass *) klass;
+  gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
 
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&gst_rtp_mpv_depay_src_template));
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&gst_rtp_mpv_depay_sink_template));
+  parent_class = g_type_class_peek_parent (klass);
 
-  gst_element_class_set_static_metadata (gstelement_class,
-      "RTP MPEG video depayloader", "Codec/Depayloader/Network/RTP",
-      "Extracts MPEG video from RTP packets (RFC 2250)",
-      "Wim Taymans <wim.taymans@gmail.com>");
-
-  gstrtpbasedepayload_class->set_caps = gst_rtp_mpv_depay_setcaps;
-  gstrtpbasedepayload_class->process = gst_rtp_mpv_depay_process;
+  gstbasertpdepayload_class->set_caps = gst_rtp_mpv_depay_setcaps;
+  gstbasertpdepayload_class->process = gst_rtp_mpv_depay_process;
 
   GST_DEBUG_CATEGORY_INIT (rtpmpvdepay_debug, "rtpmpvdepay", 0,
       "MPEG Video RTP Depayloader");
 }
 
 static void
-gst_rtp_mpv_depay_init (GstRtpMPVDepay * rtpmpvdepay)
+gst_rtp_mpv_depay_init (GstRtpMPVDepay * rtpmpvdepay,
+    GstRtpMPVDepayClass * klass)
 {
+  /* needed because of GST_BOILERPLATE */
 }
 
 static gboolean
-gst_rtp_mpv_depay_setcaps (GstRTPBaseDepayload * depayload, GstCaps * caps)
+gst_rtp_mpv_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
 {
   GstStructure *structure;
   gint clock_rate;
@@ -115,23 +128,20 @@ gst_rtp_mpv_depay_setcaps (GstRTPBaseDepayload * depayload, GstCaps * caps)
 }
 
 static GstBuffer *
-gst_rtp_mpv_depay_process (GstRTPBaseDepayload * depayload, GstBuffer * buf)
+gst_rtp_mpv_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 {
   GstRtpMPVDepay *rtpmpvdepay;
   GstBuffer *outbuf;
-  GstRTPBuffer rtp = { NULL };
 
   rtpmpvdepay = GST_RTP_MPV_DEPAY (depayload);
-
-  gst_rtp_buffer_map (buf, GST_MAP_READ, &rtp);
 
   {
     gint payload_len, payload_header;
     guint8 *payload;
     guint8 T;
 
-    payload_len = gst_rtp_buffer_get_payload_len (&rtp);
-    payload = gst_rtp_buffer_get_payload (&rtp);
+    payload_len = gst_rtp_buffer_get_payload_len (buf);
+    payload = gst_rtp_buffer_get_payload (buf);
     payload_header = 0;
 
     if (payload_len <= 4)
@@ -170,13 +180,12 @@ gst_rtp_mpv_depay_process (GstRTPBaseDepayload * depayload, GstBuffer * buf)
       payload += 4;
     }
 
-    outbuf = gst_rtp_buffer_get_payload_subbuffer (&rtp, payload_header, -1);
+    outbuf = gst_rtp_buffer_get_payload_subbuffer (buf, payload_header, -1);
 
-    if (outbuf) {
-      GST_DEBUG_OBJECT (rtpmpvdepay,
-          "gst_rtp_mpv_depay_chain: pushing buffer of size %" G_GSIZE_FORMAT,
-          gst_buffer_get_size (outbuf));
-    }
+    GST_DEBUG_OBJECT (rtpmpvdepay,
+        "gst_rtp_mpv_depay_chain: pushing buffer of size %d",
+        GST_BUFFER_SIZE (outbuf));
+
     return outbuf;
   }
 
@@ -195,5 +204,5 @@ gboolean
 gst_rtp_mpv_depay_plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "rtpmpvdepay",
-      GST_RANK_SECONDARY, GST_TYPE_RTP_MPV_DEPAY);
+      GST_RANK_MARGINAL, GST_TYPE_RTP_MPV_DEPAY);
 }

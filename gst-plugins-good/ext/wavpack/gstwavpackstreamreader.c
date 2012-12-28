@@ -78,10 +78,9 @@ gst_wavpack_stream_reader_push_back_byte (void *id, int c)
 
   GST_DEBUG ("Pushing back one byte: 0x%x", c);
 
-  if (rid->position == 0)
-    return rid->position;
-
   rid->position -= 1;
+  if (rid->position < 0)
+    rid->position = 0;
   return rid->position;
 }
 
@@ -108,7 +107,7 @@ gst_wavpack_stream_reader_write_bytes (void *id, void *data, int32_t bcount)
 }
 
 WavpackStreamReader *
-gst_wavpack_stream_reader_new (void)
+gst_wavpack_stream_reader_new ()
 {
   WavpackStreamReader *stream_reader =
       (WavpackStreamReader *) g_malloc0 (sizeof (WavpackStreamReader));

@@ -46,13 +46,9 @@ struct _GstMultiFileSrc
   GstPushSrc parent;
 
   gchar *filename;
-  int start_index;
-  int stop_index;
   int index;
 
   int offset;
-
-  gboolean loop;
 
   GstCaps *caps;
   gboolean successful_read;

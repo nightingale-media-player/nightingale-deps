@@ -21,7 +21,7 @@
 #define __GST_RTP_MP4G_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstrtpbasepayload.h>
+#include <gst/rtp/gstbasertppayload.h>
 #include <gst/base/gstadapter.h>
 
 G_BEGIN_DECLS
@@ -42,13 +42,12 @@ typedef struct _GstRtpMP4GPayClass GstRtpMP4GPayClass;
 
 struct _GstRtpMP4GPay
 {
-  GstRTPBasePayload    payload;
+  GstBaseRTPPayload    payload;
 
   GstAdapter   *adapter;
   GstClockTime  first_timestamp;
   GstClockTime  first_duration;
   GstClockTime  duration;
-  guint64       offset;
 
   gint          rate;
   gchar        *params;
@@ -56,15 +55,12 @@ struct _GstRtpMP4GPay
   const gchar  *streamtype;
   const gchar  *mode;
   GstBuffer    *config;
-  guint         frame_len;
 };
 
 struct _GstRtpMP4GPayClass
 {
-  GstRTPBasePayloadClass parent_class;
+  GstBaseRTPPayloadClass parent_class;
 };
-
-GType gst_rtp_mp4g_pay_get_type (void);
 
 gboolean gst_rtp_mp4g_pay_plugin_init (GstPlugin * plugin);
 

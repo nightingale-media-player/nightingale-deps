@@ -21,9 +21,8 @@
 #define __GST_RTP_L16_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstrtpbaseaudiopayload.h>
-
-#include "gstrtpchannels.h"
+#include <gst/rtp/gstbasertppayload.h>
+#include <gst/base/gstadapter.h>
 
 G_BEGIN_DECLS
 
@@ -43,18 +42,19 @@ typedef struct _GstRtpL16PayClass GstRtpL16PayClass;
 
 struct _GstRtpL16Pay
 {
-  GstRTPBaseAudioPayload payload;
+  GstBaseRTPPayload payload;
 
-  GstAudioInfo info;
-  const GstRTPChannelOrder *order;
+  GstAdapter  *adapter;
+  GstClockTime first_ts;
+
+  gint rate;
+  gint channels;
 };
 
 struct _GstRtpL16PayClass
 {
-  GstRTPBaseAudioPayloadClass parent_class;
+  GstBaseRTPPayloadClass parent_class;
 };
-
-GType gst_rtp_L16_pay_get_type (void);
 
 gboolean gst_rtp_L16_pay_plugin_init (GstPlugin * plugin);
 

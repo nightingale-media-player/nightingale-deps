@@ -21,12 +21,12 @@
 #define __GST_RTP_ILBC_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstrtpbaseaudiopayload.h>
+#include <gst/rtp/gstbasertpaudiopayload.h>
 
 G_BEGIN_DECLS
 
 #define GST_TYPE_RTP_ILBC_PAY \
-  (gst_rtp_ilbc_pay_get_type())
+  (gst_rtpilbcpay_get_type())
 #define GST_RTP_ILBC_PAY(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_RTP_ILBC_PAY,GstRTPILBCPay))
 #define GST_RTP_ILBC_PAY_CLASS(klass) \
@@ -41,17 +41,15 @@ typedef struct _GstRTPILBCPayClass GstRTPILBCPayClass;
 
 struct _GstRTPILBCPay
 {
-  GstRTPBaseAudioPayload audiopayload;
+  GstBaseRTPAudioPayload audiopayload;
 
   gint mode;
 };
 
 struct _GstRTPILBCPayClass
 {
-  GstRTPBaseAudioPayloadClass parent_class;
+  GstBaseRTPAudioPayloadClass parent_class;
 };
-
-GType gst_rtp_ilbc_pay_get_type (void);
 
 gboolean gst_rtp_ilbc_pay_plugin_init (GstPlugin * plugin);
 

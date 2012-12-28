@@ -30,7 +30,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch-1.0 audiotestsrc volume=0.5 ! sunaudiosink
+ * gst-launch audiotestsrc volume=0.5 ! sunaudiosink
  * ]|
  * </refsect2>
  */
@@ -49,6 +49,14 @@
 
 GST_DEBUG_CATEGORY_EXTERN (sunaudio_debug);
 #define GST_CAT_DEFAULT sunaudio_debug
+
+/* elementfactory information */
+static const GstElementDetails plugin_details =
+GST_ELEMENT_DETAILS ("Sun Audio Sink",
+    "Sink/Audio",
+    "Audio sink for Sun Audio devices",
+    "David A. Schleef <ds@schleef.org>, "
+    "Brian Cameron <brian.cameron@sun.com>");
 
 static void gst_sunaudiosink_base_init (gpointer g_class);
 static void gst_sunaudiosink_class_init (GstSunAudioSinkClass * klass);
@@ -148,11 +156,7 @@ gst_sunaudiosink_base_init (gpointer g_class)
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&gst_sunaudiosink_factory));
-  gst_element_class_set_static_metadata (element_class, "Sun Audio Sink",
-      "Sink/Audio",
-      "Audio sink for Sun Audio devices",
-      "David A. Schleef <ds@schleef.org>, "
-      "Brian Cameron <brian.cameron@sun.com>");
+  gst_element_class_set_details (element_class, &plugin_details);
 }
 
 static void
@@ -175,8 +179,10 @@ gst_sunaudiosink_class_init (GstSunAudioSinkClass * klass)
   gobject_class->dispose = gst_sunaudiosink_dispose;
   gobject_class->finalize = gst_sunaudiosink_finalize;
 
-  gobject_class->set_property = gst_sunaudiosink_set_property;
-  gobject_class->get_property = gst_sunaudiosink_get_property;
+  gobject_class->set_property =
+      GST_DEBUG_FUNCPTR (gst_sunaudiosink_set_property);
+  gobject_class->get_property =
+      GST_DEBUG_FUNCPTR (gst_sunaudiosink_get_property);
 
   gstbasesink_class->get_caps = GST_DEBUG_FUNCPTR (gst_sunaudiosink_getcaps);
 
@@ -191,7 +197,7 @@ gst_sunaudiosink_class_init (GstSunAudioSinkClass * klass)
 
   g_object_class_install_property (gobject_class, PROP_DEVICE,
       g_param_spec_string ("device", "Device", "Audio Device (/dev/audio)",
-          DEFAULT_DEVICE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          DEFAULT_DEVICE, G_PARAM_READWRITE));
 }
 
 static void
@@ -208,7 +214,7 @@ gst_sunaudiosink_init (GstSunAudioSink * sunaudiosink)
     audiodev = DEFAULT_DEVICE;
   sunaudiosink->device = g_strdup (audiodev);
 
-  /* mutex and gcond used to control the write method */
+  /* mutex and gconf used to control the write method */
   sunaudiosink->write_mutex = g_mutex_new ();
   sunaudiosink->sleep_cond = g_cond_new ();
 }

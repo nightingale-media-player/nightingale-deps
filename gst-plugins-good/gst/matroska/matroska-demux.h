@@ -1,6 +1,5 @@
 /* GStreamer Matroska muxer/demuxer
  * (c) 2003 Ronald Bultje <rbultje@ronald.bitfreak.net>
- * (c) 2011 Debarshi Ray <rishi@gnu.org>
  *
  * matroska-demux.h: matroska file/stream demuxer definition
  *
@@ -27,7 +26,6 @@
 
 #include "ebml-read.h"
 #include "matroska-ids.h"
-#include "matroska-read-common.h"
 
 G_BEGIN_DECLS
 
@@ -42,68 +40,65 @@ G_BEGIN_DECLS
 #define GST_IS_MATROSKA_DEMUX_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_MATROSKA_DEMUX))
 
+typedef enum {
+  GST_MATROSKA_DEMUX_STATE_START,
+  GST_MATROSKA_DEMUX_STATE_HEADER,
+  GST_MATROSKA_DEMUX_STATE_DATA
+} GstMatroskaDemuxState;
+
 typedef struct _GstMatroskaDemux {
-  GstElement              parent;
+  GstEbmlRead              parent;
 
   /* < private > */
 
-  GstMatroskaReadCommon    common;
+  GstIndex                *element_index;
+  gint                     element_index_writer_id;
 
   /* pads */
+  GstPad                  *sinkpad;
+  GPtrArray               *src;
   GstClock                *clock;
+  guint                    num_streams;
   guint                    num_v_streams;
   guint                    num_a_streams;
   guint                    num_t_streams;
 
+  /* metadata */
+  gchar                   *muxing_app;
+  gchar                   *writing_app;
+  gint64                   created;
+
   /* state */
-  gboolean                 streaming;
+  GstMatroskaDemuxState    state;
   guint                    level_up;
-  guint64                  seek_block;
-  gboolean                 seek_first;
 
   /* did we parse cues/tracks/segmentinfo already? */
+  gboolean                 index_parsed;
   gboolean                 tracks_parsed;
-  GList                   *seek_parsed;
+  gboolean                 segmentinfo_parsed;
+  gboolean                 attachments_parsed;
+  GList                   *tags_parsed;
 
-  /* cluster positions (optional) */
-  GArray                  *clusters;
+  /* start-of-segment */
+  guint64                  ebml_segment_start;
+
+  /* a cue (index) table */
+  GArray                  *index;
+
+  /* timescale in the file */
+  guint64                  time_scale;
 
   /* keeping track of playback position */
-  GstClockTime             last_stop_end;
-  GstClockTime             stream_start_time;
+  GstSegment               segment;
+  gboolean                 segment_running;
+  gint64                   duration;
 
-  /* Stop time for reverse playback */
-  GstClockTime             to_time;
+  GstEvent                *close_segment;
   GstEvent                *new_segment;
-
-  /* some state saving */
-  GstClockTime             cluster_time;
-  guint64                  cluster_offset;
-  guint64                  first_cluster_offset;
-  guint64                  next_cluster_offset;
-  GstClockTime             requested_seek_time;
-  guint64                  seek_offset;
-
-  /* index stuff */
-  gboolean                 seekable;
-  gboolean                 building_index;
-  guint64                  index_offset;
-  GstEvent                *seek_event;
-  gboolean                 need_segment;
-
-  /* reverse playback */
-  GArray                  *seek_index;
-  gint                     seek_entry;
-
-  /* gap handling */
-  guint64                  max_gap_time;
-
-  /* for non-finalized files, with invalid segment duration */
-  gboolean                 invalid_duration;
 } GstMatroskaDemux;
 
 typedef struct _GstMatroskaDemuxClass {
-  GstElementClass parent;
+  GstEbmlReadClass parent;
 } GstMatroskaDemuxClass;
 
 gboolean gst_matroska_demux_plugin_init (GstPlugin *plugin);

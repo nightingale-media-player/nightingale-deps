@@ -27,85 +27,97 @@ empty_fct (PluginParam * dummy)
 {
 }
 
-void
-goom_secure_param (PluginParam * p)
+PluginParam
+goom_secure_param ()
 {
-  p->changed = empty_fct;
-  p->change_listener = empty_fct;
-  p->user_data = 0;
-  p->name = p->desc = 0;
-  p->rw = 1;
+  PluginParam p;
+
+  p.changed = empty_fct;
+  p.change_listener = empty_fct;
+  p.user_data = 0;
+  p.name = p.desc = 0;
+  p.rw = 1;
+  return p;
 }
 
-void
-goom_secure_f_param (PluginParam * p, const char *name)
+PluginParam
+goom_secure_f_param (char *name)
 {
-  secure_param (p);
+  PluginParam p = secure_param ();
 
-  p->name = name;
-  p->type = PARAM_FLOATVAL;
-  FVAL (*p) = 0.5f;
-  FMIN (*p) = 0.0f;
-  FMAX (*p) = 1.0f;
-  FSTEP (*p) = 0.01f;
+  p.name = name;
+  p.type = PARAM_FLOATVAL;
+  FVAL (p) = 0.5f;
+  FMIN (p) = 0.0f;
+  FMAX (p) = 1.0f;
+  FSTEP (p) = 0.01f;
+  return p;
 }
 
-void
-goom_secure_f_feedback (PluginParam * p, const char *name)
+PluginParam
+goom_secure_f_feedback (char *name)
 {
-  secure_f_param (p, name);
+  PluginParam p = secure_f_param (name);
 
-  p->rw = 0;
+  p.rw = 0;
+  return p;
 }
 
-void
-goom_secure_s_param (PluginParam * p, const char *name)
+PluginParam
+goom_secure_s_param (char *name)
 {
-  secure_param (p);
+  PluginParam p = secure_param ();
 
-  p->name = name;
-  p->type = PARAM_STRVAL;
-  SVAL (*p) = 0;
+  p.name = name;
+  p.type = PARAM_STRVAL;
+  SVAL (p) = 0;
+  return p;
 }
 
-void
-goom_secure_b_param (PluginParam * p, const char *name, int value)
+PluginParam
+goom_secure_b_param (char *name, int value)
 {
-  secure_param (p);
+  PluginParam p = secure_param ();
 
-  p->name = name;
-  p->type = PARAM_BOOLVAL;
-  BVAL (*p) = value;
+  p.name = name;
+  p.type = PARAM_BOOLVAL;
+  BVAL (p) = value;
+  return p;
 }
 
-void
-goom_secure_i_param (PluginParam * p, const char *name)
+PluginParam
+goom_secure_i_param (char *name)
 {
-  secure_param (p);
+  PluginParam p = secure_param ();
 
-  p->name = name;
-  p->type = PARAM_INTVAL;
-  IVAL (*p) = 50;
-  IMIN (*p) = 0;
-  IMAX (*p) = 100;
-  ISTEP (*p) = 1;
+  p.name = name;
+  p.type = PARAM_INTVAL;
+  IVAL (p) = 50;
+  IMIN (p) = 0;
+  IMAX (p) = 100;
+  ISTEP (p) = 1;
+  return p;
 }
 
-void
-goom_secure_i_feedback (PluginParam * p, const char *name)
+PluginParam
+goom_secure_i_feedback (char *name)
 {
-  secure_i_param (p, name);
+  PluginParam p = secure_i_param (name);
 
-  p->rw = 0;
+  p.rw = 0;
+  return p;
 }
 
-void
-goom_plugin_parameters (PluginParameters * p, const char *name, int nb)
+PluginParameters
+goom_plugin_parameters (const char *name, int nb)
 {
-  p->name = name;
-  p->desc = "";
-  p->nbParams = nb;
-  p->params = malloc (nb * sizeof (PluginParam *));
+  PluginParameters p;
+
+  p.name = (char *) name;
+  p.desc = "";
+  p.nbParams = nb;
+  p.params = (PluginParam **) malloc (nb * sizeof (PluginParam *));
+  return p;
 }
 
 void

@@ -72,27 +72,6 @@ typefind_succeed (GstTypeFind * tf, gpointer private)
   }
 }
 
-static gboolean
-test_event_func (GstPad * pad, GstObject * parent, GstEvent * event)
-{
-  GST_LOG_OBJECT (pad, "%s event: %" GST_PTR_FORMAT,
-      GST_EVENT_TYPE_NAME (event), event);
-
-  /* a sink would post tag events as messages, so do the same here,
-   * esp. since we're polling on the bus waiting for TAG messages.. */
-  if (GST_EVENT_TYPE (event) == GST_EVENT_TAG) {
-    GstTagList *taglist;
-
-    gst_event_parse_tag (event, &taglist);
-
-    gst_bus_post (bus, gst_message_new_tag (GST_OBJECT (pad),
-            gst_tag_list_copy (taglist)));
-  }
-
-  gst_event_unref (event);
-  return TRUE;
-}
-
 static void
 icydemux_found_pad (GstElement * src, GstPad * pad, gpointer data)
 {
@@ -107,7 +86,6 @@ icydemux_found_pad (GstElement * src, GstPad * pad, gpointer data)
   srcpad = gst_element_get_static_pad (icydemux, "src");
   fail_if (srcpad == NULL, "Failed to get srcpad from icydemux");
   gst_pad_set_chain_function (sinkpad, gst_check_chain_func);
-  gst_pad_set_event_function (sinkpad, test_event_func);
 
   GST_DEBUG ("checking srcpad %p refcount", srcpad);
   /* 1 from element, 1 from signal, 1 from us */
@@ -125,9 +103,7 @@ static GstElement *
 create_icydemux (void)
 {
   icydemux = gst_check_setup_element ("icydemux");
-  srcpad = gst_check_setup_src_pad (icydemux, &srctemplate);
-
-  gst_pad_set_active (srcpad, TRUE);
+  srcpad = gst_check_setup_src_pad (icydemux, &srctemplate, NULL);
 
   g_signal_connect (icydemux, "pad-added", G_CALLBACK (icydemux_found_pad),
       NULL);
@@ -164,11 +140,11 @@ push_data (const guint8 * data, int len, GstCaps * caps, gint64 offset)
   GstFlowReturn res;
   GstBuffer *buffer = gst_buffer_new_and_alloc (len);
 
-  gst_buffer_fill (buffer, 0, data, len);
+  memcpy (GST_BUFFER_DATA (buffer), data, len);
+  gst_buffer_set_caps (buffer, caps);
 
   GST_BUFFER_OFFSET (buffer) = offset;
 
-  gst_pad_set_caps (srcpad, caps);
   res = gst_pad_push (srcpad, buffer);
 
   fail_unless (res == GST_FLOW_OK, "Failed pushing buffer: %d", res);
@@ -208,7 +184,7 @@ GST_START_TEST (test_demux)
 
   fail_unless_equals_string (TEST_METADATA, (char *) tag);
 
-  gst_tag_list_unref (tags);
+  gst_tag_list_free (tags);
   gst_message_unref (message);
   gst_caps_unref (caps);
 
@@ -251,6 +227,9 @@ GST_START_TEST (test_first_buf_offset_when_merged_for_typefinding)
 
   /* first buffer should have offset 0 even after it was merged with 2nd buf */
   fail_unless (GST_BUFFER_OFFSET (GST_BUFFER_CAST (buffers->data)) == 0);
+
+  /* first buffer should have caps set */
+  fail_unless (GST_BUFFER_CAPS (GST_BUFFER_CAST (buffers->data)) != NULL);
 
   gst_caps_unref (icy_caps);
 

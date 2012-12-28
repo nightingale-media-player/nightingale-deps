@@ -18,14 +18,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#ifdef HAVE_VALGRIND
-# include <valgrind/valgrind.h>
-#endif
-
 #include <gst/check/gstcheck.h>
 
 #include <gst/gst.h>
@@ -50,13 +42,14 @@ handoff_cb (GstElement * element, GstBuffer * buf, GstPad * pad,
 {
   *p_counter += 1;
   GST_LOG ("counter = %d", *p_counter);
+
+  fail_unless (GST_BUFFER_CAPS (buf) != NULL);
 }
 
 static void
 mux_pcm_audio (guint num_buffers, guint repeat)
 {
   GstElement *src, *sink, *flvmux, *conv, *pipeline;
-  GstPad *sinkpad, *srcpad;
   gint counter;
 
   GST_LOG ("num_buffers = %u", num_buffers);
@@ -66,7 +59,7 @@ mux_pcm_audio (guint num_buffers, guint repeat)
 
   /* kids, don't use a sync handler for this at home, really; we do because
    * we just want to abort and nothing else */
-  gst_bus_set_sync_handler (GST_ELEMENT_BUS (pipeline), error_cb, NULL, NULL);
+  gst_bus_set_sync_handler (GST_ELEMENT_BUS (pipeline), error_cb, NULL);
 
   src = gst_element_factory_make ("audiotestsrc", "audiotestsrc");
   fail_unless (src != NULL, "Failed to create 'audiotestsrc' element!");
@@ -90,23 +83,24 @@ mux_pcm_audio (guint num_buffers, guint repeat)
   fail_unless (gst_element_link (src, conv));
   fail_unless (gst_element_link (flvmux, sink));
 
-  /* now link the elements */
-  sinkpad = gst_element_get_request_pad (flvmux, "audio");
-  fail_unless (sinkpad != NULL, "Could not get audio request pad");
-
-  srcpad = gst_element_get_static_pad (conv, "src");
-  fail_unless (srcpad != NULL, "Could not get audioconvert's source pad");
-
-  fail_unless_equals_int (gst_pad_link (srcpad, sinkpad), GST_PAD_LINK_OK);
-
-  gst_object_unref (srcpad);
-  gst_object_unref (sinkpad);
-
   do {
     GstStateChangeReturn state_ret;
     GstMessage *msg;
+    GstPad *sinkpad, *srcpad;
 
     GST_LOG ("repeat=%d", repeat);
+
+    /* now link the elements */
+    sinkpad = gst_element_get_request_pad (flvmux, "audio");
+    fail_unless (sinkpad != NULL, "Could not get audio request pad");
+
+    srcpad = gst_element_get_static_pad (conv, "src");
+    fail_unless (srcpad != NULL, "Could not get audioconvert's source pad");
+
+    fail_unless_equals_int (gst_pad_link (srcpad, sinkpad), GST_PAD_LINK_OK);
+
+    gst_object_unref (srcpad);
+    gst_object_unref (sinkpad);
 
     counter = 0;
 
@@ -145,9 +139,14 @@ mux_pcm_audio (guint num_buffers, guint repeat)
 
 GST_START_TEST (test_index_writing)
 {
+  guint bufs;
+
   /* note: there's a magic 128 value in flvmux when doing index writing */
-  if ((__i__ % 33) == 1)
-    mux_pcm_audio (__i__, 2);
+  for (bufs = 1; bufs < 500; bufs += 33) {
+    mux_pcm_audio (bufs, 2);
+  }
+
+  gst_task_cleanup_all ();
 }
 
 GST_END_TEST;
@@ -157,17 +156,9 @@ flvmux_suite (void)
 {
   Suite *s = suite_create ("flvmux");
   TCase *tc_chain = tcase_create ("general");
-  gint loop = 499;
 
   suite_add_tcase (s, tc_chain);
-
-#ifdef HAVE_VALGRIND
-  if (RUNNING_ON_VALGRIND) {
-    loop = 140;
-  }
-#endif
-
-  tcase_add_loop_test (tc_chain, test_index_writing, 1, loop);
+  tcase_add_test (tc_chain, test_index_writing);
 
   return s;
 }

@@ -50,17 +50,17 @@
 #include "gstosxaudioelement.h"
 
 static void
-gst_osx_audio_element_interface_init (GstOsxAudioElementInterface * iface);
+gst_osx_audio_element_class_init (GstOsxAudioElementInterface * klass);
 
 GType
-gst_osx_audio_element_get_type (void)
+gst_osx_audio_element_get_type ()
 {
   static GType gst_osxaudioelement_type = 0;
 
   if (!gst_osxaudioelement_type) {
     static const GTypeInfo gst_osxaudioelement_info = {
       sizeof (GstOsxAudioElementInterface),
-      (GBaseInitFunc) gst_osx_audio_element_interface_init,
+      (GBaseInitFunc) gst_osx_audio_element_class_init,
       NULL,
       NULL,
       NULL,
@@ -79,7 +79,7 @@ gst_osx_audio_element_get_type (void)
 }
 
 static void
-gst_osx_audio_element_interface_init (GstOsxAudioElementInterface * iface)
+gst_osx_audio_element_class_init (GstOsxAudioElementInterface * klass)
 {
   static gboolean initialized = FALSE;
 
@@ -88,5 +88,5 @@ gst_osx_audio_element_interface_init (GstOsxAudioElementInterface * iface)
   }
 
   /* default virtual functions */
-  iface->io_proc = NULL;
+  klass->io_proc = NULL;
 }

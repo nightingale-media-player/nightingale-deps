@@ -3,13 +3,16 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>progressreport</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-pngenc.html" title="pngenc">
 <link rel="next" href="gst-plugins-good-plugins-pulsesink.html" title="pulsesink">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -17,20 +20,20 @@
 <td><a accesskey="p" href="gst-plugins-good-plugins-pngenc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-pulsesink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-progressreport.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-progressreport.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-progressreport.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-progressreport.properties" class="shortcut">Properties</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-progressreport.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-progressreport.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-progressreport.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
-<div class="refentry">
+<div class="refentry" title="progressreport">
 <a name="gst-plugins-good-plugins-progressreport"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -39,32 +42,45 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="gst-plugins-good-plugins-progressreport.synopsis"></a><h2>Synopsis</h2>
-<a name="GstProgressReport"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-progressreport.html#GstProgressReport-struct" title="struct GstProgressReport">GstProgressReport</a>;
+<a name="GstProgressReport"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-good-plugins-progressreport.html#GstProgressReport-struct" title="GstProgressReport">GstProgressReport</a>;
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Object Hierarchy">
 <a name="gst-plugins-good-plugins-progressreport.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html">GstBaseTransform</a>
-                           +----GstProgressReport
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="../gstreamer-libs-0.10/GstBaseTransform.html"
+>GstBaseTransform</a>
+                     +----GstProgressReport
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Properties">
 <a name="gst-plugins-good-plugins-progressreport.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-progressreport.html#GstProgressReport--silent" title='The "silent" property'>silent</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-progressreport.html#GstProgressReport--update-freq" title='The "update-freq" property'>update-freq</a>"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-progressreport.html#GstProgressReport--format" title='The "format" property'>format</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-progressreport.html#GstProgressReport--do-query" title='The "do-query" property'>do-query</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-progressreport.html#GstProgressReport--silent" title='The "silent" property'>silent</a>"                   <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-progressreport.html#GstProgressReport--update-freq" title='The "update-freq" property'>update-freq</a>"              <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-progressreport.html#GstProgressReport--format" title='The "format" property'>format</a>"                   <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Description">
 <a name="gst-plugins-good-plugins-progressreport.description"></a><h2>Description</h2>
 <p>
 The progressreport element can be put into a pipeline to report progress,
@@ -81,7 +97,9 @@ whenever progress has been queried (since gst-plugins-good 0.10.6 only).
 Since the element was originally designed for debugging purposes, it will
 by default also print information about the current progress to the
 terminal. This can be prevented by setting the <a class="link" href="gst-plugins-good-plugins-progressreport.html#GstProgressReport--silent" title='The "silent" property'><span class="type">"silent"</span></a>
-property to <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>.
+property to <a
+href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
+><code class="literal">TRUE</code></a>.
 </p>
 <p>
 This element is most useful in transcoding pipelines or other situations
@@ -103,37 +121,19 @@ a whole).
 </p>
 <p>
 </p>
-<div class="refsect2">
-<a name="idp14690960"></a><h3>Example launch line</h3>
-<div class="informalexample">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> <span class="gtkdoc opt">-</span>m filesrc location<span class="gtkdoc opt">=</span>foo<span class="gtkdoc opt">.</span>ogg <span class="gtkdoc opt">!</span> decodebin <span class="gtkdoc opt">!</span> progressreport update<span class="gtkdoc opt">-</span>freq<span class="gtkdoc opt">=</span><span class="number">1</span> <span class="gtkdoc opt">!</span> audioconvert <span class="gtkdoc opt">!</span> audioresample <span class="gtkdoc opt">!</span> autoaudiosink</pre></td>
-      </tr>
-    </tbody>
-  </table>
+<div class="refsect2" title="Example launch line">
+<a name="id569921"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch -m filesrc location=foo.ogg ! decodebin ! progressreport update-freq=1 ! audioconvert ! audioresample ! autoaudiosink
+</pre></div> This shows a progress query where a duration is available.
+<div class="informalexample"><pre class="programlisting">
+gst-launch -m audiotestsrc ! progressreport update-freq=1 ! audioconvert ! autoaudiosink
+</pre></div> This shows a progress query where no duration is available.
 </div>
- This shows a progress query where a duration is available.
-<div class="informalexample">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> <span class="gtkdoc opt">-</span>m audiotestsrc <span class="gtkdoc opt">!</span> progressreport update<span class="gtkdoc opt">-</span>freq<span class="gtkdoc opt">=</span><span class="number">1</span> <span class="gtkdoc opt">!</span> audioconvert <span class="gtkdoc opt">!</span> autoaudiosink</pre></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
- This shows a progress query where no duration is available.
-</div>
-<p>
-</p>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <h2>Synopsis</h2>
-<div class="refsect2">
-<a name="idp16945760"></a><h3>Element Information</h3>
+<div class="refsect2" title="Element Information">
+<a name="id572118"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -155,29 +155,8 @@ a whole).
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
-<a name="idp17423968"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>ANY</td>
-</tr>
-</tbody>
-</table></div>
+<div class="refsect2" title="Element Pads">
+<a name="id528434"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -199,54 +178,74 @@ a whole).
 </tr>
 </tbody>
 </table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 </div>
 <p>
 </p>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Details">
 <a name="gst-plugins-good-plugins-progressreport.details"></a><h2>Details</h2>
-<div class="refsect2">
-<a name="GstProgressReport-struct"></a><h3>struct GstProgressReport</h3>
-<pre class="programlisting">struct GstProgressReport;</pre>
+<div class="refsect2" title="GstProgressReport">
+<a name="GstProgressReport-struct"></a><h3>GstProgressReport</h3>
+<pre class="programlisting">typedef struct _GstProgressReport GstProgressReport;</pre>
 <p>
 </p>
 </div>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Property Details">
 <a name="gst-plugins-good-plugins-progressreport.property-details"></a><h2>Property Details</h2>
-<div class="refsect2">
+<div class="refsect2" title='The "silent" property'>
 <a name="GstProgressReport--silent"></a><h3>The <code class="literal">"silent"</code> property</h3>
-<pre class="programlisting">  "silent"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<pre class="programlisting">  "silent"                   <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Do not print output to stdout.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" title='The "update-freq" property'>
 <a name="GstProgressReport--update-freq"></a><h3>The <code class="literal">"update-freq"</code> property</h3>
-<pre class="programlisting">  "update-freq"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
+<pre class="programlisting">  "update-freq"              <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Number of seconds between reports when data is flowing.</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 5</p>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" title='The "format" property'>
 <a name="GstProgressReport--format"></a><h3>The <code class="literal">"format"</code> property</h3>
-<pre class="programlisting">  "format"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<pre class="programlisting">  "format"                   <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
 <p>Format to use for the querying.</p>
 <p>Default value: "auto"</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstProgressReport--do-query"></a><h3>The <code class="literal">"do-query"</code> property</h3>
-<pre class="programlisting">  "do-query"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
-<p>Use a query instead of buffer metadata to determine stream position.</p>
-<p>Default value: TRUE</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

@@ -1,7 +1,5 @@
 /* GStreamer
  * Copyright (C) <2005> Wim Taymans <wim@fluendo.com>
- * Copyright (C) <2012> Collabora Ltd.
- *   Author: Sebastian Dröge <sebastian.droege@collabora.co.uk>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -28,7 +26,7 @@
  * <refsect2>
  * <title>Examples</title>
  * |[
- * gst-launch-1.0 -v audiotestsrc ! udpsink
+ * gst-launch -v audiotestsrc ! udpsink
  * ]|
  * </refsect2>
  */
@@ -37,8 +35,23 @@
 #endif
 #include "gstudpsink.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#include <errno.h>
+#include <string.h>
+
 #define UDP_DEFAULT_HOST        "localhost"
-#define UDP_DEFAULT_PORT        5004
+#define UDP_DEFAULT_PORT        4951
+
+/* elementfactory information */
+static const GstElementDetails gst_udpsink_details =
+GST_ELEMENT_DETAILS ("UDP packet sender",
+    "Sink/Network",
+    "Send data over the network via UDP",
+    "Wim Taymans <wim@fluendo.com>");
 
 /* UDPSink signals and args */
 enum
@@ -56,6 +69,9 @@ enum
   /* FILL ME */
 };
 
+static void gst_udpsink_base_init (gpointer g_class);
+static void gst_udpsink_class_init (GstUDPSink * klass);
+static void gst_udpsink_init (GstUDPSink * udpsink);
 static void gst_udpsink_finalize (GstUDPSink * udpsink);
 
 static void gst_udpsink_uri_handler_init (gpointer g_iface,
@@ -66,19 +82,61 @@ static void gst_udpsink_set_property (GObject * object, guint prop_id,
 static void gst_udpsink_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
+static GstElementClass *parent_class = NULL;
+
 /*static guint gst_udpsink_signals[LAST_SIGNAL] = { 0 }; */
-#define gst_udpsink_parent_class parent_class
-G_DEFINE_TYPE_WITH_CODE (GstUDPSink, gst_udpsink, GST_TYPE_MULTIUDPSINK,
-    G_IMPLEMENT_INTERFACE (GST_TYPE_URI_HANDLER, gst_udpsink_uri_handler_init));
+
+GType
+gst_udpsink_get_type (void)
+{
+  static GType udpsink_type = 0;
+
+  if (!udpsink_type) {
+    static const GTypeInfo udpsink_info = {
+      sizeof (GstUDPSinkClass),
+      gst_udpsink_base_init,
+      NULL,
+      (GClassInitFunc) gst_udpsink_class_init,
+      NULL,
+      NULL,
+      sizeof (GstUDPSink),
+      0,
+      (GInstanceInitFunc) gst_udpsink_init,
+      NULL
+    };
+    static const GInterfaceInfo urihandler_info = {
+      gst_udpsink_uri_handler_init,
+      NULL,
+      NULL
+    };
+
+    udpsink_type =
+        g_type_register_static (GST_TYPE_MULTIUDPSINK, "GstUDPSink",
+        &udpsink_info, 0);
+
+    g_type_add_interface_static (udpsink_type, GST_TYPE_URI_HANDLER,
+        &urihandler_info);
+
+  }
+  return udpsink_type;
+}
 
 static void
-gst_udpsink_class_init (GstUDPSinkClass * klass)
+gst_udpsink_base_init (gpointer g_class)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+
+  gst_element_class_set_details (element_class, &gst_udpsink_details);
+}
+
+static void
+gst_udpsink_class_init (GstUDPSink * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
+
+  parent_class = g_type_class_peek_parent (klass);
 
   gobject_class->set_property = gst_udpsink_set_property;
   gobject_class->get_property = gst_udpsink_get_property;
@@ -88,24 +146,18 @@ gst_udpsink_class_init (GstUDPSinkClass * klass)
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_HOST,
       g_param_spec_string ("host", "host",
           "The host/IP/Multicast group to send the packets to",
-          UDP_DEFAULT_HOST, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          UDP_DEFAULT_HOST, G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_PORT,
       g_param_spec_int ("port", "port", "The port to send the packets to",
-          0, 65535, UDP_DEFAULT_PORT,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-  gst_element_class_set_static_metadata (gstelement_class, "UDP packet sender",
-      "Sink/Network",
-      "Send data over the network via UDP", "Wim Taymans <wim@fluendo.com>");
+          0, 65535, UDP_DEFAULT_PORT, G_PARAM_READWRITE));
 }
+
 
 static void
 gst_udpsink_init (GstUDPSink * udpsink)
 {
   udpsink->host = g_strdup (UDP_DEFAULT_HOST);
   udpsink->port = UDP_DEFAULT_PORT;
-  udpsink->uri = g_strdup_printf ("udp://%s:%d", udpsink->host, udpsink->port);
-
   gst_multiudpsink_add (GST_MULTIUDPSINK (udpsink), udpsink->host,
       udpsink->port);
 }
@@ -114,36 +166,62 @@ static void
 gst_udpsink_finalize (GstUDPSink * udpsink)
 {
   g_free (udpsink->host);
-  udpsink->host = NULL;
-
   g_free (udpsink->uri);
-  udpsink->uri = NULL;
 
   G_OBJECT_CLASS (parent_class)->finalize ((GObject *) udpsink);
 }
 
-static gboolean
-gst_udpsink_set_uri (GstUDPSink * sink, const gchar * uri, GError ** error)
+static void
+gst_udpsink_update_uri (GstUDPSink * sink)
 {
+  g_free (sink->uri);
+  sink->uri = g_strdup_printf ("udp://%s:%d", sink->host, sink->port);
+
+  GST_DEBUG_OBJECT (sink, "updated uri to %s", sink->uri);
+}
+
+static gboolean
+gst_udpsink_set_uri (GstUDPSink * sink, const gchar * uri)
+{
+  gchar *protocol;
+  gchar *location;
+  gchar *colptr;
+
+  protocol = gst_uri_get_protocol (uri);
+  if (strcmp (protocol, "udp") != 0)
+    goto wrong_protocol;
+  g_free (protocol);
+
+  location = gst_uri_get_location (uri);
+  if (!location)
+    return FALSE;
+  colptr = strstr (location, ":");
+
   gst_multiudpsink_remove (GST_MULTIUDPSINK (sink), sink->host, sink->port);
 
-  if (!gst_udp_parse_uri (uri, &sink->host, &sink->port))
-    goto wrong_uri;
-
-  g_free (sink->uri);
-  sink->uri = g_strdup (uri);
+  if (colptr != NULL) {
+    g_free (sink->host);
+    sink->host = g_strndup (location, colptr - location);
+    sink->port = atoi (colptr + 1);
+  } else {
+    g_free (sink->host);
+    sink->host = g_strdup (location);
+    sink->port = UDP_DEFAULT_PORT;
+  }
+  g_free (location);
 
   gst_multiudpsink_add (GST_MULTIUDPSINK (sink), sink->host, sink->port);
+
+  gst_udpsink_update_uri (sink);
 
   return TRUE;
 
   /* ERRORS */
-wrong_uri:
+wrong_protocol:
   {
     GST_ELEMENT_ERROR (sink, RESOURCE, READ, (NULL),
-        ("error parsing uri %s", uri));
-    g_set_error_literal (error, GST_URI_ERROR, GST_URI_ERROR_BAD_URI,
-        "Could not parse UDP URI");
+        ("error parsing uri %s: wrong protocol (%s != udp)", uri, protocol));
+    g_free (protocol);
     return FALSE;
   }
 }
@@ -162,22 +240,11 @@ gst_udpsink_set_property (GObject * object, guint prop_id, const GValue * value,
 
   switch (prop_id) {
     case PROP_HOST:
-    {
-      const gchar *host;
-
-      host = g_value_get_string (value);
       g_free (udpsink->host);
-      udpsink->host = g_strdup (host);
-      g_free (udpsink->uri);
-      udpsink->uri =
-          g_strdup_printf ("udp://%s:%d", udpsink->host, udpsink->port);
+      udpsink->host = g_value_dup_string (value);
       break;
-    }
     case PROP_PORT:
       udpsink->port = g_value_get_int (value);
-      g_free (udpsink->uri);
-      udpsink->uri =
-          g_strdup_printf ("udp://%s:%d", udpsink->host, udpsink->port);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -212,20 +279,20 @@ gst_udpsink_get_property (GObject * object, guint prop_id, GValue * value,
 /*** GSTURIHANDLER INTERFACE *************************************************/
 
 static GstURIType
-gst_udpsink_uri_get_type (GType type)
+gst_udpsink_uri_get_type (void)
 {
   return GST_URI_SINK;
 }
 
-static const gchar *const *
-gst_udpsink_uri_get_protocols (GType type)
+static gchar **
+gst_udpsink_uri_get_protocols (void)
 {
-  static const gchar *protocols[] = { "udp", NULL };
+  static gchar *protocols[] = { "udp", NULL };
 
   return protocols;
 }
 
-static gchar *
+static const gchar *
 gst_udpsink_uri_get_uri (GstURIHandler * handler)
 {
   GstUDPSink *sink = GST_UDPSINK (handler);
@@ -234,10 +301,14 @@ gst_udpsink_uri_get_uri (GstURIHandler * handler)
 }
 
 static gboolean
-gst_udpsink_uri_set_uri (GstURIHandler * handler, const gchar * uri,
-    GError ** error)
+gst_udpsink_uri_set_uri (GstURIHandler * handler, const gchar * uri)
 {
-  return gst_udpsink_set_uri (GST_UDPSINK (handler), uri, error);
+  gboolean ret;
+  GstUDPSink *sink = GST_UDPSINK (handler);
+
+  ret = gst_udpsink_set_uri (sink, uri);
+
+  return ret;
 }
 
 static void

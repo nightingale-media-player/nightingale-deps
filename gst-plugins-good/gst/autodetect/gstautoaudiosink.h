@@ -44,7 +44,6 @@ typedef struct _GstAutoAudioSink {
   GstPad *pad;
   GstElement *kid;
   GstCaps *filter_caps;
-  GstClockTimeDiff ts_offset;
 } GstAutoAudioSink;
 
 typedef struct _GstAutoAudioSinkClass {

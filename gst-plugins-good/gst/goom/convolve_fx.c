@@ -76,7 +76,7 @@ compute_tables (VisualFX * _this, PluginInfo * info)
   data->h_height = info->screen.height;
 
   for (i = 0; i < NB_THETA; i++) {
-    radian = 2 * i * G_PI / NB_THETA;
+    radian = 2 * i * M_PI / NB_THETA;
     h = (0.2 + cos (radian) / 15.0 * sin (radian * 2.0 + 12.123)) * screen_coef;
     data->h_cos[i] = 0x10000 * (-h * cos (radian) * cos (radian));
     data->h_sin[i] = 0x10000 * (h * sin (radian + 1.57) * sin (radian));
@@ -102,19 +102,19 @@ convolve_init (VisualFX * _this, PluginInfo * info)
   data = (ConvData *) malloc (sizeof (ConvData));
   _this->fx_data = (void *) data;
 
-  secure_f_param (&data->light, "Screen Brightness");
+  data->light = secure_f_param ("Screen Brightness");
   data->light.param.fval.max = 300.0f;
   data->light.param.fval.step = 1.0f;
   data->light.param.fval.value = 100.0f;
 
-  secure_f_param (&data->factor_adj_p, "Flash Intensity");
+  data->factor_adj_p = secure_f_param ("Flash Intensity");
   data->factor_adj_p.param.fval.max = 200.0f;
   data->factor_adj_p.param.fval.step = 1.0f;
   data->factor_adj_p.param.fval.value = 70.0f;
 
-  secure_f_feedback (&data->factor_p, "Factor");
+  data->factor_p = secure_f_feedback ("Factor");
 
-  plugin_parameters (&data->params, "Bright Flash", 5);
+  data->params = plugin_parameters ("Bright Flash", 5);
   data->params.params[0] = &data->light;
   data->params.params[1] = &data->factor_adj_p;
   data->params.params[2] = 0;
@@ -233,8 +233,9 @@ create_output_with_brightness (VisualFX * _this, Pixel * src, Pixel * dest,
       ytex -= s;
 
       iff2 =
-          ifftab[(int) data->conv_motif[(ytex >> 16) & CONV_MOTIF_WMASK][(xtex
-                  >> 16) & CONV_MOTIF_WMASK]];
+          ifftab[(int) data->
+          conv_motif[(ytex >> 16) & CONV_MOTIF_WMASK][(xtex >> 16) &
+              CONV_MOTIF_WMASK]];
 
 #define sat(a) ((a)>0xFF?0xFF:(a))
       f0 = src[i].val;
@@ -357,12 +358,14 @@ convolve_apply (VisualFX * _this, Pixel * src, Pixel * dest, PluginInfo * info)
 */
 }
 
-void
-convolve_create (VisualFX * vfx)
+VisualFX
+convolve_create (void)
 {
-  vfx->init = convolve_init;
-  vfx->free = convolve_free;
-  vfx->apply = convolve_apply;
-  vfx->fx_data = NULL;
-  vfx->params = NULL;
+  VisualFX vfx = {
+    convolve_init,
+    convolve_free,
+    convolve_apply,
+    NULL
+  };
+  return vfx;
 }

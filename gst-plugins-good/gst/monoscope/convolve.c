@@ -90,7 +90,7 @@ struct _struct_convolve_state
   double left[CONVOLVE_BIG];
   double right[CONVOLVE_SMALL * 3];
   double scratch[CONVOLVE_SMALL * 3];
-  stack_entry stack[STACK_SIZE + 1];
+  stack_entry stack[STACK_SIZE];
 };
 
 /*
@@ -102,7 +102,7 @@ struct _struct_convolve_state
 convolve_state *
 convolve_init (void)
 {
-  return (convolve_state *) calloc (1, sizeof (convolve_state));
+  return (convolve_state *) malloc (sizeof (convolve_state));
 }
 
 /*
@@ -111,7 +111,8 @@ convolve_init (void)
 void
 convolve_close (convolve_state * state)
 {
-  free (state);
+  if (state)
+    free (state);
 }
 
 static void
@@ -266,7 +267,7 @@ convolve_match (const int *lastchoice,
   double *left = state->left;
   double *right = state->right;
   double *scratch = state->scratch;
-  stack_entry *top = state->stack + (STACK_SIZE - 1);
+  stack_entry *top = state->stack + STACK_SIZE - 1;
 
 #if 1
   for (i = 0; i < 512; i++)
@@ -287,7 +288,9 @@ convolve_match (const int *lastchoice,
   for (i = 0; i < 256; i++)
     right[i] -= avg;
   /* End-of-stack marker. */
+#if     0                       /* The following line produces a CRASH, need to figure out why?!! */
   top[1].b.null = scratch;
+#endif
   top[1].b.main = NULL;
   /* The low 256x256, of which we want the high 256 outputs. */
   top->v.left = left;

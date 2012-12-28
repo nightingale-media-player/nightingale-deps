@@ -20,8 +20,7 @@
 #ifndef _GST_ALPHA_COLOR_H_
 #define _GST_ALPHA_COLOR_H_
 
-#include <gst/video/video.h>
-#include <gst/video/gstvideofilter.h>
+#include <gst/base/gstbasetransform.h>
 
 #define GST_TYPE_ALPHA_COLOR \
   (gst_alpha_color_get_type())
@@ -39,19 +38,20 @@ typedef struct _GstAlphaColorClass GstAlphaColorClass;
 
 struct _GstAlphaColor
 {
-  GstVideoFilter parent;
+  GstBaseTransform element;
 
   /*< private >*/
-  void (*process) (GstVideoFrame * frame, const gint * matrix);
-
-  const gint *matrix;
+  /* caps */
+  gint in_width, in_height;
+  gboolean in_rgba;
+  gint out_width, out_height;
 };
 
 struct _GstAlphaColorClass
 {
-  GstVideoFilterClass parent_class;
+  GstBaseTransformClass parent_class;
 };
 
-GType gst_alpha_color_get_type (void);
+GType   gst_alpha_color_get_type (void);
 
 #endif /* _GST_ALPHA_COLOR_H_ */

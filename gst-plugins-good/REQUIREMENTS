@@ -38,6 +38,12 @@ Notes:		The required version is updated frequently, so the version
 	listed in this file is often wrong.  If you are compiling from CVS,
 	the required version is often the latest GStreamer Base Plugins CVS.
 
+Package:	liboil
+Version:	>= 0.3.8
+Recommended:	0.3.latest
+URL:		http://liboil.freedesktop.org/
+DebianPackage:	liboil0.3-dev
+
 
 
 Optional libraries:
@@ -46,13 +52,6 @@ Optional libraries:
 This file lists supporting libraries for which gst-plugins contains plugins,
 as well as their minimum version.  You can find the corresponding plugins in
 ext/(library)
-
-Package:        Orc
-Version:        >= 0.4.5
-Recommended:    0.4.latest
-URL:            http://code.entropywave.com/orc
-DebianPackage:  liborc-0.4-dev
-Notes:		Used by many plugins for accelerating processing
 
 Package:	GTK+
 Version:	>= 2.0
@@ -89,10 +88,21 @@ Version:	>= 0.71
 Plugins:	cdio (cdiocddasrc)
 URL:		http://www.gnu.org/software/libcdio/
 
+Package:	ESound
+Version:	>= 0.2.12
+Plugins:	esdsink
+URL:		http://www.gnome.org/
+
 Package:	FLAC
 Version:	== 1.1.2
 Plugins:	flac (flacenc, flacdec)
 URL:		http://flac.sourceforge.net/
+
+Package:	GConf
+Version:	>= 2.0
+Plugins:	gconfelements (gconfvideosink, gconfvideosrc, gconfaudiosink,
+		gconfaudiosrc)
+URL:		http://www.gnome.org/
 
 Package:	HAL
 Version:	>= 0.5.6

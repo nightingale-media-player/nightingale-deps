@@ -18,7 +18,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <gst/gst.h>
@@ -28,7 +27,7 @@ static guint spect_bands = 20;
 #define AUDIOFREQ 32000
 
 /* receive spectral data from element message */
-static gboolean
+gboolean
 message_handler (GstBus * bus, GstMessage * message, gpointer data)
 {
   if (message->type == GST_MESSAGE_ELEMENT) {
@@ -95,7 +94,7 @@ main (int argc, char *argv[])
 
   gst_bin_add_many (GST_BIN (bin), src, audioconvert, spectrum, sink, NULL);
 
-  caps = gst_caps_new_simple ("audio/x-raw",
+  caps = gst_caps_new_simple ("audio/x-raw-int",
       "rate", G_TYPE_INT, AUDIOFREQ, NULL);
 
   if (!gst_element_link (src, audioconvert) ||

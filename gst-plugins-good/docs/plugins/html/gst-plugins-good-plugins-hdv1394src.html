@@ -3,36 +3,39 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>hdv1394src</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="prev" href="gst-plugins-good-plugins-goom2k1.html" title="goom2k1">
+<link rel="prev" href="gst-plugins-good-plugins-halaudiosrc.html" title="halaudiosrc">
 <link rel="next" href="gst-plugins-good-plugins-icydemux.html" title="icydemux">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-goom2k1.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-halaudiosrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-icydemux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-hdv1394src.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-hdv1394src.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-hdv1394src.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-hdv1394src.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-hdv1394src.properties" class="shortcut">Properties</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-hdv1394src.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-hdv1394src.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-hdv1394src.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-hdv1394src.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
-<div class="refentry">
+<div class="refentry" title="hdv1394src">
 <a name="gst-plugins-good-plugins-hdv1394src"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -41,45 +44,83 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="gst-plugins-good-plugins-hdv1394src.synopsis"></a><h2>Synopsis</h2>
-<a name="GstHDV1394Src"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-hdv1394src.html#GstHDV1394Src-struct" title="struct GstHDV1394Src">GstHDV1394Src</a>;
+<a name="GstHDV1394Src"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-good-plugins-hdv1394src.html#GstHDV1394Src-struct" title="GstHDV1394Src">GstHDV1394Src</a>;
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Object Hierarchy">
 <a name="gst-plugins-good-plugins-hdv1394src.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseSrc.html">GstBaseSrc</a>
-                           +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstPushSrc.html">GstPushSrc</a>
-                                 +----GstHDV1394Src
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="../gstreamer-libs-0.10/GstBaseSrc.html"
+>GstBaseSrc</a>
+                     +----<a
+href="../gstreamer-libs-0.10/GstPushSrc.html"
+>GstPushSrc</a>
+                           +----GstHDV1394Src
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Implemented Interfaces">
 <a name="gst-plugins-good-plugins-hdv1394src.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstHDV1394Src implements
- <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstUriHandler.html#GstURIHandler">GstURIHandler</a> and  GstPropertyProbe.</p>
+ <a
+href="../gstreamer-0.10/gstreamer-GstUriHandler.html#GstURIHandler"
+>GstURIHandler</a> and  <a
+href="../gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"
+>GstPropertyProbe</a>.</p>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Properties">
 <a name="gst-plugins-good-plugins-hdv1394src.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-hdv1394src.html#GstHDV1394Src--channel" title='The "channel" property'>channel</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-hdv1394src.html#GstHDV1394Src--device-name" title='The "device-name" property'>device-name</a>"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read
-  "<a class="link" href="gst-plugins-good-plugins-hdv1394src.html#GstHDV1394Src--guid" title='The "guid" property'>guid</a>"                     <span class="type">guint64</span>               : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-hdv1394src.html#GstHDV1394Src--port" title='The "port" property'>port</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-hdv1394src.html#GstHDV1394Src--use-avc" title='The "use-avc" property'>use-avc</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-hdv1394src.html#GstHDV1394Src--channel" title='The "channel" property'>channel</a>"                  <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-hdv1394src.html#GstHDV1394Src--device-name" title='The "device-name" property'>device-name</a>"              <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read
+  "<a class="link" href="gst-plugins-good-plugins-hdv1394src.html#GstHDV1394Src--guid" title='The "guid" property'>guid</a>"                     <a
+href="../glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-hdv1394src.html#GstHDV1394Src--port" title='The "port" property'>port</a>"                     <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-hdv1394src.html#GstHDV1394Src--use-avc" title='The "use-avc" property'>use-avc</a>"                  <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Description">
 <a name="gst-plugins-good-plugins-hdv1394src.description"></a><h2>Description</h2>
-<div class="refsynopsisdiv">
+<p>
+Read MPEG-TS data from firewire port.
+</p>
+<p>
+</p>
+<div class="refsect2" title="Example launch line">
+<a name="id513542"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch hdv1394src ! queue ! decodebin name=d ! queue ! xvimagesink d. ! queue ! alsasink
+</pre></div> captures from the firewire port and plays the streams.
+<div class="informalexample"><pre class="programlisting">
+gst-launch hdv1394src ! queue ! filesink location=mydump.ts
+</pre></div> capture to a disk file
+</div>
+<div class="refsynopsisdiv" title="Synopsis">
 <h2>Synopsis</h2>
-<div class="refsect2">
-<a name="idp15059040"></a><h3>Element Information</h3>
+<div class="refsect2" title="Element Information">
+<a name="id497720"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -101,8 +142,8 @@ GstHDV1394Src implements
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
-<a name="idp14229232"></a><h3>Element Pads</h3>
+<div class="refsect2" title="Element Pads">
+<a name="id489669"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -129,50 +170,64 @@ GstHDV1394Src implements
 <p>
 </p>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Details">
 <a name="gst-plugins-good-plugins-hdv1394src.details"></a><h2>Details</h2>
-<div class="refsect2">
-<a name="GstHDV1394Src-struct"></a><h3>struct GstHDV1394Src</h3>
-<pre class="programlisting">struct GstHDV1394Src;</pre>
+<div class="refsect2" title="GstHDV1394Src">
+<a name="GstHDV1394Src-struct"></a><h3>GstHDV1394Src</h3>
+<pre class="programlisting">typedef struct _GstHDV1394Src GstHDV1394Src;</pre>
 <p>
 </p>
 </div>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Property Details">
 <a name="gst-plugins-good-plugins-hdv1394src.property-details"></a><h2>Property Details</h2>
-<div class="refsect2">
+<div class="refsect2" title='The "channel" property'>
 <a name="GstHDV1394Src--channel"></a><h3>The <code class="literal">"channel"</code> property</h3>
-<pre class="programlisting">  "channel"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
+<pre class="programlisting">  "channel"                  <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Channel number for listening.</p>
 <p>Allowed values: [0,64]</p>
 <p>Default value: 63</p>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" title='The "device-name" property'>
 <a name="GstHDV1394Src--device-name"></a><h3>The <code class="literal">"device-name"</code> property</h3>
-<pre class="programlisting">  "device-name"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read</pre>
-<p>user-friendly name of the device.</p>
+<pre class="programlisting">  "device-name"              <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read</pre>
+<p>
+Descriptive name of the currently opened device</p>
+<p>
+</p>
 <p>Default value: "Default"</p>
+<p>Since 0.10.7</p>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" title='The "guid" property'>
 <a name="GstHDV1394Src--guid"></a><h3>The <code class="literal">"guid"</code> property</h3>
-<pre class="programlisting">  "guid"                     <span class="type">guint64</span>               : Read / Write</pre>
+<pre class="programlisting">  "guid"                     <a
+href="../glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read / Write</pre>
 <p>select one of multiple DV devices by its GUID. use a hexadecimal like 0xhhhhhhhhhhhhhhhh. (0 = no guid).</p>
 <p>Default value: 0</p>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" title='The "port" property'>
 <a name="GstHDV1394Src--port"></a><h3>The <code class="literal">"port"</code> property</h3>
-<pre class="programlisting">  "port"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
+<pre class="programlisting">  "port"                     <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Port number (-1 automatic).</p>
 <p>Allowed values: [G_MAXULONG,16]</p>
 <p>Default value: -1</p>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" title='The "use-avc" property'>
 <a name="GstHDV1394Src--use-avc"></a><h3>The <code class="literal">"use-avc"</code> property</h3>
-<pre class="programlisting">  "use-avc"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<pre class="programlisting">  "use-avc"                  <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Use AV/C VTR control.</p>
 <p>Default value: TRUE</p>
 </div>
@@ -180,6 +235,6 @@ GstHDV1394Src implements
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

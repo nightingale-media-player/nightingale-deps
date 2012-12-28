@@ -30,7 +30,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch-1.0 -v -m audiotestsrc ! audioconvert ! audioresample ! autoaudiosink
+ * gst-launch -v -m audiotestsrc ! audioconvert ! audioresample ! autoaudiosink
  * ]|
  * </refsect2>
  */
@@ -44,14 +44,11 @@
 #include "gstautoaudiosink.h"
 #include "gstautodetect.h"
 
-#define DEFAULT_TS_OFFSET           0
-
 /* Properties */
 enum
 {
   PROP_0,
   PROP_CAPS,
-  PROP_TS_OFFSET,
 };
 
 static GstStateChangeReturn
@@ -64,13 +61,30 @@ static void gst_auto_audio_sink_set_property (GObject * object, guint prop_id,
 static void gst_auto_audio_sink_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
-#define gst_auto_audio_sink_parent_class parent_class
-G_DEFINE_TYPE (GstAutoAudioSink, gst_auto_audio_sink, GST_TYPE_BIN);
+GST_BOILERPLATE (GstAutoAudioSink, gst_auto_audio_sink, GstBin, GST_TYPE_BIN);
+
+static const GstElementDetails gst_auto_audio_sink_details =
+GST_ELEMENT_DETAILS ("Auto audio sink",
+    "Sink/Audio",
+    "Wrapper audio sink for automatically detected audio sink",
+    "Ronald Bultje <rbultje@ronald.bitfreak.net>\n"
+    "Jan Schmidt <thaytan@noraisin.net>");
 
 static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS_ANY);
+
+static void
+gst_auto_audio_sink_base_init (gpointer klass)
+{
+  GstElementClass *eklass = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_add_pad_template (eklass,
+      gst_static_pad_template_get (&sink_template));
+
+  gst_element_class_set_details (eklass, &gst_auto_audio_sink_details);
+}
 
 static void
 gst_auto_audio_sink_class_init (GstAutoAudioSinkClass * klass)
@@ -81,11 +95,13 @@ gst_auto_audio_sink_class_init (GstAutoAudioSinkClass * klass)
   gobject_class = G_OBJECT_CLASS (klass);
   eklass = GST_ELEMENT_CLASS (klass);
 
-  gobject_class->dispose = (GObjectFinalizeFunc) gst_auto_audio_sink_dispose;
-  gobject_class->set_property = gst_auto_audio_sink_set_property;
-  gobject_class->get_property = gst_auto_audio_sink_get_property;
-
+  gobject_class->dispose =
+      (GObjectFinalizeFunc) GST_DEBUG_FUNCPTR (gst_auto_audio_sink_dispose);
   eklass->change_state = GST_DEBUG_FUNCPTR (gst_auto_audio_sink_change_state);
+  gobject_class->set_property =
+      GST_DEBUG_FUNCPTR (gst_auto_audio_sink_set_property);
+  gobject_class->get_property =
+      GST_DEBUG_FUNCPTR (gst_auto_audio_sink_get_property);
 
   /**
    * GstAutoAudioSink:filter-caps
@@ -101,20 +117,7 @@ gst_auto_audio_sink_class_init (GstAutoAudioSinkClass * klass)
   g_object_class_install_property (gobject_class, PROP_CAPS,
       g_param_spec_boxed ("filter-caps", "Filter caps",
           "Filter sink candidates using these caps.", GST_TYPE_CAPS,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-  g_object_class_install_property (gobject_class, PROP_TS_OFFSET,
-      g_param_spec_int64 ("ts-offset", "TS Offset",
-          "Timestamp offset in nanoseconds", G_MININT64, G_MAXINT64,
-          DEFAULT_TS_OFFSET, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-  gst_element_class_add_pad_template (eklass,
-      gst_static_pad_template_get (&sink_template));
-
-  gst_element_class_set_static_metadata (eklass, "Auto audio sink",
-      "Sink/Audio",
-      "Wrapper audio sink for automatically detected audio sink",
-      "Jan Schmidt <thaytan@noraisin.net>");
+          G_PARAM_READWRITE));
 }
 
 static void
@@ -136,8 +139,6 @@ gst_auto_audio_sink_clear_kid (GstAutoAudioSink * sink)
     gst_element_set_state (sink->kid, GST_STATE_NULL);
     gst_bin_remove (GST_BIN (sink), sink->kid);
     sink->kid = NULL;
-    /* Don't lose the SINK flag */
-    GST_OBJECT_FLAG_SET (sink, GST_ELEMENT_FLAG_SINK);
   }
 }
 
@@ -162,10 +163,12 @@ gst_auto_audio_sink_reset (GstAutoAudioSink * sink)
   gst_object_unref (targetpad);
 }
 
-static GstStaticCaps raw_caps = GST_STATIC_CAPS ("audio/x-raw");
+static GstStaticCaps raw_caps =
+    GST_STATIC_CAPS ("audio/x-raw-int; audio/x-raw-float");
 
 static void
-gst_auto_audio_sink_init (GstAutoAudioSink * sink)
+gst_auto_audio_sink_init (GstAutoAudioSink * sink,
+    GstAutoAudioSinkClass * g_class)
 {
   sink->pad = gst_ghost_pad_new_no_target ("sink", GST_PAD_SINK);
   gst_element_add_pad (GST_ELEMENT (sink), sink->pad);
@@ -174,10 +177,9 @@ gst_auto_audio_sink_init (GstAutoAudioSink * sink)
 
   /* set the default raw audio caps */
   sink->filter_caps = gst_static_caps_get (&raw_caps);
-  sink->ts_offset = DEFAULT_TS_OFFSET;
 
   /* mark as sink */
-  GST_OBJECT_FLAG_SET (sink, GST_ELEMENT_FLAG_SINK);
+  GST_OBJECT_FLAG_SET (sink, GST_ELEMENT_IS_SINK);
 }
 
 static gboolean
@@ -191,8 +193,7 @@ gst_auto_audio_sink_factory_filter (GstPluginFeature * feature, gpointer data)
     return FALSE;
 
   /* audio sinks */
-  klass = gst_element_factory_get_metadata (GST_ELEMENT_FACTORY (feature),
-      GST_ELEMENT_METADATA_KLASS);
+  klass = gst_element_factory_get_klass (GST_ELEMENT_FACTORY (feature));
   if (!(strstr (klass, "Sink") && strstr (klass, "Audio")))
     return FALSE;
 
@@ -223,7 +224,7 @@ gst_auto_audio_sink_create_element_with_pretty_name (GstAutoAudioSink * sink,
   GstElement *element;
   gchar *name, *marker;
 
-  marker = g_strdup (GST_OBJECT_NAME (factory));
+  marker = g_strdup (GST_PLUGIN_FEATURE (factory)->name);
   if (g_str_has_suffix (marker, "sink"))
     marker[strlen (marker) - 4] = '\0';
   if (g_str_has_prefix (marker, "gst"))
@@ -246,10 +247,10 @@ gst_auto_audio_sink_find_best (GstAutoAudioSink * sink)
   GSList *errors = NULL;
   GstBus *bus = gst_bus_new ();
   GstPad *el_pad = NULL;
-  GstCaps *el_caps = NULL;
+  GstCaps *el_caps = NULL, *intersect = NULL;
   gboolean no_match = TRUE;
 
-  list = gst_registry_feature_filter (gst_registry_get (),
+  list = gst_registry_feature_filter (gst_registry_get_default (),
       (GstPluginFeatureFilter) gst_auto_audio_sink_factory_filter, FALSE, sink);
   list = g_list_sort (list, (GCompareFunc) gst_auto_audio_sink_compare_ranks);
 
@@ -265,19 +266,21 @@ gst_auto_audio_sink_find_best (GstAutoAudioSink * sink)
     if ((el = gst_auto_audio_sink_create_element_with_pretty_name (sink, f))) {
       GstStateChangeReturn ret;
 
-      GST_DEBUG_OBJECT (sink, "Testing %s", GST_OBJECT_NAME (f));
+      GST_DEBUG_OBJECT (sink, "Testing %s", GST_PLUGIN_FEATURE (f)->name);
 
       /* If autoaudiosink has been provided with filter caps,
        * accept only sinks that match with the filter caps */
       if (sink->filter_caps) {
         el_pad = gst_element_get_static_pad (GST_ELEMENT (el), "sink");
-        el_caps = gst_pad_query_caps (el_pad, NULL);
+        el_caps = gst_pad_get_caps (el_pad);
         gst_object_unref (el_pad);
         GST_DEBUG_OBJECT (sink,
             "Checking caps: %" GST_PTR_FORMAT " vs. %" GST_PTR_FORMAT,
             sink->filter_caps, el_caps);
-        no_match = !gst_caps_can_intersect (sink->filter_caps, el_caps);
+        intersect = gst_caps_intersect (sink->filter_caps, el_caps);
+        no_match = gst_caps_is_empty (intersect);
         gst_caps_unref (el_caps);
+        gst_caps_unref (intersect);
 
         if (no_match) {
           GST_DEBUG_OBJECT (sink, "Incompatible caps");
@@ -345,8 +348,6 @@ gst_auto_audio_sink_detect (GstAutoAudioSink * sink)
   GST_DEBUG_OBJECT (sink, "Creating new kid");
   if (!(esink = gst_auto_audio_sink_find_best (sink)))
     goto no_sink;
-
-  g_object_set (G_OBJECT (esink), "ts-offset", sink->ts_offset, NULL);
 
   sink->kid = esink;
   /* Ensure the child is brought up to the right state to match the parent
@@ -427,11 +428,6 @@ gst_auto_audio_sink_set_property (GObject * object, guint prop_id,
         gst_caps_unref (sink->filter_caps);
       sink->filter_caps = gst_caps_copy (gst_value_get_caps (value));
       break;
-    case PROP_TS_OFFSET:
-      sink->ts_offset = g_value_get_int64 (value);
-      if (sink->kid)
-        g_object_set_property (G_OBJECT (sink->kid), pspec->name, value);
-      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -449,9 +445,6 @@ gst_auto_audio_sink_get_property (GObject * object, guint prop_id,
       gst_value_set_caps (value, sink->filter_caps);
       break;
     }
-    case PROP_TS_OFFSET:
-      g_value_set_int64 (value, sink->ts_offset);
-      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;

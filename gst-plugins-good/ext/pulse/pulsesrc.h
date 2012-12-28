@@ -1,5 +1,3 @@
-/*-*- Mode: C; c-basic-offset: 2 -*-*/
-
 /*
  *  GStreamer pulseaudio plugin
  *
@@ -30,6 +28,7 @@
 #include <pulse/pulseaudio.h>
 #include <pulse/thread-mainloop.h>
 
+#include "pulsemixerctrl.h"
 #include "pulseprobe.h"
 
 G_BEGIN_DECLS
@@ -54,13 +53,12 @@ struct _GstPulseSrc
 {
   GstAudioSrc src;
 
-  gchar *server, *device, *client_name;
+  gchar *server, *device;
 
   pa_threaded_mainloop *mainloop;
 
   pa_context *context;
   pa_stream *stream;
-  guint32 source_output_idx;
 
   pa_sample_spec sample_spec;
 
@@ -68,23 +66,14 @@ struct _GstPulseSrc
   size_t read_buffer_length;
 
   gchar *device_description;
+
+  GstPulseMixerCtrl *mixer;
   GstPulseProbe *probe;
 
-  gdouble volume;
-  gboolean volume_set:1;
-  gboolean mute:1;
-  gboolean mute_set:1;
-
-  gint notify; /* atomic */
-
-  gboolean corked:1;
-  gboolean stream_connected:1;
-  gboolean operation_success:1;
-  gboolean paused:1;
-  gboolean in_read:1;
-
-  GstStructure *properties;
-  pa_proplist *proplist;
+  gboolean corked;
+  gboolean operation_success;
+  gboolean paused;
+  gboolean in_read;
 };
 
 struct _GstPulseSrcClass

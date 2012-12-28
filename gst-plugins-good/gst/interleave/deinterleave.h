@@ -29,7 +29,7 @@
 G_BEGIN_DECLS
 
 #include <gst/gst.h>
-#include <gst/audio/audio.h>
+#include <gst/audio/multichannel.h>
 
 #define GST_TYPE_DEINTERLEAVE            (gst_deinterleave_get_type())
 #define GST_DEINTERLEAVE(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_DEINTERLEAVE,GstDeinterleave))
@@ -51,11 +51,13 @@ struct _GstDeinterleave
   /*< private > */
   GList *srcpads;
   GstCaps *sinkcaps;
-  GstAudioInfo audio_info;
+  gint channels;
+  GstAudioChannelPosition *pos;
   gboolean keep_positions;
 
   GstPad *sink;
 
+  gint width;
   GstDeinterleaveFunc func;
 
   GList *pending_events;

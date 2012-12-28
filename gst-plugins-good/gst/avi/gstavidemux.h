@@ -56,6 +56,11 @@ typedef struct {
   guint64        total;   /* total bytes before */
 } GstAviIndexEntry;
 
+#define GST_AVI_KEYFRAME 1
+#define ENTRY_IS_KEYFRAME(e) ((e)->flags == GST_AVI_KEYFRAME)
+#define ENTRY_SET_KEYFRAME(e) ((e)->flags = GST_AVI_KEYFRAME)
+#define ENTRY_UNSET_KEYFRAME(e) ((e)->flags = 0)
+
 typedef struct {
   /* index of this streamcontext */
   guint          num;
@@ -63,6 +68,7 @@ typedef struct {
   /* pad*/
   GstPad        *pad;
   gboolean       exposed;
+  gboolean       has_eos;
 
   /* stream info and headers */
   gst_riff_strh *strh;
@@ -73,7 +79,6 @@ typedef struct {
     gpointer     data;
   } strf;
   GstBuffer     *extradata, *initdata;
-  GstBuffer     *rgb8_palette;
   gchar         *name;
 
   /* the start/step/stop entries */
@@ -125,7 +130,6 @@ typedef enum {
   GST_AVI_DEMUX_START,
   GST_AVI_DEMUX_HEADER,
   GST_AVI_DEMUX_MOVI,
-  GST_AVI_DEMUX_SEEK,
 } GstAviDemuxState;
 
 typedef enum {
@@ -175,30 +179,17 @@ typedef struct _GstAviDemux {
 
   /* segment in TIME */
   GstSegment     segment;
+  gboolean       segment_running;
 
   /* pending tags/events */
   GstEvent      *seg_event;
   GstTagList	*globaltags;
   gboolean	 got_tags;
 
-#if 0
   /* gst index support */
   GstIndex      *element_index;
   gint           index_id;
-#endif
-
   gboolean       seekable;
-
-  guint64        first_movi_offset;
-  guint64        idx1_offset; /* offset in file of list/chunk after movi */
-  GstEvent      *seek_event;
-
-  gboolean       building_index;
-  guint          odml_stream;
-  guint          odml_subidx;
-  guint64       *odml_subidxs;
-
-  guint64        seek_kf_offset; /* offset of the keyframe to which we want to seek */
 } GstAviDemux;
 
 typedef struct _GstAviDemuxClass {

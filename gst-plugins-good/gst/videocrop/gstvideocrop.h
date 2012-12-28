@@ -20,7 +20,7 @@
 #ifndef __GST_VIDEO_CROP_H__
 #define __GST_VIDEO_CROP_H__
 
-#include <gst/video/gstvideofilter.h>
+#include <gst/base/gstbasetransform.h>
 
 G_BEGIN_DECLS
 
@@ -42,13 +42,32 @@ typedef enum {
 } VideoCropPixelFormat;
 
 typedef struct _GstVideoCropImageDetails GstVideoCropImageDetails;
+struct _GstVideoCropImageDetails
+{
+  /*< private >*/
+  VideoCropPixelFormat  packing;
+
+  guint width;
+  guint height;
+  guint size;
+
+  /* for packed RGB and YUV */
+  guint   stride;
+  guint   bytes_per_pixel;
+  guint8  macro_y_off;            /* for YUY2, YVYU, UYVY, Y offset within macropixel in bytes */
+
+  /* for planar YUV */
+  guint y_stride, y_off;
+  guint u_stride, u_off;
+  guint v_stride, v_off;
+};
 
 typedef struct _GstVideoCrop GstVideoCrop;
 typedef struct _GstVideoCropClass GstVideoCropClass;
 
 struct _GstVideoCrop
 {
-  GstVideoFilter parent;
+  GstBaseTransform basetransform;
 
   /*< private >*/
   gint crop_left;
@@ -56,18 +75,14 @@ struct _GstVideoCrop
   gint crop_top;
   gint crop_bottom;
 
-  VideoCropPixelFormat  packing;
-  gint macro_y_off;
-
-  GMutex lock;
+  GstVideoCropImageDetails in;  /* details of input image */
+  GstVideoCropImageDetails out; /* details of output image */
 };
 
 struct _GstVideoCropClass
 {
-  GstVideoFilterClass parent_class;
+  GstBaseTransformClass basetransform_class;
 };
-
-GType gst_video_crop_get_type (void);
 
 G_END_DECLS
 

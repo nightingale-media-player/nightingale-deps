@@ -57,7 +57,8 @@ create_element (const gchar * factory_name)
 }
 
 static void
-new_decoded_pad (GstElement * dec, GstPad * new_pad, AppInfo * info)
+new_decoded_pad (GstElement * dec, GstPad * new_pad, gboolean last,
+    AppInfo * info)
 {
   const gchar *sname;
   GstElement *csp, *scale, *filter;
@@ -69,17 +70,17 @@ new_decoded_pad (GstElement * dec, GstPad * new_pad, AppInfo * info)
   if (info->got_video)
     return;
 
-  /* FIXME: is this racy or does decodebin make sure caps are always
+  /* FIXME: is this racy or does decodebin2 make sure caps are always
    * negotiated at this point? */
-  caps = gst_pad_query_caps (new_pad, NULL);
+  caps = gst_pad_get_caps (new_pad);
   g_return_if_fail (caps != NULL);
 
   s = gst_caps_get_structure (caps, 0);
   sname = gst_structure_get_name (s);
-  if (!g_str_has_prefix (sname, "video/x-raw"))
+  if (!g_str_has_prefix (sname, "video/x-raw-"))
     goto not_video;
 
-  csp = create_element ("videoconvert");
+  csp = create_element ("ffmpegcolorspace");
   scale = create_element ("videoscale");
   filter = create_element ("capsfilter");
   info->sink = create_element ("gdkpixbufsink");
@@ -89,11 +90,11 @@ new_decoded_pad (GstElement * dec, GstPad * new_pad, AppInfo * info)
 
   sinkpad = gst_element_get_static_pad (csp, "sink");
   if (GST_PAD_LINK_FAILED (gst_pad_link (new_pad, sinkpad)))
-    g_error ("Can't link new decoded pad to videoconvert's sink pad");
+    g_error ("Can't link new decoded pad to ffmpegcolorspace's sink pad");
   gst_object_unref (sinkpad);
 
   if (!gst_element_link (csp, scale))
-    g_error ("Can't link videoconvert to videoscale");
+    g_error ("Can't link ffmpegcolorspace to videoscale");
   if (!gst_element_link (scale, filter))
     g_error ("Can't link videoscale to capsfilter");
   if (!gst_element_link (filter, info->sink))
@@ -108,15 +109,11 @@ new_decoded_pad (GstElement * dec, GstPad * new_pad, AppInfo * info)
   return;
 
 not_video:
-  return;
-}
-
-static void
-no_more_pads (GstElement * decodebin, AppInfo * info)
-{
-  if (!info->got_video) {
-    g_error ("This file does not contain a video track, or you do not have "
-        "the necessary decoder(s) installed");
+  {
+    if (last) {
+      g_error ("This file does not contain a video track, or you do not have "
+          "the necessary decoder(s) installed");
+    }
   }
 }
 
@@ -125,6 +122,8 @@ bus_message_cb (GstBus * bus, GstMessage * msg, AppInfo * info)
 {
   switch (GST_MESSAGE_TYPE (msg)) {
     case GST_MESSAGE_ASYNC_DONE:{
+      GstFormat fmt = GST_FORMAT_TIME;
+
       /* only interested in async-done messages from the top-level pipeline */
       if (msg->src != GST_OBJECT_CAST (info->pipe))
         break;
@@ -139,29 +138,26 @@ bus_message_cb (GstBus * bus, GstMessage * msg, AppInfo * info)
       }
 
       /* update position */
-      if (!gst_element_query_position (info->pipe, GST_FORMAT_TIME,
-              &info->cur_pos))
+      if (!gst_element_query_position (info->pipe, &fmt, &info->cur_pos))
         info->cur_pos = -1;
       break;
     }
     case GST_MESSAGE_ELEMENT:{
       const GValue *val;
       GdkPixbuf *pixbuf = NULL;
-      const GstStructure *structure;
 
       /* only interested in element messages from our gdkpixbufsink */
       if (msg->src != GST_OBJECT_CAST (info->sink))
         break;
 
       /* only interested in these two messages */
-      if (!gst_message_has_name (msg, "preroll-pixbuf") &&
-          !gst_message_has_name (msg, "pixbuf")) {
+      if (!gst_structure_has_name (msg->structure, "preroll-pixbuf") &&
+          !gst_structure_has_name (msg->structure, "pixbuf")) {
         break;
       }
 
       g_print ("pixbuf\n");
-      structure = gst_message_get_structure (msg);
-      val = gst_structure_get_value (structure, "pixbuf");
+      val = gst_structure_get_value (msg->structure, "pixbuf");
       g_return_if_fail (val != NULL);
 
       pixbuf = GDK_PIXBUF (g_value_dup_object (val));
@@ -194,15 +190,13 @@ create_pipeline (AppInfo * info, const gchar * filename)
   src = create_element ("filesrc");
   g_object_set (src, "location", filename, NULL);
 
-  dec = create_element ("decodebin");
+  dec = create_element ("decodebin2");
 
   gst_bin_add_many (GST_BIN (info->pipe), src, dec, NULL);
   if (!gst_element_link (src, dec))
-    g_error ("Can't link filesrc to decodebin");
+    g_error ("Can't link filesrc to decodebin2");
 
-  g_signal_connect (dec, "pad-added", G_CALLBACK (new_decoded_pad), info);
-
-  g_signal_connect (dec, "no-more-pads", G_CALLBACK (no_more_pads), info);
+  g_signal_connect (dec, "new-decoded-pad", G_CALLBACK (new_decoded_pad), info);
 
   /* set up bus */
   bus = gst_element_get_bus (info->pipe);
@@ -217,10 +211,10 @@ static void
 seek_to (AppInfo * info, gdouble percent)
 {
   GstSeekFlags seek_flags;
+  GstFormat fmt = GST_FORMAT_TIME;
   gint64 seek_pos, dur = -1;
 
-  if (!gst_element_query_duration (info->pipe, GST_FORMAT_TIME, &dur)
-      || dur <= 0) {
+  if (!gst_element_query_duration (info->pipe, &fmt, &dur) || dur <= 0) {
     g_printerr ("Could not query duration\n");
     return;
   }
@@ -288,14 +282,14 @@ run_gui (const gchar * filename)
   g_signal_connect (info->win, "delete-event", G_CALLBACK (gtk_main_quit),
       NULL);
 
-  vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
+  vbox = gtk_vbox_new (FALSE, 6);
   gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
   gtk_container_add (GTK_CONTAINER (info->win), vbox);
 
   info->img = gtk_image_new ();
   gtk_box_pack_start (GTK_BOX (vbox), info->img, FALSE, FALSE, 6);
 
-  hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+  hbox = gtk_hbox_new (FALSE, 6);
   gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 6);
 
   info->accurate_cb = gtk_check_button_new_with_label ("accurate seek "
@@ -304,8 +298,7 @@ run_gui (const gchar * filename)
   g_signal_connect (info->accurate_cb, "toggled",
       G_CALLBACK (accurate_toggled_cb), info);
 
-  info->slider = gtk_scale_new_with_range (GTK_ORIENTATION_HORIZONTAL,
-      0.0, 1.0, 0.001);
+  info->slider = gtk_hscale_new_with_range (0.0, 1.0, 0.001);
   gtk_box_pack_start (GTK_BOX (vbox), info->slider, FALSE, FALSE, 6);
   g_signal_connect (info->slider, "value-changed",
       G_CALLBACK (slider_cb), info);
@@ -335,6 +328,9 @@ main (int argc, char **argv)
   };
   GOptionContext *ctx;
   GError *opt_err = NULL;
+
+  if (!g_thread_supported ())
+    g_thread_init (NULL);
 
   gtk_init (&argc, &argv);
 

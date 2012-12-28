@@ -24,6 +24,7 @@
 #endif
 
 #include <string.h>
+#include <gst/floatcast/floatcast.h>
 
 #include "ebml-read.h"
 #include "ebml-ids.h"
@@ -40,254 +41,457 @@
 #define NAN (0.0 / 0.0)
 #endif
 
-GST_DEBUG_CATEGORY (ebmlread_debug);
+GST_DEBUG_CATEGORY_STATIC (ebmlread_debug);
 #define GST_CAT_DEFAULT ebmlread_debug
 
-/* Peeks following element id and element length in datastream provided
- * by @peek with @ctx as user data.
- * Returns GST_FLOW_EOS if not enough data to read id and length.
- * Otherwise, @needed provides the prefix length (id + length), and
- * @length provides element length.
- *
- * @object and @offset are provided for informative messaging/debug purposes.
- */
-GstFlowReturn
-gst_ebml_peek_id_length (guint32 * _id, guint64 * _length, guint * _needed,
-    GstPeekData peek, gpointer * ctx, GstElement * el, guint64 offset)
+static void gst_ebml_read_class_init (GstEbmlReadClass * klass);
+
+static void gst_ebml_read_init (GstEbmlRead * ebml);
+
+static GstStateChangeReturn gst_ebml_read_change_state (GstElement * element,
+    GstStateChange transition);
+
+/* convenience functions */
+static GstFlowReturn gst_ebml_read_peek_bytes (GstEbmlRead * ebml, guint size,
+    GstBuffer ** p_buf, guint8 ** bytes);
+static GstFlowReturn gst_ebml_read_pull_bytes (GstEbmlRead * ebml, guint size,
+    GstBuffer ** p_buf, guint8 ** bytes);
+
+
+static GstElementClass *parent_class;   /* NULL */
+
+GType
+gst_ebml_read_get_type (void)
 {
-  guint needed;
-  const guint8 *buf;
-  gint len_mask = 0x80, read = 1, n = 1, num_ffs = 0;
-  guint64 total;
+  static GType gst_ebml_read_type;      /* 0 */
+
+  if (!gst_ebml_read_type) {
+    static const GTypeInfo gst_ebml_read_info = {
+      sizeof (GstEbmlReadClass),
+      NULL,
+      NULL,
+      (GClassInitFunc) gst_ebml_read_class_init,
+      NULL,
+      NULL,
+      sizeof (GstEbmlRead),
+      0,
+      (GInstanceInitFunc) gst_ebml_read_init,
+    };
+
+    gst_ebml_read_type =
+        g_type_register_static (GST_TYPE_ELEMENT, "GstEbmlRead",
+        &gst_ebml_read_info, 0);
+  }
+
+  return gst_ebml_read_type;
+}
+
+void
+gst_ebml_level_free (GstEbmlLevel * level)
+{
+  g_slice_free (GstEbmlLevel, level);
+}
+
+static void
+gst_ebml_finalize (GObject * obj)
+{
+  GstEbmlRead *ebml = GST_EBML_READ (obj);
+
+  g_list_foreach (ebml->level, (GFunc) gst_ebml_level_free, NULL);
+  g_list_free (ebml->level);
+  ebml->level = NULL;
+  if (ebml->cached_buffer) {
+    gst_buffer_unref (ebml->cached_buffer);
+    ebml->cached_buffer = NULL;
+  }
+
+  G_OBJECT_CLASS (parent_class)->finalize (obj);
+}
+
+static void
+gst_ebml_read_class_init (GstEbmlReadClass * klass)
+{
+  GstElementClass *gstelement_class = (GstElementClass *) klass;
+  GObjectClass *gobject_class = (GObjectClass *) klass;
+
+  parent_class = g_type_class_peek_parent (klass);
+
+  GST_DEBUG_CATEGORY_INIT (ebmlread_debug, "ebmlread",
+      0, "EBML stream helper class");
+
+  gobject_class->finalize = gst_ebml_finalize;
+
+  gstelement_class->change_state =
+      GST_DEBUG_FUNCPTR (gst_ebml_read_change_state);
+}
+
+static void
+gst_ebml_read_init (GstEbmlRead * ebml)
+{
+  ebml->sinkpad = NULL;
+  ebml->level = NULL;
+}
+
+static GstStateChangeReturn
+gst_ebml_read_change_state (GstElement * element, GstStateChange transition)
+{
+  GstStateChangeReturn ret;
+  GstEbmlRead *ebml = GST_EBML_READ (element);
+
+  switch (transition) {
+    case GST_STATE_CHANGE_READY_TO_PAUSED:
+      if (!ebml->sinkpad) {
+        g_return_val_if_reached (GST_STATE_CHANGE_FAILURE);
+      }
+      break;
+    default:
+      break;
+  }
+
+  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
+
+  switch (transition) {
+    case GST_STATE_CHANGE_PAUSED_TO_READY:
+    {
+      g_list_foreach (ebml->level, (GFunc) gst_ebml_level_free, NULL);
+      g_list_free (ebml->level);
+      ebml->level = NULL;
+      if (ebml->cached_buffer) {
+        gst_buffer_unref (ebml->cached_buffer);
+        ebml->cached_buffer = NULL;
+      }
+      ebml->offset = 0;
+      break;
+    }
+    default:
+      break;
+  }
+
+  return ret;
+}
+
+/*
+ * Return: the amount of levels in the hierarchy that the
+ * current element lies higher than the previous one.
+ * The opposite isn't done - that's auto-done using master
+ * element reading.
+ */
+
+static guint
+gst_ebml_read_element_level_up (GstEbmlRead * ebml)
+{
+  guint num = 0;
+  guint64 pos = ebml->offset;
+
+  while (ebml->level != NULL) {
+    GstEbmlLevel *level = ebml->level->data;
+
+    if (pos >= level->start + level->length) {
+      ebml->level = g_list_delete_link (ebml->level, ebml->level);
+      gst_ebml_level_free (level);
+      num++;
+    } else {
+      break;
+    }
+  }
+
+  return num;
+}
+
+/*
+ * Calls pull_range for (offset,size) without advancing our offset
+ */
+static GstFlowReturn
+gst_ebml_read_peek_bytes (GstEbmlRead * ebml, guint size, GstBuffer ** p_buf,
+    guint8 ** bytes)
+{
+  GstFlowReturn ret;
+
+  /* Caching here actually makes much less difference than one would expect.
+   * We do it mainly to avoid pulling buffers of 1 byte all the time */
+  if (ebml->cached_buffer) {
+    guint64 cache_offset = GST_BUFFER_OFFSET (ebml->cached_buffer);
+    guint cache_size = GST_BUFFER_SIZE (ebml->cached_buffer);
+
+    if (cache_offset <= ebml->offset &&
+        (ebml->offset + size) < (cache_offset + cache_size)) {
+      if (p_buf)
+        *p_buf = gst_buffer_create_sub (ebml->cached_buffer,
+            ebml->offset - cache_offset, size);
+      if (bytes)
+        *bytes =
+            GST_BUFFER_DATA (ebml->cached_buffer) + ebml->offset - cache_offset;
+      return GST_FLOW_OK;
+    }
+    /* not enough data in the cache, free cache and get a new one */
+    gst_buffer_unref (ebml->cached_buffer);
+    ebml->cached_buffer = NULL;
+  }
+
+  /* refill the cache */
+  ret = gst_pad_pull_range (ebml->sinkpad, ebml->offset, MAX (size, 64 * 1024),
+      &ebml->cached_buffer);
+  if (ret != GST_FLOW_OK) {
+    ebml->cached_buffer = NULL;
+    return ret;
+  }
+
+  if (GST_BUFFER_SIZE (ebml->cached_buffer) >= size) {
+    if (p_buf)
+      *p_buf = gst_buffer_create_sub (ebml->cached_buffer, 0, size);
+    if (bytes)
+      *bytes = GST_BUFFER_DATA (ebml->cached_buffer);
+    return GST_FLOW_OK;
+  }
+
+  /* Not possible to get enough data, try a last time with
+   * requesting exactly the size we need */
+  gst_buffer_unref (ebml->cached_buffer);
+  ebml->cached_buffer = NULL;
+
+  ret =
+      gst_pad_pull_range (ebml->sinkpad, ebml->offset, size,
+      &ebml->cached_buffer);
+  if (ret != GST_FLOW_OK) {
+    GST_DEBUG_OBJECT (ebml, "pull_range returned %d", ret);
+    if (p_buf)
+      *p_buf = NULL;
+    if (bytes)
+      *bytes = NULL;
+    return ret;
+  }
+
+  if (GST_BUFFER_SIZE (ebml->cached_buffer) < size) {
+    GST_WARNING_OBJECT (ebml, "Dropping short buffer at offset %"
+        G_GUINT64_FORMAT ": wanted %u bytes, got %u bytes", ebml->offset,
+        size, GST_BUFFER_SIZE (ebml->cached_buffer));
+
+    gst_buffer_unref (ebml->cached_buffer);
+    ebml->cached_buffer = NULL;
+    if (p_buf)
+      *p_buf = NULL;
+    if (bytes)
+      *bytes = NULL;
+    return GST_FLOW_UNEXPECTED;
+  }
+
+  if (p_buf)
+    *p_buf = gst_buffer_create_sub (ebml->cached_buffer, 0, size);
+  if (bytes)
+    *bytes = GST_BUFFER_DATA (*p_buf);
+
+  return GST_FLOW_OK;
+}
+
+/*
+ * Calls pull_range for (offset,size) and advances our offset by size
+ */
+static GstFlowReturn
+gst_ebml_read_pull_bytes (GstEbmlRead * ebml, guint size, GstBuffer ** p_buf,
+    guint8 ** bytes)
+{
+  GstFlowReturn ret;
+
+  ret = gst_ebml_read_peek_bytes (ebml, size, p_buf, bytes);
+  if (ret != GST_FLOW_OK)
+    return ret;
+
+  ebml->offset += size;
+  return GST_FLOW_OK;
+}
+
+/*
+ * Read: the element content data ID.
+ * Return: FALSE on error.
+ */
+
+static GstFlowReturn
+gst_ebml_read_element_id (GstEbmlRead * ebml, guint32 * id, guint * level_up)
+{
+  guint8 *buf;
+  gint len_mask = 0x80, read = 1, n = 1;
+  guint32 total;
   guint8 b;
   GstFlowReturn ret;
 
-  g_return_val_if_fail (_id != NULL, GST_FLOW_ERROR);
-  g_return_val_if_fail (_length != NULL, GST_FLOW_ERROR);
-  g_return_val_if_fail (_needed != NULL, GST_FLOW_ERROR);
-
-  /* well ... */
-  *_id = (guint32) GST_EBML_SIZE_UNKNOWN;
-  *_length = GST_EBML_SIZE_UNKNOWN;
-
-  /* read element id */
-  needed = 2;
-  ret = peek (ctx, needed, &buf);
+  ret = gst_ebml_read_peek_bytes (ebml, 1, NULL, &buf);
   if (ret != GST_FLOW_OK)
-    goto peek_error;
+    return ret;
+
   b = GST_READ_UINT8 (buf);
-  total = (guint64) b;
+
+  total = (guint32) b;
+
   while (read <= 4 && !(total & len_mask)) {
     read++;
     len_mask >>= 1;
   }
-  if (G_UNLIKELY (read > 4))
-    goto invalid_id;
+  if (read > 4) {
+    GST_ERROR_OBJECT (ebml,
+        "Invalid EBML ID size tag (0x%x) at position %" G_GUINT64_FORMAT " (0x%"
+        G_GINT64_MODIFIER "x)", (guint) b, ebml->offset, ebml->offset);
+    return GST_FLOW_ERROR;
+  }
 
-  /* need id and at least something for subsequent length */
-  needed = read + 1;
-  ret = peek (ctx, needed, &buf);
+  ret = gst_ebml_read_peek_bytes (ebml, read, NULL, &buf);
   if (ret != GST_FLOW_OK)
-    goto peek_error;
+    return ret;
+
   while (n < read) {
     b = GST_READ_UINT8 (buf + n);
     total = (total << 8) | b;
     ++n;
   }
-  *_id = (guint32) total;
 
-  /* read element length */
-  b = GST_READ_UINT8 (buf + n);
+  *id = total;
+
+  /* level */
+  if (level_up)
+    *level_up = gst_ebml_read_element_level_up (ebml);
+
+  ebml->offset += read;
+  return GST_FLOW_OK;
+}
+
+/*
+ * Read: element content length.
+ * Return: the number of bytes read or -1 on error.
+ */
+
+static GstFlowReturn
+gst_ebml_read_element_length (GstEbmlRead * ebml, guint64 * length,
+    gint * rread)
+{
+  GstFlowReturn ret;
+  guint8 *buf;
+  gint len_mask = 0x80, read = 1, n = 1, num_ffs = 0;
+  guint64 total;
+  guint8 b;
+
+  ret = gst_ebml_read_peek_bytes (ebml, 1, NULL, &buf);
+  if (ret != GST_FLOW_OK)
+    return ret;
+
+  b = GST_READ_UINT8 (buf);
+
   total = (guint64) b;
-  len_mask = 0x80;
-  read = 1;
+
   while (read <= 8 && !(total & len_mask)) {
     read++;
     len_mask >>= 1;
   }
-  if (G_UNLIKELY (read > 8))
-    goto invalid_length;
+  if (read > 8) {
+    GST_ERROR_OBJECT (ebml,
+        "Invalid EBML length size tag (0x%x) at position %" G_GUINT64_FORMAT
+        " (0x%" G_GINT64_MODIFIER "x)", (guint) b, ebml->offset, ebml->offset);
+    return GST_FLOW_ERROR;
+  }
+
   if ((total &= (len_mask - 1)) == len_mask - 1)
     num_ffs++;
 
-  needed += read - 1;
-  ret = peek (ctx, needed, &buf);
+  ret = gst_ebml_read_peek_bytes (ebml, read, NULL, &buf);
   if (ret != GST_FLOW_OK)
-    goto peek_error;
-  buf += (needed - read);
-  n = 1;
+    return ret;
+
   while (n < read) {
     guint8 b = GST_READ_UINT8 (buf + n);
 
-    if (G_UNLIKELY (b == 0xff))
+    if (b == 0xff)
       num_ffs++;
     total = (total << 8) | b;
     ++n;
   }
 
-  if (G_UNLIKELY (read == num_ffs))
-    *_length = G_MAXUINT64;
+  if (read == num_ffs)
+    *length = G_MAXUINT64;
   else
-    *_length = total;
+    *length = total;
 
-  *_needed = needed;
+  if (rread)
+    *rread = read;
+
+  ebml->offset += read;
 
   return GST_FLOW_OK;
-
-  /* ERRORS */
-peek_error:
-  {
-    GST_WARNING_OBJECT (el, "peek failed, ret = %d", ret);
-    *_needed = needed;
-    return ret;
-  }
-invalid_id:
-  {
-    GST_ERROR_OBJECT (el,
-        "Invalid EBML ID size tag (0x%x) at position %" G_GUINT64_FORMAT " (0x%"
-        G_GINT64_MODIFIER "x)", (guint) b, offset, offset);
-    return GST_FLOW_ERROR;
-  }
-invalid_length:
-  {
-    GST_ERROR_OBJECT (el,
-        "Invalid EBML length size tag (0x%x) at position %" G_GUINT64_FORMAT
-        " (0x%" G_GINT64_MODIFIER "x)", (guint) b, offset, offset);
-    return GST_FLOW_ERROR;
-  }
 }
 
-/* setup for parsing @buf at position @offset on behalf of @el.
- * Takes ownership of @buf. */
-void
-gst_ebml_read_init (GstEbmlRead * ebml, GstElement * el, GstBuffer * buf,
-    guint64 offset)
+/*
+ * Return: the ID of the next element.
+ * Level_up contains the amount of levels that this
+ * next element lies higher than the previous one.
+ */
+
+GstFlowReturn
+gst_ebml_peek_id (GstEbmlRead * ebml, guint * level_up, guint32 * id)
 {
-  GstEbmlMaster m;
-
-  g_return_if_fail (el);
-  g_return_if_fail (buf);
-
-  ebml->el = el;
-  ebml->offset = offset;
-  ebml->buf = buf;
-  gst_buffer_map (buf, &ebml->map, GST_MAP_READ);
-  ebml->readers = g_array_sized_new (FALSE, FALSE, sizeof (GstEbmlMaster), 10);
-  m.offset = ebml->offset;
-  gst_byte_reader_init (&m.br, ebml->map.data, ebml->map.size);
-  g_array_append_val (ebml->readers, m);
-}
-
-void
-gst_ebml_read_clear (GstEbmlRead * ebml)
-{
-  if (ebml->readers)
-    g_array_free (ebml->readers, TRUE);
-  ebml->readers = NULL;
-  if (ebml->buf) {
-    gst_buffer_unmap (ebml->buf, &ebml->map);
-    gst_buffer_unref (ebml->buf);
-  }
-  ebml->buf = NULL;
-  ebml->el = NULL;
-}
-
-static GstFlowReturn
-gst_ebml_read_peek (GstByteReader * br, guint peek, const guint8 ** data)
-{
-  if (G_LIKELY (gst_byte_reader_peek_data (br, peek, data)))
-    return GST_FLOW_OK;
-  else
-    return GST_FLOW_EOS;
-}
-
-static GstFlowReturn
-gst_ebml_peek_id_full (GstEbmlRead * ebml, guint32 * id, guint64 * length,
-    guint * prefix)
-{
+  guint64 off;
+  guint level_up_tmp = 0;
   GstFlowReturn ret;
 
-  ret = gst_ebml_peek_id_length (id, length, prefix,
-      (GstPeekData) gst_ebml_read_peek, (gpointer) gst_ebml_read_br (ebml),
-      ebml->el, gst_ebml_read_get_pos (ebml));
-  if (ret != GST_FLOW_OK)
+  g_assert (level_up);
+  g_assert (id);
+
+  *level_up = 0;
+
+next:
+  off = ebml->offset;           /* save offset */
+
+  if ((ret = gst_ebml_read_element_id (ebml, id, &level_up_tmp)) != GST_FLOW_OK)
     return ret;
 
-  GST_LOG_OBJECT (ebml->el, "id 0x%x at offset 0x%" G_GINT64_MODIFIER "x"
-      " of length %" G_GUINT64_FORMAT ", prefix %d", *id,
-      gst_ebml_read_get_pos (ebml), *length, *prefix);
+  ebml->offset = off;           /* restore offset */
 
-#ifndef GST_DISABLE_GST_DEBUG
-  {
-    const guint8 *data = NULL;
-    GstByteReader *br = gst_ebml_read_br (ebml);
-    guint size = gst_byte_reader_get_remaining (br);
+  *level_up += level_up_tmp;
+  level_up_tmp = 0;
 
-    if (gst_byte_reader_peek_data (br, size, &data)) {
-
-      GST_LOG_OBJECT (ebml->el, "current br %p; remaining %d", br, size);
-      if (data)
-        GST_MEMDUMP_OBJECT (ebml->el, "element", data, MIN (size, *length));
-    }
+  switch (*id) {
+    case GST_EBML_ID_VOID:
+      GST_DEBUG_OBJECT (ebml, "Skipping EBML Void element");
+      if ((ret = gst_ebml_read_skip (ebml)) != GST_FLOW_OK)
+        return ret;
+      goto next;
+      break;
+    case GST_EBML_ID_CRC32:
+      GST_DEBUG_OBJECT (ebml, "Skipping EBML CRC32 element");
+      if ((ret = gst_ebml_read_skip (ebml)) != GST_FLOW_OK)
+        return ret;
+      goto next;
+      break;
   }
-#endif
 
   return ret;
 }
 
-GstFlowReturn
-gst_ebml_peek_id (GstEbmlRead * ebml, guint32 * id)
-{
-  guint64 length;
-  guint needed;
+/*
+ * Return the length of the stream in bytes
+ */
 
-  return gst_ebml_peek_id_full (ebml, id, &length, &needed);
+gint64
+gst_ebml_read_get_length (GstEbmlRead * ebml)
+{
+  GstFormat fmt = GST_FORMAT_BYTES;
+  gint64 end;
+
+  /* FIXME: what to do if we don't get the upstream length */
+  if (!gst_pad_query_peer_duration (ebml->sinkpad, &fmt, &end) ||
+      fmt != GST_FORMAT_BYTES || end < 0)
+    g_return_val_if_reached (0);
+
+  return end;
 }
 
 /*
- * Read the next element, the contents are supposed to be sub-elements which
- * can be read separately.  A new bytereader is setup for doing so.
+ * Seek to a given offset.
  */
+
 GstFlowReturn
-gst_ebml_read_master (GstEbmlRead * ebml, guint32 * id)
+gst_ebml_read_seek (GstEbmlRead * ebml, guint64 offset)
 {
-  guint64 length;
-  guint prefix;
-  const guint8 *data = NULL;
-  GstFlowReturn ret;
-  GstEbmlMaster m;
+  if (offset >= gst_ebml_read_get_length (ebml))
+    return GST_FLOW_UNEXPECTED;
 
-  ret = gst_ebml_peek_id_full (ebml, id, &length, &prefix);
-  if (ret != GST_FLOW_OK)
-    return ret;
-
-  /* we just at least peeked the id */
-  if (!gst_byte_reader_skip (gst_ebml_read_br (ebml), prefix))
-    return GST_FLOW_ERROR;      /* FIXME: do proper error handling */
-
-  m.offset = gst_ebml_read_get_pos (ebml);
-  if (!gst_byte_reader_get_data (gst_ebml_read_br (ebml), length, &data))
-    return GST_FLOW_PARSE;
-
-  GST_LOG_OBJECT (ebml->el, "pushing level %d at offset %" G_GUINT64_FORMAT,
-      ebml->readers->len, m.offset);
-  gst_byte_reader_init (&m.br, data, length);
-  g_array_append_val (ebml->readers, m);
-
-  return GST_FLOW_OK;
-}
-
-/* explicitly pop a bytereader from stack.  Usually invoked automagically. */
-GstFlowReturn
-gst_ebml_read_pop_master (GstEbmlRead * ebml)
-{
-  g_return_val_if_fail (ebml->readers, GST_FLOW_ERROR);
-
-  /* never remove initial bytereader */
-  if (ebml->readers->len > 1) {
-    GST_LOG_OBJECT (ebml->el, "popping level %d", ebml->readers->len - 1);
-    g_array_remove_index (ebml->readers, ebml->readers->len - 1);
-  }
+  ebml->offset = offset;
 
   return GST_FLOW_OK;
 }
@@ -301,16 +505,17 @@ gst_ebml_read_skip (GstEbmlRead * ebml)
 {
   guint64 length;
   guint32 id;
-  guint prefix;
   GstFlowReturn ret;
 
-  ret = gst_ebml_peek_id_full (ebml, &id, &length, &prefix);
+  ret = gst_ebml_read_element_id (ebml, &id, NULL);
   if (ret != GST_FLOW_OK)
     return ret;
 
-  if (!gst_byte_reader_skip (gst_ebml_read_br (ebml), length + prefix))
-    return GST_FLOW_PARSE;
+  ret = gst_ebml_read_element_length (ebml, &length, NULL);
+  if (ret != GST_FLOW_OK)
+    return ret;
 
+  ebml->offset += length;
   return ret;
 }
 
@@ -322,31 +527,23 @@ GstFlowReturn
 gst_ebml_read_buffer (GstEbmlRead * ebml, guint32 * id, GstBuffer ** buf)
 {
   guint64 length;
-  guint prefix;
   GstFlowReturn ret;
 
-  ret = gst_ebml_peek_id_full (ebml, id, &length, &prefix);
+  ret = gst_ebml_read_element_id (ebml, id, NULL);
   if (ret != GST_FLOW_OK)
     return ret;
 
-  /* we just at least peeked the id */
-  if (!gst_byte_reader_skip (gst_ebml_read_br (ebml), prefix))
-    return GST_FLOW_ERROR;      /* FIXME: do proper error handling */
+  ret = gst_ebml_read_element_length (ebml, &length, NULL);
+  if (ret != GST_FLOW_OK)
+    return ret;
 
-  if (G_LIKELY (length > 0)) {
-    guint offset;
-
-    offset = gst_ebml_read_get_pos (ebml) - ebml->offset;
-    if (G_LIKELY (gst_byte_reader_skip (gst_ebml_read_br (ebml), length))) {
-      *buf = gst_buffer_copy_region (ebml->buf, GST_BUFFER_COPY_ALL,
-          offset, length);
-    } else {
-      *buf = NULL;
-      return GST_FLOW_PARSE;
-    }
-  } else {
+  if (length == 0) {
     *buf = gst_buffer_new ();
+    return GST_FLOW_OK;
   }
+
+  *buf = NULL;
+  ret = gst_ebml_read_pull_bytes (ebml, (guint) length, buf, NULL);
 
   return ret;
 }
@@ -356,30 +553,33 @@ gst_ebml_read_buffer (GstEbmlRead * ebml, guint32 * id, GstBuffer ** buf)
  */
 
 static GstFlowReturn
-gst_ebml_read_bytes (GstEbmlRead * ebml, guint32 * id, const guint8 ** data,
+gst_ebml_read_bytes (GstEbmlRead * ebml, guint32 * id, guint8 ** data,
     guint * size)
 {
   guint64 length;
-  guint prefix;
   GstFlowReturn ret;
 
   *size = 0;
 
-  ret = gst_ebml_peek_id_full (ebml, id, &length, &prefix);
+  ret = gst_ebml_read_element_id (ebml, id, NULL);
   if (ret != GST_FLOW_OK)
     return ret;
 
-  /* we just at least peeked the id */
-  if (!gst_byte_reader_skip (gst_ebml_read_br (ebml), prefix))
-    return GST_FLOW_ERROR;      /* FIXME: do proper error handling */
+  ret = gst_ebml_read_element_length (ebml, &length, NULL);
+  if (ret != GST_FLOW_OK)
+    return ret;
 
-  *data = NULL;
-  if (G_LIKELY (length >= 0)) {
-    if (!gst_byte_reader_get_data (gst_ebml_read_br (ebml), length, data))
-      return GST_FLOW_PARSE;
+  if (length == 0) {
+    *data = NULL;
+    return ret;
   }
 
-  *size = length;
+  *data = NULL;
+  ret = gst_ebml_read_pull_bytes (ebml, (guint) length, NULL, data);
+  if (ret != GST_FLOW_OK)
+    return ret;
+
+  *size = (guint) length;
 
   return ret;
 }
@@ -391,7 +591,7 @@ gst_ebml_read_bytes (GstEbmlRead * ebml, guint32 * id, const guint8 ** data,
 GstFlowReturn
 gst_ebml_read_uint (GstEbmlRead * ebml, guint32 * id, guint64 * num)
 {
-  const guint8 *data;
+  guint8 *data;
   guint size;
   GstFlowReturn ret;
 
@@ -399,19 +599,12 @@ gst_ebml_read_uint (GstEbmlRead * ebml, guint32 * id, guint64 * num)
   if (ret != GST_FLOW_OK)
     return ret;
 
-  if (size > 8) {
-    GST_ERROR_OBJECT (ebml->el,
+  if (size < 1 || size > 8) {
+    GST_ERROR_OBJECT (ebml,
         "Invalid integer element size %d at position %" G_GUINT64_FORMAT " (0x%"
-        G_GINT64_MODIFIER "x)", size, gst_ebml_read_get_pos (ebml) - size,
-        gst_ebml_read_get_pos (ebml) - size);
+        G_GINT64_MODIFIER "x)", size, ebml->offset - size, ebml->offset - size);
     return GST_FLOW_ERROR;
   }
-
-  if (size == 0) {
-    *num = 0;
-    return ret;
-  }
-
   *num = 0;
   while (size > 0) {
     *num = (*num << 8) | *data;
@@ -429,7 +622,7 @@ gst_ebml_read_uint (GstEbmlRead * ebml, guint32 * id, guint64 * num)
 GstFlowReturn
 gst_ebml_read_sint (GstEbmlRead * ebml, guint32 * id, gint64 * num)
 {
-  const guint8 *data;
+  guint8 *data;
   guint size;
   gboolean negative = 0;
   GstFlowReturn ret;
@@ -438,17 +631,11 @@ gst_ebml_read_sint (GstEbmlRead * ebml, guint32 * id, gint64 * num)
   if (ret != GST_FLOW_OK)
     return ret;
 
-  if (size > 8) {
-    GST_ERROR_OBJECT (ebml->el,
+  if (size < 1 || size > 8) {
+    GST_ERROR_OBJECT (ebml,
         "Invalid integer element size %d at position %" G_GUINT64_FORMAT " (0x%"
-        G_GINT64_MODIFIER "x)", size, gst_ebml_read_get_pos (ebml) - size,
-        gst_ebml_read_get_pos (ebml) - size);
+        G_GINT64_MODIFIER "x)", size, ebml->offset - size, ebml->offset - size);
     return GST_FLOW_ERROR;
-  }
-
-  if (size == 0) {
-    *num = 0;
-    return ret;
   }
 
   *num = 0;
@@ -484,7 +671,7 @@ struct _ext_float
 };
 
 static gdouble
-_ext2dbl (const guint8 * data)
+_ext2dbl (guint8 * data)
 {
   struct _ext_float ext;
   guint64 m = 0;
@@ -513,7 +700,7 @@ _ext2dbl (const guint8 * data)
 GstFlowReturn
 gst_ebml_read_float (GstEbmlRead * ebml, guint32 * id, gdouble * num)
 {
-  const guint8 *data;
+  guint8 *data;
   guint size;
   GstFlowReturn ret;
 
@@ -521,11 +708,10 @@ gst_ebml_read_float (GstEbmlRead * ebml, guint32 * id, gdouble * num)
   if (ret != GST_FLOW_OK)
     return ret;
 
-  if (size != 0 && size != 4 && size != 8 && size != 10) {
-    GST_ERROR_OBJECT (ebml->el,
+  if (size != 4 && size != 8 && size != 10) {
+    GST_ERROR_OBJECT (ebml,
         "Invalid float element size %d at position %" G_GUINT64_FORMAT " (0x%"
-        G_GINT64_MODIFIER "x)", size, gst_ebml_read_get_pos (ebml) - size,
-        gst_ebml_read_get_pos (ebml) - size);
+        G_GINT64_MODIFIER "x)", size, ebml->offset - size, ebml->offset - size);
     return GST_FLOW_ERROR;
   }
 
@@ -543,24 +729,21 @@ gst_ebml_read_float (GstEbmlRead * ebml, guint32 * id, gdouble * num)
     d = GDOUBLE_FROM_BE (d);
 
     *num = d;
-  } else if (size == 10) {
-    *num = _ext2dbl (data);
   } else {
-    /* size == 0 means a value of 0.0 */
-    *num = 0.0;
+    *num = _ext2dbl (data);
   }
 
   return ret;
 }
 
 /*
- * Read the next element as a C string.
+ * Read the next element as an ASCII string.
  */
 
-static GstFlowReturn
-gst_ebml_read_string (GstEbmlRead * ebml, guint32 * id, gchar ** str)
+GstFlowReturn
+gst_ebml_read_ascii (GstEbmlRead * ebml, guint32 * id, gchar ** str)
 {
-  const guint8 *data;
+  guint8 *data;
   guint size;
   GstFlowReturn ret;
 
@@ -576,38 +759,6 @@ gst_ebml_read_string (GstEbmlRead * ebml, guint32 * id, gchar ** str)
 }
 
 /*
- * Read the next element as an ASCII string.
- */
-
-GstFlowReturn
-gst_ebml_read_ascii (GstEbmlRead * ebml, guint32 * id, gchar ** str_out)
-{
-  GstFlowReturn ret;
-  gchar *str;
-  gchar *iter;
-
-#ifndef GST_DISABLE_GST_DEBUG
-  guint64 oldoff = ebml->offset;
-#endif
-
-  ret = gst_ebml_read_string (ebml, id, &str);
-  if (ret != GST_FLOW_OK)
-    return ret;
-
-  for (iter = str; *iter != '\0'; iter++) {
-    if (G_UNLIKELY (*iter & 0x80)) {
-      GST_ERROR_OBJECT (ebml,
-          "Invalid ASCII string at offset %" G_GUINT64_FORMAT, oldoff);
-      g_free (str);
-      return GST_FLOW_ERROR;
-    }
-  }
-
-  *str_out = str;
-  return ret;
-}
-
-/*
  * Read the next element as a UTF-8 string.
  */
 
@@ -617,16 +768,16 @@ gst_ebml_read_utf8 (GstEbmlRead * ebml, guint32 * id, gchar ** str)
   GstFlowReturn ret;
 
 #ifndef GST_DISABLE_GST_DEBUG
-  guint64 oldoff = gst_ebml_read_get_pos (ebml);
+  guint64 oldoff = ebml->offset;
 #endif
 
-  ret = gst_ebml_read_string (ebml, id, str);
+  ret = gst_ebml_read_ascii (ebml, id, str);
   if (ret != GST_FLOW_OK)
     return ret;
 
   if (str != NULL && *str != NULL && **str != '\0' &&
       !g_utf8_validate (*str, -1, NULL)) {
-    GST_WARNING_OBJECT (ebml->el,
+    GST_WARNING_OBJECT (ebml,
         "Invalid UTF-8 string at offset %" G_GUINT64_FORMAT, oldoff);
   }
 
@@ -654,6 +805,35 @@ gst_ebml_read_date (GstEbmlRead * ebml, guint32 * id, gint64 * date)
 }
 
 /*
+ * Read the next element, but only the header. The contents
+ * are supposed to be sub-elements which can be read separately.
+ */
+
+GstFlowReturn
+gst_ebml_read_master (GstEbmlRead * ebml, guint32 * id)
+{
+  GstEbmlLevel *level;
+  guint64 length;
+  GstFlowReturn ret;
+
+  ret = gst_ebml_read_element_id (ebml, id, NULL);
+  if (ret != GST_FLOW_OK)
+    return ret;
+
+  ret = gst_ebml_read_element_length (ebml, &length, NULL);
+  if (ret != GST_FLOW_OK)
+    return ret;
+
+  /* remember level */
+  level = g_slice_new (GstEbmlLevel);
+  level->start = ebml->offset;
+  level->length = length;
+  ebml->level = g_list_prepend (ebml->level, level);
+
+  return GST_FLOW_OK;
+}
+
+/*
  * Read the next element as binary data.
  */
 
@@ -661,7 +841,7 @@ GstFlowReturn
 gst_ebml_read_binary (GstEbmlRead * ebml,
     guint32 * id, guint8 ** binary, guint64 * length)
 {
-  const guint8 *data;
+  guint8 *data;
   guint size;
   GstFlowReturn ret;
 
@@ -671,6 +851,149 @@ gst_ebml_read_binary (GstEbmlRead * ebml,
 
   *length = size;
   *binary = g_memdup (data, size);
+
+  return GST_FLOW_OK;
+}
+
+/*
+ * Read an EBML header.
+ */
+
+GstFlowReturn
+gst_ebml_read_header (GstEbmlRead * ebml, gchar ** doctype, guint * version)
+{
+  /* this function is the first to be called */
+  guint32 id;
+  guint level_up;
+  GstFlowReturn ret;
+
+  /* default init */
+  if (doctype)
+    *doctype = NULL;
+  if (version)
+    *version = 1;
+
+  ret = gst_ebml_peek_id (ebml, &level_up, &id);
+  if (ret != GST_FLOW_OK)
+    return ret;
+
+  GST_DEBUG_OBJECT (ebml, "id: %08x", GST_READ_UINT32_BE (&id));
+
+  if (level_up != 0 || id != GST_EBML_ID_HEADER) {
+    GST_ERROR_OBJECT (ebml, "Failed to read header");
+    return GST_FLOW_ERROR;
+  }
+  ret = gst_ebml_read_master (ebml, &id);
+  if (ret != GST_FLOW_OK)
+    return ret;
+
+  while (TRUE) {
+    ret = gst_ebml_peek_id (ebml, &level_up, &id);
+    if (ret != GST_FLOW_OK)
+      return ret;
+
+    /* end-of-header */
+    if (level_up)
+      break;
+
+    switch (id) {
+        /* is our read version uptodate? */
+      case GST_EBML_ID_EBMLREADVERSION:{
+        guint64 num;
+
+        ret = gst_ebml_read_uint (ebml, &id, &num);
+        if (ret != GST_FLOW_OK)
+          return ret;
+        g_assert (id == GST_EBML_ID_EBMLREADVERSION);
+        if (num != GST_EBML_VERSION) {
+          GST_ERROR_OBJECT (ebml, "Unsupported EBML version %" G_GUINT64_FORMAT,
+              num);
+          return GST_FLOW_ERROR;
+        }
+
+        GST_DEBUG_OBJECT (ebml, "EbmlReadVersion: %" G_GUINT64_FORMAT, num);
+        break;
+      }
+
+        /* we only handle 8 byte lengths at max */
+      case GST_EBML_ID_EBMLMAXSIZELENGTH:{
+        guint64 num;
+
+        ret = gst_ebml_read_uint (ebml, &id, &num);
+        if (ret != GST_FLOW_OK)
+          return ret;
+        g_assert (id == GST_EBML_ID_EBMLMAXSIZELENGTH);
+        if (num > sizeof (guint64)) {
+          GST_ERROR_OBJECT (ebml,
+              "Unsupported EBML maximum size %" G_GUINT64_FORMAT, num);
+          return GST_FLOW_ERROR;
+        }
+        GST_DEBUG_OBJECT (ebml, "EbmlMaxSizeLength: %" G_GUINT64_FORMAT, num);
+        break;
+      }
+
+        /* we handle 4 byte IDs at max */
+      case GST_EBML_ID_EBMLMAXIDLENGTH:{
+        guint64 num;
+
+        ret = gst_ebml_read_uint (ebml, &id, &num);
+        if (ret != GST_FLOW_OK)
+          return ret;
+        g_assert (id == GST_EBML_ID_EBMLMAXIDLENGTH);
+        if (num > sizeof (guint32)) {
+          GST_ERROR_OBJECT (ebml,
+              "Unsupported EBML maximum ID %" G_GUINT64_FORMAT, num);
+          return GST_FLOW_ERROR;
+        }
+        GST_DEBUG_OBJECT (ebml, "EbmlMaxIdLength: %" G_GUINT64_FORMAT, num);
+        break;
+      }
+
+      case GST_EBML_ID_DOCTYPE:{
+        gchar *text;
+
+        ret = gst_ebml_read_ascii (ebml, &id, &text);
+        if (ret != GST_FLOW_OK)
+          return ret;
+        g_assert (id == GST_EBML_ID_DOCTYPE);
+
+        GST_DEBUG_OBJECT (ebml, "EbmlDocType: %s", GST_STR_NULL (text));
+
+        if (doctype) {
+          g_free (*doctype);
+          *doctype = text;
+        } else
+          g_free (text);
+        break;
+      }
+
+      case GST_EBML_ID_DOCTYPEREADVERSION:{
+        guint64 num;
+
+        ret = gst_ebml_read_uint (ebml, &id, &num);
+        if (ret != GST_FLOW_OK)
+          return ret;
+        g_assert (id == GST_EBML_ID_DOCTYPEREADVERSION);
+        if (version)
+          *version = num;
+        GST_DEBUG_OBJECT (ebml, "EbmlReadVersion: %" G_GUINT64_FORMAT, num);
+        break;
+      }
+
+      default:
+        GST_WARNING_OBJECT (ebml,
+            "Unknown data type 0x%x in EBML header (ignored)", id);
+        /* pass-through */
+
+        /* we ignore these two, as they don't tell us anything we care about */
+      case GST_EBML_ID_EBMLVERSION:
+      case GST_EBML_ID_DOCTYPEVERSION:
+        ret = gst_ebml_read_skip (ebml);
+        if (ret != GST_FLOW_OK)
+          return ret;
+        break;
+    }
+  }
 
   return GST_FLOW_OK;
 }

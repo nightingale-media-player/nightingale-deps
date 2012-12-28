@@ -21,7 +21,7 @@
 #define GST_GDK_PIXBUF_SINK_H
 
 #include <gst/gst.h>
-#include <gst/video/video.h>
+
 #include <gst/video/gstvideosink.h>
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -47,15 +47,15 @@ struct _GstGdkPixbufSink
   /*< private >*/
 
   /* current caps */
-  GstVideoInfo info;
   gint         width;
   gint         height;
+  gint         rowstride;
   gint         par_n;
   gint         par_d;
   gboolean     has_alpha;
 
   /* properties */
-  gboolean     post_messages;
+  gboolean     send_messages;
   GdkPixbuf  * last_pixbuf;
 };
 

@@ -24,7 +24,6 @@
 #include <gst/rtp/gstrtpbuffer.h>
 
 
-#if 0
 
 /* This test makes sure that RTP packets sent as buffer lists are sent through
  * the rtpbin as they are supposed to, and not corrupted in any way.
@@ -62,7 +61,7 @@ static GstBuffer *header_buffer[2] = { NULL, NULL };
 
 /* Some payload.
  */
-static const char *payload =
+static char *payload =
     "0123456789ABSDEF0123456789ABSDEF0123456789ABSDEF0123456789ABSDEF0123456789ABSDEF"
     "0123456789ABSDEF0123456789ABSDEF0123456789ABSDEF0123456789ABSDEF0123456789ABSDEF"
     "0123456789ABSDEF0123456789ABSDEF0123456789ABSDEF0123456789ABSDEF0123456789ABSDEF"
@@ -311,7 +310,6 @@ GST_START_TEST (test_bufferlist)
 
 GST_END_TEST;
 
-#endif
 
 
 static Suite *
@@ -325,9 +323,7 @@ bufferlist_suite (void)
   tcase_set_timeout (tc_chain, 10);
 
   suite_add_tcase (s, tc_chain);
-#if 0
   tcase_add_test (tc_chain, test_bufferlist);
-#endif
 
   return s;
 }

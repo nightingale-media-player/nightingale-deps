@@ -3,7 +3,7 @@
   <description>Demux ICY tags from a stream</description>
   <filename>../../gst/icydemux/.libs/libgsticydemux.so</filename>
   <basename>libgsticydemux.so</basename>
-  <version>1.0.4</version>
+  <version>0.10.16</version>
   <license>LGPL</license>
   <source>gst-plugins-good</source>
   <package>GStreamer Good Plug-ins source release</package>
@@ -14,7 +14,8 @@
       <longname>ICY tag demuxer</longname>
       <class>Codec/Demuxer/Metadata</class>
       <description>Read and output ICY tags while demuxing the contents</description>
-      <author>Jan Schmidt &lt;thaytan@mad.scientist.com&gt;, Michael Smith &lt;msmith@fluendo.com&gt;</author>
+      <author>Jan Schmidt &lt;thaytan@mad.scientist.com&gt;
+    Michael Smith &lt;msmith@fluendo.com&gt;</author>
       <pads>
         <caps>
           <name>sink</name>

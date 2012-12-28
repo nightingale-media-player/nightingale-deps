@@ -1,5 +1,3 @@
-/*-*- Mode: C; c-basic-offset: 2 -*-*/
-
 /*
  *  GStreamer pulseaudio plugin
  *
@@ -28,6 +26,7 @@
 
 G_BEGIN_DECLS
 
+#include <gst/interfaces/propertyprobe.h>
 #include <pulse/pulseaudio.h>
 #include <pulse/thread-mainloop.h>
 
@@ -37,20 +36,17 @@ struct _GstPulseProbe
 {
   GObject *object;
   gchar *server;
-
   GList *devices;
-  gboolean devices_valid:1;
-
-  gboolean operation_success:1;
-
-  gboolean enumerate_sinks:1;
-  gboolean enumerate_sources:1;
+  gboolean devices_valid;
 
   pa_threaded_mainloop *mainloop;
   pa_context *context;
 
   GList *properties;
   guint prop_id;
+
+  int enumerate_sinks, enumerate_sources;
+  int operation_success;
 };
 
 GstPulseProbe *gst_pulseprobe_new (GObject *object, GObjectClass * klass,
@@ -63,10 +59,8 @@ gboolean gst_pulseprobe_needs_probe (GstPulseProbe * probe, guint prop_id,
     const GParamSpec * pspec);
 void gst_pulseprobe_probe_property (GstPulseProbe * probe, guint prop_id,
     const GParamSpec * pspec);
-#if 0
 GValueArray *gst_pulseprobe_get_values (GstPulseProbe * probe, guint prop_id,
     const GParamSpec * pspec);
-#endif
 
 void gst_pulseprobe_set_server (GstPulseProbe * c, const gchar * server);
 

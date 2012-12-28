@@ -4,31 +4,22 @@ libgstrtp_la_SOURCES = \
 	fnv1hash.c \
 	gstrtp.c \
 	gstrtpchannels.c \
+	gstrtpdepay.c \
 	gstrtpac3depay.c \
-	gstrtpac3pay.c \
-	gstrtpbvdepay.c \
-	gstrtpbvpay.c \
 	gstrtpceltdepay.c \
 	gstrtpceltpay.c \
 	gstrtpdvdepay.c \
 	gstrtpdvpay.c \
-	gstrtpgstdepay.c \
-	gstrtpgstpay.c \
 	gstrtpilbcdepay.c \
 	gstrtpilbcpay.c \
 	gstrtpmpadepay.c \
 	gstrtpmpapay.c \
-	gstrtpmparobustdepay.c \
 	gstrtpmpvdepay.c \
 	gstrtpmpvpay.c \
 	gstrtppcmadepay.c \
 	gstrtppcmudepay.c \
 	gstrtppcmupay.c \
 	gstrtppcmapay.c \
-	gstrtpg722depay.c \
-	gstrtpg722pay.c \
-	gstrtpg723depay.c \
-	gstrtpg723pay.c \
 	gstrtpg726pay.c \
 	gstrtpg726depay.c \
 	gstrtpg729pay.c \
@@ -59,7 +50,6 @@ libgstrtp_la_SOURCES = \
 	gstrtpmp4gpay.c \
 	gstrtpmp4adepay.c \
 	gstrtpmp4apay.c \
-	gstrtpqcelpdepay.c \
 	gstrtpqdmdepay.c \
 	gstrtpsirenpay.c \
 	gstrtpsirendepay.c \
@@ -73,14 +63,18 @@ libgstrtp_la_SOURCES = \
 	gstrtpvrawdepay.c  \
 	gstrtpvrawpay.c 
 
-libgstrtp_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS)
-libgstrtp_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) \
-		-lgstaudio-@GST_API_VERSION@ \
-		-lgstvideo-@GST_API_VERSION@ \
-                -lgsttag-@GST_API_VERSION@ \
-                -lgstrtp-@GST_API_VERSION@ \
-                -lgstpbutils-@GST_API_VERSION@ \
-		$(GST_BASE_LIBS) $(GST_LIBS) \
+
+if HAVE_WINSOCK2_H
+WINSOCK2_LIBS = -lws2_32
+else
+WINSOCK2_LIBS =
+endif
+
+libgstrtp_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)
+libgstrtp_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) $(GST_BASE_LIBS) \
+		-lgstaudio-@GST_MAJORMINOR@ \
+                -lgsttag-@GST_MAJORMINOR@ \
+                -lgstrtp-@GST_MAJORMINOR@ $(WINSOCK2_LIBS) \
 		$(LIBM)
 libgstrtp_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) 
 libgstrtp_la_LIBTOOLFLAGS = --tag=disable-static
@@ -91,27 +85,18 @@ noinst_HEADERS =			\
 		 gstrtpL16depay.h 	\
 		 gstrtpL16pay.h 	\
 		 gstrtpac3depay.h 	\
-		 gstrtpac3pay.h 	\
-		 gstrtpbvdepay.h 	\
-		 gstrtpbvpay.h 	        \
 		 gstrtpceltpay.h	\
 		 gstrtpceltdepay.h	\
 		 gstrtpdvdepay.h 	\
 		 gstrtpdvpay.h 	        \
 		 gstrtpamrdepay.h 	\
 		 gstrtpamrpay.h 	\
-		 gstrtpgstdepay.h 	\
-		 gstrtpgstpay.h 	\
 		 gstrtpilbcdepay.h      \
 		 gstrtpilbcpay.h        \
 		 gstrtppcmadepay.h	\
 		 gstrtppcmudepay.h	\
 		 gstrtppcmupay.h 	\
 		 gstrtppcmapay.h 	\
-	         gstrtpg722depay.h      \
-	         gstrtpg722pay.h        \
-	         gstrtpg723depay.h      \
-	         gstrtpg723pay.h        \
 	         gstrtpg726depay.h      \
 	         gstrtpg726pay.h        \
 	         gstrtpg729depay.h      \
@@ -119,7 +104,6 @@ noinst_HEADERS =			\
 		 gstrtpgsmdepay.h 	\
 		 gstrtpgsmpay.h 	\
 		 gstrtpmpadepay.h 	\
-		 gstrtpmparobustdepay.h 	\
 		 gstrtpmpapay.h 	\
 		 gstrtpmpvdepay.h \
 		 gstrtpmpvpay.h \
@@ -142,8 +126,8 @@ noinst_HEADERS =			\
 		 gstrtpmp4gpay.h	\
 		 gstrtpmp4adepay.h      \
 		 gstrtpmp4apay.h        \
+		 gstrtpdepay.h		\
 		 gstasteriskh263.h	\
-		 gstrtpqcelpdepay.h	\
 		 gstrtpqdmdepay.h	\
 		 gstrtpsirenpay.h 	\
 		 gstrtpsirendepay.h 	\
@@ -156,17 +140,3 @@ noinst_HEADERS =			\
 	 	 gstrtpvorbispay.h      \
 	 	 gstrtpvrawdepay.h      \
 	 	 gstrtpvrawpay.h
-
-Android.mk: Makefile.am $(BUILT_SOURCES)
-	androgenizer \
-	-:PROJECT libgstrtp -:SHARED libgstrtp \
-	 -:TAGS eng debug \
-         -:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
-	 -:SOURCES $(libgstrtp_la_SOURCES) \
-	 -:CFLAGS $(DEFS) $(DEFAULT_INCLUDES) $(libgstrtp_la_CFLAGS) \
-	 -:LDFLAGS $(libgstrtp_la_LDFLAGS) \
-	           $(libgstrtp_la_LIBADD) \
-	           -ldl \
-	 -:PASSTHROUGH LOCAL_ARM_MODE:=arm \
-		       LOCAL_MODULE_PATH:='$$(TARGET_OUT)/lib/gstreamer-0.10' \
-	> $@

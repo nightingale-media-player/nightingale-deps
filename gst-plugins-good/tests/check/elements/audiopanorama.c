@@ -22,7 +22,6 @@
 
 #include <unistd.h>
 
-#include <gst/audio/audio.h>
 #include <gst/base/gstbasetransform.h>
 #include <gst/check/gstcheck.h>
 
@@ -35,87 +34,92 @@ GstPad *mysrcpad, *mysinkpad;
 
 
 #define PANORAMA_MONO_CAPS_STRING    \
-    "audio/x-raw, "                     \
+    "audio/x-raw-int, "                 \
     "channels = (int) 1, "              \
     "rate = (int) 44100, "              \
-    "layout = (string) interleaved, "   \
-    "format = (string) " GST_AUDIO_NE(S16)
+    "endianness = (int) BYTE_ORDER, "   \
+    "width = (int) 16, "                \
+    "depth = (int) 16, "                \
+    "signed = (bool) TRUE"
 
 #define PANORAMA_STEREO_CAPS_STRING  \
-    "audio/x-raw, "                     \
+    "audio/x-raw-int, "                 \
     "channels = (int) 2, "              \
-    "channel-mask = (bitmask) 3, "      \
     "rate = (int) 44100, "              \
-    "layout = (string) interleaved, "   \
-    "format = (string) " GST_AUDIO_NE(S16)
+    "endianness = (int) BYTE_ORDER, "   \
+    "width = (int) 16, "                \
+    "depth = (int) 16, "                \
+    "signed = (bool) TRUE"
 
 #define PANORAMA_WRONG_CAPS_STRING  \
-    "audio/x-raw, "                     \
+    "audio/x-raw-int, "                 \
     "channels = (int) 5, "              \
     "rate = (int) 44100, "              \
-    "layout = (string) interleaved, "   \
-    "format = (string) " GST_AUDIO_NE(U16)
+    "endianness = (int) BYTE_ORDER, "   \
+    "width = (int) 16, "                \
+    "depth = (int) 16, "                \
+    "signed = (bool) FALSE"
 
 
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw, "
+    GST_STATIC_CAPS ("audio/x-raw-int, "
         "channels = (int) 2, "
         "rate = (int) [ 1,  MAX ], "
-        "layout = (string) interleaved, "
-        "format = (string) " GST_AUDIO_NE (S16))
+        "endianness = (int) BYTE_ORDER, "
+        "width = (int) 16, " "depth = (int) 16, " "signed = (bool) TRUE")
     );
 static GstStaticPadTemplate msrctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw, "
+    GST_STATIC_CAPS ("audio/x-raw-int, "
         "channels = (int) 1, "
         "rate = (int) [ 1,  MAX ], "
-        "layout = (string) interleaved, "
-        "format = (string) " GST_AUDIO_NE (S16))
+        "endianness = (int) BYTE_ORDER, "
+        "width = (int) 16, " "depth = (int) 16, " "signed = (bool) TRUE")
     );
 static GstStaticPadTemplate ssrctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw, "
+    GST_STATIC_CAPS ("audio/x-raw-int, "
         "channels = (int) 2, "
         "rate = (int) [ 1,  MAX ], "
-        "layout = (string) interleaved, "
-        "format = (string) " GST_AUDIO_NE (S16))
+        "endianness = (int) BYTE_ORDER, "
+        "width = (int) 16, " "depth = (int) 16, " "signed = (bool) TRUE")
     );
 
-static GstElement *
-setup_panorama_m (void)
+GstElement *
+setup_panorama_m ()
 {
   GstElement *panorama;
 
   GST_DEBUG ("setup_panorama");
   panorama = gst_check_setup_element ("audiopanorama");
-  mysrcpad = gst_check_setup_src_pad (panorama, &msrctemplate);
-  mysinkpad = gst_check_setup_sink_pad (panorama, &sinktemplate);
+  mysrcpad = gst_check_setup_src_pad (panorama, &msrctemplate, NULL);
+  mysinkpad = gst_check_setup_sink_pad (panorama, &sinktemplate, NULL);
   gst_pad_set_active (mysrcpad, TRUE);
   gst_pad_set_active (mysinkpad, TRUE);
 
   return panorama;
 }
 
-static GstElement *
-setup_panorama_s (void)
+GstElement *
+setup_panorama_s ()
 {
   GstElement *panorama;
 
   GST_DEBUG ("setup_panorama");
   panorama = gst_check_setup_element ("audiopanorama");
-  mysrcpad = gst_check_setup_src_pad (panorama, &ssrctemplate);
-  mysinkpad = gst_check_setup_sink_pad (panorama, &sinktemplate);
+  mysrcpad = gst_check_setup_src_pad (panorama, &ssrctemplate, NULL);
+  mysinkpad = gst_check_setup_sink_pad (panorama, &sinktemplate, NULL);
   gst_pad_set_active (mysrcpad, TRUE);
   gst_pad_set_active (mysinkpad, TRUE);
 
   return panorama;
 }
 
-static void
+void
 cleanup_panorama (GstElement * panorama)
 {
   GST_DEBUG ("cleanup_panorama");
@@ -138,20 +142,18 @@ GST_START_TEST (test_mono_middle)
   GstCaps *caps;
   gint16 in[2] = { 16384, -256 };
   gint16 out[4] = { 8192, 8192, -128, -128 };
-  gint16 res[4];
+  gint16 *res;
 
   panorama = setup_panorama_m ();
   fail_unless (gst_element_set_state (panorama,
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
+  inbuffer = gst_buffer_new_and_alloc (4);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 4);
   caps = gst_caps_from_string (PANORAMA_MONO_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
-
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, sizeof (in), 0,
-      sizeof (in), NULL, NULL);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
   /* pushing gives away my reference ... */
@@ -160,10 +162,10 @@ GST_START_TEST (test_mono_middle)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 8) == 8);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO ("expected %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], res[0], res[1], res[2], res[3]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 8) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 8) == 0);
 
   /* cleanup */
   cleanup_panorama (panorama);
@@ -178,7 +180,7 @@ GST_START_TEST (test_mono_left)
   GstCaps *caps;
   gint16 in[2] = { 16384, -256 };
   gint16 out[4] = { 16384, 0, -256, 0 };
-  gint16 res[4];
+  gint16 *res;
 
   panorama = setup_panorama_m ();
   g_object_set (G_OBJECT (panorama), "panorama", -1.0, NULL);
@@ -186,14 +188,12 @@ GST_START_TEST (test_mono_left)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
+  inbuffer = gst_buffer_new_and_alloc (4);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 4);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 4) == 0);
   caps = gst_caps_from_string (PANORAMA_MONO_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
-
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, sizeof (in), 0,
-      sizeof (in), NULL, NULL);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 4) == 0);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
   /* pushing gives away my reference ... */
@@ -202,10 +202,10 @@ GST_START_TEST (test_mono_left)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 8) == 8);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO ("expected %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], res[0], res[1], res[2], res[3]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 8) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 8) == 0);
 
   /* cleanup */
   cleanup_panorama (panorama);
@@ -220,7 +220,7 @@ GST_START_TEST (test_mono_right)
   GstCaps *caps;
   gint16 in[2] = { 16384, -256 };
   gint16 out[4] = { 0, 16384, 0, -256 };
-  gint16 res[4];
+  gint16 *res;
 
   panorama = setup_panorama_m ();
   g_object_set (G_OBJECT (panorama), "panorama", 1.0, NULL);
@@ -228,14 +228,12 @@ GST_START_TEST (test_mono_right)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
+  inbuffer = gst_buffer_new_and_alloc (4);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 4);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 4) == 0);
   caps = gst_caps_from_string (PANORAMA_MONO_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
-
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, sizeof (in), 0,
-      sizeof (in), NULL, NULL);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 4) == 0);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
   /* pushing gives away my reference ... */
@@ -244,10 +242,10 @@ GST_START_TEST (test_mono_right)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 8) == 8);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO ("expected %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], res[0], res[1], res[2], res[3]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 8) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 8) == 0);
 
   /* cleanup */
   cleanup_panorama (panorama);
@@ -261,34 +259,35 @@ GST_START_TEST (test_stereo_middle)
   GstBuffer *inbuffer, *outbuffer;
   GstCaps *caps;
   gint16 in[4] = { 16384, -256, 8192, 128 };
-  gint16 res[4];
+  gint16 *res;
 
   panorama = setup_panorama_s ();
   fail_unless (gst_element_set_state (panorama,
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
+  inbuffer = gst_buffer_new_and_alloc (8);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 8);
   caps = gst_caps_from_string (PANORAMA_STEREO_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
-
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, sizeof (in), 0,
-      sizeof (in), NULL, NULL);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
-  /* pushing gives away my reference ... */
+  /* pushing gives away my reference ... so keep an extra one */
+  gst_buffer_ref (inbuffer);
+
   fail_unless (gst_pad_push (mysrcpad, inbuffer) == GST_FLOW_OK);
   /* ... but it ends up being collected on the global buffer list */
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 8) == 8);
+  res = (gint16 *) GST_BUFFER_DATA (inbuffer);
   GST_INFO ("expected %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d",
       in[0], in[1], in[2], in[3], res[0], res[1], res[2], res[3]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, in, 8) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), in, 8) == 0);
 
   /* cleanup */
+  gst_buffer_unref (inbuffer);
   cleanup_panorama (panorama);
 }
 
@@ -301,7 +300,7 @@ GST_START_TEST (test_stereo_left)
   GstCaps *caps;
   gint16 in[4] = { 16384, -256, 8192, 128 };
   gint16 out[4] = { 16384 - 256, 0, 8192 + 128, 0 };
-  gint16 res[4];
+  gint16 *res;
 
   panorama = setup_panorama_s ();
   g_object_set (G_OBJECT (panorama), "panorama", -1.0, NULL);
@@ -309,14 +308,12 @@ GST_START_TEST (test_stereo_left)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
+  inbuffer = gst_buffer_new_and_alloc (8);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 8);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 8) == 0);
   caps = gst_caps_from_string (PANORAMA_STEREO_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
-
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, sizeof (in), 0,
-      sizeof (in), NULL, NULL);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 8) == 0);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
   /* pushing gives away my reference ... */
@@ -325,10 +322,10 @@ GST_START_TEST (test_stereo_left)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 8) == 8);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO ("expected %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], res[0], res[1], res[2], res[3]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 8) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 8) == 0);
 
   /* cleanup */
   cleanup_panorama (panorama);
@@ -343,7 +340,7 @@ GST_START_TEST (test_stereo_right)
   GstCaps *caps;
   gint16 in[4] = { 16384, -256, 8192, 128 };
   gint16 out[4] = { 0, -256 + 16384, 0, 128 + 8192 };
-  gint16 res[4];
+  gint16 *res;
 
   panorama = setup_panorama_s ();
   g_object_set (G_OBJECT (panorama), "panorama", 1.0, NULL);
@@ -351,14 +348,12 @@ GST_START_TEST (test_stereo_right)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
+  inbuffer = gst_buffer_new_and_alloc (8);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 8);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 8) == 0);
   caps = gst_caps_from_string (PANORAMA_STEREO_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
-
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, sizeof (in), 0,
-      sizeof (in), NULL, NULL);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 8) == 0);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
   /* pushing gives away my reference ... */
@@ -367,10 +362,10 @@ GST_START_TEST (test_stereo_right)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 8));
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO ("expected %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], res[0], res[1], res[2], res[3]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 8) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 8) == 0);
 
   /* cleanup */
   cleanup_panorama (panorama);
@@ -385,7 +380,7 @@ GST_START_TEST (test_mono_middle_simple)
   GstCaps *caps;
   gint16 in[2] = { 16384, -256 };
   gint16 out[4] = { 16384, 16384, -256, -256 };
-  gint16 res[4];
+  gint16 *res;
 
   panorama = setup_panorama_m ();
   g_object_set (G_OBJECT (panorama), "method", 1, NULL);
@@ -393,11 +388,10 @@ GST_START_TEST (test_mono_middle_simple)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, sizeof (in), 0,
-      sizeof (in), NULL, NULL);
+  inbuffer = gst_buffer_new_and_alloc (4);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 4);
   caps = gst_caps_from_string (PANORAMA_MONO_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -407,10 +401,10 @@ GST_START_TEST (test_mono_middle_simple)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 8) == 8);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO ("expected %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], res[0], res[1], res[2], res[3]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 8) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 8) == 0);
 
   /* cleanup */
   cleanup_panorama (panorama);
@@ -425,7 +419,7 @@ GST_START_TEST (test_mono_left_simple)
   GstCaps *caps;
   gint16 in[2] = { 16384, -256 };
   gint16 out[4] = { 16384, 0, -256, 0 };
-  gint16 res[4];
+  gint16 *res;
 
   panorama = setup_panorama_m ();
   g_object_set (G_OBJECT (panorama), "method", 1, NULL);
@@ -434,12 +428,11 @@ GST_START_TEST (test_mono_left_simple)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, sizeof (in), 0,
-      sizeof (in), NULL, NULL);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 4) == 0);
+  inbuffer = gst_buffer_new_and_alloc (4);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 4);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 4) == 0);
   caps = gst_caps_from_string (PANORAMA_MONO_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -449,10 +442,10 @@ GST_START_TEST (test_mono_left_simple)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 8) == 8);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO ("expected %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], res[0], res[1], res[2], res[3]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 8) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 8) == 0);
 
   /* cleanup */
   cleanup_panorama (panorama);
@@ -467,7 +460,7 @@ GST_START_TEST (test_mono_right_simple)
   GstCaps *caps;
   gint16 in[2] = { 16384, -256 };
   gint16 out[4] = { 0, 16384, 0, -256 };
-  gint16 res[4];
+  gint16 *res;
 
   panorama = setup_panorama_m ();
   g_object_set (G_OBJECT (panorama), "method", 1, NULL);
@@ -476,12 +469,11 @@ GST_START_TEST (test_mono_right_simple)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, sizeof (in), 0,
-      sizeof (in), NULL, NULL);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 4) == 0);
+  inbuffer = gst_buffer_new_and_alloc (4);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 4);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 4) == 0);
   caps = gst_caps_from_string (PANORAMA_MONO_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -491,10 +483,10 @@ GST_START_TEST (test_mono_right_simple)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 8) == 8);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO ("expected %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], res[0], res[1], res[2], res[3]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 8) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 8) == 0);
 
   /* cleanup */
   cleanup_panorama (panorama);
@@ -508,7 +500,7 @@ GST_START_TEST (test_stereo_middle_simple)
   GstBuffer *inbuffer, *outbuffer;
   GstCaps *caps;
   gint16 in[4] = { 16384, -256, 8192, 128 };
-  gint16 res[4];
+  gint16 *res;
 
   panorama = setup_panorama_s ();
   g_object_set (G_OBJECT (panorama), "method", 1, NULL);
@@ -516,26 +508,28 @@ GST_START_TEST (test_stereo_middle_simple)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, sizeof (in), 0,
-      sizeof (in), NULL, NULL);
+  inbuffer = gst_buffer_new_and_alloc (8);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 8);
   caps = gst_caps_from_string (PANORAMA_STEREO_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
-  /* pushing gives away my reference ... */
+  /* pushing gives away my reference ... so keep an extra one */
+  gst_buffer_ref (inbuffer);
+
   fail_unless (gst_pad_push (mysrcpad, inbuffer) == GST_FLOW_OK);
   /* ... but it ends up being collected on the global buffer list */
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 8) == 8);
+  res = (gint16 *) GST_BUFFER_DATA (inbuffer);
   GST_INFO ("expected %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d",
       in[0], in[1], in[2], in[3], res[0], res[1], res[2], res[3]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, in, 8) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), in, 8) == 0);
 
   /* cleanup */
+  gst_buffer_unref (inbuffer);
   cleanup_panorama (panorama);
 }
 
@@ -548,7 +542,7 @@ GST_START_TEST (test_stereo_left_simple)
   GstCaps *caps;
   gint16 in[4] = { 16384, -256, 8192, 128 };
   gint16 out[4] = { 16384, 0, 8192, 0 };
-  gint16 res[4];
+  gint16 *res;
 
   panorama = setup_panorama_s ();
   g_object_set (G_OBJECT (panorama), "method", 1, NULL);
@@ -557,12 +551,11 @@ GST_START_TEST (test_stereo_left_simple)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, sizeof (in), 0,
-      sizeof (in), NULL, NULL);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 8) == 0);
+  inbuffer = gst_buffer_new_and_alloc (8);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 8);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 8) == 0);
   caps = gst_caps_from_string (PANORAMA_STEREO_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -572,10 +565,10 @@ GST_START_TEST (test_stereo_left_simple)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 8) == 8);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO ("expected %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], res[0], res[1], res[2], res[3]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 8) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 8) == 0);
 
   /* cleanup */
   cleanup_panorama (panorama);
@@ -590,7 +583,7 @@ GST_START_TEST (test_stereo_right_simple)
   GstCaps *caps;
   gint16 in[4] = { 16384, -256, 8192, 128 };
   gint16 out[4] = { 0, -256, 0, 128 };
-  gint16 res[4];
+  gint16 *res;
 
   panorama = setup_panorama_s ();
   g_object_set (G_OBJECT (panorama), "method", 1, NULL);
@@ -599,12 +592,11 @@ GST_START_TEST (test_stereo_right_simple)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, sizeof (in), 0,
-      sizeof (in), NULL, NULL);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 8) == 0);
+  inbuffer = gst_buffer_new_and_alloc (8);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 8);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 8) == 0);
   caps = gst_caps_from_string (PANORAMA_STEREO_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -614,10 +606,10 @@ GST_START_TEST (test_stereo_right_simple)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 8) == 8);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO ("expected %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], res[0], res[1], res[2], res[3]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 8) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 8) == 0);
 
   /* cleanup */
   cleanup_panorama (panorama);
@@ -641,19 +633,16 @@ GST_START_TEST (test_wrong_caps)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, sizeof (in), 0,
-      sizeof (in), NULL, NULL);
+  inbuffer = gst_buffer_new_and_alloc (4);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 4);
+  caps = gst_caps_from_string (PANORAMA_WRONG_CAPS_STRING);
+  gst_buffer_set_caps (inbuffer, caps);
+  gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
   gst_buffer_ref (inbuffer);
 
   /* set a bus here so we avoid getting state change messages */
   gst_element_set_bus (panorama, bus);
-
-  caps = gst_caps_from_string (PANORAMA_WRONG_CAPS_STRING);
-  /* this actually succeeds, because the caps event is sticky */
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
-  gst_caps_unref (caps);
 
   /* pushing gives an error because it can't negotiate with wrong caps */
   fail_unless_equals_int (gst_pad_push (mysrcpad, inbuffer),
@@ -676,7 +665,7 @@ GST_START_TEST (test_wrong_caps)
 GST_END_TEST;
 
 
-static Suite *
+Suite *
 panorama_suite (void)
 {
   Suite *s = suite_create ("panorama");

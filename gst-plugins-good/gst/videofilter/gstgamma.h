@@ -24,8 +24,6 @@
 #ifndef __GST_VIDEO_GAMMA_H__
 #define __GST_VIDEO_GAMMA_H__
 
-#include <gst/gst.h>
-#include <gst/video/video.h>
 #include <gst/video/gstvideofilter.h>
 
 G_BEGIN_DECLS
@@ -53,14 +51,16 @@ struct _GstGamma
 {
   GstVideoFilter videofilter;
 
-  /* < private > */
+  /* format */
+  gint width;
+  gint height;
+  gint size;
+
   /* properties */
-  gdouble gamma;
+  double gamma;
 
   /* tables */
   guint8 gamma_table[256];
-
-  void (*process) (GstGamma *gamma, GstVideoFrame *frame);
 };
 
 struct _GstGammaClass

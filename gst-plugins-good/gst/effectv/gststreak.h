@@ -29,7 +29,6 @@
 
 #include <gst/gst.h>
 
-#include <gst/video/video.h>
 #include <gst/video/gstvideofilter.h>
 
 G_BEGIN_DECLS
@@ -55,6 +54,8 @@ struct _GstStreakTV
   GstVideoFilter element;
 
   /* < private > */
+  gint width, height;
+
   gboolean feedback;
 
   guint32 *planebuffer;

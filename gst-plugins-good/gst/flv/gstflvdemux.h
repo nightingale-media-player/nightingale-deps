@@ -22,21 +22,20 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstadapter.h>
-#include "gstindex.h"
 
 G_BEGIN_DECLS
 #define GST_TYPE_FLV_DEMUX \
   (gst_flv_demux_get_type())
 #define GST_FLV_DEMUX(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_FLV_DEMUX,GstFlvDemux))
+  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_FLV_DEMUX,GstFLVDemux))
 #define GST_FLV_DEMUX_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_FLV_DEMUX,GstFlvDemuxClass))
+  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_FLV_DEMUX,GstFLVDemuxClass))
 #define GST_IS_FLV_DEMUX(obj) \
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_FLV_DEMUX))
 #define GST_IS_FLV_DEMUX_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_FLV_DEMUX))
-typedef struct _GstFlvDemux GstFlvDemux;
-typedef struct _GstFlvDemuxClass GstFlvDemuxClass;
+typedef struct _GstFLVDemux GstFLVDemux;
+typedef struct _GstFLVDemuxClass GstFLVDemuxClass;
 
 typedef enum
 {
@@ -45,12 +44,11 @@ typedef enum
   FLV_STATE_TAG_VIDEO,
   FLV_STATE_TAG_AUDIO,
   FLV_STATE_TAG_SCRIPT,
-  FLV_STATE_SEEK,
   FLV_STATE_DONE,
   FLV_STATE_NONE
-} GstFlvDemuxState;
+} GstFLVDemuxState;
 
-struct _GstFlvDemux
+struct _GstFLVDemux
 {
   GstElement element;
 
@@ -72,11 +70,12 @@ struct _GstFlvDemux
 
   GstSegment segment;
 
+  GstEvent *close_seg_event;
   GstEvent *new_seg_event;
 
   GstTagList *taglist;
 
-  GstFlvDemuxState state;
+  GstFLVDemuxState state;
 
   guint64 offset;
   guint64 cur_tag_offset;
@@ -94,9 +93,6 @@ struct _GstFlvDemux
   gboolean audio_need_segment;
   gboolean audio_linked;
   GstBuffer * audio_codec_data;
-  GstClockTime audio_start;
-  guint32 last_audio_pts;
-  GstClockTime audio_time_offset;
 
   /* Video infos */
   guint32 w;
@@ -110,10 +106,6 @@ struct _GstFlvDemux
   gboolean video_linked;
   gboolean got_par;
   GstBuffer * video_codec_data;
-  GstClockTime video_start;
-  guint32 last_video_pts;
-  GstClockTime video_time_offset;
-  gdouble framerate;
 
   gboolean random_access;
   gboolean need_header;
@@ -122,35 +114,17 @@ struct _GstFlvDemux
   gboolean push_tags;
   gboolean strict;
   gboolean flushing;
-
-  gboolean no_more_pads;
-
-  gboolean seeking;
-  gboolean building_index;
-  gboolean indexed; /* TRUE if index is completely built */
-  gboolean upstream_seekable; /* TRUE if upstream is seekable */
-  gint64 file_size;
-  GstEvent *seek_event;
-  gint64 seek_time;
-
-  GstClockTime index_max_time;
-  gint64 index_max_pos;
-
-  /* reverse playback */
-  GstClockTime video_first_ts;
-  GstClockTime audio_first_ts;
-  gboolean video_done;
-  gboolean audio_done;
-  gint64 from_offset;
-  gint64 to_offset;
 };
 
-struct _GstFlvDemuxClass
+struct _GstFLVDemuxClass
 {
   GstElementClass parent_class;
 };
 
 GType gst_flv_demux_get_type (void);
+
+gboolean gst_flv_demux_query (GstPad * pad, GstQuery * query);
+gboolean gst_flv_demux_src_event (GstPad * pad, GstEvent * event);
 
 G_END_DECLS
 #endif /* __FLV_DEMUX_H__ */

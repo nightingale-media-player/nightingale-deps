@@ -45,10 +45,6 @@
  * </refsect2>
  */
 
-/* FIXME 0.11: suppress warnings for deprecated API such as GValueArray
- * with newer GLib versions (>= 2.31.0) */
-#define GLIB_DISABLE_DEPRECATION_WARNINGS
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -57,10 +53,9 @@
 #include <math.h>
 #include <gst/gst.h>
 #include <gst/audio/gstaudiofilter.h>
+#include <gst/controller/gstcontroller.h>
 
 #include "audiofirfilter.h"
-
-#include "gst/glib-compat-private.h"
 
 #define GST_CAT_DEFAULT gst_audio_fir_filter_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
@@ -80,9 +75,12 @@ enum
 
 static guint gst_audio_fir_filter_signals[LAST_SIGNAL] = { 0, };
 
-#define gst_audio_fir_filter_parent_class parent_class
-G_DEFINE_TYPE (GstAudioFIRFilter, gst_audio_fir_filter,
-    GST_TYPE_AUDIO_FX_BASE_FIR_FILTER);
+#define DEBUG_INIT(bla) \
+  GST_DEBUG_CATEGORY_INIT (gst_audio_fir_filter_debug, "audiofirfilter", 0, \
+      "Generic audio FIR filter plugin");
+
+GST_BOILERPLATE_FULL (GstAudioFIRFilter, gst_audio_fir_filter, GstAudioFilter,
+    GST_TYPE_AUDIO_FX_BASE_FIR_FILTER, DEBUG_INIT);
 
 static void gst_audio_fir_filter_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
@@ -91,18 +89,25 @@ static void gst_audio_fir_filter_get_property (GObject * object, guint prop_id,
 static void gst_audio_fir_filter_finalize (GObject * object);
 
 static gboolean gst_audio_fir_filter_setup (GstAudioFilter * base,
-    const GstAudioInfo * info);
+    GstRingBufferSpec * format);
 
+/* Element class */
+static void
+gst_audio_fir_filter_base_init (gpointer g_class)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+
+  gst_element_class_set_details_simple (element_class,
+      "Audio FIR filter", "Filter/Effect/Audio",
+      "Generic audio FIR filter with custom filter kernel",
+      "Sebastian Dröge <sebastian.droege@collabora.co.uk>");
+}
 
 static void
 gst_audio_fir_filter_class_init (GstAudioFIRFilterClass * klass)
 {
   GObjectClass *gobject_class = (GObjectClass *) klass;
-  GstElementClass *gstelement_class = (GstElementClass *) klass;
   GstAudioFilterClass *filter_class = (GstAudioFilterClass *) klass;
-
-  GST_DEBUG_CATEGORY_INIT (gst_audio_fir_filter_debug, "audiofirfilter", 0,
-      "Generic audio FIR filter plugin");
 
   gobject_class->set_property = gst_audio_fir_filter_set_property;
   gobject_class->get_property = gst_audio_fir_filter_get_property;
@@ -134,12 +139,7 @@ gst_audio_fir_filter_class_init (GstAudioFIRFilterClass * klass)
   gst_audio_fir_filter_signals[SIGNAL_RATE_CHANGED] =
       g_signal_new ("rate-changed", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GstAudioFIRFilterClass, rate_changed),
-      NULL, NULL, NULL, G_TYPE_NONE, 1, G_TYPE_INT);
-
-  gst_element_class_set_static_metadata (gstelement_class,
-      "Audio FIR filter", "Filter/Effect/Audio",
-      "Generic audio FIR filter with custom filter kernel",
-      "Sebastian Dröge <sebastian.droege@collabora.co.uk>");
+      NULL, NULL, gst_marshal_VOID__INT, G_TYPE_NONE, 1, G_TYPE_INT);
 }
 
 static void
@@ -147,6 +147,9 @@ gst_audio_fir_filter_update_kernel (GstAudioFIRFilter * self, GValueArray * va)
 {
   gdouble *kernel;
   guint i;
+
+  gst_audio_fx_base_fir_filter_push_residue (GST_AUDIO_FX_BASE_FIR_FILTER
+      (self));
 
   if (va) {
     if (self->kernel)
@@ -163,11 +166,12 @@ gst_audio_fir_filter_update_kernel (GstAudioFIRFilter * self, GValueArray * va)
   }
 
   gst_audio_fx_base_fir_filter_set_kernel (GST_AUDIO_FX_BASE_FIR_FILTER (self),
-      kernel, self->kernel->n_values, self->latency, NULL);
+      kernel, self->kernel->n_values, self->latency);
 }
 
 static void
-gst_audio_fir_filter_init (GstAudioFIRFilter * self)
+gst_audio_fir_filter_init (GstAudioFIRFilter * self,
+    GstAudioFIRFilterClass * g_class)
 {
   GValue v = { 0, };
   GValueArray *va;
@@ -181,24 +185,24 @@ gst_audio_fir_filter_init (GstAudioFIRFilter * self)
   g_value_unset (&v);
   gst_audio_fir_filter_update_kernel (self, va);
 
-  g_mutex_init (&self->lock);
+  self->lock = g_mutex_new ();
 }
 
 /* GstAudioFilter vmethod implementations */
 
 /* get notified of caps and plug in the correct process function */
 static gboolean
-gst_audio_fir_filter_setup (GstAudioFilter * base, const GstAudioInfo * info)
+gst_audio_fir_filter_setup (GstAudioFilter * base, GstRingBufferSpec * format)
 {
   GstAudioFIRFilter *self = GST_AUDIO_FIR_FILTER (base);
-  gint new_rate = GST_AUDIO_INFO_RATE (info);
 
-  if (GST_AUDIO_FILTER_RATE (self) != new_rate) {
+  if (self->rate != format->rate) {
     g_signal_emit (G_OBJECT (self),
-        gst_audio_fir_filter_signals[SIGNAL_RATE_CHANGED], 0, new_rate);
+        gst_audio_fir_filter_signals[SIGNAL_RATE_CHANGED], 0, format->rate);
+    self->rate = format->rate;
   }
 
-  return GST_AUDIO_FILTER_CLASS (parent_class)->setup (base, info);
+  return GST_AUDIO_FILTER_CLASS (parent_class)->setup (base, format);
 }
 
 static void
@@ -206,7 +210,8 @@ gst_audio_fir_filter_finalize (GObject * object)
 {
   GstAudioFIRFilter *self = GST_AUDIO_FIR_FILTER (object);
 
-  g_mutex_clear (&self->lock);
+  g_mutex_free (self->lock);
+  self->lock = NULL;
 
   if (self->kernel)
     g_value_array_free (self->kernel);
@@ -225,16 +230,18 @@ gst_audio_fir_filter_set_property (GObject * object, guint prop_id,
 
   switch (prop_id) {
     case PROP_KERNEL:
-      g_mutex_lock (&self->lock);
-      /* update kernel already pushes residues */
+      g_mutex_lock (self->lock);
+      gst_audio_fx_base_fir_filter_push_residue (GST_AUDIO_FX_BASE_FIR_FILTER
+          (self));
+
       gst_audio_fir_filter_update_kernel (self, g_value_dup_boxed (value));
-      g_mutex_unlock (&self->lock);
+      g_mutex_unlock (self->lock);
       break;
     case PROP_LATENCY:
-      g_mutex_lock (&self->lock);
+      g_mutex_lock (self->lock);
       self->latency = g_value_get_uint64 (value);
       gst_audio_fir_filter_update_kernel (self, NULL);
-      g_mutex_unlock (&self->lock);
+      g_mutex_unlock (self->lock);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);

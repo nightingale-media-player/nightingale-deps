@@ -21,7 +21,7 @@
 #define __GST_RTP_JPEG_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstrtpbasepayload.h>
+#include <gst/rtp/gstbasertppayload.h>
 
 G_BEGIN_DECLS
 #define GST_TYPE_RTP_JPEG_PAY \
@@ -39,7 +39,7 @@ typedef struct _GstRtpJPEGPayClass GstRtpJPEGPayClass;
 
 struct _GstRtpJPEGPay
 {
-  GstRTPBasePayload payload;
+  GstBaseRTPPayload payload;
 
   guint8 quality;
   guint8 type;
@@ -47,15 +47,15 @@ struct _GstRtpJPEGPay
   gint height;
   gint width;
 
+  gboolean buffer_list;
+
   guint8 quant;
 };
 
 struct _GstRtpJPEGPayClass
 {
-  GstRTPBasePayloadClass parent_class;
+  GstBaseRTPPayloadClass parent_class;
 };
-
-GType gst_rtp_jpeg_pay_get_type (void);
 
 gboolean gst_rtp_jpeg_pay_plugin_init (GstPlugin * plugin);
 

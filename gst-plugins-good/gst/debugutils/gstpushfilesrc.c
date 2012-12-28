@@ -31,7 +31,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch-1.0 -m playbin uri=pushfile:///home/you/some/file.ogg
+ * gst-launch -m playbin uri=pushfile:///home/you/some/file.ogg
  * ]| This plays back the given file using playbin, with the demuxer operating
  * push-based.
  * </refsect2>
@@ -48,6 +48,12 @@
 GST_DEBUG_CATEGORY_STATIC (pushfilesrc_debug);
 #define GST_CAT_DEFAULT pushfilesrc_debug
 
+static const GstElementDetails pushfilesrc_details =
+GST_ELEMENT_DETAILS ("Push File Source",
+    "Testing",
+    "Implements pushfile:// URI-handler for push-based file access",
+    "Tim-Philipp Müller <tim centricular net>");
+
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
@@ -55,11 +61,35 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
 
 static void gst_push_file_src_uri_handler_init (gpointer g_iface,
     gpointer iface_data);
+static void gst_file_push_src_add_uri_handler (GType type);
 
-#define gst_push_file_src_parent_class parent_class
-G_DEFINE_TYPE_WITH_CODE (GstPushFileSrc, gst_push_file_src, GST_TYPE_BIN,
-    G_IMPLEMENT_INTERFACE (GST_TYPE_URI_HANDLER,
-        gst_push_file_src_uri_handler_init));
+GST_BOILERPLATE_FULL (GstPushFileSrc, gst_push_file_src, GstBin, GST_TYPE_BIN,
+    gst_file_push_src_add_uri_handler);
+
+static void
+gst_file_push_src_add_uri_handler (GType type)
+{
+  static const GInterfaceInfo info = {
+    gst_push_file_src_uri_handler_init,
+    NULL,
+    NULL
+  };
+
+  g_type_add_interface_static (type, GST_TYPE_URI_HANDLER, &info);
+  GST_DEBUG_CATEGORY_INIT (pushfilesrc_debug, "pushfilesrc", 0,
+      "pushfilesrc element");
+}
+
+static void
+gst_push_file_src_base_init (gpointer g_class)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&srctemplate));
+
+  gst_element_class_set_details (element_class, &pushfilesrc_details);
+}
 
 static void
 gst_push_file_src_dispose (GObject * obj)
@@ -82,46 +112,20 @@ static void
 gst_push_file_src_class_init (GstPushFileSrcClass * g_class)
 {
   GObjectClass *gobject_class;
-  GstElementClass *element_class;
 
   gobject_class = G_OBJECT_CLASS (g_class);
-  element_class = GST_ELEMENT_CLASS (g_class);
-
-  GST_DEBUG_CATEGORY_INIT (pushfilesrc_debug, "pushfilesrc", 0,
-      "pushfilesrc element");
 
   gobject_class->dispose = gst_push_file_src_dispose;
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&srctemplate));
-
-  gst_element_class_set_static_metadata (element_class, "Push File Source",
-      "Testing",
-      "Implements pushfile:// URI-handler for push-based file access",
-      "Tim-Philipp Müller <tim centricular net>");
 }
 
 static gboolean
-gst_push_file_src_ghostpad_query (GstPad * pad, GstObject * parent,
-    GstQuery * query)
+gst_push_file_src_ghostpad_checkgetrange (GstPad * pad)
 {
-  gboolean res;
-
-  switch (GST_QUERY_TYPE (query)) {
-    case GST_QUERY_SCHEDULING:
-      gst_query_set_scheduling (query, GST_SCHEDULING_FLAG_SEEKABLE, 1, -1, 0);
-      gst_query_add_scheduling_mode (query, GST_PAD_MODE_PUSH);
-      res = TRUE;
-      break;
-    default:
-      res = gst_pad_query_default (pad, parent, query);
-      break;
-  }
-  return res;
+  return FALSE;
 }
 
 static void
-gst_push_file_src_init (GstPushFileSrc * src)
+gst_push_file_src_init (GstPushFileSrc * src, GstPushFileSrcClass * g_class)
 {
   src->filesrc = gst_element_factory_make ("filesrc", "real-filesrc");
   if (src->filesrc) {
@@ -133,8 +137,8 @@ gst_push_file_src_init (GstPushFileSrc * src)
     src->srcpad = gst_ghost_pad_new ("src", pad);
     /* FIXME^H^HCORE: try pushfile:///foo/bar.ext ! typefind ! fakesink without
      * this and watch core bugginess (some pad stays in flushing state) */
-    gst_pad_set_query_function (src->srcpad,
-        GST_DEBUG_FUNCPTR (gst_push_file_src_ghostpad_query));
+    gst_pad_set_checkgetrange_function (src->srcpad,
+        GST_DEBUG_FUNCPTR (gst_push_file_src_ghostpad_checkgetrange));
     gst_element_add_pad (GST_ELEMENT (src), src->srcpad);
     gst_object_unref (pad);
   }
@@ -143,52 +147,40 @@ gst_push_file_src_init (GstPushFileSrc * src)
 /*** GSTURIHANDLER INTERFACE *************************************************/
 
 static GstURIType
-gst_push_file_src_uri_get_type (GType type)
+gst_push_file_src_uri_get_type (void)
 {
   return GST_URI_SRC;
 }
 
-static const gchar *const *
-gst_push_file_src_uri_get_protocols (GType type)
+static gchar **
+gst_push_file_src_uri_get_protocols (void)
 {
-  static const gchar *protocols[] = { "pushfile", NULL };
+  static gchar *protocols[] = { "pushfile", NULL };
 
   return protocols;
 }
 
-static gchar *
+static const gchar *
 gst_push_file_src_uri_get_uri (GstURIHandler * handler)
 {
   GstPushFileSrc *src = GST_PUSH_FILE_SRC (handler);
-  gchar *fileuri, *pushfileuri;
 
   if (src->filesrc == NULL)
     return NULL;
 
-  fileuri = gst_uri_handler_get_uri (GST_URI_HANDLER (src->filesrc));;
-  if (fileuri == NULL)
-    return NULL;
-  pushfileuri = g_strconcat ("push", fileuri, NULL);
-  g_free (fileuri);
-
-  return pushfileuri;
+  return gst_uri_handler_get_uri (GST_URI_HANDLER (src->filesrc));
 }
 
 static gboolean
-gst_push_file_src_uri_set_uri (GstURIHandler * handler, const gchar * uri,
-    GError ** error)
+gst_push_file_src_uri_set_uri (GstURIHandler * handler, const gchar * uri)
 {
   GstPushFileSrc *src = GST_PUSH_FILE_SRC (handler);
 
-  if (src->filesrc == NULL) {
-    g_set_error_literal (error, GST_URI_ERROR, GST_URI_ERROR_BAD_STATE,
-        "Could not create file source element");
+  if (src->filesrc == NULL || !g_str_has_prefix (uri, "pushfile://"))
     return FALSE;
-  }
 
   /* skip 'push' bit */
-  return gst_uri_handler_set_uri (GST_URI_HANDLER (src->filesrc), uri + 4,
-      error);
+  return gst_uri_handler_set_uri (GST_URI_HANDLER (src->filesrc), uri + 4);
 }
 
 static void

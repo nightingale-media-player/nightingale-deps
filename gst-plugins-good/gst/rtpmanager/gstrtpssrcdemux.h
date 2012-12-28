@@ -41,7 +41,7 @@ struct _GstRtpSsrcDemux
   GstPad *rtp_sink;
   GstPad *rtcp_sink;
 
-  GRecMutex padlock;
+  GMutex *padlock;
   GSList *srcpads;
 };
 

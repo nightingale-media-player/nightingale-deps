@@ -31,7 +31,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch-1.0 -v -m autovideosrc ! xvimagesink
+ * gst-launch -v -m autovideosrc ! xvimagesink
  * ]|
  * </refsect2>
  */
@@ -63,13 +63,30 @@ static void gst_auto_video_src_set_property (GObject * object, guint prop_id,
 static void gst_auto_video_src_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
-#define gst_auto_video_src_parent_class parent_class
-G_DEFINE_TYPE (GstAutoVideoSrc, gst_auto_video_src, GST_TYPE_BIN);
+GST_BOILERPLATE (GstAutoVideoSrc, gst_auto_video_src, GstBin, GST_TYPE_BIN);
+
+static const GstElementDetails gst_auto_video_src_details =
+GST_ELEMENT_DETAILS ("Auto video source",
+    "Source/Video",
+    "Wrapper video source for automatically detected video source",
+    "Ronald Bultje <rbultje@ronald.bitfreak.net>\n"
+    "Jan Schmidt <thaytan@noraisin.net>\n"
+    "Stefan Kost <ensonic@users.sf.net>");
 
 static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS_ANY);
+
+static void
+gst_auto_video_src_base_init (gpointer klass)
+{
+  GstElementClass *eklass = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_add_pad_template (eklass,
+      gst_static_pad_template_get (&src_template));
+  gst_element_class_set_details (eklass, &gst_auto_video_src_details);
+}
 
 static void
 gst_auto_video_src_class_init (GstAutoVideoSrcClass * klass)
@@ -78,11 +95,13 @@ gst_auto_video_src_class_init (GstAutoVideoSrcClass * klass)
   GstElementClass *eklass = GST_ELEMENT_CLASS (klass);
 
   gobject_class = G_OBJECT_CLASS (klass);
-  gobject_class->dispose = (GObjectFinalizeFunc) gst_auto_video_src_dispose;
-  gobject_class->set_property = gst_auto_video_src_set_property;
-  gobject_class->get_property = gst_auto_video_src_get_property;
-
+  gobject_class->dispose =
+      (GObjectFinalizeFunc) GST_DEBUG_FUNCPTR (gst_auto_video_src_dispose);
   eklass->change_state = GST_DEBUG_FUNCPTR (gst_auto_video_src_change_state);
+  gobject_class->set_property =
+      GST_DEBUG_FUNCPTR (gst_auto_video_src_set_property);
+  gobject_class->get_property =
+      GST_DEBUG_FUNCPTR (gst_auto_video_src_get_property);
 
   /**
    * GstAutoVideoSrc:filter-caps
@@ -98,15 +117,7 @@ gst_auto_video_src_class_init (GstAutoVideoSrcClass * klass)
   g_object_class_install_property (gobject_class, PROP_CAPS,
       g_param_spec_boxed ("filter-caps", "Filter caps",
           "Filter src candidates using these caps.", GST_TYPE_CAPS,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-  gst_element_class_add_pad_template (eklass,
-      gst_static_pad_template_get (&src_template));
-  gst_element_class_set_static_metadata (eklass, "Auto video source",
-      "Source/Video",
-      "Wrapper video source for automatically detected video source",
-      "Jan Schmidt <thaytan@noraisin.net>, "
-      "Stefan Kost <ensonic@users.sf.net>");
+          G_PARAM_READWRITE));
 }
 
 static void
@@ -128,8 +139,6 @@ gst_auto_video_src_clear_kid (GstAutoVideoSrc * src)
     gst_element_set_state (src->kid, GST_STATE_NULL);
     gst_bin_remove (GST_BIN (src), src->kid);
     src->kid = NULL;
-    /* Don't loose SOURCE flag */
-    GST_OBJECT_FLAG_SET (src, GST_ELEMENT_FLAG_SOURCE);
   }
 }
 
@@ -156,10 +165,11 @@ gst_auto_video_src_reset (GstAutoVideoSrc * src)
   gst_object_unref (targetpad);
 }
 
-static GstStaticCaps raw_caps = GST_STATIC_CAPS ("video/x-raw");
+static GstStaticCaps raw_caps =
+    GST_STATIC_CAPS ("video/x-raw-yuv; video/x-raw-rgb");
 
 static void
-gst_auto_video_src_init (GstAutoVideoSrc * src)
+gst_auto_video_src_init (GstAutoVideoSrc * src, GstAutoVideoSrcClass * g_class)
 {
   src->pad = gst_ghost_pad_new_no_target ("src", GST_PAD_SRC);
   gst_element_add_pad (GST_ELEMENT (src), src->pad);
@@ -170,7 +180,7 @@ gst_auto_video_src_init (GstAutoVideoSrc * src)
   src->filter_caps = gst_static_caps_get (&raw_caps);
 
   /* mark as source */
-  GST_OBJECT_FLAG_SET (src, GST_ELEMENT_FLAG_SOURCE);
+  GST_OBJECT_FLAG_UNSET (src, GST_ELEMENT_IS_SINK);
 }
 
 static gboolean
@@ -184,8 +194,7 @@ gst_auto_video_src_factory_filter (GstPluginFeature * feature, gpointer data)
     return FALSE;
 
   /* video sources */
-  klass = gst_element_factory_get_metadata (GST_ELEMENT_FACTORY (feature),
-      GST_ELEMENT_METADATA_KLASS);
+  klass = gst_element_factory_get_klass (GST_ELEMENT_FACTORY (feature));
   if (!(strstr (klass, "Source") && strstr (klass, "Video")))
     return FALSE;
 
@@ -216,7 +225,7 @@ gst_auto_video_src_create_element_with_pretty_name (GstAutoVideoSrc * src,
   GstElement *element;
   gchar *name, *marker;
 
-  marker = g_strdup (GST_OBJECT_NAME (factory));
+  marker = g_strdup (GST_PLUGIN_FEATURE (factory)->name);
   if (g_str_has_suffix (marker, "src"))
     marker[strlen (marker) - 4] = '\0';
   if (g_str_has_prefix (marker, "gst"))
@@ -239,10 +248,10 @@ gst_auto_video_src_find_best (GstAutoVideoSrc * src)
   GSList *errors = NULL;
   GstBus *bus = gst_bus_new ();
   GstPad *el_pad = NULL;
-  GstCaps *el_caps = NULL;
+  GstCaps *el_caps = NULL, *intersect = NULL;
   gboolean no_match = TRUE;
 
-  list = gst_registry_feature_filter (gst_registry_get (),
+  list = gst_registry_feature_filter (gst_registry_get_default (),
       (GstPluginFeatureFilter) gst_auto_video_src_factory_filter, FALSE, src);
   list = g_list_sort (list, (GCompareFunc) gst_auto_video_src_compare_ranks);
 
@@ -255,19 +264,21 @@ gst_auto_video_src_find_best (GstAutoVideoSrc * src)
     if ((el = gst_auto_video_src_create_element_with_pretty_name (src, f))) {
       GstStateChangeReturn ret;
 
-      GST_DEBUG_OBJECT (src, "Testing %s", GST_OBJECT_NAME (f));
+      GST_DEBUG_OBJECT (src, "Testing %s", GST_PLUGIN_FEATURE (f)->name);
 
       /* If AutoVideoSrc has been provided with filter caps,
        * accept only sources that match with the filter caps */
       if (src->filter_caps) {
         el_pad = gst_element_get_static_pad (GST_ELEMENT (el), "src");
-        el_caps = gst_pad_query_caps (el_pad, NULL);
+        el_caps = gst_pad_get_caps (el_pad);
         gst_object_unref (el_pad);
         GST_DEBUG_OBJECT (src,
             "Checking caps: %" GST_PTR_FORMAT " vs. %" GST_PTR_FORMAT,
             src->filter_caps, el_caps);
-        no_match = !gst_caps_can_intersect (src->filter_caps, el_caps);
+        intersect = gst_caps_intersect (src->filter_caps, el_caps);
+        no_match = gst_caps_is_empty (intersect);
         gst_caps_unref (el_caps);
+        gst_caps_unref (intersect);
 
         if (no_match) {
           GST_DEBUG_OBJECT (src, "Incompatible caps");

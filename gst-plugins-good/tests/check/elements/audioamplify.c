@@ -27,7 +27,6 @@
 
 #include <gst/base/gstbasetransform.h>
 #include <gst/check/gstcheck.h>
-#include <gst/audio/audio.h>
 
 gboolean have_eos = FALSE;
 
@@ -38,45 +37,49 @@ GstPad *mysrcpad, *mysinkpad;
 
 
 #define AMPLIFY_CAPS_STRING    \
-    "audio/x-raw, "                     \
+    "audio/x-raw-int, "                 \
     "channels = (int) 1, "              \
     "rate = (int) 44100, "              \
-    "layout = (string) interleaved, "   \
-    "format = (string) " GST_AUDIO_NE(S16)
+    "endianness = (int) BYTE_ORDER, "   \
+    "width = (int) 16, "                \
+    "depth = (int) 16, "                \
+    "signed = (bool) TRUE"
 
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw, "
+    GST_STATIC_CAPS ("audio/x-raw-int, "
         "channels = (int) 1, "
         "rate = (int) [ 1,  MAX ], "
-        "layout = (string) interleaved, "
-        "format = (string) " GST_AUDIO_NE (S16)));
+        "endianness = (int) BYTE_ORDER, "
+        "width = (int) 16, " "depth = (int) 16, " "signed = (bool) TRUE")
+    );
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw, "
+    GST_STATIC_CAPS ("audio/x-raw-int, "
         "channels = (int) 1, "
         "rate = (int) [ 1,  MAX ], "
-        "layout = (string) interleaved, "
-        "format = (string) " GST_AUDIO_NE (S16)));
+        "endianness = (int) BYTE_ORDER, "
+        "width = (int) 16, " "depth = (int) 16, " "signed = (bool) TRUE")
+    );
 
-static GstElement *
-setup_amplify (void)
+GstElement *
+setup_amplify ()
 {
   GstElement *amplify;
 
   GST_DEBUG ("setup_amplify");
   amplify = gst_check_setup_element ("audioamplify");
-  mysrcpad = gst_check_setup_src_pad (amplify, &srctemplate);
-  mysinkpad = gst_check_setup_sink_pad (amplify, &sinktemplate);
+  mysrcpad = gst_check_setup_src_pad (amplify, &srctemplate, NULL);
+  mysinkpad = gst_check_setup_sink_pad (amplify, &sinktemplate, NULL);
   gst_pad_set_active (mysrcpad, TRUE);
   gst_pad_set_active (mysinkpad, TRUE);
 
   return amplify;
 }
 
-static void
+void
 cleanup_amplify (GstElement * amplify)
 {
   GST_DEBUG ("cleanup_amplify");
@@ -98,21 +101,19 @@ GST_START_TEST (test_passthrough)
   GstBuffer *inbuffer, *outbuffer;
   GstCaps *caps;
   gint16 in[6] = { 24576, -16384, 256, -128, 0, -24576 };
-  gint16 res[6];
+  gint16 *res;
 
   amplify = setup_amplify ();
   fail_unless (gst_element_set_state (amplify,
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
+  inbuffer = gst_buffer_new_and_alloc (12);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 12);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 12) == 0);
   caps = gst_caps_from_string (AMPLIFY_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
-
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, 12, 0, 12,
-      NULL, NULL);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 12) == 0);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
   /* pushing gives away my reference ... */
@@ -121,12 +122,12 @@ GST_START_TEST (test_passthrough)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 12) == 12);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO
       ("expected %+5d %+5d %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d %+5d %+5d",
       in[0], in[1], in[2], in[3], in[4], in[5], res[0], res[1], res[2], res[3],
       res[4], res[5]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, in, 12) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), in, 12) == 0);
 
   /* cleanup */
   cleanup_amplify (amplify);
@@ -141,7 +142,7 @@ GST_START_TEST (test_zero)
   GstCaps *caps;
   gint16 in[6] = { 24576, -16384, 256, -128, 0, -24576 };
   gint16 out[6] = { 0, 0, 0, 0, 0, 0 };
-  gint16 res[6];
+  gint16 *res;
 
   amplify = setup_amplify ();
   g_object_set (G_OBJECT (amplify), "amplification", 0.0, NULL);
@@ -149,14 +150,12 @@ GST_START_TEST (test_zero)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
+  inbuffer = gst_buffer_new_and_alloc (12);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 12);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 12) == 0);
   caps = gst_caps_from_string (AMPLIFY_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
-
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, 12, 0, 12,
-      NULL, NULL);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 12) == 0);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
   /* pushing gives away my reference ... */
@@ -165,12 +164,12 @@ GST_START_TEST (test_zero)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 12) == 12);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO
       ("expected %+5d %+5d %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], out[4], out[5], res[0], res[1], res[2],
       res[3], res[4], res[5]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 12) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 12) == 0);
 
   /* cleanup */
   cleanup_amplify (amplify);
@@ -185,7 +184,7 @@ GST_START_TEST (test_050_clip)
   GstCaps *caps;
   gint16 in[6] = { 24576, -16384, 256, -128, 0, -24576 };
   gint16 out[6] = { 12288, -8192, 128, -64, 0, -12288 };
-  gint16 res[6];
+  gint16 *res;
 
   amplify = setup_amplify ();
   g_object_set (G_OBJECT (amplify), "amplification", 0.5, NULL);
@@ -193,14 +192,12 @@ GST_START_TEST (test_050_clip)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
+  inbuffer = gst_buffer_new_and_alloc (12);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 12);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 12) == 0);
   caps = gst_caps_from_string (AMPLIFY_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
-
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, 12, 0, 12,
-      NULL, NULL);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 12) == 0);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
   /* pushing gives away my reference ... */
@@ -209,12 +206,12 @@ GST_START_TEST (test_050_clip)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 12) == 12);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO
       ("expected %+5d %+5d %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], out[4], out[5], res[0], res[1], res[2],
       res[3], res[4], res[5]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 12) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 12) == 0);
 
   /* cleanup */
   cleanup_amplify (amplify);
@@ -229,7 +226,7 @@ GST_START_TEST (test_200_clip)
   GstCaps *caps;
   gint16 in[6] = { 24576, -16384, 256, -128, 0, -24576 };
   gint16 out[6] = { G_MAXINT16, -32768, 512, -256, 0, G_MININT16 };
-  gint16 res[6];
+  gint16 *res;
 
   amplify = setup_amplify ();
   g_object_set (G_OBJECT (amplify), "amplification", 2.0, NULL);
@@ -237,14 +234,12 @@ GST_START_TEST (test_200_clip)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
+  inbuffer = gst_buffer_new_and_alloc (12);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 12);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 12) == 0);
   caps = gst_caps_from_string (AMPLIFY_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
-
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, 12, 0, 12,
-      NULL, NULL);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 12) == 0);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
   /* pushing gives away my reference ... */
@@ -253,12 +248,12 @@ GST_START_TEST (test_200_clip)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 12) == 12);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO
       ("expected %+5d %+5d %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], out[4], out[5], res[0], res[1], res[2],
       res[3], res[4], res[5]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 12) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 12) == 0);
 
   /* cleanup */
   cleanup_amplify (amplify);
@@ -273,7 +268,7 @@ GST_START_TEST (test_050_wrap_negative)
   GstCaps *caps;
   gint16 in[6] = { 24576, -16384, 256, -128, 0, -24576 };
   gint16 out[6] = { 12288, -8192, 128, -64, 0, -12288 };
-  gint16 res[6];
+  gint16 *res;
 
   amplify = setup_amplify ();
   g_object_set (G_OBJECT (amplify), "amplification", 0.5, NULL);
@@ -282,14 +277,12 @@ GST_START_TEST (test_050_wrap_negative)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
+  inbuffer = gst_buffer_new_and_alloc (12);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 12);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 12) == 0);
   caps = gst_caps_from_string (AMPLIFY_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
-
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, 12, 0, 12,
-      NULL, NULL);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 12) == 0);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
   /* pushing gives away my reference ... */
@@ -298,12 +291,12 @@ GST_START_TEST (test_050_wrap_negative)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 12) == 12);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO
       ("expected %+5d %+5d %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], out[4], out[5], res[0], res[1], res[2],
       res[3], res[4], res[5]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 12) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 12) == 0);
 
   /* cleanup */
   cleanup_amplify (amplify);
@@ -318,7 +311,7 @@ GST_START_TEST (test_200_wrap_negative)
   GstCaps *caps;
   gint16 in[6] = { 24576, -16384, 256, -128, 0, -24576 };
   gint16 out[6] = { -16384, -32768, 512, -256, 0, 16384 };
-  gint16 res[6];
+  gint16 *res;
 
   amplify = setup_amplify ();
   g_object_set (G_OBJECT (amplify), "amplification", 2.0, NULL);
@@ -327,14 +320,12 @@ GST_START_TEST (test_200_wrap_negative)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
+  inbuffer = gst_buffer_new_and_alloc (12);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 12);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 12) == 0);
   caps = gst_caps_from_string (AMPLIFY_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
-
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, 12, 0, 12,
-      NULL, NULL);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 12) == 0);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
   /* pushing gives away my reference ... */
@@ -343,12 +334,12 @@ GST_START_TEST (test_200_wrap_negative)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 12) == 12);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO
       ("expected %+5d %+5d %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], out[4], out[5], res[0], res[1], res[2],
       res[3], res[4], res[5]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 12) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 12) == 0);
 
   /* cleanup */
   cleanup_amplify (amplify);
@@ -363,7 +354,7 @@ GST_START_TEST (test_050_wrap_positive)
   GstCaps *caps;
   gint16 in[6] = { 24576, -16384, 256, -128, 0, -24576 };
   gint16 out[6] = { 12288, -8192, 128, -64, 0, -12288 };
-  gint16 res[6];
+  gint16 *res;
 
   amplify = setup_amplify ();
   g_object_set (G_OBJECT (amplify), "amplification", 0.5, NULL);
@@ -372,14 +363,12 @@ GST_START_TEST (test_050_wrap_positive)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
+  inbuffer = gst_buffer_new_and_alloc (12);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 12);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 12) == 0);
   caps = gst_caps_from_string (AMPLIFY_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
-
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, 12, 0, 12,
-      NULL, NULL);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 12) == 0);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
   /* pushing gives away my reference ... */
@@ -388,12 +377,12 @@ GST_START_TEST (test_050_wrap_positive)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 12) == 12);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO
       ("expected %+5d %+5d %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], out[4], out[5], res[0], res[1], res[2],
       res[3], res[4], res[5]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 12) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 12) == 0);
 
   /* cleanup */
   cleanup_amplify (amplify);
@@ -408,7 +397,7 @@ GST_START_TEST (test_200_wrap_positive)
   GstCaps *caps;
   gint16 in[6] = { 24576, -16384, 256, -128, 0, -24576 };
   gint16 out[6] = { 16382, -32768, 512, -256, 0, -16384 };
-  gint16 res[6];
+  gint16 *res;
 
   amplify = setup_amplify ();
   g_object_set (G_OBJECT (amplify), "amplification", 2.0, NULL);
@@ -417,14 +406,12 @@ GST_START_TEST (test_200_wrap_positive)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
+  inbuffer = gst_buffer_new_and_alloc (12);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 12);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 12) == 0);
   caps = gst_caps_from_string (AMPLIFY_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
-
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, 12, 0, 12,
-      NULL, NULL);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 12) == 0);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
   /* pushing gives away my reference ... */
@@ -433,12 +420,12 @@ GST_START_TEST (test_200_wrap_positive)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 12) == 12);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO
       ("expected %+5d %+5d %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d %+5d %+5d",
       out[0], out[1], out[2], out[3], out[4], out[5], res[0], res[1], res[2],
       res[3], res[4], res[5]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, out, 12) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), out, 12) == 0);
 
   /* cleanup */
   cleanup_amplify (amplify);
@@ -446,7 +433,7 @@ GST_START_TEST (test_200_wrap_positive)
 
 GST_END_TEST;
 
-static Suite *
+Suite *
 amplify_suite (void)
 {
   Suite *s = suite_create ("amplify");

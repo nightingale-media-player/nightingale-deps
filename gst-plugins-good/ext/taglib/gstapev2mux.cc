@@ -33,12 +33,12 @@
  * <refsect2>
  * <title>Example pipelines</title>
  * |[
- * gst-launch-1.0 -v filesrc location=foo.ogg ! decodebin ! audioconvert ! lame ! apev2mux ! filesink location=foo.mp3
+ * gst-launch -v filesrc location=foo.ogg ! decodebin ! audioconvert ! lame ! apev2mux ! filesink location=foo.mp3
  * ]| A pipeline that transcodes a file from Ogg/Vorbis to mp3 format with an
  * APEv2 that contains the same as the the Ogg/Vorbis file. Make sure the
  * Ogg/Vorbis file actually has comments to preserve.
  * |[
- * gst-launch-1.0 -m filesrc location=foo.mp3 ! apedemux ! fakesink silent=TRUE 2&gt; /dev/null | grep taglist
+ * gst-launch -m filesrc location=foo.mp3 ! apedemux ! fakesink silent=TRUE 2&gt; /dev/null | grep taglist
  * ]| Verify that tags have been written.
  * </refsect2>
  */
@@ -64,34 +64,21 @@ static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("application/x-apetag"));
 
-static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
-    GST_PAD_SINK,
-    GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("ANY"));
+GST_BOILERPLATE (GstApev2Mux, gst_apev2_mux, GstTagLibMux,
+    GST_TYPE_TAG_LIB_MUX);
 
-G_DEFINE_TYPE (GstApev2Mux, gst_apev2_mux, GST_TYPE_TAG_MUX);
-
-static GstBuffer *gst_apev2_mux_render_tag (GstTagMux * mux,
-    const GstTagList * taglist);
-static GstBuffer *gst_apev2_mux_render_end_tag (GstTagMux * mux,
-    const GstTagList * taglist);
+static GstBuffer *gst_apev2_mux_render_tag (GstTagLibMux * mux,
+    GstTagList * taglist);
 
 static void
-gst_apev2_mux_class_init (GstApev2MuxClass * klass)
+gst_apev2_mux_base_init (gpointer g_class)
 {
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
-  GST_TAG_MUX_CLASS (klass)->render_start_tag =
-      GST_DEBUG_FUNCPTR (gst_apev2_mux_render_tag);
-  GST_TAG_MUX_CLASS (klass)->render_end_tag =
-      GST_DEBUG_FUNCPTR (gst_apev2_mux_render_end_tag);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_template));
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_template));
 
-  gst_element_class_set_static_metadata (element_class,
+  gst_element_class_set_details_simple (element_class,
       "TagLib-based APEv2 Muxer", "Formatter/Metadata",
       "Adds an APEv2 header to the beginning of files using taglib",
       "Sebastian Dröge <slomo@circular-chaos.org>");
@@ -101,7 +88,14 @@ gst_apev2_mux_class_init (GstApev2MuxClass * klass)
 }
 
 static void
-gst_apev2_mux_init (GstApev2Mux * apev2mux)
+gst_apev2_mux_class_init (GstApev2MuxClass * klass)
+{
+  GST_TAG_LIB_MUX_CLASS (klass)->render_tag =
+      GST_DEBUG_FUNCPTR (gst_apev2_mux_render_tag);
+}
+
+static void
+gst_apev2_mux_init (GstApev2Mux * apev2mux, GstApev2MuxClass * apev2mux_class)
 {
   /* nothing to do */
 }
@@ -116,54 +110,60 @@ add_one_tag (const GstTagList * list, const gchar * tag, gpointer user_data)
    * work, only the first value will be taken into account
    */
   if (strcmp (tag, GST_TAG_TITLE) == 0) {
-    const char *title;
+    char *title;
 
-    result = gst_tag_list_peek_string_index (list, tag, 0, &title);
+    result = gst_tag_list_get_string_index (list, tag, 0, &title);
     if (result != FALSE) {
       GST_DEBUG ("Setting title to %s", title);
-      apev2tag->setTitle (String (title, String::UTF8));
+      apev2tag->setTitle (String::String (title, String::UTF8));
     }
+    g_free (title);
   } else if (strcmp (tag, GST_TAG_ALBUM) == 0) {
-    const char *album;
+    char *album;
 
-    result = gst_tag_list_peek_string_index (list, tag, 0, &album);
+    result = gst_tag_list_get_string_index (list, tag, 0, &album);
     if (result != FALSE) {
       GST_DEBUG ("Setting album to %s", album);
-      apev2tag->setAlbum (String (album, String::UTF8));
+      apev2tag->setAlbum (String::String (album, String::UTF8));
     }
+    g_free (album);
   } else if (strcmp (tag, GST_TAG_ARTIST) == 0) {
-    const char *artist;
+    char *artist;
 
-    result = gst_tag_list_peek_string_index (list, tag, 0, &artist);
+    result = gst_tag_list_get_string_index (list, tag, 0, &artist);
     if (result != FALSE) {
       GST_DEBUG ("Setting artist to %s", artist);
-      apev2tag->setArtist (String (artist, String::UTF8));
+      apev2tag->setArtist (String::String (artist, String::UTF8));
     }
+    g_free (artist);
   } else if (strcmp (tag, GST_TAG_COMPOSER) == 0) {
-    const char *composer;
+    char *composer;
 
-    result = gst_tag_list_peek_string_index (list, tag, 0, &composer);
+    result = gst_tag_list_get_string_index (list, tag, 0, &composer);
     if (result != FALSE) {
       GST_DEBUG ("Setting composer to %s", composer);
-      apev2tag->addValue (String ("COMPOSER", String::UTF8),
-          String (composer, String::UTF8));
+      apev2tag->addValue (String::String ("COMPOSER", String::UTF8),
+          String::String (composer, String::UTF8));
     }
+    g_free (composer);
   } else if (strcmp (tag, GST_TAG_GENRE) == 0) {
-    const char *genre;
+    char *genre;
 
-    result = gst_tag_list_peek_string_index (list, tag, 0, &genre);
+    result = gst_tag_list_get_string_index (list, tag, 0, &genre);
     if (result != FALSE) {
       GST_DEBUG ("Setting genre to %s", genre);
-      apev2tag->setGenre (String (genre, String::UTF8));
+      apev2tag->setGenre (String::String (genre, String::UTF8));
     }
+    g_free (genre);
   } else if (strcmp (tag, GST_TAG_COMMENT) == 0) {
-    const char *comment;
+    char *comment;
 
-    result = gst_tag_list_peek_string_index (list, tag, 0, &comment);
+    result = gst_tag_list_get_string_index (list, tag, 0, &comment);
     if (result != FALSE) {
       GST_DEBUG ("Setting comment to %s", comment);
-      apev2tag->setComment (String (comment, String::UTF8));
+      apev2tag->setComment (String::String (comment, String::UTF8));
     }
+    g_free (comment);
   } else if (strcmp (tag, GST_TAG_DATE) == 0) {
     GDate *date;
 
@@ -190,8 +190,8 @@ add_one_tag (const GstTagList * list, const gchar * tag, gpointer user_data)
 
         tag_str = g_strdup_printf ("%d/%d", track_number, total_tracks);
         GST_DEBUG ("Setting track number to %s", tag_str);
-        apev2tag->addValue (String ("TRACK", String::UTF8),
-            String (tag_str, String::UTF8), true);
+        apev2tag->addValue (String::String ("TRACK", String::UTF8),
+            String::String (tag_str, String::UTF8), true);
         g_free (tag_str);
       } else {
         GST_DEBUG ("Setting track number to %d", track_number);
@@ -208,8 +208,8 @@ add_one_tag (const GstTagList * list, const gchar * tag, gpointer user_data)
 
       tag_str = g_strdup_printf ("0/%d", n);
       GST_DEBUG ("Setting track number to %s", tag_str);
-      apev2tag->addValue (String ("TRACK", String::UTF8),
-          String (tag_str, String::UTF8), true);
+      apev2tag->addValue (String::String ("TRACK", String::UTF8),
+          String::String (tag_str, String::UTF8), true);
       g_free (tag_str);
     }
 #if 0
@@ -233,8 +233,8 @@ add_one_tag (const GstTagList * list, const gchar * tag, gpointer user_data)
 
       GST_DEBUG ("Setting album number to %s", tag_str);
 
-      apev2tag->addValue (String ("MEDIA", String::UTF8),
-          String (tag_str, String::UTF8), true);
+      apev2tag->addValue (String::String ("MEDIA", String::UTF8),
+          String::String (tag_str, String::UTF8), true);
       g_free (tag_str);
     }
   } else if (strcmp (tag, GST_TAG_ALBUM_VOLUME_COUNT) == 0) {
@@ -249,40 +249,43 @@ add_one_tag (const GstTagList * list, const gchar * tag, gpointer user_data)
       tag_str = g_strdup_printf ("CD 0/%u", n);
       GST_DEBUG ("Setting album volume number/count to %s", tag_str);
 
-      apev2tag->addValue (String ("MEDIA", String::UTF8),
-          String (tag_str, String::UTF8), true);
+      apev2tag->addValue (String::String ("MEDIA", String::UTF8),
+          String::String (tag_str, String::UTF8), true);
       g_free (tag_str);
     }
 #endif
   } else if (strcmp (tag, GST_TAG_COPYRIGHT) == 0) {
-    const gchar *copyright;
+    gchar *copyright;
 
-    result = gst_tag_list_peek_string_index (list, tag, 0, &copyright);
+    result = gst_tag_list_get_string_index (list, tag, 0, &copyright);
 
     if (result != FALSE) {
       GST_DEBUG ("Setting copyright to %s", copyright);
-      apev2tag->addValue (String ("COPYRIGHT", String::UTF8),
-          String (copyright, String::UTF8), true);
+      apev2tag->addValue (String::String ("COPYRIGHT", String::UTF8),
+          String::String (copyright, String::UTF8), true);
+      g_free (copyright);
     }
   } else if (strcmp (tag, GST_TAG_LOCATION) == 0) {
-    const gchar *location;
+    gchar *location;
 
-    result = gst_tag_list_peek_string_index (list, tag, 0, &location);
+    result = gst_tag_list_get_string_index (list, tag, 0, &location);
 
     if (result != FALSE) {
       GST_DEBUG ("Setting location to %s", location);
-      apev2tag->addValue (String ("FILE", String::UTF8),
-          String (location, String::UTF8), true);
+      apev2tag->addValue (String::String ("FILE", String::UTF8),
+          String::String (location, String::UTF8), true);
+      g_free (location);
     }
   } else if (strcmp (tag, GST_TAG_ISRC) == 0) {
-    const gchar *isrc;
+    gchar *isrc;
 
-    result = gst_tag_list_peek_string_index (list, tag, 0, &isrc);
+    result = gst_tag_list_get_string_index (list, tag, 0, &isrc);
 
     if (result != FALSE) {
       GST_DEBUG ("Setting ISRC to %s", isrc);
-      apev2tag->addValue (String ("ISRC", String::UTF8),
-          String (isrc, String::UTF8), true);
+      apev2tag->addValue (String::String ("ISRC", String::UTF8),
+          String::String (isrc, String::UTF8), true);
+      g_free (isrc);
     }
   } else if (strcmp (tag, GST_TAG_TRACK_GAIN) == 0) {
     gdouble value;
@@ -294,8 +297,8 @@ add_one_tag (const GstTagList * list, const gchar * tag, gpointer user_data)
 
       track_gain = g_ascii_dtostr (track_gain, G_ASCII_DTOSTR_BUF_SIZE, value);
       GST_DEBUG ("Setting track gain to %s", track_gain);
-      apev2tag->addValue (String ("REPLAYGAIN_TRACK_GAIN",
-              String::UTF8), String (track_gain, String::UTF8), true);
+      apev2tag->addValue (String::String ("REPLAYGAIN_TRACK_GAIN",
+              String::UTF8), String::String (track_gain, String::UTF8), true);
       g_free (track_gain);
     }
   } else if (strcmp (tag, GST_TAG_TRACK_PEAK) == 0) {
@@ -308,8 +311,8 @@ add_one_tag (const GstTagList * list, const gchar * tag, gpointer user_data)
 
       track_peak = g_ascii_dtostr (track_peak, G_ASCII_DTOSTR_BUF_SIZE, value);
       GST_DEBUG ("Setting track peak to %s", track_peak);
-      apev2tag->addValue (String ("REPLAYGAIN_TRACK_PEAK",
-              String::UTF8), String (track_peak, String::UTF8), true);
+      apev2tag->addValue (String::String ("REPLAYGAIN_TRACK_PEAK",
+              String::UTF8), String::String (track_peak, String::UTF8), true);
       g_free (track_peak);
     }
   } else if (strcmp (tag, GST_TAG_ALBUM_GAIN) == 0) {
@@ -322,8 +325,8 @@ add_one_tag (const GstTagList * list, const gchar * tag, gpointer user_data)
 
       album_gain = g_ascii_dtostr (album_gain, G_ASCII_DTOSTR_BUF_SIZE, value);
       GST_DEBUG ("Setting album gain to %s", album_gain);
-      apev2tag->addValue (String ("REPLAYGAIN_ALBUM_GAIN",
-              String::UTF8), String (album_gain, String::UTF8), true);
+      apev2tag->addValue (String::String ("REPLAYGAIN_ALBUM_GAIN",
+              String::UTF8), String::String (album_gain, String::UTF8), true);
       g_free (album_gain);
     }
   } else if (strcmp (tag, GST_TAG_ALBUM_PEAK) == 0) {
@@ -336,8 +339,8 @@ add_one_tag (const GstTagList * list, const gchar * tag, gpointer user_data)
 
       album_peak = g_ascii_dtostr (album_peak, G_ASCII_DTOSTR_BUF_SIZE, value);
       GST_DEBUG ("Setting album peak to %s", album_peak);
-      apev2tag->addValue (String ("REPLAYGAIN_ALBUM_PEAK",
-              String::UTF8), String (album_peak, String::UTF8), true);
+      apev2tag->addValue (String::String ("REPLAYGAIN_ALBUM_PEAK",
+              String::UTF8), String::String (album_peak, String::UTF8), true);
       g_free (album_peak);
     }
   } else {
@@ -346,7 +349,7 @@ add_one_tag (const GstTagList * list, const gchar * tag, gpointer user_data)
 }
 
 static GstBuffer *
-gst_apev2_mux_render_tag (GstTagMux * mux, const GstTagList * taglist)
+gst_apev2_mux_render_tag (GstTagLibMux * mux, GstTagList * taglist)
 {
   APE::Tag apev2tag;
   ByteVector rendered_tag;
@@ -363,13 +366,18 @@ gst_apev2_mux_render_tag (GstTagMux * mux, const GstTagList * taglist)
 
   /* Create buffer with tag */
   buf = gst_buffer_new_and_alloc (tag_size);
-  gst_buffer_fill (buf, 0, rendered_tag.data (), tag_size);
+  memcpy (GST_BUFFER_DATA (buf), rendered_tag.data (), tag_size);
+  gst_buffer_set_caps (buf, GST_PAD_CAPS (mux->srcpad));
 
   return buf;
 }
 
-static GstBuffer *
-gst_apev2_mux_render_end_tag (GstTagMux * mux, const GstTagList * taglist)
+gboolean
+gst_apev2_mux_plugin_init (GstPlugin * plugin)
 {
-  return NULL;
+  if (!gst_element_register (plugin, "apev2mux", GST_RANK_NONE,
+          GST_TYPE_APEV2_MUX))
+    return FALSE;
+
+  return TRUE;
 }

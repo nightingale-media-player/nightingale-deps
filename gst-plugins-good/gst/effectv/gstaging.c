@@ -33,7 +33,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch-1.0 -v videotestsrc ! agingtv ! videoconvert ! autovideosink
+ * gst-launch -v videotestsrc ! agingtv ! ffmpegcolorspace ! autovideosink
  * ]| This pipeline shows the effect of agingtv on a test stream.
  * </refsect2>
  */
@@ -47,6 +47,9 @@
 
 #include "gstaging.h"
 #include "gsteffectv.h"
+
+#include <gst/video/video.h>
+#include <gst/controller/gstcontroller.h>
 
 static const gint dx[8] = { 1, 1, 0, -1, -1, -1, 0, 1 };
 static const gint dy[8] = { 0, -1, -1, -1, 0, 1, 1, 1 };
@@ -66,9 +69,9 @@ enum
 #define DEFAULT_DUSTS TRUE
 
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
-#define CAPS_STR GST_VIDEO_CAPS_MAKE ("{ BGRx, RGBx }")
+#define CAPS_STR GST_VIDEO_CAPS_BGRx ";" GST_VIDEO_CAPS_RGBx
 #else
-#define CAPS_STR GST_VIDEO_CAPS_MAKE ("{ xRGB, xBGR }")
+#define CAPS_STR GST_VIDEO_CAPS_xRGB ";" GST_VIDEO_CAPS_xBGR
 #endif
 
 static GstStaticPadTemplate gst_agingtv_src_template =
@@ -85,7 +88,26 @@ GST_STATIC_PAD_TEMPLATE ("sink",
     GST_STATIC_CAPS (CAPS_STR)
     );
 
-G_DEFINE_TYPE (GstAgingTV, gst_agingtv, GST_TYPE_VIDEO_FILTER);
+GST_BOILERPLATE (GstAgingTV, gst_agingtv, GstVideoFilter,
+    GST_TYPE_VIDEO_FILTER);
+
+static gboolean
+gst_agingtv_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
+    GstCaps * outcaps)
+{
+  GstAgingTV *filter = GST_AGINGTV (btrans);
+  GstStructure *structure;
+  gboolean ret = FALSE;
+
+  structure = gst_caps_get_structure (incaps, 0);
+
+  if (gst_structure_get_int (structure, "width", &filter->width) &&
+      gst_structure_get_int (structure, "height", &filter->height)) {
+    ret = TRUE;
+  }
+
+  return ret;
+}
 
 static void
 coloraging (guint32 * src, guint32 * dest, gint video_area, gint * c)
@@ -240,7 +262,6 @@ gst_agingtv_get_property (GObject * object, guint prop_id,
 {
   GstAgingTV *agingtv = GST_AGINGTV (object);
 
-  GST_OBJECT_LOCK (agingtv);
   switch (prop_id) {
     case PROP_SCRATCH_LINES:
       g_value_set_uint (value, agingtv->scratch_lines);
@@ -257,7 +278,6 @@ gst_agingtv_get_property (GObject * object, guint prop_id,
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
   }
-  GST_OBJECT_UNLOCK (agingtv);
 }
 
 static void
@@ -299,42 +319,36 @@ gst_agingtv_start (GstBaseTransform * trans)
 }
 
 static GstFlowReturn
-gst_agingtv_transform_frame (GstVideoFilter * filter, GstVideoFrame * in_frame,
-    GstVideoFrame * out_frame)
+gst_agingtv_transform (GstBaseTransform * trans, GstBuffer * in,
+    GstBuffer * out)
 {
-  GstAgingTV *agingtv = GST_AGINGTV (filter);
-  gint area_scale;
+  GstAgingTV *agingtv = GST_AGINGTV (trans);
+  gint width = agingtv->width;
+  gint height = agingtv->height;
+  gint video_size = width * height;
+  guint32 *src = (guint32 *) GST_BUFFER_DATA (in);
+  guint32 *dest = (guint32 *) GST_BUFFER_DATA (out);
+  gint area_scale = width * height / 64 / 480;
+  GstFlowReturn ret = GST_FLOW_OK;
   GstClockTime timestamp, stream_time;
-  gint width, height, stride, video_size;
-  guint32 *src, *dest;
 
-  timestamp = GST_BUFFER_TIMESTAMP (in_frame->buffer);
+  timestamp = GST_BUFFER_TIMESTAMP (in);
   stream_time =
-      gst_segment_to_stream_time (&GST_BASE_TRANSFORM (filter)->segment,
-      GST_FORMAT_TIME, timestamp);
+      gst_segment_to_stream_time (&trans->segment, GST_FORMAT_TIME, timestamp);
 
   GST_DEBUG_OBJECT (agingtv, "sync to %" GST_TIME_FORMAT,
       GST_TIME_ARGS (timestamp));
 
   if (GST_CLOCK_TIME_IS_VALID (stream_time))
-    gst_object_sync_values (GST_OBJECT (agingtv), stream_time);
+    gst_object_sync_values (G_OBJECT (agingtv), stream_time);
 
-  width = GST_VIDEO_FRAME_WIDTH (in_frame);
-  height = GST_VIDEO_FRAME_HEIGHT (in_frame);
-  stride = GST_VIDEO_FRAME_PLANE_STRIDE (in_frame, 0);
-  video_size = stride * height / 4;
-
-  src = GST_VIDEO_FRAME_PLANE_DATA (in_frame, 0);
-  dest = GST_VIDEO_FRAME_PLANE_DATA (out_frame, 0);
-
-  area_scale = width * height / 64 / 480;
   if (area_scale <= 0)
     area_scale = 1;
 
   if (agingtv->color_aging)
     coloraging (src, dest, video_size, &agingtv->coloraging_state);
   else
-    memcpy (dest, src, video_size);
+    memcpy (dest, src, GST_BUFFER_SIZE (in));
 
   scratching (agingtv->scratches, agingtv->scratch_lines, dest, width, height);
   if (agingtv->pits)
@@ -342,16 +356,30 @@ gst_agingtv_transform_frame (GstVideoFilter * filter, GstVideoFrame * in_frame,
   if (area_scale > 1 && agingtv->dusts)
     dusts (dest, width, height, &agingtv->dust_interval, area_scale);
 
-  return GST_FLOW_OK;
+  return ret;
+}
+
+static void
+gst_agingtv_base_init (gpointer g_class)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+
+  gst_element_class_set_details_simple (element_class, "AgingTV effect",
+      "Filter/Effect/Video",
+      "AgingTV adds age to video input using scratches and dust",
+      "Sam Lantinga <slouken@devolution.com>");
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&gst_agingtv_sink_template));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&gst_agingtv_src_template));
 }
 
 static void
 gst_agingtv_class_init (GstAgingTVClass * klass)
 {
   GObjectClass *gobject_class = (GObjectClass *) klass;
-  GstElementClass *gstelement_class = (GstElementClass *) klass;
   GstBaseTransformClass *trans_class = (GstBaseTransformClass *) klass;
-  GstVideoFilterClass *vfilter_class = (GstVideoFilterClass *) klass;
 
   gobject_class->set_property = gst_agingtv_set_property;
   gobject_class->get_property = gst_agingtv_get_property;
@@ -376,27 +404,19 @@ gst_agingtv_class_init (GstAgingTVClass * klass)
           "Dusts", DEFAULT_DUSTS,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | GST_PARAM_CONTROLLABLE));
 
-  gst_element_class_set_static_metadata (gstelement_class, "AgingTV effect",
-      "Filter/Effect/Video",
-      "AgingTV adds age to video input using scratches and dust",
-      "Sam Lantinga <slouken@devolution.com>");
-
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&gst_agingtv_sink_template));
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&gst_agingtv_src_template));
-
+  trans_class->set_caps = GST_DEBUG_FUNCPTR (gst_agingtv_set_caps);
+  trans_class->transform = GST_DEBUG_FUNCPTR (gst_agingtv_transform);
   trans_class->start = GST_DEBUG_FUNCPTR (gst_agingtv_start);
-
-  vfilter_class->transform_frame =
-      GST_DEBUG_FUNCPTR (gst_agingtv_transform_frame);
 }
 
 static void
-gst_agingtv_init (GstAgingTV * agingtv)
+gst_agingtv_init (GstAgingTV * agingtv, GstAgingTVClass * klass)
 {
   agingtv->scratch_lines = DEFAULT_SCRATCH_LINES;
   agingtv->color_aging = DEFAULT_COLOR_AGING;
   agingtv->pits = DEFAULT_PITS;
   agingtv->dusts = DEFAULT_DUSTS;
+
+  gst_pad_use_fixed_caps (GST_BASE_TRANSFORM_SINK_PAD (agingtv));
+  gst_pad_use_fixed_caps (GST_BASE_TRANSFORM_SRC_PAD (agingtv));
 }

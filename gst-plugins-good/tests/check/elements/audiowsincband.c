@@ -21,7 +21,6 @@
  */
 
 #include <gst/gst.h>
-#include <gst/audio/audio.h>
 #include <gst/base/gstbasetransform.h>
 #include <gst/check/gstcheck.h>
 
@@ -33,54 +32,52 @@
 GstPad *mysrcpad, *mysinkpad;
 
 #define AUDIO_WSINC_BAND_CAPS_STRING_32          \
-    "audio/x-raw, "                              \
-    "format = (string) " GST_AUDIO_NE (F32) ", " \
-    "layout = (string) interleaved, "            \
-    "channels = (int) 1, "                       \
-    "rate = (int) 44100"
+    "audio/x-raw-float, "               \
+    "channels = (int) 1, "              \
+    "rate = (int) 44100, "              \
+    "endianness = (int) BYTE_ORDER, "   \
+    "width = (int) 32"                  \
 
 #define AUDIO_WSINC_BAND_CAPS_STRING_64          \
-    "audio/x-raw, "                              \
-    "format = (string) " GST_AUDIO_NE (F64) ", " \
-    "layout = (string) interleaved, "            \
-    "channels = (int) 1, "                       \
-    "rate = (int) 44100"
-
-#define FORMATS "{ "GST_AUDIO_NE (F32)","GST_AUDIO_NE (F64)" }"
+    "audio/x-raw-float, "               \
+    "channels = (int) 1, "              \
+    "rate = (int) 44100, "              \
+    "endianness = (int) BYTE_ORDER, "   \
+    "width = (int) 64"                  \
 
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw, "
-        "format = (string) " FORMATS ", "
-        "layout = (string) interleaved, "
-        "channels = (int) 1, " "rate = (int) 44100")
+    GST_STATIC_CAPS ("audio/x-raw-float, "
+        "channels = (int) 1, "
+        "rate = (int) 44100, "
+        "endianness = (int) BYTE_ORDER, " "width = (int) { 32, 64 } ")
     );
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw, "
-        "format = (string) " FORMATS ", "
-        "layout = (string) interleaved, "
-        "channels = (int) 1, " "rate = (int) 44100")
+    GST_STATIC_CAPS ("audio/x-raw-float, "
+        "channels = (int) 1, "
+        "rate = (int) 44100, "
+        "endianness = (int) BYTE_ORDER, " "width = (int) { 32, 64 } ")
     );
 
-static GstElement *
-setup_audiowsincband (void)
+GstElement *
+setup_audiowsincband ()
 {
   GstElement *audiowsincband;
 
   GST_DEBUG ("setup_audiowsincband");
   audiowsincband = gst_check_setup_element ("audiowsincband");
-  mysrcpad = gst_check_setup_src_pad (audiowsincband, &srctemplate);
-  mysinkpad = gst_check_setup_sink_pad (audiowsincband, &sinktemplate);
+  mysrcpad = gst_check_setup_src_pad (audiowsincband, &srctemplate, NULL);
+  mysinkpad = gst_check_setup_sink_pad (audiowsincband, &sinktemplate, NULL);
   gst_pad_set_active (mysrcpad, TRUE);
   gst_pad_set_active (mysinkpad, TRUE);
 
   return audiowsincband;
 }
 
-static void
+void
 cleanup_audiowsincband (GstElement * audiowsincband)
 {
   GST_DEBUG ("cleanup_audiowsincband");
@@ -106,9 +103,7 @@ GST_START_TEST (test_32_bp_0hz)
   GstCaps *caps;
   gfloat *in, *res, rms;
   gint i;
-  GstMapInfo map;
   GList *node;
-  GstSegment segment;
 
   audiowsincband = setup_audiowsincband ();
   /* Set to bandpass */
@@ -125,19 +120,12 @@ GST_START_TEST (test_32_bp_0hz)
       44100 / 4.0 + 1000, NULL);
   inbuffer = gst_buffer_new_and_alloc (1024 * sizeof (gfloat));
   GST_BUFFER_TIMESTAMP (inbuffer) = 0;
-
-  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
-  in = (gfloat *) map.data;
+  in = (gfloat *) GST_BUFFER_DATA (inbuffer);
   for (i = 0; i < 1024; i++)
     in[i] = 1.0;
-  gst_buffer_unmap (inbuffer, &map);
-
-  /* ensure segment (format) properly setup */
-  gst_segment_init (&segment, GST_FORMAT_TIME);
-  fail_unless (gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment)));
 
   caps = gst_caps_from_string (AUDIO_WSINC_BAND_CAPS_STRING_32);
-  gst_pad_set_caps (mysrcpad, caps);
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -152,17 +140,13 @@ GST_START_TEST (test_32_bp_0hz)
 
     fail_if ((outbuffer = (GstBuffer *) node->data) == NULL);
 
-    gst_buffer_map (outbuffer, &map, GST_MAP_READ);
-    res = (gfloat *) map.data;
-    buffer_length = map.size / sizeof (gfloat);
-
+    res = (gfloat *) GST_BUFFER_DATA (outbuffer);
+    buffer_length = GST_BUFFER_SIZE (outbuffer) / sizeof (gfloat);
     rms = 0.0;
     for (i = 0; i < buffer_length; i++)
       rms += res[i] * res[i];
     rms = sqrt (rms / buffer_length);
     fail_unless (rms <= 0.1);
-
-    gst_buffer_unmap (outbuffer, &map);
   }
 
   /* cleanup */
@@ -181,9 +165,7 @@ GST_START_TEST (test_32_bp_11025hz)
   GstCaps *caps;
   gfloat *in, *res, rms;
   gint i;
-  GstMapInfo map;
   GList *node;
-  GstSegment segment;
 
   audiowsincband = setup_audiowsincband ();
   /* Set to bandpass */
@@ -200,24 +182,18 @@ GST_START_TEST (test_32_bp_11025hz)
       44100 / 4.0 + 1000, NULL);
   inbuffer = gst_buffer_new_and_alloc (1024 * sizeof (gfloat));
   GST_BUFFER_TIMESTAMP (inbuffer) = 0;
-  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
-  in = (gfloat *) map.data;
+  in = (gfloat *) GST_BUFFER_DATA (inbuffer);
   for (i = 0; i < 1024; i += 4) {
     in[i] = 0.0;
     in[i + 1] = 1.0;
     in[i + 2] = 0.0;
     in[i + 3] = -1.0;
   }
-  gst_buffer_unmap (inbuffer, &map);
 
   caps = gst_caps_from_string (AUDIO_WSINC_BAND_CAPS_STRING_32);
-  gst_pad_set_caps (mysrcpad, caps);
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
-
-  /* ensure segment (format) properly setup */
-  gst_segment_init (&segment, GST_FORMAT_TIME);
-  fail_unless (gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment)));
 
   /* pushing gives away my reference ... */
   fail_unless (gst_pad_push (mysrcpad, inbuffer) == GST_FLOW_OK);
@@ -230,15 +206,13 @@ GST_START_TEST (test_32_bp_11025hz)
 
     fail_if ((outbuffer = (GstBuffer *) node->data) == NULL);
 
-    gst_buffer_map (outbuffer, &map, GST_MAP_READ);
-    res = (gfloat *) map.data;
-    buffer_length = map.size / sizeof (gfloat);
+    res = (gfloat *) GST_BUFFER_DATA (outbuffer);
+    buffer_length = GST_BUFFER_SIZE (outbuffer) / sizeof (gfloat);
     rms = 0.0;
     for (i = 0; i < buffer_length; i++)
       rms += res[i] * res[i];
     rms = sqrt (rms / buffer_length);
     fail_unless (rms >= 0.4);
-    gst_buffer_unmap (outbuffer, &map);
   }
 
   /* cleanup */
@@ -258,9 +232,7 @@ GST_START_TEST (test_32_bp_22050hz)
   GstCaps *caps;
   gfloat *in, *res, rms;
   gint i;
-  GstMapInfo map;
   GList *node;
-  GstSegment segment;
 
   audiowsincband = setup_audiowsincband ();
   /* Set to bandpass */
@@ -277,20 +249,14 @@ GST_START_TEST (test_32_bp_22050hz)
       44100 / 4.0 + 1000, NULL);
   inbuffer = gst_buffer_new_and_alloc (1024 * sizeof (gfloat));
   GST_BUFFER_TIMESTAMP (inbuffer) = 0;
-  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
-  in = (gfloat *) map.data;
+  in = (gfloat *) GST_BUFFER_DATA (inbuffer);
   for (i = 0; i < 1024; i += 2) {
     in[i] = 1.0;
     in[i + 1] = -1.0;
   }
-  gst_buffer_unmap (inbuffer, &map);
-
-  /* ensure segment (format) properly setup */
-  gst_segment_init (&segment, GST_FORMAT_TIME);
-  fail_unless (gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment)));
 
   caps = gst_caps_from_string (AUDIO_WSINC_BAND_CAPS_STRING_32);
-  gst_pad_set_caps (mysrcpad, caps);
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -305,15 +271,13 @@ GST_START_TEST (test_32_bp_22050hz)
 
     fail_if ((outbuffer = (GstBuffer *) node->data) == NULL);
 
-    gst_buffer_map (outbuffer, &map, GST_MAP_READ);
-    res = (gfloat *) map.data;
-    buffer_length = map.size / sizeof (gfloat);
+    res = (gfloat *) GST_BUFFER_DATA (outbuffer);
+    buffer_length = GST_BUFFER_SIZE (outbuffer) / sizeof (gfloat);
     rms = 0.0;
     for (i = 0; i < buffer_length; i++)
       rms += res[i] * res[i];
     rms = sqrt (rms / buffer_length);
     fail_unless (rms <= 0.3);
-    gst_buffer_unmap (outbuffer, &map);
   }
 
   /* cleanup */
@@ -332,9 +296,7 @@ GST_START_TEST (test_32_br_0hz)
   GstCaps *caps;
   gfloat *in, *res, rms;
   gint i;
-  GstMapInfo map;
   GList *node;
-  GstSegment segment;
 
   audiowsincband = setup_audiowsincband ();
   /* Set to bandreject */
@@ -351,18 +313,12 @@ GST_START_TEST (test_32_br_0hz)
       44100 / 4.0 + 1000, NULL);
   inbuffer = gst_buffer_new_and_alloc (1024 * sizeof (gfloat));
   GST_BUFFER_TIMESTAMP (inbuffer) = 0;
-  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
-  in = (gfloat *) map.data;
+  in = (gfloat *) GST_BUFFER_DATA (inbuffer);
   for (i = 0; i < 1024; i++)
     in[i] = 1.0;
-  gst_buffer_unmap (inbuffer, &map);
-
-  /* ensure segment (format) properly setup */
-  gst_segment_init (&segment, GST_FORMAT_TIME);
-  fail_unless (gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment)));
 
   caps = gst_caps_from_string (AUDIO_WSINC_BAND_CAPS_STRING_32);
-  gst_pad_set_caps (mysrcpad, caps);
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -377,15 +333,13 @@ GST_START_TEST (test_32_br_0hz)
 
     fail_if ((outbuffer = (GstBuffer *) node->data) == NULL);
 
-    gst_buffer_map (outbuffer, &map, GST_MAP_READ);
-    res = (gfloat *) map.data;
-    buffer_length = map.size / sizeof (gfloat);
+    res = (gfloat *) GST_BUFFER_DATA (outbuffer);
+    buffer_length = GST_BUFFER_SIZE (outbuffer) / sizeof (gfloat);
     rms = 0.0;
     for (i = 0; i < buffer_length; i++)
       rms += res[i] * res[i];
     rms = sqrt (rms / buffer_length);
     fail_unless (rms >= 0.9);
-    gst_buffer_unmap (outbuffer, &map);
   }
 
   /* cleanup */
@@ -404,9 +358,7 @@ GST_START_TEST (test_32_br_11025hz)
   GstCaps *caps;
   gfloat *in, *res, rms;
   gint i;
-  GstMapInfo map;
   GList *node;
-  GstSegment segment;
 
   audiowsincband = setup_audiowsincband ();
   /* Set to bandreject */
@@ -423,8 +375,7 @@ GST_START_TEST (test_32_br_11025hz)
       44100 / 4.0 + 1000, NULL);
   inbuffer = gst_buffer_new_and_alloc (1024 * sizeof (gfloat));
   GST_BUFFER_TIMESTAMP (inbuffer) = 0;
-  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
-  in = (gfloat *) map.data;
+  in = (gfloat *) GST_BUFFER_DATA (inbuffer);
 
   for (i = 0; i < 1024; i += 4) {
     in[i] = 0.0;
@@ -432,14 +383,9 @@ GST_START_TEST (test_32_br_11025hz)
     in[i + 2] = 0.0;
     in[i + 3] = -1.0;
   }
-  gst_buffer_unmap (inbuffer, &map);
-
-  /* ensure segment (format) properly setup */
-  gst_segment_init (&segment, GST_FORMAT_TIME);
-  fail_unless (gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment)));
 
   caps = gst_caps_from_string (AUDIO_WSINC_BAND_CAPS_STRING_32);
-  gst_pad_set_caps (mysrcpad, caps);
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -454,15 +400,13 @@ GST_START_TEST (test_32_br_11025hz)
 
     fail_if ((outbuffer = (GstBuffer *) node->data) == NULL);
 
-    gst_buffer_map (outbuffer, &map, GST_MAP_READ);
-    res = (gfloat *) map.data;
-    buffer_length = map.size / sizeof (gfloat);
+    res = (gfloat *) GST_BUFFER_DATA (outbuffer);
+    buffer_length = GST_BUFFER_SIZE (outbuffer) / sizeof (gfloat);
     rms = 0.0;
     for (i = 0; i < buffer_length; i++)
       rms += res[i] * res[i];
     rms = sqrt (rms / buffer_length);
     fail_unless (rms <= 0.35);
-    gst_buffer_unmap (outbuffer, &map);
   }
 
   /* cleanup */
@@ -482,9 +426,7 @@ GST_START_TEST (test_32_br_22050hz)
   GstCaps *caps;
   gfloat *in, *res, rms;
   gint i;
-  GstMapInfo map;
   GList *node;
-  GstSegment segment;
 
   audiowsincband = setup_audiowsincband ();
   /* Set to bandreject */
@@ -501,20 +443,14 @@ GST_START_TEST (test_32_br_22050hz)
       44100 / 4.0 + 1000, NULL);
   inbuffer = gst_buffer_new_and_alloc (1024 * sizeof (gfloat));
   GST_BUFFER_TIMESTAMP (inbuffer) = 0;
-  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
-  in = (gfloat *) map.data;
+  in = (gfloat *) GST_BUFFER_DATA (inbuffer);
   for (i = 0; i < 1024; i += 2) {
     in[i] = 1.0;
     in[i + 1] = -1.0;
   }
-  gst_buffer_unmap (inbuffer, &map);
-
-  /* ensure segment (format) properly setup */
-  gst_segment_init (&segment, GST_FORMAT_TIME);
-  fail_unless (gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment)));
 
   caps = gst_caps_from_string (AUDIO_WSINC_BAND_CAPS_STRING_32);
-  gst_pad_set_caps (mysrcpad, caps);
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -529,15 +465,13 @@ GST_START_TEST (test_32_br_22050hz)
 
     fail_if ((outbuffer = (GstBuffer *) node->data) == NULL);
 
-    gst_buffer_map (outbuffer, &map, GST_MAP_READ);
-    res = (gfloat *) map.data;
-    buffer_length = map.size / sizeof (gfloat);
+    res = (gfloat *) GST_BUFFER_DATA (outbuffer);
+    buffer_length = GST_BUFFER_SIZE (outbuffer) / sizeof (gfloat);
     rms = 0.0;
     for (i = 0; i < buffer_length; i++)
       rms += res[i] * res[i];
     rms = sqrt (rms / buffer_length);
     fail_unless (rms >= 0.9);
-    gst_buffer_unmap (outbuffer, &map);
   }
 
   /* cleanup */
@@ -555,8 +489,6 @@ GST_START_TEST (test_32_small_buffer)
   GstCaps *caps;
   gfloat *in;
   gint i;
-  GstMapInfo map;
-  GstSegment segment;
 
   audiowsincband = setup_audiowsincband ();
   /* Set to bandpass */
@@ -573,18 +505,12 @@ GST_START_TEST (test_32_small_buffer)
       44100 / 4.0 + 44100 / 16.0, NULL);
   inbuffer = gst_buffer_new_and_alloc (20 * sizeof (gfloat));
   GST_BUFFER_TIMESTAMP (inbuffer) = 0;
-  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
-  in = (gfloat *) map.data;
+  in = (gfloat *) GST_BUFFER_DATA (inbuffer);
   for (i = 0; i < 20; i++)
     in[i] = 1.0;
-  gst_buffer_unmap (inbuffer, &map);
-
-  /* ensure segment (format) properly setup */
-  gst_segment_init (&segment, GST_FORMAT_TIME);
-  fail_unless (gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment)));
 
   caps = gst_caps_from_string (AUDIO_WSINC_BAND_CAPS_STRING_32);
-  gst_pad_set_caps (mysrcpad, caps);
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -618,9 +544,7 @@ GST_START_TEST (test_64_bp_0hz)
   GstCaps *caps;
   gdouble *in, *res, rms;
   gint i;
-  GstMapInfo map;
   GList *node;
-  GstSegment segment;
 
   audiowsincband = setup_audiowsincband ();
   /* Set to bandpass */
@@ -637,18 +561,12 @@ GST_START_TEST (test_64_bp_0hz)
       44100 / 4.0 + 1000, NULL);
   inbuffer = gst_buffer_new_and_alloc (1024 * sizeof (gdouble));
   GST_BUFFER_TIMESTAMP (inbuffer) = 0;
-  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
-  in = (gdouble *) map.data;
+  in = (gdouble *) GST_BUFFER_DATA (inbuffer);
   for (i = 0; i < 1024; i++)
     in[i] = 1.0;
-  gst_buffer_unmap (inbuffer, &map);
-
-  /* ensure segment (format) properly setup */
-  gst_segment_init (&segment, GST_FORMAT_TIME);
-  fail_unless (gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment)));
 
   caps = gst_caps_from_string (AUDIO_WSINC_BAND_CAPS_STRING_64);
-  gst_pad_set_caps (mysrcpad, caps);
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -663,15 +581,13 @@ GST_START_TEST (test_64_bp_0hz)
 
     fail_if ((outbuffer = (GstBuffer *) node->data) == NULL);
 
-    gst_buffer_map (outbuffer, &map, GST_MAP_READ);
-    res = (gdouble *) map.data;
-    buffer_length = map.size / sizeof (gdouble);
+    res = (gdouble *) GST_BUFFER_DATA (outbuffer);
+    buffer_length = GST_BUFFER_SIZE (outbuffer) / sizeof (gdouble);
     rms = 0.0;
     for (i = 0; i < buffer_length; i++)
       rms += res[i] * res[i];
     rms = sqrt (rms / buffer_length);
     fail_unless (rms <= 0.1);
-    gst_buffer_unmap (outbuffer, &map);
   }
 
   /* cleanup */
@@ -690,9 +606,7 @@ GST_START_TEST (test_64_bp_11025hz)
   GstCaps *caps;
   gdouble *in, *res, rms;
   gint i;
-  GstMapInfo map;
   GList *node;
-  GstSegment segment;
 
   audiowsincband = setup_audiowsincband ();
   /* Set to bandpass */
@@ -709,22 +623,16 @@ GST_START_TEST (test_64_bp_11025hz)
       44100 / 4.0 + 1000, NULL);
   inbuffer = gst_buffer_new_and_alloc (1024 * sizeof (gdouble));
   GST_BUFFER_TIMESTAMP (inbuffer) = 0;
-  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
-  in = (gdouble *) map.data;
+  in = (gdouble *) GST_BUFFER_DATA (inbuffer);
   for (i = 0; i < 1024; i += 4) {
     in[i] = 0.0;
     in[i + 1] = 1.0;
     in[i + 2] = 0.0;
     in[i + 3] = -1.0;
   }
-  gst_buffer_unmap (inbuffer, &map);
-
-  /* ensure segment (format) properly setup */
-  gst_segment_init (&segment, GST_FORMAT_TIME);
-  fail_unless (gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment)));
 
   caps = gst_caps_from_string (AUDIO_WSINC_BAND_CAPS_STRING_64);
-  gst_pad_set_caps (mysrcpad, caps);
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -739,15 +647,13 @@ GST_START_TEST (test_64_bp_11025hz)
 
     fail_if ((outbuffer = (GstBuffer *) node->data) == NULL);
 
-    gst_buffer_map (outbuffer, &map, GST_MAP_READ);
-    res = (gdouble *) map.data;
-    buffer_length = map.size / sizeof (gdouble);
+    res = (gdouble *) GST_BUFFER_DATA (outbuffer);
+    buffer_length = GST_BUFFER_SIZE (outbuffer) / sizeof (gdouble);
     rms = 0.0;
     for (i = 0; i < buffer_length; i++)
       rms += res[i] * res[i];
     rms = sqrt (rms / buffer_length);
     fail_unless (rms >= 0.4);
-    gst_buffer_unmap (outbuffer, &map);
   }
 
   /* cleanup */
@@ -767,9 +673,7 @@ GST_START_TEST (test_64_bp_22050hz)
   GstCaps *caps;
   gdouble *in, *res, rms;
   gint i;
-  GstMapInfo map;
   GList *node;
-  GstSegment segment;
 
   audiowsincband = setup_audiowsincband ();
   /* Set to bandpass */
@@ -786,20 +690,14 @@ GST_START_TEST (test_64_bp_22050hz)
       44100 / 4.0 + 1000, NULL);
   inbuffer = gst_buffer_new_and_alloc (1024 * sizeof (gdouble));
   GST_BUFFER_TIMESTAMP (inbuffer) = 0;
-  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
-  in = (gdouble *) map.data;
+  in = (gdouble *) GST_BUFFER_DATA (inbuffer);
   for (i = 0; i < 1024; i += 2) {
     in[i] = 1.0;
     in[i + 1] = -1.0;
   }
-  gst_buffer_unmap (inbuffer, &map);
-
-  /* ensure segment (format) properly setup */
-  gst_segment_init (&segment, GST_FORMAT_TIME);
-  fail_unless (gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment)));
 
   caps = gst_caps_from_string (AUDIO_WSINC_BAND_CAPS_STRING_64);
-  gst_pad_set_caps (mysrcpad, caps);
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -814,15 +712,13 @@ GST_START_TEST (test_64_bp_22050hz)
 
     fail_if ((outbuffer = (GstBuffer *) node->data) == NULL);
 
-    gst_buffer_map (outbuffer, &map, GST_MAP_READ);
-    res = (gdouble *) map.data;
-    buffer_length = map.size / sizeof (gdouble);
+    res = (gdouble *) GST_BUFFER_DATA (outbuffer);
+    buffer_length = GST_BUFFER_SIZE (outbuffer) / sizeof (gdouble);
     rms = 0.0;
     for (i = 0; i < buffer_length; i++)
       rms += res[i] * res[i];
     rms = sqrt (rms / buffer_length);
     fail_unless (rms <= 0.3);
-    gst_buffer_unmap (outbuffer, &map);
   }
 
   /* cleanup */
@@ -841,9 +737,7 @@ GST_START_TEST (test_64_br_0hz)
   GstCaps *caps;
   gdouble *in, *res, rms;
   gint i;
-  GstMapInfo map;
   GList *node;
-  GstSegment segment;
 
   audiowsincband = setup_audiowsincband ();
   /* Set to bandreject */
@@ -860,18 +754,12 @@ GST_START_TEST (test_64_br_0hz)
       44100 / 4.0 + 1000, NULL);
   inbuffer = gst_buffer_new_and_alloc (1024 * sizeof (gdouble));
   GST_BUFFER_TIMESTAMP (inbuffer) = 0;
-  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
-  in = (gdouble *) map.data;
+  in = (gdouble *) GST_BUFFER_DATA (inbuffer);
   for (i = 0; i < 1024; i++)
     in[i] = 1.0;
-  gst_buffer_unmap (inbuffer, &map);
-
-  /* ensure segment (format) properly setup */
-  gst_segment_init (&segment, GST_FORMAT_TIME);
-  fail_unless (gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment)));
 
   caps = gst_caps_from_string (AUDIO_WSINC_BAND_CAPS_STRING_64);
-  gst_pad_set_caps (mysrcpad, caps);
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -886,15 +774,13 @@ GST_START_TEST (test_64_br_0hz)
 
     fail_if ((outbuffer = (GstBuffer *) node->data) == NULL);
 
-    gst_buffer_map (outbuffer, &map, GST_MAP_READ);
-    res = (gdouble *) map.data;
-    buffer_length = map.size / sizeof (gdouble);
+    res = (gdouble *) GST_BUFFER_DATA (outbuffer);
+    buffer_length = GST_BUFFER_SIZE (outbuffer) / sizeof (gdouble);
     rms = 0.0;
     for (i = 0; i < buffer_length; i++)
       rms += res[i] * res[i];
     rms = sqrt (rms / buffer_length);
     fail_unless (rms >= 0.9);
-    gst_buffer_unmap (outbuffer, &map);
   }
 
   /* cleanup */
@@ -913,9 +799,7 @@ GST_START_TEST (test_64_br_11025hz)
   GstCaps *caps;
   gdouble *in, *res, rms;
   gint i;
-  GstMapInfo map;
   GList *node;
-  GstSegment segment;
 
   audiowsincband = setup_audiowsincband ();
   /* Set to bandreject */
@@ -932,8 +816,7 @@ GST_START_TEST (test_64_br_11025hz)
       44100 / 4.0 + 1000, NULL);
   inbuffer = gst_buffer_new_and_alloc (1024 * sizeof (gdouble));
   GST_BUFFER_TIMESTAMP (inbuffer) = 0;
-  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
-  in = (gdouble *) map.data;
+  in = (gdouble *) GST_BUFFER_DATA (inbuffer);
 
   for (i = 0; i < 1024; i += 4) {
     in[i] = 0.0;
@@ -941,14 +824,9 @@ GST_START_TEST (test_64_br_11025hz)
     in[i + 2] = 0.0;
     in[i + 3] = -1.0;
   }
-  gst_buffer_unmap (inbuffer, &map);
-
-  /* ensure segment (format) properly setup */
-  gst_segment_init (&segment, GST_FORMAT_TIME);
-  fail_unless (gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment)));
 
   caps = gst_caps_from_string (AUDIO_WSINC_BAND_CAPS_STRING_64);
-  gst_pad_set_caps (mysrcpad, caps);
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -963,15 +841,13 @@ GST_START_TEST (test_64_br_11025hz)
 
     fail_if ((outbuffer = (GstBuffer *) node->data) == NULL);
 
-    gst_buffer_map (outbuffer, &map, GST_MAP_READ);
-    res = (gdouble *) map.data;
-    buffer_length = map.size / sizeof (gdouble);
+    res = (gdouble *) GST_BUFFER_DATA (outbuffer);
+    buffer_length = GST_BUFFER_SIZE (outbuffer) / sizeof (gdouble);
     rms = 0.0;
     for (i = 0; i < buffer_length; i++)
       rms += res[i] * res[i];
     rms = sqrt (rms / buffer_length);
     fail_unless (rms <= 0.35);
-    gst_buffer_unmap (outbuffer, &map);
   }
 
   /* cleanup */
@@ -991,9 +867,7 @@ GST_START_TEST (test_64_br_22050hz)
   GstCaps *caps;
   gdouble *in, *res, rms;
   gint i;
-  GstMapInfo map;
   GList *node;
-  GstSegment segment;
 
   audiowsincband = setup_audiowsincband ();
   /* Set to bandreject */
@@ -1010,20 +884,14 @@ GST_START_TEST (test_64_br_22050hz)
       44100 / 4.0 + 1000, NULL);
   inbuffer = gst_buffer_new_and_alloc (1024 * sizeof (gdouble));
   GST_BUFFER_TIMESTAMP (inbuffer) = 0;
-  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
-  in = (gdouble *) map.data;
+  in = (gdouble *) GST_BUFFER_DATA (inbuffer);
   for (i = 0; i < 1024; i += 2) {
     in[i] = 1.0;
     in[i + 1] = -1.0;
   }
-  gst_buffer_unmap (inbuffer, &map);
-
-  /* ensure segment (format) properly setup */
-  gst_segment_init (&segment, GST_FORMAT_TIME);
-  fail_unless (gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment)));
 
   caps = gst_caps_from_string (AUDIO_WSINC_BAND_CAPS_STRING_64);
-  gst_pad_set_caps (mysrcpad, caps);
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -1038,15 +906,13 @@ GST_START_TEST (test_64_br_22050hz)
 
     fail_if ((outbuffer = (GstBuffer *) node->data) == NULL);
 
-    gst_buffer_map (outbuffer, &map, GST_MAP_READ);
-    res = (gdouble *) map.data;
-    buffer_length = map.size / sizeof (gdouble);
+    res = (gdouble *) GST_BUFFER_DATA (outbuffer);
+    buffer_length = GST_BUFFER_SIZE (outbuffer) / sizeof (gdouble);
     rms = 0.0;
     for (i = 0; i < buffer_length; i++)
       rms += res[i] * res[i];
     rms = sqrt (rms / buffer_length);
     fail_unless (rms >= 0.9);
-    gst_buffer_unmap (outbuffer, &map);
   }
 
   /* cleanup */
@@ -1064,8 +930,6 @@ GST_START_TEST (test_64_small_buffer)
   GstCaps *caps;
   gdouble *in;
   gint i;
-  GstMapInfo map;
-  GstSegment segment;
 
   audiowsincband = setup_audiowsincband ();
   /* Set to bandpass */
@@ -1082,18 +946,12 @@ GST_START_TEST (test_64_small_buffer)
       44100 / 4.0 + 44100 / 16.0, NULL);
   inbuffer = gst_buffer_new_and_alloc (20 * sizeof (gdouble));
   GST_BUFFER_TIMESTAMP (inbuffer) = 0;
-  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
-  in = (gdouble *) map.data;
+  in = (gdouble *) GST_BUFFER_DATA (inbuffer);
   for (i = 0; i < 20; i++)
     in[i] = 1.0;
-  gst_buffer_unmap (inbuffer, &map);
-
-  /* ensure segment (format) properly setup */
-  gst_segment_init (&segment, GST_FORMAT_TIME);
-  fail_unless (gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment)));
 
   caps = gst_caps_from_string (AUDIO_WSINC_BAND_CAPS_STRING_64);
-  gst_pad_set_caps (mysrcpad, caps);
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -1109,7 +967,7 @@ GST_START_TEST (test_64_small_buffer)
 
 GST_END_TEST;
 
-static Suite *
+Suite *
 audiowsincband_suite (void)
 {
   Suite *s = suite_create ("audiowsincband");

@@ -25,8 +25,6 @@
 
 #include <glib.h>
 
-#include "mulaw-conversion.h"
-
 #undef ZEROTRAP                 /* turn on the trap as per the MIL-STD */
 #define BIAS 0x84               /* define the add-in bias for 16 bit samples */
 #define CLIP 32635
@@ -34,8 +32,7 @@
 void
 mulaw_encode (gint16 * in, guint8 * out, gint numsamples)
 {
-  static const gint16 exp_lut[256] = {
-    0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
+  static gint16 exp_lut[256] = { 0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
     4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
     5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
     5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
@@ -52,10 +49,9 @@ mulaw_encode (gint16 * in, guint8 * out, gint numsamples)
     7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
     7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
   };
-  gint16 sign, exponent, mantissa;
+  gint16 sign, exponent, mantissa, i;
   gint16 sample;
   guint8 ulawbyte;
-  gint i;
 
   for (i = 0; i < numsamples; i++) {
     sample = in[i];
@@ -101,12 +97,10 @@ mulaw_encode (gint16 * in, guint8 * out, gint numsamples)
 void
 mulaw_decode (guint8 * in, gint16 * out, gint numsamples)
 {
-  static const gint16 exp_lut[8] =
-      { 0, 132, 396, 924, 1980, 4092, 8316, 16764 };
+  static gint16 exp_lut[8] = { 0, 132, 396, 924, 1980, 4092, 8316, 16764 };
   gint16 sign, exponent, mantissa;
   guint8 ulawbyte;
-  gint16 linear;
-  gint i;
+  gint16 linear, i;
 
   for (i = 0; i < numsamples; i++) {
     ulawbyte = in[i];

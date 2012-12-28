@@ -176,9 +176,10 @@ typedef struct _ZOOM_FILTER_FX_WRAPPER_DATA
 
 
 
-static inline void
-zoomVector (v2g * vecteur, ZoomFilterFXWrapperData * data, float X, float Y)
+static inline v2g
+zoomVector (ZoomFilterFXWrapperData * data, float X, float Y)
 {
+  v2g vecteur;
   float vx, vy;
   float sq_dist = X * X + Y * Y;
 
@@ -259,8 +260,10 @@ zoomVector (v2g * vecteur, ZoomFilterFXWrapperData * data, float X, float Y)
   /* TODO : Water Mode */
   //    if (data->waveEffect)
 
-  vecteur->x = vx;
-  vecteur->y = vy;
+  vecteur.x = vx;
+  vecteur.y = vy;
+
+  return vecteur;
 }
 
 
@@ -300,9 +303,7 @@ makeZoomBufferStripe (ZoomFilterFXWrapperData * data, int INTERLACE_INCR)
     float X = -((float) data->middleX) * ratio;
 
     for (x = 0; x < data->prevX; x++) {
-      v2g vector;
-
-      zoomVector (&vector, data, X, Y);
+      v2g vector = zoomVector (data, X, Y);
 
       /* Finish and avoid null displacement */
       if (fabs (vector.x) < min)
@@ -802,9 +803,9 @@ zoomFilterVisualFXWrapper_init (struct _VISUAL_FX *_this, PluginInfo * info)
 
   data->wave = data->wavesp = 0;
 
-  secure_b_param (&data->enabled_bp, "Enabled", 1);
+  data->enabled_bp = secure_b_param ("Enabled", 1);
 
-  plugin_parameters (&data->params, "Zoom Filter", 1);
+  data->params = plugin_parameters ("Zoom Filter", 1);
   data->params.params[0] = &data->enabled_bp;
 
   _this->params = &data->params;
@@ -839,14 +840,17 @@ zoomFilterVisualFXWrapper_apply (struct _VISUAL_FX *_this, Pixel * src,
 {
 }
 
-void
-zoomFilterVisualFXWrapper_create (VisualFX * fx)
+VisualFX
+zoomFilterVisualFXWrapper_create (void)
 {
-  fx->init = zoomFilterVisualFXWrapper_init;
-  fx->free = zoomFilterVisualFXWrapper_free;
-  fx->apply = zoomFilterVisualFXWrapper_apply;
-  fx->params = NULL;
-  fx->fx_data = NULL;
+  VisualFX fx;
+
+  fx.init = zoomFilterVisualFXWrapper_init;
+  fx.free = zoomFilterVisualFXWrapper_free;
+  fx.apply = zoomFilterVisualFXWrapper_apply;
+  fx.params = NULL;
+  fx.fx_data = NULL;
+  return fx;
 }
 
 

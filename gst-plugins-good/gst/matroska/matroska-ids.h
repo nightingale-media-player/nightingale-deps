@@ -27,13 +27,6 @@
 #include "ebml-ids.h"
 
 /*
- * EBML DocType.
- */
-
-#define GST_MATROSKA_DOCTYPE_MATROSKA              "matroska"
-#define GST_MATROSKA_DOCTYPE_WEBM                  "webm"
-
-/*
  * Matroska element IDs. max. 32-bit.
  */
 
@@ -344,7 +337,6 @@
 #define GST_MATROSKA_CODEC_ID_VIDEO_QUICKTIME    "V_QUICKTIME"
 #define GST_MATROSKA_CODEC_ID_VIDEO_SNOW         "V_SNOW"
 #define GST_MATROSKA_CODEC_ID_VIDEO_DIRAC        "V_DIRAC"
-#define GST_MATROSKA_CODEC_ID_VIDEO_VP8          "V_VP8"
 
 #define GST_MATROSKA_CODEC_ID_AUDIO_MPEG1_L1       "A_MPEG/L1"
 #define GST_MATROSKA_CODEC_ID_AUDIO_MPEG1_L2       "A_MPEG/L2"
@@ -395,7 +387,6 @@
 
 #define GST_MATROSKA_TAG_ID_TITLE    "TITLE"
 #define GST_MATROSKA_TAG_ID_AUTHOR   "AUTHOR"
-#define GST_MATROSKA_TAG_ID_ARTIST   "ARTIST"
 #define GST_MATROSKA_TAG_ID_ALBUM    "ALBUM"
 #define GST_MATROSKA_TAG_ID_COMMENTS "COMMENTS"
 #define GST_MATROSKA_TAG_ID_BITSPS   "BITSPS"
@@ -475,10 +466,6 @@ struct _GstMatroskaTrackContext {
   GstCaps      *caps;
   guint         index;
   GstFlowReturn last_flow;
-  /* reverse playback */
-  GstClockTime  from_time;
-  gint64                   from_offset;
-  gint64                   to_offset;
 
   GArray       *index_table;
 
@@ -486,10 +473,10 @@ struct _GstMatroskaTrackContext {
 
   /* some often-used info */
   gchar        *codec_id, *codec_name, *name, *language;
-  gpointer      codec_priv;
-  gsize         codec_priv_size;
-  gpointer      codec_state;
-  gsize         codec_state_size;
+  guint8       *codec_priv;
+  guint         codec_priv_size;
+  guint8       *codec_state;
+  guint         codec_state_size;
   GstMatroskaTrackType type;
   guint         uid, num;
   GstMatroskaTrackFlags flags;
@@ -534,12 +521,6 @@ struct _GstMatroskaTrackContext {
   /* A GArray of GstMatroskaTrackEncoding structures which contain the
    * encoding (compression/encryption) settings for this track, if any */
   GArray       *encodings;
-
-  /* Whether the stream is EOS */
-  gboolean      eos;
-
-  /* any alignment we need our output buffers to have */
-  gint          alignment;
 };
 
 typedef struct _GstMatroskaTrackVideoContext {
@@ -550,9 +531,6 @@ typedef struct _GstMatroskaTrackVideoContext {
   gdouble       default_fps;
   GstMatroskaAspectRatioMode asr_mode;
   guint32       fourcc;
-
-  /* QoS */
-  GstClockTime  earliest_time;
 
   GstBuffer     *dirac_unit;
 } GstMatroskaTrackVideoContext;
@@ -569,10 +547,7 @@ typedef struct _GstMatroskaTrackSubtitleContext {
   GstMatroskaTrackContext parent;
 
   gboolean    check_utf8;     /* buffers should be valid UTF-8 */
-  gboolean    check_markup;   /* check if buffers contain markup
-                               * or plaintext and escape characters */
   gboolean    invalid_utf8;   /* work around broken files      */
-  gboolean    seen_markup_tag;  /* markup found in text */
 } GstMatroskaTrackSubtitleContext;
 
 typedef struct _GstMatroskaIndex {

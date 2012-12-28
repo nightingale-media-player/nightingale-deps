@@ -22,8 +22,8 @@
 #include "goom_visual_fx.h"
 #include "goom_plugin_info.h"
 
-void convolve_create (VisualFX *vfx);
-void flying_star_create (VisualFX *vfx);
+VisualFX convolve_create ();
+VisualFX flying_star_create (void);
 
 void zoom_filter_c(int sizeX, int sizeY, Pixel *src, Pixel *dest, int *brutS, int *brutD, int buffratio, int precalCoef[16][16]);
 

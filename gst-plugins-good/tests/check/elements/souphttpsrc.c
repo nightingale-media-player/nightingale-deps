@@ -23,13 +23,10 @@
 # include "config.h"
 #endif
 
-#include <stdlib.h>
-
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <libsoup/soup-address.h>
 #include <libsoup/soup-message.h>
-#include <libsoup/soup-misc.h>
 #include <libsoup/soup-server.h>
 #include <libsoup/soup-auth-domain.h>
 #include <libsoup/soup-auth-domain-basic.h>
@@ -54,7 +51,7 @@ static const char *basic_auth_path = "/basic_auth";
 static const char *digest_auth_path = "/digest_auth";
 
 static int run_server (guint * http_port, guint * https_port);
-static void stop_server (void);
+
 
 static void
 handoff_cb (GstElement * fakesink, GstBuffer * buf, GstPad * pad,
@@ -85,7 +82,7 @@ digest_auth_cb (SoupAuthDomain * domain, SoupMessage * msg,
   return NULL;
 }
 
-static int
+int
 run_test (const char *format, ...)
 {
   GstStateChangeReturn ret;
@@ -345,18 +342,15 @@ got_buffer (GstElement * fakesink, GstBuffer * buf, GstPad * pad,
     gpointer user_data)
 {
   GstStructure *s;
-  GstCaps *caps;
 
   /* Caps can be anything if we don't except icy caps */
   if (!icy_caps)
     return;
 
   /* Otherwise they _must_ be "application/x-icy" */
-  caps = gst_pad_get_current_caps (pad);
-  fail_unless (caps != NULL);
-  s = gst_caps_get_structure (caps, 0);
+  fail_unless (GST_BUFFER_CAPS (buf) != NULL);
+  s = gst_caps_get_structure (GST_BUFFER_CAPS (buf), 0);
   fail_unless_equals_string (gst_structure_get_name (s), "application/x-icy");
-  gst_caps_unref (caps);
 }
 
 GST_START_TEST (test_icy_stream)
@@ -369,6 +363,7 @@ GST_START_TEST (test_icy_stream)
 
   src = gst_element_factory_make ("souphttpsrc", NULL);
   fail_unless (src != NULL);
+  g_object_set (src, "iradio-mode", TRUE, NULL);
 
   sink = gst_element_factory_make ("fakesink", NULL);
   fail_unless (sink != NULL);
@@ -445,14 +440,18 @@ souphttpsrc_suite (void)
 
   TCase *tc_chain, *tc_internet;
 
+  g_type_init ();
+  if (!g_thread_supported ())
+    g_thread_init (NULL);
+
   s = suite_create ("souphttpsrc");
   tc_chain = tcase_create ("general");
   tc_internet = tcase_create ("internet");
 
   suite_add_tcase (s, tc_chain);
   run_server (&http_port, &https_port);
-  atexit (stop_server);
   tcase_add_test (tc_chain, test_first_buffer_has_offset);
+  tcase_add_test (tc_chain, test_https);
   tcase_add_test (tc_chain, test_redirect_yes);
   tcase_add_test (tc_chain, test_redirect_no);
   tcase_add_test (tc_chain, test_not_found);
@@ -464,8 +463,6 @@ souphttpsrc_suite (void)
   tcase_add_test (tc_chain, test_good_user_digest_auth);
   tcase_add_test (tc_chain, test_bad_user_digest_auth);
   tcase_add_test (tc_chain, test_bad_password_digest_auth);
-  if (soup_ssl_supported)
-    tcase_add_test (tc_chain, test_https);
 
   suite_add_tcase (s, tc_internet);
   tcase_set_timeout (tc_internet, 250);
@@ -560,12 +557,10 @@ server_callback (SoupServer * server, SoupMessage * msg,
   GST_DEBUG ("  -> %d %s", msg->status_code, msg->reason_phrase);
 }
 
-static SoupServer *server;      /* NULL */
-static SoupServer *ssl_server;  /* NULL */
-
 int
 run_server (guint * http_port, guint * https_port)
 {
+  SoupServer *server, *ssl_server;
   guint port = SOUP_ADDRESS_ANY_PORT;
   guint ssl_port = SOUP_ADDRESS_ANY_PORT;
   const char *ssl_cert_file = GST_TEST_FILES_PATH "/test-cert.pem";
@@ -616,19 +611,4 @@ run_server (guint * http_port, guint * https_port)
   }
 
   return 0;
-}
-
-static void
-stop_server (void)
-{
-  GST_INFO ("cleaning up");
-
-  if (server) {
-    g_object_unref (server);
-    server = NULL;
-  }
-  if (ssl_server) {
-    g_object_unref (ssl_server);
-    ssl_server = NULL;
-  }
 }

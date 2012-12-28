@@ -24,6 +24,18 @@
 
 typedef void (CheckTagsFunc) (const GstTagList * tags, const gchar * file);
 
+static void
+pad_added_cb (GstElement * id3demux, GstPad * pad, GstBin * pipeline)
+{
+  GstElement *sink;
+
+  sink = gst_bin_get_by_name (pipeline, "fakesink");
+  fail_unless (gst_element_link (id3demux, sink));
+  gst_object_unref (sink);
+
+  gst_element_set_state (sink, GST_STATE_PAUSED);
+}
+
 static GstBusSyncReply
 error_cb (GstBus * bus, GstMessage * msg, gpointer user_data)
 {
@@ -56,7 +68,7 @@ read_tags_from_file (const gchar * file, gboolean push_mode)
 
   /* kids, don't use a sync handler for this at home, really; we do because
    * we just want to abort and nothing else */
-  gst_bus_set_sync_handler (bus, error_cb, (gpointer) file, NULL);
+  gst_bus_set_sync_handler (bus, error_cb, (gpointer) file);
 
   src = gst_element_factory_make ("filesrc", "filesrc");
   fail_unless (src != NULL, "Failed to create 'filesrc' element!");
@@ -79,7 +91,9 @@ read_tags_from_file (const gchar * file, gboolean push_mode)
 
   fail_unless (gst_element_link (src, sep));
   fail_unless (gst_element_link (sep, id3demux));
-  fail_unless (gst_element_link (id3demux, sink));
+
+  /* can't link id3demux and sink yet, do that later */
+  g_signal_connect (id3demux, "pad-added", G_CALLBACK (pad_added_cb), pipeline);
 
   path = g_build_filename (GST_TEST_FILES_PATH, file, NULL);
   GST_LOG ("reading file '%s'", path);
@@ -124,7 +138,7 @@ run_check_for_file (const gchar * filename, CheckTagsFunc * check_func)
   tags = read_tags_from_file (filename, FALSE);
   fail_unless (tags != NULL, "Failed to extract tags from '%s'", filename);
   check_func (tags, filename);
-  gst_tag_list_unref (tags);
+  gst_tag_list_free (tags);
 
   /* FIXME: need to fix id3demux for short content in push mode */
 #if 0
@@ -132,22 +146,21 @@ run_check_for_file (const gchar * filename, CheckTagsFunc * check_func)
   tags = read_tags_from_file (filename, TRUE);
   fail_unless (tags != NULL, "Failed to extract tags from '%s'", filename);
   check_func (tags, filename);
-  gst_tag_list_unref (tags);
+  gst_tag_list_free (tags);
 #endif
 }
 
 static void
 check_date_1977_06_23 (const GstTagList * tags, const gchar * file)
 {
-  GstDateTime *date = NULL;
+  GDate *date = NULL;
 
-  gst_tag_list_get_date_time (tags, GST_TAG_DATE_TIME, &date);
-  fail_unless (date != NULL,
-      "Tags from %s should contain a GST_TAG_DATE_TIME tag");
-  fail_unless_equals_int (gst_date_time_get_year (date), 1977);
-  fail_unless_equals_int (gst_date_time_get_month (date), 6);
-  fail_unless_equals_int (gst_date_time_get_day (date), 23);
-  gst_date_time_unref (date);
+  gst_tag_list_get_date (tags, GST_TAG_DATE, &date);
+  fail_unless (date != NULL, "Tags from %s should contain a GST_TAG_DATE tag");
+  fail_unless_equals_int (g_date_get_year (date), 1977);
+  fail_unless_equals_int (g_date_get_month (date), 6);
+  fail_unless_equals_int (g_date_get_day (date), 23);
+  g_date_free (date);
 }
 
 GST_START_TEST (test_tdat_tyer)
@@ -218,12 +231,10 @@ static void
 check_unsync_v24 (const GstTagList * tags, const gchar * file)
 {
   const GValue *val;
-  GstSample *sample;
   GstBuffer *buf;
   gchar *album = NULL;
   gchar *title = NULL;
   gchar *artist = NULL;
-  GstMapInfo map;
 
   fail_unless (gst_tag_list_get_string (tags, GST_TAG_TITLE, &title));
   fail_unless (title != NULL);
@@ -242,20 +253,16 @@ check_unsync_v24 (const GstTagList * tags, const gchar * file)
 
   val = gst_tag_list_get_value_index (tags, GST_TAG_IMAGE, 0);
   fail_unless (val != NULL);
-  fail_unless (GST_VALUE_HOLDS_SAMPLE (val));
-  sample = gst_value_get_sample (val);
-  fail_unless (sample != NULL);
-  fail_unless (gst_sample_get_caps (sample) != NULL);
-  buf = gst_sample_get_buffer (sample);
+  fail_unless (GST_VALUE_HOLDS_BUFFER (val));
+  buf = gst_value_get_buffer (val);
   fail_unless (buf != NULL);
-  gst_buffer_map (buf, &map, GST_MAP_READ);
-  fail_unless_equals_int (map.size, 38022);
+  fail_unless (GST_BUFFER_CAPS (buf) != NULL);
+  fail_unless_equals_int (GST_BUFFER_SIZE (buf), 38022);
   /* check for jpeg start/end markers */
-  fail_unless_equals_int (map.data[0], 0xff);
-  fail_unless_equals_int (map.data[1], 0xd8);
-  fail_unless_equals_int (map.data[38020], 0xff);
-  fail_unless_equals_int (map.data[38021], 0xd9);
-  gst_buffer_unmap (buf, &map);
+  fail_unless_equals_int (GST_BUFFER_DATA (buf)[0], 0xff);
+  fail_unless_equals_int (GST_BUFFER_DATA (buf)[1], 0xd8);
+  fail_unless_equals_int (GST_BUFFER_DATA (buf)[38020], 0xff);
+  fail_unless_equals_int (GST_BUFFER_DATA (buf)[38021], 0xd9);
 }
 
 GST_START_TEST (test_unsync_v24)

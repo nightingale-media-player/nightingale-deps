@@ -3,13 +3,16 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>udpsink</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-udpsrc.html" title="udpsrc">
 <link rel="next" href="gst-plugins-good-plugins-v4l2src.html" title="v4l2src">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -17,22 +20,22 @@
 <td><a accesskey="p" href="gst-plugins-good-plugins-udpsrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-v4l2src.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-udpsink.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-udpsink.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-udpsink.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-udpsink.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-udpsink.properties" class="shortcut">Properties</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-udpsink.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-udpsink.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-udpsink.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-udpsink.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
-<div class="refentry">
+<div class="refentry" title="udpsink">
 <a name="gst-plugins-good-plugins-udpsink"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -41,37 +44,51 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="gst-plugins-good-plugins-udpsink.synopsis"></a><h2>Synopsis</h2>
-<a name="GstUDPSink"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-udpsink.html#GstUDPSink-struct" title="struct GstUDPSink">GstUDPSink</a>;
+<a name="GstUDPSink"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-good-plugins-udpsink.html#GstUDPSink-struct" title="GstUDPSink">GstUDPSink</a>;
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Object Hierarchy">
 <a name="gst-plugins-good-plugins-udpsink.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseSink.html">GstBaseSink</a>
-                           +----<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink">GstMultiUDPSink</a>
-                                 +----GstUDPSink
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="../gstreamer-libs-0.10/GstBaseSink.html"
+>GstBaseSink</a>
+                     +----<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink">GstMultiUDPSink</a>
+                           +----GstUDPSink
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Implemented Interfaces">
 <a name="gst-plugins-good-plugins-udpsink.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstUDPSink implements
- <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstUriHandler.html#GstURIHandler">GstURIHandler</a>.</p>
+ <a
+href="../gstreamer-0.10/gstreamer-GstUriHandler.html#GstURIHandler"
+>GstURIHandler</a>.</p>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Properties">
 <a name="gst-plugins-good-plugins-udpsink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-udpsink.html#GstUDPSink--host" title='The "host" property'>host</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-udpsink.html#GstUDPSink--port" title='The "port" property'>port</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-udpsink.html#GstUDPSink--host" title='The "host" property'>host</a>"                     <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-udpsink.html#GstUDPSink--port" title='The "port" property'>port</a>"                     <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Description">
 <a name="gst-plugins-good-plugins-udpsink.description"></a><h2>Description</h2>
 <p>
 udpsink is a network sink that sends UDP packets to the network.
@@ -79,26 +96,16 @@ It can be combined with RTP payloaders to implement RTP streaming.
 </p>
 <p>
 </p>
-<div class="refsect2">
-<a name="idp19926096"></a><h3>Examples</h3>
-<div class="informalexample">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> <span class="gtkdoc opt">-</span>v audiotestsrc <span class="gtkdoc opt">!</span> udpsink</pre></td>
-      </tr>
-    </tbody>
-  </table>
+<div class="refsect2" title="Examples">
+<a name="id606827"></a><h3>Examples</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v audiotestsrc ! udpsink
+</pre></div>
 </div>
-
-</div>
-<p>
-</p>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <h2>Synopsis</h2>
-<div class="refsect2">
-<a name="idp22496608"></a><h3>Element Information</h3>
+<div class="refsect2" title="Element Information">
+<a name="id590565"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -120,8 +127,8 @@ It can be combined with RTP payloaders to implement RTP streaming.
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
-<a name="idp18637280"></a><h3>Element Pads</h3>
+<div class="refsect2" title="Element Pads">
+<a name="id598703"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -148,39 +155,43 @@ It can be combined with RTP payloaders to implement RTP streaming.
 <p>
 </p>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Details">
 <a name="gst-plugins-good-plugins-udpsink.details"></a><h2>Details</h2>
-<div class="refsect2">
-<a name="GstUDPSink-struct"></a><h3>struct GstUDPSink</h3>
-<pre class="programlisting">struct GstUDPSink;</pre>
+<div class="refsect2" title="GstUDPSink">
+<a name="GstUDPSink-struct"></a><h3>GstUDPSink</h3>
+<pre class="programlisting">typedef struct _GstUDPSink GstUDPSink;</pre>
 <p>
 </p>
 </div>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Property Details">
 <a name="gst-plugins-good-plugins-udpsink.property-details"></a><h2>Property Details</h2>
-<div class="refsect2">
+<div class="refsect2" title='The "host" property'>
 <a name="GstUDPSink--host"></a><h3>The <code class="literal">"host"</code> property</h3>
-<pre class="programlisting">  "host"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<pre class="programlisting">  "host"                     <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
 <p>The host/IP/Multicast group to send the packets to.</p>
 <p>Default value: "localhost"</p>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" title='The "port" property'>
 <a name="GstUDPSink--port"></a><h3>The <code class="literal">"port"</code> property</h3>
-<pre class="programlisting">  "port"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
+<pre class="programlisting">  "port"                     <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>The port to send the packets to.</p>
 <p>Allowed values: [0,65535]</p>
-<p>Default value: 5004</p>
+<p>Default value: 4951</p>
 </div>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="See Also">
 <a name="gst-plugins-good-plugins-udpsink.see-also"></a><h2>See Also</h2>
 udpsrc, multifdsink
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

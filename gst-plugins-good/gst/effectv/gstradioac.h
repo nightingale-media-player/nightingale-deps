@@ -29,7 +29,6 @@
 
 #include <gst/gst.h>
 
-#include <gst/video/video.h>
 #include <gst/video/gstvideofilter.h>
 
 G_BEGIN_DECLS
@@ -53,6 +52,8 @@ struct _GstRadioacTV
   GstVideoFilter element;
 
   /* < private > */
+  gint width, height;
+
   gint mode;
   gint color;
   guint interval;
@@ -63,7 +64,7 @@ struct _GstRadioacTV
   guint32 *snapframe;
   guint8 *blurzoombuf;
   guint8 *diff;
-  gint16 *background;
+  guint32 *background;
   gint *blurzoomx;
   gint *blurzoomy;
 

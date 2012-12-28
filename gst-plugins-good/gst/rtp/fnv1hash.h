@@ -21,12 +21,12 @@
 #define __GST_FNV1_HASH_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstrtpbasepayload.h>
+#include <gst/rtp/gstbasertppayload.h>
 #include <gst/base/gstadapter.h>
 
 G_BEGIN_DECLS
 
-guint32 fnv1_hash_32_new (void);
+guint32 fnv1_hash_32_new ();
 guint32 fnv1_hash_32_update (guint32 hash, const guchar *data, guint length);
 guint32 fnv1_hash_32_to_24 (guint32 hash);
 

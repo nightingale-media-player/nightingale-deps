@@ -22,11 +22,11 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstbasesink.h>
-#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
 #include "gstudpnetutils.h"
+
 #include "gstudp.h"
 
 #define GST_TYPE_DYNUDPSINK             (gst_dynudpsink_get_type())
@@ -45,26 +45,26 @@ struct _GstDynUDPSink {
   GstBaseSink parent;
 
   /* properties */
-  GSocket *socket;
-  gboolean close_socket;
+  gint sockfd;
+  gboolean closefd;
 
   /* the socket in use */
-  GSocket *used_socket;
-  gboolean external_socket;
-  GCancellable *cancellable;
-  GSocketFamily family;
+  int sock;
+  gboolean externalfd;
 };
 
 struct _GstDynUDPSinkClass {
   GstBaseSinkClass parent_class;
 
   /* element methods */
-  GstStructure*  (*get_stats)    (GstDynUDPSink *sink, const gchar *host, gint port);
+  GValueArray*  (*get_stats)    (GstDynUDPSink *sink, const gchar *host, gint port);
 
   /* signals */
 };
 
 GType gst_dynudpsink_get_type(void);
+
+GValueArray*    gst_dynudpsink_get_stats        (GstDynUDPSink *sink, const gchar *host, gint port);
 
 G_END_DECLS
 

@@ -143,7 +143,8 @@ struct _GstAviMux {
   GSList              *sinkpads;
   /* video restricted to 1 pad */
   guint               video_pads, audio_pads;
-  GstCollectPads     *collect;
+  GstCollectPads      *collect;
+  GstPadEventFunction  collect_event;
 
   /* the AVI header */
   /* still some single stream video data in mux struct */

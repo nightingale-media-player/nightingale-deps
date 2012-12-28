@@ -36,9 +36,6 @@ G_BEGIN_DECLS
 
 GstCaps* gst_oss_helper_probe_caps (gint fd);
 
-gchar *gst_oss_helper_get_card_name (const gchar * mixer_name);
-
-
 
 G_END_DECLS
 

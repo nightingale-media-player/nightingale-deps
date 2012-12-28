@@ -30,6 +30,7 @@
 #  include <libv4l2.h>
 #else
 #  include <sys/ioctl.h>
+#  include <linux/videodev.h>
 #  include <linux/videodev2.h>
 #  define v4l2_fd_open(fd, flags) (fd)
 #  define v4l2_close    close
@@ -39,6 +40,14 @@
 #  define v4l2_mmap     mmap
 #  define v4l2_munmap   munmap
 #endif
+
+/* simple check whether the device is open */
+#define GST_V4L2_IS_OPEN(v4l2object) \
+  (v4l2object->video_fd > 0)
+
+/* check whether the device is 'active' */
+#define GST_V4L2_IS_ACTIVE(v4l2object) \
+  (v4l2object->buffer != NULL)
 
 #define GST_V4L2_IS_OVERLAY(v4l2object) \
   (v4l2object->vcap.capabilities & V4L2_CAP_VIDEO_OVERLAY)
@@ -102,10 +111,12 @@ gboolean        gst_v4l2_get_input              (GstV4l2Object * v4l2object,
                                                  gint * input);
 gboolean        gst_v4l2_set_input              (GstV4l2Object * v4l2object,
                                                  gint input);
+#if 0 /* output not handled by now */
 gboolean	gst_v4l2_get_output		(GstV4l2Object *v4l2object,
 						 gint           *output);
 gboolean	gst_v4l2_set_output		(GstV4l2Object *v4l2object,
 						 gint            output);
+#endif /* #if 0 - output not handled by now */
 
 /* frequency control */
 gboolean	gst_v4l2_get_frequency		(GstV4l2Object *v4l2object,

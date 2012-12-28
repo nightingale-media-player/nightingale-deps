@@ -20,16 +20,11 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/* FIXME 0.11: suppress warnings for deprecated API such as GValueArray
- * with newer GLib versions (>= 2.31.0) */
-#define GLIB_DISABLE_DEPRECATION_WARNINGS
-
 #include <unistd.h>
-#include <math.h>
 
-#include <gst/audio/audio.h>
 #include <gst/check/gstcheck.h>
 
+GList *buffers = NULL;
 gboolean have_eos = FALSE;
 
 /* For ease of programming we use globals to keep refs for our floating
@@ -38,19 +33,23 @@ gboolean have_eos = FALSE;
 GstPad *mysrcpad, *mysinkpad;
 
 #define LEVEL_CAPS_TEMPLATE_STRING \
-  "audio/x-raw, " \
-    "format = (string) { S8, "GST_AUDIO_NE(S16)" }, " \
-    "layout = (string) interleaved, " \
+  "audio/x-raw-int, " \
     "rate = (int) [ 1, MAX ], " \
-    "channels = (int) [ 1, 8 ]"
+    "channels = (int) [ 1, 8 ], " \
+    "endianness = (int) BYTE_ORDER, " \
+    "width = (int) {8, 16}, " \
+    "depth = (int) {8, 16}, " \
+    "signed = (boolean) true"
 
 #define LEVEL_CAPS_STRING \
-  "audio/x-raw, " \
-    "format = (string) "GST_AUDIO_NE(S16)", " \
-    "layout = (string) interleaved, " \
+  "audio/x-raw-int, " \
     "rate = (int) 1000, " \
-    "channels = (int) 2, "  \
-    "channel-mask = (bitmask) 3"  \
+    "channels = (int) 2, " \
+    "endianness = (int) BYTE_ORDER, " \
+    "width = (int) 16, " \
+    "depth = (int) 16, " \
+    "signed = (boolean) true"
+
 
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
@@ -64,22 +63,22 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     );
 
 /* takes over reference for outcaps */
-static GstElement *
-setup_level (void)
+GstElement *
+setup_level ()
 {
   GstElement *level;
 
   GST_DEBUG ("setup_level");
   level = gst_check_setup_element ("level");
-  mysrcpad = gst_check_setup_src_pad (level, &srctemplate);
-  mysinkpad = gst_check_setup_sink_pad (level, &sinktemplate);
+  mysrcpad = gst_check_setup_src_pad (level, &srctemplate, NULL);
+  mysinkpad = gst_check_setup_sink_pad (level, &sinktemplate, NULL);
   gst_pad_set_active (mysrcpad, TRUE);
   gst_pad_set_active (mysinkpad, TRUE);
 
   return level;
 }
 
-static void
+void
 cleanup_level (GstElement * level)
 {
   GST_DEBUG ("cleanup_level");
@@ -101,7 +100,6 @@ GST_START_TEST (test_int16)
   GstMessage *message;
   const GstStructure *structure;
   int i, j;
-  GstMapInfo map;
   gint16 *data;
   const GValue *list, *value;
   GstClockTime endtime;
@@ -116,15 +114,13 @@ GST_START_TEST (test_int16)
 
   /* create a fake 0.1 sec buffer with a half-amplitude block signal */
   inbuffer = gst_buffer_new_and_alloc (400);
-  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
-  data = (gint16 *) map.data;
+  data = (gint16 *) GST_BUFFER_DATA (inbuffer);
   for (j = 0; j < 200; ++j) {
     *data = 16536;
     ++data;
   }
-  gst_buffer_unmap (inbuffer, &map);
   caps = gst_caps_from_string (LEVEL_CAPS_STRING);
-  gst_pad_set_caps (mysrcpad, caps);
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -156,13 +152,10 @@ GST_START_TEST (test_int16)
 
   /* block wave of half amplitude has -5.94 dB for rms, peak and decay */
   for (i = 0; i < 2; ++i) {
-    const gchar *fields[3] = { "rms", "peak", "decay" };
+    gchar *fields[3] = { "rms", "peak", "decay" };
     for (j = 0; j < 3; ++j) {
-      GValueArray *arr;
-
       list = gst_structure_get_value (structure, fields[j]);
-      arr = g_value_get_boxed (list);
-      value = g_value_array_get_nth (arr, i);
+      value = gst_value_list_get_value (list, i);
       dB = g_value_get_double (value);
       GST_DEBUG ("%s is %lf", fields[j], dB);
       fail_if (dB < -6.0);
@@ -204,11 +197,10 @@ GST_START_TEST (test_int16_panned)
   const GstStructure *structure;
   int j;
   gint16 *data;
-  GstMapInfo map;
   const GValue *list, *value;
   GstClockTime endtime;
   gdouble dB;
-  const gchar *fields[3] = { "rms", "peak", "decay" };
+  gchar *fields[3] = { "rms", "peak", "decay" };
 
   level = setup_level ();
   g_object_set (level, "message", TRUE, "interval", GST_SECOND / 10, NULL);
@@ -219,17 +211,15 @@ GST_START_TEST (test_int16_panned)
 
   /* create a fake 0.1 sec buffer with a half-amplitude block signal */
   inbuffer = gst_buffer_new_and_alloc (400);
-  gst_buffer_map (inbuffer, &map, GST_MAP_WRITE);
-  data = (gint16 *) map.data;
+  data = (gint16 *) GST_BUFFER_DATA (inbuffer);
   for (j = 0; j < 100; ++j) {
     *data = 0;
     ++data;
     *data = 16536;
     ++data;
   }
-  gst_buffer_unmap (inbuffer, &map);
   caps = gst_caps_from_string (LEVEL_CAPS_STRING);
-  gst_pad_set_caps (mysrcpad, caps);
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -261,26 +251,16 @@ GST_START_TEST (test_int16_panned)
 
   /* silence has 0 dB for rms, peak and decay */
   for (j = 0; j < 3; ++j) {
-    GValueArray *arr;
-
     list = gst_structure_get_value (structure, fields[j]);
-    arr = g_value_get_boxed (list);
-    value = g_value_array_get_nth (arr, 0);
+    value = gst_value_list_get_value (list, 0);
     dB = g_value_get_double (value);
     GST_DEBUG ("%s[0] is %lf", fields[j], dB);
-#ifdef HAVE_ISINF
-    fail_unless (isinf (dB));
-#elif defined (HAVE_FPCLASS)
-    fail_unless (fpclass (dB) == FP_NINF);
-#endif
+    fail_if (!isinf (dB));
   }
   /* block wave of half amplitude has -5.94 dB for rms, peak and decay */
   for (j = 0; j < 3; ++j) {
-    GValueArray *arr;
-
     list = gst_structure_get_value (structure, fields[j]);
-    arr = g_value_get_boxed (list);
-    value = g_value_array_get_nth (arr, 1);
+    value = gst_value_list_get_value (list, 1);
     dB = g_value_get_double (value);
     GST_DEBUG ("%s[1] is %lf", fields[j], dB);
     fail_if (dB < -6.0);
@@ -311,7 +291,7 @@ GST_START_TEST (test_int16_panned)
 
 GST_END_TEST;
 
-static Suite *
+Suite *
 level_suite (void)
 {
   Suite *s = suite_create ("level");

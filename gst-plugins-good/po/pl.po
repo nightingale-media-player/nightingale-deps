@@ -1,24 +1,27 @@
 # Polish translation for gst-plugins-good.
 # This file is distributed under the same license as the gst-plugins-good package.
-# Jakub Bogusz <qboosh@pld-linux.org>, 2007-2012.
+# Jakub Bogusz <qboosh@pld-linux.org>, 2007-2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins-good 1.0.3\n"
+"Project-Id-Version: gst-plugins-good 0.10.15.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2012-12-18 00:33+0000\n"
-"PO-Revision-Date: 2012-11-28 19:27+0100\n"
+"POT-Creation-Date: 2009-08-28 23:17+0100\n"
+"PO-Revision-Date: 2009-08-12 22:01+0200\n"
 "Last-Translator: Jakub Bogusz <qboosh@pld-linux.org>\n"
 "Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
-"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. TRANSLATORS: 'song title' by 'artist name'
-#, c-format
-msgid "'%s' by '%s'"
-msgstr "'%s' autorstwa '%s'"
+msgid "Could not establish connection to sound server"
+msgstr "Nie udało się nawiązać połączenia z serwerem dźwięku"
+
+msgid "Failed to query sound server capabilities"
+msgstr "Nie udało się odpytać o możliwości serwera dźwięku"
+
+msgid "Internal data stream error."
+msgstr "Błąd wewnętrzny strumienia danych."
 
 msgid "Failed to decode JPEG image"
 msgstr "Nie udało się zdekodować obrazu JPEG"
@@ -26,45 +29,14 @@ msgstr "Nie udało się zdekodować obrazu JPEG"
 msgid "Could not connect to server"
 msgstr "Nie udało się połączyć z serwerem"
 
-msgid "Server does not support seeking."
-msgstr "Serwer nie obsługuje przewijania."
-
-msgid "Could not resolve server name."
-msgstr "Nie udało się rozwiązać nazwy serwera."
-
-msgid "Could not establish connection to server."
-msgstr "Nie udało się nawiązać połączenia z serwerem."
-
-msgid "Secure connection setup failed."
-msgstr "Ustanowienie bezpiecznego połączenia nie powiodło się."
-
-msgid ""
-"A network error occured, or the server closed the connection unexpectedly."
-msgstr "Wystąpił błąd sieciowy lub serwer nieoczekiwanie zamknął połączenie."
-
-msgid "Server sent bad data."
-msgstr "Serwer przysłał błędne dane."
-
-msgid "No URL set."
-msgstr "Nie ustawiono URL-a."
-
-msgid "Internal data stream error."
-msgstr "Błąd wewnętrzny strumienia danych."
-
 msgid "No or invalid input audio, AVI stream will be corrupt."
 msgstr "Brak lub niepoprawne wejście dźwięku, strumień AVI będzie uszkodzony."
-
-msgid "This file contains no playable streams."
-msgstr "Ten plik nie zawiera strumieni nadających się do odtworzenia."
 
 msgid "This file is invalid and cannot be played."
 msgstr "Ten plik jest błędny i nie może być odtworzony."
 
-msgid "This file is corrupt and cannot be played."
-msgstr "Ten plik jest uszkodzony i nie może być odtworzony."
-
-msgid "Invalid atom size."
-msgstr "Błędny rozmiar atomu."
+msgid "This file contains no playable streams."
+msgstr "Ten plik nie zawiera strumieni nadających się do odtworzenia."
 
 msgid "This file is incomplete and cannot be played."
 msgstr "Ten plik jest niekompletny i nie może być odtworzony."
@@ -76,6 +48,9 @@ msgstr "Obraz w tym pliku może nie być odtwarzany prawidłowo."
 msgid "This file contains too many streams. Only playing first %d"
 msgstr "Ten plik zawiera zbyt dużo strumieni. Odtwarzanie tylko %d pierwszych"
 
+msgid "This file is corrupt and cannot be played."
+msgstr "Ten plik jest uszkodzony i nie może być odtworzony."
+
 msgid ""
 "No supported stream was found. You might need to install a GStreamer RTSP "
 "extension plugin for Real media streams."
@@ -84,16 +59,89 @@ msgstr ""
 "wtyczkę rozszerzenia GStreamera RTSP dla strumieni Real media."
 
 msgid ""
-"No supported stream was found. You might need to allow more transport "
-"protocols or may otherwise be missing the right GStreamer RTSP extension "
-"plugin."
+"No supported stream was found. You might be missing the right GStreamer RTSP "
+"extension plugin."
 msgstr ""
-"Nie znaleziono obsługiwanego strumienia. Być może trzeba zezwolić na więcej "
-"protokołów transportu, albo może brakować właściwej wtyczki rozszerzenia "
-"RTSP GStreamera."
+"Nie znaleziono obsługiwanego strumienia. Brakuje odpowiedniej wtyczki "
+"rozszerzenia GStreamera RTSP."
 
 msgid "Internal data flow error."
 msgstr "Błąd wewnętrzny przepływu danych."
+
+msgid "Volume"
+msgstr "Głośność"
+
+msgid "Bass"
+msgstr "Niskie"
+
+msgid "Treble"
+msgstr "Wysokie"
+
+msgid "Synth"
+msgstr "Syntezator"
+
+msgid "PCM"
+msgstr "PCM"
+
+msgid "Speaker"
+msgstr "Głośniczek"
+
+msgid "Line-in"
+msgstr "Wejście"
+
+msgid "Microphone"
+msgstr "Mikrofon"
+
+msgid "CD"
+msgstr "CD"
+
+msgid "Mixer"
+msgstr "Mikser"
+
+msgid "PCM-2"
+msgstr "PCM-2"
+
+msgid "Record"
+msgstr "Nagrywanie"
+
+msgid "In-gain"
+msgstr "Wzmocnienie we"
+
+msgid "Out-gain"
+msgstr "Wzmocnienie wy"
+
+msgid "Line-1"
+msgstr "Linia 1"
+
+msgid "Line-2"
+msgstr "Linia 2"
+
+msgid "Line-3"
+msgstr "Linia 3"
+
+msgid "Digital-1"
+msgstr "Cyfrowe 1"
+
+msgid "Digital-2"
+msgstr "Cyfrowe 2"
+
+msgid "Digital-3"
+msgstr "Cyfrowe 3"
+
+msgid "Phone-in"
+msgstr "Mikrofon"
+
+msgid "Phone-out"
+msgstr "Słuchawki"
+
+msgid "Video"
+msgstr "Obraz"
+
+msgid "Radio"
+msgstr "Radio"
+
+msgid "Monitor"
+msgstr "Monitor"
 
 msgid ""
 "Could not open audio device for playback. Device is being used by another "
@@ -122,33 +170,8 @@ msgstr ""
 msgid "Could not open audio device for recording."
 msgstr "Nie udało się otworzyć urządzenia dźwiękowego do nagrywania."
 
-msgid ""
-"Could not open audio device for playback. This version of the Open Sound "
-"System is not supported by this element."
-msgstr ""
-"Nie udało się otworzyć urządzenia dźwiękowego do odtwarzania. Ta wersja Open "
-"Sound System nie jest obsługiwana przez ten element."
-
-msgid "Playback is not supported by this audio device."
-msgstr "Odtwarzanie nie jest obsługiwane przez to urządzenie dźwiękowe."
-
-msgid "Audio playback error."
-msgstr "Błąd odtwarzania dźwięku."
-
-msgid "Recording is not supported by this audio device."
-msgstr "Nagrywanie nie jest obsługiwane przez to urządzenie dźwiękowe."
-
-msgid "Error recording from audio device."
-msgstr "Błąd nagrywania z urządzenia dźwiękowego."
-
-msgid "Volume"
-msgstr "Głośność"
-
 msgid "Gain"
 msgstr "Wzmocnienie"
-
-msgid "Monitor"
-msgstr "Monitor"
 
 msgid "Built-in Speaker"
 msgstr "Wbudowany głośniczek"
@@ -173,73 +196,12 @@ msgid "Error reading %d bytes from device '%s'."
 msgstr "Błąd odczytu %d bajtów z urządzenia '%s'."
 
 #, c-format
-msgid "Failed to enumerate possible video formats device '%s' can work with"
-msgstr ""
-"Nie udało się wyliczyć dostępnych formatów obrazu, z którymi może działać "
-"urządzenie '%s'"
+msgid "Got unexpected frame size of %u instead of %u."
+msgstr "Otrzymano nieoczekiwany rozmiar klatki %u zamiast %u."
 
 #, c-format
-msgid "Could not map buffers from device '%s'"
-msgstr "Nie udało się odwzorować buforów z urządzenia '%s'"
-
-#, c-format
-msgid "The driver of device '%s' does not support the IO method %d"
-msgstr "Sterownik urządzenia '%s' nie obsługuje metody we/wy %d"
-
-#, c-format
-msgid "The driver of device '%s' does not support any known IO method."
-msgstr "Sterownik urządzenia '%s' nie obsługuje żadnej znanej metody we/wy."
-
-#, c-format
-msgid "Device '%s' does not support video capture"
-msgstr "Urządzenie '%s' nie obsługuje przechwytywania obrazu"
-
-#, c-format
-msgid "Device '%s' is busy"
-msgstr "Urządzenie '%s' jest zajęte"
-
-#, c-format
-msgid "Device '%s' cannot capture at %dx%d"
-msgstr "Urządzenie '%s' nie potrafi przechwytywać obrazu %dx%d"
-
-#, c-format
-msgid "Device '%s' cannot capture in the specified format"
-msgstr "Urządzenie '%s' nie potrafi przechwytywać obrazu w podanym formacie"
-
-#, c-format
-msgid "Could not get parameters on device '%s'"
-msgstr "Nie udało się uzyskać parametrów urządzenia '%s'"
-
-msgid "Video device did not accept new frame rate setting."
-msgstr ""
-"Urządzenie obrazu nie przyjęło nowego ustawienia częstotliwości klatek."
-
-msgid "Video device could not create buffer pool."
-msgstr "Urzędzenie obrazu nie mogło utworzyć puli buforów."
-
-#, c-format
-msgid "Failed to get settings of tuner %d on device '%s'."
-msgstr "Nie udało się uzyskać ustawień tunera %d urządzenia '%s'."
-
-#, c-format
-msgid "Error getting capabilities for device '%s'."
-msgstr "Błąd podczas pobierania możliwości uządzenia '%s'."
-
-#, c-format
-msgid "Device '%s' is not a tuner."
-msgstr "Urządzenie '%s' nie jest tunerem."
-
-#, c-format
-msgid "Failed to get radio input on device '%s'. "
-msgstr "Nie udało się uzyskać wejścia radiowego z urządzenia '%s'. "
-
-#, c-format
-msgid "Failed to set input %d on device %s."
-msgstr "Nie udało się ustawić wejścia %d urządzenia %s."
-
-#, c-format
-msgid "Failed to change mute state for device '%s'."
-msgstr "Nie udało się zmienić stanu wyciszenia dla urządzenia '%s'."
+msgid "Error reading %d bytes on device '%s'."
+msgstr "Błąd odczytu %d bajtów z urządzenia '%s'."
 
 #, c-format
 msgid ""
@@ -318,14 +280,38 @@ msgstr ""
 "Nie udało się uzyskać aktualnego wejścia urządzenia '%s'. Może to radio"
 
 #, c-format
-msgid ""
-"Failed to get current output on device '%s'. May be it is a radio device"
-msgstr ""
-"Nie udało się uzyskać aktualnego wyjścia urządzenia '%s'. Może to radio"
+msgid "Failed to set input %d on device %s."
+msgstr "Nie udało się ustawić wejścia %d urządzenia %s."
 
 #, c-format
-msgid "Failed to set output %d on device %s."
-msgstr "Nie udało się ustawić wyjścia %d urządzenia %s."
+msgid "Could not enqueue buffers in device '%s'."
+msgstr "Nie udało się skolejkować buforów urządzenia '%s'."
+
+#, c-format
+msgid "Failed trying to get video frames from device '%s'."
+msgstr "Nie udało się uzyskać klatek obrazu z urządzenia '%s'."
+
+#, c-format
+msgid "Failed after %d tries. device %s. system error: %s"
+msgstr "Niepowodzenie po %d próbach. Urządzenie %s. Błąd systemowy: %s"
+
+#, c-format
+msgid "Could not get parameters on device '%s'"
+msgstr "Nie udało się uzyskać parametrów urządzenia '%s'"
+
+msgid "Video input device did not accept new frame rate setting."
+msgstr ""
+"Urządzenie wejściowe obrazu nie przyjęło nowego ustawienia częstotliwości "
+"klatek."
+
+#, c-format
+msgid "Could not map buffers from device '%s'"
+msgstr "Nie udało się odwzorować buforów z urządzenia '%s'"
+
+#, c-format
+msgid "The driver of device '%s' does not support any known capture method."
+msgstr ""
+"Sterownik urządzenia '%s' nie obsługuje żadnej znanej metody przechwytywania."
 
 msgid "Changing resolution at runtime is not yet supported."
 msgstr "Zmiana rozdzielczości w czasie działania nie jest jeszcze obsługiwana."

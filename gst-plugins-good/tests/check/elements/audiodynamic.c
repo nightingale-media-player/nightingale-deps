@@ -25,7 +25,6 @@
 
 #include <unistd.h>
 
-#include <gst/audio/audio.h>
 #include <gst/base/gstbasetransform.h>
 #include <gst/check/gstcheck.h>
 
@@ -38,45 +37,49 @@ GstPad *mysrcpad, *mysinkpad;
 
 
 #define DYNAMIC_CAPS_STRING    \
-    "audio/x-raw, "                     \
+    "audio/x-raw-int, "                 \
     "channels = (int) 1, "              \
     "rate = (int) 44100, "              \
-    "layout = (string) interleaved, "   \
-    "format = (string) " GST_AUDIO_NE(S16)
+    "endianness = (int) BYTE_ORDER, "   \
+    "width = (int) 16, "                \
+    "depth = (int) 16, "                \
+    "signed = (bool) TRUE"
 
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw, "
+    GST_STATIC_CAPS ("audio/x-raw-int, "
         "channels = (int) 1, "
         "rate = (int) [ 1,  MAX ], "
-        "layout = (string) interleaved, "
-        "format = (string)" GST_AUDIO_NE (S16)));
+        "endianness = (int) BYTE_ORDER, "
+        "width = (int) 16, " "depth = (int) 16, " "signed = (bool) TRUE")
+    );
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw, "
+    GST_STATIC_CAPS ("audio/x-raw-int, "
         "channels = (int) 1, "
         "rate = (int) [ 1,  MAX ], "
-        "layout = (string) interleaved, "
-        "format = (string) " GST_AUDIO_NE (S16)));
+        "endianness = (int) BYTE_ORDER, "
+        "width = (int) 16, " "depth = (int) 16, " "signed = (bool) TRUE")
+    );
 
-static GstElement *
-setup_dynamic (void)
+GstElement *
+setup_dynamic ()
 {
   GstElement *dynamic;
 
   GST_DEBUG ("setup_dynamic");
   dynamic = gst_check_setup_element ("audiodynamic");
-  mysrcpad = gst_check_setup_src_pad (dynamic, &srctemplate);
-  mysinkpad = gst_check_setup_sink_pad (dynamic, &sinktemplate);
+  mysrcpad = gst_check_setup_src_pad (dynamic, &srctemplate, NULL);
+  mysinkpad = gst_check_setup_sink_pad (dynamic, &sinktemplate, NULL);
   gst_pad_set_active (mysrcpad, TRUE);
   gst_pad_set_active (mysinkpad, TRUE);
 
   return dynamic;
 }
 
-static void
+void
 cleanup_dynamic (GstElement * dynamic)
 {
   GST_DEBUG ("cleanup_dynamic");
@@ -98,19 +101,18 @@ GST_START_TEST (test_passthrough)
   GstBuffer *inbuffer, *outbuffer;
   GstCaps *caps;
   gint16 in[6] = { 24576, -16384, 256, -128, 0, -24576 };
-  gint16 res[6];
+  gint16 *res;
 
   dynamic = setup_dynamic ();
   fail_unless (gst_element_set_state (dynamic,
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
-  inbuffer =
-      gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, in, 12, 0, 12,
-      NULL, NULL);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 12) == 0);
+  inbuffer = gst_buffer_new_and_alloc (12);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 12);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 12) == 0);
   caps = gst_caps_from_string (DYNAMIC_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -120,12 +122,12 @@ GST_START_TEST (test_passthrough)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 12) == 12);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
   GST_INFO
       ("expected %+5d %+5d %+5d %+5d %+5d %+5d real %+5d %+5d %+5d %+5d %+5d %+5d",
       in[0], in[1], in[2], in[3], in[4], in[5], res[0], res[1], res[2], res[3],
       res[4], res[5]);
-  fail_unless (gst_buffer_memcmp (outbuffer, 0, in, 12) == 0);
+  fail_unless (memcmp (GST_BUFFER_DATA (outbuffer), in, 12) == 0);
 
   /* cleanup */
   cleanup_dynamic (dynamic);
@@ -139,7 +141,7 @@ GST_START_TEST (test_compress_hard_50_50)
   GstBuffer *inbuffer, *outbuffer;
   GstCaps *caps;
   gint16 in[8] = { -30000, 24576, -16384, 256, -128, 0, -24576, 30000 };
-  gint16 res[8];
+  gint16 *res;
 
   dynamic = setup_dynamic ();
   g_object_set (G_OBJECT (dynamic), "mode", 0, NULL);
@@ -151,10 +153,10 @@ GST_START_TEST (test_compress_hard_50_50)
       "could not set to playing");
 
   inbuffer = gst_buffer_new_and_alloc (16);
-  gst_buffer_fill (inbuffer, 0, in, 16);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 16) == 0);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 16);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 16) == 0);
   caps = gst_caps_from_string (DYNAMIC_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -164,7 +166,7 @@ GST_START_TEST (test_compress_hard_50_50)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 16) == 16);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
 
   fail_unless (res[0] > in[0]);
   fail_unless (res[1] < in[1]);
@@ -187,7 +189,7 @@ GST_START_TEST (test_compress_soft_50_50)
   GstBuffer *inbuffer, *outbuffer;
   GstCaps *caps;
   gint16 in[8] = { -30000, 24576, -16384, 256, -128, 0, -24576, 30000 };
-  gint16 res[8];
+  gint16 *res;
 
   dynamic = setup_dynamic ();
   g_object_set (G_OBJECT (dynamic), "mode", 0, NULL);
@@ -199,10 +201,10 @@ GST_START_TEST (test_compress_soft_50_50)
       "could not set to playing");
 
   inbuffer = gst_buffer_new_and_alloc (16);
-  gst_buffer_fill (inbuffer, 0, in, 16);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 16) == 0);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 16);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 16) == 0);
   caps = gst_caps_from_string (DYNAMIC_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -212,7 +214,7 @@ GST_START_TEST (test_compress_soft_50_50)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 16) == 16);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
 
   fail_unless (res[0] > in[0]);
   fail_unless (res[1] < in[1]);
@@ -235,7 +237,7 @@ GST_START_TEST (test_compress_hard_100_50)
   GstBuffer *inbuffer, *outbuffer;
   GstCaps *caps;
   gint16 in[8] = { -30000, 24576, -16384, 256, -128, 0, -24576, 30000 };
-  gint16 res[8];
+  gint16 *res;
 
   dynamic = setup_dynamic ();
   g_object_set (G_OBJECT (dynamic), "mode", 0, NULL);
@@ -247,10 +249,10 @@ GST_START_TEST (test_compress_hard_100_50)
       "could not set to playing");
 
   inbuffer = gst_buffer_new_and_alloc (16);
-  gst_buffer_fill (inbuffer, 0, in, 16);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 16) == 0);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 16);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 16) == 0);
   caps = gst_caps_from_string (DYNAMIC_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -260,7 +262,7 @@ GST_START_TEST (test_compress_hard_100_50)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 16) == 16);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
 
   fail_unless (res[0] == in[0]);
   fail_unless (res[1] == in[1]);
@@ -284,7 +286,7 @@ GST_START_TEST (test_expand_hard_50_200)
   GstBuffer *inbuffer, *outbuffer;
   GstCaps *caps;
   gint16 in[8] = { -30000, 24576, -16383, 256, -128, 0, -24576, 30000 };
-  gint16 res[8];
+  gint16 *res;
 
   dynamic = setup_dynamic ();
   g_object_set (G_OBJECT (dynamic), "mode", 1, NULL);
@@ -296,10 +298,10 @@ GST_START_TEST (test_expand_hard_50_200)
       "could not set to playing");
 
   inbuffer = gst_buffer_new_and_alloc (16);
-  gst_buffer_fill (inbuffer, 0, in, 16);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 16) == 0);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 16);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 16) == 0);
   caps = gst_caps_from_string (DYNAMIC_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -309,7 +311,7 @@ GST_START_TEST (test_expand_hard_50_200)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 16) == 16);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
 
   fail_unless (res[0] == in[0]);
   fail_unless (res[1] == in[1]);
@@ -332,7 +334,7 @@ GST_START_TEST (test_expand_soft_50_200)
   GstBuffer *inbuffer, *outbuffer;
   GstCaps *caps;
   gint16 in[8] = { -30000, 24576, -16383, 256, -128, 0, -24576, 30000 };
-  gint16 res[8];
+  gint16 *res;
 
   dynamic = setup_dynamic ();
   g_object_set (G_OBJECT (dynamic), "mode", 1, NULL);
@@ -344,10 +346,10 @@ GST_START_TEST (test_expand_soft_50_200)
       "could not set to playing");
 
   inbuffer = gst_buffer_new_and_alloc (16);
-  gst_buffer_fill (inbuffer, 0, in, 16);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 16) == 0);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 16);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 16) == 0);
   caps = gst_caps_from_string (DYNAMIC_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -357,7 +359,7 @@ GST_START_TEST (test_expand_soft_50_200)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 16) == 16);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
 
   fail_unless (res[0] == in[0]);
   fail_unless (res[1] == in[1]);
@@ -380,7 +382,7 @@ GST_START_TEST (test_expand_hard_0_200)
   GstBuffer *inbuffer, *outbuffer;
   GstCaps *caps;
   gint16 in[8] = { -30000, 24576, -16383, 256, -128, 0, -24576, 30000 };
-  gint16 res[8];
+  gint16 *res;
 
   dynamic = setup_dynamic ();
   g_object_set (G_OBJECT (dynamic), "mode", 1, NULL);
@@ -392,10 +394,10 @@ GST_START_TEST (test_expand_hard_0_200)
       "could not set to playing");
 
   inbuffer = gst_buffer_new_and_alloc (16);
-  gst_buffer_fill (inbuffer, 0, in, 16);
-  fail_unless (gst_buffer_memcmp (inbuffer, 0, in, 16) == 0);
+  memcpy (GST_BUFFER_DATA (inbuffer), in, 16);
+  fail_unless (memcmp (GST_BUFFER_DATA (inbuffer), in, 16) == 0);
   caps = gst_caps_from_string (DYNAMIC_CAPS_STRING);
-  fail_unless (gst_pad_set_caps (mysrcpad, caps));
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
@@ -405,7 +407,7 @@ GST_START_TEST (test_expand_hard_0_200)
   fail_unless_equals_int (g_list_length (buffers), 1);
   fail_if ((outbuffer = (GstBuffer *) buffers->data) == NULL);
 
-  fail_unless (gst_buffer_extract (outbuffer, 0, res, 16) == 16);
+  res = (gint16 *) GST_BUFFER_DATA (outbuffer);
 
   fail_unless (res[0] == in[0]);
   fail_unless (res[1] == in[1]);
@@ -422,7 +424,7 @@ GST_START_TEST (test_expand_hard_0_200)
 
 GST_END_TEST;
 
-static Suite *
+Suite *
 dynamic_suite (void)
 {
   Suite *s = suite_create ("dynamic");

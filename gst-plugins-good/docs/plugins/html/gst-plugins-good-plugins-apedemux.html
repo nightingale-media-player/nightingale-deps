@@ -3,32 +3,35 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>apedemux</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="prev" href="gst-plugins-good-plugins-amrparse.html" title="amrparse">
+<link rel="prev" href="gst-plugins-good-plugins-alawenc.html" title="alawenc">
 <link rel="next" href="gst-plugins-good-plugins-apev2mux.html" title="apev2mux">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-amrparse.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-alawenc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-apev2mux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-good-plugins-apedemux.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-apedemux.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-apedemux.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-apedemux.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-apedemux.object-hierarchy" class="shortcut">Object Hierarchy</a>
 </td></tr>
 </table>
-<div class="refentry">
+<div class="refentry" title="apedemux">
 <a name="gst-plugins-good-plugins-apedemux"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -37,23 +40,31 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="gst-plugins-good-plugins-apedemux.synopsis"></a><h2>Synopsis</h2>
-<a name="GstApeDemux"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-apedemux.html#GstApeDemux-struct" title="struct GstApeDemux">GstApeDemux</a>;
+<a name="GstApeDemux"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-good-plugins-apedemux.html#GstApeDemux-struct" title="GstApeDemux">GstApeDemux</a>;
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Object Hierarchy">
 <a name="gst-plugins-good-plugins-apedemux.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gsttagdemux.html#GstTagDemux">GstTagDemux</a>
-                           +----GstApeDemux
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="../gst-plugins-base-libs-0.10/gst-plugins-base-libs-gsttagdemux.html#GstTagDemux"
+>GstTagDemux</a>
+                     +----GstApeDemux
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Description">
 <a name="gst-plugins-good-plugins-apedemux.description"></a><h2>Description</h2>
 <p>
 apedemux accepts data streams with APE tags at the start or at the end
@@ -71,28 +82,18 @@ information.
 </p>
 <p>
 </p>
-<div class="refsect2">
-<a name="idp8876368"></a><h3>Example launch line</h3>
-<div class="informalexample">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> <span class="gtkdoc opt">-</span>t filesrc location<span class="gtkdoc opt">=</span>file<span class="gtkdoc opt">.</span>mpc <span class="gtkdoc opt">!</span> apedemux <span class="gtkdoc opt">!</span> fakesink</pre></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
- This pipeline should read any available APE tag information and output it.
+<div class="refsect2" title="Example launch line">
+<a name="id485908"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch -t filesrc location=file.mpc ! apedemux ! fakesink
+</pre></div> This pipeline should read any available APE tag information and output it.
 The contents of the file inside the APE tag regions should be detected, and
 the appropriate mime type set on buffers produced from apedemux.
 </div>
-<p>
-</p>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <h2>Synopsis</h2>
-<div class="refsect2">
-<a name="idp7614832"></a><h3>Element Information</h3>
+<div class="refsect2" title="Element Information">
+<a name="id499491"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -104,7 +105,7 @@ the appropriate mime type set on buffers produced from apedemux.
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
-<td>Tim-Philipp Müller &lt;tim centricular net&gt;</td>
+<td>Ronald Bultje &lt;rbultje@ronald.bitfreak.net&gt;, Tim-Philipp Müller &lt;tim centricular net&gt;</td>
 </tr>
 <tr>
 <td><p><span class="term">class</span></p></td>
@@ -114,8 +115,8 @@ the appropriate mime type set on buffers produced from apedemux.
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
-<a name="idp7521792"></a><h3>Element Pads</h3>
+<div class="refsect2" title="Element Pads">
+<a name="id503621"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -150,7 +151,7 @@ the appropriate mime type set on buffers produced from apedemux.
 </tr>
 <tr>
 <td><p><span class="term">presence</span></p></td>
-<td>always</td>
+<td>sometimes</td>
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
@@ -163,11 +164,11 @@ the appropriate mime type set on buffers produced from apedemux.
 <p>
 </p>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Details">
 <a name="gst-plugins-good-plugins-apedemux.details"></a><h2>Details</h2>
-<div class="refsect2">
-<a name="GstApeDemux-struct"></a><h3>struct GstApeDemux</h3>
-<pre class="programlisting">struct GstApeDemux;</pre>
+<div class="refsect2" title="GstApeDemux">
+<a name="GstApeDemux-struct"></a><h3>GstApeDemux</h3>
+<pre class="programlisting">typedef struct _GstApeDemux GstApeDemux;</pre>
 <p>
 </p>
 </div>
@@ -175,6 +176,6 @@ the appropriate mime type set on buffers produced from apedemux.
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

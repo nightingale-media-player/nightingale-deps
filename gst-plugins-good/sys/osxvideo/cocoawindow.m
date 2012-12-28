@@ -39,10 +39,10 @@
 /* Debugging category */
 #include <gst/gstinfo.h>
 
-@ implementation GstOSXVideoSinkWindow
+@implementation GstOSXVideoSinkWindow
 
 /* The object has to be released */
-- (id) initWithContentNSRect: (NSRect) rect
+- (id) initWithContentRect: (NSRect) rect
 		 styleMask: (unsigned int) styleMask
 		   backing: (NSBackingStoreType) bufferingType 
 		     defer: (BOOL) flag
@@ -69,7 +69,7 @@
   width = size.width;
   height = size.height;
 
-  [gstview setVideoSize: (int) width:(int) height];
+  [gstview setVideoSize:size];
 
   [super setContentSize:size];
 }
@@ -81,6 +81,21 @@
 - (void) awakeFromNib {
   [self setAcceptsMouseMovedEvents:YES];
 }
+
+- (void) sendEvent:(NSEvent *) event {
+  BOOL taken = NO;
+
+  GST_DEBUG ("event %p type:%d", event,[event type]);
+
+  if ([event type] == NSKeyDown) {
+  }
+  /*taken = [gstview keyDown:event]; */
+
+  if (!taken) {
+    [super sendEvent:event];
+  }
+}
+
 
 @end
 
@@ -113,11 +128,10 @@
   }
 
   self = [super initWithFrame: frame pixelFormat:fmt];
-  [fmt release];
 
-   actualContext = [self openGLContext];
-   [actualContext makeCurrentContext];
-   [actualContext update];
+  actualContext = [self openGLContext];
+  [actualContext makeCurrentContext];
+  [actualContext update];
 
   /* Black background */
   glClearColor (0.0, 0.0, 0.0, 0.0);
@@ -126,31 +140,15 @@
   data = nil;
   width = frame.size.width;
   height = frame.size.height;
-  drawingBounds = NSMakeRect(0, 0, width, height);
 
   GST_LOG ("Width: %d Height: %d", width, height);
-
-  trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds]
-      options: (NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved | NSTrackingActiveInKeyWindow)
-      owner:self
-      userInfo:nil];
-
-  [self addTrackingArea:trackingArea];
-  mainThread = [NSThread mainThread];
 
   [self initTextures];
   return self;
 }
 
-- (NSRect) getDrawingBounds {
-  return drawingBounds;
-}
-
 - (void) reshape {
   NSRect bounds;
-  gdouble frame_par, view_par;
-  gint view_height, view_width, c_height, c_width, c_x, c_y;
-
 
   GST_LOG ("reshaping");
 
@@ -161,33 +159,9 @@
   [actualContext makeCurrentContext];
 
   bounds = [self bounds];
-  view_width = bounds.size.width;
-  view_height = bounds.size.height;
 
-  frame_par = (gdouble) width / height;
-  view_par = (gdouble) view_width / view_height;
-  if (!keepAspectRatio)
-    view_par = frame_par;
+  glViewport (0, 0, (GLint) bounds.size.width, (GLint) bounds.size.height);
 
-  if (frame_par == view_par) {
-    c_height = view_height;
-    c_width = view_width;
-    c_x = 0;
-    c_y = 0;
-  } else if (frame_par < view_par) {
-    c_height = view_height;
-    c_width = c_height * frame_par;
-    c_x = (view_width - c_width) / 2;
-    c_y = 0;
-  } else {
-    c_width = view_width;
-    c_height = c_width / frame_par;
-    c_x = 0;
-    c_y = (view_height - c_height) / 2;
-  }
-
-  drawingBounds = NSMakeRect(c_x, c_y, c_width, c_height);
-  glViewport (c_x, c_y, (GLint) c_width, (GLint) c_height);
 }
 
 - (void) initTextures {
@@ -397,59 +371,27 @@
   }
 }
 
-- (void) setVideoSize: (int) w:(int) h {
-  GST_LOG ("width:%d, height:%d", w, h);
+- (void) setVideoSize: (NSSize) aSize {
+  GST_LOG ("width:%f, height:%f", aSize.width, aSize.height);
 
-  width = w;
-  height = h;
+  width = aSize.width;
+  height = aSize.height;
 
 //  if (data) g_free(data);
 
 //  data = g_malloc0 (2 * w * h);
   [self initTextures];
-  [self reshape];
 }
 
-- (void) setKeepAspectRatio: (BOOL) flag {
-  keepAspectRatio = flag;
-  [self reshape];
+- (void) setDelegate: (id) aDelegate {
+  delegate = aDelegate;
 }
 
-- (void) setMainThread: (NSThread *) thread {
-  mainThread = thread;
-}
-
-- (void) haveSuperviewReal:(NSMutableArray *)closure {
-	BOOL haveSuperview = [self superview] != nil;
-	[closure addObject:[NSNumber numberWithBool:haveSuperview]];
-}
-
-- (BOOL) haveSuperview {
-	NSMutableArray *closure = [NSMutableArray arrayWithCapacity:1];
-	[self performSelector:@selector(haveSuperviewReal:)
-		onThread:mainThread
-		withObject:(id)closure waitUntilDone:YES];
-
-	return [[closure objectAtIndex:0] boolValue];
-}
-
-- (void) addToSuperviewReal:(NSView *)superview {
-	NSRect bounds;
-	[superview addSubview:self];
-	bounds = [superview bounds];
-	[self setFrame:bounds];
-	[self setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
-}
-
-- (void) addToSuperview: (NSView *)superview {
-	[self performSelector:@selector(addToSuperviewReal:)
-		onThread:mainThread
-		withObject:superview waitUntilDone:YES];
-}
-
-- (void) removeFromSuperview: (id)unused
-{
-	[self removeFromSuperview];
+- (void) mouseMoved: (NSEvent *) theEvent {
+  SEL selector = @selector(mouseMoved:);
+  if (delegate && [delegate respondsToSelector:selector]) {
+    [delegate mouseMoved:theEvent];
+  }
 }
 
 - (void) dealloc {
@@ -464,113 +406,7 @@
     fullScreenContext = nil;
   }
 
+  delegate = nil;
   [super dealloc];
 }
-
-- (void)updateTrackingAreas {
-  [self removeTrackingArea:trackingArea];
-  [trackingArea release];
-  trackingArea = [[NSTrackingArea alloc] initWithRect: [self bounds]
-      options: (NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved | NSTrackingActiveInKeyWindow)
-      owner:self userInfo:nil];
-  [self addTrackingArea:trackingArea];
-}
-
-- (BOOL)acceptsFirstResponder {
-    return YES;
-}
-
-- (void) setNavigation:(GstNavigation *)nav
-{
-  navigation = nav;
-}
-
-- (void)sendMouseEvent:(NSEvent *)event: (const char *)event_name
-{
-  NSPoint location;
-  gint button;
-  gdouble x, y;
-
-  if (!navigation)
-    return;
-
-  switch ([event type]) {
-    case NSMouseMoved:
-      button = 0;
-      break;
-    case NSLeftMouseDown:
-    case NSLeftMouseUp:
-      button = 1;
-      break;
-    case NSRightMouseDown:
-    case NSRightMouseUp:
-      button = 2;
-      break;
-    default:
-      button = 3;
-      break;
-  }
-
-  location = [self convertPoint:[event locationInWindow] fromView:nil];
-
-  x = location.x;
-  y = location.y;
-  /* invert Y */
-
-  y = (1 - ((gdouble) y) / [self bounds].size.height) * [self bounds].size.height;
-
-  gst_navigation_send_mouse_event (navigation, event_name, button, x, y);
-}
-
-- (void)sendKeyEvent:(NSEvent *)event: (const char *)event_name
-{
-  NSString *keyCharStr = [event charactersIgnoringModifiers];
-  gchar * key_str;
-
-  if (!navigation)
-    return;
-
-  if ( [keyCharStr length] == 0 )
-    return;
-
-  if ( [keyCharStr length] == 1 ) {
-    key_str = g_strdup_printf("%c", [keyCharStr characterAtIndex:0]);
-    gst_navigation_send_key_event(navigation, event_name, (const gchar *) key_str);
-    g_free(key_str);
-  }
-}
-
-- (void)keyDown:(NSEvent *) event;
-{
-  [self sendKeyEvent: event: "key-press"];
-}
-
-- (void)keyUp:(NSEvent *) event;
-{
-  [self sendKeyEvent: event: "key-release"];
-}
-
-- (void)mouseDown:(NSEvent *) event;
-{
-  [self sendMouseEvent:event: "mouse-button-press"];
-}
-
-- (void)mouseUp:(NSEvent *) event;
-{
-  [self sendMouseEvent:event: "mouse-button-release"];
-}
-
-- (void)mouseMoved:(NSEvent *)event;
-{
-  [self sendMouseEvent:event: "mouse-move"];
-}
-
-- (void)mouseEntered:(NSEvent *)event;
-{
-}
-
-- (void)mouseExited:(NSEvent *)event;
-{
-}
-
 @end

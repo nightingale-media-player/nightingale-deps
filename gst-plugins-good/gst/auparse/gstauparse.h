@@ -60,6 +60,7 @@ struct _GstAuParse {
   guint       sample_size;
   guint       encoding;
   guint       samplerate;
+  guint       endianness;
   guint       channels;
 };
 

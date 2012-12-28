@@ -21,7 +21,7 @@
 #define __GST_RTP_AMR_DEPAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstrtpbasedepayload.h>
+#include <gst/rtp/gstbasertpdepayload.h>
 
 G_BEGIN_DECLS
 
@@ -47,7 +47,7 @@ typedef enum {
 
 struct _GstRtpAMRDepay
 {
-  GstRTPBaseDepayload depayload;
+  GstBaseRTPDepayload depayload;
 
   GstRtpAMRDepayMode mode;
 
@@ -65,10 +65,8 @@ struct _GstRtpAMRDepay
 
 struct _GstRtpAMRDepayClass
 {
-  GstRTPBaseDepayloadClass parent_class;
+  GstBaseRTPDepayloadClass parent_class;
 };
-
-GType gst_rtp_amr_depay_get_type (void);
 
 gboolean gst_rtp_amr_depay_plugin_init (GstPlugin * plugin);
 

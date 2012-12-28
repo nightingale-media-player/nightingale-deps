@@ -26,8 +26,6 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-#define CAPS_RGB "video/x-raw, format=RGB"
-#define CAPS_RGBA "video/x-raw, format=RGBA"
 #define WxH ",width=(int)319,height=(int)241"
 
 #define N_BUFFERS 5
@@ -102,11 +100,11 @@ check_message_pixbuf (GstMessage * msg, const gchar * name, gint channels,
     gboolean has_alpha)
 {
   GdkPixbuf *pixbuf;
-  const GstStructure *s;
+  GstStructure *s;
 
-  fail_unless (gst_message_get_structure (msg) != NULL);
+  fail_unless (msg->structure != NULL);
 
-  s = gst_message_get_structure (msg);
+  s = msg->structure;
   fail_unless_equals_string (gst_structure_get_name (s), name);
 
   fail_unless (gst_structure_has_field (s, "pixbuf"));
@@ -131,7 +129,7 @@ GST_START_TEST (test_rgb)
   GstBus *bus;
   gint i;
 
-  gdkpixbufsink_init_test_context (&ctx, CAPS_RGB WxH, N_BUFFERS);
+  gdkpixbufsink_init_test_context (&ctx, GST_VIDEO_CAPS_RGB WxH, N_BUFFERS);
 
   fail_unless (check_last_pixbuf (&ctx, NULL));
 
@@ -208,7 +206,7 @@ GST_START_TEST (test_rgba)
   GstBus *bus;
   gint i;
 
-  gdkpixbufsink_init_test_context (&ctx, CAPS_RGBA WxH, N_BUFFERS);
+  gdkpixbufsink_init_test_context (&ctx, GST_VIDEO_CAPS_RGBA WxH, N_BUFFERS);
 
   fail_unless (check_last_pixbuf (&ctx, NULL));
 

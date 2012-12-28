@@ -23,8 +23,8 @@
 
 #include <gst/gst.h>
 
-#include "multipartdemux.h"
-#include "multipartmux.h"
+extern gboolean gst_multipart_demux_plugin_init (GstPlugin * plugin);
+extern gboolean gst_multipart_mux_plugin_init (GstPlugin * plugin);
 
 static gboolean
 plugin_init (GstPlugin * plugin)
@@ -37,6 +37,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    multipart,
+    "multipart",
     "multipart stream manipulation",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

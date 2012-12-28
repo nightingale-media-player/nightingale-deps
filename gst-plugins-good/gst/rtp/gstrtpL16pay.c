@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include <gst/audio/audio.h>
+#include <gst/audio/multichannel.h>
 #include <gst/rtp/gstrtpbuffer.h>
 
 #include "gstrtpL16pay.h"
@@ -32,13 +33,22 @@
 GST_DEBUG_CATEGORY_STATIC (rtpL16pay_debug);
 #define GST_CAT_DEFAULT (rtpL16pay_debug)
 
+/* elementfactory information */
+static const GstElementDetails gst_rtp_L16_pay_details =
+GST_ELEMENT_DETAILS ("RTP audio payloader",
+    "Codec/Payloader/Network",
+    "Payload-encode Raw audio into RTP packets (RFC 3551)",
+    "Wim Taymans <wim.taymans@gmail.com>");
+
 static GstStaticPadTemplate gst_rtp_L16_pay_sink_template =
 GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw, "
-        "format = (string) S16BE, "
-        "layout = (string) interleaved, "
+    GST_STATIC_CAPS ("audio/x-raw-int, "
+        "endianness = (int) BIG_ENDIAN, "
+        "signed = (boolean) true, "
+        "width = (int) 16, "
+        "depth = (int) 16, "
         "rate = (int) [ 1, MAX ], " "channels = (int) [ 1, MAX ]")
     );
 
@@ -64,39 +74,74 @@ static GstStaticPadTemplate gst_rtp_L16_pay_src_template =
         "clock-rate = (int) 44100")
     );
 
-static gboolean gst_rtp_L16_pay_setcaps (GstRTPBasePayload * basepayload,
-    GstCaps * caps);
-static GstCaps *gst_rtp_L16_pay_getcaps (GstRTPBasePayload * rtppayload,
-    GstPad * pad, GstCaps * filter);
-static GstFlowReturn
-gst_rtp_L16_pay_handle_buffer (GstRTPBasePayload * basepayload,
-    GstBuffer * buffer);
+static void gst_rtp_L16_pay_class_init (GstRtpL16PayClass * klass);
+static void gst_rtp_L16_pay_base_init (GstRtpL16PayClass * klass);
+static void gst_rtp_L16_pay_init (GstRtpL16Pay * rtpL16pay);
+static void gst_rtp_L16_pay_finalize (GObject * object);
 
-#define gst_rtp_L16_pay_parent_class parent_class
-G_DEFINE_TYPE (GstRtpL16Pay, gst_rtp_L16_pay, GST_TYPE_RTP_BASE_AUDIO_PAYLOAD);
+static gboolean gst_rtp_L16_pay_setcaps (GstBaseRTPPayload * basepayload,
+    GstCaps * caps);
+static GstFlowReturn gst_rtp_L16_pay_handle_buffer (GstBaseRTPPayload * pad,
+    GstBuffer * buffer);
+static GstCaps *gst_rtp_L16_pay_getcaps (GstBaseRTPPayload * rtppayload,
+    GstPad * pad);
+
+static GstBaseRTPPayloadClass *parent_class = NULL;
+
+static GType
+gst_rtp_L16_pay_get_type (void)
+{
+  static GType rtpL16pay_type = 0;
+
+  if (!rtpL16pay_type) {
+    static const GTypeInfo rtpL16pay_info = {
+      sizeof (GstRtpL16PayClass),
+      (GBaseInitFunc) gst_rtp_L16_pay_base_init,
+      NULL,
+      (GClassInitFunc) gst_rtp_L16_pay_class_init,
+      NULL,
+      NULL,
+      sizeof (GstRtpL16Pay),
+      0,
+      (GInstanceInitFunc) gst_rtp_L16_pay_init,
+    };
+
+    rtpL16pay_type =
+        g_type_register_static (GST_TYPE_BASE_RTP_PAYLOAD, "GstRtpL16Pay",
+        &rtpL16pay_info, 0);
+  }
+  return rtpL16pay_type;
+}
+
+static void
+gst_rtp_L16_pay_base_init (GstRtpL16PayClass * klass)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&gst_rtp_L16_pay_src_template));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&gst_rtp_L16_pay_sink_template));
+
+  gst_element_class_set_details (element_class, &gst_rtp_L16_pay_details);
+}
 
 static void
 gst_rtp_L16_pay_class_init (GstRtpL16PayClass * klass)
 {
-  GstElementClass *gstelement_class;
-  GstRTPBasePayloadClass *gstrtpbasepayload_class;
+  GObjectClass *gobject_class;
+  GstBaseRTPPayloadClass *gstbasertppayload_class;
 
-  gstelement_class = (GstElementClass *) klass;
-  gstrtpbasepayload_class = (GstRTPBasePayloadClass *) klass;
+  gobject_class = (GObjectClass *) klass;
+  gstbasertppayload_class = (GstBaseRTPPayloadClass *) klass;
 
-  gstrtpbasepayload_class->set_caps = gst_rtp_L16_pay_setcaps;
-  gstrtpbasepayload_class->get_caps = gst_rtp_L16_pay_getcaps;
-  gstrtpbasepayload_class->handle_buffer = gst_rtp_L16_pay_handle_buffer;
+  parent_class = g_type_class_peek_parent (klass);
 
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&gst_rtp_L16_pay_src_template));
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&gst_rtp_L16_pay_sink_template));
+  gobject_class->finalize = gst_rtp_L16_pay_finalize;
 
-  gst_element_class_set_static_metadata (gstelement_class,
-      "RTP audio payloader", "Codec/Payloader/Network/RTP",
-      "Payload-encode Raw audio into RTP packets (RFC 3551)",
-      "Wim Taymans <wim.taymans@gmail.com>");
+  gstbasertppayload_class->set_caps = gst_rtp_L16_pay_setcaps;
+  gstbasertppayload_class->get_caps = gst_rtp_L16_pay_getcaps;
+  gstbasertppayload_class->handle_buffer = gst_rtp_L16_pay_handle_buffer;
 
   GST_DEBUG_CATEGORY_INIT (rtpL16pay_debug, "rtpL16pay", 0,
       "L16 RTP Payloader");
@@ -105,80 +150,177 @@ gst_rtp_L16_pay_class_init (GstRtpL16PayClass * klass)
 static void
 gst_rtp_L16_pay_init (GstRtpL16Pay * rtpL16pay)
 {
-  GstRTPBaseAudioPayload *rtpbaseaudiopayload;
+  rtpL16pay->adapter = gst_adapter_new ();
+}
 
-  rtpbaseaudiopayload = GST_RTP_BASE_AUDIO_PAYLOAD (rtpL16pay);
+static void
+gst_rtp_L16_pay_finalize (GObject * object)
+{
+  GstRtpL16Pay *rtpL16pay;
 
-  /* tell rtpbaseaudiopayload that this is a sample based codec */
-  gst_rtp_base_audio_payload_set_sample_based (rtpbaseaudiopayload);
+  rtpL16pay = GST_RTP_L16_PAY (object);
+
+  g_object_unref (rtpL16pay->adapter);
+  rtpL16pay->adapter = NULL;
+
+  G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static gboolean
-gst_rtp_L16_pay_setcaps (GstRTPBasePayload * basepayload, GstCaps * caps)
+gst_rtp_L16_pay_setcaps (GstBaseRTPPayload * basepayload, GstCaps * caps)
 {
   GstRtpL16Pay *rtpL16pay;
+  GstStructure *structure;
+  gint channels, rate;
   gboolean res;
   gchar *params;
-  GstAudioInfo *info;
+  GstAudioChannelPosition *pos;
   const GstRTPChannelOrder *order;
-  GstRTPBaseAudioPayload *rtpbaseaudiopayload;
 
-  rtpbaseaudiopayload = GST_RTP_BASE_AUDIO_PAYLOAD (basepayload);
   rtpL16pay = GST_RTP_L16_PAY (basepayload);
 
-  info = &rtpL16pay->info;
-  gst_audio_info_init (info);
-  if (!gst_audio_info_from_caps (info, caps))
-    goto invalid_caps;
+  structure = gst_caps_get_structure (caps, 0);
 
-  order = gst_rtp_channels_get_by_pos (info->channels, info->position);
-  rtpL16pay->order = order;
+  /* first parse input caps */
+  if (!gst_structure_get_int (structure, "rate", &rate))
+    goto no_rate;
 
-  gst_rtp_base_payload_set_options (basepayload, "audio", TRUE, "L16",
-      info->rate);
-  params = g_strdup_printf ("%d", info->channels);
+  if (!gst_structure_get_int (structure, "channels", &channels))
+    goto no_channels;
 
-  if (!order && info->channels > 2) {
+  /* get the channel order */
+  pos = gst_audio_get_channel_positions (structure);
+  if (pos)
+    order = gst_rtp_channels_get_by_pos (channels, pos);
+  else
+    order = NULL;
+
+  gst_basertppayload_set_options (basepayload, "audio", TRUE, "L16", rate);
+  params = g_strdup_printf ("%d", channels);
+
+  if (!order && channels > 2) {
     GST_ELEMENT_WARNING (rtpL16pay, STREAM, DECODE,
-        (NULL), ("Unknown channel order for %d channels", info->channels));
+        (NULL), ("Unknown channel order for %d channels", channels));
   }
 
   if (order && order->name) {
-    res = gst_rtp_base_payload_set_outcaps (basepayload,
+    res = gst_basertppayload_set_outcaps (basepayload,
         "encoding-params", G_TYPE_STRING, params, "channels", G_TYPE_INT,
-        info->channels, "channel-order", G_TYPE_STRING, order->name, NULL);
+        channels, "channel-order", G_TYPE_STRING, order->name, NULL);
   } else {
-    res = gst_rtp_base_payload_set_outcaps (basepayload,
+    res = gst_basertppayload_set_outcaps (basepayload,
         "encoding-params", G_TYPE_STRING, params, "channels", G_TYPE_INT,
-        info->channels, NULL);
+        channels, NULL);
   }
 
   g_free (params);
+  g_free (pos);
 
-  /* octet-per-sample is 2 * channels for L16 */
-  gst_rtp_base_audio_payload_set_sample_options (rtpbaseaudiopayload,
-      2 * info->channels);
+  rtpL16pay->rate = rate;
+  rtpL16pay->channels = channels;
 
   return res;
 
   /* ERRORS */
-invalid_caps:
+no_rate:
   {
-    GST_DEBUG_OBJECT (rtpL16pay, "invalid caps");
+    GST_DEBUG_OBJECT (rtpL16pay, "no rate given");
+    return FALSE;
+  }
+no_channels:
+  {
+    GST_DEBUG_OBJECT (rtpL16pay, "no channels given");
     return FALSE;
   }
 }
 
+static GstFlowReturn
+gst_rtp_L16_pay_flush (GstRtpL16Pay * rtpL16pay, guint len)
+{
+  GstBuffer *outbuf;
+  guint8 *payload;
+  GstFlowReturn ret;
+  guint samples;
+  GstClockTime duration;
+
+  /* calculate the amount of samples and round down the length */
+  samples = len / (2 * rtpL16pay->channels);
+  len = samples * (2 * rtpL16pay->channels);
+
+  /* now alloc output buffer */
+  outbuf = gst_rtp_buffer_new_allocate (len, 0, 0);
+
+  /* get payload, this is now writable */
+  payload = gst_rtp_buffer_get_payload (outbuf);
+
+  /* copy and flush data out of adapter into the RTP payload */
+  gst_adapter_copy (rtpL16pay->adapter, payload, 0, len);
+  gst_adapter_flush (rtpL16pay->adapter, len);
+
+  duration = gst_util_uint64_scale_int (samples, GST_SECOND, rtpL16pay->rate);
+
+  GST_BUFFER_TIMESTAMP (outbuf) = rtpL16pay->first_ts;
+  GST_BUFFER_DURATION (outbuf) = duration;
+
+  /* increase count (in ts) of data pushed to basertppayload */
+  if (GST_CLOCK_TIME_IS_VALID (rtpL16pay->first_ts))
+    rtpL16pay->first_ts += duration;
+
+  ret = gst_basertppayload_push (GST_BASE_RTP_PAYLOAD (rtpL16pay), outbuf);
+
+  return ret;
+}
+
+static GstFlowReturn
+gst_rtp_L16_pay_handle_buffer (GstBaseRTPPayload * basepayload,
+    GstBuffer * buffer)
+{
+  GstRtpL16Pay *rtpL16pay;
+  GstFlowReturn ret = GST_FLOW_OK;
+  guint payload_len;
+  GstClockTime timestamp;
+  guint mtu, avail;
+
+  rtpL16pay = GST_RTP_L16_PAY (basepayload);
+  mtu = GST_BASE_RTP_PAYLOAD_MTU (rtpL16pay);
+
+  timestamp = GST_BUFFER_TIMESTAMP (buffer);
+
+  if (GST_BUFFER_IS_DISCONT (buffer))
+    gst_adapter_clear (rtpL16pay->adapter);
+
+  avail = gst_adapter_available (rtpL16pay->adapter);
+  if (avail == 0) {
+    rtpL16pay->first_ts = timestamp;
+  }
+
+  /* push buffer in adapter */
+  gst_adapter_push (rtpL16pay->adapter, buffer);
+
+  /* get payload len for MTU */
+  payload_len = gst_rtp_buffer_calc_payload_len (mtu, 0, 0);
+
+  /* flush complete MTU while we have enough data in the adapter */
+  while (avail >= payload_len) {
+    /* flush payload_len bytes */
+    ret = gst_rtp_L16_pay_flush (rtpL16pay, payload_len);
+    if (ret != GST_FLOW_OK)
+      break;
+
+    avail = gst_adapter_available (rtpL16pay->adapter);
+  }
+  return ret;
+}
+
 static GstCaps *
-gst_rtp_L16_pay_getcaps (GstRTPBasePayload * rtppayload, GstPad * pad,
-    GstCaps * filter)
+gst_rtp_L16_pay_getcaps (GstBaseRTPPayload * rtppayload, GstPad * pad)
 {
   GstCaps *otherpadcaps;
   GstCaps *caps;
 
-  caps = gst_pad_get_pad_template_caps (pad);
-
   otherpadcaps = gst_pad_get_allowed_caps (rtppayload->srcpad);
+  caps = gst_caps_copy (gst_pad_get_pad_template_caps (pad));
+
   if (otherpadcaps) {
     if (!gst_caps_is_empty (otherpadcaps)) {
       GstStructure *structure;
@@ -187,7 +329,6 @@ gst_rtp_L16_pay_getcaps (GstRTPBasePayload * rtppayload, GstPad * pad,
       gint rate;
 
       structure = gst_caps_get_structure (otherpadcaps, 0);
-      caps = gst_caps_make_writable (caps);
 
       if (gst_structure_get_int (structure, "channels", &channels)) {
         gst_caps_set_simple (caps, "channels", G_TYPE_INT, channels, NULL);
@@ -208,40 +349,12 @@ gst_rtp_L16_pay_getcaps (GstRTPBasePayload * rtppayload, GstPad * pad,
     }
     gst_caps_unref (otherpadcaps);
   }
-
-  if (filter) {
-    GstCaps *tcaps = caps;
-
-    caps = gst_caps_intersect_full (filter, tcaps, GST_CAPS_INTERSECT_FIRST);
-    gst_caps_unref (tcaps);
-  }
-
   return caps;
-}
-
-static GstFlowReturn
-gst_rtp_L16_pay_handle_buffer (GstRTPBasePayload * basepayload,
-    GstBuffer * buffer)
-{
-  GstRtpL16Pay *rtpL16pay;
-
-  rtpL16pay = GST_RTP_L16_PAY (basepayload);
-  buffer = gst_buffer_make_writable (buffer);
-
-  if (rtpL16pay->order &&
-      !gst_audio_buffer_reorder_channels (buffer, rtpL16pay->info.finfo->format,
-          rtpL16pay->info.channels, rtpL16pay->info.position,
-          rtpL16pay->order->pos)) {
-    return GST_FLOW_ERROR;
-  }
-
-  return GST_RTP_BASE_PAYLOAD_CLASS (parent_class)->handle_buffer (basepayload,
-      buffer);
 }
 
 gboolean
 gst_rtp_L16_pay_plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "rtpL16pay",
-      GST_RANK_SECONDARY, GST_TYPE_RTP_L16_PAY);
+      GST_RANK_NONE, GST_TYPE_RTP_L16_PAY);
 }

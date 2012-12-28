@@ -21,7 +21,6 @@
 #ifndef __GST_NAVIGATIONTEST_H__
 #define __GST_NAVIGATIONTEST_H__
 
-#include <gst/video/video.h>
 #include <gst/video/gstvideofilter.h>
 
 G_BEGIN_DECLS
@@ -50,7 +49,11 @@ struct _GstNavigationtest
 {
   GstVideoFilter videofilter;
 
+  gint width, height;
+
+  GValue framerate;
   gdouble x, y;
+
   GSList *clicks;
 };
 

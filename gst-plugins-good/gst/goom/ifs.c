@@ -177,8 +177,8 @@ Random_Simis (PluginInfo * goomInfo, FRACTAL * F, SIMI * Cur, int i)
     Cur->c_y = Gauss_Rand (goomInfo, 0.0, .8, 4.0);
     Cur->r = Gauss_Rand (goomInfo, F->r_mean, F->dr_mean, 3.0);
     Cur->r2 = Half_Gauss_Rand (goomInfo, 0.0, F->dr2_mean, 2.0);
-    Cur->A = Gauss_Rand (goomInfo, 0.0, 360.0, 4.0) * (G_PI / 180.0);
-    Cur->A2 = Gauss_Rand (goomInfo, 0.0, 360.0, 4.0) * (G_PI / 180.0);
+    Cur->A = Gauss_Rand (goomInfo, 0.0, 360.0, 4.0) * (M_PI / 180.0);
+    Cur->A2 = Gauss_Rand (goomInfo, 0.0, 360.0, 4.0) * (M_PI / 180.0);
     Cur++;
   }
 }
@@ -762,13 +762,15 @@ ifs_vfx_free (VisualFX * _this)
   free (data);
 }
 
-void
-ifs_visualfx_create (VisualFX * vfx)
+VisualFX
+ifs_visualfx_create (void)
 {
+  VisualFX vfx;
 
-  vfx->init = ifs_vfx_init;
-  vfx->free = ifs_vfx_free;
-  vfx->apply = ifs_vfx_apply;
-  vfx->fx_data = NULL;
-  vfx->params = NULL;
+  vfx.init = ifs_vfx_init;
+  vfx.free = ifs_vfx_free;
+  vfx.apply = ifs_vfx_apply;
+  vfx.fx_data = NULL;
+  vfx.params = NULL;
+  return vfx;
 }

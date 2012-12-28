@@ -22,7 +22,7 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstadapter.h>
-#include <gst/rtp/gstrtpbasedepayload.h>
+#include <gst/rtp/gstbasertpdepayload.h>
 
 G_BEGIN_DECLS
 
@@ -47,23 +47,19 @@ typedef struct _GstRtpTheoraConfig {
 
 struct _GstRtpTheoraDepay
 {
-  GstRTPBaseDepayload parent;
+  GstBaseRTPDepayload parent;
 
   GList              *configs;
   GstRtpTheoraConfig *config;
 
   GstAdapter         *adapter;
   gboolean            assembling;
-
-  gboolean            needs_keyframe;
 };
 
 struct _GstRtpTheoraDepayClass
 {
-  GstRTPBaseDepayloadClass parent_class;
+  GstBaseRTPDepayloadClass parent_class;
 };
-
-GType gst_rtp_theora_depay_get_type (void);
 
 gboolean gst_rtp_theora_depay_plugin_init (GstPlugin * plugin);
 

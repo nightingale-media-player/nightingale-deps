@@ -23,8 +23,6 @@
 
 
 #include <gst/gst.h>
-#include <gst/video/video.h>
-
 #include <libdv/dv.h>
 
 
@@ -65,7 +63,6 @@ struct _GstDVDec {
 
   /* input caps */
   gboolean       sink_negotiated;
-  GstVideoInfo   vinfo;
   gint           framerate_numerator;
   gint           framerate_denominator;
   gint           height;
@@ -81,8 +78,7 @@ struct _GstDVDec {
   gint           video_offset;
   gint           drop_factor;
 
-  GstBufferPool *pool;
-  GstSegment     segment;
+  GstSegment	*segment;
 };
 
 struct _GstDVDecClass {

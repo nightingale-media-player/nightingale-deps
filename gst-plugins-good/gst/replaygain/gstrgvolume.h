@@ -74,6 +74,8 @@ struct _GstRgVolume
   gboolean has_album_peak;
 
   gdouble reference_level;
+
+  gboolean got_newsegment;
 };
 
 struct _GstRgVolumeClass

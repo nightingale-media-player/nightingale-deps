@@ -22,8 +22,7 @@
 
 #include <gst/gst.h>
 #include <gst/rtp/gstrtcpbuffer.h>
-#include <gst/net/gstnetaddressmeta.h>
-#include <gio/gio.h>
+#include <gst/netbuffer/gstnetbuffer.h>
 
 #include "rtpstats.h"
 
@@ -72,7 +71,7 @@ typedef struct _RTPSourceClass RTPSourceClass;
  *
  * Returns: a #GstFlowReturn.
  */
-typedef GstFlowReturn (*RTPSourcePushRTP) (RTPSource *src, GstBuffer *buffer,
+typedef GstFlowReturn (*RTPSourcePushRTP) (RTPSource *src, GstBuffer *buffer, 
 	gpointer user_data);
 
 /**
@@ -102,24 +101,9 @@ typedef struct {
 } RTPSourceCallbacks;
 
 /**
- * RTPConflictingAddress:
- * @address: #GSocketAddress which conflicted
- * @last_conflict_time: time when the last conflict was seen
- *
- * This structure is used to account for addresses that have conflicted to find
- * loops.
- */
-typedef struct {
-  GSocketAddress *address;
-  GstClockTime time;
-} RTPConflictingAddress;
-
-/**
  * RTPSource:
  *
  * A source in the #RTPSession
- *
- * @conflicting_addresses: GList of conflicting addresses
  */
 struct _RTPSource {
   GObject       object;
@@ -127,21 +111,22 @@ struct _RTPSource {
   /*< private >*/
   guint32       ssrc;
 
-  guint         probation;
-  guint         curr_probation;
+  gint          probation;
   gboolean      validated;
   gboolean      internal;
   gboolean      is_csrc;
   gboolean      is_sender;
-  gboolean      closing;
 
-  GstStructure  *sdes;
+  guint8       *sdes[9];
+  guint         sdes_len[9];
 
   gboolean      received_bye;
   gchar        *bye_reason;
 
-  GSocketAddress *rtp_from;
-  GSocketAddress *rtcp_from;
+  gboolean      have_rtp_from;
+  GstNetAddress rtp_from;
+  gboolean      have_rtcp_from;
+  GstNetAddress rtcp_from;
 
   gint          payload;
   GstCaps      *caps;
@@ -152,14 +137,13 @@ struct _RTPSource {
   GstClockTime  last_activity;
   GstClockTime  last_rtp_activity;
 
-  GstClockTime  last_rtime;
   GstClockTime  last_rtptime;
+  GstClockTime  last_ntpnstime;
 
   /* for bitrate estimation */
   guint64       bitrate;
-  GstClockTime  prev_rtime;
+  GstClockTime  prev_ntpnstime;
   guint64       bytes_sent;
-  guint64       bytes_received;
 
   GQueue       *packets;
 
@@ -167,16 +151,6 @@ struct _RTPSource {
   gpointer           user_data;
 
   RTPSourceStats stats;
-  RTPReceiverReport last_rr;
-
-  GList         *conflicting_addresses;
-
-  GQueue        *retained_feedback;
-
-  gboolean     send_pli;
-  gboolean     send_fir;
-  guint8       current_send_fir_seqnum;
-  gint         last_fir_count;
 };
 
 struct _RTPSourceClass {
@@ -205,32 +179,36 @@ gchar *         rtp_source_get_bye_reason      (RTPSource *src);
 void            rtp_source_update_caps         (RTPSource *src, GstCaps *caps);
 
 /* SDES info */
+gboolean        rtp_source_set_sdes            (RTPSource *src, GstRTCPSDESType type, 
+                                                const guint8 *data, guint len);
 gboolean        rtp_source_set_sdes_string     (RTPSource *src, GstRTCPSDESType type,
                                                 const gchar *data);
+gboolean        rtp_source_get_sdes            (RTPSource *src, GstRTCPSDESType type,
+                                                guint8 **data, guint *len);
 gchar*          rtp_source_get_sdes_string     (RTPSource *src, GstRTCPSDESType type);
-const GstStructure *
-                rtp_source_get_sdes_struct     (RTPSource * src);
-gboolean        rtp_source_set_sdes_struct     (RTPSource * src, GstStructure *sdes);
+
+GstStructure *  rtp_source_get_sdes_struct     (RTPSource * src);
+void            rtp_source_set_sdes_struct     (RTPSource * src, const GstStructure *sdes);
 
 /* handling network address */
-void            rtp_source_set_rtp_from        (RTPSource *src, GSocketAddress *address);
-void            rtp_source_set_rtcp_from       (RTPSource *src, GSocketAddress *address);
+void            rtp_source_set_rtp_from        (RTPSource *src, GstNetAddress *address);
+void            rtp_source_set_rtcp_from       (RTPSource *src, GstNetAddress *address);
 
 /* handling RTP */
 GstFlowReturn   rtp_source_process_rtp         (RTPSource *src, GstBuffer *buffer, RTPArrivalStats *arrival);
 
-GstFlowReturn   rtp_source_send_rtp            (RTPSource *src, gpointer data, gboolean is_list,
-                                                GstClockTime running_time);
+GstFlowReturn   rtp_source_send_rtp            (RTPSource *src, gpointer data, gboolean is_list, guint64 ntpnstime);
+
 /* RTCP messages */
 void            rtp_source_process_bye         (RTPSource *src, const gchar *reason);
 void            rtp_source_process_sr          (RTPSource *src, GstClockTime time, guint64 ntptime,
                                                 guint32 rtptime, guint32 packet_count, guint32 octet_count);
-void            rtp_source_process_rb          (RTPSource *src, guint64 ntpnstime, guint8 fractionlost,
+void            rtp_source_process_rb          (RTPSource *src, GstClockTime time, guint8 fractionlost,
                                                 gint32 packetslost, guint32 exthighestseq, guint32 jitter,
                                                 guint32 lsr, guint32 dlsr);
 
-gboolean        rtp_source_get_new_sr          (RTPSource *src, guint64 ntpnstime, GstClockTime running_time,
-                                                guint64 *ntptime, guint32 *rtptime, guint32 *packet_count,
+gboolean        rtp_source_get_new_sr          (RTPSource *src, guint64 ntpnstime, guint64 *ntptime,
+		                                guint32 *rtptime, guint32 *packet_count,
 						guint32 *octet_count);
 gboolean        rtp_source_get_new_rb          (RTPSource *src, GstClockTime time, guint8 *fractionlost,
                                                 gint32 *packetslost, guint32 *exthighestseq, guint32 *jitter,
@@ -244,27 +222,5 @@ gboolean        rtp_source_get_last_rb         (RTPSource *src, guint8 *fraction
                                                 guint32 *lsr, guint32 *dlsr, guint32 *round_trip);
 
 void            rtp_source_reset               (RTPSource * src);
-
-gboolean        rtp_source_find_conflicting_address (RTPSource * src,
-                                                GSocketAddress *address,
-                                                GstClockTime time);
-
-void            rtp_source_add_conflicting_address (RTPSource * src,
-                                                GSocketAddress *address,
-                                                GstClockTime time);
-
-void            rtp_source_timeout             (RTPSource * src,
-                                                GstClockTime current_time,
-                                                GstClockTime collision_timeout,
-                                                GstClockTime feedback_retention_window);
-
-void            rtp_source_retain_rtcp_packet  (RTPSource * src,
-                                                GstRTCPPacket *pkt,
-                                                GstClockTime running_time);
-
-gboolean        rtp_source_has_retained        (RTPSource * src,
-                                                GCompareFunc func,
-                                                gconstpointer data);
-
 
 #endif /* __RTP_SOURCE_H__ */

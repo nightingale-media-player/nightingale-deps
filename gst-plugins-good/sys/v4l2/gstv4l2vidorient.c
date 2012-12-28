@@ -29,6 +29,7 @@
 #include "gstv4l2vidorient.h"
 #include "gstv4l2object.h"
 #include "v4l2_calls.h"
+#include "v4l2src_calls.h"
 
 GST_DEBUG_CATEGORY_STATIC (v4l2vo_debug);
 #define GST_CAT_DEFAULT v4l2vo_debug
@@ -42,7 +43,7 @@ GST_DEBUG_CATEGORY_STATIC (v4l2vo_debug);
 #endif
 
 void
-gst_v4l2_video_orientation_interface_init (GstVideoOrientationInterface * iface)
+gst_v4l2_video_orientation_interface_init (GstVideoOrientationInterface * klass)
 {
   GST_DEBUG_CATEGORY_INIT (v4l2vo_debug, "v4l2vo", 0,
       "V4L2 VideoOrientation interface debugging");

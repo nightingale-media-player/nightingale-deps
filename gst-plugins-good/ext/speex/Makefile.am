@@ -1,14 +1,12 @@
 plugin_LTLIBRARIES = libgstspeex.la
 
 libgstspeex_la_SOURCES = gstspeex.c gstspeexdec.c gstspeexenc.c
-libgstspeex_la_CFLAGS = -DGST_USE_UNSTABLE_API \
+libgstspeex_la_CFLAGS = \
 	$(GST_PLUGINS_BASE_CFLAGS) \
-	$(GST_BASE_CFLAGS) \
 	$(GST_CFLAGS) \
 	$(SPEEX_CFLAGS)
 libgstspeex_la_LIBADD = \
-	$(GST_PLUGINS_BASE_LIBS) \
-	-lgsttag-$(GST_API_VERSION) -lgstaudio-$(GST_API_VERSION) \
+	$(GST_PLUGINS_BASE_LIBS) -lgsttag-$(GST_MAJORMINOR) \
 	$(GST_BASE_LIBS) \
 	$(GST_LIBS) \
 	$(SPEEX_LIBS)

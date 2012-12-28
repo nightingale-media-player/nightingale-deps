@@ -42,6 +42,12 @@ enum
   PROP_LAST
 };
 
+static const GstElementDetails gst_rtp_g726_pay_details =
+GST_ELEMENT_DETAILS ("RTP G.726 payloader",
+    "Codec/Payloader/Network",
+    "Payload-encodes G.726 audio into a RTP packet",
+    "Axis Communications <dev-gstreamer@axis.com>");
+
 static GstStaticPadTemplate gst_rtp_g726_pay_sink_template =
 GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
@@ -70,25 +76,34 @@ static void gst_rtp_g726_pay_get_property (GObject * object, guint prop_id,
 static void gst_rtp_g726_pay_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 
-static gboolean gst_rtp_g726_pay_setcaps (GstRTPBasePayload * payload,
+static gboolean gst_rtp_g726_pay_setcaps (GstBaseRTPPayload * payload,
     GstCaps * caps);
-static GstFlowReturn gst_rtp_g726_pay_handle_buffer (GstRTPBasePayload *
+static GstFlowReturn gst_rtp_g726_pay_handle_buffer (GstBaseRTPPayload *
     payload, GstBuffer * buffer);
 
-#define gst_rtp_g726_pay_parent_class parent_class
-G_DEFINE_TYPE (GstRtpG726Pay, gst_rtp_g726_pay,
-    GST_TYPE_RTP_BASE_AUDIO_PAYLOAD);
+GST_BOILERPLATE (GstRtpG726Pay, gst_rtp_g726_pay, GstBaseRTPAudioPayload,
+    GST_TYPE_BASE_RTP_AUDIO_PAYLOAD);
+
+static void
+gst_rtp_g726_pay_base_init (gpointer klass)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&gst_rtp_g726_pay_sink_template));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&gst_rtp_g726_pay_src_template));
+  gst_element_class_set_details (element_class, &gst_rtp_g726_pay_details);
+}
 
 static void
 gst_rtp_g726_pay_class_init (GstRtpG726PayClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
-  GstRTPBasePayloadClass *gstrtpbasepayload_class;
+  GstBaseRTPPayloadClass *gstbasertppayload_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
-  gstrtpbasepayload_class = (GstRTPBasePayloadClass *) klass;
+  gstbasertppayload_class = (GstBaseRTPPayloadClass *) klass;
 
   gobject_class->set_property = gst_rtp_g726_pay_set_property;
   gobject_class->get_property = gst_rtp_g726_pay_get_property;
@@ -98,49 +113,38 @@ gst_rtp_g726_pay_class_init (GstRtpG726PayClass * klass)
           "Force AAL2 encoding for compatibility with bad depayloaders",
           DEFAULT_FORCE_AAL2, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&gst_rtp_g726_pay_sink_template));
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&gst_rtp_g726_pay_src_template));
-
-  gst_element_class_set_static_metadata (gstelement_class,
-      "RTP G.726 payloader", "Codec/Payloader/Network/RTP",
-      "Payload-encodes G.726 audio into a RTP packet",
-      "Axis Communications <dev-gstreamer@axis.com>");
-
-  gstrtpbasepayload_class->set_caps = gst_rtp_g726_pay_setcaps;
-  gstrtpbasepayload_class->handle_buffer = gst_rtp_g726_pay_handle_buffer;
+  gstbasertppayload_class->set_caps = gst_rtp_g726_pay_setcaps;
+  gstbasertppayload_class->handle_buffer = gst_rtp_g726_pay_handle_buffer;
 
   GST_DEBUG_CATEGORY_INIT (rtpg726pay_debug, "rtpg726pay", 0,
       "G.726 RTP Payloader");
 }
 
 static void
-gst_rtp_g726_pay_init (GstRtpG726Pay * rtpg726pay)
+gst_rtp_g726_pay_init (GstRtpG726Pay * rtpg726pay, GstRtpG726PayClass * klass)
 {
-  GstRTPBaseAudioPayload *rtpbaseaudiopayload;
+  GstBaseRTPAudioPayload *basertpaudiopayload;
 
-  rtpbaseaudiopayload = GST_RTP_BASE_AUDIO_PAYLOAD (rtpg726pay);
+  basertpaudiopayload = GST_BASE_RTP_AUDIO_PAYLOAD (rtpg726pay);
 
-  GST_RTP_BASE_PAYLOAD (rtpg726pay)->clock_rate = 8000;
+  GST_BASE_RTP_PAYLOAD (rtpg726pay)->clock_rate = 8000;
 
   rtpg726pay->force_aal2 = DEFAULT_FORCE_AAL2;
 
   /* sample based codec */
-  gst_rtp_base_audio_payload_set_sample_based (rtpbaseaudiopayload);
+  gst_base_rtp_audio_payload_set_sample_based (basertpaudiopayload);
 }
 
 static gboolean
-gst_rtp_g726_pay_setcaps (GstRTPBasePayload * payload, GstCaps * caps)
+gst_rtp_g726_pay_setcaps (GstBaseRTPPayload * payload, GstCaps * caps)
 {
   gchar *encoding_name;
   GstStructure *structure;
-  GstRTPBaseAudioPayload *rtpbaseaudiopayload;
+  GstBaseRTPAudioPayload *basertpaudiopayload;
   GstRtpG726Pay *pay;
   GstCaps *peercaps;
-  gboolean res;
 
-  rtpbaseaudiopayload = GST_RTP_BASE_AUDIO_PAYLOAD (payload);
+  basertpaudiopayload = GST_BASE_RTP_AUDIO_PAYLOAD (payload);
   pay = GST_RTP_G726_PAY (payload);
 
   structure = gst_caps_get_structure (caps, 0);
@@ -156,22 +160,22 @@ gst_rtp_g726_pay_setcaps (GstRTPBasePayload * payload, GstCaps * caps)
   switch (pay->bitrate) {
     case 16000:
       encoding_name = g_strdup ("G726-16");
-      gst_rtp_base_audio_payload_set_samplebits_options (rtpbaseaudiopayload,
+      gst_base_rtp_audio_payload_set_samplebits_options (basertpaudiopayload,
           2);
       break;
     case 24000:
       encoding_name = g_strdup ("G726-24");
-      gst_rtp_base_audio_payload_set_samplebits_options (rtpbaseaudiopayload,
+      gst_base_rtp_audio_payload_set_samplebits_options (basertpaudiopayload,
           3);
       break;
     case 32000:
       encoding_name = g_strdup ("G726-32");
-      gst_rtp_base_audio_payload_set_samplebits_options (rtpbaseaudiopayload,
+      gst_base_rtp_audio_payload_set_samplebits_options (basertpaudiopayload,
           4);
       break;
     case 40000:
       encoding_name = g_strdup ("G726-40");
-      gst_rtp_base_audio_payload_set_samplebits_options (rtpbaseaudiopayload,
+      gst_base_rtp_audio_payload_set_samplebits_options (basertpaudiopayload,
           5);
       break;
     default:
@@ -181,7 +185,7 @@ gst_rtp_g726_pay_setcaps (GstRTPBasePayload * payload, GstCaps * caps)
   GST_DEBUG_OBJECT (payload, "selected base encoding %s", encoding_name);
 
   /* now see if we need to produce AAL2 or not */
-  peercaps = gst_pad_peer_query_caps (payload->srcpad, NULL);
+  peercaps = gst_pad_peer_get_caps (payload->srcpad);
   if (peercaps) {
     GstCaps *filter, *intersect;
     gchar *capsstr;
@@ -237,13 +241,12 @@ gst_rtp_g726_pay_setcaps (GstRTPBasePayload * payload, GstCaps * caps)
     GST_DEBUG_OBJECT (payload, "no peer caps, AAL2 %d", pay->aal2);
   }
 
-  gst_rtp_base_payload_set_options (payload, "audio", TRUE, encoding_name,
-      8000);
-  res = gst_rtp_base_payload_set_outcaps (payload, NULL);
+  gst_basertppayload_set_options (payload, "audio", TRUE, encoding_name, 8000);
+  gst_basertppayload_set_outcaps (payload, NULL);
 
   g_free (encoding_name);
 
-  return res;
+  return TRUE;
 
   /* ERRORS */
 invalid_bitrate:
@@ -259,7 +262,7 @@ no_format:
 }
 
 static GstFlowReturn
-gst_rtp_g726_pay_handle_buffer (GstRTPBasePayload * payload, GstBuffer * buffer)
+gst_rtp_g726_pay_handle_buffer (GstBaseRTPPayload * payload, GstBuffer * buffer)
 {
   GstFlowReturn res;
   GstRtpG726Pay *pay;
@@ -267,19 +270,17 @@ gst_rtp_g726_pay_handle_buffer (GstRTPBasePayload * payload, GstBuffer * buffer)
   pay = GST_RTP_G726_PAY (payload);
 
   if (!pay->aal2) {
-    GstMapInfo map;
     guint8 *data, tmp;
-    gsize size;
+    guint len;
 
     /* for non AAL2, we need to reshuffle the bytes, we can do this in-place
      * when the buffer is writable. */
     buffer = gst_buffer_make_writable (buffer);
 
-    gst_buffer_map (buffer, &map, GST_MAP_READWRITE);
-    data = map.data;
-    size = map.size;
+    data = GST_BUFFER_DATA (buffer);
+    len = GST_BUFFER_SIZE (buffer);
 
-    GST_LOG_OBJECT (pay, "packing %" G_GSIZE_FORMAT " bytes of data", map.size);
+    GST_LOG_OBJECT (pay, "packing %u bytes of data", len);
 
     /* we need to reshuffle the bytes, output is of the form:
      * A B C D .. with the number of bits depending on the bitrate. */
@@ -293,11 +294,11 @@ gst_rtp_g726_pay_handle_buffer (GstRTPBasePayload * payload, GstBuffer * buffer)
          * |0 1|0 1|0 1|0 1|
          * +-+-+-+-+-+-+-+-+-
          */
-        while (size > 0) {
+        while (len > 0) {
           tmp = *data;
           *data++ = ((tmp & 0xc0) >> 6) |
               ((tmp & 0x30) >> 2) | ((tmp & 0x0c) << 2) | ((tmp & 0x03) << 6);
-          size--;
+          len--;
         }
         break;
       }
@@ -310,7 +311,7 @@ gst_rtp_g726_pay_handle_buffer (GstRTPBasePayload * payload, GstBuffer * buffer)
          * |1 2|0 1 2|0 1 2|2|0 1 2|0 1 2|0|0 1 2|0 1 2|0 1|
          * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
          */
-        while (size > 2) {
+        while (len > 2) {
           tmp = *data;
           *data++ = ((tmp & 0xc0) >> 6) |
               ((tmp & 0x38) >> 1) | ((tmp & 0x07) << 5);
@@ -320,7 +321,7 @@ gst_rtp_g726_pay_handle_buffer (GstRTPBasePayload * payload, GstBuffer * buffer)
           tmp = *data;
           *data++ = ((tmp & 0xe0) >> 5) |
               ((tmp & 0x1c) >> 2) | ((tmp & 0x03) << 6);
-          size -= 3;
+          len -= 3;
         }
         break;
       }
@@ -333,10 +334,10 @@ gst_rtp_g726_pay_handle_buffer (GstRTPBasePayload * payload, GstBuffer * buffer)
          * |0 1 2 3|0 1 2 3|0 1 2 3|0 1 2 3|
          * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
          */
-        while (size > 0) {
+        while (len > 0) {
           tmp = *data;
           *data++ = ((tmp & 0xf0) >> 4) | ((tmp & 0x0f) << 4);
-          size--;
+          len--;
         }
         break;
       }
@@ -349,7 +350,7 @@ gst_rtp_g726_pay_handle_buffer (GstRTPBasePayload * payload, GstBuffer * buffer)
          * |2 3 4|0 1 2 3 4|4|0 1 2 3 4|0 1|1 2 3 4|0 1 2 3|3 4|0 1 2 3 4|0|0 1 2 3 4|0 1 2|   
          * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
          */
-        while (size > 4) {
+        while (len > 4) {
           tmp = *data;
           *data++ = ((tmp & 0xe0) >> 5) | ((tmp & 0x1f) << 3);
           tmp = *data;
@@ -362,16 +363,15 @@ gst_rtp_g726_pay_handle_buffer (GstRTPBasePayload * payload, GstBuffer * buffer)
               ((tmp & 0x3e) << 2) | ((tmp & 0x01) << 7);
           tmp = *data;
           *data++ = ((tmp & 0xf8) >> 3) | ((tmp & 0x07) << 5);
-          size -= 5;
+          len -= 5;
         }
         break;
       }
     }
-    gst_buffer_unmap (buffer, &map);
   }
 
   res =
-      GST_RTP_BASE_PAYLOAD_CLASS (parent_class)->handle_buffer (payload,
+      GST_BASE_RTP_PAYLOAD_CLASS (parent_class)->handle_buffer (payload,
       buffer);
 
   return res;
@@ -417,5 +417,5 @@ gboolean
 gst_rtp_g726_pay_plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "rtpg726pay",
-      GST_RANK_SECONDARY, GST_TYPE_RTP_G726_PAY);
+      GST_RANK_NONE, GST_TYPE_RTP_G726_PAY);
 }

@@ -29,7 +29,6 @@
 #import <Cocoa/Cocoa.h>
 #import <QuickTime/QuickTime.h>
 #import <glib.h>
-#import <gst/video/navigation.h>
 
 struct _GstOSXImage;
 
@@ -43,13 +42,9 @@ struct _GstOSXImage;
     char* data;
     int width, height;
     BOOL fullscreen;
-    BOOL keepAspectRatio;
     NSOpenGLContext* fullScreenContext; 
     NSOpenGLContext* actualContext;
-    NSTrackingArea *trackingArea;
-    GstNavigation *navigation;
-    NSRect drawingBounds;
-    NSThread *mainThread;
+    id delegate;  // weak
 }
 - (void) drawQuad;
 - (void) drawRect: (NSRect) rect;
@@ -60,16 +55,9 @@ struct _GstOSXImage;
 - (void) displayTexture;
 - (char*) getTextureBuffer;
 - (void) setFullScreen: (BOOL) flag;
-- (void) setKeepAspectRatio: (BOOL) flag;
 - (void) reshape;
-- (void) setVideoSize: (int) w: (int) h;
-- (NSRect) getDrawingBounds;
-- (BOOL) haveSuperview;
-- (void) haveSuperviewReal: (NSMutableArray *)closure;
-- (void) addToSuperview: (NSView *)superview;
-- (void) removeFromSuperview: (id)unused;
-- (void) setNavigation: (GstNavigation *) nav;
-- (void) setMainThread: (NSThread *) thread;
+- (void) setVideoSize: (NSSize) aSize;
+- (void) setDelegate: (id) aDelegate;
 
 @end
 
@@ -80,5 +68,6 @@ struct _GstOSXImage;
 
 - (void) setContentSize: (NSSize) size;
 - (GstGLView *) gstView;
-- (id)initWithContentNSRect:(NSRect)contentRect styleMask:(unsigned int)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)flag screen:(NSScreen *)aScreen;
+- (id)initWithContentRect:(NSRect)contentRect styleMask:(unsigned int)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)flag screen:(NSScreen *)aScreen;
 @end
+

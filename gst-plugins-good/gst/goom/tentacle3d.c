@@ -51,7 +51,7 @@ typedef struct _TENTACLE_FX_DATA
   /* statics from pretty_move */
   float distt;
   float distt2;
-  float rot;                    /* entre 0 et 2 * G_PI */
+  float rot;                    /* entre 0 et 2 * M_PI */
   int happens;
   int rotation;
   int lock;
@@ -72,8 +72,8 @@ tentacle_fx_init (VisualFX * _this, PluginInfo * info)
 
   TentacleFXData *data = (TentacleFXData *) malloc (sizeof (TentacleFXData));
 
-  secure_b_param (&data->enabled_bp, "Enabled", 1);
-  plugin_parameters (&data->params, "3D Tentacles", 1);
+  data->enabled_bp = secure_b_param ("Enabled", 1);
+  data->params = plugin_parameters ("3D Tentacles", 1);
   data->params.params[0] = &data->enabled_bp;
 
   data->cycle = 0.0f;
@@ -85,7 +85,7 @@ tentacle_fx_init (VisualFX * _this, PluginInfo * info)
 
   data->distt = 10.0f;
   data->distt2 = 0.0f;
-  data->rot = 0.0f;             /* entre 0 et 2 * G_PI */
+  data->rot = 0.0f;             /* entre 0 et 2 * M_PI */
   data->happens = 0;
 
   data->rotation = 0;
@@ -125,14 +125,17 @@ tentacle_fx_free (VisualFX * _this)
   free (_this->fx_data);
 }
 
-void
-tentacle_fx_create (VisualFX * fx)
+VisualFX
+tentacle_fx_create (void)
 {
-  fx->init = tentacle_fx_init;
-  fx->apply = tentacle_fx_apply;
-  fx->free = tentacle_fx_free;
-  fx->fx_data = NULL;
-  fx->params = NULL;
+  VisualFX fx;
+
+  fx.init = tentacle_fx_init;
+  fx.apply = tentacle_fx_apply;
+  fx.free = tentacle_fx_free;
+  fx.fx_data = NULL;
+  fx.params = NULL;
+  return fx;
 }
 
 /* ----- */
@@ -253,27 +256,27 @@ pretty_move (PluginInfo * goomInfo, float cycle, float *dist, float *dist2,
   *dist = fx_data->distt = (tmp + 3.0f * fx_data->distt) / 4.0f;
 
   if (!fx_data->happens) {
-    tmp = G_PI * sin (cycle) / 32 + 3 * G_PI / 2;
+    tmp = M_PI * sin (cycle) / 32 + 3 * M_PI / 2;
   } else {
     fx_data->rotation =
         goom_irand (goomInfo->gRandom,
         500) ? fx_data->rotation : goom_irand (goomInfo->gRandom, 2);
     if (fx_data->rotation)
-      cycle *= 2.0f * G_PI;
+      cycle *= 2.0f * M_PI;
     else
-      cycle *= -1.0f * G_PI;
-    tmp = cycle - (G_PI * 2.0) * floor (cycle / (G_PI * 2.0));
+      cycle *= -1.0f * M_PI;
+    tmp = cycle - (M_PI * 2.0) * floor (cycle / (M_PI * 2.0));
   }
 
-  if (abs (tmp - fx_data->rot) > abs (tmp - (fx_data->rot + 2.0 * G_PI))) {
-    fx_data->rot = (tmp + 15.0f * (fx_data->rot + 2 * G_PI)) / 16.0f;
-    if (fx_data->rot > 2.0 * G_PI)
-      fx_data->rot -= 2.0 * G_PI;
+  if (abs (tmp - fx_data->rot) > abs (tmp - (fx_data->rot + 2.0 * M_PI))) {
+    fx_data->rot = (tmp + 15.0f * (fx_data->rot + 2 * M_PI)) / 16.0f;
+    if (fx_data->rot > 2.0 * M_PI)
+      fx_data->rot -= 2.0 * M_PI;
     *rotangle = fx_data->rot;
-  } else if (abs (tmp - fx_data->rot) > abs (tmp - (fx_data->rot - 2.0 * G_PI))) {
-    fx_data->rot = (tmp + 15.0f * (fx_data->rot - 2.0 * G_PI)) / 16.0f;
+  } else if (abs (tmp - fx_data->rot) > abs (tmp - (fx_data->rot - 2.0 * M_PI))) {
+    fx_data->rot = (tmp + 15.0f * (fx_data->rot - 2.0 * M_PI)) / 16.0f;
     if (fx_data->rot < 0.0f)
-      fx_data->rot += 2.0 * G_PI;
+      fx_data->rot += 2.0 * M_PI;
     *rotangle = fx_data->rot;
   } else
     *rotangle = fx_data->rot = (tmp + 15.0f * fx_data->rot) / 16.0f;

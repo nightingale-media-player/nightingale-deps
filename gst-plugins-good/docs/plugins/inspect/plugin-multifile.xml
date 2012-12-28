@@ -1,9 +1,9 @@
 <plugin>
   <name>multifile</name>
-  <description>Reads/Writes buffers from/to sequentially named files</description>
+  <description>Writes buffers to sequentially named files</description>
   <filename>../../gst/multifile/.libs/libgstmultifile.so</filename>
   <basename>libgstmultifile.so</basename>
-  <version>1.0.4</version>
+  <version>0.10.16</version>
   <license>LGPL</license>
   <source>gst-plugins-good</source>
   <package>GStreamer Good Plug-ins source release</package>
@@ -30,21 +30,6 @@
       <class>Source/File</class>
       <description>Read a sequentially named set of files into buffers</description>
       <author>David Schleef &lt;ds@schleef.org&gt;</author>
-      <pads>
-        <caps>
-          <name>src</name>
-          <direction>source</direction>
-          <presence>always</presence>
-          <details>ANY</details>
-        </caps>
-      </pads>
-    </element>
-    <element>
-      <name>splitfilesrc</name>
-      <longname>Split-File Source</longname>
-      <class>Source/File</class>
-      <description>Read a sequentially named set of files as if it was one large file</description>
-      <author>Tim-Philipp Müller &lt;tim.muller@collabora.co.uk&gt;</author>
       <pads>
         <caps>
           <name>src</name>

@@ -26,7 +26,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch-1.0 videotestsrc num-buffers=3 ! cairorender ! "application/pdf" ! filesink location=test.pdf
+ * gst-launch videotestsrc num-buffers=3 ! cairorender ! "application/pdf" ! filesink location=test.pdf
  * ]|
  * </refsect2>
  */
@@ -264,63 +264,52 @@ gst_cairo_render_setcaps_sink (GstPad * pad, GstCaps * caps)
   return TRUE;
 }
 
-
-#define SIZE_CAPS "width = (int) [ 1, MAX], height = (int) [ 1, MAX] "
+static GstStaticPadTemplate t_src = GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC, GST_PAD_ALWAYS, GST_STATIC_CAPS (
 #if CAIRO_HAS_PDF_SURFACE
-#define PDF_CAPS "application/pdf, " SIZE_CAPS
-#else
-#define PDF_CAPS
+        "application/pdf, "
+        "width = (int) [ 1, MAX], " "height = (int) [ 1, MAX] "
 #endif
 #if CAIRO_HAS_PDF_SURFACE && (CAIRO_HAS_PS_SURFACE || CAIRO_HAS_SVG_SURFACE || CAIRO_HAS_PNG_FUNCTIONS)
-#define JOIN1 ";"
-#else
-#define JOIN1
+        ";"
 #endif
 #if CAIRO_HAS_PS_SURFACE
-#define PS_CAPS "application/postscript, " SIZE_CAPS
-#else
-#define PS_CAPS
+        "application/postscript, "
+        "width = (int) [ 1, MAX], " "height = (int) [ 1, MAX] "
 #endif
 #if (CAIRO_HAS_PDF_SURFACE || CAIRO_HAS_PS_SURFACE) && (CAIRO_HAS_SVG_SURFACE || CAIRO_HAS_PNG_FUNCTIONS)
-#define JOIN2 ";"
-#else
-#define JOIN2
+        ";"
 #endif
 #if CAIRO_HAS_SVG_SURFACE
-#define SVG_CAPS "image/svg+xml, " SIZE_CAPS
-#else
-#define SVG_CAPS
+        "image/svg+xml, "
+        "width = (int) [ 1, MAX], " "height = (int) [ 1, MAX] "
 #endif
 #if (CAIRO_HAS_PDF_SURFACE || CAIRO_HAS_PS_SURFACE || CAIRO_HAS_SVG_SURFACE) && CAIRO_HAS_PNG_FUNCTIONS
-#define JOIN3 ";"
-#else
-#define JOIN3
+        ";"
 #endif
 #if CAIRO_HAS_PNG_FUNCTIONS
-#define PNG_CAPS "image/png, " SIZE_CAPS
-#define PNG_CAPS2 "; image/png, " SIZE_CAPS
-#else
-#define PNG_CAPS
-#define PNG_CAPS2
+        "image/png, " "width = (int) [ 1, MAX], " "height = (int) [ 1, MAX] "
 #endif
-
-#if G_BYTE_ORDER == G_LITTLE_ENDIAN
-#define ARGB_CAPS GST_VIDEO_CAPS_BGRx " ; " GST_VIDEO_CAPS_BGRA " ; "
-#else
-#define ARGB_CAPS GST_VIDEO_CAPS_xRGB " ; " GST_VIDEO_CAPS_ARGB " ; "
-#endif
-static GstStaticPadTemplate t_src = GST_STATIC_PAD_TEMPLATE ("src",
-    GST_PAD_SRC, GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (PDF_CAPS JOIN1 PS_CAPS JOIN2 SVG_CAPS JOIN3 PNG_CAPS));
+    ));
 static GstStaticPadTemplate t_snk = GST_STATIC_PAD_TEMPLATE ("sink",
-    GST_PAD_SINK, GST_PAD_ALWAYS, GST_STATIC_CAPS (ARGB_CAPS
+    GST_PAD_SINK, GST_PAD_ALWAYS, GST_STATIC_CAPS (
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
+        GST_VIDEO_CAPS_BGRx " ; " GST_VIDEO_CAPS_BGRA " ; "
+#else
+        GST_VIDEO_CAPS_xRGB " ; " GST_VIDEO_CAPS_ARGB " ; "
+#endif
         GST_VIDEO_CAPS_YUV ("Y800") " ; "
         "video/x-raw-gray, "
         "bpp = 8, "
         "depth = 8, "
         "width = " GST_VIDEO_SIZE_RANGE ", "
         "height = " GST_VIDEO_SIZE_RANGE ", " "framerate = " GST_VIDEO_FPS_RANGE
-        PNG_CAPS2));
+        " ; "
+#if CAIRO_HAS_PNG_FUNCTIONS
+        "image/png, "
+        "width = " GST_VIDEO_SIZE_RANGE ", " "height = " GST_VIDEO_SIZE_RANGE
+#endif
+    ));
 
 GST_BOILERPLATE (GstCairoRender, gst_cairo_render, GstElement,
     GST_TYPE_ELEMENT);
@@ -329,7 +318,8 @@ static void
 gst_cairo_render_init (GstCairoRender * c, GstCairoRenderClass * klass)
 {
   /* The sink */
-  c->snk = gst_pad_new_from_static_template (&t_snk, "sink");
+  c->snk =
+      gst_pad_new_from_template (gst_static_pad_template_get (&t_snk), "sink");
   gst_pad_set_event_function (c->snk, gst_cairo_render_event);
   gst_pad_set_chain_function (c->snk, gst_cairo_render_chain);
   gst_pad_set_setcaps_function (c->snk, gst_cairo_render_setcaps_sink);
@@ -337,7 +327,8 @@ gst_cairo_render_init (GstCairoRender * c, GstCairoRenderClass * klass)
   gst_element_add_pad (GST_ELEMENT (c), c->snk);
 
   /* The source */
-  c->src = gst_pad_new_from_static_template (&t_src, "src");
+  c->src =
+      gst_pad_new_from_template (gst_static_pad_template_get (&t_src), "src");
   gst_pad_use_fixed_caps (c->src);
   gst_element_add_pad (GST_ELEMENT (c), c->src);
 
@@ -351,7 +342,7 @@ gst_cairo_render_base_init (gpointer g_class)
 {
   GstElementClass *ec = GST_ELEMENT_CLASS (g_class);
 
-  gst_element_class_set_static_metadata (ec, "Cairo encoder",
+  gst_element_class_set_details_simple (ec, "Cairo encoder",
       "Codec/Encoder", "Encodes streams using Cairo",
       "Lutz Mueller <lutz@topfrose.de>");
   gst_element_class_add_pad_template (ec, gst_static_pad_template_get (&t_snk));

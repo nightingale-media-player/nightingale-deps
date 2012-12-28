@@ -24,7 +24,7 @@
 #include "goom_visual_fx.h"
 #include "goom_graphic.h"
 
-void zoomFilterVisualFXWrapper_create(VisualFX *fx);
+VisualFX zoomFilterVisualFXWrapper_create(void);
 
 struct _ZOOM_FILTER_DATA
 {

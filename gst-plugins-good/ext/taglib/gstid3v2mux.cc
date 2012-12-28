@@ -34,12 +34,12 @@
  * <refsect2>
  * <title>Example pipelines</title>
  * |[
- * gst-launch-1.0 -v filesrc location=foo.ogg ! decodebin ! audioconvert ! lame ! id3v2mux ! filesink location=foo.mp3
+ * gst-launch -v filesrc location=foo.ogg ! decodebin ! audioconvert ! lame ! id3v2mux ! filesink location=foo.mp3
  * ]| A pipeline that transcodes a file from Ogg/Vorbis to mp3 format with an
  * ID3v2 that contains the same as the the Ogg/Vorbis file. Make sure the
  * Ogg/Vorbis file actually has comments to preserve.
  * |[
- * gst-launch-1.0 -m filesrc location=foo.mp3 ! id3demux ! fakesink silent=TRUE 2&gt; /dev/null | grep taglist
+ * gst-launch -m filesrc location=foo.mp3 ! id3demux ! fakesink silent=TRUE 2&gt; /dev/null | grep taglist
  * ]| Verify that tags have been written.
  * </refsect2>
  */
@@ -72,34 +72,22 @@ static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("application/x-id3"));
 
-static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
-    GST_PAD_SINK,
-    GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("ANY"));
 
-G_DEFINE_TYPE (GstId3v2Mux, gst_id3v2_mux, GST_TYPE_TAG_MUX);
+GST_BOILERPLATE (GstId3v2Mux, gst_id3v2_mux, GstTagLibMux,
+    GST_TYPE_TAG_LIB_MUX);
 
-static GstBuffer *gst_id3v2_mux_render_tag (GstTagMux * mux,
-    const GstTagList * taglist);
-static GstBuffer *gst_id3v2_mux_render_end_tag (GstTagMux * mux,
-    const GstTagList * taglist);
+static GstBuffer *gst_id3v2_mux_render_tag (GstTagLibMux * mux,
+    GstTagList * taglist);
 
 static void
-gst_id3v2_mux_class_init (GstId3v2MuxClass * klass)
+gst_id3v2_mux_base_init (gpointer g_class)
 {
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
-  GST_TAG_MUX_CLASS (klass)->render_start_tag =
-      GST_DEBUG_FUNCPTR (gst_id3v2_mux_render_tag);
-  GST_TAG_MUX_CLASS (klass)->render_end_tag =
-      GST_DEBUG_FUNCPTR (gst_id3v2_mux_render_end_tag);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_template));
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_template));
 
-  gst_element_class_set_static_metadata (element_class,
+  gst_element_class_set_details_simple (element_class,
       "TagLib-based ID3v2 Muxer", "Formatter/Metadata",
       "Adds an ID3v2 header to the beginning of MP3 files using taglib",
       "Christophe Fergeau <teuf@gnome.org>");
@@ -109,7 +97,14 @@ gst_id3v2_mux_class_init (GstId3v2MuxClass * klass)
 }
 
 static void
-gst_id3v2_mux_init (GstId3v2Mux * id3v2mux)
+gst_id3v2_mux_class_init (GstId3v2MuxClass * klass)
+{
+  GST_TAG_LIB_MUX_CLASS (klass)->render_tag =
+      GST_DEBUG_FUNCPTR (gst_id3v2_mux_render_tag);
+}
+
+static void
+gst_id3v2_mux_init (GstId3v2Mux * id3v2mux, GstId3v2MuxClass * id3v2mux_class)
 {
   /* nothing to do */
 }
@@ -371,30 +366,25 @@ add_id3v2frame_tag (ID3v2::Tag * id3v2tag, const GstTagList * list,
     ID3v2::Frame * frame;
     const GValue *val;
     GstBuffer *buf;
-    GstSample *sample;
 
     val = gst_tag_list_get_value_index (list, tag, i);
-    sample = (GstSample *) g_value_get_boxed (val);
+    buf = (GstBuffer *) gst_value_get_mini_object (val);
 
-    if (sample && (buf = gst_sample_get_buffer (sample)) &&
-        gst_sample_get_caps (sample)) {
+    if (buf && GST_BUFFER_CAPS (buf)) {
       GstStructure *s;
       gint version = 0;
 
-      s = gst_caps_get_structure (gst_sample_get_caps (sample), 0);
+      s = gst_caps_get_structure (GST_BUFFER_CAPS (buf), 0);
       if (s && gst_structure_get_int (s, "version", &version) && version > 0) {
-        GstMapInfo map;
+        ByteVector bytes ((char *) GST_BUFFER_DATA (buf),
+            GST_BUFFER_SIZE (buf));
 
-        gst_buffer_map (buf, &map, GST_MAP_READ);
-        GST_DEBUG ("Injecting ID3v2.%u frame %u/%u of length %" G_GSIZE_FORMAT " and type %"
-            GST_PTR_FORMAT, version, i, num_tags, map.size, s);
+        GST_DEBUG ("Injecting ID3v2.%u frame %u/%u of length %u and type %"
+            GST_PTR_FORMAT, version, i, num_tags, GST_BUFFER_SIZE (buf), s);
 
-        frame = factory->createFrame (ByteVector ((const char *) map.data,
-                map.size), (TagLib::uint) version);
+        frame = factory->createFrame (bytes, (TagLib::uint) version);
         if (frame)
           id3v2tag->addFrame (frame);
-
-        gst_buffer_unmap (buf, &map);
       }
     }
   }
@@ -408,44 +398,38 @@ add_image_tag (ID3v2::Tag * id3v2tag, const GstTagList * list,
 
   for (n = 0; n < num_tags; ++n) {
     const GValue *val;
-    GstSample *sample;
     GstBuffer *image;
 
     GST_DEBUG ("image %u/%u", n + 1, num_tags);
 
     val = gst_tag_list_get_value_index (list, tag, n);
-    sample = (GstSample *) g_value_get_boxed (val);
+    image = (GstBuffer *) gst_value_get_mini_object (val);
 
-    if (GST_IS_SAMPLE (sample) && (image = gst_sample_get_buffer (sample)) &&
-        GST_IS_BUFFER (image) && gst_buffer_get_size (image) > 0 &&
-        gst_sample_get_caps (sample) != NULL &&
-        !gst_caps_is_empty (gst_sample_get_caps (sample))) {
+    if (GST_IS_BUFFER (image) && GST_BUFFER_SIZE (image) > 0 &&
+        GST_BUFFER_CAPS (image) != NULL &&
+        !gst_caps_is_empty (GST_BUFFER_CAPS (image))) {
       const gchar *mime_type;
       GstStructure *s;
 
-      s = gst_caps_get_structure (gst_sample_get_caps (sample), 0);
+      s = gst_caps_get_structure (GST_BUFFER_CAPS (image), 0);
       mime_type = gst_structure_get_name (s);
       if (mime_type != NULL) {
         ID3v2::AttachedPictureFrame * frame;
         const gchar *desc;
-        GstMapInfo map;
 
         if (strcmp (mime_type, "text/uri-list") == 0)
           mime_type = "-->";
 
         frame = new ID3v2::AttachedPictureFrame ();
 
-        gst_buffer_map (image, &map, GST_MAP_READ);
-
-        GST_DEBUG ("Attaching picture of %" G_GSIZE_FORMAT " bytes and mime type %s",
-            map.size, mime_type);
+        GST_DEBUG ("Attaching picture of %u bytes and mime type %s",
+            GST_BUFFER_SIZE (image), mime_type);
 
         id3v2tag->addFrame (frame);
-        frame->setPicture (ByteVector ((const char *) map.data, map.size));
+        frame->setPicture (ByteVector ((const char *) GST_BUFFER_DATA (image),
+                GST_BUFFER_SIZE (image)));
         frame->setTextEncoding (String::UTF8);
         frame->setMimeType (mime_type);
-
-        gst_buffer_unmap (image, &map);
 
         desc = gst_structure_get_string (s, "image-description");
         frame->setDescription ((desc) ? desc : "");
@@ -458,9 +442,8 @@ add_image_tag (ID3v2::Tag * id3v2tag, const GstTagList * list,
         }
       }
     } else {
-      GST_WARNING ("NULL image or no caps on image sample (%p, caps=%"
-          GST_PTR_FORMAT ")", sample,
-          (sample) ? gst_sample_get_caps (sample) : NULL);
+      GST_WARNING ("NULL image or no caps on image buffer (%p, caps=%"
+          GST_PTR_FORMAT ")", image, (image) ? GST_BUFFER_CAPS (image) : NULL);
     }
   }
 }
@@ -603,7 +586,7 @@ add_relative_volume_tag (ID3v2::Tag * id3v2tag, const GstTagList * list,
     frame->setIdentification ("album");
     GST_DEBUG ("adding album relative-volume frame");
   }
-
+  
   /* find the value for the paired tag (gain, if this is peak, and
    * vice versa).  if both tags exist, only write the frame when
    * we're processing the peak tag.
@@ -643,26 +626,6 @@ add_relative_volume_tag (ID3v2::Tag * id3v2tag, const GstTagList * list,
   id3v2tag->addFrame (frame);
 }
 
-static void
-add_bpm_tag (ID3v2::Tag * id3v2tag, const GstTagList * list,
-    const gchar * tag, guint num_tags, const gchar * frame_id)
-{
-  gdouble bpm;
-
-  if (gst_tag_list_get_double_index (list, tag, 0, &bpm)) {
-    ID3v2::TextIdentificationFrame * frame;
-    gchar *tag_str;
-
-    tag_str = g_strdup_printf ("%u", (guint)bpm);
-
-    GST_DEBUG ("Setting %s to %s", tag, tag_str);
-    frame = new ID3v2::TextIdentificationFrame ("TBPM", String::UTF8);
-    id3v2tag->addFrame (frame);
-    frame->setText (tag_str);
-    g_free (tag_str);
-  }
-}
-
 /* id3demux produces these for frames it cannot parse */
 #define GST_ID3_DEMUX_TAG_ID3V2_FRAME "private-id3v2-frame"
 
@@ -674,7 +637,6 @@ static const struct
 } add_funcs[] = {
   {
   GST_TAG_ARTIST, add_text_tag, "TPE1"}, {
-  GST_TAG_ALBUM_ARTIST, add_text_tag, "TPE2"}, {
   GST_TAG_TITLE, add_text_tag, "TIT2"}, {
   GST_TAG_ALBUM, add_text_tag, "TALB"}, {
   GST_TAG_COPYRIGHT, add_text_tag, "TCOP"}, {
@@ -707,8 +669,7 @@ static const struct
   GST_TAG_TRACK_PEAK, add_relative_volume_tag, ""}, {
   GST_TAG_TRACK_GAIN, add_relative_volume_tag, ""}, {
   GST_TAG_ALBUM_PEAK, add_relative_volume_tag, ""}, {
-  GST_TAG_ALBUM_GAIN, add_relative_volume_tag, ""}, {
-  GST_TAG_BEATS_PER_MINUTE, add_bpm_tag, ""}
+  GST_TAG_ALBUM_GAIN, add_relative_volume_tag, ""}
 };
 
 
@@ -741,7 +702,7 @@ foreach_add_tag (const GstTagList * list, const gchar * tag, gpointer userdata)
 }
 
 static GstBuffer *
-gst_id3v2_mux_render_tag (GstTagMux * mux, const GstTagList * taglist)
+gst_id3v2_mux_render_tag (GstTagLibMux * mux, GstTagList * taglist)
 {
   ID3v2::Tag id3v2tag;
   ByteVector rendered_tag;
@@ -774,13 +735,20 @@ gst_id3v2_mux_render_tag (GstTagMux * mux, const GstTagList * taglist)
 
   /* Create buffer with tag */
   buf = gst_buffer_new_and_alloc (tag_size);
-  gst_buffer_fill (buf, 0, rendered_tag.data (), tag_size);
+  memcpy (GST_BUFFER_DATA (buf), rendered_tag.data (), tag_size);
+  gst_buffer_set_caps (buf, GST_PAD_CAPS (mux->srcpad));
 
   return buf;
 }
 
-static GstBuffer *
-gst_id3v2_mux_render_end_tag (GstTagMux * mux, const GstTagList * taglist)
+gboolean
+gst_id3v2_mux_plugin_init (GstPlugin * plugin)
 {
-  return NULL;
+  if (!gst_element_register (plugin, "id3v2mux", GST_RANK_NONE,
+          GST_TYPE_ID3V2_MUX))
+    return FALSE;
+
+  gst_tag_register_musicbrainz_tags ();
+
+  return TRUE;
 }

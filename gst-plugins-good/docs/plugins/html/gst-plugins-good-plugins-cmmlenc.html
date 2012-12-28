@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>cmmlenc</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="prev" href="gst-plugins-good-plugins-cmmldec.html" title="cmmldec">
+<link rel="next" href="gst-plugins-good-plugins-cutter.html" title="cutter">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-good-plugins-cmmldec.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-good-plugins-cutter.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-good-plugins-cmmlenc.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-cmmlenc.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-cmmlenc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-good-plugins-cmmlenc.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry" title="cmmlenc">
+<a name="gst-plugins-good-plugins-cmmlenc"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-cmmlenc.top_of_page"></a>cmmlenc</span></h2>
+<p>cmmlenc — Encodes CMML streams</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv" title="Synopsis">
+<a name="gst-plugins-good-plugins-cmmlenc.synopsis"></a><h2>Synopsis</h2>
+<a name="GstCmmlEnc"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-good-plugins-cmmlenc.html#GstCmmlEnc-struct" title="GstCmmlEnc">GstCmmlEnc</a>;
+</pre>
+</div>
+<div class="refsect1" title="Object Hierarchy">
+<a name="gst-plugins-good-plugins-cmmlenc.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="../gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----GstCmmlEnc
+</pre>
+</div>
+<div class="refsect1" title="Properties">
+<a name="gst-plugins-good-plugins-cmmlenc.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-good-plugins-cmmlenc.html#GstCmmlEnc--granule-rate-denominator" title='The "granule-rate-denominator" property'>granule-rate-denominator</a>" <a
+href="../glib/glib-Basic-Types.html#gint64"
+>gint64</a>                : Read / Write / Construct
+  "<a class="link" href="gst-plugins-good-plugins-cmmlenc.html#GstCmmlEnc--granule-rate-numerator" title='The "granule-rate-numerator" property'>granule-rate-numerator</a>"   <a
+href="../glib/glib-Basic-Types.html#gint64"
+>gint64</a>                : Read / Write / Construct
+  "<a class="link" href="gst-plugins-good-plugins-cmmlenc.html#GstCmmlEnc--granule-shift" title='The "granule-shift" property'>granule-shift</a>"            <a
+href="../glib/glib-Basic-Types.html#guchar"
+>guchar</a>                : Read / Write / Construct
+</pre>
+</div>
+<div class="refsect1" title="Description">
+<a name="gst-plugins-good-plugins-cmmlenc.description"></a><h2>Description</h2>
+<p>
+Cmmlenc encodes a CMML document into a CMML stream.  <a class="ulink" href="http://www.annodex.net/TR/draft-pfeiffer-cmml-02.html" target="_top">CMML</a> is
+an XML markup language for time-continuous data maintained by the <a class="ulink" href="http:/www.annodex.org/" target="_top">Annodex Foundation</a>.
+</p>
+<p>
+</p>
+<div class="refsect2" title="Example pipeline">
+<a name="id506921"></a><h3>Example pipeline</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v filesrc location=annotations.cmml ! cmmlenc ! oggmux name=mux ! filesink location=annotated.ogg
+</pre></div>
+</div>
+<div class="refsynopsisdiv" title="Synopsis">
+<h2>Synopsis</h2>
+<div class="refsect2" title="Element Information">
+<a name="id533968"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-good-plugins-plugin-annodex.html#plugin-annodex">annodex</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Alessandro Decina &lt;alessandro@nnva.org&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Encoder</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="Element Pads">
+<a name="id507430"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>text/x-cmml, encoded=(boolean)true</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>text/x-cmml, encoded=(boolean)false</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>
+</p>
+</div>
+<div class="refsect1" title="Details">
+<a name="gst-plugins-good-plugins-cmmlenc.details"></a><h2>Details</h2>
+<div class="refsect2" title="GstCmmlEnc">
+<a name="GstCmmlEnc-struct"></a><h3>GstCmmlEnc</h3>
+<pre class="programlisting">typedef struct _GstCmmlEnc GstCmmlEnc;</pre>
+<p>
+</p>
+</div>
+</div>
+<div class="refsect1" title="Property Details">
+<a name="gst-plugins-good-plugins-cmmlenc.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" title='The "granule-rate-denominator" property'>
+<a name="GstCmmlEnc--granule-rate-denominator"></a><h3>The <code class="literal">"granule-rate-denominator"</code> property</h3>
+<pre class="programlisting">  "granule-rate-denominator" <a
+href="../glib/glib-Basic-Types.html#gint64"
+>gint64</a>                : Read / Write / Construct</pre>
+<p>Granulerate denominator.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 1</p>
+</div>
+<hr>
+<div class="refsect2" title='The "granule-rate-numerator" property'>
+<a name="GstCmmlEnc--granule-rate-numerator"></a><h3>The <code class="literal">"granule-rate-numerator"</code> property</h3>
+<pre class="programlisting">  "granule-rate-numerator"   <a
+href="../glib/glib-Basic-Types.html#gint64"
+>gint64</a>                : Read / Write / Construct</pre>
+<p>Granulerate numerator.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 1000</p>
+</div>
+<hr>
+<div class="refsect2" title='The "granule-shift" property'>
+<a name="GstCmmlEnc--granule-shift"></a><h3>The <code class="literal">"granule-shift"</code> property</h3>
+<pre class="programlisting">  "granule-shift"            <a
+href="../glib/glib-Basic-Types.html#guchar"
+>guchar</a>                : Read / Write / Construct</pre>
+<p>The number of lower bits to use for partitioning a granule position.</p>
+<p>Allowed values: &lt;= 64</p>
+<p>Default value: 32</p>
+</div>
+</div>
+<div class="refsect1" title="See Also">
+<a name="gst-plugins-good-plugins-cmmlenc.see-also"></a><h2>See Also</h2>
+cmmldec, oggmux
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.11</div>
+</body>
+</html>

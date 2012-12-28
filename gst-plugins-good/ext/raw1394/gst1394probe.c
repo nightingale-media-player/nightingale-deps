@@ -25,8 +25,7 @@
 #include <gst/gst.h>
 
 #include "gst1394probe.h"
-
-#if 0
+#include "gst/interfaces/propertyprobe.h"
 
 static GValueArray *
 gst_1394_get_guid_array (void)
@@ -139,5 +138,3 @@ gst_1394_type_add_property_probe_interface (GType type)
   g_type_add_interface_static (type, GST_TYPE_PROPERTY_PROBE,
       &probe_iface_info);
 }
-
-#endif

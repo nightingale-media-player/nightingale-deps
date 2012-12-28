@@ -22,14 +22,13 @@
  #ifndef MATHTOOLS_H
 #define MATHTOOLS_H
 
-#include <glib.h>
 
 #define _double2fixmagic (68719476736.0*1.5)
 /* 2^36 * 1.5,  (52-_shiftamt=36) uses limited precisicion to floor */
 #define _shiftamt 16
 /* 16.16 fixed point representation */
 
-#if G_BYTE_ORDER == G_BIG_ENDIAN
+#if BigEndian_
 #define iexp_				0
 #define iman_				1
 #else

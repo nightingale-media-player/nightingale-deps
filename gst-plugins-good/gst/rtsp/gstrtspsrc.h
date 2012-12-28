@@ -71,23 +71,17 @@ G_BEGIN_DECLS
 typedef struct _GstRTSPSrc GstRTSPSrc;
 typedef struct _GstRTSPSrcClass GstRTSPSrcClass;
 
-#define GST_RTSP_STATE_GET_LOCK(rtsp)    (&GST_RTSPSRC_CAST(rtsp)->state_rec_lock)
-#define GST_RTSP_STATE_LOCK(rtsp)        (g_rec_mutex_lock (GST_RTSP_STATE_GET_LOCK(rtsp)))
-#define GST_RTSP_STATE_UNLOCK(rtsp)      (g_rec_mutex_unlock (GST_RTSP_STATE_GET_LOCK(rtsp)))
+#define GST_RTSP_STATE_GET_LOCK(rtsp)    (GST_RTSPSRC_CAST(rtsp)->state_rec_lock)
+#define GST_RTSP_STATE_LOCK(rtsp)        (g_static_rec_mutex_lock (GST_RTSP_STATE_GET_LOCK(rtsp)))
+#define GST_RTSP_STATE_UNLOCK(rtsp)      (g_static_rec_mutex_unlock (GST_RTSP_STATE_GET_LOCK(rtsp)))
 
-#define GST_RTSP_STREAM_GET_LOCK(rtsp)   (&GST_RTSPSRC_CAST(rtsp)->stream_rec_lock)
-#define GST_RTSP_STREAM_LOCK(rtsp)       (g_rec_mutex_lock (GST_RTSP_STREAM_GET_LOCK(rtsp)))
-#define GST_RTSP_STREAM_UNLOCK(rtsp)     (g_rec_mutex_unlock (GST_RTSP_STREAM_GET_LOCK(rtsp)))
+#define GST_RTSP_STREAM_GET_LOCK(rtsp)   (GST_RTSPSRC_CAST(rtsp)->stream_rec_lock)
+#define GST_RTSP_STREAM_LOCK(rtsp)       (g_static_rec_mutex_lock (GST_RTSP_STREAM_GET_LOCK(rtsp)))
+#define GST_RTSP_STREAM_UNLOCK(rtsp)     (g_static_rec_mutex_unlock (GST_RTSP_STREAM_GET_LOCK(rtsp)))
 
-typedef struct _GstRTSPConnInfo GstRTSPConnInfo;
-
-struct _GstRTSPConnInfo {
-  gchar              *location;
-  GstRTSPUrl         *url;
-  gchar              *url_str;
-  GstRTSPConnection  *connection;
-  gboolean            connected;
-};
+#define GST_RTSP_CONN_GET_LOCK(rtsp)     (GST_RTSPSRC_CAST(rtsp)->conn_rec_lock)
+#define GST_RTSP_CONN_LOCK(rtsp)         (g_static_rec_mutex_lock (GST_RTSP_CONN_GET_LOCK(rtsp)))
+#define GST_RTSP_CONN_UNLOCK(rtsp)       (g_static_rec_mutex_unlock (GST_RTSP_CONN_GET_LOCK(rtsp)))
 
 typedef struct _GstRTSPStream GstRTSPStream;
 
@@ -112,8 +106,6 @@ struct _GstRTSPStream {
   /* our udp sources */
   GstElement   *udpsrc[2];
   GstPad       *blockedpad;
-  gulong        blockid;
-  gboolean      is_ipv6;
 
   /* our udp sinks back to the server */
   GstElement   *udpsink[2];
@@ -124,29 +116,19 @@ struct _GstRTSPStream {
 
   /* state */
   gint          pt;
-  guint         port;
   gboolean      container;
   /* original control url */
   gchar        *control_url;
-  guint32       ssrc;
+  /* fully qualified control url */
+  gchar        *setup_url;
+  guint32       ssrc; 
   guint32       seqbase;
   guint64       timebase;
-
-  /* per stream connection */
-  GstRTSPConnInfo  conninfo;
-
-  /* session */
-  GObject      *session;
 
   /* bandwidth */
   guint         as_bandwidth;
   guint         rs_bandwidth;
   guint         rr_bandwidth;
-
-  /* destination */
-  gchar        *destination;
-  gboolean      is_multicast;
-  guint         ttl;
 };
 
 /**
@@ -168,56 +150,50 @@ struct _GstRTSPSrc {
   /* task and mutex for interleaved mode */
   gboolean         interleaved;
   GstTask         *task;
-  GRecMutex        stream_rec_lock;
+  GStaticRecMutex *stream_rec_lock;
   GstSegment       segment;
   gboolean         running;
   gboolean         need_range;
   gboolean         skip;
   gint             free_channel;
+  GstEvent        *close_segment;
   GstEvent        *start_segment;
   GstClockTime     base_time;
 
   /* UDP mode loop */
-  gint             pending_cmd;
-  gint             busy_cmd;
+  gint             loop_cmd;
   gboolean         ignore_timeout;
-  gboolean         open_error;
 
   /* mutex for protecting state changes */
-  GRecMutex        state_rec_lock;
+  GStaticRecMutex *state_rec_lock;
 
-  GstSDPMessage   *sdp;
-  gboolean         from_sdp;
+  /* mutex for protecting the connection */
+  GStaticRecMutex *conn_rec_lock;
+
   gint             numstreams;
   GList           *streams;
   GstStructure    *props;
   gboolean         need_activate;
 
   /* properties */
+  gchar            *location;
+  gchar            *req_location; /* Sanitised URL to use in network requests */
+  GstRTSPUrl       *url;
   GstRTSPLowerTrans protocols;
   gboolean          debug;
-  guint             retry;
+  guint   	    retry;
   guint64           udp_timeout;
   GTimeVal          tcp_timeout;
   GTimeVal         *ptcp_timeout;
   guint             latency;
-  gboolean          drop_on_latency;
-  guint64           connection_speed;
+  guint             connection_speed;
   GstRTSPNatMethod  nat_method;
   gboolean          do_rtcp;
-  gboolean          do_rtsp_keep_alive;
   gchar            *proxy_host;
   guint             proxy_port;
   gchar            *proxy_user;
   gchar            *proxy_passwd;
   guint             rtp_blocksize;
-  gchar            *user_id;
-  gchar            *user_pw;
-  gint              buffer_mode;
-  GstRTSPRange      client_port_range;
-  gint              udp_buffer_size;
-  gboolean          short_header;
-  guint             probation;
 
   /* state */
   GstRTSPState       state;
@@ -227,21 +203,17 @@ struct _GstRTSPSrc {
   gchar             *addr;
   gboolean           need_redirect;
   GstRTSPTimeRange  *range;
-  gchar             *control;
-  guint              next_port_num;
 
   /* supported methods */
   gint               methods;
 
-  gboolean           seekable;
-  GstClockTime       last_pos;
-
   /* session management */
-  GstElement      *manager;
-  gulong           manager_sig_id;
-  gulong           manager_ptmap_id;
+  GstElement      *session;
+  gulong           session_sig_id;
+  gulong           session_ptmap_id;
 
-  GstRTSPConnInfo  conninfo;
+  GstRTSPConnection  *connection;
+  gboolean            connected;
 
   /* a list of RTSP extensions as GstElement */
   GstRTSPExtensionList  *extensions;

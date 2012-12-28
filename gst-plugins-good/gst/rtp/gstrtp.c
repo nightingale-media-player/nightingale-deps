@@ -21,26 +21,18 @@
 #include "config.h"
 #endif
 
+#include "gstrtpdepay.h"
 #include "gstrtpac3depay.h"
-#include "gstrtpac3pay.h"
-#include "gstrtpbvdepay.h"
-#include "gstrtpbvpay.h"
 #include "gstrtpceltdepay.h"
 #include "gstrtpceltpay.h"
 #include "gstrtpdvdepay.h"
 #include "gstrtpdvpay.h"
-#include "gstrtpgstdepay.h"
-#include "gstrtpgstpay.h"
 #include "gstrtpilbcdepay.h"
 #include "gstrtpilbcpay.h"
 #include "gstrtppcmupay.h"
 #include "gstrtppcmapay.h"
 #include "gstrtppcmadepay.h"
 #include "gstrtppcmudepay.h"
-#include "gstrtpg722depay.h"
-#include "gstrtpg722pay.h"
-#include "gstrtpg723depay.h"
-#include "gstrtpg723pay.h"
 #include "gstrtpg726depay.h"
 #include "gstrtpg726pay.h"
 #include "gstrtpg729depay.h"
@@ -51,7 +43,6 @@
 #include "gstrtpamrdepay.h"
 #include "gstrtpmpapay.h"
 #include "gstrtpmpadepay.h"
-#include "gstrtpmparobustdepay.h"
 #include "gstrtpmpvdepay.h"
 #include "gstrtpmpvpay.h"
 #include "gstrtph263pdepay.h"
@@ -76,7 +67,6 @@
 #include "gstrtpmp4apay.h"
 #include "gstrtpmp4gdepay.h"
 #include "gstrtpmp4gpay.h"
-#include "gstrtpqcelpdepay.h"
 #include "gstrtpqdmdepay.h"
 #include "gstrtpsirenpay.h"
 #include "gstrtpsirendepay.h"
@@ -93,16 +83,10 @@
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
+  if (!gst_rtp_depay_plugin_init (plugin))
+    return FALSE;
+
   if (!gst_rtp_ac3_depay_plugin_init (plugin))
-    return FALSE;
-
-  if (!gst_rtp_ac3_pay_plugin_init (plugin))
-    return FALSE;
-
-  if (!gst_rtp_bv_depay_plugin_init (plugin))
-    return FALSE;
-
-  if (!gst_rtp_bv_pay_plugin_init (plugin))
     return FALSE;
 
   if (!gst_rtp_celt_depay_plugin_init (plugin))
@@ -117,28 +101,10 @@ plugin_init (GstPlugin * plugin)
   if (!gst_rtp_dv_pay_plugin_init (plugin))
     return FALSE;
 
-  if (!gst_rtp_gst_depay_plugin_init (plugin))
-    return FALSE;
-
-  if (!gst_rtp_gst_pay_plugin_init (plugin))
-    return FALSE;
-
   if (!gst_rtp_ilbc_pay_plugin_init (plugin))
     return FALSE;
 
   if (!gst_rtp_ilbc_depay_plugin_init (plugin))
-    return FALSE;
-
-  if (!gst_rtp_g722_depay_plugin_init (plugin))
-    return FALSE;
-
-  if (!gst_rtp_g722_pay_plugin_init (plugin))
-    return FALSE;
-
-  if (!gst_rtp_g723_depay_plugin_init (plugin))
-    return FALSE;
-
-  if (!gst_rtp_g723_pay_plugin_init (plugin))
     return FALSE;
 
   if (!gst_rtp_g726_depay_plugin_init (plugin))
@@ -181,9 +147,6 @@ plugin_init (GstPlugin * plugin)
     return FALSE;
 
   if (!gst_rtp_mpa_pay_plugin_init (plugin))
-    return FALSE;
-
-  if (!gst_rtp_mpa_robust_depay_plugin_init (plugin))
     return FALSE;
 
   if (!gst_rtp_mpv_depay_plugin_init (plugin))
@@ -258,9 +221,6 @@ plugin_init (GstPlugin * plugin)
   if (!gst_rtp_mp4g_pay_plugin_init (plugin))
     return FALSE;
 
-  if (!gst_rtp_qcelp_depay_plugin_init (plugin))
-    return FALSE;
-
   if (!gst_rtp_qdm2_depay_plugin_init (plugin))
     return FALSE;
 
@@ -302,6 +262,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    rtp,
+    "rtp",
     "Real-time protocol plugins",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

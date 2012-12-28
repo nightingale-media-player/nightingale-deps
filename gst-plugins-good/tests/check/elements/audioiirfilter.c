@@ -18,10 +18,6 @@
  * 02110-1301 USA
  */
 
-/* FIXME 0.11: suppress warnings for deprecated API such as GValueArray
- * with newer GLib versions (>= 2.31.0) */
-#define GLIB_DISABLE_DEPRECATION_WARNINGS
-
 #include <gst/gst.h>
 #include <gst/check/gstcheck.h>
 
@@ -80,17 +76,17 @@ on_rate_changed (GstElement * element, gint rate, gpointer user_data)
   g_value_array_append (va, &v);
   g_value_reset (&v);
 
-  g_object_set (G_OBJECT (element), "b", va, NULL);
+  g_object_set (G_OBJECT (element), "a", va, NULL);
 
   g_value_array_free (va);
 
   va = g_value_array_new (6);
 
-  g_value_set_double (&v, 1.0);
+  g_value_set_double (&v, 0.0);
   g_value_array_append (va, &v);
   g_value_reset (&v);
 
-  g_object_set (G_OBJECT (element), "a", va, NULL);
+  g_object_set (G_OBJECT (element), "b", va, NULL);
 
   g_value_array_free (va);
 }
@@ -102,21 +98,15 @@ on_handoff (GstElement * object, GstBuffer * buffer, GstPad * pad,
     gpointer user_data)
 {
   if (!have_data) {
-    GstMapInfo map;
-    gfloat *data;
+    gdouble *data = (gdouble *) GST_BUFFER_DATA (buffer);
 
-    fail_unless (gst_buffer_map (buffer, &map, GST_MAP_READ));
-    data = (gfloat *) map.data;
-
-    fail_unless (map.size > 5 * sizeof (gdouble));
+    fail_unless (GST_BUFFER_SIZE (buffer) > 5 * sizeof (gdouble));
     fail_unless (data[0] == 0.0);
     fail_unless (data[1] == 0.0);
     fail_unless (data[2] == 0.0);
     fail_unless (data[3] == 0.0);
     fail_unless (data[4] == 0.0);
     fail_unless (data[5] != 0.0);
-
-    gst_buffer_unmap (buffer, &map);
     have_data = TRUE;
   }
 }

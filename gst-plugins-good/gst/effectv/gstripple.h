@@ -29,7 +29,6 @@
 
 #include <gst/gst.h>
 
-#include <gst/video/video.h>
 #include <gst/video/gstvideofilter.h>
 
 G_BEGIN_DECLS
@@ -53,6 +52,8 @@ struct _GstRippleTV
   GstVideoFilter element;
 
   /* < private > */
+  gint width, height;
+
   gint mode;
 
   gint16 *background;

@@ -21,7 +21,7 @@
 #include "config.h"
 #endif
 
-#include <gst/net/gstnetaddressmeta.h>
+#include <gst/netbuffer/gstnetbuffer.h>
 
 #include "gstudpsrc.h"
 #include "gstmultiudpsink.h"
@@ -31,10 +31,14 @@
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  /* register info of the netaddress metadata so that we can use it from
-   * multiple threads right away. Note that the plugin loading is always
-   * serialized */
-  gst_net_address_meta_get_info ();
+#ifdef G_OS_WIN32
+  if (!gst_udp_net_utils_win32_wsa_startup (GST_OBJECT (plugin)))
+    return FALSE;
+#endif
+
+  /* register type of the netbuffer so that we can use it from multiple threads
+   * right away. Note that the plugin loading is always serialized */
+  gst_netbuffer_get_type ();
 
   if (!gst_element_register (plugin, "udpsink", GST_RANK_NONE,
           GST_TYPE_UDPSINK))
@@ -56,6 +60,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    udp,
+    "udp",
     "transfer data via UDP",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

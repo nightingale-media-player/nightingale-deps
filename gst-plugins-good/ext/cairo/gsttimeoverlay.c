@@ -27,7 +27,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch-1.0 videotestsrc ! cairotimeoverlay ! autovideosink
+ * gst-launch videotestsrc ! cairotimeoverlay ! autovideosink
  * ]|
  * </refsect2>
  */
@@ -36,15 +36,24 @@
 #include "config.h"
 #endif
 
-#include <gst/math-compat.h>
-
 #include <gsttimeoverlay.h>
 
 #include <string.h>
+#include <math.h>
 
 #include <cairo.h>
 
 #include <gst/video/video.h>
+
+#ifndef HAVE_RINT
+#define rint(x) ((double) floor((x)+(((x) < 0)? -0.5 : 0.5)))
+#endif
+
+static const GstElementDetails cairo_time_overlay_details =
+GST_ELEMENT_DETAILS ("Time overlay",
+    "Filter/Editor/Video",
+    "Overlays the time on a video stream",
+    "David Schleef <ds@schleef.org>");
 
 static GstStaticPadTemplate gst_cairo_time_overlay_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
@@ -261,9 +270,7 @@ gst_cairo_time_overlay_base_init (gpointer g_class)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
-  gst_element_class_set_static_metadata (element_class, "Time overlay",
-      "Filter/Editor/Video",
-      "Overlays the time on a video stream", "David Schleef <ds@schleef.org>");
+  gst_element_class_set_details (element_class, &cairo_time_overlay_details);
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&gst_cairo_time_overlay_sink_template));
