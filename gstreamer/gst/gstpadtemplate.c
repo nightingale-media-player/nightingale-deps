@@ -31,26 +31,26 @@
  * created (request or sometimes pads).
  *
  * Pad and PadTemplates have #GstCaps attached to it to describe the media type
- * they are capable of dealing with. gst_pad_template_get_caps() or 
- * GST_PAD_TEMPLATE_CAPS() are used to get the caps of a padtemplate. It's not 
+ * they are capable of dealing with. gst_pad_template_get_caps() or
+ * GST_PAD_TEMPLATE_CAPS() are used to get the caps of a padtemplate. It's not
  * possible to modify the caps of a padtemplate after creation.
  *
  * PadTemplates have a #GstPadPresence property which identifies the lifetime
- * of the pad and that can be retrieved with GST_PAD_TEMPLATE_PRESENCE(). Also 
- * the direction of the pad can be retrieved from the #GstPadTemplate with 
+ * of the pad and that can be retrieved with GST_PAD_TEMPLATE_PRESENCE(). Also
+ * the direction of the pad can be retrieved from the #GstPadTemplate with
  * GST_PAD_TEMPLATE_DIRECTION().
  *
  * The GST_PAD_TEMPLATE_NAME_TEMPLATE () is important for GST_PAD_REQUEST pads
- * because it has to be used as the name in the gst_element_request_pad_by_name()
+ * because it has to be used as the name in the gst_element_get_request_pad()
  * call to instantiate a pad from this template.
  *
- * Padtemplates can be created with gst_pad_template_new() or with 
+ * Padtemplates can be created with gst_pad_template_new() or with
  * gst_static_pad_template_get (), which creates a #GstPadTemplate from a
  * #GstStaticPadTemplate that can be filled with the
- * convenient GST_STATIC_PAD_TEMPLATE() macro. 
+ * convenient GST_STATIC_PAD_TEMPLATE() macro.
  *
- * A padtemplate can be used to create a pad (see gst_pad_new_from_template() 
- * or gst_pad_new_from_static_template ()) or to add to an element class 
+ * A padtemplate can be used to create a pad (see gst_pad_new_from_template()
+ * or gst_pad_new_from_static_template ()) or to add to an element class
  * (see gst_element_class_add_pad_template ()).
  *
  * The following code example shows the code to create a pad from a padtemplate.
@@ -63,10 +63,10 @@
  *     GST_PAD_SINK,    // the direction of the pad
  *     GST_PAD_ALWAYS,  // when this pad will be present
  *     GST_STATIC_CAPS (        // the capabilities of the padtemplate
- *       "audio/x-raw-int, "
+ *       "audio/x-raw, "
  *         "channels = (int) [ 1, 6 ]"
  *     )
- *   )
+ *   );
  *   void
  *   my_method (void)
  *   {
@@ -78,14 +78,14 @@
  * </example>
  *
  * The following example shows you how to add the padtemplate to an
- * element class, this is usually done in the base_init of the class:
+ * element class, this is usually done in the class_init of the class:
  * <informalexample>
  *   <programlisting>
  *   static void
- *   my_element_base_init (gpointer g_class)
+ *   my_element_class_init (GstMyElementClass *klass)
  *   {
- *     GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
- *    
+ *     GstElementClass *gstelement_class = GST_ELEMENT_CLASS (klass);
+ *
  *     gst_element_class_add_pad_template (gstelement_class,
  *         gst_static_pad_template_get (&amp;my_template));
  *   }
@@ -100,7 +100,6 @@
 #include "gstpad.h"
 #include "gstpadtemplate.h"
 #include "gstenumtypes.h"
-#include "gstmarshal.h"
 #include "gstutils.h"
 #include "gstinfo.h"
 #include "gsterror.h"
@@ -123,7 +122,6 @@ enum
   LAST_SIGNAL
 };
 
-static GstObject *parent_class = NULL;
 static guint gst_pad_template_signals[LAST_SIGNAL] = { 0 };
 
 static void gst_pad_template_dispose (GObject * object);
@@ -132,6 +130,7 @@ static void gst_pad_template_set_property (GObject * object, guint prop_id,
 static void gst_pad_template_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
+#define gst_pad_template_parent_class parent_class
 G_DEFINE_TYPE (GstPadTemplate, gst_pad_template, GST_TYPE_OBJECT);
 
 static void
@@ -143,8 +142,6 @@ gst_pad_template_class_init (GstPadTemplateClass * klass)
   gobject_class = (GObjectClass *) klass;
   gstobject_class = (GstObjectClass *) klass;
 
-  parent_class = g_type_class_peek_parent (klass);
-
   /**
    * GstPadTemplate::pad-created:
    * @pad_template: the object which received the signal.
@@ -155,7 +152,7 @@ gst_pad_template_class_init (GstPadTemplateClass * klass)
   gst_pad_template_signals[TEMPL_PAD_CREATED] =
       g_signal_new ("pad-created", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
       G_STRUCT_OFFSET (GstPadTemplateClass, pad_created),
-      NULL, NULL, gst_marshal_VOID__OBJECT, G_TYPE_NONE, 1, GST_TYPE_PAD);
+      NULL, NULL, g_cclosure_marshal_generic, G_TYPE_NONE, 1, GST_TYPE_PAD);
 
   gobject_class->dispose = gst_pad_template_dispose;
 
@@ -163,11 +160,9 @@ gst_pad_template_class_init (GstPadTemplateClass * klass)
   gobject_class->set_property = gst_pad_template_set_property;
 
   /**
-   * GstPadTemplate:name-template
+   * GstPadTemplate:name-template:
    *
    * The name template of the pad template.
-   *
-   * Since: 0.10.21
    */
   g_object_class_install_property (gobject_class, PROP_NAME_TEMPLATE,
       g_param_spec_string ("name-template", "Name template",
@@ -175,11 +170,9 @@ gst_pad_template_class_init (GstPadTemplateClass * klass)
           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
   /**
-   * GstPadTemplate:direction
+   * GstPadTemplate:direction:
    *
    * The direction of the pad described by the pad template.
-   *
-   * Since: 0.10.21
    */
   g_object_class_install_property (gobject_class, PROP_DIRECTION,
       g_param_spec_enum ("direction", "Direction",
@@ -188,11 +181,9 @@ gst_pad_template_class_init (GstPadTemplateClass * klass)
           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
   /**
-   * GstPadTemplate:presence
+   * GstPadTemplate:presence:
    *
    * When the pad described by the pad template will become available.
-   *
-   * Since: 0.10.21
    */
   g_object_class_install_property (gobject_class, PROP_PRESENCE,
       g_param_spec_enum ("presence", "Presence",
@@ -201,11 +192,9 @@ gst_pad_template_class_init (GstPadTemplateClass * klass)
           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
   /**
-   * GstPadTemplate:caps
+   * GstPadTemplate:caps:
    *
    * The capabilities of the pad described by the pad template.
-   *
-   * Since: 0.10.21
    */
   g_object_class_install_property (gobject_class, PROP_CAPS,
       g_param_spec_boxed ("caps", "Caps",
@@ -219,20 +208,6 @@ gst_pad_template_class_init (GstPadTemplateClass * klass)
 static void
 gst_pad_template_init (GstPadTemplate * templ)
 {
-  /* FIXME 0.11: Does anybody remember why this is here? If not, let's
-   * change it for 0.11 and let gst_element_class_add_pad_template() for
-   * example ref/sink the pad templates.
-   */
-  /* We ensure that the pad template we're creating has a sunken reference.
-   * Inconsistencies in pad templates being floating or sunken has caused
-   * problems in the past with leaks, etc.
-   *
-   * For consistency, then, we only produce them  with sunken references
-   * owned by the creator of the object
-   */
-  if (GST_OBJECT_IS_FLOATING (templ)) {
-    gst_object_ref_sink (templ);
-  }
 }
 
 static void
@@ -288,17 +263,7 @@ name_is_valid (const gchar * name, GstPadPresence presence)
   return TRUE;
 }
 
-GType
-gst_static_pad_template_get_type (void)
-{
-  static GType staticpadtemplate_type = 0;
-
-  if (G_UNLIKELY (staticpadtemplate_type == 0)) {
-    staticpadtemplate_type =
-        g_pointer_type_register_static ("GstStaticPadTemplate");
-  }
-  return staticpadtemplate_type;
-}
+G_DEFINE_POINTER_TYPE (GstStaticPadTemplate, gst_static_pad_template);
 
 /**
  * gst_static_pad_template_get:
@@ -306,8 +271,9 @@ gst_static_pad_template_get_type (void)
  *
  * Converts a #GstStaticPadTemplate into a #GstPadTemplate.
  *
- * Returns: a new #GstPadTemplate.
+ * Returns: (transfer full): a new #GstPadTemplate.
  */
+/* FIXME0.11: rename to gst_pad_template_new_from_static_pad_template() */
 GstPadTemplate *
 gst_static_pad_template_get (GstStaticPadTemplate * pad_template)
 {
@@ -335,13 +301,12 @@ gst_static_pad_template_get (GstStaticPadTemplate * pad_template)
  * @name_template: the name template.
  * @direction: the #GstPadDirection of the template.
  * @presence: the #GstPadPresence of the pad.
- * @caps: a #GstCaps set for the template. The caps are taken ownership of.
+ * @caps: (transfer none): a #GstCaps set for the template.
  *
  * Creates a new pad template with a name according to the given template
- * and with the given arguments. This functions takes ownership of the provided
- * caps, so be sure to not use them afterwards.
+ * and with the given arguments.
  *
- * Returns: a new #GstPadTemplate.
+ * Returns: (transfer floating): a new #GstPadTemplate.
  */
 GstPadTemplate *
 gst_pad_template_new (const gchar * name_template,
@@ -357,16 +322,12 @@ gst_pad_template_new (const gchar * name_template,
       || presence == GST_PAD_SOMETIMES || presence == GST_PAD_REQUEST, NULL);
 
   if (!name_is_valid (name_template, presence)) {
-    gst_caps_unref (caps);
     return NULL;
   }
 
   new = g_object_new (gst_pad_template_get_type (),
       "name", name_template, "name-template", name_template,
       "direction", direction, "presence", presence, "caps", caps, NULL);
-
-  if (caps)
-    gst_caps_unref (caps);
 
   return new;
 }
@@ -377,7 +338,7 @@ gst_pad_template_new (const gchar * name_template,
  *
  * Gets the capabilities of the static pad template.
  *
- * Returns: the #GstCaps of the static pad template.
+ * Returns: (transfer full): the #GstCaps of the static pad template.
  * Unref after usage. Since the core holds an additional
  * ref to the returned caps, use gst_caps_make_writable()
  * on the returned caps to modify it.
@@ -387,7 +348,7 @@ gst_static_pad_template_get_caps (GstStaticPadTemplate * templ)
 {
   g_return_val_if_fail (templ, NULL);
 
-  return (GstCaps *) gst_static_caps_get (&templ->static_caps);
+  return gst_static_caps_get (&templ->static_caps);
 }
 
 /**
@@ -396,15 +357,18 @@ gst_static_pad_template_get_caps (GstStaticPadTemplate * templ)
  *
  * Gets the capabilities of the pad template.
  *
- * Returns: the #GstCaps of the pad template. If you need to keep a reference to
- * the caps, take a ref (see gst_caps_ref ()).
+ * Returns: (transfer full): the #GstCaps of the pad template.
+ * Unref after usage.
  */
 GstCaps *
 gst_pad_template_get_caps (GstPadTemplate * templ)
 {
+  GstCaps *caps;
   g_return_val_if_fail (GST_IS_PAD_TEMPLATE (templ), NULL);
 
-  return GST_PAD_TEMPLATE_CAPS (templ);
+  caps = GST_PAD_TEMPLATE_CAPS (templ);
+
+  return (caps ? gst_caps_ref (caps) : NULL);
 }
 
 /**
@@ -417,8 +381,7 @@ gst_pad_template_get_caps (GstPadTemplate * templ)
 void
 gst_pad_template_pad_created (GstPadTemplate * templ, GstPad * pad)
 {
-  g_signal_emit (G_OBJECT (templ),
-      gst_pad_template_signals[TEMPL_PAD_CREATED], 0, pad);
+  g_signal_emit (templ, gst_pad_template_signals[TEMPL_PAD_CREATED], 0, pad);
 }
 
 static void
@@ -431,18 +394,15 @@ gst_pad_template_set_property (GObject * object, guint prop_id,
       GST_PAD_TEMPLATE_NAME_TEMPLATE (object) = g_value_dup_string (value);
       break;
     case PROP_DIRECTION:
-      GST_PAD_TEMPLATE_DIRECTION (object) = g_value_get_enum (value);
+      GST_PAD_TEMPLATE_DIRECTION (object) =
+          (GstPadDirection) g_value_get_enum (value);
       break;
     case PROP_PRESENCE:
-      GST_PAD_TEMPLATE_PRESENCE (object) = g_value_get_enum (value);
+      GST_PAD_TEMPLATE_PRESENCE (object) =
+          (GstPadPresence) g_value_get_enum (value);
       break;
     case PROP_CAPS:
-      /* allow caps == NULL for backwards compatibility (ie. g_object_new()
-       * called without any of the new properties) (FIXME 0.11) */
-      if (g_value_get_boxed (value) != NULL) {
-        GST_PAD_TEMPLATE_CAPS (object) =
-            gst_caps_copy (g_value_get_boxed (value));
-      }
+      GST_PAD_TEMPLATE_CAPS (object) = g_value_dup_boxed (value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);

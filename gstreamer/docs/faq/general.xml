@@ -77,10 +77,10 @@ on the GStreamer project website.
 GStreamer aims to support every format imaginable, but that doesn't mean the 
 developers have managed to achieve that aim yet. If a GStreamer enabled 
 application doesn't play back your files, you can help us solve that problem
-by <ulink url="htpp://bugzilla.gnome.org">filing an enhancement request 
+by <ulink url="http://bugzilla.gnome.org">filing an enhancement request
 bug</ulink> for that format. If you have it, please provide: 
 <itemizedlist>
-  <listitem><para>links to other players, preferrably Open Source and working 
+  <listitem><para>links to other players, preferably Open Source and working
   on Unix</para></listitem>
   <listitem><para>links to explanations of the format.</para></listitem>
   <listitem><para>ways to obtain mediafiles in that format to test.
@@ -99,7 +99,7 @@ What are the exact licensing terms for GStreamer and its plugins ?
       <answer>
         <para>
 All of GStreamer, including our own plugin code, is licensed under the 
-<ulink url="http://www.gnu.org/licenses/lgpl.html">GNU LGPL</ulink> license.
+<ulink url="http://www.gnu.org/licenses/lgpl-2.1.html">GNU LGPL 2.1</ulink> license.
 Some of the libraries we use for some of the plugins are however under the 
 GPL, which means that those plugins can not be used by a non-GPL-compatible 
 application. 

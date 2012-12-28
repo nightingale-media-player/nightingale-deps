@@ -54,6 +54,7 @@ PACKAGE="$1"
 
 DOMAINS_TO_ADD=""
 DOMAINS_UPDATED=""
+DOMAINS_NOT_IN_LINGUAS=""
 
 echo "Downloading latest translation files for package $PACKAGE ..."
 echo
@@ -95,6 +96,10 @@ do
         fi
         DOMAINS_UPDATED="$DOMAINS_UPDATED $d"
       fi
+      # make sure domain is listed in LINGUAS
+      if ! grep $d "po/LINGUAS" >/dev/null 2>/dev/null; then
+        DOMAINS_NOT_IN_LINGUAS="$DOMAINS_NOT_IN_LINGUAS $d"
+      fi
     else
       # ./po/foo.po doesn't exist, but foo.po exists on the translation project
       # website, so it's probably a new translation
@@ -133,6 +138,15 @@ if [ -n "$DOMAINS_UPDATED" ]; then
     echo
   fi
   echo "===================================================================="
+fi
+
+if [ -n "$DOMAINS_NOT_IN_LINGUAS" ]; then
+  echo
+  echo "Existing domains missing from the po/LINGUAS file:"
+  echo
+  echo "  $DOMAINS_NOT_IN_LINGUAS"
+  echo
+  echo
 fi
 
 

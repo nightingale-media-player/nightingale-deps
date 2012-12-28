@@ -2,6 +2,7 @@
  * Copyright (C) 1999,2000 Erik Walthinsen <omega@cse.ogi.edu>
  *                    2005 Wim Taymans <wim@fluendo.com>
  *                    2005 Andy Wingo <wingo@pobox.com>
+ * Copyright (C) 2012 Collabora Ltd. <tim.muller@collabora.co.uk>
  *
  * gstnetclientclock.h: clock that synchronizes itself to a time provider over
  * the network
@@ -53,13 +54,7 @@
 #include "gstnettimepacket.h"
 #include "gstnetclientclock.h"
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
-#if defined (_MSC_VER) && _MSC_VER >= 1400
-#include <io.h>
-#endif
+#include <gio/gio.h>
 
 GST_DEBUG_CATEGORY_STATIC (ncc_debug);
 #define GST_CAT_DEFAULT (ncc_debug)
@@ -68,15 +63,11 @@ GST_DEBUG_CATEGORY_STATIC (ncc_debug);
 #define DEFAULT_PORT            5637
 #define DEFAULT_TIMEOUT         GST_SECOND
 
-#ifdef G_OS_WIN32
-#define getsockname(sock,addr,len) getsockname(sock,addr,(int *)len)
-#endif
-
 enum
 {
   PROP_0,
   PROP_ADDRESS,
-  PROP_PORT,
+  PROP_PORT
 };
 
 #define GST_NET_CLIENT_CLOCK_GET_PRIVATE(obj)  \
@@ -84,15 +75,23 @@ enum
 
 struct _GstNetClientClockPrivate
 {
-  GstPollFD sock;
-  GstPoll *fdset;
+  GThread *thread;
+
+  GSocket *socket;
+  GSocketAddress *servaddr;
+  GCancellable *cancel;
+
+  GstClockTime timeout_expiration;
+
+  gchar *address;
+  gint port;
 };
 
-#define _do_init(type) \
+#define _do_init \
   GST_DEBUG_CATEGORY_INIT (ncc_debug, "netclock", 0, "Network client clock");
-
-GST_BOILERPLATE_FULL (GstNetClientClock, gst_net_client_clock,
-    GstSystemClock, GST_TYPE_SYSTEM_CLOCK, _do_init);
+#define gst_net_client_clock_parent_class parent_class
+G_DEFINE_TYPE_WITH_CODE (GstNetClientClock, gst_net_client_clock,
+    GST_TYPE_SYSTEM_CLOCK, _do_init);
 
 static void gst_net_client_clock_finalize (GObject * object);
 static void gst_net_client_clock_set_property (GObject * object, guint prop_id,
@@ -101,27 +100,6 @@ static void gst_net_client_clock_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
 static void gst_net_client_clock_stop (GstNetClientClock * self);
-
-#ifdef G_OS_WIN32
-static int
-inet_aton (const char *c, struct in_addr *paddr)
-{
-  /* note that inet_addr is deprecated on unix because
-   * inet_addr returns -1 (INADDR_NONE) for the valid 255.255.255.255
-   * address. */
-  paddr->s_addr = inet_addr (c);
-  if (paddr->s_addr == INADDR_NONE)
-    return 0;
-
-  return 1;
-}
-#endif
-
-static void
-gst_net_client_clock_base_init (gpointer g_class)
-{
-  /* nop */
-}
 
 static void
 gst_net_client_clock_class_init (GstNetClientClockClass * klass)
@@ -138,9 +116,8 @@ gst_net_client_clock_class_init (GstNetClientClockClass * klass)
 
   g_object_class_install_property (gobject_class, PROP_ADDRESS,
       g_param_spec_string ("address", "address",
-          "The address of the machine providing a time server, "
-          "as a dotted quad (x.x.x.x)", DEFAULT_ADDRESS,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          "The IP address of the machine providing a time server",
+          DEFAULT_ADDRESS, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_PORT,
       g_param_spec_int ("port", "port",
           "The port on which the remote server is listening", 0, G_MAXUINT16,
@@ -148,33 +125,21 @@ gst_net_client_clock_class_init (GstNetClientClockClass * klass)
 }
 
 static void
-gst_net_client_clock_init (GstNetClientClock * self,
-    GstNetClientClockClass * g_class)
+gst_net_client_clock_init (GstNetClientClock * self)
 {
   GstClock *clock = GST_CLOCK_CAST (self);
+  GstNetClientClockPrivate *priv;
 
-#ifdef G_OS_WIN32
-  WSADATA w;
-  int error = WSAStartup (0x0202, &w);
+  self->priv = priv = GST_NET_CLIENT_CLOCK_GET_PRIVATE (self);
 
-  if (error) {
-    GST_DEBUG_OBJECT (self, "Error on WSAStartup");
-  }
-  if (w.wVersion != 0x0202) {
-    WSACleanup ();
-  }
-#endif
-  self->priv = GST_NET_CLIENT_CLOCK_GET_PRIVATE (self);
+  priv->port = DEFAULT_PORT;
+  priv->address = g_strdup (DEFAULT_ADDRESS);
 
-  self->port = DEFAULT_PORT;
-  self->address = g_strdup (DEFAULT_ADDRESS);
+  gst_clock_set_timeout (clock, DEFAULT_TIMEOUT);
 
-  clock->timeout = DEFAULT_TIMEOUT;
+  priv->thread = NULL;
 
-  self->priv->sock.fd = -1;
-  self->thread = NULL;
-
-  self->servaddr = NULL;
+  priv->servaddr = NULL;
 }
 
 static void
@@ -182,25 +147,23 @@ gst_net_client_clock_finalize (GObject * object)
 {
   GstNetClientClock *self = GST_NET_CLIENT_CLOCK (object);
 
-  if (self->thread) {
+  if (self->priv->thread) {
     gst_net_client_clock_stop (self);
-    g_assert (self->thread == NULL);
   }
 
-  if (self->priv->fdset) {
-    gst_poll_free (self->priv->fdset);
-    self->priv->fdset = NULL;
+  g_free (self->priv->address);
+  self->priv->address = NULL;
+
+  if (self->priv->servaddr != NULL) {
+    g_object_unref (self->priv->servaddr);
+    self->priv->servaddr = NULL;
   }
 
-  g_free (self->address);
-  self->address = NULL;
-
-  g_free (self->servaddr);
-  self->servaddr = NULL;
-
-#ifdef G_OS_WIN32
-  WSACleanup ();
-#endif
+  if (self->priv->socket != NULL) {
+    g_socket_close (self->priv->socket, NULL);
+    g_object_unref (self->priv->socket);
+    self->priv->socket = NULL;
+  }
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -213,14 +176,13 @@ gst_net_client_clock_set_property (GObject * object, guint prop_id,
 
   switch (prop_id) {
     case PROP_ADDRESS:
-      g_free (self->address);
-      if (g_value_get_string (value) == NULL)
-        self->address = g_strdup (DEFAULT_ADDRESS);
-      else
-        self->address = g_strdup (g_value_get_string (value));
+      g_free (self->priv->address);
+      self->priv->address = g_value_dup_string (value);
+      if (self->priv->address == NULL)
+        self->priv->address = g_strdup (DEFAULT_ADDRESS);
       break;
     case PROP_PORT:
-      self->port = g_value_get_int (value);
+      self->priv->port = g_value_get_int (value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -236,10 +198,10 @@ gst_net_client_clock_get_property (GObject * object, guint prop_id,
 
   switch (prop_id) {
     case PROP_ADDRESS:
-      g_value_set_string (value, self->address);
+      g_value_set_string (value, self->priv->address);
       break;
     case PROP_PORT:
-      g_value_set_int (value, self->port);
+      g_value_set_int (value, self->priv->port);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -251,6 +213,7 @@ static void
 gst_net_client_clock_observe_times (GstNetClientClock * self,
     GstClockTime local_1, GstClockTime remote, GstClockTime local_2)
 {
+  GstClockTime current_timeout;
   GstClockTime local_avg;
   gdouble r_squared;
   GstClock *clock;
@@ -262,18 +225,17 @@ gst_net_client_clock_observe_times (GstNetClientClock * self,
 
   clock = GST_CLOCK_CAST (self);
 
-  gst_clock_add_observation (GST_CLOCK (self), local_avg, remote, &r_squared);
-
-  GST_CLOCK_SLAVE_LOCK (self);
-  if (clock->filling) {
-    self->current_timeout = 0;
-  } else {
+  if (gst_clock_add_observation (GST_CLOCK (self), local_avg, remote,
+          &r_squared)) {
     /* geto formula */
-    self->current_timeout =
-        (1e-3 / (1 - MIN (r_squared, 0.99999))) * GST_SECOND;
-    self->current_timeout = MIN (self->current_timeout, clock->timeout);
+    current_timeout = (1e-3 / (1 - MIN (r_squared, 0.99999))) * GST_SECOND;
+    current_timeout = MIN (current_timeout, gst_clock_get_timeout (clock));
+  } else {
+    current_timeout = 0;
   }
-  GST_CLOCK_SLAVE_UNLOCK (clock);
+
+  GST_INFO ("next timeout: %" GST_TIME_FORMAT, GST_TIME_ARGS (current_timeout));
+  self->priv->timeout_expiration = gst_util_get_timestamp () + current_timeout;
 
   return;
 
@@ -286,180 +248,150 @@ bogus_observation:
   }
 }
 
-static gint
-gst_net_client_clock_do_select (GstNetClientClock * self)
-{
-  while (TRUE) {
-    GstClockTime diff;
-    gint ret;
-
-    GST_LOG_OBJECT (self, "doing select");
-
-    diff = gst_clock_get_internal_time (GST_CLOCK (self));
-    ret = gst_poll_wait (self->priv->fdset, self->current_timeout);
-    diff = gst_clock_get_internal_time (GST_CLOCK (self)) - diff;
-
-    if (diff > self->current_timeout)
-      self->current_timeout = 0;
-    else
-      self->current_timeout -= diff;
-
-    GST_LOG_OBJECT (self, "select returned %d", ret);
-
-    if (ret < 0 && errno != EBUSY) {
-      if (errno != EAGAIN && errno != EINTR)
-        goto select_error;
-      else
-        continue;
-    } else {
-      return ret;
-    }
-
-    g_assert_not_reached ();
-
-    /* log errors and keep going */
-  select_error:
-    {
-      GST_WARNING_OBJECT (self, "select error %d: %s (%d)", ret,
-          g_strerror (errno), errno);
-      continue;
-    }
-  }
-
-  g_assert_not_reached ();
-  return -1;
-}
-
 static gpointer
 gst_net_client_clock_thread (gpointer data)
 {
   GstNetClientClock *self = data;
-  struct sockaddr_in tmpaddr;
-  socklen_t len;
   GstNetTimePacket *packet;
-  gint ret;
+  GSocket *socket = self->priv->socket;
+  GError *err = NULL;
   GstClock *clock = data;
 
-  while (TRUE) {
-    ret = gst_net_client_clock_do_select (self);
+  GST_INFO_OBJECT (self, "net client clock thread running, socket=%p", socket);
 
-    if (ret < 0 && errno == EBUSY) {
-      GST_LOG_OBJECT (self, "stop");
-      goto stopped;
-    } else if (ret == 0) {
-      /* timed out, let's send another packet */
-      GST_DEBUG_OBJECT (self, "timed out");
+  g_socket_set_blocking (socket, TRUE);
+  g_socket_set_timeout (socket, 0);
 
-      packet = gst_net_time_packet_new (NULL);
+  while (!g_cancellable_is_cancelled (self->priv->cancel)) {
+    GstClockTime expiration_time = self->priv->timeout_expiration;
+    GstClockTime now = gst_util_get_timestamp ();
+    gint64 socket_timeout;
 
-      packet->local_time = gst_clock_get_internal_time (GST_CLOCK (self));
-
-      GST_DEBUG_OBJECT (self, "sending packet, local time = %" GST_TIME_FORMAT,
-          GST_TIME_ARGS (packet->local_time));
-      gst_net_time_packet_send (packet, self->priv->sock.fd,
-          (struct sockaddr *) self->servaddr, sizeof (struct sockaddr_in));
-
-      g_free (packet);
-
-      /* reset timeout */
-      self->current_timeout = clock->timeout;
-      continue;
-    } else if (gst_poll_fd_can_read (self->priv->fdset, &self->priv->sock)) {
-      /* got data in */
-      GstClockTime new_local = gst_clock_get_internal_time (GST_CLOCK (self));
-
-      len = sizeof (struct sockaddr);
-      packet = gst_net_time_packet_receive (self->priv->sock.fd,
-          (struct sockaddr *) &tmpaddr, &len);
-
-      if (!packet)
-        goto receive_error;
-
-      GST_LOG_OBJECT (self, "got packet back");
-      GST_LOG_OBJECT (self, "local_1 = %" GST_TIME_FORMAT,
-          GST_TIME_ARGS (packet->local_time));
-      GST_LOG_OBJECT (self, "remote = %" GST_TIME_FORMAT,
-          GST_TIME_ARGS (packet->remote_time));
-      GST_LOG_OBJECT (self, "local_2 = %" GST_TIME_FORMAT,
-          GST_TIME_ARGS (new_local));
-
-      /* observe_times will reset the timeout */
-      gst_net_client_clock_observe_times (self, packet->local_time,
-          packet->remote_time, new_local);
-
-      g_free (packet);
-      continue;
+    if (now >= expiration_time || (expiration_time - now) <= GST_MSECOND) {
+      socket_timeout = 0;
     } else {
-      GST_WARNING_OBJECT (self, "unhandled select return state?");
-      continue;
+      socket_timeout = (expiration_time - now) / GST_USECOND;
     }
 
-    g_assert_not_reached ();
+    GST_TRACE_OBJECT (self, "timeout: %" G_GINT64_FORMAT "us", socket_timeout);
 
-  stopped:
-    {
-      GST_DEBUG_OBJECT (self, "shutting down");
-      /* socket gets closed in _stop() */
-      return NULL;
+    if (!g_socket_condition_timed_wait (socket, G_IO_IN, socket_timeout,
+            self->priv->cancel, &err)) {
+      /* cancelled, timeout or error */
+      if (err->code == G_IO_ERROR_CANCELLED) {
+        GST_INFO_OBJECT (self, "cancelled");
+        g_clear_error (&err);
+        break;
+      } else if (err->code == G_IO_ERROR_TIMED_OUT) {
+        /* timed out, let's send another packet */
+        GST_DEBUG_OBJECT (self, "timed out");
+
+        packet = gst_net_time_packet_new (NULL);
+
+        packet->local_time = gst_clock_get_internal_time (GST_CLOCK (self));
+
+        GST_DEBUG_OBJECT (self,
+            "sending packet, local time = %" GST_TIME_FORMAT,
+            GST_TIME_ARGS (packet->local_time));
+
+        gst_net_time_packet_send (packet, self->priv->socket,
+            self->priv->servaddr, NULL);
+
+        g_free (packet);
+
+        /* reset timeout (but are expecting a response sooner anyway) */
+        self->priv->timeout_expiration =
+            gst_util_get_timestamp () + gst_clock_get_timeout (clock);
+      } else {
+        GST_DEBUG_OBJECT (self, "socket error: %s", err->message);
+        g_usleep (G_USEC_PER_SEC / 10); /* throttle */
+      }
+      g_clear_error (&err);
+    } else {
+      GstClockTime new_local;
+
+      /* got packet */
+
+      new_local = gst_clock_get_internal_time (GST_CLOCK (self));
+
+      packet = gst_net_time_packet_receive (socket, NULL, &err);
+
+      if (packet != NULL) {
+        GST_LOG_OBJECT (self, "got packet back");
+        GST_LOG_OBJECT (self, "local_1 = %" GST_TIME_FORMAT,
+            GST_TIME_ARGS (packet->local_time));
+        GST_LOG_OBJECT (self, "remote = %" GST_TIME_FORMAT,
+            GST_TIME_ARGS (packet->remote_time));
+        GST_LOG_OBJECT (self, "local_2 = %" GST_TIME_FORMAT,
+            GST_TIME_ARGS (new_local));
+
+        /* observe_times will reset the timeout */
+        gst_net_client_clock_observe_times (self, packet->local_time,
+            packet->remote_time, new_local);
+
+        g_free (packet);
+      } else if (err != NULL) {
+        GST_WARNING_OBJECT (self, "receive error: %s", err->message);
+        g_clear_error (&err);
+      }
     }
-  receive_error:
-    {
-      GST_WARNING_OBJECT (self, "receive error");
-      continue;
-    }
-
-    g_assert_not_reached ();
-
   }
 
-  g_assert_not_reached ();
-
+  GST_INFO_OBJECT (self, "shutting down net client clock thread");
   return NULL;
 }
 
 static gboolean
 gst_net_client_clock_start (GstNetClientClock * self)
 {
-  struct sockaddr_in servaddr, myaddr;
-  socklen_t len;
-  gint ret;
-  GError *error;
+  GSocketAddress *servaddr;
+  GSocketAddress *myaddr;
+  GInetAddress *inetaddr;
+  GSocket *socket;
+  GError *error = NULL;
 
-  g_return_val_if_fail (self->address != NULL, FALSE);
-  g_return_val_if_fail (self->servaddr == NULL, FALSE);
+  g_return_val_if_fail (self->priv->address != NULL, FALSE);
+  g_return_val_if_fail (self->priv->servaddr == NULL, FALSE);
 
-  if ((ret = socket (AF_INET, SOCK_DGRAM, 0)) < 0)
+  socket = g_socket_new (G_SOCKET_FAMILY_IPV4, G_SOCKET_TYPE_DATAGRAM,
+      G_SOCKET_PROTOCOL_UDP, &error);
+
+  if (socket == NULL)
     goto no_socket;
 
-  self->priv->sock.fd = ret;
+  /* check address we're bound to, mostly for debugging purposes */
+  myaddr = g_socket_get_local_address (socket, &error);
 
-  len = sizeof (myaddr);
-  ret = getsockname (self->priv->sock.fd, (struct sockaddr *) &myaddr, &len);
-  if (ret < 0)
+  if (myaddr == NULL)
     goto getsockname_error;
 
-  memset (&servaddr, 0, sizeof (servaddr));
-  servaddr.sin_family = AF_INET;        /* host byte order */
-  servaddr.sin_port = htons (self->port);       /* short, network byte order */
-
   GST_DEBUG_OBJECT (self, "socket opened on UDP port %hd",
-      ntohs (servaddr.sin_port));
+      g_inet_socket_address_get_port (G_INET_SOCKET_ADDRESS (myaddr)));
 
-  if (!inet_aton (self->address, &servaddr.sin_addr))
+  g_object_unref (myaddr);
+
+  /* create target address */
+  inetaddr = g_inet_address_new_from_string (self->priv->address);
+
+  if (inetaddr == NULL)
     goto bad_address;
 
-  self->servaddr = g_malloc (sizeof (struct sockaddr_in));
-  memcpy (self->servaddr, &servaddr, sizeof (servaddr));
+  servaddr = g_inet_socket_address_new (inetaddr, self->priv->port);
+  g_object_unref (inetaddr);
 
-  GST_DEBUG_OBJECT (self, "will communicate with %s:%d", self->address,
-      self->port);
+  g_assert (servaddr != NULL);
 
-  gst_poll_add_fd (self->priv->fdset, &self->priv->sock);
-  gst_poll_fd_ctl_read (self->priv->fdset, &self->priv->sock, TRUE);
+  GST_DEBUG_OBJECT (self, "will communicate with %s:%d", self->priv->address,
+      self->priv->port);
 
-  self->thread = g_thread_create (gst_net_client_clock_thread, self, TRUE,
-      &error);
-  if (!self->thread)
+  self->priv->cancel = g_cancellable_new ();
+  self->priv->socket = socket;
+  self->priv->servaddr = G_SOCKET_ADDRESS (servaddr);
+
+  self->priv->thread = g_thread_try_new ("GstNetClientClock",
+      gst_net_client_clock_thread, self, &error);
+
+  if (error != NULL)
     goto no_thread;
 
   return TRUE;
@@ -467,34 +399,31 @@ gst_net_client_clock_start (GstNetClientClock * self)
   /* ERRORS */
 no_socket:
   {
-    GST_ERROR_OBJECT (self, "socket failed %d: %s (%d)", ret,
-        g_strerror (errno), errno);
+    GST_ERROR_OBJECT (self, "socket_new() failed: %s", error->message);
+    g_error_free (error);
     return FALSE;
   }
 getsockname_error:
   {
-    GST_ERROR_OBJECT (self, "getsockname failed %d: %s (%d)", ret,
-        g_strerror (errno), errno);
-    close (self->priv->sock.fd);
-    self->priv->sock.fd = -1;
+    GST_ERROR_OBJECT (self, "get_local_address() failed: %s", error->message);
+    g_error_free (error);
+    g_object_unref (socket);
     return FALSE;
   }
 bad_address:
   {
-    GST_ERROR_OBJECT (self, "inet_aton failed %d: %s (%d)", ret,
-        g_strerror (errno), errno);
-    close (self->priv->sock.fd);
-    self->priv->sock.fd = -1;
+    GST_ERROR_OBJECT (self, "inet_address_new_from_string('%s') failed",
+        self->priv->address);
+    g_object_unref (socket);
     return FALSE;
   }
 no_thread:
   {
     GST_ERROR_OBJECT (self, "could not create thread: %s", error->message);
-    gst_poll_remove_fd (self->priv->fdset, &self->priv->sock);
-    close (self->priv->sock.fd);
-    self->priv->sock.fd = -1;
-    g_free (self->servaddr);
-    self->servaddr = NULL;
+    g_object_unref (self->priv->servaddr);
+    self->priv->servaddr = NULL;
+    g_object_unref (self->priv->socket);
+    self->priv->socket = NULL;
     g_error_free (error);
     return FALSE;
   }
@@ -503,15 +432,25 @@ no_thread:
 static void
 gst_net_client_clock_stop (GstNetClientClock * self)
 {
-  gst_poll_set_flushing (self->priv->fdset, TRUE);
-  g_thread_join (self->thread);
-  self->thread = NULL;
+  if (self->priv->thread == NULL)
+    return;
 
-  if (self->priv->sock.fd != -1) {
-    gst_poll_remove_fd (self->priv->fdset, &self->priv->sock);
-    close (self->priv->sock.fd);
-    self->priv->sock.fd = -1;
-  }
+  GST_INFO_OBJECT (self, "stopping...");
+  g_cancellable_cancel (self->priv->cancel);
+
+  g_thread_join (self->priv->thread);
+  self->priv->thread = NULL;
+
+  g_object_unref (self->priv->cancel);
+  self->priv->cancel = NULL;
+
+  g_object_unref (self->priv->servaddr);
+  self->priv->servaddr = NULL;
+
+  g_object_unref (self->priv->socket);
+  self->priv->socket = NULL;
+
+  GST_INFO_OBJECT (self, "stopped");
 }
 
 /**
@@ -522,7 +461,7 @@ gst_net_client_clock_stop (GstNetClientClock * self)
  * @base_time: initial time of the clock
  *
  * Create a new #GstNetClientClock that will report the time
- * provided by the #GstNetClockProvider on @remote_address and 
+ * provided by the #GstNetTimeProvider on @remote_address and 
  * @remote_port.
  *
  * Returns: a new #GstClock that receives a time from the remote
@@ -532,6 +471,7 @@ GstClock *
 gst_net_client_clock_new (gchar * name, const gchar * remote_address,
     gint remote_port, GstClockTime base_time)
 {
+  /* FIXME: gst_net_client_clock_new() should be a thin wrapper for g_object_new() */
   GstNetClientClock *ret;
   GstClockTime internal;
 
@@ -557,12 +497,11 @@ gst_net_client_clock_new (gchar * name, const gchar * remote_address,
   {
     GstClockTime now = gst_clock_get_time (GST_CLOCK (ret));
 
-    if (now < base_time || now > base_time + GST_SECOND)
+    if (GST_CLOCK_DIFF (now, base_time) > 0 ||
+        GST_CLOCK_DIFF (now, base_time + GST_SECOND) < 0) {
       g_warning ("unable to set the base time, expect sync problems!");
+    }
   }
-
-  if ((ret->priv->fdset = gst_poll_new (TRUE)) == NULL)
-    goto no_fdset;
 
   if (!gst_net_client_clock_start (ret))
     goto failed_start;
@@ -570,13 +509,6 @@ gst_net_client_clock_new (gchar * name, const gchar * remote_address,
   /* all systems go, cap'n */
   return (GstClock *) ret;
 
-no_fdset:
-  {
-    GST_ERROR_OBJECT (ret, "could not create an fdset: %s (%d)",
-        g_strerror (errno), errno);
-    gst_object_unref (ret);
-    return NULL;
-  }
 failed_start:
   {
     /* already printed a nice error */

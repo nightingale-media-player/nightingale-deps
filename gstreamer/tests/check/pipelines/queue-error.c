@@ -23,9 +23,10 @@
 
 #include <gst/gst.h>
 
-static gboolean
-modify_caps (GstObject * pad, GstEvent * event, gpointer data)
+static GstPadProbeReturn
+modify_caps (GstObject * pad, GstPadProbeInfo * info, gpointer data)
 {
+  GstEvent *event = GST_PAD_PROBE_INFO_EVENT (info);
   GstElement *filter = GST_ELEMENT (data);
   GstCaps *caps;
 
@@ -33,14 +34,14 @@ modify_caps (GstObject * pad, GstEvent * event, gpointer data)
   fail_unless (GST_IS_EVENT (event));
 
   if (GST_EVENT_TYPE (event) != GST_EVENT_EOS)
-    return TRUE;
+    return GST_PAD_PROBE_OK;
 
   /* trigger caps negotiation error */
-  caps = gst_caps_new_simple ("video/x-raw-rgb", NULL);
+  caps = gst_caps_new_empty_simple ("video/x-raw");
   g_object_set (filter, "caps", caps, NULL);
   gst_caps_unref (caps);
 
-  return TRUE;
+  return GST_PAD_PROBE_OK;
 }
 
 GST_START_TEST (test_queue)
@@ -52,7 +53,7 @@ GST_START_TEST (test_queue)
   GstPad *pad;
   guint probe;
   gchar *pipe_desc =
-      g_strdup_printf ("fakesrc num-buffers=1 ! video/x-raw-yuv ! "
+      g_strdup_printf ("fakesrc num-buffers=1 ! video/x-raw ! "
       "queue min-threshold-buffers=2 name=queue ! "
       "capsfilter name=nasty ! fakesink");
 
@@ -69,7 +70,9 @@ GST_START_TEST (test_queue)
   fail_unless (queue != NULL);
   pad = gst_element_get_static_pad (queue, "sink");
   fail_unless (pad != NULL);
-  probe = gst_pad_add_event_probe (pad, G_CALLBACK (modify_caps), filter);
+  probe =
+      gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM,
+      (GstPadProbeCallback) modify_caps, filter, NULL);
 
   bus = gst_element_get_bus (pipeline);
 
@@ -85,7 +88,7 @@ GST_START_TEST (test_queue)
   fail_unless_equals_int (gst_element_set_state (pipeline, GST_STATE_NULL),
       GST_STATE_CHANGE_SUCCESS);
 
-  gst_pad_remove_event_probe (pad, probe);
+  gst_pad_remove_probe (pad, probe);
   gst_object_unref (queue);
   gst_object_unref (pad);
   gst_object_unref (filter);

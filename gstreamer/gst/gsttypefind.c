@@ -38,25 +38,16 @@
 GST_DEBUG_CATEGORY_EXTERN (type_find_debug);
 #define GST_CAT_DEFAULT type_find_debug
 
-GType
-gst_type_find_get_type (void)
-{
-  static GType typefind_type = 0;
-
-  if (G_UNLIKELY (typefind_type == 0)) {
-    typefind_type = g_pointer_type_register_static ("GstTypeFind");
-  }
-  return typefind_type;
-}
+G_DEFINE_POINTER_TYPE (GstTypeFind, gst_type_find);
 
 /**
  * gst_type_find_register:
- * @plugin: A #GstPlugin, or NULL for a static typefind function (note that
- *    passing NULL only works in GStreamer 0.10.16 and later)
+ * @plugin: A #GstPlugin, or NULL for a static typefind function
  * @name: The name for registering
  * @rank: The rank (or importance) of this typefind function
  * @func: The #GstTypeFindFunction to use
- * @extensions: Optional extensions that could belong to this type
+ * @extensions: (allow-none): Optional comma-separated list of extensions
+ *     that could belong to this type
  * @possible_caps: Optionally the caps that could be returned when typefinding
  *                 succeeds
  * @data: Optional user data. This user data must be available until the plugin
@@ -72,8 +63,8 @@ gst_type_find_get_type (void)
  */
 gboolean
 gst_type_find_register (GstPlugin * plugin, const gchar * name, guint rank,
-    GstTypeFindFunction func, gchar ** extensions,
-    const GstCaps * possible_caps, gpointer data, GDestroyNotify data_notify)
+    GstTypeFindFunction func, const gchar * extensions,
+    GstCaps * possible_caps, gpointer data, GDestroyNotify data_notify)
 {
   GstTypeFindFactory *factory;
 
@@ -81,30 +72,37 @@ gst_type_find_register (GstPlugin * plugin, const gchar * name, guint rank,
 
   GST_INFO ("registering typefind function for %s", name);
 
-  factory = g_object_new (GST_TYPE_TYPE_FIND_FACTORY, NULL);
+  factory = g_object_newv (GST_TYPE_TYPE_FIND_FACTORY, 0, NULL);
   GST_DEBUG_OBJECT (factory, "using new typefind factory for %s", name);
   g_assert (GST_IS_TYPE_FIND_FACTORY (factory));
 
-  gst_plugin_feature_set_name (GST_PLUGIN_FEATURE (factory), name);
-  gst_plugin_feature_set_rank (GST_PLUGIN_FEATURE (factory), rank);
+  gst_plugin_feature_set_name (GST_PLUGIN_FEATURE_CAST (factory), name);
+  gst_plugin_feature_set_rank (GST_PLUGIN_FEATURE_CAST (factory), rank);
 
-  if (factory->extensions)
+  if (factory->extensions) {
     g_strfreev (factory->extensions);
-  factory->extensions = g_strdupv (extensions);
+    factory->extensions = NULL;
+  }
+  if (extensions)
+    factory->extensions = g_strsplit (extensions, ",", -1);
 
-  gst_caps_replace (&factory->caps, (GstCaps *) possible_caps);
+  gst_caps_replace (&factory->caps, possible_caps);
   factory->function = func;
   factory->user_data = data;
   factory->user_data_notify = data_notify;
   if (plugin && plugin->desc.name) {
-    GST_PLUGIN_FEATURE (factory)->plugin_name = plugin->desc.name;      /* interned string */
+    GST_PLUGIN_FEATURE_CAST (factory)->plugin_name = plugin->desc.name; /* interned string */
+    GST_PLUGIN_FEATURE_CAST (factory)->plugin = plugin;
+    g_object_add_weak_pointer ((GObject *) plugin,
+        (gpointer *) & GST_PLUGIN_FEATURE_CAST (factory)->plugin);
   } else {
-    GST_PLUGIN_FEATURE (factory)->plugin_name = "NULL";
+    GST_PLUGIN_FEATURE_CAST (factory)->plugin_name = "NULL";
+    GST_PLUGIN_FEATURE_CAST (factory)->plugin = NULL;
   }
-  GST_PLUGIN_FEATURE (factory)->loaded = TRUE;
+  GST_PLUGIN_FEATURE_CAST (factory)->loaded = TRUE;
 
-  gst_registry_add_feature (gst_registry_get_default (),
-      GST_PLUGIN_FEATURE (factory));
+  gst_registry_add_feature (gst_registry_get (),
+      GST_PLUGIN_FEATURE_CAST (factory));
 
   return TRUE;
 }
@@ -123,9 +121,10 @@ gst_type_find_register (GstPlugin * plugin, const gchar * name, guint rank,
  * the stream. The returned memory is valid until the typefinding function
  * returns and must not be freed.
  *
- * Returns: the requested data, or NULL if that data is not available.
+ * Returns: (transfer none) (array length=size): the requested data, or NULL
+ *     if that data is not available.
  */
-guint8 *
+const guint8 *
 gst_type_find_peek (GstTypeFind * find, gint64 offset, guint size)
 {
   g_return_val_if_fail (find->peek != NULL, NULL);
@@ -145,8 +144,7 @@ gst_type_find_peek (GstTypeFind * find, gint64 offset, guint size)
  * It is up to the caller of the #GstTypeFindFunction to interpret these values.
  */
 void
-gst_type_find_suggest (GstTypeFind * find, guint probability,
-    const GstCaps * caps)
+gst_type_find_suggest (GstTypeFind * find, guint probability, GstCaps * caps)
 {
   g_return_if_fail (find->suggest != NULL);
   g_return_if_fail (probability <= 100);
@@ -179,8 +177,6 @@ gst_type_find_suggest (GstTypeFind * find, guint probability,
  * the values passed have the correct type (in terms of width in bytes when
  * passed to the vararg function - this applies particularly to gdouble and
  * guint64 arguments).
- *
- * Since: 0.10.20
  */
 void
 gst_type_find_suggest_simple (GstTypeFind * find, guint probability,

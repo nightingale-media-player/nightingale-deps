@@ -39,8 +39,6 @@ G_BEGIN_DECLS
  *
  * Available details for pipeline graphs produced by GST_DEBUG_BIN_TO_DOT_FILE()
  * and GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS().
- *
- * Since: 0.10.15
  */
 typedef enum {
   GST_DEBUG_GRAPH_SHOW_MEDIA_TYPE         = (1<<0),
@@ -51,12 +49,12 @@ typedef enum {
 } GstDebugGraphDetails;
 
 
-#ifndef GST_DISABLE_GST_DEBUG
-
 /********** pipeline graphs **********/
 
-void _gst_debug_bin_to_dot_file (GstBin *bin, GstDebugGraphDetails details, const gchar *file_name);
-void _gst_debug_bin_to_dot_file_with_ts (GstBin *bin, GstDebugGraphDetails details, const gchar *file_name);
+void gst_debug_bin_to_dot_file (GstBin *bin, GstDebugGraphDetails details, const gchar *file_name);
+void gst_debug_bin_to_dot_file_with_ts (GstBin *bin, GstDebugGraphDetails details, const gchar *file_name);
+
+#ifndef GST_DISABLE_GST_DEBUG
 
 /**
  * GST_DEBUG_BIN_TO_DOT_FILE:
@@ -75,10 +73,8 @@ void _gst_debug_bin_to_dot_file_with_ts (GstBin *bin, GstDebugGraphDetails detai
  * The macro is only active if gstreamer is configured with
  * &quot;--gst-enable-gst-debug&quot; and the environment variable
  * GST_DEBUG_DUMP_DOT_DIR is set to a basepath (e.g. /tmp).
- *
- * Since: 0.10.15
  */
-#define GST_DEBUG_BIN_TO_DOT_FILE(bin, details, file_name) _gst_debug_bin_to_dot_file (bin, details, file_name)
+#define GST_DEBUG_BIN_TO_DOT_FILE(bin, details, file_name) gst_debug_bin_to_dot_file (bin, details, file_name)
 
 /**
  * GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS:
@@ -87,12 +83,10 @@ void _gst_debug_bin_to_dot_file_with_ts (GstBin *bin, GstDebugGraphDetails detai
  *    one or more other #GstDebugGraphDetails flags.
  * @file_name: output base filename (e.g. "myplayer")
  *
- * This works like _gst_debug_bin_to_dot_file(), but adds the current timestamp
+ * This works like GST_DEBUG_BIN_TO_DOT_FILE(), but adds the current timestamp
  * to the filename, so that it can be used to take multiple snapshots.
- *
- * Since: 0.10.15
  */
-#define GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(bin, details, file_name) _gst_debug_bin_to_dot_file_with_ts (bin, details, file_name)
+#define GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(bin, details, file_name) gst_debug_bin_to_dot_file_with_ts (bin, details, file_name)
 
 
 #else /* GST_DISABLE_GST_DEBUG */

@@ -38,12 +38,6 @@ G_BEGIN_DECLS
 GST_DEBUG_CATEGORY_EXTERN (check_debug);
 #define GST_CAT_DEFAULT check_debug
 
-#define __CHECK_VERSION_LATER_THAN(major,minor,micro) \
-    (CHECK_MAJOR_VERSION > major || \
-     (CHECK_MAJOR_VERSION == (major) && CHECK_MINOR_VERSION > (minor)) || \
-     (CHECK_MAJOR_VERSION == (major) && CHECK_MINOR_VERSION == (minor) && \
-      CHECK_MICRO_VERSION > (micro)))
-
 /* logging function for tests
  * a test uses g_message() to log a debug line
  * a gst unit test can be run with GST_TEST_DEBUG env var set to see the
@@ -57,12 +51,12 @@ extern gboolean _gst_check_expecting_log;
 /* global variables used in test methods */
 extern GList * buffers;
 
-extern GMutex *check_mutex;
-extern GCond *check_cond;
+extern GMutex check_mutex;
+extern GCond check_cond;
 
 typedef struct
 {
-  char *name;
+  const char *name;
   int size;
   int abi_size;
 }
@@ -70,7 +64,7 @@ GstCheckABIStruct;
 
 void gst_check_init (int *argc, char **argv[]);
 
-GstFlowReturn gst_check_chain_func (GstPad * pad, GstBuffer * buffer);
+GstFlowReturn gst_check_chain_func (GstPad * pad, GstObject * parent, GstBuffer * buffer);
 
 void gst_check_message_error (GstMessage * message, GstMessageType type,
     GQuark domain, gint code);
@@ -78,28 +72,31 @@ void gst_check_message_error (GstMessage * message, GstMessageType type,
 GstElement *gst_check_setup_element (const gchar * factory);
 void gst_check_teardown_element (GstElement * element);
 GstPad *gst_check_setup_src_pad (GstElement * element,
-    GstStaticPadTemplate * template, GstCaps * caps);
+    GstStaticPadTemplate * tmpl);
 GstPad * gst_check_setup_src_pad_by_name (GstElement * element,
-          GstStaticPadTemplate * template, gchar *name);
+          GstStaticPadTemplate * tmpl, const gchar *name);
 GstPad * gst_check_setup_sink_pad_by_name (GstElement * element, 
-          GstStaticPadTemplate * template, gchar *name);
-void gst_check_teardown_pad_by_name (GstElement * element, gchar *name);
+          GstStaticPadTemplate * tmpl, const gchar *name);
+void gst_check_teardown_pad_by_name (GstElement * element, const gchar *name);
 void gst_check_teardown_src_pad (GstElement * element);
-void gst_check_drop_buffers ();
+void gst_check_drop_buffers (void);
 void gst_check_caps_equal (GstCaps * caps1, GstCaps * caps2);
+void gst_check_buffer_data (GstBuffer * buffer, gconstpointer data, gsize size);
 void gst_check_element_push_buffer_list (const gchar * element_name,
-    GList * buffer_in, GList * buffer_out, GstFlowReturn last_flow_return);
+    GList * buffer_in, GstCaps * caps_in, GList * buffer_out,
+    GstCaps * caps_out, GstFlowReturn last_flow_return);
 void gst_check_element_push_buffer (const gchar * element_name,
-    GstBuffer * buffer_in, GstBuffer * buffer_out);
+    GstBuffer * buffer_in, GstCaps * caps_in, GstBuffer * buffer_out,
+    GstCaps *caps_out);
 GstPad *gst_check_setup_sink_pad (GstElement * element,
-    GstStaticPadTemplate * template, GstCaps * caps);
+    GstStaticPadTemplate * tmpl);
 void gst_check_teardown_sink_pad (GstElement * element);
 void gst_check_abi_list (GstCheckABIStruct list[], gboolean have_abi_sizes);
 gint gst_check_run_suite (Suite * suite, const gchar * name,
     const gchar * fname);
 
-#define fail_unless_message_error(msg, domain, code)		\
-gst_check_message_error (msg, GST_MESSAGE_ERROR,		\
+#define fail_unless_message_error(msg, domain, code)            \
+gst_check_message_error (msg, GST_MESSAGE_ERROR,                \
   GST_ ## domain ## _ERROR, GST_ ## domain ## _ERROR_ ## code)
 #define assert_message_error(m, d, c) fail_unless_message_error(m, d, c)
 
@@ -114,7 +111,6 @@ gst_check_message_error (msg, GST_MESSAGE_ERROR,		\
  *
  * wrapper for checks END_TEST
  */
-#if __CHECK_VERSION_LATER_THAN(0,9,3)
 #define GST_START_TEST(__testname) \
 static void __testname (int __i__)\
 {\
@@ -124,18 +120,6 @@ static void __testname (int __i__)\
 #define GST_END_TEST GST_LOG ("cleaning up tasks"); \
                      gst_task_cleanup_all (); \
                      END_TEST
-#else
-#define GST_START_TEST(__testname) \
-static void __testname ()\
-{\
-  GST_DEBUG ("test start"); \
-  tcase_fn_start (""# __testname, __FILE__, __LINE__);
-
-#define GST_END_TEST GST_LOG ("cleaning up tasks"); \
-                     gst_task_cleanup_all (); \
-                     END_TEST
-#endif
-
 
 /* additional fail macros */
 /**
@@ -147,12 +131,12 @@ static void __testname ()\
  * case, printing both expressions and the values they evaluated to. This
  * macro is for use in unit tests.
  */
-#define fail_unless_equals_int(a, b)					\
-G_STMT_START {								\
-  int first = a;							\
-  int second = b;							\
-  fail_unless(first == second,						\
-    "'" #a "' (%d) is not equal to '" #b"' (%d)", first, second);	\
+#define fail_unless_equals_int(a, b)                                    \
+G_STMT_START {                                                          \
+  int first = a;                                                        \
+  int second = b;                                                       \
+  fail_unless(first == second,                                          \
+    "'" #a "' (%d) is not equal to '" #b"' (%d)", first, second);       \
 } G_STMT_END;
 /**
  * assert_equals_int:
@@ -166,6 +150,34 @@ G_STMT_START {								\
 #define assert_equals_int(a, b) fail_unless_equals_int(a, b)
 
 /**
+ * fail_unless_equals_int64:
+ * @a: a #gint64 value or expression
+ * @b: a #gint64 value or expression
+ *
+ * This macro checks that @a and @b are equal and aborts if this is not the
+ * case, printing both expressions and the values they evaluated to. This
+ * macro is for use in unit tests.
+ */
+#define fail_unless_equals_int64(a, b)                                  \
+G_STMT_START {                                                          \
+  gint64 first = a;                                                     \
+  gint64 second = b;                                                    \
+  fail_unless(first == second,                                          \
+    "'" #a "' (%" G_GINT64_FORMAT") is not equal to '" #b"' (%"         \
+    G_GINT64_FORMAT")", first, second);                                 \
+} G_STMT_END;
+/**
+ * assert_equals_int64:
+ * @a: a #gint64 value or expression
+ * @b: a #gint64 value or expression
+ *
+ * This macro checks that @a and @b are equal and aborts if this is not the
+ * case, printing both expressions and the values they evaluated to. This
+ * macro is for use in unit tests.
+ */
+#define assert_equals_int64(a, b) fail_unless_equals_int64(a, b)
+
+/**
  * fail_unless_equals_uint64:
  * @a: a #guint64 value or expression
  * @b: a #guint64 value or expression
@@ -174,13 +186,13 @@ G_STMT_START {								\
  * case, printing both expressions and the values they evaluated to. This
  * macro is for use in unit tests.
  */
-#define fail_unless_equals_uint64(a, b)					\
-G_STMT_START {								\
-  guint64 first = a;							\
-  guint64 second = b;							\
-  fail_unless(first == second,						\
-    "'" #a "' (%" G_GUINT64_FORMAT ") is not equal to '" #b"' (%"	\
-    G_GUINT64_FORMAT ")", first, second);				\
+#define fail_unless_equals_uint64(a, b)                                 \
+G_STMT_START {                                                          \
+  guint64 first = a;                                                    \
+  guint64 second = b;                                                   \
+  fail_unless(first == second,                                          \
+    "'" #a "' (%" G_GUINT64_FORMAT ") is not equal to '" #b"' (%"       \
+    G_GUINT64_FORMAT ")", first, second);                               \
 } G_STMT_END;
 /**
  * assert_equals_uint64:
@@ -206,7 +218,7 @@ G_STMT_START {								\
 G_STMT_START {                                                      \
   const gchar * first = a;                                          \
   const gchar * second = b;                                         \
-  fail_unless(strcmp (first, second) == 0,                          \
+  fail_unless(g_strcmp0 (first, second) == 0,                          \
     "'" #a "' (%s) is not equal to '" #b"' (%s)", first, second);   \
 } G_STMT_END;
 /**
@@ -228,8 +240,6 @@ G_STMT_START {                                                      \
  * This macro checks that @a and @b are (almost) equal and aborts if this
  * is not the case, printing both expressions and the values they evaluated
  * to. This macro is for use in unit tests.
- *
- * Since: 0.10.14
  */
 #define fail_unless_equals_float(a, b)                            \
 G_STMT_START {                                                    \
@@ -249,8 +259,6 @@ G_STMT_START {                                                    \
  * This macro checks that @a and @b are (almost) equal and aborts if this
  * is not the case, printing both expressions and the values they evaluated
  * to. This macro is for use in unit tests.
- *
- * Since: 0.10.14
  */
 #define assert_equals_float(a, b) fail_unless_equals_float(a, b)
 
@@ -259,170 +267,164 @@ G_STMT_START {                                                    \
  * thread test macros and variables
  */
 extern GList *thread_list;
-extern GMutex *mutex;
-extern GCond *start_cond;	/* used to notify main thread of thread startups */
-extern GCond *sync_cond;	/* used to synchronize all threads and main thread */
+extern GMutex mutex;
+extern GCond start_cond;       /* used to notify main thread of thread startups */
+extern GCond sync_cond;        /* used to synchronize all threads and main thread */
 
-#define MAIN_START_THREADS(count, function, data)		\
-MAIN_INIT();							\
-MAIN_START_THREAD_FUNCTIONS(count, function, data);		\
+#define MAIN_START_THREADS(count, function, data)               \
+MAIN_INIT();                                                    \
+MAIN_START_THREAD_FUNCTIONS(count, function, data);             \
 MAIN_SYNCHRONIZE();
 
-#define MAIN_INIT()			\
-G_STMT_START {				\
-  _gst_check_threads_running = TRUE;	\
-					\
-  if (mutex == NULL) {			\
-    mutex = g_mutex_new ();		\
-    start_cond = g_cond_new ();		\
-    sync_cond = g_cond_new ();		\
-  }					\
+#define MAIN_INIT()                     \
+G_STMT_START {                          \
+  _gst_check_threads_running = TRUE;    \
 } G_STMT_END;
 
-#define MAIN_START_THREAD_FUNCTIONS(count, function, data)	\
-G_STMT_START {							\
-  int i;							\
-  for (i = 0; i < count; ++i) {					\
-    MAIN_START_THREAD_FUNCTION (i, function, data);		\
-  }								\
+#define MAIN_START_THREAD_FUNCTIONS(count, function, data)      \
+G_STMT_START {                                                  \
+  int i;                                                        \
+  for (i = 0; i < count; ++i) {                                 \
+    MAIN_START_THREAD_FUNCTION (i, function, data);             \
+  }                                                             \
 } G_STMT_END;
 
-#define MAIN_START_THREAD_FUNCTION(i, function, data)		\
-G_STMT_START {							\
-    GThread *thread = NULL;					\
-    GST_DEBUG ("MAIN: creating thread %d", i);			\
-    g_mutex_lock (mutex);					\
-    thread = g_thread_create ((GThreadFunc) function, data,	\
-	TRUE, NULL);						\
-    /* wait for thread to signal us that it's ready */		\
-    GST_DEBUG ("MAIN: waiting for thread %d", i);		\
-    g_cond_wait (start_cond, mutex);				\
-    g_mutex_unlock (mutex);					\
-								\
-    thread_list = g_list_append (thread_list, thread);		\
+#define MAIN_START_THREAD_FUNCTION(i, function, data)           \
+G_STMT_START {                                                  \
+    GThread *thread = NULL;                                     \
+    GST_DEBUG ("MAIN: creating thread %d", i);                  \
+    g_mutex_lock (&mutex);                                      \
+    thread = g_thread_try_new ("gst-check",                     \
+        (GThreadFunc) function, data, NULL);                    \
+    /* wait for thread to signal us that it's ready */          \
+    GST_DEBUG ("MAIN: waiting for thread %d", i);               \
+    g_cond_wait (&start_cond, &mutex);                          \
+    g_mutex_unlock (&mutex);                                    \
+                                                                \
+    thread_list = g_list_append (thread_list, thread);          \
 } G_STMT_END;
 
 
-#define MAIN_SYNCHRONIZE()		\
-G_STMT_START {				\
-  GST_DEBUG ("MAIN: synchronizing");	\
-  g_cond_broadcast (sync_cond);		\
-  GST_DEBUG ("MAIN: synchronized");	\
+#define MAIN_SYNCHRONIZE()              \
+G_STMT_START {                          \
+  GST_DEBUG ("MAIN: synchronizing");    \
+  g_cond_broadcast (&sync_cond);        \
+  GST_DEBUG ("MAIN: synchronized");     \
 } G_STMT_END;
 
-#define MAIN_STOP_THREADS()					\
-G_STMT_START {							\
-  _gst_check_threads_running = FALSE;				\
-								\
-  /* join all threads */					\
-  GST_DEBUG ("MAIN: joining");					\
-  g_list_foreach (thread_list, (GFunc) g_thread_join, NULL);	\
-  g_list_free (thread_list);					\
-  thread_list = NULL;						\
-  GST_DEBUG ("MAIN: joined");					\
+#define MAIN_STOP_THREADS()                                     \
+G_STMT_START {                                                  \
+  _gst_check_threads_running = FALSE;                           \
+                                                                \
+  /* join all threads */                                        \
+  GST_DEBUG ("MAIN: joining");                                  \
+  g_list_foreach (thread_list, (GFunc) g_thread_join, NULL);    \
+  g_list_free (thread_list);                                    \
+  thread_list = NULL;                                           \
+  GST_DEBUG ("MAIN: joined");                                   \
 } G_STMT_END;
 
-#define THREAD_START()						\
-THREAD_STARTED();						\
+#define THREAD_START()                                          \
+THREAD_STARTED();                                               \
 THREAD_SYNCHRONIZE();
 
-#define THREAD_STARTED()					\
-G_STMT_START {							\
-  /* signal main thread that we started */			\
-  GST_DEBUG ("THREAD %p: started", g_thread_self ());		\
-  g_mutex_lock (mutex);						\
-  g_cond_signal (start_cond);					\
+#define THREAD_STARTED()                                        \
+G_STMT_START {                                                  \
+  /* signal main thread that we started */                      \
+  GST_DEBUG ("THREAD %p: started", g_thread_self ());           \
+  g_mutex_lock (&mutex);                                        \
+  g_cond_signal (&start_cond);                                  \
 } G_STMT_END;
 
-#define THREAD_SYNCHRONIZE()					\
-G_STMT_START {							\
-  /* synchronize everyone */					\
-  GST_DEBUG ("THREAD %p: syncing", g_thread_self ());		\
-  g_cond_wait (sync_cond, mutex);				\
-  GST_DEBUG ("THREAD %p: synced", g_thread_self ());		\
-  g_mutex_unlock (mutex);					\
+#define THREAD_SYNCHRONIZE()                                    \
+G_STMT_START {                                                  \
+  /* synchronize everyone */                                    \
+  GST_DEBUG ("THREAD %p: syncing", g_thread_self ());           \
+  g_cond_wait (&sync_cond, &mutex);                             \
+  GST_DEBUG ("THREAD %p: synced", g_thread_self ());            \
+  g_mutex_unlock (&mutex);                                      \
 } G_STMT_END;
 
-#define THREAD_SWITCH()						\
-G_STMT_START {							\
-  /* a minimal sleep is a context switch */			\
-  g_usleep (1);							\
+#define THREAD_SWITCH()                                         \
+G_STMT_START {                                                  \
+  /* a minimal sleep is a context switch */                     \
+  g_usleep (1);                                                 \
 } G_STMT_END;
 
-#define THREAD_TEST_RUNNING()	(_gst_check_threads_running == TRUE)
+#define THREAD_TEST_RUNNING()   (_gst_check_threads_running == TRUE)
 
 /* additional assertions */
-#define ASSERT_CRITICAL(code)					\
-G_STMT_START {							\
-  _gst_check_expecting_log = TRUE;				\
-  _gst_check_raised_critical = FALSE;				\
-  code;								\
+#define ASSERT_CRITICAL(code)                                   \
+G_STMT_START {                                                  \
+  _gst_check_expecting_log = TRUE;                              \
+  _gst_check_raised_critical = FALSE;                           \
+  code;                                                         \
   _fail_unless (_gst_check_raised_critical, __FILE__, __LINE__, \
                 "Expected g_critical, got nothing", NULL);      \
-  _gst_check_expecting_log = FALSE;				\
+  _gst_check_expecting_log = FALSE;                             \
 } G_STMT_END
 
-#define ASSERT_WARNING(code)					\
-G_STMT_START {							\
-  _gst_check_expecting_log = TRUE;				\
-  _gst_check_raised_warning = FALSE;				\
-  code;								\
+#define ASSERT_WARNING(code)                                    \
+G_STMT_START {                                                  \
+  _gst_check_expecting_log = TRUE;                              \
+  _gst_check_raised_warning = FALSE;                            \
+  code;                                                         \
   _fail_unless (_gst_check_raised_warning, __FILE__, __LINE__,  \
                 "Expected g_warning, got nothing", NULL);       \
-  _gst_check_expecting_log = FALSE;				\
+  _gst_check_expecting_log = FALSE;                             \
 } G_STMT_END
 
 
-#define ASSERT_OBJECT_REFCOUNT(object, name, value)		\
-G_STMT_START {							\
-  int rc;							\
-  rc = GST_OBJECT_REFCOUNT_VALUE (object);			\
-  fail_unless (rc == value,					\
-      "%s (%p) refcount is %d instead of %d",			\
-      name, object, rc, value);					\
+#define ASSERT_OBJECT_REFCOUNT(object, name, value)             \
+G_STMT_START {                                                  \
+  int rc;                                                       \
+  rc = GST_OBJECT_REFCOUNT_VALUE (object);                      \
+  fail_unless (rc == value,                                     \
+      "%s (%p) refcount is %d instead of %d",                   \
+      name, object, rc, value);                                 \
 } G_STMT_END
 
-#define ASSERT_OBJECT_REFCOUNT_BETWEEN(object, name, lower, upper)	\
-G_STMT_START {								\
-  int rc = GST_OBJECT_REFCOUNT_VALUE (object);				\
-  int lo = lower;							\
-  int hi = upper;							\
-									\
-  fail_unless (rc >= lo,						\
-      "%s (%p) refcount %d is smaller than %d",				\
-      name, object, rc, lo);						\
-  fail_unless (rc <= hi,						\
-      "%s (%p) refcount %d is bigger than %d",				\
-      name, object, rc, hi);						\
+#define ASSERT_OBJECT_REFCOUNT_BETWEEN(object, name, lower, upper)      \
+G_STMT_START {                                                          \
+  int rc = GST_OBJECT_REFCOUNT_VALUE (object);                          \
+  int lo = lower;                                                       \
+  int hi = upper;                                                       \
+                                                                        \
+  fail_unless (rc >= lo,                                                \
+      "%s (%p) refcount %d is smaller than %d",                         \
+      name, object, rc, lo);                                            \
+  fail_unless (rc <= hi,                                                \
+      "%s (%p) refcount %d is bigger than %d",                          \
+      name, object, rc, hi);                                            \
 } G_STMT_END
 
 
-#define ASSERT_CAPS_REFCOUNT(caps, name, value)			\
-	ASSERT_MINI_OBJECT_REFCOUNT(caps, name, value)
+#define ASSERT_CAPS_REFCOUNT(caps, name, value)                 \
+        ASSERT_MINI_OBJECT_REFCOUNT(caps, name, value)
 
-#define ASSERT_BUFFER_REFCOUNT(buffer, name, value)		\
-	ASSERT_MINI_OBJECT_REFCOUNT(buffer, name, value)
+#define ASSERT_BUFFER_REFCOUNT(buffer, name, value)             \
+        ASSERT_MINI_OBJECT_REFCOUNT(buffer, name, value)
 
-#define ASSERT_MINI_OBJECT_REFCOUNT(caps, name, value)		\
-G_STMT_START {							\
-  int rc;							\
-  rc = GST_MINI_OBJECT_REFCOUNT_VALUE (caps);			\
-  fail_unless (rc == value,					\
-               name " refcount is %d instead of %d", rc, value);\
+#define ASSERT_MINI_OBJECT_REFCOUNT(miniobj, name, value)       \
+G_STMT_START {                                                  \
+  int rc;                                                       \
+  rc = GST_MINI_OBJECT_REFCOUNT_VALUE (miniobj);                \
+  fail_unless (rc == value,                                     \
+               name " (%p) refcount is %d instead of %d", miniobj, rc, value); \
 } G_STMT_END
 
-#define ASSERT_SET_STATE(element, state, ret)			\
-fail_unless (gst_element_set_state (element,			\
-  state) == ret,						\
+#define ASSERT_SET_STATE(element, state, ret)                   \
+fail_unless (gst_element_set_state (element,                    \
+  state) == ret,                                                \
   "could not change state to " #state);
 
-#define GST_CHECK_MAIN(name)					\
-int main (int argc, char **argv)				\
-{								\
+#define GST_CHECK_MAIN(name)                                    \
+int main (int argc, char **argv)                                \
+{                                                               \
   Suite *s;                                                     \
-  gst_check_init (&argc, &argv);				\
-  s = name ## _suite ();					\
-  return gst_check_run_suite (s, # name, __FILE__);		\
+  gst_check_init (&argc, &argv);                                \
+  s = name ## _suite ();                                        \
+  return gst_check_run_suite (s, # name, __FILE__);             \
 }
 
 /* Hack to allow run-time selection of unit tests to run via the
@@ -430,7 +432,6 @@ int main (int argc, char **argv)				\
 
 gboolean _gst_check_run_test_func (const gchar * func_name);
 
-#if __CHECK_VERSION_LATER_THAN(0,9,6)
 static inline void
 __gst_tcase_add_test (TCase * tc, TFun tf, const char * fname, int signal,
     int allowed_exit_value, int start, int end)
@@ -439,28 +440,14 @@ __gst_tcase_add_test (TCase * tc, TFun tf, const char * fname, int signal,
     _tcase_add_test (tc, tf, fname, signal, allowed_exit_value, start, end);
   }
 }
-#elif __CHECK_VERSION_LATER_THAN(0,9,3)
-static inline void
-__gst_tcase_add_test (TCase * tc, TFun tf, const char * fname, int signal,
-    int start, int end)
-{
-  if (_gst_check_run_test_func (fname)) {
-    _tcase_add_test (tc, tf, fname, signal, start, end);
-  }
-}
-#else
-static inline void
-__gst_tcase_add_test (TCase * tc, TFun tf, const char * fname, int signal)
-{
-  if (_gst_check_run_test_func (fname)) {
-    _tcase_add_test (tc, tf, fname, signal);
-  }
-}
-#endif
 
 #define _tcase_add_test __gst_tcase_add_test
 
-#undef __CHECK_VERSION_LATER_THAN
+/* add define to skip broken tests */
+#define tcase_skip_broken_test(chain,test_func) \
+  if (0) { tcase_add_test(chain,test_func); } else { \
+    g_printerr ("FIXME: skipping test %s because it's broken\n", G_STRINGIFY (test_func)); \
+  }
 
 G_END_DECLS
 

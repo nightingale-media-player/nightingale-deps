@@ -44,8 +44,8 @@
     </para>
     <para>
       The last thing left to do is to add all elements into a container
-      element, a <classname>GstPipeline</classname>, and iterate this
-      pipeline until we've played the whole song. We've previously
+      element, a <classname>GstPipeline</classname>, and wait until
+      we've played the whole song. We've previously
       learned how to add elements to a container bin in <xref
       linkend="chapter-bins"/>, and we've learned about element states
       in <xref linkend="section-elements-states"/>. We will also attach
@@ -125,6 +125,7 @@ main (int   argc,
 
   GstElement *pipeline, *source, *demuxer, *decoder, *conv, *sink;
   GstBus *bus;
+  guint bus_watch_id;
 
   /* Initialisation */
   gst_init (&amp;argc, &amp;argv);
@@ -159,7 +160,7 @@ main (int   argc,
 
   /* we add a message handler */
   bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
-  gst_bus_add_watch (bus, bus_call, loop);
+  bus_watch_id = gst_bus_add_watch (bus, bus_call, loop);
   gst_object_unref (bus);
 
   /* we add all elements into the pipeline */
@@ -197,6 +198,8 @@ main (int   argc,
 
   g_print ("Deleting pipeline\n");
   gst_object_unref (GST_OBJECT (pipeline));
+  g_source_remove (bus_watch_id);
+  g_main_loop_unref (loop);
 
   return 0;
 }
@@ -222,14 +225,23 @@ main (int   argc,
     <title>Compiling and Running helloworld.c</title>
     <para>
       To compile the helloworld example, use: <command>gcc -Wall
-      $(pkg-config --cflags --libs gstreamer-&GST_MAJORMINOR;)
-      helloworld.c -o helloworld</command>. &GStreamer; makes use of
-      <command>pkg-config</command> to get compiler and linker flags
-      needed to compile this application. If you're running a
-      non-standard installation, make sure the
-      <classname>PKG_CONFIG_PATH</classname> environment variable is
-      set to the correct location (<filename>$libdir/pkgconfig</filename>).
-      application against the uninstalled location.
+      helloworld.c -o helloworld
+      $(pkg-config --cflags --libs gstreamer-&GST_API_VERSION;)</command>.
+      &GStreamer; makes use of <command>pkg-config</command> to get compiler
+      and linker flags needed to compile this application.
+    </para>
+    <para>
+      If you're running a non-standard installation (ie. you've installed
+      GStreamer from source yourself instead of using pre-built packages),
+      make sure the <classname>PKG_CONFIG_PATH</classname> environment variable
+      is set to the correct location (<filename>$libdir/pkgconfig</filename>).
+    </para>
+    <para>
+      In the unlikely case that you are using an uninstalled GStreamer
+      setup (ie. gst-uninstalled), you will need to use libtool to build the
+      hello world program, like this: <command>libtool --mode=link gcc -Wall
+      helloworld.c -o helloworld
+      $(pkg-config --cflags --libs gstreamer-&GST_API_VERSION;)</command>.
     </para>
     <para>
       You can run this example application with <command>./helloworld

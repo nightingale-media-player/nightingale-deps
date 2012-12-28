@@ -3,22 +3,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>GstPushSrc</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer 0.10 Library Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer 1.0 Library Reference Manual">
 <link rel="up" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
 <link rel="prev" href="GstBaseTransform.html" title="GstBaseTransform">
 <link rel="next" href="GstAdapter.html" title="GstAdapter">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-libs.html" title="Part I. GStreamer Libraries">
-<link rel="chapter" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
-<link rel="chapter" href="gstreamer-control.html" title="GStreamer Dynamic Parameter Control">
-<link rel="chapter" href="gstreamer-dataprotocol.html" title="GStreamer Data Protocol">
-<link rel="chapter" href="gstreamer-net.html" title="GStreamer Network Classes">
-<link rel="chapter" href="gstreamer-check.html" title="GStreamer Check Unit Testing">
-<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index-full.html" title="API Index">
-<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -26,18 +17,18 @@
 <td><a accesskey="p" href="GstBaseTransform.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="gstreamer-base.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer 0.10 Library Reference Manual</th>
+<th width="100%" align="center">GStreamer 1.0 Library Reference Manual</th>
 <td><a accesskey="n" href="GstAdapter.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#GstPushSrc.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#GstPushSrc.description" class="shortcut">Description</a>
-                 | 
-                <a href="#GstPushSrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#GstPushSrc.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#GstPushSrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
 </td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry">
 <a name="GstPushSrc"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -49,29 +40,23 @@
 <div class="refsynopsisdiv">
 <a name="GstPushSrc.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
-
 #include &lt;gst/base/gstpushsrc.h&gt;
 
-                    <a class="link" href="GstPushSrc.html#GstPushSrc-struct" title="GstPushSrc">GstPushSrc</a>;
+struct              <a class="link" href="GstPushSrc.html#GstPushSrc-struct" title="struct GstPushSrc">GstPushSrc</a>;
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="GstPushSrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a>
-                     +----GstPushSrc
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                     +----<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a>
+                           +----GstPushSrc
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="GstPushSrc.description"></a><h2>Description</h2>
 <p>
 This class is mostly useful for elements that cannot do
@@ -87,8 +72,8 @@ Classes extending this base class will usually be scheduled
 in a push based mode. If the peer accepts to operate without
 offsets and within the limits of the allowed block size, this
 class can operate in getrange based mode automatically. To make
-this possible, the subclass should override the ::check_get_range
-method.
+this possible, the subclass should implement and override the
+SCHEDULING query.
 </p>
 <p>
 The subclass should extend the methods from the baseclass in
@@ -99,32 +84,26 @@ Seeking, flushing, scheduling and sync is all handled by this
 base class.
 </p>
 <p>
-Last reviewed on 2006-07-04 (0.10.9)</p>
-<p>
+Last reviewed on 2006-07-04 (0.10.9)
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="GstPushSrc.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
-<a name="GstPushSrc-struct"></a><h3>GstPushSrc</h3>
-<pre class="programlisting">typedef struct _GstPushSrc GstPushSrc;</pre>
+<div class="refsect2">
+<a name="GstPushSrc-struct"></a><h3>struct GstPushSrc</h3>
+<pre class="programlisting">struct GstPushSrc;</pre>
 <p>
-The opaque <a class="link" href="GstPushSrc.html" title="GstPushSrc"><span class="type">GstPushSrc</span></a> data structure.</p>
-<p>
+The opaque <a class="link" href="GstPushSrc.html" title="GstPushSrc"><span class="type">GstPushSrc</span></a> data structure.
 </p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody></tbody>
-</table></div>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="GstPushSrc.see-also"></a><h2>See Also</h2>
-#GstBaseSrc
+<a class="link" href="GstBaseSrc.html" title="GstBaseSrc"><span class="type">GstBaseSrc</span></a>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

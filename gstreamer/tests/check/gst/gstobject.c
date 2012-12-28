@@ -42,15 +42,16 @@ struct _GstFakeObjectClass
   GstObjectClass parent_class;
 };
 
-static GType _gst_fake_object_type = 0;
-
 //static GstObjectClass *parent_class = NULL;
 //static guint gst_fake_object_signals[LAST_SIGNAL] = { 0 };
 
 static GType
 gst_fake_object_get_type (void)
 {
-  if (!_gst_fake_object_type) {
+  static volatile gsize fake_object_type = 0;
+
+  if (g_once_init_enter (&fake_object_type)) {
+    GType type;
     static const GTypeInfo fake_object_info = {
       sizeof (GstFakeObjectClass),
       NULL,                     //gst_fake_object_base_class_init,
@@ -64,22 +65,12 @@ gst_fake_object_get_type (void)
       NULL
     };
 
-    _gst_fake_object_type = g_type_register_static (GST_TYPE_OBJECT,
+    type = g_type_register_static (GST_TYPE_OBJECT,
         "GstFakeObject", &fake_object_info, 0);
+    g_once_init_leave (&fake_object_type, type);
   }
-  return _gst_fake_object_type;
+  return fake_object_type;
 }
-
-/* g_object_new on abstract GstObject should fail */
-GST_START_TEST (test_fail_abstract_new)
-{
-  GstObject *object;
-
-  ASSERT_CRITICAL (object = g_object_new (gst_object_get_type (), NULL));
-  fail_unless (object == NULL, "Created an instance of abstract GstObject");
-}
-
-GST_END_TEST;
 
 /* g_object_new on GstFakeObject should succeed */
 GST_START_TEST (test_fake_object_new)
@@ -356,7 +347,7 @@ GST_START_TEST (test_fake_object_parentage)
   fail_if (object1 == NULL, "Failed to create instance of GstFakeObject");
   fail_unless (GST_IS_OBJECT (object1),
       "GstFakeObject instance is not a GstObject");
-  fail_unless (GST_OBJECT_IS_FLOATING (object1),
+  fail_unless (g_object_is_floating (object1),
       "GstFakeObject instance is not floating");
 
   /* check the parent */
@@ -370,7 +361,7 @@ GST_START_TEST (test_fake_object_parentage)
   fail_if (result == TRUE, "GstFakeObject accepted itself as parent");
 
   /* should still be floating */
-  fail_unless (GST_OBJECT_IS_FLOATING (object1),
+  fail_unless (g_object_is_floating (object1),
       "GstFakeObject instance is not floating");
 
   /* create another object */
@@ -379,7 +370,7 @@ GST_START_TEST (test_fake_object_parentage)
       "Failed to create another instance of GstFakeObject");
   fail_unless (GST_IS_OBJECT (object2),
       "second GstFakeObject instance is not a GstObject");
-  fail_unless (GST_OBJECT_IS_FLOATING (object1),
+  fail_unless (g_object_is_floating (object1),
       "GstFakeObject instance is not floating");
 
   /* try to set other object as parent */
@@ -388,10 +379,10 @@ GST_START_TEST (test_fake_object_parentage)
       "GstFakeObject could not accept other object as parent");
 
   /* should not be floating anymore */
-  fail_if (GST_OBJECT_IS_FLOATING (object1),
+  fail_if (g_object_is_floating (object1),
       "GstFakeObject instance is still floating");
   /* parent should still be floating */
-  fail_unless (GST_OBJECT_IS_FLOATING (object2),
+  fail_unless (g_object_is_floating (object2),
       "GstFakeObject instance is not floating");
 
   /* check the parent */
@@ -412,7 +403,7 @@ GST_START_TEST (test_fake_object_parentage)
   fail_if (parent != NULL, "GstFakeObject has parent");
 
   /* object should not be floating */
-  fail_if (GST_OBJECT_IS_FLOATING (object1),
+  fail_if (g_object_is_floating (object1),
       "GstFakeObject instance is floating again");
 
   gst_object_unref (object1);
@@ -451,6 +442,55 @@ GST_START_TEST (test_fake_object_parentage_dispose)
 
 GST_END_TEST;
 
+GST_START_TEST (test_fake_object_has_ancestor)
+{
+  GstObject *object1, *object2, *object3, *object4;
+  gboolean result;
+
+  object1 = g_object_new (gst_fake_object_get_type (), NULL);
+  fail_if (object1 == NULL, "Failed to create instance of GstFakeObject");
+
+  object2 = g_object_new (gst_fake_object_get_type (), NULL);
+  fail_if (object2 == NULL, "Failed to create instance of GstFakeObject");
+
+  object3 = g_object_new (gst_fake_object_get_type (), NULL);
+  fail_if (object3 == NULL, "Failed to create instance of GstFakeObject");
+
+  object4 = g_object_new (gst_fake_object_get_type (), NULL);
+  fail_if (object4 == NULL, "Failed to create instance of GstFakeObject");
+
+  /* try to set other object as parent */
+  result = gst_object_set_parent (object1, object3);
+  fail_if (result == FALSE,
+      "GstFakeObject could not accept other object as parent");
+  result = gst_object_set_parent (object2, object3);
+  fail_if (result == FALSE,
+      "GstFakeObject could not accept other object as parent");
+  result = gst_object_set_parent (object3, object4);
+  fail_if (result == FALSE,
+      "GstFakeObject could not accept other object as parent");
+
+  fail_unless (gst_object_has_ancestor (object1, object1));
+  fail_if (gst_object_has_ancestor (object1, object2));
+  fail_unless (gst_object_has_ancestor (object1, object3));
+  fail_unless (gst_object_has_ancestor (object1, object4));
+  fail_if (gst_object_has_ancestor (object3, object1));
+  fail_if (gst_object_has_ancestor (object4, object1));
+  fail_unless (gst_object_has_ancestor (object3, object4));
+  fail_if (gst_object_has_ancestor (object4, object3));
+  fail_unless (gst_object_has_ancestor (object4, object4));
+
+  /* unparent everything */
+  gst_object_unparent (object3);
+  gst_object_unparent (object2);
+  gst_object_unparent (object1);
+
+  /* now dispose objects */
+  gst_object_unref (object4);
+}
+
+GST_END_TEST;
+
 /* test: try renaming a parented object, make sure it fails */
 
 static Suite *
@@ -472,17 +512,9 @@ gst_object_suite (void)
   tcase_add_test (tc_chain, test_fake_object_name_threaded_unique);
   tcase_add_test (tc_chain, test_fake_object_parentage);
   tcase_add_test (tc_chain, test_fake_object_parentage_dispose);
-  //tcase_add_checked_fixture (tc_chain, setup, teardown);
 
-  /* FIXME: GLib shouldn't crash here, but issue a warning and return a NULL
-   * object, or at least g_error() and then abort properly ... (tpm) */
-#ifdef HAVE_OSX
-  /* on OSX we get SIGBUS instead it seems */
-  tcase_add_test_raise_signal (tc_chain, test_fail_abstract_new, SIGBUS);
-#else
-  /* SEGV tests go last so we can debug the others */
-  tcase_add_test_raise_signal (tc_chain, test_fail_abstract_new, SIGSEGV);
-#endif
+  tcase_add_test (tc_chain, test_fake_object_has_ancestor);
+  //tcase_add_checked_fixture (tc_chain, setup, teardown);
 
   return s;
 }

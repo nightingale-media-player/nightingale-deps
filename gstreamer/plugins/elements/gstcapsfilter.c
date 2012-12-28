@@ -24,6 +24,13 @@
  *
  * The element does not modify data as such, but can enforce limitations on the
  * data format.
+ *
+ * <refsect2>
+ * <title>Example launch line</title>
+ * |[
+ * gst-launch videotestsrc ! video/x-raw,format=GRAY8 ! videoconvert ! autovideosink
+ * ]| Limits acceptable video from videotestsrc to be grayscale.
+ * </refsect2>
  */
 
 #ifdef HAVE_CONFIG_H
@@ -54,12 +61,12 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
 GST_DEBUG_CATEGORY_STATIC (gst_capsfilter_debug);
 #define GST_CAT_DEFAULT gst_capsfilter_debug
 
-#define _do_init(bla) \
+#define _do_init \
     GST_DEBUG_CATEGORY_INIT (gst_capsfilter_debug, "capsfilter", 0, \
     "capsfilter element");
-
-GST_BOILERPLATE_FULL (GstCapsFilter, gst_capsfilter, GstBaseTransform,
-    GST_TYPE_BASE_TRANSFORM, _do_init);
+#define gst_capsfilter_parent_class parent_class
+G_DEFINE_TYPE_WITH_CODE (GstCapsFilter, gst_capsfilter, GST_TYPE_BASE_TRANSFORM,
+    _do_init);
 
 
 static void gst_capsfilter_set_property (GObject * object, guint prop_id,
@@ -69,35 +76,19 @@ static void gst_capsfilter_get_property (GObject * object, guint prop_id,
 static void gst_capsfilter_dispose (GObject * object);
 
 static GstCaps *gst_capsfilter_transform_caps (GstBaseTransform * base,
+    GstPadDirection direction, GstCaps * caps, GstCaps * filter);
+static gboolean gst_capsfilter_accept_caps (GstBaseTransform * base,
     GstPadDirection direction, GstCaps * caps);
 static GstFlowReturn gst_capsfilter_transform_ip (GstBaseTransform * base,
     GstBuffer * buf);
 static GstFlowReturn gst_capsfilter_prepare_buf (GstBaseTransform * trans,
-    GstBuffer * input, gint size, GstCaps * caps, GstBuffer ** buf);
-static gboolean gst_capsfilter_transform_size (GstBaseTransform * trans,
-    GstPadDirection direction, GstCaps * caps, guint size,
-    GstCaps * othercaps, guint * othersize);
-
-static void
-gst_capsfilter_base_init (gpointer g_class)
-{
-  GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_set_details_simple (gstelement_class,
-      "CapsFilter",
-      "Generic",
-      "Pass data without modification, limiting formats",
-      "David Schleef <ds@schleef.org>");
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&srctemplate));
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&sinktemplate));
-}
+    GstBuffer * input, GstBuffer ** buf);
 
 static void
 gst_capsfilter_class_init (GstCapsFilterClass * klass)
 {
   GObjectClass *gobject_class;
+  GstElementClass *gstelement_class;
   GstBaseTransformClass *trans_class;
 
   gobject_class = G_OBJECT_CLASS (klass);
@@ -112,27 +103,33 @@ gst_capsfilter_class_init (GstCapsFilterClass * klass)
               "object."), GST_TYPE_CAPS,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+  gstelement_class = GST_ELEMENT_CLASS (klass);
+  gst_element_class_set_static_metadata (gstelement_class,
+      "CapsFilter",
+      "Generic",
+      "Pass data without modification, limiting formats",
+      "David Schleef <ds@schleef.org>");
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&srctemplate));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sinktemplate));
+
   trans_class = GST_BASE_TRANSFORM_CLASS (klass);
-  trans_class->transform_caps = gst_capsfilter_transform_caps;
-  trans_class->transform_ip = gst_capsfilter_transform_ip;
-  trans_class->prepare_output_buffer = gst_capsfilter_prepare_buf;
-  trans_class->transform_size = gst_capsfilter_transform_size;
+  trans_class->transform_caps =
+      GST_DEBUG_FUNCPTR (gst_capsfilter_transform_caps);
+  trans_class->transform_ip = GST_DEBUG_FUNCPTR (gst_capsfilter_transform_ip);
+  trans_class->accept_caps = GST_DEBUG_FUNCPTR (gst_capsfilter_accept_caps);
+  trans_class->prepare_output_buffer =
+      GST_DEBUG_FUNCPTR (gst_capsfilter_prepare_buf);
 }
 
 static void
-gst_capsfilter_init (GstCapsFilter * filter, GstCapsFilterClass * g_class)
+gst_capsfilter_init (GstCapsFilter * filter)
 {
   GstBaseTransform *trans = GST_BASE_TRANSFORM (filter);
   gst_base_transform_set_gap_aware (trans, TRUE);
+  gst_base_transform_set_prefer_passthrough (trans, FALSE);
   filter->filter_caps = gst_caps_new_any ();
-}
-
-static gboolean
-copy_func (GQuark field_id, const GValue * value, GstStructure * dest)
-{
-  gst_structure_id_set_value (dest, field_id, value);
-
-  return TRUE;
 }
 
 static void
@@ -144,7 +141,7 @@ gst_capsfilter_set_property (GObject * object, guint prop_id,
   switch (prop_id) {
     case PROP_FILTER_CAPS:{
       GstCaps *new_caps;
-      GstCaps *old_caps, *suggest, *nego;
+      GstCaps *old_caps;
       const GstCaps *new_caps_val = gst_value_get_caps (value);
 
       if (new_caps_val == NULL) {
@@ -163,51 +160,7 @@ gst_capsfilter_set_property (GObject * object, guint prop_id,
 
       GST_DEBUG_OBJECT (capsfilter, "set new caps %" GST_PTR_FORMAT, new_caps);
 
-      /* filter the currently negotiated format against the new caps */
-      GST_OBJECT_LOCK (GST_BASE_TRANSFORM_SINK_PAD (object));
-      nego = GST_PAD_CAPS (GST_BASE_TRANSFORM_SINK_PAD (object));
-      if (nego) {
-        GST_DEBUG_OBJECT (capsfilter, "we had negotiated caps %" GST_PTR_FORMAT,
-            nego);
-
-        if (G_UNLIKELY (gst_caps_is_any (new_caps))) {
-          GST_DEBUG_OBJECT (capsfilter, "not settings any suggestion");
-
-          suggest = NULL;
-        } else {
-          GstStructure *s1, *s2;
-
-          /* first check if the name is the same */
-          s1 = gst_caps_get_structure (nego, 0);
-          s2 = gst_caps_get_structure (new_caps, 0);
-
-          if (gst_structure_get_name_id (s1) == gst_structure_get_name_id (s2)) {
-            /* same name, copy all fields from the new caps into the previously
-             * negotiated caps */
-            suggest = gst_caps_copy (nego);
-            s1 = gst_caps_get_structure (suggest, 0);
-            gst_structure_foreach (s2, (GstStructureForeachFunc) copy_func, s1);
-            GST_DEBUG_OBJECT (capsfilter, "copied structure fields");
-          } else {
-            GST_DEBUG_OBJECT (capsfilter, "different structure names");
-            /* different names, we can only suggest the complete caps */
-            suggest = gst_caps_copy (new_caps);
-          }
-        }
-      } else {
-        GST_DEBUG_OBJECT (capsfilter, "no negotiated caps");
-        /* no previous caps, the getcaps function will be used to find suitable
-         * caps */
-        suggest = NULL;
-      }
-      GST_OBJECT_UNLOCK (GST_BASE_TRANSFORM_SINK_PAD (object));
-
-      GST_DEBUG_OBJECT (capsfilter, "suggesting new caps %" GST_PTR_FORMAT,
-          suggest);
-      gst_base_transform_suggest (GST_BASE_TRANSFORM (object), suggest, 0);
-      if (suggest)
-        gst_caps_unref (suggest);
-
+      gst_base_transform_reconfigure_sink (GST_BASE_TRANSFORM (object));
       break;
     }
     default:
@@ -246,18 +199,28 @@ gst_capsfilter_dispose (GObject * object)
 
 static GstCaps *
 gst_capsfilter_transform_caps (GstBaseTransform * base,
-    GstPadDirection direction, GstCaps * caps)
+    GstPadDirection direction, GstCaps * caps, GstCaps * filter)
 {
   GstCapsFilter *capsfilter = GST_CAPSFILTER (base);
-  GstCaps *ret, *filter_caps;
+  GstCaps *ret, *filter_caps, *tmp;
 
   GST_OBJECT_LOCK (capsfilter);
   filter_caps = gst_caps_ref (capsfilter->filter_caps);
   GST_OBJECT_UNLOCK (capsfilter);
 
-  ret = gst_caps_intersect (caps, filter_caps);
+  if (filter) {
+    tmp =
+        gst_caps_intersect_full (filter, filter_caps, GST_CAPS_INTERSECT_FIRST);
+    gst_caps_unref (filter_caps);
+    filter_caps = tmp;
+  }
+
+  ret = gst_caps_intersect_full (filter_caps, caps, GST_CAPS_INTERSECT_FIRST);
+
   GST_DEBUG_OBJECT (capsfilter, "input:     %" GST_PTR_FORMAT, caps);
-  GST_DEBUG_OBJECT (capsfilter, "filter:    %" GST_PTR_FORMAT, filter_caps);
+  GST_DEBUG_OBJECT (capsfilter, "filter:    %" GST_PTR_FORMAT, filter);
+  GST_DEBUG_OBJECT (capsfilter, "caps filter:    %" GST_PTR_FORMAT,
+      filter_caps);
   GST_DEBUG_OBJECT (capsfilter, "intersect: %" GST_PTR_FORMAT, ret);
 
   gst_caps_unref (filter_caps);
@@ -266,15 +229,36 @@ gst_capsfilter_transform_caps (GstBaseTransform * base,
 }
 
 static gboolean
-gst_capsfilter_transform_size (GstBaseTransform * trans,
-    GstPadDirection direction, GstCaps * caps, guint size,
-    GstCaps * othercaps, guint * othersize)
+gst_capsfilter_accept_caps (GstBaseTransform * base,
+    GstPadDirection direction, GstCaps * caps)
 {
-  /* return the same size */
-  *othersize = size;
-  return TRUE;
-}
+  GstCapsFilter *capsfilter = GST_CAPSFILTER (base);
+  GstCaps *filter_caps;
+  gboolean ret;
 
+  GST_OBJECT_LOCK (capsfilter);
+  filter_caps = gst_caps_ref (capsfilter->filter_caps);
+  GST_OBJECT_UNLOCK (capsfilter);
+
+  ret = gst_caps_can_intersect (caps, filter_caps);
+  GST_DEBUG_OBJECT (capsfilter, "can intersect: %d", ret);
+  if (ret) {
+    /* if we can intersect, see if the other end also accepts */
+    if (direction == GST_PAD_SRC)
+      ret =
+          gst_pad_peer_query_accept_caps (GST_BASE_TRANSFORM_SINK_PAD (base),
+          caps);
+    else
+      ret =
+          gst_pad_peer_query_accept_caps (GST_BASE_TRANSFORM_SRC_PAD (base),
+          caps);
+    GST_DEBUG_OBJECT (capsfilter, "peer accept: %d", ret);
+  }
+
+  gst_caps_unref (filter_caps);
+
+  return ret;
+}
 
 static GstFlowReturn
 gst_capsfilter_transform_ip (GstBaseTransform * base, GstBuffer * buf)
@@ -290,70 +274,40 @@ gst_capsfilter_transform_ip (GstBaseTransform * base, GstBuffer * buf)
  * This ensures that outgoing buffers have caps if we can, so
  * that pipelines like:
  *   gst-launch filesrc location=rawsamples.raw !
- *       audio/x-raw-int,width=16,depth=16,rate=48000,channels=2,
- *       endianness=4321,signed='(boolean)'true ! alsasink
+ *       audio/x-raw,format=S16LE,rate=48000,channels=2 ! alsasink
  * will work.
  */
 static GstFlowReturn
 gst_capsfilter_prepare_buf (GstBaseTransform * trans, GstBuffer * input,
-    gint size, GstCaps * caps, GstBuffer ** buf)
+    GstBuffer ** buf)
 {
   GstFlowReturn ret = GST_FLOW_OK;
 
-  if (GST_BUFFER_CAPS (input) != NULL) {
-    /* Output buffer already has caps */
-    GST_LOG_OBJECT (trans, "Input buffer already has caps (implicitely fixed)");
-    /* FIXME : Move this behaviour to basetransform. The given caps are the ones
-     * of the source pad, therefore our outgoing buffers should always have
-     * those caps. */
-    if (GST_BUFFER_CAPS (input) != caps) {
-      /* caps are different, make a metadata writable output buffer to set
-       * caps */
-      if (gst_buffer_is_metadata_writable (input)) {
-        /* input is writable, just set caps and use this as the output */
-        *buf = input;
-        gst_buffer_set_caps (*buf, caps);
-        gst_buffer_ref (input);
-      } else {
-        GST_DEBUG_OBJECT (trans, "Creating sub-buffer and setting caps");
-        *buf = gst_buffer_create_sub (input, 0, GST_BUFFER_SIZE (input));
-        gst_buffer_set_caps (*buf, caps);
-      }
-    } else {
-      /* caps are right, just use a ref of the input as the outbuf */
-      *buf = input;
-      gst_buffer_ref (input);
-    }
-  } else {
+  /* always return the input as output buffer */
+  *buf = input;
+
+  if (!gst_pad_has_current_caps (trans->sinkpad)) {
     /* Buffer has no caps. See if the output pad only supports fixed caps */
     GstCaps *out_caps;
 
-    out_caps = GST_PAD_CAPS (trans->srcpad);
+    GST_LOG_OBJECT (trans, "Input pad does not have caps");
 
-    if (out_caps != NULL) {
-      gst_caps_ref (out_caps);
-    } else {
+    out_caps = gst_pad_get_current_caps (trans->srcpad);
+    if (out_caps == NULL) {
       out_caps = gst_pad_get_allowed_caps (trans->srcpad);
       g_return_val_if_fail (out_caps != NULL, GST_FLOW_ERROR);
     }
 
-    out_caps = gst_caps_make_writable (out_caps);
-    gst_caps_do_simplify (out_caps);
+    out_caps = gst_caps_simplify (out_caps);
 
     if (gst_caps_is_fixed (out_caps) && !gst_caps_is_empty (out_caps)) {
       GST_DEBUG_OBJECT (trans, "Have fixed output caps %"
-          GST_PTR_FORMAT " to apply to buffer with no caps", out_caps);
-      if (gst_buffer_is_metadata_writable (input)) {
-        gst_buffer_ref (input);
-        *buf = input;
-      } else {
-        GST_DEBUG_OBJECT (trans, "Creating sub-buffer and setting caps");
-        *buf = gst_buffer_create_sub (input, 0, GST_BUFFER_SIZE (input));
-      }
-      GST_BUFFER_CAPS (*buf) = out_caps;
+          GST_PTR_FORMAT " to apply to srcpad", out_caps);
 
-      if (GST_PAD_CAPS (trans->srcpad) == NULL)
-        gst_pad_set_caps (trans->srcpad, out_caps);
+      if (!gst_pad_has_current_caps (trans->srcpad))
+        if (!gst_pad_set_caps (trans->srcpad, out_caps))
+          ret = GST_FLOW_NOT_NEGOTIATED;
+      gst_caps_unref (out_caps);
     } else {
       gchar *caps_str = gst_caps_to_string (out_caps);
 

@@ -8,7 +8,6 @@ EXTRA_DIST = \
 	as-gcc-inline-assembly.m4 \
 	as-libtool.m4 \
 	as-libtool-tags.m4 \
-	as-objc.m4 \
 	as-python.m4 \
 	as-scrub-include.m4 \
 	as-version.m4 \
@@ -28,6 +27,8 @@ EXTRA_DIST = \
 	gst-glib2.m4 \
 	gst-libxml2.m4 \
 	gst-parser.m4 \
+	gst-package-release-datetime.m4 \
+	gst-platform.m4 \
 	gst-plugindir.m4 \
 	gst-plugin-docs.m4 \
 	gst-valgrind.m4 \
@@ -37,4 +38,4 @@ EXTRA_DIST = \
 	introspection.m4 \
 	pkg.m4 \
 	check.m4 \
-        shave.m4
+	orc.m4

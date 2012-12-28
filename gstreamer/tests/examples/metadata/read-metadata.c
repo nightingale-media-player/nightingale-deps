@@ -69,7 +69,7 @@ message_loop (GstElement * element, GstTagList ** tags)
         if (*tags) {
           old_tags = *tags;
           *tags = gst_tag_list_merge (old_tags, new_tags, GST_TAG_MERGE_KEEP);
-          gst_tag_list_free (old_tags);
+          gst_tag_list_unref (old_tags);
         } else
           *tags = new_tags;
         break;
@@ -178,13 +178,18 @@ main (int argc, char *argv[])
     if (tags) {
       g_print ("Metadata for %s:\n", argv[i]);
       gst_tag_list_foreach (tags, print_tag, NULL);
-      gst_tag_list_free (tags);
+      gst_tag_list_unref (tags);
       tags = NULL;
     } else
       g_print ("No metadata found for %s\n", argv[i]);
 
     sret = gst_element_set_state (GST_ELEMENT (pipeline), GST_STATE_NULL);
-#ifndef NEW_PIPE_PER_FILE
+#ifdef NEW_PIPE_PER_FILE
+    if (sret != GST_STATE_CHANGE_SUCCESS) {
+      g_print ("State change failed. Aborting\n");
+      break;
+    }
+#else
     if (GST_STATE_CHANGE_ASYNC == sret) {
       if (GST_STATE_CHANGE_FAILURE ==
           gst_element_get_state (GST_ELEMENT (pipeline), &state, NULL,
@@ -192,6 +197,9 @@ main (int argc, char *argv[])
         g_print ("State change failed. Aborting");
         break;
       }
+    } else if (sret != GST_STATE_CHANGE_SUCCESS) {
+      g_print ("State change failed. Aborting\n");
+      break;
     }
 #endif
 

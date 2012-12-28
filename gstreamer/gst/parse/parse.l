@@ -1,10 +1,10 @@
 %{
+#include "../gst_private.h"
+
 #include <math.h>
 #include <string.h>
 
 #include <glib/gprintf.h>
-
-#include "../gst_private.h"
 
 #include "types.h"
 #include "../gstinfo.h"
@@ -35,7 +35,7 @@ PRINT (const char *format, ...)
 %}
 
 _operator [(){}.!,;=]
-_identifier [[:alpha:]][[:alnum:]\-_%:]*
+_identifier [[:alnum:]_][[:alnum:]\-_%:]*
 
 _char ("\\".)|([^[:space:]])
 _string {_char}+|("\""([^\"]|"\\\"")*"\"")|("'"([^']|"\\\'")*"'")

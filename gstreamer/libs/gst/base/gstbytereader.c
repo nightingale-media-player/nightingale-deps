@@ -28,8 +28,6 @@
 
 #include <string.h>
 
-/* FIXME 0.11: inline everything and get rid of non-inlined functions */
-
 /**
  * SECTION:gstbytereader
  * @short_description: Reads different integer, string and floating point
@@ -45,14 +43,15 @@
 
 /**
  * gst_byte_reader_new:
- * @data: Data from which the #GstByteReader should read
+ * @data: (in) (transfer none) (array length=size): data from which the
+ *     #GstByteReader should read
  * @size: Size of @data in bytes
  *
  * Create a new #GstByteReader instance, which will read from @data.
  *
- * Returns: a new #GstByteReader instance
+ * Free-function: gst_byte_reader_free
  *
- * Since: 0.10.22
+ * Returns: (transfer full): a new #GstByteReader instance
  */
 GstByteReader *
 gst_byte_reader_new (const guint8 * data, guint size)
@@ -66,33 +65,11 @@ gst_byte_reader_new (const guint8 * data, guint size)
 }
 
 /**
- * gst_byte_reader_new_from_buffer:
- * @buffer: Buffer from which the #GstByteReader should read
- *
- * Create a new #GstByteReader instance, which will read from the
- * #GstBuffer @buffer.
- *
- * Returns: a new #GstByteReader instance
- *
- * Since: 0.10.22
- */
-GstByteReader *
-gst_byte_reader_new_from_buffer (const GstBuffer * buffer)
-{
-  g_return_val_if_fail (GST_IS_BUFFER (buffer), NULL);
-
-  return gst_byte_reader_new (GST_BUFFER_DATA (buffer),
-      GST_BUFFER_SIZE (buffer));
-}
-
-/**
  * gst_byte_reader_free:
- * @reader: a #GstByteReader instance
+ * @reader: (in) (transfer full): a #GstByteReader instance
  *
  * Frees a #GstByteReader instance, which was previously allocated by
- * gst_byte_reader_new() or gst_byte_reader_new_from_buffer().
- * 
- * Since: 0.10.22
+ * gst_byte_reader_new().
  */
 void
 gst_byte_reader_free (GstByteReader * reader)
@@ -105,13 +82,12 @@ gst_byte_reader_free (GstByteReader * reader)
 /**
  * gst_byte_reader_init:
  * @reader: a #GstByteReader instance
- * @data: Data from which the #GstByteReader should read
+ * @data: (in) (transfer none) (array length=size): data from which
+ *     the #GstByteReader should read
  * @size: Size of @data in bytes
  *
  * Initializes a #GstByteReader instance to read from @data. This function
  * can be called on already initialized instances.
- * 
- * Since: 0.10.22
  */
 void
 gst_byte_reader_init (GstByteReader * reader, const guint8 * data, guint size)
@@ -124,26 +100,6 @@ gst_byte_reader_init (GstByteReader * reader, const guint8 * data, guint size)
 }
 
 /**
- * gst_byte_reader_init_from_buffer:
- * @reader: a #GstByteReader instance
- * @buffer: Buffer from which the #GstByteReader should read
- *
- * Initializes a #GstByteReader instance to read from @buffer. This function
- * can be called on already initialized instances.
- * 
- * Since: 0.10.22
- */
-void
-gst_byte_reader_init_from_buffer (GstByteReader * reader,
-    const GstBuffer * buffer)
-{
-  g_return_if_fail (GST_IS_BUFFER (buffer));
-
-  gst_byte_reader_init (reader, GST_BUFFER_DATA (buffer),
-      GST_BUFFER_SIZE (buffer));
-}
-
-/**
  * gst_byte_reader_set_pos:
  * @reader: a #GstByteReader instance
  * @pos: The new position in bytes
@@ -152,8 +108,6 @@ gst_byte_reader_init_from_buffer (GstByteReader * reader,
  *
  * Returns: %TRUE if the position could be set successfully, %FALSE
  * otherwise.
- * 
- * Since: 0.10.22
  */
 gboolean
 gst_byte_reader_set_pos (GstByteReader * reader, guint pos)
@@ -175,15 +129,11 @@ gst_byte_reader_set_pos (GstByteReader * reader, guint pos)
  * Returns the current position of a #GstByteReader instance in bytes.
  *
  * Returns: The current position of @reader in bytes.
- * 
- * Since: 0.10.22
  */
 guint
 gst_byte_reader_get_pos (const GstByteReader * reader)
 {
-  g_return_val_if_fail (reader != NULL, 0);
-
-  return reader->byte;
+  return _gst_byte_reader_get_pos_inline (reader);
 }
 
 /**
@@ -193,18 +143,29 @@ gst_byte_reader_get_pos (const GstByteReader * reader)
  * Returns the remaining number of bytes of a #GstByteReader instance.
  *
  * Returns: The remaining number of bytes of @reader instance.
- * 
- * Since: 0.10.22
  */
 guint
 gst_byte_reader_get_remaining (const GstByteReader * reader)
 {
-  g_return_val_if_fail (reader != NULL, 0);
-
   return _gst_byte_reader_get_remaining_inline (reader);
 }
 
+/**
+ * gst_byte_reader_get_size:
+ * @reader: a #GstByteReader instance
+ *
+ * Returns the total number of bytes of a #GstByteReader instance.
+ *
+ * Returns: The total number of bytes of @reader instance.
+ */
+guint
+gst_byte_reader_get_size (const GstByteReader * reader)
+{
+  return _gst_byte_reader_get_size_inline (reader);
+}
+
 #define gst_byte_reader_get_remaining _gst_byte_reader_get_remaining_inline
+#define gst_byte_reader_get_size _gst_byte_reader_get_size_inline
 
 /**
  * gst_byte_reader_skip:
@@ -214,503 +175,416 @@ gst_byte_reader_get_remaining (const GstByteReader * reader)
  * Skips @nbytes bytes of the #GstByteReader instance.
  *
  * Returns: %TRUE if @nbytes bytes could be skipped, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 gboolean
 gst_byte_reader_skip (GstByteReader * reader, guint nbytes)
 {
-  g_return_val_if_fail (reader != NULL, FALSE);
-
-  if (gst_byte_reader_get_remaining (reader) < nbytes)
-    return FALSE;
-
-  reader->byte += nbytes;
-
-  return TRUE;
+  return _gst_byte_reader_skip_inline (reader, nbytes);
 }
 
 /**
  * gst_byte_reader_get_uint8:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #guint8 to store the result
+ * @val: (out): Pointer to a #guint8 to store the result
  *
  * Read an unsigned 8 bit integer into @val and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_int8:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gint8 to store the result
+ * @val: (out): Pointer to a #gint8 to store the result
  *
  * Read a signed 8 bit integer into @val and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_uint8:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #guint8 to store the result
+ * @val: (out): Pointer to a #guint8 to store the result
  *
- * Read a signed 8 bit integer into @val but keep the current position.
+ * Read an unsigned 8 bit integer into @val but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_int8:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gint8 to store the result
+ * @val: (out): Pointer to a #gint8 to store the result
  *
  * Read a signed 8 bit integer into @val but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_uint16_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #guint16 to store the result
+ * @val: (out): Pointer to a #guint16 to store the result
  *
  * Read an unsigned 16 bit little endian integer into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_int16_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gint16 to store the result
+ * @val: (out): Pointer to a #gint16 to store the result
  *
  * Read a signed 16 bit little endian integer into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_uint16_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #guint16 to store the result
+ * @val: (out): Pointer to a #guint16 to store the result
  *
- * Read a signed 16 bit little endian integer into @val
+ * Read an unsigned 16 bit little endian integer into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_int16_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gint16 to store the result
+ * @val: (out): Pointer to a #gint16 to store the result
  *
  * Read a signed 16 bit little endian integer into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_uint16_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #guint16 to store the result
+ * @val: (out): Pointer to a #guint16 to store the result
  *
  * Read an unsigned 16 bit big endian integer into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_int16_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gint16 to store the result
+ * @val: (out): Pointer to a #gint16 to store the result
  *
  * Read a signed 16 bit big endian integer into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_uint16_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #guint16 to store the result
+ * @val: (out): Pointer to a #guint16 to store the result
  *
- * Read a signed 16 bit big endian integer into @val
+ * Read an unsigned 16 bit big endian integer into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_int16_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gint16 to store the result
+ * @val: (out): Pointer to a #gint16 to store the result
  *
  * Read a signed 16 bit big endian integer into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_uint24_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #guint32 to store the result
+ * @val: (out): Pointer to a #guint32 to store the result
  *
  * Read an unsigned 24 bit little endian integer into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_int24_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gint32 to store the result
+ * @val: (out): Pointer to a #gint32 to store the result
  *
  * Read a signed 24 bit little endian integer into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_uint24_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #guint32 to store the result
+ * @val: (out): Pointer to a #guint32 to store the result
  *
- * Read a signed 24 bit little endian integer into @val
+ * Read an unsigned 24 bit little endian integer into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_int24_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gint32 to store the result
+ * @val: (out): Pointer to a #gint32 to store the result
  *
  * Read a signed 24 bit little endian integer into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_uint24_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #guint32 to store the result
+ * @val: (out): Pointer to a #guint32 to store the result
  *
  * Read an unsigned 24 bit big endian integer into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_int24_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gint32 to store the result
+ * @val: (out): Pointer to a #gint32 to store the result
  *
  * Read a signed 24 bit big endian integer into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_uint24_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #guint32 to store the result
+ * @val: (out): Pointer to a #guint32 to store the result
  *
- * Read a signed 24 bit big endian integer into @val
+ * Read an unsigned 24 bit big endian integer into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_int24_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gint32 to store the result
+ * @val: (out): Pointer to a #gint32 to store the result
  *
  * Read a signed 24 bit big endian integer into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 
 /**
  * gst_byte_reader_get_uint32_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #guint32 to store the result
+ * @val: (out): Pointer to a #guint32 to store the result
  *
  * Read an unsigned 32 bit little endian integer into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_int32_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gint32 to store the result
+ * @val: (out): Pointer to a #gint32 to store the result
  *
  * Read a signed 32 bit little endian integer into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_uint32_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #guint32 to store the result
+ * @val: (out): Pointer to a #guint32 to store the result
  *
- * Read a signed 32 bit little endian integer into @val
+ * Read an unsigned 32 bit little endian integer into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_int32_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gint32 to store the result
+ * @val: (out): Pointer to a #gint32 to store the result
  *
  * Read a signed 32 bit little endian integer into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_uint32_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #guint32 to store the result
+ * @val: (out): Pointer to a #guint32 to store the result
  *
  * Read an unsigned 32 bit big endian integer into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_int32_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gint32 to store the result
+ * @val: (out): Pointer to a #gint32 to store the result
  *
  * Read a signed 32 bit big endian integer into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_uint32_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #guint32 to store the result
+ * @val: (out): Pointer to a #guint32 to store the result
  *
- * Read a signed 32 bit big endian integer into @val
+ * Read an unsigned 32 bit big endian integer into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_int32_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gint32 to store the result
+ * @val: (out): Pointer to a #gint32 to store the result
  *
  * Read a signed 32 bit big endian integer into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_uint64_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #guint64 to store the result
+ * @val: (out): Pointer to a #guint64 to store the result
  *
  * Read an unsigned 64 bit little endian integer into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_int64_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gint64 to store the result
+ * @val: (out): Pointer to a #gint64 to store the result
  *
  * Read a signed 64 bit little endian integer into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_uint64_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #guint64 to store the result
+ * @val: (out): Pointer to a #guint64 to store the result
  *
- * Read a signed 64 bit little endian integer into @val
+ * Read an unsigned 64 bit little endian integer into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_int64_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gint64 to store the result
+ * @val: (out): Pointer to a #gint64 to store the result
  *
  * Read a signed 64 bit little endian integer into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_uint64_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #guint64 to store the result
+ * @val: (out): Pointer to a #guint64 to store the result
  *
  * Read an unsigned 64 bit big endian integer into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_int64_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gint64 to store the result
+ * @val: (out): Pointer to a #gint64 to store the result
  *
  * Read a signed 64 bit big endian integer into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_uint64_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #guint64 to store the result
+ * @val: (out): Pointer to a #guint64 to store the result
  *
- * Read a signed 64 bit big endian integer into @val
+ * Read an unsigned 64 bit big endian integer into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_int64_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gint64 to store the result
+ * @val: (out): Pointer to a #gint64 to store the result
  *
  * Read a signed 64 bit big endian integer into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 #define GST_BYTE_READER_PEEK_GET(bits,type,name) \
 gboolean \
 gst_byte_reader_get_##name (GstByteReader * reader, type * val) \
 { \
-  g_return_val_if_fail (reader != NULL, FALSE); \
-  g_return_val_if_fail (val != NULL, FALSE); \
-  \
   return _gst_byte_reader_get_##name##_inline (reader, val); \
 } \
 \
 gboolean \
-gst_byte_reader_peek_##name (GstByteReader * reader, type * val) \
+gst_byte_reader_peek_##name (const GstByteReader * reader, type * val) \
 { \
-  g_return_val_if_fail (reader != NULL, FALSE); \
-  g_return_val_if_fail (val != NULL, FALSE); \
-  \
   return _gst_byte_reader_peek_##name##_inline (reader, val); \
 }
 
@@ -742,105 +616,89 @@ GST_BYTE_READER_PEEK_GET(64,gint64,int64_be)
 /**
  * gst_byte_reader_get_float32_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gfloat to store the result
+ * @val: (out): Pointer to a #gfloat to store the result
  *
  * Read a 32 bit little endian floating point value into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_float32_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gfloat to store the result
+ * @val: (out): Pointer to a #gfloat to store the result
  *
  * Read a 32 bit little endian floating point value into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_float32_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gfloat to store the result
+ * @val: (out): Pointer to a #gfloat to store the result
  *
  * Read a 32 bit big endian floating point value into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_float32_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gfloat to store the result
+ * @val: (out): Pointer to a #gfloat to store the result
  *
  * Read a 32 bit big endian floating point value into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_float64_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gdouble to store the result
+ * @val: (out): Pointer to a #gdouble to store the result
  *
  * Read a 64 bit little endian floating point value into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_float64_le:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gdouble to store the result
+ * @val: (out): Pointer to a #gdouble to store the result
  *
  * Read a 64 bit little endian floating point value into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_get_float64_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gdouble to store the result
+ * @val: (out): Pointer to a #gdouble to store the result
  *
  * Read a 64 bit big endian floating point value into @val
  * and update the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 /**
  * gst_byte_reader_peek_float64_be:
  * @reader: a #GstByteReader instance
- * @val: Pointer to a #gdouble to store the result
+ * @val: (out): Pointer to a #gdouble to store the result
  *
  * Read a 64 bit big endian floating point value into @val
  * but keep the current position.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 
 GST_BYTE_READER_PEEK_GET(32,gfloat,float32_le)
@@ -854,7 +712,8 @@ GST_BYTE_READER_PEEK_GET(64,gdouble,float64_be)
  * gst_byte_reader_get_data:
  * @reader: a #GstByteReader instance
  * @size: Size in bytes
- * @val: Pointer to a #guint8 to store the result
+ * @val: (out) (transfer none) (array length=size): address of a
+ *     #guint8 pointer variable in which to store the result
  *
  * Returns a constant pointer to the current data
  * position if at least @size bytes are left and
@@ -862,16 +721,11 @@ GST_BYTE_READER_PEEK_GET(64,gdouble,float64_be)
  *
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 gboolean
 gst_byte_reader_get_data (GstByteReader * reader, guint size,
     const guint8 ** val)
 {
-  g_return_val_if_fail (reader != NULL, FALSE);
-  g_return_val_if_fail (val != NULL, FALSE);
-
   return _gst_byte_reader_get_data_inline (reader, size, val);
 }
 
@@ -879,7 +733,8 @@ gst_byte_reader_get_data (GstByteReader * reader, guint size,
  * gst_byte_reader_peek_data:
  * @reader: a #GstByteReader instance
  * @size: Size in bytes
- * @val: Pointer to a #guint8 to store the result
+ * @val: (out) (transfer none) (array length=size): address of a
+ *     #guint8 pointer variable in which to store the result
  *
  * Returns a constant pointer to the current data
  * position if at least @size bytes are left and
@@ -887,16 +742,11 @@ gst_byte_reader_get_data (GstByteReader * reader, guint size,
  *
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- * 
- * Since: 0.10.22
  */
 gboolean
-gst_byte_reader_peek_data (GstByteReader * reader, guint size,
+gst_byte_reader_peek_data (const GstByteReader * reader, guint size,
     const guint8 ** val)
 {
-  g_return_val_if_fail (reader != NULL, FALSE);
-  g_return_val_if_fail (val != NULL, FALSE);
-
   return _gst_byte_reader_peek_data_inline (reader, size, val);
 }
 
@@ -904,22 +754,20 @@ gst_byte_reader_peek_data (GstByteReader * reader, guint size,
  * gst_byte_reader_dup_data:
  * @reader: a #GstByteReader instance
  * @size: Size in bytes
- * @val: Pointer to a #guint8 to store the result
+ * @val: (out) (transfer full) (array length=size): address of a
+ *     #guint8 pointer variable in which to store the result
+ *
+ * Free-function: g_free
  *
  * Returns a newly-allocated copy of the current data
  * position if at least @size bytes are left and
- * updates the current position.
+ * updates the current position. Free with g_free() when no longer needed.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
- *
- * Since: 0.10.24
  */
 gboolean
 gst_byte_reader_dup_data (GstByteReader * reader, guint size, guint8 ** val)
 {
-  g_return_val_if_fail (reader != NULL, FALSE);
-  g_return_val_if_fail (val != NULL, FALSE);
-
   return _gst_byte_reader_dup_data_inline (reader, size, val);
 }
 
@@ -964,11 +812,9 @@ gst_byte_reader_dup_data (GstByteReader * reader, guint size, guint8 ** val)
  * gst_byte_reader_masked_scan_uint32 (reader, 0xffff0000, 0x02030000, 0, 4);
  * // -> returns -1
  * </programlisting>
- *
- * Since: 0.10.24
  */
 guint
-gst_byte_reader_masked_scan_uint32 (GstByteReader * reader, guint32 mask,
+gst_byte_reader_masked_scan_uint32 (const GstByteReader * reader, guint32 mask,
     guint32 pattern, guint offset, guint size)
 {
   const guint8 *data;
@@ -1006,7 +852,7 @@ gst_byte_reader_masked_scan_uint32 (GstByteReader * reader, guint32 mask,
 
 #define GST_BYTE_READER_SCAN_STRING(bits) \
 static guint \
-gst_byte_reader_scan_string_utf##bits (GstByteReader * reader) \
+gst_byte_reader_scan_string_utf##bits (const GstByteReader * reader) \
 { \
   guint len, off, max_len; \
   \
@@ -1061,8 +907,6 @@ gst_byte_reader_skip_string_utf##bits (GstByteReader * reader) \
  * This function will fail if no NUL-terminator was found in in the data.
  *
  * Returns: %TRUE if a string could be skipped, %FALSE otherwise.
- *
- * Since: 0.10.24
  */
 /**
  * gst_byte_reader_skip_string_utf8:
@@ -1076,8 +920,6 @@ gst_byte_reader_skip_string_utf##bits (GstByteReader * reader) \
  * This function will fail if no NUL-terminator was found in in the data.
  *
  * Returns: %TRUE if a string could be skipped, %FALSE otherwise.
- *
- * Since: 0.10.24
  */
 GST_BYTE_READER_SKIP_STRING (8);
 
@@ -1093,8 +935,6 @@ GST_BYTE_READER_SKIP_STRING (8);
  * This function will fail if no NUL-terminator was found in in the data.
  *
  * Returns: %TRUE if a string could be skipped, %FALSE otherwise.
- *
- * Since: 0.10.24
  */
 GST_BYTE_READER_SKIP_STRING (16);
 
@@ -1110,15 +950,14 @@ GST_BYTE_READER_SKIP_STRING (16);
  * This function will fail if no NUL-terminator was found in in the data.
  *
  * Returns: %TRUE if a string could be skipped, %FALSE otherwise.
- *
- * Since: 0.10.24
  */
 GST_BYTE_READER_SKIP_STRING (32);
 
 /**
  * gst_byte_reader_peek_string:
  * @reader: a #GstByteReader instance
- * @str: Pointer to a #gchar to store the result
+ * @str: (out) (transfer none) (array zero-terminated=1): address of a
+ *     #gchar pointer varieble in which to store the result
  *
  * Returns a constant pointer to the current data position if there is
  * a NUL-terminated string in the data (this could be just a NUL terminator).
@@ -1129,13 +968,12 @@ GST_BYTE_READER_SKIP_STRING (32);
  * This function will fail if no NUL-terminator was found in in the data.
  *
  * Returns: %TRUE if a string could be skipped, %FALSE otherwise.
- *
- * Since: 0.10.24
  */
 /**
  * gst_byte_reader_peek_string_utf8:
  * @reader: a #GstByteReader instance
- * @str: Pointer to a #gchar to store the result
+ * @str: (out) (transfer none) (array zero-terminated=1): address of a
+ *     #gchar pointer varieble in which to store the result
  *
  * Returns a constant pointer to the current data position if there is
  * a NUL-terminated string in the data (this could be just a NUL terminator).
@@ -1148,11 +986,10 @@ GST_BYTE_READER_SKIP_STRING (32);
  * This function will fail if no NUL-terminator was found in in the data.
  *
  * Returns: %TRUE if a string could be skipped, %FALSE otherwise.
- *
- * Since: 0.10.24
  */
 gboolean
-gst_byte_reader_peek_string_utf8 (GstByteReader * reader, const gchar ** str)
+gst_byte_reader_peek_string_utf8 (const GstByteReader * reader,
+    const gchar ** str)
 {
   g_return_val_if_fail (reader != NULL, FALSE);
   g_return_val_if_fail (str != NULL, FALSE);
@@ -1168,7 +1005,8 @@ gst_byte_reader_peek_string_utf8 (GstByteReader * reader, const gchar ** str)
 /**
  * gst_byte_reader_get_string_utf8:
  * @reader: a #GstByteReader instance
- * @str: Pointer to a #gchar to store the result
+ * @str: (out) (transfer none) (array zero-terminated=1): address of a
+ *     #gchar pointer varieble in which to store the result
  *
  * Returns a constant pointer to the current data position if there is
  * a NUL-terminated string in the data (this could be just a NUL terminator),
@@ -1181,8 +1019,6 @@ gst_byte_reader_peek_string_utf8 (GstByteReader * reader, const gchar ** str)
  * This function will fail if no NUL-terminator was found in in the data.
  *
  * Returns: %TRUE if a string could be found, %FALSE otherwise.
- *
- * Since: 0.10.24
  */
 gboolean
 gst_byte_reader_get_string_utf8 (GstByteReader * reader, const gchar ** str)
@@ -1225,7 +1061,10 @@ gst_byte_reader_dup_string_utf##bits (GstByteReader * reader, type ** str) \
 /**
  * gst_byte_reader_dup_string_utf8:
  * @reader: a #GstByteReader instance
- * @str: address of a string pointer to store the result
+ * @str: (out) (transfer full) (array zero-terminated=1): address of a
+ *     #gchar pointer varieble in which to store the result
+ *
+ * Free-function: g_free
  *
  * FIXME:Reads (copies) a NUL-terminated string in the #GstByteReader instance,
  * advancing the current position to the byte after the string. This will work
@@ -1236,15 +1075,16 @@ gst_byte_reader_dup_string_utf##bits (GstByteReader * reader, type ** str) \
  *
  * Returns: %TRUE if a string could be read into @str, %FALSE otherwise. The
  *     string put into @str must be freed with g_free() when no longer needed.
- *
- * Since: 0.10.24
  */
 GST_BYTE_READER_DUP_STRING (8, gchar);
 
 /**
  * gst_byte_reader_dup_string_utf16:
  * @reader: a #GstByteReader instance
- * @str: address of a #guint16 pointer to store the result
+ * @str: (out) (transfer full) (array zero-terminated=1): address of a
+ *     #guint16 pointer varieble in which to store the result
+ *
+ * Free-function: g_free
  *
  * Returns a newly-allocated copy of the current data position if there is
  * a NUL-terminated UTF-16 string in the data (this could be an empty string
@@ -1261,15 +1101,16 @@ GST_BYTE_READER_DUP_STRING (8, gchar);
  *
  * Returns: %TRUE if a string could be read, %FALSE otherwise. The
  *     string put into @str must be freed with g_free() when no longer needed.
- *
- * Since: 0.10.24
  */
 GST_BYTE_READER_DUP_STRING (16, guint16);
 
 /**
  * gst_byte_reader_dup_string_utf32:
  * @reader: a #GstByteReader instance
- * @str: address of a #guint32 pointer to store the result
+ * @str: (out) (transfer full) (array zero-terminated=1): address of a
+ *     #guint32 pointer varieble in which to store the result
+ *
+ * Free-function: g_free
  *
  * Returns a newly-allocated copy of the current data position if there is
  * a NUL-terminated UTF-32 string in the data (this could be an empty string
@@ -1286,7 +1127,5 @@ GST_BYTE_READER_DUP_STRING (16, guint16);
  *
  * Returns: %TRUE if a string could be read, %FALSE otherwise. The
  *     string put into @str must be freed with g_free() when no longer needed.
- *
- * Since: 0.10.24
  */
 GST_BYTE_READER_DUP_STRING (32, guint32);

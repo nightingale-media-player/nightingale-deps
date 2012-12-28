@@ -26,18 +26,282 @@ hierarchy, and a set of media-agnostic core elements.
  <category></category>
  <bug-database rdf:resource="http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer&amp;component=gstreamer+%28core%29" />
  <screenshots></screenshots>
- <mailing-list rdf:resource="http://lists.sourceforge.net/lists/listinfo/gstreamer-devel/" />
+ <mailing-list rdf:resource="http://lists.freedesktop.org/mailman/listinfo/gstreamer-devel" />
  <programming-language>C</programming-language>
  <license rdf:resource="http://usefulinc.com/doap/licenses/lgpl" />
  <download-page rdf:resource="http://gstreamer.freedesktop.org/download/" />
 
  <repository>
-   <CVSRepository>
-     <anon-root>:pserver:anonymous@cvs.freedesktop.org:/cvs/gstreamer</anon-root>
-     <module>gstreamer</module>
-     <browse rdf:resource="http://webcvs.freedesktop.org/gstreamer/gstreamer/" />
-   </CVSRepository>
+   <GitRepository>
+     <location rdf:resource="git://anongit.freedesktop.org/gstreamer/gstreamer"/>
+     <browse rdf:resource="http://cgit.freedesktop.org/gstreamer/gstreamer"/>
+   </GitRepository>
  </repository> 
+
+ <release>
+  <Version>
+   <revision>1.0.4</revision>
+   <branch>1.0</branch>
+   <name></name>
+   <created>2012-12-18</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.0.4.tar.xz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>1.0.3</revision>
+   <branch>1.0</branch>
+   <name></name>
+   <created>2012-11-21</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.0.3.tar.xz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>1.0.2</revision>
+   <branch>1.0</branch>
+   <name></name>
+   <created>2012-10-24</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.0.2.tar.xz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>1.0.1</revision>
+   <branch>1.0</branch>
+   <name></name>
+   <created>2012-10-07</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.0.1.tar.xz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>1.0.0</revision>
+   <branch>1.0</branch>
+   <name></name>
+   <created>2012-09-24</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.0.0.tar.xz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.11.99</revision>
+   <branch>0.11</branch>
+   <name>Allow Me to Introduce Myself</name>
+   <created>2012-09-17</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.11.99.tar.xz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.11.94</revision>
+   <branch>0.11</branch>
+   <name>Burning Spear</name>
+   <created>2012-09-14</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.11.94.tar.xz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.11.93</revision>
+   <branch>0.11</branch>
+   <name>Balrog Boogie</name>
+   <created>2012-08-08</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.11.93.tar.xz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.11.92</revision>
+   <branch>0.11</branch>
+   <name>High Hopes</name>
+   <created>2012-06-07</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.11.92.tar.xz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.11.91</revision>
+   <branch>0.11</branch>
+   <name>I will give you five magic beans!</name>
+   <created>2012-05-13</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.11.91.tar.xz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.11.90</revision>
+   <branch>0.11</branch>
+   <name>And all with pearl and ruby glowing was the fair palace door</name>
+   <created>2012-04-12</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.11.90.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.11.90.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.11.3</revision>
+   <branch>0.11</branch>
+   <name>Thrill of the Hunt</name>
+   <created>2012-03-22</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.11.3.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.11.3.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.11.2</revision>
+   <branch>0.11</branch>
+   <name>A Shiny white Tooth</name>
+   <created>2012-02-16</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.11.2.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.11.2.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.11.1</revision>
+   <branch>0.11</branch>
+   <name>Sweet New Blossom</name>
+   <created>2011-09-29</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.11.1.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.11.1.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.11.0</revision>
+   <branch>0.11</branch>
+   <name>It's a boy</name>
+   <created>2011-08-02</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.11.0.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.11.0.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.10.35</revision>
+   <branch>0.10</branch>
+   <name>Nuclear Fission</name>
+   <created>2011-06-15</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.35.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.35.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.10.34</revision>
+   <branch>0.10</branch>
+   <name>Misfits</name>
+   <created>2011-05-13</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.34.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.34.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.10.33</revision>
+   <branch>0.10</branch>
+   <name>Prior Spaceflight Experience is an Advantage</name>
+   <created>2011-05-10</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.33.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.33.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.10.32</revision>
+   <branch>0.10</branch>
+   <name>Take Me to the Bonus Level</name>
+   <created>2011-01-21</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.32.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.32.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.10.31</revision>
+   <branch>0.10</branch>
+   <name>Safety Pins</name>
+   <created>2010-11-30</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.31.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.31.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.10.30</revision>
+   <branch>0.10</branch>
+   <name>Safety First</name>
+   <created>2010-07-15</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.30.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.30.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.10.29</revision>
+   <branch>0.10</branch>
+   <name>It's a Trap</name>
+   <created>2010-04-27</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.29.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.29.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.10.28</revision>
+   <branch>0.10</branch>
+   <name>Same Old, Same Old</name>
+   <created>2010-03-08</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.28.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.28.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.10.27</revision>
+   <branch>0.10</branch>
+   <name>You're Shocked, We Know</name>
+   <created>2010-03-05</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.27.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.27.tar.gz" />
+  </Version>
+ </release>
+
+ <release>
+  <Version>
+   <revision>0.10.26</revision>
+   <branch>0.10</branch>
+   <name>Think Twice</name>
+   <created>2010-02-09</created>
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.26.tar.bz2" />
+   <file-release rdf:resource="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.26.tar.gz" />
+  </Version>
+ </release>
 
  <release>
   <Version>
@@ -319,11 +583,6 @@ hierarchy, and a set of media-agnostic core elements.
   <foaf:Person>
      <foaf:name>Wim Taymans</foaf:name>
      <foaf:mbox_sha1sum>0d93fde052812d51a05fd86de9bdbf674423daa2</foaf:mbox_sha1sum>
-  </foaf:Person>
- </maintainer>
- <maintainer>
-  <foaf:Person>
-     <foaf:name>Thomas Vander Stichele</foaf:name>
   </foaf:Person>
  </maintainer>
 

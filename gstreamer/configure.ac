@@ -1,15 +1,16 @@
-AC_PREREQ(2.52)
+AC_PREREQ(2.62)
 
 dnl initialize autoconf
 dnl when going to/from release please set the nano (fourth number) right !
 dnl releases only do Wall, git and prerelease does Werror too
-AC_INIT(GStreamer, 0.10.25,
+dnl
+AC_INIT(GStreamer, 1.0.4,
     http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer,
     gstreamer)
 AG_GST_INIT
 
 dnl initialize automake (we require GNU make)
-AM_INIT_AUTOMAKE([-Wno-portability])
+AM_INIT_AUTOMAKE([-Wno-portability 1.11 no-dist-gzip dist-xz tar-ustar])
 
 dnl define PACKAGE_VERSION_* variables
 AS_VERSION
@@ -24,18 +25,32 @@ dnl define the output header for config
 AM_CONFIG_HEADER([config.h])
 
 dnl AM_MAINTAINER_MODE only provides the option to configure to enable it
-AM_MAINTAINER_MODE
+AM_MAINTAINER_MODE([enable])
 
 dnl sets host_* variables
 AC_CANONICAL_HOST
 
-dnl our libraries and install dirs use major.minor as a version
-GST_MAJORMINOR=$PACKAGE_VERSION_MAJOR.$PACKAGE_VERSION_MINOR
-dnl we override it here for release candidates for a new series
-GST_MAJORMINOR=0.10
-AC_SUBST(GST_MAJORMINOR)
-AC_DEFINE_UNQUOTED(GST_MAJORMINOR, "$GST_MAJORMINOR",
-  [library major.minor version])
+dnl use pretty build output with automake >= 1.11
+m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])],
+  [AM_DEFAULT_VERBOSITY=1
+   AC_SUBST(AM_DEFAULT_VERBOSITY)])
+
+dnl GStreamer versioning, this is mostly informational
+GST_VERSION_MAJOR=$PACKAGE_VERSION_MAJOR
+GST_VERSION_MINOR=$PACKAGE_VERSION_MINOR
+GST_VERSION_MICRO=$PACKAGE_VERSION_MICRO
+GST_VERSION_NANO=$PACKAGE_VERSION_NANO
+AC_SUBST(GST_VERSION_MAJOR)
+AC_SUBST(GST_VERSION_MINOR)
+AC_SUBST(GST_VERSION_MICRO)
+AC_SUBST(GST_VERSION_NANO)
+
+dnl our libraries and install dirs use GST_API_VERSION in the filename
+dnl to allow side-by-side installation of different API versions
+GST_API_VERSION=1.0
+AC_SUBST(GST_API_VERSION)
+AC_DEFINE_UNQUOTED(GST_API_VERSION, "$GST_API_VERSION",
+  [GStreamer API Version])
 
 dnl CURRENT, REVISION, AGE
 dnl - library source changed -> increment REVISION
@@ -43,15 +58,7 @@ dnl - interfaces added/removed/changed -> increment CURRENT, REVISION = 0
 dnl - interfaces added -> increment AGE
 dnl - interfaces removed -> AGE = 0
 dnl sets GST_LT_LDFLAGS
-AS_LIBTOOL(GST, 22, 0, 22)
-
-dnl FIXME: this macro doesn't actually work;
-dnl the generated libtool script has no support for the listed tags.
-dnl So this needs to be fixed first if we want to use this
-dnl AS_LIBTOOL_TAGS
-
-AC_LIBTOOL_WIN32_DLL
-AM_PROG_LIBTOOL
+AS_LIBTOOL(GST, 4, 0, 4)
 
 dnl *** autotools stuff ****
 
@@ -59,30 +66,22 @@ dnl allow for different autotools
 AS_AUTOTOOLS_ALTERNATE
 
 dnl Add parameters for aclocal (keep in sync with Makefile.am)
-AC_SUBST(ACLOCAL_AMFLAGS, "-I common/m4 -I .")
+AC_SUBST(ACLOCAL_AMFLAGS, "-I m4 -I common/m4")
 
 dnl set up gettext
 dnl the version check needs to stay here because autopoint greps for it
-AM_GNU_GETTEXT_VERSION([0.14])
+AM_GNU_GETTEXT_VERSION([0.17])
 AM_GNU_GETTEXT([external])
-AG_GST_GETTEXT([gstreamer-$GST_MAJORMINOR])
+AG_GST_GETTEXT([gstreamer-$GST_API_VERSION])
 
 dnl *** check for arguments to configure ***
+
+AG_GST_ARG_DISABLE_FATAL_WARNINGS
 
 dnl subsystems - can influence other decisions so needs to be high up
 dnl we need to AM_CONDITIONAL them here for automake 1.6.x compatibility
 AG_GST_CHECK_SUBSYSTEM_DISABLE(GST_DEBUG,[debugging subsystem])
 AM_CONDITIONAL(GST_DISABLE_GST_DEBUG, test "x$GST_DISABLE_GST_DEBUG" = "xyes")
-AG_GST_CHECK_SUBSYSTEM_DISABLE(LOADSAVE,[pipeline XML load/save])
-AM_CONDITIONAL(GST_DISABLE_LOADSAVE, test "x$GST_DISABLE_LOADSAVE" = "xyes")
-dnl define a substitution to use in docs/gst/gstreamer.types
-if test "x$GST_DISABLE_LOADSAVE" = "xyes"
-then
-  GST_LOADSAVE_DOC_TYPES="%"
-else
-  GST_LOADSAVE_DOC_TYPES=
-fi
-AC_SUBST(GST_LOADSAVE_DOC_TYPES)
 AG_GST_CHECK_SUBSYSTEM_DISABLE(PARSE,[command-line parser])
 AM_CONDITIONAL(GST_DISABLE_PARSE, test "x$GST_DISABLE_PARSE" = "xyes")
 if test "x$GST_DISABLE_PARSE" = xyes; then
@@ -109,8 +108,6 @@ else
   GST_REGISTRY_DOC_TYPES=
 fi
 AC_SUBST(GST_REGISTRY_DOC_TYPES)
-AG_GST_CHECK_SUBSYSTEM_DISABLE(NET,[network distribution])
-AM_CONDITIONAL(GST_DISABLE_NET, test "x$GST_DISABLE_NET" = "xyes")
 AG_GST_CHECK_SUBSYSTEM_DISABLE(PLUGIN,[plugin])
 AM_CONDITIONAL(GST_DISABLE_PLUGIN, test "x$GST_DISABLE_PLUGIN" = "xyes")
 
@@ -124,6 +121,12 @@ AG_GST_ARG_EXAMPLES
 AG_GST_ARG_WITH_PKG_CONFIG_PATH
 AG_GST_ARG_WITH_PACKAGE_NAME
 AG_GST_ARG_WITH_PACKAGE_ORIGIN
+
+AG_GST_PKG_CONFIG_PATH
+
+AG_GST_SET_PACKAGE_RELEASE_DATETIME_WITH_NANO([$PACKAGE_VERSION_NANO],
+  ["${srcdir}/gstreamer.doap"],
+  [$PACKAGE_VERSION_MAJOR.$PACKAGE_VERSION_MINOR.$PACKAGE_VERSION_MICRO])
 
 dnl building of tests
 AC_ARG_ENABLE(tests,
@@ -156,6 +159,32 @@ if test x$BUILD_FAILING_TESTS = xyes; then
 else
   AC_MSG_WARN([Sissy ! By asking to not build the tests known to fail, you hereby waive your right to customer support.  If you do not agree with this EULA, please press Ctrl-C before the next line is printed.  By allowing the next line to be printed, you expressly acknowledge your acceptance of this EULA.])
 fi
+
+dnl building of benchmarks
+AC_ARG_ENABLE(benchmarks,
+  AC_HELP_STRING([--disable-benchmarks], [disable building benchmarks apps]),
+  [
+    case "${enableval}" in
+      yes) BUILD_BENCHMARKS=yes ;;
+      no)  BUILD_BENCHMARKS=no ;;
+      *)   AC_MSG_ERROR(bad value ${enableval} for --disable-benchmarks) ;;
+    esac
+  ],
+[BUILD_BENCHMARKS=yes]) dnl Default value
+AM_CONDITIONAL(BUILD_BENCHMARKS, test "x$BUILD_BENCHMARKS" = "xyes")
+
+dnl building of tools
+AC_ARG_ENABLE(tools,
+  AC_HELP_STRING([--disable-tools], [disable building tools]),
+  [
+    case "${enableval}" in
+      yes) BUILD_TOOLS=yes ;;
+      no)  BUILD_TOOLS=no ;;
+      *)   AC_MSG_ERROR(bad value ${enableval} for --disable-tools) ;;
+    esac
+  ],
+[BUILD_TOOLS=yes]) dnl Default value
+AM_CONDITIONAL(BUILD_TOOLS, test "x$BUILD_TOOLS" = "xyes")
 
 dnl poison destroyed objects
 AC_ARG_ENABLE(poisoning,
@@ -197,44 +226,7 @@ fi
 AC_SUBST(GST_HAVE_UNALIGNED_ACCESS_DEFINE)
 
 dnl check for platform specific settings
-case $host_os in
-     rhapsody*)
-	AC_DEFINE_UNQUOTED(GST_EXTRA_MODULE_SUFFIX, [".dylib"], [Extra platform specific plugin suffix])
-        ;;
-     darwin*)
-	AC_DEFINE_UNQUOTED(GST_EXTRA_MODULE_SUFFIX, [".dylib"], [Extra platform specific plugin suffix])
-        AC_DEFINE_UNQUOTED(GST_HAVE_UNSAFE_FORK, 1, [Defined when registry scanning through fork is unsafe])
-        AC_DEFINE_UNQUOTED(HAVE_OSX, 1, [Defined if compiling for OSX])
-	;;
-     cygwin*)
-	AC_DEFINE_UNQUOTED(GST_HAVE_UNSAFE_FORK, 1, [Defined when registry scanning through fork is unsafe])
-	;;
-     mingw* | msvc* | mks*)
-        dnl HAVE_WIN32 currently means "disable POSIXisms".
-        AC_DEFINE_UNQUOTED(HAVE_WIN32, 1, [Defined if compiling for Windows])
-
-        dnl define __MSVCRT_VERSION__ version if not set already by the
-        dnl compiler (ie. mostly for mingw). This is needed for things like
-        dnl __stat64 to be available. If set by the compiler, ensure it's
-        dnl new enough - we need at least WinXP SP2.
-        AC_TRY_COMPILE([ ], [ return __MSVCRT_VERSION__; ], [
-            AC_TRY_COMPILE([ ], [
-              #if __MSVCRT_VERSION__ < 0x0601
-              #error "MSVCRT too old"
-              #endif
-            ], [
-              AC_MSG_NOTICE([MSVCRT version looks ok])
-            ], [
-              AC_MSG_ERROR([MSVCRT version too old, need at least WinXP SP2])
-            ])
-        ], [
-          AC_MSG_NOTICE([Setting MSVCRT version to 0x0601])
-          AC_DEFINE_UNQUOTED(__MSVCRT_VERSION__, 0x0601, [We need at least WinXP SP2 for __stat64])
-        ])
-        ;;
-     *)
-	;;
-esac
+AG_GST_PLATFORM
 
 dnl * software *
 
@@ -246,12 +238,23 @@ dnl *** checks for programs ***
 
 dnl find a compiler
 AC_PROG_CC
+AC_PROG_CC_STDC
 
 dnl check if the compiler supports '-c' and '-o' options
 AM_PROG_CC_C_O
 
 dnl find an assembler
 AM_PROG_AS
+
+dnl determine if c++ is available on this system
+AC_PROG_CXX
+dnl CXX may be set to some default even if no c++ compiler is available
+dnl (thanks autotools!), so just try to compile some c++ code to make sure
+AC_LANG_PUSH([C++])
+AC_TRY_COMPILE([ class Foo { int bar; };], , working_cxx=yes, working_cxx=no)
+AC_LANG_POP([C++])
+AC_MSG_NOTICE([working c++ compiler found: $working_cxx])
+AM_CONDITIONAL(HAVE_CXX, test "x$working_cxx" = "xyes")
 
 dnl Perl is used in building documentation and in the version checks
 AC_PATH_PROG(PERL_PATH, perl, no)
@@ -269,19 +272,18 @@ AC_PATH_PROG(VALGRIND_PATH, valgrind, no)
 AM_CONDITIONAL(HAVE_VALGRIND, test ! "x$VALGRIND_PATH" = "xno")
 
 dnl check for gobject-introspection
-dnl GOBJECT_INTROSPECTION_CHECK([0.6.3])
-AM_CONDITIONAL(HAVE_INTROSPECTION, false)
+GOBJECT_INTROSPECTION_CHECK([1.31.1])
 
 dnl check for documentation tools
 AG_GST_DOCBOOK_CHECK
-GTK_DOC_CHECK([1.3])
+GTK_DOC_CHECK([1.12])
 AS_PATH_PYTHON([2.1])
 AG_GST_PLUGIN_DOCS([1.3],[2.1])
 
 dnl *** checks for libraries ***
 
 dnl check for libm, for sin()
-AC_CHECK_LIBM
+LT_LIB_M
 AC_SUBST(LIBM)
 
 dnl *** checks for header files ***
@@ -290,37 +292,40 @@ dnl check if we have ANSI C header files
 AC_HEADER_STDC
 
 dnl Check for ucontext.h
-AC_CHECK_HEADERS([ucontext.h])
+AC_CHECK_HEADERS([ucontext.h], [], [], [AC_INCLUDES_DEFAULT])
 
 dnl Check for sys/socket.h
-AC_CHECK_HEADERS([sys/socket.h], HAVE_SYS_SOCKET_H=yes)
+AC_CHECK_HEADERS([sys/socket.h], [HAVE_SYS_SOCKET_H=yes], [HAVE_SYS_SOCKET_H=no], [AC_INCLUDES_DEFAULT])
 AM_CONDITIONAL(HAVE_SYS_SOCKET_H, test "x$HAVE_SYS_SOCKET_H" = "xyes")
 
 dnl check for sys/times.h for tests/examples/adapter/
-AC_CHECK_HEADERS([sys/times.h], HAVE_SYS_TIMES_H=yes)
-AC_CHECK_HEADERS([unistd.h], HAVE_UNISTD_H=yes)
+AC_CHECK_HEADERS([sys/times.h], [HAVE_SYS_TIMES_H=yes], [HAVE_SYS_TIME_H=no], [AC_INCLUDES_DEFAULT])
+AC_CHECK_HEADERS([unistd.h], [HAVE_UNISTD_H=yes], [HAVE_UNISTD_H=no], [AC_INCLUDES_DEFAULT])
 AM_CONDITIONAL(HAVE_SYS_TIMES_H_AND_UNISTD_H, test "x$HAVE_SYS_TIMES_H" = "xyes" -a "x$HAVE_UNISTD_H" = "xyes")
 
 dnl Check for process.h for getpid() on win32
-AC_CHECK_HEADERS([process.h])
+AC_CHECK_HEADERS([process.h], [], [], [AC_INCLUDES_DEFAULT])
 
 dnl Check for sys/utsname.h for uname
-AC_CHECK_HEADERS([sys/utsname.h])
+AC_CHECK_HEADERS([sys/utsname.h], [], [], [AC_INCLUDES_DEFAULT])
 
 dnl Check for stdio_ext.f for __fbufsize
-AC_CHECK_HEADERS([stdio_ext.h])
+AC_CHECK_HEADERS([stdio_ext.h], [], [], [AC_INCLUDES_DEFAULT])
 
 dnl check for pthreads
-AC_CHECK_HEADERS([pthread.h], HAVE_PTHREAD_H=yes)
-AM_CONDITIONAL(HAVE_PTHREAD_H, test "x$HAVE_PTHREAD_H" = "xyes")
+AX_PTHREAD([HAVE_PTHREAD=yes], [HAVE_PTHREAD=no])
+AM_CONDITIONAL(HAVE_PTHREAD, test "x$HAVE_PTHREAD" = "xyes")
+
+dnl check for sys/prctl for setting thread name on Linux
+AC_CHECK_HEADERS([sys/prctl.h], [], [], [AC_INCLUDES_DEFAULT])
 
 dnl Check for valgrind.h
 dnl separate from HAVE_VALGRIND because you can have the program, but not
 dnl the dev package
-AC_CHECK_HEADERS([valgrind/valgrind.h], HAVE_VALGRIND_H=yes)
+AC_CHECK_HEADERS([valgrind/valgrind.h], [], [], [AC_INCLUDES_DEFAULT])
 
 dnl used in gst/gstpoll.c
-AC_CHECK_HEADERS([winsock2.h], HAVE_WINSOCK2_H=yes)
+AC_CHECK_HEADERS([winsock2.h], [HAVE_WINSOCK2_H=yes], [HAVE_WINSOCK2_H=no], [AC_INCLUDES_DEFAULT])
 AM_CONDITIONAL(HAVE_WINSOCK2_H, test "x$HAVE_WINSOCK2_H" = "xyes")
 if test "x$HAVE_WINSOCK2_H" = "xyes"; then
   WIN32_LIBS="-lws2_32"
@@ -328,18 +333,20 @@ if test "x$HAVE_WINSOCK2_H" = "xyes"; then
 fi
 
 dnl check for GMP/GSL, used by the gst_util_uint64_scale unit test only
-AG_GST_CHECK_LIBHEADER(GMP, gmp,
-                        __gmpz_init_set_d, ,
-                        gmp.h,
-                        GMP_LIBS="-lgmp"
-                        AC_SUBST(GMP_LIBS)
-			AC_DEFINE(HAVE_GMP, [1],[Have GMP library]))
-AG_GST_CHECK_LIBHEADER(GSL, gsl,
-                        gsl_rng_uniform_int, -lgslcblas,
-                        gsl/gsl_rng.h,
-                        GSL_LIBS="-lgsl -lgslcblas"
-                        AC_SUBST(GSL_LIBS)
-			AC_DEFINE(HAVE_GSL, [1],[Have GSL library]))
+if test "x$BUILD_TESTS" = "xyes"; then
+  AG_GST_CHECK_LIBHEADER(GMP, gmp,
+                         __gmpz_init_set_d, ,
+                         gmp.h,
+                         GMP_LIBS="-lgmp"
+                         AC_SUBST(GMP_LIBS)
+                         AC_DEFINE(HAVE_GMP, [1],[Have GMP library]))
+  AG_GST_CHECK_LIBHEADER(GSL, gsl,
+                         gsl_rng_uniform_int, -lgslcblas,
+                         gsl/gsl_rng.h,
+                         GSL_LIBS="-lgsl -lgslcblas"
+                         AC_SUBST(GSL_LIBS)
+                         AC_DEFINE(HAVE_GSL, [1],[Have GSL library]))
+fi
 
 dnl *** checks for types/defines ***
 
@@ -348,11 +355,14 @@ dnl *** checks for structures ***
 dnl *** checks for compiler characteristics ***
 
 dnl check if the compiler supports __uint128_t (gcc)
+dnl Actually check for 128-bit division, since that's what we use
+dnl uint128_t for.
 AC_CACHE_CHECK(for __uint128_t, gst_cv_uint128_t,
-    AC_TRY_COMPILE([ ], [
-      __uint128_t u = 0;
-
-      return 0;
+    AC_TRY_LINK([ ], [
+      static __uint128_t v1 = 100;
+      static __uint128_t v2 = 10;
+      static __uint128_t u;
+      u = v1 / v2;
     ], [
       gst_cv_uint128_t=yes
     ], [
@@ -363,27 +373,27 @@ if test x$gst_cv_uint128_t = xyes; then
   AC_DEFINE(HAVE_UINT128_T, 1, [Have __uint128_t type])
 fi
 
-OPT_CFLAGS=
-dnl Check for some compiler flags that optimize our code.
-if test "x$GCC" = xyes; then
-  AS_COMPILER_FLAG(-fno-common, OPT_CFLAGS="$OPT_CFLAGS -fno-common")
-fi
+dnl *** checking for tm_gmtoff ***
+AC_MSG_CHECKING([for tm_gmtoff])
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+	#include <time.h>
+	int main(void) {
+	  struct tm t;
+	  t.tm_gmtoff = 0;
+	  exit(0);
+	}]])],
+  [have_tm_gmtoff=yes
+   AC_DEFINE(HAVE_TM_GMTOFF,1,[Have tm_gmtoff field in struct tm])],
+  [have_tm_gmtoff=no],
+  [have_tm_gmtoff="no (cross compiling)"])
+AC_MSG_RESULT($have_tm_gmtoff)
 
-dnl FIXME: decide what kind of flag this is, maybe it's not an optimization
-dnl flag
-dnl check if we should use -Wa,-mregnames on PowerPC, so we can use
-dnl symbolic register names in inline asm
-if test x$HAVE_CPU_PPC = xyes ; then
-  AS_COMPILER_FLAG(["-Wa,-mregnames"],
-    [OPT_CFLAGS="$OPT_CFLAGS -Wa,-mregnames"])
-fi
 
 dnl *** checks for library functions ***
 
+AC_CHECK_FUNCS([gmtime_r])
+AC_CHECK_FUNCS([localtime_r])
 AC_CHECK_FUNCS([sigaction])
-
-dnl we use fork in the registry code
-AC_CHECK_FUNCS([fork])
 
 dnl check for fseeko()
 AC_FUNC_FSEEKO
@@ -394,13 +404,51 @@ AC_CHECK_FUNCS([fgetpos])
 AC_CHECK_FUNCS([fsetpos])
 
 dnl check for poll(), ppoll() and pselect()
+AC_CHECK_HEADERS([sys/poll.h], [], [], [AC_INCLUDES_DEFAULT])
+AC_CHECK_HEADERS([poll.h], [], [], [AC_INCLUDES_DEFAULT])
 AC_CHECK_FUNCS([poll])
 AC_CHECK_FUNCS([ppoll])
 AC_CHECK_FUNCS([pselect])
 
+dnl ****************************************
+dnl *** GLib POLL* compatibility defines ***
+dnl ****************************************
+
+AC_MSG_CHECKING([for broken poll])
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+	#include <stdlib.h>
+	#include <fcntl.h>
+	#ifdef HAVE_SYS_POLL_H
+	#include <sys/poll.h>
+	#endif
+	#ifdef HAVE_POLL_H
+	#include <poll.h>
+	#endif
+	int main(void) {
+	  struct pollfd fds[1];
+	  int fd;
+	  fd = open("/dev/null", 1);
+	  fds[0].fd = fd;
+	  fds[0].events = POLLIN;
+	  fds[0].revents = 0;
+	  if (poll(fds, 1, 0) < 0 || (fds[0].revents & POLLNVAL) != 0) {
+		exit(1);  /* Does not work for devices -- fail */
+	  }
+	  exit(0);
+	}]])],
+  [broken_poll=no],
+  [broken_poll=yes
+   AC_DEFINE(BROKEN_POLL,1,[poll doesn't work on devices])],
+  [broken_poll="no (cross compiling)"])
+AC_MSG_RESULT($broken_poll)
+
 dnl check for mmap()
 AC_FUNC_MMAP
 AM_CONDITIONAL(HAVE_MMAP, test "x$ac_cv_func_mmap_fixed_mapped" = "xyes")
+
+dnl check for posix_memalign(), getpagesize()
+AC_CHECK_FUNCS([posix_memalign])
+AC_CHECK_FUNCS([getpagesize])
 
 dnl Check for POSIX timers
 AC_CHECK_FUNCS(clock_gettime, [], [
@@ -420,7 +468,6 @@ AC_CACHE_CHECK(for posix timers, gst_cv_posix_timers,
 #if !defined(_POSIX_TIMERS) || _POSIX_TIMERS < 0 || !defined(CLOCK_REALTIME)
 #error Either _POSIX_TIMERS or CLOCK_REALTIME not defined
 #endif
-      return 0;
     ], [
       gst_cv_posix_timers=yes
     ], [
@@ -447,7 +494,6 @@ AC_CACHE_CHECK(for monotonic clock, gst_cv_monotonic_clock,
 #if !defined(_POSIX_MONOTONIC_CLOCK) || _POSIX_MONOTONIC_CLOCK < 0 || !defined(CLOCK_MONOTONIC)
 #error Either _POSIX_MONOTONIC_CLOCK or CLOCK_MONOTONIC not defined
 #endif
-      return 0;
     ], [
       gst_cv_monotonic_clock=yes
     ], [
@@ -494,49 +540,15 @@ AC_CHECK_LIB(dl, dladdr,
    LIBS="$LIBS -ldl")
 CFLAGS="$save_cflags"
 
-dnl *** checks for socket and nsl libraries ***
-AC_CHECK_FUNC(socket,,[AC_CHECK_LIB(socket,socket)])
-AC_CHECK_FUNC(gethostbyname,,[AC_CHECK_LIB(nsl,gethostbyname)])
-
-dnl check for inet_aton()
-save_libs="$LIBS"
-AC_CHECK_FUNC(inet_aton, ,
-   AC_CHECK_LIB(nsl, inet_aton, ,
-      AC_CHECK_LIB(socket, inet_aton, ,
-         AC_CHECK_LIB(resolv, inet_aton, ,[AC_DEFINE(NO_INET_ATON, 1, [Define if you have no native inet_aton() function.])]))))
-INET_ATON_LIBS=$LIBS
-AC_SUBST(INET_ATON_LIBS)
-LIBS="$save_libs"
-
 dnl *** checks for dependency libraries ***
 
 dnl GLib
-GLIB_REQ=2.16
-
+GLIB_REQ=2.32.0
 AG_GST_GLIB_CHECK([$GLIB_REQ])
-
-dnl FIXME: 0.11: Guess we need to keep this around until 0.11
-GST_HAVE_GLIB_2_8_DEFINE="#define GST_HAVE_GLIB_2_8 1"
-AC_SUBST(GST_HAVE_GLIB_2_8_DEFINE)
-
-dnl Check for glib2 without extra fat, useful for the unversioned tool frontends
-PKG_CHECK_MODULES(GLIB_ONLY, glib-2.0 >= $GLIB_REQ)
 
 dnl Check for documentation xrefs
 GLIB_PREFIX="`$PKG_CONFIG --variable=prefix glib-2.0`"
 AC_SUBST(GLIB_PREFIX)
-
-dnl libxml2 is only needed for xml loading/saving of pipelines these days
-if test "x$GST_DISABLE_LOADSAVE" = "xyes"
-then
-  AC_MSG_NOTICE([XML registry and load/save are disabled, not checking for libxml2])
-  GST_DISABLE_XML_DEFINE="#define GST_DISABLE_XML 1"
-else
-  dnl check for libxml2 with minimum req version
-  AG_GST_LIBXML2_CHECK(2.4.9)
-  GST_DISABLE_XML_DEFINE="/* #undef GST_DISABLE_XML */"
-fi
-AC_SUBST(GST_DISABLE_XML_DEFINE)
 
 dnl building of unit test libraries
 AC_ARG_ENABLE(check,
@@ -558,6 +570,40 @@ dnl bit of a misnomer, but keep the conditional named like this so we don't
 dnl have to change too much elsewhere
 AM_CONDITIONAL(HAVE_CHECK, test "x$BUILD_CHECK" = "xyes")
 
+dnl configure the desired memory alignment
+AC_ARG_WITH([memory-alignment],
+  AS_HELP_STRING([--with-memory-alignment],[8,N,malloc,pagesize (default is 32)]),
+  [
+    if test "x$withval" = "xyes"
+    then
+      AC_DEFINE(MEMORY_ALIGNMENT, 32, [Memory alignment to use])
+    else
+      case "${withval}" in
+        malloc) AC_DEFINE(MEMORY_ALIGNMENT_MALLOC, 1, [Memory alignment by malloc default]) ;;
+        pagesize)  AC_DEFINE(MEMORY_ALIGNMENT_PAGESIZE, 1, [Memory alignment by pagesize]) ;;
+        *)   AC_DEFINE_UNQUOTED(MEMORY_ALIGNMENT, ${withval}, [Memory alignment to use]) ;;
+      esac
+    fi
+  ], [
+    AC_DEFINE(MEMORY_ALIGNMENT_MALLOC, 1, [Memory alignment by malloc default]) 
+  ]
+)
+
+dnl Check for -Bsymbolic-functions linker flag used to avoid
+dnl intra-library PLT jumps, if available.
+AC_ARG_ENABLE(Bsymbolic,
+              [AC_HELP_STRING([--disable-Bsymbolic],
+                              [avoid linking with -Bsymbolic])],,
+              [SAVED_LDFLAGS="${LDFLAGS}"
+               AC_MSG_CHECKING([for -Bsymbolic-functions linker flag])
+               LDFLAGS=-Wl,-Bsymbolic-functions
+               AC_TRY_LINK([], [int main (void) { return 0; }],
+                           AC_MSG_RESULT(yes)
+                           enable_Bsymbolic=yes,
+                           AC_MSG_RESULT(no)
+                           enable_Bsymbolic=no)
+               LDFLAGS="${SAVED_LDFLAGS}"])
+
 
 dnl *** set variables based on configure arguments
 
@@ -575,12 +621,17 @@ AC_DEFINE_UNQUOTED(GST_DATADIR, "$DATADIR", [data dir])
 dnl set location of plugin directory
 AG_GST_SET_PLUGINDIR
 
-dnl FIXME: add LIBXML_PKG here if we use it
 GST_PKG_DEPS="glib-2.0, gobject-2.0, gmodule-no-export-2.0, gthread-2.0"
 AC_SUBST(GST_PKG_DEPS)
 
+dnl make sure it doesn't complain about unused variables if debugging is disabled
+NO_WARNINGS=""
+if test "x${GST_DISABLE_GST_DEBUG}" = "xyes"; then
+  NO_WARNINGS="-Wno-unused"
+fi
+
 dnl define an ERROR_CFLAGS Makefile variable
-AG_GST_SET_ERROR_CFLAGS($GST_GIT)
+AG_GST_SET_ERROR_CFLAGS($FATAL_WARNINGS, [-Wmissing-declarations -Wmissing-prototypes -Wredundant-decls -Wundef -Wwrite-strings -Wformat-nonliteral -Wformat-security -Wold-style-definition -Winit-self -Wmissing-include-dirs -Waddress -Waggregate-return -Wno-multichar -Wnested-externs $NO_WARNINGS])
 
 dnl define correct level for debugging messages
 AG_GST_SET_LEVEL_DEFAULT($GST_GIT)
@@ -615,18 +666,22 @@ AC_SUBST(DEPRECATED_CFLAGS)
 
 dnl every flag in GST_OPTION_CFLAGS can be overridden at make time via e.g.
 dnl make DEPRECATED_CFLAGS=''
-GST_OPTION_CFLAGS="\$(ERROR_CFLAGS) \$(DEBUG_CFLAGS) \$(PROFILE_CFLAGS) \$(GCOV_CFLAGS) \$(OPT_CFLAGS) \$(DEPRECATED_CFLAGS)"
+GST_OPTION_CFLAGS="\$(WARNING_CFLAGS) \$(DEBUG_CFLAGS) \$(PROFILE_CFLAGS) \$(GCOV_CFLAGS) \$(OPT_CFLAGS) \$(DEPRECATED_CFLAGS)"
+GST_OPTION_CXXFLAGS="\$(WARNING_CXXFLAGS) \$(ERROR_CXXFLAGS) \$(DEBUG_CFLAGS) \$(PROFILE_CFLAGS) \$(GCOV_CFLAGS) \$(OPT_CFLAGS) \$(DEPRECATED_CFLAGS)"
+GST_OPTION_CFLAGS="$GST_OPTION_CFLAGS"
+GST_OPTION_CXXFLAGS="$GST_OPTION_CXXFLAGS"
 AC_SUBST(GST_OPTION_CFLAGS)
+AC_SUBST(GST_OPTION_CXXFLAGS)
 
 dnl GST_ALL_*
 dnl vars common to for all internal objects (core libs, elements, applications)
 dnl CFLAGS:
-dnl - XML needs to be added because xmlPtr is used in core
 dnl - src and build dirs need to be added because every piece that gets built
 dnl   will need the GStreamer source and generated headers
 dnl LIBS: XML doesn't need to be added because we don't explicitly use symbols
 dnl       from LibXML except for in the core library
-GST_ALL_CFLAGS="-I\$(top_srcdir)/libs -I\$(top_srcdir) -I\$(top_builddir)/libs -I\$(top_builddir) $GLIB_CFLAGS $XML_CFLAGS \$(GST_OPTION_CFLAGS)"
+GST_ALL_CXXFLAGS="-I\$(top_srcdir)/libs -I\$(top_srcdir) -I\$(top_builddir)/libs -I\$(top_builddir) $GLIB_CFLAGS \$(GLIB_EXTRA_CFLAGS) $XML_CFLAGS \$(GST_OPTION_CXXFLAGS) \$(ERROR_CXXFLAGS)"
+GST_ALL_CFLAGS="-I\$(top_srcdir)/libs -I\$(top_srcdir) -I\$(top_builddir)/libs -I\$(top_builddir) $GLIB_CFLAGS \$(GLIB_EXTRA_CFLAGS) $XML_CFLAGS \$(GST_OPTION_CFLAGS) \$(ERROR_CFLAGS)"
 
 dnl FIXME: check if LTLIBINTL is needed everywhere
 dnl I presume it is given that it contains the symbols that _() stuff maps to
@@ -635,41 +690,48 @@ GST_ALL_LIBS="$GLIB_LIBS $LTLIBINTL \$(GCOV_LIBS)"
 dnl LDFLAGS really should only contain flags, not libs - they get added before
 dnl whatevertarget_LIBS and -L flags here affect the rest of the linking
 GST_ALL_LDFLAGS="-no-undefined"
+if test "x${enable_Bsymbolic}" = "xyes"; then
+  GST_ALL_LDFLAGS="$GST_ALL_LDFLAGS -Wl,-Bsymbolic-functions"
+fi
 
 AC_SUBST(GST_ALL_CFLAGS)
+AC_SUBST(GST_ALL_CXXFLAGS)
 AC_SUBST(GST_ALL_LIBS)
 AC_SUBST(GST_ALL_LDFLAGS)
 
 dnl GST_LIB_LDFLAGS
 dnl linker flags shared by all libraries
 dnl LDFLAGS modifier defining exported symbols from built libraries
-GST_LIB_LDFLAGS="-export-symbols-regex \^[_]*\(gst_\|Gst\|GST_\).*"
+GST_LIB_LDFLAGS="-export-symbols-regex \^[_]?\(gst_\|Gst\|GST_\).*"
 AC_SUBST(GST_LIB_LDFLAGS)
 
 dnl GST_OBJ_*
 dnl default vars for all internal objects built on libgstreamer
 dnl includes GST_ALL_*
 GST_OBJ_CFLAGS="\$(GST_ALL_CFLAGS)"
-GST_OBJ_LIBS="\$(top_builddir)/gst/libgstreamer-$GST_MAJORMINOR.la \$(GST_ALL_LIBS)"
+GST_OBJ_CXXFLAGS="\$(GST_ALL_CXXFLAGS)"
+GST_OBJ_LIBS="\$(top_builddir)/gst/libgstreamer-$GST_API_VERSION.la \$(GST_ALL_LIBS)"
 AC_SUBST(GST_OBJ_CFLAGS)
+AC_SUBST(GST_OBJ_CXXFLAGS)
 AC_SUBST(GST_OBJ_LIBS)
 
 dnl GST_PLUGIN_LDFLAGS
 dnl LDFLAGS for plugins; includes GST_ALL_LDFLAGS
-GST_PLUGIN_LDFLAGS="-module -avoid-version -export-symbols-regex '^[_]*gst_plugin_desc\$\$' $GST_ALL_LDFLAGS"
+GST_PLUGIN_LDFLAGS="-module -avoid-version -export-symbols-regex '^[_]*gst_plugin_desc.*' $GST_ALL_LDFLAGS"
 AC_SUBST(GST_PLUGIN_LDFLAGS, "$GST_PLUGIN_LDFLAGS")
 
-SHAVE_INIT([common],[enable])
+dnl plugin scanner locations
+AS_AC_EXPAND(GST_PLUGIN_SCANNER_INSTALLED,${libexecdir}/gstreamer-$GST_API_VERSION/gst-plugin-scanner)
+AC_DEFINE_UNQUOTED(GST_PLUGIN_SCANNER_INSTALLED,
+    "$GST_PLUGIN_SCANNER_INSTALLED", [location of the installed gst-plugin-scanner])
+AC_SUBST(GST_PLUGIN_SCANNER_INSTALLED)
 
-dnl things for our internal libcheck
-if test "x$BUILD_CHECK" = "xyes"; then
-  AG_GST_CHECK_CHECKS()
-fi
+dnl things for our internal libcheck (must be called even if building
+dnl libcheck is disabled because it defines conditionals)
+AG_GST_CHECK_CHECKS()
 
 AC_CONFIG_FILES(
 Makefile
-common/shave
-common/shave-libtool
 gst/Makefile
 gst/gstconfig.h
 gst/gstversion.h
@@ -681,10 +743,9 @@ libs/gst/check/Makefile
 libs/gst/check/libcheck/Makefile
 libs/gst/check/libcheck/check.h
 libs/gst/controller/Makefile
-libs/gst/dataprotocol/Makefile
+libs/gst/helpers/Makefile
 libs/gst/net/Makefile
 plugins/Makefile
-plugins/indexers/Makefile
 plugins/elements/Makefile
 po/Makefile.in
 tests/Makefile
@@ -698,11 +759,11 @@ tests/examples/stepping/Makefile
 tests/examples/helloworld/Makefile
 tests/examples/launch/Makefile
 tests/examples/manual/Makefile
+tests/examples/memory/Makefile
 tests/examples/metadata/Makefile
 tests/examples/queue/Makefile
 tests/examples/streams/Makefile
 tests/examples/typefind/Makefile
-tests/examples/xml/Makefile
 tools/Makefile
 common/Makefile
 common/m4/Makefile
@@ -718,6 +779,7 @@ docs/pwg/Makefile
 docs/slides/Makefile
 docs/xsl/Makefile
 docs/version.entities
+m4/Makefile
 pkgconfig/Makefile
 stamp.h
 pkgconfig/gstreamer.pc
@@ -728,11 +790,8 @@ pkgconfig/gstreamer-check.pc
 pkgconfig/gstreamer-check-uninstalled.pc
 pkgconfig/gstreamer-controller.pc
 pkgconfig/gstreamer-controller-uninstalled.pc
-pkgconfig/gstreamer-dataprotocol.pc
-pkgconfig/gstreamer-dataprotocol-uninstalled.pc
 pkgconfig/gstreamer-net.pc
 pkgconfig/gstreamer-net-uninstalled.pc
-gst-element-check.m4
 gstreamer.spec
 )
 
@@ -744,13 +803,13 @@ sed \
     -e 's/.* GST_DATADIR$/#define GST_DATADIR PREFIX "\\\\share"/' \
     -e 's/.* GST_LEVEL_DEFAULT$/#define GST_LEVEL_DEFAULT GST_LEVEL_ERROR/' \
     -e 's/.* GST_LICENSE$/#define GST_LICENSE "'$GST_LICENSE'"/' \
-    -e 's/.* GST_MAJORMINOR$/#define GST_MAJORMINOR "'$GST_MAJORMINOR'"/' \
+    -e 's/.* GST_API_VERSION$/#define GST_API_VERSION "'$GST_API_VERSION'"/' \
     -e "s,.* GST_PACKAGE_NAME$,#define GST_PACKAGE_NAME \"${GST_PACKAGE_NAME}\"," \
     -e 's/.* GST_PACKAGE_ORIGIN$/#define GST_PACKAGE_ORIGIN "Unknown package origin"/' \
+    -e "s,.* GST_PACKAGE_RELEASE_DATETIME$,#define GST_PACKAGE_RELEASE_DATETIME \"${GST_PACKAGE_RELEASE_DATETIME}\"," \
     -e 's/.* HAVE_CPU_I386$/#define HAVE_CPU_I386 1/' \
     -e 's/.* HAVE_FGETPOS$/#define HAVE_FGETPOS 1/' \
     -e 's/.* HAVE_FSETPOS$/#define HAVE_FSETPOS 1/' \
-    -e 's/.* HAVE_LIBXML2$/#define HAVE_LIBXML2 1/' \
     -e 's/.* HAVE_PROCESS_H$/#define HAVE_PROCESS_H 1/' \
     -e 's/.* HAVE_STDLIB_H$/#define HAVE_STDLIB_H 1/' \
     -e 's/.* HAVE_STRING_H$/#define HAVE_STRING_H 1/' \
@@ -759,6 +818,7 @@ sed \
     -e 's/.* HAVE_WIN32$/#define HAVE_WIN32 1/' \
     -e 's/.* HAVE_WINSOCK2_H$/#define HAVE_WINSOCK2_H 1/' \
     -e 's/.* HOST_CPU$/#define HOST_CPU "i686"/' \
+    -e 's/.* MEMORY_ALIGNMENT_MALLOC/#define MEMORY_ALIGNMENT_MALLOC 1/' \
     -e 's/.* LIBDIR$/#ifdef _DEBUG\n#  define LIBDIR PREFIX "\\\\debug\\\\lib"\n#else\n#  define LIBDIR PREFIX "\\\\lib"\n#endif/' \
     -e 's/.* LOCALEDIR$/#define LOCALEDIR PREFIX "\\\\share\\\\locale"/' \
     -e 's/.* PACKAGE$/#define PACKAGE "gstreamer"/' \
@@ -767,7 +827,8 @@ sed \
     -e "s/.* PACKAGE_STRING$/#define PACKAGE_STRING \"$PACKAGE_STRING\"/" \
     -e 's/.* PACKAGE_TARNAME$/#define PACKAGE_TARNAME "'$PACKAGE_TARNAME'"/' \
     -e 's/.* PACKAGE_VERSION$/#define PACKAGE_VERSION "'$PACKAGE_VERSION'"/' \
-    -e 's/.* PLUGINDIR$/#ifdef _DEBUG\n#  define PLUGINDIR PREFIX "\\\\debug\\\\lib\\\\gstreamer-0.10"\n#else\n#  define PLUGINDIR PREFIX "\\\\lib\\\\gstreamer-0.10"\n#endif/' \
+    -e 's/.* PLUGINDIR$/#ifdef _DEBUG\n#  define PLUGINDIR PREFIX "\\\\debug\\\\lib\\\\gstreamer-1.0"\n#else\n#  define PLUGINDIR PREFIX "\\\\lib\\\\gstreamer-1.0"\n#endif/' \
+    -e 's/.* GST_PLUGIN_SCANNER_INSTALLED$/#define GST_PLUGIN_SCANNER_INSTALLED LIBDIR "\\\\gst-plugin-scanner"/' \
     -e 's/.* VERSION$/#define VERSION "'$VERSION'"/' \
     config.h.in >win32/common/config.h-new
 
@@ -775,14 +836,12 @@ AC_OUTPUT
 
 dnl negate for output
 if test "x${GST_DISABLE_GST_DEBUG}" = "xno"; then enable_gst_debug="yes"; fi
-if test "x${GST_DISABLE_LOADSAVE}" = "xno"; then enable_loadsave="yes"; fi
 if test "x${GST_DISABLE_PARSE}" = "xno"; then enable_parse="yes"; fi
 if test "x${GST_DISABLE_OPTION_PARSING}" = "xno"; then enable_option_parsing="yes"; fi
 if test "x${GST_DISABLE_TRACE}" = "xno"; then enable_trace="yes"; fi
 if test "x${GST_DISABLE_ALLOC_TRACE}" = "xno"; then enable_alloc_trace="yes"; fi
 if test "x${GST_DISABLE_PLUGIN}" = "xno"; then enable_plugin="yes"; fi
 if test "x${GST_DISABLE_REGISTRY}" = "xno"; then enable_registry="yes"; fi
-if test "x${GST_DISABLE_NET}" = "xno"; then enable_net="yes"; fi
 
 echo "
 
@@ -790,7 +849,7 @@ Configuration
 	Version                    : ${VERSION}
 	Source code location       : ${srcdir}
 	Prefix                     : ${prefix}
-	Compiler                   : ${SHAVE_SAVED_CC}
+	Compiler                   : ${CC}
 	Package name               : ${GST_PACKAGE_NAME}
 	Package origin             : ${GST_PACKAGE_ORIGIN}
 
@@ -798,20 +857,20 @@ Configuration
 	Documentation (API)        : ${enable_gtk_doc}
 
 	Debug Logging              : ${enable_gst_debug}
-	Pipeline XML load/save     : ${enable_loadsave}
 	Command-line parser        : ${enable_parse}
 	Option parsing in gst_init : ${enable_option_parsing}
 	Tracing subsystem          : ${enable_trace}
 	Allocation tracing         : ${enable_alloc_trace}
 	Plugin registry            : ${enable_registry}
 	Plugin support	           : ${enable_plugin}
-	Network support            : ${enable_net}
 	Unit testing support       : ${BUILD_CHECK}
 
 	Debug                      : ${USE_DEBUG}
 	Profiling                  : ${USE_PROFILING}
 
+	Building benchmarks        : ${BUILD_BENCHMARKS}
 	Building examples          : ${BUILD_EXAMPLES}
 	Building test apps         : ${BUILD_TESTS}
 	Building tests that fail   : ${BUILD_FAILING_TESTS}
+	Building tools             : ${BUILD_TOOLS}
 "

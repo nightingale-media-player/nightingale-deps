@@ -23,7 +23,7 @@
 /**
  * SECTION:element-identity
  *
- * Dummy element that passes incomming data through unmodified. It has some
+ * Dummy element that passes incoming data through unmodified. It has some
  * useful diagnostic functions, such as offset and timestamp checking.
  */
 
@@ -32,10 +32,10 @@
 #endif
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "../../gst/gst-i18n-lib.h"
 #include "gstidentity.h"
-#include <gst/gstmarshal.h>
 
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
@@ -63,11 +63,10 @@ enum
 #define DEFAULT_ERROR_AFTER             -1
 #define DEFAULT_DROP_PROBABILITY        0.0
 #define DEFAULT_DATARATE                0
-#define DEFAULT_SILENT                  FALSE
+#define DEFAULT_SILENT                  TRUE
 #define DEFAULT_SINGLE_SEGMENT          FALSE
 #define DEFAULT_DUMP                    FALSE
 #define DEFAULT_SYNC                    FALSE
-#define DEFAULT_CHECK_PERFECT           FALSE
 #define DEFAULT_CHECK_IMPERFECT_TIMESTAMP FALSE
 #define DEFAULT_CHECK_IMPERFECT_OFFSET    FALSE
 #define DEFAULT_SIGNAL_HANDOFFS           TRUE
@@ -84,18 +83,17 @@ enum
   PROP_LAST_MESSAGE,
   PROP_DUMP,
   PROP_SYNC,
-  PROP_CHECK_PERFECT,
   PROP_CHECK_IMPERFECT_TIMESTAMP,
   PROP_CHECK_IMPERFECT_OFFSET,
   PROP_SIGNAL_HANDOFFS
 };
 
 
-#define _do_init(bla) \
+#define _do_init \
     GST_DEBUG_CATEGORY_INIT (gst_identity_debug, "identity", 0, "identity element");
-
-GST_BOILERPLATE_FULL (GstIdentity, gst_identity, GstBaseTransform,
-    GST_TYPE_BASE_TRANSFORM, _do_init);
+#define gst_identity_parent_class parent_class
+G_DEFINE_TYPE_WITH_CODE (GstIdentity, gst_identity, GST_TYPE_BASE_TRANSFORM,
+    _do_init);
 
 static void gst_identity_finalize (GObject * object);
 static void gst_identity_set_property (GObject * object, guint prop_id,
@@ -103,31 +101,18 @@ static void gst_identity_set_property (GObject * object, guint prop_id,
 static void gst_identity_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
-static gboolean gst_identity_event (GstBaseTransform * trans, GstEvent * event);
+static gboolean gst_identity_sink_event (GstBaseTransform * trans,
+    GstEvent * event);
 static GstFlowReturn gst_identity_transform_ip (GstBaseTransform * trans,
     GstBuffer * buf);
-static GstFlowReturn gst_identity_prepare_output_buffer (GstBaseTransform
-    * trans, GstBuffer * in_buf, gint out_size, GstCaps * out_caps,
-    GstBuffer ** out_buf);
 static gboolean gst_identity_start (GstBaseTransform * trans);
 static gboolean gst_identity_stop (GstBaseTransform * trans);
+static GstStateChangeReturn gst_identity_change_state (GstElement * element,
+    GstStateChange transition);
 
 static guint gst_identity_signals[LAST_SIGNAL] = { 0 };
 
-static void
-gst_identity_base_init (gpointer g_class)
-{
-  GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_set_details_simple (gstelement_class,
-      "Identity",
-      "Generic",
-      "Pass data without modification", "Erik Walthinsen <omega@cse.ogi.edu>");
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&srctemplate));
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&sinktemplate));
-}
+static GParamSpec *pspec_last_message = NULL;
 
 static void
 gst_identity_finalize (GObject * object)
@@ -137,50 +122,23 @@ gst_identity_finalize (GObject * object)
   identity = GST_IDENTITY (object);
 
   g_free (identity->last_message);
-  g_static_rec_mutex_free (&identity->notify_lock);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
-}
-
-/* fixme: do something about this */
-static void
-marshal_VOID__MINIOBJECT (GClosure * closure, GValue * return_value,
-    guint n_param_values, const GValue * param_values, gpointer invocation_hint,
-    gpointer marshal_data)
-{
-  typedef void (*marshalfunc_VOID__MINIOBJECT) (gpointer obj, gpointer arg1,
-      gpointer data2);
-  register marshalfunc_VOID__MINIOBJECT callback;
-  register GCClosure *cc = (GCClosure *) closure;
-  register gpointer data1, data2;
-
-  g_return_if_fail (n_param_values == 2);
-
-  if (G_CCLOSURE_SWAP_DATA (closure)) {
-    data1 = closure->data;
-    data2 = g_value_peek_pointer (param_values + 0);
-  } else {
-    data1 = g_value_peek_pointer (param_values + 0);
-    data2 = closure->data;
-  }
-  callback =
-      (marshalfunc_VOID__MINIOBJECT) (marshal_data ? marshal_data :
-      cc->callback);
-
-  callback (data1, gst_value_get_mini_object (param_values + 1), data2);
 }
 
 static void
 gst_identity_class_init (GstIdentityClass * klass)
 {
   GObjectClass *gobject_class;
+  GstElementClass *gstelement_class;
   GstBaseTransformClass *gstbasetrans_class;
 
   gobject_class = G_OBJECT_CLASS (klass);
+  gstelement_class = GST_ELEMENT_CLASS (klass);
   gstbasetrans_class = GST_BASE_TRANSFORM_CLASS (klass);
 
-  gobject_class->set_property = GST_DEBUG_FUNCPTR (gst_identity_set_property);
-  gobject_class->get_property = GST_DEBUG_FUNCPTR (gst_identity_get_property);
+  gobject_class->set_property = gst_identity_set_property;
+  gobject_class->get_property = gst_identity_get_property;
 
   g_object_class_install_property (gobject_class, PROP_SLEEP_TIME,
       g_param_spec_uint ("sleep-time", "Sleep time",
@@ -205,11 +163,12 @@ gst_identity_class_init (GstIdentityClass * klass)
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_SINGLE_SEGMENT,
       g_param_spec_boolean ("single-segment", "Single Segment",
-          "Timestamp buffers and eat newsegments so as to appear as one segment",
+          "Timestamp buffers and eat segments so as to appear as one segment",
           DEFAULT_SINGLE_SEGMENT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  pspec_last_message = g_param_spec_string ("last-message", "last-message",
+      "last-message", NULL, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (gobject_class, PROP_LAST_MESSAGE,
-      g_param_spec_string ("last-message", "last-message", "last-message", NULL,
-          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+      pspec_last_message);
   g_object_class_install_property (gobject_class, PROP_DUMP,
       g_param_spec_boolean ("dump", "Dump", "Dump buffer contents to stdout",
           DEFAULT_DUMP, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
@@ -217,12 +176,6 @@ gst_identity_class_init (GstIdentityClass * klass)
       g_param_spec_boolean ("sync", "Synchronize",
           "Synchronize to pipeline clock", DEFAULT_SYNC,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-  g_object_class_install_property (gobject_class, PROP_CHECK_PERFECT,
-      g_param_spec_boolean ("check-perfect", "Check For Perfect Stream",
-          "Verify that the stream is time- and data-contiguous. "
-          "This only logs in the debug log.  This will be deprecated in favor "
-          "of the check-imperfect-timestamp/offset properties.",
-          DEFAULT_CHECK_PERFECT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class,
       PROP_CHECK_IMPERFECT_TIMESTAMP,
       g_param_spec_boolean ("check-imperfect-timestamp",
@@ -242,8 +195,6 @@ gst_identity_class_init (GstIdentityClass * klass)
    *
    * If set to #TRUE, the identity will emit a handoff signal when handling a buffer.
    * When set to #FALSE, no signal will be emited, which might improve performance.
-   *
-   * Since: 0.10.16
    */
   g_object_class_install_property (gobject_class, PROP_SIGNAL_HANDOFFS,
       g_param_spec_boolean ("signal-handoffs",
@@ -261,21 +212,32 @@ gst_identity_class_init (GstIdentityClass * klass)
   gst_identity_signals[SIGNAL_HANDOFF] =
       g_signal_new ("handoff", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
       G_STRUCT_OFFSET (GstIdentityClass, handoff), NULL, NULL,
-      marshal_VOID__MINIOBJECT, G_TYPE_NONE, 1, GST_TYPE_BUFFER);
+      g_cclosure_marshal_generic, G_TYPE_NONE, 1,
+      GST_TYPE_BUFFER | G_SIGNAL_TYPE_STATIC_SCOPE);
 
-  gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_identity_finalize);
+  gobject_class->finalize = gst_identity_finalize;
 
-  gstbasetrans_class->event = GST_DEBUG_FUNCPTR (gst_identity_event);
+  gst_element_class_set_static_metadata (gstelement_class,
+      "Identity",
+      "Generic",
+      "Pass data without modification", "Erik Walthinsen <omega@cse.ogi.edu>");
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&srctemplate));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sinktemplate));
+
+  gstelement_class->change_state =
+      GST_DEBUG_FUNCPTR (gst_identity_change_state);
+
+  gstbasetrans_class->sink_event = GST_DEBUG_FUNCPTR (gst_identity_sink_event);
   gstbasetrans_class->transform_ip =
       GST_DEBUG_FUNCPTR (gst_identity_transform_ip);
-  gstbasetrans_class->prepare_output_buffer =
-      GST_DEBUG_FUNCPTR (gst_identity_prepare_output_buffer);
   gstbasetrans_class->start = GST_DEBUG_FUNCPTR (gst_identity_start);
   gstbasetrans_class->stop = GST_DEBUG_FUNCPTR (gst_identity_stop);
 }
 
 static void
-gst_identity_init (GstIdentity * identity, GstIdentityClass * g_class)
+gst_identity_init (GstIdentity * identity)
 {
   identity->sleep_time = DEFAULT_SLEEP_TIME;
   identity->error_after = DEFAULT_ERROR_AFTER;
@@ -284,31 +246,23 @@ gst_identity_init (GstIdentity * identity, GstIdentityClass * g_class)
   identity->silent = DEFAULT_SILENT;
   identity->single_segment = DEFAULT_SINGLE_SEGMENT;
   identity->sync = DEFAULT_SYNC;
-  identity->check_perfect = DEFAULT_CHECK_PERFECT;
   identity->check_imperfect_timestamp = DEFAULT_CHECK_IMPERFECT_TIMESTAMP;
   identity->check_imperfect_offset = DEFAULT_CHECK_IMPERFECT_OFFSET;
   identity->dump = DEFAULT_DUMP;
   identity->last_message = NULL;
   identity->signal_handoffs = DEFAULT_SIGNAL_HANDOFFS;
-  g_static_rec_mutex_init (&identity->notify_lock);
+
+  gst_base_transform_set_gap_aware (GST_BASE_TRANSFORM_CAST (identity), TRUE);
 }
 
 static void
 gst_identity_notify_last_message (GstIdentity * identity)
 {
-  /* FIXME: this hacks around a bug in GLib/GObject: doing concurrent
-   * g_object_notify() on the same object might lead to crashes, see
-   * http://bugzilla.gnome.org/show_bug.cgi?id=166020#c60 and follow-ups.
-   * So we really don't want to do a g_object_notify() here for out-of-band
-   * events with the streaming thread possibly also doing a g_object_notify()
-   * for an in-band buffer or event. */
-  g_static_rec_mutex_lock (&identity->notify_lock);
-  g_object_notify ((GObject *) identity, "last_message");
-  g_static_rec_mutex_unlock (&identity->notify_lock);
+  g_object_notify_by_pspec ((GObject *) identity, pspec_last_message);
 }
 
 static gboolean
-gst_identity_event (GstBaseTransform * trans, GstEvent * event)
+gst_identity_sink_event (GstBaseTransform * trans, GstEvent * event)
 {
   GstIdentity *identity;
   gboolean ret = TRUE;
@@ -317,125 +271,89 @@ gst_identity_event (GstBaseTransform * trans, GstEvent * event)
 
   if (!identity->silent) {
     const GstStructure *s;
+    const gchar *tstr;
     gchar *sstr;
 
     GST_OBJECT_LOCK (identity);
     g_free (identity->last_message);
 
+    tstr = gst_event_type_get_name (GST_EVENT_TYPE (event));
     if ((s = gst_event_get_structure (event)))
       sstr = gst_structure_to_string (s);
     else
       sstr = g_strdup ("");
 
     identity->last_message =
-        g_strdup_printf ("event   ******* (%s:%s) E (type: %d, %s) %p",
-        GST_DEBUG_PAD_NAME (trans->sinkpad), GST_EVENT_TYPE (event), sstr,
-        event);
+        g_strdup_printf ("event   ******* (%s:%s) E (type: %s (%d), %s) %p",
+        GST_DEBUG_PAD_NAME (trans->sinkpad), tstr, GST_EVENT_TYPE (event),
+        sstr, event);
     g_free (sstr);
     GST_OBJECT_UNLOCK (identity);
 
     gst_identity_notify_last_message (identity);
   }
 
-  if (identity->single_segment
-      && (GST_EVENT_TYPE (event) == GST_EVENT_NEWSEGMENT)) {
-    if (trans->have_newsegment == FALSE) {
+  if (identity->single_segment && (GST_EVENT_TYPE (event) == GST_EVENT_SEGMENT)) {
+    if (trans->have_segment == FALSE) {
       GstEvent *news;
-      GstFormat format;
+      GstSegment segment;
 
-      gst_event_parse_new_segment (event, NULL, NULL, &format, NULL, NULL,
-          NULL);
+      gst_event_copy_segment (event, &segment);
+      gst_event_copy_segment (event, &trans->segment);
+      trans->have_segment = TRUE;
 
-      /* This is the first newsegment, send out a (0, -1) newsegment */
-      news = gst_event_new_new_segment (TRUE, 1.0, format, 0, -1, 0);
+      /* This is the first segment, send out a (0, -1) segment */
+      gst_segment_init (&segment, segment.format);
+      news = gst_event_new_segment (&segment);
 
-      gst_pad_event_default (trans->sinkpad, news);
+      gst_pad_event_default (trans->sinkpad, GST_OBJECT_CAST (trans), news);
+    } else {
+      /* need to track segment for proper running time */
+      gst_event_copy_segment (event, &trans->segment);
     }
   }
 
-  /* Reset previous timestamp, duration and offsets on NEWSEGMENT
+  /* also transform GAP timestamp similar to buffer timestamps */
+  if (identity->single_segment && (GST_EVENT_TYPE (event) == GST_EVENT_GAP) &&
+      trans->have_segment && trans->segment.format == GST_FORMAT_TIME) {
+    GstClockTime start, dur;
+
+    gst_event_parse_gap (event, &start, &dur);
+    if (GST_CLOCK_TIME_IS_VALID (start)) {
+      start = gst_segment_to_running_time (&trans->segment,
+          GST_FORMAT_TIME, start);
+      gst_event_unref (event);
+      event = gst_event_new_gap (start, dur);
+    }
+  }
+
+  /* Reset previous timestamp, duration and offsets on SEGMENT
    * to prevent false warnings when checking for perfect streams */
-  if (GST_EVENT_TYPE (event) == GST_EVENT_NEWSEGMENT) {
+  if (GST_EVENT_TYPE (event) == GST_EVENT_SEGMENT) {
     identity->prev_timestamp = identity->prev_duration = GST_CLOCK_TIME_NONE;
     identity->prev_offset = identity->prev_offset_end = GST_BUFFER_OFFSET_NONE;
   }
 
-  ret = parent_class->event (trans, event);
-
-  if (identity->single_segment
-      && (GST_EVENT_TYPE (event) == GST_EVENT_NEWSEGMENT)) {
+  if (identity->single_segment && GST_EVENT_TYPE (event) == GST_EVENT_SEGMENT) {
     /* eat up segments */
-    ret = FALSE;
+    gst_event_unref (event);
+    ret = TRUE;
+  } else {
+    if (GST_EVENT_TYPE (event) == GST_EVENT_FLUSH_START) {
+      GST_OBJECT_LOCK (identity);
+      if (identity->clock_id) {
+        GST_DEBUG_OBJECT (identity, "unlock clock wait");
+        gst_clock_id_unschedule (identity->clock_id);
+        gst_clock_id_unref (identity->clock_id);
+        identity->clock_id = NULL;
+      }
+      GST_OBJECT_UNLOCK (identity);
+    }
+
+    ret = GST_BASE_TRANSFORM_CLASS (parent_class)->sink_event (trans, event);
   }
 
   return ret;
-}
-
-static GstFlowReturn
-gst_identity_prepare_output_buffer (GstBaseTransform * trans,
-    GstBuffer * in_buf, gint out_size, GstCaps * out_caps, GstBuffer ** out_buf)
-{
-  GstIdentity *identity = GST_IDENTITY (trans);
-
-  /* only bother if we may have to alter metadata */
-  if (identity->datarate > 0 || identity->single_segment) {
-    if (gst_buffer_is_metadata_writable (in_buf))
-      *out_buf = gst_buffer_ref (in_buf);
-    else {
-      /* make even less writable */
-      gst_buffer_ref (in_buf);
-      /* extra ref is dropped going through the official process */
-      *out_buf = gst_buffer_make_metadata_writable (in_buf);
-    }
-  } else
-    *out_buf = gst_buffer_ref (in_buf);
-
-  return GST_FLOW_OK;
-}
-
-static void
-gst_identity_check_perfect (GstIdentity * identity, GstBuffer * buf)
-{
-  GstClockTime timestamp;
-
-  timestamp = GST_BUFFER_TIMESTAMP (buf);
-
-  /* see if we need to do perfect stream checking */
-  /* invalid timestamp drops us out of check.  FIXME: maybe warn ? */
-  if (timestamp != GST_CLOCK_TIME_NONE) {
-    /* check if we had a previous buffer to compare to */
-    if (identity->prev_timestamp != GST_CLOCK_TIME_NONE &&
-        identity->prev_duration != GST_CLOCK_TIME_NONE) {
-      guint64 offset, t_expected;
-      gint64 dt;
-
-      t_expected = identity->prev_timestamp + identity->prev_duration;
-      dt = timestamp - t_expected;
-      if (dt != 0) {
-        GST_WARNING_OBJECT (identity,
-            "Buffer not time-contiguous with previous one: " "prev ts %"
-            GST_TIME_FORMAT ", prev dur %" GST_TIME_FORMAT ", new ts %"
-            GST_TIME_FORMAT " (expected ts %" GST_TIME_FORMAT ", delta=%c%"
-            GST_TIME_FORMAT ")", GST_TIME_ARGS (identity->prev_timestamp),
-            GST_TIME_ARGS (identity->prev_duration), GST_TIME_ARGS (timestamp),
-            GST_TIME_ARGS (t_expected), (dt < 0) ? '-' : '+',
-            GST_TIME_ARGS ((dt < 0) ? (GstClockTime) (-dt) : dt));
-      }
-
-      offset = GST_BUFFER_OFFSET (buf);
-      if (identity->prev_offset_end != offset &&
-          identity->prev_offset_end != GST_BUFFER_OFFSET_NONE &&
-          offset != GST_BUFFER_OFFSET_NONE) {
-        GST_WARNING_OBJECT (identity,
-            "Buffer not data-contiguous with previous one: "
-            "prev offset_end %" G_GINT64_FORMAT ", new offset %"
-            G_GINT64_FORMAT, identity->prev_offset_end, offset);
-      }
-    } else {
-      GST_DEBUG_OBJECT (identity, "can't check time-contiguity, no timestamp "
-          "and/or duration were set on previous buffer");
-    }
-  }
 }
 
 static void
@@ -533,15 +451,71 @@ gst_identity_check_imperfect_offset (GstIdentity * identity, GstBuffer * buf)
   }
 }
 
+static const gchar *
+print_pretty_time (gchar * ts_str, gsize ts_str_len, GstClockTime ts)
+{
+  if (ts == GST_CLOCK_TIME_NONE)
+    return "none";
+
+  g_snprintf (ts_str, ts_str_len, "%" GST_TIME_FORMAT, GST_TIME_ARGS (ts));
+  return ts_str;
+}
+
+static void
+gst_identity_update_last_message_for_buffer (GstIdentity * identity,
+    const gchar * action, GstBuffer * buf, gsize size)
+{
+  gchar dts_str[64], pts_str[64], dur_str[64];
+  gchar flag_str[100];
+
+  GST_OBJECT_LOCK (identity);
+
+  {
+    const char *flag_list[15] = {
+      "", "", "", "", "live", "decode-only", "discont", "resync", "corrupted",
+      "marker", "header", "gap", "droppable", "delta-unit", "in-caps"
+    };
+    int i;
+    char *end = flag_str;
+    end[0] = '\0';
+    for (i = 0; i < G_N_ELEMENTS (flag_list); i++) {
+      if (GST_MINI_OBJECT_CAST (buf)->flags & (1 << i)) {
+        strcpy (end, flag_list[i]);
+        end += strlen (end);
+        end[0] = ' ';
+        end[1] = '\0';
+        end++;
+      }
+    }
+  }
+
+  g_free (identity->last_message);
+  identity->last_message = g_strdup_printf ("%s   ******* (%s:%s) "
+      "(%" G_GSIZE_FORMAT " bytes, dts: %s, pts:%s, duration: %s, offset: %"
+      G_GINT64_FORMAT ", " "offset_end: % " G_GINT64_FORMAT
+      ", flags: %08x %s) %p", action,
+      GST_DEBUG_PAD_NAME (GST_BASE_TRANSFORM_CAST (identity)->sinkpad), size,
+      print_pretty_time (dts_str, sizeof (dts_str), GST_BUFFER_DTS (buf)),
+      print_pretty_time (pts_str, sizeof (pts_str), GST_BUFFER_PTS (buf)),
+      print_pretty_time (dur_str, sizeof (dur_str), GST_BUFFER_DURATION (buf)),
+      GST_BUFFER_OFFSET (buf), GST_BUFFER_OFFSET_END (buf),
+      GST_BUFFER_FLAGS (buf), flag_str, buf);
+
+  GST_OBJECT_UNLOCK (identity);
+
+  gst_identity_notify_last_message (identity);
+}
+
 static GstFlowReturn
 gst_identity_transform_ip (GstBaseTransform * trans, GstBuffer * buf)
 {
   GstFlowReturn ret = GST_FLOW_OK;
   GstIdentity *identity = GST_IDENTITY (trans);
   GstClockTime runtimestamp = G_GINT64_CONSTANT (0);
+  gsize size;
 
-  if (identity->check_perfect)
-    gst_identity_check_perfect (identity, buf);
+  size = gst_buffer_get_size (buf);
+
   if (identity->check_imperfect_timestamp)
     gst_identity_check_imperfect_timestamp (identity, buf);
   if (identity->check_imperfect_offset)
@@ -555,67 +529,37 @@ gst_identity_transform_ip (GstBaseTransform * trans, GstBuffer * buf)
 
   if (identity->error_after >= 0) {
     identity->error_after--;
-    if (identity->error_after == 0) {
-      GST_ELEMENT_ERROR (identity, CORE, FAILED,
-          (_("Failed after iterations as requested.")), (NULL));
-      return GST_FLOW_ERROR;
-    }
+    if (identity->error_after == 0)
+      goto error_after;
   }
 
   if (identity->drop_probability > 0.0) {
-    if ((gfloat) (1.0 * rand () / (RAND_MAX)) < identity->drop_probability) {
-      if (!identity->silent) {
-        GST_OBJECT_LOCK (identity);
-        g_free (identity->last_message);
-        identity->last_message =
-            g_strdup_printf
-            ("dropping   ******* (%s:%s)i (%d bytes, timestamp: %"
-            GST_TIME_FORMAT ", duration: %" GST_TIME_FORMAT ", offset: %"
-            G_GINT64_FORMAT ", offset_end: % " G_GINT64_FORMAT
-            ", flags: %d) %p", GST_DEBUG_PAD_NAME (trans->sinkpad),
-            GST_BUFFER_SIZE (buf), GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)),
-            GST_TIME_ARGS (GST_BUFFER_DURATION (buf)), GST_BUFFER_OFFSET (buf),
-            GST_BUFFER_OFFSET_END (buf), GST_BUFFER_FLAGS (buf), buf);
-        GST_OBJECT_UNLOCK (identity);
-        gst_identity_notify_last_message (identity);
-      }
-      /* return DROPPED to basetransform. */
-      return GST_BASE_TRANSFORM_FLOW_DROPPED;
-    }
+    if ((gfloat) (1.0 * rand () / (RAND_MAX)) < identity->drop_probability)
+      goto dropped;
   }
 
   if (identity->dump) {
-    gst_util_dump_mem (GST_BUFFER_DATA (buf), GST_BUFFER_SIZE (buf));
+    GstMapInfo info;
+
+    gst_buffer_map (buf, &info, GST_MAP_READ);
+    gst_util_dump_mem (info.data, info.size);
+    gst_buffer_unmap (buf, &info);
   }
 
   if (!identity->silent) {
-    GST_OBJECT_LOCK (identity);
-    g_free (identity->last_message);
-    identity->last_message =
-        g_strdup_printf ("chain   ******* (%s:%s)i (%d bytes, timestamp: %"
-        GST_TIME_FORMAT ", duration: %" GST_TIME_FORMAT ", offset: %"
-        G_GINT64_FORMAT ", offset_end: % " G_GINT64_FORMAT ", flags: %d) %p",
-        GST_DEBUG_PAD_NAME (trans->sinkpad), GST_BUFFER_SIZE (buf),
-        GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)),
-        GST_TIME_ARGS (GST_BUFFER_DURATION (buf)),
-        GST_BUFFER_OFFSET (buf), GST_BUFFER_OFFSET_END (buf),
-        GST_BUFFER_FLAGS (buf), buf);
-    GST_OBJECT_UNLOCK (identity);
-    gst_identity_notify_last_message (identity);
+    gst_identity_update_last_message_for_buffer (identity, "chain", buf, size);
   }
 
   if (identity->datarate > 0) {
     GstClockTime time = gst_util_uint64_scale_int (identity->offset,
         GST_SECOND, identity->datarate);
 
-    GST_BUFFER_TIMESTAMP (buf) = time;
-    GST_BUFFER_DURATION (buf) =
-        GST_BUFFER_SIZE (buf) * GST_SECOND / identity->datarate;
+    GST_BUFFER_PTS (buf) = GST_BUFFER_DTS (buf) = time;
+    GST_BUFFER_DURATION (buf) = size * GST_SECOND / identity->datarate;
   }
 
   if (identity->signal_handoffs)
-    g_signal_emit (G_OBJECT (identity), gst_identity_signals[SIGNAL_HANDOFF], 0,
-        buf);
+    g_signal_emit (identity, gst_identity_signals[SIGNAL_HANDOFF], 0, buf);
 
   if (trans->segment.format == GST_FORMAT_TIME)
     runtimestamp = gst_segment_to_running_time (&trans->segment,
@@ -632,7 +576,6 @@ gst_identity_transform_ip (GstBaseTransform * trans, GstBuffer * buf)
       timestamp = runtimestamp + GST_ELEMENT (identity)->base_time;
 
       /* save id if we need to unlock */
-      /* FIXME: actually unlock this somewhere in the state changes */
       identity->clock_id = gst_clock_new_single_shot_id (clock, timestamp);
       GST_OBJECT_UNLOCK (identity);
 
@@ -644,24 +587,41 @@ gst_identity_transform_ip (GstBaseTransform * trans, GstBuffer * buf)
         identity->clock_id = NULL;
       }
       if (cret == GST_CLOCK_UNSCHEDULED)
-        ret = GST_FLOW_UNEXPECTED;
+        ret = GST_FLOW_EOS;
     }
     GST_OBJECT_UNLOCK (identity);
   }
 
-  identity->offset += GST_BUFFER_SIZE (buf);
+  identity->offset += size;
 
   if (identity->sleep_time && ret == GST_FLOW_OK)
     g_usleep (identity->sleep_time);
 
   if (identity->single_segment && (trans->segment.format == GST_FORMAT_TIME)
       && (ret == GST_FLOW_OK)) {
-    GST_BUFFER_TIMESTAMP (buf) = runtimestamp;
+    GST_BUFFER_PTS (buf) = GST_BUFFER_DTS (buf) = runtimestamp;
     GST_BUFFER_OFFSET (buf) = GST_CLOCK_TIME_NONE;
     GST_BUFFER_OFFSET_END (buf) = GST_CLOCK_TIME_NONE;
   }
 
   return ret;
+
+  /* ERRORS */
+error_after:
+  {
+    GST_ELEMENT_ERROR (identity, CORE, FAILED,
+        (_("Failed after iterations as requested.")), (NULL));
+    return GST_FLOW_ERROR;
+  }
+dropped:
+  {
+    if (!identity->silent) {
+      gst_identity_update_last_message_for_buffer (identity, "dropping", buf,
+          size);
+    }
+    /* return DROPPED to basetransform. */
+    return GST_BASE_TRANSFORM_FLOW_DROPPED;
+  }
 }
 
 static void
@@ -697,9 +657,6 @@ gst_identity_set_property (GObject * object, guint prop_id,
     case PROP_SYNC:
       identity->sync = g_value_get_boolean (value);
       break;
-    case PROP_CHECK_PERFECT:
-      identity->check_perfect = g_value_get_boolean (value);
-      break;
     case PROP_CHECK_IMPERFECT_TIMESTAMP:
       identity->check_imperfect_timestamp = g_value_get_boolean (value);
       break;
@@ -713,6 +670,10 @@ gst_identity_set_property (GObject * object, guint prop_id,
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
+  if (identity->datarate > 0 || identity->single_segment)
+    gst_base_transform_set_passthrough (GST_BASE_TRANSFORM (identity), FALSE);
+  else
+    gst_base_transform_set_passthrough (GST_BASE_TRANSFORM (identity), TRUE);
 }
 
 static void
@@ -752,9 +713,6 @@ gst_identity_get_property (GObject * object, guint prop_id, GValue * value,
       break;
     case PROP_SYNC:
       g_value_set_boolean (value, identity->sync);
-      break;
-    case PROP_CHECK_PERFECT:
-      g_value_set_boolean (value, identity->check_perfect);
       break;
     case PROP_CHECK_IMPERFECT_TIMESTAMP:
       g_value_set_boolean (value, identity->check_imperfect_timestamp);
@@ -800,4 +758,47 @@ gst_identity_stop (GstBaseTransform * trans)
   GST_OBJECT_UNLOCK (identity);
 
   return TRUE;
+}
+
+static GstStateChangeReturn
+gst_identity_change_state (GstElement * element, GstStateChange transition)
+{
+  GstStateChangeReturn ret;
+  GstIdentity *identity = GST_IDENTITY (element);
+
+  switch (transition) {
+    case GST_STATE_CHANGE_NULL_TO_READY:
+      break;
+    case GST_STATE_CHANGE_READY_TO_PAUSED:
+      break;
+    case GST_STATE_CHANGE_PAUSED_TO_PLAYING:
+      break;
+    case GST_STATE_CHANGE_PAUSED_TO_READY:
+      GST_OBJECT_LOCK (identity);
+      if (identity->clock_id) {
+        GST_DEBUG_OBJECT (identity, "unlock clock wait");
+        gst_clock_id_unschedule (identity->clock_id);
+        gst_clock_id_unref (identity->clock_id);
+        identity->clock_id = NULL;
+      }
+      GST_OBJECT_UNLOCK (identity);
+      break;
+    default:
+      break;
+  }
+
+  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
+
+  switch (transition) {
+    case GST_STATE_CHANGE_PLAYING_TO_PAUSED:
+      break;
+    case GST_STATE_CHANGE_PAUSED_TO_READY:
+      break;
+    case GST_STATE_CHANGE_READY_TO_NULL:
+      break;
+    default:
+      break;
+  }
+
+  return ret;
 }

@@ -1,24 +1,25 @@
-# translation of gstreamer-0.10.22.2.nl.po to Dutch
+# translation of gstreamer-1.0.3.po to Dutch
 # Dutch translation of gstreamer
-# Copyright (C) 2003-2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+# Copyright (C) 2003-2006, 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gstreamer package.
 #
 # Thomas Vander Stichele <thomas@apestaart.org>, 2004.
 # Taco Witte <tcwitte@cs.uu.nl>, 2006.
-# Freek de Kruijf <f.de.kruijf@hetnet.nl>, 2007, 2008, 2009.
+# Freek de Kruijf <f.de.kruijf@gmail.com>, 2007, 2008, 2009, 2010, 2011, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer 0.10.22.2\n"
+"Project-Id-Version: gstreamer 1.0.3\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-10-05 12:38+0100\n"
-"PO-Revision-Date: 2009-05-04 13:12+0200\n"
-"Last-Translator: Freek de Kruijf <f.de.kruijf@hetnet.nl>\n"
+"POT-Creation-Date: 2012-12-18 00:21+0000\n"
+"PO-Revision-Date: 2012-11-29 22:42+0100\n"
+"Last-Translator: Freek de Kruijf <f.de.kruijf@gmail.com>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.5\n"
 
 msgid "Print the GStreamer version"
 msgstr "Toon de GStreamer versie"
@@ -81,8 +82,10 @@ msgstr ""
 msgid "Disable updating the registry"
 msgstr "Zet het het bijwerken van de registry uit"
 
-msgid "Disable the use of fork() while scanning the registry"
-msgstr "Zet het gebruik van fork() uit tijdens het doorlopen van de registry"
+msgid "Disable spawning a helper process while scanning the registry"
+msgstr ""
+"Zet het starten van een hulpprogramma uit tijdens het doorlopen van de "
+"registry"
 
 msgid "GStreamer Options"
 msgstr "GStreamer-opties"
@@ -90,32 +93,8 @@ msgstr "GStreamer-opties"
 msgid "Show GStreamer Options"
 msgstr "Toon de GStreamer-opties"
 
-#, c-format
-msgid "Error writing registry cache to %s: %s"
-msgstr "Fout bij het schrijven van de cache van de registry naar %s: %s"
-
-#, c-format
-msgid "Error re-scanning registry %s: %s"
-msgstr "Fout bij het opnieuw doorlopen van de registry %s: %s"
-
-#, c-format
-msgid "Error re-scanning registry %s"
-msgstr "Fout bij het opnieuw doorlopen van de registry %s"
-
 msgid "Unknown option"
 msgstr "Onbekende optie"
-
-#, c-format
-msgid "ERROR: from element %s: %s\n"
-msgstr "FOUT: van element %s: %s\n"
-
-#, c-format
-msgid ""
-"Additional debug info:\n"
-"%s\n"
-msgstr ""
-"Extra debug-informatie:\n"
-"%s\n"
 
 msgid "GStreamer encountered a general core library error."
 msgstr "GStreamer kreeg een algemene fout van de kernbibliotheek."
@@ -133,6 +112,8 @@ msgid ""
 "GStreamer error: state change failed and some element failed to post a "
 "proper error message with the reason for the failure."
 msgstr ""
+"GStreamer-fout: statuswijziging is mislukt en een element heeft geen goede "
+"foutmelding afgegeven met een reden voor het mislukken."
 
 msgid "Internal GStreamer error: pad problem."
 msgstr "Interne GStreamer-fout: padprobleem."
@@ -140,8 +121,8 @@ msgstr "Interne GStreamer-fout: padprobleem."
 msgid "Internal GStreamer error: thread problem."
 msgstr "Interne GStreamer-fout: threadprobleem."
 
-msgid "Internal GStreamer error: negotiation problem."
-msgstr "Interne GStreamer-fout: onderhandelingsprobleem."
+msgid "GStreamer error: negotiation problem."
+msgstr "GStreamer-fout: onderhandelingsprobleem."
 
 msgid "Internal GStreamer error: event problem."
 msgstr "Interne GStreamer-fout: gebeurtenisprobleem."
@@ -158,8 +139,8 @@ msgstr "Interne GStreamer-fout: tagprobleem."
 msgid "Your GStreamer installation is missing a plug-in."
 msgstr "Er ontbreekt een plugin in uw GStreamer installatie."
 
-msgid "Internal GStreamer error: clock problem."
-msgstr "Interne GStreamer-fout: klokprobleem."
+msgid "GStreamer error: clock problem."
+msgstr "GStreamer-fout: klokprobleem."
 
 msgid ""
 "This application is trying to use GStreamer functionality that has been "
@@ -179,6 +160,9 @@ msgstr "Kan ondersteunende bibliotheek niet sluiten."
 
 msgid "Could not configure supporting library."
 msgstr "Kan ondersteunende bibliotheek niet configureren."
+
+msgid "Encoding error."
+msgstr "Coderingsfout."
 
 msgid "GStreamer encountered a general resource error."
 msgstr "GStreamer kwam een algemene fout tegen met systeembronnen."
@@ -306,25 +290,32 @@ msgstr "naam album voor sorteren"
 msgid "album containing this data for sorting purposes"
 msgstr "album waarop dit stuk staat voor sorteren"
 
-#, fuzzy
 msgid "album artist"
-msgstr "artiest"
+msgstr "albumartiest"
 
 msgid "The artist of the entire album, as it should be displayed"
-msgstr ""
+msgstr "De artiest van het gehele album, zoals dat zou moeten worden getoond"
 
-#, fuzzy
 msgid "album artist sortname"
 msgstr "naam artiest voor sorteren"
 
 msgid "The artist of the entire album, as it should be sorted"
 msgstr ""
+"De artiest van het gehele album, zoals dat zou moeten worden gebruikt voor "
+"sorteren"
 
 msgid "date"
 msgstr "datum"
 
 msgid "date the data was created (as a GDate structure)"
 msgstr "datum waarop het stuk gemaakt is (als GDate-structuur)"
+
+msgid "datetime"
+msgstr "datum-tijd"
+
+msgid "date and time the data was created (as a GstDateTime structure)"
+msgstr ""
+"datum en tijd waarop de gegevens zijn gemaakt (als een GstDateTime-structuur)"
 
 msgid "genre"
 msgstr "genre"
@@ -419,6 +410,12 @@ msgstr "auteursrecht-uri"
 msgid "URI to the copyright notice of the data"
 msgstr "URI naar de auteursrechtvermelding van de gegevens"
 
+msgid "encoded by"
+msgstr "gecodeerd door"
+
+msgid "name of the encoding person or organization"
+msgstr "naam van de coderende persoon of organisatie"
+
 msgid "contact"
 msgstr "contact"
 
@@ -479,13 +476,11 @@ msgstr "codec voor ondertiteling"
 msgid "codec the subtitle data is stored in"
 msgstr "codec waarin de ondertiteling is opgeslagen"
 
-#, fuzzy
 msgid "container format"
-msgstr "contactinformatie"
+msgstr "containerindeling"
 
-#, fuzzy
 msgid "container format the data is stored in"
-msgstr "codec waarin het stuk is opgeslagen"
+msgstr "containerindeling waarin de gegevens zijn opgeslagen"
 
 msgid "bitrate"
 msgstr "bitsnelheid"
@@ -562,8 +557,14 @@ msgstr "referentieniveau van de waarde van tarck- en albumgeluidsterkte"
 msgid "language code"
 msgstr "taalcode"
 
-msgid "language code for this stream, conforming to ISO-639-1"
-msgstr "taalcode van deze stroom, conform ISO-639-1"
+msgid "language code for this stream, conforming to ISO-639-1 or ISO-639-2"
+msgstr "taalcode van deze stream, conform ISO-639-1 of ISO-639-2"
+
+msgid "language name"
+msgstr "naam van taal"
+
+msgid "freeform name of the language this stream is in"
+msgstr "naam van de taal in vrije vorm van deze stream"
 
 msgid "image"
 msgstr "afbeelding"
@@ -571,6 +572,7 @@ msgstr "afbeelding"
 msgid "image related to this stream"
 msgstr "afbeelding behorende bij deze stroom"
 
+#. TRANSLATORS: 'preview image' = image that shows a preview of the full image
 msgid "preview image"
 msgstr "voorbeeldafbeelding"
 
@@ -598,7 +600,6 @@ msgstr "komma gescheiden trefwoorden die de inhoud omschrijven"
 msgid "geo location name"
 msgstr "naam geografische locatie"
 
-#, fuzzy
 msgid ""
 "human readable descriptive location of where the media has been recorded or "
 "produced"
@@ -640,8 +641,173 @@ msgstr ""
 "hoogte van de geografische locatie van waar het medium is opgenomen of "
 "geproduceerd in meters volgens WGS84 (nul op gemiddeld zeeniveau)"
 
+msgid "geo location country"
+msgstr "geografische locatie van het land"
+
+msgid "country (english name) where the media has been recorded or produced"
+msgstr "land (Engelse naam) waar het medium is opgenomen of geproduceerd"
+
+msgid "geo location city"
+msgstr "geografische locatie van de stad"
+
+msgid "city (english name) where the media has been recorded or produced"
+msgstr "stad (Engelse naam) waar het medium is opgenomen of geproduceerd"
+
+msgid "geo location sublocation"
+msgstr "geografische locatie van de sublocatie"
+
+msgid ""
+"a location within a city where the media has been produced or created (e.g. "
+"the neighborhood)"
+msgstr ""
+"een locatie in een stad waar het medium is geproduceerd of gemaakt (bijv. de "
+"buurt)"
+
+msgid "geo location horizontal error"
+msgstr "fout in horizontale geo-locatie"
+
+msgid "expected error of the horizontal positioning measures (in meters)"
+msgstr "verwachte fout van de horizontale positioneringsafmetingen (in meters)"
+
+msgid "geo location movement speed"
+msgstr "verplaatsingssnelheid op de geografische locatie"
+
+msgid ""
+"movement speed of the capturing device while performing the capture in m/s"
+msgstr "verplaatsingssnelheid van het opnameapparaat tijdens de opname in m/s"
+
+msgid "geo location movement direction"
+msgstr "bewegingsrichting op de geografische locatie"
+
+msgid ""
+"indicates the movement direction of the device performing the capture of a "
+"media. It is represented as degrees in floating point representation, 0 "
+"means the geographic north, and increases clockwise"
+msgstr ""
+"geeft de bewegingsrichting aan van het apparaat dat de opname op het medium "
+"doet. Het wordt weergegeven in graden in drijvendekommavorm, 0 betekent het "
+"geografische noorden en neem rechtsom toe"
+
+msgid "geo location capture direction"
+msgstr "opnamerichting op de geografische locatie"
+
+msgid ""
+"indicates the direction the device is pointing to when capturing  a media. "
+"It is represented as degrees in floating point  representation, 0 means the "
+"geographic north, and increases clockwise"
+msgstr ""
+"geeft de richting aan waarnaar het apparaat wijst dat de opname op het "
+"medium doet. Het wordt weergegeven in graden in drijvendekommavorm, 0 "
+"betekent het geografische noorden en neem rechtsom toe"
+
+#. TRANSLATORS: 'show name' = 'TV/radio/podcast show name' here
+msgid "show name"
+msgstr "naam tonen"
+
+msgid "Name of the tv/podcast/series show the media is from"
+msgstr "Mediumnaam van de show van de tv/podcast/serie"
+
+#. TRANSLATORS: 'show sortname' = 'TV/radio/podcast show name as used for sorting purposes' here
+msgid "show sortname"
+msgstr "naam voor sorteren"
+
+msgid ""
+"Name of the tv/podcast/series show the media is from, for sorting purposes"
+msgstr "Mediumnaam van de show van de tv/podcast/serie, voor sorteren"
+
+msgid "episode number"
+msgstr "episodenummer"
+
+msgid "The episode number in the season the media is part of"
+msgstr "Het episodenummer in het seizoen waar het medium deel van is"
+
+msgid "season number"
+msgstr "seizoennummer"
+
+msgid "The season number of the show the media is part of"
+msgstr "Het nummer van het seizoen van de show waar het medium deel van is"
+
+msgid "lyrics"
+msgstr "liedtekst"
+
+msgid "The lyrics of the media, commonly used for songs"
+msgstr "De liedtekst van het medium, gewoonlijk voor songs gebruikt"
+
+msgid "composer sortname"
+msgstr "componist voor sorteren"
+
+msgid "person(s) who composed the recording, for sorting purposes"
+msgstr ""
+"perso(o)n(en) die de opname gecomponeerd he(eft)bben, gebruikt voor sorteren"
+
+msgid "grouping"
+msgstr "groepering"
+
+msgid ""
+"Groups related media that spans multiple tracks, like the different pieces "
+"of a concerto. It is a higher level than a track, but lower than an album"
+msgstr ""
+"Groepen gerelateerde media die meerdere tracks omvatten, zoals de "
+"verschillende delen van een concert. Het is een hoger niveau dan een track, "
+"maat lager dan een album"
+
+msgid "user rating"
+msgstr "waardering van gebruiker"
+
+msgid ""
+"Rating attributed by a user. The higher the rank, the more the user likes "
+"this media"
+msgstr ""
+"Waardering toegekend door een gebruiker. Hoe hoger de waardering, hoe meer "
+"de gebruiker dit medium waardeert"
+
+msgid "device manufacturer"
+msgstr "apparaatfabrikant"
+
+msgid "Manufacturer of the device used to create this media"
+msgstr ""
+"Fabrikant van het apparaat dat gebruikt wordt om dit medium aan te maken"
+
+msgid "device model"
+msgstr "apparaatmodel"
+
+msgid "Model of the device used to create this media"
+msgstr "Model van het apparaat dat gebruikt wordt om dit medium aan te maken"
+
+msgid "application name"
+msgstr "toepassingsnaam"
+
+msgid "Application used to create the media"
+msgstr "Gebruikte toepassing om het medium aan te maken"
+
+msgid "application data"
+msgstr "toepassingsgegevens"
+
+msgid "Arbitrary application data to be serialized into the media"
+msgstr ""
+"Willekeurige toepassingsgegevens die geserialiseerd moeten worden op het "
+"medium"
+
+msgid "image orientation"
+msgstr "oriëntatie van de afbeelding"
+
+msgid "How the image should be rotated or flipped before display"
+msgstr "Hoe de afbeelding geroteerd moet worden of gespiegeld bij tonen"
+
 msgid ", "
 msgstr ", "
+
+#, c-format
+msgid "ERROR: from element %s: %s\n"
+msgstr "FOUT: van element %s: %s\n"
+
+#, c-format
+msgid ""
+"Additional debug info:\n"
+"%s\n"
+msgstr ""
+"Extra debug-informatie:\n"
+"%s\n"
 
 #, c-format
 msgid "specified empty bin \"%s\", not allowed"
@@ -703,7 +869,7 @@ msgid "Internal data flow error."
 msgstr "Interne fout met gegevensdoorvoer."
 
 msgid "A lot of buffers are being dropped."
-msgstr ""
+msgstr "Er worden veel buffers gedropt."
 
 msgid "Internal data flow problem."
 msgstr "Intern probleem met gegevensdoorvoer."
@@ -763,6 +929,16 @@ msgstr "Bestand \"%s\" is een socket."
 msgid "Failed after iterations as requested."
 msgstr "Mislukt na iteraties zoals gevraagd."
 
+msgid "No Temp directory specified."
+msgstr "Geen tijdelijke map opgegeven."
+
+#, c-format
+msgid "Could not create temp file \"%s\"."
+msgstr "Kon geen tijdelijk bestand \"%s\" aanmaken."
+
+msgid "Error while writing to download file."
+msgstr "Fout bij het schrijven om bestand te downloaden."
+
 msgid "caps"
 msgstr "mogelijkheden"
 
@@ -771,9 +947,6 @@ msgstr "gedetecteerde mogelijkheden in stroom"
 
 msgid "minimum"
 msgstr "minimum"
-
-msgid "maximum"
-msgstr "maximum"
 
 msgid "force caps"
 msgstr "forceer mogelijkheden"
@@ -796,14 +969,38 @@ msgstr "schrijfbaar"
 msgid "controllable"
 msgstr "controleerbaar"
 
+msgid "changeable in NULL, READY, PAUSED or PLAYING state"
+msgstr "te veranderen in NUL, GEREED-, GEPAUZEERD- of SPEEL-status"
+
+msgid "changeable only in NULL, READY or PAUSED state"
+msgstr "te veranderen in NUL, GEREED- of GEPAUZEERD-status"
+
+msgid "changeable only in NULL or READY state"
+msgstr "alleen te veranderen in NUL of GEREED-status"
+
+msgid "Blacklisted files:"
+msgstr "Bestanden op de zwarte lijst:"
+
 msgid "Total count: "
 msgstr "Totaal aantal: "
+
+#, c-format
+msgid "%d blacklisted file"
+msgid_plural "%d blacklisted files"
+msgstr[0] "%d bestand op de zwarte lijst"
+msgstr[1] "%d bestanden op de zwarte lijst"
 
 #, c-format
 msgid "%d plugin"
 msgid_plural "%d plugins"
 msgstr[0] "%d plugin"
 msgstr[1] "%d plugins"
+
+#, c-format
+msgid "%d blacklist entry"
+msgid_plural "%d blacklist entries"
+msgstr[0] "%d item op de zwarte lijst"
+msgstr[1] "%d items op de zwarte lijst"
 
 #, c-format
 msgid "%d feature"
@@ -814,18 +1011,32 @@ msgstr[1] "%d mogelijkheden"
 msgid "Print all elements"
 msgstr "Alle elementen weergeven"
 
+msgid "Print list of blacklisted files"
+msgstr "Druk de lijst met bestanden op de zwarte lijst af"
+
 msgid ""
-"Print a machine-parsable list of features the specified plugin provides.\n"
+"Print a machine-parsable list of features the specified plugin or all "
+"plugins provide.\n"
 "                                       Useful in connection with external "
 "automatic plugin installation mechanisms"
 msgstr ""
 "Toon een door een machine te ontleden lijst van mogelijkheden die de "
-"gespecificeerde plugin aanbiedt.\n"
+"gespecificeerde plugin of alle plugins aanbieden.\n"
 "                                       Bruikbaar in verband met externe "
 "automatische plugin-installatiemechanismen"
 
 msgid "List the plugin contents"
 msgstr "Toon de inhoud van de plugin"
+
+msgid "Check if the specified element or plugin exists"
+msgstr "Controleer of het gespecificeerde element of plug-in bestaat"
+
+msgid ""
+"When checking if an element or plugin exists, also check that its version is "
+"at least the version specified"
+msgstr ""
+"Bij het controleren of het gespecificeerde element of plug-in bestaat, "
+"controleer ook dat zijn versie minstens de gespecificeerde versie is"
 
 msgid "Print supported URI schemes, with the elements that implement them"
 msgstr ""
@@ -839,46 +1050,24 @@ msgstr "Kan plugin-bestand \"%s\" niet laden\n"
 msgid "No such element or plugin '%s'\n"
 msgstr "Geen element of plugin '%s'\n"
 
-msgid "Usage: gst-xmllaunch <file.xml> [ element.property=value ... ]\n"
-msgstr ""
-"Gebruik: gst-xmllaunch <bestand.xml> [ element.eigenschap=waarde ... ]\n"
+msgid "Index statistics"
+msgstr "Indexstatistieken"
 
 #, c-format
-msgid "ERROR: parse of xml file '%s' failed.\n"
-msgstr "FOUT: verwerken van xml-bestand '%s' mislukt.\n"
-
-#, c-format
-msgid "ERROR: no toplevel pipeline element in file '%s'.\n"
-msgstr "FOUT: geen bovenste pijplijn-element gevonden in file '%s'.\n"
-
-msgid "WARNING: only one toplevel element is supported at this time.\n"
-msgstr ""
-"WAARSCHUWING: slechts één element op het hoogste niveau ondersteund op dit "
-"moment.\n"
-
-#, c-format
-msgid "ERROR: could not parse command line argument %d: %s.\n"
-msgstr "FOUT: kon argument %d op opdrachtregel niet verwerken: %s.\n"
-
-#, c-format
-msgid "WARNING: element named '%s' not found.\n"
-msgstr "WAARSCHUWING: element met naam '%s' niet gevonden.\n"
-
-#, fuzzy, c-format
 msgid "Got message #%u from element \"%s\" (%s): "
-msgstr "Einde-stroom ontvangen van element \"%s\".\n"
+msgstr "Bericht #%u ontvangen uit element \"%s\" (%s): "
 
 #, c-format
 msgid "Got message #%u from pad \"%s:%s\" (%s): "
-msgstr ""
+msgstr "Bericht #%u ontvangen uit pad \"%s:%s\" (%s): "
 
 #, c-format
 msgid "Got message #%u from object \"%s\" (%s): "
-msgstr ""
+msgstr "Bericht #%u ontvangen uit object \"%s\" (%s): "
 
-#, fuzzy, c-format
+#, c-format
 msgid "Got message #%u (%s): "
-msgstr "Bericht #% ontvangen"
+msgstr "Bericht #%u (%s) ontvangen: "
 
 #, c-format
 msgid "Got EOS from element \"%s\".\n"
@@ -888,16 +1077,27 @@ msgstr "Einde-stroom ontvangen van element \"%s\".\n"
 msgid "FOUND TAG      : found by element \"%s\".\n"
 msgstr "TAG GEVONDEN   : gevonden door element \"%s\".\n"
 
-#, fuzzy, c-format
+#, c-format
 msgid "FOUND TAG      : found by pad \"%s:%s\".\n"
-msgstr "TAG GEVONDEN   : gevonden door element \"%s\".\n"
+msgstr "TAG GEVONDEN   : gevonden door pad \"%s:%s\".\n"
 
-#, fuzzy, c-format
+#, c-format
 msgid "FOUND TAG      : found by object \"%s\".\n"
-msgstr "TAG GEVONDEN   : gevonden door element \"%s\".\n"
+msgstr "TAG GEVONDEN   : gevonden door object \"%s\".\n"
 
 msgid "FOUND TAG\n"
-msgstr ""
+msgstr "TAG GEVONDEN\n"
+
+#, c-format
+msgid "FOUND TOC      : found by element \"%s\".\n"
+msgstr "INH GEVONDEN   : gevonden door element \"%s\".\n"
+
+#, c-format
+msgid "FOUND TOC      : found by object \"%s\".\n"
+msgstr "INH GEVONDEN   : gevonden door object \"%s\".\n"
+
+msgid "FOUND TOC\n"
+msgstr "INH GEVONDEN\n"
 
 #, c-format
 msgid ""
@@ -933,8 +1133,15 @@ msgstr "Stel de status in op %s zoals verzocht door %s...\n"
 msgid "Interrupt: Stopping pipeline ...\n"
 msgstr "Interrupt: Pijplijn ingesteld op gestopt ...\n"
 
+#, c-format
+msgid "Missing element: %s\n"
+msgstr "ontbrekend element: \"%s\"\n"
+
 msgid "Output tags (also known as metadata)"
 msgstr "Tags (ook bekend als metadata) weergeven"
+
+msgid "Output TOC (chapters and editions)"
+msgstr "INH uitvoeren (hoofdstukken en uitgaven)"
 
 msgid "Output status information and property notifications"
 msgstr "Statusinformatie en eigenschapswaarschuwingen weergeven"
@@ -951,20 +1158,14 @@ msgstr "Statusinformatie van soort SOORT niet weergeven"
 msgid "TYPE1,TYPE2,..."
 msgstr "SOORT1,SOORT2,..."
 
-msgid "Save xml representation of pipeline to FILE and exit"
-msgstr "XML-representatie van pijplijn in BESTAND opslaan en afsluiten"
-
-msgid "FILE"
-msgstr "BESTAND"
-
 msgid "Do not install a fault handler"
 msgstr "Geen foutafhandelaar installeren"
 
-msgid "Print alloc trace (if enabled at compile time)"
-msgstr "Toewijzingsspoor weergeven (indien aangezet tijdens compileren)"
-
 msgid "Force EOS on sources before shutting the pipeline down"
 msgstr "Forceer een EOS op de bron bij het afsluiten van de pijplijn"
+
+msgid "Gather and print index statistics"
+msgstr "Verzamel en print indexstatistieken"
 
 #, c-format
 msgid "ERROR: pipeline could not be constructed: %s.\n"
@@ -1007,11 +1208,17 @@ msgstr "FOUT: pijplijn wil niet afspelen.\n"
 msgid "EOS on shutdown enabled -- Forcing EOS on the pipeline\n"
 msgstr "EOS bij afsluiten ingeschakeld -- Forceer een EOS op de pijplijn\n"
 
+msgid "EOS on shutdown enabled -- waiting for EOS after Error\n"
+msgstr "EOS bij afsluiten ingeschakeld -- wacht op EOS na fout\n"
+
 msgid "Waiting for EOS...\n"
 msgstr "Wacht op EOS...\n"
 
 msgid "EOS received - stopping pipeline...\n"
 msgstr "EOS ontvangen - pijplijn wordt gestopt...\n"
+
+msgid "Interrupt while waiting for EOS - stopping pipeline...\n"
+msgstr "Interrupt bij wachten op EOS - pijplijn wordt gestopt...\n"
 
 msgid "An error happened while waiting for EOS\n"
 msgstr "Er trad een fout op bij het wachten op EOS\n"
@@ -1028,11 +1235,38 @@ msgstr "Pijplijn gezet op NULL ...\n"
 msgid "Freeing pipeline ...\n"
 msgstr "Pijplijn wordt vrijgemaakt ...\n"
 
-#~ msgid "Internal GStreamer error: state change failed."
-#~ msgstr "Interne GStreamer-fout: toestandsverandering mislukt."
+#~ msgid "maximum"
+#~ msgstr "maximum"
 
-#~ msgid "Error while writing to file descriptor \"%d\"."
-#~ msgstr "Fout bij het schrijven naar bestandsaanduiding \"%d\"."
+#~ msgid "Usage: gst-xmllaunch <file.xml> [ element.property=value ... ]\n"
+#~ msgstr ""
+#~ "Gebruik: gst-xmllaunch <bestand.xml> [ element.eigenschap=waarde ... ]\n"
 
-#~ msgid "File descriptor \"%d\" is not valid."
-#~ msgstr "Bestandsaanduiding \"%d\" is niet geldig."
+#~ msgid "ERROR: parse of xml file '%s' failed.\n"
+#~ msgstr "FOUT: verwerken van xml-bestand '%s' mislukt.\n"
+
+#~ msgid "ERROR: no toplevel pipeline element in file '%s'.\n"
+#~ msgstr "FOUT: geen bovenste pijplijn-element gevonden in file '%s'.\n"
+
+#~ msgid "WARNING: only one toplevel element is supported at this time.\n"
+#~ msgstr ""
+#~ "WAARSCHUWING: slechts één element op het hoogste niveau ondersteund op "
+#~ "dit moment.\n"
+
+#~ msgid "ERROR: could not parse command line argument %d: %s.\n"
+#~ msgstr "FOUT: kon argument %d op opdrachtregel niet verwerken: %s.\n"
+
+#~ msgid "WARNING: element named '%s' not found.\n"
+#~ msgstr "WAARSCHUWING: element met naam '%s' niet gevonden.\n"
+
+#~ msgid "Save xml representation of pipeline to FILE and exit"
+#~ msgstr "XML-representatie van pijplijn in BESTAND opslaan en afsluiten"
+
+#~ msgid "FILE"
+#~ msgstr "BESTAND"
+
+#~ msgid "Do not install signal handlers for SIGUSR1 and SIGUSR2"
+#~ msgstr "Geen signaalafhandelaars installeren voor SIGUSR1 en SIGUSR2"
+
+#~ msgid "Print alloc trace (if enabled at compile time)"
+#~ msgstr "Toewijzingsspoor weergeven (indien aangezet tijdens compileren)"

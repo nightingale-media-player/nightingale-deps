@@ -1,35 +1,40 @@
 
-Release notes for GStreamer 0.10.25 "Feel the burn"
-        
+Release notes for GStreamer 1.0.4
 
 
-The GStreamer team is proud to announce a new release
-in the 0.10.x stable series of the
+The GStreamer team is proud to announce a new bug-fix release
+in the 1.x stable series of the
 core of the GStreamer streaming media framework.
 
 
-The 0.10.x series is a stable series targeted at end users.
-It is not API or ABI compatible with the stable 0.8.x series.
-It is, however, parallel installable with the 0.8.x series.
+The 1.x series is a stable series targeted at end users.
+It is not API or ABI compatible with the stable 0.10.x series.
+It is, however, parallel installable with the 0.10.x series and
+will not affect an existing 0.10.x installation.
 
 
-The 0.10.x series has been reworked for threadsafety.  It also features
-various feature additions and enhancements.
+The 1.x series has been reworked for more flexible memory handling, improved
+caps negotiation and re-negotiation, better handling of dynamic pipelines,
+and increased performance in general. It also features countless other feature
+additions and enhancements.
 
 
 This module, gstreamer, only contains core functionality.
 For actual media playback, you will need other modules.
 
 gst-plugins-base
-contains a basic set of well-supported plug-ins
+contains a basic set of well-supported plugins
 gst-plugins-good
-contains a set of well-supported plug-ins under our preferred license
+contains a set of well-supported plugins under our preferred license
 gst-plugins-ugly
-contains a set of well-supported plug-ins, but might pose problems for
+contains a set of well-supported plugins, but might pose problems for
     distributors
 gst-plugins-bad
-contains a set of less supported plug-ins that haven't passed the
-    rigorous quality testing we expect
+contains a set of less supported plugins that haven't passed the
+    rigorous quality testing we expect, or are still missing documentation
+    and/or unit tests
+gst-libav
+contains a set of codecs plugins based on libav (formerly gst-ffmpeg)
 
 
 
@@ -37,107 +42,55 @@ contains a set of less supported plug-ins that haven't passed the
 
 Features of this release
     
-      * Improve the byte-reader API
-      * GObject introspection support
-      * Improve clock accuracy on win32
-      * Optimisations in capabilities checking
-      * Optimisations and fixes in the basetransform base class
-      * new 64-bit scaling utility function variants
-      * Various bug-fixes and improvements (see ChangeLog and bugs list below)
+      * basesrc: fix potential leaks when re-activating in a different mode
+      * bindings: make all pad probe types work with bindings
+      * bindings: fix gst_event_parse_stream_start() annotation, fixing crash
+      * documentation improvements
 
 Bugs fixed in this release
      
-      * 583999 : [basetransform] caps refcounting problem causing GST_IS_CAPS assertion failures
-      * 566881 : [GstIndex] support/caching in GstBin
-      * 588472 : [basetransform] problems in reverse-negotiating
-      * 589173 : macros cause spurious semicolon warnings
-      * 589314 : [basetransform] clears GAP flag in passthrough mode
-      * 589524 : gst_base_transform_acceptcaps() could provide more verbose debugging output
-      * 589849 : [segment] Clipping fails to handle start=stop < segment_start correctly
-      * 589991 : [queue] limited error handling might cause pipeline appearing to hang
-      * 590045 : Query position fails when pipeline is paused and format is not time
-      * 590430 : Add support for " album artist " tags
-      * 590841 : configure script check for libxml2 is incorrect
-      * 590919 : gst_util_uint64_scale_int() and friends don't round
-      * 591045 : [basesrc] Leaking GstTask instances
-      * 591318 : ghostpad : core dump : on_src_target_notify called with an invalid ghostpad
-      * 591441 : append mode for filesink
-      * 592209 : [GstPad] Deprecated markers missing in the header for internal links function related things
-      * 592314 : core/tests/examples/streams/ does not link to pthread
-      * 593460 : Broken win32-specific systemclock code
-      * 593719 : regression: segfault when using gstrtpbin and certain video codecs
-      * 594107 : [gstbin] : use of freed message : valgrind Invalid read
-      * 594225 : [API] [bytereader] add _unchecked() variants and inline most common functions
-      * 594990 : [introspection] pkg-config file madness and another bug
-      * 595130 : checks fail
-      * 595133 : gst/gstutils check fails
-      * 595209 : Fix out-of-tree build
-      * 368536 : bin_change_state makes children go through unnecessary state changes
+      * 687845 : filesrc: leaks file descriptor if activation in pull mode fails
+      * 688804 : Getting error trying to add a pad_probe
+      * 688934 : Gst.Event.parse_stream_start seems to not function correctly
 
-API changed in this release
-     
-- API additions:
-    
-* gst_caps_can_intersect()
-* gst_util_uint64_scale_int_round()
-* gst_util_uint64_scale_int_ceil()
-* gst_util_uint64_scale_round()
-* gst_util_uint64_scale_ceil()
-* gst_iterator_new_single()
-* gst_byte_reader_skip_unchecked()
-* gst_byte_reader_peek_*_unchecked()
-* gst_byte_reader_get_*_unchecked()
-* gst_byte_reader_{peek,get,dup}_data_unchecked()
-* gst_byte_reader_get_float*_unchecked()
+==== Download ====
 
-Download
+You can find source releases of gstreamer in the download
+directory: http://gstreamer.freedesktop.org/src/gstreamer/
 
-You can find source releases of gstreamer in the download directory:
-http://gstreamer.freedesktop.org/src/gstreamer/
+The git repository and details how to clone it can be found at
+http://cgit.freedesktop.org/gstreamer/gstreamer/
 
-GStreamer Homepage
+==== Homepage ====
 
-More details can be found on the project's website:
-http://gstreamer.freedesktop.org/
+The project's website is http://gstreamer.freedesktop.org/
 
-Support and Bugs
+==== Support and Bugs ====
 
 We use GNOME's bugzilla for bug reports and feature requests:
 http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer
 
-Developers
+Please submit patches via bugzilla as well.
 
-GStreamer is stored in Git, hosted at git.freedesktop.org, and can be cloned from there.
-Interested developers of the core library, plug-ins, and applications should
-subscribe to the gstreamer-devel list. If there is sufficient interest we
-will create more lists as necessary.
+For help and support, please subscribe to and send questions to the
+gstreamer-devel mailing list (see below for details).
+
+There is also a #gstreamer IRC channel on the Freenode IRC network.
+
+==== Developers ====
+
+GStreamer is stored in Git, hosted at git.freedesktop.org, and can be cloned
+from there (see link above).
+
+Interested developers of the core library, plugins, and applications should
+subscribe to the gstreamer-devel list.
 
         
-Applications
-
-Applications ported to GStreamer 0.10 include Totem, RhythmBox, Sound-Juicer,
-Gnome Media, Flumotion, Amarok, Jamboree, Pitivi, Istanbul, AnnoAmp, Elisa, and others.
-Let us know if you want to be added to this list.
-
-  
 Contributors to this release
     
-      * Antoine Tremblay
-      * Aurelien Grimaud
-      * Benjamin Otte
-      * David Schleef
-      * Edward Hervey
-      * Jan Schmidt
-      * John Millikin
-      * Jonas Holmberg
-      * Kipp Cannon
-      * Laurent Glayal
-      * Mark Nauwelaerts
-      * Sebastian Dröge
-      * Stefan Kost
-      * Stian Selnes
-      * Thijs Vermeir
+      * Alessandro Decina
+      * Luis de Bethencourt
+      * Olivier Crête
       * Tim-Philipp Müller
       * Wim Taymans
-      * Руслан Ижбулатов
  

@@ -11,17 +11,16 @@ live sources.
 
 We want to be able to implement the following features:
 
- - buffering up to a specifc amount of data, in memory, before starting playback
+ - buffering up to a specific amount of data, in memory, before starting playback
    so that network fluctuations are minimized.
  - download of the network file to a local disk with fast seeking in the
    downloaded data. This is similar to the quicktime/youtube players.
  - caching of semi-live streams to a local, on disk, ringbuffer with seeking in
    the cached area. This is similar to tivo-like timeshifting.
  - progress report about the buffering operations
- - easy (backward compatible) application notification of buffering
  - the possibility for the application to do more complex buffering
 
- Some use cases:
+Some use cases:
 
  * Stream buffering:
 
@@ -44,13 +43,14 @@ We want to be able to implement the following features:
      posted, which instructs the application to continue playback.
    - When during playback, the low watermark is hit, the queue will start posting
      BUFFERING messages again, making the application PAUSE the pipeline again
-     until the high watermark is hit again.
+     until the high watermark is hit again. This is called the rebuffering
+     stage.
    - during playback, the queue level will fluctuate between the high and the
      low watermark as a way to compensate for network irregularities.
 
   This buffering method is usable when the demuxer operates in push mode.
   Seeking in the stream requires the seek to happen in the network source.
-  It is mostly desirable when the total duration of the file is not know, such
+  It is mostly desirable when the total duration of the file is not known, such
   as in live streaming or when efficient seeking is not possible/required.
 
  * Incremental download
@@ -78,7 +78,7 @@ We want to be able to implement the following features:
 
   The application can use the BUFFERING query to get the estimated download time
   and match this time to the current/remaining playback time to control when
-  playback should start to have a non-interupted playback experience.
+  playback should start to have a non-interrupted playback experience.
 
 
  * Timeshifting
@@ -112,7 +112,7 @@ We want to be able to implement the following features:
 
 
 Messages
---------
+~~~~~~~~
 
 A GST_MESSAGE_BUFFERING must be posted on the bus when playback temporarily
 stops to buffer and when buffering finishes. When percentage field in the
@@ -137,27 +137,24 @@ are added to the buffering message:
 
   "avg-in-rate", G_TYPE_INT
       - gives the average input buffering speed in bytes/second. -1 is unknown.
-
         This is the average number of bytes per second that is received on the
 	buffering element input (sink) pads. It is a measurement of the network
 	speed in most cases.
 
   "avg-out-rate", G_TYPE_INT
       - gives the average consumption speed in bytes/second. -1 is unknown.
-
         This is the average number of bytes per second that is consumed by the
 	downstream element of the buffering element. 
 
   "buffering-left", G_TYPE_INT64
       - gives the estimated time that bufferring will take in milliseconds.
         -1 unknown.
-
-      This is measured based on the avg-in-rate and the filled level of the
-      queue. The application can use this hint to update the GUI about the
-      estimated remaining time that buffering will take.
+        This is measured based on the avg-in-rate and the filled level of the
+        queue. The application can use this hint to update the GUI about the
+        estimated remaining time that buffering will take.
 
 Application
------------
+~~~~~~~~~~~
 
 While data is buffered, the pipeline should remain in the PAUSED state. It is
 also possible that more data should be buffered while the pipeline is PLAYING,
@@ -180,7 +177,7 @@ time to resume playback to get uninterrupted playback.
 
 
 Buffering Query
----------------
+~~~~~~~~~~~~~~~
 
 In addition to the BUFFERING messages posted by the buffering elements we want
 to be able to query the same information from the application. We also want to
@@ -213,6 +210,17 @@ range in a specific format and the estimated time to complete:
     this information to estimate the amount of remaining time to download the
     complete file.
 
+  "buffering-ranges", G_TYPE_ARRAY of GstQueryBufferingRange
+    - contains optionally the downloaded areas in the format given above. One
+      of the ranges contains the same start/stop position as above.
+
+      typedef struct
+      {
+        gint64 start;
+        gint64 stop;
+      } GstQueryBufferingRange;
+
+
 For the "download" and "timeshift" buffering-modes, the start and stop positions
 specify the ranges where efficient seeking in the downloaded media is possible.
 Seeking outside of these ranges might be slow or not at all possible.
@@ -222,7 +230,7 @@ and newest item (expressed in "format") in the buffer.
 
 
 Defaults
---------
+~~~~~~~~
 
 Some defaults for common elements:
 
@@ -237,6 +245,7 @@ A GstBaseSrc with random access replies to the BUFFERING query with:
   "start" = 0
   "stop" = the total filesize
   "estimated-total" = 0
+  "buffering-ranges" = NULL
 
 A GstBaseSrc in push mode replies to the BUFFERING query with:
 
@@ -249,4 +258,63 @@ A GstBaseSrc in push mode replies to the BUFFERING query with:
   "start" = current position
   "stop" = current position
   "estimated-total" = -1
+  "buffering-ranges" = NULL
+
+
+Buffering strategies
+~~~~~~~~~~~~~~~~~~~~
+
+ Buffering strategies are specific implementations based on the buffering
+ message and query described above.
+
+ Most strategies have to balance buffering time versus maximal playback
+ experience.
+
+ * simple buffering
+
+   NON-live pipelines are kept in the paused state while buffering messages with
+   a percent < 100% are received.
+
+   This buffering strategy relies on the buffer size and low/high watermarks of
+   the element. It can work with a fixed size buffer in memory or on disk.
+
+   The size of the buffer is usually expressed in a fixed amount of time units
+   and the estimated bitrate of the upstream source is used to convert this time
+   to bytes.
+
+   All GStreamer applications must implement this strategy. Failure to do so
+   will result in starvation at the sink.
+
+ * no-rebuffer strategy
+
+   This strategy tries to buffer as much data as possible so that playback can
+   continue without any further rebuffering.
+
+   This strategy is initially similar to simple buffering, the difference is in
+   deciding on the condition to continue playback. When a 100% buffering message
+   has been received, the application will not yet start the playback but it will
+   start a periodic buffering query, which will return the estimated amount of
+   buffering time left. When the estimated time left is less than the remaining
+   playback time, playback can continue.
+
+   This strategy requires a unlimited buffer size in memory or on disk, such as
+   provided by elements that implement the incremental download buffering mode.
+
+   Usually, the application can choose to start playback even before the
+   remaining buffer time elapsed in order to more quickly start the playback at
+   the expense of a possible rebuffering phase.
+
+ * Incremental rebuffering
+
+   The application implements the simple buffering strategy but with each
+   rebuffering phase, it increases the size of the buffer. 
+
+   This strategy has quick, fixed time startup times but incrementally longer
+   rebuffering times if the network is slower than the media bitrate.
+
+   
+
+
+
+
 

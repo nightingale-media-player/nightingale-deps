@@ -48,7 +48,7 @@ setup_filesink (void)
 
   GST_DEBUG ("setup_filesink");
   filesink = gst_check_setup_element ("filesink");
-  mysrcpad = gst_check_setup_src_pad (filesink, &srctemplate, NULL);
+  mysrcpad = gst_check_setup_src_pad (filesink, &srctemplate);
   gst_pad_set_active (mysrcpad, TRUE);
   return filesink;
 }
@@ -65,19 +65,17 @@ cleanup_filesink (GstElement * filesink)
 /* this queries via the element vfunc, which is currently not implemented */
 #define CHECK_QUERY_POSITION(filesink,format,position)                  \
     G_STMT_START {                                                       \
-      GstFormat fmt = format;                                            \
       gint64 pos;                                                        \
-      fail_unless (gst_element_query_position (filesink, &fmt, &pos));   \
+      fail_unless (gst_element_query_position (filesink, format, &pos)); \
       fail_unless_equals_int (pos, position);                            \
     } G_STMT_END
 #else
 #define CHECK_QUERY_POSITION(filesink,format,position)                   \
     G_STMT_START {                                                       \
-      GstFormat fmt = format;                                            \
       GstPad *pad;                                                       \
       gint64 pos;                                                        \
       pad = gst_element_get_static_pad (filesink, "sink");               \
-      fail_unless (gst_pad_query_position (pad, &fmt, &pos));            \
+      fail_unless (gst_pad_query_position (pad, format, &pos));          \
       fail_unless_equals_int (pos, position);                            \
       gst_object_unref (pad);                                            \
     } G_STMT_END
@@ -87,9 +85,12 @@ cleanup_filesink (GstElement * filesink)
     G_STMT_START {                                                        \
       GstBuffer *buf = gst_buffer_new_and_alloc(num_bytes);               \
       GRand *rand = g_rand_new_with_seed (num_bytes);                     \
+      GstMapInfo info;                                                    \
       guint i;                                                            \
+      fail_unless (gst_buffer_map (buf, &info, GST_MAP_WRITE));           \
       for (i = 0; i < num_bytes; ++i)                                     \
-        GST_BUFFER_DATA(buf)[i] = (g_rand_int (rand) >> 24) & 0xff;       \
+        ((guint8 *)info.data)[i] = (g_rand_int (rand) >> 24) & 0xff;      \
+      gst_buffer_unmap (buf, &info);                                      \
       fail_unless_equals_int (gst_pad_push (mysrcpad, buf), GST_FLOW_OK); \
       g_rand_free (rand);                                                 \
     } G_STMT_END
@@ -102,6 +103,7 @@ GST_START_TEST (test_seeking)
   GstElement *filesink;
   gchar *tmp_fn;
   gint fd;
+  GstSegment segment;
 
   tmpdir = g_get_tmp_dir ();
   if (tmpdir == NULL)
@@ -141,8 +143,8 @@ GST_START_TEST (test_seeking)
   gst_query_unref (seeking_query);
 #endif
 
-  fail_unless (gst_pad_push_event (mysrcpad,
-          gst_event_new_new_segment (FALSE, 1.0, GST_FORMAT_BYTES, 0, -1, 0)));
+  gst_segment_init (&segment, GST_FORMAT_BYTES);
+  fail_unless (gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment)));
 
   CHECK_QUERY_POSITION (filesink, GST_FORMAT_BYTES, 0);
 
@@ -159,11 +161,10 @@ GST_START_TEST (test_seeking)
   PUSH_BYTES (8800);
   CHECK_QUERY_POSITION (filesink, GST_FORMAT_BYTES, 8900);
 
-  if (gst_pad_push_event (mysrcpad,
-          gst_event_new_new_segment (TRUE, 1.0, GST_FORMAT_BYTES, 8800, -1,
-              0))) {
+  segment.start = 8800;
+  if (gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment))) {
     GST_LOG ("seek ok");
-    /* make sure that that new position is reported immediately */
+    /* make sure that new position is reported immediately */
     CHECK_QUERY_POSITION (filesink, GST_FORMAT_BYTES, 8800);
     PUSH_BYTES (1);
     CHECK_QUERY_POSITION (filesink, GST_FORMAT_BYTES, 8801);
@@ -264,30 +265,42 @@ GST_START_TEST (test_uri_interface)
   fail_unless_equals_string (location, "/i/do/not/exist");
   g_free (location);
 
-  location = (gchar *) gst_uri_handler_get_uri (GST_URI_HANDLER (filesink));
-  fail_unless_equals_string (location, "file://%2Fi%2Fdo%2Fnot%2Fexist");
+  location = gst_uri_handler_get_uri (GST_URI_HANDLER (filesink));
+  fail_unless_equals_string (location, "file:///i/do/not/exist");
+  g_free (location);
 
   /* should accept file:///foo/bar URIs */
   fail_unless (gst_uri_handler_set_uri (GST_URI_HANDLER (filesink),
-          "file:///foo/bar"));
-  location = (gchar *) gst_uri_handler_get_uri (GST_URI_HANDLER (filesink));
-  fail_unless_equals_string (location, "file://%2Ffoo%2Fbar");
+          "file:///foo/bar", NULL));
+  location = gst_uri_handler_get_uri (GST_URI_HANDLER (filesink));
+  fail_unless_equals_string (location, "file:///foo/bar");
+  g_free (location);
   g_object_get (G_OBJECT (filesink), "location", &location, NULL);
   fail_unless_equals_string (location, "/foo/bar");
   g_free (location);
 
   /* should accept file://localhost/foo/bar URIs */
   fail_unless (gst_uri_handler_set_uri (GST_URI_HANDLER (filesink),
-          "file://localhost/foo/baz"));
-  location = (gchar *) gst_uri_handler_get_uri (GST_URI_HANDLER (filesink));
-  fail_unless_equals_string (location, "file://%2Ffoo%2Fbaz");
+          "file://localhost/foo/baz", NULL));
+  location = gst_uri_handler_get_uri (GST_URI_HANDLER (filesink));
+  fail_unless_equals_string (location, "file:///foo/baz");
+  g_free (location);
   g_object_get (G_OBJECT (filesink), "location", &location, NULL);
   fail_unless_equals_string (location, "/foo/baz");
   g_free (location);
 
+  /* should escape non-uri characters for the URI but not for the location */
+  g_object_set (G_OBJECT (filesink), "location", "/foo/b?r", NULL);
+  g_object_get (G_OBJECT (filesink), "location", &location, NULL);
+  fail_unless_equals_string (location, "/foo/b?r");
+  g_free (location);
+  location = gst_uri_handler_get_uri (GST_URI_HANDLER (filesink));
+  fail_unless_equals_string (location, "file:///foo/b%3Fr");
+  g_free (location);
+
   /* should fail with other hostnames */
   fail_if (gst_uri_handler_set_uri (GST_URI_HANDLER (filesink),
-          "file://hostname/foo/foo"));
+          "file://hostname/foo/foo", NULL));
 
   /* cleanup */
   gst_element_set_bus (filesink, NULL);

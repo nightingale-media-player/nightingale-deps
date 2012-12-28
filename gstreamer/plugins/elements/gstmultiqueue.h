@@ -24,7 +24,7 @@
 #define __GST_MULTI_QUEUE_H__
 
 #include <gst/gst.h>
-#include <gst/base/gstdataqueue.h>
+#include "gstdataqueue.h"
 
 G_BEGIN_DECLS
 
@@ -50,6 +50,8 @@ typedef struct _GstMultiQueueClass GstMultiQueueClass;
 struct _GstMultiQueue {
   GstElement element;
 
+  gboolean sync_by_running_time;
+
   /* number of queues */
   guint	nbqueues;
 
@@ -58,15 +60,18 @@ struct _GstMultiQueue {
   guint32 queues_cookie;
 
   GstDataQueueSize  max_size, extra_size;
+  gboolean use_buffering;
+  gint low_percent, high_percent;
+  gboolean buffering;
+  gint percent;
 
-  guint32  counter;	/* incoming object counter */
+  guint    counter;	/* incoming object counter, use atomic accesses */
   guint32  highid;	/* contains highest id of last outputted object */
+  GstClockTime high_time; /* highest start running time */
 
-  GMutex * qlock;	/* Global queue lock (vs object lock or individual */
+  GMutex   qlock;	/* Global queue lock (vs object lock or individual */
 			/* queues lock). Protects nbqueues, queues, global */
 			/* GstMultiQueueSize, counter and highid */
-
-  gint nextnotlinked;	/* ID of the next queue not linked (-1 : none) */
 
   gint numwaiting;	/* number of not-linked pads waiting */
 };
@@ -79,7 +84,7 @@ struct _GstMultiQueueClass {
   void (*overrun)	(GstMultiQueue *queue);
 };
 
-GType gst_multi_queue_get_type (void);
+G_GNUC_INTERNAL GType gst_multi_queue_get_type (void);
 
 G_END_DECLS
 

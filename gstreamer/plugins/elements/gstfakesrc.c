@@ -52,7 +52,6 @@
 #include <string.h>
 
 #include "gstfakesrc.h"
-#include <gst/gstmarshal.h>
 
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -61,7 +60,6 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
 
 GST_DEBUG_CATEGORY_STATIC (gst_fake_src_debug);
 #define GST_CAT_DEFAULT gst_fake_src_debug
-
 
 /* FakeSrc signals and args */
 enum
@@ -82,7 +80,7 @@ enum
 #define DEFAULT_PATTERN         NULL
 #define DEFAULT_EOS             FALSE
 #define DEFAULT_SIGNAL_HANDOFFS FALSE
-#define DEFAULT_SILENT          FALSE
+#define DEFAULT_SILENT          TRUE
 #define DEFAULT_DUMP            FALSE
 #define DEFAULT_PARENTSIZE      4096*10
 #define DEFAULT_CAN_ACTIVATE_PULL TRUE
@@ -202,11 +200,10 @@ gst_fake_src_filltype_get_type (void)
   return fakesrc_filltype_type;
 }
 
-#define _do_init(bla) \
+#define _do_init \
     GST_DEBUG_CATEGORY_INIT (gst_fake_src_debug, "fakesrc", 0, "fakesrc element");
-
-GST_BOILERPLATE_FULL (GstFakeSrc, gst_fake_src, GstBaseSrc, GST_TYPE_BASE_SRC,
-    _do_init);
+#define gst_fake_src_parent_class parent_class
+G_DEFINE_TYPE_WITH_CODE (GstFakeSrc, gst_fake_src, GST_TYPE_BASE_SRC, _do_init);
 
 static void gst_fake_src_finalize (GObject * object);
 static void gst_fake_src_set_property (GObject * object, guint prop_id,
@@ -226,61 +223,23 @@ static GstFlowReturn gst_fake_src_create (GstBaseSrc * src, guint64 offset,
 
 static guint gst_fake_src_signals[LAST_SIGNAL] = { 0 };
 
-static void
-marshal_VOID__MINIOBJECT_OBJECT (GClosure * closure, GValue * return_value,
-    guint n_param_values, const GValue * param_values, gpointer invocation_hint,
-    gpointer marshal_data)
-{
-  typedef void (*marshalfunc_VOID__MINIOBJECT_OBJECT) (gpointer obj,
-      gpointer arg1, gpointer arg2, gpointer data2);
-  register marshalfunc_VOID__MINIOBJECT_OBJECT callback;
-  register GCClosure *cc = (GCClosure *) closure;
-  register gpointer data1, data2;
-
-  g_return_if_fail (n_param_values == 3);
-
-  if (G_CCLOSURE_SWAP_DATA (closure)) {
-    data1 = closure->data;
-    data2 = g_value_peek_pointer (param_values + 0);
-  } else {
-    data1 = g_value_peek_pointer (param_values + 0);
-    data2 = closure->data;
-  }
-  callback =
-      (marshalfunc_VOID__MINIOBJECT_OBJECT) (marshal_data ? marshal_data :
-      cc->callback);
-
-  callback (data1, gst_value_get_mini_object (param_values + 1),
-      g_value_get_object (param_values + 2), data2);
-}
-
-static void
-gst_fake_src_base_init (gpointer g_class)
-{
-  GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_set_details_simple (gstelement_class,
-      "Fake Source",
-      "Source",
-      "Push empty (no data) buffers around",
-      "Erik Walthinsen <omega@cse.ogi.edu>, " "Wim Taymans <wim@fluendo.com>");
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&srctemplate));
-}
+static GParamSpec *pspec_last_message = NULL;
 
 static void
 gst_fake_src_class_init (GstFakeSrcClass * klass)
 {
   GObjectClass *gobject_class;
+  GstElementClass *gstelement_class;
   GstBaseSrcClass *gstbase_src_class;
 
   gobject_class = G_OBJECT_CLASS (klass);
+  gstelement_class = GST_ELEMENT_CLASS (klass);
   gstbase_src_class = GST_BASE_SRC_CLASS (klass);
 
-  gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_fake_src_finalize);
+  gobject_class->finalize = gst_fake_src_finalize;
 
-  gobject_class->set_property = GST_DEBUG_FUNCPTR (gst_fake_src_set_property);
-  gobject_class->get_property = GST_DEBUG_FUNCPTR (gst_fake_src_get_property);
+  gobject_class->set_property = gst_fake_src_set_property;
+  gobject_class->get_property = gst_fake_src_get_property;
 
 /*
   FIXME: this is not implemented; would make sense once basesrc and fakesrc
@@ -324,10 +283,11 @@ gst_fake_src_class_init (GstFakeSrcClass * klass)
   g_object_class_install_property (gobject_class, PROP_PATTERN,
       g_param_spec_string ("pattern", "pattern", "pattern", DEFAULT_PATTERN,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  pspec_last_message = g_param_spec_string ("last-message", "last-message",
+      "The last status message", NULL,
+      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (gobject_class, PROP_LAST_MESSAGE,
-      g_param_spec_string ("last-message", "last-message",
-          "The last status message", NULL,
-          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+      pspec_last_message);
   g_object_class_install_property (gobject_class, PROP_SILENT,
       g_param_spec_boolean ("silent", "Silent",
           "Don't produce last_message events", DEFAULT_SILENT,
@@ -355,8 +315,6 @@ gst_fake_src_class_init (GstFakeSrcClass * klass)
    * GstFakeSrc:format
    *
    * Set the format of the newsegment events to produce.
-   *
-   * Since: 0.10.20
    */
   g_object_class_install_property (gobject_class, PROP_FORMAT,
       g_param_spec_enum ("format", "Format",
@@ -374,8 +332,16 @@ gst_fake_src_class_init (GstFakeSrcClass * klass)
   gst_fake_src_signals[SIGNAL_HANDOFF] =
       g_signal_new ("handoff", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
       G_STRUCT_OFFSET (GstFakeSrcClass, handoff), NULL, NULL,
-      marshal_VOID__MINIOBJECT_OBJECT, G_TYPE_NONE, 2, GST_TYPE_BUFFER,
-      GST_TYPE_PAD);
+      g_cclosure_marshal_generic, G_TYPE_NONE, 2,
+      GST_TYPE_BUFFER | G_SIGNAL_TYPE_STATIC_SCOPE, GST_TYPE_PAD);
+
+  gst_element_class_set_static_metadata (gstelement_class,
+      "Fake Source",
+      "Source",
+      "Push empty (no data) buffers around",
+      "Erik Walthinsen <omega@cse.ogi.edu>, " "Wim Taymans <wim@fluendo.com>");
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&srctemplate));
 
   gstbase_src_class->is_seekable = GST_DEBUG_FUNCPTR (gst_fake_src_is_seekable);
   gstbase_src_class->start = GST_DEBUG_FUNCPTR (gst_fake_src_start);
@@ -386,10 +352,9 @@ gst_fake_src_class_init (GstFakeSrcClass * klass)
 }
 
 static void
-gst_fake_src_init (GstFakeSrc * fakesrc, GstFakeSrcClass * g_class)
+gst_fake_src_init (GstFakeSrc * fakesrc)
 {
   fakesrc->output = FAKE_SRC_FIRST_LAST_LOOP;
-  fakesrc->buffer_count = 0;
   fakesrc->silent = DEFAULT_SILENT;
   fakesrc->signal_handoffs = DEFAULT_SIGNAL_HANDOFFS;
   fakesrc->dump = DEFAULT_DUMP;
@@ -432,10 +397,13 @@ gst_fake_src_event_handler (GstBaseSrc * basesrc, GstEvent * event)
 
   if (!src->silent) {
     const GstStructure *s;
+    const gchar *tstr;
     gchar *sstr;
 
     GST_OBJECT_LOCK (src);
     g_free (src->last_message);
+
+    tstr = gst_event_type_get_name (GST_EVENT_TYPE (event));
 
     if ((s = gst_event_get_structure (event)))
       sstr = gst_structure_to_string (s);
@@ -443,12 +411,13 @@ gst_fake_src_event_handler (GstBaseSrc * basesrc, GstEvent * event)
       sstr = g_strdup ("");
 
     src->last_message =
-        g_strdup_printf ("event   ******* E (type: %d, %s) %p",
-        GST_EVENT_TYPE (event), sstr, event);
+        g_strdup_printf ("event   ******* (%s:%s) E (type: %s (%d), %s) %p",
+        GST_DEBUG_PAD_NAME (GST_BASE_SRC_CAST (src)->srcpad),
+        tstr, GST_EVENT_TYPE (event), sstr, event);
     g_free (sstr);
     GST_OBJECT_UNLOCK (src);
 
-    g_object_notify (G_OBJECT (src), "last_message");
+    g_object_notify_by_pspec ((GObject *) src, pspec_last_message);
   }
 
   return GST_BASE_SRC_CLASS (parent_class)->event (basesrc, event);
@@ -459,10 +428,7 @@ gst_fake_src_alloc_parent (GstFakeSrc * src)
 {
   GstBuffer *buf;
 
-  buf = gst_buffer_new ();
-  GST_BUFFER_DATA (buf) = g_malloc (src->parentsize);
-  GST_BUFFER_MALLOCDATA (buf) = GST_BUFFER_DATA (buf);
-  GST_BUFFER_SIZE (buf) = src->parentsize;
+  buf = gst_buffer_new_allocate (NULL, src->parentsize, NULL);
 
   src->parent = buf;
   src->parentoffset = 0;
@@ -483,7 +449,7 @@ gst_fake_src_set_property (GObject * object, guint prop_id,
       g_warning ("not yet implemented");
       break;
     case PROP_DATA:
-      src->data = g_value_get_enum (value);
+      src->data = (GstFakeSrcDataType) g_value_get_enum (value);
 
       if (src->data == FAKE_SRC_DATA_SUBBUFFER) {
         if (!src->parent)
@@ -496,7 +462,7 @@ gst_fake_src_set_property (GObject * object, guint prop_id,
       }
       break;
     case PROP_SIZETYPE:
-      src->sizetype = g_value_get_enum (value);
+      src->sizetype = (GstFakeSrcSizeType) g_value_get_enum (value);
       break;
     case PROP_SIZEMIN:
       src->sizemin = g_value_get_int (value);
@@ -508,7 +474,7 @@ gst_fake_src_set_property (GObject * object, guint prop_id,
       src->parentsize = g_value_get_int (value);
       break;
     case PROP_FILLTYPE:
-      src->filltype = g_value_get_enum (value);
+      src->filltype = (GstFakeSrcFillType) g_value_get_enum (value);
       break;
     case PROP_DATARATE:
       src->datarate = g_value_get_int (value);
@@ -528,18 +494,20 @@ gst_fake_src_set_property (GObject * object, guint prop_id,
       src->dump = g_value_get_boolean (value);
       break;
     case PROP_CAN_ACTIVATE_PUSH:
-      g_return_if_fail (!GST_OBJECT_FLAG_IS_SET (object, GST_BASE_SRC_STARTED));
+      g_return_if_fail (!GST_OBJECT_FLAG_IS_SET (object,
+              GST_BASE_SRC_FLAG_STARTED));
       GST_BASE_SRC (src)->can_activate_push = g_value_get_boolean (value);
       break;
     case PROP_CAN_ACTIVATE_PULL:
-      g_return_if_fail (!GST_OBJECT_FLAG_IS_SET (object, GST_BASE_SRC_STARTED));
+      g_return_if_fail (!GST_OBJECT_FLAG_IS_SET (object,
+              GST_BASE_SRC_FLAG_STARTED));
       src->can_activate_pull = g_value_get_boolean (value);
       break;
     case PROP_IS_LIVE:
       gst_base_src_set_live (basesrc, g_value_get_boolean (value));
       break;
     case PROP_FORMAT:
-      src->format = g_value_get_enum (value);
+      src->format = (GstFormat) g_value_get_enum (value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -623,21 +591,21 @@ gst_fake_src_get_property (GObject * object, guint prop_id, GValue * value,
 }
 
 static void
-gst_fake_src_prepare_buffer (GstFakeSrc * src, GstBuffer * buf)
+gst_fake_src_prepare_buffer (GstFakeSrc * src, guint8 * data, gsize size)
 {
-  if (GST_BUFFER_SIZE (buf) == 0)
+  if (size == 0)
     return;
 
   switch (src->filltype) {
     case FAKE_SRC_FILLTYPE_ZERO:
-      memset (GST_BUFFER_DATA (buf), 0, GST_BUFFER_SIZE (buf));
+      memset (data, 0, size);
       break;
     case FAKE_SRC_FILLTYPE_RANDOM:
     {
       gint i;
-      guint8 *ptr = GST_BUFFER_DATA (buf);
+      guint8 *ptr = data;
 
-      for (i = GST_BUFFER_SIZE (buf); i; i--) {
+      for (i = size; i; i--) {
         *ptr++ = g_random_int_range (0, 256);
       }
       break;
@@ -647,9 +615,9 @@ gst_fake_src_prepare_buffer (GstFakeSrc * src, GstBuffer * buf)
     case FAKE_SRC_FILLTYPE_PATTERN_CONT:
     {
       gint i;
-      guint8 *ptr = GST_BUFFER_DATA (buf);
+      guint8 *ptr = data;
 
-      for (i = GST_BUFFER_SIZE (buf); i; i--) {
+      for (i = size; i; i--) {
         *ptr++ = src->pattern_byte++;
       }
       break;
@@ -664,29 +632,32 @@ static GstBuffer *
 gst_fake_src_alloc_buffer (GstFakeSrc * src, guint size)
 {
   GstBuffer *buf;
+  gpointer data;
+  gboolean do_prepare = FALSE;
 
   buf = gst_buffer_new ();
-  GST_BUFFER_SIZE (buf) = size;
 
   if (size != 0) {
     switch (src->filltype) {
       case FAKE_SRC_FILLTYPE_NOTHING:
-        GST_BUFFER_DATA (buf) = g_malloc (size);
-        GST_BUFFER_MALLOCDATA (buf) = GST_BUFFER_DATA (buf);
+        data = g_malloc (size);
         break;
       case FAKE_SRC_FILLTYPE_ZERO:
-        GST_BUFFER_DATA (buf) = g_malloc0 (size);
-        GST_BUFFER_MALLOCDATA (buf) = GST_BUFFER_DATA (buf);
+        data = g_malloc0 (size);
         break;
       case FAKE_SRC_FILLTYPE_RANDOM:
       case FAKE_SRC_FILLTYPE_PATTERN:
       case FAKE_SRC_FILLTYPE_PATTERN_CONT:
       default:
-        GST_BUFFER_DATA (buf) = g_malloc (size);
-        GST_BUFFER_MALLOCDATA (buf) = GST_BUFFER_DATA (buf);
-        gst_fake_src_prepare_buffer (src, buf);
+        data = g_malloc (size);
+        do_prepare = TRUE;
         break;
     }
+    if (do_prepare)
+      gst_fake_src_prepare_buffer (src, data, size);
+
+    gst_buffer_append_memory (buf,
+        gst_memory_new_wrapped (0, data, size, 0, size, data, g_free));
   }
 
   return buf;
@@ -714,15 +685,14 @@ gst_fake_src_get_size (GstFakeSrc * src)
 }
 
 static GstBuffer *
-gst_fake_src_create_buffer (GstFakeSrc * src)
+gst_fake_src_create_buffer (GstFakeSrc * src, gsize * bufsize)
 {
   GstBuffer *buf;
-  guint size;
+  gsize size = gst_fake_src_get_size (src);
   gboolean dump = src->dump;
+  GstMapInfo info;
 
-  size = gst_fake_src_get_size (src);
-  if (size == 0)
-    return gst_buffer_new ();
+  *bufsize = size;
 
   switch (src->data) {
     case FAKE_SRC_DATA_ALLOCATE:
@@ -735,17 +705,21 @@ gst_fake_src_create_buffer (GstFakeSrc * src)
         g_assert (src->parent);
       }
       /* see if it's large enough */
-      if ((GST_BUFFER_SIZE (src->parent) - src->parentoffset) >= size) {
-        buf = gst_buffer_create_sub (src->parent, src->parentoffset, size);
+      if ((src->parentsize - src->parentoffset) >= size) {
+        buf =
+            gst_buffer_copy_region (src->parent, GST_BUFFER_COPY_ALL,
+            src->parentoffset, size);
         src->parentoffset += size;
       } else {
         /* the parent is useless now */
         gst_buffer_unref (src->parent);
         src->parent = NULL;
         /* try again (this will allocate a new parent) */
-        return gst_fake_src_create_buffer (src);
+        return gst_fake_src_create_buffer (src, bufsize);
       }
-      gst_fake_src_prepare_buffer (src, buf);
+      gst_buffer_map (buf, &info, GST_MAP_WRITE);
+      gst_fake_src_prepare_buffer (src, info.data, info.size);
+      gst_buffer_unmap (buf, &info);
       break;
     default:
       g_warning ("fakesrc: dunno how to allocate buffers !");
@@ -753,7 +727,9 @@ gst_fake_src_create_buffer (GstFakeSrc * src)
       break;
   }
   if (dump) {
-    gst_util_dump_mem (GST_BUFFER_DATA (buf), GST_BUFFER_SIZE (buf));
+    gst_buffer_map (buf, &info, GST_MAP_READ);
+    gst_util_dump_mem (info.data, info.size);
+    gst_buffer_unmap (buf, &info);
   }
 
   return buf;
@@ -769,12 +745,16 @@ gst_fake_src_get_times (GstBaseSrc * basesrc, GstBuffer * buffer,
 
   /* sync on the timestamp of the buffer if requested. */
   if (src->sync) {
-    GstClockTime timestamp = GST_BUFFER_TIMESTAMP (buffer);
+    GstClockTime timestamp, duration;
+
+    /* first sync on DTS, else use PTS */
+    timestamp = GST_BUFFER_DTS (buffer);
+    if (!GST_CLOCK_TIME_IS_VALID (timestamp))
+      timestamp = GST_BUFFER_PTS (buffer);
 
     if (GST_CLOCK_TIME_IS_VALID (timestamp)) {
       /* get duration to calculate end time */
-      GstClockTime duration = GST_BUFFER_DURATION (buffer);
-
+      duration = GST_BUFFER_DURATION (buffer);
       if (GST_CLOCK_TIME_IS_VALID (duration)) {
         *end = timestamp + duration;
       }
@@ -793,17 +773,17 @@ gst_fake_src_create (GstBaseSrc * basesrc, guint64 offset, guint length,
   GstFakeSrc *src;
   GstBuffer *buf;
   GstClockTime time;
+  gsize size;
 
   src = GST_FAKE_SRC (basesrc);
 
-  buf = gst_fake_src_create_buffer (src);
-  GST_BUFFER_OFFSET (buf) = src->buffer_count++;
+  buf = gst_fake_src_create_buffer (src, &size);
+  GST_BUFFER_OFFSET (buf) = offset;
 
   if (src->datarate > 0) {
     time = (src->bytes_sent * GST_SECOND) / src->datarate;
 
-    GST_BUFFER_DURATION (buf) =
-        GST_BUFFER_SIZE (buf) * GST_SECOND / src->datarate;
+    GST_BUFFER_DURATION (buf) = size * GST_SECOND / src->datarate;
   } else if (gst_base_src_is_live (basesrc)) {
     GstClock *clock;
 
@@ -821,21 +801,28 @@ gst_fake_src_create (GstBaseSrc * basesrc, guint64 offset, guint length,
     time = GST_CLOCK_TIME_NONE;
   }
 
-  GST_BUFFER_TIMESTAMP (buf) = time;
+  GST_BUFFER_DTS (buf) = time;
+  GST_BUFFER_PTS (buf) = time;
 
   if (!src->silent) {
-    gchar ts_str[64], dur_str[64];
+    gchar dts_str[64], pts_str[64], dur_str[64];
+    gchar flag_str[100];
 
     GST_OBJECT_LOCK (src);
     g_free (src->last_message);
 
-    if (GST_BUFFER_TIMESTAMP (buf) != GST_CLOCK_TIME_NONE) {
-      g_snprintf (ts_str, sizeof (ts_str), "%" GST_TIME_FORMAT,
-          GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)));
+    if (GST_BUFFER_DTS (buf) != GST_CLOCK_TIME_NONE) {
+      g_snprintf (dts_str, sizeof (dts_str), "%" GST_TIME_FORMAT,
+          GST_TIME_ARGS (GST_BUFFER_DTS (buf)));
     } else {
-      g_strlcpy (ts_str, "none", sizeof (ts_str));
+      g_strlcpy (dts_str, "none", sizeof (dts_str));
     }
-
+    if (GST_BUFFER_PTS (buf) != GST_CLOCK_TIME_NONE) {
+      g_snprintf (pts_str, sizeof (pts_str), "%" GST_TIME_FORMAT,
+          GST_TIME_ARGS (GST_BUFFER_PTS (buf)));
+    } else {
+      g_strlcpy (pts_str, "none", sizeof (pts_str));
+    }
     if (GST_BUFFER_DURATION (buf) != GST_CLOCK_TIME_NONE) {
       g_snprintf (dur_str, sizeof (dur_str), "%" GST_TIME_FORMAT,
           GST_TIME_ARGS (GST_BUFFER_DURATION (buf)));
@@ -843,25 +830,46 @@ gst_fake_src_create (GstBaseSrc * basesrc, guint64 offset, guint length,
       g_strlcpy (dur_str, "none", sizeof (dur_str));
     }
 
+    {
+      const char *flag_list[15] = {
+        "", "", "", "", "live", "decode-only", "discont", "resync", "corrupted",
+        "marker", "header", "gap", "droppable", "delta-unit", "in-caps"
+      };
+      int i;
+      char *end = flag_str;
+      end[0] = '\0';
+      for (i = 0; i < G_N_ELEMENTS (flag_list); i++) {
+        if (GST_MINI_OBJECT_CAST (buf)->flags & (1 << i)) {
+          strcpy (end, flag_list[i]);
+          end += strlen (end);
+          end[0] = ' ';
+          end[1] = '\0';
+          end++;
+        }
+      }
+    }
+
     src->last_message =
-        g_strdup_printf ("get      ******* > (%5d bytes, timestamp: %s"
+        g_strdup_printf ("create   ******* (%s:%s) (%u bytes, dts: %s, pts:%s"
         ", duration: %s, offset: %" G_GINT64_FORMAT ", offset_end: %"
-        G_GINT64_FORMAT ", flags: %d) %p", GST_BUFFER_SIZE (buf), ts_str,
-        dur_str, GST_BUFFER_OFFSET (buf), GST_BUFFER_OFFSET_END (buf),
-        GST_MINI_OBJECT (buf)->flags, buf);
+        G_GINT64_FORMAT ", flags: %08x %s) %p",
+        GST_DEBUG_PAD_NAME (GST_BASE_SRC_CAST (src)->srcpad), (guint) size,
+        dts_str, pts_str, dur_str, GST_BUFFER_OFFSET (buf),
+        GST_BUFFER_OFFSET_END (buf), GST_MINI_OBJECT_CAST (buf)->flags,
+        flag_str, buf);
     GST_OBJECT_UNLOCK (src);
 
-    g_object_notify (G_OBJECT (src), "last_message");
+    g_object_notify_by_pspec ((GObject *) src, pspec_last_message);
   }
 
   if (src->signal_handoffs) {
     GST_LOG_OBJECT (src, "pre handoff emit");
-    g_signal_emit (G_OBJECT (src), gst_fake_src_signals[SIGNAL_HANDOFF], 0,
-        buf, basesrc->srcpad);
+    g_signal_emit (src, gst_fake_src_signals[SIGNAL_HANDOFF], 0, buf,
+        basesrc->srcpad);
     GST_LOG_OBJECT (src, "post handoff emit");
   }
 
-  src->bytes_sent += GST_BUFFER_SIZE (buf);
+  src->bytes_sent += size;
 
   *ret = buf;
   return GST_FLOW_OK;
@@ -874,7 +882,6 @@ gst_fake_src_start (GstBaseSrc * basesrc)
 
   src = GST_FAKE_SRC (basesrc);
 
-  src->buffer_count = 0;
   src->pattern_byte = 0x00;
   src->bytes_sent = 0;
 

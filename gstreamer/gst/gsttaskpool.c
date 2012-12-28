@@ -40,9 +40,9 @@
 GST_DEBUG_CATEGORY_STATIC (taskpool_debug);
 #define GST_CAT_DEFAULT (taskpool_debug)
 
-static void gst_task_pool_class_init (GstTaskPoolClass * klass);
-static void gst_task_pool_init (GstTaskPool * pool);
+#ifndef GST_DISABLE_GST_DEBUG
 static void gst_task_pool_finalize (GObject * object);
+#endif
 
 #define _do_init \
 { \
@@ -128,7 +128,9 @@ gst_task_pool_class_init (GstTaskPoolClass * klass)
   gobject_class = (GObjectClass *) klass;
   gsttaskpool_class = (GstTaskPoolClass *) klass;
 
-  gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_task_pool_finalize);
+#ifndef GST_DISABLE_GST_DEBUG
+  gobject_class->finalize = gst_task_pool_finalize;
+#endif
 
   gsttaskpool_class->prepare = default_prepare;
   gsttaskpool_class->cleanup = default_cleanup;
@@ -141,6 +143,7 @@ gst_task_pool_init (GstTaskPool * pool)
 {
 }
 
+#ifndef GST_DISABLE_GST_DEBUG
 static void
 gst_task_pool_finalize (GObject * object)
 {
@@ -148,21 +151,21 @@ gst_task_pool_finalize (GObject * object)
 
   G_OBJECT_CLASS (gst_task_pool_parent_class)->finalize (object);
 }
-
+#endif
 /**
  * gst_task_pool_new:
  *
  * Create a new default task pool. The default task pool will use a regular
  * GThreadPool for threads.
  *
- * Returns: a new #GstTaskPool. gst_object_unref() after usage.
+ * Returns: (transfer full): a new #GstTaskPool. gst_object_unref() after usage.
  */
 GstTaskPool *
 gst_task_pool_new (void)
 {
   GstTaskPool *pool;
 
-  pool = g_object_new (GST_TYPE_TASK_POOL, NULL);
+  pool = g_object_newv (GST_TYPE_TASK_POOL, 0, NULL);
 
   return pool;
 }
@@ -214,15 +217,15 @@ gst_task_pool_cleanup (GstTaskPool * pool)
 /**
  * gst_task_pool_push:
  * @pool: a #GstTaskPool
- * @func: the function to call
- * @user_data: data to pass to @func
+ * @func: (scope async): the function to call
+ * @user_data: (closure): data to pass to @func
  * @error: return location for an error
  *
  * Start the execution of a new thread from @pool.
  *
- * Returns: a pointer that should be used for the gst_task_pool_join
- * function. This pointer can be NULL, you must check @error to detect
- * errors.
+ * Returns: (transfer none): a pointer that should be used for the
+ * gst_task_pool_join function. This pointer can be NULL, you must
+ * check @error to detect errors.
  */
 gpointer
 gst_task_pool_push (GstTaskPool * pool, GstTaskPoolFunction func,

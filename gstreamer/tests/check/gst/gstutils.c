@@ -32,42 +32,46 @@ static int n_data_probes = 0;
 static int n_buffer_probes = 0;
 static int n_event_probes = 0;
 
-static gboolean
-probe_do_nothing (GstPad * pad, GstMiniObject * obj, gpointer data)
+static GstPadProbeReturn
+probe_do_nothing (GstPad * pad, GstPadProbeInfo * info, gpointer data)
 {
+  GstMiniObject *obj = GST_PAD_PROBE_INFO_DATA (info);
   GST_DEBUG_OBJECT (pad, "is buffer:%d", GST_IS_BUFFER (obj));
-  return TRUE;
+  return GST_PAD_PROBE_OK;
 }
 
-static gboolean
-data_probe (GstPad * pad, GstMiniObject * obj, gpointer data)
+static GstPadProbeReturn
+data_probe (GstPad * pad, GstPadProbeInfo * info, gpointer data)
 {
+  GstMiniObject *obj = GST_PAD_PROBE_INFO_DATA (info);
   n_data_probes++;
   GST_DEBUG_OBJECT (pad, "data probe %d", n_data_probes);
-  g_assert (GST_IS_MINI_OBJECT (obj));
+  g_assert (GST_IS_BUFFER (obj) || GST_IS_EVENT (obj));
   g_assert (data == SPECIAL_POINTER (0));
-  return TRUE;
+  return GST_PAD_PROBE_OK;
 }
 
-static gboolean
-buffer_probe (GstPad * pad, GstBuffer * obj, gpointer data)
+static GstPadProbeReturn
+buffer_probe (GstPad * pad, GstPadProbeInfo * info, gpointer data)
 {
+  GstBuffer *obj = GST_PAD_PROBE_INFO_BUFFER (info);
   n_buffer_probes++;
   GST_DEBUG_OBJECT (pad, "buffer probe %d", n_buffer_probes);
   g_assert (GST_IS_BUFFER (obj));
   g_assert (data == SPECIAL_POINTER (1));
-  return TRUE;
+  return GST_PAD_PROBE_OK;
 }
 
-static gboolean
-event_probe (GstPad * pad, GstEvent * obj, gpointer data)
+static GstPadProbeReturn
+event_probe (GstPad * pad, GstPadProbeInfo * info, gpointer data)
 {
+  GstEvent *obj = GST_PAD_PROBE_INFO_EVENT (info);
   n_event_probes++;
   GST_DEBUG_OBJECT (pad, "event probe %d [%s]",
       n_event_probes, GST_EVENT_TYPE_NAME (obj));
   g_assert (GST_IS_EVENT (obj));
   g_assert (data == SPECIAL_POINTER (2));
-  return TRUE;
+  return GST_PAD_PROBE_OK;
 }
 
 GST_START_TEST (test_buffer_probe_n_times)
@@ -89,18 +93,20 @@ GST_START_TEST (test_buffer_probe_n_times)
   pad = gst_element_get_static_pad (fakesink, "sink");
 
   /* add the probes we need for the test */
-  gst_pad_add_data_probe (pad, G_CALLBACK (data_probe), SPECIAL_POINTER (0));
-  gst_pad_add_buffer_probe (pad, G_CALLBACK (buffer_probe),
-      SPECIAL_POINTER (1));
-  gst_pad_add_event_probe (pad, G_CALLBACK (event_probe), SPECIAL_POINTER (2));
+  gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_DATA_BOTH, data_probe,
+      SPECIAL_POINTER (0), NULL);
+  gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_BUFFER, buffer_probe,
+      SPECIAL_POINTER (1), NULL);
+  gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_EVENT_BOTH, event_probe,
+      SPECIAL_POINTER (2), NULL);
 
-  /* add some probes just to test that _full works and the data is free'd
+  /* add some string probes just to test that the data is free'd
    * properly as it should be */
-  gst_pad_add_data_probe_full (pad, G_CALLBACK (probe_do_nothing),
+  gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_DATA_BOTH, probe_do_nothing,
       g_strdup ("data probe string"), (GDestroyNotify) g_free);
-  gst_pad_add_buffer_probe_full (pad, G_CALLBACK (probe_do_nothing),
+  gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_BUFFER, probe_do_nothing,
       g_strdup ("buffer probe string"), (GDestroyNotify) g_free);
-  gst_pad_add_event_probe_full (pad, G_CALLBACK (probe_do_nothing),
+  gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_EVENT_BOTH, probe_do_nothing,
       g_strdup ("event probe string"), (GDestroyNotify) g_free);
 
   gst_object_unref (pad);
@@ -113,53 +119,59 @@ GST_START_TEST (test_buffer_probe_n_times)
   gst_object_unref (bus);
 
   g_assert (n_buffer_probes == 10);     /* one for every buffer */
-  g_assert (n_event_probes == 3);       /* new segment, latency and eos */
-  g_assert (n_data_probes == 13);       /* duh */
+  g_assert (n_event_probes == 4);       /* stream-start, new segment, latency and eos */
+  g_assert (n_data_probes == 14);       /* duh */
 
   gst_element_set_state (pipeline, GST_STATE_NULL);
   gst_object_unref (pipeline);
 
   /* make sure nothing was sent in addition to the above when shutting down */
   g_assert (n_buffer_probes == 10);     /* one for every buffer */
-  g_assert (n_event_probes == 3);       /* new segment, latency and eos */
-  g_assert (n_data_probes == 13);       /* duh */
+  g_assert (n_event_probes == 4);       /* stream-start, new segment, latency and eos */
+  g_assert (n_data_probes == 14);       /* duh */
 } GST_END_TEST;
 
 static int n_data_probes_once = 0;
 static int n_buffer_probes_once = 0;
 static int n_event_probes_once = 0;
 
-static gboolean
-data_probe_once (GstPad * pad, GstMiniObject * obj, guint * data)
+static GstPadProbeReturn
+data_probe_once (GstPad * pad, GstPadProbeInfo * info, guint * data)
 {
+  GstMiniObject *obj = GST_PAD_PROBE_INFO_DATA (info);
+
   n_data_probes_once++;
-  g_assert (GST_IS_MINI_OBJECT (obj));
+  g_assert (GST_IS_BUFFER (obj) || GST_IS_EVENT (obj));
 
-  gst_pad_remove_data_probe (pad, *data);
+  gst_pad_remove_probe (pad, *data);
 
-  return TRUE;
+  return GST_PAD_PROBE_OK;
 }
 
-static gboolean
-buffer_probe_once (GstPad * pad, GstBuffer * obj, guint * data)
+static GstPadProbeReturn
+buffer_probe_once (GstPad * pad, GstPadProbeInfo * info, guint * data)
 {
+  GstBuffer *obj = GST_PAD_PROBE_INFO_BUFFER (info);
+
   n_buffer_probes_once++;
   g_assert (GST_IS_BUFFER (obj));
 
-  gst_pad_remove_buffer_probe (pad, *data);
+  gst_pad_remove_probe (pad, *data);
 
-  return TRUE;
+  return GST_PAD_PROBE_OK;
 }
 
-static gboolean
-event_probe_once (GstPad * pad, GstEvent * obj, guint * data)
+static GstPadProbeReturn
+event_probe_once (GstPad * pad, GstPadProbeInfo * info, guint * data)
 {
+  GstEvent *obj = GST_PAD_PROBE_INFO_EVENT (info);
+
   n_event_probes_once++;
   g_assert (GST_IS_EVENT (obj));
 
-  gst_pad_remove_event_probe (pad, *data);
+  gst_pad_remove_probe (pad, *data);
 
-  return TRUE;
+  return GST_PAD_PROBE_OK;
 }
 
 GST_START_TEST (test_buffer_probe_once)
@@ -180,9 +192,15 @@ GST_START_TEST (test_buffer_probe_once)
   gst_element_link (fakesrc, fakesink);
 
   pad = gst_element_get_static_pad (fakesink, "sink");
-  id1 = gst_pad_add_data_probe (pad, G_CALLBACK (data_probe_once), &id1);
-  id2 = gst_pad_add_buffer_probe (pad, G_CALLBACK (buffer_probe_once), &id2);
-  id3 = gst_pad_add_event_probe (pad, G_CALLBACK (event_probe_once), &id3);
+  id1 =
+      gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_DATA_BOTH,
+      (GstPadProbeCallback) data_probe_once, &id1, NULL);
+  id2 =
+      gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_BUFFER,
+      (GstPadProbeCallback) buffer_probe_once, &id2, NULL);
+  id3 =
+      gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_EVENT_BOTH,
+      (GstPadProbeCallback) event_probe_once, &id3, NULL);
   gst_object_unref (pad);
 
   gst_element_set_state (pipeline, GST_STATE_PLAYING);
@@ -453,7 +471,7 @@ GST_START_TEST (test_parse_bin_from_description)
     }
 
     if (strcmp (s->str, bin_tests[i].pad_names) != 0) {
-      g_error ("FAILED: expted '%s', got '%s' for bin '%s'",
+      g_error ("FAILED: expected '%s', got '%s' for bin '%s'",
           bin_tests[i].pad_names, s->str, bin_tests[i].bin_desc);
     }
     g_string_free (s, TRUE);
@@ -471,11 +489,12 @@ GST_START_TEST (test_element_found_tags)
   GstTagList *list;
   GstBus *bus;
   GstMessage *message;
+  GstPad *srcpad;
 
   pipeline = gst_element_factory_make ("pipeline", NULL);
   fakesrc = gst_element_factory_make ("fakesrc", NULL);
   fakesink = gst_element_factory_make ("fakesink", NULL);
-  list = gst_tag_list_new ();
+  list = gst_tag_list_new_empty ();
 
   g_object_set (fakesrc, "num-buffers", (int) 10, NULL);
 
@@ -484,7 +503,9 @@ GST_START_TEST (test_element_found_tags)
 
   gst_element_set_state (pipeline, GST_STATE_PLAYING);
 
-  gst_element_found_tags (GST_ELEMENT (fakesrc), list);
+  srcpad = gst_element_get_static_pad (fakesrc, "src");
+  gst_pad_push_event (srcpad, gst_event_new_tag (list));
+  gst_object_unref (srcpad);
 
   bus = gst_element_get_bus (pipeline);
   message = gst_bus_poll (bus, GST_MESSAGE_EOS, -1);
@@ -880,6 +901,9 @@ _gmp_test_scale (gsl_rng * rng)
       bygst = gst_util_uint64_scale (val, a, b);
       func = "gst_util_uint64_scale";
       break;
+    default:
+      g_assert_not_reached ();
+      break;
   }
   fail_unless (bygst == bygmp,
       "error: %s(): %" G_GUINT64_FORMAT " * %" G_GUINT64_FORMAT " / %"
@@ -910,6 +934,9 @@ _gmp_test_scale_int (gsl_rng * rng)
     case ROUND_DOWN:
       bygst = gst_util_uint64_scale_int (val, a, b);
       func = "gst_util_uint64_scale_int";
+      break;
+    default:
+      g_assert_not_reached ();
       break;
   }
   fail_unless (bygst == bygmp,
@@ -948,6 +975,275 @@ GST_END_TEST;
 #endif
 #endif
 
+GST_START_TEST (test_pad_proxy_query_caps_aggregation)
+{
+  GstElement *tee, *sink1, *sink2;
+  GstCaps *caps;
+  GstPad *tee_src1, *tee_src2, *tee_sink, *sink1_sink, *sink2_sink;
+
+  tee = gst_element_factory_make ("tee", "tee");
+
+  sink1 = gst_element_factory_make ("fakesink", "sink1");
+  tee_src1 = gst_element_get_request_pad (tee, "src_%u");
+  sink1_sink = gst_element_get_static_pad (sink1, "sink");
+  fail_unless_equals_int (gst_pad_link (tee_src1, sink1_sink), GST_PAD_LINK_OK);
+
+  sink2 = gst_element_factory_make ("fakesink", "sink2");
+  tee_src2 = gst_element_get_request_pad (tee, "src_%u");
+  sink2_sink = gst_element_get_static_pad (sink2, "sink");
+  fail_unless_equals_int (gst_pad_link (tee_src2, sink2_sink), GST_PAD_LINK_OK);
+
+  tee_sink = gst_element_get_static_pad (tee, "sink");
+
+  gst_element_set_state (sink1, GST_STATE_PAUSED);
+  gst_element_set_state (sink2, GST_STATE_PAUSED);
+  gst_element_set_state (tee, GST_STATE_PAUSED);
+
+  /* by default, ANY caps should intersect to ANY */
+  caps = gst_pad_query_caps (tee_sink, NULL);
+  GST_INFO ("got caps: %" GST_PTR_FORMAT, caps);
+  fail_unless (caps != NULL);
+  fail_unless (gst_caps_is_any (caps));
+  gst_caps_unref (caps);
+
+  /* these don't intersect we should get empty caps */
+  caps = gst_caps_new_empty_simple ("foo/bar");
+  fail_unless (gst_pad_set_caps (sink1_sink, caps));
+  gst_pad_use_fixed_caps (sink1_sink);
+  gst_caps_unref (caps);
+
+  caps = gst_caps_new_empty_simple ("bar/ter");
+  fail_unless (gst_pad_set_caps (sink2_sink, caps));
+  gst_pad_use_fixed_caps (sink2_sink);
+  gst_caps_unref (caps);
+
+  caps = gst_pad_query_caps (tee_sink, NULL);
+  GST_INFO ("got caps: %" GST_PTR_FORMAT, caps);
+  fail_unless (caps != NULL);
+  fail_unless (gst_caps_is_empty (caps));
+  gst_caps_unref (caps);
+
+  /* test intersection */
+  caps = gst_caps_new_simple ("foo/bar", "barversion", G_TYPE_INT, 1, NULL);
+  GST_OBJECT_FLAG_UNSET (sink2_sink, GST_PAD_FLAG_FIXED_CAPS);
+  fail_unless (gst_pad_set_caps (sink2_sink, caps));
+  gst_pad_use_fixed_caps (sink2_sink);
+  gst_caps_unref (caps);
+
+  caps = gst_pad_query_caps (tee_sink, NULL);
+  GST_INFO ("got caps: %" GST_PTR_FORMAT, caps);
+  fail_unless (caps != NULL);
+  fail_if (gst_caps_is_empty (caps));
+  {
+    GstStructure *s = gst_caps_get_structure (caps, 0);
+
+    fail_unless_equals_string (gst_structure_get_name (s), "foo/bar");
+    fail_unless (gst_structure_has_field_typed (s, "barversion", G_TYPE_INT));
+  }
+  gst_caps_unref (caps);
+
+  gst_element_set_state (sink1, GST_STATE_NULL);
+  gst_element_set_state (sink2, GST_STATE_NULL);
+  gst_element_set_state (tee, GST_STATE_NULL);
+
+  /* clean up */
+  gst_element_release_request_pad (tee, tee_src1);
+  gst_object_unref (tee_src1);
+  gst_element_release_request_pad (tee, tee_src2);
+  gst_object_unref (tee_src2);
+  gst_object_unref (tee_sink);
+  gst_object_unref (tee);
+  gst_object_unref (sink1_sink);
+  gst_object_unref (sink1);
+  gst_object_unref (sink2_sink);
+  gst_object_unref (sink2);
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_greatest_common_divisor)
+{
+  fail_if (gst_util_greatest_common_divisor (1, 1) != 1);
+  fail_if (gst_util_greatest_common_divisor (2, 3) != 1);
+  fail_if (gst_util_greatest_common_divisor (3, 5) != 1);
+  fail_if (gst_util_greatest_common_divisor (-1, 1) != 1);
+  fail_if (gst_util_greatest_common_divisor (-2, 3) != 1);
+  fail_if (gst_util_greatest_common_divisor (-3, 5) != 1);
+  fail_if (gst_util_greatest_common_divisor (-1, -1) != 1);
+  fail_if (gst_util_greatest_common_divisor (-2, -3) != 1);
+  fail_if (gst_util_greatest_common_divisor (-3, -5) != 1);
+  fail_if (gst_util_greatest_common_divisor (1, -1) != 1);
+  fail_if (gst_util_greatest_common_divisor (2, -3) != 1);
+  fail_if (gst_util_greatest_common_divisor (3, -5) != 1);
+  fail_if (gst_util_greatest_common_divisor (2, 2) != 2);
+  fail_if (gst_util_greatest_common_divisor (2, 4) != 2);
+  fail_if (gst_util_greatest_common_divisor (1001, 11) != 11);
+
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_read_macros)
+{
+  guint8 carray[] = "ABCDEFGH"; /* 0x41 ... 0x48 */
+  guint32 uarray[2];
+  guint8 *cpointer;
+
+#define fail_unless_equals_int_hex(a, b)                                \
+G_STMT_START {								\
+  int first = a;							\
+  int second = b;							\
+  fail_unless(first == second,						\
+    "'" #a "' (0x%08x) is not equal to '" #b"' (0x%08x)", first, second);	\
+} G_STMT_END;
+
+#define fail_unless_equals_int64_hex(a, b)                                \
+G_STMT_START {								\
+  gint64 first = a;							\
+  gint64 second = b;							\
+  fail_unless(first == second,						\
+    "'" #a "' (0x%016x) is not equal to '" #b"' (0x%016x)", first, second);	\
+} G_STMT_END;
+
+  memcpy (uarray, carray, 8);
+  cpointer = carray;
+
+  /* 16 bit */
+  /* First try the standard pointer variants */
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (cpointer), 0x4142);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (cpointer + 1), 0x4243);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (cpointer + 2), 0x4344);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (cpointer + 3), 0x4445);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (cpointer + 4), 0x4546);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (cpointer + 5), 0x4647);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (cpointer + 6), 0x4748);
+
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (cpointer), 0x4241);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (cpointer + 1), 0x4342);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (cpointer + 2), 0x4443);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (cpointer + 3), 0x4544);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (cpointer + 4), 0x4645);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (cpointer + 5), 0x4746);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (cpointer + 6), 0x4847);
+
+  /* On an array of guint8 */
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (carray), 0x4142);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (carray + 1), 0x4243);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (carray + 2), 0x4344);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (carray + 3), 0x4445);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (carray + 4), 0x4546);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (carray + 5), 0x4647);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (carray + 6), 0x4748);
+
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (carray), 0x4241);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (carray + 1), 0x4342);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (carray + 2), 0x4443);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (carray + 3), 0x4544);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (carray + 4), 0x4645);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (carray + 5), 0x4746);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (carray + 6), 0x4847);
+
+  /* On an array of guint32 */
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (uarray), 0x4142);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (uarray + 1), 0x4546);
+
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (uarray), 0x4241);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (uarray + 1), 0x4645);
+
+
+  /* 24bit */
+  /* First try the standard pointer variants */
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (cpointer), 0x414243);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (cpointer + 1), 0x424344);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (cpointer + 2), 0x434445);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (cpointer + 3), 0x444546);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (cpointer + 4), 0x454647);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (cpointer + 5), 0x464748);
+
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (cpointer), 0x434241);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (cpointer + 1), 0x444342);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (cpointer + 2), 0x454443);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (cpointer + 3), 0x464544);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (cpointer + 4), 0x474645);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (cpointer + 5), 0x484746);
+
+  /* On an array of guint8 */
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (carray), 0x414243);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (carray + 1), 0x424344);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (carray + 2), 0x434445);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (carray + 3), 0x444546);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (carray + 4), 0x454647);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (carray + 5), 0x464748);
+
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (carray), 0x434241);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (carray + 1), 0x444342);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (carray + 2), 0x454443);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (carray + 3), 0x464544);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (carray + 4), 0x474645);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (carray + 5), 0x484746);
+
+  /* On an array of guint32 */
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (uarray), 0x414243);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (uarray + 1), 0x454647);
+
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (uarray), 0x434241);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (uarray + 1), 0x474645);
+
+
+  /* 32bit */
+  /* First try the standard pointer variants */
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (cpointer), 0x41424344);
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (cpointer + 1), 0x42434445);
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (cpointer + 2), 0x43444546);
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (cpointer + 3), 0x44454647);
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (cpointer + 4), 0x45464748);
+
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (cpointer), 0x44434241);
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (cpointer + 1), 0x45444342);
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (cpointer + 2), 0x46454443);
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (cpointer + 3), 0x47464544);
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (cpointer + 4), 0x48474645);
+
+  /* On an array of guint8 */
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (carray), 0x41424344);
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (carray + 1), 0x42434445);
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (carray + 2), 0x43444546);
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (carray + 3), 0x44454647);
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (carray + 4), 0x45464748);
+
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (carray), 0x44434241);
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (carray + 1), 0x45444342);
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (carray + 2), 0x46454443);
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (carray + 3), 0x47464544);
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (carray + 4), 0x48474645);
+
+  /* On an array of guint32 */
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (uarray), 0x41424344);
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (uarray + 1), 0x45464748);
+
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (uarray), 0x44434241);
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (uarray + 1), 0x48474645);
+
+
+  /* 64bit */
+  fail_unless_equals_int64_hex (GST_READ_UINT64_BE (cpointer),
+      0x4142434445464748);
+  fail_unless_equals_int64_hex (GST_READ_UINT64_LE (cpointer),
+      0x4847464544434241);
+
+  fail_unless_equals_int64_hex (GST_READ_UINT64_BE (carray),
+      0x4142434445464748);
+  fail_unless_equals_int64_hex (GST_READ_UINT64_LE (carray),
+      0x4847464544434241);
+
+  fail_unless_equals_int64_hex (GST_READ_UINT64_BE (uarray),
+      0x4142434445464748);
+  fail_unless_equals_int64_hex (GST_READ_UINT64_LE (uarray),
+      0x4847464544434241);
+}
+
+GST_END_TEST;
+
 static Suite *
 gst_utils_suite (void)
 {
@@ -978,6 +1274,11 @@ gst_utils_suite (void)
   tcase_add_test (tc_chain, test_element_unlink);
   tcase_add_test (tc_chain, test_set_value_from_string);
   tcase_add_test (tc_chain, test_binary_search);
+
+  tcase_add_test (tc_chain, test_pad_proxy_query_caps_aggregation);
+  tcase_add_test (tc_chain, test_greatest_common_divisor);
+
+  tcase_add_test (tc_chain, test_read_macros);
   return s;
 }
 

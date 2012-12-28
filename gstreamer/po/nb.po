@@ -1,18 +1,20 @@
 # Norwegian bokmaal translation of gstreamer.
 # This file is put in the public domain.
-# Kjartan Maraas <kmaraas@gnome.org>, 2004-2007.
+# Kjartan Maraas <kmaraas@gnome.org>, 2004-2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer 0.10.14\n"
+"Project-Id-Version: gstreamer 0.10.30.3\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-10-05 12:38+0100\n"
-"PO-Revision-Date: 2007-11-02 15:43+0100\n"
+"POT-Creation-Date: 2012-12-18 00:21+0000\n"
+"PO-Revision-Date: 2010-10-24 21:36+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmaal <i18n-nb@lister.ping.uio.no>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Print the GStreamer version"
 msgstr "Skriv ut versjonsnummer for GStreamer"
@@ -67,42 +69,17 @@ msgstr ""
 msgid "Disable updating the registry"
 msgstr ""
 
-msgid "Disable the use of fork() while scanning the registry"
+msgid "Disable spawning a helper process while scanning the registry"
 msgstr ""
 
 msgid "GStreamer Options"
-msgstr ""
+msgstr "GStreamer-flagg"
 
-#, fuzzy
 msgid "Show GStreamer Options"
-msgstr "Skriv ut versjonsnummer for GStreamer"
-
-#, c-format
-msgid "Error writing registry cache to %s: %s"
-msgstr ""
-
-#, c-format
-msgid "Error re-scanning registry %s: %s"
-msgstr ""
-
-#, c-format
-msgid "Error re-scanning registry %s"
-msgstr ""
+msgstr "Vis flagg for GStreamer"
 
 msgid "Unknown option"
 msgstr "Ukjent flagg"
-
-#, c-format
-msgid "ERROR: from element %s: %s\n"
-msgstr "FEIL: fra element %s: %s\n"
-
-#, c-format
-msgid ""
-"Additional debug info:\n"
-"%s\n"
-msgstr ""
-"Tilleggsinformasjon for feilsøking:\n"
-"%s\n"
 
 msgid "GStreamer encountered a general core library error."
 msgstr ""
@@ -125,7 +102,7 @@ msgstr ""
 msgid "Internal GStreamer error: thread problem."
 msgstr ""
 
-msgid "Internal GStreamer error: negotiation problem."
+msgid "GStreamer error: negotiation problem."
 msgstr ""
 
 msgid "Internal GStreamer error: event problem."
@@ -143,7 +120,7 @@ msgstr ""
 msgid "Your GStreamer installation is missing a plug-in."
 msgstr ""
 
-msgid "Internal GStreamer error: clock problem."
+msgid "GStreamer error: clock problem."
 msgstr ""
 
 msgid ""
@@ -160,9 +137,11 @@ msgstr "Kunne ikke initiere støttebibliotek."
 msgid "Could not close supporting library."
 msgstr "Kunne ikke lukke støttebibliotek."
 
-#, fuzzy
 msgid "Could not configure supporting library."
-msgstr "Kunne ikke lukke støttebibliotek."
+msgstr "Kunne ikke konfigurere støttebibliotek."
+
+msgid "Encoding error."
+msgstr "Feil i koding."
 
 msgid "GStreamer encountered a general resource error."
 msgstr ""
@@ -230,12 +209,11 @@ msgstr "Kunne ikke bryte opp strøm."
 msgid "Could not multiplex stream."
 msgstr "Kunne ikke sette sammen strøm."
 
-#, fuzzy
 msgid "The stream is in the wrong format."
 msgstr "Strømmen er i feil format."
 
 msgid "The stream is encrypted and decryption is not supported."
-msgstr ""
+msgstr "Strømmen er kryptert og dekryptering er ikke støttet."
 
 msgid ""
 "The stream is encrypted and can't be decrypted because no suitable key has "
@@ -262,9 +240,8 @@ msgstr "ofte brukt tittel"
 msgid "title sortname"
 msgstr ""
 
-#, fuzzy
 msgid "commonly used title for sorting purposes"
-msgstr "ofte brukt tittel"
+msgstr "ofte brukt tittel for sorteringsformål"
 
 msgid "artist"
 msgstr "artist"
@@ -273,11 +250,10 @@ msgid "person(s) responsible for the recording"
 msgstr "person(er) som er ansvarlige for opptaket"
 
 msgid "artist sortname"
-msgstr ""
+msgstr "sorteringsnavn for artist"
 
-#, fuzzy
 msgid "person(s) responsible for the recording for sorting purposes"
-msgstr "person(er) som er ansvarlige for opptaket"
+msgstr "person(er) som er ansvarlige for opptaket - til sortering"
 
 msgid "album"
 msgstr "album"
@@ -292,9 +268,8 @@ msgstr ""
 msgid "album containing this data for sorting purposes"
 msgstr "album som inneholder disse dataene"
 
-#, fuzzy
 msgid "album artist"
-msgstr "artist"
+msgstr "albumartist"
 
 msgid "The artist of the entire album, as it should be displayed"
 msgstr ""
@@ -308,8 +283,14 @@ msgstr ""
 msgid "date"
 msgstr "dato"
 
-#, fuzzy
 msgid "date the data was created (as a GDate structure)"
+msgstr "dato for oppretting av dataene (som en GDate-struktur)"
+
+msgid "datetime"
+msgstr "datotid"
+
+#, fuzzy
+msgid "date and time the data was created (as a GstDateTime structure)"
 msgstr ""
 "dato for oppretting av dataene (kalenderdager i den Julianske kalenderen)"
 
@@ -325,9 +306,8 @@ msgstr "kommentar"
 msgid "free text commenting the data"
 msgstr "fritekstkommentar som beskriver dataene"
 
-#, fuzzy
 msgid "extended comment"
-msgstr "kommentar"
+msgstr "utvidet kommentar"
 
 #, fuzzy
 msgid "free text commenting the data in key=value or key[en]=comment form"
@@ -365,9 +345,8 @@ msgid ""
 "is hosted)"
 msgstr ""
 
-#, fuzzy
 msgid "homepage"
-msgstr "bilde"
+msgstr "hjemmeside"
 
 msgid "Homepage for this media (i.e. artist or movie homepage)"
 msgstr ""
@@ -399,13 +378,19 @@ msgstr "opphavsrett"
 msgid "copyright notice of the data"
 msgstr "melding om opphavsrett for data"
 
-#, fuzzy
 msgid "copyright uri"
-msgstr "opphavsrett"
+msgstr "lenke til informasjon om opphavsrett"
 
 #, fuzzy
 msgid "URI to the copyright notice of the data"
 msgstr "melding om opphavsrett for data"
+
+#, fuzzy
+msgid "encoded by"
+msgstr "koder"
+
+msgid "name of the encoding person or organization"
+msgstr ""
 
 msgid "contact"
 msgstr "kontakt"
@@ -419,9 +404,8 @@ msgstr "lisens"
 msgid "license of data"
 msgstr "lisens for data"
 
-#, fuzzy
 msgid "license uri"
-msgstr "lisens"
+msgstr "lenke til lisens"
 
 #, fuzzy
 msgid "URI to the license of the data"
@@ -434,11 +418,10 @@ msgid "person(s) performing"
 msgstr "personer som spiller"
 
 msgid "composer"
-msgstr ""
+msgstr "komponist"
 
-#, fuzzy
 msgid "person(s) who composed the recording"
-msgstr "person(er) som er ansvarlige for opptaket"
+msgstr "person(er) som er komponerte opptaket"
 
 msgid "duration"
 msgstr "varighet"
@@ -491,13 +474,13 @@ msgid "nominal bitrate in bits/s"
 msgstr ""
 
 msgid "minimum bitrate"
-msgstr ""
+msgstr "minste bitrate"
 
 msgid "minimum bitrate in bits/s"
-msgstr ""
+msgstr "minste bitrate i bits/s"
 
 msgid "maximum bitrate"
-msgstr ""
+msgstr "maksimal bitrate"
 
 msgid "maximum bitrate in bits/s"
 msgstr ""
@@ -509,7 +492,7 @@ msgid "encoder used to encode this stream"
 msgstr ""
 
 msgid "encoder version"
-msgstr ""
+msgstr "versjon av koder"
 
 msgid "version of the encoder used to encode this stream"
 msgstr ""
@@ -553,7 +536,14 @@ msgstr ""
 msgid "language code"
 msgstr "språkkode"
 
-msgid "language code for this stream, conforming to ISO-639-1"
+msgid "language code for this stream, conforming to ISO-639-1 or ISO-639-2"
+msgstr ""
+
+#, fuzzy
+msgid "language name"
+msgstr "språkkode"
+
+msgid "freeform name of the language this stream is in"
 msgstr ""
 
 msgid "image"
@@ -562,6 +552,7 @@ msgstr "bilde"
 msgid "image related to this stream"
 msgstr ""
 
+#. TRANSLATORS: 'preview image' = image that shows a preview of the full image
 msgid "preview image"
 msgstr ""
 
@@ -569,23 +560,22 @@ msgid "preview image related to this stream"
 msgstr ""
 
 msgid "attachment"
-msgstr ""
+msgstr "vedlegg"
 
 msgid "file attached to this stream"
 msgstr ""
 
 msgid "beats per minute"
-msgstr ""
+msgstr "slag i minuttet"
 
 msgid "number of beats per minute in audio"
-msgstr ""
+msgstr "antall slag i minuttet i lyd"
 
 msgid "keywords"
-msgstr ""
+msgstr "nøkkelord"
 
-#, fuzzy
 msgid "comma separated keywords describing the content"
-msgstr "kort tekst som beskriver datainnholdet"
+msgstr "kommaseparerte nøkkelord som beskriver innholdet"
 
 #, fuzzy
 msgid "geo location name"
@@ -622,8 +612,166 @@ msgid ""
 "according to WGS84 (zero is average sea level)"
 msgstr ""
 
+#, fuzzy
+msgid "geo location country"
+msgstr "plassering"
+
+msgid "country (english name) where the media has been recorded or produced"
+msgstr ""
+
+#, fuzzy
+msgid "geo location city"
+msgstr "plassering"
+
+msgid "city (english name) where the media has been recorded or produced"
+msgstr ""
+
+#, fuzzy
+msgid "geo location sublocation"
+msgstr "plassering"
+
+msgid ""
+"a location within a city where the media has been produced or created (e.g. "
+"the neighborhood)"
+msgstr ""
+
+#, fuzzy
+msgid "geo location horizontal error"
+msgstr "plassering"
+
+msgid "expected error of the horizontal positioning measures (in meters)"
+msgstr ""
+
+#, fuzzy
+msgid "geo location movement speed"
+msgstr "plassering"
+
+msgid ""
+"movement speed of the capturing device while performing the capture in m/s"
+msgstr ""
+
+#, fuzzy
+msgid "geo location movement direction"
+msgstr "plassering"
+
+msgid ""
+"indicates the movement direction of the device performing the capture of a "
+"media. It is represented as degrees in floating point representation, 0 "
+"means the geographic north, and increases clockwise"
+msgstr ""
+
+#, fuzzy
+msgid "geo location capture direction"
+msgstr "plassering"
+
+msgid ""
+"indicates the direction the device is pointing to when capturing  a media. "
+"It is represented as degrees in floating point  representation, 0 means the "
+"geographic north, and increases clockwise"
+msgstr ""
+
+#. TRANSLATORS: 'show name' = 'TV/radio/podcast show name' here
+msgid "show name"
+msgstr "navn på program"
+
+msgid "Name of the tv/podcast/series show the media is from"
+msgstr ""
+
+#. TRANSLATORS: 'show sortname' = 'TV/radio/podcast show name as used for sorting purposes' here
+msgid "show sortname"
+msgstr ""
+
+msgid ""
+"Name of the tv/podcast/series show the media is from, for sorting purposes"
+msgstr ""
+
+msgid "episode number"
+msgstr "episodenummer"
+
+msgid "The episode number in the season the media is part of"
+msgstr ""
+
+msgid "season number"
+msgstr "sesongnummer"
+
+msgid "The season number of the show the media is part of"
+msgstr ""
+
+msgid "lyrics"
+msgstr "tekster"
+
+msgid "The lyrics of the media, commonly used for songs"
+msgstr ""
+
+msgid "composer sortname"
+msgstr ""
+
+#, fuzzy
+msgid "person(s) who composed the recording, for sorting purposes"
+msgstr "person(er) som er ansvarlige for opptaket"
+
+msgid "grouping"
+msgstr "gruppering"
+
+msgid ""
+"Groups related media that spans multiple tracks, like the different pieces "
+"of a concerto. It is a higher level than a track, but lower than an album"
+msgstr ""
+
+#, fuzzy
+msgid "user rating"
+msgstr "varighet"
+
+msgid ""
+"Rating attributed by a user. The higher the rank, the more the user likes "
+"this media"
+msgstr ""
+
+msgid "device manufacturer"
+msgstr ""
+
+msgid "Manufacturer of the device used to create this media"
+msgstr ""
+
+msgid "device model"
+msgstr ""
+
+msgid "Model of the device used to create this media"
+msgstr ""
+
+#, fuzzy
+msgid "application name"
+msgstr "plassering"
+
+msgid "Application used to create the media"
+msgstr ""
+
+msgid "application data"
+msgstr ""
+
+msgid "Arbitrary application data to be serialized into the media"
+msgstr ""
+
+msgid "image orientation"
+msgstr ""
+
+msgid "How the image should be rotated or flipped before display"
+msgstr ""
+
 msgid ", "
 msgstr ", "
+
+#, c-format
+msgid "ERROR: from element %s: %s\n"
+msgstr "FEIL: fra element %s: %s\n"
+
+#, c-format
+msgid ""
+"Additional debug info:\n"
+"%s\n"
+msgstr ""
+"Tilleggsinformasjon for feilsøking:\n"
+"%s\n"
 
 #, c-format
 msgid "specified empty bin \"%s\", not allowed"
@@ -682,7 +830,7 @@ msgid "Internal clock error."
 msgstr "Feil i intern klokke"
 
 msgid "Internal data flow error."
-msgstr ""
+msgstr "Intern feil med dataflyt."
 
 msgid "A lot of buffers are being dropped."
 msgstr ""
@@ -727,9 +875,9 @@ msgstr "Ingen filnavn oppgitt for lesing."
 msgid "Could not open file \"%s\" for reading."
 msgstr "Kunne ikke åpne fil «%s» for lesing."
 
-#, fuzzy, c-format
+#, c-format
 msgid "Could not get info on \"%s\"."
-msgstr "Kunne ikke hente/sette innstillinger fra/på ressurs."
+msgstr "Kunne ikke hente informasjon om «%s»."
 
 #, c-format
 msgid "\"%s\" is a directory."
@@ -742,6 +890,17 @@ msgstr "Fil «%s» er en plugg."
 msgid "Failed after iterations as requested."
 msgstr ""
 
+msgid "No Temp directory specified."
+msgstr ""
+
+#, c-format
+msgid "Could not create temp file \"%s\"."
+msgstr "Kunne ikke lage midlertidig fil «%s»."
+
+#, fuzzy
+msgid "Error while writing to download file."
+msgstr "Feil ved skriving til fil «%s»."
+
 msgid "caps"
 msgstr ""
 
@@ -751,21 +910,17 @@ msgstr ""
 msgid "minimum"
 msgstr "minimum"
 
-msgid "maximum"
-msgstr "maksimum"
-
 msgid "force caps"
 msgstr ""
 
 msgid "force caps without doing a typefind"
 msgstr ""
 
-#, fuzzy
 msgid "Stream contains no data."
-msgstr "album som inneholder disse dataene"
+msgstr "Strømmen inneholder ikke data."
 
 msgid "Implemented Interfaces:\n"
-msgstr ""
+msgstr "Implementerte grensesnitt:\n"
 
 msgid "readable"
 msgstr "lesbar"
@@ -776,27 +931,54 @@ msgstr "skrivbar"
 msgid "controllable"
 msgstr "kontrollerbar"
 
-#, fuzzy
+msgid "changeable in NULL, READY, PAUSED or PLAYING state"
+msgstr ""
+
+msgid "changeable only in NULL, READY or PAUSED state"
+msgstr ""
+
+msgid "changeable only in NULL or READY state"
+msgstr ""
+
+msgid "Blacklisted files:"
+msgstr ""
+
 msgid "Total count: "
-msgstr "antall spor"
+msgstr "Totalt antall: "
+
+#, c-format
+msgid "%d blacklisted file"
+msgid_plural "%d blacklisted files"
+msgstr[0] "%d sortelistet fil"
+msgstr[1] "%d sortelistede filer"
 
 #, c-format
 msgid "%d plugin"
 msgid_plural "%d plugins"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d tillegg"
+msgstr[1] "%d tillegg"
+
+#, c-format
+msgid "%d blacklist entry"
+msgid_plural "%d blacklist entries"
+msgstr[0] "%d sortelisteoppføring"
+msgstr[1] "%d sortelisteoppføringer"
 
 #, c-format
 msgid "%d feature"
 msgid_plural "%d features"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d funksjon"
+msgstr[1] "%d funksjoner"
 
 msgid "Print all elements"
 msgstr "Skriv ut alle elementene"
 
+msgid "Print list of blacklisted files"
+msgstr "Skriv ut liste med sortelistede filer"
+
 msgid ""
-"Print a machine-parsable list of features the specified plugin provides.\n"
+"Print a machine-parsable list of features the specified plugin or all "
+"plugins provide.\n"
 "                                       Useful in connection with external "
 "automatic plugin installation mechanisms"
 msgstr ""
@@ -804,37 +986,26 @@ msgstr ""
 msgid "List the plugin contents"
 msgstr ""
 
+msgid "Check if the specified element or plugin exists"
+msgstr ""
+
+msgid ""
+"When checking if an element or plugin exists, also check that its version is "
+"at least the version specified"
+msgstr ""
+
 msgid "Print supported URI schemes, with the elements that implement them"
 msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "Could not load plugin file: %s\n"
-msgstr "Kunne ikke åpne fil «%s» for skriving."
+msgstr "Kunne ikke laste tilleggsfil: «%s»\n"
 
 #, c-format
 msgid "No such element or plugin '%s'\n"
 msgstr ""
 
-msgid "Usage: gst-xmllaunch <file.xml> [ element.property=value ... ]\n"
-msgstr ""
-
-#, c-format
-msgid "ERROR: parse of xml file '%s' failed.\n"
-msgstr ""
-
-#, c-format
-msgid "ERROR: no toplevel pipeline element in file '%s'.\n"
-msgstr ""
-
-msgid "WARNING: only one toplevel element is supported at this time.\n"
-msgstr ""
-
-#, c-format
-msgid "ERROR: could not parse command line argument %d: %s.\n"
-msgstr ""
-
-#, c-format
-msgid "WARNING: element named '%s' not found.\n"
+msgid "Index statistics"
 msgstr ""
 
 #, fuzzy, c-format
@@ -873,10 +1044,23 @@ msgid "FOUND TAG\n"
 msgstr ""
 
 #, c-format
+msgid "FOUND TOC      : found by element \"%s\".\n"
+msgstr ""
+
+#, c-format
+msgid "FOUND TOC      : found by object \"%s\".\n"
+msgstr ""
+
+msgid "FOUND TOC\n"
+msgstr ""
+
+#, c-format
 msgid ""
 "INFO:\n"
 "%s\n"
 msgstr ""
+"INFO:\n"
+"%s\n"
 
 #, fuzzy, c-format
 msgid "WARNING: from element %s: %s\n"
@@ -904,7 +1088,14 @@ msgstr ""
 msgid "Interrupt: Stopping pipeline ...\n"
 msgstr ""
 
+#, fuzzy, c-format
+msgid "Missing element: %s\n"
+msgstr "ingen element «%s»"
+
 msgid "Output tags (also known as metadata)"
+msgstr ""
+
+msgid "Output TOC (chapters and editions)"
 msgstr ""
 
 msgid "Output status information and property notifications"
@@ -922,19 +1113,13 @@ msgstr ""
 msgid "TYPE1,TYPE2,..."
 msgstr "TYPE1,TYPE2,..."
 
-msgid "Save xml representation of pipeline to FILE and exit"
-msgstr ""
-
-msgid "FILE"
-msgstr "FIL"
-
 msgid "Do not install a fault handler"
 msgstr ""
 
-msgid "Print alloc trace (if enabled at compile time)"
+msgid "Force EOS on sources before shutting the pipeline down"
 msgstr ""
 
-msgid "Force EOS on sources before shutting the pipeline down"
+msgid "Gather and print index statistics"
 msgstr ""
 
 #, c-format
@@ -978,10 +1163,16 @@ msgstr ""
 msgid "EOS on shutdown enabled -- Forcing EOS on the pipeline\n"
 msgstr ""
 
+msgid "EOS on shutdown enabled -- waiting for EOS after Error\n"
+msgstr ""
+
 msgid "Waiting for EOS...\n"
 msgstr ""
 
 msgid "EOS received - stopping pipeline...\n"
+msgstr ""
+
+msgid "Interrupt while waiting for EOS - stopping pipeline...\n"
 msgstr ""
 
 msgid "An error happened while waiting for EOS\n"
@@ -996,13 +1187,8 @@ msgstr ""
 msgid "Setting pipeline to NULL ...\n"
 msgstr ""
 
-#, fuzzy
 msgid "Freeing pipeline ...\n"
-msgstr "FRIGJØR rør...\n"
+msgstr "Frigjør rør ...\n"
 
-#~ msgid "original location of file as a URI"
-#~ msgstr "opprinnelig lokasjon for filen som en URI"
-
-#, fuzzy
-#~ msgid "Error while writing to file descriptor \"%d\"."
-#~ msgstr "Feil ved skriving til fil «%s»."
+#~ msgid "FILE"
+#~ msgstr "FIL"

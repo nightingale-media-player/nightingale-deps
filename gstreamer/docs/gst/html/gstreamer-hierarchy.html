@@ -3,66 +3,58 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Object Hierarchy</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer 0.10 Core Reference Manual">
-<link rel="up" href="index.html" title="GStreamer 0.10 Core Reference Manual">
-<link rel="prev" href="gstreamer-GstTrace.html" title="GstTrace">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer 1.0 Core Reference Manual">
+<link rel="up" href="index.html" title="GStreamer 1.0 Core Reference Manual">
+<link rel="prev" href="gstreamer-GstInfo.html" title="GstInfo">
 <link rel="next" href="api-index-full.html" title="API Index">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
-<link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
-<link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
-<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index-full.html" title="API Index">
-<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle">
-<td><a accesskey="p" href="gstreamer-GstTrace.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gstreamer-GstInfo.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td> </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
+<th width="100%" align="center">GStreamer 1.0 Core Reference Manual</th>
 <td><a accesskey="n" href="api-index-full.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr></table>
-<div class="chapter" lang="en">
+<div class="chapter">
 <div class="titlepage"><div><div><h2 class="title">
 <a name="gstreamer-hierarchy"></a>Object Hierarchy</h2></div></div></div>
 <pre class="screen">
-    <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-        <a class="link" href="GstObject.html" title="GstObject">GstObject</a>
-            <a class="link" href="GstPad.html" title="GstPad">GstPad</a>
-                GstProxyPad
-                    <a class="link" href="GstGhostPad.html" title="GstGhostPad">GstGhostPad</a>
-            <a class="link" href="GstPadTemplate.html" title="GstPadTemplate">GstPadTemplate</a>
-            <a class="link" href="GstPluginFeature.html" title="GstPluginFeature">GstPluginFeature</a>
-                <a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a>
-                <a class="link" href="GstTypeFindFactory.html" title="GstTypeFindFactory">GstTypeFindFactory</a>
-                <a class="link" href="GstIndexFactory.html" title="GstIndexFactory">GstIndexFactory</a>
-            <a class="link" href="GstElement.html" title="GstElement">GstElement</a>
-                <a class="link" href="GstBin.html" title="GstBin">GstBin</a>
-                    <a class="link" href="GstPipeline.html" title="GstPipeline">GstPipeline</a>
-            <a class="link" href="GstBus.html" title="GstBus">GstBus</a>
-            <a class="link" href="GstTask.html" title="GstTask">GstTask</a>
-            <a class="link" href="GstTaskPool.html" title="GstTaskPool">GstTaskPool</a>
-            <a class="link" href="GstClock.html" title="GstClock">GstClock</a>
-                <a class="link" href="GstSystemClock.html" title="GstSystemClock">GstSystemClock</a>
-            <a class="link" href="GstPlugin.html" title="GstPlugin">GstPlugin</a>
-            <a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a>
-            <a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a>
-            <a class="link" href="GstXML.html" title="GstXML">GstXML</a>
+    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+        <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+            <a class="link" href="GstObject.html" title="GstObject">GstObject</a>
+                <a class="link" href="GstAllocator.html" title="GstAllocator">GstAllocator</a>
+                <a class="link" href="GstPad.html" title="GstPad">GstPad</a>
+                    <a class="link" href="GstGhostPad.html#GstProxyPad">GstProxyPad</a>
+                        <a class="link" href="GstGhostPad.html" title="GstGhostPad">GstGhostPad</a>
+                <a class="link" href="GstPadTemplate.html" title="GstPadTemplate">GstPadTemplate</a>
+                <a class="link" href="GstPluginFeature.html" title="GstPluginFeature">GstPluginFeature</a>
+                    <a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a>
+                    <a class="link" href="GstTypeFindFactory.html" title="GstTypeFindFactory">GstTypeFindFactory</a>
+                <a class="link" href="GstElement.html" title="GstElement">GstElement</a>
+                    <a class="link" href="GstBin.html" title="GstBin">GstBin</a>
+                        <a class="link" href="GstPipeline.html" title="GstPipeline">GstPipeline</a>
+                <a class="link" href="GstBus.html" title="GstBus">GstBus</a>
+                <a class="link" href="GstTask.html" title="GstTask">GstTask</a>
+                <a class="link" href="GstTaskPool.html" title="GstTaskPool">GstTaskPool</a>
+                <a class="link" href="GstClock.html" title="GstClock">GstClock</a>
+                    <a class="link" href="GstSystemClock.html" title="GstSystemClock">GstSystemClock</a>
+                <a class="link" href="GstControlBinding.html" title="GstControlBinding">GstControlBinding</a>
+                <a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a>
+                <a class="link" href="GstPlugin.html" title="GstPlugin">GstPlugin</a>
+                <a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a>
     GInterface
         <a class="link" href="GstChildProxy.html" title="GstChildProxy">GstChildProxy</a>
         <a class="link" href="gstreamer-GstUriHandler.html#GstURIHandler">GstURIHandler</a>
-        <a class="link" href="GstImplementsInterface.html" title="GstImplementsInterface">GstImplementsInterface</a>
         <a class="link" href="GstPreset.html" title="GstPreset">GstPreset</a>
         <a class="link" href="GstTagSetter.html" title="GstTagSetter">GstTagSetter</a>
 </pre>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

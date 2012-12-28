@@ -3,20 +3,21 @@
 # Copyright (C) 2004, 2005 gstreamer's COPYRIGHT HOLDER
 # This file is put in the public domain.
 #
-# Peter Tuhársky <tuharsky@misbb.sk>, 2007, 2008, 2009.
+# Peter Tuhársky <tuharsky@misbb.sk>, 2007, 2008, 2009, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer 0.10.24.2\n"
+"Project-Id-Version: gstreamer 0.10.30.3\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-10-05 12:38+0100\n"
-"PO-Revision-Date: 2009-09-21 10:11+0100\n"
+"POT-Creation-Date: 2012-12-18 00:21+0000\n"
+"PO-Revision-Date: 2010-11-08 16:13+0100\n"
 "Last-Translator: Peter Tuhársky <tuharsky@misbb.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
+"Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: KBabel 1.11.4\n"
 "X-Poedit-Language: Slovak\n"
 "X-Poedit-Country: SLOVAKIA\n"
@@ -81,8 +82,8 @@ msgstr "Zakázať zachytávanie chýb segmentácie počas načítania zásuvnéh
 msgid "Disable updating the registry"
 msgstr "Zakázať aktualizáciu registrov"
 
-msgid "Disable the use of fork() while scanning the registry"
-msgstr "Zakázať používanie fork() počas skenovania registrov"
+msgid "Disable spawning a helper process while scanning the registry"
+msgstr "Zakázať vytváranie pomocných procesov počas skenovania registrov"
 
 msgid "GStreamer Options"
 msgstr "Možnosti pre GStreamer"
@@ -90,32 +91,8 @@ msgstr "Možnosti pre GStreamer"
 msgid "Show GStreamer Options"
 msgstr "Zobraziť možnosti pre GStreamer"
 
-#, c-format
-msgid "Error writing registry cache to %s: %s"
-msgstr "Chyba pri zápise vyrovnávacej pamäte registrov do %s: %s"
-
-#, c-format
-msgid "Error re-scanning registry %s: %s"
-msgstr "Chyba pri opätovnom skenovaní registrov %s: %s"
-
-#, c-format
-msgid "Error re-scanning registry %s"
-msgstr "Chyba pri opätovnom skenovaní registrov %s"
-
 msgid "Unknown option"
 msgstr "Neznáma možnosť"
-
-#, c-format
-msgid "ERROR: from element %s: %s\n"
-msgstr "CHYBA: od prvku %s: %s\n"
-
-#, c-format
-msgid ""
-"Additional debug info:\n"
-"%s\n"
-msgstr ""
-"Prídavné ladiace informácie:\n"
-"%s\n"
 
 msgid "GStreamer encountered a general core library error."
 msgstr "GStreamer narazil na všeobecnú chybu hlavnej knižnice."
@@ -146,7 +123,8 @@ msgid "Internal GStreamer error: thread problem."
 msgstr ""
 "Vnútorná chyba GStreamer: problém s vláknami. Ohláste prosím túto chybu."
 
-msgid "Internal GStreamer error: negotiation problem."
+#, fuzzy
+msgid "GStreamer error: negotiation problem."
 msgstr ""
 "Vnútorná chyba GStreamer: problém pri vyjednávaní. Ohláste prosím túto chybu."
 
@@ -170,7 +148,8 @@ msgstr ""
 msgid "Your GStreamer installation is missing a plug-in."
 msgstr "Vašej inštalácii GStreamer chýba zásuvný modul."
 
-msgid "Internal GStreamer error: clock problem."
+#, fuzzy
+msgid "GStreamer error: clock problem."
 msgstr ""
 "Vnútorná chyba GStreamer: problém s časovaním. Ohláste prosím túto chybu."
 
@@ -192,6 +171,9 @@ msgstr "Nepodarilo sa zatvoriť podpornú knižnicu."
 
 msgid "Could not configure supporting library."
 msgstr "Nepodarilo sa nastaviť podpornú knižnicu."
+
+msgid "Encoding error."
+msgstr "Chyba pri kódovaní."
 
 msgid "GStreamer encountered a general resource error."
 msgstr "GStreamer narazil na všeobecnú chybu zdrojov."
@@ -341,6 +323,13 @@ msgstr "dátum"
 msgid "date the data was created (as a GDate structure)"
 msgstr "dátum, kedy boli tieto údaje vytvorené (ako štruktúra GDate)"
 
+msgid "datetime"
+msgstr "dátum a čas"
+
+msgid "date and time the data was created (as a GstDateTime structure)"
+msgstr ""
+"dátum a čas, kedy boli tieto údaje vytvorené (ako štruktúra GstDateTime)"
+
 msgid "genre"
 msgstr "žáner"
 
@@ -432,6 +421,13 @@ msgstr "uri pre copyright"
 
 msgid "URI to the copyright notice of the data"
 msgstr "URI pre poznámku o autorských právach údajov"
+
+#, fuzzy
+msgid "encoded by"
+msgstr "kodér"
+
+msgid "name of the encoding person or organization"
+msgstr ""
 
 msgid "contact"
 msgstr "kontakt"
@@ -574,8 +570,16 @@ msgstr "Referenčná úroveň zisku pre stopu a pre album"
 msgid "language code"
 msgstr "jazykový kód"
 
-msgid "language code for this stream, conforming to ISO-639-1"
+#, fuzzy
+msgid "language code for this stream, conforming to ISO-639-1 or ISO-639-2"
 msgstr "jazykový kód pre tento prúd údajov, v súlade s ISO-639-1"
+
+#, fuzzy
+msgid "language name"
+msgstr "jazykový kód"
+
+msgid "freeform name of the language this stream is in"
+msgstr ""
 
 msgid "image"
 msgstr "obrázok"
@@ -583,6 +587,7 @@ msgstr "obrázok"
 msgid "image related to this stream"
 msgstr "obrázok zodpovedajúci k tomuto prúdu údajov"
 
+#. TRANSLATORS: 'preview image' = image that shows a preview of the full image
 msgid "preview image"
 msgstr "ukážka obrázku"
 
@@ -608,7 +613,7 @@ msgid "comma separated keywords describing the content"
 msgstr "kľúčové slová, opisujúce obsah, oddelené čiarkou"
 
 msgid "geo location name"
-msgstr "geografické umiestnenie"
+msgstr "geografická poloha"
 
 msgid ""
 "human readable descriptive location of where the media has been recorded or "
@@ -649,8 +654,170 @@ msgstr ""
 "zemepisná nadmorská výška  miesta, kde boli tieto médiá nahraté alebo "
 "produkované, v metroch podľa WGS84 (0 je priemerná hladina mora)"
 
+msgid "geo location country"
+msgstr "zemepisná poloha krajina"
+
+msgid "country (english name) where the media has been recorded or produced"
+msgstr "krajina (v angličtine), kde bolo toto médium nahraté alebo produkované"
+
+msgid "geo location city"
+msgstr "zemepisná poloha mesto"
+
+msgid "city (english name) where the media has been recorded or produced"
+msgstr "mesto (v angličtine), kde bolo toto médium nahraté alebo produkované"
+
+msgid "geo location sublocation"
+msgstr "zemepisná poloha upresnenie"
+
+#, fuzzy
+msgid ""
+"a location within a city where the media has been produced or created (e.g. "
+"the neighborhood)"
+msgstr ""
+"umiestnenie v rámci mesta, kde bolo toto médium vyprodukované alebo "
+"vytvorené (napr. v susedstve)"
+
+msgid "geo location horizontal error"
+msgstr "geografická poloha vodorovná odchýlka"
+
+msgid "expected error of the horizontal positioning measures (in meters)"
+msgstr "očakávaná odchýlka vodorovného umiestnenia (v metroch)"
+
+msgid "geo location movement speed"
+msgstr "zemepisná poloha rýchlosť pohybu"
+
+msgid ""
+"movement speed of the capturing device while performing the capture in m/s"
+msgstr "rýchlosť pohybu zachytávajúceho zariadenia počas zachytávania v m/s"
+
+msgid "geo location movement direction"
+msgstr "zemepisná poloha smer pohybu"
+
+msgid ""
+"indicates the movement direction of the device performing the capture of a "
+"media. It is represented as degrees in floating point representation, 0 "
+"means the geographic north, and increases clockwise"
+msgstr ""
+"ukazuje smer pohybu zariadenia, ktoré vykonávalo zachytávanie média. Je "
+"reprezentovaný ako stupne v neceločíselnej reprezentácii, 0 znamená "
+"geografický sever, a zvyšuje sa v smere hodinových ručičiek"
+
+msgid "geo location capture direction"
+msgstr "zemepisná poloha smer zachytávania"
+
+msgid ""
+"indicates the direction the device is pointing to when capturing  a media. "
+"It is represented as degrees in floating point  representation, 0 means the "
+"geographic north, and increases clockwise"
+msgstr ""
+"ukazuje smer, kam zariadenie smerovalo počas zachytávania média. Je "
+"reprezentovaný ako stupne v neceločíselnej reprezentácii, 0 znamená "
+"geografický sever, a zvyšuje sa v smere hodinových ručičiek"
+
+#. TRANSLATORS: 'show name' = 'TV/radio/podcast show name' here
+msgid "show name"
+msgstr "názov šou"
+
+msgid "Name of the tv/podcast/series show the media is from"
+msgstr "Názov tv/podcast/seriálovej šou z ktorého pochádza toto médium"
+
+#. TRANSLATORS: 'show sortname' = 'TV/radio/podcast show name as used for sorting purposes' here
+msgid "show sortname"
+msgstr "názov šou pre triedenie"
+
+msgid ""
+"Name of the tv/podcast/series show the media is from, for sorting purposes"
+msgstr ""
+"Názov tv/podcast/seriálovej šou z ktorého pochádza toto médium, pre účely "
+"triedenia"
+
+msgid "episode number"
+msgstr "číslo epizódy"
+
+msgid "The episode number in the season the media is part of"
+msgstr "Číslo epizódy v tomto období, ktorého súčasťou je toto médium"
+
+msgid "season number"
+msgstr "číslo obdobia"
+
+msgid "The season number of the show the media is part of"
+msgstr "Číslo obdobia tejto šou, ktorej súčasťou je toto médium"
+
+msgid "lyrics"
+msgstr "text"
+
+msgid "The lyrics of the media, commonly used for songs"
+msgstr "Text tohto média, zvyčajne sa používa pri piesňach"
+
+msgid "composer sortname"
+msgstr "meno skladateľa pre triedenie"
+
+msgid "person(s) who composed the recording, for sorting purposes"
+msgstr "osoby zodpovedné za nahrávku, na účely triedenia"
+
+msgid "grouping"
+msgstr "zoskupovanie"
+
+msgid ""
+"Groups related media that spans multiple tracks, like the different pieces "
+"of a concerto. It is a higher level than a track, but lower than an album"
+msgstr ""
+"Zoskupí súvisiace médiá, ktoré zaberajú viacero stôp, ako napríklad rôzne "
+"časti koncertu. Toto je vyššia úroveň než stopa, ale nižšia než album."
+
+msgid "user rating"
+msgstr "hodnotenie používateľa"
+
+msgid ""
+"Rating attributed by a user. The higher the rank, the more the user likes "
+"this media"
+msgstr ""
+"Hodnotenie podľa používateľa. Čím vyššie, tým viac sa toto médium páči."
+
+msgid "device manufacturer"
+msgstr "výrobca zariadenia"
+
+msgid "Manufacturer of the device used to create this media"
+msgstr "Výrobca zariadenia použitého na vytvorenie tohto média"
+
+msgid "device model"
+msgstr "model zariadenia"
+
+msgid "Model of the device used to create this media"
+msgstr "Model zariadenia použitého na vytvorenie tohto média"
+
+msgid "application name"
+msgstr "názov aplikácie"
+
+msgid "Application used to create the media"
+msgstr "Aplikácia použitá pri tvorbe tohto média"
+
+msgid "application data"
+msgstr "dáta aplikácie"
+
+msgid "Arbitrary application data to be serialized into the media"
+msgstr "Ľubovoľné údaje aplikácie, ktoré sa majú serializovať do média"
+
+msgid "image orientation"
+msgstr "orientácia obrázku"
+
+msgid "How the image should be rotated or flipped before display"
+msgstr "Ako má byť obrázok otočený alebo prevrátený pred jeho zobrazením"
+
 msgid ", "
 msgstr ", "
+
+#, c-format
+msgid "ERROR: from element %s: %s\n"
+msgstr "CHYBA: od prvku %s: %s\n"
+
+#, c-format
+msgid ""
+"Additional debug info:\n"
+"%s\n"
+msgstr ""
+"Prídavné ladiace informácie:\n"
+"%s\n"
 
 #, c-format
 msgid "specified empty bin \"%s\", not allowed"
@@ -771,6 +938,16 @@ msgstr "Súbor \"%s\" je zásuvka."
 msgid "Failed after iterations as requested."
 msgstr "Zlyhanie po vykonaní požadovaných iterácií."
 
+msgid "No Temp directory specified."
+msgstr "Nebol určený dočasný priečinok (Temp)."
+
+#, c-format
+msgid "Could not create temp file \"%s\"."
+msgstr "Nepodarilo sa získať informácie o \"%s\"."
+
+msgid "Error while writing to download file."
+msgstr "Chyba pri zápise do sťahovaného súboru."
+
 msgid "caps"
 msgstr "schopnosti"
 
@@ -779,9 +956,6 @@ msgstr "zistené schopnosti v prúde údajov"
 
 msgid "minimum"
 msgstr "minimum"
-
-msgid "maximum"
-msgstr "maximum"
 
 msgid "force caps"
 msgstr "vynútiť veľké písmená"
@@ -804,8 +978,27 @@ msgstr "zapisovateľné"
 msgid "controllable"
 msgstr "ovládateľné"
 
+msgid "changeable in NULL, READY, PAUSED or PLAYING state"
+msgstr ""
+
+msgid "changeable only in NULL, READY or PAUSED state"
+msgstr ""
+
+msgid "changeable only in NULL or READY state"
+msgstr ""
+
+msgid "Blacklisted files:"
+msgstr "Zakázané súbory:"
+
 msgid "Total count: "
 msgstr "Celkový počet:"
+
+#, c-format
+msgid "%d blacklisted file"
+msgid_plural "%d blacklisted files"
+msgstr[0] "%d zakázaný súbor"
+msgstr[1] "%d zakázané súbory"
+msgstr[2] "%d zakázaných súborov"
 
 #, c-format
 msgid "%d plugin"
@@ -813,6 +1006,13 @@ msgid_plural "%d plugins"
 msgstr[0] "%d zásuvný modul"
 msgstr[1] "%d zásuvné moduly"
 msgstr[2] "%d zásuvných modulov"
+
+#, c-format
+msgid "%d blacklist entry"
+msgid_plural "%d blacklist entries"
+msgstr[0] "%d zakázaná položka"
+msgstr[1] "%d zakázané položky"
+msgstr[2] "%d zakázaných položiek"
 
 #, c-format
 msgid "%d feature"
@@ -824,8 +1024,12 @@ msgstr[2] "%d funkcií"
 msgid "Print all elements"
 msgstr "Vypísať všetky prvky"
 
+msgid "Print list of blacklisted files"
+msgstr "Vytlačiť zoznam zakázaných súborov"
+
 msgid ""
-"Print a machine-parsable list of features the specified plugin provides.\n"
+"Print a machine-parsable list of features the specified plugin or all "
+"plugins provide.\n"
 "                                       Useful in connection with external "
 "automatic plugin installation mechanisms"
 msgstr ""
@@ -836,6 +1040,14 @@ msgstr ""
 
 msgid "List the plugin contents"
 msgstr "Vypísať zoznam zásuvných modulov"
+
+msgid "Check if the specified element or plugin exists"
+msgstr ""
+
+msgid ""
+"When checking if an element or plugin exists, also check that its version is "
+"at least the version specified"
+msgstr ""
 
 msgid "Print supported URI schemes, with the elements that implement them"
 msgstr ""
@@ -849,28 +1061,8 @@ msgstr "Nepodarilo sa načítať súbor zásuvného modulu: %s\n"
 msgid "No such element or plugin '%s'\n"
 msgstr "Takýto prvok alebo zásuvný modul neexistuje '%s'\n"
 
-msgid "Usage: gst-xmllaunch <file.xml> [ element.property=value ... ]\n"
-msgstr "Použitie: gst-xmllaunch <súbor.xml> [ prvk.vlastnosť=hodnota ... ]\n"
-
-#, c-format
-msgid "ERROR: parse of xml file '%s' failed.\n"
-msgstr "CHYBA: zlyhala analýza xml súboru '%s'.\n"
-
-#, c-format
-msgid "ERROR: no toplevel pipeline element in file '%s'.\n"
-msgstr "CHYBA: v súbore '%s' chýba prvok rúry najvyššej úrovne.\n"
-
-msgid "WARNING: only one toplevel element is supported at this time.\n"
+msgid "Index statistics"
 msgstr ""
-"VAROVANIE: v súčasnosti je podporovaný iba jeden prvok najvyššej úrovne.\n"
-
-#, c-format
-msgid "ERROR: could not parse command line argument %d: %s.\n"
-msgstr "CHYBA: nepodarilo sa analyzovať argument príkazového riadku %d: %s.\n"
-
-#, c-format
-msgid "WARNING: element named '%s' not found.\n"
-msgstr "VAROVANIE: prvok s názvom '%s' sa nenašiel.\n"
 
 #, c-format
 msgid "Got message #%u from element \"%s\" (%s): "
@@ -907,6 +1099,18 @@ msgstr "NAŠLA SA ZNAČKA    : našiel ju objekt \"%s\".\n"
 msgid "FOUND TAG\n"
 msgstr "NAŠLA SA ZNAČKA\n"
 
+#, fuzzy, c-format
+msgid "FOUND TOC      : found by element \"%s\".\n"
+msgstr "NAŠLA SA ZNAČKA    : našiel ju prvok \"%s\".\n"
+
+#, fuzzy, c-format
+msgid "FOUND TOC      : found by object \"%s\".\n"
+msgstr "NAŠLA SA ZNAČKA    : našiel ju objekt \"%s\".\n"
+
+#, fuzzy
+msgid "FOUND TOC\n"
+msgstr "NAŠLA SA ZNAČKA\n"
+
 #, c-format
 msgid ""
 "INFO:\n"
@@ -941,8 +1145,15 @@ msgstr "Nastavujem stav na %s ako požaduje %s...\n"
 msgid "Interrupt: Stopping pipeline ...\n"
 msgstr "Prerušenie: Zastavujem rúru ...\n"
 
+#, fuzzy, c-format
+msgid "Missing element: %s\n"
+msgstr "prvok \"%s\" neexistuje"
+
 msgid "Output tags (also known as metadata)"
 msgstr "Vypísať značky (známe tiež ako metadáta)"
+
+msgid "Output TOC (chapters and editions)"
+msgstr ""
 
 msgid "Output status information and property notifications"
 msgstr "Vypísať informácie o stave a upozornenia o vlastnostiach"
@@ -959,20 +1170,14 @@ msgstr "Nevypisovať informácie o stave TYPU"
 msgid "TYPE1,TYPE2,..."
 msgstr "TYP1,TYP2,..."
 
-msgid "Save xml representation of pipeline to FILE and exit"
-msgstr "Uložiť reprezentáciu rúry v xml do SÚBORU a skončiť"
-
-msgid "FILE"
-msgstr "SÚBOR"
-
 msgid "Do not install a fault handler"
 msgstr "Neinštalovať obsluhu výnimiek"
 
-msgid "Print alloc trace (if enabled at compile time)"
-msgstr "Vypisovať stopu alokácie (ak je to povolené pri kompilácii)"
-
 msgid "Force EOS on sources before shutting the pipeline down"
 msgstr "Vynútiť EOS na zdrojoch pred vypnutím rúry"
+
+msgid "Gather and print index statistics"
+msgstr ""
 
 #, c-format
 msgid "ERROR: pipeline could not be constructed: %s.\n"
@@ -1018,11 +1223,19 @@ msgstr "CHYBA: Rúra nechce hrať.\n"
 msgid "EOS on shutdown enabled -- Forcing EOS on the pipeline\n"
 msgstr "EOS pri vypnutí je povolený -- Vynucujem EOS pre rúru\n"
 
+#, fuzzy
+msgid "EOS on shutdown enabled -- waiting for EOS after Error\n"
+msgstr "EOS pri vypnutí je povolený -- Vynucujem EOS pre rúru\n"
+
 msgid "Waiting for EOS...\n"
 msgstr "Čakám na EOS...\n"
 
 msgid "EOS received - stopping pipeline...\n"
 msgstr "Prijatý EOS - zastavujem rúru ...\n"
+
+#, fuzzy
+msgid "Interrupt while waiting for EOS - stopping pipeline...\n"
+msgstr "Prerušenie: Zastavujem rúru ...\n"
 
 msgid "An error happened while waiting for EOS\n"
 msgstr "Počas čakania na EOS nastala chyba\n"
@@ -1038,6 +1251,48 @@ msgstr "Nastavujem rúru na NULOVÚ ...\n"
 
 msgid "Freeing pipeline ...\n"
 msgstr "Uvoľňujem rúru ...\n"
+
+#~ msgid "Print alloc trace (if enabled at compile time)"
+#~ msgstr "Vypisovať stopu alokácie (ak je to povolené pri kompilácii)"
+
+#~ msgid "Usage: gst-xmllaunch <file.xml> [ element.property=value ... ]\n"
+#~ msgstr ""
+#~ "Použitie: gst-xmllaunch <súbor.xml> [ prvk.vlastnosť=hodnota ... ]\n"
+
+#~ msgid "ERROR: parse of xml file '%s' failed.\n"
+#~ msgstr "CHYBA: zlyhala analýza xml súboru '%s'.\n"
+
+#~ msgid "ERROR: no toplevel pipeline element in file '%s'.\n"
+#~ msgstr "CHYBA: v súbore '%s' chýba prvok rúry najvyššej úrovne.\n"
+
+#~ msgid "WARNING: only one toplevel element is supported at this time.\n"
+#~ msgstr ""
+#~ "VAROVANIE: v súčasnosti je podporovaný iba jeden prvok najvyššej úrovne.\n"
+
+#~ msgid "ERROR: could not parse command line argument %d: %s.\n"
+#~ msgstr ""
+#~ "CHYBA: nepodarilo sa analyzovať argument príkazového riadku %d: %s.\n"
+
+#~ msgid "WARNING: element named '%s' not found.\n"
+#~ msgstr "VAROVANIE: prvok s názvom '%s' sa nenašiel.\n"
+
+#~ msgid "Save xml representation of pipeline to FILE and exit"
+#~ msgstr "Uložiť reprezentáciu rúry v xml do SÚBORU a skončiť"
+
+#~ msgid "FILE"
+#~ msgstr "SÚBOR"
+
+#~ msgid "Do not install signal handlers for SIGUSR1 and SIGUSR2"
+#~ msgstr "Neinštalovať obsluhu signálov SIGUSR1 a SIGUSR2"
+
+#~ msgid "Error writing registry cache to %s: %s"
+#~ msgstr "Chyba pri zápise vyrovnávacej pamäte registrov do %s: %s"
+
+#~ msgid "Error re-scanning registry %s: %s"
+#~ msgstr "Chyba pri opätovnom skenovaní registrov %s: %s"
+
+#~ msgid "Error re-scanning registry %s"
+#~ msgstr "Chyba pri opätovnom skenovaní registrov %s"
 
 #~ msgid "Internal GStreamer error: state change failed."
 #~ msgstr ""

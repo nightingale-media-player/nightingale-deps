@@ -25,25 +25,20 @@
 
 #define NUM_CAPS 10000
 
+#define AUDIO_FORMATS_ALL " { S8, U8, " \
+    "S16LE, S16BE, U16LE, U16BE, " \
+    "S24_32LE, S24_32BE, U24_32LE, U24_32BE, " \
+    "S32LE, S32BE, U32LE, U32BE, " \
+    "S24LE, S24BE, U24LE, U24BE, " \
+    "S20LE, S20BE, U20LE, U20BE, " \
+    "S18LE, S18BE, U18LE, U18BE, " \
+    "F32LE, F32BE, F64LE, F64BE }"
 
 #define GST_AUDIO_INT_PAD_TEMPLATE_CAPS \
-  "audio/x-raw-int, " \
+  "audio/x-raw, " \
+  "format = (string) " AUDIO_FORMATS_ALL ", " \
   "rate = (int) [ 1, MAX ], " \
-  "channels = (int) [ 1, MAX ], " \
-  "endianness = (int) { LITTLE_ENDIAN, BIG_ENDIAN }, " \
-  "width = (int) { 8, 16, 24, 32 }, " \
-  "depth = (int) [ 1, 32 ], " \
-  "signed = (boolean) { true, false }"
-
-
-static GstClockTime
-gst_get_current_time (void)
-{
-  GTimeVal tv;
-
-  g_get_current_time (&tv);
-  return GST_TIMEVAL_TO_TIME (tv);
-}
+  "channels = (int) [ 1, MAX ]"
 
 
 gint
@@ -58,18 +53,18 @@ main (gint argc, gchar * argv[])
 
   protocaps = gst_caps_from_string (GST_AUDIO_INT_PAD_TEMPLATE_CAPS);
 
-  start = gst_get_current_time ();
+  start = gst_util_get_timestamp ();
   capses = g_new (GstCaps *, NUM_CAPS);
   for (i = 0; i < NUM_CAPS; i++)
     capses[i] = gst_caps_copy (protocaps);
-  end = gst_get_current_time ();
+  end = gst_util_get_timestamp ();
   g_print ("%" GST_TIME_FORMAT " - creating %d caps\n",
       GST_TIME_ARGS (end - start), i);
 
-  start = gst_get_current_time ();
+  start = gst_util_get_timestamp ();
   for (i = 0; i < NUM_CAPS; i++)
     gst_caps_unref (capses[i]);
-  end = gst_get_current_time ();
+  end = gst_util_get_timestamp ();
   g_print ("%" GST_TIME_FORMAT " - destroying %d caps\n",
       GST_TIME_ARGS (end - start), i);
 

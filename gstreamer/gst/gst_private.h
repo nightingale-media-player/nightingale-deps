@@ -48,6 +48,17 @@ extern const char             g_log_domain_gstreamer[];
 /* for the flags in the GstPluginDep structure below */
 #include "gstplugin.h"
 
+/* for the pad cache */
+#include "gstpad.h"
+
+/* for GstElement */
+#include "gstelement.h"
+
+/* for GstToc */
+#include "gsttoc.h"
+
+#include "gstdatetime.h"
+
 G_BEGIN_DECLS
 
 /* used by gstparse.c and grammar.y */
@@ -73,57 +84,114 @@ struct _GstPluginPrivate {
   GstStructure *cache_data;
 };
 
-gboolean _priv_plugin_deps_env_vars_changed (GstPlugin * plugin);
-gboolean _priv_plugin_deps_files_changed (GstPlugin * plugin);
+/* FIXME: could rename all priv_gst_* functions to __gst_* now */
+G_GNUC_INTERNAL  gboolean priv_gst_plugin_loading_have_whitelist (void);
 
-gboolean _priv_gst_in_valgrind (void);
+G_GNUC_INTERNAL  guint32  priv_gst_plugin_loading_get_whitelist_hash (void);
 
-/* Initialize GStreamer private quark storage */
-void _priv_gst_quarks_initialize (void);
+G_GNUC_INTERNAL  gboolean priv_gst_plugin_desc_is_whitelisted (GstPluginDesc * desc,
+                                                               const gchar   * filename);
 
-/* Other init functions called from gst_init().
- * FIXME 0.11: rename to _priv_gst_foo_init() so they don't get exported
- * (can't do this now because these functions used to be in our public
- * headers, so at least the symbols need to continue to be available unless
- * we want enterprise edition packagers dancing on our heads) */
-void  _gst_buffer_initialize (void);
-void  _gst_buffer_list_initialize (void);
-void  _gst_event_initialize (void);
-void  _gst_format_initialize (void);
-void  _gst_message_initialize (void);
-void  _gst_plugin_initialize (void);
-void  _gst_query_initialize (void);
-void  _gst_tag_initialize (void);
-void  _gst_value_initialize (void);
+G_GNUC_INTERNAL  gboolean _priv_plugin_deps_env_vars_changed (GstPlugin * plugin);
+
+G_GNUC_INTERNAL  gboolean _priv_plugin_deps_files_changed (GstPlugin * plugin);
+
+G_GNUC_INTERNAL  gboolean _priv_gst_in_valgrind (void);
+
+/* init functions called from gst_init(). */
+G_GNUC_INTERNAL  void  _priv_gst_quarks_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_mini_object_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_buffer_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_buffer_list_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_structure_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_caps_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_event_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_format_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_message_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_memory_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_meta_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_plugin_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_query_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_sample_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_tag_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_value_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_debug_init (void);
 
 /* Private registry functions */
+G_GNUC_INTERNAL
 gboolean _priv_gst_registry_remove_cache_plugins (GstRegistry *registry);
-void _priv_gst_registry_cleanup (void);
+
+G_GNUC_INTERNAL  void _priv_gst_registry_cleanup (void);
+
+gboolean _gst_plugin_loader_client_run (void);
+
+/* Used in GstBin for manual state handling */
+G_GNUC_INTERNAL  void _priv_gst_element_state_changed (GstElement *element,
+                      GstState oldstate, GstState newstate, GstState pending);
 
 /* used in both gststructure.c and gstcaps.c; numbers are completely made up */
-#define STRUCTURE_ESTIMATED_STRING_LEN(s) (16 + (s)->fields->len * 22)
+#define STRUCTURE_ESTIMATED_STRING_LEN(s) (16 + gst_structure_n_fields(s) * 22)
 
+G_GNUC_INTERNAL
 gboolean  priv_gst_structure_append_to_gstring (const GstStructure * structure,
                                                 GString            * s);
-
 /* registry cache backends */
-/* FIXME 0.11: use priv_ prefix */
-gboolean 		gst_registry_binary_read_cache 	(GstRegistry * registry, const char *location);
-gboolean 		gst_registry_binary_write_cache	(GstRegistry * registry, const char *location);
+G_GNUC_INTERNAL
+gboolean		priv_gst_registry_binary_read_cache	(GstRegistry * registry, const char *location);
 
+G_GNUC_INTERNAL
+gboolean		priv_gst_registry_binary_write_cache	(GstRegistry * registry, GList * plugins, const char *location);
+
+
+G_GNUC_INTERNAL
+void      __gst_element_factory_add_static_pad_template (GstElementFactory    * elementfactory,
+                                                         GstStaticPadTemplate * templ);
+
+G_GNUC_INTERNAL
+void      __gst_element_factory_add_interface           (GstElementFactory    * elementfactory,
+                                                         const gchar          * interfacename);
 
 /* used in gstvalue.c and gststructure.c */
 #define GST_ASCII_IS_STRING(c) (g_ascii_isalnum((c)) || ((c) == '_') || \
     ((c) == '-') || ((c) == '+') || ((c) == '/') || ((c) == ':') || \
     ((c) == '.'))
 
+/* This is only meant for internal uses */
+G_GNUC_INTERNAL
+gint __gst_date_time_compare (const GstDateTime * dt1, const GstDateTime * dt2);
+
+G_GNUC_INTERNAL
+gchar * __gst_date_time_serialize (GstDateTime * datetime, gboolean with_usecs);
+
+#ifndef GST_DISABLE_REGISTRY
+/* Secret variable to initialise gst without registry cache */
+GST_EXPORT gboolean _gst_disable_registry_cache;
+#endif
+
+/* provide inline gst_g_value_get_foo_unchecked(), used in gststructure.c */
+#define DEFINE_INLINE_G_VALUE_GET_UNCHECKED(ret_type,name_type,v_field) \
+static inline ret_type                                                  \
+gst_g_value_get_##name_type##_unchecked (const GValue *value)           \
+{                                                                       \
+  return value->data[0].v_field;                                        \
+}
+
+DEFINE_INLINE_G_VALUE_GET_UNCHECKED(gboolean,boolean,v_int)
+DEFINE_INLINE_G_VALUE_GET_UNCHECKED(gint,int,v_int)
+DEFINE_INLINE_G_VALUE_GET_UNCHECKED(guint,uint,v_uint)
+DEFINE_INLINE_G_VALUE_GET_UNCHECKED(gint64,int64,v_int64)
+DEFINE_INLINE_G_VALUE_GET_UNCHECKED(guint64,uint64,v_uint64)
+DEFINE_INLINE_G_VALUE_GET_UNCHECKED(gfloat,float,v_float)
+DEFINE_INLINE_G_VALUE_GET_UNCHECKED(gdouble,double,v_double)
+DEFINE_INLINE_G_VALUE_GET_UNCHECKED(const gchar *,string,v_pointer)
+
+
 /*** debugging categories *****************************************************/
 
 #ifndef GST_REMOVE_GST_DEBUG
 
 GST_EXPORT GstDebugCategory *GST_CAT_GST_INIT;
-GST_EXPORT GstDebugCategory *GST_CAT_AUTOPLUG; /* FIXME 0.11: remove? */
-GST_EXPORT GstDebugCategory *GST_CAT_AUTOPLUG_ATTEMPT; /* FIXME 0.11: remove? */
+GST_EXPORT GstDebugCategory *GST_CAT_MEMORY;
 GST_EXPORT GstDebugCategory *GST_CAT_PARENTAGE;
 GST_EXPORT GstDebugCategory *GST_CAT_STATES;
 GST_EXPORT GstDebugCategory *GST_CAT_SCHEDULING;
@@ -139,7 +207,6 @@ GST_EXPORT GstDebugCategory *GST_CAT_PIPELINE;
 GST_EXPORT GstDebugCategory *GST_CAT_PLUGIN_LOADING;
 GST_EXPORT GstDebugCategory *GST_CAT_PLUGIN_INFO;
 GST_EXPORT GstDebugCategory *GST_CAT_PROPERTIES;
-GST_EXPORT GstDebugCategory *GST_CAT_XML;
 GST_EXPORT GstDebugCategory *GST_CAT_NEGOTIATION;
 GST_EXPORT GstDebugCategory *GST_CAT_REFCOUNTING;
 GST_EXPORT GstDebugCategory *GST_CAT_ERROR_SYSTEM;
@@ -151,7 +218,13 @@ GST_EXPORT GstDebugCategory *GST_CAT_SIGNAL;
 GST_EXPORT GstDebugCategory *GST_CAT_PROBE;
 GST_EXPORT GstDebugCategory *GST_CAT_REGISTRY;
 GST_EXPORT GstDebugCategory *GST_CAT_QOS;
-GST_EXPORT GstDebugCategory *GST_CAT_TYPES; /* FIXME 0.11: remove? */
+GST_EXPORT GstDebugCategory *GST_CAT_META;
+GST_EXPORT GstDebugCategory *GST_CAT_LOCKING;
+
+/* Categories that should be completely private to
+ * libgstreamer should be done like this: */
+#define GST_CAT_POLL _priv_GST_CAT_POLL
+extern GstDebugCategory *_priv_GST_CAT_POLL;
 
 #else
 
@@ -174,7 +247,6 @@ GST_EXPORT GstDebugCategory *GST_CAT_TYPES; /* FIXME 0.11: remove? */
 #define GST_CAT_PLUGIN_LOADING   NULL
 #define GST_CAT_PLUGIN_INFO      NULL
 #define GST_CAT_PROPERTIES       NULL
-#define GST_CAT_XML              NULL
 #define GST_CAT_NEGOTIATION      NULL
 #define GST_CAT_REFCOUNTING      NULL
 #define GST_CAT_ERROR_SYSTEM     NULL
@@ -187,8 +259,121 @@ GST_EXPORT GstDebugCategory *GST_CAT_TYPES; /* FIXME 0.11: remove? */
 #define GST_CAT_REGISTRY         NULL
 #define GST_CAT_QOS              NULL
 #define GST_CAT_TYPES            NULL
+#define GST_CAT_POLL             NULL
+#define GST_CAT_META             NULL
+#define GST_CAT_LOCKING          NULL
 
 #endif
+
+
+/**** objects made opaque until the private bits have been made private ****/
+
+#include <gmodule.h>
+#include <time.h> /* time_t */
+#include <sys/types.h> /* off_t */
+#include <sys/stat.h> /* off_t */
+
+typedef struct _GstPluginPrivate GstPluginPrivate;
+
+struct _GstPlugin {
+  GstObject       object;
+
+  /*< private >*/
+  GstPluginDesc	desc;
+
+  GstPluginDesc *orig_desc;
+
+  gchar *	filename;
+  gchar *	basename;       /* base name (non-dir part) of plugin path */
+
+  GModule *	module;		/* contains the module if plugin is loaded */
+
+  off_t         file_size;
+  time_t        file_mtime;
+  gboolean      registered;     /* TRUE when the registry has seen a filename
+                                 * that matches the plugin's basename */
+
+  GstPluginPrivate *priv;
+
+  gpointer _gst_reserved[GST_PADDING];
+};
+
+struct _GstPluginClass {
+  GstObjectClass  object_class;
+
+  /*< private >*/
+  gpointer _gst_reserved[GST_PADDING];
+};
+
+struct _GstPluginFeature {
+  GstObject      object;
+
+  /*< private >*/
+  gboolean       loaded;
+  guint          rank;
+
+  const gchar   *plugin_name;
+  GstPlugin     *plugin;      /* weak ref */
+
+  /*< private >*/
+  gpointer _gst_reserved[GST_PADDING];
+};
+
+struct _GstPluginFeatureClass {
+  GstObjectClass        parent_class;
+
+  /*< private >*/
+  gpointer _gst_reserved[GST_PADDING];
+};
+
+#include "gsttypefind.h"
+
+struct _GstTypeFindFactory {
+  GstPluginFeature              feature;
+  /* <private> */
+
+  GstTypeFindFunction           function;
+  gchar **                      extensions;
+  GstCaps *                     caps; /* FIXME: not yet saved in registry */
+
+  gpointer                      user_data;
+  GDestroyNotify                user_data_notify;
+
+  gpointer _gst_reserved[GST_PADDING];
+};
+
+struct _GstTypeFindFactoryClass {
+  GstPluginFeatureClass         parent;
+  /* <private> */
+
+  gpointer _gst_reserved[GST_PADDING];
+};
+
+struct _GstElementFactory {
+  GstPluginFeature      parent;
+
+  GType                 type;                   /* unique GType of element or 0 if not loaded */
+
+  gpointer              metadata;
+
+  GList *               staticpadtemplates;     /* GstStaticPadTemplate list */
+  guint                 numpadtemplates;
+
+  /* URI interface stuff */
+  GstURIType            uri_type;
+  gchar **              uri_protocols;
+
+  GList *               interfaces;             /* interface type names this element implements */
+
+  /*< private >*/
+  gpointer _gst_reserved[GST_PADDING];
+};
+
+struct _GstElementFactoryClass {
+  GstPluginFeatureClass parent_class;
+
+  gpointer _gst_reserved[GST_PADDING];
+};
 
 G_END_DECLS
 #endif /* __GST_PRIVATE_H__ */

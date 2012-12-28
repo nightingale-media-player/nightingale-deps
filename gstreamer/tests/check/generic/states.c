@@ -39,13 +39,13 @@ setup (void)
   const gchar *STATE_IGNORE_ELEMENTS = NULL;
 
   GST_DEBUG ("getting elements for package %s", PACKAGE);
-  STATE_IGNORE_ELEMENTS = g_getenv ("STATE_IGNORE_ELEMENTS");
-  if (STATE_IGNORE_ELEMENTS) {
+  STATE_IGNORE_ELEMENTS = g_getenv ("GST_STATE_IGNORE_ELEMENTS");
+  if (!g_getenv ("GST_NO_STATE_IGNORE_ELEMENTS") && STATE_IGNORE_ELEMENTS) {
     GST_DEBUG ("Will ignore element factories: '%s'", STATE_IGNORE_ELEMENTS);
     ignorelist = g_strsplit (STATE_IGNORE_ELEMENTS, " ", 0);
   }
 
-  plugins = gst_registry_get_plugin_list (gst_registry_get_default ());
+  plugins = gst_registry_get_plugin_list (gst_registry_get ());
 
   for (p = plugins; p; p = p->next) {
     GstPlugin *plugin = p->data;
@@ -54,16 +54,18 @@ setup (void)
       continue;
 
     features =
-        gst_registry_get_feature_list_by_plugin (gst_registry_get_default (),
+        gst_registry_get_feature_list_by_plugin (gst_registry_get (),
         gst_plugin_get_name (plugin));
 
     for (f = features; f; f = f->next) {
       GstPluginFeature *feature = f->data;
-      const gchar *name = gst_plugin_feature_get_name (feature);
+      const gchar *name;
       gboolean ignore = FALSE;
 
       if (!GST_IS_ELEMENT_FACTORY (feature))
         continue;
+
+      name = GST_OBJECT_NAME (feature);
 
       if (ignorelist) {
         gchar **s;
@@ -79,7 +81,7 @@ setup (void)
       }
 
       GST_DEBUG ("adding element %s", name);
-      elements = g_list_prepend (elements, (gpointer) g_strdup (name));
+      elements = g_list_prepend (elements, g_strdup (name));
     }
     gst_plugin_feature_list_free (features);
   }

@@ -27,8 +27,6 @@
 #include <glib-object.h>
 #include <gst/gst.h>
 
-#include "gstcontrolsource.h"
-
 G_BEGIN_DECLS
 
 #define GST_TYPE_LFO_CONTROL_SOURCE \
@@ -79,13 +77,13 @@ struct _GstLFOControlSource {
 
   /* <private> */
   GstLFOControlSourcePrivate *priv;
-  GMutex *lock;
+  GMutex lock;
   gpointer _gst_reserved[GST_PADDING];
 };
 
 struct _GstLFOControlSourceClass {
   GstControlSourceClass parent_class;
-  
+
   /*< private >*/
   gpointer _gst_reserved[GST_PADDING];
 };
@@ -95,7 +93,7 @@ GType gst_lfo_waveform_get_type (void);
 
 /* Functions */
 
-GstLFOControlSource *gst_lfo_control_source_new (void);
+GstControlSource *gst_lfo_control_source_new (void);
 
 G_END_DECLS
 

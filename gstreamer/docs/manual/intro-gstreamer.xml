@@ -23,7 +23,7 @@
     </para> 
 
     <para>
-      One of the the most obvious uses of &GStreamer; is using it to build
+      One of the most obvious uses of &GStreamer; is using it to build
       a media player. &GStreamer; already includes components for building a
       media player that can support a very wide variety of formats, including
       MP3, Ogg/Vorbis, MPEG-1/2, AVI, Quicktime, mod, and more. &GStreamer;,
@@ -55,7 +55,8 @@
         <listitem><para>a plugin architecture</para></listitem>
         <listitem><para>a pipeline architecture</para></listitem>
         <listitem><para>a mechanism for media type handling/negotiation</para></listitem>
-        <listitem><para>over 150 plug-ins</para></listitem>
+        <listitem><para>a mechanism for synchronization</para></listitem>
+        <listitem><para>over 250 plug-ins providing more than 1000 elements</para></listitem>
         <listitem><para>a set of tools</para></listitem>
       </itemizedlist>
     </para> 
@@ -89,7 +90,7 @@
         <listitem><para>gst-plugins-good: a set of good-quality plug-ins under LGPL</para></listitem>
         <listitem><para>gst-plugins-ugly: a set of good-quality plug-ins that might pose distribution problems</para></listitem>
         <listitem><para>gst-plugins-bad: a set of plug-ins that need more quality</para></listitem>
-        <listitem><para>gst-python: the python bindings</para></listitem>
+        <listitem><para>gst-libav: a set of plug-ins that wrap libav for decoding and encoding</para></listitem>
         <listitem><para>a few others packages</para></listitem>
       </itemizedlist>
     </para> 

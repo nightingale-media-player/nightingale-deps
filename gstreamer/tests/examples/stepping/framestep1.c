@@ -6,20 +6,30 @@ event_loop (GstElement * pipe)
 {
   GstBus *bus;
   GstMessage *message = NULL;
+  gboolean running = TRUE;
 
   bus = gst_element_get_bus (GST_ELEMENT (pipe));
 
-  while (TRUE) {
-    message = gst_bus_timed_pop_filtered (bus, GST_MESSAGE_ANY, -1);
+  while (running) {
+    message = gst_bus_timed_pop_filtered (bus, -1, GST_MESSAGE_ANY);
 
     g_assert (message != NULL);
 
     switch (message->type) {
       case GST_MESSAGE_EOS:
         g_message ("got EOS");
-        gst_message_unref (message);
-        return;
-      case GST_MESSAGE_WARNING:
+        running = FALSE;
+        break;
+      case GST_MESSAGE_WARNING:{
+        GError *gerror;
+        gchar *debug;
+
+        gst_message_parse_warning (message, &gerror, &debug);
+        gst_object_default_error (GST_MESSAGE_SRC (message), gerror, debug);
+        g_error_free (gerror);
+        g_free (debug);
+        break;
+      }
       case GST_MESSAGE_ERROR:
       {
         GError *gerror;
@@ -27,10 +37,10 @@ event_loop (GstElement * pipe)
 
         gst_message_parse_error (message, &gerror, &debug);
         gst_object_default_error (GST_MESSAGE_SRC (message), gerror, debug);
-        gst_message_unref (message);
         g_error_free (gerror);
         g_free (debug);
-        return;
+        running = FALSE;
+        break;
       }
       case GST_MESSAGE_STEP_DONE:
       {
@@ -51,18 +61,18 @@ event_loop (GstElement * pipe)
           g_message ("step done: %" GST_TIME_FORMAT " skipped",
               GST_TIME_ARGS (duration));
         }
-
-        return;
+        break;
       }
       default:
-        gst_message_unref (message);
         break;
     }
+    gst_message_unref (message);
   }
+  gst_object_unref (bus);
 }
 
 /* signalled when a new preroll buffer is available */
-static void
+static GstFlowReturn
 new_preroll (GstElement * appsink, gpointer user_data)
 {
   GstBuffer *buffer;
@@ -73,13 +83,14 @@ new_preroll (GstElement * appsink, gpointer user_data)
       GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buffer)));
 
   gst_buffer_unref (buffer);
+
+  return GST_FLOW_OK;
 }
 
 int
 main (int argc, char *argv[])
 {
   GstElement *bin, *videotestsrc, *appsink;
-  GstFormat format;
   gint64 pos;
 
   gst_init (&argc, &argv);
@@ -114,8 +125,9 @@ main (int argc, char *argv[])
 
   /* step two frames, flush so that new preroll is queued */
   g_message ("stepping three frames");
-  g_assert (gst_element_send_event (bin,
-          gst_event_new_step (GST_FORMAT_BUFFERS, 2, 1.0, TRUE, FALSE)));
+  if (!gst_element_send_event (bin,
+          gst_event_new_step (GST_FORMAT_BUFFERS, 2, 1.0, TRUE, FALSE)))
+    g_warning ("Filed to send STEP event!");
 
   /* blocks and returns when we received the step done message */
   event_loop (bin);
@@ -123,16 +135,16 @@ main (int argc, char *argv[])
   /* wait for step to really complete */
   gst_element_get_state (bin, NULL, NULL, -1);
 
-  format = GST_FORMAT_TIME;
-  gst_element_query_position (bin, &format, &pos);
+  gst_element_query_position (bin, GST_FORMAT_TIME, &pos);
   g_message ("stepped two frames, now at %" GST_TIME_FORMAT,
       GST_TIME_ARGS (pos));
 
   /* step 3 frames, flush so that new preroll is queued */
   g_message ("stepping 120 milliseconds ");
-  g_assert (gst_element_send_event (bin,
+  if (!gst_element_send_event (bin,
           gst_event_new_step (GST_FORMAT_TIME, 120 * GST_MSECOND, 1.0, TRUE,
-              FALSE)));
+              FALSE)))
+    g_warning ("Filed to send STEP event!");
 
   /* blocks and returns when we received the step done message */
   event_loop (bin);
@@ -140,8 +152,7 @@ main (int argc, char *argv[])
   /* wait for step to really complete */
   gst_element_get_state (bin, NULL, NULL, -1);
 
-  format = GST_FORMAT_TIME;
-  gst_element_query_position (bin, &format, &pos);
+  gst_element_query_position (bin, GST_FORMAT_TIME, &pos);
   g_message ("stepped 120ms frames, now at %" GST_TIME_FORMAT,
       GST_TIME_ARGS (pos));
 

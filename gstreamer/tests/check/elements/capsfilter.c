@@ -20,7 +20,7 @@
 #include <gst/check/gstcheck.h>
 
 #define CAPS_TEMPLATE_STRING            \
-    "audio/x-raw-int, "                 \
+    "audio/x-raw, "                     \
     "channels = (int) [ 1, 2], "        \
     "rate = (int) [ 1,  MAX ]"
 
@@ -43,14 +43,14 @@ GST_START_TEST (test_unfixed_downstream_caps)
   g_object_set (src, "sizetype", 2, "sizemax", 1024, "num-buffers", 1, NULL);
 
   filter = gst_check_setup_element ("capsfilter");
-  filter_caps = gst_caps_from_string ("audio/x-raw-int, rate=(int)44100");
+  filter_caps = gst_caps_from_string ("audio/x-raw, rate=(int)44100");
   fail_unless (filter_caps != NULL);
   g_object_set (filter, "caps", filter_caps, NULL);
 
   gst_bin_add_many (GST_BIN (pipe), src, filter, NULL);
   fail_unless (gst_element_link (src, filter));
 
-  mysinkpad = gst_check_setup_sink_pad (filter, &sinktemplate, NULL);
+  mysinkpad = gst_check_setup_sink_pad (filter, &sinktemplate);
   gst_pad_set_active (mysinkpad, TRUE);
 
   fail_unless_equals_int (gst_element_set_state (pipe, GST_STATE_PLAYING),

@@ -29,10 +29,10 @@ GST_START_TEST (test_copy)
 
   buffer = gst_buffer_new_and_alloc (4);
 
-  copy = GST_BUFFER (gst_mini_object_copy (GST_MINI_OBJECT (buffer)));
+  copy = GST_BUFFER (gst_mini_object_copy (GST_MINI_OBJECT_CAST (buffer)));
 
   fail_if (copy == NULL, "Copy of buffer returned NULL");
-  fail_unless (GST_BUFFER_SIZE (copy) == 4,
+  fail_unless (gst_buffer_get_size (copy) == 4,
       "Copy of buffer has different size");
 }
 
@@ -44,17 +44,10 @@ GST_START_TEST (test_is_writable)
   GstMiniObject *mobj;
 
   buffer = gst_buffer_new_and_alloc (4);
-  mobj = GST_MINI_OBJECT (buffer);
+  mobj = GST_MINI_OBJECT_CAST (buffer);
 
   fail_unless (gst_mini_object_is_writable (mobj),
       "A buffer with one ref should be writable");
-
-  GST_MINI_OBJECT_FLAG_SET (mobj, GST_MINI_OBJECT_FLAG_READONLY);
-  fail_if (gst_mini_object_is_writable (mobj),
-      "A buffer with READONLY set should not be writable");
-  GST_MINI_OBJECT_FLAG_UNSET (mobj, GST_MINI_OBJECT_FLAG_READONLY);
-  fail_unless (gst_mini_object_is_writable (mobj),
-      "A buffer with one ref and READONLY not set should be writable");
 
   fail_if (gst_mini_object_ref (mobj) == NULL, "Could not ref the mobj");
 
@@ -70,7 +63,7 @@ GST_START_TEST (test_make_writable)
   GstMiniObject *mobj, *mobj2, *mobj3;
 
   buffer = gst_buffer_new_and_alloc (4);
-  mobj = GST_MINI_OBJECT (buffer);
+  mobj = GST_MINI_OBJECT_CAST (buffer);
 
   mobj2 = gst_mini_object_make_writable (mobj);
   fail_unless (GST_IS_BUFFER (mobj2), "make_writable did not return a buffer");
@@ -123,7 +116,7 @@ GST_START_TEST (test_ref_threaded)
 
   buffer = gst_buffer_new_and_alloc (4);
 
-  mobj = GST_MINI_OBJECT (buffer);
+  mobj = GST_MINI_OBJECT_CAST (buffer);
 
   MAIN_START_THREADS (num_threads, thread_ref, mobj);
 
@@ -175,6 +168,171 @@ GST_START_TEST (test_unref_threaded)
 
 GST_END_TEST;
 
+/* ======== weak ref test ======== */
+
+static gboolean weak_ref_notify_succeeded = FALSE;
+
+static void
+on_weak_ref_notify (gpointer data, GstMiniObject * where_object_was)
+{
+  weak_ref_notify_succeeded = TRUE;
+}
+
+GST_START_TEST (test_weak_ref)
+{
+  GstBuffer *buffer;
+
+  buffer = gst_buffer_new_and_alloc (4);
+
+  gst_mini_object_weak_ref (GST_MINI_OBJECT (buffer), on_weak_ref_notify,
+      &buffer);
+
+  gst_buffer_unref (buffer);
+
+  fail_unless (weak_ref_notify_succeeded,
+      "No weak reference notification took place.");
+}
+
+GST_END_TEST;
+
+#if 0
+/* ======== recycle test ======== */
+
+static gint recycle_buffer_count = 10;
+
+typedef struct _MyBufferPool MyBufferPool;
+
+struct _MyBufferPool
+{
+  GSList *buffers;
+
+  volatile gboolean is_closed;
+};
+
+static void my_recycle_buffer_destroy (MyRecycleBuffer * buf);
+
+static MyBufferPool *
+my_buffer_pool_new (void)
+{
+  return g_new0 (MyBufferPool, 1);
+}
+
+static void
+my_buffer_pool_free (MyBufferPool * self)
+{
+  while (self->buffers != NULL) {
+    my_recycle_buffer_destroy (self->buffers->data);
+    self->buffers = g_slist_delete_link (self->buffers, self->buffers);
+  }
+
+  g_free (self);
+}
+
+static void
+my_buffer_pool_add (MyBufferPool * self, GstBuffer * buf)
+{
+  g_mutex_lock (mutex);
+  self->buffers = g_slist_prepend (self->buffers, gst_buffer_ref (buf));
+  g_mutex_unlock (mutex);
+}
+
+static GstBuffer *
+my_buffer_pool_drain_one (MyBufferPool * self)
+{
+  GstBuffer *buf = NULL;
+
+  g_mutex_lock (mutex);
+  if (self->buffers != NULL) {
+    buf = self->buffers->data;
+    self->buffers = g_slist_delete_link (self->buffers, self->buffers);
+  }
+  g_mutex_unlock (mutex);
+
+  return buf;
+}
+
+static void
+my_recycle_buffer_finalize (GstMiniObject * mini_object)
+{
+  GstBuffer *self = GST_BUFFER_CAST (mini_object);
+
+  if (self->pool != NULL) {
+    my_buffer_pool_add (self->pool, GST_BUFFER_CAST (self));
+    g_usleep (G_USEC_PER_SEC / 100);
+  } else {
+    GST_MINI_OBJECT_CLASS (my_recycle_buffer_parent_class)->finalize
+        (mini_object);
+  }
+}
+
+static GstBuffer *
+my_recycle_buffer_new (MyBufferPool * pool)
+{
+  GstBuffer *buf;
+
+  buf = gst_buffer_new ();
+
+  //buf->pool = pool;
+
+  return GST_BUFFER_CAST (buf);
+}
+
+static void
+my_recycle_buffer_destroy (MyRecycleBuffer * buf)
+{
+  buf->pool = NULL;
+  gst_buffer_unref (GST_BUFFER_CAST (buf));
+}
+
+static void
+thread_buffer_producer (MyBufferPool * pool)
+{
+  int j;
+
+  THREAD_START ();
+
+  for (j = 0; j < recycle_buffer_count; ++j) {
+    GstBuffer *buf = my_recycle_buffer_new (pool);
+    gst_buffer_unref (buf);
+  }
+
+  pool->is_closed = TRUE;
+}
+
+static void
+thread_buffer_consumer (MyBufferPool * pool)
+{
+  THREAD_START ();
+
+  do {
+    GstBuffer *buf;
+
+    buf = my_buffer_pool_drain_one (pool);
+    if (buf != NULL)
+      my_recycle_buffer_destroy (MY_RECYCLE_BUFFER_CAST (buf));
+
+    THREAD_SWITCH ();
+  }
+  while (!pool->is_closed);
+}
+
+GST_START_TEST (test_recycle_threaded)
+{
+  MyBufferPool *pool;
+
+  pool = my_buffer_pool_new ();
+
+  MAIN_START_THREADS (1, thread_buffer_producer, pool);
+  MAIN_START_THREADS (1, thread_buffer_consumer, pool);
+
+  MAIN_STOP_THREADS ();
+
+  my_buffer_pool_free (pool);
+}
+
+GST_END_TEST;
+#endif
+
 /* ======== value collection test ======== */
 typedef struct _MyFoo
 {
@@ -191,6 +349,7 @@ enum
   PROP_BUFFER = 1
 };
 
+GType my_foo_get_type (void);
 G_DEFINE_TYPE (MyFoo, my_foo, G_TYPE_OBJECT);
 
 static void
@@ -207,7 +366,7 @@ my_foo_get_property (GObject * object, guint prop_id, GValue * value,
   g_assert (prop_id == PROP_BUFFER);
 
   new_buf = gst_buffer_new_and_alloc (1024);
-  gst_value_set_mini_object (value, GST_MINI_OBJECT (new_buf));
+  g_value_set_boxed (value, GST_MINI_OBJECT (new_buf));
   gst_buffer_unref (new_buf);
 }
 
@@ -219,8 +378,7 @@ my_foo_set_property (GObject * object, guint prop_id, const GValue * value,
 
   g_assert (prop_id == PROP_BUFFER);
 
-  mini_obj = gst_value_get_mini_object (value);
-  g_assert (GST_IS_MINI_OBJECT (mini_obj));
+  mini_obj = g_value_get_boxed (value);
   g_assert (GST_IS_BUFFER (mini_obj));
 
 #if 0
@@ -242,7 +400,7 @@ my_foo_class_init (MyFooClass * klass)
   gobject_klass->set_property = my_foo_set_property;
 
   g_object_class_install_property (gobject_klass, PROP_BUFFER,
-      gst_param_spec_mini_object ("buffer", "Buffer",
+      g_param_spec_boxed ("buffer", "Buffer",
           "a newly created GstBuffer", GST_TYPE_BUFFER, G_PARAM_READWRITE));
 }
 
@@ -271,6 +429,23 @@ GST_START_TEST (test_value_collection)
 GST_END_TEST;
 
 
+GST_START_TEST (test_dup_null_mini_object)
+{
+  GValue value = { 0, };
+  GstMiniObject *mo;
+
+  g_value_init (&value, GST_TYPE_BUFFER);
+
+  g_value_set_boxed (&value, NULL);
+
+  mo = GST_MINI_OBJECT_CAST (g_value_dup_boxed (&value));
+  g_assert (mo == NULL);
+
+  g_value_unset (&value);
+}
+
+GST_END_TEST;
+
 static Suite *
 gst_mini_object_suite (void)
 {
@@ -286,7 +461,10 @@ gst_mini_object_suite (void)
   tcase_add_test (tc_chain, test_make_writable);
   tcase_add_test (tc_chain, test_ref_threaded);
   tcase_add_test (tc_chain, test_unref_threaded);
+  tcase_add_test (tc_chain, test_weak_ref);
+  //tcase_add_test (tc_chain, test_recycle_threaded);
   tcase_add_test (tc_chain, test_value_collection);
+  tcase_add_test (tc_chain, test_dup_null_mini_object);
   return s;
 }
 

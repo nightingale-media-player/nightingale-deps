@@ -16,7 +16,17 @@ event_loop (GstBus * bus, GstElement * pipe)
         g_message ("received EOS");
         gst_message_unref (message);
         return;
-      case GST_MESSAGE_WARNING:
+      case GST_MESSAGE_WARNING:{
+        GError *gerror;
+        gchar *debug;
+
+        gst_message_parse_warning (message, &gerror, &debug);
+        gst_object_default_error (GST_MESSAGE_SRC (message), gerror, debug);
+        gst_message_unref (message);
+        g_error_free (gerror);
+        g_free (debug);
+        break;
+      }
       case GST_MESSAGE_ERROR:{
         GError *gerror;
         gchar *debug;
@@ -73,8 +83,8 @@ sync_bus_handler (GstBus * bus, GstMessage * message, GstElement * bin)
           break;
         case GST_STREAM_STATUS_TYPE_ENTER:
           if (task) {
-            g_message ("raising task priority for %p", task);
-            gst_task_set_priority (task, G_THREAD_PRIORITY_HIGH);
+            /* g_message ("raising task priority for %p", task); */
+            /* FIXME: do something here */
           }
           break;
         case GST_STREAM_STATUS_TYPE_LEAVE:
@@ -120,7 +130,8 @@ main (int argc, char *argv[])
 
   /* get the bus, we need to install a sync handler */
   bus = gst_pipeline_get_bus (GST_PIPELINE (bin));
-  gst_bus_set_sync_handler (bus, (GstBusSyncHandler) sync_bus_handler, bin);
+  gst_bus_set_sync_handler (bus, (GstBusSyncHandler) sync_bus_handler, bin,
+      NULL);
 
   /* start playing */
   gst_element_set_state (bin, GST_STATE_PLAYING);

@@ -8,12 +8,13 @@ REGISTRY_ENVIRONMENT = \
 	GST_REGISTRY=$(CHECK_REGISTRY)
 
 TESTS_ENVIRONMENT = \
-        STATE_IGNORE_ELEMENTS="$(STATE_IGNORE_ELEMENTS)"	\
+        GST_STATE_IGNORE_ELEMENTS="$(STATE_IGNORE_ELEMENTS)"	\
         $(REGISTRY_ENVIRONMENT)					\
+        GST_PLUGIN_SCANNER=$(top_builddir)/libs/gst/helpers/gst-plugin-scanner \
         GST_PLUGIN_SYSTEM_PATH=					\
         GST_PLUGIN_PATH=$(top_builddir)/plugins
 
-plugindir = $(libdir)/gstreamer-@GST_MAJORMINOR@
+plugindir = $(libdir)/gstreamer-@GST_API_VERSION@
 
 # override to _not_ install the test plugins
 install-pluginLTLIBRARIES:
@@ -26,16 +27,29 @@ SUPPRESSIONS = $(top_srcdir)/common/gst.supp
 
 clean-local: clean-local-check
 
+# These tests don't even build any longer:
+#   gst/gstindex.c
+
 if GST_DISABLE_PARSE
 PARSE_CHECKS = pipelines/parse-disabled
 else
 PARSE_CHECKS = pipelines/simple-launch-lines pipelines/cleanup pipelines/parse-launch
 endif
 
-if GST_DISABLE_LOADSAVE
-LOADSAVE_CHECKS = 
+# Do not run the abi test in case any option which causes the API to change has
+# been used
+if !GST_DISABLE_REGISTRY
+if !GST_DISABLE_TRACE
+ABI_CHECKS = gst/gstabi
+endif
+endif
+
+LIBSABI_CHECKS = libs/libsabi
+
+if HAVE_CXX
+CXX_CHECKS = gst/gstcpp libs/gstlibscpp
 else
-LOADSAVE_CHECKS = gst/gstxml
+CXX_CHECKS =
 endif
 
 # if it's calling gst_element_factory_make(), it will probably not work without
@@ -46,11 +60,12 @@ else
 REGISTRY_CHECKS =				\
 	gst/gst					\
 	gst/gstbin				\
+	gst/gstchildproxy			\
+	gst/gstcontroller				\
 	gst/gstelement				\
+	gst/gstelementfactory			\
 	gst/gstevent				\
 	gst/gstghostpad				\
-	gst/gstindex				\
-	gst/gstinterface				\
 	gst/gstplugin				\
 	gst/gstpreset				\
 	gst/gstquery				\
@@ -64,22 +79,35 @@ REGISTRY_CHECKS =				\
 	elements/fdsrc			  	\
 	elements/filesink			\
 	elements/filesrc			\
+	elements/funnel				\
 	elements/identity			\
 	elements/multiqueue			\
+	elements/selector			\
 	elements/tee			  	\
+	elements/queue                          \
+	elements/queue2                         \
+	elements/valve                          \
 	libs/basesrc				\
+	libs/basesink				\
 	libs/controller				\
+	libs/queuearray				\
 	libs/typefindhelper			\
+	pipelines/seek				\
 	pipelines/stress			\
 	pipelines/queue-error
 endif
 
 check_PROGRAMS =				\
-	gst/gstabi			     	\
+	$(ABI_CHECKS)			     	\
+	gst/gstatomicqueue			\
 	gst/gstbuffer				\
 	gst/gstbufferlist			\
+	gst/gstmeta				\
+	gst/gstmemory				\
 	gst/gstbus				\
 	gst/gstcaps     			\
+	$(CXX_CHECKS)			     	\
+	gst/gstdatetime     			\
 	gst/gstinfo		 		\
 	gst/gstiterator 			\
 	gst/gstmessage	 			\
@@ -87,33 +115,34 @@ check_PROGRAMS =				\
 	gst/gstobject				\
 	gst/gstpad				\
 	gst/gstparamspecs			\
+	gst/gstpipeline				\
 	gst/gstpoll     			\
 	gst/gstsegment				\
 	gst/gstsystemclock			\
+	gst/gstclock				\
 	gst/gststructure			\
 	gst/gsttag				\
 	gst/gsttagsetter			\
 	gst/gsttask				\
+	gst/gsttoc				\
+	gst/gsttocsetter			\
 	gst/gstvalue				\
-	$(LOADSAVE_CHECKS)	  		\
 	generic/states				\
 	$(PARSE_CHECKS)				\
 	$(REGISTRY_CHECKS)			\
-	libs/libsabi				\
-	libs/gdp				\
+	$(LIBSABI_CHECKS)		     	\
 	libs/adapter				\
 	libs/bitreader				\
 	libs/bytereader				\
+	libs/bytewriter				\
+	libs/collectpads			\
 	libs/gstnetclientclock			\
 	libs/gstnettimeprovider			\
-	libs/transform1				
+	libs/transform1				\
+	tools/gstinspect
 
 # failing tests
-# queue : tests is unstable (race conditions)
-noinst_PROGRAMS =				\
-	gst/gstpipeline				\
-	libs/collectpads			\
-	elements/queue
+noinst_PROGRAMS =
 
 # elements to ignore for the state tests
 # STATE_IGNORE_ELEMENTS =
@@ -122,12 +151,14 @@ TESTS = $(check_PROGRAMS)
 
 noinst_HEADERS = \
 	gst/capslist.h \
+	gst/struct_arm.h \
 	gst/struct_i386.h \
 	gst/struct_hppa.h \
 	gst/struct_ppc32.h \
 	gst/struct_ppc64.h \
 	gst/struct_sparc.h \
 	gst/struct_x86_64.h \
+	libs/struct_arm.h \
 	libs/struct_i386.h \
 	libs/struct_hppa.h \
 	libs/struct_ppc32.h \
@@ -138,64 +169,39 @@ noinst_HEADERS = \
 EXTRA_DIST = \
 	libs/test_transform.c
 
-AM_CFLAGS = $(GST_OBJ_CFLAGS) $(CHECK_CFLAGS)
-LDADD = $(top_builddir)/libs/gst/check/libgstcheck-@GST_MAJORMINOR@.la \
-	$(GST_OBJ_LIBS) \
-	$(CHECK_LIBS)
+AM_CFLAGS = $(GST_OBJ_CFLAGS) -UG_DISABLE_ASSERT -UG_DISABLE_CAST_CHECKS
+AM_CXXFLAGS = $(GST_OBJ_CXXFLAGS) -UG_DISABLE_ASSERT -UG_DISABLE_CAST_CHECKS
+LDADD = $(top_builddir)/libs/gst/check/libgstcheck-@GST_API_VERSION@.la \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_API_VERSION@.la \
+	$(GST_OBJ_LIBS)
+
+gst_gstcpp_SOURCES = gst/gstcpp.cc
+
+libs_gstlibscpp_SOURCES = libs/gstlibscpp.cc
 
 gst_gstutils_LDADD = $(LDADD) $(GSL_LIBS) $(GMP_LIBS)
 
-libs_gdp_SOURCES = \
-	libs/gdp.c
-libs_gdp_CFLAGS = $(AM_CFLAGS)
-libs_gdp_LDADD = \
-	$(top_builddir)/libs/gst/dataprotocol/libgstdataprotocol-@GST_MAJORMINOR@.la \
-	$(LDADD)
+elements_fdsrc_CFLAGS=$(GST_OBJ_CFLAGS) $(AM_CFLAGS) \
+	-DTESTFILE=\"$(top_srcdir)/configure.ac\"
+elements_filesrc_CFLAGS=$(GST_OBJ_CFLAGS) $(AM_CFLAGS) \
+	-DTESTFILE=\"$(top_srcdir)/configure.ac\"
 
-elements_fdsrc_CFLAGS=$(GST_OBJ_CFLAGS) $(CHECK_CFLAGS) -DTESTFILE=\"$(top_srcdir)/configure.ac\"
-elements_filesrc_CFLAGS=$(GST_OBJ_CFLAGS) $(CHECK_CFLAGS) -DTESTFILE=\"$(top_srcdir)/configure.ac\"
-
-elements_fakesink_LDADD = \
-	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
-	$(LDADD)
-
-libs_basesrc_LDADD = \
-	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
-	$(LDADD)
-libs_bitreader_LDADD = \
-	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
-	$(LDADD)
-libs_bytereader_LDADD = \
-	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
-	$(LDADD)
-libs_adapter_LDADD = \
-	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
-	$(LDADD)
-libs_collectpads_LDADD = \
-	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
-	$(LDADD)
 libs_controller_LDADD = \
-	$(top_builddir)/libs/gst/controller/libgstcontroller-@GST_MAJORMINOR@.la \
+	$(top_builddir)/libs/gst/controller/libgstcontroller-@GST_API_VERSION@.la \
 	$(LDADD)
 libs_gstnetclientclock_LDADD = \
-	$(top_builddir)/libs/gst/net/libgstnet-@GST_MAJORMINOR@.la \
+	$(top_builddir)/libs/gst/net/libgstnet-@GST_API_VERSION@.la \
 	$(LDADD)
 libs_gstnettimeprovider_LDADD = \
-	$(top_builddir)/libs/gst/net/libgstnet-@GST_MAJORMINOR@.la \
-	$(LDADD)
-libs_typefindhelper_LDADD = \
-	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
-	$(LDADD)
-libs_transform1_LDADD = \
-	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
-	$(LDADD)
+	$(top_builddir)/libs/gst/net/libgstnet-@GST_API_VERSION@.la \
+	$(GIO_LIBS) $(LDADD)
 
 # valgrind testing
 # these just need valgrind fixing, period
 VALGRIND_TO_FIX = \
 	gst/gstinfo \
-	libs/collectpads \
-	pipelines/parse-launch
+	pipelines/parse-launch \
+	tools/gstinspect
 
 VALGRIND_IGNORE = \
 	pipelines/stress
@@ -216,7 +222,6 @@ COVERAGE_DIRS = \
 	libs/gst/base \
 	libs/gst/controller \
 	libs/gst/check \
-	libs/gst/dataprotocol \
 	libs/gst/net \
 	plugins/elements
 COVERAGE_FILES = $(foreach dir,$(COVERAGE_DIRS),$(wildcard $(top_builddir)/$(dir)/*.gcov))
@@ -261,7 +266,6 @@ coverage-report:
 	      coverage/$$dir/index.xml > coverage/$$dir/index.html;	\
 	  fi; \
         done
-	
 	for file in $(COVERAGE_FILES_REL); do				\
 	  echo Generating coverage/$$file.html; 			\
 	  perl $(top_srcdir)/common/coverage/coverage-report-entry.pl   \

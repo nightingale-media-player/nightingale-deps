@@ -67,6 +67,7 @@ main (int   argc,
 
   GstElement *pipeline, *source, *demuxer, *decoder, *conv, *sink;
   GstBus *bus;
+  guint bus_watch_id;
 
   /* Initialisation */
   gst_init (&argc, &argv);
@@ -101,7 +102,7 @@ main (int   argc,
 
   /* we add a message handler */
   bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
-  gst_bus_add_watch (bus, bus_call, loop);
+  bus_watch_id = gst_bus_add_watch (bus, bus_call, loop);
   gst_object_unref (bus);
 
   /* we add all elements into the pipeline */
@@ -139,6 +140,8 @@ main (int   argc,
 
   g_print ("Deleting pipeline\n");
   gst_object_unref (GST_OBJECT (pipeline));
+  g_source_remove (bus_watch_id);
+  g_main_loop_unref (loop);
 
   return 0;
 }
